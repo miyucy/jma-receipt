@@ -574,6 +574,10 @@
                05  WK-SHOKUJIRYOYO     PIC 9(01)  OCCURS 31.
            03  WK-TOKUKANRIKASAN-OCC.
                05  WK-TOKUKANRIKASAN   PIC 9(01)  OCCURS 31.
+           03  WK-SHOKUJI-KINGAKU-OCC.
+               05  WK-SHOKUJI-KINGAKU      PIC 9(07)  OCCURS  5.
+           03  WK-SHOKUJI-HYOJYUNFTN-OCC.
+               05  WK-SHOKUJI-HYOJYUNFTN   PIC 9(07)  OCCURS  4.
            03  WK-SHOKUJI-NISSU        PIC 9(02).
            03  WK-SHOKUJI-RYOYOHI      PIC 9(07).
            03  WK-SHOKUJI-RYOYOHI95    PIC 9(07).
@@ -7607,6 +7611,61 @@
       ******************************************************************
        23047-SHOKUJI-COUNT200604-SEC         SECTION.
       *
+      *    Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£±¡Ë
+           MOVE    "197000110"    TO   WK-SRYCD
+           PERFORM    TENSU-TBL-SEC
+           IF       FLG-TENSU      =    ZERO
+              MOVE    WK-KEISAN   TO  WK-SHOKUJI-KINGAKU(1)
+           END-IF
+      *    Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£²¡Ë
+           MOVE    "197000710"    TO   WK-SRYCD
+           PERFORM    TENSU-TBL-SEC
+           IF       FLG-TENSU      =    ZERO
+              MOVE    WK-KEISAN   TO  WK-SHOKUJI-KINGAKU(2)
+           END-IF
+      *    ÆÃÊÌ¿©²Ã»»
+           MOVE    "197000470"    TO   WK-SRYCD
+           PERFORM    TENSU-TBL-SEC
+           IF       FLG-TENSU      =    ZERO
+              MOVE    WK-KEISAN   TO  WK-SHOKUJI-KINGAKU(3)
+           END-IF
+      *    ¿©Æ²²Ã»»
+           MOVE    "197000570"    TO   WK-SRYCD
+           PERFORM    TENSU-TBL-SEC
+           IF       FLG-TENSU      =    ZERO
+              MOVE    WK-KEISAN   TO  WK-SHOKUJI-KINGAKU(4)
+           END-IF
+      *    É¸½àÉéÃ´³Û¡ÊÏ«ºÒÆþ±¡Ãæ¡Ë
+           MOVE    "197001210"    TO   WK-SRYCD
+           PERFORM    TENSU-TBL-SEC
+           IF       FLG-TENSU      =    ZERO
+              MOVE    WK-KEISAN   TO  WK-SHOKUJI-KINGAKU(5)
+           END-IF
+      *    É¸½àÉéÃ´³Û¡Ê°ìÈÌ¡Ë
+           MOVE    "197000810"    TO   WK-SRYCD
+           PERFORM    TENSU-TBL-SEC
+           IF       FLG-TENSU      =    ZERO
+              MOVE    WK-KEISAN   TO  WK-SHOKUJI-HYOJYUNFTN(1)
+           END-IF
+      *    É¸½àÉéÃ´³Û¡ÊÄã£±¡Ë
+           MOVE    "197001110"    TO   WK-SRYCD
+           PERFORM    TENSU-TBL-SEC
+           IF       FLG-TENSU      =    ZERO
+              MOVE    WK-KEISAN   TO  WK-SHOKUJI-HYOJYUNFTN(2)
+           END-IF
+      *    É¸½àÉéÃ´³Û¡ÊÄã£²¡¦£¹£°Æü°Ê²¼¡Ë
+           MOVE    "197000910"    TO   WK-SRYCD
+           PERFORM    TENSU-TBL-SEC
+           IF       FLG-TENSU      =    ZERO
+              MOVE    WK-KEISAN   TO  WK-SHOKUJI-HYOJYUNFTN(3)
+           END-IF
+      *    É¸½àÉéÃ´³Û¡ÊÄã£²¡¦£¹£°ÆüÄ¶¡Ë
+           MOVE    "197001010"    TO   WK-SRYCD
+           PERFORM    TENSU-TBL-SEC
+           IF       FLG-TENSU      =    ZERO
+              MOVE    WK-KEISAN   TO  WK-SHOKUJI-HYOJYUNFTN(4)
+           END-IF
+      **
            MOVE       LNK-SYU-SKYSTYMD(7:2)  TO   IDX-ST
            MOVE       LNK-SYU-SKYEDYMD(7:2)  TO   IDX-ED
       *
@@ -7620,141 +7679,53 @@
              AND      ( WK-GAIHAKU(IDY)        =  ZERO  OR  4 )
       *
               EVALUATE   WK-SHOKUJIRYOYO(IDY)
+      *
                 WHEN        1
-                  EVALUATE   WK-SHOKUJI-NYUINJI(IDY)
-                    WHEN        1
-                       ADD       1    TO   WK-SHOKUJI-NISSU
-                                           LNK-SYU-SHOKUJI1-NISSU
-      *                Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£±¡Ë
-                       MOVE  "197000110"    TO   WK-SRYCD
-                       PERFORM    TENSU-TBL-SEC
-                       IF       FLG-TENSU      =    ZERO
-                          COMPUTE WK-KEISAN-XX =  WK-KEISAN * 1
-                          PERFORM 230471-SHOKUJI-ROSAIJIBAI-HENSYU-SEC
-                          ADD     WK-KEISAN-XX TO WK-SHOKUJI-RYOYOHI
-                                                  WK-SHOKUJI-JIHI
-                          MOVE    WK-KEISAN-XX TO LNK-SYU-SHOKUJI1
-                       END-IF
-                    WHEN        2
-                       ADD       1    TO   WK-SHOKUJI-NISSU
-                                           LNK-SYU-SHOKUJI2-NISSU
-      *                Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£±¡Ë
-                       MOVE  "197000110"    TO   WK-SRYCD
-                       PERFORM    TENSU-TBL-SEC
-                       IF       FLG-TENSU      =    ZERO
-                          COMPUTE WK-KEISAN-XX =  WK-KEISAN * 2
-                          PERFORM 230471-SHOKUJI-ROSAIJIBAI-HENSYU-SEC
-                          ADD     WK-KEISAN-XX TO WK-SHOKUJI-RYOYOHI
-                                                  WK-SHOKUJI-JIHI
-                          MOVE    WK-KEISAN-XX TO LNK-SYU-SHOKUJI2
-                       END-IF
-                    WHEN        3
-                       ADD       1    TO   WK-SHOKUJI-NISSU
-                                           LNK-SYU-SHOKUJI3-NISSU
-      *                Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£±¡Ë
-                       MOVE  "197000110"    TO   WK-SRYCD
-                       PERFORM    TENSU-TBL-SEC
-                       IF       FLG-TENSU      =    ZERO
-                          COMPUTE WK-KEISAN-XX =  WK-KEISAN * 3
-                          PERFORM 230471-SHOKUJI-ROSAIJIBAI-HENSYU-SEC
-                          ADD     WK-KEISAN-XX TO WK-SHOKUJI-RYOYOHI
-                                                  WK-SHOKUJI-JIHI
-                          MOVE    WK-KEISAN-XX TO LNK-SYU-SHOKUJI3
-                       END-IF
-                  END-EVALUATE
-                  EVALUATE   WK-SHOKUJI-TOKUSYO(IDY)
-                    WHEN        1
-                       ADD       1    TO   LNK-SYU-SHOKUJI4-NISSU
-      *                ÆÃÊÌ¿©²Ã»»
-                       MOVE  "197000470"    TO   WK-SRYCD
-                       PERFORM    TENSU-TBL-SEC
-                       IF       FLG-TENSU      =    ZERO
-                          COMPUTE WK-KEISAN-XX =  WK-KEISAN * 1
-                          PERFORM 230471-SHOKUJI-ROSAIJIBAI-HENSYU-SEC
-                          ADD     WK-KEISAN-XX TO WK-SHOKUJI-RYOYOHI
-                                                  WK-SHOKUJI-JIHI
-                          MOVE    WK-KEISAN-XX TO LNK-SYU-SHOKUJI4
-                       END-IF
-                    WHEN        2
-                       ADD       1    TO   LNK-SYU-SHOKUJI5-NISSU
-      *                ÆÃÊÌ¿©²Ã»»
-                       MOVE  "197000470"    TO   WK-SRYCD
-                       PERFORM    TENSU-TBL-SEC
-                       IF       FLG-TENSU      =    ZERO
-                          COMPUTE WK-KEISAN-XX =  WK-KEISAN * 2
-                          PERFORM 230471-SHOKUJI-ROSAIJIBAI-HENSYU-SEC
-                          ADD     WK-KEISAN-XX TO WK-SHOKUJI-RYOYOHI
-                                                  WK-SHOKUJI-JIHI
-                          MOVE    WK-KEISAN-XX TO LNK-SYU-SHOKUJI5
-                       END-IF
-                    WHEN        3
-                       ADD       1    TO   LNK-SYU-SHOKUJI6-NISSU
-      *                ÆÃÊÌ¿©²Ã»»
-                       MOVE  "197000470"    TO   WK-SRYCD
-                       PERFORM    TENSU-TBL-SEC
-                       IF       FLG-TENSU      =    ZERO
-                          COMPUTE WK-KEISAN-XX =  WK-KEISAN * 3
-                          PERFORM 230471-SHOKUJI-ROSAIJIBAI-HENSYU-SEC
-                          ADD     WK-KEISAN-XX TO WK-SHOKUJI-RYOYOHI
-                                                  WK-SHOKUJI-JIHI
-                          MOVE    WK-KEISAN-XX TO LNK-SYU-SHOKUJI6
-                       END-IF
-                  END-EVALUATE
-                  IF  WK-SHOKUDOKASAN(IDY)  NOT =  ZERO
-                       ADD       1    TO   LNK-SYU-SHOKUJI7-NISSU
-      *                ¿©Æ²²Ã»»
-                       MOVE  "197000570"    TO   WK-SRYCD
-                       PERFORM    TENSU-TBL-SEC
-                       IF       FLG-TENSU      =    ZERO
-                          COMPUTE WK-KEISAN-XX =  WK-KEISAN * 1
-                          PERFORM 230471-SHOKUJI-ROSAIJIBAI-HENSYU-SEC
-                          ADD     WK-KEISAN-XX TO WK-SHOKUJI-RYOYOHI
-                                                  WK-SHOKUJI-JIHI
-                          MOVE    WK-KEISAN-XX TO LNK-SYU-SHOKUJI7
-                       END-IF
+      *
+                  ADD     WK-SHOKUJI-NYUINJI(IDY)
+                                           TO WK-SHOKUJI-NISSU
+                  COMPUTE WK-KEISAN-XX     =  WK-SHOKUJI-KINGAKU(1)
+                                           *  WK-SHOKUJI-NYUINJI(IDY)
+                  ADD     WK-KEISAN-XX     TO WK-SHOKUJI-RYOYOHI
+                                              WK-SHOKUJI-JIHI
+                  ADD     WK-SHOKUJI-NYUINJI(IDY)
+                                           TO LNK-SYU-SHOKUJI1-NISSU
+                  MOVE    WK-SHOKUJI-KINGAKU(1)
+                                           TO LNK-SYU-SHOKUJI1
+      *
+                  IF   WK-SHOKUJI-TOKUSYO(IDY)  NOT = ZERO
+                      COMPUTE WK-KEISAN-XX =  WK-SHOKUJI-KINGAKU(3)
+                                           *  WK-SHOKUJI-TOKUSYO(IDY)
+                      ADD     WK-KEISAN-XX TO WK-SHOKUJI-RYOYOHI
+                                              WK-SHOKUJI-JIHI
+                      ADD     WK-SHOKUJI-TOKUSYO(IDY)
+                                           TO LNK-SYU-SHOKUJI3-NISSU
+                      MOVE    WK-SHOKUJI-KINGAKU(3)
+                                           TO LNK-SYU-SHOKUJI3
                   END-IF
+      *
+                  IF   WK-SHOKUDOKASAN(IDY)     NOT =  ZERO
+                      COMPUTE WK-KEISAN-XX =  WK-SHOKUJI-KINGAKU(4)
+                      ADD     WK-KEISAN-XX TO WK-SHOKUJI-RYOYOHI
+                                              WK-SHOKUJI-JIHI
+                      ADD     1            TO LNK-SYU-SHOKUJI4-NISSU
+                      MOVE    WK-SHOKUJI-KINGAKU(4)
+                                           TO LNK-SYU-SHOKUJI4
+                  END-IF
+      *
                 WHEN        2
-                  EVALUATE   WK-SHOKUJI-NYUINJI(IDY)
-                    WHEN        1
-                       ADD       1    TO   WK-SHOKUJI-NISSU
-                                           LNK-SYU-SHOKUJI1-NISSU
-      *                Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£²¡Ë
-                       MOVE  "197000710"    TO   WK-SRYCD
-                       PERFORM    TENSU-TBL-SEC
-                       IF       FLG-TENSU      =    ZERO
-                          COMPUTE WK-KEISAN-XX =  WK-KEISAN * 1
-                          PERFORM 230471-SHOKUJI-ROSAIJIBAI-HENSYU-SEC
-                          ADD     WK-KEISAN-XX TO WK-SHOKUJI-RYOYOHI
-                                                  WK-SHOKUJI-JIHI
-                          MOVE    WK-KEISAN-XX TO LNK-SYU-SHOKUJI1
-                       END-IF
-                    WHEN        2
-                       ADD       1    TO   WK-SHOKUJI-NISSU
-                                           LNK-SYU-SHOKUJI2-NISSU
-      *                Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£²¡Ë
-                       MOVE  "197000710"    TO   WK-SRYCD
-                       PERFORM    TENSU-TBL-SEC
-                       IF       FLG-TENSU      =    ZERO
-                          COMPUTE WK-KEISAN-XX =  WK-KEISAN * 2
-                          PERFORM 230471-SHOKUJI-ROSAIJIBAI-HENSYU-SEC
-                          ADD     WK-KEISAN-XX TO WK-SHOKUJI-RYOYOHI
-                                                  WK-SHOKUJI-JIHI
-                          MOVE    WK-KEISAN-XX TO LNK-SYU-SHOKUJI2
-                       END-IF
-                    WHEN        3
-                       ADD       1    TO   WK-SHOKUJI-NISSU
-                                           LNK-SYU-SHOKUJI3-NISSU
-      *                Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£²¡Ë
-                       MOVE  "197000710"    TO   WK-SRYCD
-                       PERFORM    TENSU-TBL-SEC
-                       IF       FLG-TENSU      =    ZERO
-                          COMPUTE WK-KEISAN-XX =  WK-KEISAN * 3
-                          PERFORM 230471-SHOKUJI-ROSAIJIBAI-HENSYU-SEC
-                          ADD     WK-KEISAN-XX TO WK-SHOKUJI-RYOYOHI
-                                                  WK-SHOKUJI-JIHI
-                          MOVE    WK-KEISAN-XX TO LNK-SYU-SHOKUJI3
-                       END-IF
-                  END-EVALUATE
+      *
+                  ADD     WK-SHOKUJI-NYUINJI(IDY)
+                                           TO WK-SHOKUJI-NISSU
+                  COMPUTE WK-KEISAN-XX     =  WK-SHOKUJI-KINGAKU(2)
+                                           *  WK-SHOKUJI-NYUINJI(IDY)
+                  ADD     WK-KEISAN-XX     TO WK-SHOKUJI-RYOYOHI
+                                              WK-SHOKUJI-JIHI
+                  ADD     WK-SHOKUJI-NYUINJI(IDY)
+                                           TO LNK-SYU-SHOKUJI2-NISSU
+                  MOVE    WK-SHOKUJI-KINGAKU(2)
+                                           TO LNK-SYU-SHOKUJI2
+      *
               END-EVALUATE
       *
               IF   ( COMB-SYU-HKNKOHSBTKBN   =   "8"            )
@@ -7765,33 +7736,31 @@
                 EVALUATE   FLG-SKJ
                   WHEN       0
       *              É¸½àÉéÃ´³Û¡Ê°ìÈÌ¡Ë
-                     MOVE  "197000810"    TO   WK-SRYCD
-                     PERFORM    TENSU-TBL-SEC
-                     IF       FLG-TENSU      =    ZERO
-                        PERFORM  230472-SHOKUJI-FTN-KEISAN-SEC
-                     END-IF
+                     COMPUTE WK-KEISAN-XX =  WK-SHOKUJI-HYOJYUNFTN(1)
+                                          *  WK-SHOKUJI-NYUINJI(IDY)
+                     ADD     WK-KEISAN-XX TO WK-SHOKUJI-FTN
+                     MOVE    WK-KEISAN-XX TO WK-DAY-SKJFTN(IDY)
                   WHEN       1
       *              É¸½àÉéÃ´³Û¡ÊÄã£±¡Ë
-                     MOVE  "197001110"    TO   WK-SRYCD
-                     PERFORM    TENSU-TBL-SEC
-                     IF       FLG-TENSU      =    ZERO
-                        PERFORM  230472-SHOKUJI-FTN-KEISAN-SEC
-                     END-IF
+                     COMPUTE WK-KEISAN-XX =  WK-SHOKUJI-HYOJYUNFTN(2)
+                                          *  WK-SHOKUJI-NYUINJI(IDY)
+                     ADD     WK-KEISAN-XX TO WK-SHOKUJI-FTN
+                     MOVE    WK-KEISAN-XX TO WK-DAY-SKJFTN(IDY)
                   WHEN       2
       *              É¸½àÉéÃ´³Û¡ÊÄã£²¡¦£¹£°Æü°Ê²¼¡Ë
-                     MOVE  "197000910"    TO   WK-SRYCD
-                     PERFORM    TENSU-TBL-SEC
-                     IF       FLG-TENSU      =    ZERO
-                        PERFORM  230472-SHOKUJI-FTN-KEISAN-SEC
-                     END-IF
+                     COMPUTE WK-KEISAN-XX =  WK-SHOKUJI-HYOJYUNFTN(3)
+                                          *  WK-SHOKUJI-NYUINJI(IDY)
+                     ADD     WK-KEISAN-XX TO WK-SHOKUJI-FTN
+                     MOVE    WK-KEISAN-XX TO WK-DAY-SKJFTN(IDY)
                   WHEN       3
       *              É¸½àÉéÃ´³Û¡ÊÄã£²¡¦£¹£°ÆüÄ¶¡Ë
-                     MOVE  "197001010"    TO   WK-SRYCD
-                     PERFORM    TENSU-TBL-SEC
-                     IF       FLG-TENSU      =    ZERO
-                        PERFORM  230472-SHOKUJI-FTN-KEISAN-SEC
-                     END-IF
+                     COMPUTE WK-KEISAN-XX =  WK-SHOKUJI-HYOJYUNFTN(4)
+                                          *  WK-SHOKUJI-NYUINJI(IDY)
+                     ADD     WK-KEISAN-XX TO WK-SHOKUJI-FTN
+                     MOVE    WK-KEISAN-XX TO WK-DAY-SKJFTN(IDY)
                 END-EVALUATE
+                DISPLAY "IDY=" IDY
+                DISPLAY "WK-DAY-SKJFTN=" WK-DAY-SKJFTN(IDY)
               END-IF
       *
              END-IF
@@ -7799,47 +7768,35 @@
              IF       ( WK-ROSAITOKU95(IDY)  NOT =  ZERO       )
              AND      ( LNK-SYU-DAY(IDY)         =  "2"        )
       *        É¸½àÉéÃ´³Û¡ÊÏ«ºÒÆþ±¡Ãæ¡Ë
-               MOVE  "197001210"    TO   WK-SRYCD
-               PERFORM    TENSU-TBL-SEC
-               IF       FLG-TENSU      =    ZERO
-                 COMPUTE WK-KEISAN-XX =  TNS-TEN * WK-ROSAITOKU95(IDY)
-                 ADD     WK-KEISAN-XX TO WK-SHOKUJI-RYOYOHI95
-                                         WK-SHOKUJI-FTN95
-               END-IF
+               COMPUTE WK-KEISAN-XX =  WK-SHOKUJI-KINGAKU(5)
+                                    *  WK-ROSAITOKU95(IDY)
+               ADD     WK-KEISAN-XX TO WK-SHOKUJI-RYOYOHI95
+                                       WK-SHOKUJI-FTN95
              END-IF
              IF       ( WK-ROSAITOKU95-X(IDY)  NOT =  ZERO     )
              AND      ( LNK-SYU-DAY(IDY)           =  "2"      )
       *        ÆÃÊÌ¿©²Ã»»
-               MOVE  "197000470"    TO   WK-SRYCD
-               PERFORM    TENSU-TBL-SEC
-               IF       FLG-TENSU      =    ZERO
-                 COMPUTE WK-KEISAN-XX =  TNS-TEN * WK-ROSAITOKU95-X(IDY)
-                 ADD     WK-KEISAN-XX TO WK-SHOKUJI-RYOYOHI95
-                                         WK-SHOKUJI-FTN95
-               END-IF
+               COMPUTE WK-KEISAN-XX =  WK-SHOKUJI-KINGAKU(3)
+                                    *  WK-ROSAITOKU95-X(IDY)
+               ADD     WK-KEISAN-XX TO WK-SHOKUJI-RYOYOHI95
+                                       WK-SHOKUJI-FTN95
              END-IF
       *
              IF       ( WK-ROSAITOKU96(IDY)  NOT =  ZERO       )
              AND      ( LNK-SYU-DAY(IDY)         =  "2"        )
       *        É¸½àÉéÃ´³Û¡ÊÏ«ºÒÆþ±¡Ãæ¡Ë
-               MOVE  "197001210"    TO   WK-SRYCD
-               PERFORM    TENSU-TBL-SEC
-               IF       FLG-TENSU      =    ZERO
-                 COMPUTE WK-KEISAN-XX =  TNS-TEN * WK-ROSAITOKU96(IDY)
-                 ADD     WK-KEISAN-XX TO WK-SHOKUJI-RYOYOHI96
-                                         WK-SHOKUJI-FTN96
-               END-IF
+               COMPUTE WK-KEISAN-XX =  WK-SHOKUJI-KINGAKU(5)
+                                    *  WK-ROSAITOKU96(IDY)
+               ADD     WK-KEISAN-XX TO WK-SHOKUJI-RYOYOHI96
+                                       WK-SHOKUJI-FTN96
              END-IF
              IF       ( WK-ROSAITOKU96-X(IDY)  NOT =  ZERO     )
              AND      ( LNK-SYU-DAY(IDY)           =  "2"      )
       *        ÆÃÊÌ¿©²Ã»»
-               MOVE  "197000470"    TO   WK-SRYCD
-               PERFORM    TENSU-TBL-SEC
-               IF       FLG-TENSU      =    ZERO
-                 COMPUTE WK-KEISAN-XX =  TNS-TEN * WK-ROSAITOKU96-X(IDY)
-                 ADD     WK-KEISAN-XX TO WK-SHOKUJI-RYOYOHI96
-                                         WK-SHOKUJI-FTN96
-               END-IF
+               COMPUTE WK-KEISAN-XX =  WK-SHOKUJI-KINGAKU(3)
+                                    *  WK-ROSAITOKU96-X(IDY)
+               ADD     WK-KEISAN-XX TO WK-SHOKUJI-RYOYOHI96
+                                       WK-SHOKUJI-FTN96
              END-IF
       *
              MOVE     ZERO     TO      WK-SHOKUJI-JIHI
@@ -7847,47 +7804,20 @@
              IF       ( WK-ROSAITOKU97(IDY)  NOT =  ZERO       )
              AND      ( LNK-SYU-DAY(IDY)         =  "2"        )
       *
-                EVALUATE   WK-ROSAITOKU97(IDY)
-                  WHEN        1
-                     ADD       1    TO   WK-SHOKUJI-NISSU
-                                         LNK-SYU-SHOKUJI4-NISSU
-      *              É¸½àÉéÃ´³Û¡ÊÏ«ºÒÆþ±¡Ãæ¡Ë
-                     MOVE  "197001210"    TO   WK-SRYCD
-                     PERFORM    TENSU-TBL-SEC
-                     IF       FLG-TENSU      =    ZERO
-                        COMPUTE WK-KEISAN-XX =  TNS-TEN * 1
-                        ADD     WK-KEISAN-XX TO WK-SHOKUJI-RYOYOHI
-                                                WK-SHOKUJI-JIHI
-                        MOVE    WK-KEISAN-XX TO LNK-SYU-SHOKUJI4
-                     END-IF
-                  WHEN        2
-                     ADD       1    TO   WK-SHOKUJI-NISSU
-                                         LNK-SYU-SHOKUJI5-NISSU
-      *              É¸½àÉéÃ´³Û¡ÊÏ«ºÒÆþ±¡Ãæ¡Ë
-                     MOVE  "197001210"    TO   WK-SRYCD
-                     PERFORM    TENSU-TBL-SEC
-                     IF       FLG-TENSU      =    ZERO
-                        COMPUTE WK-KEISAN-XX =  TNS-TEN * 2
-                        ADD     WK-KEISAN-XX TO WK-SHOKUJI-RYOYOHI
-                                                WK-SHOKUJI-JIHI
-                        MOVE    WK-KEISAN-XX TO LNK-SYU-SHOKUJI5
-                     END-IF
-                  WHEN        3
-                     ADD       1    TO   WK-SHOKUJI-NISSU
-                                         LNK-SYU-SHOKUJI6-NISSU
-      *              É¸½àÉéÃ´³Û¡ÊÏ«ºÒÆþ±¡Ãæ¡Ë
-                     MOVE  "197001210"    TO   WK-SRYCD
-                     PERFORM    TENSU-TBL-SEC
-                     IF       FLG-TENSU      =    ZERO
-                        COMPUTE WK-KEISAN-XX =  TNS-TEN * 3
-                        ADD     WK-KEISAN-XX TO WK-SHOKUJI-RYOYOHI
-                                                WK-SHOKUJI-JIHI
-                        MOVE    WK-KEISAN-XX TO LNK-SYU-SHOKUJI6
-                     END-IF
-                END-EVALUATE
+      *         É¸½àÉéÃ´³Û¡ÊÏ«ºÒÆþ±¡Ãæ¡Ë
+                ADD     WK-ROSAITOKU97(IDY)
+                                          TO  WK-SHOKUJI-NISSU
+                COMPUTE WK-KEISAN-XX  =  WK-SHOKUJI-KINGAKU(5)
+                                      *  WK-ROSAITOKU97(IDY)
+                ADD     WK-KEISAN-XX      TO  WK-SHOKUJI-RYOYOHI
+                                              WK-SHOKUJI-JIHI
+                ADD     WK-ROSAITOKU97(IDY)
+                                          TO  LNK-SYU-SHOKUJI3-NISSU
+                MOVE    WK-SHOKUJI-KINGAKU(5)
+                                          TO  LNK-SYU-SHOKUJI3
       *
                 IF   COMB-SYU-HKNKOHSBTKBN   =   "8"
-                  ADD   WK-SHOKUJI-JIHI    TO   WK-SHOKUJI-FTN
+                  ADD   WK-SHOKUJI-JIHI   TO  WK-SHOKUJI-FTN
                 END-IF
       *
              END-IF
@@ -7895,102 +7825,37 @@
              IF       ( WK-ROSAITOKU97-X(IDY)  NOT =  ZERO     )
              AND      ( LNK-SYU-DAY(IDY)           =  "2"      )
       *
-                EVALUATE   WK-ROSAITOKU97-X(IDY)
-                  WHEN        1
-                     ADD       1    TO   WK-SHOKUJI-NISSU
-                                         LNK-SYU-SHOKUJI4-NISSU
-      *              É¸½àÉéÃ´³Û¡ÊÏ«ºÒÆþ±¡Ãæ¡Ë
-                     MOVE  "197000470"    TO   WK-SRYCD
-                     PERFORM    TENSU-TBL-SEC
-                     IF       FLG-TENSU      =    ZERO
-                        COMPUTE WK-KEISAN-XX =  TNS-TEN * 1
-                        ADD     WK-KEISAN-XX TO WK-SHOKUJI-RYOYOHI
-                                                WK-SHOKUJI-JIHI
-                        MOVE    WK-KEISAN-XX TO LNK-SYU-SHOKUJI4
-                     END-IF
-                  WHEN        2
-                     ADD       1    TO   WK-SHOKUJI-NISSU
-                                         LNK-SYU-SHOKUJI5-NISSU
-      *              É¸½àÉéÃ´³Û¡ÊÏ«ºÒÆþ±¡Ãæ¡Ë
-                     MOVE  "197000470"    TO   WK-SRYCD
-                     PERFORM    TENSU-TBL-SEC
-                     IF       FLG-TENSU      =    ZERO
-                        COMPUTE WK-KEISAN-XX =  TNS-TEN * 2
-                        ADD     WK-KEISAN-XX TO WK-SHOKUJI-RYOYOHI
-                                                WK-SHOKUJI-JIHI
-                        MOVE    WK-KEISAN-XX TO LNK-SYU-SHOKUJI5
-                     END-IF
-                  WHEN        3
-                     ADD       1    TO   WK-SHOKUJI-NISSU
-                                         LNK-SYU-SHOKUJI6-NISSU
-      *              É¸½àÉéÃ´³Û¡ÊÏ«ºÒÆþ±¡Ãæ¡Ë
-                     MOVE  "197000470"    TO   WK-SRYCD
-                     PERFORM    TENSU-TBL-SEC
-                     IF       FLG-TENSU      =    ZERO
-                        COMPUTE WK-KEISAN-XX =  TNS-TEN * 3
-                        ADD     WK-KEISAN-XX TO WK-SHOKUJI-RYOYOHI
-                                                WK-SHOKUJI-JIHI
-                        MOVE    WK-KEISAN-XX TO LNK-SYU-SHOKUJI6
-                     END-IF
-                END-EVALUATE
+      *         ÆÃÊÌ¿©²Ã»»
+                ADD     WK-ROSAITOKU97-X(IDY)
+                                          TO  WK-SHOKUJI-NISSU
+                COMPUTE WK-KEISAN-XX  =  WK-SHOKUJI-KINGAKU(3)
+                                      *  WK-ROSAITOKU97-X(IDY)
+                ADD     WK-KEISAN-XX      TO  WK-SHOKUJI-RYOYOHI
+                                              WK-SHOKUJI-JIHI
+                ADD     WK-ROSAITOKU97-X(IDY)
+                                          TO  LNK-SYU-SHOKUJI3-NISSU
+                MOVE    WK-SHOKUJI-KINGAKU(3)
+                                          TO  LNK-SYU-SHOKUJI3
       *
                 IF   COMB-SYU-HKNKOHSBTKBN   =   "8"
-                  ADD   WK-SHOKUJI-JIHI    TO   WK-SHOKUJI-FTN
+                  ADD   WK-SHOKUJI-JIHI   TO  WK-SHOKUJI-FTN
                 END-IF
       *
              END-IF
       *
            END-PERFORM
       *
+           DISPLAY "WK-SHOKUJI-NISSU=" WK-SHOKUJI-NISSU
+           DISPLAY "WK-SHOKUJI-RYOYOHI=" WK-SHOKUJI-RYOYOHI
+           DISPLAY "WK-SHOKUJI-FTN=" WK-SHOKUJI-FTN
+           DISPLAY "WK-SHOKUJI-RYOYOHI95=" WK-SHOKUJI-RYOYOHI95
+           DISPLAY "WK-SHOKUJI-FTN95=" WK-SHOKUJI-FTN95
+           DISPLAY "WK-SHOKUJI-RYOYOHI96=" WK-SHOKUJI-RYOYOHI96
+           DISPLAY "WK-SHOKUJI-FTN96=" WK-SHOKUJI-FTN96
+      *
            .
       *
        23047-SHOKUJI-COUNT200604-EXT.
-           EXIT.
-      *
-      ******************************************************************
-      *        Ï«ºÒ¡¦¼«ÇåÀÕ¤Î¿©»öÎÅÍÜÈñ¡ß£±¡¥£²                        *
-      ******************************************************************
-       230471-SHOKUJI-ROSAIJIBAI-HENSYU-SEC         SECTION.
-      *
-           IF    LNK-SYU-SYUHKNNUM   =   "971" OR "973"
-                COMPUTE   WK-KEISAN-XX  =   WK-KEISAN-XX  *  1.2
-                COMPUTE   WK-KEISAN-XX  =   WK-KEISAN-XX  +   5
-                COMPUTE   WK-KEISAN-XX  =   WK-KEISAN-XX  /  10
-                COMPUTE   WK-KEISAN-XX  =   WK-KEISAN-XX  *  10
-                IF    LNK-SYU-SYUHKNNUM   =   "973"
-                AND   WK-4001-SKJKBN      =   "2"
-                   COMPUTE   WK-KEISAN-XX = WK-KEISAN-XX  *  1.2
-                END-IF
-           END-IF
-      *
-           .
-      *
-       230471-SHOKUJI-ROSAIJIBAI-HENSYU-EXT.
-           EXIT.
-      *
-      ******************************************************************
-      *        ¿©»öÉéÃ´·×»»                                            *
-      ******************************************************************
-       230472-SHOKUJI-FTN-KEISAN-SEC         SECTION.
-      *
-           EVALUATE   WK-SHOKUJI-NYUINJI(IDY)
-             WHEN         1
-                 COMPUTE WK-KEISAN-XX =  TNS-TEN * 1
-                 ADD     WK-KEISAN-XX TO WK-SHOKUJI-FTN
-                 MOVE    WK-KEISAN-XX TO WK-DAY-SKJFTN(IDY)
-             WHEN         2
-                 COMPUTE WK-KEISAN-XX =  TNS-TEN * 2
-                 ADD     WK-KEISAN-XX TO WK-SHOKUJI-FTN
-                 MOVE    WK-KEISAN-XX TO WK-DAY-SKJFTN(IDY)
-             WHEN         3
-                 COMPUTE WK-KEISAN-XX =  TNS-TEN * 3
-                 ADD     WK-KEISAN-XX TO WK-SHOKUJI-FTN
-                 MOVE    WK-KEISAN-XX TO WK-DAY-SKJFTN(IDY)
-           END-EVALUATE
-      *
-           .
-      *
-       230472-SHOKUJI-FTN-KEISAN-EXT.
            EXIT.
       *
       ******************************************************************
@@ -13639,17 +13504,13 @@
       *
            IF     FLG-TENSU    =    ZERO
               IF    LNK-SYU-SYUHKNNUM   =   "971" OR "973"
-                 IF    LNK-SYU-SRYYMD(1:6)   >=   "200604"
-                   MOVE    TNS-TEN     TO     WK-KEISAN
-                 ELSE
-                   COMPUTE   WK-KEISAN    =   TNS-TEN    *  1.2
-                   COMPUTE   WK-KEISAN    =   WK-KEISAN  +   5
-                   COMPUTE   WK-KEISAN    =   WK-KEISAN  /  10
-                   COMPUTE   WK-KEISAN    =   WK-KEISAN  *  10
-                   IF    LNK-SYU-SYUHKNNUM   =   "973"
-                   AND   WK-4001-SKJKBN      =   "2"
-                      COMPUTE   WK-KEISAN    =   WK-KEISAN  *  1.2
-                   END-IF
+                 COMPUTE   WK-KEISAN    =   TNS-TEN    *  1.2
+                 COMPUTE   WK-KEISAN    =   WK-KEISAN  +   5
+                 COMPUTE   WK-KEISAN    =   WK-KEISAN  /  10
+                 COMPUTE   WK-KEISAN    =   WK-KEISAN  *  10
+                 IF    LNK-SYU-SYUHKNNUM   =   "973"
+                 AND   WK-4001-SKJKBN      =   "2"
+                    COMPUTE   WK-KEISAN    =   WK-KEISAN  *  1.2
                  END-IF
               ELSE
                  MOVE      TNS-TEN     TO     WK-KEISAN
