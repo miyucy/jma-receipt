@@ -1,4 +1,3 @@
-      *VER.2.8.0外来用
       *******************************************************************
       * Project code name "ORCA"
       * 日医標準レセプトソフト（JMA standard receipt software）
@@ -88,6 +87,7 @@
                05  WRK-TOUMM       PIC 9(02).
                05  WRK-TOUDD       PIC 9(02).
            03  WRK-SRYYM-CHK           PIC X(06).
+           03  WRK-NYUGAIKBN           PIC X(01).
       *    禁忌薬剤チェック
            03  WRK-KNKYAK-AREA.
               05  WRK-KNKYAK-TBL             OCCURS   100.
@@ -208,8 +208,8 @@
            MOVE    SPA-WORK            TO  SPA-K01KYOUTU
       *
            EVALUATE    ORCSCKNKCHK-KBN
-               WHEN    "1"
-                   PERFORM 100-SRYACT-SPASET-SEC
+      *TE      WHEN    "1"
+      *TE          PERFORM 100-SRYACT-SPASET-SEC
                WHEN    "2"
                    PERFORM 200-KNKCHK-IN-SEC
                WHEN    "3"
@@ -247,33 +247,15 @@
                COMPUTE WRK-SRYYY           =   WRK-SRYYY
                                            -   1
            END-IF
-      *    受診履歴より算定日チェック
-           MOVE    ZERO                TO  FLG-CHK
-           MOVE    SPACE               TO  WRK-SRYYM-CHK
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX         >   SPA-GMN-MAX1 )
-                          OR  (FLG-CHK     =   1   )
-               IF      SPA-NAI-RRKYMD (IDX)(1:6)    <=  WRK-SRYYM
-                   MOVE    1                TO  FLG-CHK
-               ELSE
-                   IF      SPA-NAI-RRKYMD (IDX)(1:6) >   WRK-SRYYM-CHK
-                       MOVE    SPA-NAI-RRKYMD (IDX)(1:6)
-                                               TO  WRK-SRYYM-CHK
-                   END-IF
-               END-IF
-           END-PERFORM
-           MOVE    ZERO                TO  FLG-END
-           IF     (FLG-CHK             =   ZERO ) AND
-                  (SPA-GMN-MAX1        <   150  )
-               IF      WRK-SRYYM-CHK       =   SPACE
-                   MOVE    1               TO  FLG-END
-               ELSE
-                   MOVE    WRK-SRYYM-CHK   TO  WRK-SRYYM
-               END-IF
-           END-IF
       *
+           IF     (SPA-LSTYMD          =   SPACE ) OR
+                 ((SPA-NYUGAIKBN       =   "2"   )
+              AND (SPA-GMN-MAX1        =   ZERO  )
+              AND (SPA-K02N-TAIINYMD   =   SPACE ))
+               MOVE    1                   TO  FLG-END
+           END-IF
       *    禁忌薬剤チェック用編集処理
-           IF      FLG-END             =   ZERO
+           IF      FLG-END              =  ZERO
                PERFORM 1001-KNKYAKSET-HENSYU-SEC
            END-IF
       *
@@ -324,18 +306,18 @@
       *****************************************************************
        1001-KNKYAKSET-HENSYU-SEC              SECTION.
       *
-      *外来用（月数のチェック）
+      *    外来分
+           MOVE    "2"                 TO  WRK-NYUGAIKBN
+           PERFORM 10011-KNKYAKSET-HENSYU-02-SEC
       *
-           PERFORM
-                   UNTIL   SPA-SRYYMD(1:6)     <   WRK-SRYYM
-              PERFORM 3203-KNKYAKSET-HENSYU02-SEC
-      *
-              ADD     1                    TO  WRK-SRYMM
-              IF      WRK-SRYMM            >   12
-                   ADD     1                   TO  WRK-SRYYY
-                   MOVE    1                   TO  WRK-SRYMM
-               END-IF
-           END-PERFORM
+      *    入院
+           IF    ( SPA-NYUGAIKBN       =   "1"  )  OR
+                 ((SPA-NYUGAIKBN       =   "2"  )  AND
+                  (SPA-K02N-TAIINYMD   NOT =   SPACE ) AND
+                  (SPA-K02N-TAIINYMD(1:6)  >=  WRK-SRYYM ))
+               MOVE    "1"                 TO  WRK-NYUGAIKBN
+               PERFORM 10011-KNKYAKSET-HENSYU-02-SEC
+           END-IF
            .
        1001-KNKYAKSET-HENSYU-EXT.
            EXIT.
@@ -343,13 +325,13 @@
       *****************************************************************
       *    禁忌薬剤チェック用編集処理
       *****************************************************************
-       3203-KNKYAKSET-HENSYU02-SEC              SECTION.
+       10011-KNKYAKSET-HENSYU-02-SEC    SECTION.
       *
       *    診療会計マスタよりチェックする
            MOVE    SPACE               TO  SRYACCT-REC
            INITIALIZE                      SRYACCT-REC
            MOVE    SPA-HOSPID          TO  ACCT-HOSPID
-           MOVE    SPA-NYUGAIKBN       TO  ACCT-NYUGAIKBN
+           MOVE    WRK-NYUGAIKBN       TO  ACCT-NYUGAIKBN
            MOVE    SPA-PTID            TO  ACCT-PTID
            MOVE    WRK-SRYYM           TO  ACCT-SRYYM
       *    診療年月検索用項目
@@ -378,7 +360,7 @@
            PERFORM 990-DBCLOSE-SEC
       *
            .
-       3203-KNKYAKSET-HENSYU02-EXT.
+       1001-KNKYAKSET-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -525,10 +507,10 @@
            END-IF
       *TEST
       *    １回目
-      *    IF     (FLG-INTERACT        =   ZERO )  AND
-      *           (SPA-KNK-SRYCD (100) =   SPACE )
-      *        PERFORM 2000-KNK-SPASET-SEC
-      *    END-IF
+           IF     (FLG-INTERACT        =   ZERO )  AND
+                  (SPA-KNK-SRYCD (100) =   SPACE )
+               PERFORM 2000-KNK-SPASET-SEC
+           END-IF
       *TEST
       *
       *    禁忌チェック
