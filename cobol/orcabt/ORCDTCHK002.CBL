@@ -2096,7 +2096,7 @@
                    MOVE    THKNCOMBI-MAX   TO  IDXA
                END-IF
            ELSE
-                   MOVE    THKNCOMBI-MAX   TO  IDXA
+                   MOVE    IDX0            TO  IDXA
            END-IF
       *
            IF    ( IDXA            >   ZERO )
