@@ -551,6 +551,7 @@
                                                =   "+"   OR  "-"
                                                OR  "/"   OR  "!"
                                                OR  "."   OR  "*"
+                                               OR  "_"
                        MOVE    "0010"      TO  SPA-ERRCD
                    END-IF
                ELSE

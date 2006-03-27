@@ -883,6 +883,7 @@
                    IF      WRK-INPUTCD (IDY:1) =   "+"   OR  "-"
                                                OR  "/"   OR  "!"
                                                OR  "."   OR  "*"
+                                               OR  "_"
                        MOVE    "0008"      TO  SPA-ERRCD
                    END-IF
                ELSE

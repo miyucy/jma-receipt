@@ -74,6 +74,7 @@
            03  IDY                 PIC 9(04).
            03  IDX1                PIC 9(04).
            03  IDX2                PIC 9(04).
+           03  IDX-C               PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -504,6 +505,36 @@
                END-IF
            END-IF
       *
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    IDX                 TO  SPA-K051-CUR
+               GO      TO      2001-INPUTCD-EXT
+           END-IF
+      *    記号は入力不可とする
+           IF      FLG-KANJI           =   1
+               MOVE    2                   TO  IDX-C
+           ELSE
+               MOVE    1                   TO  IDX-C
+           END-IF
+           PERFORM VARYING     IDY     FROM    1   BY  IDX-C
+                   UNTIL      (IDY         >   20  )  OR
+                              (SPA-ERRCD   NOT =   SPACE )
+               IF      IDX-C               =   1
+                   IF      SPA-GMN-K051-INPUTCD (IDX)(IDY:1)
+                                               =   "+"   OR  "-"
+                                               OR  "/"   OR  "!"
+                                               OR  "."   OR  "*"
+                                               OR  "_"
+                       MOVE    "0008"      TO  SPA-ERRCD
+                   END-IF
+               ELSE
+                   IF    SPA-GMN-K051-INPUTCD (IDX) (IDY:2)
+                                               =   "＋"   OR  "−"
+                                               OR  "／"   OR  "！"
+                                               OR  "．"   OR  "＊"
+                       MOVE    "0008"      TO  SPA-ERRCD
+                   END-IF
+               END-IF
+           END-PERFORM
            IF      SPA-ERRCD       NOT =   SPACE
                MOVE    IDX                 TO  SPA-K051-CUR
                GO      TO      2001-INPUTCD-EXT
