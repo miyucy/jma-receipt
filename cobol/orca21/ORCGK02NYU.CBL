@@ -4740,7 +4740,6 @@
                                        SPA-AREA
       *
            MOVE    LNK-SC92-INPUT-G    TO  LNK-SC97-INPUT-G
-           MOVE    LNK-SC92-TIMEFLG    TO  SPA-NAI-TIMEFLG
       *    カーソル位置設定
            PERFORM 41011139-INFLG-HEN-SEC
       *
