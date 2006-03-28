@@ -336,6 +336,7 @@
                  06  WK-JIRITU-CYUKANSOU   PIC  9(01).
                  06  WK-JIRITU-TAFTNRUIKEI PIC  9(07).
                  06  WK-JIRITU-TENSURUIKEI PIC  9(07).
+                 06  WK-JIRITU-SKJGENMEN   PIC  9(01).
       *
            03  WK-JIRITU-SRYYMD            PIC  X(08).
            03  WK-KOHHKNNUM                PIC  X(03).
@@ -3590,6 +3591,10 @@
                               MOVE  2  TO WK-JIRITU-CYUKANSOU(KOH-IDX)
                               MOVE  LNK-ORCSJGNGET-TAFTNRUIKEI
                                        TO WK-JIRITU-TAFTNRUIKEI(KOH-IDX)
+                              IF   MAX-KIN-KOHI1-M = ZERO
+                                 MOVE   1
+                                       TO WK-JIRITU-SKJGENMEN(KOH-IDX)
+                              END-IF
                             END-IF
                         END-IF
                         IF  ( LNK-SYU-SRYYMD(1:6)   >= "200604"  )
@@ -3649,6 +3654,10 @@
                               MOVE  2  TO WK-JIRITU-CYUKANSOU(KOH-IDX)
                               MOVE  LNK-ORCSJGNGET-TAFTNRUIKEI
                                        TO WK-JIRITU-TAFTNRUIKEI(KOH-IDX)
+                              IF   MAX-KIN-KOHI2-M = ZERO
+                                 MOVE   1
+                                       TO WK-JIRITU-SKJGENMEN(KOH-IDX)
+                              END-IF
                             END-IF
                         END-IF
                         IF  ( LNK-SYU-SRYYMD(1:6)   >= "200604"  )
@@ -3708,6 +3717,10 @@
                               MOVE  2  TO WK-JIRITU-CYUKANSOU(KOH-IDX)
                               MOVE  LNK-ORCSJGNGET-TAFTNRUIKEI
                                        TO WK-JIRITU-TAFTNRUIKEI(KOH-IDX)
+                              IF   MAX-KIN-KOHI3-M = ZERO
+                                 MOVE   1
+                                       TO WK-JIRITU-SKJGENMEN(KOH-IDX)
+                              END-IF
                             END-IF
                         END-IF
                         IF  ( LNK-SYU-SRYYMD(1:6)   >= "200604"  )
@@ -3767,6 +3780,10 @@
                               MOVE  2  TO WK-JIRITU-CYUKANSOU(KOH-IDX)
                               MOVE  LNK-ORCSJGNGET-TAFTNRUIKEI
                                        TO WK-JIRITU-TAFTNRUIKEI(KOH-IDX)
+                              IF   MAX-KIN-KOHI4-M = ZERO
+                                 MOVE   1
+                                       TO WK-JIRITU-SKJGENMEN(KOH-IDX)
+                              END-IF
                             END-IF
                         END-IF
                         IF  ( LNK-SYU-SRYYMD(1:6)   >= "200604"  )
@@ -8462,6 +8479,9 @@
                    AND (COMB-KOHHKNNUM(KOH-IDX)   =  "015" OR "016")
                        MOVE    "2"              TO   WK-NYUSKJRYYKBN
                    END-IF
+                   IF  WK-JIRITU-SKJGENMEN(KOH-IDX)  =   1
+                       MOVE    "3"              TO   WK-NYUSKJRYYKBN
+                   END-IF
                    IF  (COMB-KOHHKNNUM(KOH-IDX)   =  "012"         )
                        MOVE    "3"              TO   WK-NYUSKJRYYKBN
                    END-IF
@@ -8488,6 +8508,9 @@
       ***          AND (COMB-KOHHKNNUM(KOH-IDX)   =  "015" OR "016")
       ***              MOVE    "2"              TO   WK-NYUSKJRYYKBN
       ***          END-IF
+      ***          IF  WK-JIRITU-SKJGENMEN(KOH-IDX)  =   1
+      ***              MOVE    "3"              TO   WK-NYUSKJRYYKBN
+      ***          END-IF
       ***          IF  (COMB-KOHHKNNUM(KOH-IDX)   =  "012"         )
       ***              MOVE    "3"              TO   WK-NYUSKJRYYKBN
       ***          END-IF
@@ -8513,6 +8536,9 @@
       ***          AND (LNK-SYU-SRYYMD(1:6)      <   "200604"      )
       ***          AND (COMB-KOHHKNNUM(KOH-IDX)   =  "015" OR "016")
       ***              MOVE    "2"              TO   WK-NYUSKJRYYKBN
+      ***          END-IF
+      ***          IF  WK-JIRITU-SKJGENMEN(KOH-IDX)  =   1
+      ***              MOVE    "3"              TO   WK-NYUSKJRYYKBN
       ***          END-IF
       ***          IF  (COMB-KOHHKNNUM(KOH-IDX)   =  "012"         )
       ***              MOVE    "3"              TO   WK-NYUSKJRYYKBN
