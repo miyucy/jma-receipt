@@ -3595,6 +3595,16 @@
                                  MOVE   1
                                        TO WK-JIRITU-SKJGENMEN(KOH-IDX)
                               END-IF
+                              IF   MAX-KIN-KOHI1-M = 2501 OR 5001
+                                 MOVE   1
+                                       TO WK-JIRITU-SKJGENMEN(KOH-IDX)
+                                 COMPUTE MAX-KIN-KOHI1-M =
+                                         MAX-KIN-KOHI1-M -
+                                         1
+                                 COMPUTE WK-TAIHI-NYUJGNGAK(KOH-IDX) =
+                                         WK-TAIHI-NYUJGNGAK(KOH-IDX) -
+                                         1
+                              END-IF
                             END-IF
                         END-IF
                         IF  ( LNK-SYU-SRYYMD(1:6)   >= "200604"  )
@@ -3657,6 +3667,16 @@
                               IF   MAX-KIN-KOHI2-M = ZERO
                                  MOVE   1
                                        TO WK-JIRITU-SKJGENMEN(KOH-IDX)
+                              END-IF
+                              IF   MAX-KIN-KOHI2-M = 2501 OR 5001
+                                 MOVE   1
+                                       TO WK-JIRITU-SKJGENMEN(KOH-IDX)
+                                 COMPUTE MAX-KIN-KOHI2-M =
+                                         MAX-KIN-KOHI2-M -
+                                         1
+                                 COMPUTE WK-TAIHI-NYUJGNGAK(KOH-IDX) =
+                                         WK-TAIHI-NYUJGNGAK(KOH-IDX) -
+                                         1
                               END-IF
                             END-IF
                         END-IF
@@ -3721,6 +3741,16 @@
                                  MOVE   1
                                        TO WK-JIRITU-SKJGENMEN(KOH-IDX)
                               END-IF
+                              IF   MAX-KIN-KOHI3-M = 2501 OR 5001
+                                 MOVE   1
+                                       TO WK-JIRITU-SKJGENMEN(KOH-IDX)
+                                 COMPUTE MAX-KIN-KOHI3-M =
+                                         MAX-KIN-KOHI3-M -
+                                         1
+                                 COMPUTE WK-TAIHI-NYUJGNGAK(KOH-IDX) =
+                                         WK-TAIHI-NYUJGNGAK(KOH-IDX) -
+                                         1
+                              END-IF
                             END-IF
                         END-IF
                         IF  ( LNK-SYU-SRYYMD(1:6)   >= "200604"  )
@@ -3783,6 +3813,16 @@
                               IF   MAX-KIN-KOHI4-M = ZERO
                                  MOVE   1
                                        TO WK-JIRITU-SKJGENMEN(KOH-IDX)
+                              END-IF
+                              IF   MAX-KIN-KOHI4-M = 2501 OR 5001
+                                 MOVE   1
+                                       TO WK-JIRITU-SKJGENMEN(KOH-IDX)
+                                 COMPUTE MAX-KIN-KOHI4-M =
+                                         MAX-KIN-KOHI4-M -
+                                         1
+                                 COMPUTE WK-TAIHI-NYUJGNGAK(KOH-IDX) =
+                                         WK-TAIHI-NYUJGNGAK(KOH-IDX) -
+                                         1
                               END-IF
                             END-IF
                         END-IF
