@@ -141,6 +141,7 @@
            03  IDX-MAX             PIC 9(04).
       *    Ｘ線の開始行
            03  IDX-HOZ             PIC 9(04).
+           03  IDX-HOZ2            PIC 9(04).
       *    行削除
            03  IDX-D1              PIC 9(04).
            03  IDX-D2              PIC 9(04).
@@ -1346,12 +1347,13 @@
            END-IF
       *    撮影の切り替えフラグ
            MOVE    "K"                 TO  WRK-COM-AUTOKBN (IDX-Z)
+           MOVE    IDX-Z               TO  IDX-HOZ2
       *
       *    診断料加算追加
            PERFORM 10021-XSEN-SINDAN-SEC
       *
       *    現在のチェック位置に戻す
-           PERFORM VARYING     IDX     FROM    IDX-SAT  BY  1
+           PERFORM VARYING     IDX     FROM    IDX-HOZ2  BY  1
                    UNTIL       IDX     >   200
                IF      WRK-COM-AUTOKBN (IDX)   =   "K"
                    MOVE    IDX             TO  IDX-Z
@@ -1359,9 +1361,6 @@
                END-IF
            END-PERFORM
       *
-           IF      IDX-Z               =   IDX-SAT
-               ADD    1                TO  IDX-Z
-           END-IF
            MOVE    ZERO                TO  IDX-SAT
            MOVE    IDX-Z               TO  IDX-HOZ
            .
