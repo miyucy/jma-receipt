@@ -3777,7 +3777,8 @@
                                                        (IDX-SINSATU2)
                    END-IF
                ELSE
-                   IF      SPA-NYUGAIKBN       =   "2"
+                   IF     (SPA-SYORIFLG        =   ZERO     ) AND
+                          (SPA-NYUGAIKBN       =   "2"      )
                        MOVE    "2069"          TO  SPA-ERRCD
                        MOVE    "1"             TO  WRK-COM-CUR
                                                        (IDX-SINSATU2)
