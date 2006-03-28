@@ -3762,7 +3762,11 @@
            IF      IDX-SYU2        >   ZERO
                 IF      WRK-COM-SRYKA(IDX-SYU2)
                                        =   WRK-COM-SRYKA(IDX-SINSATU2)
-                   MOVE    "2067"          TO  SPA-ERRCD
+                   IF      FLG-TAKA        =   ZERO
+                       MOVE    "2067"          TO  SPA-ERRCD
+                   ELSE
+                       MOVE    "2070"          TO  SPA-ERRCD
+                   END-IF
                    MOVE    "1"             TO  WRK-COM-CUR
                                                        (IDX-SINSATU2)
                END-IF

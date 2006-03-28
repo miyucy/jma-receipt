@@ -1016,6 +1016,11 @@
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
+               WHEN    "2070"
+                   STRING  "同じ診療科で同日初診は算定できません。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "2069"
                    STRING  "当日に初診・再診が算定されていません。"
                                                DELIMITED  BY  SIZE
