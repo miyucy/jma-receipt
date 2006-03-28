@@ -30,6 +30,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *
       *  02.08.01    NACL-藤原    06/02/20  主科対応
+      *  02.08.02    NACL-藤原    06/03/28  山形県のレセプト様式変更対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -460,7 +461,8 @@
            CALL    "ORCR0104"          USING
                                    WRK-PARA3
       *
-           IF      WRK-PARA-A11    =   "06"
+           IF    ( WRK-PARA-A11    =   "06"     )
+           AND   ( WRK-PARA-A1-1   <   "200601" )
                CALL    "ORCRCP060"     USING
                                        WRK-PARA3
            END-IF
