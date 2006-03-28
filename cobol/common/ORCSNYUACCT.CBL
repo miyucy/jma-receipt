@@ -2231,6 +2231,12 @@
                GO      TO     700-TAIINDEL-SYORI-EXT
            END-IF
       *
+      *    平成１８年４月改定対応
+      *    退院日が平成１８年３月３１日であれば、作成しない
+           IF      LNK-SCNYUACCT-EDSRYYMD  =   "20060331"
+               GO      TO     700-TAIINDEL-SYORI-EXT
+           END-IF
+      *
       *    入院期間作成
       *    退院日＋１日を開始日とする
            MOVE    LNK-SCNYUACCT-EDSRYYMD
@@ -2238,6 +2244,7 @@
            MOVE    1                   TO  WRK-ZOGEN
            PERFORM 800-HIZUKE-KEI-SEC
            MOVE    WRK-OTYMD           TO  WRK-STYMD
+      *
       *    開始日の翌月の末日を求める
            PERFORM 100-INIT-SEC
       *
