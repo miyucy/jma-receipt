@@ -1359,6 +1359,9 @@
                END-IF
            END-PERFORM
       *
+           IF      IDX-Z               =   IDX-SAT
+               ADD    1                TO  IDX-Z
+           END-IF
            MOVE    ZERO                TO  IDX-SAT
            MOVE    IDX-Z               TO  IDX-HOZ
            .

@@ -988,7 +988,7 @@
       *
       *    Ｘ線の時、エラーなら診断料の自動発生をおこなう
            IF     (FLG-SINDAN          =   1     )
-      *??  AND    (WRK-ERRCD       NOT =   SPACE )
+           AND    (WRK-ERRCD       NOT =   SPACE )
                PERFORM 10021-XSEN-SINDAN-SEC
            END-IF
       *
@@ -1387,6 +1387,9 @@
                END-IF
            END-PERFORM
       *
+           IF      IDX-SAT             =   IDX-Z
+               ADD     1               TO  IDX-Z
+           END-IF
            MOVE    ZERO                TO  IDX-SAT
            MOVE    IDX-Z               TO  IDX-HOZ
            .
