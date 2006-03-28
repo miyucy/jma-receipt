@@ -4246,11 +4246,11 @@
                               MOVE  2  TO WK-JIRITU-CYUKANSOU(KOH-IDX)
                               MOVE  LNK-ORCSJGNGET-TAFTNRUIKEI
                                        TO WK-JIRITU-TAFTNRUIKEI(KOH-IDX)
-                              IF   MAX-KIN-KOHI1-M = 2501 OR 5001
-                                 COMPUTE MAX-KIN-KOHI1-M =
-                                         MAX-KIN-KOHI1-M -
-                                         1
-                              END-IF
+      ***                     IF   MAX-KIN-KOHI1-M = 2501 OR 5001
+      ***                        COMPUTE MAX-KIN-KOHI1-M =
+      ***                                MAX-KIN-KOHI1-M -
+      ***                                1
+      ***                     END-IF
                             END-IF
                         END-IF
                         IF  ( COMB-KOH1HKNNUM  = "015" OR "016") AND
@@ -4303,11 +4303,11 @@
                               MOVE  2  TO WK-JIRITU-CYUKANSOU(KOH-IDX)
                               MOVE  LNK-ORCSJGNGET-TAFTNRUIKEI
                                        TO WK-JIRITU-TAFTNRUIKEI(KOH-IDX)
-                              IF   MAX-KIN-KOHI2-M = 2501 OR 5001
-                                 COMPUTE MAX-KIN-KOHI2-M =
-                                         MAX-KIN-KOHI2-M -
-                                         1
-                              END-IF
+      ***                     IF   MAX-KIN-KOHI2-M = 2501 OR 5001
+      ***                        COMPUTE MAX-KIN-KOHI2-M =
+      ***                                MAX-KIN-KOHI2-M -
+      ***                                1
+      ***                     END-IF
                             END-IF
                         END-IF
                         IF  ( COMB-KOH2HKNNUM  = "015" OR "016") AND
@@ -4360,11 +4360,11 @@
                               MOVE  2  TO WK-JIRITU-CYUKANSOU(KOH-IDX)
                               MOVE  LNK-ORCSJGNGET-TAFTNRUIKEI
                                        TO WK-JIRITU-TAFTNRUIKEI(KOH-IDX)
-                              IF   MAX-KIN-KOHI3-M = 2501 OR 5001
-                                 COMPUTE MAX-KIN-KOHI3-M =
-                                         MAX-KIN-KOHI3-M -
-                                         1
-                              END-IF
+      ***                     IF   MAX-KIN-KOHI3-M = 2501 OR 5001
+      ***                        COMPUTE MAX-KIN-KOHI3-M =
+      ***                                MAX-KIN-KOHI3-M -
+      ***                                1
+      ***                     END-IF
                             END-IF
                         END-IF
                         IF  ( COMB-KOH3HKNNUM  = "015" OR "016") AND
@@ -4417,11 +4417,11 @@
                               MOVE  2  TO WK-JIRITU-CYUKANSOU(KOH-IDX)
                               MOVE  LNK-ORCSJGNGET-TAFTNRUIKEI
                                        TO WK-JIRITU-TAFTNRUIKEI(KOH-IDX)
-                              IF   MAX-KIN-KOHI4-M = 2501 OR 5001
-                                 COMPUTE MAX-KIN-KOHI4-M =
-                                         MAX-KIN-KOHI4-M -
-                                         1
-                              END-IF
+      ***                     IF   MAX-KIN-KOHI4-M = 2501 OR 5001
+      ***                        COMPUTE MAX-KIN-KOHI4-M =
+      ***                                MAX-KIN-KOHI4-M -
+      ***                                1
+      ***                     END-IF
                             END-IF
                         END-IF
                         IF  ( COMB-KOH4HKNNUM  = "015" OR "016") AND
