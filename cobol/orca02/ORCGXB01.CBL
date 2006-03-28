@@ -387,6 +387,10 @@
                            END-IF
                        END-IF
                    END-IF
+      *
+                   MOVE    "tbl_jobkanri"      TO  MCP-TABLE
+                   MOVE    "key"               TO  MCP-PATHNAME
+                   PERFORM 910-DBCLOSECURSOR-SEC
                END-IF
            END-PERFORM.
       *
@@ -463,6 +467,10 @@
                                         TO  MCP-PATHNAME
                PERFORM 810-JOBKANRI-READ-SEC
            END-PERFORM.
+      *
+           MOVE    "tbl_jobkanri"      TO  MCP-TABLE
+           MOVE    "all02"             TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            IF  (IDX              >   100)   AND
                (FLG-JOBKANRI     =   ZERO)
@@ -671,6 +679,9 @@
                            END-IF
                        END-IF
                    END-IF
+                   MOVE    "tbl_jobkanri"      TO  MCP-TABLE
+                   MOVE    "key2"              TO  MCP-PATHNAME
+                   PERFORM 910-DBCLOSECURSOR-SEC
                END-IF
            END-PERFORM.
       *    ジョブ管理削除 JOBID で DEL 指定   SHELLID で ALL 指定
@@ -908,6 +919,20 @@
        810-JOBKANRI-READ-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    ＤＢクローズ処理
+      *****************************************************************
+       910-DBCLOSECURSOR-SEC                 SECTION.
+      *
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       910-DBCLOSECURSOR-EXT.
+           EXIT.
       *****************************************************************
       *    ＰＵＴ　処理
       *****************************************************************
