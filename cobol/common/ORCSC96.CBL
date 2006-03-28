@@ -1017,7 +1017,7 @@
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "2070"
-                   STRING  "同じ診療科で同日初診は算定できません。"
+                   STRING  "診察料を削除後、算定してください。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
