@@ -1496,22 +1496,14 @@
       *
       *    診療コードより診療行為名称を取得
            MOVE    LNK-WKSRY-SRYCD (IDX IDZ)   TO  TNS-SRYCD
+           MOVE    WRK-SRYYMD          TO  TNS-YUKOSTYMD
+           MOVE    WRK-SRYYMD          TO  TNS-YUKOEDYMD
            PERFORM 910-TENSU-READ-SEC
-           IF      FLG-TENSU       NOT =   ZERO
+           IF      FLG-TENSU           =   1
                MOVE    LNK-WKSRY-SRYCD (IDX IDZ)   TO  TNS-NAME
            END-IF
            MOVE    TNS-NAME            TO  SPA-WKSRY-NAME
                                                    (SPA-WKSRY-MAX IDX-W)
-      *    交付日期間外の点数マスタ判定
-           IF     (FLG-TENSU           =   ZERO  )  AND
-                  (TNS-YUKOSTYMD       <=  SPA-SRYYMD ) AND
-                  (TNS-YUKOEDYMD       >=  SPA-SRYYMD )
-               CONTINUE
-           ELSE
-               MOVE    1               TO  SPA-WKSRY-ERRKBN
-                                                   (SPA-WKSRY-MAX IDX-W)
-               MOVE    1               TO  SPA-NAI-ERRFLG  (IDG)
-           END-IF
       *    行為名称
            MOVE    TNS-NAME            TO  SPA-GMN-TMEISYO2(IDG)
       *    薬剤服用コメントの時、再編集
@@ -1551,6 +1543,28 @@
                PERFORM 310121-SURYO-HEN-SEC
                MOVE    WRK-SURYO-J         TO  SPA-GMN-TSURYOU (IDG)
                MOVE    TNS-TANINAME        TO  SPA-GMN-TTANI1  (IDG)
+           END-IF
+      *
+      *    交付日期間外の点数マスタ判定
+           IF     (FLG-TENSU           =   ZERO  )
+               IF     (TNS-YUKOSTYMD       <=  SPA-SRYYMD ) AND
+                      (TNS-YUKOEDYMD       >=  SPA-SRYYMD )
+                   CONTINUE
+               ELSE
+                   MOVE    LNK-WKSRY-SRYCD (IDX IDZ)   TO  TNS-SRYCD
+                   MOVE    SPA-SRYYMD          TO  TNS-YUKOSTYMD
+                   MOVE    SPA-SRYYMD          TO  TNS-YUKOEDYMD
+                   PERFORM 910-TENSU-READ-SEC
+                   IF      FLG-TENSU           =   1
+                       MOVE    1               TO  SPA-WKSRY-ERRKBN
+                                                   (SPA-WKSRY-MAX IDX-W)
+                       MOVE    1               TO  SPA-NAI-ERRFLG  (IDG)
+                   END-IF
+               END-IF
+           ELSE
+               MOVE    1               TO  SPA-WKSRY-ERRKBN
+                                                   (SPA-WKSRY-MAX IDX-W)
+               MOVE    1               TO  SPA-NAI-ERRFLG  (IDG)
            END-IF
       *
            INSPECT SPA-GMN-TMEISYO2(IDG) REPLACING  ALL "  "  BY  "　"
@@ -3620,8 +3634,6 @@
       *****************************************************************
        910-TENSU-READ-SEC         SECTION.
       *
-           MOVE    WRK-SRYYMD          TO  TNS-YUKOSTYMD
-           MOVE    WRK-SRYYMD          TO  TNS-YUKOEDYMD
       *
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
