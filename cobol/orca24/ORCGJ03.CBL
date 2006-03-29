@@ -924,11 +924,15 @@
                    IF     (SRY-SRYCD (IDZ)(1:1)    =   "8"  )  OR
                           (SRY-SRYCD (IDZ)(1:3)    =   "001")  OR
                           (SRY-SRYCD (IDZ)(1:3)    =   "008")  OR
-                          (SRY-SRYCD (IDZ)         =   "099209901") OR
-                          (SRY-SRYCD (IDZ)         =   "099309901") OR
-                          (SRY-SRYCD (IDZ)(1:7)    =   "0992000"  ) OR
+      *************       (SRY-SRYCD (IDZ)         =   "099209901") OR
+      *                   (SRY-SRYCD (IDZ)         =   "099309901") OR
+      *************       (SRY-SRYCD (IDZ)(1:7)    =   "0992000"  ) OR
                           (SRY-AUTOKBN(IDZ)        =   "2"
                                                    OR  "3" )
+      *                   システム予約で診察料以外
+                   OR    ((SRY-SRYCD (IDZ)(1:3)    =   "099"  ) AND
+                          (SRY-SRYCD (IDZ)(1:5)    NOT =   "09911" 
+                                                   AND     "09912" ))
                        CONTINUE
                    ELSE
       *                点数マスタを取得する
