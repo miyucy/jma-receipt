@@ -1475,7 +1475,7 @@
       *
            MOVE    WRK-PARA-DENPPRTYM
                                    TO  ORC-DBYMD(1:6)
-           MOVE    WRK-DD          TO  ORC-DBYMD(7:2)
+           MOVE    "01"            TO  ORC-DBYMD(7:2)
       *
            MOVE    TNS-SRYCD           TO  TTNS-CHK-SRYCD
            MOVE    ORC-DBYMD           TO  TTNS-CHK-YMD
