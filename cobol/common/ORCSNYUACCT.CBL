@@ -154,6 +154,7 @@
            03  WRK-KASAN-ALL           PIC 9(08)V999.
            03  WRK-GENZAN              PIC 9(08)V999.
            03  WRK-GENZAN-ALL          PIC 9(08)V999.
+           03  WRK-ZAITEN-G2           PIC 9(08)V99.
       *
            03  WRK-MAXCNT              PIC 9(04).
            03  WRK-ZAINUM              PIC 9(08).
@@ -1198,6 +1199,7 @@
                COMPUTE WRK-ZAITEN          =   WRK-ZAITEN
                                            -   WRK-ZAITEN-G
            END-IF
+      *    ¡ó²Ã»»
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   10  )  OR
                               (TBL-SRYCD (IDX) =   SPACE )
@@ -1209,20 +1211,30 @@
                                                /   100
                                                +   0.5
                        ADD     WRK-KASAN       TO  WRK-KASAN-ALL
-      *            ¡ó¸º»»
-                   WHEN    6
-                       COMPUTE WRK-GENZAN  =   TBL-TENSU  (IDX-SYU)
-                                               *   TBL-TENSU  (IDX)
-                                               /   100
-                                               -   0.5
-                       ADD     WRK-GENZAN     TO  WRK-GENZAN-ALL
                END-EVALUATE
            END-PERFORM
-      *
       *    ÅÀ¿ô·×»»
            COMPUTE WRK-ZAITEN          =   WRK-ZAITEN
                                        +   WRK-KASAN-ALL
+      *
+      *    ¡ó²Ã»»¤·¤¿ÅÀ¿ô¤«¤é¡ó¸º»»¤ò¹Ô¤¦
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   10  )  OR
+                              (TBL-SRYCD (IDX) =   SPACE )
+               EVALUATE    TBL-TENSIKIBETU (IDX)
+                   WHEN    6
+                       COMPUTE WRK-GENZAN  =   WRK-ZAITEN
+                                               *   TBL-TENSU  (IDX)
+                                               /   100
+                       ADD     WRK-GENZAN     TO  WRK-GENZAN-ALL
+               END-EVALUATE
+           END-PERFORM
+      *    ÅÀ¿ô·×»»
+           COMPUTE WRK-ZAITEN-G2       =   WRK-ZAITEN
                                        -   WRK-GENZAN-ALL
+           MOVE    ZERO                TO  WRK-ZAITEN
+           COMPUTE WRK-ZAITEN          =   WRK-ZAITEN-G2
+                                       +   0.5
       *
            .
        40091-NYUACT-KEISAN-EXT.
