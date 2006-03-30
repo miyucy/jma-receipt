@@ -395,19 +395,22 @@
        01  TBL-RSI-SINSATU-AREA.
       *    ½é¿ÇÎÁ
            03  FILLER              PIC X(13)   VALUE   "0 F 101110010".
+      *    Æ±Æü½é¿Ç
+           03  FILLER              PIC X(13)   VALUE   "0 FD101110040".
       *    ºÆ¿ÇÎÁ
            03  FILLER              PIC X(13)   VALUE   "0 S 101120040".
       *    ³°Íè´ÉÍý²Ã»»
            03  FILLER              PIC X(13)   VALUE   "0 G 101120070".
       *
        01  TBL-RSI-SINSATU-AREAR   REDEFINES   TBL-RSI-SINSATU-AREA.
-           03  TBL-RSI-SINSATU-OCC     OCCURS  3    INDEXED  TBL-RSI.
+           03  TBL-RSI-SINSATU-OCC     OCCURS  4    INDEXED  TBL-RSI.
       *        ²ó¿ô
                05  TBLR-KAISU           PIC 9(01).
                05  FILLER               PIC X(01).
       *        F:½é¿Ç¡¢S:ºÆ¿Ç¡¢G:³°Íè´ÉÍý²Ã»»
                05  TBLR-KBN             PIC X(01).
-               05  FILLER               PIC X(01).
+      *        D:Æ±Æü½é¿Ç
+               05  TBLR-KBN2            PIC X(01).
       *        ¿ÇÎÅ¥³¡¼¥É
                05  TBLR-SRYCD           PIC X(09).
       *
@@ -3278,6 +3281,7 @@
            IF      SPA-SYOSIN          =   1
                MOVE    ZERO                TO  WRK-KAISU
                MOVE    "F"                 TO  WRK-KBN
+               MOVE    SPACE               TO  WRK-KBN2
                PERFORM 20091-RSI-SINSATU-SEC
            ELSE
       *        ºÆ¿ÇÎÁ
@@ -3291,7 +3295,7 @@
       *            Ê¿À®£±£µÇ¯£¹·î£±Æü¤«¤éÄþ¸ºÇÑ»ß¤È¤¹¤ë
                    MOVE    ZERO                TO  WRK-KAISU
                    MOVE    "S"                 TO  WRK-KBN
-      *
+                   MOVE    SPACE               TO  WRK-KBN2
                    PERFORM 20091-RSI-SINSATU-SEC
                END-IF
            END-IF
@@ -3378,7 +3382,8 @@
                    MOVE    ZERO               TO  FLG-ARI
                    MOVE    SPACE              TO  WRK-SRYCD
                WHEN   (WRK-KAISU       =   TBLR-KAISU (TBL-RSI)) AND
-                      (WRK-KBN         =   TBLR-KBN   (TBL-RSI))
+                      (WRK-KBN         =   TBLR-KBN   (TBL-RSI)) AND
+                      (WRK-KBN2        =   TBLR-KBN2  (TBL-RSI))
                    MOVE    1                  TO  FLG-ARI
                    MOVE    TBLR-SRYCD (TBL-RSI)
                                               TO  WRK-SRYCD
@@ -4592,7 +4597,7 @@
       *    Ï«ºÒ¤Î»þ¡¢Ï«ºÒ¤Î¥³¡¼¥É¤ò¿¶¤êÂØ¤¨¤ë
            IF     (SPA-HKNKBN          =   1   )  AND
                   (IDX-SIN             >   ZERO)
-               MOVE    TBLR-SRYCD (3)      TO  WRK-SRYCD
+               MOVE    TBLR-SRYCD (4)      TO  WRK-SRYCD
                MOVE    IDX-SIN             TO  WRK-IDX-IN
       *        ÄÉ²Ã¶¦ÄÌ½èÍý
                PERFORM 33041-SRYCD-ADD-SEC
@@ -5311,6 +5316,8 @@
                ELSE
       *            Æ±Æü½é¿Ç
                    IF      SPA-COM-INPUTCD (IDX)   =   "111011810"
+      *TE 
+                                                   OR  "101110040"
                        MOVE    1               TO  FLG-DOUSYOSIN
                    END-IF
                END-IF
@@ -5353,6 +5360,8 @@
                    END-IF
       *            Æ±Æü½é¿Ç
                    IF      SPA-COM-INPUTCD (IDX)   =   "111011810"
+      *TE          Ï«ºÒ
+                                                   OR  "101110040"
                        MOVE    1               TO  FLG-DOUSYOSIN
                    END-IF
                END-IF
@@ -5473,8 +5482,7 @@
        1015112-TAKA-HEN-SEC         SECTION.
       *
            MOVE    SPACE               TO  WRK-SRYCD
-           IF     (SPA-HKNKBN          =   ZERO )  AND
-                  (FLG-SRYKBN          =   1 )  AND
+           IF     (FLG-SRYKBN          =   1 )  AND
                   (FLG-SYOSIN-ARI      =   1 )  AND
                   (FLG-DOUSYOSIN       =   ZERO )
       *        Æ±Æü½é¿ÇÈ½Äê
@@ -5547,7 +5555,12 @@
       *****************************************************************
        10151121-DOJITU-HEN-SEC       SECTION.
       *
-           MOVE   "111011810"          TO  WRK-SRYCD
+           IF      SPA-HKNKBN          =   ZERO
+               MOVE   "111011810"          TO  WRK-SRYCD
+           ELSE
+      *TE      Ï«ºÒ
+               MOVE   "101110040"          TO  WRK-SRYCD
+           END-IF
            IF      IDX-A               <   200
                IF      SPA-COM-INPUTCD(IDX-A + 1)
                                            =   WRK-SRYCD
