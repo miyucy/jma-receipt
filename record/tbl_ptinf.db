@@ -318,3 +318,15 @@ path	upd1	{
 	};
 };
 
+path	st_key1	{
+	DBSELECT	{
+		DECLARE tbl_ptinf_st_key1_csr CURSOR FOR
+		SELECT A.*
+		FROM TBL_PTINF A JOIN  TBL_PTNUM B USING (HOSPID,PTID)
+		WHERE  A.HOSPID  = :HOSPID
+		AND    A.CREYMD  = :CREYMD
+		AND    A.TSTPTNUMKBN    <>      '1'
+		ORDER BY  B.PTNUM
+        ;
+	};
+};
