@@ -102,11 +102,20 @@
            03  FILLER              PIC X(12)   VALUE   "   099800101".
       *    脳血管急性発生終了
            03  FILLER              PIC X(12)   VALUE   "   099800102".
+      *Ｈ１８／４から
+      *    リハビリ算定回数（？？）
+           03  FILLER              PIC X(12)   VALUE   "   099800201".
+      *    リハビリ各発生日
+           03  FILLER              PIC X(12)   VALUE   "   099800111".
+           03  FILLER              PIC X(12)   VALUE   "   099800121".
+           03  FILLER              PIC X(12)   VALUE   "   099800131".
+           03  FILLER              PIC X(12)   VALUE   "   099800141".
+           03  FILLER              PIC X(12)   VALUE   "   099800151".
       *
        01  TBL-SANTEI-AREA-R       REDEFINES   TBL-SANTEI-AREA.
       **** 03  TBL-SANTEI-OCC      OCCURS   39  INDEXED   TBL-SAN.
       *****03  TBL-SANTEI-OCC      OCCURS   41  INDEXED   TBL-SAN.
-           03  TBL-SANTEI-OCC      OCCURS   43  INDEXED   TBL-SAN.
+           03  TBL-SANTEI-OCC      OCCURS   49  INDEXED   TBL-SAN.
       *        リハビリ（K:個別、S:集団）
                05  TBL-RIGAKU-RYO      PIC X(01).
       *        リハビリ（R:理学,S:作業, G:言語)
