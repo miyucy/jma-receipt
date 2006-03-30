@@ -179,6 +179,7 @@
       *  02.08.02    NACL-藤原    06/02/01  自院病名コード検索追加
       *  02.08.03    NACL-藤原    06/03/22  改正対応
       *                                     疾患区分の表示を変更
+      *  02.08.04    NACL-藤原    06/03/30  旧総合病院のときの診療科の表示
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1778,12 +1779,16 @@
            PERFORM 900-CLOSE-SEC
       *
       *    １診療科のとき全科の表示はなし
-           IF      SPA-GMN-C02-SRYKA-MAX
-                                   =   2
-               MOVE    SPA-GMN-C02-SRYKALST (2)
-                                       TO  SPA-GMN-C02-SRYKALST (1)
-               MOVE    SPACE           TO   SPA-GMN-C02-SRYKALST (2)
-               MOVE    1               TO  SPA-GMN-C02-SRYKA-MAX
+           IF      SPA-C02-1001-HOSPSBT1   =   "1"
+               CONTINUE
+           ELSE
+               IF      SPA-GMN-C02-SRYKA-MAX
+                                           =   2
+                   MOVE    SPA-GMN-C02-SRYKALST (2)
+                                           TO  SPA-GMN-C02-SRYKALST (1)
+                   MOVE    SPACE           TO  SPA-GMN-C02-SRYKALST (2)
+                   MOVE    1               TO  SPA-GMN-C02-SRYKA-MAX
+               END-IF
            END-IF
       * 
            IF      SPA-GMN-C02-SRYKA-MAX    =   1
