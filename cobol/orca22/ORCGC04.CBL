@@ -46,6 +46,7 @@
       *  02.07.02    NACL-藤原    06/03/13  病名検索時の修正
       *
       *  02.08.01    NACL-藤原    06/02/01  自院病名コード検索追加
+      *  02.08.02    NACL-藤原    06/03/30  複数病名検索時のまとめかたの修正
       ****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -539,19 +540,50 @@
            END-IF
       *
       *   自院病名の部位が入力されている場合は複数病名にはしない
-           PERFORM VARYING IDW FROM    1   BY  1
-                   UNTIL   IDW >       6
-               IF    ( SPA-C01-TUSERBYOMEIFLG (IDW)
-                                           =   "1" )
-               AND   ( SPA-NAI-C04-BYOMEISBT(IDW)
-                                           =   "1" )
-                   MOVE    SPACE       TO  SPA-NAI-C04-BYOMEITOP(IDX)
-                   GO  TO  3101-BYOMEITOP-HENSYU-EXT
-               END-IF
-           END-PERFORM
+           IF      SPA-C01-INDEX   =   ZERO
+               PERFORM VARYING IDW FROM    1   BY  1
+                       UNTIL   IDW >       6
+                   IF      SPA-NAI-C04-BYOMEISBT(IDW)
+                                               =   "1"
+                       MOVE    SPACE   TO  SPA-NAI-C04-BYOMEITOP(IDX)
+                       GO  TO  3101-BYOMEITOP-HENSYU-EXT
+                   END-IF
+               END-PERFORM
+           ELSE
+               PERFORM VARYING IDW FROM    1   BY  1
+                       UNTIL   IDW >       6
+                   IF    ( SPA-C01-TUSERBYOMEIFLG (IDW)
+                                               =   "1" )
+                   AND   ( SPA-NAI-C04-BYOMEISBT(IDW)
+                                               =   "1" )
+                       MOVE    SPACE   TO  SPA-NAI-C04-BYOMEITOP(IDX)
+                       GO  TO  3101-BYOMEITOP-HENSYU-EXT
+                   END-IF
+               END-PERFORM
+           END-IF
       *
            COMPUTE IDW     =   IDX     -   1
-           IF      SPA-C01-TUSERBYOMEIFLG (IDX)
+           IF      SPA-C01-INDEX   =   ZERO
+               EVALUATE    SPA-NAI-C04-BYOMEISBT(IDX)
+                   WHEN    "8"
+                       MOVE    SPACE   TO  SPA-NAI-C04-BYOMEITOP(IDX)
+                   WHEN    "7"
+                   WHEN    "0"
+                       EVALUATE    SPA-NAI-C04-BYOMEISBT (IDW)
+                           WHEN    "7"
+                           WHEN    "1"
+                               MOVE    SPACE       TO
+                                           SPA-NAI-C04-BYOMEITOP(IDX)
+                           WHEN    "8"
+                           WHEN    "0"
+                               MOVE    "1"         TO
+                                           SPA-NAI-C04-BYOMEITOP(IDX)
+                       END-EVALUATE
+                   WHEN    "1"
+                       MOVE    SPACE   TO  SPA-NAI-C04-BYOMEITOP(IDX)
+               END-EVALUATE
+           ELSE
+             IF      SPA-C01-TUSERBYOMEIFLG (IDX)
                                        =   "1"
                EVALUATE    SPA-NAI-C04-BYOMEISBT(IDX)
                    WHEN    "8"
@@ -590,7 +622,7 @@
                    WHEN    "1"
                        MOVE    SPACE   TO  SPA-NAI-C04-BYOMEITOP(IDX)
                END-EVALUATE
-           ELSE
+             ELSE
                EVALUATE    SPA-GMN-C04-INPUTCD (IDX)(1:1)
                            ALSO   SPA-GMN-C04-INPUTCD (IDX)(4:1) 
                    WHEN    "Z"             ALSO    "8"
@@ -629,6 +661,7 @@
                    WHEN    "Z"                 ALSO    ANY
                        MOVE    SPACE   TO  SPA-NAI-C04-BYOMEITOP(IDX)
                END-EVALUATE    
+             END-IF
            END-IF    
            .
        3101-BYOMEITOP-HENSYU-EXT.
