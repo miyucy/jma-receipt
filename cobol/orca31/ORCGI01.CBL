@@ -9302,6 +9302,12 @@
                     MOVE   SYS-5002-RYOYO-CD  TO
                                    WRK-NYUKHNKSN-SRYCD(IDX8)
                END-IF
+      *        Œ≈Õ‹…¬≈ÔŒ≈Õ‹¥ƒ∂≠≤√ªª£±°  ø¿Æ£±£∏«Øø∑¿ﬂ°À
+               IF   SYS-5002-BTU-RYOYO-H18-KBN     =   "2"
+                    ADD     1       TO     IDX8
+                    MOVE   "190120210"  TO
+                                   WRK-NYUKHNKSN-SRYCD(IDX8)
+               END-IF
       *        Œ≈Õ‹…¬≈ÔŒ≈Õ‹¥ƒ∂≠≤√ªª£±
                IF   SYS-5002-BTU-RYOYO-KBN(1)     =   "2"
                     ADD     1       TO     IDX8
