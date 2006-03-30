@@ -466,7 +466,7 @@
       *        上限回数エラー処理＝９の時、回数エラーは警告とする
                IF       WRK-DAYCNT     =   ZERO
                    IF       TNS-JGNCNTERR      =   9
-                       MOVE    "K004"              TO  LNK-SC91-ERRCD
+                       MOVE    "K091"              TO  LNK-SC91-ERRCD
                    END-IF
                END-IF
            END-IF
@@ -970,7 +970,7 @@
                    END-IF
       *            上限回数エラー処理＝９の時、回数エラーは警告とする
                    IF       WRK-JGNCNTERR      =   9
-                      MOVE    "K004"              TO  LNK-SC91-ERRCD
+                      MOVE    "K091"              TO  LNK-SC91-ERRCD
                    END-IF
                END-IF
            END-IF

@@ -1451,6 +1451,9 @@
                                        DELIMITED   BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
+               WHEN    "K091"
+                   MOVE    "警告！既に当日算定回数を超えています。"
+                                       TO  SPA-ERRMSG
                WHEN    OTHER
                    MOVE    SPA-ERRCD
                                        TO  SPA-ERRMSG

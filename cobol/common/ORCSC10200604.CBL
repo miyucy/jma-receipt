@@ -414,6 +414,8 @@
        01  TBL-RSI-SINSATU-AREA.
       *    ½é¿ÇÎÁ
            03  FILLER              PIC X(13)   VALUE   "0 F 101110010".
+      *TE  Æ±Æü½é¿Ç
+           03  FILLER              PIC X(13)   VALUE   "0 FD101110040".
       *    ºÆ¿ÇÎÁ
            03  FILLER              PIC X(13)   VALUE   "0 S 101120040".
       *
@@ -421,13 +423,14 @@
            03  FILLER              PIC X(13)   VALUE   "0 G 101120070".
       *
        01  TBL-RSI-SINSATU-AREAR   REDEFINES   TBL-RSI-SINSATU-AREA.
-           03  TBL-RSI-SINSATU-OCC     OCCURS  3    INDEXED  TBL-RSI.
+           03  TBL-RSI-SINSATU-OCC     OCCURS  4    INDEXED  TBL-RSI.
       *        ²ó¿ô
                05  TBLR-KAISU           PIC 9(01).
                05  FILLER               PIC X(01).
       *        F:½é¿Ç¡¢S:ºÆ¿Ç¡¢G:³°Íè´ÉÍý²Ã»»
                05  TBLR-KBN             PIC X(01).
-               05  FILLER               PIC X(01).
+      *        D:Æ±Æü½é¿Ç
+               05  TBLR-KBN2            PIC X(01).
       *        ¿ÇÎÅ¥³¡¼¥É
                05  TBLR-SRYCD           PIC X(09).
       *
@@ -827,6 +830,7 @@
                    WHEN    WRK-COM-INPUTCD(IDX-Z)
                                                =   TBLR-SRYCD (TBL-RSI)
                        MOVE    TBLR-KBN  (TBL-RSI) TO  WRK-KBN
+                       MOVE    TBLR-KBN2 (TBL-RSI) TO  WRK-KBN2
                        MOVE    TBLR-KAISU(TBL-RSI) TO  WRK-KAISU
                        MOVE    1                   TO  FLG-TBL
                END-SEARCH
@@ -1272,6 +1276,8 @@
       *
       *    Ï«ºÒ¤Î¿Ç»¡ÎÁ¤ÎÈ½Äê
            IF      WRK-COM-INPUTCD(IDX-Z)  =   "101110010"
+      *TE  Æ±Æü½é¿Ç
+                                           OR  "101110040"
       *        ½é¿ÇÎÁ¤Î»þ¡¢²áµî¤Ë¼õ¿Ç¤¬¤Ê¤¤¤³¤È
       *        ¼õ¿ÇÎò¤ò¸¡º÷¤¹¤ë  °åÎÅµ¡´Ø¡¢´µ¼Ô£É£Ä
                INITIALIZE                  JYURRK-REC
@@ -3303,6 +3309,10 @@
                        MOVE    1               TO  FLG-DOUJITU
                        MOVE    IDX-Z           TO  IDX-SINSATU2
                    END-IF
+      *            Ï«ºÒ¤Î»þ¡¢Ï«ºÒ¥³¡¼¥É¤ÇÈ½Äê¤¹¤ë
+                   IF      SPA-HKNKBN      =   1
+                       PERFORM 20012-RSISINSATU-CHK-SEC
+                   END-IF
                END-IF
       *
       *        ³°Íè´ÉÍý²Ã»»¡¢·ÑÂ³´ÉÍý²Ã»»¤ÎÈ½Äê
@@ -4015,6 +4025,7 @@
                    MOVE    ZERO                TO  WRK-KAISU
                WHEN    WRK-COM-INPUTCD(IDX-Z)  =   TBLR-SRYCD (TBL-RSI)
                    MOVE    TBLR-KBN  (TBL-RSI) TO  WRK-KBN
+                   MOVE    TBLR-KBN2 (TBL-RSI) TO  WRK-KBN2
                    MOVE    TBLR-KAISU(TBL-RSI) TO  WRK-KAISU
            END-SEARCH
       *
@@ -4023,7 +4034,12 @@
                MOVE    1               TO  LNK-ORCSC-SINSATU-ARI
       *        ½é¿ÇÎÁ¤ÎÈ½Äê
                IF      WRK-KBN             =   "F"
-                   MOVE    1               TO  LNK-ORCSC-SYOSIN2
+      *            Æ±Æü½é¿Ç
+                   IF      WRK-KBN2            =   "D"
+                       CONTINUE
+                   ELSE
+                       MOVE    1               TO  LNK-ORCSC-SYOSIN2
+                   END-IF
                ELSE
       *            ÄûÀµ¤Ç½é¿ÇÎÁ¤«¤é¤ÎÊÑ¹¹»þ
                    IF     (LNK-ORCSC-PG        =   "K02") AND
@@ -4042,6 +4058,12 @@
                MOVE    WRK-KBN         TO  WRK-SINSATU-KBN
                MOVE    WRK-KAISU       TO  WRK-SINSATU-KAISU
                MOVE    IDX-Z           TO  IDX-SINSATU
+      *        Æ±Æü½é¿Ç
+               IF     (WRK-KBN             =   "F" )  AND
+                      (WRK-KBN2            =   "D" )
+                   MOVE    1               TO  FLG-DOUJITU
+                   MOVE    IDX-Z           TO  IDX-SINSATU2
+               END-IF
            END-IF
       *
            .
