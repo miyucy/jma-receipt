@@ -16,11 +16,11 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION          DIVISION.
-       PROGRAM-ID.             ORCBCRENYUACCT.
+       PROGRAM-ID.             ORCBREV200604.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : 月次
-      *  コンポーネント名  : 入院会計一括作成
+      *  コンポーネント名  : 入院会計一括作成（旧コード分置き換え）
       *  管理者            : 
       *  作成日付    作業者        記述
       *  04/05/15    NACL-小豆沢   新規作成
@@ -28,15 +28,6 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *平成１８年４月改定対応
-      *  02.08.01    NACL-小豆沢  06/03/16  入院料老人コード置き換えは療養病棟
-      *                                     または療養病床のみを対象とする
-      *              NACL-小豆沢  06/03/17  特定入院料対応
-      *                                       脳卒中ケアユニット入院医療管理料
-      *                                       精神科救急入院料
-      *                                       精神科急性期治療病棟入院料１
-      *                                       精神科急性期治療病棟入院料２
-      *                                     看護補助加算の変更
-      *                                     改定による特定入院料次月作成変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -226,7 +217,7 @@
            03  LST-HEAD1.
                05                      PIC X(40)   VALUE   " ".
                05                      PIC X(30)   VALUE   
-                             "入院会計一括作成結果リスト".
+                             "入院会計一括置換え結果リスト".
                05                      PIC X(30)   VALUE   " ".
                05  LST-HEAD-PAGE       PIC Z,ZZ9.
                05                      PIC X(05)   VALUE   "頁".
@@ -289,6 +280,10 @@
       *    入院会計
        01  NYUINACCT-REC.
            COPY    "CPNYUINACCT.INC".
+      *
+      *    入院診療行為
+       01  NYUINACT-REC.
+           COPY    "CPNYUINACT.INC".
       *
       *    患者入院履歴
        01  PTNYUINRRK-REC.
@@ -431,13 +426,15 @@
                                        WRK-PARA-SRYYM
            END-UNSTRING
       *
+           MOVE   "200604"             TO   WRK-PARA-SRYYM
+      *
       *    ステップ管理開始処理
            MOVE    "STS"               TO  SJOBKANRI-MODE
            INITIALIZE                      JOBKANRI-REC
            MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
-           MOVE    "ORCBCRENYUACCT"    TO  JOB-PGID
-           MOVE    "入院会計一括作成"  TO  JOB-SHELLMSG
+           MOVE    "ORCBREV200604"     TO  JOB-PGID
+           MOVE    "入院会計一括置換え（改正）"  TO  JOB-SHELLMSG
       *
            CALL    "ORCSJOB"               USING
                                            ORCSJOBKANRIAREA
@@ -508,6 +505,8 @@
                MOVE    MCPDATA-REC     TO  SYS-2009-REC
                IF      SYS-2009-SYUKA-KBN  =  "1"
                    MOVE   "1"          TO  SPA-SYUKA-KBN
+                   DISPLAY "SYS-2009-SYUKA-NYUIN = "
+                            SYS-2009-SYUKA-NYUIN
                    MOVE   SYS-2009-SYUKA-NYUIN
                                        TO  SPA-SYUKA-NYUIN
                    MOVE   SYS-2009-SYUKA-MODE
@@ -571,13 +570,11 @@
                        MOVE    PTNYUINRRK-PTID   TO  WRK-PTID
       *                入院会計存在チェック
                        PERFORM    2001-NYUINACCT-CHK-SEC
-                       IF         FLG-NYUINACCTARI   =    ZERO
-      *                     前月分入院会計の存在チェック
-      *                     （併せて保険組合せと食事の情報を退避）
-                            PERFORM     2001-NYUINACCT-MAECHK-SEC
-      *                     入院会計作成処理
-                            PERFORM     2001-NYUINACCT-INS-SEC
-                       END-IF
+      *                前月分入院会計の存在チェック
+      *                （併せて保険組合せと食事の情報を退避）
+                       PERFORM     2001-NYUINACCT-MAECHK-SEC
+      *                入院会計作成処理
+                       PERFORM     2001-NYUINACCT-INS-SEC
                    MOVE    "PTNYUINRRK-KEY27"    TO      ORC-DBPATH
                    PERFORM  910-PTNYUINRRK-READ-SEC
                END-PERFORM
@@ -779,7 +776,12 @@
            ELSE
                EVALUATE    WRK-ERRCD
                    WHEN    SPACE
-                       MOVE  "入院会計を作成しました" TO  WRK-NAIYO
+                       IF   FLG-NYUINACCTARI   =   0
+                           MOVE  "入院会計を作成しました" TO  WRK-NAIYO
+                       ELSE
+                           MOVE  "入院会計を更新（再作成）しました"  
+                                                     TO  WRK-NAIYO
+                       END-IF
                    WHEN    "2003"
                        MOVE  "通算日数の取得に失敗しました"
                                                       TO  WRK-NAIYO
@@ -1338,6 +1340,31 @@
       *****************************************************************
        410191-NYUACCT-SAKUSEI-SEC   SECTION.
       *
+      *    既に作成済の入院会計が存在すれば
+      *    削除を行う
+           INITIALIZE                      NYUINACCT-REC
+           MOVE    WRK-HOSPID          TO  NACCT-HOSPID
+           MOVE    WRK-PTID            TO  NACCT-PTID
+           MOVE    WRK-PARA-SRYYM      TO  NACCT-SRYYM
+           MOVE    NYUINACCT-REC       TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+           MOVE    "del2"              TO  MCP-PATHNAME
+           CALL    "MONFUNC"            USING
+                                        MCPAREA
+                                        MCPDATA-REC
+           INITIALIZE                      NYUINACT-REC
+           MOVE    WRK-HOSPID          TO  NSRY-HOSPID
+           MOVE    WRK-PTID            TO  NSRY-PTID
+           MOVE    WRK-PARA-SRYYM      TO  NSRY-SRYYM
+           MOVE    NYUINACT-REC        TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_nyuinact"      TO  MCP-TABLE
+           MOVE    "del13"             TO  MCP-PATHNAME
+           CALL    "MONFUNC"            USING
+                                        MCPAREA
+                                        MCPDATA-REC
+      *
            MOVE   SPACE                TO  IPN-NYUKAIKEI-SAKUSEI-FLG
            INITIALIZE      ORCSSYOKIKSNAREA
            MOVE    WRK-PARA-SRYYM      TO  WRK-NAI-SRYYM-41.
@@ -1497,7 +1524,7 @@
                                                                   (2)
                PERFORM    4801-KIKAN-CHG-SEC
            END-IF
-      *    老人性痴呆疾患治療病棟入院料
+      *    老人性認知症疾患治療病棟入院料
            IF      SYOKIKSN-IN-KHNSRYCD    =   "190739910"
                MOVE   SPACE            TO  SYOKIKSN-IN-KHNSRYCD
                                            LNK-SCNYUACCT-NYUKHN-SRYCD(1)
@@ -1619,7 +1646,7 @@
                END-IF
            END-IF
       *
-      *    老人性痴呆疾患治療病棟入院料２
+      *    老人性認知症疾患治療病棟入院料２
            IF      SYOKIKSN-IN-KHNSRYCD    =   "190813410"
                MOVE    SPACE           TO  SYOKIKSN-IN-KHNSRYCD
                                            LNK-SCNYUACCT-NYUKHN-SRYCD(1)
@@ -1875,6 +1902,14 @@
            END-IF
       *    食事区分
            MOVE    "099999913"         TO  LNK-SCNYUACCT-SHOKUJI-SRYCD
+      *    選択食廃止による変換
+           EVALUATE   WRK-TAIHI-SHOKUJI
+               WHEN   3
+                      MOVE   1         TO  WRK-TAIHI-SHOKUJI
+               WHEN   4
+                      MOVE   2         TO  WRK-TAIHI-SHOKUJI
+           END-EVALUATE
+      *
            MOVE   WRK-TAIHI-SHOKUJI    TO  LNK-SCNYUACCT-SHOKUJIKBN
       *    食堂加算
            PERFORM 4801-BTUSEL-SEC
