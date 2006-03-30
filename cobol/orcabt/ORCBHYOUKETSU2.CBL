@@ -527,15 +527,15 @@
                        CONTINUE
                    ELSE
                        MOVE    1      TO   FLG-NYUINACCT-UPD
-                       IF   NSRY-SRYCD(2) = "190108690" OR "190108590"
-                           MOVE   SPACE         TO   NSRY-SRYCD(2)
-                           MOVE   ZERO          TO   NSRY-SRYSURYO(2)
-                       ELSE
-                           IF   NSRY-SRYCD(3)   = "190108690" OR 
-                                                  "190108590"
-                               MOVE  SPACE      TO   NSRY-SRYCD(3)
-                               MOVE  ZERO       TO   NSRY-SRYSURYO(3)
-                           END-IF
+                       IF   NSRY-SRYCD(2)   = "190108690" OR
+                                              "190108590"
+                           MOVE   SPACE     TO   NSRY-SRYCD(2)
+                           MOVE   ZERO      TO   NSRY-SRYSURYO(2)
+                       END-IF
+                       IF   NSRY-SRYCD(3)   = "190108690" OR 
+                                              "190108590"
+                           MOVE  SPACE      TO   NSRY-SRYCD(3)
+                           MOVE  ZERO       TO   NSRY-SRYSURYO(3)
                        END-IF
       *                明細数・数量計・診療コード計
                        MOVE     ZERO    TO   WRK-MEISAISU
