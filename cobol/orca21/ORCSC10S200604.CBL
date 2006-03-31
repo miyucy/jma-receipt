@@ -642,7 +642,7 @@
       *DD          WHEN    "111700110"
       *DD          WHEN    "111700210"
                    WHEN    "111000110"
-      ******       WHEN    "111011810"
+      *??????      WHEN    "111011810"
       *DDD         WHEN    "111003610"
                    WHEN    "113003510"
                    WHEN    "113003710"
@@ -3978,7 +3978,7 @@
       *
       *    ºßÂð»þ°å³ØÁí¹ç´ÉÍýÎÁ¥Á¥§¥Ã¥¯
            IF     (SPA-ZAIKANRI-ARI    NOT =   ZERO )
-      *??    OR   (SPA-ZAIKANRI-ARI2   NOT =   ZERO )
+             OR   (SPA-ZAIKANRI-ARI2   NOT =   ZERO )
                PERFORM 5022-ZAIKANRI-CHK-SEC
            END-IF
       *
@@ -5573,11 +5573,11 @@
                MOVE    "0007"              TO  SPA-ERRCD
            END-IF
            IF      SPA-ERRCD           =   SPACE
-               IF      SPA-HKNKBN      =   ZERO
-                   MOVE   "111011810"      TO  WRK-SRYCD
+               IF      SPA-HKNKBN          =   ZERO
+                   MOVE   "111011810"          TO  WRK-SRYCD
                ELSE
-      *TE      Ï«ºÒ
-                   MOVE   "101110040"      TO  WRK-SRYCD
+      *TE          Ï«ºÒ
+                   MOVE   "101110040"          TO  WRK-SRYCD
                END-IF
                INITIALIZE                  SPA-GMN-TBLREC  (IDX-A)
                INITIALIZE                  SPA-COM-TBLREC  (IDX-A)
