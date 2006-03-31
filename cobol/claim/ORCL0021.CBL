@@ -1183,6 +1183,7 @@
       *    １剤で２０行以上の時
            IF      IDX-IJ              >   20
                DISPLAY "*** ORCL0021 INDEX OVER ****"
+               GO      TO  20022-SRYACT-SYORI-EXT
            END-IF
       *
       *     フィルム
@@ -1782,6 +1783,7 @@
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+           MOVE    LNK-SRYYMD          TO  ORC-DBYMD
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
