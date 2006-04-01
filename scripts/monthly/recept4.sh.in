@@ -44,6 +44,7 @@ fi
 
     $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM500 -parameter $1,$2,$3,$rennum,$5,$6,$7,$8,$9,${10},${11},${12},${14},${15},${19},${17},$fixedsize >> /home/orca/recept4.log
     if  [ -e ${16} ]; then
+        echo "--- BM500 err file exist ---" >>/home/orca/recept4.log
         exit 
     fi
         
@@ -54,6 +55,7 @@ fi
         
         
     if  [ -e ${16} ]; then
+        echo "--- BM510 err file exist ---" >>/home/orca/recept4.log
         exit 
     fi
         
@@ -95,21 +97,27 @@ fi
 ##    exit 
 ##
     if  [ ${17} -eq '1' ]; then
+        echo "--- fdw-> fd start ---" >>/home/orca/recept4.log
 	$FDW -host $FDDHOST -command fd-write.sh ${13}RECEIPTC.UKE RECEIPTC.UKE
 	RC=$?
+        echo "--- fdw-> fd end   ---[" $RC  "]" >>/home/orca/recept4.log
 	if  [ $RC -ne '0' ]; then
 	    ERRCD='0000'$RC
 	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${14}${15}'  '${ERRCD:${#ERRCD}-4:4}
+        echo "--- fdw-> fd err   ---" >>/home/orca/recept4.log
             exit
 	fi
     fi
 
     if  [ ${17} -eq '2' ]; then
+        echo "--- fdw-> mo start ---" >>/home/orca/recept4.log
 	$FDW -host $FDDHOST -command mo-write.sh ${13}RECEIPTC.UKE RECEIPTC.UKE
 	RC=$?
+        echo "--- fdw-> mo end   ---[" $RC  "]" >>/home/orca/recept4.log
 	if  [ $RC -ne '0' ]; then
 	    ERRCD='0000'$RC
 	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${14}${15}'  '${ERRCD:${#ERRCD}-4:4}
+            echo "--- fdw-> mo err   ---" >>/home/orca/recept4.log
             exit
 	fi
     fi
