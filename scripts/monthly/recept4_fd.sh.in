@@ -41,11 +41,14 @@ fi
 ##    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${2}${3} >> /home/orca/recept4_fd.log
 ##    exit 
 ##
+        echo "--- fdw-> fd start ---" >>/home/orca/recept4_fd.log
 	$FDW -host $FDDHOST -command fd-write.sh ${1}RECEIPTC${6}.UKE RECEIPTC.UKE
 	RC=$?
+        echo "--- fdw-> fd end   ---[" $RC  "]" >>/home/orca/recept4_fd.log
 	if  [ $RC -ne '0' ]; then
 	    ERRCD='0000'$RC
 	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${2}${3}'  '${ERRCD:${#ERRCD}-4:4} >> /home/orca/recept4_fd.log
+        echo "--- fdw-> fd err   ---" >>/home/orca/recept4_fd.log
             exit
     fi
 
