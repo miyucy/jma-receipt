@@ -1238,7 +1238,6 @@
                                        MCPAREA
                                        MCPDATA-REC
            .
-           .
        100-DBOPEN-EXT.
            EXIT.
       *
