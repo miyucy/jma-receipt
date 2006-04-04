@@ -47,7 +47,7 @@ fi
            fi
         fi
 
-        if [ ${10} -eq  '01' ]; then
+        if [ $4 -eq  '0' ] && [ ${10} -eq  '01' ]; then
            rm /home/orca/recept2.log
         fi
 
