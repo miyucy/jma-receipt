@@ -1047,6 +1047,11 @@
            ELSE
                MOVE    LNK-ORCSC-SYOYMD        TO  WRK-SYOYMD
            END-IF
+      *    同日初診がある時、同日初診
+           IF      (SPA-DOUYMD     NOT =   SPACE )  AND
+                   (SPA-DOUYMD         >   WRK-SYOYMD)
+               MOVE    SPA-DOUYMD          TO  WRK-SYOYMD
+           END-IF
       *    初診算定日から６月以内
            IF     (WRK-SYOYMD          =   SPACE  )  OR
                   (LNK-ORCSC-SYOSIN2   =   1      )

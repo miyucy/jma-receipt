@@ -179,6 +179,8 @@
                                                OCCURS  10.
       *同日診察料有無
                05  SPA-DOUJITU             PIC  9(01).
+      *同日初診算定日（直帰）
+               05  SPA-DOUYMD              PIC  X(08).
       *外来診療料算定有無
                05  SPA-GAIRAISIN           PIC  9(01).
       *特定疾患有無（病名）

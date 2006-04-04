@@ -3154,6 +3154,13 @@
                MOVE    SPACE           TO  SPA-SYOYMD-OLD
            END-IF
       *
+      *    同日初診算定日
+           IF      SPA-SRYYMD          >=  "20060401"
+               PERFORM 30091-DOUSYOSIN-SYORI-SEC
+           ELSE
+               MOVE    SPACE           TO  SPA-DOUYMD
+           END-IF
+      *
            .
        11012-GAI-SYOYMD-SET-EXT.
            EXIT.
@@ -3756,6 +3763,13 @@
       *    最初の初診算定日
            MOVE    WRK-SYOSINYMDS      TO  SPA-SYOYMD1
       *
+      *    同日初診算定日
+           IF      SPA-SRYYMD          >=  "20060401"
+               PERFORM 30091-DOUSYOSIN-SYORI-SEC
+           ELSE
+               MOVE    SPACE           TO  SPA-DOUYMD
+           END-IF
+      *
       *    保険組合せが使用できるかのチェック
       *****PERFORM 100131-HKNCOMBI-CHK-SEC
       *
@@ -3912,9 +3926,6 @@
                   (WRK-YMD             <   WRK-SYOSINYMDS))
                MOVE    WRK-YMD         TO  WRK-SYOSINYMDS
            END-IF
-      *TEST
-           DISPLAY " WRK-SYOSINYMD1:"  WRK-SYOSINYMD1
-                   ". WRK-SYOSINYMDS:"  WRK-SYOSINYMDS
       *    前回の初診算定日
            MOVE    WRK-SYOSINYMD1      TO  SPA-SYOYMD-OLD
       *
@@ -3959,7 +3970,7 @@
                            END-IF
                        END-PERFORM
                        MOVE    SANTEI-SRYYM        TO  WRK-YMD(1:6)
-                       IF     (WRK-YMDS            =   SPACE ) OR
+                       IF     (WRK-YMDS            =   SPACE )  OR
                               (WRK-YMD             >   WRK-YMDS)
                            MOVE    WRK-YMD             TO  WRK-YMDS
                        END-IF
@@ -3985,6 +3996,31 @@
        30091-SANTEI-CHK-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    同日初診算定日編集処理
+      *****************************************************************
+       30091-DOUSYOSIN-SYORI-SEC       SECTION.
+      *
+           MOVE    SPACE               TO  WRK-SYOSINYMD1
+      *    同日初診
+           MOVE    "111011810"         TO  WRK-SRYCD
+           PERFORM 30091-SANTEI-CHK-SEC
+           IF     (WRK-SYOSINYMD1      =   SPACE  )  OR
+                  (WRK-YMDS            >   WRK-SYOSINYMD1)
+               MOVE    WRK-YMDS            TO  WRK-SYOSINYMD1
+           END-IF
+      *    同日初診（労災）
+           MOVE    "101110040"         TO  WRK-SRYCD
+           PERFORM 30091-SANTEI-CHK-SEC
+           IF     (WRK-SYOSINYMD1      =   SPACE  )  OR
+                  (WRK-YMDS            >   WRK-SYOSINYMD1)
+               MOVE    WRK-YMDS            TO  WRK-SYOSINYMD1
+           END-IF
+           MOVE    WRK-SYOSINYMD1      TO  SPA-DOUYMD
+      *
+           .
+       30091-DOUSYOSIN-SYORI-EXT.
+           EXIT.
       *****************************************************************
       *    診療行為マスタを作成する 
       *****************************************************************

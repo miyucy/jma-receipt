@@ -4245,6 +4245,12 @@
            ELSE
                MOVE    LNK-ORCSC-SYOYMD        TO  WRK-SYOYMD
            END-IF
+      *
+           IF      (SPA-DOUYMD     NOT =   SPACE )  AND
+                   (SPA-DOUYMD         >   WRK-SYOYMD)
+               MOVE    SPA-DOUYMD          TO  WRK-SYOYMD
+           END-IF
+      *
       *    瘉蔽轉情ゥ互丐月凜﹜轉情ゥ
            IF     (LNK-ORCSC-TAIINYMD  =   SPACE )  OR
                   (LNK-ORCSC-TAIINYMD  <=  WRK-SYOYMD)
@@ -4270,9 +4276,9 @@
                CALL    "ORCSDAY"           USING   STS-AREA-DAY
                                                    LNK-DAY6-AREA
       *TEST
-      *        DISPLAY "C10 WRK-SYOYMD:" WRK-SYOYMD
-      *          ",LNK-DAY6-KEISAN:" LNK-DAY6-KEISAN
-      *          ",LNK-DAY6-KEISANZEN:" LNK-DAY6-KEISANZEN
+               DISPLAY "C10 WRK-SYOYMD:" WRK-SYOYMD
+                 ",LNK-DAY6-KEISAN:" LNK-DAY6-KEISAN
+                 ",LNK-DAY6-KEISANZEN:" LNK-DAY6-KEISANZEN
       *TEST
                MOVE    LNK-DAY6-KEISAN     TO  WRK-KEIYMD
                MOVE    LNK-DAY6-KEISANZEN  TO  WRK-KEIYMDZEN
