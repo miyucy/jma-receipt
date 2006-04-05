@@ -4557,6 +4557,9 @@
                                                              (IDX-TEI)
                            IF     (TNS-SANTEIRRKKBN NOT =   ZERO )
                            AND    (TNS-SRYCD (1:1)      =   "1"  )
+                           AND    (TNS-JGNCNT1D         >   ZERO)
+                           AND    (TNS-TANICD       NOT =   "001")
+      *                    １日上限の場合、数量＊回数
                                IF     SRY-SRYSURYO(IDX)   >   1
                                    COMPUTE SPA-K02-TEI-KAISU (IDX-TEI)
                                                    =   SRY-SRYSURYO(IDX)
@@ -4626,9 +4629,16 @@
                IF      IDX-TEI             <=  200
                   MOVE    WRK-HEN-SRYCD       TO  SPA-K02-TEI-SRYCD
                                                             (IDX-TEI)
-                  COMPUTE SPA-K02-TEI-KAISU (IDX-TEI)
+                  IF      (TNS-JGNCNT1D         >   ZERO )
+                     AND  (TNS-TANICD       NOT =   "001")
+      *           １日上限の場合、数量＊回数
+                      COMPUTE SPA-K02-TEI-KAISU (IDX-TEI)
                                                =   SRY-SRYSURYO(IDX)
                                                *   WRK-ZAIKAISU
+                   ELSE
+                       MOVE    WRK-ZAIKAISU    TO  SPA-K02-TEI-KAISU
+                                                           (IDX-TEI)
+                   END-IF
                END-IF
            END-IF
       *

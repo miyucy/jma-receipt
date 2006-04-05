@@ -2317,7 +2317,12 @@
            MOVE    SPA-SRYYMD          TO  SSANTEI-SRYYMD
            MOVE    WRK-KAISU           TO  SSANTEI-KAISU
       *    数量
-           MOVE    WRK-SRYSURYO        TO  SSANTEI-SRYSURYO
+      *    １日上限で単位が分以外の時、数量編集
+           IF      (WRK-SRYSURYO       >   1    )
+               AND (TNS-JGNCNT1D       >   ZERO )
+               AND (TNS-TANICD     NOT =   "001")
+               MOVE    WRK-SRYSURYO        TO  SSANTEI-SRYSURYO
+           END-IF
       *    診療科
            MOVE    SRY-SRYKA           TO  SSANTEI-SRYKA
            MOVE    ACCT-HKNCOMBI       TO  SSANTEI-HKNCOMBINUM
@@ -3307,8 +3312,12 @@
                MOVE    SPA-TOKTEI-YMD  TO  SSANTEI-SYOKAIYMD
            END-IF
            MOVE    WRK-KAISU           TO  SSANTEI-KAISU
-      *    数量
-           MOVE    WRK-SRYSURYO        TO  SSANTEI-SRYSURYO
+      *    １日上限で単位が分以外の時、数量編集
+           IF      (WRK-SRYSURYO       >   1    )
+               AND (TNS-JGNCNT1D       >   ZERO )
+               AND (TNS-TANICD     NOT =   "001")
+               MOVE    WRK-SRYSURYO        TO  SSANTEI-SRYSURYO
+           END-IF
       *    初診料算定日
       *    訂正の時
            IF      SPA-SYORIFLG        =   1

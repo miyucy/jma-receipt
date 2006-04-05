@@ -1159,11 +1159,8 @@
            MOVE    SPA-COM-KAISU (IDX-T)
                                        TO  LNK-SC91-KAISU
       *    ¿ôÎÌÈ¿±Ç
-           IF      SPA-COM-SURYO (IDX-T)   >   1
-               COMPUTE LNK-SC91-KAISU  =   SPA-COM-SURYO (IDX-T)
-                                       *   LNK-SC91-KAISU
-           END-IF
-      *
+           MOVE    SPA-COM-SURYO (IDX-T)
+                                       TO  LNK-SC91-SURYO
            MOVE    LNK-SC92-TEISEI-AREA
                                        TO  LNK-SC91-TEISEI-AREA
       *
@@ -2301,6 +2298,7 @@
            .
        300-TENSU-HENSYU-EXT.
            EXIT.
+      *
       *
       *****************************************************************
       *     »ÀÁÇ¡¦ÃâÁÇ¤Î»þ¡¢»ÀÁÇ¶èÊ¬ºÆÀßÄê½èÍý

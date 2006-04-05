@@ -10039,7 +10039,10 @@
       *    保険組合せ
            MOVE    ACCT-HKNCOMBI       TO  SPA-HKNCOMBINUM
       *    数量
-           IF      SRY-SRYSURYO(IDZ)   >   ZERO
+      *    １日上限で単位が分以外の時、数量編集
+           IF     (SRY-SRYSURYO(IDZ)   >   ZERO  )
+               AND (TNS-JGNCNT1D       >   ZERO )
+               AND (TNS-TANICD     NOT =   "001")
                MOVE    SRY-SRYSURYO(IDZ)   TO  SSANTEI-SRYSURYO
            END-IF
       *!   保険内容編集

@@ -5388,7 +5388,11 @@
            MOVE    SRY-SRYKA           TO  SSANTEI-SRYKA
            MOVE    ZERO                TO  SSANTEI-MSANTEID
            MOVE    ZERO                TO  SSANTEI-MSANTEICNT
-           MOVE    SRY-SRYSURYO(IDZ)   TO  SSANTEI-SRYSURYO
+           IF      (SRY-SRYSURYO(IDZ)  >   1    )
+               AND (TNS-JGNCNT1D       >   ZERO )
+               AND (TNS-TANICD     NOT =   "001")
+               MOVE    SRY-SRYSURYO(IDZ)   TO  SSANTEI-SRYSURYO
+           END-IF
            MOVE    SPA-SEL-DAY-G       TO  SSANTEI-DAY-AREA
       *    特定薬剤の初回日
            MOVE    SPA-TOKTEI-YMD      TO  SSANTEI-SYOKAIYMD
@@ -6007,7 +6011,11 @@
            MOVE    SRY-SRYKA           TO  SSANTEI-SRYKA
            MOVE    ZERO                TO  SSANTEI-MSANTEID
            MOVE    ZERO                TO  SSANTEI-MSANTEICNT
-           MOVE    SRY-SRYSURYO(IDZ)   TO  SSANTEI-SRYSURYO
+           IF      (SRY-SRYSURYO(IDZ)  >   1    )
+               AND (TNS-JGNCNT1D       >   ZERO )
+               AND (TNS-TANICD     NOT =   "001")
+               MOVE    SRY-SRYSURYO(IDZ)   TO  SSANTEI-SRYSURYO
+           END-IF
            MOVE    SPA-SEL-DAY-G       TO  SSANTEI-DAY-AREA
            IF      SPA-SEL-RRKYMD      =   SPACE
                MOVE    SRY-SRYYM           TO  SSANTEI-SRYYMD(1:6)

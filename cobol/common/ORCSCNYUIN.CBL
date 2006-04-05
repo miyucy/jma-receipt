@@ -1524,7 +1524,12 @@
            END-IF
            MOVE    WRK-KAISU           TO  SSANTEI-KAISU
       *    数量
-           MOVE    WRK-SRYSURYO        TO  SSANTEI-SRYSURYO
+      *    １日上限で単位が分以外の時、数量編集
+           IF      (WRK-SRYSURYO       >   1    )
+               AND (TNS-JGNCNT1D       >   ZERO )
+               AND (TNS-TANICD     NOT =   "001")
+               MOVE    WRK-SRYSURYO        TO  SSANTEI-SRYSURYO
+           END-IF
       *    内分泌負荷試験用
            IF      LNK-WKSRYP-MSANTEITFLG(IDX)   =   1
                MOVE    LNK-WKSRYP-MSANTEITEN (IDX)
@@ -2338,7 +2343,12 @@
            MOVE    SPA-SRYYMD          TO  SSANTEI-SRYYMD
            MOVE    WRK-KAISU           TO  SSANTEI-KAISU
       *    数量
-           MOVE    WRK-SRYSURYO        TO  SSANTEI-SRYSURYO
+      *    １日上限で単位が分以外の時、数量編集
+           IF      (WRK-SRYSURYO       >   1    )
+               AND (TNS-JGNCNT1D       >   ZERO )
+               AND (TNS-TANICD     NOT =   "001")
+               MOVE    WRK-SRYSURYO        TO  SSANTEI-SRYSURYO
+           END-IF
       *    診療科
            MOVE    SRY-SRYKA           TO  SSANTEI-SRYKA
       *    保険区分は同じ

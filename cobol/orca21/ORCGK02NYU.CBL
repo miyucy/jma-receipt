@@ -5150,6 +5150,8 @@
            MOVE    SPA-GMN-IDX         TO  LNK-SC91-GMN-IDX
            MOVE    SPA-COM-KAISU   (SPA-GMN-IDX)
                                        TO  LNK-SC91-KAISU
+           MOVE    SPA-COM-SURYO   (SPA-GMN-IDX)
+                                       TO  LNK-SC91-SURYO
            MOVE    SPA-K02-TEISEI-AREA TO  LNK-SC91-TEISEI-AREA
       *
            CALL    "ORCSC91"           USING    MCPAREA
@@ -5681,6 +5683,8 @@
                    MOVE    "3"                 TO  LNK-SC91-KBN
                    MOVE    IDX                 TO  LNK-SC91-GMN-IDX
                    MOVE    WRK-NYU-KAISU       TO  LNK-SC91-KAISU
+                   MOVE    SPA-COM-SURYO   (IDX)
+                                               TO  LNK-SC91-SURYO
                    MOVE    SPA-K02-TEISEI-AREA TO  LNK-SC91-TEISEI-AREA
       *
                    CALL    "ORCSC91"           USING    MCPAREA

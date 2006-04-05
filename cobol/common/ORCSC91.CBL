@@ -296,6 +296,13 @@
            ELSE
                MOVE    ZERO            TO  WRK-TEI-CNT
            END-IF
+      *    １日上限で単位が分以外の時、数量
+           IF      (LNK-SC91-SURYO     >   1    )
+               AND (TNS-JGNCNT1D       >   ZERO )
+               AND (TNS-TANICD     NOT =   "001")
+               COMPUTE LNK-SC91-KAISU      =   LNK-SC91-KAISU
+                                           *   LNK-SC91-SURYO
+           END-IF
       *
            EVALUATE    LNK-SC91-KBN
                WHEN    "1"
@@ -792,8 +799,15 @@
                                            =   LNK-SC91-SRYCD  )  OR
                               (SPA-COM-CHK-SRYCD (IDX)
                                            =   LNK-SC91-SRYCD  )
-                           ADD     SPA-COM-KAISU(IDX)
+                           IF      (TNS-JGNCNT1D       >   ZERO ) AND
+                                   (TNS-TANICD     NOT =   "001")
+                               COMPUTE WRK-DOCNT   =   WRK-DOCNT
+                                                +  (SPA-COM-KAISU(IDX)
+                                                *   SPA-COM-SURYO(IDX))
+                           ELSE
+                               ADD     SPA-COM-KAISU(IDX)
                                                TO  WRK-DOCNT
+                           END-IF
                        END-IF
                    END-IF
                ELSE

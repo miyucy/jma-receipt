@@ -38,6 +38,8 @@
            03  LNK-SC91-GMN-IDX        PIC 9(04).
       *    回数
            03  LNK-SC91-KAISU          PIC 9(03).
+      *    数量
+           03  LNK-SC91-SURYO          PIC 9(03).
       *    訂正時の診療コード
            03  LNK-SC91-TEISEI-AREA.
                05  LNK-SC91-TEISEI-OCC      OCCURS   200.

@@ -6408,6 +6408,7 @@
       *---(01.00.01) LINE ADD  START  ----
       *    ·Ù¹ðÈ½Äê
            IF      SPA-ERRCD(1:1)      =   "K"
+             AND  (SPA-ERRCD       NOT =   "K033" )
                IF      SPA-COM-KZMFLG (SPA-GMN-IDX)  =   SPACE
                    MOVE    "1"             TO  SPA-COM-KZMFLG
                                                           (SPA-GMN-IDX)
@@ -6838,11 +6839,8 @@
            MOVE    SPA-GMN-IDX         TO  LNK-SC91-GMN-IDX
            MOVE    SPA-COM-KAISU   (SPA-GMN-IDX)
                                        TO  LNK-SC91-KAISU
-      *    ¿ôÎÌÈ¿±Ç
-           IF      SPA-COM-SURYO (SPA-GMN-IDX)    >   1
-               COMPUTE LNK-SC91-KAISU  =   SPA-COM-SURYO (SPA-GMN-IDX)
-                                       *   LNK-SC91-KAISU
-           END-IF
+           MOVE    SPA-COM-SURYO   (SPA-GMN-IDX)
+                                       TO  LNK-SC91-SURYO
            MOVE    SPA-K02-TEISEI-AREA TO  LNK-SC91-TEISEI-AREA
       *
            CALL    "ORCSC91"           USING    MCPAREA
@@ -10566,6 +10564,7 @@
       *---(01.00.01) LINE ADD  START  ----
       *            ·Ù¹ðÈ½Äê
                    IF      SPA-ERRCD(1:1)      =   "K"
+                     AND  (SPA-ERRCD       NOT =   "K033" )
                        IF      SPA-COM-KZMFLG (IDX)  =   SPACE
                            MOVE    "1"         TO  SPA-COM-KZMFLG(IDX)
                        ELSE
