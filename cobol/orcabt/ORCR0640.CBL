@@ -174,6 +174,7 @@
       *  02.07.11    NACL-門脇    06/02/07  食事基本料情報（その他）編集
       *  02.08.01    NACL-小豆沢  06/03/22  特定入院料追加分（脳卒中ケアユニ）
       *                                     外泊置き換え処理
+      *  02.09.01    NACL-門脇    06/04/05  累計トータル編集修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -381,6 +382,7 @@
            03  KOHFTN-IDX                              PIC 9(03).
            03  SYSKAN-IDX                              PIC 9(03).
            03  KOHIDX                                  PIC 9(03).
+           03  FUKA-IDX                                PIC 9(03).
       *     
            03  IDA                 PIC 9(04).
            03  IDB                 PIC 9(04).
@@ -689,6 +691,8 @@
                05  WRK-TANKA-Z2                PIC X(01).
                05  WRK-TANKA-Z3                PIC ZZ.
       *
+           03  WRK-FUKA-KINGAKU                PIC 9(09).
+           03  WRK-FUKA-VALUE                  PIC 9(01).
       *
       *    固定値
        01  CONST-AREA.
@@ -2054,6 +2058,23 @@
                    COMPUTE  RECE64-RUIKEITOTAL  =
                             RECE64-RUIKEITOTAL  +
                            (WRK-SRYCD  *  SRY-SRYSURYO(IDX2))
+      *
+                   MOVE     ZERO    TO    WRK-FUKA-KINGAKU
+                   PERFORM  VARYING  FUKA-IDX  FROM  1  BY  1
+                             UNTIL   FUKA-IDX   >    9
+                     MOVE   SRY-SRYCD(IDX2)(FUKA-IDX:1)
+                                             TO  WRK-FUKA-VALUE
+                     IF  WRK-FUKA-VALUE  =  ZERO
+                       CONTINUE
+                     ELSE
+                       COMPUTE  WRK-FUKA-KINGAKU    =
+                                WRK-FUKA-KINGAKU    +
+                              ((WRK-FUKA-VALUE^5) * FUKA-IDX)
+                     END-IF
+                   END-PERFORM
+                   COMPUTE  RECE64-RUIKEITOTAL  =
+                            RECE64-RUIKEITOTAL  +
+                            WRK-FUKA-KINGAKU
       *          END-IF
                END-IF
       *
@@ -6523,6 +6544,23 @@
                   COMPUTE  RECE64-RUIKEITOTAL =
                            RECE64-RUIKEITOTAL +
                           (WRK-SRYCD  *  WRK-ORCSTEN-SURYO(IDX2))
+      *
+                  MOVE     ZERO    TO    WRK-FUKA-KINGAKU
+                  PERFORM  VARYING  FUKA-IDX  FROM  1  BY  1
+                            UNTIL   FUKA-IDX   >    9
+                    MOVE   WRK-ORCSTEN-SRYCD(IDX2)(FUKA-IDX:1)
+                                            TO  WRK-FUKA-VALUE
+                    IF  WRK-FUKA-VALUE  =  ZERO
+                      CONTINUE
+                    ELSE
+                      COMPUTE  WRK-FUKA-KINGAKU    =
+                               WRK-FUKA-KINGAKU    +
+                             ((WRK-FUKA-VALUE^5) * FUKA-IDX)
+                    END-IF
+                  END-PERFORM
+                  COMPUTE  RECE64-RUIKEITOTAL  =
+                           RECE64-RUIKEITOTAL  +
+                           WRK-FUKA-KINGAKU
       *
       *           特定器材の単価編集
                   IF      WRK-ORCSTEN-SRYCD(IDX2)(1:1)  =   "7"

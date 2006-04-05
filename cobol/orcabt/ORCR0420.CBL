@@ -103,6 +103,7 @@
       *  01.02.20    NACL-ÌçÏÆ    06/01/05  ¥¢¥Õ¥¿¡¼¥±¥¢ºßÂðÎÁÂÐ±þ
       *  01.02.21    NACL-ÌçÏÆ    06/02/01  £°£¹£¹£²£°£°£°¤Ç»Ï¤Þ¤ëÅêÌôÍÑ
       *                                     ¥³¥á¥ó¥È¤ÎÊÔ½¸ÂÐ±þ
+      *  02.09.01    NACL-ÌçÏÆ    06/04/05  Îß·×¥È¡¼¥¿¥ëÊÔ½¸½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -313,6 +314,7 @@
            03  IDU                                     PIC 9(03).
            03  NUM-IDX                                 PIC 9(01).
            03  SYSKAN-IDX                              PIC 9(03).
+           03  FUKA-IDX                                PIC 9(03).
       *
       *    ¥Ñ¥¹Ì¾ÎÎ°è
        01  WK-PATH                                     PIC X(20).
@@ -423,6 +425,9 @@
                05  WRK-TANKA-Z1                PIC ZZZZZZZZ9.
                05  WRK-TANKA-Z2                PIC X(01).
                05  WRK-TANKA-Z3                PIC ZZ.
+      *
+           03  WRK-FUKA-KINGAKU                PIC 9(09).
+           03  WRK-FUKA-VALUE                  PIC 9(01).
       *
       *---------------------------------------------------------------
       *  ²ó¿ô¸º»»ÍÑÂàÈòÎÎ°è
@@ -1335,6 +1340,23 @@
                    COMPUTE  RECE44-RUIKEITOTAL  =
                             RECE44-RUIKEITOTAL  +
                            (WRK-SRYCD  *  SRY-SRYSURYO(IDX2))
+      *
+                   MOVE     ZERO    TO    WRK-FUKA-KINGAKU
+                   PERFORM  VARYING  FUKA-IDX  FROM  1  BY  1
+                             UNTIL   FUKA-IDX   >    9
+                     MOVE   SRY-SRYCD(IDX2)(FUKA-IDX:1)
+                                             TO  WRK-FUKA-VALUE
+                     IF  WRK-FUKA-VALUE  =  ZERO
+                       CONTINUE
+                     ELSE
+                       COMPUTE  WRK-FUKA-KINGAKU    =
+                                WRK-FUKA-KINGAKU    +
+                              ((WRK-FUKA-VALUE^5) * FUKA-IDX)
+                     END-IF
+                   END-PERFORM
+                   COMPUTE  RECE44-RUIKEITOTAL  =
+                            RECE44-RUIKEITOTAL  +
+                            WRK-FUKA-KINGAKU
       *          END-IF
                END-IF
       *
