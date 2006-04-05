@@ -1004,6 +1004,7 @@ path	key22           {
 	                SRYSYUKBN,
                         NAME,
 	                TEN,
+			TANICD,
 	                JITUDAY,
 	                DAYCNT,
 	                JGNCNT,
@@ -1167,3 +1168,4 @@ path	key25	{
 			;
 	};
 };
+
