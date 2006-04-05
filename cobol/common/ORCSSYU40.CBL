@@ -31,11 +31,6 @@
       *  01.00.01    NACL-多々納  04/03/11  Ｈ１６．４改正対応
       *  01.00.02    NACL-多々納  05/11/11  MONFUNC 対応 他
       *  01.00.03    NACL-多々納  06/03/20  Ｈ１８．４改正対応
-      *  01.00.04    NACL-多々納  06/04/12  電子化加算追加
-      *  01.00.05    NACL-多々納  06/08/18  同日初診追加
-      *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
-      *  04.08.00    NACL-多々納  12/03/XX  Ｈ２５年４月改正対応
-      *  04.08.00    NACL-多々納  12/03/XX  Ｈ２７年１月改正対応
       *****************************************************************
       *
       *
@@ -53,7 +48,6 @@
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
-           03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-SRYACT          PIC 9(01).
            03  FLG-SRYACCT         PIC 9(01).
            03  FLG-SYUNOU          PIC 9(01).
@@ -65,8 +59,6 @@
            03  FLG-OK2             PIC 9(01).
            03  FLG-ERR             PIC 9(01).
            03  FLG-SYOSIN-ERR      PIC 9(01).
-           03  FLG-SYOSIN          PIC 9(01).
-           03  FLG-DOUJITU         PIC 9(01).
       *
            03  FLG-SYORI-END       PIC 9(01).
            03  FLG-SYONIKA         PIC 9(01).
@@ -94,7 +86,6 @@
            03  WRK-HEN-SRYCD       PIC X(09).
       *    初診算定日
            03  WRK-DD              PIC 9(02).
-           03  WRK-DD2             PIC 9(02).
            03  WRK-DD-S            PIC 9(02).
       *
            03  WRK-SRYYMD.
@@ -104,10 +95,6 @@
       *
            03  WRK-ZAINUM          PIC 9(08).
            03  WRK-H-ZAINUM        PIC 9(08).
-      *    電子化加算
-           03  WRK-DENSIKA         PIC 9(01).
-      *    同日初診
-           03  WRK-DOUJITU         PIC X(01).
       *
       *    診療行為コード一覧
        01  TBL-SINSATU-AREA.
@@ -158,34 +145,17 @@
            03  FILLER              PIC X(13)   VALUE   "113007170 2 6".
       *    小児科外来診察料(初診時乳幼児深夜）
            03  FILLER              PIC X(13)   VALUE   "113007270 2 7".
-      *Ｈ１８／４から
-      *    小児科外来診察料(初診時時間外加算)
-           03  FILLER              PIC X(13)   VALUE   "113009670 2 1".
-      *
-      *    初診料（同日複数診療科）
-           03  FILLER              PIC X(13)   VALUE   "111011810 110".
-      *H25.4 から
-      *    初診料（紹介状なし）
-           03  FILLER              PIC X(13)   VALUE   "111012510 1 0".
-      *    同日初診（紹介状なし）
-           03  FILLER              PIC X(13)   VALUE   "111012610 110".
-      *H27.1 から
-      *    初診料（妥結率５割以下）
-           03  FILLER              PIC X(13)   VALUE   "111012710 1 0".
-      *H29.2
-      *    初診料（同一日２科目・妥結率５割以下）
-           03  FILLER              PIC X(13)   VALUE   "111012810 110".
       *
        01  TBL-SINSATU-AREAR       REDEFINES   TBL-SINSATU-AREA.
       *****03  TBL-SINSATU-OCC         OCCURS  18    INDEXED  TBL-IDX.
-           03  TBL-SINSATU-OCC         OCCURS  27    INDEXED  TBL-IDX.
+           03  TBL-SINSATU-OCC         OCCURS  21    INDEXED  TBL-IDX.
       *        診療コード
                05  TBL-SRYCD           PIC X(09).
       *
                05  TBL-YOBO1           PIC X(01).
       *        データ区分
                05  TBL-DATAKBN         PIC X(01).
-      *        （1:同日初診）
+      *
                05  TBL-YOBO2           PIC X(01).
       *        往診加算（0:なし,1:夜間、2:深夜・緊急）
       *        時間加算（0:なし,1:時間外、2:休日、3:深夜、4:特例
@@ -234,8 +204,6 @@
       *
       *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
-      *
-           COPY    "CPSK1006.INC".
       *
       *    診療行為マスター
        01  SRYACT-REC.
@@ -319,61 +287,11 @@
            .
       *
       *****************************************************************
-      *   電子化加算チェック処理
-      *****************************************************************
-       1000-SYSKANRI-HEN-SEC           SECTION.
-      *
-           MOVE    SPACE               TO  SYS-1006-REC
-           INITIALIZE                      SYS-1006-REC
-           MOVE    "1006"              TO  SYS-1006-KANRICD
-           MOVE    "2"                 TO  SYS-1006-KBNCD
-           MOVE    WRK-SRYYMD          TO  SYS-1006-STYUKYMD
-           MOVE    WRK-SRYYMD          TO  SYS-1006-EDYUKYMD
-      *    システム管理検索（施設基準）
-           MOVE    SPA-HOSPNUM         TO  SYS-1006-HOSPNUM
-           MOVE    SYS-1006-REC        TO  MCPDATA-REC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "key10"             TO  MCP-PATHNAME
-               PERFORM 900-SYSKANRI-READ-SEC
-           ELSE
-               MOVE    SPACE               TO  SYS-1006-REC
-               INITIALIZE                  SYS-1006-REC
-               MOVE    1               TO  FLG-SYSKANRI
-           END-IF
-           MOVE    ZERO                TO  WRK-DENSIKA
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1006-REC
-               IF      SYS-1006-KBNCD      =   "2"
-      *            電子化加算
-                   IF      SYS-1006-SSTKIJUN (100) =   1
-                       MOVE    1               TO  WRK-DENSIKA
-                   END-IF
-               END-IF
-           END-IF
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-           .
-       1000-SYSKANRI-HEN-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    診療行為作成処理
       *****************************************************************
        100-SRYKOU-GMN-SEC           SECTION.
       *
            MOVE    SPA-SRYYMD          TO  WRK-SRYYMD
-      *    電子化加算
-           IF      WRK-SRYYMD(1:6)     <   "200604"
-               MOVE    ZERO            TO  WRK-DENSIKA
-           ELSE
-               PERFORM 1000-SYSKANRI-HEN-SEC
-           END-IF
-           MOVE    ZERO                TO  FLG-DOUJITU
-           MOVE    ZERO                TO  FLG-SYOSIN
       *    当月最初の初診料算定日を判定する
            PERFORM 3000-SYOSIN-ALLCHK-SEC
       *
@@ -399,8 +317,6 @@
                                            +   SYU-KYUFUGAI-OSIN3-TEN
       *
       *TEST
-      *    DISPLAY "SYU-SRYKA :" SYU-SRYKA
-      *    DISPLAY "SYU-HKNCOMBINUM :" SYU-HKNCOMBINUM
       *    DISPLAY "SYU-KYUFUGAI-SHOSHIN-TEN:" SYU-KYUFUGAI-SHOSHIN-TEN
       *    DISPLAY "SYU-KYUFUGAI-SIDOU-TEN:" SYU-KYUFUGAI-SIDOU-TEN
       *    DISPLAY "SYU-KYUFUGAI-OSIN1-TEN:" SYU-KYUFUGAI-OSIN1-TEN
@@ -418,7 +334,6 @@
       *
            MOVE    ZERO                TO  FLG-OK
            MOVE    ZERO                TO  WRK-KASAN
-           MOVE    SPACE               TO  WRK-DOUJITU
            PERFORM VARYING     IDX2    FROM    1   BY  1
                    UNTIL      (IDX2            >   5   )  OR
                               (ORCS40-SRYCD (IDX IDX2)
@@ -435,7 +350,6 @@
                        END-IF
                        IF      TBL-DATAKBN (TBL-IDX)   =   "1"
                            MOVE    1               TO  FLG-OK
-                           MOVE    TBL-YOBO2 (TBL-IDX) TO  WRK-DOUJITU
                            MOVE    IDX2            TO  IDX-SYU
                        END-IF
                END-SEARCH
@@ -451,19 +365,9 @@
       *            初診料の時、当月最初かどうかの判定
                    IF     (WRK-DD              =   ZERO )  OR
                           (WRK-SRYDD           <=  WRK-DD)
-                       IF     (WRK-SRYDD           =   WRK-DD) AND
-                              (FLG-SYOSIN          =   1     )
-      *                    初診料と同日初診が同日にある場合、初診料のみ
-                           IF      WRK-DOUJITU     =   SPACE
-      *                    給付対象外点数（初診）
-                               MOVE    ORCS40-ZAITEN (IDX)
+      *                給付対象外点数（初診）
+                       MOVE    ORCS40-ZAITEN (IDX)
                                            TO  SYU-KYUFUGAI-SHOSHIN-TEN
-                           END-IF
-                       ELSE
-      *                    給付対象外点数（初診）
-                           MOVE    ORCS40-ZAITEN (IDX)
-                                           TO  SYU-KYUFUGAI-SHOSHIN-TEN
-                       END-IF
                    END-IF
                WHEN    "14"
                    EVALUATE    WRK-KASAN
@@ -544,7 +448,7 @@
            END-IF
       *
       *    初診料点数を給付対象外点数へ
-           IF      WRK-SRYYMD(1:6)     <   "200604"
+           IF      SPA-SRYYMD(1:6)     <   "200604"
                PERFORM 10013-SYOSIN-TEN-SEC
            ELSE
                PERFORM 10013-SYOSIN02-TEN-SEC
@@ -643,7 +547,6 @@
                ADD     WRK-TENSU               TO  WRK-ZAITEN
       *
       *        乳幼児加算
-               MOVE    SPACE                   TO  WRK-SRYCD
       *        時間外
                EVALUATE    WRK-KASAN
                    WHEN    "1"
@@ -667,20 +570,11 @@
                    WHEN    "7"
       *                乳幼児深夜
                        MOVE    "111011770"         TO  WRK-SRYCD
-                   WHEN    "8"
-      *                乳幼児夜間早朝等
-                       MOVE    "111012470"         TO  WRK-SRYCD
                    WHEN    OTHER
       *                時間外なし
                        MOVE    "111000370"         TO  WRK-SRYCD
                END-EVALUATE
                IF      WRK-SRYCD       NOT =   SPACE
-                   PERFORM 10011-TENSU-SET-SEC
-                   ADD     WRK-TENSU               TO  WRK-ZAITEN
-               END-IF
-      *        電子化加算
-               IF      WRK-DENSIKA         =   1
-                   MOVE    "111012370"         TO  WRK-SRYCD
                    PERFORM 10011-TENSU-SET-SEC
                    ADD     WRK-TENSU               TO  WRK-ZAITEN
                END-IF
@@ -725,7 +619,7 @@
       *    受診歴を検索する
            MOVE    SPACE               TO  JYURRK-REC
            INITIALIZE                  JYURRK-KEY
-           MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
+           MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
            MOVE    SPA-PTID            TO  JYURRK-PTID
            MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
            MOVE    ORCS40-DENPNUM      TO  JYURRK-DENPNUM
@@ -747,12 +641,6 @@
                   (JYURRK-RENNUM       =   1    )  AND
                   (JYURRK-SRYKBN1  NOT =   SPACE)
                MOVE    JYURRK-SRYYMD       TO  WRK-SRYYMD
-      *        電子化加算
-               IF      WRK-SRYYMD(1:6)     <   "200604"
-                   MOVE    ZERO            TO  WRK-DENSIKA
-               ELSE
-                   PERFORM 1000-SYSKANRI-HEN-SEC
-               END-IF
       *        当月最初の初診料算定日を判定する
                PERFORM 3000-SYOSIN-ALLCHK-SEC
       *****ELSE
@@ -802,11 +690,10 @@
        3000-SYOSIN-ALLCHK-SEC            SECTION.
       *
            MOVE    ZERO                TO  FLG-ERR
-           MOVE    ZERO                TO  FLG-DOUJITU
       *    算定履歴検索
            MOVE    SPACE               TO  SANTEI-REC
            INITIALIZE                  SANTEI-REC
-           MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
+           MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
            MOVE    SPA-PTID            TO  SANTEI-PTID
            MOVE    WRK-SRYYMD (1:6)    TO  SANTEI-SRYYM
       *
@@ -822,8 +709,8 @@
            END-IF
       *
            PERFORM
-               UNTIL      (FLG-SANTEI      =   1  )
-      *D               OR (FLG-ERR         =   1  )
+               UNTIL      (FLG-SANTEI      =   1  )  OR
+                          (FLG-ERR         =   1  )
       *
                IF      SANTEI-MSANTEICNT   >   ZERO
       *            当月算定分
@@ -836,19 +723,6 @@
            MOVE    "tbl_santei"        TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
-      *
-      *    処理日に初診料算定
-           IF      WRK-DD              =   WRK-SRYDD
-               MOVE    1               TO  FLG-SYOSIN
-           END-IF
-      *    同日初診編集
-           IF      WRK-DD2             >   ZERO
-               IF     (WRK-DD          >   WRK-DD2 )
-                  OR  (WRK-DD          =   ZERO    )
-                   MOVE    WRK-DD2         TO  WRK-DD
-                   MOVE    ZERO            TO  FLG-SYOSIN
-               END-IF
-           END-IF
            .
        3000-SYOSIN-ALLCHK-EXT.
            EXIT.
@@ -877,15 +751,6 @@
                    IF      WRK-DD              <   WRK-SRYDD
                         MOVE    1              TO  FLG-ERR
                    END-IF
-      *        同日複数診療科
-               WHEN    "111011810"
-      *H25.4   同日初診（紹介状なし）
-               WHEN    "111012610"
-      *            最小の算定日編集
-                   IF     (WRK-DD2             =   ZERO )  OR
-                          (SANTEI-MSANTEID     <   WRK-DD2)
-                       MOVE    SANTEI-MSANTEID     TO  WRK-DD2
-                   END-IF
            END-EVALUATE
       *
            .
@@ -900,7 +765,7 @@
            MOVE    ZERO                TO  FLG-SYORI-END
      *
            INITIALIZE                      SRYACCT-REC
-           MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
+           MOVE    SPA-HOSPID          TO  ACCT-HOSPID
            MOVE    JYURRK-NYUGAIKBN    TO  ACCT-NYUGAIKBN
            MOVE    JYURRK-PTID         TO  ACCT-PTID
            MOVE    JYURRK-SRYKA        TO  ACCT-SRYKA
@@ -954,7 +819,7 @@
       *
       *    診療行為マスター読み込み
            INITIALIZE                      SRYACT-REC
-           MOVE    ACCT-HOSPNUM        TO  SRY-HOSPNUM
+           MOVE    ACCT-HOSPID         TO  SRY-HOSPID
            MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
            MOVE    ACCT-PTID           TO  SRY-PTID
            MOVE    ACCT-SRYKA          TO  SRY-SRYKA
@@ -1012,7 +877,6 @@
       *****************************************************************
        300111-TBL-CHK-SEC            SECTION.
       *
-           MOVE    SPACE               TO  WRK-DOUJITU
       *    コードチェック
            SET     TBL-IDX             TO  1
            SEARCH  TBL-SINSATU-OCC     VARYING   TBL-IDX
@@ -1024,20 +888,10 @@
                    END-IF
                    IF      TBL-DATAKBN (TBL-IDX)   =   "1"
                        MOVE    1               TO  FLG-OK
-                       MOVE    TBL-YOBO2 (TBL-IDX) TO  WRK-DOUJITU
                        MOVE    TBL-IDX         TO  IDX-SYU
                    END-IF
                    MOVE    1               TO  FLG-OK2
            END-SEARCH
-      *
-           IF      FLG-OK                  =   1
-      *        同日初診コードで同日に初診料がないこと
-               IF      WRK-DOUJITU         =   "1"
-                   IF      FLG-SYOSIN      =   1
-                       MOVE    ZERO            TO  FLG-OK
-                   END-IF
-               END-IF
-           END-IF
       *
            IF      FLG-OK2                 =   ZERO
       *        紹介加算の判定
@@ -1095,11 +949,7 @@
                    IF     (WRK-DD              =   ZERO )  OR
                           (WRK-SRYDD           <=  WRK-DD)
       *                初診料点数を給付対象外点数へ
-                       IF      WRK-SRYYMD(1:6)     <   "200604"
-                           PERFORM 10013-SYOSIN-TEN-SEC
-                       ELSE
-                           PERFORM 10013-SYOSIN02-TEN-SEC
-                       END-IF
+                       PERFORM 10013-SYOSIN-TEN-SEC
                        MOVE    1                   TO  FLG-SYONIKA
                    ELSE
                        MOVE    1                   TO  FLG-SYORI-END
@@ -1108,12 +958,7 @@
       *            小児科外来診察料
       *            初診料点数を給付対象外点数へ
                    IF      FLG-SYONIKA         =   1
-      *                初診料点数を給付対象外点数へ
-                       IF      WRK-SRYYMD(1:6)     <   "200604"
-                           PERFORM 10013-SYOSIN-TEN-SEC
-                       ELSE
-                           PERFORM 10013-SYOSIN02-TEN-SEC
-                       END-IF
+                       PERFORM 10013-SYOSIN-TEN-SEC
                    END-IF
            END-EVALUATE
       *
@@ -1129,15 +974,17 @@
            MOVE    WRK-SRYYMD          TO  TNS-YUKOSTYMD
            MOVE    WRK-SRYYMD          TO  TNS-YUKOEDYMD
       *
-           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
+               MOVE    "DBFETCH"           TO  MCP-FUNC
                MOVE    "tbl_tensu"         TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 920-DBFETCH-SEC
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
                    MOVE    ZERO                TO  FLG-TENSU
@@ -1158,28 +1005,15 @@
        910-TENSU-READ-EXT.
            EXIT.
       *****************************************************************
-      *    システム管理読み込み
-      *****************************************************************
-       900-SYSKANRI-READ-SEC         SECTION.
-      *
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           PERFORM 920-DBFETCH-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    ZERO                TO  FLG-SYSKANRI
-           ELSE
-               MOVE    1                   TO  FLG-SYSKANRI
-           END-IF
-      *
-           .
-       900-SYSKANRI-READ-EXT.
-           EXIT.
-      *****************************************************************
       *    算定歴マスタ読み込み
       *****************************************************************
        920-SANTEI-READ-SEC         SECTION.
       *
            MOVE    "tbl_santei"        TO  MCP-TABLE
-           PERFORM 920-DBFETCH-SEC
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  SANTEI-REC
                MOVE    ZERO                TO  FLG-SANTEI
@@ -1199,7 +1033,10 @@
       *
            MOVE    "tbl_sryact"        TO  MCP-TABLE
       *
-           PERFORM 920-DBFETCH-SEC
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  SRYACT-REC
                MOVE    ZERO                TO  FLG-SRYACT
@@ -1218,7 +1055,10 @@
       *
            MOVE    "tbl_sryacct"       TO  MCP-TABLE
       *
-           PERFORM 920-DBFETCH-SEC
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  SRYACCT-REC
                MOVE    ZERO                TO  FLG-SRYACCT
@@ -1237,7 +1077,10 @@
       *
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
       *
-           PERFORM 920-DBFETCH-SEC
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  JYURRK-REC 
                MOVE    ZERO                TO  FLG-JYURRK
@@ -1254,26 +1097,12 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        910-DBSELECT-EXT.
-           EXIT.
-      *****************************************************************
-      *    ＤＢ読み込み処理
-      *****************************************************************
-       920-DBFETCH-SEC                 SECTION.
-      *
-           MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-           .
-      *
-       920-DBFETCH-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1282,9 +1111,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        990-DBCLOSE-EXT.
