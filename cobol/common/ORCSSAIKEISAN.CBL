@@ -1216,6 +1216,12 @@
                           PERFORM   900-SRYACT-READ-SEC
                      END-PERFORM
                    END-IF
+                   MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+                   MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
+                   CALL    "ORCMCPSUB"          USING
+                                                MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC
       *
                  END-IF
       *
@@ -1249,6 +1255,12 @@
                           PERFORM   900-SRYACT-READ-SEC
                      END-PERFORM
                    END-IF
+                   MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+                   MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
+                   CALL    "ORCMCPSUB"          USING
+                                                MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC
                END-IF
       *
                IF  LNK-SYU-SYUHKNNUM(IDY)   =   "971"  OR  "973"
@@ -1282,15 +1294,21 @@
                           PERFORM   900-SRYACT-READ-SEC
                      END-PERFORM
                    END-IF
+                   MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+                   MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
+                   CALL    "ORCMCPSUB"          USING
+                                                MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC
                  END-IF                                                
                END-IF                                                  
       *
-               MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-               MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+      *        MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+      *        MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
+      *        CALL    "ORCMCPSUB"          USING
+      *                                     MCPAREA
+      **                                    ORCMCPAREA
+      **                                    MCPDATA-REC
            END-PERFORM
       *
       *    Ï«ºÒ¼«ÇåÀÕÊÝ¸±½èÍý
