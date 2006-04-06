@@ -22,7 +22,7 @@ K02	{
 			value	varchar(9);
 		};
 		SYOSINYMD	{
-			value	varchar(9);
+			value	varchar(24);
 		};
 		MISYUMONEY	{
 			value	varchar(15);

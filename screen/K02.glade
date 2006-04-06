@@ -423,7 +423,7 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>LASTYMD</name>
-      <x>164</x>
+      <x>156</x>
       <y>632</y>
       <width>134</width>
       <height>24</height>
@@ -438,14 +438,14 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>SYOSINYMD</name>
-      <x>312</x>
+      <x>296</x>
       <y>632</y>
-      <width>134</width>
+      <width>160</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
-      <text_max_length>9</text_max_length>
-      <text></text>
+      <text_max_length>24</text_max_length>
+      <text>H11.11.11 (H11.11.11)</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
@@ -453,7 +453,7 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>MISYUMONEY</name>
-      <x>460</x>
+      <x>464</x>
       <y>632</y>
       <width>134</width>
       <height>24</height>
@@ -498,7 +498,7 @@
       <name>GOKEITEN</name>
       <x>16</x>
       <y>632</y>
-      <width>134</width>
+      <width>130</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2494,22 +2494,6 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label38</name>
-      <x>36</x>
-      <y>608</y>
-      <width>92</width>
-      <height>18</height>
-      <label>合計点数</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>label153</name>
       <x>40</x>
       <y>88</y>
@@ -3083,54 +3067,6 @@
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>label34</name>
-      <x>312</x>
-      <y>608</y>
-      <width>136</width>
-      <height>16</height>
-      <label>初診算定日</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label32</name>
-      <x>168</x>
-      <y>608</y>
-      <width>128</width>
-      <height>16</height>
-      <label>最終来院日</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>MODE</name>
-      <x>744</x>
-      <y>636</y>
-      <width>66</width>
-      <height>20</height>
-      <label></label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
       <class>GtkButton</class>
       <name>BHELP</name>
       <x>996</x>
@@ -3422,6 +3358,70 @@
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>MODE</name>
+      <x>744</x>
+      <y>636</y>
+      <width>66</width>
+      <height>20</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label32</name>
+      <x>156</x>
+      <y>608</y>
+      <width>128</width>
+      <height>16</height>
+      <label>最終来院日</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label38</name>
+      <x>36</x>
+      <y>608</y>
+      <width>92</width>
+      <height>18</height>
+      <label>合計点数</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label34</name>
+      <x>298</x>
+      <y>607</y>
+      <width>160</width>
+      <height>19</height>
+      <label>初診算定日（同日初診）</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
     </widget>
   </widget>
 </widget>
