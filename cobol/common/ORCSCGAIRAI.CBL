@@ -32,26 +32,6 @@
       *                                     セットする
       *  01.00.03    NACL-多々納  05/11/28  MONFUNC 対応
       *  01.00.04    NACL-多々納  06/03/06  主科設定追加
-      *  03.04.00    NACL-多々納  07/01/22  収納差額処理追加
-      *  03.04.01    NACL-多々納  07/02/20  収納履歴マスタ削除追加
-      *  03.04.02    NACL-多々納  07/02/28  複数保険に包括保険追加
-      *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
-      *  04.01.00    NACL-多々納  07/11/XX  公務災害・公害対応
-      *                                     器材商品名コード対応
-      *  04.02.00    NACL-多々納  08/03/XX  Ｈ２０年４月改正対応
-      *  04.05.00    NACL-多々納  09/06/XX  数量小数５桁対応
-      *  04.05.00    NACL-多々納  09/09/15  同日会計の上限エラーメッセー変更対応
-      *  04.05.00    NACL-多々納  09/10/XX  換算値入力・多剤投与他対応
-      *  04.06.00    NACL-多々納  10/09/10  分娩管理テーブル削除対応
-      *  04.06.00    NACL-多々納  10/11/05  発行日変更対応
-      *  04.07.00    NACL-多々納  11/08/XX  算定履歴付加テーブル削除対応
-      *  04.08.00    NACL-多々納  13/01/11  診療回数テーブル１０対応
-      *  04.08.00    NACL-多々納  13/07/XX  第三者行為対応
-      *  04.08.00    NACL-多々納  14/05/27  一時ファイル変更
-      *  04.08.00    NACL-多々納  14/08/22  外用薬剤回数チェック対応
-      *  04.08.00    NACL-多々納  14/09/XX  Ｈ２６年１０月改正対応
-      *  04.08.00    NACL-多々納  15/03/XX  Ｈ２７年０４月改正対応
-      *  04.08.00    NACL-多々納  18/03/XX  Ｈ３０年０４月改正対応
       *****************************************************************
       *
       *
@@ -61,34 +41,33 @@
        FILE-CONTROL.
       *
       *    パラメタデータ
-      *    SELECT  PARA-FILE       ASSIGN  FILE-NAME2
-      *                            ORGANIZATION    IS  SEQUENTIAL
-      *                            FILE    STATUS  IS  STS-PARA.
+           SELECT  PARA-FILE       ASSIGN  FILE-NAME2
+                                   ORGANIZATION    IS  LINE SEQUENTIAL
+                                   FILE    STATUS  IS  STS-PARA.
       *
        DATA                    DIVISION.
        FILE                        SECTION.
       *
       *    パラメタデータ
-      *FD  PARA-FILE.
-      *01  PARA-REC.
-      *    03  PARA-KEY.
-      *        05  PARA-FILEMEI         PIC X(08).
-      *        05  PARA-EDABAN          PIC 9(03).
-      *    03  PARA-DATA-REC            PIC X(60000).
+       FD  PARA-FILE.
+       01  PARA-REC.
+           03  PARA-KEY.
+               05  PARA-FILEMEI         PIC X(08).
+               05  PARA-EDABAN          PIC 9(03).
+           03  PARA-DATA-REC            PIC X(60000).
       *
        WORKING-STORAGE             SECTION.
       *
       *    パラメタファイル名
-      *01  FILE-NAME2.
-      *    03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
-      *    03  FILLER              PIC X(07)   VALUE   "K01PARA".
-      *    03  FILE-HOSPNUM2       PIC 9(02)   VALUE   ZERO.
-      *    03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
-      *    03  FILLER              PIC X(06)   VALUE   ".TXT".
+       01  FILE-NAME2.
+           03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
+           03  FILLER              PIC X(07)   VALUE   "K01PARA".
+           03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
+           03  FILLER              PIC X(06)   VALUE   ".TXT".
       *
       *    フラグ領域
-      *01  STS-AREA.
-      *    03  STS-PARA            PIC X(02).
+       01  STS-AREA.
+           03  STS-PARA            PIC X(02).
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -105,7 +84,6 @@
            03  FLG-SRYKARRK        PIC 9(01).
            03  FLG-UKETUKE         PIC 9(01).
            03  FLG-TENSU           PIC 9(01).
-           03  FLG-TENSUPLUS       PIC 9(01).
            03  FLG-SANTEI          PIC 9(01).
            03  FLG-PARA            PIC 9(01).
            03  FLG-SYUTTL          PIC 9(01).
@@ -134,11 +112,6 @@
            03  FLG-SRYKA-OK              PIC 9(01).
       *    同日初診
            03  FLG-DOUJITU               PIC 9(01).
-      *    算定履歴付加チェック
-           03  FLG-SANTEI-ARI            PIC 9(01).
-      *    処理有
-           03  FLG-SYORI-ARI            PIC 9(01).
-      *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -150,12 +123,11 @@
            03  IDX-SIN             PIC 9(04).
            03  IDX-ATO             PIC 9(04).
            03  IDX-YAKUZAI         PIC 9(04).
-           03  IDX-D               PIC 9(02).
+           03  IDX-Y2              PIC 9(02).
       *
            03  IDX-1               PIC 9(04).
            03  IDX-2               PIC 9(02).
            03  IDX-3               PIC 9(02).
-           03  IDX-A               PIC 9(04).
       *
            03  IDH                 PIC 9(04).
            03  IDH2                PIC 9(04).
@@ -183,14 +155,12 @@
                05  WRK-WDD         PIC 9(02).
       *    初診算定日保存
            03  WRK-KARRK-SYOSINYMD2    PIC X(08).
-      *    エラー
-           03  ORCSCGAIRAI-ERRMSG      PIC X(80).
       *
       *    診療行為計算用
            03  WRK-TENSU           PIC 9(08).
            03  WRK-ZAITEN          PIC 9(08).
            03  WRK-SRYKAISUKEI     PIC 9(03).
-           03  WRK-SRYSURYOKEI     PIC 9(07)V9(05).
+           03  WRK-SRYSURYOKEI     PIC 9(07)V9(03).
            03  WRK-MEISAISU        PIC 9(07).
            03  WRK-SRYCD           PIC X(09).
            03  WRK-SRYCD9          PIC 9(09).
@@ -200,7 +170,7 @@
                05  WRK-SRYMM           PIC 9(02).
                05  WRK-SRYDD           PIC 9(02).
       *
-           03  WRK-SRYSURYO           PIC 9(07)V9(05).
+           03  WRK-SRYSURYO           PIC 9(07)V9(03).
       *
            03  WRK-ZAINUM          PIC 9(08).
            03  WRK-H-ZAINUM        PIC 9(08).
@@ -252,8 +222,6 @@
       *伝票状態区分
            03  WRK-DENPJTIKBN          PIC  X(01).
       *
-           03  WRK-ERRCD               PIC X(04).
-      *
            03  WRK-RENNUM-KEY          PIC 9(01).
            03  WRK-RENNUM              PIC 9(01).
       *    訂正前の連番
@@ -270,21 +238,12 @@
                    07  TBL-SRYKA-MAX           PIC 9(02).
                    07  TBL-SRYKA-REN           PIC 9(02).
       *
-           03  WRK-SYUNOU-MAX          PIC 9(03).
-      *
            03  WRK-SRYKA-MAX           PIC 9(02).
            03  WRK-SRYKA-REN           PIC 9(02).
            03  WRK-MAE-SRYKA           PIC X(02).
            03  WRK-SRYKA               PIC X(02).
            03  WRK-HKNCOMBI            PIC X(04).
            03  WRK-DOUJI-RENNUM        PIC 9(01).
-      *
-      *    収納の入金額
-           03  WRK-SYUTTL-G.
-               05  WRK-TTL-NYUKIN-TOTAL    PIC 9(07)
-                                           OCCURS   15.
-      *    入金合計額
-           03  WRK-SUM-NYUKIN          PIC  9(07).
       *    受診時間
            03  WRK-TIME1.
                05  WRK-TIME11      PIC 9(08).
@@ -296,26 +255,32 @@
            03  WRK-HZN-SRYKA           PIC X(02).
       *    診療行為附加情報設定（科毎）
            03  WRK-ACTP-AREA.
-               05  WRK-ACTP-ZAINUM-G       OCCURS   30.
+               05  WRK-ACTP-ZAINUM-G       OCCURS   10.
                    07  WRK-ACTP-SRYKA      PIC X(02).
                    07  WRK-ACTP-HKNCOMBI   PIC X(04).
-      *H26.10      診療区分毎
-                   07  WRK-ACTP-SRYKBN     PIC X(02).
                    07  WRK-ACTP-MAX        PIC 9(04).
                    07  WRK-ACTP-ZAINUM     PIC 9(08)   OCCURS   50.
                05  IDX-GEN                 PIC 9(04).
                05  IDX-GEN2                PIC 9(04).
-      *H27.4
-      *    診療行為附加情報設定（科毎）３０日逓減
-           03  WRK-ACTP30-AREA.
-               05  WRK-ACTP30-ZAINUM-G       OCCURS   30.
-                   07  WRK-ACTP30-SRYKA      PIC X(02).
-                   07  WRK-ACTP30-HKNCOMBI   PIC X(04).
-                   07  WRK-ACTP30-SRYKBN     PIC X(02).
-                   07  WRK-ACTP30-MAX        PIC 9(04).
-                   07  WRK-ACTP30-ZAINUM     PIC 9(08)   OCCURS   50.
-               05  IDX-GEN3                 PIC 9(04).
-               05  IDX-GEN32                PIC 9(04).
+      *
+      *    診療行為内容比較用テーブル
+      *01  TBL-AREA.
+      *    03  TBL-MAE-AREA.
+      *        05  TBL-MAE-REC     OCCURS   50.
+      *            07  TBL-MAE-SRYCD       PIC  X(09).
+      *            07  TBL-MAE-SRYSURYO    PIC  9(05)V9(03).
+      *            07  TBL-MAE-SRYKAISU    PIC  9(03).
+      *            07  TBL-MAE-INPUTCOMENT PIC  X(40).
+      *            07  TBL-MAE-ATAI-G.
+      *                09  TBL-MAE-ATAI    PIC  X(08)  OCCURS  3.
+      *    03  TBL-ATO-AREA.
+      *        05  TBL-ATO-REC     OCCURS   50.
+      *            07  TBL-ATO-SRYCD       PIC  X(09).
+      *            07  TBL-ATO-SRYSURYO    PIC  9(05)V9(03).
+      *            07  TBL-ATO-SRYKAISU    PIC  9(03).
+      *            07  TBL-ATO-INPUTCOMENT PIC  X(40).
+      *            07  TBL-ATO-ATAI-G.
+      ***              09  TBL-ATO-ATAI    PIC  X(08)  OCCURS  3.
       *
       *    剤テーブル領域
        01  WRK-TBL-ZAINUM-AREA.
@@ -326,40 +291,10 @@
       *
       *    診療会計附加情報マスタ−（内服逓減）
        01  TBL-SRYACCTPLUS-AREA.
-           02  TBL-SRYACCTPLUS-REC   OCCURS   30.
+           02  TBL-SRYACCTPLUS-REC   OCCURS   10.
            COPY    "CPSRYACCTPLUS.INC"  REPLACING
                                      //ACCTP-// BY //TBL-ACCTP-//.
            03  TBL-ACCTP-HKNCOMBI      PIC X(04).
-           03  TBL-ACCTP-SRYKBN        PIC X(02).
-      *H27.4
-      *    診療会計附加情報マスタ−（３０日逓減）
-       01  TBL-SRYACCTPLUS30-AREA.
-           02  TBL-SRYACCTPLUS30-REC   OCCURS   30.
-           COPY    "CPSRYACCTPLUS.INC"  REPLACING
-                                     //ACCTP-// BY //TBL-ACCTP30-//.
-           03  TBL-ACCTP30-HKNCOMBI      PIC X(04).
-           03  TBL-ACCTP30-SRYKBN        PIC X(02).
-      *
-      *!!!!
-      *    リハビリ開始日訂正前情報
-       01  TBL-RIHADEL-AREA.
-           03  TBL-RIHADEL-G               OCCURS   10.
-               05  TBL-RIHA-SRYCD          PIC X(09).
-               05  TBL-RIHA-SRYKA          PIC X(02).
-               05  TBL-RIHA-HKNCOMBI       PIC X(04).
-               05  TBL-RIHA-HKNKBN         PIC X(01).
-           03  IDX-RIH                 PIC 9(02).
-           03  IDX-R2                  PIC 9(02).
-      *!!!!
-      *
-      *H26.10
-      * 向精神薬多剤投与減算コード
-       01  CONS-TAZAI-SRYCD        PIC X(09)   VALUE    "630010005".
-      * （精減）
-       01  CONS-SGEN-SRYCD         PIC X(09)   VALUE    "820000166".
-      *H28.4
-      * （湿布減）
-       01  CONS-SPCM-SRYCD         PIC X(09)   VALUE    "820000047".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -394,10 +329,6 @@
       *    収納合計マスタ−
        01  SYUTTL-REC.
            COPY    "CPSYUTOTAL.INC".
-      *
-      *    収納履歴マスタ
-       01  SYURRK-REC.
-           COPY    "CPSYURRK.INC".
       *
       *    診療会計マスタ−
        01  SRYACCT-REC.
@@ -436,13 +367,6 @@
       *    点数マスタ−
       *01  TENSU-REC.
            COPY    "CPTENSU.INC".
-      *    点数マスタ付加コード
-        01 TENSUPLUS-REC.
-           COPY    "CPTENSUPLUS.INC".
-      *
-      *    分娩管理テーブル
-       01  BUNBEN-REC.
-           COPY    "CPBUNBEN.INC".
       *
       *    診療行為マスタワーク
        01  LNK-WKSRYACT-AREA.
@@ -474,12 +398,6 @@
            02  TBL-JYURRK-REC        OCCURS   10.
            COPY    "CPJYURRK.INC"  REPLACING
                                      //JYURRK-// BY //TBL-JYURRK-//.
-      *
-      *v4.8
-      *    パラメタテーブル
-       01  PARA-REC.
-           COPY    "CPPARA.INC". 
-      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -525,8 +443,6 @@
       *    主情報アクセス用パラメタ
            01  ORCSSYUACCAREA.
                COPY    "CPORCSSYUACC.INC".
-      *    収納更新差額取得パラメタ
-           COPY    "CPORCSS002.INC".
       *
            COPY    "MCPAREA".
            COPY    "ORCA-SPA".
@@ -556,10 +472,8 @@
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
            INITIALIZE                  WRK-AREA
-           INITIALIZE                  TBL-RIHADEL-AREA
       *
            MOVE    SPA-WORK            TO  SPA-K01KYOUTU
-           MOVE    SPACE               TO  ORCSCGAIRAI-ERRMSG
       *
       *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
@@ -578,10 +492,6 @@
                    PERFORM 400-SYOSIN-SYORI-SEC
            END-EVALUATE
       *
-           IF     (ORCSCGAIRAI-ERRMSG  NOT =   SPACE ) AND
-                  (SPA-ERRCD           NOT =   SPACE )
-               MOVE    ORCSCGAIRAI-ERRMSG  TO  SPA-ERRMSG2
-           END-IF
            MOVE    SPA-K01KYOUTU       TO  SPA-WORK
       *
            .
@@ -595,11 +505,6 @@
       *****************************************************************
        100-SAKUSEI-SYORI-SEC           SECTION.
       *
-      *    発行日
-           IF      ORCSCGAIRAI-HAKYMD  =   SPACE
-               MOVE    SPA-SYSYMD          TO  ORCSCGAIRAI-HAKYMD
-           END-IF
-      *
       *    初診料算定のみの時初診料を算定する
            IF      SPA-SYOSIN-YMD  NOT =   SPACE
                PERFORM 400-SYOSIN-SYORI-SEC
@@ -609,24 +514,14 @@
            IF      SPA-SYORIFLG         =   1
                PERFORM 1001-TEISEI-SYORI-SEC
            END-IF
-      *    収納から包括保険の件数を削除
-           MOVE    ZERO                TO  WRK-SYUNOU-MAX
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   ORCSCGAIRAI-SYUNOU-MAX)
-               MOVE    ORCSCGAIRAI-SYUNOU-REC(IDX) TO  SYUNOU-REC
-               IF     (SYU-HKNCOMBINUM     NOT =   "9999" )
-                   ADD     1               TO  WRK-SYUNOU-MAX
-                END-IF
-           END-PERFORM
       *
-           INITIALIZE                  WRK-SYUTTL-G
       *    科毎の保険数を設定する
            INITIALIZE                  TBL-SRYKA-AREA
            PERFORM VARYING     IDH     FROM    1   BY  1
                    UNTIL      (IDH     >   15  )  OR
                               (SPA-TBL-HKNCOMBI(IDH)   =   SPACE)
                PERFORM VARYING     IDH2    FROM    1   BY  1
-                       UNTIL      (IDH2    >   10  )  OR
+                       UNTIL      (IDH2    >   15  )  OR
                                   (SPA-TBL-SRYKA(IDH IDH2) =   SPACE)
                    MOVE    SPA-TBL-SRYKA(IDH IDH2) TO  WRK-SRYKA
                    PERFORM VARYING     IDH3    FROM    1   BY  1
@@ -649,8 +544,6 @@
            END-IF
            INITIALIZE                  WRK-ACTP-AREA
            INITIALIZE                  TBL-SRYACCTPLUS-AREA
-           INITIALIZE                  WRK-ACTP30-AREA
-           INITIALIZE                  TBL-SRYACCTPLUS30-AREA
       *
            PERFORM VARYING     IDH     FROM    1   BY  1
                    UNTIL      (IDH     >   15  )  OR
@@ -667,7 +560,7 @@
                    MOVE    1                   TO  FLG-FUKU-FLG
                END-IF
                PERFORM VARYING     IDH2    FROM    1   BY  1
-                       UNTIL      (IDH2    >   10  )  OR
+                       UNTIL      (IDH2    >   15  )  OR
                                   (SPA-TBL-SRYKA(IDH IDH2) =   SPACE)
                               OR  (SPA-ERRCD   NOT =   SPACE )
                    MOVE    SPA-TBL-SRYKA(IDH IDH2) TO  WRK-SRYKA
@@ -678,63 +571,24 @@
                IF      FLG-FUKU-FLG            =   1
                    MOVE    ZERO                TO  WRK-SRYKA
       *            複数科まとめ収納作成
-                   IF      SPA-ERRCD           =   SPACE
-                       PERFORM 1004-DBKOUSIN-SYUTTL-SEC
-                   END-IF
+                   PERFORM 1004-DBKOUSIN-SYUTTL-SEC
                END-IF
            END-PERFORM
       *    内服７種類逓減の診療会計附加情報追加
-           IF      SPA-ERRCD           =   SPACE
-               PERFORM 4504-SRYACCTPLUS-GENINS-SEC
-           END-IF
-      *!!!!
-           IF     (SPA-SYORIFLG        =   1    )
-              AND (SPA-ERRCD           =   SPACE)
-      *        リハビリ開始日の履歴付加削除
-               PERFORM 45005-SANTEIPLUS-DEL-SEC
-           END-IF
-      *!!!!
+           PERFORM 4504-SRYACCTPLUS-GENINS-SEC
       *
-           IF     (SPA-SYORIFLG        =   1    )
-              AND (SPA-ERRCD           =   SPACE)
+           IF      SPA-SYORIFLG        =   1
       *        訂正の時、前回の削除分を削除する
                PERFORM 45004-ALL-JYURRK-UPD-SEC
            END-IF
-      *!!!
-      *    明細の登録なしはＤＢ異常終了とする（収納が残る為）
-           IF     (SPA-ERRCD       NOT =   SPACE)
-             OR   (FLG-SYORI-ARI       =   ZERO )
-               MOVE    SPACE               TO  MCPDATA-REC
-               MOVE    "DBSELECT"          TO  MCP-FUNC
-               MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "abort"             TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
-      *
-               IF      SPA-ERRCD           =   SPACE
-                   MOVE    "0051"              TO  SPA-ERRCD
-               END-IF
-           END-IF
-      *!!!
       *
            IF      SPA-ERRCD           =   SPACE
       *        ワーク診療行為マスタ−が存在した時、削除する
                PERFORM 45002-WKSRYACT-DEL-SEC
       *        受診内容データに時間を設定し、更新する
-               IF     (SPA-SYORIFLG        =   ZERO )
-                  AND (SPA-SYSYMD          =   SPA-SRYYMD)
+               IF      SPA-SYORIFLG        =   ZERO
                    PERFORM 45003-UKETUKE-SEC
                END-IF
-           END-IF
-      *
-      *H25.5
-      * 訂正時のみ
-      *    レセプト作成管理マスタ更新処理
-           IF     (SPA-SYORIFLG        =   1    )
-             AND  (SPA-HKNCOMBINUM NOT =   "9999")
-             AND  (SPA-ERRCD           =   SPACE )
-               PERFORM 3009-RECEUPD-UPDATE-SEC
            END-IF
       *
            IF      SPA-ERRCD           =   SPACE
@@ -742,7 +596,6 @@
                PERFORM 1009-ORCSSYUKAMAIN-SEC
            END-IF
            IF      FLG-NAIBUN          =   1
-             AND   SPA-ERRCD           =   SPACE
       *        内分泌負荷試験包括点数チェック
                INITIALIZE                  ORCSSANFUKAAREA
                INITIALIZE                  SPA-SCR-REC
@@ -758,6 +611,7 @@
                END-IF
            END-IF
            .
+      *
        100-SAKUSEI-SYORI-EXT.
            EXIT.
       *
@@ -809,10 +663,6 @@
                                                SPA-AREA
                    IF      SKARRK-RC       NOT =   ZERO
                        MOVE    "0005"              TO  SPA-ERRCD
-                       STRING  "ORCSKARRK ERR "
-                               SKARRK-ERRMSG   DELIMITED  BY  SIZE
-                                               INTO  ORCSCGAIRAI-ERRMSG
-                       END-STRING
                    END-IF
                END-IF
            END-IF
@@ -897,9 +747,6 @@
                PERFORM 1002-SYUNOU-OUT-SEC
                MOVE    SYUNOU-REC          TO  ORCSCGAIRAI-SYUNOU-REC
                                                              (IDH-GAI)
-           ELSE
-      *        収納がない場合、エラー
-               MOVE    "0051"              TO  SPA-ERRCD
            END-IF
       *
       *    剤番号テーブル
@@ -915,45 +762,18 @@
            MOVE    SPACE               TO  LNK-WKSRYACT-AREA
            MOVE    ZERO                TO  IDX-KOUI
       *
-      *    MOVE    SPA-TERMID          TO  FILE-TERMID2
-      *    MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM2
-      *    OPEN    INPUT               PARA-FILE
-      *    IF      STS-PARA        NOT =   ZERO
-      *        DISPLAY "ORCSGAIARI PARA STS-PARA:" STS-PARA
-      *    END-IF
-      *****PERFORM 980-PARA-READ-SEC
-      *ver.4.8
-           MOVE    SPACE               TO  PARA-REC
-           INITIALIZE                      PARA-REC
-           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
-           MOVE    "K02"               TO  PARA-GYOUMUID
-           MOVE    SPA-TERMID          TO  PARA-TERMID
-           MOVE    "WKSRYACT"          TO  PARA-FILEMEI
-      *
-           MOVE    PARA-REC            TO  MCPDATA-REC
-           MOVE    "tbl_para"          TO  MCP-TABLE
-           MOVE    "key5"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_para"          TO  MCP-TABLE
-               MOVE    "key5"              TO  MCP-PATHNAME
-               PERFORM 990-PARA-READ-SEC
-           ELSE
-               INITIALIZE                  PARA-REC
-               MOVE    1                   TO  FLG-PARA
-           END-IF
+           MOVE    SPA-TERMID          TO  FILE-TERMID2
+           OPEN    INPUT               PARA-FILE
+           PERFORM 980-PARA-READ-SEC
       *
            PERFORM
                    UNTIL      (FLG-PARA   =    1  )  OR
                               (SPA-ERRCD  NOT =   SPACE)
-      *!!!
-      *        対象有
-               MOVE    1                   TO  FLG-SYORI-ARI
-      *!!!
-               MOVE    PARA-DATA-REC       TO  WRK-WKSRYACT-REC
-               IF     (WRK-WKSRY-SRYKA     =   WRK-SRYKA)  AND
-                      (WRK-WKSRY-HKNCOMBI  =   WRK-HKNCOMBI) AND
-                      (WRK-WKSRY-SRYCD (1)(1:1)
+               IF      PARA-FILEMEI        =   "WKSRYACT"
+                 MOVE    PARA-DATA-REC     TO  WRK-WKSRYACT-REC
+                 IF     (WRK-WKSRY-SRYKA      =   WRK-SRYKA)  AND
+                        (WRK-WKSRY-HKNCOMBI   =   WRK-HKNCOMBI) AND
+                        (WRK-WKSRY-SRYCD (1)(1:1)
                                            NOT =  "$"  AND "#" )
       *
                    IF     (IDX-KOUI        >   ZERO  )  AND
@@ -961,31 +781,32 @@
                                            LNK-WKSRY-ZAINUM (IDX-KOUI))
       *                剤毎に処理を行う
                        PERFORM 4501-SRYACT-KOU-SEC
-                       IF      SPA-ERRCD       =   SPACE
-                           PERFORM 45001-JYURRK-SYORI2-SEC
-                       END-IF
+                       PERFORM 45001-JYURRK-SYORI2-SEC
                        MOVE    SPACE           TO  LNK-WKSRYACT-AREA
                        MOVE    ZERO            TO  IDX-KOUI
                    END-IF
                    ADD     1               TO  IDX-KOUI
                    MOVE    PARA-DATA-REC   TO  LNK-WKSRYACT-REC
                                                             (IDX-KOUI)
+                 END-IF
+               ELSE
+                   IF      IDX-KOUI        >   ZERO
+                       PERFORM 4501-SRYACT-KOU-SEC
+                       PERFORM 45001-JYURRK-SYORI2-SEC
+                       MOVE    SPACE           TO  LNK-WKSRYACT-AREA
+                       MOVE    ZERO            TO  IDX-KOUI
+                   END-IF
                END-IF
       *
-               MOVE    "tbl_para"          TO  MCP-TABLE
-               MOVE    "key5"              TO  MCP-PATHNAME
-               PERFORM 990-PARA-READ-SEC
+               PERFORM 980-PARA-READ-SEC
            END-PERFORM
-           MOVE    "tbl_para"          TO  MCP-TABLE
-           MOVE    "key5"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
+      *
+           CLOSE                       PARA-FILE
       *
            IF     (SPA-ERRCD       =   SPACE ) AND
                   (IDX-KOUI        >   ZERO  )
                PERFORM 4501-SRYACT-KOU-SEC
-               IF      SPA-ERRCD       =   SPACE
-                   PERFORM 45001-JYURRK-SYORI2-SEC
-               END-IF
+               PERFORM 45001-JYURRK-SYORI2-SEC
                MOVE    SPACE           TO  LNK-WKSRYACT-AREA
                MOVE    ZERO            TO  IDX-KOUI
                MOVE    ZERO            TO  WRK-ZAINUM
@@ -1014,7 +835,11 @@
                   (SYU-DENPNUM         =   ZERO )
       *        システム管理より、伝票番号を取得する
                PERFORM 45001-DENPNUM-SET-SEC
+      ******** IF      SPA-ERRCD       NOT =   SPACE
+      *            GO      TO      1002-SYUNOU-OUT-EXT
+      *********END-IF
            ELSE
+      *********MOVE    SPA-DENPNUM     TO  WRK-DENPNUM
                MOVE    SYU-DENPNUM     TO  WRK-DENPNUM
            END-IF
       *    主の伝票番号
@@ -1030,8 +855,7 @@
       *
            IF      SPA-ERRCD           =   SPACE
       *        包括保険の場合、伝票番号のみ取得
-               IF     (SPA-HKNCOMBINUM     =   "9999" )
-                  OR  (WRK-HKNCOMBI        =   "9999" )
+               IF      SPA-HKNCOMBINUM     =   "9999"
                    MOVE    WRK-DENPNUM         TO  SYU-DENPNUM
       *            まとめ入力伝票番号
                    IF      ORCSCGAIRAI-SYUNOU-MAX  >   1
@@ -1054,8 +878,7 @@
       *
            MOVE    WRK-DENPNUM         TO  SYU-DENPNUM
       *    伝票番号発行日
-      *!!! MOVE    SPA-SYSYMD          TO  SYU-DENPPRTYMD
-           MOVE    ORCSCGAIRAI-HAKYMD  TO  SYU-DENPPRTYMD
+           MOVE    SPA-SYSYMD          TO  SYU-DENPPRTYMD
       *    ドクター
       *!   MOVE    SPA-DRCD(2:4)       TO  SYU-DRCD
       *    調整金
@@ -1069,14 +892,7 @@
            MOVE    SYU-SKYMONEY        TO  WRK-KON-SKYMONEY
       *    入金額
            MOVE    SYU-NYUKIN-TOTAL    TO  WRK-KON-NYUKIN
-      **
-      *    返金充当分の加算
-           IF      ORCSCGAIRAI-SYU-HENKIN (IDH-GAI) >  ZERO
-               COMPUTE SYU-NYUKIN-TOTAL    =   SYU-NYUKIN-TOTAL
-                                           +   ORCSCGAIRAI-SYU-HENKIN
-                                                       (IDH-GAI)
-           END-IF
-      *!***MOVE    ORCSCGAIRAI-NYUKIN  TO  SYU-NYUKIN-TOTAL
+      *!   MOVE    ORCSCGAIRAI-NYUKIN  TO  SYU-NYUKIN-TOTAL
       *    入金回数
            MOVE    1                   TO  SYU-NYUKIN-KAISU
       *    伝票状態区分
@@ -1164,45 +980,26 @@
                MOVE    WRK-GRP-DENPNUM     TO  SYU-GRP-DENPNUM
                ADD     1                   TO  WRK-GRP-RENNUM
                MOVE    WRK-GRP-RENNUM      TO  SYU-GRP-RENNUM
-      *        発行方法
-               MOVE    ORCSCGAIRAI-HAKHOUFLG   TO  SYU-GRP-HAKHOUFLG
-      *        包括保険以外は１件の時
-               IF      WRK-SYUNOU-MAX      =   1
-                   MOVE    ZERO                TO  SYU-GRP-DENPNUM
-                   MOVE    ZERO                TO  SYU-GRP-RENNUM
-                   MOVE    ZERO                TO  SYU-GRP-HAKHOUFLG
-               END-IF
            ELSE
                MOVE    ZERO                TO  SYU-GRP-DENPNUM
                MOVE    ZERO                TO  SYU-GRP-RENNUM
-      *        発行方法
-               MOVE    ZERO                TO  SYU-GRP-HAKHOUFLG
            END-IF
       *
-           MOVE    SPA-HOSPNUM         TO  SYU-HOSPNUM
            IF      SPA-SYORIFLG        =   ZERO
-      *        収納更新差額取得
-               PERFORM 100218-ORCSS002-CALL-SEC
       *        新規作成
                MOVE    SMCNDATE-YMD        TO  SYU-CREYMD
                MOVE    SMCNDATE-YMD        TO  SYU-UPYMD
                MOVE    SMCNDATE-HMS        TO  SYU-UPHMS
       *
-               MOVE    SPA-OPID            TO  SYU-OPID
-      *
                MOVE    SYUNOU-REC          TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "tbl_syunou"        TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
                IF      MCP-RC          NOT =   ZERO
                    MOVE    "0005"          TO  SPA-ERRCD
-                   STRING  "SYUNOU INS ERR KEY : "
-                           SYU-KEY         DELIMITED  BY  SIZE
-                                           INTO  ORCSCGAIRAI-ERRMSG
-                   END-STRING
                    DISPLAY "K03 SYUNOU INS ERR MCP-RC:" MCP-RC
                            ",KEY:" SYU-KEY
                END-IF
@@ -1258,17 +1055,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    WRK-NYUKIN-TOTAL    TO  SYU-NYUKIN-TOTAL
                    MOVE    WRK-NYUKIN-KAISU    TO  SYU-NYUKIN-KAISU
                END-IF
-      *        返金反映
-               IF      ORCSCGAIRAI-SYU-HENKIN (IDH-GAI) <  ZERO
-                   IF     (ORCSCGAIRAI-SYU-HENKIN (IDH-GAI) * -1)
-                                             <=  SYU-NYUKIN-TOTAL
-                       COMPUTE SYU-NYUKIN-TOTAL  =   SYU-NYUKIN-TOTAL
-                                             +   ORCSCGAIRAI-SYU-HENKIN
-                                                       (IDH-GAI)
-                   ELSE
-                       MOVE    ZERO          TO  SYU-NYUKIN-TOTAL
-                   END-IF
-               END-IF
       *        伝票状態区分
                IF      SYU-DENPJTIKBN  NOT =   "7"
                    IF      SYU-SKYMONEY        >   SYU-NYUKIN-TOTAL
@@ -1281,29 +1067,21 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    SPACE               TO  SYU-DENPJTIKBN
                    END-IF
                END-IF
-      *        収納更新差額取得
-               PERFORM 100218-ORCSS002-CALL-SEC
                IF      FLG-SYUNOU          =   ZERO
       *            会計変更区分
                    MOVE    SPACE               TO  SYU-ACCT-UPDKBN
                    MOVE    SMCNDATE-YMD        TO  SYU-UPYMD
                    MOVE    SMCNDATE-HMS        TO  SYU-UPHMS
       *
-                   MOVE    SPA-OPID            TO  SYU-OPID
-      *
                    MOVE    SYUNOU-REC          TO  MCPDATA-REC
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
                    MOVE    "tbl_syunou"        TO  MCP-TABLE
                    MOVE    "key"               TO  MCP-PATHNAME
-grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                       MCPDATA-REC
-                                                       SPA-AREA
+                   CALL    "MONFUNC"           USING
+                                               MCPAREA
+                                               MCPDATA-REC
                    IF      MCP-RC          NOT =   ZERO
                        MOVE    "0005"          TO  SPA-ERRCD
-                       STRING  "SYUNOU UPD ERR KEY : "
-                               SYU-KEY         DELIMITED  BY  SIZE
-                                               INTO  ORCSCGAIRAI-ERRMSG
-                       END-STRING
                        DISPLAY "K03 SYUNOU UPD MCP-RC:" MCP-RC
                                ",KEY:" SYU-KEY
                    END-IF
@@ -1316,21 +1094,15 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    SMCNDATE-YMD        TO  SYU-UPYMD
                    MOVE    SMCNDATE-HMS        TO  SYU-UPHMS
       *
-                   MOVE    SPA-OPID            TO  SYU-OPID
-      *
                    MOVE    SYUNOU-REC          TO  MCPDATA-REC
                    MOVE    "DBINSERT"          TO  MCP-FUNC
                    MOVE    "tbl_syunou"        TO  MCP-TABLE
                    MOVE    "key"               TO  MCP-PATHNAME
-grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                       MCPDATA-REC
-                                                       SPA-AREA
+                   CALL    "MONFUNC"           USING
+                                               MCPAREA
+                                               MCPDATA-REC
                    IF      MCP-RC          NOT =   ZERO
                        MOVE    "0005"          TO  SPA-ERRCD
-                       STRING  "SYUNOU INS ERR KEY : "
-                               SYU-KEY         DELIMITED  BY  SIZE
-                                           INTO  ORCSCGAIRAI-ERRMSG
-                       END-STRING
                        DISPLAY "K03 SYUNOU INS MCP-RC:" MCP-RC
                                ",KEY:" SYU-KEY
                    END-IF
@@ -1340,28 +1112,11 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-IF
                END-IF
            END-IF
-      *    収納の入金額合計
-           MOVE    SYU-NYUKIN-TOTAL    TO  WRK-TTL-NYUKIN-TOTAL
-                                                        (IDH-GAI)
       *
            MOVE    WRK-SYUNOU-REC      TO  SYUNOU-REC
       *
            .
        10021-SYUNOU-SYORI-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *   収納更新差額取得処理
-      *****************************************************************
-       100218-ORCSS002-CALL-SEC            SECTION.
-      *
-           INITIALIZE                  SS002-AREA
-           CALL    "ORCSS002"          USING    SS002-AREA
-                                                SYUNOU-REC
-                                                SPA-AREA
-      *
-           .
-       100218-ORCSS002-CALL-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1393,22 +1148,16 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SMCNDATE-YMD        TO  SYU-UPYMD
                MOVE    SMCNDATE-HMS        TO  SYU-UPHMS
       *
-               MOVE    SPA-OPID            TO  SYU-OPID
-      *
                MOVE    SYUNOU-REC          TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "tbl_syunou"        TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "K03 SYUNOU UPD ERR:"  MCP-RC
                              ",KEY:" SYU-KEY
-                   STRING  "SYUNOU UPD ERR KEY : "
-                           SYU-KEY         DELIMITED  BY  SIZE
-                                           INTO  ORCSCGAIRAI-ERRMSG
-                   END-STRING
                    MOVE    "0005"          TO  SPA-ERRCD
                END-IF
       *
@@ -1431,7 +1180,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        45012-SYUMEI-UPD-SEC                SECTION.
       *
            INITIALIZE                      SYUMEI-REC
-           MOVE    SYU-HOSPNUM         TO  SMEI-HOSPNUM
+           MOVE    SYU-HOSPID          TO  SMEI-HOSPID
            MOVE    SYU-NYUGAIKBN       TO  SMEI-NYUGAIKBN
            MOVE    SYU-PTID            TO  SMEI-PTID
            MOVE    SYU-DENPNUM         TO  SMEI-DENPNUM
@@ -1457,23 +1206,17 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SMCNDATE-YMD        TO  SMEI-UPYMD
                MOVE    SMCNDATE-HMS        TO  SMEI-UPHMS
       *
-               MOVE    SPA-OPID            TO  SMEI-OPID
-      *
                MOVE    SYUMEI-REC          TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "tbl_syumei"        TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "K03 SYUMEI UPD ERR:"  MCP-RC
                            ",KEY:" SMEI-KEY
                    MOVE    "0005"          TO  SPA-ERRCD
-                   STRING  "SYUMEI UPD ERR KEY : "
-                           SMEI-KEY        DELIMITED  BY  SIZE
-                                           INTO  ORCSCGAIRAI-ERRMSG
-                   END-STRING
                END-IF
       *
                MOVE    "tbl_syumei"        TO  MCP-TABLE
@@ -1521,7 +1264,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-SRYYMD          TO  SYS-0041-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-0041-EDYUKYMD
       *
-           MOVE    SPA-HOSPNUM         TO  SYS-0041-HOSPNUM
            MOVE    SYS-0041-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -1545,39 +1287,26 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            IF      FLG-SYSKANRI        =   ZERO
                ADD     1                   TO  SYS-0041-DENPNUMMAX
-               IF      SYS-0041-DENPNUMMAX =    0
-                   ADD     1                   TO  SYS-0041-DENPNUMMAX
-               END-IF
                MOVE    SYS-0041-DENPNUMMAX
                                            TO  WRK-DENPNUM
       *
                MOVE    SMCNDATE-YMD        TO  SYS-0041-UPYMD
                MOVE    SMCNDATE-HMS        TO  SYS-0041-UPHMS
       *
-               MOVE    SPA-OPID            TO  SYS-0041-OPID
-      *
                MOVE    SYS-0041-REC        TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
                IF      MCP-RC         NOT  =   ZERO
                    MOVE    "0005"              TO  SPA-ERRCD
-                   STRING  "SYSKANRI UPD ERR KEY : "
-                           SYS-0041-KEY     DELIMITED  BY  SIZE
-                                           INTO  ORCSCGAIRAI-ERRMSG
-                   END-STRING
                    DISPLAY "K03 SYSKANRI UPDATE:" MCP-RC
                            ",KEY:" SYS-0041-KEY
                END-IF
            ELSE
                MOVE    "0005"              TO  SPA-ERRCD
-               STRING  " DENPNUM-SET ERR KEY : "
-                        SYS-0041-KEY     DELIMITED  BY  SIZE
-                                           INTO  ORCSCGAIRAI-ERRMSG
-               END-STRING
                DISPLAY "K03 DENPNUM-SET ERR:" MCP-RC
                            ",KEY:" SYS-0041-KEY
            END-IF
@@ -1591,26 +1320,45 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        45001-SINMEI-SYORI-SEC          SECTION.
       *
-           MOVE    ZERO                TO  WRK-DENPEDANUM
-           MOVE    ZERO                TO  WRK-NYUKINRENNUM
-      *    共通編集
            MOVE    SPACE               TO  SYUMEI-REC
            INITIALIZE                      SYUMEI-REC
-      *    請求金額
+           MOVE    SYU-HOSPID          TO  SMEI-HOSPID
+           MOVE    SYU-NYUGAIKBN       TO  SMEI-NYUGAIKBN
+           MOVE    SYU-PTID            TO  SMEI-PTID
+      *伝票番号
+           MOVE    SYU-DENPNUM         TO  SMEI-DENPNUM
+      *伝票番号枝番
+           MOVE    01                  TO  SMEI-DENPEDANUM
+      *伝票状態区分
+           MOVE    SPACE               TO  SMEI-MEISAIJOUTAIKBN
+      *請求発行日（発行日の西暦）
+           MOVE    SPA-SYSYMD          TO  SMEI-SKYPRINTYMD
+      *請求再発行日
+           MOVE    SPACE               TO  SMEI-SKYREPRINTYMD
+      *領収書発行日
+           MOVE    SMEI-SKYPRINTYMD    TO  SMEI-RYOSYUPRINTYMD
+      *領収書再発行日
+           MOVE    SPACE               TO  SMEI-RYOSYUREPRINTYMD
+      *請求金額
            MOVE    WRK-KON-SKYMONEY    TO  SMEI-SKYMONEY
+      *入返金日
+           MOVE    SMEI-SKYPRINTYMD    TO  SMEI-NYUHEN-YMD
+      *入金連番
+           MOVE    01                  TO  SMEI-NYUKINRENNUM
+      *診療科
+           MOVE    SYU-SRYKA           TO  SMEI-SRYKA
       *
       *    入金額がゼロの時
-           IF     (WRK-KON-NYUKIN      =   ZERO ) AND
-                  (ORCSCGAIRAI-SYU-HENKIN (IDH-GAI)  =   ZERO)
+           IF      WRK-KON-NYUKIN      =   ZERO
                MOVE    ORCSCGAIRAI-NYUKIN-HOHO  TO  SMEI-NYUKIN-HOHO
            ELSE
-               IF      ORCSCGAIRAI-SYU-HENKIN (IDH-GAI)  =   ZERO
-      *            入金編集
-                   PERFORM 450012-SMEI-NYUKIN-SEC
-               ELSE
-      *            返金編集
-                   PERFORM 450013-SMEI-HENKIN-SEC
-               END-IF
+      *入返金区分
+               MOVE    "1"                 TO  SMEI-NYUHEN-KBN
+      *入返金額
+               MOVE    WRK-KON-NYUKIN      TO  SMEI-NYUHEN-MONEY
+      *入金方法
+               MOVE    ORCSCGAIRAI-NYUKIN-HOHO
+                                           TO  SMEI-NYUKIN-HOHO
            END-IF
       *状態区分
            IF      SYU-SKYMONEY        =   ZERO
@@ -1623,91 +1371,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "7"                 TO  SMEI-JOUTAIKBN
            END-IF
       *
-      *    出力編集
-           PERFORM 450013-SMEI-INSERT-SEC
-      *
-      *    入金を作成
-           IF     (ORCSCGAIRAI-SYU-HENKIN  (IDH-GAI)
-                                   NOT =   ZERO ) AND
-                  (WRK-KON-NYUKIN  NOT =   ZERO )
-               PERFORM 45002-SMEI-NYUKINSYORI-SEC
-           END-IF
-           .
-       45001-SINMEI-SYORI-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    収納明細入金編集追加処理
-      *****************************************************************
-       450012-SMEI-NYUKIN-SEC          SECTION.
-      *
-      *入返金区分
-           MOVE    "1"                 TO  SMEI-NYUHEN-KBN
-      *入返金額
-           MOVE    WRK-KON-NYUKIN      TO  SMEI-NYUHEN-MONEY
-      *入金方法
-           MOVE    ORCSCGAIRAI-NYUKIN-HOHO
-                                       TO  SMEI-NYUKIN-HOHO
-           .
-       450012-SMEI-NYUKIN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    収納明細返金編集追加処理
-      *****************************************************************
-       450013-SMEI-HENKIN-SEC          SECTION.
-      *
-      *入返金区分
-           MOVE    "1"                 TO  SMEI-NYUHEN-KBN
-      *入返金額
-           MOVE    ORCSCGAIRAI-SYU-HENKIN  (IDH-GAI)
-                                       TO  SMEI-NYUHEN-MONEY
-      *入金方法
-           MOVE    "01"                TO  SMEI-NYUKIN-HOHO
-      *明細状態区分
-           MOVE    "1"                 TO  SMEI-MEISAIJOUTAIKBN
-           .
-       450013-SMEI-HENKIN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    収納明細共通編集追加処理
-      *****************************************************************
-       450013-SMEI-INSERT-SEC          SECTION.
-      *
-           MOVE    SYU-HOSPNUM         TO  SMEI-HOSPNUM
-           MOVE    SYU-NYUGAIKBN       TO  SMEI-NYUGAIKBN
-           MOVE    SYU-PTID            TO  SMEI-PTID
-      *伝票番号
-           MOVE    SYU-DENPNUM         TO  SMEI-DENPNUM
-      *請求発行日（発行日の西暦）
-      *?   MOVE    SPA-SYSYMD          TO  SMEI-SKYPRINTYMD
-           MOVE    ORCSCGAIRAI-HAKYMD  TO  SMEI-SKYPRINTYMD
-      *請求再発行日
-           MOVE    SPACE               TO  SMEI-SKYREPRINTYMD
-      *領収書発行日
-           MOVE    SMEI-SKYPRINTYMD    TO  SMEI-RYOSYUPRINTYMD
-      *領収書再発行日
-           MOVE    SPACE               TO  SMEI-RYOSYUREPRINTYMD
-      *診療科
-           MOVE    SYU-SRYKA           TO  SMEI-SRYKA
-      *入返金日
-           MOVE    SMEI-SKYPRINTYMD    TO  SMEI-NYUHEN-YMD
-      *伝票番号枝番
-           ADD     1                   TO  WRK-DENPEDANUM
-           MOVE    WRK-DENPEDANUM      TO  SMEI-DENPEDANUM
-      *入金連番
-           ADD     1                   TO  WRK-NYUKINRENNUM
-           MOVE    WRK-NYUKINRENNUM    TO  SMEI-NYUKINRENNUM
-      *    収納履歴編集処理
-           PERFORM 4500131-SRYURRK-HEN-SEC
-      *
            MOVE    SMCNDATE-YMD        TO  SMEI-CREYMD
            MOVE    SMCNDATE-YMD        TO  SMEI-UPYMD
            MOVE    SMCNDATE-HMS        TO  SMEI-UPHMS
            MOVE    SMCNDATE-HMS        TO  SMEI-CREHMS
-      *
-           MOVE    SPA-OPID            TO  SMEI-OPID
       *
            MOVE    SMEI-CREYMD         TO  SDAILYKEY-CREYMD
            MOVE    SMEI-CREHMS         TO  SDAILYKEY-CREHMS
@@ -1719,40 +1386,17 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "tbl_syumei"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
                MOVE    "0005"          TO  SPA-ERRCD
-               STRING  "SYUMEI INS ERR KEY : "
-                       SMEI-KEY        DELIMITED  BY  SIZE
-                                       INTO  ORCSCGAIRAI-ERRMSG
-               END-STRING
                DISPLAY "K03 SINMEI-SYORI MCP-RC:" MCP-RC
                         ",KEY:" SMEI-KEY
            END-IF
-           .
-       450013-SMEI-INSERT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    収納明細マスター作成処理（入金）
-      *****************************************************************
-       45002-SMEI-NYUKINSYORI-SEC          SECTION.
-      *
-           MOVE    SPACE               TO  SYUMEI-REC
-           INITIALIZE                      SYUMEI-REC
-      *    請求金額
-           MOVE    ZERO                TO  SMEI-SKYMONEY
-      *    入金編集
-           PERFORM 450012-SMEI-NYUKIN-SEC
-      *    状態区分
-           MOVE    "2"                 TO  SMEI-JOUTAIKBN
-      *    出力編集
-           PERFORM 450013-SMEI-INSERT-SEC
       *
            .
-       45002-SMEI-NYUKINSYORI-EXT.
+       45001-SINMEI-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1761,7 +1405,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        45001-SINMEI-SYORI2-SEC          SECTION.
       *
            INITIALIZE                      SYUMEI-REC
-           MOVE    SYU-HOSPNUM         TO  SMEI-HOSPNUM
+           MOVE    SYU-HOSPID          TO  SMEI-HOSPID
            MOVE    SYU-NYUGAIKBN       TO  SMEI-NYUGAIKBN
            MOVE    SYU-PTID            TO  SMEI-PTID
            MOVE    SYU-DENPNUM         TO  SMEI-DENPNUM
@@ -1794,22 +1438,16 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    SMCNDATE-YMD        TO  SMEI-UPYMD
                    MOVE    SMCNDATE-HMS        TO  SMEI-UPHMS
       *
-                   MOVE    SPA-OPID            TO  SMEI-OPID
-      *
                    MOVE    SYUMEI-REC          TO  MCPDATA-REC
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
                    MOVE    "tbl_syumei"        TO  MCP-TABLE
                    MOVE    "key"               TO  MCP-PATHNAME
-grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                       MCPDATA-REC
-                                                       SPA-AREA
+                   CALL    "MONFUNC"           USING
+                                               MCPAREA
+                                               MCPDATA-REC
                    IF      MCP-RC          NOT =   ZERO
                        DISPLAY "K03 SYUMEI UPD ERR:"  MCP-RC
                                ",KEY:" SMEI-KEY
-                       STRING  "SYUMEI UPD ERR KEY : "
-                                SMEI-KEY        DELIMITED  BY  SIZE
-                                       INTO  ORCSCGAIRAI-ERRMSG
-                        END-STRING
                        MOVE    "0005"          TO  SPA-ERRCD
                    END-IF
                END-IF
@@ -1824,7 +1462,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPACE               TO  SYUMEI-REC
            INITIALIZE                      SYUMEI-REC
-           MOVE    SYU-HOSPNUM         TO  SMEI-HOSPNUM
+           MOVE    SYU-HOSPID          TO  SMEI-HOSPID
            MOVE    SYU-NYUGAIKBN       TO  SMEI-NYUGAIKBN
            MOVE    SYU-PTID            TO  SMEI-PTID
       *伝票番号
@@ -1838,8 +1476,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *伝票状態区分
            MOVE    SPACE               TO  SMEI-MEISAIJOUTAIKBN
       *請求発行日（発行日の西暦）
-      *??  MOVE    SPA-SYSYMD          TO  SMEI-SKYPRINTYMD
-           MOVE    ORCSCGAIRAI-HAKYMD  TO  SMEI-SKYPRINTYMD
+           MOVE    SPA-SYSYMD          TO  SMEI-SKYPRINTYMD
       *請求再発行日
            MOVE    SPACE               TO  SMEI-SKYREPRINTYMD
       *領収書発行日
@@ -1872,30 +1509,13 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    ORCSCGAIRAI-NYUKIN-HOHO
                                            TO  SMEI-NYUKIN-HOHO
            END-IF
-      *    請求額がマイナスで返金がある時、返金を作成
-           IF      SMEI-SKYMONEY       <   ZERO
-               IF      ORCSCGAIRAI-SYU-HENKIN (IDH-GAI)  <   ZERO
-      *            入返金区分
-                   MOVE    "2"             TO  SMEI-NYUHEN-KBN
-      *            返金額
-                   MOVE    ORCSCGAIRAI-SYU-HENKIN (IDH-GAI)
-                                           TO  SMEI-NYUHEN-MONEY
-      *            入金方法は現金とする
-                   MOVE    "00"            TO  SMEI-NYUKIN-HOHO
-               END-IF
-           END-IF
-      *
       *状態区分
            MOVE    "8"                 TO  SMEI-JOUTAIKBN
-      *    収納履歴編集処理
-           PERFORM 4500131-SRYURRK-HEN-SEC
       *
            MOVE    SMCNDATE-YMD        TO  SMEI-CREYMD
            MOVE    SMCNDATE-YMD        TO  SMEI-UPYMD
            MOVE    SMCNDATE-HMS        TO  SMEI-UPHMS
            MOVE    SMCNDATE-HMS        TO  SMEI-CREHMS
-      *
-           MOVE    SPA-OPID            TO  SMEI-OPID
       *
            MOVE    SMEI-CREYMD         TO  SDAILYKEY-CREYMD
            MOVE    SMEI-CREHMS         TO  SDAILYKEY-CREHMS
@@ -1907,42 +1527,17 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "tbl_syumei"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
                MOVE    "0005"          TO  SPA-ERRCD
-               STRING  "SYUMEI INS ERR KEY : "
-                        SMEI-KEY        DELIMITED  BY  SIZE
-                                        INTO  ORCSCGAIRAI-ERRMSG
-               END-STRING
                DISPLAY "K03 SINMEI-SYORI MCP-RC:" MCP-RC
                        ",KEY:" SMEI-KEY
            END-IF
       *
            .
        45001-SINMEI-SYORI2-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *   収納履歴編集処理処理
-      *****************************************************************
-       4500131-SRYURRK-HEN-SEC            SECTION.
-      *
-           IF      SMEI-JOUTAIKBN       =   "1"
-                                        OR  "3"
-                                        OR  "7"
-                                        OR  "8"
-                                        OR  SPACE
-      *        収納履歴番号
-               MOVE    SS002-SYURRKNUM     TO  SMEI-SYURRKNUM
-      *        収納履歴枝番号
-               MOVE    SS002-SYUEDANUM     TO  SMEI-SYUEDANUM
-      *        収納履歴更新区分
-               MOVE    SS002-SYURRKUPDKBN  TO  SMEI-SYURRKUPDKBN
-           END-IF
-           .
-       4500131-SRYURRK-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1968,7 +1563,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPACE               TO  JYURRK-REC
            INITIALIZE                      JYURRK-REC
-           MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
+           MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
            MOVE    SPA-PTID            TO  JYURRK-PTID
            MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
       **** MOVE    SPA-SRYKA           TO  JYURRK-SRYKA
@@ -2020,9 +1615,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                       (WRK-SRYKA-REN       >   1  )
                    ADD     1               TO  WRK-JYURRK-DOUJI-RENNUM
                ELSE
-                   IF      WRK-JYURRK-RENNUM   =   9
-                       MOVE    "XXXX"              TO  WRK-ERRCD
-                   END-IF
                    ADD     1               TO  WRK-JYURRK-RENNUM
                    IF      WRK-SRYKA-MAX   >   1
                        MOVE    1           TO  WRK-JYURRK-DOUJI-RENNUM
@@ -2073,7 +1665,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *受診履歴レコードの作成
            MOVE    SPACE               TO  JYURRK-REC
            INITIALIZE                      JYURRK-REC
-           MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
+           MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
            MOVE    SPA-PTID            TO  JYURRK-PTID
            MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
            MOVE    WRK-SRYKA           TO  JYURRK-SRYKA
@@ -2103,7 +1695,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    労災用に保険区分をセットする（すべて同じとする）
            MOVE    SPA-HKNKBN          TO  JYURRK-HKNKBN
-           IF      SPA-HKNKBN          =   1
+           IF      SPA-HKNKBN          =   "1"
                EVALUATE    SPA-RSI-HKNKBN
                    WHEN    "1"
                    WHEN    "2"
@@ -2111,30 +1703,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *                 労災
                        MOVE    "1"                 TO  JYURRK-HKNKBN
                    WHEN    "4"
-      *                自賠責
-                       IF      SPA-RSI-JUNKYO      =   "1"
-      *                    健保準拠
-                           MOVE    "4"                 TO  JYURRK-HKNKBN
-                       ELSE
-                           MOVE    "2"                 TO  JYURRK-HKNKBN
-                       END-IF
-                   WHEN    "5"
-      *                公務災害
-                       IF      SPA-RSI-JUNKYO      =   "1"
-      *                    健保準拠
-                           MOVE    "5"                 TO  JYURRK-HKNKBN
-                       ELSE
-                           MOVE    "1"                 TO  JYURRK-HKNKBN
-                       END-IF
-      *
-                   WHEN    "6"
-      *                自賠責（第三者行為）
-                       MOVE    "7"             TO  JYURRK-HKNKBN
+      *                 自賠責
+                       MOVE    "2"                 TO  JYURRK-HKNKBN
                END-EVALUATE
-           END-IF
-      *    公害保険
-           IF      SPA-HKNKBN          =   2
-               MOVE    "6"                 TO  JYURRK-HKNKBN
            END-IF
       *
            MOVE    ZERO                TO  IDX-YAKUZAI
@@ -2152,12 +1723,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "1036"              TO  SPA-ERRCD
            ELSE
       *
-           INITIALIZE                  TBL-RIHADEL-AREA
            INITIALIZE                  WRK-TEISEI-AREA
            IF      SPA-TEI-DENPNUM (1) =   ZERO
                MOVE    SPA-DENPNUM         TO  WRK-DENPNUM
                MOVE    SPA-DOUJI-RENNUM    TO  WRK-DOUJI-RENNUM
-               MOVE    SPA-OLD-HKNCOMBI    TO  WRK-HKNCOMBI
                PERFORM 10011-TEISEI-SYORI1-SEC
            ELSE
                PERFORM VARYING     IDXF    FROM    1   BY  1
@@ -2166,12 +1735,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    SPA-TEI-DENPNUM (IDXF)  TO  WRK-DENPNUM
                    MOVE    SPA-TEI-DOUJI-RENNUM (IDXF)
                                                    TO  WRK-DOUJI-RENNUM
-                   MOVE    SPA-TEI-HKNCOMBI (IDXF)
-                                               TO  WRK-HKNCOMBI
                    PERFORM 10011-TEISEI-SYORI1-SEC
-                   IF      WRK-HKNCOMBI    NOT =   "9999"
-                       PERFORM 10012-TEISEI-SYUTTL-DEL-SEC
-                   END-IF
+                   PERFORM 10012-TEISEI-SYUTTL-DEL-SEC
                END-PERFORM
            END-IF
       *
@@ -2190,7 +1755,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                OR (SPA-TBL-HKNCOMBI(IDH)   =   SPACE)
                                OR (FLG-SRYKA-OK   =   1  )
                    PERFORM VARYING     IDH2    FROM    1   BY  1
-                           UNTIL      (IDH2    >   10  )  OR
+                           UNTIL      (IDH2    >   15  )  OR
                                    (SPA-TBL-SRYKA(IDH IDH2) =   SPACE)
                                    OR (FLG-SRYKA-OK   =   1  )
                        IF      SPA-TBL-SRYKA(IDH IDH2) =
@@ -2210,20 +1775,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                SPA-AREA
                    IF      SKARRK-RC       NOT =   ZERO
                        MOVE    "0005"              TO  SPA-ERRCD
-                       STRING  "ORCSKARRK ERR "
-                               SKARRK-ERRMSG      DELIMITED  BY  SIZE
-                                            INTO  ORCSCGAIRAI-ERRMSG
-                       END-STRING
                    END-IF
                END-IF
            END-PERFORM
-      *
-      *H25.5
-      *    レセプト作成管理マスタ更新処理
-      *    IF     (SPA-HKNCOMBINUM NOT =   "9999")
-      *      AND  (SPA-ERRCD           =   SPACE )
-      *        PERFORM 3009-RECEUPD-UPDATE-SEC
-      *    END-IF
       *
            .
        1001-TEISEI-SYORI-EXT.
@@ -2242,7 +1796,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPACE               TO  JYURRK-REC
            INITIALIZE                      JYURRK-REC
-           MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
+           MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
            MOVE    SPA-PTID            TO  JYURRK-PTID
            MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
            MOVE    WRK-DENPNUM         TO  JYURRK-DENPNUM
@@ -2262,10 +1816,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    UNTIL       FLG-JYURRK      =   1
       *?       IF      WRK-DOUJI-RENNUM    =   JYURRK-DOUJI-RENNUM
       *
-      *H24.5   伝票番号重複対応
-               IF     (JYURRK-SRYYMD       =   SPA-SRYYMD )
-                AND   (JYURRK-HKNCOMBINUM  =   WRK-HKNCOMBI )
-      *
                    MOVE    JYURRK-RENNUM       TO  WRK-JYURRK-RENNUM
                    MOVE    JYURRK-RENNUM       TO  WRK-DEL-RENNUM
                    MOVE    JYURRK-DOUJI-RENNUM TO
@@ -2282,15 +1832,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "DBDELETE"          TO  MCP-FUNC
                    MOVE    "tbl_jyurrk"        TO  MCP-TABLE
                    MOVE    "key"               TO  MCP-PATHNAME
-                   CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                       MCPDATA-REC
-                                                       SPA-AREA
-                   IF      MCP-RC          NOT =   ZERO
-                        DISPLAY "K03 JYURRK DEL ERR:" MCP-RC
-                                ",KEY:" JYURRK-KEY
-                       MOVE    "0005"              TO  SPA-ERRCD
-                  END-IF
-               END-IF
+                   CALL    "MONFUNC"           USING
+                                               MCPAREA
+                                               MCPDATA-REC
+      *!       END-IF
       *
                MOVE    "tbl_jyurrk"        TO  MCP-TABLE
                MOVE    "key6"              TO  MCP-PATHNAME
@@ -2349,7 +1894,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPACE               TO  JYURRK-REC
            INITIALIZE                      JYURRK-REC
-           MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
+           MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
            MOVE    SPA-PTID            TO  JYURRK-PTID
            MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
       **** MOVE    SPA-OLD-SRYKA       TO  JYURRK-SRYKA
@@ -2395,23 +1940,17 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SMCNDATE-YMD        TO  JYURRK-UPYMD
                MOVE    SMCNDATE-HMS        TO  JYURRK-UPHMS
       *
-               MOVE    SPA-OPID            TO  JYURRK-OPID
-      *
       *        キー変換
                MOVE    JYURRK-REC          TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "tbl_jyurrk"        TO  MCP-TABLE
                MOVE    "upd1"              TO  MCP-PATHNAME
-grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
                IF      MCP-RC          NOT =   ZERO
                     DISPLAY "K03 JYURRK UPD1 ERR:" MCP-RC
                            ",KEY:" JYURRK-KEY
-                    STRING  "JYURRK UPD ERR KEY : "
-                            JYURRK-KEY        DELIMITED  BY  SIZE
-                                        INTO  ORCSCGAIRAI-ERRMSG
-                    END-STRING
                     MOVE    "0005"              TO  SPA-ERRCD
                END-IF
       *
@@ -2428,119 +1967,90 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        4500111-TEISEI-JYURRK-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    診療会計マスタの診療回数変更処理
+      *    診療会計マスタの診療回数クリア処理
       *****************************************************************
        45001112-TEISEI-ACCT-SEC          SECTION.
       *
-           MOVE    JYURRK-SRYYMD(7:2)      TO  IDX-2
-      *
-      *ver.4.8
-      *    EVALUATE    JYURRK-RENNUM
-      *        WHEN    1
-      *            MOVE    2               TO  IDX-1
-      *        WHEN    2
-      *            MOVE    3               TO  IDX-1
-      *        WHEN    OTHER
-      *            MOVE    4               TO  IDX-1
-      *    END-EVALUATE
-      *    EVALUATE    WRK-MAE-RENNUM
-      *        WHEN    1
-      *            MOVE    2               TO  IDX-3
-      *        WHEN    2
-      *            MOVE    3               TO  IDX-3
-      *        WHEN    OTHER
-      *            MOVE    4               TO  IDX-3
-      ***  END-EVALUATE
-      *ver.4.8
-      *    連番＋１　を会計テーブル位置とする
-           COMPUTE IDX-1               =   JYURRK-RENNUM   +   1
-           COMPUTE IDX-3               =   WRK-MAE-RENNUM  +   1
-      *
-      *
-           IF      IDX-1           NOT =   IDX-3
-      *        回数テーブルが異なる時のみ変更
-               PERFORM 45001112-ACCTDAY-SEC
-           END-IF
-      *
-           .
-       45001112-TEISEI-ACCT-EXT.
-           EXIT.
-      *****************************************************************
-      *    診療会計マスタの診療回数クリア処理
-      *****************************************************************
-       45001112-ACCTDAY-SEC            SECTION.
-      *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX         >   15  )
-                           OR (SPA-ERRCD   NOT =   SPACE )
-               IF    (JYURRK-ZAINUM (IDX)    NOT =   ZERO )
+                   UNTIL      (IDX         >   15  )  OR
+                              (JYURRK-ZAINUM (IDX) =   ZERO )
+                           OR (SPA-ERRCD       NOT =   SPACE )
       *
-                   INITIALIZE                      SRYACCT-REC
-                   MOVE    JYURRK-HOSPNUM      TO  ACCT-HOSPNUM
-                   MOVE    JYURRK-NYUGAIKBN    TO  ACCT-NYUGAIKBN
-                   MOVE    JYURRK-PTID         TO  ACCT-PTID
-                   MOVE    JYURRK-SRYKA        TO  ACCT-SRYKA
-                   MOVE    JYURRK-SRYYMD(1:6)  TO  ACCT-SRYYM
-                   MOVE    JYURRK-ZAINUM (IDX) TO  ACCT-ZAINUM
+               INITIALIZE                      SRYACCT-REC
+               MOVE    JYURRK-HOSPID       TO  ACCT-HOSPID
+               MOVE    JYURRK-NYUGAIKBN    TO  ACCT-NYUGAIKBN
+               MOVE    JYURRK-PTID         TO  ACCT-PTID
+               MOVE    JYURRK-SRYKA        TO  ACCT-SRYKA
+               MOVE    JYURRK-SRYYMD(1:6)  TO  ACCT-SRYYM
+               MOVE    JYURRK-ZAINUM (IDX) TO  ACCT-ZAINUM
       *
-                   MOVE    SRYACCT-REC         TO  MCPDATA-REC
+               MOVE    SRYACCT-REC         TO  MCPDATA-REC
+               MOVE    "tbl_sryacct"       TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
+               PERFORM 910-DBSELECT-SEC
+               IF      MCP-RC              =   ZERO
                    MOVE    "tbl_sryacct"       TO  MCP-TABLE
                    MOVE    "key5"              TO  MCP-PATHNAME
-                   PERFORM 910-DBSELECT-SEC
-                   IF      MCP-RC              =   ZERO
-                       MOVE    "tbl_sryacct"       TO  MCP-TABLE
-                       MOVE    "key5"              TO  MCP-PATHNAME
-                       PERFORM 930-SRYACCT-NEXT-SEC
-                   ELSE
-                       MOVE    1                   TO  FLG-SRYACCT
-                   END-IF
-                   PERFORM
-                       UNTIL   FLG-SRYACCT     =   1
-                           OR (SPA-ERRCD       NOT =   SPACE )
-      *                剤回数　変更
-                       ADD     ACCT-DAY (IDX-3 IDX-2)
+                   PERFORM 930-SRYACCT-NEXT-SEC
+               ELSE
+                   MOVE    1                   TO  FLG-SRYACCT
+               END-IF
+               PERFORM
+                   UNTIL   FLG-SRYACCT     =   1
+                       OR (SPA-ERRCD       NOT =   SPACE )
+      *
+                   MOVE    JYURRK-SRYYMD(7:2)      TO  IDX-2
+                   EVALUATE    JYURRK-RENNUM
+                       WHEN    1
+                           MOVE    2               TO  IDX-1
+                       WHEN    2
+                           MOVE    3               TO  IDX-1
+                       WHEN    OTHER
+                           MOVE    4               TO  IDX-1
+                   END-EVALUATE
+                   EVALUATE    WRK-MAE-RENNUM
+                       WHEN    1
+                           MOVE    2               TO  IDX-3
+                       WHEN    2
+                           MOVE    3               TO  IDX-3
+                       WHEN    OTHER
+                           MOVE    4               TO  IDX-3
+                   END-EVALUATE
+      *
+      *            剤回数　変更
+                   ADD     ACCT-DAY (IDX-3 IDX-2)
                                                TO  ACCT-DAY
                                                        (IDX-1 IDX-2)
-                       MOVE    ZERO            TO  ACCT-DAY
+                   MOVE    ZERO                TO  ACCT-DAY
                                                        (IDX-3 IDX-2)
-      *                剤回数編集
-                       PERFORM 450140-ZAIKAISU-HEN-SEC
       *
-                       MOVE    SMCNDATE-YMD        TO  ACCT-UPYMD
-                       MOVE    SMCNDATE-HMS        TO  ACCT-UPHMS
+                   MOVE    SMCNDATE-YMD        TO  ACCT-UPYMD
+                   MOVE    SMCNDATE-HMS        TO  ACCT-UPHMS
       *
-                       MOVE    SPA-OPID            TO  ACCT-OPID
+                   MOVE    SRYACCT-REC         TO  MCPDATA-REC
+                   MOVE    "DBUPDATE"          TO  MCP-FUNC
+                   MOVE    "tbl_sryacct"       TO  MCP-TABLE
+                   MOVE    "key"               TO  MCP-PATHNAME
+                   CALL    "MONFUNC"           USING
+                                               MCPAREA
+                                               MCPDATA-REC
+                   IF      MCP-RC          NOT =   ZERO
+                        DISPLAY "K03 SRYACCT UPD ERR:" MCP-RC
+                                ",KEY:" ACCT-KEY
+                        MOVE    "0005"             TO  SPA-ERRCD
+                   END-IF
       *
-                       MOVE    SRYACCT-REC         TO  MCPDATA-REC
-                       MOVE    "DBUPDATE"          TO  MCP-FUNC
-                       MOVE    "tbl_sryacct"       TO  MCP-TABLE
-                       MOVE    "key"               TO  MCP-PATHNAME
-grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                           MCPDATA-REC
-                                                           SPA-AREA
-                       IF      MCP-RC          NOT =   ZERO
-                           DISPLAY "K03 SRYACCT UPD ERR:" MCP-RC
-                                   ",KEY:" ACCT-KEY
-                           MOVE    "0005"              TO  SPA-ERRCD
-                           STRING  "SRYACCT UPD ERR KEY : "
-                                   ACCT-KEY        DELIMITED  BY  SIZE
-                                           INTO  ORCSCGAIRAI-ERRMSG
-                           END-STRING
-                       END-IF
-      *
-                       MOVE    "tbl_sryacct"       TO  MCP-TABLE
-                       MOVE    "key5"              TO  MCP-PATHNAME
-                       PERFORM 930-SRYACCT-NEXT-SEC
-                   END-PERFORM
                    MOVE    "tbl_sryacct"       TO  MCP-TABLE
                    MOVE    "key5"              TO  MCP-PATHNAME
-                  PERFORM 990-DBCLOSE-SEC
-      *
-               END-IF
+                   PERFORM 930-SRYACCT-NEXT-SEC
+               END-PERFORM
+               MOVE    "tbl_sryacct"       TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
+               PERFORM 990-DBCLOSE-SEC
            END-PERFORM
       *
            .
-       45001112-ACCTDAY-EXT.
+       45001112-TEISEI-ACCT-EXT.
            EXIT.
       *****************************************************************
       *    診療会計マスタの診療回数クリア処理
@@ -2554,12 +2064,12 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
       *    MOVE    JYURRK-HKNKBN       TO  SPA-HKNKBN
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX         >   15  )
+                   UNTIL      (IDX         >   15  )  OR
+                              (JYURRK-ZAINUM (IDX) =   ZERO )
                            OR (SPA-ERRCD       NOT =   SPACE )
-             IF   (JYURRK-ZAINUM (IDX) NOT =   ZERO )
       *
                INITIALIZE                      SRYACCT-REC
-               MOVE    JYURRK-HOSPNUM      TO  ACCT-HOSPNUM
+               MOVE    JYURRK-HOSPID       TO  ACCT-HOSPID
                MOVE    SPA-NYUGAIKBN       TO  ACCT-NYUGAIKBN
                MOVE    JYURRK-PTID         TO  ACCT-PTID
                MOVE    JYURRK-SRYKA        TO  ACCT-SRYKA
@@ -2582,26 +2092,28 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                         OR (SPA-ERRCD      NOT =   SPACE )
       *
                    MOVE    JYURRK-SRYYMD(7:2)      TO  IDX-2
-      *ver.4.8
-      ****         EVALUATE    JYURRK-RENNUM
-      *                WHEN    1
-      *                    MOVE    2               TO  IDX-1
-      *                WHEN    2
-      *                    MOVE    3               TO  IDX-1
-      *                WHEN    OTHER
-      *                    MOVE    4               TO  IDX-1
-      ************ END-EVALUATE
-                   COMPUTE IDX-1       =   JYURRK-RENNUM   +   1
+                   EVALUATE    JYURRK-RENNUM
+                       WHEN    1
+                           MOVE    2               TO  IDX-1
+                       WHEN    2
+                           MOVE    3               TO  IDX-1
+                       WHEN    OTHER
+                           MOVE    4               TO  IDX-1
+                   END-EVALUATE
       *
       *            算定履歴の削除処理
                    MOVE    ACCT-DAY (IDX-1 IDX-2)  TO  WRK-KAISU
                    PERFORM 4500113-TEISEI-SANTEI-SEC
       *
-      *            剤回数　削除
+      *            剤回数　変更
+                   COMPUTE ACCT-ZAIKAISU       =   ACCT-ZAIKAISU
+                                               -   ACCT-DAY
+                                                       (IDX-1 IDX-2)
+                   COMPUTE ACCT-DAY (1 IDX-2)  =   ACCT-DAY (1 IDX-2)
+                                               -   ACCT-DAY
+                                                       (IDX-1 IDX-2)
                    MOVE    ZERO                TO  ACCT-DAY
                                                        (IDX-1 IDX-2)
-      *            剤回数編集
-                   PERFORM 450140-ZAIKAISU-HEN-SEC
       *            回数がゼロの時、削除
                    IF      ACCT-ZAIKAISU       =   ZERO
                        PERFORM 45001121-ZAINUM-DELETE-SEC
@@ -2610,23 +2122,17 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    SMCNDATE-YMD        TO  ACCT-UPYMD
                        MOVE    SMCNDATE-HMS        TO  ACCT-UPHMS
       *
-                       MOVE    SPA-OPID            TO  ACCT-OPID
-      *
                        MOVE    SRYACCT-REC         TO  MCPDATA-REC
                        MOVE    "DBUPDATE"          TO  MCP-FUNC
                        MOVE    "tbl_sryacct"       TO  MCP-TABLE
                        MOVE    "key"               TO  MCP-PATHNAME
-grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                           MCPDATA-REC
-                                                           SPA-AREA
+                       CALL    "MONFUNC"           USING
+                                                   MCPAREA
+                                                   MCPDATA-REC
                        IF      MCP-RC          NOT =   ZERO
                             DISPLAY "K03 SRYACCT UPD ERR:" MCP-RC
                                 ",KEY:" ACCT-KEY
                             MOVE    "0005"              TO  SPA-ERRCD
-                            STRING  "SRYACCT UPD ERR KEY : "
-                                     ACCT-KEY        DELIMITED  BY  SIZE
-                                           INTO  ORCSCGAIRAI-ERRMSG
-                           END-STRING
                        END-IF
                    END-IF
       *
@@ -2637,8 +2143,6 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "tbl_sryacct"       TO  MCP-TABLE
                MOVE    "key5"              TO  MCP-PATHNAME
                PERFORM 990-DBCLOSE-SEC
-      *
-             END-IF
            END-PERFORM
       *
       *!   保険組合せを戻す
@@ -2655,7 +2159,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
        45001121-ZAINUM-DELETE-SEC          SECTION.
       *
            INITIALIZE                  SRYACT-REC
-           MOVE    ACCT-HOSPNUM        TO  SRY-HOSPNUM
+           MOVE    ACCT-HOSPID         TO  SRY-HOSPID
            MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
            MOVE    ACCT-PTID           TO  SRY-PTID
            MOVE    ACCT-SRYKA          TO  SRY-SRYKA
@@ -2665,17 +2169,16 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_sryact"        TO  MCP-TABLE
            MOVE    "del11"             TO  MCP-PATHNAME
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
                 DISPLAY "K03 SRYACT DEL ERR:" MCP-RC
                         ",KEY:" SRY-KEY
-               MOVE    "0005"              TO  SPA-ERRCD
            END-IF
       *    コメント
            INITIALIZE                  PTCOM-REC
-           MOVE    ACCT-HOSPNUM        TO  PTCOM-HOSPNUM
+           MOVE    ACCT-HOSPID         TO  PTCOM-HOSPID
            MOVE    ACCT-PTID           TO  PTCOM-PTID
            MOVE    ACCT-ZAINUM         TO  PTCOM-ZAINUM
       *
@@ -2683,31 +2186,29 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_ptcom"         TO  MCP-TABLE
            MOVE    "del11"             TO  MCP-PATHNAME
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "K03  PTCOM  DEL ERR:" MCP-RC
                      ",KEY:" PTCOM-KEY
-               MOVE    "0005"              TO  SPA-ERRCD
            END-IF
       *
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_sryacct"       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "K03 SRYACCT DEL ERR:" MCP-RC
                         ",KEY:" ACCT-KEY
-               MOVE    "0005"              TO  SPA-ERRCD
            END-IF
       *
       *    附加情報削除
            INITIALIZE                  SRYACCTPLUS-REC
-           MOVE    ACCT-HOSPNUM        TO  ACCTP-HOSPNUM
+           MOVE    ACCT-HOSPID         TO  ACCTP-HOSPID
            MOVE    ACCT-NYUGAIKBN      TO  ACCTP-NYUGAIKBN
            MOVE    ACCT-PTID           TO  ACCTP-PTID
            MOVE    ACCT-SRYKA          TO  ACCTP-SRYKA
@@ -2718,13 +2219,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_sryacctplus"   TO  MCP-TABLE
            MOVE    "del2"              TO  MCP-PATHNAME
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "K03  SRYACCTPLUS  DEL ERR:" MCP-RC
                      ",KEY:" ACCTP-KEY
-               MOVE    "0005"              TO  SPA-ERRCD
            END-IF
            .
        45001121-ZAINUM-DELETE-EXT.
@@ -2735,8 +2235,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        4500113-TEISEI-SANTEI-SEC          SECTION.
       *
+      *    PERFORM VARYING     IDX     FROM    1   BY  1
+      *            UNTIL      (IDX         >   15  )  OR
+      *                       (JYURRK-ZAINUM (IDX) =   ZERO )
+      *
                INITIALIZE                      SRYACT-REC
-               MOVE    JYURRK-HOSPNUM      TO  SRY-HOSPNUM
+               MOVE    JYURRK-HOSPID       TO  SRY-HOSPID
                MOVE    SPA-NYUGAIKBN       TO  SRY-NYUGAIKBN
                MOVE    JYURRK-PTID         TO  SRY-PTID
                MOVE    JYURRK-SRYKA        TO  SRY-SRYKA
@@ -2778,6 +2282,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                            MOVE    WRK-SRYCD           TO  TNS-SRYCD
                            PERFORM 910-TENSU-READ-SEC
                        END-IF
+      *
                        IF      TNS-SANTEIRRKKBN    NOT =   ZERO
                            PERFORM 45001131-SANTEI-DEL-SEC
                        END-IF
@@ -2795,6 +2300,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 990-DBCLOSE-SEC
       *
+      *****END-PERFORM
+      *
            .
        4500113-TEISEI-SANTEI-EXT.
            EXIT.
@@ -2806,55 +2313,17 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            INITIALIZE                  ORCSSANTEIAREA
            MOVE    "3"                 TO  SSANTEI-SYORI
-      *    削除（算定履歴付加削除）
-           IF      ORCSCGAIRAI-KBN     =   "2"
-               MOVE    "1"                 TO  SSANTEI-SYORI2
-           END-IF
            MOVE    "K03"               TO  SSANTEI-PG
            MOVE    WRK-SRYCD           TO  SSANTEI-SRYCD
            MOVE    SPA-PTID            TO  SSANTEI-PTID
            MOVE    SPA-SRYYMD          TO  SSANTEI-SRYYMD
            MOVE    WRK-KAISU           TO  SSANTEI-KAISU
       *    数量
-      *    １日上限で単位が分以外の時、数量編集
-           IF      (WRK-SRYSURYO       >   1    )
-               AND (TNS-JGNCNT1D       >   ZERO )
-               AND (TNS-TANICD     NOT =   "001")
-               MOVE    WRK-SRYSURYO        TO  SSANTEI-SRYSURYO
-           END-IF
+           MOVE    WRK-SRYSURYO        TO  SSANTEI-SRYSURYO
       *    診療科
            MOVE    SRY-SRYKA           TO  SSANTEI-SRYKA
            MOVE    ACCT-HKNCOMBI       TO  SSANTEI-HKNCOMBINUM
            MOVE    JYURRK-HKNKBN       TO  SSANTEI-HKNKBN
-      *    労災・自賠責区分
-           MOVE    SPACE               TO  SSANTEI-RSI-JUNKYO
-           EVALUATE    JYURRK-HKNKBN
-               WHEN    "1"
-                   MOVE    "1"             TO  SSANTEI-RSI-HKNKBN
-               WHEN    "2"
-                   MOVE    "1"             TO  SSANTEI-HKNKBN
-                   MOVE    "4"             TO  SSANTEI-RSI-HKNKBN
-               WHEN    "4"
-      *            自賠責 健保準拠
-                   MOVE    "1"             TO  SSANTEI-HKNKBN
-      ************ MOVE    "5"             TO  SSANTEI-RSI-HKNKBN
-                   MOVE    "4"             TO  SSANTEI-RSI-HKNKBN
-                   MOVE    "1"             TO  SSANTEI-RSI-JUNKYO
-               WHEN    "5"
-      *            労災（公務災害）自賠責 健保準拠
-                   MOVE    "1"             TO  SSANTEI-HKNKBN
-                   MOVE    "5"             TO  SSANTEI-RSI-HKNKBN
-                   MOVE    "1"             TO  SSANTEI-RSI-JUNKYO
-               WHEN    "6"
-      *            公害
-                   MOVE    "2"             TO  SSANTEI-HKNKBN
-      *
-               WHEN    "7"
-      *            自賠責（第三者行為）
-                   MOVE    "1"             TO  SSANTEI-HKNKBN
-                   MOVE    "6"             TO  SSANTEI-RSI-HKNKBN
-                   MOVE    "1"             TO  SSANTEI-RSI-JUNKYO
-           END-EVALUATE
            CALL    "ORCSSANTEI"        USING
                                        ORCSSANTEIAREA
                                        SPA-AREA
@@ -2863,17 +2332,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    1               TO  FLG-NAIBUN
            END-IF
       *
-      *!!!
-      *    リハビリ開始日コード
-           IF      SSANTEI-SANTEIPLUS  =   1
-               ADD     1               TO  IDX-RIH
-               MOVE    WRK-SRYCD       TO  TBL-RIHA-SRYCD (IDX-RIH)
-               MOVE    SSANTEI-SRYKA   TO  TBL-RIHA-SRYKA (IDX-RIH)
-               MOVE    SSANTEI-HKNCOMBINUM
-                                       TO  TBL-RIHA-HKNCOMBI (IDX-RIH)
-               MOVE    SSANTEI-HKNKBN  TO  TBL-RIHA-HKNKBN (IDX-RIH)
-           END-IF
-      *!!!!
            .
        45001131-SANTEI-DEL-EXT.
            EXIT.
@@ -2885,7 +2343,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    合計収納削除
            INITIALIZE                  SYUTTL-REC
-           MOVE    SPA-HOSPNUM         TO  SYUTTL-HOSPNUM
+           MOVE    SPA-HOSPID          TO  SYUTTL-HOSPID
            MOVE    SPA-NYUGAIKBN       TO  SYUTTL-NYUGAIKBN
            MOVE    SPA-PTID            TO  SYUTTL-PTID
            MOVE    WRK-DENPNUM         TO  SYUTTL-DENPNUM
@@ -2911,9 +2369,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "DBDELETE"          TO  MCP-FUNC
                MOVE    "tbl_syutotal"      TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
            END-IF
       *
            .
@@ -2949,8 +2407,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN   "54"
                    MOVE    "01"        TO  JYURRK-SRYKBN8
                WHEN   "60"
-                   MOVE    "01"        TO  JYURRK-SRYKBN9
-               WHEN   "64"
                    MOVE    "01"        TO  JYURRK-SRYKBN9
                WHEN   "70"
                    MOVE    "01"        TO  JYURRK-SRYKBN10
@@ -2998,7 +2454,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    初診料算定日設定処理
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   IDX-KOUI
+      *
                MOVE    ZERO                TO  FLG-DOUJITU
+      *
                PERFORM VARYING     IDY     FROM    1   BY  1
                        UNTIL      (IDY     >   5   )  OR
                                   (LNK-WKSRY-SRYCD (IDX IDY) =   SPACE)
@@ -3008,18 +2466,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        WHEN    "113003710"
                            MOVE    SYU-SRYYMD      TO
                                                    WRK-KARRK-SYOSINYMD2
-      *H28.4           小児かかりつけ診療料
-                       WHEN    "113019710"
-                       WHEN    "113019910"
-                           MOVE    SYU-SRYYMD      TO
-                                                   WRK-KARRK-SYOSINYMD2
       *                同日初診
                        WHEN    "101110040"
                        WHEN    "111011810"
-      *H25.4           紹介なし
-                       WHEN    "111012610"
-      *H28.4           妥結５割以下
-                       WHEN    "111012810"
                            IF      LNK-WKSRY-SRYKBN (IDX)  =   "11"
                                MOVE    1               TO  FLG-DOUJITU
                            END-IF
@@ -3060,27 +2509,17 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SMCNDATE-YMD        TO  JYURRK-UPYMD
            MOVE    SMCNDATE-HMS        TO  JYURRK-UPHMS
       *
-           MOVE    SPA-OPID            TO  JYURRK-OPID
-      *
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
                MOVE    "0005"          TO  SPA-ERRCD
                DISPLAY "K03 JYURRK-SYORI3 INS ERR:" MCP-RC 
                         ",KEY:" JYURRK-KEY "."
-               STRING  "JYURRK-SYORI3 INS ERR KEY : "
-                       JYURRK-KEY      DELIMITED  BY  SIZE
-                                       INTO  ORCSCGAIRAI-ERRMSG
-               END-STRING
-               IF       WRK-ERRCD      NOT =   SPACE
-                   MOVE    "0105"          TO  SPA-ERRCD
-                   MOVE    SPACE           TO  ORCSCGAIRAI-ERRMSG
-               END-IF
            END-IF
       *
            .
@@ -3094,7 +2533,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPACE               TO  SRYKARRK-REC
            INITIALIZE                      SRYKARRK-REC
-           MOVE    SPA-HOSPNUM         TO  KARRK-HOSPNUM
+           MOVE    SPA-HOSPID          TO  KARRK-HOSPID
            MOVE    SPA-PTID            TO  KARRK-PTID
            MOVE    WRK-SRYKA           TO  KARRK-SRYKA
       *
@@ -3131,7 +2570,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *        診療科新規作成
                MOVE    SPACE               TO  SRYKARRK-REC
                INITIALIZE                      SRYKARRK-REC
-               MOVE    SPA-HOSPNUM         TO  KARRK-HOSPNUM
+               MOVE    SPA-HOSPID          TO  KARRK-HOSPID
                MOVE    SPA-PTID            TO  KARRK-PTID
                MOVE    WRK-SRYKA           TO  KARRK-SRYKA
                MOVE    SPA-SRYYMD          TO  KARRK-SYOSINYMD1
@@ -3161,23 +2600,17 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SMCNDATE-YMD        TO  KARRK-UPYMD
                MOVE    SMCNDATE-HMS        TO  KARRK-UPHMS
       *
-               MOVE    SPA-OPID            TO  KARRK-OPID
-      *
       *        更新
                MOVE    SRYKARRK-REC        TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "tbl_srykarrk"      TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "K03 SRYKARRK UPD ERR:"  MCP-RC
                            ",KEY:" KARRK-KEY  ";"
-                   STRING  "SRYKARRK UPD ERR KEY : "
-                           KARRK-KEY       DELIMITED  BY  SIZE
-                                       INTO  ORCSCGAIRAI-ERRMSG
-                   END-STRING
                    MOVE    "0005"              TO  SPA-ERRCD
                END-IF
            ELSE
@@ -3186,23 +2619,17 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SMCNDATE-YMD        TO  KARRK-UPYMD
                MOVE    SMCNDATE-HMS        TO  KARRK-UPHMS
       *
-               MOVE    SPA-OPID            TO  KARRK-OPID
-      *
                MOVE    SRYKARRK-REC        TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "tbl_srykarrk"      TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "K03 SRYKARRK INS ERR:"  MCP-RC
                            ",KEY:" KARRK-KEY  ";"
                    MOVE    "0005"              TO  SPA-ERRCD
-                   STRING  "SRYKARRK INS ERR KEY : "
-                           KARRK-KEY       DELIMITED  BY  SIZE
-                                       INTO  ORCSCGAIRAI-ERRMSG
-                   END-STRING
                END-IF
            END-IF
       *
@@ -3227,8 +2654,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
       *    診療行為マスター処理 
-           IF     (FLG-SINKI           =   1     )
-             AND  (SPA-ERRCD           =   SPACE )
+           IF      FLG-SINKI           =   1
                PERFORM 4501-SRYACT-SYORI-SEC
            END-IF
       *
@@ -3236,7 +2662,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    診療会計附加情報処理 
            IF     (FLG-SINKI           =   1 )  AND
                   (LNK-WKSRYP-ADDKBN(01)   =   "1"  )
-             AND  (SPA-ERRCD           =   SPACE )
                PERFORM 4503-SRYACCTPLUS-SYORI-SEC
            END-IF
       *!!
@@ -3306,33 +2731,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                       AND (LNK-WKSRY-SRYKBN (IDX)      =   "21"  )
                        MOVE    1               TO  FLG-GEN-ARI
                    END-IF
-      *H27.4
-                   IF     (LNK-WKSRY-SRYCD (IDX IDY)   =   "820000047")
-                      AND (LNK-WKSRY-SRYKBN (IDX)      =   "22"  )
-                       MOVE    1               TO  FLG-GEN-ARI
-                   END-IF
-      *H28.4       湿布薬減点
-                   IF     (LNK-WKSRY-SRYCD (IDX IDY)
-                                                   =   CONS-SPCM-SRYCD)
-                      AND (LNK-WKSRY-SRYKBN (IDX)      =   "23"  )
-                       MOVE    1               TO  FLG-GEN-ARI
-                   END-IF
-      *H26.10
-      *            向精神薬多剤逓減の減の有無判定
-                   IF     (LNK-WKSRY-SRYCD (IDX IDY)
-                                                   =   CONS-SGEN-SRYCD)
-                      AND (LNK-WKSRY-SRYKBN (IDX)  =   "21"
-                                                   OR  "22"
-                                                   OR  "23"     )
-                       MOVE    1               TO  FLG-GEN-ARI
-                   END-IF
                END-PERFORM
            END-PERFORM
       *
       *    剤点数がゼロの時、自費を点数へ
-      ***  IF      WRK-ZAITEN          =   ZERO
-           IF    ( LNK-WKSRY-SRYKBN(01)    =   "95"
-                                           OR  "96" )
+           IF      WRK-ZAITEN          =   ZERO
                MOVE   WRK-JIHIMONEY        TO  WRK-ZAITEN
            END-IF
       *
@@ -3340,10 +2743,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      WRK-MEISAISU        =   ZERO
                GO      TO      4501-SRYACCT-SYORI-EXT
            END-IF 
-      *!!!
-      *    対象有
-           MOVE    1                   TO  FLG-SYORI-ARI
-      *!!!
       *
       *    診療会計剤チェックサブ
            INITIALIZE                      ORCSCZAICHKAREA
@@ -3359,11 +2758,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    WRK-MEISAISU            TO  ORCSCZAICHK-MEISAISU
            MOVE    WRK-SRYSURYOKEI         TO  ORCSCZAICHK-SURYOUTOTAL
            MOVE    WRK-SRYKAISUKEI         TO  ORCSCZAICHK-ZAIKAISU
-      *@
-      *    包括剤の設定
-           IF      LNK-WKSRY-CONTKBN (1)   =   "H"
-               MOVE    "1"                 TO  ORCSCZAICHK-JIHOKBN
-           END-IF
            MOVE    ZERO                    TO  IDX-ATO
            PERFORM VARYING     IDX1    FROM    1   BY  1
                    UNTIL       IDX1        >   IDX-KOUI
@@ -3387,15 +2781,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    LNK-WKSRY-INPUTCHI-G(IDX1 IDX2)
                                            TO  ORCSCZAICHK-INPUTCHI-G
                                                              (IDX-ATO)
-                   MOVE    LNK-WKSRY-KANSURYO(IDX1 IDX2)
-                                               TO  ORCSCZAICHK-KANSURYO
-                                                             (IDX-ATO)
-                   MOVE    LNK-WKSRY-INPUTKBN(IDX1 IDX2)
-                                               TO  ORCSCZAICHK-INPUTKBN
-                                                             (IDX-ATO)
-                   MOVE    LNK-WKSRY-JIHIMONEY(IDX1 IDX2)
-                                               TO  ORCSCZAICHK-JIHIMONEY
-                                                             (IDX-ATO)
                END-PERFORM
            END-PERFORM
       *
@@ -3404,26 +2789,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    ORCSCZAICHK-ZAINUM  TO  WRK-ZAINUM
       *    内服逓減の剤チェック
            IF     (WRK-ZAINUM      NOT =   ZERO )  AND
-                  (LNK-WKSRY-SRYKBN    (1) =   "21"
-                                           OR  "22"
-                                           OR  "23" )  AND
+                  (LNK-WKSRY-SRYKBN    (1) =   "21" )  AND
                   (LNK-WKSRYP-TEI-NKBN (1) =   2    )
                PERFORM 45015-TEIGEN-CHK-SEC
-           END-IF
-      *H27.4
-      *    ３０日以上逓減の剤チェック
-           IF     (WRK-ZAINUM      NOT =   ZERO )  AND
-                  (LNK-WKSRY-SRYKBN    (1) =   "21"
-                                           OR  "22" )  AND
-                  (LNK-WKSRYP-TEI-NKBN30(1) =   2    )
-               PERFORM 45015-TEIGEN30-CHK-SEC
-           END-IF
-      *H28.4
-      *    湿布７０枚以上逓減の剤チェック
-           IF     (WRK-ZAINUM      NOT =   ZERO )  AND
-                  (LNK-WKSRY-SRYKBN    (1) =   "23" )  AND
-                  (LNK-WKSRYP-TEI-NKBN30(1) =   2    )
-               PERFORM 45015-TEIGEN30-CHK-SEC
            END-IF
       *
            IF      WRK-ZAINUM          =   ZERO
@@ -3435,80 +2803,37 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *!!
       *    内服逓減処理
-      *****IF      FLG-GEN-ARI         =   1
-      *H27.4
-      *    内服逓減対象剤
-           IF      LNK-WKSRYP-TEI-NKBN (1) =   1
+           IF      FLG-GEN-ARI         =   1
                PERFORM VARYING IDX-GEN2    FROM    1   BY  1
-                       UNTIL   IDX-GEN2    >   30
+                       UNTIL   IDX-GEN2    >   10
                    IF      WRK-ACTP-SRYKA(IDX-GEN2)    =   SPACE
                        MOVE    LNK-WKSRY-SRYKA(01)
                                            TO  WRK-ACTP-SRYKA(IDX-GEN2)
                        MOVE    LNK-WKSRY-HKNCOMBI(01)
                                            TO  WRK-ACTP-HKNCOMBI
                                                             (IDX-GEN2)
-      *H26.10
-                       MOVE    LNK-WKSRY-SRYKBN(01)
-                                           TO  WRK-ACTP-SRYKBN
-                                                            (IDX-GEN2)
                    END-IF
                    IF     (WRK-ACTP-SRYKA(IDX-GEN2)
                                            =   LNK-WKSRY-SRYKA(01) )
                      AND  (WRK-ACTP-HKNCOMBI(IDX-GEN2)
                                            =   LNK-WKSRY-HKNCOMBI(01))
-      *H26.10
-                     AND  (WRK-ACTP-SRYKBN  (IDX-GEN2)
-                                           =   LNK-WKSRY-SRYKBN  (01))
                        ADD     1           TO  WRK-ACTP-MAX (IDX-GEN2)
                        MOVE    WRK-ACTP-MAX (IDX-GEN2) 
                                            TO  IDX-GEN
                        IF      IDX-GEN     >   50
                            MOVE    50                  TO  IDX-GEN
                        END-IF
-                       MOVE    WRK-ZAINUM      TO  WRK-ACTP-ZAINUM
-                                                    (IDX-GEN2 IDX-GEN)
-                       MOVE    30              TO  IDX-GEN2
-                   END-IF
-               END-PERFORM
-           END-IF
-      *H27.4
-      *    ３０日以上逓減対象剤
-           IF      LNK-WKSRYP-TEI-NKBN30 (1) =   1
-               PERFORM VARYING IDX-GEN2    FROM    1   BY  1
-                       UNTIL   IDX-GEN2    >   30
-                   IF      WRK-ACTP30-SRYKA(IDX-GEN2)    =   SPACE
-                       MOVE    LNK-WKSRY-SRYKA(01)
-                                           TO  WRK-ACTP30-SRYKA
-                                                            (IDX-GEN2)
-                       MOVE    LNK-WKSRY-HKNCOMBI(01)
-                                           TO  WRK-ACTP30-HKNCOMBI
-                                                            (IDX-GEN2)
-                       MOVE    LNK-WKSRY-SRYKBN(01)
-                                           TO  WRK-ACTP30-SRYKBN
-                                                            (IDX-GEN2)
-                   END-IF
-                   IF     (WRK-ACTP30-SRYKA(IDX-GEN2)
-                                           =   LNK-WKSRY-SRYKA(01) )
-                     AND  (WRK-ACTP30-HKNCOMBI(IDX-GEN2)
-                                           =   LNK-WKSRY-HKNCOMBI(01))
-                     AND  (WRK-ACTP30-SRYKBN  (IDX-GEN2)
-                                           =   LNK-WKSRY-SRYKBN  (01))
-                       ADD     1           TO  WRK-ACTP30-MAX (IDX-GEN2)
-                       MOVE    WRK-ACTP30-MAX (IDX-GEN2) 
-                                           TO  IDX-GEN
-                       IF      IDX-GEN     >   50
-                           MOVE    50                  TO  IDX-GEN
-                       END-IF
-                       MOVE    WRK-ZAINUM      TO  WRK-ACTP30-ZAINUM
-                                                    (IDX-GEN2 IDX-GEN)
-                       MOVE    30              TO  IDX-GEN2
+      **********   END-IF
+                   MOVE    WRK-ZAINUM      TO  WRK-ACTP-ZAINUM
+                                                     (IDX-GEN2 IDX-GEN)
+                   MOVE    10              TO  IDX-GEN2
                    END-IF
                END-PERFORM
            END-IF
       *!!
       *    診療会計マスター更新用読み込み
            INITIALIZE                          SRYACCT-REC
-           MOVE    LNK-WKSRY-HOSPNUM (01)  TO  ACCT-HOSPNUM
+           MOVE    LNK-WKSRY-HOSPID (01)   TO  ACCT-HOSPID
            MOVE    LNK-WKSRY-NYUGAIKBN(01) TO  ACCT-NYUGAIKBN
            MOVE    LNK-WKSRY-PTID   (01)   TO  ACCT-PTID
            MOVE    LNK-WKSRY-SRYKA  (01)   TO  ACCT-SRYKA
@@ -3542,23 +2867,17 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SMCNDATE-YMD        TO  ACCT-UPYMD
                MOVE    SMCNDATE-HMS        TO  ACCT-UPHMS
       *
-               MOVE    SPA-OPID            TO  ACCT-OPID
-      *
                MOVE    SRYACCT-REC         TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "tbl_sryacct"       TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "K03 SRYACCT INS ERR:" MCP-RC
                                 ",KEY:" ACCT-KEY
                    MOVE    "0005"              TO  SPA-ERRCD
-                   STRING  "SRYACCT INS ERR KEY : "
-                           ACCT-KEY       DELIMITED  BY  SIZE
-                                       INTO  ORCSCGAIRAI-ERRMSG
-                   END-STRING
                END-IF
       *        新規のときのみ、診療行為マスターを追加する
                MOVE    1                   TO  FLG-SINKI
@@ -3569,27 +2888,23 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SMCNDATE-YMD        TO  ACCT-UPYMD
                MOVE    SMCNDATE-HMS        TO  ACCT-UPHMS
       *
-               MOVE    SPA-OPID            TO  ACCT-OPID
-      *
                MOVE    SRYACCT-REC         TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "tbl_sryacct"       TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "SYRACCT UPDTE ERR:" MCP-RC
                                 ",KEY:" ACCT-KEY
                    MOVE    "0005"              TO  SPA-ERRCD
-                   STRING  "SRYACCT UPD ERR KEY : "
-                           ACCT-KEY       DELIMITED  BY  SIZE
-                                       INTO  ORCSCGAIRAI-ERRMSG
-                   END-STRING
                END-IF   
                MOVE    ZERO                TO  FLG-SINKI
            END-IF
+      *
            .
+      *
        4501-SRYACCT-SYORI-EXT.
            EXIT.
       *
@@ -3600,7 +2915,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPACE               TO  SRYACCTPLUS-REC
            INITIALIZE                  SRYACCTPLUS-REC
-           MOVE    LNK-WKSRY-HOSPNUM (01)  TO  ACCTP-HOSPNUM
+           MOVE    LNK-WKSRY-HOSPID (01)   TO  ACCTP-HOSPID
            MOVE    LNK-WKSRY-NYUGAIKBN(01) TO  ACCTP-NYUGAIKBN
            MOVE    LNK-WKSRY-PTID   (01)   TO  ACCTP-PTID
            MOVE    LNK-WKSRY-SRYKA  (01)   TO  ACCTP-SRYKA
@@ -3628,7 +2943,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                               (FLG-ERR         =   1 )
                    MOVE    ZERO                TO  FLG-ERR2
                    PERFORM VARYING IDX-GEN5    FROM    1   BY  1
-                           UNTIL  (IDX-GEN5    >   30   )  OR
+                           UNTIL  (IDX-GEN5    >   10   )  OR
                                   (WRK-ACTP-SRYKA(IDX-GEN5)
                                                =   SPACE  )  OR
                                   (FLG-ERR2    =   1      )
@@ -3636,9 +2951,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                            =   WRK-ACTP-SRYKA(IDX-GEN5))
                          AND  (LNK-WKSRY-HKNCOMBI (01)
                                            =   WRK-ACTP-HKNCOMBI
-                                                            (IDX-GEN5))
-                         AND  (LNK-WKSRY-SRYKBN   (01)
-                                           =   WRK-ACTP-SRYKBN
                                                             (IDX-GEN5))
                            PERFORM VARYING IDX-GEN6    FROM    1   BY  1
                                    UNTIL  (IDX-GEN6    >   50  )  OR
@@ -3675,90 +2987,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        45015-TEIGEN-CHK-EXT.
            EXIT.
       *
-      *H27.4
-      *****************************************************************
-      *   ３０日以上逓減剤内容判定処理
-      *****************************************************************
-       45015-TEIGEN30-CHK-SEC          SECTION.
-      *
-           MOVE    SPACE               TO  SRYACCTPLUS-REC
-           INITIALIZE                  SRYACCTPLUS-REC
-           MOVE    LNK-WKSRY-HOSPNUM (01)  TO  ACCTP-HOSPNUM
-           MOVE    LNK-WKSRY-NYUGAIKBN(01) TO  ACCTP-NYUGAIKBN
-           MOVE    LNK-WKSRY-PTID   (01)   TO  ACCTP-PTID
-           MOVE    LNK-WKSRY-SRYKA  (01)   TO  ACCTP-SRYKA
-           MOVE    LNK-WKSRY-SRYYMD (01)(1:6)
-                                           TO  ACCTP-SRYYM
-           MOVE    WRK-ZAINUM              TO  ACCTP-ZAINUM
-      *
-           MOVE    SRYACCTPLUS-REC     TO  MCPDATA-REC
-           MOVE    "tbl_sryacctplus"   TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_sryacctplus"   TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
-               PERFORM 910-SRYACCTPLUS-READ-SEC
-           ELSE
-               MOVE    1                   TO  FLG-SRYACCTPLUS
-           END-IF
-           MOVE    ZERO                TO  FLG-ERR
-           PERFORM UNTIL  (FLG-SRYACCTPLUS =   1 )  OR
-                          (FLG-ERR         =   1 )
-               PERFORM VARYING IDX-GEN4    FROM    1   BY  1
-                       UNTIL  (IDX-GEN4    >   5   )  OR
-                              (ACCTP-GRP-ZAINUM(IDX-GEN4)  =   ZERO) OR
-                              (FLG-ERR         =   1 )
-                   MOVE    ZERO                TO  FLG-ERR2
-                   PERFORM VARYING IDX-GEN5    FROM    1   BY  1
-                           UNTIL  (IDX-GEN5    >   30   )  OR
-                                  (WRK-ACTP30-SRYKA(IDX-GEN5)
-                                               =   SPACE  )  OR
-                                  (FLG-ERR2    =   1      )
-                       IF     (LNK-WKSRY-SRYKA(01)
-                                           =   WRK-ACTP30-SRYKA
-                                                            (IDX-GEN5))
-                         AND  (LNK-WKSRY-HKNCOMBI (01)
-                                           =   WRK-ACTP30-HKNCOMBI
-                                                            (IDX-GEN5))
-                         AND  (LNK-WKSRY-SRYKBN   (01)
-                                           =   WRK-ACTP30-SRYKBN
-                                                            (IDX-GEN5))
-                           PERFORM VARYING IDX-GEN6    FROM    1   BY  1
-                                   UNTIL  (IDX-GEN6    >   50  )  OR
-                                          (WRK-ACTP30-ZAINUM
-                                                    (IDX-GEN5 IDX-GEN6)
-                                                       =   ZERO   ) OR
-                                          (FLG-ERR2    =   1      )
-                               IF      WRK-ACTP30-ZAINUM
-                                                     (IDX-GEN5 IDX-GEN6)
-                                           =   ACCTP-GRP-ZAINUM
-                                                         (IDX-GEN4)
-                                   MOVE    1           TO  FLG-ERR2
-                               END-IF
-                           END-PERFORM
-                       END-IF
-                   END-PERFORM
-                   IF      FLG-ERR2            =   ZERO
-                       MOVE    1               TO  FLG-ERR
-                   END-IF
-               END-PERFORM
-               MOVE    "tbl_sryacctplus"   TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
-               PERFORM 910-SRYACCTPLUS-READ-SEC
-           END-PERFORM
-           MOVE    "tbl_sryacctplus"   TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *    診療会計附加情報の逓減剤内容が違う時、新規
-           IF      FLG-ERR             =   1
-               MOVE    ZERO            TO  WRK-ZAINUM
-           END-IF
-      *
-           .
-       45015-TEIGEN30-CHK-EXT.
-           EXIT.
-      *
       *****************************************************************
       *   剤番号取得処理
       *****************************************************************
@@ -3766,16 +2994,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    患者マスターより、最終剤番号を再番し、患者マスターを更新する
            INITIALIZE                      PTINF-REC
-           MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
+           MOVE    SPA-HOSPID          TO  PTINF-HOSPID
            MOVE    SPA-PTID            TO  PTINF-PTID
            PERFORM 940-PTINF-READ-SEC
            IF      FLG-PTINF           =   1
                MOVE    "0002"          TO  SPA-ERRCD
                DISPLAY "K03 ZAINUM-SET ERR:" SPA-PTID
-               STRING  "PTINF READ ERR PTID : "
-                       SPA-PTID        DELIMITED  BY  SIZE
-                                       INTO  ORCSCGAIRAI-ERRMSG
-               END-STRING
                GO      TO      45013-ZAINUM-SET-EXT
            END-IF
       *
@@ -3789,23 +3013,17 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SMCNDATE-YMD        TO  PTINF-UPYMD
            MOVE    SMCNDATE-HMS        TO  PTINF-UPHMS
       *
-           MOVE    SPA-OPID            TO  PTINF-OPID
-      *
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "PTINF UPDTE ERR:"   MCP-RC
                                 ",KEY:" PTINF-KEY
                MOVE    "0005"              TO  SPA-ERRCD
-               STRING  "PTINF UPDTE ERR KEY : "
-                       PTINF-KEY      DELIMITED  BY  SIZE
-                                       INTO  ORCSCGAIRAI-ERRMSG
-               END-STRING
            END-IF 
       *
            .
@@ -3820,7 +3038,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPACE               TO  SRYACCT-REC
            INITIALIZE                      SRYACCT-REC
-           MOVE    LNK-WKSRY-HOSPNUM (01)  TO  ACCT-HOSPNUM
+           MOVE    LNK-WKSRY-HOSPID (01)   TO  ACCT-HOSPID
            MOVE    LNK-WKSRY-NYUGAIKBN(01) TO  ACCT-NYUGAIKBN
            MOVE    LNK-WKSRY-PTID   (01)   TO  ACCT-PTID
            MOVE    LNK-WKSRY-SRYKA  (01)   TO  ACCT-SRYKA
@@ -3855,22 +3073,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      LNK-WKSRYP-TEI-NKBN (1) =   1
                MOVE    "2"                 TO  ACCT-ZAIREQFLG
            END-IF
-      *H27.4
-      *    ３０日逓減対象剤
-           IF      LNK-WKSRYP-TEI-NKBN30 (1) =   1
-               MOVE    "2"                 TO  ACCT-ZAIREQFLG
-           END-IF
       *!!
-      *@
-      *    包括剤の設定
-           IF      LNK-WKSRY-CONTKBN (1)   =   "H"
-               MOVE    "1"                 TO  ACCT-JIHOKBN
-           ELSE
-               MOVE    SPACE               TO  ACCT-JIHOKBN
-           END-IF
-      *
-      *    薬評・器評、減点分
-           MOVE    LNK-WKSRY-ZAIKBN (1)    TO  ACCT-ZAIKBN
            .
       *
        45015-SRYACCT-SRY-EXT.
@@ -3881,59 +3084,21 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        45014-SRYACCT-HEN-SEC          SECTION.
       *
+      *    剤回数
+           ADD     WRK-SRYKAISUKEI     TO  ACCT-ZAIKAISU
       *    回数セット
-           MOVE    SPA-SRYYMD(7:2)     TO  IDX-2
-           ADD     WRK-SRYKAISUKEI     TO  ACCT-DAY  (1 IDX-2)
+           MOVE    SPA-SRYYMD(7:2)     TO  IDX2
+           ADD     WRK-SRYKAISUKEI     TO  ACCT-DAY  (1 IDX2)
       *
            COMPUTE IDX1                =   WRK-JYURRK-RENNUM
                                        +   1
-      *ver.4.8
-      ***  IF      IDX1                >   4
-      *        MOVE    4                   TO  IDX1
-      **** END-IF
-           ADD     WRK-SRYKAISUKEI     TO  ACCT-DAY  (IDX1 IDX-2)
-      *
-      *H26.8
-      *    外用で回数１以上はエラー
-           IF     (ACCT-SRYKBN         =   "23" )
-             AND  (WRK-SYUTEN1         =   ZERO )
-             AND  (WRK-SRYKAISUKEI     =   1    )
-             AND  (ACCT-DAY  (IDX1 IDX-2)  >   1)
-      *v4.7 は集計以外
-      **     AND  (WRK-JYURRK-RENNUM       <   4 )
-               MOVE    "0052"          TO  SPA-ERRCD
+           IF      IDX1                >   4
+               MOVE    4                   TO  IDX1
            END-IF
-      *
-      *    剤回数編集
-           PERFORM 450140-ZAIKAISU-HEN-SEC
+           ADD     WRK-SRYKAISUKEI     TO  ACCT-DAY  (IDX1 IDX2)
            .
+      *
        45014-SRYACCT-HEN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *   剤回数編集処理
-      *****************************************************************
-       450140-ZAIKAISU-HEN-SEC          SECTION.
-      *
-           MOVE    ZERO                TO  ACCT-DAY (1 IDX-2)
-           PERFORM VARYING     IDX-A   FROM    2   BY  1
-                   UNTIL       IDX-A   >   10
-               COMPUTE ACCT-DAY (1 IDX-2)  =   ACCT-DAY (1 IDX-2)
-                                           +   ACCT-DAY (IDX-A IDX-2)
-           END-PERFORM
-      *
-           MOVE    ZERO                TO  ACCT-ZAIKAISU
-           PERFORM VARYING     IDX-D   FROM    1   BY  1
-                   UNTIL       IDX-D   >   31
-              IF      ACCT-DAY (1 IDX-D)   >   ZERO
-      *            剤回数集計
-                   COMPUTE ACCT-ZAIKAISU       =   ACCT-ZAIKAISU
-                                               +   ACCT-DAY
-                                                       (1  IDX-D)
-               END-IF
-           END-PERFORM
-           .
-       450140-ZAIKAISU-HEN-EXT.
            EXIT.
       *****************************************************************
       *    診療行為マスター処理
@@ -3945,7 +3110,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   IDX-KOUI
                INITIALIZE                          SRYACT-REC
-               MOVE    LNK-WKSRY-HOSPNUM  (IDX) TO  SRY-HOSPNUM
+               MOVE    LNK-WKSRY-HOSPID  (IDX) TO  SRY-HOSPID
                MOVE    LNK-WKSRY-NYUGAIKBN (IDX)   TO  SRY-NYUGAIKBN
                MOVE    LNK-WKSRY-PTID   (IDX)  TO  SRY-PTID
                MOVE    LNK-WKSRY-SRYKA  (IDX)  TO  SRY-SRYKA
@@ -3971,48 +3136,15 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    LNK-WKSRY-SRYKAISU(IDX IDX-SIN)
                                                TO  SRY-SRYKAISU
                                                             (IDX-SIN)
-      *            明細請求区分
-                   IF      LNK-WKSRY-AUTOKBN(IDX IDX-SIN)  =   "T"
-                       MOVE    "1"             TO  SRY-MEISKYFLG
-                                                            (IDX-SIN)
-                       MOVE    SPACE           TO  LNK-WKSRY-AUTOKBN
-                                                         (IDX IDX-SIN)
-                   END-IF
                    MOVE    LNK-WKSRY-AUTOKBN(IDX IDX-SIN)
                                                TO  SRY-AUTOKBN
                                                             (IDX-SIN)
                    MOVE    LNK-WKSRY-JIHIMONEY (IDX IDX-SIN)
                                                TO  SRY-JIHIMONEY
                                                             (IDX-SIN)
-      *            換算値数量
-                   MOVE    LNK-WKSRY-KANSURYO(IDX IDX-SIN)
-                                               TO  SRY-KANSURYO
-                                                            (IDX-SIN)
-                   EVALUATE    LNK-WKSRY-INPUTKBN(IDX IDX-SIN)
-      *            関連コメント指示
-                       WHEN    "1"
-                           MOVE    "2"             TO  SRY-MEISKYFLG
-                                                            (IDX-SIN)
-      *            多剤投与指示
-                       WHEN    "2"
-                           MOVE    "3"             TO  SRY-MEISKYFLG
-                                                            (IDX-SIN)
-      *H25.3
-      *            労災読み替え手技
-                       WHEN    "R"
-                           IF      SPA-SRYYMD      >=  "20130701"
-                               MOVE    "R"             TO  SRY-MEISKYFLG
-                                                            (IDX-SIN)
-                            END-IF
-                   END-EVALUATE
-      *
       *            患者コメント作成
                    IF     (LNK-WKSRY-SRYCD (IDX IDX-SIN)(1:1)  =  "8")
                       OR  (LNK-WKSRY-SRYCD (IDX IDX-SIN)(1:3)  =  "008")
-                      OR  (LNK-WKSRY-SRYCD (IDX IDX-SIN)(1:3)  =  "001")
-      *H30.4
-                      OR  (LNK-WKSRY-SRYCD (IDX IDX-SIN)(1:7)
-                                                         =   "0992081")
       *               入力があれば作成
                        IF      (LNK-WKSRY-INPUTCHI-G (IDX IDX-SIN)
                                                        =  SPACE ) AND
@@ -4029,23 +3161,17 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SMCNDATE-YMD        TO  SRY-UPYMD
                MOVE    SMCNDATE-HMS        TO  SRY-UPHMS
       *
-               MOVE    SPA-OPID            TO  SRY-OPID
-      *
                MOVE    SRYACT-REC          TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "tbl_sryact"        TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "K03 SRYACT INS ERR:" SRY-KEY  "."
                    DISPLAY "MCP-RC:" MCP-RC ":" 
                    MOVE    "0005"          TO  SPA-ERRCD
-                   STRING  "SRYACT INS  ERR KEY : "
-                           SRY-KEY      DELIMITED  BY  SIZE
-                                       INTO  ORCSCGAIRAI-ERRMSG
-                   END-STRING
                END-IF
            END-PERFORM
            .
@@ -4061,7 +3187,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            ADD     1                   TO  WRK-MEIBAN
            INITIALIZE                  PTCOM-REC
       *医療機関ＩＤ
-           MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
+           MOVE    SRY-HOSPID          TO  PTCOM-HOSPID
       *患者ＩＤ
            MOVE    SRY-PTID            TO  PTCOM-PTID
       *剤番号
@@ -4082,23 +3208,17 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SMCNDATE-YMD        TO  PTCOM-UPYMD
            MOVE    SMCNDATE-HMS        TO  PTCOM-UPHMS
       *
-           MOVE    SPA-OPID            TO  PTCOM-OPID
-      *
            MOVE    PTCOM-REC           TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "tbl_ptcom"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "K03 PTCOM INS ERR:" PTCOM-KEY
                MOVE    "0005"          TO  SPA-ERRCD
-               STRING  "PTCOM INS  ERR KEY : "
-                       PTCOM-KEY       DELIMITED  BY  SIZE
-                                       INTO  ORCSCGAIRAI-ERRMSG
-               END-STRING
            END-IF
       *
       *    明細番号
@@ -4116,11 +3236,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   IDX-KOUI  )
                            OR (SPA-ERRCD   NOT =   SPACE )
-      *      包括剤の設定
-      *****  IF     (LNK-WKSRY-CONTKBN (IDX)   =   "H" )  OR
-             IF     (LNK-WKSRY-HKNCOMBI(IDX)   =   "9999")
-               CONTINUE
-             ELSE
                PERFORM VARYING     IDY     FROM    1   BY  1
                        UNTIL      (IDY     >   5   )  OR
                                   (LNK-WKSRY-SRYCD (IDX IDY) =   SPACE)
@@ -4145,6 +3260,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                            MOVE    WRK-SRYCD           TO  TNS-SRYCD
                            PERFORM 910-TENSU-READ-SEC
                        END-IF
+      *
                        IF      TNS-SANTEIRRKKBN    NOT =   ZERO
       *                    特定薬剤治療管理の初回日があれば編集
                            MOVE    1               TO  FLG-TOKTEI
@@ -4154,9 +3270,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                        END-IF
                    END-IF
                END-PERFORM
-      *
-             END-IF
            END-PERFORM
+      *
       *
            .
        4502-SANTEI-SYORI-EXT.
@@ -4203,12 +3318,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SPA-TOKTEI-YMD  TO  SSANTEI-SYOKAIYMD
            END-IF
            MOVE    WRK-KAISU           TO  SSANTEI-KAISU
-      *    １日上限で単位が分以外の時、数量編集
-           IF      (WRK-SRYSURYO       >   1    )
-               AND (TNS-JGNCNT1D       >   ZERO )
-               AND (TNS-TANICD     NOT =   "001")
-               MOVE    WRK-SRYSURYO        TO  SSANTEI-SRYSURYO
-           END-IF
+      *    数量
+           MOVE    WRK-SRYSURYO        TO  SSANTEI-SRYSURYO
       *    初診料算定日
       *    訂正の時
            IF      SPA-SYORIFLG        =   1
@@ -4225,8 +3336,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    WRK-HKNCOMBI        TO  SSANTEI-HKNCOMBINUM
       *    保険区分は同じ
            MOVE    SPA-HKNKBN          TO  SSANTEI-HKNKBN
-           MOVE    SPA-RSI-HKNKBN      TO  SSANTEI-RSI-HKNKBN
-           MOVE    SPA-RSI-JUNKYO      TO  SSANTEI-RSI-JUNKYO
            IF      FLG-SYOSIN-DUMMY    =   1
                CONTINUE
            ELSE
@@ -4243,17 +3352,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        ORCSSANTEIAREA
                                        SPA-AREA
       *
-      *!!!!
-      *    訂正前のリハビリ開始日判定
-           IF      SPA-SYORIFLG        =   1
-               PERFORM VARYING IDX-R2      FROM    1   BY  1
-                       UNTIL  (IDX-R2      >   IDX-RIH )
-                   IF     (TBL-RIHA-SRYCD(IDX-R2)  =   WRK-SRYCD )
-                       MOVE    SPACE       TO  TBL-RIHA-SRYCD(IDX-R2)
-                   END-IF
-               END-PERFORM
-           END-IF
-      *!!!!
            .
        45021-SANTEI-UPD-EXT.
            EXIT.
@@ -4266,7 +3364,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPACE               TO  SRYACCTPLUS-REC
            INITIALIZE                  SRYACCTPLUS-REC
-           MOVE    ACCT-HOSPNUM        TO  ACCTP-HOSPNUM
+           MOVE    ACCT-HOSPID         TO  ACCTP-HOSPID
            MOVE    ACCT-NYUGAIKBN      TO  ACCTP-NYUGAIKBN
            MOVE    ACCT-PTID           TO  ACCTP-PTID
            MOVE    ACCT-SRYKA          TO  ACCTP-SRYKA
@@ -4298,45 +3396,19 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    LNK-WKSRYP-SANSOTEN (1) TO  ACCTP-SANSOTEN
       *    窒素点数
            MOVE    LNK-WKSRYP-CHISOTEN (1) TO  ACCTP-CHISOTEN
-      *    院外処方点数
-           MOVE    LNK-WKSRYP-INGAITEN (1) TO  ACCTP-INGAITEN
       *
       *    内服７種類逓減対象剤番号
            IF      LNK-WKSRYP-TEI-NKBN (1) =   2
                PERFORM VARYING     IDW     FROM    1   BY  1
-                       UNTIL       IDW     >   30
-                   IF      TBL-ACCTP-HOSPNUM (IDW)  =   ZERO
+                       UNTIL       IDW     >   10
+                   IF      TBL-ACCTP-HOSPID (IDW)  =   SPACE
                        MOVE    SRYACCTPLUS-REC
                                            TO  TBL-SRYACCTPLUS-REC(IDW)
                        MOVE    ACCT-HKNCOMBI
                                            TO  TBL-ACCTP-HKNCOMBI (IDW)
-                       MOVE    ACCT-SRYKBN
-                                           TO  TBL-ACCTP-SRYKBN   (IDW)
-                       MOVE    30          TO  IDW
+                       MOVE    10          TO  IDW
                    END-IF
                END-PERFORM
-           END-IF
-      *H27.4
-      *    ３０日逓減対象剤
-           IF      LNK-WKSRYP-TEI-NKBN30 (1)   =   2
-               PERFORM VARYING     IDW     FROM    1   BY  1
-                       UNTIL       IDW     >   30
-                   IF      TBL-ACCTP30-HOSPNUM (IDW)  =   ZERO
-                       MOVE    SRYACCTPLUS-REC
-                                           TO  TBL-SRYACCTPLUS30-REC
-                                                                (IDW)
-                       MOVE    ACCT-HKNCOMBI
-                                           TO  TBL-ACCTP30-HKNCOMBI
-                                                                 (IDW)
-                       MOVE    ACCT-SRYKBN
-                                           TO  TBL-ACCTP30-SRYKBN(IDW)
-                       MOVE    30          TO  IDW
-                   END-IF
-               END-PERFORM
-           END-IF
-           IF      (LNK-WKSRYP-TEI-NKBN (1)    =   2 )
-               OR  (LNK-WKSRYP-TEI-NKBN30 (1)  =   2 )
-               CONTINUE
            ELSE
                PERFORM 4503-SRYACCTPLUS-INS-SEC
            END-IF
@@ -4350,22 +3422,19 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        4504-SRYACCTPLUS-GENINS-SEC              SECTION.
       *
            PERFORM VARYING     IDW     FROM    1   BY  1
-                   UNTIL      (IDW     >   30   )   OR
-                              (TBL-ACCTP-HOSPNUM (IDW)  =   ZERO )
+                   UNTIL      (IDW     >   10   )   OR
+                              (TBL-ACCTP-HOSPID (IDW)  =   SPACE)
                MOVE    TBL-SRYACCTPLUS-REC(IDW)    TO  SRYACCTPLUS-REC
                INITIALIZE                  ACCTP-GRP-ZAINUM-G
                MOVE    ZERO                TO  IDW2
                PERFORM VARYING     IDX-GEN2    FROM    1   BY  1
-                       UNTIL      (IDX-GEN2    >   30   )   OR
+                       UNTIL      (IDX-GEN2    >   10   )   OR
                                   (WRK-ACTP-SRYKA(IDX-GEN2)
                                               =   SPACE)
                    IF     (ACCTP-SRYKA        =    WRK-ACTP-SRYKA
                                                           (IDX-GEN2))
                      AND  (TBL-ACCTP-HKNCOMBI(IDW)
                                               =    WRK-ACTP-HKNCOMBI
-                                                          (IDX-GEN2))
-                     AND  (TBL-ACCTP-SRYKBN  (IDW)
-                                              =    WRK-ACTP-SRYKBN
                                                           (IDX-GEN2))
                        PERFORM VARYING IDX-GEN FROM    1   BY  1
                                UNTIL   (IDX-GEN    >   50  )   OR
@@ -4385,50 +3454,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                        IF      IDW2                >   ZERO
                            PERFORM 4503-SRYACCTPLUS-INS-SEC
                        END-IF
-                       MOVE    30             TO  IDX-GEN2
-                   END-IF
-               END-PERFORM
-           END-PERFORM
-      *
-      *H27.4
-      *    30日逓減
-           PERFORM VARYING     IDW     FROM    1   BY  1
-                   UNTIL      (IDW     >   30   )   OR
-                              (TBL-ACCTP30-HOSPNUM (IDW)  =   ZERO )
-               MOVE    TBL-SRYACCTPLUS30-REC(IDW)    TO  SRYACCTPLUS-REC
-               INITIALIZE                  ACCTP-GRP-ZAINUM-G
-               MOVE    ZERO                TO  IDW2
-               PERFORM VARYING     IDX-GEN2    FROM    1   BY  1
-                       UNTIL      (IDX-GEN2    >   30   )   OR
-                                  (WRK-ACTP30-SRYKA (IDX-GEN2)
-                                              =   SPACE)
-                   IF     (ACCTP-SRYKA        =    WRK-ACTP30-SRYKA
-                                                          (IDX-GEN2))
-                     AND  (TBL-ACCTP30-HKNCOMBI(IDW)
-                                              =    WRK-ACTP30-HKNCOMBI
-                                                          (IDX-GEN2))
-                     AND  (TBL-ACCTP30-SRYKBN  (IDW)
-                                              =    WRK-ACTP30-SRYKBN
-                                                          (IDX-GEN2))
-                       PERFORM VARYING IDX-GEN FROM    1   BY  1
-                               UNTIL   (IDX-GEN    >   50  )   OR
-                                       (WRK-ACTP30-ZAINUM
-                                                  (IDX-GEN2 IDX-GEN)
-                                                       =  ZERO)
-                           ADD     1                   TO  IDW2
-                           IF      IDW2                >   15
-                               PERFORM 4503-SRYACCTPLUS-INS-SEC
-                               MOVE    1           TO  IDW2
-                               INITIALIZE          ACCTP-GRP-ZAINUM-G
-                               ADD     1           TO  ACCTP-RENNUM
-                           END-IF
-                           MOVE    WRK-ACTP30-ZAINUM (IDX-GEN2 IDX-GEN)
-                                          TO  ACCTP-GRP-ZAINUM (IDW2)
-                       END-PERFORM
-                       IF      IDW2                >   ZERO
-                           PERFORM 4503-SRYACCTPLUS-INS-SEC
-                       END-IF
-                       MOVE    30             TO  IDX-GEN2
+                       MOVE    10             TO  IDX-GEN2
                    END-IF
                END-PERFORM
            END-PERFORM
@@ -4445,90 +3471,30 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SMCNDATE-YMD        TO  ACCTP-UPYMD
            MOVE    SMCNDATE-HMS        TO  ACCTP-UPHMS
       *
-           MOVE    SPA-OPID            TO  ACCTP-OPID
-      *
            MOVE    SRYACCTPLUS-REC     TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "tbl_sryacctplus"   TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            IF      MCP-RC          NOT =   ZERO
               DISPLAY "K03 SRYACCTPLUS INS ERR:" ACCTP-KEY  "."
               DISPLAY "MCP-RC:" MCP-RC ":" 
               MOVE    "0005"          TO  SPA-ERRCD
-              STRING  "SRYACCTPLUS INS  ERR KEY : "
-                       ACCTP-KEY       DELIMITED  BY  SIZE
-                                       INTO  ORCSCGAIRAI-ERRMSG
-              END-STRING
            END-IF
       *
            .
        4503-SRYACCTPLUS-INS-EXT.
            EXIT.
       *
-      *!!!!
-      *****************************************************************
-      *    リハビリ開始日の履歴付加削除
-      *****************************************************************
-       45005-SANTEIPLUS-DEL-SEC              SECTION.
-      *
-           PERFORM VARYING IDX-R2      FROM    1   BY  1
-                   UNTIL  (IDX-R2      >   10      )
-               IF      TBL-RIHA-SRYCD(IDX-R2)  NOT =   SPACE
-                   INITIALIZE                  ORCSSANTEIAREA
-                   MOVE    "3"                 TO  SSANTEI-SYORI
-                   MOVE    "2"                 TO  SSANTEI-SYORI2
-                   MOVE    "K03"               TO  SSANTEI-PG
-                   MOVE    TBL-RIHA-SRYCD(IDX-R2)
-                                               TO  SSANTEI-SRYCD
-                   MOVE    SPA-PTID            TO  SSANTEI-PTID
-                   MOVE    SPA-SRYYMD          TO  SSANTEI-SRYYMD
-                   MOVE    ZERO                TO  SSANTEI-KAISU
-                   MOVE    TBL-RIHA-SRYKA (IDX-R2)
-                                               TO  SSANTEI-SRYKA
-                   MOVE    TBL-RIHA-HKNCOMBI (IDX-R2)
-                                               TO  SSANTEI-HKNCOMBINUM
-                   MOVE    TBL-RIHA-HKNKBN (IDX-R2)
-                                               TO  SSANTEI-HKNKBN
-                   CALL    "ORCSSANTEI"        USING
-                                               ORCSSANTEIAREA
-                                               SPA-AREA
-               END-IF
-           END-PERFORM
-           .
-       45005-SANTEIPLUS-DEL-EXT.
-           EXIT.
-      *!!!!
       *****************************************************************
       *    訂正で科変更のあった受診履歴の変更
       *****************************************************************
        45004-ALL-JYURRK-UPD-SEC              SECTION.
       *
-           IF      SPA-TEI-DENPNUM (1)  =   ZERO
-      *        複数科でない時の診療科変更
-               PERFORM VARYING     IDXF    FROM    1   BY  1
-                       UNTIL      (IDXF    >   15  )  OR
-                                  (WRK-TEI-SRYKA (IDXF)    =   SPACE)
-                   MOVE    WRK-TEI-SRYKA (IDXF)    TO  WRK-SRYKA
-                   MOVE    ZERO                TO  FLG-OK
-                   PERFORM VARYING     IDH3    FROM    1   BY  1
-                           UNTIL      (IDH3    >   15  )  OR
-                                      (TBL-SRYKA(IDH3) =   SPACE) OR
-                                      (FLG-OK          =   1  )
-                       IF     TBL-SRYKA (IDH3)     =   WRK-SRYKA
-                           MOVE    1               TO  FLG-OK
-                       END-IF
-                   END-PERFORM
-                   IF      FLG-OK              =   ZERO
-                        PERFORM 4500111-TEISEI-JYURRK-HEN-SEC
-                   END-IF
-               END-PERFORM
-          END-IF
-      *
-          PERFORM VARYING     IDXF    FROM    1   BY  1
+           PERFORM VARYING     IDXF    FROM    1   BY  1
                    UNTIL      (IDXF    >   15  )  OR
                               (SPA-TEI-DENPNUM (IDXF)  =   ZERO )
                MOVE    SPA-TEI-SRYKA (IDXF)    TO  WRK-SRYKA
@@ -4551,18 +3517,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                OR (FLG-OK  =   1    )
                    MOVE    ORCSCGAIRAI-SYUNOU-REC(IDX) TO  SYUNOU-REC
                    IF      SYU-DENPNUM     =   SPA-TEI-DENPNUM (IDXF) 
-                    AND   (SYU-HKNCOMBINUM NOT =   "9999" )
                        MOVE    1               TO  FLG-OK
                        MOVE    IDX             TO  IDH-GAI
                     END-IF
                END-PERFORM
                IF      FLG-OK              =   ZERO
-      *H24.5
-                  IF      SPA-TEI-HKNCOMBI (IDXF)    NOT =   "9999"
-      *
                     MOVE    SPA-TEI-DENPNUM (IDXF) TO  WRK-DENPNUM
                     PERFORM 450041-TEI-SYUNOU-DEL-SEC
-                  END-IF
                END-IF
            END-PERFORM
            .
@@ -4576,7 +3537,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    収納テーブル読み込み
            MOVE    SPACE               TO  SYUNOU-REC
            INITIALIZE                  SYUNOU-REC
-           MOVE    SPA-HOSPNUM         TO  SYU-HOSPNUM
+           MOVE    SPA-HOSPID          TO  SYU-HOSPID
            MOVE    SPA-NYUGAIKBN       TO  SYU-NYUGAIKBN
            MOVE    SPA-PTID            TO  SYU-PTID
            MOVE    WRK-DENPNUM         TO  SYU-DENPNUM
@@ -4602,13 +3563,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "DBDELETE"          TO  MCP-FUNC
                MOVE    "tbl_syunou"        TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
       *        収納明細削除
                MOVE    SPACE               TO  SYUMEI-REC
                INITIALIZE                      SYUMEI-REC
-               MOVE    SYU-HOSPNUM         TO  SMEI-HOSPNUM
+               MOVE    SYU-HOSPID          TO  SMEI-HOSPID
                MOVE    SYU-NYUGAIKBN       TO  SMEI-NYUGAIKBN
                MOVE    SYU-PTID            TO  SMEI-PTID
                MOVE    SYU-DENPNUM         TO  SMEI-DENPNUM
@@ -4616,40 +3577,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "DBDELETE"          TO  MCP-FUNC
                MOVE    "tbl_syumei"        TO  MCP-TABLE
                MOVE    "del2"              TO  MCP-PATHNAME
-grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
-      *        収納履歴マスタ
-               INITIALIZE                  SYURRK-REC
-               MOVE    SYU-HOSPNUM         TO  SYURRK-HOSPNUM
-               MOVE    SYU-NYUGAIKBN       TO  SYURRK-NYUGAIKBN
-               MOVE    SYU-PTID            TO  SYURRK-PTID
-               MOVE    SYU-DENPNUM         TO  SYURRK-DENPNUM
-      *
-               MOVE    SYURRK-REC          TO  MCPDATA-REC
-               MOVE    "DBDELETE"          TO  MCP-FUNC
-               MOVE    "tbl_syurrk"        TO  MCP-TABLE
-               MOVE    "del1"              TO  MCP-PATHNAME
-grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
-           END-IF
-      *    分娩管理テーブル削除
-           IF     (FLG-SYUNOU          =   ZERO )   AND
-                  (SYU-BUNBENINFFLG    =   "1"  )
-               INITIALIZE                      BUNBEN-REC
-               MOVE    SYU-HOSPNUM         TO  BUNBEN-HOSPNUM
-               MOVE    SYU-NYUGAIKBN       TO  BUNBEN-NYUGAIKBN
-               MOVE    SYU-PTID            TO  BUNBEN-PTID
-               MOVE    SYU-SRYYMD(1:6)     TO  BUNBEN-SKYYM
-               MOVE    SYU-DENPNUM         TO  BUNBEN-RRKNUM
-               MOVE    BUNBEN-REC          TO  MCPDATA-REC
-               MOVE    "DBDELETE"          TO  MCP-FUNC
-               MOVE    "tbl_bunben"        TO  MCP-TABLE
-               MOVE    "del3"              TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
            END-IF
            .
        450041-TEI-SYUNOU-DEL-EXT.
@@ -4660,9 +3590,32 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        45002-WKSRYACT-DEL-SEC              SECTION.
       *
+      *    作成済みのワーク診療行為マスタ−を削除する
+      *    MOVE    SPACE               TO  WKSRYACT-REC
+      *    MOVE    SPA-HOSPID          TO  WKSRY-HOSPID
+      *    MOVE    SPA-PTID            TO  WKSRY-PTID
+      *    MOVE    SPA-NYUGAIKBN       TO  WKSRY-NYUGAIKBN
+      *    MOVE    SPA-SRYKA           TO  WKSRY-SRYKA
+      *    MOVE    SPA-SRYYMD          TO  WKSRY-SRYYMD
+      *****MOVE    SPA-HKNCOMBINUM     TO  WKSRY-HKNCOMBI
+      *    MOVE    SPA-WKSRY-HKNCOMBI  TO  WKSRY-HKNCOMBI
+      *
+      *    MOVE    WKSRYACT-REC        TO  MCPDATA-REC
+      *    MOVE    "DBDELETE"          TO  MCP-FUNC
+      *    MOVE    "WKSRYACT-KEY2"     TO  ORC-DBPATH
+      *    CALL    "ORCMCPSUB"          USING
+      *                                 MCPAREA
+      *                                 ORCMCPAREA
+      *                                 MCPDATA-REC
+      *
+      *    IF      MCP-RC          NOT =   ZERO
+      *D       DISPLAY "K03 WKSRYACT DEL ERR:" MCP-RC
+      *D       MOVE    "0003"          TO  SPA-ERRCD
+      *    END-IF
+      *
       *    展開中の削除
            INITIALIZE                  WKSRYACT-REC
-           MOVE    SPA-HOSPNUM         TO  WKSRY-HOSPNUM
+           MOVE    SPA-HOSPID          TO  WKSRY-HOSPID
            MOVE    SPA-NYUGAIKBN       TO  WKSRY-NYUGAIKBN
            MOVE    SPA-PTID            TO  WKSRY-PTID
            MOVE    SPA-NYUGAIKBN       TO  WKSRY-NYUGAIKBN
@@ -4687,9 +3640,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "DBDELETE"          TO  MCP-FUNC
                    MOVE    "tbl_wksryact"      TO  MCP-TABLE
                    MOVE    "key"               TO  MCP-PATHNAME
-grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                       MCPDATA-REC
-                                                       SPA-AREA
+                   CALL    "MONFUNC"           USING
+                                               MCPAREA
+                                               MCPDATA-REC
                END-IF
       *
                MOVE    "tbl_wksryact"      TO  MCP-TABLE
@@ -4715,7 +3668,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    WRK-TIME1(1:4)       TO  WRK-TIME2(1:4)
       *    受診内容ファイルを特定する
            INITIALIZE                      UKETUKE-REC
-           MOVE    SPA-HOSPNUM         TO  UKE-HOSPNUM
+           MOVE    SPA-HOSPID          TO  UKE-HOSPID
            MOVE    SPA-SYSYMD          TO  UKE-UKEYMD
            MOVE    SPA-PTID            TO  UKE-PTID
            MOVE    SPA-SRYKA           TO  UKE-SRYKA
@@ -4745,23 +3698,17 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    SMCNDATE-YMD        TO  UKE-UPYMD
                        MOVE    SMCNDATE-HMS        TO  UKE-UPHMS
       *
-                       MOVE    SPA-OPID            TO  UKE-OPID
-      *
                        MOVE    UKETUKE-REC         TO  MCPDATA-REC
                        MOVE    "DBUPDATE"          TO  MCP-FUNC
                        MOVE    "tbl_uketuke"       TO  MCP-TABLE
                        MOVE    "key"               TO  MCP-PATHNAME
-grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                           MCPDATA-REC
-                                                           SPA-AREA
+                       CALL    "MONFUNC"           USING
+                                                   MCPAREA
+                                                   MCPDATA-REC
                        IF      MCP-RC          NOT =   ZERO
                            DISPLAY "K03 UKETUKE UPD ERR:" UKE-KEY
                                    ",MCP-RC:"  MCP-RC
                            MOVE    "0005"          TO  SPA-ERRCD
-                           STRING  "UKETUKE UPD  ERR KEY : "
-                                   UKE-KEY       DELIMITED  BY  SIZE
-                                   INTO  ORCSCGAIRAI-ERRMSG
-                           END-STRING
                        END-IF
                   END-IF
                END-IF
@@ -4804,24 +3751,14 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
        1004-DBKOUSIN-SYUTTL-SEC        SECTION.
       *
            MOVE    ZERO                TO  FLG-OK
-           MOVE    ZERO                TO  WRK-SUM-NYUKIN
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   ORCSCGAIRAI-SYUNOU-MAX)
-      **************      OR  (FLG-OK  =   1    )
-               IF      FLG-OK          =   ZERO
-                   MOVE    ORCSCGAIRAI-SYUNOU-REC(IDX) TO  SYUNOU-REC
-                   IF     (SYU-SRYKA       =   WRK-SRYKA )  AND
-                          (SYU-HKNCOMBINUM =   WRK-HKNCOMBI)
-                       MOVE    1               TO  FLG-OK
-                       MOVE    IDX             TO  IDH-GAI
-                   END-IF
-               END-IF
-               MOVE    ORCSCGAIRAI-SYUNOU-REC(IDX) TO  WRK-SYUNOU-REC
-               IF     (WRK-SYU-SRYKA   NOT =   WRK-SRYKA )  AND
-                      (WRK-SYU-HKNCOMBINUM =   WRK-HKNCOMBI)
-      *            収納入金額合計集計
-                   ADD     WRK-TTL-NYUKIN-TOTAL(IDX)
-                                           TO  WRK-SUM-NYUKIN
+                   UNTIL      (IDX     >   ORCSCGAIRAI-SYUNOU-MAX) OR
+                              (FLG-OK  =   1    )
+               MOVE    ORCSCGAIRAI-SYUNOU-REC(IDX) TO  SYUNOU-REC
+               IF     (SYU-SRYKA       =   WRK-SRYKA )  AND
+                      (SYU-HKNCOMBINUM =   WRK-HKNCOMBI)
+                   MOVE    1               TO  FLG-OK
+                   MOVE    IDX             TO  IDH-GAI
                 END-IF
            END-PERFORM
            IF      FLG-OK              =   1
@@ -4836,7 +3773,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
        10041-SYUTTL-INS-SEC        SECTION.
       *
            INITIALIZE                  SYUTTL-REC
-           MOVE    SYU-HOSPNUM         TO  SYUTTL-HOSPNUM
+           MOVE    SYU-HOSPID          TO  SYUTTL-HOSPID
            MOVE    SYU-NYUGAIKBN       TO  SYUTTL-NYUGAIKBN
            MOVE    SYU-PTID            TO  SYUTTL-PTID
            MOVE    WRK-KA-DENPNUM      TO  SYUTTL-DENPNUM
@@ -4858,7 +3795,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPACE               TO  SYUTTL-REC
            INITIALIZE                  SYUTTL-REC
-           MOVE    SYU-HOSPNUM         TO  SYUTTL-HOSPNUM
+           MOVE    SYU-HOSPID          TO  SYUTTL-HOSPID
            MOVE    SYU-NYUGAIKBN       TO  SYUTTL-NYUGAIKBN
            MOVE    SYU-PTID            TO  SYUTTL-PTID
            MOVE    WRK-KA-DENPNUM      TO  SYUTTL-DENPNUM
@@ -4897,8 +3834,6 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SYU-SKYKUKBN        TO  SYUTTL-SKYKUKBN
       *請求内容
            MOVE    SYU-SKY-NAIYOU      TO  SYUTTL-SKY-NAIYOU
-      *処方せん料再掲
-           MOVE    SYU-SHOHOU-SAI      TO  SYUTTL-SHOHOU-SAI
       *保険適用外金額−消費税（再掲）
            MOVE    SYU-TGMONEY-TAX-SAI TO  SYUTTL-TGMONEY-TAX-SAI
       *自費１から５
@@ -4913,8 +3848,6 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SYU-KOH-FTN-ENTANI  TO  SYUTTL-KOH-FTN-ENTANI
       *調整金
            MOVE    SYU-CHOSEI          TO  SYUTTL-CHOSEI
-           MOVE    SYU-CHOSEI1         TO  SYUTTL-CHOSEI1
-           MOVE    SYU-CHOSEI2         TO  SYUTTL-CHOSEI2
       *まとめ入力差額
            MOVE    SYU-GRP-SGKMONEY    TO  SYUTTL-GRP-SGKMONEY
       *保険適用金額
@@ -4947,9 +3880,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SYU-SKYMONEY        TO  SYUTTL-SKYMONEY
            COMPUTE SYUTTL-SKYMONEY     =   SYUTTL-SKYMONEY
                                        +   SYUTTL-CHOSEI
-      *    入金額は収納の合計
-      **** MOVE    SYU-NYUKIN-TOTAL    TO  SYUTTL-NYUKIN-TOTAL
-           MOVE    WRK-SUM-NYUKIN      TO  SYUTTL-NYUKIN-TOTAL
+           MOVE    SYU-NYUKIN-TOTAL    TO  SYUTTL-NYUKIN-TOTAL
            MOVE    SYU-NYUKIN-KAISU    TO  SYUTTL-NYUKIN-KAISU
       *未収理由
            MOVE    SYU-MISYURIYU       TO  SYUTTL-MISYURIYU
@@ -4957,8 +3888,6 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SYU-ZAITAKU         TO  SYUTTL-ZAITAKU
       *診療区分別給付外点数
            MOVE    SYU-KYUFUGAI        TO  SYUTTL-KYUFUGAI
-      *保険適用区分
-           MOVE    SYU-HKNTEKKBN       TO  SYUTTL-HKNTEKKBN
       *
       *    伝票状態区分
            IF      SYUTTL-SKYMONEY     >   SYUTTL-NYUKIN-TOTAL
@@ -4976,23 +3905,17 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SMCNDATE-YMD        TO  SYUTTL-UPYMD
                MOVE    SMCNDATE-HMS        TO  SYUTTL-UPHMS
       *
-               MOVE    SPA-OPID            TO  SYUTTL-OPID
-      *
                MOVE    SYUTTL-REC          TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "tbl_syutotal"      TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "K03 SYUTTL INS ERR:" SYUTTL-KEY
                        ",MCP-RC:"  MCP-RC
                    MOVE    "0005"          TO  SPA-ERRCD
-                   STRING  "SYUTTL INS  ERR KEY : "
-                           SYUTTL-KEY      DELIMITED  BY  SIZE
-                                   INTO  ORCSCGAIRAI-ERRMSG
-                   END-STRING
                END-IF
            ELSE
       *        更新（新規とする）
@@ -5000,22 +3923,16 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SMCNDATE-YMD        TO  SYUTTL-UPYMD
                MOVE    SMCNDATE-HMS        TO  SYUTTL-UPHMS
       *
-               MOVE    SPA-OPID            TO  SYUTTL-OPID
-      *
                MOVE    SYUTTL-REC          TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "tbl_syutotal"      TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "K03 SYUTTL UPD ERR:" SYUTTL-KEY
                        ",MCP-RC:"  MCP-RC
-                   STRING  "SYUTTL UPD  ERR KEY : "
-                           SYUTTL-KEY      DELIMITED  BY  SIZE
-                                   INTO  ORCSCGAIRAI-ERRMSG
-                   END-STRING
                    MOVE    "0005"          TO  SPA-ERRCD
                END-IF
            END-IF
@@ -5030,12 +3947,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        300-DELETE-SYORI-SEC             SECTION.
       *
            MOVE    ZERO                TO  FLG-NAIBUN
-      *
-      *    レセプト作成管理マスタ更新処理
-           IF      SPA-HKNCOMBINUM NOT =   "9999"
-               PERFORM 3009-RECEUPD-UPDATE-SEC
-           END-IF
-      *
       *    削除処理
       *    複数科・保険入力があった場合、すべて削除する
            IF      SPA-TEI-DENPNUM (1) NOT =   ZERO
@@ -5051,22 +3962,16 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            ELSE
                INITIALIZE                  ORCSKARRKAREA
                MOVE    SPA-SRYYMD(1:6)     TO  SKARRK-SRYYM
-      ******   MOVE    SPA-SRYKA           TO  SKARRK-SRYKA
-               MOVE    SPA-OLD-SRYKA       TO  SKARRK-SRYKA
+               MOVE    SPA-SRYKA           TO  SKARRK-SRYKA
                CALL    "ORCSKARRK"         USING
                                            ORCSKARRKAREA
                                            SPA-AREA
                IF      SKARRK-RC       NOT =   ZERO
                    MOVE    "0005"              TO  SPA-ERRCD
-                   STRING  "ORCSKARRK ERR "
-                           SKARRK-ERRMSG      DELIMITED  BY  SIZE
-                                   INTO  ORCSCGAIRAI-ERRMSG
-                   END-STRING
                END-IF
            END-IF
       *
            IF      FLG-NAIBUN          =   1
-              AND  SPA-ERRCD           =   SPACE
       *        内分泌負荷試験包括点数チェック
                INITIALIZE                  ORCSSANFUKAAREA
                INITIALIZE                  SPA-SCR-REC
@@ -5082,10 +3987,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
            END-IF
       *
-      **** レセプト作成管理マスタ更新処理
-      *    IF      SPA-HKNCOMBINUM NOT =   "9999"
-      *        PERFORM 3009-RECEUPD-UPDATE-SEC
-      **** END-IF
+      *    レセプト作成管理マスタ更新処理
+           IF      SPA-HKNCOMBINUM NOT =   "9999"
+               PERFORM 3009-RECEUPD-UPDATE-SEC
+           END-IF
            IF      SPA-ERRCD           =   SPACE
       *        ワーク診療行為マスタ−が存在した時、削除する
                PERFORM 45002-WKSRYACT-DEL-SEC
@@ -5107,7 +4012,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    受診履歴の連番をすべて削除する
            MOVE    SPACE               TO  JYURRK-REC
            INITIALIZE                      JYURRK-REC
-           MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
+           MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
            MOVE    SPA-PTID            TO  JYURRK-PTID
            MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
            MOVE    SPA-OLD-SRYKA       TO  JYURRK-SRYKA
@@ -5168,7 +4073,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPACE               TO  JYURRK-REC
            INITIALIZE                      JYURRK-REC
-           MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
+           MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
            MOVE    SPA-PTID            TO  JYURRK-PTID
            MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
            MOVE    WRK-JYURRK-SRYKA    TO  JYURRK-SRYKA
@@ -5194,9 +4099,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                IF      JYURRK-RENNUM       =   WRK-RENNUM-KEY
                    CONTINUE
                ELSE
-                   IF      WRK-JYURRK-RENNUM   =   9
-                       MOVE    "XXXX"              TO  WRK-ERRCD
-                   END-IF
                    ADD     1                   TO  WRK-JYURRK-RENNUM
                    MOVE    JYURRK-RENNUM       TO  WRK-RENNUM-KEY
                END-IF
@@ -5209,41 +4111,27 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "DBDELETE"          TO  MCP-FUNC
                    MOVE    "tbl_jyurrk"        TO  MCP-TABLE
                    MOVE    "key"               TO  MCP-PATHNAME
-grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                       MCPDATA-REC
-                                                       SPA-AREA
-                   IF      MCP-RC          NOT =   ZERO
-                       DISPLAY "K03 JYURRK DEL ERR:" JYURRK-KEY
-                               ",MCP-RC:" MCP-RC
-                       MOVE    "0005"          TO  SPA-ERRCD
-                   END-IF
+                   CALL    "MONFUNC"           USING
+                                               MCPAREA
+                                               MCPDATA-REC
+      *
                    MOVE    WRK-JYURRK-RENNUM   TO  JYURRK-RENNUM
       *
                    MOVE    SMCNDATE-YMD        TO  JYURRK-CREYMD
                    MOVE    SMCNDATE-YMD        TO  JYURRK-UPYMD
                    MOVE    SMCNDATE-HMS        TO  JYURRK-UPHMS
       *
-                   MOVE    SPA-OPID            TO  JYURRK-OPID
-      *
                    MOVE    JYURRK-REC          TO  MCPDATA-REC
                    MOVE    "DBINSERT"          TO  MCP-FUNC
                    MOVE    "tbl_jyurrk"        TO  MCP-TABLE
                    MOVE    "key"               TO  MCP-PATHNAME
-grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                       MCPDATA-REC
-                                                       SPA-AREA
+                   CALL    "MONFUNC"           USING
+                                               MCPAREA
+                                               MCPDATA-REC
                    IF      MCP-RC          NOT =   ZERO
                        DISPLAY "K03 JYURRK INS ERR:" JYURRK-KEY
-                               ",MCP-RC:" MCP-RC
+                           ",MCP-RC:" MCP-RC
                        MOVE    "0005"          TO  SPA-ERRCD
-                       STRING  "JYURRK INS ERR KEY : "
-                               JYURRK-KEY    DELIMITED  BY  SIZE
-                                       INTO  ORCSCGAIRAI-ERRMSG
-                       END-STRING
-                       IF      WRK-ERRCD       NOT =   SPACE
-                           MOVE    "0105"      TO  SPA-ERRCD
-                           MOVE    SPACE       TO  ORCSCGAIRAI-ERRMSG
-                       END-IF
                    END-IF
       *            診療会計修正
                    PERFORM 4500115-TEISEI-SRYACTUPD-SEC
@@ -5289,7 +4177,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                               (SPA-TEI-DENPNUM(IDXF)   =   ZERO)
                MOVE    SPACE               TO  JYURRK-REC
                INITIALIZE                      JYURRK-REC
-               MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
+               MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
                MOVE    SPA-PTID            TO  JYURRK-PTID
                MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
                MOVE    SPA-TEI-SRYKA(IDXF) TO  JYURRK-SRYKA
@@ -5311,7 +4199,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *
                PERFORM
                        UNTIL       FLG-JYURRK      =   1
-               IF      JYURRK-SRYYMD       =   SPA-SRYYMD
       *
       *            診療会計マスタの診療回数をクリアする
                    PERFORM 4500112-TEISEI-SRYACCT-SEC
@@ -5325,8 +4212,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *            受診履歴・収納削除
                    PERFORM 4500114-TEISEI-JYURRKDEL-SEC
-      *
-               END-IF
       *
                    MOVE    "tbl_jyurrk"        TO  MCP-TABLE
                    MOVE    "key6"              TO  MCP-PATHNAME
@@ -5357,10 +4242,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                                SPA-AREA
                    IF      SKARRK-RC       NOT =   ZERO
                        MOVE    "0005"              TO  SPA-ERRCD
-                       STRING  "ORCSKARRK ERR "
-                               SKARRK-ERRMSG   DELIMITED  BY  SIZE
-                                               INTO  ORCSCGAIRAI-ERRMSG
-                       END-STRING
                    END-IF
                END-IF
            END-PERFORM
@@ -5381,7 +4262,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                        UNTIL       FLG-JYURRK  NOT =   ZERO
                    MOVE    SPACE               TO  JYURRK-REC
                    INITIALIZE                      JYURRK-REC
-                   MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
+                   MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
                    MOVE    SPA-PTID            TO  JYURRK-PTID
                    MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
                    MOVE    WRK-JYURRK-SRYKA    TO  JYURRK-SRYKA
@@ -5408,23 +4289,17 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    PERFORM 990-DBCLOSE-SEC
                    IF      FLG-JYURRK          =   ZERO
       *                収納削除
-                       IF      JYURRK-HKNCOMBINUM  NOT =   "9999"
-                           PERFORM 45001141-SYUNOU-DELETE-SEC
-                       END-IF
+                       PERFORM 45001141-SYUNOU-DELETE-SEC
       *
       *                受診履歴削除
                        MOVE    JYURRK-REC          TO  MCPDATA-REC
                        MOVE    "DBDELETE"          TO  MCP-FUNC
                        MOVE    "tbl_jyurrk"        TO  MCP-TABLE
                        MOVE    "key"               TO  MCP-PATHNAME
-grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                           MCPDATA-REC
-                                                           SPA-AREA
-                       IF      MCP-RC          NOT =   ZERO
-                           DISPLAY "K03 JYURRK DEL ERR:" JYURRK-KEY
-                                   ",MCP-RC:" MCP-RC
-                           MOVE    "0005"          TO  SPA-ERRCD
-                       END-IF
+                       CALL    "MONFUNC"           USING
+                                                   MCPAREA
+                                                   MCPDATA-REC
+      *
                    END-IF
                END-PERFORM
            END-PERFORM
@@ -5441,7 +4316,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
        45001141-SYUNOU-DELETE-SEC         SECTION.
       *
            INITIALIZE                      SYUNOU-REC
-           MOVE    SPA-HOSPNUM         TO  SYU-HOSPNUM
+           MOVE    SPA-HOSPID          TO  SYU-HOSPID
            MOVE    SPA-NYUGAIKBN       TO  SYU-NYUGAIKBN
            MOVE    SPA-PTID            TO  SYU-PTID
            MOVE    JYURRK-DENPNUM      TO  SYU-DENPNUM
@@ -5465,13 +4340,13 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "DBDELETE"          TO  MCP-FUNC
                MOVE    "tbl_syunou"        TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
       *        収納明細削除
                MOVE    SPACE               TO  SYUMEI-REC
                INITIALIZE                      SYUMEI-REC
-               MOVE    SYU-HOSPNUM         TO  SMEI-HOSPNUM
+               MOVE    SYU-HOSPID          TO  SMEI-HOSPID
                MOVE    SYU-NYUGAIKBN       TO  SMEI-NYUGAIKBN
                MOVE    SYU-PTID            TO  SMEI-PTID
                MOVE    SYU-DENPNUM         TO  SMEI-DENPNUM
@@ -5479,30 +4354,16 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "DBDELETE"          TO  MCP-FUNC
                MOVE    "tbl_syumei"        TO  MCP-TABLE
                MOVE    "del2"              TO  MCP-PATHNAME
-grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
-      *        収納履歴マスタ
-               INITIALIZE                  SYURRK-REC
-               MOVE    SYU-HOSPNUM         TO  SYURRK-HOSPNUM
-               MOVE    SYU-NYUGAIKBN       TO  SYURRK-NYUGAIKBN
-               MOVE    SYU-PTID            TO  SYURRK-PTID
-               MOVE    SYU-DENPNUM         TO  SYURRK-DENPNUM
-      *
-               MOVE    SYURRK-REC          TO  MCPDATA-REC
-               MOVE    "DBDELETE"          TO  MCP-FUNC
-               MOVE    "tbl_syurrk"        TO  MCP-TABLE
-               MOVE    "del1"              TO  MCP-PATHNAME
-grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
       *
            END-IF
       *    合計収納削除
            IF     (FLG-SYUNOU          =   ZERO )   AND
                   (SYU-FUKU-DENPNUM    NOT =   ZERO)
                INITIALIZE                  SYUTTL-REC
-               MOVE    SYU-HOSPNUM         TO  SYUTTL-HOSPNUM
+               MOVE    SYU-HOSPID          TO  SYUTTL-HOSPID
                MOVE    SYU-NYUGAIKBN       TO  SYUTTL-NYUGAIKBN
                MOVE    SYU-PTID            TO  SYUTTL-PTID
                MOVE    SYU-FUKU-DENPNUM    TO  SYUTTL-DENPNUM
@@ -5526,27 +4387,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "DBDELETE"          TO  MCP-FUNC
                    MOVE    "tbl_syutotal"      TO  MCP-TABLE
                    MOVE    "key"               TO  MCP-PATHNAME
-grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                       MCPDATA-REC
-                                                       SPA-AREA
+                   CALL    "MONFUNC"           USING
+                                               MCPAREA
+                                               MCPDATA-REC
                END-IF
-           END-IF
-      *    分娩管理テーブル削除
-           IF     (FLG-SYUNOU          =   ZERO )   AND
-                  (SYU-BUNBENINFFLG    =   "1"  )
-               INITIALIZE                      BUNBEN-REC
-               MOVE    SYU-HOSPNUM         TO  BUNBEN-HOSPNUM
-               MOVE    SYU-NYUGAIKBN       TO  BUNBEN-NYUGAIKBN
-               MOVE    SYU-PTID            TO  BUNBEN-PTID
-               MOVE    SYU-SRYYMD(1:6)     TO  BUNBEN-SKYYM
-               MOVE    SYU-DENPNUM         TO  BUNBEN-RRKNUM
-               MOVE    BUNBEN-REC          TO  MCPDATA-REC
-               MOVE    "DBDELETE"          TO  MCP-FUNC
-               MOVE    "tbl_bunben"        TO  MCP-TABLE
-               MOVE    "del3"              TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
            END-IF
            .
        45001141-SYUNOU-DELETE-EXT.
@@ -5556,33 +4400,82 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        4500115-TEISEI-SRYACTUPD-SEC          SECTION.
       *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX         >   15  )  OR
+                              (JYURRK-ZAINUM (IDX) =   ZERO)
+                           OR (SPA-ERRCD       NOT =   SPACE )
       *
-           MOVE    JYURRK-SRYYMD(7:2)      TO  IDX-2
-      *ver.4.8
-      *    EVALUATE    JYURRK-RENNUM
-      *        WHEN    1
-      *            MOVE    2               TO  IDX-1
-      *        WHEN    2
-      *            MOVE    3               TO  IDX-1
-      *        WHEN    OTHER
-      *            MOVE    4               TO  IDX-1
-      *    END-EVALUATE
-      *    EVALUATE    WRK-RENNUM-KEY
-      *        WHEN    1
-      *            MOVE    2               TO  IDX-3
-      *        WHEN    2
-      *            MOVE    3               TO  IDX-3
-      *        WHEN    OTHER
-      *            MOVE    4               TO  IDX-3
-      **** END-EVALUATE
+               INITIALIZE                      SRYACCT-REC
+               MOVE    JYURRK-HOSPID       TO  ACCT-HOSPID
+               MOVE    SPA-NYUGAIKBN       TO  ACCT-NYUGAIKBN
+               MOVE    JYURRK-PTID         TO  ACCT-PTID
+               MOVE    JYURRK-SRYKA        TO  ACCT-SRYKA
+               MOVE    JYURRK-SRYYMD(1:6)  TO  ACCT-SRYYM
+               MOVE    JYURRK-ZAINUM (IDX) TO  ACCT-ZAINUM
       *
-           COMPUTE IDX-1               =   JYURRK-RENNUM   +   1
-           COMPUTE IDX-3               =   WRK-RENNUM-KEY  +   1
+               MOVE    SRYACCT-REC         TO  MCPDATA-REC
+               MOVE    "tbl_sryacct"       TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
+               PERFORM 910-DBSELECT-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    "tbl_sryacct"       TO  MCP-TABLE
+                   MOVE    "key5"              TO  MCP-PATHNAME
+                   PERFORM 930-SRYACCT-NEXT-SEC
+               ELSE
+                   MOVE    1                   TO  FLG-SRYACCT
+               END-IF
+               PERFORM
+                   UNTIL   (FLG-SRYACCT        =   1    )
+                       OR  (SPA-ERRCD      NOT =   SPACE)
       *
-           IF      IDX-1           NOT =   IDX-3
-      *        回数テーブルが異なる時のみ変更
-               PERFORM 45001112-ACCTDAY-SEC
-           END-IF
+                   MOVE    JYURRK-SRYYMD(7:2)      TO  IDX-2
+                   EVALUATE    JYURRK-RENNUM
+                       WHEN    1
+                           MOVE    2               TO  IDX-1
+                       WHEN    2
+                           MOVE    3               TO  IDX-1
+                       WHEN    OTHER
+                           MOVE    4               TO  IDX-1
+                   END-EVALUATE
+                       EVALUATE    WRK-RENNUM-KEY
+                           WHEN    1
+                               MOVE    2               TO  IDX-3
+                           WHEN    2
+                               MOVE    3               TO  IDX-3
+                           WHEN    OTHER
+                               MOVE    4               TO  IDX-3
+                       END-EVALUATE
+      *                剤回数　変更
+                       ADD     ACCT-DAY (IDX-3 IDX-2)
+                                              TO  ACCT-DAY (IDX-1 IDX-2)
+                       MOVE    ZERO           TO  ACCT-DAY (IDX-3 IDX-2)
+      *
+      *
+                       MOVE    SMCNDATE-YMD        TO  ACCT-UPYMD
+                       MOVE    SMCNDATE-HMS        TO  ACCT-UPHMS
+      *
+                       MOVE    SRYACCT-REC         TO  MCPDATA-REC
+                       MOVE    "DBUPDATE"          TO  MCP-FUNC
+                       MOVE    "tbl_sryacct"       TO  MCP-TABLE
+                       MOVE    "key"               TO  MCP-PATHNAME
+                       CALL    "MONFUNC"           USING
+                                                   MCPAREA
+                                                   MCPDATA-REC
+      *
+                       IF      MCP-RC          NOT =   ZERO
+                            DISPLAY "K03 SRYACCT UPD ERR:" MCP-RC
+                             ",KEY:"  ACCT-KEY
+                            MOVE    "0005"          TO  SPA-ERRCD
+                       END-IF
+      *
+                   MOVE    "tbl_sryacct"       TO  MCP-TABLE
+                   MOVE    "key5"              TO  MCP-PATHNAME
+                   PERFORM 930-SRYACCT-NEXT-SEC
+               END-PERFORM
+               MOVE    "tbl_sryacct"       TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
+               PERFORM 990-DBCLOSE-SEC
+           END-PERFORM
       *
            .
        4500115-TEISEI-SRYACTUPD-EXT.
@@ -5624,7 +4517,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPACE               TO  SRYKARRK-REC
            INITIALIZE                      SRYKARRK-REC
-           MOVE    SPA-HOSPNUM         TO  KARRK-HOSPNUM
+           MOVE    SPA-HOSPID          TO  KARRK-HOSPID
            MOVE    SPA-PTID            TO  KARRK-PTID
            MOVE    WRK-SRYKA           TO  KARRK-SRYKA
       *
@@ -5647,7 +4540,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      FLG-SRYKARRK           =   1
                MOVE    SPACE               TO  SRYKARRK-REC
                INITIALIZE                      SRYKARRK-REC
-               MOVE    SPA-HOSPNUM         TO  KARRK-HOSPNUM
+               MOVE    SPA-HOSPID          TO  KARRK-HOSPID
                MOVE    SPA-PTID            TO  KARRK-PTID
                MOVE    WRK-SRYKA           TO  KARRK-SRYKA
                MOVE    SPA-SYOSIN-YMD      TO  KARRK-SYOSINYMD1
@@ -5668,14 +4561,14 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            INITIALIZE                      ORCSRECEUPDAREA
            MOVE    "2"                 TO  LNK-UPD-SYORI
-           MOVE    SPA-HOSPNUM         TO  LNK-UPD-HOSPNUM
+           MOVE    SPA-HOSPID          TO  LNK-UPD-HOSPID
            MOVE    SPA-PTID            TO  LNK-UPD-PTID
            MOVE    SPA-TERMID          TO  LNK-UPD-TERMID
            MOVE    SPA-OPID            TO  LNK-UPD-OPID
            MOVE    SPA-NYUGAIKBN       TO  LNK-UPD-NYUGAIKBN
            MOVE    SPA-SRYYMD(1:6)     TO  LNK-UPD-SRYYM
            MOVE    SPA-HKNKBN          TO  LNK-UPD-HKNKBN
-           IF      SPA-HKNKBN          =   1
+           IF      SPA-HKNKBN          =   "1"
                EVALUATE    SPA-RSI-HKNKBN
                    WHEN    "1"
                    WHEN    "2"
@@ -5683,39 +4576,13 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *                 労災
                        MOVE    "1"                 TO  LNK-UPD-HKNKBN
                    WHEN    "4"
-      *                自賠責
-                       IF      SPA-RSI-JUNKYO      =   "1"
-      *                    健保準拠
-                           MOVE    "4"             TO  LNK-UPD-HKNKBN
-                       ELSE
-                           MOVE    "2"             TO  LNK-UPD-HKNKBN
-                       END-IF
-                   WHEN    "5"
-      *                公務災害
-                       IF      SPA-RSI-JUNKYO      =   "1"
-      *                    健保準拠
-                           MOVE    "5"             TO  LNK-UPD-HKNKBN
-                       ELSE
-                           MOVE    "1"             TO  LNK-UPD-HKNKBN
-                       END-IF
-      *
-                   WHEN    "6"
-      *                自賠責（第三者行為）
-                       MOVE    "7"             TO  LNK-UPD-HKNKBN
+      *                 自賠責
+                       MOVE    "2"                 TO  LNK-UPD-HKNKBN
                END-EVALUATE
            END-IF
-      *    公害保険
-           IF      SPA-HKNKBN          =   2
-               MOVE    "6"                 TO  LNK-UPD-HKNKBN
-           END-IF
            CALL    "ORCSRECEUPD"       USING    ORCSRECEUPDAREA
-                                                SPA-AREA
            IF      LNK-UPD-RC      NOT =   ZERO
                MOVE    "0005"              TO  SPA-ERRCD
-               STRING  "ORCSRECEUPD ERR LNK-UPD-RC : "
-                        LNK-UPD-RC   DELIMITED  BY  SIZE
-                                         INTO  ORCSCGAIRAI-ERRMSG
-               END-STRING
                DISPLAY "LNK-UPD-RC =>" LNK-UPD-RC
            END-IF
       *
@@ -5728,7 +4595,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
        800-DAILYKEY-SEC         SECTION.
       *
            CALL    "ORCSDAILYKEY"   USING   SDAILYKEYAREA
-                                            SPA-AREA
       *
            .
       *
@@ -5744,7 +4610,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-SRYYMD          TO  TNS-YUKOSTYMD
            MOVE    SPA-SRYYMD          TO  TNS-YUKOEDYMD
       *
-           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -5768,62 +4633,9 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
-      *    附加情報の上限回数設定
-           IF     (FLG-TENSU           =   ZERO )  AND
-                  (TNS-SRYCD(1:1)      =   "1"  )
-               PERFORM 9101-TENSUPLUS-SYORI-SEC
-           END-IF
       *
            .
        910-TENSU-READ-EXT.
-           EXIT.
-      *****************************************************************
-      *    点数マスタ付加情報より編集処理
-      *****************************************************************
-       9101-TENSUPLUS-SYORI-SEC          SECTION.
-      *
-           MOVE    SPACE               TO  TENSUPLUS-REC
-           INITIALIZE                      TENSUPLUS-REC
-           MOVE    TNS-SRYCD           TO  TNSP-SRYCD
-           MOVE    SPA-SRYYMD          TO  TNSP-YUKOSTYMD
-           MOVE    SPA-SRYYMD          TO  TNSP-YUKOEDYMD
-      *
-           MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
-           MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
-           MOVE    "tbl_tensuplus"     TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_tensuplus"     TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 920-DBFETCH-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC         TO  TENSUPLUS-REC
-                   MOVE    ZERO                TO  FLG-TENSUPLUS
-               ELSE
-                   MOVE    1                   TO  FLG-TENSUPLUS
-                   INITIALIZE                      TENSUPLUS-REC
-               END-IF
-           ELSE
-               MOVE    1                   TO  FLG-TENSUPLUS
-               INITIALIZE                      TENSUPLUS-REC
-           END-IF
-           MOVE    "tbl_tensuplus"     TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *    上限回数
-           IF      TNSP-SANTEIRRKKBN   =   1
-               MOVE    TNSP-SANTEIRRKKBN   TO  TNS-SANTEIRRKKBN
-               MOVE    TNSP-JGNCNT         TO  TNS-JGNCNT
-               MOVE    TNSP-JGNCNT1D       TO  TNS-JGNCNT1D
-               MOVE    TNSP-JGNCNTERR      TO  TNS-JGNCNTERR
-      *
-               MOVE    TNSP-JGNCNTETCM     TO  TNS-JGNCNTETCM
-               MOVE    TNSP-JGNCNTETC      TO  TNS-JGNCNTETC
-           END-IF
-      *
-           .
-       9101-TENSUPLUS-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -5991,6 +4803,28 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
+      *    算定歴マスタ読み込み
+      *****************************************************************
+      *920-SANTEI-READ-SEC         SECTION.
+      *
+      *    MOVE    "DBFETCH"           TO  MCP-FUNC
+      *    CALL    "ORCMCPSUB"          USING
+      *                                 MCPAREA
+      *                                 ORCMCPAREA
+      *                                 MCPDATA-REC
+      *    IF      MCP-RC              =   ZERO
+      *        MOVE    MCPDATA-REC         TO  SANTEI-REC
+      *        MOVE    ZERO                TO  FLG-SANTEI
+      *    ELSE
+      *        INITIALIZE                      SANTEI-REC
+      *        MOVE    1                   TO  FLG-SANTEI
+      *    END-IF
+      *
+      *    .
+      *920-SANTEI-READ-EXT.
+      *    EXIT.
+      *
+      *****************************************************************
       *    ワーク診療行為データ読込
       *****************************************************************
        940-WKSRYACT-READ-SEC          SECTION.
@@ -6077,24 +4911,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        910-SRYACCTPLUS-READ-EXT.
            EXIT.
-      *v.4.8
-      *****************************************************************
-      *    パラメタ情報読み込み
-      *****************************************************************
-       990-PARA-READ-SEC        SECTION.
-      *
-           PERFORM 920-DBFETCH-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC     TO  PARA-REC
-               MOVE    ZERO            TO  FLG-PARA
-           ELSE
-               INITIALIZE                  PARA-REC
-               MOVE    1               TO  FLG-PARA
-           END-IF
-      *
-           .
-       990-PARA-READ-EXT.
-           EXIT.
       *
       *****************************************************************
       *    テーブル検索処理
@@ -6102,9 +4918,9 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        910-DBSELECT-EXT.
@@ -6115,9 +4931,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
       *
@@ -6130,12 +4946,27 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        990-DBCLOSE-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    パラメタデータ順読み
+      *****************************************************************
+       980-PARA-READ-SEC         SECTION.
+      *
+           READ    PARA-FILE 
+               AT  END
+                   MOVE    1           TO  FLG-PARA
+               NOT AT  END 
+                   MOVE    ZERO        TO  FLG-PARA
+           END-READ
+      *
+           .
+       980-PARA-READ-EXT.
+           EXIT.
       *
