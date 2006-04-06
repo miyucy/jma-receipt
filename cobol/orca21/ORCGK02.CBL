@@ -3439,7 +3439,13 @@
                            (SPA-COM-INPUTCD(IDX)   =   SPACE ))
                IF     (SPA-COM-KZMFLG (IDX)    NOT =   SPACE )  OR
                       (SPA-COM-KZMFLG2(IDX)    NOT =   SPACE )
-                   MOVE    SPACE               TO  SPA-MAE-INPUTCD (IDX)
+      *            ÌóÂ«¥»¥Ã¥È
+                   IF     (SPA-GMN-INPUTCD(IDX)(1:1)   =   "." )
+                      OR  (SPA-GMN-INPUTCD(IDX)(1:1)   =   "S" )
+                      CONTINUE
+                   ELSE
+                       MOVE    SPACE       TO  SPA-MAE-INPUTCD (IDX)
+                   END-IF
                END-IF
                MOVE    SPACE           TO  SPA-COM-KZMFLG (IDX)
                MOVE    SPACE           TO  SPA-COM-KZMFLG2(IDX)
@@ -5535,6 +5541,9 @@
                                        TO  SPA-GMN-INPUTCD(SPA-GMN-IDX)
                PERFORM 41014-GYOINSN-SEC
                IF      SPA-ERRCD       =   SPACE
+      *TEST
+           DISPLAY "INS SPA-GMN-IDX:" SPA-GMN-IDX
+      *TEST
                    MOVE    "3"             TO  SPA-COM-CUR (SPA-GMN-IDX)
                    ADD     1               TO  SPA-GMN-IDX
                    MOVE    1               TO  FLG-INS

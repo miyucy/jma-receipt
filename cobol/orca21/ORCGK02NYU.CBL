@@ -2616,8 +2616,6 @@
                IF      SPA-COM-CUR (IDX)   =   SPACE
                    MOVE    SPA-GMN-INPUTCD (IDX)
                                            TO  SPA-MAE-INPUTCD (IDX)
-               ELSE
-                   MOVE    SPACE           TO  SPA-MAE-INPUTCD (IDX)
                END-IF
       *        警告表示をしない
                MOVE    "1"                 TO  SPA-COM-KZMFLG(IDX)
@@ -2642,7 +2640,13 @@
                IF     (SPA-COM-KZMFLG (IDX)    NOT =   SPACE )  OR
                       (SPA-COM-KZMFLG2(IDX)    NOT =   SPACE )  OR
                       (SPA-COM-NYU-KZMFLG-G(IDX)    NOT =   SPACE )
-                   MOVE    SPACE           TO  SPA-MAE-INPUTCD (IDX)
+      *            約束セット
+                   IF     (SPA-GMN-INPUTCD(IDX)(1:1)   =   "." )
+                      OR  (SPA-GMN-INPUTCD(IDX)(1:1)   =   "S" )
+                      CONTINUE
+                   ELSE
+                       MOVE    SPACE       TO  SPA-MAE-INPUTCD (IDX)
+                   END-IF
                END-IF
                MOVE    SPACE           TO  SPA-COM-KZMFLG (IDX)
                MOVE    SPACE           TO  SPA-COM-KZMFLG2(IDX)
@@ -4049,7 +4053,7 @@
                IF     (SPA-MAE-INPUTCD (SPA-GMN-IDX)  NOT =
                                        SPA-GMN-INPUTCD (SPA-GMN-IDX)) OR
                       (SPA-COM-IN2 (SPA-GMN-IDX)   =   "1"  )
-               OR     (SPA-GMN-INPUTCD (SPA-GMN-IDX)   NOT =   SPACE)
+      *??      OR     (SPA-GMN-INPUTCD (SPA-GMN-IDX)   NOT =   SPACE)
                    PERFORM 41011-KOUI-HEN2-SEC
                END-IF
       *        フリーコメントの名称の全角チェックはすべて行う
