@@ -458,6 +458,8 @@
            03  WRK-SANTEI-CNT          PIC 9(04).
       *    入力位置
            03  WRK-FLG-IN              PIC X(01).
+      *    同日初診フラグ
+           03  WRK-DOUSIN              PIC 9(01).
       *
       *    診療行為チェック用編集
            03  WRK-TDD                 PIC 9(02).
@@ -2501,6 +2503,14 @@
            MOVE    SPA-SYOYMD          TO  WRK-SYMD
            PERFORM 520-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  SPA-GMN-SYOSINYMD
+      *    同時初診
+           IF      SPA-DOUYMD      NOT =   SPACE
+               MOVE    SPA-DOUYMD          TO  WRK-SYMD
+               PERFORM 520-SEIWA-HEN-SEC
+               MOVE    " ("                TO  SPA-GMN-SYOSINYMD(10:2)
+               MOVE    WRK-HENYMDG         TO  SPA-GMN-SYOSINYMD(12:9)
+               MOVE    ")"                 TO  SPA-GMN-SYOSINYMD(21:1)
+           END-IF
       *
       *    画面用スパ編集処理
            INITIALIZE                  SPA-SCR-REC
@@ -3106,6 +3116,14 @@
                MOVE    SPA-SYOYMD      TO  WRK-SYMD
                PERFORM 520-SEIWA-HEN-SEC
                MOVE    WRK-HENYMDG     TO  SPA-GMN-SYOSINYMD
+      *        同時初診
+               IF      SPA-DOUYMD      NOT =   SPACE
+                   MOVE    SPA-DOUYMD      TO  WRK-SYMD
+                   PERFORM 520-SEIWA-HEN-SEC
+                   MOVE    "("             TO  SPA-GMN-SYOSINYMD(12:1)
+                   MOVE    WRK-HENYMDG     TO  SPA-GMN-SYOSINYMD(13:9)
+                   MOVE    ")"             TO  SPA-GMN-SYOSINYMD(22:1)
+               END-IF
            END-IF
       *
       *****年齢計算
@@ -7008,6 +7026,9 @@
            MOVE    ZERO                TO  WRK-KAISU
            MOVE    SPACE               TO  WRK-KYUSEI-YMD
            MOVE    SPACE               TO  WRK-KYUSEI-END
+      *    同日初診フラグ
+           MOVE    ZERO                TO  WRK-DOUSIN
+      *
            PERFORM VARYING     IDX     FROM    200 BY  -1
                    UNTIL       IDX     <   1
                IF     (SPA-GMN-INPUTCD (IDX)   =   SPACE )  AND
@@ -7044,6 +7065,13 @@
                           (SPA-COM-DATAKBN(IDX)    =   "1"   )  AND
                           (SPA-COM-HOUKNSKBN(IDX)  =   08    )
                        MOVE    1               TO  FLG-NAIFUTAN
+                   END-IF
+      *            同日初診有無（通院精神療法の為）
+                   IF     (SPA-COM-SRYKBN (IDX)    =   "11"  )  AND
+                          (SPA-COM-HKNCOMBI(IDX)   NOT =   "9999") AND
+                          (SPA-COM-INPUTCD(IDX)    =   "111011810"
+                                                   OR  "101110040")
+                       MOVE    1               TO  WRK-DOUSIN
                    END-IF
                END-IF
       *
@@ -7326,6 +7354,8 @@
            ELSE
                MOVE    ZERO                TO  LNK-ORCSC-SYOSIN
            END-IF
+      *    同日初診フラグ
+           MOVE    WRK-DOUSIN          TO  LNK-ORCSC-DOUSIN
       *
            MOVE    SPA-CHOKI-FLG       TO  LNK-ORCSC-CHOKI-FLG
            MOVE    SPA-YAKJYO-1        TO  LNK-ORCSC-YAKJYO-1
@@ -7425,6 +7455,8 @@
                    ADD     1               TO  SPA-SRYKBN-CNT (01)
       *            初診フラグ
                    MOVE    LNK-ORCSC-SYOSIN2   TO  SPA-SYOSIN
+      *            同日初診フラグ
+                   MOVE    LNK-ORCSC-DOUSIN    TO  WRK-DOUSIN
       *            診察の時間加算の時、全体へ
                    MOVE    LNK-ORCSC-TIMEFLG   TO  WRK-TIMEFLG
       *            外来診療料算定有無

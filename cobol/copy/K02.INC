@@ -32,7 +32,7 @@
               03  K02-LASTYMD.
                 04  K02-VALUE   PIC X(9).
               03  K02-SYOSINYMD.
-                04  K02-VALUE   PIC X(9).
+                04  K02-VALUE   PIC X(24).
               03  K02-MISYUMONEY.
                 04  K02-VALUE   PIC X(15).
               03  K02-SRYYMD.

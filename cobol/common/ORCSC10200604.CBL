@@ -3981,7 +3981,7 @@
                IF      WRK-KBN             =   "F"
       *            同日初診
                    IF      WRK-KBN2            =   "D"
-                       CONTINUE
+                       MOVE    1               TO  LNK-ORCSC-DOUSIN
                    ELSE
                        MOVE    1               TO  LNK-ORCSC-SYOSIN2
                    END-IF
@@ -4049,6 +4049,7 @@
       *            同日初診
                    IF      WRK-KBN2            =   "D"
                        CONTINUE
+                       MOVE    1               TO  LNK-ORCSC-DOUSIN
                    ELSE
                        MOVE    1               TO  LNK-ORCSC-SYOSIN2
                    END-IF
@@ -4245,7 +4246,7 @@
            ELSE
                MOVE    LNK-ORCSC-SYOYMD        TO  WRK-SYOYMD
            END-IF
-      *
+      *    同日初診がある時、同日初診
            IF      (SPA-DOUYMD     NOT =   SPACE )  AND
                    (SPA-DOUYMD         >   WRK-SYOYMD)
                MOVE    SPA-DOUYMD          TO  WRK-SYOYMD
@@ -4269,7 +4270,6 @@
                INITIALIZE                      STS-AREA-DAY
                INITIALIZE                      LNK-DAY6-AREA
                MOVE    "61"                TO  LNK-DAY6-IRAI
-      ******** MOVE    LNK-ORCSC-SYOYMD    TO  LNK-DAY6-KIJUN
                MOVE    WRK-SYOYMD          TO  LNK-DAY6-KIJUN
                MOVE    "2"                 TO  LNK-DAY6-ZOGENPTN
                MOVE    1                   TO  LNK-DAY6-ZOGEN
@@ -4291,7 +4291,6 @@
                WHEN    WRK-KEIYMD          <   SPA-SRYYMD
                    CONTINUE
                WHEN    WRK-KEIYMD          >   SPA-SRYYMD
-      *!           MOVE    "0034"          TO  SPA-ERRCD
       *            １月後の前営業日と同じ時、ＯＫ
                    IF      FLG-SIDOU       =   1
                        IF      FLG-TAIIN       =   1

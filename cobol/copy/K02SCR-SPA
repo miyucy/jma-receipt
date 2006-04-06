@@ -74,7 +74,7 @@
       *
                    07  SPA-GMN-GOKEI             PIC 9(11).
                    07  SPA-GMN-LASTYMD           PIC X(09).
-                   07  SPA-GMN-SYOSINYMD         PIC X(09).
+                   07  SPA-GMN-SYOSINYMD         PIC X(24).
                    07  SPA-GMN-MISYUMONEY        PIC S9(08).
                    07  SPA-GMN-ZAITENTOTAL       PIC 9(11).
       *        £Ä£ÏÆâÍÆ¡Ê£Ë£°£¹¤È¶¦ÄÌ¡Ë

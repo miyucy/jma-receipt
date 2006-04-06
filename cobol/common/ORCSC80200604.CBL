@@ -1054,7 +1054,8 @@
            END-IF
       *    ½é¿Ç»»ÄêÆü¤«¤é£¶·î°ÊÆâ
            IF     (WRK-SYOYMD          =   SPACE  )  OR
-                  (LNK-ORCSC-SYOSIN2   =   1      )
+                  (LNK-ORCSC-SYOSIN2   =   1      )  OR
+                  (LNK-ORCSC-DOUSIN    =   1      )
                MOVE    SPA-SRYYMD          TO  WRK-SYOYMD
            END-IF
       *    ½é¿ÇÎÁ»»ÄêÆü¡Ü£¶·î¸å
@@ -1079,7 +1080,7 @@
                                                =   "180012210"  OR
                                                    "180012310"
                                                OR  "180020410"
-      *             ²ÈÂ²
+      *            ²ÈÂ²
                                                OR  "180007250"
                                                OR  "180007350"
                        IF      SPA-SRYYMD      >   WRK-SYOYMD

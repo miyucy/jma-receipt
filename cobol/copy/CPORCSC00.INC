@@ -47,6 +47,8 @@
            03  LNK-ORCSC-SYOSIN        PIC 9(01).
       *    初診フラグ２（今回初診料かどうかの判定）
            03  LNK-ORCSC-SYOSIN2       PIC 9(01).
+      *    同日初診フラグ２（今回初診料かどうかの判定）
+           03  LNK-ORCSC-DOUSIN       PIC 9(01).
       *    訂正前診療科
            03  LNK-ORCSC-OLD-SRYKA     PIC X(02).
       *    訂正前保険組合せ
