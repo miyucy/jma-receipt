@@ -513,8 +513,9 @@
                        MOVE    "key"               TO  MCP-PATHNAME
                        PERFORM   910-HKNCOMBI-READ-SEC
                        IF   FLG-HKNCOMBI         =  ZERO
-                            IF     COMB-HKNNUM   =  "971" OR "973" OR
-                                                    "980"
+                            IF    ( COMB-HKNNUM   = "971" OR "973")
+                                            OR
+                                  ( COMB-HKNNUM(1:2)  =    "98")
                                 MOVE   ZERO   TO  WRK-HKNCOMBI-DAY(IDX)
                             ELSE
                                 IF     LNK-NYURECEDEN-HKNKBN  = "1"
