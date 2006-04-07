@@ -277,7 +277,8 @@
            PERFORM 900-TBL-CLOSE-SEC
       *
       *    処理年月チェック
-           IF    WRK-PARA-SRYYM    =   "200603"
+           IF    (WRK-PARA-SRYYM    >=   "200512")   AND
+                 (WRK-PARA-SRYYM    <=   "200603")
                CONTINUE
            ELSE
                MOVE  "標欠対象年月が誤りです。"
