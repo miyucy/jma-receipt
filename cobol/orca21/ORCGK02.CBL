@@ -2892,6 +2892,9 @@
            IF      SPA-ERRCD           =   SPACE
                MOVE    01                  TO  SPA-GMN-CUR
            END-IF
+      *
+           MOVE    SPA-GMN-MAX         TO  SPA-GMN-IDX
+      *
            .
        3014-K97-SET-EXT.
            EXIT.
