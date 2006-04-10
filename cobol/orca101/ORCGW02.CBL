@@ -57,6 +57,7 @@
       *  01.05.26    NACL-太田    06/02/22  自費保険集計先区分追加
       *  01.00.27    NACL-藤原    06/03/18  旧総合病院フラグと主科設定の
       *                                     チェック追加
+      *  01.05.26    NACL-太田    06/04/10  自費保険集計先区分“３”追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -161,12 +162,12 @@
                            11  SPA-GMN-HIWARIKBNMEIL
                                                       PIC X(18).
                        09  SPA-GMN-JIHIPOSITIONLST
-                                                      OCCURS  2.
+                                                      OCCURS  3.
                            11  SPA-GMN-JIHIPOSITIONL
                                                       PIC X(01).
                            11  SPA-GMN-F14L           PIC X(01).
                            11  SPA-GMN-JIHIPOSITIONMEIL
-                                                      PIC X(10).
+                                                      PIC X(38).
                        09  SPA-GMN-KOUMOKU.
                            11  SPA-GMN-PREFNUM-G.
                                13  SPA-GMN-PREFNUM    PIC X(02).
@@ -262,7 +263,7 @@
                                                       PIC X(01).
                                13  SPA-GMN-F16        PIC X(01).
                                13  SPA-GMN-JIHIPOSITIONMEI
-                                                      PIC X(10).
+                                                      PIC X(38).
       *                データ収集
                        09  SPA-GMN-DATASYU.
       *                    データ作成フラグ
@@ -912,9 +913,13 @@
            MOVE    3                   TO  SPA-DATATEISYUTU-MAX
       *    自費保険集計先区分
            MOVE    "1"                 TO  SPA-GMN-JIHIPOSITIONL (1)
-           MOVE    "保険分欄"          TO  SPA-GMN-JIHIPOSITIONMEIL (1)
+           MOVE    "保険分欄（自己負担額欄を四捨五入）"
+                                       TO  SPA-GMN-JIHIPOSITIONMEIL (1)
            MOVE    "2"                 TO  SPA-GMN-JIHIPOSITIONL (2)
            MOVE    "自費分欄"          TO  SPA-GMN-JIHIPOSITIONMEIL (2)
+           MOVE    "3"                 TO  SPA-GMN-JIHIPOSITIONL (3)
+           MOVE    "保険分欄（四捨五入しない）"
+                                       TO  SPA-GMN-JIHIPOSITIONMEIL (3)
       * 
       *    割引率区分設定処理
            PERFORM 3101-DISCOUNT-KBN-SET-SEC
@@ -1436,12 +1441,12 @@
            END-IF
       *
            PERFORM VARYING IDY FROM    1   BY  1
-                   UNTIL   IDY >       2
+                   UNTIL   IDY >       3
                IF      SYS-1001-JIHIPOSITION
                                        =   SPA-GMN-JIHIPOSITIONL(IDY)
                    MOVE    SPA-GMN-JIHIPOSITIONLST (IDY)
                                        TO  SPA-GMN-JIHIPOSITION-G
-                   MOVE    2           TO  IDY
+                   MOVE    3           TO  IDY
                 END-IF
            END-PERFORM
       *
@@ -2510,18 +2515,18 @@
        4131-DATATEISYUTU-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    データ収集提出方法フラグ
+      *    自費保険集計先区分
       *****************************************************************
        4131-JIHIPOSITION-CHK-SEC       SECTION.
       *
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING IDY     FROM    1   BY  1
-                   UNTIL   IDY     >       2
+                   UNTIL   IDY     >       3
                IF      SPA-GMN-JIHIPOSITION
                                        =   SPA-GMN-JIHIPOSITIONL (IDY)
                    MOVE    SPA-GMN-JIHIPOSITIONLST (IDY)
                                        TO  SPA-GMN-JIHIPOSITION-G
-                   MOVE    2           TO  IDY
+                   MOVE    3           TO  IDY
                    MOVE    1           TO  FLG-OK
                END-IF
            END-PERFORM
@@ -3514,11 +3519,11 @@
       *
            MOVE    SPA-GMN-JIHIPOSITION-G    TO  W02-JIHIPOSITION
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       2
+                   UNTIL   IDX >       3
                MOVE    SPA-GMN-JIHIPOSITIONLST (IDX)
                                        TO  W02-JIHIPOSITION-ITEM (IDX)
            END-PERFORM
-           MOVE    2                   TO  W02-JIHIPOSITION-COUNT
+           MOVE    3                   TO  W02-JIHIPOSITION-COUNT
       *----(01.00.09) LINE ADD END   ----------------------------------
       *
       *    医療機関情報ー所在地、連絡先情報

@@ -150,10 +150,10 @@ W02	{
 				};
 				JIHIPOSITION_COMB	{
 					JIHIPOSITION	{
-						value	varchar(12);
+						value	varchar(40);
 					};
 					count	int;
-					item	varchar(12)[2];
+					item	varchar(40)[3];
 				};
 			};
 	            N01	{
