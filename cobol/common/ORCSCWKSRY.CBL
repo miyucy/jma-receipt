@@ -737,6 +737,8 @@
                                IF    ((SPA-COM-SRYKBN (IDX-1 + 1)
                                                NOT =  SPA-COM-SRYKBN
                                                        (IDX-1) )  AND
+                                      (SPA-COM-SRYKBN (IDX-1)
+                                                   >   "13"    )  AND
                                       (SPA-COM-INPUTCD(IDX-1 + 1)(1:1)
                                                    =   "6"     ))
       *                         コメントの時
@@ -870,7 +872,7 @@
                                                               (IDX-1)
       *            入力コードの画面用再編集
                    PERFORM 10026-INPUTCD-HEN-SEC
-                   MOVE    SPACE               TO  SPA-MAE-INPUTCD (IDX)
+      *?           MOVE    SPACE               TO  SPA-MAE-INPUTCD (IDX)
                    MOVE    IDX-1               TO  SPA-GMN-IDX
       *
                    MOVE    SPACE               TO  SPA-COM-INPUTCD
@@ -1263,7 +1265,14 @@
            IF      FLG-SYUBETU         =   1
                IF     (FLG-AUTO-OK         =   1 ) AND
                       (LNK-WKSRY-SRYKBN (IDX)  NOT =   "70" )
-                   MOVE    ZERO            TO  FLG-SYUBETU
+      *            前の剤が自費以外
+                   IF     LNK-WKSRY-SRYKBN (IDX - 1 )
+                                               =   "95"
+                                               OR  "96"
+                       CONTINUE
+                   ELSE
+                       MOVE    ZERO            TO  FLG-SYUBETU
+                   END-IF
                END-IF
            END-IF
       *
