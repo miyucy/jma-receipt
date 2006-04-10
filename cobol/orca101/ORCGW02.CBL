@@ -913,7 +913,7 @@
            MOVE    3                   TO  SPA-DATATEISYUTU-MAX
       *    自費保険集計先区分
            MOVE    "1"                 TO  SPA-GMN-JIHIPOSITIONL (1)
-           MOVE    "保険分欄（負担金額四捨五入"
+           MOVE    "保険分欄（負担金額四捨五入）"
                                        TO  SPA-GMN-JIHIPOSITIONMEIL (1)
            MOVE    "2"                 TO  SPA-GMN-JIHIPOSITIONL (2)
            MOVE    "自費分欄"          TO  SPA-GMN-JIHIPOSITIONMEIL (2)
