@@ -534,6 +534,33 @@
                PERFORM 990-EXIT-PROGRAM-SEC
            END-IF
       *
+      *    期間指定区分が設定されている場合、期間が設定されていること
+           IF    ( HCM34S01-SANTEIYM       =   "1" )
+               IF    ( HCM34S01-SKYSTYMD   IS  NOT NUMERIC )
+                   MOVE    12              TO  HCM34S01-RC
+                   PERFORM 990-EXIT-PROGRAM-SEC
+               END-IF
+               IF    ( HCM34S01-SKYEDYMD   IS  NOT NUMERIC )
+                   MOVE    13              TO  HCM34S01-RC
+                   PERFORM 990-EXIT-PROGRAM-SEC
+               END-IF
+      *
+               MOVE    HCM34S01-SKYSTYMD (7:2) TO  WRK-STIDX
+               MOVE    HCM34S01-SKYEDYMD (7:2) TO  WRK-EDIDX
+               PERFORM VARYING IDX1    FROM    1   BY  1
+                       UNTIL ( IDX1    >   31 )
+      *
+                   IF    ( IDX1    >=  WRK-STIDX )
+                    AND  ( IDX1    <=  WRK-EDIDX )
+                       CONTINUE
+                   ELSE
+                       MOVE    ZERO        TO  FLG-NYUINDAY (IDX1)
+                   END-IF
+      *
+               END-PERFORM
+      *
+           END-IF
+      *
            .
        100-PRM-CHK-EXT.
            EXIT.

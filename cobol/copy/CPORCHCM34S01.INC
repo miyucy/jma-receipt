@@ -36,6 +36,11 @@
            03  HCM34S01-PTID                   PIC 9(10).
       *算定年月
            03  HCM34S01-SANTEIYM               PIC X(06).
+      *期間指定区分
+           03  HCM34S01-KIKANKBN               PIC X(01).
+      *算定期間（診療費明細書からの呼び出しの際は設定する）
+           03  HCM34S01-SKYSTYMD               PIC X(08).
+           03  HCM34S01-SKYEDYMD               PIC X(08).
       *保険組合せ
            03  HCM34S01-HKNCOMBI               PIC 9(04).
       *保険番号
@@ -61,7 +66,8 @@
                    07  HCM34S01-SRYKBN         PIC  X(02).
       *診療種別
                    07  HCM34S01-SRYSYUKBN      PIC  X(03).
-      *剤識別区分
+      *剤識別区分（１：入院料　２：外泊　３：室料差額　４：食事
+      *            ５：保険組合せ　６：入院料加算　７：療養担当手当）
                    07  HCM34S01-ZAISKBKBN      PIC  X(01).
       *並び優先順位
                    07  HCM34S01-PRIORITY       PIC  9(03).
