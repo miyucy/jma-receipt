@@ -42,6 +42,8 @@
                05  SPA-SYOHOKBN            PIC X(01).
       *請求書発行フラグ
                05  SPA-SKYPRTFLG           PIC X(01).
+      *診療費明細書発行フラグ
+               05  SPA-MEIPRTFLG           PIC X(01).
       *相互作用チェック期間
                05  SPA-INTERACT-KIKAN      PIC 9(02).
       *外来管理加算チェック

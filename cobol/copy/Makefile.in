@@ -1134,6 +1134,8 @@ COPYS = \
 	HCM2LV03.INC \
         CMRIHACDTBL.INC \
         HCM05V02.INC \
+        HCM04.INC \
+        CPORCHC04.INC \
 
 
 DBPATH = \

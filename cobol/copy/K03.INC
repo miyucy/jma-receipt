@@ -237,3 +237,9 @@
                 04  K03-USERPG-COUNT   PIC S9(9)   BINARY.
                 04  K03-USERPG-ITEM
                         PIC X(20)   OCCURS  2 TIMES.
+              03  K03-MEIPRTFLG-COMB.
+                04  K03-MEIPRTFLG.
+                  05  K03-VALUE   PIC X(24).
+                04  K03-MEIPRTFLG-COUNT   PIC S9(9)   BINARY.
+                04  K03-MEIPRTFLG-ITEM
+                        PIC X(24)   OCCURS  3 TIMES.

@@ -334,5 +334,12 @@ K03	{
 			count	int;
 			item	varchar(20)[2];
 		};
+		MEIPRTFLG_COMB	{
+			MEIPRTFLG	{
+				value	varchar(24);
+			};
+			count	int;
+			item	varchar(24)[3];
+		};
 	};
 };

@@ -138,6 +138,12 @@
                     06  W06-YAKUJYOFLG-COUNT   PIC S9(9)   BINARY.
                     06  W06-YAKUJYOFLG-ITEM
                             PIC X(26)   OCCURS  5 TIMES.
+                  05  W06-MEIPRTFLG-COMB.
+                    06  W06-MEIPRTFLG.
+                      07  W06-VALUE   PIC X(26).
+                    06  W06-MEIPRTFLG-COUNT   PIC S9(9)   BINARY.
+                    06  W06-MEIPRTFLG-ITEM
+                            PIC X(26)   OCCURS  3 TIMES.
               03  W06-STYUKYMD.
                 04  W06-VALUE   PIC X(10).
               03  W06-EDYUKYMD.

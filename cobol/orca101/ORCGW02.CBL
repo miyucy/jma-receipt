@@ -57,7 +57,6 @@
       *  01.05.26    NACL-太田    06/02/22  自費保険集計先区分追加
       *  01.00.27    NACL-藤原    06/03/18  旧総合病院フラグと主科設定の
       *                                     チェック追加
-      *  01.05.26    NACL-太田    06/04/10  自費保険集計先区分“３”追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -133,6 +132,13 @@
                            11  SPA-GMN-YAKUJYOFLGMEIL
                                                       PIC X(12).
       *----(01.00.09) LINE ADD END   ----------------------------------
+                       09  SPA-GMN-MEIPRTFLGLST      OCCURS  2.
+                           11  SPA-GMN-MEIPRTFLGL    PIC X(01).
+                           11  SPA-GMN-F14L           PIC X(01).
+                           11  SPA-GMN-MEIPRTFLGMEIL
+                                                      PIC X(12).
+                       09  SPA-MEIPRTFLG-MAX          PIC 9(02).
+      *
                        09  SPA-GMN-DISCOUNT-HASU-KBNLST
                                                       OCCURS  4.
                            11  SPA-GMN-DISCOUNT-HASU-KBNL
@@ -162,12 +168,12 @@
                            11  SPA-GMN-HIWARIKBNMEIL
                                                       PIC X(18).
                        09  SPA-GMN-JIHIPOSITIONLST
-                                                      OCCURS  3.
+                                                      OCCURS  2.
                            11  SPA-GMN-JIHIPOSITIONL
                                                       PIC X(01).
                            11  SPA-GMN-F14L           PIC X(01).
                            11  SPA-GMN-JIHIPOSITIONMEIL
-                                                      PIC X(38).
+                                                      PIC X(10).
                        09  SPA-GMN-KOUMOKU.
                            11  SPA-GMN-PREFNUM-G.
                                13  SPA-GMN-PREFNUM    PIC X(02).
@@ -234,6 +240,13 @@
                                13  SPA-GMN-F10        PIC X(01).
                                13  SPA-GMN-YAKUJYOFLGMEI
                                                       PIC X(12).
+      *診療費明細書発行区分フラグ
+                           11  SPA-GMN-MEIPRTFLG-G.
+                               13  SPA-GMN-MEIPRTFLG
+                                                      PIC X(01).
+                               13  SPA-GMN-F14        PIC X(01).
+                               13  SPA-GMN-MEIPRTFLGMEI
+                                                      PIC X(12).
                            11  SPA-GMN-DISCOUNT-HASU-KBN-G.
                                13  SPA-GMN-DISCOUNT-HASU-KBN
                                                       PIC X(01).
@@ -263,7 +276,7 @@
                                                       PIC X(01).
                                13  SPA-GMN-F16        PIC X(01).
                                13  SPA-GMN-JIHIPOSITIONMEI
-                                                      PIC X(38).
+                                                      PIC X(10).
       *                データ収集
                        09  SPA-GMN-DATASYU.
       *                    データ作成フラグ
@@ -837,6 +850,12 @@
            MOVE    "1"                TO  SPA-GMN-YAKUJYOFLGL    (2)
            MOVE    "発行する"         TO  SPA-GMN-YAKUJYOFLGMEIL (2)
       *----(01.00.09) LINE ADD END   ----------------------------------
+           MOVE    "0"                TO  SPA-GMN-MEIPRTFLGL    (1)
+           MOVE    "発行しない"       TO  SPA-GMN-MEIPRTFLGMEIL (1)
+           MOVE    "1"                TO  SPA-GMN-MEIPRTFLGL    (2)
+           MOVE    "発行する"         TO  SPA-GMN-MEIPRTFLGMEIL (2)
+           MOVE    2                  TO  SPA-MEIPRTFLG-MAX
+      *
            MOVE    "1"         TO  SPA-GMN-DISCOUNT-HASU-KBNL    (1)
            MOVE    "１０円未満四捨五入"  
                                TO  SPA-GMN-DISCOUNT-HASU-KBNMEIL (1)
@@ -913,13 +932,9 @@
            MOVE    3                   TO  SPA-DATATEISYUTU-MAX
       *    自費保険集計先区分
            MOVE    "1"                 TO  SPA-GMN-JIHIPOSITIONL (1)
-           MOVE    "保険分欄（負担金額四捨五入）"
-                                       TO  SPA-GMN-JIHIPOSITIONMEIL (1)
+           MOVE    "保険分欄"          TO  SPA-GMN-JIHIPOSITIONMEIL (1)
            MOVE    "2"                 TO  SPA-GMN-JIHIPOSITIONL (2)
            MOVE    "自費分欄"          TO  SPA-GMN-JIHIPOSITIONMEIL (2)
-           MOVE    "3"                 TO  SPA-GMN-JIHIPOSITIONL (3)
-           MOVE    "保険分欄（負担金額端数処理なし）"
-                                       TO  SPA-GMN-JIHIPOSITIONMEIL (3)
       * 
       *    割引率区分設定処理
            PERFORM 3101-DISCOUNT-KBN-SET-SEC
@@ -1349,6 +1364,20 @@
                    MOVE    2               TO  IDY
                END-IF
            END-PERFORM
+      *    診療費明細書発行区分空白の時、ゼロとする
+           IF      SYS-1001-MEIPRTFLG  =   SPACE
+               MOVE    ZERO                TO  SYS-1001-MEIPRTFLG
+           END-IF
+           MOVE    SYS-1001-MEIPRTFLG  TO  SPA-GMN-MEIPRTFLG
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       SPA-MEIPRTFLG-MAX
+               IF      SYS-1001-MEIPRTFLG
+                                       =   SPA-GMN-MEIPRTFLGL (IDY)
+                   MOVE    SPA-GMN-MEIPRTFLGLST (IDY)
+                                           TO  SPA-GMN-MEIPRTFLG-G
+                   MOVE    SPA-MEIPRTFLG-MAX   TO  IDY
+               END-IF
+           END-PERFORM
       *    請求額端数区分（減免有） 空白の時、"1"とする
            IF      SYS-1001-DISCOUNT-HASU-KBN    =   SPACE
                MOVE    "1"             TO  SYS-1001-DISCOUNT-HASU-KBN
@@ -1441,12 +1470,12 @@
            END-IF
       *
            PERFORM VARYING IDY FROM    1   BY  1
-                   UNTIL   IDY >       3
+                   UNTIL   IDY >       2
                IF      SYS-1001-JIHIPOSITION
                                        =   SPA-GMN-JIHIPOSITIONL(IDY)
                    MOVE    SPA-GMN-JIHIPOSITIONLST (IDY)
                                        TO  SPA-GMN-JIHIPOSITION-G
-                   MOVE    3           TO  IDY
+                   MOVE    2           TO  IDY
                 END-IF
            END-PERFORM
       *
@@ -1651,6 +1680,7 @@
            MOVE    W02-SYOHOPRTFLG     TO  SPA-GMN-SYOHOPRTFLG-G
            MOVE    W02-ZENSYOHOFLG     TO  SPA-GMN-ZENSYOHOFLG-G
            MOVE    W02-YAKUJYOFLG      TO  SPA-GMN-YAKUJYOFLG-G
+           MOVE    W02-MEIPRTFLG       TO  SPA-GMN-MEIPRTFLG-G
            MOVE    W02-DISCOUNTHASU    TO  SPA-GMN-DISCOUNT-HASU-KBN-G
            MOVE    W02-DISCOUNTHASU2   TO  SPA-GMN-DISCOUNT-HASU-KBN2-G
            MOVE    W02-TAXHASU         TO  SPA-GMN-TAX-HASU-KBN-G
@@ -1823,6 +1853,11 @@
            END-IF
       *
            PERFORM 4129-YAKUJYOFLG-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      41021-KIHON-1001-EXT
+           END-IF
+      *
+           PERFORM 4129-MEIPRTFLG-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      41021-KIHON-1001-EXT
            END-IF
@@ -2368,6 +2403,30 @@
       *
       *----(01.00.09) LINE ADD END   ----------------------------------
       *****************************************************************
+      *    診療費明細書発行区分フラグ
+      *****************************************************************
+       4129-MEIPRTFLG-CHK-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       SPA-MEIPRTFLG-MAX
+               IF      SPA-GMN-MEIPRTFLG =   SPA-GMN-MEIPRTFLGL
+                                                              (IDY)
+                   MOVE    SPA-GMN-MEIPRTFLGLST (IDY)
+                                           TO  SPA-GMN-MEIPRTFLG-G
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    "0025"              TO  SPA-ERRCD
+               MOVE    206                 TO  SPA-GMN-CUR
+           END-IF
+      *
+           .
+       4129-MEIPRTFLG-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    請求額端数設定（減免有）
       *****************************************************************
        4130-DISCOUNT-HASU-KBN-CHK-SEC        SECTION.
@@ -2515,18 +2574,18 @@
        4131-DATATEISYUTU-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    自費保険集計先区分
+      *    データ収集提出方法フラグ
       *****************************************************************
        4131-JIHIPOSITION-CHK-SEC       SECTION.
       *
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING IDY     FROM    1   BY  1
-                   UNTIL   IDY     >       3
+                   UNTIL   IDY     >       2
                IF      SPA-GMN-JIHIPOSITION
                                        =   SPA-GMN-JIHIPOSITIONL (IDY)
                    MOVE    SPA-GMN-JIHIPOSITIONLST (IDY)
                                        TO  SPA-GMN-JIHIPOSITION-G
-                   MOVE    3           TO  IDY
+                   MOVE    2           TO  IDY
                    MOVE    1           TO  FLG-OK
                END-IF
            END-PERFORM
@@ -3003,6 +3062,8 @@
                    MOVE    SPA-GMN-YAKUJYOFLG
                                        TO  SYS-1001-YAKUJYOPRTFLG
       *----(01.00.09) LINE ADD END   ----------------------------------
+                   MOVE    SPA-GMN-MEIPRTFLG
+                                       TO  SYS-1001-MEIPRTFLG
                    MOVE    SPA-GMN-DISCOUNT-HASU-KBN
                                        TO  SYS-1001-DISCOUNT-HASU-KBN
                    MOVE    SPA-GMN-DISCOUNT-HASU-KBN2
@@ -3475,7 +3536,17 @@
                MOVE    SPA-GMN-YAKUJYOFLGLST(IDX)
                                        TO  W02-YAKUJYOFLGLST  (IDX)
            END-PERFORM    
-           MOVE    2                   TO  W02-YAKUJYOFLG-COUNT     
+           MOVE    2                   TO  W02-YAKUJYOFLG-COUNT
+      *    診療費明細書発行区分
+           MOVE    SPA-GMN-MEIPRTFLG-G
+                                       TO  W02-MEIPRTFLG
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       SPA-MEIPRTFLG-MAX
+               MOVE    SPA-GMN-MEIPRTFLGLST(IDX)
+                                       TO  W02-MEIPRTFLG-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-MEIPRTFLG-MAX   TO  W02-MEIPRTFLG-COUNT
+      *
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       4
                MOVE    SPA-GMN-DISCOUNT-HASU-KBNLST(IDX)
@@ -3519,11 +3590,11 @@
       *
            MOVE    SPA-GMN-JIHIPOSITION-G    TO  W02-JIHIPOSITION
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       3
+                   UNTIL   IDX >       2
                MOVE    SPA-GMN-JIHIPOSITIONLST (IDX)
                                        TO  W02-JIHIPOSITION-ITEM (IDX)
            END-PERFORM
-           MOVE    3                   TO  W02-JIHIPOSITION-COUNT
+           MOVE    2                   TO  W02-JIHIPOSITION-COUNT
       *----(01.00.09) LINE ADD END   ----------------------------------
       *
       *    医療機関情報ー所在地、連絡先情報
@@ -3718,6 +3789,9 @@
       *----(01.00.09) LINE ADD START ----------------------------------
                WHEN    "0011"
                    MOVE    "薬剤情報発行フラグ入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "0025"
+                   MOVE    "診療費明細書発行フラグ入力エラー"
                                                TO  SPA-ERRMSG
                WHEN    "0012"
                    MOVE    "全角で入力して下さい。"
@@ -3920,6 +3994,8 @@
                                            TO   MCP-WIDGET
                 WHEN    205
                     MOVE  "JIHIPOSITION"   TO   MCP-WIDGET
+                WHEN    206
+                    MOVE  "MEIPRTFLG"      TO   MCP-WIDGET
       *
                 WHEN    40
                     MOVE  "TEIRITU"        TO   MCP-WIDGET
@@ -4029,6 +4105,9 @@
               WHEN    "ZENSYOHOFLG"
                   MOVE    36               TO  SPA-GMN-CUR
               WHEN    "YAKUJYOFLG"
+      *********** MOVE    12               TO  SPA-GMN-CUR
+                  MOVE    206              TO  SPA-GMN-CUR
+              WHEN    "MEIPRTFLG"
                   MOVE    12               TO  SPA-GMN-CUR
               WHEN    "HOSPCDN"
                   MOVE    38               TO  SPA-GMN-CUR

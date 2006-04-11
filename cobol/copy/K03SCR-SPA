@@ -108,6 +108,15 @@
                        09  SPA-GMN-SYOHOPRTLST      PIC X(18)
                                                     OCCURS   3.
                    07  SPA-SYOHOPRTFLG-MAX          PIC 9(04).
+      *            ø«Œ≈»ÒÃ¿∫ŸΩÒ»Øπ‘
+                   07  SPA-GMN-MEIPRTFLG-G.
+                       09  SPA-GMN-MEIPRTFLG        PIC X(01).
+                       09  SPA-GMN-F2               PIC X(01).
+                       09  SPA-GMN-MEIPRTFLG-MSG    PIC X(22).
+                   07  SPA-GMN-MEIPRTFLG-LIST.
+                       09  SPA-GMN-MEIPRTFLGLST     PIC X(24)
+                                                    OCCURS   2.
+                   07  SPA-MEIPRTFLG-MAX            PIC 9(04).
       *            ÃÙ∫ﬁæ Û
                    07  SPA-GMN-YAKJYOFLG-G.
                        09  SPA-GMN-YAKJYOFLG        PIC X(01).

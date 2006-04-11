@@ -45,6 +45,7 @@
       *                                     診療行為初期表示追加
       * 03.00.02     NACL-多々納  05/12/01  請求書発行フラグ等追加
       *                                     MONFUNC 対応
+      * 03.00.03     NACL-多々納  06/04/11  診療費明細書発行追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -172,10 +173,16 @@
                        09  SPA-GMN-YAKUJYOFLG-LST   PIC X(26)
                                                    OCCURS  5. 
                    07  SPA-YAKUJYOFLG-MAX      PIC 9(04).  
+      *            診療費明細書
+                   07  SPA-GMN-MEIPRTFLG-LSTG.
+                       09  SPA-GMN-MEIPRTFLG-LST   PIC X(26)
+                                                   OCCURS  3. 
+                   07  SPA-MEIPRTFLG-MAX      PIC 9(04).  
       *            基本情報の発行区分
                    07  SPA-1001-SKYPRTFLG      PIC  X(01).
                    07  SPA-1001-SYOHOPRTFLG    PIC  X(01).
                    07  SPA-1001-YAKUJYOPRTFLG  PIC  X(01).
+                   07  SPA-1001-MEIPRTFLG      PIC  X(01).
       *
                05  SPA-PAGE2-G.
       *            請求書
@@ -193,6 +200,11 @@
                        09  SPA-GMN-YAKUJYOFLG       PIC X(01).
                        09  SPA-GMN-YAKUJYOFLG-F1    PIC X(01).
                        09  SPA-GMN-YAKUJYOFLG-MEI   PIC X(24).
+      *            診療費明細書
+                   07  SPA-GMN-MEIPRTFLG-G. 
+                       09  SPA-GMN-MEIPRTFLG        PIC X(01).
+                       09  SPA-GMN-MEIPRTFLG-F1     PIC X(01).
+                       09  SPA-GMN-MEIPRTFLG-MEI    PIC X(24).
       *
                05  SPA-NAIB-AREA.
                    07  SPA-NAI-STYUKYMD       PIC X(08).
@@ -526,6 +538,10 @@
            MOVE    "0 発行しない"      TO  SPA-GMN-YAKUJYOFLG-LST (1)
            MOVE    "1 発行する"        TO  SPA-GMN-YAKUJYOFLG-LST (2)
            MOVE    2                   TO  SPA-YAKUJYOFLG-MAX
+      *    診療費明細書フラグ
+           MOVE    "0 発行しない"      TO  SPA-GMN-MEIPRTFLG-LST (1)
+           MOVE    "1 発行する"        TO  SPA-GMN-MEIPRTFLG-LST (2)
+           MOVE    2                   TO  SPA-MEIPRTFLG-MAX
       *
       *    基本情報の発行フラグ
            PERFORM 3202-KIHON-HEN-SEC
@@ -792,6 +808,7 @@
            MOVE    SYS-1001-SKYPRTFLG      TO  SPA-1001-SKYPRTFLG
            MOVE    SYS-1001-SYOHOPRTFLG    TO  SPA-1001-SYOHOPRTFLG
            MOVE    SYS-1001-YAKUJYOPRTFLG  TO  SPA-1001-YAKUJYOPRTFLG
+           MOVE    SYS-1001-MEIPRTFLG      TO  SPA-1001-MEIPRTFLG
            . 
        3202-KIHON-HEN-EXT.
            EXIT.
@@ -1237,6 +1254,7 @@
       *
       *        発行フラグ
                MOVE    SYS-1010-SKYPRTFLG      TO  SPA-GMN-SKYPRTFLG
+               MOVE    SYS-1010-MEIPRTFLG      TO  SPA-GMN-MEIPRTFLG
                MOVE    SYS-1010-SYOHOPRTFLG    TO  SPA-GMN-SYOHOPRTFLG
                MOVE    SYS-1010-YAKUJYOPRTFLG  TO  SPA-GMN-YAKUJYOFLG
                PERFORM 20091-PRTFLG-HEN-SEC
@@ -1258,6 +1276,16 @@
                    MOVE    SPA-GMN-SKYPRTFLG-LST (IDX)
                                            TO  SPA-GMN-SKYPRTFLG-G
                    MOVE    SPA-SKYPRTFLG-MAX   TO  IDX
+               END-IF
+           END-PERFORM
+      *
+           PERFORM VARYING IDX     FROM    1   BY  1
+                   UNTIL   IDX     >       SPA-MEIPRTFLG-MAX
+               IF      SPA-GMN-MEIPRTFLG   =   SPA-GMN-MEIPRTFLG-LST
+                                                      (IDX)(1:1)
+                   MOVE    SPA-GMN-MEIPRTFLG-LST (IDX)
+                                           TO  SPA-GMN-MEIPRTFLG-G
+                   MOVE    SPA-MEIPRTFLG-MAX   TO  IDX
                END-IF
            END-PERFORM
       *
@@ -1558,6 +1586,7 @@
       *
       *    個別設定画面
            MOVE    W06-SKYPRTFLG       TO  SPA-GMN-SKYPRTFLG-G
+           MOVE    W06-MEIPRTFLG       TO  SPA-GMN-MEIPRTFLG-G
            MOVE    W06-SYOHOPRTFLG     TO  SPA-GMN-SYOHOPRTFLG-G
            MOVE    W06-YAKUJYOFLG      TO  SPA-GMN-YAKUJYOFLG-G
       *
@@ -1638,6 +1667,9 @@
                PERFORM 4121-YAKUJYOFLG-CHK-SEC
            END-IF
       *
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4121-MEIPRTFLG-CHK-SEC
+           END-IF
            .
        4102-KIHON-CHK-EXT.
            EXIT.
@@ -2181,6 +2213,34 @@
        4121-YAKUJYOFLG-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    請求書発行フラグチェック処理
+      *****************************************************************
+       4121-MEIPRTFLG-CHK-SEC        SECTION.
+      *
+           MOVE    ZERO                TO  FLG-CHK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-MEIPRTFLG-MAX
+               IF      SPA-GMN-MEIPRTFLG   =   SPA-GMN-MEIPRTFLG-LST
+                                                       (IDX)(1:1)
+                   MOVE    SPA-GMN-MEIPRTFLG-LST (IDX)
+                                               TO  SPA-GMN-MEIPRTFLG-G
+                    MOVE    1                  TO  FLG-CHK
+                   MOVE    SPA-MEIPRTFLG-MAX   TO  IDX
+                END-IF
+           END-PERFORM
+           IF     (FLG-CHK             =   ZERO )
+               IF      SPA-GMN-MEIPRTFLG   =   SPACE
+                   MOVE    SPACE           TO  SPA-GMN-MEIPRTFLG-G
+               ELSE
+                   MOVE    "0019"          TO  SPA-ERRCD
+                   MOVE    24              TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           .
+       4121-MEIPRTFLG-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    タグ切替え処理
       *****************************************************************
        460-TAGUCHG-SEC           SECTION.
@@ -2458,6 +2518,7 @@
            MOVE    SPA-GMN-SKYPRTFLG       TO  SYS-1010-SKYPRTFLG
            MOVE    SPA-GMN-SYOHOPRTFLG     TO  SYS-1010-SYOHOPRTFLG
            MOVE    SPA-GMN-YAKUJYOFLG      TO  SYS-1010-YAKUJYOPRTFLG
+           MOVE    SPA-GMN-MEIPRTFLG       TO  SYS-1010-MEIPRTFLG
       *
            IF     (FLG-SYSKANRI        =   ZERO ) AND
                   (SPA-GMN-SYORI       =   2    )
@@ -2910,6 +2971,14 @@
            END-PERFORM
            MOVE  SPA-YAKUJYOFLG-MAX     TO  W06-YAKUJYOFLG-COUNT
            MOVE  SPA-GMN-YAKUJYOFLG-G   TO  W06-YAKUJYOFLG
+      *    診療費明細書
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-MEIPRTFLG-MAX
+               MOVE    SPA-GMN-MEIPRTFLG-LST(IDX)
+                                       TO  W06-MEIPRTFLG-ITEM(IDX)
+           END-PERFORM
+           MOVE  SPA-MEIPRTFLG-MAX     TO  W06-MEIPRTFLG-COUNT
+           MOVE  SPA-GMN-MEIPRTFLG-G   TO  W06-MEIPRTFLG
       *
            EVALUATE    SPA-GMN-PAGENO
                WHEN    1
@@ -3015,6 +3084,9 @@
                                                TO  SPA-ERRMSG
                WHEN    "0018"
                    MOVE    "薬剤情報発行フラグ入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "0019"
+                   MOVE    "診療費明細書発行フラグ入力エラー"
                                                TO  SPA-ERRMSG
                WHEN    "0020"
                    MOVE    "期間が重複しています。"
@@ -3151,6 +3223,8 @@
                     MOVE  "SYOHOPRTFLG"    TO   MCP-WIDGET
                 WHEN    23
                     MOVE  "YAKUJYOFLG"     TO   MCP-WIDGET
+                WHEN    24
+                    MOVE  "MEIPRTFLG"      TO   MCP-WIDGET
       *
                 WHEN    99
                     MOVE  "B12"            TO   MCP-WIDGET
@@ -3214,6 +3288,8 @@
                WHEN     "SYOHOPRTFLG"
                    MOVE    23              TO  SPA-GMN-CUR
                WHEN     "YAKUJYOFLG"
+                   MOVE    24              TO  SPA-GMN-CUR
+               WHEN     "MEIPRTFLG"
                    MOVE    99              TO  SPA-GMN-CUR
       *
                WHEN     OTHER

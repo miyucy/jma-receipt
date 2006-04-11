@@ -194,6 +194,13 @@ W06	{
 					count	int;
 					item	varchar(26)[5];
 				};
+				MEIPRTFLG_COMB	{
+					MEIPRTFLG	{
+						value	varchar(26);
+					};
+					count	int;
+					item	varchar(26)[3];
+				};
 			};
 		};
 		STYUKYMD	{

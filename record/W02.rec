@@ -150,10 +150,17 @@ W02	{
 				};
 				JIHIPOSITION_COMB	{
 					JIHIPOSITION	{
-						value	varchar(40);
+						value	varchar(12);
 					};
 					count	int;
-					item	varchar(40)[3];
+					item	varchar(12)[2];
+				};
+				MEIPRTFLG_COMB	{
+					MEIPRTFLG	{
+						value	varchar(14);
+					};
+					count	int;
+					item	varchar(14)[2];
 				};
 			};
 	            N01	{

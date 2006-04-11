@@ -1,0 +1,20 @@
+        01  HCM04.
+            02  HCM04-NO    PIC X(7).
+            02  HCM04-SRYYMD    PIC X(22).
+            02  HCM04-NAME  PIC X(30).
+            02  HCM04-PTNUM PIC X(20).
+            02  HCM04-SRYKANAME PIC X(20).
+            02  HCM04-HAKYMD    PIC X(22).
+            02  HCM04-HOKEN PIC X(20).
+            02  HCM04-FUTAN PIC X(3).
+            02  HCM04-PAGE  PIC X(3).
+            02  HCM04-NAIYO-TBL         OCCURS  70 TIMES.
+              03  HCM04-SRYKBN    PIC X(10).
+              03  HCM04-SRYMEI    PIC X(80).
+              03  HCM04-TANI  PIC X(10).
+              03  HCM04-SURYO PIC X(8).
+              03  HCM04-KAISU PIC X(3).
+              03  HCM04-KINGAKU   PIC X(11).
+            02  HCM04-IRYOADRS  PIC X(60).
+            02  HCM04-IRYOMEI   PIC X(40).
+            02  HCM04-IRYOTEL   PIC X(15).
