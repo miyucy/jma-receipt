@@ -31,7 +31,8 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者        日付      内容
       * 01.00.01     NACL-多々納  04/12/16   カルテ３号紙（入院）追加
-      * 02.07.00     NACL-太田    05/10/24   MONFUNC 対応
+      * 01.00.02     NACL-太田    05/10/24   MONFUNC 対応
+      * 01.00.03     NACL-多々納  06/04/10   診療費明細書追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -215,6 +216,9 @@
       *            指示箋
                    WHEN    "00000007"
                        MOVE    "ORCHC503"      TO  ORCSPRTNM-PRTPG
+      *            診療費明細書
+                   WHEN    "00000008"
+                       MOVE    "ORCHCN04"      TO  ORCSPRTNM-PRTPG
                END-EVALUATE
            ELSE
       *        外来
@@ -234,6 +238,9 @@
       *            カルテ（３号紙）
                    WHEN    "00000005"
                        MOVE    "ORCHC33"       TO  ORCSPRTNM-PRTPG
+      *            診療費明細書
+                   WHEN    "00000008"
+                       MOVE    "ORCHC04"       TO  ORCSPRTNM-PRTPG
                END-EVALUATE
            END-IF
       *

@@ -512,6 +512,8 @@
                MOVE    MCPDATA-REC         TO  SYS-1001-REC
       *        請求書発行
                MOVE    SYS-1001-SKYPRTFLG  TO  SPA-SKYPRTFLG
+      *        診療費明細書発行
+               MOVE    SYS-1001-MEIPRTFLG  TO  SPA-MEIPRTFLG
       *        院外処方せん発行フラグ
                MOVE    SYS-1001-SYOHOPRTFLG    TO  SPA-SYOHOPRTFLG
       *        前回処方表示フラグ
@@ -1002,6 +1004,11 @@
                    IF      SYS-1010-YAKUJYOPRTFLG  NOT =   SPACE
                        MOVE    SYS-1010-YAKUJYOPRTFLG
                                                    TO  SPA-YAKJYOPRTFLG
+                   END-IF
+      *            診療費明細書発行
+                   IF      SYS-1010-MEIPRTFLG  NOT =   SPACE
+                       MOVE    SYS-1010-MEIPRTFLG
+                                                   TO  SPA-MEIPRTFLG
                    END-IF
                    MOVE    1                   TO  FLG-SYSKANRI
                ELSE

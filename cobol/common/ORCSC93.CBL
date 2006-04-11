@@ -1392,10 +1392,22 @@
                            END-IF
       *
                        WHEN    OTHER
+      *                Ｈ１８．４からリハビリ発生日
+                       IF       SPA-COM-INPUTCD (IDX)(1:6) =   "099800"
+                           MOVE    "80"            TO  SPA-COM-SRYKBN
+                                                                  (IDX)
+                           MOVE    "810"           TO  SPA-COM-SRYSYUKBN
+                                                                  (IDX)
+      *                    １剤１明細とする
+                           MOVE    "1"             TO  SPA-COM-ZAIEND
+                                                                  (IDX)
+                           MOVE    1               TO  FLG-ZAI
+                       ELSE
                            MOVE    "99"            TO  SPA-COM-SRYKBN
                                                                   (IDX)
       *!                   MOVE    "990"           TO  SPA-COM-SRYSYUKBN
       *!                                                           (IDX)
+                       END-IF
                    END-EVALUATE
            END-EVALUATE
       *

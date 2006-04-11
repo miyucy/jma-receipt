@@ -55,6 +55,7 @@
       *  02.00.19    NACL-多々納  04/10/21  CLAIMにドクター追加
       *  02.00.20    NACL-多々納  05/10/11  ユーザプログラム起動追加
       *  02.00.21    NACL-多々納  05/11/18  MONFUNC 対応
+      *  02.00.23    NACL-多々納  06/04/10  診療費明細書発行追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -280,6 +281,8 @@
            03  WRK-SYOHOU-PG           PIC X(20).
       *    請求書ＰＧ名
            03  WRK-SEIKYU-PG           PIC X(20).
+      *    診療費明細書ＰＧ名
+           03  WRK-MEISAI-PG           PIC X(20).
       *    入力項目名
            03  WRK-MCP-WIDGET          PIC X(64).
       *
@@ -494,6 +497,9 @@
       *
       *    請求書印刷パラメタ
            COPY    "CPORCHC03.INC".
+      *
+      *    診療費明細書印刷パラメタ
+           COPY    "CPORCHC04.INC".
       *
       *    薬情報印刷パラメタ
            COPY    "CPORCSCH30.INC".
@@ -835,6 +841,23 @@
                                        TO  SPA-GMN-HAKFLGLST (03)
            MOVE    3                   TO  SPA-HAKFLG-MAX
            MOVE    SPA-SKYPRTFLG       TO  SPA-GMN-HAKFLG
+      *
+      *    診療費明細フラグ
+           MOVE    "0 発行なし"        TO  SPA-GMN-MEIPRTFLGLST(01)
+           MOVE    "1 発行あり"        TO  SPA-GMN-MEIPRTFLGLST(02)
+           MOVE    2                   TO  SPA-MEIPRTFLG-MAX
+           IF      SPA-MEIPRTFLG       =   SPACE
+               MOVE    "0"                 TO  SPA-MEIPRTFLG
+           END-IF
+           MOVE    SPA-MEIPRTFLG       TO  SPA-GMN-MEIPRTFLG
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-MEIPRTFLG-MAX
+               IF      SPA-GMN-MEIPRTFLG   =   SPA-GMN-MEIPRTFLGLST
+                                                          (IDX) (1:1)
+                   MOVE    SPA-GMN-MEIPRTFLGLST(IDX)
+                                           TO  SPA-GMN-MEIPRTFLG-G
+               END-IF
+           END-PERFORM
       *
       *    院外処方せん発行フラグ
            MOVE    SPA-SYOHOPRTFLG     TO  SPA-GMN-SYOHOPRTFLG
@@ -2566,6 +2589,14 @@
            END-PERFORM
            MOVE    SPA-GMN-SYOHOPRTFLG-G   TO  K03-SYOHOPRTFLG
            MOVE    SPA-SYOHOPRTFLG-MAX     TO  K03-SYOHOPRTFLG-COUNT
+      *    診療費明細書発行
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-MEIPRTFLG-MAX
+               MOVE    SPA-GMN-MEIPRTFLGLST (IDX)
+                                           TO  K03-MEIPRTFLG-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-MEIPRTFLG-G     TO  K03-MEIPRTFLG
+           MOVE    SPA-MEIPRTFLG-MAX       TO  K03-MEIPRTFLG-COUNT
       *    薬剤情報発行
            MOVE    SPA-GMN-YAKJYOFLG-G     TO  K03-YAKJYOFLG
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -2843,6 +2874,8 @@
                    MOVE    "HAKHOUFLG"       TO  MCP-WIDGET
                WHEN    15
                    MOVE    "USERPG"          TO  MCP-WIDGET
+               WHEN    16
+                   MOVE    "MEIPRTFLG"       TO  MCP-WIDGET
                WHEN    07
                    MOVE    "B12"             TO  MCP-WIDGET
       *!       WHEN    08
@@ -2887,6 +2920,10 @@
                    MOVE    14          TO  SPA-GMN-CUR
       *       発行方法
                WHEN    "HAKHOUFLG"
+      ************ MOVE    03          TO  SPA-GMN-CUR
+                   MOVE    16          TO  SPA-GMN-CUR
+      *       診療費明細書発行
+               WHEN    "MEIPRTFLG"
                    MOVE    03          TO  SPA-GMN-CUR
       *       院外処方せん発行フラグ
                WHEN    "SYOHOPRTFLG"
@@ -3107,6 +3144,7 @@
            MOVE    K03-HAKHOUFLG       TO  SPA-GMN-HAKHOUFLG-G
            MOVE    K03-SYOHOPRTFLG     TO  SPA-GMN-SYOHOPRTFLG-G
            MOVE    K03-YAKJYOFLG       TO  SPA-GMN-YAKJYOFLG-G
+           MOVE    K03-MEIPRTFLG       TO  SPA-GMN-MEIPRTFLG-G
            MOVE    K03-DRCD            TO  SPA-GMN-DRCD-G
            MOVE    K03-USERPG          TO  SPA-GMN-USERPG-G
            .
@@ -3155,6 +3193,11 @@
            END-IF
       *    請求発行方法
            PERFORM 420-HAKHOUFLG-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *    診療費明細書発行
+           PERFORM 420-MEIPRTFLG-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
@@ -3681,6 +3724,31 @@
            END-IF
            .
        420-HAKHOUFLG-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療費明細書発行入力　処理
+      *****************************************************************
+       420-MEIPRTFLG-CHK-SEC              SECTION.
+      *
+           MOVE    ZERO                TO  FLG-CHK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-MEIPRTFLG-MAX
+               IF      SPA-GMN-MEIPRTFLG   =   SPA-GMN-MEIPRTFLGLST
+                                                               (IDX)
+                                                                (1:1)
+                   MOVE    SPA-GMN-MEIPRTFLGLST(IDX)
+                                           TO  SPA-GMN-MEIPRTFLG-G
+                   MOVE    SPA-MEIPRTFLG-MAX   TO  IDX
+                   MOVE    1                   TO  FLG-CHK
+               END-IF
+           END-PERFORM
+      *
+           IF      FLG-CHK             =   ZERO
+               MOVE    "0028"              TO  SPA-ERRCD
+               MOVE    16                  TO  SPA-GMN-CUR
+           END-IF
+           .
+       420-MEIPRTFLG-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4720,6 +4788,28 @@
                CALL    "ORCSCH30"          USING   SPA-AREA
                                                    ORCSCH30AREA
            END-IF
+      *
+      *    診療費明細書印刷
+           INITIALIZE                      ORCHC04AREA
+           MOVE    WRK-DENPNUM         TO  ORCHC04-DENPNUM
+      *    発行フラグ
+           IF      SPA-SYORIFLG        =   1
+      *        訂正分
+               MOVE    2                   TO  ORCHC04-HAKKOFLG
+           ELSE
+               MOVE    ZERO                TO  ORCHC04-HAKKOFLG
+           END-IF
+      *    発行方法
+           MOVE    SPA-GMN-HAKHOUFLG   TO  ORCHC04-HAKHOUFLG
+           IF      SPA-SYUNOU-MAX      =   1
+      *        単独の時
+               MOVE    ZERO                TO  ORCHC04-HAKHOUFLG
+           END-IF
+           IF      SPA-GMN-MEIPRTFLG   NOT =   ZERO
+               CALL    WRK-MEISAI-PG       USING
+                                           SPA-AREA
+                                           ORCHC04AREA
+           END-IF
            .
        45009-PRINT-EXT.
            EXIT.
@@ -4759,78 +4849,24 @@
            END-IF
            MOVE    ORCSPRTNM-PRTPG     TO  WRK-SYOHOU-PG
       *
-      **** 請求書
-      *    MOVE    SPACE               TO  WRK-SEIKYU-PG
-      *    MOVE    SPACE               TO  SYS-1032-REC
-      *    INITIALIZE                      SYS-1032-REC
-      *    MOVE    "1032"              TO  SYS-1032-KANRICD
-      *    MOVE    "00000003"          TO  SYS-1032-KBNCD
+      *    診療費明細書
+           INITIALIZE                      ORCSPRTNMAREA
+           MOVE    "1"                 TO  ORCSPRTNM-KBN
+           MOVE    "00000008"          TO  ORCSPRTNM-KBNCD
+           MOVE    SPA-SRYYMD          TO  ORCSPRTNM-SRYYMD
+           CALL    "ORCSPRTNM"         USING
+                                           ORCSPRTNMAREA
+                                           SPA-AREA
+                                           SYS-1032-REC
+           IF      ORCSPRTNM-RC    NOT =   ZERO
+               MOVE    "1030"              TO  SPA-ERRCD
+               GO      TO      4901-PRINT-PG-EXT
+           END-IF
+           MOVE    ORCSPRTNM-PRTPG     TO  WRK-MEISAI-PG
       *
-      *    MOVE    SYS-1032-REC        TO  MCPDATA-REC
-      *    MOVE    "DBSELECT"          TO  MCP-FUNC
-      *    MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-      *    MOVE    SPA-SRYYMD          TO  ORC-DBYMD
-      *    CALL    "ORCMCPSUB"          USING
-      *                                 MCPAREA
-      *                                 ORCMCPAREA
-      *                                 MCPDATA-REC
-      *    IF      MCP-RC              =   ZERO
-      *        MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-      *        PERFORM 960-KANRIMST-READ-SEC
-      *    ELSE
-      *        INITIALIZE                  SYS-1010-REC
-      *        MOVE    1               TO  FLG-SYSKANRI
-      *    END-IF
-      *    IF      FLG-SYSKANRI        =   ZERO
-      *        MOVE    MCPDATA-REC         TO  SYS-1032-REC
-      *        独自開発分
-      *        IF      SYS-1032-ORCACSTCHK     =   "T"
-      *            MOVE    SYS-1032-ORCACSTNM  TO  WRK-SEIKYU-PG
-      *        ELSE
-      *        ＯＲＣＡ標準分
-      *            MOVE    SYS-1032-ORCAORGNM  TO  WRK-SEIKYU-PG
-      *        END-IF
-      *    END-IF
-      *    IF      WRK-SEIKYU-PG       =   SPACE
-      *        MOVE    "ORCHC03"           TO  WRK-SEIKYU-PG
-      *    END-IF
-      *
-      *    処方せん
-      *    MOVE    SPACE               TO  WRK-SYOHOU-PG
-      *    MOVE    SPACE               TO  SYS-1032-REC
-      *    INITIALIZE                      SYS-1032-REC
-      *    MOVE    "1032"              TO  SYS-1032-KANRICD
-      *    MOVE    "00000002"          TO  SYS-1032-KBNCD
-      *
-      *    MOVE    SYS-1032-REC        TO  MCPDATA-REC
-      *    MOVE    "DBSELECT"          TO  MCP-FUNC
-      *    MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-      *    MOVE    SPA-SRYYMD          TO  ORC-DBYMD
-      *    CALL    "ORCMCPSUB"          USING
-      *                                 MCPAREA
-      *                                 ORCMCPAREA
-      *                                 MCPDATA-REC
-      *    IF      MCP-RC              =   ZERO
-      *        MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-      *        PERFORM 960-KANRIMST-READ-SEC
-      *    ELSE
-      *        INITIALIZE                  SYS-1010-REC
-      *        MOVE    1               TO  FLG-SYSKANRI
-      *    END-IF
-      *    IF      FLG-SYSKANRI        =   ZERO
-      *        MOVE    MCPDATA-REC         TO  SYS-1032-REC
-      *        独自開発分
-      *        IF      SYS-1032-ORCACSTCHK     =   "T"
-      *            MOVE    SYS-1032-ORCACSTNM  TO  WRK-SYOHOU-PG
-      *        ELSE
-      *        ＯＲＣＡ標準分
-      *            MOVE    SYS-1032-ORCAORGNM  TO  WRK-SYOHOU-PG
-      *        END-IF
-      *    END-IF
-      *    IF      WRK-SYOHOU-PG       =   SPACE
-      *        MOVE    "ORCHC19"           TO  WRK-SYOHOU-PG
-      *****END-IF
-      *
+      *TEST
+           DISPLAY "WRK-MEISAI-PG:" WRK-MEISAI-PG
+      *TEST
            .
       *
        4901-PRINT-PG-EXT.
@@ -5182,6 +5218,9 @@
                                        TO  SPA-ERRMSG
                WHEN    "0027"
                    MOVE    "Ｕ・Ｐがありません。"
+                                       TO  SPA-ERRMSG
+               WHEN    "0028"
+                   MOVE    "診療費明細書区分がありません。"
                                        TO  SPA-ERRMSG
                WHEN    "0020"
                    MOVE    "複数科まとめのできない保険です。"
