@@ -122,10 +122,10 @@
                             PIC X(14)   OCCURS  5 TIMES.
                   05  W02-JIHIPOSITION-COMB.
                     06  W02-JIHIPOSITION.
-                      07  W02-VALUE   PIC X(12).
+                      07  W02-VALUE   PIC X(40).
                     06  W02-JIHIPOSITION-COUNT   PIC S9(9)   BINARY.
                     06  W02-JIHIPOSITION-ITEM
-                            PIC X(12)   OCCURS  2 TIMES.
+                            PIC X(40)   OCCURS  3 TIMES.
                   05  W02-MEIPRTFLG-COMB.
                     06  W02-MEIPRTFLG.
                       07  W02-VALUE   PIC X(14).
