@@ -83,6 +83,7 @@
       *  01.02.12    NACL-伊藤    05/09/01  検体検査コメントのついた包括
       *                                     対象検査の剤まとめに対応
       *  01.02.13    NACL-門脇    05/11/01  （検選）等コメント対応
+      *  02.09.01    NACL-門脇    06/04/13  ２００６年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -567,10 +568,24 @@
            03  FILLER          PIC X(09)   VALUE   "830000020".
       *    再診料算定科：
            03  FILLER          PIC X(09)   VALUE   "830000021".
+      *    再診（乳幼児時間外）加算
+           03  FILLER          PIC X(09)   VALUE   "112014770".
+      *    再診（乳幼児休日）加算
+           03  FILLER          PIC X(09)   VALUE   "112014870".
+      *    再診（乳幼児深夜）加算
+           03  FILLER          PIC X(09)   VALUE   "112014970".
+      *    リハ開始日
+           03  FILLER          PIC X(09)   VALUE   "099800111".
+           03  FILLER          PIC X(09)   VALUE   "099800121".
+           03  FILLER          PIC X(09)   VALUE   "099800131".
+           03  FILLER          PIC X(09)   VALUE   "099800141".
+           03  FILLER          PIC X(09)   VALUE   "099800151".
+           03  FILLER          PIC X(09)   VALUE   "099800161".
+           03  FILLER          PIC X(09)   VALUE   "099800171".
        01  TBL-NOSRYCD-R       REDEFINES   TBL-NOSRYCD-AREA.
-            03  TBL-NOSRYCD     PIC X(09)   OCCURS   25.
+            03  TBL-NOSRYCD     PIC X(09)   OCCURS   35.
       *
-       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE   25.
+       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE   35.
       *
       *    固定値
        01  CONST-AREA.
@@ -660,6 +675,12 @@
            03  CONS-SYOSIN-KASAN25 PIC X(09) VALUE "111000870".
       *    ＜老＞初診（時間外特例）加算
            03  CONS-SYOSIN-KASAN26 PIC X(09) VALUE "111700870".
+      *    初診（乳幼児時間外特例医療機関）加算
+           03  CONS-SYOSIN-KASAN27 PIC X(09) VALUE "111012270".
+      *    同日初診
+           03  CONS-SYOSIN-KASAN28 PIC X(09) VALUE "111011810".
+      *    電子化加算
+           03  CONS-SYOSIN-KASAN29 PIC X(09) VALUE "111012370".
       *
       *    検査の回数に集計しない診療行為
       *    採血（Ｂ−Ａ）
@@ -1356,6 +1377,9 @@
                                                 CONS-SYOSIN-KASAN24 OR
                                                 CONS-SYOSIN-KASAN25 OR
                                                 CONS-SYOSIN-KASAN26 OR
+                                                CONS-SYOSIN-KASAN27 OR
+                                                CONS-SYOSIN-KASAN28 OR
+                                                CONS-SYOSIN-KASAN29 OR
                                                 CONS-COMMENT5       OR
                                                 CONS-COMMENT6       OR
                                                 CONS-COMMENT7       OR

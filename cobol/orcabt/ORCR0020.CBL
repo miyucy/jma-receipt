@@ -137,6 +137,7 @@
       *                                     ¥ì¥»¥×¥ÈÍÍ¼°¤ØÊÑ¹¹
       *
       *  02.08.01    NACL-Æ£¸¶    06/02/20  ¼ç²ÊÂÐ±þ
+      *  02.09.01    NACL-ÌçÏÆ    06/04/13  £²£°£°£¶Ç¯£´·î²þÀµÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -392,6 +393,26 @@
             03  TBL-ZAITAKU    PIC X(09)   OCCURS   4.       
       *
        01  TBL-ZAITAKU-MAX     PIC 9(02)   VALUE    4.  
+      *
+      *    ºßÁí¿Ç¥Æ¡¼¥Ö¥ë¡Ê£²£°£°£¶Ç¯£´·î¿ÇÎÅÊ¬¡Á¡Ë
+       01  TBL-ZAITAKU2-AREA.
+      *    ºßÂðËö´ü°åÎÅÁí¹ç¿ÇÎÅÎÁ¡Ê±¡³°¡Ë
+           03  FILLER          PIC X(09)   VALUE   "114007610".
+      *    ºßÂðËö´ü°åÎÅÁí¹ç¿ÇÎÅÎÁ¡Ê±¡Æâ¡Ë
+           03  FILLER          PIC X(09)   VALUE   "114007710".
+      *    ºßÂð»þ°å³ØÁí¹ç´ÉÍýÎÁ£±¡Ê±¡³°½èÊý¤»¤ó¡Ë
+           03  FILLER          PIC X(09)   VALUE   "114012210".
+      *    ºßÂð»þ°å³ØÁí¹ç´ÉÍýÎÁ£±¡Ê±¡Æâ½èÊý¤»¤ó¡Ë
+           03  FILLER          PIC X(09)   VALUE   "114012310".
+      *    ºßÂð»þ°å³ØÁí¹ç´ÉÍýÎÁ£²¡Ê±¡Æâ½èÊý¤»¤ó¡Ë
+           03  FILLER          PIC X(09)   VALUE   "114012410".
+      *    ºßÂð»þ°å³ØÁí¹ç´ÉÍýÎÁ£²¡Ê±¡³°½èÊý¤»¤ó¡Ë
+           03  FILLER          PIC X(09)   VALUE   "114007510".
+      *
+       01  TBL-ZAITAKU2-R      REDEFINES   TBL-ZAITAKU2-AREA.
+            03  TBL-ZAITAKU2   PIC X(09)   OCCURS   6.
+      *
+       01  TBL-ZAITAKU2-MAX    PIC 9(02)   VALUE    6.
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -2261,8 +2282,69 @@
       *
            IF   RECE01-SRYYM    >=  "200210"
       *
-             MOVE      SPACE     TO    WRK-ZAITAKU
+            MOVE      SPACE     TO    WRK-ZAITAKU
       *
+            IF  RECE01-SRYYM    >=  "200604"
+             PERFORM   VARYING   IDX3   FROM    1   BY  1
+                         UNTIL   ( IDX3   >   TBL-ZAITAKU2-MAX )
+                          OR     ( WRK-ZAITAKU    =    "1"     )
+      *
+               INITIALIZE                           SRYACT-REC
+               MOVE    RECE01-HOSPID        TO      SRY-HOSPID
+               MOVE    RECE01-NYUGAIKBN     TO      SRY-NYUGAIKBN
+               MOVE    RECE01-PTID          TO      SRY-PTID
+               MOVE    RECE01-SRYYM         TO      SRY-SRYYM
+               MOVE    TBL-ZAITAKU2(IDX3)   TO      SRY-SRYCD(1)
+               MOVE    TBL-ZAITAKU2(IDX3)   TO      SRY-SRYCD(2)
+               MOVE    TBL-ZAITAKU2(IDX3)   TO      SRY-SRYCD(3)
+               MOVE    TBL-ZAITAKU2(IDX3)   TO      SRY-SRYCD(4)
+               MOVE    TBL-ZAITAKU2(IDX3)   TO      SRY-SRYCD(5)
+               MOVE    SRYACT-REC           TO      MCPDATA-REC
+               MOVE    "DBSELECT"           TO      MCP-FUNC
+               MOVE    "SRYACT-KEY7"        TO      ORC-DBPATH
+               CALL    "ORCMCPSUB"           USING   MCPAREA
+                                                     ORCMCPAREA
+                                                     MCPDATA-REC
+               IF      MCP-RC               =       ZERO
+                   MOVE    "SRYACT-KEY7"    TO      ORC-DBPATH 
+                   PERFORM   SRYACT-READ-SEC
+                   IF      FLG-SRYACT       =       ZERO
+                       INITIALIZE                   SRYACCT-REC
+                       MOVE    SRY-HOSPID       TO   ACCT-HOSPID
+                       MOVE    SRY-NYUGAIKBN    TO   ACCT-NYUGAIKBN
+                       MOVE    SRY-SRYKA        TO   ACCT-SRYKA
+                       MOVE    SRY-PTID         TO   ACCT-PTID
+                       MOVE    SRY-SRYYM        TO   ACCT-SRYYM
+                       MOVE    SRY-ZAINUM       TO   ACCT-ZAINUM
+                       MOVE    SRYACCT-REC      TO   MCPDATA-REC
+                       MOVE    "DBSELECT"       TO   MCP-FUNC
+                       MOVE    "SRYACCT-KEY31"  TO   ORC-DBPATH
+                       CALL    "ORCMCPSUB"           USING
+                                                     MCPAREA
+                                                     ORCMCPAREA
+                                                     MCPDATA-REC
+                       IF      MCP-RC           =       ZERO
+                           MOVE    "SRYACCT-KEY31"  TO  ORC-DBPATH 
+                           PERFORM   SRYACCT-READ-SEC
+                           IF      FLG-SRYACCT  =       ZERO
+                               IF  (ACCT-ZAITEN   NOT =  ZERO)  AND
+                                   (ACCT-ZAIKAISU NOT =  ZERO)
+                                   MOVE    "1" TO   WRK-ZAITAKU
+                               END-IF
+                           END-IF
+                       END-IF
+      *
+                       MOVE    "SRYACCT-KEY31" TO    WK-PATH
+                       PERFORM   CSR-CLOSE-SEC
+      *
+                   END-IF
+               END-IF
+      *
+               MOVE    "SRYACT-KEY7"    TO    WK-PATH
+               PERFORM   CSR-CLOSE-SEC
+      *
+             END-PERFORM
+            ELSE
              PERFORM   VARYING   IDX3   FROM    1   BY  1
                          UNTIL   ( IDX3   >   TBL-ZAITAKU-MAX )
                           OR     ( WRK-ZAITAKU    =    "1"    )
@@ -2322,8 +2404,9 @@
                PERFORM   CSR-CLOSE-SEC
       *
              END-PERFORM
+            END-IF
       *
-             IF    WRK-ZAITAKU   =   "1"
+            IF    WRK-ZAITAKU   =   "1"
       *******  IF  ( RECE02-AGE          >=  70      )   OR
       *******      ( RECE02-AGE          >=  65  AND                    
       *******        RECE01-KOHID    NOT  =   ZERO   )   OR
@@ -2331,7 +2414,7 @@
       *******        FLG-ROUJINHOKEN      =   1      )
                  MOVE    "1"           TO  RECE02-ZAITAKU
       *******  END-IF
-             END-IF
+            END-IF
       *
            END-IF
            .

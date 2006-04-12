@@ -154,6 +154,7 @@
       *  02.06.10    NACL-°ËÆ£    05/09/01  ¸¡ÂÎ¸¡ºº¥³¥á¥ó¥È¤Î¤Ä¤¤¤¿Êñ³ç
       *                                     ÂÐ¾Ý¸¡ºº¤ÎºÞ¤Þ¤È¤á¤ËÂÐ±þ
       *  02.06.11    NACL-ÌçÏÆ    05/11/01  ¡Ê¸¡Áª¡ËÅù¥³¥á¥ó¥ÈÂÐ±þ
+      *  02.09.01    NACL-ÌçÏÆ    06/04/13  £²£°£°£¶Ç¯£´·î²þÀµÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -797,10 +798,24 @@
            03  FILLER          PIC X(09)   VALUE   "112703050".
       *    °é»ù±ÉÍÜ»ØÆ³²Ã»»¡Ê£Ä£Õ£Í£Í£Ù¡Ë
            03  FILLER          PIC X(09)   VALUE   "099114001".
+      *    ºÆ¿Ç¡ÊÆýÍÄ»ù»þ´Ö³°¡Ë²Ã»»
+           03  FILLER          PIC X(09)   VALUE   "112014770".
+      *    ºÆ¿Ç¡ÊÆýÍÄ»ùµÙÆü¡Ë²Ã»»
+           03  FILLER          PIC X(09)   VALUE   "112014870".
+      *    ºÆ¿Ç¡ÊÆýÍÄ»ù¿¼Ìë¡Ë²Ã»»
+           03  FILLER          PIC X(09)   VALUE   "112014970".
+      *    ¥ê¥Ï³«»ÏÆü
+           03  FILLER          PIC X(09)   VALUE   "099800111".
+           03  FILLER          PIC X(09)   VALUE   "099800121".
+           03  FILLER          PIC X(09)   VALUE   "099800131".
+           03  FILLER          PIC X(09)   VALUE   "099800141".
+           03  FILLER          PIC X(09)   VALUE   "099800151".
+           03  FILLER          PIC X(09)   VALUE   "099800161".
+           03  FILLER          PIC X(09)   VALUE   "099800171".
        01  TBL-NOSRYCD-R       REDEFINES   TBL-NOSRYCD-AREA.
-            03  TBL-NOSRYCD     PIC X(09)   OCCURS   50.       
+            03  TBL-NOSRYCD     PIC X(09)   OCCURS   60.       
       *
-       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE   50.         
+       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE   60.         
       *
       *    ¸ÇÄêÃÍ
        01  CONST-AREA.
@@ -934,6 +949,15 @@
       *    ¡ãÏ·¡ä½é¿Ç¡Ê»þ´Ö³°ÆÃÎã¡Ë²Ã»»
            03  WRK-CONS-SYOSIN-KASAN26 PIC X(09)   VALUE 
                                                    "111700870".
+      *    ½é¿Ç¡ÊÆýÍÄ»ù»þ´Ö³°ÆÃÎã°åÎÅµ¡´Ø¡Ë²Ã»»
+           03  WRK-CONS-SYOSIN-KASAN27 PIC X(09)   VALUE 
+                                                   "111012270".
+      *    Æ±Æü½é¿Ç
+           03  WRK-CONS-SYOSIN-KASAN28 PIC X(09)   VALUE 
+                                                   "111011810".
+      *    ÅÅ»Ò²½²Ã»»
+           03  WRK-CONS-SYOSIN-KASAN29 PIC X(09)   VALUE 
+                                                   "111012370".
       *
       *    ¸¡ºº¤Î²ó¿ô¤Ë½¸·×¤·¤Ê¤¤¿ÇÎÅ¹Ô°Ù
       *    ºÎ·ì¡Ê£Â¡Ý£Á¡Ë
@@ -1750,6 +1774,9 @@
                                             OR  WRK-CONS-SYOSIN-KASAN24
                                             OR  WRK-CONS-SYOSIN-KASAN25
                                             OR  WRK-CONS-SYOSIN-KASAN26
+                                            OR  WRK-CONS-SYOSIN-KASAN27
+                                            OR  WRK-CONS-SYOSIN-KASAN28
+                                            OR  WRK-CONS-SYOSIN-KASAN29
                                             OR  CONS-COMMENT5         
                                             OR  CONS-COMMENT6         
                                             OR  CONS-COMMENT7         

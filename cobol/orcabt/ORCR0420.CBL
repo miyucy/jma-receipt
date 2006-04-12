@@ -104,6 +104,7 @@
       *  01.02.21    NACL-ÌçÏÆ    06/02/01  £°£¹£¹£²£°£°£°¤Ç»Ï¤Þ¤ëÅêÌôÍÑ
       *                                     ¥³¥á¥ó¥È¤ÎÊÔ½¸ÂÐ±þ
       *  02.09.01    NACL-ÌçÏÆ    06/04/05  Îß·×¥È¡¼¥¿¥ëÊÔ½¸½¤Àµ
+      *  02.09.02    NACL-ÌçÏÆ    06/04/13  £²£°£°£¶Ç¯£´·î²þÀµÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -493,6 +494,13 @@
       *    ÆýÍÄ»ù²Ã»»
            03  CONS-NYUKSN1        PIC X(09) VALUE "111000370".         
            03  CONS-NYUKSN2        PIC X(09) VALUE "111011470".
+           03  CONS-NYUKSN3        PIC X(09) VALUE "111011970".
+           03  CONS-NYUKSN4        PIC X(09) VALUE "111012070".
+           03  CONS-NYUKSN5        PIC X(09) VALUE "111012170".
+           03  CONS-NYUKSN6        PIC X(09) VALUE "111012270".
+           03  CONS-NYUKSN7        PIC X(09) VALUE "111011570".
+           03  CONS-NYUKSN8        PIC X(09) VALUE "111011670".
+           03  CONS-NYUKSN9        PIC X(09) VALUE "111011770".
       *    ºÆ¿Ç¡Ê£³·îÄ¶¡Ë¡Ê£µ²óÄ¶¡Ë¤Ê¤É
       *    ¡Ê£´£¶£µ¤Ë´Ø·¸¤¢¤ê¡Ë
            03  CONS-SAISHIN-A1     PIC X(09) VALUE "101120060".
@@ -529,6 +537,7 @@
            03  CONS-ROUSAI15   PIC X(09)   VALUE   "101130080".
            03  CONS-ROUSAI16   PIC X(09)   VALUE   "101130090".
            03  CONS-ROUSAI17   PIC X(09)   VALUE   "101130100".
+           03  CONS-ROUSAI18   PIC X(09)   VALUE   "101110040".
       *
            03  CONS-ROUCOM1    PIC X(09)   VALUE   "840800001".
            03  CONS-ROUCOM2    PIC X(09)   VALUE   "840800002". 
@@ -1262,6 +1271,7 @@
              OR     ((SRY-SRYCD(IDX2)(1:3)  =  "059") AND
                      (TNS-TEN               =  ZERO )       )
              OR     ( SRY-SRYCD(IDX2)(1:7)  =  "0992000"    )
+             OR     ( SRY-SRYCD(IDX2)       =  "099209903"  )
                   COMPUTE   RECE44-MEISAISU    =  RECE44-MEISAISU
                                                -  1
                   MOVE      SRY-SRYCD(IDX2)   TO  WRK-SRYCD
@@ -1292,6 +1302,7 @@
               OR     ((SRY-SRYCD(IDX2)(1:3)  =  "059") AND
                       (TNS-TEN               =  ZERO )       )
               OR     ( SRY-SRYCD(IDX2)(1:7)  =  "0992000"    )
+              OR     ( SRY-SRYCD(IDX2)       =  "099209903"  )
       *
                CONTINUE
       *
@@ -1663,7 +1674,8 @@
                                        CONS-ROUSAI14 OR
                                        CONS-ROUSAI15 OR
                                        CONS-ROUSAI16 OR
-                                       CONS-ROUSAI17   )                
+                                       CONS-ROUSAI17 OR
+                                       CONS-ROUSAI18   )                
                OR (( ACCT-SRYKBN          =  "80"     )   AND           
                    ( SRY-SRYCD(IDX2)(1:5) =  "09593"  ))                
       *
@@ -1811,18 +1823,26 @@
                    WHEN    "114000110"
                    WHEN    "114001610"
                    WHEN    "114000970"
+                   WHEN    "114002470"
+                   WHEN    "114002970"
                    IF  FLG-OSINKBN        NOT = 2  AND 3
                        MOVE     1         TO    FLG-OSINKBN
                    END-IF
       *Ìë´Ö
                    WHEN    "114000470"
                    WHEN    "114001970"
+                   WHEN    "114011670"
+                   WHEN    "114011970"
                        MOVE     2         TO    FLG-OSINKBN
       *¿¼Ìë¡¦¶ÛµÞ
                    WHEN    "114000370"
                    WHEN    "114000570"
                    WHEN    "114001870"
                    WHEN    "114002070"
+                   WHEN    "114011570"
+                   WHEN    "114011770"
+                   WHEN    "114011870"
+                   WHEN    "114012070"
                        MOVE     3         TO    FLG-OSINKBN
                  END-EVALUATE
                END-IF
@@ -1895,7 +1915,19 @@
                                             "180025110"   OR
                                             "180025010"   OR
                                             "180025510"   OR
-                                            "180025410"     
+                                            "180025410"   OR
+      *
+                                            "180027410"   OR
+                                            "180027510"   OR
+                                            "180027610"   OR
+                                            "180027710"   OR
+                                            "180027810"   OR
+                                            "180027910"   OR
+                                            "180028010"   OR
+                                            "180028110"   OR
+                                            "180028210"   OR
+                                            "180028310"   OR
+                                            "180028410"     
       *****             MOVE   "1"    TO    RECE41-COMCNTFLG
                         MOVE   "1"    TO    RECE44-RIHABIRI-COMMENT
               END-IF
@@ -2414,7 +2446,8 @@
                                 RECE41-TENSU(1)  +
                                    (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
                    END-IF
-                   IF   SRY-SRYCD(IDX3) = CONS-ROUSAI1    
+                   IF   SRY-SRYCD(IDX3) = CONS-ROUSAI1 OR
+                                          CONS-ROUSAI18
                         COMPUTE    RECE41-KINGAKU2(1)  =
                                    RECE41-KINGAKU2(1)  +
                                    (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
@@ -2576,12 +2609,20 @@
                        ((SRY-SRYCD(IDX3)   NOT =    "114000110")   AND
                         (SRY-SRYCD(IDX3)   NOT =    "114001610")   AND
                         (SRY-SRYCD(IDX3)   NOT =    "114000970")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114002470")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114002970")   AND
                         (SRY-SRYCD(IDX3)   NOT =    "114000470")   AND
                         (SRY-SRYCD(IDX3)   NOT =    "114001970")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114011670")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114011970")   AND
                         (SRY-SRYCD(IDX3)   NOT =    "114000370")   AND
                         (SRY-SRYCD(IDX3)   NOT =    "114001570")   AND
                         (SRY-SRYCD(IDX3)   NOT =    "114001870")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114002070"))
+                        (SRY-SRYCD(IDX3)   NOT =    "114002070")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114011570")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114011770")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114011870")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114012070"))
                        MOVE   1              TO   FLG-ZAITAKU
                        ADD    WK-ZAIKAISU    TO   RECE41-KAISU(11)
                        COMPUTE   RECE41-TENSU(11)  =
@@ -2860,7 +2901,8 @@
                                 RECE41-TENSU(1)  +
                                 (WRK-TNS-TEN(IDX3) * WRK-ZAIKAISU-XXX)
                    END-IF
-                   IF   SRY-SRYCD(IDX3) = CONS-ROUSAI1    
+                   IF   SRY-SRYCD(IDX3) = CONS-ROUSAI1 OR
+                                          CONS-ROUSAI18
                         COMPUTE    RECE41-KINGAKU2(1)  =
                                    RECE41-KINGAKU2(1)  +
                                 (WRK-TNS-TEN(IDX3) * WRK-ZAIKAISU-XXX)
@@ -2982,12 +3024,20 @@
                        ((SRY-SRYCD(IDX3)   NOT =    "114000110")   AND
                         (SRY-SRYCD(IDX3)   NOT =    "114001610")   AND
                         (SRY-SRYCD(IDX3)   NOT =    "114000970")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114002470")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114002970")   AND
                         (SRY-SRYCD(IDX3)   NOT =    "114000470")   AND
                         (SRY-SRYCD(IDX3)   NOT =    "114001970")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114011670")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114011970")   AND
                         (SRY-SRYCD(IDX3)   NOT =    "114000370")   AND
                         (SRY-SRYCD(IDX3)   NOT =    "114001570")   AND
                         (SRY-SRYCD(IDX3)   NOT =    "114001870")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114002070"))
+                        (SRY-SRYCD(IDX3)   NOT =    "114002070")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114011570")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114011770")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114011870")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114012070"))
                        MOVE   1              TO   FLG-ZAITAKU
                        COMPUTE   RECE41-TENSU(6)  =
                                  RECE41-TENSU(6)  +
@@ -3224,11 +3274,19 @@
                                 RECE41-TENSU(1)  +
                                 (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
                      IF  SRY-SRYCD(IDX3)  =  CONS-NYUKSN1  OR
-                                             CONS-NYUKSN2
+                                             CONS-NYUKSN2  OR
+                                             CONS-NYUKSN3  OR
+                                             CONS-NYUKSN4  OR
+                                             CONS-NYUKSN5  OR
+                                             CONS-NYUKSN6  OR
+                                             CONS-NYUKSN7  OR
+                                             CONS-NYUKSN8  OR
+                                             CONS-NYUKSN9
                              MOVE  "1"     TO   RECE41-SHOSHIN-NYU
                      END-IF
                    END-IF
-                   IF   SRY-SRYCD(IDX3) = CONS-ROUSAI1    
+                   IF   SRY-SRYCD(IDX3) = CONS-ROUSAI1 OR
+                                          CONS-ROUSAI18
                         COMPUTE    RECE41-KINGAKU2(1)  =
                                    RECE41-KINGAKU2(1)  +
                                    (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
@@ -3340,12 +3398,20 @@
                        ((SRY-SRYCD(IDX3)   NOT =    "114000110")   AND
                         (SRY-SRYCD(IDX3)   NOT =    "114001610")   AND
                         (SRY-SRYCD(IDX3)   NOT =    "114000970")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114002470")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114002970")   AND
                         (SRY-SRYCD(IDX3)   NOT =    "114000470")   AND
                         (SRY-SRYCD(IDX3)   NOT =    "114001970")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114011670")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114011970")   AND
                         (SRY-SRYCD(IDX3)   NOT =    "114000370")   AND
                         (SRY-SRYCD(IDX3)   NOT =    "114001570")   AND
                         (SRY-SRYCD(IDX3)   NOT =    "114001870")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114002070"))
+                        (SRY-SRYCD(IDX3)   NOT =    "114002070")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114011570")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114011770")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114011870")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114012070"))
                        MOVE   1              TO   FLG-ZAITAKU
                        COMPUTE   RECE41-TENSU(7)  =
                                  RECE41-TENSU(7)  +
@@ -3651,11 +3717,19 @@
                                 TBL-SYUTEN-JI(1)   +
                                 (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
                      IF  SRY-SRYCD(IDX3)  =  CONS-NYUKSN1  OR
-                                             CONS-NYUKSN2
+                                             CONS-NYUKSN2  OR
+                                             CONS-NYUKSN3  OR
+                                             CONS-NYUKSN4  OR
+                                             CONS-NYUKSN5  OR
+                                             CONS-NYUKSN6  OR
+                                             CONS-NYUKSN7  OR
+                                             CONS-NYUKSN8  OR
+                                             CONS-NYUKSN9
                              MOVE  "1"     TO   RECE41-SHOSHIN-NYU
                      END-IF
                    END-IF
-                   IF   SRY-SRYCD(IDX3) = CONS-ROUSAI1
+                   IF   SRY-SRYCD(IDX3) = CONS-ROUSAI1 OR
+                                          CONS-ROUSAI18
       ****              COMPUTE    RECE41-SONOTAKIN-JYU  =
       ****                         RECE41-SONOTAKIN-JYU  +
       ****                     (WRK-TNS-TEN(IDX3)   * ACCT-ZAIKAISU)
@@ -3812,12 +3886,20 @@
                        ((SRY-SRYCD(IDX3)   NOT =    "114000110")   AND
                         (SRY-SRYCD(IDX3)   NOT =    "114001610")   AND
                         (SRY-SRYCD(IDX3)   NOT =    "114000970")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114002470")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114002970")   AND
                         (SRY-SRYCD(IDX3)   NOT =    "114000470")   AND
                         (SRY-SRYCD(IDX3)   NOT =    "114001970")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114011670")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114011970")   AND
                         (SRY-SRYCD(IDX3)   NOT =    "114000370")   AND
                         (SRY-SRYCD(IDX3)   NOT =    "114001570")   AND
                         (SRY-SRYCD(IDX3)   NOT =    "114001870")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114002070"))
+                        (SRY-SRYCD(IDX3)   NOT =    "114002070")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114011570")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114011770")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114011870")   AND
+                        (SRY-SRYCD(IDX3)   NOT =    "114012070"))
                        MOVE   1              TO   FLG-ZAITAKU
                        COMPUTE   RECE41-TENSU(8)   =
                                  RECE41-TENSU(8)   +

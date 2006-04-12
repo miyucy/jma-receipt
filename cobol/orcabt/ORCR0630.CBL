@@ -64,6 +64,7 @@
       *  02.06.04    NACL-ÌçÏÆ    06/01/05  ¥·¥¹´É¡Ê£µ£°£°£°¡Ë¤Î¿©»ö¾ðÊó¼è
       *                                     ÆÀ½¤Àµ
       *  02.06.05    NACL-ÌçÏÆ    06/01/20  É¸·çÂÐ±þ
+      *  02.09.01    NACL-ÌçÏÆ    06/04/13  £²£°£°£¶Ç¯£´·î²þÀµÂÐ±þ
       *****************************************************************
       *
       *
@@ -914,7 +915,11 @@
                PERFORM    200111-RECE62-HENSYU-SEC
                PERFORM    200112-RECE62-HENSYU2-SEC
                PERFORM    200113-RECE62-HENSYU3-SEC
-               PERFORM    200114-RECE62-HENSYU4-SEC
+               IF   RECE62-SRYYM  >= "200604"
+                 CONTINUE
+               ELSE
+                 PERFORM  200114-RECE62-HENSYU4-SEC
+               END-IF
                PERFORM    200115-RECE62-HENSYU9-SEC
       ***  END-PERFORM
       *
@@ -1086,13 +1091,17 @@
                     MOVE   NACCT-DAY(IDY)   TO  WRK-DAY2(IDY) 
                END-IF 
       *
-               IF     NACCT-ZAISKBKBN    =    "4"  
-                 IF    NACCT-SRYCDTOTAL  =    197000570 
-                    MOVE   NACCT-DAY(IDY)   TO  WRK-DAY41(IDY) 
-                 ELSE 
-                    MOVE   NACCT-DAY(IDY)   TO  WRK-DAY4(IDY) 
+               IF   RECE62-SRYYM  >= "200604"
+                 CONTINUE
+               ELSE
+                 IF     NACCT-ZAISKBKBN    =    "4"
+                   IF    NACCT-SRYCDTOTAL  =    197000570 
+                      MOVE   NACCT-DAY(IDY)   TO  WRK-DAY41(IDY)
+                   ELSE
+                      MOVE   NACCT-DAY(IDY)   TO  WRK-DAY4(IDY)
+                   END-IF
                  END-IF
-               END-IF 
+               END-IF
       *
                IF     NACCT-ZAISKBKBN    =    "5"  
                     MOVE   NACCT-DAY(IDY)   TO  WRK-DAY5(IDY) 
@@ -1220,7 +1229,8 @@
                             (  SRY-SRYCD(SRYACT-IDX) =  "099409901" OR
                                                         "099999902" OR
                                                         "099110001" OR
-                                                        "099120001")
+                                                        "099120001" OR
+                                                        "111011810")
                              MOVE    1      TO    FLG-SHOSAISIN
                          END-IF
                        END-IF
@@ -3639,7 +3649,10 @@
                                TO   RECE62-NYUSYUBETU(ID1)
               END-IF
       *
-              IF   WRK-SRYCD  =  "190109670"  OR  "190808870"
+              IF   RECE62-SRYYM  >= "200604"
+                CONTINUE
+              ELSE
+                IF   WRK-SRYCD  =  "190109670"  OR  "190808870"
       *
                  MOVE     ZERO     TO    FLG-ARI
                  PERFORM  VARYING  ID1    FROM    1   BY  1
@@ -3655,8 +3668,8 @@
                                   TO   RECE62-NYUSYUBETU(ID1)(1:4)
                  END-IF
       *
-              END-IF
-              IF   WRK-SRYCD  =  "190117070"  OR  "190813270"
+                END-IF
+                IF   WRK-SRYCD  =  "190117070"  OR  "190813270"
       *
                  MOVE     ZERO     TO    FLG-ARI
                  PERFORM  VARYING  ID1    FROM    1   BY  1
@@ -3672,8 +3685,8 @@
                                   TO   RECE62-NYUSYUBETU(ID1)(1:4)
                  END-IF
       *
-              END-IF
-              IF   WRK-SRYCD  =  "190117670"  OR  "190813870"
+                END-IF
+                IF   WRK-SRYCD  =  "190117670"  OR  "190813870"
       *
                  MOVE     ZERO     TO    FLG-ARI
                  PERFORM  VARYING  ID1    FROM    1   BY  1
@@ -3689,6 +3702,7 @@
                                   TO   RECE62-NYUSYUBETU(ID1)(1:6)
                  END-IF
       *
+                END-IF
               END-IF
       *
            END-IF

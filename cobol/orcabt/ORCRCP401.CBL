@@ -48,6 +48,7 @@
       *  02.07.03    NACL-藤原    05/12/12  保険履歴を年月日記載へ変更
       *  02.07.04    NACL-藤原    05/12/12  国保レセプト編綴順対応
       *  02.07.05    NACL-門脇    06/02/08  食事基本料情報（その他）編集
+      *  02.09.01    NACL-門脇    06/04/13  ２００６年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -4443,12 +4444,14 @@
                    MOVE    RECE62-SHOKUJIKHNNISSU (IDX)
                                              TO  WRK-KGK2
                    MOVE    WRK-KGK2          TO  HC06-SYOKAISU (IDX)
-                   EVALUATE    IDX
+                   IF   RECE62-SRYYM  <  "200604"
+                     EVALUATE    IDX
                        WHEN    3
-                           MOVE    "特"          TO  HC06-SYOKBN (IDX)
+                           MOVE    "特"      TO  HC06-SYOKBN (IDX)
                        WHEN    4
-                           MOVE    "選"          TO  HC06-SYOKBN (IDX)
-                   END-EVALUATE        
+                           MOVE    "選"      TO  HC06-SYOKBN (IDX)
+                     END-EVALUATE
+                   END-IF
                END-IF                                        
            END-PERFORM          
       *                                                                 
@@ -4580,6 +4583,18 @@
                                            TO  WRK-KGK7
                    MOVE    WRK-KGK7        TO  HC06-SYOFTNMONEY(2)
                END-IF
+           ELSE
+               IF      RECE62-FUKUSHIFLG-SKJ(1)   =    "1"
+                     MOVE    RECE62-SHOKUJINISSU (IDX2)
+                                                 TO  WRK-KGK2 
+                     MOVE    WRK-KGK2            TO  HC06-SYONISSU(2)
+                     MOVE    RECE62-SHOKUJIRYOYOHI (IDX2)
+                                                 TO  WRK-KGK6
+                     MOVE    WRK-KGK6            TO  HC06-SYOTOTALTEN(2)
+                     MOVE    RECE62-SHOKUJIFTN (IDX2)
+                                                 TO  WRK-KGK7
+                     MOVE    WRK-KGK7            TO  HC06-SYOFTNMONEY(2)
+               END-IF
            END-IF
       *     
       *    公費２
@@ -4648,6 +4663,18 @@
                    MOVE    RECE62-SHOKUJIFTN (IDX3)
                                                TO  WRK-KGK7
                    MOVE    WRK-KGK7        TO  HC06-SYOFTNMONEY(3)
+               END-IF
+           ELSE
+               IF      RECE62-FUKUSHIFLG-SKJ(2)   =    "1"
+                     MOVE    RECE62-SHOKUJINISSU (IDX3)
+                                                 TO  WRK-KGK2 
+                     MOVE    WRK-KGK2            TO  HC06-SYONISSU(3)
+                     MOVE    RECE62-SHOKUJIRYOYOHI (IDX3)
+                                                 TO  WRK-KGK6
+                     MOVE    WRK-KGK6            TO  HC06-SYOTOTALTEN(3)
+                     MOVE    RECE62-SHOKUJIFTN (IDX3)
+                                                 TO  WRK-KGK7
+                     MOVE    WRK-KGK7            TO  HC06-SYOFTNMONEY(3)
                END-IF
            END-IF
       *

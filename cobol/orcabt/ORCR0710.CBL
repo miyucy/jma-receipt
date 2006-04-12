@@ -126,6 +126,7 @@
       *  02.08.01    NACL-藤原    06/03/09  realtime preview 処理時の削除
       *                                     処理対応
       *  02.08.02    NACL-藤原    06/02/20  主科対応
+      *  02.09.01    NACL-門脇    06/04/13  ２００６年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -4808,12 +4809,14 @@
                    MOVE    RECE62-SHOKUJIKHNNISSU (IDX)
                                              TO  WRK-KGK2
                    MOVE    WRK-KGK2          TO  HC06-SYOKAISU (IDX)
-                   EVALUATE    IDX
+                   IF   RECE62-SRYYM  <  "200604"
+                     EVALUATE    IDX
                        WHEN    3
-                           MOVE    "特"          TO  HC06-SYOKBN (IDX)
+                           MOVE    "特"      TO  HC06-SYOKBN (IDX)
                        WHEN    4
-                           MOVE    "選"          TO  HC06-SYOKBN (IDX)
-                   END-EVALUATE        
+                           MOVE    "選"      TO  HC06-SYOKBN (IDX)
+                     END-EVALUATE
+                   END-IF
                END-IF                                        
            END-PERFORM          
       *                                                                 
@@ -4938,13 +4941,12 @@
                END-IF
            ELSE
                IF      RECE62-FUKUSHIFLG-SKJ(1)   =    "1"
-                 EVALUATE   SYS-1001-PREFNUM
-                   WHEN    "04"
+                 IF   (SYS-1001-PREFNUM  =  04                    )
+                 AND  (RECE62-KOHNUM(1)  = "183" OR "383" OR "483")
                      MOVE    RECE62-SHOKUJINISSU (IDX2)
                                                  TO  WRK-KGK2 
                      MOVE    WRK-KGK2            TO  HC06-SYONISSU(2)
-                   WHEN    "38"
-                   WHEN    "39"
+                 ELSE
                      MOVE    RECE62-SHOKUJINISSU (IDX2)
                                                  TO  WRK-KGK2 
                      MOVE    WRK-KGK2            TO  HC06-SYONISSU(2)
@@ -4954,7 +4956,7 @@
                      MOVE    RECE62-SHOKUJIFTN (IDX2)
                                                  TO  WRK-KGK7
                      MOVE    WRK-KGK7            TO  HC06-SYOFTNMONEY(2)
-                 END-EVALUATE
+                 END-IF
                END-IF
            END-IF
       *     
@@ -5025,13 +5027,12 @@
                END-IF
            ELSE
                IF      RECE62-FUKUSHIFLG-SKJ(2)   =    "1"
-                 EVALUATE   SYS-1001-PREFNUM
-                   WHEN    "04"
+                 IF   (SYS-1001-PREFNUM  =  04                    )
+                 AND  (RECE62-KOHNUM(2)  = "183" OR "383" OR "483")
                      MOVE    RECE62-SHOKUJINISSU (IDX3)
                                                  TO  WRK-KGK2 
                      MOVE    WRK-KGK2            TO  HC06-SYONISSU(3)
-                   WHEN    "38"
-                   WHEN    "39"
+                 ELSE
                      MOVE    RECE62-SHOKUJINISSU (IDX3)
                                                  TO  WRK-KGK2 
                      MOVE    WRK-KGK2            TO  HC06-SYONISSU(3)
@@ -5041,7 +5042,7 @@
                      MOVE    RECE62-SHOKUJIFTN (IDX3)
                                                  TO  WRK-KGK7
                      MOVE    WRK-KGK7            TO  HC06-SYOFTNMONEY(3)
-                 END-EVALUATE
+                 END-IF
                END-IF
            END-IF
       *

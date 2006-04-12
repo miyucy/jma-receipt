@@ -58,6 +58,7 @@
       *  01.01.09    NACL-ÌçÏÆ    05.09.13  ¡ÊÆÃ¡ËÂÐ¾Ý¤ÎÊÔ½¸½¤Àµ
       *  01.01.10    NACL-ÌçÏÆ    05.10.06  ¿Ç¶è£¹£µ£¹£¶ÂÐ±þ
       *  01.01.11    NACL-ÌçÏÆ    05.12.01  Ï«ºÒ¥ì¥»¥×¥È²ó¿ôÂÐ±þ
+      *  02.09.01    NACL-ÌçÏÆ    06.04.13  £²£°£°£¶Ç¯£´·î²þÀµÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -283,6 +284,7 @@
            03  CONS-ROUSAI15   PIC X(09)   VALUE   "101130080".
            03  CONS-ROUSAI16   PIC X(09)   VALUE   "101130090".
            03  CONS-ROUSAI17   PIC X(09)   VALUE   "101130100".
+           03  CONS-ROUSAI18   PIC X(09)   VALUE   "101110040".
       *
            03  CONS-GAIRAI1    PIC X(09)   VALUE   "101120070".
            03  CONS-GAIRAI2    PIC X(09)   VALUE   "101120080".
@@ -1117,7 +1119,10 @@
                        OR  (  SRY-SRYCD(IDY) =  "099409901"   
                                              OR "099999902"    
                                              OR "099110001"
-                                             OR "099120001"    )    
+                                             OR "099120001"
+                                             OR "112011710"
+                                             OR "112705850"
+                                             OR  CONS-ROUSAI18 )
       *
                           MOVE       1      TO    FLG-SHOSAISIN
       *
@@ -1331,7 +1336,8 @@
                                               CONS-ROUSAI14 OR
                                               CONS-ROUSAI15 OR
                                               CONS-ROUSAI16 OR
-                                              CONS-ROUSAI17   )
+                                              CONS-ROUSAI17 OR
+                                              CONS-ROUSAI18   )
                        OR ((ACCT-SRYKBN         =  "80"      )   AND
                            (SRY-SRYCD(IDY)(1:5) =  "09593"   ))
       *
@@ -1542,7 +1548,8 @@
                                               CONS-ROUSAI14 OR
                                               CONS-ROUSAI15 OR
                                               CONS-ROUSAI16 OR
-                                              CONS-ROUSAI17   
+                                              CONS-ROUSAI17 OR
+                                              CONS-ROUSAI18
       *
       *                     IF     TNS-TENSIKIBETU   =   1
                                COMPUTE  WRK-TEN-JI   =  TNS-TEN / 10

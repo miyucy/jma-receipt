@@ -42,6 +42,7 @@
       *  01.00.06    NACL-ÌçÏÆ    06/01/20  É¸·çÂÐ±þ
       *  01.00.07    NACL-¾®Æ¦Âô  06/03/22  ÆÃÄêÆþ±¡ÎÁÄÉ²ÃÊ¬¡ÊÇ¾Â´Ãæ¥±¥¢¥æ¥Ë¡Ë
       *                                     ³°ÇñÃÖ¤­´¹¤¨½èÍý
+      *  02.09.01    NACL-ÌçÏÆ    06/04/13  £²£°£°£¶Ç¯£´·î²þÀµÂÐ±þ
       *****************************************************************
       *
       *
@@ -1579,7 +1580,10 @@
                                      TO   LNK-SROUNYUIN-RYAKUSYO2(ID1)
                     END-IF
       *
-                    IF  WRK-RYAKU-SRYCD  =  "190109670" OR "190808870"
+                    IF  LNK-SROUNYUIN-SANTEIYM  >= "200604"
+                     CONTINUE
+                    ELSE
+                     IF  WRK-RYAKU-SRYCD  =  "190109670" OR "190808870"
       *
                        MOVE     ZERO     TO    FLG-ARI
                        PERFORM  VARYING  ID1    FROM    1   BY  1
@@ -1595,8 +1599,8 @@
                                 TO   LNK-SROUNYUIN-RYAKUSYO2(ID1)(1:4)
                        END-IF
       *
-                    END-IF
-                    IF  WRK-RYAKU-SRYCD  =  "190117070" OR "190813270"
+                     END-IF
+                     IF  WRK-RYAKU-SRYCD  =  "190117070" OR "190813270"
       *
                        MOVE     ZERO     TO    FLG-ARI
                        PERFORM  VARYING  ID1    FROM    1   BY  1
@@ -1612,8 +1616,8 @@
                                 TO   LNK-SROUNYUIN-RYAKUSYO2(ID1)(1:4)
                        END-IF
       *
-                    END-IF
-                    IF  WRK-RYAKU-SRYCD  =  "190117670" OR "190813870"
+                     END-IF
+                     IF  WRK-RYAKU-SRYCD  =  "190117670" OR "190813870"
       *
                        MOVE     ZERO     TO    FLG-ARI
                        PERFORM  VARYING  ID1    FROM    1   BY  1
@@ -1629,6 +1633,7 @@
                                 TO   LNK-SROUNYUIN-RYAKUSYO2(ID1)(1:6)
                        END-IF
       *
+                     END-IF
                     END-IF
       *
                   ELSE
