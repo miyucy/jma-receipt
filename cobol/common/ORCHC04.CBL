@@ -821,19 +821,15 @@
                        UNTIL      (IDX2    >   50  )  OR
                                   (TBL-SRYCD (IDX IDX2)  =   SPACE)
                    ADD     1              TO  IDX-H
-                   IF      IDX-H          >   LINE-MAX
-                       ADD     1              TO  WRK-PAGE
-                       MOVE    1              TO  IDX-H
-                       MOVE    SPACE          TO  WRK-SRYMEI-OLD
+                   IF      IDX-H          >=  LINE-MAX
+                       PERFORM 200520-PAGE-CNT-SEC
                    END-IF
       *            名称と単位名称チェック
                    IF     (TBL-TANINAME (IDX IDX2)    NOT =   SPACE)
                      AND  (TBL-NAME (IDX IDX2)(71:)   NOT =   SPACE)
       *                最終行の時、改ページ
-                       IF      IDX-H          >=  LINE-MAX
-                           ADD     1              TO  WRK-PAGE
-                           MOVE    1              TO  IDX-H
-                           MOVE    SPACE          TO  WRK-SRYMEI-OLD
+                       IF      IDX-H          >=  (LINE-MAX - 1 )
+                           PERFORM 200520-PAGE-CNT-SEC
                        END-IF
                    END-IF
                    IF     IDX2                =   1
@@ -892,8 +888,42 @@
            END-PERFORM
            MOVE    WRK-PAGE            TO  WRK-PAGE-MAX
       *
+      *    最終行
+           IF      TBL-H-SRYMEI(WRK-PAGE LINE-MAX)
+                                       =   SPACE
+               ADD     1                   TO  IDX-H
+               IF      IDX-H               >   LINE-MAX
+                   MOVE    LINE-MAX            TO  IDX-H
+               END-IF
+               MOVE    "以下余白"          TO  TBL-H-SRYMEI
+                                               (WRK-PAGE IDX-H)(30:)
+           END-IF
+      *
            .
        20052-TBL-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ページカウント処理
+      *****************************************************************
+       200520-PAGE-CNT-SEC                  SECTION.
+      *
+      *    最終明細の時、改ページなし
+           IF    ( IDX-H               =   LINE-MAX)  AND
+                 ( IDX                 =   IDX-TBL )  AND
+                 ((IDX2                =   50      )  OR
+                  (TBL-SRYCD (IDX IDX2 + 1)    =   SPACE ))
+               CONTINUE
+           ELSE
+               MOVE    LINE-MAX            TO  IDX-H
+               MOVE    "次ページへ続く"    TO  TBL-H-SRYMEI
+                                               (WRK-PAGE IDX-H)(30:)
+               ADD     1                   TO  WRK-PAGE
+               MOVE    1                   TO  IDX-H
+               MOVE    SPACE               TO  WRK-SRYMEI-OLD
+           END-IF
+           .
+       200520-PAGE-CNT-EXT.
            EXIT.
       *
       *****************************************************************
