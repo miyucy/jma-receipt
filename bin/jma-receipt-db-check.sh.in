@@ -19,6 +19,8 @@ SQLSELECT="SELECT * FROM TBL_DBKANRI WHERE KANRICD='ORCADB00';"
 
 DBHOST=localhost
 
+EXITMODE=code
+
 FLAG=`id -u`
 
 if [ "${LANG}" = "ja_JP.eucJP" ] ; then
@@ -34,6 +36,12 @@ if [ ${FLAG} -ne 0 ] ; then
         echo "ERROR: mest be root permission."
     fi
     exit 1
+fi
+
+if [ -z $1 ] ; then
+    EXITMODE=code
+else
+    EXITMODE=file
 fi
 
 rm -f $DBKANRIFL
@@ -53,6 +61,9 @@ DBVERSION1=`echo $DBVERSION | awk '{gsub(/[-)]/,""); print } ' `
 echo
 if [ `echo $DBVERSION1 $VERDATA1 | awk '{print($1==$2) ? "true" : "false"} '` = "true" ];	then
     echo "Very Good!"
+    if [ -e "SYSCONFDIR"/database-schema-different ] ; then
+	rm -f "$SYSCONFDIR"/database-schema-different
+    fi
 else
     echo "package  version=" $VERDATA1
     echo "database version=" $DBVERSION1
@@ -62,7 +73,13 @@ else
     else
 	echo "No Good!"
     fi
-    exit 99
+    if [ "${EXITMODE}" = "file" ] ; then
+	if ! [ -e "SYSCONFDIR"/database-schema-different ] ; then
+	    touch "$SYSCONFDIR"/database-schema-different
+	fi
+    else
+	exit 99
+    fi
 fi 
 
 rm -f $DBKANRIFL
