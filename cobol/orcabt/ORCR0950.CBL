@@ -48,6 +48,7 @@
       *  02.07.01    NACL-Æ£¸¶    05/12/12  ¹ñÊÝ¥ì¥»¥×¥ÈÊÔÄÖ½çÂÐ±þ
       *  02.07.02    NACL-ÌçÏÆ    06/01/24  DBCLOSECURSORÄÉ²Ã
       *  02.07.03    NACL-ÌçÏÆ    06/02/08  ¿©»ö´ðËÜÎÁ¾ðÊó¡Ê¤½¤ÎÂ¾¡ËÊÔ½¸
+      *  02.09.01    NACL-ÌçÏÆ    06/04/13  £²£°£°£¶Ç¯£´·î²þÀµÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1794,14 +1795,22 @@
                    MOVE    RECE82-SHOKUJIKHNNISSU (IDX)
                                              TO  WRK-ZZZ
                    MOVE    WRK-ZZZ           TO  HC22-SYOKAISU (IDX)
-                   EVALUATE    IDX
-                       WHEN    3
-                           MOVE    "ÆÃ"          TO  HC22-SYOKBN (IDX)
+                   IF   RECE82-SRYYM  >=  "200604"
+                     EVALUATE    IDX
                        WHEN    4
-                           MOVE    "Áª"          TO  HC22-SYOKBN (IDX)
-                           MOVE    "±ß¡ß"        TO  HC22-SYOKAKERU 
-                           MOVE    "Æü´Ö"        TO  HC22-SYONICHI
-                   END-EVALUATE        
+                           MOVE    "±ß¡ß"    TO  HC22-SYOKAKERU
+                           MOVE    "Æü´Ö"    TO  HC22-SYONICHI
+                     END-EVALUATE
+                   ELSE
+                     EVALUATE    IDX
+                       WHEN    3
+                           MOVE    "ÆÃ"      TO  HC22-SYOKBN (IDX)
+                       WHEN    4
+                           MOVE    "Áª"      TO  HC22-SYOKBN (IDX)
+                           MOVE    "±ß¡ß"    TO  HC22-SYOKAKERU
+                           MOVE    "Æü´Ö"    TO  HC22-SYONICHI
+                     END-EVALUATE
+                   END-IF
                END-IF                                        
            END-PERFORM
       *

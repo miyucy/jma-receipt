@@ -42,6 +42,7 @@
       *  01.01.06    NACL-ÌçÏÆ    05/05/16  ÎÅÍÜÃ´Åö¼êÅö¡ÊËÌ³¤Æ»¡ËÂÐ±þ
       *  01.01.07    NACL-ÌçÏÆ    05.09.06  ¼«ÇåÀÕ½¾ÍèÍÍ¼°ÂÐ±þ
       *  01.01.08    NACL-ÌçÏÆ    05.10.06  ¿Ç¶è£¹£µ£¹£¶ÂÐ±þ
+      *  02.09.01    NACL-ÌçÏÆ    06/04/13  £²£°£°£¶Ç¯£´·î²þÀµÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -245,6 +246,7 @@
            03  CONS-ROUSAI18   PIC X(09)   VALUE   "101910080".
            03  CONS-ROUSAI19   PIC X(09)   VALUE   "101910090".
            03  CONS-ROUSAI20   PIC X(09)   VALUE   "101910100".
+           03  CONS-ROUSAI21   PIC X(09)   VALUE   "101110040".
       *
       *    ¹øÉô¸ÇÄêÂÓ²Ã»»
            03  CONS-YOUBUKASAN PIC X(09)   VALUE   "140037490".
@@ -733,7 +735,11 @@
       *
            PERFORM     220-RECE82-HENSYU-SEC
            PERFORM     230-RECE82-HENSYU2-SEC
-           PERFORM     250-RECE82-HENSYU4-SEC
+           IF   RECE82-SRYYM  >= "200604"
+             CONTINUE
+           ELSE
+             PERFORM   250-RECE82-HENSYU4-SEC
+           END-IF
            PERFORM     260-RECE82-HENSYU9-SEC
       *
            PERFORM     270-JNISSU-SET-SEC
@@ -876,13 +882,17 @@
                     MOVE   NACCT-DAY(IDY)   TO  WRK-DAY2(IDY) 
                END-IF 
       *
-               IF     NACCT-ZAISKBKBN    =    "4"  
-                 IF    NACCT-SRYCDTOTAL  =    197000570 
-                    MOVE   NACCT-DAY(IDY)   TO  WRK-DAY41(IDY) 
-                 ELSE 
-                    MOVE   NACCT-DAY(IDY)   TO  WRK-DAY4(IDY) 
+               IF   RECE82-SRYYM  >= "200604"
+                 CONTINUE
+               ELSE
+                 IF     NACCT-ZAISKBKBN    =    "4"
+                   IF    NACCT-SRYCDTOTAL  =    197000570 
+                      MOVE   NACCT-DAY(IDY)   TO  WRK-DAY41(IDY)
+                   ELSE
+                      MOVE   NACCT-DAY(IDY)   TO  WRK-DAY4(IDY)
+                   END-IF
                  END-IF
-               END-IF 
+               END-IF
       *
                IF     NACCT-ZAISKBKBN    =    "5"  
                     MOVE   NACCT-DAY(IDY)   TO  WRK-DAY5(IDY) 
@@ -951,7 +961,8 @@
                             (  SRY-SRYCD(SRYACT-IDX) =  "099409901" OR
                                                         "099999902" OR
                                                         "099110001" OR
-                                                        "099120001")
+                                                        "099120001" OR
+                                                         CONS-ROUSAI21 )
                              MOVE    1      TO    FLG-SHOSAISIN
                          END-IF
                        END-IF
@@ -1519,7 +1530,8 @@
       *
                      IF    RECE82-HKNKBN   =   "4"
                          IF  SRY-SRYCD(SRYACT-IDX) =  CONS-ROUSAI1  OR
-                                                      CONS-ROUSAI2
+                                                      CONS-ROUSAI2  OR
+                                                      CONS-ROUSAI21
                             ADD    TNS-TEN      TO    WRK-KIN
                          END-IF
                          IF  SRY-SRYCD(SRYACT-IDX) =  CONS-ROUSAI3  OR
@@ -1573,7 +1585,8 @@
                                                       CONS-ROUSAI17 OR
                                                       CONS-ROUSAI18 OR
                                                       CONS-ROUSAI19 OR
-                                                      CONS-ROUSAI20
+                                                      CONS-ROUSAI20 OR
+                                                      CONS-ROUSAI21
                             ADD    TNS-TEN      TO    WRK-KIN
                             COMPUTE  WRK-TEN  =   WRK-TEN   +
                                      ( TNS-TEN / 10)
@@ -1846,7 +1859,8 @@
                                                      CONS-ROUSAI17 OR
                                                      CONS-ROUSAI18 OR
                                                      CONS-ROUSAI19 OR
-                                                     CONS-ROUSAI20
+                                                     CONS-ROUSAI20 OR
+                                                     CONS-ROUSAI21
       *
                             COMPUTE  WRK-TEN-JI   =  TNS-TEN / 10
                             COMPUTE  TBL-SYUTEN-JI(IDY)  =

@@ -58,6 +58,7 @@
       *  01.02.13    NACL-°ËÆ£    05/09/01  ¸¡ÂÎ¸¡ºº¥³¥á¥ó¥È¤Î¤Ä¤¤¤¿Êñ³ç
       *                                     ÂÐ¾Ý¸¡ºº¤ÎºÞ¤Þ¤È¤á¤ËÂÐ±þ
       *  01.02.14    NACL-ÌçÏÆ    05/11/01  ¡Ê¸¡Áª¡ËÅù¥³¥á¥ó¥ÈÂÐ±þ
+      *  02.09.01    NACL-ÌçÏÆ    06/04/13  £²£°£°£¶Ç¯£´·î²þÀµÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -483,10 +484,18 @@
            03  FILLER          PIC X(09)   VALUE   "099110001".
       *    ½é¿ÇÎÁ»»Äê²Ê¡§
            03  FILLER          PIC X(09)   VALUE   "830000020".
+      *    ¥ê¥Ï³«»ÏÆü
+           03  FILLER          PIC X(09)   VALUE   "099800111".
+           03  FILLER          PIC X(09)   VALUE   "099800121".
+           03  FILLER          PIC X(09)   VALUE   "099800131".
+           03  FILLER          PIC X(09)   VALUE   "099800141".
+           03  FILLER          PIC X(09)   VALUE   "099800151".
+           03  FILLER          PIC X(09)   VALUE   "099800161".
+           03  FILLER          PIC X(09)   VALUE   "099800171".
        01  TBL-NOSRYCD-R       REDEFINES   TBL-NOSRYCD-AREA.
-            03  TBL-NOSRYCD     PIC X(09)   OCCURS   8.       
+            03  TBL-NOSRYCD     PIC X(09)   OCCURS  15.       
       *
-       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE   8.         
+       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE  15.         
       *
       *    ¸ÇÄêÃÍ
        01  CONST-AREA.
@@ -599,6 +608,15 @@
       *    ¡ãÏ·¡ä½é¿Ç¡Ê»þ´Ö³°ÆÃÎã¡Ë²Ã»»
            03  WRK-CONS-SYOSIN-KASAN26 PIC X(09)   VALUE 
                                                    "111700870".
+      *    ½é¿Ç¡ÊÆýÍÄ»ù»þ´Ö³°ÆÃÎã°åÎÅµ¡´Ø¡Ë²Ã»»
+           03  WRK-CONS-SYOSIN-KASAN27 PIC X(09)   VALUE 
+                                                   "111012270".
+      *    Æ±Æü½é¿Ç
+           03  WRK-CONS-SYOSIN-KASAN28 PIC X(09)   VALUE 
+                                                   "111011810".
+      *    ÅÅ»Ò²½²Ã»»
+           03  WRK-CONS-SYOSIN-KASAN29 PIC X(09)   VALUE 
+                                                   "111012370".
       *
       *    Ì¤¼Â»Ü¸º»»
            03  CONS-GENZAN1            PIC X(09)   VALUE   "190080470".
@@ -1310,6 +1328,9 @@
                                             OR  WRK-CONS-SYOSIN-KASAN24
                                             OR  WRK-CONS-SYOSIN-KASAN25
                                             OR  WRK-CONS-SYOSIN-KASAN26
+                                            OR  WRK-CONS-SYOSIN-KASAN27
+                                            OR  WRK-CONS-SYOSIN-KASAN28
+                                            OR  WRK-CONS-SYOSIN-KASAN29
                                             OR  CONS-COMMENT5         
                                             OR  CONS-COMMENT6         
                                             OR  CONS-COMMENT7         
@@ -2394,20 +2415,39 @@
                 IF   (WRK-SRYSYUKBN      =  "340")
                 AND  (WRK-TBLMAX         =   1   )
       *         AND  (TBL-ZAI-IDX(IDY)   =   1   )
-                AND  (TBL-ZAI-SRYCD(IDY) =  "130004410" OR "130008510")
+                AND  (TBL-ZAI-SRYCD(IDY) =  "130004410" OR "130008510"
+                                         OR "130011210"               )
                          MOVE   2              TO  RECE86-TENTEKIKBN
                          MOVE   RECE84-ZAINUM  TO  RECE86-TENTEKIBAN
                 END-IF
+                IF   (WRK-SRYSYUKBN      =  "340")
+                AND  (WRK-TBLMAX         =   2   )
+      *         AND  (TBL-ZAI-IDX(IDY)   =   1   )
+                   IF ((IDY = 1                           ) AND
+                       (TBL-ZAI-SRYCD(IDY) =  "130004410"
+                                           OR "130008510"
+                                           OR "130011210" ) AND
+                       (TBL-ZAI-SRYCD(2)   =  "130011170" ))
+                   OR ((IDY = 2                           ) AND
+                       (TBL-ZAI-SRYCD(IDY) =  "130011170" ) AND
+                       (TBL-ZAI-SRYCD(1)   =  "130004410"
+                                           OR "130008510"
+                                           OR "130011210" ))
+                         MOVE   2              TO  RECE86-TENTEKIKBN
+                         MOVE   RECE84-ZAINUM  TO  RECE86-TENTEKIBAN
+                   END-IF
+                END-IF
       *
                 IF   (WRK-SRYSYUKBN      =  "330" OR "340")
-                AND  (WRK-TBLMAX         =   1            )
+                AND  (WRK-TBLMAX         =   1 OR 2       )
       *         AND  (TBL-ZAI-IDX(IDY)   =   1            )
                 AND  (TBL-ZAI-SRYCD(IDY) =  "130000110" OR "130000210"
                                          OR "130000310" OR "130008270"
                                          OR "130701270" OR "130004570"
                                          OR "130009670" OR "130701370"
                                          OR "130010570" OR "130702670"
-                                         OR "130010670" OR "130702770")
+                                         OR "130010670" OR "130702770"
+                                         OR "130011070"               )
                          MOVE   3              TO  RECE86-TENTEKIKBN
                          MOVE   RECE84-ZAINUM  TO  RECE86-TENTEKIBAN
                 END-IF
