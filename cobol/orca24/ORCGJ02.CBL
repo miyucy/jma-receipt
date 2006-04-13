@@ -11027,9 +11027,9 @@
       *****************************************************************
        4010-PREVIEW-SYORI-SEC          SECTION.
       *@@@ レセプト更新まで
-           IF       SPA-NAI-SRYYM      >=   "200604"
-               MOVE    "9009"          TO  SPA-ERRCD
-           END-IF
+      *    IF       SPA-NAI-SRYYM      >=   "200604"
+      *        MOVE    "9009"          TO  SPA-ERRCD
+      *    END-IF
       *@@@
       *
            IF      SPA-GMN-BANGO   NOT =   ZERO
