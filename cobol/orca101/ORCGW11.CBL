@@ -2169,6 +2169,7 @@
       *    Æþ±¡
            IF      SPA-BEDSU           >   ZERO
       *
+               MOVE    ZERO            TO  WRK-KBNCD1
                PERFORM 490-SYS-1034-KOUSHIN-SEC
       *        Æþ±¡¡¦Ä¢É¼¥×¥í¥°¥é¥à
                PERFORM VARYING IDZ2        FROM    1   BY  1
