@@ -204,17 +204,8 @@
       *
            COPY    "CPSK1005.INC".
       *
-           COPY    "CPSK1010.INC".
-      *
-           COPY    "CPSK1013.INC".
-      *
       *    出力先プリンタ名割り当て情報
            COPY  "CPSK1031.INC".
-      *
-      *    患者マスタ
-       01  PTINF-REC.
-           COPY    "CPPTINF.INC".
-      *
       *
       *    収納
        01  SYUNOU-REC.
@@ -994,10 +985,13 @@
                WHEN    "80"
                    MOVE    "その他"            TO  WRK-SRYMEI
                WHEN    "90"
-                   MOVE    "入　　院"          TO  WRK-SRYMEI
+               WHEN    "92"
+                   MOVE    "入院料等"          TO  WRK-SRYMEI
+               WHEN    "97"
+                   MOVE    "入院料等"          TO  WRK-SRYMEI
                WHEN    "95"
                WHEN    "96"
-                   MOVE    "適用外"            TO  WRK-SRYMEI
+                   MOVE    "給付外"            TO  WRK-SRYMEI
                WHEN    OTHER
                    MOVE    "その他"            TO  WRK-SRYMEI
            END-EVALUATE
