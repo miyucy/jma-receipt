@@ -77,6 +77,7 @@
            03  IDX                 PIC 9(04).
            03  IDXA                PIC 9(04).
            03  IDX2                PIC 9(04).
+           03  IDX3                PIC 9(04).
       *
            03  IDX-JYU             PIC 9(04).
            03  IDX-REN             PIC 9(04).
@@ -529,7 +530,9 @@
            MOVE    SYS-1005-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-KEY10-SEC
            IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC     TO  SYS-1005-REC
+               MOVE    MCPDATA-REC         TO  SYS-1005-REC
+               MOVE    SYS-1005-SRYKANAME1
+                                           TO  WRK-SRYKA-MEI
            ELSE
                INITIALIZE                  SYS-1005-REC
            END-IF
@@ -908,8 +911,9 @@
                                                       (IDX-H)
                END-IF
            END-PERFORM
-           IF      TBL-SRYKBN          =   "95"
-                                       OR  "96"
+           IF     (TBL-SRYKBN          =   "95"
+                                       OR  "96"  )  AND
+                  (TBL-KINGAKU         =   ZERO  )
                CONTINUE
            ELSE
       *        ¶â³Û
@@ -1126,15 +1130,15 @@
            MOVE    SYS-1002-TEL        TO  HCN04-IRYOTEL
       *
       *    ÌÀºÙÆâÍÆ
-           PERFORM VARYING     IDX2    FROM    1   BY  1
-                   UNTIL       IDX2    >   LINE-MAX
-               MOVE    TBL-H-SRYKBN (IDX2) TO  HCN04-SRYKBN (IDX2)
-               MOVE    TBL-H-SRYMEI (IDX2) TO  HCN04-SRYMEI (IDX2)
-               MOVE    TBL-H-TANINAME(IDX2)
-                                           TO  HCN04-TANI  (IDX2)
-               MOVE    TBL-H-SURYO  (IDX2) TO  HCN04-SURYO (IDX2)
-               MOVE    TBL-H-KAISU  (IDX2) TO  HCN04-KAISU (IDX2)
-               MOVE    TBL-H-KINGAKU(IDX2) TO  HCN04-KINGAKU(IDX2)
+           PERFORM VARYING     IDX3    FROM    1   BY  1
+                   UNTIL       IDX3    >   LINE-MAX
+               MOVE    TBL-H-SRYKBN (IDX3) TO  HCN04-SRYKBN (IDX3)
+               MOVE    TBL-H-SRYMEI (IDX3) TO  HCN04-SRYMEI (IDX3)
+               MOVE    TBL-H-TANINAME(IDX3)
+                                           TO  HCN04-TANI  (IDX3)
+               MOVE    TBL-H-SURYO  (IDX3) TO  HCN04-SURYO (IDX3)
+               MOVE    TBL-H-KAISU  (IDX3) TO  HCN04-KAISU (IDX3)
+               MOVE    TBL-H-KINGAKU(IDX3) TO  HCN04-KINGAKU(IDX3)
            END-PERFORM
            .
        300-HCN04-HEN-EXT.
@@ -1213,15 +1217,21 @@
       *****************************************************************
        20042-NYUTBL-HENSYU-SEC                SECTION.
       *
-           MOVE    HCM34S01-SRYKBN (IDX)   TO  TBL-SRYKBN
+      *    ¼¼ÎÁº¹³Û¤Ï¼«Èñ
+           IF      HCM34S01-ZAISKBKBN(IDX) =   "3"
+               MOVE    "95"                    TO  TBL-SRYKBN
+           ELSE
+               MOVE    HCM34S01-SRYKBN (IDX)   TO  TBL-SRYKBN
+           END-IF
            MOVE    HCM34S01-SRYSYUKBN(IDX) TO  TBL-SRYSYUKBN
       *    ºÞÅÀ¿ô
            MOVE    HCM34S01-ZAITEN (IDX)   TO  TBL-ZAITENSU
       *    ºÞ²ó¿ô
            MOVE    HCM34S01-ZAIKAISU(IDX)  TO  TBL-KAISU
       *    ¶â³Û
-      *    ¿©»ö¤Ï¶â³Û
+      *    ¿©»ö¡¦¼¼ÎÁº¹³Û¤Ï¶â³Û
            IF      HCM34S01-ZAISKBKBN(IDX) =   "4"
+                                           OR  "3"
                COMPUTE TBL-KINGAKU         =  (TBL-ZAITENSU
                                            *   TBL-KAISU )
            ELSE
