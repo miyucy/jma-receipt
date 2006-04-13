@@ -285,6 +285,13 @@ I04	{
 			count	int;
 			item	varchar(30)[03];
 		};
+		CMB_SRYPRTOUT	{
+			SRYPRTOUT	{
+				value	varchar(30);
+			};
+			count	int;
+			item	varchar(30)[03];
+		};
 		CMB_TAIPRTOUT	{
 			TAIPRTOUT	{
 				value	varchar(20);

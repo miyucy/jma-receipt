@@ -220,6 +220,13 @@
                                 PIC S9(9)   BINARY.
                 04  I04-SKYPRTOUT-ITM
                                 PIC X(30)   OCCURS  3 TIMES.
+              03  I04-CMB-SRYPRTOUT.
+                04  I04-SRYPRTOUT.
+                  05  I04-VALUE PIC X(30).
+                04  I04-SRYPRTOUT-CNT
+                                PIC S9(9)   BINARY.
+                04  I04-SRYPRTOUT-ITM
+                                PIC X(30)   OCCURS  3 TIMES.
               03  I04-CMB-TAIPRTOUT.
                 04  I04-TAIPRTOUT.
                   05  I04-VALUE PIC X(20).

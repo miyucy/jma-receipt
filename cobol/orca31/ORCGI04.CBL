@@ -104,6 +104,7 @@
            03  FLG-ZI-SAISIN       PIC 9(01).
            03  FLG-NYUINKA         PIC 9(01).
            03  FLG-SKYPRT          PIC 9(01).
+           03  FLG-SRYPRT          PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -369,6 +370,9 @@
       *    帳票サブ < 請求書兼領収書 >
            COPY    "CPORCHCN03.INC".
       *
+      *    帳票サブ < 診療費明細書 >
+           COPY    "CPORCHCN04.INC".
+      *
       *    帳票サブ < 退院証明書 >
        01  LNK-PTNYUINRRK.
            COPY    "CPPTNYUINRRK.INC"
@@ -605,6 +609,10 @@
                MOVE    WRK-CMB-ITM TO  SPA-GMN-I04-SKYPRTOUT
            END-IF
       *
+           MOVE    SPA-GMN-I04-SRYPRTOUT-ITM (1)
+                                   TO  SPA-GMN-I04-SRYPRTOUT
+      *
+      *
            IF    ( SPA-I01-I04-PROCKBN      =   "1" )
                IF    ( SYS-5000-TAIPRTKBN   =   "0" )
                    MOVE    SPA-GMN-I04-TAIPRTOUT-ITM (01)
@@ -830,6 +838,9 @@
       *    請求書兼領収書発行コンボ
            PERFORM 3100-CMB-SKYPRTOUT-SET-SEC
       *
+      *    診療費明細書発行コンボ
+           PERFORM 3100-CMB-SRYPRTOUT-SET-SEC
+      *
       *    退院証明書発行コンボ
            PERFORM 3100-CMB-TAIPRTOUT-SET-SEC
       *
@@ -911,6 +922,18 @@
       *
             .
        3100-CMB-SKYPRTOUT-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療費明細書発行コンボ
+      *****************************************************************
+       3100-CMB-SRYPRTOUT-SET-SEC      SECTION.
+      *
+           MOVE    2               TO  SPA-GMN-I04-SRYPRTOUT-CNT
+           MOVE    "0:発行なし"    TO  SPA-GMN-I04-SRYPRTOUT-ITM (01)
+           MOVE    "1:発行あり"    TO  SPA-GMN-I04-SRYPRTOUT-ITM (02)
+      *
+            .
+       3100-CMB-SRYPRTOUT-SET-EXT.
            EXIT.
       *****************************************************************
       *    退院証明書発行コンボ
@@ -1625,6 +1648,17 @@
                                        TO  I04-SKYPRTOUT-ITM (IDX1)
            END-PERFORM
       *
+      *    診療費明細書書発行
+           MOVE    SPA-GMN-I04-SRYPRTOUT
+                                       TO  I04-SRYPRTOUT
+           MOVE    SPA-GMN-I04-SRYPRTOUT-CNT
+                                       TO  I04-SRYPRTOUT-CNT
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   SPA-GMN-I04-SRYPRTOUT-CNT )
+               MOVE    SPA-GMN-I04-SRYPRTOUT-ITM (IDX1)
+                                       TO  I04-SRYPRTOUT-ITM (IDX1)
+           END-PERFORM
+      *
       *    退院証明書発行
            MOVE    SPA-GMN-I04-TAIPRTOUT
                                        TO  I04-TAIPRTOUT
@@ -1721,6 +1755,8 @@
                MOVE    "DR"            TO  MCP-WIDGET
            WHEN    005
                MOVE    "NYKNHOHO"      TO  MCP-WIDGET
+           WHEN    006
+               MOVE    "SRYPRTOUT"     TO  MCP-WIDGET
            WHEN    101
                MOVE    "SELNUM"        TO  MCP-WIDGET
            WHEN    102
@@ -1745,6 +1781,8 @@
            WHEN    "NYUKIN"
                MOVE    002             TO  SPA-GMN-I04-CUR
            WHEN    "SKYPRTOUT"
+               MOVE    006             TO  SPA-GMN-I04-CUR
+           WHEN    "SRYPRTOUT"
                MOVE    003             TO  SPA-GMN-I04-CUR
            WHEN    "TAIPRTOUT"
                MOVE    004             TO  SPA-GMN-I04-CUR
@@ -1919,6 +1957,9 @@
       *    請求書兼領収書発行
            MOVE    I04-SKYPRTOUT   TO  SPA-GMN-I04-SKYPRTOUT
       *
+      *    診療費明細書発行
+           MOVE    I04-SRYPRTOUT   TO  SPA-GMN-I04-SRYPRTOUT
+      *
       *    退院証明書発行
            MOVE    I04-TAIPRTOUT   TO  SPA-GMN-I04-TAIPRTOUT
       *
@@ -1954,6 +1995,12 @@
       *
       *    請求書兼領収書発行チェック処理
            PERFORM 4100-SKYPRTOUT-CHK-SEC
+           IF    ( SPA-ERRCD       NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
+      *    診療費明細書発行チェック処理
+           PERFORM 4100-SRYPRTOUT-CHK-SEC
            IF    ( SPA-ERRCD       NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
@@ -2039,6 +2086,8 @@
                    IF    ( SPA-GMN-I04-SEIGOK  <=  ZERO )
                        MOVE    SPA-GMN-I04-SKYPRTOUT-ITM (1)
                                                TO  SPA-GMN-I04-SKYPRTOUT
+                       MOVE    SPA-GMN-I04-SRYPRTOUT-ITM (1)
+                                               TO  SPA-GMN-I04-SRYPRTOUT
                    END-IF
                END-EVALUATE
            END-IF
@@ -2272,6 +2321,30 @@
        4100-SKYPRTOUT-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    診療費明細書発行チェック処理
+      *****************************************************************
+       4100-SRYPRTOUT-CHK-SEC          SECTION.
+      *
+           IF    ( SPA-GMN-I04-SRYPRTOUT   =   SPACE )
+               MOVE    SPA-GMN-I04-SRYPRTOUT-ITM (1)
+                                   TO  SPA-GMN-I04-SRYPRTOUT
+               GO  TO  4100-SRYPRTOUT-CHK-EXT
+           END-IF
+      *
+           MOVE    SPA-GMN-I04-SRYPRTOUT-CD
+                                   TO  WRK-CMB-CD
+           PERFORM 4103-CMB-SRYPRTOUT-CHK-SEC
+           IF    ( WRK-CMB-ITM     =   SPACE )
+               MOVE    SPA-GMN-I04-SRYPRTOUT-ITM (1)
+                                   TO  SPA-GMN-I04-SRYPRTOUT
+           ELSE
+               MOVE    WRK-CMB-ITM TO  SPA-GMN-I04-SRYPRTOUT
+           END-IF
+      *
+           .
+       4100-SRYPRTOUT-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    退院証明書発行チェック処理
       *****************************************************************
        4100-TAIPRTOUT-CHK-SEC          SECTION.
@@ -2404,6 +2477,31 @@
            .
       *
        4103-CMB-SKYPRTOUT-SRH-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療費明細書リストチェック処理
+      *****************************************************************
+       4103-CMB-SRYPRTOUT-CHK-SEC  SECTION.
+      *
+           INITIALIZE              WRK-CMB-ITM
+                                   WRK-CMB-IDX
+      *
+           PERFORM VARYING IDX-CMB FROM 1 BY 1
+                   UNTIL ( IDX-CMB >    2 )
+                    OR   ( WRK-CMB-ITM  NOT =   SPACE )
+      *
+               IF (  SPA-GMN-I04-SRYPRTOUT-ITM (IDX-CMB) (1 : 1)
+                                   =   WRK-CMB-CD )
+                   MOVE    IDX-CMB TO  WRK-CMB-IDX
+                   MOVE    SPA-GMN-I04-SRYPRTOUT-ITM (IDX-CMB)
+                                   TO  WRK-CMB-ITM
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+      *
+       4103-CMB-SRYPRTOUT-CHK-EXT.
            EXIT.
       *****************************************************************
       *    退院証明書発行サーチ処理
@@ -3495,11 +3593,17 @@
            PERFORM 5002-HIZUKE-CHK-SEC
            MOVE    WRK-HENYMDG     TO  WRK-SPA-BIRTHDAYW
            MOVE    WRK-SYMD        TO  WRK-SPA-BIRTHDAY
-      *
+      
       *    請求書兼領収書
            IF    ( SPA-GMN-I04-SKYPRTOUT-CD
                                        =   "1" OR "2" )
                PERFORM 451-SKYPRT-OUT-SEC
+           END-IF
+      
+      *    診療費明細書
+           IF    ( SPA-GMN-I04-SRYPRTOUT-CD
+                                       =   "1" )
+               PERFORM 451-SRYPRT-OUT-SEC
            END-IF
       *
       *    退院証明書
@@ -3581,6 +3685,52 @@
       *
            .
        451-SKYPRT-OUT-EXT.
+           EXIT.
+      *****************************************************************
+      *    請求書兼領収書出力処理
+      *****************************************************************
+       451-SRYPRT-OUT-SEC              SECTION.
+      *
+           MOVE    "ORCHCN04"      TO  WRK-ORG-PRINT-PG
+           MOVE    "00000008"      TO  WRK-KBNCD
+           PERFORM 4511-PRINT-PG-EDIT-SEC
+      *
+           INITIALIZE      ORCHCN04AREA
+           MOVE    WRK-SPA-PTID    TO  ORCHCN04-PTID
+           MOVE    WRK-SPA-PTNUM   TO  ORCHCN04-PTNUM
+           MOVE    WRK-SPA-NAME    TO  ORCHCN04-NAME
+      *
+           MOVE    ZERO            TO  IDX2
+      *
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1        >   SPA-I0-SYUNOU-CNT )
+      *
+               MOVE    SPA-I0-SYUNOU-DAT (IDX1)
+                                       TO  WKSYUNOU-REC
+      *
+               MOVE  1                 TO  FLG-SRYPRT
+      *
+               IF    ( SPA-I0-SYUNOU-TTLDAT-FLG (IDX1)
+                                   NOT =   ZERO )
+                       MOVE    ZERO    TO  FLG-SRYPRT
+               END-IF
+      *
+               IF    ( FLG-SRYPRT      =   1 )
+      *
+                   COMPUTE IDX2    =   IDX2    +   1
+      *
+                   MOVE    WKSYU-DENPNUM
+                                       TO  ORCHCN04-DENPNUM (IDX2)
+               END-IF
+           END-PERFORM
+      *
+           IF    ( IDX2            >   ZERO )
+               CALL    WRK-PRINT-PG    USING   WRK-SPA-AREA
+                                               ORCHCN04AREA
+           END-IF
+      *
+           .
+       451-SRYPRT-OUT-EXT.
            EXIT.
       *****************************************************************
       *    退院証明書出力処理
