@@ -1109,3 +1109,21 @@ path	key46	{
 	};
 };
 
+path	key47 	{
+	DBSELECT	{
+		DECLARE tbl_sryacct_key47_csr CURSOR FOR
+		SELECT *
+		FROM tbl_sryacct
+			WHERE   HOSPID    =   :HOSPID
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+			AND   PTID        =   :PTID
+			AND   SRYYM       =   :SRYYM
+			AND   HKNCOMBI    =   :HKNCOMBI
+			AND   ZAIKAISU    >   0
+			AND   ZAITEN      >   0
+			ORDER   BY      SRYKBN,
+                                        ZAINUM
+		;
+	};
+};
+
