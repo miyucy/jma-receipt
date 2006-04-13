@@ -1850,7 +1850,8 @@
                    IF    SPA-GMN-CHUKSNTSUBAN  =   SPACE
                        MOVE    ZERO            TO  SPA-GMN-CHUKSNTSUBAN
                    END-IF
-                   IF    SPA-GMN-CHUKSNTSUBAN    >=  "0"  AND  <=  "9"
+                   IF  (SPA-GMN-CHUKSNTSUBAN   >= "0" AND <= "9")  OR
+                       (SPA-GMN-CHUKSNTSUBAN   >= "A" AND <= "Z")
                        CONTINUE
                    ELSE
                        MOVE    "0003"                TO  SPA-ERRCD
