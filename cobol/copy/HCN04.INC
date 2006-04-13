@@ -1,0 +1,22 @@
+        01  HCN04.
+            02  HCN04-NO    PIC X(7).
+            02  HCN04-NYUINSTRYMD   PIC X(22).
+            02  HCN04-NYUINENDYMD   PIC X(22).
+            02  HCN04-HAKYMD    PIC X(22).
+            02  HCN04-NAME  PIC X(20).
+            02  HCN04-PTNUM PIC X(20).
+            02  HCN04-ROOM  PIC X(50).
+            02  HCN04-HOKEN PIC X(20).
+            02  HCN04-FUTAN PIC X(6).
+            02  HCN04-SRYKANAME PIC X(20).
+            02  HCN04-PAGE  PIC X(3).
+            02  HCN04-NAIYO-TBL         OCCURS  70 TIMES.
+              03  HCN04-SRYKBN    PIC X(10).
+              03  HCN04-SRYMEI    PIC X(80).
+              03  HCN04-TANI  PIC X(10).
+              03  HCN04-SURYO PIC X(8).
+              03  HCN04-KAISU PIC X(3).
+              03  HCN04-KINGAKU   PIC X(11).
+            02  HCN04-IRYOADRS  PIC X(60).
+            02  HCN04-IRYOMEI   PIC X(40).
+            02  HCN04-IRYOTEL   PIC X(15).
