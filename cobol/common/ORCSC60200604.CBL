@@ -177,6 +177,8 @@
            03  WRK-TENSUKEI-G2     PIC 9(08).
            03  WRK-TENSUKEI-K1     PIC 9(08).
            03  WRK-TENSUKEI-K2     PIC 9(08).
+      *
+           03  WRK-TENSU           PIC S9(08).
       *    ½¸·×
            03  WRK-SYUKEI-AREA.
                05  WRK-TENSUKEI-TEI    PIC 9(08).
@@ -245,7 +247,7 @@
       *
       *    Êñ³çÂÐ¾Ý¸¡ºº
        01  WRK-HOUKNS-AREA.
-           03  WRK-HOUKNS-TBL          OCCURS   10.
+           03  WRK-HOUKNS-TBL          OCCURS   11.
                05  WRK-HOUKNS-CNT      PIC 9(04).
                05  WRK-HOUKNS-TENSU    PIC 9(07)V9(03).
       *
@@ -1579,6 +1581,13 @@
                        ADD     WRK-COM-KISOTEN(IDX-Z)
                                                TO  WRK-HOUKNS-TENSU
                                                                  (IDX)
+      *ÆÃ°ÛÅª£É£Ç£Å
+                   WHEN    11
+                       MOVE    WRK-COM-HOUKNSKBN(IDX-Z)    TO  IDX
+                       ADD     1               TO  WRK-HOUKNS-CNT (IDX)
+                       ADD     WRK-COM-KISOTEN(IDX-Z)
+                                               TO  WRK-HOUKNS-TENSU
+                                                                 (IDX)
                    WHEN    OTHER
       *                Äþ¸º¤¢¤êÅÀ¿ô·×»»
                        IF      WRK-COM-TEIGENKBN (IDX-Z)   =   1
@@ -1618,7 +1627,7 @@
            MOVE    ZERO                TO  WRK-TENSUKEI
            MOVE    ZERO                TO  FLG-ERR
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX             >   10  )   OR
+                   UNTIL      (IDX             >   11  )   OR
                               (SPA-ERRCD   NOT =   SPACE )
                EVALUATE    IDX
                    WHEN    1
@@ -1758,6 +1767,9 @@
                        ELSE
                            PERFORM 10041-HOUKNS-ADD-SEC
                        END-IF
+                   WHEN    11
+      *            ÆÃ°ÛÅª£É£Ç£Å
+                       PERFORM 10042-IGE-HOUKNS-ADD-SEC
       *ÆâÊ¬ÈçÉé²Ù»î¸³¤ÏÊñ³ç·×»»³°
       *D           WHEN    8
       *                ÆâÉôÈçÉé²Ù»î¸³¤ÎÊñ³ç
@@ -1834,6 +1846,35 @@
       *
            .
        10041-HOUKNS-ADD-EXT.
+           EXIT.
+      *****************************************************************
+      *    ÆÃ°ÛÅª£É£Ç£Å»»Äê½èÍý
+      *****************************************************************
+       10042-IGE-HOUKNS-ADD-SEC                  SECTION.
+      *
+           MOVE    "099601101"         TO  WRK-SRYCD
+      *
+           MOVE    WRK-SRYCD           TO  TNS-SRYCD
+           PERFORM 910-TENSU-READ-SEC
+           ADD     WRK-HOUKNS-TENSU (IDX)  TO  WRK-TENSUKEI
+           IF      WRK-TENSUKEI            >   TNS-TEN
+               MOVE    TNS-TEN             TO  WRK-TENSUKEI
+           END-IF
+      *
+      *    ¸¡ºº¤ÎºÇ½ª¹ÔÈ½Äê
+           MOVE    ZERO                TO  WRK-IDX
+           PERFORM VARYING     IDY     FROM    1   BY  1
+                   UNTIL       IDY     >   IDX-MAX
+               IF      WRK-COM-INPUTCD(IDY)(1:1)   =   "1"
+                   MOVE    IDY                 TO  WRK-IDX
+               END-IF
+           END-PERFORM
+           IF      WRK-IDX             =   ZERO
+               MOVE    IDX-MAX             TO  WRK-IDX
+           END-IF
+      *
+           .
+       10042-IGE-HOUKNS-ADD-EXT.
            EXIT.
       *
       *****************************************************************

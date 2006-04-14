@@ -1572,6 +1572,10 @@
                WHEN    10
       *            グロブリンクラス別ウイルス抗体価
                    MOVE    2             TO  WRK-KENSA-MAX
+      *平成１８年４月
+               WHEN    11
+      *            特異的ＩＧＥ
+                   MOVE    2             TO  WRK-KENSA-MAX
                WHEN    OTHER
                    MOVE    ZERO          TO  WRK-KENSA-MAX
            END-EVALUATE
