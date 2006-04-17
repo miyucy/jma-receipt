@@ -21,12 +21,11 @@
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : 
       *  コンポーネント名  : 算定履歴 更新処理
+      *                    : リアルタイムプレビュー用に作成
       *  返却エラーコード  : 00:正常　10:パラメータ不正・対象データなし
       *  管理者            : 
       *  作成日付    作業者        記述
-      *  01.00.01    MCC-多々納   02.05.17  労災用保険種別毎の追加
-      *  01.00.02    NACL-多々納  02.12.05  慢性疼痛疾患管理料の初回算定日修正
-      *  01.00.03    NACL-多々納  05.03.05  内分泌負荷試験点数の追加
+      *  02.09.01    NACL-竹田    06/04/17  MONFUNC 対応 他
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -98,12 +97,6 @@
                05  WRK-DD              PIC 9(02).
       *
            03  WRK-DBPATH              PIC X(64). 
-      *--- take mod st
-           03  WRK-MCP-PATH.
-             04  WRK-MCP-BLOCKS  PIC S9(9)   BINARY.
-             04  WRK-MCP-RNAME   PIC S9(9)   BINARY.
-             04  WRK-MCP-PNAME   PIC S9(9)   BINARY.
-      *--- take mod ed
       *
            03  WRK-RIGAKU-RYO          PIC X(01). 
       *
@@ -128,6 +121,8 @@
       *
       *    保険別算定履歴テーブル
            COPY   "CMSANTEITBL.INC".
+      *    リハビリ同一算定コードテーブル
+           COPY   "CMRIHACDTBL.INC".
       *
       *    算定履歴
        01  WRK-SANTEI-REC.
@@ -165,8 +160,8 @@
            COPY    "CPSRYKARRK.INC".
       *
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
-           COPY    "ORCA-DBPATH".
+      **** COPY    "CPORCMCP.INC".
+      **** COPY    "ORCA-DBPATH".
       *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
@@ -201,6 +196,32 @@
            IF      SSANTEI-HKNKBN      =   SPACE
                MOVE    SPA-HKNKBN      TO  SSANTEI-HKNKBN
                MOVE    SPA-HKNCOMBINUM TO  SSANTEI-HKNCOMBINUM
+           END-IF
+           IF     (SSANTEI-HKNKBN      =   "1" ) AND
+                  (SSANTEI-HKNCOMBINUM =   SPACE )
+               MOVE    SPA-HKNCOMBINUM TO  SSANTEI-HKNCOMBINUM
+           END-IF
+      *    回数変更
+           IF      SSANTEI-KAISU       =   ZERO
+               MOVE    1               TO  SSANTEI-KAISU
+           END-IF
+           IF      SSANTEI-SRYSURYO    >   1
+               COMPUTE SSANTEI-KAISU   =   SSANTEI-KAISU
+                                       *   SSANTEI-SRYSURYO
+      *
+               PERFORM VARYING     IDX-Y2  FROM    1   BY  1
+                       UNTIL       IDX-Y2  >   31
+                   IF      SSANTEI-DAY (IDX-Y2)    >   ZERO
+                       COMPUTE SSANTEI-DAY (IDX-Y2)
+                                           =   SSANTEI-DAY (IDX-Y2)
+                                           *   SSANTEI-SRYSURYO
+                   END-IF
+                   IF      SSANTEI-MAE-DAY (IDX-Y2)    >   ZERO
+                       COMPUTE SSANTEI-MAE-DAY (IDX-Y2)
+                                           =   SSANTEI-MAE-DAY (IDX-Y2)
+                                           *   SSANTEI-SRYSURYO
+                   END-IF
+               END-PERFORM
            END-IF
       *
            EVALUATE    SSANTEI-SYORI
@@ -245,18 +266,17 @@
            MOVE    SPACE               TO  WRK-SRYYMD
            MOVE    SPACE               TO  WRK-FSANTEIYMD-OLD
       *    算定履歴検索（診療日降順）
-      *----->take mod st
-           MOVE    PATH-TBL-SANTEI-PRV-KEY3
-                                       TO  WRK-MCP-PATH
-           MOVE    "SANTEI-KEY3"       TO  WRK-DBPATH
-      *----->take mod ed
+           MOVE    "key3"              TO  WRK-DBPATH
            PERFORM 1001-SANTEI-KEN-SEC
            PERFORM UNTIL   (FLG-SANTEI     =   1 )  OR
                            (SANTEI-SRYYM   <=  SSANTEI-SRYYMD(1:6))
                MOVE    SANTEI-FSANTEIYMD   TO  WRK-FSANTEIYMD-OLD
-               MOVE    WRK-DBPATH          TO  ORC-DBPATH
+               MOVE    "key3"              TO  MCP-PATHNAME
                PERFORM 920-SANTEI-READ-SEC
            END-PERFORM
+           MOVE    "tbl_santei_prv"    TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
            IF      FLG-SANTEI          =   ZERO
                IF     (SANTEI-FSANTEIYMD   <=  SSANTEI-SRYYMD) AND
                       (SANTEI-MSANTEICNT   >   ZERO      ) AND
@@ -265,9 +285,6 @@
                    MOVE    SANTEI-REC          TO  HZN-SANTEI-REC
                END-IF
            END-IF
-      *
-           MOVE    WRK-MCP-PATH        TO  MCP-PATH
-           PERFORM 990-DBCLOSE-SEC
       *
       *    同一算定コードがある時、すべてでチェック
            SET     TBL-IDX             TO  1
@@ -287,18 +304,17 @@
                       (TBL-SRYCD (TBL-IDX) NOT =   WRK-MAE-SRYCD )
                    MOVE    TBL-SRYCD (TBL-IDX)     TO  WRK-SRYCD
       *            算定履歴検索
-      *----->take mod st
-                   MOVE    PATH-TBL-SANTEI-PRV-KEY3
-                                               TO  WRK-MCP-PATH
-                   MOVE    "SANTEI-KEY3"       TO  WRK-DBPATH
-      *----->take mod ed
+                   MOVE    "key3"          TO  WRK-DBPATH
                    PERFORM 1001-SANTEI-KEN-SEC
                    PERFORM UNTIL   (FLG-SANTEI     =   1 )  OR
                                    (SANTEI-SRYYM   <=  SSANTEI-SRYYMD
                                                                 (1:6))
-                       MOVE    WRK-DBPATH          TO  ORC-DBPATH
+                       MOVE    "key3"              TO  MCP-PATHNAME
                        PERFORM 920-SANTEI-READ-SEC
                    END-PERFORM
+                   MOVE    "tbl_santei_prv"    TO  MCP-TABLE
+                   MOVE    "key3"              TO  MCP-PATHNAME
+                   PERFORM 990-DBCLOSE-SEC
                    IF      FLG-SANTEI          =   ZERO
                        IF     (SANTEI-FSANTEIYMD   <=
                                                    SSANTEI-SRYYMD) AND
@@ -308,9 +324,6 @@
                                                    TO  WRK-FSANTEIYMD
                        END-IF
                    END-IF
-      *
-                   MOVE    WRK-MCP-PATH        TO  MCP-PATH
-                   PERFORM 990-DBCLOSE-SEC
                END-IF
            END-PERFORM
       *
@@ -343,30 +356,14 @@
            MOVE    HZN-SANTEI-REC      TO  SANTEI-REC
            MOVE    SPACE               TO  WRK-YMD3
       *    算定履歴検索
-      *----->take mod st
-           MOVE    PATH-TBL-SANTEI-PRV-KEY4
-                                       TO  WRK-MCP-PATH
            MOVE    "SANTEI-KEY4"       TO  WRK-DBPATH
-      *----->take mod ed
       *
            MOVE    SANTEI-REC          TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    WRK-DBPATH          TO  ORC-DBPATH
-      *----->take mod st
-      *    CALL    "ORCMCPSUB"          USING
-      *                                 MCPAREA
-      *                                 ORCMCPAREA
-      *                                 MCPDATA-REC
-           MOVE    WRK-MCP-PATH         TO MCP-PATH
-           CALL    "MCPSUB"             USING
-                                        MCPAREA
-                                        MCPDATA-REC
-      *----->take mod ed
+           MOVE    "tbl_santei_prv"    TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-      *----->take mod st
-               MOVE    WRK-MCP-PATH        TO  MCP-PATH
-               MOVE    WRK-DBPATH          TO  ORC-DBPATH
-      *----->take mod ed
+               MOVE    "key4"              TO  MCP-PATHNAME
                PERFORM 920-SANTEI-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-SANTEI
@@ -381,15 +378,11 @@
                        MOVE    WRK-YMD         TO  WRK-YMD3
                    END-IF
                END-IF
-      *----->take mod st
-               MOVE    WRK-MCP-PATH        TO  MCP-PATH
-               MOVE    WRK-DBPATH          TO  ORC-DBPATH
-      *----->take mod ed
+               MOVE    "key4"              TO  MCP-PATHNAME
                PERFORM 920-SANTEI-READ-SEC
            END-PERFORM
-      *
-      *
-           MOVE    WRK-MCP-PATH        TO  MCP-PATH
+           MOVE    "tbl_santei_prv"    TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
            IF      WRK-YMD3            =   SPACE
@@ -402,30 +395,14 @@
       *
            MOVE    HZN-SANTEI-REC      TO  SANTEI-REC
       *    算定履歴検索
-      *----->take mod st
-           MOVE    PATH-TBL-SANTEI-PRV-KEY4
-                                       TO  WRK-MCP-PATH
            MOVE    "SANTEI-KEY4"       TO  WRK-DBPATH
-      *----->take mod ed
       *
            MOVE    SANTEI-REC          TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    WRK-DBPATH          TO  ORC-DBPATH
-      *----->take mod st
-      *    CALL    "ORCMCPSUB"          USING
-      *                                 MCPAREA
-      *                                 ORCMCPAREA
-      *                                 MCPDATA-REC
-           MOVE    WRK-MCP-PATH        TO  MCP-PATH
-           CALL    "MCPSUB"             USING
-                                        MCPAREA
-                                        MCPDATA-REC
-      *----->take mod ed
+           MOVE    "tbl_santei_prv"    TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-      *----->take mod st
-               MOVE    WRK-MCP-PATH        TO  MCP-PATH
-               MOVE    WRK-DBPATH          TO  ORC-DBPATH
-      *----->take mod ed
+               MOVE    "key4"              TO  MCP-PATHNAME
                PERFORM 920-SANTEI-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-SANTEI
@@ -443,14 +420,11 @@
       *
                PERFORM 510-SANTEI-UPD-SEC
       *
-      *----->take mod st
-               MOVE    WRK-MCP-PATH        TO  MCP-PATH
-               MOVE    WRK-DBPATH          TO  ORC-DBPATH
-      *----->take mod ed
+               MOVE    "key4"              TO  MCP-PATHNAME
                PERFORM 920-SANTEI-READ-SEC
            END-PERFORM
-      *
-           MOVE    WRK-MCP-PATH        TO  MCP-PATH
+           MOVE    "tbl_santei_prv"    TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
            .
        10010-MAE-SANTEI-HEN-EXT.
@@ -464,7 +438,8 @@
            MOVE    WRK-SRYCD           TO  TNS-SRYCD
            PERFORM 910-TENSU-READ-SEC
            IF     (WRK-SRYCD (1:3)     =   "099"  )  OR
-                  (TNS-SRYKBN      NOT =   "70"   )
+                 ((TNS-SRYKBN      NOT =   "70"   )
+            AND   (TNS-SRYKBN      NOT =   "80"   ))
                CONTINUE
            ELSE
       *        ＣＴ、ＭＲＩの時算定のコードを置換える
@@ -491,7 +466,7 @@
            MOVE    SSANTEI-PTID        TO  SANTEI-PTID
            MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
            MOVE    WRK-SRYYMD(1:6)     TO  SANTEI-SRYYM
-           IF      WRK-DBPATH          =   "SANTEI-KEY4" 
+           IF      WRK-DBPATH          =   "key4"
                MOVE    WRK-FSANTEIYMD      TO  SANTEI-FSANTEIYMD
            END-IF
            EVALUATE    TNS-SANTEIRRKKBN
@@ -517,22 +492,11 @@
            END-IF
       *
            MOVE    SANTEI-REC          TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    WRK-DBPATH          TO  ORC-DBPATH
-      *----->take mod st
-      *    CALL    "ORCMCPSUB"         USING
-      *                                MCPAREA
-      *                                ORCMCPAREA
-      *                                MCPDATA-REC
-           MOVE    WRK-MCP-PATH        TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
-      *----->take mod st
+           MOVE    "tbl_santei_prv"    TO  MCP-TABLE
+           MOVE    WRK-DBPATH          TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    WRK-MCP-PATH        TO  MCP-PATH
-               MOVE    WRK-DBPATH          TO  ORC-DBPATH
-      *----->take mod ed
+               MOVE    WRK-DBPATH          TO  MCP-PATHNAME
                PERFORM 920-SANTEI-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-SANTEI
@@ -559,6 +523,19 @@
                WHEN    203
                    MOVE    "099700103"         TO  WRK-SRYCD
            END-EVALUATE
+      *
+      *    リハビリテーション（H18/4から）
+           SET     TBL-RIH             TO  1
+           SEARCH  TBL-RIHABIRI-OCC    VARYING   TBL-RIH
+                   AT  END
+                       MOVE    ZERO            TO  FLG-RIHA-OK
+                   WHEN    WRK-SRYCD       =   TBL-RIHA-SRYCD
+                                                           (TBL-RIH)
+                       MOVE    1               TO  FLG-RIHA-OK
+           END-SEARCH
+           IF      FLG-RIHA-OK         =   1
+               MOVE    "099800201"         TO  WRK-SRYCD
+           END-IF
            .
        10010-SANTEI-SRYCD-EXT.
            EXIT.
@@ -686,24 +663,12 @@
            MOVE    WRK-SRYYM           TO  SANTEI-SRYYM
       *
            MOVE    SANTEI-REC          TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-      *----->take mod st
-           MOVE    PATH-TBL-SANTEI-PRV-KEY8
-                                       TO  MCP-PATH
-           MOVE    "SANTEI-KEY8"       TO  ORC-DBPATH
-      *    CALL    "ORCMCPSUB"          USING
-      *                                 MCPAREA
-      *                                 ORCMCPAREA
-      *                                 MCPDATA-REC
-           CALL    "MCPSUB"             USING
-                                        MCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_santei_prv"    TO  MCP-TABLE
+           MOVE    "key8"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    PATH-TBL-SANTEI-PRV-KEY8
-                                           TO  MCP-PATH
-               MOVE    "SANTEI-KEY8"       TO  ORC-DBPATH
+               MOVE    "key8"              TO  MCP-PATHNAME
                PERFORM 920-SANTEI-READ-SEC
-      *----->take mod ed
            ELSE
                MOVE    1                   TO  FLG-SANTEI
            END-IF
@@ -724,19 +689,13 @@
                END-IF
       *
                IF      FLG-SANTEI          =   ZERO
-      *----->take mod st
-                   MOVE    PATH-TBL-SANTEI-PRV-KEY8
-                                               TO  MCP-PATH
-                   MOVE    "SANTEI-KEY8"       TO  ORC-DBPATH
-      *----->take mod ed
+                   MOVE    "key8"              TO  MCP-PATHNAME
                    PERFORM 920-SANTEI-READ-SEC
                END-IF
            END-PERFORM
-      *
-      *
-           MOVE    WRK-MCP-PATH        TO  MCP-PATH
+           MOVE    "tbl_santei_prv"    TO  MCP-TABLE
+           MOVE    "key8"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
-      *
            .
       *
        100912-SANTEI-CHK-EXT.
@@ -777,14 +736,11 @@
            MOVE    SSANTEI-SRYCD       TO  WRK-SRYCD
            MOVE    SSANTEI-SRYYMD      TO  WRK-SRYYMD
       *    算定履歴検索
-      *----->take mod st
-           MOVE    PATH-TBL-SANTEI-PRV-KEY
-                                       TO  WRK-MCP-PATH
-           MOVE    "SANTEI-KEY"        TO  WRK-DBPATH
-      *----->take mod ed
+           MOVE    "key"               TO  WRK-DBPATH
            PERFORM 1001-SANTEI-KEN-SEC
-      *-----> closecursor
-           MOVE    WRK-MCP-PATH        TO  MCP-PATH
+      *
+           MOVE    "tbl_santei_prv"    TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
       *    健保以外で保険別の時、3月以内は作成なし
@@ -1097,11 +1053,7 @@
                    MOVE    TBL-SRYCD (TBL-IDX)     TO  WRK-SRYCD
                    MOVE    WRK-MAE-FSANTEIYMD      TO  WRK-FSANTEIYMD
       *            算定履歴検索
-      *----->take mod st
-                   MOVE    PATH-TBL-SANTEI-PRV-KEY4
-                                               TO  WRK-MCP-PATH
-                   MOVE    "SANTEI-KEY4"       TO  WRK-DBPATH
-      *----->take mod ed
+                   MOVE    "key4"              TO  WRK-DBPATH
                    PERFORM 1001-SANTEI-KEN-SEC
                    PERFORM UNTIL     FLG-SANTEI    =   1
                        IF      SANTEI-MSANTEICNT   >   ZERO
@@ -1118,16 +1070,12 @@
                                END-IF
                            END-IF
                        END-IF
-      *----->take mod st
-                       MOVE    WRK-MCP-PATH        TO  MCP-PATH
-                       MOVE    WRK-DBPATH          TO  ORC-DBPATH
-      *----->take mod ed
+                       MOVE    "key4"              TO  MCP-PATHNAME
                        PERFORM 920-SANTEI-READ-SEC
                    END-PERFORM
-      *
-                   MOVE    WRK-MCP-PATH        TO  MCP-PATH
+                   MOVE    "tbl_santei_prv"    TO  MCP-TABLE
+                   MOVE    "key4"              TO  MCP-PATHNAME
                    PERFORM 990-DBCLOSE-SEC
-      *
                END-IF
            END-PERFORM
       *
@@ -1142,14 +1090,11 @@
            MOVE    SSANTEI-SRYCD       TO  WRK-SRYCD
            MOVE    SSANTEI-SRYYMD      TO  WRK-SRYYMD
       *    算定履歴検索
-      *----->take mod st
-           MOVE    PATH-TBL-SANTEI-PRV-KEY
-                                       TO  WRK-MCP-PATH
-           MOVE    "SANTEI-KEY"        TO  WRK-DBPATH
-      *----->take mod st
+           MOVE    "key"               TO  WRK-DBPATH
            PERFORM 1001-SANTEI-KEN-SEC
       *
-           MOVE    WRK-MCP-PATH        TO  MCP-PATH
+           MOVE    "tbl_santei_prv"    TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
       *    健保以外で保険別の時、3月以内は作成なし
@@ -1362,16 +1307,10 @@
        300111-DEL-SYOKAI-SEC                SECTION.
       *    算定履歴検索
            IF      WRK-SRYCD           =   WRK-MANSEI
-      *----->take mod st
-               MOVE    PATH-TBL-SANTEI-PRV-KEY4
-                                           TO  WRK-MCP-PATH
-               MOVE    "SANTEI-KEY4"       TO  WRK-DBPATH
+               MOVE    "key4"          TO  WRK-DBPATH
            ELSE
-               MOVE    PATH-TBL-SANTEI-PRV-KEY3
-                                           TO  WRK-MCP-PATH
-               MOVE    "SANTEI-KEY3"       TO  WRK-DBPATH
+               MOVE    "key3"          TO  WRK-DBPATH
            END-IF
-      *----->take mod ed
            PERFORM 1001-SANTEI-KEN-SEC
            PERFORM UNTIL     FLG-SANTEI    =   1
                IF     (SANTEI-MSANTEICNT   >   ZERO )  AND
@@ -1387,11 +1326,11 @@
                        END-IF
                    END-IF
                END-IF
-               MOVE    WRK-DBPATH          TO  ORC-DBPATH
+               MOVE    WRK-DBPATH          TO  MCP-PATHNAME
                PERFORM 920-SANTEI-READ-SEC
            END-PERFORM
-      *
-           MOVE    WRK-MCP-PATH        TO  MCP-PATH
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    WRK-DBPATH          TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
            .
@@ -1430,11 +1369,7 @@
       *
            MOVE    WRK-MAE-FSANTEIYMD  TO  WRK-FSANTEIYMD
       *    算定履歴検索
-      *----->take mod st
-           MOVE    PATH-TBL-SANTEI-PRV-KEY4
-                                       TO  WRK-MCP-PATH
-           MOVE    "SANTEI-KEY4"       TO  WRK-DBPATH
-      *----->take mod ed
+           MOVE    "key4"              TO  WRK-DBPATH
            PERFORM 1001-SANTEI-KEN-SEC
            PERFORM
                UNTIL      FLG-SANTEI       =   1
@@ -1443,15 +1378,11 @@
       *
                PERFORM 510-SANTEI-UPD-SEC
       *
-      *----->take mod st
-               MOVE    WRK-MCP-PATH        TO  MCP-PATH
-               MOVE    WRK-DBPATH          TO  ORC-DBPATH
-      *----->take mod ed
+               MOVE    "key4"              TO  MCP-PATHNAME
                PERFORM 920-SANTEI-READ-SEC
            END-PERFORM
-      *
-      *
-           MOVE    WRK-MCP-PATH        TO  MCP-PATH
+           MOVE    "tbl_santei_prv"    TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
            .
@@ -1465,11 +1396,7 @@
       *
            MOVE    WRK-FSANTEIYMD-OLD  TO  WRK-FSANTEIYMD
       *    算定履歴検索
-      *----->take mod st
-           MOVE    PATH-TBL-SANTEI-PRV-KEY4
-                                       TO  WRK-MCP-PATH
-           MOVE    "SANTEI-KEY4"       TO  WRK-DBPATH
-      *----->take mod ed
+           MOVE    "key4"              TO  WRK-DBPATH
            PERFORM 1001-SANTEI-KEN-SEC
            PERFORM
                UNTIL      FLG-SANTEI       =   1
@@ -1478,16 +1405,11 @@
       *
                PERFORM 510-SANTEI-UPD-SEC
       *
-      *----->take mod st
-               MOVE    PATH-TBL-SANTEI-PRV-KEY4
-                                           TO  MCP-PATH
-               MOVE    WRK-DBPATH          TO  ORC-DBPATH
-      *----->take mod ed
+               MOVE    "key4"              TO  MCP-PATHNAME
                PERFORM 920-SANTEI-READ-SEC
            END-PERFORM
-      *
-      *
-           MOVE    WRK-MCP-PATH        TO  MCP-PATH
+           MOVE    "tbl_santei_prv"    TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
            .
@@ -1501,12 +1423,12 @@
            MOVE    "099600801"         TO  WRK-SRYCD
            MOVE    SSANTEI-SRYYMD      TO  WRK-SRYYMD
       *    算定履歴検索
-      *----->take mod st
-           MOVE    PATH-TBL-SANTEI-PRV-KEY
-                                       TO  WRK-MCP-PATH
-           MOVE    "SANTEI-KEY"        TO  WRK-DBPATH
-      *----->take mod ed
+           MOVE    "key"                TO  WRK-DBPATH
            PERFORM 1001-SANTEI-KEN-SEC
+           MOVE    "tbl_santei_prv"    TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
            IF      FLG-SANTEI          =   ZERO
                MOVE    SANTEI-REC          TO  KEN2-SANTEI-REC
                MOVE    ZERO                TO  KEN2-SANTEI-MSANTEID
@@ -1561,11 +1483,6 @@
       *
                PERFORM 500-SANTEI-INS-SEC
            END-IF
-      *
-      *
-           MOVE    WRK-MCP-PATH        TO  MCP-PATH
-           PERFORM 990-DBCLOSE-SEC
-      *
            .
        3001-NAIBUNFUKA-UPD-EXT.
            EXIT.
@@ -1575,20 +1492,14 @@
        30011-NAIBUFUKA-SUM-SEC         SECTION.
       *
       *    算定履歴検索
-           MOVE    SANTEI-REC              TO  MCPDATA-REC
-      *----->take mod st
-           MOVE    PATH-TBL-SANTEI-PRV-KEY9
-                                       TO  MCP-PATH
-      *    MOVE    PATH-TBL-SANTEI-KEY9    TO  MCP-PATH
-      *----->take mod ed 
+           MOVE    SANTEI-REC          TO  MCPDATA-REC
+           MOVE    "tbl_santei_prv"    TO  MCP-TABLE
+           MOVE    "key9"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-      *----->take mod st
-               MOVE    PATH-TBL-SANTEI-PRV-KEY9
-                                               TO  MCP-PATH
-      *        MOVE    PATH-TBL-SANTEI-KEY9    TO  MCP-PATH
-      *----->take mod ed 
-               PERFORM 900-SANTEI-READ2-SEC
+               MOVE    "tbl_santei_prv"    TO  MCP-TABLE
+               MOVE    "key9"              TO  MCP-PATHNAME
+               PERFORM 920-SANTEI-READ-SEC
            ELSE
                INITIALIZE                  SANTEI-REC
                MOVE    1                   TO  FLG-SANTEI
@@ -1607,18 +1518,11 @@
                        END-IF
                    END-PERFORM
                END-IF
-      *----->take mod st
-               MOVE    PATH-TBL-SANTEI-PRV-KEY9
-                                               TO  MCP-PATH
-      *        MOVE    PATH-TBL-SANTEI-KEY9    TO  MCP-PATH
-      *----->take mod ed
-               PERFORM 900-SANTEI-READ2-SEC
+               MOVE    "key9"              TO  MCP-PATHNAME
+               PERFORM 920-SANTEI-READ-SEC
            END-PERFORM
-      *----->take mod st
-           MOVE    PATH-TBL-SANTEI-PRV-KEY9
-                                           TO  MCP-PATH
-      *    MOVE    PATH-TBL-SANTEI-KEY9    TO  MCP-PATH
-      *----->take mod ed
+           MOVE    "tbl_santei_prv"    TO  MCP-TABLE
+           MOVE    "key9"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
            .
        30011-NAIBUFUKA-SUM-EXT.
@@ -1635,20 +1539,13 @@
       *    新規
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
-      *----> take mod st
-      *    MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
-           MOVE    PATH-TBL-SANTEI-PRV-KEY
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
+           MOVE    "tbl_santei_prv"    TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
-      *    CALL    "ORCMCPSUB"         USING
-      *                                MCPAREA
-      *                                ORCMCPAREA
-      *                                MCPDATA-REC
-      *----> take mod ed
            IF      MCP-RC          NOT =   ZERO
-               DISPLAY "ORCSSANTEIPRV  INS ERR:" SANTEI-KEY
+               DISPLAY "ORCSSANTEI  INS ERR:" SANTEI-KEY
                                       ","   MCP-RC
                MOVE    "9000"          TO  SPA-ERRCD
            END-IF
@@ -1665,22 +1562,15 @@
            MOVE    SMCNDATE-YMD        TO  SANTEI-UPYMD
            MOVE    SMCNDATE-HMS        TO  SANTEI-UPHMS
       *
-      *----> take mod st
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
-      *    MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
-           MOVE    PATH-TBL-SANTEI-PRV-KEY
-                                       TO  MCP-PATH
-      *    CALL    "ORCMCPSUB"         USING
-      *                                MCPAREA
-      *                                ORCMCPAREA
-      *                                MCPDATA-REC
-           CALL    "MCPSUB"            USING
+           MOVE    "tbl_santei_prv"    TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
-      *----> take mod ed
            IF      MCP-RC          NOT =   ZERO
-               DISPLAY "ORCSSANTEIPRV UPD ERR:" SANTEI-KEY
+               DISPLAY "ORCSSANTEI UPD ERR:" SANTEI-KEY
                                                   ","  MCP-RC
                MOVE    "9000"          TO  SPA-ERRCD
            END-IF
@@ -1695,20 +1585,13 @@
       *
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
-      *----> take mod st
-           MOVE    PATH-TBL-SANTEI-PRV-KEY
-                                       TO  MCP-PATH
-           MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
-      *    CALL    "ORCMCPSUB"         USING
-      *                                MCPAREA
-      *                                ORCMCPAREA
-      *                                MCPDATA-REC
-           CALL    "MCPSUB"            USING
+           MOVE    "tbl_santei_prv"    TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
-      *----> take mod ed
            IF      MCP-RC          NOT =   ZERO
-               DISPLAY "ORCSSANTEIPRV DEL ERR:" SANTEI-KEY
+               DISPLAY "ORCSSANTEI DEL ERR:" SANTEI-KEY
                                                   ","  MCP-RC
                MOVE    "9000"          TO  SPA-ERRCD
            END-IF
@@ -1722,24 +1605,17 @@
       *****************************************************************
        910-TENSU-READ-SEC         SECTION.
       *
-           MOVE    ZERO                TO  TNS-YUKOSTYMD
-           MOVE    ALL "9"             TO  TNS-YUKOEDYMD
+           MOVE    SSANTEI-SRYYMD      TO  TNS-YUKOSTYMD
+           MOVE    SSANTEI-SRYYMD      TO  TNS-YUKOEDYMD
       *
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-           MOVE    SSANTEI-SRYYMD      TO  ORC-DBYMD
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+               MOVE    "tbl_tensu"         TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
                    MOVE    ZERO                TO  FLG-TENSU
@@ -1752,12 +1628,9 @@
                MOVE    1                   TO  FLG-TENSU
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        910-TENSU-READ-EXT.
@@ -1768,16 +1641,8 @@
       *****************************************************************
        920-SANTEI-READ-SEC         SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-      *----->take mod st
-      *    CALL    "ORCMCPSUB"          USING
-      *                                 MCPAREA
-      *                                 ORCMCPAREA
-      *                                 MCPDATA-REC
-           CALL    "MCPSUB"             USING
-                                        MCPAREA
-                                        MCPDATA-REC
-      *----->take mod ed
+           MOVE    "tbl_santei_prv"    TO  MCP-TABLE
+           PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  SANTEI-REC
                MOVE    ZERO                TO  FLG-SANTEI
@@ -1791,52 +1656,12 @@
            EXIT.
       *
       *****************************************************************
-      *    診療科歴データ主キー検索
-      *****************************************************************
-       975-SRYKARRK-READ-SEC           SECTION.
-      *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC         TO  SRYKARRK-REC
-               MOVE    ZERO                TO  FLG-SRYKARRK
-           ELSE
-               MOVE    1                   TO  FLG-SRYKARRK
-               INITIALIZE                  SRYKARRK-REC
-           END-IF
-      *
-           .
-       975-SRYKARRK-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    算定歴マスタ読み込み
-      *****************************************************************
-       900-SANTEI-READ2-SEC         SECTION.
-      *
-           PERFORM 920-DBFETCH-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC         TO  SANTEI-REC
-               MOVE    ZERO                TO  FLG-SANTEI
-           ELSE
-               INITIALIZE                      SANTEI-REC
-               MOVE    1                   TO  FLG-SANTEI
-           END-IF
-      *
-           .
-       900-SANTEI-READ2-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -1849,7 +1674,7 @@
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -1864,7 +1689,7 @@
        990-DBCLOSE-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
