@@ -2958,6 +2958,7 @@
       *****************************************************************
        1101-HKN-SYOYMD-SET-SEC             SECTION.
       *
+           MOVE    ZERO                TO  SPA-SYOSINFLG
       *    ¿ÇÎÅ²ÊÎò¤ò¸¡º÷
            MOVE    SPACE               TO  SRYKARRK-REC
            INITIALIZE                  SRYKARRK-REC
@@ -2986,6 +2987,7 @@
                IF     (KARRK-SYOSINYMD2 NOT =  SPACE      ) AND
                       (KARRK-SYOSINYMD2    >=  SPA-SYOYMD )
                    MOVE    KARRK-SYOSINYMD2    TO  SPA-SYOYMD
+                   MOVE    1                   TO  SPA-SYOSINFLG
                END-IF
       *        ºÇ½ª¼õ¿ÇÆü
                IF     (KARRK-LASTYMD   NOT =   SPACE      ) AND

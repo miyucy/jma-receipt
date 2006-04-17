@@ -621,6 +621,7 @@
            03  WRK-KYUSEI-YMD          PIC X(08).
            03  WRK-KYUSEI-END          PIC X(08).
       *
+           03  WRK-SYOKAI-YMD          PIC X(08).
       *
       *    小児科外来診察料テーブル
            COPY   "CMSYONIKATBL.INC".
@@ -929,6 +930,12 @@
       *    禁忌薬剤チェックパラメタ
            COPY    "CPORCSCKNKCHK.INC".
       *
+      *   診療科算定履歴更新サブ
+           COPY    "CPORCSKARRK.INC".
+      *
+      *   算定履歴更新サブ
+           COPY    "CPORCSSANTEI.INC".
+      *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
@@ -1233,7 +1240,6 @@
                                                           (SPA-GMN-IDX)
                        MOVE    "1"                 TO  SPA-COM-IN
                                                          (SPA-GMN-IDX)
-      *
       *                入力コード・名称チェック処理
                        PERFORM 410112-KOUI-SPACHK-SEC
                        MOVE    1                   TO  FLG-GMN
@@ -2129,26 +2135,6 @@
                    MOVE    SPACE               TO  SPA-KIDCD
                    MOVE    ZERO                TO  SPA-SYOSIN
                    PERFORM 30019-DOUSAISIN-SEC
-      ************ MOVE    SPACE               TO  SPA-KIDCD
-      *            診療料　自動修正
-      *            MOVE    SPA-CHK-IDX         TO  SPA-GMN-IDX
-      *            入力分変換処理
-      *            MOVE    SPA-K01KYOUTU       TO  SPA-WORK
-      *            INITIALIZE                      ORCSC10SAREA
-      *            MOVE    "5"                 TO  LNK-SC10S-SYORI
-      *            CALL    "ORCSC10S"          USING
-      *                                        ORCSC10SAREA
-      *                                        SPA-AREA
-      *                                        SPA-SCR-REC
-      *                                        SPA-K02
-      *            MOVE    SPA-WORK            TO  SPA-K01KYOUTU
-      *            MOVE    SPACE               TO  SPA-ERRCD
-      *            MOVE    SPACE               TO  SPA-KIDCD
-      *
-      *            診療行為、計計算処理、編集
-      *            MOVE    "1"             TO  FLG-TOROKU
-      *            PERFORM 510-TBLHEN-SEC
-      ************ MOVE    SPACE           TO  FLG-TOROKU
       *
                WHEN    "0102"
                    MOVE    SPACE               TO  SPA-KIDCD
@@ -2237,7 +2223,17 @@
                    ELSE
                        MOVE    1               TO  SPA-GMN-CUR
                    END-IF
-      *
+      *???
+      *        初回算定日の確認
+               WHEN    "0140"
+                   MOVE    SPACE               TO  SPA-KIDCD
+                   IF      SPA-KID1-FLG        =   "OK"
+                       MOVE    SPACE               TO  SPA-KIDCD
+                       PERFORM 3001099-SYOKAISET-SEC
+                   ELSE
+                       MOVE    1               TO  SPA-GMN-CUR
+                   END-IF
+      *???
       *        同日再診料算定の確認
                WHEN    "0109"
                    MOVE    SPACE               TO  SPA-KIDCD
@@ -2525,6 +2521,72 @@
       *
            .
        300108-SAISET-EXT.
+           EXIT.
+      *??
+      *****************************************************************
+      *    初診料の履歴算定、再診料の再変更処理
+      *****************************************************************
+       3001099-SYOKAISET-SEC     SECTION.
+      *
+      *    算定履歴作成
+           INITIALIZE                  ORCSSANTEIAREA
+           MOVE    "1"                 TO  SSANTEI-SYORI
+           MOVE    "K03"               TO  SSANTEI-PG
+           MOVE    SPA-SYOKAI-SRYCD    TO  SSANTEI-SRYCD
+           MOVE    SPA-SYOKAI-YMD      TO  SSANTEI-SRYYMD
+           MOVE    SPA-PTID            TO  SSANTEI-PTID
+           MOVE    1                   TO  SSANTEI-KAISU
+           MOVE    SPA-SRYKA           TO  SSANTEI-SRYKA
+           MOVE    SPA-HKNCOMBINUM     TO  SSANTEI-HKNCOMBINUM
+           MOVE    SPA-HKNKBN          TO  SSANTEI-HKNKBN
+           CALL    "ORCSSANTEI"        USING
+                                       ORCSSANTEIAREA
+                                       SPA-AREA
+      *
+           IF      SPA-SYOKAI-SRYCD     =   "099110001"
+               INITIALIZE                  ORCSKARRKAREA
+               MOVE    SPA-SRYYMD(1:6)     TO  SKARRK-SRYYM
+               MOVE    SPA-SRYKA           TO  SKARRK-SRYKA
+               CALL    "ORCSKARRK"         USING
+                                           ORCSKARRKAREA
+                                           SPA-AREA
+               MOVE    SPA-SYOKAI-YMD      TO  SPA-SYOYMD
+               MOVE    SPACE               TO  SPA-SYOSIN-YMD
+               MOVE    SPACE               TO  SPA-SYOSIN-SRYCD
+               MOVE    ZERO                TO  SPA-SYOSIN
+      *        初診算定日
+               MOVE    SPA-SYOYMD          TO  WRK-SYMD
+               PERFORM 520-SEIWA-HEN-SEC
+               MOVE    WRK-HENYMDG         TO  SPA-GMN-SYOSINYMD
+      *        画面用スパ編集処理
+               INITIALIZE                  SPA-SCR-REC
+               MOVE    ZERO                TO  LNK-WKSRYACT-MAX
+               MOVE    SPACE               TO  SPA-KIDCD
+               PERFORM                     310-SPA-GMNSET-SEC
+               MOVE    SPACE               TO  SPA-KID1-FLG
+      *
+               MOVE    1                   TO  SPA-GMN-PAGE
+               MOVE    1                   TO  SPA-GMN-CUR
+               MOVE    1                   TO  SPA-MAP-IDX
+           ELSE
+      *        行削除
+               MOVE    SPA-SYOKAI-IDX      TO  SPA-GMN-IDX
+      *TEST
+               DISPLAY "SPA-SYOKAI-IDX:" SPA-SYOKAI-IDX
+                      ",SPA-GMN-INPUTCD:" SPA-GMN-INPUTCD(SPA-GMN-IDX)
+      *TEST
+               MOVE    SPACE               TO  SPA-GMN-INPUTCD
+                                                (SPA-GMN-IDX)
+               MOVE    "2"                 TO  FLG-TOROKU
+               PERFORM 510-TBLHEN-SEC
+               MOVE    SPACE               TO  FLG-TOROKU
+           END-IF
+           MOVE    ZERO                TO  SPA-SYOKAI-IDX
+           MOVE    SPACE               TO  SPA-SYOKAI-YMD
+           MOVE    SPACE               TO  SPA-SYOKAI-SRYCD
+           MOVE    SPACE               TO  SPA-KID1-FLG
+           .
+       3001099-SYOKAISET-EXT.
            EXIT.
       *****************************************************************
       *    同日再診料の設定処理
@@ -6330,6 +6392,22 @@
                    GO      TO      4101113-INPUTCD-CHK-EXT
                END-IF
            END-IF
+      *TEST
+      *    算定履歴のみ作成
+           IF    ((SPA-COM-INPUTCD (SPA-GMN-IDX)(1:1)
+                                       =   "1"       )  OR
+                  (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:3)
+                                       =   "099"     ))  AND
+                  (LNK-SC97-SURYOCNT   =   7     )
+              AND (SPA-HKNCOMBINUM NOT =   "9999"  )
+              AND (SPA-SYORIFLG        =   ZERO     )
+               PERFORM 4101126-SYOKAI-CHK-SEC
+               IF     (SPA-KIDCD       NOT =   SPACE )
+                   OR (SPA-ERRCD       NOT =   SPACE )
+                   GO      TO      4101113-INPUTCD-CHK-EXT
+               END-IF
+           END-IF
+      *TEST
       *    入力コード変更ありの時
            IF      LNK-SC97-NYURYOKU   =   1
                CONTINUE
@@ -6580,7 +6658,7 @@
            CALL    "ORCSGDAY"          USING
                                        ORCSGDAYAREA
            IF      SGDAY-RC            =   ZERO
-               IF      SGDAY-SDAY          >=  SPA-SRYYMD
+               IF      SGDAY-SDAY          >   SPA-SRYYMD
                    MOVE    "1101"              TO  SPA-ERRCD
                ELSE
                    MOVE    SGDAY-SDAY          TO  SPA-SYOSIN-YMD
@@ -6594,6 +6672,115 @@
       *
            .
        4101125-SYOSIN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    初回算定日チェック処理
+      *****************************************************************
+       4101126-SYOKAI-CHK-SEC       SECTION.
+      *
+           MOVE    SPACE               TO  WRK-SRYCD
+      *    数量の日付変換
+           INITIALIZE                      ORCSGDAYAREA
+           MOVE    WRK-SURYO-S1        TO  SGDAY-INDAY
+           CALL    "ORCSGDAY"          USING
+                                       ORCSGDAYAREA
+           IF      SGDAY-RC            =   ZERO
+               MOVE    SGDAY-SDAY          TO  WRK-SYOKAI-YMD
+      *    初診料
+               IF      SPA-COM-INPUTCD(SPA-GMN-IDX)
+                                           =   "111700110"  OR
+                                               "111700210"  OR
+                                               "111000110"  OR
+                                               "111003610"  OR
+                                               "113003510"  OR
+                                               "113003710"
+                                           OR  "101110010"
+                   IF      SPA-SYOSINFLG       =   ZERO
+                       MOVE    "099110001"         TO  WRK-SRYCD
+                   ELSE
+                       MOVE    "1207"              TO  SPA-ERRCD
+                   END-IF
+               ELSE
+      *        リハビリの発生日のみ
+                   IF     (SPA-COM-INPUTCD(SPA-GMN-IDX)(1:6)
+                                           =   "099800")
+                       MOVE    SPA-COM-INPUTCD(SPA-GMN-IDX)
+                                                   TO  WRK-SRYCD
+                       MOVE    WRK-SRYCD           TO  TNS-SRYCD
+                       PERFORM 910-TENSU-READ-SEC
+                       IF      FLG-TENSU           =   1
+                            MOVE    SPACE           TO  WRK-SRYCD
+                       ELSE
+      *                    算定履歴にないこと
+                           PERFORM 41011262-SANTEI-CHK-SEC
+                           IF      FLG-SANTEI          =   ZERO
+                               MOVE    SPACE           TO  WRK-SRYCD
+                               MOVE    "1208"          TO  SPA-ERRCD
+                           END-IF
+                       END-IF
+                   END-IF
+               END-IF
+      *        日付判定
+               IF      WRK-SRYCD       NOT =   SPACE
+                   IF      WRK-SYOKAI-YMD       >   SPA-SRYYMD
+                       MOVE    "1205"              TO  SPA-ERRCD
+                   END-IF
+                   IF     (WRK-SRYCD           =   "099110001") AND
+                          (WRK-SYOKAI-YMD      >   SPA-LSTYMD )
+                       MOVE    "1206"              TO  SPA-ERRCD
+                   END-IF
+                   IF     (WRK-SRYCD       NOT =   "099110001") AND
+                          (WRK-SYOKAI-YMD      <   "20060401" )
+                       MOVE    "1209"              TO  SPA-ERRCD
+                   END-IF
+                   IF      SPA-ERRCD           =   SPACE
+                       MOVE    WRK-SYOKAI-YMD      TO  SPA-SYOKAI-YMD
+                       MOVE    WRK-SRYCD           TO  SPA-SYOKAI-SRYCD
+                       MOVE    SPA-GMN-IDX         TO  SPA-SYOKAI-IDX
+                       MOVE    "0140"              TO  SPA-KIDCD
+                   END-IF
+               END-IF
+           END-IF
+      *
+           .
+       4101126-SYOKAI-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    算定履歴チェック処理
+      *****************************************************************
+       41011262-SANTEI-CHK-SEC       SECTION.
+      *
+      *    算定履歴検索
+           INITIALIZE                  SANTEI-REC
+           MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
+           MOVE    SPA-PTID            TO  SANTEI-PTID
+           MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
+           MOVE    ZERO                TO  SANTEI-NYUGAIKBN
+           MOVE    ZERO                TO  SANTEI-SRYKA
+           IF     (WRK-SRYCD (1:5)     =   "09980")  AND
+                  (SPA-HKNKBN          =   1      )  AND
+                  (SSANTEI-HKNKBN  NOT =   ZERO)
+               MOVE    SPA-HKNCOMBINUM     TO  SANTEI-HKNCOMBINUM
+           ELSE
+               MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
+           END-IF
+      *
+           MOVE    SANTEI-REC          TO  MCPDATA-REC
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "key3"              TO  MCP-PATHNAME
+               PERFORM 920-SANTEI-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SANTEI
+           END-IF
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       41011262-SANTEI-CHK-EXT.
            EXIT.
       *****************************************************************
       *    再診時、初診料算定へ変更処理
@@ -12131,6 +12318,13 @@
                                        TO  WRK-KIDMSG
                    MOVE    "７種類以上の処方せん料にしますか？"
                                        TO  WRK-KIDMSG(33:)
+               WHEN    "0140"
+                   STRING  "初回算定日を算定履歴に作成します。"
+                                           DELIMITED  BY  SIZE
+                           "取消はできません。よろしいですか？"
+                                           DELIMITED  BY  SIZE
+                                       INTO    WRK-KIDMSG
+                   END-STRING
                WHEN    OTHER
                    MOVE    SPA-KIDCD
                                        TO  WRK-KIDMSG
@@ -12503,6 +12697,23 @@
       *
            .
        910-PTNYUINRRK-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    算定歴マスタ読み込み
+      *****************************************************************
+       920-SANTEI-READ-SEC         SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  SANTEI-REC
+               MOVE    ZERO            TO  FLG-SANTEI
+           ELSE
+               INITIALIZE                  SANTEI-REC
+               MOVE    1               TO  FLG-SANTEI
+           END-IF
+      *
+           .
+       920-SANTEI-READ-EXT.
            EXIT.
       *****************************************************************
       *    テーブル検索処理

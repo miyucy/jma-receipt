@@ -1009,6 +1009,11 @@
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
+               WHEN    "2066"
+                   STRING  "上の薬剤に後発医薬品はありません。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "2067"
                    STRING  "初診・再診と同日初診の診療科が同じです。"
                                                DELIMITED  BY  SIZE
@@ -1340,6 +1345,32 @@
                                        TO  SPA-ERRMSG
                    MOVE    "システム管理を確認して下さい。"
                                        TO  SPA-ERRMSG(31:)
+      *!
+               WHEN    "1205"
+                   MOVE    "初回算定日＜診療日で入力して下さい。"
+                                       TO  SPA-ERRMSG
+               WHEN    "1206"
+                   MOVE    "初回算定日≦最終来院日で入力して下さい。"
+                                       TO  SPA-ERRMSG
+               WHEN    "1207"
+                   STRING   "既に初診算定日が登録されています。"
+                                       DELIMITED  BY  SIZE
+                           "算定日の登録はできません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "1208"
+                   STRING  "既に算定履歴が登録されています。"
+                                       DELIMITED  BY  SIZE
+                           "初回算定日の登録はできません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "1209"
+                   STRING  "Ｈ１８年４月１日以降にして下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
       *!
                WHEN    "K001"
                    MOVE    "警告！時間外算定がありません"
