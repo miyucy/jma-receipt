@@ -1629,7 +1629,7 @@
            END-PERFORM
       *
            MOVE    "tbl_byomei"        TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
+           MOVE    "key7"              TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            MOVE    IDX1            TO  SPA-GMN-SRCBYOLST-MAX
@@ -3932,7 +3932,7 @@
       *
            MOVE    "tbl_tekioubyomei"  TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
       *
