@@ -5016,9 +5016,9 @@
        4010-PREVIEW-SYORI-SEC          SECTION.
       *
       *@@@ レセプト更新まで
-           IF       SPA-SRYYMD(1:6)    >=   "200604"
-               MOVE    "9009"          TO  SPA-ERRCD
-           END-IF
+      *    IF       SPA-SRYYMD(1:6)    >=   "200604"
+      *        MOVE    "9009"          TO  SPA-ERRCD
+      *    END-IF
       *@@@
            IF      (SPA-HKNCOMBINUM    =    "9999" )  OR
                    (SPA-HKNKBN         =    1      )
