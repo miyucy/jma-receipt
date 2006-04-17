@@ -265,6 +265,11 @@
                05  SPA-K02-TEISEI-OCC          OCCURS   200.
                    07  SPA-K02-TEI-SRYCD       PIC X(09).
                    07  SPA-K02-TEI-KAISU       PIC 9(03).
+      *    ½é²ó»»ÄêÆüÀßÄê
+           03  SPA-SYOKAI-AREA.
+               05  SPA-SYOKAI-YMD             PIC  X(08).
+               05  SPA-SYOKAI-SRYCD           PIC  X(09).
+               05  SPA-SYOKAI-IDX             PIC  9(04).
       *
       *    £Ë£°£µ²èÌÌ¸ÇÍ­£Ó£Ð£Á
            03  SPA-K05-AREA.

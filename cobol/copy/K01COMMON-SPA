@@ -175,6 +175,8 @@
                05  SPA-RRK-LSTSRYKA        PIC  X(02).
       *½é¿ÇÎÁ»»ÄêÍ­Ìµ
                05  SPA-SYOSIN              PIC  9(01).
+      *
+               05  SPA-SYOSINFLG           PIC  9(01).
       *Â¾ÊÝ¸±¼õ¿Ç²ÊÍ­¤ê
                05  SPA-TA-HKNCOMBI-AREA.
                    07  SPA-TA-HKNCOMBI         PIC  9(04)
