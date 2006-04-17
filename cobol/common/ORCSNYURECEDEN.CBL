@@ -2985,13 +2985,6 @@
                     MOVE  WRK-SKJ4-KAISU(IDX1)  TO
                                   LNK-NYURECEDEN-KAISU(3 IDX2 1)
                     MOVE  1   TO  LNK-NYURECEDEN-MEISAISU(3 IDX2)
-                    DISPLAY "IDX1 = " IDX1
-                    DISPLAY "WRK-SKJ4-HKNCOMBI-DAY(IDX1) = "
-                             WRK-SKJ4-HKNCOMBI-DAY(IDX1)
-                    DISPLAY "WRK-SKJ4-RYOYO(IDX1) = "
-                             WRK-SKJ4-RYOYO(IDX1)
-                    DISPLAY "WRK-SKJ4-KAISU(IDX1) = "
-                             WRK-SKJ4-KAISU(IDX1)
                 END-IF
            END-PERFORM
       *
