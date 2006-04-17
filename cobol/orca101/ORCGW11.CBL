@@ -111,6 +111,7 @@
       *    03  WRK-KBNCD           PIC 9(01).
       *----(02.00.03)--UPD-START---
       *     03  WRK-KBNCD                PIC 9(08).
+           03  WRK-KBNCD-KEY             PIC X(08).
            03  WRK-KBNCD-G.
                05  WRK-KBNCD1           PIC 9(05).
                05  WRK-KBNCD2           PIC 9(03).
@@ -2169,7 +2170,6 @@
       *    Æþ±¡
            IF      SPA-BEDSU           >   ZERO
       *
-               MOVE    ZERO            TO  WRK-KBNCD1
                PERFORM 490-SYS-1034-KOUSHIN-SEC
       *        Æþ±¡¡¦Ä¢É¼¥×¥í¥°¥é¥à
                PERFORM VARYING IDZ2        FROM    1   BY  1
@@ -2630,7 +2630,7 @@
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "W11 SYSKANRI UPD ERR:" MCP-RC
                            ",KEY:"    SYS-KEY
-               END-IF
+              END-IF
            ELSE
                MOVE    SYSKANRI-REC        TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -3560,12 +3560,14 @@
       *****************************************************************
        900-SYSKANRI-INV2-SEC         SECTION.
       *
-           MOVE    SYS-KBNCD           TO  WRK-KBNCD-G
-           MOVE    SPACE               TO  SYS-KBNCD
-           STRING  WRK-KBNCD-G         DELIMITED  BY  SPACE
-                   "%"                 DELIMITED  BY  SIZE
-                                       INTO    SYS-KBNCD
-           END-STRING
+           IF      SYS-KBNCD(8:1)      =   SPACE
+               MOVE    SYS-KBNCD           TO  WRK-KBNCD-KEY
+               MOVE    SPACE               TO  SYS-KBNCD
+               STRING  WRK-KBNCD-KEY       DELIMITED  BY  SPACE
+                       "%"                 DELIMITED  BY  SIZE
+                                           INTO    SYS-KBNCD
+               END-STRING
+           END-IF
            MOVE    SPA-W01-STYUKYMD    TO  SYS-STYUKYMD
            MOVE    SPA-W01-STYUKYMD    TO  SYS-EDYUKYMD
       *
