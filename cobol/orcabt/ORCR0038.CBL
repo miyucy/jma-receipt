@@ -505,20 +505,22 @@
                          END-PERFORM
                      END-PERFORM
       *
-                     MOVE     ZERO     TO    FLG-ARI
-                     PERFORM  VARYING  IDX   FROM    1   BY  1
-                               UNTIL IDX                       > 10
-                                OR   RECE042-SYODOU-SRYKA(IDX) = SPACE
-                                OR   FLG-ARI                   = 1
-                        IF  RECE04-SYODOU-SRYKA(1)
-                                   =  RECE042-SYODOU-SRYKA(IDX)
-                            MOVE  1   TO   FLG-ARI
-                        END-IF
-                     END-PERFORM
-                     IF  FLG-ARI  =  ZERO
-                     AND IDX     <=  10
-                            MOVE   RECE04-SYODOU-SRYKA(1)
-                                      TO   RECE042-SYODOU-SRYKA(IDX)
+                     IF  RECE04-SYODOU-SRYKA(1)  NOT =  SPACE
+                       MOVE     ZERO     TO    FLG-ARI
+                       PERFORM  VARYING  IDX   FROM    1   BY  1
+                                 UNTIL IDX                       > 10
+                                  OR   RECE042-SYODOU-SRYKA(IDX) = SPACE
+                                  OR   FLG-ARI                   = 1
+                          IF  RECE04-SYODOU-SRYKA(1)
+                                     =  RECE042-SYODOU-SRYKA(IDX)
+                              MOVE  1   TO   FLG-ARI
+                          END-IF
+                       END-PERFORM
+                       IF  FLG-ARI  =  ZERO
+                       AND IDX     <=  10
+                              MOVE   RECE04-SYODOU-SRYKA(1)
+                                        TO   RECE042-SYODOU-SRYKA(IDX)
+                       END-IF
                      END-IF
       *
                      IF      FLG-MATOME    =   ZERO
@@ -545,20 +547,22 @@
                          END-PERFORM
                      END-PERFORM
       *
-                     MOVE     ZERO     TO    FLG-ARI
-                     PERFORM  VARYING  IDX   FROM    1   BY  1
-                               UNTIL IDX                       > 10
-                                OR   RECE042-SYODOU-SRYKA(IDX) = SPACE
-                                OR   FLG-ARI                   = 1
-                        IF  RECE04-SYODOU-SRYKA(1)
-                                   =  RECE042-SYODOU-SRYKA(IDX)
-                            MOVE  1   TO   FLG-ARI
-                        END-IF
-                     END-PERFORM
-                     IF  FLG-ARI  =  ZERO
-                     AND IDX     <=  10
-                            MOVE   RECE04-SYODOU-SRYKA(1)
-                                      TO   RECE042-SYODOU-SRYKA(IDX)
+                     IF  RECE04-SYODOU-SRYKA(1)  NOT =  SPACE
+                       MOVE     ZERO     TO    FLG-ARI
+                       PERFORM  VARYING  IDX   FROM    1   BY  1
+                                 UNTIL IDX                       > 10
+                                  OR   RECE042-SYODOU-SRYKA(IDX) = SPACE
+                                  OR   FLG-ARI                   = 1
+                          IF  RECE04-SYODOU-SRYKA(1)
+                                     =  RECE042-SYODOU-SRYKA(IDX)
+                              MOVE  1   TO   FLG-ARI
+                          END-IF
+                       END-PERFORM
+                       IF  FLG-ARI  =  ZERO
+                       AND IDX     <=  10
+                              MOVE   RECE04-SYODOU-SRYKA(1)
+                                        TO   RECE042-SYODOU-SRYKA(IDX)
+                       END-IF
                      END-IF
       *
                      IF      FLG-RECE042         =   1
