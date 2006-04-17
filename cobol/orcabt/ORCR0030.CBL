@@ -232,8 +232,12 @@
       *  02.07.07    NACL-門脇    06/02/01  ０９９２０００で始まる投薬用
       *                                     コメントの編集対応
       *  02.07.08    NACL-門脇    06/02/03  高知県乳幼児対応
+      *
+      *  ２００６年４月改正対応
       *  02.09.01    NACL-門脇    06/04/05  累計トータル編集修正
       *  02.09.02    NACL-門脇    06/04/13  ２００６年４月改正対応
+      *  02.09.03    NACL-藤原    06/04/14   三種の公費併用に係わる記載要
+      *                                      項の特例対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -884,7 +888,9 @@
        01  WRK-CONS-AREA.    
       *    固定端末ＩＤ
            03  WRK-CONS-TERMID     PIC X(64)   VALUE
-                                   "0100007FZZZZZZZZZZZZZZZZZZZZZZZZ". 
+                                   "0100007FZZZZZZZZZZZZZZZZZZZZZZZZ".
+      * 
+           03  WRK-CONS-SRYYM-200604  PIC X(06)   VALUE   "200604". 
       *
            COPY    "MCPAREA".
       *
@@ -1289,10 +1295,20 @@
                            MOVE    "1"          TO  WRK-3SYU (2:1)
                            MOVE     IDX         TO  KAKKIDX
                        END-IF
-      *                精神
-                       IF  RECE02-KOHNUM (IDX)  =   "020"  OR  "021"
-                           MOVE    "1"          TO  WRK-3SYU (3:1)
-                           MOVE     IDX         TO  SESNIDX
+      *
+                       IF      RECE02-SRYYM <   WRK-CONS-SRYYM-200604
+      *                    精神
+                           IF  RECE02-KOHNUM (IDX)  =   "020"  OR  "021"
+                               MOVE    "1"          TO  WRK-3SYU (3:1)
+                               MOVE     IDX         TO  SESNIDX
+                           END-IF
+                       ELSE
+      *                    自立支援法
+                           IF  RECE02-KOHNUM (IDX)  =   "020"  OR  "021"
+                                                    OR  "015"  OR  "016"
+                               MOVE    "1"          TO  WRK-3SYU (3:1)
+                               MOVE     IDX         TO  SESNIDX
+                           END-IF
                        END-IF
                    END-PERFORM
       *    

@@ -54,6 +54,8 @@
       *  02.07.02    NACL-Æ£¸¶    05/10/31  MONFUNCÂÐ±þ
       *
       *  02.08.01    NACL-Æ£¸¶    06/02/20  ¼ç²ÊÂÐ±þ
+      *
+      *  02.09.01    NACL-Æ£¸¶    06/04/14  £²£°£°£¶Ç¯£´·î²þÀµÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -255,15 +257,10 @@
                END-IF
       *        ²èÌÌÊÔ½¸
                PERFORM 500-GMNHEN-SEC
-      ****         IF      SPA-ERRCD       NOT =   SPACE
-      ****             PERFORM 510-ERRSET-SEC
-      ****             GO  TO  100-INIT-EXT
-      ****         END-IF
            END-IF
       *
            MOVE    SPACE               TO  LINKAREA
       *
-      ***  MOVE    "NEW"               TO  MCP-PUTTYPE.
            MOVE    SPACE               TO  MCP-PUTTYPE.
            MOVE    "H01    "           TO  MCP-WINDOW.
       *
@@ -374,7 +371,6 @@
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
-      *
            INITIALIZE              SPA-H01-AREA
                                    SPA-H01KYOUTU 
       *
@@ -393,8 +389,10 @@
       *
       *    ¸«½Ð¤·ÊÔ½¸
            MOVE    "2"                 TO  SPA-RECE10-NYUGAIKBN
+           MOVE    SPA-SYSYMD (1:6)    TO  SPA-RECE10-SRYYM
            PERFORM 3101-MIDASI-HENSYU-SEC
            MOVE    SPACE               TO  SPA-RECE10-NYUGAIKBN
+           MOVE    ZERO                TO  SPA-RECE10-SRYYM
       *
            MOVE    "0"                 TO  SPA-H01GMN-SKYKBNL    (1)
            MOVE    "ÀÁµá¤·¤Ê¤¤"        TO  SPA-H01GMN-SKYKBNMEIL (1)
@@ -420,7 +418,13 @@
                        MOVE    "blue"  TO  SPA-H01GMN-MIDASI-STYLE (IDX)
                    END-PERFORM
                    MOVE  "          ½é    ¿Ç"  TO SPA-H01GMN-MIDASI(01)
-                   MOVE  "          »Ø    Æ³"  TO SPA-H01GMN-MIDASI(02)
+                   IF      SPA-RECE10-SRYYM    >=  "200604"
+                       MOVE  "          °å³Ø´ÉÍý"
+                                               TO SPA-H01GMN-MIDASI(02)
+                   ELSE 
+                       MOVE  "          »Ø    Æ³"
+                                               TO SPA-H01GMN-MIDASI(02)
+                   END-IF 
                    MOVE  "          ºß    Âð"  TO SPA-H01GMN-MIDASI(03)
                    MOVE  "          Æâ    Éþ"  TO SPA-H01GMN-MIDASI(04)
                    MOVE  "          ÆÖ    Éþ"  TO SPA-H01GMN-MIDASI(05)
@@ -470,7 +474,13 @@
                    MOVE    "          »þ´Ö³°"  TO SPA-H01GMN-MIDASI(04)
                    MOVE    "        µÙ    Æü"  TO SPA-H01GMN-MIDASI(05)
                    MOVE    "        ¿¼    Ìë"  TO SPA-H01GMN-MIDASI(06)
-                   MOVE    "        »Ø    Æ³"  TO SPA-H01GMN-MIDASI(07)
+                   IF      SPA-RECE10-SRYYM    >=  "200604"
+                       MOVE  "          °å³Ø´ÉÍý"
+                                               TO SPA-H01GMN-MIDASI(07)
+                   ELSE 
+                       MOVE  "          »Ø    Æ³"
+                                               TO SPA-H01GMN-MIDASI(07)
+                   END-IF 
                    MOVE    "        ±ý    ¿Ç"  TO SPA-H01GMN-MIDASI(08)
                    MOVE    "        Ìë    ´Ö"  TO SPA-H01GMN-MIDASI(09)
                    MOVE    "      ¿¼Ìë¡¦¶ÛµÞ"  TO SPA-H01GMN-MIDASI(10)

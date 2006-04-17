@@ -116,6 +116,11 @@
       *                                     レセプト様式へ変更
       *
       *  02.08.01    NACL-藤原    06/02/20  主科対応
+      *
+      *  ２００６年４月改正対応
+      *  02.09.01    NACL-藤原    06/04/14  「１３指導」「日」の差し込み
+      *                                      三種の公費併用に係わる記載要
+      *                                      項の特例対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -241,7 +246,8 @@
       ***  COPY    "HCM09V01.INC"  REPLACING  //HCM09V01//
       ***  COPY    "HCM09V02.INC"  REPLACING  //HCM09V02//
       ***  COPY    "HCM09V03.INC"  REPLACING  //HCM09V03//
-           COPY    "HCM09V04.INC"  REPLACING  //HCM09V04//
+      ***  COPY    "HCM09V04.INC"  REPLACING  //HCM09V04//
+           COPY    "HCM10.INC"     REPLACING  //HCM10//
                                    BY         //HC06//.
       ***  COPY    "HCN061.INC"    REPLACING  //HCN061//
       ***  COPY    "HCN061V01.INC" REPLACING  //HCN061V01//
@@ -806,7 +812,9 @@
            03  WRK-ERR-MSG-5           PIC X(14)  VALUE
                "【主科未設定】".
       *
-       01  WRK-CONS-SRYYM             PIC X(06)   VALUE   "200304". 
+       01  WRK-CONS-AREA.
+           03  WRK-CONS-SRYYM         PIC X(06)   VALUE   "200304". 
+           03  WRK-CONS-SRYYM-200604  PIC X(06)   VALUE   "200604". 
       *
        01  WRK-RECE07-REC. 
            COPY    "CPRCF007.INC"  REPLACING  //RECE07//
@@ -1725,10 +1733,20 @@
                    MOVE    "1"          TO  WRK-3SYU (2:1)
                    MOVE     IDX         TO  KAKKIDX
                END-IF
-      *        精神
-               IF  RECE02-KOHNUM (IDX)  =   "020"  OR  "021"
-                   MOVE    "1"          TO  WRK-3SYU (3:1)
-                   MOVE     IDX         TO  SESNIDX
+      *
+               IF      RECE02-SRYYM     <   WRK-CONS-SRYYM-200604
+      *            精神
+                   IF  RECE02-KOHNUM (IDX)  =   "020"  OR  "021"
+                       MOVE    "1"          TO  WRK-3SYU (3:1)
+                       MOVE     IDX         TO  SESNIDX
+                   END-IF
+               ELSE
+      *            自立支援法
+                   IF  RECE02-KOHNUM (IDX)  =   "020"  OR  "021"   OR
+                                                "015"  OR  "016"
+                       MOVE    "1"          TO  WRK-3SYU (3:1)
+                       MOVE     IDX         TO  SESNIDX
+                   END-IF
                END-IF
            END-PERFORM
       *
@@ -2043,6 +2061,12 @@
       *
            INITIALIZE                      HC06
            MOVE    SPACE               TO  HC06
+      *
+           IF      RECE02-SRYYM        <   WRK-CONS-SRYYM-200604
+               MOVE    "指　　導"          TO  HC06-TITLE
+           ELSE
+               MOVE    "医学管理"          TO  HC06-TITLE
+           END-IF
       *
       *    特別療養費の場合「特別療養費」文字記載をシス管の設定により行う
            IF      RECE02-RECESYUBETU  =   6666
@@ -5414,7 +5438,8 @@
            MOVE    CNT-PAGE            TO  TBL-RECE-RENNUM(TBL-RECE-MAX)
            IF      CNT-PAGE            =   1
       *********MOVE    "HCM09V03.red"      TO
-               MOVE    "HCM09V04.red"      TO
+      *********MOVE    "HCM09V04.red"      TO
+               MOVE    "HCM10.red"         TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
                MOVE    HC06                TO
                                        TBL-RECE-PRTDATA (TBL-RECE-MAX)
@@ -5422,7 +5447,8 @@
                EVALUATE    SYS-2005-NEXTPRTKBN-G
                    WHEN    ZERO
       *********        MOVE    "HCM09V03.red"  TO
-                       MOVE    "HCM09V04.red"  TO
+      *********        MOVE    "HCM09V04.red"  TO
+                       MOVE    "HCM10.red"     TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
                        MOVE    HC06            TO
                                        TBL-RECE-PRTDATA (TBL-RECE-MAX)
@@ -5795,7 +5821,8 @@
                    MOVE    TBL-RECE-MAX        TO  WRK-PAGE2
                    EVALUATE    RECE08-FORMID
       *********        WHEN    "HCM09V03.red"                  
-                       WHEN    "HCM09V04.red"                  
+      *********        WHEN    "HCM09V04.red"                  
+                       WHEN    "HCM10.red"                  
                            MOVE    RECE08-PRTDATA  TO HC06
                            MOVE    WRK-HEN-PAGE-AREA
                                                    TO HC06-PAGE

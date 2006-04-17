@@ -99,6 +99,11 @@
       *                                     HCN063V02.red
       *
       *  02.08.01    NACL-藤原    06/04/01  対象データ表示
+      *
+      *  ２００６年４月改正対応
+      *  02.09.01    NACL-藤原    06/04/14  「１３指導」「日」の差し込み
+      *                                     HCM10.red    HCN07.red
+      *                                     HCRCP402.red HCRCP403.red
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -260,6 +265,10 @@
            COPY    "HCRCP400V03.INC".
            COPY    "HCRCP401.INC".
            COPY    "HCRCP401V01.INC".
+           COPY    "HCM10.INC".
+           COPY    "HCN07.INC".
+           COPY    "HCRCP402.INC".
+           COPY    "HCRCP403.INC".
       *
       *    ファイルデイレクトリ位置指定サブ
            COPY  "CPMKPASS.INC".
@@ -430,6 +439,9 @@
            INITIALIZE                  SYS-2005-REC
            MOVE    "2005"              TO  SYS-2005-KANRICD
            MOVE    "*"                 TO  SYS-2005-KBNCD
+           MOVE    WRK-PARA-SRYYM      TO  SYS-2005-STYUKYMD (1:6)
+           MOVE    "01"                TO  SYS-2005-STYUKYMD (7:2)
+           MOVE    SYS-2005-STYUKYMD   TO  SYS-2005-EDYUKYMD
            MOVE    SYS-2005-REC        TO  MCPDATA-REC
            PERFORM 800-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -442,6 +454,9 @@
            INITIALIZE                  SYS-1001-REC
            MOVE    "1001"              TO  SYS-1001-KANRICD
            MOVE    "*"                 TO  SYS-1001-KBNCD
+           MOVE    WRK-PARA-SRYYM      TO  SYS-1001-STYUKYMD (1:6)
+           MOVE    "01"                TO  SYS-1001-STYUKYMD (7:2)
+           MOVE    SYS-1001-STYUKYMD   TO  SYS-1001-EDYUKYMD
            MOVE    SYS-1001-REC        TO  MCPDATA-REC
            PERFORM 800-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -457,6 +472,9 @@
            INITIALIZE                  SYS-1009-REC
            MOVE    "1009"              TO  SYS-1009-KANRICD
            MOVE    "*"                 TO  SYS-1009-KBNCD
+           MOVE    WRK-PARA-SRYYM      TO  SYS-1009-STYUKYMD (1:6)
+           MOVE    "01"                TO  SYS-1009-STYUKYMD (7:2)
+           MOVE    SYS-1009-STYUKYMD   TO  SYS-1009-EDYUKYMD
            MOVE    SYS-1009-REC        TO  MCPDATA-REC
            PERFORM 800-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -791,6 +809,14 @@
                        MOVE    WRK-HEN-RENNUM-AREA
                                                TO  HCRCP401V01-RENNUM
                        MOVE    HCRCP401V01         TO  RECE08-PRTDATA
+                   WHEN    "HCM10.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCM10
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM10-RENNUM
+                       MOVE    HCM10               TO  RECE08-PRTDATA
+                   WHEN    "HCN07.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCN07
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCN07-RENNUM
+                       MOVE    HCN07               TO  RECE08-PRTDATA
                END-EVALUATE
            END-IF            
       *             
@@ -859,10 +885,7 @@
            END-IF
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           PERFORM 900-CLOSE-SEC
       *
            .
        2002-OFFSET-GET-EXT.
@@ -921,6 +944,8 @@
                                        ALSO    ANY                
                WHEN    "HCRCP400V03.red"  
                                        ALSO    ANY                
+               WHEN    "HCM10.red"     ALSO    ANY               
+               WHEN    "HCRCP402.red"  ALSO    ANY                
                WHEN    "HCN061.red"    ALSO    "2"              
                WHEN    "HCN061V01.red" ALSO    "2"              
                WHEN    "HCN061V02.red" ALSO    "2"              
@@ -953,6 +978,8 @@
                WHEN    "HCRCP401.red"  ALSO    ANY                
                WHEN    "HCRCP401V01.red"
                                        ALSO    ANY                
+               WHEN    "HCN07.red"     ALSO    ANY               
+               WHEN    "HCRCP403.red"  ALSO    ANY                
                    MOVE    "医科レセプト（入院）"      TO  SPRT-TITLE
                END-EVALUATE
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
@@ -1322,78 +1349,90 @@
       *****************************************************************
        800-SYSKANRI-READ-SEC           SECTION.
       *
-           MOVE    WRK-PARA-SRYYM      TO  ORC-DBYMD (1:6)
-           MOVE    "01"                TO  ORC-DBYMD (7:2)
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
                IF      MCP-RC              =   ZERO
-                   MOVE    ZERO            TO  FLG-SYSKANRI
+                   MOVE    ZERO                TO  FLG-SYSKANRI
                ELSE
-                   MOVE    1               TO  FLG-SYSKANRI
+                   MOVE    1                   TO  FLG-SYSKANRI
                END-IF
            ELSE
-               MOVE    1               TO  FLG-SYSKANRI
+               MOVE    1                   TO  FLG-SYSKANRI
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
       *
            .
        800-SYSKANRI-READ-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    クローズ処理
+      *****************************************************************
+       900-CLOSE-SEC                  SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       900-CLOSE-EXT.
+           EXIT.
       *      
       *****************************************************************
-      *    ＤＢ　オープン処理
+      *    ＤＢオープン処理
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
-           MOVE    "DBOPEN"            TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBOPEN"            TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
-           MOVE    "DBSTART"           TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBSTART"           TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            .
        100-DBOPEN-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ＤＢ　クローズ処理
+      *    ＤＢクローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *
-           MOVE    "DBCOMMIT"          TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBCOMMIT"          TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
-           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
-      *
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBDISCONNECT"      TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            .
        900-DBDISCONNECT-EXT.
            EXIT.

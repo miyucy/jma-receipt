@@ -285,6 +285,17 @@ FORM_files = \
               HCM05V02.red \
               HCM04.red \
               HCN04.red \
+              HCM10.red \
+              HCN07.red \
+              HCRCP402.red \
+              HCRCP403.red \
+              HCM2S.red \
+              HCM2T.red \
+              HCM2U.red \
+              HCM2V.red \
+              HCM2W.red \
+              HCM2X.red \
+
 
 all:   
 
