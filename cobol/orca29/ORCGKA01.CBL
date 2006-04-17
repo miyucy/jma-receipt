@@ -1162,11 +1162,16 @@
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
+           IF      FLG-YAKUZAI         =   ZERO
+               CONTINUE
+           ELSE
            IF     (IDX-KOUI        >   ZERO ) AND
                   (FLG-OK          =   1    ) AND
                   (SPA-WKSRY-MAX   <   100  )
       *        剤毎に処理を行う
                PERFORM 3101-WKSRYACT-HEN-SEC
+           END-IF
+      *
            END-IF
       *
            .
