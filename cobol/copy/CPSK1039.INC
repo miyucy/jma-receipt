@@ -57,8 +57,12 @@
                            11  SYS-1039-KARIEDTIME.
                                13  SYS-1039-KARIED-HH  PIC X(02).
                                13  SYS-1039-KARIED-MM  PIC X(02).
+      *診療費明細書発行区分（外来）
+               05  SYS-1039-SRYPRTGKBN  PIC  X(01).
+      *診療費明細書発行区分（入院）
+               05  SYS-1039-SRYPRTNKBN  PIC  X(01).
       *予備
-               05                       PIC  X(447).
+               05                       PIC  X(445).
       *端末ＩＤ
            03  SYS-1039-TERMID          PIC  X(16).
       *オペーレータＩＤ

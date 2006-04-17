@@ -567,6 +567,9 @@
       *    ¿¡µ·ΩÒÃ§º˝≥€∞ı∫˛∂Ë ¨•≥•Û•‹
            PERFORM 310-MISYUPRTKBNLST-SET-SEC
       *
+      *    ø«Œ≈»ÒÃ¿∫ŸΩÒ»Øπ‘∂Ë ¨•≥•Û•‹
+           PERFORM 310-SRYPRTKBNLST-SET-SEC
+      *
       *    ¬‡±°æ⁄Ã¿ΩÒ»Øπ‘∂Ë ¨•≥•Û•‹
            PERFORM 310-TAIPRTKBNLST-SET-SEC
       *
@@ -743,6 +746,23 @@
       *
            .
        310-MISYUPRTKBNLST-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    ø«Œ≈»ÒÃ¿∫ŸΩÒ»Øπ‘∂Ë ¨•≥•Û•‹
+      *****************************************************************
+       310-SRYPRTKBNLST-SET-SEC    SECTION.
+      *
+           MOVE    2               TO  SPA-GMN-W24-SRYPRTKBN-MAX
+      *
+           MOVE    "0"             TO  SPA-GMN-W24-SRYPRTKBNL   (1)
+           MOVE    "»Øπ‘§∑§ §§"    TO  SPA-GMN-W24-SRYPRTKBNMEIL(1)
+      *
+           MOVE    "1"             TO  SPA-GMN-W24-SRYPRTKBNL   (2)
+           MOVE    "»Øπ‘§π§Î"      TO  SPA-GMN-W24-SRYPRTKBNMEIL(2)
+      *
+      *
+           .
+       310-SRYPRTKBNLST-SET-EXT.
            EXIT.
       *****************************************************************
       *    ¬‡±°æ⁄Ã¿ΩÒ»Øπ‘∂Ë ¨•≥•Û•‹
@@ -1038,6 +1058,16 @@
            ELSE
                MOVE    SPA-GMN-W24-MISYUPRTKBNLST (1)
                                        TO  SPA-GMN-W24-MISYUPRTKBN-G
+           END-IF
+      *
+      *    ø«Œ≈»ÒÃ¿∫ŸΩÒ»Øπ‘∂Ë ¨
+           MOVE    SYS-5000-SRYPRTKBN   TO  WRK-CMB-CD
+           PERFORM 4200-SRYPRTKBNLST-CHK-SEC
+           IF    ( WRK-CMB-ITM     NOT =   SPACE )
+               MOVE    WRK-CMB-ITM         TO  SPA-GMN-W24-SRYPRTKBN-G
+           ELSE
+               MOVE    SPA-GMN-W24-SRYPRTKBNLST (1)
+                                           TO  SPA-GMN-W24-SRYPRTKBN-G
            END-IF
       *
       *    ¬‡±°æ⁄Ã¿ΩÒ»Øπ‘∂Ë ¨
@@ -1339,6 +1369,9 @@
       *    ¿¡µ·ΩÒÃ§º˝≥€∞ı∫˛∂Ë ¨
            MOVE    W24-SKYMISYUPRTKBN  TO  SPA-GMN-W24-MISYUPRTKBN-G
       *
+      *    ø«Œ≈»ÒÃ¿∫ŸΩÒ»Øπ‘∂Ë ¨
+           MOVE    W24-SRYPRTKBN       TO  SPA-GMN-W24-SRYPRTKBN-G
+      *
       *    ¬‡±°æ⁄Ã¿ΩÒ»Øπ‘∂Ë ¨
            MOVE    W24-TAIPRTKBN       TO  SPA-GMN-W24-TAIPRTKBN-G
       *
@@ -1461,6 +1494,12 @@
       *
       *    ¿¡µ·ΩÒÃ§º˝≥€∞ı∫˛∂Ë ¨•¡•ß•√•ØΩËÕ˝
            PERFORM 4101-MISYUPRTKBN-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
+      *    ø«Œ≈»ÒÃ¿∫ŸΩÒ»Øπ‘∂Ë ¨•¡•ß•√•ØΩËÕ˝
+           PERFORM 4101-SRYPRTKBN-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
@@ -1873,6 +1912,10 @@
       *    ¿¡µ·ΩÒÃ§º˝≥€∞ı∫˛∂Ë ¨
            MOVE    SPA-GMN-W24-MISYUPRTKBN
                                    TO  SYS-5000-SKYMISYUPRTKBN
+      *
+      *    ø«Œ≈»ÒÃ¿∫ŸΩÒ»Øπ‘∂Ë ¨
+           MOVE    SPA-GMN-W24-SRYPRTKBN
+                                   TO  SYS-5000-SRYPRTKBN
       *
       *    ¬‡±°æ⁄Ã¿ΩÒ»Øπ‘∂Ë ¨
            MOVE    SPA-GMN-W24-TAIPRTKBN
@@ -2499,6 +2542,25 @@
        4101-SKYPRTKBN-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    ø«Œ≈»ÒÃ¿∫ŸΩÒ»Øπ‘∂Ë ¨•¡•ß•√•ØΩËÕ˝
+      *****************************************************************
+       4101-SRYPRTKBN-CHK-SEC       SECTION.
+      *
+           MOVE    SPA-GMN-W24-SRYPRTKBN
+                                       TO  WRK-CMB-CD
+           PERFORM 4200-SRYPRTKBNLST-CHK-SEC
+           IF    ( WRK-CMB-ITM         =   SPACE )
+               MOVE    SPA-GMN-W24-SRYPRTKBNLST (1)
+                                       TO  SPA-GMN-W24-SRYPRTKBN-G
+           ELSE
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-W24-SRYPRTKBN-G
+           END-IF
+      *
+           .
+      *
+       4101-SRYPRTKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    ¿¡µ·ΩÒÃ§º˝≥€∞ı∫˛∂Ë ¨•¡•ß•√•ØΩËÕ˝
       *****************************************************************
        4101-MISYUPRTKBN-CHK-SEC       SECTION.
@@ -2680,6 +2742,31 @@
            .
       *
        4200-MISYUPRTKBNLST-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    ø«Œ≈»ÒÃ¿∫ŸΩÒ»Øπ‘∂Ë ¨•≥•Û•‹•¡•ß•√•ØΩËÕ˝
+      *****************************************************************
+       4200-SRYPRTKBNLST-CHK-SEC   SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM-G
+      *
+      *
+           PERFORM VARYING IDX-CMB     FROM    1   BY  1
+                   UNTIL ( IDX-CMB     >   SPA-GMN-W24-SRYPRTKBN-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-W24-SRYPRTKBNL (IDX-CMB)
+                                       =   WRK-CMB-CD )
+                   MOVE    SPA-GMN-W24-SRYPRTKBNLST (IDX-CMB)
+                                       TO  WRK-CMB-ITM
+                   MOVE    IDX-CMB     TO  WRK-CMB-IDX
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+      *
+       4200-SRYPRTKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
       *    ¬‡±°æ⁄Ã¿ΩÒ»Øπ‘∂Ë ¨•µ°º•¡ΩËÕ˝
@@ -2901,6 +2988,8 @@
                                    TO  SPA-GMN-W24-SKYPRTKBN-G
            MOVE    SPA-GMN-W24-MISYUPRTKBNLST  (1)
                                    TO  SPA-GMN-W24-MISYUPRTKBN-G
+           MOVE    SPA-GMN-W24-SRYPRTKBNLST    (1)
+                                   TO  SPA-GMN-W24-SRYPRTKBN-G
            MOVE    SPA-GMN-W24-TAIPRTKBNLST (2)
                                    TO  SPA-GMN-W24-TAIPRTKBN-G
       *
@@ -3370,6 +3459,19 @@
       *
            END-PERFORM
       *
+      *    ø«Œ≈»ÒÃ¿∫ŸΩÒ»Øπ‘∂Ë ¨
+           MOVE    SPA-GMN-W24-SRYPRTKBN-G
+                                       TO  W24-SRYPRTKBN
+           MOVE    SPA-GMN-W24-SRYPRTKBN-MAX
+                                       TO  W24-SRYPRTKBN-CNT
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0        >   W24-SRYPRTKBN-CNT )
+      *
+               MOVE    SPA-GMN-W24-SRYPRTKBNLST (IDX0)
+                                       TO  W24-SRYPRTKBN-ITM (IDX0)
+      *
+           END-PERFORM
+      *
       *    ¬‡±°æ⁄Ã¿ΩÒ»Øπ‘∂Ë ¨
            MOVE    SPA-GMN-W24-TAIPRTKBN-G
                                        TO  W24-TAIPRTKBN
@@ -3533,6 +3635,8 @@
            WHEN    044
                MOVE    "SKYMISYUPRTKBN"
                                        TO  MCP-WIDGET
+           WHEN    050
+               MOVE    "SRYPRTKBN"     TO  MCP-WIDGET
            WHEN    045
                MOVE    "TAIPRTKBN"     TO  MCP-WIDGET
            WHEN    046
@@ -3650,6 +3754,8 @@
            WHEN    "SKYPRTKBN"
                MOVE    044             TO  SPA-GMN-W24-CUR
            WHEN    "SKYMISYUPRTKBN"
+               MOVE    050             TO  SPA-GMN-W24-CUR
+           WHEN    "SRYPRTKBN"
                MOVE    045             TO  SPA-GMN-W24-CUR
            WHEN    "TAIPRTKBN"
                MOVE    212             TO  SPA-GMN-W24-CUR

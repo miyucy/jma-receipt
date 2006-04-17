@@ -608,9 +608,16 @@
            ELSE
                MOVE    WRK-CMB-ITM TO  SPA-GMN-I04-SKYPRTOUT
            END-IF
-      *
-           MOVE    SPA-GMN-I04-SRYPRTOUT-ITM (1)
+
+           MOVE    SYS-5000-SRYPRTKBN
+                                   TO  WRK-CMB-CD
+           PERFORM 4103-CMB-SRYPRTOUT-CHK-SEC
+           IF    ( WRK-CMB-ITM     =   SPACE )
+               MOVE    SPA-GMN-I04-SRYPRTOUT-ITM (1)
                                    TO  SPA-GMN-I04-SRYPRTOUT
+           ELSE
+               MOVE    WRK-CMB-ITM TO  SPA-GMN-I04-SRYPRTOUT
+           END-IF
       *
       *
            IF    ( SPA-I01-I04-PROCKBN      =   "1" )

@@ -367,11 +367,21 @@
                            11  SPA-GMN-SYUSKYPRTG          PIC X(01).
                            11  SPA-GMN-SYUSKYPRTG-F1       PIC X(01).
                            11  SPA-GMN-SYUSKYPRTGMEI       PIC X(22).
+      *                診療費明細書発行（外来）
+                       09  SPA-GMN-SYUSRYPRTG-G.
+                           11  SPA-GMN-SYUSRYPRTG          PIC X(01).
+                           11  SPA-GMN-SYUSRYPRTG-F1       PIC X(01).
+                           11  SPA-GMN-SYUSRYPRTGMEI       PIC X(22).
       *                請求書兼領収書発行（入院）
                        09  SPA-GMN-SYUSKYPRTN-G.
                            11  SPA-GMN-SYUSKYPRTN          PIC X(01).
                            11  SPA-GMN-SYUSKYPRTN-F1       PIC X(01).
                            11  SPA-GMN-SYUSKYPRTNMEI       PIC X(22).
+      *                診療費明細書発行（入院）
+                       09  SPA-GMN-SYUSRYPRTN-G.
+                           11  SPA-GMN-SYUSRYPRTN          PIC X(01).
+                           11  SPA-GMN-SYUSRYPRTN-F1       PIC X(01).
+                           11  SPA-GMN-SYUSRYPRTNMEI       PIC X(22).
                        09  SPA-GMN-SYUSTIME.
                            11  SPA-GMN-SYUSTIME-HH         PIC 9(02).
                            11  SPA-GMN-SYUSTIME-MM         PIC 9(02).
@@ -407,12 +417,26 @@
                                13                          PIC X(01).
                                13  SPA-GMN-SYUSKYPRTGMEIL
                                                            PIC X(22).
+                       09  SPA-GMN-SYUSRYPRTGLST-G.
+                           11  SPA-GMN-SYUSRYPRTG-MAX      PIC 9(03).
+                           11  SPA-GMN-SYUSRYPRTGLST       OCCURS  2.
+                               13  SPA-GMN-SYUSRYPRTGL     PIC X(01).
+                               13                          PIC X(01).
+                               13  SPA-GMN-SYUSRYPRTGMEIL
+                                                           PIC X(22).
                        09  SPA-GMN-SYUSKYPRTNLST-G.
                            11  SPA-GMN-SYUSKYPRTN-MAX      PIC 9(03).
                            11  SPA-GMN-SYUSKYPRTNLST       OCCURS  2.
                                13  SPA-GMN-SYUSKYPRTNL     PIC X(01).
                                13                          PIC X(01).
                                13  SPA-GMN-SYUSKYPRTNMEIL
+                                                           PIC X(22).
+                       09  SPA-GMN-SYUSRYPRTNLST-G.
+                           11  SPA-GMN-SYUSRYPRTN-MAX      PIC 9(03).
+                           11  SPA-GMN-SYUSRYPRTNLST       OCCURS  2.
+                               13  SPA-GMN-SYUSRYPRTNL     PIC X(01).
+                               13                          PIC X(01).
+                               13  SPA-GMN-SYUSRYPRTNMEIL
                                                            PIC X(22).
                    07  SPA-GMN-PAGE5-AREA.
       *                病名機能情報
@@ -1009,9 +1033,17 @@
            MOVE    "1 発行する"        TO  SPA-GMN-SYUSKYPRTGLST(2)
            MOVE    2                   TO  SPA-GMN-SYUSKYPRTG-MAX
       *
+           MOVE    "0 発行しない"      TO  SPA-GMN-SYUSRYPRTGLST(1)
+           MOVE    "1 発行する"        TO  SPA-GMN-SYUSRYPRTGLST(2)
+           MOVE    2                   TO  SPA-GMN-SYUSRYPRTG-MAX
+      *
            MOVE    "0 発行しない"      TO  SPA-GMN-SYUSKYPRTNLST(1)
            MOVE    "1 発行する"        TO  SPA-GMN-SYUSKYPRTNLST(2)
            MOVE    2                   TO  SPA-GMN-SYUSKYPRTN-MAX
+      *
+           MOVE    "0 発行しない"      TO  SPA-GMN-SYUSRYPRTNLST(1)
+           MOVE    "1 発行する"        TO  SPA-GMN-SYUSRYPRTNLST(2)
+           MOVE    2                   TO  SPA-GMN-SYUSRYPRTN-MAX
       *
            MOVE    "0 表示する"        TO  SPA-GMN-MSG1-DSPKBNLST(1)
            MOVE    "1 表示しない"      TO  SPA-GMN-MSG1-DSPKBNLST(2)
@@ -1817,9 +1849,17 @@
            MOVE    SYS-1039-SKYPRTGKBN TO  SPA-GMN-SYUSKYPRTG
            PERFORM 3101-SYUSKYPRTG-SYOKI-SEC
       *
+      *    診療費明細書発行区分（外来）
+           MOVE    SYS-1039-SRYPRTGKBN TO  SPA-GMN-SYUSRYPRTG
+           PERFORM 3101-SYUSRYPRTG-SYOKI-SEC
+      *
       *    請求書兼領収書発行区分（入院）
            MOVE    SYS-1039-SKYPRTNKBN TO  SPA-GMN-SYUSKYPRTN
            PERFORM 3101-SYUSKYPRTN-SYOKI-SEC
+      *
+      *    診療費明細書発行区分（入院）
+           MOVE    SYS-1039-SRYPRTNKBN TO  SPA-GMN-SYUSRYPRTN
+           PERFORM 3101-SYUSRYPRTN-SYOKI-SEC
       *
            IF    ( SYS-1039-STIME          IS  NUMERIC )
                MOVE    SYS-1039-STIME      TO  SPA-GMN-SYUSTIME
@@ -1916,6 +1956,31 @@
        3101-SYUSKYPRTG-SYOKI-EXT.
            EXIT.
       *****************************************************************
+      *    収納診療費明細書外来初期値設定処理
+      *****************************************************************
+       3101-SYUSRYPRTG-SYOKI-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY         FROM    1   BY  1
+                   UNTIL   IDY         >   SPA-GMN-SYUSRYPRTG-MAX
+               IF      SPA-GMN-SYUSRYPRTG
+                                       =   SPA-GMN-SYUSRYPRTGL (IDY)
+                   MOVE    SPA-GMN-SYUSRYPRTGLST(IDY)
+                                       TO  SPA-GMN-SYUSRYPRTG-G
+                   MOVE    1           TO  FLG-OK
+                   MOVE    SPA-GMN-SYUSRYPRTG-MAX
+                                       TO  IDY
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-SYUSRYPRTGLST (1)
+                                       TO  SPA-GMN-SYUSRYPRTG-G
+           END-IF
+      *
+           . 
+       3101-SYUSRYPRTG-SYOKI-EXT.
+           EXIT.
+      *****************************************************************
       *    収納請求書兼領収書入院初期値設定処理
       *****************************************************************
        3101-SYUSKYPRTN-SYOKI-SEC       SECTION.
@@ -1959,6 +2024,31 @@
       *
            . 
        3101-SYUSKYPRTN-SYOKI-EXT.
+           EXIT.
+      *****************************************************************
+      *    収納診療費明細書入院初期値設定処理
+      *****************************************************************
+       3101-SYUSRYPRTN-SYOKI-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY         FROM    1   BY  1
+                   UNTIL   IDY         >   SPA-GMN-SYUSRYPRTN-MAX
+               IF      SPA-GMN-SYUSRYPRTN
+                                       =   SPA-GMN-SYUSRYPRTNL (IDY)
+                   MOVE    SPA-GMN-SYUSRYPRTNLST(IDY)
+                                       TO  SPA-GMN-SYUSRYPRTN-G
+                   MOVE    1           TO  FLG-OK
+                   MOVE    SPA-GMN-SYUSRYPRTN-MAX
+                                       TO  IDY
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-SYUSRYPRTNLST (1)
+                                       TO  SPA-GMN-SYUSRYPRTN-G
+           END-IF
+      *
+           . 
+       3101-SYUSRYPRTN-SYOKI-EXT.
            EXIT.
       *****************************************************************
       *    スパ初期編集処理
@@ -2325,7 +2415,9 @@
       *    収納機能情報
            MOVE    W07-SYUNYKNKNRKBN   TO  SPA-GMN-SYUNYKNKNRKBN-G
            MOVE    W07-SYUSKYPRTG      TO  SPA-GMN-SYUSKYPRTG-G
+           MOVE    W07-SYUSRYPRTG      TO  SPA-GMN-SYUSRYPRTG-G
            MOVE    W07-SYUSKYPRTN      TO  SPA-GMN-SYUSKYPRTN-G
+           MOVE    W07-SYUSRYPRTN      TO  SPA-GMN-SYUSRYPRTN-G
            MOVE    W07-SYUSTIME-HH     TO  SPA-GMN-SYUSTIME-HH
            MOVE    W07-SYUSTIME-MM     TO  SPA-GMN-SYUSTIME-MM
       *
@@ -2497,9 +2589,17 @@
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4110-SYUSKYPRTG-CHK-SEC
                    END-IF
+      *            診療費明細書発行区分（外来）チェック
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4110-SYUSRYPRTG-CHK-SEC
+                   END-IF
       *            請求書兼領収書発行区分（入院）チェック
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4110-SYUSKYPRTN-CHK-SEC
+                   END-IF
+      *            診療費明細書発行区分（入院）チェック
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4110-SYUSRYPRTN-CHK-SEC
                    END-IF
       *            入金管理区分チェック
                    IF      SPA-ERRCD           =   SPACE
@@ -3659,6 +3759,29 @@
        4110-SYUSKYPRTG-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    診療費明細書発行区分（外来）チェック処理（収納行為機能情報）
+      *****************************************************************
+       4110-SYUSRYPRTG-CHK-SEC      SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-SYUSRYPRTG-MAX
+               IF      SPA-GMN-SYUSRYPRTG
+                                       =   SPA-GMN-SYUSRYPRTGL (IDX)
+                   MOVE    SPA-GMN-SYUSRYPRTGLST(IDX)
+                                          TO  SPA-GMN-SYUSRYPRTG-G
+                   MOVE    1              TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    45              TO  SPA-GMN-CUR
+               MOVE    "3005"          TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       4110-SYUSRYPRTG-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    請求書兼領収書発行区分（入院）チェック処理（収納行為機能情報）
       *****************************************************************
        4110-SYUSKYPRTN-CHK-SEC      SECTION.
@@ -3680,6 +3803,29 @@
       *
            .
        4110-SYUSKYPRTN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療費明細書発行区分（入院）チェック処理（収納行為機能情報）
+      *****************************************************************
+       4110-SYUSRYPRTN-CHK-SEC      SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-SYUSRYPRTN-MAX
+               IF      SPA-GMN-SYUSRYPRTN
+                                       =   SPA-GMN-SYUSRYPRTNL (IDX)
+                   MOVE    SPA-GMN-SYUSRYPRTNLST(IDX)
+                                          TO  SPA-GMN-SYUSRYPRTN-G
+                   MOVE    1              TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    46              TO  SPA-GMN-CUR
+               MOVE    "3005"          TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       4110-SYUSRYPRTN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    登録時刻チェック
@@ -4690,6 +4836,8 @@
            MOVE    SPA-GMN-SYUNYKNKNRKBN   TO  SYS-1039-NYKNKNRKBN
            MOVE    SPA-GMN-SYUSKYPRTG      TO  SYS-1039-SKYPRTGKBN
            MOVE    SPA-GMN-SYUSKYPRTN      TO  SYS-1039-SKYPRTNKBN
+           MOVE    SPA-GMN-SYUSRYPRTG      TO  SYS-1039-SRYPRTGKBN
+           MOVE    SPA-GMN-SYUSRYPRTN      TO  SYS-1039-SRYPRTNKBN
            MOVE    SPA-GMN-SYUSTIME        TO  SYS-1039-STIME
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
@@ -5417,6 +5565,16 @@
            MOVE    SPA-GMN-SYUSKYPRTG-MAX
                                        TO  W07-SYUSKYPRTG-COUNT
       *
+      *    診療費明細書発行区分（外来）
+           MOVE    SPA-GMN-SYUSRYPRTG-G TO  W07-SYUSRYPRTG
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-SYUSRYPRTG-MAX
+               MOVE    SPA-GMN-SYUSRYPRTGLST (IDX)
+                                       TO  W07-SYUSRYPRTG-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-SYUSRYPRTG-MAX
+                                       TO  W07-SYUSRYPRTG-COUNT
+      *
       *    請求書兼領収書発行区分（入院）
            MOVE    SPA-GMN-SYUSKYPRTN-G TO  W07-SYUSKYPRTN
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -5426,6 +5584,16 @@
            END-PERFORM
            MOVE    SPA-GMN-SYUSKYPRTN-MAX
                                        TO  W07-SYUSKYPRTN-COUNT
+      *
+      *    診療費明細書発行区分（入院）
+           MOVE    SPA-GMN-SYUSRYPRTN-G TO  W07-SYUSRYPRTN
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-SYUSRYPRTN-MAX
+               MOVE    SPA-GMN-SYUSRYPRTNLST (IDX)
+                                       TO  W07-SYUSRYPRTN-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-SYUSRYPRTN-MAX
+                                       TO  W07-SYUSRYPRTN-COUNT
       *
       *    過去日分の登録時刻
            MOVE    SPA-GMN-SYUSTIME-HH TO  W07-SYUSTIME-HH
@@ -5762,6 +5930,9 @@
                WHEN    "3004"
                    MOVE    "仮締め時刻入力エラー"
                                                        TO  SPA-ERRMSG
+               WHEN    "3005"
+                   MOVE    "仮締め時刻入力エラー"
+                                                       TO  SPA-ERRMSG
                WHEN    "3101"
                    MOVE    "期間の指定に誤りがあります"
                                                        TO  SPA-ERRMSG
@@ -6012,8 +6183,12 @@
       *
                WHEN    40
                    MOVE  "SYUSKYPRTG"      TO   MCP-WIDGET
+               WHEN    45
+                   MOVE  "SYUSRYPRTG"      TO   MCP-WIDGET
                WHEN    41
                    MOVE  "SYUSKYPRTN"      TO   MCP-WIDGET
+               WHEN    46
+                   MOVE  "SYUSRYPRTN"      TO   MCP-WIDGET
                WHEN    42
                    MOVE  "SYUNYKNKNRKBN"   TO   MCP-WIDGET
                WHEN    43
@@ -6241,8 +6416,12 @@
                    MOVE    99              TO  SPA-GMN-CUR
       *
                WHEN    "SYUSKYPRTG"
+                   MOVE    45              TO  SPA-GMN-CUR
+               WHEN    "SYUSRYPRTG"
                    MOVE    41              TO  SPA-GMN-CUR
                WHEN    "SYUSKYPRTN"
+                   MOVE    46              TO  SPA-GMN-CUR
+               WHEN    "SYUSRYPRTN"
                    MOVE    42              TO  SPA-GMN-CUR
                WHEN    "SYUNYKNKNRKBN"
                    MOVE    43              TO  SPA-GMN-CUR

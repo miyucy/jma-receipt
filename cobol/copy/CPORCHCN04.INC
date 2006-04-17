@@ -37,5 +37,5 @@
       *    伝票番号（必須）
                05  ORCHCN04-DENPNUM        PIC 9(07).
       *    伝票番号枝番（収納からの再発行）
-               05  ORCHC04-DENPEDANUM      PIC  9(02).
+               05  ORCHCN04-DENPEDANUM     PIC  9(02).
       *

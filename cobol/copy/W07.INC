@@ -256,11 +256,21 @@
                       07  W07-VALUE   PIC X(24).
                     06  W07-SYUSKYPRTG-COUNT      PIC S9(9)   BINARY.
                     06  W07-SYUSKYPRTG-ITEM       PIC X(24)   OCCURS  2.
+                  05  W07-SYUSRYPRTG-COMBO.
+                    06  W07-SYUSRYPRTG.
+                      07  W07-VALUE   PIC X(24).
+                    06  W07-SYUSRYPRTG-COUNT      PIC S9(9)   BINARY.
+                    06  W07-SYUSRYPRTG-ITEM       PIC X(24)   OCCURS  2.
                   05  W07-SYUSKYPRTN-COMBO.
                     06  W07-SYUSKYPRTN.
                       07  W07-VALUE   PIC X(24).
                     06  W07-SYUSKYPRTN-COUNT      PIC S9(9)   BINARY.
                     06  W07-SYUSKYPRTN-ITEM       PIC X(24)   OCCURS  2.
+                  05  W07-SYUSRYPRTN-COMBO.
+                    06  W07-SYUSRYPRTN.
+                      07  W07-VALUE   PIC X(24).
+                    06  W07-SYUSRYPRTN-COUNT      PIC S9(9)   BINARY.
+                    06  W07-SYUSRYPRTN-ITEM       PIC X(24)   OCCURS  2.
                   05  W07-SYUSTIME-HH             PIC S9(02).
                   05  W07-SYUSTIME-MM             PIC S9(02).
                   05  W07-SYUKARITIME-G.

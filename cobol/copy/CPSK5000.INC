@@ -68,8 +68,11 @@
       *¬‡±°æ⁄Ã¿ΩÒ»Øπ‘∂Ë ¨
                05  SYS-5000-TAIPRTKBN
                                            PIC  X(01).
+      *ø«Œ≈»ÒÃ¿∫ŸΩÒ»Øπ‘∂Ë ¨
+               05  SYS-5000-SRYPRTKBN
+                                           PIC  X(01).
       *ÕΩ»˜° £≥°À
-               05                          PIC  X(03).
+               05                          PIC  X(02).
       *¿¡µ·ΩÒÃ§º˝≥€∞ı∫˛∂Ë ¨
                05  SYS-5000-SKYMISYUPRTKBN
                                            PIC  X(01).

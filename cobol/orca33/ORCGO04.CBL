@@ -81,6 +81,7 @@
            03  IDX5                                PIC 9(05).
            03  IDX6                                PIC 9(05).
            03  IDX-SKY                             PIC 9(05).
+           03  IDX-SRY                             PIC 9(05).
            03  IDX-CMB                             PIC 9(05).
            03  IDX-LST                             PIC 9(05).
       *
@@ -110,10 +111,13 @@
            03  WRK-MCP-WIDGET                      PIC X(64).
            03  WRK-DENPEDANUM                      PIC 9(02).
            03  WRK-SKYPRT-DENPEDANUM               PIC 9(02).
+           03  WRK-SRYPRT-DENPEDANUM               PIC 9(02).
            03  WRK-SKYPRT-SKYMONEY                 PIC S9(10).
            03  WRK-SKYPRT-NYUKIN                   PIC S9(10).
            03  WRK-SEIKYU-PG                       PIC X(20).
+           03  WRK-MEISAI-PG                       PIC X(20).
            03  WRK-SKYPRTKBN                       PIC X(01).
+           03  WRK-SRYPRTKBN                       PIC X(01).
            03  WRK-TSKYMONEY-G.
                05  WRK-TSKYMONEY                   PIC --,---,---.
                05  WRK-TSKYMONEY-MRK               PIC X(01).
@@ -227,6 +231,9 @@
       *
       *    請求書印刷パラメタ
            COPY    "CPORCHCN03.INC".
+      *
+      *    明細書印刷パラメタ
+           COPY    "CPORCHCN04.INC".
       *
       *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
@@ -453,6 +460,8 @@
                                        TO  SPA-GMN-O04-NYKN-HOHO-G
            MOVE    SPA-GMN-O04-SKYPRTLST (1)
                                        TO  SPA-GMN-O04-SKYPRT-G
+           MOVE    SPA-GMN-O04-SRYPRTLST (1)
+                                       TO  SPA-GMN-O04-SRYPRT-G
       *
            MOVE    1                   TO  SPA-GMN-O04-CUR
            .
@@ -469,6 +478,8 @@
            PERFORM 3101-NYKN-HOHOLST-SET-SEC
       *
            PERFORM 3101-SKYPRTLST-SET-SEC
+      *
+           PERFORM 3101-SRYPRTLST-SET-SEC
       *
            .
        3101-COMBO-SET-EXT.
@@ -562,6 +573,24 @@
       *
            .
        3101-SKYPRTLST-SET-EXT.
+           EXIT.
+      *************************************************************
+      *    明細書発行コンボ設定処理
+      *************************************************************
+       3101-SRYPRTLST-SET-SEC          SECTION.
+      *
+           INITIALIZE                  SPA-GMN-O04-SRYPRTLST-G
+      *
+           MOVE    "0"             TO  SPA-GMN-O04-SRYPRTL (1)
+           MOVE    "発行なし"      TO  SPA-GMN-O04-SRYPRTMEIL (1)
+      *
+           MOVE    "1"             TO  SPA-GMN-O04-SRYPRTL (2)
+           MOVE    "発行する"      TO  SPA-GMN-O04-SRYPRTMEIL (2)
+      *
+           MOVE    2               TO  SPA-GMN-O04-SRYPRT-MAX
+      *
+           .
+       3101-SRYPRTLST-SET-EXT.
            EXIT.
       *************************************************************
       *    収納項目設定処理
@@ -1336,6 +1365,14 @@
                                            TO  O04-SKYPRTLST(IDX0)
            END-PERFORM
       *
+           MOVE    SPA-GMN-O04-SRYPRT-G    TO  O04-SRYPRT
+           MOVE    SPA-GMN-O04-SRYPRT-MAX  TO  O04-SRYPRT-COUNT
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   SPA-GMN-O04-SRYPRT-MAX )
+               MOVE    SPA-GMN-O04-SRYPRTLST (IDX0)
+                                           TO  O04-SRYPRTLST(IDX0)
+           END-PERFORM
+      *
            MOVE    SPA-GMN-O04-SELNUM          TO  O04-RIREKIIN
       *
            MOVE    SPA-GMN-O04-SMEILIST-MAX    TO  O04-CLIST1-COUNT
@@ -1514,6 +1551,8 @@
                MOVE  "NYUKINHOUHOU"    TO  MCP-WIDGET
            WHEN   07
                MOVE  "SKYPRT"          TO  MCP-WIDGET
+           WHEN   10
+               MOVE  "SRYPRT"          TO  MCP-WIDGET
            WHEN   08
                MOVE  "RIREKIIN"        TO  MCP-WIDGET
            WHEN   09
@@ -1545,6 +1584,8 @@
            WHEN    "NYUKINHOUHOU"
                MOVE    07              TO  SPA-GMN-O04-CUR
            WHEN    "SKYPRT"
+               MOVE    10              TO  SPA-GMN-O04-CUR
+           WHEN    "SRYPRT"
                MOVE    112             TO  SPA-GMN-O04-CUR
            WHEN    "RIREKIIN"
                MOVE    03              TO  SPA-GMN-O04-CUR
@@ -1592,6 +1633,9 @@
       *    前回患者
            WHEN    "CLICKED"           ALSO    "B03"
                PERFORM 430-LAST-PTNUM-SET-SEC
+      *    印刷
+           WHEN    "CLICKED"           ALSO    "B11S"
+               PERFORM 411-PRINT-SEC
       *    印刷
            WHEN    "CLICKED"           ALSO    "B12S"
                PERFORM 410-PRINT-SEC
@@ -1691,6 +1735,7 @@
            MOVE    O04-NYUKINYMD      TO  SPA-GMN-O04-NYUKINYMD
            MOVE    O04-NYUKINHOUHOU   TO  SPA-GMN-O04-NYKN-HOHO-G
            MOVE    O04-SKYPRT         TO  SPA-GMN-O04-SKYPRT-G
+           MOVE    O04-SRYPRT         TO  SPA-GMN-O04-SRYPRT-G
       *
            .
       *
@@ -1743,6 +1788,10 @@
                PERFORM 4101-SKYPRT-CHK-SEC
            END-IF
       *
+           IF    ( SPA-ERRCD           =   SPACE )
+               PERFORM 4101-SRYPRT-CHK-SEC
+           END-IF
+      *
            .
        4102-SKY-NYKN-KIHON-CHK-EXT.
            EXIT.
@@ -1783,6 +1832,10 @@
       *
            IF    ( SPA-ERRCD           =   SPACE )
                PERFORM 4101-SKYPRT-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD           =   SPACE )
+               PERFORM 4101-SRYPRT-CHK-SEC
            END-IF
       *
            .
@@ -2638,6 +2691,30 @@
        4101-SKYPRT-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    明細書発行コンボチェック処理
+      *****************************************************************
+       4101-SRYPRT-CHK-SEC             SECTION.
+      *
+           MOVE    1                   TO  IDX-SRY
+      *
+           IF    ( SPA-GMN-O04-SRYPRT-G    =   SPACE )
+               MOVE    SPA-GMN-O04-SRYPRTLST (IDX-SRY)
+                                       TO  SPA-GMN-O04-SRYPRT-G
+           ELSE
+               MOVE    SPA-GMN-O04-SRYPRT  TO  WRK-CMB-CD
+               PERFORM 4200-SRYPRTLST-CHK-SEC
+               IF    ( WRK-CMB-ITM     =   SPACE )
+                   MOVE    SPA-GMN-O04-SRYPRTLST (IDX-SRY)
+                                       TO  SPA-GMN-O04-SRYPRT-G
+               ELSE
+                   MOVE    WRK-CMB-ITM TO  SPA-GMN-O04-SRYPRT-G
+               END-IF
+           END-IF
+      *
+           .
+       4101-SRYPRT-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    前頁処理
       *****************************************************************
        4101-PREV-PAGE-SEC              SECTION.
@@ -2853,6 +2930,84 @@
       *
        41011-PRINT-PG-EXT.
            EXIT.
+      *************************************************************
+      *    印刷処理
+      *************************************************************
+       411-PRINT-SEC                   SECTION.
+      *
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *
+           MOVE    ZERO            TO  WRK-SRYPRT-DENPEDANUM
+           IF    ( SPA-GMN-O04-SELNUM  >=  1 )
+            AND  ( SPA-GMN-O04-SELNUM  <=  SPA-GMN-O04-SMEILIST-MAX )
+               MOVE    SPA-GMN-O04-TDENPEDANUM(SPA-GMN-O04-SELNUM)
+                                   TO  WRK-SRYPRT-DENPEDANUM
+           END-IF
+      *
+           PERFORM 4111-SRYPRT-PRINT-SEC
+      *
+           .
+       411-PRINT-EXT.
+           EXIT.
+      *************************************************************
+      *    明細書兼領収書印刷処理
+      *************************************************************
+       4111-SRYPRT-PRINT-SEC           SECTION.
+      *
+           MOVE    SPA-AREA            TO  WRK-SPA-AREA
+           MOVE    SPA-NAI-O04-SRYYMD  TO  WRK-SPA-SRYYMD
+           MOVE    SPA-NAI-O04-NYUGAIKBN
+                                       TO  WRK-SPA-NYUGAIKBN
+           MOVE    SPA-NAI-O04-PTID    TO  WRK-SPA-PTID
+           MOVE    SPA-GMN-O04-PTNUM   TO  WRK-SPA-PTNUM
+           MOVE    SPA-GMN-O04-NAME    TO  WRK-SPA-NAME
+      *
+           PERFORM 41111-PRINT-PG-SEC
+      *
+      *
+           INITIALIZE      ORCHCN04AREA
+      *
+           MOVE    WRK-SPA-PTID    TO  ORCHCN04-PTID
+           MOVE    WRK-SPA-PTNUM   TO  ORCHCN04-PTNUM
+           MOVE    WRK-SPA-NAME    TO  ORCHCN04-NAME
+           MOVE    SPA-NAI-O04-DENPNUM
+                                   TO  ORCHCN04-DENPNUM (1)
+           MOVE    WRK-SRYPRT-DENPEDANUM
+                                   TO  ORCHCN04-DENPEDANUM (1)
+      *
+           CALL    WRK-MEISAI-PG   USING   WRK-SPA-AREA
+                                           ORCHCN04AREA
+      *
+           .
+       4111-SRYPRT-PRINT-EXT.
+           EXIT.
+      *****************************************************************
+      *    帳票プログラム取得処理
+      *****************************************************************
+       41111-PRINT-PG-SEC              SECTION.
+      *
+      *    請求書
+           MOVE    SPACE               TO  WRK-MEISAI-PG
+      *
+           INITIALIZE                      ORCSPRTNMAREA
+           MOVE    "1"                 TO  ORCSPRTNM-KBN
+           MOVE    "00000008"          TO  ORCSPRTNM-KBNCD
+           MOVE    SPA-SYSYMD          TO  ORCSPRTNM-SRYYMD
+           MOVE    "1"                 TO  ORCSPRTNM-NYUGAIKBN
+           CALL    "ORCSPRTNM"         USING
+                                           ORCSPRTNMAREA
+                                           WRK-SPA-AREA
+                                           SYS-1035-REC
+           IF    ( ORCSPRTNM-RC        =   ZERO )
+              MOVE    ORCSPRTNM-PRTPG     TO  WRK-MEISAI-PG
+           ELSE
+              MOVE    "ORCHCN04"          TO  WRK-MEISAI-PG
+           END-IF
+      *
+           .
+      *
+       41111-PRINT-PG-EXT.
+           EXIT.
       *****************************************************************
       *    氏名検索へ
       *****************************************************************
@@ -2957,6 +3112,12 @@
                    MOVE    SPA-NAI-O04-DENPEDANUM
                                    TO  WRK-SKYPRT-DENPEDANUM
                    PERFORM 4101-SKYPRT-PRINT-SEC
+               END-IF
+      *
+               IF    ( SPA-GMN-O04-SRYPRT  =   "1" )
+                   MOVE    SPA-NAI-O04-DENPEDANUM
+                                   TO  WRK-SRYPRT-DENPEDANUM
+                   PERFORM 4111-SRYPRT-PRINT-SEC
                END-IF
       *
                PERFORM 3101-SYUNOU-SET-SEC
@@ -3677,6 +3838,29 @@
       *
            .
        4200-SKYPRTLST-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    明細書発行区分コンボチェック処理
+      *****************************************************************
+       4200-SRYPRTLST-CHK-SEC          SECTION.
+      *
+           MOVE    SPACE               TO  WRK-CMB-ITM-G
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+               UNTIL ( IDX-CMB     >   SPA-GMN-O04-SRYPRT-MAX )
+                OR   ( WRK-CMB-CD  =   SPA-GMN-O04-SRYPRTL (IDX-CMB) )
+      *
+               CONTINUE
+      *
+           END-PERFORM
+      *
+           IF    ( IDX-CMB     <=  SPA-GMN-O04-SRYPRT-MAX )
+               MOVE    SPA-GMN-O04-SRYPRTLST (IDX-CMB)
+                                       TO  WRK-CMB-ITM
+           END-IF
+      *
+           .
+       4200-SRYPRTLST-CHK-EXT.
            EXIT.
       *************************************************************
       *    エラーメッセージ表示理

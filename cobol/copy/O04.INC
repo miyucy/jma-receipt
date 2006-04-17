@@ -132,6 +132,10 @@
                 04  O04-SKYPRT PIC X(24).
                 04  O04-SKYPRT-COUNT   PIC S9(9)   BINARY.
                 04  O04-SKYPRTLST      PIC X(24) OCCURS 5 TIMES.
+              03  O04-CMB-SRYPRT.
+                04  O04-SRYPRT PIC X(24).
+                04  O04-SRYPRT-COUNT   PIC S9(9)   BINARY.
+                04  O04-SRYPRTLST      PIC X(24) OCCURS 5 TIMES.
               03  O04-RIREKIIN PIC S9(2).
               03  O04-SCROLLEDWINDOW1.
                 04  O04-CLIST1.

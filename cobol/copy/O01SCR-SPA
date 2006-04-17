@@ -170,6 +170,17 @@
                            11                          PIC X(01).
                            11  SPA-GMN-O04-SKYPRTMEIL  PIC X(22).
       *
+                   07  SPA-GMN-O04-SRYPRT-G.
+                       09  SPA-GMN-O04-SRYPRT          PIC X(01).
+                       09                              PIC X(01).
+                       09  SPA-GMN-O04-SRYPRTMEI       PIC X(22).
+                   07  SPA-GMN-O04-SRYPRTLST-G.
+                       09  SPA-GMN-O04-SRYPRT-MAX      PIC 9(05).
+                       09  SPA-GMN-O04-SRYPRTLST       OCCURS  5.
+                           11  SPA-GMN-O04-SRYPRTL     PIC X(01).
+                           11                          PIC X(01).
+                           11  SPA-GMN-O04-SRYPRTMEIL  PIC X(22).
+      *
                05  SPA-GMN-O04-SMEITBL-AREA.
                    07  SPA-GMN-O04-SMEILIST-MAX        PIC 9(02).
                    07  SPA-GMN-O04-SMEILIST-SEL        PIC 9(02).

@@ -134,6 +134,12 @@
                 04  S03-SKYPRT-COUNT   PIC S9(9)   BINARY.
                 04  S03-SKYPRTLST      PIC X(24) OCCURS 5 TIMES.
                 04  S03-SKYPRTLST-STATE PIC S9(9)   BINARY.
+              03  S03-SRYPRT-COMBO.
+                04  S03-SRYPRT PIC X(24).
+                04  S03-SRYPRT-STATE PIC S9(9)   BINARY.
+                04  S03-SRYPRT-COUNT   PIC S9(9)   BINARY.
+                04  S03-SRYPRTLST      PIC X(24) OCCURS 5 TIMES.
+                04  S03-SRYPRTLST-STATE PIC S9(9)   BINARY.
               03  S03-RIREKIIN PIC S9(2).
               03  S03-SCROLLEDWINDOW1.
                 04  S03-CLIST1.

@@ -299,6 +299,13 @@ O04	{
 			count	int;
 			item	varchar(24)[5];
 		};
+		CMB_SRYPRT	{
+			SRYPRT	{
+				value	varchar(24);
+			};
+			count	int;
+			item	varchar(24)[5];
+		};
 		RIREKIIN	{
 			value	number(2);
 		};

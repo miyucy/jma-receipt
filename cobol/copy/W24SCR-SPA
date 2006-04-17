@@ -124,6 +124,11 @@
                    13  SPA-GMN-W24-MISYUPRTKBN         PIC X(01).
                    13                                  PIC X(01).
                    13  SPA-GMN-W24-MISYUPRTKBNMEI      PIC X(18).
+      *          ø«Œ≈»ÒÃ¿∫ŸΩÒ»Øπ‘∂Ë ¨
+                 11  SPA-GMN-W24-SRYPRTKBN-G.
+                   13  SPA-GMN-W24-SRYPRTKBN           PIC X(01).
+                   13                                  PIC X(01).
+                   13  SPA-GMN-W24-SRYPRTKBNMEI        PIC X(28).
       *          ¬‡±°æ⁄Ã¿ΩÒ»Øπ‘∂Ë ¨
                  11  SPA-GMN-W24-TAIPRTKBN-G.
                    13  SPA-GMN-W24-TAIPRTKBN           PIC X(01).
@@ -167,6 +172,14 @@
                        15  SPA-GMN-W24-SKYPRTKBNL      PIC X(01).
                        15                              PIC X(01).
                        15  SPA-GMN-W24-SKYPRTKBNMEIL   PIC X(28).
+      *
+      *          ø«Œ≈»ÒÃ¿∫ŸΩÒ»Øπ‘∂Ë ¨
+                 11  SPA-GMN-W24-SRYPRTKBNLST-G.
+                   13  SPA-GMN-W24-SRYPRTKBN-MAX       PIC 9(03).
+                   13  SPA-GMN-W24-SRYPRTKBNLST        OCCURS  5.
+                       15  SPA-GMN-W24-SRYPRTKBNL      PIC X(01).
+                       15                              PIC X(01).
+                       15  SPA-GMN-W24-SRYPRTKBNMEIL   PIC X(28).
       *
       *          ¬‡±°æ⁄Ã¿ΩÒ»Øπ‘∂Ë ¨
                  11  SPA-GMN-W24-TAIPRTKBNLST-G.

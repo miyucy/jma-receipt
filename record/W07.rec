@@ -356,8 +356,22 @@ W07	{
 					count	int;
 					item	varchar(24)[2];
 				};
+				SYUSRYPRTG_COMBO	{
+					SYUSRYPRTG	{
+						value	varchar(24);
+					};
+					count	int;
+					item	varchar(24)[2];
+				};
 				SYUSKYPRTN_COMBO	{
 					SYUSKYPRTN	{
+						value	varchar(24);
+					};
+					count	int;
+					item	varchar(24)[2];
+				};
+				SYUSRYPRTN_COMBO	{
+					SYUSRYPRTN	{
 						value	varchar(24);
 					};
 					count	int;

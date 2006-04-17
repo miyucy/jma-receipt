@@ -305,6 +305,15 @@ S03N	{
 			item	varchar(24)[5];
            	state	int;
  		};
+		SRYPRT_COMBO	{
+			SRYPRT	{
+				value	varchar(24);
+	           	state	int;
+ 			};
+ 			count	int;
+			item	varchar(24)[5];
+           	state	int;
+ 		};
 		RIREKIIN	{
 			value	number(2);
 		};
