@@ -347,7 +347,7 @@
            03  WRK-RECE84-TBL              OCCURS  100.
                05  WRK-RECE84-HOUKNSKBN           PIC 9(02).
                05  WRK-RECE84-SRYSYUKBN           PIC X(03).
-               05  WRK-RECE84-REC                 PIC X(600).
+               05  WRK-RECE84-REC                 PIC X(700).
                05  WRK-RECE84-SRYCD-G.
                    07  WRK-RECE84-KENTAICOMMENT-SRYCD
                                                   PIC 9(09).

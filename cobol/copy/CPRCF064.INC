@@ -29,6 +29,7 @@
       *                                     の追加
       *  01.01.02    NACL-門脇    05.01.17  酸素の追加
       *  01.01.03    NACL-門脇    05.02.28  （サ）フラグの追加
+      *  02.09.01    NACL-門脇    05.04.17  ２００６年４月改正対応
       ************************************************************
       *01  RECE64-REC.
            03  RECE64-KEY.
@@ -103,6 +104,20 @@
       *
       *リハビリ
            03  RECE64-RIHABIRI-COMMENT    PIC  X(01).
+      *リハビリ（心大血管疾患）
+           03  RECE64-SINDAI-COMMENT      PIC  X(01).
+      *リハビリ（呼吸器）
+           03  RECE64-KOKYUKI-COMMENT     PIC  X(01).
+      *リハビリ（脳血管疾患等）
+           03  RECE64-NOUKE-COMMENT       PIC  X(01).
+      *リハビリ（運動器）
+           03  RECE64-UNDOKI-COMMENT      PIC  X(01).
+      *リハビリ（難病患者）
+           03  RECE64-NANBYO-COMMENT      PIC  X(01).
+      *リハビリ（障害児（者））
+           03  RECE64-SYOGAI-COMMENT      PIC  X(01).
+      *リハビリ（障害児（者））
+           03  RECE64-SESSYOKU-COMMENT    PIC  X(01).
       *
       *薬剤管理指導料
            03  RECE64-FLG-YAKUKAN-COMMENT PIC  X(01).
@@ -130,6 +145,10 @@
            03  RECE64-FLG-HINKAI-COMMENT  PIC  X(01).
       *酸素
            03  RECE64-FLG-SANSO-COMMENT   PIC  X(01).
+      *初診（同日複数診療科）
+           03  RECE64-FLG-SYODOU-COMMENT  PIC  X(01).
+           03  RECE64-SYODOU-SRYKA-AREA.
+               05  RECE64-SYODOU-SRYKA    PIC  X(02)     OCCURS  10.
       *日数回数テーブル
            03  RECE64-DAY-AREA.
       *        診療回数テーブル（1:合計,2:１回,3:２回, 4:３回以上）

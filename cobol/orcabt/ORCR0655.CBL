@@ -36,6 +36,7 @@
       *                                     中止処理の追加
       *  02.06.02    NACL-門脇    05.07.05  検査は診療種別区分毎でまとめる
       *  02.06.03    NACL-門脇    05.11.11  コメントを含む場合の編集修正
+      *  02.09.01    NACL-門脇    06/04/13  ２００６年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -452,6 +453,23 @@
                                          TO   RECE642-KAISU (IDX IDY)
                      END-PERFORM
                  END-PERFORM
+      *
+                 MOVE     ZERO     TO    FLG-ARI
+                 PERFORM  VARYING  IDX   FROM    1   BY  1
+                           UNTIL IDX                       > 10
+                            OR   RECE642-SYODOU-SRYKA(IDX) = SPACE
+                            OR   FLG-ARI                   = 1
+                    IF  RECE64-SYODOU-SRYKA(1)
+                               =  RECE642-SYODOU-SRYKA(IDX)
+                        MOVE  1   TO   FLG-ARI
+                    END-IF
+                 END-PERFORM
+                 IF  FLG-ARI  =  ZERO
+                 AND IDX     <=  10
+                        MOVE   RECE64-SYODOU-SRYKA(1)
+                                  TO   RECE642-SYODOU-SRYKA(IDX)
+                 END-IF
+      *
                  IF      FLG-MATOME    =   ZERO
                      WRITE   RECE642-REC
                      ADD     1                   TO  CNT-RECE642
@@ -475,6 +493,23 @@
                                          TO   RECE642-KAISU (IDX IDY)
                      END-PERFORM
                  END-PERFORM
+      *
+                 MOVE     ZERO     TO    FLG-ARI
+                 PERFORM  VARYING  IDX   FROM    1   BY  1
+                           UNTIL IDX                       > 10
+                            OR   RECE642-SYODOU-SRYKA(IDX) = SPACE
+                            OR   FLG-ARI                   = 1
+                    IF  RECE64-SYODOU-SRYKA(1)
+                               =  RECE642-SYODOU-SRYKA(IDX)
+                        MOVE  1   TO   FLG-ARI
+                    END-IF
+                 END-PERFORM
+                 IF  FLG-ARI  =  ZERO
+                 AND IDX     <=  10
+                        MOVE   RECE64-SYODOU-SRYKA(1)
+                                  TO   RECE642-SYODOU-SRYKA(IDX)
+                 END-IF
+      *
                  IF      FLG-RECE642         =   1
                      WRITE   RECE642-REC
                      ADD     1                   TO  CNT-RECE642
@@ -619,6 +654,9 @@
       *   剤回数・日数回数テーブルの加算したものを編集
            MOVE    RECE642-ZAIKAISU     TO  RECE64W-ZAIKAISU
            MOVE    RECE642-DAY-AREA     TO  RECE64W-DAY-AREA
+      *
+           MOVE    RECE642-SYODOU-SRYKA-AREA
+                                        TO  RECE64W-SYODOU-SRYKA-AREA
       *
            WRITE   RECE64W-REC
            ADD     1                   TO  CNT-RECE64W

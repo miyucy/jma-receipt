@@ -264,6 +264,9 @@
            03  FLG-HOUTEN-COM                          PIC 9(01).
            03  FLG-SYOBYO-COM                          PIC 9(01).
            03  FLG-RYOYO-COM                           PIC 9(01).
+           03  FLG-SYODOU-COM                          PIC 9(01).
+           03  FLG-NIKOCHIN-COM                        PIC 9(01).
+           03  FLG-ZENSOKU-COM                         PIC 9(01).
            03  FLG-TAIGAI                              PIC 9(01).
            03  FLG-RINYAK                              PIC 9(01).
       *
@@ -617,6 +620,50 @@
            03  CONS-CTMRI-COMMENT17  PIC X(09)  VALUE  "170023510".
       *    ºßÂð·ì±ÕÆ©ÀÏÉÑ²ó»ØÆ³´ÉÍýÎÁ
            03  CONS-HINKAI-COMMENT   PIC X(09)  VALUE  "114009410".
+      *    ½é¿Ç¡ÊÆ±ÆüÊ£¿ô¿ÇÎÅ²Ê¡Ë
+           03  CONS-SYODOU-COMMENT   PIC X(09)  VALUE  "101110040".
+      *    Ê£½é»»Äê¿ÇÎÅ²Ê¡§
+           03  CONS-SYODOU2-COMMENT  PIC X(09)  VALUE  "830000024".
+      *    ¥Ë¥³¥Á¥ó°ÍÂ¸¾É´ÉÍýÎÁ¡Ê½é²ó¡Ë
+           03  CONS-NIKOCHIN-COMMENT PIC X(09)  VALUE  "113008310".
+      *    ¥Ë¥³¥Á¥ó°ÍÂ¸¾É´ÉÍýÎÁ¡Ê£²²óÌÜ¤«¤é£´²óÌÜ¤Þ¤Ç¡Ë
+           03  CONS-NIKOCHIN2-COMMENT PIC X(09) VALUE  "113008410".
+      *    ¥Ë¥³¥Á¥ó°ÍÂ¸¾É´ÉÍýÎÁ¡Ê£µ²óÌÜ¡Ë
+           03  CONS-NIKOCHIN3-COMMENT PIC X(09) VALUE  "113008510".
+      *    ½é²ó»»Äê¡¡¡¡·î¡¡Æü
+           03  CONS-NIKOCHIN4-COMMENT PIC X(09) VALUE  "840000097".
+      *    ½ÅÅÙÓÃÂ©´µ¼Ô¼£ÎÅ´ÉÍý²Ã»»¡Ê£±·îÌÜ¡Ë
+           03  CONS-ZENSOKU-COMMENT  PIC X(09)  VALUE  "113008070".
+      *    ½ÅÅÙÓÃÂ©´µ¼Ô¼£ÎÅ´ÉÍý²Ã»»¡Ê£²·îÌÜ°Ê¹ß£¶·îÌÜ¤Þ¤Ç¡Ë
+           03  CONS-ZENSOKU2-COMMENT PIC X(09)  VALUE  "113008170".
+      *    Âè£±²óÌÜ¼£ÎÅ´ÉÍý¡¡¡¡·î¡¡Æü
+           03  CONS-ZENSOKU3-COMMENT PIC X(09)  VALUE  "840000098".
+      *    ¿´Âç·ì´É¼À´µ¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£±¡Ë
+           03  CONS-SINDAI1-COMMENT  PIC X(09)  VALUE  "180027410".
+      *    ¿´Âç·ì´É¼À´µ¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£²¡Ë
+           03  CONS-SINDAI2-COMMENT  PIC X(09)  VALUE  "180027510".
+      *    ¸ÆµÛ´ï¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£±¡Ë
+           03  CONS-KOKYUKI1-COMMENT PIC X(09)  VALUE  "180028010".
+      *    ¸ÆµÛ´ï¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£²¡Ë
+           03  CONS-KOKYUKI2-COMMENT PIC X(09)  VALUE  "180028110".
+      *    Ç¾·ì´É¼À´µÅù¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£±¡Ë
+           03  CONS-NOUKE1-COMMENT   PIC X(09)  VALUE  "180027610".
+      *    Ç¾·ì´É¼À´µÅù¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£²¡Ë
+           03  CONS-NOUKE2-COMMENT   PIC X(09)  VALUE  "180027710".
+      *    ±¿Æ°´ï¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£±¡Ë
+           03  CONS-UNDOKI1-COMMENT  PIC X(09)  VALUE  "180027810".
+      *    ±¿Æ°´ï¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£²¡Ë
+           03  CONS-UNDOKI2-COMMENT  PIC X(09)  VALUE  "180027910".
+      *    ÆñÉÂ´µ¼Ô¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ
+           03  CONS-NANBYO-COMMENT   PIC X(09)  VALUE  "180017910".
+      *    ¾ã³²»ù¡Ê¼Ô¡Ë¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£¶ºÐÌ¤Ëþ¡Ë
+           03  CONS-SYOGAI1-COMMENT  PIC X(09)  VALUE  "180028210".
+      *    ¾ã³²»ù¡Ê¼Ô¡Ë¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£¶ºÐ°Ê¾å£±£¸ºÐÌ¤Ëþ¡Ë
+           03  CONS-SYOGAI2-COMMENT  PIC X(09)  VALUE  "180028310".
+      *    ¾ã³²»ù¡Ê¼Ô¡Ë¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£±£¸ºÐ°Ê¾å¡Ë
+           03  CONS-SYOGAI3-COMMENT  PIC X(09)  VALUE  "180028410".
+      *    ÀÝ¿©µ¡Ç½ÎÅË¡
+           03  CONS-SESSYOKU-COMMENT PIC X(09)  VALUE  "180016610".
       *
       *    Èé²¼¶ÚÆùÃí¼Í
            03  CONS-HIKAKIN          PIC X(09)  VALUE  "130000510".
@@ -979,6 +1026,9 @@
                                                        FLG-HOUTEN-COM
                                                        FLG-SYOBYO-COM
                                                        FLG-RYOYO-COM
+                                                       FLG-SYODOU-COM
+                                                       FLG-NIKOCHIN-COM
+                                                       FLG-ZENSOKU-COM
       *
                                MOVE    SPACE   TO      WRK-KYUGYOFLG
       *
@@ -1023,6 +1073,9 @@
                                                       FLG-HOUTEN-COM
                                                       FLG-SYOBYO-COM
                                                       FLG-RYOYO-COM
+                                                      FLG-SYODOU-COM
+                                                      FLG-NIKOCHIN-COM
+                                                      FLG-ZENSOKU-COM
       *
                                       MOVE  SPACE TO  WRK-KYUGYOFLG
       *
@@ -1052,6 +1105,9 @@
                                                       FLG-HOUTEN-COM
                                                       FLG-SYOBYO-COM
                                                       FLG-RYOYO-COM
+                                                      FLG-SYODOU-COM
+                                                      FLG-NIKOCHIN-COM
+                                                      FLG-ZENSOKU-COM
       *
                                       MOVE  SPACE TO  WRK-KYUGYOFLG
       *
@@ -1865,6 +1921,17 @@
                         MOVE   "1"    TO    RECE41-COMCNTFLG
                         MOVE   "1"    TO    RECE44-SYOSANTEIKA-COMMENT
               END-IF
+      *       ½é¿Ç¡ÊÆ±ÆüÊ£¿ô¿ÇÎÅ²Ê¡Ë
+              IF   SRY-SRYCD(IDX2)    =     CONS-SYODOU-COMMENT
+              AND  FLG-SYODOU-COM     =     ZERO
+                   MOVE   "1"   TO    RECE44-FLG-SYODOU-COMMENT
+                   MOVE   SRY-SRYKA   TO    RECE44-SYODOU-SRYKA(1)
+              END-IF
+              IF   SRY-SRYCD(IDX2)    =     CONS-SYODOU2-COMMENT
+                   MOVE  SPACE  TO    RECE44-FLG-SYODOU-COMMENT
+                   MOVE  SPACE  TO    RECE44-SYODOU-SRYKA(1)
+                   MOVE    1    TO    FLG-SYODOU-COM
+              END-IF
            END-IF
       *
            IF      RECE44-SRYKBN      =     "12"
@@ -1915,24 +1982,62 @@
                                             "180025110"   OR
                                             "180025010"   OR
                                             "180025510"   OR
-                                            "180025410"   OR
-      *
-                                            "180027410"   OR
-                                            "180027510"   OR
-                                            "180027610"   OR
-                                            "180027710"   OR
-                                            "180027810"   OR
-                                            "180027910"   OR
-                                            "180028010"   OR
-                                            "180028110"   OR
-                                            "180028210"   OR
-                                            "180028310"   OR
-                                            "180028410"     
+                                            "180025410"
       *****             MOVE   "1"    TO    RECE41-COMCNTFLG
                         MOVE   "1"    TO    RECE44-RIHABIRI-COMMENT
               END-IF
+              IF   SRY-SRYCD(IDX2)    =     CONS-SINDAI1-COMMENT  OR
+                                            CONS-SINDAI2-COMMENT  OR
+                                            CONS-KOKYUKI1-COMMENT OR
+                                            CONS-KOKYUKI2-COMMENT OR
+                                            CONS-NOUKE1-COMMENT   OR
+                                            CONS-NOUKE2-COMMENT   OR
+                                            CONS-UNDOKI1-COMMENT  OR
+                                            CONS-UNDOKI2-COMMENT  OR
+                                            CONS-SYOGAI1-COMMENT  OR
+                                            CONS-SYOGAI2-COMMENT  OR
+                                            CONS-SYOGAI3-COMMENT
+      *****             MOVE   "1"    TO    RECE41-COMCNTFLG
+                        MOVE   "1"    TO    RECE44-RIHABIRI-COMMENT
+              END-IF
+      *       ¥ê¥Ï¥Ó¥ê¡ÊÈ¯¾ÉÆüµ­ºÜ¡Ë
+              IF   RECE41-SRYYM      >=    "200604"
+                IF   SRY-SRYCD(IDX2)  =     CONS-SINDAI1-COMMENT
+                                      OR    CONS-SINDAI2-COMMENT
+                        MOVE   "1"    TO    RECE41-COMCNTFLG
+                        MOVE   "1"    TO    RECE44-SINDAI-COMMENT
+                END-IF
+                IF   SRY-SRYCD(IDX2)  =     CONS-KOKYUKI1-COMMENT
+                                      OR    CONS-KOKYUKI2-COMMENT
+                        MOVE   "1"    TO    RECE41-COMCNTFLG
+                        MOVE   "1"    TO    RECE44-KOKYUKI-COMMENT
+                END-IF
+                IF   SRY-SRYCD(IDX2)  =     CONS-NOUKE1-COMMENT
+                                      OR    CONS-NOUKE2-COMMENT
+                        MOVE   "1"    TO    RECE41-COMCNTFLG
+                        MOVE   "1"    TO    RECE44-NOUKE-COMMENT
+                END-IF
+                IF   SRY-SRYCD(IDX2)  =     CONS-UNDOKI1-COMMENT
+                                      OR    CONS-UNDOKI2-COMMENT
+                        MOVE   "1"    TO    RECE41-COMCNTFLG
+                        MOVE   "1"    TO    RECE44-UNDOKI-COMMENT
+                END-IF
+                IF   SRY-SRYCD(IDX2)  =     CONS-NANBYO-COMMENT
+                        MOVE   "1"    TO    RECE41-COMCNTFLG
+                        MOVE   "1"    TO    RECE44-NANBYO-COMMENT
+                END-IF
+                IF   SRY-SRYCD(IDX2)  =     CONS-SYOGAI1-COMMENT
+                                      OR    CONS-SYOGAI2-COMMENT
+                                      OR    CONS-SYOGAI3-COMMENT
+                        MOVE   "1"    TO    RECE41-COMCNTFLG
+                        MOVE   "1"    TO    RECE44-SYOGAI-COMMENT
+                END-IF
+                IF   SRY-SRYCD(IDX2)  =     CONS-SESSYOKU-COMMENT
+                        MOVE   "1"    TO    RECE41-COMCNTFLG
+                        MOVE   "1"    TO    RECE44-SESSYOKU-COMMENT
+                END-IF
+              END-IF
            END-IF
-      *
       *
            IF      RECE44-SRYKBN      =     "13"
               IF   SRY-SRYCD(IDX2)    =     CONS-MANSEI
@@ -1956,6 +2061,27 @@
               IF   SRY-SRYCD(IDX2)    =     CONS-RYOYO2-COMMENT
                    MOVE  SPACE  TO    RECE44-FLG-RYOYO-COMMENT
                    MOVE    1    TO    FLG-RYOYO-COM
+              END-IF
+      *
+              IF   SRY-SRYCD(IDX2)    =     CONS-NIKOCHIN-COMMENT
+                                      OR    CONS-NIKOCHIN2-COMMENT
+                                      OR    CONS-NIKOCHIN3-COMMENT
+              AND  FLG-NIKOCHIN-COM   =     ZERO
+                   MOVE   "1"   TO    RECE44-FLG-NIKOCHIN-COMMENT
+              END-IF
+              IF   SRY-SRYCD(IDX2)    =     CONS-NIKOCHIN4-COMMENT
+                   MOVE  SPACE  TO    RECE44-FLG-NIKOCHIN-COMMENT
+                   MOVE    1    TO    FLG-NIKOCHIN-COM
+              END-IF
+      *
+              IF   SRY-SRYCD(IDX2)    =     CONS-ZENSOKU-COMMENT
+                                      OR    CONS-ZENSOKU2-COMMENT
+              AND  FLG-ZENSOKU-COM    =     ZERO
+                   MOVE   "1"   TO    RECE44-FLG-ZENSOKU-COMMENT
+              END-IF
+              IF   SRY-SRYCD(IDX2)    =     CONS-ZENSOKU3-COMMENT
+                   MOVE  SPACE  TO    RECE44-FLG-ZENSOKU-COMMENT
+                   MOVE    1    TO    FLG-ZENSOKU-COM
               END-IF
            END-IF
       *
@@ -4560,6 +4686,9 @@
                                                      FLG-HOUTEN-COM
                                                      FLG-SYOBYO-COM
                                                      FLG-RYOYO-COM
+                                                     FLG-SYODOU-COM
+                                                     FLG-NIKOCHIN-COM
+                                                     FLG-ZENSOKU-COM
       *
                                MOVE    SPACE   TO    WRK-KYUGYOFLG
       *
@@ -4606,6 +4735,9 @@
                                                       FLG-HOUTEN-COM
                                                       FLG-SYOBYO-COM
                                                       FLG-RYOYO-COM
+                                                      FLG-SYODOU-COM
+                                                      FLG-NIKOCHIN-COM
+                                                      FLG-ZENSOKU-COM
       *
                                       MOVE  SPACE TO  WRK-KYUGYOFLG
       *
@@ -4637,6 +4769,9 @@
                                                       FLG-HOUTEN-COM
                                                       FLG-SYOBYO-COM
                                                       FLG-RYOYO-COM
+                                                      FLG-SYODOU-COM
+                                                      FLG-NIKOCHIN-COM
+                                                      FLG-ZENSOKU-COM
       *
                                       MOVE  SPACE TO  WRK-KYUGYOFLG
       *

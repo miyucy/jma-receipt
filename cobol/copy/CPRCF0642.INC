@@ -26,6 +26,7 @@
       *  01.00.02    NACL-門脇    04.08.17  レセプト科追加
       *  01.00.03    NACL-門脇    05.07.05  診療種別区分追加
       *  01.00.04    NACL-門脇    05.11.11  コメントデータ追加
+      *  02.09.01    NACL-門脇    05.04.17  ２００６年４月改正対応
       ************************************************************
       *01  RECE642-REC.
            03  RECE642-KEY.
@@ -76,7 +77,10 @@
                    07  RECE642-KAISUINF    OCCURS  31.
                        09  RECE642-KAISU   PIC  9(03).
       *データ
-           03  RECE642-REC1                PIC  X(600).
+           03  RECE642-REC1                PIC  X(700).
       *コメントデータ
            03  RECE642-COM-AREA.
                05  RECE642-COM             PIC  X(200)    OCCURS  10.
+      *初診（同日複数診療科）算定科
+           03  RECE642-SYODOU-SRYKA-AREA.
+               05  RECE642-SYODOU-SRYKA    PIC  X(02)     OCCURS  10.

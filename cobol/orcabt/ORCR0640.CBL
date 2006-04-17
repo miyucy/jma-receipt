@@ -319,6 +319,7 @@
            03  FLG-HOUSIJI-COM                         PIC 9(01).
            03  FLG-SYOBYO-COM                          PIC 9(01).
            03  FLG-RYOYO-COM                           PIC 9(01).
+           03  FLG-SYODOU-COM                          PIC 9(01).
            03  FLG-RECESKYKBN                          PIC 9(01).
       *****03  FLG-HKNNUM                              PIC 9(01).
            03  FLG-RECE69                              PIC 9(01).
@@ -815,6 +816,36 @@
            03  CONS-KAKURI-COMMENT   PIC X(09)  VALUE  "190107070".
       *    ºßÂð·ì±ÕÆ©ÀÏÉÑ²ó»ØÆ³´ÉÍýÎÁ
            03  CONS-HINKAI-COMMENT   PIC X(09)  VALUE  "114009410".
+      *    ½é¿Ç¡ÊÆ±ÆüÊ£¿ô¿ÇÎÅ²Ê¡Ë
+           03  CONS-SYODOU-COMMENT   PIC X(09)  VALUE  "111011810".
+      *    Ê£½é»»Äê¿ÇÎÅ²Ê¡§
+           03  CONS-SYODOU2-COMMENT  PIC X(09)  VALUE  "830000024".
+      *    ¿´Âç·ì´É¼À´µ¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£±¡Ë
+           03  CONS-SINDAI1-COMMENT  PIC X(09)  VALUE  "180027410".
+      *    ¿´Âç·ì´É¼À´µ¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£²¡Ë
+           03  CONS-SINDAI2-COMMENT  PIC X(09)  VALUE  "180027510".
+      *    ¸ÆµÛ´ï¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£±¡Ë
+           03  CONS-KOKYUKI1-COMMENT PIC X(09)  VALUE  "180028010".
+      *    ¸ÆµÛ´ï¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£²¡Ë
+           03  CONS-KOKYUKI2-COMMENT PIC X(09)  VALUE  "180028110".
+      *    Ç¾·ì´É¼À´µÅù¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£±¡Ë
+           03  CONS-NOUKE1-COMMENT   PIC X(09)  VALUE  "180027610".
+      *    Ç¾·ì´É¼À´µÅù¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£²¡Ë
+           03  CONS-NOUKE2-COMMENT   PIC X(09)  VALUE  "180027710".
+      *    ±¿Æ°´ï¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£±¡Ë
+           03  CONS-UNDOKI1-COMMENT  PIC X(09)  VALUE  "180027810".
+      *    ±¿Æ°´ï¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£²¡Ë
+           03  CONS-UNDOKI2-COMMENT  PIC X(09)  VALUE  "180027910".
+      *    ÆñÉÂ´µ¼Ô¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ
+           03  CONS-NANBYO-COMMENT   PIC X(09)  VALUE  "180017910".
+      *    ¾ã³²»ù¡Ê¼Ô¡Ë¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£¶ºÐÌ¤Ëþ¡Ë
+           03  CONS-SYOGAI1-COMMENT  PIC X(09)  VALUE  "180028210".
+      *    ¾ã³²»ù¡Ê¼Ô¡Ë¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£¶ºÐ°Ê¾å£±£¸ºÐÌ¤Ëþ¡Ë
+           03  CONS-SYOGAI2-COMMENT  PIC X(09)  VALUE  "180028310".
+      *    ¾ã³²»ù¡Ê¼Ô¡Ë¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£±£¸ºÐ°Ê¾å¡Ë
+           03  CONS-SYOGAI3-COMMENT  PIC X(09)  VALUE  "180028410".
+      *    ÀÝ¿©µ¡Ç½ÎÅË¡
+           03  CONS-SESSYOKU-COMMENT PIC X(09)  VALUE  "180016610".
       *
       *    Ï·¿ÍÍý³ØÎÅË¡¤ÎÅ¦Í×Íóµ­ºÜÈ½ÄêÍÑ¡ÊÌ¾¾Î¤ËÏ·¿Í¤òÄÉ²Ã¡Ë
            03  CONS-RJNRIGAKU1     PIC X(09) VALUE "180706810".
@@ -1637,6 +1668,7 @@
                                MOVE   ZERO   TO   FLG-HOUSIJI-COM
                                                   FLG-SYOBYO-COM
                                                   FLG-RYOYO-COM
+                                                  FLG-SYODOU-COM
       *
                                MOVE   ZERO   TO   WRK-FILMTEN
       *
@@ -1676,6 +1708,7 @@
                                       MOVE   ZERO   TO   FLG-HOUSIJI-COM
                                                          FLG-SYOBYO-COM
                                                          FLG-RYOYO-COM
+                                                         FLG-SYODOU-COM
       *
                                       MOVE   ZERO   TO   WRK-FILMTEN
       *
@@ -1698,6 +1731,7 @@
                                       MOVE   ZERO   TO   FLG-HOUSIJI-COM
                                                          FLG-SYOBYO-COM
                                                          FLG-RYOYO-COM
+                                                         FLG-SYODOU-COM
       *
                                       MOVE   ZERO   TO   WRK-FILMTEN
       *
@@ -2357,6 +2391,20 @@
       *****************************************************************
        2101211-RECE65-TENSOU-COMCNT-HEN-SEC               SECTION.
       *
+           IF      RECE64-SRYKBN      =     "11"
+      *       ½é¿Ç¡ÊÆ±ÆüÊ£¿ô¿ÇÎÅ²Ê¡Ë
+              IF   SRY-SRYCD(IDX2)    =     CONS-SYODOU-COMMENT
+              AND  FLG-SYODOU-COM     =     ZERO
+                   MOVE   "1"   TO    RECE64-FLG-SYODOU-COMMENT
+                   MOVE   SRY-SRYKA   TO    RECE64-SYODOU-SRYKA(1)
+              END-IF
+              IF   SRY-SRYCD(IDX2)    =     CONS-SYODOU2-COMMENT
+                   MOVE  SPACE  TO    RECE64-FLG-SYODOU-COMMENT
+                   MOVE  SPACE  TO    RECE64-SYODOU-SRYKA(1)
+                   MOVE    1    TO    FLG-SYODOU-COM
+              END-IF
+           END-IF
+      *
            IF      RECE64-SRYKBN      =     "80"
       *       ¥ê¥Ï¥Ó¥ê
               IF   SRY-SRYCD(IDX2)    =     "180706910"   OR
@@ -2388,24 +2436,62 @@
                                             "180025110"   OR
                                             "180025010"   OR
                                             "180025510"   OR
-                                            "180025410"   OR
-      *
-                                            "180027410"   OR
-                                            "180027510"   OR
-                                            "180027610"   OR
-                                            "180027710"   OR
-                                            "180027810"   OR
-                                            "180027910"   OR
-                                            "180028010"   OR
-                                            "180028110"   OR
-                                            "180028210"   OR
-                                            "180028310"   OR
-                                            "180028410"     
+                                            "180025410"
       ****              MOVE   "1"    TO    RECE62-COMCNTFLG
                         MOVE   "1"    TO    RECE64-RIHABIRI-COMMENT
               END-IF
+              IF   SRY-SRYCD(IDX2)    =     CONS-SINDAI1-COMMENT  OR
+                                            CONS-SINDAI2-COMMENT  OR
+                                            CONS-KOKYUKI1-COMMENT OR
+                                            CONS-KOKYUKI2-COMMENT OR
+                                            CONS-NOUKE1-COMMENT   OR
+                                            CONS-NOUKE2-COMMENT   OR
+                                            CONS-UNDOKI1-COMMENT  OR
+                                            CONS-UNDOKI2-COMMENT  OR
+                                            CONS-SYOGAI1-COMMENT  OR
+                                            CONS-SYOGAI2-COMMENT  OR
+                                            CONS-SYOGAI3-COMMENT
+      ****              MOVE   "1"    TO    RECE62-COMCNTFLG
+                        MOVE   "1"    TO    RECE64-RIHABIRI-COMMENT
+              END-IF
+      *       ¥ê¥Ï¥Ó¥ê¡ÊÈ¯¾ÉÆüµ­ºÜ¡Ë
+              IF   RECE62-SRYYM      >=    "200604"
+                IF   SRY-SRYCD(IDX2)  =     CONS-SINDAI1-COMMENT
+                                      OR    CONS-SINDAI2-COMMENT
+                        MOVE   "1"    TO    RECE62-COMCNTFLG
+                        MOVE   "1"    TO    RECE64-SINDAI-COMMENT
+                END-IF
+                IF   SRY-SRYCD(IDX2)  =     CONS-KOKYUKI1-COMMENT
+                                      OR    CONS-KOKYUKI2-COMMENT
+                        MOVE   "1"    TO    RECE62-COMCNTFLG
+                        MOVE   "1"    TO    RECE64-KOKYUKI-COMMENT
+                END-IF
+                IF   SRY-SRYCD(IDX2)  =     CONS-NOUKE1-COMMENT
+                                      OR    CONS-NOUKE2-COMMENT
+                        MOVE   "1"    TO    RECE62-COMCNTFLG
+                        MOVE   "1"    TO    RECE64-NOUKE-COMMENT
+                END-IF
+                IF   SRY-SRYCD(IDX2)  =     CONS-UNDOKI1-COMMENT
+                                      OR    CONS-UNDOKI2-COMMENT
+                        MOVE   "1"    TO    RECE62-COMCNTFLG
+                        MOVE   "1"    TO    RECE64-UNDOKI-COMMENT
+                END-IF
+                IF   SRY-SRYCD(IDX2)  =     CONS-NANBYO-COMMENT
+                        MOVE   "1"    TO    RECE62-COMCNTFLG
+                        MOVE   "1"    TO    RECE64-NANBYO-COMMENT
+                END-IF
+                IF   SRY-SRYCD(IDX2)  =     CONS-SYOGAI1-COMMENT
+                                      OR    CONS-SYOGAI2-COMMENT
+                                      OR    CONS-SYOGAI3-COMMENT
+                        MOVE   "1"    TO    RECE62-COMCNTFLG
+                        MOVE   "1"    TO    RECE64-SYOGAI-COMMENT
+                END-IF
+                IF   SRY-SRYCD(IDX2)  =     CONS-SESSYOKU-COMMENT
+                        MOVE   "1"    TO    RECE62-COMCNTFLG
+                        MOVE   "1"    TO    RECE64-SESSYOKU-COMMENT
+                END-IF
+              END-IF
            END-IF
-      *
       *
            IF      RECE64-SRYKBN      =     "13"
               IF   SRY-SRYCD(IDX2)    =     CONS-YAKUKAN-COMMENT
@@ -3764,11 +3850,25 @@
                             AND (WRK-SHOKUJIRYOYO(IDY)
                                                  NOT  =  ZERO)
                                IF  WRK-DAY2(IDY) =  ZERO  OR  4
+                                IF   RECE62-SRYYM  >= "200604"
+                                 IF  NACCT-SRYCDTOTAL = 099999918
+                                                    OR  099999919
+                                                    OR  099999920
                                   MOVE   NACCT-DAY(IDY)  
                                             TO   WRK-DAY24(IDY) 
                                   PERFORM      210204-NYUINACCT-SYU2-SEC
                                   ADD    1     TO   CNT-DAY24
                                   MOVE   1     TO   FLG-DAY24
+                                 END-IF
+                                ELSE
+                                 IF  NACCT-SRYCDTOTAL = 099999913
+                                  MOVE   NACCT-DAY(IDY)  
+                                            TO   WRK-DAY24(IDY) 
+                                  PERFORM      210204-NYUINACCT-SYU2-SEC
+                                  ADD    1     TO   CNT-DAY24
+                                  MOVE   1     TO   FLG-DAY24
+                                 END-IF
+                                END-IF
                                END-IF
                             END-IF
                          END-IF

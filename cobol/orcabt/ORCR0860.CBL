@@ -34,6 +34,7 @@
       *  01.01.01    NACL-藤原    04/10/13  中止処理の追加
       *  01.01.02    NACL-門脇    05.09.06  自賠責従来様式対応
       *  01.01.03    NACL-門脇    05/11/11  コメントを含む場合の編集修正
+      *  02.09.01    NACL-門脇    06/04/13  ２００６年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -426,6 +427,23 @@
                                          TO   RECE843-KAISU (IDX IDY)
                      END-PERFORM
                  END-PERFORM
+      *
+                 MOVE     ZERO     TO    FLG-ARI
+                 PERFORM  VARYING  IDX   FROM    1   BY  1
+                           UNTIL IDX                       > 10
+                            OR   RECE843-SYODOU-SRYKA(IDX) = SPACE
+                            OR   FLG-ARI                   = 1
+                    IF  RECE84-SYODOU-SRYKA(1)
+                               =  RECE843-SYODOU-SRYKA(IDX)
+                        MOVE  1   TO   FLG-ARI
+                    END-IF
+                 END-PERFORM
+                 IF  FLG-ARI  =  ZERO
+                 AND IDX     <=  10
+                        MOVE   RECE84-SYODOU-SRYKA(1)
+                                  TO   RECE843-SYODOU-SRYKA(IDX)
+                 END-IF
+      *
                  IF      FLG-MATOME    =   ZERO
                      WRITE   RECE843-REC
                      ADD     1                   TO  CNT-RECE843
@@ -449,6 +467,23 @@
                                          TO   RECE843-KAISU (IDX IDY)
                      END-PERFORM
                  END-PERFORM
+      *
+                 MOVE     ZERO     TO    FLG-ARI
+                 PERFORM  VARYING  IDX   FROM    1   BY  1
+                           UNTIL IDX                       > 10
+                            OR   RECE843-SYODOU-SRYKA(IDX) = SPACE
+                            OR   FLG-ARI                   = 1
+                    IF  RECE84-SYODOU-SRYKA(1)
+                               =  RECE843-SYODOU-SRYKA(IDX)
+                        MOVE  1   TO   FLG-ARI
+                    END-IF
+                 END-PERFORM
+                 IF  FLG-ARI  =  ZERO
+                 AND IDX     <=  10
+                        MOVE   RECE84-SYODOU-SRYKA(1)
+                                  TO   RECE843-SYODOU-SRYKA(IDX)
+                 END-IF
+      *
                  IF      FLG-RECE843         =   1
                      WRITE   RECE843-REC
                      ADD     1                   TO  CNT-RECE843
@@ -537,6 +572,9 @@
       *   剤回数・日数回数テーブルの加算したものを編集
            MOVE    RECE843-ZAIKAISU    TO  RECE84X-ZAIKAISU
            MOVE    RECE843-DAY-AREA    TO  RECE84X-DAY-AREA
+      *
+           MOVE    RECE843-SYODOU-SRYKA-AREA
+                                       TO  RECE84X-SYODOU-SRYKA-AREA
       *
            WRITE   RECE84X-REC
            ADD     1                   TO  CNT-RECE84X

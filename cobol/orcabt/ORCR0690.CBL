@@ -446,7 +446,7 @@
                05  WRK-RECE64-HOUKNSKBN           PIC 9(02).
                05  WRK-RECE64-KOHBUNRI            PIC 9(01).
                05  WRK-RECE64-SRYSYUKBN           PIC X(03).
-               05  WRK-RECE64-REC                 PIC X(600).
+               05  WRK-RECE64-REC                 PIC X(700).
                05  WRK-RECE64-SRYCD-G.
                    07  WRK-RECE64-KENTAICOMMENT-SRYCD
                                                   PIC 9(09).

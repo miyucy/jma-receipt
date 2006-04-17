@@ -64,6 +64,7 @@
       *  01.02.08    NACL-門脇    05/11/01  （検選）等コメント対応
       *  01.02.09    NACL-門脇    05/11/15  傷病手当金、療養費同意書の自動
       *                                     記載編集修正
+      *  02.09.01    NACL-門脇    06/04/13  ２００６年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -455,7 +456,7 @@
            03  TBL-YT1-OCC                      OCCURS 100.
              05  TBL-YT1-KEY.
                07  TBL-YT1-SRYKA                PIC X(02).
-             05  TBL-YT1-RECE44-REC             PIC X(250).
+             05  TBL-YT1-RECE44-REC             PIC X(300).
              05  TBL-YT1-HIKAKU.
                07  TBL-YT1-ZAITEN               PIC 9(08).
                07  TBL-YT1-SRYCDTOTAL           PIC 9(14).
@@ -469,7 +470,7 @@
              05  TBL-YT1-FLG                    PIC 9(01).
       *
       *    並び替え用
-       01  WRK-YAKUTEI-DATA                     PIC X(586).
+       01  WRK-YAKUTEI-DATA                     PIC X(636).
       *
        01  WRK-TAIHI-YT1-KEY                    PIC X(02).
        01  WRK-YAKUTEI-ZAINUM                   PIC 9(08).
@@ -480,10 +481,10 @@
            03  TBL-YT2-DAY                    OCCURS      31.
              05  TBL-YT2X-KAIT                  OCCURS     3.
                06  TBL-YT2X1-OCC                  OCCURS  25.
-                 07  TBL-YT2X1-RECE44-REC         PIC X(250).
+                 07  TBL-YT2X1-RECE44-REC         PIC X(300).
                  07  TBL-YT2X1-KAISU              PIC 9(03).
                06  TBL-YT2X2-OCC                  OCCURS   3.
-                 07  TBL-YT2X2-RECE44-REC         PIC X(250).
+                 07  TBL-YT2X2-RECE44-REC         PIC X(300).
                  07  TBL-YT2X2-KAISU              PIC 9(03).
              05  TBL-YT2Y-KAIT                  OCCURS     3.
                06  TBL-YT2Y1-OCC                  OCCURS  26.
@@ -506,10 +507,10 @@
            03  TBL-YT3-XXX                    OCCURS     100.
              05  TBL-YT3X-KAIT.
                06  TBL-YT3X1-OCC                  OCCURS  25.
-                 07  TBL-YT3X1-RECE44-REC         PIC X(250).
+                 07  TBL-YT3X1-RECE44-REC         PIC X(300).
                  07  TBL-YT3X1-KAISU              PIC 9(03).
                06  TBL-YT3X2-OCC                  OCCURS   3.
-                 07  TBL-YT3X2-RECE44-REC         PIC X(250).
+                 07  TBL-YT3X2-RECE44-REC         PIC X(300).
                  07  TBL-YT3X2-KAISU              PIC 9(03).
              05  TBL-YT3Y-KAIT.
                06  TBL-YT3Y1-OCC                  OCCURS  26.

@@ -36,6 +36,7 @@
       *                                     導料算定時の点滴注射の追加
       *  01.01.03    NACL-門脇    05.01.17  酸素の追加
       *  01.01.04    NACL-門脇    05.02.28  （サ）フラグの追加
+      *  02.09.01    NACL-門脇    05.04.17  ２００６年４月改正対応
       ************************************************************
       *01  RECE04-REC.
            03  RECE04-KEY.
@@ -118,6 +119,20 @@
            03  RECE04-JINKOJIN-COMMENT    PIC  X(01).
       *リハビリ
            03  RECE04-RIHABIRI-COMMENT    PIC  X(01).
+      *リハビリ（心大血管疾患）
+           03  RECE04-SINDAI-COMMENT      PIC  X(01).
+      *リハビリ（呼吸器）
+           03  RECE04-KOKYUKI-COMMENT     PIC  X(01).
+      *リハビリ（脳血管疾患等）
+           03  RECE04-NOUKE-COMMENT       PIC  X(01).
+      *リハビリ（運動器）
+           03  RECE04-UNDOKI-COMMENT      PIC  X(01).
+      *リハビリ（難病患者）
+           03  RECE04-NANBYO-COMMENT      PIC  X(01).
+      *リハビリ（障害児（者））
+           03  RECE04-SYOGAI-COMMENT      PIC  X(01).
+      *リハビリ（障害児（者））
+           03  RECE04-SESSYOKU-COMMENT    PIC  X(01).
       *
       *慢性疼痛疾患管理料
            03  RECE04-FLG-SHIDOU-COMMENT  PIC  X(01).
@@ -137,6 +152,14 @@
            03  RECE04-FLG-HOUTEN-COMMENT  PIC  X(01).
       *酸素
            03  RECE04-FLG-SANSO-COMMENT   PIC  X(01).
+      *初診（同日複数診療科）
+           03  RECE04-FLG-SYODOU-COMMENT  PIC  X(01).
+           03  RECE04-SYODOU-SRYKA-AREA.
+               05  RECE04-SYODOU-SRYKA    PIC  X(02)     OCCURS  10.
+      *ニコチン依存症管理料
+           03  RECE04-FLG-NIKOCHIN-COMMENT PIC X(01).
+      *重度喘息患者治療管理加算
+           03  RECE04-FLG-ZENSOKU-COMMENT PIC  X(01).
       *日数回数テーブル
            03  RECE04-DAY-AREA.
       *        診療回数テーブル（1:合計,2:１回,3:２回, 4:３回以上）
