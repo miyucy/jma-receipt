@@ -116,6 +116,8 @@
            03  RECE44-SYOGAI-COMMENT      PIC  X(01).
       *リハビリ（障害児（者））
            03  RECE44-SESSYOKU-COMMENT    PIC  X(01).
+      *介達牽引
+           03  RECE44-KAITATU-COMMENT     PIC  X(01).
       *
       *慢性疼痛疾患管理料
            03  RECE44-FLG-SHIDOU-COMMENT  PIC  X(01).

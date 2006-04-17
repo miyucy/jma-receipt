@@ -677,6 +677,8 @@
            03  CONS-SYOGAI3-COMMENT  PIC X(09)  VALUE  "180028410".
       *    ÀÝ¿©µ¡Ç½ÎÅË¡
            03  CONS-SESSYOKU-COMMENT PIC X(09)  VALUE  "180016610".
+      *    ²ðÃ£¸£°ú
+           03  CONS-KAITATU-COMMENT  PIC X(09)  VALUE  "140048010".
       *
       *    ºÞ¤Î¿ÇÎÅÆâÍÆ¥Á¥§¥Ã¥¯¥Æ¡¼¥Ö¥ë
        01  TBL-ZAICHECK-AREA.
@@ -2135,6 +2137,16 @@
                    MOVE  SPACE  TO    RECE84-FLG-SYODOU-COMMENT
                    MOVE  SPACE  TO    RECE84-SYODOU-SRYKA(1)
                    MOVE    1    TO    FLG-SYODOU-COM
+              END-IF
+           END-IF
+      *
+           IF      RECE84-SRYKBN      =     "40"
+      *       ²ðÃ£¸£°ú¡ÊÈ¯¾ÉÆüµ­ºÜ¡Ë
+              IF   RECE82-SRYYM      >=    "200604"
+                IF   SRY-SRYCD(IDX2)  =     CONS-KAITATU-COMMENT
+                        MOVE   "1"    TO    RECE82-COMCNTFLG
+                        MOVE   "1"    TO    RECE84-KAITATU-COMMENT
+                END-IF
               END-IF
            END-IF
       *

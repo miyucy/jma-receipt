@@ -118,6 +118,8 @@
            03  RECE64-SYOGAI-COMMENT      PIC  X(01).
       *¥ê¥Ï¥Ó¥ê¡Ê¾ã³²»ù¡Ê¼Ô¡Ë¡Ë
            03  RECE64-SESSYOKU-COMMENT    PIC  X(01).
+      *²ðÃ£¸£°ú
+           03  RECE64-KAITATU-COMMENT     PIC  X(01).
       *
       *ÌôºÞ´ÉÍý»ØÆ³ÎÁ
            03  RECE64-FLG-YAKUKAN-COMMENT PIC  X(01).

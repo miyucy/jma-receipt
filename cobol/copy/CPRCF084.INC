@@ -107,6 +107,8 @@
            03  RECE84-SYOGAI-COMMENT      PIC  X(01).
       *¥ê¥Ï¥Ó¥ê¡Ê¾ã³²»ù¡Ê¼Ô¡Ë¡Ë
            03  RECE84-SESSYOKU-COMMENT    PIC  X(01).
+      *²ðÃ£¸£°ú
+           03  RECE84-KAITATU-COMMENT     PIC  X(01).
       *
       *ÌôºÞ´ÉÍý»ØÆ³ÎÁ
            03  RECE84-FLG-YAKUKAN-COMMENT PIC  X(01).
