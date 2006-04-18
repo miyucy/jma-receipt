@@ -664,9 +664,9 @@
                    INITIALIZE                  ORCSKARRKAREA
                    MOVE    SPA-SRYYMD(1:6)     TO  SKARRK-SRYYM
                    MOVE    WRK-SRYKA           TO  SKARRK-SRYKA
-                   CALL    "ORCSKARRKPRV"      USING
-                                               ORCSKARRKAREA
-                                               SPA-AREA
+      *            CALL    "ORCSKARRK"         USING
+      *                                        ORCSKARRKAREA
+      *                                        SPA-AREA
                    IF      SKARRK-RC       NOT =   ZERO
                        MOVE    "0005"              TO  SPA-ERRCD
                    END-IF
@@ -1623,7 +1623,7 @@
            END-IF
       *
            MOVE    JYURRK-REC          TO  MCPDATA-REC
-           MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+           MOVE    "tbl_jyurrk_prv"    TO  MCP-TABLE
            MOVE    WRK-PATH            TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
@@ -1816,9 +1816,9 @@
                    INITIALIZE                  ORCSKARRKAREA
                    MOVE    SPA-SRYYMD(1:6)     TO  SKARRK-SRYYM
                    MOVE    WRK-TEI-SRYKA (IDX) TO  SKARRK-SRYKA
-                   CALL    "ORCSKARRKPRV"      USING
-                                               ORCSKARRKAREA
-                                               SPA-AREA
+      *            CALL    "ORCSKARRKPRV"      USING
+      *                                        ORCSKARRKAREA
+      *                                        SPA-AREA
                    IF      SKARRK-RC       NOT =   ZERO
                        MOVE    "0005"              TO  SPA-ERRCD
                    END-IF
@@ -2621,17 +2621,17 @@
            MOVE    WRK-SRYKA           TO  KARRK-SRYKA
       *
            MOVE    SRYKARRK-REC        TO  MCPDATA-REC
-           MOVE    "tbl_srykarrk"      TO  MCP-TABLE
+           MOVE    "tbl_srykarrk_prv"  TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_srykarrk"      TO  MCP-TABLE
+               MOVE    "tbl_srykarrk_prv"  TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
                PERFORM 975-SRYKARRK-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-SRYKARRK
            END-IF
-           MOVE    "tbl_srykarrk"      TO  MCP-TABLE
+           MOVE    "tbl_srykarrk_prv"  TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
@@ -4094,9 +4094,9 @@
                INITIALIZE                  ORCSKARRKAREA
                MOVE    SPA-SRYYMD(1:6)     TO  SKARRK-SRYYM
                MOVE    SPA-SRYKA           TO  SKARRK-SRYKA
-               CALL    "ORCSKARRKPRV"      USING
-                                           ORCSKARRKAREA
-                                           SPA-AREA
+      *        CALL    "ORCSKARRKPRV"      USING
+      *                                    ORCSKARRKAREA
+      *                                    SPA-AREA
                IF      SKARRK-RC       NOT =   ZERO
                    MOVE    "0005"              TO  SPA-ERRCD
                END-IF
@@ -4378,9 +4378,9 @@
                    INITIALIZE                  ORCSKARRKAREA
                    MOVE    SPA-SRYYMD(1:6)     TO  SKARRK-SRYYM
                    MOVE    WRK-JYURRK-SRYKA    TO  SKARRK-SRYKA
-                   CALL    "ORCSKARRKPRV"      USING
-                                               ORCSKARRKAREA
-                                               SPA-AREA
+      *            CALL    "ORCSKARRKPRV"      USING
+      *                                        ORCSKARRKAREA
+      *                                        SPA-AREA
                    IF      SKARRK-RC       NOT =   ZERO
                        MOVE    "0005"              TO  SPA-ERRCD
                    END-IF
@@ -4681,17 +4681,17 @@
            MOVE    WRK-SRYKA           TO  KARRK-SRYKA
       *
            MOVE    SRYKARRK-REC        TO  MCPDATA-REC
-           MOVE    "tbl_srykarrk"      TO  MCP-TABLE
+           MOVE    "tbl_srykarrk_prv"  TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_srykarrk"      TO  MCP-TABLE
+               MOVE    "tbl_srykarrk_prv"  TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
                PERFORM 975-SRYKARRK-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-SRYKARRK
            END-IF
-           MOVE    "tbl_srykarrk"      TO  MCP-TABLE
+           MOVE    "tbl_srykarrk_prv"  TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
