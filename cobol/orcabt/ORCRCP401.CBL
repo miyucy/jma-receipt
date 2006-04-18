@@ -48,7 +48,12 @@
       *  02.07.03    NACL-藤原    05/12/12  保険履歴を年月日記載へ変更
       *  02.07.04    NACL-藤原    05/12/12  国保レセプト編綴順対応
       *  02.07.05    NACL-門脇    06/02/08  食事基本料情報（その他）編集
+      *
+      *  ２００６年４月改正対応
       *  02.09.01    NACL-門脇    06/04/13  ２００６年４月改正対応
+      *  02.09.02    NACL-藤原    06/04/14  「１３指導」「日」の差し込み
+      *                                      三種の公費併用に係わる記載要
+      *                                      項の特例対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -187,8 +192,9 @@
            03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       ***  COPY    "HCRCP401.INC"  REPLACING  //HCRCP401//
-           COPY    "HCRCP401V01.INC"
-                                   REPLACING  //HCRCP401V01//
+      ***  COPY    "HCRCP401V01.INC"
+      ***                          REPLACING  //HCRCP401V01//
+           COPY    "HCRCP403.INC"  REPLACING  //HCRCP403//
                                    BY         //HC06//.
       ***  COPY    "HCN061V01.INC" REPLACING  //HCN061V01//
       ***  COPY    "HCN061V02.INC" REPLACING  //HCN061V02//
@@ -803,6 +809,9 @@
        01  WRK-RECE07-REC. 
            COPY    "CPRCF007.INC"  REPLACING  //RECE07//
                                    BY         //WRK-RECE07//.
+      *
+       01  WRK-CONS-AREA.
+           03  WRK-CONS-SRYYM-200604  PIC 9(06)   VALUE   200604. 
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -1652,10 +1661,20 @@
                    MOVE    "1"          TO  WRK-3SYU (2:1)
                    MOVE     IDX         TO  KAKKIDX
                END-IF
-      *        精神
-               IF  RECE62-KOHNUM (IDX)  =   "020"  OR  "021"
-                   MOVE    "1"          TO  WRK-3SYU (3:1)
-                   MOVE     IDX         TO  SESNIDX
+      *
+               IF      RECE62-SRYYM     <   WRK-CONS-SRYYM-200604
+      *            精神
+                   IF  RECE62-KOHNUM (IDX)  =   "020"  OR  "021"
+                       MOVE    "1"          TO  WRK-3SYU (3:1)
+                       MOVE     IDX         TO  SESNIDX
+                   END-IF
+               ELSE
+      *            自立支援法
+                   IF  RECE62-KOHNUM (IDX)  =   "020"  OR  "021"   OR
+                                                "015"  OR  "016"
+                       MOVE    "1"          TO  WRK-3SYU (3:1)
+                       MOVE     IDX         TO  SESNIDX
+                   END-IF
                END-IF
       *        地方公費
                EVALUATE    RECE62-KOHNUM (IDX)  (1:1)
@@ -2052,6 +2071,22 @@
       *
            INITIALIZE                      HC06
            MOVE    SPACE               TO  HC06
+      *
+           IF      RECE62-SRYYM        <   WRK-CONS-SRYYM-200604
+               MOVE    "指　　導"          TO  HC06-TITLE
+               MOVE    "日"                TO  HC06-TITLE1
+                                               HC06-TITLE2 (1)
+                                               HC06-TITLE2 (2)
+                                               HC06-TITLE2 (3)
+                                               HC06-TITLE2 (4)
+           ELSE
+               MOVE    "医学管理"          TO  HC06-TITLE
+               MOVE    "回"                TO  HC06-TITLE1
+                                               HC06-TITLE2 (1)
+                                               HC06-TITLE2 (2)
+                                               HC06-TITLE2 (3)
+               MOVE    "日"                TO  HC06-TITLE2 (4)
+           END-IF
       *
       *    患者番号
            MOVE    RECE62-PTNUM        TO  HC06-PTNUM
@@ -5789,7 +5824,8 @@
       * 
            MOVE    CNT-PAGE            TO  TBL-RECE-RENNUM(TBL-RECE-MAX)
            IF      CNT-PAGE            =   1
-               MOVE    "HCRCP401V01.red"   TO
+      ******** MOVE    "HCRCP401V01.red"   TO
+               MOVE    "HCRCP403.red"      TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
                MOVE    HC06                TO
                                        TBL-RECE-PRTDATA (TBL-RECE-MAX)
@@ -6144,7 +6180,8 @@
                    MOVE    "/"                 TO  WRK-PAGE-HEN
                    MOVE    TBL-RECE-MAX        TO  WRK-PAGE2
                    EVALUATE    RECE08-FORMID
-                       WHEN    "HCRCP401V01.red"                  
+      *****************WHEN    "HCRCP401V01.red"                  
+                       WHEN    "HCRCP403.red"                  
                            MOVE    RECE08-PRTDATA  TO HC06
                            MOVE    WRK-HEN-PAGE-AREA
                                                    TO HC06-PAGE

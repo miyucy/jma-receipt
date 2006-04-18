@@ -461,7 +461,13 @@
                                                   SPA-H01GMN-MIDASI(35)
                    MOVE  "    ¿©»öÎÅÍÜÈñ"   TO SPA-H01GMN-SHOMIDASI (1)
                    MOVE  "¿©»öÉ¸½àÉéÃ´³Û"   TO SPA-H01GMN-SHOMIDASI (2) 
-                   MOVE  "      ¿©»öÆü¿ô"   TO SPA-H01GMN-SHOMIDASI (3) 
+                   IF      SPA-RECE10-SRYYM    >=  "200604"
+                       MOVE  "      ¿©»ö²ó¿ô"
+                                            TO SPA-H01GMN-SHOMIDASI (3)
+                   ELSE
+                       MOVE  "      ¿©»öÆü¿ô"
+                                            TO SPA-H01GMN-SHOMIDASI (3)
+                   END-IF 
                    MOVE  WIDGET-NORMAL      TO SPA-H01GMN-SHO-STATE 
                WHEN    "2"
                    PERFORM VARYING IDX FROM    1   BY  1
@@ -475,10 +481,10 @@
                    MOVE    "        µÙ    Æü"  TO SPA-H01GMN-MIDASI(05)
                    MOVE    "        ¿¼    Ìë"  TO SPA-H01GMN-MIDASI(06)
                    IF      SPA-RECE10-SRYYM    >=  "200604"
-                       MOVE  "          °å³Ø´ÉÍý"
+                       MOVE  "        °å³Ø´ÉÍý"
                                                TO SPA-H01GMN-MIDASI(07)
                    ELSE 
-                       MOVE  "          »Ø    Æ³"
+                       MOVE  "        »Ø    Æ³"
                                                TO SPA-H01GMN-MIDASI(07)
                    END-IF 
                    MOVE    "        ±ý    ¿Ç"  TO SPA-H01GMN-MIDASI(08)

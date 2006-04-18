@@ -783,8 +783,8 @@
                "地方公費のみ選択されています。主保険がありません".
       *
        01  WRK-CONS-AREA.
-           03  WRK-CONS-SRYYM         PIC X(06)   VALUE   "200304". 
-           03  WRK-CONS-SRYYM-200604  PIC X(06)   VALUE   "200604". 
+           03  WRK-CONS-SRYYM         PIC 9(06)   VALUE   200304. 
+           03  WRK-CONS-SRYYM-200604  PIC 9(06)   VALUE   200604. 
       *     
            COPY    "ORCA-DBPATH".
            COPY    "ORCA-DBMETA".

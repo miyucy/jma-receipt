@@ -73,6 +73,9 @@
       *  02.06.05    NACL-門脇    05/10/05  省庁対応
       *
       *  02.07.01    NACL-藤原    05/08/20  特別療養費対応
+      *
+      *  02.09.01    NACL-藤原    06/04/14  ２００６年４月改正対応
+      *                                     MONFUNC対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -196,6 +199,7 @@
            03  IDX3                                    PIC 9(03). 
            03  IDY                                     PIC 9(03). 
            03  IDZ                                     PIC 9(03).
+           03  IDXX                                    PIC 9(03).
            03  TBL-MAX                                 PIC 9(03).
            03  SYSKAN-IDX                              PIC 9(03).
       *
@@ -338,8 +342,34 @@
                05                      PIC X(03)   VALUE   "053".  
                05                      PIC X(03)   VALUE   "012".
                05                      PIC X(03)   VALUE   "972".
+      *
+               05  FILLER              PIC X(03)   VALUE   "027".  
+               05  FILLER              PIC X(03)   VALUE   "013".  
+               05  FILLER              PIC X(03)   VALUE   "014".  
+               05  FILLER              PIC X(03)   VALUE   "018".  
+               05  FILLER              PIC X(03)   VALUE   "029".  
+               05  FILLER              PIC X(03)   VALUE   "010".  
+               05  FILLER              PIC X(03)   VALUE   "011".  
+               05  FILLER              PIC X(03)   VALUE   "020".  
+               05  FILLER              PIC X(03)   VALUE   "021".  
+               05  FILLER              PIC X(03)   VALUE   "015".  
+               05  FILLER              PIC X(03)   VALUE   "016".  
+               05  FILLER              PIC X(03)   VALUE   "022".  
+               05  FILLER              PIC X(03)   VALUE   "028".  
+               05  FILLER              PIC X(03)   VALUE   "017".  
+               05  FILLER              PIC X(03)   VALUE   "019".  
+               05  FILLER              PIC X(03)   VALUE   "023".  
+               05  FILLER              PIC X(03)   VALUE   "051".  
+               05  FILLER              PIC X(03)   VALUE   "091".  
+               05  FILLER              PIC X(03)   VALUE   "052".  
+               05  FILLER              PIC X(03)   VALUE   "053".  
+               05  FILLER              PIC X(03)   VALUE   "012".
+               05  FILLER              PIC X(03)   VALUE   "972".
+      *
            03  WRK-SRT-TABLE-R         REDEFINES   WRK-SRT-TABLE.
-               05  WRK-SRT-KOHHKNNUM   PIC X(03)   OCCURS  22.
+               05  WRK-SRT-OCC         OCCURS  2.
+                   07  WRK-SRT-KOHHKNNUM
+                                       PIC X(03)   OCCURS  22.
       *     
       *    ワーク保険組合せ（入院会計用） 
        01  WRK-HKNCOMBI-TABLE.
@@ -354,6 +384,8 @@
            03  WRK-CONS-ROUSAI-HKNNUM  PIC X(03)   VALUE   "971". 
       *    自賠責保険番号 
            03  WRK-CONS-JIBAI-HKNNUM   PIC X(03)   VALUE   "973".       
+      *
+           03  WRK-CONS-SRYYM          PIC 9(06)   VALUE   200604.      
       *     
       * 
        01  WRK-RECE61-REC. 
@@ -2097,21 +2129,6 @@
                    IF    ( WRK-RECE61-KOHID    NOT =   ZERO  )
                    AND   ( WRK-SEIKYU-KOHHKNNUM(IDX1 IDX)  
                                                    =   "019" )
-      *************    IF      WRK-RECE61-HKNNUM   =   "060"   OR  "067" 
-      *************        IF      SYS-2005-RJNGNBKKBN =   "1" OR  ZERO
-      *************            MOVE    WRK-SEIKYU-KOHHKNNUM(IDX1 IDX)
-      *************                            TO  WRK-RECE61-ETC-HKNNUM
-      *************        ELSE
-      *************            PERFORM 200121-KOHID-TBL-HENSYU-SEC
-      *************        END-IF
-      *************    ELSE                
-      *************        IF      SYS-2005-RJNGNBKKBN =   "2" OR  ZERO
-      *************            MOVE    WRK-SEIKYU-KOHHKNNUM(IDX1 IDX)
-      *************                            TO  WRK-RECE61-ETC-HKNNUM
-      *************        ELSE
-      *************            PERFORM 200121-KOHID-TBL-HENSYU-SEC
-      *************        END-IF
-      *************    END-IF
                        IF      WRK-RECE61-HKNNUM   =   "060"   OR  "067" 
                            IF      SYS-2005-RJNGNBKKBN =   "1" OR  ZERO
                                MOVE    "4"         TO  WRK-RECESKYKBN
@@ -2141,12 +2158,18 @@
            INITIALIZE                      WRK-RECE61-KOHI-AREA
            MOVE    ZERO                    TO  TBL-MAX
       *
+      *
+           IF      WRK-RECE61-SRYYM    <   WRK-CONS-SRYYM
+               MOVE    1                   TO  IDXX
+           ELSE
+               MOVE    2                   TO  IDXX
+           END-IF
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       22
                    OR      TBL-MAX     =   4 
                PERFORM VARYING IDY FROM    1   BY  1
                        UNTIL   IDY >       4
-                   IF      WRK-SRT-KOHHKNNUM   (IDX)
+                   IF      WRK-SRT-KOHHKNNUM   (IDXX IDX)
                                        =   WRK-KOHHKNNUM-O (IDY)
                        ADD     1               TO  TBL-MAX
                        MOVE    WRK-KOHI-TBL    (IDY)   TO
@@ -3177,41 +3200,45 @@
            EXIT.
       *      
       *****************************************************************
-      *    ＤＢ　オープン処理
+      *    ＤＢオープン処理
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
-           MOVE    "DBOPEN"            TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBOPEN"            TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
-           MOVE    "DBSTART"           TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBSTART"           TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            .
        100-DBOPEN-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ＤＢ　クローズ処理
+      *    ＤＢクローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *
-           MOVE    "DBCOMMIT"          TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBCOMMIT"          TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
-           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBDISCONNECT"      TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            .
        900-DBDISCONNECT-EXT.
            EXIT.

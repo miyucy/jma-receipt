@@ -835,22 +835,6 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>MIDASI28</name>
-      <x>20</x>
-      <y>490</y>
-      <width>150</width>
-      <height>15</height>
-      <label></label>
-      <justify>GTK_JUSTIFY_RIGHT</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>MIDASI29</name>
       <x>20</x>
       <y>505</y>
@@ -883,22 +867,6 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>MIDASI31</name>
-      <x>20</x>
-      <y>535</y>
-      <width>150</width>
-      <height>15</height>
-      <label></label>
-      <justify>GTK_JUSTIFY_RIGHT</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>MIDASI32</name>
       <x>20</x>
       <y>550</y>
@@ -918,22 +886,6 @@
       <name>MIDASI33</name>
       <x>20</x>
       <y>565</y>
-      <width>150</width>
-      <height>15</height>
-      <label></label>
-      <justify>GTK_JUSTIFY_RIGHT</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>MIDASI34</name>
-      <x>20</x>
-      <y>580</y>
       <width>150</width>
       <height>15</height>
       <label></label>
@@ -10435,118 +10387,6 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label550</name>
-      <x>210</x>
-      <y>640</y>
-      <width>100</width>
-      <height>14</height>
-      <label>薬剤一部負担金</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label549</name>
-      <x>210</x>
-      <y>625</y>
-      <width>100</width>
-      <height>14</height>
-      <label>     一部負担金</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label548</name>
-      <x>210</x>
-      <y>610</y>
-      <width>100</width>
-      <height>14</height>
-      <label>      合計点数</label>
-      <justify>GTK_JUSTIFY_RIGHT</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label551</name>
-      <x>210</x>
-      <y>655</y>
-      <width>100</width>
-      <height>14</height>
-      <label>         実日数</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>SHOMIDASI1</name>
-      <x>210</x>
-      <y>670</y>
-      <width>100</width>
-      <height>14</height>
-      <label></label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>SHOMIDASI2</name>
-      <x>210</x>
-      <y>685</y>
-      <width>100</width>
-      <height>14</height>
-      <label></label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>SHOMIDASI3</name>
-      <x>210</x>
-      <y>700</y>
-      <width>100</width>
-      <height>14</height>
-      <label></label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>label553</name>
       <x>706</x>
       <y>68</y>
@@ -10636,102 +10476,6 @@
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>True</wrap>
       <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label549</name>
-      <x>650</x>
-      <y>625</y>
-      <width>100</width>
-      <height>14</height>
-      <label>     一部負担金</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label548</name>
-      <x>650</x>
-      <y>610</y>
-      <width>100</width>
-      <height>14</height>
-      <label>      合計点数</label>
-      <justify>GTK_JUSTIFY_RIGHT</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label551</name>
-      <x>650</x>
-      <y>655</y>
-      <width>100</width>
-      <height>14</height>
-      <label>         実日数</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>SHOMIDASI4</name>
-      <x>650</x>
-      <y>670</y>
-      <width>100</width>
-      <height>14</height>
-      <label></label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>SHOMIDASI5</name>
-      <x>650</x>
-      <y>685</y>
-      <width>100</width>
-      <height>14</height>
-      <label></label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>SHOMIDASI6</name>
-      <x>650</x>
-      <y>700</y>
-      <width>100</width>
-      <height>14</height>
-      <label></label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -11308,6 +11052,262 @@
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>True</wrap>
       <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label550</name>
+      <x>210</x>
+      <y>640</y>
+      <width>100</width>
+      <height>14</height>
+      <label>薬剤一部負担金</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label549</name>
+      <x>210</x>
+      <y>625</y>
+      <width>100</width>
+      <height>14</height>
+      <label>       一部負担金</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label551</name>
+      <x>210</x>
+      <y>655</y>
+      <width>100</width>
+      <height>14</height>
+      <label>              実日数</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label549</name>
+      <x>650</x>
+      <y>625</y>
+      <width>100</width>
+      <height>14</height>
+      <label>       一部負担金</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label548</name>
+      <x>650</x>
+      <y>610</y>
+      <width>100</width>
+      <height>14</height>
+      <label>          合計点数</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>MIDASI31</name>
+      <x>20</x>
+      <y>535</y>
+      <width>150</width>
+      <height>15</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_RIGHT</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>SHOMIDASI2</name>
+      <x>210</x>
+      <y>685</y>
+      <width>100</width>
+      <height>14</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>MIDASI28</name>
+      <x>20</x>
+      <y>490</y>
+      <width>150</width>
+      <height>15</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_RIGHT</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label551</name>
+      <x>650</x>
+      <y>655</y>
+      <width>100</width>
+      <height>14</height>
+      <label>              実日数</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label548</name>
+      <x>210</x>
+      <y>610</y>
+      <width>100</width>
+      <height>14</height>
+      <label>          合計点数</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>MIDASI34</name>
+      <x>20</x>
+      <y>580</y>
+      <width>150</width>
+      <height>15</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_RIGHT</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>SHOMIDASI1</name>
+      <x>223</x>
+      <y>670</y>
+      <width>90</width>
+      <height>14</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>SHOMIDASI4</name>
+      <x>663</x>
+      <y>670</y>
+      <width>90</width>
+      <height>14</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>SHOMIDASI5</name>
+      <x>650</x>
+      <y>685</y>
+      <width>100</width>
+      <height>14</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>SHOMIDASI6</name>
+      <x>668</x>
+      <y>700</y>
+      <width>90</width>
+      <height>14</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>SHOMIDASI3</name>
+      <x>228</x>
+      <y>700</y>
+      <width>100</width>
+      <height>14</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>

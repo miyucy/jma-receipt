@@ -174,8 +174,12 @@
       *  02.07.11    NACL-門脇    06/02/07  食事基本料情報（その他）編集
       *  02.08.01    NACL-小豆沢  06/03/22  特定入院料追加分（脳卒中ケアユニ）
       *                                     外泊置き換え処理
+      *
+      *  ２００６年４月改正対応
       *  02.09.01    NACL-門脇    06/04/05  累計トータル編集修正
       *  02.09.02    NACL-門脇    06/04/13  ２００６年４月改正対応
+      *  02.09.03    NACL-藤原    06/04/14  三種の公費併用に係わる記載要
+      *                                     項の特例対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -895,6 +899,8 @@
       *    固定端末ＩＤ
            03  WRK-CONS-TERMID     PIC X(64)   VALUE
                                    "0100007FZZZZZZZZZZZZZZZZZZZZZZZZ". 
+      * 
+           03  WRK-CONS-SRYYM-200604  PIC 9(06)   VALUE   200604. 
       *
            COPY    "MCPAREA".
       *
@@ -1565,10 +1571,20 @@
                            MOVE    "1"          TO  WRK-3SYU (2:1)
                            MOVE     IDX         TO  KAKKIDX
                        END-IF
-      *                精神
-                       IF  RECE62-KOHNUM (IDX)  =   "020"  OR  "021"
-                           MOVE    "1"          TO  WRK-3SYU (3:1)
-                           MOVE     IDX         TO  SESNIDX
+      *
+                       IF      RECE62-SRYYM <   WRK-CONS-SRYYM-200604
+      *                    精神
+                           IF  RECE62-KOHNUM (IDX)  =   "020"  OR  "021"
+                               MOVE    "1"          TO  WRK-3SYU (3:1)
+                               MOVE     IDX         TO  SESNIDX
+                           END-IF
+                       ELSE
+      *                    自立支援法
+                           IF  RECE62-KOHNUM (IDX)  =   "020"  OR  "021"
+                                                    OR  "015"  OR  "016"
+                               MOVE    "1"          TO  WRK-3SYU (3:1)
+                               MOVE     IDX         TO  SESNIDX
+                           END-IF
                        END-IF
                    END-PERFORM
       *    
