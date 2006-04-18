@@ -163,3 +163,5 @@
                     PIC X(2)    OCCURS  4 TIMES.
             02  HCRCP403-TITLE  PIC X(8).
             02  HCRCP403-TITLE1 PIC X(2).
+            02  HCRCP403-TITLE2
+                    PIC X(2)    OCCURS  4 TIMES.

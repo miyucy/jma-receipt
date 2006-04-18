@@ -160,3 +160,5 @@
                     PIC X(2)    OCCURS  4 TIMES.
             02  HCN07-TITLE PIC X(8).
             02  HCN07-TITLE1    PIC X(2).
+            02  HCN07-TITLE2
+                    PIC X(2)    OCCURS  4 TIMES.
