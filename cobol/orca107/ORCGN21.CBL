@@ -404,9 +404,9 @@
                GO  TO  320-N22-SET-EXT
            END-IF
       *
-      *     IF      SPA-GMN-PHOTO   NOT =   SPACE
-      *         PERFORM 430-GAZOCHK-SEC
-      *     END-IF
+           IF      SPA-GMN-PHOTO   NOT =   SPACE
+               PERFORM 430-GAZOCHK-SEC
+           END-IF
            .
       *
        320-N22-SET-EXT.
@@ -1825,6 +1825,11 @@
            END-IF
       *----(00.01.04)--ADD-END------
       *----(00.01.02)--ADD-END------
+           IF      SPA-GMN-PHOTO   NOT =   SPACE
+               PERFORM 430-GAZOCHK-SEC
+           END-IF
+           MOVE    SPACE           TO  SPA-ERRCD
+           MOVE    4               TO  SPA-GMN-CUR
            .
        800-YAKUJYO-SET-EXT.
            EXIT.
