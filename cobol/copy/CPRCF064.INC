@@ -116,7 +116,7 @@
            03  RECE64-NANBYO-COMMENT      PIC  X(01).
       *リハビリ（障害児（者））
            03  RECE64-SYOGAI-COMMENT      PIC  X(01).
-      *リハビリ（障害児（者））
+      *リハビリ（摂食）
            03  RECE64-SESSYOKU-COMMENT    PIC  X(01).
       *介達牽引
            03  RECE64-KAITATU-COMMENT     PIC  X(01).
