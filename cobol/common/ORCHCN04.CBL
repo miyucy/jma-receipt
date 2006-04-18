@@ -739,8 +739,7 @@
                                        OR  "96"
       *        自費は１行１明細とする
                COMPUTE TBL-JIHIMONEY(IDX-S)
-                                       =  (SRY-JIHIMONEY(IDXA)
-                                       *   SRY-SRYSURYO (IDXA))
+                                       =   SRY-JIHIMONEY(IDXA)
                                        *   WRK-KAISU
                MOVE    ZERO                TO  TBL-SURYO (IDX-S)
            END-IF
