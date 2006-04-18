@@ -1329,7 +1329,7 @@
                MOVE    WRK-DBPATH          TO  MCP-PATHNAME
                PERFORM 920-SANTEI-READ-SEC
            END-PERFORM
-           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    "tbl_santei_prv"    TO  MCP-TABLE
            MOVE    WRK-DBPATH          TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
