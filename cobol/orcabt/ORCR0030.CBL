@@ -2786,10 +2786,10 @@
                    MOVE    1    TO    FLG-RYOYO-COM
               END-IF
       *
-              IF   SRY-SRYCD(IDX2)    =     CONS-NIKOCHIN-COMMENT
+              IF  (SRY-SRYCD(IDX2)    =     CONS-NIKOCHIN-COMMENT
                                       OR    CONS-NIKOCHIN2-COMMENT
-                                      OR    CONS-NIKOCHIN3-COMMENT
-              AND  FLG-NIKOCHIN-COM   =     ZERO
+                                      OR    CONS-NIKOCHIN3-COMMENT)
+              AND (FLG-NIKOCHIN-COM   =     ZERO                  )
                    MOVE   "1"   TO    RECE04-FLG-NIKOCHIN-COMMENT
               END-IF
               IF   SRY-SRYCD(IDX2)    =     CONS-NIKOCHIN4-COMMENT
@@ -2797,9 +2797,9 @@
                    MOVE    1    TO    FLG-NIKOCHIN-COM
               END-IF
       *
-              IF   SRY-SRYCD(IDX2)    =     CONS-ZENSOKU-COMMENT
-                                      OR    CONS-ZENSOKU2-COMMENT
-              AND  FLG-ZENSOKU-COM    =     ZERO
+              IF  (SRY-SRYCD(IDX2)    =     CONS-ZENSOKU-COMMENT
+                                      OR    CONS-ZENSOKU2-COMMENT)
+              AND (FLG-ZENSOKU-COM    =     ZERO                 )
                    MOVE   "1"   TO    RECE04-FLG-ZENSOKU-COMMENT
               END-IF
               IF   SRY-SRYCD(IDX2)    =     CONS-ZENSOKU3-COMMENT
