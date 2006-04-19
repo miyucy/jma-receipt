@@ -1580,8 +1580,8 @@
                            END-IF
                        ELSE
       *                    ¼«Î©»Ù±çË¡
-                           IF  RECE62-KOHNUM (IDX)  =   "020"  OR  "021"
-                                                    OR  "015"  OR  "016"
+                           IF  RECE62-KOHNUM (IDX)  =   "021"  OR
+                                                        "015"  OR  "016"
                                MOVE    "1"          TO  WRK-3SYU (3:1)
                                MOVE     IDX         TO  SESNIDX
                            END-IF
