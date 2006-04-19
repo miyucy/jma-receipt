@@ -1,3 +1,6 @@
+delete from tbl_nyuksnchk where nyuinkbn = '055' and ksnkbn = '403' and yukostymd = '20060401';
+delete from tbl_nyuksnchk where nyuinkbn = '056' and ksnkbn = '403' and yukostymd = '20060401';
+delete from tbl_nyuksnchk where nyuinkbn = '142' and ksnkbn = '403' and yukostymd = '20060401';
 COPY "tbl_nyuksnchk" FROM stdin;
 055	403	20060401	99999999	1			        	        	      
 056	403	20060401	99999999	1			        	        	      
