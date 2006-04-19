@@ -56,6 +56,8 @@
                        09  LNK-NYURECEDEN-SRYSKB     PIC  X(02).
       *診療行為コード
                        09  LNK-NYURECEDEN-SRYCD      PIC  X(09).
+      *数量
+                       09  LNK-NYURECEDEN-SURYO      PIC  9(01).
       *点数
                        09  LNK-NYURECEDEN-TEN        PIC  9(07).
       *回数
