@@ -57,6 +57,8 @@
                05  WRK-PARA-DRCD    PIC  X(05).
                05  WRK-PARA-HKNCOMBI
                                     PIC  X(04).
+               05  WRK-PARA-SINRYONAIYO
+                                    PIC  X(16).
       *
            03  WRK-IN               PIC X(01).
       *
@@ -135,6 +137,7 @@
                                             WRK-PARA-HOSPID
                                             WRK-PARA-DRCD
                                             WRK-PARA-HKNCOMBI
+                                            WRK-PARA-SINRYONAIYO
       *
       *???
            DISPLAY "PARA " WRK-PARA "##"
@@ -159,6 +162,7 @@
                                                SPA-SYSYMD
                                                WRK-PARA-DRCD
                                                WRK-PARA-HKNCOMBI
+                                               WRK-PARA-SINRYONAIYO 
                                                WRK-LF01-REC
       *
            MOVE    WRK-PARA-PTID       TO  FILE-PTID

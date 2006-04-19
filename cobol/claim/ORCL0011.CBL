@@ -542,6 +542,7 @@
        01  LNK-SYSYMD           PIC 9(08).
        01  LNK-DRCD             PIC X(05).
        01  LNK-HKNCOMBI         PIC X(04).
+       01  LNK-PARA-SINRYONAIYO PIC X(16).
       *
        01  WRK-LF01-REC. 
            COPY    "CPRLF001.INC"    REPLACING  //LF01//
@@ -557,6 +558,7 @@
                                                LNK-SYSYMD
                                                LNK-DRCD
                                                LNK-HKNCOMBI
+                                               LNK-PARA-SINRYONAIYO
                                                WRK-LF01-REC.
       *
       *****************************************************************
@@ -1322,6 +1324,10 @@
                            WRK-LF01-IJICD 
                END-IF
            END-IF
+      *
+      *    診察料コードを決定する
+           MOVE    LNK-PARA-SINRYONAIYO
+                                       TO  WRK-LF01-YYKMEMO
       *
            MOVE    1                  TO  FLG-END
       *
