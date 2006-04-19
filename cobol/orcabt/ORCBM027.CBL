@@ -40,6 +40,11 @@
       *  01.01.01    NACL-∆£∏∂    05/02/25   ÷Ã· ¨¬–±˛
       *
       *  02.08.01    NACL-∆£∏∂    06/02/20  ºÁ≤ ¬–±˛
+      *
+      *  £≤£∞£∞£∂«Ø£¥∑Ó≤˛¿µ¬–±˛
+      *  02.09.01    NACL-∆£∏∂    06/04/13  £≤£∞£∞£∂«Ø£¥∑Ó≤˛¿µ¬–±˛
+      *                                     HCM2LV03.red ¢™ HCM2Y.red 
+      *                                     MONFUNC¬–±˛
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -74,8 +79,9 @@
       *****COPY    "HCM2L.INC".
       *****COPY    "HCM2LV01.INC"  REPLACING  //HCM2LV01//
       *****COPY    "HCM2LV02.INC"  REPLACING  //HCM2LV02//
-           COPY    "HCM2LV03.INC"  REPLACING  //HCM2LV03//
-                                   BY         //HCM2L//.
+      *****COPY    "HCM2LV03.INC"  REPLACING  //HCM2LV03//
+      *****                        BY         //HCM2L//.
+           COPY    "HCM2Y.INC".
       *
       *    •π•—ŒŒ∞Ë
        01  STS-AREA.
@@ -94,13 +100,6 @@
        01  CNT-AREA.
            03  CNT-LINE            PIC 9(02).
            03  CNT-PAGE            PIC 9(03).
-      *
-      *    •∑•π•∆•‡ŒŒ∞Ë
-       01  SYS-AREA.
-           03  SYS-YMD.
-               05  SYS-YY          PIC 9(02).
-               05  SYS-MM          PIC 9(02).
-               05  SYS-DD          PIC 9(02).
       *
       *    ≈∫ª˙ŒŒ∞Ë
        01  IDX-AREA.
@@ -128,8 +127,6 @@
       *
            03  WRK-RECEERR             PIC X(200). 
       *
-           03  WRK-YMD               PIC X(07).
-      *
            03  WRK-Z9                PIC ZZZZZ.
            03  WRK-ZZ9               PIC ZZ,ZZZ,ZZZ.
            03  WRK-NISSUZ            PIC ZZZZZZ.
@@ -143,11 +140,6 @@
                05  WRK-HKNNAME       PIC X(40). 
       *
            COPY    "CPSHELLTBL.INC".
-      *     
-           COPY    "ORCA-DBPATH".
-      *
-      *    £≤£∞£∞£≥«Ø£¥∑Ó≤˛¿µ
-           03  WRK-CONS-SRYYM-200304   PIC X(06)   VALUE   "200304".
       *
       *****************************************************************
       *    •’•°•§•Î•Ï•§•¢•¶•»
@@ -200,7 +192,6 @@
       *
       *    £ƒ£¬∏°∫˜
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
       *
       *****************************************************************
       *    œ¢ÕÌ°°ŒŒ∞Ë
@@ -281,12 +272,15 @@
       *
        01  WRK-SYOKBN              PIC X(01).
       *
+       01  WRK-PRTFLG              PIC 9(01).
+      *
       ******************************************************************
       *
        PROCEDURE                       DIVISION
                                        USING   SUM-AREA
                                                WRK-PARA
                                                WRK-SYOKBN
+                                               WRK-PRTFLG
            .
       *
       *****************************************************************
@@ -353,6 +347,9 @@
            INITIALIZE                  SYS-1001-REC
            MOVE    "1001"              TO  SYS-1001-KANRICD
            MOVE    "*"                 TO  SYS-1001-KBNCD
+           MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-1001-STYUKYMD (1:6)
+           MOVE    "01"                TO  SYS-1001-STYUKYMD (7:2)
+           MOVE    SYS-1001-STYUKYMD   TO  SYS-1001-EDYUKYMD 
            MOVE    SYS-1001-REC        TO  MCPDATA-REC
            PERFORM 800-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -374,6 +371,9 @@
            INITIALIZE                  SYS-1002-REC
            MOVE    "1002"              TO  SYS-1002-KANRICD
            MOVE    "*"                 TO  SYS-1002-KBNCD
+           MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-1002-STYUKYMD (1:6)
+           MOVE    "01"                TO  SYS-1002-STYUKYMD (7:2)
+           MOVE    SYS-1002-STYUKYMD   TO  SYS-1002-EDYUKYMD 
            MOVE    SYS-1002-REC        TO  MCPDATA-REC
            PERFORM 800-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -418,6 +418,11 @@
                        MOVE    "1005"          TO  SYS-1005-KANRICD
                        MOVE    SUM-TBL-SRYKA (IDX3)
                                                TO  SYS-1005-KBNCD
+                       MOVE    LNK-PRTKANRI-SRYYM
+                                               TO SYS-1005-STYUKYMD(1:6)
+                       MOVE    "01"            TO SYS-1005-STYUKYMD(7:2)
+                       MOVE    SYS-1005-STYUKYMD
+                                               TO  SYS-1005-EDYUKYMD 
                        MOVE    SYS-1005-REC    TO  MCPDATA-REC
                        PERFORM 800-SYSKANRI-READ-SEC
                        IF      FLG-SYSKANRI    =   ZERO
@@ -478,8 +483,13 @@
                WHEN    1
                    MOVE    "§Ω§Œ¬æ§Œ•Ï•ª"      TO  HCM2K-TITLE  
                WHEN    2
-                   MOVE    "∫ﬂ¡Ìø«§ﬁ§ø§œ∫ﬂ∞Â¡Ì§ÚªªƒÍ§∑§ø•Ï•ª"
-                                               TO  HCM2K-TITLE     
+                   IF      WRK-PRTFLG          =   1
+                       MOVE    "∫ﬂ¡Ìø«§ﬁ§ø§œ∫ﬂ∞Â¡Ì§ÚªªƒÍ§∑§ø•Ï•ª"
+                                                   TO  HCM2K-TITLE
+                   ELSE   
+                       MOVE    "∫ﬂ∞Â¡Ì¥…§ﬁ§ø§œ∫ﬂ∞Â¡Ì§ÚªªƒÍ§∑§ø•Ï•ª"
+                                                   TO  HCM2K-TITLE
+                   END-IF
            END-EVALUATE
       *
            EVALUATE    WRK-SYOKBN
@@ -497,24 +507,35 @@
       *****************************************************************
        310-HEAD-HEN-02-SEC          SECTION.
       *
-           INITIALIZE                      HCM2L
+           INITIALIZE                      HCM2Y
       *    
-           MOVE    SYS-1001-HOSPCDN    TO  HCM2L-HOSPCD 
+           MOVE    SYS-1001-HOSPCDN    TO  HCM2Y-HOSPCD 
       *
            EVALUATE    IDX1
                WHEN    1
-                   MOVE    "§Ω§Œ¬æ§Œ•Ï•ª"      TO  HCM2L-TITLE  
+                   MOVE    "§Ω§Œ¬æ§Œ•Ï•ª"      TO  HCM2Y-TITLE  
                WHEN    2
-                   MOVE    "∫ﬂ¡Ìø«§ﬁ§ø§œ∫ﬂ∞Â¡Ì§ÚªªƒÍ§∑§ø•Ï•ª"
-                                               TO  HCM2L-TITLE     
+                   IF      WRK-PRTFLG          =   1
+                       MOVE    "∫ﬂ¡Ìø«§ﬁ§ø§œ∫ﬂ∞Â¡Ì§ÚªªƒÍ§∑§ø•Ï•ª"
+                                                   TO  HCM2Y-TITLE     
+                   ELSE   
+                       MOVE    "∫ﬂ∞Â¡Ì¥…§ﬁ§ø§œ∫ﬂ∞Â¡Ì§ÚªªƒÍ§∑§ø•Ï•ª"
+                                                   TO  HCM2Y-TITLE
+                   END-IF
            END-EVALUATE
       *
            EVALUATE    WRK-SYOKBN
                WHEN    "2"
-                   MOVE    "°  ÷Ã· ¨°À"  TO  HCM2L-TITLE1
+                   MOVE    "°  ÷Ã· ¨°À"  TO  HCM2Y-TITLE1
            END-EVALUATE           
       *
-           MOVE    SYS-1005-SRYKANAME    TO  HCM2L-SRYKA
+           IF      WRK-PRTFLG          =   1
+               MOVE    "ø©ªˆ∆¸øÙ"          TO  HCM2Y-TITLE2
+           ELSE   
+               MOVE    "ø©ªˆ≤ÛøÙ"          TO  HCM2Y-TITLE2
+           END-IF
+      *
+           MOVE    SYS-1005-SRYKANAME  TO  HCM2Y-SRYKA
       *
            .
        310-HEAD-HEN-02-EXT.
@@ -640,24 +661,24 @@
                        UNTIL   IDY >       3
                    MOVE    SUM-ROU-KENSU    (IDX3 IDX1 IDX IDY) 
                                            TO  WRK-KENSUZ
-                   MOVE    WRK-KENSUZ      TO  HCM2L-ROU-KENSU (IDX IDY)
+                   MOVE    WRK-KENSUZ      TO  HCM2Y-ROU-KENSU (IDX IDY)
                    IF      IDY                 <   3
                        MOVE    SUM-ROU-NISSU    (IDX3 IDX1 IDX IDY)
                                            TO  WRK-NISSUZ 
-                       MOVE    WRK-NISSUZ  TO  HCM2L-ROU-NISSU (IDX IDY)
+                       MOVE    WRK-NISSUZ  TO  HCM2Y-ROU-NISSU (IDX IDY)
                        MOVE    SUM-ROU-TOTALTEN (IDX3 IDX1 IDX IDY)
                                            TO  WRK-TENSUZ
-                       MOVE    WRK-TENSUZ  TO  HCM2L-ROU-TENSU (IDX IDY)
+                       MOVE    WRK-TENSUZ  TO  HCM2Y-ROU-TENSU (IDX IDY)
                        MOVE    SUM-ROU-FTNMONEY (IDX3 IDX1 IDX IDY)
                                            TO  WRK-FTNMONEYZ
                        MOVE    WRK-FTNMONEYZ
-                                           TO  HCM2L-ROU-ITBFTN(IDX IDY)
+                                           TO  HCM2Y-ROU-ITBFTN(IDX IDY)
                    END-IF
                END-PERFORM    
            END-PERFORM
       *     
            MOVE    SUM-GOK-KENSU (IDX3 IDX1 2)  TO  WRK-KENSUZ
-           MOVE    WRK-KENSUZ              TO  HCM2L-KENSUG (1)    
+           MOVE    WRK-KENSUZ              TO  HCM2Y-KENSUG (1)    
       *
       *    ∏¯»Ò∫∆∑« ‘Ω∏ΩËÕ˝
            PERFORM VARYING IDX FROM    1   BY  1
@@ -665,16 +686,16 @@
                IF      SUM-ROU-KOH-KENSU (IDX3 IDX1 IDX)    >   ZERO
                    MOVE    SUM-ROU-KOH-KENSU    (IDX3 IDX1 IDX) 
                                            TO  WRK-KENSUZ
-                   MOVE    WRK-KENSUZ      TO  HCM2L-BKO-KENSU (IDX) 
+                   MOVE    WRK-KENSUZ      TO  HCM2Y-BKO-KENSU (IDX) 
                    MOVE    SUM-ROU-KOH-NISSU    (IDX3 IDX1 IDX)
                                            TO  WRK-NISSUZ 
-                   MOVE    WRK-NISSUZ      TO  HCM2L-BKO-NISSU (IDX) 
+                   MOVE    WRK-NISSUZ      TO  HCM2Y-BKO-NISSU (IDX) 
                    MOVE    SUM-ROU-KOH-ITBFTN   (IDX3 IDX1 IDX)
                                            TO  WRK-FTNMONEYZ
-                   MOVE    WRK-FTNMONEYZ   TO  HCM2L-BKO-ITBFTN(IDX)
+                   MOVE    WRK-FTNMONEYZ   TO  HCM2Y-BKO-ITBFTN(IDX)
                    MOVE    SUM-ROU-KOH-FTNMONEY (IDX3 IDX1 IDX)
                                            TO  WRK-FTNMONEYZ
-                   MOVE    WRK-FTNMONEYZ   TO  HCM2L-BKO-KOJYO (IDX)
+                   MOVE    WRK-FTNMONEYZ   TO  HCM2Y-BKO-KOJYO (IDX)
                END-IF
            END-PERFORM    
       *     
@@ -716,15 +737,15 @@
                            MOVE    SUM-KOH-KENSU (IDX3 IDX1 IDX IDX2)
                                            TO  WRK-KENSUZ        
                            MOVE    WRK-KENSUZ
-                                           TO  HCM2L-KOH-KENSU (IDX IDY)
+                                           TO  HCM2Y-KOH-KENSU (IDX IDY)
                            MOVE    SUM-KOH-TOTALTEN (IDX3 IDX1 IDX IDX2)
                                            TO  WRK-TENSUZ         
                            MOVE    WRK-TENSUZ
-                                           TO  HCM2L-KOH-TENSU (IDX IDY)
+                                           TO  HCM2Y-KOH-TENSU (IDX IDY)
                            MOVE    SUM-KOH-FTNMONEY (IDX3 IDX1 IDX IDX2)
                                            TO  WRK-FTNMONEYZ
                            MOVE    WRK-FTNMONEYZ
-                                           TO  HCM2L-KOH-ITBFTN(IDX IDY)
+                                           TO  HCM2Y-KOH-ITBFTN(IDX IDY)
                        END-IF
                    END-PERFORM
                    ADD     1                   TO  IDX2   
@@ -761,12 +782,14 @@
                                        TO    HKN-HKNNUM
            MOVE   HKNNUM-REC           TO    MCPDATA-REC
            MOVE   "DBSELECT"           TO    MCP-FUNC
-           MOVE   "HKNNUM-KEY2"        TO    ORC-DBPATH
-           CALL   "ORCMCPSUB"          USING MCPAREA
-                                              ORCMCPAREA
-                                              MCPDATA-REC
+           MOVE    "tbl_hknnum"        TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "HKNNUM-KEY2"       TO  ORC-DBPATH
+               MOVE    "tbl_hknnum"        TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 900-HKNNUM-READ-SEC
            ELSE
                MOVE    1                  TO  FLG-HKNNUM
@@ -807,7 +830,8 @@
                END-IF
       *
                IF      FLG-HKNNUM           =   ZERO
-                   MOVE    "HKNNUM-KEY2"       TO  ORC-DBPATH
+                   MOVE    "tbl_hknnum"        TO  MCP-TABLE
+                   MOVE    "key2"              TO  MCP-PATHNAME
                    PERFORM 900-HKNNUM-READ-SEC
                ELSE
                    MOVE    HKN-HBTNUM      TO  WRK-Z9
@@ -823,14 +847,11 @@
                END-IF 
            END-PERFORM
       *    
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "HKNNUM-KEY2"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_hknnum"        TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
       *
-           MOVE    WRK-KOHKBN          TO  HCM2L-KOHKBN (IDX IDY)
+           MOVE    WRK-KOHKBN          TO  HCM2Y-KOHKBN (IDX IDY)
            .
        3202-HKNNUM-HENSYU-EXT.
            EXIT.
@@ -843,10 +864,10 @@
       *    πÁ∑◊°¶¡ÌπÁ∑◊
       *
            MOVE    SUM-GOK-KENSU (IDX3 IDX1 3)  TO  WRK-KENSUZ
-           MOVE    WRK-KENSUZ              TO  HCM2L-KENSUG (2)
+           MOVE    WRK-KENSUZ              TO  HCM2Y-KENSUG (2)
       *
            MOVE    SUM-GOK-KENSU (IDX3 IDX1 4)  TO  WRK-GKENSUZ
-           MOVE    WRK-GKENSUZ             TO  HCM2L-GKENSU
+           MOVE    WRK-GKENSUZ             TO  HCM2Y-GKENSU
            .
        330-TERM-HEN-EXT.
            EXIT.
@@ -883,20 +904,21 @@
       *********MOVE    "HCM2L.red"         TO  SPRT-PRTID
       *********MOVE    "HCM2LV01.red"      TO  SPRT-PRTID
       *********MOVE    "HCM2LV02.red"      TO  SPRT-PRTID
-               MOVE    "HCM2LV03.red"      TO  SPRT-PRTID
-               MOVE    HCM2L               TO  SPRT-PRTDATA
+      *********MOVE    "HCM2LV03.red"      TO  SPRT-PRTID
+               MOVE    "HCM2Y.red"         TO  SPRT-PRTID
+               MOVE    HCM2Y               TO  SPRT-PRTDATA
            END-IF    
            EVALUATE    IDX1    ALSO    WRK-SYOKBN
                WHEN    1       ALSO    "1"                            
                    MOVE    "º“ ›¡Ì≥Á…Ω"        TO  SPRT-TITLE
                WHEN    2       ALSO    "1"                            
-                   MOVE    "º“ ›¡Ì≥Á…Ω° ∫ﬂ¡Ìø«≈˘°À"
+                   MOVE    "º“ ›¡Ì≥Á…Ω° ∫ﬂ∞Â¡Ì≈˘°À"
                                                TO  SPRT-TITLE
                WHEN    1       ALSO    "2"                            
                    MOVE    "º“ ›¡Ì≥Á…Ω°Œ ÷Ã· ¨°œ"
                                                TO  SPRT-TITLE
                WHEN    2       ALSO    "2"                            
-                   MOVE    "º“ ›¡Ì≥Á…Ω° ∫ﬂ¡Ìø«≈˘°À°Œ ÷Ã· ¨°œ"
+                   MOVE    "º“ ›¡Ì≥Á…Ω° ∫ﬂ∞Â¡Ì≈˘°À°Œ ÷Ã· ¨°œ"
                                                TO  SPRT-TITLE
            END-EVALUATE        
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
@@ -985,37 +1007,31 @@
       *****************************************************************
        800-SYSKANRI-READ-SEC           SECTION.
       *
-      *****MOVE    LNK-PRTKANRI-SKYYMD     TO  ORC-DBYMD
-           MOVE    LNK-PRTKANRI-SRYYM      TO  ORC-DBYMD (1:6)
-           MOVE    "01"                    TO  ORC-DBYMD (7:2)
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
                IF      MCP-RC              =   ZERO
-                   MOVE    ZERO            TO  FLG-SYSKANRI
+                   MOVE    ZERO                TO  FLG-SYSKANRI
                ELSE
-                   MOVE    1               TO  FLG-SYSKANRI
+                   MOVE    1                   TO  FLG-SYSKANRI
                END-IF
            ELSE
-               MOVE    1               TO  FLG-SYSKANRI
+               MOVE    1                   TO  FLG-SYSKANRI
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
       *
            .
        800-SYSKANRI-READ-EXT.
@@ -1027,10 +1043,9 @@
        900-HKNNUM-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  HKNNUM-REC
                MOVE    ZERO            TO  FLG-HKNNUM
@@ -1043,3 +1058,17 @@
        900-HKNNUM-READ-EXT.
            EXIT.
       *
+      *
+      *****************************************************************
+      *    •Ø•Ì°º•∫ΩËÕ˝
+      *****************************************************************
+       900-CLOSE-SEC                  SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       900-CLOSE-EXT.
+           EXIT.

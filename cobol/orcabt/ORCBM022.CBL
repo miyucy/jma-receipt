@@ -48,6 +48,9 @@
       *
       *  02.08.01    NACL-Æ£¸¶    06/02/20  ¼ç²ÊÂÐ±þ
       *                                     £²£°£°£³Ç¯£´·î°Ê¹ß¤Î¤ßºîÀ®
+      *
+      *  £²£°£°£¶Ç¯£´·î²þÀµÂÐ±þ
+      *  02.09.01    NACL-Æ£¸¶    06/04/13  £²£°£°£¶Ç¯£´·î²þÀµÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -140,7 +143,7 @@
       *    °ì»þÎÎ°è
        01  WRK-AREA.
            03  WRK-NYUGAIKBN       PIC X(01).
-      *    1:200303 2:200304
+      *    1:200603 2:200604
            03  WRK-PRTFLG          PIC 9(01).
       *
            03  WRK-RECEERR         PIC X(200). 
@@ -229,6 +232,8 @@
            03  WRK-CONS-SRYYM-200210   PIC X(06)   VALUE   "200210".
       *    £²£°£°£³Ç¯£´·î²þÀµ
            03  WRK-CONS-SRYYM-200304   PIC X(06)   VALUE   "200304".
+      *    £²£°£°£¶Ç¯£´·î²þÀµ
+           03  WRK-CONS-SRYYM-200604   PIC X(06)   VALUE   "200604".
       *     
            COPY    "ORCA-DBPATH".         
       *
@@ -376,6 +381,7 @@
            MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-2009-STYUKYMD (1:6)
            MOVE    "01"                TO  SYS-2009-STYUKYMD (7:2)
            MOVE    SYS-2009-STYUKYMD   TO  SYS-2009-EDYUKYMD
+           MOVE    SYS-2009-REC        TO  MCPDATA-REC
            PERFORM 800-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI    =   ZERO
                MOVE    MCPDATA-REC     TO  SYS-2009-REC
@@ -397,12 +403,14 @@
       *
            OPEN    OUTPUT              UPD-FILE
       *
+      *    ÊÖÌáÊ¬
            EVALUATE    WRK-PARA-SYOKBN
                WHEN    ZERO
                WHEN    "2"
                    MOVE    "2"         TO  WRK-SYOKBN
                    PERFORM 2001-SYOKBN-SYUKEI-SEC
            END-EVALUATE
+      *    Åö·î¡¦·îÃÙ¤ìÊ¬
            EVALUATE    WRK-PARA-SYOKBN
                WHEN    ZERO
                WHEN    "1"
@@ -431,80 +439,58 @@
       *
            MOVE    "2"                 TO  WRK-NYUGAIKBN
       *   
-      *****PERFORM VARYING WRK-PRTFLG  FROM    1   BY  1
-           PERFORM VARYING WRK-PRTFLG  FROM    2   BY  1
+           PERFORM VARYING WRK-PRTFLG  FROM    1   BY  1
                    UNTIL   WRK-PRTFLG  >       2
       *
-               IF      WRK-PRTFLG          =   2
-               AND      LNK-PRTKANRI-SRYYM <   WRK-CONS-SRYYM-200304
+               IF    ( WRK-PRTFLG          =   2                     )
+               AND   ( LNK-PRTKANRI-SRYYM  <   WRK-CONS-SRYYM-200604 )
                    CONTINUE
-               ELSE    
+               ELSE
                    PERFORM 2001-GAIRAI-SYUKEI-SEC
       *
                    IF      CNT-RECE10          >   ZERO 
                        IF      WRK-PARA-NYUGAIKBN  =   "1"
-                           IF      WRK-PRTFLG      =   1    
-                               CALL    "ORCBM024"      USING 
-                                                       SUM-AREA
-                                                       WRK-PARA
-                                                       WRK-NYUGAIKBN
-                                                       WRK-SYOKBN
-                           ELSE
-                               CALL    "ORCBM028"      USING 
-                                                       SUM-AREA
-                                                       WRK-PARA
-                                                       WRK-NYUGAIKBN
-                                                       WRK-SYOKBN
-                           END-IF
+                           CALL    "ORCBM028"      USING 
+                                                   SUM-AREA
+                                                   WRK-PARA
+                                                   WRK-NYUGAIKBN
+                                                   WRK-SYOKBN
+                                                   WRK-PRTFLG
                        ELSE
-                           IF      WRK-PRTFLG      =   1    
-                               CALL    "ORCBM023"      USING 
-                                                       SUM-AREA
-                                                       WRK-PARA
-                                                       WRK-SYOKBN
-                           ELSE    
-                               CALL    "ORCBM027"      USING 
-                                                       SUM-AREA
-                                                       WRK-PARA
-                                                       WRK-SYOKBN
-                           END-IF
+                           CALL    "ORCBM027"      USING 
+                                                   SUM-AREA
+                                                   WRK-PARA
+                                                   WRK-SYOKBN
+                                                   WRK-PRTFLG
                        END-IF
-                   END-IF    
-               END-IF
+                   END-IF
+               END-IF    
            END-PERFORM    
       *
       *    Æþ±¡Ê¬
       *
            MOVE    "1"                 TO  WRK-NYUGAIKBN
       *
-           IF      WRK-PARA-NYUGAIKBN  =   "1"
-           AND     FLG-ERR             =   ZERO
-      *****    PERFORM VARYING WRK-PRTFLG  FROM    1   BY  1
-               PERFORM VARYING WRK-PRTFLG  FROM    2   BY  1
+           IF    ( WRK-PARA-NYUGAIKBN  =   "1"  )
+           AND   ( FLG-ERR             =   ZERO )
+               PERFORM VARYING WRK-PRTFLG  FROM    1   BY  1
                        UNTIL   WRK-PRTFLG  >       2
-      *
-                   IF      WRK-PRTFLG          =   2
-                   AND      LNK-PRTKANRI-SRYYM <   WRK-CONS-SRYYM-200304
+                   IF    ( WRK-PRTFLG      =   2                     )
+                   AND   ( LNK-PRTKANRI-SRYYM
+                                           <   WRK-CONS-SRYYM-200604 )
                        CONTINUE
-                   ELSE    
+                   ELSE
                        PERFORM 2001-NYUIN-SYUKEI-SEC
       *
                        IF      CNT-RECE10          >   ZERO 
-                           IF      WRK-PRTFLG      =   1    
-                               CALL    "ORCBM024"      USING 
+                           CALL    "ORCBM028"      USING 
                                                        SUM-AREA
                                                        WRK-PARA
                                                        WRK-NYUGAIKBN
                                                        WRK-SYOKBN
-                           ELSE
-                               CALL    "ORCBM028"      USING 
-                                                       SUM-AREA
-                                                       WRK-PARA
-                                                       WRK-NYUGAIKBN
-                                                       WRK-SYOKBN
-                           END-IF
+                                                       WRK-PRTFLG
                        END-IF
-                   END-IF    
+                   END-IF
                END-PERFORM
            END-IF
            .
@@ -850,8 +836,8 @@
       *
       *    ¸øÈñÉéÃ´Ê¬     
            IF      RECE10-KOHNUM (1)   NOT =   SPACE
-               IF      RECE10-RJNHKNNUM    NOT =   SPACE
-               OR      RECE10-HKNNUM       NOT =   SPACE
+               IF    ( RECE10-RJNHKNNUM    NOT =   SPACE )
+               OR    ( RECE10-HKNNUM       NOT =   SPACE )
       *            ¸øÈñ¤È°åÊÝ¡¦Ï·¿Í¤ÎÊ»ÍÑÍó
                    MOVE    1               TO  IDX1
                    IF      IDXX            >   ZERO
@@ -1393,12 +1379,12 @@
            MOVE    WRK-PARA-HOSPID     TO  RECE10-HOSPID
            MOVE    LNK-PRTKANRI-SRYYM  TO  RECE10-SKYYM
            IF      WRK-PRTFLG          =   1
-               MOVE    WRK-CONS-SRYYM-200210
-                                           TO  RECE10-SRYYM
                MOVE    WRK-CONS-SRYYM-200304
+                                           TO  RECE10-SRYYM
+               MOVE    WRK-CONS-SRYYM-200604
                                            TO  RECE10-XXSRYYM
            ELSE
-               MOVE    WRK-CONS-SRYYM-200304
+               MOVE    WRK-CONS-SRYYM-200604
                                            TO  RECE10-SRYYM
                MOVE    999999              TO  RECE10-XXSRYYM
            END-IF
@@ -1472,20 +1458,21 @@
       *    ´µ¼Ô¥Þ¥¹¥¿ÆÉ¹þ
       *****************************************************************
        800-PTINF-READ-SEC         SECTION.
-      *
+      *  
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "PTINF-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_ptinf"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "PTINF-KEY"         TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+               MOVE    "tbl_ptinf"         TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO                TO  FLG-PTINF
                    MOVE    MCPDATA-REC         TO  PTINF-REC
@@ -1498,12 +1485,9 @@
                INITIALIZE                  PTINF-REC
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "PTINF-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_ptinf"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
       *
            .
        800-PTINF-READ-EXT.

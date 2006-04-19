@@ -55,7 +55,13 @@
       *
       *  02.08.01    NACL-藤原    06/02/20  主科対応
       *
+      *２００６年４月改正対応
       *  02.09.01    NACL-藤原    06/04/14  ２００６年４月改正対応
+      *                                     「１３指導」「１３医学管理」
+      *                                     「食事日数」「食事回数」
+      *                                      の診療年月による表示の変更
+      *                                     「在宅寝たきり等」の表示を
+      *                                     「在医総等」に変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1210,7 +1216,7 @@
            MOVE    RECE10-KYURATE  TO  SPA-H01GMN-KYURATE         
       *
            IF      RECE10-ZAITAKU  =   "1"
-               MOVE    "在宅寝たきり等"    TO  SPA-H01GMN-ZAITAKU
+               MOVE    "在医総等"          TO  SPA-H01GMN-ZAITAKU
            END-IF
       *
            IF      RECE10-RECESYUBETU  =   "6666"
