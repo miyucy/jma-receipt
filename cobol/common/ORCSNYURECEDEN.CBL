@@ -3218,37 +3218,37 @@
                                EVALUATE   WRK-SKJ7-SKJFTN-SU(IDX1)
                                    WHEN   1
                                       MOVE  210  TO 
-                                            LNK-NYURECEDEN-TEN(3 IDX2 1)
+                                         LNK-NYURECEDEN-TEN(3 IDX2 IDX4)
                                    WHEN   2
                                       MOVE  420  TO 
-                                            LNK-NYURECEDEN-TEN(3 IDX2 1)
+                                         LNK-NYURECEDEN-TEN(3 IDX2 IDX4)
                                    WHEN   3
                                       MOVE  630  TO 
-                                            LNK-NYURECEDEN-TEN(3 IDX2 1)
+                                         LNK-NYURECEDEN-TEN(3 IDX2 IDX4)
                                END-EVALUATE
                             WHEN   "197001010"
                                EVALUATE   WRK-SKJ7-SKJFTN-SU(IDX1)
                                    WHEN   1
                                       MOVE  160  TO 
-                                            LNK-NYURECEDEN-TEN(3 IDX2 1)
+                                         LNK-NYURECEDEN-TEN(3 IDX2 IDX4)
                                    WHEN   2
                                       MOVE  320  TO 
-                                            LNK-NYURECEDEN-TEN(3 IDX2 1)
+                                         LNK-NYURECEDEN-TEN(3 IDX2 IDX4)
                                    WHEN   3
                                       MOVE  480  TO 
-                                            LNK-NYURECEDEN-TEN(3 IDX2 1)
+                                         LNK-NYURECEDEN-TEN(3 IDX2 IDX4)
                                END-EVALUATE
                             WHEN   "197001110"
                                EVALUATE   WRK-SKJ7-SKJFTN-SU(IDX1)
                                    WHEN   1
                                       MOVE  100  TO 
-                                            LNK-NYURECEDEN-TEN(3 IDX2 1)
+                                         LNK-NYURECEDEN-TEN(3 IDX2 IDX4)
                                    WHEN   2
                                       MOVE  200  TO 
-                                            LNK-NYURECEDEN-TEN(3 IDX2 1)
+                                         LNK-NYURECEDEN-TEN(3 IDX2 IDX4)
                                    WHEN   3
                                       MOVE  300  TO 
-                                            LNK-NYURECEDEN-TEN(3 IDX2 1)
+                                         LNK-NYURECEDEN-TEN(3 IDX2 IDX4)
                                END-EVALUATE
                         END-EVALUATE
                         MOVE  WRK-SKJ7-KAISU(IDX1)  TO
