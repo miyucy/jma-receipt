@@ -5083,6 +5083,20 @@
                                       TO RECE65-CDKBN-KOUBAN(IDX4)
                MOVE    TNS-KOUHYOJYUNNUM  
                                       TO RECE65-KOUHYOJYUNNUM(IDX4)
+      *
+               IF      NACCT-ZAISKBKBN      =       "7"
+                 MOVE  TNS-SRYSYUKBN  TO RECE65-SRYSYUKBN-X(IDX4)
+                 MOVE  TNS-KOKUJISKBKBN1
+                                      TO RECE65-KOKUJISKBKBN1(IDX4)
+                 MOVE  TNS-KZMCOMPSIKIBETU
+                                      TO RECE65-KZMCOMPSIKIBETU(IDX4)
+                 MOVE  TNS-CHUKSNCD   TO RECE65-CHUKSNCD(IDX4)
+                 MOVE  TNS-CHUKSNTUBAN
+                                      TO RECE65-CHUKSNTUBAN(IDX4)
+                 MOVE  TNS-KENTAICOMMENT
+                                      TO RECE65-KENTAICOMMENT(IDX4)
+               END-IF
+      *
                IF    ((NSRY-SRYCD    (IDX2)(1:1)     =   "8"  )  OR
                       (NSRY-SRYCD    (IDX2)(1:3)     =   "008"))
                AND   ( NSRY-INPUTNUM (IDX2)      NOT =   ZERO  )
