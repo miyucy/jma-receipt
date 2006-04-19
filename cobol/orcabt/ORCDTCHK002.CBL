@@ -2318,8 +2318,9 @@
       *****************************************************************
        200111-TSRYKA-SYOSIN-HEN-SEC    SECTION.
       *
-           IF    ( TNS-JITUDAY     =   2 )
-            AND  ( TNS-DAYCNT      =   1 )
+           IF   (( TNS-JITUDAY     =   2 )
+            AND  ( TNS-DAYCNT      =   1 ))
+            OR  (  TNS-SRYCD       =   "111011810" )
       *
                PERFORM VARYING IDX2    FROM    1   BY  1
                        UNTIL ( IDX2    >   31 )
@@ -2329,21 +2330,25 @@
                        MOVE    1   TO  TSRYKA-SYOSIN-DAY
                                                  (IDX-TSRYKA IDX2)
       *
-                       MOVE    ORCBSD01-SRYYM  TO  WRK-SYOSIN-CHK-YMD
-                       MOVE    IDX2            TO  WRK-SYOSIN-CHK-DD
-      *
-                       IF    ( TSRYKA-SYOSIN-YMD (IDX-TSRYKA)
-                                           =   SPACE )
-                               MOVE    WRK-SYOSIN-CHK-YMD
-                                           TO  TSRYKA-SYOSIN-YMD 
-                                                 (IDX-TSRYKA)
+                       IF    ( TNS-SRYCD       =   "111011810" )
+                           CONTINUE
                        ELSE
-                           IF    ( TSRYKA-SYOSIN-YMD
-                                                 (IDX-TSRYKA)
-                                           <   WRK-SYOSIN-CHK-YMD )
+                           MOVE    ORCBSD01-SRYYM
+                                               TO  WRK-SYOSIN-CHK-YMD
+                           MOVE    IDX2        TO  WRK-SYOSIN-CHK-DD
+      *
+                           IF    ( TSRYKA-SYOSIN-YMD (IDX-TSRYKA)
+                                               =   SPACE )
                                MOVE    WRK-SYOSIN-CHK-YMD
-                                           TO  TSRYKA-SYOSIN-YMD 
-                                                 (IDX-TSRYKA)
+                                               TO  TSRYKA-SYOSIN-YMD
+                                                       (IDX-TSRYKA)
+                           ELSE
+                               IF    ( TSRYKA-SYOSIN-YMD (IDX-TSRYKA)
+                                           <   WRK-SYOSIN-CHK-YMD )
+                                   MOVE    WRK-SYOSIN-CHK-YMD
+                                               TO  TSRYKA-SYOSIN-YMD
+                                                       (IDX-TSRYKA)
+                               END-IF
                            END-IF
                        END-IF
       *
