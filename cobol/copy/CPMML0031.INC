@@ -105,6 +105,12 @@
                05  FILLER               PIC  X(3)   VALUE   "067" .
                05  FILLER               PIC  X(40)  
                    VALUE   "¬‡ø¶º‘" .
+               05  FILLER               PIC  X(3)   VALUE   "068" .
+               05  FILLER               PIC  X(40)  
+                   VALUE   "∆√Œ≈»Ò" .
+               05  FILLER               PIC  X(3)   VALUE   "069" .
+               05  FILLER               PIC  X(40)  
+                   VALUE   "¬‡∆√Œ≈»Ò" .
                05  FILLER               PIC  X(3)   VALUE   "063" .
                05  FILLER               PIC  X(40)  
                    VALUE   "∆√ƒÍ∑Ú ›" .
@@ -130,6 +136,6 @@
                05  FILLER               PIC  X(40)  
                    VALUE   "º´»Ò£≥" .
            02  MML0031-R  REDEFINES   MML0031-T.
-             03  MML0031-TX           OCCURS  40.
+             03  MML0031-TX           OCCURS  42.
                05  MML0031-HOKEN      PIC  X(3).
                05  MML0031-NAME       PIC  X(40).
