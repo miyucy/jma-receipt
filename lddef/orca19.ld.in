@@ -27,6 +27,7 @@ db	{
 	tbl_ptinf;
 	tbl_ptnyuinrrk;
 	tbl_lock;
+	tbl_ldmap;
 };
 
 /* #include "orcadb.inc" */
