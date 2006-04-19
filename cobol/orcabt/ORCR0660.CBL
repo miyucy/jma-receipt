@@ -1916,7 +1916,6 @@
                 MOVE    RECE62-HKNJANUM-KEY  TO  RECE659-HKNJANUM
                 MOVE    RECE62-HOJOKBN-KEY   TO  RECE659-HOJOKBN
                 MOVE    RECE62-TEKSTYMD      TO  RECE659-TEKSTYMD
-      ***       MOVE    99999996             TO  RECE659-ZAINUM
                 MOVE    WRK-ZAINUM           TO  RECE659-ZAINUM
                 COMPUTE WRK-KOHBUNRI  =  IDX14  -  1
                 MOVE    WRK-KOHBUNRI         TO  RECE659-KOHBUNRI
@@ -1953,12 +1952,12 @@
            MOVE    RECE62-HKNJANUM-KEY TO  RECE649-HKNJANUM
            MOVE    RECE62-HOJOKBN-KEY  TO  RECE649-HOJOKBN
            MOVE    RECE62-TEKSTYMD     TO  RECE649-TEKSTYMD
-      ***  MOVE    99999996            TO  RECE649-ZAINUM
            MOVE    WRK-ZAINUM          TO  RECE649-ZAINUM
            COMPUTE WRK-KOHBUNRI  =  IDX14  -  1
            MOVE    WRK-KOHBUNRI        TO  RECE649-KOHBUNRI
            MOVE    WRK-SRYKBN          TO  RECE649-SRYKBN
-           MOVE    WRK-HKNCOMBI-JIDO   TO  RECE649-HKNCOMBI
+           MOVE    TBL-HASSYO-HKNCOMBI(IDX14)
+                                       TO  RECE649-HKNCOMBI
       *
            MOVE    WRK-CNT-MEISAI      TO  RECE649-MEISAISU
       *

@@ -1626,7 +1626,6 @@
                 MOVE    RECE82-RECEKA       TO  RECE859-RECEKA
                 MOVE    RECE82-HKNID        TO  RECE859-HKNID
                 MOVE    RECE82-TEKSTYMD     TO  RECE859-TEKSTYMD
-      ***       MOVE    99999996            TO  RECE859-ZAINUM
                 MOVE    WRK-ZAINUM          TO  RECE859-ZAINUM
                 MOVE    WRK-SRYKBN          TO  RECE859-SRYKBN
                 ADD     1                   TO  WRK-RENNUM
@@ -1658,7 +1657,6 @@
            MOVE    RECE82-RECEKA       TO  RECE849-RECEKA
            MOVE    RECE82-HKNID        TO  RECE849-HKNID
            MOVE    RECE82-TEKSTYMD     TO  RECE849-TEKSTYMD
-      ***  MOVE    99999996            TO  RECE849-ZAINUM
            MOVE    WRK-ZAINUM          TO  RECE849-ZAINUM
            MOVE    WRK-SRYKBN          TO  RECE849-SRYKBN
       *

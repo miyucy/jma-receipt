@@ -32,6 +32,7 @@
       *  中止処理追加
       *  01.01.01    NACL-藤原    04/10/13  中止処理の追加
       *  01.01.02    NACL-門脇    05/07/15  自賠責従来様式対応
+      *  02.09.01    NACL-門脇    06/04/13  ２００６年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -167,6 +168,8 @@
            03  FLG-END             PIC 9(01).
            03  FLG-RECE84          PIC 9(01).
            03  FLG-RECE85          PIC 9(01).
+           03  FLG-WRKRECE85       PIC 9(01).
+           03  FLG-SYSKANRI        PIC 9(01).
       *    
       *    カウント領域
        01  CNT-AREA.
@@ -178,7 +181,10 @@
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
+           03  IDZ                 PIC 9(04).
+           03  IDW                 PIC 9(04).
            03  DAY-IDX             PIC 9(02).
+           03  IDX-RECE85          PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -191,6 +197,24 @@
                05  WRK-PARA-SHELLID            PIC  X(08).
       *
            03  WRK-RECEERR         PIC X(200).
+           03  WRK-RENNUM          PIC 9(02).
+           03  WRK-CNT-MEISAI      PIC 9(04).
+      *
+       01  WRK-RECE85-REC. 
+           COPY    "CPRCF085.INC"  REPLACING   //RECE85//
+                                   BY          //WRK-RECE85//.
+      *
+       01  WRK-RECE85XX-REC.
+         02 WRK-RECE85XX-TBL       OCCURS 50.
+           COPY    "CPRCF085.INC"  REPLACING   //RECE85//
+                                   BY          //WRK-RECE85XX//.
+      *
+       01  MAX-MEISAISU            PIC 9(07).
+      *
+       01  WRK-FREE-AREA2.
+           03  WRK-FREEINF2                  OCCURS 50.
+               05  WK-FREE-YUKOKETA2         PIC  9(02).
+               05  WK-FREE-NAME2             PIC  X(200).
       *
       *    日付全角変換領域
        01  TBL-TUKI-AREA.
@@ -262,6 +286,12 @@
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
+      *
+      *    システム管理マスタ
+           COPY    "CPSYSKANRI.INC".
+      *
+      *    診療科目情報
+           COPY    "CPSK1005.INC".
       *
       *****************************************************************
       *    サブプロ用領域
@@ -414,6 +444,15 @@
                OR     ( RECE82-TEKSTYMD  NOT =   RECE84-TEKSTYMD     )
       *
                EVALUATE      RECE84-SRYKBN
+                   WHEN      "11"
+                      IF    RECE84-FLG-SYODOU-COMMENT   =    "1"
+                          PERFORM    2001-SYODOU-COMMENT-SEC
+                      ELSE
+                          MOVE       RECE84-REC    TO   RECE841-REC
+                          WRITE      RECE841-REC
+                          ADD     1          TO      CNT-RECE84
+                          PERFORM    2002-RECE85-TENSOU-SEC
+                      END-IF
                    WHEN      "80"
                       IF  ( RECE82-KYUKYU-PRTKBN    =      1         )
                       AND ( RECE84-SRYCDTOTAL(6:9)  =   CONS-KYUKYU  )
@@ -501,6 +540,170 @@
       *    
            .
        2001-KYUKYU-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    初診（同日複数診療科）のコメント編集
+      *****************************************************************
+       2001-SYODOU-COMMENT-SEC          SECTION.
+      *
+           MOVE       ZERO       TO   IDZ
+           INITIALIZE            WRK-FREE-AREA2
+      *
+           PERFORM   VARYING   IDX    FROM   1   BY   1
+                      UNTIL   (IDX                       >   10  )
+                       OR     (RECE84-SYODOU-SRYKA(IDX)  =  SPACE)
+      *
+             ADD      1                  TO  IDZ
+             MOVE    "複初算定診療科："  TO  WK-FREE-NAME2(IDZ)(1:16)
+      *      診療科の取得
+             INITIALIZE                      SYS-1005-REC
+             MOVE    "1005"              TO  SYS-1005-KANRICD
+             MOVE    RECE84-SYODOU-SRYKA(IDX)
+                                         TO  SYS-1005-KBNCD
+             MOVE    RECE82-SRYYM        TO  ORC-DBYMD(1:6)
+             MOVE    "01"                TO  ORC-DBYMD(7:2)
+             MOVE    SYS-1005-REC        TO  MCPDATA-REC
+             MOVE    "DBSELECT"          TO  MCP-FUNC
+             MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+             CALL    "ORCMCPSUB"         USING   MCPAREA
+                                                 ORCMCPAREA
+                                                 MCPDATA-REC
+             IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY"    TO  ORC-DBPATH
+               PERFORM  900-SYSKANRI-READ-SEC
+               IF      FLG-SYSKANRI      =   ZERO
+                  MOVE  SYS-1005-SRYKANAME(1:40)
+                                         TO  WK-FREE-NAME2(IDZ)(17:40)
+               END-IF
+             END-IF
+      *
+             INITIALIZE                        MCPAREA
+             MOVE    "DBCLOSECURSOR"   TO      MCP-FUNC
+             MOVE    "SYSKANRI-KEY"    TO      ORC-DBPATH
+             CALL    "ORCMCPSUB"       USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+             PERFORM   VARYING   IDW   FROM   200   BY  -1
+                        UNTIL    IDW   <   1
+                IF   WK-FREE-NAME2(IDZ)(IDW:1)  NOT =  SPACE
+                     COMPUTE WK-FREE-YUKOKETA2(IDZ) =  IDW  /   2
+                     MOVE    1   TO    IDW
+                END-IF
+             END-PERFORM
+      *
+           END-PERFORM
+      *
+           INITIALIZE                      RECE85-REC
+           MOVE    RECE84-HOSPID       TO  RECE85-HOSPID
+           MOVE    RECE84-SRYYM        TO  RECE85-SRYYM
+           MOVE    RECE84-NYUGAIKBN    TO  RECE85-NYUGAIKBN
+           MOVE    RECE84-PTID         TO  RECE85-PTID
+           MOVE    RECE84-RECEKA       TO  RECE85-RECEKA
+           MOVE    RECE84-HKNID        TO  RECE85-HKNID
+           MOVE    RECE84-TEKSTYMD     TO  RECE85-TEKSTYMD
+           MOVE    RECE84-ZAINUM       TO  RECE85-ZAINUM
+           START   RECE85-FILE
+                 KEY IS    >=   RECE85-KEY
+                 INVALID
+                     MOVE    1         TO  FLG-RECE85
+                 NOT INVALID
+                     PERFORM 990-RECE85-NEXT-SEC
+                     MOVE  RECE85-REC  TO  WRK-RECE85-REC
+           END-START
+      *
+      *    ＲＥＣＥ０５ファイルの内容をテーブルに退避
+           MOVE    ZERO                TO  IDX-RECE85
+           MOVE    SPACE               TO  WRK-RECE85XX-REC
+           INITIALIZE                      WRK-RECE85XX-REC
+      *
+           MOVE    RECE84-MEISAISU     TO  MAX-MEISAISU
+      *
+           PERFORM   VARYING   IDX   FROM    1   BY  1
+                         UNTIL   ( IDX                >   50    )
+                         OR      ( WK-FREE-NAME2(IDX) =   SPACE )
+                COMPUTE  MAX-MEISAISU        =   MAX-MEISAISU  +  1
+                MOVE   "810000001"
+                             TO  WRK-RECE85XX-SRYCD(MAX-MEISAISU 1)
+                MOVE   ZERO  TO  WRK-RECE85XX-SRYSURYO(MAX-MEISAISU 1)
+                MOVE   WK-FREE-YUKOKETA2(IDX)
+                             TO  WRK-RECE85XX-YUKOKETA(MAX-MEISAISU 1)
+                MOVE   WK-FREE-NAME2(IDX)
+                             TO  WRK-RECE85XX-NAME(MAX-MEISAISU 1)
+                MOVE    "2"  TO  WRK-RECE85XX-SIKFLG(MAX-MEISAISU 1)
+           END-PERFORM
+      *
+           PERFORM
+             UNTIL  ( FLG-RECE85           =   1                   )
+             OR     ( RECE84-HOSPID    NOT =   RECE85-HOSPID       )
+             OR     ( RECE84-SRYYM     NOT =   RECE85-SRYYM        )
+             OR     ( RECE84-NYUGAIKBN NOT =   RECE85-NYUGAIKBN    )
+             OR     ( RECE84-PTID      NOT =   RECE85-PTID         )
+             OR     ( RECE84-RECEKA    NOT =   RECE85-RECEKA       )
+             OR     ( RECE84-HKNID     NOT =   RECE85-HKNID        )
+             OR     ( RECE84-TEKSTYMD  NOT =   RECE85-TEKSTYMD     )
+             OR     ( RECE84-ZAINUM    NOT =   RECE85-ZAINUM       )
+      *
+             PERFORM   VARYING   IDX   FROM    1   BY  1
+                       UNTIL   ( IDX               >   5     )
+                       OR      ( RECE85-SRYCD(IDX) =   SPACE )
+                  ADD    1             TO      IDX-RECE85
+                  MOVE   RECE85-SRYACT-TBL(IDX)
+                             TO   WRK-RECE85XX-SRYACT-TBL(IDX-RECE85 1)
+             END-PERFORM 
+      *
+             PERFORM 990-RECE85-NEXT-SEC
+      *
+           END-PERFORM
+      *
+      *    コメントを含んだ内容で中間ファイルの再作成
+           MOVE       ZERO             TO      FLG-WRKRECE85
+           MOVE       ZERO             TO      IDX
+           MOVE       ZERO             TO      IDX-RECE85
+           MOVE       ZERO             TO      WRK-RENNUM
+           MOVE       ZERO             TO      WRK-CNT-MEISAI
+           PERFORM    UNTIL     FLG-WRKRECE85  =    1
+      *
+                  INITIALIZE                        RECE851-REC
+                  MOVE    WRK-RECE85-KEY       TO   RECE851-KEY
+                  ADD     1                    TO   WRK-RENNUM
+                  MOVE    WRK-RENNUM           TO   RECE851-RENNUM
+                  MOVE    WRK-RECE85-PTNUM     TO   RECE851-PTNUM
+                  MOVE    WRK-RECE85-SRYKA     TO   RECE851-SRYKA
+                  MOVE    WRK-RECE85-SRYKBN    TO   RECE851-SRYKBN
+                  MOVE    WRK-RECE85-SRYSYUKBN TO   RECE851-SRYSYUKBN
+                  MOVE    WRK-RECE85-JIHIMONEY TO   RECE851-JIHIMONEY
+                  PERFORM  VARYING   IDX   FROM   1   BY   1
+                           UNTIL   (IDX       >    5)   OR
+                                   (FLG-WRKRECE85   =   1)
+                     ADD         1             TO    IDX-RECE85
+                     IF  WRK-RECE85XX-SRYCD(IDX-RECE85 1) = SPACE
+                         MOVE    1             TO    FLG-WRKRECE85
+                     ELSE
+                         MOVE  WRK-RECE85XX-SRYACT-TBL(IDX-RECE85 1)
+                                          TO   RECE851-SRYACT-TBL(IDX)
+      *
+                         IF    WRK-RECE85XX-SIKFLG(IDX-RECE85 1)  =  "2"
+                              ADD    1    TO   WRK-CNT-MEISAI
+                         END-IF
+      *
+                     END-IF
+                  END-PERFORM
+                  IF   RECE851-SRYCD(1)  NOT =  SPACE
+                     WRITE   RECE851-REC
+                     ADD     1            TO   CNT-RECE85
+                  END-IF
+           END-PERFORM
+      *
+           MOVE    RECE84-REC        TO      RECE841-REC
+           MOVE    WRK-CNT-MEISAI    TO      RECE841-MEISAISU
+           WRITE   RECE841-REC
+           ADD     1                 TO      CNT-RECE84
+      *
+           .
+       2001-SYODOU-COMMENT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -727,6 +930,28 @@
       *
            .
        990-RECE85-NEXT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    システム管理マスター読込
+      *****************************************************************
+       900-SYSKANRI-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  SYS-1005-REC
+               MOVE    ZERO            TO  FLG-SYSKANRI
+           ELSE
+               INITIALIZE                  SYS-1005-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           .
+       900-SYSKANRI-READ-EXT.
            EXIT.
       *
       *****************************************************************
