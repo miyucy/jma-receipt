@@ -3148,16 +3148,31 @@
                     END-IF
                     MOVE      WRK-SKJ7-RYOYO-SU(IDX1)  TO
                                       LNK-NYURECEDEN-SURYO(3 IDX2 IDX4)
-                    EVALUATE  WRK-SKJ7-RYOYO-SU(IDX1)
-                        WHEN  1
-                            MOVE   640     TO  
+                    EVALUATE  WRK-SKJ7-RYOYO(IDX1)
+                      WHEN  "197000110"
+                        EVALUATE  WRK-SKJ7-RYOYO-SU(IDX1)
+                            WHEN  1
+                                MOVE   640     TO  
                                       LNK-NYURECEDEN-TEN(3 IDX2 IDX4)
-                        WHEN  2
-                            MOVE  1280     TO  
+                            WHEN  2
+                                MOVE  1280     TO  
                                       LNK-NYURECEDEN-TEN(3 IDX2 IDX4)
-                        WHEN  3
-                            MOVE  1920     TO  
+                            WHEN  3
+                                MOVE  1920     TO  
                                       LNK-NYURECEDEN-TEN(3 IDX2 IDX4)
+                        END-EVALUATE
+                      WHEN  "197000710"
+                        EVALUATE  WRK-SKJ7-RYOYO-SU(IDX1)
+                            WHEN  1
+                                MOVE   506     TO  
+                                      LNK-NYURECEDEN-TEN(3 IDX2 IDX4)
+                            WHEN  2
+                                MOVE  1012     TO  
+                                      LNK-NYURECEDEN-TEN(3 IDX2 IDX4)
+                            WHEN  3
+                                MOVE  1518     TO  
+                                      LNK-NYURECEDEN-TEN(3 IDX2 IDX4)
+                        END-EVALUATE
                     END-EVALUATE
                     MOVE  WRK-SKJ7-KAISU(IDX1)  TO
                                 LNK-NYURECEDEN-KAISU(3 IDX2 IDX4)
