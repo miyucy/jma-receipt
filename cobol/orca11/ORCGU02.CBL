@@ -3658,6 +3658,8 @@
            ELSE
                MOVE    SPA-GMN-COMBINUM    TO  SHELLTBL-ARG9
            END-IF
+      *    ø«Œ≈∆‚Õ∆
+           MOVE    SPA-GMN-SRYNAIYODSP TO  SHELLTBL-ARG10
       *
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC
