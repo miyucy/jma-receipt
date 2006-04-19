@@ -2635,8 +2635,8 @@
                          (WRK-GAIHAKU-KBN(IDX1)  =  ZERO  OR  4)
                        MOVE   WRK-HKNCOMBI-DAY(IDX1)
                                        TO  WRK-SKJ4-HKNCOMBI-DAY(IDX1)
-                                           WRK-SKJ5-HKNCOMBI-DAY(IDX1)
-                                           WRK-SKJ6-HKNCOMBI-DAY(IDX1)
+      *                                     WRK-SKJ5-HKNCOMBI-DAY(IDX1)
+      *                                     WRK-SKJ6-HKNCOMBI-DAY(IDX1)
                                         WRK-SKJFTN2-HKNCOMBI-DAY(IDX1)
                        EVALUATE   NACCT-DAY(IDX1)
                            WHEN   1
@@ -2696,7 +2696,8 @@
                          (WRK-GAIHAKU-KBN(IDX1)  =  ZERO  OR  4)
                        MOVE   WRK-HKNCOMBI-DAY(IDX1)
                                        TO  WRK-SKJ4-HKNCOMBI-DAY(IDX2)
-                                           WRK-SKJ5-HKNCOMBI-DAY(IDX2)
+      *                                     WRK-SKJ5-HKNCOMBI-DAY(IDX2)
+      *                                     WRK-SKJ6-HKNCOMBI-DAY(IDX2)
                                         WRK-SKJFTN2-HKNCOMBI-DAY(IDX2)
                        EVALUATE   NACCT-DAY(IDX1)
                            WHEN   1
@@ -2721,6 +2722,10 @@
                                            TO  WRK-SKJFTN2-SRYCD(IDX2)
                                END-IF
                        END-EVALUATE
+                       IF    WRK-SYS5000-SHOKUCD(3 IDX1)  NOT = SPACE
+                           MOVE  WRK-SYS5000-SHOKUCD(3 IDX1)
+                                          TO  WRK-SKJ6-SHOKUDOU(IDX1)
+                       END-IF
                    END-IF
                END-PERFORM
            END-IF
@@ -2751,7 +2756,8 @@
                          (WRK-GAIHAKU-KBN(IDX1)  =  ZERO  OR  4)
                        MOVE   WRK-HKNCOMBI-DAY(IDX1)
                                        TO  WRK-SKJ4-HKNCOMBI-DAY(IDX3)
-                                           WRK-SKJ5-HKNCOMBI-DAY(IDX3)
+      *                                     WRK-SKJ5-HKNCOMBI-DAY(IDX3)
+      *                                     WRK-SKJ6-HKNCOMBI-DAY(IDX3)
                                         WRK-SKJFTN2-HKNCOMBI-DAY(IDX3)
                        EVALUATE   NACCT-DAY(IDX1)
                            WHEN   1
@@ -2776,6 +2782,10 @@
                                            TO  WRK-SKJFTN2-SRYCD(IDX3)
                                END-IF
                        END-EVALUATE
+                       IF    WRK-SYS5000-SHOKUCD(3 IDX1)  NOT = SPACE
+                           MOVE  WRK-SYS5000-SHOKUCD(3 IDX1)
+                                          TO  WRK-SKJ6-SHOKUDOU(IDX1)
+                       END-IF
                    END-IF
                END-PERFORM
            END-IF
@@ -3085,6 +3095,29 @@
                ADD   WRK-SKJ7-SKJFTN-SU(IDX1)
                                      TO  WRK-SKJ7-SRYCDTOTAL(IDX1)
            END-PERFORM
+      *
+      *     PERFORM      VARYING    IDX1   FROM   1  BY  1
+      *                  UNTIL      IDX1   >   31
+      *          DISPLAY "IDX1 = " IDX1
+      *          DISPLAY "WRK-SKJ7-HKNCOMBI-DAY(IDX1) = "
+      *                   WRK-SKJ7-HKNCOMBI-DAY(IDX1)
+      *          DISPLAY "WRK-SKJ7-RYOYO(IDX1) = "
+      *                   WRK-SKJ7-RYOYO(IDX1)
+      *          DISPLAY "WRK-SKJ7-RYOYO-SU(IDX1) = "
+      *                   WRK-SKJ7-RYOYO-SU(IDX1)
+      *          DISPLAY "WRK-SKJ7-SHOKUDOU(IDX1) = "
+      *                   WRK-SKJ7-SHOKUDOU(IDX1)
+      *          DISPLAY "WRK-SKJ7-TOKU-SHOKU(IDX1) = "
+      *                   WRK-SKJ7-TOKU-SHOKU(IDX1)
+      *          DISPLAY "WRK-SKJ7-TOKU-SHOKU-SU(IDX1) = "
+      *                   WRK-SKJ7-TOKU-SHOKU-SU(IDX1)
+      *          DISPLAY "WRK-SKJ7-SKJFTN(IDX1) = "
+      *                   WRK-SKJ7-SKJFTN(IDX1)
+      *          DISPLAY "WRK-SKJ7-SKJFTN-SU(IDX1) = "
+      *                   WRK-SKJ7-SKJFTN-SU(IDX1)
+      *          DISPLAY "WRK-SKJ7-KAISU =(IDX1) = "
+      *                   WRK-SKJ7-KAISU (IDX1)
+      *     END-PERFORM
       *
       *    再構築した食事情報から同一剤のまとめ処理
       *    食事ワーク
