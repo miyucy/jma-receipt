@@ -2154,7 +2154,7 @@
                               (JYURRK-SRYKA        =   SPA-RRK-SRYKA
                                                        (IDX2)  )
                           AND (JYURRK-HKNCOMBINUM  =
-                                                   SPA-GMN-RRKHKNCOMBI
+                                                   SPA-RRK-HKNCOMBI
                                                          (IDX2) )
                            MOVE    IDX2            TO  IDX-S
                            MOVE    SPA-RRK-MAX     TO  IDX2
@@ -11026,11 +11026,6 @@
       *    プレビュー処理
       *****************************************************************
        4010-PREVIEW-SYORI-SEC          SECTION.
-      *@@@ レセプト更新まで
-      *    IF       SPA-NAI-SRYYM      >=   "200604"
-      *        MOVE    "9009"          TO  SPA-ERRCD
-      *    END-IF
-      *@@@
       *
            IF      SPA-GMN-BANGO   NOT =   ZERO
                MOVE    "0009"          TO  SPA-ERRCD
