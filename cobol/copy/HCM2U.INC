@@ -24,3 +24,4 @@
             02  HCM2U-TITLE PIC X(50).
             02  HCM2U-TITLE1    PIC X(10).
             02  HCM2U-MOJI  PIC X(10).
+            02  HCM2U-TITLE2    PIC X(4).

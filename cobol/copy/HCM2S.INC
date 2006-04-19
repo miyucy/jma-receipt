@@ -55,3 +55,4 @@
                     PIC X(2)    OCCURS  2 TIMES.
             02  HCM2S-TITLE1    PIC X(10).
             02  HCM2S-SRYKA PIC X(40).
+            02  HCM2S-TITLE2    PIC X(4).

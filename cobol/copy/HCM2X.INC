@@ -29,3 +29,5 @@
               03  HCM2X-KOH-NAME  PIC X(12).
             02  HCM2X-TITLE1    PIC X(10).
             02  HCM2X-MOJI  PIC X(10).
+            02  HCM2X-TITLE2
+                    PIC X(4)    OCCURS  2 TIMES.

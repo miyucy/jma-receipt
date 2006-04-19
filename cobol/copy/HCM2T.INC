@@ -40,3 +40,5 @@
               03  HCM2T-BKO-SYOFTNGAK PIC X(13).
             02  HCM2T-TITLE1    PIC X(10).
             02  HCM2T-SRYKA PIC X(40).
+            02  HCM2T-TITLE2    PIC X(4).
+            02  HCM2T-TITLE3    PIC X(8).
