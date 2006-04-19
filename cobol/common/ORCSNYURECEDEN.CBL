@@ -276,6 +276,20 @@
                    07  WRK-SKJ6-HKNCOMBI-DAY   PIC 9(03).
                    07  WRK-SKJ6-SHOKUDOU       PIC X(09).
                    07  WRK-SKJ6-KAISU          PIC 9(02).
+      *    食事ワーク７
+           03  WRK-SKJ7-TABLE.
+               05  WRK-SKJ7-TBL           OCCURS  31.
+                   07  WRK-SKJ7-HKNCOMBI-DAY   PIC 9(03).
+                   07  WRK-SKJ7-GRP.
+                       09  WRK-SKJ7-RYOYO       PIC X(09).
+                       09  WRK-SKJ7-RYOYO-SU    PIC 9(01).
+                       09  WRK-SKJ7-SHOKUDOU    PIC X(09).
+                       09  WRK-SKJ7-TOKU-SHOKU  PIC X(09).
+                       09  WRK-SKJ7-TOKU-SHOKU-SU PIC 9(01).
+                       09  WRK-SKJ7-SKJFTN      PIC X(09).
+                       09  WRK-SKJ7-SKJFTN-SU   PIC 9(01).
+                   07  WRK-SKJ7-SRYCDTOTAL      PIC 9(14).
+                   07  WRK-SKJ7-KAISU           PIC 9(02).
       *
       *    点数マスタ退避ワーク
            03  WRK-TENSU-OCC                   OCCURS  200.
@@ -2881,80 +2895,212 @@
            PERFORM   910-DB-CLOSE-SEC
       *
       *    食事ワーク４（食事療養）
-           PERFORM      VARYING    IDX1   FROM   1  BY  1
-                        UNTIL      IDX1   >   93
-               IF    WRK-SKJ4-RYOYO(IDX1)  NOT =   SPACE
-                   ADD   1                  TO  WRK-SKJ4-KAISU(IDX1)
-                   MOVE       ZERO          TO  IDX2
-                   COMPUTE    IDX2          =   IDX1    +   1
-                   PERFORM    VARYING    IDX3   FROM   IDX2  BY  1
-                              UNTIL      IDX3   >   93
-                       IF    (WRK-SKJ4-HKNCOMBI-DAY(IDX3)  =
-                                       WRK-SKJ4-HKNCOMBI-DAY(IDX1)) AND
-                             (WRK-SKJ4-RYOYO(IDX3)  =
-                                       WRK-SKJ4-RYOYO(IDX1))
-                             ADD     1    TO    WRK-SKJ4-KAISU(IDX1)
-                             INITIALIZE   WRK-SKJ4-TBL(IDX3)
-                       END-IF
-                   END-PERFORM
-               END-IF
-           END-PERFORM
+      **     PERFORM      VARYING    IDX1   FROM   1  BY  1
+      **                  UNTIL      IDX1   >   93
+      **         IF    WRK-SKJ4-RYOYO(IDX1)  NOT =   SPACE
+      **             ADD   1                  TO  WRK-SKJ4-KAISU(IDX1)
+      **             MOVE       ZERO          TO  IDX2
+      **             COMPUTE    IDX2          =   IDX1    +   1
+      **             PERFORM    VARYING    IDX3   FROM   IDX2  BY  1
+      **                        UNTIL      IDX3   >   93
+      **                 IF    (WRK-SKJ4-HKNCOMBI-DAY(IDX3)  =
+      **                                 WRK-SKJ4-HKNCOMBI-DAY(IDX1)) AND
+      **                       (WRK-SKJ4-RYOYO(IDX3)  =
+      **                                 WRK-SKJ4-RYOYO(IDX1))
+      **                       ADD     1    TO    WRK-SKJ4-KAISU(IDX1)
+      **                       INITIALIZE   WRK-SKJ4-TBL(IDX3)
+      **                 END-IF
+      **             END-PERFORM
+      **         END-IF
+      **     END-PERFORM
       *
       *    食事ワーク５（特別食加算）
+      **     PERFORM      VARYING    IDX1   FROM   1  BY  1
+      **                  UNTIL      IDX1   >   93
+      **         IF    WRK-SKJ5-TOKU-SHOKU(IDX1)  NOT =   SPACE
+      **             ADD   1                  TO  WRK-SKJ5-KAISU(IDX1)
+      **             MOVE       ZERO          TO  IDX2
+      **             COMPUTE    IDX2          =   IDX1    +   1
+      **             PERFORM    VARYING    IDX3   FROM   IDX2  BY  1
+      **                        UNTIL      IDX3   >   93
+      **                 IF    (WRK-SKJ5-HKNCOMBI-DAY(IDX3)  =
+      **                                WRK-SKJ5-HKNCOMBI-DAY(IDX1)) AND
+      **                       (WRK-SKJ5-TOKU-SHOKU(IDX3)  =
+      **                                 WRK-SKJ5-TOKU-SHOKU(IDX1))
+      **                       ADD     1    TO    WRK-SKJ5-KAISU(IDX1)
+      **                       INITIALIZE   WRK-SKJ5-TBL(IDX3)
+      **                END-IF
+      **             END-PERFORM
+      **         END-IF
+      **     END-PERFORM
+      *
+      *    食事ワーク６（食堂加算）
+      **     PERFORM      VARYING    IDX1   FROM   1  BY  1
+      **                  UNTIL      IDX1   >   31
+      **         IF    WRK-SKJ6-SHOKUDOU(IDX1)  NOT =   SPACE
+      **             ADD   1                  TO  WRK-SKJ6-KAISU(IDX1)
+      **             MOVE       ZERO          TO  IDX2
+      **             COMPUTE    IDX2          =   IDX1    +   1
+      **             PERFORM    VARYING    IDX3   FROM   IDX2  BY  1
+      **                        UNTIL      IDX3   >   31
+      **                 IF    (WRK-SKJ6-HKNCOMBI-DAY(IDX3)  =
+      **                                WRK-SKJ6-HKNCOMBI-DAY(IDX1)) AND
+      **                       (WRK-SKJ6-SHOKUDOU(IDX3)  =
+      **                                 WRK-SKJ6-SHOKUDOU(IDX1))
+      **                       ADD     1    TO    WRK-SKJ6-KAISU(IDX1)
+      **                       INITIALIZE   WRK-SKJ6-TBL(IDX3)
+      **                 END-IF
+      **             END-PERFORM
+      **         END-IF
+      **     END-PERFORM
+      *
+      *    食事負担ワーク
+      **     PERFORM      VARYING    IDX1   FROM   1  BY  1
+      **                  UNTIL      IDX1   >   93
+      **         IF    WRK-SKJFTN2-SRYCD(IDX1)  NOT =   SPACE
+      **             ADD   1                  TO  WRK-SKJFTN2-KAISU(IDX1)
+      **             MOVE       ZERO          TO  IDX2
+      **             COMPUTE    IDX2          =   IDX1    +   1
+      **             PERFORM    VARYING    IDX3   FROM   IDX2  BY  1
+      **                        UNTIL      IDX3   >   93
+      **                 IF    (WRK-SKJFTN2-HKNCOMBI-DAY(IDX3)  =
+      **                              WRK-SKJFTN2-HKNCOMBI-DAY(IDX1)) AND
+      **                       (WRK-SKJFTN2-SRYCD(IDX3)  =
+      **                                 WRK-SKJFTN2-SRYCD(IDX1))
+      **                       ADD     1    TO    WRK-SKJFTN2-KAISU(IDX1)
+      **                       INITIALIZE   WRK-SKJFTN2-TBL(IDX3)
+      **                 END-IF
+      **             END-PERFORM
+      **         END-IF
+      **     END-PERFORM
+      *
+      *    食事ワーク７の編集（同一剤まとめ用）
            PERFORM      VARYING    IDX1   FROM   1  BY  1
-                        UNTIL      IDX1   >   93
+                        UNTIL      IDX1   >   31
+      *        食事療養費（朝）
+               IF    WRK-SKJ4-RYOYO(IDX1)  NOT =   SPACE
+                   MOVE  WRK-SKJ4-HKNCOMBI-DAY(IDX1)
+                                       TO  WRK-SKJ7-HKNCOMBI-DAY(IDX1)
+                   MOVE  WRK-SKJ4-RYOYO(IDX1)
+                                       TO  WRK-SKJ7-RYOYO(IDX1)
+                   ADD   1             TO  WRK-SKJ7-RYOYO-SU(IDX1)
+               END-IF
+      *        特別食加算（朝）
                IF    WRK-SKJ5-TOKU-SHOKU(IDX1)  NOT =   SPACE
-                   ADD   1                  TO  WRK-SKJ5-KAISU(IDX1)
-                   MOVE       ZERO          TO  IDX2
-                   COMPUTE    IDX2          =   IDX1    +   1
-                   PERFORM    VARYING    IDX3   FROM   IDX2  BY  1
-                              UNTIL      IDX3   >   93
-                       IF    (WRK-SKJ5-HKNCOMBI-DAY(IDX3)  =
-                                      WRK-SKJ5-HKNCOMBI-DAY(IDX1)) AND
-                             (WRK-SKJ5-TOKU-SHOKU(IDX3)  =
-                                       WRK-SKJ5-TOKU-SHOKU(IDX1))
-                             ADD     1    TO    WRK-SKJ5-KAISU(IDX1)
-                             INITIALIZE   WRK-SKJ5-TBL(IDX3)
-                       END-IF
-                   END-PERFORM
+                   MOVE  WRK-SKJ5-TOKU-SHOKU(IDX1)
+                                       TO  WRK-SKJ7-TOKU-SHOKU(IDX1)
+                   ADD   1             TO  WRK-SKJ7-TOKU-SHOKU-SU(IDX1)
+               END-IF
+      *        食事負担（朝）
+               IF    WRK-SKJFTN2-SRYCD(IDX1)  NOT =   SPACE
+                   MOVE  WRK-SKJFTN2-SRYCD(IDX1)
+                                       TO  WRK-SKJ7-SKJFTN(IDX1)
+                   ADD   1             TO  WRK-SKJ7-SKJFTN-SU(IDX1)
+               END-IF
+      *        食事療養費（昼）
+               MOVE      ZERO          TO  IDX2
+               COMPUTE   IDX2     =    IDX1    +   31
+               IF    WRK-SKJ4-RYOYO(IDX2)  NOT =   SPACE
+                   MOVE  WRK-SKJ4-HKNCOMBI-DAY(IDX2)
+                                       TO  WRK-SKJ7-HKNCOMBI-DAY(IDX1)
+                   MOVE  WRK-SKJ4-RYOYO(IDX2)
+                                       TO  WRK-SKJ7-RYOYO(IDX1)
+                   ADD   1             TO  WRK-SKJ7-RYOYO-SU(IDX1)
+               END-IF
+      *        特別食加算（昼）
+               IF    WRK-SKJ5-TOKU-SHOKU(IDX2)  NOT =   SPACE
+                   MOVE  WRK-SKJ5-TOKU-SHOKU(IDX2)
+                                       TO  WRK-SKJ7-TOKU-SHOKU(IDX1)
+                   ADD   1             TO  WRK-SKJ7-TOKU-SHOKU-SU(IDX1)
+               END-IF
+      *        食事負担（昼）
+               IF    WRK-SKJFTN2-SRYCD(IDX2)  NOT =   SPACE
+                   MOVE  WRK-SKJFTN2-SRYCD(IDX2)
+                                       TO  WRK-SKJ7-SKJFTN(IDX1)
+                   ADD   1             TO  WRK-SKJ7-SKJFTN-SU(IDX1)
+               END-IF
+      *        食事療養費（夕）
+               MOVE      ZERO          TO  IDX3
+               COMPUTE   IDX3     =    IDX1    +   62
+               IF    WRK-SKJ4-RYOYO(IDX3)  NOT =   SPACE
+                   MOVE  WRK-SKJ4-HKNCOMBI-DAY(IDX3)
+                                       TO  WRK-SKJ7-HKNCOMBI-DAY(IDX1)
+                   MOVE  WRK-SKJ4-RYOYO(IDX3)
+                                       TO  WRK-SKJ7-RYOYO(IDX1)
+                   ADD   1             TO  WRK-SKJ7-RYOYO-SU(IDX1)
+               END-IF
+      *        特別食加算（夕）
+               IF    WRK-SKJ5-TOKU-SHOKU(IDX3)  NOT =   SPACE
+                   MOVE  WRK-SKJ5-TOKU-SHOKU(IDX3)
+                                       TO  WRK-SKJ7-TOKU-SHOKU(IDX1)
+                   ADD   1             TO  WRK-SKJ7-TOKU-SHOKU-SU(IDX1)
+               END-IF
+      *        食事負担（夕）
+               IF    WRK-SKJFTN2-SRYCD(IDX3)  NOT =   SPACE
+                   MOVE  WRK-SKJFTN2-SRYCD(IDX3)
+                                       TO  WRK-SKJ7-SKJFTN(IDX1)
+                   ADD   1             TO  WRK-SKJ7-SKJFTN-SU(IDX1)
+               END-IF
+      *        食事回数
+      **         IF    (WRK-SKJ4-RYOYO(IDX1)  NOT =   SPACE)   AND
+      **               (WRK-SKJ4-RYOYO(IDX2)  NOT =   SPACE)   AND
+      **               (WRK-SKJ4-RYOYO(IDX3)  NOT =   SPACE)
+      **             MOVE      1         TO   WRK-SKJ7-KAISU(IDX1)
+      **         END-IF
+      *        食堂加算
+               IF    WRK-SKJ6-SHOKUDOU(IDX1)  NOT =   SPACE
+                   MOVE  WRK-SKJ6-SHOKUDOU(IDX1)
+                                       TO  WRK-SKJ7-SHOKUDOU(IDX1)
                END-IF
            END-PERFORM
       *
-      *    食事ワーク６（食堂加算）
+      *    食事の診療コード計
+           PERFORM    VARYING   IDX1    FROM  1  BY  1
+                      UNTIL     IDX1    >   31
+               IF   WRK-SKJ7-RYOYO(IDX1)  NOT =  SPACE
+                   MOVE    WRK-SKJ7-RYOYO(IDX1)       TO WRK-SRYCD-X
+                   COMPUTE WRK-SKJ7-SRYCDTOTAL(IDX1)  =
+                           WRK-SKJ7-SRYCDTOTAL(IDX1)  +  WRK-SRYCD-9
+               END-IF
+               IF   WRK-SKJ7-SHOKUDOU(IDX1)  NOT =  SPACE
+                   MOVE    WRK-SKJ7-SHOKUDOU(IDX1)    TO WRK-SRYCD-X
+                   COMPUTE WRK-SKJ7-SRYCDTOTAL(IDX1)  =
+                           WRK-SKJ7-SRYCDTOTAL(IDX1)  +  WRK-SRYCD-9
+               END-IF
+               IF   WRK-SKJ7-TOKU-SHOKU(IDX1)  NOT =  SPACE
+                   MOVE    WRK-SKJ7-TOKU-SHOKU(IDX1)  TO WRK-SRYCD-X
+                   COMPUTE WRK-SKJ7-SRYCDTOTAL(IDX1)  =
+                           WRK-SKJ7-SRYCDTOTAL(IDX1)  +  WRK-SRYCD-9
+               END-IF
+               IF   WRK-SKJ7-SKJFTN(IDX1)      NOT =  SPACE
+                   MOVE    WRK-SKJ7-SKJFTN(IDX1)  TO WRK-SRYCD-X
+                   COMPUTE WRK-SKJ7-SRYCDTOTAL(IDX1)  =
+                           WRK-SKJ7-SRYCDTOTAL(IDX1)  +  WRK-SRYCD-9
+               END-IF
+               ADD   WRK-SKJ7-RYOYO-SU(IDX1)
+                                     TO  WRK-SKJ7-SRYCDTOTAL(IDX1)
+               ADD   WRK-SKJ7-TOKU-SHOKU-SU(IDX1)
+                                     TO  WRK-SKJ7-SRYCDTOTAL(IDX1)
+               ADD   WRK-SKJ7-SKJFTN-SU(IDX1)
+                                     TO  WRK-SKJ7-SRYCDTOTAL(IDX1)
+           END-PERFORM
+      *
+      *    再構築した食事情報から同一剤のまとめ処理
+      *    食事ワーク
            PERFORM      VARYING    IDX1   FROM   1  BY  1
                         UNTIL      IDX1   >   31
-               IF    WRK-SKJ6-SHOKUDOU(IDX1)  NOT =   SPACE
-                   ADD   1                  TO  WRK-SKJ6-KAISU(IDX1)
+               IF    WRK-SKJ7-SRYCDTOTAL(IDX1)  NOT =   ZERO
+                   ADD   1                  TO  WRK-SKJ7-KAISU(IDX1)
                    MOVE       ZERO          TO  IDX2
                    COMPUTE    IDX2          =   IDX1    +   1
                    PERFORM    VARYING    IDX3   FROM   IDX2  BY  1
                               UNTIL      IDX3   >   31
-                       IF    (WRK-SKJ6-HKNCOMBI-DAY(IDX3)  =
-                                      WRK-SKJ6-HKNCOMBI-DAY(IDX1)) AND
-                             (WRK-SKJ6-SHOKUDOU(IDX3)  =
-                                       WRK-SKJ6-SHOKUDOU(IDX1))
-                             ADD     1    TO    WRK-SKJ6-KAISU(IDX1)
-                             INITIALIZE   WRK-SKJ6-TBL(IDX3)
-                       END-IF
-                   END-PERFORM
-               END-IF
-           END-PERFORM
-      *
-      *    食事負担ワーク
-           PERFORM      VARYING    IDX1   FROM   1  BY  1
-                        UNTIL      IDX1   >   93
-               IF    WRK-SKJFTN2-SRYCD(IDX1)  NOT =   SPACE
-                   ADD   1                  TO  WRK-SKJFTN2-KAISU(IDX1)
-                   MOVE       ZERO          TO  IDX2
-                   COMPUTE    IDX2          =   IDX1    +   1
-                   PERFORM    VARYING    IDX3   FROM   IDX2  BY  1
-                              UNTIL      IDX3   >   93
-                       IF    (WRK-SKJFTN2-HKNCOMBI-DAY(IDX3)  =
-                                    WRK-SKJFTN2-HKNCOMBI-DAY(IDX1)) AND
-                             (WRK-SKJFTN2-SRYCD(IDX3)  =
-                                       WRK-SKJFTN2-SRYCD(IDX1))
-                             ADD     1    TO    WRK-SKJFTN2-KAISU(IDX1)
-                             INITIALIZE   WRK-SKJFTN2-TBL(IDX3)
+                       IF    (WRK-SKJ7-HKNCOMBI-DAY(IDX3)  =
+                                       WRK-SKJ7-HKNCOMBI-DAY(IDX1)) AND
+                             (WRK-SKJ7-SRYCDTOTAL(IDX3)  =
+                                       WRK-SKJ7-SRYCDTOTAL(IDX1))
+                             ADD     1    TO    WRK-SKJ7-KAISU(IDX1)
+                             INITIALIZE   WRK-SKJ7-TBL(IDX3)
                        END-IF
                    END-PERFORM
                END-IF
@@ -2962,107 +3108,208 @@
       *
       *    レセ電サブ返却エリアへの食事セット
            MOVE       ZERO    TO   IDX2
-      *
-      *    レセ電サブ返却エリアへの食事セット（食事療養）
-           PERFORM    VARYING   IDX1   FROM  1  BY  1
-                      UNTIL     (IDX1   >     93)
-                IF    WRK-SKJ4-RYOYO(IDX1)   NOT =  SPACE
-                    ADD    1     TO    IDX2
-                    MOVE  WRK-SKJ4-HKNCOMBI-DAY(IDX1) TO
-                                    LNK-NYURECEDEN-HKNCOMBI(3 IDX2)
-                    MOVE   "SI"   TO
-                                  LNK-NYURECEDEN-RECSKB(3 IDX2 1)
-                    MOVE   "97"   TO
-                                  LNK-NYURECEDEN-SRYSKB(3 IDX2 1)
-                    MOVE   WRK-SKJ4-RYOYO(IDX1)  TO
-                                  LNK-NYURECEDEN-SRYCD(3 IDX2 1)
-                    EVALUATE  WRK-SKJ4-RYOYO(IDX1)
-                       WHEN   "197000110"
-                            MOVE  640  TO  LNK-NYURECEDEN-TEN(3 IDX2 1)
-                       WHEN   "197000710"
-                            MOVE  506  TO  LNK-NYURECEDEN-TEN(3 IDX2 1)
-                    END-EVALUATE
-                    MOVE  WRK-SKJ4-KAISU(IDX1)  TO
-                                  LNK-NYURECEDEN-KAISU(3 IDX2 1)
-                    MOVE  1   TO  LNK-NYURECEDEN-MEISAISU(3 IDX2)
-                END-IF
-           END-PERFORM
-      *
-      *    レセ電サブ返却エリアへの食事セット（特別食加算）
-           PERFORM    VARYING   IDX1   FROM  1  BY  1
-                      UNTIL     (IDX1   >     93)
-                IF    WRK-SKJ5-TOKU-SHOKU(IDX1)   NOT =  SPACE
-                    ADD    1     TO    IDX2
-                    MOVE  WRK-SKJ5-HKNCOMBI-DAY(IDX1) TO
-                                    LNK-NYURECEDEN-HKNCOMBI(3 IDX2)
-                    MOVE   "SI"   TO
-                                  LNK-NYURECEDEN-RECSKB(3 IDX2 1)
-                    MOVE   SPACE   TO
-                                  LNK-NYURECEDEN-SRYSKB(3 IDX2 1)
-                    MOVE   WRK-SKJ5-TOKU-SHOKU(IDX1)  TO
-                                  LNK-NYURECEDEN-SRYCD(3 IDX2 1)
-                    MOVE  76  TO
-                                LNK-NYURECEDEN-TEN(3 IDX2 1)
-                    MOVE  WRK-SKJ5-KAISU(IDX1)  TO
-                                  LNK-NYURECEDEN-KAISU(3 IDX2 1)
-                    MOVE  1   TO  LNK-NYURECEDEN-MEISAISU(3 IDX2)
-                END-IF
-           END-PERFORM
-      *
-      *    レセ電サブ返却エリアへの食事セット（食堂加算）
            PERFORM    VARYING   IDX1   FROM  1  BY  1
                       UNTIL     (IDX1   >     31)
-                IF    WRK-SKJ6-SHOKUDOU(IDX1)   NOT =  SPACE
+                DISPLAY "IDX1 = " IDX1
+                DISPLAY "WRK-SKJ7-HKNCOMBI-DAY(IDX1) = "
+                         WRK-SKJ7-HKNCOMBI-DAY(IDX1)
+                DISPLAY "WRK-SKJ7-RYOYO(IDX1) = "
+                         WRK-SKJ7-RYOYO(IDX1)
+                DISPLAY "WRK-SKJ7-RYOYO-SU(IDX1) = "
+                         WRK-SKJ7-RYOYO-SU(IDX1)
+                DISPLAY "WRK-SKJ7-SHOKUDOU(IDX1) = "
+                         WRK-SKJ7-SHOKUDOU(IDX1)
+                DISPLAY "WRK-SKJ7-TOKU-SHOKU(IDX1) = "
+                         WRK-SKJ7-TOKU-SHOKU(IDX1)
+                DISPLAY "WRK-SKJ7-TOKU-SHOKU-SU(IDX1) = "
+                         WRK-SKJ7-TOKU-SHOKU-SU(IDX1)
+                DISPLAY "WRK-SKJ7-SKJFTN(IDX1) = "
+                         WRK-SKJ7-SKJFTN(IDX1)
+                DISPLAY "WRK-SKJ7-SKJFTN-SU(IDX1) = "
+                         WRK-SKJ7-SKJFTN-SU(IDX1)
+                DISPLAY "WRK-SKJ7-KAISU =(IDX1) = "
+                         WRK-SKJ7-KAISU (IDX1)
+                IF    WRK-SKJ7-RYOYO(IDX1)   NOT =  SPACE
                     ADD    1     TO    IDX2
-                    MOVE  WRK-SKJ6-HKNCOMBI-DAY(IDX1) TO
+                    MOVE  WRK-SKJ7-HKNCOMBI-DAY(IDX1) TO
                                     LNK-NYURECEDEN-HKNCOMBI(3 IDX2)
-                    MOVE   "SI"   TO
-                                  LNK-NYURECEDEN-RECSKB(3 IDX2 1)
-                    MOVE   SPACE   TO
-                                  LNK-NYURECEDEN-SRYSKB(3 IDX2 1)
-                    MOVE   WRK-SKJ6-SHOKUDOU(IDX1)  TO
-                                  LNK-NYURECEDEN-SRYCD(3 IDX2 1)
-                    MOVE  50  TO
-                                LNK-NYURECEDEN-TEN(3 IDX2 1)
-                    MOVE  WRK-SKJ6-KAISU(IDX1)  TO
-                                  LNK-NYURECEDEN-KAISU(3 IDX2 1)
-                    MOVE  1   TO  LNK-NYURECEDEN-MEISAISU(3 IDX2)
+                    MOVE   ZERO     TO    IDX4
+                    IF   WRK-SKJ7-RYOYO(IDX1)  NOT =  SPACE
+                        ADD     1     TO    IDX4
+                        MOVE   "SI"   TO
+                              LNK-NYURECEDEN-RECSKB(3 IDX2 IDX4)
+                        IF     IDX4    =   1
+                            MOVE   "97"   TO
+                              LNK-NYURECEDEN-SRYSKB(3 IDX2 IDX4)
+                        END-IF
+                        MOVE   WRK-SKJ7-RYOYO(IDX1)  TO
+                                  LNK-NYURECEDEN-SRYCD(3 IDX2 IDX4)
+                    END-IF
+                    MOVE      WRK-SKJ7-RYOYO-SU(IDX1)  TO
+                                      LNK-NYURECEDEN-SURYO(3 IDX2 IDX4)
+                    EVALUATE  WRK-SKJ7-RYOYO-SU(IDX1)
+                        WHEN  1
+                            MOVE   640     TO  
+                                      LNK-NYURECEDEN-TEN(3 IDX2 IDX4)
+                        WHEN  2
+                            MOVE  1280     TO  
+                                      LNK-NYURECEDEN-TEN(3 IDX2 IDX4)
+                        WHEN  3
+                            MOVE  1920     TO  
+                                      LNK-NYURECEDEN-TEN(3 IDX2 IDX4)
+                    END-EVALUATE
+                    MOVE  WRK-SKJ7-KAISU(IDX1)  TO
+                                LNK-NYURECEDEN-KAISU(3 IDX2 IDX4)
+                    IF   WRK-SKJ7-SHOKUDOU(IDX1)  NOT =  SPACE
+                         ADD     1     TO    IDX4
+                         MOVE   "SI"   TO
+                              LNK-NYURECEDEN-RECSKB(3 IDX2 IDX4)
+                         MOVE   WRK-SKJ7-SHOKUDOU(IDX1)  TO
+                                  LNK-NYURECEDEN-SRYCD(3 IDX2 IDX4)
+                         MOVE   50     TO
+                                 LNK-NYURECEDEN-TEN(3 IDX2 IDX4)
+                         MOVE  WRK-SKJ7-KAISU(IDX1)  TO
+                                LNK-NYURECEDEN-KAISU(3 IDX2 IDX4)
+                    END-IF
+                    IF   WRK-SKJ7-TOKU-SHOKU(IDX1)  NOT =  SPACE
+                         ADD     1     TO    IDX4
+                         MOVE   "SI"   TO
+                              LNK-NYURECEDEN-RECSKB(3 IDX2 IDX4)
+                         MOVE   WRK-SKJ7-TOKU-SHOKU(IDX1)  TO
+                                  LNK-NYURECEDEN-SRYCD(3 IDX2 IDX4)
+                         MOVE   WRK-SKJ7-TOKU-SHOKU-SU(IDX1)  TO
+                                  LNK-NYURECEDEN-SURYO(3 IDX2 IDX4)
+                         EVALUATE  WRK-SKJ7-TOKU-SHOKU-SU(IDX1)
+                             WHEN  1
+                                 MOVE   76     TO
+                                      LNK-NYURECEDEN-TEN(3 IDX2 IDX4)
+                             WHEN  2
+                                 MOVE   152    TO
+                                      LNK-NYURECEDEN-TEN(3 IDX2 IDX4)
+                             WHEN  3
+                                 MOVE   228    TO
+                                      LNK-NYURECEDEN-TEN(3 IDX2 IDX4)
+                         END-EVALUATE
+                         MOVE  WRK-SKJ7-KAISU(IDX1)  TO
+                                LNK-NYURECEDEN-KAISU(3 IDX2 IDX4)
+                    END-IF
+                    IF   WRK-SKJ7-SKJFTN(IDX1)  NOT =  SPACE
+                         ADD     1     TO    IDX4
+                         MOVE   "SI"   TO
+                              LNK-NYURECEDEN-RECSKB(3 IDX2 IDX4)
+                         MOVE   WRK-SKJ7-SKJFTN(IDX1)  TO
+                                  LNK-NYURECEDEN-SRYCD(3 IDX2 IDX4)
+                         MOVE   WRK-SKJ7-SKJFTN-SU(IDX1)  TO
+                                  LNK-NYURECEDEN-SURYO(3 IDX2 IDX4)
+                         MOVE  WRK-SKJ7-KAISU(IDX1)  TO
+                                LNK-NYURECEDEN-KAISU(3 IDX2 IDX4)
+                    END-IF
+                    MOVE  IDX4  TO  LNK-NYURECEDEN-MEISAISU(3 IDX2)
                 END-IF
-
            END-PERFORM
       *
+      *    レセ電サブ返却エリアへの食事セット
+      **     MOVE       ZERO    TO   IDX2
+      *
+      *    レセ電サブ返却エリアへの食事セット（食事療養）
+      **     PERFORM    VARYING   IDX1   FROM  1  BY  1
+      **                UNTIL     (IDX1   >     93)
+      **          IF    WRK-SKJ4-RYOYO(IDX1)   NOT =  SPACE
+      **              ADD    1     TO    IDX2
+      **              MOVE  WRK-SKJ4-HKNCOMBI-DAY(IDX1) TO
+      **                              LNK-NYURECEDEN-HKNCOMBI(3 IDX2)
+      **              MOVE   "SI"   TO
+      **                            LNK-NYURECEDEN-RECSKB(3 IDX2 1)
+      **              MOVE   "97"   TO
+      **                            LNK-NYURECEDEN-SRYSKB(3 IDX2 1)
+      **              MOVE   WRK-SKJ4-RYOYO(IDX1)  TO
+      **                            LNK-NYURECEDEN-SRYCD(3 IDX2 1)
+      **              EVALUATE  WRK-SKJ4-RYOYO(IDX1)
+      **                 WHEN   "197000110"
+      **                      MOVE  640  TO  LNK-NYURECEDEN-TEN(3 IDX2 1)
+      **                 WHEN   "197000710"
+      **                      MOVE  506  TO  LNK-NYURECEDEN-TEN(3 IDX2 1)
+      **              END-EVALUATE
+      **              MOVE  WRK-SKJ4-KAISU(IDX1)  TO
+      **                            LNK-NYURECEDEN-KAISU(3 IDX2 1)
+      **              MOVE  1   TO  LNK-NYURECEDEN-MEISAISU(3 IDX2)
+      **          END-IF
+      **     END-PERFORM
+      *
+      *    レセ電サブ返却エリアへの食事セット（特別食加算）
+      **     PERFORM    VARYING   IDX1   FROM  1  BY  1
+      **                UNTIL     (IDX1   >     93)
+      **          IF    WRK-SKJ5-TOKU-SHOKU(IDX1)   NOT =  SPACE
+      **              ADD    1     TO    IDX2
+      **              MOVE  WRK-SKJ5-HKNCOMBI-DAY(IDX1) TO
+      **                              LNK-NYURECEDEN-HKNCOMBI(3 IDX2)
+      **              MOVE   "SI"   TO
+      **                            LNK-NYURECEDEN-RECSKB(3 IDX2 1)
+      **              MOVE   SPACE   TO
+      **                            LNK-NYURECEDEN-SRYSKB(3 IDX2 1)
+      **              MOVE   WRK-SKJ5-TOKU-SHOKU(IDX1)  TO
+      **                            LNK-NYURECEDEN-SRYCD(3 IDX2 1)
+      **              MOVE  76  TO
+      **                          LNK-NYURECEDEN-TEN(3 IDX2 1)
+      **              MOVE  WRK-SKJ5-KAISU(IDX1)  TO
+      **                            LNK-NYURECEDEN-KAISU(3 IDX2 1)
+      **              MOVE  1   TO  LNK-NYURECEDEN-MEISAISU(3 IDX2)
+      **          END-IF
+      **     END-PERFORM
+      *
+      *    レセ電サブ返却エリアへの食事セット（食堂加算）
+      **     PERFORM    VARYING   IDX1   FROM  1  BY  1
+      **                UNTIL     (IDX1   >     31)
+      **          IF    WRK-SKJ6-SHOKUDOU(IDX1)   NOT =  SPACE
+      **              ADD    1     TO    IDX2
+      **             MOVE  WRK-SKJ6-HKNCOMBI-DAY(IDX1) TO
+      **                              LNK-NYURECEDEN-HKNCOMBI(3 IDX2)
+      **              MOVE   "SI"   TO
+      **                            LNK-NYURECEDEN-RECSKB(3 IDX2 1)
+      **              MOVE   SPACE   TO
+      **                            LNK-NYURECEDEN-SRYSKB(3 IDX2 1)
+      **              MOVE   WRK-SKJ6-SHOKUDOU(IDX1)  TO
+      **                            LNK-NYURECEDEN-SRYCD(3 IDX2 1)
+      **              MOVE  50  TO
+      **                          LNK-NYURECEDEN-TEN(3 IDX2 1)
+      **              MOVE  WRK-SKJ6-KAISU(IDX1)  TO
+      **                            LNK-NYURECEDEN-KAISU(3 IDX2 1)
+      **              MOVE  1   TO  LNK-NYURECEDEN-MEISAISU(3 IDX2)
+      **          END-IF
+      **     END-PERFORM
+      *
       *    レセ電サブ返却エリアへの食事セット（食事負担）
-           PERFORM    VARYING   IDX1   FROM  1  BY  1
-                      UNTIL     (IDX1   >     93)
-                IF    WRK-SKJFTN2-SRYCD(IDX1)   NOT =  SPACE
-                    ADD    1     TO    IDX2
-                    MOVE  WRK-SKJFTN2-HKNCOMBI-DAY(IDX1) TO
-                                    LNK-NYURECEDEN-HKNCOMBI(3 IDX2)
-                    MOVE   "SI"   TO
-                                  LNK-NYURECEDEN-RECSKB(3 IDX2 1)
-                    MOVE   "97"   TO
-                                  LNK-NYURECEDEN-SRYSKB(3 IDX2 1)
-                    MOVE   WRK-SKJFTN2-SRYCD(IDX1)  TO
-                                  LNK-NYURECEDEN-SRYCD(3 IDX2 1)
-                    EVALUATE   WRK-SKJFTN2-SRYCD(IDX1)
-                        WHEN   "197000810"
-                            MOVE  260  TO 
-                                        LNK-NYURECEDEN-TEN(3 IDX2 1)
-                        WHEN   "197000910"
-                            MOVE  210  TO 
-                                        LNK-NYURECEDEN-TEN(3 IDX2 1)
-                        WHEN   "197001010"
-                            MOVE  160  TO 
-                                        LNK-NYURECEDEN-TEN(3 IDX2 1)
-                        WHEN   "197001110"
-                            MOVE  100  TO 
-                                        LNK-NYURECEDEN-TEN(3 IDX2 1)
-                    END-EVALUATE
-                    MOVE  WRK-SKJFTN2-KAISU(IDX1)  TO
-                                  LNK-NYURECEDEN-KAISU(3 IDX2 1)
-                    MOVE  1   TO  LNK-NYURECEDEN-MEISAISU(3 IDX2)
-                END-IF
-           END-PERFORM
+      **     PERFORM    VARYING   IDX1   FROM  1  BY  1
+      **                UNTIL     (IDX1   >     93)
+      **          IF    WRK-SKJFTN2-SRYCD(IDX1)   NOT =  SPACE
+      **              ADD    1     TO    IDX2
+      **              MOVE  WRK-SKJFTN2-HKNCOMBI-DAY(IDX1) TO
+      **                              LNK-NYURECEDEN-HKNCOMBI(3 IDX2)
+      **              MOVE   "SI"   TO
+      **                            LNK-NYURECEDEN-RECSKB(3 IDX2 1)
+      **              MOVE   "97"   TO
+      **                            LNK-NYURECEDEN-SRYSKB(3 IDX2 1)
+      **              MOVE   WRK-SKJFTN2-SRYCD(IDX1)  TO
+      **                            LNK-NYURECEDEN-SRYCD(3 IDX2 1)
+      **              EVALUATE   WRK-SKJFTN2-SRYCD(IDX1)
+      **                  WHEN   "197000810"
+      **                      MOVE  260  TO 
+      **                                  LNK-NYURECEDEN-TEN(3 IDX2 1)
+      **                  WHEN   "197000910"
+      **                      MOVE  210  TO 
+      **                                  LNK-NYURECEDEN-TEN(3 IDX2 1)
+      **                  WHEN   "197001010"
+      **                      MOVE  160  TO 
+      **                                  LNK-NYURECEDEN-TEN(3 IDX2 1)
+      **                  WHEN   "197001110"
+      **                      MOVE  100  TO 
+      **                                  LNK-NYURECEDEN-TEN(3 IDX2 1)
+      **              END-EVALUATE
+      **              MOVE  WRK-SKJFTN2-KAISU(IDX1)  TO
+      **                            LNK-NYURECEDEN-KAISU(3 IDX2 1)
+      **              MOVE  1   TO  LNK-NYURECEDEN-MEISAISU(3 IDX2)
+      **          END-IF
+      **     END-PERFORM
       *
            .
        2102-SHOKUJI-HENSHU2-EXT.
