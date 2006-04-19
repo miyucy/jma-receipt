@@ -91,6 +91,10 @@
       *  02.08.01    NACL-Æ£¸¶    06/03/01  ÆþÂà±¡ÍúÎò¾ðÊó¤ÎÆþ±¡Ãæ¶èÊ¬¤Ë
       *                                     ¤è¤ëµ­ºÜÊýË¡¤ÎÊÑ¹¹
       *  02.08.02    NACL-Æ£¸¶    06/02/20  ¼ç²ÊÂÐ±þ
+      *
+      *  £²£°£°£¶Ç¯£´·î²þÀµÂÐ±þ
+      *  02.09.01    NACL-Æ£¸¶    06/04/13  £²£°£°£¶Ç¯£´·î²þÀµÂÐ±þ
+      *                                     ¿©»ö¤Î¿ôÎÌ¤Îµ­ºÜ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -4050,7 +4054,18 @@
                                    MOVE    9           TO  WRK-NAGASA
                                    PERFORM 5004-MOJI-HENSYU-SEC  
       *                            ¿ôÎÌ
-                                   PERFORM 5005-NUM-HENSYU-SEC  
+                                   IF    ( RECE62-SRYYM >=  200604  )
+                                   AND   ( LNK-NYURECEDEN-SURYO
+                                                    (IDZ1 IDZ2 IDXZ)
+                                                        >   ZERO    )
+                                       MOVE    LNK-NYURECEDEN-SURYO
+                                                       (IDZ1 IDZ2 IDXZ)
+                                                       TO  WRK-SURYO
+                                       MOVE    WRK-SURYO
+                                                       TO  WRK-NUM
+                                       MOVE    8       TO  WRK-NAGASA
+                                   END-IF
+                                   PERFORM 5005-NUM-HENSYU-SEC
       *                            ÅÀ¿ô
                                    IF      LNK-NYURECEDEN-TEN
                                                     (IDZ1 IDZ2 IDXZ)
