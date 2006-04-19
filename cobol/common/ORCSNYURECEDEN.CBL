@@ -2763,16 +2763,16 @@
                                END-IF
                            WHEN   2
                                MOVE   WRK-SYS5000-SHOKUCD(1 IDX1)
-                                              TO  WRK-SKJ4-RYOYO(IDX2)
+                                              TO  WRK-SKJ4-RYOYO(IDX3)
                                IF   WRK-SYS5000-SHOKUCD(1 IDX1) NOT =
                                                                  SPACE
                                    MOVE   "197000470"
-                                           TO  WRK-SKJ5-TOKU-SHOKU(IDX2)
+                                           TO  WRK-SKJ5-TOKU-SHOKU(IDX3)
                                END-IF
                                IF   WRK-SYS5000-SHOKUCD(1 IDX1) NOT =
                                                                  SPACE
                                    MOVE   "197000810"
-                                           TO  WRK-SKJFTN2-SRYCD(IDX2)
+                                           TO  WRK-SKJFTN2-SRYCD(IDX3)
                                END-IF
                        END-EVALUATE
                    END-IF
@@ -3110,25 +3110,25 @@
            MOVE       ZERO    TO   IDX2
            PERFORM    VARYING   IDX1   FROM  1  BY  1
                       UNTIL     (IDX1   >     31)
-                DISPLAY "IDX1 = " IDX1
-                DISPLAY "WRK-SKJ7-HKNCOMBI-DAY(IDX1) = "
-                         WRK-SKJ7-HKNCOMBI-DAY(IDX1)
-                DISPLAY "WRK-SKJ7-RYOYO(IDX1) = "
-                         WRK-SKJ7-RYOYO(IDX1)
-                DISPLAY "WRK-SKJ7-RYOYO-SU(IDX1) = "
-                         WRK-SKJ7-RYOYO-SU(IDX1)
-                DISPLAY "WRK-SKJ7-SHOKUDOU(IDX1) = "
-                         WRK-SKJ7-SHOKUDOU(IDX1)
-                DISPLAY "WRK-SKJ7-TOKU-SHOKU(IDX1) = "
-                         WRK-SKJ7-TOKU-SHOKU(IDX1)
-                DISPLAY "WRK-SKJ7-TOKU-SHOKU-SU(IDX1) = "
-                         WRK-SKJ7-TOKU-SHOKU-SU(IDX1)
-                DISPLAY "WRK-SKJ7-SKJFTN(IDX1) = "
-                         WRK-SKJ7-SKJFTN(IDX1)
-                DISPLAY "WRK-SKJ7-SKJFTN-SU(IDX1) = "
-                         WRK-SKJ7-SKJFTN-SU(IDX1)
-                DISPLAY "WRK-SKJ7-KAISU =(IDX1) = "
-                         WRK-SKJ7-KAISU (IDX1)
+      *          DISPLAY "IDX1 = " IDX1
+      *          DISPLAY "WRK-SKJ7-HKNCOMBI-DAY(IDX1) = "
+      *                   WRK-SKJ7-HKNCOMBI-DAY(IDX1)
+      *          DISPLAY "WRK-SKJ7-RYOYO(IDX1) = "
+      *                   WRK-SKJ7-RYOYO(IDX1)
+      *          DISPLAY "WRK-SKJ7-RYOYO-SU(IDX1) = "
+      *                   WRK-SKJ7-RYOYO-SU(IDX1)
+      *          DISPLAY "WRK-SKJ7-SHOKUDOU(IDX1) = "
+      *                   WRK-SKJ7-SHOKUDOU(IDX1)
+      *          DISPLAY "WRK-SKJ7-TOKU-SHOKU(IDX1) = "
+      *                   WRK-SKJ7-TOKU-SHOKU(IDX1)
+      *          DISPLAY "WRK-SKJ7-TOKU-SHOKU-SU(IDX1) = "
+      *                   WRK-SKJ7-TOKU-SHOKU-SU(IDX1)
+      *          DISPLAY "WRK-SKJ7-SKJFTN(IDX1) = "
+      *                   WRK-SKJ7-SKJFTN(IDX1)
+      *          DISPLAY "WRK-SKJ7-SKJFTN-SU(IDX1) = "
+      *                   WRK-SKJ7-SKJFTN-SU(IDX1)
+      *          DISPLAY "WRK-SKJ7-KAISU =(IDX1) = "
+      *                   WRK-SKJ7-KAISU (IDX1)
                 IF    WRK-SKJ7-RYOYO(IDX1)   NOT =  SPACE
                     ADD    1     TO    IDX2
                     MOVE  WRK-SKJ7-HKNCOMBI-DAY(IDX1) TO
