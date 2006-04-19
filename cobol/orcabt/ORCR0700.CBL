@@ -39,6 +39,7 @@
       *  02.06.02    NACL-竹田    05/05/30  realtime preview 処理追加
       *  02.06.03    NACL-門脇    05/08/31  剤番号編集修正
       *  02.06.04    NACL-門脇    05/11/01  （検選）等コメント対応
+      *  02.09.01    NACL-門脇    06/04/13  ２００６年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -328,7 +329,8 @@
                   PERFORM     RECE661-WRITE-SEC
               ELSE
                 IF  ( RECE66-SRYKBN  =  "11" OR "33" OR "99"
-                                     OR "90" OR "92" OR SPACE )
+                                     OR "90" OR "92" OR SPACE
+                                     OR "40" OR "80"          )
                 OR  ( RECE66-SAFLG   NOT =  SPACE             )
                      PERFORM  RECE661-WRITE-SEC
                 END-IF

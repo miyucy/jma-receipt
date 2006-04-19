@@ -2137,89 +2137,104 @@
              MOVE      CONS-KYUSEI     TO   WRK-SRYCD
              PERFORM   2001-KYUSEIHASSYO-HANTEI-SEC
            END-IF
-           PERFORM   VARYING   IDX14    FROM   1   BY   1
-                      UNTIL    IDX14      >    5
-              IF   TBL-HASSYO-KAITATU-COMMENT(IDX14)   =  1
-                  PERFORM    20011-HASSYO-COMMENT-SEC
-              END-IF
-           END-PERFORM
       ***
            IF   TBL-HASSYO-SINDAI-FLG   =   1
              MOVE      CONS-SINDAI     TO   WRK-SRYCD
              PERFORM   20011-RIHABIRIHASSYO-HANTEI-SEC
+             IF        FLG-KYUSEI-COMMENT    =      1
+               PERFORM    20011-KYUSEIHASSYO-KENSAKU-SEC
+               PERFORM   VARYING   IDX14    FROM   1   BY   1
+                          UNTIL    IDX14      >    5
+                  IF   TBL-HASSYO-SINDAI-COMMENT(IDX14)   =  1
+                      PERFORM    20011-HASSYO-COMMENT-SEC
+                  END-IF
+               END-PERFORM
+             END-IF
            END-IF
-           PERFORM   VARYING   IDX14    FROM   1   BY   1
-                      UNTIL    IDX14      >    5
-              IF   TBL-HASSYO-SINDAI-COMMENT(IDX14)   =  1
-                  PERFORM    20011-HASSYO-COMMENT-SEC
-              END-IF
-           END-PERFORM
       ***
            IF   TBL-HASSYO-KOKYUKI-FLG   =   1
              MOVE      CONS-KOKYUKI    TO   WRK-SRYCD
              PERFORM   20011-RIHABIRIHASSYO-HANTEI-SEC
+             IF        FLG-KYUSEI-COMMENT    =      1
+               PERFORM    20011-KYUSEIHASSYO-KENSAKU-SEC
+               PERFORM   VARYING   IDX14    FROM   1   BY   1
+                          UNTIL    IDX14      >    5
+                  IF   TBL-HASSYO-KOKYUKI-COMMENT(IDX14)   =  1
+                      PERFORM    20011-HASSYO-COMMENT-SEC
+                  END-IF
+               END-PERFORM
+             END-IF
            END-IF
-           PERFORM   VARYING   IDX14    FROM   1   BY   1
-                      UNTIL    IDX14      >    5
-              IF   TBL-HASSYO-KOKYUKI-COMMENT(IDX14)   =  1
-                  PERFORM    20011-HASSYO-COMMENT-SEC
-              END-IF
-           END-PERFORM
       ***
            IF   TBL-HASSYO-NOUKE-FLG   =   1
              MOVE      CONS-NOUKE      TO   WRK-SRYCD
              PERFORM   20011-RIHABIRIHASSYO-HANTEI-SEC
+             IF        FLG-KYUSEI-COMMENT    =      1
+               PERFORM    20011-KYUSEIHASSYO-KENSAKU-SEC
+               PERFORM   VARYING   IDX14    FROM   1   BY   1
+                          UNTIL    IDX14      >    5
+                  IF   TBL-HASSYO-NOUKE-COMMENT(IDX14)   =  1
+                      PERFORM    20011-HASSYO-COMMENT-SEC
+                  END-IF
+               END-PERFORM
+             END-IF
            END-IF
-           PERFORM   VARYING   IDX14    FROM   1   BY   1
-                      UNTIL    IDX14      >    5
-              IF   TBL-HASSYO-NOUKE-COMMENT(IDX14)   =  1
-                  PERFORM    20011-HASSYO-COMMENT-SEC
-              END-IF
-           END-PERFORM
       ***
            IF   TBL-HASSYO-UNDOKI-FLG   =   1
              MOVE      CONS-UNDOKI      TO   WRK-SRYCD
              PERFORM   20011-RIHABIRIHASSYO-HANTEI-SEC
+             IF        FLG-KYUSEI-COMMENT    =      1
+               PERFORM    20011-KYUSEIHASSYO-KENSAKU-SEC
+               PERFORM   VARYING   IDX14    FROM   1   BY   1
+                          UNTIL    IDX14      >    5
+                  IF   TBL-HASSYO-UNDOKI-COMMENT(IDX14)   =  1
+                      PERFORM    20011-HASSYO-COMMENT-SEC
+                  END-IF
+               END-PERFORM
+             END-IF
            END-IF
-           PERFORM   VARYING   IDX14    FROM   1   BY   1
-                      UNTIL    IDX14      >    5
-              IF   TBL-HASSYO-UNDOKI-COMMENT(IDX14)   =  1
-                  PERFORM    20011-HASSYO-COMMENT-SEC
-              END-IF
-           END-PERFORM
       ***
            IF   TBL-HASSYO-NANBYO-FLG   =   1
              MOVE      CONS-NANBYO      TO   WRK-SRYCD
              PERFORM   20011-RIHABIRIHASSYO-HANTEI-SEC
+             IF        FLG-KYUSEI-COMMENT    =      1
+               PERFORM    20011-KYUSEIHASSYO-KENSAKU-SEC
+               PERFORM   VARYING   IDX14    FROM   1   BY   1
+                          UNTIL    IDX14      >    5
+                  IF   TBL-HASSYO-NANBYO-COMMENT(IDX14)   =  1
+                      PERFORM    20011-HASSYO-COMMENT-SEC
+                  END-IF
+               END-PERFORM
+             END-IF
            END-IF
-           PERFORM   VARYING   IDX14    FROM   1   BY   1
-                      UNTIL    IDX14      >    5
-              IF   TBL-HASSYO-NANBYO-COMMENT(IDX14)   =  1
-                  PERFORM    20011-HASSYO-COMMENT-SEC
-              END-IF
-           END-PERFORM
       ***
            IF   TBL-HASSYO-SYOGAI-FLG   =   1
              MOVE      CONS-SYOGAI      TO   WRK-SRYCD
              PERFORM   20011-RIHABIRIHASSYO-HANTEI-SEC
+             IF        FLG-KYUSEI-COMMENT    =      1
+               PERFORM    20011-KYUSEIHASSYO-KENSAKU-SEC
+               PERFORM   VARYING   IDX14    FROM   1   BY   1
+                          UNTIL    IDX14      >    5
+                  IF   TBL-HASSYO-SYOGAI-COMMENT(IDX14)   =  1
+                      PERFORM    20011-HASSYO-COMMENT-SEC
+                  END-IF
+               END-PERFORM
+             END-IF
            END-IF
-           PERFORM   VARYING   IDX14    FROM   1   BY   1
-                      UNTIL    IDX14      >    5
-              IF   TBL-HASSYO-SYOGAI-COMMENT(IDX14)   =  1
-                  PERFORM    20011-HASSYO-COMMENT-SEC
-              END-IF
-           END-PERFORM
       ***
            IF   TBL-HASSYO-SESSYOKU-FLG   =   1
              MOVE      CONS-SESSYOKU      TO   WRK-SRYCD
              PERFORM   20011-RIHABIRIHASSYO-HANTEI-SEC
+             IF        FLG-KYUSEI-COMMENT    =      1
+               PERFORM    20011-KYUSEIHASSYO-KENSAKU-SEC
+               PERFORM   VARYING   IDX14    FROM   1   BY   1
+                          UNTIL    IDX14      >    5
+                  IF   TBL-HASSYO-SESSYOKU-COMMENT(IDX14)   =  1
+                      PERFORM    20011-HASSYO-COMMENT-SEC
+                  END-IF
+               END-PERFORM
+             END-IF
            END-IF
-           PERFORM   VARYING   IDX14    FROM   1   BY   1
-                      UNTIL    IDX14      >    5
-              IF   TBL-HASSYO-SESSYOKU-COMMENT(IDX14)   =  1
-                  PERFORM    20011-HASSYO-COMMENT-SEC
-              END-IF
-           END-PERFORM
       *
            .
        2001-HASSYO-HANTEI-EXT.
@@ -2368,7 +2383,12 @@
            AND     FLG-KYUSEI-COMMENT2   =      ZERO
                PERFORM    20011-KYUSEIHASSYO-KENSAKU-SEC
                IF   RECE02-SRYYM      >=    "200604"
-                   CONTINUE
+                   PERFORM   VARYING   IDX14    FROM   1   BY   1
+                              UNTIL    IDX14      >    5
+                      IF   TBL-HASSYO-KAITATU-COMMENT(IDX14)   =  1
+                          PERFORM    20011-HASSYO-COMMENT-SEC
+                      END-IF
+                   END-PERFORM
                ELSE
                    PERFORM    20011-KYUSEIHASSYO-COMMENT-SEC
                END-IF
@@ -2921,10 +2941,6 @@
                                        MCPAREA
                                        ORCMCPAREA
                                        MCPDATA-REC
-      *
-           IF      FLG-KYUSEI-COMMENT    =      1
-               PERFORM    20011-KYUSEIHASSYO-KENSAKU-SEC
-           END-IF
       *
            .
        20011-RIHABIRIHASSYO-HANTEI-EXT.

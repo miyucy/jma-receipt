@@ -47,6 +47,7 @@
       *  01.02.07    NACL-門脇    05/11/01  （検選）等コメント対応
       *  01.02.08    NACL-門脇    05/11/15  傷病手当金、療養費同意書の自動
       *                                     記載編集修正
+      *  02.09.01    NACL-門脇    06/04/13  ２００６年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -302,6 +303,10 @@
            03  WRK-HINKAIYMD       PIC 9(08).
            03  WRK-DAY             PIC 9(02).
       *
+           03  WRK-SRYKBN          PIC X(02).
+           03  WRK-SRYCD           PIC X(09).
+           03  WRK-ZAINUM          PIC 9(08).
+      *
            03  WRK-HENSYU-KAISU    PIC X(02).
            03  WRK-HENSYU-KAISU2   PIC X(04).
       *
@@ -411,6 +416,30 @@
            03  CONS-TOSEKI           PIC X(09) VALUE "114009310".
       *    脳血管疾患急性発症日
            03  CONS-KYUSEI           PIC X(09) VALUE "099800101".
+      *    心大リハ開始日
+           03  CONS-SINDAI          PIC X(09) VALUE "099800111".
+      *    呼吸器リハ開始日
+           03  CONS-KOKYUKI         PIC X(09) VALUE "099800141".
+      *    脳血管疾患等リハ開始日
+           03  CONS-NOUKE           PIC X(09) VALUE "099800121".
+      *    運動器リハ開始日
+           03  CONS-UNDOKI          PIC X(09) VALUE "099800131".
+      *    難病患者リハ開始日
+           03  CONS-NANBYO          PIC X(09) VALUE "099800161".
+      *    障害児（者）リハ開始日
+           03  CONS-SYOGAI          PIC X(09) VALUE "099800171".
+      *    摂食療法開始日
+           03  CONS-SESSYOKU        PIC X(09) VALUE "099800151".
+      *
+       01  TBL-HASSYO-INF.
+           03  TBL-HASSYO-KAITATU-COMMENT   PIC 9(01).
+           03  TBL-HASSYO-SINDAI-COMMENT    PIC 9(01).
+           03  TBL-HASSYO-KOKYUKI-COMMENT   PIC 9(01).
+           03  TBL-HASSYO-NOUKE-COMMENT     PIC 9(01).
+           03  TBL-HASSYO-UNDOKI-COMMENT    PIC 9(01).
+           03  TBL-HASSYO-NANBYO-COMMENT    PIC 9(01).
+           03  TBL-HASSYO-SYOGAI-COMMENT    PIC 9(01).
+           03  TBL-HASSYO-SESSYOKU-COMMENT  PIC 9(01).
       *
       *    酸素（金額・数量）情報
        01  TBL-SANSO-INF.
@@ -599,48 +628,101 @@
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-      **** IF   RECE82-COMCNTFLG   =   "1"
-      ****   INITIALIZE                      RECE84-REC
-      ****   MOVE    RECE82-HOSPID       TO  RECE84-HOSPID
-      ****   MOVE    RECE82-SRYYM        TO  RECE84-SRYYM
-      ****   MOVE    RECE82-NYUGAIKBN    TO  RECE84-NYUGAIKBN
-      ****   MOVE    RECE82-PTID         TO  RECE84-PTID
-      ****   MOVE    RECE82-RECEKA       TO  RECE84-RECEKA
-      ****   MOVE    RECE82-HKNID        TO  RECE84-HKNID
-      ****   MOVE    RECE82-TEKSTYMD     TO  RECE84-TEKSTYMD
-      ****   MOVE    ZERO                TO  RECE84-ZAINUM
+           INITIALIZE                        TBL-HASSYO-INF
       *
-      ****   START   RECE84-FILE
-      ****       KEY IS    >=   RECE84-KEY
-      ****       INVALID
-      ****           MOVE    1           TO  FLG-RECE84
-      ****       NOT INVALID
-      ****           PERFORM 990-RECE84-NEXT-SEC
-      ****   END-START
-      ****   PERFORM
-      ****     UNTIL  ( FLG-RECE84           =   1                   )
-      ****     OR     ( RECE82-HOSPID    NOT =   RECE84-HOSPID       )
-      ****     OR     ( RECE82-SRYYM     NOT =   RECE84-SRYYM        )
-      ****     OR     ( RECE82-NYUGAIKBN NOT =   RECE84-NYUGAIKBN    )
-      ****     OR     ( RECE82-PTID      NOT =   RECE84-PTID         )
-      ****     OR     ( RECE82-RECEKA    NOT =   RECE84-RECEKA       )
-      ****     OR     ( RECE82-HKNID     NOT =   RECE84-HKNID        )
-      ****     OR     ( RECE82-TEKSTYMD  NOT =   RECE84-TEKSTYMD     )
+           IF   RECE82-COMCNTFLG   =   "1"
+             INITIALIZE                      RECE84-REC
+             MOVE    RECE82-HOSPID       TO  RECE84-HOSPID
+             MOVE    RECE82-SRYYM        TO  RECE84-SRYYM
+             MOVE    RECE82-NYUGAIKBN    TO  RECE84-NYUGAIKBN
+             MOVE    RECE82-PTID         TO  RECE84-PTID
+             MOVE    RECE82-RECEKA       TO  RECE84-RECEKA
+             MOVE    RECE82-HKNID        TO  RECE84-HKNID
+             MOVE    RECE82-TEKSTYMD     TO  RECE84-TEKSTYMD
+             MOVE    ZERO                TO  RECE84-ZAINUM
       *
-      ****     IF   RECE82-HKNKBN    NOT  =  "4"                        
-      ****        EVALUATE      RECE84-SRYKBN
-      *+++
-      *+++
-      ****        END-EVALUATE
-      ****     ELSE                                                     
-      ****        EVALUATE      RECE84-SRYKBN
-      *+++
-      *+++
-      ****        END-EVALUATE                                          
-      ****     END-IF                                                   
-      ****     PERFORM 990-RECE84-NEXT-SEC
-      ****   END-PERFORM
-      **** END-IF
+             START   RECE84-FILE
+                 KEY IS    >=   RECE84-KEY
+                 INVALID
+                     MOVE    1           TO  FLG-RECE84
+                 NOT INVALID
+                     PERFORM 990-RECE84-NEXT-SEC
+             END-START
+             PERFORM
+               UNTIL  ( FLG-RECE84           =   1                   )
+               OR     ( RECE82-HOSPID    NOT =   RECE84-HOSPID       )
+               OR     ( RECE82-SRYYM     NOT =   RECE84-SRYYM        )
+               OR     ( RECE82-NYUGAIKBN NOT =   RECE84-NYUGAIKBN    )
+               OR     ( RECE82-PTID      NOT =   RECE84-PTID         )
+               OR     ( RECE82-RECEKA    NOT =   RECE84-RECEKA       )
+               OR     ( RECE82-HKNID     NOT =   RECE84-HKNID        )
+               OR     ( RECE82-TEKSTYMD  NOT =   RECE84-TEKSTYMD     )
+      *
+               IF   RECE82-HKNKBN    NOT  =  "4"                        
+                  EVALUATE      RECE84-SRYKBN
+                      WHEN      "40"
+      *               （介達牽引あり）
+                         IF  RECE84-KAITATU-COMMENT      =  "1"
+                            MOVE   1   TO  TBL-HASSYO-KAITATU-COMMENT
+                         END-IF
+                      WHEN      "80"
+      *               （リハビリあり）
+                         IF  RECE84-SINDAI-COMMENT       =  "1"
+                            MOVE   1   TO  TBL-HASSYO-SINDAI-COMMENT
+                         END-IF
+                         IF  RECE84-KOKYUKI-COMMENT      =  "1"
+                            MOVE   1   TO  TBL-HASSYO-KOKYUKI-COMMENT
+                         END-IF
+                         IF  RECE84-NOUKE-COMMENT        =  "1"
+                            MOVE   1   TO  TBL-HASSYO-NOUKE-COMMENT
+                         END-IF
+                         IF  RECE84-UNDOKI-COMMENT       =  "1"
+                            MOVE   1   TO  TBL-HASSYO-UNDOKI-COMMENT
+                         END-IF
+                         IF  RECE84-NANBYO-COMMENT       =  "1"
+                            MOVE   1   TO  TBL-HASSYO-NANBYO-COMMENT
+                         END-IF
+                         IF  RECE84-SYOGAI-COMMENT       =  "1"
+                            MOVE   1   TO  TBL-HASSYO-SYOGAI-COMMENT
+                         END-IF
+                         IF  RECE84-SESSYOKU-COMMENT     =  "1"
+                            MOVE   1   TO  TBL-HASSYO-SESSYOKU-COMMENT
+                         END-IF
+                  END-EVALUATE
+               ELSE                                                     
+                  EVALUATE      RECE84-SRYKBN
+                      WHEN      "40"
+      *               （介達牽引あり）
+                         IF  RECE84-KAITATU-COMMENT      =  "1"
+                            MOVE   1   TO  TBL-HASSYO-KAITATU-COMMENT
+                         END-IF
+      *               （リハビリあり）
+                         IF  RECE84-SINDAI-COMMENT       =  "1"
+                            MOVE   1   TO  TBL-HASSYO-SINDAI-COMMENT
+                         END-IF
+                         IF  RECE84-KOKYUKI-COMMENT      =  "1"
+                            MOVE   1   TO  TBL-HASSYO-KOKYUKI-COMMENT
+                         END-IF
+                         IF  RECE84-NOUKE-COMMENT        =  "1"
+                            MOVE   1   TO  TBL-HASSYO-NOUKE-COMMENT
+                         END-IF
+                         IF  RECE84-UNDOKI-COMMENT       =  "1"
+                            MOVE   1   TO  TBL-HASSYO-UNDOKI-COMMENT
+                         END-IF
+                         IF  RECE84-NANBYO-COMMENT       =  "1"
+                            MOVE   1   TO  TBL-HASSYO-NANBYO-COMMENT
+                         END-IF
+                         IF  RECE84-SYOGAI-COMMENT       =  "1"
+                            MOVE   1   TO  TBL-HASSYO-SYOGAI-COMMENT
+                         END-IF
+                         IF  RECE84-SESSYOKU-COMMENT     =  "1"
+                            MOVE   1   TO  TBL-HASSYO-SESSYOKU-COMMENT
+                         END-IF
+                  END-EVALUATE                                          
+               END-IF                                                   
+               PERFORM 990-RECE84-NEXT-SEC
+             END-PERFORM
+           END-IF
       *
       *    他保険にて入院料算定済みのコメント
       *
@@ -650,8 +732,13 @@
       *
            END-IF
       *
-      *    脳血管疾患急性発症日のコメント
-           PERFORM   2001-KYUSEIHASSYO-HANTEI-SEC
+      *    発症日のコメント
+           IF   RECE82-SRYYM      >=    "200604"
+               PERFORM   2001-HASSYO-HANTEI-SEC
+           ELSE
+               MOVE      CONS-KYUSEI     TO   WRK-SRYCD
+               PERFORM   2001-KYUSEIHASSYO-HANTEI-SEC
+           END-IF
       *
       *    自賠責従来様式：加算率 
            IF   RECE82-HKNKBN     =   "4"
@@ -980,6 +1067,55 @@
            EXIT.
       *
       *****************************************************************
+      *    発症日があるか判定
+      *****************************************************************
+       2001-HASSYO-HANTEI-SEC          SECTION.
+      *
+           IF   TBL-HASSYO-KAITATU-COMMENT   =  1
+                MOVE      CONS-KYUSEI      TO   WRK-SRYCD
+                PERFORM   2001-KYUSEIHASSYO-HANTEI-SEC
+           END-IF
+      ***
+           IF   TBL-HASSYO-SINDAI-COMMENT    =  1
+                MOVE      CONS-SINDAI      TO   WRK-SRYCD
+                PERFORM   20011-RIHABIRIHASSYO-HANTEI-SEC
+           END-IF
+      ***
+           IF   TBL-HASSYO-KOKYUKI-COMMENT   =  1
+                MOVE      CONS-KOKYUKI     TO   WRK-SRYCD
+                PERFORM   20011-RIHABIRIHASSYO-HANTEI-SEC
+           END-IF
+      ***
+           IF   TBL-HASSYO-NOUKE-COMMENT     =  1
+                MOVE      CONS-NOUKE       TO   WRK-SRYCD
+                PERFORM   20011-RIHABIRIHASSYO-HANTEI-SEC
+           END-IF
+      ***
+           IF   TBL-HASSYO-UNDOKI-COMMENT    =  1
+                MOVE      CONS-UNDOKI      TO   WRK-SRYCD
+                PERFORM   20011-RIHABIRIHASSYO-HANTEI-SEC
+           END-IF
+      ***
+           IF   TBL-HASSYO-NANBYO-COMMENT    =  1
+                MOVE      CONS-NANBYO      TO   WRK-SRYCD
+                PERFORM   20011-RIHABIRIHASSYO-HANTEI-SEC
+           END-IF
+      ***
+           IF   TBL-HASSYO-SYOGAI-COMMENT    =  1
+                MOVE      CONS-SYOGAI      TO   WRK-SRYCD
+                PERFORM   20011-RIHABIRIHASSYO-HANTEI-SEC
+           END-IF
+      ***
+           IF   TBL-HASSYO-SESSYOKU-COMMENT  =  1
+                MOVE      CONS-SESSYOKU    TO   WRK-SRYCD
+                PERFORM   20011-RIHABIRIHASSYO-HANTEI-SEC
+           END-IF
+      *
+           .
+       2001-HASSYO-HANTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    脳血管疾患急性発症日があるか判定
       *    脳血管疾患急性発症日の１８０日以内か判定
       *****************************************************************
@@ -992,7 +1128,7 @@
            INITIALIZE                  SANTEI-REC
            MOVE    RECE82-HOSPID       TO  SANTEI-HOSPID
            MOVE    RECE82-PTID         TO  SANTEI-PTID
-           MOVE    CONS-KYUSEI         TO  SANTEI-SRYCD
+           MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
            MOVE    ZERO                TO  SANTEI-NYUGAIKBN
            MOVE    ZERO                TO  SANTEI-SRYKA
            MOVE    RECE82-HKNCOMBI     TO  SANTEI-HKNCOMBINUM
@@ -1057,7 +1193,11 @@
       *
            IF      FLG-KYUSEI-COMMENT    =      1
                PERFORM    20011-KYUSEIHASSYO-KENSAKU-SEC
-               PERFORM    20011-KYUSEIHASSYO-COMMENT-SEC
+               IF   RECE82-SRYYM      >=    "200604"
+                   PERFORM    20011-HASSYO-COMMENT-SEC
+               ELSE
+                   PERFORM    20011-KYUSEIHASSYO-COMMENT-SEC
+               END-IF
            END-IF
       *
            .
@@ -1065,7 +1205,7 @@
            EXIT.
       *
       *****************************************************************
-      *    脳血管疾患急性発症日の検索
+      *    脳血管疾患急性発症日等の検索
       *****************************************************************
        20011-KYUSEIHASSYO-KENSAKU-SEC          SECTION.
       *
@@ -1081,11 +1221,11 @@
            MOVE    RECE82-HOSPID         TO  SRY-HOSPID
            MOVE    RECE82-PTID           TO  SRY-PTID
            MOVE    WRK-KYUSEIYMD(1:6)    TO  SRY-SRYYM
-           MOVE    CONS-KYUSEI           TO  SRY-SRYCD (1)
-           MOVE    CONS-KYUSEI           TO  SRY-SRYCD (2)
-           MOVE    CONS-KYUSEI           TO  SRY-SRYCD (3)
-           MOVE    CONS-KYUSEI           TO  SRY-SRYCD (4)
-           MOVE    CONS-KYUSEI           TO  SRY-SRYCD (5)
+           MOVE    WRK-SRYCD             TO  SRY-SRYCD (1)
+           MOVE    WRK-SRYCD             TO  SRY-SRYCD (2)
+           MOVE    WRK-SRYCD             TO  SRY-SRYCD (3)
+           MOVE    WRK-SRYCD             TO  SRY-SRYCD (4)
+           MOVE    WRK-SRYCD             TO  SRY-SRYCD (5)
            MOVE    SRYACT-REC            TO  MCPDATA-REC
            MOVE    "DBSELECT"            TO  MCP-FUNC
            MOVE    "SRYACT-KEY12"        TO  ORC-DBPATH
@@ -1312,6 +1452,292 @@
       *
            .
        20011-KYUSEIHASSYO-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    発症日のコメント編集
+      *****************************************************************
+       20011-HASSYO-COMMENT-SEC          SECTION.
+      *
+      *    ＲＥＣＥ０５ファイルの内容をテーブルに退避
+           MOVE    ZERO         TO  IDX-RECE85
+           MOVE    SPACE        TO  WRK-RECE85XX-REC
+           INITIALIZE               WRK-RECE85XX-REC
+      *
+           ADD     1            TO  IDX-RECE85
+           MOVE    "810000001"  TO  WRK-RECE85XX-SRYCD(IDX-RECE85 1)
+           MOVE    ZERO         TO  WRK-RECE85XX-SRYSURYO(IDX-RECE85 1)
+      *
+           EVALUATE      WRK-SRYCD
+             WHEN       CONS-KYUSEI
+               MOVE    16   TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
+               MOVE    "脳血管疾患急性発症　　　月　　日"
+                            TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
+               MOVE    WRK-KYUSEIYMD(5:2)   TO  DAY-IDX2
+               MOVE    TBL-DAY(DAY-IDX2)
+                            TO  WRK-RECE85XX-NAME(IDX-RECE85 1)(21:4)
+               MOVE    WRK-KYUSEIYMD(7:2)   TO  DAY-IDX2
+               MOVE    TBL-DAY(DAY-IDX2)
+                            TO  WRK-RECE85XX-NAME(IDX-RECE85 1)(27:4)
+               MOVE    99999601      TO    WRK-ZAINUM
+               MOVE    "40" TO  WRK-SRYKBN
+             WHEN       CONS-SINDAI
+               MOVE    20   TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
+               MOVE    "心大血管疾患リハ：治療開始　　　月　　日"
+                            TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
+               MOVE    WRK-KYUSEIYMD(5:2)   TO  DAY-IDX2
+               MOVE    TBL-DAY(DAY-IDX2)
+                            TO  WRK-RECE85XX-NAME(IDX-RECE85 1)(29:4)
+               MOVE    WRK-KYUSEIYMD(7:2)   TO  DAY-IDX2
+               MOVE    TBL-DAY(DAY-IDX2)
+                            TO  WRK-RECE85XX-NAME(IDX-RECE85 1)(35:4)
+               MOVE    99999611      TO    WRK-ZAINUM
+               IF   RECE82-HKNKBN    NOT  =  "4"
+                    MOVE    "80" TO  WRK-SRYKBN
+               ELSE
+                    MOVE    "40" TO  WRK-SRYKBN
+               END-IF
+             WHEN       CONS-NOUKE
+               MOVE    18   TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
+               MOVE    "脳血管疾患等リハ：発症　　　月　　日"
+                            TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
+               MOVE    WRK-KYUSEIYMD(5:2)   TO  DAY-IDX2
+               MOVE    TBL-DAY(DAY-IDX2)
+                            TO  WRK-RECE85XX-NAME(IDX-RECE85 1)(25:4)
+               MOVE    WRK-KYUSEIYMD(7:2)   TO  DAY-IDX2
+               MOVE    TBL-DAY(DAY-IDX2)
+                            TO  WRK-RECE85XX-NAME(IDX-RECE85 1)(31:4)
+               MOVE    99999621      TO    WRK-ZAINUM
+               IF   RECE82-HKNKBN    NOT  =  "4"
+                    MOVE    "80" TO  WRK-SRYKBN
+               ELSE
+                    MOVE    "40" TO  WRK-SRYKBN
+               END-IF
+             WHEN       CONS-UNDOKI
+               MOVE    15   TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
+               MOVE    "運動器リハ：発症　　　月　　日"
+                            TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
+               MOVE    WRK-KYUSEIYMD(5:2)   TO  DAY-IDX2
+               MOVE    TBL-DAY(DAY-IDX2)
+                            TO  WRK-RECE85XX-NAME(IDX-RECE85 1)(19:4)
+               MOVE    WRK-KYUSEIYMD(7:2)   TO  DAY-IDX2
+               MOVE    TBL-DAY(DAY-IDX2)
+                            TO  WRK-RECE85XX-NAME(IDX-RECE85 1)(25:4)
+               MOVE    99999631      TO    WRK-ZAINUM
+               IF   RECE82-HKNKBN    NOT  =  "4"
+                    MOVE    "80" TO  WRK-SRYKBN
+               ELSE
+                    MOVE    "40" TO  WRK-SRYKBN
+               END-IF
+             WHEN       CONS-KOKYUKI
+               MOVE    17   TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
+               MOVE    "呼吸器リハ：治療開始　　　月　　日"
+                            TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
+               MOVE    WRK-KYUSEIYMD(5:2)   TO  DAY-IDX2
+               MOVE    TBL-DAY(DAY-IDX2)
+                            TO  WRK-RECE85XX-NAME(IDX-RECE85 1)(23:4)
+               MOVE    WRK-KYUSEIYMD(7:2)   TO  DAY-IDX2
+               MOVE    TBL-DAY(DAY-IDX2)
+                            TO  WRK-RECE85XX-NAME(IDX-RECE85 1)(29:4)
+               MOVE    99999641      TO    WRK-ZAINUM
+               IF   RECE82-HKNKBN    NOT  =  "4"
+                    MOVE    "80" TO  WRK-SRYKBN
+               ELSE
+                    MOVE    "40" TO  WRK-SRYKBN
+               END-IF
+             WHEN       CONS-SESSYOKU
+               MOVE    18   TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
+               MOVE    "摂食機能療法：治療開始　　　月　　日"
+                            TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
+               MOVE    WRK-KYUSEIYMD(5:2)   TO  DAY-IDX2
+               MOVE    TBL-DAY(DAY-IDX2)
+                            TO  WRK-RECE85XX-NAME(IDX-RECE85 1)(25:4)
+               MOVE    WRK-KYUSEIYMD(7:2)   TO  DAY-IDX2
+               MOVE    TBL-DAY(DAY-IDX2)
+                            TO  WRK-RECE85XX-NAME(IDX-RECE85 1)(31:4)
+               MOVE    99999651      TO    WRK-ZAINUM
+               IF   RECE82-HKNKBN    NOT  =  "4"
+                    MOVE    "80" TO  WRK-SRYKBN
+               ELSE
+                    MOVE    "40" TO  WRK-SRYKBN
+               END-IF
+             WHEN       CONS-NANBYO
+               MOVE    16   TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
+               MOVE    "難病患者リハ：発症　　　月　　日"
+                            TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
+               MOVE    WRK-KYUSEIYMD(5:2)   TO  DAY-IDX2
+               MOVE    TBL-DAY(DAY-IDX2)
+                            TO  WRK-RECE85XX-NAME(IDX-RECE85 1)(21:4)
+               MOVE    WRK-KYUSEIYMD(7:2)   TO  DAY-IDX2
+               MOVE    TBL-DAY(DAY-IDX2)
+                            TO  WRK-RECE85XX-NAME(IDX-RECE85 1)(27:4)
+               MOVE    99999661      TO    WRK-ZAINUM
+               IF   RECE82-HKNKBN    NOT  =  "4"
+                    MOVE    "80" TO  WRK-SRYKBN
+               ELSE
+                    MOVE    "40" TO  WRK-SRYKBN
+               END-IF
+             WHEN       CONS-SYOGAI
+               MOVE    18   TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
+               MOVE    "障害児（者）リハ：発症　　　月　　日"
+                            TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
+               MOVE    WRK-KYUSEIYMD(5:2)   TO  DAY-IDX2
+               MOVE    TBL-DAY(DAY-IDX2)
+                            TO  WRK-RECE85XX-NAME(IDX-RECE85 1)(25:4)
+               MOVE    WRK-KYUSEIYMD(7:2)   TO  DAY-IDX2
+               MOVE    TBL-DAY(DAY-IDX2)
+                            TO  WRK-RECE85XX-NAME(IDX-RECE85 1)(31:4)
+               MOVE    99999671      TO    WRK-ZAINUM
+               IF   RECE82-HKNKBN    NOT  =  "4"
+                    MOVE    "80" TO  WRK-SRYKBN
+               ELSE
+                    MOVE    "40" TO  WRK-SRYKBN
+               END-IF
+           END-EVALUATE
+      *
+           MOVE    "1"        TO  WRK-RECE85XX-SIKFLG(IDX-RECE85 1)
+      *
+           PERFORM   VARYING   IDX12   FROM    1   BY  1
+                      UNTIL  ( IDX12               >   49    )
+                        OR   ( WK-FREE-NAME(IDX12) =   SPACE )
+                ADD    1        TO  IDX-RECE85
+                MOVE   "810000001"
+                                TO  WRK-RECE85XX-SRYCD(IDX-RECE85 1)
+                MOVE   ZERO     TO  WRK-RECE85XX-SRYSURYO(IDX-RECE85 1)
+                MOVE   WK-FREE-YUKOKETA(IDX12)
+                                TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
+                MOVE   WK-FREE-NAME(IDX12)
+                                TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
+                MOVE   "1"      TO  WRK-RECE85XX-SIKFLG(IDX-RECE85 1)
+           END-PERFORM
+      *
+      *    科・日付の編集を含んだ内容で中間ファイルの再作成
+           MOVE       ZERO             TO      FLG-WRKRECE85
+           MOVE       ZERO             TO      IDX
+           MOVE       ZERO             TO      IDX-RECE85
+           MOVE       ZERO             TO      WRK-RENNUM
+           MOVE       ZERO             TO      WRK-CNT-MEISAI
+           PERFORM    UNTIL     FLG-WRKRECE85  =    1
+                INITIALIZE                      RECE859-REC
+                MOVE    RECE82-HOSPID       TO  RECE859-HOSPID
+                MOVE    RECE82-SRYYM        TO  RECE859-SRYYM
+                MOVE    RECE82-NYUGAIKBN    TO  RECE859-NYUGAIKBN
+                MOVE    RECE82-PTID         TO  RECE859-PTID
+                MOVE    RECE82-RECEKA       TO  RECE859-RECEKA
+                MOVE    RECE82-HKNID        TO  RECE859-HKNID
+                MOVE    RECE82-TEKSTYMD     TO  RECE859-TEKSTYMD
+      ***       MOVE    99999996            TO  RECE859-ZAINUM
+                MOVE    WRK-ZAINUM          TO  RECE859-ZAINUM
+                MOVE    WRK-SRYKBN          TO  RECE859-SRYKBN
+                ADD     1                   TO  WRK-RENNUM
+                MOVE    WRK-RENNUM          TO  RECE859-RENNUM
+                PERFORM  VARYING   IDX   FROM   1   BY   1
+                          UNTIL   (IDX             >    5)   OR
+                                  (FLG-WRKRECE85   =    1)
+                   ADD         1            TO  IDX-RECE85
+                   IF  WRK-RECE85XX-SRYCD(IDX-RECE85 1) = SPACE
+                       MOVE    1            TO  FLG-WRKRECE85
+                   ELSE
+                       MOVE  WRK-RECE85XX-SRYACT-TBL (IDX-RECE85 1)
+                                        TO   RECE859-SRYACT-TBL(IDX)
+                       ADD   1          TO   WRK-CNT-MEISAI
+                   END-IF
+                END-PERFORM
+                IF   RECE859-SRYCD(1)  NOT =  SPACE
+                   WRITE   RECE859-REC
+                   ADD     1            TO   CNT-RECE859
+                END-IF
+           END-PERFORM
+      *
+      *
+           INITIALIZE                      RECE849-REC
+           MOVE    RECE82-HOSPID       TO  RECE849-HOSPID
+           MOVE    RECE82-SRYYM        TO  RECE849-SRYYM
+           MOVE    RECE82-NYUGAIKBN    TO  RECE849-NYUGAIKBN
+           MOVE    RECE82-PTID         TO  RECE849-PTID
+           MOVE    RECE82-RECEKA       TO  RECE849-RECEKA
+           MOVE    RECE82-HKNID        TO  RECE849-HKNID
+           MOVE    RECE82-TEKSTYMD     TO  RECE849-TEKSTYMD
+      ***  MOVE    99999996            TO  RECE849-ZAINUM
+           MOVE    WRK-ZAINUM          TO  RECE849-ZAINUM
+           MOVE    WRK-SRYKBN          TO  RECE849-SRYKBN
+      *
+           MOVE    WRK-CNT-MEISAI      TO  RECE849-MEISAISU
+      *
+           WRITE   RECE849-REC
+           ADD     1                   TO  CNT-RECE849
+      *
+           .
+       20011-HASSYO-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    リハビリ発症日があるか判定
+      *****************************************************************
+       20011-RIHABIRIHASSYO-HANTEI-SEC          SECTION.
+      *
+           MOVE     ZERO     TO     FLG-KYUSEI-COMMENT
+           MOVE     ZERO     TO     WRK-KYUSEIYMD
+      *
+      *    算定履歴検索
+           INITIALIZE                  SANTEI-REC
+           MOVE    RECE82-HOSPID       TO  SANTEI-HOSPID
+           MOVE    RECE82-PTID         TO  SANTEI-PTID
+           MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
+           MOVE    ZERO                TO  SANTEI-NYUGAIKBN
+           MOVE    ZERO                TO  SANTEI-SRYKA
+           MOVE    RECE82-HKNCOMBI     TO  SANTEI-HKNCOMBINUM
+           MOVE    SANTEI-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+      *
+                MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
+                PERFORM        900-SANTEI-READ-SEC
+      *
+                PERFORM   UNTIL  ( FLG-SANTEI         =   1 ) OR
+                                 ( FLG-KYUSEI-COMMENT =   1 )
+      *
+                   PERFORM  VARYING   IDX3   FROM  31  BY  -1
+                             UNTIL   ( IDX3               <    1 )
+                               OR    ( FLG-KYUSEI-COMMENT =    1 )
+      *
+                     IF   SANTEI-DAY(IDX3)  NOT =  ZERO
+      *
+                         MOVE   SANTEI-SRYYM   TO  WRK-KYUSEIYMD(1:6)
+                         MOVE   IDX3           TO  WRK-KYUSEIYMD(7:2)
+      *
+                         MOVE    1    TO   FLG-KYUSEI-COMMENT
+      *
+                     END-IF
+      *
+                   END-PERFORM
+      *
+                   MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
+                   PERFORM        900-SANTEI-READ-SEC
+      *
+                END-PERFORM
+      *
+           END-IF
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+           IF      FLG-KYUSEI-COMMENT    =      1
+               PERFORM    20011-KYUSEIHASSYO-KENSAKU-SEC
+               PERFORM    20011-HASSYO-COMMENT-SEC
+           END-IF
+      *
+           .
+       20011-RIHABIRIHASSYO-HANTEI-EXT.
            EXIT.
       *
       *****************************************************************
