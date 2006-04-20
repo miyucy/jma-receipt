@@ -5009,7 +5009,8 @@
       *
                MOVE    HCM34S01-SRYCD (IDX28 IDX30)
                                        TO  SRY-SRYCD   (IDX31)
-               MOVE    1               TO  SRY-SRYSURYO(IDX31)
+               MOVE    HCM34S01-SURYO (IDX28 IDX30)
+                                       TO  SRY-SRYSURYO(IDX31)
       *
                IF    ( SRY-SRYCD   (IDX31) IS  NUMERIC )
       *
