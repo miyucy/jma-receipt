@@ -55,6 +55,9 @@
       *    地域連携小児夜間・休日診療料
            03  FILLER              PIC X(11)   VALUE   "9 113006710".
       *    Ｈ１６．４から追加
+           03  FILLER              PIC X(11)   VALUE   "3 113009670".
+           03  FILLER              PIC X(11)   VALUE   "3 113009770".
+           03  FILLER              PIC X(11)   VALUE   "3 113009870".
            03  FILLER              PIC X(11)   VALUE   "3 113007070".
            03  FILLER              PIC X(11)   VALUE   "3 113007170".
            03  FILLER              PIC X(11)   VALUE   "3 113007270".
@@ -72,7 +75,7 @@
            03  FILLER              PIC X(11)   VALUE   "9 113008210".
       *
        01  TBL-SYONIKA-AREA-R      REDEFINES   TBL-SYONIKA-AREA.
-           03  TBL-SYONIKA-OCC     OCCURS  38  INDEXED   TBL-SYO.
+           03  TBL-SYONIKA-OCC     OCCURS  41  INDEXED   TBL-SYO.
       *        1:初診、2:再診、3:初診時間外、4:再診時間外
       *        9:小児科外来診察料以外でも算定可能
                05  TBL-SYONIKA-KBN         PIC X(01).
