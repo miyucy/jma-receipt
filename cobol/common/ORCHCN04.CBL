@@ -129,7 +129,7 @@
       *
            03  WRK-Z119                PIC Z,ZZZ,ZZ9.
            03  WRK-Z119-2              PIC -,---,--9.
-           03  WRK-ZZ9                 PIC ZZ9.
+           03  WRK-ZZ9                 PIC ZZZ.
            03  WRK-NO                  PIC Z(7).
            03  WRK-WARI                PIC 9(02)V9.
            03  WRK-Z6                  PIC ZZZ.
@@ -1205,7 +1205,8 @@
                CONTINUE
            ELSE
                MOVE    TNS-TANINAME        TO  TBL-TANINAME(IDX-S)
-               MOVE    1                   TO  TBL-SURYO (IDX-S)
+               MOVE    HCM34S01-SRYCD(IDX IDX2)
+                                           TO  TBL-SURYO (IDX-S)
            END-IF
           .
        20041-SRYCD-HEN-EXT.
@@ -1252,7 +1253,7 @@
       *
            INITIALIZE                  TBL-DATA-AREA
            MOVE    "95"                TO  TBL-SRYKBN
-           MOVE    1                   TO  TBL-KAISU
+           MOVE    ZERO                TO  TBL-KAISU
            MOVE    "99999999"          TO  TBL-SRYCD  (1)
            MOVE    "联年掐薄瘟极甘砷么驰"
                                        TO  TBL-NAME   (1)
