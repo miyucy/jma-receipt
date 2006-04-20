@@ -1469,6 +1469,8 @@ path	key39	{
                        AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
                        OR (( SKYYM       =   :SKYYM   )
                        AND ( SKYKBN      <>  '0'      )))
+                  AND (      SRYYM       >=  :SRYYM      )
+                  AND (      SRYYM       <   :XXSRYYM    )
                   AND (      HKNJANUM_S  >=  :XXSTHKNJANUM  
                        AND   HKNJANUM_S  <=  :XXEDHKNJANUM  ) 
                   AND (      HENREIYM    <>  '000000'       )
@@ -1490,6 +1492,8 @@ path	key40	{
                        AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
                        OR (( SKYYM       =   :SKYYM   )
                        AND ( SKYKBN      <>  '0'      )))
+                  AND (      SRYYM       >=  :SRYYM      )
+                  AND (      SRYYM       <   :XXSRYYM    )
                   AND (      HKNJANUM_S  >=  :XXSTHKNJANUM  
                        AND   HKNJANUM_S  <=  :XXEDHKNJANUM  ) 
                   AND (      HENREIYM    =   '000000'       )
