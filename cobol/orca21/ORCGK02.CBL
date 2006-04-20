@@ -2571,10 +2571,6 @@
            ELSE
       *        行削除
                MOVE    SPA-SYOKAI-IDX      TO  SPA-GMN-IDX
-      *TEST
-               DISPLAY "SPA-SYOKAI-IDX:" SPA-SYOKAI-IDX
-                      ",SPA-GMN-INPUTCD:" SPA-GMN-INPUTCD(SPA-GMN-IDX)
-      *TEST
                MOVE    SPACE               TO  SPA-GMN-INPUTCD
                                                 (SPA-GMN-IDX)
                MOVE    "2"                 TO  FLG-TOROKU
@@ -5606,9 +5602,6 @@
                                        TO  SPA-GMN-INPUTCD(SPA-GMN-IDX)
                PERFORM 41014-GYOINSN-SEC
                IF      SPA-ERRCD       =   SPACE
-      *TEST
-           DISPLAY "INS SPA-GMN-IDX:" SPA-GMN-IDX
-      *TEST
                    MOVE    "3"             TO  SPA-COM-CUR (SPA-GMN-IDX)
                    ADD     1               TO  SPA-GMN-IDX
                    MOVE    1               TO  FLG-INS
@@ -6394,10 +6387,8 @@
            END-IF
       *TEST
       *    算定履歴のみ作成
-           IF    ((SPA-COM-INPUTCD (SPA-GMN-IDX)(1:1)
-                                       =   "1"       )  OR
-                  (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:3)
-                                       =   "099"     ))  AND
+           IF     (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:1)
+                                       =   "1"       )  AND
                   (LNK-SC97-SURYOCNT   =   7     )
               AND (SPA-HKNCOMBINUM NOT =   "9999"  )
               AND (SPA-SYORIFLG        =   ZERO     )
@@ -6686,7 +6677,7 @@
                                        ORCSGDAYAREA
            IF      SGDAY-RC            =   ZERO
                MOVE    SGDAY-SDAY          TO  WRK-SYOKAI-YMD
-      *    初診料
+      *        初診料のみ
                IF      SPA-COM-INPUTCD(SPA-GMN-IDX)
                                            =   "111700110"  OR
                                                "111700210"  OR
@@ -6700,25 +6691,6 @@
                    ELSE
                        MOVE    "1207"              TO  SPA-ERRCD
                    END-IF
-               ELSE
-      *        リハビリの発生日のみ
-                   IF     (SPA-COM-INPUTCD(SPA-GMN-IDX)(1:6)
-                                           =   "099800")
-                       MOVE    SPA-COM-INPUTCD(SPA-GMN-IDX)
-                                                   TO  WRK-SRYCD
-                       MOVE    WRK-SRYCD           TO  TNS-SRYCD
-                       PERFORM 910-TENSU-READ-SEC
-                       IF      FLG-TENSU           =   1
-                            MOVE    SPACE           TO  WRK-SRYCD
-                       ELSE
-      *                    算定履歴にないこと
-                           PERFORM 41011262-SANTEI-CHK-SEC
-                           IF      FLG-SANTEI          =   ZERO
-                               MOVE    SPACE           TO  WRK-SRYCD
-                               MOVE    "1208"          TO  SPA-ERRCD
-                           END-IF
-                       END-IF
-                   END-IF
                END-IF
       *        日付判定
                IF      WRK-SRYCD       NOT =   SPACE
@@ -6728,10 +6700,6 @@
                    IF     (WRK-SRYCD           =   "099110001") AND
                           (WRK-SYOKAI-YMD      >   SPA-LSTYMD )
                        MOVE    "1206"              TO  SPA-ERRCD
-                   END-IF
-                   IF     (WRK-SRYCD       NOT =   "099110001") AND
-                          (WRK-SYOKAI-YMD      <   "20060401" )
-                       MOVE    "1209"              TO  SPA-ERRCD
                    END-IF
                    IF      SPA-ERRCD           =   SPACE
                        MOVE    WRK-SYOKAI-YMD      TO  SPA-SYOKAI-YMD
