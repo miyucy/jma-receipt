@@ -84,9 +84,11 @@
                    07  HCM34S01-SURYOUTOTAL    PIC  9(07)V9(03).
       *累計合計
                    07  HCM34S01-RUIKEITOTAL    PIC  9(15)V9(03).
+                   07  HCM34S01-SRYCD-OCC      OCCURS  20.
+      *数量
+                       09  HCM34S01-SURYO      PIC  9(05).
       *診療コード
-                   07  HCM34S01-SRYCD          PIC  X(09)
-                                               OCCURS  20.
+                       09  HCM34S01-SRYCD      PIC  X(09).
       *診療回数テーブル
                    07  HCM34S01-DAY-TBL.
                        09  HCM34S01-DAY        PIC  9(03)
