@@ -103,8 +103,11 @@
       *  01.02.20    NACL-門脇    06/01/05  アフターケア在宅料対応
       *  01.02.21    NACL-門脇    06/02/01  ０９９２０００で始まる投薬用
       *                                     コメントの編集対応
+      *
+      *  ２００６年４月改正対応
       *  02.09.01    NACL-門脇    06/04/05  累計トータル編集修正
       *  02.09.02    NACL-門脇    06/04/13  ２００６年４月改正対応
+      *  02.09.03    NACL-藤原    06/04/14  きざみ値計算識別の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1622,6 +1625,8 @@
                                       TO RECE45-CDKBN-KOUBAN(IDX4)
                MOVE    TNS-KOUHYOJYUNNUM  
                                       TO RECE45-KOUHYOJYUNNUM(IDX4)
+               MOVE    TNS-KZMCOMPSIKIBETU
+                                      TO RECE45-KZMCOMPSIKIBETU(IDX4)
       *
                IF     TNS-SRYCD       =  "170022290"  OR
                                          "170022390"  OR

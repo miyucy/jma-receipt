@@ -1915,7 +1915,7 @@
                MOVE    1               TO  FLG-KYUSEIRRK
            END-IF
       *
-           MOVE    "KYUSEIRRK-KEY3"    TO  WRK-DBPATH
+           MOVE    "KYUSEIRRK-KEY3"    TO  ORC-DBPATH
            PERFORM 900-DBCLOSE-SEC
       *
            .
@@ -1927,7 +1927,7 @@
       *****************************************************************
        900-DBCLOSE-SEC                 SECTION.
       *
-           MOVE    WRK-DBPATH          TO  ORC-DBPATH
+      *****MOVE    WRK-DBPATH          TO  ORC-DBPATH
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA

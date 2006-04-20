@@ -83,7 +83,10 @@
       *  01.02.12    NACL-∞À∆£    05/09/01  ∏°¬Œ∏°∫∫•≥•·•Û•»§Œ§ƒ§§§ø Ò≥Á
       *                                     ¬–æ›∏°∫∫§Œ∫ﬁ§ﬁ§»§·§À¬–±˛
       *  01.02.13    NACL-ÃÁœ∆    05/11/01  ° ∏°¡™°À≈˘•≥•·•Û•»¬–±˛
+      *
+      *  £≤£∞£∞£∂«Ø£¥∑Ó≤˛¿µ¬–±˛
       *  02.09.01    NACL-ÃÁœ∆    06/04/13  £≤£∞£∞£∂«Ø£¥∑Ó≤˛¿µ¬–±˛
+      *  02.09.02    NACL-∆£∏∂    06/04/14   Ò≥Á¬–æ›∏°∫∫°÷£±£±°◊§Œƒ…≤√
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -450,9 +453,11 @@
                 "•¶•§•Î•ππ≥¬Œ≤¡".                        
                 05  FILLER                 PIC X(50)   VALUE
                 "•¶•§•Î•ππ≥¬Œ≤¡¿∫Ã©¬¨ƒÍ".                        
+                05  FILLER                 PIC X(50)   VALUE
+                "∑Ïﬁ˘√¡«ÚÃ»±÷≥ÿ≈™∏°∫∫".                        
             03  WRK-CONS-KENSACOMMENT-R    REDEFINES
                                            WRK-CONS-KENSACOMMENT-G.
-                05  WRK-CONS-KENSACOMMENT  PIC X(50)   OCCURS  10.
+                05  WRK-CONS-KENSACOMMENT  PIC X(50)   OCCURS  11.
       *          
        01  TBL-ZAIW-AREA.
       *    ∫ﬁ§Œ¿Ë∆¨§Œø«Œ≈•≥°º•…
@@ -493,6 +498,8 @@
                        09  TBL-ZAIW-TENTTLKBN       PIC  9(03).
       *                ∏°¬Œ∏°∫∫•≥•·•Û•»
                        09  TBL-ZAIW-KENTAICOMMENT   PIC  9(01).
+      *                §≠§∂§ﬂ√Õ∑◊ªªº± Ã
+                       09  TBL-ZAIW-KZMCOMPSIKIBETU PIC  9(01).
                    07  TBL-ZAIW-NAMEINF.
       *                ¥¡ª˙Õ≠∏˙∑ÂøÙ/¥¡ª˙ÃææŒ
                        09  TBL-ZAIW-YUKOKETA        PIC  9(02).
@@ -1576,7 +1583,28 @@
       *     
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       WRK-ZAIWMAX (3)
-               MOVE    TBL-ZAIW-NAMEINF (3 IDX)  TO  TBL-NAMEINF (IDX)
+               IF    ( TBL-ZAIW-HOUKNSKBN(3 IDX) =   11   )
+               AND   ( TBL-ZAIW-KZMCOMPSIKIBETU  (3 IDX)
+                                                 >   ZERO ) 
+      *            øÙŒÃ ‘Ω∏
+                   MOVE    3               TO  WRK-WIDX1
+                   MOVE    IDX             TO  WRK-WIDX2
+                   PERFORM 4301-SURYO-HEN1-SEC
+                   MOVE    SPACE           TO  TBL-NAME (IDX)
+                   STRING  TBL-ZAIW-NAME     (3 IDX)
+                                              DELIMITED  BY  SPACE
+                           "° "               DELIMITED  BY  SIZE
+                           WRK-SRYSURYOW      DELIMITED  BY  SPACE
+                           TBL-ZAIW-TANINAME(3 IDX)
+                                              DELIMITED  BY  SPACE
+                           "°À"               DELIMITED  BY  SIZE
+                           INTO               TBL-NAME (IDX)
+                   END-STRING
+                   MOVE    ZERO               TO  TBL-YUKOKETA (IDX)
+               ELSE
+                   MOVE    TBL-ZAIW-NAMEINF (3 IDX)
+                                              TO  TBL-NAMEINF (IDX)
+               END-IF
                MOVE    TBL-ZAIW-SRYSURYO(3 IDX)  TO  TBL-SRYSURYO(IDX)
                MOVE    TBL-ZAIW-TANICD  (3 IDX)  TO  TBL-TANICD  (IDX)
                MOVE    TBL-ZAIW-TANIMOJISU(3 IDX)
@@ -1708,12 +1736,18 @@
                ADD     1                  TO  WRK-ZAIWMAX (2)
                                               WRK-ZAIWMAX (6)
                MOVE    WRK-ZAIWMAX (2)    TO  IDZ   
-               STRING  WRK-CONS-KENSACOMMENT (WRK-TNS-HOUKNSKBN)
-                                          DELIMITED  BY  SPACE
-                       "° "               DELIMITED  BY  SIZE
-                       WRK-CHAR-N         DELIMITED  BY  SPACE
-                       "π‡Ã‹°À"           DELIMITED  BY  SIZE
+               IF      WRK-TNS-HOUKNSKBN  <   11
+                   STRING  WRK-CONS-KENSACOMMENT (WRK-TNS-HOUKNSKBN)
+                                              DELIMITED  BY  SPACE
+                           "° "               DELIMITED  BY  SIZE
+                           WRK-CHAR-N         DELIMITED  BY  SPACE
+                           "π‡Ã‹°À"           DELIMITED  BY  SIZE
                                           INTO    TBL-ZAIW-NAME (2 IDZ)
+                   END-STRING
+               ELSE
+                   MOVE    WRK-CONS-KENSACOMMENT (WRK-TNS-HOUKNSKBN)
+                                          TO    TBL-ZAIW-NAME (2 IDZ)
+               END-IF
                PERFORM VARYING IDX FROM   200 BY  -1
                        UNTIL   IDX <      1
                    IF      TBL-ZAIW-NAME (2 IDZ) (IDX:1)
