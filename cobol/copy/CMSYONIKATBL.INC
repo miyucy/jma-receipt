@@ -55,9 +55,6 @@
       *    ÃÏ°èÏ¢·È¾®»ùÌë´Ö¡¦µÙÆü¿ÇÎÅÎÁ
            03  FILLER              PIC X(11)   VALUE   "9 113006710".
       *    £È£±£¶¡¥£´¤«¤éÄÉ²Ã
-           03  FILLER              PIC X(11)   VALUE   "3 113009670".
-           03  FILLER              PIC X(11)   VALUE   "3 113009770".
-           03  FILLER              PIC X(11)   VALUE   "3 113009870".
            03  FILLER              PIC X(11)   VALUE   "3 113007070".
            03  FILLER              PIC X(11)   VALUE   "3 113007170".
            03  FILLER              PIC X(11)   VALUE   "3 113007270".
@@ -67,6 +64,10 @@
            03  FILLER              PIC X(11)   VALUE   "4 113007670".
            03  FILLER              PIC X(11)   VALUE   "4 113007770".
            03  FILLER              PIC X(11)   VALUE   "4 113007870".
+      *    »þ´Ö³°²Ã»»
+           03  FILLER              PIC X(11)   VALUE   "3 113009670".
+           03  FILLER              PIC X(11)   VALUE   "4 113009770".
+           03  FILLER              PIC X(11)   VALUE   "4 113009870".
       *    ÎÅÍÜÃ´Åö¼êÅö¡ÊÆþ±¡³°¡Ë
            03  FILLER              PIC X(11)   VALUE   "9 199000610".
       *    ¿ÇÎÅ¾ðÊóÄó¶¡ÎÁ£²¡Ê£È£±£¸¡¿£´¤«¤é¡Ë
