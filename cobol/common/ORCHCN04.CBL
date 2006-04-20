@@ -1205,7 +1205,7 @@
                CONTINUE
            ELSE
                MOVE    TNS-TANINAME        TO  TBL-TANINAME(IDX-S)
-               MOVE    HCM34S01-SRYCD(IDX IDX2)
+               MOVE    HCM34S01-SURYO(IDX IDX2)
                                            TO  TBL-SURYO (IDX-S)
            END-IF
           .
