@@ -1227,7 +1227,7 @@
       *¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿
            MOVE    WRK-PARA-HOSPID      TO      SRY-HOSPID
            MOVE    WRK-PARA-NYUGAIKBN   TO      SRY-NYUGAIKBN
-           MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
+           MOVE    WRK-PARA-PTID        TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      SRY-PTID
            MOVE    SRYACT-REC           TO      MCPDATA-REC
            MOVE    "DBSELECT"           TO      MCP-FUNC
@@ -1269,8 +1269,9 @@
       *--------------------------------------------------
       *»»ÄêÍúÎò¥Þ¥¹¥¿
            MOVE    WRK-PARA-HOSPID      TO      SANTEI-HOSPID
-           MOVE    WRK-PARA-NYUGAIKBN   TO      SANTEI-NYUGAIKBN
-           MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
+      *    MOVE    WRK-PARA-NYUGAIKBN   TO      SANTEI-NYUGAIKBN
+           MOVE    ZERO                 TO      SANTEI-NYUGAIKBN
+           MOVE    WRK-PARA-PTID        TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      SANTEI-PTID
            MOVE    SANTEI-REC           TO      MCPDATA-REC
            MOVE    "DBSELECT"           TO      MCP-FUNC
