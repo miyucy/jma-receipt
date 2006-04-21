@@ -488,13 +488,13 @@
       *
            PERFORM 900-PGKANRI-CLOSE-SEC
       *
-           IF      SPA-GMN-NAIYOLIST-MAX   =  ZERO
-               MOVE    SPACE         TO  SKBN-RUN
-               MOVE    "更新データはありません。"
-                                     TO  SPA-GMN-MSG
-               MOVE    "blue"        TO  SPA-GMN-MSG-STYLE
-               GO  TO  400-JYOKYO-SET-EXT
-           END-IF
+      *    IF      SPA-GMN-NAIYOLIST-MAX   =  ZERO
+      *        MOVE    SPACE         TO  SKBN-RUN
+      *        MOVE    "更新データはありません。"
+      *                              TO  SPA-GMN-MSG
+      *        MOVE    "blue"        TO  SPA-GMN-MSG-STYLE
+      *        GO  TO  400-JYOKYO-SET-EXT
+      *    END-IF
       *
       *    メッセージ編集
            PERFORM 820-JOBKANRI-READ1-SEC
@@ -617,6 +617,9 @@
       *
       *    ジョブ管理作成
            PERFORM 820-JOBKANRI-JBS-SEC
+      *
+      *    状況更新
+           PERFORM 400-JYOKYO-SET-SEC
       *
       *    プログラム更新処理
            MOVE    SPACE           TO  SHELLTBL
