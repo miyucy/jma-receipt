@@ -1412,6 +1412,7 @@
       *
                IF     SRY-SRYCD(IDX2)      =    CONS-GAIJINKEN
                   MOVE   "1"              TO    RECE41-KENTAIKASANFLG
+                  MOVE   99               TO    RECE44-KNSJISGRPKBN
                END-IF
                IF     RECE44-KNSJISGRPKBN  =    ZERO
                   MOVE  TNS-KNSJISGRPKBN  TO    RECE44-KNSJISGRPKBN

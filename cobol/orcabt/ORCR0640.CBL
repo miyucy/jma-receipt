@@ -2129,6 +2129,7 @@
       *
                IF     SRY-SRYCD(IDX2)      =    CONS-GAIJINKEN
                   MOVE   "1"              TO    RECE62-KENTAIKASANFLG
+                  MOVE   99               TO    RECE64-KNSJISGRPKBN
                END-IF
                IF     RECE64-KNSJISGRPKBN  =    ZERO
                   MOVE  TNS-KNSJISGRPKBN  TO    RECE64-KNSJISGRPKBN
@@ -5125,6 +5126,9 @@
                ELSE
                    MOVE    TNS-NAME              TO  RECE65-NAME(IDX4)
       *
+                 IF   RECE62-SRYYM  >= "200604"
+                   CONTINUE
+                 ELSE
                    IF   RECE64-ZAISKBKBN = "1"
                    AND  RECE64-SRYKBN    = "90"
                    AND  TNS-DATAKBN      =  1
@@ -5140,6 +5144,7 @@
                       END-IF
       *
                    END-IF
+                 END-IF
       *
                END-IF
                MOVE    NSRY-SRYCD(IDX2)  TO  WRK-SRYCD
@@ -5460,6 +5465,9 @@
                ELSE
                    MOVE    TNS-NAME              TO  RECE65-NAME(IDX4)
       *
+                 IF   RECE62-SRYYM  >= "200604"
+                   CONTINUE
+                 ELSE
                    IF   RECE64-ZAISKBKBN = "1"
                    AND  RECE64-SRYKBN    = "90"
                    AND  TNS-DATAKBN      =  1
@@ -5478,6 +5486,7 @@
                       END-IF
       *
                    END-IF
+                 END-IF
       *
                END-IF
       *
