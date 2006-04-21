@@ -3911,37 +3911,37 @@
                                      TO  WRK-SKJ7-SRYCDTOTAL(IDX1)
            END-PERFORM
       *
-           DISPLAY "WRK-SKJ7  MATOME BEFORE"
-           PERFORM      VARYING    IDX1   FROM   1  BY  1
-                        UNTIL      IDX1   >   31
-                DISPLAY "IDX1 = " IDX1
-                DISPLAY "WRK-SKJ7-HKNCOMBI-DAY(IDX1) = "
-                         WRK-SKJ7-HKNCOMBI-DAY(IDX1)
-                DISPLAY "WRK-SKJ7-RYOYO(IDX1) = "
-                         WRK-SKJ7-RYOYO(IDX1)
-                DISPLAY "WRK-SKJ7-RYOYO-SU(IDX1) = "
-                         WRK-SKJ7-RYOYO-SU(IDX1)
-                DISPLAY "WRK-SKJ7-SHOKUDOU(IDX1) = "
-                         WRK-SKJ7-SHOKUDOU(IDX1)
-                DISPLAY "WRK-SKJ7-TOKU-SHOKU(IDX1) = "
-                         WRK-SKJ7-TOKU-SHOKU(IDX1)
-                DISPLAY "WRK-SKJ7-TOKU-SHOKU-SU(IDX1) = "
-                         WRK-SKJ7-TOKU-SHOKU-SU(IDX1)
-                DISPLAY "WRK-SKJ7-TOKU-SHOKU-KAISU1(IDX1) = "
-                         WRK-SKJ7-TOKU-SHOKU-KAISU1(IDX1)
-                DISPLAY "WRK-SKJ7-TOKU-SHOKU-KAISU2(IDX1) = "
-                         WRK-SKJ7-TOKU-SHOKU-KAISU2(IDX1)
-                DISPLAY "WRK-SKJ7-TOKU-SHOKU-KAISU3(IDX1) = "
-                         WRK-SKJ7-TOKU-SHOKU-KAISU3(IDX1)
-                DISPLAY "WRK-SKJ7-SKJFTN(IDX1) = "
-                         WRK-SKJ7-SKJFTN(IDX1)
-                DISPLAY "WRK-SKJ7-SKJFTN-SU(IDX1) = "
-                         WRK-SKJ7-SKJFTN-SU(IDX1)
-                DISPLAY "WRK-SKJ7-KAISU =(IDX1) = "
-                         WRK-SKJ7-KAISU (IDX1)
-                DISPLAY "WRK-SKJ7-SRYCDTOTAL =(IDX1) = "
-                         WRK-SKJ7-SRYCDTOTAL (IDX1)
-           END-PERFORM
+      *     DISPLAY "WRK-SKJ7  MATOME BEFORE"
+      *     PERFORM      VARYING    IDX1   FROM   1  BY  1
+      *                  UNTIL      IDX1   >   31
+      *          DISPLAY "IDX1 = " IDX1
+      *          DISPLAY "WRK-SKJ7-HKNCOMBI-DAY(IDX1) = "
+      *                   WRK-SKJ7-HKNCOMBI-DAY(IDX1)
+      *          DISPLAY "WRK-SKJ7-RYOYO(IDX1) = "
+      *                   WRK-SKJ7-RYOYO(IDX1)
+      *          DISPLAY "WRK-SKJ7-RYOYO-SU(IDX1) = "
+      *                   WRK-SKJ7-RYOYO-SU(IDX1)
+      *          DISPLAY "WRK-SKJ7-SHOKUDOU(IDX1) = "
+      *                   WRK-SKJ7-SHOKUDOU(IDX1)
+      *          DISPLAY "WRK-SKJ7-TOKU-SHOKU(IDX1) = "
+      *                   WRK-SKJ7-TOKU-SHOKU(IDX1)
+      *          DISPLAY "WRK-SKJ7-TOKU-SHOKU-SU(IDX1) = "
+      *                   WRK-SKJ7-TOKU-SHOKU-SU(IDX1)
+      *          DISPLAY "WRK-SKJ7-TOKU-SHOKU-KAISU1(IDX1) = "
+      *                   WRK-SKJ7-TOKU-SHOKU-KAISU1(IDX1)
+      *          DISPLAY "WRK-SKJ7-TOKU-SHOKU-KAISU2(IDX1) = "
+      *                   WRK-SKJ7-TOKU-SHOKU-KAISU2(IDX1)
+      *          DISPLAY "WRK-SKJ7-TOKU-SHOKU-KAISU3(IDX1) = "
+      *                   WRK-SKJ7-TOKU-SHOKU-KAISU3(IDX1)
+      *          DISPLAY "WRK-SKJ7-SKJFTN(IDX1) = "
+      *                   WRK-SKJ7-SKJFTN(IDX1)
+      *          DISPLAY "WRK-SKJ7-SKJFTN-SU(IDX1) = "
+      *                   WRK-SKJ7-SKJFTN-SU(IDX1)
+      *          DISPLAY "WRK-SKJ7-KAISU =(IDX1) = "
+      *                   WRK-SKJ7-KAISU (IDX1)
+      *          DISPLAY "WRK-SKJ7-SRYCDTOTAL =(IDX1) = "
+      *                   WRK-SKJ7-SRYCDTOTAL (IDX1)
+      *     END-PERFORM
       *
       *    再構築した食事情報から同一剤のまとめ処理
       *    食事ワーク
@@ -3987,32 +3987,32 @@
            MOVE       ZERO    TO   IDX2
            PERFORM    VARYING   IDX1   FROM  1  BY  1
                       UNTIL     (IDX1   >     31)
-                DISPLAY "WRK-SKJ7  MATOME AFTER"
-                DISPLAY "IDX1 = " IDX1
-                DISPLAY "WRK-SKJ7-HKNCOMBI-DAY(IDX1) = "
-                         WRK-SKJ7-HKNCOMBI-DAY(IDX1)
-                DISPLAY "WRK-SKJ7-RYOYO(IDX1) = "
-                         WRK-SKJ7-RYOYO(IDX1)
-                DISPLAY "WRK-SKJ7-RYOYO-SU(IDX1) = "
-                         WRK-SKJ7-RYOYO-SU(IDX1)
-                DISPLAY "WRK-SKJ7-SHOKUDOU(IDX1) = "
-                         WRK-SKJ7-SHOKUDOU(IDX1)
-                DISPLAY "WRK-SKJ7-TOKU-SHOKU(IDX1) = "
-                         WRK-SKJ7-TOKU-SHOKU(IDX1)
-                DISPLAY "WRK-SKJ7-TOKU-SHOKU-SU(IDX1) = "
-                         WRK-SKJ7-TOKU-SHOKU-SU(IDX1)
-                DISPLAY "WRK-SKJ7-TOKU-SHOKU-KAISU1(IDX1) = "
-                         WRK-SKJ7-TOKU-SHOKU-KAISU1(IDX1)
-                DISPLAY "WRK-SKJ7-TOKU-SHOKU-KAISU2(IDX1) = "
-                         WRK-SKJ7-TOKU-SHOKU-KAISU2(IDX1)
-                DISPLAY "WRK-SKJ7-TOKU-SHOKU-KAISU3(IDX1) = "
-                         WRK-SKJ7-TOKU-SHOKU-KAISU3(IDX1)
-                DISPLAY "WRK-SKJ7-SKJFTN(IDX1) = "
-                         WRK-SKJ7-SKJFTN(IDX1)
-                DISPLAY "WRK-SKJ7-SKJFTN-SU(IDX1) = "
-                         WRK-SKJ7-SKJFTN-SU(IDX1)
-                DISPLAY "WRK-SKJ7-KAISU =(IDX1) = "
-                         WRK-SKJ7-KAISU (IDX1)
+      *          DISPLAY "WRK-SKJ7  MATOME AFTER"
+      *          DISPLAY "IDX1 = " IDX1
+      *          DISPLAY "WRK-SKJ7-HKNCOMBI-DAY(IDX1) = "
+      *                   WRK-SKJ7-HKNCOMBI-DAY(IDX1)
+      *          DISPLAY "WRK-SKJ7-RYOYO(IDX1) = "
+      *                   WRK-SKJ7-RYOYO(IDX1)
+      *          DISPLAY "WRK-SKJ7-RYOYO-SU(IDX1) = "
+      *                   WRK-SKJ7-RYOYO-SU(IDX1)
+      *          DISPLAY "WRK-SKJ7-SHOKUDOU(IDX1) = "
+      *                   WRK-SKJ7-SHOKUDOU(IDX1)
+      *          DISPLAY "WRK-SKJ7-TOKU-SHOKU(IDX1) = "
+      *                   WRK-SKJ7-TOKU-SHOKU(IDX1)
+      *          DISPLAY "WRK-SKJ7-TOKU-SHOKU-SU(IDX1) = "
+      *                   WRK-SKJ7-TOKU-SHOKU-SU(IDX1)
+      *          DISPLAY "WRK-SKJ7-TOKU-SHOKU-KAISU1(IDX1) = "
+      *                   WRK-SKJ7-TOKU-SHOKU-KAISU1(IDX1)
+      *          DISPLAY "WRK-SKJ7-TOKU-SHOKU-KAISU2(IDX1) = "
+      *                   WRK-SKJ7-TOKU-SHOKU-KAISU2(IDX1)
+      *          DISPLAY "WRK-SKJ7-TOKU-SHOKU-KAISU3(IDX1) = "
+      *                   WRK-SKJ7-TOKU-SHOKU-KAISU3(IDX1)
+      *          DISPLAY "WRK-SKJ7-SKJFTN(IDX1) = "
+      *                   WRK-SKJ7-SKJFTN(IDX1)
+      *          DISPLAY "WRK-SKJ7-SKJFTN-SU(IDX1) = "
+      *                   WRK-SKJ7-SKJFTN-SU(IDX1)
+      *          DISPLAY "WRK-SKJ7-KAISU =(IDX1) = "
+      *                   WRK-SKJ7-KAISU (IDX1)
                 IF    WRK-SKJ7-RYOYO(IDX1)   NOT =  SPACE
                     ADD    1     TO    IDX2
                     MOVE  WRK-SKJ7-HKNCOMBI-DAY(IDX1) TO
