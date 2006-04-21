@@ -238,6 +238,7 @@
       *  02.09.02    NACL-ÌçÏÆ    06/04/13  £²£°£°£¶Ç¯£´·î²þÀµÂÐ±þ
       *  02.09.03    NACL-Æ£¸¶    06/04/14  »°¼ï¤Î¸øÈñÊ»ÍÑ¤Ë·¸¤ï¤ëµ­ºÜÍ×
       *                                     ¹à¤ÎÆÃÎãÂÐ±þ
+      *  02.09.04    NACL-ÌçÏÆ    06/04/20  ³°Íè¿×Â®¸¡ÂÎ¸¡ºº²Ã»»ÊÔ½¸
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -879,6 +880,9 @@
            03  CONS-SESSYOKU-COMMENT PIC X(09)  VALUE  "180016610".
       *    ²ðÃ£¸£°ú
            03  CONS-KAITATU-COMMENT  PIC X(09)  VALUE  "140048010".
+      *
+      *    ³°Íè¿×Â®¸¡ÂÎ¸¡ºº²Ã»»
+           03  CONS-GAIJINKEN        PIC X(09)  VALUE  "160177770".
       *
       *    Èé²¼¶ÚÆùÃí¼Í
            03  CONS-HIKAKIN          PIC X(09)  VALUE  "130000510".
@@ -2099,6 +2103,13 @@
                    END-IF
                END-IF
       *
+               IF     SRY-SRYCD(IDX2)      =    CONS-GAIJINKEN
+                  MOVE   "1"              TO    RECE02-KENTAIKASANFLG
+               END-IF
+               IF     RECE04-KNSJISGRPKBN  =    ZERO
+                  MOVE  TNS-KNSJISGRPKBN  TO    RECE04-KNSJISGRPKBN
+               END-IF
+      *
                IF     SRY-SRYCD(IDX2)  IS  NUMERIC
       *          IF  SRY-SRYCD(IDX2)(1:3) NOT = "001"
                    MOVE    SRY-SRYCD(IDX2)  TO  WRK-SRYCD
@@ -2321,6 +2332,8 @@
                                       TO RECE05-CHUKSNTUBAN    (IDX4)
                MOVE    TNS-KENTAICOMMENT
                                       TO RECE05-KENTAICOMMENT  (IDX4)
+               MOVE    TNS-KNSJISGRPKBN
+                                      TO RECE05-KNSJISGRPKBN   (IDX4)
       *
                IF     TNS-SRYCD       =  "170022290"  OR
                                          "170022390"  OR

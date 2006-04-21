@@ -180,6 +180,7 @@
       *  02.09.02    NACL-門脇    06/04/13  ２００６年４月改正対応
       *  02.09.03    NACL-藤原    06/04/14  三種の公費併用に係わる記載要
       *                                     項の特例対応
+      *  02.09.04    NACL-門脇    06/04/20  外来迅速検体検査加算編集
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -856,6 +857,9 @@
            03  CONS-SESSYOKU-COMMENT PIC X(09)  VALUE  "180016610".
       *    介達牽引
            03  CONS-KAITATU-COMMENT  PIC X(09)  VALUE  "140048010".
+      *
+      *    外来迅速検体検査加算
+           03  CONS-GAIJINKEN        PIC X(09)  VALUE  "160177770".
       *
       *    老人理学療法の摘要欄記載判定用（名称に老人を追加）
            03  CONS-RJNRIGAKU1     PIC X(09) VALUE "180706810".
@@ -2123,6 +2127,13 @@
                    END-IF
                END-IF
       *
+               IF     SRY-SRYCD(IDX2)      =    CONS-GAIJINKEN
+                  MOVE   "1"              TO    RECE62-KENTAIKASANFLG
+               END-IF
+               IF     RECE64-KNSJISGRPKBN  =    ZERO
+                  MOVE  TNS-KNSJISGRPKBN  TO    RECE64-KNSJISGRPKBN
+               END-IF
+      *
                IF     SRY-SRYCD(IDX2)  IS  NUMERIC
       *          IF  SRY-SRYCD(IDX2)(1:3) NOT = "001"
                    MOVE    SRY-SRYCD(IDX2)  TO  WRK-SRYCD
@@ -2264,6 +2275,8 @@
                                       TO RECE65-CHUKSNTUBAN    (IDX4)
                MOVE    TNS-KENTAICOMMENT
                                       TO RECE65-KENTAICOMMENT  (IDX4)
+               MOVE    TNS-KNSJISGRPKBN
+                                      TO RECE65-KNSJISGRPKBN   (IDX4)
       *
                IF     TNS-SRYCD       =  "170022290"  OR
                                          "170022390"  OR
@@ -5095,6 +5108,8 @@
                                       TO RECE65-CHUKSNTUBAN(IDX4)
                  MOVE  TNS-KENTAICOMMENT
                                       TO RECE65-KENTAICOMMENT(IDX4)
+                 MOVE  TNS-KNSJISGRPKBN
+                                      TO RECE65-KNSJISGRPKBN(IDX4)
                END-IF
       *
                IF    ((NSRY-SRYCD    (IDX2)(1:1)     =   "8"  )  OR

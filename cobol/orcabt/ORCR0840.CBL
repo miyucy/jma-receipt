@@ -87,6 +87,7 @@
       *  02.09.01    NACL-門脇    06/04/05  累計トータル編集修正
       *  02.09.02    NACL-門脇    06/04/13  ２００６年４月改正対応
       *  02.09.03    NACL-藤原    06/04/14  きざみ値計算識別の追加
+      *  02.09.04    NACL-門脇    06/04/20  外来迅速検体検査加算編集
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -684,6 +685,9 @@
            03  CONS-SESSYOKU-COMMENT PIC X(09)  VALUE  "180016610".
       *    介達牽引
            03  CONS-KAITATU-COMMENT  PIC X(09)  VALUE  "140048010".
+      *
+      *    外来迅速検体検査加算
+           03  CONS-GAIJINKEN        PIC X(09)  VALUE  "160177770".
       *
       *    剤の診療内容チェックテーブル
        01  TBL-ZAICHECK-AREA.
@@ -1710,6 +1714,13 @@
                   END-EVALUATE
                END-IF
       *
+               IF     SRY-SRYCD(IDX2)      =    CONS-GAIJINKEN
+                  MOVE   "1"              TO    RECE82-KENTAIKASANFLG
+               END-IF
+               IF     RECE84-KNSJISGRPKBN  =    ZERO
+                  MOVE  TNS-KNSJISGRPKBN  TO    RECE84-KNSJISGRPKBN
+               END-IF
+      *
                IF     SRY-SRYCD(IDX2)  IS  NUMERIC
       *          IF  SRY-SRYCD(IDX2)(1:3) NOT = "001"
                    MOVE    SRY-SRYCD(IDX2)  TO  WRK-SRYCD
@@ -1931,6 +1942,8 @@
                                       TO RECE85-KOUHYOJYUNNUM(IDX4)
                MOVE    TNS-KZMCOMPSIKIBETU
                                       TO RECE85-KZMCOMPSIKIBETU(IDX4)
+               MOVE    TNS-KNSJISGRPKBN
+                                      TO RECE85-KNSJISGRPKBN   (IDX4)
       *
                IF     TNS-SRYCD       =  "170022290"  OR
                                          "170022390"  OR
