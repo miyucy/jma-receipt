@@ -2108,7 +2108,9 @@
                   MOVE   99               TO    RECE04-KNSJISGRPKBN
                END-IF
                IF     RECE04-KNSJISGRPKBN  =    ZERO
+                 IF    TNS-KNSJISGRPKBN = 1 OR 2 OR 3 OR 4 OR 5 OR 6
                   MOVE  TNS-KNSJISGRPKBN  TO    RECE04-KNSJISGRPKBN
+                 END-IF
                END-IF
       *
                IF     SRY-SRYCD(IDX2)  IS  NUMERIC
