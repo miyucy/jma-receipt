@@ -2237,6 +2237,7 @@
                 PERFORM   UNTIL  ( FLG-SANTEI         =   1 ) OR
                                  ( FLG-KYUSEI-COMMENT =   1 )
       *
+                 IF   SANTEI-SRYYM  <=  RECE41-SRYYM
                    PERFORM  VARYING   IDX3   FROM  31  BY  -1
                              UNTIL   ( IDX3               <    1 )
                                OR    ( FLG-KYUSEI-COMMENT =    1 )
@@ -2246,14 +2247,15 @@
                          MOVE   SANTEI-SRYYM   TO  WRK-KYUSEIYMD(1:6)
                          MOVE   IDX3           TO  WRK-KYUSEIYMD(7:2)
       *
-                         MOVE    1    TO   FLG-KYUSEI-COMMENT
+                         MOVE   1              TO  FLG-KYUSEI-COMMENT
       *
                      END-IF
       *
                    END-PERFORM
+                 END-IF
       *
-                   MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
-                   PERFORM        900-SANTEI-READ-SEC
+                 MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
+                 PERFORM        900-SANTEI-READ-SEC
       *
                 END-PERFORM
       *
