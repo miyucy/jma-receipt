@@ -1460,6 +1460,9 @@
                WHEN    "112014670"
                    MOVE    "7"                 TO  WRK-TIMEKBN
       *        小児科外来診察料（初診）
+      *        時間外加算
+               WHEN    "113009760"
+                   MOVE    "1"                 TO  WRK-TIMEKBN
       *        夜間（時間外）加算
                WHEN    "113007070"
                    MOVE    "5"                 TO  WRK-TIMEKBN
@@ -1470,6 +1473,9 @@
                WHEN    "113007270"
                    MOVE    "7"                 TO  WRK-TIMEKBN
       *        小児科外来診察料（再診）
+      *        時間外加算
+               WHEN    "113009770"
+                   MOVE    "1"                 TO  WRK-TIMEKBN
       *        夜間（時間外）加算
                WHEN    "113007370"
                    MOVE    "5"                 TO  WRK-TIMEKBN
@@ -1480,6 +1486,9 @@
                WHEN    "113007570"
                    MOVE    "7"                 TO  WRK-TIMEKBN
       *        小児科外来診察料（外来診察料）
+      *        時間外加算
+               WHEN    "113009870"
+                   MOVE    "1"                 TO  WRK-TIMEKBN
       *        夜間（時間外）加算
                WHEN    "113007670"
                    MOVE    "5"                 TO  WRK-TIMEKBN
