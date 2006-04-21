@@ -145,6 +145,8 @@
            03  RECE44-FLG-NIKOCHIN-COMMENT PIC X(01).
       *重度喘息患者治療管理加算
            03  RECE44-FLG-ZENSOKU-COMMENT PIC  X(01).
+      *検査等実施判断グループ
+           03  RECE44-KNSJISGRPKBN        PIC  9(02).
       *日数回数テーブル
            03  RECE44-DAY-AREA.
       *        診療回数テーブル（1:合計,2:１回,3:２回, 4:３回以上）

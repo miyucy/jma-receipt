@@ -93,6 +93,7 @@
       *  ２００６年４月改正対応
       *  02.09.01    NACL-門脇    06/04/13  ２００６年４月改正対応
       *  02.09.02    NACL-藤原    06/04/14  包括対象検査「１１」の追加
+      *                                     検査等実施判断グループの追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -564,6 +565,8 @@
                        09  TBL-ZAIW-HOUKNSKBN       PIC  9(02).
       *                検査等実施判断
                        09  TBL-ZAIW-KNSJISKBN       PIC  9(01).
+      *                検査等実施判断グループ
+                       09  TBL-ZAIW-KNSJISGRPKBN    PIC  9(02).
       *                各種番号等
                        09  TBL-ZAIW-CDKBNINF.
                            11  TBL-ZAIW-CDKBN-KBN   PIC  X(01).

@@ -95,6 +95,7 @@
       *  ２００６年４月改正対応
       *  02.09.01    NACL-藤原    06/04/13  ２００６年４月改正対応
       *                                     食事の数量の記載
+      *  02.09.02    NACL-藤原    06/04/20  検査等実施判断グループの追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -508,6 +509,8 @@
                        09  TBL-ZAIW-HOUKNSKBN       PIC  9(02).
       *                検査等実施判断
                        09  TBL-ZAIW-KNSJISKBN       PIC  9(01).
+      *                検査等実施判断グループ
+                       09  TBL-ZAIW-KNSJISGRPKBN    PIC  9(02).
       *                各種番号等
                        09  TBL-ZAIW-CDKBNINF.
                            11  TBL-ZAIW-CDKBN-KBN   PIC  X(01).
@@ -576,6 +579,8 @@
                    07  TBL-KOUI-HOUKNSKBN       PIC  9(02).
       *            検査等実施判断
                    07  TBL-KOUI-KNSJISKBN       PIC  9(01).
+      *            検査等実施判断グループ
+                   07  TBL-KOUI-KNSJISGRPKBN    PIC  9(02).
       *            各種番号等
                    07  TBL-KOUI-CDKBNINF.
                        09  TBL-KOUI-CDKBN-KBN   PIC  X(01).
@@ -662,6 +667,8 @@
                        09  WRK-KOUI-HOUKNSKBN       PIC  9(02).
       *            検査等実施判断
                        09  WRK-KOUI-KNSJISKBN       PIC  9(01).
+      *            検査等実施判断グループ
+                       09  WRK-KOUI-KNSJISGRPKBN    PIC  9(02).
       *            各種番号等
                        09  WRK-KOUI-CDKBNINF.
                            11  WRK-KOUI-CDKBN-KBN   PIC  X(01).

@@ -151,6 +151,8 @@
            03  RECE64-FLG-SYODOU-COMMENT  PIC  X(01).
            03  RECE64-SYODOU-SRYKA-AREA.
                05  RECE64-SYODOU-SRYKA    PIC  X(02)     OCCURS  10.
+      *検査等実施判断グループ
+           03  RECE64-KNSJISGRPKBN        PIC  9(02).
       *日数回数テーブル
            03  RECE64-DAY-AREA.
       *        診療回数テーブル（1:合計,2:１回,3:２回, 4:３回以上）

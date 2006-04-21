@@ -36,6 +36,9 @@
       *  02.07.01    NACL-Æ£¸¶    05/08/20  ÆÃÊÌÎÅÍÜÈñÂÐ±þ
       *  02.07.02    NACL-Æ£¸¶    05/12/02  ¿ÇÎÅ¶èÊ¬£¹£¹¤Ï£°£±¤ËÊÑ¹¹
       *                                     MONFUNCÂÐ±þ
+      *
+      *  £²£°£°£¶Ç¯£´·î²þÀµÂÐ±þ
+      *  02.09.01    NACL-Æ£¸¶    06/04/20  ¸¡ººÅù¼Â»ÜÈ½ÃÇ¥°¥ë¡¼¥×¤ÎÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -305,6 +308,7 @@
            MOVE    RECE04-DRCD         TO  RECE041-DRCD
            MOVE    RECE04-ZAIREQFLG    TO  RECE041-ZAIREQFLG
            MOVE    RECE04-TEIGENRATE   TO  RECE041-TEIGENRATE
+           MOVE    RECE04-KNSJISGRPKBN TO  RECE041-KNSJISGRPKBN
            MOVE    RECE04-DAY-AREA     TO  RECE041-DAY-AREA
       *
            WRITE   RECE041-REC
