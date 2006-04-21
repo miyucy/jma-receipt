@@ -149,10 +149,13 @@
            03  FILLER              PIC X(13)   VALUE   "113007170 2 6".
       *    ¾®»ù²Ê³°Íè¿Ç»¡ÎÁ(½é¿Ç»þÆýÍÄ»ù¿¼Ìë¡Ë
            03  FILLER              PIC X(13)   VALUE   "113007270 2 7".
+      *£È£±£¸¡¿£´¤«¤é
+      *    ¾®»ù²Ê³°Íè¿Ç»¡ÎÁ(½é¿Ç»þ»þ´Ö³°²Ã»»)
+           03  FILLER              PIC X(13)   VALUE   "113009670 2 1".
       *
        01  TBL-SINSATU-AREAR       REDEFINES   TBL-SINSATU-AREA.
       *****03  TBL-SINSATU-OCC         OCCURS  18    INDEXED  TBL-IDX.
-           03  TBL-SINSATU-OCC         OCCURS  21    INDEXED  TBL-IDX.
+           03  TBL-SINSATU-OCC         OCCURS  22    INDEXED  TBL-IDX.
       *        ¿ÇÎÅ¥³¡¼¥É
                05  TBL-SRYCD           PIC X(09).
       *

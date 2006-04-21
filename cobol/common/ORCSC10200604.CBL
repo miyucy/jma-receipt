@@ -1644,7 +1644,7 @@
                        EVALUATE    WRK-COM-TIMEFLG(IDX-Z)
                            WHEN    1
       *                        ½é¿Ç»þ»þ´Ö³°²Ã»»
-                               MOVE    "113007070"     TO  WRK-SRYCD
+                               MOVE    "113009670"     TO  WRK-SRYCD
                            WHEN    2
       *                        ½é¿Ç»þµÙÆü²Ã»»
                                MOVE    "113007170"     TO  WRK-SRYCD
@@ -1668,7 +1668,7 @@
                        EVALUATE    WRK-COM-TIMEFLG(IDX-Z)
                            WHEN    1
       *                        ºÆ¿Ç»þ»þ´Ö³°²Ã»»
-                               MOVE    "113007370"     TO  WRK-SRYCD
+                               MOVE    "113009770"     TO  WRK-SRYCD
                            WHEN    2
       *                        ºÆ¿Ç»þµÙÆü²Ã»»
                                MOVE    "113007470"     TO  WRK-SRYCD
@@ -1760,7 +1760,7 @@
            EVALUATE    WRK-COM-TIMEFLG(IDX-Z)
                WHEN    1
       *            ³°Íè¿Ç»¡ÎÁ»þ´Ö³°²Ã»»
-                   MOVE    "113007670"     TO  WRK-SRYCD
+                   MOVE    "113009870"     TO  WRK-SRYCD
                WHEN    2
       *            ³°Íè¿Ç»¡ÎÁµÙÆü²Ã»»
                    MOVE    "113007770"     TO  WRK-SRYCD
