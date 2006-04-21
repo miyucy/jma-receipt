@@ -624,7 +624,7 @@
            03  WRK-SYOKAI-YMD          PIC X(08).
       *
       *    小児科外来診察料テーブル
-           COPY   "CMSYONIKATBL.INC".
+      **** COPY   "CMSYONIKATBL.INC".
       *
       *   年齢表示
        01  WRK-NENREI-G.
