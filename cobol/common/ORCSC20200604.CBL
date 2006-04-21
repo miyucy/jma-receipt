@@ -3061,7 +3061,7 @@
            MOVE    WRK-SRYCD           TO  TNS-SRYCD
            PERFORM 910-TENSU-READ-SEC
            IF      FLG-TENSU       NOT =   ZERO
-               MOVE    "0001"              TO  SPA-ERRCD
+      *!       MOVE    "0001"              TO  SPA-ERRCD
                MOVE    1                   TO  FLG-ERR
                GO      TO      300211-NYUKASAN-SYORI-EXT
            END-IF
@@ -3176,7 +3176,7 @@
            MOVE    WRK-SRYCD           TO  TNS-SRYCD
            PERFORM 910-TENSU-READ-SEC
            IF      FLG-TENSU       NOT =   ZERO
-               MOVE    "0001"              TO  SPA-ERRCD
+      *!       MOVE    "0001"              TO  SPA-ERRCD
                MOVE    1                   TO  FLG-ERR
                GO      TO      3002-KASAN-SYORI-EXT
            END-IF
@@ -3372,6 +3372,7 @@
            MOVE    WRK-SRYCD           TO  TNS-SRYCD
            PERFORM 910-TENSU-READ-SEC
            IF      FLG-TENSU       NOT =   ZERO
+               MOVE    1                   TO  FLG-ERR
      **********MOVE    1                   TO  FLG-YAKJYO
                GO      TO      3003-YAKJYO-CHK-EXT
            END-IF

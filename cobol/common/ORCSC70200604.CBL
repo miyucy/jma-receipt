@@ -3056,31 +3056,33 @@
       *
                MOVE    WRK-SRYCD       TO  TNS-SRYCD
                PERFORM 910-TENSU-READ-SEC
+               IF      FLG-TENSU       =   ZERO
       *
-               ADD     1               TO  IDXS
-               MOVE    WRK-SRYCD       TO  LNK-ORCSC-SRYCD
+                   ADD     1               TO  IDXS
+                   MOVE    WRK-SRYCD       TO  LNK-ORCSC-SRYCD
                                                        (08 IDXS)
-               MOVE    TNS-TEN         TO  LNK-ORCSC-TENSU
+                   MOVE    TNS-TEN         TO  LNK-ORCSC-TENSU
                                                        (08 IDXS)
-               MOVE    WRK-HKNCOMBI    TO  LNK-ORCSC-HKNCOMBI
+                   MOVE    WRK-HKNCOMBI    TO  LNK-ORCSC-HKNCOMBI
                                                        (08 IDXS)
-               MOVE    WRK-SRYKA       TO  LNK-ORCSC-SRYKA
+                   MOVE    WRK-SRYKA       TO  LNK-ORCSC-SRYKA
                                                        (08 IDXS)
-               MOVE    WRK-SRYCD       TO  LNK-ORCSC-SRYCD
+                   MOVE    WRK-SRYCD       TO  LNK-ORCSC-SRYCD
                                                        (08 IDXS)
-               MOVE    "700"           TO  LNK-ORCSC-SRYSYUKBN
+                   MOVE    "700"           TO  LNK-ORCSC-SRYSYUKBN
                                                         (08 IDXS)
-               MOVE    "70"            TO  LNK-ORCSC-SRYKBN
+                   MOVE    "70"            TO  LNK-ORCSC-SRYKBN
                                                         (08 IDXS)
-      *        自動発生分としない
-               MOVE    "4"             TO  LNK-ORCSC-AUTOKBN
+      *            自動発生分としない
+                   MOVE    "4"             TO  LNK-ORCSC-AUTOKBN
                                                          (08 IDXS)
-      *        入院回数
-               IF      WRK-NYU-DAY     >   ZERO
-                    MOVE    "*/"           TO  LNK-ORCSC-INPUTCD
+      *            入院回数
+                   IF      WRK-NYU-DAY     >   ZERO
+                       MOVE    "*/"           TO  LNK-ORCSC-INPUTCD
                                                     (08 IDXS 01)
-                    MOVE    WRK-NYU-DAY    TO  LNK-ORCSC-INPUTCD
+                       MOVE    WRK-NYU-DAY    TO  LNK-ORCSC-INPUTCD
                                                     (08 IDXS 01)(3:2)
+                   END-IF
                END-IF
            END-IF
       *
