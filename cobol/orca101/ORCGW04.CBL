@@ -31,6 +31,7 @@
       *  01.01.02    MCC-藤原     01/11/27  自由構成区分追加
       *  02.00.01    NACL-多々納  02/11/12  一括入力 
       *  02.00.02    NACL-多々納  03/03/17  連番号変更可能へ修正
+      *  02.00.03    NACL-多々納  06/04/24  MONFUNC 対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -61,7 +62,7 @@
                    07  SPA-GMN-EDYUKYMD       PIC X(09).
                    07  SPA-GMN-NEN            PIC X(04).
                    07  SPA-GMN-RENNUM         PIC 9(10).
-                   07  SPA-GMN-PTID           PIC 9(10).              
+                   07  SPA-GMN-PTID           PIC 9(10).
                    07  SPA-GMN-PAGENO         PIC 9(01).
                    07  SPA-GMN-PTNUMKSIKBN    PIC X(01).
                    07  SPA-GMN-JIYKSI-AREA.
@@ -156,7 +157,7 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
+      *****COPY    "CPORCMCP.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -268,24 +269,24 @@
            ELSE
       *        初期画面セット
                PERFORM 300-SCREEN-SEC
-               IF      FLG-END             =   1
-                   GO  TO  100-INIT-EXT
-               END-IF
       *        画面編集
-               PERFORM 500-GMNHEN-SEC
-               IF      SPA-ERRCD       NOT =   SPACE
+               IF      FLG-END             =   ZERO
+                   PERFORM 500-GMNHEN-SEC
+               END-IF
+               IF     (FLG-END             =   ZERO  )
+                 AND  (SPA-ERRCD       NOT =   SPACE )
                    PERFORM 510-ERRSET-SEC
-                   GO  TO  100-INIT-EXT
                END-IF
            END-IF
       *
-           MOVE    SPACE               TO  LINKAREA
+           IF      FLG-END             =   ZERO
+               MOVE    SPACE               TO  LINKAREA
       * 
-      ***  MOVE    "NEW"                TO  MCP-PUTTYPE
-           MOVE    SPACE                TO  MCP-PUTTYPE
-           MOVE    "W04"                TO  MCP-WINDOW
-           PERFORM 900-PUT-WINDOW
-           MOVE    1                    TO  FLG-END
+               MOVE    SPACE                TO  MCP-PUTTYPE
+               MOVE    "W04"                TO  MCP-WINDOW
+               PERFORM 900-PUT-WINDOW
+               MOVE    1                    TO  FLG-END
+           END-IF
            .
        100-INIT-EXT.
            EXIT.
@@ -303,10 +304,9 @@
            EVALUATE    SPA-MOTOPG
                WHEN    "WID1"
                    PERFORM 330-WID1-SET-SEC
-                   GO      TO      300-SCREEN-EXT
+               WHEN    OTHER
+                   PERFORM 310-SPASET-SEC
            END-EVALUATE
-      *
-           PERFORM 310-SPASET-SEC
       *
            .
        300-SCREEN-EXT.
@@ -339,9 +339,10 @@
       * 
            MOVE    SPACE               TO  SYS-1009-REC
            INITIALIZE                      SYS-1009-REC
-           MOVE    "1009"                  TO  SYS-1009-KANRICD
-           MOVE    SPA-W01-STYUKYMD        TO  ORC-DBYMD
-           MOVE    SYS-1009-REC            TO  MCPDATA-REC
+           MOVE    "1009"              TO  SYS-1009-KANRICD
+           MOVE    SPA-W01-STYUKYMD    TO  SYS-1009-STYUKYMD
+           MOVE    SPA-W01-STYUKYMD    TO  SYS-1009-EDYUKYMD
+           MOVE    SYS-1009-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI            =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1009-REC
@@ -480,9 +481,6 @@
            PERFORM 4101-GMN-SPA-SET-SEC
       *    基本チェック処理
            PERFORM 4102-KIHON-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      410-INPUT-CHK-EXT
-           END-IF
       *
            .
        410-INPUT-CHK-EXT.
@@ -519,43 +517,33 @@
                WHEN    "1"
       *            自由構成
                    PERFORM 4120-JIYKSIKBN-CHK-SEC
-                   IF      SPA-ERRCD       NOT =   SPACE
-                       GO      TO      4102-KIHON-CHK-EXT
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4100-JIYKSIKETA-CHK-SEC
                    END-IF
-                   PERFORM 4100-JIYKSIKETA-CHK-SEC
                WHEN    "2"
       *            標準構成
                    PERFORM 4112-HJNKSIKBN-CHK-SEC
-                   IF      SPA-ERRCD       NOT =   SPACE
-                       GO      TO      4102-KIHON-CHK-EXT
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4113-HJNKSINENKBN-CHK-SEC
                    END-IF
-                   PERFORM 4113-HJNKSINENKBN-CHK-SEC
-                   IF      SPA-ERRCD       NOT =   SPACE
-                       GO      TO      4102-KIHON-CHK-EXT
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4114-HJNKSIRENNUMKBN-CHK-SEC
                    END-IF
-                   PERFORM 4114-HJNKSIRENNUMKBN-CHK-SEC
-                   IF      SPA-ERRCD       NOT =   SPACE
-                       GO      TO      4102-KIHON-CHK-EXT
-                   END-IF
-                   PERFORM 4115-HJNKSIRENNUMKETA-CHK-SEC
-                   IF      SPA-ERRCD       NOT =   SPACE
-                       GO      TO      4102-KIHON-CHK-EXT
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4115-HJNKSIRENNUMKETA-CHK-SEC
                    END-IF
                WHEN    "3"
       *            拡張構成
                    PERFORM 4116-KKCKSIKBN-CHK-SEC  
-                   IF      SPA-ERRCD       NOT =   SPACE
-                       GO      TO      4102-KIHON-CHK-EXT
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4117-KKCKSIMAEKETA-CHK-SEC
                    END-IF
-                   PERFORM 4117-KKCKSIMAEKETA-CHK-SEC
-                   IF      SPA-ERRCD       NOT =   SPACE
-                       GO      TO      4102-KIHON-CHK-EXT
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4118-KKCKSIRENNUMKETA-CHK-SEC
                    END-IF
-                   PERFORM 4118-KKCKSIRENNUMKETA-CHK-SEC
-                   IF      SPA-ERRCD       NOT =   SPACE
-                       GO      TO      4102-KIHON-CHK-EXT
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4119-KKCKSIATOKETA-CHK-SEC
                    END-IF
-                   PERFORM 4119-KKCKSIATOKETA-CHK-SEC
            END-EVALUATE
       *
            .
@@ -738,9 +726,10 @@
            IF      IDX              NOT =   SPA-GMN-PAGENO
                IF      SPA-GMN-PTNUMKSIKBN  =   "1" OR  "2" OR  "3"
                    MOVE    "0005"               TO  SPA-ERRCD
-                   GO  TO  440-TAG-CHANGE-EXT
                END-IF
-               PERFORM 4900-KANRENCHK-SEC
+               IF      SPA-ERRCD            =   SPACE
+                   PERFORM 4900-KANRENCHK-SEC
+               END-IF
            END-IF
            IF      SPA-ERRCD            =   SPACE
                MOVE    IDX                  TO  SPA-GMN-PAGENO
@@ -859,7 +848,8 @@
            MOVE    SPACE               TO  SYS-1009-REC
            INITIALIZE                      SYS-1009-REC
            MOVE    "1009"                  TO  SYS-1009-KANRICD
-           MOVE    SPA-W01-STYUKYMD        TO  ORC-DBYMD
+           MOVE    SPA-W01-STYUKYMD        TO  SYS-1009-STYUKYMD
+           MOVE    SPA-W01-STYUKYMD        TO  SYS-1009-EDYUKYMD
            MOVE    SYS-1009-REC            TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI            =   ZERO
@@ -901,18 +891,19 @@
            MOVE    SPA-GMN-KKCKSIATOKETA    TO  SYS-1009-KKCKSIATOKETA
       *
            MOVE    SYS-1009-REC            TO  MCPDATA-REC
-           MOVE    "SYSKANRI-KEY"          TO  ORC-DBPATH
            IF      FLG-SYSKANRI            =   ZERO
                MOVE    "DBUPDATE"              TO  MCP-FUNC
            ELSE
                MOVE    "DBINSERT"              TO  MCP-FUNC
            END-IF
-           CALL    "ORCMCPSUB"              USING
-                                                MCPAREA
-                                                ORCMCPAREA
-                                                MCPDATA-REC
+           MOVE    "tbl_syskanri"          TO  MCP-TABLE
+           MOVE    "key"                   TO  MCP-PATHNAME
+           CALL    "MONFUNC"               USING
+                                           MCPAREA
+                                           MCPDATA-REC
            IF      MCP-RC              NOT =   ZERO 
                MOVE    "1003"                  TO  SPA-ERRCD
+               DISPLAY "W04 SYSKANRI INV:" MCP-RC  ",KEY:" SYS-1009-KEY
                GO  TO  490-KOUSHIN-EXT
            END-IF      
       *
@@ -1396,19 +1387,13 @@
       *****************************************************************
        900-SYSKANRI-INV-SEC         SECTION.
       *
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO                TO  FLG-SYSKANRI
                ELSE
@@ -1418,12 +1403,9 @@
                MOVE    1                   TO  FLG-SYSKANRI
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        900-SYSKANRI-INV-EXT.
@@ -1434,12 +1416,7 @@
       *****************************************************************
        900-SYSKANRI-READ-SEC         SECTION.
       *
-      *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-SYSKANRI
            ELSE
@@ -1449,6 +1426,47 @@
            .
        900-SYSKANRI-READ-EXT.
            EXIT.
+      *****************************************************************
+      *    テーブル検索処理
+      *****************************************************************
+       910-DBSELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       910-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ読み込み処理
+      *****************************************************************
+       920-DBFETCH-SEC                 SECTION.
+      *
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       920-DBFETCH-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢクロース処理
+      *****************************************************************
+       990-DBCLOSE-SEC         SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       990-DBCLOSE-EXT.
+           EXIT.
       *
       *****************************************************************
       *    ＰＵＴ　処理
@@ -1456,10 +1474,9 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL   "ORCMCPSUB"   USING
-                                MCPAREA
-                                ORCMCPAREA
-                                MCPDATA-REC.
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        900-PUT-WINDOW-EXT.
