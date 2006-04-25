@@ -1082,6 +1082,13 @@
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
+               WHEN    "8028"
+                   STRING  "救急医療管理加算は入院日から７日間のみ"
+                                               DELIMITED  BY  SIZE
+                           "算定可能です。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
       *
            END-EVALUATE
            .
