@@ -3511,12 +3511,15 @@
            END-IF
       *    入院が存在するかのチェック
            IF     (SPA-BEDSU           >   ZERO )
-      *        全科以外
-            AND   (SPA-NAI-SRYKA-FLG   NOT =   2 )
                PERFORM 410101-NYUINRRK-CHK-SEC
-               IF      SPA-NAI-NYUINKA NOT =   SPACE
-                   MOVE    SPA-NAI-NYUINKA     TO  SPA-J01-SRYKA
-                   PERFORM 3101-SRYKA-HEN-SEC
+               IF      SPA-NAI-SRYKA-FLG   =   2
+                   CONTINUE
+               ELSE
+      *        全科以外
+                   IF      SPA-NAI-NYUINKA NOT =   SPACE
+                       MOVE    SPA-NAI-NYUINKA     TO  SPA-J01-SRYKA
+                       PERFORM 3101-SRYKA-HEN-SEC
+                   END-IF
                END-IF
            END-IF
       *
