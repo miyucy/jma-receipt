@@ -3438,6 +3438,8 @@
                    GO      TO     41010-PTNUM-SYORI-EXT
            END-EVALUATE
       *
+           INITIALIZE                      SPA-J02-SET
+      *
            MOVE    SPTID-PTNUM         TO  SPA-GMN-PTNUM
            MOVE    SPTID-PTID          TO  SPA-GMN-PTID
       *    患者マスター存在チェック
