@@ -399,6 +399,10 @@
                    MOVE
                    "在宅末期医療総合診察料を算定時、算定できません"
                                        TO  SPA-ERRMSG
+               WHEN    "1402"
+                   MOVE
+                   "在宅時医学総合管理料を算定時、算定できません"
+                                       TO  SPA-ERRMSG
                WHEN    "0070"
                    MOVE    "同時併施分です。入力できません"
                                        TO  SPA-ERRMSG
