@@ -252,6 +252,7 @@
            COPY    "W30.INC".
            COPY    "W60.INC".
            COPY    "W61.INC".
+           COPY    "W62.INC".
            COPY    "W98.INC".
            COPY    "W97.INC".
            COPY    "W99.INC".
@@ -1243,6 +1244,9 @@
                IF      SPA-W01-KANRICD     =   "1031"
                    PERFORM  4110-W111-SYORI-SEC
                END-IF
+      *    テスト印刷
+           WHEN    "CLICKED"       ALSO    "B10"
+               PERFORM 460-W62-SYORI-SEC
       *
            END-EVALUATE
            .
@@ -2061,6 +2065,47 @@
        4110-W111-SYORI-EXT.
            EXIT.
       *----(02.00.03)--ADD-END-----
+      *****************************************************************
+      *    帳票テスト印刷画面処理
+      *****************************************************************
+       460-W62-SYORI-SEC           SECTION.
+      *
+      *    初期画面セット
+           MOVE    SPACE               TO  LINKAREA
+           MOVE    SPACE               TO  SPA-MOTOPG
+           MOVE    SPA-W11             TO  SPA-FREE
+           MOVE    SPA-W01KYOUTU       TO  SPA-WORK
+           MOVE    SPA-AREA            TO  SPA-COMMON
+      *
+           MOVE    "LINK"              TO  MCP-STATUS
+           MOVE    SPACE               TO  MCP-EVENT
+      *
+           CALL    "ORCGW62"           USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA
+      *
+           MOVE    SPA-COMMON          TO  SPA-AREA
+           MOVE    SPA-FREE            TO  SPA-W11
+           MOVE    SPA-WORK            TO  SPA-W01KYOUTU
+      *
+           MOVE    "W62"               TO  SPA-SAKIPG
+           MOVE    "W11"               TO  SPA-MOTOPG
+      *
+           MOVE    SPACE               TO  LINKAREA
+      *
+           MOVE    "PRTNUM"            TO  MCP-WIDGET
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "W62"               TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       460-W62-SYORI-EXT.
+           EXIT.
       *****************************************************************
       *       登録処理
       *****************************************************************
