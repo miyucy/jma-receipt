@@ -177,6 +177,8 @@
       *  02.09.01    NACL-藤原    06/04/20  外来迅速検体検査加算対応
       *                                     検査等実施判断グループの追加
       *                                     再診のときの時間外の追加
+      *  02.09.02    NACL-藤原    06/04/25  主科のときの症状詳記データの
+      *                                     キーの設定を修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -4502,10 +4504,15 @@
                MOVE    RECE02-SRYYM        TO  RECEDEN-SRYYM
                MOVE    RECE02-NYUGAIKBN    TO  RECEDEN-NYUGAIKBN
                MOVE    RECE02-PTID         TO  RECEDEN-PTID
-               IF      RECE02-RECEKA       =   SPACE
-                   MOVE    ZERO            TO  RECEDEN-RECEKA
+               IF    ( SYS-2009-SYUKA-KBN  =   "1"                )
+               AND   ( RECE02-TEISYUTUSAKI =   "1"                )
+                   MOVE    RECE02-SYUKA        TO  RECEDEN-RECEKA
                ELSE
-                   MOVE    RECE02-RECEKA   TO  RECEDEN-RECEKA
+                   IF      RECE02-RECEKA       =   SPACE
+                       MOVE    ZERO            TO  RECEDEN-RECEKA
+                   ELSE
+                       MOVE    RECE02-RECEKA   TO  RECEDEN-RECEKA
+                   END-IF
                END-IF
                MOVE    RECE02-TEISYUTUSAKI TO
                                                RECEDEN-TEISYUTUSAKI
@@ -4692,10 +4699,15 @@
            MOVE    RECE02-SRYYM        TO  RECEDEN-SRYYM
            MOVE    RECE02-NYUGAIKBN    TO  RECEDEN-NYUGAIKBN
            MOVE    RECE02-PTID         TO  RECEDEN-PTID
-           IF      RECE02-RECEKA       =   SPACE
-               MOVE    ZERO            TO  RECEDEN-RECEKA
+           IF    ( SYS-2009-SYUKA-KBN  =   "1"                )
+           AND   ( RECE02-TEISYUTUSAKI =   "1"                )
+               MOVE    RECE02-SYUKA        TO  RECEDEN-RECEKA
            ELSE
-              MOVE    RECE02-RECEKA   TO  RECEDEN-RECEKA
+               IF      RECE02-RECEKA       =   SPACE
+                   MOVE    ZERO            TO  RECEDEN-RECEKA
+               ELSE
+                   MOVE    RECE02-RECEKA   TO  RECEDEN-RECEKA
+               END-IF
            END-IF
            MOVE    RECE02-TEISYUTUSAKI TO
                                                RECEDEN-TEISYUTUSAKI
@@ -4843,10 +4855,16 @@
                        MOVE    RECE02-SRYYM        TO  RECEDEN-SRYYM
                        MOVE    RECE02-NYUGAIKBN    TO  RECEDEN-NYUGAIKBN
                        MOVE    RECE02-PTID         TO  RECEDEN-PTID
-                       IF      RECE02-RECEKA       =   SPACE
-                           MOVE    ZERO            TO  RECEDEN-RECEKA
+                       IF    ( SYS-2009-SYUKA-KBN  =   "1" )
+                       AND   ( RECE02-TEISYUTUSAKI =   "1" )
+                           MOVE    RECE02-SYUKA    TO  RECEDEN-RECEKA
                        ELSE
-                           MOVE    RECE02-RECEKA   TO  RECEDEN-RECEKA
+                           IF      RECE02-RECEKA   =   SPACE
+                               MOVE    ZERO        TO  RECEDEN-RECEKA
+                           ELSE
+                               MOVE    RECE02-RECEKA
+                                                   TO  RECEDEN-RECEKA
+                           END-IF
                        END-IF
                        MOVE    RECE02-TEISYUTUSAKI TO
                                                    RECEDEN-TEISYUTUSAKI
