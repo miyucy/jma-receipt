@@ -243,7 +243,13 @@
 	<key>GDK_F10</key>
 	<signal>clicked</signal>
       </accelerator>
-      <label></label>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Wed, 08 Mar 2006 05:50:28 GMT</last_modification_time>
+      </signal>
+      <label>印字テスト</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 

@@ -1,0 +1,14 @@
+W62	{
+	fixed32	{
+		PRTNUMCOMBO	{
+			PRTNUM	{
+				value	varchar(20);
+			};
+			count	int;
+			item	varchar(20)[5];
+		};
+		PSAREA	{
+			objectdata	object;
+		};
+	};
+};
