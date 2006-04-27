@@ -3421,7 +3421,7 @@
                MOVE   "PTHKNINF-KEY" TO    ORC-DBPATH
                PERFORM  PTHKNINF-READ-SEC
                IF      FLG-PTHKNINF   =     ZERO
-                  IF   PTHKN-HKNJANUM = "133033" OR "133280"
+                  IF   PTHKN-HKNJANUM(1:6) = "133033" OR "133280"
                       MOVE    1      TO    FLG-SEISINJYO
                   END-IF
                END-IF

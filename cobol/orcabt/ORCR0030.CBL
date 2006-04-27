@@ -5553,7 +5553,8 @@
                OR ((SYS-1001-PREFNUM =   13           ) AND
                    (RECE02-KOHNUM(KOHFTN-IDX) =  "151" OR "451"))
                OR ((RECE02-KOHNUM(KOHFTN-IDX) =  "010" OR "021") AND
-                   (RECE02-HKNJANUM  =  "133033" OR "133280"   ))
+                   (RECE02-HKNJANUM(1:6)
+                                     =  "133033" OR "133280"   ))
                      MOVE  "1"  TO
                              RECE02-ZEROKISAIFLG(KOHFTN-IDX + 1)
                ELSE

@@ -8113,7 +8113,8 @@
                OR ((WRK-PREFNUM      =   13           ) AND
                    (RECE62-KOHNUM(KOHFTN-IDX) =  "151" OR "451"))
                OR ((RECE62-KOHNUM(KOHFTN-IDX) =  "010" OR "021") AND
-                   (RECE62-HKNJANUM  =  "133033" OR "133280"   ))
+                   (RECE62-HKNJANUM(1:6)
+                                     =  "133033" OR "133280"   ))
                      MOVE  "1"   TO
                              RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
                ELSE
