@@ -266,7 +266,7 @@
       *
       *»»ÄêÍúÎò¥Þ¥¹¥¿
            MOVE    PARAM-HOSPID        TO      SANTEI-HOSPID
-           MOVE    PARAM-NYUGAIKBN     TO      SANTEI-NYUGAIKBN
+           MOVE    ZERO                TO      SANTEI-NYUGAIKBN
            MOVE    PARAM-PTID          TO      SANTEI-PTID
            MOVE    SANTEI-REC          TO      MCPDATA-REC
            MOVE    "DBDELETE"          TO      MCP-FUNC

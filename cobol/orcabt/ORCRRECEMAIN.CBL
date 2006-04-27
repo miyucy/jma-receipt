@@ -982,7 +982,7 @@
                    " "  LNK-TIMEOFDAY(1:20)
            MOVE    WRK-PARA-HOSPID      TO      ACCT-HOSPID
            MOVE    WRK-PARA-NYUGAIKBN   TO      ACCT-NYUGAIKBN
-           MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
+           MOVE    WRK-PARA-PTID        TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      ACCT-PTID
            MOVE    WRK-PARA-A8          TO      ACCT-SRYYM
            MOVE    SRYACCT-REC          TO      MCPDATA-REC
@@ -1001,6 +1001,19 @@
            CALL "timeofday" USING LNK-TIMEOFDAY
            DISPLAY "real db(sryact) del ed  "
                    " "  LNK-TIMEOFDAY(1:20)
+      *»»ÄêÍúÎòºï½ü
+           DISPLAY "real db(santei) del ed  "
+           MOVE    WRK-PARA-HOSPID      TO      SANTEI-HOSPID
+           MOVE    WRK-PARA-PTID        TO      WRK-PTID-X
+           MOVE    WRK-PTID             TO      SANTEI-PTID
+           MOVE    WRK-PARA-A8          TO      SANTEI-SRYYM
+           MOVE    SANTEI-REC           TO      MCPDATA-REC
+           MOVE    "tbl_santei"         TO  MCP-TABLE
+           MOVE    "del2"               TO  MCP-PATHNAME
+           MOVE    "DBDELETE"           TO      MCP-FUNC
+           CALL    "MONFUNC"            USING
+                                        MCPAREA
+                                        MCPDATA-REC
            .
        20011-REAL-DB-DELETE-EXT.
            EXIT.
@@ -1750,7 +1763,8 @@
       *
       *»»ÄêÍúÎò¥Þ¥¹¥¿
            MOVE    WRK-PARA-HOSPID      TO      SANTEI-HOSPID
-           MOVE    WRK-PARA-NYUGAIKBN   TO      SANTEI-NYUGAIKBN
+      *    MOVE    WRK-PARA-NYUGAIKBN   TO      SANTEI-NYUGAIKBN
+           MOVE    ZERO                 TO      SANTEI-NYUGAIKBN
            MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      SANTEI-PTID
            MOVE    SANTEI-REC           TO      MCPDATA-REC
