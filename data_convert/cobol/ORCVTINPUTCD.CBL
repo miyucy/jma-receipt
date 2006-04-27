@@ -32,6 +32,7 @@
       *                                     の変更  
       *  01.00.02    NACL-森脇    05/07/13  エラーメッセージ、コミット
       *  01.00.03    NACL-森脇    05/09/28  構造変更
+      *  01.00.04    NACL-多々納  06/04/26  チェック追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -102,6 +103,7 @@
            03  FLG-SYSKANRI            PIC 9(01).
            03  FLG-TENSU               PIC 9(01).
            03  FLG-INPUTCD             PIC 9(01).
+           03  FLG-KANJI               PIC 9(01).
       *
            03  FLG-ERRARI              PIC 9(01).
            03  FLG-DATAEND             PIC 9(01).
@@ -127,6 +129,7 @@
            03  IDZ                     PIC 9(04).
            03  IDS                     PIC 9(04).
            03  IDE                     PIC 9(04).
+           03  IDX-C                   PIC 9(04).
       *
       *    パラメータ保存
        01  PARA-SAVE.
@@ -158,6 +161,7 @@
            03  WRK-DATA                PIC X(200).
            03  WRK-LEN                 PIC 9(03).
            03  WRK-CNT                 PIC 9(04).
+           03  WRK-LEN-W               PIC 9(03).
       *
            03  WRK-COMMIT              PIC 9(06).
            03  WRK-ERR                 PIC 9(06).
@@ -191,8 +195,10 @@
                    " [3]誤入力            [4]ＣＤ件数オーバー".
                05  MES-TITLE2-L2.
                    07  FILLER          PIC X(10) VALUE SPACE.
-                   07  FILLER          PIC X(41) VALUE
+                   07  FILLER          PIC X(42) VALUE
                    " [5]点数情報取得失敗  [6]入力ＣＤ出力失敗".
+                   07  FILLER          PIC X(41) VALUE
+                   " [7]入力ＣＤ登録済み  [8]表示キー桁数不正".
                05  MES-TITLE2-L3.
                    07  FILLER          PIC X(50) VALUE
                    "--------------------------------------------------".
@@ -246,7 +252,7 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
+      **** COPY    "CPORCMCP.INC".
       *
        PROCEDURE                   DIVISION.
       ****************************************************************
@@ -395,17 +401,16 @@
            MOVE    ZERO            TO  FLG-SYSKANRI
            MOVE    SPACE           TO  SYS-1001-REC
            MOVE    "1001"          TO  SYS-1001-KANRICD
+           MOVE    WRK-SYSYMD      TO  SYS-1001-STYUKYMD
+           MOVE    WRK-SYSYMD      TO  SYS-1001-EDYUKYMD
            MOVE    SYS-1001-REC    TO  MCPDATA-REC
-           MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY2" TO  ORC-DBPATH
-           MOVE    WRK-SYSYMD      TO  ORC-DBYMD
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
       *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "SYSKANRI-KEY2" TO  ORC-DBPATH
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 900-SYSTEM-NEXT-SEC
            ELSE
                MOVE    1               TO  FLG-SYSKANRI
@@ -419,12 +424,9 @@
                MOVE    SYS-1001-ROUPAYKBN  TO  SPA-ROUPAYKBN
            END-IF
       *
-           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY2" TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        110-CP1001-KENSAKU-EXT.
@@ -453,7 +455,7 @@
            MOVE    ZERO            TO  WRK-POINT-AREA
            INITIALIZE                  WRK-INPUTCD-AREA
       *
-           MOVE    ZERO            TO  IDX-AREA
+           INITIALIZE                  IDX-AREA
            MOVE    ZERO            TO  FLG-ERRARI
            MOVE    ZERO            TO  FLG-DATAEND
            MOVE    ZERO            TO  WRK-KOUMOKU-NO
@@ -464,7 +466,6 @@
                    UNTIL   ( IDX           >   20   )
                    OR      ( WRK-PO-ED     >=  3000 )
                    OR      ( FLG-ERRARI    =   1 )
-      *             OR      ( IDE           >    4    )
       *
                MOVE    ZERO            TO  FLG-AREA1
                COMPUTE     WRK-PO-ST   =   WRK-PO-ED   +   1
@@ -621,6 +622,7 @@
       *****************************************************************
        2402-ZENKAKU-HEN-SEC        SECTION.
       *
+           MOVE    ZERO                TO  FLG-KANJI
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI
            MOVE    WRK-DATA            TO  KANACHK-MAE-INPUT
@@ -640,13 +642,18 @@
                IF      KANACHK-RC          =   ZERO
                    MOVE    KANACHK-MAX         TO  WRK-LEN
                    MOVE    KANACHK-OUT-INPUT   TO  WRK-DATA
+                   MOVE    1               TO  FLG-KANJI
+               ELSE
+                   MOVE    2               TO  FLG-ERR
+               END-IF
+           ELSE
+      *        全角
+               IF      KANACHK-SYUBETU     =   2
+                   MOVE    1               TO  FLG-KANJI
                END-IF
            END-IF
-           IF      WRK-LEN             =   ZERO
-               MOVE    1                   TO  WRK-LEN
-           END-IF
-      *    後ろの全角空白を削除
-           IF      WRK-LEN             >   1
+      *    空白を削除
+           IF      WRK-LEN             >   ZERO
                PERFORM 24021-KUHAKU-DEL-SEC
            END-IF
            .
@@ -658,23 +665,37 @@
       *****************************************************************
        24021-KUHAKU-DEL-SEC        SECTION.
       *
-           COMPUTE IDZ             =   WRK-LEN     -   1
-           IF      WRK-DATA (IDZ:2)    =   "　"
-               MOVE    1                   TO  WRK-LEN
-               PERFORM VARYING IDS     FROM    IDZ BY  -2
-                       UNTIL   IDS     <   2
-                   IF      WRK-DATA (IDS:2)    NOT =   "　"
-                       COMPUTE WRK-LEN         =   IDS     +   1
-                       MOVE    2               TO  IDS
+           MOVE    SPACE               TO  WRK-INPUTCD
+           MOVE    1                   TO  IDZ
+           MOVE    ZERO                TO  WRK-LEN-W
+           IF      FLG-KANJI           =   1
+      *        全角空白削除
+               PERFORM VARYING IDS     FROM    1   BY  2
+                       UNTIL   IDS     >   WRK-LEN
+                   IF      WRK-DATA (IDS:2)  =   "　"
+                                             OR  SPACE
+                       CONTINUE
                    ELSE
-                       IF      IDS             =   3
-                           IF      WRK-DATA (1:2)      NOT =   "　"
-                               MOVE    2               TO  WRK-LEN
-                           END-IF
-                       END-IF
+                       MOVE    WRK-DATA(IDS:2) TO  WRK-INPUTCD(IDZ:2)
+                       ADD     2               TO  IDZ
+                       ADD     2               TO  WRK-LEN-W
                    END-IF
-               END-PERFORM    
+               END-PERFORM
+           ELSE
+      *        間の空白削除
+               PERFORM VARYING IDS     FROM    1   BY  1
+                       UNTIL   IDS     >   WRK-LEN
+                   IF      WRK-DATA (IDS:1)  =   SPACE
+                       CONTINUE
+                   ELSE
+                       MOVE    WRK-DATA(IDS:1) TO  WRK-INPUTCD(IDZ:1)
+                       ADD     1               TO  IDZ
+                       ADD     1               TO  WRK-LEN-W
+                   END-IF
+               END-PERFORM
            END-IF
+           MOVE    WRK-LEN-W           TO  WRK-LEN
+      *
            .
        2402-ZENKAKU-HEN-EXT.
            EXIT.
@@ -713,7 +734,6 @@
            PERFORM 900-TENSU-READ-SEC
            IF  FLG-TENSU           NOT = ZERO
                MOVE    5           TO  FLG-ERR
-               GO  TO  2410-SRYCD-SET-EXT
            END-IF
       *
            .
@@ -742,12 +762,11 @@
                                    TO  WRK-DATA
            MOVE    20              TO  WRK-CNT
            PERFORM 2402-ZENKAKU-HEN-SEC
-           IF      FLG-ERR         =   ZERO
-               MOVE    WRK-DATA (1:WRK-LEN)
-                                   TO  WRK-INPUTCD
-           END-IF
       *
-           PERFORM 250-INPUTCD-INSERT-SEC
+           IF     (FLG-ERR         =   ZERO ) AND
+                  (WRK-LEN         >   ZERO )
+               PERFORM 250-INPUTCD-INSERT-SEC
+           END-IF
       *
            .
        2450-INPUTCD-SET-EXT.
@@ -761,45 +780,55 @@
            MOVE    ZERO            TO  WRK-DSPSEQ
       *
            PERFORM 250-CDSYU-SET-SEC
-           IF  FLG-ERR         NOT =   ZERO
-               GO  TO  250-INPUTCD-INSERT-EXT
-           END-IF
-      *
-      *    重複データが無いかチェック
-           MOVE    ZERO        TO  FLG-INPUTCD
-           MOVE    SPACE       TO  INPUTCD-REC
-           INITIALIZE              INPUTCD-REC
-           MOVE    SPA-HOSPID  TO  ICD-HOSPID
-           MOVE    WRK-SRYCD   TO  ICD-SRYCD
-           MOVE    INPUTCD-REC     TO  MCPDATA-REC
-           MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "INPUTCD-KEY4"  TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
-      *
-           IF      MCP-RC          =   ZERO
-               MOVE    "INPUTCD-KEY4"  TO  ORC-DBPATH
-               PERFORM 940-INPUTCD-NEXT-SEC
-                       UNTIL   FLG-INPUTCD   =   1
-           END-IF
-      *
-           ADD     1               TO  WRK-DSPSEQ
-      *
-           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           MOVE    "INPUTCD-KEY4"  TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
            IF      FLG-ERR         NOT =   ZERO
                GO  TO  250-INPUTCD-INSERT-EXT
            END-IF
       *
+      *    重複データが無いかチェック
+           PERFORM 2501-INPUTCD-CHK-SEC
+           IF      FLG-ERR         NOT =   ZERO
+               GO  TO  250-INPUTCD-INSERT-EXT
+           END-IF
+      *    連番検索
+           MOVE    SPACE               TO  INPUTCD-REC
+           INITIALIZE                      INPUTCD-REC
+           MOVE    SPA-HOSPID          TO  ICD-HOSPID
+           MOVE    WRK-SRYCD           TO  ICD-SRYCD
+           MOVE    INPUTCD-REC         TO  MCPDATA-REC
+           MOVE    "tbl_inputcd"       TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_inputcd"       TO  MCP-TABLE
+               MOVE    "key4"              TO  MCP-PATHNAME
+               PERFORM 940-INPUTCD-NEXT-SEC
+           ELSE
+               MOVE    1                   TO  FLG-INPUTCD
+           END-IF
+           MOVE    ZERO                TO  WRK-DSPSEQ
+           PERFORM
+                   UNTIL   FLG-INPUTCD     =   1
+               MOVE    ICD-DSPSEQ          TO  WRK-DSPSEQ
+      *
+               MOVE    "tbl_inputcd"       TO  MCP-TABLE
+               MOVE    "key4"              TO  MCP-PATHNAME
+               PERFORM 940-INPUTCD-NEXT-SEC
+           END-PERFORM
+           MOVE    "tbl_inputcd"       TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           ADD     1               TO  WRK-DSPSEQ
            IF      WRK-DSPSEQ      >  10
                 MOVE    4              TO  FLG-ERR
                 GO  TO  250-INPUTCD-INSERT-EXT
+           END-IF
+      *    表示キーは１０桁までとする
+           IF      WRK-DSPSEQ      =   1
+               IF      WRK-LEN         >   10
+                    MOVE    8              TO  FLG-ERR
+                    GO  TO  250-INPUTCD-INSERT-EXT
+               END-IF
            END-IF
       *
       *    入力コード作成
@@ -818,12 +847,12 @@
            MOVE    SPACE           TO  ICD-UPYMD
            MOVE    SPACE           TO  ICD-UPHMS
       *
-           MOVE    INPUTCD-REC     TO  MCPDATA-REC
-           MOVE    "DBINSERT"      TO  MCP-FUNC
-           MOVE    "INPUTCD-KEY"   TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    INPUTCD-REC         TO  MCPDATA-REC
+           MOVE    "DBINSERT"          TO  MCP-FUNC
+           MOVE    "tbl_inputcd"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
                 MOVE    6              TO  FLG-ERR
@@ -840,73 +869,121 @@
       *****************************************************************
        250-CDSYU-SET-SEC           SECTION.
       *
-           MOVE    ZERO            TO  WRK-NUMCNT
-           MOVE    ZERO            TO  WRK-SPCFLG
+           MOVE    SPACE           TO  WRK-CDSYU
       *
-           PERFORM VARYING IDZ     FROM    1   BY  1
-                   UNTIL   IDZ     >=  20
-               IF  WRK-INPUTCD(IDZ:1)      NOT =     SPACE
-                   IF  WRK-SPCFLG              =   1
+           IF      FLG-KANJI           =   1
+      *        全角は５文字とする
+               IF      WRK-LEN             >   10
+                   MOVE    3               TO  FLG-ERR
+               END-IF
+           ELSE
+      *        半角
+               IF      WRK-INPUTCD(1:WRK-LEN)  NUMERIC
+      *            ４桁から６桁
+                   IF      WRK-LEN        <   4   OR  >  6
+                       MOVE    3               TO  FLG-ERR
+                   END-IF
+               END-IF
+      *        １文字目判定
+               IF      WRK-INPUTCD(1:1)   =   "P"
+                                          OR  "S"
+                                          OR  "#"
+                                          OR  "$"
+                   MOVE    3               TO  FLG-ERR
+               END-IF
+           END-IF
+      *    記号は入力不可とする
+           IF      FLG-KANJI           =   1
+               MOVE    2                   TO  IDX-C
+           ELSE
+               MOVE    1                   TO  IDX-C
+           END-IF
+           PERFORM VARYING     IDZ     FROM    1   BY  IDX-C
+                   UNTIL      (IDZ         >   20  )  OR
+                              (FLG-ERR     NOT =   ZERO)
+               IF      IDX-C               =   1
+                   IF       WRK-INPUTCD(IDZ:1)
+                                               =   "+"   OR  "-"
+                                               OR  "/"   OR  "!"
+                                               OR  "."   OR  "*"
+                                               OR  "_"
                        MOVE    3           TO  FLG-ERR
-                       GO  TO  250-CDSYU-SET-EXT
                    END-IF
-                   IF  WRK-INPUTCD(IDZ:1)  =   "P"   OR
-                       WRK-INPUTCD(IDZ:1)  =   "S"
-                       MOVE    3           TO  FLG-ERR
-                       GO  TO  250-CDSYU-SET-EXT
-                   END-IF
-                   IF
-      *    全角カタカナ
-                       WRK-INPUTCD(IDZ:1)  =   X"A5" OR
-      *    全角英数字
-                       WRK-INPUTCD(IDZ:1)  =   X"A3" OR
-      *    全角記号
-                       WRK-INPUTCD(IDZ:1)  =   X"A1"
-                       MOVE    "J"         TO  WRK-CDSYU
-                       GO  TO  250-CDSYU-SET-EXT
-                   END-IF
-      *    半角英数字
-                   IF  WRK-INPUTCD(IDZ:1)  =   "0"   OR
-                       WRK-INPUTCD(IDZ:1)  =   "1"   OR
-                       WRK-INPUTCD(IDZ:1)  =   "2"   OR
-                       WRK-INPUTCD(IDZ:1)  =   "3"   OR
-                       WRK-INPUTCD(IDZ:1)  =   "4"   OR
-                       WRK-INPUTCD(IDZ:1)  =   "5"   OR
-                       WRK-INPUTCD(IDZ:1)  =   "6"   OR
-                       WRK-INPUTCD(IDZ:1)  =   "7"   OR
-                       WRK-INPUTCD(IDZ:1)  =   "8"   OR
-                       WRK-INPUTCD(IDZ:1)  =   "9"
-                       ADD 1               TO  WRK-NUMCNT
-                   ELSE
-                       MOVE    "A"         TO  WRK-CDSYU
-                       GO  TO  250-CDSYU-SET-EXT
-                   END-IF
-      *
                ELSE
-                   EVALUATE    WRK-NUMCNT
-                   WHEN 0
-                       CONTINUE
-      *    半角数字（４桁）
-                   WHEN 4
-                       MOVE    "4"         TO  WRK-CDSYU
-                       MOVE    1           TO  WRK-SPCFLG
-      *    半角数字（５桁）
-                   WHEN 5
-                       MOVE    "5"         TO  WRK-CDSYU
-                       MOVE    1           TO  WRK-SPCFLG
-      *    半角数字（６桁）
-                   WHEN 6
-                       MOVE    "6"         TO  WRK-CDSYU
-                       MOVE    1           TO  WRK-SPCFLG
-      *
-                   WHEN OTHER
-                       MOVE    2           TO  FLG-ERR
-                       GO  TO  250-CDSYU-SET-EXT
-                   END-EVALUATE
+                   IF      WRK-INPUTCD (IDZ:2)
+                                           =   "＋"   OR  "−"
+                                           OR  "／"   OR  "！"
+                                           OR  "．"   OR  "＊"
+                       MOVE    3           TO  FLG-ERR
+                   END-IF
                END-IF
            END-PERFORM
+      *    コード種別
+           IF      FLG-KANJI           =   1
+               MOVE    "J"                 TO  WRK-CDSYU
+           ELSE
+               IF      WRK-INPUTCD(1:WRK-LEN)
+                                           NUMERIC
+                   EVALUATE    WRK-LEN
+                       WHEN    4
+                           MOVE    "4"                 TO  WRK-CDSYU
+                       WHEN    5
+                           MOVE    "5"                 TO  WRK-CDSYU
+                       WHEN    6
+                           MOVE    "6"                 TO  WRK-CDSYU
+                   END-EVALUATE
+               ELSE
+                   MOVE    "A"                 TO  WRK-CDSYU
+               END-IF
+           END-IF
            .
        250-CDSYU-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    重複データチェック処理
+      *****************************************************************
+       2501-INPUTCD-CHK-SEC         SECTION.
+      *
+           MOVE    SPACE               TO  INPUTCD-REC
+           INITIALIZE                      INPUTCD-REC
+           MOVE    SPA-HOSPID          TO  ICD-HOSPID
+           MOVE    WRK-CDSYU           TO  ICD-CDSYU
+           IF      WRK-INPUTCD(20:1)   =   SPACE
+               STRING    WRK-INPUTCD       DELIMITED  BY  SPACE
+                         "%"               DELIMITED  BY  SIZE
+                                       INTO      ICD-INPUTCD
+               END-STRING
+           ELSE
+               MOVE    WRK-INPUTCD         TO  ICD-INPUTCD
+           END-IF
+           MOVE    INPUTCD-REC         TO  MCPDATA-REC
+           MOVE    "tbl_inputcd"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_inputcd"       TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 940-INPUTCD-NEXT-SEC
+           ELSE
+               MOVE    1                   TO  FLG-INPUTCD
+           END-IF
+           PERFORM
+                   UNTIL  (FLG-INPUTCD     =   1 )  OR
+                          (FLG-ERR     NOT =   ZERO )
+               IF      ICD-INPUTCD         =   WRK-INPUTCD
+                   MOVE    7               TO  FLG-ERR
+               ELSE
+                   MOVE    "tbl_inputcd"       TO  MCP-TABLE
+                   MOVE    "key"               TO  MCP-PATHNAME
+                   PERFORM 940-INPUTCD-NEXT-SEC
+               END-IF
+           END-PERFORM
+           MOVE    "tbl_inputcd"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           .
+       2501-INPUTCD-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -946,6 +1023,12 @@
       *    点数情報取得エラー
            WHEN    5
                PERFORM 2910-ERRREC-EDIT-BETU2-SEC
+      *    入力ＣＤ登録済み
+           WHEN    7
+           WHEN    8
+               PERFORM 2910-ERRREC-EDIT-BETU2-SEC
+               PERFORM 2950-ERRLST-OUT-SEC
+               MOVE    0           TO  FLG-ERRARI
       *    入力ＣＤ出力エラー
            WHEN    6
                PERFORM 2910-ERRREC-EDIT-BETU2-SEC
@@ -1093,11 +1176,7 @@
       *****************************************************************
        900-SYSTEM-NEXT-SEC         SECTION.
       *
-           MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           PERFORM 920-DBFETCH-SEC
            IF      MCP-RC          =   ZERO
                MOVE    ZERO            TO  FLG-SYSKANRI
            ELSE
@@ -1113,21 +1192,10 @@
       *****************************************************************
        940-INPUTCD-NEXT-SEC         SECTION.
       *
-           MOVE    "DBFETCH"        TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 920-DBFETCH-SEC
            IF      MCP-RC          =   ZERO
                MOVE    MCPDATA-REC     TO  INPUTCD-REC
-               IF      ICD-INPUTCD     =   WRK-INPUTCD
-                   INITIALIZE                  INPUTCD-REC
-                   MOVE    1               TO  FLG-INPUTCD
-                   MOVE    6               TO  FLG-ERR
-               ELSE
-                   MOVE    ICD-DSPSEQ      TO  WRK-DSPSEQ
-                   MOVE    ZERO            TO  FLG-INPUTCD
-               END-IF
+               MOVE    ZERO            TO  FLG-INPUTCD
            ELSE
                INITIALIZE                  INPUTCD-REC
                MOVE    1               TO  FLG-INPUTCD
@@ -1144,22 +1212,17 @@
       *
            INITIALIZE                  TNS-TENSU-REC
            MOVE    WRK-SRYCD       TO  TNS-SRYCD
+           MOVE    SPA-SYSYMD      TO  TNS-YUKOSTYMD
+           MOVE    SPA-SYSYMD      TO  TNS-YUKOEDYMD
       *
-           MOVE    TNS-TENSU-REC   TO  MCPDATA-REC
-           MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "TENSU-KEY"     TO  ORC-DBPATH
-           MOVE    SPA-SYSYMD      TO  ORC-DBYMD
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "TENSU-KEY"     TO  ORC-DBPATH
-               MOVE    "DBFETCH"       TO  MCP-FUNC
-               CALL    "ORCMCPSUB"         USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
+               MOVE    "tbl_tensu"         TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO            TO  FLG-TENSU
                ELSE
@@ -1170,15 +1233,51 @@
                MOVE    1               TO  FLG-TENSU
            END-IF
       *
-           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           MOVE    "TENSU-KEY"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        900-TENSU-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    テーブル検索処理
+      *****************************************************************
+       910-DBSELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       910-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ読み込み処理
+      *****************************************************************
+       920-DBFETCH-SEC                 SECTION.
+      *
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       920-DBFETCH-EXT.
+           EXIT.
+      *****************************************************************
+      *   ＤＢクローズ処理
+      *****************************************************************
+       990-DBCLOSE-SEC                 SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           .
+       990-DBCLOSE-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1225,18 +1324,16 @@
        100-DBOPEN-SEC              SECTION.
       *
            MOVE    "DBOPEN"        TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC      NOT =   ZERO
                DISPLAY "DBOPEN ERROR"
            END-IF
       *
            MOVE    "DBSTART"       TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC      NOT =   ZERO
                DISPLAY "DBSTART ERROR"
@@ -1251,15 +1348,13 @@
        900-DBCOMMIT-SEC            SECTION.
       *
            MOVE    "DBCOMMIT"      TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
       *
            MOVE    "DBSTART"       TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            .
        900-DBCOMMIT-EXT.
@@ -1271,18 +1366,16 @@
        900-DBDISCONNECT-SEC        SECTION.
       *
            MOVE    "DBCOMMIT"      TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC      NOT =   ZERO
                DISPLAY "DBCOMMIT ERROR"
            END-IF
       *
            MOVE    "DBDISCONNECT"  TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC      NOT =   ZERO
                DISPLAY "DBDISCONNECT ERROR"
