@@ -195,7 +195,7 @@
        01  PARA-SAVE.
            03  PARA-05-1               PIC X(02).
            03  PARA-06-2               PIC X(08).
-           03  PARA-07-00              PIC X(01).
+           03  PARA-07-00              PIC X(02).
            03  PARA-07-TBL             OCCURS 99.
                05  PARA-07-HBTNUM      PIC X(02).
                05  PARA-07-WARIAI      PIC X(01).
