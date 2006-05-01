@@ -32,6 +32,7 @@
       *  01.00.02    NACL-多々納  03/08/12  合計点数、労災・自費金額編集
       *  01.00.03    NACL-多々納  04/04/22  手術追加他
       *  01.00.04    NACL-多々納  05/11/30  MONFUNC 対応
+      *  01.00.05    NACL-多々納  06/05/01  処置・検査改正対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -57,6 +58,8 @@
                    07  TENSU-KNONO      PIC 9(03).
                    07  TENSU-KNONO2     PIC 9(02).
                05  TENSU-KNOMEI         PIC X(50).
+               05  TENSU-STYYMM         PIC X(06).
+               05  TENSU-EDYYMM         PIC X(06).
       *
        WORKING-STORAGE             SECTION.
       *
@@ -185,6 +188,7 @@
            03  FLG-OK              PIC 9(01).
       *
            03  FLG-GENZAN          PIC 9(01).
+           03  FLG-ERR02           PIC 9(01).
 012400*
 012500*    カウント領域
 012600 01  CNT-AREA.
@@ -351,6 +355,8 @@
                    07  MKNO-KNONO      PIC 9(03).
                    07  MKNO-KNONO2     PIC 9(02).
                05  MKNO-KNOMEI         PIC X(50).
+               05  MKNO-STYYMM         PIC X(06).
+               05  MKNO-EDYYMM         PIC X(06).
 022800*
 022900**************************************************************
 023000*    ファイルレイアウト
@@ -920,6 +926,7 @@
                PERFORM VARYING     IDZ     FROM    1   BY  1
                        UNTIL      (IDZ         >   5   )  OR
                                   (SRY-SRYCD (IDZ) =   SPACE )
+                   MOVE    ZERO                TO  FLG-ERR02
       *            コメント、薬剤投与、粉砕、自動発生分は対象外
                    IF     (SRY-SRYCD (IDZ)(1:1)    =   "8"  )  OR
                           (SRY-SRYCD (IDZ)(1:3)    =   "001")  OR
@@ -929,12 +936,18 @@
       *************       (SRY-SRYCD (IDZ)(1:7)    =   "0992000"  ) OR
                           (SRY-AUTOKBN(IDZ)        =   "2"
                                                    OR  "3" )
+                       MOVE    1                   TO  FLG-ERR02
+                   END-IF
       *                   システム予約で診察料以外
-                   OR    ((SRY-SRYCD (IDZ)(1:3)    =   "099"  ) AND
-                          (SRY-SRYCD (IDZ)(1:5)    NOT =   "09911" 
-                                                   AND     "09912" ))
-                       CONTINUE
-                   ELSE
+                   IF     (SRY-SRYCD (IDZ)(1:3)    =   "099"  )
+                       IF     (SRY-SRYCD (IDZ)(1:5)    =   "09911" 
+                                                       OR  "09912" )
+                           CONTINUE
+                       ELSE
+                           MOVE    1                   TO  FLG-ERR02
+                       END-IF
+                   END-IF
+                   IF      FLG-ERR02               =   ZERO
       *                点数マスタを取得する
                        MOVE    SRY-SRYCD (IDZ)     TO  TNS-SRYCD
                        PERFORM 910-TENSU-READ-SEC
@@ -969,7 +982,7 @@
            IF      IDX             =   1   OR  2  OR  3
       *        手術追加
                                    OR  5
-053700*        診療行為別編集
+      *        診療行為別編集
 053800         PERFORM 310111-SINKOUI-01-SEC 
 053900     ELSE
 054000*        コード表別編集
@@ -1062,6 +1075,16 @@
                   (TNS-CDKBN-KBNNUM-EDA    =   ZERO  )
                GO      TO      310112-SINKOUI-02-EXT
            END-IF
+      *    療養担当手当は対象とする
+           IF     (TNS-CDKBN-KBN       =   "*"   )
+               IF     (TNS-CDKBN-KBNNUM    =   ZERO  )  AND
+                      (TNS-CDKBN-KBNNUM-EDA    =   1 )  AND
+                      (TNS-SRYKBN          =   "80"  )
+                   CONTINUE
+               ELSE
+                   GO      TO      310112-SINKOUI-02-EXT
+               END-IF
+           END-IF
       *    手技料のみ
            IF      SRY-SRYCD (IDZ)(1:1)    NOT =   "1"
                GO      TO      310112-SINKOUI-02-EXT
@@ -1138,6 +1161,8 @@
                                TO  WRK-TBL-MEISYO(IDX TBL-IDX1)
                    WHEN    WRK-TBL-KNO   (IDX TBL-IDX1)
                                      =   MKNO-KNO    (MKNO-IDX)
+                       AND (SRY-SRYYM    >=   MKNO-STYYMM (MKNO-IDX))
+                       AND (SRY-SRYYM    <=   MKNO-EDYYMM (MKNO-IDX))
                        MOVE    MKNO-KNOMEI (MKNO-IDX)
                                TO  WRK-TBL-MEISYO(IDX TBL-IDX1)
            END-SEARCH
