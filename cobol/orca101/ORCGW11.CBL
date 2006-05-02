@@ -56,6 +56,8 @@
       * 02.00.13     NACL-多々納  06/03/08  帳票オフセット登録画面追加
       * 02.00.14     NACL-多々納  06/03/16  後発医薬品への変更可追加
       * 02.00.15     NACL-多々納  06/04/10  診療費明細書追加
+      *                                     MONFUNC 対応
+      * 02.00.16     NACL-多々納  06/05/02  帳票編集区分削除追加他
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -1995,20 +1997,27 @@
       *****************************************************************
        410-SAKUJYO-SEC             SECTION.
       *
-           IF     (SPA-GMN-USERKBN      =   SPACE )
-               OR (SPA-GMN-YUKOKBN      =   SPACE )
-               MOVE    "0003"              TO  SPA-ERRCD
-               GO  TO  410-SAKUJYO-EXT
-           END-IF
       *
-           IF      SPA-GMN-USERKBN     =   "*"
-               MOVE    "0009"              TO  SPA-ERRCD
-           ELSE
-               IF      SPA-GMN-SELNUM       =   ZERO
-                   MOVE    "0007"              TO  SPA-ERRCD
+           IF      SPA-W01-KANRICD      =   "1031"
+      *
+               IF     (SPA-GMN-USERKBN      =   SPACE )
+                   OR (SPA-GMN-YUKOKBN      =   SPACE )
+                   MOVE    "0003"              TO  SPA-ERRCD
+               END-IF
+               IF      SPA-GMN-USERKBN     =   "*"
+                   IF     SPA-ERRCD            =   SPACE
+                       MOVE    "0009"              TO  SPA-ERRCD
+                   END-IF
                ELSE
-                   IF      SPA-GMN-UMARK(SPA-GMN-SELNUM)   NOT =   "*"
-                       MOVE    "0010"              TO  SPA-ERRCD
+                   IF      SPA-ERRCD            =   SPACE
+                       IF      SPA-GMN-SELNUM       =   ZERO
+                           MOVE    "0007"           TO  SPA-ERRCD
+                       ELSE
+                          IF      SPA-GMN-UMARK(SPA-GMN-SELNUM)
+                                                 NOT =   "*"
+                               MOVE    "0010"              TO  SPA-ERRCD
+                          END-IF
+                       END-IF
                    END-IF
                END-IF
            END-IF
@@ -2182,13 +2191,16 @@
       *            初期画面へ
                    PERFORM 310-SPASET-SEC
                END-IF
+      *
+           WHEN    "1030"
+               PERFORM 490-SYS-1030-DELETE-SEC
+               IF      SPA-ERRCD       =   SPACE
+      *            選択へ
+                   MOVE   "JOIN"               TO  MCP-PUTTYPE
+                   PERFORM 210-BACK
+               END-IF
            END-EVALUATE
       *
-      *----(02.00.03)--UPD-START---
-      *     MOVE   "JOIN"               TO  MCP-PUTTYPE
-      *     PERFORM 210-BACK
-      ***** PERFORM 310-SPASET-SEC
-      *----(02.00.03)--UPD-END-----
            .
        490-SAKUJYO-EXT.
            EXIT.
@@ -2546,6 +2558,29 @@
        490-SYS-1030-KOUSHIN-EXT.
            EXIT.
       *
+      *****************************************************************
+      *       帳票区分削除処理
+      *****************************************************************
+       490-SYS-1030-DELETE-SEC    SECTION.
+      *
+           MOVE    SPACE               TO  SYS-1030-REC
+           INITIALIZE                      SYS-1030-REC
+           MOVE    "1030"              TO  SYS-1030-KANRICD
+           MOVE    "*"                 TO  SYS-1030-KBNCD
+           MOVE    SPA-W01-STYUKYMD    TO  SYS-1030-STYUKYMD
+           MOVE    SPA-W01-EDYUKYMD    TO  SYS-1030-EDYUKYMD
+      *
+           MOVE    SYS-1030-REC        TO  SYSKANRI-REC
+      *
+           PERFORM 490-SYSKANRI-SAKUJYO-SEC
+           IF    ( MCP-RC          NOT =   ZERO )
+               MOVE    "3001"          TO  SPA-ERRCD
+           END-IF
+      *
+           .
+      *
+       490-SYS-1030-DELETE-EXT.
+           EXIT.
       *----(02.00.03)--ADD-START---
       *****************************************************************
       *       出力先プリンタ割り当て情報
@@ -3136,6 +3171,10 @@
                MOVE    WIDGET-INSENSITIVE  TO  W11-SELNUM-STATE
                MOVE    WIDGET-INSENSITIVE  TO  W11-B03-STATE
                MOVE    WIDGET-INSENSITIVE  TO  W11-B08-STATE
+               IF     (SPA-W01-STYUKYMD    NOT =   ZERO ) AND
+                      (SPA-W01-SELNUM      NOT =   ZERO )
+                   MOVE    WIDGET-NORMAL       TO  W11-B03-STATE
+               END-IF
            WHEN    "1031"
                EVALUATE    SPA-GMN-USERKBN
                WHEN    "*"
