@@ -86,7 +86,7 @@
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
-           03  IDY                 PIC 9(04).
+           03  IDY                 PIC 9(02).
       *
       *    一時領域
        01  WRK-AREA.
@@ -94,6 +94,8 @@
            03  WRK-WIDMSG          PIC X(70).
       *
            03  WRK-TESTERR         PIC X(200).
+      *
+           03  WRK-PRTNUM          PIC X(17).
       *
        01  WRK-CONS-AREA.
            03  WRK-CONS-FILENAME   PIC X(20)   VALUE
@@ -284,38 +286,13 @@
       *
       *    他のＬＤより
            IF      LINKAREA        NOT =   SPACE
-               MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
+               MOVE    LNK-KYOUTU      TO  SPA-KYOUTU
            END-IF
       *
-           EVALUATE    SPA-MOTOPG
-               WHEN    "WID1"
-                   PERFORM 330-WID1-SET-SEC
-               WHEN    OTHER
-                   PERFORM 310-SPASET-SEC
-           END-EVALUATE
+           PERFORM 310-SPASET-SEC
       *
            .
        300-SCREEN-EXT.
-           EXIT.
-      *****************************************************************
-      *    確認画面（ＣＩＤ１）ＯＫ処理
-      *****************************************************************
-       330-WID1-SET-SEC            SECTION.
-      *
-           EVALUATE    SPA-WIDCD
-               WHEN    "1001"
-                   IF      SPA-WID1-FLG    =   "OK"
-                       PERFORM 230-PRINT-SEC
-                   ELSE
-                       MOVE    1           TO  SPA-GMN-CUR
-                   END-IF
-           END-EVALUATE
-      *
-           MOVE    SPACE           TO  SPA-WID1-FLG
-           MOVE    SPACE           TO  SPA-WIDCD
-      *
-           .
-       330-WID1-SET-EXT.
            EXIT.
       *****************************************************************
       *    画面編集処理
@@ -369,12 +346,13 @@
                            UNTIL   IDY     >       20
                            OR      FLG-OK  =   1
                        IF      SPA-W62-PRTNUML(IDY)
-                                               =   SYS-1031-PRTNM(IDX)
-                           MOVE     SYS-1031-PRTNM(IDX)
-                                               TO  SPA-W62-PRTNUML(IDY)
+                                             =   SYS-1031-PRTNM(IDX)
+      *                     MOVE     SYS-1031-PRTNM(IDX)
+      *                                         TO  SPA-W62-PRTNUML(IDY)
                            MOVE    1           TO  FLG-OK
                        ELSE
                            IF      SPA-W62-PRTNUML(IDY)    =   SPACE
+                               MOVE     IDY    TO  SPA-W62-PRTKBNL(IDY)
                                MOVE     SYS-1031-PRTNM(IDX)
                                                TO  SPA-W62-PRTNUML(IDY)
                                ADD     1       TO  SPA-W62-PRTNUM-MAX
@@ -414,11 +392,12 @@
                            OR      FLG-OK  =   1
                        IF      SPA-W62-PRTNUML(IDY)
                                                =   SYS-1034-PRTNM(IDX)
-                           MOVE     SYS-1034-PRTNM(IDX)
-                                               TO  SPA-W62-PRTNUML(IDY)
+      *                    MOVE     SYS-1034-PRTNM(IDX)
+      *                                         TO  SPA-W62-PRTNUML(IDY)
                            MOVE    1           TO  FLG-OK
                        ELSE
                            IF      SPA-W62-PRTNUML(IDY)    =   SPACE
+                               MOVE     IDY    TO  SPA-W62-PRTKBNL(IDY)
                                MOVE     SYS-1034-PRTNM(IDX)
                                                TO  SPA-W62-PRTNUML(IDY)
                                ADD     1       TO  SPA-W62-PRTNUM-MAX
@@ -449,11 +428,6 @@
                GO  TO  500-SET-SCREEN-EXT
            END-IF
       *
-           IF      SPA-WIDCD       NOT =   SPACE
-               PERFORM 520-WIDSET-SEC
-               GO  TO  500-SET-SCREEN-EXT
-           END-IF
-      *
            MOVE    SPACE           TO  LINKAREA
       *
            MOVE    "CURRENT"       TO  MCP-PUTTYPE.
@@ -473,7 +447,7 @@
            INITIALIZE                  W62
       *
            MOVE    SPA-W62-OBJECT  TO  W62-PSAREA
-           MOVE    SPA-W62-PRTNUM  TO  W62-PRTNUM
+           MOVE    SPA-W62-PRTNUM-G    TO  W62-PRTNUM
       *
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >       SPA-W62-PRTNUM-MAX
@@ -559,18 +533,26 @@
       *
            MOVE    W62-PRTNUM      TO  SPA-W62-PRTNUM-G
       *
-      *     MOVE    ZERO            TO  FLG-OK
+           MOVE    ZERO            TO  FLG-OK
+           MOVE    SPACE           TO  WRK-PRTNUM
       *
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >   SPA-W62-PRTNUM-MAX
-               IF      SPA-W62-PRTNUM  =   SPA-W62-PRTNUMLST(IDX)
+               IF      SPA-W62-PRTNUM  =   SPA-W62-PRTNUML(IDX)
                    MOVE    SPA-W62-PRTNUMLST(IDX)
                                            TO  SPA-W62-PRTNUM-G
                    MOVE    SPA-W62-PRTNUM-MAX  TO  IDX
-      *             MOVE    1               TO  FLG-OK
+                   MOVE    1               TO  FLG-OK
                END-IF
            END-PERFORM
-           IF      SPA-W62-PRTNUM      =   SPACE
+      *
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-W62-PRTNUM-G    TO  WRK-PRTNUM
+           ELSE
+               MOVE    SPA-W62-PRTNUM      TO  WRK-PRTNUM
+           END-IF
+      *
+           IF      WRK-PRTNUM          =   SPACE
                MOVE    "0001"          TO  SPA-ERRCD
                MOVE    1               TO  SPA-W62-CUR
            ELSE
@@ -610,9 +592,7 @@
                GO  TO  220-KAKUNIN-EXT
            END-IF
       *
-           IF      SPA-ERRCD            =   SPACE
-               MOVE    "1001"           TO  SPA-WIDCD
-           END-IF
+           PERFORM 230-PRINT-SEC
       *
            .
        220-KAKUNIN-EXT.
@@ -702,7 +682,7 @@
            MOVE    ZERO            TO  LNK-PRTKANRI-PRIORITY
            MOVE    SPA-TERMID      TO  LNK-PRTKANRI-TERMID
            MOVE    SPA-OPID        TO  LNK-PRTKANRI-OPID
-           MOVE    SPA-W62-PRTNUM  TO  LNK-PRTKANRI-PRTNM
+           MOVE    WRK-PRTNUM      TO  LNK-PRTKANRI-PRTNM
       *
            MOVE    LNK-PRTKANRI-RENNUM
                                    TO  SHELLTBL-ARG1
@@ -739,7 +719,7 @@
            CALL    "ORCSMKPASS"        USING
                                        ORCSMKPASSAREA
            MOVE    MKPASS-OT-01    TO  SHELLTBL-ARG15
-           MOVE    SPA-W62-PRTNUM  TO  SHELLTBL-ARG16
+           MOVE    WRK-PRTNUM      TO  SHELLTBL-ARG16
       *
       *     MOVE    "1"             TO  SHELLTBL-ARG17
       *
@@ -794,38 +774,6 @@
            MOVE    1               TO  FLG-END
            .
        510-ERRSET-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ガイドメッセージ表示
-      *****************************************************************
-       520-WIDSET-SEC              SECTION.
-      *
-           MOVE    SPACE           TO  WRK-WIDMSG
-      *
-           EVALUATE    SPA-WIDCD
-               WHEN    "1001"
-                   MOVE    "テスト印刷します。よろしいですか？"
-                                           TO  WRK-WIDMSG
-          END-EVALUATE
-      *
-           MOVE    SPACE           TO  WID1
-           MOVE    SPA-WIDCD       TO  WID1-ID1CODE
-           MOVE    WRK-WIDMSG      TO  WID1-ID1MSG
-           MOVE    "B12"           TO  MCP-WIDGET
-      *
-           MOVE    "W62"           TO  SPA-MOTOPG
-           MOVE    "WID1"          TO  SPA-SAKIPG
-      *
-           MOVE    "NEW"           TO  MCP-PUTTYPE
-           MOVE    "WID1"          TO  MCP-WINDOW
-      *
-           PERFORM 900-PUT-WINDOW
-      *
-           MOVE    1               TO  FLG-END
-      *
-           .
-       520-WIDSET-EXT.
            EXIT.
       *
       *****************************************************************
