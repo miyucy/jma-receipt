@@ -500,7 +500,7 @@
                WHEN    1
                    MOVE    "PRTNUM"    TO   MCP-WIDGET
                WHEN    99
-                   MOVE    "B07"       TO   MCP-WIDGET
+                   MOVE    "B12"       TO   MCP-WIDGET
            END-EVALUATE
       *
            .
@@ -515,7 +515,7 @@
            EVALUATE    WRK-WIDGET
                WHEN    "PRTNUM"
                    MOVE    99          TO  SPA-W62-CUR
-               WHEN    "B07"
+               WHEN    "B12"
                    MOVE    1           TO  SPA-W62-CUR
            END-EVALUATE
       *
@@ -533,7 +533,7 @@
                WHEN    "CLICKED"   ALSO    "B01"
                    PERFORM 210-BACK
       *        °õºþ
-               WHEN    "CLICKED"   ALSO    "B07"
+               WHEN    "CLICKED"   ALSO    "B12"
                    PERFORM 220-KAKUNIN-SEC
            END-EVALUATE
       *
@@ -559,7 +559,7 @@
       *
            MOVE    W62-PRTNUM      TO  SPA-W62-PRTNUM-G
       *
-           MOVE    ZERO            TO  FLG-OK
+      *     MOVE    ZERO            TO  FLG-OK
       *
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >   SPA-W62-PRTNUM-MAX
@@ -567,10 +567,10 @@
                    MOVE    SPA-W62-PRTNUMLST(IDX)
                                            TO  SPA-W62-PRTNUM-G
                    MOVE    SPA-W62-PRTNUM-MAX  TO  IDX
-                   MOVE    1               TO  FLG-OK
+      *             MOVE    1               TO  FLG-OK
                END-IF
            END-PERFORM
-           IF      FLG-OK              =   ZERO
+           IF      SPA-W62-PRTNUM      =   SPACE
                MOVE    "0001"          TO  SPA-ERRCD
                MOVE    1               TO  SPA-W62-CUR
            ELSE
