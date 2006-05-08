@@ -35,10 +35,6 @@
       *                                     チェック追加
       *  01.00.05    NACL-太田    03.09.10  入力パラメータ特定入院料コード
       *                                     の最大数を１０に変更
-      *  03.01.00    NACL-太田    06.06.30  入院料が拾えないケースを認める
-      *  03.05.00    NACL-多々納  07/04/26  グループ診療対応
-      *  03.05.00    NACL-太田    07/05/10  グループ診療対応
-      *  04.01.00    NACL-太田    07/12/13  日数８追加
       *****************************************************************
       *
        ENVIRONMENT                         DIVISION.
@@ -63,7 +59,6 @@
            03  FLG-SENTEICDCHG             PIC 9(01).
            03  FLG-TOKUTEI                 PIC 9(01).
            03  FLG-TOKUTEI-SITEI           PIC 9(01).
-           03  FLG-SEISINZOUAKU            PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -73,6 +68,10 @@
       *
       *    一時領域
        01  WRK-AREA.
+           03  WRK-MCP-PATH.
+               05  WRK-MCP-BLOCKS          PIC S9(9)   BINARY.
+               05  WRK-MCP-RNAME           PIC S9(9)   BINARY.
+               05  WRK-MCP-PNAME           PIC S9(9)   BINARY.
            03  WRK-YMD                     PIC X(10). 
            03  WRK-HENYMDG                 PIC X(09).
            03  WRK-SYMD.
@@ -83,12 +82,6 @@
            03  WRK-EDYMD                   PIC X(08).
            03  WRK-STSRYYM                 PIC X(06).
            03  WRK-EDSRYYM                 PIC X(06).
-           03  WRK-EDSRYYMD.
-               05  WRK-EDSRYYMD-YM         PIC X(06).
-               05  WRK-EDSRYYMD-DD         PIC 9(02).
-           03  WRK-ACCTYMD.
-               05  WRK-ACCTYMD-YM          PIC X(06).
-               05  WRK-ACCTYMD-DD          PIC 9(02).
            03  WRK-NISSU-G.
                05  WRK-NISSU               PIC 9(05).
                05  WRK-NISSU1              PIC 9(05).
@@ -106,7 +99,6 @@
                05  WRK-DAY-9               PIC 9(02).
            03  WRK-SRYYMD                  PIC X(08). 
            03  WRK-KONKAI-NYUINYMD         PIC X(08).
-           03  WRK-SZYMD                   PIC X(08).
       *
        01  CONST-AREA.
            03  CONST-H180701               PIC X(08)   VALUE "20060701".
@@ -160,6 +152,7 @@
       *    共通領域
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
+           COPY    "ORCA-DBPATH".
       *
       *****************************************************************
       *    連絡　領域
@@ -167,11 +160,9 @@
        LINKAGE                             SECTION.
       *
            COPY    "CPORCSTUSAN.INC".
-           COPY    "COMMON-SPA".
       *
        PROCEDURE                           DIVISION    USING
-           ORCSTUSANAREA
-           SPA-AREA.
+           ORCSTUSANAREA.
       *
       *****************************************************************
       *    主　　処理
@@ -263,10 +254,6 @@
                GO  TO  2100-KONKAI-NYUIN-TUSAN-EXT
            END-IF
       *
-           IF    ( WRK-SZYMD            <  SDNTCHK-STYMD )
-               MOVE    SDNTCHK-STYMD       TO  WRK-SZYMD
-           END-IF
-      *
            IF    ( PTNYUINRRK-NYUINYMD <=  STUSAN-KJNYMD )
            AND   ( PTNYUINRRK-TAIINYMD >=  STUSAN-KJNYMD )
       *
@@ -301,10 +288,6 @@
                    =   STUSAN-NISSU06 +    WRK-ACCT-TOK-NISSU1
                COMPUTE STUSAN-NISSU07
                    =   STUSAN-NISSU07 +    WRK-ACCT-TOK-NISSU2
-               COMPUTE STUSAN-NISSU08
-                   =   STUSAN-NISSU08 +    WRK-ACCT-TOK-NISSU1
-               COMPUTE STUSAN-NISSU09
-                   =   STUSAN-NISSU09 +    WRK-ACCT-TOK-NISSU2
            ELSE
                PERFORM 2110-TUSAN-SYUKEI-SEC
                IF    ( STUSAN-RC       NOT  =   ZERO )
@@ -328,12 +311,11 @@
            IF    ( STUSAN-RRKNUMKBN    =   "1" )
       *
                INITIALIZE                  PTNYUINRRK-REC
-               MOVE    STUSAN-HOSPNUM   TO  PTNYUINRRK-HOSPNUM
+               MOVE    STUSAN-HOSPID   TO  PTNYUINRRK-HOSPID
                MOVE    STUSAN-PTID     TO  PTNYUINRRK-PTID
                MOVE    STUSAN-RRKNUM   TO  PTNYUINRRK-RRKNUM
                MOVE    1               TO  PTNYUINRRK-RRKEDANUM
-               MOVE    "tbl_ptnyuinrrk" TO MCP-TABLE
-               MOVE    "key"           TO  MCP-PATHNAME
+               MOVE    PATH-TBL-PTNYUINRRK-KEY     TO  MCP-PATH
                MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
                PERFORM 910-DBSELECT-SEC
                IF    ( MCP-RC          =   ZERO )
@@ -342,17 +324,15 @@
                    MOVE    1           TO  FLG-PTNYUINRRK
                END-IF
       *
-               MOVE    "tbl_ptnyuinrrk" TO MCP-TABLE
-               MOVE    "key"           TO  MCP-PATHNAME
-               PERFORM 910-DBCLOSECURSOR-SEC
+               MOVE    PATH-TBL-PTNYUINRRK-KEY     TO  MCP-PATH
+               PERFORM 910-DBCLOSE-SEC
            ELSE
       *
                INITIALIZE                  PTNYUINRRK-REC
-               MOVE    STUSAN-HOSPNUM   TO  PTNYUINRRK-HOSPNUM
+               MOVE    STUSAN-HOSPID   TO  PTNYUINRRK-HOSPID
                MOVE    STUSAN-PTID     TO  PTNYUINRRK-PTID
                MOVE    STUSAN-KJNYMD   TO  PTNYUINRRK-NYUINYMD
-               MOVE    "tbl_ptnyuinrrk" TO MCP-TABLE
-               MOVE    "key17"          TO  MCP-PATHNAME
+               MOVE    PATH-TBL-PTNYUINRRK-KEY17   TO  MCP-PATH
                MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
                PERFORM 910-DBSELECT-SEC
                IF    ( MCP-RC          =   ZERO )
@@ -361,66 +341,14 @@
                    MOVE    1           TO  FLG-PTNYUINRRK
                END-IF
       *
-               MOVE    "tbl_ptnyuinrrk" TO MCP-TABLE
-               MOVE    "key17"          TO  MCP-PATHNAME
-               PERFORM 910-DBCLOSECURSOR-SEC
+               MOVE    PATH-TBL-PTNYUINRRK-KEY17   TO  MCP-PATH
+               PERFORM 910-DBCLOSE-SEC
            END-IF
       *
            IF    ( FLG-PTNYUINRRK  NOT =   ZERO )
                MOVE    03              TO  STUSAN-RC
                GO  TO  2110-NYUINRRK-SEL-EXT
            END-IF
-      *
-           MOVE    ALL "0"             TO  WRK-SZYMD
-      *
-           MOVE    ZERO                TO  FLG-PTNYUINRRK
-      *
-           MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
-           MOVE    "tbl_ptnyuinrrk" TO MCP-TABLE
-           MOVE    "key4"          TO  MCP-PATHNAME
-           MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC TO  PTNYUINRRK-REC
-      *
-               IF    ( PTNYUINRRK-TOKUTEI-KBN   =   "2" )
-                AND  ( PTNYUINRRK-TOKUTEI-NYUIN =   "24" OR "25" )
-                   MOVE    1           TO  FLG-SEISINZOUAKU
-                   MOVE    PTNYUINRRK-TENNYUYMD
-                                       TO  WRK-SZYMD
-               END-IF
-           ELSE
-                   MOVE    1           TO  FLG-PTNYUINRRK
-           END-IF
-      *
-           IF    ( FLG-SEISINZOUAKU    =   1 )
-      *
-               PERFORM UNTIL ( FLG-PTNYUINRRK   NOT =   ZERO )
-                   IF    ( PTNYUINRRK-TOKUTEI-KBN   =   "2" )
-                    AND  ( PTNYUINRRK-TOKUTEI-NYUIN =   "24" OR "25" )
-                       MOVE    PTNYUINRRK-TENNYUYMD
-                                       TO  WRK-SZYMD
-                   ELSE
-                       MOVE    1       TO  FLG-PTNYUINRRK
-                   END-IF
-      *
-                   MOVE    "tbl_ptnyuinrrk" TO MCP-TABLE
-                   MOVE    "key4"          TO  MCP-PATHNAME
-                   PERFORM 910-DBFETCH-SEC
-                   IF    ( MCP-RC          =   ZERO )
-                       MOVE    MCPDATA-REC TO  PTNYUINRRK-REC
-                   ELSE
-                       MOVE    1           TO  FLG-PTNYUINRRK
-                   END-IF
-      *
-               END-PERFORM
-           END-IF
-      *
-      *     DISPLAY "WRK-SZYMD =" WRK-SZYMD
-      *
-           MOVE    "tbl_ptnyuinrrk" TO  MCP-TABLE
-           MOVE    "key4"           TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        2110-NYUINRRK-SEL-EXT.
@@ -450,14 +378,6 @@
                    =   STUSAN-NISSU02  +   PTNYUINRRK-TAISYONISSU
                COMPUTE STUSAN-NISSU04
                    =   STUSAN-NISSU04  +   PTNYUINRRK-TAISYONISSU
-               IF    ( PTNYUINRRK-TAINRELKBN   =   "1" )
-                   COMPUTE STUSAN-TAINREL-NISSU
-                       =   STUSAN-TAINREL-NISSU
-                       +   PTNYUINRRK-TAISYONISSU
-                   COMPUTE STUSAN-NISSU08
-                       =   STUSAN-NISSU08
-                       +   PTNYUINRRK-TOKU-TAISYONISSU
-               END-IF
            WHEN    "6"
                COMPUTE STUSAN-NISSU02
                    =   STUSAN-NISSU02  +   PTNYUINRRK-TAISYONISSU
@@ -467,8 +387,7 @@
                    =   STUSAN-NISSU04  +   PTNYUINRRK-TAISYONISSU
                COMPUTE STUSAN-NISSU05
                    =   STUSAN-NISSU05  +   PTNYUINRRK-TAISYONISSU
-               COMPUTE STUSAN-NISSU08
-                   =   STUSAN-NISSU08  +   PTNYUINRRK-TOKU-TAISYONISSU
+               DISPLAY "PTNYUINRRK-NYUINCHUKBN =" PTNYUINRRK-NYUINCHUKBN
                IF    ( PTNYUINRRK-NYUINCHUKBN  =   "1" )
                    MOVE   PTNYUINRRK-TAIINYMD
                                        TO  WRK-YMD
@@ -500,10 +419,6 @@
                    =   STUSAN-NISSU04 +    WRK-ACCT-NISSU
                COMPUTE STUSAN-NISSU05
                    =   STUSAN-NISSU05 +    WRK-ACCT-NISSU
-               COMPUTE STUSAN-NISSU08
-                   =   STUSAN-NISSU08 +    WRK-ACCT-TOK-NISSU1
-               COMPUTE STUSAN-NISSU09
-                   =   STUSAN-NISSU09 +    WRK-ACCT-TOK-NISSU2
            END-EVALUATE
            .
       *
@@ -548,15 +463,14 @@
       *
            MOVE    ZERO                TO  FLG-NYUINACCT
            INITIALIZE                      NYUINACCT-REC
-           MOVE    PTNYUINRRK-HOSPNUM   TO  NACCT-HOSPNUM
+           MOVE    PTNYUINRRK-HOSPID   TO  NACCT-HOSPID
            MOVE    "1"                 TO  NACCT-NYUGAIKBN
            MOVE    PTNYUINRRK-PTID     TO  NACCT-PTID
            MOVE    WRK-STSRYYM         TO  NACCT-SRYYM
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
-           MOVE    "tbl_nyuinacct"     TO MCP-TABLE
-           MOVE    "key7"              TO  MCP-PATHNAME
+           MOVE    PATH-TBL-NYUINACCT-KEY7 TO  MCP-PATH
            PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC          NOT =   ZERO )
+           IF    ( MCP-RC              =   1 )
                MOVE    1               TO  FLG-NYUINACCT
            END-IF
       *
@@ -570,23 +484,19 @@
                        GO  TO  2121-NYUINACCT-SEL-EXT
                    END-IF
       *
-                   IF    ( FLG-HIT     NOT =   ZERO )
-                       PERFORM 2121-NYUINACT-TUSAN-SEC
-                   END-IF
+                   PERFORM 2121-NYUINACT-TUSAN-SEC
                END-IF
       *
-               MOVE    "tbl_nyuinacct"     TO MCP-TABLE
-               MOVE    "key7"              TO  MCP-PATHNAME
+               MOVE    PATH-TBL-NYUINACCT-KEY7 TO  MCP-PATH
                PERFORM 910-DBFETCH-SEC
-               IF    ( MCP-RC         NOT  =   ZERO )
+               IF    ( MCP-RC              =   1 )
                    MOVE    1           TO  FLG-NYUINACCT
                END-IF
       *
            END-PERFORM
       *
-           MOVE    "tbl_nyuinacct"     TO MCP-TABLE
-           MOVE    "key7"              TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
+           MOVE    PATH-TBL-NYUINACCT-KEY7 TO  MCP-PATH
+           PERFORM 910-DBCLOSE-SEC
       *
            .
        2121-NYUINACCT-SEL-EXT.
@@ -596,18 +506,16 @@
       *****************************************************************
        2121-NYUINACT-SEL-SEC               SECTION.
       *
-           MOVE    ZERO                TO  FLG-HIT
-      *
            MOVE    ZERO                TO  FLG-NYUINACT
            INITIALIZE                      NYUINACT-REC
-           MOVE    NACCT-HOSPNUM       TO  NSRY-HOSPNUM
+           MOVE    NACCT-HOSPID        TO  NSRY-HOSPID
            MOVE    NACCT-NYUGAIKBN     TO  NSRY-NYUGAIKBN
            MOVE    NACCT-PTID          TO  NSRY-PTID
            MOVE    NACCT-SRYYM         TO  NSRY-SRYYM
            MOVE    NACCT-ZAINUM        TO  NSRY-ZAINUM
            MOVE    NYUINACT-REC        TO  MCPDATA-REC
-           MOVE    "tbl_nyuinact"      TO  MCP-TABLE
-           MOVE    "key9"              TO  MCP-PATHNAME
+           MOVE    PATH-TBL-NYUINACT-KEY9
+                                       TO  MCP-PATH
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
                MOVE    MCPDATA-REC     TO  NYUINACT-REC
@@ -615,29 +523,28 @@
                MOVE    1               TO  FLG-NYUINACT
            END-IF
       *
-           MOVE    "tbl_nyuinact"      TO MCP-TABLE
-           MOVE    "key9"              TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
+           MOVE    PATH-TBL-NYUINACT-KEY9
+                                       TO  MCP-PATH
+           PERFORM 910-DBCLOSE-SEC
       *
            IF    ( FLG-NYUINACT    NOT =   ZERO )
                MOVE    04              TO  STUSAN-RC
                GO  TO  2121-NYUINACT-SEL-EXT
            END-IF
       *
+           MOVE    ZERO                TO  FLG-HIT
            PERFORM VARYING IDX1    FROM    1   BY  1
                UNTIL     ( IDX1        >   5 )
                 OR       ( FLG-HIT NOT =   ZERO )
                 OR       ( NSRY-SRYCD (IDX1)   =   SPACE )
       *
                INITIALIZE                  TNS-TENSU-REC
-               MOVE    NACCT-HOSPNUM       TO  TNS-HOSPNUM
                MOVE    NSRY-SRYCD(IDX1)    TO  TNS-SRYCD
                MOVE    NACCT-SRYYM         TO  TNS-YUKOSTYMD(1:6)
                MOVE    "01"                TO  TNS-YUKOSTYMD(7:2)
                MOVE    TNS-YUKOSTYMD       TO  TNS-YUKOEDYMD
                MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
-               MOVE    "tbl_tensu"         TO MCP-TABLE
-               MOVE    "key"              TO  MCP-PATHNAME
+               MOVE    PATH-TBL-TENSU-KEY  TO  MCP-PATH
                PERFORM 910-DBSELECT-SEC
                IF    ( MCP-RC              =   ZERO )
                    MOVE    MCPDATA-REC     TO  TNS-TENSU-REC
@@ -648,20 +555,16 @@
                        PERFORM 2121-SENTEICDCHG-CHK-SEC
                        PERFORM 2121-TOKUTEI-CHK-SEC
                    END-IF
-               ELSE
-                   DISPLAY "SRYCD not found TNS-KEY:" TNS-KEY
                END-IF
       *
-               MOVE    "tbl_tensu"         TO MCP-TABLE
-               MOVE    "key"              TO  MCP-PATHNAME
-               PERFORM 910-DBCLOSECURSOR-SEC
+               MOVE    PATH-TBL-TENSU-KEY  TO  MCP-PATH
+               PERFORM 910-DBCLOSE-SEC
       *
            END-PERFORM
       *
            IF    ( FLG-HIT             =   ZERO )
-               DISPLAY "datakbn=1 not found NSRY-KEY:" NSRY-KEY
-      *        MOVE    05              TO  STUSAN-RC
-      *        GO  TO  2121-NYUINACT-SEL-EXT
+               MOVE    05              TO  STUSAN-RC
+               GO  TO  2121-NYUINACT-SEL-EXT
            END-IF
       *
            .
@@ -683,9 +586,6 @@
            ELSE
                MOVE    31                  TO  WRK-EDIDX
            END-IF
-      *
-           MOVE    WRK-EDYMD           TO  WRK-EDSRYYMD-YM
-           MOVE    WRK-EDIDX           TO  WRK-EDSRYYMD-DD
       *
            PERFORM VARYING IDX1    FROM    WRK-STIDX   BY  1
                    UNTIL ( IDX1    >       WRK-EDIDX )
@@ -720,19 +620,8 @@
                             AND  ( STUSAN-KJNYMD (7:2) =   WRK-DAY-X   )
                                CONTINUE
                            ELSE
-                               IF    ( FLG-SEISINZOUAKU    =   ZERO )
-                                   COMPUTE WRK-ACCT-TOK-NISSU2
-                                       =   WRK-ACCT-TOK-NISSU2 +   1
-                               ELSE
-                                   MOVE    NACCT-SRYYM
-                                                   TO  WRK-ACCTYMD-YM
-                                   MOVE    IDX1    TO  WRK-ACCTYMD-DD
-                                   IF    ( WRK-SZYMD    <=  WRK-ACCTYMD)
-                                    AND  ( WRK-EDSRYYMD >=  WRK-ACCTYMD)
-                                       COMPUTE WRK-ACCT-TOK-NISSU2
-                                           =   WRK-ACCT-TOK-NISSU2 +   1
-                                   END-IF
-                               END-IF
+                               COMPUTE WRK-ACCT-TOK-NISSU2
+                                   =   WRK-ACCT-TOK-NISSU2 +   1
                            END-IF
                        END-IF
                    END-IF
@@ -764,8 +653,8 @@
                INITIALIZE  SENTEICDCHG-REC
                MOVE    TNS-SRYCD       TO  SENCHG-IPNSRYCD
                MOVE    SENTEICDCHG-REC TO  MCPDATA-REC
-               MOVE    "tbl_senteicdchg"   TO MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
+               MOVE    PATH-TBL-SENTEICDCHG-KEY2
+                                   TO  MCP-PATH
                PERFORM 910-DBSELECT-SEC
                IF    ( MCP-RC      =   ZERO  )
                    CONTINUE
@@ -773,9 +662,9 @@
                    MOVE    1           TO  FLG-SENTEICDCHG
                END-IF
       *
-               MOVE    "tbl_senteicdchg"   TO MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
-               PERFORM 910-DBCLOSECURSOR-SEC
+               MOVE    PATH-TBL-SENTEICDCHG-KEY2
+                                       TO  MCP-PATH
+               PERFORM 910-DBCLOSE-SEC
            END-IF
       *
       *
@@ -819,11 +708,11 @@
       *
            MOVE    ZERO                TO  FLG-PTNYUINRRK
       *
-           MOVE    "tbl_ptnyuinrrk"    TO MCP-TABLE
-           MOVE    "key38"             TO  MCP-PATHNAME
+           MOVE    PATH-TBL-PTNYUINRRK-KEY38
+                                       TO  MCP-PATH
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC          NOT =   ZERO )
+           IF    ( MCP-RC              =   1 )
                MOVE    1               TO  FLG-PTNYUINRRK
            END-IF
       *
@@ -845,17 +734,17 @@
       *        入院履歴データ設定処理
                PERFORM 2100-RRK-DATA-SET-SEC
       *
-               MOVE    "tbl_ptnyuinrrk"    TO MCP-TABLE
-               MOVE    "key38"             TO  MCP-PATHNAME
+               MOVE    PATH-TBL-PTNYUINRRK-KEY38
+                                       TO  MCP-PATH
                PERFORM 910-DBFETCH-SEC
-               IF    ( MCP-RC          NOT =   ZERO )
+               IF    ( MCP-RC              =   1 )
                    MOVE    1           TO  FLG-PTNYUINRRK
                END-IF
            END-PERFORM
       *
-           MOVE    "tbl_ptnyuinrrk"    TO MCP-TABLE
-           MOVE    "key38"             TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
+           MOVE    PATH-TBL-PTNYUINRRK-KEY38
+                                       TO  MCP-PATH
+           PERFORM 910-DBCLOSE-SEC
       *
            .
        2100-KAKO-NYUIN-TUSAN-EXT.
@@ -887,9 +776,6 @@
                MOVE    STUSAN-RRK-CNT      TO  IDX2
       *
                MOVE    PTNYUINRRK-JTIKBN   TO  STUSAN-RRK-JTIKBN  (IDX2)
-               MOVE    PTNYUINRRK-TAINRELKBN
-                                           TO  STUSAN-RRK-TAINRELKBN
-                                                                  (IDX2)
                MOVE    PTNYUINRRK-NYUINYMD TO  STUSAN-RRK-NYUINYMD(IDX2)
                MOVE    PTNYUINRRK-TAIINYMD TO  STUSAN-RRK-TAIINYMD(IDX2)
                MOVE    SDNTCHK-DJKBN       TO  STUSAN-RRK-DJKBN   (IDX2)
@@ -981,16 +867,11 @@
            DISPLAY "STUSAN-NISSU05 = " STUSAN-NISSU05
            DISPLAY "STUSAN-NISSU06 = " STUSAN-NISSU06
            DISPLAY "STUSAN-NISSU07 = " STUSAN-NISSU07
-           DISPLAY "STUSAN-NISSU08 = " STUSAN-NISSU08
-           DISPLAY "STUSAN-NISSU09 = " STUSAN-NISSU09
-           DISPLAY "STUSAN-TAINREL-NISSU = " STUSAN-TAINREL-NISSU
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
                UNTIL     ( IDX1    >   STUSAN-RRK-CNT )
                DISPLAY "STUSAN-RRK-JTIKBN (" IDX1 ")= "
                         STUSAN-RRK-JTIKBN (IDX1)
-               DISPLAY "STUSAN-RRK-TAINRELKBN (" IDX1 ")= "
-                        STUSAN-RRK-TAINRELKBN (IDX1)
                DISPLAY "STUSAN-RRK-NYUINYMD (" IDX1 ")= "
                         STUSAN-RRK-NYUINYMD (IDX1)
                DISPLAY "STUSAN-RRK-TAIINYMD (" IDX1 ")= "
@@ -1029,9 +910,9 @@
        910-DBSELECT-SEC                    SECTION.
       *
            MOVE    "DBSELECT"      TO      MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MCPSUB"                USING
+                                           MCPAREA
+                                           MCPDATA-REC
            IF    ( MCP-RC  =   ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
@@ -1046,9 +927,9 @@
        910-DBFETCH-SEC                     SECTION.
       *
            MOVE    "DBFETCH"       TO      MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MCPSUB"                USING
+                                           MCPAREA
+                                           MCPDATA-REC
       *
            .
       *
@@ -1057,14 +938,14 @@
       *****************************************************************
       *    ＤＢクローズ処理
       *****************************************************************
-       910-DBCLOSECURSOR-SEC                     SECTION.
+       910-DBCLOSE-SEC                     SECTION.
       *
            MOVE    "DBCLOSECURSOR" TO      MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MCPSUB"                USING
+                                           MCPAREA
+                                           MCPDATA-REC
       *
            .
       *
-       910-DBCLOSECURSOR-EXT.
+       910-DBCLOSE-EXT.
            EXIT.
