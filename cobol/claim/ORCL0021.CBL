@@ -399,6 +399,7 @@
            PERFORM 900-LF03-READ-SEC
            IF      FLG-LF03        =   1
                DISPLAY "*** ORCL0021 LF03 INVALID ***"
+               INITIALIZE   LF03-REC
                MOVE    1               TO  FLG-END
            END-IF
            .
@@ -466,7 +467,8 @@
            INITIALIZE                      SYS-1005-REC
            MOVE    "1005"              TO  SYS-1005-KANRICD
            MOVE    LNK-SRYKA           TO  SYS-1005-KBNCD
-           MOVE    LNK-SYSYMD          TO  ORC-DBYMD
+           MOVE    LNK-SYSYMD          TO  SYS-1005-STYUKYMD
+           MOVE    LNK-SYSYMD          TO  SYS-1005-EDYUKYMD
            MOVE    SYS-1005-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
