@@ -1946,8 +1946,8 @@
            INITIALIZE                  TBL-JIHIMSG-AREA
            MOVE    SPACE               TO  SYS-1013-REC
            MOVE    "1013"              TO  SYS-1013-KANRICD
-           MOVE    SPA-SRYYMD          TO  SYS-1013-STYUKYMD
-           MOVE    SPA-SRYYMD          TO  SYS-1013-EDYUKYMD
+           MOVE    LNK-SYSYMD          TO  SYS-1013-STYUKYMD
+           MOVE    LNK-SYSYMD          TO  SYS-1013-EDYUKYMD
       *    システム管理検索
            MOVE    SYS-1013-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
