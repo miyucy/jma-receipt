@@ -32,6 +32,7 @@
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  01.00.01    NACL-Â¿¡¹Ç¼  06/05/09  ¼«ÈñÂ¾ÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -62,7 +63,7 @@
       *
            COPY    "CPCLAIM006.INC".
       *
-018000*    ¥Õ¥é¥°ÎÎ°è
+      *    ¥Õ¥é¥°ÎÎ°è
        01  STS-AREA.
            03  STS-LF03            PIC X(02).
       *
@@ -82,6 +83,8 @@
            03  FLG-JYURRK          PIC 9(01).
            03  FLG-SRYKARRK        PIC 9(01).
            03  FLG-PTCOM           PIC 9(01).
+           03  FLG-SYUNOU          PIC 9(01).
+           03  FLG-SYUMEI          PIC 9(01).
            03  FLG-LF03            PIC 9(01).
       *
            03  FLG-KAISU           PIC 9(01).
@@ -156,6 +159,7 @@
            03  WRK-RATE            PIC ---------------9.
            03  WRK-TANKA           PIC ZZZZZZZZZZZZZ.ZZ.
            03  WRK-TANKA9          PIC ZZZZZZZZZZZZ9.99.
+           03  WRK-TANKA9N         PIC ------------9.99.
       *
            03  WRK-SYSYMD.
                05  WRK-SYSYY         PIC 9(04).
@@ -169,6 +173,10 @@
            03  WRK-SURYO-R         REDEFINES   WRK-SURYO9.
                05  WRK-SURYO-S1    PIC 9(05).
                05  WRK-SURYO-S2    PIC 9(03).
+      *
+      *    ¼«ÈñÌ¾¾Î¥Æ¡¼¥Ö¥ë
+       01  TBL-JIHIMSG-AREA.
+           03  TBL-JIHIMSG             PIC X(20)  OCCURS   10.
       *
       *    ½¸·×ÍÑ¥Æ¡¼¥Ö¥ë
        01  TBL-AREA.
@@ -274,6 +282,14 @@
        01  PTCOM-REC.
            COPY    "CPPTCOM.INC".
       *
+      *    ¼ýÇ¼¥Þ¥¹¥¿¥ï¡¼¥¯
+       01  SYUNOU-REC.
+           COPY    "CPSYUNOU.INC".
+      *
+      *    ¼ýÇ¼ÌÀºÙ¥Þ¥¹¥¿¡Ý
+       01  SYUMEI-REC.
+           COPY    "CPSYUMEI.INC".
+      *
       *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿
            COPY    "CPSYSKANRI.INC".
       *
@@ -284,6 +300,8 @@
            COPY    "CPSK1005.INC".
       *
            COPY    "CPSK1010.INC".
+      *
+           COPY    "CPSK1013.INC".
       *
       *    ¥·¥¹¥Æ¥àÎÎ°è
        01  SYS-AREA.
@@ -334,6 +352,7 @@
        01  LNK-NYUGAIKBN        PIC X(01).
        01  LNK-HKNCOMBINUM      PIC X(04).
        01  LNK-DRCD             PIC X(05).
+       01  LNK-DENPNUM          PIC 9(07).
       *
        01  WRK-LF02-REC. 
            COPY    "CPRLF002.INC"    REPLACING  //LF02//
@@ -351,6 +370,7 @@
                                                LNK-NYUGAIKBN
                                                LNK-HKNCOMBINUM
                                                LNK-DRCD
+                                               LNK-DENPNUM
                                                WRK-LF02-REC.
       *
       *****************************************************************
@@ -465,14 +485,14 @@
       *
       *    ¼õ¿ÇÍúÎò¤ÎÏ¢ÈÖ³ÎÄê½èÍý
            MOVE    ZERO                TO  WRK-RENNUM
-           PERFORM 2001-RENNUM-SET-SEC
+      *    PERFORM 2001-RENNUM-SET-SEC
       *???
-           DISPLAY "RENNUM=" WRK-RENNUM "##"
+      *    DISPLAY "RENNUM=" WRK-RENNUM "##"
       *???     
       *    ¼õ¿ÇÍúÎò¤Ê¤·
-           IF      WRK-RENNUM          =   ZERO
-               GO      TO      200-MAIN-EXT
-           END-IF
+      *    IF      WRK-RENNUM          =   ZERO
+      *        GO      TO      200-MAIN-EXT
+      *    END-IF
       *
       *
            MOVE    SPACE           TO  TBL-AREA
@@ -488,18 +508,16 @@
            MOVE    LNK-PTID            TO  JYURRK-PTID
            MOVE    LNK-SRYKA           TO  JYURRK-SRYKA
            MOVE    LNK-SRYYMD          TO  JYURRK-SRYYMD
-           MOVE    WRK-RENNUM          TO  JYURRK-RENNUM
+           MOVE    LNK-DENPNUM         TO  JYURRK-DENPNUM
            MOVE    "2"                 TO  JYURRK-NYUGAIKBN
       *
            MOVE    JYURRK-REC          TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "JYURRK-KEY5"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+           MOVE    "key6"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "JYURRK-KEY5"       TO  ORC-DBPATH
+               MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+               MOVE    "key6"              TO  MCP-PATHNAME
                PERFORM 970-JYURRK-NEXT-SEC
            ELSE
                MOVE    1                   TO  FLG-JYURRK
@@ -521,16 +539,17 @@
                END-PERFORM
              END-IF
       *
-               MOVE    "JYURRK-KEY5"       TO  ORC-DBPATH
+               MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+               MOVE    "key6"              TO  MCP-PATHNAME
                PERFORM 970-JYURRK-NEXT-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "JYURRK-KEY5"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+           MOVE    "key6"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+      *    ¼ýÇ¼¤è¤êÀÁµá½ñ¹àÌÜÊÔ½¸
+           PERFORM 2005-SYUNOU-SET-SEC
       *
       *    £Ô£Â£Ì¤è¤êºÆÊÔ½¸
            PERFORM 2003-TBL-FL02-SET-SEC
@@ -539,7 +558,8 @@
            INITIALIZE                  SYS-1002-REC
            MOVE    "1002"              TO  SYS-1002-KANRICD
            MOVE    "*"                 TO  SYS-1002-KBNCD
-           MOVE    LNK-SYSYMD          TO  ORC-DBYMD
+           MOVE    LNK-SYSYMD          TO  SYS-1002-STYUKYMD
+           MOVE    LNK-SYSYMD          TO  SYS-1002-EDYUKYMD
            MOVE    SYS-1002-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -550,7 +570,8 @@
            INITIALIZE                  SYS-1001-REC
            MOVE    "1001"              TO  SYS-1001-KANRICD
            MOVE    "*"                 TO  SYS-1001-KBNCD
-           MOVE    LNK-SYSYMD          TO  ORC-DBYMD
+           MOVE    LNK-SYSYMD          TO  SYS-1001-STYUKYMD
+           MOVE    LNK-SYSYMD          TO  SYS-1001-EDYUKYMD
            MOVE    SYS-1001-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -630,7 +651,8 @@
            INITIALIZE                      SYS-1010-REC
            MOVE    "1010"              TO  SYS-1010-KANRICD
            MOVE    LNK-DRCD            TO  SYS-1010-KBNCD
-           MOVE    LNK-SYSYMD          TO  ORC-DBYMD
+           MOVE    LNK-SYSYMD          TO  SYS-1010-STYUKYMD
+           MOVE    LNK-SYSYMD          TO  SYS-1010-EDYUKYMD
            MOVE    SYS-1010-REC        TO  MCPDATA-REC
       *
            PERFORM 900-SYSKANRI-INV-SEC
@@ -660,14 +682,12 @@
            MOVE    "2"                 TO  JYURRK-NYUGAIKBN
       *
            MOVE    JYURRK-REC          TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "JYURRK-KEY4"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "JYURRK-KEY4"       TO  ORC-DBPATH
+               MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+               MOVE    "key4"              TO  MCP-PATHNAME
                PERFORM 970-JYURRK-NEXT-SEC
            ELSE
                MOVE    1                   TO  FLG-JYURRK
@@ -678,16 +698,14 @@
                    MOVE    JYURRK-RENNUM       TO  WRK-RENNUM
                END-IF
       *
-               MOVE    "JYURRK-KEY4"       TO  ORC-DBPATH
+               MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+               MOVE    "key4"              TO  MCP-PATHNAME
                PERFORM 970-JYURRK-NEXT-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "JYURRK-KEY4"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        2001-RENNUM-SET-EXT.
@@ -712,14 +730,12 @@
            MOVE    WRK-ZAINUM          TO  SRY-ZAINUM
       *
            MOVE    SRYACT-REC          TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_sryact"        TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "SRYACT-KEY2"         TO  ORC-DBPATH
+               MOVE    "tbl_sryact"        TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 900-SRYACT-READ-SEC
            ELSE
                INITIALIZE                  SRYACT-REC
@@ -761,16 +777,14 @@
                    END-PERFORM
                END-IF
       *
-               MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
+               MOVE    "tbl_sryact"        TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 900-SRYACT-READ-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_sryact"        TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        2002-SRYACT-SYORI-EXT.
@@ -811,24 +825,19 @@
            MOVE    SRY-ZAINUM          TO  ACCT-ZAINUM
       *
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SRYACCT-KEY"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_sryacct"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "SRYACCT-KEY"       TO  ORC-DBPATH
+               MOVE    "tbl_sryacct"       TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
                PERFORM 930-SRYACCT-NEXT-SEC
            ELSE
                MOVE    1                   TO  FLG-SRYACCT
            END-IF
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "SRYACCT-KEY"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_sryacct"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
            ADD     1                   TO  IDX-LF2
       *    £²£°ºÞ°Ê¾å¤Î»þ¥¨¥é¡¼
@@ -1511,13 +1520,19 @@
                    MOVE    WRK-KINGAK          TO  WRK-RATE
                    MOVE    WRK-RATE            TO  WRK-LF02-TENNSUALL
                                                              (IDX-LF)
+                   IF      TBL-SRYCD (IDX-LF)  =   "000"
+      *                ÅÁÉ¼ÈÖ¹æ
+                       MOVE    LNK-DENPNUM     TO  WRK-LF02-GINGAKUALL
+                                                             (IDX-LF)
+                   ELSE
       *            ¹ç·×ÀÁµá¶â³Û
-                   COMPUTE WRK-KINGAK          =   TBL-GINGAKUALL
+                       COMPUTE WRK-KINGAK      =   TBL-GINGAKUALL
                                                              (IDX-LF)
                                                *   TBL-KAISU (IDX-LF)
-                   MOVE    WRK-KINGAK          TO  WRK-RATE
-                   MOVE    WRK-RATE            TO  WRK-LF02-GINGAKUALL
+                       MOVE    WRK-KINGAK      TO  WRK-RATE
+                       MOVE    WRK-RATE        TO  WRK-LF02-GINGAKUALL
                                                              (IDX-LF)
+                   END-IF
       *
                    COMPUTE WRK-KINGAK          =   TBL-SYUGI (IDX-LF)
                                                *   TBL-KAISU (IDX-LF)
@@ -1632,9 +1647,15 @@
                                                         (IDX-LF IDX-S)
            END-IF
       *ÌÀºÙÃ±²Á(ZÊÔ½¸)
-           MOVE    TBL-MEISAITANKA (IDX-LF IDX-S)    TO  WRK-TANKA9
-           MOVE    WRK-TANKA9            TO  WRK-LF02-MEISAITANKA
+           IF      TBL-MEISAITANKA (IDX-LF IDX-S)    <   ZERO
+               MOVE    TBL-MEISAITANKA (IDX-LF IDX-S)    TO  WRK-TANKA9N
+               MOVE    WRK-TANKA9N           TO  WRK-LF02-MEISAITANKA
                                                         (IDX-LF IDX-S)
+           ELSE
+               MOVE    TBL-MEISAITANKA (IDX-LF IDX-S)    TO  WRK-TANKA9
+               MOVE    WRK-TANKA9            TO  WRK-LF02-MEISAITANKA
+                                                        (IDX-LF IDX-S)
+           END-IF
       *½êÍ×»þ´Ö(PTnHnM,5»þ´Ö23Ê¬¢ªPT5H23M)
            MOVE    TBL-DURATION (IDX-LF IDX-S) 
                                        TO  WRK-LF02-DURATION
@@ -1675,6 +1696,533 @@
       *
            .
        20031-MEISAI-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¼ýÇ¼¤è¤êÀÁµá½ñ¹àÌÜÊÔ½¸½èÍý
+      *****************************************************************
+       2005-SYUNOU-SET-SEC                 SECTION.
+      *
+      *    ¼ýÇ¼¥Æ¡¼¥Ö¥ëÆÉ¤ß¹þ¤ß
+           MOVE    SPACE               TO  SYUNOU-REC
+           INITIALIZE                  SYUNOU-REC
+           MOVE    LNK-HOSPID          TO  SYU-HOSPID
+           MOVE    "2"                 TO  SYU-NYUGAIKBN
+           MOVE    LNK-PTID            TO  SYU-PTID
+           MOVE    LNK-DENPNUM         TO  SYU-DENPNUM
+      *
+           MOVE    SYUNOU-REC          TO  MCPDATA-REC
+           MOVE    "tbl_syunou"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syunou"        TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 980-SYUNOU-READ-SEC
+           ELSE
+               MOVE    SPACE               TO  SYUNOU-REC
+               INITIALIZE                  SYUNOU-REC
+               MOVE    1               TO  FLG-SYUNOU
+           END-IF
+           MOVE    "tbl_syunou"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           IF      FLG-SYUNOU          =   1
+               GO      TO      2005-SYUNOU-SET-EXT
+           END-IF
+      *    ¼ýÇ¼ÌÀºÙ
+           INITIALIZE                      SYUMEI-REC
+           MOVE    SYU-HOSPID          TO  SMEI-HOSPID
+           MOVE    SYU-NYUGAIKBN       TO  SMEI-NYUGAIKBN
+           MOVE    SYU-PTID            TO  SMEI-PTID
+           MOVE    SYU-DENPNUM         TO  SMEI-DENPNUM
+      *
+           MOVE    SYUMEI-REC          TO  MCPDATA-REC
+           MOVE    "tbl_syumei"        TO  MCP-TABLE
+           MOVE    "key7"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syumei"        TO  MCP-TABLE
+               MOVE    "key7"              TO  MCP-PATHNAME
+               PERFORM 980-SYUMEI-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SYUMEI
+           END-IF
+           MOVE    "tbl_syumei"        TO  MCP-TABLE
+           MOVE    "key7"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+      *    ÀÁµáÅÀ¿ô
+           ADD     1                   TO  IDX-LF2
+      *    £²£°ºÞ°Ê¾å¤Î»þ¥¨¥é¡¼
+           IF      IDX-LF2             >   20
+               DISPLAY "ZAI 20 OVER ???"
+           ELSE
+               MOVE    IDX-LF2             TO  IDX-LF
+               PERFORM 20051-SEIKYU-TEN-SEC
+           END-IF
+      *
+           PERFORM 20050-JIHIMEISYO-SET-SEC
+      *    ¼«Èñ¡Ê¾ÃÈñÀÇ¤Ê¤·¡Ë
+           IF     (SYU-TOTAL-TGMONEY   >   ZERO )  OR
+                  (SYU-JIHI-TOTAL      >   ZERO )
+               ADD     1                   TO  IDX-LF2
+               IF      IDX-LF2             >   20
+                   DISPLAY "ZAI 20 OVER ???"
+               ELSE
+                   MOVE    IDX-LF2             TO  IDX-LF
+                   PERFORM 20052-JIHI-TEN-SEC
+               END-IF
+           END-IF
+      *
+      *    ¼«Èñ¡Ê¾ÃÈñÀÇ¤¢¤ê¡Ë
+           IF     (SYU-TOTAL-TGMONEY-TAX   >   ZERO )  OR
+                  (SYU-JIHI-TOTAL-TAX      >   ZERO )
+               ADD     1                   TO  IDX-LF2
+               IF      IDX-LF2             >   20
+                   DISPLAY "ZAI 20 OVER ???"
+               ELSE
+                   MOVE    IDX-LF2             TO  IDX-LF
+                   PERFORM 20053-JIHITEX-TEN-SEC
+               END-IF
+           END-IF
+           .
+       2005-SYUNOU-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÀÁµáÅÀ¿ôÂ¾½èÍý
+      *****************************************************************
+       20051-SEIKYU-TEN-SEC                 SECTION.
+      *
+      *    ²ó¿ô
+           MOVE    1                   TO  TBL-KAISU (IDX-LF)
+      *
+      *    ¿ÇÎÅ¹Ô°Ù¶èÊ¬¥³¡¼¥É
+           MOVE    "000"               TO  TBL-SRYCD (IDX-LF)
+      *    £Ã£Ì£Á£É£ÍÍÑ¿ÇÎÅ¹Ô°Ù¶èÊ¬¥³¡¼¥É
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       35
+               IF      TBL-SRYCD (IDX-LF)  =   CLAIM007-CLAIM  (IDX)
+                   MOVE    CLAIM007-CLAIM(IDX) 
+                                           TO  TBL-SRYCD  (IDX-LF)
+                   MOVE    CLAIM007-NAME (IDX)
+                                           TO  TBL-SRYNAME(IDX-LF)
+                   MOVE    35              TO  IDX
+               END-IF
+           END-PERFORM
+      *    ¹ç·×ÀÁµáÅÀ¿ô
+           MOVE    SYU-TOTAL-HKNTEN     TO  TBL-TENNSUALL(IDX-LF)
+      *    ÀÁµáÅÀ¿ô
+           MOVE    ZERO                TO  IDX-IJ
+           PERFORM VARYING IDX     FROM    1   BY  1
+                   UNTIL   IDX     >       10
+               ADD     1                   TO  IDX-IJ
+      *        ÀÁµá¥³¡¼¥É
+               MOVE    IDX                 TO  TBL-IJICD(IDX-LF IDX-IJ)
+               MOVE    "0"                 TO  TBL-SRYSYUBETSU
+                                                        (IDX-LF IDX-IJ)
+      *        ÀÁµáÅÀ¿ô
+               MOVE    SYU-HKNTEN (IDX)    TO  TBL-SEIKYUTEN
+                                                        (IDX-LF IDX-IJ)
+               EVALUATE    IDX
+                   WHEN    1
+                       MOVE    "½é¡¦ºÆ¿ÇÎÁ"    TO  TBL-ALSNAME
+                                                        (IDX-LF IDX-IJ)
+                   WHEN    2
+                       MOVE    "°å³Ø´ÉÍýÅù"    TO  TBL-ALSNAME
+                                                        (IDX-LF IDX-IJ)
+                   WHEN    3
+                       MOVE    "ºßÂð°åÎÅ"      TO  TBL-ALSNAME
+                                                        (IDX-LF IDX-IJ)
+                   WHEN    4
+                       MOVE    "ÅêÌô"          TO  TBL-ALSNAME
+                                                        (IDX-LF IDX-IJ)
+                   WHEN    5
+                       MOVE    "Ãí¼Í"          TO  TBL-ALSNAME
+                                                        (IDX-LF IDX-IJ)
+                   WHEN    6
+                       MOVE    "½èÃÖ"          TO  TBL-ALSNAME
+                                                        (IDX-LF IDX-IJ)
+                   WHEN    7
+                       MOVE    "¼ê½Ñ¡¦Ëã¿ì"    TO  TBL-ALSNAME
+                                                        (IDX-LF IDX-IJ)
+                   WHEN    8
+                       MOVE    "¸¡ºº"          TO  TBL-ALSNAME
+                                                        (IDX-LF IDX-IJ)
+                   WHEN    9
+                       MOVE    "²èÁü¿ÇÃÇ"      TO  TBL-ALSNAME
+                                                        (IDX-LF IDX-IJ)
+                   WHEN    10
+                       MOVE    "¤½¤ÎÂ¾"        TO  TBL-ALSNAME
+                                                        (IDX-LF IDX-IJ)
+               END-EVALUATE
+           END-PERFORM
+      *    ÊÝ¸±Å¬ÍÑ¶â³Û
+           ADD     1                   TO  IDX-IJ
+           MOVE    IDX-IJ              TO  TBL-IJICD(IDX-LF IDX-IJ)
+           MOVE    "0"                 TO  TBL-SRYSYUBETSU
+                                                        (IDX-LF IDX-IJ)
+           MOVE    SYU-HKNTEKMONEY     TO  TBL-MEISAITANKA
+                                                    (IDX-LF IDX-IJ)
+           MOVE    "ÉéÃ´¶â³Û"          TO  TBL-ALSNAME
+                                                      (IDX-LF IDX-IJ)
+      *    ÌôºÞ°ìÉôÉéÃ´¶â
+           ADD     1                   TO  IDX-IJ
+           MOVE    IDX-IJ              TO  TBL-IJICD(IDX-LF IDX-IJ)
+           MOVE    "0"                 TO  TBL-SRYSYUBETSU
+                                                        (IDX-LF IDX-IJ)
+           MOVE    SYU-YKZ-FTN         TO  TBL-MEISAITANKA
+                                                    (IDX-LF IDX-IJ)
+           MOVE    "ÌôºÞ°ìÉôÉéÃ´¶â"    TO  TBL-ALSNAME
+                                                      (IDX-LF IDX-IJ)
+      *    Ï·¿Í°ìÉôÉéÃ´¶â
+           ADD     1                   TO  IDX-IJ
+           MOVE    IDX-IJ              TO  TBL-IJICD(IDX-LF IDX-IJ)
+           MOVE    "0"                 TO  TBL-SRYSYUBETSU
+                                                        (IDX-LF IDX-IJ)
+           MOVE    SYU-RJN-FTN         TO  TBL-MEISAITANKA
+                                                    (IDX-LF IDX-IJ)
+           MOVE    "Ï·¿Í°ìÉôÉéÃ´¶â"    TO  TBL-ALSNAME
+                                                      (IDX-LF IDX-IJ)
+      *    ¸øÈñ°ìÉôÉéÃ´¶â
+           ADD     1                   TO  IDX-IJ
+           MOVE    IDX-IJ              TO  TBL-IJICD(IDX-LF IDX-IJ)
+           MOVE    "0"                 TO  TBL-SRYSYUBETSU
+                                                        (IDX-LF IDX-IJ)
+           MOVE    SYU-KOH-FTN         TO  TBL-MEISAITANKA
+                                                    (IDX-LF IDX-IJ)
+           MOVE    "¸øÈñ°ìÉôÉéÃ´¶â"    TO  TBL-ALSNAME
+                                                      (IDX-LF IDX-IJ)
+      *    Ä´À°¶â
+           IF      SYU-CHOSEI      NOT =   ZERO
+               ADD     1                   TO  IDX-IJ
+               MOVE    IDX-IJ              TO  TBL-IJICD(IDX-LF IDX-IJ)
+               MOVE    "0"                 TO  TBL-SRYSYUBETSU
+                                                        (IDX-LF IDX-IJ)
+               MOVE    SYU-CHOSEI          TO  TBL-MEISAITANKA
+                                                    (IDX-LF IDX-IJ)
+               MOVE    "Ä´À°¶â"            TO  TBL-ALSNAME
+                                                      (IDX-LF IDX-IJ)
+           END-IF
+      *
+      *    ÀÁµá¶â³Û
+           ADD     1                   TO  IDX-IJ
+           MOVE    IDX-IJ              TO  TBL-IJICD(IDX-LF IDX-IJ)
+           MOVE    "0"                 TO  TBL-SRYSYUBETSU
+                                                        (IDX-LF IDX-IJ)
+           MOVE    SYU-SKYMONEY        TO  TBL-MEISAITANKA
+                                                    (IDX-LF IDX-IJ)
+           MOVE    "ÀÁµá¶â³Û"          TO  TBL-ALSNAME
+                                                      (IDX-LF IDX-IJ)
+      *    Æþ¶â¹ç·×³Û
+           ADD     1                   TO  IDX-IJ
+           MOVE    IDX-IJ              TO  TBL-IJICD(IDX-LF IDX-IJ)
+           MOVE    "0"                 TO  TBL-SRYSYUBETSU
+                                                        (IDX-LF IDX-IJ)
+           MOVE    SMEI-NYUHEN-MONEY   TO  TBL-MEISAITANKA
+                                                    (IDX-LF IDX-IJ)
+           MOVE    "º£²óÆþ¶â³Û"        TO  TBL-ALSNAME
+                                                      (IDX-LF IDX-IJ)
+      *    ÄûÀµ»þ
+           IF      SMEI-DENPEDANUM     >   1
+               ADD     1                   TO  IDX-IJ
+               MOVE    IDX-IJ              TO  TBL-IJICD(IDX-LF IDX-IJ)
+               MOVE    "0"                 TO  TBL-SRYSYUBETSU
+                                                        (IDX-LF IDX-IJ)
+               MOVE    SMEI-SKYMONEY       TO  TBL-MEISAITANKA
+                                                    (IDX-LF IDX-IJ)
+               MOVE    "ÄûÀµÊ¬ÀÁµá¶â³Û"    TO  TBL-ALSNAME
+                                                      (IDX-LF IDX-IJ)
+           END-IF
+           .
+       2005-SYUNOU-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¼«ÈñÌ¾¾Î½èÍý
+      *****************************************************************
+       20050-JIHIMEISYO-SET-SEC                 SECTION.
+      *
+           INITIALIZE                  TBL-JIHIMSG-AREA
+           MOVE    SPACE               TO  SYS-1013-REC
+           MOVE    "1013"              TO  SYS-1013-KANRICD
+           MOVE    SPA-SRYYMD          TO  SYS-1013-STYUKYMD
+           MOVE    SPA-SRYYMD          TO  SYS-1013-EDYUKYMD
+      *    ¥·¥¹¥Æ¥à´ÉÍý¸¡º÷
+           MOVE    SYS-1013-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC     TO  SYS-1013-REC
+                   MOVE    ZERO            TO  FLG-SYSKANRI
+               ELSE
+                   MOVE    1               TO  FLG-SYSKANRI
+               END-IF
+           ELSE
+               INITIALIZE                  SYS-1013-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           PERFORM
+               UNTIL       FLG-SYSKANRI    =   1
+               IF      SYS-1013-KBNCD(1:1)     =   "2"
+                   EVALUATE    SYS-1013-KBNCD(2:1)
+                       WHEN    "1"
+                           MOVE    SYS-1013-JIHINAME
+                                               TO  TBL-JIHIMSG (1)
+                       WHEN    "2"
+                           MOVE    SYS-1013-JIHINAME
+                                               TO  TBL-JIHIMSG (2)
+                       WHEN    "3"
+                           MOVE    SYS-1013-JIHINAME
+                                               TO  TBL-JIHIMSG (3)
+                       WHEN    "4"
+                           MOVE    SYS-1013-JIHINAME
+                                               TO  TBL-JIHIMSG (4)
+                       WHEN    "5"
+                           MOVE    SYS-1013-JIHINAME
+                                               TO  TBL-JIHIMSG (5)
+                       WHEN    "6"
+                           MOVE    SYS-1013-JIHINAME
+                                               TO  TBL-JIHIMSG (6)
+                       WHEN    "7"
+                           MOVE    SYS-1013-JIHINAME
+                                               TO  TBL-JIHIMSG (7)
+                       WHEN    "8"
+                           MOVE    SYS-1013-JIHINAME
+                                               TO  TBL-JIHIMSG (8)
+                       WHEN    "9"
+                           MOVE    SYS-1013-JIHINAME
+                                               TO  TBL-JIHIMSG (9)
+                       WHEN    "0"
+                           MOVE    SYS-1013-JIHINAME
+                                               TO  TBL-JIHIMSG (10)
+                   END-EVALUATE
+               END-IF
+      *
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC     TO  SYS-1013-REC
+                   MOVE    ZERO            TO  FLG-SYSKANRI
+               ELSE
+                   MOVE    1               TO  FLG-SYSKANRI
+               END-IF
+           END-PERFORM
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           PERFORM VARYING IDX     FROM    1   BY  1
+                   UNTIL   IDX     >       10
+               IF      TBL-JIHIMSG (IDX)   =   SPACE
+                   MOVE    "Ì¤ÀßÄê"        TO  TBL-JIHIMSG (IDX)
+               END-IF
+           END-PERFORM
+           .
+       20050-JIHIMEISYO-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¼«Èñ¡Ê¾ÃÈñÀÇ¤Ê¤·¡Ë½èÍý
+      *****************************************************************
+       20052-JIHI-TEN-SEC                 SECTION.
+      *
+      *    ²ó¿ô
+           MOVE    1                   TO  TBL-KAISU (IDX-LF)
+      *
+      *    ¿ÇÎÅ¹Ô°Ù¶èÊ¬¥³¡¼¥É
+           MOVE    "014"               TO  TBL-SRYCD (IDX-LF)
+      *    £Ã£Ì£Á£É£ÍÍÑ¿ÇÎÅ¹Ô°Ù¶èÊ¬¥³¡¼¥É
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       35
+               IF      TBL-SRYCD (IDX-LF)  =   CLAIM007-CLAIM  (IDX)
+                   MOVE    CLAIM007-CLAIM(IDX) 
+                                           TO  TBL-SRYCD  (IDX-LF)
+                   MOVE    CLAIM007-NAME (IDX)
+                                           TO  TBL-SRYNAME(IDX-LF)
+                   MOVE    35              TO  IDX
+               END-IF
+           END-PERFORM
+      *    ¹ç·×¶â³Û
+           COMPUTE TBL-GINGAKUALL (IDX-LF)
+                                       =   SYU-TOTAL-TGMONEY
+                                       +   SYU-JIHI-TOTAL
+      *    ÊÝ¸±Ê¬
+           MOVE    ZERO                TO  IDX-IJ
+           PERFORM VARYING IDX     FROM    1   BY  1
+                   UNTIL   IDX     >       10
+               IF      SYU-TGMONEY (IDX)   NOT =   ZERO
+                   ADD     1               TO  IDX-IJ
+      *            ÀÁµá¥³¡¼¥É
+                   MOVE    IDX-IJ          TO  TBL-IJICD(IDX-LF IDX-IJ)
+                   MOVE    "0"             TO  TBL-SRYSYUBETSU
+                                                        (IDX-LF IDX-IJ)
+      *            ¼«Èñ¶â³Û
+                   MOVE    SYU-TGMONEY (IDX)   TO  TBL-MEISAITANKA
+                                                        (IDX-LF IDX-IJ)
+                   EVALUATE    IDX
+                   WHEN    1
+                       MOVE    "½é¡¦ºÆ¿ÇÎÁ"    TO  TBL-ALSNAME
+                                                        (IDX-LF IDX-IJ)
+                   WHEN    2
+                       MOVE    "°å³Ø´ÉÍýÅù"    TO  TBL-ALSNAME
+                                                        (IDX-LF IDX-IJ)
+                   WHEN    3
+                       MOVE    "ºßÂð°åÎÅ"      TO  TBL-ALSNAME
+                                                        (IDX-LF IDX-IJ)
+                   WHEN    4
+                       MOVE    "ÅêÌô"          TO  TBL-ALSNAME
+                                                        (IDX-LF IDX-IJ)
+                   WHEN    5
+                       MOVE    "Ãí¼Í"          TO  TBL-ALSNAME
+                                                        (IDX-LF IDX-IJ)
+                   WHEN    6
+                       MOVE    "½èÃÖ"          TO  TBL-ALSNAME
+                                                        (IDX-LF IDX-IJ)
+                   WHEN    7
+                       MOVE    "¼ê½Ñ¡¦Ëã¿ì"    TO  TBL-ALSNAME
+                                                        (IDX-LF IDX-IJ)
+                   WHEN    8
+                       MOVE    "¸¡ºº"          TO  TBL-ALSNAME
+                                                        (IDX-LF IDX-IJ)
+                   WHEN    9
+                       MOVE    "²èÁü¿ÇÃÇ"      TO  TBL-ALSNAME
+                                                        (IDX-LF IDX-IJ)
+                   WHEN    10
+                       MOVE    "¤½¤ÎÂ¾"        TO  TBL-ALSNAME
+                                                        (IDX-LF IDX-IJ)
+                   END-EVALUATE
+               END-IF
+           END-PERFORM
+      *    ¼«Èñ
+           PERFORM VARYING IDX     FROM    1   BY  1
+                   UNTIL   IDX     >       10
+               IF      SYU-JIHI-TAXNASI (IDX)  NOT =   ZERO
+                   ADD     1               TO  IDX-IJ
+      *            ÀÁµá¥³¡¼¥É
+                   MOVE    IDX-IJ          TO  TBL-IJICD(IDX-LF IDX-IJ)
+                   MOVE    "0"             TO  TBL-SRYSYUBETSU
+                                                        (IDX-LF IDX-IJ)
+      *            ¼«Èñ¶â³Û
+                   MOVE    SYU-JIHI-TAXNASI(IDX)   TO  TBL-MEISAITANKA
+                                                        (IDX-LF IDX-IJ)
+                   MOVE    TBL-JIHIMSG (IDX)   TO  TBL-ALSNAME
+                                                        (IDX-LF IDX-IJ)
+               END-IF
+           END-PERFORM
+           .
+       20052-JIHI-TEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¼«Èñ¡Ê¾ÃÈñÀÇ¤¢¤ê¡Ë½èÍý
+      *****************************************************************
+       20053-JIHITEX-TEN-SEC                 SECTION.
+      *
+      *    ²ó¿ô
+           MOVE    1                   TO  TBL-KAISU (IDX-LF)
+      *
+      *    ¿ÇÎÅ¹Ô°Ù¶èÊ¬¥³¡¼¥É
+           MOVE    "016"               TO  TBL-SRYCD (IDX-LF)
+      *    £Ã£Ì£Á£É£ÍÍÑ¿ÇÎÅ¹Ô°Ù¶èÊ¬¥³¡¼¥É
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       35
+               IF      TBL-SRYCD (IDX-LF)  =   CLAIM007-CLAIM  (IDX)
+                   MOVE    CLAIM007-CLAIM(IDX) 
+                                           TO  TBL-SRYCD  (IDX-LF)
+                   MOVE    CLAIM007-NAME (IDX)
+                                           TO  TBL-SRYNAME(IDX-LF)
+                   MOVE    35              TO  IDX
+               END-IF
+           END-PERFORM
+      *    ¹ç·×¶â³Û
+           COMPUTE TBL-GINGAKUALL (IDX-LF)
+                                       =   SYU-TOTAL-TGMONEY-TAX
+                                       +   SYU-JIHI-TOTAL-TAX
+                                       +   SYU-JIHI-TAX
+      *    ÊÝ¸±Ê¬
+           MOVE    ZERO                TO  IDX-IJ
+           PERFORM VARYING IDX     FROM    1   BY  1
+                   UNTIL   IDX     >       10
+               IF      SYU-TGMONEY-TAX (IDX)   NOT =   ZERO
+                   ADD     1               TO  IDX-IJ
+      *            ÀÁµá¥³¡¼¥É
+                   MOVE    IDX-IJ          TO  TBL-IJICD(IDX-LF IDX-IJ)
+                   MOVE    "0"             TO  TBL-SRYSYUBETSU
+                                                        (IDX-LF IDX-IJ)
+      *            ¼«Èñ¶â³Û
+                   MOVE    SYU-TGMONEY-TAX (IDX)   TO  TBL-MEISAITANKA
+                                                        (IDX-LF IDX-IJ)
+                   EVALUATE    IDX
+                   WHEN    1
+                       MOVE    "½é¡¦ºÆ¿ÇÎÁ"    TO  TBL-ALSNAME
+                                                        (IDX-LF IDX-IJ)
+                   WHEN    2
+                       MOVE    "°å³Ø´ÉÍýÅù"    TO  TBL-ALSNAME
+                                                        (IDX-LF IDX-IJ)
+                   WHEN    3
+                       MOVE    "ºßÂð°åÎÅ"      TO  TBL-ALSNAME
+                                                        (IDX-LF IDX-IJ)
+                   WHEN    4
+                       MOVE    "ÅêÌô"          TO  TBL-ALSNAME
+                                                        (IDX-LF IDX-IJ)
+                   WHEN    5
+                       MOVE    "Ãí¼Í"          TO  TBL-ALSNAME
+                                                        (IDX-LF IDX-IJ)
+                   WHEN    6
+                       MOVE    "½èÃÖ"          TO  TBL-ALSNAME
+                                                        (IDX-LF IDX-IJ)
+                   WHEN    7
+                       MOVE    "¼ê½Ñ¡¦Ëã¿ì"    TO  TBL-ALSNAME
+                                                        (IDX-LF IDX-IJ)
+                   WHEN    8
+                       MOVE    "¸¡ºº"          TO  TBL-ALSNAME
+                                                        (IDX-LF IDX-IJ)
+                   WHEN    9
+                       MOVE    "²èÁü¿ÇÃÇ"      TO  TBL-ALSNAME
+                                                        (IDX-LF IDX-IJ)
+                   WHEN    10
+                       MOVE    "¤½¤ÎÂ¾"        TO  TBL-ALSNAME
+                                                        (IDX-LF IDX-IJ)
+                   END-EVALUATE
+               END-IF
+           END-PERFORM
+      *    ¼«Èñ
+           PERFORM VARYING IDX     FROM    1   BY  1
+                   UNTIL   IDX     >       10
+               IF      SYU-JIHI-TAXARI (IDX)   NOT =   ZERO
+                   ADD     1               TO  IDX-IJ
+      *            ÀÁµá¥³¡¼¥É
+                   MOVE    IDX-IJ          TO  TBL-IJICD(IDX-LF IDX-IJ)
+                   MOVE    "0"             TO  TBL-SRYSYUBETSU
+                                                        (IDX-LF IDX-IJ)
+      *            ¼«Èñ¶â³Û
+                   MOVE    SYU-JIHI-TAXARI(IDX)
+                                               TO  TBL-MEISAITANKA
+                                                        (IDX-LF IDX-IJ)
+                   MOVE    TBL-JIHIMSG (IDX)   TO  TBL-ALSNAME
+                                                        (IDX-LF IDX-IJ)
+               END-IF
+           END-PERFORM
+           IF      SYU-JIHI-TAX    NOT =   ZERO
+               ADD     1               TO  IDX-IJ
+      *        ÀÁµá¥³¡¼¥É
+               MOVE    IDX-IJ          TO  TBL-IJICD(IDX-LF IDX-IJ)
+               MOVE    "0"             TO  TBL-SRYSYUBETSU
+                                                        (IDX-LF IDX-IJ)
+      *        ¼«Èñ¶â³Û¾ÃÈñÀÇ
+               MOVE    SYU-JIHI-TAX       TO  TBL-MEISAITANKA
+                                                        (IDX-LF IDX-IJ)
+               MOVE    "¼«Èñ¶â³Û¾ÃÈñÀÇ"   TO  TBL-ALSNAME
+                                                        (IDX-LF IDX-IJ)
+           END-IF
+           .
+       20053-JIHITEX-TEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1740,19 +2288,13 @@
       *****************************************************************
        900-SYSKANRI-INV-SEC         SECTION.
       *
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO                TO  FLG-SYSKANRI
                ELSE
@@ -1762,12 +2304,9 @@
                MOVE    1                   TO  FLG-SYSKANRI
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        900-SYSKANRI-INV-EXT.
@@ -1777,24 +2316,17 @@
       *****************************************************************
        910-TENSU-READ-SEC         SECTION.
       *
-           MOVE    ZERO                TO  TNS-YUKOSTYMD
-           MOVE    ALL "9"             TO  TNS-YUKOEDYMD
+           MOVE    LNK-SRYYMD          TO  TNS-YUKOSTYMD
+           MOVE    LNK-SRYYMD          TO  TNS-YUKOEDYMD
       *
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-           MOVE    LNK-SRYYMD          TO  ORC-DBYMD
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+               MOVE    "tbl_tensu"         TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
                    MOVE    ZERO                TO  FLG-TENSU
@@ -1807,12 +2339,9 @@
                MOVE    1                   TO  FLG-TENSU
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        910-TENSU-READ-EXT.
@@ -1822,11 +2351,7 @@
       *****************************************************************
        900-SRYACT-READ-SEC         SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  SRYACT-REC
                MOVE    ZERO                TO  FLG-SRYACT
@@ -1843,11 +2368,7 @@
       *****************************************************************
        930-SRYACCT-NEXT-SEC         SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  SRYACCT-REC
                MOVE    ZERO                TO  FLG-SRYACCT
@@ -1864,11 +2385,7 @@
       *****************************************************************
        970-JYURRK-NEXT-SEC           SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  JYURRK-REC 
                MOVE    ZERO                TO  FLG-JYURRK
@@ -1881,26 +2398,37 @@
            EXIT.
       *
       *****************************************************************
-      *    ¿ÇÎÅ²ÊÎò¥Ç¡¼¥¿½çÆÉ¤ß
+      *    ¼ýÇ¼½çÆÉ¤ß
       *****************************************************************
-       975-SRYKARRK-READ-SEC         SECTION.
+       980-SYUNOU-READ-SEC         SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
-      *???
-           DISPLAY "SRYKARRK-REC=" MCPDATA-REC "##"     
-               MOVE    MCPDATA-REC         TO  SRYKARRK-REC 
-               MOVE    ZERO                TO  FLG-SRYKARRK
+               MOVE    MCPDATA-REC         TO  SYUNOU-REC 
+               MOVE    ZERO                TO  FLG-SYUNOU
            ELSE
-               MOVE    1                   TO  FLG-SRYKARRK
+               MOVE    1                   TO  FLG-SYUNOU
            END-IF
       *
            .
-       975-SRYKARRK-READ-EXT.
+       980-SYUNOU-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¼ýÇ¼ÌÀºÙÆÉ¹þ¤ß½èÍý
+      *****************************************************************
+       980-SYUMEI-READ-SEC         SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  SYUMEI-REC 
+               MOVE    ZERO                TO  FLG-SYUMEI
+           ELSE
+               MOVE    1                   TO  FLG-SYUMEI
+           END-IF
+      *
+           .
+       980-SYUMEI-READ-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1908,21 +2436,14 @@
       *****************************************************************
        950-PTCOM-READ-SEC           SECTION.
       *
-      *
            MOVE    PTCOM-REC           TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "PTCOM-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_ptcom"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "PTCOM-KEY"         TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+               MOVE    "tbl_ptcom"         TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC         TO  PTCOM-REC
                    MOVE    ZERO                TO  FLG-PTCOM
@@ -1935,16 +2456,55 @@
                INITIALIZE                  PTCOM-REC
            END-IF
       *
-      *    MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-      *    MOVE    "PTCOM-KEY"         TO  ORC-DBPATH
-      *    CALL    "MCPDBSUB"          USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
+           MOVE    "tbl_ptcom"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        950-PTCOM-READ-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    ¥Æ¡¼¥Ö¥ë¸¡º÷½èÍý
+      *****************************************************************
+       910-DBSELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       910-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    £Ä£ÂÆÉ¤ß¹þ¤ß½èÍý
+      *****************************************************************
+       920-DBFETCH-SEC                 SECTION.
+      *
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       920-DBFETCH-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    £Ä£Â¥¯¥í¡¼¥¹½èÍý
+      *****************************************************************
+       990-DBCLOSE-SEC           SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       990-DBCLOSE-EXT.
+           EXIT.
       *
       *****************************************************************
       *    ¥ì¥»¥×¥ÈÌÀºÙ½ñÆÉ¹þ
