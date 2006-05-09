@@ -1079,7 +1079,9 @@
                     MOVE   NACCT-DAY(IDY)   TO  WRK-DAY1-SENTEI(IDY)
                   ELSE
                     MOVE   NACCT-DAY(IDY)   TO  WRK-DAY1(IDY) 
-                    IF  NACCT-SRYKBN  =  "90"                           
+                    IF  ( NACCT-SRYKBN     = "90"      )
+      *+++          OR  ( NACCT-SRYCDTOTAL = 190799410 )
+      *+++          OR  ( NACCT-SRYCDTOTAL = 190799510 )
                        MOVE   903  TO  WRK-DAY1-NYUTENTTLKBN(IDY)       
                     ELSE                                                
                        MOVE   920  TO  WRK-DAY1-NYUTENTTLKBN(IDY)       
@@ -2015,7 +2017,9 @@
       **************************************************************
        2001123-NYUINKHN-GET-SEC           SECTION.
       *
-           IF   NACCT-SRYKBN  =  "90"                                   
+           IF  ( NACCT-SRYKBN     = "90"      )
+      *+++ OR  ( NACCT-SRYCDTOTAL = 190799410 )
+      *+++ OR  ( NACCT-SRYCDTOTAL = 190799510 )
                  MOVE   903   TO  WRK-NYUTENTTLKBN                      
            ELSE                                                         
                  MOVE   920   TO  WRK-NYUTENTTLKBN                      
