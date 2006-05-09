@@ -4864,9 +4864,6 @@
            END-IF
            MOVE    ORCSPRTNM-PRTPG     TO  WRK-MEISAI-PG
       *
-      *TEST
-           DISPLAY "WRK-MEISAI-PG:" WRK-MEISAI-PG
-      *TEST
            .
       *
        4901-PRINT-PG-EXT.
@@ -5033,6 +5030,7 @@
                    ELSE
                        MOVE    SYU-DRCD-G          TO  SHELLTBL-ARG9
                    END-IF
+                   MOVE    SYU-DENPNUM         TO  SHELLTBL-ARG10
                    MOVE    SHELLTBL            TO  MCPDATA-REC
                    MOVE    "SHELL"             TO  MCP-FUNC
                    MOVE    "shell"             TO  MCP-TABLE
