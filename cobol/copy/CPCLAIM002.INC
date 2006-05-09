@@ -228,27 +228,27 @@
                05  CLAIM002-NAME-T94   PIC  X(40)  
                    VALUE   "∞Â≥ÿ¥…Õ˝Œ¡" .
              03  CLAIM002-T95.
-               05  CLAIM002-ORCA-T95   PIC  X(2)   VALUE   "95" .
+               05  CLAIM002-ORCA-T95   PIC  X(2)   VALUE   "XX" .
                05  CLAIM002-CLAIM-T95  PIC  X(3)   VALUE   "950" .
                05  CLAIM002-NAME-T95   PIC  X(40)  
                    VALUE   "∆˛±°ª˛∞Ï…Ù…È√¥∂‚" .
              03  CLAIM002-T951.
-               05  CLAIM002-ORCA-T951  PIC  X(2)   VALUE   "95" .
+               05  CLAIM002-ORCA-T951  PIC  X(2)   VALUE   "XX" .
                05  CLAIM002-CLAIM-T951 PIC  X(3)   VALUE   "951" .
                05  CLAIM002-NAME-T951  PIC  X(40)  
                    VALUE   "ÃÙ∫ﬁ∞Ï…Ù…È√¥∂‚" .
              03  CLAIM002-T952.
-               05  CLAIM002-ORCA-T952  PIC  X(2)   VALUE   "95" .
+               05  CLAIM002-ORCA-T952  PIC  X(2)   VALUE   "XX" .
                05  CLAIM002-CLAIM-T952 PIC  X(3)   VALUE   "952" .
                05  CLAIM002-NAME-T952  PIC  X(40)  
                    VALUE   "ø©±¬∞Ï…Ù…È√¥∂‚" .
              03  CLAIM002-T953.
-               05  CLAIM002-ORCA-T953  PIC  X(2)   VALUE   "95" .
+               05  CLAIM002-ORCA-T953  PIC  X(2)   VALUE   "XX" .
                05  CLAIM002-CLAIM-T953 PIC  X(3)   VALUE   "953" .
                05  CLAIM002-NAME-T953  PIC  X(40)  
                    VALUE   "§Ω§Œ¬æ∞Ï…Ù…È√¥∂‚" .
              03  CLAIM002-T96.
-               05  CLAIM002-ORCA-T96   PIC  X(2)   VALUE   "96" .
+               05  CLAIM002-ORCA-T96   PIC  X(2)   VALUE   "YY" .
                05  CLAIM002-CLAIM-T96  PIC  X(3)   VALUE   "960" .
                05  CLAIM002-NAME-T96   PIC  X(40)  
                    VALUE   "ººŒ¡∫π≥€" .
@@ -283,22 +283,27 @@
                05  CLAIM002-NAME-T013  PIC  X(40)  
                    VALUE   "Õ∆¥Ô¬Â" .
              03  CLAIM002-T014.
-               05  CLAIM002-ORCA-T014  PIC  X(2)   VALUE   "14" .
+               05  CLAIM002-ORCA-T014  PIC  X(2)   VALUE   "95" .
                05  CLAIM002-CLAIM-T014 PIC  X(3)   VALUE   "014" .
                05  CLAIM002-NAME-T014  PIC  X(40)  
-                   VALUE   "º´»Òø«Œ≈" .
+                   VALUE   "º´»Ò° æ√»Ò¿«§ §∑°À" .
              03  CLAIM002-T015.
                05  CLAIM002-ORCA-T015  PIC  X(2)   VALUE   "15" .
                05  CLAIM002-CLAIM-T015 PIC  X(3)   VALUE   "015" .
                05  CLAIM002-NAME-T015  PIC  X(40)  
                    VALUE   "π‚≈Ÿ¿Ëø ∞ÂŒ≈" .
+             03  CLAIM002-T016.
+               05  CLAIM002-ORCA-T014  PIC  X(2)   VALUE   "96" .
+               05  CLAIM002-CLAIM-T014 PIC  X(3)   VALUE   "016" .
+               05  CLAIM002-NAME-T014  PIC  X(40)  
+                   VALUE   "º´»Ò° æ√»Ò¿«§¢§Í°À" .
              03  CLAIM002-T019.
                05  CLAIM002-ORCA-T019  PIC  X(2)   VALUE   "19" .
                05  CLAIM002-CLAIM-T019 PIC  X(3)   VALUE   "019" .
                05  CLAIM002-NAME-T019  PIC  X(40)  
                    VALUE   "§Ω§Œ¬æ§Œº´»Ò" .
            02  CLAIM002-R  REDEFINES   CLAIM002-T.
-             03  CLAIM002-TX           OCCURS  58.
+             03  CLAIM002-TX           OCCURS  59.
                05  CLAIM002-ORCA       PIC  X(2).
                05  CLAIM002-CLAIM      PIC  X(3).
                05  CLAIM002-NAME       PIC  X(40).

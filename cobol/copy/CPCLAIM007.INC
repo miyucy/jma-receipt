@@ -11,7 +11,7 @@
       *        05  FILLER               PIC  X(2)   VALUE   "00" .
                05  FILLER               PIC  X(3)   VALUE   "000" .
                05  FILLER               PIC  X(40)  
-                   VALUE   "　　" .
+                   VALUE   "その他" .
              03  CLAIM007-T110.
       *        05  CLAIM007-ORCA-T110   PIC  X(2)   VALUE   "11" .
                05  CLAIM007-CLAIM-T110  PIC  X(3)   VALUE   "110" .
@@ -172,8 +172,18 @@
                05  FILLER               PIC  X(3)   VALUE   "971" .
                05  FILLER               PIC  X(40)  
                    VALUE   "入院（標準負担額）" .
+             03  CLAIM007-T014.
+      *        05  FILLER               PIC  X(2)   VALUE   "95" .
+               05  FILLER               PIC  X(3)   VALUE   "014" .
+               05  FILLER               PIC  X(40)  
+                   VALUE   "自費（消費税なし）" .
+             03  CLAIM007-T016.
+      *        05  FILLER               PIC  X(2)   VALUE   "96" .
+               05  FILLER               PIC  X(3)   VALUE   "016" .
+               05  FILLER               PIC  X(40)  
+                   VALUE   "自費（消費税あり）" .
            02  CLAIM007-R  REDEFINES   CLAIM007-T.
-             03  CLAIM007-TX           OCCURS  33.
+             03  CLAIM007-TX           OCCURS  35.
       *        05  CLAIM007-ORCA       PIC  X(2).
                05  CLAIM007-CLAIM      PIC  X(3).
                05  CLAIM007-NAME       PIC  X(40).
