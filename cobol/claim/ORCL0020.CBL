@@ -67,6 +67,8 @@
                                     PIC  X(04). 
                05  WRK-PARA-HOSPID  PIC  X(24).
                05  WRK-PARA-DRCD    PIC  X(05).
+               05  WRK-PARA-DENPNUM
+                                    PIC  X(07).
       *
            03  WRK-IN               PIC X(01).
       *
@@ -147,6 +149,7 @@
                                             WRK-PARA-HKNCOMBINUM
                                             WRK-PARA-HOSPID
                                             WRK-PARA-DRCD
+                                            WRK-PARA-DENPNUM
       *
       *
       *???
@@ -168,6 +171,7 @@
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
+           DISPLAY "WRK-PARA-DENPNUM = " WRK-PARA-DENPNUM
            CALL    "ORCL0021"          USING   WRK-PARA-KBN
                                                WRK-PARA-PTID
                                                WRK-PARA-SRYKA
@@ -177,6 +181,7 @@
                                                SPA-NYUGAIKBN
                                                SPA-HKNCOMBINUM
                                                WRK-PARA-DRCD
+                                               WRK-PARA-DENPNUM
                                                WRK-LF02-REC
       *
            MOVE    WRK-LF02-REC        TO  LF02-REC
