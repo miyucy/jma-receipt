@@ -96,6 +96,8 @@
            03  WRK-TESTERR         PIC X(200).
       *
            03  WRK-PRTNUM          PIC X(17).
+           03  WRK-PRTNAME-G.
+               05  WRK-PRTNAME     PIC X(16)   OCCURS  8.
       *
        01  WRK-CONS-AREA.
            03  WRK-CONS-FILENAME   PIC X(20)   VALUE
@@ -122,6 +124,8 @@
            COPY  "CPSK1031.INC".
       *    入院プリンタ情報
            COPY  "CPSK1034.INC".
+      *    総括、レセプリンタ情報
+           COPY  "CPSK2005.INC".
       *    ジョブ管理情報
           COPY    "CPSK3003.INC".
       *
@@ -347,13 +351,58 @@
                            OR      FLG-OK  =   1
                        IF      SPA-W62-PRTNUML(IDY)
                                              =   SYS-1031-PRTNM(IDX)
-      *                     MOVE     SYS-1031-PRTNM(IDX)
-      *                                         TO  SPA-W62-PRTNUML(IDY)
                            MOVE    1           TO  FLG-OK
                        ELSE
                            IF      SPA-W62-PRTNUML(IDY)    =   SPACE
                                MOVE     IDY    TO  SPA-W62-PRTKBNL(IDY)
                                MOVE     SYS-1031-PRTNM(IDX)
+                                               TO  SPA-W62-PRTNUML(IDY)
+                               ADD     1       TO  SPA-W62-PRTNUM-MAX
+                               MOVE    1       TO  FLG-OK
+                           END-IF
+                       END-IF
+                   END-PERFORM
+               END-PERFORM
+               PERFORM 900-SYSKANRI-READ-SEC
+           END-PERFORM
+           PERFORM 900-SYSKANRI-CLOSE-SEC
+      *
+      *    総括、レセプリンタセット
+           MOVE    SPACE               TO  SYSKANRI-REC
+           INITIALIZE                      SYSKANRI-REC
+           MOVE    "2005"              TO  SYS-KANRICD
+           MOVE    SPA-W01-STYUKYMD    TO  SYS-STYUKYMD
+                                           SYS-EDYUKYMD
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           PERFORM 900-SYSKANRI-SELECT-SEC
+           PERFORM UNTIL   FLG-SYSKANRI    NOT =   ZERO
+               MOVE    MCPDATA-REC     TO  SYS-2005-REC
+               MOVE    SPACE           TO  WRK-PRTNAME-G
+               MOVE    SYS-2005-SYAPRTNM           TO  WRK-PRTNAME(1)
+               MOVE    SYS-2005-KKHPRTNM           TO  WRK-PRTNAME(2)
+               MOVE    SYS-2005-SYAPRTNM-NEXT      TO  WRK-PRTNAME(3)
+               MOVE    SYS-2005-KKHPRTNM-NEXT      TO  WRK-PRTNAME(4)
+               MOVE    SYS-2005-SYAPRTNM-N         TO  WRK-PRTNAME(5)
+               MOVE    SYS-2005-KKHPRTNM-N         TO  WRK-PRTNAME(6)
+               MOVE    SYS-2005-SYAPRTNM-NEXT-N    TO  WRK-PRTNAME(7)
+               MOVE    SYS-2005-KKHPRTNM-NEXT-N    TO  WRK-PRTNAME(8)
+      *
+               PERFORM VARYING IDX     FROM    1   BY  1
+                       UNTIL   IDX     >       8
+                   MOVE    ZERO            TO  FLG-OK
+                   IF      WRK-PRTNAME(IDX)    =   SPACE
+                       MOVE    1           TO  FLG-OK
+                   END-IF
+                   PERFORM VARYING IDY     FROM    1   BY  1
+                           UNTIL   IDY     >       20
+                           OR      FLG-OK  =   1
+                       IF      SPA-W62-PRTNUML(IDY)
+                                             =   WRK-PRTNAME(IDX)
+                           MOVE    1           TO  FLG-OK
+                       ELSE
+                           IF      SPA-W62-PRTNUML(IDY)    =   SPACE
+                               MOVE     IDY    TO  SPA-W62-PRTKBNL(IDY)
+                               MOVE     WRK-PRTNAME(IDX)
                                                TO  SPA-W62-PRTNUML(IDY)
                                ADD     1       TO  SPA-W62-PRTNUM-MAX
                                MOVE    1       TO  FLG-OK
@@ -392,8 +441,6 @@
                            OR      FLG-OK  =   1
                        IF      SPA-W62-PRTNUML(IDY)
                                                =   SYS-1034-PRTNM(IDX)
-      *                    MOVE     SYS-1034-PRTNM(IDX)
-      *                                         TO  SPA-W62-PRTNUML(IDY)
                            MOVE    1           TO  FLG-OK
                        ELSE
                            IF      SPA-W62-PRTNUML(IDY)    =   SPACE
