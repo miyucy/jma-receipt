@@ -1248,7 +1248,9 @@
                END-IF
       *    ¥Æ¥¹¥È°õºþ
            WHEN    "CLICKED"       ALSO    "B10"
-               PERFORM 460-W62-SYORI-SEC
+               IF      SPA-W01-KANRICD     =   "1031"
+                   PERFORM 460-W62-SYORI-SEC
+               END-IF
       *
            END-EVALUATE
            .
@@ -3171,6 +3173,7 @@
                MOVE    WIDGET-INSENSITIVE  TO  W11-SELNUM-STATE
                MOVE    WIDGET-INSENSITIVE  TO  W11-B03-STATE
                MOVE    WIDGET-INSENSITIVE  TO  W11-B08-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  W11-B10-STATE
                IF     (SPA-W01-SELNUM      NOT =   ZERO )
                    MOVE    WIDGET-NORMAL       TO  W11-B03-STATE
                END-IF
@@ -3186,6 +3189,7 @@
                    MOVE    WIDGET-NORMAL       TO  W11-B03-STATE
                END-EVALUATE
                MOVE    WIDGET-NORMAL      TO  W11-B08-STATE
+               MOVE    WIDGET-NORMAL      TO  W11-B10-STATE
            END-EVALUATE
       *----(02.00.03)--ADD-END-----
       *

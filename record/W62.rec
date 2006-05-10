@@ -5,7 +5,7 @@ W62	{
 				value	varchar(20);
 			};
 			count	int;
-			item	varchar(20)[5];
+			item	varchar(20)[20];
 		};
 		PSAREA	{
 			objectdata	object;

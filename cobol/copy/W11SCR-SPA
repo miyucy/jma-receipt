@@ -214,10 +214,10 @@
                    07  SPA-W62-PRTKBN     PIC X(02).
                    07  SPA-W62-PRTF       PIC X(01).
                    07  SPA-W62-PRTNUM     PIC X(17).
-               05  SPA-W62-PRTNUMLST      OCCURS  5.
+               05  SPA-W62-PRTNUMLST      OCCURS  20.
                    07  SPA-W62-PRTKBNL    PIC X(02).
                    07  SPA-W62-PRTFL      PIC X(01).
                    07  SPA-W62-PRTNUML    PIC X(17).
-               05  SPA-W62-PRTNUM-MAX     PIC 9(01).
+               05  SPA-W62-PRTNUM-MAX     PIC 9(02).
                05  SPA-W62-OBJECT         PIC X(08).
       *

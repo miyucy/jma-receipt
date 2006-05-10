@@ -6,6 +6,9 @@ W11	{
 		B08	{
 			state	int;
 		};
+		B10	{
+			state	int;
+		};
 		n3	{
 			pageno	int;
 			fi23	{
