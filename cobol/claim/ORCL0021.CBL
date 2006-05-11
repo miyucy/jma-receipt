@@ -122,6 +122,7 @@
            03  IDXP                PIC 9(02).
            03  IDXM                PIC 9(02).
            03  IDK                 PIC 9(04).
+           03  IDW                 PIC 9(04).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -173,6 +174,9 @@
            03  WRK-SURYO-R         REDEFINES   WRK-SURYO9.
                05  WRK-SURYO-S1    PIC 9(05).
                05  WRK-SURYO-S2    PIC 9(03).
+      *
+           03  WRK-ZZZ             PIC Z99.
+           03  WRK-999             PIC 9(03).
       *
       *    ¼«ÈñÌ¾¾Î¥Æ¡¼¥Ö¥ë
        01  TBL-JIHIMSG-AREA.
@@ -289,6 +293,9 @@
       *    ¼ýÇ¼ÌÀºÙ¥Þ¥¹¥¿¡Ý
        01  SYUMEI-REC.
            COPY    "CPSYUMEI.INC".
+      *    ÊÝ¸±ÁÈ¹ç¤»
+       01  HKNCOMBI-REC.
+           COPY    "CPHKNCOMBI.INC".
       *
       *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿
            COPY    "CPSYSKANRI.INC".
@@ -337,6 +344,8 @@
            03  C-RET   PIC X(2).
            03  C-UID   PIC X(36).
        01  ST          PIC 9(2).
+      * 
+           COPY    "CPMML0031.INC".
       * 
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
@@ -399,7 +408,6 @@
            PERFORM 900-LF03-READ-SEC
            IF      FLG-LF03        =   1
                DISPLAY "*** ORCL0021 LF03 INVALID ***"
-               INITIALIZE   LF03-REC
                MOVE    1               TO  FLG-END
            END-IF
            .
@@ -448,7 +456,9 @@
       *            MOVE    IDX                 TO  WRK-LF02-UID1
                    MOVE    20                  TO  IDX 
                END-IF
-           END-PERFORM    
+           END-PERFORM 
+      *    ÊÝ¸±ÁÈ¹ç¤»
+           PERFORM 2009-HKNCOMBI-HEN-SEC
       * 
            MOVE    "account"       TO  WRK-LF02-STATUS
       * 
@@ -467,8 +477,7 @@
            INITIALIZE                      SYS-1005-REC
            MOVE    "1005"              TO  SYS-1005-KANRICD
            MOVE    LNK-SRYKA           TO  SYS-1005-KBNCD
-           MOVE    LNK-SYSYMD          TO  SYS-1005-STYUKYMD
-           MOVE    LNK-SYSYMD          TO  SYS-1005-EDYUKYMD
+           MOVE    LNK-SYSYMD          TO  ORC-DBYMD
            MOVE    SYS-1005-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -666,6 +675,74 @@
       *
            .
        2001-DRCD-NAME-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÊÝ¸±ÁÈ¹ç¤»½èÍý
+      *****************************************************************
+       2009-HKNCOMBI-HEN-SEC                SECTION.
+      *
+           INITIALIZE                      HKNCOMBI-REC
+           MOVE    LNK-HOSPID          TO  COMB-HOSPID
+           MOVE    LNK-PTID            TO  COMB-PTID
+           MOVE    LNK-HKNCOMBINUM     TO  COMB-HKNCOMBINUM
+           PERFORM 910-HKNCOMBI-READ-SEC
+      *    ¼çÊÝ¸±¤¢¤ê
+           IF      COMB-HKNNUM     NOT =   SPACE
+               PERFORM VARYING IDW     FROM    1   BY  1
+                       UNTIL   IDW     >       42
+                   IF    COMB-HKNNUM       =   MML0031-HOKEN (IDW)
+                       MOVE    MML0031-NAME(IDW) 
+                                           TO  WRK-LF02-HKNSBT
+                       MOVE    42          TO  IDW
+                   END-IF
+               END-PERFORM
+               PERFORM 20091-HKNNUM-SET-SEC
+           ELSE
+      *         ¸øÈñÃ±ÆÈ
+                MOVE    "¸øÈñÃ±ÆÈ"         TO  WRK-LF02-HKNSBT
+                MOVE    "XX"               TO  WRK-LF02-HKNSBTCODE
+           END-IF
+      *
+           MOVE    "MML0031"           TO  WRK-LF02-HKNSBTTBL
+           .
+       2009-HKNCOMBI-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    ÊÝ¸±¼ïÊÌÊÔ½¸½èÍý
+      *****************************************************************
+       20091-HKNNUM-SET-SEC              SECTION.
+      *
+           EVALUATE    COMB-HKNNUM 
+               WHEN    "060"
+      *            ¹ñÊÝ¤Î¾ì¹ç¤Ï¡¢¥¼¥í¤òÀßÄê
+                   MOVE    "00"        TO  WRK-LF02-HKNSBTCODE
+               WHEN    "971"
+      *            Ï«ºÒ
+                   MOVE    "R1"        TO  WRK-LF02-HKNSBTCODE
+                   MOVE    "Ï«ºÒ"      TO  WRK-LF02-HKNSBT
+               WHEN    "973"
+      *            ¼«ÇåÀÕ
+                   MOVE    "R3"        TO  WRK-LF02-HKNSBTCODE
+                   MOVE    "¼«ÇåÀÕ"    TO  WRK-LF02-HKNSBT
+               WHEN    OTHER
+                   IF      COMB-HKNNUM(1:2)   =   "98"
+      *                ¼«Èñ
+                       MOVE    "Z"         TO  WRK-LF02-HKNSBTCODE(1:1)
+                       MOVE    COMB-HKNNUM(3:1)
+                                           TO  WRK-LF02-HKNSBTCODE(2:1)
+                       MOVE    "¼«Èñ"
+                                           TO  WRK-LF02-HKNSBT
+                   ELSE
+      *                ¤½¤ÎÂ¾¡Ê²¼£²·å¡Ë
+                       MOVE    COMB-HKNNUM     TO  WRK-999
+                       MOVE    WRK-999         TO  WRK-ZZZ
+                       MOVE    WRK-ZZZ(2:2)    TO  WRK-LF02-HKNSBTCODE
+                   END-IF
+           END-EVALUATE
+      *
+           .
+       20091-HKNNUM-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2061,7 +2138,10 @@
                IF      SYU-TGMONEY (IDX)   NOT =   ZERO
                    ADD     1               TO  IDX-IJ
       *            ÀÁµá¥³¡¼¥É
-                   MOVE    IDX-IJ          TO  TBL-IJICD(IDX-LF IDX-IJ)
+                   MOVE    "1"             TO  TBL-IJICD(IDX-LF IDX-IJ)
+                                                        (1:1)
+                   MOVE    IDX(2:3)        TO  TBL-IJICD(IDX-LF IDX-IJ)
+                                                        (2:3)
                    MOVE    "0"             TO  TBL-SRYSYUBETSU
                                                         (IDX-LF IDX-IJ)
       *            ¼«Èñ¶â³Û
@@ -2107,7 +2187,7 @@
                IF      SYU-JIHI-TAXNASI (IDX)  NOT =   ZERO
                    ADD     1               TO  IDX-IJ
       *            ÀÁµá¥³¡¼¥É
-                   MOVE    IDX-IJ          TO  TBL-IJICD(IDX-LF IDX-IJ)
+                   MOVE    IDX             TO  TBL-IJICD(IDX-LF IDX-IJ)
                    MOVE    "0"             TO  TBL-SRYSYUBETSU
                                                         (IDX-LF IDX-IJ)
       *            ¼«Èñ¶â³Û
@@ -2154,7 +2234,10 @@
                IF      SYU-TGMONEY-TAX (IDX)   NOT =   ZERO
                    ADD     1               TO  IDX-IJ
       *            ÀÁµá¥³¡¼¥É
-                   MOVE    IDX-IJ          TO  TBL-IJICD(IDX-LF IDX-IJ)
+                   MOVE    "1"             TO  TBL-IJICD(IDX-LF IDX-IJ)
+                                                        (1:1)
+                   MOVE    IDX(2:3)        TO  TBL-IJICD(IDX-LF IDX-IJ)
+                                                        (2:3)
                    MOVE    "0"             TO  TBL-SRYSYUBETSU
                                                         (IDX-LF IDX-IJ)
       *            ¼«Èñ¶â³Û
@@ -2200,7 +2283,7 @@
                IF      SYU-JIHI-TAXARI (IDX)   NOT =   ZERO
                    ADD     1               TO  IDX-IJ
       *            ÀÁµá¥³¡¼¥É
-                   MOVE    IDX-IJ          TO  TBL-IJICD(IDX-LF IDX-IJ)
+                   MOVE    IDX             TO  TBL-IJICD(IDX-LF IDX-IJ)
                    MOVE    "0"             TO  TBL-SRYSYUBETSU
                                                         (IDX-LF IDX-IJ)
       *            ¼«Èñ¶â³Û
@@ -2214,7 +2297,7 @@
            IF      SYU-JIHI-TAX    NOT =   ZERO
                ADD     1               TO  IDX-IJ
       *        ÀÁµá¥³¡¼¥É
-               MOVE    IDX-IJ          TO  TBL-IJICD(IDX-LF IDX-IJ)
+               MOVE    "0099"          TO  TBL-IJICD(IDX-LF IDX-IJ)
                MOVE    "0"             TO  TBL-SRYSYUBETSU
                                                         (IDX-LF IDX-IJ)
       *        ¼«Èñ¶â³Û¾ÃÈñÀÇ
@@ -2464,6 +2547,38 @@
       *
            .
        950-PTCOM-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    ÊÝ¸±ÁÈ¹ç¤»¥Þ¥¹¥¿¡¼ÆÉ¤ß¹þ¤ß
+      *****************************************************************
+       910-HKNCOMBI-READ-SEC         SECTION.
+      *
+           MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
+           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC     TO  HKNCOMBI-REC
+                   MOVE    ZERO            TO  FLG-HKNCOMBI
+               ELSE
+                  INITIALIZE                   HKNCOMBI-REC
+                  MOVE    1                TO  FLG-HKNCOMBI
+               END-IF
+           ELSE
+               INITIALIZE                  HKNCOMBI-REC
+               MOVE    1               TO  FLG-HKNCOMBI
+           END-IF
+      *
+           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       910-HKNCOMBI-READ-EXT.
            EXIT.
       *
       *****************************************************************
