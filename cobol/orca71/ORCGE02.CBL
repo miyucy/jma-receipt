@@ -105,6 +105,7 @@
                    07  SPA-GMN-FILE-ID        PIC X(128).
                    07  SPA-GMN-FILE-KEY       PIC X(64).
                05  SPA-NAI-AREA.
+                   07  SPA-NAI-SRYYM          PIC X(06).
                    07  SPA-NAI-MOTOPG         PIC X(08).
       *
       *    ¥Õ¥é¥°ÎÎ°è
@@ -841,12 +842,12 @@
                MOVE    E02-SRYYM(1:6)      TO  SPA-GMN-SRYYM
            ELSE
                MOVE    SPACE               TO  SPA-GMN-SRYYM
-               MOVE    SPACE               TO  WK-SRYYM
+               MOVE    SPACE               TO  SPA-NAI-SRYYM
            END-IF.
       *
            IF  SPA-GMN-SRYYM   =  "******"
                MOVE    SPACE               TO  SPA-GMN-SRYYM
-               MOVE    SPACE               TO  WK-SRYYM
+               MOVE    SPACE               TO  SPA-NAI-SRYYM
            END-IF.
       *
            MOVE    ZERO                TO  SPA-GMN-CUR.
@@ -858,7 +859,7 @@
                IF  SGDAY-RC   =   ZERO
                    MOVE    SPACE               TO  SPA-ERRCD
                    MOVE    SGDAY-OTDAY(1:6)    TO  SPA-GMN-SRYYM
-                   MOVE    SGDAY-SDAY(1:6)     TO  WK-SRYYM
+                   MOVE    SGDAY-SDAY(1:6)     TO  SPA-NAI-SRYYM
                    INITIALIZE                  STS-AREA-DAY
                    INITIALIZE                  LNK-DAY1-AREA
                    MOVE    ZERO                TO  LNK-DAY1-YMD
@@ -1318,7 +1319,7 @@
            OPEN    INPUT                   EIE01-FILE.
       *
            MOVE    ZERO                    TO  SPA-GMN-MAX-B.
-           MOVE    SPACE                   TO  WK-SRYYM.
+           MOVE    SPACE                   TO  SPA-NAI-SRYYM
       *
            IF  STS-EIE01   =   ZERO
                READ    EIE01-FILE
@@ -1333,7 +1334,7 @@
                            MOVE    SGDAY-OTDAY(1:6)    TO  SPA-GMN-SRYYM
                         END-IF
                    END-IF
-                   MOVE    EIE01-REC(1:6)           TO  WK-SRYYM
+                   MOVE    EIE01-REC(1:6)           TO  SPA-NAI-SRYYM
                    MOVE    EIE01-REC(8:128)         TO  SPA-GMN-FILE-ID
                    MOVE    EIE01-REC(137:64)        TO  SPA-GMN-FILE-KEY
                    PERFORM VARYING IDX1  FROM  1  BY 1
@@ -1399,7 +1400,7 @@
            OPEN    OUTPUT                  EIE01-FILE.
       *
            MOVE    SPACE                   TO  EIE01-REC.
-           MOVE    WK-SRYYM                TO  EIE01-REC.
+           MOVE    SPA-NAI-SRYYM           TO  EIE01-REC.
            MOVE    SPA-GMN-FILE-ID         TO  EIE01-REC(8:128).
            MOVE    SPA-GMN-FILE-KEY        TO  EIE01-REC(137:64).
            WRITE   EIE01-REC.

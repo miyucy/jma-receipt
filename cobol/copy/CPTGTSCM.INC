@@ -110,7 +110,6 @@
                05  PIC X(23)   VALUE "076tbl_chksnd".
                05  PIC X(23)   VALUE "077tbl_receupd".
                05  PIC X(23)   VALUE "078tbl_orderprt".
-               05  PIC X(23)   VALUE "079tbl_medyakko".
                05  PIC X(23)   VALUE "080tbl_sryacctplus".
                05  PIC X(23)   VALUE "081tbl_jyurrk_prv".
                05  PIC X(23)   VALUE "082tbl_sryacct_prv".
@@ -126,7 +125,7 @@
                05  PIC X(23)   VALUE "094tbl_hours".
                05  PIC X(23)   VALUE "095tbl_tekioubyomei".
            03  TGTSCM-R     REDEFINES TGTSCM-VAL.
-               05  TGTSCM-OCC  OCCURS  101.
+               05  TGTSCM-OCC  OCCURS  100.
                    07  TGTSCM-NO     PIC 9(03).
                    07  TGTSCM-ID     PIC X(20).
-           03  TGTSCM-MAX      PIC 9(05)   VALUE 101.
+           03  TGTSCM-MAX      PIC 9(05)   VALUE 100.

@@ -114,7 +114,8 @@
                05  WRK-PARA-SYOKBN     PIC  X(01).
                05  WRK-PARA-RECEKBN    PIC  X(01).
            03  WK-SRYYM                PIC  X(06).
-           03  WK-PATH                 PIC  X(64).
+           03  WK-PATHNAME             PIC  X(64).
+           03  WK-TABLE                PIC  X(64).
            03  WK-TYPE                 PIC  X(10).
            03  WK-SPACE                PIC  X(01).
            03  WK-STPNT                PIC  9(06).
@@ -159,7 +160,6 @@
       *
       *    シェル用領域
            COPY    "CPSHELLTBL.INC".
-           COPY    "ORCA-DBPATH".
       *
       *
       *****************************************************************
@@ -180,7 +180,6 @@
       *修正/*終了*03.06.05*********************************************
       *    連絡
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
       *
       *     テーブルアクセス
            COPY    "MCPAREA".
@@ -219,16 +218,18 @@
       *****************************************************************
        000-DBOPEN-SEC                  SECTION.
       *
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
            MOVE    "DBOPEN"            TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC.
       *
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
            MOVE    "DBSTART"           TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC.
       *
        000-DBOPEN-EXT.
@@ -239,16 +240,18 @@
       *****************************************************************
        000-DBCLOSE-SEC                 SECTION.
       *
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
            MOVE    "DBCOMMIT"          TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC.
       *
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
            MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC.
       *
        000-DBCLOSE-EXT.
@@ -306,24 +309,23 @@
       *修正/*開始*03.06.05*********************************************
            MOVE    SPACE               TO  SYS-1009-REC.
            MOVE    "1009"              TO  SYS-1009-KANRICD.
-           MOVE    ZERO                TO  SYS-1009-STYUKYMD.
-           MOVE    ALL "9"             TO  SYS-1009-EDYUKYMD.
+           MOVE    WK-TBL-SYSYMD       TO  SYS-1009-STYUKYMD
+                                           SYS-1009-EDYUKYMD
       *    システム管理検索
            MOVE    SYS-1009-REC        TO  MCPDATA-REC.
-           MOVE    WK-TBL-SYSYMD       TO  ORC-DBYMD.
            MOVE    "DBSELECT"          TO  MCP-FUNC.
-           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH.
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC.
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"         USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               CALL    "MONFUNC"       USING
+                                       MCPAREA
+                                       MCPDATA-REC
                MOVE    MCPDATA-REC         TO  SYS-1009-REC
            ELSE
                INITIALIZE                  SYS-1009-REC
@@ -331,11 +333,11 @@
       *
            INITIALIZE              MCPAREA.
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC.
-           MOVE    "SYSKANRI-KEY2" TO  ORC-DBPATH.
-           CALL    "ORCMCPSUB"     USING
-                                   MCPAREA
-                                   ORCMCPAREA
-                                   MCPDATA-REC.
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key2"          TO  MCP-PATHNAME
+           CALL    "MONFUNC"       USING
+                                       MCPAREA
+                                       MCPDATA-REC.
       *修正/*終了*03.06.05*********************************************
       *
        T-000-CHEKCHEK-EXT.
@@ -367,7 +369,8 @@
                    ".SLT"              DELIMITED  BY    SIZE
                                        INTO       EIE01PARA-FILE.
            MOVE    SPACE               TO  EIECSPARA-FILE-ID.
-           MOVE    SPACE               TO  WK-PATH.
+           MOVE    SPACE               TO  WK-TABLE.
+           MOVE    SPACE               TO  WK-PATHNAME.
            MOVE    SPACE               TO  WK-SRYYM.
            MOVE    SPACE               TO  WK-TBL2.
            MOVE    ZERO                TO  FLG-END.
@@ -387,7 +390,11 @@
                  NOT  AT  END
                    MOVE    EIE01-REC(1:6)    TO  WK-SRYYM
                    MOVE    EIE01-REC(8:128)  TO  EIECSPARA-FILE-ID
-                   MOVE    EIE01-REC(137:64) TO  WK-PATH
+                   MOVE    WK-TBL-NAME(IDX2) TO  WK-TABLE
+                   MOVE    "all"             TO  WK-PATHNAME
+                   IF    ( WK-TABLE      =   "tbl_jyurrk_prv" )
+                       MOVE    "all3"        TO  WK-PATHNAME
+                   END-IF
                    PERFORM UNTIL   FLG-END   NOT  =  ZERO
                        READ    EIE01-FILE
                          AT   END
@@ -423,10 +430,10 @@
                    PERFORM T-001-SRYYMSET-01-SEC
                END-IF
                MOVE    "DBSELECT"      TO  MCP-FUNC
-               MOVE    WK-PATH         TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"     USING
+               MOVE    WK-TABLE        TO  MCP-TABLE
+               MOVE    WK-PATHNAME     TO  MCP-PATHNAME
+               CALL    "MONFUNC"     USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
       *
                IF  MCP-RC   =   ZERO
@@ -444,10 +451,10 @@
       *
                INITIALIZE              MCPAREA
                MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-               MOVE    WK-PATH         TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"     USING
+               MOVE    WK-TABLE        TO  MCP-TABLE
+               MOVE    WK-PATHNAME     TO  MCP-PATHNAME
+               CALL    "MONFUNC"       USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
       *
                CLOSE                       EIECS-FILE
@@ -462,42 +469,42 @@
       *
            EVALUATE    WK-TBL-MSG (IDX2)(1:10)
                WHEN    "JYURRK    "
-                   MOVE    "JYURRK-ALL2"   TO  WK-PATH
+                   MOVE    "all2"          TO  WK-PATHNAME
                    MOVE    WK-SRYYM        TO  MCPDATA-REC(WK-SRYYM-S:6)
                    MOVE    "%"             TO  MCPDATA-REC(WK-SRYYM-L:1)
                WHEN    "PTBYOMEI  "
-                   MOVE    "PTBYOMEI-ALL2" TO  WK-PATH
+                   MOVE    "all2"          TO  WK-PATHNAME
                    MOVE    WK-SRYYM        TO  MCPDATA-REC(WK-SRYYM-S:6)
                    MOVE    "%"             TO  MCPDATA-REC(WK-SRYYM-L:1)
                WHEN    "SRYACCT   "
-                   MOVE    "SRYACCT-ALL2"  TO  WK-PATH
+                   MOVE    "all2"          TO  WK-PATHNAME
                    MOVE    WK-SRYYM        TO  MCPDATA-REC(WK-SRYYM-S:6)
                WHEN    "SRYACT    "
-                   MOVE    "SRYACT-ALL2"   TO  WK-PATH
+                   MOVE    "all2"          TO  WK-PATHNAME
                    MOVE    WK-SRYYM        TO  MCPDATA-REC(WK-SRYYM-S:6)
                WHEN    "WKSRYACT  "
-                   MOVE    "WKSRYACT-ALL2" TO  WK-PATH
+                   MOVE    "all2"          TO  WK-PATHNAME
                    MOVE    WK-SRYYM        TO  MCPDATA-REC(WK-SRYYM-S:6)
                    MOVE    "%"             TO  MCPDATA-REC(WK-SRYYM-L:1)
                WHEN    "SANTEI    "
-                   MOVE    "SANTEI-ALL2"   TO  WK-PATH
+                   MOVE    "all2"          TO  WK-PATHNAME
                    MOVE    WK-SRYYM        TO  MCPDATA-REC(WK-SRYYM-S:6)
                WHEN    "SEIKYU    "
-                   MOVE    "SEIKYU-ALL2"   TO  WK-PATH
+                   MOVE    "all2"          TO  WK-PATHNAME
                    MOVE    WK-SRYYM        TO  MCPDATA-REC(WK-SRYYM-S:6)
                WHEN    "BD002     "
-                   MOVE    "BD002-ALL2"    TO  WK-PATH
+                   MOVE    "all2"          TO  WK-PATHNAME
                    MOVE    WK-SRYYM        TO  MCPDATA-REC(WK-SRYYM-S:6)
                    MOVE    "%"             TO  MCPDATA-REC(53:1)
       *修正/*開始*03.05.12*********************************************
                WHEN    "NYUINACCT "
-                   MOVE    "NYUINACCT-ALL2"  TO  WK-PATH
+                   MOVE    "all2"          TO  WK-PATHNAME
                    MOVE    WK-SRYYM        TO  MCPDATA-REC(WK-SRYYM-S:6)
                WHEN    "NYUINACT  "
-                   MOVE    "NYUINACT-ALL2" TO  WK-PATH
+                   MOVE    "all2"          TO  WK-PATHNAME
                    MOVE    WK-SRYYM        TO  MCPDATA-REC(WK-SRYYM-S:6)
                WHEN    "PTTEIKIRRK"
-                   MOVE    "PTTEIKIRRK-ALL2" TO  WK-PATH
+                   MOVE    "all2"          TO  WK-PATHNAME
                    MOVE    WK-SRYYM        TO  MCPDATA-REC(WK-SRYYM-S:6)
       *修正/*終了*03.05.12*********************************************
            END-EVALUATE.
@@ -510,11 +517,12 @@
        T-001-TBLFETCH-01-SEC             SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC.
-           MOVE    WK-PATH             TO  ORC-DBPATH.
-           CALL    "ORCMCPSUB"         USING
+           MOVE    WK-TABLE            TO  MCP-TABLE
+           MOVE    WK-PATHNAME         TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC.
+                                       MCPDATA-REC
+           .
       *
        T-001-TBLFETCH-01-EXT.
            EXIT.
@@ -656,18 +664,18 @@
       *
                    MOVE    PTNUM-REC           TO  MCPDATA-REC
                    MOVE    "DBSELECT"          TO  MCP-FUNC
-                   MOVE    "PTNUM-KEY"         TO  ORC-DBPATH
-                   CALL    "ORCMCPSUB"         USING
+                   MOVE    "tbl_ptnum"         TO  MCP-TABLE
+                   MOVE    "key"               TO  MCP-PATHNAME
+                   CALL    "MONFUNC"           USING
                                                MCPAREA
-                                               ORCMCPAREA
                                                MCPDATA-REC
       *
                    IF  MCP-RC    =   ZERO
                        MOVE    "DBFETCH"           TO  MCP-FUNC
-                       MOVE    "PTNUM-KEY"         TO  ORC-DBPATH
-                       CALL    "ORCMCPSUB"         USING
+                       MOVE    "tbl_ptnum"         TO  MCP-TABLE
+                       MOVE    "key"               TO  MCP-PATHNAME
+                       CALL    "MONFUNC"           USING
                                                    MCPAREA
-                                                   ORCMCPAREA
                                                    MCPDATA-REC
                        IF  MCP-RC    =   ZERO
                            MOVE    MCPDATA-REC         TO  PTNUM-REC
@@ -676,10 +684,10 @@
       *
                    INITIALIZE                  MCPAREA
                    MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-                   MOVE    "PTNUM-KEY"         TO  ORC-DBPATH
-                   CALL    "ORCMCPSUB"         USING
+                   MOVE    "tbl_ptnum"         TO  MCP-TABLE
+                   MOVE    "key"               TO  MCP-PATHNAME
+                   CALL    "MONFUNC"           USING
                                                MCPAREA
-                                               ORCMCPAREA
                                                MCPDATA-REC
                END-IF
       *
