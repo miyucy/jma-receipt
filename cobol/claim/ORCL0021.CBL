@@ -1975,16 +1975,14 @@
            MOVE    "¸øÈñ°ìÉôÉéÃ´¶â"    TO  TBL-ALSNAME
                                                       (IDX-LF IDX-IJ)
       *    Ä´À°¶â
-           IF      SYU-CHOSEI      NOT =   ZERO
-               ADD     1                   TO  IDX-IJ
-               MOVE    IDX-IJ              TO  TBL-IJICD(IDX-LF IDX-IJ)
-               MOVE    "0"                 TO  TBL-SRYSYUBETSU
-                                                        (IDX-LF IDX-IJ)
-               MOVE    SYU-CHOSEI          TO  TBL-MEISAITANKA
+           ADD     1                   TO  IDX-IJ
+           MOVE    IDX-IJ              TO  TBL-IJICD(IDX-LF IDX-IJ)
+           MOVE    "0"                 TO  TBL-SRYSYUBETSU
+                                                     (IDX-LF IDX-IJ)
+           MOVE    SYU-CHOSEI          TO  TBL-MEISAITANKA
                                                     (IDX-LF IDX-IJ)
-               MOVE    "Ä´À°¶â"            TO  TBL-ALSNAME
+           MOVE    "Ä´À°¶â"            TO  TBL-ALSNAME
                                                       (IDX-LF IDX-IJ)
-           END-IF
       *
       *    ÀÁµá¶â³Û
            ADD     1                   TO  IDX-IJ
