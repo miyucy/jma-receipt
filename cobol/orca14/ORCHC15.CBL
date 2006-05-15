@@ -31,6 +31,7 @@
       *  01.00.03    NACL-多々納  02.09.13  印刷サプの追加
       *  01.00.04    NACL-太田    03.06.12  フォームをDIAからMONPEに変更
       *  01.00.05    NACL-多々納  03/06/27  出力先プリンタサブ追加
+      *  01.00.06    NACL-多々納  06/05/15  MONFUNC 対応 他
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -133,13 +134,6 @@
            03  WRK-MOJI                PIC X(10).
            03  WRK-MOJISU              PIC 9(02).
       *
-      *   日本語数字
-       01  TBL-SUJI-AREA.
-           03  FILLER          PIC X(20)   VALUE
-              "１２３４５６７８９０".
-       01  TBL-SUJI-R          REDEFINES   TBL-SUJI-AREA.
-           03  TBL-SUJI        PIC X(02)   OCCURS   10.
-      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -183,7 +177,7 @@
       *
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
+      *****COPY    "CPORCMCP.INC".
       *
       *
       *****************************************************************
@@ -291,42 +285,20 @@
       *　　印刷用データ出力
               WRITE  HC15
       *
-      ***** MOVE   "HC01.sh"           TO  SHELL-ID
-      *     MOVE   "HC15.dia"          TO  SHELL-DIA
-      *     MOVE   "HC15.def"          TO  SHELL-DEF
-      *     MOVE   HC01PARA            TO  SHELL-DAT
-      ***** MOVE   SYS-1031-PRTNM(7)   TO  SHELL-PRTNM 
             CLOSE                       PRT-FILE
       *
             INITIALIZE                 ORCSMKPRTAREA
             MOVE   "HC01.sh"           TO  MKPRT-ID
-      *      MOVE   "HC15.dia"          TO  MKPRT-DIA
-      *      MOVE   "HC15.def"          TO  MKPRT-DEF
             MOVE   "HCM15.red"         TO  MKPRT-DIA
             MOVE   SPACE               TO  MKPRT-DEF
             MOVE   HC01PARA            TO  MKPRT-DAT
             MOVE   SYS-1031-PRTNM(7)   TO  MKPRT-PRTNM
             CALL   "ORCSMKPRT"         USING
                                        ORCSMKPRTAREA
-      ***** 印刷用スクリプト処理
-      *★   ETC-EXEC SHELL   SHELL-AREA 10
-      *    MOVE    SHELL-NAME          TO  SHELLTBL-NAME
-      *    MOVE    SHELL-ARG1          TO  SHELLTBL-ARG1
-      *    MOVE    SHELL-ARG2          TO  SHELLTBL-ARG2
-      *    MOVE    SHELL-ARG3          TO  SHELLTBL-ARG3
-      *    MOVE    SHELL-ARG4          TO  SHELLTBL-ARG4
-      *    MOVE    SHELL-ARG5          TO  SHELLTBL-ARG5
-      *    MOVE    SHELLTBL            TO  MCPDATA-REC
-      *    MOVE    "SHELL"             TO  MCP-FUNC
-      *    MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
-      *    CALL    "MCPSUB"            USING
-      *            MCPAREA
-      **********   MCPDATA-REC
       *
            .
        400-PRINT-EXT.
            EXIT.
-      *
       *
       *****************************************************************
       *    初期編集処理
@@ -343,36 +315,6 @@
                                            ORCSPRTNMAREA
                                            SPA-AREA
                                            SYS-1031-REC
-      *
-      *****出力先プリンタ名割り当て情報編集
-      *    MOVE    SPACE               TO  SYS-1031-REC
-      *    INITIALIZE                  SYS-1031-REC
-      *    MOVE    "1031"              TO  SYS-1031-KANRICD
-      *    MOVE    "*"                 TO  SYS-1031-KBNCD
-      *    MOVE    SYS-1031-REC        TO  MCPDATA-REC
-      *    MOVE    "DBSELECT"          TO  MCP-FUNC
-      *    MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-      *    MOVE    SPA-SYSYMD          TO  ORC-DBYMD
-      *    CALL    "ORCMCPSUB"          USING
-      *                                 MCPAREA
-      *                                 ORCMCPAREA
-      *                                 MCPDATA-REC
-      *    IF      MCP-RC              =   ZERO
-      *        MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-      *        PERFORM 900-KANRIMST-READ-SEC
-      *        IF      MCP-RC              =   ZERO
-      *            MOVE    MCPDATA-REC     TO  SYS-1031-REC
-      *        END-IF
-      *    ELSE
-      *        INITIALIZE                  SYS-1031-REC
-      *        MOVE    1               TO  FLG-SYSKANRI
-      *    END-IF
-      *    MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-      *    MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-      *    CALL    "ORCMCPSUB"          USING
-      *                                 MCPAREA
-      *                                 ORCMCPAREA
-      *****                             MCPDATA-REC
       *
       *    発行日
            MOVE    SPA-SYSYMD          TO  WRK-SYMD
@@ -449,46 +391,6 @@
            MOVE    LNK-DAY2-EDTYMD3    TO  WRK-HENYMDG
            .
        31012-SEIWA-HEN-EXT.
-           EXIT.
-      *****************************************************************
-      *    システム管理マスタ読み込み処理
-      *****************************************************************
-       900-KANRIMST-READ-SEC         SECTION.
-      *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    ZERO            TO  FLG-SYSKANRI
-           ELSE
-               MOVE    1               TO  FLG-SYSKANRI
-           END-IF
-      *
-           .
-       900-KANRIMST-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    予約マスター読込
-      *****************************************************************
-       900-YOYAKU-READ-SEC         SECTION.
-      *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    ZERO                TO  FLG-YYK
-               MOVE    MCPDATA-REC         TO  YYK-REC
-           ELSE
-               MOVE    "1"                 TO  FLG-YYK
-           END-IF
-           .
-      *
-       900-YOYAKU-READ-EXT.
            EXIT.
       *
       *****************************************************************

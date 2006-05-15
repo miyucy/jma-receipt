@@ -23,7 +23,7 @@
       *  コンポーネント名  : エラーメッセージ（ＥＲＲ）
       *  管理者            : 
       *  作成日付    作業者        記述
-      *  XX.XX.XX    ＮＮＮ        新規作成
+      *  01.00.01    NACL-多々納  06/05/12  MONFUNC 対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -50,7 +50,7 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
+      **** COPY    "CPORCMCP.INC".
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -133,10 +133,9 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL   "ORCMCPSUB"   USING
-                                MCPAREA
-                                ORCMCPAREA
-                                MCPDATA-REC.
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        900-PUT-WINDOW-EXT.
