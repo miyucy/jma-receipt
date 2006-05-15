@@ -914,7 +914,7 @@
       *
        01  WRK-CONS-AREA.
       *    日計表レコード記載の条件点数
-           03  WRK-CONS-JYOGEN         PIC 9(06)   VALUE   350000.
+           03  WRK-CONS-JYOKEN-TENSU   PIC 9(08)   VALUE   350000.
       *    外来迅速検体検査加算
            03  WRK-CONS-SRYCD          PIC X(09)   VALUE   "160177770".
       *    検査日　日
@@ -1359,8 +1359,20 @@
            PERFORM 910-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC      TO  SYS-2005-REC
+               IF      SYS-2005-NI-JYOKEN (3)  NOT NUMERIC
+                   MOVE    WRK-CONS-JYOKEN-TENSU
+                                               TO  SYS-2005-NI-JYOKEN(3)
+               END-IF
+               IF      SYS-2005-NI-JYOKEN (4)  NOT NUMERIC
+                   MOVE    WRK-CONS-JYOKEN-TENSU
+                                               TO  SYS-2005-NI-JYOKEN(4)
+               END-IF
            ELSE    
                MOVE    SPACE            TO  SYS-2005-REC
+               INITIALIZE                   SYS-2005-REC
+               MOVE    WRK-CONS-JYOKEN-TENSU
+                                        TO  SYS-2005-NI-JYOKEN(3)
+                                            SYS-2005-NI-JYOKEN(4)
            END-IF
            IF      SYS-2005-SYUBYOHENFLG    =   SPACE
                MOVE    ZERO             TO  SYS-2005-SYUBYOHENFLG
@@ -1368,6 +1380,9 @@
            IF      SYS-2005-RECECOMKBN      =   SPACE
                MOVE    ZERO             TO  SYS-2005-RECECOMKBN
            END-IF
+      *
+           DISPLAY "2005 NI-JYOKEN (3)=" SYS-2005-NI-JYOKEN(3)
+                                 " (4)=" SYS-2005-NI-JYOKEN(4)
       *         
       *    レセプト編集区分情報
            MOVE    SPACE           TO  SYS-2009-REC
@@ -4170,16 +4185,17 @@
                PERFORM 200722-YKZ-HENSYU-SEC
            END-PERFORM            
       *    日計表データの編集
-           IF    ( WRK-TBLMAX6         >   ZERO             )                 
-           AND   ( RECE62-RJNGAIFTN    >=  WRK-CONS-JYOGEN  )
-               EVALUATE    RECE641-SRYKBN
-                   WHEN    "21"    THRU    "28"
-                   WHEN    "31"    THRU    "33"
-                   WHEN    "40"
-                   WHEN    "50"  
-                   WHEN    "54"  
+           IF    ( WRK-TBLMAX6         >   ZERO                        )
+           AND   ( RECE641-SRYKBN (1:1)
+                                       =   "2" OR  "3"  OR  "4" OR  "5")
+               IF    ( RECE62-TEISYUTUSAKI   =   "1"                )
+               AND   ( RECE62-RJNGAIFTN  >=  SYS-2005-NI-JYOKEN (3) )
                        PERFORM 200725-NIKKEI-HENSYU-SEC
-               END-EVALUATE
+               END-IF
+               IF    ( RECE62-TEISYUTUSAKI   =   "2"                )
+               AND   ( RECE62-RJNGAIFTN  >=  SYS-2005-NI-JYOKEN (4) )
+                       PERFORM 200725-NIKKEI-HENSYU-SEC
+               END-IF
            END-IF
       *
       *    特定器材データの編集                 
@@ -5944,7 +5960,8 @@
                            MOVE    RECE62-TEISYUTUSAKI
                                                    TO KEY-N-TEISYUTUSAKI
       *
-                           DISPLAY "RECE62  PTNUM=" RECE62-PTNUM     
+                           DISPLAY "RECE62  PTNUM=" RECE62-PTNUM  
+                                   "  RJNGAIFTN=" RECE62-RJNGAIFTN    
                        END-IF
                END-READ
            END-PERFORM

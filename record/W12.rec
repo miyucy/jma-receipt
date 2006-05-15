@@ -9,9 +9,6 @@ W12	{
 		note3	{
 			pageno	int;
 			fi23	{
-				RECEDENOUT	{
-					value	varchar(30);
-				};
 				PREFPRGID	{
 					value	varchar(15);
 				};
@@ -71,13 +68,6 @@ W12	{
 					count	int;
 					item	varchar(10)[2];
 				};
-				RECECOMKBN_COMBO	{
-					RECECOMKBN	{
-						value	varchar(26);
-					};
-					count	int;
-					item	varchar(26)[2];
-				};
 				BYOMEIHENKBN_COMBO	{
 					BYOMEIHENKBN	{
 						value	varchar(20);
@@ -98,20 +88,6 @@ W12	{
 					};
 					count	int;
 					item	varchar(20)[2];
-				};
-				SYARECEKBN_COMBO	{
-					SYARECEKBN	{
-						value	varchar(24);
-					};
-					count	int;
-					item	varchar(24)[4];
-				};
-				KKHRECEKBN_COMBO	{
-					KKHRECEKBN	{
-						value	varchar(24);
-					};
-					count	int;
-					item	varchar(24)[4];
 				};
 				SYAOCRKBN_COMBO	{
 					SYAOCRKBN	{
@@ -175,6 +151,44 @@ W12	{
 					};
 					count	int;
 					item	varchar(26)[5];
+				};
+			};
+			fi28	{
+				SYARECEKBN_COMBO	{
+					SYARECEKBN	{
+						value	varchar(24);
+					};
+					count	int;
+					item	varchar(24)[4];
+				};
+				KKHRECEKBN_COMBO	{
+					KKHRECEKBN	{
+						value	varchar(24);
+					};
+					count	int;
+					item	varchar(24)[4];
+				};
+				RECEDENOUT	{
+					value	varchar(30);
+				};
+				RECECOMKBN_COMBO	{
+					RECECOMKBN	{
+						value	varchar(26);
+					};
+					count	int;
+					item	varchar(26)[2];
+				};
+				NI_JYOKEN1 {
+					value	number(8);
+				};
+				NI_JYOKEN2 {
+					value	number(8);
+				};
+				NI_JYOKEN3 {
+					value	number(8);
+				};
+				NI_JYOKEN4 {
+					value	number(8);
 				};
 			};
 			fi26	{

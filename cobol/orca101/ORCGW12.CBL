@@ -64,6 +64,10 @@
       *  02.07.02    NACL-藤原    05/12/12  国保レセプト編綴順対応
       *                                     MONFUNC対応
       *  02.07.03    NACL-藤原    06/02/01  主科対応
+      *  
+      *  02.09.01    NACL-藤原    06/05/12  改定通信医１６０４９号
+      *                                     レセ電日計表レコード記録条件
+      *                                     の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -87,7 +91,7 @@
                05  SPA-GMN-PAGE        PIC 9(02).
                05  SPA-GMN-LINE        PIC 9(02).
                05  SPA-GMN-MAX         PIC 9(03).
-               05  SPA-GMN-CUR         PIC 9(02).
+               05  SPA-GMN-CUR         PIC 9(03).
       *
                05  SPA-GMN-AREA.
                    07  SPA-GMN-HSTYUKYMD       PIC X(09).
@@ -288,7 +292,6 @@
                                               PIC X(22).
                        09  SPA-GMN-HKNJANUM   PIC X(08).
                        09  SPA-GMN-HKNJANAME  PIC X(50).
-                       09  SPA-GMN-SELNUM     PIC 9(03).
                        09  SPA-GMN-STYUKYMD   PIC X(10).
                        09  SPA-GMN-EDYUKYMD   PIC X(10).
                        09  SPA-GMN-SYUKA-KBN-G.
@@ -321,6 +324,10 @@
                            11  SPA-GMN-F1     PIC X(01).
                            11  SPA-GMN-SYUKA-SELECTMEI
                                               PIC X(28).
+                       09  SPA-GMN-NI-JYOKEN1 PIC 9(08).
+                       09  SPA-GMN-NI-JYOKEN2 PIC 9(08).
+                       09  SPA-GMN-NI-JYOKEN3 PIC 9(08).
+                       09  SPA-GMN-NI-JYOKEN4 PIC 9(08).
       *                                        
                    07  SPA-GMN-BYOMEIHENKBNLST        OCCURS  2.
                        09  SPA-GMN-BYOMEIHENKBNL
@@ -675,6 +682,10 @@
                05  WRK-HMM         PIC 9(02).
                05  FILLER          PIC X(01)   VALUE   ".".
                05  WRK-HDD         PIC 9(02).
+      *
+       01  WRK-CONST-AREA.
+           03  WRK-CONS-JYOKEN-TENSU
+                                   PIC 9(08)   VALUE   350000.
       *         
       *****************************************************************
       *    ファイルレイアウト
@@ -1270,6 +1281,22 @@
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI            =   ZERO
                MOVE    MCPDATA-REC             TO  SYS-2005-REC
+               IF      SYS-2005-NI-JYOKEN (1)  NOT NUMERIC
+                   MOVE    WRK-CONS-JYOKEN-TENSU
+                                               TO  SYS-2005-NI-JYOKEN(1)
+               END-IF
+               IF      SYS-2005-NI-JYOKEN (2)  NOT NUMERIC
+                   MOVE    WRK-CONS-JYOKEN-TENSU
+                                               TO  SYS-2005-NI-JYOKEN(2)
+               END-IF
+               IF      SYS-2005-NI-JYOKEN (3)   NOT NUMERIC
+                   MOVE    WRK-CONS-JYOKEN-TENSU
+                                               TO  SYS-2005-NI-JYOKEN(3)
+               END-IF
+               IF      SYS-2005-NI-JYOKEN (4)   NOT NUMERIC
+                   MOVE    WRK-CONS-JYOKEN-TENSU
+                                               TO  SYS-2005-NI-JYOKEN(4)
+               END-IF
       *
                IF      SYS-2005-PRTJYUNKBN3    =   SPACE
                    MOVE    SYS-2005-PRTJYUNKBN1    TO
@@ -1580,6 +1607,15 @@
                                            TO  IDY
                    END-IF
                END-PERFORM
+      *
+               MOVE    SYS-2005-NI-JYOKEN (1) TO
+                                           SPA-GMN-NI-JYOKEN1
+               MOVE    SYS-2005-NI-JYOKEN (2) TO
+                                           SPA-GMN-NI-JYOKEN2
+               MOVE    SYS-2005-NI-JYOKEN (3) TO
+                                           SPA-GMN-NI-JYOKEN3
+               MOVE    SYS-2005-NI-JYOKEN (4) TO
+                                           SPA-GMN-NI-JYOKEN4
            END-IF
       *
       *    レセプト（編綴順）情報
@@ -1866,6 +1902,22 @@
            IF     SPA-GMN-SYUKA-KBN    =   SPACE
                MOVE    SPA-GMN-SYUKA-KBNLST (1)
                                            TO  SPA-GMN-SYUKA-KBN-G
+           END-IF
+           IF      SPA-GMN-NI-JYOKEN1  =   ZERO
+               MOVE    WRK-CONS-JYOKEN-TENSU
+                                           TO  SPA-GMN-NI-JYOKEN1
+           END-IF                                              
+           IF      SPA-GMN-NI-JYOKEN2  =   ZERO
+               MOVE    WRK-CONS-JYOKEN-TENSU
+                                           TO  SPA-GMN-NI-JYOKEN2
+           END-IF                                              
+           IF      SPA-GMN-NI-JYOKEN3  =   ZERO
+               MOVE    WRK-CONS-JYOKEN-TENSU
+                                           TO  SPA-GMN-NI-JYOKEN3
+           END-IF                                              
+           IF      SPA-GMN-NI-JYOKEN4  =   ZERO
+               MOVE    WRK-CONS-JYOKEN-TENSU
+                                           TO  SPA-GMN-NI-JYOKEN4
            END-IF                                              
       *
            MOVE    1                   TO  SPA-GMN-CUR
@@ -1892,6 +1944,7 @@
                WHEN    "CLICKED"       ALSO    "N03"
                WHEN    "CLICKED"       ALSO    "N04"
                WHEN    "CLICKED"       ALSO    "N05"
+               WHEN    "CLICKED"       ALSO    "N06"
                    PERFORM 440-TAG-CHANGE-SEC
            END-EVALUATE
       *
@@ -1989,6 +2042,10 @@
            MOVE    W12-SYUKA-GAIRAI    TO  SPA-GMN-SYUKA-GAIRAI-G
            MOVE    W12-SYUKA-SELECT    TO  SPA-GMN-SYUKA-SELECT-G
            MOVE    W12-SYUKA-MODE      TO  SPA-GMN-SYUKA-MODE-G
+           MOVE    W12-NI-JYOKEN1      TO  SPA-GMN-NI-JYOKEN1
+           MOVE    W12-NI-JYOKEN2      TO  SPA-GMN-NI-JYOKEN2
+           MOVE    W12-NI-JYOKEN3      TO  SPA-GMN-NI-JYOKEN3
+           MOVE    W12-NI-JYOKEN4      TO  SPA-GMN-NI-JYOKEN4
       *
            .
        4101-GMN-SPA-SET-EXT.
@@ -2015,26 +2072,6 @@
            END-IF
       *
            PERFORM 4108-TENKIHENKBN-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
-           END-IF
-      *
-           PERFORM 4102-SYARECEKBN-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
-           END-IF
-      *
-           PERFORM 4101-KKHRECEKBN-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
-           END-IF
-      *
-           PERFORM 4103-RECEDENOUT-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
-           END-IF
-      *
-           PERFORM 4120-RECECOMKBN-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
@@ -2130,6 +2167,46 @@
            END-IF
       *
            PERFORM 4124-PRTJYUN2-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4102-SYARECEKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4101-KKHRECEKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4103-RECEDENOUT-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4120-RECECOMKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4140-NI-JYOKEN1-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4141-NI-JYOKEN2-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4142-NI-JYOKEN3-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4143-NI-JYOKEN4-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
@@ -2269,7 +2346,7 @@
                END-PERFORM
       *     
                IF      SPA-GMN-KKHRECEKBNMEI   =   SPACE
-                   MOVE    5                      TO  SPA-GMN-CUR
+                   MOVE    101                     TO  SPA-GMN-CUR
                    MOVE    "0002"                  TO  SPA-ERRCD
                END-IF
            END-IF    
@@ -2298,7 +2375,7 @@
                END-PERFORM
       *     
                IF      SPA-GMN-SYARECEKBNMEI   =   SPACE
-                   MOVE    4                       TO  SPA-GMN-CUR
+                   MOVE    100                     TO  SPA-GMN-CUR
                    MOVE    "0003"                  TO  SPA-ERRCD
                END-IF
            END-IF    
@@ -2731,7 +2808,7 @@
                END-PERFORM
       *     
                IF      SPA-GMN-RECECOMKBNMEI   =   SPACE
-                   MOVE    22                      TO  SPA-GMN-CUR
+                   MOVE    103                     TO  SPA-GMN-CUR
                    MOVE    "0013"                  TO  SPA-ERRCD
                END-IF
            END-IF    
@@ -3334,6 +3411,58 @@
            EXIT.
       *
       *****************************************************************
+      *    日計表レコード記録条件（入院外・社保）チェック
+      *****************************************************************
+       4140-NI-JYOKEN1-CHK-SEC   SECTION.
+      *
+           IF      SPA-GMN-NI-JYOKEN1  =   ZERO
+               MOVE    WRK-CONS-JYOKEN-TENSU
+                                           TO  SPA-GMN-NI-JYOKEN1
+           END-IF
+           .
+       4140-NI-JYOKEN1-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    日計表レコード記録条件（入院外・国保）チェック
+      *****************************************************************
+       4141-NI-JYOKEN2-CHK-SEC   SECTION.
+      *
+           IF      SPA-GMN-NI-JYOKEN2  =   ZERO
+               MOVE    WRK-CONS-JYOKEN-TENSU
+                                           TO  SPA-GMN-NI-JYOKEN2
+           END-IF
+           .
+       4141-NI-JYOKEN2-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    日計表レコード記録条件（入院・社保）チェック
+      *****************************************************************
+       4142-NI-JYOKEN3-CHK-SEC   SECTION.
+      *
+           IF      SPA-GMN-NI-JYOKEN3  =   ZERO
+               MOVE    WRK-CONS-JYOKEN-TENSU
+                                           TO  SPA-GMN-NI-JYOKEN3
+           END-IF
+           .
+       4142-NI-JYOKEN3-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    日計表レコード記録条件（入院・国保）チェック
+      *****************************************************************
+       4143-NI-JYOKEN4-CHK-SEC   SECTION.
+      *
+           IF      SPA-GMN-NI-JYOKEN4  =   ZERO
+               MOVE    WRK-CONS-JYOKEN-TENSU
+                                           TO  SPA-GMN-NI-JYOKEN4
+           END-IF
+           .
+       4143-NI-JYOKEN4-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    タグ編集処理
       *****************************************************************
        440-TAG-CHANGE-SEC            SECTION.
@@ -3341,14 +3470,16 @@
            EVALUATE    MCP-WIDGET
                WHEN    "N01"
                    MOVE   0            TO  IDX
-               WHEN    "N04"
+               WHEN    "N06"
                   MOVE    1            TO  IDX
-               WHEN    "N02"
+               WHEN    "N04"
                   MOVE    2            TO  IDX
-               WHEN    "N03"
+               WHEN    "N02"
                   MOVE    3            TO  IDX
-               WHEN    "N05"
+               WHEN    "N03"
                   MOVE    4            TO  IDX
+               WHEN    "N05"
+                  MOVE    5            TO  IDX
            END-EVALUATE
       *
       *    タグが変わったとき項目チェック
@@ -3366,12 +3497,14 @@
                            WHEN    0
                                MOVE    1            TO  SPA-GMN-CUR
                            WHEN    1
-                               MOVE    70           TO  SPA-GMN-CUR
+                               MOVE    100          TO  SPA-GMN-CUR
                            WHEN    2
-                               MOVE    50           TO  SPA-GMN-CUR
+                               MOVE    70           TO  SPA-GMN-CUR
                            WHEN    3
-                               MOVE    11           TO  SPA-GMN-CUR
+                               MOVE    50           TO  SPA-GMN-CUR
                            WHEN    4
+                               MOVE    11           TO  SPA-GMN-CUR
+                           WHEN    5
                                MOVE    90           TO  SPA-GMN-CUR
                        END-EVALUATE
                    END-IF
@@ -3484,6 +3617,10 @@
            MOVE    SPA-GMN-RECESYUBETU-KISAIKBN
                                            TO
                                            SYS-2005-RECESYUBETU-KISAIKBN
+           MOVE    SPA-GMN-NI-JYOKEN1      TO  SYS-2005-NI-JYOKEN(1)
+           MOVE    SPA-GMN-NI-JYOKEN2      TO  SYS-2005-NI-JYOKEN(2)
+           MOVE    SPA-GMN-NI-JYOKEN3      TO  SYS-2005-NI-JYOKEN(3)
+           MOVE    SPA-GMN-NI-JYOKEN4      TO  SYS-2005-NI-JYOKEN(4)
            MOVE    SYS-2005-REC            TO  SYSKANRI-REC
       *     
            PERFORM 800-MCNDATE-SEC
@@ -3862,6 +3999,10 @@
            MOVE    SPA-GMN-SYUKA-GAIRAI-G   TO  W12-SYUKA-GAIRAI
            MOVE    SPA-GMN-SYUKA-MODE-G     TO  W12-SYUKA-MODE
            MOVE    SPA-GMN-SYUKA-SELECT-G   TO  W12-SYUKA-SELECT
+           MOVE    SPA-GMN-NI-JYOKEN1       TO  W12-NI-JYOKEN1
+           MOVE    SPA-GMN-NI-JYOKEN2       TO  W12-NI-JYOKEN2
+           MOVE    SPA-GMN-NI-JYOKEN3       TO  W12-NI-JYOKEN3
+           MOVE    SPA-GMN-NI-JYOKEN4       TO  W12-NI-JYOKEN4
       *     
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >       SPA-GMN-BYOMEIHENKBN-MAX
@@ -4387,12 +4528,6 @@
                     MOVE  "BYOMEIHENKBN1"    TO   MCP-WIDGET
                 WHEN    3
                     MOVE  "TENKIHENKBN"      TO   MCP-WIDGET
-                WHEN    4
-                    MOVE  "SYARECEKBN"       TO   MCP-WIDGET
-                WHEN    5
-                    MOVE  "KKHRECEKBN"       TO   MCP-WIDGET
-                WHEN    6
-                    MOVE  "RECEDENOUT"       TO   MCP-WIDGET
                 WHEN    7
                     MOVE  "KKHOCRKBN"        TO   MCP-WIDGET
                 WHEN    8
@@ -4423,8 +4558,6 @@
                     MOVE  "JIHITEKKSIKBN"    TO   MCP-WIDGET
                 WHEN    21
                     MOVE  "SYAOCRKBN"        TO   MCP-WIDGET
-                WHEN    22
-                    MOVE  "RECECOMKBN"       TO   MCP-WIDGET
                 WHEN    23
                     MOVE  "SRYKAHENKBN"      TO   MCP-WIDGET
                 WHEN    24
@@ -4478,6 +4611,23 @@
                 WHEN    94
                     MOVE  "SYUKA_MODE"       TO   MCP-WIDGET
       *
+                WHEN    100
+                    MOVE  "SYARECEKBN"       TO   MCP-WIDGET
+                WHEN    101
+                    MOVE  "KKHRECEKBN"       TO   MCP-WIDGET
+                WHEN    102
+                    MOVE  "RECEDENOUT"       TO   MCP-WIDGET
+                WHEN    103
+                    MOVE  "RECECOMKBN"       TO   MCP-WIDGET
+                WHEN    104
+                    MOVE  "NI_JYOKEN1"        TO   MCP-WIDGET
+                WHEN    105
+                    MOVE  "NI_JYOKEN2"        TO   MCP-WIDGET
+                WHEN    106
+                    MOVE  "NI_JYOKEN3"        TO   MCP-WIDGET
+                WHEN    107
+                    MOVE  "NI_JYOKEN4"        TO   MCP-WIDGET
+      *
                 WHEN    99
                     MOVE  "B12"              TO   MCP-WIDGET
             END-EVALUATE
@@ -4486,14 +4636,16 @@
                 WHEN    1   THRU    10
                 WHEN    12  THRU    31
                     MOVE    0                TO  W12-PAGENO
-                WHEN    70  THRU    79
+                WHEN    100 THRU    107
                     MOVE    1                TO  W12-PAGENO
-                WHEN    50  THRU    52
+                WHEN    70  THRU    79
                     MOVE    2                TO  W12-PAGENO
-                WHEN    11
+                WHEN    50  THRU    52
                     MOVE    3                TO  W12-PAGENO
-                WHEN    90  THRU    98
+                WHEN    11
                     MOVE    4                TO  W12-PAGENO
+                WHEN    90  THRU    98
+                    MOVE    5                TO  W12-PAGENO
       **********WHEN    99
       **********    MOVE    SPA-W12-PAGENO   TO  W12-PAGENO
             END-EVALUATE
@@ -4514,15 +4666,7 @@
                WHEN    "SYUBYOHENFLG"
                    MOVE    3           TO  SPA-GMN-CUR
                WHEN    "TENKIHENKBN"
-                   MOVE    4           TO  SPA-GMN-CUR
-               WHEN    "SYARECEKBN"
-                   MOVE    5           TO  SPA-GMN-CUR
-               WHEN    "KKHRECEKBN"
-                   MOVE    6           TO  SPA-GMN-CUR
-               WHEN    "RECEDENOUT"
-                   MOVE    22          TO  SPA-GMN-CUR
-               WHEN    "RECECOMKBN"
-                   MOVE    21          TO  SPA-GMN-CUR
+                   MOVE    21           TO  SPA-GMN-CUR
                WHEN    "SYAOCRKBN"
                    MOVE    7           TO  SPA-GMN-CUR
                WHEN    "KKHOCRKBN"
@@ -4610,6 +4754,23 @@
                    MOVE    99          TO  SPA-GMN-CUR
       *
                WHEN    "KKHPRTKBN"
+                   MOVE    99          TO  SPA-GMN-CUR
+      *
+               WHEN    "SYARECEKBN"
+                   MOVE    101         TO  SPA-GMN-CUR
+               WHEN    "KKHRECEKBN"
+                   MOVE    102         TO  SPA-GMN-CUR
+               WHEN    "RECEDENOUT"
+                   MOVE    103         TO  SPA-GMN-CUR
+               WHEN    "RECECOMKBN"
+                   MOVE    104         TO  SPA-GMN-CUR
+               WHEN    "NI_JYOKEN1"
+                   MOVE    105         TO  SPA-GMN-CUR
+               WHEN    "NI_JYOKEN2"
+                   MOVE    106         TO  SPA-GMN-CUR
+               WHEN    "NI_JYOKEN3"
+                   MOVE    107         TO  SPA-GMN-CUR
+               WHEN    "NI_JYOKEN4"
                    MOVE    99          TO  SPA-GMN-CUR
            END-EVALUATE
       *
