@@ -26,6 +26,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-多々納  06/05/15  MONFUNC 対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -97,7 +98,7 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
+      **** COPY    "CPORCMCP.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -211,20 +212,21 @@
            MOVE    WRK-ST-PTNUM        TO  PTNUM-PTNUM
       *
            MOVE    PTNUM-REC           TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "PTNUM-KEY3"        TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_ptnum"         TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "PTNUM-KEY3"        TO  ORC-DBPATH
+               MOVE    "tbl_ptnum"         TO  MCP-TABLE
+               MOVE    "key3"              TO  MCP-PATHNAME
                PERFORM 910-PTNUM-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-PTNUM
            END-IF
       *    対象がない時、システム管理の連番を判定する
            IF      FLG-PTNUM           =   1
+               MOVE    "tbl_ptnum"         TO  MCP-TABLE
+               MOVE    "key3"              TO  MCP-PATHNAME
+               PERFORM 990-DBCLOSE-SEC
                PERFORM 2002-RENNUM-CHK-SEC
                GO      TO     200-MAIN-EXT
            END-IF
@@ -253,10 +255,14 @@
                    MOVE    1                   TO  FLG-END
                ELSE
       *
-                   MOVE    "PTNUM-KEY3"        TO  ORC-DBPATH
+                   MOVE    "tbl_ptnum"         TO  MCP-TABLE
+                   MOVE    "key3"              TO  MCP-PATHNAME
                    PERFORM 910-PTNUM-READ-SEC
                END-IF
            END-PERFORM
+           MOVE    "tbl_ptnum"         TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
       *    対象がない時、システム管理の連番を判定する
            IF     (FLG-PTNUM           =   1  )  AND
@@ -562,11 +568,7 @@
       *****************************************************************
        910-PTNUM-READ-SEC         SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  PTNUM-REC
                MOVE    ZERO            TO  FLG-PTNUM
@@ -577,5 +579,46 @@
       *
            .
        910-PTNUM-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    テーブル検索処理
+      *****************************************************************
+       910-DBSELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       910-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ読み込み処理
+      *****************************************************************
+       920-DBFETCH-SEC                 SECTION.
+      *
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       920-DBFETCH-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢクロース処理
+      *****************************************************************
+       990-DBCLOSE-SEC         SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       990-DBCLOSE-EXT.
            EXIT.
       *
