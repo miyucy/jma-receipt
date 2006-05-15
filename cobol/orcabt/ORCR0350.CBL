@@ -3112,6 +3112,8 @@
                        WHEN    "1"
                            IF    ( RECE62-KENTAIKASANFLG   =   "1"  )
                            AND   ( RECE641-KNSJISGRPKBN    >   ZERO )
+                           AND   ( RECE65-KNSJISKBN (IDX)
+                                                       NOT =   2    )
       *****                AND  (( RECE65-KNSJISKBN (IDX)  =   1    ) OR
       *****                      ( RECE65-SRYCD (IDX)      =
       *****                                            WRK-CONS-SRYCD )) 
