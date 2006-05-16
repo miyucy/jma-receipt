@@ -423,7 +423,9 @@
       *    ¿ôÎÌ
            IF     (WRK-MOJI            =   "6" OR  "7"  OR  "S" ) OR
                  ((WRK-MOJI            =   "1" )   AND
-                  (SPA-COM-SURYO(IDX)  >   1           ))
+                  (SPA-COM-TANICD (IDX)    NOT =   ZERO
+                                               AND SPACE ))
+      ************(SPA-COM-SURYO(IDX)  >   1           ))
               OR ((SPA-COM-INPUTCD(IDX)(1:3)   =   "095" OR
                                                    "096") AND
                   (SPA-COM-SURYO  (IDX)    >   1    ))
