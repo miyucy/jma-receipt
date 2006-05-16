@@ -5594,7 +5594,6 @@
            IF      LNK-SC97-JODOU      >   ZERO
                MOVE    "3"             TO  SPA-COM-IN  (SPA-GMN-IDX)
            END-IF
-      *
       *    行挿入
            IF      SPA-GMN-INPUTCD(SPA-GMN-IDX)(1:1)   =   "+"
                MOVE    SPA-GMN-INPUTCD(SPA-GMN-IDX)(2:)
@@ -5707,8 +5706,9 @@
                                                     (SPA-GMN-IDX)
            ELSE
       *        文字変換・編集処理
-               PERFORM 410112-INPUTCD-HENKAN-SEC
-      *
+               IF      SPA-ERRCD           =   SPACE
+                   PERFORM 410112-INPUTCD-HENKAN-SEC
+               END-IF
            END-IF
       *
            IF      SPA-ERRCD           =   SPACE
