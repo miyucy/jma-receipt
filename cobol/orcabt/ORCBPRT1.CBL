@@ -344,6 +344,13 @@
                    PERFORM 2001-PRTDATA-PRINT-SEC
                    PERFORM 900-PRTDATA-FET-SEC
                END-PERFORM    
+      *
+               MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+               MOVE    PATH-TBL-PRTDATA-KEY2
+                                           TO  MCP-PATH
+               CALL    "MCPSUB"        USING
+                                           MCPAREA
+                                           MCPDATA-REC
                PERFORM 2003-PRTKANRI-UPD-SEC
                PERFORM 900-PRTKANRI-FET-SEC
            END-PERFORM                                
