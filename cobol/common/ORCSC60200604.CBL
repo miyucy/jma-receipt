@@ -1426,6 +1426,12 @@
                MOVE    "9031"              TO  WRK-ERRCD
                MOVE    "1"                 TO  WRK-COM-CUR (IDX-Z)
            END-IF
+      *   £±²ó¤Î¤ß
+           IF   (WRK-COM-NYU-KAI (IDX-Z)   >   1 )  OR
+                (LNK-ORCSC-KAISU           >   1 )
+               MOVE    "9035"              TO  WRK-ERRCD
+               MOVE    "1"                 TO  WRK-COM-CUR (IDX-Z)
+           END-IF
            .
        100113-NYUINSYOKAI-EXT.
            EXIT.

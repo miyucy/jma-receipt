@@ -909,6 +909,18 @@
                                        TO  SPA-ERRMSG
                    MOVE    "診療内容の登録はできません。"
                                        TO  SPA-ERRMSG(25:)
+               WHEN    "9034"
+                   STRING  "既に入院期間中に算定済みです。"
+                                       DELIMITED  BY  SPACE
+                           "算定できません。"
+                                       DELIMITED  BY  SPACE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "9035"
+                   STRING  "入院中に１回のみの算定です。"
+                                       DELIMITED  BY  SPACE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "9100"
                    MOVE    "診療内容が２００行を超えます。"
                                        TO  SPA-ERRMSG
