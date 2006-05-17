@@ -144,6 +144,8 @@
       *
            03  WRK-DSPSEQ          PIC 9(04).
       *
+           03  WRK-PAGE            PIC 9(04).
+      *
            03  WRK-SP-FLG          PIC 9(01).
       *
        01  WRK-INPUTCD-TBL.
@@ -782,6 +784,9 @@
            PERFORM VARYING     IDX-1   FROM    1   BY  1
                    UNTIL      (IDX-1             >   100 )   OR
                               (SPA-ERRCD     NOT =   SPACE )
+               COMPUTE WRK-PAGE        =  ((IDX-1    -   1 )
+                                       /   20  )
+                                       +   1
                PERFORM VARYING     IDX-2     FROM    1   BY  1
                        UNTIL      (IDX-2             >   3   )   OR
                                   (SPA-ERRCD   NOT =   SPACE )
@@ -795,8 +800,13 @@
                            MOVE    WRK-CDSYU       TO  SPA-K023-CDSYU
                                                        (IDX-1 IDX-2)
                        ELSE
+                           IF      WRK-PAGE        =   SPA-K023-PAGE
+                               CONTINUE
+                           ELSE
+                               MOVE    WRK-PAGE        TO  SPA-K023-PAGE
+                           END-IF
                            COMPUTE SPA-K023-MAP    =   IDX-1
-                                                   +  ((SPA-K023-PAGE
+                                                   -  ((SPA-K023-PAGE
                                                    -   1)
                                                    *   20 )
                            MOVE    IDX-2           TO  SPA-K023-CUR
@@ -867,9 +877,9 @@
                END-IF
            END-IF
       *
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      41020-INPUTCD-CHK-EXT
-           END-IF
+      *D   IF      SPA-ERRCD       NOT =   SPACE
+      *        GO      TO      41020-INPUTCD-CHK-EXT
+      *D   END-IF
       *    記号は入力不可とする
            IF      FLG-KANJI           =   1
                MOVE    2                   TO  IDX-C
@@ -913,6 +923,8 @@
                        ELSE
                            IF      WRK-INPUTCD     =   SPA-K023-INPUTCD
                                                             (IDY IDY2)
+      *                表示中の画面をエラー
+                           AND    (SPA-K023-PAGE   =   WRK-PAGE  )
                                MOVE    "0002"          TO  SPA-ERRCD
                            END-IF
                        END-IF
