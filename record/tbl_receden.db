@@ -13,7 +13,7 @@ RECKBN				char(1);
 RENNUM				number(4);
 CREYMD				char(8);
 TOTALTEN			number(10);
-RECEDATA			char(250);
+RECEDATA			char(2500);
 };
 
 primary	{
