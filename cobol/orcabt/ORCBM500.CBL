@@ -203,7 +203,7 @@
       *
        01  TABLE-AREA.
            03  TABLE-OCC               OCCURS  10000.
-               05  TBL-RECEDATA        PIC X(200).
+               05  TBL-RECEDATA        PIC X(2500).
            03  TABLE-MAX               PIC 9(05).
       *  
        01  WRK-CONS-AREA.
@@ -617,7 +617,7 @@
                    INSPECT RECEDEN-RECEDATA   TALLYING    WRK-MOJISU
                                                FOR ALL "," 
                    IF      WRK-MOJISU          =   16
-                       PERFORM VARYING IDX FROM    250 BY  -1
+                       PERFORM VARYING IDX FROM    2500 BY  -1
                                UNTIL   IDX <       1
                            IF      RECEDEN-RECEDATA (IDX:1)
                                                    =   WRK-KAIGYO
@@ -637,7 +637,7 @@
                    INSPECT RECEDEN-RECEDATA    TALLYING    WRK-MOJISU
                                                FOR ALL "," 
                    IF      WRK-MOJISU          =   9
-                       PERFORM VARYING IDX FROM    250 BY  -1
+                       PERFORM VARYING IDX FROM    2500 BY  -1
                                UNTIL   IDX <       1
                            IF      RECEDEN-RECEDATA (IDX:1)
                                                    =   WRK-KAIGYO
@@ -665,7 +665,7 @@
            MOVE    RECEDEN-RECEDATA    TO  TBL-RECEDATA (TABLE-MAX)
       *
            MOVE    ZERO                TO  WRK-REC-LENGTH
-           PERFORM VARYING IDX FROM    250 BY  -1
+           PERFORM VARYING IDX FROM    2500 BY  -1
                    UNTIL   IDX <       1
                IF      RECEDEN-RECEDATA (IDX:1)
                                        =   WRK-KAIGYO
