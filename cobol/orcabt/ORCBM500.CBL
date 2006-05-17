@@ -45,6 +45,10 @@
       *  02.07.02    NACL-藤原    05/12/02  MONFUNC対応
       *
       *  02.08.03    NACL-藤原    06/02/20  主科対応
+      *
+      *  02.09.05    NACL-藤原    06/05/16  改定通信医１６０４９号
+      *                                     症状詳記レコード対応
+      *                                     レセ電データを２５００に変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -65,7 +69,7 @@
       *
       *    レセプト電算ファイル  
        FD  RECE30-FILE.
-       01  RECE30-R         PIC X(200).
+       01  RECE30-R         PIC X(2500).
       *     
       *    エラーファイル
        FD  RECEERR-FILE.
@@ -108,14 +112,14 @@
            03  CNT-RECE10              PIC 9(06).
       *
        01  INDEX-AREA.
-           03  IDW                     PIC 9(03).
+           03  IDW                     PIC 9(05).
            03  IDX                     PIC 9(05). 
-           03  IDY                     PIC 9(03). 
-           03  IDZ                     PIC 9(03).
-           03  IDY1                    PIC 9(03).
-           03  IDY2                    PIC 9(03).
-           03  IDY3                    PIC 9(03).
-           03  IDXX                    PIC 9(03).
+           03  IDY                     PIC 9(05). 
+           03  IDZ                     PIC 9(05).
+           03  IDY1                    PIC 9(05).
+           03  IDY2                    PIC 9(05).
+           03  IDY3                    PIC 9(05).
+           03  IDXX                    PIC 9(05).
       *
        01  KEY-AREA                                VALUE   LOW-VALUE.
            03  KEY-NEW.
@@ -160,19 +164,20 @@
            03  WRK-MCP-TABLE           PIC X(64).
            03  WRK-MCP-PATHNAME        PIC X(64).
       *
-      *     右づめ編集用     
+      *     右ずめ編集用     
            03  WRK-HENKAN              PIC X(20).
            03  WRK-LENGTH              PIC 9(02).
            03  WRK-HENSYU              PIC X(20).
       *    出力データ編集用
            03  WRK-SRYKBN              PIC X(02).
-           03  WRK-REC                 PIC X(200).
-           03  WRK-REC-LENGTH          PIC 9(03).
+           03  WRK-COM-SRYKBN          PIC X(02).
+           03  WRK-REC                 PIC X(2500).
+           03  WRK-REC-LENGTH          PIC 9(04).
            03  WRK-FILE-RENNUM         PIC 9(02).
            03  WRK-HENSYU-AREA.
-               05  WRK-DATA            PIC X(80).
+               05  WRK-DATA            PIC X(2400).
                05  WRK-NUM             PIC ZZZZZZZZZ9.999. 
-               05  WRK-NAGASA          PIC 9(02).
+               05  WRK-NAGASA          PIC 9(04).
                05  WRK-ST              PIC 9(02). 
                05  WRK-SYOSUU          PIC 9(01).
                05  WRK-END             PIC 9(01).
