@@ -3164,7 +3164,7 @@
            IF  SPA-GMN-MAX             >   ZERO
                MOVE    "0102"              TO  SPA-CIDCD
            ELSE
-               MOVE    "1031"              TO  SPA-ERRCD
+               MOVE    "1003"              TO  SPA-ERRCD
            END-IF
       *
            .
