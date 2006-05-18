@@ -87,7 +87,7 @@
                        09  SPA-GMN-USERPG-MEI      PIC X(18).
                    07  SPA-GMN-USERPG-COB.
                        09  SPA-GMN-USERPG-LST      PIC X(20)  OCCURS 2.
-                   07  SPA-USERPG-MAX              PIC 9(04).
+                   07  SPA-USERPG-MAX              PIC 9(02).
       *
       *            ¿ÇÎÅ²Ê
                    07  SPA-GMN-SRYKA-G.
@@ -97,7 +97,7 @@
       *            ¿ÇÎÅ²Ê°ìÍ÷¡Ê¶¦ÄÌ¡Ë
                    07  SPA-GMN-SRYKA-COB.
                        09  SPA-GMN-SRYKA-LST       PIC X(20)  OCCURS 40.
-                   07  SPA-SRYKA-MAX               PIC 9(04).
+                   07  SPA-SRYKA-MAX               PIC 9(03).
       *
                    07  SPA-GMN-POST            PIC X(07).
                    07  SPA-GMN-EDITADRS-NAME   PIC X(100).
@@ -134,7 +134,7 @@
                            11  SPA-GMN-DISCOUNTKBN-KBNCD     PIC X(02).
                            11  SPA-GMN-DISCOUNTKBN-BODY      PIC X(20).
                            11  SPA-GMN-DISCOUNTKBN-RATEKBN   PIC X(02).
-                       09  SPA-DISCOUNTKBN-MAX           PIC 9(04).
+                       09  SPA-DISCOUNTKBN-MAX           PIC 9(03).
       *            ³ä°úÎ¨¡Ê1027¡Ë
                    07  SPA-GMN-DISCOUNT-TBL.
                        09  SPA-GMN-DISCOUNT-LST           OCCURS   99.
@@ -142,7 +142,7 @@
                            11  SPA-GMN-DISCOUNT-TEIRITU      PIC X(01).
                            11  SPA-GMN-DISCOUNT-RITU         PIC 9(07).
                            11  SPA-GMN-DISCOUNT-EDIT         PIC X(14).
-                       09  SPA-DISCOUNT-MAX              PIC 9(04).
+                       09  SPA-DISCOUNT-MAX              PIC 9(03).
       *            ¾õÂÖ£±¡Á£³
                    07  SPA-GMN-CONDITION-TBL.
                        09  SPA-GMN-CONDITION-KBN       OCCURS   3.
@@ -152,14 +152,23 @@
                                13  SPA-GMN-CONDITION-BODY  PIC X(20).
                            11  SPA-GMN-CONDITION-LST2      OCCURS   99.
                                13  SPA-GMN-CONDITION-WORD  PIC X(02).
-                           11  SPA-CONDITION-MAX           PIC 9(04).
+                           11  SPA-CONDITION-MAX           PIC 9(03).
       *            Æþ¶âÊýË¡(1041)
                    07  SPA-GMN-NYUKIN-HOHO-TBL.
                        09  SPA-GMN-NYUKIN-LST           OCCURS   99.
                            11  SPA-GMN-NYUKIN-HOHOL         PIC X(02).
                            11  SPA-GMN-NYUKIN-HL            PIC X(01).
                            11  SPA-GMN-NYUKIN-MEIL          PIC X(20).
-                       09  SPA-NYUKIN-MAX                   PIC 9(04).
+                       09  SPA-NYUKIN-MAX                   PIC 9(03).
+      *            ÀÁµá½ñÈ¯¹Ô¶èÊ¬
+                   07  SPA-GMN-SKYPRTFLG-G.
+                       09  SPA-GMN-SKYPRTFLG          PIC X(01).
+                       09  SPA-GMN-SKYPRTFLG-H        PIC X(01).
+                       09  SPA-GMN-SKYPRTFLG-MEI      PIC X(28).
+                   07  SPA-GMN-SKYPRTFLG-COB.
+                       09  SPA-GMN-SKYPRTFLG-LST      PIC X(30)
+                                                      OCCURS 4.
+                   07  SPA-SKYPRTFLG-MAX              PIC 9(02).
       *            ÊÝ¸±¾ðÊó
                    07  SPA-GMN-HKN-AREA.
       *                ÊÝ¸±¾ðÊó

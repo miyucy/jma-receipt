@@ -411,6 +411,13 @@ P02	{
 					count	int;
 					item	varchar(20)[2];
 				};
+				P02_SKYPRTFLG_COB	{
+					P02_SKYPRTFLG	{
+						value	varchar(30);
+					};
+					count	int;
+					item	varchar(30)[4];
+				};
 			};
 			FP3	{
 				P027_SELNUM	{

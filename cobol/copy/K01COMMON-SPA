@@ -40,6 +40,8 @@
                05  SPA-SYOHOPRTFLG         PIC  9(01).
       *処方区分
                05  SPA-SYOHOKBN            PIC X(01).
+      *請求書発行フラグ（システム管理）
+               05  SPA-SKYPRTFLG-SYS       PIC X(01).
       *請求書発行フラグ
                05  SPA-SKYPRTFLG           PIC X(01).
       *診療費明細書発行フラグ
@@ -453,7 +455,7 @@
                        09  SPA-GMN-SRYKAL      PIC X(02).
                        09  SPA-GMN-F1L         PIC X(01).
                        09  SPA-GMN-SRYKAMEIL   PIC X(12).
-                   07  SPA-SRYKA-MAX           PIC 9(04).
+                   07  SPA-SRYKA-MAX           PIC 9(02).
       *
       *戻り先
            03  SPA-HZN-MOTOPG          PIC X(08).

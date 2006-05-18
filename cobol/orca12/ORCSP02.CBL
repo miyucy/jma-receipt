@@ -39,6 +39,7 @@
       * 02.00.07     NACL-多々納  05/02/10  特定の受給者番号表示追加
       * 02.00.08     NACL-多々納  05/11/14  MONFUNC 対応
       * 02.00.09     NACL-多々納  06/02/24  主科対応対応
+      * 02.00.10     NACL-多々納  06/05/18  請求書発行区分追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1267,6 +1268,13 @@
                MOVE    SPA-GMN-USERPG-LST (1)  TO  SPA-GMN-USERPG-G
            END-IF
       *
+      *    請求書発行区分
+           MOVE    "0 請求書不要"      TO  SPA-GMN-SKYPRTFLG-LST (1)
+           MOVE    "1 請求書必要"      TO  SPA-GMN-SKYPRTFLG-LST (2)
+           MOVE    "2 請求書必要（請求あり）"
+                                       TO  SPA-GMN-SKYPRTFLG-LST (3)
+           MOVE    3                   TO  SPA-SKYPRTFLG-MAX
+           MOVE    SPACE               TO  SPA-GMN-SKYPRTFLG-G
       *
            .
        1005-COMB-SET-EXT.
@@ -1557,6 +1565,8 @@
            MOVE    PTINF-CONDITION-3   TO  SPA-GMN-CONDITION(3)
       *    入金方法
            MOVE    PTINF-NYUKIN-HOHO   TO  SPA-GMN-NYUKIN-HOHO
+      *    請求書発行区分
+           MOVE    PTINF-SKYPRTFLG     TO  SPA-GMN-SKYPRTFLG
       *
       *    連絡先
            MOVE    PTINF-FAX           TO  SPA-GMN21-FAX
@@ -1661,6 +1671,16 @@
                                        =   SPA-GMN-NYUKIN-HOHOL(IDX)
                    MOVE    SPA-GMN-NYUKIN-LST (IDX)
                                        TO  SPA-GMN-NYUKIN-HOHO-G
+               END-IF
+           END-PERFORM
+      *    請求書発行区分
+           PERFORM   VARYING   IDX   FROM    1   BY  1
+                     UNTIL     IDX       >   SPA-SKYPRTFLG-MAX
+               IF      SPA-GMN-SKYPRTFLG
+                                       =   SPA-GMN-SKYPRTFLG-LST(IDX)
+                                                           (1:1)
+                   MOVE    SPA-GMN-SKYPRTFLG-LST (IDX)
+                                       TO  SPA-GMN-SKYPRTFLG-G
                END-IF
            END-PERFORM
       *
@@ -2746,6 +2766,7 @@
            MOVE    SPA-GMN-COMMENT-1       TO  P02-P02-COMMENT1
            MOVE    SPA-GMN-COMMENT-2       TO  P02-P02-COMMENT2
            MOVE    SPA-GMN-NYUKIN-HOHO-G   TO  P02-P02-NYUKIN
+           MOVE    SPA-GMN-SKYPRTFLG-G     TO  P02-P02-SKYPRTFLG
       *
            MOVE    ZERO                TO  P02-P02-CONDITION1-COUNT
            MOVE    ZERO                TO  P02-P02-CONDITION2-COUNT
@@ -2824,6 +2845,15 @@
                MOVE    SPA-GMN-NYUKIN-LST  (IDX)
                                        TO  P02-P02-NYUKIN-ITEM(IDX)
                MOVE    IDX             TO  P02-P02-NYUKIN-COUNT
+           END-PERFORM
+      *    入金方法
+           MOVE    SPA-GMN-SKYPRTFLG-G     TO  P02-P02-SKYPRTFLG
+           MOVE    ZERO                TO  P02-P02-SKYPRTFLG-COUNT
+           PERFORM VARYING   IDX       FROM    1   BY  1
+                   UNTIL     IDX           >   SPA-SKYPRTFLG-MAX
+               MOVE    SPA-GMN-SKYPRTFLG-LST  (IDX)
+                                       TO  P02-P02-SKYPRTFLG-ITEM(IDX)
+               MOVE    IDX             TO  P02-P02-SKYPRTFLG-COUNT
            END-PERFORM
       *
       *    保険情報

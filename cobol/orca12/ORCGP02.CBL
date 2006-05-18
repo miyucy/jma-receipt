@@ -3514,6 +3514,9 @@
                WHEN    "0166"
                    MOVE    "入金方法入力エラー"
                                                TO  SPA-ERRMSG
+               WHEN    "0167"
+                   MOVE    "請求書発行区分入力エラー"
+                                               TO  SPA-ERRMSG
                WHEN    "0036"
                    MOVE    "状態入力エラー"
                                                TO  SPA-ERRMSG
