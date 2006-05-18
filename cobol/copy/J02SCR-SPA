@@ -220,6 +220,8 @@
                05  SPA-J021-CUR                PIC 9(02).
                05  SPA-J021-MAX                PIC 9(04).
                05  SPA-J021-ENDFLG             PIC 9(01).
+               05  SPA-HKN-NENREI              PIC 9(03).
+               05  SPA-J021-KOHCHK             PIC 9(01).
                05  SPA-J021-TBL.
                    07  SPA-J021-TBLREC         OCCURS   40.
                        09  SPA-J021-THKNCOMBI      PIC 9(04).
