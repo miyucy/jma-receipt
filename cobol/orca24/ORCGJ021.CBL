@@ -66,6 +66,7 @@
            03  FLG-SRYACT          PIC 9(01).
            03  FLG-PTCOM           PIC 9(01).
            03  FLG-PTINF           PIC 9(01).
+           03  FLG-PTKOHINF        PIC 9(01).
       *
            03  FLG-JYURRK-ATO      PIC 9(01).
            03  FLG-HKNCOMBICHK     PIC 9(01).
@@ -152,6 +153,9 @@
       *    保険組み合わせ
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
+      *    公費マスタ
+       01  PTKOHINF-REC.
+           COPY    "CPPTKOHINF.INC".
       *
       *    受診履歴
        01  JYURRK-REC.
@@ -435,6 +439,23 @@
       *****************************************************************
        3101-HKNCOMBI-HEN-SEC        SECTION.
       *
+      *    保険算定年齢チェック等
+           INITIALIZE                  ORCSAGECHKAREA
+           MOVE    SPA-HOSPID          TO  AGECHK-HOSPID
+           MOVE    SPA-GMN-PTID        TO  AGECHK-PTID
+           MOVE    SPA-NAI-SRYYM       TO  AGECHK-SRYYMD(1:6)
+           MOVE    "01"                TO  AGECHK-SRYYMD(7:2)
+           MOVE    SPA-BIRTHDAY        TO  AGECHK-BIRTHDAY
+           CALL    "ORCSAGECHK"        USING
+                                       ORCSAGECHKAREA
+           MOVE    AGECHK-NENREI       TO  SPA-HKN-NENREI
+           MOVE    ZERO                TO  SPA-J021-KOHCHK
+           IF     (AGECHK-NENREI       >=  65 )
+             AND  (SPA-J02-ROUJIN      =   ZERO )
+      *        ６５歳以上で老人でない時、老人公費の有無判定
+               PERFORM 31011-ROUJIN-CHK-SEC
+           END-IF
+      *
            INITIALIZE                  SPA-J021-TBL
            MOVE    ZERO                TO  SPA-J021-MAX
            MOVE    ZERO                TO  FLG-HKNCOMBICHK
@@ -506,7 +527,7 @@
                    MOVE    COMB-HKNCOMBINUM    TO  AGECHK-HKNCOMBINUM
                    MOVE    SPA-NYUGAIKBN       TO  AGECHK-NYUGAIKBN
                    CALL    "ORCSAGECHK"        USING
-                                                ORCSAGECHKAREA
+                                               ORCSAGECHKAREA
                    IF      AGECHK-FTNRATE  NOT =   ZERO
       *                負担率
                        MOVE    AGECHK-FTNRATE      TO  SPA-NAI-FTNWARI
@@ -519,13 +540,35 @@
                        MOVE    1               TO  SPA-NAI-TROUJIN
                                                       (SPA-J021-MAX)
                    END-IF
-      *            生保単独の場合
+      *            生保等単独の場合
                    IF     (COMB-HKNNUM         =   SPACE )  AND
                           ((COMB-KOH1HKNNUM    =   "012" )  OR
                            (COMB-KOH2HKNNUM    =   "012" )  OR
                            (COMB-KOH3HKNNUM    =   "012" )  OR
                            (COMB-KOH4HKNNUM    =   "012" ))
-                       IF      AGECHK-NENREI       >=  65
+                       IF     (SPA-HKN-NENREI      >=  65 ) AND
+                              (SPA-J02-ROUJIN      =   ZERO)  AND
+                              (SPA-J021-KOHCHK     =   1  )
+      *                    老人年齢でなく、老人公費のある時
+                           MOVE    1           TO  SPA-NAI-TSEIHO
+                                                      (SPA-J021-MAX)
+                       END-IF
+                   END-IF
+      *            精神通院・更正
+                   IF     (COMB-HKNNUM         =   SPACE )  AND
+                         (((COMB-KOH1HKNNUM    =   "015" )  OR
+                           (COMB-KOH2HKNNUM    =   "015" )  OR
+                           (COMB-KOH3HKNNUM    =   "015" )  OR
+                           (COMB-KOH4HKNNUM    =   "015" ))  OR
+                          ((COMB-KOH1HKNNUM    =   "021" )  OR
+                           (COMB-KOH2HKNNUM    =   "021" )  OR
+                           (COMB-KOH3HKNNUM    =   "021" )  OR
+                           (COMB-KOH4HKNNUM    =   "021" )))
+                       IF     (COMB-TEKSTYMD       >=   "20060401") AND
+                              (SPA-HKN-NENREI      >=  65 ) AND
+                              (SPA-J02-ROUJIN      =   ZERO)  AND
+                              (SPA-J021-KOHCHK     =   1  )
+      *                    老人年齢でなく、老人公費のある時
                            MOVE    1           TO  SPA-NAI-TSEIHO
                                                       (SPA-J021-MAX)
                        END-IF
@@ -556,7 +599,52 @@
       *
            .
        3101-HKNCOMBI-HEN-EXT.
+           EXIT.
       *
+      *****************************************************************
+      *    老人公費チェック処理
+      *****************************************************************
+       31011-ROUJIN-CHK-SEC             SECTION.
+      *
+      *    公費編集
+           INITIALIZE                  PTKOHINF-REC
+           MOVE    SPA-HOSPID          TO  PTKOH-HOSPID
+           MOVE    SPA-GMN-PTID        TO  PTKOH-PTID
+      *
+           MOVE    PTKOHINF-REC        TO  MCPDATA-REC
+           MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 920-PTKOHINF-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-PTKOHINF
+           END-IF
+           MOVE    ZERO                TO  SPA-J021-KOHCHK
+           PERFORM
+                UNTIL     (FLG-PTKOHINF    =   1  )
+                      OR  (SPA-J021-ROUJIN =   1  )
+      *        老人公費
+               IF      PTKOH-KOHNUM        =   "027"
+                   IF      (SPA-NAI-SRYYM  >=  PTKOH-TEKSTYMD(1:6)) AND
+                           (SPA-NAI-SRYYM  <=  PTKOH-TEKEDYMD(1:6))
+                       MOVE    1               TO  SPA-J021-KOHCHK
+                   END-IF
+               END-IF
+      *
+               MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 920-PTKOHINF-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       31011-ROUJIN-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1095,6 +1183,35 @@
                       ( SPA-J02-ROUJIN     =   1        )
                    MOVE    1               TO  FLG-MAE-ROUJIN
                END-IF
+      *        生保単独の場合
+               IF     (COMB-HKNNUM         =   SPACE )  AND
+                      ((COMB-KOH1HKNNUM    =   "012" )  OR
+                       (COMB-KOH2HKNNUM    =   "012" )  OR
+                       (COMB-KOH3HKNNUM    =   "012" )  OR
+                       (COMB-KOH4HKNNUM    =   "012" ))
+                   IF     (SPA-HKN-NENREI      >=  65 ) AND
+                          (SPA-J02-ROUJIN      =   ZERO)  AND
+                          (SPA-J021-KOHCHK     =   1  )
+                       MOVE    1               TO  FLG-MAE-SEIHO
+                   END-IF
+               END-IF
+      *        精神通院・更正
+               IF     (COMB-HKNNUM         =   SPACE )  AND
+                     (((COMB-KOH1HKNNUM    =   "015" )  OR
+                       (COMB-KOH2HKNNUM    =   "015" )  OR
+                       (COMB-KOH3HKNNUM    =   "015" )  OR
+                       (COMB-KOH4HKNNUM    =   "015" ))  OR
+                      ((COMB-KOH1HKNNUM    =   "021" )  OR
+                       (COMB-KOH2HKNNUM    =   "021" )  OR
+                       (COMB-KOH3HKNNUM    =   "021" )  OR
+                       (COMB-KOH4HKNNUM    =   "021" )))
+                   IF     (COMB-TEKSTYMD       >=   "20060401") AND
+                          (SPA-HKN-NENREI      >=  65 ) AND
+                          (SPA-J02-ROUJIN      =   ZERO)  AND
+                          (SPA-J021-KOHCHK     =   1  )
+                       MOVE    1               TO  FLG-MAE-SEIHO
+                   END-IF
+               END-IF
            END-IF
            .
        40012-MAE-HKNCHK-EXT.
@@ -1280,7 +1397,7 @@
                           (FLG-ATO-SEIHO       =   1   ))  AND
                           (FLG-MAE-ROUJIN      =   1   )   AND
                           (SPA-J02-ROUJIN      =   ZERO)
-                       MOVE    "0014"              TO  SPA-ERRCD
+                       MOVE    "0024"              TO  SPA-ERRCD
                    END-IF
                ELSE
                    MOVE    "0004"              TO  SPA-ERRCD
@@ -3159,15 +3276,24 @@
                    MOVE    "変更後の保険組合せがありません"
                                        TO  SPA-ERRMSG
                WHEN    "0004"
-                   MOVE    "一般から老人保険への変更はできません。"
-                                       TO  SPA-ERRMSG
-                   MOVE    "診療行為の訂正で変更して下さい。"
-                                       TO  SPA-ERRMSG(39:)
+                   STRING  "変更前と後の一般・老人判定が違います。"
+                                               DELIMITED  BY  SIZE
+                           "診療行為の訂正で変更して下さい。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "0014"
                    MOVE    "生活保護単独は一般・老人の判別ができま"
                                        TO  SPA-ERRMSG
                    MOVE    "せん。診療行為の訂正で変更して下さい。"
                                        TO  SPA-ERRMSG(39:)
+               WHEN    "0024"
+                   STRING  "一般・老人の判別ができない保険組合せです。"
+                                               DELIMITED  BY  SIZE
+                           "診療行為の訂正で変更して下さい。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "0005"
                    MOVE    "変更前保険組合せを入力して下さい。"
                                        TO  SPA-ERRMSG
@@ -3203,9 +3329,9 @@
                WHEN    "0013"
                    MOVE    "開始日での受診がありません。"
                                        TO  SPA-ERRMSG
-               WHEN    "0014"
-                   MOVE    "終了日が違います。"
-                                       TO  SPA-ERRMSG
+      ******** WHEN    "0014"
+      *            MOVE    "終了日が違います。"
+      ********                         TO  SPA-ERRMSG
                WHEN    "0015"
                    MOVE    "開始日＜終了日で入力して下さい。"
                                        TO  SPA-ERRMSG
@@ -3483,7 +3609,23 @@
            .
        920-RECECOM-READ-EXT.
            EXIT.
+      *****************************************************************
+      *    公費履歴読み込み
+      *****************************************************************
+       920-PTKOHINF-READ-SEC         SECTION.
       *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  PTKOHINF-REC
+               MOVE    ZERO            TO  FLG-PTKOHINF
+           ELSE
+               INITIALIZE                  PTKOHINF-REC
+               MOVE    1               TO  FLG-PTKOHINF
+           END-IF
+      *
+           .
+       920-PTKOHINF-READ-EXT.
+           EXIT.
       *****************************************************************
       *    テーブル検索処理
       *****************************************************************
