@@ -833,6 +833,9 @@
       *        地方公費単独チェック
                MOVE    SYS-1017-KOHONLY-CHKFLG TO
                                                SPA-NAI-KOHONLY-CHKFLG
+      *        削除機能
+               MOVE    SYS-1017-PTNUMDEL-FLG TO
+                                               SPA-NAI-PTNUMDEL-FLG
            ELSE
       *        未登録の時、ゼロとする
                MOVE    ZERO                    TO  SPA-NAI-JINMEI-USE
@@ -844,6 +847,9 @@
            END-IF
            IF      SPA-NAI-JYUFUKU-CHKKBN  =   SPACE
                MOVE    ZERO                TO  SPA-NAI-JYUFUKU-CHKKBN
+           END-IF
+           IF      SPA-NAI-PTNUMDEL-FLG    =   SPACE
+               MOVE    ZERO                TO  SPA-NAI-PTNUMDEL-FLG
            END-IF
       *    地方公費単独チェックはチェックするを初期とする
            IF      SPA-NAI-KOHONLY-CHKFLG  =   SPACE
@@ -2560,6 +2566,12 @@
                MOVE    WIDGET-NORMAL       TO  P02-B10S-STATE
            ELSE
                MOVE    WIDGET-INSENSITIVE  TO  P02-B10S-STATE
+           END-IF
+      *    削除機能
+           IF      SPA-NAI-PTNUMDEL-FLG    =   "1"
+               MOVE    WIDGET-INSENSITIVE  TO  P02-B04-STATE
+           ELSE
+               MOVE    WIDGET-NORMAL       TO  P02-B04-STATE
            END-IF
            .
        200-P02-SET-EXT.

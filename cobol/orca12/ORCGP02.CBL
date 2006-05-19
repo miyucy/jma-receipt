@@ -3767,6 +3767,14 @@
                    MOVE
                    "警告！地方公費単独の保険組合せがあります。"
                                                TO  SPA-ERRMSG
+               WHEN    "K011"
+                   STRING
+                   "警告！退職国保と老人公費の保険組合せがあります。"
+                                               DELIMITED   BY  SPACE
+                   "保険を確認して下さい。"
+                                               DELIMITED   BY  SPACE
+                                               INTO   SPA-ERRMSG
+                   END-STRING
                WHEN    "K120"
                    MOVE    "警告！労災・自賠責の患者情報が未登録です。"
                                                TO  SPA-ERRMSG

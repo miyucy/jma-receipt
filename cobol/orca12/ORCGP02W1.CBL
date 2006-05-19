@@ -5550,9 +5550,12 @@
                GO      TO      490-TOUROKU-EXT
            END-IF
       *    ÊÝ¸±ÁÈ¹ç¤»¸øÈñÃ±ÆÈ¥Á¥§¥Ã¥¯
-           IF     (SPA-NAI-KOHONLY     =   ZERO ) AND
-                  (SPA-TAGU-FLG        =   ZERO )
-              AND (SPA-NAI-KOHONLY-CHKFLG  =   "1"  )
+      **** IF     (SPA-NAI-KOHONLY     =   ZERO ) AND
+      *           (SPA-TAGU-FLG        =   ZERO )
+      *       AND (SPA-NAI-KOHONLY-CHKFLG  =   "1"  )
+      *        PERFORM 4901-KOHONLY-CHK-SEC
+      *****END-IF
+           IF     (SPA-TAGU-FLG        =   ZERO )
                PERFORM 4901-KOHONLY-CHK-SEC
            END-IF
       *
@@ -5596,42 +5599,28 @@
            END-IF
       *
            PERFORM
-               UNTIL   FLG-PARA        NOT =   ZERO
+               UNTIL  (FLG-PARA        NOT =   ZERO )  OR
+                      (SPA-ERRCD       NOT =   SPACE )
                MOVE    PARA-DATA-REC       TO  HKNCOMBI-REC
-      *        ÃÏÊý¸øÈñÃ±ÆÈÈ½Äê
                IF     (COMB-DELKBN         =   "1"       )  OR
                       (SPA-SYSYMD          >   COMB-TEKEDYMD)
                    CONTINUE
                ELSE
-      *            Ä¹ºê¸©¤ÎÈïÇú¼Ô°åÎÅ¡Ê£±£¸£¶¡Ë¤ÏÃ±ÆÈ²ÄÇ½
-                   IF      (COMB-HKNNUM         =   SPACE )  AND
-                           (COMB-KOH1HKNNUM     =   "186" )  AND
-                           (COMB-KOH2HKNNUM     =   SPACE )  AND
-                           (COMB-KOH3HKNNUM     =   SPACE )  AND
-                           (COMB-KOH4HKNNUM     =   SPACE )  AND
-                           (SPA-PREFNUM         =   "42"  )
-                       MOVE    ZERO             TO  FLG-KOHCHK
-                   ELSE
-      *
-                   IF      (COMB-HKNNUM         =   SPACE )  AND
-                          (COMB-KOH1HKNNUM     >=  "100"  AND
-                                               <=  "899"  )  AND
-                         ((COMB-KOH2HKNNUM     =   SPACE  ) OR
-                          (COMB-KOH2HKNNUM     >=  "100"  AND
-                                               <=  "899"  )) AND
-                         ((COMB-KOH3HKNNUM     =   SPACE  ) OR
-                          (COMB-KOH3HKNNUM     >=  "100"  AND
-                                               <=  "899"  )) AND
-                         ((COMB-KOH4HKNNUM     =   SPACE  ) OR
-                          (COMB-KOH4HKNNUM     >=  "100"  AND
-                                               <=  "899"  ))
-                       PERFORM 49011-KOHONLY-HKNCHK-SEC
-                       IF      FLG-KOHCHK      =   1
-                           MOVE    "K010"          TO  SPA-ERRCD
-                           MOVE    1               TO  SPA-NAI-KOHONLY
-                       END-IF
+      *            ÃÏÊý¸øÈñÃ±ÆÈÈ½Äê
+                   IF     (SPA-NAI-KOHONLY     =   ZERO ) AND
+                          (SPA-NAI-KOHONLY-CHKFLG  =   "1" )
+                       PERFORM 49011-KOHONLY-CHKSYORI-SEC
                    END-IF
-      *
+      *            Âà¿¦¹ñÊÝ¤ÈÏ·¿Í¸øÈñ¤ÎÁÈ¹ç¤»
+                   IF      (COMB-HKNNUM        =   "067" ) AND
+                          ((COMB-KOH1HKNNUM    =   "027" ) OR
+                           (COMB-KOH2HKNNUM    =   "027" ) OR
+                           (COMB-KOH3HKNNUM    =   "027" ) OR
+                           (COMB-KOH4HKNNUM    =   "027" ))
+                       IF      SPA-NAI-TAICHK      =   ZERO
+                           MOVE    "K011"          TO  SPA-ERRCD
+                           MOVE    1               TO  SPA-NAI-TAICHK
+                       END-IF
                    END-IF
                END-IF
       *
@@ -5645,6 +5634,43 @@
            PERFORM 990-DBCLOSE-SEC
            .
        4901-KOHONLY-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    Ã±ÆÈ¸øÈñ¤ÎÈ½Äê½èÍý
+      *****************************************************************
+       49011-KOHONLY-CHKSYORI-SEC             SECTION.
+      *
+      *    Ä¹ºê¸©¤ÎÈïÇú¼Ô°åÎÅ¡Ê£±£¸£¶¡Ë¤ÏÃ±ÆÈ²ÄÇ½
+           IF      (COMB-HKNNUM         =   SPACE )  AND
+                   (COMB-KOH1HKNNUM     =   "186" )  AND
+                   (COMB-KOH2HKNNUM     =   SPACE )  AND
+                   (COMB-KOH3HKNNUM     =   SPACE )  AND
+                   (COMB-KOH4HKNNUM     =   SPACE )  AND
+                   (SPA-PREFNUM         =   "42"  )
+               MOVE    ZERO             TO  FLG-KOHCHK
+           ELSE
+               MOVE    ZERO             TO  FLG-KOHCHK
+               IF      (COMB-HKNNUM         =   SPACE )  AND
+                       (COMB-KOH1HKNNUM     >=  "100"  AND
+                                            <=  "899"  )  AND
+                       ((COMB-KOH2HKNNUM     =   SPACE  ) OR
+                        (COMB-KOH2HKNNUM     >=  "100"  AND
+                                             <=  "899"  )) AND
+                       ((COMB-KOH3HKNNUM     =   SPACE  ) OR
+                        (COMB-KOH3HKNNUM     >=  "100"  AND
+                                             <=  "899"  )) AND
+                       ((COMB-KOH4HKNNUM     =   SPACE  ) OR
+                        (COMB-KOH4HKNNUM     >=  "100"  AND
+                                             <=  "899"  ))
+                   PERFORM 49011-KOHONLY-HKNCHK-SEC
+               END-IF
+           END-IF
+           IF      FLG-KOHCHK      =   1
+               MOVE    "K010"          TO  SPA-ERRCD
+               MOVE    1               TO  SPA-NAI-KOHONLY
+           END-IF
+           .
+       49011-KOHONLY-CHKSYORI-EXT.
            EXIT.
       *
       *****************************************************************
