@@ -437,6 +437,8 @@
       *        地方公費単独チェック
                05  SPA-NAI-KOHONLY             PIC 9(01).
                05  SPA-NAI-RSIONLY             PIC 9(01).
+      *        退職国保と老人公費チェック
+               05  SPA-NAI-TAICHK             PIC 9(01).
       *
       *    保険・公費情報
            03  SPA-HKNKOH-AREA.
