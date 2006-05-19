@@ -76,6 +76,7 @@
       *                                     MONFUNC 対応
       *  02.01.23    NACL-多々納  06/01/20  会計照会 診療科初期表示追加
       *  02.01.24    NACL-多々納  06/02/08  地方公費単独チェックの追加
+      *  02.01.25    NACL-多々納  06/05/19  患者削除機能チェックの追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -309,7 +310,7 @@
                        09  SPA-GMN-JYUFUKU-CHKKBN-COMB.
                            11  SPA-GMN-JYUFUKU-CHKKBN-LIST PIC X(60)
                                                            OCCURS  5.
-                       09  SPA-GMN-JYUFUKU-MAX             PIC 9(04).
+                       09  SPA-GMN-JYUFUKU-MAX             PIC 9(02).
       *                地方公費単独チェック
                        09  SPA-GMN-KOHONLY-CHKFLG-G.
                            11  SPA-GMN-KOHONLY-CHKFLG      PIC X(01).
@@ -318,7 +319,16 @@
                        09  SPA-GMN-KOHONLY-CHKFLG-COMB.
                            11  SPA-GMN-KOHONLY-CHKFLG-LIST PIC X(28)
                                                            OCCURS  2.
-                       09  SPA-GMN-KOHONLY-MAX             PIC 9(04).
+                       09  SPA-GMN-KOHONLY-MAX             PIC 9(02).
+      *                患者情報削除機能
+                       09  SPA-GMN-PTNUMDEL-FLG-G.
+                           11  SPA-GMN-PTNUMDEL-FLG         PIC X(01).
+                           11  SPA-GMN-PTNUMDEL-F1          PIC X(01).
+                           11  SPA-GMN-PTNUMDEL-MEI         PIC X(26).
+                       09  SPA-GMN-PTNUMDEL-FLG-COMB.
+                           11  SPA-GMN-PTNUMDEL-FLG-LIST PIC X(28)
+                                                           OCCURS  2.
+                       09  SPA-GMN-PTNUMDEL-MAX             PIC 9(02).
                    07  SPA-GMN-PAGE3-AREA.
       *                入金管理情報（診療行為機能情報）
                        09  SPA-GMN-SRYNYKNKNRKBN-G.
@@ -995,6 +1005,12 @@
                                    TO  SPA-GMN-KOHONLY-CHKFLG-LIST (2)
            MOVE    2               TO  SPA-GMN-KOHONLY-MAX 
       *
+           MOVE    "0 削除機能あり" 
+                                   TO  SPA-GMN-PTNUMDEL-FLG-LIST (1)
+           MOVE    "1 削除機能なし" 
+                                   TO  SPA-GMN-PTNUMDEL-FLG-LIST (2)
+           MOVE    2               TO  SPA-GMN-PTNUMDEL-MAX 
+      *
            MOVE    "1 今回請求分のみ入金"
                                        TO  SPA-GMN-SRYNYKNKNRKBNLST(1)
            MOVE    "2 今回分・伝票の古い未収順に入金"
@@ -1636,6 +1652,9 @@
       *        地方公費単独チェック
                MOVE    SYS-1017-KOHONLY-CHKFLG
                                        TO  SPA-GMN-KOHONLY-CHKFLG
+      *        患者情報削除機能
+               MOVE    SYS-1017-PTNUMDEL-FLG
+                                       TO  SPA-GMN-PTNUMDEL-FLG
            END-IF
       *
       *    初期設定
@@ -1717,6 +1736,18 @@
                WHEN    OTHER
                    MOVE    SPA-GMN-KOHONLY-CHKFLG-LIST(2)
                                            TO  SPA-GMN-KOHONLY-CHKFLG-G
+           END-EVALUATE
+      *    患者情報削除機能
+           EVALUATE    SPA-GMN-PTNUMDEL-FLG
+               WHEN    "0"
+                   MOVE    SPA-GMN-PTNUMDEL-FLG-LIST(1)
+                                           TO  SPA-GMN-PTNUMDEL-FLG-G
+               WHEN    "1"
+                   MOVE    SPA-GMN-PTNUMDEL-FLG-LIST(2)
+                                           TO  SPA-GMN-PTNUMDEL-FLG-G
+               WHEN    OTHER
+                   MOVE    SPA-GMN-PTNUMDEL-FLG-LIST(1)
+                                           TO  SPA-GMN-PTNUMDEL-FLG-G
            END-EVALUATE
       *
            MOVE    20                 TO  SPA-GMN-CUR
@@ -2407,6 +2438,7 @@
            MOVE    W07-DOUMEI-CHKFLG   TO  SPA-GMN-DOUMEI-CHKFLG-G
            MOVE    W07-JYUFUKU-CHKKBN  TO  SPA-GMN-JYUFUKU-CHKKBN-G
            MOVE    W07-KOHONLY-CHKFLG  TO  SPA-GMN-KOHONLY-CHKFLG-G
+           MOVE    W07-PTNUMDEL-FLG    TO  SPA-GMN-PTNUMDEL-FLG-G
       *
       *    診療行為機能情報
            MOVE    W07-SRYNYKNKNRKBN   TO  SPA-GMN-SRYNYKNKNRKBN-G
@@ -2571,6 +2603,10 @@
       *            地方公費単独チェック
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4107-KOHONLY-CHKFLG-SEC
+                   END-IF
+      *            患者情報削除機能
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4107-PTNUMDEL-FLG-SEC
                    END-IF
                WHEN    "1038"
       *            入金管理区分チェック
@@ -3643,6 +3679,31 @@
        4107-KOHONLY-CHKFLG-EXT.
            EXIT.
       *****************************************************************
+      *    地方公費単独チェック処理
+      *****************************************************************
+       4107-PTNUMDEL-FLG-SEC          SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   SPA-GMN-PTNUMDEL-MAX) OR
+                              (FLG-OK  =   1    )
+               IF      SPA-GMN-PTNUMDEL-FLG
+                                       =   SPA-GMN-PTNUMDEL-FLG-LIST
+                                                          (IDX)(1:1)
+                   MOVE    SPA-GMN-PTNUMDEL-FLG-LIST(IDX)
+                                          TO  SPA-GMN-PTNUMDEL-FLG-G
+                   MOVE    1              TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    27              TO  SPA-GMN-CUR
+               MOVE    "1008"          TO  SPA-ERRCD
+           END-IF
+      *
+          .
+       4107-PTNUMDEL-FLG-EXT.
+           EXIT.
+      *****************************************************************
       *    入金管理区分チェック処理（診療行為機能情報）
       *****************************************************************
        4108-SRYNYKNKNRKBN-CHK-SEC      SECTION.
@@ -4676,6 +4737,7 @@
            MOVE    SPA-GMN-DOUMEI-CHKFLG   TO  SYS-1017-DOUMEI-CHKFLG
            MOVE    SPA-GMN-JYUFUKU-CHKKBN  TO  SYS-1017-JYUFUKU-CHKKBN
            MOVE    SPA-GMN-KOHONLY-CHKFLG  TO  SYS-1017-KOHONLY-CHKFLG
+           MOVE    SPA-GMN-PTNUMDEL-FLG    TO  SYS-1017-PTNUMDEL-FLG
       *
            MOVE    SYS-1017-REC            TO  SYSKANRI-REC
       *
@@ -5515,6 +5577,14 @@
                                        TO  W07-KOHONLY-CHKFLG-ITEM(IDX)
            END-PERFORM
            MOVE    SPA-GMN-KOHONLY-MAX TO  W07-KOHONLY-CHKFLG-COUNT
+      *    患者情報削除機能
+           MOVE    SPA-GMN-PTNUMDEL-FLG-G  TO  W07-PTNUMDEL-FLG
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-PTNUMDEL-MAX
+               MOVE    SPA-GMN-PTNUMDEL-FLG-LIST (IDX)
+                                       TO  W07-PTNUMDEL-FLG-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-PTNUMDEL-MAX TO  W07-PTNUMDEL-FLG-COUNT
       *
       *    入金管理区分（診療行為機能情報）
            MOVE    SPA-GMN-SRYNYKNKNRKBN-G TO  W07-SRYNYKNKNRKBN
@@ -5908,6 +5978,9 @@
                WHEN    "1007"
                    MOVE    "地方公費単独チェック区分がありません。"
                                                        TO  SPA-ERRMSG
+               WHEN    "1008"
+                   MOVE    "患者削除機能区分がありません。"
+                                                       TO  SPA-ERRMSG
       *        診療行為機能情報
                WHEN    "2001"
                    MOVE    "入金管理区分がありません。"
@@ -6174,6 +6247,8 @@
                    MOVE  "JYUFUKU_CHKKBN"  TO   MCP-WIDGET
                WHEN    26
                    MOVE  "KOHONLY_CHKFLG"  TO   MCP-WIDGET
+               WHEN    27
+                   MOVE  "PTNUMDEL_FLG"    TO   MCP-WIDGET
       *
                WHEN    30
                    MOVE  "SRYNYKNKNRKBN"   TO   MCP-WIDGET
@@ -6407,6 +6482,8 @@
       **********   MOVE    99              TO  SPA-GMN-CUR
                    MOVE    26              TO  SPA-GMN-CUR
                WHEN    "KOHONLY_CHKFLG"
+                   MOVE    27              TO  SPA-GMN-CUR
+               WHEN    "PTNUMDEL_FLG"
                    MOVE    99              TO  SPA-GMN-CUR
       *
                WHEN    "SRYNYKNKNRKBN"
