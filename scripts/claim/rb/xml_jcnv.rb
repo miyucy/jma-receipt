@@ -93,7 +93,8 @@ class XmlJCnv
           when "toeuc"
             print Uconv::u8toeuc(@buf)
           when "tosjis"
-            print Uconv::u8tosjis(@buf)
+            @buf = Uconv::u8toeuc(@buf)
+            print Kconv::tosjis(@buf)
           when "tojis"
             @buf = Uconv::u8toeuc(@buf)
             print Kconv::tojis(@buf)
@@ -114,7 +115,8 @@ class XmlJCnv
           ersub if !(@tp == 0 or @tp == 3)
           case @to
           when "tou8"
-            print Uconv::sjistou8(@buf)
+            @buf = Kconv::toeuc(@buf)
+            print Uconv::euctou8(@buf)
           when "toeuc"
             print Kconv::toeuc(@buf)
           when "tosjis"
