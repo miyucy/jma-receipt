@@ -311,6 +311,13 @@ W07	{
 					count	int;
 					item	varchar(28)[2];
 				};
+				PTNUMDEL_FLG_COMBO	{
+					PTNUMDEL_FLG	{
+						value	varchar(28);
+					};
+					count	int;
+					item	varchar(28)[2];
+				};
 			};
 			TAGNAME2    {
 			    state   int;
