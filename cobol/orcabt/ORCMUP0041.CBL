@@ -29,6 +29,7 @@
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       *  01.00.01    MCC-Â¿¡¹Ç¼   02/06/06  ¹¹¿·¡¦ºï½ü¤Î½¤Àµ
+      *  01.00.02    NACL-¾®Æ¦Âô  06/05/22  MONFUNCÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -191,7 +192,6 @@
       *
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
       *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
@@ -336,16 +336,18 @@
       *
            INITIALIZE                  CHK-REC
            MOVE    CHKWK-KEY           TO  CHK-KEY
+           MOVE    CHKWK-YUKOSTYMD     TO  CHK-YUKOSTYMD
+                                           CHK-YUKOEDYMD
            MOVE    CHK-REC             TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "CHK-KEY"           TO  ORC-DBPATH
-           MOVE    CHKWK-YUKOSTYMD     TO  ORC-DBYMD
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_chk"           TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "CHK-KEY"       TO  ORC-DBPATH
+               MOVE    "tbl_chk"           TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
                PERFORM                     910-CHK-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-CHK
@@ -392,16 +394,18 @@
       *
            INITIALIZE                  CHK-REC
            MOVE    CHKWK-KEY           TO  CHK-KEY
+           MOVE    CHKWK-YUKOSTYMD     TO  CHK-YUKOSTYMD
+                                           CHK-YUKOEDYMD
            MOVE    CHK-REC             TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "CHK-KEY2"          TO  ORC-DBPATH
-           MOVE    CHKWK-YUKOSTYMD     TO  ORC-DBYMD
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_chk"           TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "CHK-KEY2"      TO  ORC-DBPATH
+               MOVE    "tbl_chk"           TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM                     910-CHK-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-CHK
@@ -416,7 +420,8 @@
                    PERFORM 20102-CHK-UPD-SEC
                END-IF
       *
-               MOVE    "CHK-KEY2"          TO  ORC-DBPATH
+               MOVE    "tbl_chk"           TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM                     910-CHK-READ-SEC
            END-PERFORM
       *
@@ -431,16 +436,18 @@
       *
            INITIALIZE                  CHK-REC
            MOVE    CHKWK-KEY           TO  CHK-KEY
+           MOVE    CHKWK-YUKOSTYMD     TO  CHK-YUKOSTYMD
+                                           CHK-YUKOEDYMD
            MOVE    CHK-REC             TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "CHK-KEY"           TO  ORC-DBPATH
-           MOVE    CHKWK-YUKOSTYMD     TO  ORC-DBYMD
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_chk"           TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "CHK-KEY"       TO  ORC-DBPATH
+               MOVE    "tbl_chk"           TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
                PERFORM                     910-CHK-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-CHK
@@ -459,10 +466,10 @@
       *
            MOVE    CHK-REC             TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
-           MOVE    "CHK-KEY"           TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_chk"           TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
                MOVE    1               TO  WRK-ERRCD
@@ -481,10 +488,10 @@
       *
            MOVE    CHK-REC             TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
-           MOVE    "CHK-UPD1"          TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_chk"           TO  MCP-TABLE
+           MOVE    "upd1"              TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
                MOVE    2               TO  WRK-ERRCD
@@ -504,16 +511,18 @@
       *
            INITIALIZE                  CHK-REC
            MOVE    CHKWK-KEY           TO  CHK-KEY
+           MOVE    CHKWK-YUKOSTYMD     TO  CHK-YUKOSTYMD
+                                           CHK-YUKOEDYMD
            MOVE    CHK-REC             TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "CHK-KEY"           TO  ORC-DBPATH
-           MOVE    CHKWK-YUKOSTYMD     TO  ORC-DBYMD
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_chk"           TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "CHK-KEY"           TO  ORC-DBPATH
+               MOVE    "tbl_chk"           TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
                PERFORM                     910-CHK-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-CHK
@@ -557,18 +566,18 @@
       *
            INITIALIZE                  CHK-REC
            MOVE    CHKWK-KEY           TO  CHK-KEY
+           MOVE    CHKWK-YUKOSTYMD     TO  CHK-YUKOSTYMD
+                                           CHK-YUKOEDYMD
            MOVE    CHK-REC             TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-      *****MOVE    "CHK-KEY"           TO  ORC-DBPATH
-           MOVE    "CHK-KEY2"          TO  ORC-DBPATH
-           MOVE    CHKWK-YUKOSTYMD     TO  ORC-DBYMD
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_chk"           TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-      ******** MOVE    "CHK-KEY"           TO  ORC-DBPATH
-               MOVE    "CHK-KEY2"          TO  ORC-DBPATH
+               MOVE    "tbl_chk"           TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM                     910-CHK-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-CHK
@@ -598,11 +607,10 @@
       *
            MOVE    CHK-REC             TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
-      *****MOVE    "CHK-KEY"           TO  ORC-DBPATH
-           MOVE    "CHK-KEY4"          TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_chk"           TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
                MOVE    4               TO  WRK-ERRCD
@@ -743,9 +751,8 @@
        910-CHK-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
+           CALL    "MONFUNC"            USING
                                         MCPAREA
-                                        ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  CHK-REC
@@ -764,17 +771,19 @@
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
-           MOVE    "DBOPEN"            TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE       TO  MCP-TABLE
+                                       MCP-PATHNAME
+           MOVE    "DBOPEN"        TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
-           MOVE    "DBSTART"           TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE       TO  MCP-TABLE
+                                       MCP-PATHNAME
+           MOVE    "DBSTART"       TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            .
        100-DBOPEN-EXT.
            EXIT.
@@ -784,18 +793,20 @@
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *
-           MOVE    "DBCOMMIT"          TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE       TO  MCP-TABLE
+                                       MCP-PATHNAME
+           MOVE    "DBCOMMIT"      TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
-           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE       TO  MCP-TABLE
+                                       MCP-PATHNAME
+           MOVE    "DBDISCONNECT"  TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            .
-       900-DBCLOSE-EXT.
+       900-DBDISCONNECT-EXT.
            EXIT.
       *

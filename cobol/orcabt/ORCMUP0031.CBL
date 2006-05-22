@@ -28,6 +28,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 01.00.01     NACL-小豆沢  06/05/22  MONFUNC対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -169,7 +170,6 @@
       *
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -308,13 +308,14 @@
            MOVE    BYOWK-KEY           TO  BYO-KEY
            MOVE    BYOMEI-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "BYOMEI-KEY"        TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_byomei"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "BYOMEI-KEY"        TO  ORC-DBPATH
+               MOVE    "tbl_byomei"        TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
                PERFORM  910-BYOMEI-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-BYOMEI
@@ -334,7 +335,8 @@
            END-IF
       *
       *    病名マスタクローズ
-           MOVE    "BYOMEI-KEY"        TO  WRK-DBPATH
+           MOVE    "tbl_byomei"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
       *
            .
@@ -350,13 +352,14 @@
            MOVE    BYOWK-KEY           TO  BYO-KEY
            MOVE    BYOMEI-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "BYOMEI-KEY"        TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_byomei"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "BYOMEI-KEY"        TO  ORC-DBPATH
+               MOVE    "tbl_byomei"        TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
                PERFORM  910-BYOMEI-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-BYOMEI
@@ -376,7 +379,8 @@
            END-IF
       *
       *    病名マスタクローズ
-           MOVE    "BYOMEI-KEY"        TO  WRK-DBPATH
+           MOVE    "tbl_byomei"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
       *
            .
@@ -402,10 +406,10 @@
       *
            MOVE    BYOMEI-REC          TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
-           MOVE    "BYOMEI-KEY"        TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_byomei"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
                MOVE    2               TO  WRK-ERRCD
@@ -425,10 +429,10 @@
       *
            MOVE    BYOMEI-REC          TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
-           MOVE    "BYOMEI-KEY"        TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_byomei"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
                MOVE    3               TO  WRK-ERRCD
@@ -569,9 +573,8 @@
        910-BYOMEI-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  BYOMEI-REC
@@ -590,17 +593,19 @@
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
-           MOVE    "DBOPEN"            TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE       TO  MCP-TABLE
+                                       MCP-PATHNAME
+           MOVE    "DBOPEN"        TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
-           MOVE    "DBSTART"           TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE       TO  MCP-TABLE
+                                       MCP-PATHNAME
+           MOVE    "DBSTART"       TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            .
        100-DBOPEN-EXT.
            EXIT.
@@ -610,19 +615,21 @@
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *
-           MOVE    "DBCOMMIT"          TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE       TO  MCP-TABLE
+                                       MCP-PATHNAME
+           MOVE    "DBCOMMIT"      TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
-           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE       TO  MCP-TABLE
+                                       MCP-PATHNAME
+           MOVE    "DBDISCONNECT"  TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            .
-       900-DBCLOSE-EXT.
+       900-DBDISCONNECT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -630,11 +637,9 @@
       *****************************************************************
        900-TBL-CLOSE-SEC               SECTION.
       *
-           MOVE    WRK-DBPATH      TO  ORC-DBPATH
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
       *
            .

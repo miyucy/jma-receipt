@@ -28,6 +28,7 @@
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      * 01.00.01     NACL-¾®Æ¦Âô  06/05/22  MONFUNCÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -169,7 +170,6 @@
       *
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
       *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
@@ -311,13 +311,14 @@
            MOVE    IN-KEY              TO  KENSASORT-KEY
            MOVE    KENSASORT-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "KENSASORT-KEY"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_kensasort"     TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "KENSASORT-KEY"     TO  ORC-DBPATH
+               MOVE    "tbl_kensasort"     TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
                PERFORM                     910-KENSASORT-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-KENSASORT
@@ -350,10 +351,10 @@
       *
            MOVE    KENSASORT-REC       TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
-           MOVE    "KENSASORT-KEY"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_kensasort"     TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
                MOVE    2               TO  WRK-ERRCD
@@ -372,13 +373,14 @@
            MOVE    IN-KEY              TO  KENSASORT-KEY
            MOVE    KENSASORT-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "KENSASORT-KEY"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_kensasort"     TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "KENSASORT-KEY"     TO  ORC-DBPATH
+               MOVE    "tbl_kensasort"     TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
                PERFORM                     910-KENSASORT-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-KENSASORT
@@ -417,10 +419,10 @@
       *
            MOVE    KENSASORT-REC       TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
-           MOVE    "KENSASORT-KEY"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_kensasort"     TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
                MOVE    5               TO  WRK-ERRCD
@@ -439,13 +441,14 @@
            MOVE    IN-KEY              TO  KENSASORT-KEY
            MOVE    KENSASORT-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "KENSASORT-KEY"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_kensasort"     TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "KENSASORT-KEY"     TO  ORC-DBPATH
+               MOVE    "tbl_kensasort"     TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
                PERFORM                     910-KENSASORT-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-KENSASORT
@@ -472,10 +475,10 @@
       *
            MOVE    KENSASORT-REC       TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "KENSASORT-KEY"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_kensasort"     TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
                MOVE    6               TO  WRK-ERRCD
@@ -622,9 +625,8 @@
        910-KENSASORT-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
+           CALL    "MONFUNC"            USING
                                         MCPAREA
-                                        ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  KENSASORT-REC
@@ -643,17 +645,19 @@
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
-           MOVE    "DBOPEN"            TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE       TO  MCP-TABLE
+                                       MCP-PATHNAME
+           MOVE    "DBOPEN"        TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
-           MOVE    "DBSTART"           TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE       TO  MCP-TABLE
+                                       MCP-PATHNAME
+           MOVE    "DBSTART"       TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            .
        100-DBOPEN-EXT.
            EXIT.
@@ -663,18 +667,20 @@
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *
-           MOVE    "DBCOMMIT"          TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE       TO  MCP-TABLE
+                                       MCP-PATHNAME
+           MOVE    "DBCOMMIT"      TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
-           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE       TO  MCP-TABLE
+                                       MCP-PATHNAME
+           MOVE    "DBDISCONNECT"  TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            .
-       900-DBCLOSE-EXT.
+       900-DBDISCONNECT-EXT.
            EXIT.
       *

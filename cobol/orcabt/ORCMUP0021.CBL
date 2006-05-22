@@ -28,6 +28,7 @@
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      * 01.00.01     NACL-¾®Æ¦Âô   6/05/22  MONFUNCÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -177,7 +178,6 @@
       *
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
       *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
@@ -333,18 +333,30 @@
       *****************************************************************
        2011-INSERT-SYORI-SEC               SECTION.
       *
+      *     INITIALIZE                  SYSKANRI-REC
+      *     MOVE    SYSWK-KEY           TO  SYS-KEY
+      *     MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+      *     MOVE    "DBSELECT"          TO  MCP-FUNC
+      *     MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+      *     MOVE    SYSWK-STYUKYMD      TO  ORC-DBYMD
+      *     CALL    "ORCMCPSUB"         USING
+      *                                 MCPAREA
+      *                                 ORCMCPAREA
+      *                                 MCPDATA-REC
            INITIALIZE                  SYSKANRI-REC
            MOVE    SYSWK-KEY           TO  SYS-KEY
+           MOVE    SYSWK-STYUKYMD      TO  SYS-STYUKYMD
+                                           SYS-EDYUKYMD
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           MOVE    SYSWK-STYUKYMD      TO  ORC-DBYMD
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
                PERFORM                     910-SYSKANRI-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-SYS
@@ -369,18 +381,28 @@
       *****************************************************************
        2012-INSERT-SYORI-SEC               SECTION.
       *
+      *     INITIALIZE                  SYSKANRI-REC
+      *     MOVE    SYSWK-KEY           TO  SYS-KEY
+      *     MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+      *     MOVE    "DBSELECT"          TO  MCP-FUNC
+      *     MOVE    "SYSKANRI-KEY4"     TO  ORC-DBPATH
+      *     MOVE    SYSWK-STYUKYMD      TO  ORC-DBYMD
+      *     CALL    "ORCMCPSUB"         USING
+      *                                 MCPAREA
+      *                                 ORCMCPAREA
+      *                                 MCPDATA-REC
            INITIALIZE                  SYSKANRI-REC
            MOVE    SYSWK-KEY           TO  SYS-KEY
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY4"     TO  ORC-DBPATH
-           MOVE    SYSWK-STYUKYMD      TO  ORC-DBYMD
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key4"             TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "SYSKANRI-KEY4"     TO  ORC-DBPATH
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key4"              TO  MCP-PATHNAME
                PERFORM                     910-SYSKANRI-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-SYS
@@ -402,7 +424,8 @@
       *
                    MOVE    1                   TO  FLG-SYORI
                ELSE
-                   MOVE    "SYSKANRI-KEY4"     TO  ORC-DBPATH
+                   MOVE    "tbl_syskanri"      TO  MCP-TABLE
+                   MOVE    "key4"              TO  MCP-PATHNAME
                    PERFORM                     910-SYSKANRI-READ-SEC
                END-IF
            END-PERFORM
@@ -428,10 +451,10 @@
       *
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
                MOVE    7               TO  WRK-ERRCD
@@ -450,10 +473,10 @@
       *
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
-           MOVE    "SYSKANRI-UPD1"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "upd1"              TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
                MOVE    2               TO  WRK-ERRCD
@@ -472,10 +495,10 @@
       *
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
                MOVE    4               TO  WRK-ERRCD
@@ -492,18 +515,28 @@
       *
            MOVE    ZERO                TO  FLG-SYORI
       *
+      *     INITIALIZE                  SYSKANRI-REC
+      *     MOVE    SYSWK-KEY           TO  SYS-KEY
+      *     MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+      *     MOVE    "DBSELECT"          TO  MCP-FUNC
+      *     MOVE    "SYSKANRI-KEY4"     TO  ORC-DBPATH
+      *     MOVE    SYSWK-STYUKYMD      TO  ORC-DBYMD
+      *     CALL    "ORCMCPSUB"         USING
+      *                                 MCPAREA
+      *                                 ORCMCPAREA
+      *                                 MCPDATA-REC
            INITIALIZE                  SYSKANRI-REC
            MOVE    SYSWK-KEY           TO  SYS-KEY
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY4"     TO  ORC-DBPATH
-           MOVE    SYSWK-STYUKYMD      TO  ORC-DBYMD
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "SYSKANRI-KEY4"     TO  ORC-DBPATH
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key4"              TO  MCP-PATHNAME
                PERFORM                     910-SYSKANRI-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-SYS
@@ -523,7 +556,8 @@
       *
                    MOVE    1                   TO  FLG-SYORI
                ELSE
-                   MOVE    "SYSKANRI-KEY4"     TO  ORC-DBPATH
+                   MOVE    "tbl_syskanri"      TO  MCP-TABLE
+                   MOVE    "key4"              TO  MCP-PATHNAME
                    PERFORM                     910-SYSKANRI-READ-SEC
                END-IF
            END-PERFORM
@@ -544,18 +578,28 @@
       *
            MOVE    ZERO                TO  FLG-SYORI
       *
+      *     INITIALIZE                  SYSKANRI-REC
+      *     MOVE    SYSWK-KEY           TO  SYS-KEY
+      *     MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+      *     MOVE    "DBSELECT"          TO  MCP-FUNC
+      *     MOVE    "SYSKANRI-KEY4"     TO  ORC-DBPATH
+      *     MOVE    SYSWK-STYUKYMD      TO  ORC-DBYMD
+      *     CALL    "ORCMCPSUB"         USING
+      *                                 MCPAREA
+      *                                 ORCMCPAREA
+      *                                 MCPDATA-REC
            INITIALIZE                  SYSKANRI-REC
            MOVE    SYSWK-KEY           TO  SYS-KEY
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY4"     TO  ORC-DBPATH
-           MOVE    SYSWK-STYUKYMD      TO  ORC-DBYMD
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "SYSKANRI-KEY4"     TO  ORC-DBPATH
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key4"              TO  MCP-PATHNAME
                PERFORM                     910-SYSKANRI-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-SYS
@@ -570,7 +614,8 @@
       *
                    MOVE    1                   TO  FLG-SYORI
                ELSE
-                   MOVE    "SYSKANRI-KEY4"     TO  ORC-DBPATH
+                   MOVE    "tbl_syskanri"      TO  MCP-TABLE
+                   MOVE    "key4"              TO  MCP-PATHNAME
                    PERFORM                     910-SYSKANRI-READ-SEC
                END-IF
            END-PERFORM
@@ -712,9 +757,8 @@
        910-SYSKANRI-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
+           CALL    "MONFUNC"            USING
                                         MCPAREA
-                                        ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  SYSKANRI-REC
@@ -733,17 +777,19 @@
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
-           MOVE    "DBOPEN"            TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE       TO  MCP-TABLE
+                                       MCP-PATHNAME
+           MOVE    "DBOPEN"        TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
-           MOVE    "DBSTART"           TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE       TO  MCP-TABLE
+                                       MCP-PATHNAME
+           MOVE    "DBSTART"       TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            .
        100-DBOPEN-EXT.
            EXIT.
@@ -753,18 +799,20 @@
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *
-           MOVE    "DBCOMMIT"          TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE       TO  MCP-TABLE
+                                       MCP-PATHNAME
+           MOVE    "DBCOMMIT"      TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
-           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE       TO  MCP-TABLE
+                                       MCP-PATHNAME
+           MOVE    "DBDISCONNECT"  TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            .
-       900-DBCLOSE-EXT.
+       900-DBDISCONNECT-EXT.
            EXIT.
       *
