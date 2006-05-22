@@ -27,7 +27,7 @@
       *¥­¡¼
            03  PTINF-KEY.
       *°åÎÅµ¡´Ø£É£Ä
-               05  PTINF-HOSPNUM              PIC 9(2).
+               05  PTINF-HOSPID              PIC  X(24).
       *´µ¼Ô£É£Ä
                05  PTINF-PTID                PIC  9(10).
       *¥«¥Ê»áÌ¾
@@ -134,8 +134,6 @@
            03  PTINF-RRKNUM                  PIC  9(03).
       *Æþ±¡ÍúÎò»ÞÈÖ¹æ
            03  PTINF-RRKEDANUM               PIC  9(03).
-      *ÀÁµá½ñÈ¯¹Ô¶èÊ¬
-           03  PTINF-SKYPRTFLG               PIC  X(01).
       *Ã¼Ëö£É£Ä
            03  PTINF-TERMID                  PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
@@ -153,5 +151,3 @@
            03  PTINF-HKNKBN                  PIC  X(01).
            03  PTINF-SRYYMD                  PIC  X(08).
            03  PTINF-SRYYM                   PIC  X(06).
-           03  PTINF-HKNKBN2                 PIC  X(01).
-           03  PTINF-VPTNUM                  PIC  X(20).
