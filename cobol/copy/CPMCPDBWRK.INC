@@ -41,7 +41,9 @@
            03  WRK-ICHI1           PIC 9(04).
            03  WRK-ICHI2           PIC 9(04).
       *     
-           03  WRK-PATH.
-               04  WRK-MCP-BLOCKS       PIC S9(9)   BINARY.
-               04  WRK-MCP-RNAME        PIC S9(9)   BINARY.
-               04  WRK-MCP-PNAME        PIC S9(9)   BINARY.
+           03  WRK-PATHNAME        PIC X(64).
+           03  WRK-TABLE           PIC X(64).
+      *    03  WRK-PATH.
+      *        04  WRK-MCP-BLOCKS       PIC S9(9)   BINARY.
+      *        04  WRK-MCP-RNAME        PIC S9(9)   BINARY.
+      *        04  WRK-MCP-PNAME        PIC S9(9)   BINARY.
