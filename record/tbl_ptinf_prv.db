@@ -53,7 +53,6 @@ tbl_ptinf_prv {
 	MAXZAINUM   			number(8,0);
 	RRKNUM					number(3,0);
 	RRKEDANUM				number(3,0);
-	SKYPRTFLG  			char(1);
 	TERMID   			varchar(16);
 	OPID     			varchar(16);
 	CREYMD   			char(8);

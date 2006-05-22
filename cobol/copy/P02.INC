@@ -322,12 +322,6 @@
                     06  P02-P02-USERPG-COUNT   PIC S9(9)   BINARY.
                     06  P02-P02-USERPG-ITEM
                             PIC X(20)   OCCURS  2 TIMES.
-                  05  P02-P02-SKYPRTFLG-COB.
-                    06  P02-P02-SKYPRTFLG.
-                      07  P02-VALUE   PIC X(30).
-                    06  P02-P02-SKYPRTFLG-COUNT   PIC S9(9)   BINARY.
-                    06  P02-P02-SKYPRTFLG-ITEM
-                            PIC X(30)   OCCURS  4 TIMES.
                 04 P02-FP3.
                   05  P02-P027-SELNUM.
                     06  P02-VALUE   PIC X(4).

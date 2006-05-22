@@ -70,7 +70,6 @@
       *  02.00.17    NACL-Â¿¡¹Ç¼  05/10/19  ÆÃÊÌÎÅÍÜÈñÄÉ²Ã
       *  02.00.18    NACL-Â¿¡¹Ç¼  05/10/20  ¸øÈñºï½ü½¤Àµ
       *  02.00.19    NACL-Â¿¡¹Ç¼  05/11/14  MONFUNC ÂÐ±þ Â¾
-      *  02.00.20    NACL-Â¿¡¹Ç¼  06/05/18  ÀÁµá½ñÈ¯¹Ô¶èÊ¬ÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2211,7 +2210,6 @@
            MOVE    P02-P02-CONDITION2  TO  SPA-GMN-CONDITION(2)
            MOVE    P02-P02-CONDITION3  TO  SPA-GMN-CONDITION(3)
            MOVE    P02-P02-NYUKIN      TO  SPA-GMN-NYUKIN-HOHO-G
-           MOVE    P02-P02-SKYPRTFLG   TO  SPA-GMN-SKYPRTFLG-G
            MOVE    P02-P02-COMMENT1    TO  SPA-GMN-COMMENT-1
            MOVE    P02-P02-COMMENT2    TO  SPA-GMN-COMMENT-2
            MOVE    P02-P02-TABOO1      TO  SPA-GMN-TABOO-1
@@ -2506,11 +2504,6 @@
            IF     (SPA-ERRCD           =   SPACE )  AND
                   (SPA-FLG-END         =   ZERO  )
                PERFORM 4101-CONDITIONH-SET-SEC
-           END-IF
-      *    ÀÁµá½ñÈ¯¹Ô¶èÊ¬
-           IF     (SPA-ERRCD           =   SPACE )  AND
-                  (SPA-FLG-END         =   ZERO  )
-               PERFORM 4101-SKYPRTFLG-CHK-SEC
            END-IF
       *    ¶Ø´÷Â¾
            IF     (SPA-ERRCD           =   SPACE )  AND
@@ -3413,35 +3406,6 @@
       *
            .
        4101-NYUKIN-HOHO-CHK-EXT.
-           EXIT.
-      ***************************************************************
-      *    ÀÁµá½ñÈ¯¹Ô¶èÊ¬¥Á¥§¥Ã¥¯½èÍý
-      ***************************************************************
-       4101-SKYPRTFLG-CHK-SEC         SECTION.
-      *
-           IF      SPA-GMN-SKYPRTFLG   =   SPACE
-               MOVE    SPACE               TO  SPA-GMN-SKYPRTFLG-G
-           ELSE
-               MOVE    ZERO                TO  FLG-CHK
-               PERFORM VARYING     IDX     FROM    1   BY  1
-                       UNTIL      (IDX         >   SPA-SKYPRTFLG-MAX)
-                              OR  (FLG-CHK     =   1   )
-                   IF      SPA-GMN-SKYPRTFLG
-                                           =   SPA-GMN-SKYPRTFLG-LST
-                                                         (IDX)(1:1)
-                       MOVE    SPA-GMN-SKYPRTFLG-LST (IDX)
-                                           TO  SPA-GMN-SKYPRTFLG-G
-                       MOVE    1               TO  FLG-CHK
-                   END-IF
-               END-PERFORM
-               IF      FLG-CHK             =   ZERO
-                   MOVE    "0167"              TO  SPA-ERRCD
-                   MOVE    67                  TO  SPA-GMN-CUR
-               END-IF
-           END-IF
-      *
-           .
-       4101-SKYPRTFLG-CHK-EXT.
            EXIT.
       *
       ****************************************************************
@@ -5892,8 +5856,6 @@
                   MOVE    "P02_DISCOUNT"        TO  MCP-WIDGET
               WHEN    66
                   MOVE    "P02_NYUKIN"          TO  MCP-WIDGET
-              WHEN    67
-                  MOVE    "P02_SKYPRTFLG"        TO  MCP-WIDGET
               WHEN    47
                   MOVE    "P02_SETAINUSI"        TO  MCP-WIDGET
               WHEN    48
@@ -6106,10 +6068,6 @@
                    MOVE    50          TO  SPA-GMN-CUR
       *    ¾õÂÖ£³
                WHEN    "P02_CONDITION3"
-      *******      MOVE    51                  TO  SPA-GMN-CUR
-                   MOVE    66                  TO  SPA-GMN-CUR
-      *    ÀÁµá½ñÈ¯¹Ô¶èÊ¬
-               WHEN    "P02_SKYPRTFLG"
                    MOVE    51                  TO  SPA-GMN-CUR
       *    ¶Ø´÷
                WHEN    "P02_TABOO1"

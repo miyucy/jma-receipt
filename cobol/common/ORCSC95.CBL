@@ -511,7 +511,7 @@
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1001-REC
       *        請求書発行
-               MOVE    SYS-1001-SKYPRTFLG  TO  SPA-SKYPRTFLG-SYS
+               MOVE    SYS-1001-SKYPRTFLG  TO  SPA-SKYPRTFLG
       *        診療費明細書発行
                MOVE    SYS-1001-MEIPRTFLG  TO  SPA-MEIPRTFLG
       *        院外処方せん発行フラグ
@@ -994,7 +994,7 @@
                IF      SYS-1010-USERID     =   SPA-OPID
       *            請求書発行フラグ
                    IF      SYS-1010-SKYPRTFLG  NOT =   SPACE
-                       MOVE    SYS-1010-SKYPRTFLG  TO  SPA-SKYPRTFLG-SYS
+                       MOVE    SYS-1010-SKYPRTFLG  TO  SPA-SKYPRTFLG
                    END-IF
       *            院外処方せん発行フラグ
                    IF      SYS-1010-SYOHOPRTFLG  NOT =   SPACE
@@ -2664,12 +2664,6 @@
            PERFORM 401011-TABOO-SET-SEC
       *    入金方法
            MOVE    PTINF-NYUKIN-HOHO   TO  SPA-NYUKIN-HOHO
-      *    入金方法
-           IF      PTINF-SKYPRTFLG     =   SPACE
-               MOVE    SPA-SKYPRTFLG-SYS   TO  SPA-SKYPRTFLG
-           ELSE
-               MOVE    PTINF-SKYPRTFLG     TO  SPA-SKYPRTFLG
-           END-IF
       *
            .
        1101-PTINF-HENSYU-EXT.

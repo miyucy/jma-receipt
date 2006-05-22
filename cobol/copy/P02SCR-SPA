@@ -160,15 +160,6 @@
                            11  SPA-GMN-NYUKIN-HL            PIC X(01).
                            11  SPA-GMN-NYUKIN-MEIL          PIC X(20).
                        09  SPA-NYUKIN-MAX                   PIC 9(03).
-      *            請求書発行区分
-                   07  SPA-GMN-SKYPRTFLG-G.
-                       09  SPA-GMN-SKYPRTFLG          PIC X(01).
-                       09  SPA-GMN-SKYPRTFLG-H        PIC X(01).
-                       09  SPA-GMN-SKYPRTFLG-MEI      PIC X(28).
-                   07  SPA-GMN-SKYPRTFLG-COB.
-                       09  SPA-GMN-SKYPRTFLG-LST      PIC X(30)
-                                                      OCCURS 4.
-                   07  SPA-SKYPRTFLG-MAX              PIC 9(02).
       *            保険情報
                    07  SPA-GMN-HKN-AREA.
       *                保険情報

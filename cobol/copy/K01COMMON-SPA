@@ -40,8 +40,6 @@
                05  SPA-SYOHOPRTFLG         PIC  9(01).
       *処方区分
                05  SPA-SYOHOKBN            PIC X(01).
-      *請求書発行フラグ（システム管理）
-               05  SPA-SKYPRTFLG-SYS       PIC X(01).
       *請求書発行フラグ
                05  SPA-SKYPRTFLG           PIC X(01).
       *診療費明細書発行フラグ
