@@ -1809,7 +1809,6 @@
       *
            INITIALIZE                  ORCSKARRKAREA
            MOVE    SPA-NAI-SRYYM       TO  SKARRK-SRYYM
-           MOVE    "99"                TO  SKARRK-SRYKA
            CALL    "ORCSKARRK"         USING
                                        ORCSKARRKAREA
                                        SPA-AREA.
