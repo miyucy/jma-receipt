@@ -106,6 +106,7 @@
       *  02.09.06    NACL-藤原    06/05/16  改定通信医１６０４９号
       *                                     症状詳記レコード対応
       *                                     レセ電データを２５００に変更
+      *                                     改行までを１レコードとする
       *                                     日計表レコードの記載方法の変更
       *****************************************************************
       *
@@ -402,8 +403,7 @@
            03  WRK-COM-FTNKBN          PIC X(01).
            03  WRK-TAIHI-FTNKBN        PIC X(01).
            03  WRK-SJ-KBN              PIC X(02).
-           03  WRK-SJ-LENGTH           PIC 9(04).
-           03  WRK-SJ-DATA             PIC X(2500).
+           03  WRK-SJ-CHK              PIC 9(01).
       *
       *    1桁目:生保 2桁目:結核 3桁目:精神
            03  WRK-3SYU-KBN.
@@ -5128,8 +5128,6 @@
            MOVE    RECECOM-COMMENT TO  WRK-COMM
            MOVE    ZERO            TO  WRK-RECEHEN                      
            MOVE    "07"            TO  WRK-SJ-KBN               
-           MOVE    SPACE           TO  WRK-SJ-DATA
-           MOVE    0               TO  WRK-SJ-LENGTH        
       *
            PERFORM     UNTIL       WRK-RECEHEN  =   1      
       *
@@ -5222,27 +5220,12 @@
                        ADD     1                   TO  CNT-OUT
                      END-PERFORM
       *
-                     IF      WRK-RECEHEN       =   1
-                         MOVE    800               TO  IDY1
-                     END-IF 
-                     IF      WRK-SJ-LENGTH     =   0
-                         MOVE   WRK-COMMENT-G(1:IDY1)  TO  WRK-SJ-DATA
-                     ELSE
-                         STRING    WRK-SJ-DATA (1:WRK-SJ-LENGTH)
-                                                   DELIMITED  BY  SIZE
-                                   WRK-COMMENT-G(1:IDY1)
-                                                   DELIMITED  BY  SIZE
-                                   INTO    WRK-SJ-DATA
-                         END-STRING
-                     END-IF
-                     ADD     IDY1           TO  WRK-SJ-LENGTH 
+      *              症状詳記レコード編集処理
+                     PERFORM 20092-SJ-HENSYU-SEC
                    END-IF
                END-IF  
                MOVE    WRK-COMM1       TO  WRK-COMM
            END-PERFORM   
-      *
-      *    症状詳記レコード編集処理
-           PERFORM 20092-SJ-HENSYU-SEC
       *
            .
        20091-RECECOM-HENSYU-EXT.
@@ -5253,9 +5236,19 @@
       *****************************************************************
        20092-SJ-HENSYU-SEC       SECTION.
       *
-      *****IF      SYS-2005-RECECOMKBN =   "1"
-      *****    GO  TO  20092-SJ-HENSYU-EXT
-      *****END-IF
+      *    全角スペースのみのレコードは記載しない
+           MOVE    ZERO                TO  WRK-SJ-CHK
+           PERFORM VARYING IDX FROM    1   BY  2
+                   UNTIL   IDX >       800
+                   OR      WRK-COMMENT-G(IDX:2)    =   SPACE
+                   OR      WRK-SJ-CHK              =   1
+               IF      WRK-COMMENT-G(IDX:2)    NOT =   "　"
+                   MOVE    1               TO  WRK-SJ-CHK
+               END-IF
+           END-PERFORM 
+           IF      WRK-SJ-CHK          =   ZERO
+               GO  TO  20092-SJ-HENSYU-EXT
+           END-IF   
       *
            MOVE    SPACE               TO  WRK-REC
            MOVE    ZERO                TO  WRK-REC-LENGTH
@@ -5270,8 +5263,7 @@
            MOVE    SPACE               TO  WRK-SJ-KBN
            PERFORM 5004-MOJI-HENSYU-SEC  
       *    症状詳記データ
-           MOVE    WRK-SJ-DATA (1:WRK-SJ-LENGTH)
-                                       TO  WRK-DATA
+           MOVE    WRK-COMMENT-G       TO  WRK-DATA
            MOVE    2400                TO  WRK-NAGASA
            MOVE    1                   TO  WRK-END 
            PERFORM 5004-MOJI-HENSYU-SEC  
