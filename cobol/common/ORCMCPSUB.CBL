@@ -102,7 +102,7 @@
       *
       *
            COPY    'ORCA-DBCOMM'.
-      *    COPY    'ORCA-DBPATH'.
+           COPY    'ORCA-DBPATH'.
       *
        LINKAGE                     SECTION.
            COPY    'MCPAREA'.
