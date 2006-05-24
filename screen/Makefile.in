@@ -317,6 +317,9 @@ SCREEN_screen = \
         P02S.glade \
         W111.glade \
         W62.glade \
+        N23.glade \
+        N21ID2.glade \
+        N29.glade \
 
 
 SCREEN_objs = $(SCREEN_sources:.glade.in=.glade)

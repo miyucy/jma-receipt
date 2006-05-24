@@ -111,3 +111,13 @@
                  09  SPA-N22-PHOTO1    PIC X(256).
                  09  SPA-N22-PHOTO2    PIC X(256).
                  09  SPA-N22-PHOTO3    PIC X(256).
+      *    °õºþ¾ò·ïÀßÄê²èÌÌ
+           03  SPA-N23-AREA.
+               05  SPA-N23-MAX     PIC 9(05).
+               05  SPA-N23-CUR     PIC 9(02).
+               05  SPA-N23-JYO     PIC X     OCCURS  2.
+               05  SPA-N23-KBN     PIC X     OCCURS  3.
+               05  SPA-N23-NAME    PIC X(10).
+               05  SPA-N23-SRYCD   PIC X(9).
+               05  SPA-N23-IYK     PIC X     OCCURS  2.
+               05  SPA-N23-SYU     PIC X     OCCURS  3.

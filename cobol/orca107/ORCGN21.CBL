@@ -41,6 +41,7 @@
       * 02.01.02     NACL-¿¹ÏÆ     04/10/05  È¾³ÑÁ´³Ñ¥Á¥§¥Ã¥¯ÄÉ²Ã
       * 02.01.03     NACL-¿¹ÏÆ     04/10/22  CLOSE½èÍý
       * 02.02.01     NACL-¿¹ÏÆ     05/12/13  ÌôºÞ¾ðÊó»²¾ÈÄÉ²Ã
+      * 02.02.02     NACL-¿¹ÏÆ     06/05/11  ÌôºÞ¾ðÊó¥ê¥¹¥ÈÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -193,8 +194,11 @@
        01  SCRAREA.
            COPY    "N21.INC".
            COPY    "N22.INC".
+           COPY    "N23.INC".
+           COPY    "N29.INC".
            COPY    "N21ERR.INC".
            COPY    "N21ID1.INC".
+           COPY    "N21ID2.INC".
       *
        PROCEDURE           DIVISION    USING
            MCPAREA
@@ -292,6 +296,11 @@
       *    ºï½ü
                WHEN    "CLICKED"   ALSO    "B03"
                    PERFORM 470-DEL-SEC
+      *----(02.02.02)--ADD-START---
+      *    ¥ê¥¹¥È
+               WHEN    "CLICKED"   ALSO    "B04"
+                   PERFORM 440-LSTPRT-SEC
+      *----(02.02.02)--ADD-END-----
       *    ÅÐÏ¿
                WHEN    "CLICKED"   ALSO    "B12"
                    PERFORM 480-TOUROKU-SEC
@@ -1004,6 +1013,31 @@
        430-GAZOCHK2-EXT.
            EXIT.
       *
+      *----(02.02.02)--ADD-START---
+      *****************************************************************
+      *    ¥ê¥¹¥È°õºþ½èÍý
+      *****************************************************************
+       440-LSTPRT-SEC              SECTION.
+      *
+           MOVE    SPACE               TO  LINKAREA
+           MOVE    SPA-N21KYOUTU       TO  SPA-WORK
+           MOVE    SPA-AREA            TO  SPA-COMMON
+      *
+           MOVE    "N23"               TO  SPA-SAKIPG
+           MOVE    "N21"               TO  SPA-MOTOPG
+      *
+           MOVE   "CHANGE"             TO  MCP-PUTTYPE
+           MOVE   SPA-SAKIPG           TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+           .
+      *
+       440-LSTPRT-EXT.
+           EXIT.
+      *
+      *----(02.02.02)--ADD-END-----
       *****************************************************************
       *    »²¾È½èÍý
       *****************************************************************

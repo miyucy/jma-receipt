@@ -319,6 +319,9 @@ RECORD_files = \
 	P02S.rec \
 	W111.rec \
 	W62.rec \
+	N21ID2.rec \
+	N23.rec \
+	N29.rec 
 
 DEF_files = \
 	HC01.def \

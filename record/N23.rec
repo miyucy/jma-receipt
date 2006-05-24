@@ -1,0 +1,44 @@
+N23	{
+	fixed2	{
+		JYO1	{
+			value	bool;
+		};
+		JYO2	{
+			value	bool;
+		};
+		KBN1	{
+			value	bool;
+			state   int;
+		};
+		KBN2	{
+			value	bool;
+			state   int;
+		};
+		KBN3	{
+			value	bool;
+			state   int;
+		};
+		NAME	{
+			value	varchar(10);
+			state   int;
+		};
+		SRYCD	{
+			value	char(10);
+			state   int;
+		};
+		IYK1	{
+			value	bool;
+			state   int;
+		};
+		IYK2	{
+			value	bool;
+			state   int;
+		};
+		SYU1	{
+			value	bool;
+		};
+		SYU2	{
+			value	bool;
+		};
+	};
+};

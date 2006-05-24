@@ -39,3 +39,151 @@ path	all 	{
  		;
 	};
 };
+
+path	key2s 	{
+	DBSELECT	{
+		DECLARE tbl_yakujyo_key2s_csr CURSOR FOR
+		SELECT a.*
+		FROM tbl_yakujyo a,tbl_tensu b
+			WHERE  (a.NAME       LIKE   :NAME
+			OR      b.NAME       LIKE   :NAME
+			OR      b.KANANAME   LIKE   :NAME)
+			AND     a.SRYCD      =     b.SRYCD
+			AND     b.YUKOSTYMD  <=     :CREYMD
+			AND     b.YUKOEDYMD  >=     :CREYMD
+			AND     a.SRYCD      LIKE   '6%'
+			AND     a.TEKNUM     =      '1'
+			AND    (b.YKZKBN     =      '1'
+			OR      b.YKZKBN     =      '6')
+			ORDER   BY  a.SRYCD
+		;
+	};
+};
+
+path	key2k 	{
+	DBSELECT	{
+		DECLARE tbl_yakujyo_key2k_csr CURSOR FOR
+		SELECT a.*
+		FROM tbl_yakujyo a,tbl_tensu b
+			WHERE  (a.NAME       LIKE   :NAME
+			OR      b.NAME       LIKE   :NAME
+			OR      b.KANANAME   LIKE   :NAME)
+			AND     a.SRYCD      =     b.SRYCD
+			AND     b.YUKOSTYMD  <=     :CREYMD
+			AND     b.YUKOEDYMD  >=     :CREYMD
+			AND     a.SRYCD      LIKE   '6%'
+			AND     a.TEKNUM     =      '1'
+			AND    (b.YKZKBN     =      '1'
+			OR      b.YKZKBN     =      '6')
+			ORDER   BY  b.KANANAME
+		;
+	};
+};
+
+path	key3s 	{
+	DBSELECT	{
+		DECLARE tbl_yakujyo_key3s_csr CURSOR FOR
+		SELECT a.*
+		FROM tbl_yakujyo a,tbl_tensu b
+			WHERE  (a.SRYCD      =      :SRYCD
+			OR      a.SRYCD      LIKE   :SRYCD)
+			AND     a.SRYCD      =     b.SRYCD
+			AND     b.YUKOSTYMD  <=     :CREYMD
+			AND     b.YUKOEDYMD  >=     :CREYMD
+			AND     a.SRYCD      LIKE   '6%'
+			AND     a.TEKNUM     =      '1'
+			AND    (b.YKZKBN     =      '1'
+			OR      b.YKZKBN     =      '6')
+			ORDER   BY  a.SRYCD
+		;
+	};
+};
+
+path	key3k 	{
+	DBSELECT	{
+		DECLARE tbl_yakujyo_key3k_csr CURSOR FOR
+		SELECT a.*
+		FROM tbl_yakujyo a,tbl_tensu b
+			WHERE  (a.SRYCD      =      :SRYCD
+			OR      a.SRYCD      LIKE   :SRYCD)
+			AND     a.SRYCD      =     b.SRYCD
+			AND     b.YUKOSTYMD  <=     :CREYMD
+			AND     b.YUKOEDYMD  >=     :CREYMD
+			AND     a.SRYCD      LIKE   '6%'
+			AND     a.TEKNUM     =      '1'
+			AND    (b.YKZKBN     =      '1'
+			OR      b.YKZKBN     =      '6')
+			ORDER   BY  b.KANANAME
+		;
+	};
+};
+
+path	key4s 	{
+	DBSELECT	{
+		DECLARE tbl_yakujyo_key4s_csr CURSOR FOR
+		SELECT a.*
+		FROM tbl_yakujyo a,tbl_tensu b
+			WHERE   b.YKZKBN     =      :TEKNUM
+			AND     a.SRYCD      =     b.SRYCD
+			AND     b.YUKOSTYMD  <=     :CREYMD
+			AND     b.YUKOEDYMD  >=     :CREYMD
+			AND     a.SRYCD      LIKE   '6%'
+			AND     a.TEKNUM     =      '1'
+			AND    (b.YKZKBN     =      '1'
+			OR      b.YKZKBN     =      '6')
+			ORDER   BY  a.SRYCD
+		;
+	};
+};
+
+path	key4k 	{
+	DBSELECT	{
+		DECLARE tbl_yakujyo_key4k_csr CURSOR FOR
+		SELECT a.*
+		FROM tbl_yakujyo a,tbl_tensu b
+			WHERE   b.YKZKBN     =      :TEKNUM
+			AND     a.SRYCD      =     b.SRYCD
+			AND     b.YUKOSTYMD  <=     :CREYMD
+			AND     b.YUKOEDYMD  >=     :CREYMD
+			AND     a.SRYCD      LIKE   '6%'
+			AND     a.TEKNUM     =      '1'
+			AND    (b.YKZKBN     =      '1'
+			OR      b.YKZKBN     =      '6')
+			ORDER   BY  b.KANANAME
+		;
+	};
+};
+
+path	key5s 	{
+	DBSELECT	{
+		DECLARE tbl_yakujyo_key5s_csr CURSOR FOR
+		SELECT a.*
+		FROM tbl_yakujyo a,tbl_tensu b
+			WHERE   a.SRYCD      =     b.SRYCD
+			AND     b.YUKOSTYMD  <=     :CREYMD
+			AND     b.YUKOEDYMD  >=     :CREYMD
+			AND     a.SRYCD      LIKE   '6%'
+			AND     a.TEKNUM     =      '1'
+			AND    (b.YKZKBN     =      '1'
+			OR      b.YKZKBN     =      '6')
+			ORDER   BY  a.SRYCD
+		;
+	};
+};
+
+path	key5k 	{
+	DBSELECT	{
+		DECLARE tbl_yakujyo_key5k_csr CURSOR FOR
+		SELECT a.*
+		FROM tbl_yakujyo a,tbl_tensu b
+			WHERE   a.SRYCD      =     b.SRYCD
+			AND     b.YUKOSTYMD  <=     :CREYMD
+			AND     b.YUKOEDYMD  >=     :CREYMD
+			AND     a.SRYCD      LIKE   '6%'
+			AND     a.TEKNUM     =      '1'
+			AND    (b.YKZKBN     =      '1'
+			OR      b.YKZKBN     =      '6')
+			ORDER   BY  b.KANANAME
+		;
+	};
+};

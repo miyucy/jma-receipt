@@ -95,11 +95,14 @@
            03  FILLER               PIC X(08)   VALUE   "TEIKI3".
            03  FILLER               PIC X(40)   VALUE
                                     "Äê´üÀÁµá¡ÝÀÁµáºï½ü".
+           03  FILLER               PIC X(08)   VALUE   "YKJMST".
+           03  FILLER               PIC X(40)   VALUE
+                                    "ÌôºÞ¾ðÊó¥Þ¥¹¥¿°ìÍ÷".
       *
        01  MNAME-DATA-REC-R         REDEFINES   MNAME-DATA-REC.
-           03  MNAME-TBL-OCC        OCCURS      20  INDEXED TBL-IDX.
+           03  MNAME-TBL-OCC        OCCURS      21  INDEXED TBL-IDX.
                05  MNAME-SHELLID    PIC X(08).
                05  MNAME-JOBNAME    PIC X(40).
       *
-       01  MNAME-MAX                PIC 9(04)   VALUE   20.
+       01  MNAME-MAX                PIC 9(04)   VALUE   21.
       *
