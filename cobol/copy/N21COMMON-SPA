@@ -31,8 +31,12 @@
       *警告画面より
            05  SPA-N21ID1-AREA. 
                07  SPA-N21ID1-FLG          PIC X(02).
+               07  SPA-N29-FLG             PIC X(02).
       *参照画面より
            05  SPA-N22-FLG         PIC X(02).
            05  SPA-N22-GAZO        PIC X(01).
            05  SPA-N22-COPY        PIC X(01).
+      *ジョブ管理
+           05  SPA-N23-TBL-GROUP           PIC  X(14).
+           05  SPA-N23-JOB-JOBID           PIC  9(07).
       *
