@@ -130,7 +130,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Fri, 22 Dec 2000 04:58:30 GMT</last_modification_time>
       </signal>
-      <label></label>
+      <label>¥ê¥¹¥È</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
