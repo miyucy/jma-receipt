@@ -67,6 +67,7 @@ shell_sources = \
 	monthly/receipt_prv.sh.in \
 	allways/cachedl.sh.in \
 	monthly/teiki3.sh.in \
+	allways/ykjmst.sh.in \
 
 ruby_scripts = \
 	daily/print-data.rb \
