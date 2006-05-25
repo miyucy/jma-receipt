@@ -408,6 +408,10 @@
                        MOVE  "key4"        TO  MCP-PATHNAME
                        PERFORM                 910-TENSU-READ-SEC
                    END-PERFORM
+                   MOVE  "tbl_tensu"   TO  MCP-TABLE
+                   MOVE  "key4"        TO  MCP-PATHNAME
+                   PERFORM 990-DBCLOSE-SEC
+      *
                    MOVE    WRK-TNS-TENSU-REC
                                            TO  TNS-TENSU-REC
                    IF      TNSWK-YUKOSTYMD <=  TNS-YUKOEDYMD
@@ -415,6 +419,10 @@
                        PERFORM 2040-ERR-SYORI-SEC
                        GO      TO      2010-INSERT-SYORI-EXT
                    END-IF
+               ELSE
+                   MOVE  "tbl_tensu"   TO  MCP-TABLE
+                   MOVE  "key4"        TO  MCP-PATHNAME
+                   PERFORM 990-DBCLOSE-SEC
                END-IF
       *
       *        ＤＢ追加
@@ -448,6 +456,9 @@
                        PERFORM                     910-TENSU-READ-SEC
                    END-IF
                END-PERFORM
+               MOVE  "tbl_tensu"   TO  MCP-TABLE
+               MOVE  "key4"        TO  MCP-PATHNAME
+               PERFORM 990-DBCLOSE-SEC
       *
                IF      FLG-SYORI           =   ZERO
       *
@@ -469,6 +480,7 @@
            MOVE    TNSWK-TENSU-REC(35:)
                                        TO  TNS-TENSU-REC(26:)
       *    点数マスタの確認
+           MOVE    TNS-YUKOSTYMD       TO  TNS-YUKOEDYMD
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
@@ -481,13 +493,19 @@
                MOVE    "tbl_tensu"         TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
                PERFORM                     910-TENSU-READ-SEC
-               IF     (FLG-TENSU           =   ZERO )  AND
-                      (TNS-YUKOSTYMD       =   TNSWK-YUKOSTYMD) AND
-                      (TNS-YUKOEDYMD       =   TNSWK-YUKOEDYMD)
-                   MOVE    5               TO  WRK-ERRCD
-                   PERFORM 2040-ERR-SYORI-SEC
-                   GO      TO      20101-TENSU-INS-EXT
-               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-TENSU
+           END-IF
+           MOVE  "tbl_tensu"           TO  MCP-TABLE
+           MOVE  "key"                 TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF     (FLG-TENSU           =   ZERO )  AND
+                  (TNS-YUKOSTYMD       =   TNSWK-YUKOSTYMD) AND
+                  (TNS-YUKOEDYMD       =   TNSWK-YUKOEDYMD)
+               MOVE    5               TO  WRK-ERRCD
+               PERFORM 2040-ERR-SYORI-SEC
+               GO      TO      20101-TENSU-INS-EXT
            END-IF
       *
       *    点数マスタ追加
@@ -561,6 +579,9 @@
                MOVE    1                   TO  FLG-TENSUPLUS
                INITIALIZE                      TENSUPLUS-REC
            END-IF
+           MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
            MOVE    SPACE               TO  WRK-TENSUPLUS-REC
            IF      FLG-TENSUPLUS       =   ZERO
@@ -606,11 +627,17 @@
                MOVE    "tbl_tensuplus" TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
                PERFORM 980-TENSUPLUS-READ-SEC
-               IF      FLG-TENSUPLUS       =   ZERO
-                   MOVE    6               TO  WRK-ERRCD
-                   PERFORM 2040-ERR-SYORI-SEC
-                   GO      TO      20104-TENSUPLUS-INS-EXT
-               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-TENSUPLUS
+           END-IF
+           MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      FLG-TENSUPLUS       =   ZERO
+               MOVE    6               TO  WRK-ERRCD
+               PERFORM 2040-ERR-SYORI-SEC
+               GO      TO      20104-TENSUPLUS-INS-EXT
            END-IF
       *
            MOVE    WRK-TENSUPLUS-REC   TO  TENSUPLUS-REC
@@ -712,6 +739,9 @@
                    PERFORM                     910-TENSU-READ-SEC
                END-IF
            END-PERFORM
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
       *    更新エラー
            IF      FLG-SYORI           =   ZERO
@@ -758,6 +788,9 @@
                    PERFORM                 910-TENSU-READ-SEC
                END-IF
            END-PERFORM
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
       *    削除エラー
            IF      FLG-SYORI           =   ZERO
@@ -1013,7 +1046,7 @@
       *****************************************************************
       *    カーソルクローズ処理
       *****************************************************************
-       900-CLOSE-SEC               SECTION.
+       990-DBCLOSE-SEC               SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            CALL    "MONFUNC"               USING
@@ -1021,7 +1054,7 @@
                                            MCPDATA-REC
            .
       *
-       900-CLOSE-EXT.
+       990-DBCLOSE-EXT.
            EXIT.
       *
       *
