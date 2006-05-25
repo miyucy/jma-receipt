@@ -28,6 +28,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 01.00.01     NACL-小豆沢  06/05/22  MONFUNC対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -333,6 +334,13 @@
                MOVE    1                   TO  FLG-SRYCDCHG
            END-IF
       *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    "tbl_srycdchg"      TO  MCP-TABLE
+           MOVE    "key"              TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
       *    あればそのまま
            IF      FLG-SRYCDCHG        =   ZERO
                MOVE    5               TO  WRK-ERRCD
@@ -357,6 +365,14 @@
            ELSE
                MOVE    1                   TO  FLG-SRYCDCHG
            END-IF
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    "tbl_srycdchg"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
            IF      FLG-SRYCDCHG        =   ZERO
                MOVE    1               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
@@ -380,6 +396,14 @@
            ELSE
                MOVE    1                   TO  FLG-SRYCDCHG
            END-IF
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    "tbl_srycdchg"      TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
            IF      FLG-SRYCDCHG        =   ZERO
                MOVE    2               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
