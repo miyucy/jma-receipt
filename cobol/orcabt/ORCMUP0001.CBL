@@ -480,6 +480,7 @@
            MOVE    TNSWK-TENSU-REC(35:)
                                        TO  TNS-TENSU-REC(26:)
       *    点数マスタの確認
+           MOVE    TNS-YUKOSTYMD       TO  TNS-YUKOEDYMD
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
