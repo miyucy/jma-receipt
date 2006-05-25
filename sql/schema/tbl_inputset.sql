@@ -1,6 +1,8 @@
 CREATE TABLE "tbl_inputset" (
 	"hospid" character(24) NOT NULL,
 	"setcd" character(6) NOT NULL,
+	"yukostymd" character(8) NOT NULL,
+	"yukoedymd" character(8) NOT NULL,
 	"setseq" numeric(3,0) NOT NULL,
 	"inputcd" character(9),
 	"suryo1" numeric(10,3) DEFAULT 0,
@@ -16,7 +18,7 @@ CREATE TABLE "tbl_inputset" (
 	"creymd" character(8),
 	"upymd" character(8),
 	"uphms" character(6),
-	Constraint "tbl_inputset_primary_key" Primary Key ("hospid", "setcd", "setseq")
+	Constraint "tbl_inputset_primary_key" Primary Key ("hospid", "setcd", "yukostymd", "yukoedymd", "setseq")
 );
 
 COMMENT ON TABLE "tbl_inputset" IS '入力セット';

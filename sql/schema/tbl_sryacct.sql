@@ -152,5 +152,7 @@ CREATE TABLE "tbl_sryacct" (
 	Constraint "tbl_sryacct_primary_key" Primary Key ("hospid", "nyugaikbn", "ptid", "sryka", "sryym", "srykbn", "zainum")
 );
 
+CREATE INDEX idx_sryacct_ptid_sryym ON tbl_sryacct USING btree (hospid, nyugaikbn, ptid, sryym);
+
 COMMENT ON TABLE "tbl_sryacct" IS '©гне╡Я╥в';
 

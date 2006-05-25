@@ -50,6 +50,7 @@ CREATE TABLE "tbl_tensu" (
 	"laserksn" numeric(1,0) DEFAULT 0,
 	"chpmesuksn" numeric(1,0) DEFAULT 0,
 	"micmesuksn" numeric(1,0) DEFAULT 0,
+	"donorkbn" numeric(1,0) DEFAULT 0,
 	"knsjiskbn" numeric(1,0) DEFAULT 0,
 	"knsjisgrpkbn" numeric(2,0) DEFAULT 0,
 	"teigenkbn" numeric(1,0) DEFAULT 0,

@@ -10,8 +10,8 @@ CREATE TABLE "tbl_adrs" (
 	"townname" character varying(100),
 	"editadrs_kana" character varying(440),
 	"editadrs_name" character varying(220),
-	"towndivflg" character(1) DEFAULT '0',
-	"manytownflg" character(1) DEFAULT '0',
+	"towndivflg" character(1) DEFAULT '0'::bpchar,
+	"manytownflg" character(1) DEFAULT '0'::bpchar,
 	Constraint "tbl_adrs_primary_key" Primary Key ("lpubcd", "post", "rennum")
 );
 
