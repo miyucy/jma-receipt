@@ -30,7 +30,6 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    MCC-多々納   02/06/06  更新・削除の修正
       *  01.00.02    NACL-小豆沢  06/05/22  MONFUNC対応
-      *  04.03.00    NACL-太田    08/05/28  エラー処理強化対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -73,8 +72,6 @@
        01  PLF-REC                 PIC X(1000).
       *
        WORKING-STORAGE             SECTION.
-grpsys*
-grpsys     COPY    "COMMON-SPA".
       *
       *    ファイル指定領域
        01  ASS-AREA.
@@ -130,7 +127,6 @@ grpsys     COPY    "COMMON-SPA".
                05  WRK-SDD2            PIC 9(02).
       *　　主キー更新用項目
            03  WRK-CHKUP-KEY.
-               05  WRK-CHKUP-HOSPNUM       PIC  9(02).
                05  WRK-CHKUP-CHKKBN        PIC  X(01).
                05  WRK-CHKUP-SRYCD         PIC  X(09).
                05  WRK-CHKUP-YUKOSTYMD     PIC  X(08).
@@ -142,7 +138,6 @@ grpsys     COPY    "COMMON-SPA".
            03  WRK-UPD-ERRCD           PIC 9(01). 
       *
            03  WRK-IN                  PIC X(01). 
-           03  WRK-HOMEDIR             PIC X(128).
       *
       *    出力ファイル領域
        01  MES-AREA.
@@ -154,33 +149,28 @@ grpsys     COPY    "COMMON-SPA".
                05  MES-TITLE1-MM       PIC X(02) VALUE SPACE.
                05  FILLER              PIC X(01) VALUE ".".
                05  MES-TITLE1-DD       PIC X(02) VALUE SPACE.
-               05  FILLER              PIC X(02) VALUE SPACE.
-               05  MES-TITLE1-HOSPNUM  PIC 9(02).
       *
-       01  WRK-MSG-AREA.
-           03  WRK-MSG-01              PIC X(30).
-           03  FILLER                  PIC X(01)   VALUE   SPACE.
-           03  WRK-SYORIKBN            PIC X(01).
-           03  FILLER                  PIC X(01)   VALUE   ",".
-           03  WRK-CHKKBN              PIC X(01).
-           03  FILLER                  PIC X(01)   VALUE   ",".
-           03  WRK-SRYCD               PIC X(09).
-           03  FILLER                  PIC X(01)   VALUE   ",".
-           03  WRK-YUKOSTYMD           PIC X(08).
-           03  FILLER                  PIC X(01)   VALUE   ",".
-           03  WRK-YUKOEDYMD           PIC X(08).
-           03  FILLER                  PIC X(01)   VALUE   ",".
-           03  WRK-YUKOEDYMD2          PIC X(08).
-           03  FILLER                  PIC X(01)   VALUE   ",".
-           03  WRK-CDKBN               PIC X(01).
-           03  FILLER                  PIC X(01)   VALUE   ",".
-           03  WRK-RENNUM              PIC 9(02).
-           03  FILLER                  PIC X(01)   VALUE   ",".
-           03  WRK-NAME                PIC X(100).
+           01  WRK-MSG-AREA.
+               03  WRK-MSG-01          PIC X(30).
+               03  FILLER              PIC X(01)   VALUE   SPACE.
+               03  WRK-SYORIKBN        PIC X(01).
+               03  FILLER              PIC X(01)   VALUE   ",".
+               03  WRK-CHKKBN          PIC X(01).
+               03  FILLER              PIC X(01)   VALUE   ",".
+               03  WRK-SRYCD           PIC X(09).
+               03  FILLER              PIC X(01)   VALUE   ",".
+               03  WRK-YUKOSTYMD       PIC X(08).
+               03  FILLER              PIC X(01)   VALUE   ",".
+               03  WRK-YUKOEDYMD       PIC X(08).
+               03  FILLER              PIC X(01)   VALUE   ",".
+               03  WRK-YUKOEDYMD2      PIC X(08).
+               03  FILLER              PIC X(01)   VALUE   ",".
+               03  WRK-CDKBN           PIC X(01).
+               03  FILLER              PIC X(01)   VALUE   ",".
+               03  WRK-RENNUM          PIC 9(02).
+               03  FILLER              PIC X(01)   VALUE   ",".
+               03  WRK-NAME            PIC X(100).
       *
-       01  CONST-AREA.
-           03  CONST-HOMEDIR           PIC X(28)  VALUE
-               "/var/lib/jma-receipt/master/".
       *****************************************************************
       *    ファイル定義
       *****************************************************************
@@ -188,9 +178,6 @@ grpsys     COPY    "COMMON-SPA".
       *    数字変換領域
            COPY    "CPORCSNUM.INC".
       *
-           COPY    "ENUM-VALUE".
-      *    一時ファイル名編集
-           COPY    "CPORCSGETTEMP.INC".
       *
       *****************************************************************
       *    ファイル定義
@@ -198,11 +185,7 @@ grpsys     COPY    "COMMON-SPA".
       *
       *    チェックマスタ−
        01  CHK-REC.
-           COPY    "CPCHKOLD.INC".
-      *
-      *    ジョブ管理情報
-       01  JOBKANRI-REC.
-           COPY    "CPJOBKANRI.INC".
+           COPY    "CPCHK.INC".
       *
       *    共通パラメタ
            COPY    "MCPAREA".
@@ -214,12 +197,13 @@ grpsys     COPY    "COMMON-SPA".
       *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
-      *
-           COPY    "CPMUPLINK.INC".
+       01  PARA-REC.
+           03  PARA-DBFILE               PIC X(13).
+           03  PARA-UPFILE               PIC X(100).
       *
        PROCEDURE                       DIVISION
            USING
-           LNK-AREA.
+           PARA-REC.
       *
       ****************************************************************
       *    主　　処理
@@ -229,8 +213,7 @@ grpsys     COPY    "COMMON-SPA".
            PERFORM 100-INIT-SEC
       *
            PERFORM 200-MAIN-SEC
-                   UNTIL ( FLG-IN      =   1 )
-                    OR   ( LNK-RC  NOT =   ZERO )
+                   UNTIL   FLG-IN      =   1
       *
            PERFORM 300-END-SEC
       *
@@ -247,18 +230,15 @@ grpsys     COPY    "COMMON-SPA".
            MOVE    ZERO            TO  CNT-AREA
            MOVE    ZERO            TO  IDX-AREA
            INITIALIZE                  WRK-AREA
-                                       SPA-AREA
-      *
-           MOVE    LNK-HOSPNUM     TO  SPA-HOSPNUM
       *
       *    DB OPEN
-      *    PERFORM 100-DBOPEN-SEC
-      *    IF      MCP-RC      NOT =   ZERO
-      *        DISPLAY "DBOPEN ERR"
-      *    END-IF.
+           PERFORM 100-DBOPEN-SEC
+           IF      MCP-RC      NOT =   ZERO
+               DISPLAY "DBOPEN ERR"
+           END-IF.
       *
       *    パラメータ情報取得
-      *****PERFORM 101-LNK-GET-SEC
+      *****PERFORM 101-PARA-GET-SEC
       *    ファイル情報
            PERFORM 101-ASSIN-GET-SEC
       *
@@ -287,49 +267,34 @@ grpsys     COPY    "COMMON-SPA".
       *****************************************************************
        101-ASSIN-GET-SEC                SECTION.
       *
-           INITIALIZE                      SGETTEMP-AREA
-           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
-      *
-           IF      SGETTEMP-MW         =   SPA-PANDA
-               MOVE    CONST-HOMEDIR       TO  WRK-HOMEDIR
-           ELSE
-               MOVE    SGETTEMP-TEMPDIR    TO  WRK-HOMEDIR
-           END-IF
-      *
       *    入力ファイル
            MOVE    SPACE               TO  ASS-IN
-           STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
-                   SPA-HOSPNUM         DELIMITED  BY  SIZE
+           STRING  "/home/orca/"       DELIMITED  BY  SIZE
+                   PARA-DBFILE         DELIMITED  BY  SPACE
                    "/"                 DELIMITED  BY  SIZE
-                   LNK-DBFILE         DELIMITED  BY  SPACE
-                   "/"                 DELIMITED  BY  SIZE
-                   LNK-UPFILE         DELIMITED  BY  SPACE
+                   PARA-UPFILE         DELIMITED  BY  SPACE
                                        INTO    ASS-IN
            END-STRING
       *
       *    エラーファイル
            MOVE    SPACE               TO  ASS-ERR
-           STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
-                   SPA-HOSPNUM         DELIMITED  BY  SIZE
-                   "/"                 DELIMITED  BY  SIZE
+           STRING  "/home/orca/"       DELIMITED  BY  SIZE
                    "orca-mstlog/"      DELIMITED  BY  SIZE
-                   LNK-UPFILE         DELIMITED  BY  SPACE
+                   PARA-UPFILE         DELIMITED  BY  SPACE
                    ".ERR"              DELIMITED  BY  SIZE
                                        INTO    ASS-ERR
            END-STRING
       *
       *    プルーフファイル
            MOVE    SPACE               TO  ASS-PLF
-           STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
-                   SPA-HOSPNUM         DELIMITED  BY  SIZE
-                   "/"                 DELIMITED  BY  SIZE
+           STRING  "/home/orca/"       DELIMITED  BY  SIZE
                    "orca-mstlog/"      DELIMITED  BY  SIZE
-                   LNK-UPFILE         DELIMITED  BY  SPACE
-                   ".PRF"              DELIMITED  BY  SIZE
+                   PARA-UPFILE         DELIMITED  BY  SPACE
+                   ".PLF"              DELIMITED  BY  SIZE
                                        INTO    ASS-PLF
            END-STRING
       *
-      *    DISPLAY "LNK-UPFILE:" LNK-UPFILE
+      *    DISPLAY "PARA-UPFILE:" PARA-UPFILE
       *    DISPLAY "ASS-IN:" ASS-IN
       *    DISPLAY "ASS-ERR:" ASS-ERR
       *    DISPLAY "ASS-PLF:" ASS-PLF
@@ -337,6 +302,7 @@ grpsys     COPY    "COMMON-SPA".
            .
        101-ASSIN-GET-EXT.
            EXIT.
+      *
       *****************************************************************
       *    メイン処理
       *****************************************************************
@@ -369,21 +335,18 @@ grpsys     COPY    "COMMON-SPA".
        2010-INSERT-SYORI-SEC               SECTION.
       *
            INITIALIZE                  CHK-REC
-      *****MOVE    CHKWK-KEY           TO  CHK-KEY
-grpsys     MOVE    SPA-HOSPNUM         TO  CHK-HOSPNUM
-           MOVE    CHKWK-CHKKBN        TO  CHK-CHKKBN
-           MOVE    CHKWK-SRYCD         TO  CHK-SRYCD
+           MOVE    CHKWK-KEY           TO  CHK-KEY
            MOVE    CHKWK-YUKOSTYMD     TO  CHK-YUKOSTYMD
                                            CHK-YUKOEDYMD
-           MOVE    CHKWK-CDKBN         TO  CHK-CDKBN
-           MOVE    CHKWK-RENNUM        TO  CHK-RENNUM
            MOVE    CHK-REC             TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_chk_master"    TO  MCP-TABLE
+           MOVE    "tbl_chk"           TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     PERFORM 900-ORCDBMAIN-SEC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_chk_master"    TO  MCP-TABLE
+               MOVE    "tbl_chk"           TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
                PERFORM                     910-CHK-READ-SEC
            ELSE
@@ -391,16 +354,18 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            END-IF
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "tbl_chk_master"    TO  MCP-TABLE
+           MOVE    "tbl_chk"           TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     PERFORM 900-ORCDBMAIN-SEC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
       *
       *    単純追加
            IF      CHKWK-YUKOEDYMD2    =   SPACE
       *        追加エラー
                IF      FLG-CHK             =   ZERO
-                   MOVE    5               TO  WRK-ERRCD
+                   MOVE    1               TO  WRK-ERRCD
                    PERFORM 2040-ERR-SYORI-SEC
                    GO      TO      2010-INSERT-SYORI-EXT
                END-IF
@@ -436,21 +401,18 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
       *
            INITIALIZE                  CHK-REC
-      *****MOVE    CHKWK-KEY           TO  CHK-KEY
-grpsys     MOVE    SPA-HOSPNUM         TO  CHK-HOSPNUM
-           MOVE    CHKWK-CHKKBN        TO  CHK-CHKKBN
-           MOVE    CHKWK-SRYCD         TO  CHK-SRYCD
+           MOVE    CHKWK-KEY           TO  CHK-KEY
            MOVE    CHKWK-YUKOSTYMD     TO  CHK-YUKOSTYMD
                                            CHK-YUKOEDYMD
-           MOVE    CHKWK-CDKBN         TO  CHK-CDKBN
-           MOVE    CHKWK-RENNUM        TO  CHK-RENNUM
            MOVE    CHK-REC             TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_chk_master"    TO  MCP-TABLE
+           MOVE    "tbl_chk"           TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
-grpsys     PERFORM 900-ORCDBMAIN-SEC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_chk_master"    TO  MCP-TABLE
+               MOVE    "tbl_chk"           TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM                     910-CHK-READ-SEC
            ELSE
@@ -466,15 +428,17 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                    PERFORM 20102-CHK-UPD-SEC
                END-IF
       *
-               MOVE    "tbl_chk_master"    TO  MCP-TABLE
+               MOVE    "tbl_chk"           TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM                     910-CHK-READ-SEC
            END-PERFORM
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "tbl_chk_master"    TO  MCP-TABLE
+           MOVE    "tbl_chk"           TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
-grpsys     PERFORM 900-ORCDBMAIN-SEC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        20102-CHK-DELUPDS-EXT.
@@ -486,21 +450,18 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
        20101-CHK-INS-SEC           SECTION.
       *
            INITIALIZE                  CHK-REC
-      *****MOVE    CHKWK-KEY           TO  CHK-KEY
-grpsys     MOVE    SPA-HOSPNUM         TO  CHK-HOSPNUM
-           MOVE    CHKWK-CHKKBN        TO  CHK-CHKKBN
-           MOVE    CHKWK-SRYCD         TO  CHK-SRYCD
+           MOVE    CHKWK-KEY           TO  CHK-KEY
            MOVE    CHKWK-YUKOSTYMD     TO  CHK-YUKOSTYMD
                                            CHK-YUKOEDYMD
-           MOVE    CHKWK-CDKBN         TO  CHK-CDKBN
-           MOVE    CHKWK-RENNUM        TO  CHK-RENNUM
            MOVE    CHK-REC             TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_chk_master"    TO  MCP-TABLE
+           MOVE    "tbl_chk"           TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     PERFORM 900-ORCDBMAIN-SEC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_chk_master"    TO  MCP-TABLE
+               MOVE    "tbl_chk"           TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
                PERFORM                     910-CHK-READ-SEC
            ELSE
@@ -508,42 +469,38 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            END-IF
       *
            IF      FLG-CHK             =   ZERO
-               MOVE    5               TO  WRK-ERRCD
+               MOVE    1               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
       *
                MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-               MOVE    "tbl_chk_master"    TO  MCP-TABLE
+               MOVE    "tbl_chk"           TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-grpsys         PERFORM 900-ORCDBMAIN-SEC
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
                GO      TO      20101-CHK-INS-EXT
            END-IF
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "tbl_chk_master"    TO  MCP-TABLE
+           MOVE    "tbl_chk"           TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     PERFORM 900-ORCDBMAIN-SEC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            INITIALIZE                  CHK-REC
-      *****MOVE    CHKWK-KEY           TO  CHK-KEY
-grpsys     MOVE    SPA-HOSPNUM         TO  CHK-HOSPNUM
-           MOVE    CHKWK-CHKKBN        TO  CHK-CHKKBN
-           MOVE    CHKWK-SRYCD         TO  CHK-SRYCD
-           MOVE    CHKWK-YUKOSTYMD     TO  CHK-YUKOSTYMD
-           MOVE    CHKWK-YUKOEDYMD     TO  CHK-YUKOEDYMD
-           MOVE    CHKWK-CDKBN         TO  CHK-CDKBN
-           MOVE    CHKWK-RENNUM        TO  CHK-RENNUM
-           MOVE    CHKWK-REC(39:)      TO  CHK-REC(32:)
+           MOVE    CHKWK-KEY           TO  CHK-KEY
+           MOVE    CHKWK-REC(39:)
+                                       TO  CHK-REC(30:)
       *
-           MOVE    LNK-MNTYMD          TO  CHK-CREYMD
-                                           CHK-UPYMD
-           MOVE    LNK-MNTHMS          TO  CHK-UPHMS
            MOVE    CHK-REC             TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
-           MOVE    "tbl_chk_master"    TO  MCP-TABLE
+           MOVE    "tbl_chk"           TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     PERFORM 900-ORCDBMAIN-SEC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
-               MOVE    1               TO  LNK-RC
                MOVE    1               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
       *****ELSE
@@ -558,15 +515,14 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *****************************************************************
        20102-CHK-UPD-SEC           SECTION.
       *
-           MOVE    LNK-MNTYMD          TO  CHK-UPYMD
-           MOVE    LNK-MNTHMS          TO  CHK-UPHMS
            MOVE    CHK-REC             TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
-           MOVE    "tbl_chk_master"    TO  MCP-TABLE
+           MOVE    "tbl_chk"           TO  MCP-TABLE
            MOVE    "upd1"              TO  MCP-PATHNAME
-grpsys     PERFORM 900-ORCDBMAIN-SEC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
-               MOVE    2               TO  LNK-RC
                MOVE    2               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
            END-IF
@@ -583,31 +539,23 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    ZERO                TO  FLG-CHK
       *
            INITIALIZE                  CHK-REC
-      *****MOVE    CHKWK-KEY           TO  CHK-KEY
-grpsys     MOVE    SPA-HOSPNUM         TO  CHK-HOSPNUM
-           MOVE    CHKWK-CHKKBN        TO  CHK-CHKKBN
-           MOVE    CHKWK-SRYCD         TO  CHK-SRYCD
+           MOVE    CHKWK-KEY           TO  CHK-KEY
            MOVE    CHKWK-YUKOSTYMD     TO  CHK-YUKOSTYMD
                                            CHK-YUKOEDYMD
-           MOVE    CHKWK-CDKBN         TO  CHK-CDKBN
-           MOVE    CHKWK-RENNUM        TO  CHK-RENNUM
            MOVE    CHK-REC             TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_chk_master"    TO  MCP-TABLE
+           MOVE    "tbl_chk"           TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     PERFORM 900-ORCDBMAIN-SEC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_chk_master"    TO  MCP-TABLE
+               MOVE    "tbl_chk"           TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
                PERFORM                     910-CHK-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-CHK
            END-IF
-      *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "tbl_chk_master"    TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
       *    連番が１の時、対象のデータをすべて削除する
            IF      CHKWK-RENNUM        =   01
@@ -646,21 +594,18 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    ZERO                TO  FLG-CHK
       *
            INITIALIZE                  CHK-REC
-      *****MOVE    CHKWK-KEY           TO  CHK-KEY
-grpsys     MOVE    SPA-HOSPNUM         TO  CHK-HOSPNUM
-           MOVE    CHKWK-CHKKBN        TO  CHK-CHKKBN
-           MOVE    CHKWK-SRYCD         TO  CHK-SRYCD
+           MOVE    CHKWK-KEY           TO  CHK-KEY
            MOVE    CHKWK-YUKOSTYMD     TO  CHK-YUKOSTYMD
                                            CHK-YUKOEDYMD
-           MOVE    CHKWK-CDKBN         TO  CHK-CDKBN
-           MOVE    CHKWK-RENNUM        TO  CHK-RENNUM
            MOVE    CHK-REC             TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_chk_master"    TO  MCP-TABLE
+           MOVE    "tbl_chk"           TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
-grpsys     PERFORM 900-ORCDBMAIN-SEC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_chk_master"    TO  MCP-TABLE
+               MOVE    "tbl_chk"           TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM                     910-CHK-READ-SEC
            ELSE
@@ -668,13 +613,15 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            END-IF
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "tbl_chk_master"    TO  MCP-TABLE
+           MOVE    "tbl_chk"           TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
-grpsys     PERFORM 900-ORCDBMAIN-SEC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
       *    削除エラー
            IF      FLG-CHK          NOT =   ZERO
-               MOVE    3               TO  WRK-ERRCD
+               MOVE    2               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
                GO      TO      2030-DELETE-SYORI-EXT
            END-IF
@@ -692,21 +639,16 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
        20101-CHK-DEL-SEC           SECTION.
       *
            INITIALIZE                  CHK-REC
-      *****MOVE    CHKWK-KEY           TO  CHK-KEY
-grpsys     MOVE    SPA-HOSPNUM         TO  CHK-HOSPNUM
-           MOVE    CHKWK-CHKKBN        TO  CHK-CHKKBN
-           MOVE    CHKWK-SRYCD         TO  CHK-SRYCD
-           MOVE    CHKWK-YUKOSTYMD     TO  CHK-YUKOSTYMD
-           MOVE    CHKWK-YUKOEDYMD     TO  CHK-YUKOEDYMD
-           MOVE    CHKWK-CDKBN         TO  CHK-CDKBN
-           MOVE    CHKWK-RENNUM        TO  CHK-RENNUM
+           MOVE    CHKWK-KEY           TO  CHK-KEY
+      *
            MOVE    CHK-REC             TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "tbl_chk_master"    TO  MCP-TABLE
-           MOVE    "del11"             TO  MCP-PATHNAME
-grpsys     PERFORM 900-ORCDBMAIN-SEC
+           MOVE    "tbl_chk"           TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
-               MOVE    3               TO  LNK-RC
                MOVE    4               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
            ELSE
@@ -753,13 +695,10 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                WHEN    2
                    MOVE    "更新エラー"       TO  WRK-MSG-01
                WHEN   3
-                   MOVE    "削除対象なし"     TO  WRK-MSG-01
+                   MOVE    "更新データなし"   TO  WRK-MSG-01
                WHEN   4
                    MOVE    "削除エラー"
                                                TO  WRK-MSG-01
-               WHEN   5
-                   MOVE    "チェックマスタ登録済み"
-                                              TO  WRK-MSG-01
            END-EVALUATE
       *
            MOVE    WRK-MSG-AREA       TO  PLF-REC
@@ -792,7 +731,6 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    WRK-SYY             TO  MES-TITLE1-YY
            MOVE    SYS-MM              TO  MES-TITLE1-MM
            MOVE    SYS-DD              TO  MES-TITLE1-DD
-           MOVE    SPA-HOSPNUM         TO  MES-TITLE1-HOSPNUM
            MOVE    MES-TITLE1          TO  PLF-REC
            WRITE   PLF-REC
       *
@@ -807,28 +745,12 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
        300-END-SEC                     SECTION.
       *
       *    DB DISCONNECT
-      *    PERFORM 900-DBDISCONNECT-SEC
+           PERFORM 900-DBDISCONNECT-SEC
       *
       *    出力ファイル　終了処理
            CLOSE                       IN-FILE
            CLOSE                       ERR-FILE
            CLOSE                       PLF-FILE
-      *
-           IF    ( LNK-RC              =   ZERO )
-               IF    ( CNT-IN      NOT =   LNK-COUNT )
-      *
-                   MOVE    99              TO  LNK-RC
-      *
-                   INITIALIZE                  JOBKANRI-REC
-                   MOVE    1               TO  JOB-HOSPNUM
-                   MOVE    "tbl_jobkanri"  TO  MCP-TABLE
-                   MOVE    "abort"         TO  MCP-PATHNAME
-                   MOVE    JOBKANRI-REC    TO  MCPDATA-REC
-                   MOVE    "DBSELECT"      TO  MCP-FUNC
-                   PERFORM 900-ORCDBMAIN-SEC
-               END-IF
-      *
-           END-IF
       *
            DISPLAY "*(ORCMUP0041)* INPUT  /I   CNT[" CNT-IN  "]"
            DISPLAY "*(ORCMUP0041)*  INSERT     CNT[" CNT-INS "]"
@@ -836,7 +758,6 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            DISPLAY "*(ORCMUP0041)*  DELETE     CNT[" CNT-DEL "]"
            DISPLAY "*(ORCMUP0041)* ERR    /O   CNT[" CNT-ERR "]"
            DISPLAY "*(ORCMUP0041)* PLF    /O   CNT[" CNT-PLF "]"
-           DISPLAY "*(ORCMUP0041)* RC             [" LNK-RC "]"
       **** ACCEPT  WRK-IN
       *
            .
@@ -866,7 +787,9 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
        910-CHK-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     PERFORM 900-ORCDBMAIN-SEC
+           CALL    "MONFUNC"            USING
+                                        MCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  CHK-REC
                MOVE    ZERO                TO  FLG-CHK
@@ -887,12 +810,16 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    LOW-VALUE       TO  MCP-TABLE
                                        MCP-PATHNAME
            MOVE    "DBOPEN"        TO  MCP-FUNC
-grpsys     PERFORM 900-ORCDBMAIN-SEC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            MOVE    LOW-VALUE       TO  MCP-TABLE
                                        MCP-PATHNAME
            MOVE    "DBSTART"       TO  MCP-FUNC
-grpsys     PERFORM 900-ORCDBMAIN-SEC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            .
        100-DBOPEN-EXT.
            EXIT.
@@ -905,25 +832,17 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    LOW-VALUE       TO  MCP-TABLE
                                        MCP-PATHNAME
            MOVE    "DBCOMMIT"      TO  MCP-FUNC
-grpsys     PERFORM 900-ORCDBMAIN-SEC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            MOVE    LOW-VALUE       TO  MCP-TABLE
                                        MCP-PATHNAME
            MOVE    "DBDISCONNECT"  TO  MCP-FUNC
-grpsys     PERFORM 900-ORCDBMAIN-SEC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            .
        900-DBDISCONNECT-EXT.
            EXIT.
       *
-      *****************************************************************
-      *    テーブルアクセス処理
-      *****************************************************************
-       900-ORCDBMAIN-SEC               SECTION.
-      *
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           .
-      *
-       900-ORCDBMAIN-EXT.
-           EXIT.
