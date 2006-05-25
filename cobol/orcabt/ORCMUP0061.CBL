@@ -28,6 +28,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 01.00.01     NACL-小豆沢  06/05/22  MONFUNC対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -323,6 +324,13 @@
                MOVE    1                   TO  FLG-KENSASORT
            END-IF
       *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    "tbl_kensasort"     TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
       *    あればそのまま
            IF      FLG-KENSASORT       =   ZERO
                MOVE    1               TO  WRK-ERRCD
@@ -452,6 +460,13 @@
            ELSE
                MOVE    1                   TO  FLG-KENSASORT
            END-IF
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
       *    削除エラー
            IF      FLG-KENSASORT    NOT =   ZERO
