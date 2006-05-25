@@ -345,6 +345,9 @@
            ELSE
                MOVE    1                   TO  FLG-HKNJA
            END-IF
+           MOVE    "tbl_hknjainf"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
       *    あればそのまま
            IF      FLG-HKNJA           =   ZERO
@@ -408,6 +411,9 @@
            ELSE
                MOVE    1                   TO  FLG-HKNJA
            END-IF
+           MOVE    "tbl_hknjainf"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
       *    なければそのまま
            IF      FLG-HKNJA       NOT =   ZERO
@@ -477,6 +483,9 @@
            ELSE
                MOVE    1                   TO  FLG-HKNJA
            END-IF
+           MOVE    "tbl_hknjainf"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
       *    削除エラー
            IF      FLG-HKNJA       NOT =   ZERO
@@ -724,6 +733,19 @@
       *
            .
        910-HKNJA-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    カーソルクローズ処理
+      *****************************************************************
+       990-DBCLOSE-SEC               SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MONFUNC"               USING
+                                           MCPAREA
+                                           MCPDATA-REC
+           .
+      *
+       990-DBCLOSE-EXT.
            EXIT.
       *
       *****************************************************************

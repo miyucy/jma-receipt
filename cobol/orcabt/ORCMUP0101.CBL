@@ -28,6 +28,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 01.00.01     NACL-多々納  06/05/25  MONFUNC対応 他
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -152,7 +153,7 @@
       *
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
+      *****COPY    "CPORCMCP.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -298,17 +299,21 @@
            MOVE    IN-EDANUM       TO  ADRS-EDANUM
            MOVE    ADRS-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "ADRS-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_adrs"      TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "ADRS-KEY"      TO  ORC-DBPATH
+               MOVE    "tbl_adrs"      TO  MCP-TABLE
+               MOVE    "key"           TO  MCP-PATHNAME
                PERFORM 910-ADRS-READ-SEC
            ELSE
                MOVE    1               TO  FLG-ADRS
            END-IF
+           MOVE    "tbl_adrs"      TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
       *    あればそのまま
            IF      FLG-ADRS            =   ZERO
@@ -349,10 +354,10 @@
       *
            MOVE    ADRS-REC        TO  MCPDATA-REC
            MOVE    "DBINSERT"      TO  MCP-FUNC
-           MOVE    "ADRS-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_adrs"      TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
                MOVE    2               TO  WRK-ERRCD
@@ -373,17 +378,21 @@
            MOVE    IN-EDANUM       TO  ADRS-EDANUM
            MOVE    ADRS-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "ADRS-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_adrs"      TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "ADRS-KEY"      TO  ORC-DBPATH
+               MOVE    "tbl_adrs"      TO  MCP-TABLE
+               MOVE    "key"           TO  MCP-PATHNAME
                PERFORM 910-ADRS-READ-SEC
            ELSE
                MOVE    1               TO  FLG-ADRS
            END-IF
+           MOVE    "tbl_adrs"      TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
       *    なければそのまま
            IF      FLG-ADRS        NOT =   ZERO
@@ -424,10 +433,10 @@
       *
            MOVE    ADRS-REC        TO  MCPDATA-REC
            MOVE    "DBUPDATE"      TO  MCP-FUNC
-           MOVE    "ADRS-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_adrs"      TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
                MOVE    5               TO  WRK-ERRCD
@@ -448,17 +457,21 @@
            MOVE    IN-EDANUM       TO  ADRS-EDANUM
            MOVE    ADRS-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "ADRS-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_adrs"      TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "ADRS-KEY"      TO  ORC-DBPATH
+               MOVE    "tbl_adrs"      TO  MCP-TABLE
+               MOVE    "key"           TO  MCP-PATHNAME
                PERFORM 910-ADRS-READ-SEC
            ELSE
                MOVE    1               TO  FLG-ADRS
            END-IF
+           MOVE    "tbl_adrs"      TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
       *    削除エラー
            IF      FLG-ADRS        NOT =   ZERO
@@ -481,10 +494,10 @@
       *
            MOVE    ADRS-REC        TO  MCPDATA-REC
            MOVE    "DBDELETE"      TO  MCP-FUNC
-           MOVE    "ADRS-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_adrs"      TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
                MOVE    6               TO  WRK-ERRCD
@@ -507,13 +520,14 @@
            MOVE    IN-POST         TO  ADRS-POST
            MOVE    ADRS-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "ADRS-KEY7"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_adrs"      TO  MCP-TABLE
+           MOVE    "key7"          TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "ADRS-KEY7"     TO  ORC-DBPATH
+               MOVE    "tbl_adrs"      TO  MCP-TABLE
+               MOVE    "key7"          TO  MCP-PATHNAME
                PERFORM 910-ADRS-READ-SEC
            ELSE
                MOVE    1               TO  FLG-ADRS
@@ -522,9 +536,13 @@
            PERFORM UNTIL   FLG-ADRS    NOT =   ZERO
       *        ＤＢ削除
                PERFORM 20101-ADRS-DEL-SEC
-               MOVE    "ADRS-KEY7"     TO  ORC-DBPATH
+               MOVE    "tbl_adrs"      TO  MCP-TABLE
+               MOVE    "key7"          TO  MCP-PATHNAME
                PERFORM 910-ADRS-READ-SEC
            END-PERFORM
+           MOVE    "tbl_adrs"      TO  MCP-TABLE
+           MOVE    "key7"          TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        2010-USER-DELETE-SYORI-EXT.
@@ -661,9 +679,8 @@
        910-ADRS-READ-SEC           SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  ADRS-REC
@@ -678,21 +695,34 @@
            EXIT.
       *
       *****************************************************************
+      *    カーソルクローズ処理
+      *****************************************************************
+       990-DBCLOSE-SEC               SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MONFUNC"               USING
+                                           MCPAREA
+                                           MCPDATA-REC
+           .
+      *
+       990-DBCLOSE-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
       *    ＤＢ　オープン処理
       *****************************************************************
        100-DBOPEN-SEC              SECTION.
       *
            MOVE    "DBOPEN"        TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC.
+                                       MCPDATA-REC
       *
            MOVE    "DBSTART"       TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC.
+                                       MCPDATA-REC
            .
        100-DBOPEN-EXT.
            EXIT.
@@ -703,17 +733,15 @@
        900-DBDISCONNECT-SEC        SECTION.
       *
            MOVE    "DBCOMMIT"      TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC.
+                                       MCPDATA-REC
       *
            MOVE    "DBDISCONNECT"  TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC.
+                                       MCPDATA-REC
            .
-       900-DBCLOSE-EXT.
+       900-DBDISCONNECT-EXT.
            EXIT.
       *

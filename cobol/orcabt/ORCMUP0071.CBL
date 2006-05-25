@@ -326,6 +326,9 @@
            ELSE
                MOVE    1                   TO  FLG-INTERACT
            END-IF
+           MOVE    "tbl_interact"      TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
       *    あればそのまま
            IF            FLG-INTERACT      =   ZERO
@@ -389,6 +392,9 @@
            ELSE
                MOVE    1                   TO  FLG-INTERACT
            END-IF
+           MOVE    "tbl_interact"      TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
       *    なければそのまま
            IF      FLG-INTERACT    NOT =   ZERO
@@ -446,13 +452,15 @@
            CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
-      *
            IF      MCP-RC              =   ZERO
       *        相互作用マスタ読み込み
                PERFORM 910-INTERACT-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-INTERACT
            END-IF
+           MOVE    "tbl_interact"      TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
       *    削除エラー
            IF      FLG-INTERACT        =   1
@@ -646,6 +654,20 @@
       *
            .
        910-INTERACT-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    カーソルクローズ処理
+      *****************************************************************
+       990-DBCLOSE-SEC               SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MONFUNC"               USING
+                                           MCPAREA
+                                           MCPDATA-REC
+           .
+      *
+       990-DBCLOSE-EXT.
            EXIT.
       *
       *****************************************************************
