@@ -353,6 +353,14 @@
                MOVE    1                   TO  FLG-CHK
            END-IF
       *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    "tbl_chk"           TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+      *
       *    単純追加
            IF      CHKWK-YUKOEDYMD2    =   SPACE
       *        追加エラー
@@ -425,6 +433,13 @@
                PERFORM                     910-CHK-READ-SEC
            END-PERFORM
       *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    "tbl_chk"           TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
            .
        20102-CHK-DELUPDS-EXT.
            EXIT.
@@ -456,8 +471,22 @@
            IF      FLG-CHK             =   ZERO
                MOVE    1               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
+      *
+               MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+               MOVE    "tbl_chk"           TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
                GO      TO      20101-CHK-INS-EXT
            END-IF
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    "tbl_chk"           TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            INITIALIZE                  CHK-REC
            MOVE    CHKWK-KEY           TO  CHK-KEY
@@ -582,6 +611,13 @@
            ELSE
                MOVE    1                   TO  FLG-CHK
            END-IF
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    "tbl_chk"           TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
       *    削除エラー
            IF      FLG-CHK          NOT =   ZERO
