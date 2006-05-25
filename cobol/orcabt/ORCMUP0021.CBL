@@ -362,6 +362,10 @@
                MOVE    1                   TO  FLG-SYS
            END-IF
       *
+           MOVE  "tbl_syskanri"        TO  MCP-TABLE
+           MOVE  "key10"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
       *    追加エラー
            IF      FLG-SYS             =   ZERO
                    MOVE    1               TO  WRK-ERRCD
@@ -429,6 +433,10 @@
                    PERFORM                     910-SYSKANRI-READ-SEC
                END-IF
            END-PERFORM
+      *
+           MOVE  "tbl_syskanri"        TO  MCP-TABLE
+           MOVE  "key4"                TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
            IF      FLG-SYORI           =   ZERO
       *
@@ -562,6 +570,10 @@
                END-IF
            END-PERFORM
       *
+           MOVE  "tbl_syskanri"        TO  MCP-TABLE
+           MOVE  "key4"                TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
       *    更新エラー
            IF      FLG-SYORI           =   ZERO
                MOVE    3               TO  WRK-ERRCD
@@ -619,6 +631,10 @@
                    PERFORM                     910-SYSKANRI-READ-SEC
                END-IF
            END-PERFORM
+      *
+           MOVE  "tbl_syskanri"        TO  MCP-TABLE
+           MOVE  "key4"                TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
       *    削除エラー
            IF      FLG-SYORI           =   ZERO
@@ -770,6 +786,20 @@
       *
            .
        910-SYSKANRI-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    カーソルクローズ処理
+      *****************************************************************
+       990-DBCLOSE-SEC               SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MONFUNC"               USING
+                                           MCPAREA
+                                           MCPDATA-REC
+           .
+      *
+       990-DBCLOSE-EXT.
            EXIT.
       *
       *****************************************************************
