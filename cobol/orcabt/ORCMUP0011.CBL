@@ -374,6 +374,10 @@
       *
       *    単純追加
            IF      HKNWK-TEKEDYMD2    =   SPACE
+      *
+               MOVE    "tbl_hknnum"        TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 900-CLOSE-SEC
       *        追加エラー
                IF      FLG-HKNNUM           =   ZERO
                    MOVE    1               TO  WRK-ERRCD
@@ -404,6 +408,9 @@
                        PERFORM                     910-HKNNUM-READ-SEC
                    END-IF
                END-PERFORM
+               MOVE    "tbl_hknnum"        TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 900-CLOSE-SEC
       *
                IF      FLG-SYORI           =   ZERO
       *
@@ -437,13 +444,18 @@
                MOVE    "tbl_hknnum"    TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
                PERFORM                     910-HKNNUM-READ-SEC
-               IF     (FLG-HKNNUM         =   ZERO )  AND
-                      (HKN-TEKSTYMD       =   HKNWK-TEKSTYMD) AND
-                      (HKN-TEKEDYMD       =   HKNWK-TEKEDYMD)
-                   MOVE    5           TO  WRK-ERRCD
-                   PERFORM 2040-ERR-SYORI-SEC
-                   GO      TO      20101-HKNNUM-INS-EXT
-               END-IF
+           ELSE
+               MOVE    1               TO  FLG-HKNNUM
+           END-IF
+           MOVE    "tbl_hknnum"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+           IF     (FLG-HKNNUM         =   ZERO )  AND
+                  (HKN-TEKSTYMD       =   HKNWK-TEKSTYMD) AND
+                  (HKN-TEKEDYMD       =   HKNWK-TEKEDYMD)
+               MOVE    5           TO  WRK-ERRCD
+               PERFORM 2040-ERR-SYORI-SEC
+               GO      TO      20101-HKNNUM-INS-EXT
            END-IF
       *
       *    保険番号マスタ追加
@@ -537,6 +549,9 @@
                        PERFORM                     910-HKNNUM-READ-SEC
                    END-IF
                END-PERFORM
+               MOVE    "tbl_hknnum"        TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 900-CLOSE-SEC
            ELSE
       *
       *    期限更新
@@ -556,6 +571,9 @@
                        PERFORM                     910-HKNNUM-READ-SEC
                    END-IF
                END-PERFORM
+               MOVE    "tbl_hknnum"        TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 900-CLOSE-SEC
       *
            END-IF
       *
