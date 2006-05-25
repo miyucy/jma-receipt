@@ -330,6 +330,9 @@
            ELSE
                MOVE    1                   TO  FLG-SSKIJYO
            END-IF
+           MOVE    "tbl_sskijyo"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
       *    あればそのまま
            IF      FLG-SSKIJYO       =   ZERO
@@ -393,6 +396,9 @@
            ELSE
                MOVE    1                   TO  FLG-SSKIJYO
            END-IF
+           MOVE    "tbl_sskijyo"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
       *    なければそのまま
            IF      FLG-SSKIJYO       NOT =   ZERO
@@ -458,6 +464,9 @@
            ELSE
                MOVE    1                   TO  FLG-SSKIJYO
            END-IF
+           MOVE    "tbl_sskijyo"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
       *    削除エラー
            IF      FLG-SSKIJYO    NOT =   ZERO
@@ -695,6 +704,21 @@
            .
        910-SSKIJYO-READ-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    カーソルクローズ処理
+      *****************************************************************
+       990-DBCLOSE-SEC               SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MONFUNC"               USING
+                                           MCPAREA
+                                           MCPDATA-REC
+           .
+      *
+       990-DBCLOSE-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    ＤＢ　オープン処理
