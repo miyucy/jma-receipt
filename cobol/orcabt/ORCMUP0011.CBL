@@ -1091,7 +1091,7 @@
            END-IF
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM    900-CLOSE-SEC
       *
            .
