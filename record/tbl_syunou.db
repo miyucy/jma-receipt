@@ -1082,3 +1082,16 @@ path	key47 	{
 	};
 };
 
+path	key48 	{
+	DBSELECT	{
+		DECLARE tbl_syunou_key48_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syunou
+			WHERE   HOSPID     =   :HOSPID
+			AND   NYUGAIKBN LIKE   :NYUGAIKBN
+			AND   SRYYMD    LIKE   :SRYYMD
+			AND   CREATEKBN   <>  '3'
+		;
+	};
+};
+
