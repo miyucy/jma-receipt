@@ -639,16 +639,21 @@
        330-SID1-SET-SEC            SECTION.
       *
            IF      SPA-SID1-FLG    =   "OK"
-               IF      SPA-SIDCD            =   "2001"
+               EVALUATE    SPA-SIDCD
+               WHEN    "2001"
                    PERFORM 430-TORIKESI-KOUSHIN-SEC
                    MOVE    SPA-ERRCD
                                    TO  WRK-ERRCD
-               END-IF
-               IF      SPA-SIDCD            =   "2002"
+               WHEN    "2002"
                    PERFORM 440-IKATUSAIKEI-SEC
                    MOVE    SPA-ERRCD
                                    TO  WRK-ERRCD
-               END-IF
+               WHEN    "2003"
+                   PERFORM 420-SAIHAKKOU-SEC
+                   MOVE    SPA-ERRCD
+                                   TO  WRK-ERRCD
+               END-EVALUATE
+      *
            END-IF
       *
            MOVE    SPACE           TO  SPA-SID1-FLG
@@ -1217,7 +1222,8 @@
                                            SYS-3003-EDYUKYMD
            MOVE    SYS-3003-REC        TO  MCPDATA-REC
       *
-           MOVE    PATH-TBL-SYSKANRI-KEY10 TO  MCP-PATH
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
                MOVE    MCPDATA-REC     TO  SYS-3003-REC
@@ -1226,15 +1232,16 @@
                INITIALIZE                  SYS-3003-REC
            END-IF
       *
-           MOVE    PATH-TBL-SYSKANRI-KEY10 TO  MCP-PATH
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 910-DBCLOSE-SEC
       *
            IF    ( FLG-SYSKANRI        =   ZERO )
                MOVE    MCPDATA-REC         TO  SYS-3003-REC
                MOVE    CONST-3003-KBNCD    TO  SYS-3003-KBNCD
                MOVE    SYS-3003-REC        TO  MCPDATA-REC
-               MOVE    PATH-TBL-SYSKANRI-KEY
-                                           TO  MCP-PATH
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
                PERFORM 910-DBDELETE-SEC
                IF    ( MCP-RC          NOT =   ZERO )
                    MOVE    "1006"          TO  SPA-ERRCD
@@ -1382,9 +1389,9 @@
                                            TO  SHELLTBL-ARG24
                    MOVE    SHELLTBL        TO  MCPDATA-REC
                    MOVE    "SHELL"         TO  MCP-FUNC
-                   MOVE    PATH-SHELL-SHELL
-                                           TO  MCP-PATH
-                   CALL    "MCPSUB"        USING
+                   MOVE    "shell"         TO  MCP-TABLE
+                   MOVE    "shell"         TO  MCP-PATHNAME
+                   CALL    "MONFUNC"       USING
                                                MCPAREA
                                                MCPDATA-REC
                END-IF
@@ -1443,8 +1450,9 @@
                MOVE    WRK-EDPAGE          TO  SHELLTBL-ARG16
                MOVE    SHELLTBL            TO  MCPDATA-REC
                MOVE    "SHELL"             TO  MCP-FUNC
-               MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
-               CALL    "MCPSUB"            USING
+               MOVE    "shell"             TO  MCP-TABLE
+               MOVE    "shell"             TO  MCP-PATHNAME
+               CALL    "MONFUNC"           USING
                                            MCPAREA
                                            MCPDATA-REC
            END-IF
@@ -1550,15 +1558,15 @@
            MOVE    SPA-SYSYMD          TO  SYS-3003-STYUKYMD
                                            SYS-3003-EDYUKYMD
            MOVE    SYS-3003-REC        TO  MCPDATA-REC
-           MOVE    PATH-TBL-SYSKANRI-KEY10
-                                       TO  MCP-PATH
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          NOT =   ZERO )
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
       *
-           MOVE    PATH-TBL-SYSKANRI-KEY10
-                                       TO  MCP-PATH
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 910-DBCLOSE-SEC
       *
            INITIALIZE                      SYS-3003-REC
@@ -1573,14 +1581,14 @@
            MOVE    CNT-JOBID           TO  SYS-3003-JOBID
       *
            MOVE    SYS-3003-REC        TO  MCPDATA-REC
-           MOVE    PATH-TBL-SYSKANRI-KEY
-                                       TO  MCP-PATH
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            IF    ( FLG-SYSKANRI        =   ZERO )
                MOVE    "DBUPDATE"          TO  MCP-FUNC
            ELSE
                MOVE    "DBINSERT"          TO  MCP-FUNC
            END-IF
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            IF    ( MCP-RC          NOT =   ZERO )
@@ -1901,8 +1909,8 @@
            MOVE    SPA-SYSYMD          TO  SYS-3003-STYUKYMD
                                            SYS-3003-EDYUKYMD
            MOVE    SYS-3003-REC        TO  MCPDATA-REC
-           MOVE    PATH-TBL-SYSKANRI-KEY10
-                                       TO  MCP-PATH
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC     TO  SYS-3003-REC
@@ -1911,8 +1919,8 @@
                INITIALIZE                  SYS-3003-REC
            END-IF
       *
-           MOVE    PATH-TBL-SYSKANRI-KEY10
-                                       TO  MCP-PATH
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 910-DBCLOSE-SEC
       *
            IF    ( FLG-SYSKANRI        =   ZERO )
@@ -2277,7 +2285,7 @@
       *
       *    再発行
            WHEN    "CLICKED"       ALSO    "B02S"
-                   PERFORM 420-SAIHAKKOU-SEC
+                   PERFORM 419-SAIHAKKOU-SEC
       *    請求取消処理
            WHEN    "CLICKED"       ALSO    "B03S"
                    PERFORM 430-TORIKESI-SEC
@@ -2717,11 +2725,25 @@
       **************************************************************
       *    再発行処理
       **************************************************************
+       419-SAIHAKKOU-SEC           SECTION.
+      *
+           IF    ( SPA-GMN-SELBAN      NOT =   ZERO )
+               PERFORM 900-PTINF-KEY-SEL-SEC
+               IF    ( PTINF-SKYPRTFLG     =   "0" )
+                   MOVE    "2003"      TO  SPA-SIDCD
+               ELSE
+                   PERFORM 420-SAIHAKKOU-SEC
+               END-IF
+           END-IF
+      *
+           .
+       419-SAIHAKKOU-EXT.
+           EXIT.
+      **************************************************************
+      *    再発行処理
+      **************************************************************
        420-SAIHAKKOU-SEC           SECTION.
       *
-           IF    ( SPA-GMN-SELBAN      =   ZERO )
-               GO  TO      420-SAIHAKKOU-EXT
-           END-IF
       *
       *    収納マスタを読み込みし、診療日の取込み
       *    選択された伝票番号から再発行を行う
@@ -3162,8 +3184,8 @@
            MOVE    SMCNDATE-HMS        TO  PTTEIKIRRK-UPHMS
       *
            MOVE    PTTEIKIRRK-REC      TO  MCPDATA-REC
-           MOVE    PATH-TBL-PTTEIKIRRK-UPD4
-                                       TO  MCP-PATH
+           MOVE    "tbl_ptteikirrk"    TO  MCP-TABLE
+           MOVE    "upd4"              TO  MCP-PATHNAME
            PERFORM 910-DBUPDATE-SEC
            IF    ( MCP-RC          NOT =   ZERO )
                MOVE    "1004"      TO  SPA-ERRCD
@@ -4473,6 +4495,14 @@
            WHEN    "2002"
                MOVE    "外来収納の一括再計算を行います"
                                         TO  WRK-SIDMSG
+           WHEN    "2003"
+               MOVE    SPACE            TO  WRK-SIDMSG
+               STRING  "請求書不要の設定がされています。"
+                                       DELIMITED   BY  SIZE
+                       "再発行を行いますか"
+                                       DELIMITED   BY  SIZE
+               INTO  WRK-SIDMSG
+               END-STRING
            END-EVALUATE
       *
            MOVE    SPACE                TO  SID1
@@ -4741,13 +4771,42 @@
        900-TBL-CLOSE-EXT.
            EXIT.
       *
+      **************************************************************
+      *    患者情報検索処理(KEY)
+      **************************************************************
+       900-PTINF-KEY-SEL-SEC           SECTION.
+      *
+           MOVE    ZERO            TO  FLG-PTINF
+      *
+           INITIALIZE                  PTINF-REC
+           MOVE    SPA-HOSPID      TO  PTINF-HOSPID
+           MOVE    SPA-GMN-PTID    TO  PTINF-PTID
+           MOVE    PTINF-REC       TO  MCPDATA-REC
+           MOVE    "tbl_ptinf"     TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC TO  PTINF-REC
+           ELSE
+               MOVE    1           TO  FLG-PTINF
+               INITIALIZE              PTINF-REC
+           END-IF
+      *
+           MOVE    "tbl_ptinf"     TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSE-SEC
+      *
+           .
+       900-PTINF-KEY-SEL-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    ＤＢ検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            IF    ( MCP-RC          =   ZERO )
@@ -4764,7 +4823,7 @@
        911-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -4778,7 +4837,7 @@
        910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -4792,7 +4851,7 @@
        910-DBCLOSE-SEC                 SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -4806,7 +4865,7 @@
        910-DBDELETE-SEC                SECTION.
       *
            MOVE    "DBDELETE"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -4820,7 +4879,7 @@
        910-DBUPDATE-SEC                SECTION.
       *
            MOVE    "DBUPDATE"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
