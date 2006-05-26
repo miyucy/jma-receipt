@@ -108,6 +108,7 @@
        01  IDX-AREA.
            03  IDX                     PIC 9(04).
            03  IDY                     PIC 9(04).
+           03  IDX-LIKE                PIC 9(04).
       *
       *
        01  SYS-DATE.
@@ -397,6 +398,14 @@
       *                                 MCPDATA-REC
            INITIALIZE                  SYSKANRI-REC
            MOVE    SYSWK-KEY           TO  SYS-KEY
+           PERFORM   VARYING IDX-LIKE FROM  1  BY  1
+             UNTIL  (SYS-KBNCD(IDX-LIKE:1)   =   SPACE)  OR
+                    (IDX-LIKE          >    8)
+                   CONTINUE
+           END-PERFORM
+           IF      IDX-LIKE    <=   8
+               MOVE   "%"      TO   SYS-KBNCD(IDX-LIKE:1)
+           END-IF
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -535,6 +544,14 @@
       *                                 MCPDATA-REC
            INITIALIZE                  SYSKANRI-REC
            MOVE    SYSWK-KEY           TO  SYS-KEY
+           PERFORM   VARYING IDX-LIKE FROM  1  BY  1
+             UNTIL  (SYS-KBNCD(IDX-LIKE:1)   =   SPACE)  OR
+                    (IDX-LIKE          >    8)
+                   CONTINUE
+           END-PERFORM
+           IF      IDX-LIKE    <=   8
+               MOVE   "%"      TO   SYS-KBNCD(IDX-LIKE:1)
+           END-IF
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -602,6 +619,14 @@
       *                                 MCPDATA-REC
            INITIALIZE                  SYSKANRI-REC
            MOVE    SYSWK-KEY           TO  SYS-KEY
+           PERFORM   VARYING IDX-LIKE FROM  1  BY  1
+             UNTIL  (SYS-KBNCD(IDX-LIKE:1)   =   SPACE)  OR
+                    (IDX-LIKE          >    8)
+                   CONTINUE
+           END-PERFORM
+           IF      IDX-LIKE    <=   8
+               MOVE   "%"      TO   SYS-KBNCD(IDX-LIKE:1)
+           END-IF
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
