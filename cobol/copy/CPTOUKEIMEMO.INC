@@ -36,6 +36,10 @@
                05  TKIMEMO-STYUKYMD        PIC  X(08).
       *有効期間終了日
                05  TKIMEMO-EDYUKYMD        PIC  X(08).
+      *入力パラメータ
+           03  TKIMEMO-PARA-G.
+               05  TKIMEMO-PARA            PIC  X(20)
+                                           OCCURS  8.
       *メモ
            03  TKIMEMO-MEMO                PIC  X(6000).
       *端末ＩＤ
