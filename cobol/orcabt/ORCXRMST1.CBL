@@ -30,6 +30,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-多々納  02/09/18  バージョン判定変更
       *  01.00.02    NACL-伊藤    05/04/05  マスタ単位に変更
+      *  01.00.03    NACL-伊藤    06/05/26  MONFUNC対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -134,7 +135,6 @@
       *
       *
       *    共通パラメタ
-           COPY    "ORCA-DBPATH".
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
       *
@@ -240,10 +240,12 @@
       *    ＤＢ管理マスタ検索
            INITIALIZE                  DBKANRI-REC
            MOVE    DBKANRI-REC         TO  MCPDATA-REC
-           MOVE    PATH-TBL-DBKANRI-ALL
-                                       TO  MCP-PATH
+           MOVE    "tbl_dbkanri"       TO  MCP-TABLE
+           MOVE    "all"               TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
+               MOVE    "tbl_dbkanri"   TO  MCP-TABLE
+               MOVE    "all"           TO  MCP-PATHNAME
                PERFORM 910-DBKANRI-READ-SEC
            ELSE
                INITIALIZE                      DBKANRI-REC
@@ -273,9 +275,14 @@
                      END-IF
                    END-PERFORM
                END-IF
-               MOVE    PATH-TBL-DBKANRI-ALL    TO  MCP-PATH
+               MOVE    "tbl_dbkanri"   TO  MCP-TABLE
+               MOVE    "all"           TO  MCP-PATHNAME
                PERFORM 910-DBKANRI-READ-SEC
            END-PERFORM
+      *
+           MOVE    "tbl_dbkanri"       TO  MCP-TABLE
+           MOVE    "all"               TO  MCP-PATHNAME
+           PERFORM 910-CLOSE-SEC
       *
            .
        101-DBR-TBL-SET-EXT.
@@ -333,8 +340,8 @@
                MOVE    WRK-TBL-MASTER-KBN(IDX)
                                        TO  DBKANRI-KANRICD(7:2)
                MOVE    DBKANRI-REC     TO  MCPDATA-REC
-               MOVE    PATH-TBL-DBKANRI-KEY
-                                       TO  MCP-PATH
+               MOVE    "tbl_dbkanri"   TO  MCP-TABLE
+               MOVE    "key"           TO  MCP-PATHNAME
                PERFORM 910-DBSELECT-SEC
                IF      MCP-RC           =  ZERO
                    PERFORM 910-DBKANRI-READ-SEC
@@ -348,15 +355,19 @@
                                        TO  DBKANRI-DBRVERSION2
                    MOVE    DBKANRI-REC TO  MCPDATA-REC
                    MOVE    "DBUPDATE"  TO  MCP-FUNC
-                   MOVE    PATH-TBL-DBKANRI-KEY
-                                       TO  MCP-PATH
-                   CALL    "MCPSUB"        USING
+                   MOVE    "tbl_dbkanri"
+                                       TO  MCP-TABLE
+                   MOVE    "key"       TO  MCP-PATHNAME
+                   CALL    "MONFUNC"   USING
                                            MCPAREA
                                            MCPDATA-REC
-                   IF      MCP-RC   NOT =  ZERO
+                   IF      MCP-RC      NOT =  ZERO
                      DISPLAY "ORCXRMST1 DBKANRI UPD ERR:" MCP-RC
                    END-IF
                END-IF
+               MOVE    "tbl_dbkanri"   TO  MCP-TABLE
+               MOVE    "key"           TO  MCP-PATHNAME
+               PERFORM 910-CLOSE-SEC
              END-IF
            END-PERFORM
            .
@@ -421,18 +432,18 @@
       *****************************************************************
       *    ＤＢ管理ファイル読込
       *****************************************************************
-       910-DBKANRI-READ-SEC         SECTION.
+       910-DBKANRI-READ-SEC            SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MCPSUB"             USING
-                                        MCPAREA
-                                        MCPDATA-REC
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC         TO  DBKANRI-REC
-               MOVE    ZERO                TO  FLG-DBKANRI
+               MOVE    MCPDATA-REC     TO  DBKANRI-REC
+               MOVE    ZERO            TO  FLG-DBKANRI
            ELSE
                INITIALIZE                  DBKANRI-REC
-               MOVE    1                   TO  FLG-DBKANRI
+               MOVE    1               TO  FLG-DBKANRI
            END-IF
       *
            .
@@ -444,31 +455,49 @@
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
-           MOVE    ZERO            TO  MCP-RC
+           MOVE    ZERO                TO  MCP-RC
       *
-           MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
       *
            .
        910-DBSELECT-EXT.
            EXIT.
       *
       *****************************************************************
+      *    カーソルクローズ処理
+      *****************************************************************
+       910-CLOSE-SEC                   SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
+           .
+      *
+       910-CLOSE-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    ＤＢ　オープン処理
       *****************************************************************
-       100-DBOPEN-SEC                SECTION.
+       100-DBOPEN-SEC                  SECTION.
       *
-           MOVE    "DBOPEN"            TO  MCP-FUNC.
-           CALL    "MCPSUB"             USING
-                                        MCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBOPEN"            TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
       *
-           MOVE    "DBSTART"           TO  MCP-FUNC.
-           CALL    "MCPSUB"             USING
-                                        MCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBSTART"           TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
            .
        100-DBOPEN-EXT.
            EXIT.
@@ -478,15 +507,19 @@
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *
-           MOVE    "DBCOMMIT"          TO  MCP-FUNC.
-           CALL    "MCPSUB"             USING
-                                        MCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBCOMMIT"          TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
       *
-           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
-           CALL    "MCPSUB"             USING
-                                        MCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBDISCONNECT"      TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
            .
        900-DBCLOSE-EXT.
            EXIT.
