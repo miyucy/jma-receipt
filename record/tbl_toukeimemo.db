@@ -4,6 +4,14 @@ tbl_toukeimemo {
 	KBNCD                   char(8);
 	STYUKYMD                char(8);
 	EDYUKYMD                char(8);
+	PARA1                   char(20);
+	PARA2                   char(20);
+	PARA3                   char(20);
+	PARA4                   char(20);
+	PARA5                   char(20);
+	PARA6                   char(20);
+	PARA7                   char(20);
+	PARA8                   char(20);
 	MEMO                    varchar(6000);
 	TERMID  	        	varchar(32);
 	OPID             		varchar(16);
