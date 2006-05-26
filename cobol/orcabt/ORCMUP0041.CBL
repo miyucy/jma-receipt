@@ -582,6 +582,13 @@
                PERFORM 2040-ERR-SYORI-SEC
            END-IF
       *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    "tbl_chk"           TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
            .
        2020-UPDATE-SYORI-EXT.
            EXIT.
