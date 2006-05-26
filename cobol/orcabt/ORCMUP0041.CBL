@@ -557,6 +557,13 @@
                MOVE    1                   TO  FLG-CHK
            END-IF
       *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    "tbl_chk"           TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
       *    連番が１の時、対象のデータをすべて削除する
            IF      CHKWK-RENNUM        =   01
                MOVE    ZERO            TO  WRK-UPD-ERRCD
@@ -581,13 +588,6 @@
       *        更新エラー
                PERFORM 2040-ERR-SYORI-SEC
            END-IF
-      *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "tbl_chk"           TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
       *
            .
        2020-UPDATE-SYORI-EXT.
