@@ -651,7 +651,7 @@
            MOVE    CHK-REC             TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_chk"           TO  MCP-TABLE
-           MOVE    "key4"              TO  MCP-PATHNAME
+           MOVE    "del11"             TO  MCP-PATHNAME
            CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
