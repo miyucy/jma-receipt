@@ -917,56 +917,6 @@
 
 	<widget>
 	  <class>GtkRadioButton</class>
-	  <name>OPTHISSU01</name>
-	  <x>515</x>
-	  <y>145</y>
-	  <width>60</width>
-	  <height>24</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>toggled</name>
-	    <handler>button_toggled</handler>
-	    <last_modification_time>Tue, 14 May 2002 02:29:44 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>clicked</name>
-	    <handler>send_event</handler>
-	    <data>CLICKED</data>
-	    <last_modification_time>Tue, 14 May 2002 02:30:20 GMT</last_modification_time>
-	  </signal>
-	  <label>必須</label>
-	  <active>False</active>
-	  <draw_indicator>True</draw_indicator>
-	  <group>OPT01</group>
-	</widget>
-
-	<widget>
-	  <class>GtkRadioButton</class>
-	  <name>OPTNINI01</name>
-	  <x>580</x>
-	  <y>145</y>
-	  <width>60</width>
-	  <height>24</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>toggled</name>
-	    <handler>button_toggled</handler>
-	    <last_modification_time>Tue, 14 May 2002 02:29:44 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>clicked</name>
-	    <handler>send_event</handler>
-	    <data>CLICKED</data>
-	    <last_modification_time>Tue, 14 May 2002 02:30:20 GMT</last_modification_time>
-	  </signal>
-	  <label>任意</label>
-	  <active>False</active>
-	  <draw_indicator>True</draw_indicator>
-	  <group>OPT01</group>
-	</widget>
-
-	<widget>
-	  <class>GtkRadioButton</class>
 	  <name>OPTHISSU02</name>
 	  <x>515</x>
 	  <y>175</y>
@@ -1539,6 +1489,80 @@
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkRadioButton</class>
+	  <name>OPTNINI01</name>
+	  <x>580</x>
+	  <y>145</y>
+	  <width>60</width>
+	  <height>24</height>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>toggled</name>
+	    <handler>button_toggled</handler>
+	    <last_modification_time>Tue, 14 May 2002 02:29:44 GMT</last_modification_time>
+	  </signal>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>send_event</handler>
+	    <data>CLICKED</data>
+	    <last_modification_time>Tue, 14 May 2002 02:30:20 GMT</last_modification_time>
+	  </signal>
+	  <label>任意</label>
+	  <active>False</active>
+	  <draw_indicator>True</draw_indicator>
+	  <group>OPT01</group>
+	</widget>
+
+	<widget>
+	  <class>GtkRadioButton</class>
+	  <name>OPTHISSU01</name>
+	  <x>515</x>
+	  <y>145</y>
+	  <width>60</width>
+	  <height>24</height>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>toggled</name>
+	    <handler>button_toggled</handler>
+	    <last_modification_time>Tue, 14 May 2002 02:29:44 GMT</last_modification_time>
+	  </signal>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>send_event</handler>
+	    <data>CLICKED</data>
+	    <last_modification_time>Tue, 14 May 2002 02:30:20 GMT</last_modification_time>
+	  </signal>
+	  <label>必須</label>
+	  <active>False</active>
+	  <draw_indicator>True</draw_indicator>
+	  <group>OPT01</group>
+	</widget>
+
+	<widget>
+	  <class>GtkCheckButton</class>
+	  <name>CHK_SAVEPARA</name>
+	  <x>336</x>
+	  <y>24</y>
+	  <width>416</width>
+	  <height>24</height>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>toggled</name>
+	    <handler>button_toggled</handler>
+	    <last_modification_time>Thu, 18 May 2006 04:44:24 GMT</last_modification_time>
+	  </signal>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>send_event</handler>
+	    <data>CLICKED</data>
+	    <last_modification_time>Thu, 18 May 2006 04:44:47 GMT</last_modification_time>
+	  </signal>
+	  <label>前回入力されたパラメタを初期設定する　※日付は対象外です</label>
+	  <active>False</active>
+	  <draw_indicator>True</draw_indicator>
 	</widget>
       </widget>
 
@@ -2713,6 +2737,30 @@
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkCheckButton</class>
+	  <name>CHK_SAVEPARA1</name>
+	  <x>336</x>
+	  <y>24</y>
+	  <width>416</width>
+	  <height>24</height>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>toggled</name>
+	    <handler>button_toggled</handler>
+	    <last_modification_time>Thu, 18 May 2006 04:44:24 GMT</last_modification_time>
+	  </signal>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>send_event</handler>
+	    <data>CLICKED</data>
+	    <last_modification_time>Thu, 18 May 2006 04:44:47 GMT</last_modification_time>
+	  </signal>
+	  <label>前回入力されたパラメタを初期設定する　※日付は対象外です</label>
+	  <active>False</active>
+	  <draw_indicator>True</draw_indicator>
 	</widget>
       </widget>
 

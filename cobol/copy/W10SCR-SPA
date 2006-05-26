@@ -49,6 +49,7 @@
                    07  SPA-GMN-W10-PAGENO          PIC 9(01).
                    07  SPA-GMN-W10-3001-AREA.
                        09  SPA-GMN-W10-HCNUM       PIC 9(03).
+                       09  SPA-GMN-W10-CHK-SAVEPARA PIC X(1).
                        09  SPA-GMN-W10-HCNAME      PIC X(80).
                        09  SPA-GMN-W10-PRGNAME     PIC X(24).
                        09  SPA-GMN-W10-PARA-G      OCCURS  8.
@@ -64,6 +65,7 @@
                        09  SPA-GMN-W10-MEMO        PIC X(6000).
                    07  SPA-GMN-W10-3002-AREA.
                        09  SPA-GMN-W10-HCNUM1      PIC 9(03).
+                       09  SPA-GMN-W10-CHK-SAVEPARA1 PIC X(1).
                        09  SPA-GMN-W10-HCNAME1     PIC X(80).
                        09  SPA-GMN-W10-PRGNAME1    PIC X(24).
                        09  SPA-GMN-W10-PARA1-G     OCCURS  8.

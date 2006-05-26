@@ -50,8 +50,9 @@
       *É¬¿Ü¶èÊ¬¡ÊSPACE or 1:É¬¿Ü2:Ç¤°Õ¡Ë
                05  SYS-3001-HISSU-KBN   OCCURS  10
                                         PIC X(01).
+               05  SYS-3001-SAVEPARA    PIC X(01).
       *Í½È÷
-           03                           PIC  X(06).
+           03                           PIC  X(05).
       *Ã¼Ëö£É£Ä
            03  SYS-3001-TERMID          PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä

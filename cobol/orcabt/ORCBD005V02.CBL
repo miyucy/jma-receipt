@@ -38,16 +38,9 @@
       *    収納明細処理ファイル（初期化／読込用）
            SELECT  BD00501-FILE   ASSIGN   ORCBD005PARA
                                   ORGANIZATION    IS  INDEXED
-                                  ACCESS  MODE    IS  SEQUENTIAL
+                                  ACCESS  MODE    IS  DYNAMIC
                                   RECORD  KEY     IS  BD00501-ISAM-KEY
                                   FILE    STATUS  IS  STS-BD00501.
-      *
-      *    収納明細ファイル（書込用）
-           SELECT  BD00502-FILE   ASSIGN   ORCBD005PARA
-                                  ORGANIZATION    IS  INDEXED
-                                  ACCESS  MODE    IS  DYNAMIC
-                                  RECORD  KEY     IS  BD00502-ISAM-KEY
-                                  FILE    STATUS  IS  STS-BD00502.
       * 
       *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
@@ -59,32 +52,30 @@
        FD  BD00501-FILE.
        01  BD00501-REC.
            02  BD00501-ISAM-KEY.
-               03  BD00501-ISAM-KEY-BTUNUM     PIC X(02).
-               03  BD00501-ISAM-KEY-BRMNUM     PIC X(08).
-               03  BD00501-ISAM-KEY-SRYKA      PIC X(02).
-               03  BD00501-ISAM-KEY-PTNUM      PIC X(20).
-               03  BD00501-ISAM-KEY-DENPNUM    PIC 9(07).
-               03  BD00501-ISAM-KEY-DENPEDANUM PIC 9(02).
+               03  BD00501-ISAM-KEY-VAL            PIC X(100).
+               03  BD00501-ISAM-KEY1   REDEFINES   BD00501-ISAM-KEY-VAL.
+                   05  BD00501-ISAM-KEY1-BTUNUM    PIC X(02).
+                   05  BD00501-ISAM-KEY1-BRMNUM    PIC X(08).
+                   05  BD00501-ISAM-KEY1-SRYKA     PIC X(02).
+                   05  BD00501-ISAM-KEY1-PTNUM     PIC X(20).
+                   05  BD00501-ISAM-KEY1-DENPNUM   PIC 9(07).
+                   05  BD00501-ISAM-KEY1-DENPEDANUM PIC 9(02).
+                   05  BD00501-ISAM-KEY1-FIL       PIC X(59).
+               03  BD00501-ISAM-KEY2-G   REDEFINES BD00501-ISAM-KEY-VAL.
+                   05  BD00501-ISAM-KEY2-DENPNUM   PIC 9(07).
+                   05  BD00501-ISAM-KEY2-DENPEDANUM PIC 9(02).
+                   05  BD00501-ISAM-KEY2-FIL       PIC X(91).
            02  BD00501-SYU-DATA-AREA.
+               03  BD00501-SYU-BTUNUM          PIC X(02).
+               03  BD00501-SYU-BRMNUM          PIC X(08).
+               03  BD00501-SYU-SRYKA           PIC X(02).
+               03  BD00501-SYU-PTNUM           PIC X(20).
+               03  BD00501-SYU-DENPNUM         PIC 9(07).
+               03  BD00501-SYU-DENPEDANUM      PIC 9(02).
                03  BD00501-SYU-CREATEKBN       PIC X(01).
            02  BD00501-SMEI-DATA-AREA.
            COPY    "CPSYUMEI.INC"  REPLACING   //SMEI//
                                    BY          //BD00501-SMEI//.
-      *
-       FD  BD00502-FILE.
-       01  BD00502-REC.
-           02  BD00502-ISAM-KEY.
-               03  BD00502-ISAM-KEY-BTUNUM     PIC X(02).
-               03  BD00502-ISAM-KEY-BRMNUM     PIC X(08).
-               03  BD00502-ISAM-KEY-SRYKA      PIC X(02).
-               03  BD00502-ISAM-KEY-PTNUM      PIC X(20).
-               03  BD00502-ISAM-KEY-DENPNUM    PIC 9(07).
-               03  BD00502-ISAM-KEY-DENPEDANUM PIC 9(02).
-           02  BD00502-SYU-DATA-AREA.
-               03  BD00502-SYU-CREATEKBN       PIC X(01).
-           02  BD00502-SMEI-DATA-AREA.
-           COPY    "CPSYUMEI.INC"  REPLACING   //SMEI//
-                                   BY          //BD00502-SMEI//.
       *
       *    エラーファイル
        FD  RECEERR-FILE.
@@ -111,7 +102,6 @@
        01  STS-AREA.
            03  STS-RECEERR         PIC X(02).
            03  STS-BD00501         PIC X(02).
-           03  STS-BD00502         PIC X(02).
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -152,6 +142,7 @@
            03  WRK-PARA-SHELLID    PIC X(08).
            03  WRK-PARA-HOSPID     PIC X(24).
            03  WRK-PARA-SYORI-KBN  PIC X(01).
+           03  WRK-PARA-SORTKBN    PIC X(01).
       *
       *    一時領域
        01  WRK-AREA.
@@ -248,8 +239,6 @@
       *
            COPY    "CPSHELLTBL.INC".
       *
-           COPY    "ORCA-DBPATH".
-      *
            COPY    "COMMON-SPA".
       *
       *****************************************************************
@@ -335,7 +324,6 @@
            COPY    "MCPAREA".
       *
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
       *
       ****************************************************************
        LINKAGE                     SECTION.
@@ -391,6 +379,7 @@
                                                WRK-PARA-SHELLID
                                                WRK-PARA-HOSPID
                                                WRK-PARA-SYORI-KBN
+                                               WRK-PARA-SORTKBN
       *
       *    ステップ管理開始処理
            MOVE    "STS"           TO  SJOBKANRI-MODE
@@ -439,8 +428,10 @@
            INITIALIZE                  SYS-3005-REC
            MOVE    "3005"          TO  SYS-3005-KANRICD
            MOVE    "*"             TO  SYS-3005-KBNCD
+           MOVE    WRK-SYSYMD      TO  SYS-3005-STYUKYMD
+                                       SYS-3005-EDYUKYMD
            MOVE    SYS-3005-REC    TO  MCPDATA-REC
-           PERFORM 800-SYSKANRI-READ-SEC
+           PERFORM 800-SYSKANRI-KEY10-SEL-SEC
            IF    ( FLG-SYSKANRI        =   ZERO )
                MOVE    MCPDATA-REC TO  SYS-3005-REC
       *
@@ -475,8 +466,10 @@
            INITIALIZE                  SYS-1009-REC
            MOVE    "1009"              TO  SYS-1009-KANRICD
            MOVE    "*"                 TO  SYS-1009-KBNCD
+           MOVE    WRK-SYSYMD          TO  SYS-1009-STYUKYMD
+                                           SYS-1009-EDYUKYMD
            MOVE    SYS-1009-REC        TO  MCPDATA-REC
-           PERFORM 800-SYSKANRI-READ-SEC
+           PERFORM 800-SYSKANRI-KEY10-SEL-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC     TO  SYS-1009-REC
                MOVE    SYS-1009-PTNUMKSIKBN
@@ -513,6 +506,10 @@
                GO  TO  110-PARA-HENSYU-EXT
            END-EVALUATE
       *
+           IF    ( WRK-PARA-SYORI-KBN   =   "2" )
+               MOVE    SPACE           TO  WRK-PARA-SORTKBN
+           END-IF
+      *
            .
        110-PARA-HENSYU-EXT.
            EXIT.
@@ -522,11 +519,7 @@
       *****************************************************************
        110-SMEI-OUT-SEC            SECTION.
       *
-      *    定期請求収納ファイル初期化
            OPEN    OUTPUT              BD00501-FILE
-           CLOSE   BD00501-FILE
-      *
-           OPEN    OUTPUT              BD00502-FILE
       *
       *    収納明細をソートする為、一度ファイルに退避する
            MOVE    ZERO            TO  FLG-SMEI
@@ -536,21 +529,41 @@
       *
       *        収納データ取得
                PERFORM 1101-SYUNOU-GET-SEC
-               MOVE    SYU-BYOTONUM    TO  BD00502-ISAM-KEY-BTUNUM
-               MOVE    SYU-ROOMNUM     TO  BD00502-ISAM-KEY-BRMNUM
-               MOVE    SYU-SRYKA       TO  BD00502-ISAM-KEY-SRYKA
+               MOVE    SYU-BYOTONUM    TO  BD00501-SYU-BTUNUM
+               MOVE    SYU-ROOMNUM     TO  BD00501-SYU-BRMNUM
+               MOVE    SYU-SRYKA       TO  BD00501-SYU-SRYKA
       *
                MOVE    SMEI-PTID       TO  WRK-SPTID-PTID
                PERFORM 1101-PTNUM-GET-SEC
-               MOVE    WRK-SPTID-PTNUM TO  BD00502-ISAM-KEY-PTNUM
+               MOVE    WRK-SPTID-PTNUM TO  BD00501-SYU-PTNUM
       *
-               MOVE    SMEI-DENPNUM    TO  BD00502-ISAM-KEY-DENPNUM
-               MOVE    SMEI-DENPEDANUM TO  BD00502-ISAM-KEY-DENPEDANUM
+               MOVE    SMEI-DENPNUM    TO  BD00501-SYU-DENPNUM
+               MOVE    SMEI-DENPEDANUM TO  BD00501-SYU-DENPEDANUM
       *
-               MOVE    SYU-CREATEKBN   TO  BD00502-SYU-CREATEKBN
-               MOVE    SMEI-REC        TO  BD00502-SMEI-DATA-AREA
+               MOVE    SYU-CREATEKBN   TO  BD00501-SYU-CREATEKBN
+               MOVE    SMEI-REC        TO  BD00501-SMEI-DATA-AREA
       *
-               WRITE   BD00502-REC
+               IF    ( WRK-PARA-SORTKBN =   "1" )
+                   MOVE    BD00501-SYU-DENPNUM
+                                       TO  BD00501-ISAM-KEY2-DENPNUM
+                   MOVE    BD00501-SYU-DENPEDANUM
+                                       TO  BD00501-ISAM-KEY2-DENPEDANUM
+               ELSE
+                   MOVE    BD00501-SYU-BTUNUM
+                                       TO  BD00501-ISAM-KEY1-BTUNUM
+                   MOVE    BD00501-SYU-BRMNUM
+                                       TO  BD00501-ISAM-KEY1-BRMNUM
+                   MOVE    BD00501-SYU-SRYKA
+                                       TO  BD00501-ISAM-KEY1-SRYKA
+                   MOVE    BD00501-SYU-PTNUM
+                                       TO  BD00501-ISAM-KEY1-PTNUM
+                   MOVE    BD00501-SYU-DENPNUM
+                                       TO  BD00501-ISAM-KEY1-DENPNUM
+                   MOVE    BD00501-SYU-DENPEDANUM
+                                       TO  BD00501-ISAM-KEY1-DENPEDANUM
+               END-IF
+      *
+               WRITE   BD00501-REC
       *
                PERFORM 900-DBFETCH-SEC
       *
@@ -558,7 +571,7 @@
       *
            PERFORM 900-DBCLOSE-SEC
       *
-           CLOSE   BD00502-FILE
+           CLOSE   BD00501-FILE
       *
            .
        110-SMEI-OUT-EXT.
@@ -766,10 +779,10 @@
       *
            MOVE    BD00501-SMEI-HOSPID     TO  WRK-NAI-HOSPID
            MOVE    BD00501-SMEI-PTID       TO  WRK-NAI-PTID
-           MOVE    BD00501-ISAM-KEY-PTNUM  TO  WRK-NAI-PTNUM
-           MOVE    BD00501-ISAM-KEY-BTUNUM TO  WRK-NAI-BTUNUM
-           MOVE    BD00501-ISAM-KEY-BRMNUM TO  WRK-NAI-BRMNUM
-           MOVE    BD00501-ISAM-KEY-SRYKA  TO  WRK-NAI-SRYKA
+           MOVE    BD00501-SYU-PTNUM  TO  WRK-NAI-PTNUM
+           MOVE    BD00501-SYU-BTUNUM TO  WRK-NAI-BTUNUM
+           MOVE    BD00501-SYU-BRMNUM TO  WRK-NAI-BRMNUM
+           MOVE    BD00501-SYU-SRYKA  TO  WRK-NAI-SRYKA
       *
            INITIALIZE                      WRK-SUM-TBL(4)
       *
@@ -777,38 +790,38 @@
            PERFORM 3202-BODY-DENPRRK-CHK-SEC
       *
       *    キーを設定
-           MOVE    BD00501-ISAM-KEY-BTUNUM
+           MOVE    BD00501-SYU-BTUNUM
                                        TO  KEY-BTUNUM
-           MOVE    BD00501-ISAM-KEY-BRMNUM
+           MOVE    BD00501-SYU-BRMNUM
                                        TO  KEY-BRMNUM
-           MOVE    BD00501-ISAM-KEY-SRYKA
+           MOVE    BD00501-SYU-SRYKA
                                        TO  KEY-SRYKA
            MOVE    SMEI-PTID           TO  KEY-PTID
-           MOVE    BD00501-ISAM-KEY-DENPNUM
+           MOVE    BD00501-SYU-DENPNUM
                                        TO  KEY-DENPNUM
            MOVE    ZERO                TO  FLG-MAINEXT
       *
            PERFORM
                UNTIL ( FLG-SMEI        =   1 )
-               OR    ( KEY-BTUNUM  NOT =   BD00501-ISAM-KEY-BTUNUM )
-               OR    ( KEY-BRMNUM  NOT =   BD00501-ISAM-KEY-BRMNUM )
-               OR    ( KEY-SRYKA   NOT =   BD00501-ISAM-KEY-SRYKA )
+               OR    ( KEY-BTUNUM  NOT =   BD00501-SYU-BTUNUM )
+               OR    ( KEY-BRMNUM  NOT =   BD00501-SYU-BRMNUM )
+               OR    ( KEY-SRYKA   NOT =   BD00501-SYU-SRYKA )
                OR    ( KEY-PTID    NOT =   SMEI-PTID )
-      *        OR    ( KEY-DENPNUM NOT =   BD00501-ISAM-KEY-DENPNUM )
+      *        OR    ( KEY-DENPNUM NOT =   BD00501-SYU-DENPNUM )
                OR    ( FLG-MAINEXT NOT =   ZERO )
                OR    ( CNT-DENP       >=   30 )
       *
       *
       *        処理区分が0（収納明細単位）か1（伝票番号単位）
       *        の場合、伝票番号が変わったらループを抜ける
-               IF    ( KEY-DENPNUM NOT =   BD00501-ISAM-KEY-DENPNUM )
+               IF    ( KEY-DENPNUM NOT =   BD00501-SYU-DENPNUM )
                    IF    ( WRK-PARA-SYORI-KBN  =   "0" OR  "1" )
                        MOVE    1       TO  FLG-MAINEXT
                    ELSE
       *
       *                伝票履歴チェック
                        PERFORM 3202-BODY-DENPRRK-CHK-SEC
-                       MOVE    BD00501-ISAM-KEY-DENPNUM
+                       MOVE    BD00501-SYU-DENPNUM
                                        TO  KEY-DENPNUM
                    END-IF
                END-IF
@@ -843,37 +856,41 @@
            INITIALIZE                  WRK-OUT-AREA
       *
            IF    ( CNT-LINE        =   ZERO )
-            OR   ( KEY-BTUNUM  NOT =   BD00501-ISAM-KEY-BTUNUM )
-               MOVE    BD00501-ISAM-KEY-BTUNUM
+            OR   ( WRK-PARA-SORTKBN =  "1" )
+            OR   ( KEY-BTUNUM  NOT =   BD00501-SYU-BTUNUM )
+               MOVE    BD00501-SYU-BTUNUM
                                        TO  WRK-EDT-BTUNUM
                PERFORM 3200-BODY-BTUNAME-HEN-SEC
            END-IF
       *
            IF    ( CNT-LINE        =   ZERO )
-            OR   ( KEY-BTUNUM  NOT =   BD00501-ISAM-KEY-BTUNUM )
-            OR   ( KEY-BRMNUM  NOT =   BD00501-ISAM-KEY-BRMNUM )
-               MOVE    BD00501-ISAM-KEY-BRMNUM
+            OR   ( WRK-PARA-SORTKBN =  "1" )
+            OR   ( KEY-BTUNUM  NOT =   BD00501-SYU-BTUNUM )
+            OR   ( KEY-BRMNUM  NOT =   BD00501-SYU-BRMNUM )
+               MOVE    BD00501-SYU-BRMNUM
                                        TO  WRK-EDT-BRMNUM
                PERFORM 3200-BODY-BRMNUM-HEN-SEC
            END-IF
       *
            IF    ( CNT-LINE        =   ZERO )
-            OR   ( KEY-BTUNUM  NOT =   BD00501-ISAM-KEY-BTUNUM )
-            OR   ( KEY-BRMNUM  NOT =   BD00501-ISAM-KEY-BRMNUM )
-            OR   ( KEY-SRYKA   NOT =   BD00501-ISAM-KEY-SRYKA )
-               MOVE    BD00501-ISAM-KEY-SRYKA
+            OR   ( WRK-PARA-SORTKBN =  "1" )
+            OR   ( KEY-BTUNUM  NOT =   BD00501-SYU-BTUNUM )
+            OR   ( KEY-BRMNUM  NOT =   BD00501-SYU-BRMNUM )
+            OR   ( KEY-SRYKA   NOT =   BD00501-SYU-SRYKA )
+               MOVE    BD00501-SYU-SRYKA
                                        TO  WRK-EDT-SRYKA
                PERFORM 3200-BODY-SRYKA-HEN-SEC
            END-IF
       *
            IF    ( CNT-LINE        =   ZERO )
-            OR   ( KEY-BTUNUM  NOT =   BD00501-ISAM-KEY-BTUNUM )
-            OR   ( KEY-BRMNUM  NOT =   BD00501-ISAM-KEY-BRMNUM )
-            OR   ( KEY-SRYKA   NOT =   BD00501-ISAM-KEY-SRYKA )
+            OR   ( WRK-PARA-SORTKBN =  "1" )
+            OR   ( KEY-BTUNUM  NOT =   BD00501-SYU-BTUNUM )
+            OR   ( KEY-BRMNUM  NOT =   BD00501-SYU-BRMNUM )
+            OR   ( KEY-SRYKA   NOT =   BD00501-SYU-SRYKA )
             OR   ( KEY-PTID    NOT =   SMEI-PTID )
                MOVE    SMEI-HOSPID     TO  WRK-EDT-HOSPID
                MOVE    SMEI-PTID       TO  WRK-EDT-PTID
-               MOVE    BD00501-ISAM-KEY-PTNUM
+               MOVE    BD00501-SYU-PTNUM
                                        TO  WRK-EDT-PTNUM
                PERFORM 3201-BODY-PTID-HEN-SEC
            END-IF
@@ -1002,8 +1019,10 @@
            MOVE    "5001"          TO  SYS-5001-KANRICD
            MOVE    WRK-EDT-BTUNUM
                                    TO  SYS-5001-KBNCD
+           MOVE    WRK-SYSYMD      TO  SYS-5001-STYUKYMD
+                                       SYS-5001-EDYUKYMD
            MOVE    SYS-5001-REC    TO  MCPDATA-REC
-           PERFORM 800-SYSKANRI-READ-SEC
+           PERFORM 800-SYSKANRI-KEY10-SEL-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC     TO  SYS-5001-REC
                MOVE    SYS-5001-BTU-TANNAME
@@ -1080,8 +1099,10 @@
            MOVE    "1005"          TO  SYS-1005-KANRICD
            MOVE    WRK-EDT-SRYKA
                                    TO  SYS-1005-KBNCD
+           MOVE    WRK-SYSYMD      TO  SYS-1005-STYUKYMD
+                                       SYS-1005-EDYUKYMD
            MOVE    SYS-1005-REC    TO  MCPDATA-REC
-           PERFORM 800-SYSKANRI-READ-SEC
+           PERFORM 800-SYSKANRI-KEY10-SEL-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC     TO  SYS-1005-REC
                MOVE    SYS-1005-SRYKANAME
@@ -1423,9 +1444,10 @@
            MOVE    WRK-STDAILYKEY          TO  SMEI-STDAILYKEY
            MOVE    WRK-EDDAILYKEY          TO  SMEI-EDDAILYKEY
            MOVE    SMEI-REC                TO  MCPDATA-REC
-           MOVE    PATH-TBL-SYUMEI-KEY10   TO  MCP-PATH
+           MOVE    "tbl_syumei"            TO  MCP-TABLE
+           MOVE    "key10"                 TO  MCP-PATHNAME
            MOVE    "DBSELECT"              TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
@@ -1443,9 +1465,10 @@
       *****************************************************************
        900-DBFETCH-SEC             SECTION.
       *
-           MOVE    PATH-TBL-SYUMEI-KEY10   TO  MCP-PATH
+           MOVE    "tbl_syumei"            TO  MCP-TABLE
+           MOVE    "key10"                 TO  MCP-PATHNAME
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
@@ -1464,9 +1487,10 @@
       *****************************************************************
        900-DBCLOSE-SEC             SECTION.
       *
-           MOVE    PATH-TBL-SYUMEI-KEY10   TO  MCP-PATH
+           MOVE    "tbl_syumei"            TO  MCP-TABLE
+           MOVE    "key10"                 TO  MCP-PATHNAME
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            .
@@ -1482,6 +1506,11 @@
            AT END
                MOVE    1               TO FLG-SMEI
            NOT AT  END
+               IF    ( WRK-PARA-SORTKBN   =    "1" )
+                   MOVE    BD00501-SYU-BTUNUM  TO  KEY-BTUNUM
+                   MOVE    BD00501-SYU-BRMNUM  TO  KEY-BRMNUM
+                   MOVE    BD00501-SYU-SRYKA   TO  KEY-SRYKA
+               END-IF
                MOVE    BD00501-SMEI-DATA-AREA
                                        TO SMEI-REC
            END-READ
@@ -1502,8 +1531,9 @@
            MOVE    SMEI-NYUGAIKBN  TO  SMEI2-NYUGAIKBN
            MOVE    SMEI2-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    PATH-TBL-SYUMEI-KEY11   TO  MCP-PATH
-           CALL    "MCPSUB"            USING
+           MOVE    "tbl_syumei"    TO  MCP-TABLE
+           MOVE    "key11"         TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
@@ -1521,8 +1551,9 @@
        900-SMEI2-FETCH-SEC         SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           MOVE    PATH-TBL-SYUMEI-KEY11   TO  MCP-PATH
-           CALL    "MCPSUB"            USING
+           MOVE    "tbl_syumei"    TO  MCP-TABLE
+           MOVE    "key11"         TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
@@ -1541,8 +1572,9 @@
        900-SMEI2-CLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           MOVE    PATH-TBL-SYUMEI-KEY11   TO  MCP-PATH
-           CALL    "MCPSUB"            USING
+           MOVE    "tbl_syumei"    TO  MCP-TABLE
+           MOVE    "key11"         TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            .
@@ -1554,38 +1586,21 @@
        900-SYU-READ-SEC            SECTION.
       *
            MOVE    SYU-REC         TO  MCPDATA-REC
-           MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "SYUNOU-KEY"    TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
-      *
+           MOVE    "tbl_syunou"    TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"       TO  MCP-FUNC
-               MOVE    "SYUNOU-KEY"    TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"         USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC     TO  SYU-REC
-                   MOVE    ZERO            TO  FLG-SYU
-               ELSE
-                   MOVE    1               TO  FLG-SYU
-                   INITIALIZE                  SYU-REC
-               END-IF
+               MOVE    MCPDATA-REC     TO  SYU-REC
+               MOVE    ZERO            TO  FLG-SYU
            ELSE
                MOVE    1               TO  FLG-SYU
                INITIALIZE                  SYU-REC
            END-IF
       *
-           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           MOVE    "SYUNOU-KEY"    TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_syunou"    TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
            .
        900-SYU-READ-EXT.
            EXIT.
@@ -1596,159 +1611,141 @@
        900-PTINF-READ-SEC          SECTION.
       *
            MOVE    PTINF-REC       TO  MCPDATA-REC
-           MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "PTINF-KEY"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
-      *
+           MOVE    "tbl_ptinf"     TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"       TO  MCP-FUNC
-               MOVE    "PTINF-KEY"     TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"         USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC     TO  PTINF-REC
-                   MOVE    ZERO            TO  FLG-PTINF
-               ELSE
-                   MOVE    1               TO  FLG-PTINF
-                   INITIALIZE                  PTINF-REC
-               END-IF
+               MOVE    MCPDATA-REC     TO  PTINF-REC
+               MOVE    ZERO            TO  FLG-PTINF
            ELSE
                MOVE    1               TO  FLG-PTINF
                INITIALIZE                  PTINF-REC
            END-IF
       *
-           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           MOVE    "PTINF-KEY"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_ptinf"     TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
            .
        900-PTINF-READ-EXT.
            EXIT.
       *
       *****************************************************************
-      *    患者番号変換マスター読込処理
-      *****************************************************************
-       900-PTNUM-READ-SEC          SECTION.
-      *
-           MOVE    PTNUM-REC       TO  MCPDATA-REC
-           MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "PTNUM-KEY"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
-      *
-           IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"       TO  MCP-FUNC
-               MOVE    "PTNUM-KEY"     TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"         USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC     TO  PTNUM-REC
-                   MOVE    ZERO            TO  FLG-PTNUM
-               ELSE
-                   MOVE    1               TO  FLG-PTNUM
-                   INITIALIZE                  PTNUM-REC
-               END-IF
-           ELSE
-               MOVE    1               TO  FLG-PTNUM
-               INITIALIZE                  PTNUM-REC
-           END-IF
-      *
-           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           MOVE    "PTNUM-KEY"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
-           .
-       900-PTNUM-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    管理マスタ読み込み
       *****************************************************************
-       800-SYSKANRI-READ-SEC       SECTION.
+       800-SYSKANRI-KEY10-SEL-SEC       SECTION.
       *
-           MOVE    WRK-SYSYMD      TO  ORC-DBYMD
-           MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
-      *
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key10"         TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"       TO  MCP-FUNC
-               MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"         USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
-               IF      MCP-RC              =   ZERO
-                   MOVE    ZERO            TO  FLG-SYSKANRI
-               ELSE
-                   MOVE    1               TO  FLG-SYSKANRI
-               END-IF
+               MOVE    ZERO            TO  FLG-SYSKANRI
            ELSE
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
       *
-           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key10"         TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
            .
-       800-SYSKANRI-READ-EXT.
+       800-SYSKANRI-KEY10-SEL-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    ＤＢ検索処理
+      *****************************************************************
+       910-DBSELECT-SEC               SECTION.
+      *
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           CALL    "MONFUNC"   USING   MCPAREA
+                                       MCPDATA-REC
+           IF    ( MCP-RC          =   ZERO )
+               PERFORM 910-DBFETCH-SEC
+           END-IF
+      *
+           .
+      *
+       910-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ検索処理
+      *****************************************************************
+       911-DBSELECT-SEC               SECTION.
+      *
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           CALL    "MONFUNC"   USING   MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       911-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ読み込み処理
+      *****************************************************************
+       910-DBFETCH-SEC                 SECTION.
+      *
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           CALL    "MONFUNC"   USING   MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       910-DBFETCH-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢクローズ処理
+      *****************************************************************
+       910-DBCLOSECURSOR-SEC                SECTION.
+      *
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+           CALL    "MONFUNC"   USING   MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       910-DBCLOSECURSOR-EXT.
+           EXIT.
       *****************************************************************
       *    ＤＢ　オープン処理
       *****************************************************************
        100-DBOPEN-SEC              SECTION.
       *
+           MOVE    LOW-VALUE       TO  MCP-TABLE
+                                       MCP-PATHNAME
            MOVE    "DBOPEN"        TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC.
       *
+           MOVE    LOW-VALUE       TO  MCP-TABLE
+                                       MCP-PATHNAME
            MOVE    "DBSTART"       TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC.
            .
        100-DBOPEN-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ＤＢ　クローズ処理
+      *    ＤＢ　切断処理
       *****************************************************************
        900-DBDISCONNECT-SEC        SECTION.
       *
+           MOVE    LOW-VALUE       TO  MCP-TABLE
+                                       MCP-PATHNAME
            MOVE    "DBCOMMIT"      TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC.
       *
-           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE       TO  MCP-TABLE
+                                       MCP-PATHNAME
+           MOVE    "DBDISCONNECT"  TO  MCP-FUNC.
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC.
       *
            .
        900-DBDISCONNECT-EXT.

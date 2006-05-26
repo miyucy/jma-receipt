@@ -52,13 +52,21 @@
        FD  BD00801-FILE.
        01  BD00801-REC.
            02  BD00801-ISAM-KEY.
-               03  BD00801-ISAM-PTNUM      PIC X(20).
-               03  BD00801-ISAM-PTID       PIC 9(10).
-               03  BD00801-ISAM-DENPNUM    PIC 9(07).
-               03  BD00801-ISAM-NYUGAIKBN  PIC X(01).
+               03  BD00801-ISAM-KEY-VAL        PIC X(100).
+               03  BD00801-ISAM-KEY1 REDEFINES BD00801-ISAM-KEY-VAL.
+                   05  BD00801-ISAM-KEY1-PTNUM      PIC X(20).
+                   05  BD00801-ISAM-KEY1-PTID       PIC 9(10).
+                   05  BD00801-ISAM-KEY1-DENPNUM    PIC 9(07).
+                   05  BD00801-ISAM-KEY1-NYUGAIKBN  PIC X(01).
+                   05  BD00801-ISAM-KEY1-FIL        PIC X(62).
+               03  BD00801-ISAM-KEY2 REDEFINES BD00801-ISAM-KEY-VAL.
+                   05  BD00801-ISAM-KEY2-NYUGAIKBN  PIC X(01).
+                   05  BD00801-ISAM-KEY2-DENPNUM    PIC 9(07).
+                   05  BD00801-ISAM-KEY2-FIL        PIC X(92).
+           02  BD00801-PTNUM                        PIC X(20).
            02  BD00801-SYU-DAT.
            COPY    "CPSYUNOU.INC"  REPLACING  //SYU-//
-                                   BY         //BD00801-//.
+                                   BY         //BD00801-SYU-//.
       *
       *    エラーファイル
        FD  RECEERR-FILE.
@@ -388,10 +396,17 @@
                MOVE    SYU-PTID      TO  PTNUM-PTID
                PERFORM 900-PTNUM-READ-SEC
       *
-               MOVE    PTNUM-PTNUM   TO  BD00801-ISAM-PTNUM
-               MOVE    SYU-PTID      TO  BD00801-ISAM-PTID
-               MOVE    SYU-DENPNUM   TO  BD00801-ISAM-DENPNUM
-               MOVE    SYU-NYUGAIKBN TO  BD00801-ISAM-NYUGAIKBN
+               MOVE    PTNUM-PTNUM   TO  BD00801-PTNUM
+      *
+               IF    ( ORCBD008-SORTKBN  =     "1" )
+                   MOVE    SYU-NYUGAIKBN TO  BD00801-ISAM-KEY2-NYUGAIKBN
+                   MOVE    SYU-DENPNUM   TO  BD00801-ISAM-KEY2-DENPNUM
+               ELSE
+                   MOVE    PTNUM-PTNUM   TO  BD00801-ISAM-KEY1-PTNUM
+                   MOVE    SYU-PTID      TO  BD00801-ISAM-KEY1-PTID
+                   MOVE    SYU-DENPNUM   TO  BD00801-ISAM-KEY1-DENPNUM
+                   MOVE    SYU-NYUGAIKBN TO  BD00801-ISAM-KEY1-NYUGAIKBN
+               END-IF
       *
                MOVE    SYU-REC       TO  BD00801-SYU-DAT
       *
@@ -507,7 +522,7 @@
                MOVE    WRK-RENNUM      TO  WRK-RENNUM-X
                MOVE    WRK-RENNUM-X    TO  HCM41-RENNUM(CNT-LINE)
       *    患者番号
-               MOVE    BD00801-ISAM-PTNUM
+               MOVE    BD00801-PTNUM
                                        TO  HCM41-PTNUM(CNT-LINE)
       *    氏名
                MOVE    PTINF-NAME      TO  HCM41-NAME(CNT-LINE)

@@ -46,6 +46,7 @@
        01  WRK-PARA-ATAI.
            03  WRK-PARA-SYORIYMD   PIC X(08).
            03  WRK-PARA-NYUGAIKBN  PIC X(01).
+           03  WRK-PARA-SORTKBN    PIC X(01).
       *
       *    メインＰＧ用パラメタ
        COPY    "CPORCBD008.INC".
@@ -101,6 +102,7 @@
                                        WRK-PARA-HOSPID
                                        WRK-PARA-SYORIYMD
                                        WRK-PARA-NYUGAIKBN
+                                       WRK-PARA-SORTKBN
       *
            .
        100-INIT-EXT.
@@ -120,6 +122,8 @@
            ELSE
                MOVE    "2"         TO  ORCBD008-NYUGAIKBN
            END-IF
+      *
+           MOVE    WRK-PARA-SORTKBN TO ORCBD008-SORTKBN
       *
            CALL    "ORCBD008"          USING
                                        WRK-PARA

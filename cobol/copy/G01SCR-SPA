@@ -45,6 +45,7 @@
       *
                05  SPA-NAI-G01-AREA.
                    07  SPA-NAI-G01-TBL             OCCURS  100.
+                       09  SPA-NAI-G01-SAVEPARA    PIC X(01).
                        09  SPA-NAI-G01-PARA-G      OCCURS  8.
                            11  SPA-NAI-G01-PARA    PIC X(20).
                        09  SPA-NAI-G01-HENPARA-TBL.

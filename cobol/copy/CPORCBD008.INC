@@ -29,3 +29,5 @@
            03  ORCBD008-SYORIYMD           PIC X(08).
       *    ェ陸嗉坌 (1:ェ情/ 2:陸侳﹌
            03  ORCBD008-NYUGAIKBN          PIC X(01).
+      *    岈太賜
+           03  ORCBD008-SORTKBN            PIC X(01).

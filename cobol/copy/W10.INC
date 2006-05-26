@@ -38,6 +38,8 @@
                     06  W10-VALUE       PIC X(80).
                   05  W10-HCNUM.
                     06  W10-VALUE       PIC S9(3).
+                  05  W10-CHK-SAVEPARA      PIC X(01).
+                  05  W10-CHK-SAVEPARA-STATE   PIC S9(9)   BINARY.
                   05  W10-PARA-G        OCCURS  8.
                       06  W10-PARAHYOJI PIC X(20).
                       06  W10-PARA      PIC X(10).
@@ -55,6 +57,8 @@
                     06  W10-VALUE       PIC X(80).
                   05  W10-HCNUM1.
                     06  W10-VALUE       PIC S9(3).
+                  05  W10-CHK-SAVEPARA1     PIC X(01).
+                  05  W10-CHK-SAVEPARA1-STATE  PIC S9(9)   BINARY.
                   05  W10-PARA1-G        OCCURS  8.
                       06  W10-PARAHYOJI1 PIC X(20).
                       06  W10-PARA1      PIC X(10).

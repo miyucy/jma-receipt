@@ -88,6 +88,7 @@
       *
            03  FLG-CHK                         PIC 9(01).
            03  FLG-ERR                         PIC 9(01).
+           03  FLG-TOUKEIMEMO                  PIC 9(01).
       *
       *    フラグ領域
        01  STS-AREA.
@@ -105,6 +106,7 @@
            03  IDX0                            PIC 9(04).
            03  IDX1                            PIC 9(04).
            03  IDX2                            PIC 9(04).
+           03  IDX-PARA                        PIC 9(04).
       *
       *    ファイルデイレクトリ位置指定サブ
            COPY  "CPMKPASS.INC".
@@ -145,6 +147,9 @@
            03  WRK-MAE-INPUT                   PIC X(100).
            03  WRK-ATO-INPUT                   PIC X(100).
            03  WRK-PRT-PAGE                    PIC 9(10).
+           03  WRK-PGID                        PIC X(20).
+           03  WRK-KBNCD-G.
+               05  WRK-KBNCD                   PIC 9(03).
       *
       *    システム領域
        01  SYS-AREA.
@@ -218,6 +223,10 @@
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
+      *
+      *    統計メモ
+       01  TOUKEIMEMO-REC.
+           COPY  "CPTOUKEIMEMO.INC".
       *
       *
       *****************************************************************
@@ -464,6 +473,8 @@
                        MOVE    SYS-3001-KBNCD(1:3)
                                            TO  WRK-NUM
                        MOVE    WRK-NUM     TO  IDX
+                       MOVE    SYS-3001-SAVEPARA
+                                          TO  SPA-NAI-L01-SAVEPARA (IDX)
                        MOVE    SYS-3001-HCNAME
                                            TO  SPA-GMN-L01-HCNAME (IDX)
                        MOVE    SYS-3001-PRGNAME
@@ -482,6 +493,23 @@
                                    TO  SPA-NAI-L01-HISSU-KBN(IDX IDY)
                            END-IF
                        END-PERFORM
+      *
+                       MOVE    SPA-GMN-L01-PRGNAME (IDX)
+                                           TO  WRK-PGID
+                       MOVE    IDX         TO  WRK-KBNCD
+                       PERFORM 900-TOUKEIMEMO-KEY2-SEL-SEC
+                       IF    ( FLG-TOUKEIMEMO  =   ZERO )
+                           PERFORM VARYING IDX-PARA    FROM    1   BY  1
+                                   UNTIL ( IDX-PARA
+                                               >   WRK-CONS-PARA-MAX )
+      *
+                               MOVE    TKIMEMO-PARA (IDX-PARA)
+                                   TO  SPA-GMN-L01-PARA (IDX  IDX-PARA)
+      *
+                           END-PERFORM
+      *
+                       END-IF
+      *
                        IF    ( IDX         >   SPA-GMN-L01-MAX )
                            MOVE    IDX         TO  SPA-GMN-L01-MAX
                        END-IF
@@ -1339,6 +1367,8 @@
       *****************************************************************
        490-PRINT-SEC                       SECTION.
       *
+           PERFORM 4901-TOUKEIMEMO-UPD-SEC
+      *
            INITIALIZE                      SPA-L01-TBL-GROUP
                                            SPA-L01-JOB-JOBID
       *
@@ -1608,6 +1638,54 @@
        490-PRINT-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    統計メモ更新処理
+      *****************************************************************
+       4901-TOUKEIMEMO-UPD-SEC         SECTION.
+      *
+           PERFORM VARYING IDY FROM    1       BY  1
+                   UNTIL ( IDY             >   WRK-CONS-LINE-MAX )
+                   OR    ( SPA-ERRCD   NOT =   SPACE )
+               IF    ( SPA-GMN-L01-CHK-VALUE   (IDY)   =   "T" )
+      *
+                   IF    ( SPA-NAI-L01-SAVEPARA (IDY)    =   "1" )
+                       MOVE    SPA-GMN-L01-PRGNAME (IDY)
+                                           TO  WRK-PGID
+                       MOVE    IDY         TO  WRK-KBNCD
+                       PERFORM 900-TOUKEIMEMO-KEY2-SEL-SEC
+                       IF    ( FLG-TOUKEIMEMO  =   ZERO )
+                           PERFORM VARYING IDX-PARA    FROM    1   BY  1
+                                   UNTIL ( IDX-PARA
+                                               >   WRK-CONS-PARA-MAX )
+                                   OR    ( SPA-ERRCD   NOT =   SPACE )
+      *
+                               IF    ( SPA-NAI-L01-PARA (IDY IDX-PARA)
+                                           =   "YM" OR "KKNYM" OR "YMD")
+                                   CONTINUE
+                               ELSE
+                                   MOVE  SPA-GMN-L01-PARA (IDY IDX-PARA)
+                                           TO  TKIMEMO-PARA (IDX-PARA)
+                               END-IF
+      *
+                           END-PERFORM
+      *
+                           MOVE    TOUKEIMEMO-REC      TO  MCPDATA-REC
+                           MOVE    "tbl_toukeimemo"    TO  MCP-TABLE
+                           MOVE    "key2"              TO  MCP-PATHNAME
+                           PERFORM 910-DBUPDATE-SEC
+                           IF    ( MCP-RC          NOT =   ZERO )
+                               MOVE    "4001"          TO  SPA-ERRCD
+                           END-IF
+      *
+                       END-IF
+                   END-IF
+      *
+               END-IF
+           END-PERFORM
+      *
+           .
+       4901-TOUKEIMEMO-UPD-EXT.
+           EXIT.
       *****************************************************************
       *    ジョブ開始セット処理
       *****************************************************************
@@ -2543,6 +2621,9 @@
                    MOVE    WRK-RECEERR             TO  SPA-ERRMSG
                WHEN    "9999"
                    MOVE    WRK-RECEERR             TO  SPA-ERRMSG
+           WHEN    "4001"
+               MOVE    "ＤＢの更新に失敗しました"
+                                                   TO  SPA-ERRMSG
            END-EVALUATE
       *
            MOVE    SPACE               TO  LERR
@@ -2781,6 +2862,107 @@
        120-FECH-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    統計メモテーブル検索処理
+      *****************************************************************
+       900-TOUKEIMEMO-KEY2-SEL-SEC     SECTION.
+      *
+           MOVE    ZERO                TO  FLG-TOUKEIMEMO
+      *
+           INITIALIZE                      TOUKEIMEMO-REC
+           MOVE    WRK-PGID            TO  TKIMEMO-PGID
+           MOVE    "3001"              TO  TKIMEMO-KANRICD
+           MOVE    WRK-KBNCD-G         TO  TKIMEMO-KBNCD
+           MOVE    SPA-SYSYMD          TO  TKIMEMO-STYUKYMD
+                                           TKIMEMO-EDYUKYMD
+           MOVE    TOUKEIMEMO-REC      TO  MCPDATA-REC
+           MOVE    "tbl_toukeimemo"    TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC     TO  TOUKEIMEMO-REC
+           ELSE
+               INITIALIZE                  TOUKEIMEMO-REC
+               MOVE    1               TO  FLG-TOUKEIMEMO
+           END-IF
+      *
+           MOVE    "tbl_toukeimemo"    TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+      *
+       900-TOUKEIMEMO-KEY2-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ検索処理
+      *****************************************************************
+       910-DBSELECT-SEC               SECTION.
+      *
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           CALL    "MONFUNC"   USING   MCPAREA
+                                       MCPDATA-REC
+           IF    ( MCP-RC          =   ZERO )
+               PERFORM 910-DBFETCH-SEC
+           END-IF
+      *
+           .
+      *
+       910-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ検索処理
+      *****************************************************************
+       911-DBSELECT-SEC               SECTION.
+      *
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           CALL    "MONFUNC"   USING   MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       911-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ読み込み処理
+      *****************************************************************
+       910-DBFETCH-SEC                 SECTION.
+      *
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           CALL    "MONFUNC"   USING   MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       910-DBFETCH-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢクローズ処理
+      *****************************************************************
+       910-DBCLOSECURSOR-SEC                SECTION.
+      *
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+           CALL    "MONFUNC"   USING   MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       910-DBCLOSECURSOR-EXT.
+           EXIT.
+      *****************************************************************
+      *    DBUPDATE処理
+      *****************************************************************
+       910-DBUPDATE-SEC                 SECTION.
+      *
+           MOVE    "DBUPDATE"      TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       910-DBUPDATE-EXT.
+           EXIT.
       *****************************************************************
       *    ＰＵＴ　処理
       *****************************************************************

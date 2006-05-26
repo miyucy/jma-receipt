@@ -31,6 +31,10 @@ W10	{
 				HCNUM	{
 					value	number(3);
 				};
+				CHK_SAVEPARA	{
+					value	bool;
+                        		state	int;
+				};
 				PARAHYOJI1	{
 					value	varchar(20);
 				};
@@ -145,6 +149,10 @@ W10	{
 				};
 				HCNUM1	{
 					value	number(3);
+				};
+				CHK_SAVEPARA1	{
+					value	bool;
+                        		state	int;
 				};
 				PARAHYOJI11	{
 					value	varchar(20);

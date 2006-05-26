@@ -171,8 +171,6 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
-           COPY    "ORCA-DBPATH".
       *
       *
       *****************************************************************
@@ -367,9 +365,10 @@
       *
            MOVE    WRK-KANRICD         TO  SYS-TOUKEI-KANRICD
            MOVE    WRK-KBNCD           TO  SYS-TOUKEI-KBNCD
-           MOVE    SYS-TOUKEI-REC      TO  MCPDATA-REC
            MOVE    SPA-W10-SEL-STYUKYMD
-                                       TO  ORC-DBYMD
+                                       TO  SYS-TOUKEI-STYUKYMD
+                                           SYS-TOUKEI-EDYUKYMD
+           MOVE    SYS-TOUKEI-REC      TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
       *
            IF    ( FLG-SYSKANRI        =   ZERO )
@@ -397,6 +396,11 @@
                        END-IF
                    END-PERFORM
       *
+                   IF    ( SYS-TOUKEI-SAVEPARA =   "1" )
+                       MOVE    "T"     TO  SPA-GMN-W10-CHK-SAVEPARA
+                   ELSE
+                       MOVE    "F"     TO  SPA-GMN-W10-CHK-SAVEPARA
+                   END-IF
                    MOVE    SYS-TOUKEI-REC  TO  SYSKANRI-REC
                    MOVE    SYS-TOUKEI-PRGNAME
                                            TO  WRK-PGID
@@ -429,6 +433,11 @@
                        END-IF
                    END-PERFORM
       *
+                   IF    ( SYS-TOUKEI-SAVEPARA =   "1" )
+                       MOVE    "T"     TO  SPA-GMN-W10-CHK-SAVEPARA1
+                   ELSE
+                       MOVE    "F"     TO  SPA-GMN-W10-CHK-SAVEPARA1
+                   END-IF
                    MOVE    SYS-TOUKEI-REC  TO  SYSKANRI-REC
                    MOVE    SYS-TOUKEI-PRGNAME
                                            TO  WRK-PGID
@@ -500,9 +509,10 @@
            INITIALIZE                      SYS-3001-REC
            MOVE    SPA-W10-KANRICD     TO  SYS-3001-KANRICD
            MOVE    SPA-W10-KBNCD       TO  SYS-3001-KBNCD
-           MOVE    SYS-3001-REC        TO  MCPDATA-REC
            MOVE    SPA-W10-SEL-STYUKYMD
-                                       TO  ORC-DBYMD
+                                       TO  SYS-3001-STYUKYMD
+                                           SYS-3001-EDYUKYMD
+           MOVE    SYS-3001-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
       *     
            EVALUATE    SPA-W10-KANRICD
@@ -535,6 +545,12 @@
                                                                  (IDX)
                            END-IF
                        END-PERFORM
+      *
+                       IF    ( SYS-3001-SAVEPARA =   "1" )
+                           MOVE    "T"     TO  SPA-GMN-W10-CHK-SAVEPARA
+                       ELSE
+                           MOVE    "F"     TO  SPA-GMN-W10-CHK-SAVEPARA
+                       END-IF
                        MOVE    SYS-3001-REC    TO  SYSKANRI-REC
                        MOVE    SYS-3001-PRGNAME
                                                TO  WRK-PGID
@@ -568,6 +584,12 @@
                                                                  (IDX)
                            END-IF
                        END-PERFORM
+      *
+                       IF    ( SYS-3002-SAVEPARA =   "1" )
+                           MOVE    "T"     TO  SPA-GMN-W10-CHK-SAVEPARA1
+                       ELSE
+                           MOVE    "F"     TO  SPA-GMN-W10-CHK-SAVEPARA1
+                       END-IF
                        MOVE    SYS-3002-REC    TO  SYSKANRI-REC
                        MOVE    SYS-3002-PRGNAME
                                                TO  WRK-PGID
@@ -588,6 +610,8 @@
            INITIALIZE   SPA-GMN-W10-AREA
                         SPA-NAI-W10-AREA
       *
+           MOVE        "F"             TO  SPA-GMN-W10-CHK-SAVEPARA
+                                           SPA-GMN-W10-CHK-SAVEPARA1
       *
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL ( IDX >       CONST-3001-PARA-MAX )
@@ -748,6 +772,14 @@
                WHEN    "CLICKED"       ALSO    "OPTNINI081"
                    MOVE    MCP-WIDGET  TO      WRK-WIDGET
                    PERFORM 4212-OPTNINI-CHK-SEC
+               WHEN    "CLICKED"       ALSO    "CHK_SAVEPARA"
+                   PERFORM 4101-GMN-SPA-SET-SEC
+                   MOVE    W10-CHK-SAVEPARA
+                                       TO  SPA-GMN-W10-CHK-SAVEPARA
+               WHEN    "CLICKED"       ALSO    "CHK_SAVEPARA1"
+                   PERFORM 4101-GMN-SPA-SET-SEC
+                   MOVE    W10-CHK-SAVEPARA1
+                                       TO  SPA-GMN-W10-CHK-SAVEPARA1
           END-EVALUATE
       *
            .
@@ -1320,13 +1352,13 @@
            MOVE    SPA-W10-SEL-EDYUKYMD    TO  SYS-3001-EDYUKYMD
            MOVE    SYS-3001-REC            TO  MCPDATA-REC
            MOVE    "DBDELETE"              TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"          TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"              USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+           MOVE    "tbl_syskanri"          TO  MCP-TABLE
+           MOVE    "key"                   TO  MCP-PATHNAME
+           CALL    "MONFUNC"               USING
+                                           MCPAREA
+                                           MCPDATA-REC
       *
-           IF      MCP-RC              NOT =   ZERO 
+           IF    ( MCP-RC              NOT =   ZERO  )
                MOVE    "1002"              TO  SPA-ERRCD
                GO  TO  4031-DEL-EXT
            END-IF
@@ -1360,9 +1392,9 @@
            MOVE    SPA-W10-SEL-EDYUKYMD    TO  TKIMEMO-EDYUKYMD
            MOVE    TOUKEIMEMO-REC          TO  MCPDATA-REC
            MOVE    "DBDELETE"              TO  MCP-FUNC
-           MOVE    PATH-TBL-TOUKEIMEMO-DEL1
-                                           TO  MCP-PATH
-           CALL    "MCPSUB"                USING
+           MOVE    "tbl_toukeimemo"        TO  MCP-TABLE
+           MOVE    "del1"                  TO  MCP-PATHNAME
+           CALL    "MONFUNC"               USING
                                            MCPAREA
                                            MCPDATA-REC
       *
@@ -1388,8 +1420,9 @@
            MOVE    SPA-W10-SEL-EDYUKYMD    TO  TKIMEMO-EDYUKYMD
            MOVE    TOUKEIMEMO-REC          TO  MCPDATA-REC
            MOVE    "DBDELETE"              TO  MCP-FUNC
-           MOVE    PATH-TBL-TOUKEIMEMO-KEY TO  MCP-PATH
-           CALL    "MCPSUB"                USING
+           MOVE    "tbl_toukeimemo"        TO  MCP-TABLE
+           MOVE    "key"                   TO  MCP-PATHNAME
+           CALL    "MONFUNC"               USING
                                            MCPAREA
                                            MCPDATA-REC
       *
@@ -1432,7 +1465,8 @@
            INITIALIZE                      SYS-3001-REC
            MOVE    SPA-W10-KANRICD         TO  SYS-3001-KANRICD
            MOVE    SPA-W10-KBNCD           TO  SYS-3001-KBNCD
-           MOVE    SPA-W10-SEL-STYUKYMD    TO  ORC-DBYMD
+           MOVE    SPA-W10-SEL-STYUKYMD    TO  SYS-3001-STYUKYMD
+                                               SYS-3001-EDYUKYMD
            MOVE    SYS-3001-REC            TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
       *
@@ -1468,6 +1502,11 @@
                                            TO  SYS-3001-HISSU-KBN(IDX)
                        END-IF
                    END-PERFORM
+                   IF    ( SPA-GMN-W10-CHK-SAVEPARA    =   "T" )
+                       MOVE    "1" TO  SYS-3001-SAVEPARA
+                   ELSE
+                       MOVE    " " TO  SYS-3001-SAVEPARA
+                   END-IF
                    MOVE    SYS-3001-REC         TO  SYSKANRI-REC
                WHEN    "0044"
                WHEN    "3002"
@@ -1500,6 +1539,11 @@
                                            TO  SYS-3002-HISSU-KBN(IDX)
                        END-IF
                    END-PERFORM
+                   IF    ( SPA-GMN-W10-CHK-SAVEPARA1   =   "T" )
+                       MOVE    "1" TO  SYS-3002-SAVEPARA
+                   ELSE
+                       MOVE    " " TO  SYS-3002-SAVEPARA
+                   END-IF
                    MOVE    SYS-3002-REC         TO  SYSKANRI-REC
            END-EVALUATE       
       *     
@@ -1511,20 +1555,21 @@
                PERFORM 800-MCNDATE-SEC
                MOVE    SMCNDATE-YMD            TO  SYS-UPYMD
                MOVE    SMCNDATE-HMS            TO  SYS-UPHMS
-               MOVE    "SYSKANRI-UPD1"         TO  ORC-DBPATH
+               MOVE    "tbl_syskanri"          TO  MCP-TABLE
+               MOVE    "upd1"                  TO  MCP-PATHNAME
                MOVE    "DBUPDATE"              TO  MCP-FUNC
            ELSE
                PERFORM 800-MCNDATE-SEC
                MOVE    SMCNDATE-YMD            TO  SYS-CREYMD
                                                    SYS-UPYMD
                MOVE    SMCNDATE-HMS            TO  SYS-UPHMS
-               MOVE    "SYSKANRI-KEY"          TO  ORC-DBPATH
+               MOVE    "tbl_syskanri"          TO  MCP-TABLE
+               MOVE    "key"                   TO  MCP-PATHNAME
                MOVE    "DBINSERT"              TO  MCP-FUNC
            END-IF
            MOVE    SYSKANRI-REC            TO  MCPDATA-REC
-           CALL    "ORCMCPSUB"              USING
+           CALL    "MONFUNC"                USING
                                             MCPAREA
-                                            ORCMCPAREA
                                             MCPDATA-REC
            IF      MCP-RC              NOT =   ZERO 
                MOVE    "1001"                  TO  SPA-ERRCD
@@ -1574,11 +1619,20 @@
                                        TO  TKIMEMO-PGID
                MOVE    SPA-GMN-W10-MEMO
                                        TO  TKIMEMO-MEMO
+      *
+      *        IF    ( SPA-GMN-W10-CHK-SAVEPARA    =   "F" )
+                   MOVE    SPACE       TO  TKIMEMO-PARA-G
+      *        END-IF
+      *
            ELSE
                MOVE    SPA-GMN-W10-PRGNAME1
                                        TO  TKIMEMO-PGID
                MOVE    SPA-GMN-W10-MEMO1
                                        TO  TKIMEMO-MEMO
+      *
+      *        IF    ( SPA-GMN-W10-CHK-SAVEPARA1   =   "F" )
+                   MOVE    SPACE       TO  TKIMEMO-PARA-G
+      *        END-IF
            END-IF
       *
            IF    ( SPA-W10-MODE        =   ZERO )
@@ -1600,9 +1654,9 @@
            MOVE    TOUKEIMEMO-REC      TO  MCPDATA-REC
       *
            MOVE    "DBINSERT"          TO  MCP-FUNC
-           MOVE    PATH-TBL-TOUKEIMEMO-KEY
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"                USING
+           MOVE    "tbl_toukeimemo"    TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"               USING
                                            MCPAREA
                                            MCPDATA-REC
       *
@@ -1787,6 +1841,7 @@
                    MOVE    "black"          TO  W10-LBLKANRICD-STYLE
            END-IF
       *
+      *
            EVALUATE    SPA-W10-MODE
            WHEN    1
                MOVE    "red"                TO  W10-LBLKIKAN-STYLE
@@ -1801,6 +1856,12 @@
       *
       *    日次統計情報 
            MOVE    SPA-GMN-W10-HCNUM        TO  W10-HCNUM
+           MOVE    SPA-GMN-W10-CHK-SAVEPARA TO  W10-CHK-SAVEPARA
+           IF    ( SPA-W10-MODE     NOT =   ZERO )
+               MOVE    WIDGET-INSENSITIVE   TO  W10-CHK-SAVEPARA-STATE
+           ELSE
+               MOVE    WIDGET-NORMAL        TO  W10-CHK-SAVEPARA-STATE
+           END-IF
            MOVE    SPA-GMN-W10-HCNAME       TO  W10-HCNAME
            MOVE    SPA-GMN-W10-PRGNAME      TO  W10-PROGNAME
            PERFORM VARYING IDX FROM    1   BY  1
@@ -1817,6 +1878,12 @@
       *
       *    月次統計情報 
            MOVE    SPA-GMN-W10-HCNUM1       TO  W10-HCNUM1
+           MOVE    SPA-GMN-W10-CHK-SAVEPARA1 TO  W10-CHK-SAVEPARA1
+           IF    ( SPA-W10-MODE     NOT =   ZERO )
+               MOVE    WIDGET-INSENSITIVE   TO  W10-CHK-SAVEPARA1-STATE
+           ELSE
+               MOVE    WIDGET-NORMAL        TO  W10-CHK-SAVEPARA1-STATE
+           END-IF
            MOVE    SPA-GMN-W10-HCNAME1      TO  W10-HCNAME1
            MOVE    SPA-GMN-W10-PRGNAME1     TO  W10-PROGNAME1
            PERFORM VARYING IDX FROM    1   BY  1
@@ -2276,18 +2343,18 @@
        900-SYSKANRI-INV-SEC         SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+               MOVE    "DBFETCH"       TO  MCP-FUNC
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key10"         TO  MCP-PATHNAME
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO                TO  FLG-SYSKANRI
                ELSE
@@ -2298,35 +2365,14 @@
            END-IF
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           CALL    "MONFUNC"               USING
+                                           MCPAREA
+                                           MCPDATA-REC
       *
            .
        900-SYSKANRI-INV-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    システム管理マスタ読み込み処理
-      *****************************************************************
-       900-SYSKANRI-READ-SEC         SECTION.
-      *
-      *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    ZERO            TO  FLG-SYSKANRI
-           ELSE
-               MOVE    1               TO  FLG-SYSKANRI
-           END-IF
-      *
-           .
-       900-SYSKANRI-READ-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2337,16 +2383,16 @@
            MOVE    ZERO                TO  FLG-TOUKEIMEMO
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    PATH-TBL-TOUKEIMEMO-KEY
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
+           MOVE    "tbl_toukeimemo"    TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            IF    ( MCP-RC              =   ZERO )
                MOVE    "DBFETCH"       TO  MCP-FUNC
-               MOVE    PATH-TBL-TOUKEIMEMO-KEY
-                                       TO  MCP-PATH
-               CALL    "MCPSUB"        USING
+               MOVE    "tbl_toukeimemo" TO  MCP-TABLE
+               MOVE    "key"           TO  MCP-PATHNAME
+               CALL    "MONFUNC"       USING
                                        MCPAREA
                                        MCPDATA-REC
                IF    ( MCP-RC          =   ZERO )
@@ -2362,9 +2408,9 @@
            END-IF
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    PATH-TBL-TOUKEIMEMO-KEY
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
+           MOVE    "tbl_toukeimemo"    TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -2377,10 +2423,9 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL   "ORCMCPSUB"   USING
-                                MCPAREA
-                                ORCMCPAREA
-                                MCPDATA-REC.
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        900-PUT-WINDOW-EXT.
