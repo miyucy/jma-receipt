@@ -400,7 +400,7 @@
                        PERFORM 20102-HKNNUM-UPD-SEC
       *
       *                ＤＢ케꼴
-                       PERFORM 20101-HKNNUM-INS-SEC
+      ***************  PERFORM 20101-HKNNUM-INS-SEC
                        MOVE    1                   TO  FLG-SYORI
                    ELSE
                        MOVE    "tbl_hknnum"        TO  MCP-TABLE
@@ -412,11 +412,11 @@
                MOVE    "key"               TO  MCP-PATHNAME
                PERFORM 900-CLOSE-SEC
       *
-               IF      FLG-SYORI           =   ZERO
+      *******  IF      FLG-SYORI           =   ZERO
       *
       *            ＤＢ케꼴
                    PERFORM 20101-HKNNUM-INS-SEC
-               END-IF
+      *******  END-IF
            END-IF
            .
        2010-INSERT-SYORI-EXT.
@@ -1091,7 +1091,7 @@
            END-IF
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM    900-CLOSE-SEC
       *
            .
