@@ -78,7 +78,6 @@
       *
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
       *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
@@ -159,10 +158,6 @@
                        PERFORM   310-SYUMEI-INS-SEC
            END-PERFORM
       *
-      *    ¼ýÇ¼¥¯¥í¡¼¥º
-           MOVE    WRK-SYUNOU-DBPATH   TO  ORC-DBPATH
-           PERFORM   910-DB-CLOSE-SEC
-      *
            .
        200-MAIN-EXT.
            EXIT.
@@ -179,12 +174,14 @@
                                            TO  SYU-NYUGAIKBN
            MOVE    LNK-SCNYUKINS-DENPNUM(IDX)
                                            TO  SYU-DENPNUM
-           MOVE    "SYUNOU-KEY"            TO  ORC-DBPATH
+           MOVE    "tbl_syunou"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-SYUNOU-SELECT-SEC
            IF      FLG-SYUNOU              NOT =   ZERO
                MOVE    11                  TO  LNK-SCNYUKINS-RC
            ELSE
-               MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
+               MOVE    "tbl_syunou"        TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
                PERFORM 910-SYUNOU-READ-SEC
                IF   FLG-SYUNOU             NOT =   ZERO
                    MOVE   11                  TO  LNK-SCNYUKINS-RC
@@ -208,10 +205,10 @@
       *           ¼ýÇ¼¹¹¿·
                   MOVE    SYUNOU-REC          TO  MCPDATA-REC
                   MOVE    "DBUPDATE"          TO  MCP-FUNC
-                  MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
-                  CALL    "ORCMCPSUB"         USING
+                  MOVE    "tbl_syunou"        TO  MCP-TABLE
+                  MOVE    "key"               TO  MCP-PATHNAME
+                  CALL    "MONFUNC"           USING
                                               MCPAREA
-                                              ORCMCPAREA
                                        MCPDATA-REC
                    IF      MCP-RC              NOT =   ZERO
                        DISPLAY "ORCSNYUKINS SYUNOU UPD ERR:"
@@ -222,7 +219,8 @@
            END-IF
       *
       *    ¼ýÇ¼¥¯¥í¡¼¥º
-           MOVE    "SYUNOU-KEY"         TO  ORC-DBPATH
+           MOVE    "tbl_syunou"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM    910-DB-CLOSE-SEC
       *
            .
@@ -242,13 +240,14 @@
            MOVE    SYU-DENPNUM         TO  SMEI-DENPNUM
            MOVE    SYUMEI-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SYUMEI-KEY2"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
+           MOVE    "tbl_syumei"        TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           CALL    "MONFUNC"            USING
                                         MCPAREA
-                                        ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =    ZERO
-                 MOVE    "SYUMEI-KEY2"      TO  ORC-DBPATH
+                 MOVE    "tbl_syumei"  TO  MCP-TABLE
+                 MOVE    "key2"        TO  MCP-PATHNAME
                  PERFORM 910-SYUMEI-READ-SEC
            ELSE
                  MOVE    1                    TO  FLG-SYUMEI
@@ -258,11 +257,13 @@
            ELSE
                  PERFORM   VARYING  IDX1  FROM   1  BY   1
                      UNTIL (FLG-SYUMEI   =      1 )
-                            MOVE      "SYUMEI-KEY2"  TO  ORC-DBPATH
+                            MOVE    "tbl_syumei"   TO  MCP-TABLE
+                            MOVE    "key2"         TO  MCP-PATHNAME
                             PERFORM   910-SYUMEI-READ-SEC
                  END-PERFORM
       *    ¼ýÇ¼ÌÀºÙ¥¯¥í¡¼¥º
-           MOVE     "SYUMEI-KEY2"    TO  ORC-DBPATH
+           MOVE    "tbl_syumei"   TO  MCP-TABLE
+           MOVE    "key2"         TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
            END-IF
       *
@@ -332,10 +333,10 @@
       *
            MOVE    SYUMEI-REC          TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
-           MOVE    "SYUMEI-KEY"        TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
+           MOVE    "tbl_syumei"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"            USING
                                         MCPAREA
-                                        ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              NOT =   ZERO
                    DISPLAY "ORCSNYUKINS SYUMEI INS ERR:"  MCP-RC  "."
@@ -363,17 +364,17 @@
       *
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "PTINF-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
+           MOVE    "tbl_ptinf"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"            USING
                                         MCPAREA
-                                        ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "PTINF-KEY"         TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
+               MOVE    "tbl_ptinf"         TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               CALL    "MONFUNC"            USING
                                             MCPAREA
-                                            ORCMCPAREA
                                             MCPDATA-REC
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC        TO  PTINF-REC
@@ -387,7 +388,8 @@
                MOVE    1              TO  FLG-PTINF
            END-IF
       *
-           MOVE    "PTINF-KEY"        TO  ORC-DBPATH
+           MOVE    "tbl_ptinf"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
       *
            .
@@ -401,9 +403,8 @@
       *
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
+           CALL    "MONFUNC"            USING
                                         MCPAREA
-                                        ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO               TO  FLG-SYUNOU
@@ -421,9 +422,8 @@
        910-SYUNOU-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
+           CALL    "MONFUNC"            USING
                                         MCPAREA
-                                        ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  SYUNOU-REC
@@ -443,9 +443,8 @@
        910-SYUMEI-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
+           CALL    "MONFUNC"            USING
                                         MCPAREA
-                                        ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  SYUMEI-REC
@@ -465,9 +464,8 @@
        910-DB-CLOSE-SEC                 SECTION.
       *
            MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
+           CALL    "MONFUNC"            USING
                                         MCPAREA
-                                        ORCMCPAREA
                                         MCPDATA-REC
       *
            .
