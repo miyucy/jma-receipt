@@ -18,16 +18,19 @@
           03  N23.
                 04  N23-FIXED2.
                     05  N23-JYO                PIC X       OCCURS  2.
-                    05  N23-KBN-G                          OCCURS  3.
+                    05  N23-KBN-G                          OCCURS  4.
                         07  N23-KBN            PIC X.
                         07  N23-KBN-STATE      PIC S9(9)   BINARY.
                     05  N23-NAME-G.
-                        07  N23-NAME           PIC X(10).
+                        07  N23-NAME           PIC X(30).
                         07  N23-NAME-STATE     PIC S9(9)   BINARY.
                     05  N23-SRYCD-G.
                         07  N23-SRYCD          PIC X(10).
                         07  N23-SRYCD-STATE    PIC S9(9)   BINARY.
-                    05  N23-IYK-G                          OCCURS  2.
+                    05  N23-INPUTCD-G.
+                        07  N23-INPUTCD        PIC X(10).
+                        07  N23-INPUTCD-STATE  PIC S9(9)   BINARY.
+                    05  N23-IYK-G                          OCCURS  3.
                         07  N23-IYK            PIC X.
                         07  N23-IYK-STATE      PIC S9(9)   BINARY.
                     05  N23-SYU                PIC X       OCCURS  2.

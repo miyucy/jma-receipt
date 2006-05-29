@@ -64,6 +64,7 @@
       *
       *    ¥Õ¥é¥°ÎÎ°è
        01  FLG-AREA.
+           03  FLG-OK                  PIC 9(01).
            03  FLG-END                 PIC 9(01).
            03  FLG-TENSU               PIC 9(01).
            03  FLG-YAKUJYO             PIC 9(01).
@@ -84,17 +85,10 @@
        01  IDX-AREA.
            03  IDX                     PIC 9(03).
            03  IDY                     PIC 9(03).
-           03  IDZ                     PIC 9(03).
-           03  STR-KET                 PIC 9(03).
-           03  END-KET                 PIC 9(03).
-           03  NUM-KET                 PIC 9(03).
       *
            03  IDX-STR                 PIC 9(04).
            03  IDX-STR1                PIC 9(04).
            03  IDX-KET                 PIC 9(04).
-           03  IDX-MAX                 PIC 9(04).
-           03  IDX2                    PIC 9(04).
-           03  IDX2-MAX                PIC 9(04).
       *
       *    ¥Ñ¥é¥á¥¿ÎÎ°è
        01  WRK-PARA.
@@ -108,6 +102,7 @@
            03  WRK-PARA-SYU            PIC X(01).
            03  WRK-PARA-NAME           PIC X(10).
            03  WRK-PARA-SRYCD          PIC X(09).
+           03  WRK-PARA-INPUTCD        PIC X(10).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -141,6 +136,15 @@
            03  WRK-NAIYOU              PIC X(600).
            03  GYO-MAX                 PIC 9(04).
            03  KOU-MAX                 PIC 9(04).
+      *
+      *    ¡ö¤ò¡ó¤ËÊÔ½¸
+       01  WRK-KEY-AREA.
+           03  WRK-MAE-KEY             PIC X(30).
+           03  WRK-ATO-KEY             PIC X(30).
+           03  WRK-MAX                 PIC 9(02).
+           03  WRK-KET                 PIC 9(02).
+           03  WRK-STR                 PIC 9(02).
+           03  WRK-STR1                PIC 9(02).
       *
        01  WRK-YKJ-AREA.
            03  WRK-YKJ-TBL                         OCCURS  5.
@@ -275,6 +279,7 @@
                                        WRK-PARA-SYU
                                        WRK-PARA-NAME
                                        WRK-PARA-SRYCD
+                                       WRK-PARA-INPUTCD
       *
       *    ¥¹¥Æ¥Ã¥×´ÉÍý³«»Ï½èÍý
            MOVE    "STS"               TO  SJOBKANRI-MODE
@@ -363,12 +368,7 @@
                PERFORM 212-HENCAUTION-SET-SEC
       *
       *        ÌôºÞÌ¾¥»¥Ã¥È
-               IF  YAKUJYO-NAME    NOT =   SPACE
-                   MOVE    YAKUJYO-NAME    TO  WRK-HENYKZNAME
-               ELSE
-                   PERFORM 900-TENSU-READ-SEC
-                   MOVE    TNS-NAME       TO  WRK-HENYKZNAME
-               END-IF
+               MOVE    YAKUJYO-NAME    TO  WRK-HENYKZNAME
                PERFORM 213-HENYKZNAME-SET-SEC
       *
       *        ²èÁüÊÔ½¸
@@ -606,10 +606,58 @@
        216-HENSYU-SYORI-EXT.
            EXIT.
       *
+     *****************************************************************
+      *   ¡öÊÔ½¸½èÍý
+      *****************************************************************
+       217-ASUTA-SYORI-SEC         SECTION.
+      *
+           MOVE    1               TO  WRK-STR
+           MOVE    1               TO  WRK-STR1
+           MOVE    ZERO            TO  WRK-KET
+           MOVE    SPACE           TO  WRK-ATO-KEY
+      *
+           IF      WRK-PARA-KBN    =   "1"
+               MOVE    "%"             TO  WRK-ATO-KEY(WRK-STR1:1)
+               ADD     1               TO  WRK-STR1
+               ADD     1               TO  WRK-KET
+           END-IF
+      *
+           PERFORM UNTIL ( WRK-STR     >   WRK-MAX )
+                   OR    ( WRK-MAE-KEY(WRK-STR:)   =   SPACE )
+               IF      WRK-MAE-KEY(WRK-STR:2)  =   "¡ö"
+                   MOVE    "%"             TO  WRK-ATO-KEY(WRK-STR1:1)
+                   ADD     2               TO  WRK-STR
+                   ADD     1               TO  WRK-STR1
+                   ADD     1               TO  WRK-KET
+               ELSE
+                   IF      WRK-MAE-KEY(WRK-STR:1)  =   "*"
+                       MOVE    "%"         TO  WRK-ATO-KEY(WRK-STR1:1)
+                       ADD     1           TO  WRK-STR
+                       ADD     1           TO  WRK-STR1
+                       ADD     1           TO  WRK-KET
+                   ELSE
+                       MOVE    WRK-MAE-KEY(WRK-STR:1)
+                                           TO  WRK-ATO-KEY(WRK-STR1:1)
+                       ADD     1           TO  WRK-STR
+                       ADD     1           TO  WRK-STR1
+                       ADD     1           TO  WRK-KET
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           IF      WRK-PARA-KBN    =   "1"
+               MOVE    "%"             TO  WRK-ATO-KEY(WRK-STR1:1)
+               ADD     1               TO  WRK-KET
+           END-IF
+      *
+           .
+       217-ASUTA-SYORI-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    Ä¢É¼½ÐÎÏ½èÍý
       *****************************************************************
-       220-PRT-SET-SEC            SECTION.
+       220-PRT-SET-SEC             SECTION.
       *
            INITIALIZE                  HCM47
       *
@@ -829,6 +877,7 @@
        900-YAKUJYO-SELECT-SEC      SECTION.
       *
            INITIALIZE                  YAKUJYO-REC
+           INITIALIZE                  WRK-KEY-AREA
       *
            MOVE    "tbl_yakujyo"   TO  WRK-TABLE
            EVALUATE    WRK-PARA-JYO
@@ -842,49 +891,52 @@
                WHEN    "2"
                    EVALUATE    WRK-PARA-KBN
                        WHEN    "1"
-                           STRING  "%"             DELIMITED  BY  SIZE
-                                   WRK-PARA-NAME   DELIMITED  BY  SPACE
-                                   "%"             DELIMITED  BY  SIZE
-                                   INTO    YAKUJYO-NAME
-                           END-STRING
+                           MOVE    30                  TO  WRK-MAX
+                           MOVE    WRK-PARA-NAME       TO  WRK-MAE-KEY
+                           PERFORM 217-ASUTA-SYORI-SEC
+                           MOVE    WRK-ATO-KEY(1:WRK-KET) 
+                                                       TO  YAKUJYO-NAME
                            EVALUATE    WRK-PARA-SYU
                                WHEN    "1"
-                                   MOVE    "key2s" TO  WRK-PATHNAME
+                                   MOVE    "key2s"     TO  WRK-PATHNAME
                                WHEN    "2"
-                                   MOVE    "key2k" TO  WRK-PATHNAME
+                                   MOVE    "key2k"     TO  WRK-PATHNAME
                            END-EVALUATE
                        WHEN    "2"
-                           STRING  WRK-PARA-SRYCD  DELIMITED  BY  SPACE
-                                   "%"             DELIMITED  BY  SIZE
-                                   INTO    YAKUJYO-SRYCD
-                           END-STRING
+                           MOVE    9                   TO  WRK-MAX
+                           MOVE    WRK-PARA-SRYCD      TO  WRK-MAE-KEY
+                           PERFORM 217-ASUTA-SYORI-SEC
+                           MOVE    WRK-ATO-KEY(1:WRK-KET)
+                                                       TO  YAKUJYO-SRYCD
                            EVALUATE    WRK-PARA-SYU
                                WHEN    "1"
-                                   MOVE    "key3s" TO  WRK-PATHNAME
+                                   MOVE    "key3s"     TO  WRK-PATHNAME
                                WHEN    "2"
-                                   MOVE    "key3k" TO  WRK-PATHNAME
+                                   MOVE    "key3k"     TO  WRK-PATHNAME
                            END-EVALUATE
                        WHEN    "3"
-                           IF      WRK-PARA-IYK    =   '0'
-                               EVALUATE    WRK-PARA-SYU
-                                   WHEN    "1"
-                                       MOVE    "key5s" TO  WRK-PATHNAME
-                                   WHEN    "2"
-                                       MOVE    "key5k" TO  WRK-PATHNAME
-                               END-EVALUATE
-                           ELSE
-                               MOVE    WRK-PARA-IYK
-                                                   TO  YAKUJYO-TEKNUM
-                               EVALUATE    WRK-PARA-SYU
-                                   WHEN    "1"
-                                       MOVE    "key4s" TO  WRK-PATHNAME
-                                   WHEN    "2"
-                                       MOVE    "key4k" TO  WRK-PATHNAME
-                               END-EVALUATE
-                           END-IF
+                           MOVE    10                  TO  WRK-MAX
+                           MOVE    WRK-PARA-INPUTCD    TO  WRK-MAE-KEY
+                           PERFORM 217-ASUTA-SYORI-SEC
+                           MOVE    WRK-ATO-KEY(1:WRK-KET)
+                                                       TO  YAKUJYO-SRYCD
+                           EVALUATE    WRK-PARA-SYU
+                               WHEN    "1"
+                                   MOVE    "key4s" TO  WRK-PATHNAME
+                               WHEN    "2"
+                                   MOVE    "key4k" TO  WRK-PATHNAME
+                           END-EVALUATE
+                       WHEN    "4"
+                           EVALUATE    WRK-PARA-SYU
+                               WHEN    "1"
+                                   MOVE    "key5s" TO  WRK-PATHNAME
+                               WHEN    "2"
+                                   MOVE    "key5k" TO  WRK-PATHNAME
+                           END-EVALUATE
                    END-EVALUATE
            END-EVALUATE
       *
+           MOVE    WRK-PARA-HOSPID TO  YAKUJYO-HOSPID
            MOVE    LNK-PRTKANRI-SKYYMD
                                    TO  YAKUJYO-CREYMD
            MOVE    YAKUJYO-REC     TO  MCPDATA-REC
@@ -909,18 +961,46 @@
       *****************************************************************
        900-YAKUJYO-FETCH-SEC       SECTION.
       *
-           MOVE    WRK-TABLE       TO  MCP-TABLE
-           MOVE    WRK-PATHNAME    TO  MCP-PATHNAME
-           MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
-           IF      MCP-RC           =  ZERO
-               MOVE    ZERO            TO  FLG-YAKUJYO
-               MOVE    MCPDATA-REC     TO  YAKUJYO-REC
-           ELSE
-               MOVE    1               TO  FLG-YAKUJYO
-           END-IF
+           MOVE    ZERO            TO  FLG-OK
+      *
+           PERFORM UNTIL   FLG-OK  =   1
+               MOVE    WRK-TABLE       TO  MCP-TABLE
+               MOVE    WRK-PATHNAME    TO  MCP-PATHNAME
+               MOVE    "DBFETCH"       TO  MCP-FUNC
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC          =   ZERO
+                   MOVE    ZERO            TO  FLG-YAKUJYO
+                   MOVE    MCPDATA-REC     TO  YAKUJYO-REC
+      *            ÌôºÞÌ¾¤ò¥»¥Ã¥È
+                   PERFORM 900-TENSU-READ-SEC
+                   IF  YAKUJYO-NAME        =   SPACE
+                       MOVE    TNS-NAME        TO  YAKUJYO-NAME
+                   END-IF
+      *            ÌôºÞ¶èÊ¬¤ò¥Á¥§¥Ã¥¯
+                   IF      WRK-PARA-KBN    NOT =   "4"
+                       MOVE    1               TO  FLG-OK
+                   ELSE
+                       EVALUATE    WRK-PARA-IYK    ALSO    TNS-YKZKBN
+                           WHEN    "0"     ALSO    ANY
+                           WHEN    "1"     ALSO    "1"
+                           WHEN    "1"     ALSO    "6"
+                           WHEN    "2"     ALSO    "1"
+                           WHEN    "2"     ALSO    "4"
+                           WHEN    "3"     ALSO    "1"
+                           WHEN    "4"     ALSO    "4"
+                           WHEN    "4"     ALSO    "6"
+                           WHEN    "5"     ALSO    "6"
+                           WHEN    "6"     ALSO    "4"
+                               MOVE    1           TO  FLG-OK
+                       END-EVALUATE
+                   END-IF
+               ELSE
+                   MOVE    1               TO  FLG-YAKUJYO
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
       *
            .
       *

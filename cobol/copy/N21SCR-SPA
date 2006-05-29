@@ -116,8 +116,9 @@
                05  SPA-N23-MAX     PIC 9(05).
                05  SPA-N23-CUR     PIC 9(02).
                05  SPA-N23-JYO     PIC X     OCCURS  2.
-               05  SPA-N23-KBN     PIC X     OCCURS  3.
-               05  SPA-N23-NAME    PIC X(10).
+               05  SPA-N23-KBN     PIC X     OCCURS  4.
+               05  SPA-N23-NAME    PIC X(30).
                05  SPA-N23-SRYCD   PIC X(9).
-               05  SPA-N23-IYK     PIC X     OCCURS  2.
+               05  SPA-N23-INPUTCD PIC X(10).
+               05  SPA-N23-IYK     PIC X     OCCURS  3.
                05  SPA-N23-SYU     PIC X     OCCURS  3.

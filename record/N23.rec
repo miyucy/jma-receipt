@@ -18,11 +18,19 @@ N23	{
 			value	bool;
 			state   int;
 		};
+		KBN4	{
+			value	bool;
+			state   int;
+		};
 		NAME	{
-			value	varchar(10);
+			value	varchar(30);
 			state   int;
 		};
 		SRYCD	{
+			value	char(10);
+			state   int;
+		};
+		INPUTCD	{
 			value	char(10);
 			state   int;
 		};
@@ -31,6 +39,10 @@ N23	{
 			state   int;
 		};
 		IYK2	{
+			value	bool;
+			state   int;
+		};
+		IYK3	{
 			value	bool;
 			state   int;
 		};

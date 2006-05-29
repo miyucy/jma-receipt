@@ -45,15 +45,17 @@ path	key2s 	{
 		DECLARE tbl_yakujyo_key2s_csr CURSOR FOR
 		SELECT a.*
 		FROM tbl_yakujyo a,tbl_tensu b
-			WHERE  (a.NAME       LIKE   :NAME
-			OR      b.NAME       LIKE   :NAME
-			OR      b.KANANAME   LIKE   :NAME)
-			AND     a.SRYCD      =     b.SRYCD
+			WHERE   a.SRYCD      =     b.SRYCD
 			AND     b.YUKOSTYMD  <=     :CREYMD
 			AND     b.YUKOEDYMD  >=     :CREYMD
+			AND     a.HOSPID     =      :HOSPID
+			AND    (a.NAME       LIKE   :NAME
+			OR      b.NAME       LIKE   :NAME
+			OR      b.KANANAME   LIKE   :NAME)
 			AND     a.SRYCD      LIKE   '6%'
 			AND     a.TEKNUM     =      '1'
 			AND    (b.YKZKBN     =      '1'
+			OR      b.YKZKBN     =      '4'
 			OR      b.YKZKBN     =      '6')
 			ORDER   BY  a.SRYCD
 		;
@@ -65,15 +67,17 @@ path	key2k 	{
 		DECLARE tbl_yakujyo_key2k_csr CURSOR FOR
 		SELECT a.*
 		FROM tbl_yakujyo a,tbl_tensu b
-			WHERE  (a.NAME       LIKE   :NAME
-			OR      b.NAME       LIKE   :NAME
-			OR      b.KANANAME   LIKE   :NAME)
-			AND     a.SRYCD      =     b.SRYCD
+			WHERE   a.SRYCD      =     b.SRYCD
 			AND     b.YUKOSTYMD  <=     :CREYMD
 			AND     b.YUKOEDYMD  >=     :CREYMD
+			AND     a.HOSPID     =      :HOSPID
+			AND    (a.NAME       LIKE   :NAME
+			OR      b.NAME       LIKE   :NAME
+			OR      b.KANANAME   LIKE   :NAME)
 			AND     a.SRYCD      LIKE   '6%'
 			AND     a.TEKNUM     =      '1'
 			AND    (b.YKZKBN     =      '1'
+			OR      b.YKZKBN     =      '4'
 			OR      b.YKZKBN     =      '6')
 			ORDER   BY  b.KANANAME
 		;
@@ -85,14 +89,16 @@ path	key3s 	{
 		DECLARE tbl_yakujyo_key3s_csr CURSOR FOR
 		SELECT a.*
 		FROM tbl_yakujyo a,tbl_tensu b
-			WHERE  (a.SRYCD      =      :SRYCD
-			OR      a.SRYCD      LIKE   :SRYCD)
-			AND     a.SRYCD      =     b.SRYCD
+			WHERE   a.SRYCD      =     b.SRYCD
 			AND     b.YUKOSTYMD  <=     :CREYMD
 			AND     b.YUKOEDYMD  >=     :CREYMD
+			AND     a.HOSPID     =      :HOSPID
+			AND    (a.SRYCD      =      :SRYCD
+			OR      a.SRYCD      LIKE   :SRYCD)
 			AND     a.SRYCD      LIKE   '6%'
 			AND     a.TEKNUM     =      '1'
 			AND    (b.YKZKBN     =      '1'
+			OR      b.YKZKBN     =      '4'
 			OR      b.YKZKBN     =      '6')
 			ORDER   BY  a.SRYCD
 		;
@@ -104,14 +110,16 @@ path	key3k 	{
 		DECLARE tbl_yakujyo_key3k_csr CURSOR FOR
 		SELECT a.*
 		FROM tbl_yakujyo a,tbl_tensu b
-			WHERE  (a.SRYCD      =      :SRYCD
-			OR      a.SRYCD      LIKE   :SRYCD)
-			AND     a.SRYCD      =     b.SRYCD
+			WHERE   a.SRYCD      =     b.SRYCD
 			AND     b.YUKOSTYMD  <=     :CREYMD
 			AND     b.YUKOEDYMD  >=     :CREYMD
+			AND     a.HOSPID     =      :HOSPID
+			AND    (a.SRYCD      =      :SRYCD
+			OR      a.SRYCD      LIKE   :SRYCD)
 			AND     a.SRYCD      LIKE   '6%'
 			AND     a.TEKNUM     =      '1'
 			AND    (b.YKZKBN     =      '1'
+			OR      b.YKZKBN     =      '4'
 			OR      b.YKZKBN     =      '6')
 			ORDER   BY  b.KANANAME
 		;
@@ -122,14 +130,19 @@ path	key4s 	{
 	DBSELECT	{
 		DECLARE tbl_yakujyo_key4s_csr CURSOR FOR
 		SELECT a.*
-		FROM tbl_yakujyo a,tbl_tensu b
-			WHERE   b.YKZKBN     =      :TEKNUM
-			AND     a.SRYCD      =     b.SRYCD
+		FROM tbl_yakujyo a,tbl_tensu b,tbl_inputcd c
+			WHERE   a.SRYCD      =     b.SRYCD
+			AND     a.SRYCD      =     c.SRYCD
+			AND     a.HOSPID     =     c.HOSPID
 			AND     b.YUKOSTYMD  <=     :CREYMD
 			AND     b.YUKOEDYMD  >=     :CREYMD
+			AND     a.HOSPID     =      :HOSPID
+			AND    (c.INPUTCD    =      :SRYCD
+			OR      c.INPUTCD    LIKE   :SRYCD)
 			AND     a.SRYCD      LIKE   '6%'
 			AND     a.TEKNUM     =      '1'
 			AND    (b.YKZKBN     =      '1'
+			OR      b.YKZKBN     =      '4'
 			OR      b.YKZKBN     =      '6')
 			ORDER   BY  a.SRYCD
 		;
@@ -140,14 +153,19 @@ path	key4k 	{
 	DBSELECT	{
 		DECLARE tbl_yakujyo_key4k_csr CURSOR FOR
 		SELECT a.*
-		FROM tbl_yakujyo a,tbl_tensu b
-			WHERE   b.YKZKBN     =      :TEKNUM
-			AND     a.SRYCD      =     b.SRYCD
+		FROM tbl_yakujyo a,tbl_tensu b,tbl_inputcd c
+			WHERE   a.SRYCD      =     b.SRYCD
+			AND     a.SRYCD      =     c.SRYCD
+			AND     a.HOSPID     =     c.HOSPID
 			AND     b.YUKOSTYMD  <=     :CREYMD
 			AND     b.YUKOEDYMD  >=     :CREYMD
+			AND     a.HOSPID     =      :HOSPID
+			AND    (c.INPUTCD    =      :SRYCD
+			OR      c.INPUTCD    LIKE   :SRYCD)
 			AND     a.SRYCD      LIKE   '6%'
 			AND     a.TEKNUM     =      '1'
 			AND    (b.YKZKBN     =      '1'
+			OR      b.YKZKBN     =      '4'
 			OR      b.YKZKBN     =      '6')
 			ORDER   BY  b.KANANAME
 		;
@@ -162,9 +180,11 @@ path	key5s 	{
 			WHERE   a.SRYCD      =     b.SRYCD
 			AND     b.YUKOSTYMD  <=     :CREYMD
 			AND     b.YUKOEDYMD  >=     :CREYMD
+			AND     a.HOSPID     =      :HOSPID
 			AND     a.SRYCD      LIKE   '6%'
 			AND     a.TEKNUM     =      '1'
 			AND    (b.YKZKBN     =      '1'
+			OR      b.YKZKBN     =      '4'
 			OR      b.YKZKBN     =      '6')
 			ORDER   BY  a.SRYCD
 		;
@@ -179,9 +199,11 @@ path	key5k 	{
 			WHERE   a.SRYCD      =     b.SRYCD
 			AND     b.YUKOSTYMD  <=     :CREYMD
 			AND     b.YUKOEDYMD  >=     :CREYMD
+			AND     a.HOSPID     =      :HOSPID
 			AND     a.SRYCD      LIKE   '6%'
 			AND     a.TEKNUM     =      '1'
 			AND    (b.YKZKBN     =      '1'
+			OR      b.YKZKBN     =      '4'
 			OR      b.YKZKBN     =      '6')
 			ORDER   BY  b.KANANAME
 		;

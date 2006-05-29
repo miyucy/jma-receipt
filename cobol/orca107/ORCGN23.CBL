@@ -119,8 +119,9 @@
        01  WRK-JYOKEN-AREA.
            03  WRK-JYO             PIC X(01).
            03  WRK-KBN             PIC X(01).
-           03  WRK-NAME            PIC X(10).
+           03  WRK-NAME            PIC X(30).
            03  WRK-SRYCD           PIC X(09).
+           03  WRK-INPUTCD         PIC X(10).
            03  WRK-IYK             PIC X(01).
            03  WRK-SYU             PIC X(01).
       *
@@ -344,9 +345,11 @@
            MOVE    "T"             TO  SPA-N23-KBN(1)
            MOVE    "F"             TO  SPA-N23-KBN(2)
            MOVE    "F"             TO  SPA-N23-KBN(3)
+           MOVE    "F"             TO  SPA-N23-KBN(4)
       *
            MOVE    "F"             TO  SPA-N23-IYK(1)
            MOVE    "F"             TO  SPA-N23-IYK(2)
+           MOVE    "F"             TO  SPA-N23-IYK(3)
       *
            MOVE    "T"             TO  SPA-N23-SYU(1)
            MOVE    "F"             TO  SPA-N23-SYU(2)
@@ -501,7 +504,7 @@
                    MOVE    "T"         TO  SPA-N23-JYO(1)
                    MOVE    "F"         TO  SPA-N23-JYO(2)
                END-IF
-               MOVE    10          TO  SPA-N23-CUR
+               MOVE    13          TO  SPA-N23-CUR
            WHEN    "CLICKED"       ALSO    "JYO2"
                IF      SPA-N23-JYO(2)  =   "F"
                    MOVE    "F"         TO  SPA-N23-JYO(1)
@@ -514,22 +517,33 @@
                    MOVE    "T"         TO  SPA-N23-KBN(1)
                    MOVE    "F"         TO  SPA-N23-KBN(2)
                    MOVE    "F"         TO  SPA-N23-KBN(3)
+                   MOVE    "F"         TO  SPA-N23-KBN(4)
                END-IF
-               MOVE    6           TO  SPA-N23-CUR
+               MOVE    7           TO  SPA-N23-CUR
            WHEN    "CLICKED"       ALSO    "KBN2"
                IF      SPA-N23-KBN(2)  =   "F"
                    MOVE    "F"         TO  SPA-N23-KBN(1)
                    MOVE    "T"         TO  SPA-N23-KBN(2)
                    MOVE    "F"         TO  SPA-N23-KBN(3)
+                   MOVE    "F"         TO  SPA-N23-KBN(4)
                END-IF
-               MOVE    7           TO  SPA-N23-CUR
+               MOVE    8           TO  SPA-N23-CUR
            WHEN    "CLICKED"       ALSO    "KBN3"
                IF      SPA-N23-KBN(3)  =   "F"
                    MOVE    "F"         TO  SPA-N23-KBN(1)
                    MOVE    "F"         TO  SPA-N23-KBN(2)
                    MOVE    "T"         TO  SPA-N23-KBN(3)
+                   MOVE    "F"         TO  SPA-N23-KBN(4)
                END-IF
-               MOVE    8           TO  SPA-N23-CUR
+               MOVE    9           TO  SPA-N23-CUR
+           WHEN    "CLICKED"       ALSO    "KBN4"
+               IF      SPA-N23-KBN(4)  =   "F"
+                   MOVE    "F"         TO  SPA-N23-KBN(1)
+                   MOVE    "F"         TO  SPA-N23-KBN(2)
+                   MOVE    "F"         TO  SPA-N23-KBN(3)
+                   MOVE    "T"         TO  SPA-N23-KBN(4)
+               END-IF
+               MOVE    10          TO  SPA-N23-CUR
       *    薬剤区分チェックボタン
            WHEN    "CLICKED"       ALSO    "IYK1"
                IF      SPA-N23-IYK(1)  =   "F"
@@ -537,14 +551,21 @@
                ELSE
                    MOVE    "F"         TO  SPA-N23-IYK(1)
                END-IF
-               MOVE    9           TO  SPA-N23-CUR
+               MOVE    10          TO  SPA-N23-CUR
            WHEN    "CLICKED"       ALSO    "IYK2"
                IF      SPA-N23-IYK(2)  =   "F"
                    MOVE    "T"         TO  SPA-N23-IYK(2)
                ELSE
                    MOVE    "F"         TO  SPA-N23-IYK(2)
                END-IF
-               MOVE    10          TO  SPA-N23-CUR
+               MOVE    11           TO  SPA-N23-CUR
+           WHEN    "CLICKED"       ALSO    "IYK3"
+               IF      SPA-N23-IYK(3)  =   "F"
+                   MOVE    "T"         TO  SPA-N23-IYK(3)
+               ELSE
+                   MOVE    "F"         TO  SPA-N23-IYK(3)
+               END-IF
+               MOVE    12          TO  SPA-N23-CUR
       *    出力順指定
            WHEN    "CLICKED"       ALSO    "SYU1"
                IF      SPA-N23-SYU(1)  =   "F"
@@ -573,10 +594,13 @@
           EVALUATE    MCP-EVENT   ALSO     MCP-WIDGET
           WHEN    "ACTIVATE"      ALSO     "NAME"
               MOVE    N23-NAME         TO  SPA-N23-NAME
-              MOVE    10               TO  SPA-N23-CUR
+              MOVE    13               TO  SPA-N23-CUR
           WHEN    "ACTIVATE"      ALSO     "SRYCD"
               MOVE    N23-SRYCD        TO  SPA-N23-SRYCD
-              MOVE    10               TO  SPA-N23-CUR
+              MOVE    13               TO  SPA-N23-CUR
+          WHEN    "ACTIVATE"      ALSO     "INPUTCD"
+              MOVE    N23-INPUTCD      TO  SPA-N23-INPUTCD
+              MOVE    13               TO  SPA-N23-CUR
           END-EVALUATE
            .
        200-ENTRY-EXT.
@@ -778,19 +802,39 @@
                ELSE
                    IF      SPA-N23-KBN(3)  =   "T"
                        MOVE    "3"         TO  WRK-KBN
+                   ELSE
+                       IF      SPA-N23-KBN(4)  =   "T"
+                           MOVE    "4"         TO  WRK-KBN
+                       END-IF
                    END-IF
                END-IF
            END-IF
       *    薬剤区分指定
            IF      SPA-N23-IYK(1)      =   "T"
                IF      SPA-N23-IYK(2)      =   "T"
-                   MOVE    "0"         TO  WRK-IYK
+                   IF      SPA-N23-IYK(3)      =   "T"
+                       MOVE    "0"         TO  WRK-IYK
+                   ELSE
+                       MOVE    "1"         TO  WRK-IYK
+                   END-IF
                ELSE
-                   MOVE    "1"         TO  WRK-IYK
+                   IF      SPA-N23-IYK(3)      =   "T"
+                       MOVE    "2"         TO  WRK-IYK
+                   ELSE
+                       MOVE    "3"         TO  WRK-IYK
+                   END-IF
                END-IF
            ELSE
                IF      SPA-N23-IYK(2)      =   "T"
-                   MOVE    "6"         TO  WRK-IYK
+                   IF      SPA-N23-IYK(3)      =   "T"
+                       MOVE    "4"         TO  WRK-IYK
+                   ELSE
+                       MOVE    "5"         TO  WRK-IYK
+                   END-IF
+               ELSE
+                   IF      SPA-N23-IYK(3)      =   "T"
+                       MOVE    "6"         TO  WRK-IYK
+                   END-IF
                END-IF
            END-IF
       *    出力順指定
@@ -805,21 +849,28 @@
                WHEN    "2"      ALSO    "1"
                    IF      SPA-N23-NAME     =   SPACE
                        MOVE    "0001"           TO  SPA-ERRCD
-                       MOVE    6           TO  SPA-N23-CUR
+                       MOVE    7           TO  SPA-N23-CUR
                    ELSE
                        MOVE    SPA-N23-NAME     TO  WRK-NAME
                    END-IF
                WHEN    "2"      ALSO    "2"
                    IF      SPA-N23-SRYCD    =   SPACE
                        MOVE    "0002"           TO  SPA-ERRCD
-                       MOVE    7           TO  SPA-N23-CUR
+                       MOVE    8           TO  SPA-N23-CUR
                    ELSE
                        MOVE    SPA-N23-SRYCD    TO  WRK-SRYCD
                    END-IF
                WHEN    "2"      ALSO    "3"
-                   IF      WRK-IYK          =   SPACE
+                   IF      SPA-N23-INPUTCD  =   SPACE
                        MOVE    "0003"           TO  SPA-ERRCD
-                       MOVE    8           TO  SPA-N23-CUR
+                       MOVE    9            TO  SPA-N23-CUR
+                   ELSE
+                       MOVE    SPA-N23-INPUTCD  TO  WRK-INPUTCD
+                   END-IF
+               WHEN    "2"      ALSO    "4"
+                   IF      WRK-IYK          =   SPACE
+                       MOVE    "0004"           TO  SPA-ERRCD
+                       MOVE    10           TO  SPA-N23-CUR
                    END-IF
            END-EVALUATE
       *
@@ -1082,7 +1133,8 @@
            MOVE    WRK-SYU         TO  SHELLTBL-ARG18
            MOVE    WRK-NAME        TO  SHELLTBL-ARG19
            MOVE    WRK-SRYCD       TO  SHELLTBL-ARG20
-           MOVE    YKJMERR         TO  SHELLTBL-ARG21
+           MOVE    WRK-INPUTCD     TO  SHELLTBL-ARG21
+           MOVE    YKJMERR         TO  SHELLTBL-ARG22
       *
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
@@ -1332,46 +1384,77 @@
                                        TO  N23-KBN-STATE(1)
                                            N23-KBN-STATE(2)
                                            N23-KBN-STATE(3)
+                                           N23-KBN-STATE(4)
                                            N23-NAME-STATE
                                            N23-SRYCD-STATE
+                                           N23-INPUTCD-STATE
                                            N23-IYK-STATE(1)
                                            N23-IYK-STATE(2)
+                                           N23-IYK-STATE(3)
                MOVE    SPACE           TO  SPA-N23-NAME
                                            SPA-N23-SRYCD
+                                           SPA-N23-INPUTCD
                MOVE    "F"             TO  SPA-N23-IYK(1)
                                            SPA-N23-IYK(2)
+                                           SPA-N23-IYK(3)
            ELSE
                MOVE     WIDGET-NORMAL  TO  N23-KBN-STATE(1)
                                            N23-KBN-STATE(2)
                                            N23-KBN-STATE(3)
+                                           N23-KBN-STATE(4)
                IF      SPA-N23-KBN(1)  =   "T"
                    MOVE    WIDGET-NORMAL   TO  N23-NAME-STATE
                    MOVE    WIDGET-INSENSITIVE
                                            TO  N23-SRYCD-STATE
+                                               N23-INPUTCD-STATE
                                                N23-IYK-STATE(1)
                                                N23-IYK-STATE(2)
+                                               N23-IYK-STATE(3)
                    MOVE    SPACE           TO  SPA-N23-SRYCD
+                                               SPA-N23-INPUTCD
                    MOVE    "F"             TO  SPA-N23-IYK(1)
                                                SPA-N23-IYK(2)
+                                               SPA-N23-IYK(3)
                END-IF
                IF      SPA-N23-KBN(2)  =   "T"
                    MOVE    WIDGET-NORMAL   TO  N23-SRYCD-STATE
                    MOVE    WIDGET-INSENSITIVE
                                            TO  N23-NAME-STATE
+                                               N23-INPUTCD-STATE
                                                N23-IYK-STATE(1)
                                                N23-IYK-STATE(2)
+                                               N23-IYK-STATE(3)
                    MOVE    SPACE           TO  SPA-N23-NAME
+                                               SPA-N23-INPUTCD
                    MOVE    "F"             TO  SPA-N23-IYK(1)
                                                SPA-N23-IYK(2)
+                                               SPA-N23-IYK(3)
                END-IF
                IF      SPA-N23-KBN(3)  =   "T"
-                   MOVE    WIDGET-NORMAL   TO  N23-IYK-STATE(1)
-                                               N23-IYK-STATE(2)
+                   MOVE    WIDGET-NORMAL   TO  N23-INPUTCD-STATE
                    MOVE    WIDGET-INSENSITIVE
                                            TO  N23-NAME-STATE
                                                N23-SRYCD-STATE
+                                               N23-IYK-STATE(1)
+                                               N23-IYK-STATE(2)
+                                               N23-IYK-STATE(3)
                    MOVE    SPACE           TO  SPA-N23-NAME
                                                SPA-N23-SRYCD
+                   MOVE    "F"             TO  SPA-N23-IYK(1)
+                                               SPA-N23-IYK(2)
+                                               SPA-N23-IYK(3)
+               END-IF
+               IF      SPA-N23-KBN(4)  =   "T"
+                   MOVE    WIDGET-NORMAL   TO  N23-IYK-STATE(1)
+                                               N23-IYK-STATE(2)
+                                               N23-IYK-STATE(3)
+                   MOVE    WIDGET-INSENSITIVE
+                                           TO  N23-NAME-STATE
+                                               N23-SRYCD-STATE
+                                               N23-INPUTCD-STATE
+                   MOVE    SPACE           TO  SPA-N23-NAME
+                                               SPA-N23-SRYCD
+                                               SPA-N23-INPUTCD
                END-IF
            END-IF
       *
@@ -1380,10 +1463,13 @@
            MOVE    SPA-N23-KBN(1)  TO  N23-KBN(1)
            MOVE    SPA-N23-KBN(2)  TO  N23-KBN(2)
            MOVE    SPA-N23-KBN(3)  TO  N23-KBN(3)
+           MOVE    SPA-N23-KBN(4)  TO  N23-KBN(4)
            MOVE    SPA-N23-NAME    TO  N23-NAME
            MOVE    SPA-N23-SRYCD   TO  N23-SRYCD
+           MOVE    SPA-N23-INPUTCD TO  N23-INPUTCD
            MOVE    SPA-N23-IYK(1)  TO  N23-IYK(1)
            MOVE    SPA-N23-IYK(2)  TO  N23-IYK(2)
+           MOVE    SPA-N23-IYK(3)  TO  N23-IYK(3)
            MOVE    SPA-N23-SYU(1)  TO  N23-SYU(1)
            MOVE    SPA-N23-SYU(2)  TO  N23-SYU(2)
       *
@@ -1415,16 +1501,22 @@
            WHEN    5
                MOVE    "KBN3"          TO  MCP-WIDGET
            WHEN    6
-               MOVE    "NAME"          TO  MCP-WIDGET
+               MOVE    "KBN4"          TO  MCP-WIDGET
            WHEN    7
-               MOVE    "SRYCD"         TO  MCP-WIDGET
+               MOVE    "NAME"          TO  MCP-WIDGET
            WHEN    8
-               MOVE    "IYK1"          TO  MCP-WIDGET
+               MOVE    "SRYCD"         TO  MCP-WIDGET
            WHEN    9
-               MOVE    "IYK2"          TO  MCP-WIDGET
+               MOVE    "INPUTCD"       TO  MCP-WIDGET
            WHEN    10
-               MOVE    "SYU1"          TO  MCP-WIDGET
+               MOVE    "IYK1"          TO  MCP-WIDGET
            WHEN    11
+               MOVE    "IYK2"          TO  MCP-WIDGET
+           WHEN    12
+               MOVE    "IYK3"          TO  MCP-WIDGET
+           WHEN    13
+               MOVE    "SYU1"          TO  MCP-WIDGET
+           WHEN    14
                MOVE    "SYU2"          TO  MCP-WIDGET
            WHEN    99
                MOVE    "B12"           TO  MCP-WIDGET
@@ -1450,16 +1542,22 @@
                MOVE    5               TO  SPA-N23-CUR
            WHEN    "KBN3"
                MOVE    6               TO  SPA-N23-CUR
-           WHEN    "NAME"
+           WHEN    "KBN4"
                MOVE    7               TO  SPA-N23-CUR
-           WHEN    "SRYCD"
+           WHEN    "NAME"
                MOVE    8               TO  SPA-N23-CUR
-           WHEN    "IYK1"
+           WHEN    "SRYCD"
                MOVE    9               TO  SPA-N23-CUR
-           WHEN    "IYK2"
+           WHEN    "INPUTCD"
                MOVE    10              TO  SPA-N23-CUR
-           WHEN    "SYU1"
+           WHEN    "IYK1"
                MOVE    11              TO  SPA-N23-CUR
+           WHEN    "IYK2"
+               MOVE    12              TO  SPA-N23-CUR
+           WHEN    "IYK3"
+               MOVE    13              TO  SPA-N23-CUR
+           WHEN    "SYU1"
+               MOVE    14              TO  SPA-N23-CUR
            WHEN    "SYU2"
                MOVE    99              TO  SPA-N23-CUR
            END-EVALUATE
@@ -1483,6 +1581,9 @@
                MOVE    "診療行為コードが未入力です"
                                        TO  SPA-ERRMSG
            WHEN    "0003"
+               MOVE    "入力コードが未入力です"
+                                       TO  SPA-ERRMSG
+           WHEN    "0004"
                MOVE    "薬剤区分を選択してください"
                                        TO  SPA-ERRMSG
            WHEN    "1004"
