@@ -294,6 +294,15 @@
            03  WRK-SYONIKA-KBN         PIC X(01).
       *
            03  WRK-INPUTCD             PIC X(22).
+      *    ニコチンチェック
+           03  WRK-SYO-YMD.
+               05  WRK-SYO-YY          PIC 9(04).
+               05  WRK-SYO-MM          PIC 9(02).
+               05  WRK-SYO-DD          PIC 9(02).
+           03  WRK-SYO-YMD-12          PIC X(08).
+           03  FLG-SANTEI-OK           PIC 9(01).
+           03  IDX-TEI                 PIC 9(04).
+           03  WRK-TEI-CNT             PIC 9(01).
       *!
       *    酸素計算用
       *    03  WRK-SANSO               PIC 9(08).
@@ -995,18 +1004,6 @@
                GO      TO      100114-SYUGISYORI-CHK-EXT
             END-IF
       *
-      *    老人慢性疾患外来診療料が有る時、外来管理加算を削除する 
-      *        受診回数が３回目以外の時
-           IF     (LNK-ORCSC-ROUMANSEI-ARI     NOT =   ZERO )  OR
-                  (LNK-ORCSC-ROUMANSEI-ARI2    NOT =   ZERO  AND
-                   LNK-ORCSC-SINSATU-CNT       NOT =   2    )
-               IF      FLG-GAIRAI          =   1
-                   INITIALIZE              WRK-GMN-TBLREC(IDX-Z)
-                   INITIALIZE              WRK-COM-TBLREC(IDX-Z)
-                   GO    TO      100114-SYUGISYORI-CHK-EXT
-               END-IF
-           END-IF
-      *
       *    電話再診が有る時、外来管理加算・継続管理加算を削除する
            IF      LNK-ORCSC-TELSAI-ARI    =   1
                IF     (FLG-GAIRAI          =   1  )  OR
@@ -1136,6 +1133,13 @@
                PERFORM 10012-AKUSEI-SEC
            END-IF
       *
+      *    ニコチン依存管理料チェック
+           IF      WRK-COM-INPUTCD (IDX-Z)     =   "113008310"  OR
+                                                   "113008410"  OR
+                                                   "113008510"
+               PERFORM 10014-NIKOCHIN-CHK-SEC
+           END-IF
+      *
       *    アフターケアの時算定できないコードのチェック
            IF      SPA-RSI-HKNKBN      =   "3"
                PERFORM 100113-RSI-AFTCHK-SEC
@@ -1226,15 +1230,15 @@
            IF      SPA-HKNKBN      NOT =   1
                GO      TO      100111-KEIZOKU-CHK-EXT
            END-IF
-      *    労災で継続管理の時
-           IF      FLG-KEIZOK          =   1
-               IF      SPA-RSI-HKNKBN      =   "3"
+      **** 労災で継続管理の時
+      *    IF      FLG-KEIZOK          =   1
+      *        IF      SPA-RSI-HKNKBN      =   "3"
       *            アフターケアの時エラー
-                   MOVE    "8006"          TO  WRK-ERRCD
-                   MOVE    "1"             TO  WRK-COM-CUR  (IDX-Z)
-               END-IF
-               GO      TO      100111-KEIZOKU-CHK-EXT
-           END-IF
+      *            MOVE    "8006"          TO  WRK-ERRCD
+      *            MOVE    "1"             TO  WRK-COM-CUR  (IDX-Z)
+      *        END-IF
+      *        GO      TO      100111-KEIZOKU-CHK-EXT
+      **** END-IF
       *
       *    労災保険の時、外来管理加算はエラーとする
            IF      WRK-KBN         =   "G"
@@ -2795,6 +2799,272 @@
            EXIT.
       *
       *****************************************************************
+      *   ニコチン依存管理料チェック処理
+      *****************************************************************
+       10014-NIKOCHIN-CHK-SEC                  SECTION.
+      *
+      *    初回算定日
+           MOVE    "113008310"         TO  WRK-SRYCD
+           PERFORM 10141-SANTEI-KEN02-SEC
+           MOVE    SPACE               TO  WRK-SYO-YMD
+           PERFORM VARYING     IDX-2   FROM   1    BY  1
+                   UNTIL      (IDX-2   >   31  )  OR
+                              (WRK-SYO-YMD NOT =   SPACE )
+               IF      SANTEI-DAY (IDX-2)  >   ZERO
+                   MOVE    SANTEI-SRYYM    TO  WRK-SYO-YMD(1:6)
+                   MOVE    IDX-2           TO  WRK-SYO-DD
+               END-IF
+           END-PERFORM
+           IF      WRK-SYO-YMD NOT =   SPACE
+      *        初回＋12週
+               INITIALIZE                      STS-AREA-DAY
+               INITIALIZE                      LNK-DAY6-AREA
+               MOVE    "61"                TO  LNK-DAY6-IRAI
+               MOVE    WRK-SYO-YMD         TO  LNK-DAY6-KIJUN
+               MOVE    "1"                 TO  LNK-DAY6-ZOGENPTN
+               MOVE    84                  TO  LNK-DAY6-ZOGEN
+               CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                                   LNK-DAY6-AREA
+               MOVE    LNK-DAY6-KOYOMI     TO  WRK-SYO-YMD-12
+           END-IF
+      *
+      *    ニコチン依存管理料チェック
+           EVALUATE    WRK-COM-INPUTCD (IDX-Z)
+               WHEN    "113008310"
+                   IF      WRK-SYO-YMD NOT =   SPACE
+      *                前回の初回から１年以内 エラー
+                       COMPUTE WRK-SYO-YY      =   WRK-SYO-YY
+                                               +   1
+                       IF      WRK-SYO-YMD     >   SPA-SRYYMD
+                           IF     (WRK-COM-KZMFLG (IDX-Z)  =   SPACE )
+                              AND (LNK-ORCSC-KEI-IDX       =   ZERO  )
+                               MOVE    IDX-Z        TO
+                                                    LNK-ORCSC-KEI-IDX
+                               MOVE    "K138"       TO  WRK-ERRCD
+                               MOVE    "1"          TO  WRK-COM-CUR
+                                                          (IDX-Z)
+                               MOVE    "1"          TO  WRK-COM-KZMFLG
+                                                          (IDX-Z)
+                           END-IF
+                       END-IF
+                   END-IF
+      *        ２回から４回
+               WHEN    "113008410"
+      *        ５回
+               WHEN    "113008510"
+                   IF      WRK-SYO-YMD         =   SPACE
+                       MOVE    "1300"          TO  WRK-ERRCD
+                       MOVE    "1"             TO  WRK-COM-CUR
+                                                          (IDX-Z)
+                   ELSE
+      *                １２週以上
+                       IF      WRK-SYO-YMD-12  <   SPA-SRYYMD
+                           IF     (WRK-COM-KZMFLG (IDX-Z)  =   SPACE )
+                              AND (LNK-ORCSC-KEI-IDX       =   ZERO  )
+                               MOVE    IDX-Z        TO
+                                                    LNK-ORCSC-KEI-IDX
+                               MOVE    "K139"       TO  WRK-ERRCD
+                               MOVE    "1"          TO  WRK-COM-CUR
+                                                          (IDX-Z)
+                               MOVE    "1"          TO  WRK-COM-KZMFLG
+                                                          (IDX-Z)
+                           END-IF
+                       END-IF
+                   END-IF
+                   IF      WRK-ERRCD           =   SPACE
+                       MOVE    "113008410"     TO  WRK-SRYCD
+                       PERFORM 10143-NIKOCHIN-CHK03-SEC
+                       IF      WRK-COM-INPUTCD (IDX-Z) =   "113008410"
+      *                    ４回以上の算定
+                           IF      WRK-SANTEI-CNT       >=  3
+                               MOVE    "1301"       TO  WRK-ERRCD
+                               MOVE    "1"          TO  WRK-COM-CUR
+                                                          (IDX-Z)
+                           END-IF
+                       ELSE
+      *                    ４回算定の有無
+                           IF      WRK-SANTEI-CNT   NOT =   3
+                               MOVE    "1302"       TO  WRK-ERRCD
+                               MOVE    "1"          TO  WRK-COM-CUR
+                                                          (IDX-Z)
+                           ELSE
+      *                    ５回目の回数チェック
+                               MOVE    "113008510"     TO  WRK-SRYCD
+                               PERFORM 10143-NIKOCHIN-CHK03-SEC
+                               IF      WRK-SANTEI-CNT  >   ZERO
+                                   MOVE    "1303"      TO  WRK-ERRCD
+                                   MOVE    "1"         TO  WRK-COM-CUR
+                                                          (IDX-Z)
+                               END-IF
+                           END-IF
+                       END-IF
+                   END-IF
+           END-EVALUATE
+           .
+       10014-NIKOCHIN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   算定履歴検索処理
+      *****************************************************************
+       10141-SANTEI-KEN02-SEC                  SECTION.
+      *
+           INITIALIZE                  SANTEI-REC
+           MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
+           MOVE    SPA-PTID            TO  SANTEI-PTID
+           MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
+      *    算定履歴区分は’１’であることとする
+           MOVE    ZERO                TO  SANTEI-NYUGAIKBN
+           MOVE    ZERO                TO  SANTEI-SRYKA
+           MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
+      *
+           MOVE    SANTEI-REC          TO  MCPDATA-REC
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_santei"        TO  MCP-TABLE
+               MOVE    "key3"              TO  MCP-PATHNAME
+               PERFORM 920-SANTEI-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SANTEI
+           END-IF
+           MOVE    ZERO                TO  FLG-SANTEI-OK
+           PERFORM UNTIL   (FLG-SANTEI     =   1  )  OR
+                           (FLG-SANTEI-OK  =   1  )
+               IF      SANTEI-SRYYM        <=  SPA-SRYYMD(1:6)
+                   MOVE    1                   TO  FLG-SANTEI-OK
+               ELSE
+                   MOVE    "tbl_santei"        TO  MCP-TABLE
+                   MOVE    "key3"              TO  MCP-PATHNAME
+                   PERFORM 920-SANTEI-READ-SEC
+               END-IF
+           END-PERFORM
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+     *
+           IF     (LNK-ORCSC-SYORIFLG  =   1  )  AND
+                  (FLG-SANTEI-OK       =   1  )  AND
+                  (SANTEI-SRYYM        =   SPA-SRYYMD(1:6))
+      *        訂正で今回にある時
+               PERFORM VARYING IDX-TEI     FROM   1  BY  1
+                       UNTIL  (IDX-TEI     >   200 )  OR
+                              (LNK-ORCSC-TEI-SRYCD (IDX-TEI)
+                                           =   SPACE  )
+                   IF     (LNK-ORCSC-TEI-SRYCD (IDX-TEI)
+                                           =   WRK-SRYCD )
+                       MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
+                       IF      SANTEI-DAY (IDX-Y2) >   ZERO
+                           IF      SANTEI-DAY (IDX-Y2)
+                                               <   LNK-ORCSC-TEI-KAISU
+                                                            (IDX-TEI)
+                               MOVE    ZERO        TO  SANTEI-DAY
+                                                            (IDX-Y2)
+                           ELSE
+                               COMPUTE SANTEI-DAY(IDX-Y2)
+                                               =   SANTEI-DAY (IDX-Y2)
+                                               -   LNK-ORCSC-TEI-KAISU
+                                                              (IDX-TEI)
+                           END-IF
+                       END-IF
+                   END-IF
+               END-PERFORM
+           END-IF
+      *
+           .
+       10141-SANTEI-KEN02-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   算定履歴検索処理
+      *****************************************************************
+       10143-NIKOCHIN-CHK03-SEC        SECTION.
+      *
+           MOVE    ZERO                TO  WRK-SANTEI-CNT
+           MOVE    ZERO                TO  WRK-TEI-CNT
+           IF      LNK-ORCSC-SYORIFLG  =   1
+      *        訂正で今回にある時
+               PERFORM VARYING IDX-TEI     FROM   1  BY  1
+                       UNTIL  (IDX-TEI     >   200 )  OR
+                              (LNK-ORCSC-TEI-SRYCD (IDX-TEI)
+                                           =   SPACE  )
+                   IF     (LNK-ORCSC-TEI-SRYCD (IDX-TEI)
+                                           =   WRK-SRYCD )
+                       MOVE    LNK-ORCSC-TEI-KAISU (IDX-TEI)
+                                           TO  WRK-TEI-CNT
+                   END-IF
+               END-PERFORM
+           END-IF
+      *
+           INITIALIZE                  SANTEI-REC
+           MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
+           MOVE    SPA-PTID            TO  SANTEI-PTID
+           MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
+      *    算定履歴区分は’１’であることとする
+           MOVE    ZERO                TO  SANTEI-NYUGAIKBN
+           MOVE    ZERO                TO  SANTEI-SRYKA
+           MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
+      *
+           MOVE    SANTEI-REC          TO  MCPDATA-REC
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_santei"        TO  MCP-TABLE
+               MOVE    "key3"              TO  MCP-PATHNAME
+               PERFORM 920-SANTEI-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SANTEI
+           END-IF
+           PERFORM UNTIL   (FLG-SANTEI     =   1  )
+               IF      SANTEI-SRYYM        <   WRK-SYO-YMD(1:6)
+                   MOVE    1                   TO  FLG-SANTEI
+               ELSE
+                   IF      LNK-ORCSC-SYORIFLG  =   1
+      *               訂正時は訂正日までの件数
+                      IF      SANTEI-SRYYM        <=  SPA-SRYYMD(1:6)
+                           IF      SANTEI-SRYYM   =   SPA-SRYYMD(1:6)
+                               MOVE    SPA-SRYYMD(7:2)    TO  IDX-Y2
+                           ELSE
+                               MOVE    31                 TO  IDX-Y2
+                           END-IF
+                           PERFORM VARYING IDX-2   FROM   1      BY  1
+                                   UNTIL   IDX-2   >   IDX-Y2
+                               COMPUTE WRK-SANTEI-CNT
+                                                   =   WRK-SANTEI-CNT
+                                                   +   SANTEI-DAY
+                                                             (IDX-2)
+                           END-PERFORM
+                       END-IF
+                   ELSE
+                       PERFORM VARYING IDX-2   FROM   1      BY  1
+                               UNTIL   IDX-2   >   31
+                           COMPUTE WRK-SANTEI-CNT
+                                               =   WRK-SANTEI-CNT
+                                               +   SANTEI-DAY
+                                                             (IDX-2)
+                       END-PERFORM
+                   END-IF
+               END-IF
+               IF      FLG-SANTEI              =   ZERO
+                   MOVE    "tbl_santei"        TO  MCP-TABLE
+                   MOVE    "key3"              TO  MCP-PATHNAME
+                   PERFORM 920-SANTEI-READ-SEC
+               END-IF
+           END-PERFORM
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+     *
+           COMPUTE WRK-SANTEI-CNT      =   WRK-SANTEI-CNT
+                                       -   WRK-TEI-CNT
+      *
+           .
+       10143-NIKOCHIN-CHK03-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *   コメントのチェック処理
       *****************************************************************
        10018-COMMENT-SEC                  SECTION.
@@ -3454,7 +3724,7 @@
                    MOVE    ZERO                TO  FLG-SIDOU
                    PERFORM 230-SIDOU-SYOSIN-SEC
                END-IF
-      *         皮膚科特定疾患
+      *        皮膚科特定疾患
                IF      WRK-COM-INPUTCD(IDX-Z) =    "113002310"
                                                OR  "113000910"
                    MOVE    1                   TO  FLG-SIDOU
@@ -3467,6 +3737,8 @@
                                                OR  "113002210"
       *        てんかん指導管理料
                                                OR  "113002850"
+      *        小児悪性腫瘍指導管理料
+                                               OR  "113006610"
                    MOVE    1                   TO  FLG-SIDOU
                    PERFORM 230-SIDOU-SYOSIN-SEC
                END-IF
@@ -3744,17 +4016,6 @@
                END-IF
            END-IF
       *
-      *    人工腎臓・厚生大臣による再診料振替え処理
-           IF      SPA-HKNKBN          =   ZERO
-               CONTINUE
-           ELSE
-      *        労災
-               PERFORM 20014-RSISAISIN-SYORI-SEC
-           END-IF
-           IF      LNK-ORCSC-KIDCD NOT =   SPACE
-               GO      TO       200-ALL-SYORI-EXT
-           END-IF
-      *
            IF      SPA-ERRCD           =   SPACE
       *        特定薬剤治療管理料の算定チェック
                PERFORM 20010-TOKUTEI-ALLCHK-SEC
@@ -3798,7 +4059,11 @@
                IF     ( SPA-SYORIFLG        =   ZERO     ) AND
                       ( SPA-RRK-LSTYMD      =   SPA-SRYYMD)
       *            他科の診療
-                   IF    ( SPA-TAKA-SRYKA-R    =   SPACE  )
+                   IF    ( SPA-TAKA-SRYKA-R NOT =   SPACE  ) OR
+                         ( SPA-SRYKA        NOT =   WRK-COM-SRYKA
+                                                     (IDX-SINSATU2))
+                       CONTINUE
+                   ELSE
                        MOVE    "2067"          TO  SPA-ERRCD
                        MOVE    "1"             TO  WRK-COM-CUR
                                                        (IDX-SINSATU2)
@@ -4247,19 +4512,11 @@
            ELSE
                MOVE    LNK-ORCSC-SYOYMD        TO  WRK-SYOYMD
            END-IF
-      *    同日初診がある時、同日初診
-           IF      (SPA-DOUYMD     NOT =   SPACE )  AND
-                   (SPA-DOUYMD         >   WRK-SYOYMD)
-      *
-               IF   WRK-COM-INPUTCD(IDX-Z)  =  "113001810" OR
-                                               "113001910" OR
-                                               "113002010"
-                 CONTINUE
-               ELSE
-                 MOVE    SPA-DOUYMD          TO  WRK-SYOYMD
-               END-IF
-      **         MOVE    SPA-DOUYMD          TO  WRK-SYOYMD
-           END-IF
+      **** 同日初診がある時、同日初診
+      *    IF      (SPA-DOUYMD     NOT =   SPACE )  AND
+      *            (SPA-DOUYMD         >   WRK-SYOYMD)
+      *        MOVE    SPA-DOUYMD          TO  WRK-SYOYMD
+      **** END-IF
       *
       *    最終退院日がある時、退院日
            IF     (LNK-ORCSC-TAIINYMD  =   SPACE )  OR
@@ -4455,10 +4712,7 @@
                       (LNK-ORCSC-GAIFLG    =   ZERO )  AND
       *                自動算定なしの時、追加しない
                       (LNK-ORCSC-GAIKANRIKBN-CHK   NOT =   "2" )
-                   IF     (LNK-ORCSC-ROUMANSEI-ARI     NOT =   ZERO ) OR
-                          (LNK-ORCSC-ROUMANSEI-ARI2    NOT =   ZERO  AND
-                           LNK-ORCSC-SINSATU-CNT       NOT =   3    ) OR
-                          (LNK-ORCSC-TOKUTEI-KNJ2  =   1  )  OR
+                   IF     (LNK-ORCSC-TOKUTEI-KNJ2  =   1  )  OR
                           (LNK-ORCSC-TOKUTEI-KNJ   =   1  )  OR
                           (LNK-ORCSC-GAIRAI-NASI   =   1  )
                        CONTINUE
@@ -4646,31 +4900,6 @@
            EXIT.
       *
       *
-      *****************************************************************
-      *    労災人工腎臓・厚生大臣による再診料振替え処理
-      *****************************************************************
-       20014-RSISAISIN-SYORI-SEC                SECTION.
-      *
-      *    ３ヶ月超で５回目以降の時、人工腎臓があれば変更する
-           IF      WRK-SINSATU-KAISU       =   5
-             IF  ( LNK-ORCSC-SAISIN-CHK    =   ZERO  )  OR
-                 ((LNK-ORCSC-TOKUTEI-JNZ   NOT =  WRK-TOKUTEI-JNZ ) OR
-                  (LNK-ORCSC-TOKUTEI-KNJ   NOT =  WRK-TOKUTEI-KNJ ) )
-      *        人工腎臓・慢性疼痛
-               IF     (LNK-ORCSC-TOKUTEI-JNZ   =   1   )  OR
-                      (LNK-ORCSC-TOKUTEI-KNJ   =   1   )  OR
-                      (LNK-ORCSC-TOKUTEI-KNJ2  =   1   )
-                   MOVE    "0120"          TO  LNK-ORCSC-KIDCD
-                   GO      TO      20014-RSISAISIN-SYORI-EXT
-               END-IF
-      *
-               MOVE    ZERO            TO  LNK-ORCSC-SAISIN-CHK
-             END-IF
-           END-IF
-      *
-           .
-       20014-RSISAISIN-SYORI-EXT.
-           EXIT.
       *
       *****************************************************************
       *    注加算コードのチェック処理

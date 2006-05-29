@@ -984,6 +984,45 @@
                WHEN    "K133"
                    MOVE    "初回算定日には診療年月を入力して下さい。"
                                        TO  SPA-ERRMSG
+      *Ｈ１８年度
+               WHEN    "K138"
+                   MOVE    "警告！前回の初回算定日から１年未満です。"
+                                       TO  SPA-ERRMSG
+               WHEN    "K139"
+                   STRING  "警告！初回算定日から"
+                                       DELIMITED  BY  SIZE
+                           "１２週以上経過しています。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "1300"
+                   STRING  "初回が算定してありません。"
+                                       DELIMITED  BY  SIZE
+                           "初回を算定して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "1301"
+                   STRING  "既に４回算定しています。"
+                                       DELIMITED  BY  SIZE
+                           "５回目を算定して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "1302"
+                   STRING  "２回目から４回目の算定回数が足りません。"
+                                       DELIMITED  BY  SIZE
+                           "３回算定して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "1303"
+                   STRING  "既に５回目の算定をしています。"
+                                       DELIMITED  BY  SIZE
+                           "算定できません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
       *
                WHEN    "K401"
                    MOVE    "警告！処置の手技が剤内に複数あります。"
