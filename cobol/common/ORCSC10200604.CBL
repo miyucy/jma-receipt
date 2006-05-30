@@ -3969,11 +3969,27 @@
                        CONTINUE
                    ELSE
                        MOVE    "0101"              TO  LNK-ORCSC-KIDCD
-                       GO      TO      200-ALL-SYORI-EXT
+      *TEST
+      *                初診料の時、算定可能
+                       IF     (IDX-ZAI1            =   1  )  AND
+                              (WRK-COM-SRYKBN (IDX-SYU2)
+                                                   =   "11" )
+                           IF      WRK-COM-KZMFLG(IDX-SYU2)  =   SPACE
+                               MOVE    "1"         TO  WRK-COM-KZMFLG
+                                                           (IDX-SYU2)
+                           ELSE
+                               MOVE    SPACE       TO  LNK-ORCSC-KIDCD
+                           END-IF
+                       END-IF
+      *TEST
+      **************** GO      TO      200-ALL-SYORI-EXT
                    END-IF
                END-IF
            END-IF
       *
+           IF      LNK-ORCSC-KIDCD NOT =   SPACE
+                GO      TO      200-ALL-SYORI-EXT
+           END-IF
       *    以下外来のみとする
            IF      SPA-NYUGAIKBN       =   "1"
                 GO      TO      200-ALL-SYORI-EXT
