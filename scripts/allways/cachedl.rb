@@ -21,18 +21,18 @@ end
 
 if offline == 'offline'
    `cp #{package_url+package_file} #{save_dir}`
-   if $? > 0
+   if $?.to_i > 0
       exit 1
    end
 else
 # ftp.orca.med.or.jp よりダウンロード
-   `wget -q #{wgetoption} -P #{save_dir} #{package_url+package_file}`
-   if $? > 0
+   puts `wget -q #{wgetoption} -P #{save_dir} #{package_url+package_file}`
+   if $?.to_i > 0
       exit 1
    end
 end
 `gunzip -f #{save_dir+package_file}`
-if $? > 0
+if $?.to_i > 0
    exit 1
 end
 
@@ -47,12 +47,12 @@ tmp.each do |data|
 	 File.delete(save_dir+file)
 	 if offline == 'offline'
 	    `cp #{package_url+file} #{save_dir}`
-	    if $? > 0
+	    if $?.to_i > 0
 	       exit 1
 	    end
 	 else
 	    `wget -q #{wgetoption} -P #{save_dir} #{package_url+file}`
-	    if $? > 0
+	    if $?.to_i > 0
 	       exit 1
 	    end
 	 end
@@ -60,12 +60,12 @@ tmp.each do |data|
    else
       if offline == 'offline'
          `cp #{package_url+file} #{save_dir}`
-	 if $? > 0
+	 if $?.to_i > 0
 	    exit 1
 	 end
       else
          `wget -q #{wgetoption} -P #{save_dir} #{package_url+file}`
-	 if $? > 0
+	 if $?.to_i > 0
 	    exit 1
 	 end
       end

@@ -6,7 +6,7 @@ prg_dir = ARGV[2]+"/"   # ex. /home/orca/orca-prg2.6.0/
 
 if File.exist?(save_dir+package_file)
    `gunzip -f #{save_dir+package_file}`
-   if $? > 0
+   if $?.to_i > 0
       exit 1
    end
 end
@@ -18,15 +18,15 @@ if File.exist?(save_dir+package_file.gsub(/\.gz$/, ""))
 
       if File.exist?(save_dir+file)
         `tar zxf #{save_dir+file} -C #{prg_dir}`
-	if $? > 0
+	if $?.to_i > 0
 	   exit 1
 	else
 	   `mv #{prg_dir}/patch/* #{prg_dir}`
-	   if $? > 0
+	   if $?.to_i > 0
 	      exit 1
 	   else
 	      `rmdir #{prg_dir}/patch`
-	      if $? > 0
+	      if $?.to_i > 0
 	         exit 1
 	      end
 	   end
