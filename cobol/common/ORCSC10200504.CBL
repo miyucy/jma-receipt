@@ -1024,7 +1024,7 @@
       *
       *    慢性疼痛疾病管理料が有る時、外来管理加算を削除する
            IF     (LNK-ORCSC-TOKUTEI-KNJ2  =   1  )  OR
-      ************(LNK-ORCSC-TOKUTEI-KNJ   =   1  )  OR
+                  (LNK-ORCSC-TOKUTEI-KNJ   =   1  )  OR
                   (LNK-ORCSC-GAIRAI-NASI   =   1  )
                IF      FLG-GAIRAI          =   1
       *            訂正の時、自動削除はしない
@@ -3883,9 +3883,9 @@
                    IF     (LNK-ORCSC-PG        =   "K02") AND
                           (LNK-ORCSC-SYORIFLG  =   1   )  AND
                           (LNK-ORCSC-SYOSIN2   =   1   )  AND
-                          (SPA-SYOYMD          =   SPA-SRYYMD) AND
+                          (SPA-SYOYMD-OLD      =   SPA-SRYYMD) AND
                           (SPA-SYOYMD1         =   SPACE   OR
-                                                   SPA-SYOYMD)
+                                                   SPA-SYOYMD-OLD)
                        MOVE    "0139"          TO  WRK-ERRCD
                        MOVE    "1"             TO  WRK-COM-CUR  (IDX-Z)
                    ELSE
@@ -3943,9 +3943,9 @@
                    IF     (LNK-ORCSC-PG        =   "K02") AND
                           (LNK-ORCSC-SYORIFLG  =   1   )  AND
                           (LNK-ORCSC-SYOSIN2   =   1   )  AND
-                          (SPA-SYOYMD          =   SPA-SRYYMD) AND
+                          (SPA-SYOYMD-OLD      =   SPA-SRYYMD) AND
                           (SPA-SYOYMD1         =   SPACE   OR
-                                                   SPA-SYOYMD)
+                                                   SPA-SYOYMD-OLD)
                        MOVE    "0139"          TO  WRK-ERRCD
                        MOVE    "1"             TO  WRK-COM-CUR  (IDX-Z)
                    ELSE

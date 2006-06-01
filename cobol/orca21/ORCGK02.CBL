@@ -2499,7 +2499,8 @@
            PERFORM 520-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  SPA-GMN-SYOSINYMD
       *    Æ±»þ½é¿Ç
-           IF      SPA-DOUYMD      NOT =   SPACE
+           IF     (SPA-DOUYMD      NOT =   SPACE )
+             AND  (SPA-DOUYMD          >=  SPA-SYOYMD)
                MOVE    SPA-DOUYMD          TO  WRK-SYMD
                PERFORM 520-SEIWA-HEN-SEC
                MOVE    " ("                TO  SPA-GMN-SYOSINYMD(10:2)
@@ -2832,6 +2833,11 @@
                MOVE    SPACE           TO  WRK-ERRCD1
                PERFORM 3103-SAIHEN-HEN-SEC
       *
+      *TEST
+               DISPLAY "WRK-ERRCD1;"  WRK-ERRCD1
+                      ",WRK-ERRCD3:" WRK-ERRCD3
+                      ",SPA-ERRCD:" SPA-ERRCD
+      *TEST
                IF      WRK-ERRCD1      NOT =   SPACE
                    MOVE    WRK-ERRCD1          TO  SPA-ERRCD
                END-IF
@@ -3177,7 +3183,8 @@
                PERFORM 520-SEIWA-HEN-SEC
                MOVE    WRK-HENYMDG     TO  SPA-GMN-SYOSINYMD
       *        Æ±»þ½é¿Ç
-               IF      SPA-DOUYMD      NOT =   SPACE
+               IF     (SPA-DOUYMD      NOT =   SPACE )
+                 AND  (SPA-DOUYMD          >=  SPA-SYOYMD)
                    MOVE    SPA-DOUYMD      TO  WRK-SYMD
                    PERFORM 520-SEIWA-HEN-SEC
                    MOVE    "("             TO  SPA-GMN-SYOSINYMD(12:1)
@@ -7606,6 +7613,8 @@
            MOVE    FLG-RIHTEI          TO  LNK-ORCSC-FLG-RIHTEI
       *    ¿Ç»¡ÎÁÍ­Ìµ
            MOVE    WRK-SINSATU-ARI     TO  LNK-ORCSC-SINSATU-ARI
+      *    Æ±Æü½é¿Ç¤Î¿ÇÎÅ²Ê
+           MOVE    SPA-DOUSYOSIN-AREA  TO  LNK-ORCSC-DOUSYOSIN-AREA
       *
            EVALUATE    WRK-COM-SRYKBN (01)
       *            ¿ÇÎÅ
@@ -8520,6 +8529,8 @@
            MOVE    SPA-K02N-TAIINYMD   TO  LNK-ORCSC-TAIINYMD
       *    ¥ê¥Ï¥Ó¥êÄþ¸º³ÎÇ§
            MOVE    FLG-RIHTEI          TO  LNK-ORCSC-FLG-RIHTEI
+      *    Æ±Æü½é¿Ç¤Î¿ÇÎÅ²Ê
+           MOVE    SPA-DOUSYOSIN-AREA  TO  LNK-ORCSC-DOUSYOSIN-AREA
       *
            MOVE    ZERO                TO  LNK-ORCSC-JIKANERR-FLG
            MOVE    SPACE               TO  SPA-GMN-JIKANMSG

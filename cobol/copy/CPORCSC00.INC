@@ -215,6 +215,11 @@
       *    入院期間
            03  LNK-ORCSC-NYUINYMD           PIC X(08).
            03  LNK-ORCSC-TAIINYMD           PIC X(08).
+      *    同日初診算定科（外来のみ）
+           03  LNK-ORCSC-DOUSYOSIN-AREA.
+               05  LNK-ORCSC-DOUSYOSIN-OCC       OCCURS   10.
+                   07  LNK-ORCSC-DOU-SRYKA       PIC X(02).
+                   07  LNK-ORCSC-DOU-SRYYMD      PIC X(08).
       *
       *    加算追加領域（更新時の自動加算（単独剤））
            03  LNK-ORCSC-KASAN.

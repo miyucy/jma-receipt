@@ -137,6 +137,7 @@
            03  IDX-J2              PIC 9(04).
       *
            03  IDX-Y2              PIC 9(02).
+           03  IDX-Y3              PIC 9(02).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -226,6 +227,8 @@
            03  WRK-SYOSINYMD1          PIC X(08).
            03  WRK-SYOSINYMDS          PIC X(08).
            03  WRK-YMDS                PIC X(08).
+           03  WRK-YMDS-1              PIC X(08).
+           03  WRK-DD-1                PIC X(02).
            03  WRK-SRYCD               PIC X(09).
       *
            03  WRK-KEY-SRYYMD          PIC X(08).
@@ -249,6 +252,12 @@
                05  IDX-B2                  PIC 9(04).
                05  IDX-B3                  PIC 9(04).
                05  FLG-BYOMEI-END          PIC 9(01).
+      *    ¿ÇÎÅÇ¯·îÆü¡Ý£±¥ö·î
+           03  WRK-SRYYMD-1.
+               05  WRK-SRYYM-1.
+                   07  WRK-SRYYY       PIC 9(04).
+                   07  WRK-SRYMM       PIC 9(02).
+               05  WRK-SRYDD           PIC 9(02).
       *
       *Â¾²Ê¼õ¿Ç²ÊÍ­¤ê
        01  WRK-TAKA-SRYKA-AREA.
@@ -3173,6 +3182,7 @@
            IF      SPA-SRYYMD          >=  "20060401"
                PERFORM 30091-DOUSYOSIN-SYORI-SEC
            ELSE
+               INITIALIZE              SPA-DOUSYOSIN-AREA
                MOVE    SPACE           TO  SPA-DOUYMD
            END-IF
       *
@@ -3782,6 +3792,7 @@
            IF      SPA-SRYYMD          >=  "20060401"
                PERFORM 30091-DOUSYOSIN-SYORI-SEC
            ELSE
+               INITIALIZE              SPA-DOUSYOSIN-AREA
                MOVE    SPACE           TO  SPA-DOUYMD
            END-IF
       *
@@ -3847,9 +3858,9 @@
                        MOVE    WRK-YMDS        TO  WRK-SYOSINYMD1
                    END-IF
                    IF     (WRK-SYOSINYMDS      =   SPACE  )  OR
-                         ((WRK-YMD         NOT =   SPACE    )  AND
-                          (WRK-YMD             <   WRK-SYOSINYMDS))
-                       MOVE    WRK-YMD         TO  WRK-SYOSINYMDS
+                         ((WRK-YMDS-1      NOT =   SPACE    )  AND
+                          (WRK-YMDS-1          <   WRK-SYOSINYMDS))
+                       MOVE    WRK-YMDS-1      TO  WRK-SYOSINYMDS
                    END-IF
       *            Ï·¿Í³°
                    MOVE    "111000110"         TO  WRK-SRYCD
@@ -3859,9 +3870,9 @@
                        MOVE    WRK-YMDS        TO  WRK-SYOSINYMD1
                    END-IF
                    IF     (WRK-SYOSINYMDS      =   SPACE  )  OR
-                         ((WRK-YMD         NOT =   SPACE    )  AND
-                          (WRK-YMD             <   WRK-SYOSINYMDS))
-                       MOVE    WRK-YMD         TO  WRK-SYOSINYMDS
+                         ((WRK-YMDS-1      NOT =   SPACE    )  AND
+                          (WRK-YMDS-1          <   WRK-SYOSINYMDS))
+                       MOVE    WRK-YMDS-1      TO  WRK-SYOSINYMDS
                    END-IF
       *        ¿ÇÎÅ½ê
       *******  WHEN    2
@@ -3873,9 +3884,9 @@
                        MOVE    WRK-YMDS        TO  WRK-SYOSINYMD1
                    END-IF
                    IF     (WRK-SYOSINYMDS      =   SPACE  )  OR
-                         ((WRK-YMD         NOT =   SPACE    )  AND
-                          (WRK-YMD             <   WRK-SYOSINYMDS))
-                       MOVE    WRK-YMD         TO  WRK-SYOSINYMDS
+                         ((WRK-YMDS-1         NOT =   SPACE    )  AND
+                          (WRK-YMDS-1             <   WRK-SYOSINYMDS))
+                       MOVE    WRK-YMDS-1         TO  WRK-SYOSINYMDS
                    END-IF
       *            Ï·¿Í³°
                    MOVE    "111003610"         TO  WRK-SRYCD
@@ -3885,9 +3896,9 @@
                        MOVE    WRK-YMDS        TO  WRK-SYOSINYMD1
                    END-IF
                    IF     (WRK-SYOSINYMDS      =   SPACE  )  OR
-                         ((WRK-YMD         NOT =   SPACE    )  AND
-                          (WRK-YMD             <   WRK-SYOSINYMDS))
-                       MOVE    WRK-YMD         TO  WRK-SYOSINYMDS
+                         ((WRK-YMDS-1         NOT =   SPACE    )  AND
+                          (WRK-YMDS-1             <   WRK-SYOSINYMDS))
+                       MOVE    WRK-YMDS-1         TO  WRK-SYOSINYMDS
                    END-IF
       *****END-EVALUATE
       *    ¾®»ù²Ê¿Ç»¡ÎÁ
@@ -3899,9 +3910,9 @@
                MOVE    WRK-YMDS        TO  WRK-SYOSINYMD1
            END-IF
            IF     (WRK-SYOSINYMDS      =   SPACE  )  OR
-                 ((WRK-YMD         NOT =   SPACE    )  AND
-                  (WRK-YMD             <   WRK-SYOSINYMDS))
-               MOVE    WRK-YMD         TO  WRK-SYOSINYMDS
+                 ((WRK-YMDS-1         NOT =   SPACE    )  AND
+                  (WRK-YMDS-1             <   WRK-SYOSINYMDS))
+               MOVE    WRK-YMDS-1         TO  WRK-SYOSINYMDS
            END-IF
       *    ¡¡¡¡±¡Æâ½èÊý   ½é¿Ç
            MOVE    "113003710"         TO  WRK-SRYCD
@@ -3911,9 +3922,9 @@
                MOVE    WRK-YMDS        TO  WRK-SYOSINYMD1
            END-IF
            IF     (WRK-SYOSINYMDS      =   SPACE  )  OR
-                 ((WRK-YMD         NOT =   SPACE    )  AND
-                  (WRK-YMD             <   WRK-SYOSINYMDS))
-               MOVE    WRK-YMD         TO  WRK-SYOSINYMDS
+                 ((WRK-YMDS-1      NOT =   SPACE    )  AND
+                  (WRK-YMDS-1          <   WRK-SYOSINYMDS))
+               MOVE    WRK-YMDS-1      TO  WRK-SYOSINYMDS
            END-IF
       *
       *    ²¾¤Î½é¿ÇÎÁ
@@ -3924,9 +3935,9 @@
                MOVE    WRK-YMDS        TO  WRK-SYOSINYMD1
            END-IF
            IF     (WRK-SYOSINYMDS      =   SPACE  )  OR
-                 ((WRK-YMD         NOT =   SPACE    )  AND
-                  (WRK-YMD             <   WRK-SYOSINYMDS))
-               MOVE    WRK-YMD         TO  WRK-SYOSINYMDS
+                 ((WRK-YMDS-1      NOT =   SPACE    )  AND
+                  (WRK-YMDS-1          <   WRK-SYOSINYMDS))
+               MOVE    WRK-YMDS-1      TO  WRK-SYOSINYMDS
            END-IF
       *
       *    Ï«ºÒ½é¿ÇÎÁ
@@ -3937,9 +3948,9 @@
                MOVE    WRK-YMDS        TO  WRK-SYOSINYMD1
            END-IF
            IF     (WRK-SYOSINYMDS      =   SPACE  )  OR
-                 ((WRK-YMD         NOT =   SPACE    )  AND
-                  (WRK-YMD             <   WRK-SYOSINYMDS))
-               MOVE    WRK-YMD         TO  WRK-SYOSINYMDS
+                 ((WRK-YMDS-1      NOT =   SPACE    )  AND
+                  (WRK-YMDS-1          <   WRK-SYOSINYMDS))
+               MOVE    WRK-YMDS-1      TO  WRK-SYOSINYMDS
            END-IF
       *    Á°²ó¤Î½é¿Ç»»ÄêÆü
            MOVE    WRK-SYOSINYMD1      TO  SPA-SYOYMD-OLD
@@ -3955,6 +3966,7 @@
       *
            MOVE    SPACE               TO  WRK-YMD
            MOVE    SPACE               TO  WRK-YMDS
+           MOVE    SPACE               TO  WRK-YMDS-1
       *
       *    »»ÄêÍúÎò¸¡º÷
            INITIALIZE                  SANTEI-REC
@@ -3976,22 +3988,39 @@
       *
            PERFORM UNTIL       FLG-SANTEI          =   1
       *        ½ªÎ»È½Äê
-               IF      SANTEI-MSANTEICNT   >   ZERO
-                   IF      SANTEI-SRYYM    <=  SPA-SRYYMD(1:6)
-                       PERFORM VARYING     IDX-Y2  FROM    1  BY  1
-                               UNTIL       IDX-Y2      >   31
-                           IF      SANTEI-DAY (IDX-Y2) >   ZERO
-                               MOVE    IDX-Y2          TO  WRK-DD
+               IF     (SANTEI-MSANTEICNT   >   ZERO )
+                 AND  (SANTEI-SRYYM        <=  SPA-SRYYMD(1:6) )
+      *            ¿ÇÎÅÆü°ÊÁ°¤Î»»ÄêÆü
+                   IF      SANTEI-SRYYM    =   SPA-SRYYMD(1:6)
+                       MOVE    SPA-SRYYMD(7:2) TO  IDX-Y3
+                   ELSE
+                       MOVE    31              TO  IDX-Y3
+                   END-IF
+                   MOVE    ZERO                TO  WRK-DD
+                   MOVE    ZERO                TO  WRK-DD-1
+                   PERFORM VARYING     IDX-Y2  FROM    1  BY  1
+                           UNTIL       IDX-Y2      >   IDX-Y3
+                       IF      SANTEI-DAY (IDX-Y2) >   ZERO
+                           MOVE    IDX-Y2          TO  WRK-DD
+                           IF      WRK-DD-1        =   ZERO
+                               MOVE    IDX-Y2      TO  WRK-DD-1
                            END-IF
-                       END-PERFORM
+                       END-IF
+                   END-PERFORM
+                   IF      WRK-DD              >   ZERO
                        MOVE    SANTEI-SRYYM        TO  WRK-YMD(1:6)
                        IF     (WRK-YMDS            =   SPACE )  OR
                               (WRK-YMD             >   WRK-YMDS)
-                           MOVE    WRK-YMD             TO  WRK-YMDS
+                           MOVE    WRK-YMD         TO  WRK-YMDS
+                       END-IF
+                       MOVE    WRK-DD-1            TO  WRK-DD
+                       IF     (WRK-YMDS-1          =   SPACE )  OR
+                              (WRK-YMD             <   WRK-YMDS-1)
+                           MOVE    WRK-YMD         TO  WRK-YMDS-1
                        END-IF
       *                ÄûÀµ»þ¤Ï¤¹¤Ù¤Æ
                        IF      SPA-SYORIFLG        =   ZERO
-                           MOVE    1                   TO  FLG-SANTEI
+                           MOVE    1               TO  FLG-SANTEI
                        END-IF
                    END-IF
                END-IF
@@ -4033,8 +4062,143 @@
            END-IF
            MOVE    WRK-SYOSINYMD1      TO  SPA-DOUYMD
       *
+      *    Æ±Æü½é¿Ç¤Î¿ÇÎÅ²ÊÀßÄê
+           MOVE    SPA-SRYYMD          TO  WRK-SRYYMD-1
+           IF      WRK-SRYMM           =   1
+               MOVE    12              TO  WRK-SRYMM
+               COMPUTE WRK-SRYYY       =   WRK-SRYYY   -   1
+           ELSE
+               COMPUTE WRK-SRYMM       =   WRK-SRYMM   -   1
+           END-IF
+           INITIALIZE              SPA-DOUSYOSIN-AREA
+           IF      (SPA-DOUYMD     NOT =   SPACE )  AND
+                   (SPA-DOUYMD(1:6)    >=  WRK-SRYYM-1 )
+               IF     ( SPA-DOUYMD         >   SPA-SYOYMD ) OR
+                      ((SPA-SYOYMD-OLD NOT =   SPACE   ) AND
+                       (SPA-DOUYMD         >   SPA-SYOYMD-OLD ))
+                   PERFORM 300911-DOUSYOSIN-SRYKA-SEC
+               END-IF
+           END-IF
            .
        30091-DOUSYOSIN-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    Æ±Æü½é¿Ç¿ÇÎÅ²ÊÀßÄê½èÍý 
+      *****************************************************************
+       300911-DOUSYOSIN-SRYKA-SEC               SECTION.
+      *
+      *    Æ±Æü½é¿Ç¡ÊÁ°·î¡Ë
+           MOVE    "111011810"         TO  WRK-SRYCD
+           MOVE    WRK-SRYYM-1         TO  WRK-SRYYYMM
+           PERFORM 3009111-DOU-SANTEI-SEC
+      *    Æ±Æü½é¿Ç¡Êº£·î¡Ë
+           MOVE    SPA-SRYYMD(1:6)     TO  WRK-SRYYYMM
+           PERFORM 3009111-DOU-SANTEI-SEC
+      *
+      *    Æ±Æü½é¿Ç¡ÊÏ«ºÒ¡Ë¡ÊÁ°·î¡Ë
+           MOVE    "101110040"         TO  WRK-SRYCD
+           MOVE    WRK-SRYYM-1         TO  WRK-SRYYYMM
+           PERFORM 3009111-DOU-SANTEI-SEC
+      *    Æ±Æü½é¿Ç¡Êº£·î¡Ë
+           MOVE    SPA-SRYYMD(1:6)     TO  WRK-SRYYYMM
+           PERFORM 3009111-DOU-SANTEI-SEC
+           .
+       300911-DOUSYOSIN-SRYKA-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Æ±Æü½é¿Ç¿ÇÎÅ²ÊÀßÄê½èÍý 
+      *****************************************************************
+       3009111-DOU-SANTEI-SEC               SECTION.
+      *
+           MOVE    SPACE               TO  SRYACT-REC
+           INITIALIZE                  SRYACT-REC
+           MOVE    SPA-HOSPID          TO  SRY-HOSPID
+           MOVE    SPA-NYUGAIKBN       TO  SRY-NYUGAIKBN
+           MOVE    SPA-PTID            TO  SRY-PTID
+           MOVE    WRK-SRYYYMM         TO  SRY-SRYYM
+           MOVE    WRK-SRYCD           TO  SRY-SRYCD(1)
+           MOVE    WRK-SRYCD           TO  SRY-SRYCD(2)
+           MOVE    WRK-SRYCD           TO  SRY-SRYCD(3)
+           MOVE    WRK-SRYCD           TO  SRY-SRYCD(4)
+           MOVE    WRK-SRYCD           TO  SRY-SRYCD(5)
+      *
+           MOVE    SRYACT-REC          TO  MCPDATA-REC
+           MOVE    "tbl_sryact"        TO  MCP-TABLE
+           MOVE    "key7"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_sryact"        TO  MCP-TABLE
+               MOVE    "key7"              TO  MCP-PATHNAME
+               PERFORM 930-SRYACT-READ-SEC
+           ELSE
+               INITIALIZE                  SRYACT-REC
+               MOVE    1               TO  FLG-SRYACT
+           END-IF
+           PERFORM
+                   UNTIL   FLG-SRYACT      =   1
+      *        ºÞ²ó¿ô¼èÆÀ
+               MOVE    SPACE               TO  SRYACCT-REC
+               INITIALIZE                      SRYACCT-REC
+               MOVE    SRY-HOSPID          TO  ACCT-HOSPID
+               MOVE    SRY-NYUGAIKBN       TO  ACCT-NYUGAIKBN
+               MOVE    SRY-PTID            TO  ACCT-PTID
+               MOVE    SRY-SRYKA           TO  ACCT-SRYKA
+               MOVE    SRY-SRYYM           TO  ACCT-SRYYM
+               MOVE    SRY-SRYKBN          TO  ACCT-SRYKBN
+               MOVE    SRY-ZAINUM          TO  ACCT-ZAINUM
+      *        ¼ç¥­¡¼ÆÉ¤ß
+               PERFORM 940-SRYACCT-READ-SEC
+               IF      FLG-SRYACCT         =   ZERO
+                   MOVE    SPACE           TO  WRK-YMD
+                   MOVE    ACCT-SRYYM      TO  WRK-YMD(1:6)
+                   MOVE    ZERO            TO  WRK-DD
+                   PERFORM VARYING     IDX-Y2  FROM    31 BY  -1
+                           UNTIL       IDX-Y2  <   1
+                       IF      ACCT-DAY (1 IDX-Y2) >   ZERO
+                           MOVE    IDX-Y2          TO  WRK-DD
+                           IF      WRK-YMD         >   SPA-SRYYMD
+                               MOVE    ZERO        TO  WRK-DD
+                           ELSE
+                               MOVE    1               TO  IDX-Y2
+                           END-IF
+                       END-IF
+                   END-PERFORM
+                   IF      WRK-DD              =   ZERO
+                       MOVE    SPACE           TO  WRK-YMD
+                   END-IF
+                   PERFORM VARYING     IDX     FROM    1   BY  1
+                           UNTIL      (IDX     >   10  )
+                                  OR  (WRK-YMD =   SPACE )
+                       IF      SPA-DOU-SRYKA (IDX) =   SPACE
+                           MOVE    ACCT-SRYKA      TO  SPA-DOU-SRYKA
+                                                             (IDX)
+                           MOVE    WRK-YMD         TO  SPA-DOU-SRYYMD
+                                                             (IDX)
+                           MOVE    10              TO  IDX
+                       ELSE
+                           IF      SPA-DOU-SRYKA (IDX)
+                                                   =   ACCT-SRYKA
+                               IF     SPA-DOU-SRYYMD (IDX)
+                                                   <   WRK-YMD
+                                   MOVE    WRK-YMD TO  SPA-DOU-SRYYMD
+                                                             (IDX)
+                               END-IF
+                               MOVE    10              TO  IDX
+                           END-IF
+                       END-IF
+                   END-PERFORM
+               END-IF
+               MOVE    "tbl_sryact"        TO  MCP-TABLE
+               MOVE    "key7"              TO  MCP-PATHNAME
+               PERFORM 930-SRYACT-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_sryact"        TO  MCP-TABLE
+           MOVE    "key7"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+     *
+           .
+       300911-DOUSYOSIN-SRYKA-EXT.
            EXIT.
       *****************************************************************
       *    ¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿¤òºîÀ®¤¹¤ë 

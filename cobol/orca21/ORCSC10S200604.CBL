@@ -3115,13 +3115,23 @@
       *****************************************************************
        330121-SIDOU-CHK-SEC               SECTION.
       *
+           MOVE    SPA-SYOYMD          TO  WRK-SYOYMD
       *    同日初診がある時、同日初診
-      **   IF      (SPA-DOUYMD     NOT =   SPACE )  AND
-      **           (SPA-DOUYMD         >   SPA-SYOYMD)
-      **       MOVE    SPA-DOUYMD          TO  WRK-SYOYMD
-      **   ELSE
-               MOVE    SPA-SYOYMD          TO  WRK-SYOYMD
-      **   END-IF
+           IF      WRK-SRYKA           =   SPACE
+               MOVE    SPA-SRYKA       TO  WRK-SRYKA
+           END-IF
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   10  )   OR
+                              (SPA-DOU-SRYKA (IDX) =   SPACE)
+               IF      SPA-DOU-SRYKA (IDX) =   WRK-SRYKA
+                   IF      SPA-DOU-SRYYMD(IDX) >   WRK-SYOYMD
+                       MOVE    SPA-DOU-SRYYMD(IDX)
+                                               TO  WRK-SYOYMD
+                   END-IF
+                   MOVE    10          TO  IDX
+               END-IF
+           END-PERFORM
+      *
       *    最終退院日がある時、退院日
            IF     (SPA-K02N-TAIINYMD   =   SPACE )  OR
                   (SPA-K02N-TAIINYMD   <=  WRK-SYOYMD)

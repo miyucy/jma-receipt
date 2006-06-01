@@ -216,6 +216,12 @@
       *            ÄûÀµ¹ç·×ÅÀ¿ô
                    07  SPA-NAI-FUKATEN-DEL         PIC 9(08).
       *!!
+      *!!
+      *        Æ±Æü½é¿Ç»»Äê²Ê
+               05  SPA-DOUSYOSIN-AREA.
+                   07  SPA-DOUSYOSIN-OCC           OCCURS   10.
+                       09  SPA-DOU-SRYKA           PIC X(02).
+                       09  SPA-DOU-SRYYMD          PIC X(08).
       *
       *    Æþ±¡ÍÑ¡Ê£Ë£°£²£Î¡Ë
            03  SPA-K02N-AREA.
