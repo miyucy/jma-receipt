@@ -1994,27 +1994,13 @@
       *****************************************************************
        910-HKNCOMBI-READ-SEC         SECTION.
       *
-           MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
-           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
+           PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_hkncombi"      TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 920-DBFETCH-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC     TO  HKNCOMBI-REC
-                   MOVE    ZERO            TO  FLG-HKNCOMBI
-               ELSE
-                   MOVE    1               TO  FLG-HKNCOMBI
-               END-IF
+               MOVE    MCPDATA-REC     TO  HKNCOMBI-REC
+               MOVE    ZERO            TO  FLG-HKNCOMBI
            ELSE
                MOVE    1               TO  FLG-HKNCOMBI
            END-IF
-     *
-           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
       *
            .
        910-HKNCOMBI-READ-EXT.
