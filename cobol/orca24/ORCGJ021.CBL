@@ -1892,30 +1892,23 @@
                INITIALIZE                  SRYACCT-REC
                MOVE    1               TO  FLG-SRYACCT
            END-IF
+           MOVE    "tbl_sryacct"       TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
            MOVE    ZERO                TO  WRK-ZAINUM
-           PERFORM
-               UNTIL  (FLG-SRYACCT     =   1   )  OR
-                      (SPA-ERRCD   NOT =   SPACE)
+           IF      (FLG-SRYACCT        =   ZERO )  AND
+                   (SPA-ERRCD          =   SPACE)
                IF      SPA-J021-MAE-HKNCOMBI   =  ACCT-HKNCOMBI
                    PERFORM 3003211-SRYACCT-UPD-SEC
-                   MOVE    1                   TO  FLG-SRYACCT
                END-IF
-               IF      FLG-SRYACCT             =   ZERO
-                   MOVE    "tbl_sryacct"       TO  MCP-TABLE
-                   MOVE    "key5"              TO  MCP-PATHNAME
-                   PERFORM 980-SRYACCT-READ-SEC
-               END-IF
-           END-PERFORM
+           END-IF
       *
       *    剤番号変更
            IF     (WRK-ZAINUM      NOT =   ZERO )  AND
                   (WRK-ZAINUM      NOT =   JYURRK-ZAINUM(IDJ))
                MOVE    WRK-ZAINUM          TO  JYURRK-ZAINUM(IDJ)
            END-IF
-      *
-           MOVE    "tbl_sryacct"       TO  MCP-TABLE
-           MOVE    "key5"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
       *
            .
        300321-SRYACCT-CHK-EXT.
@@ -2491,22 +2484,15 @@
                INITIALIZE                  SRYACCT-REC
                MOVE    1               TO  FLG-SRYACCT
            END-IF
-      *
-           PERFORM
-               UNTIL   FLG-SRYACCT     =   1
-               IF      SPA-J021-ATO-HKNCOMBI   =   ACCT-HKNCOMBI
-                   PERFORM 300321131-SRYACCT-HENUPD-SEC
-                   MOVE    1                   TO  FLG-SRYACCT
-               END-IF
-               IF      FLG-SRYACCT             =   ZERO
-                   MOVE    "tbl_sryacct"       TO  MCP-TABLE
-                   MOVE    "key5"              TO  MCP-PATHNAME
-                   PERFORM 980-SRYACCT-READ-SEC
-               END-IF
-           END-PERFORM
            MOVE    "tbl_sryacct"       TO  MCP-TABLE
            MOVE    "key5"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
+      *
+           IF      FLG-SRYACCT         =   ZERO
+               IF      SPA-J021-ATO-HKNCOMBI   =   ACCT-HKNCOMBI
+                   PERFORM 300321131-SRYACCT-HENUPD-SEC
+               END-IF
+           END-IF
       *
            .
        30032113-SRYACCT-UPD-EXT.

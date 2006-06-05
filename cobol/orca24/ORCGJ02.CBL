@@ -5120,6 +5120,7 @@
       *    受診日変更処理
       *****************************************************************
        41016101-ACCT-CHKSYORI-SEC      SECTION.
+      *
            INITIALIZE                      SRYACCT-REC
            MOVE    SPA-HOSPID          TO  ACCT-HOSPID
            MOVE    JYURRK-NYUGAIKBN    TO  ACCT-NYUGAIKBN
@@ -5141,8 +5142,11 @@
                INITIALIZE                  SRYACCT-REC
                MOVE    1               TO  FLG-SRYACCT
            END-IF
-           PERFORM
-               UNTIL   FLG-SRYACCT          =   1
+           MOVE    "tbl_sryacct"       TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      FLG-SRYACCT          =   ZERO
       *        自費の時対象外
                IF      ACCT-SRYKBN          =   "95"  OR  "96"
                    CONTINUE
@@ -5159,14 +5163,7 @@
       *            受診日・回数変更時、回数チェック
                    PERFORM 410161011-SANTEI-CHK-SEC
                END-IF
-      *
-               MOVE    "tbl_sryacct"       TO  MCP-TABLE
-               MOVE    "key5"              TO  MCP-PATHNAME
-               PERFORM 900-SRYACCT-READ-SEC
-           END-PERFORM
-           MOVE    "tbl_sryacct"       TO  MCP-TABLE
-           MOVE    "key5"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
+           END-IF
       *
            .
        41016101-ACCT-CHKSYORI-EXT.
@@ -5496,9 +5493,11 @@
                INITIALIZE                  SRYACCT-REC
                MOVE    1               TO  FLG-SRYACCT
            END-IF
-           PERFORM
-               UNTIL   FLG-SRYACCT          =   1
+           MOVE    "tbl_sryacct"       TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
+           IF      FLG-SRYACCT         =   ZERO
                IF      JYURRK-HKNCOMBINUM   =   ACCT-HKNCOMBI
                    MOVE    1                TO  IDX
                    MOVE    1                TO  IDY
@@ -5540,15 +5539,7 @@
                        MOVE    "2000"              TO  SPA-ERRCD
                    END-IF
                END-IF
-      *
-               MOVE    "tbl_sryacct"       TO  MCP-TABLE
-               MOVE    "key5"              TO  MCP-PATHNAME
-               PERFORM 900-SRYACCT-READ-SEC
-           END-PERFORM
-           MOVE    "tbl_sryacct"       TO  MCP-TABLE
-           MOVE    "key5"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
+           END-IF
            .
        4101612-ACCT-UPDSYORI-EXT.
            EXIT.
