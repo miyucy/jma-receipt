@@ -28,7 +28,8 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  01.00.01    NACL-竹田     04.03.31 シェル起動追加他
+      *  01.00.01    NACL-竹田    04/03/31  シェル起動追加他
+      *  01.00.02    NACL-伊藤    06/06/05  MONFUNC対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -112,7 +113,6 @@
            COPY    "MCPAREA".
       *
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -171,17 +171,17 @@
       *****************************************************************
       *    メイン処理
       *****************************************************************
-       200-MAIN-SEC                SECTION.
+       200-MAIN-SEC                    SECTION.
       *
       *    ＰＧ管理マスタ検索
            INITIALIZE                  PGKANRI-REC
-           MOVE    PGKANRI-REC     TO  MCPDATA-REC
-           MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "PGKANRI-KEY2"  TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    PGKANRI-REC         TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "tbl_pgkanri"       TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
            IF      MCP-RC              =   ZERO
                PERFORM 910-PGKANRI-READ-SEC
            ELSE
@@ -217,12 +217,12 @@
                PERFORM 910-PGKANRI-READ-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           MOVE    "PGKANRI-KEY2"  TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    "tbl_pgkanri"       TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
            .
       *
        200-MAIN-EXT.
@@ -231,20 +231,20 @@
       *****************************************************************
       *       更新処理
       *****************************************************************
-       210-KOUSHIN-SEC         SECTION.
+       210-KOUSHIN-SEC                 SECTION.
       *
-           ACCEPT  WRK-TIME        FROM    TIME
-           MOVE    "T"             TO  PGKANRI-UPDATEFLG
-           MOVE    WRK-TIME        TO  PGKANRI-UPHMS
-           MOVE    WRK-SYMD        TO  PGKANRI-UPYMD
+           ACCEPT  WRK-TIME            FROM    TIME
+           MOVE    "T"                 TO  PGKANRI-UPDATEFLG
+           MOVE    WRK-TIME            TO  PGKANRI-UPHMS
+           MOVE    WRK-SYMD            TO  PGKANRI-UPYMD
       *
-           MOVE    "PGKANRI-KEY"   TO  ORC-DBPATH
-           MOVE    "DBUPDATE"      TO  MCP-FUNC
-           MOVE    PGKANRI-REC     TO  MCPDATA-REC
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    "DBUPDATE"          TO  MCP-FUNC
+           MOVE    "tbl_pgkanri"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    PGKANRI-REC         TO  MCPDATA-REC
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
                MOVE    1               TO  FLG-ERR
                ADD     1               TO  CNT-ERR
@@ -260,7 +260,7 @@
       *****************************************************************
       *       ＭＯＮＩＴＯＲ再起動スイッチ出力処理
       *****************************************************************
-       220-RESTART-WRITE-SEC         SECTION.
+       220-RESTART-WRITE-SEC           SECTION.
       *
       *    ファイル情報
            MOVE    PARA-RSFILE     TO  ASS-OUT
@@ -286,10 +286,10 @@
       *****************************************************************
       *    終了処理
       *****************************************************************
-       300-END-SEC                 SECTION.
+       300-END-SEC                     SECTION.
       *
       * オンラインリスタート用シェル起動
-           IF      FLG-RESTART         =  1
+           IF      FLG-RESTART         =   1
                MOVE    SPACE           TO  SHELLTBL
                INITIALIZE              ORCSMKPASSAREA
                MOVE    SHELL-NAME1     TO  MKPASS-IN-01
@@ -318,14 +318,14 @@
       *****************************************************************
       *    ＰＧ管理ファイル読込
       *****************************************************************
-       910-PGKANRI-READ-SEC        SECTION.
+       910-PGKANRI-READ-SEC            SECTION.
       *
-           MOVE    "PGKANRI-KEY2"  TO  ORC-DBPATH
-           MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           MOVE    "tbl_pgkanri"       TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  PGKANRI-REC
                MOVE    ZERO            TO  FLG-PGKANRI
@@ -341,19 +341,21 @@
       *****************************************************************
       *    ＤＢ　オープン処理
       *****************************************************************
-       100-DBOPEN-SEC              SECTION.
+       100-DBOPEN-SEC                  SECTION.
       *
-           MOVE    "DBOPEN"        TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBOPEN"            TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
       *
-           MOVE    "DBSTART"       TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBSTART"           TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
            .
        100-DBOPEN-EXT.
            EXIT.
@@ -361,19 +363,21 @@
       *****************************************************************
       *    ＤＢ　クローズ処理
       *****************************************************************
-       900-DBDISCONNECT-SEC        SECTION.
+       900-DBDISCONNECT-SEC            SECTION.
       *
-           MOVE    "DBCOMMIT"      TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBCOMMIT"          TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
       *
-           MOVE    "DBDISCONNECT"  TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBDISCONNECT"      TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
            .
        900-DBCLOSE-EXT.
            EXIT.

@@ -110,7 +110,6 @@
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
-      *****COPY    "CPORCMCP.INC".
       *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
@@ -153,9 +152,6 @@
       *
       *    DB OPEN
            PERFORM 100-DBOPEN-SEC
-           IF      MCP-RC          NOT =   ZERO
-               DISPLAY "DBOPEN ERR"
-           END-IF
       *
            ACCEPT  WRK-SYMD2       FROM    DATE
            MOVE    WRK-SYMD2       TO  WRK-SYMD (3:)
@@ -417,22 +413,26 @@
       *****************************************************************
       *    £Ä£Â¡¡¥ª¡¼¥×¥ó½èÍý
       *****************************************************************
-       100-DBOPEN-SEC              SECTION.
+       100-DBOPEN-SEC                  SECTION.
       *
-           MOVE    "DBOPEN"        TO  MCP-FUNC
-           CALL    "MONFUNC"       USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBOPEN"            TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
-               DISPLAY "DBOPEN ERROR"
+                   DISPLAY "DBOPEN ERROR"
            END-IF
       *
-           MOVE    "DBSTART"       TO  MCP-FUNC
-           CALL    "MONFUNC"       USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBSTART"           TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
-               DISPLAY "DBSTART ERROR"
+                   DISPLAY "DBSTART ERROR"
            END-IF
            .
        100-DBOPEN-EXT.
@@ -441,22 +441,26 @@
       *****************************************************************
       *    £Ä£Â¡¡¥¯¥í¡¼¥º½èÍý
       *****************************************************************
-       900-DBDISCONNECT-SEC        SECTION.
+       900-DBDISCONNECT-SEC            SECTION.
       *
-           MOVE    "DBCOMMIT"      TO  MCP-FUNC
-           CALL    "MONFUNC"       USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBCOMMIT"          TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
-               DISPLAY "DBCOMMIT ERROR"
+                   DISPLAY "DBCOMMIT ERROR"
            END-IF
       *
-           MOVE    "DBDISCONNECT"  TO  MCP-FUNC
-           CALL    "MONFUNC"       USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBDISCONNECT"      TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
-               DISPLAY "DBDISCONNECT ERROR"
+                   DISPLAY "DBDISCONNECT ERROR"
            END-IF
            .
        900-DBCLOSE-EXT.
