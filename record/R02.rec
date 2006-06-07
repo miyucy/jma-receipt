@@ -295,6 +295,582 @@ R02	{
 	           	state	int;
 			value	varchar(100);
 		};
+		PRTNM01_COMBO	{
+			state	int;
+			PRTNM01	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM02_COMBO	{
+			state	int;
+			PRTNM02	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM03_COMBO	{
+			state	int;
+			PRTNM03	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM04_COMBO	{
+			state	int;
+			PRTNM04	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM05_COMBO	{
+			state	int;
+			PRTNM05	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM06_COMBO	{
+			state	int;
+			PRTNM06	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM07_COMBO	{
+			state	int;
+			PRTNM07	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM08_COMBO	{
+			state	int;
+			PRTNM08	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM09_COMBO	{
+			state	int;
+			PRTNM09	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM10_COMBO	{
+			state	int;
+			PRTNM10	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM11_COMBO	{
+			state	int;
+			PRTNM11	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM12_COMBO	{
+			state	int;
+			PRTNM12	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM13_COMBO	{
+			state	int;
+			PRTNM13	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM14_COMBO	{
+			state	int;
+			PRTNM14	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM15_COMBO	{
+			state	int;
+			PRTNM15	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM16_COMBO	{
+			state	int;
+			PRTNM16	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM17_COMBO	{
+			state	int;
+			PRTNM17	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM18_COMBO	{
+			state	int;
+			PRTNM18	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM19_COMBO	{
+			state	int;
+			PRTNM19	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM20_COMBO	{
+			state	int;
+			PRTNM20	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM21_COMBO	{
+			state	int;
+			PRTNM21	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM22_COMBO	{
+			state	int;
+			PRTNM22	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM23_COMBO	{
+			state	int;
+			PRTNM23	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM24_COMBO	{
+			state	int;
+			PRTNM24	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM25_COMBO	{
+			state	int;
+			PRTNM25	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM26_COMBO	{
+			state	int;
+			PRTNM26	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM27_COMBO	{
+			state	int;
+			PRTNM27	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM28_COMBO	{
+			state	int;
+			PRTNM28	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM29_COMBO	{
+			state	int;
+			PRTNM29	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM30_COMBO	{
+			state	int;
+			PRTNM30	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM31_COMBO	{
+			state	int;
+			PRTNM31	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM32_COMBO	{
+			state	int;
+			PRTNM32	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM33_COMBO	{
+			state	int;
+			PRTNM33	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM34_COMBO	{
+			state	int;
+			PRTNM34	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM35_COMBO	{
+			state	int;
+			PRTNM35	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM36_COMBO	{
+			state	int;
+			PRTNM36	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM_N01_COMBO	{
+			state	int;
+			PRTNM_N01	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM_N02_COMBO	{
+			state	int;
+			PRTNM_N02	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM_N03_COMBO	{
+			state	int;
+			PRTNM_N03	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM_N04_COMBO	{
+			state	int;
+			PRTNM_N04	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM_N05_COMBO	{
+			state	int;
+			PRTNM_N05	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM_N06_COMBO	{
+			state	int;
+			PRTNM_N06	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM_N07_COMBO	{
+			state	int;
+			PRTNM_N07	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM_N08_COMBO	{
+			state	int;
+			PRTNM_N08	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM_N09_COMBO	{
+			state	int;
+			PRTNM_N09	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM_N10_COMBO	{
+			state	int;
+			PRTNM_N10	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM_N11_COMBO	{
+			state	int;
+			PRTNM_N11	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM_N12_COMBO	{
+			state	int;
+			PRTNM_N12	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM_N13_COMBO	{
+			state	int;
+			PRTNM_N13	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM_N14_COMBO	{
+			state	int;
+			PRTNM_N14	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM_N15_COMBO	{
+			state	int;
+			PRTNM_N15	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM_N16_COMBO	{
+			state	int;
+			PRTNM_N16	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM_N17_COMBO	{
+			state	int;
+			PRTNM_N17	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM_N18_COMBO	{
+			state	int;
+			PRTNM_N18	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM_N19_COMBO	{
+			state	int;
+			PRTNM_N19	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM_N20_COMBO	{
+			state	int;
+			PRTNM_N20	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM_N21_COMBO	{
+			state	int;
+			PRTNM_N21	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM_N22_COMBO	{
+			state	int;
+			PRTNM_N22	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM_N23_COMBO	{
+			state	int;
+			PRTNM_N23	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM_N24_COMBO	{
+			state	int;
+			PRTNM_N24	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM_N25_COMBO	{
+			state	int;
+			PRTNM_N25	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM_N26_COMBO	{
+			state	int;
+			PRTNM_N26	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM_N27_COMBO	{
+			state	int;
+			PRTNM_N27	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM_N28_COMBO	{
+			state	int;
+			PRTNM_N28	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM_N29_COMBO	{
+			state	int;
+			PRTNM_N29	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM_N30_COMBO	{
+			state	int;
+			PRTNM_N30	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM_N31_COMBO	{
+			state	int;
+			PRTNM_N31	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM_N32_COMBO	{
+			state	int;
+			PRTNM_N32	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM_N33_COMBO	{
+			state	int;
+			PRTNM_N33	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM_N34_COMBO	{
+			state	int;
+			PRTNM_N34	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM_N35_COMBO	{
+			state	int;
+			PRTNM_N35	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
+		PRTNM_N36_COMBO	{
+			state	int;
+			PRTNM_N36	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[100];
+		};
 		PAGE1	{
 			style   varchar(20);
 			value	number(4);

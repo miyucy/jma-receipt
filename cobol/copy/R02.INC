@@ -11,6 +11,20 @@
                 05  R02-TEDDATA-STATE   PIC S9(09) BINARY.
                 05  R02-TEDDATA.
                   06  R02-VALUE   PIC X(100).
+              04  R02-TPRTNM-COMBO-G    OCCURS  36.
+                05  R02-TPRTNM-COMBO.
+                  06  R02-TPRTNM-STATE   PIC S9(09) BINARY.
+                  06  R02-TPRTNM.
+                    07  R02-VALUE   PIC X(19).
+                  06  R02-TPRTNM-COUNT   PIC S9(9)   BINARY.
+                  06  R02-TPRTNMLST  PIC X(19)   OCCURS  100 TIMES.
+              04  R02-TPRTNM-N-COMBO-G    OCCURS  36.
+                05  R02-TPRTNM-N-COMBO.
+                  06  R02-TPRTNM-N-STATE   PIC S9(09) BINARY.
+                  06  R02-TPRTNM-N.
+                    07  R02-VALUE   PIC X(19).
+                  06  R02-TPRTNM-N-COUNT   PIC S9(9)   BINARY.
+                  06  R02-TPRTNM-NLST  PIC X(19)   OCCURS  100 TIMES.
               04  R02-TPAGE-G      OCCURS  36.
                 05  R02-TPAGE-STYLE   PIC X(20).
                 05  R02-TPAGE.

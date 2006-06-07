@@ -103,6 +103,13 @@ W12	{
 					count	int;
 					item	varchar(24)[4];
 				};
+				NYUTAIINREKI_COMBO	{
+					NYUTAIINREKI	{
+						value	varchar(24);
+					};
+					count	int;
+					item	varchar(24)[2];
+				};
 				RJNGNBKKBN_COMBO	{
 					RJNGNBKKBN	{
 						value	varchar(24);

@@ -80,6 +80,12 @@
                     06  W12-KKHOCRKBN-COUNT   PIC S9(9)   BINARY.
                     06  W12-KKHOCRKBNLST
                             PIC X(24)   OCCURS  4 TIMES.
+                  05  W12-NYUTAIINREKI-COMBO.
+                    06  W12-NYUTAIINREKI.
+                      07  W12-VALUE   PIC X(24).
+                    06  W12-NYUTAIINREKI-COUNT   PIC S9(9)   BINARY.
+                    06  W12-NYUTAIINREKILST
+                            PIC X(24)   OCCURS  2 TIMES.
                   05  W12-RJNGNBKKBN-COMBO.
                     06  W12-RJNGNBKKBN.
                       07  W12-VALUE   PIC X(24).

@@ -75,6 +75,9 @@
       *
       *  02.09.01    NACL-藤原    06/04/14  ２００６年４月改正対応
       *                                     外来迅速検体検査加算フラグ追加
+      *  3.0.0
+      *  03.00.01    NACL-藤原    06/05/15  入退院履歴記載対応
+      *                                     入退院履歴記載フラグの追加
       ************************************************************
       *01  RECE02-REC.
            03  RECE02-KEY.
@@ -399,6 +402,8 @@
            03  RECE02-KENTAIKASANFLG      PIC  X(01).
       *福祉編集フラグ
            03  RECE02-FUKUSHIFLG          PIC  X(01).
+      *入退院履歴記載フラグ
+           03  RECE02-NYUINRRK-FLG        PIC  X(01).
       *合計点数情報（ぶん点・公費分離区分編集用）
            03  RECE02-HENTOTALTENINF-AREA.
                05  RECE02-HENTOTALTENINF  OCCURS  5.

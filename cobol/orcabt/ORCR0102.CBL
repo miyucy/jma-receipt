@@ -105,6 +105,9 @@
       *                                     HCM10.red    HCN07.red
       *                                     HCRCP402.red HCRCP403.red
       *  02.09.02    NACL-藤原    06/04/26  福岡国保レセの通し番号の編集
+      *
+      *  03.00.01    NACL-藤原    06/05/29  印刷時のプリンター指定対応
+      *                                     プリンタ名をreceprt より取得
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -223,10 +226,10 @@
                    07  WRK-PARA-RECE09-NYUGAIKBN PIC X(01).                              
                05  WRK-PARA-TERMID64             PIC X(64).
                05  WRK-PARA-SYOKBN               PIC X(01).
-               05  WRK-PARA-SYAPRTNM             PIC X(16).
-               05  WRK-PARA-KKHPRTNM             PIC X(16). 
-               05  WRK-PARA-SYAPRTNM-NEXT        PIC X(16).
-               05  WRK-PARA-KKHPRTNM-NEXT        PIC X(16). 
+      *********05  WRK-PARA-SYAPRTNM             PIC X(16).
+      *********05  WRK-PARA-KKHPRTNM             PIC X(16). 
+      *********05  WRK-PARA-SYAPRTNM-NEXT        PIC X(16).
+      *********05  WRK-PARA-KKHPRTNM-NEXT        PIC X(16). 
                05  WRK-PARA-PRTKBN               PIC X(01). 
       *
            COPY    "CPORCSPRTLNK.INC".
@@ -377,8 +380,8 @@
                                              WRK-PARA1
                                              WRK-PARA-RECE09-KEY
                                              WRK-PARA-SYOKBN
-                                             WRK-PARA-SYAPRTNM
-                                             WRK-PARA-KKHPRTNM
+      ***************************************WRK-PARA-SYAPRTNM
+      ***************************************WRK-PARA-KKHPRTNM
                                              LNK-PRTKANRI-RENNUM
                                              LNK-PRTKANRI-TBL-KEY
                                              LNK-PRTKANRI-TBL-GROUP
@@ -390,8 +393,8 @@
                                              LNK-PRTKANRI-TERMID
                                              LNK-PRTKANRI-OPID    
                                              LNK-PRTKANRI-PRTNM
-                                             WRK-PARA-SYAPRTNM-NEXT
-                                             WRK-PARA-KKHPRTNM-NEXT
+      ***************************************WRK-PARA-SYAPRTNM-NEXT
+      ***************************************WRK-PARA-KKHPRTNM-NEXT
                                              WRK-PARA-PRTKBN
            END-UNSTRING                                  
       *
@@ -619,20 +622,21 @@
            MOVE    SPACE               TO  PRT-REC 
            MOVE    RECE08-FORMID       TO  PRT-PRTID
       *     
-           EVALUATE    RECE08-TEISYUTUSAKI ALSO    RECE08-RENNUM
-               WHEN    "0"                 ALSO    1
-               WHEN    "1"                 ALSO    1
-                   MOVE    WRK-PARA-SYAPRTNM   TO  PRT-PRTNM
-               WHEN    "2"                 ALSO    1
-                   MOVE    WRK-PARA-KKHPRTNM   TO  PRT-PRTNM
-               WHEN    "0"                 ALSO    ANY
-               WHEN    "1"                 ALSO    ANY
-                   MOVE    WRK-PARA-SYAPRTNM-NEXT
-                                               TO  PRT-PRTNM
-               WHEN    "2"                 ALSO    ANY
-                   MOVE    WRK-PARA-KKHPRTNM-NEXT
-                                               TO  PRT-PRTNM
-           END-EVALUATE
+      *****EVALUATE    RECE08-TEISYUTUSAKI ALSO    RECE08-RENNUM
+      *        WHEN    "0"                 ALSO    1
+      *        WHEN    "1"                 ALSO    1
+      *            MOVE    WRK-PARA-SYAPRTNM   TO  PRT-PRTNM
+      *        WHEN    "2"                 ALSO    1
+      *            MOVE    WRK-PARA-KKHPRTNM   TO  PRT-PRTNM
+      *        WHEN    "0"                 ALSO    ANY
+      *        WHEN    "1"                 ALSO    ANY
+      *            MOVE    WRK-PARA-SYAPRTNM-NEXT
+      *                                        TO  PRT-PRTNM
+      *        WHEN    "2"                 ALSO    ANY
+      *            MOVE    WRK-PARA-KKHPRTNM-NEXT
+      *                                        TO  PRT-PRTNM
+      *****END-EVALUATE
+           MOVE    RECE08-PRTNM        TO  PRT-PRTNM
       *
       *    オフセット
            PERFORM 2002-OFFSET-GET-SEC
@@ -993,20 +997,21 @@
                END-EVALUATE
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
            MOVE    LNK-PRTKANRI-OPID   TO  SPRT-OPID
-           EVALUATE    RECE08-TEISYUTUSAKI ALSO    RECE08-RENNUM
-               WHEN    "0"                 ALSO    1
-               WHEN    "1"                 ALSO    1
-                   MOVE    WRK-PARA-SYAPRTNM   TO  SPRT-PRTNM
-               WHEN    "2"                 ALSO    1
-                   MOVE    WRK-PARA-KKHPRTNM   TO  SPRT-PRTNM
-               WHEN    "0"                 ALSO    ANY
-               WHEN    "1"                 ALSO    ANY
-                   MOVE    WRK-PARA-SYAPRTNM-NEXT
-                                               TO  SPRT-PRTNM
-               WHEN    "2"                 ALSO    ANY
-                   MOVE    WRK-PARA-KKHPRTNM-NEXT
-                                               TO  SPRT-PRTNM
-           END-EVALUATE
+      *****EVALUATE    RECE08-TEISYUTUSAKI ALSO    RECE08-RENNUM
+      *         WHEN    "0"                 ALSO    1
+      *         WHEN    "1"                 ALSO    1
+      *             MOVE    WRK-PARA-SYAPRTNM   TO  SPRT-PRTNM
+      *         WHEN    "2"                 ALSO    1
+      *             MOVE    WRK-PARA-KKHPRTNM   TO  SPRT-PRTNM
+      *         WHEN    "0"                 ALSO    ANY
+      *         WHEN    "1"                 ALSO    ANY
+      *             MOVE    WRK-PARA-SYAPRTNM-NEXT
+      *                                         TO  SPRT-PRTNM
+      *         WHEN    "2"                 ALSO    ANY
+      *             MOVE    WRK-PARA-KKHPRTNM-NEXT
+      *                                         TO  SPRT-PRTNM
+      *****END-EVALUATE
+           MOVE    RECE08-PRTNM        TO  SPRT-PRTNM
            MOVE    "1"                 TO  SPRT-SITEKBN
            MOVE    "1"                 TO  SPRT-PRTFLG
       *    
@@ -1049,7 +1054,8 @@
                DISPLAY "PTNUM=" RECE08-PTNUM
       *
            MOVE    ZERO                 TO  RECE08-PRTJYUN
-           MOVE    ZERO                 TO  RECE08-PRTRENNUM     
+           MOVE    ZERO                 TO  RECE08-PRTRENNUM
+           MOVE    SPACE                TO  RECE08-PRTNM     
       *
            MOVE    RECE08-REC           TO  MCPDATA-REC
            MOVE    "RECEPRT-KEY"        TO  ORC-DBPATH

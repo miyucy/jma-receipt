@@ -187,6 +187,8 @@
       *                                     症状詳記レコード対応
       *                                     レセ電データを２５００に変更
       *                                     改行までを１レコードとする
+      *  3.0.0
+      *  03.00.01    NACL-藤原    06/05/15  入退院履歴記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -231,6 +233,12 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE11-KEY
                                    FILE    STATUS  IS  STS-RECE11.
+      *    入退院履歴情報
+           SELECT  RECE12-FILE     ASSIGN  RECE12PARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  DYNAMIC
+                                   RECORD  KEY     IS  RECE12-KEY
+                                   FILE    STATUS  IS  STS-RECE12.
       *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
@@ -268,6 +276,11 @@
        FD  RECE11-FILE.
        01  RECE11-REC. 
            COPY    "CPRCF011.INC".
+      *
+       FD  RECE12-FILE.
+       01  RECE12-REC. 
+           COPY    "CPRCF068.INC"  REPLACING  //RECE68//
+                                   BY         //RECE12//.
       *     
       *    エラーファイル
        FD  RECEERR-FILE.
@@ -301,6 +314,11 @@
                                    REPLACING  //RECE01//
                                    BY         //RECE11//.
       *
+      *     入退院履歴情報ファイル 名称領域 
+           COPY    "CPCOMMONDAT2.INC"
+                                   REPLACING  //RECE01//
+                                   BY         //RECE12//.
+      *
       *     レセプト電算ファイル 名称領域 
            COPY    "CPCOMMONDAT2.INC"
                                    REPLACING  //RECE01//
@@ -322,6 +340,7 @@
            03  STS-RECE05              PIC X(02).
            03  STS-RECE09              PIC X(02).
            03  STS-RECE11              PIC X(02).
+           03  STS-RECE12              PIC X(02).
            03  STS-RECEERR             PIC X(02).
       *
        01  FLG-AREA.
@@ -340,6 +359,7 @@
            03  FLG-RECE05              PIC 9(01).
            03  FLG-RECE09              PIC 9(01).
            03  FLG-RECE11              PIC 9(01).
+           03  FLG-RECE12              PIC 9(01).
            03  FLG-OPECOM              PIC 9(01).
       *
            03  FLG-READ                PIC 9(01).
@@ -550,6 +570,20 @@
       *
       *    手術歴編集
            03  WRK-OPECOM-HEN      PIC X(50).
+      *                 
+      *    入退院履歴編集（適用欄）
+           03  WRK-NYUTAI-RIREKI-AREA.
+               05  WRK-NYUTAI-RIREKI           PIC X(52).
+               05  WRK-NYUTAI-RIREKI-W         REDEFINES
+                                               WRK-NYUTAI-RIREKI.
+                   07  WRK-NYUTAI-MSG          PIC X(12).
+                   07  WRK-NYUTAI-NYUINYMD     PIC X(18).
+                   07  WRK-NYUTAI-FL1          PIC X(02).
+                   07  WRK-NYUTAI-TAIINYMD     PIC X(18).
+                   07  WRK-NYUTAI-FL2          PIC X(02).
+      *
+      *    入退院履歴編集（自院歴−入院中区分）
+           03  WRK-NYUINCHUKBN                 PIC X(01).
       *
       *    医薬品・特定器材用テーブル
        01  TBL-ZAIW-AREA.
@@ -1282,6 +1316,9 @@
            MOVE    "RECE110"           TO  RECE11PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE11PARA-TERMID
       *
+           MOVE    "RECE120"           TO  RECE12PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE12PARA-TERMID
+      *
            MOVE    "RECEERR"           TO  RECEERR-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
       *
@@ -1296,6 +1333,8 @@
            OPEN    INPUT               RECE09-FILE
       *
            OPEN    INPUT               RECE11-FILE
+      *
+           OPEN    INPUT               RECE12-FILE
       * 
            IF      FLG-END             =   ZERO
       *
@@ -1413,6 +1452,10 @@
            END-IF
            IF      SYS-2005-RECECOMKBN      =   SPACE
                MOVE    ZERO             TO  SYS-2005-RECECOMKBN
+           END-IF
+           IF      SYS-2005-NYUTAIINREKI-KSIKBN
+                                            =   SPACE
+               MOVE    "0"              TO  SYS-2005-NYUTAIINREKI-KSIKBN
            END-IF
       *
            DISPLAY "2005 NI-JYOKEN (1)=" SYS-2005-NI-JYOKEN(1)
@@ -2427,7 +2470,7 @@
       *        負担区分編集処理
                PERFORM 20070-FTNKBN-HENSYU-SEC
       *
-      *        症状詳記（手術歴・保険履歴）
+      *        症状詳記（入退院履歴・手術歴・保険履歴）
                IF      FLG-COMMENT         =   ZERO
                    MOVE    1                   TO  FLG-COMMENT
                    MOVE    WRK-FTNKBN          TO  WRK-COM-FTNKBN
@@ -4564,11 +4607,19 @@
            EXIT.
       *
       *****************************************************************
-      *    症状詳記（手術歴・保険履歴）
+      *    症状詳記（入退院履歴・手術歴・保険履歴）
       *****************************************************************
        2008-COMMENT-HEN-01-SEC      SECTION.
       *
            MOVE    "01"                TO  WRK-COM-SRYKBN
+      *
+      *    入退院履歴情報
+           IF    ( SYS-2005-NYUTAIINREKI-KSIKBN
+                                   =   "1" )               
+           AND   ( RECE02-NYUINRRK-FLG
+                                   =   "1" )               
+               PERFORM 20082-NYUTAI-RIREKI-HEN-SEC
+           END-IF
       *
       *    手術歴編集
            PERFORM 20081-OPECOM-HEN-SEC
@@ -4834,6 +4885,157 @@
            EXIT.
       *
       *****************************************************************
+      *    入退院履歴情報編集処理
+      *****************************************************************
+       20082-NYUTAI-RIREKI-HEN-SEC      SECTION.
+      *
+      *    最初の行のコメントのセット
+           MOVE    SPACE               TO  WRK-NYUTAI-RIREKI-AREA
+           MOVE    "入退院履歴"        TO  WRK-NYUTAI-MSG
+           MOVE    ZERO                TO  WRK-NYUINCHUKBN
+      *          
+           INITIALIZE                      RECE12-REC
+           MOVE    RECE02-HOSPID       TO  RECE12-HOSPID
+           MOVE    RECE02-SRYYM        TO  RECE12-SRYYM
+           MOVE    RECE02-NYUGAIKBN    TO  RECE12-NYUGAIKBN
+           MOVE    RECE02-PTID         TO  RECE12-PTID
+           MOVE    RECE02-RECEKA       TO  RECE12-RECEKA
+           MOVE    RECE02-TEISYUTUSAKI TO  RECE12-TEISYUTUSAKI
+           MOVE    RECE02-RECESYUBETU  TO  RECE12-RECESYUBETU
+           MOVE    RECE02-HKNJANUM-KEY TO  RECE12-HKNJANUM
+           MOVE    RECE02-HOJOKBN-KEY  TO  RECE12-HOJOKBN
+           MOVE    RECE02-TEKSTYMD     TO  RECE12-TEKSTYMD
+      *
+           START   RECE12-FILE
+               KEY IS    >=   RECE12-KEY
+               INVALID
+                   MOVE    1           TO  FLG-RECE12
+               NOT INVALID
+                   PERFORM 900-RECE12-NEXT-SEC
+           END-START
+      *
+           PERFORM UNTIL ( FLG-RECE12           =  1                   )
+                   OR    ( RECE02-HOSPID    NOT =  RECE12-HOSPID       )
+                   OR    ( RECE02-SRYYM     NOT =  RECE12-SRYYM        )
+                   OR    ( RECE02-NYUGAIKBN NOT =  RECE12-NYUGAIKBN    )
+                   OR    ( RECE02-PTID      NOT =  RECE12-PTID         )
+                   OR    ( RECE02-RECEKA    NOT =  RECE12-RECEKA       )
+                   OR    ( RECE02-TEISYUTUSAKI
+                                             NOT =  RECE12-TEISYUTUSAKI)
+                   OR    ( RECE02-RECESYUBETU
+                                             NOT =  RECE12-RECESYUBETU )
+                   OR    ( RECE02-HKNJANUM-KEY
+                                             NOT =  RECE12-HKNJANUM    )
+                   OR    ( RECE02-HOJOKBN-KEY
+                                             NOT =  RECE12-HOJOKBN     )
+                   OR    ( RECE02-TEKSTYMD   NOT =  RECE12-TEKSTYMD    )
+      *
+               IF      WRK-NYUINCHUKBN     =   ZERO
+                   MOVE    RECE12-NYUINYMD     TO  WRK-SYMD
+                   PERFORM 31012-SEIWA-HEN-SEC
+                   MOVE    LNK-DAY2-EDTYMD3(5:18)    TO  
+                                               WRK-NYUTAI-NYUINYMD
+                   MOVE    "〜"                TO  WRK-NYUTAI-FL1
+               END-IF
+      *                          
+               IF      RECE12-TAIINYMD (1:6)   
+                                           >   RECE02-SRYYM
+                   MOVE    SPACE               TO  WRK-NYUTAI-TAIINYMD
+                   CONTINUE
+               ELSE
+                   MOVE    RECE12-TAIINYMD     TO  WRK-SYMD
+                   PERFORM 31012-SEIWA-HEN-SEC
+                   MOVE    LNK-DAY2-EDTYMD3(5:18)    TO  
+                                               WRK-NYUTAI-TAIINYMD
+               END-IF
+      *
+               IF      RECE12-NYUINCHUKBN  =   ZERO
+                   PERFORM 200821-NYUTAI-RIREKI-HENSYU-SEC  
+                   MOVE    SPACE           TO  WRK-NYUTAI-RIREKI-AREA
+               END-IF
+      *
+               MOVE    RECE12-NYUINCHUKBN  TO  WRK-NYUINCHUKBN    
+      *
+               PERFORM 900-RECE12-NEXT-SEC
+           END-PERFORM
+      *
+      *    最後の履歴が入院中のときに編集する
+           IF      WRK-NYUTAI-RIREKI-AREA
+                                       NOT =   SPACE                   
+               PERFORM 200821-NYUTAI-RIREKI-HENSYU-SEC  
+               MOVE    SPACE           TO  WRK-NYUTAI-RIREKI-AREA
+           END-IF
+      *
+           .
+       20082-NYUTAI-RIREKI-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入退院履歴情報編集処理
+      *****************************************************************
+       200821-NYUTAI-RIREKI-HENSYU-SEC    SECTION.
+      *
+           ADD     1                   TO  WRK-COM-RENNUM
+      *          
+           INITIALIZE                  RECEDEN-REC
+           MOVE    RECE02-HOSPID       TO  RECEDEN-HOSPID
+           MOVE    RECE02-SRYYM        TO  RECEDEN-SRYYM
+           MOVE    RECE02-NYUGAIKBN    TO  RECEDEN-NYUGAIKBN
+           MOVE    RECE02-PTID         TO  RECEDEN-PTID
+           IF    ( SYS-2009-SYUKA-KBN  =   "1"                )
+           AND   ( RECE02-TEISYUTUSAKI =   "1"                )
+               MOVE    RECE02-SYUKA        TO  RECEDEN-RECEKA
+           ELSE
+               IF      RECE02-RECEKA       =   SPACE
+                   MOVE    ZERO            TO  RECEDEN-RECEKA
+               ELSE
+                   MOVE    RECE02-RECEKA   TO  RECEDEN-RECEKA
+               END-IF
+           END-IF
+           MOVE    RECE02-TEISYUTUSAKI TO
+                                               RECEDEN-TEISYUTUSAKI
+           MOVE    RECE02-RECESYUBETU  TO
+                                               RECEDEN-RECESYUBETU
+           IF      RECE02-HKNJANUM-KEY =   SPACE
+               MOVE    ZERO                TO  RECEDEN-HKNJANUM
+           ELSE
+               MOVE    RECE02-HKNJANUM-KEY TO  RECEDEN-HKNJANUM
+           END-IF
+           IF      RECE02-HOJOKBN-KEY  =   SPACE
+               MOVE    ZERO                TO  RECEDEN-HOJOKBN-KEY
+           ELSE
+               MOVE    RECE02-HOJOKBN-KEY  TO  RECEDEN-HOJOKBN-KEY
+           END-IF   
+           IF      RECE02-TEKSTYMD     =   SPACE
+               MOVE    ZERO            TO  RECEDEN-TEKSTYMD
+           ELSE
+               MOVE    RECE02-TEKSTYMD TO  RECEDEN-TEKSTYMD
+           END-IF
+           MOVE    "2"                 TO  RECEDEN-RECKBN
+           MOVE    WRK-COM-RENNUM      TO  RECEDEN-RENNUM
+           MOVE    WRK-PARA-SYSYMD     TO  RECEDEN-CREYMD
+           INSPECT WRK-NYUTAI-RIREKI-AREA  REPLACING   ALL "  "
+                                                       BY  "　"
+           MOVE    WRK-NYUTAI-RIREKI-AREA
+                                       TO  RECEDEN-RECEDATA
+      *
+           MOVE    RECEDEN-REC         TO  MCPDATA-REC
+           MOVE    "RECEDEN-KEY"       TO  ORC-DBPATH
+           MOVE    "DBINSERT"          TO  MCP-FUNC
+           CALL    "ORCMCPSUB"             USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC      
+      *
+           ADD     1                   TO  CNT-OUT
+      *
+      *    症状詳記（コメント）編集処理
+           PERFORM 20099-COMMENT-HENSYU-SEC
+           .
+       200821-NYUTAI-RIREKI-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    症状詳記（レセコメント）
       *****************************************************************
        2009-COMMENT-HEN-99-SEC      SECTION.
@@ -4984,6 +5186,7 @@
                        ADD     1                   TO  CNT-OUT
                      END-PERFORM
       *
+      *
       *              症状詳記レコード編集処理
                      PERFORM 20092-SJ-HENSYU-SEC
                    END-IF
@@ -4999,6 +5202,7 @@
       *    症状詳記レコード編集処理
       *****************************************************************
        20092-SJ-HENSYU-SEC       SECTION.
+      *
       *
       *    全角スペースのみのレコードは記載しない
            MOVE    ZERO                TO  WRK-SJ-CHK
@@ -5987,6 +6191,22 @@
       *
            .
        990-RECE11-READ-EXT.
+           EXIT.
+      *
+      ****************************************************************
+      *    入退院履歴情報データ読み
+      ****************************************************************
+       900-RECE12-NEXT-SEC           SECTION.
+      *
+           READ    RECE12-FILE      NEXT
+               AT  END
+                   MOVE    1         TO  FLG-RECE12
+               NOT AT  END
+                   MOVE    ZERO      TO  FLG-RECE12
+           END-READ
+      *
+           .
+       900-RECE12-NEXT-EXT.
            EXIT.
       *      
       *****************************************************************

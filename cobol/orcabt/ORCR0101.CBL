@@ -61,6 +61,8 @@
       *
       *  02.08.01    NACL-藤原    06/02/20  主科対応
       *  02.08.02    NACL-藤原    06/04/01  対象データ表示
+      *
+      *  03.00.01    NACL-藤原    06/05/29  印刷時のプリンター指定対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -139,12 +141,16 @@
                    07  WRK-PARA-RECE09-HKNJANUM      PIC X(08).
                05  WRK-PARA-RECE09-STDATA            PIC X(100).
                05  WRK-PARA-RECE09-EDDATA            PIC X(100).
-               05  WRK-PARA-PRTJYUN           PIC 9(02).
+               05  WRK-PARA-PRTJYUN           PIC 9(03).
                05  WRK-PARA-SHELLID           PIC X(08).
                05  WRK-PARA-JOBID             PIC 9(07).
                05  WRK-PARA-PRTKBN            PIC X(01).
                05  WRK-PARA-PREFKBN           PIC X(01).
                05  WRK-PARA-SRYKA             PIC X(02).
+               05  WRK-PARA-PRTNM             PIC X(16).
+               05  WRK-PARA-PRTNM-N           PIC X(16). 
+               05  WRK-PARA-KKHPRTNM          PIC X(16). 
+               05  WRK-PARA-KKHPRTNM-N        PIC X(16). 
       *
            03  WRK-RECE08-PRTRENNUM    PIC 9(06).
       *
@@ -239,6 +245,10 @@
                                              WRK-PARA-RECE09-STDATA
                                              WRK-PARA-RECE09-EDDATA
                                              WRK-PARA-PRTJYUN
+                                             WRK-PARA-PRTNM
+                                             WRK-PARA-PRTNM-N
+                                             WRK-PARA-KKHPRTNM
+                                             WRK-PARA-KKHPRTNM-N
            END-UNSTRING                                  
       *
            MOVE    "RECEERR"           TO  RECEERR-FILE-ID
@@ -317,7 +327,38 @@
                ADD     1                    TO  WRK-RECE08-PRTRENNUM
       *
                MOVE    WRK-PARA-PRTJYUN     TO  RECE08-PRTJYUN
-               MOVE    WRK-RECE08-PRTRENNUM TO  RECE08-PRTRENNUM      
+               MOVE    WRK-RECE08-PRTRENNUM TO  RECE08-PRTRENNUM
+               EVALUATE    WRK-PARA-RECE09-PRTJYUN
+                   WHEN    "05"
+                       IF      RECE08-RENNUM    =   1
+                           IF    ( RECE08-RECESYUBETU   =   "0000"  OR
+                                                            "6666"  OR
+                                                            "8888"     )
+                           OR    ( RECE08-TEISYUTUSAKI  =   "1"        )
+                               IF      RECE08-RENNUM    =   1
+                                   MOVE    WRK-PARA-PRTNM
+                                                        TO  RECE08-PRTNM
+                               ELSE
+                                   MOVE    WRK-PARA-PRTNM-N
+                                                        TO  RECE08-PRTNM
+                               END-IF
+                           ELSE
+                               IF      RECE08-RENNUM    =   1
+                                   MOVE    WRK-PARA-KKHPRTNM
+                                                        TO  RECE08-PRTNM
+                               ELSE
+                                   MOVE    WRK-PARA-KKHPRTNM-N
+                                                        TO  RECE08-PRTNM
+                               END-IF
+                           END-IF
+                       END-IF
+                   WHEN    OTHER
+                       IF      RECE08-RENNUM    =   1
+                           MOVE    WRK-PARA-PRTNM   TO  RECE08-PRTNM 
+                       ELSE
+                           MOVE    WRK-PARA-PRTNM-N TO  RECE08-PRTNM 
+                       END-IF
+               END-EVALUATE
       *
                MOVE    RECE08-REC           TO  MCPDATA-REC
                MOVE    "RECEPRT-KEY"        TO  ORC-DBPATH

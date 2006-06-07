@@ -31,6 +31,8 @@
       *
       *  02.08.01    NACL-藤原    06/02/20  主科対応
       *  02.08.02    NACL-藤原    06/03/28  山形県のレセプト様式変更対応
+      *
+      *  03.00.01    NACL-藤原    06/05/29  印刷時のプリンター指定対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -487,7 +489,15 @@
                                 DELIMITED   BY  SPACE
                     ","         DELIMITED   BY  SIZE
                     "0,"        DELIMITED   BY  SIZE
-                    "Z,01,"     DELIMITED   BY  SIZE
+                    "Z,05,"     DELIMITED   BY  SIZE
+                    WRK-PARA-A15  DELIMITED BY  SPACE
+                    ","         DELIMITED   BY  SIZE
+                    WRK-PARA-A16  DELIMITED BY  SPACE
+                    ","         DELIMITED   BY  SIZE
+                    WRK-PARA-A28  DELIMITED BY  SPACE
+                    ","         DELIMITED   BY  SIZE
+                    WRK-PARA-A29  DELIMITED BY  SPACE
+                    ","         DELIMITED   BY  SIZE
                                 INTO    WRK-ARG
            END-STRING
       **     CALL "timeofday" USING LNK-TIMEOFDAY.
@@ -509,10 +519,10 @@
                     ","         DELIMITED   BY  SIZE
                     "2"         DELIMITED   BY  SPACE
                     ","         DELIMITED   BY  SIZE
-                    WRK-PARA-A15  DELIMITED BY  SPACE
-                    ","         DELIMITED   BY  SIZE
-                    WRK-PARA-A16  DELIMITED BY  SPACE
-                    ","         DELIMITED   BY  SIZE
+      **************WRK-PARA-A15  DELIMITED BY  SPACE
+      **************","         DELIMITED   BY  SIZE
+      **************WRK-PARA-A16  DELIMITED BY  SPACE
+      **************","         DELIMITED   BY  SIZE
                     WRK-PARA-A17 DELIMITED   BY  SPACE
                     ","         DELIMITED   BY  SIZE
                     WRK-PARA-A18 DELIMITED   BY  SPACE
@@ -535,10 +545,10 @@
                     ","         DELIMITED   BY  SIZE
                     WRK-PARA-A27  DELIMITED BY  SPACE
                     ","         DELIMITED   BY  SIZE
-                    WRK-PARA-A28  DELIMITED BY  SPACE
-                    ","         DELIMITED   BY  SIZE
-                    WRK-PARA-A29  DELIMITED BY  SPACE
-                    ","         DELIMITED   BY  SIZE
+      **************WRK-PARA-A28  DELIMITED BY  SPACE
+      **************","         DELIMITED   BY  SIZE
+      **************WRK-PARA-A29  DELIMITED BY  SPACE
+      **************","         DELIMITED   BY  SIZE
                     "3"         DELIMITED   BY  SIZE
                                 INTO    WRK-ARG
       **     CALL "timeofday" USING LNK-TIMEOFDAY.
@@ -668,7 +678,15 @@
                                 DELIMITED   BY  SPACE
                     ","         DELIMITED   BY  SIZE
                     "0,"        DELIMITED   BY  SIZE
-                    "Z,01,"     DELIMITED   BY  SIZE
+                    "Z,05,"     DELIMITED   BY  SIZE
+                    WRK-PARA-A15  DELIMITED BY  SPACE
+                    ","         DELIMITED   BY  SIZE
+                    WRK-PARA-A16  DELIMITED BY  SPACE
+                    ","         DELIMITED   BY  SIZE
+                    WRK-PARA-A28  DELIMITED BY  SPACE
+                    ","         DELIMITED   BY  SIZE
+                    WRK-PARA-A29  DELIMITED BY  SPACE
+                    ","         DELIMITED   BY  SIZE
                                 INTO    WRK-ARG
            END-STRING
       **   CALL "timeofday" USING LNK-TIMEOFDAY.
@@ -690,10 +708,10 @@
                     ","         DELIMITED   BY  SIZE
                     "2"         DELIMITED   BY  SPACE
                     ","         DELIMITED   BY  SIZE
-                    WRK-PARA-A15  DELIMITED BY  SPACE
-                    ","         DELIMITED   BY  SIZE
-                    WRK-PARA-A16  DELIMITED BY  SPACE
-                    ","         DELIMITED   BY  SIZE
+      **************WRK-PARA-A15  DELIMITED BY  SPACE
+      **************","         DELIMITED   BY  SIZE
+      **************WRK-PARA-A16  DELIMITED BY  SPACE
+      **************","         DELIMITED   BY  SIZE
                     WRK-PARA-A17 DELIMITED   BY  SPACE
                     ","         DELIMITED   BY  SIZE
                     WRK-PARA-A18 DELIMITED   BY  SPACE
@@ -716,10 +734,10 @@
                     ","         DELIMITED   BY  SIZE
                     WRK-PARA-A27  DELIMITED BY  SPACE
                     ","         DELIMITED   BY  SIZE
-                    WRK-PARA-A28  DELIMITED BY  SPACE
-                    ","         DELIMITED   BY  SIZE
-                    WRK-PARA-A29  DELIMITED BY  SPACE
-                    ","         DELIMITED   BY  SIZE
+      **************WRK-PARA-A28  DELIMITED BY  SPACE
+      **************","         DELIMITED   BY  SIZE
+      **************WRK-PARA-A29  DELIMITED BY  SPACE
+      **************","         DELIMITED   BY  SIZE
                     "3"         DELIMITED   BY  SIZE
                                 INTO    WRK-ARG
       **     CALL "timeofday" USING LNK-TIMEOFDAY.

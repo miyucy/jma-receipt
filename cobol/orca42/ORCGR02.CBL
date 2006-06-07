@@ -91,6 +91,8 @@
       *  02.08.03    NACL-藤原    06/03/14  編綴順情報の表示の修正
       *  02.08.04    NACL-藤原    06/04/07  編綴順指定のときの自費・不明分
       *                                     レセが印刷されない現象の修正
+      *
+      *  03.00.01    NACL-藤原    06/05/29  印刷時のプリンター指定
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -199,6 +201,11 @@
                        09  SPA-GMN-PRTKBNL         PIC X(01).
                        09  SPA-GMN-F1L             PIC X(01).
                        09  SPA-GMN-PRTKBNMEIL      PIC X(12).
+                   07  SPA-GMN-PRTNMLST            OCCURS  100.
+                       09  SPA-GMN-PRTNML          PIC X(02).
+                       09  SPA-GMN-F1L             PIC X(01).
+                       09  SPA-GMN-PRTNMMEIL       PIC X(16).
+                   07  SPA-GMN-PRTNM-MAX           PIC 9(03).
                    07  SPA-GMN-TBL.
                        09  SPA-GMN-TBL-OCC         OCCURS   30.
                            11  SPA-GMN-TBL-G       OCCURS   36.
@@ -217,6 +224,21 @@
                                13  SPA-GMN-TKENSU  PIC 9(04).
                                13  SPA-GMN-TSYURUINAME
                                                    PIC X(40).
+                   07  SPA-GMN-TBL2.
+                       09  SPA-GMN-TBL-OCC2        OCCURS   30.
+                           11  SPA-GMN-TBL-G2      OCCURS   36.
+                               13  SPA-GMN-TPRTNM-G.
+                                   15  SPA-GMN-TPRTNM
+                                                   PIC X(02).
+                                   15  SPA-GMN-F1  PIC X(01).
+                                   15  SPA-GMN-TPRTNMMEI
+                                                   PIC X(16).
+                               13  SPA-GMN-TPRTNM-N-G.
+                                   15  SPA-GMN-TPRTNM-N
+                                                   PIC X(02).
+                                   15  SPA-GMN-F1  PIC X(01).
+                                   15  SPA-GMN-TPRTNM-NMEI
+                                                   PIC X(16).
       *
                05  SPA-NAI-AREA.
                    07  SPA-NAI-WIDGET              PIC X(08). 
@@ -228,6 +250,12 @@
                    07  SPA-NAI-2005-KKHPRTNM-N     PIC X(16).
                    07  SPA-NAI-2005-SYAPRTNM-NEXT-N  PIC X(16).
                    07  SPA-NAI-2005-KKHPRTNM-NEXT-N  PIC X(16).
+      *
+                   07  SPA-NAI-PRTNM-TABLE.
+                       09  SPA-NAI-PRTNM-G                 OCCURS  4.
+                           11  SPA-NAI-PRTNM       PIC X(02).
+                           11  FILLER              PIC X(01).
+                           11  SPA-NAI-PRTNMMEI    PIC X(16).
       *
                    07  SPA-NAI-2008-ZAITAKU        PIC  X(01).
                    07  SPA-NAI-2008-CHOUKI         PIC  X(01).
@@ -281,6 +309,8 @@
            03  FLG-RECE07          PIC 9(01).
            03  FLG-HKNJAINF        PIC 9(01).
       *
+           03  FLG-PRTNM-SET       PIC 9(01).
+      *
       *
            03  STS-RECEERR         PIC X(02).
       *
@@ -297,13 +327,17 @@
            03  IDX1                PIC 9(04).
            03  IDX2                PIC 9(04).
       *
+           03  IDXX                PIC 9(04).
+      *
       *    一時領域
        01  WRK-AREA.
            03  WRK-WIDGET.
                05  WRK-WIDGET1     PIC X(03).
                05  WRK-WIDGET2     PIC 9(02).
                05  FILLER          PIC X(01).
-               05  WRK-WIDGET3     PIC 9(02). 
+               05  WRK-WIDGET3     PIC 9(02).
+               05  WRK-WIDGET4     PIC 9(02).
+      *
            03  WRK-RIDMSG          PIC X(70).
            03  WRK-Z9              PIC ZZZ9.
            03  WRK-YM              PIC X(07). 
@@ -337,10 +371,22 @@
              05  WRK-SHELL-TERMID  PIC  X(16).
              05  WRK-SHELL-SYSYMD  PIC  X(08).  
       *
-           03  WRK-RECE08-PRTJYUN  PIC 9(02).
+           03  WRK-RECE08-PRTJYUN  PIC 9(03).
       *
            03  WRK-KBNCD.
                05  WRK-KBNCD-9     PIC 9(08).
+      *
+           03  WRK-PRTNM           PIC 9(04).
+           03  WRK-PRTNM-R         REDEFINES   WRK-PRTNM.
+               05  FILLER          PIC X(02).
+               05  WRK-PRTNM-X     PIC X(02). 
+      *
+           03  WRK-GMN-PRTNM-G.
+               05  WRK-GMN-PRTNM   PIC X(02).
+               05  FILLER          PIC X(01).
+               05  WRK-GMN-PRTNMMEI
+                                   PIC X(16).
+           03  WRK-PRTNMMEI        PIC X(16).
       * 
            03  WRK-SYUKA-BACK      PIC X(02).
       *      
@@ -467,6 +513,9 @@
       *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
+      *
+      *    プリンタ名取得サブ
+           COPY  "CPORCSPRTNMGET.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -1053,10 +1102,64 @@
                    MOVE    SYS-2005-KKHPRTNM-N  TO
                                            SPA-NAI-2005-KKHPRTNM-NEXT-N
                END-IF
-           END-IF                                              
+           END-IF
+      *
+      *    プリンター名取得
+           INITIALIZE                      ORCSPRTNMGETAREA
+           MOVE    SPA-SYSYMD          TO  PRTNMGET-YMD
+           CALL    "ORCSPRTNMGET"      USING   ORCSPRTNMGETAREA
+      *
+           PERFORM VARYING IDX     FROM    1   BY  1
+                   UNTIL   IDX     >       PRTNMGET-PRTNM-MAX
+               COMPUTE IDY =   IDX     -   1
+               MOVE    IDY                 TO  WRK-PRTNM
+               MOVE    WRK-PRTNM-X         TO  SPA-GMN-PRTNML (IDX)
+               MOVE    PRTNMGET-PRTNM (IDX)    TO
+                                           SPA-GMN-PRTNMMEIL (IDX)
+               MOVE    IDX                 TO  SPA-GMN-PRTNM-MAX
+           END-PERFORM
+      *
+      *    初期値のプリンタ名設定
+           EVALUATE    SPA-R01-NYUGAIKBN
+               WHEN    "1"
+                   MOVE    SPA-NAI-2005-SYAPRTNM-N
+                                           TO  WRK-PRTNMMEI
+                   PERFORM 5001-PRTNM-HENSYU-SEC
+                   MOVE    WRK-GMN-PRTNM-G TO  SPA-NAI-PRTNM-G (1)
+                   MOVE    SPA-NAI-2005-SYAPRTNM-NEXT-N
+                                           TO  WRK-PRTNMMEI
+                   PERFORM 5001-PRTNM-HENSYU-SEC
+                   MOVE    WRK-GMN-PRTNM-G TO  SPA-NAI-PRTNM-G (2)
+                   MOVE    SPA-NAI-2005-KKHPRTNM-N
+                                           TO  WRK-PRTNMMEI
+                   PERFORM 5001-PRTNM-HENSYU-SEC
+                   MOVE    WRK-GMN-PRTNM-G TO  SPA-NAI-PRTNM-G (3)
+                   MOVE    SPA-NAI-2005-KKHPRTNM-NEXT-N
+                                           TO  WRK-PRTNMMEI
+                   PERFORM 5001-PRTNM-HENSYU-SEC
+                   MOVE    WRK-GMN-PRTNM-G TO  SPA-NAI-PRTNM-G (4)
+               WHEN    "2"
+                   MOVE    SPA-NAI-2005-SYAPRTNM
+                                           TO  WRK-PRTNMMEI
+                   PERFORM 5001-PRTNM-HENSYU-SEC
+                   MOVE    WRK-GMN-PRTNM-G TO  SPA-NAI-PRTNM-G (1)
+                   MOVE    SPA-NAI-2005-SYAPRTNM-NEXT
+                                           TO  WRK-PRTNMMEI
+                   PERFORM 5001-PRTNM-HENSYU-SEC
+                   MOVE    WRK-GMN-PRTNM-G TO  SPA-NAI-PRTNM-G (2)
+                   MOVE    SPA-NAI-2005-KKHPRTNM
+                                           TO  WRK-PRTNMMEI
+                   PERFORM 5001-PRTNM-HENSYU-SEC
+                   MOVE    WRK-GMN-PRTNM-G TO  SPA-NAI-PRTNM-G (3)
+                   MOVE    SPA-NAI-2005-KKHPRTNM-NEXT
+                                           TO  WRK-PRTNMMEI
+                   PERFORM 5001-PRTNM-HENSYU-SEC
+                   MOVE    WRK-GMN-PRTNM-G TO  SPA-NAI-PRTNM-G (4)
+           END-EVALUATE
       *
       *    頁・件数の編集処理
            MOVE    "T"                 TO  SPA-GMN-SYOKBN
+           MOVE    ZERO                TO  FLG-PRTNM-SET
            PERFORM 3101-HENSYU-SEC
            .
        310-SPASET-EXT.
@@ -1066,7 +1169,7 @@
       *    頁・件数の編集処理
       *****************************************************************
        3101-HENSYU-SEC                 SECTION.
-      *
+       
            MOVE    SPA-GMN-PREFKBNLST (1)
                                        TO  SPA-GMN-PREFKBN-G
            MOVE    SPA-GMN-PRTKBNLST  (1)
@@ -1077,7 +1180,10 @@
                                        SPA-NAI-TBL   
            MOVE    ZERO                TO  SPA-GMN-PAGEH
                                            SPA-GMN-KENSUH     
-                                           SPA-GMN-PAGE-MAX                          
+                                           SPA-GMN-PAGE-MAX
+           IF      FLG-PRTNM-SET       =   ZERO
+               INITIALIZE                  SPA-GMN-TBL2
+           END-IF                          
       *
            PERFORM VARYING IDW FROM    1   BY  1
                    UNTIL   IDW >       WRK-CONS-PAGE-MAX
@@ -1244,7 +1350,24 @@
                                                SPA-GMN-KENSUH
                    END-IF
                END-PERFORM
+      *
+      *        プリンタ設定
+               IF      FLG-PRTNM-SET           =   ZERO
+                   EVALUATE    SPA-NAI-TEISYUTUSAKI  (IDW IDX)
+                       WHEN    "1"
+                           MOVE    SPA-NAI-PRTNM-G (1)
+                                       TO  SPA-GMN-TPRTNM-G   (IDW IDX)
+                           MOVE    SPA-NAI-PRTNM-G (2)
+                                       TO  SPA-GMN-TPRTNM-N-G (IDW IDX)
+                       WHEN    "2"
+                           MOVE    SPA-NAI-PRTNM-G (3)
+                                       TO  SPA-GMN-TPRTNM-G   (IDW IDX)
+                           MOVE    SPA-NAI-PRTNM-G (4)
+                                       TO  SPA-GMN-TPRTNM-N-G (IDW IDX)
+                   END-EVALUATE
+               END-IF
            END-PERFORM
+               
            .
        3101-PAGE-HENSYU-01-EXT.
            EXIT.
@@ -1338,6 +1461,22 @@
            MOVE    "tbl_recekanri"     TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
+      *
+      *    プリンタ設定
+           IF      FLG-PRTNM-SET           =   ZERO
+               EVALUATE    SPA-NAI-TEISYUTUSAKI  (IDW IDX)
+                   WHEN    "1"
+                       MOVE    SPA-NAI-PRTNM-G (1)
+                                       TO  SPA-GMN-TPRTNM-G   (IDW IDX)
+                       MOVE    SPA-NAI-PRTNM-G (2)
+                                       TO  SPA-GMN-TPRTNM-N-G (IDW IDX)
+                   WHEN    "2"
+                       MOVE    SPA-NAI-PRTNM-G (3)
+                                       TO  SPA-GMN-TPRTNM-G   (IDW IDX)
+                       MOVE    SPA-NAI-PRTNM-G (4)
+                                       TO  SPA-GMN-TPRTNM-N-G (IDW IDX)
+               END-EVALUATE
+           END-IF
            .
        3101-PAGE-HENSYU-02-EXT.
            EXIT.
@@ -1428,6 +1567,14 @@
                    ADD     RECE07-PAGE-ZAITAKU
                                            TO
                                        SPA-NAI-TPAGE-ZAITAKU(IDW IDX)
+      *
+      *            プリンタ設定
+                   IF      FLG-PRTNM-SET           =   ZERO
+                       MOVE    SPA-NAI-PRTNM-G (3)
+                                       TO  SPA-GMN-TPRTNM-G   (IDW IDX)
+                       MOVE    SPA-NAI-PRTNM-G (4)
+                                       TO  SPA-GMN-TPRTNM-N-G (IDW IDX)
+                   END-IF
       * 
                    MOVE    "tbl_recekanri"     TO  MCP-TABLE
                    MOVE    "key8"              TO  MCP-PATHNAME
@@ -1454,6 +1601,12 @@
            MOVE    "6666"            TO  SPA-NAI-SYUBETU     (1 34 1)
            MOVE    "特別療養費"      TO  SPA-GMN-TSYURUINAME (1 34)
            MOVE    "T"               TO  SPA-GMN-TCHK-VALUE  (1 34)
+           IF      FLG-PRTNM-SET           =   ZERO
+               MOVE    SPA-NAI-PRTNM-G (1)
+                                     TO  SPA-GMN-TPRTNM-G    (1 34)
+               MOVE    SPA-NAI-PRTNM-G (2)
+                                     TO  SPA-GMN-TPRTNM-N-G  (1 34)
+           END-IF
       *
       *    自費の編集     
            MOVE    "35"              TO  SPA-NAI-PRTJYUNI    (1 35)
@@ -1461,6 +1614,12 @@
            MOVE    "8888"            TO  SPA-NAI-SYUBETU     (1 35 1)
            MOVE    "自費"            TO  SPA-GMN-TSYURUINAME (1 35)
            MOVE    "T"               TO  SPA-GMN-TCHK-VALUE  (1 35)
+           IF      FLG-PRTNM-SET           =   ZERO
+               MOVE    SPA-NAI-PRTNM-G (1)
+                                     TO  SPA-GMN-TPRTNM-G    (1 35)
+               MOVE    SPA-NAI-PRTNM-G (2)
+                                     TO  SPA-GMN-TPRTNM-N-G  (1 35)
+           END-IF
       *
       *    レセプト種別不明の編集     
            MOVE    "36"              TO  SPA-NAI-PRTJYUNI    (1 36)
@@ -1469,6 +1628,12 @@
            MOVE    "レセプト種別不明"
                                      TO  SPA-GMN-TSYURUINAME (1 36)
            MOVE    "T"               TO  SPA-GMN-TCHK-VALUE  (1 36)
+           IF      FLG-PRTNM-SET           =   ZERO
+               MOVE    SPA-NAI-PRTNM-G (1)
+                                         TO  SPA-GMN-TPRTNM-G    (1 36)
+               MOVE    SPA-NAI-PRTNM-G (2)
+                                         TO  SPA-GMN-TPRTNM-N-G  (1 36)
+           END-IF 
       *                                     
       *    特別療養費レセプトのページ数     
            INITIALIZE                  RECE07-REC
@@ -1854,6 +2019,84 @@
                    PERFORM 4107-PRTKBN-CHK-SEC
                WHEN    "ACTIVATE"      ALSO    "SYUKA"
                    PERFORM 4109-SYUKA-CHK-SEC
+               WHEN    "ACTIVATE"      ALSO    "PRTNM01"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM02"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM03"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM04"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM05"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM06"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM07"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM08"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM09"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM10"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM11"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM12"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM13"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM14"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM15"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM16"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM17"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM18"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM19"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM20"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM21"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM22"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM23"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM24"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM25"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM26"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM27"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM28"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM29"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM30"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM31"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM32"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM33"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM34"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM35"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM36"
+                   MOVE    MCP-WIDGET          TO  WRK-WIDGET (2:)
+                   MOVE    WRK-WIDGET3         TO  IDX 
+                   PERFORM 4110-TPRTNM-CHK-SEC
+               WHEN    "ACTIVATE"      ALSO    "PRTNM_N01"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM_N02"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM_N03"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM_N04"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM_N05"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM_N06"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM_N07"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM_N08"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM_N09"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM_N10"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM_N11"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM_N12"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM_N13"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM_N14"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM_N15"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM_N16"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM_N17"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM_N18"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM_N19"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM_N20"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM_N21"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM_N22"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM_N23"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM_N24"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM_N25"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM_N26"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM_N27"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM_N28"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM_N29"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM_N30"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM_N31"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM_N32"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM_N33"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM_N34"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM_N35"
+               WHEN    "ACTIVATE"      ALSO    "PRTNM_N36"
+                   MOVE    MCP-WIDGET          TO  WRK-WIDGET (2:)
+                   MOVE    WRK-WIDGET4         TO  IDX 
+                   PERFORM 4120-TPRTNM-N-CHK-SEC
            END-EVALUATE
       *
            .
@@ -2040,11 +2283,7 @@
            END-IF   
       *
            IF      SPA-ERRCD           =   SPACE
-               IF      IDX                 =   WRK-CONS-LINE-MAX
-                   MOVE    199                 TO  SPA-GMN-CUR
-               ELSE 
-                   ADD     1                   TO  SPA-GMN-CUR
-               END-IF
+               COMPUTE SPA-GMN-CUR         =   201 +   (IDX - 1) * 2 
            END-IF 
            .
        4104-TEDDATA-CHK-EXT.
@@ -2090,6 +2329,7 @@
                END-IF
       *        頁・件数の編集処理
                MOVE    "T"                 TO  SPA-GMN-SYOKBN
+               MOVE    ZERO                TO  FLG-PRTNM-SET
                PERFORM 3101-HENSYU-SEC
            END-IF         
            .
@@ -2204,6 +2444,7 @@
                END-IF
       *        頁・件数の編集処理
                MOVE    "T"                 TO  SPA-GMN-SYOKBN
+               MOVE    ZERO                TO  FLG-PRTNM-SET
                PERFORM 3101-HENSYU-SEC
            END-IF         
            .
@@ -2244,6 +2485,7 @@
            END-IF
       *    
       *    頁・件数の編集処理
+           MOVE    1                  TO  FLG-PRTNM-SET
            PERFORM 3101-HENSYU-SEC
       *        
            INITIALIZE                  SPA-GMN-TBL
@@ -2305,6 +2547,103 @@
            END-EVALUATE    
            .
        4109-SYUKA-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    プリンター入力処理
+      *****************************************************************
+       4110-TPRTNM-CHK-SEC             SECTION.
+      *
+           MOVE    201                TO  SPA-GMN-CUR
+      *
+           COMPUTE SPA-GMN-CUR         =   SPA-GMN-CUR     +
+                                          (IDX - 1) * 2 
+           MOVE    SPA-GMN-PAGE        TO  IDW
+      *
+           MOVE    R02-TPRTNM (IDX)    TO  SPA-GMN-TPRTNM-G (IDW IDX)
+      * 
+           IF      SPA-GMN-TPRTNM (IDW IDX)
+                                       =   SPACE   
+               MOVE    SPACE           TO  SPA-GMN-TPRTNM-G (IDW IDX)
+           ELSE
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       SPA-GMN-PRTNM-MAX
+                   IF      SPA-GMN-TPRTNM (IDW IDX)
+                                           =   SPA-GMN-PRTNML (IDY)
+                       MOVE    SPA-GMN-PRTNMLST (IDY)
+                                          TO  SPA-GMN-TPRTNM-G (IDW IDX)
+                       MOVE    SPA-GMN-PRTNM-MAX
+                                          TO  IDY
+                   END-IF
+               END-PERFORM
+           END-IF
+           IF      SPA-GMN-TPRTNMMEI (IDW IDX)
+                                          =   SPACE
+               MOVE    SPA-GMN-PRTNMLST (1)
+                                          TO  SPA-GMN-TPRTNM-G (IDW IDX)
+           END-IF    
+      *
+           IF      SPA-ERRCD           =   SPACE
+               IF      IDX                 =   WRK-CONS-LINE-MAX
+                   MOVE    199                 TO  SPA-GMN-CUR
+               ELSE 
+                   ADD     1                   TO  SPA-GMN-CUR
+               END-IF
+           END-IF 
+           .
+       4110-TPRTNM-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    プリンター（続紙）入力処理
+      *****************************************************************
+       4120-TPRTNM-N-CHK-SEC             SECTION.
+      *
+           MOVE    202                TO  SPA-GMN-CUR
+      *
+           COMPUTE SPA-GMN-CUR         =   SPA-GMN-CUR     +
+                                          (IDX - 1) * 2 
+      *
+           MOVE    SPA-GMN-PAGE        TO  IDW
+      *
+           MOVE    R02-TPRTNM-N (IDX)  TO  SPA-GMN-TPRTNM-N-G (IDW IDX)
+      * 
+           IF      SPA-GMN-TPRTNM-N (IDW IDX)
+                                       =   SPACE   
+               MOVE    SPACE           TO  SPA-GMN-TPRTNM-N-G (IDW IDX)
+           ELSE
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       SPA-GMN-PRTNM-MAX
+                   IF      SPA-GMN-TPRTNM-N (IDW IDX)
+                                           =   SPA-GMN-PRTNML (IDY)
+                       MOVE    SPA-GMN-PRTNMLST (IDY)
+                                          TO  SPA-GMN-TPRTNM-N-G
+                                                               (IDW IDX)
+                       MOVE    SPA-GMN-PRTNM-MAX
+                                          TO  IDY
+                   END-IF
+               END-PERFORM
+           END-IF
+           IF      SPA-GMN-TPRTNM-NMEI (IDW IDX)
+                                          =   SPACE
+               MOVE    SPA-GMN-PRTNMLST (1)
+                                          TO  SPA-GMN-TPRTNM-N-G
+                                                               (IDW IDX)
+           END-IF    
+      *
+           IF      SPA-ERRCD           =   SPACE
+               IF      IDX                 =   WRK-CONS-LINE-MAX
+                   MOVE    199                 TO  SPA-GMN-CUR
+               ELSE
+                   IF      SPA-GMN-SYOKBN     =   "T"
+                       COMPUTE SPA-GMN-CUR     =   SPA-GMN-CUR +   1
+                   ELSE
+                       MOVE    199                 TO  SPA-GMN-CUR
+                   END-IF
+               END-IF
+           END-IF 
+           .
+       4120-TPRTNM-N-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2391,6 +2730,7 @@
            AND   ( SPA-GMN-SYUKA   NOT =   "00" )
                MOVE    SPA-GMN-SYUKALST (1) TO  SPA-GMN-SYUKA-G
       *        頁・件数の編集処理
+               MOVE    1                    TO  FLG-PRTNM-SET
                PERFORM 3101-HENSYU-SEC
            END-IF
       *
@@ -2773,19 +3113,18 @@
            MOVE    WRK-RECE09-KEY  TO  SHELLTBL-ARG7 
            MOVE    "00000"         TO  SHELLTBL-ARG8
            MOVE    "99999"         TO  SHELLTBL-ARG9
-           EVALUATE   SPA-R01-RECE07-NYUGAIKBN
-               WHEN   "1"
-                   MOVE    SPA-NAI-2005-SYAPRTNM-N
-                                   TO  SHELLTBL-ARG11
-                   MOVE    SPA-NAI-2005-KKHPRTNM-N
-                                   TO  SHELLTBL-ARG12
-               WHEN   "2"
-                   MOVE    SPA-NAI-2005-SYAPRTNM
-                                   TO  SHELLTBL-ARG11
-                   MOVE    SPA-NAI-2005-KKHPRTNM
-                                   TO  SHELLTBL-ARG12
-           END-EVALUATE
-      *                                     
+      *****EVALUATE   SPA-R01-RECE07-NYUGAIKBN
+      *       WHEN   "1"
+      *           MOVE    SPA-NAI-2005-SYAPRTNM-N
+      *                            TO  SHELLTBL-ARG11
+      *           MOVE    SPA-NAI-2005-KKHPRTNM-N
+      *                            TO  SHELLTBL-ARG12
+      *       WHEN   "2"
+      *           MOVE    SPA-NAI-2005-SYAPRTNM
+      *                            TO  SHELLTBL-ARG11
+      *           MOVE    SPA-NAI-2005-KKHPRTNM
+      *                            TO  SHELLTBL-ARG12
+      *****END-EVALUATE
            MOVE    SPACE           TO  LNK-PRTKANRI-AREA
            INITIALIZE                  LNK-PRTKANRI-AREA
            MOVE    1               TO  LNK-PRTKANRI-RENNUM
@@ -2832,18 +3171,18 @@
            MOVE    LNK-PRTKANRI-PRTNM
                                    TO  SHELLTBL-ARG23
            MOVE    SPA-GMN-PRTKBN  TO  SHELLTBL-ARG24
-           EVALUATE   SPA-R01-RECE07-NYUGAIKBN
-               WHEN   "1"
-                   MOVE    SPA-NAI-2005-SYAPRTNM-NEXT-N
-                                   TO  SHELLTBL-ARG25
-                   MOVE    SPA-NAI-2005-KKHPRTNM-NEXT-N
-                                   TO  SHELLTBL-ARG26
-               WHEN   "2"
-                   MOVE    SPA-NAI-2005-SYAPRTNM-NEXT
-                                   TO  SHELLTBL-ARG25
-                   MOVE    SPA-NAI-2005-KKHPRTNM-NEXT
-                                   TO  SHELLTBL-ARG26
-           END-EVALUATE
+      *****EVALUATE   SPA-R01-RECE07-NYUGAIKBN
+      *        WHEN   "1"
+      *            MOVE    SPA-NAI-2005-SYAPRTNM-NEXT-N
+      *                            TO  SHELLTBL-ARG25
+      *            MOVE    SPA-NAI-2005-KKHPRTNM-NEXT-N
+      *                            TO  SHELLTBL-ARG26
+      *        WHEN   "2"
+      *            MOVE    SPA-NAI-2005-SYAPRTNM-NEXT
+      *                            TO  SHELLTBL-ARG25
+      *            MOVE    SPA-NAI-2005-KKHPRTNM-NEXT
+      *                            TO  SHELLTBL-ARG26
+      *****END-EVALUATE
            EVALUATE    SPA-RID1-FLG
                WHEN    "PV"
                    MOVE    "4"             TO  SHELLTBL-ARG27
@@ -3015,6 +3354,10 @@
                                    TO  SHELLTBL-ARG9
            MOVE    WRK-RECE08-PRTJYUN
                                    TO  SHELLTBL-ARG10
+           MOVE    SPA-GMN-TPRTNMMEI (IDW IDX)
+                                   TO  SHELLTBL-ARG11
+           MOVE    SPA-GMN-TPRTNM-NMEI (IDW IDX)
+                                   TO  SHELLTBL-ARG12
            MOVE    SPA-GMN-PRTKBN  TO  SHELLTBL-ARG24
            MOVE    SPA-GMN-PREFKBN TO  SHELLTBL-ARG28
            IF      WRK-RECE09-TEISYUTUSAKI =   "1"
@@ -3100,6 +3443,26 @@
            MOVE    WRK-RECE09-EDDATA
                                    TO  SHELLTBL-ARG9
            MOVE    WRK-RECE08-PRTJYUN  TO  SHELLTBL-ARG10
+           EVALUATE   SPA-R01-RECE07-NYUGAIKBN
+               WHEN   "1"
+                   MOVE    SPA-NAI-2005-SYAPRTNM-N
+                                   TO  SHELLTBL-ARG11
+                    MOVE    SPA-NAI-2005-SYAPRTNM-NEXT-N
+                                   TO  SHELLTBL-ARG12
+                   MOVE    SPA-NAI-2005-KKHPRTNM-N
+                                   TO  SHELLTBL-ARG25
+                   MOVE    SPA-NAI-2005-KKHPRTNM-NEXT-N
+                                   TO  SHELLTBL-ARG26
+               WHEN   "2"
+                   MOVE    SPA-NAI-2005-SYAPRTNM
+                                   TO  SHELLTBL-ARG11
+                   MOVE    SPA-NAI-2005-SYAPRTNM-NEXT
+                                   TO  SHELLTBL-ARG12
+                   MOVE    SPA-NAI-2005-KKHPRTNM
+                                   TO  SHELLTBL-ARG25
+                   MOVE    SPA-NAI-2005-KKHPRTNM-NEXT
+                                   TO  SHELLTBL-ARG26
+           END-EVALUATE
            MOVE    SPA-GMN-PRTKBN  TO  SHELLTBL-ARG24
            MOVE    SPA-GMN-PREFKBN TO  SHELLTBL-ARG28
            MOVE    SHELLTBL        TO  MCPDATA-REC
@@ -3639,10 +4002,21 @@
                                            TO  R02-TCHK-STATE    (IDX)
                                                R02-TSTDATA-STATE (IDX)
                                                R02-TEDDATA-STATE (IDX)
+                                               R02-TPRTNM-STATE  (IDX)
+                                               R02-TPRTNM-N-STATE(IDX)
                ELSE 
                    MOVE    WIDGET-NORMAL   TO  R02-TCHK-STATE    (IDX)
                                                R02-TSTDATA-STATE (IDX)
                                                R02-TEDDATA-STATE (IDX)
+                   IF       SPA-GMN-PRTJYUN    =   "05"
+                       MOVE    WIDGET-INSENSITIVE
+                                           TO  R02-TPRTNM-STATE  (IDX)
+                                               R02-TPRTNM-N-STATE(IDX)
+                   ELSE
+                       MOVE    WIDGET-NORMAL
+                                           TO  R02-TPRTNM-STATE  (IDX)
+                                               R02-TPRTNM-N-STATE(IDX)
+                   END-IF
                END-IF    
                MOVE    SPA-GMN-TSTDATA     (IDW IDX)
                                            TO  R02-TSTDATA    (IDX)
@@ -3656,6 +4030,18 @@
                                            TO  R02-TCHK-VALUE (IDX) 
                MOVE    SPA-GMN-TSYURUINAME (IDW IDX)
                                            TO  R02-TCHK-LABEL (IDX)
+               MOVE    SPA-GMN-TPRTNM-G    (IDW IDX)
+                                           TO  R02-TPRTNM     (IDX)
+               MOVE    SPA-GMN-TPRTNM-N-G  (IDW IDX)
+                                           TO  R02-TPRTNM-N   (IDX)
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       SPA-GMN-PRTNM-MAX
+                   MOVE    SPA-GMN-PRTNMLST (IDY)
+                                           TO  R02-TPRTNMLST   (IDX IDY)
+                                               R02-TPRTNM-NLST (IDX IDY)
+               END-PERFORM
+               MOVE    SPA-GMN-PRTNM-MAX   TO  R02-TPRTNM-COUNT   (IDX)
+                                               R02-TPRTNM-N-COUNT (IDX) 
                IF      SPA-GMN-TPRTFLG     (IDW IDX)
                                            =   "1"
                    MOVE    "済"            TO  R02-TPRTFLG        (IDX)
@@ -3935,7 +4321,151 @@
                     MOVE  "EDDATA36"    TO  MCP-WIDGET
              WHEN    109
                     MOVE  "CHK36"       TO  MCP-WIDGET
-             WHEN    180
+             WHEN    201
+                    MOVE  "PRTNM01"    TO  MCP-WIDGET
+             WHEN    203
+                    MOVE  "PRTNM02"    TO  MCP-WIDGET
+             WHEN    205
+                    MOVE  "PRTNM03"    TO  MCP-WIDGET
+             WHEN    207
+                    MOVE  "PRTNM04"    TO  MCP-WIDGET
+             WHEN    209
+                    MOVE  "PRTNM05"    TO  MCP-WIDGET
+             WHEN    211
+                    MOVE  "PRTNM06"    TO  MCP-WIDGET
+             WHEN    213
+                    MOVE  "PRTNM07"    TO  MCP-WIDGET
+             WHEN    215
+                    MOVE  "PRTNM08"    TO  MCP-WIDGET
+             WHEN    217
+                    MOVE  "PRTNM09"    TO  MCP-WIDGET
+             WHEN    219
+                    MOVE  "PRTNM10"    TO  MCP-WIDGET
+             WHEN    221
+                    MOVE  "PRTNM11"    TO  MCP-WIDGET
+             WHEN    223
+                    MOVE  "PRTNM12"    TO  MCP-WIDGET
+             WHEN    225
+                    MOVE  "PRTNM13"    TO  MCP-WIDGET
+             WHEN    227
+                    MOVE  "PRTNM14"    TO  MCP-WIDGET
+             WHEN    229
+                    MOVE  "PRTNM15"    TO  MCP-WIDGET
+             WHEN    231
+                    MOVE  "PRTNM16"    TO  MCP-WIDGET
+             WHEN    233
+                    MOVE  "PRTNM17"    TO  MCP-WIDGET
+             WHEN    235
+                    MOVE  "PRTNM18"    TO  MCP-WIDGET
+             WHEN    237
+                    MOVE  "PRTNM19"    TO  MCP-WIDGET
+             WHEN    239
+                    MOVE  "PRTNM20"    TO  MCP-WIDGET
+             WHEN    241
+                    MOVE  "PRTNM21"    TO  MCP-WIDGET
+             WHEN    243
+                    MOVE  "PRTNM22"    TO  MCP-WIDGET
+             WHEN    245
+                    MOVE  "PRTNM23"    TO  MCP-WIDGET
+             WHEN    247
+                    MOVE  "PRTNM24"    TO  MCP-WIDGET
+             WHEN    249
+                    MOVE  "PRTNM25"    TO  MCP-WIDGET
+             WHEN    251
+                    MOVE  "PRTNM26"    TO  MCP-WIDGET
+             WHEN    253
+                    MOVE  "PRTNM27"    TO  MCP-WIDGET
+             WHEN    255
+                    MOVE  "PRTNM28"    TO  MCP-WIDGET
+             WHEN    257
+                    MOVE  "PRTNM29"    TO  MCP-WIDGET
+             WHEN    259
+                    MOVE  "PRTNM30"    TO  MCP-WIDGET
+             WHEN    261
+                    MOVE  "PRTNM31"    TO  MCP-WIDGET
+             WHEN    263
+                    MOVE  "PRTNM32"    TO  MCP-WIDGET
+             WHEN    265
+                    MOVE  "PRTNM33"    TO  MCP-WIDGET
+             WHEN    267
+                    MOVE  "PRTNM34"    TO  MCP-WIDGET
+             WHEN    269
+                    MOVE  "PRTNM35"    TO  MCP-WIDGET
+             WHEN    271
+                    MOVE  "PRTNM36"    TO  MCP-WIDGET
+             WHEN    202
+                    MOVE  "PRTNM_N01"  TO  MCP-WIDGET
+             WHEN    204
+                    MOVE  "PRTNM_N02"  TO  MCP-WIDGET
+             WHEN    206
+                    MOVE  "PRTNM_N03"  TO  MCP-WIDGET
+             WHEN    208
+                    MOVE  "PRTNM_N04"  TO  MCP-WIDGET
+             WHEN    210
+                    MOVE  "PRTNM_N05"  TO  MCP-WIDGET
+             WHEN    212
+                    MOVE  "PRTNM_N06"  TO  MCP-WIDGET
+             WHEN    214
+                    MOVE  "PRTNM_N07"  TO  MCP-WIDGET
+             WHEN    216
+                    MOVE  "PRTNM_N08"  TO  MCP-WIDGET
+             WHEN    218
+                    MOVE  "PRTNM_N09"  TO  MCP-WIDGET
+             WHEN    220
+                    MOVE  "PRTNM_N10"  TO  MCP-WIDGET
+             WHEN    222
+                    MOVE  "PRTNM_N11"  TO  MCP-WIDGET
+             WHEN    224
+                    MOVE  "PRTNM_N12"  TO  MCP-WIDGET
+             WHEN    226
+                    MOVE  "PRTNM_N13"  TO  MCP-WIDGET
+             WHEN    228
+                    MOVE  "PRTNM_N14"  TO  MCP-WIDGET
+             WHEN    230
+                    MOVE  "PRTNM_N15"  TO  MCP-WIDGET
+             WHEN    232
+                    MOVE  "PRTNM_N16"  TO  MCP-WIDGET
+             WHEN    234
+                    MOVE  "PRTNM_N17"  TO  MCP-WIDGET
+             WHEN    236
+                    MOVE  "PRTNM_N18"  TO  MCP-WIDGET
+             WHEN    238
+                    MOVE  "PRTNM_N19"  TO  MCP-WIDGET
+             WHEN    240
+                    MOVE  "PRTNM_N20"  TO  MCP-WIDGET
+             WHEN    242
+                    MOVE  "PRTNM_N21"  TO  MCP-WIDGET
+             WHEN    244
+                    MOVE  "PRTNM_N22"  TO  MCP-WIDGET
+             WHEN    246
+                    MOVE  "PRTNM_N23"  TO  MCP-WIDGET
+             WHEN    248
+                    MOVE  "PRTNM_N24"  TO  MCP-WIDGET
+             WHEN    250
+                    MOVE  "PRTNM_N25"  TO  MCP-WIDGET
+             WHEN    252
+                    MOVE  "PRTNM_N26"  TO  MCP-WIDGET
+             WHEN    254
+                    MOVE  "PRTNM_N27"  TO  MCP-WIDGET
+             WHEN    256
+                    MOVE  "PRTNM_N28"  TO  MCP-WIDGET
+             WHEN    258
+                    MOVE  "PRTNM_N29"  TO  MCP-WIDGET
+             WHEN    260
+                    MOVE  "PRTNM_N30"  TO  MCP-WIDGET
+             WHEN    262
+                    MOVE  "PRTNM_N31"  TO  MCP-WIDGET
+             WHEN    264
+                    MOVE  "PRTNM_N32"  TO  MCP-WIDGET
+             WHEN    266
+                    MOVE  "PRTNM_N33"  TO  MCP-WIDGET
+             WHEN    268
+                    MOVE  "PRTNM_N34"  TO  MCP-WIDGET
+             WHEN    270
+                    MOVE  "PRTNM_N35"  TO  MCP-WIDGET
+             WHEN    272
+                    MOVE  "PRTNM_N36"  TO  MCP-WIDGET
+             WHEN    180 
                     MOVE  "PRTJYUN1"   TO  MCP-WIDGET
              WHEN    181
                     MOVE  "SYUKA"      TO  MCP-WIDGET
@@ -4074,6 +4604,30 @@
       *
            .
        530-RID3SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    プリンタ編集処理
+      *****************************************************************
+       5001-PRTNM-HENSYU-SEC            SECTION.
+      *
+           MOVE    SPACE               TO  WRK-GMN-PRTNM-G
+      *
+           IF      WRK-PRTNMMEI        =   SPACE
+               CONTINUE
+           ELSE
+               PERFORM VARYING IDXX    FROM    1   BY  1
+                       UNTIL   IDXX    >       SPA-GMN-PRTNM-MAX
+                   IF      WRK-PRTNMMEI    =   SPA-GMN-PRTNMMEIL (IDXX)
+                       MOVE    SPA-GMN-PRTNMLST (IDXX)
+                                              TO  WRK-GMN-PRTNM-G
+                       MOVE    SPA-GMN-PRTNM-MAX
+                                              TO  IDXX
+                   END-IF
+               END-PERFORM
+           END-IF
+           .
+       5001-PRTNM-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************

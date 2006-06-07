@@ -29,6 +29,8 @@
       *  02.07.01    NACL-藤原    05/12/02  レセ電データ複数枚対応
       *
       *  02.08.01    NACL-藤原    06/02/20  主科対応
+      *
+      *  03.00.01    NACL-藤原    06/05/29  印刷時のプリンター指定対応
       *****************************************************************
       *
        01  SPA-T01FREE.
@@ -111,14 +113,17 @@
                    07  SPA-CHK22-VALUE             PIC X(01).
       *
                05  SPA-3004-AREA.
-                   07  SPA-3004-MAX                PIC 9(02).
-                   07  SPA-3004-TBL                OCCURS  25.
+                   07  SPA-3004-MAX                PIC 9(03).
+                   07  SPA-3004-TBL                OCCURS  100.
+                       09  SPA-3004-KBNCD          PIC 9(03).
                        09  SPA-3004-SHELLID        PIC X(20).
                        09  SPA-3004-PARAKBN        PIC X(01). 
                        09  SPA-3004-PRTNM          PIC X(16).
+                       09  SPA-3004-PRTNM-BACK     PIC X(16).
                        09  SPA-3004-CHK.
                            11  SPA-3004-CHKFLG     PIC  X(01)
                                                    OCCURS   4.
+                       09  SPA-3004-SHORIMSG       PIC X(40).
       *
                05  SPA-NAI-1031-PRTNM              PIC X(16). 
       *
@@ -186,3 +191,43 @@
                    07  SPA-NAI-T02-PARA-TBL.
                        09  SPA-NAI-T02-PARA-TBL-O      OCCURS   100.
                            11  SPA-NAI-T02-TPTID       PIC 9(10).
+      *
+      *    プリンタ指定
+           03  SPA-T03-AREA.
+               05  SPA-GMN-T03-MAX                 PIC 9(04).
+               05  SPA-GMN-T03-PAGE                PIC 9(02).
+               05  SPA-GMN-T03-CUR                 PIC 9(02).
+               05  SPA-GMN-T03-NEXT                PIC 9(02).
+               05  SPA-GMN-T03-AREA.
+                   07  SPA-GMN-T03-PRTNMLST        OCCURS  100.
+                       09  SPA-GMN-T03-PRTNML      PIC X(02).
+                       09  SPA-GMN-T03-F1L         PIC X(01).
+                       09  SPA-GMN-T03-PRTNMMEIL   PIC X(16).
+                   07  SPA-GMN-T03-PRTNM-MAX       PIC 9(03).
+      * 
+                   07  SPA-GMN-T03-SHELLID-TBL.
+                       09  SPA-GMN-T03-SHELLID-TBL-O   OCCURS   30.
+                           11  SPA-GMN-T03-TRENNUM PIC 9(03).
+                           11  SPA-GMN-T03-TSHORIMSG
+                                                   PIC X(40).
+                           11  SPA-GMN-T03-TPRTNM  PIC X(16).
+                       09  SPA-GMN-T03-SHELLID-MAX PIC 9(02).
+      *                                             
+                   07  SPA-GMN-T03-KOUMOKU.
+                       09  SPA-GMN-T03-SELNUM      PIC 9(03).
+                       09  SPA-GMN-T03-PRTNM-G.
+                           11  SPA-GMN-T03-PRTNM   PIC X(02).
+                           11  SPA-GMN-F1          PIC X(01).
+                           11  SPA-GMN-T03-PRTNMMEI
+                                                   PIC X(16).
+                       09  SPA-GMN-T03-SHORIMSG    PIC X(40).
+      *
+               05  SPA-NAI-T03-AREA.
+                   07  SPA-NAI-T03-KOUMOKU.
+                       09  SPA-NAI-T03-SELNUM      PIC 9(03).
+      *
+                   07  SPA-NAI-T03-SHELLID-TBL.
+                       09  SPA-NAI-T03-SHELLID-TBL-O   OCCURS   30.
+                           11  SPA-NAI-T03-TSHELLID
+                                                   PIC X(20).
+                           11  SPA-NAI-T03-TKBNCD  PIC 9(03).

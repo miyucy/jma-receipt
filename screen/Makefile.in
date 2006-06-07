@@ -173,6 +173,7 @@ SCREEN_screen = \
 	SID1.glade \
 	T01.glade \
 	T02.glade \
+	T03.glade \
 	T99.glade \
 	TERR.glade \
 	TID1.glade \

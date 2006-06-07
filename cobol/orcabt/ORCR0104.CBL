@@ -123,6 +123,8 @@
       *                                     項の特例対応
       *  02.09.02    NACL-藤原    06/04/26  自立支援医療（精神通院医療）
       *                                     と生活保護の併用の点数欄記載
+      *  3.0.0
+      *  03.00.01    NACL-藤原    06/05/15  入退院履歴記載対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -167,6 +169,12 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE11-KEY
                                    FILE    STATUS  IS  STS-RECE11.
+      *    入退院履歴情報
+           SELECT  RECE12-FILE     ASSIGN  RECE12PARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  DYNAMIC
+                                   RECORD  KEY     IS  RECE12-KEY
+                                   FILE    STATUS  IS  STS-RECE12.
       *
       *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
@@ -206,6 +214,11 @@
        01  RECE11-REC. 
            COPY    "CPRCF011.INC".
       *
+       FD  RECE12-FILE.
+       01  RECE12-REC. 
+           COPY    "CPRCF068.INC"  REPLACING  //RECE68//
+                                   BY         //RECE12//.
+      *
       *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
@@ -236,6 +249,11 @@
            COPY    "CPCOMMONDAT2.INC"
                                    REPLACING  //RECE01//
                                    BY         //RECE11//.
+      *
+      *     入退院履歴情報ファイル 名称領域 
+           COPY    "CPCOMMONDAT2.INC"
+                                   REPLACING  //RECE01//
+                                   BY         //RECE12//.
       *
       *    エラーファイル 名称領域 
            COPY    "CPCOMMONDAT2.INC"
@@ -276,6 +294,7 @@
            03  STS-RECE            PIC X(02).
            03  STS-RECE09          PIC X(02).
            03  STS-RECE11          PIC X(02).
+           03  STS-RECE12          PIC X(02).
            03  STS-RECEERR         PIC X(02).
            03  STS-RECE02X         PIC X(02).  
       *
@@ -288,6 +307,7 @@
            03  FLG-RECE08          PIC 9(01).
            03  FLG-RECE09          PIC 9(01).
            03  FLG-RECE11          PIC 9(01).
+           03  FLG-RECE12          PIC 9(01).
            03  FLG-KANRIMST        PIC 9(01).
            03  FLG-HKNNUM          PIC 9(01).
            03  FLG-KUGIRI          PIC 9(01).
@@ -309,6 +329,7 @@
            03  FLG-SYS-1901        PIC 9(01).
            03  FLG-SYS-1902        PIC 9(01).
            03  FLG-SYS-2008        PIC 9(01).
+           03  FLG-LINE            PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -500,6 +521,20 @@
                        09  WRK-BYOMEI2R-TENKI  PIC X(04).
                        09  WRK-BYOMEI2R-TENKIYMD
                                                PIC X(06).
+      *                 
+      *    入退院履歴編集（適用欄）
+           03  WRK-NYUTAI-RIREKI-AREA.
+               05  WRK-NYUTAI-RIREKI           PIC X(52).
+               05  WRK-NYUTAI-RIREKI-W         REDEFINES
+                                               WRK-NYUTAI-RIREKI.
+                   07  WRK-NYUTAI-MSG          PIC X(12).
+                   07  WRK-NYUTAI-NYUINYMD     PIC X(18).
+                   07  WRK-NYUTAI-FL1          PIC X(02).
+                   07  WRK-NYUTAI-TAIINYMD     PIC X(18).
+                   07  WRK-NYUTAI-FL2          PIC X(02).
+      *
+      *    入退院履歴編集（自院歴−入院中区分）
+           03  WRK-NYUINCHUKBN                 PIC X(01).
       *                 
       *    保険履歴編集（適用欄）
            03  WRK-HKN-RIREKI-AREA.
@@ -1035,6 +1070,9 @@
            MOVE    "RECE110"           TO  RECE11PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE11PARA-TERMID
       *
+           MOVE    "RECE120"           TO  RECE12PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE12PARA-TERMID
+      *
            MOVE    "RECEERR"           TO  RECEERR-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
       *
@@ -1071,6 +1109,12 @@
            OPEN    INPUT               RECE11-FILE
            IF  STS-RECE11            NOT =   ZERO
                DISPLAY "*** ORCR0104 RECE11 OPEN ERR  ***" STS-RECE11
+               MOVE    2               TO  SPA-STS
+           END-IF
+      *
+           OPEN    INPUT               RECE12-FILE
+           IF  STS-RECE12            NOT =   ZERO
+               DISPLAY "*** ORCR0710 RECE12 OPEN ERR  ***" STS-RECE12
                MOVE    2               TO  SPA-STS
            END-IF
            .
@@ -1352,6 +1396,10 @@
                                         =   SPACE
                MOVE    ZERO             TO
                                         SYS-2005-RECESYUBETU-KISAIKBN
+           END-IF
+           IF      SYS-2005-NYUTAIINREKI-KSIKBN
+                                   =   SPACE
+               MOVE    "0"             TO  SYS-2005-NYUTAIINREKI-KSIKBN
            END-IF
       *         
       *    レセプト編綴順情報
@@ -1768,6 +1816,14 @@
       *
       *    帳票編集<傷病名>処理
            PERFORM 320-HC101-BYOMEI-HEN-SEC
+      *
+      *    帳票編集<入退院履歴>処理
+           IF    ( SYS-2005-NYUTAIINREKI-KSIKBN
+                                   =   "1" )               
+           AND   ( RECE02-NYUINRRK-FLG
+                                   =   "1" )               
+               PERFORM 380-HC101-NYUTAI-RIREKI-HEN-SEC
+           END-IF
       *
       *    帳票編集<手術歴>処理
            PERFORM 380-HC101-OPECOM-HEN-SEC 
@@ -4659,24 +4715,38 @@
       *****************************************************************
        340-HC101-ZAI-HEN-SEC      SECTION.
       *
-      *    摘要欄に病名が表示されている場合、１行あける
-           IF  WRK-LINETEK             >   ZERO
+           MOVE    ZERO            TO  FLG-LINE
       *
-               IF  WRK-LINETEK          >=   WRK-TEKIYOU-LINE
-                   PERFORM 34120-PAGE-SEC
-               END-IF    
-               MOVE    1           TO  FLG-KUGIRI
-               PERFORM 34110-KUGIRI-LINE-SEC
-               MOVE    ZERO        TO  FLG-KUGIRI   
-           END-IF
+      *****摘要欄に病名が表示されている場合、１行あける
+      *****IF  WRK-LINETEK             >   ZERO
+      *
+      *****    IF  WRK-LINETEK          >=   WRK-TEKIYOU-LINE
+      *****        PERFORM 34120-PAGE-SEC
+      *****    END-IF    
+      *****    MOVE    1           TO  FLG-KUGIRI
+      *****    PERFORM 34110-KUGIRI-LINE-SEC
+      *****    MOVE    ZERO        TO  FLG-KUGIRI   
+      *****END-IF
       *
            IF    ( RECE02-TEISYOTOKU   =   SPACE )
            OR    ( RECE02-ZAITAKU      =   SPACE )
                CONTINUE
            ELSE
+      *        摘要欄に病名が表示されている場合、１行あける
+               IF  WRK-LINETEK             >   ZERO
+      *
+                   IF  WRK-LINETEK          >=   WRK-TEKIYOU-LINE
+                       PERFORM 34120-PAGE-SEC
+                   END-IF    
+                   MOVE    1           TO  FLG-KUGIRI
+                   PERFORM 34110-KUGIRI-LINE-SEC
+                   MOVE    ZERO        TO  FLG-KUGIRI
+                   MOVE    1           TO  FLG-LINE   
+               END-IF
+      *
                IF  WRK-LINETEK           >   WRK-TEKIYOU-LINE
                    PERFORM 34120-PAGE-SEC
-               END-IF    
+               END-IF
                ADD     1               TO  WRK-LINETEK
                IF      CNT-PAGE        =   1   
                    EVALUATE    RECE02-TEISYOTOKU
@@ -4754,6 +4824,7 @@
                NOT INVALID
                    PERFORM 990-RECE061-NEXT-SEC
            END-START
+      *
            PERFORM
                UNTIL  ( FLG-RECE061           =   1 )
                OR     ( RECE02-HOSPID    NOT =   RECE061-HOSPID      )
@@ -4770,6 +4841,21 @@
                OR     ( RECE02-HOJOKBN-KEY
                                          NOT =   RECE061-HOJOKBN     )
                OR     ( RECE02-TEKSTYMD  NOT =   RECE061-TEKSTYMD    )
+      *
+      *        適用欄に剤の記載が必要なとき区切り線がまだ記載されていないとき
+               IF      FLG-LINE            =   ZERO
+      *            摘要欄に記載がある場合、１行あける
+                   IF  WRK-LINETEK             >   ZERO
+      *
+                       IF  WRK-LINETEK          >=   WRK-TEKIYOU-LINE
+                           PERFORM 34120-PAGE-SEC
+                       END-IF    
+                       MOVE    1           TO  FLG-KUGIRI
+                       PERFORM 34110-KUGIRI-LINE-SEC
+                       MOVE    ZERO        TO  FLG-KUGIRI
+                   END-IF
+                   MOVE    1           TO  FLG-LINE   
+               END-IF
       *
                MOVE    ZERO                  TO  FLG-KUGIRI
                IF  RECE061-ZAINUM        NOT =   WRK-R061-ZAINUM-O
@@ -5249,6 +5335,159 @@
       *
            .
        370-HC101-HKN-RIREKI-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    帳票編集<入退院履歴情報>処理
+      *****************************************************************
+       380-HC101-NYUTAI-RIREKI-HEN-SEC      SECTION.
+      *
+      *    最初の行のとき２行あける
+           COMPUTE WRK-WLINETEK    =   WRK-LINETEK +   2                                       
+           IF  WRK-WLINETEK        >   WRK-TEKIYOU-LINE
+               PERFORM 34120-PAGE-SEC
+           END-IF    
+           ADD     2               TO  WRK-LINETEK     
+      *
+           MOVE    ZERO                TO  WRK-NYUINCHUKBN
+      * 
+      *    最初の行のコメントのセット
+           MOVE    SPACE               TO  WRK-NYUTAI-RIREKI-AREA
+           MOVE    "入退院履歴"        TO  WRK-NYUTAI-MSG
+      *          
+           INITIALIZE                      RECE12-REC
+           MOVE    RECE02-HOSPID       TO  RECE12-HOSPID
+           MOVE    RECE02-SRYYM        TO  RECE12-SRYYM
+           MOVE    RECE02-NYUGAIKBN    TO  RECE12-NYUGAIKBN
+           MOVE    RECE02-PTID         TO  RECE12-PTID
+           MOVE    RECE02-RECEKA       TO  RECE12-RECEKA
+           MOVE    RECE02-TEISYUTUSAKI TO  RECE12-TEISYUTUSAKI
+           MOVE    RECE02-RECESYUBETU  TO  RECE12-RECESYUBETU
+           MOVE    RECE02-HKNJANUM-KEY TO  RECE12-HKNJANUM
+           MOVE    RECE02-HOJOKBN-KEY  TO  RECE12-HOJOKBN
+           MOVE    RECE02-TEKSTYMD     TO  RECE12-TEKSTYMD
+      *
+           START   RECE12-FILE
+               KEY IS    >=   RECE12-KEY
+               INVALID
+                   MOVE    1           TO  FLG-RECE12
+               NOT INVALID
+                   PERFORM 900-RECE12-NEXT-SEC
+           END-START
+      *
+           PERFORM UNTIL ( FLG-RECE12           =  1                   )
+                   OR    ( RECE02-HOSPID    NOT =  RECE12-HOSPID       )
+                   OR    ( RECE02-SRYYM     NOT =  RECE12-SRYYM        )
+                   OR    ( RECE02-NYUGAIKBN NOT =  RECE12-NYUGAIKBN    )
+                   OR    ( RECE02-PTID      NOT =  RECE12-PTID         )
+                   OR    ( RECE02-RECEKA    NOT =  RECE12-RECEKA       )
+                   OR    ( RECE02-TEISYUTUSAKI
+                                             NOT =  RECE12-TEISYUTUSAKI)
+                   OR    ( RECE02-RECESYUBETU
+                                             NOT =  RECE12-RECESYUBETU )
+                   OR    ( RECE02-HKNJANUM-KEY
+                                             NOT =  RECE12-HKNJANUM    )
+                   OR    ( RECE02-HOJOKBN-KEY
+                                             NOT =  RECE12-HOJOKBN     )
+                   OR    ( RECE02-TEKSTYMD   NOT =  RECE12-TEKSTYMD    )
+      *
+               IF      WRK-NYUINCHUKBN     =   ZERO
+                   MOVE    RECE12-NYUINYMD     TO  WRK-SYMD
+                   PERFORM 31012-SEIWA-HEN-SEC
+                   MOVE    LNK-DAY2-EDTYMD3(5:18)    TO  
+                                               WRK-NYUTAI-NYUINYMD
+                   MOVE    "〜"                TO  WRK-NYUTAI-FL1
+               END-IF
+      *                          
+               IF      RECE12-TAIINYMD (1:6)   
+                                           >   RECE02-SRYYM
+                   MOVE    SPACE               TO  WRK-NYUTAI-TAIINYMD
+                   CONTINUE
+               ELSE
+                   MOVE    RECE12-TAIINYMD     TO  WRK-SYMD
+                   PERFORM 31012-SEIWA-HEN-SEC
+                   MOVE    LNK-DAY2-EDTYMD3(5:18)    TO  
+                                               WRK-NYUTAI-TAIINYMD
+               END-IF
+      *
+               IF      RECE12-NYUINCHUKBN  =   ZERO
+                   IF  WRK-LINETEK         >=  WRK-TEKIYOU-LINE
+                       PERFORM 34120-PAGE-SEC
+                   END-IF    
+                   ADD     1                   TO  WRK-LINETEK
+      *
+                   INSPECT WRK-NYUTAI-RIREKI-AREA  REPLACING   ALL "  "
+                                                               BY  "　"  
+                   IF      CNT-PAGE        =   1   
+                       MOVE    WRK-NYUTAI-RIREKI-AREA
+                                           TO  HC06-TEKIYO (WRK-LINETEK)
+                   ELSE                    
+                       EVALUATE    SYS-2005-NEXTPRTKBN-G
+                           WHEN    "0"   
+                               MOVE    WRK-NYUTAI-RIREKI-AREA
+                                           TO  HC06-TEKIYO (WRK-LINETEK)
+                           WHEN    "1"   
+                               MOVE    WRK-NYUTAI-RIREKI-AREA
+                                           TO  HC061-TEKIYO(WRK-LINETEK)
+                           WHEN    "2"   
+                               MOVE    WRK-NYUTAI-RIREKI-AREA
+                                           TO  HC062-TEKIYO(WRK-LINETEK)
+                           WHEN    "3"   
+                               MOVE    WRK-NYUTAI-RIREKI-AREA
+                                           TO  HC063-TEKIYO(WRK-LINETEK)
+                       END-EVALUATE
+                   END-IF                    
+                   MOVE    SPACE           TO  WRK-NYUTAI-RIREKI-AREA
+               END-IF
+      *
+               MOVE    RECE12-NYUINCHUKBN  TO  WRK-NYUINCHUKBN    
+      *
+               PERFORM 900-RECE12-NEXT-SEC
+           END-PERFORM
+      *
+      *    最後の履歴が入院中のときに編集する
+           IF      WRK-NYUTAI-RIREKI-AREA
+                                       NOT =   SPACE                   
+               IF  WRK-LINETEK         >=  WRK-TEKIYOU-LINE
+                   PERFORM 34120-PAGE-SEC
+               END-IF    
+               ADD     1                   TO  WRK-LINETEK
+      *
+               INSPECT WRK-NYUTAI-RIREKI-AREA  REPLACING   ALL "  "
+                                                           BY  "　"  
+               IF      CNT-PAGE        =   1   
+                   MOVE    WRK-NYUTAI-RIREKI-AREA
+                                       TO  HC06-TEKIYO (WRK-LINETEK)
+               ELSE                    
+                   EVALUATE    SYS-2005-NEXTPRTKBN-G
+                       WHEN    "0"   
+                           MOVE    WRK-NYUTAI-RIREKI-AREA
+                                       TO  HC06-TEKIYO (WRK-LINETEK)
+                       WHEN    "1"   
+                           MOVE    WRK-NYUTAI-RIREKI-AREA
+                                       TO  HC061-TEKIYO(WRK-LINETEK)
+                       WHEN    "2"   
+                           MOVE    WRK-NYUTAI-RIREKI-AREA
+                                       TO  HC062-TEKIYO(WRK-LINETEK)
+                       WHEN    "3"   
+                           MOVE    WRK-NYUTAI-RIREKI-AREA
+                                       TO  HC063-TEKIYO(WRK-LINETEK)
+                   END-EVALUATE
+               END-IF                    
+               MOVE    SPACE           TO  WRK-NYUTAI-RIREKI-AREA
+           END-IF
+      *
+      *    最後の行の後に１行あける
+           IF      WRK-NYUTAI-RIREKI-AREA
+                                       =   SPACE                   
+               IF  WRK-LINETEK         >=  WRK-TEKIYOU-LINE
+                   PERFORM 34120-PAGE-SEC
+               END-IF    
+               ADD     1               TO  WRK-LINETEK     
+           END-IF
+      *
+           .
+       380-HC101-NYUTAI-RIREKI-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -6569,6 +6808,7 @@
            CLOSE                       RECE061-FILE
                                        RECE09-FILE
                                        RECE11-FILE
+           CLOSE                       RECE12-FILE
       *
            DISPLAY "RECE02  CNT-IN  :"  CNT-RECE02
            DISPLAY "RECE02X CNT-IN  :"  CNT-RECE02X
@@ -6881,6 +7121,22 @@
       *
            .
        990-RECE11-READ-EXT.
+           EXIT.
+      *
+      ****************************************************************
+      *    入退院履歴情報データ読み
+      ****************************************************************
+       900-RECE12-NEXT-SEC           SECTION.
+      *
+           READ    RECE12-FILE      NEXT
+               AT  END
+                   MOVE    1         TO  FLG-RECE12
+               NOT AT  END
+                   MOVE    ZERO      TO  FLG-RECE12
+           END-READ
+      *
+           .
+       900-RECE12-NEXT-EXT.
            EXIT.
       *
       *****************************************************************

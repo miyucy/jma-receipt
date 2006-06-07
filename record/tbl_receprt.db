@@ -15,7 +15,7 @@ tbl_receprt	{
         PREFNUM             char(2);
         PTNUM               char(20);
         SRYYM               char(6);
-        RENNUM              number(2);
+        RENNUM              number(3);
         RECENUM             number(6);
         HKNKBN              char(1);
         KANANAME            char(100);
@@ -27,6 +27,7 @@ tbl_receprt	{
         HKNJANUM_S          char(8);
         FORMID              char(20);
         PRTDATA             varchar(10000);
+        PRTNM               char(16);
         TERMID              char(64);
         OPID                char(16);
 #-----> ธกบ๗อันเฬÜ

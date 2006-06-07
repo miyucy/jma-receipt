@@ -30,6 +30,9 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-藤原    04/11/29  引数にエラーファイル名を追加
       *  01.00.02    NACL-藤原    04/12/01  印刷中止処理の追加
+      *
+      *  03.00.01    NACL-藤原    06/05/29  tbl_prevkanri のプリンタ名を
+      *                                     tbl_prtdata より設定
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -636,7 +639,7 @@
       *    MOVE    PRTKANRI-SRYYM      TO  PRVKANRI-SRYYM
            MOVE    PRTDATA-SRYYM       TO  PRVKANRI-SRYYM
            MOVE    PRTKANRI-SKYYMD     TO  PRVKANRI-SKYYMD
-           MOVE    PRTKANRI-PRTNM      TO  PRVKANRI-PRTNM
+           MOVE    PRTDATA-PRTNM       TO  PRVKANRI-PRTNM
            MOVE    PRTKANRI-TBL-GROUP  TO  
                                        PRVKANRI-TBL-GROUP-RRK(1)
            MOVE    LNK-PRTKANRI-PRIORITY
