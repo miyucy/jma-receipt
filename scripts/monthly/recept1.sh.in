@@ -45,6 +45,7 @@ fi
         
         rm  /var/tmp/RECE0*
         rm  /var/tmp/RECE11*
+        rm  /var/tmp/RECE12*
 
         if [ ${2} -eq  '1' ]; then
            LOG_FILE="/home/orca/recept1a.log"
