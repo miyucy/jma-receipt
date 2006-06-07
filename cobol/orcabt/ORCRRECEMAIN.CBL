@@ -33,6 +33,7 @@
       *  02.08.02    NACL-藤原    06/03/28  山形県のレセプト様式変更対応
       *
       *  03.00.01    NACL-藤原    06/05/29  印刷時のプリンター指定対応
+      *  03.00.01    NACL-竹田    06/06/07  算定履歴取り込み変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1320,10 +1321,15 @@
                PERFORM  UNTIL
                         (FLG-SANTEI         =    1)
                    MOVE    SANTEI-REC   TO      MCPDATA-REC
+                IF SANTEI-SRYYM         <       WRK-PARA-A8
+                   CONTINUE
+                ELSE
                    MOVE    "DBINSERT"   TO      MCP-FUNC
                    MOVE    PATH-TBL-SANTEI-KEY
                                         TO      MCP-PATH
                    PERFORM  900-REALDB-INS-SEC
+                   DISPLAY "take santei insert "
+                END-IF
                    MOVE    PATH-TBL-SANTEI-PRV-KEY2
                                         TO      MCP-PATH
                    PERFORM  900-SANTEIPRV-READ-SEC
