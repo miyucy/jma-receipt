@@ -1844,8 +1844,11 @@
                                                                  (IDY)
                    END-IF
       *            入力コメント番号
-                   IF     (SPA-COM-INPUTCD(IDX)(1:1)   =   "8"  )  OR
-                          (SPA-COM-INPUTCD(IDX)(1:3)   =   "008")
+                   IF     (SPA-COM-INPUTCD(IDX)(1:2) =   "83"
+                                                     OR  "84" )
+                      OR  (SPA-COM-INPUTCD(IDX)(1:4) =   "0083"
+                                                     OR  "0084")
+                      OR  (SPA-COM-INPUTCD(IDX)      =   "810000001")
                        ADD     1                   TO  WRK-MEINUM
                        MOVE    WRK-MEINUM          TO  WKSRY-INPUTNUM
                                                                  (IDY)
