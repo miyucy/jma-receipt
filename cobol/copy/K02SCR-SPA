@@ -393,6 +393,7 @@
                    07  SPA-K98-NAI-KENSANO       PIC 9(02).
                    07  SPA-K98-NAI-HOUKATU       PIC X(01).
                05  SPA-K98-GMN-ALL               PIC X(01).
+               05  SPA-K98-OLD-SYORI             PIC X(01).
       *
                05  SPA-K98-GMN-TBL.
                    07  SPA-K98-GMN-TBLREC        OCCURS   200.
