@@ -91,6 +91,7 @@
       *    特定薬剤治療管理初回
            03  FLG-SYOKAI          PIC 9(01).
            03  FLG-SYOKAI2         PIC 9(01).
+           03  FLG-SYOKAI3         PIC 9(01).
       *    指導料
            03  FLG-SIDOU           PIC 9(01).
       *
@@ -2383,6 +2384,7 @@
                MOVE    LNK-ORCSC-TOKTEI-YMD    TO  WRK-SYOKAI-YMD
            END-IF
       *
+           MOVE    ZERO                TO  FLG-SYOKAI3
       *    特定薬剤治療管理加算がある時、初回とする
            PERFORM VARYING     IDX1    FROM    1   BY  1
                    UNTIL      (IDX1        >   200     )   OR
@@ -2398,6 +2400,7 @@
                               (LNK-ORCSC-SYORIFLG  =   1  AND
                                SPA-SRYYMD(7:2)     =   SANTEI-MSANTEID)
                            MOVE    SPACE           TO  WRK-SYOKAI-YMD
+                           MOVE    1               TO  FLG-SYOKAI3
                        ELSE
       *!                   MOVE    "0132"      TO  WRK-ERRCD
       *!                   MOVE    "1"         TO  WRK-COM-CUR (IDX-Z)
@@ -2488,9 +2491,14 @@
            IF     (WRK-SYOKAI-YMD  NOT =   SPACE  )  AND
                   (LNK-ORCSC-PG        =   "K02"  )
       *        算定回数計算
-               PERFORM 10013-SANTEI-CNT-SEC
+      *********PERFORM 10013-SANTEI-CNT-SEC
       *        初回算定日＋３月
                MOVE    WRK-SYOKAI-YMD      TO  WRK-SYOKAI-YMD3
+      *        コメントの初回日判定
+               IF     (WRK-COM-YM      NOT =   SPACE )  AND
+                      (WRK-COM-YM          <   WRK-SYOKAI-YMD(1:6))
+                   MOVE   WRK-COM-YM       TO  WRK-SYOKAI-YMD3(1:6)
+               END-IF
                COMPUTE WRK-SYO-MM3         =   WRK-SYO-MM3   +   3
                IF      WRK-SYO-MM3         >   12
                    COMPUTE WRK-SYO-YY3     =   WRK-SYO-YY3   +   1
@@ -2576,14 +2584,16 @@
                PERFORM 100112-COMMT1-SEC
            END-IF
       *    初回算定日をセットする
-           IF      WRK-SYOKAI-YMD      =   SPACE
-               MOVE    SPA-SRYYMD          TO  WRK-SYOKAI-YMD
+           IF      FLG-SYOKAI3         =   1
+               IF     (WRK-SYOKAI-YMD      =   SPACE )  OR
+                      (WRK-SYOKAI-YMD      <   SPA-SRYYMD)
+                   MOVE    SPA-SRYYMD          TO  WRK-SYOKAI-YMD
+               END-IF
            END-IF
       *
            IF      WRK-SYOKAI-YMD      >   LNK-ORCSC-TOKTEI-YMD
                MOVE    WRK-SYOKAI-YMD      TO  LNK-ORCSC-TOKTEI-YMD
            END-IF
-
       *
            .
        10011-TOKUYAKU-EXT.

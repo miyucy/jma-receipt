@@ -91,6 +91,7 @@
       *    特定薬剤治療管理初回
            03  FLG-SYOKAI          PIC 9(01).
            03  FLG-SYOKAI2         PIC 9(01).
+           03  FLG-SYOKAI3         PIC 9(01).
       *    指導料
            03  FLG-SIDOU           PIC 9(01).
       *
@@ -908,9 +909,9 @@
            IF      (FLG-DEL            =   ZERO )  AND
                    (WRK-ERRCD          =   SPACE)
       *        初診料が算定済みであること
-               IF     (LNK-ORCSC-SYOYMD    =   SPACE ) OR
-                     ((LNK-ORCSC-SYORIFLG  =   1  )  AND
-                      (SPA-SYOYMD1         =   SPA-SRYYMD ))
+               IF     (LNK-ORCSC-SYOYMD    =   SPACE )
+      *******    OR  ((LNK-ORCSC-SYORIFLG  =   1  )  AND
+      *******         (SPA-SYOYMD1         =   SPA-SRYYMD ))
                    MOVE    "1020"          TO  WRK-ERRCD
                    MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
                END-IF
@@ -2374,6 +2375,7 @@
            END-IF
       *
       *    特定薬剤治療管理加算がある時、初回とする
+           MOVE    ZERO                TO  FLG-SYOKAI3
            PERFORM VARYING     IDX1    FROM    1   BY  1
                    UNTIL      (IDX1        >   200     )   OR
                               (WRK-GMN-INPUTCD (IDX1)  =   SPACE ) OR
@@ -2388,6 +2390,7 @@
                               (LNK-ORCSC-SYORIFLG  =   1  AND
                                SPA-SRYYMD(7:2)     =   SANTEI-MSANTEID)
                            MOVE    SPACE           TO  WRK-SYOKAI-YMD
+                           MOVE    1               TO  FLG-SYOKAI3
                        ELSE
       *!                   MOVE    "0132"      TO  WRK-ERRCD
       *!                   MOVE    "1"         TO  WRK-COM-CUR (IDX-Z)
@@ -2478,9 +2481,14 @@
            IF     (WRK-SYOKAI-YMD  NOT =   SPACE  )  AND
                   (LNK-ORCSC-PG        =   "K02"  )
       *        算定回数計算
-               PERFORM 10013-SANTEI-CNT-SEC
+      *********PERFORM 10013-SANTEI-CNT-SEC
       *        初回算定日＋３月
                MOVE    WRK-SYOKAI-YMD      TO  WRK-SYOKAI-YMD3
+      *        コメントの初回日判定
+               IF     (WRK-COM-YM      NOT =   SPACE )  AND
+                      (WRK-COM-YM          <   WRK-SYOKAI-YMD(1:6))
+                   MOVE   WRK-COM-YM       TO  WRK-SYOKAI-YMD3(1:6)
+               END-IF
                COMPUTE WRK-SYO-MM3         =   WRK-SYO-MM3   +   3
                IF      WRK-SYO-MM3         >   12
                    COMPUTE WRK-SYO-YY3     =   WRK-SYO-YY3   +   1
@@ -2490,7 +2498,6 @@
                EVALUATE    WRK-COM-INPUTCD (IDX-Z)
       *            特定薬剤治療管理料
                    WHEN    "113000410"
-      ***************  IF      WRK-SANTEI-CNT      >=  3
                        IF      SPA-SRYYMD(1:6)     >=  WRK-SYOKAI-YMD3
                                                                (1:6)
       ***H14.03.08 現在 振替えなしで、警告表示
@@ -2514,14 +2521,10 @@
                        END-IF
       *            特定薬剤治療管理料（４月目以上）はエラー
                    WHEN    "113000510"
-      *****************IF      WRK-SANTEI-CNT      >=  3
                        IF      SPA-SRYYMD(1:6)     >=  WRK-SYOKAI-YMD3
                                                                (1:6)
                            CONTINUE
                        ELSE
-      *!                   MOVE    "0130"          TO  WRK-ERRCD
-      *!                   MOVE    "1"             TO  WRK-COM-CUR
-      *!                                                      (IDX-Z)
       *                   警告へ
                           IF     (WRK-COM-KZMFLG (IDX-Z)   =   SPACE )
                              AND (LNK-ORCSC-KEI-IDX        =   ZERO  )
@@ -2566,8 +2569,11 @@
                PERFORM 100112-COMMT1-SEC
            END-IF
       *    初回算定日をセットする
-           IF      WRK-SYOKAI-YMD      =   SPACE
-               MOVE    SPA-SRYYMD          TO  WRK-SYOKAI-YMD
+           IF      FLG-SYOKAI3         =   1
+               IF     (WRK-SYOKAI-YMD      =   SPACE )  OR
+                      (WRK-SYOKAI-YMD      <   SPA-SRYYMD)
+                   MOVE    SPA-SRYYMD          TO  WRK-SYOKAI-YMD
+               END-IF
            END-IF
       *
            IF      WRK-SYOKAI-YMD      >   LNK-ORCSC-TOKTEI-YMD
@@ -3097,8 +3103,6 @@
                    IF      WRK-WYM         =   LNK-DAY1-WYMD(2:4)
                        MOVE    SPA-SRYYMD      TO  LNK-ORCSC-TOKTEI-YMD
                    ELSE
-      *!               MOVE    "0133"          TO  WRK-ERRCD
-      *!               MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
       *                警告とする
                        IF     (WRK-COM-KZMFLG (IDX-Z)  =   SPACE )
                           AND (LNK-ORCSC-KEI-IDX       =   ZERO  )
@@ -3109,13 +3113,10 @@
                                                           (IDX-Z)
                            MOVE    "1"          TO  WRK-COM-KZMFLG
                                                           (IDX-Z)
-      ******           ELSE
-     ******                MOVE    SPACE        TO  LNK-ORCSC-TOKTEI-YMD
                        END-IF
                    END-IF
                END-IF
            END-IF
-      *
       *
       *    特定薬剤治療管理初回算定コメントがあれば初回とする
            IF     (WRK-COM-INPUTCD (IDX-Z) =   "840000038" ) AND
@@ -4661,6 +4662,21 @@
                               (SPA-ERRCD   NOT =   SPACE  )  OR
                               (WRK-GMN-INPUTCD(IDX-Z)  =   SPACE  AND
                                WRK-COM-INPUTCD(IDX-Z)  =   SPACE  )
+             IF      WRK-COM-SRYKBN (IDX-Z)  =   "13"
+      *
+      *        初回算定日をセットする
+               EVALUATE    WRK-COM-INPUTCD (IDX-Z)
+      *            特定薬剤治療管理料
+                   WHEN    "113000410"
+      *            特定薬剤治療管理料（ジギタリス製剤等）
+                   WHEN    "180000110"
+                   WHEN    "180000210"
+      *            特定薬剤治療管理料（４月目以上）はエラー
+                   WHEN    "113000510"
+                       IF      LNK-ORCSC-TOKTEI-YMD    =   SPACE
+                           MOVE    SPA-SRYYMD  TO  LNK-ORCSC-TOKTEI-YMD
+                       END-IF
+               END-EVALUATE
       *        特定薬剤治療加算料チェック
                IF      WRK-COM-INPUTCD (IDX-Z)     =   "180000110"  OR
                                                        "180000210"
@@ -4694,6 +4710,7 @@
                        END-IF
                    END-IF
                END-IF
+             END-IF
            END-PERFORM
       *
            .
