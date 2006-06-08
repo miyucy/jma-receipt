@@ -366,7 +366,7 @@
              UNTIL   (LNK-ORCHCN02SUB-SYUBETUCD(NYUIN-IDX) = SPACE) OR
                      (FLG-MATCH        =   1 )     OR
                      (NYUIN-IDX    >   5)
-      *        ≈¿øÙ•ﬁ•π•ø§Ë§Í∆˛±°Œ¡ÃææŒ§ŒºË∆¿° •Ô°º•Ø»Ê≥”Õ—°À
+      *        ≈¿øÙ•ﬁ•π•ø§Ë§Í∆˛±°Œ¡ÃææŒ§ŒºË∆¿° •Ô°º•Ø§»§Œ»Ê≥”Õ—°À
                INITIALIZE    TNS-TENSU-REC
                MOVE   NSRY-SRYCD(1)   TO    TNS-SRYCD
                MOVE   NACCT-SRYYM     TO    TNS-YUKOSTYMD(1:6)
@@ -374,34 +374,49 @@
                MOVE   "01"            TO    TNS-YUKOSTYMD(7:2)
                                             TNS-YUKOEDYMD(7:2)
                PERFORM    910-TENSU-READ-SEC
-                 IF   (NSRY-SRYCD(1)  =
-                            LNK-ORCHCN02SUB-SYUBETUCD(NYUIN-IDX))  AND
-                      (TNS-NAME   = 
-                            LNK-ORCHCN02SUB-SYUBETUMEI(NYUIN-IDX))
-
-                     MOVE   1      TO    FLG-MATCH
-                     IF   NACCT-SRYYM  =  LNK-ORCHCN02SUB-NYUINYMD(1:6)
-                          MOVE   LNK-ORCHCN02SUB-NYUINYMD(7:2) 
-                                          TO   WRK-DDX
-                          MOVE   WRK-DD9  TO   ST-IDX
-                     ELSE
-                          MOVE    1       TO   ST-IDX
-                     END-IF
-                     IF   NACCT-SRYYM  =  LNK-ORCHCN02SUB-TAIINYMD(1:6)
-                          MOVE   LNK-ORCHCN02SUB-TAIINYMD(7:2) 
-                                          TO   WRK-DDX
-                          MOVE   WRK-DD9  TO   ED-IDX
-                     ELSE
-                          MOVE   31       TO   ED-IDX
-                     END-IF
-                     PERFORM   VARYING   IDX1   FROM  ST-IDX  BY  1
-                       UNTIL   IDX1      >   ED-IDX
-                           IF   NACCT-DAY(IDX1)    NOT =  ZERO
-                                ADD   1     TO
-                                        LNK-ORCHCN02SUB-NISSU(NYUIN-IDX)
-                           END-IF
-                     END-PERFORM
-                 END-IF
+               IF    (NACCT-SRYYM      >=   "200604")    AND
+                     (NSRY-SRYCD(1)    =    "190097010"  OR
+                                            "190097110"  OR
+                                            "190119510"  OR
+                                            "190119610")
+                   MOVE   "111111111"     TO    NSRY-SRYCD(1)
+                   MOVE   "Õ≠æ≤ø«Œ≈ΩÍ∆˛±°¥À‹Œ¡£±"  TO   TNS-NAME
+               END-IF
+               IF    (NACCT-SRYYM      >=   "200604")    AND
+                     (NSRY-SRYCD(1)    =    "190097210"  OR
+                                            "190097310"  OR
+                                            "190119710"  OR
+                                            "190119810")
+                   MOVE   "222222222"     TO    NSRY-SRYCD(1)
+                   MOVE   "Õ≠æ≤ø«Œ≈ΩÍ∆˛±°¥À‹Œ¡£≤"  TO   TNS-NAME
+               END-IF
+               IF   (NSRY-SRYCD(1)  =
+                          LNK-ORCHCN02SUB-SYUBETUCD(NYUIN-IDX))  AND
+                    (TNS-NAME   = 
+                          LNK-ORCHCN02SUB-SYUBETUMEI(NYUIN-IDX))
+                    MOVE   1      TO    FLG-MATCH
+                    IF   NACCT-SRYYM  =  LNK-ORCHCN02SUB-NYUINYMD(1:6)
+                         MOVE   LNK-ORCHCN02SUB-NYUINYMD(7:2) 
+                                         TO   WRK-DDX
+                         MOVE   WRK-DD9  TO   ST-IDX
+                    ELSE
+                         MOVE    1       TO   ST-IDX
+                    END-IF
+                    IF   NACCT-SRYYM  =  LNK-ORCHCN02SUB-TAIINYMD(1:6)
+                         MOVE   LNK-ORCHCN02SUB-TAIINYMD(7:2) 
+                                         TO   WRK-DDX
+                         MOVE   WRK-DD9  TO   ED-IDX
+                    ELSE
+                         MOVE   31       TO   ED-IDX
+                    END-IF
+                    PERFORM   VARYING   IDX1   FROM  ST-IDX  BY  1
+                      UNTIL   IDX1      >   ED-IDX
+                          IF   NACCT-DAY(IDX1)    NOT =  ZERO
+                               ADD   1     TO
+                                       LNK-ORCHCN02SUB-NISSU(NYUIN-IDX)
+                          END-IF
+                    END-PERFORM
+               END-IF
            END-PERFORM
       *
            IF   (FLG-MATCH     =     ZERO)   AND
@@ -418,7 +433,29 @@
                                             TNS-YUKOEDYMD(7:2)
                PERFORM    910-TENSU-READ-SEC
                MOVE     TNS-NAME      TO
-                                 LNK-ORCHCN02SUB-SYUBETUMEI(NYUIN-IDX)
+                             LNK-ORCHCN02SUB-SYUBETUMEI(NYUIN-IDX)
+               IF    (NACCT-SRYYM      >=   "200604")    AND
+                     (LNK-ORCHCN02SUB-SYUBETUCD(NYUIN-IDX)  =
+                                            "190097010"  OR
+                                            "190097110"  OR
+                                            "190119510"  OR
+                                            "190119610")
+                   MOVE   "111111111"     TO
+                               LNK-ORCHCN02SUB-SYUBETUCD(NYUIN-IDX)
+                   MOVE   "Õ≠æ≤ø«Œ≈ΩÍ∆˛±°¥À‹Œ¡£±"  TO
+                               LNK-ORCHCN02SUB-SYUBETUMEI(NYUIN-IDX)
+               END-IF
+               IF    (NACCT-SRYYM      >=   "200604")    AND
+                     (LNK-ORCHCN02SUB-SYUBETUCD(NYUIN-IDX)  =
+                                            "190097210"  OR
+                                            "190097310"  OR
+                                            "190119710"  OR
+                                            "190119810")
+                   MOVE   "222222222"     TO
+                               LNK-ORCHCN02SUB-SYUBETUCD(NYUIN-IDX)
+                   MOVE   "Õ≠æ≤ø«Œ≈ΩÍ∆˛±°¥À‹Œ¡£≤"  TO
+                               LNK-ORCHCN02SUB-SYUBETUMEI(NYUIN-IDX)
+               END-IF
       *
                IF   NACCT-SRYYM  =  LNK-ORCHCN02SUB-NYUINYMD(1:6)
                     MOVE   LNK-ORCHCN02SUB-NYUINYMD(7:2) 
