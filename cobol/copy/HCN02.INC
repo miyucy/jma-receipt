@@ -6,8 +6,10 @@
             02  HCN02-PTNAME    PIC X(48).
             02  HCN02-PTADRS    PIC X(68).
             02  HCN02-PTTEL PIC X(15).
-            02  HCN02-PTSEX PIC X(2)    OCCURS  2 TIMES.
-            02  HCN02-PTBIRTHG  PIC X(2)        OCCURS  4 TIMES.
+            02  HCN02-PTSEX
+                    PIC X(2)    OCCURS  2 TIMES.
+            02  HCN02-PTBIRTHG
+                    PIC X(2)    OCCURS  4 TIMES.
             02  HCN02-PTBIRTHYMD.
               03  HCN02-PTBIRTHYY PIC X(4).
               03  HCN02-PTBIRTHMM PIC X(4).
@@ -21,7 +23,10 @@
               03  HCN02-TAIINYY   PIC X(4).
               03  HCN02-TAIINMM   PIC X(4).
               03  HCN02-TAIINDD   PIC X(4).
-            02  HCN02-SYUBETU   PIC X(26).
+            02  HCN02-SYUBETU
+                    PIC X(50)   OCCURS  3 TIMES.
+            02  HCN02-NISSU
+                    PIC X(12)   OCCURS  3 TIMES.
             02  HCN02-KIKAN PIC X(4).
             02  HCN02-KIKANSTRYMD.
               03  HCN02-KIKANSTRYY    PIC X(4).
@@ -31,9 +36,11 @@
               03  HCN02-KIKANENDYY    PIC X(4).
               03  HCN02-KIKANENDMM    PIC X(4).
               03  HCN02-KIKANENDDD    PIC X(4).
+            02  HCN02-YOBI  PIC X(12).
             02  HCN02-TKIKAN    PIC X(4).
             02  HCN02-TKIKANYMD.
               03  HCN02-TKIKANYY  PIC X(4).
               03  HCN02-TKIKANMM  PIC X(4).
               03  HCN02-TKIKANDD  PIC X(4).
-            02  HCN02-SONOTA    PIC X(92)       OCCURS  8 TIMES.
+            02  HCN02-SONOTA
+                    PIC X(92)   OCCURS  8 TIMES.
