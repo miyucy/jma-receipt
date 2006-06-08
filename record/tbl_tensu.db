@@ -814,7 +814,7 @@ path	key12m 	{
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
 			AND   SRYCD      >=  :SRYCD
 			AND   SRYCD      <=  :UPSRYCD
-			ORDER  BY  KANANAME
+			ORDER  BY KANANAME
 		;
 	};
 };
@@ -1172,6 +1172,36 @@ path	key25	{
 			AND   NYUKHNKSNKBN  >  0
 			ORDER   BY          KOUHYOJYUNNUM
 			;
+	};
+};
+
+path	key13s 	{
+	DBSELECT	{
+		DECLARE tbl_tensu_key13s_csr CURSOR FOR
+		SELECT *
+		FROM tbl_tensu
+			WHERE YUKOSTYMD  <=  :YUKOSTYMD
+			AND   YUKOEDYMD  >=  :YUKOEDYMD
+			AND   SRYCD      >=  :SRYCD
+			AND   SRYCD      <=  :UPSRYCD
+			ORDER  BY  TEN,
+                                   SRYCD
+		;
+	};
+};
+
+path	key13m1 	{
+	DBSELECT	{
+		DECLARE tbl_tensu_key13m1_csr CURSOR FOR
+		SELECT distinct a.*
+		FROM tbl_tensu a,tbl_inputcd b
+			WHERE a.SRYCD    =   b.SRYCD
+			AND   YUKOSTYMD  <=  :YUKOSTYMD
+			AND   YUKOEDYMD  >=  :YUKOEDYMD
+			AND   b.SRYCD    >=  :SRYCD
+                        AND   b.SRYCD    <=  :UPSRYCD
+			ORDER  BY  a.TEN
+		;
 	};
 };
 
