@@ -193,6 +193,10 @@
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
       *
+      *    退院証明書入院取得サブ
+           COPY    "CPORCHCN02SUB.INC".
+      *
+      *
       *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
       *
@@ -502,6 +506,8 @@
       *****************************************************************
        3101-NTYMD-HEN-SEC              SECTION.
       *
+           INITIALIZE                      ORCHCN02SUB-AREA
+      *
            INITIALIZE                  ORCSNTYMDAREA
            MOVE    PTINF-HOSPID        TO  SNTYMD-HOSPID
            MOVE    PTINF-PTID          TO  SNTYMD-PTID
@@ -517,23 +523,72 @@
                                                TO  WRK-SYMD
                    PERFORM 31012-SEIWA-HEN-SEC
                    MOVE    WRK-HENYMDG(5:4)    TO  HCN02-NYUINYY
+                                                   HCN02-KIKANSTRYY
                    MOVE    WRK-HENYMDG(11:4)   TO  HCN02-NYUINMM
+                                                   HCN02-KIKANSTRMM
                    MOVE    WRK-HENYMDG(17:4)   TO  HCN02-NYUINDD
+                                                   HCN02-KIKANSTRDD
+                   MOVE    SNTYMD-NYUINYMD(IDX2)
+                                       TO  LNK-ORCHCN02SUB-NYUINYMD
       *
       *            退院日
                    MOVE    SNTYMD-TAIINYMD(IDX2)
                                                TO  WRK-SYMD
                    PERFORM 31012-SEIWA-HEN-SEC
                    MOVE    WRK-HENYMDG(5:4)    TO  HCN02-TAIINYY
+                                                   HCN02-KIKANENDYY
+                                                   HCN02-TKIKANYY
                    MOVE    WRK-HENYMDG(11:4)   TO  HCN02-TAIINMM
+                                                   HCN02-KIKANENDMM
+                                                   HCN02-TKIKANMM
                    MOVE    WRK-HENYMDG(17:4)   TO  HCN02-TAIINDD
+                                                   HCN02-KIKANENDDD
+                                                   HCN02-TKIKANDD
+                   MOVE    SNTYMD-TAIINYMD(IDX2)
+                                       TO  LNK-ORCHCN02SUB-TAIINYMD
       *
                    MOVE    SNTYMD-MAX          TO  IDX2
       *
                END-IF
            END-PERFORM
       *
+      *    退院証明書用入院取得サブ
       *
+           MOVE    PTINF-HOSPID        TO  LNK-ORCHCN02SUB-HOSPID
+           MOVE    PTINF-PTID          TO  LNK-ORCHCN02SUB-PTID
+           CALL    "ORCHCN02SUB"       USING   ORCHCN02SUB-AREA
+           IF      LNK-ORCHCN02SUB-RC  NOT =   ZERO
+               DISPLAY "LNK-ORCHCN02SUB-RC=" LNK-ORCHCN02SUB-RC 
+           END-IF
+      *
+           IF    LNK-ORCHCN02SUB-SYUBETUCD(1)   NOT =   SPACE
+               MOVE    LNK-ORCHCN02SUB-SYUBETUMEI(1)
+                                           TO   HCN02-SYUBETU(1)
+               MOVE  LNK-ORCHCN02SUB-NISSU(1)
+                                           TO   WRK-Z4
+               MOVE  WRK-Z4                TO   HCN02-NISSU(1)
+               MOVE  "日間"                TO   HCN02-NISSU(1)(5:)
+           END-IF
+           IF    LNK-ORCHCN02SUB-SYUBETUCD(2)   NOT =   SPACE
+               MOVE    LNK-ORCHCN02SUB-SYUBETUMEI(2)
+                                           TO   HCN02-SYUBETU(2)
+               MOVE  LNK-ORCHCN02SUB-NISSU(2)
+                                           TO   WRK-Z4
+               MOVE  WRK-Z4                TO   HCN02-NISSU(2)
+               MOVE  "日間"                TO   HCN02-NISSU(2)(5:)
+           END-IF
+           IF    LNK-ORCHCN02SUB-SYUBETUCD(3)   NOT =   SPACE
+               MOVE    LNK-ORCHCN02SUB-SYUBETUMEI(3)
+                                           TO   HCN02-SYUBETU(3)
+               MOVE  LNK-ORCHCN02SUB-NISSU(3)
+                                           TO   WRK-Z4
+               MOVE  WRK-Z4                TO   HCN02-NISSU(3)
+               MOVE  "日間"                TO   HCN02-NISSU(3)(5:)
+           END-IF
+           COMPUTE   WRK-Z4   =   LNK-ORCHCN02SUB-NISSU(1)   +
+                                  LNK-ORCHCN02SUB-NISSU(2)   +
+                                  LNK-ORCHCN02SUB-NISSU(3)
+           MOVE  WRK-Z4                    TO   HCN02-KIKAN
            .
        3101-NTYMD-HEN-EXT.
            EXIT.
