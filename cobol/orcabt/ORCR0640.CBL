@@ -197,6 +197,9 @@
       *  02.09.12    NACL-門脇    06/05/23  外泊時の入院基本料取得修正
       *  02.09.13    NACL-門脇    06/05/31  川崎市国保、相模原市国保の
       *                                     対応取り止め
+      *
+      *  03.00.01    NACL-藤原    06/06/07  ＯＣＲエリアの記号番号の数字
+      *                                     記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -635,8 +638,10 @@
            03  WRK-CHK-ICHIBUGAKU                      PIC 9(07).
       *
            03  WRK-ZENKAKU                             PIC X(80).
-           03  WRK-NUM                                 PIC X(80).
-           03  WRK-NUM-X                               PIC X(10). 
+           03  WRK-NUM.
+               05  WRK-NUM-X                           PIC X(10).
+               05  FILLER                              PIC X(70).
+           03  WRK-NUM-9                               PIC 9(10). 
            03  WRK-STIDX                               PIC 9(02).
            03  WRK-EDIDX                               PIC 9(02).
            03  WRK-SRYCD-X.
@@ -9042,29 +9047,19 @@
            IF      WRK-3SYU-KBN           =   ALL "1" AND 
                    RECE62-HKNNUM          =   SPACE
       *        ３種の場合（８桁）
-               IF      RECE62-KOHJKYSNUM(SEIHIDX) =       SPACE
-                   MOVE  ZERO               TO      OCR2-KIGO
-               ELSE
-                   INITIALIZE                       ORCSNUMAREA
-                   MOVE    RECE62-KOHJKYSNUM(SEIHIDX)
-                                            TO      SNUM-INX
-                   CALL    "ORCSNUM"        USING   ORCSNUMAREA
-                   IF      SNUM-RC          =       ZERO
-                       MOVE   SNUM-OUTNUM
-                                        TO      OCR2-KIGO
-                   ELSE
-                       MOVE   ZERO      TO      OCR2-KIGO
-                   END-IF
-               END-IF
+               MOVE    RECE62-KOHJKYSNUM (SEIHIDX)
+                                           TO  WRK-ZENKAKU
+               PERFORM 800-NUM-ZENKAKU-HENKAN-SEC
+               MOVE    WRK-NUM-9           TO  OCR2-KIGO
                MOVE    ZERO                TO  OCR2-NUM
            ELSE
                MOVE    RECE62-KIGO         TO  WRK-ZENKAKU
                PERFORM 800-NUM-ZENKAKU-HENKAN-SEC
-               MOVE    WRK-NUM (1:IDY)     TO  OCR2-KIGO
+               MOVE    WRK-NUM-9           TO  OCR2-KIGO
       *
                MOVE    RECE62-NUM          TO  WRK-ZENKAKU
                PERFORM 800-NUM-ZENKAKU-HENKAN-SEC
-               MOVE    WRK-NUM (1:IDY)     TO  OCR2-NUM
+               MOVE    WRK-NUM-9           TO  OCR2-NUM
            END-IF
       *チェックディジット２
            INITIALIZE                           LNK-CHKDGT-AREA
@@ -9304,6 +9299,7 @@
            MOVE    ZERO                TO  WRK-STIDX
                                            WRK-EDIDX 
            MOVE    SPACE               TO  WRK-NUM
+           MOVE    ZERO                TO  WRK-NUM-9
       *
       *    空白のときはゼロ 
            IF      WRK-ZENKAKU          =       SPACE
@@ -9358,10 +9354,10 @@
                                WHEN    "９"
                                    MOVE    "9"     TO  WRK-NUM (IDX3:1)
                            END-EVALUATE
-                       ELSE
-                           MOVE    ZERO            TO  WRK-NUM
-                           MOVE    WRK-EDIDX       TO  IDX
-                           MOVE    10              TO  IDX3
+      *****************ELSE
+      *****************    MOVE    ZERO            TO  WRK-NUM
+      *****************    MOVE    WRK-EDIDX       TO  IDX
+      *****************    MOVE    10              TO  IDX3
                        END-IF
                    END-PERFORM
                    MOVE    IDX3                TO  IDY     
@@ -9369,9 +9365,17 @@
       *        半角数字に変換（数字以外のときはゼロ）
                    INSPECT WRK-ZENKAKU(WRK-STIDX:)  REPLACING   ALL " "
                                                                 BY  "0"
-                   IF      WRK-ZENKAKU(WRK-STIDX:)      NOT NUMERIC
-                       MOVE    ZERO                TO  WRK-NUM
-                       MOVE    10                  TO  IDY   
+                   IF      WRK-ZENKAKU(WRK-STIDX:)     NOT NUMERIC
+                       PERFORM VARYING IDX     FROM    WRK-STIDX  BY  1
+                               UNTIL   IDX     >       WRK-EDIDX
+                           IF      WRK-ZENKAKU (IDX:1) >=  "0" AND
+                                                       <=  "9"
+                               ADD     1           TO  IDX3
+                               MOVE    WRK-ZENKAKU (IDX:1)
+                                                   TO  WRK-NUM (IDX3:1)
+                           END-IF
+                       END-PERFORM    
+                       MOVE    IDX3                TO  IDY     
                    ELSE
                        COMPUTE IDY     =   WRK-EDIDX   -
                                            WRK-STIDX   +   1
@@ -9380,17 +9384,14 @@
                END-IF
            END-IF
       *
-           IF      IDY                 >   10
-               MOVE    1                   TO  IDX
+           INITIALIZE                      ORCSNUMAREA
+           MOVE    WRK-NUM-X           TO  SNUM-INX
+           CALL    "ORCSNUM"           USING   ORCSNUMAREA
+           IF      SNUM-RC             =   ZERO
+               MOVE    SNUM-OUTNUM         TO  WRK-NUM-9
            ELSE
-               COMPUTE IDX     =   11      -   IDY
+               MOVE    ZERO                TO  WRK-NUM-9 
            END-IF
-           MOVE    ZERO                TO  WRK-NUM-X
-           MOVE    WRK-NUM (1:IDY)     TO  WRK-NUM-X (IDX:)
-           MOVE    SPACE               TO  WRK-NUM
-           MOVE    WRK-NUM-X           TO  WRK-NUM (1:10)
-           MOVE    10                  TO  IDY
-       
       *
            .
        800-NUM-ZENKAKU-HENKAN-EXT.
