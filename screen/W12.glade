@@ -1784,38 +1784,6 @@
 	</widget>
 
 	<widget>
-	  <class>GtkLabel</class>
-	  <name>label239</name>
-	  <x>48</x>
-	  <y>155</y>
-	  <width>170</width>
-	  <height>16</height>
-	  <label>レセプトコメント</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
-	  <xalign>0</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label240</name>
-	  <x>48</x>
-	  <y>175</y>
-	  <width>170</width>
-	  <height>16</height>
-	  <label>（症状詳記）記録区分</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
-	  <xalign>0</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
 	  <class>GtkPandaCombo</class>
 	  <name>SYARECEKBN_COMBO</name>
 	  <x>204</x>
@@ -2131,6 +2099,38 @@
 	  <width>200</width>
 	  <height>24</height>
 	  <label>日計表記録条件（合計点数）</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label240</name>
+	  <x>48</x>
+	  <y>175</y>
+	  <width>170</width>
+	  <height>16</height>
+	  <label>                     記録区分</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label239</name>
+	  <x>48</x>
+	  <y>155</y>
+	  <width>170</width>
+	  <height>16</height>
+	  <label>（手術歴・保険歴）</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
