@@ -587,11 +587,25 @@
            END-IF
            COMPUTE   WRK-Z4   =   LNK-ORCHCN02SUB-NISSU(1)   +
                                   LNK-ORCHCN02SUB-NISSU(2)   +
-                                  LNK-ORCHCN02SUB-NISSU(3)
+                                  LNK-ORCHCN02SUB-NISSU(3)   +
+                                  LNK-ORCHCN02SUB-NISSU(4)   +
+                                  LNK-ORCHCN02SUB-NISSU(5)
            MOVE  WRK-Z4                    TO   HCN02-KIKAN
       *
            MOVE   LNK-ORCHCN02SUB-TKIKAN   TO   WRK-Z4
            MOVE   WRK-Z4                   TO   HCN02-TKIKAN
+      *
+      *    予備エリアの印字
+           IF    (LNK-ORCHCN02SUB-SYUBETUCD(4)   =  SPACE)  AND
+                 (LNK-ORCHCN02SUB-SYUBETUCD(5)   =  SPACE)
+               CONTINUE
+           ELSE
+               MOVE  "他"                  TO   HCN02-YOBI(1:2)
+               COMPUTE   WRK-Z4   =   LNK-ORCHCN02SUB-NISSU(4)   +
+                                      LNK-ORCHCN02SUB-NISSU(5)
+               MOVE  WRK-Z4                TO   HCN02-YOBI(3:4)
+               MOVE  "日有"                TO   HCN02-YOBI(7:4)
+           END-IF
       *
            .
        3101-NTYMD-HEN-EXT.

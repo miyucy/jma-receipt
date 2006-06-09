@@ -308,7 +308,7 @@
            MOVE    LNK-ORCHCN02SUB-PTID     TO  STUSAN-PTID
            MOVE    LNK-ORCHCN02SUB-TAIINYMD TO  STUSAN-KJNYMD
            CALL    "ORCSTUSAN"     USING        ORCSTUSANAREA
-           MOVE    STUSAN-NISSU04           TO  LNK-ORCHCN02SUB-TKIKAN
+           MOVE    STUSAN-NISSU05           TO  LNK-ORCHCN02SUB-TKIKAN
       *
       *
       *   結果表示
