@@ -589,6 +589,10 @@
                                   LNK-ORCHCN02SUB-NISSU(2)   +
                                   LNK-ORCHCN02SUB-NISSU(3)
            MOVE  WRK-Z4                    TO   HCN02-KIKAN
+      *
+           MOVE   LNK-ORCHCN02SUB-TKIKAN   TO   WRK-Z4
+           MOVE   WRK-Z4                   TO   HCN02-TKIKAN
+      *
            .
        3101-NTYMD-HEN-EXT.
            EXIT.

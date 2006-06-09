@@ -190,8 +190,8 @@
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    保険算定用年齢・割合計算サブ
-           COPY    "CPORCSAGECHK.INC".
+      *    通算日数取得サブ
+           COPY "CPORCSTUSAN.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -302,53 +302,28 @@
            PERFORM   910-DB-CLOSE-SEC
       *
       *
-      *選定療養情報の取得
-      *     MOVE    ZERO                    TO  FLG-SENTEI-SET
-      *     MOVE    ZERO                    TO  FLG-NYUINACCT
-      *     INITIALIZE                          NYUINACCT-REC
-      *     MOVE    LNK-ORCHCN02SUB-HOSPID   TO  NACCT-HOSPID
-      *     MOVE    LNK-ORCHCN02SUB-PTID     TO  NACCT-PTID
-      *     MOVE    LNK-ORCHCN02SUB-SANTEIYM TO  NACCT-SRYYM
-      *     MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
-      *     MOVE    "key22"                 TO  MCP-PATHNAME
-      *     PERFORM 910-NYUINACCT-SELECT-SEC
-      *     IF      FLG-NYUINACCT           =   ZERO
-      *         MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-      *         MOVE    "key22"             TO  MCP-PATHNAME
-      *         PERFORM   910-NYUINACCT-READ-SEC
-      *         PERFORM   UNTIL   (FLG-NYUINACCT    =   1)
-      *            選定入院の退避
-      *             PERFORM    VARYING   IDX1   FROM   1   BY   1
-      *                        UNTIL     IDX1   >   31
-      *                 IF    (WRK-NYUINKHN(IDX1) NOT = SPACE) 
-      *                 AND   (NACCT-DAY(IDX1)    NOT =  ZERO) 
-      *                     MOVE   NACCT-DAY(IDX1)
-      *                                        TO  TBL-SENTEI (IDX1)
-      *                     MOVE     1         TO  FLG-SENTEI-SET 
-      *                 END-IF
-      *             END-PERFORM
-      *             MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
-      *             MOVE    "key22"                 TO  MCP-PATHNAME
-      *             PERFORM 910-NYUINACCT-READ-SEC
-      *         END-PERFORM
-      *     END-IF
-      **    入院会計クローズ
-      *     MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
-      *     MOVE    "key22"                 TO  MCP-PATHNAME
-      *     PERFORM   910-DB-CLOSE-SEC
-      **
+      *選定対象日数の取得
+           INITIALIZE                       ORCSTUSANAREA
+           MOVE    LNK-ORCHCN02SUB-HOSPID   TO  STUSAN-HOSPID
+           MOVE    LNK-ORCHCN02SUB-PTID     TO  STUSAN-PTID
+           MOVE    LNK-ORCHCN02SUB-TAIINYMD TO  STUSAN-KJNYMD
+           CALL    "ORCSTUSAN"     USING        ORCSTUSANAREA
+           MOVE    STUSAN-NISSU04           TO  LNK-ORCHCN02SUB-TKIKAN
+      *
       *
       *   結果表示
-           PERFORM    VARYING   IDX1   FROM  1  BY  1
-                      UNTIL     (IDX1   >     5)
-                DISPLAY  "IDX1 = " IDX1
-                DISPLAY  "LNK-ORCHCN02SUB-SYUBETUCD = "
-                          LNK-ORCHCN02SUB-SYUBETUCD(IDX1)
-                DISPLAY  "LNK-ORCHCN02SUB-SYUBETUMEI = "
-                          LNK-ORCHCN02SUB-SYUBETUMEI(IDX1)
-                DISPLAY  "LNK-ORCHCN02SUB-NISSU = "
-                          LNK-ORCHCN02SUB-NISSU(IDX1)
-           END-PERFORM
+      *     PERFORM    VARYING   IDX1   FROM  1  BY  1
+      *                UNTIL     (IDX1   >     5)
+      *          DISPLAY  "IDX1 = " IDX1
+      *          DISPLAY  "LNK-ORCHCN02SUB-SYUBETUCD = "
+      *                    LNK-ORCHCN02SUB-SYUBETUCD(IDX1)
+      *          DISPLAY  "LNK-ORCHCN02SUB-SYUBETUMEI = "
+      *                    LNK-ORCHCN02SUB-SYUBETUMEI(IDX1)
+      *          DISPLAY  "LNK-ORCHCN02SUB-NISSU = "
+      *                    LNK-ORCHCN02SUB-NISSU(IDX1)
+      *     END-PERFORM
+            DISPLAY  "LNK-ORCHCN02SUB-TKIKAN = " LNK-ORCHCN02SUB-TKIKAN
+            DISPLAY  "STUSAN-RC = " STUSAN-RC
       *
       *
            .
