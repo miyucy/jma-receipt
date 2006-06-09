@@ -182,6 +182,7 @@
       *  02.09.01    NACL-ÌçÏÆ    06/04/19  ´ä¼ê¸©ÃÏÊý¸øÈñÂÐ±þ
       *  02.09.02    NACL-ÌçÏÆ    06/05/02  ¼«Î©»Ù±ç¿À¸Í»ÔÂÐ±þ
       *  02.09.03    NACL-ÌçÏÆ    06/05/18  ²¬»³¸©À¾°ÀÁÒÂ¼Âà¿¦¼Ô¹ñÊÝ£²³äÂÐ±þ
+      *  02.09.04    NACL-ÌçÏÆ    06/06/09  ¼«Î©»Ù±ç¿À¸Í»ÔÂÐ±þ½¤Àµ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -4261,7 +4262,11 @@
                             MOVE  MAX-KAI-KOHI2-D  TO  MAX-KAI-KOHI1-D
                             MOVE  MAX-KAI-KOHI2-M  TO  MAX-KAI-KOHI1-M
                             MOVE  MAX-KIN-KOHI2-D  TO  MAX-KIN-KOHI1-D
-                            MOVE  MAX-KIN-KOHI2-M  TO  MAX-KIN-KOHI1-M
+                            IF   COMB-KOH2HKNNUM  =  "200"
+                              MOVE   ZERO          TO  MAX-KIN-KOHI1-M
+                            ELSE
+                              MOVE MAX-KIN-KOHI2-M TO  MAX-KIN-KOHI1-M
+                            END-IF
                             MOVE  ZERO           TO  WK-IRYOHI
                             MOVE  ZERO           TO  FLG-IRYOHI
                           END-IF
@@ -4271,7 +4276,11 @@
                             MOVE  MAX-KAI-KOHI3-D  TO  MAX-KAI-KOHI1-D
                             MOVE  MAX-KAI-KOHI3-M  TO  MAX-KAI-KOHI1-M
                             MOVE  MAX-KIN-KOHI3-D  TO  MAX-KIN-KOHI1-D
-                            MOVE  MAX-KIN-KOHI3-M  TO  MAX-KIN-KOHI1-M
+                            IF   COMB-KOH3HKNNUM  =  "200"
+                              MOVE   ZERO          TO  MAX-KIN-KOHI1-M
+                            ELSE
+                              MOVE MAX-KIN-KOHI3-M TO  MAX-KIN-KOHI1-M
+                            END-IF
                             MOVE  ZERO           TO  WK-IRYOHI
                             MOVE  ZERO           TO  FLG-IRYOHI
                           END-IF
@@ -4281,7 +4290,11 @@
                             MOVE  MAX-KAI-KOHI4-D  TO  MAX-KAI-KOHI1-D
                             MOVE  MAX-KAI-KOHI4-M  TO  MAX-KAI-KOHI1-M
                             MOVE  MAX-KIN-KOHI4-D  TO  MAX-KIN-KOHI1-D
-                            MOVE  MAX-KIN-KOHI4-M  TO  MAX-KIN-KOHI1-M
+                            IF   COMB-KOH4HKNNUM  =  "200"
+                              MOVE   ZERO          TO  MAX-KIN-KOHI1-M
+                            ELSE
+                              MOVE MAX-KIN-KOHI4-M TO  MAX-KIN-KOHI1-M
+                            END-IF
                             MOVE  ZERO           TO  WK-IRYOHI
                             MOVE  ZERO           TO  FLG-IRYOHI
                           END-IF
@@ -4362,7 +4375,11 @@
                             MOVE  MAX-KAI-KOHI3-D  TO  MAX-KAI-KOHI2-D
                             MOVE  MAX-KAI-KOHI3-M  TO  MAX-KAI-KOHI2-M
                             MOVE  MAX-KIN-KOHI3-D  TO  MAX-KIN-KOHI2-D
-                            MOVE  MAX-KIN-KOHI3-M  TO  MAX-KIN-KOHI2-M
+                            IF   COMB-KOH3HKNNUM  =  "200"
+                              MOVE   ZERO          TO  MAX-KIN-KOHI2-M
+                            ELSE
+                              MOVE MAX-KIN-KOHI3-M TO  MAX-KIN-KOHI2-M
+                            END-IF
                             MOVE  ZERO           TO  WK-IRYOHI
                             MOVE  ZERO           TO  FLG-IRYOHI
                           END-IF
@@ -4372,7 +4389,11 @@
                             MOVE  MAX-KAI-KOHI4-D  TO  MAX-KAI-KOHI2-D
                             MOVE  MAX-KAI-KOHI4-M  TO  MAX-KAI-KOHI2-M
                             MOVE  MAX-KIN-KOHI4-D  TO  MAX-KIN-KOHI2-D
-                            MOVE  MAX-KIN-KOHI4-M  TO  MAX-KIN-KOHI2-M
+                            IF   COMB-KOH4HKNNUM  =  "200"
+                              MOVE   ZERO          TO  MAX-KIN-KOHI2-M
+                            ELSE
+                              MOVE MAX-KIN-KOHI4-M TO  MAX-KIN-KOHI2-M
+                            END-IF
                             MOVE  ZERO           TO  WK-IRYOHI
                             MOVE  ZERO           TO  FLG-IRYOHI
                           END-IF
@@ -4453,7 +4474,11 @@
                             MOVE  MAX-KAI-KOHI4-D  TO  MAX-KAI-KOHI3-D
                             MOVE  MAX-KAI-KOHI4-M  TO  MAX-KAI-KOHI3-M
                             MOVE  MAX-KIN-KOHI4-D  TO  MAX-KIN-KOHI3-D
-                            MOVE  MAX-KIN-KOHI4-M  TO  MAX-KIN-KOHI3-M
+                            IF   COMB-KOH4HKNNUM  =  "200"
+                              MOVE   ZERO          TO  MAX-KIN-KOHI3-M
+                            ELSE
+                              MOVE MAX-KIN-KOHI4-M TO  MAX-KIN-KOHI3-M
+                            END-IF
                             MOVE  ZERO           TO  WK-IRYOHI
                             MOVE  ZERO           TO  FLG-IRYOHI
                           END-IF
