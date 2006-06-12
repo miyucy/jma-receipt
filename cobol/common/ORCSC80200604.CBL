@@ -37,6 +37,7 @@
       * 01.00.07     NACL-多々納  04/03/17  Ｈ１６年４月改正追加
       * 01.00.08     NACL-多々納  05/01/27  酸素追加
       * 01.00.09     NACL-多々納  05/11/22  MONFUNC 対応 他
+      * 01.00.11     NACL-多々納  06/06/12  診療科毎の同日初診判定
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -236,6 +237,8 @@
       *    訂正
            03  WRK-TEI-CNT         PIC 9(04).
            03  WRK-ZOGEN           PIC S9(03).
+      *
+           03  WRK-SRYKA           PIC  X(02).
       *
       *    リハビリ回数集計
        01  WRK-RIGAKU-NCNT-AREA.
@@ -1020,7 +1023,7 @@
                MOVE    "61"                TO  LNK-DAY6-IRAI
                MOVE    WRK-KYUSEI          TO  LNK-DAY6-KIJUN
                MOVE    "1"                 TO  LNK-DAY6-ZOGENPTN
-               MOVE    WRK-ZOGEN            TO  LNK-DAY6-ZOGEN
+               MOVE    WRK-ZOGEN           TO  LNK-DAY6-ZOGEN
                CALL    "ORCSDAY"           USING   STS-AREA-DAY
                                                    LNK-DAY6-AREA
                MOVE    LNK-DAY6-KOYOMI     TO  WRK-KYUSEI-YMD
@@ -1047,15 +1050,26 @@
            ELSE
                MOVE    LNK-ORCSC-SYOYMD        TO  WRK-SYOYMD
            END-IF
-      *    同日初診がある時、同日初診
-           IF      (SPA-DOUYMD     NOT =   SPACE )  AND
-                   (SPA-DOUYMD         >   WRK-SYOYMD)
-               MOVE    SPA-DOUYMD          TO  WRK-SYOYMD
+      *    同じ科で同日初診がある時、同日初診
+           IF      WRK-COM-SRYKA (IDX-Z)   =   SPACE
+               MOVE    SPA-SRYKA           TO  WRK-SRYKA
+           ELSE
+               MOVE    WRK-COM-SRYKA (IDX-Z)   TO  WRK-SRYKA
            END-IF
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   10  )   OR
+                              (LNK-ORCSC-DOU-SRYKA (IDX) =   SPACE)
+               IF      LNK-ORCSC-DOU-SRYKA (IDX) =   WRK-SRYKA
+                   IF      LNK-ORCSC-DOU-SRYYMD(IDX) >   WRK-SYOYMD
+                       MOVE    LNK-ORCSC-DOU-SRYYMD(IDX)
+                                               TO  WRK-SYOYMD
+                   END-IF
+                   MOVE    10          TO  IDX
+               END-IF
+           END-PERFORM
       *    初診算定日から６月以内
            IF     (WRK-SYOYMD          =   SPACE  )  OR
-                  (LNK-ORCSC-SYOSIN2   =   1      )  OR
-                  (LNK-ORCSC-DOUSIN    =   1      )
+                  (LNK-ORCSC-SYOSIN2   =   1      )
                MOVE    SPA-SRYYMD          TO  WRK-SYOYMD
            END-IF
       *    初診料算定日＋６月後
