@@ -323,6 +323,7 @@ RECORD_files = \
 	N21ID2.rec \
 	N23.rec \
 	N29.rec 
+	W63.rec \
 
 DEF_files = \
 	HC01.def \
@@ -493,6 +494,7 @@ DB_files = \
 	tbl_yakujyo_temp.db \
         tbl_syuka.db \
 	query_teiki.db \
+	tbl_chk004.db \
 
 all:   
 

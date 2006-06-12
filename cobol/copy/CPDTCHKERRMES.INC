@@ -43,8 +43,8 @@
       *    ** 020xxx 被保険者記号・番号抜け
       *                            +---------+---------+---------+.
            05 PIC  X(06)   VALUE   "020001".
-           05 PIC  X(30)   VALUE   "保険情報の記号・番号が未入力で".
-           05 PIC  X(30)   VALUE   "す                            ".
+           05 PIC  X(30)   VALUE   "保険情報の記号が未入力です    ".
+           05 PIC  X(30)   VALUE   "                              ".
            05 PIC  X(30)   VALUE   "                              ".
       *                            +---------+---------+---------+.
            05 PIC  X(06)   VALUE   "020002".
@@ -81,6 +81,21 @@
            05 PIC  X(06)   VALUE   "020008".
            05 PIC  X(30)   VALUE   "レセ電算データの場合、保険情報".
            05 PIC  X(30)   VALUE   "の記号に空白が入力されています".
+           05 PIC  X(30)   VALUE   "                              ".
+      *                            +---------+---------+---------+.
+           05 PIC  X(06)   VALUE   "020009".
+           05 PIC  X(30)   VALUE   "レセ電算データの場合、保険情報".
+           05 PIC  X(30)   VALUE   "の記号が入力誤りです          ".
+           05 PIC  X(30)   VALUE   "                              ".
+      *                            +---------+---------+---------+.
+           05 PIC  X(06)   VALUE   "020010".
+           05 PIC  X(30)   VALUE   "レセ電算データの場合、保険情報".
+           05 PIC  X(30)   VALUE   "の番号の１文字目が入力誤りです".
+           05 PIC  X(30)   VALUE   "                              ".
+      *                            +---------+---------+---------+.
+           05 PIC  X(06)   VALUE   "020011".
+           05 PIC  X(30)   VALUE   "レセ電算データの場合、保険情報".
+           05 PIC  X(30)   VALUE   "の番号が入力誤りです          ".
            05 PIC  X(30)   VALUE   "                              ".
       *                            +---------+---------+---------+.
       *
@@ -380,7 +395,7 @@
            05 PIC  X(30)   VALUE   "                              ".
       *
          03  ERRMES-RED    REDEFINES   ERRMES-VAL.
-           05 ERRMES-OCC   OCCURS  63.
+           05 ERRMES-OCC   OCCURS  66.
               07  ERRMES-CD            PIC X(06).
               07  ERRMES-MESSAGE       PIC X(90).
-         03  ERRMES-MAX                PIC 9(05)   VALUE   63.
+         03  ERRMES-MAX                PIC 9(05)   VALUE   66.

@@ -1,0 +1,81 @@
+tbl_chk004	{
+	KANRICD		char(4);
+	KBNCD		char(8);
+	STYUKYMD	char(8);
+	EDYUKYMD	char(8);
+	KANRITBL	varchar(500);
+	TERMID		varchar(16);
+	OPID		varchar(16);
+	CREYMD		char(8);
+	UPYMD		char(8);
+	UPHMS		char(6);
+#-----> 主キー更新用項目
+	UPKANRICD	char(4),virtual;
+	UPKBNCD	char(8),virtual;
+	UPSTYUKYMD	char(8),virtual;
+	UPEDYUKYMD	char(8),virtual;
+};
+
+primary	{
+	KANRICD,KBNCD,STYUKYMD,EDYUKYMD;
+};
+
+path	key		{ 	
+	DBSELECT	{
+		DECLARE tbl_chk004_key_csr CURSOR FOR
+		SELECT *
+		FROM tbl_chk004
+			WHERE   KANRICD      =   :KANRICD 
+			AND	KBNCD        =   :KBNCD
+			AND	STYUKYMD     <=  :STYUKYMD
+			AND	EDYUKYMD     >=  :EDYUKYMD
+		;
+	};
+};
+
+path	key2		{ 	
+	DBSELECT	{
+		DECLARE tbl_chk004_key2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_chk004
+			WHERE   KANRICD      =   :KANRICD 
+			AND	STYUKYMD     <=  :STYUKYMD
+			AND	EDYUKYMD     >=  :EDYUKYMD
+			ORDER	BY KBNCD
+		;
+	};
+};
+
+path	key3		{ 	
+	DBSELECT	{
+		DECLARE tbl_chk004_key3_csr CURSOR FOR
+		SELECT *
+		FROM tbl_chk004
+			WHERE   KANRICD      =   :KANRICD 
+			ORDER	BY KBNCD
+		;
+	};
+};
+
+path	upd1	{ 	
+	DBUPDATE	{
+		UPDATE	tbl_chk004
+				SET	
+					KANRICD      =   :KANRICD,
+					KBNCD     	 =   :KBNCD,
+					STYUKYMD     =   :STYUKYMD,
+					EDYUKYMD     =   :EDYUKYMD,
+					KANRITBL     =   :KANRITBL,
+					TERMID       =   :TERMID,
+					OPID         =   :OPID,
+					CREYMD       =   :CREYMD,
+					UPYMD        =   :UPYMD,
+					UPHMS        =   :UPHMS
+			WHERE   KANRICD      =   :UPKANRICD
+			AND		KBNCD        =   :UPKBNCD
+			AND		STYUKYMD     =   :UPSTYUKYMD
+			AND		EDYUKYMD     =   :UPEDYUKYMD
+		;
+	};
+};
+

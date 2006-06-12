@@ -73,6 +73,7 @@
       *  01.05.23    NACL-多々納  05/08/15  1043 会計照会機能情報追加
       *  01.05.24    NACL-多々納  05/08/29  職員情報更新修正
       *  01.05.25    NACL-多々納  05/08/31  9700 ユーザプログラム起動追加
+      *  01.05.26    NACL-多々納  06/06/09  1102 チェックマスタ機能情報３追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -270,6 +271,8 @@
            03  FILLER              PIC X(35)   VALUE
                "1101 データチェック機能情報２".
            03  FILLER              PIC X(35)   VALUE
+               "1102 データチェック機能情報３".
+           03  FILLER              PIC X(35)   VALUE
                "1901 医療機関編集情報".
            03  FILLER              PIC X(35)   VALUE
                "2003 レセプト作成指示（印刷順）情報".
@@ -287,11 +290,11 @@
                "4001 労災自賠医療機関情報".
       *
        01  TBL-KANRICD-AREAR           REDEFINES   TBL-KANRICD-AREA.
-           03  TBL-KANRICD-TBL         OCCURS   35.
+           03  TBL-KANRICD-TBL         OCCURS   36.
                05  TBL-KANRICD             PIC X(04).
                05  TBL-FILLER              PIC X(01).
                05  TBL-KANRICDMEI          PIC X(30).
-       01  TBL-KANRICD-MAX                 PIC 9(04)   VALUE   35.
+       01  TBL-KANRICD-MAX                 PIC 9(04)   VALUE   36.
       *
       *外来のみ
        01  TBL-KANRICD-G-AREA.
@@ -453,6 +456,7 @@
            COPY    "W60.INC".
            COPY    "W61.INC".
            COPY    "W62.INC".
+           COPY    "W63.INC".
            COPY    "W98.INC".
            COPY    "W97.INC".
            COPY    "W99.INC".
@@ -1069,6 +1073,7 @@
       *---- (01.05.24) LINE ADD END   --------------------------------
                WHEN    "1036"
                WHEN    "1100"
+               WHEN    "1102"
                WHEN    "5001"
                WHEN    "5002"
                WHEN    "5003"
@@ -1704,6 +1709,7 @@
       *
            IF    ( SPA-GMN-KANRICD     =   "1036"
              OR                            "1100"
+             OR                            "1102"
              OR                            "5001"
              OR                            "5002" 
              OR                            "5003" 
@@ -1789,6 +1795,8 @@
                    MOVE    "W17"               TO  SPA-SAKIPG
                WHEN    "1101"
                    MOVE    "W60"               TO  SPA-SAKIPG
+               WHEN    "1102"
+                   MOVE    "W63"               TO  SPA-SAKIPG
                WHEN    "1901" 
                    MOVE    "W18"               TO  SPA-SAKIPG
                WHEN    "5000"

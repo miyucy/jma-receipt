@@ -1,0 +1,61 @@
+W63	{
+	fixed1	{
+		B06	{
+			state	int;
+		};
+		SELNUM	{
+			value	number(2);
+		};
+		STYUKYMD	{
+			value	varchar(10);
+		};
+		EDYUKYMD	{
+			value	varchar(10);
+		};
+		HKNJANUM	{
+			value	varchar(10);
+		};
+		HKNJANAME	{
+			value	varchar(100);
+		};
+		CMB_JYKNKBN	{
+			JYKNKBN	{
+				value	varchar(16);
+			};
+			count	int;
+			item	varchar(16)[05];
+		};
+		CMB_HKNNUM	{
+			HKNNUM	{
+				value	varchar(20);
+			};
+			count	int;
+			item	varchar(20)[50];
+		};
+		CMB_KIGO	{
+			KIGO	{
+				value	varchar(16);
+			};
+			count	int;
+			item	varchar(16)[05];
+		};
+		CLISTSCROLL	{
+			CHECKLIST	{
+				count	int;
+				row	int;
+				rowattr	int;
+				item	{
+					value0	varchar(3);
+					value1	varchar(9);
+					value2	varchar(4);
+					value3	varchar(60);
+					value4	varchar(20);
+					value5	varchar(10);
+					value6	varchar(9);
+					value7	varchar(9);
+				}	[200];
+				select	bool[200];
+			};
+		};
+	};
+};
