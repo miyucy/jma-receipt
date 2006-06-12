@@ -66,36 +66,6 @@
            03  WRK-DDX                     PIC X(02).
            03  WRK-DD9          REDEFINES  WRK-DDX
                                            PIC 9(02).
-      *    ¥³¥ó¥¹¥¿¥ó¥ÈÃÍ
-       01  CONSTANT-AREA.
-      *    Æþ±¡¿ÇÎÅ·×²èÌ¤¼Â»Ü¸º»»
-           03  CONS-KEIKAKU-GENSAN1        PIC X(09) VALUE "190080470".
-           03  CONS-KEIKAKU-GENSAN2        PIC X(09) VALUE "190799670".
-      *    ±¡Æâ´¶À÷ËÉ»ßÂÐºöÌ¤¼Â»Ü¸º»»
-           03  CONS-INNAI-GENSAN1          PIC X(09) VALUE "190080570".
-           03  CONS-INNAI-GENSAN2          PIC X(09) VALUE "190799770".
-      *    °åÎÅ°ÂÁ´´ÉÍýÂÎÀ©Ì¤À°È÷¸º»»
-           03  CONS-ANZEN-GENSAN1          PIC X(09) VALUE "190111690".
-           03  CONS-ANZEN-GENSAN2          PIC X(09) VALUE "190809090".
-      *    êóáìÂÐºöÌ¤¼Â»Ü¸º»»
-           03  CONS-JYOKU-GENSAN1          PIC X(09) VALUE "190111790".
-           03  CONS-JYOKU-GENSAN2          PIC X(09) VALUE "190809190".
-      *    Æü¾ïÀ¸³è¾ã³²²Ã»»
-           03  CONS-NICHIJOU-KSN1          PIC X(09) VALUE "190109170".
-           03  CONS-NICHIJOU-KSN2          PIC X(09) VALUE "190807570".
-      *    Ç§ÃÎ¾É²Ã»»
-           03  CONS-CHIHOU-KSN1            PIC X(09) VALUE "190109270".
-           03  CONS-CHIHOU-KSN2            PIC X(09) VALUE "190808670".
-      *    êóáì´µ¼Ô´ÉÍý²Ã»»
-           03  CONS-JYOKU-KSN1             PIC X(09) VALUE "190116990".
-           03  CONS-JYOKU-KSN2             PIC X(09) VALUE "190813390".
-      *    ÆÃÄê¹³Àº¿ÀÉÂÌô¼£ÎÅ´ÉÍý²Ã»»
-           03  CONS-TOKUSEIYAKU-KSN        PIC X(09) VALUE "190117570".
-      *    ¤½¤ÎÂ¾¿ÇÎÅ¹Ô°Ù¤ÇÆþÎÏ¤·¤¿Æþ±¡ÎÁ²Ã»»
-           03  CONS-ETCNYUIN-TBL.
-             05  CONS-ETCNYUIN-KSN         PIC X(09)  OCCURS 10.
-      *    ÅÀ¿ô¥Þ¥¹¥¿ÆÉ¤ß¹þ¤ß¥ï¡¼¥¯ÍÑ
-           03  TTNS-CONST-MAX              PIC 9(03) VALUE 200.
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -104,58 +74,6 @@
            03  WRK-MEISAISU                PIC 9(03).
            03  WRK-KSNKBN                  PIC 9(03).
       *
-           03  WRK-SYS5000-COUNT           PIC 9(02).
-      *
-           03  WRK-GENSAN2-MIJISI          PIC 9(01).
-           03  WRK-GENSAN3-MIJISI          PIC 9(01).
-           03  WRK-GENSAN4-MIJISI          PIC 9(01).
-      *
-      *    Æþ±¡²ñ·×¥ï¡¼¥¯
-           03  WRK-NYUIN-TABLE.
-               05  WRK-NYUIN-TBL           OCCURS  31.
-                   07  WRK-HKNCOMBI-DAY    PIC 9(03).
-                   07  WRK-SRYKBN          PIC X(02).
-                   07  WRK-NYUINKHN        PIC X(09).
-                   07  WRK-SHOKIKSN        PIC X(09).
-                   07  WRK-GAIHAKU         PIC X(09).
-                   07  WRK-NYUKHNKSNKBN    PIC 9(03).
-                   07  WRK-GAIHAKU-KBN     PIC 9(01).
-      *
-      *    ÆüÉÕÁ´³ÑÊÑ´¹ÎÎ°è
-       01  TBL-DAY-AREA.
-           03  FILLER              PIC X(04)  VALUE "£°£±".
-           03  FILLER              PIC X(04)  VALUE "£°£²".
-           03  FILLER              PIC X(04)  VALUE "£°£³".
-           03  FILLER              PIC X(04)  VALUE "£°£´".
-           03  FILLER              PIC X(04)  VALUE "£°£µ".
-           03  FILLER              PIC X(04)  VALUE "£°£¶".
-           03  FILLER              PIC X(04)  VALUE "£°£·".
-           03  FILLER              PIC X(04)  VALUE "£°£¸".
-           03  FILLER              PIC X(04)  VALUE "£°£¹".
-           03  FILLER              PIC X(04)  VALUE "£±£°".
-           03  FILLER              PIC X(04)  VALUE "£±£±".
-           03  FILLER              PIC X(04)  VALUE "£±£²".
-           03  FILLER              PIC X(04)  VALUE "£±£³".
-           03  FILLER              PIC X(04)  VALUE "£±£´".
-           03  FILLER              PIC X(04)  VALUE "£±£µ".
-           03  FILLER              PIC X(04)  VALUE "£±£¶".
-           03  FILLER              PIC X(04)  VALUE "£±£·".
-           03  FILLER              PIC X(04)  VALUE "£±£¸".
-           03  FILLER              PIC X(04)  VALUE "£±£¹".
-           03  FILLER              PIC X(04)  VALUE "£²£°".
-           03  FILLER              PIC X(04)  VALUE "£²£±".
-           03  FILLER              PIC X(04)  VALUE "£²£²".
-           03  FILLER              PIC X(04)  VALUE "£²£³".
-           03  FILLER              PIC X(04)  VALUE "£²£´".
-           03  FILLER              PIC X(04)  VALUE "£²£µ".
-           03  FILLER              PIC X(04)  VALUE "£²£¶".
-           03  FILLER              PIC X(04)  VALUE "£²£·".
-           03  FILLER              PIC X(04)  VALUE "£²£¸".
-           03  FILLER              PIC X(04)  VALUE "£²£¹".
-           03  FILLER              PIC X(04)  VALUE "£³£°".
-           03  FILLER              PIC X(04)  VALUE "£³£±".
-       01  TBL-DAY-AREA-R          REDEFINES   TBL-DAY-AREA.
-           03  TBL-DAY             PIC X(04)   OCCURS   31.
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -217,7 +135,6 @@
            INITIALIZE                  IDX-AREA
            INITIALIZE                  WRK-AREA
            INITIALIZE                  LNK-ORCHCN02SUB-HENKYAKU-AREA
-           INITIALIZE                  CONS-ETCNYUIN-TBL
            MOVE    ZERO                TO  LNK-ORCHCN02SUB-RC
       *
       *    ¥Ñ¥é¥á¡¼¥¿¥Á¥§¥Ã¥¯
