@@ -1111,6 +1111,15 @@
                                INTO        SPA-K98-GMN-NAME(IDX)
                 END-STRING
            END-IF
+      *    後発医薬品再編集
+           IF     (TNS-SRYCD(1:1)      =   "6") AND
+                  (TNS-KOUHATUKBN      =   2  )
+                MOVE    SPACE              TO  SPA-K98-GMN-NAME (IDX)
+                STRING  "【後発有り】"
+                        TNS-NAME      DELIMITED   BY  SIZE
+                               INTO        SPA-K98-GMN-NAME(IDX)
+                END-STRING
+           END-IF
       *
            .
        31012-INPUTCD-HEN-EXT.
