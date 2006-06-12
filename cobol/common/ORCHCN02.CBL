@@ -30,6 +30,7 @@
       *  01.00.01    NACL-太田    03.07.01  出力先プリンタサブ追加
       *  01.00.02    NACL-太田    03.09.19  自院歴より継続して入院している
       *                                     場合の入院日を修正
+      *  01.00.03    NACL-小豆沢  06.06.12  入院歴、通算期間の編集追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -600,11 +601,11 @@
                  (LNK-ORCHCN02SUB-SYUBETUCD(5)   =  SPACE)
                CONTINUE
            ELSE
-               MOVE  "他"                  TO   HCN02-YOBI(1:2)
+               MOVE  "上記他"              TO   HCN02-YOBI(1:6)
                COMPUTE   WRK-Z4   =   LNK-ORCHCN02SUB-NISSU(4)   +
                                       LNK-ORCHCN02SUB-NISSU(5)
-               MOVE  WRK-Z4                TO   HCN02-YOBI(3:4)
-               MOVE  "日有"                TO   HCN02-YOBI(7:4)
+               MOVE  WRK-Z4                TO   HCN02-YOBI(7:4)
+               MOVE  "日有"                TO   HCN02-YOBI(11:4)
            END-IF
       *
            .
