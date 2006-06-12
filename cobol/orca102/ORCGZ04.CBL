@@ -130,14 +130,14 @@
                05  SPA-GMN-KANZANTANICD-MAX    PIC 9(04).
       *
       *        ¸åÈ¯°åÌôÉÊ
-               05  SPA-GMN-KOUHATUKBNLST       OCCURS  2.
+               05  SPA-GMN-KOUHATUKBNLST       OCCURS  3.
                    07  SPA-GMN-KOUHATUKBNL     PIC X(01).
                    07  SPA-GMN-F1L             PIC X(01).
-                   07  SPA-GMN-KOUHATUKBNMEIL  PIC X(20).
+                   07  SPA-GMN-KOUHATUKBNMEIL  PIC X(32).
                05  SPA-GMN-KOUHATUKBN-G.
                    07  SPA-GMN-KOUHATUKBN      PIC X(01).
                    07  SPA-GMN-F1              PIC X(01).
-                   07  SPA-GMN-KOUHATUKBNMEI   PIC X(20).
+                   07  SPA-GMN-KOUHATUKBNMEI   PIC X(32).
       *
                05  SPA-GMN-YUKOSTYMD           PIC X(10).
                05  SPA-GMN-YUKOEDYMD           PIC X(10).
@@ -562,9 +562,12 @@
            MOVE    "±ÕºÞ"              TO  SPA-GMN-ZAIGATAKBNMEIL (4)
       *
            MOVE    "0"                 TO  SPA-GMN-KOUHATUKBNL    (1)
-           MOVE    "¸åÈ¯°åÌôÉÊ°Ê³°"    TO  SPA-GMN-KOUHATUKBNMEIL (1)
+           MOVE    "¸åÈ¯°åÌôÉÊ¤Ç¤Ê¤¤"  TO  SPA-GMN-KOUHATUKBNMEIL (1)
            MOVE    "1"                 TO  SPA-GMN-KOUHATUKBNL    (2)
-           MOVE    "¸åÈ¯°åÌôÉÊ"        TO  SPA-GMN-KOUHATUKBNMEIL (2)
+           MOVE    "¸åÈ¯°åÌôÉÊ¤Ç¤¢¤ë"  TO  SPA-GMN-KOUHATUKBNMEIL (2)
+           MOVE    "2"                 TO  SPA-GMN-KOUHATUKBNL    (3)
+           MOVE    "¸åÈ¯°åÌôÉÊ¤¬¤¢¤ëÀèÈ¯°åÌôÉÊ¤Ç¤¢¤ë"
+                                       TO  SPA-GMN-KOUHATUKBNMEIL (3)
       *
            MOVE    "0"                 TO  SPA-GMN-ALLSURYOKBNL   (1)
            MOVE    "µ­ºÜ¤·¤Ê¤¤"        TO  SPA-GMN-ALLSURYOKBNMEIL(1)
@@ -820,12 +823,12 @@
       *    ¸åÈ¯°åÌôÉÊ
            MOVE    TNS-KOUHATUKBN      TO  SPA-GMN-KOUHATUKBN
            PERFORM VARYING IDXX    FROM    1   BY  1
-                   UNTIL   IDXX    >       2
+                   UNTIL   IDXX    >       3
                IF      SPA-GMN-KOUHATUKBN 
                                        =   SPA-GMN-KOUHATUKBNL(IDXX)
                    MOVE    SPA-GMN-KOUHATUKBNLST (IDXX)
                                            TO  SPA-GMN-KOUHATUKBN-G
-                   MOVE    2               TO  IDXX
+                   MOVE    3               TO  IDXX
                END-IF
            END-PERFORM
       *
@@ -2317,7 +2320,7 @@
       *
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING     IDXX    FROM    1   BY  1
-                   UNTIL      (IDXX    >   2   )   OR
+                   UNTIL      (IDXX    >   3   )   OR
                               (FLG-OK  =   1   )
                IF      SPA-GMN-KOUHATUKBN  =   SPA-GMN-KOUHATUKBNL(IDXX)
                    MOVE    SPA-GMN-KOUHATUKBNLST (IDXX)
@@ -2704,11 +2707,11 @@
            MOVE    4                   TO  Z04-ZAIGATAKBN-COUNT
       *    ¸åÈ¯°åÌôÉÊ
            PERFORM VARYING IDXX    FROM    1   BY  1
-                   UNTIL   IDXX    >       2
+                   UNTIL   IDXX    >       3
                MOVE    SPA-GMN-KOUHATUKBNLST(IDXX)
                                        TO  Z04-KOUHATUKBN-ITEM  (IDXX)
            END-PERFORM
-           MOVE    2                   TO  Z04-KOUHATUKBN-COUNT
+           MOVE    3                   TO  Z04-KOUHATUKBN-COUNT
       *
            MOVE  SPA-GMN-INPCHKKBN     TO  Z04-INPCHKKBN
       *

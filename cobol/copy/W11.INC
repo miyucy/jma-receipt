@@ -149,10 +149,10 @@
                     06  W11-VALUE              PIC X(128).
                   05  W11-KOUHATUKA-COMB.
                     06  W11-KOUHATUKA.
-                      07  W11-VALUE   PIC X(12).
+                      07  W11-VALUE   PIC X(22).
                     06  W11-KOUHATUKA-COUNT   PIC S9(9)   BINARY.
                     06  W11-KOUHATUKA-ITEM
-                            PIC X(12)   OCCURS  2 TIMES.
+                            PIC X(22)   OCCURS  3 TIMES.
                 04  W11-N02-STATE              PIC S9(9)    BINARY.
               03  W11-STYUKYMD                 PIC X(9).
               03  W11-EDYUKYMD                 PIC X(9).

@@ -99,9 +99,9 @@
                 04  Z04-ZAIGATAKBNLST   PIC X(36)   OCCURS  4 TIMES.
               03  Z04-KOUHATUKBN-COMB.
                 04  Z04-KOUHATUKBN.
-                  05  Z04-VALUE   PIC X(20).
+                  05  Z04-VALUE   PIC X(34).
                 04  Z04-KOUHATUKBN-COUNT   PIC S9(9)   BINARY.
-                04  Z04-KOUHATUKBN-ITEM   PIC X(20)   OCCURS  2 TIMES.
+                04  Z04-KOUHATUKBN-ITEM   PIC X(34)   OCCURS  3 TIMES.
               03  Z04-TANICD-COMBO.
                 04  Z04-TANICD.
                   05  Z04-VALUE   PIC X(14).
