@@ -523,10 +523,10 @@ W11	{
 				};
 				KOUHATUKA_COMB	{
 					KOUHATUKA	{
-						value	varchar(12);
+						value	varchar(22);
 					};
 					count	int;
-					item	varchar(12)[2];
+					item	varchar(22)[3];
 				};
 			};
 			            N02	{ state	int;

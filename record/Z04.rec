@@ -118,10 +118,10 @@ Z04	{
 		};
 		KOUHATUKBN_COMB	{
 			KOUHATUKBN	{
-				value	varchar(20);
+				value	varchar(34);
 			};
 			count	int;
-			item	varchar(20)[2];
+			item	varchar(34)[3];
 		};
 		TANICD_COMBO	{
 			TANICD	{
