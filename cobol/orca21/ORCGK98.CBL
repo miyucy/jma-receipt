@@ -1097,7 +1097,7 @@
            IF     (TNS-SRYCD(1:1)      =   "1") AND
                   (TNS-ROUTEKKBN       =   2  )
                 MOVE    SPACE              TO  SPA-K98-GMN-NAME (IDX)
-                STRING  "¡ÎÏ·¡Ï"
+                STRING  "¡ÎÏ·¡Ï"      DELIMITED   BY  SIZE
                         TNS-NAME      DELIMITED   BY  SIZE
                                INTO        SPA-K98-GMN-NAME(IDX)
                 END-STRING
@@ -1106,7 +1106,7 @@
            IF     (TNS-SRYCD(1:1)      =   "6") AND
                   (TNS-KOUHATUKBN      =   1  )
                 MOVE    SPACE              TO  SPA-K98-GMN-NAME (IDX)
-                STRING  "¡Ú¸åÈ¯¡Û"
+                STRING  "¡Ú¸åÈ¯¡Û"    DELIMITED   BY  SIZE
                         TNS-NAME      DELIMITED   BY  SIZE
                                INTO        SPA-K98-GMN-NAME(IDX)
                 END-STRING
@@ -1115,7 +1115,7 @@
            IF     (TNS-SRYCD(1:1)      =   "6") AND
                   (TNS-KOUHATUKBN      =   2  )
                 MOVE    SPACE              TO  SPA-K98-GMN-NAME (IDX)
-                STRING  "¡Ú¸åÈ¯Í­¤ê¡Û"
+                STRING  "¡Ú¸åÈ¯Í­¡Û"  DELIMITED   BY  SIZE
                         TNS-NAME      DELIMITED   BY  SIZE
                                INTO        SPA-K98-GMN-NAME(IDX)
                 END-STRING
@@ -1594,7 +1594,16 @@
            IF     (TNS-SRYCD(1:1)      =   "6") AND
                   (TNS-KOUHATUKBN      =   1  )
                 MOVE    SPACE              TO  SPA-K98-GMN-NAME (IDX)
-                STRING  "¡Ú¸åÈ¯¡Û"
+                STRING  "¡Ú¸åÈ¯¡Û"    DELIMITED   BY  SIZE
+                        TNS-NAME      DELIMITED   BY  SIZE
+                               INTO        SPA-K98-GMN-NAME(IDX)
+                END-STRING
+           END-IF
+      *    ¸åÈ¯°åÌôÉÊºÆÊÔ½¸
+           IF     (TNS-SRYCD(1:1)      =   "6") AND
+                  (TNS-KOUHATUKBN      =   2  )
+                MOVE    SPACE              TO  SPA-K98-GMN-NAME (IDX)
+                STRING  "¡Ú¸åÈ¯Í­¡Û"  DELIMITED   BY  SIZE
                         TNS-NAME      DELIMITED   BY  SIZE
                                INTO        SPA-K98-GMN-NAME(IDX)
                 END-STRING

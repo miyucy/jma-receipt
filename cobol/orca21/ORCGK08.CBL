@@ -2151,6 +2151,13 @@
                 PERFORM 3100122-KOUHATU-MEISYO-SEC
                 MOVE    WRK-MEISYO    TO  SPA-GMN-TMEISYO2(IDG)
            END-IF
+      *    後発医薬品再編集
+           IF     (LNK-WKSRY-SRYCD (IDX IDZ)(1:1)  =   "6") AND
+                  (TNS-KOUHATUKBN      =   1
+                                       OR  2  )
+                PERFORM 3100123-KOUHATU-HEN-SEC
+                MOVE    WRK-MEISYO    TO  SPA-GMN-TMEISYO2(IDG)
+           END-IF
       *
       *    約束の内容の時、再編集
            IF      FLG-YAKUSOKU        =   1
@@ -2273,6 +2280,13 @@
                   (LNK-WKSRY-INPUTCOMENT(IDX IDZ) NOT =  SPACE )
                MOVE    LNK-WKSRY-INPUTCOMENT(IDX IDZ)
                                            TO  SPA-GMN-TMEISYO2(IDG)
+           END-IF
+      *    後発医薬品再編集
+           IF     (LNK-WKSRY-SRYCD (IDX IDZ)(1:1)  =   "6") AND
+                  (TNS-KOUHATUKBN      =   1
+                                       OR  2  )
+                PERFORM 3100123-KOUHATU-HEN-SEC
+                MOVE    WRK-MEISYO    TO  SPA-GMN-TMEISYO2(IDG)
            END-IF
       *
            MOVE    ZERO                TO  FLG-KAISUU
@@ -2458,6 +2472,28 @@
            END-STRING
            .
        3100122-KOUHATU-MEISYO-EXT.
+           EXIT.
+      *****************************************************************
+      *     後発医薬品再編集処理
+      *****************************************************************
+       3100123-KOUHATU-HEN-SEC        SECTION.
+      *
+           MOVE    SPACE               TO  WRK-MEISYO
+      *
+      *    後発医薬品再編集
+           IF      TNS-KOUHATUKBN      =   1
+                STRING  "【後】"      DELIMITED   BY  SIZE
+                        TNS-NAME      DELIMITED   BY  SIZE
+                                      INTO        WRK-MEISYO
+                END-STRING
+           ELSE
+                STRING  "【先】"      DELIMITED   BY  SIZE
+                        TNS-NAME      DELIMITED   BY  SIZE
+                                      INTO        WRK-MEISYO
+                END-STRING
+           END-IF
+           .
+       3100123-KOUHATU-HEN-EXT.
            EXIT.
       *****************************************************************
       *     用量割合再編集処理
