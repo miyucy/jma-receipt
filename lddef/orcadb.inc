@@ -106,4 +106,5 @@ db	{
 	tbl_yakujyo_temp;
         query_teiki;
         tbl_syuka;
+        tbl_chk004;
 };
