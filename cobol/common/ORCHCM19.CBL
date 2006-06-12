@@ -51,6 +51,7 @@
       * 01.00.16     NACL-多々納  05/11/09  再印刷処理追加
       * 01.00.17     NACL-多々納  06/01/24  用量コード判定追加
       * 01.00.18     NACL-多々納  06/03/XX  Ｈ１８年４月改正対応
+      * 01.00.19     NACL-多々納  06/06/09  後発医薬品区分変更
       *****************************************************************
       *
       *
@@ -128,6 +129,10 @@
            03  FLG-KOUHATU-HEN         PIC 9(01).
            03  FLG-KOUHATU-CHK         PIC 9(01).
            03  FLG-KOUHATU             PIC 9(01).
+      *---(01.00.19) LINE ADD START ------------------------------------
+           03  FLG-KOUHATU-1           PIC 9(01).
+           03  FLG-KOUHATU-1-CHK       PIC 9(01).
+      *---(01.00.19) LINE ADD END   ------------------------------------
            03  FLG-NAME                PIC 9(01).
       *
       *    添字領域
@@ -774,6 +779,10 @@
            MOVE    ZERO                TO  FLG-KOUHATU-HEN
            MOVE    ZERO                TO  FLG-KOUHATU-CHK
            MOVE    ZERO                TO  FLG-KOUHATU
+      *---(01.00.19) LINE ADD START ------------------------------------
+           MOVE    ZERO                TO  FLG-KOUHATU-1
+           MOVE    ZERO                TO  FLG-KOUHATU-1-CHK
+      *---(01.00.19) LINE ADD END   ------------------------------------
       *
       *---(01.00.14) LINE ADD START -----------------------------------
            INITIALIZE                  WRK-BIKOU-AREA
@@ -1511,11 +1520,23 @@
       *
       *    後発医薬品変更可
            IF    ((FLG-KOUHATU-HEN     =   1 )  OR
-                  (SYS-1030-KOUHATUKA  =   "1"))  AND
+                  (SYS-1030-KOUHATUKA  =   "1"
+      *---(01.00.19) LINE ADD START -----------------------------------
+                                       OR  "2"))  AND
+      *---(01.00.19) LINE ADD END   -----------------------------------
                   (FLG-KOUHATU-CHK     =   1 )
       *        ドクター
                MOVE    SYS-1010-NAME       TO  HCM19-HKNINAME
            END-IF
+      *---(01.00.19) LINE ADD START -----------------------------------
+      *    後発医薬品の後発医薬品への変更可
+           IF    ((FLG-KOUHATU-HEN     =   1 )  OR
+                  (SYS-1030-KOUHATUKA  =   "2"))  AND
+                  (FLG-KOUHATU-1-CHK   =   1 )
+      *        ドクター
+               MOVE    SYS-1010-NAME       TO  HCM19-HKNINAME
+           END-IF
+      *---(01.00.19) LINE ADD END   -----------------------------------
       *
            .
        300-HCM19-HEN-EXT.
@@ -2075,6 +2096,9 @@
                                            +   4
            END-IF
            MOVE    ZERO               TO  FLG-KOUHATU
+      *---(01.00.19) LINE ADD START ------------------------------------
+           MOVE    ZERO                TO  FLG-KOUHATU-1
+      *---(01.00.19) LINE ADD END   ------------------------------------
       *
            .
        31039-KOUHATU-NAME-EXT.
@@ -2132,6 +2156,12 @@
            IF      FLG-KOUHATU         =   1
                MOVE    1               TO  FLG-KOUHATU-CHK
            END-IF
+      *---(01.00.19) LINE ADD SART ------------------------------------
+           IF      FLG-KOUHATU-1       =   1
+               MOVE    1               TO  FLG-KOUHATU-1-CHK
+           END-IF
+           MOVE    ZERO                TO  FLG-KOUHATU-1
+      *---(01.00.19) LINE ADD END   ------------------------------------
            MOVE    ZERO                TO  FLG-KOUHATU
       *
            .
@@ -2161,21 +2191,36 @@
       *        後発医薬品の時、表示（優先）
                IF      SYS-1030-SYOHODSPNAME   NOT =   SPACE
       *            後発医薬品区分
-                   IF      TNS-KOUHATUKBN      NOT =   ZERO
+      *---(01.00.19) LINE UPD START ------------------------------------
+      *************IF      TNS-KOUHATUKBN      NOT =   ZERO
+                   IF      TNS-KOUHATUKBN          =   "1"
+      *---(01.00.19) LINE UPD END   ------------------------------------
                        MOVE    TNS-NAME        TO  WRK-TNS-NAME
                        COMPUTE KETA            =  (TNS-YUKOKETA  * 2)
                                                +   1
                        MOVE    SYS-1030-SYOHODSPNAME
                                                TO  WRK-TNS-NAME(KETA:)
-                   ELSE
-                       MOVE    1               TO  FLG-KOUHATU
+      *---(01.00.19) LINE UPD START ------------------------------------
+      ********     ELSE
+      *******          MOVE    1               TO  FLG-KOUHATU
+      *---(01.00.19) LINE UPD END   ------------------------------------
                    END-IF
                END-IF
       *
-      *        後発医薬品区分
-               IF      TNS-KOUHATUKBN          =   ZERO
+      *---(01.00.19) LINE UPD START ------------------------------------
+      *        後発医薬品
+      *******  IF      TNS-KOUHATUKBN          =   ZERO
+      *           MOVE    1                TO  FLG-KOUHATU
+      ******   END-IF
+      *        後発医薬品がある先発品
+               IF      TNS-KOUHATUKBN          =   "2"
                   MOVE    1                TO  FLG-KOUHATU
                END-IF
+      *        後発医薬品
+               IF      TNS-KOUHATUKBN          =   "1"
+                  MOVE    1                TO  FLG-KOUHATU-1
+               END-IF
+      *---(01.00.19) LINE ADD END   ------------------------------------
       *        麻薬判定
                IF      TNS-MADOKUKBN       =   1
                    MOVE   1                TO  FLG-MAYAKU
@@ -2591,6 +2636,10 @@
            MOVE    ZERO                TO  FLG-KOUHATU-HEN
            MOVE    ZERO                TO  FLG-KOUHATU-CHK
            MOVE    ZERO                TO  FLG-KOUHATU
+      *---(01.00.19) LINE ADD START ------------------------------------
+           MOVE    ZERO                TO  FLG-KOUHATU-1
+           MOVE    ZERO                TO  FLG-KOUHATU-1-CHK
+      *---(01.00.19) LINE ADD END   ------------------------------------
            INITIALIZE                  WRK-MEISAI-AREA
            MOVE    ZERO                TO  FLG-HENSYU
       *
@@ -2925,6 +2974,10 @@
            MOVE    ZERO                TO  FLG-KOUHATU-HEN
            MOVE    ZERO                TO  FLG-KOUHATU-CHK
            MOVE    ZERO                TO  FLG-KOUHATU
+      *---(01.00.19) LINE ADD START ------------------------------------
+           MOVE    ZERO                TO  FLG-KOUHATU-1
+           MOVE    ZERO                TO  FLG-KOUHATU-1-CHK
+      *---(01.00.19) LINE ADD END   ------------------------------------
            INITIALIZE                  WRK-MEISAI-AREA
            MOVE    ZERO                TO  FLG-HENSYU
       *

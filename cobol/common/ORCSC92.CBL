@@ -2108,6 +2108,12 @@
                    PERFORM 3002-KOUHATU-MEISYO-SEC
                    MOVE    WRK-MEISYO    TO  SPA-GMN-MEISYO (IDX-T)
                END-IF
+      *        後発医薬品あり編集
+               IF     (SPA-COM-INPUTCD (IDX-T)(1:1)    =   "6") AND
+                      (TNS-KOUHATUKBN                  =   2  )
+                   PERFORM 3002-KOUHATU-MEISYO-2-SEC
+                   MOVE    WRK-MEISYO    TO  SPA-GMN-MEISYO (IDX-T)
+               END-IF
       *       後発医薬品変更再編集
               IF      SPA-COM-INPUTCD (IDX-T)  =   "099209903"
                    PERFORM 30021-KOUHEN-MEISYO-SEC
@@ -2384,6 +2390,20 @@
            END-STRING
            .
        3002-KOUHATU-MEISYO-EXT.
+           EXIT.
+      *****************************************************************
+      *     後発医薬品あり区分再編集処理
+      *****************************************************************
+       3002-KOUHATU-MEISYO-2-SEC        SECTION.
+      *
+           MOVE    SPACE               TO  WRK-MEISYO
+      *
+           STRING     "【先】"         DELIMITED   BY  SIZE
+                      TNS-NAME         DELIMITED   BY  SIZE
+                      INTO             WRK-MEISYO
+           END-STRING
+           .
+       3002-KOUHATU-MEISYO-2-EXT.
            EXIT.
       ******************************************************************
       *     後発医薬品変更再編集処理

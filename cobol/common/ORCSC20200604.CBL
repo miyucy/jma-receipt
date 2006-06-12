@@ -42,6 +42,7 @@
       *  02.00.08    NACL-多々納  05/12/14  .213 自動変換対応
       *  02.00.09    NACL-多々納  05/12/14  MONFUNC 対応 他
       *  02.00.10    NACL-多々納  05/12/20  処方せん料と調基の訂正判定
+      *  02.00.11    NACL-多々納  06/06/09  後発医薬品ありの判定追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -474,8 +475,14 @@
                            (WRK-COM-INPUTCD(IDX-Z - 1)(1:1)
                                                =   "6"  )
       *                後発医薬品区分判定
-                       IF      WRK-COM-KOUHATUKBN (IDX-Z - 1) =   "1"
-                           MOVE    "2065"          TO  WRK-ERRCD
+      *!               IF      WRK-COM-KOUHATUKBN (IDX-Z - 1) =   "1"
+      *                    MOVE    "2065"          TO  WRK-ERRCD
+      *                    MOVE    "1"             TO  WRK-COM-CUR
+      *                                                      (IDX-Z)
+      *!               END-IF
+      *                後発医薬品区分判定
+                       IF      WRK-COM-KOUHATUKBN (IDX-Z - 1) =   "0"
+                           MOVE    "2066"          TO  WRK-ERRCD
                            MOVE    "1"             TO  WRK-COM-CUR
                                                              (IDX-Z)
                        END-IF
@@ -1578,7 +1585,7 @@
                                            "232"  OR
                                            "292"     )
                IF      (WRK-COM-KOUHATUKBN (IDX)
-                                        NOT =   ZERO  )
+                                           =   "1"   )
                    MOVE    1                   TO  FLG-KOUHATU
                ELSE
       *            後発医薬品変更不可
@@ -1586,7 +1593,13 @@
                           (WRK-COM-INPUTCD(IDX + 1)  =   "099209903")
                        CONTINUE
                    ELSE
-                       MOVE    1               TO  FLG-KOUHATU-HEN2
+      *                先発品のみ
+                       IF      (WRK-COM-KOUHATUKBN (IDX)
+                                               =   "0"   )
+                           CONTINUE
+                       ELSE
+                           MOVE    1               TO  FLG-KOUHATU-HEN2
+                       END-IF
                    END-IF
                END-IF
            END-IF
@@ -1860,7 +1873,8 @@
       *    後発医薬品への変更判定
            IF      FLG-KOUHATU         =   ZERO
       *        後発医薬品への変更可があり、薬剤に変更不可がない場合
-               IF     ((SPA-KOUHATUKA      =   "1" )  OR
+               IF     ((SPA-KOUHATUKA      =   "1"
+                                           OR  "2" )  OR
                        (FLG-KOUHATU-HEN1   =   1   )) AND
                        (FLG-KOUHATU-HEN2   =   1   )
                    MOVE    1               TO  FLG-KOUHATU
