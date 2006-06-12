@@ -7,6 +7,7 @@
 -- 更新日        : 2006/05/17     --
 -- パラメータ初期値追加           --
 
+\set ON_ERROR_STOP
 
 create table tbl_toukeimemowk (
 PGID				varchar(20) not null,

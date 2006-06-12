@@ -1,3 +1,5 @@
+\set ON_ERROR_STOP
+
 delete from tbl_syskanri where kanricd = '0043' and kbncd in ('1001','1002','1003','1004','1005','1006','1007','1008');
 
 

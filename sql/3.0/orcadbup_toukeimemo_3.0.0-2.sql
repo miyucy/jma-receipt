@@ -1,3 +1,5 @@
+\set ON_ERROR_STOP
+
 delete from tbl_toukeimemo where pgid in ('ORCBD003','ORCBD002','ORCBD007','ORCBD006','ORCBD005','ORCBD005V02','ORCBD004V02','ORCBD004') and kanricd = '0000';
 
 COPY "tbl_toukeimemo" FROM stdin;

@@ -7,6 +7,8 @@
 -- Update Date : 2006/05/17           --
 --                                    --
 
+\set ON_ERROR_STOP
+
 -- TBL_PTINFWK ∫Ó¿Æ                   --
 
 CREATE TABLE "tbl_ptinfwk" (

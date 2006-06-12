@@ -7,6 +7,8 @@
 -- Update Date : 2006/05/17           --
 --                                    --
 
+\set ON_ERROR_STOP
+
 -- TBL_PTINF_PRV ºï½ü --
 
 DROP TABLE tbl_ptinf_prv ;

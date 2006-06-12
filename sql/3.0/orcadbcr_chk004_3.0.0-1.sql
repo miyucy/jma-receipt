@@ -1,3 +1,5 @@
+\set ON_ERROR_STOP
+
 CREATE TABLE "tbl_chk004" (
 	"kanricd" character(4) NOT NULL,
 	"kbncd" character(8) NOT NULL,

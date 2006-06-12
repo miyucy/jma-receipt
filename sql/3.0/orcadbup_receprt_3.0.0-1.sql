@@ -8,6 +8,7 @@
 -- Create Date : 2006/06/01             --
 --                                      --
 
+\set ON_ERROR_STOP
 
 -- TBL_RECEPRTWWK ∫Ó¿Æ                 --
 create table TBL_RECEPRTWWK (
