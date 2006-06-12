@@ -424,7 +424,9 @@
            MOVE    "記載しない"        TO  SPA-GMN-KOUHATUKALST(1)(3:)
            MOVE    "1"                 TO  SPA-GMN-KOUHATUKALST(2)
            MOVE    "記載する"          TO  SPA-GMN-KOUHATUKALST(2)(3:)
-           MOVE    2                   TO  SPA-GMN-KOUHATUKA-MAX
+           MOVE    "2"                 TO  SPA-GMN-KOUHATUKALST(3)
+           MOVE    "記載する（後発）"  TO  SPA-GMN-KOUHATUKALST(3)(3:)
+           MOVE    3                   TO  SPA-GMN-KOUHATUKA-MAX
       *
            MOVE    SPACE               TO  SYSKANRI-REC
            INITIALIZE                      SYSKANRI-REC
@@ -471,13 +473,24 @@
                MOVE    SPA-GMN-KARUTE3KBNLST(1)
                                        TO  SPA-GMN-KARUTE3KBN-G
            END-IF
-           IF      SPA-GMN-KOUHATUKA  =   "1"
-               MOVE    SPA-GMN-KOUHATUKALST(2)
-                                       TO  SPA-GMN-KOUHATUKA-G
-           ELSE
+      *
+           MOVE    ZERO                TO  FLG-CHK
+           PERFORM VARYING IDY FROM    1   BY  1
+                   UNTIL   IDY >       SPA-GMN-KOUHATUKA-MAX
+               IF      SPA-GMN-KOUHATUKA
+                                   =   SPA-GMN-KOUHATUKALST (IDY)(1:1)
+                   MOVE    SPA-GMN-KOUHATUKALST (IDY)
+                                           TO  SPA-GMN-KOUHATUKA-G
+                   MOVE    SPA-GMN-KOUHATUKA-MAX
+                                           TO  IDY
+                   MOVE    1               TO  FLG-CHK
+               END-IF
+           END-PERFORM
+           IF      FLG-CHK             =   ZERO
                MOVE    SPA-GMN-KOUHATUKALST(1)
                                        TO  SPA-GMN-KOUHATUKA-G
            END-IF
+      *
       *
            MOVE    305                 TO  SPA-GMN-CUR
       *
