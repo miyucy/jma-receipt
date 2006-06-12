@@ -153,7 +153,7 @@
     </element>
     <element name="YOBI" occurs="1">
       <appinfo>
-        <embed object="string" length="12"/>
+        <embed object="string" length="14"/>
       </appinfo>
     </element>
     <element name="TKIKAN" occurs="1">
@@ -3780,7 +3780,7 @@
         <point val="16.5,16"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="16.5,15.7264;18.621,16.0764"/>
+        <rectangle val="16.5,15.7264;18.9745,16.0764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#YOBI#</string>
@@ -3791,7 +3791,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;#</string>
+            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>

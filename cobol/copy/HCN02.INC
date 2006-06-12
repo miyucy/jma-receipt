@@ -36,7 +36,7 @@
               03  HCN02-KIKANENDYY    PIC X(4).
               03  HCN02-KIKANENDMM    PIC X(4).
               03  HCN02-KIKANENDDD    PIC X(4).
-            02  HCN02-YOBI  PIC X(12).
+            02  HCN02-YOBI  PIC X(14).
             02  HCN02-TKIKAN    PIC X(4).
             02  HCN02-TKIKANYMD.
               03  HCN02-TKIKANYY  PIC X(4).
