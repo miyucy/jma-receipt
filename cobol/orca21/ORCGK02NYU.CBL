@@ -5525,6 +5525,8 @@
            MOVE    SPACE               TO  WRK-KIDCD
       *    剤別初回編集
            INITIALIZE                  ORCSC00AREA
+      *    リハビリ初回
+           MOVE    SPACE               TO  SPA-RIGAKU-INIT
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   WRK-GYO-MAX      )   OR
@@ -5952,6 +5954,8 @@
            MOVE    SPA-K02N-TAIINYMD   TO  LNK-ORCSC-TAIINYMD
       *    リハビリ逓減確認
            MOVE    FLG-RIHTEI          TO  LNK-ORCSC-FLG-RIHTEI
+      *    リハビリ算定回数
+           MOVE    SPA-RIGAKU-NCNT-AREA    TO  LNK-RIGAKU-NCNT-AREA
       *
            MOVE    SPA-SRYYMD          TO  WRK-SPA-SRYYMD
       *    入院日の最後の日を診療日とする
@@ -6089,6 +6093,9 @@
                                            ORCSC00AREA
                                            WRK-SCR-REC
                                            SPA-AREA
+      *            リハビリ確認
+                   MOVE    LNK-RIGAKU-NCNT-AREA
+                                           TO  SPA-RIGAKU-NCNT-AREA
                    ADD     1               TO  SPA-SRYKBN-CNT (09)
       *            コメント等
       *********WHEN    "90"
@@ -6909,6 +6916,8 @@
            MOVE    SPA-K02N-TAIINYMD   TO  LNK-ORCSC-TAIINYMD
       *    リハビリ逓減確認
            MOVE    FLG-RIHTEI          TO  LNK-ORCSC-FLG-RIHTEI
+      *    リハビリ算定回数
+           MOVE    SPA-RIGAKU-NCNT-AREA    TO  LNK-RIGAKU-NCNT-AREA
       *
       *            診療
            IF      SPA-SRYKBN-CNT (01) >   ZERO

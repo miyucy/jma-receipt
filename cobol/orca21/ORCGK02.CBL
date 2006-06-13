@@ -7319,6 +7319,8 @@
       *
       *    剤別初回編集
            INITIALIZE                  ORCSC00AREA
+      *    リハビリ初回
+           MOVE    SPACE               TO  SPA-RIGAKU-INIT
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   200      )   OR
@@ -7611,6 +7613,8 @@
            MOVE    SPA-K02N-TAIINYMD   TO  LNK-ORCSC-TAIINYMD
       *    リハビリ逓減確認
            MOVE    FLG-RIHTEI          TO  LNK-ORCSC-FLG-RIHTEI
+      *    リハビリ算定回数
+           MOVE    SPA-RIGAKU-NCNT-AREA    TO  LNK-RIGAKU-NCNT-AREA
       *    診察料有無
            MOVE    WRK-SINSATU-ARI     TO  LNK-ORCSC-SINSATU-ARI
       *    同日初診の診療科
@@ -7736,6 +7740,9 @@
                                            WRK-SCR-REC
                                            SPA-AREA
                    ADD     1               TO  SPA-SRYKBN-CNT (09)
+      *            リハビリ確認
+                   MOVE    LNK-RIGAKU-NCNT-AREA
+                                           TO  SPA-RIGAKU-NCNT-AREA
       *            コメント等
                WHEN    "93"
                WHEN    "99"
@@ -8531,6 +8538,8 @@
            MOVE    FLG-RIHTEI          TO  LNK-ORCSC-FLG-RIHTEI
       *    同日初診の診療科
            MOVE    SPA-DOUSYOSIN-AREA  TO  LNK-ORCSC-DOUSYOSIN-AREA
+      *    リハビリ逓減確認
+           MOVE    SPA-RIGAKU-NCNT-AREA    TO  LNK-RIGAKU-NCNT-AREA
       *
            MOVE    ZERO                TO  LNK-ORCSC-JIKANERR-FLG
            MOVE    SPACE               TO  SPA-GMN-JIKANMSG

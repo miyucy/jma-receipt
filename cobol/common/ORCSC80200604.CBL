@@ -58,6 +58,8 @@
            03  FLG-TENSU           PIC 9(01).
            03  FLG-CHKMST          PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
+           03  FLG-SRYACT          PIC 9(01).
+           03  FLG-SRYACCT         PIC 9(01).
       *
            03  FLG-ERR             PIC 9(01).
            03  FLG-CHK             PIC 9(01).
@@ -124,6 +126,7 @@
            03  HZN-IDX             PIC 9(04).
       *
            03  IDX-Y               PIC 9(04).
+           03  IDX-Y2              PIC 9(02).
            03  IDX-T               PIC 9(04).
            03  IDX-R               PIC 9(04).
            03  IDX-R1              PIC 9(04).
@@ -237,11 +240,18 @@
       *    訂正
            03  WRK-TEI-CNT         PIC 9(04).
            03  WRK-ZOGEN           PIC S9(03).
+      *    診療年月日−６ヶ月
+           03  WRK-SRYYMD-1.
+               05  WRK-SRYYM-1.
+                   07  WRK-SRYYY       PIC 9(04).
+                   07  WRK-SRYMM       PIC 9(02).
+               05  WRK-SRYDD           PIC 9(02).
       *
            03  WRK-SRYKA           PIC  X(02).
       *
       *    リハビリ回数集計
        01  WRK-RIGAKU-NCNT-AREA.
+           03  WRK-RIGAKU-INT2             PIC X(01).
       *    当月算定回数
            03  WRK-RIHA-DAY-G.
                05  WRK-RIHA-DAY            PIC 9(03)
@@ -255,6 +265,11 @@
            03  WRK-KYUSEI2-YMD             PIC X(08).
            03  WRK-KYUSEI3-YMD             PIC X(08).
            03  WRK-KYUSEI4-YMD             PIC X(08).
+      *    通院精神用同日初診
+           03  WRK-DOUSYOSIN-AREA.
+               05  WRK-DOUSYOSIN-OCC       OCCURS   10.
+                   07  WRK-DOU-SRYKA       PIC X(02).
+                   07  WRK-DOU-SRYYMD      PIC X(08).
       *    初期区分
            03  WRK-RIGAKU-INT              PIC X(01).
       *
@@ -289,6 +304,12 @@
       *    算定履歴
        01  SANTEI-REC.
            COPY    "CPSANTEI.INC".
+      *    診療行為マスタ−
+       01  SRYACT-REC.
+           COPY    "CPSRYACT.INC".
+      *    診療会計マスタ−
+       01  SRYACCT-REC.
+           COPY    "CPSRYACCT.INC".
       *
       *    チェックマスタ−
        01  CHK-REC.
@@ -364,6 +385,11 @@
            IF      LNK-ORCSC-PG        =   "K02"
                IF      WRK-RIGAKU-INT      =   SPACE
                    PERFORM 1000-RIHBIRI-INIT-SEC
+               END-IF
+               IF      WRK-RIGAKU-INT2     =   SPACE
+      *            今回算定回数クリア
+                   INITIALIZE  WRK-RIHA-CNT-G
+                   MOVE    "1"             TO  WRK-RIGAKU-INT2
                END-IF
            ELSE
                INITIALIZE              WRK-RIGAKU-NCNT-AREA
@@ -473,6 +499,11 @@
            PERFORM 10001-KYUSEI-YMD-SEC
            MOVE    WRK-YMD             TO  WRK-KYUSEI4-YMD
       *
+      *    外来の時、精神通院
+           IF      SPA-NYUGAIKBN       =   "2"
+               PERFORM 10002-DOUJIT-YMD-SEC
+           END-IF
+      *
            MOVE    "1"                 TO  WRK-RIGAKU-INT
            .
        1000-RIHBIRI-INIT-EXT.
@@ -552,6 +583,203 @@
            END-IF
            .
        10001-KYUSEI-YMD-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    精神通院の同日初診編集処理
+      *****************************************************************
+       10002-DOUJIT-YMD-SEC                SECTION.
+      *
+      *    同日初診の診療科設定
+           MOVE    SPA-SRYYMD          TO  WRK-SRYYMD-1
+           IF      WRK-SRYMM           <=  6
+               COMPUTE WRK-SRYMM       =  (WRK-SRYMM   +   12 )
+                                                       -   6
+               COMPUTE WRK-SRYYY       =   WRK-SRYYY   -   1
+           ELSE
+               COMPUTE WRK-SRYMM       =   WRK-SRYMM   -   6
+           END-IF
+           IF      WRK-SRYYM-1         <   "200604"
+               MOVE    "200604"        TO  WRK-SRYYM-1
+           END-IF
+           IF      (SPA-DOUYMD         =   SPACE )  OR
+                  ((SPA-DOUYMD     NOT =   SPACE )  AND
+                   (SPA-SYOYMD         >   SPA-DOUYMD OR
+                    SPA-SYOYMD-OLD     >   SPA-DOUYMD ))
+               CONTINUE
+           ELSE
+      *        同日初診
+               MOVE    "111011810"         TO  WRK-SRYCD
+               PERFORM 10021-DOUSYOSIN-SRYKA-SEC
+      *        同日初診（労災）
+               MOVE    "101110040"         TO  WRK-SRYCD
+               PERFORM 10021-DOUSYOSIN-SRYKA-SEC
+           END-IF
+           .
+       10002-DOUJIT-YMD-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    同日初診算定処理
+      *****************************************************************
+       10021-DOUSYOSIN-SRYKA-SEC                SECTION.
+      *
+      *    算定履歴検索
+           MOVE    SPACE               TO  SANTEI-REC
+           INITIALIZE                  SANTEI-REC
+           MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
+           MOVE    SPA-PTID            TO  SANTEI-PTID
+           MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
+           MOVE    ZERO                TO  SANTEI-NYUGAIKBN
+           MOVE    ZERO                TO  SANTEI-SRYKA
+      *    労災毎とする
+           IF     (SPA-HKNKBN          =   1   )  AND
+                  (WRK-SRYCD           =   "101110040")
+               MOVE    SPA-HKNCOMBINUM     TO  SANTEI-HKNCOMBINUM
+           ELSE
+               MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
+           END-IF
+      *
+           MOVE    SANTEI-REC          TO  MCPDATA-REC
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "key3"              TO  MCP-PATHNAME
+               PERFORM 920-SANTEI-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SANTEI
+           END-IF
+      *
+           MOVE    SPACE               TO  WRK-YMD
+           PERFORM
+               UNTIL       FLG-SANTEI      =   1
+      *
+               IF     (SANTEI-MSANTEICNT   >   ZERO )  AND
+                      (SANTEI-SRYYM        >=  WRK-SRYYM-1 )  AND
+                      (SANTEI-SRYYM        <=  SPA-SRYYMD(1:6))
+      *            最後の発生日、当日以降は対象外
+                   IF      SANTEI-SRYYM        =   SPA-SRYYMD(1:6)
+                       MOVE    SPA-SRYYMD(7:2)     TO  IDD2
+                   ELSE
+                       MOVE    31                  TO  IDD2
+                   END-IF
+                   MOVE    ZERO                TO  WRK-DD
+                   PERFORM VARYING     IDD     FROM    IDD2  BY  -1
+                           UNTIL       IDD     <   1
+                       IF      SANTEI-DAY (IDD)    >   ZERO
+                           MOVE    IDD             TO  WRK-DD
+                           MOVE    1               TO  IDD
+                       END-IF
+                   END-PERFORM
+                   IF      WRK-DD              >   ZERO
+                       PERFORM 100211-DOU-SANTEI-SEC
+                   END-IF
+               END-IF
+      *
+               MOVE    "tbl_santei"        TO  MCP-TABLE
+               MOVE    "key3"              TO  MCP-PATHNAME
+               PERFORM 920-SANTEI-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           .
+       10021-DOUSYOSIN-SRYKA-EXT.
+           EXIT.
+      *****************************************************************
+      *    同日初診診療科設定処理 
+      *****************************************************************
+       100211-DOU-SANTEI-SEC               SECTION.
+      *
+           MOVE    SPACE               TO  SRYACT-REC
+           INITIALIZE                  SRYACT-REC
+           MOVE    SPA-HOSPID          TO  SRY-HOSPID
+           MOVE    SPA-NYUGAIKBN       TO  SRY-NYUGAIKBN
+           MOVE    SPA-PTID            TO  SRY-PTID
+           MOVE    SANTEI-SRYYM        TO  SRY-SRYYM
+           MOVE    WRK-SRYCD           TO  SRY-SRYCD(1)
+           MOVE    WRK-SRYCD           TO  SRY-SRYCD(2)
+           MOVE    WRK-SRYCD           TO  SRY-SRYCD(3)
+           MOVE    WRK-SRYCD           TO  SRY-SRYCD(4)
+           MOVE    WRK-SRYCD           TO  SRY-SRYCD(5)
+      *
+           MOVE    SRYACT-REC          TO  MCPDATA-REC
+           MOVE    "tbl_sryact"        TO  MCP-TABLE
+           MOVE    "key7"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_sryact"        TO  MCP-TABLE
+               MOVE    "key7"              TO  MCP-PATHNAME
+               PERFORM 930-SRYACT-READ-SEC
+           ELSE
+               INITIALIZE                  SRYACT-REC
+               MOVE    1               TO  FLG-SRYACT
+           END-IF
+           PERFORM
+                   UNTIL   FLG-SRYACT      =   1
+      *        剤回数取得
+               MOVE    SPACE               TO  SRYACCT-REC
+               INITIALIZE                      SRYACCT-REC
+               MOVE    SRY-HOSPID          TO  ACCT-HOSPID
+               MOVE    SRY-NYUGAIKBN       TO  ACCT-NYUGAIKBN
+               MOVE    SRY-PTID            TO  ACCT-PTID
+               MOVE    SRY-SRYKA           TO  ACCT-SRYKA
+               MOVE    SRY-SRYYM           TO  ACCT-SRYYM
+               MOVE    SRY-SRYKBN          TO  ACCT-SRYKBN
+               MOVE    SRY-ZAINUM          TO  ACCT-ZAINUM
+      *        主キー読み
+               PERFORM 940-SRYACCT-READ-SEC
+               IF      FLG-SRYACCT         =   ZERO
+                   MOVE    SPACE           TO  WRK-YMD
+                   MOVE    ACCT-SRYYM      TO  WRK-YMD(1:6)
+                   MOVE    ZERO            TO  WRK-DD
+                   PERFORM VARYING     IDX-Y2  FROM    31 BY  -1
+                           UNTIL       IDX-Y2  <   1
+                       IF      ACCT-DAY (1 IDX-Y2) >   ZERO
+                           MOVE    IDX-Y2          TO  WRK-DD
+                           IF      WRK-YMD         >   SPA-SRYYMD
+                               MOVE    ZERO        TO  WRK-DD
+                           ELSE
+                               MOVE    1               TO  IDX-Y2
+                           END-IF
+                       END-IF
+                   END-PERFORM
+                   IF      WRK-DD              =   ZERO
+                       MOVE    SPACE           TO  WRK-YMD
+                   END-IF
+                   PERFORM VARYING     IDX     FROM    1   BY  1
+                           UNTIL      (IDX     >   10  )
+                                  OR  (WRK-YMD =   SPACE )
+                       IF      WRK-DOU-SRYKA (IDX) =   SPACE
+                           MOVE    ACCT-SRYKA      TO  WRK-DOU-SRYKA
+                                                             (IDX)
+                           MOVE    WRK-YMD         TO  WRK-DOU-SRYYMD
+                                                             (IDX)
+                           MOVE    10              TO  IDX
+                       ELSE
+                           IF      WRK-DOU-SRYKA (IDX)
+                                                   =   ACCT-SRYKA
+                               IF     WRK-DOU-SRYYMD (IDX)
+                                                   <   WRK-YMD
+                                   MOVE    WRK-YMD TO  WRK-DOU-SRYYMD
+                                                             (IDX)
+                               END-IF
+                               MOVE    10              TO  IDX
+                           END-IF
+                       END-IF
+                   END-PERFORM
+               END-IF
+               MOVE    "tbl_sryact"        TO  MCP-TABLE
+               MOVE    "key7"              TO  MCP-PATHNAME
+               PERFORM 930-SRYACT-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_sryact"        TO  MCP-TABLE
+           MOVE    "key7"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+     *
+           .
+       300911-DOUSYOSIN-SRYKA-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1034,7 +1262,7 @@
            EXIT.
       *
       *****************************************************************
-      *     精神通院の逓減チェック処理
+      *     精神通院の加算チェック処理
       *****************************************************************
        100113-SEISIN-CHK-SEC            SECTION.
       *
@@ -1058,10 +1286,10 @@
            END-IF
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   10  )   OR
-                              (LNK-ORCSC-DOU-SRYKA (IDX) =   SPACE)
-               IF      LNK-ORCSC-DOU-SRYKA (IDX) =   WRK-SRYKA
-                   IF      LNK-ORCSC-DOU-SRYYMD(IDX) >   WRK-SYOYMD
-                       MOVE    LNK-ORCSC-DOU-SRYYMD(IDX)
+                              (WRK-DOU-SRYKA (IDX) =   SPACE)
+               IF      WRK-DOU-SRYKA (IDX) =   WRK-SRYKA
+                   IF      WRK-DOU-SRYYMD(IDX) >   WRK-SYOYMD
+                       MOVE    WRK-DOU-SRYYMD(IDX)
                                                TO  WRK-SYOYMD
                    END-IF
                    MOVE    10          TO  IDX
@@ -1098,9 +1326,15 @@
                                                OR  "180007250"
                                                OR  "180007350"
                        IF      SPA-SRYYMD      >   WRK-SYOYMD
-                           MOVE    "0082"      TO  WRK-ERRCD
-                           MOVE    "1"         TO  WRK-COM-CUR
+                           IF     (WRK-COM-KZMFLG (IDX-Z)   =   SPACE)
+                           AND    (LNK-ORCSC-KEI-IDX        =   ZERO )
+                               MOVE    IDX-Z       TO  LNK-ORCSC-KEI-IDX
+                               MOVE    "1"         TO  WRK-COM-KZMFLG
                                                            (IDX-Z)
+                               MOVE    "0082"      TO  WRK-ERRCD
+                               MOVE    "1"         TO  WRK-COM-CUR
+                                                           (IDX-Z)
+                           END-IF
                        END-IF
                    ELSE
                        MOVE    "0083"      TO  WRK-ERRCD
@@ -1934,6 +2168,59 @@
            .
        900-KANRIMST-READ-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    診療行為マスター読込
+      *****************************************************************
+       930-SRYACT-READ-SEC         SECTION.
+      *
+           MOVE    "tbl_sryact"        TO  MCP-TABLE
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  SRYACT-REC
+               MOVE    ZERO            TO  FLG-SRYACT
+           ELSE
+               INITIALIZE                  SRYACT-REC
+               MOVE    1               TO  FLG-SRYACT
+           END-IF
+      *
+           .
+       930-SRYACT-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    診療会計マスター読込（主キー）
+      *****************************************************************
+       940-SRYACCT-READ-SEC           SECTION.
+      *
+           MOVE    SRYACCT-REC         TO  MCPDATA-REC
+           MOVE    "tbl_sryacct"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_sryacct"       TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  SRYACCT-REC
+                   MOVE    ZERO                TO  FLG-SRYACCT
+               ELSE
+                   MOVE    1                   TO  FLG-SRYACCT
+                   INITIALIZE                  SRYACCT-REC
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-SRYACCT
+               INITIALIZE                  SRYACCT-REC
+           END-IF
+      *
+           MOVE    "tbl_sryacct"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       940-SRYACCT-READ-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    テーブル検索処理

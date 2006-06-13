@@ -189,6 +189,7 @@
       *
       *    リハビリ回数集計
         01  WRK-RIGAKU-NCNT-AREA.
+            03  WRK-RIGAKU-INT              PIC X(01).
             03  WRK-ORCSC-RIGAKU-TBL.
       *        １:理学、２：作業、３：言語
                05  WRK-DCNT-TBL        OCCURS  3.
@@ -210,7 +211,7 @@
       *    早期リハ等加算（今回入力分）
            03  WRK-ORCSC-GAI-FLG-G.
                05  WRK-ORCSC-GAI-FLG           PIC 9(01)   OCCURS  31.
-           03  WRK-RIGAKU-INT              PIC X(01).
+      *****03  WRK-RIGAKU-INT              PIC X(01).
       *
       *    保存用
        01  HOZ-SCR-REC.
