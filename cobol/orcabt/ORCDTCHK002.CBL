@@ -439,6 +439,7 @@
                        09  WRK-SYOSIN-DD               PIC 9(02).
            03  WRK-ZAIHKNNUM                           PIC X(03).
            03  WRK-HKNJANUMLEN                         PIC 9(03).
+           03  WRK-SRYYMD                              PIC X(08).
       *
        01  KEY-AREA.
            03  KEY-HKNCOMBI                            PIC 9(04).
@@ -3736,6 +3737,18 @@
       *
                MOVE    THKNCOMBI-HKNCOMBI (IDX20)
                                        TO  WRK-HKNCOMBI
+      *
+               MOVE    WRK-KJNYMD      TO  WRK-YMD
+               PERFORM VARYING IDX-DAY FROM    1   BY  1
+                       UNTIL ( IDX-DAY >   31 )
+                   IF    ( THKNCOMBI-DAY (IDX20 IDX-DAY)   =   1  )
+                       MOVE    IDX-DAY TO  WRK-DD
+                       MOVE    31      TO  IDX-DAY
+                   END-IF
+               END-PERFORM
+      *
+               MOVE    WRK-YMD         TO  WRK-SRYYMD
+      *
                PERFORM 220-HKNCOMBI-GET-SEC
       *
                IF    ( COMB-HKNID      NOT =   ZERO )
@@ -3765,7 +3778,7 @@
            INITIALIZE ORCSAGECHKAREA
            MOVE    DTCHK003-HOSPID     TO  AGECHK-HOSPID
            MOVE    DTCHK003-PTID       TO  AGECHK-PTID
-           MOVE    WRK-KJNYMD          TO  AGECHK-SRYYMD
+           MOVE    WRK-SRYYMD          TO  AGECHK-SRYYMD
            MOVE    PTINF-BIRTHDAY      TO  AGECHK-BIRTHDAY
            MOVE    COMB-HKNCOMBINUM    TO  AGECHK-HKNCOMBINUM
            CALL    "ORCSAGECHK"        USING
