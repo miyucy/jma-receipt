@@ -152,7 +152,7 @@ if test "x"$Start_GLSERVER = "xtrue"; then
 fi
 
 if test "x"$Start_dbredirector = "xtrue"; then
-    $DBREDIRECTOR -dir $DIRECTORY -ddir $LDDEF -record $RECORD log|tee $$dbredirector &
+    $DBREDIRECTOR -dir $DIRECTORY -record $RECORD log|tee $$dbredirector &
     until [ -s $$dbredirector ]
     do 
 	echo "wait..."
@@ -160,19 +160,19 @@ if test "x"$Start_dbredirector = "xtrue"; then
     done
 fi
 
-$WFC -dir $DIRECTORY -lddir $LDDEF -bddir $LDDEF -base $ORCA_DIR >/dev/null &
+$WFC -dir $DIRECTORY  -base $ORCA_DIR >/dev/null &
 	sleep 10
 
 for i in $ALWAYS_LD; do
     LDNUM=`echo $i|sed -e "s/[^0-9]//g"`
     ORCA_PORT=`expr $START_PORT + $LDNUM`
-    $APS -nocheck -dir $DIRECTORY -lddir $LDDEF -record $RECORD -base $ORCA_DIR $i -port $ORCA_PORT &
+    $APS -nocheck -dir $DIRECTORY -record $RECORD -base $ORCA_DIR $i -port $ORCA_PORT &
 done
 
 for i in $LD; do
     LDNUM=`echo $i|sed -e "s/[^0-9]//g"`
     ORCA_PORT=`expr $START_PORT + $LDNUM`
-    $APS -nocheck -dir $DIRECTORY -lddir $LDDEF -record $RECORD -base $ORCA_DIR $i -port $ORCA_PORT &
+    $APS -nocheck -dir $DIRECTORY -record $RECORD -base $ORCA_DIR $i -port $ORCA_PORT &
 done
 
 while :
