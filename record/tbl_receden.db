@@ -13,6 +13,7 @@ RECKBN				char(1);
 RENNUM				number(4);
 CREYMD				char(8);
 TOTALTEN			number(10);
+SJKBN				char(2);
 RECEDATA			char(2500);
 };
 
@@ -116,3 +117,23 @@ path	del3 	{
 	};
 };
 
+path	key3	{
+	DBSELECT	{
+		DECLARE tbl_receden_key3_csr CURSOR FOR
+		SELECT *
+		FROM tbl_receden
+		WHERE	HOSPID		=	:HOSPID
+		  AND	SRYYM		=	:SRYYM
+		  AND	NYUGAIKBN	=	:NYUGAIKBN
+		  AND	PTID		=	:PTID
+		  AND	RECEKA		=	:RECEKA
+		  AND	TEISYUTUSAKI	=	:TEISYUTUSAKI
+		  AND	RECESYUBETU	=	:RECESYUBETU
+		  AND	HKNJANUM	=	:HKNJANUM
+		  AND	HOJOKBN_KEY	=	:HOJOKBN_KEY
+		  AND	TEKSTYMD	=	:TEKSTYMD
+		  AND	RECKBN		=	'2'
+          ORDER  BY  SJKBN,RENNUM
+		;
+	};
+};
