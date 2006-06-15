@@ -1,0 +1,27 @@
+name	orca25;
+
+arraysize	20;
+textsize	400;
+
+bind	""		"OpenCOBOL"	"ORCGC50";
+bind	"C50"		"OpenCOBOL"	"ORCGC50";
+bind	"C501"		"OpenCOBOL"	"ORCGC501";
+bind	"C50ERR"	"OpenCOBOL"	"ORCGC50ERR";
+bind	"C50ID1"	"OpenCOBOL"	"ORCGC50ID1";
+
+multiplex_group	orca25;
+
+
+
+data	{
+	spa	orcaspa;
+	window	{
+		C50;
+		C501;
+                C50ERR;
+                C50ID1;
+	};
+};
+
+#include "orcadb.inc"
+#include "orcadbh.inc"
