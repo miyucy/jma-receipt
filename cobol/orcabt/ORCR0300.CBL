@@ -189,7 +189,9 @@
       *                                     改行までを１レコードとする
       *  3.0.0
       *  03.00.01    NACL-藤原    06/05/15  入退院履歴記載対応
-      *  03.00.02    NACL-藤原    06/06/14  外来迅速検体検査加算を算定した
+      *  03.00.02    NACL-藤原    06/06/13  レセコメントの症状詳記区分に
+      *                                     よる記載対応
+      *  03.00.03    NACL-藤原    06/06/14  外来迅速検体検査加算を算定した
       *                                     検査にコメントがある場合の記載
       *****************************************************************
       *
@@ -486,6 +488,7 @@
            03  WRK-COM-FTNKBN          PIC X(01).
            03  WRK-TAIHI-FTNKBN        PIC X(01).
            03  WRK-SJ-KBN              PIC X(02).
+           03  WRK-RECECOM-SJKBN       PIC X(02).
            03  WRK-SJ-CHK              PIC 9(01).
       *
            03  WRK-CHUKSNCD            PIC X(04).
@@ -528,6 +531,9 @@
       *    日付変換用
            03  WRK-SYMD                PIC X(08).
       *
+           03  WRK-MCP-TABLE       PIC X(64).
+           03  WRK-MCP-PATHNAME    PIC X(64).
+      *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG             PIC 9(08).
            03  WRK-HENYMDGR            REDEFINES   WRK-HENYMDG.
@@ -564,11 +570,16 @@
            03  WRK-COMMENT-G.
                05  WRK-COMMENT                 PIC X(50)
                                                OCCURS  16.
+           03  WRK-COMMENT-R               REDEFINES   WRK-COMMENT-G.
+               05  WRK-COMMENT1                PIC X(100)
+                                               OCCURS  8.
            03  WRK-COMM                        PIC X(800).
            03  WRK-COMM1                       PIC X(800).
            03  WRK-COL                         PIC 9(03). 
            03  WRK-RECECOM         PIC 9(01).
            03  WRK-RECEHEN         PIC 9(01).
+           03  WRK-SJKBN-X.
+               05  WRK-SJKBN       PIC 9(02).
       *
       *    手術歴編集
            03  WRK-OPECOM-HEN      PIC X(50).
@@ -4860,10 +4871,8 @@
                    MOVE    RECE02-RECEKA   TO  RECEDEN-RECEKA
                END-IF
            END-IF
-           MOVE    RECE02-TEISYUTUSAKI TO
-                                               RECEDEN-TEISYUTUSAKI
-           MOVE    RECE02-RECESYUBETU  TO
-                                               RECEDEN-RECESYUBETU
+           MOVE    RECE02-TEISYUTUSAKI TO  RECEDEN-TEISYUTUSAKI
+           MOVE    RECE02-RECESYUBETU  TO  RECEDEN-RECESYUBETU
            IF      RECE02-HKNJANUM-KEY =   SPACE
                MOVE    ZERO                TO  RECEDEN-HKNJANUM
            ELSE
@@ -5060,21 +5069,31 @@
       *****************************************************************
        2009-COMMENT-HEN-99-SEC      SECTION.
       *
+           MOVE    "99"                TO  WRK-COM-SRYKBN
+           MOVE   SPACE                TO  WRK-SJ-KBN
+                                           WRK-RECECOM-SJKBN
+      *     
+      *    適用欄コメント     
+           MOVE    "tbl_rececom"       TO  WRK-MCP-TABLE
+           MOVE    "key7"              TO  WRK-MCP-PATHNAME
+      *
            INITIALIZE                      RECECOM-REC
            MOVE    RECE02-HOSPID       TO  RECECOM-HOSPID
            MOVE    RECE02-SRYYM        TO  RECECOM-SRYYM
            MOVE    RECE02-PTID         TO  RECECOM-PTID
            MOVE    RECE02-NYUGAIKBN    TO  RECECOM-NYUGAIKBN
+           MOVE    "99"                TO  RECECOM-SJKBN 
       * 
            MOVE    RECECOM-REC         TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "RECECOM-KEY1"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "RECECOM-KEY1"      TO  ORC-DBPATH
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                PERFORM 900-RECECOM-READ-SEC
            ELSE
                INITIALIZE                  RECECOM-REC
@@ -5091,29 +5110,188 @@
                    END-IF
                END-PERFORM
       *                 
-               MOVE    "RECECOM-KEY1"      TO  ORC-DBPATH
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                PERFORM 900-RECECOM-READ-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "RECECOM-KEY1"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *     
+      *    症状詳記コメント     
+           MOVE    "tbl_rececom"       TO  WRK-MCP-TABLE
+           MOVE    "key8"              TO  WRK-MCP-PATHNAME
+      *
+           INITIALIZE                      RECECOM-REC
+           MOVE    RECE02-HOSPID       TO  RECECOM-HOSPID
+           MOVE    RECE02-SRYYM        TO  RECECOM-SRYYM
+           MOVE    RECE02-PTID         TO  RECECOM-PTID
+           MOVE    RECE02-NYUGAIKBN    TO  RECECOM-NYUGAIKBN
+      * 
+           MOVE    RECECOM-REC         TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+               PERFORM 900-RECECOM-READ-SEC
+           ELSE
+               INITIALIZE                  RECECOM-REC
+               MOVE    1               TO  FLG-RECECOM
+           END-IF
+      *
+           PERFORM             UNTIL   FLG-RECECOM   =   1
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       10
+                       OR      RECE02-HKNCOMBI (IDY) =   ZERO
+                   IF      RECECOM-HKNCOMBI    =   RECE02-HKNCOMBI(IDY)
+                       PERFORM 20092-RECECOM-HENSYU-SEC                 
+                       MOVE    10                  TO  IDY
+                   END-IF
+               END-PERFORM
+      *                 
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+               PERFORM 900-RECECOM-READ-SEC
+           END-PERFORM
+      *
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
       *
            .
        2009-COMMENT-HEN-99-EXT.
            EXIT.
       *
       *****************************************************************
-      *    症状詳記（レセコメント）コメントの改行コード削除処理
+      *    適用欄コメント（レセコメント）の改行コード削除処理
       *****************************************************************
        20091-RECECOM-HENSYU-SEC    SECTION.
       *                                          
            MOVE    RECECOM-COMMENT TO  WRK-COMM
            MOVE    ZERO            TO  WRK-RECEHEN
-           MOVE    "07"            TO  WRK-SJ-KBN
+      *
+           PERFORM     UNTIL       WRK-RECEHEN  =   1      
+      *
+               MOVE    SPACE           TO  WRK-COMMENT-G
+                                           WRK-COMM1
+               MOVE    ZERO            TO  WRK-COL
+      *
+               IF      WRK-COMM (1:1)  =   WRK-CONS-RETURN
+                   MOVE    WRK-COMM (2:)   TO  WRK-COMM1
+               ELSE             
+                   INSPECT WRK-COMM    TALLYING    WRK-COL
+                                               FOR ALL WRK-CONS-RETURN
+                   IF      WRK-COL         >   ZERO
+                       PERFORM VARYING IDX FROM    1   BY  1
+                               UNTIL   IDX >       800
+                           IF      WRK-COMM(IDX:1) =   WRK-CONS-RETURN
+                               COMPUTE IDY1     =   IDX     -   1
+                               COMPUTE IDY2     =   IDX     +   1   
+                               MOVE    WRK-COMM (1:IDY1)
+                                                TO  WRK-COMMENT-G
+                               MOVE    WRK-COMM (IDY2:)
+                                                TO  WRK-COMM1
+                               MOVE    800      TO  IDX
+                           END-IF
+                       END-PERFORM                                                                                  
+                   ELSE
+                       MOVE    WRK-COMM        TO  WRK-COMMENT-G
+                       MOVE    1               TO  WRK-RECEHEN
+                   END-IF
+      *                                       
+                   IF      WRK-COMMENT-G   NOT =   SPACE
+                     PERFORM VARYING IDW FROM    1   BY  1
+                             UNTIL   IDW >       8
+                             OR      WRK-COMMENT (IDW)   =   SPACE
+      *
+                       ADD     1                   TO  WRK-COM-RENNUM
+      *          
+                       INITIALIZE                  RECEDEN-REC
+                       MOVE    RECE02-HOSPID       TO  RECEDEN-HOSPID
+                       MOVE    RECE02-SRYYM        TO  RECEDEN-SRYYM
+                       MOVE    RECE02-NYUGAIKBN    TO  RECEDEN-NYUGAIKBN
+                       MOVE    RECE02-PTID         TO  RECEDEN-PTID
+                       IF    ( SYS-2009-SYUKA-KBN  =   "1" )
+                       AND   ( RECE02-TEISYUTUSAKI =   "1" )
+                           MOVE    RECE02-SYUKA    TO  RECEDEN-RECEKA
+                       ELSE
+                           IF      RECE02-RECEKA   =   SPACE
+                               MOVE    ZERO        TO  RECEDEN-RECEKA
+                           ELSE
+                               MOVE    RECE02-RECEKA
+                                                   TO  RECEDEN-RECEKA
+                           END-IF
+                       END-IF
+                       MOVE    RECE02-TEISYUTUSAKI TO
+                                                   RECEDEN-TEISYUTUSAKI
+                       MOVE    RECE02-RECESYUBETU  TO
+                                                   RECEDEN-RECESYUBETU
+                       IF      RECE02-HKNJANUM-KEY =   SPACE
+                           MOVE    ZERO                TO
+                                                   RECEDEN-HKNJANUM
+                       ELSE
+                           MOVE    RECE02-HKNJANUM-KEY TO
+                                                   RECEDEN-HKNJANUM
+                       END-IF
+                       IF      RECE02-HOJOKBN-KEY  =   SPACE
+                           MOVE    ZERO                TO
+                                                   RECEDEN-HOJOKBN-KEY
+                       ELSE
+                           MOVE    RECE02-HOJOKBN-KEY  TO
+                                                   RECEDEN-HOJOKBN-KEY
+                       END-IF   
+                       IF      RECE02-TEKSTYMD     =   SPACE
+                           MOVE    ZERO            TO  RECEDEN-TEKSTYMD
+                       ELSE
+                           MOVE    RECE02-TEKSTYMD TO  RECEDEN-TEKSTYMD
+                       END-IF
+                       MOVE    "2"                 TO  RECEDEN-RECKBN
+                       MOVE    WRK-COM-RENNUM      TO  RECEDEN-RENNUM
+                       MOVE    WRK-PARA-SYSYMD     TO  RECEDEN-CREYMD
+                       MOVE    WRK-COMMENT1 (IDW)  TO  RECEDEN-RECEDATA
+      *
+                       MOVE    RECEDEN-REC         TO  MCPDATA-REC
+                       MOVE    "RECEDEN-KEY"       TO  ORC-DBPATH
+                       MOVE    "DBINSERT"          TO  MCP-FUNC
+                       CALL    "ORCMCPSUB"             USING
+                                                       MCPAREA
+                                                       ORCMCPAREA
+                                                       MCPDATA-REC      
+      *
+                       ADD     1                   TO  CNT-OUT
+      *
+      *                適用欄コメント編集処理
+                       PERFORM 20099-COMMENT-HENSYU-SEC
+                     END-PERFORM
+                   END-IF
+               END-IF  
+               MOVE    WRK-COMM1       TO  WRK-COMM
+           END-PERFORM   
+      *
+           .
+       20091-RECECOM-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    症状詳記コメント（レセコメント）の改行コード削除処理
+      *****************************************************************
+       20092-RECECOM-HENSYU-SEC    SECTION.
+      *                                          
+           MOVE    RECECOM-COMMENT TO  WRK-COMM
+           MOVE    ZERO            TO  WRK-RECEHEN
+           IF      RECECOM-SJKBN   =   "07"    OR  "08"    OR  "09"
+               MOVE    "07"            TO  RECECOM-SJKBN
+           END-IF 
+           IF      RECECOM-SJKBN   NOT =   WRK-RECECOM-SJKBN
+               MOVE   RECECOM-SJKBN        TO  WRK-RECECOM-SJKBN
+                                               WRK-SJ-KBN
+           END-IF
       *
            PERFORM     UNTIL       WRK-RECEHEN  =   1      
       *
@@ -5194,6 +5372,8 @@
                        MOVE    WRK-COM-RENNUM      TO  RECEDEN-RENNUM
                        MOVE    WRK-PARA-SYSYMD     TO  RECEDEN-CREYMD
                        MOVE    WRK-COMMENT (IDW)   TO  RECEDEN-RECEDATA
+                       MOVE    RECECOM-SJKBN       TO  WRK-SJKBN-X
+                       MOVE    WRK-SJKBN           TO  RECEDEN-TOTALTEN
       *
                        MOVE    RECEDEN-REC         TO  MCPDATA-REC
                        MOVE    "RECEDEN-KEY"       TO  ORC-DBPATH
@@ -5206,23 +5386,21 @@
                        ADD     1                   TO  CNT-OUT
                      END-PERFORM
       *
-      *
       *              症状詳記レコード編集処理
-                     PERFORM 20092-SJ-HENSYU-SEC
+                     PERFORM 200921-SJ-HENSYU-SEC
                    END-IF
                END-IF  
                MOVE    WRK-COMM1       TO  WRK-COMM
            END-PERFORM   
       *
            .
-       20091-RECECOM-HENSYU-EXT.
+       20092-RECECOM-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
       *    症状詳記レコード編集処理
       *****************************************************************
-       20092-SJ-HENSYU-SEC       SECTION.
-      *
+       200921-SJ-HENSYU-SEC       SECTION.
       *
       *    全角スペースのみのレコードは記載しない
            MOVE    ZERO                TO  WRK-SJ-CHK
@@ -5235,7 +5413,7 @@
                END-IF
            END-PERFORM 
            IF      WRK-SJ-CHK          =   ZERO
-               GO  TO  20092-SJ-HENSYU-EXT
+               GO  TO  200921-SJ-HENSYU-EXT
            END-IF   
       *
            MOVE    SPACE               TO  WRK-REC
@@ -5258,7 +5436,7 @@
       *
             PERFORM 5001-FILE-WRITE-SEC
            .
-       20092-SJ-HENSYU-EXT.
+       200921-SJ-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -5928,10 +6106,9 @@
        900-RECECOM-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-RECECOM
                MOVE    MCPDATA-REC     TO  RECECOM-REC
@@ -6227,6 +6404,20 @@
       *
            .
        900-RECE12-NEXT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    テーブルクローズ処理
+      *****************************************************************
+       900-CLOSE-SEC               SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
+      *
+           .
+       900-CLOSE-EXT.
            EXIT.
       *      
       *****************************************************************
