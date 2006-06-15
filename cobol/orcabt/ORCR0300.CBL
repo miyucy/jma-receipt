@@ -5373,7 +5373,7 @@
                        MOVE    WRK-PARA-SYSYMD     TO  RECEDEN-CREYMD
                        MOVE    WRK-COMMENT (IDW)   TO  RECEDEN-RECEDATA
                        MOVE    RECECOM-SJKBN       TO  WRK-SJKBN-X
-                       MOVE    WRK-SJKBN           TO  RECEDEN-TOTALTEN
+                       MOVE    WRK-SJKBN           TO  RECEDEN-SJKBN
       *
                        MOVE    RECEDEN-REC         TO  MCPDATA-REC
                        MOVE    "RECEDEN-KEY"       TO  ORC-DBPATH
