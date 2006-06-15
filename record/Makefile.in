@@ -324,6 +324,10 @@ RECORD_files = \
 	N23.rec \
 	N29.rec \
 	W63.rec \
+	C50.rec \
+	C501.rec \
+	C50ERR.rec \
+	C50ID1.rec \
 
 
 DEF_files = \
