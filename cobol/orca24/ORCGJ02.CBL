@@ -50,6 +50,7 @@
       *  01.00.19    NACL-多々納  05/11/24  MONFUNC 対応
       *  01.00.20    NACL-多々納  06/01/20  診療科初期表示追加
       *  01.00.21    NACL-多々納  06/01/23  用量割合・包括検査数追加
+      *  01.00.22    NACL-多々納  06/05/14  コメント入力画面変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -942,6 +943,7 @@
                IF      WRK-MOTOPG          =   "Y01"  OR  "U01"
                                                       OR  "P97"
                                                       OR  "XC01"
+                                                      OR  "C50"
                    MOVE    LNK-COMMON      TO  SPA-KYOUTU
                    MOVE    LNK-SCRSPA      TO  SPA-J02
                    MOVE    SPA-WORK        TO  SPA-J01KYOUTU
@@ -953,6 +955,10 @@
                END-IF
       *        プレビューから
                IF      WRK-MOTOPG          =   "XC01"
+                   GO      TO      300-SCREEN-EXT
+               END-IF
+      *        コメント入力から
+               IF      WRK-MOTOPG          =   "C50"
                    GO      TO      300-SCREEN-EXT
                END-IF
       *        外部より選択がある時
@@ -7374,6 +7380,39 @@
                GO      TO      430-FREEMSG-EXT
            END-IF
       *
+      *    戻り時、画面を元へ戻す
+           MOVE    SPACE               TO  LINKAREA
+           MOVE    SPA-KYOUTU          TO  LNK-COMMON
+           MOVE    SPA-J02             TO  LNK-SCRSPA
+      *
+      *    画面移行用のパラメタ変更
+           MOVE    "J02"               TO  SPA-MOTOPG
+           MOVE    "C50"               TO  SPA-SAKIPG
+      *
+      *****MOVE    SPACE               TO  SPA-KYOTUKEY
+      *    遷移後の初期表示
+           MOVE    SPA-GMN-SRYYM       TO  SPA-SRYYMDW(1:6)
+           MOVE    SPA-NAI-SRYYM       TO  SPA-SRYYMD (1:6)
+           MOVE    SPA-GMN-SRYKA       TO  SPA-SRYKA
+           MOVE    SPA-GMN-NYUGAIKBN   TO  SPA-NYUGAIKBN
+           MOVE    SPA-GMN-PTID        TO  SPA-PTID
+           MOVE    SPA-GMN-PTNUM       TO  SPA-PTNUM
+           MOVE    SPA-GMN-NAME        TO  SPA-NAME
+           MOVE    SPA-GMN-SEX         TO  SPA-SEX
+           MOVE    SPA-GMN-BIRTHDAYW   TO  SPA-BIRTHDAYW
+           MOVE    SPA-GMN-BIRTHDAY    TO  SPA-BIRTHDAY
+      *
+           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
+      *
+           MOVE    "CHANGE"            TO  MCP-PUTTYPE.
+           MOVE    "C50"               TO  MCP-WINDOW.
+      *
+           PERFORM 900-PUT-WINDOW.
+      *
+           MOVE    1                   TO  FLG-END
+      *
+      *!!以下削除
+           GO      TO      430-FREEMSG-EXT
            MOVE    SPA-GMN-SRYYM       TO  SPA-J02-SRYYMDW(1:6)
            MOVE    SPA-NAI-SRYYM       TO  SPA-J02-SRYYMD (1:6)
            MOVE    SPA-GMN-SRYKA       TO  SPA-J01-SRYKA
