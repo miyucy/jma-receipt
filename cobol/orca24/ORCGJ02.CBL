@@ -399,6 +399,7 @@
            03  WRK-RENNUM              PIC 9(01).
            03  WRK-MAE-RENNUM          PIC 9(01).
            03  WRK-SRYKA               PIC X(02).
+           03  WRK-RRK-SRYKA           PIC X(02).
            03  WRK-DAY-S               PIC 9(03).
            03  WRK-DAY-MAE             PIC 9(03).
            03  IDX-D1                  PIC 9(02).
@@ -2028,18 +2029,18 @@
       *
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
+           MOVE    "key35"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_jyurrk"        TO  MCP-TABLE
-               MOVE    "key10"             TO  MCP-PATHNAME
+               MOVE    "key35"             TO  MCP-PATHNAME
                PERFORM 970-JYURRK-READ-SEC
            ELSE
                INITIALIZE                  JYURRK-REC
                MOVE    1               TO  FLG-JYURRK
            END-IF
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
+           MOVE    "key35"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
            IF      FLG-JYURRK          =   ZERO
@@ -3384,20 +3385,6 @@
       *
            MOVE    J02-PTNUM           TO  SPA-GMN-PTNUM
       *
-      **** INITIALIZE                      ORCSPTIDAREA
-      *    MOVE    SPA-HOSPID          TO  SPTID-HOSPID
-      *    MOVE    SPA-GMN-PTNUM       TO  SPTID-PTNUM
-      *    CALL    "ORCSPTID"          USING   ORCSPTIDAREA
-      *                                        SPA-1009-TBL
-      *    IF      SPTID-RC        NOT =   ZERO
-      *        INITIALIZE                  SPA-J02-AREA
-      *        INITIALIZE                  SPA-SCR-REC
-      *        MOVE    SPA-J02-SRYYMDW(1:6)    TO  SPA-GMN-SRYYM
-      *        MOVE    SPA-J02-SRYYMD (1:6)    TO  SPA-NAI-SRYYM
-      *        MOVE    "0016"              TO  SPA-ERRCD
-      *        GO      TO     41010-PTNUM-SYORI-EXT
-      **** END-IF
-      *
            INITIALIZE                      ORCSPTNUMAREA
            MOVE    SPA-GMN-PTNUM       TO  SPTNUM-PTNUM
            CALL    "ORCSPTNUM"         USING   ORCSPTNUMAREA
@@ -3522,7 +3509,8 @@
                    CONTINUE
                ELSE
       *        全科以外
-                   IF      SPA-NAI-NYUINKA NOT =   SPACE
+                   IF     (SPA-NAI-NYUINKA NOT =   SPACE )
+                     AND  (SPA-NYUGAIKBN       =   "1"   )
                        MOVE    SPA-NAI-NYUINKA     TO  SPA-J01-SRYKA
                        PERFORM 3101-SRYKA-HEN-SEC
                    END-IF
@@ -7406,46 +7394,6 @@
       *
            MOVE    "CHANGE"            TO  MCP-PUTTYPE.
            MOVE    "C50"               TO  MCP-WINDOW.
-      *
-           PERFORM 900-PUT-WINDOW.
-      *
-           MOVE    1                   TO  FLG-END
-      *
-      *!!以下削除
-           GO      TO      430-FREEMSG-EXT
-           MOVE    SPA-GMN-SRYYM       TO  SPA-J02-SRYYMDW(1:6)
-           MOVE    SPA-NAI-SRYYM       TO  SPA-J02-SRYYMD (1:6)
-           MOVE    SPA-GMN-SRYKA       TO  SPA-J01-SRYKA
-           MOVE    SPA-GMN-SRYKAMEI    TO  SPA-J01-SRYKAMEI
-      *    診療種別
-           MOVE    SPA-GMN-SRYKBN      TO  SPA-GMN-SRYKBN-MAE
-      *
-           MOVE    SPACE               TO  SPA-MOTOPG
-           MOVE    SPA-J01KYOUTU       TO  SPA-WORK
-           MOVE    SPA-AREA            TO  SPA-COMMON
-           MOVE    SPA-J02             TO  SPA-FREE
-      *
-           MOVE    "LINK"              TO  MCP-STATUS
-           MOVE    SPACE               TO  MCP-EVENT
-      *
-           CALL    "ORCGJ023"          USING
-                                       MCPAREA
-                                       SPAAREA
-                                       LINKAREA
-                                       SCRAREA.
-      *
-           MOVE    SPA-COMMON      TO  SPA-AREA.
-           MOVE    SPA-FREE        TO  SPA-J02
-           MOVE    SPA-WORK        TO  SPA-J01KYOUTU
-      *
-      *    カーソル移動
-           MOVE    "COMMENT"           TO  MCP-WIDGET
-      *
-           MOVE    "J02"               TO  SPA-MOTOPG
-           MOVE    "J023"              TO  SPA-SAKIPG
-      *
-           MOVE    "NEW"               TO  MCP-PUTTYPE.
-           MOVE    "J023"              TO  MCP-WINDOW.
       *
            PERFORM 900-PUT-WINDOW.
       *
