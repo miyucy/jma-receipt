@@ -96,6 +96,7 @@
                 05  I01-HKNCOMBI-ITM               PIC X(51)
                                                    OCCURS  30.
                 05  I01-HKNCOMBI-ITM-STT           PIC S9(9)   BINARY.
+              04  I01-LBL-TOKNYUIN                 PIC X(10).
               04  I01-CMB-TOKNYUIN.
                 05  I01-TOKNYUIN                   PIC X(63).
                 05  I01-TOKNYUIN-STT               PIC S9(9)   BINARY.

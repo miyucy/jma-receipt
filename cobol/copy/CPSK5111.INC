@@ -44,8 +44,11 @@
       *ÆÃÄêÆþ±¡ÎÁÌ¾¾Î£²
                05  SYS-5111-BRM-TOKUTEINYUIN-NM2
                                         PIC  X(24).
+      *Æþ±¡ÎÁ¶èÊ¬
+               05  SYS-5111-BRM-NYUINRYOKBN
+                                        PIC  X(02).
       *Í½È÷
-               05                       PIC  X(407).
+               05                       PIC  X(405).
       *Ã¼Ëö£É£Ä
            03  SYS-5111-TERMID          PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä

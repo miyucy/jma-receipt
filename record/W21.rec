@@ -92,6 +92,25 @@ W21	{
 			item	varchar(23)[99];
 			state	int;
 		};
+		LBLKHNRYO1	{
+			value	varchar(10);
+		};
+		LBLKHNRYO2	{
+			value	varchar(2);
+		};
+		CMB_KHNRYO	{
+			KHNRYO	{
+				value	varchar(63);
+				state	int;
+			};
+			count	int;
+			item	varchar(63)[20];
+			state	int;
+		};
+		KHNTEN	{
+			value	number(6);
+			state	int;
+		};
 		YUKOSTYMD	{
 			value	varchar(10);
 			state	int;
@@ -103,8 +122,11 @@ W21	{
 		SELNUM2	{
 			value	number(2);
 		};
-		scrolledwindow28	{
+		scrw28	{
 			BRMLST	{
+				TKHNRYO_TITLE	{
+					value	varchar(20);
+				};
 				count	int;
 				row	int;
 				rowattr	int;
@@ -118,8 +140,9 @@ W21	{
 					value6	varchar(10);
 					value7	varchar(05);
 					value8	varchar(20);
-					value9	varchar(09);
+					value9	varchar(20);
 					value10	varchar(09);
+					value11	varchar(09);
 				}	[200];
 				select	bool[200];
 			};

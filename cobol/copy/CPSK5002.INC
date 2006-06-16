@@ -101,8 +101,10 @@
                  07  SYS-5002-KSN              OCCURS  12.
                    09  SYS-5002-KSNCD              PIC X(09).
                    09  SYS-5002-KSNKBN             PIC X(01).
-      *Í½È÷
-           03                           PIC  X(366).
+               05  SYS-5002-YOBI                   PIC X(300).
+               05  SYS-5002-KHNSRYCD               PIC X(09).
+               05  SYS-5002-KHNKBNCD               PIC X(03).
+               05  SYS-5002-YOBI2                  PIC X(44).
       *Ã¼Ëö£É£Ä
            03  SYS-5002-TERMID          PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä

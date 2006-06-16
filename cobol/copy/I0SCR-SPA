@@ -233,6 +233,11 @@
                  11  SPA-NAI-I01-KHNRYO-G.
                     13  SPA-NAI-I01-KHNRYO-CD      PIC X(09).
                     13  SPA-NAI-I01-KHNRYO-NM      PIC X(60).
+      *          病棟種別
+                 11  SPA-NAI-I01-BTUSBT            PIC X(02).
+                 11  SPA-NAI-I01-BTUKHNKBNCD       PIC X(03).
+                 11  SPA-NAI-I01-BRMKHNKBNCD       PIC X(03).
+                 11  SPA-NAI-I01-SELNYUKHN         PIC 9(01).
       *          退院処理時、請求データ取消フラグ
                  11  SPA-NAI-I01-TORIKESI-FLG      PIC 9(01).
       *        入院歴リスト内部領域
@@ -274,6 +279,9 @@
                                                    PIC X(02).
       *                ITM4には同一病室名の病室の診療科を退避する
                        15  SPA-GMN-I01-BTUNAME-ITM4
+                                                   PIC X(02).
+      *                ITM4には病棟種別を入れる
+                       15  SPA-GMN-I01-BTUNAME-ITM5
                                                    PIC X(02).
                    13  SPA-GMN-I01-BTUNAME-ITM-STT
                                                    PIC S9(9)   BINARY.

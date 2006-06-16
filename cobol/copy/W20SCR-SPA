@@ -241,89 +241,68 @@
                05  SPA-GMN-W21-LINE                        PIC 9(02).
                05  SPA-GMN-W21-MAX                         PIC 9(04).
                05  SPA-GMN-W21-CUR                         PIC 9(03).
-               05  SPA-GMN-W21-ERRCD-TBL.
-                   07  SPA-GMN-W21-ERRCD                   PIC X(04)
-                                                           OCCURS 30.
                05  SPA-GMN-W21-MOTOPG                      PIC X(08).
                05  SPA-GMN-W21-AREA.
       *            ヘッダ項目領域
                    07  SPA-GMN-W21-HEAD-AREA.
       *                病棟名称
-                       09  SPA-GMN-W21-BTU-NAME.
-                           11  SPA-GMN-W21-BTU-NUM         PIC X(02).
+                       09  SPA-GMN-W21-BTUNUM-G.
+                           11  SPA-GMN-W21-BTUNUM          PIC X(02).
                            11                              PIC X(01).
-                           11  SPA-GMN-W21-BTU-NAME-NM     PIC X(20).
+                           11  SPA-GMN-W21-BTUNUMMEI       PIC X(20).
       *                病棟入院基本料
-                       09  SPA-GMN-W21-BTU-KHNRYO          PIC X(60).
+                       09  SPA-GMN-W21-BTUKHNRYO           PIC X(60).
       *            入力項目領域
                    07  SPA-GMN-W21-INPUT-AREA.
-      *                画面状態
-      *                （有効期間終了日が過去のデータの変更は
-      *                  不可とする）
-                       09  SPA-GMN-W21-STATE               PIC S9(9)
-                                                           BINARY.
-      *                クリアボタン（状態）
-                       09  SPA-GMN-W21-B02-STATE           PIC S9(9)
-                                                           BINARY.
-      *                室歴ボタン（状態）
-                       09  SPA-GMN-W21-B05-STATE           PIC S9(9)
-                                                           BINARY.
-      *                追加ボタン（状態）
-                       09  SPA-GMN-W21-B06-STATE           PIC S9(9)
-                                                           BINARY.
-      *                変更ボタン（状態）
-                       09  SPA-GMN-W21-B07-STATE           PIC S9(9)
-                                                           BINARY.
-      *                削除ボタン（状態）
-                       09  SPA-GMN-W21-B08-STATE           PIC S9(9)
-                                                           BINARY.
       *                病棟ボタン（状態）
                        09  SPA-GMN-W21-B09                 PIC X(04).
-                       09  SPA-GMN-W21-B09-STATE           PIC S9(9)
-                                                           BINARY.
-      *                登録ボタン（状態）
-                       09  SPA-GMN-W21-B12-STATE           PIC S9(9)
-                                                           BINARY.
       *                選択番号１
                        09  SPA-GMN-W21-SELNUM1             PIC S9(3).
       *                病室番号
-                       09  SPA-GMN-W21-BRM-NUM             PIC X(06).
+                       09  SPA-GMN-W21-BRMNUM              PIC X(06).
       *                病室種別
-                       09  SPA-GMN-W21-BRM-SBT.
-                           11  SPA-GMN-W21-BRM-SBT-CD      PIC X(02).
+                       09  SPA-GMN-W21-SBT-G.
+                           11  SPA-GMN-W21-SBT             PIC X(02).
                            11                              PIC X(01).
-                           11  SPA-GMN-W21-BRM-SBT-NM      PIC X(20).
+                           11  SPA-GMN-W21-SBTMEI          PIC X(20).
       *                特定入院料
-                       09  SPA-GMN-W21-BRM-TOKNYUIN.
-                           11  SPA-GMN-W21-BRM-TOKNYUIN-CD
-                                                           PIC X(02).
+                       09  SPA-GMN-W21-TOKNYUIN-G.
+                           11  SPA-GMN-W21-TOKNYUIN        PIC X(02).
                            11                              PIC X(01).
-                           11  SPA-GMN-W21-BRM-TOKNYUIN-NM
-                                                           PIC X(40).
+                           11  SPA-GMN-W21-TOKNYUINMEI     PIC X(40).
       *
       *                収容人数
-                       09  SPA-GMN-W21-BRM-NINZU           PIC S9(2).
+                       09  SPA-GMN-W21-NINZU               PIC S9(2).
       *
       *                室料差額
-                       09  SPA-GMN-W21-BRM-SAGAKU.
-                           11  SPA-GMN-W21-BRM-SAGAKU-CD   PIC X(02).
+                       09  SPA-GMN-W21-SAGAKU-G.
+                           11  SPA-GMN-W21-SAGAKU          PIC X(02).
                            11                              PIC X(01).
-                           11  SPA-GMN-W21-BRM-SAGAKU-NM   PIC X(07).
+                           11  SPA-GMN-W21-SAGAKUMEI       PIC X(07).
       *
       *                性別特定
-                       09  SPA-GMN-W21-BRM-SEX.
-                           11  SPA-GMN-W21-BRM-SEX-CD      PIC X(01).
+                       09  SPA-GMN-W21-SEX-G.
+                           11  SPA-GMN-W21-SEX             PIC X(01).
                            11                              PIC X(01).
-                           11  SPA-GMN-W21-BRM-SEX-NM      PIC X(10).
+                           11  SPA-GMN-W21-SEXMEI          PIC X(10).
       *
       *                内線番号
-                       09  SPA-GMN-W21-BRM-NAITEL          PIC X(5).
+                       09  SPA-GMN-W21-NAITEL              PIC X(5).
       *
       *                病棟科名
-                       09  SPA-GMN-W21-BRM-KA.
-                           11  SPA-GMN-W21-BRM-KA-CD       PIC X(02).
+                       09  SPA-GMN-W21-SRYKA-G.
+                           11  SPA-GMN-W21-SRYKA           PIC X(02).
                            11                              PIC X(01).
-                           11  SPA-GMN-W21-BRM-KA-NM       PIC X(20).
+                           11  SPA-GMN-W21-SRYKAMEI        PIC X(20).
+      *
+      *                入院基本料
+                       09  SPA-GMN-W21-KHNRYO-G.
+                           11  SPA-GMN-W21-KHNRYO           PIC X(02).
+                           11                               PIC X(01).
+                           11  SPA-GMN-W21-KHNRYOMEI        PIC X(60).
+      *
+      *                点数
+                       09  SPA-GMN-W21-KHNTEN              PIC 9(06).
       *                有効開始日
                        09  SPA-GMN-W21-YUKOSTYMD           PIC X(10).
       *                有効終了日
@@ -333,114 +312,97 @@
       *            病室情報コンボ領域
                    07  SPA-GMN-W21-CMB-DAT-AREA.
       *                病棟名称コンボ
-                       09  SPA-GMN-W21-CMB-BTU-NAME.
-      *                    病棟名称コンボ項目数
-                           11  SPA-GMN-W21-BTU-NAME-CNT    PIC S9(9)
-                                                           BINARY.
+                       09  SPA-GMN-W21-BTUNUMLST-G.
+                           11  SPA-GMN-W21-BTUNUM-MAX      PIC 9(5).
       *                    病棟名称コンボ項目
-                           11  SPA-GMN-W21-BTU-NAME-ITM-OCC
-                                                           OCCURS  50
-                                               INDEXED BY  CMB-IDX21.
-      *                        病棟名称
-                               13  SPA-GMN-W21-BTU-NAME-ITM
-                                                           PIC X(23).
-      *                        特定入院料
-                               13  SPA-GMN-W21-BTU-NAME-ITM2
-                                                           PIC  X(02).
-      *                        入院基本料
-                               13  SPA-GMN-W21-BTU-NAME-ITM3
-                                                           PIC  X(09).
-      *                        有効開始日
-                               13  SPA-GMN-W21-BTU-NAME-ITM4
-                                                           PIC  X(08).
+                           11  SPA-GMN-W21-BTUNUMLST       OCCURS  50.
+                               13  SPA-GMN-W21-BTUNUML     PIC X(02).
+                               13                          PIC X(01).
+                               13  SPA-GMN-W21-BTUNUMMEIL  PIC X(20).
       *                病室種別コンボ
-                       09  SPA-GMN-W21-CMB-BRM-SBT.
-                           11  SPA-GMN-W21-BRM-SBT-CNT     PIC S9(9)
-                                                           BINARY.
-                           11  SPA-GMN-W21-BRM-SBT-ITM 
-                                                           PIC X(23)
-                                                           OCCURS  15
-                                               INDEXED BY  CMB-IDX22.
+                       09  SPA-GMN-W21-SBTLST-G.
+                           11  SPA-GMN-W21-SBT-MAX         PIC 9(5).
+                           11  SPA-GMN-W21-SBTLST          OCCURS  15.
+                               13  SPA-GMN-W21-SBTL        PIC X(02).
+                               13                          PIC X(01).
+                               13  SPA-GMN-W21-SBTMEIL     PIC X(20).
       *                特定入院料コンボ
-                       09  SPA-GMN-W21-CMB-BRM-TOKNYUIN.
-                           11  SPA-GMN-W21-BRM-TOKNYUIN-CNT
-                                                           PIC S9(9)
-                                                           BINARY.
-                           11  SPA-GMN-W21-BRM-TOKNYUIN-ITM-OCC
-                                                           OCCURS 30 
-                                               INDEXED BY  CMB-IDX23.
-                               13  SPA-GMN-W21-BRM-TOKNYUIN-ITM
-                                                           PIC X(43).
-                               13  SPA-GMN-W21-BRM-TOKNYUIN-ITM2
-                                                           PIC X(24).
+                       09  SPA-GMN-W21-TOKNYUINLST-G.
+                           11  SPA-GMN-W21-TOKNYUIN-MAX    PIC 9(5).
+                           11  SPA-GMN-W21-TOKNYUINLST     OCCURS 30.
+                               13  SPA-GMN-W21-TOKNYUINL   PIC X(02).
+                               13                          PIC X(01).
+                               13  SPA-GMN-W21-TOKNYUINMEIL
+                                                           PIC X(40).
       *                室料差額コンボ
-                       09  SPA-GMN-W21-CMB-BRM-SAGAKU.
+                       09  SPA-GMN-W21-SAGAKULST-G.
       *                    室料差額コンボ項目数
-                           11  SPA-GMN-W21-BRM-SAGAKU-CNT
-                                                           PIC S9(9)
-                                                           BINARY.
+                           11  SPA-GMN-W21-SAGAKU-MAX      PIC 9(5).
       *                    室料差額コンボ項目
-                           11  SPA-GMN-W21-BRM-SAGAKU-ITM
-                                                           PIC X(10)
-                                                           OCCURS  30
-                                               INDEXED BY  CMB-IDX24.
+                           11  SPA-GMN-W21-SAGAKULST       OCCURS  30.
+                               13  SPA-GMN-W21-SAGAKUL     PIC X(02).
+                               13                          PIC X(01).
+                               13  SPA-GMN-W21-SAGAKUMEIL  PIC X(07).
       *                性別特定コンボ
-                       09  SPA-GMN-W21-CMB-BRM-SEX.
+                       09  SPA-GMN-W21-SEXLST-G.
       *                    性別特定コンボ項目数
-                           11  SPA-GMN-W21-BRM-SEX-CNT
-                                                           PIC S9(9)
-                                                           BINARY.
+                           11  SPA-GMN-W21-SEX-MAX         PIC 9(5).
       *                    性別特定コンボ項目
-                           11  SPA-GMN-W21-BRM-SEX-ITM
-                                                           PIC X(12)
-                                                           OCCURS  10
-                                               INDEXED BY  CMB-IDX25.
+                           11  SPA-GMN-W21-SEXLST          OCCURS  10.
+                               13  SPA-GMN-W21-SEXL        PIC X(01).
+                               13                          PIC X(01).
+                               13  SPA-GMN-W21-SEXMEIL     PIC X(10).
       *                病室科名コンボ
-                       09  SPA-GMN-W21-CMB-BRM-KA.
+                       09  SPA-GMN-W21-SRYKALST-G.
       *                    病棟科名コンボ項目数
-                           11  SPA-GMN-W21-BRM-KA-CNT
-                                                           PIC S9(9)
-                                                           BINARY.
+                           11  SPA-GMN-W21-SRYKA-MAX       PIC 9(5).
       *                    病棟科名コンボ項目
-                           11  SPA-GMN-W21-BRM-KA-ITM
-                                                           PIC X(23)
-                                                           OCCURS  99
-                                               INDEXED BY  CMB-IDX26.
+                           11  SPA-GMN-W21-SRYKALST        OCCURS  99.
+                               13  SPA-GMN-W21-SRYKAL      PIC X(02).
+                               13                          PIC X(01).
+                               13  SPA-GMN-W21-SRYKAMEIL   PIC X(20).
+      *                入院基本料コンボ
+                       09  SPA-GMN-W21-KHNRYOLST-G.
+                           11  SPA-GMN-W21-KHNRYO-MAX       PIC 9(5).
+                           11  SPA-GMN-W21-KHNRYOLST        OCCURS  20.
+                               13  SPA-GMN-W21-KHNRYOL      PIC X(02).
+                               13                           PIC X(01).
+                               13  SPA-GMN-W21-KHNRYOMEIL   PIC X(60).
       *            病室情報リスト
-                   07  SPA-GMN-W21-BRMLST-TBL.
+                   07  SPA-GMN-W21-BRMLST.
       *                病室情報リスト項目数
-                       09  SPA-GMN-W21-BRMLST-CNT          PIC S9(9)
-                                                           BINARY.
-                       09  SPA-GMN-W21-BTULST-OCC          OCCURS  200.
+                       09  SPA-GMN-W21-BRMLST-MAX          PIC 9(5).
+                       09  SPA-GMN-W21-BRMLST-OCC          OCCURS  200.
       *                    選択番号１
                            11  SPA-GMN-W21-TSELNUM         PIC 9(3).
       *                    病室番号
-                           11  SPA-GMN-W21-TBRM-NUM        PIC X(6).
-                           11  SPA-GMN-W21-TBRM-NUM2       PIC X(6).
+                           11  SPA-GMN-W21-TBRMNUM         PIC X(6).
+                           11  SPA-GMN-W21-TBRMNUM2        PIC X(6).
       *                    病室種別
-                           11  SPA-GMN-W21-TBRM-SBT        PIC X(20).
+                           11  SPA-GMN-W21-TSBT            PIC X(20).
       *                    特定入院料
-                           11  SPA-GMN-W21-TBRM-TOKNYUIN   PIC X(24).
+                           11  SPA-GMN-W21-TTOKNYUIN       PIC X(24).
       *                    収容人数
-                           11  SPA-GMN-W21-TBRM-NINZU      PIC 9(10).
+                           11  SPA-GMN-W21-TNINZU          PIC 9(10).
       *                    室料差額
-                           11  SPA-GMN-W21-TBRM-SAGAKU     PIC 9(10).
+                           11  SPA-GMN-W21-TSAGAKU         PIC 9(10).
       *                    性別特定
-                           11  SPA-GMN-W21-TBRM-SEX        PIC X(10).
+                           11  SPA-GMN-W21-TSEX            PIC X(10).
       *                    内線番号
-                           11  SPA-GMN-W21-TBRM-NAITEL     PIC X(5).
+                           11  SPA-GMN-W21-TNAITEL         PIC X(5).
       *                    診療科
-                           11  SPA-GMN-W21-TBRM-KA         PIC X(20).
+                           11  SPA-GMN-W21-TSRYKA          PIC X(20).
+      *                    入院基本料
+                           11  SPA-GMN-W21-TKHNRYO         PIC X(20).
       *                    有効開始日
                            11  SPA-GMN-W21-TYUKOSTYMD      PIC X(9).
       *                    有効終了日
                            11  SPA-GMN-W21-TYUKOEDYMD      PIC X(9).
-                       09  SPA-GMN-W21-BRMLST-SEL-NUM      PIC 9(05).
+                       09  SPA-GMN-W21-BRMLST-SEL          PIC 9(05).
       *            履歴リスト
-                   07  SPA-GMN-W21-RIREKILST-TBL.
+                   07  SPA-GMN-W21-RIREKILST.
       *                病棟情報リスト項目数
-                       09  SPA-GMN-W21-RIREKILST-CNT       PIC S9(9)
-                                                           BINARY.
+                       09  SPA-GMN-W21-RIREKILST-MAX       PIC 9(5).
                        09  SPA-GMN-W21-RIREKILST-OCC       OCCURS  20.
       *                    選択番号２
                            11  SPA-GMN-W21-TRSELNUM        PIC 9(02).
@@ -449,14 +411,19 @@
       *                    病棟履歴終了日
                            11  SPA-GMN-W21-TRYUKOEDYMD     PIC X(09).
       *                履歴情報リスト選択行情報
-                       09  SPA-GMN-W21-RIREKILST-SEL-NUM   PIC 9(05).
+                       09  SPA-GMN-W21-RIREKILST-SEL       PIC 9(05).
       *
+      *            ヘッダ内部領域
+                   07  SPA-NAI-W21-HEAD-AREA.
+                       09  SPA-NAI-W21-BTUSBT              PIC X(02).
       *            入力領域内部領域
                    07  SPA-NAI-W21-INPUT-AREA.
       *                区分コード（変更・削除時使用）
                        09  SPA-NAI-W21-5002-KBNCD          PIC X(08).
       *                病室番号
-                       09  SPA-NAI-W21-BRM-NUM-OLD         PIC X(06).
+                       09  SPA-NAI-W21-BRMNUM-OLD          PIC X(06).
+      *                入院基本料診療コード
+                       09  SPA-NAI-W21-KHNSRYCD            PIC X(09).
       *                有効開始日
                        09  SPA-NAI-W21-YUKOSTYMD           PIC X(08).
                        09  SPA-NAI-W21-YUKOSTYMD-MOT       PIC X(08).
@@ -465,7 +432,7 @@
                        09  SPA-NAI-W21-YUKOEDYMD           PIC X(08).
                        09  SPA-NAI-W21-YUKOEDYMD-OLD       PIC X(08).
       *            履歴リスト内部領域
-                   07  SPA-NAI-W21-RIREKILST-TBL.
+                   07  SPA-NAI-W21-RIREKILST.
                        09  SPA-NAI-W21-RIREKILST-OCC       OCCURS  20.
       *                    病棟履歴開始日
                            11  SPA-NAI-W21-TRYUKOSTYMD     PIC X(08).
@@ -474,8 +441,25 @@
       *                履歴情報リスト選択番号
                        09  SPA-NAI-W21-RIREKILST-SELNUM    PIC 9(05).
       *                履歴情報リスト病室番号
-                       09  SPA-NAI-W21-RIREKILST-BRM-NUM   PIC X(06).
+                       09  SPA-NAI-W21-RIREKILST-BRMNUM    PIC X(06).
       *
+                   07  SPA-NAI-W21-CMB-DAT-AREA.
+                       09  SPA-NAI-W21-BTUINFLST-G.
+                           11  SPA-NAI-W21-BTUINF-OCC      OCCURS  50.
+                               13  SPA-NAI-W21-BTUINF-TOKNYUIN
+                                                           PIC  X(02).
+                               13  SPA-NAI-W21-BTUINF-KHNSRYCD
+                                                           PIC  X(09).
+                               13  SPA-NAI-W21-BTUINF-STYUKYMD
+                                                           PIC  X(08).
+                               13  SPA-NAI-W21-BTUINF-SBT
+                                                           PIC  X(02).
+                       09  SPA-NAI-W21-TOKNYUINLST-G.
+                           11  SPA-NAI-W21-TOKNYUINLST     OCCURS  30.
+                               13  SPA-NAI-W21-TOKNYUINL   PIC  X(24).
+                       09  SPA-NAI-W21-KHNRYOLST-G.
+                           11  SPA-NAI-W21-KHNRYOLST       OCCURS  20.
+                               13  SPA-NAI-W21-KHNRYOL     PIC  X(09).
            03  SPA-W20-W21-AREA.
       *        病棟番号
-               05  SPA-W20-W21-BTU-NUM                     PIC  X(02).
+               05  SPA-W20-W21-BTUNUM                      PIC  X(02).

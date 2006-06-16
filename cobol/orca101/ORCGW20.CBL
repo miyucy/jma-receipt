@@ -164,6 +164,7 @@
            03  CONST-KNGTEKCD          PIC X(09) VALUE "190109670".
            03  CONST-DRTEKCD           PIC X(09) VALUE "190117070".
            03  CONST-H180401           PIC X(08) VALUE "20060401".
+           03  CONST-H180701           PIC X(08) VALUE "20060701".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -195,6 +196,8 @@
            COPY  "CPSK5106.INC".
       *    特定入院料（病棟）
            COPY  "CPSK5110.INC".
+      *    特定入院料（病室）
+           COPY  "CPSK5111.INC".
       *    看護補助配置
            COPY  "CPSK5115.INC".
       *
@@ -441,7 +444,7 @@
            MOVE    1               TO  SPA-GMN-W20-CUR
       *
       *    入力項目領域編集処理
-           MOVE    SPA-W20-W21-BTU-NUM
+           MOVE    SPA-W20-W21-BTUNUM
                                    TO  WRK-BTUNUM 
            MOVE    SPA-SYSYMD      TO  WRK-KIJUN-YMD
       *
@@ -828,8 +831,13 @@
       *    入院基本点数をサブプロより取得する
            INITIALIZE                      W20SUB01-LNK
            MOVE    "1"                 TO  W20SUB01-I-KBN
-           MOVE    SYS-5001-BTU-KHNSRYCD
+           IF    ( SYS-5001-KHNSRYCD   NOT =   SPACE )
+               MOVE    SYS-5001-KHNSRYCD
                                        TO  W20SUB01-I-KHNSRYCD
+           ELSE
+               MOVE    SYS-5001-BTU-KHNSRYCD
+                                       TO  W20SUB01-I-KHNSRYCD
+           END-IF
            MOVE    SYS-5001-STYUKYMD   TO  W20SUB01-I-KJNYMD
       *
            CALL    "ORCGW20SUB01"      USING
@@ -1526,7 +1534,7 @@
                  MOVE    SPA-GMN-W20-BTULST-SEL 
                                        TO  IDX1
                  MOVE    SPA-GMN-W20-TBTUNUM (IDX1)
-                                       TO  SPA-W20-W21-BTU-NUM
+                                       TO  SPA-W20-W21-BTUNUM
            END-IF
       *
            MOVE    "W21"               TO  SPA-SAKIPG
@@ -1782,15 +1790,64 @@
            MOVE    SPA-GMN-W20-RECEDSPKBN
                                        TO  SYS-5001-RECEDSPKBN
       *
-      *    入院基本料点数コード
-           MOVE    SPA-NAI-W20-KHNSRYCD
-                                       TO  SYS-5001-BTU-KHNSRYCD
+           PERFORM 42011-KHNRYO-EDIT-SEC
       *
       *    病棟終了区分
            MOVE    SPA-GMN-W20-EDKBN   TO  SYS-5001-BTU-EDKBN
       *
            .
        4201-BTU-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    病棟情報編集処理
+      *****************************************************************
+       42011-KHNRYO-EDIT-SEC           SECTION.
+      *
+      *    入院基本料点数コード
+           IF    ( SPA-GMN-W20-SBT         =   "04" OR "09" )
+            AND  ( SPA-NAI-W20-YUKOSTYMD  >=   CONST-H180701 )
+      *
+               MOVE    SPACE           TO  SYS-5001-BTU-KHNSRYCD
+                                           SYS-5001-KHNSRYCD
+                                           SYS-5001-KHNKBNCD
+      *
+               INITIALIZE                  SYSKANRI-REC
+               MOVE    "5111"          TO  SYS-KANRICD
+               MOVE    SPA-NAI-W20-YUKOSTYMD
+                                       TO  SYS-STYUKYMD
+                                           SYS-EDYUKYMD
+               PERFORM 900-SYSKANRI-KEY2-SEL-SEC
+               MOVE    SYSKANRI-REC    TO  SYS-5111-REC
+      *
+               PERFORM UNTIL ( FLG-SYSKANRI        NOT =   ZERO )
+                        OR   ( SYS-5001-KHNSRYCD   NOT =   SPACE )
+      *
+                   IF    ( SPA-NAI-W20-KHNSRYCD    =   SYS-5111-SRYCD )
+                       MOVE    SPA-NAI-W20-KHNSRYCD
+                                       TO  SYS-5001-KHNSRYCD
+                       MOVE    "3"     TO  SYS-5001-KHNKBNCD (1:1)
+                       MOVE    SYS-5111-KBNCD
+                                       TO  SYS-5001-KHNKBNCD (2:2)
+                   END-IF
+      *
+                   PERFORM 900-SYSKANRI-KEY2-FET-SEC
+                   MOVE    SYSKANRI-REC    TO  SYS-5111-REC
+      *
+               END-PERFORM
+      *
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key2"          TO  MCP-PATHNAME
+               PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           ELSE
+               MOVE    SPA-NAI-W20-KHNSRYCD
+                                       TO  SYS-5001-BTU-KHNSRYCD
+               MOVE    SPACE           TO  SYS-5001-KHNSRYCD
+                                           SYS-5001-KHNKBNCD
+           END-IF
+      *
+           .
+       42011-KHNRYO-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    病棟情報編集処理
@@ -2177,13 +2234,25 @@
                INSPECT TNS-NAME    TALLYING   CNT-STR
                        FOR     ALL "（選）", ALL "（選定療養）"
       *
-      *
                IF    ( CNT-STR     >   ZERO )
                    MOVE    ZERO    TO  FLG-SETKHNRYO
                END-IF
       *
                IF    ( TNS-ROUTEKKBN       =   "2" )
                    MOVE    ZERO    TO  FLG-SETKHNRYO
+               END-IF
+      *
+               IF    ( SPA-GMN-W20-SBT =   "04"  OR "09" )
+                AND  ( SPA-NAI-W20-YUKOSTYMD
+                                      >=   CONST-H180701 )
+                   IF    ( TNS-SRYCD   =   "190081310" 
+                                        OR "190081410" 
+                                        OR "190080610" 
+                                        OR "190080710" 
+                                        OR "190098210" 
+                                        OR "190098310" )
+                       MOVE    ZERO    TO  FLG-SETKHNRYO
+                   END-IF
                END-IF
       *
                IF    ( FLG-SETKHNRYO   =   1 )
@@ -2688,8 +2757,13 @@
       *    入院基本点数をサブプロより取得する
            INITIALIZE W20SUB01-LNK
            MOVE    "1"             TO  W20SUB01-I-KBN
-           MOVE    SYS-5001-BTU-KHNSRYCD
-                                   TO  W20SUB01-I-KHNSRYCD
+           IF    ( SYS-5001-KHNSRYCD   NOT =   SPACE )
+               MOVE    SYS-5001-KHNSRYCD
+                                       TO  W20SUB01-I-KHNSRYCD
+           ELSE
+               MOVE    SYS-5001-BTU-KHNSRYCD
+                                       TO  W20SUB01-I-KHNSRYCD
+           END-IF
            MOVE    SPA-NAI-W20-YUKOSTYMD
                                    TO  W20SUB01-I-KJNYMD
       *
@@ -2928,11 +3002,14 @@
                END-IF
       *
       *        入院基本料が算定されていること
-               IF    ( SPA-GMN-W20-KHNRYO  NOT =   SPACE )
-                   CONTINUE
-               ELSE
-                   MOVE    "1014"  TO  SPA-ERRCD
-                   GO  TO  4900-KANRENCHK-EXT
+               IF    ( SPA-GMN-W20-KHNRYO      =   SPACE )
+                   IF    ( SPA-GMN-W20-SBT         =   "04" OR "09"  )
+                    AND  ( SPA-NAI-W20-YUKOSTYMD  >=   CONST-H180701 )
+                        CONTINUE
+                   ELSE
+                       MOVE    "1014"  TO  SPA-ERRCD
+                       GO  TO  4900-KANRENCHK-EXT
+                   END-IF
                END-IF
            END-IF
       *
@@ -3522,6 +3599,12 @@
                                        TO  W20-YAKANKNGKSN-STATE
                                            W20-YKNKNGKSN-ITM-STATE
                END-IF
+           END-IF
+      *
+           IF    ( SPA-NAI-W20-YUKOSTYMD  >=   CONST-H180701 )
+                   MOVE    WIDGET-INSENSITIVE
+                                       TO  W20-YAKANKNGKSN-STATE
+                                           W20-YKNKNGKSN-ITM-STATE
            END-IF
       *
            .

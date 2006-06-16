@@ -1166,22 +1166,6 @@
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>label13</name>
-      <x>25</x>
-      <y>265</y>
-      <width>70</width>
-      <height>24</height>
-      <label>ÆÃÄêÆþ±¡ÎÁ</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
       <class>GtkPandaEntry</class>
       <name>SNTNYUIN</name>
       <x>105</x>
@@ -1787,6 +1771,22 @@
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBL_TOKNYUIN</name>
+      <x>25</x>
+      <y>265</y>
+      <width>70</width>
+      <height>24</height>
+      <label>ÆÃÄêÆþ±¡ÎÁ</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
     </widget>
   </widget>
 </widget>

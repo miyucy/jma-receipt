@@ -148,6 +148,9 @@ I01	{
 			item	varchar(51)[30];
 			state	int;
 		};
+		LBL_TOKNYUIN	{
+			value	varchar(10);
+		};
 		CMB_TOKNYUIN	{
 			TOKNYUIN	{
 				value	varchar(63);

@@ -71,13 +71,24 @@
                 05  W21-BRM-KA-CNT         PIC S9(9)   BINARY.
                 05  W21-BRM-KA-ITM         PIC X(23)   OCCURS  99.
                 05  W21-BRM-KA-ITM-STT     PIC S9(9)   BINARY.
+              04  W21-LBLKHNRYO1           PIC X(10).
+              04  W21-LBLKHNRYO2           PIC X(02).
+              04  W21-CMB-KHNRYO.
+                05  W21-KHNRYO             PIC X(63).
+                05  W21-KHNRYO-STT         PIC S9(9)   BINARY.
+                05  W21-KHNRYO-CNT         PIC S9(9)   BINARY.
+                05  W21-KHNRYO-ITM         PIC X(63)   OCCURS  20.
+                05  W21-KHNRYO-ITM-STT     PIC S9(9)   BINARY.
+              04  W21-KHNTEN               PIC S9(6).
+              04  W21-KHNTEN-STT           PIC S9(9)   BINARY.
               04  W21-YUKOSTYMD            PIC X(10).
               04  W21-YUKOSTYMD-STT        PIC S9(9)   BINARY.
               04  W21-YUKOEDYMD            PIC X(10).
               04  W21-YUKOEDYMD-STT        PIC S9(9)   BINARY.
               04  W21-SELNUM2              PIC S9(2).
-              04  W21-SCROLLEDWINDOW28.
+              04  W21-SCRW28.
                 05  W21-BRMLST-TBL.
+                  06  W21-TKHNRYO-TITLE    PIC X(20).
                   06  W21-BRMLST-CNT       PIC S9(9)   BINARY.
                   06  W21-BRMLST-ROW       PIC S9(9)   BINARY.
                   06  W21-BRMLST-ROWATTR   PIC S9(9)   BINARY.
@@ -92,6 +103,7 @@
                     07  W21-TBRM-SEX       PIC X(10).
                     07  W21-TBRM-NAITEL    PIC X(5).
                     07  W21-TBRM-KA        PIC X(20).
+                    07  W21-TKHNRYO        PIC X(20).
                     07  W21-TYUKOSTYMD     PIC X(9).
                     07  W21-TYUKOEDYMD     PIC X(9).
                   06  W21-BRMLST-SEL       PIC X   OCCURS  200 TIMES.
