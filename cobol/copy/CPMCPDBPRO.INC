@@ -3210,22 +3210,22 @@
       *---- (NYUIN.08) LINE ADD END      -----------------------------
       *---- (NYUIN.10) LINE ADD START    -----------------------------
                WHEN    ANY             ALSO   "I001-KEY"
-                   MOVE "view_i001" TO WRK-TABLE
+                   MOVE "view_I001" TO WRK-TABLE
                    MOVE "key" TO WRK-PATHNAME
                WHEN    ANY             ALSO   "I001-KEY2"
-                   MOVE "view_i001" TO WRK-TABLE
+                   MOVE "view_I001" TO WRK-TABLE
                    MOVE "key2" TO WRK-PATHNAME
                WHEN    ANY             ALSO   "I001-KEY3"
-                   MOVE "view_i001" TO WRK-TABLE
+                   MOVE "view_I001" TO WRK-TABLE
                    MOVE "key3" TO WRK-PATHNAME
                WHEN    ANY             ALSO   "I001-ALL"
-                   MOVE "view_i001" TO WRK-TABLE
+                   MOVE "view_I001" TO WRK-TABLE
                    MOVE "all" TO WRK-PATHNAME
                WHEN    ANY             ALSO   "I001-KEY4"
-                   MOVE "view_i001" TO WRK-TABLE
+                   MOVE "view_I001" TO WRK-TABLE
                    MOVE "key4" TO WRK-PATHNAME
                WHEN    ANY             ALSO   "Q001-ALL"
-                   MOVE "view_q001" TO WRK-TABLE
+                   MOVE "view_Q001" TO WRK-TABLE
                    MOVE "all" TO WRK-PATHNAME
       *---- (NYUIN.10) LINE ADD END      -----------------------------
       *---- (NYUIN.15) LINE ADD START    -----------------------------
@@ -3547,7 +3547,7 @@
                    MOVE "all" TO WRK-PATHNAME
       *
                WHEN    ANY             ALSO   "Q002-ALL"
-                   MOVE "view_q002" TO WRK-TABLE
+                   MOVE "view_Q002" TO WRK-TABLE
                    MOVE "all" TO WRK-PATHNAME
                WHEN    ANY             ALSO   "HOURS-ALL"
                    MOVE "tbl_hours" TO WRK-TABLE
