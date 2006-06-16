@@ -23,7 +23,7 @@
                 05  W22-KANRICD-COUNT        PIC S9(9)   BINARY.
                 05  W22-KANRICD-ITEM         PIC X(30) OCCURS  20 TIMES.
               04  W22-KBNCD.
-                05  W22-VALUE                PIC X(09).
+                05  W22-VALUE                PIC X(02).
               04  W22-MEISYOU.
                 05  W22-VALUE                PIC X(51).
               04  W22-STYUKYMD.

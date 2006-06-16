@@ -119,6 +119,8 @@
                "削除できませんでした。".
            03  T-MESSAGE-054       PIC X(40)   VALUE
                "該当データを削除します。よろしいですか？".
+           03  T-MESSAGE-055       PIC X(60)   VALUE
+               "区分コードは０１から９９の範囲で入力してください".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -241,6 +243,10 @@
       *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
+      *
+           INITIALIZE                  IDX-AREA
+                                       FLG-AREA
+                                       WRK-AREA
       *
            MOVE    SPA-COMMON      TO  SPA-AREA.
            MOVE    SPA-WORK        TO  SPA-W01KYOUTU.
@@ -468,6 +474,7 @@
       *
            MOVE    SPACE               TO  SPA-W22-ERRMSG.
            MOVE    ZERO                TO  FLG-ARI.
+           MOVE    ZERO                TO  SPA-W22-BTNO
       *
            MOVE    2                   TO  SPA-W22-CUR.
       *
@@ -479,23 +486,24 @@
       *****************************************************************
        420-TUIKA-SEC               SECTION.
       *
-           IF  FLG-ARI   =   1
-               MOVE    T-MESSAGE-014   TO  SPA-W22-ERRMSG
-               MOVE    2               TO  SPA-W22-CUR
-           ELSE
-               PERFORM 4900-KANRENCHK-SEC
-               IF  SPA-W22-ERRMSG   =   SPACE
-                   MOVE    1                   TO  FLG-UPD-KBN
-                   PERFORM 4201-KAKUNIN-SEC
-                   IF  FLG-KIKAN-DABURI   NOT =   ZERO
-                       MOVE    T-MESSAGE-012   TO  SPA-W22-ERRMSG
-                       MOVE    4               TO  SPA-W22-CUR
-                   ELSE
-                       PERFORM 4201-INSERT-SEC
-                       IF  SPA-W22-ERRMSG   =   SPACE
-                           PERFORM 420-TORIKOMI-SEC
-                           PERFORM 420-CLEAR-SEC
-                       END-IF
+           PERFORM 4900-KANRENCHK-SEC
+           IF  SPA-W22-ERRMSG   =   SPACE
+               IF  FLG-ARI   =   1
+                   MOVE    T-MESSAGE-014   TO  SPA-W22-ERRMSG
+                   MOVE    2               TO  SPA-W22-CUR
+               END-IF
+           END-IF
+           IF  SPA-W22-ERRMSG   =   SPACE
+               MOVE    1                   TO  FLG-UPD-KBN
+               PERFORM 4201-KAKUNIN-SEC
+               IF  FLG-KIKAN-DABURI   NOT =   ZERO
+                   MOVE    T-MESSAGE-012   TO  SPA-W22-ERRMSG
+                   MOVE    4               TO  SPA-W22-CUR
+               ELSE
+                   PERFORM 4201-INSERT-SEC
+                   IF  SPA-W22-ERRMSG   =   SPACE
+                       PERFORM 420-TORIKOMI-SEC
+                       PERFORM 420-CLEAR-SEC
                    END-IF
                END-IF
            END-IF.
@@ -508,12 +516,14 @@
       *****************************************************************
        420-HENKOU-SEC                  SECTION.
       *
-           IF  FLG-ARI   =   ZERO
-               MOVE    T-MESSAGE-003   TO  SPA-W22-ERRMSG
-               MOVE    2               TO  SPA-W22-CUR
-           ELSE
-               PERFORM 4900-KANRENCHK-SEC
-               IF  SPA-W22-ERRMSG   =   SPACE
+           PERFORM 4900-KANRENCHK-SEC
+           IF  SPA-W22-ERRMSG   =   SPACE
+               IF  FLG-ARI   =   ZERO
+                   MOVE    T-MESSAGE-003   TO  SPA-W22-ERRMSG
+                   MOVE    2               TO  SPA-W22-CUR
+               END-IF
+           END-IF
+           IF  SPA-W22-ERRMSG   =   SPACE
       *    有効期間の開始日と終了日が同時に変更されていないこと
                    IF  (SPA-W22-STYUKYMD-S  NOT =
                                                SPA-W22-STYUKYMD-OLD) AND
@@ -535,7 +545,6 @@
                            END-IF
                        END-IF
                    END-IF
-               END-IF
            END-IF.
       *
        420-HENKOU-EXT.
@@ -546,10 +555,14 @@
       *****************************************************************
        420-SAKUJO-SEC                  SECTION.
       *
-           IF  FLG-ARI   =   ZERO
-               MOVE    T-MESSAGE-004  TO  SPA-W22-ERRMSG
-               MOVE    2              TO  SPA-W22-CUR
-           ELSE
+           PERFORM 4900-KANRENCHK-SEC
+           IF  SPA-W22-ERRMSG    =   SPACE
+               IF  FLG-ARI   =   ZERO
+                   MOVE    T-MESSAGE-004  TO  SPA-W22-ERRMSG
+                   MOVE    2              TO  SPA-W22-CUR
+               END-IF
+           END-IF
+           IF  SPA-W22-ERRMSG    =   SPACE
                IF  SPA-W22-KANRICD   =   SPACE
                    MOVE    T-MESSAGE-007   TO  SPA-W22-ERRMSG
                    MOVE    2               TO  SPA-W22-CUR
@@ -675,8 +688,9 @@
                    MOVE    IDX                 TO  SPA-W22-MEISYOU-COUNT
                    PERFORM SYS-KANRI-READ-SEC
                END-PERFORM
-               PERFORM SYS-KANRI-CLOSE-SEC
            END-IF.
+           PERFORM SYS-KANRI-CLOSE-SEC
+           .
       *
        420-TORIKOMI-EXT.
            EXIT.
@@ -742,8 +756,9 @@
                    COMPUTE  IDX   =   IDX   +   1
                    PERFORM SYS-KANRI-READ-SEC
                END-PERFORM
-               PERFORM SYS-KANRI-CLOSE-SEC
            END-IF.
+           PERFORM SYS-KANRI-CLOSE-SEC
+           .
       *
        4201-KAKUNIN-EXT.
            EXIT.
@@ -1110,6 +1125,31 @@
       *
            MOVE    SPACE           TO  SPA-W22-ERRMSG.
       *
+           PERFORM T-001-KANRICD-SEC
+           IF    ( SPA-W22-ERRMSG  NOT =   SPACE )
+               GO  TO  4900-KANRENCHK-EXT
+           END-IF
+      *
+           PERFORM T-001-KBNCD-SEC
+           IF    ( SPA-W22-ERRMSG  NOT =   SPACE )
+               GO  TO  4900-KANRENCHK-EXT
+           END-IF
+      *
+           PERFORM T-001-MEISYOU-SEC
+           IF    ( SPA-W22-ERRMSG  NOT =   SPACE )
+               GO  TO  4900-KANRENCHK-EXT
+           END-IF
+      *
+           PERFORM T-001-STYUKYMD-SEC
+           IF    ( SPA-W22-ERRMSG  NOT =   SPACE )
+               GO  TO  4900-KANRENCHK-EXT
+           END-IF
+      *
+           PERFORM T-001-EDYUKYMD-SEC
+           IF    ( SPA-W22-ERRMSG  NOT =   SPACE )
+               GO  TO  4900-KANRENCHK-EXT
+           END-IF
+      *
            IF  SPA-W22-KANRICD   =   SPACE
                MOVE    T-MESSAGE-007   TO  SPA-W22-ERRMSG
                MOVE    1               TO  SPA-W22-CUR
@@ -1206,8 +1246,11 @@
                                            TO  W22-VALUE3 (IDX)
                MOVE    SPA-W22-ITEM4 (IDX)
                                            TO  W22-VALUE4 (IDX)
-               MOVE    SPA-W22-BTNO (IDX)
-                                           TO  W22-MEISYOU-SELECT (IDX)
+               IF    ( SPA-W22-BTNO        =   IDX )
+                   MOVE    "T"             TO  W22-MEISYOU-SELECT (IDX)
+               ELSE
+                   MOVE    "F"             TO  W22-MEISYOU-SELECT (IDX)
+               END-IF
            END-PERFORM.
       *
            MOVE    SPA-W22-MEISYOU-COUNT   TO  W22-MEISYOU-COUNT.
@@ -1364,17 +1407,31 @@
       *
            MOVE    2                   TO  SPA-W22-CUR.
       *
-           MOVE    SPACE               TO  SPA-W22-KBNCD
+           INITIALIZE                      SPA-W22-KBNCD
                                            SPA-W22-MEISYOU
                                            SPA-W22-STYUKYMD-L
                                            SPA-W22-EDYUKYMD-L
                                            SPA-W22-MEISYOU-TBL
       *
       *
-           MOVE    1                   TO  FLG-ERR.
            MOVE    W22-KANRICD         TO  SPA-W22-KANRICD.
       *
-           IF  W22-KANRICD   NOT =   SPACE
+           PERFORM T-001-KANRICD-SEC
+      *
+           IF  SPA-W22-ERRMSG   =   SPACE
+               PERFORM 420-TORIKOMI-SEC
+           END-IF.
+      *
+       T-000-KANRICD-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    管理コード 確認処理
+      *****************************************************************
+       T-001-KANRICD-SEC                 SECTION.
+      *
+           MOVE    1                   TO  FLG-ERR.
+           IF  SPA-W22-KANRICD   NOT =   SPACE
                PERFORM VARYING IDX FROM   1   BY  1
                        UNTIL   IDX >      20
                    IF  SPA-W22-KANRICD-C   =   SPA-W22-KANRICD-1 (IDX)
@@ -1389,38 +1446,57 @@
            IF  FLG-ERR   =   1   
                MOVE    T-MESSAGE-007         TO  SPA-W22-ERRMSG
                MOVE    1                     TO  SPA-W22-CUR
-           ELSE
-               PERFORM 420-TORIKOMI-SEC
            END-IF.
       *
-       T-000-KANRICD-EXT.
+           .
+       T-001-KANRICD-EXT.
            EXIT.
-      *
       *****************************************************************
       *    区分コード 確認処理
       *****************************************************************
        T-000-KBNCD-SEC                   SECTION.
       *
            MOVE    3                   TO  SPA-W22-CUR.
-           MOVE    1                   TO  FLG-ERR.
            MOVE    W22-KBNCD           TO  SPA-W22-KBNCD.
       *
-           IF  W22-KBNCD   NOT =   SPACE
+           PERFORM T-001-KBNCD-SEC
+           .
+      *
+       T-000-KBNCD-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    区分コード 確認処理
+      *****************************************************************
+       T-001-KBNCD-SEC                 SECTION.
+      *
+           IF  SPA-W22-KBNCD   NOT =   SPACE
                MOVE    SPACE               TO  ORCSKANACHKAREA
                INITIALIZE                      ORCSKANACHKAREA
                MOVE    "1"                 TO  KANACHK-SYORI
-               MOVE    W22-KBNCD           TO  KANACHK-MAE-INPUT
+               MOVE    SPA-W22-KBNCD       TO  KANACHK-MAE-INPUT
                CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+               MOVE    KANACHK-OUT-INPUT   TO  SPA-W22-KBNCD
                IF  (KANACHK-RC        =   ZERO)  AND
                    (KANACHK-SYUBETU   =   1)
-                   MOVE    ZERO                TO  FLG-ERR
+                   CONTINUE
+               ELSE
+                   MOVE    T-MESSAGE-002   TO  SPA-W22-ERRMSG
+                   MOVE    2               TO  SPA-W22-CUR
                END-IF
-           END-IF.
       *
-           IF  FLG-ERR   =   1   
-               MOVE    T-MESSAGE-002         TO  SPA-W22-ERRMSG
-               MOVE    2                     TO  SPA-W22-CUR
-           ELSE
+               IF    ( SPA-W22-ERRMSG      =   SPACE )
+                   IF    ( SPA-W22-KBNCD  >=    "01" )
+                    AND  ( SPA-W22-KBNCD  <=    "99" )
+                       CONTINUE
+                   ELSE
+                       MOVE    T-MESSAGE-055   TO  SPA-W22-ERRMSG
+                       MOVE    2               TO  SPA-W22-CUR
+                   END-IF
+               END-IF
+      *
+           END-IF.
+           IF  SPA-W22-ERRMSG   =   SPACE
                MOVE    ZERO                  TO  IDX
                MOVE    ZERO                  TO  FLG-ARI
                INITIALIZE                        SYSKANRI-REC
@@ -1434,28 +1510,41 @@
                IF  MCP-RC   =   ZERO
                    PERFORM SYS-KANRI-READ-SEC
                    IF  IDX   =   ZERO
-                       MOVE    1                TO  FLG-ARI
-                       MOVE    SYS-STYUKYMD     TO  SPA-W22-STYUKYMD-OLD
-                       MOVE    SYS-EDYUKYMD     TO  SPA-W22-EDYUKYMD-OLD
+                       MOVE    1            TO  FLG-ARI
+                       MOVE    SYS-STYUKYMD TO  SPA-W22-STYUKYMD-OLD
+                       MOVE    SYS-EDYUKYMD TO  SPA-W22-EDYUKYMD-OLD
                    END-IF
-                   PERFORM SYS-KANRI-CLOSE-SEC
                END-IF
+               PERFORM SYS-KANRI-CLOSE-SEC
       *
            END-IF.
       *
-       T-000-KBNCD-EXT.
+           .
+       T-001-KBNCD-EXT.
            EXIT.
-      *
       *****************************************************************
       *    名称 確認処理
       *****************************************************************
        T-000-MEISYOU-SEC                 SECTION.
       *
            MOVE    4                   TO  SPA-W22-CUR.
-           MOVE    1                   TO  FLG-ERR.
            MOVE    W22-MEISYOU         TO  SPA-W22-MEISYOU.
       *
-           IF  W22-MEISYOU   NOT =   SPACE
+           PERFORM T-001-MEISYOU-SEC
+      *
+	  .
+      *
+       T-000-MEISYOU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    名称 確認処理
+      *****************************************************************
+       T-001-MEISYOU-SEC                 SECTION.
+      *
+           MOVE    1                   TO  FLG-ERR.
+      *
+           IF  SPA-W22-MEISYOU   NOT =   SPACE
                MOVE    SPACE               TO  ORCSKANACHKAREA
                INITIALIZE                      ORCSKANACHKAREA
                IF  SPA-W22-KANRICD-C   =   "5113"
@@ -1463,7 +1552,7 @@
                ELSE
                    MOVE    "2"                 TO  KANACHK-SYORI
                END-IF
-               MOVE    W22-MEISYOU         TO  KANACHK-MAE-INPUT
+               MOVE    SPA-W22-MEISYOU     TO  KANACHK-MAE-INPUT
                CALL    "ORCSKANACHK"    USING  ORCSKANACHKAREA
                IF  SPA-W22-KANRICD-C   =   "5113"
                    IF  (KANACHK-RC        =   ZERO)  AND
@@ -1487,7 +1576,7 @@
                    MOVE    T-MESSAGE-001         TO  SPA-W22-ERRMSG
                END-IF
                MOVE    3                     TO  SPA-W22-CUR
-               GO  TO  T-000-MEISYOU-EXT
+               GO  TO  T-001-MEISYOU-EXT
            END-IF.
       *
           IF  SPA-W22-KANRICD-C         =   "5113"
@@ -1500,27 +1589,37 @@
                 OR ( SNUM-MINKBN   NOT =   SPACE )
                 OR ( SNUM-SYOKBN   NOT =   SPACE )
                    MOVE    T-MESSAGE-001         TO  SPA-W22-ERRMSG
-                   GO  TO  T-000-MEISYOU-EXT
+                   GO  TO  T-001-MEISYOU-EXT
                ELSE
                    MOVE    SNUM-OUTNUM TO  WRK-NUM-05
                    MOVE    WRK-NUM-05  TO  SPA-W22-MEISYOU
                END-IF
           END-IF
-	  .
       *
-       T-000-MEISYOU-EXT.
+           .
+       T-001-MEISYOU-EXT.
            EXIT.
-      *
       *****************************************************************
       *    有効期間開始日 確認処理
       *****************************************************************
        T-000-STYUKYMD-SEC               SECTION.
       *
            MOVE    5                   TO  SPA-W22-CUR.
-           MOVE    1                   TO  FLG-ERR.
            MOVE    SPACE               TO  SPA-W22-STYUKYMD-S.
            MOVE    W22-STYUKYMD        TO  SPA-W22-STYUKYMD.
       *
+           PERFORM T-001-STYUKYMD-SEC
+           .
+      *
+       T-000-STYUKYMD-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    有効期間開始日 確認処理
+      *****************************************************************
+       T-001-STYUKYMD-SEC                 SECTION.
+      *
+           MOVE    1                   TO  FLG-ERR.
            IF  SPA-W22-STYUKYMD   =   SPACE
                MOVE    "00000000"          TO  SPA-W22-STYUKYMD
                MOVE    "00000000"          TO  SPA-W22-STYUKYMD-S
@@ -1541,19 +1640,30 @@
                MOVE    4                     TO  SPA-W22-CUR
            END-IF.
       *
-       T-000-STYUKYMD-EXT.
+           .
+       T-001-STYUKYMD-EXT.
            EXIT.
-      *
       *****************************************************************
       *    有効期間終了日 確認処理
       *****************************************************************
        T-000-EDYUKYMD-SEC               SECTION.
       *
            MOVE    6                   TO  SPA-W22-CUR.
-           MOVE    1                   TO  FLG-ERR.
            MOVE    SPACE               TO  SPA-W22-EDYUKYMD-S.
            MOVE    W22-EDYUKYMD        TO  SPA-W22-EDYUKYMD.
       *
+           PERFORM T-001-EDYUKYMD-SEC
+           .
+      *
+       T-000-EDYUKYMD-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    有効期間終了日 確認処理
+      *****************************************************************
+       T-001-EDYUKYMD-SEC                 SECTION.
+      *
+           MOVE    1                   TO  FLG-ERR.
            IF  SPA-W22-EDYUKYMD   =   SPACE
                MOVE    "99999999"          TO  SPA-W22-EDYUKYMD
                MOVE    "99999999"          TO  SPA-W22-EDYUKYMD-S
@@ -1574,9 +1684,9 @@
                MOVE    5                     TO  SPA-W22-CUR
            END-IF.
       *
-       T-000-EDYUKYMD-EXT.
+           .
+       T-001-EDYUKYMD-EXT.
            EXIT.
-      *
       *****************************************************************
       *    入院関連情報 確認処理
       *****************************************************************
@@ -1587,6 +1697,7 @@
            MOVE    SPACE            TO  SPA-W22-STYUKYMD.
            MOVE    SPACE            TO  SPA-W22-EDYUKYMD.
            MOVE    ZERO             TO  FLG-ARI.
+           MOVE    ZERO             TO  SPA-W22-BTNO
       *
            PERFORM VARYING IDX  FROM  1  BY 1
                    UNTIL   IDX  >    SPA-W22-MEISYOU-COUNT
@@ -1611,8 +1722,7 @@
                        MOVE    WRK-SYMD         TO  SPA-W22-EDYUKYMD-S
                        MOVE    WRK-SYMD         TO  SPA-W22-EDYUKYMD-OLD
                    END-IF
-                   MOVE    "F"                  TO  SPA-W22-BTNO (IDX)
-                   MOVE    99                   TO  IDX
+                   MOVE    IDX                  TO  SPA-W22-BTNO
                    MOVE    3                    TO  SPA-W22-CUR
                    MOVE    1                    TO  FLG-ARI
                END-IF

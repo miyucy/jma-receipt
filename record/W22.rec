@@ -8,7 +8,7 @@ W22	{
 				item	varchar(30)[20];
 		};
 		KBNCD	{
-			value	varchar(09);
+			value	varchar(02);
 		};
 		MEISYOU	{
 			value	varchar(51);
