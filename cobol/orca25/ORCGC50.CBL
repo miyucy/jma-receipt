@@ -128,14 +128,16 @@
                05  WRK-OLD-HKNCOMBI    PIC X(04).
                05  WRK-OLD-SRYDD       PIC X(02).
       *
-           03  WRK-ERRCD           PIC X(04).
-           03  WRK-C50IDMSG          PIC X(80).
+           03  WRK-ERRCD               PIC X(04).
+           03  WRK-C50IDMSG            PIC X(80).
       *
            03  WRK-COPYYM.
                05  WRK-COPYYY          PIC 9(04).
                05  WRK-COPYMM          PIC 9(02).
       *
-           05  WRK-SRYDD               PIC X(02).
+           03  WRK-SRYDD               PIC X(02).
+           03  WRK-NYUINYMD            PIC X(08).
+           03  WRK-TAIINYMD            PIC X(08). 
       *
       *    コラムリスト位置
            03  WRK-C50-RECE-ROW        PIC S9(09).
@@ -428,9 +430,94 @@
            MOVE    SPA-BIRTHDAYW       TO  SPA-GMN-BIRTHDAYW
            MOVE    SPA-SEX             TO  SPA-GMN-SEX
       *
+           MOVE    SPA-SRYYMD(1:6)     TO  SPA-NAI-SRYYM
+           MOVE    SPA-SRYYMDW(1:6)    TO  SPA-GMN-SRYYM
+      *
+           IF      SPA-PTID            =   ZERO
+      *        文例登録のみ
+               MOVE    2               TO  SPA-GMN-SYORI
+           ELSE
+               MOVE    SPACE               TO  WRK-NYUGAIKBN
+               IF      SPA-NYUGAIKBN       =   SPACE
+                   PERFORM 3104-NYUGAIKBN-HEN-SEC
+               END-IF
+           END-IF
+      *
            PERFORM 310-SPA-SET-SEC
            .
        3001-SPA-INIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    入外区分編集処理
+      *****************************************************************
+       3104-NYUGAIKBN-HEN-SEC          SECTION.
+      *
+           MOVE    SPACE               TO  WRK-TAIINYMD
+           MOVE    SPACE               TO  WRK-NYUINYMD
+      *    入院履歴判定
+           MOVE    SPACE               TO  PTNYUINRRK-REC
+           INITIALIZE                  PTNYUINRRK-REC
+           MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID
+           MOVE    SPA-PTID            TO  PTNYUINRRK-PTID
+      *
+           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key8"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+               MOVE    "key8"              TO  MCP-PATHNAME
+               PERFORM 910-PTNYUINRRK-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-PTNYUINRRK
+               INITIALIZE                  PTNYUINRRK-REC
+           END-IF
+      *
+      *    入院が１件もないとき、外来とする
+           IF      FLG-PTNYUINRRK      =   1
+               MOVE    "2"             TO   SPA-NYUGAIKBN
+           ELSE
+               MOVE    ZERO                TO  FLG-OK
+               PERFORM UNTIL      (FLG-PTNYUINRRK      =   1 )
+      *                転入日
+                   IF      PTNYUINRRK-TENNYUYMD(1:6)
+                                               <=  SPA-NAI-SRYYM
+      *                転出日
+                       IF     ( PTNYUINRRK-TENSTUYMD   =   SPACE )  OR
+                              ((PTNYUINRRK-TENSTUYMD   NOT =
+                                                           SPACE ) AND
+                               (PTNYUINRRK-TENSTUYMD(1:6)  >=
+                                                       SPA-NAI-SRYYM))
+                           MOVE    PTNYUINRRK-NYUINYMD TO  WRK-NYUINYMD
+                           MOVE    PTNYUINRRK-TAIINYMD TO  WRK-TAIINYMD
+                           MOVE    1                   TO  FLG-OK
+                       END-IF
+                   END-IF
+      *
+                   MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+                   MOVE    "key8"              TO  MCP-PATHNAME
+                   PERFORM 910-PTNYUINRRK-READ-SEC
+               END-PERFORM
+      *
+               IF      FLG-OK              =   1
+      *            入院中の場合入院とする
+                   IF      (WRK-NYUINYMD(1:6)  <   SPA-NAI-SRYYM  )  AND
+                           (WRK-TAIINYMD(1:6)  >   SPA-NAI-SRYYM  )
+                       MOVE    "1"             TO  SPA-NYUGAIKBN
+                   END-IF
+               END-IF
+           END-IF
+      *
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key8"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      SPA-NYUGAIKBN       =   SPACE
+               MOVE    "2"             TO   SPA-NYUGAIKBN
+           END-IF
+      *
+           .
+       3104-NYUGAIKBN-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -455,6 +542,7 @@
            ELSE
       *        患者情報初期編集
                PERFORM 3100-SPA-INIT-HEN-SEC
+               MOVE    1               TO  SPA-GMN-SYORI
            END-IF
            MOVE    1                   TO  SPA-GMN-CUR
            .
@@ -766,6 +854,7 @@
                                        TO  SPA-GMN-SJKBNLST (10)
            MOVE    10                  TO  SPA-SJKBN-MAX
       *
+      *
            .
        3106-SJKBN-HEN-EXT.
            EXIT.
@@ -857,6 +946,12 @@
            INITIALIZE                      SPA-GMN-COMMENTLIST-G
            MOVE    ZERO                TO  SPA-GMN-COMSEL
            MOVE    SPACE               TO  SPA-GMN-SJKBN-G
+      *    初期表示
+           IF      SPA-GMN-SYORI       =   2
+               CONTINUE
+           ELSE
+               MOVE    SPA-GMN-SJKBNLST (01)   TO  SPA-GMN-SJKBN-G
+           END-IF
       *
            .
        3103-RECECOM-HEN-EXT.
@@ -1026,10 +1121,10 @@
            INITIALIZE                  SPA-GMN-HKNCOMB-COMB
            MOVE    ZERO                TO  SPA-GMN-HKNMAX
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >    WRK-GMN-HKNMAX
+                   UNTIL       IDX     >   WRK-GMN-HKNMAX
       *        診療年月がシステム年月以前の時のみ、受診履歴の判定
-               IF     (SPA-NAI-SRYYM     <   SPA-SYSYMD(1:6) ) AND
-                      (WRK-GMN-FLG (IDX)  =   SPACE           )
+               IF     (SPA-NAI-SRYYM       <   SPA-SYSYMD(1:6) ) AND
+                      (WRK-GMN-FLG (IDX)   =   SPACE           )
                    CONTINUE
                ELSE
                    ADD     1                TO  SPA-GMN-HKNMAX
@@ -1425,6 +1520,9 @@
                WHEN    1
                WHEN    5
                    MOVE    "＜変　更＞"        TO  C50-MIDASI
+                   MOVE    "red"               TO  C50-MIDASI-STYLE
+               WHEN    6
+                   MOVE    "＜削　除＞"        TO  C50-MIDASI
                    MOVE    "red"               TO  C50-MIDASI-STYLE
                WHEN    2
                    MOVE    "＜文　例＞"        TO  C50-MIDASI
@@ -1833,14 +1931,11 @@
            IF      FLG-OK              =   ZERO
                MOVE    "0002"              TO  SPA-ERRCD
            ELSE
-      *        保険組合せ
-               PERFORM 3101-HKNCOMBI-HEN-SEC
-      *         コメント編集編集
-               MOVE    ZERO                TO  SPA-GMN-NEXT
-               MOVE    1                   TO  SPA-GMN-PAGE
-               PERFORM 3103-RECECOM-HEN-SEC
       *        初期編集
                PERFORM 314-SYOKI-SEC
+               IF      SPA-ERRCD           =   SPACE
+                   MOVE    1               TO  SPA-GMN-CUR
+               END-IF
            END-IF
       *
            .
@@ -2386,6 +2481,12 @@
                MOVE    ZERO                TO  SPA-GMN-BUNNUM
                MOVE    ZERO                TO  SPA-GMN-COMSEL
                MOVE    SPACE               TO  SPA-GMN-SJKBN-G
+      *        初期表示
+               IF      SPA-GMN-SYORI       =   2
+                   CONTINUE
+               ELSE
+                   MOVE    SPA-GMN-SJKBNLST (01)   TO  SPA-GMN-SJKBN-G
+               END-IF
                MOVE    1                   TO  SPA-GMN-CUR
            END-IF
            .
@@ -2428,8 +2529,7 @@
       *        複写月がある時
                IF     (SPA-GMN-COPYYM      NOT =   SPACE ) AND
                       (SPA-GMN-RSI-HKNKBN  NOT =   "3" )
-                   IF     (SPA-GMN-SJKBN       =   SPACE ) AND
-                          (SPA-GMN-COMMENT     =   SPACE )
+                   IF     (SPA-GMN-COMMENT     =   SPACE )
                        MOVE    "0206"              TO  SPA-C50IDCD
                    END-IF
                END-IF
@@ -2462,6 +2562,7 @@
                IF      FLG-RECECOM         =   ZERO
                    MOVE    "0105"              TO  SPA-C50IDCD
                    IF      SPA-GMN-SYORI       =   1  OR  5
+                                               OR  ZERO
                        PERFORM 2124-UPDATE-CHK-SEC
                    END-IF
                ELSE
@@ -2777,11 +2878,13 @@
       *    変更前の保険組合せが無効の時、削除
            IF     (SPA-ERRCD           =   SPACE )  AND
                   (SPA-GMN-SYORI       =   5     )  AND
-                  (SPA-GMN-SELNUM (1)  NOT =   ZERO) AND
-                  (SPA-GMN-NHKNCOMBI(1)
-                                   NOT =   SPA-GMN-HKNCOMBINUM)
-               MOVE    1               TO  IDX2
-               PERFORM 24011-COMMENT-DELETE-SEC
+                  (SPA-GMN-SELNUM (1)  NOT =   ZERO)
+               MOVE     SPA-GMN-SELNUM (1)     TO  WRK-SELNUM
+               IF      (SPA-GMN-NHKNCOMBI(WRK-SELNUM)
+                                       NOT =   SPA-GMN-HKNCOMBINUM)
+                   MOVE    1               TO  IDX2
+                   PERFORM 24011-COMMENT-DELETE-SEC
+               END-IF
            END-IF
       *    複写処理
            IF     (SPA-ERRCD           =   SPACE ) AND
@@ -2856,11 +2959,17 @@
            IF      WRK-SELNUM          >   ZERO
                MOVE    1                   TO  SPA-GMN-SYORI
                MOVE    SPACE               TO  SPA-GMN-SELNUM-X
-               MOVE    WRK-SELNUM          TO  SPA-GMN-SELNUM-X(1:3)
+               MOVE    SPACE               TO  WRK-HEN-SELNUM
+               PERFORM 4401-SELNUM-CHK-HEN-SEC
+               MOVE    WRK-HEN-SELNUM      TO  SPA-GMN-SELNUM-X
                PERFORM 4201-SELNUM-CHK-SEC
       *        コメント
                MOVE    SPA-GMN-SELNUM(1)   TO  WRK-SELNUM
-               PERFORM 2103-RECECOM-HEN-SEC
+               PERFORM 2101-HENKOU-SYORI-SEC
+      *        コメント選択なし
+               MOVE    ZERO                TO  SPA-GMN-COMSEL
+               MOVE    SPACE               TO  SPA-GMN-COMMENT
+               MOVE    SPA-GMN-SJKBNLST (01)   TO  SPA-GMN-SJKBN-G
            ELSE
                INITIALIZE                  SPA-GMN-SELNUM-G
            END-IF
@@ -3331,6 +3440,7 @@
       *
            IF      SPA-GMN-SELNUM-MAX  =   ZERO
                MOVE    4               TO  SPA-GMN-CUR
+               MOVE    6               TO  SPA-GMN-SYORI
            ELSE
                IF      SPA-GMN-SELNUM(1)   =   ZERO
                    MOVE    "0003"              TO  SPA-ERRCD
@@ -3393,7 +3503,8 @@
            INITIALIZE                  RECECOM-REC
            MOVE    SPA-HOSPID          TO  RECECOM-HOSPID
            MOVE    SPA-GMN-PTID        TO  RECECOM-PTID
-           MOVE    SPA-GMN-NYUGAIKBN   TO  RECECOM-NYUGAIKBN
+           MOVE    SPA-GMN-NNYUGAIKBN (IDX)
+                                       TO  RECECOM-NYUGAIKBN
            MOVE    SPA-GMN-NSRYKA (IDX)
                                        TO  RECECOM-SRYKA
            MOVE    SPA-GMN-NSRYYM (IDX)
@@ -3436,7 +3547,8 @@
            INITIALIZE                  RECECOM-REC
            MOVE    SPA-HOSPID          TO  RECECOM-HOSPID
            MOVE    SPA-GMN-PTID        TO  RECECOM-PTID
-           MOVE    SPA-GMN-NYUGAIKBN   TO  RECECOM-NYUGAIKBN
+           MOVE    SPA-GMN-NNYUGAIKBN (IDX)
+                                       TO  RECECOM-NYUGAIKBN
            MOVE    SPA-GMN-NSRYKA (IDX)
                                        TO  RECECOM-SRYKA
            MOVE    SPA-GMN-NSRYYM (IDX)
@@ -3721,8 +3833,6 @@
            END-IF
       *    選択行からレセコメント検索編集
            PERFORM 2103-RECECOM-HEN-SEC
-      **** MOVE    SPA-GMN-TCOMMENT(WRK-SELNUM)
-      ****                             TO  SPA-GMN-COMMENT
       *
            MOVE    1                   TO  SPA-GMN-CUR
            .
@@ -3993,9 +4103,6 @@
                WHEN    "0042"
                    MOVE    "症状詳記区分を選択して下さい。"
                                        TO  SPA-ERRMSG
-               WHEN    "0043"
-                   MOVE    "この症状詳記区分で既に登録があります。"
-                                       TO  SPA-ERRMSG
                WHEN    "0020"
                    MOVE    "更新エラーです。"
                                        TO  SPA-ERRMSG
@@ -4060,7 +4167,7 @@
                    MOVE    "よろしいですか？"
                                        TO  WRK-C50IDMSG(37:)
                WHEN    "0107"
-                   STRING  "既に症状詳記区分で登録されています。"
+                   STRING  "既に登録済みです。"
                                        DELIMITED  BY  SIZE
                            "ＯＫでコメント内容を更新します。"
                                        DELIMITED  BY  SIZE
@@ -4234,7 +4341,23 @@
            .
        980-NYUINACCT-READ-EXT.
            EXIT.
+      *****************************************************************
+      *    入院履歴マスター読込
+      *****************************************************************
+       910-PTNYUINRRK-READ-SEC         SECTION.
       *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
+               MOVE    ZERO            TO  FLG-PTNYUINRRK
+           ELSE
+               INITIALIZE                  PTNYUINRRK-REC
+               MOVE    1               TO  FLG-PTNYUINRRK
+           END-IF
+      *
+           .
+       910-PTNYUINRRK-READ-EXT.
+           EXIT.
       *****************************************************************
       *    テーブル検索処理
       *****************************************************************
