@@ -40,19 +40,6 @@
                05  SPA-GMN-BIRTHDAY        PIC X(08).
       *患者生年月日（和暦編集）
                05  SPA-GMN-BIRTHDAYW       PIC X(09).
-      *入院日
-               05  SPA-NAI-NYUINYMD        PIC X(08).
-      *退院日
-               05  SPA-NAI-TAIINYMD        PIC X(08).
-      *入院科
-               05  SPA-NAI-NYUINKA         PIC X(02).
-      *
-               05  SPA-GMN-NYUINYMD        PIC X(09).
-               05  SPA-GMN-TAIINYMD        PIC X(09).
-      *入院期間設定
-               05  SPA-NAI-NYUIN-KIKAN.
-                   07  SPA-NAI-NYUIN       PIC 9(01)
-                                           OCCURS   31.
       *
            03  SPA-C50ID-AREA.
       *警告メッセージ
