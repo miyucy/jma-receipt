@@ -122,7 +122,7 @@
            MOVE    WRK-PARA-SYORIYMD
                                    TO  ORCBD008-SYORIYMD
       *
-           MOVE    "0"             TO  ORCBD008-NYUGAIKBN
+           MOVE    "2"             TO  ORCBD008-NYUGAIKBN
            MOVE    WRK-PARA-SORTKBN TO ORCBD008-SORTKBN
       *
            CALL    "ORCBD008"          USING

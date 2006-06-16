@@ -861,6 +861,10 @@
                MOVE    ORCBD008-SYORIYMD       TO  SYU-DENPPRTYMD
                MOVE    PATH-TBL-SYUNOU-KEY43   TO  WRK-PATH
                MOVE    "%"                     TO  SYU-NYUGAIKBN
+           WHEN    "4"
+               MOVE    ORCBD008-NYUGAIKBN      TO  SYU-NYUGAIKBN
+               MOVE    ORCBD008-SYORIYMD       TO  SYU-SRYYMD
+               MOVE    PATH-TBL-SYUNOU-KEY44   TO  WRK-PATH
            WHEN    OTHER
                MOVE    ORCBD008-SYORIYMD       TO  SYU-SRYYMD
                MOVE    PATH-TBL-SYUNOU-KEY44   TO  WRK-PATH
