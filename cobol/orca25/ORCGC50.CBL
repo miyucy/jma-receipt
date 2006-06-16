@@ -1523,7 +1523,7 @@
                    MOVE    "red"               TO  C50-MIDASI-STYLE
                WHEN    6
                    MOVE    "¡ãºï¡¡½ü¡ä"        TO  C50-MIDASI
-                   MOVE    "red"               TO  C50-MIDASI-STYLE
+                   MOVE    "blue"              TO  C50-MIDASI-STYLE
                WHEN    2
                    MOVE    "¡ãÊ¸¡¡Îã¡ä"        TO  C50-MIDASI
                    MOVE    "red"               TO  C50-MIDASI-STYLE
