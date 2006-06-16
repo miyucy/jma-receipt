@@ -802,3 +802,27 @@ path	key34	{
 		;
 	};
 };
+path	key35 	{
+	DBSELECT	{
+		DECLARE tbl_jyurrk_key35_csr CURSOR FOR
+		SELECT *
+		FROM tbl_jyurrk
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+			AND   HKNCOMBINUM <>  '9999'
+			AND   SRYYMD      =
+                           (SELECT MAX(SRYYMD)
+                                   FROM tbl_jyurrk 
+                               	WHERE   HOSPID    =   :HOSPID
+		        	AND   PTID        =   :PTID
+           			AND   NYUGAIKBN   =   :NYUGAIKBN
+		        	AND   HKNCOMBINUM <>  '9999'
+                                AND   SRYYMD      <=  :SRYYMD )
+			ORDER   BY        DENPNUM,
+		                          RENNUM,
+			                  DOUJI_RENNUM,
+			                  EDANUM
+		;
+	};
+};
