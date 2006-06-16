@@ -184,6 +184,7 @@
       *                                      登録時の変更時の複数病名のチ
       *                                      ェックの追加
       *  02.08.05    NACL-藤原    06/04/04   自院病名検索時の病名種別のセット
+      *  02.08.06    NACL-多々納  06/05/16  コメント入力画面変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -764,12 +765,17 @@
       *        元の画面へ戻す
                IF      WRK-MOTOPG(1:3)     =   "Y01"  OR  "U01"  OR
                                                "P97"  
+                                           OR  "C50"
                    MOVE    LNK-COMMON      TO  SPA-KYOUTU
                    MOVE    LNK-SCRSPA      TO  SPA-C02
                    MOVE    SPA-WORK        TO  SPA-C01KYOUTU
                END-IF
       *        予約とエラー表示の時、そのまま画面表示へ
                IF      WRK-MOTOPG(1:3)     =   "Y01" 
+                   GO      TO      300-SCREEN-EXT
+               END-IF
+      *        コメントから
+               IF      WRK-MOTOPG(1:3)     =   "C50"
                    GO      TO      300-SCREEN-EXT
                END-IF
       *        外部より選択がある時
@@ -7355,37 +7361,68 @@
                GO      TO      430-FREEMSG-EXT
            END-IF
       *
-           MOVE    SPACE               TO  SPA-MOTOPG
-           INITIALIZE                  SPA-C01KYOUTU
-           MOVE    SPA-C01KYOUTU       TO  SPA-WORK
-           MOVE    SPA-AREA            TO  SPA-COMMON
-           MOVE    SPA-C02FREE         TO  SPA-FREE
-      *
-           MOVE    "LINK"              TO  MCP-STATUS
-           MOVE    SPACE               TO  MCP-EVENT
-      *
-           CALL    "ORCGC07"           USING
-                                       MCPAREA
-                                       SPAAREA
-                                       LINKAREA
-                                       SCRAREA
-      *
-           MOVE    SPA-COMMON      TO  SPA-AREA
-           MOVE    SPA-WORK        TO  SPA-C01KYOUTU
-           MOVE    SPA-FREE        TO  SPA-C02FREE
-      *
-      *    カーソル移動
-           MOVE    "COMMENT"           TO  MCP-WIDGET
-      *
+      *    戻り時、画面を元へ戻す
+           MOVE    SPACE               TO  LINKAREA
+           MOVE    SPA-KYOUTU          TO  LNK-COMMON
+           MOVE    SPA-C02             TO  LNK-SCRSPA
+      *    画面移行用のパラメタ変更
            MOVE    "C02"               TO  SPA-MOTOPG
-           MOVE    "C07"               TO  SPA-SAKIPG
+           MOVE    "C50"               TO  SPA-SAKIPG
       *
-           MOVE    "NEW"               TO  MCP-PUTTYPE.
-           MOVE    "C07"               TO  MCP-WINDOW.
+      *    遷移後の初期表示
+           MOVE    SPA-GMN-C02-SYSYMD  TO  SPA-SRYYMDW
+           MOVE    SPA-NAI-C02-SYSYMD  TO  SPA-SRYYMD
+           MOVE    SPACE               TO  SPA-SRYKA
+           MOVE    SPACE               TO  SPA-NYUGAIKBN
+           MOVE    SPA-NAI-C02-PTID    TO  SPA-PTID
+           MOVE    SPA-GMN-C02-PTNUM   TO  SPA-PTNUM
+           MOVE    SPA-GMN-C02-NAME    TO  SPA-NAME
+           MOVE    SPA-GMN-C02-SEX     TO  SPA-SEX
+           MOVE    SPA-GMN-C02-BIRTHDAY    TO  SPA-BIRTHDAYW
+           MOVE    SPA-NAI-C02-BIRTHDAY    TO  SPA-BIRTHDAY
+      *
+           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
+      *
+           MOVE    "CHANGE"            TO  MCP-PUTTYPE
+           MOVE    "C50"               TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW.
       *
            MOVE    1                   TO  FLG-END
+      *
+      *!!以下削除
+      *
+      *    MOVE    SPACE               TO  SPA-MOTOPG
+      *    INITIALIZE                  SPA-C01KYOUTU
+      *    MOVE    SPA-C01KYOUTU       TO  SPA-WORK
+      *    MOVE    SPA-AREA            TO  SPA-COMMON
+      *    MOVE    SPA-C02FREE         TO  SPA-FREE
+      *
+      *    MOVE    "LINK"              TO  MCP-STATUS
+      *    MOVE    SPACE               TO  MCP-EVENT
+      *
+      *    CALL    "ORCGC07"           USING
+      *                                MCPAREA
+      *                                SPAAREA
+      *                                LINKAREA
+      *                                SCRAREA
+      *
+      *    MOVE    SPA-COMMON      TO  SPA-AREA
+      *    MOVE    SPA-WORK        TO  SPA-C01KYOUTU
+      *    MOVE    SPA-FREE        TO  SPA-C02FREE
+      *
+      *    カーソル移動
+      *    MOVE    "COMMENT"           TO  MCP-WIDGET
+      *
+      *    MOVE    "C02"               TO  SPA-MOTOPG
+      *    MOVE    "C07"               TO  SPA-SAKIPG
+      *
+      *    MOVE    "NEW"               TO  MCP-PUTTYPE.
+      *    MOVE    "C07"               TO  MCP-WINDOW.
+      *
+      *    PERFORM 900-PUT-WINDOW.
+      *
+      *****MOVE    1                   TO  FLG-END
       *
            .
        430-FREEMSG-EXT.
