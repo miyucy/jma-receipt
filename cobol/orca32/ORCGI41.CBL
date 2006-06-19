@@ -340,6 +340,10 @@
                    07  TBL-SRYSYUKBN       PIC X(03).
                    07  TBL-DAY-G.
                        09  TBL-DAY         PIC 9(03)   OCCURS   31.
+      *    施設規準テーブル
+       01  WRK-TBL-SSTKIJUN-AREA.
+           03  WRK-TBL-SSTKIJUN-OCC       OCCURS  1000.
+               05  WRK-TBL-SSTKIJUN       PIC 9(01).
       *
       *    患者年齢算出用エリア
        01  WRK-NENREI-AREA.
@@ -521,8 +525,8 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
-           COPY    "ORCA-DBPATH".
+      ***  COPY    "CPORCMCP.INC".
+      ***  COPY    "ORCA-DBPATH".
       *
       *****************************************************************
       *    連絡　領域
@@ -537,9 +541,7 @@
        01  SCRAREA.
            COPY    "I41.INC".
            COPY    "I42.INC".
-           COPY    "I43.INC".
            COPY    "I44.INC".
-           COPY    "I45.INC".
            COPY    "I48.INC".
            COPY    "I49.INC".
            COPY    "I4ERR.INC".
@@ -675,9 +677,9 @@
       *
       *
            EVALUATE    SPA-MOTOPG(1:5)
-      *        レセコメントより
-               WHEN    "I43"
-                   GO      TO      300-SCREEN-EXT
+      ****     レセコメントより
+      *        WHEN    "I43"
+      ****         GO      TO      300-SCREEN-EXT
                WHEN    "I4ID1"
       *            確認画面より
                    PERFORM 3003-JID1-SET-SEC
@@ -3682,21 +3684,42 @@
                GO      TO      420-ZAIHENKOU-EXT
            END-IF
       *
+           INITIALIZE                  WRK-TBL-SSTKIJUN-AREA
       *    施設基準情報検索
            MOVE    SPACE               TO  SYS-1006-REC.
            MOVE    "1006"              TO  SYS-1006-KANRICD.
-           MOVE    "1"                 TO  SYS-1006-KBNCD.
            MOVE    SPA-NAI-SRYYM       TO  SYS-1006-STYUKYMD(1:6).
            MOVE    "01"                TO  SYS-1006-STYUKYMD(7:2).
            MOVE    SYS-1006-STYUKYMD   TO  SYS-1006-EDYUKYMD.
       *    システム管理検索
            MOVE    SYS-1006-REC        TO  MCPDATA-REC
-           PERFORM 900-SYSKANRI-KEY-READ-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1006-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key2"             TO  MCP-PATHNAME
+               PERFORM 900-KANRIMST-READ-SEC
            ELSE
-               INITIALIZE                  SYS-1006-REC
+               MOVE    1                   TO  FLG-SYSKANRI
            END-IF
+           MOVE    ZERO                TO  IDX
+           PERFORM UNTIL   (FLG-SYSKANRI   =   1    )
+                   OR      (IDX            >=  1000 )
+               MOVE    MCPDATA-REC         TO  SYS-1006-REC
+               PERFORM VARYING IDY         FROM    1   BY  1
+                       UNTIL   IDY         >       500
+                   ADD     1               TO  IDX
+                   MOVE    SYS-1006-SSTKIJUN  (IDY)
+                                           TO  WRK-TBL-SSTKIJUN (IDX)
+               END-PERFORM
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 900-KANRIMST-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
       *    入院基本料の施設規準判定
            MOVE    SPA-NAI-SRYYM       TO  WRK-SRYYMD(1:6).
@@ -3720,7 +3743,7 @@
                    CONTINUE
                ELSE
                    MOVE    TNS-SSTKIJUNCD (IDX)    TO  IDY
-                   IF      SYS-1006-SSTKIJUN (IDY) =   1
+                   IF      WRK-TBL-SSTKIJUN (IDY)  =   1
                        MOVE    1               TO  FLG-SST
                    END-IF
                END-IF
@@ -6349,10 +6372,10 @@
       *
                    MOVE    NYUINACCT-REC       TO  MCPDATA-REC
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
-                   MOVE    "NYUINACCT-UPD1"    TO  ORC-DBPATH
-                   CALL    "ORCMCPSUB"         USING
+                   MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+                   MOVE    "upd1"              TO  MCP-PATHNAME
+                   CALL    "MONFUNC"           USING
                                                MCPAREA
-                                               ORCMCPAREA
                                                MCPDATA-REC
                    IF      MCP-RC          NOT =   ZERO
                         DISPLAY "I41 NYUINACCT UPD ERR:" MCP-RC
