@@ -1804,7 +1804,6 @@
        210-DOWN-SYORI-SEC                    SECTION.
       *
            IF      SPA-COMMENT-MAX     =   ZERO
-                                       OR  1
                CONTINUE
            ELSE
                COMPUTE SPA-GMN-COMSEL  =   SPA-GMN-COMSEL  +  1
@@ -2299,7 +2298,11 @@
                MOVE    SPA-GMN-SELNUM(1)  TO  WRK-SELNUM
                PERFORM 21031-COMMENT-HENSYU-SEC
            ELSE
-               MOVE    "0140"          TO  SPA-ERRCD
+               IF      SPA-GMN-COMSEL      =   ZERO
+                   MOVE    1                   TO  SPA-GMN-CUR
+               ELSE
+                   MOVE    "0040"              TO  SPA-ERRCD
+               END-IF
            END-IF
            .
        420-COMSEL-EXT.
@@ -3731,8 +3734,12 @@
            PERFORM 990-DBCLOSE-SEC
       *
            IF      SPA-COMMENT-MAX     >   ZERO
-               MOVE    1                   TO  SPA-GMN-COMSEL
-               PERFORM 21031-COMMENT-HENSYU-SEC
+               MOVE    14                  TO  SPA-GMN-CUR
+               MOVE    ZERO                TO  SPA-GMN-COMSEL
+               MOVE    SPACE               TO  SPA-GMN-COMMENT
+               MOVE    SPA-GMN-SJKBNLST (01)   TO  SPA-GMN-SJKBN-G
+      ***      MOVE    1                   TO  SPA-GMN-COMSEL
+      ***      PERFORM 21031-COMMENT-HENSYU-SEC
            ELSE
                MOVE    ZERO                TO  SPA-GMN-COMSEL
                MOVE    SPACE               TO  SPA-GMN-COMMENT
