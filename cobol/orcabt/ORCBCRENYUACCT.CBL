@@ -2370,13 +2370,13 @@
                        MOVE   "190122010"   TO  SYOKIKSN-IN-KHNSRYCD
                    WHEN    "32"
                        MOVE   "190122110"   TO  SYOKIKSN-IN-KHNSRYCD
-                   WHEN    "31"
+                   WHEN    "33"
                        MOVE   "190122210"   TO  SYOKIKSN-IN-KHNSRYCD
-                   WHEN    "31"
+                   WHEN    "34"
                        MOVE   "190122310"   TO  SYOKIKSN-IN-KHNSRYCD
-                   WHEN    "31"
+                   WHEN    "35"
                        MOVE   "190122410"   TO  SYOKIKSN-IN-KHNSRYCD
-                   WHEN    "31"
+                   WHEN    "36"
                        MOVE   "190122510"   TO  SYOKIKSN-IN-KHNSRYCD
                END-EVALUATE
            END-IF
