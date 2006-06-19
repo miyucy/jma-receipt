@@ -54,9 +54,7 @@ RECORD_files = \
 	I2ID1.rec \
 	I41.rec \
 	I42.rec \
-	I43.rec \
 	I44.rec \
-	I45.rec \
 	I48.rec \
 	I49.rec \
 	I4ERR.rec \
@@ -68,8 +66,6 @@ RECORD_files = \
 	J02.rec \
 	J021.rec \
 	J022.rec \
-	J023.rec \
-	J024.rec \
 	J03.rec \
 	J04.rec \
 	J041.rec \

@@ -65,8 +65,6 @@ SCREEN_screen = \
 	J02.glade \
 	J021.glade \
 	J022.glade \
-	J023.glade \
-	J024.glade \
 	J03.glade \
 	J04.glade \
 	J041.glade \
@@ -251,9 +249,7 @@ SCREEN_screen = \
         U02X.glade \
         W15.glade \
 	I42.glade \
-	I43.glade \
 	I44.glade \
-	I45.glade \
 	I48.glade \
 	I49.glade \
 	S04.glade \
