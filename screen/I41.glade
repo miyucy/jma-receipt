@@ -1708,22 +1708,6 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label129</name>
-      <x>12</x>
-      <y>584</y>
-      <width>52</width>
-      <height>24</height>
-      <label>変更番号</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>label4</name>
       <x>76</x>
       <y>612</y>
@@ -2656,6 +2640,22 @@
       <width>45</width>
       <height>24</height>
       <label>退院日</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label129</name>
+      <x>12</x>
+      <y>584</y>
+      <width>58</width>
+      <height>24</height>
+      <label>変更番号</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
