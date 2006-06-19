@@ -5207,8 +5207,8 @@
       *                                       
                    IF      WRK-COMMENT-G   NOT =   SPACE
                      PERFORM VARYING IDW FROM    1   BY  1
-                             UNTIL   IDW >       8
-                             OR      WRK-COMMENT (IDW)   =   SPACE
+                             UNTIL   IDW >       16
+                             OR      WRK-COMMENT(IDW)  =   SPACE
       *
                        ADD     1                   TO  WRK-COM-RENNUM
       *          
@@ -5254,7 +5254,7 @@
                        MOVE    "2"                 TO  RECEDEN-RECKBN
                        MOVE    WRK-COM-RENNUM      TO  RECEDEN-RENNUM
                        MOVE    WRK-PARA-SYSYMD     TO  RECEDEN-CREYMD
-                       MOVE    WRK-COMMENT1 (IDW)  TO  RECEDEN-RECEDATA
+                       MOVE    WRK-COMMENT (IDW)   TO  RECEDEN-RECEDATA
       *
                        MOVE    RECEDEN-REC         TO  MCPDATA-REC
                        MOVE    "RECEDEN-KEY"       TO  ORC-DBPATH
@@ -5324,8 +5324,8 @@
       *                                       
                    IF      WRK-COMMENT-G   NOT =   SPACE
                      PERFORM VARYING IDW FROM    1   BY  1
-                             UNTIL   IDW >       16
-                             OR      WRK-COMMENT (IDW)   =   SPACE
+                             UNTIL   IDW >       8
+                             OR      WRK-COMMENT1(IDW)   =   SPACE
       *
                        ADD     1                   TO  WRK-COM-RENNUM
       *          
@@ -5371,7 +5371,7 @@
                        MOVE    "2"                 TO  RECEDEN-RECKBN
                        MOVE    WRK-COM-RENNUM      TO  RECEDEN-RENNUM
                        MOVE    WRK-PARA-SYSYMD     TO  RECEDEN-CREYMD
-                       MOVE    WRK-COMMENT (IDW)   TO  RECEDEN-RECEDATA
+                       MOVE    WRK-COMMENT1 (IDW)  TO  RECEDEN-RECEDATA
                        MOVE    RECECOM-SJKBN       TO  WRK-SJKBN-X
                        MOVE    WRK-SJKBN           TO  RECEDEN-SJKBN
       *
