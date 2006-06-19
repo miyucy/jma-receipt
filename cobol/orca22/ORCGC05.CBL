@@ -50,6 +50,8 @@
       *                                     をシス管の設定より行う
       *
       *  02.07.01    NACL-藤原    05/10/31  MONFUNC対応
+      *
+      *  03.00.01    NACL-藤原    06/06/19   C06,C07,C08 削除
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -209,9 +211,6 @@
            COPY    "C03.INC".
            COPY    "C04.INC".
            COPY    "C05.INC".
-           COPY    "C06.INC".
-           COPY    "C07.INC".
-           COPY    "C08.INC".
            COPY    "C09.INC".
            COPY    "C10.INC".
            COPY    "C11.INC".
