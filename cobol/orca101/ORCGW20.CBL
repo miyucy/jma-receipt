@@ -2418,6 +2418,20 @@
       *
            END-IF
       *
+           IF    ( SPA-NAI-W20-YUKOSTYMD  >=   CONST-H180701 )
+               IF    ( SPA-NAI-W20-YUKOSTYMD-MOT   <   CONST-H180701 )
+                   IF    ( SPA-GMN-W20-SBT =   "04" OR "09" )
+                       INITIALIZE              SPA-NAI-W20-KHNSRYCD
+                                               SPA-NAI-W20-KHNTEN
+                                               SPA-GMN-W20-KHNRYO-G
+                                               SPA-GMN-W20-KNGHJOKSN-G
+                   END-IF
+      *
+                   MOVE    SPACE   TO  SPA-GMN-W20-YKNKNGKSN-G
+      *
+               END-IF
+           END-IF
+      *
            MOVE    SPA-NAI-W20-YUKOSTYMD
                                    TO  SPA-NAI-W20-YUKOSTYMD-MOT
       *
