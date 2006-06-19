@@ -6,6 +6,8 @@
 -- Create Date : 2006/06/16           --
 --                                    --
 
+\set ON_ERROR_STOP
+
 -- TBL_RECEDENWK  ∫Ó¿Æ              --
 
 create table TBL_RECEDENWK (
