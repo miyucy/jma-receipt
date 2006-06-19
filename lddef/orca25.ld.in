@@ -23,5 +23,20 @@ data	{
 	};
 };
 
-#include "orcadb.inc"
+db	{
+	tbl_syskanri;
+	tbl_hkncombi;
+	tbl_hknnum;
+	tbl_pthkninf;
+	tbl_ptkohinf;
+	tbl_jyurrk;
+	tbl_ptrsiinf;
+	tbl_rececom;
+	tbl_example;
+	tbl_receupd;
+	tbl_ptnyuinrrk;
+	tbl_nyuinacct;
+};
+
+/* #include "orcadb.inc" */
 #include "orcadbh.inc"
