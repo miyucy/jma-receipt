@@ -747,8 +747,6 @@
            COPY    "J02.INC".
            COPY    "J021.INC".
            COPY    "J022.INC".
-           COPY    "J023.INC".
-           COPY    "J024.INC".
            COPY    "J025.INC".
            COPY    "J026.INC".
            COPY    "J03.INC".
@@ -984,9 +982,9 @@
       *        回数入力より
                WHEN    "J022"
                    PERFORM 3002-J022-HEN-SEC
-      *        レセコメントより
-               WHEN    "J023"
-                   CONTINUE
+      ****     レセコメントより
+      *        WHEN    "J023"
+      ****         CONTINUE
       *        カルテ印刷より
                WHEN    "J026"
                    CONTINUE

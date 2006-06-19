@@ -434,8 +434,6 @@
            COPY    "J02.INC".
            COPY    "J021.INC".
            COPY    "J022.INC".
-           COPY    "J023.INC".
-           COPY    "J024.INC".
            COPY    "J025.INC".
            COPY    "J026.INC".
            COPY    "J03.INC".
