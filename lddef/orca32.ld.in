@@ -6,9 +6,7 @@ textsize	400;
 bind	""		"OpenCOBOL"	"ORCGI41";
 bind	"I41"		"OpenCOBOL"	"ORCGI41";
 bind	"I42"		"OpenCOBOL"	"ORCGI42";
-bind	"I43"		"OpenCOBOL"	"ORCGI43";
 bind	"I44"		"OpenCOBOL"	"ORCGI44";
-bind	"I45"		"OpenCOBOL"	"ORCGI45";
 bind	"I48"		"OpenCOBOL"	"ORCGI48";
 bind	"I49"		"OpenCOBOL"	"ORCGI49";
 bind	"I4ERR"		"OpenCOBOL"	"ORCGI4ERR";
@@ -21,9 +19,7 @@ data 	{
 	window	{
 		I41;
 		I42;
-		I43;
 		I44;
-		I45;
 		I48;
 		I49;
 		I4ERR;
