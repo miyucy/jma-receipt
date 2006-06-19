@@ -64,6 +64,8 @@
       *                                     外す
       *  02.09.03    NACL-多々納  06/05/16  コメント入力画面変更
       *                                     MONFUNC対応
+      *平成１８年７月改定対応
+      *  03.00.01    NACL-小豆沢  06/06/19  療養病棟、療養病床改定対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -4971,9 +4973,22 @@
                MOVE     "0"        TO  LNK-SCNYUACCT-TOKUTEINYUIN-KBN
            ELSE
                MOVE     "1"        TO  LNK-SCNYUACCT-TOKUTEINYUIN-KBN
-      *        老人特定入院基本料の場合は特定入院料扱いから外す
+      *        老人特定入院基本料及び平成１８年７月以降の療養病棟、
+      *        療養病床の場合は特定入院料扱いから外す
                IF    LNK-SCNYUACCT-NYUKHN-SRYCD(1)  =  "190799410" OR
-                                                       "190799510"
+                                                       "190799510" OR
+                                                       "190121310" OR
+                                                       "190121410" OR
+                                                       "190121510" OR
+                                                       "190121610" OR
+                                                       "190121710" OR
+                                                       "190121810" OR
+                                                       "190122010" OR
+                                                       "190122110" OR
+                                                       "190122210" OR
+                                                       "190122310" OR
+                                                       "190122410" OR
+                                                       "190121510"
                    MOVE  "0"     TO  LNK-SCNYUACCT-TOKUTEINYUIN-KBN
                END-IF
            END-IF
@@ -5451,6 +5466,30 @@
                        MOVE   "190808910"   TO  SYOKIKSN-IN-KHNSRYCD
                    WHEN    "24"
                        MOVE   "190799510"   TO  SYOKIKSN-IN-KHNSRYCD
+                   WHEN    "25"
+                       MOVE   "190121310"   TO  SYOKIKSN-IN-KHNSRYCD
+                   WHEN    "26"
+                       MOVE   "190121410"   TO  SYOKIKSN-IN-KHNSRYCD
+                   WHEN    "27"
+                       MOVE   "190121510"   TO  SYOKIKSN-IN-KHNSRYCD
+                   WHEN    "28"
+                       MOVE   "190121610"   TO  SYOKIKSN-IN-KHNSRYCD
+                   WHEN    "29"
+                       MOVE   "190121710"   TO  SYOKIKSN-IN-KHNSRYCD
+                   WHEN    "30"
+                       MOVE   "190121810"   TO  SYOKIKSN-IN-KHNSRYCD
+                   WHEN    "31"
+                       MOVE   "190122010"   TO  SYOKIKSN-IN-KHNSRYCD
+                   WHEN    "32"
+                       MOVE   "190122110"   TO  SYOKIKSN-IN-KHNSRYCD
+                   WHEN    "31"
+                       MOVE   "190122210"   TO  SYOKIKSN-IN-KHNSRYCD
+                   WHEN    "31"
+                       MOVE   "190122310"   TO  SYOKIKSN-IN-KHNSRYCD
+                   WHEN    "31"
+                       MOVE   "190122410"   TO  SYOKIKSN-IN-KHNSRYCD
+                   WHEN    "31"
+                       MOVE   "190122510"   TO  SYOKIKSN-IN-KHNSRYCD
                END-EVALUATE
            END-IF
       *
