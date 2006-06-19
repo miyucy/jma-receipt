@@ -53,7 +53,7 @@
       *    Ä¢É¼¥¿¥¤¥È¥ë
            03  SPRT-TITLE          PIC X(100).
       *    Ä¢É¼¥Ç¡¼¥¿
-           03  SPRT-PRTDATA        PIC X(10000).
+           03  SPRT-PRTDATA        PIC X(20000).
       *    Ã¼Ëö£É£Ä
            03  SPRT-TERMID         PIC X(64).
       *    ¥ª¥Ú¥ì¡¼¥¿£É£Ä

@@ -79,7 +79,7 @@
              05  PRT-PSFILE-SRENNUM    PIC X(04).
              05  PRT-PSFILE-PAGE       PIC X(05).
       *  01.01.02  ADD END
-           03  PRT-PRTDATA         PIC X(10000).
+           03  PRT-PRTDATA         PIC X(20000).
       *
       *
       *    °õºþÍÑ¥Ç¡¼¥¿ Ì¾¾ÎÎÎ°è 

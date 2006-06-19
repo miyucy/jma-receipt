@@ -63,7 +63,7 @@
              05  PRT-TBL-GROUP       PIC X(14).
              05  PRT-SHORI-RENNUM    PIC 9(04).
              05  PRT-PAGE            PIC 9(05).
-           03  PRT-PRTDATA         PIC X(10000).
+           03  PRT-PRTDATA         PIC X(20000).
       *
 006900*    入力ＰＳ環境ファイル
        FD  PREVIEW-FILE.
