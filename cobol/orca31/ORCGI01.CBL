@@ -6847,23 +6847,39 @@
                                    TO  WRK-CHK-YMD
            END-EVALUATE
       *
+           INITIALIZE  SYS-5001-REC
+           MOVE    "5001"              TO  SYS-5001-KANRICD
+           MOVE    SPA-GMN-I01-BTUNAME-CD  TO  SYS-5001-KBNCD
+           MOVE    WRK-CHK-YMD         TO  ORC-DBYMD
+           MOVE    SYS-5001-REC        TO  MCPDATA-REC
+           MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC
+           IF    ( FLG-DBRC    =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYS-5001-REC
+           ELSE
+              INITIALIZE                   SYS-5001-REC
+           END-IF
+      *
+           MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
+           INITIALIZE  SYS-5000-REC
+           MOVE    "5000"              TO  SYS-5000-KANRICD
+           MOVE    "*"                 TO  SYS-5000-KBNCD
+           MOVE    WRK-CHK-YMD         TO  ORC-DBYMD
+           MOVE    SYS-5000-REC        TO  MCPDATA-REC
+           MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC
+           IF    ( FLG-DBRC    =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYS-5000-REC
+           ELSE
+              INITIALIZE                  SYS-5000-REC
+           END-IF
+      *
+           MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
            IF    ( WRK-CHK-YMD     >=  CONST-H180401 )
-      *
-               INITIALIZE  SYS-5001-REC
-               MOVE    "5001"              TO  SYS-5001-KANRICD
-               MOVE    SPA-GMN-I01-BTUNAME-CD  TO  SYS-5001-KBNCD
-               MOVE    WRK-CHK-YMD         TO  ORC-DBYMD
-               MOVE    SYS-5001-REC        TO  MCPDATA-REC
-               MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
-               PERFORM 900-TBL-SELECT-SEC
-               IF    ( FLG-DBRC    =   ZERO )
-                   MOVE    MCPDATA-REC     TO  SYS-5001-REC
-               ELSE
-                  INITIALIZE                   SYS-5001-REC
-               END-IF
-      *
-               MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
-               PERFORM 900-TBL-CLOSE-SEC
       *
                IF    ( SYS-5001-STYUKYMD NOT =  SPACE )
                 AND  ( SYS-5001-STYUKYMD   >=  CONST-H180401 )
@@ -6873,27 +6889,24 @@
                    GO  TO  48011-H18-KAISEI-CHK-EXT
                END-IF
       *
-               INITIALIZE  SYS-5000-REC
-               MOVE    "5000"              TO  SYS-5000-KANRICD
-               MOVE    "*"                 TO  SYS-5000-KBNCD
-               MOVE    WRK-CHK-YMD         TO  ORC-DBYMD
-               MOVE    SYS-5000-REC        TO  MCPDATA-REC
-               MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
-               PERFORM 900-TBL-SELECT-SEC
-               IF    ( FLG-DBRC    =   ZERO )
-                   MOVE    MCPDATA-REC     TO  SYS-5000-REC
-               ELSE
-                  INITIALIZE                  SYS-5000-REC
-               END-IF
-      *
-               MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
-               PERFORM 900-TBL-CLOSE-SEC
-      *
                IF    ( SYS-5000-STYUKYMD NOT =  SPACE )
                  AND ( SYS-5000-STYUKYMD    >=  CONST-H180401 )
                    CONTINUE
                ELSE
                    MOVE    "1040"          TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+           IF    ( WRK-CHK-YMD     >=  CONST-H180701 )
+      *
+               IF    ( SYS-5001-BTU-SBT     =   "04"   OR  "09" )
+                   IF    ( SYS-5001-STYUKYMD NOT =  SPACE )
+                    AND  ( SYS-5001-STYUKYMD   >=  CONST-H180701 )
+                       CONTINUE
+                   ELSE
+                       MOVE    "1041"          TO  SPA-ERRCD
+                       GO  TO  48011-H18-KAISEI-CHK-EXT
+                   END-IF
                END-IF
       *
            END-IF
@@ -15428,6 +15441,11 @@
                MOVE    "医療機関情報−入院基本の設定を平成１８年"
                                        TO  SPA-ERRMSG (1 : 40)
                MOVE   "４月１日より新規に作成してください"
+                                       TO  SPA-ERRMSG (41 : )
+           WHEN    "1041"
+               MOVE    "病棟管理情報の設定を平成１８年７月１日よ"
+                                       TO  SPA-ERRMSG (1 : 40)
+               MOVE    "り新規に作成してください"
                                        TO  SPA-ERRMSG (41 : )
            WHEN    "2012"
                MOVE    "退院計算に必要な会計情報が作成されていません"
