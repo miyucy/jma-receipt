@@ -57,7 +57,7 @@
       *プリンタ名
            03  PRTDATA-PRTNM          PIC X(16).
       *帳票データ
-           03  PRTDATA-PRTDATA        PIC X(10000).
+           03  PRTDATA-PRTDATA        PIC X(20000).
       *
       *検索用項目
            03  PRTDATAXX-STPAGE       PIC 9(05).
