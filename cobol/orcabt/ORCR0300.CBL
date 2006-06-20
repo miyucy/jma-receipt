@@ -5076,52 +5076,25 @@
       *    適用欄コメント     
            MOVE    "tbl_rececom"       TO  WRK-MCP-TABLE
            MOVE    "key7"              TO  WRK-MCP-PATHNAME
-      *
-           INITIALIZE                      RECECOM-REC
-           MOVE    RECE02-HOSPID       TO  RECECOM-HOSPID
-           MOVE    RECE02-SRYYM        TO  RECECOM-SRYYM
-           MOVE    RECE02-PTID         TO  RECECOM-PTID
-           MOVE    RECE02-NYUGAIKBN    TO  RECECOM-NYUGAIKBN
-           MOVE    "99"                TO  RECECOM-SJKBN 
-      * 
-           MOVE    RECECOM-REC         TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
-           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
-               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
-               PERFORM 900-RECECOM-READ-SEC
-           ELSE
-               INITIALIZE                  RECECOM-REC
-               MOVE    1               TO  FLG-RECECOM
-           END-IF
-      *
-           PERFORM             UNTIL   FLG-RECECOM   =   1
-               PERFORM VARYING IDY FROM    1   BY  1
-                       UNTIL   IDY >       10
-                       OR      RECE02-HKNCOMBI (IDY) =   ZERO
-                   IF      RECECOM-HKNCOMBI    =   RECE02-HKNCOMBI(IDY)
-                       PERFORM 20091-RECECOM-HENSYU-SEC                 
-                       MOVE    10                  TO  IDY
-                   END-IF
-               END-PERFORM
-      *                 
-               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
-               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
-               PERFORM 900-RECECOM-READ-SEC
-           END-PERFORM
-      *
-           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
-           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
-           PERFORM 900-CLOSE-SEC
+           PERFORM 2009-RECECOM-HENSYU-SEC
       *     
       *    症状詳記コメント     
            MOVE    "tbl_rececom"       TO  WRK-MCP-TABLE
            MOVE    "key8"              TO  WRK-MCP-PATHNAME
+           PERFORM 2009-RECECOM-HENSYU-SEC
+      *     
+      *    症状詳記コメント（その他）    
+           MOVE    "tbl_rececom"       TO  WRK-MCP-TABLE
+           MOVE    "key9"              TO  WRK-MCP-PATHNAME
+           PERFORM 2009-RECECOM-HENSYU-SEC
+           .
+       2009-COMMENT-HEN-99-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセコメント読み込み処理
+      *****************************************************************
+       2009-RECECOM-HENSYU-SEC    SECTION.
       *
            INITIALIZE                      RECECOM-REC
            MOVE    RECE02-HOSPID       TO  RECECOM-HOSPID
@@ -5150,7 +5123,11 @@
                        UNTIL   IDY >       10
                        OR      RECE02-HKNCOMBI (IDY) =   ZERO
                    IF      RECECOM-HKNCOMBI    =   RECE02-HKNCOMBI(IDY)
-                       PERFORM 20092-RECECOM-HENSYU-SEC                 
+                       IF      RECECOM-SJKBN   =   "99"
+                           PERFORM 20091-RECECOM-TEKIYOU-HENSYU-SEC 
+                       ELSE      
+                           PERFORM 20092-RECECOM-SJ-HENSYU-SEC                 
+                       END-IF                 
                        MOVE    10                  TO  IDY
                    END-IF
                END-PERFORM
@@ -5165,13 +5142,13 @@
            PERFORM 900-CLOSE-SEC
       *
            .
-       2009-COMMENT-HEN-99-EXT.
+       2009-RECECOM-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
       *    適用欄コメント（レセコメント）の改行コード削除処理
       *****************************************************************
-       20091-RECECOM-HENSYU-SEC    SECTION.
+       20091-RECECOM-TEKIYOU-HENSYU-SEC    SECTION.
       *                                          
            MOVE    RECECOM-COMMENT TO  WRK-COMM
            MOVE    ZERO            TO  WRK-RECEHEN
@@ -5199,7 +5176,7 @@
                                                 TO  WRK-COMM1
                                MOVE    800      TO  IDX
                            END-IF
-                       END-PERFORM                                                                                  
+                       END-PERFORM
                    ELSE
                        MOVE    WRK-COMM        TO  WRK-COMMENT-G
                        MOVE    1               TO  WRK-RECEHEN
@@ -5275,13 +5252,13 @@
            END-PERFORM   
       *
            .
-       20091-RECECOM-HENSYU-EXT.
+       20091-RECECOM-TEKIYOU-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
       *    症状詳記コメント（レセコメント）の改行コード削除処理
       *****************************************************************
-       20092-RECECOM-HENSYU-SEC    SECTION.
+       20092-RECECOM-SJ-HENSYU-SEC    SECTION.
       *                                          
            MOVE    RECECOM-COMMENT TO  WRK-COMM
            MOVE    ZERO            TO  WRK-RECEHEN
@@ -5394,7 +5371,7 @@
            END-PERFORM   
       *
            .
-       20092-RECECOM-HENSYU-EXT.
+       20092-RECECOM-SJ-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************

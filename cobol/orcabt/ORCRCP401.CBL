@@ -54,6 +54,9 @@
       *  02.09.02    NACL-Æ£¸¶    06/04/14  ¡Ö£±£³»ØÆ³¡×¡ÖÆü¡×¤Îº¹¤·¹þ¤ß
       *                                      »°¼ï¤Î¸øÈñÊ»ÍÑ¤Ë·¸¤ï¤ëµ­ºÜÍ×
       *                                      ¹à¤ÎÆÃÎãÂÐ±þ
+      *
+      *  03.00.01    NACL-Æ£¸¶    06/06/13  ¥ì¥»¥³¥á¥ó¥È¤Î¾É¾õ¾Üµ­¶èÊ¬¤«¤é
+      *                                     ¤ÎÉ½Âêµ­ºÜÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -258,6 +261,7 @@
            03  FLG-SYS-1902        PIC 9(01).
            03  FLG-SYS-2008        PIC 9(01).
            03  FLG-SHOKUJI-ETC     PIC 9(01).
+           03  FLG-RECECOM-SJKBN   PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -536,6 +540,10 @@
            03  WRK-COL                         PIC 9(03). 
            03  WRK-RECECOM         PIC 9(01).
            03  WRK-RECEHEN         PIC 9(01).
+           03  WRK-RECECOM-NAME    PIC X(52).
+           03  WRK-SJKBN-X.
+               05  WRK-SJKBN       PIC 9(02).
+           03  WRK-RECECOM-SJKBN   PIC X(02).
       *
       *    ¼ê½ÑÎòÊÔ½¸
            03  WRK-OPECOM          PIC 9(01).
@@ -627,6 +635,25 @@
                05  TBL-TOKKICD             PIC X(02).
                05  TBL-TOKKINAME           PIC X(10).
       *
+      *   ¾É¾õ¾Üµ­¶èÊ¬¤ÎÉ½Âê
+       01  TBL-RECECOM-AREA.
+           03  FILLER              PIC X(52)   VALUE
+               "¡Ú¼ç¤¿¤ë¼À´µ¤Î¿ÇÃÇº¬µò¤È¤Ê¤ëÎ×¾²¾É¾õ¡Û".
+           03  FILLER              PIC X(52)   VALUE
+               "¡Ú¼ç¤¿¤ë¼À´µ¤Î¿ÇÃÇº¬µò¤È¤Ê¤ëÎ×¾²¾É¾õ¤Î¿Ç»¡¸¡ºº½ê¸«¡Û".
+           03  FILLER              PIC X(52)   VALUE
+               "¡Ú¼ç¤Ê¼£ÎÅ¹Ô°Ù¡Ê¼ê½Ñ¡¢½èÃÖ¡¢ÌôÊª¼£ÎÅÅù¡Ë¤ÎÉ¬Í×À­¡Û".
+           03  FILLER              PIC X(52)   VALUE
+               "¡Ú¼ç¤Ê¼£ÎÅ¹Ô°Ù¡Ê¼ê½Ñ¡¢½èÃÖ¡¢ÌôÊª¼£ÎÅÅù¡Ë¤Î·Ð²á¡Û".
+           03  FILLER              PIC X(52)   VALUE
+               "¡Ú¹ç·×ÅÀ¿ô¤¬£±£°£°ËüÅÀ°Ê¾å¤ÎÌôºÞ¤Ë·¸¤ë¾É¾õÅù¡Û".
+           03  FILLER              PIC X(52)   VALUE
+               "¡Ú¹ç·×ÅÀ¿ô¤¬£±£°£°ËüÅÀ°Ê¾å¤Î½èÃÖ¤Ë·¸¤ë¾É¾õÅù¡Û".
+           03  FILLER              PIC X(52)   VALUE
+               "¡Ú¤½¤ÎÂ¾¡Û".
+       01  TBL-RECECOM-AREA-R      REDEFINES   TBL-RECECOM-AREA.
+           03  TBL-RECECOM-NAME    PIC X(52)   OCCURS   7.
+      *
       *   Âà¿¦¼ÔÊÝ¸±ÈÖ¹æ
        01  WRK-RETIRE-AREA.
       *        ÁÈ¹ç
@@ -665,14 +692,6 @@
                                    "¡¡Å¬ÍÑÊ¬¡¡¡á¡á¡á¡á¡á".
            03  WRK-KUGIRI3         PIC X(52)   VALUE
                ALL "¡Ý".
-      *    
-      *    ¸ÇÄêÃ¼Ëö£É£Ä
-           03  WRK-CONS-TERMID     PIC X(32)   VALUE
-                                   "0100007FZZZZZZZZZZZZZZZZZZZZZZZZ". 
-      *
-      *    ²þ¹Ô¥³¡¼¥É
-       01  WRK-CONS-RETURN          PIC X(01)   VALUE   X"0A".
-      *
       *
        01  WRK-TENSU-AREA.
            03  WRK-KHNTEN.
@@ -811,6 +830,12 @@
                                    BY         //WRK-RECE07//.
       *
        01  WRK-CONS-AREA.
+      *    ¸ÇÄêÃ¼Ëö£É£Ä
+           03  WRK-CONS-TERMID         PIC X(32)   VALUE
+                                   "0100007FZZZZZZZZZZZZZZZZZZZZZZZZ". 
+      *    ²þ¹Ô¥³¡¼¥É
+           03  WRK-CONS-RETURN         PIC X(01)   VALUE   X"0A".
+      *
            03  WRK-CONS-SRYYM-200604  PIC 9(06)   VALUE   200604. 
       *
       *****************************************************************
@@ -5196,7 +5221,33 @@
        360-HC101-COMMENT-HEN-SEC      SECTION.
       *
            MOVE    ZERO                TO  WRK-RECECOM
+           MOVE    ZERO                TO  FLG-RECECOM-SJKBN
+           MOVE    SPACE               TO  WRK-RECECOM-NAME 
+                                           WRK-RECECOM-SJKBN
       *     
+      *    Å¬ÍÑÍó¥³¥á¥ó¥È     
+           MOVE    "tbl_rececom"       TO  WRK-MCP-TABLE
+           MOVE    "key7"              TO  WRK-MCP-PATHNAME
+           PERFORM 3601-RECECOM-HENSYU-SEC
+      *     
+      *    ¾É¾õ¾Üµ­¥³¥á¥ó¥È     
+           MOVE    "tbl_rececom"       TO  WRK-MCP-TABLE
+           MOVE    "key8"              TO  WRK-MCP-PATHNAME
+           PERFORM 3601-RECECOM-HENSYU-SEC
+      *     
+      *    ¾É¾õ¾Üµ­¥³¥á¥ó¥È¡Ê¤½¤ÎÂ¾¡Ë    
+           MOVE    "tbl_rececom"       TO  WRK-MCP-TABLE
+           MOVE    "key9"              TO  WRK-MCP-PATHNAME
+           PERFORM 3601-RECECOM-HENSYU-SEC
+           .
+       360-HC101-COMMENT-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¥ì¥»¥³¥á¥ó¥ÈÆÉ¤ß¹þ¤ß½èÍý
+      *****************************************************************
+       3601-RECECOM-HENSYU-SEC    SECTION.
+      *
            INITIALIZE                      RECECOM-REC
            MOVE    RECE62-HOSPID       TO  RECECOM-HOSPID
            MOVE    RECE62-SRYYM        TO  RECECOM-SRYYM
@@ -5205,13 +5256,14 @@
       * 
            MOVE    RECECOM-REC         TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "RECECOM-KEY1"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "RECECOM-KEY1"      TO  ORC-DBPATH
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                PERFORM 900-RECECOM-READ-SEC
            ELSE
                INITIALIZE                  RECECOM-REC
@@ -5228,27 +5280,43 @@
                    END-IF
                END-PERFORM
       *                 
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                PERFORM 900-RECECOM-READ-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "RECECOM-KEY1"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
-      *
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
            .
-       360-HC101-COMMENT-HEN-EXT.
+       3601-RECECOM-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
       *    ¥³¥á¥ó¥È¤Î²þ¹Ô¥³¡¼¥Éºï½ü½èÍý
       *****************************************************************
        3601-COMMENT-HENSYU-SEC    SECTION.
-      *                                          
+      *
            MOVE    RECECOM-COMMENT TO  WRK-COMM
            MOVE    ZERO            TO  WRK-RECEHEN                      
+           MOVE    ZERO            TO  FLG-RECECOM-SJKBN
+      *
+      *    ¾É¾õ¾Üµ­¶èÊ¬¤Î¸«½Ð¤·¤òµ­ºÜ
+           IF      RECECOM-SJKBN   =   "07"    OR  "08"    OR  "09"
+               MOVE    "07"            TO  RECECOM-SJKBN
+           END-IF 
+           IF      RECECOM-SJKBN   NOT =   WRK-RECECOM-SJKBN
+               MOVE   RECECOM-SJKBN        TO  WRK-RECECOM-SJKBN
+      *
+               MOVE    SPACE           TO  WRK-RECECOM-NAME
+               EVALUATE    WRK-RECECOM-SJKBN
+                   WHEN    "01"    THRU    "07"
+                       MOVE    1               TO  FLG-RECECOM-SJKBN
+                       MOVE    RECECOM-SJKBN   TO  WRK-SJKBN-X
+                       MOVE    TBL-RECECOM-NAME (WRK-SJKBN)
+                                               TO  WRK-RECECOM-NAME
+               END-EVALUATE
+           END-IF
       *
            PERFORM     UNTIL       WRK-RECEHEN  =   1      
       *
@@ -5293,6 +5361,32 @@
                            END-IF
                        END-IF
                      END-IF
+      *
+      *              ¾É¾õ¾Üµ­¶èÊ¬¤Î¸«½Ð¤·¤òµ­ºÜ
+                     IF      FLG-RECECOM-SJKBN   =   1
+                       IF      WRK-LINETEK      >=
+                                                WRK-TEKIYOU-LINE
+                           PERFORM 34120-PAGE-SEC
+                       END-IF
+                       ADD     1               TO  WRK-LINETEK
+                       IF      CNT-PAGE        =   1   
+                           MOVE    WRK-RECECOM-NAME
+                                       TO  HC06-TEKIYO (WRK-LINETEK)
+                       ELSE                
+                           EVALUATE    SYS-2005-NEXTPRTKBN
+                               WHEN    "0"
+                                   MOVE    WRK-RECECOM-NAME
+                                       TO  HC061-TEKIYO(WRK-LINETEK)
+                               WHEN    "1"
+                                   MOVE    WRK-RECECOM-NAME
+                                       TO  HC062-TEKIYO(WRK-LINETEK)
+                               WHEN    "2"
+                                   MOVE    WRK-RECECOM-NAME
+                                       TO  HC063-TEKIYO(WRK-LINETEK)
+                           END-EVALUATE
+                       END-IF
+                       MOVE    ZERO            TO  FLG-RECECOM-SJKBN
+                     END-IF            
       *                 
                      PERFORM VARYING IDW FROM    1   BY  1
                              UNTIL   IDW >       16
@@ -7257,10 +7351,9 @@
        900-RECECOM-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-RECECOM
                MOVE    MCPDATA-REC     TO  RECECOM-REC
