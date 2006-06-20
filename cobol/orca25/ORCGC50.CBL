@@ -1961,6 +1961,7 @@
       *
            IF     (SPA-ERRCD           =   SPACE )  AND
                   (SPA-GMN-SELNUM-MAX =   1     )
+               MOVE    SPA-GMN-SELNUM(1)   TO  WRK-SELNUM
                EVALUATE    SPA-GMN-SYORI
       *        変更処理
                WHEN    1
