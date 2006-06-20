@@ -2895,7 +2895,7 @@
                    UNTIL   IDX >       10
                    OR      WRK-COMB-HKNCOMBINUM (IDX) =   ZERO
       *       主保険情報読み出し
-               IF      COMB-HKNID          NOT =   ZERO
+               IF      WRK-COMB-HKNID (IDX)    NOT =   ZERO
                    INITIALIZE                      PTHKNINF-REC
                    MOVE    RECE02-HOSPID       TO  PTHKN-HOSPID
                    MOVE    RECE02-PTID         TO  PTHKN-PTID
@@ -2973,9 +2973,9 @@
                            UNTIL   IDX >       IDX5
                        PERFORM VARYING IDY FROM    1   BY  1
                                UNTIL   IDY >       10
-                               OR  RECE02-HKNCOMBI (IDY)   =   ZERO
+                               OR  WRK-HKNCOMBI (IDY)   =   ZERO
                            IF      WRK-DAY (2 IDX)
-                                           =   RECE02-HKNCOMBI (IDY)
+                                           =   WRK-HKNCOMBI (IDY)
                                PERFORM 2401-PTNYUINRRK-HENSYU-SEC
                                MOVE    10                  TO  IDY
                                MOVE   IDX5                 TO  IDX
