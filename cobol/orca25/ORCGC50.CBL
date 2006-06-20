@@ -94,6 +94,7 @@
            03  WRK-NYUGAIKBN       PIC X(01).
            03  WRK-SRYKA           PIC X(02).
            03  WRK-SRYKAMEI        PIC X(20).
+           03  WRK-SRYYMD          PIC X(08).
       *    保険組合せ再設定
            03  WRK-HKN-IDX         PIC 9(04).
            03  WRK-HKN-IDX1        PIC 9(04).
@@ -587,6 +588,8 @@
            MOVE    ZERO                TO  SPA-GMN-HKNMAX
            MOVE    ZERO                TO  FLG-HKNCOMBICHK
       *
+           MOVE    SPA-SRYYMD          TO  WRK-SRYYMD
+      *
            MOVE    SPA-NAI-SRYYM       TO  SPA-SRYYMD(1:6)
            MOVE    "00"                TO  SPA-SRYYMD(7:2)
            MOVE    SPA-GMN-PTID        TO  SPA-PTID
@@ -617,6 +620,7 @@
       *
                MOVE    IDH             TO  SPA-GMN-HKNMAX
            END-PERFORM
+           MOVE    WRK-SRYYMD          TO  SPA-SRYYMD
       *
            .
        3101-HKNCOMBI-HEN-EXT.
@@ -776,7 +780,6 @@
        3105-NYUGAI-HEN-SEC        SECTION.
       *
            IF     (SPA-BEDKBN          =   ZERO )
-      ****   OR   (SPA-NAI-SRYYM       =   SPA-GMN-SRYYM)
                CONTINUE
            ELSE
                INITIALIZE                  SYS-1001-REC
@@ -3835,11 +3838,19 @@
       *****************************************************************
        2101-HENKOU-SYORI-SEC                   SECTION.
       *
+      *    入院判定
+           IF      SPA-NAI-SRYYM   NOT =   SPA-GMN-TSRYYM  (WRK-SELNUM)
+               MOVE    SPA-GMN-NSRYYM  (WRK-SELNUM)
+                                       TO  SPA-NAI-SRYYM
+               PERFORM 3105-NYUGAI-HEN-SEC
+           END-IF
+      *
            MOVE    SPA-GMN-TSRYYM  (WRK-SELNUM)
                                        TO  SPA-GMN-SRYYM
            MOVE    SPA-GMN-NSRYYM  (WRK-SELNUM)
                                        TO  SPA-NAI-SRYYM
       *    入外区分
+           MOVE    SPACE               TO  SPA-GMN-NYUGAIKBN-G
            MOVE    SPA-GMN-NNYUGAIKBN(WRK-SELNUM)
                                        TO  SPA-GMN-NYUGAIKBN
            PERFORM VARYING     IDX     FROM    1   BY  1
