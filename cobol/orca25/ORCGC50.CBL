@@ -775,8 +775,8 @@
       *****************************************************************
        3105-NYUGAI-HEN-SEC        SECTION.
       *
-           IF     (SPA-BEDKBN          =   ZERO ) OR
-                  (SPA-NAI-SRYYM       =   SPA-GMN-SRYYM)
+           IF     (SPA-BEDKBN          =   ZERO )
+      ****   OR   (SPA-NAI-SRYYM       =   SPA-GMN-SRYYM)
                CONTINUE
            ELSE
                INITIALIZE                  SYS-1001-REC
@@ -2633,7 +2633,7 @@
                IF     (SPA-GMN-NNYUGAIKBN (WRK-SELNUM)
                                            =   SPA-GMN-NYUGAIKBN) AND
                       (SPA-GMN-NSRYYM  (WRK-SELNUM)
-                                           =   SPA-GMN-SRYYM    ) AND
+                                           =   SPA-NAI-SRYYM    ) AND
                       (SPA-GMN-NSRYKA  (WRK-SELNUM)
                                            =   SPA-GMN-SRYKA    ) AND
                       (SPA-GMN-NHKNCOMBI  (WRK-SELNUM)
@@ -2676,7 +2676,7 @@
                IF     (SPA-GMN-NNYUGAIKBN (WRK-SELNUM)
                                            =   SPA-GMN-NYUGAIKBN) AND
                       (SPA-GMN-NSRYYM  (WRK-SELNUM)
-                                           =   SPA-GMN-SRYYM    ) AND
+                                           =   SPA-NAI-SRYYM    ) AND
                       (SPA-GMN-NSRYKA  (WRK-SELNUM)
                                            =   SPA-GMN-SRYKA    ) AND
                       (SPA-GMN-NHKNCOMBI  (WRK-SELNUM)
@@ -4407,9 +4407,7 @@
                WHEN    "0108"
                    STRING  "表示されているコメントをすべて登録します。"
                                        DELIMITED  BY  SIZE
-                           "登録済みの場合はコメント内容を更新します。"
-                                       DELIMITED  BY  SIZE
-                           "よろしいですか？"
+                           "登録済みのコメントは内容を更新します。"
                                        DELIMITED  BY  SIZE
                                        INTO    WRK-C50IDMSG
                    END-STRING
