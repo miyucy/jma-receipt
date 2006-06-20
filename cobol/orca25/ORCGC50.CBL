@@ -68,6 +68,7 @@
            03  FLG-COPY-END        PIC 9(01).
       *
            03  FLG-HENOK           PIC 9(01).
+           03  FLG-HENOK2          PIC 9(01).
       *
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -386,10 +387,12 @@
                    ELSE
                        MOVE    1               TO  SPA-GMN-CUR
                    END-IF
+               WHEN    "0108"
+               WHEN    "0109"
                WHEN    "0206"
-      *            コメント登録の確認
+      *            コメント空白の登録確認
                    IF      SPA-C50ID1-FLG      =   "OK"
-                       PERFORM 2129-COPYONLY-SYORI-SEC
+                       PERFORM 2122-ALLTOUROKU-SYORI-SEC
                    ELSE
                        MOVE    1               TO  SPA-GMN-CUR
                    END-IF
@@ -2527,12 +2530,20 @@
                    END-IF
                END-IF
            END-IF
+      *    コメント空白チェック
+           MOVE    ZERO                TO  FLG-HENOK2
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-C50IDCD         =   SPACE )  AND
+                  (SPA-GMN-COMMENT     =   SPACE )
+               PERFORM 2124-UPDATE-CHK1-SEC
+           END-IF
       *
            IF      SPA-ERRCD           =   SPACE
       *        複写月がある時
                IF     (SPA-GMN-COPYYM      NOT =   SPACE ) AND
                       (SPA-GMN-RSI-HKNKBN  NOT =   "3" )
-                   IF     (SPA-GMN-COMMENT     =   SPACE )
+                   IF     (SPA-GMN-COMMENT     =   SPACE )  AND
+                          (SPA-GMN-SELNUM (1)  >   ZERO  )
                        MOVE    "0206"              TO  SPA-C50IDCD
                    END-IF
                END-IF
@@ -2541,7 +2552,8 @@
            IF     (SPA-ERRCD           =   SPACE ) AND
                   (SPA-C50IDCD         =   SPACE )
       *        症状詳記区分
-               IF      SPA-GMN-SJKBN       =   SPACE
+               IF     (SPA-GMN-SJKBN       =   SPACE )  AND
+                      (SPA-GMN-COMMENT NOT =   SPACE )
                    MOVE    "0042"              TO  SPA-ERRCD
                    MOVE    15                  TO  SPA-GMN-CUR
                END-IF
@@ -2549,8 +2561,10 @@
            IF     (SPA-ERRCD           =   SPACE ) AND
                   (SPA-C50IDCD         =   SPACE )
                IF      SPA-GMN-COMMENT    =   SPACE
-                   MOVE    "0007"              TO  SPA-ERRCD
-                   MOVE    1                   TO  SPA-GMN-CUR
+                   IF      FLG-HENOK2          =   ZERO
+                       MOVE    "0007"              TO  SPA-ERRCD
+                       MOVE    1                   TO  SPA-GMN-CUR
+                   END-IF
                END-IF
            END-IF
       *
@@ -2561,11 +2575,23 @@
       *
            IF     (SPA-ERRCD           =   SPACE ) AND
                   (SPA-C50IDCD         =   SPACE )
+               IF      FLG-HENOK2      =   1
+      *        選択番号分の追加
+                   PERFORM 2120-RECECOM-SEL06-SEC
+                   IF      FLG-RECECOM         =   ZERO
+                       MOVE    "0108"              TO  SPA-C50IDCD
+                   ELSE
+                       MOVE    "0109"              TO  SPA-C50IDCD
+                   END-IF
+               END-IF
+           END-IF
+           IF     (SPA-ERRCD           =   SPACE ) AND
+                  (SPA-C50IDCD         =   SPACE ) 
                PERFORM 2120-RECECOM-SEL-SEC
                IF      FLG-RECECOM         =   ZERO
                    MOVE    "0105"              TO  SPA-C50IDCD
                    IF      SPA-GMN-SYORI       =   1  OR  5
-                                               OR  ZERO
+                                                      OR  ZERO
                        PERFORM 2124-UPDATE-CHK-SEC
                    END-IF
                ELSE
@@ -2628,6 +2654,41 @@
            END-IF
            .
        2124-UPDATE-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    更新のチェック処理（コメント空白）
+      *****************************************************************
+       2124-UPDATE-CHK1-SEC          SECTION.
+      *
+           MOVE    ZERO                TO  FLG-HENOK2
+           IF     (SPA-GMN-SYORI       =   1  OR  5  )  AND
+                  (SPA-GMN-SELNUM (1)  >   ZERO )  AND
+                  (SPA-GMN-COMSEL      =   ZERO )
+               MOVE    SPA-GMN-SELNUM (1)  TO  WRK-SELNUM
+               IF      SPA-GMN-RSI-HKNKBN     =   "3"
+                   MOVE    SPA-GMN-JYURRKYMD (SPA-GMN-JYURRKNUM)(7:2)
+                                               TO  WRK-SRYDD
+               ELSE
+                   MOVE    SPACE               TO  WRK-SRYDD
+               END-IF
+               IF     (SPA-GMN-NNYUGAIKBN (WRK-SELNUM)
+                                           =   SPA-GMN-NYUGAIKBN) AND
+                      (SPA-GMN-NSRYYM  (WRK-SELNUM)
+                                           =   SPA-GMN-SRYYM    ) AND
+                      (SPA-GMN-NSRYKA  (WRK-SELNUM)
+                                           =   SPA-GMN-SRYKA    ) AND
+                      (SPA-GMN-NHKNCOMBI  (WRK-SELNUM)
+                                           =   SPA-GMN-HKNCOMBINUM) AND
+                      (SPA-GMN-TSRYDD  (WRK-SELNUM)
+                                           =   WRK-SRYDD    )
+                   CONTINUE
+               ELSE
+                   MOVE    1               TO  FLG-HENOK2
+               END-IF
+           END-IF
+           .
+       2124-UPDATE-CHK2-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2808,6 +2869,46 @@
       *
            .
        2120-RECECOM-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    レセプトコメントチェック処理
+      *****************************************************************
+       2120-RECECOM-SEL06-SEC          SECTION.
+      *
+           MOVE    SPACE               TO  RECECOM-REC
+           INITIALIZE                  RECECOM-REC
+           MOVE    SPA-HOSPID          TO  RECECOM-HOSPID
+           MOVE    SPA-GMN-PTID        TO  RECECOM-PTID
+           MOVE    SPA-GMN-NYUGAIKBN   TO  RECECOM-NYUGAIKBN
+           MOVE    SPA-GMN-SRYKA       TO  RECECOM-SRYKA
+           MOVE    SPA-NAI-SRYYM       TO  RECECOM-SRYYM
+           MOVE    SPA-GMN-HKNCOMBINUM
+                                       TO  RECECOM-HKNCOMBI
+           IF      SPA-GMN-RSI-HKNKBN     =   "3"
+               MOVE    SPA-GMN-JYURRKYMD (SPA-GMN-JYURRKNUM)(7:2)
+                                           TO  RECECOM-SRYDD
+           ELSE
+               MOVE    ZERO                TO  RECECOM-SRYDD
+           END-IF
+      *
+           MOVE    RECECOM-REC         TO  MCPDATA-REC
+           MOVE    "tbl_rececom"       TO  MCP-TABLE
+           MOVE    "key6"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_rececom"       TO  MCP-TABLE
+               MOVE    "key6"              TO  MCP-PATHNAME
+               PERFORM 920-RECECOM-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-RECECOM
+               INITIALIZE                  RECECOM-REC
+           END-IF
+           MOVE    "tbl_rececom"       TO  MCP-TABLE
+           MOVE    "key6"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       2120-RECECOM-SEL06-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3121,9 +3222,9 @@
         21212-RECEUPD-UPDATE-EXT.
            EXIT.
       *****************************************************************
-      *    複写のみ登録　処理
+      *    一括登録　処理
       *****************************************************************
-       2129-COPYONLY-SYORI-SEC          SECTION.
+       2122-ALLTOUROKU-SYORI-SEC        SECTION.
       *
       *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
@@ -3165,7 +3266,15 @@
            END-IF
            PERFORM UNTIL  (FLG-RECECOM         =   1 )
       *
-               PERFORM 21213-COPY-RECECOME-SEC
+               MOVE    RECECOM-REC         TO  HZN-RECECOM-REC
+               PERFORM 21221-ALL-KOUSIN-SEC
+      *
+      *        複写処理
+               IF     (SPA-ERRCD           =   SPACE ) AND
+                      (SPA-GMN-COPYYM  NOT =   SPACE )  AND
+                      (SPA-GMN-RSI-HKNKBN NOT =   "3")
+                   PERFORM 21213-COPY-RECECOME-SEC
+               END-IF
       *
                MOVE    "tbl_rececom"       TO  MCP-TABLE
                MOVE    "key6"              TO  MCP-PATHNAME
@@ -3174,6 +3283,18 @@
            MOVE    "tbl_rececom"       TO  MCP-TABLE
            MOVE    "key6"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
+      *
+      *    変更前の保険組合せが無効の時、削除
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-GMN-SYORI       =   5     )  AND
+                  (SPA-GMN-SELNUM (1)  NOT =   ZERO)
+               MOVE     SPA-GMN-SELNUM (1)     TO  WRK-SELNUM
+               IF      (SPA-GMN-NHKNCOMBI(WRK-SELNUM)
+                                       NOT =   SPA-GMN-HKNCOMBINUM)
+                   MOVE    1               TO  IDX2
+                   PERFORM 24011-COMMENT-DELETE-SEC
+               END-IF
+           END-IF
       *    レセプト作成管理マスタ更新
            IF      SPA-ERRCD           =   SPACE
                PERFORM 21212-RECEUPD-UPDATE-SEC
@@ -3184,6 +3305,106 @@
            MOVE    1                   TO  SPA-GMN-CUR
            .
         2129-COPYONLY-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    文例選択画面へ　処理
+      *****************************************************************
+       21221-ALL-KOUSIN-SEC                   SECTION.
+      *
+           MOVE    SPACE               TO  RECECOM-REC
+           INITIALIZE                  RECECOM-REC
+           MOVE    SPA-HOSPID          TO  RECECOM-HOSPID
+           MOVE    SPA-GMN-PTID        TO  RECECOM-PTID
+           MOVE    SPA-GMN-NYUGAIKBN   TO  RECECOM-NYUGAIKBN
+           MOVE    SPA-GMN-SRYKA       TO  RECECOM-SRYKA
+           MOVE    SPA-NAI-SRYYM       TO  RECECOM-SRYYM
+           MOVE    SPA-GMN-HKNCOMBINUM
+                                       TO  RECECOM-HKNCOMBI
+           IF      SPA-GMN-RSI-HKNKBN     =   "3"
+               MOVE    SPA-GMN-JYURRKYMD (SPA-GMN-JYURRKNUM)(7:2)
+                                           TO  RECECOM-SRYDD
+           ELSE
+               MOVE    ZERO                TO  RECECOM-SRYDD
+           END-IF
+           MOVE    HZN-RECECOM-SJKBN       TO  RECECOM-SJKBN
+      *
+           MOVE    RECECOM-REC         TO  MCPDATA-REC
+           MOVE    "tbl_rececom"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_rececom"       TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 920-RECECOM-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-RECECOM
+               INITIALIZE                  RECECOM-REC
+           END-IF
+           MOVE    "tbl_rececom"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      FLG-RECECOM         =   ZERO
+      *        更新
+               MOVE    HZN-RECECOM-COMMENT TO  RECECOM-COMMENT
+      *
+               MOVE    SMCNDATE-YMD        TO  RECECOM-UPYMD
+               MOVE    SMCNDATE-HMS        TO  RECECOM-UPHMS
+      *
+               MOVE    RECECOM-REC         TO  MCPDATA-REC
+               MOVE    "DBUPDATE"          TO  MCP-FUNC
+               MOVE    "tbl_rececom"       TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC          NOT =   ZERO
+                   DISPLAY "C50 RECECOM UPD ERR:" MCP-RC
+                           ",KEY:"   RECECOM-KEY    "."
+                   MOVE    "0020"              TO  SPA-ERRCD
+               END-IF
+           ELSE
+      *        追加
+               MOVE    SPACE               TO  RECECOM-REC
+               INITIALIZE                  RECECOM-REC
+               MOVE    SPA-HOSPID          TO  RECECOM-HOSPID
+               MOVE    SPA-GMN-PTID        TO  RECECOM-PTID
+               MOVE    SPA-GMN-NYUGAIKBN   TO  RECECOM-NYUGAIKBN
+               MOVE    SPA-GMN-SRYKA       TO  RECECOM-SRYKA
+               MOVE    SPA-NAI-SRYYM       TO  RECECOM-SRYYM
+               MOVE    SPA-GMN-HKNCOMBINUM
+                                           TO  RECECOM-HKNCOMBI
+               IF      SPA-GMN-RSI-HKNKBN     =   "3"
+                   MOVE    SPA-GMN-JYURRKYMD (SPA-GMN-JYURRKNUM)(7:2)
+                                               TO  RECECOM-SRYDD
+               ELSE
+                   MOVE    ZERO                TO  RECECOM-SRYDD
+               END-IF
+               MOVE    HZN-RECECOM-SJKBN   TO  RECECOM-SJKBN
+               MOVE    HZN-RECECOM-COMMENT TO  RECECOM-COMMENT
+      *
+               MOVE    SMCNDATE-YMD        TO  RECECOM-CREYMD
+               MOVE    SMCNDATE-YMD        TO  RECECOM-UPYMD
+               MOVE    SMCNDATE-HMS        TO  RECECOM-UPHMS
+      *
+      *
+               MOVE    RECECOM-REC         TO  MCPDATA-REC
+               MOVE    "DBINSERT"          TO  MCP-FUNC
+               MOVE    "tbl_rececom"       TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC          NOT =   ZERO
+                   DISPLAY "C50 RECECOM INS ERR:" MCP-RC
+                           ",KEY:"   RECECOM-KEY    "."
+                   MOVE    "0020"              TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+           .
+       21221-ALL-KOUSIN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4177,6 +4398,22 @@
                    STRING  "既に登録済みです。"
                                        DELIMITED  BY  SIZE
                            "ＯＫでコメント内容を更新します。"
+                                       DELIMITED  BY  SIZE
+                           "よろしいですか？"
+                                       DELIMITED  BY  SIZE
+                                       INTO    WRK-C50IDMSG
+                   END-STRING
+               WHEN    "0108"
+                   STRING  "表示されているコメントをすべて登録します。"
+                                       DELIMITED  BY  SIZE
+                           "登録済みの場合はコメント内容を更新します。"
+                                       DELIMITED  BY  SIZE
+                           "よろしいですか？"
+                                       DELIMITED  BY  SIZE
+                                       INTO    WRK-C50IDMSG
+                   END-STRING
+               WHEN    "0109"
+                   STRING  "表示されているコメントをすべて登録します。"
                                        DELIMITED  BY  SIZE
                            "よろしいですか？"
                                        DELIMITED  BY  SIZE
