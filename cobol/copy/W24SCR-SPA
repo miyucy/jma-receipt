@@ -134,6 +134,11 @@
                    13  SPA-GMN-W24-TAIPRTKBN           PIC X(01).
                    13                                  PIC X(01).
                    13  SPA-GMN-W24-TAIPRTKBNMEI        PIC X(18).
+      *          ¬‡±°æ⁄Ã¿ΩÒµ≠∫‹∂Ë ¨
+                 11  SPA-GMN-W24-TAIKSIKBN-G.
+                   13  SPA-GMN-W24-TAIKSIKBN           PIC X(01).
+                   13                                  PIC X(01).
+                   13  SPA-GMN-W24-TAIKSIKBNMEI        PIC X(18).
       *        •≥•Û•‹π‡Ã‹ŒŒ∞Ë
                09  SPA-GMN-W24-CMB-DAT-AREA.
       *          ∆˛±°ª˛ø©ªˆŒ≈Õ‹
@@ -188,6 +193,14 @@
                        15  SPA-GMN-W24-TAIPRTKBNL      PIC X(01).
                        15                              PIC X(01).
                        15  SPA-GMN-W24-TAIPRTKBNMEIL   PIC X(18).
+      *
+      *          ¬‡±°æ⁄Ã¿ΩÒµ≠∫‹∂Ë ¨
+                 11  SPA-GMN-W24-TAIKSIKBNLST-G.
+                   13  SPA-GMN-W24-TAIKSIKBN-MAX       PIC 9(03).
+                   13  SPA-GMN-W24-TAIKSIKBNLST        OCCURS  5.
+                       15  SPA-GMN-W24-TAIKSIKBNL      PIC X(01).
+                       15                              PIC X(01).
+                       15  SPA-GMN-W24-TAIKSIKBNMEIL   PIC X(18).
       *
       *          ¡™ƒÍ∆˛±°Œ¡°›…È√¥∂Ë ¨
                  11  SPA-GMN-W24-SENTEI-FTNKBNLST-G.

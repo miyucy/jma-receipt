@@ -137,3 +137,9 @@
                                                BINARY.
                 05  W24-TAIPRTKBN-ITM          PIC X(20)
                                                OCCURS  5.
+              04  W24-CMB-TAIKSIKBN.
+                05  W24-TAIKSIKBN              PIC X(20).
+                05  W24-TAIKSIKBN-CNT          PIC S9(9)
+                                               BINARY.
+                05  W24-TAIKSIKBN-ITM          PIC X(20)
+                                               OCCURS  5.

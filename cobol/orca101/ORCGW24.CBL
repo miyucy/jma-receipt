@@ -575,6 +575,9 @@
       *    Âà±¡¾ÚÌÀ½ñÈ¯¹Ô¶èÊ¬¥³¥ó¥Ü
            PERFORM 310-TAIPRTKBNLST-SET-SEC
       *
+      *    Âà±¡¾ÚÌÀ½ñµ­ºÜ¶èÊ¬¥³¥ó¥Ü
+           PERFORM 310-TAIKSIKBNLST-SET-SEC
+      *
       *    ¼¼ÎÁº¹³Û¾ÃÈñÀÇ¶èÊ¬¥³¥ó¥Ü
            PERFORM 310-BRMSGK-TAXLST-SET-SEC
       *
@@ -781,6 +784,24 @@
       *
            .
        310-TAIPRTKBNLST-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    Âà±¡¾ÚÌÀ½ñµ­ºÜ¶èÊ¬¥³¥ó¥Ü
+      *****************************************************************
+       310-TAIKSIKBNLST-SET-SEC    SECTION.
+      *
+           MOVE    2               TO  SPA-GMN-W24-TAIKSIKBN-MAX
+      *
+           MOVE    "0"             TO  SPA-GMN-W24-TAIKSIKBNL    (1)
+           MOVE    "£²¤È£³¤òµ­ºÜ¤·¤Ê¤¤"
+                                   TO  SPA-GMN-W24-TAIKSIKBNMEIL (1)
+      *
+           MOVE    "1"             TO  SPA-GMN-W24-TAIKSIKBNL    (2)
+           MOVE    "£²¤È£³¤òµ­ºÜ¤¹¤ë"
+                                   TO  SPA-GMN-W24-TAIKSIKBNMEIL (2)
+      *
+           .
+       310-TAIKSIKBNLST-SET-EXT.
            EXIT.
       *****************************************************************
       *    ¼¼ÎÁº¹³Û¾ÃÈñÀÇ¶èÊ¬¥³¥ó¥Ü
@@ -1082,6 +1103,16 @@
                                            TO  SPA-GMN-W24-TAIPRTKBN-G
            END-IF
       *
+      *    Âà±¡¾ÚÌÀ½ñµ­ºÜ¶èÊ¬
+           MOVE    SYS-5000-TAIKSIKBN  TO  WRK-CMB-CD
+           PERFORM 4200-TAIKSIKBNLST-CHK-SEC
+           IF    ( WRK-CMB-ITM     NOT =   SPACE )
+               MOVE    WRK-CMB-ITM         TO  SPA-GMN-W24-TAIKSIKBN-G
+           ELSE
+               MOVE    SPA-GMN-W24-TAIKSIKBNLST (1)
+                                           TO  SPA-GMN-W24-TAIKSIKBN-G
+           END-IF
+      *
       *    ¸º»»¾ðÊó
            IF    ( SPA-W01-EDYUKYMD    >=  CONST-H180401 )
                CONTINUE
@@ -1377,6 +1408,9 @@
       *    Âà±¡¾ÚÌÀ½ñÈ¯¹Ô¶èÊ¬
            MOVE    W24-TAIPRTKBN       TO  SPA-GMN-W24-TAIPRTKBN-G
       *
+      *    Âà±¡¾ÚÌÀ½ñµ­ºÜ¶èÊ¬
+           MOVE    W24-TAIKSIKBN       TO  SPA-GMN-W24-TAIKSIKBN-G
+      *
            .
       *
        4101-GMN-SPA-SET-EXT.
@@ -1508,6 +1542,12 @@
       *
       *    Âà±¡¾ÚÌÀ½ñÈ¯¹Ô¶èÊ¬¥Á¥§¥Ã¥¯½èÍý
            PERFORM 4100-TAIPRTKBN-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
+      *    Âà±¡¾ÚÌÀ½ñµ­ºÜ¶èÊ¬¥Á¥§¥Ã¥¯½èÍý
+           PERFORM 4100-TAIKSIKBN-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
@@ -1922,6 +1962,10 @@
       *    Âà±¡¾ÚÌÀ½ñÈ¯¹Ô¶èÊ¬
            MOVE    SPA-GMN-W24-TAIPRTKBN
                                    TO  SYS-5000-TAIPRTKBN
+      *
+      *    Âà±¡¾ÚÌÀ½ñµ­ºÜ¶èÊ¬
+           MOVE    SPA-GMN-W24-TAIKSIKBN
+                                   TO  SYS-5000-TAIKSIKBN
       *
       *    ¸º»»¾ðÊó
            IF    ( SPA-W01-EDYUKYMD    >=  CONST-H180401 )
@@ -2582,7 +2626,7 @@
        4101-MISYUPRTKBN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡ÎòÉ½¼¨¥Á¥§¥Ã¥¯½èÍý
+      *    Âà±¡¾ÚÌÀ½ñ°õºþ¶èÊ¬¥Á¥§¥Ã¥¯½èÍý
       *****************************************************************
        4100-TAIPRTKBN-CHK-SEC          SECTION.
       *
@@ -2599,6 +2643,25 @@
            .
       *
        4100-TAIPRTKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    Âà±¡¾ÚÌÀ½ñµ­ºÜ¶èÊ¬¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       4100-TAIKSIKBN-CHK-SEC          SECTION.
+      *
+           MOVE    SPA-GMN-W24-TAIKSIKBN
+                                       TO  WRK-CMB-CD
+           PERFORM 4200-TAIKSIKBNLST-CHK-SEC
+           IF    ( WRK-CMB-ITM         =   SPACE )
+               MOVE    SPA-GMN-W24-TAIKSIKBNLST (1)
+                                       TO  SPA-GMN-W24-TAIKSIKBN-G
+           ELSE
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-W24-TAIKSIKBN-G
+           END-IF
+      *
+           .
+      *
+       4100-TAIKSIKBN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    Æþ±¡»þ¿©»öÎÅÍÜ¥³¥ó¥Ü¥Á¥§¥Ã¥¯½èÍý
@@ -2793,6 +2856,30 @@
            .
       *
        4200-TAIPRTKBNLST-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    Âà±¡¾ÚÌÀ½ñµ­ºÜ¶èÊ¬¥µ¡¼¥Á½èÍý
+      *****************************************************************
+       4200-TAIKSIKBNLST-CHK-SEC   SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM-G
+      *
+           PERFORM VARYING IDX-CMB     FROM    1   BY  1
+                   UNTIL ( IDX-CMB     >   SPA-GMN-W24-TAIKSIKBN-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-W24-TAIKSIKBNL (IDX-CMB)
+                                       =   WRK-CMB-CD )
+                   MOVE    SPA-GMN-W24-TAIKSIKBNLST (IDX-CMB)
+                                       TO  WRK-CMB-ITM
+                   MOVE    IDX-CMB     TO  WRK-CMB-IDX
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+      *
+       4200-TAIKSIKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
       *    ÁªÄêÎÅÍÜÈñ¡ÝÉéÃ´¶èÊ¬¥µ¡¼¥Á½èÍý
@@ -2994,6 +3081,9 @@
                                    TO  SPA-GMN-W24-SRYPRTKBN-G
            MOVE    SPA-GMN-W24-TAIPRTKBNLST (2)
                                    TO  SPA-GMN-W24-TAIPRTKBN-G
+           MOVE    SPA-GMN-W24-TAIKSIKBNLST (1)
+                                   TO  SPA-GMN-W24-TAIKSIKBN-G
+      *
       *
       *    Æþ±¡²Ã»»Ì¾¾ÎÊÔ½¸½èÍý
            PERFORM 4201-NYUKSNMEI-EDIT-SEC
@@ -3487,6 +3577,21 @@
       *
            END-PERFORM
       *
+      *    Âà±¡¾ÚÌÀ½ñµ­ºÜ¶èÊ¬
+           MOVE    SPA-GMN-W24-TAIKSIKBN-G
+                                       TO  W24-TAIKSIKBN
+           MOVE    SPA-GMN-W24-TAIKSIKBN-MAX
+                                       TO  W24-TAIKSIKBN-CNT
+      *
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   W24-TAIKSIKBN-CNT )
+      *
+      *
+               MOVE    SPA-GMN-W24-TAIKSIKBNLST (IDX0)
+                                       TO  W24-TAIKSIKBN-ITM (IDX0)
+      *
+           END-PERFORM
+      *
            IF    ( SPA-W01-EDYUKYMD    >=  CONST-H180401 )
                MOVE    "Æþ±¡²Ã»»¾ðÊó"          TO  W24-FRAME3-LABEL
            ELSE
@@ -3641,11 +3746,13 @@
                MOVE    "SRYPRTKBN"     TO  MCP-WIDGET
            WHEN    045
                MOVE    "TAIPRTKBN"     TO  MCP-WIDGET
+           WHEN    052
+               MOVE    "TAIKSIKBN"     TO  MCP-WIDGET
            WHEN    046
                MOVE    "BRMSGK_TAX"    TO  MCP-WIDGET
            WHEN    047
                MOVE    "NACCT_BRMSGK"  TO  MCP-WIDGET
-           WHEN    050
+           WHEN    051
                MOVE    "NACCT_GAIHAKU" TO  MCP-WIDGET
            WHEN    048
                MOVE    "SENTEI_TANKAIP"
@@ -3760,11 +3867,13 @@
            WHEN    "SRYPRTKBN"
                MOVE    045             TO  SPA-GMN-W24-CUR
            WHEN    "TAIPRTKBN"
+               MOVE    052             TO  SPA-GMN-W24-CUR
+           WHEN    "TAIKSIKBN"
                MOVE    212             TO  SPA-GMN-W24-CUR
            WHEN    "BRMSGK_TAX"
                MOVE    047             TO  SPA-GMN-W24-CUR
            WHEN    "NACCT_BRMSGK"
-               MOVE    050             TO  SPA-GMN-W24-CUR
+               MOVE    051             TO  SPA-GMN-W24-CUR
            WHEN    "NACCT_GAIHAKU"
                MOVE    008             TO  SPA-GMN-W24-CUR
            END-EVALUATE

@@ -363,5 +363,12 @@ W24	{
 			count	int;
 			item	varchar(20)[05];
 		};
+		CMB_TAIKSIKBN	{
+			TAIKSIKBN	{
+				value	varchar(20);
+			};
+			count	int;
+			item	varchar(20)[05];
+		};
 	};
 };
