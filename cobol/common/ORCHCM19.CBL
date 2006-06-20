@@ -2193,7 +2193,7 @@
       *            後発医薬品区分
       *---(01.00.19) LINE UPD START ------------------------------------
       *************IF      TNS-KOUHATUKBN      NOT =   ZERO
-                   IF      TNS-KOUHATUKBN          =   "1"
+                   IF      TNS-KOUHATUKBN          =   1
       *---(01.00.19) LINE UPD END   ------------------------------------
                        MOVE    TNS-NAME        TO  WRK-TNS-NAME
                        COMPUTE KETA            =  (TNS-YUKOKETA  * 2)
@@ -2213,11 +2213,11 @@
       *           MOVE    1                TO  FLG-KOUHATU
       ******   END-IF
       *        後発医薬品がある先発品
-               IF      TNS-KOUHATUKBN          =   "2"
+               IF      TNS-KOUHATUKBN          =   2
                   MOVE    1                TO  FLG-KOUHATU
                END-IF
       *        後発医薬品
-               IF      TNS-KOUHATUKBN          =   "1"
+               IF      TNS-KOUHATUKBN          =   1
                   MOVE    1                TO  FLG-KOUHATU-1
                END-IF
       *---(01.00.19) LINE ADD END   ------------------------------------

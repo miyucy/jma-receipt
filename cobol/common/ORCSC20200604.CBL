@@ -481,7 +481,7 @@
       *                                                      (IDX-Z)
       *!               END-IF
       *                後発医薬品区分判定
-                       IF      WRK-COM-KOUHATUKBN (IDX-Z - 1) =   "0"
+                       IF      WRK-COM-KOUHATUKBN (IDX-Z - 1) =   ZERO
                            MOVE    "2066"          TO  WRK-ERRCD
                            MOVE    "1"             TO  WRK-COM-CUR
                                                              (IDX-Z)
@@ -1585,7 +1585,7 @@
                                            "232"  OR
                                            "292"     )
                IF      (WRK-COM-KOUHATUKBN (IDX)
-                                           =   "1"   )
+                                           =   1     )
                    MOVE    1                   TO  FLG-KOUHATU
                ELSE
       *            後発医薬品変更不可
@@ -1595,7 +1595,7 @@
                    ELSE
       *                先発品のみ
                        IF      (WRK-COM-KOUHATUKBN (IDX)
-                                               =   "0"   )
+                                               =   0   )
                            CONTINUE
                        ELSE
                            MOVE    1               TO  FLG-KOUHATU-HEN2
