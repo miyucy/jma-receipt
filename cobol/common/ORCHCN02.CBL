@@ -174,6 +174,9 @@
       *    出力先プリンタ名割り当て情報
            COPY    "CPSK1034.INC".
       *
+      *    入院基本情報
+           COPY    "CPSK5000.INC".
+      *
       *    印刷パラメタ
            COPY    "CPORCSMKPRT.INC".
       *
@@ -439,7 +442,19 @@
       *
       *
       *    入退院日編集処理
-           PERFORM 3101-NTYMD-HEN-SEC
+           INITIALIZE                  SYS-5000-REC
+           MOVE    "5000"              TO  SYS-5000-KANRICD
+           MOVE    "*"                 TO  SYS-5000-KBNCD
+           MOVE    SYS-5000-REC        TO  MCPDATA-REC
+           PERFORM 800-SYSKANRI-READ-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-5000-REC
+           END-IF
+           IF   SYS-5000-TAIKSIKBN     =   SPACE OR "0"
+               PERFORM 3101-NTYMD-HEN1-SEC
+           ELSE
+               PERFORM 3101-NTYMD-HEN2-SEC
+           END-IF
       *
       *    通算期間統計
       *     MOVE    ORCHCMT-TKIKAN      TO  WRK-Z4
@@ -503,11 +518,52 @@
            EXIT.
       *
       *****************************************************************
-      *    入退院日編集処理
+      *    入退院日編集処理（入院料等の記載なし）
       *****************************************************************
-       3101-NTYMD-HEN-SEC              SECTION.
+       3101-NTYMD-HEN1-SEC              SECTION.
       *
-           INITIALIZE                      ORCHCN02SUB-AREA
+           INITIALIZE                  ORCSNTYMDAREA
+           MOVE    PTINF-HOSPID        TO  SNTYMD-HOSPID
+           MOVE    PTINF-PTID          TO  SNTYMD-PTID
+           MOVE    "3"                 TO  SNTYMD-KBN
+           CALL    "ORCSNTYMD" USING   ORCSNTYMDAREA
+      *
+           PERFORM VARYING IDX2    FROM    1   BY   1
+                   UNTIL ( IDX2    >   SNTYMD-MAX )
+               IF    ( LNK-PTNYUINRRK-RRKNUM
+                                   =   SNTYMD-RRKNUM (IDX2))
+      *            入院日
+                   MOVE    SNTYMD-NYUINYMD(IDX2)
+                                               TO  WRK-SYMD
+                   PERFORM 31012-SEIWA-HEN-SEC
+                   MOVE    WRK-HENYMDG(5:4)    TO  HCN02-NYUINYY
+                   MOVE    WRK-HENYMDG(11:4)   TO  HCN02-NYUINMM
+                   MOVE    WRK-HENYMDG(17:4)   TO  HCN02-NYUINDD
+      *
+      *            退院日
+                   MOVE    SNTYMD-TAIINYMD(IDX2)
+                                               TO  WRK-SYMD
+                   PERFORM 31012-SEIWA-HEN-SEC
+                   MOVE    WRK-HENYMDG(5:4)    TO  HCN02-TAIINYY
+                   MOVE    WRK-HENYMDG(11:4)   TO  HCN02-TAIINMM
+                   MOVE    WRK-HENYMDG(17:4)   TO  HCN02-TAIINDD
+      *
+                   MOVE    SNTYMD-MAX          TO  IDX2
+      *
+               END-IF
+           END-PERFORM
+      *
+      *
+           .
+       3101-NTYMD-HEN1-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入退院日編集処理（入院料等の記載なし）
+      *****************************************************************
+       3101-NTYMD-HEN2-SEC              SECTION.
+      *
+           INITIALIZE                  ORCHCN02SUB-AREA
       *
            INITIALIZE                  ORCSNTYMDAREA
            MOVE    PTINF-HOSPID        TO  SNTYMD-HOSPID
@@ -609,7 +665,7 @@
            END-IF
       *
            .
-       3101-NTYMD-HEN-EXT.
+       3101-NTYMD-HEN2-EXT.
            EXIT.
       *****************************************************************
       *    西暦日本語変換処理
