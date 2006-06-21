@@ -441,10 +441,12 @@
       *
            MOVE    "0"             TO  SPA-GMN-JYKNKBNL(1)
            MOVE    "1"             TO  SPA-GMN-JYKNKBNL(2)
+           MOVE    "2"             TO  SPA-GMN-JYKNKBNL(3)
            MOVE    "完全一致"      TO  SPA-GMN-JYKNKBNMEIL(1)
            MOVE    "前方一致"      TO  SPA-GMN-JYKNKBNMEIL(2)
+           MOVE    "指定なし"      TO  SPA-GMN-JYKNKBNMEIL(3)
       *
-           MOVE    2               TO  SPA-GMN-JYKNKBN-MAX
+           MOVE    3               TO  SPA-GMN-JYKNKBN-MAX
       *
            .
        31011-JYKNKBNLST-SET-EXT.
@@ -527,6 +529,9 @@
       *****************************************************************
        3101-CLIST-SET-SEC          SECTION.
       *
+           INITIALIZE                  SPA-GMN-CLIST-AREA
+                                       SPA-NAI-CLIST-AREA
+      *
            INITIALIZE                  CK4-1102-REC
            MOVE    "1102"          TO  CK4-1102-KANRICD
            MOVE    CK4-1102-REC    TO  CHK004-REC
@@ -547,11 +552,14 @@
       *
                MOVE    CK4-1102-HKNJANUM
                                    TO  SPA-GMN-THKNJANUM(IDX-LST)
-               IF    ( CK4-1102-JYKNKBN    =   "1" )
-                   MOVE    "前方"      TO  SPA-GMN-TJYKNKBN(IDX-LST)
-               ELSE
+               EVALUATE    CK4-1102-JYKNKBN
+               WHEN    "0"
                    MOVE    "完全"      TO  SPA-GMN-TJYKNKBN(IDX-LST)
-               END-IF
+               WHEN    "1"
+                   MOVE    "前方"      TO  SPA-GMN-TJYKNKBN(IDX-LST)
+               WHEN    "2"
+                   MOVE    "　　"      TO  SPA-GMN-TJYKNKBN(IDX-LST)
+               END-EVALUATE
                MOVE    CK4-1102-JYKNKBN
                                    TO  SPA-NAI-TJYKNKBN(IDX-LST)
       *
@@ -934,6 +942,10 @@
                MOVE    WRK-CMB-ITM         TO  SPA-GMN-JYKNKBN-G
            ELSE
                MOVE    WRK-CMB-ITM         TO  SPA-GMN-JYKNKBN-G
+           END-IF
+      *
+           IF    ( SPA-GMN-JYKNKBN     =   "2" )
+               MOVE    SPACE           TO  SPA-GMN-HKNJANUM
            END-IF
       *
            .
