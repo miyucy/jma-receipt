@@ -49,6 +49,9 @@
       *  02.07.02    NACL-門脇    06/01/24  DBCLOSECURSOR追加
       *  02.07.03    NACL-門脇    06/02/08  食事基本料情報（その他）編集
       *  02.09.01    NACL-門脇    06/04/13  ２００６年４月改正対応
+      *
+      *  03.00.01    NACL-藤原    06/06/20  レセコメントを保険組合せ・
+      *                                     症状詳記区分順に記載する
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -356,6 +359,9 @@
            03  WRK-OPECOM-PATH     PIC X(64).
       *
            03  WRK-DBPATH          PIC X(64).
+      *
+           03  WRK-MCP-TABLE       PIC X(64).
+           03  WRK-MCP-PATHNAME    PIC X(64).
       *
        01  WRK-HENSYU-AREA.
            03  WRK-HENYMDG.
@@ -2004,6 +2010,9 @@
            MOVE    ZERO                TO  WRK-RECECOM
                                            WRK-KEIKA-LINE
       *     
+           MOVE    "tbl_rececom"       TO  WRK-MCP-TABLE
+           MOVE    "key10"             TO  WRK-MCP-PATHNAME
+      *     
            INITIALIZE                      RECECOM-REC
            MOVE    RECE82-HOSPID       TO  RECECOM-HOSPID
            MOVE    RECE82-SRYYM        TO  RECECOM-SRYYM
@@ -2012,13 +2021,14 @@
       * 
            MOVE    RECECOM-REC         TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "RECECOM-KEY1"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "RECECOM-KEY1"      TO  ORC-DBPATH
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                PERFORM 900-RECECOM-READ-SEC
            ELSE
                INITIALIZE                  RECECOM-REC
@@ -2030,15 +2040,14 @@
                    PERFORM 200241-COMMENT-HENSYU-SEC                 
                END-IF
       *                 
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                PERFORM 900-RECECOM-READ-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "RECECOM-KEY1"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
       *
            .
        20024-COMMENT-HEN-EXT.
@@ -3368,10 +3377,9 @@
        900-RECECOM-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-RECECOM
                MOVE    MCPDATA-REC     TO  RECECOM-REC
@@ -3441,6 +3449,20 @@
                                         MCPDATA-REC
            .
        900-DBCLOSE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    テーブルクローズ処理
+      *****************************************************************
+       900-CLOSE-SEC               SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
+      *
+           .
+       900-CLOSE-EXT.
            EXIT.
       *      
       *****************************************************************
