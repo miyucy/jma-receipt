@@ -2114,7 +2114,7 @@
 	  <y>175</y>
 	  <width>170</width>
 	  <height>16</height>
-	  <label>                     記録区分</label>
+	  <label>（症状詳記）記録区分</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -2130,7 +2130,7 @@
 	  <y>155</y>
 	  <width>170</width>
 	  <height>16</height>
-	  <label>（手術歴・保険歴）</label>
+	  <label>レセプトコメント</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
