@@ -80,6 +80,7 @@
                    07  WRK-SAGAKU1-9               PIC 9(05).
            03  WRK-NUM-05                          PIC 9(05).
            03  WRK-CREYMD                          PIC X(08).
+           03  WRK-BRMNUMKBN                       PIC 9(02).
       *
       *    メッセージ領域
        01  T-MESSAGE-AREA.
@@ -555,13 +556,6 @@
       *****************************************************************
        420-SAKUJO-SEC                  SECTION.
       *
-           PERFORM 4900-KANRENCHK-SEC
-           IF  SPA-W22-ERRMSG    =   SPACE
-               IF  FLG-ARI   =   ZERO
-                   MOVE    T-MESSAGE-004  TO  SPA-W22-ERRMSG
-                   MOVE    2              TO  SPA-W22-CUR
-               END-IF
-           END-IF
            IF  SPA-W22-ERRMSG    =   SPACE
                IF  SPA-W22-KANRICD   =   SPACE
                    MOVE    T-MESSAGE-007   TO  SPA-W22-ERRMSG
@@ -1485,13 +1479,23 @@
                    MOVE    2               TO  SPA-W22-CUR
                END-IF
       *
+      *
                IF    ( SPA-W22-ERRMSG      =   SPACE )
-                   IF    ( SPA-W22-KBNCD  >=    "01" )
-                    AND  ( SPA-W22-KBNCD  <=    "99" )
-                       CONTINUE
+                   IF    ( SPA-W22-KBNCD (1:2)
+                                          IS  NUMERIC )
+                    AND  ( SPA-W22-KBNCD (3:)  =   SPACE )
+                       MOVE    SPA-W22-KBNCD  (1:2)
+                                           TO  WRK-BRMNUMKBN
+                       IF    ( WRK-BRMNUMKBN   >=  01 )
+                        AND  ( WRK-BRMNUMKBN   <=  99 )
+                           CONTINUE
+                       ELSE
+                           MOVE    T-MESSAGE-055   TO  SPA-W22-ERRMSG
+                           MOVE    2               TO  SPA-W22-CUR
+                       END-IF
                    ELSE
-                       MOVE    T-MESSAGE-055   TO  SPA-W22-ERRMSG
-                       MOVE    2               TO  SPA-W22-CUR
+                           MOVE    T-MESSAGE-055   TO  SPA-W22-ERRMSG
+                           MOVE    2               TO  SPA-W22-CUR
                    END-IF
                END-IF
       *
