@@ -422,7 +422,7 @@
            IF    ( WRK-PARA-SRYKA  NOT =   SPACE )
                INITIALIZE              SYSKANRI-REC
                MOVE    "1005"          TO  SYS-KANRICD
-               MOVE    KEY-SRYKA       TO  SYS-KBNCD
+               MOVE    WRK-PARA-SRYKA  TO  SYS-KBNCD
                MOVE    WRK-SRYYMD      TO  SYS-STYUKYMD
                                            SYS-EDYUKYMD
                PERFORM 900-SYSKANRI-KEY10-SEL-SEC
