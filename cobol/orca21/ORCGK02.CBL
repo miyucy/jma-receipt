@@ -2833,11 +2833,6 @@
                MOVE    SPACE           TO  WRK-ERRCD1
                PERFORM 3103-SAIHEN-HEN-SEC
       *
-      *TEST
-               DISPLAY "WRK-ERRCD1;"  WRK-ERRCD1
-                      ",WRK-ERRCD3:" WRK-ERRCD3
-                      ",SPA-ERRCD:" SPA-ERRCD
-      *TEST
                IF      WRK-ERRCD1      NOT =   SPACE
                    MOVE    WRK-ERRCD1          TO  SPA-ERRCD
                END-IF
@@ -5420,14 +5415,21 @@
                    PERFORM 41011-KOUI-HEN2-SEC
                END-IF
       *        フリーコメントの名称の全角チェックはすべて行う
-               IF     (SPA-ERRCD           =   SPACE )  AND
-                     ((SPA-COM-INPUTCD(SPA-GMN-IDX)(1:2)
-                                           =   "81" OR "83" OR "84") OR
-                      (SPA-COM-INPUTCD(SPA-GMN-IDX)(1:3)
-                                           =   "008"         ))  AND
-                      (SPA-GMN-MEISYO-G(SPA-GMN-IDX) 
+               IF     (SPA-ERRCD           =   SPACE )
+                   IF    ((SPA-COM-INPUTCD(SPA-GMN-IDX)
+                                           =   "810000001" ) OR
+                          (SPA-COM-INPUTCD(SPA-GMN-IDX)(1:2)
+                                           =   "83" OR "84") OR
+                          (SPA-COM-INPUTCD(SPA-GMN-IDX)(1:4)
+                                           =   "0083" 
+                                           OR  "0084"    ))  AND
+                          (SPA-GMN-MEISYO-G(SPA-GMN-IDX) 
                                        NOT =   SPACE  )
-                   PERFORM 401131-MEISYO-HENKAN-SEC
+                       PERFORM 401131-MEISYO-HENKAN-SEC
+                   ELSE
+                       MOVE    SPA-COM-NAME (SPA-GMN-IDX)
+                                       TO  SPA-GMN-MEISYO (SPA-GMN-IDX)
+                   END-IF
                END-IF
                IF     (SPA-ERRCD       =   SPACE )  AND
                       (FLG-END         =   ZERO  )
@@ -6265,8 +6267,10 @@
            END-IF
       *    名称入力へのカーソル移動
            IF      WRK-IN-IDX          >   ZERO
-               IF     (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:2)
-                                           =   "81"  OR  "83")  OR
+               IF     (SPA-COM-INPUTCD (SPA-GMN-IDX)
+                                           =   "810000001"  ) OR
+                      (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:2)
+                                           =   "83")  OR
                       (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:4)
                                            =   "0083"        )
                    IF     (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:2)
@@ -8059,7 +8063,7 @@
       *****************************************************************
        40113-MEISYOU-CHK-SEC        SECTION.
       *
-           IF      SPA-COM-INPUTCD (SPA-GMN-IDX)(1:2)  =  "81"
+           IF     (SPA-COM-INPUTCD (SPA-GMN-IDX)   =  "810000001")
                MOVE    WRK-MEISYO-G        TO  SPA-GMN-MEISYO-G
                                                          (SPA-GMN-IDX)
                MOVE    "1"                 TO  SPA-COM-MEIFLG
