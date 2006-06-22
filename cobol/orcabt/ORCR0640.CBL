@@ -200,6 +200,8 @@
       *
       *  03.00.01    NACL-Æ£¸¶    06/06/07  £Ï£Ã£Ò¥¨¥ê¥¢¤Îµ­¹æÈÖ¹æ¤Î¿ô»ú
       *                                     µ­ºÜÂÐ±þ
+      *  03.00.02    NACL-ÌçÏÆ    06/06/22  ±ý¿Ç¡¢ºßÂð´µ¼ÔË¬Ìä¿ÇÎÅÎÁ¤Î
+      *                                     ¥³¥á¥ó¥È¼«Æ°µ­ºÜÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -341,6 +343,7 @@
            03  FLG-NYUINRYO                            PIC 9(01).
            03  FLG-HKNCOMBI                            PIC 9(01).
            03  FLG-HOUSIJI-COM                         PIC 9(01).
+           03  FLG-OSIN-COM                            PIC 9(01).
            03  FLG-SYOBYO-COM                          PIC 9(01).
            03  FLG-RYOYO-COM                           PIC 9(01).
            03  FLG-SYODOU-COM                          PIC 9(01).
@@ -882,6 +885,12 @@
            03  CONS-SESSYOKU-COMMENT PIC X(09)  VALUE  "180016610".
       *    ²ðÃ£¸£°ú
            03  CONS-KAITATU-COMMENT  PIC X(09)  VALUE  "140048010".
+      *    ±ý¿Ç
+           03  CONS-OSIN-COMMENT     PIC X(09)  VALUE  "114000110".
+      *    ÆÃÊÌ±ý¿Ç
+           03  CONS-OSIN2-COMMENT    PIC X(09)  VALUE  "114001610".
+      *    ±ý¿ÇÆü¥³¥á¥ó¥È
+           03  CONS-OSIN3-COMMENT    PIC X(09)  VALUE  "840000039".
       *
       *    ³°Íè¿×Â®¸¡ÂÎ¸¡ºº²Ã»»
            03  CONS-GAIJINKEN        PIC X(09)  VALUE  "160177770".
@@ -1721,6 +1730,7 @@
                                                   FLG-SYOBYO-COM
                                                   FLG-RYOYO-COM
                                                   FLG-SYODOU-COM
+                                                  FLG-OSIN-COM
       *
                                MOVE   ZERO   TO   WRK-FILMTEN
       *
@@ -1761,6 +1771,7 @@
                                                          FLG-SYOBYO-COM
                                                          FLG-RYOYO-COM
                                                          FLG-SYODOU-COM
+                                                         FLG-OSIN-COM
       *
                                       MOVE   ZERO   TO   WRK-FILMTEN
       *
@@ -1784,6 +1795,7 @@
                                                          FLG-SYOBYO-COM
                                                          FLG-RYOYO-COM
                                                          FLG-SYODOU-COM
+                                                         FLG-OSIN-COM
       *
                                       MOVE   ZERO   TO   WRK-FILMTEN
       *
@@ -2616,6 +2628,18 @@
            IF      RECE64-SRYKBN      =     "14"
               IF   SRY-SRYCD(IDX2)    =     CONS-HINKAI-COMMENT
                    MOVE   "1"   TO    RECE64-FLG-HINKAI-COMMENT
+              END-IF
+           END-IF
+      *
+           IF      RECE64-SRYKBN      =     "14"
+              IF  (SRY-SRYCD(IDX2)    =     CONS-OSIN-COMMENT
+                                      OR    CONS-OSIN2-COMMENT)
+              AND (FLG-OSIN-COM       =     ZERO              )
+                   MOVE   "1"   TO    RECE64-FLG-OSIN-COMMENT
+              END-IF
+              IF   SRY-SRYCD(IDX2)    =     CONS-OSIN3-COMMENT
+                   MOVE  SPACE  TO    RECE64-FLG-OSIN-COMMENT
+                   MOVE    1    TO    FLG-OSIN-COM
               END-IF
            END-IF
       *

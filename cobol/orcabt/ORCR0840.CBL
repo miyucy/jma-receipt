@@ -94,6 +94,8 @@
       *                                     ´Ç¸îÇÛÃÖÅ¬¹ç²Ã»»¤ÎÊÔ½¸ÂÐ±þ
       *  02.09.08    NACL-ÌçÏÆ    06/06/09  Ï«ºÒ¡Ê²Ã»»¤Ê¤·¡Ë¤òºÞ¤Ë´Þ¤à
       *                                     ¾ì¹ç¤ÎÊÔ½¸½¤Àµ¡Ê¼«ÇåÀÕ¡Ë
+      *  03.00.01    NACL-ÌçÏÆ    06/06/22  ±ý¿Ç¡¢ºßÂð´µ¼ÔË¬Ìä¿ÇÎÅÎÁ¤Î
+      *                                     ¥³¥á¥ó¥È¼«Æ°µ­ºÜÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -263,6 +265,7 @@
            03  FLG-NYUINRYO                            PIC 9(01).
            03  FLG-HKNCOMBI                            PIC 9(01).
            03  FLG-HOUSIJI-COM                         PIC 9(01).
+           03  FLG-OSIN-COM                            PIC 9(01).
            03  FLG-SYOBYO-COM                          PIC 9(01).
            03  FLG-RYOYO-COM                           PIC 9(01).
            03  FLG-SYODOU-COM                          PIC 9(01).
@@ -694,6 +697,12 @@
            03  CONS-SESSYOKU-COMMENT PIC X(09)  VALUE  "180016610".
       *    ²ðÃ£¸£°ú
            03  CONS-KAITATU-COMMENT  PIC X(09)  VALUE  "140048010".
+      *    ±ý¿Ç
+           03  CONS-OSIN-COMMENT     PIC X(09)  VALUE  "114000110".
+      *    ÆÃÊÌ±ý¿Ç
+           03  CONS-OSIN2-COMMENT    PIC X(09)  VALUE  "114001610".
+      *    ±ý¿ÇÆü¥³¥á¥ó¥È
+           03  CONS-OSIN3-COMMENT    PIC X(09)  VALUE  "840000039".
       *
       *    ³°Íè¿×Â®¸¡ÂÎ¸¡ºº²Ã»»
            03  CONS-GAIJINKEN        PIC X(09)  VALUE  "160177770".
@@ -1312,6 +1321,7 @@
                                           FLG-SYOBYO-COM
                                           FLG-RYOYO-COM
                                           FLG-SYODOU-COM
+                                          FLG-OSIN-COM
       *
                        MOVE   ZERO   TO   FLG-WRITE85
                        PERFORM   2201-RECE84-TENSOU-SEC
@@ -1358,6 +1368,7 @@
                                                     FLG-SYOBYO-COM
                                                     FLG-RYOYO-COM
                                                     FLG-SYODOU-COM
+                                                    FLG-OSIN-COM
       *
                                  MOVE   ZERO   TO   FLG-WRITE85
                                  PERFORM   2201-RECE84-TENSOU-SEC
@@ -1388,6 +1399,7 @@
                                                     FLG-SYOBYO-COM
                                                     FLG-RYOYO-COM
                                                     FLG-SYODOU-COM
+                                                    FLG-OSIN-COM
       *
                                  MOVE   ZERO   TO   FLG-WRITE85
                                  PERFORM   2201-RECE84-TENSOU-SEC
@@ -2337,6 +2349,21 @@
                    RECE84-SRYKBN         =  "80"       )
               IF   SRY-SRYCD(IDX2)    =     CONS-HINKAI-COMMENT
                    MOVE   "1"   TO    RECE84-FLG-HINKAI-COMMENT
+              END-IF
+           END-IF
+      *
+           IF     (RECE82-HKNKBN    NOT  =  "4"    AND
+                   RECE84-SRYKBN         =  "14"       )
+           OR     (RECE82-HKNKBN         =  "4"    AND
+                   RECE84-SRYKBN         =  "80"       )
+              IF  (SRY-SRYCD(IDX2)    =     CONS-OSIN-COMMENT
+                                      OR    CONS-OSIN2-COMMENT)
+              AND (FLG-OSIN-COM       =     ZERO              )
+                   MOVE   "1"   TO    RECE84-FLG-OSIN-COMMENT
+              END-IF
+              IF   SRY-SRYCD(IDX2)    =     CONS-OSIN3-COMMENT
+                   MOVE  SPACE  TO    RECE84-FLG-OSIN-COMMENT
+                   MOVE    1    TO    FLG-OSIN-COM
               END-IF
            END-IF
       *

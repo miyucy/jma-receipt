@@ -112,6 +112,8 @@
       *  02.09.05    NACL-ÌçÏÆ    06/04/28  ºßÂðÊÔ½¸½¤Àµ
       *  02.09.06    NACL-ÌçÏÆ    06/06/09  Ï«ºÒ¡Ê²Ã»»¤Ê¤·¡Ë¤òºÞ¤Ë´Þ¤à
       *                                     ¾ì¹ç¤ÎÊÔ½¸½¤Àµ¡Ê¼«ÇåÀÕ¡Ë
+      *  03.00.01    NACL-ÌçÏÆ    06/06/22  ±ý¿Ç¡¢ºßÂð´µ¼ÔË¬Ìä¿ÇÎÅÎÁ¤Î
+      *                                     ¥³¥á¥ó¥È¼«Æ°µ­ºÜÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -268,6 +270,8 @@
            03  FLG-REWRITE                             PIC 9(01).
            03  FLG-SET                                 PIC 9(01).
            03  FLG-HOUSIJI-COM                         PIC 9(01).
+           03  FLG-OSIN-COM                            PIC 9(01).
+           03  FLG-ZAIHOU-COM                          PIC 9(01).
            03  FLG-HOUTEN-COM                          PIC 9(01).
            03  FLG-SYOBYO-COM                          PIC 9(01).
            03  FLG-RYOYO-COM                           PIC 9(01).
@@ -675,6 +679,16 @@
            03  CONS-SESSYOKU-COMMENT PIC X(09)  VALUE  "180016610".
       *    ²ðÃ£¸£°ú
            03  CONS-KAITATU-COMMENT  PIC X(09)  VALUE  "140048010".
+      *    ±ý¿Ç
+           03  CONS-OSIN-COMMENT     PIC X(09)  VALUE  "114000110".
+      *    ÆÃÊÌ±ý¿Ç
+           03  CONS-OSIN2-COMMENT    PIC X(09)  VALUE  "114001610".
+      *    ±ý¿ÇÆü¥³¥á¥ó¥È
+           03  CONS-OSIN3-COMMENT    PIC X(09)  VALUE  "840000039".
+      *    ºßÂð´µ¼ÔË¬Ìä¿ÇÎÅÎÁ
+           03  CONS-ZAIHOU-COMMENT   PIC X(09)  VALUE  "114001110".
+      *    Ë¬Ìä¿ÇÎÅÆü¥³¥á¥ó¥È
+           03  CONS-ZAIHOU2-COMMENT  PIC X(09)  VALUE  "840000066".
       *
       *    ³°Íè¿×Â®¸¡ÂÎ¸¡ºº²Ã»»
            03  CONS-GAIJINKEN        PIC X(09)  VALUE  "160177770".
@@ -1043,6 +1057,8 @@
                                                        FLG-SYODOU-COM
                                                        FLG-NIKOCHIN-COM
                                                        FLG-ZENSOKU-COM
+                                                       FLG-OSIN-COM
+                                                       FLG-ZAIHOU-COM
       *
                                MOVE    SPACE   TO      WRK-KYUGYOFLG
       *
@@ -1090,6 +1106,8 @@
                                                       FLG-SYODOU-COM
                                                       FLG-NIKOCHIN-COM
                                                       FLG-ZENSOKU-COM
+                                                      FLG-OSIN-COM
+                                                      FLG-ZAIHOU-COM
       *
                                       MOVE  SPACE TO  WRK-KYUGYOFLG
       *
@@ -1122,6 +1140,8 @@
                                                       FLG-SYODOU-COM
                                                       FLG-NIKOCHIN-COM
                                                       FLG-ZENSOKU-COM
+                                                      FLG-OSIN-COM
+                                                      FLG-ZAIHOU-COM
       *
                                       MOVE  SPACE TO  WRK-KYUGYOFLG
       *
@@ -2137,6 +2157,28 @@
            IF      RECE44-SRYKBN      =     "14"
               IF   SRY-SRYCD(IDX2)    =     CONS-HINKAI-COMMENT
                    MOVE   "1"   TO    RECE44-FLG-HINKAI-COMMENT
+              END-IF
+           END-IF
+      *
+           IF      RECE44-SRYKBN      =     "14"
+              IF  (SRY-SRYCD(IDX2)    =     CONS-OSIN-COMMENT
+                                      OR    CONS-OSIN2-COMMENT)
+              AND (FLG-OSIN-COM       =     ZERO              )
+                   MOVE   "1"   TO    RECE44-FLG-OSIN-COMMENT
+              END-IF
+              IF   SRY-SRYCD(IDX2)    =     CONS-OSIN3-COMMENT
+                   MOVE  SPACE  TO    RECE44-FLG-OSIN-COMMENT
+                   MOVE    1    TO    FLG-OSIN-COM
+              END-IF
+           END-IF
+           IF      RECE44-SRYKBN      =     "14"
+              IF   SRY-SRYCD(IDX2)    =     CONS-ZAIHOU-COMMENT
+              AND  FLG-ZAIHOU-COM     =     ZERO
+                   MOVE   "1"   TO    RECE44-FLG-ZAIHOU-COMMENT
+              END-IF
+              IF   SRY-SRYCD(IDX2)    =     CONS-ZAIHOU2-COMMENT
+                   MOVE  SPACE  TO    RECE44-FLG-ZAIHOU-COMMENT
+                   MOVE    1    TO    FLG-ZAIHOU-COM
               END-IF
            END-IF
       *
@@ -4732,6 +4774,8 @@
                                                      FLG-SYODOU-COM
                                                      FLG-NIKOCHIN-COM
                                                      FLG-ZENSOKU-COM
+                                                     FLG-OSIN-COM
+                                                     FLG-ZAIHOU-COM
       *
                                MOVE    SPACE   TO    WRK-KYUGYOFLG
       *
@@ -4781,6 +4825,8 @@
                                                       FLG-SYODOU-COM
                                                       FLG-NIKOCHIN-COM
                                                       FLG-ZENSOKU-COM
+                                                      FLG-OSIN-COM
+                                                      FLG-ZAIHOU-COM
       *
                                       MOVE  SPACE TO  WRK-KYUGYOFLG
       *
@@ -4815,6 +4861,8 @@
                                                       FLG-SYODOU-COM
                                                       FLG-NIKOCHIN-COM
                                                       FLG-ZENSOKU-COM
+                                                      FLG-OSIN-COM
+                                                      FLG-ZAIHOU-COM
       *
                                       MOVE  SPACE TO  WRK-KYUGYOFLG
       *
