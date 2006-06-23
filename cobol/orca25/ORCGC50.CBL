@@ -856,7 +856,7 @@
                                        TO  SPA-GMN-SJKBNLST (08)
            MOVE    "09 その他（３）"
                                        TO  SPA-GMN-SJKBNLST (09)
-           MOVE    "99 レセプト電算摘要欄コメント"
+           MOVE    "99 レセプト摘要欄コメント"
                                        TO  SPA-GMN-SJKBNLST (10)
            MOVE    10                  TO  SPA-SJKBN-MAX
       *
@@ -3971,8 +3971,6 @@
                MOVE    ZERO                TO  SPA-GMN-COMSEL
                MOVE    SPACE               TO  SPA-GMN-COMMENT
                MOVE    SPA-GMN-SJKBNLST (01)   TO  SPA-GMN-SJKBN-G
-      ***      MOVE    1                   TO  SPA-GMN-COMSEL
-      ***      PERFORM 21031-COMMENT-HENSYU-SEC
            ELSE
                MOVE    ZERO                TO  SPA-GMN-COMSEL
                MOVE    SPACE               TO  SPA-GMN-COMMENT
