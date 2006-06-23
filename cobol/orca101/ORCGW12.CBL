@@ -1012,7 +1012,7 @@
            MOVE    "ÆþÂà±¡ÍúÎò¤òµ­ºÜ¤¹¤ë"
                                        TO
                                    SPA-GMN-NYUTAIINREKI-KSIKBNMEIL (2)
-           MOVE    3                   TO
+           MOVE    2                   TO
                                    SPA-GMN-NYUTAIINREKI-KSIKBN-MAX 
       *     
            MOVE    "0"                 TO  SPA-GMN-KKHPRTKBNL    (1)
