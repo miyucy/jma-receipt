@@ -1177,7 +1177,7 @@
            EXIT.
       *
       *****************************************************************
-      *    理学療法の逓減チェック処理
+      *    リハビリの回数チェック処理
       *****************************************************************
        100112-RIGAKU-CHK-SEC            SECTION.
       *
@@ -1353,16 +1353,13 @@
       *
            MOVE    IDX-Z               TO  HZN-IDX
       *
-      *DD  理学療法の逓減は、傷病発生３月以降
-      *    IF     (WRK-COM-DATAKBN (IDX-Z) =   "1"  )
-      *        減額診療コード（労災）
-      *        MOVE    "101800030"         TO  WRK-GEN-SRYCD
-      *        理学療法の逓減チェック
-      *        IF      LNK-ORCSC-PG        =   "K02"
-      *            PERFORM 100112-RIGAKU-CHK-SEC
-      *            MOVE    HZN-IDX             TO  IDX-Z
-      *        END-IF
-      *DD  END-IF
+      *    回数チェク
+           IF     (WRK-COM-DATAKBN (IDX-Z) =   "1"  )
+               IF      LNK-ORCSC-PG        =   "K02"
+                   PERFORM 100112-RIGAKU-CHK-SEC
+                   MOVE    HZN-IDX             TO  IDX-Z
+               END-IF
+           END-IF
       *
       *    リハビリテーション総合計画評価料は対象外
            IF      WRK-COM-INPUTCD (IDX-Z) =   "180024710"
@@ -1992,8 +1989,18 @@
                                            INTO    LNK-ORCSC-ERRMSG
                        END-STRING
                    END-IF
-                   MOVE    "8027"          TO  SPA-ERRCD
-                   MOVE    "1"             TO  WRK-COM-CUR  (IDX-Z)
+                   IF      SPA-HKNKBN      =   1
+                       IF     (WRK-COM-KZMFLG (IDX-Z)   =   SPACE)  AND
+                              (LNK-ORCSC-KEI-IDX        =   ZERO )
+                           MOVE    IDX-Z       TO  LNK-ORCSC-KEI-IDX
+                           MOVE    "1"         TO  WRK-COM-KZMFLG(IDX-Z)
+                           MOVE    "8027"      TO  SPA-ERRCD
+                           MOVE    "1"         TO  WRK-COM-CUR (IDX-Z)
+                       END-IF
+                   ELSE
+                       MOVE    "8027"          TO  SPA-ERRCD
+                       MOVE    "1"             TO  WRK-COM-CUR  (IDX-Z)
+                   END-IF
                END-IF
            END-IF
       *    １日６単位で警告
