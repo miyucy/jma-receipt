@@ -36,7 +36,7 @@
       *    ソート区分
            03  HXLST-SRTKBN             PIC X(01).
       *    一括パラメタ
-           03  HXLST-PRTAREA            PIC X(15000).
+           03  HXLST-PRTAREA            PIC X(25000).
       *    出力件数
            03  HXLST-OUT-CNT            PIC 9(8).
       *    復帰コード

@@ -58,5 +58,5 @@
                05  ORCHCN03-DENPEDANUM     PIC 9(02).
       *
            03  ORCHCN03-PRTKBN             PIC X(1).
-           03  ORCHCN03-PRTAREA            PIC X(15000).
+           03  ORCHCN03-PRTAREA            PIC X(25000).
            03  ORCHCN03-OUTCNT             PIC 9(10).

@@ -61,7 +61,7 @@
            03  ORCHC33-KARUTE3KBN      PIC X(01).
       *
       *    一括パラメタ
-           03  ORCHC33-PRTAREA         PIC X(15000).
+           03  ORCHC33-PRTAREA         PIC X(25000).
       *
       *出力領域
       *    ページ枚数

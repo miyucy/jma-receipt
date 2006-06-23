@@ -40,7 +40,7 @@
                    07  ORCHCM34-SRYKADAY   PIC 9(01)
                                            OCCURS  31.
       *        一括パラメタ
-               05  ORCHCM34-PRTAREA        PIC X(15000).
+               05  ORCHCM34-PRTAREA        PIC X(25000).
       *
            03  ORCHCM34-OT.
       *        編集ページ数

@@ -31,7 +31,7 @@
       *    一括用病名編集区分
            03  ORCHC01-BYOMEIFLG       PIC X(01).
       *    一括パラメタ
-           03  ORCHC01-PRTAREA         PIC X(15000).
+           03  ORCHC01-PRTAREA         PIC X(25000).
       *出力領域
       *    エラーコード
            03  ORCHC01-RC              PIC 9(02).
