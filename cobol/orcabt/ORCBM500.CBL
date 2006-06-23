@@ -49,6 +49,9 @@
       *  02.09.05    NACL-藤原    06/05/16  改定通信医１６０４９号
       *                                     症状詳記レコード対応
       *                                     レセ電データを２５００に変更
+      *
+      *  03.00.01    NACL-藤原    06/06/21  システム管理の情報をを診療年
+      *                                     月で取得する
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -391,8 +394,9 @@
            INITIALIZE                  SYS-1001-REC
            MOVE    "1001"              TO  SYS-1001-KANRICD
            MOVE    "*"                 TO  SYS-1001-KBNCD
-           MOVE    LNK-PRTKANRI-SKYYMD TO  SYS-1001-STYUKYMD
-                                           SYS-1001-EDYUKYMD
+           MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-1001-STYUKYMD (1:6)
+           MOVE    "01"                TO  SYS-1001-STYUKYMD (7:2)
+           MOVE    SYS-1001-STYUKYMD   TO  SYS-1001-EDYUKYMD
            MOVE    SYS-1001-REC        TO  MCPDATA-REC
            PERFORM 910-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -406,8 +410,9 @@
            INITIALIZE                  SYS-1002-REC
            MOVE    "1002"              TO  SYS-1002-KANRICD
            MOVE    "*"                 TO  SYS-1002-KBNCD
-           MOVE    LNK-PRTKANRI-SKYYMD TO  SYS-1002-STYUKYMD
-                                           SYS-1002-EDYUKYMD
+           MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-1002-STYUKYMD (1:6)
+           MOVE    "01"                TO  SYS-1002-STYUKYMD (7:2)
+           MOVE    SYS-1001-STYUKYMD   TO  SYS-1002-EDYUKYMD
            MOVE    SYS-1002-REC        TO  MCPDATA-REC
            PERFORM 910-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
