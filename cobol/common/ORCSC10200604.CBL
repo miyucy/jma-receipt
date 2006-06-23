@@ -4506,6 +4506,10 @@
                MOVE    LNK-ORCSC-SYOYMD-OLD    TO  WRK-SYOYMD
            ELSE
                MOVE    LNK-ORCSC-SYOYMD        TO  WRK-SYOYMD
+               IF     (LNK-ORCSC-SYOYMD-OLD NOT =  SPACE ) AND
+                      (WRK-SYOYMD               >  SPA-SRYYMD)
+                   MOVE    LNK-ORCSC-SYOYMD-OLD    TO  WRK-SYOYMD
+               END-IF
            END-IF
       *    同じ科で同日初診がある時、同日初診
            IF      WRK-COM-SRYKA (IDX-Z)   =   SPACE
