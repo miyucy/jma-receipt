@@ -48,6 +48,7 @@
       *  02.09.04    NACL-ÃÁœ∆    06/06/02  ÍÛ·Ï¥µº‘¥…Õ˝≤√ªª ‘Ω∏¬–±˛
       *  02.09.05    NACL-ÃÁœ∆    06/06/05   £øÙ∞Âª’µ⁄§”¥«∏Ó«€√÷≈¨πÁ≤√ªª§»
       *                                     ¥«∏Ó«€√÷≈¨πÁ≤√ªª§Œ ‘Ω∏¬–±˛
+      *  02.09.06    NACL-ÃÁœ∆    06/06/23  «ß√Œµ°«Ωæ„≥≤≤√ªª§Œ ‘Ω∏¬–±˛
       *****************************************************************
       *
       *
@@ -118,6 +119,10 @@
            03  CONS-KANGO-KSN1             PIC X(09) VALUE "190117070".
       *    ¥«∏Ó«€√÷≈¨πÁ≤√ªª
            03  CONS-KANGO-KSN2             PIC X(09) VALUE "190109670".
+      *    «ß√Œµ°«Ωæ„≥≤≤√ªª° Œ≈Õ‹…¬≈Ô°À
+           03  CONS-NINSYO-KSN1            PIC X(09) VALUE "190121970".
+      *    «ß√Œµ°«Ωæ„≥≤≤√ªª° Õ≠æ≤ø«Œ≈ΩÍ°À
+           03  CONS-NINSYO-KSN2            PIC X(09) VALUE "190122670".
       *
       *    œ´∫“º£Œ≈∑◊≤Ë≤√ªª
            03  CONS-ROSAICHIRYO            PIC X(09) VALUE "101910050".
@@ -210,6 +215,11 @@
            03  WRK-KANGO-KSN1              PIC 9(03) OCCURS 31.
       *    ¥«∏Ó«€√÷≈¨πÁ≤√ªª
            03  WRK-KANGO-KSN2              PIC 9(03) OCCURS 31.
+      *
+      *    «ß√Œµ°«Ωæ„≥≤≤√ªª° Œ≈Õ‹…¬≈Ô°À
+           03  WRK-NINSYO-KSN1             PIC 9(03) OCCURS 31.
+      *    «ß√Œµ°«Ωæ„≥≤≤√ªª° Õ≠æ≤ø«Œ≈ΩÍ°À
+           03  WRK-NINSYO-KSN2             PIC 9(03) OCCURS 31.
       *
       *    ø«Œ≈•≥°º•…∑◊Ω∏∑◊Õ—
            03  WRK-SRYCD-X                 PIC X(09).
@@ -747,6 +757,9 @@
                      OR ((ACCT-SRYCDTOTAL(6:9)  =  CONS-KANGO-KSN1
                                                OR  CONS-KANGO-KSN2) AND
                          (LNK-SROUNYUIN-SANTEIYM >= "200604"      ))
+                     OR ((ACCT-SRYCDTOTAL(6:9)  = CONS-NINSYO-KSN1
+                                               OR CONS-NINSYO-KSN2) AND
+                         (LNK-SROUNYUIN-SANTEIYM >= "200607"      ))
       *                ∆˛±°Œ¡≤√ªª§Œ¬‡»Ú
                        PERFORM    VARYING   IDX1   FROM   1   BY   1
                                   UNTIL     IDX1   >   31
@@ -812,6 +825,14 @@
                                 WHEN  CONS-KANGO-KSN2
                                   MOVE   ACCT-DAY(1 IDX1)
                                         TO  WRK-KANGO-KSN2(IDX1)
+      *                         «ß√Œµ°«Ωæ„≥≤≤√ªª° Œ≈Õ‹…¬≈Ô°À
+                                WHEN  CONS-NINSYO-KSN1
+                                  MOVE   ACCT-DAY(1 IDX1)
+                                        TO  WRK-NINSYO-KSN1(IDX1)
+      *                         «ß√Œµ°«Ωæ„≥≤≤√ªª° Õ≠æ≤ø«Œ≈ΩÍ°À
+                                WHEN  CONS-NINSYO-KSN2
+                                  MOVE   ACCT-DAY(1 IDX1)
+                                        TO  WRK-NINSYO-KSN2(IDX1)
                               END-EVALUATE
       *
                               IF   FLG-RYAKU   =   ZERO
@@ -944,6 +965,22 @@
                IF         WRK-KANGO-KSN2(IDX1)      NOT =   ZERO
                    ADD      1                  TO  WRK-MEISAISU
                    MOVE   CONS-KANGO-KSN2      TO  LNK-SROUNYUIN-SRYCD
+                                           (IDX1 WRK-MEISAISU)
+                   MOVE    "3"             TO  LNK-SROUNYUIN-SRYCD-SK
+                                           (IDX1 WRK-MEISAISU)
+               END-IF
+      *        «ß√Œµ°«Ωæ„≥≤≤√ªª° Œ≈Õ‹…¬≈Ô°À
+               IF         WRK-NINSYO-KSN1(IDX1)      NOT =   ZERO
+                   ADD      1                  TO  WRK-MEISAISU
+                   MOVE   CONS-NINSYO-KSN1     TO  LNK-SROUNYUIN-SRYCD
+                                           (IDX1 WRK-MEISAISU)
+                   MOVE    "3"             TO  LNK-SROUNYUIN-SRYCD-SK
+                                           (IDX1 WRK-MEISAISU)
+               END-IF
+      *        «ß√Œµ°«Ωæ„≥≤≤√ªª° Õ≠æ≤ø«Œ≈ΩÍ°À
+               IF         WRK-NINSYO-KSN2(IDX1)      NOT =   ZERO
+                   ADD      1                  TO  WRK-MEISAISU
+                   MOVE   CONS-NINSYO-KSN2     TO  LNK-SROUNYUIN-SRYCD
                                            (IDX1 WRK-MEISAISU)
                    MOVE    "3"             TO  LNK-SROUNYUIN-SRYCD-SK
                                            (IDX1 WRK-MEISAISU)

@@ -96,6 +96,7 @@
       *                                     場合の編集修正（自賠責）
       *  03.00.01    NACL-門脇    06/06/22  往診、在宅患者訪問診療料の
       *                                     コメント自動記載対応
+      *  03.00.02    NACL-門脇    06/06/23  認知機能障害加算の編集対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1297,6 +1298,8 @@
                      (RECE82-SRYYM     <  "200604"                ))
                  OR ((ACCT-SRYCDTOTAL  =  190117070  OR  190109670) AND
                      (RECE82-SRYYM     >= "200604"                ))
+                 OR ((ACCT-SRYCDTOTAL  =  190121970  OR  190122670) AND
+                     (RECE82-SRYYM     >= "200607"                ))
                    CONTINUE
                  ELSE
                    IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
