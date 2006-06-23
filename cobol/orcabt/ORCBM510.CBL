@@ -120,6 +120,7 @@
            03  WRK-SYMD                PIC 9(08).
            03  WRK-HENYMDG             PIC X(22).
            03  WRK-SRYYMWH             PIC X(16).
+           03  WRK-SYM                 PIC 9(06).
       *
            03  WRK-ZZ9                 PIC ZZ9.
       *
@@ -325,6 +326,7 @@
                                            JOBKANRI-REC
       *
       *    システム管理基本情報読込
+           MOVE    LNK-PRTKANRI-SRYYM  TO  WRK-SYM
            PERFORM 900-SYS1001-READ-SEC
       *
            MOVE    "RECEERR"           TO  RECEERR-FILE-ID
@@ -528,7 +530,13 @@
            MOVE    RECE10-SRYYM        TO  WRK-SYMD(1:6)
            MOVE    "01"                TO  WRK-SYMD(7:2)
            PERFORM 31012-SEIWA-HEN-SEC
-           MOVE     WRK-HENYMDG(1:16)  TO  HCM37-SRYM
+           MOVE    WRK-HENYMDG(1:16)   TO  HCM37-SRYM
+      *
+           IF      RECE10-SRYYM        NOT =   WRK-SYM
+               MOVE    RECE10-SRYYM        TO  WRK-SYM
+      *        システム管理基本情報読込
+               PERFORM 900-SYS1001-READ-SEC
+           END-IF
       *
       *    医療機関コード
            MOVE    SYS-1001-HOSPCD     TO  HCM37-HOSPCD
@@ -820,11 +828,16 @@
       *****************************************************************
        900-SYS1001-READ-SEC            SECTION.
       *
+           MOVE    WRK-SYM             TO  WRK-SYMD(1:6)
+           MOVE    "01"                TO  WRK-SYMD(7:2)
+      *
            INITIALIZE                  SYS-1001-REC
            MOVE    "1001"              TO  SYS-1001-KANRICD
            MOVE    "*%"                TO  SYS-1001-KBNCD
-           MOVE    LNK-PRTKANRI-SKYYMD TO  SYS-1001-STYUKYMD
+           MOVE    WRK-SYMD            TO  SYS-1001-STYUKYMD
                                            SYS-1001-EDYUKYMD
+      *     MOVE    LNK-PRTKANRI-SKYYMD TO  SYS-1001-STYUKYMD
+      *                                     SYS-1001-EDYUKYMD
            MOVE    SYS-1001-REC        TO  MCPDATA-REC
            PERFORM 800-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
