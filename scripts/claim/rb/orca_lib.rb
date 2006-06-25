@@ -137,6 +137,7 @@ def macro_get_equal_data(layout)
 	                  	# (cloneとしないと、ポインタのみの複製)
 	# コメントと空白行と行頭・行末・項目間の空白除去
 	record_del_comment_space(wd1)
+	wd1 = wd1+"\n"
 	# マクロ以外の削除
 	begin
 		wd1.gsub! /(?!^.*?,equal,)^.*?\n/ , ''
@@ -144,7 +145,7 @@ def macro_get_equal_data(layout)
 
 # [文字列][,][equal][,][内容][#文字列][\n]
 
-	if wd1!='' and wd1!=nil
+	if wd1.to_s !=''
 		# 定数マクロあり
 		# 重複パラメータの検索
 		wd2 = wd1.split "\n"	# 行単位で配列にする

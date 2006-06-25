@@ -25,10 +25,10 @@
 if __FILE__ == $0
 
 
-	$debug = 0	# デバッグモードではない
+#	$debug = 0	# デバッグモードではない
 #	$debug = 1	# デバッグモードである (レベル1)
 #	$debug = 2	# デバッグモードである (レベル2)
-#	$debug = 3	# デバッグモードである (レベル3)
+	$debug = 3	# デバッグモードである (レベル3)
 
 	# Debian環境ではEUC環境を、Windows環境ではシフトJIS環境を選択してください。
 	$lang_conf = '1'	# EUC環境
@@ -466,7 +466,7 @@ class Xml_baselist
 					when	nil, ''
 						# 空白かnilである
 						# 該当する派生XMLリストの配列を削除する
-						@xmllist.delete_at (n)
+						@xmllist.delete_at(n)
 						@list_value -= 1	# 現在の配列数をセットする
 						# ※for分で、０から実行すると、配列オーバーや判定漏れを起こすので、
 						#   かならず最後の配列から実行すること
@@ -1271,7 +1271,7 @@ class Xml_listdata
 			define_param = $3
 
 			# LineTarget定義の終了位置の取得
-			if h_data1 =~ /^(\s*?\$LineTargetEnd\s*?,\s*?#{define_symbol}\s*?\n)/i
+			if h_data1 =~ /^(\s*?\$LineTargetEnd\s*?,\s*?#{define_symbol}\s*?)/i
 				# $1 = 終了LineTargetEnd定義が出現した行
 				define_endline = $1
 			else
@@ -1704,7 +1704,7 @@ class Xml_listdata
 					# 該当XMLパスのデータは、シーケンシャルファイルに書き込む文字数より小さい
 					ret_data.push xml_data1
 					if output_mode != 1		# CSV出力の場合は、空白はセットしない
-						ret_data.push (' ' * (h_data1[1] - xml_size1))	# 足りない文字数分空白をセット
+						ret_data.push(' ' * (h_data1[1] - xml_size1))	# 足りない文字数分空白をセット
 					end
 				elsif xml_size1 > h_data1[1]
 					# 該当XMLパスのデータは、シーケンシャルファイルに書き込む文字数より大きい
@@ -1719,7 +1719,7 @@ class Xml_listdata
 			else
 				# XMLデータが見つからなかった
 				if output_mode != 1		# CSV出力の場合は、空白はセットしない
-					ret_data.push (' ' * h_data1[1])	# 指定文字数数空白をセット
+					ret_data.push(' ' * h_data1[1])	# 指定文字数数空白をセット
 					w_idx1 += h_data1[1]
 				end
 			end

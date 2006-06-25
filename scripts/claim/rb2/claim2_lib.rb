@@ -770,7 +770,8 @@ if __FILE__ == $0
 	w_ary1 = realize_topline(mes)
 
 	# デバッグ用のメッセージ表示
-	puts debug_realize_topline_mes 1, w_ary1
+	# puts debug_realize_topline_mes 1, w_ary1
+	puts debug_realize_topline_mes(1, w_ary1)
 
 end
 

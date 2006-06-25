@@ -83,24 +83,26 @@ class XmlJCnv
       @head.sub!(/#{@in_code}/i, @out_code) if @in_code
       puts @head 
       while @buf = @f.gets
+        # puts @tp = Kconv::guess(@buf)
+        # exit
         @lct += 1 ; @tp = Kconv::guess(@buf)
         case @from
         when "u8"
-          ersub if !(@tp == 0 or @tp == 3)
+          # ersub if !(@tp == 0 or @tp == 3 or @tp == 5)
           case @to
           when "tou8"
             print @buf
           when "toeuc"
             print Uconv::u8toeuc(@buf)
           when "tosjis"
-            @buf = Uconv::u8toeuc(@buf)
-            print Kconv::tosjis(@buf)
+            print Uconv::u8tosjis(@buf)
           when "tojis"
-            @buf = Uconv::u8toeuc(@buf)
-            print Kconv::tojis(@buf)
+            print Uconv::u8tojis(@buf)
+            # @buf = Uconv::u8toeuc(@buf)
+            # print Kconv::tojis(@buf)
           end
         when "euc"
-          ersub if !(@tp == 0 or @tp == 2)
+          # ersub if !(@tp == 0 or @tp == 2)
           case @to
           when "tou8"
             print Uconv::euctou8(@buf)
@@ -112,11 +114,10 @@ class XmlJCnv
             print Kconv::tojis(@buf)
           end
         when "sjis"
-          ersub if !(@tp == 0 or @tp == 3)
+          # ersub if !(@tp == 0 or @tp == 3)
           case @to
           when "tou8"
-            @buf = Kconv::toeuc(@buf)
-            print Uconv::euctou8(@buf)
+            print Uconv::sjistou8(@buf)
           when "toeuc"
             print Kconv::toeuc(@buf)
           when "tosjis"
@@ -125,7 +126,7 @@ class XmlJCnv
             print Kconv::tojis(@buf)
           end
         when "jis"
-          ersub if !(@tp == 0 or @tp == 1)
+          # ersub if !(@tp == 0 or @tp == 1)
           case @to
           when "tou8"
             @buf = Kconv::toeuc(@buf)
