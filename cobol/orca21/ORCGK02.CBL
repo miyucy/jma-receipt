@@ -5426,9 +5426,6 @@
                           (SPA-GMN-MEISYO-G(SPA-GMN-IDX) 
                                        NOT =   SPACE  )
                        PERFORM 401131-MEISYO-HENKAN-SEC
-                   ELSE
-                       MOVE    SPA-COM-NAME (SPA-GMN-IDX)
-                                       TO  SPA-GMN-MEISYO (SPA-GMN-IDX)
                    END-IF
                END-IF
                IF     (SPA-ERRCD       =   SPACE )  AND
