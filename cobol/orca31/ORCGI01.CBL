@@ -7384,12 +7384,17 @@
       *-   END-IF
       *
       *    該当月の会計テーブルが作成済であること
-           MOVE    SPA-NAI-I01-IDOYMD (1 : 6)
+           IF    ( SPA-NAI-I01-IDOYMD   =  CONST-H180701 )
+            AND  ( SPA-NAI-I01-BTUSBT   =  "04"  OR "09" )
+               CONTINUE
+           ELSE
+               MOVE    SPA-NAI-I01-IDOYMD (1 : 6)
                                        TO  WRK-NACCT-SRYYM
-           PERFORM 4801-NYUINACCT-SEL-SEC
-           IF    ( FLG-NYUINACCTARI    =   ZERO )
-               MOVE    "1029"          TO  SPA-ERRCD
-               GO  TO  4801-TEKNA-CHK-EXT
+               PERFORM 4801-NYUINACCT-SEL-SEC
+               IF    ( FLG-NYUINACCTARI    =   ZERO )
+                   MOVE    "1029"          TO  SPA-ERRCD
+                   GO  TO  4801-TEKNA-CHK-EXT
+               END-IF
            END-IF
       *
            .
