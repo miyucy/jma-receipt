@@ -248,6 +248,8 @@
                            11  SPA-COM-CDKBN-BU    PIC  X(02).
       *                    労災用　区分番号
                            11  SPA-COM-CDKBN-KBNNUM     PIC  X(03).
+      *                    労災用　区分番号枝番
+                           11  SPA-COM-CDKBN-KBNNUM-EDA   PIC  X(02).
       *                算定履歴区分
                        09  SPA-COM-SANTEIRRKKBN    PIC  9(01).
       *                外来管理加算区分
