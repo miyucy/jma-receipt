@@ -2212,12 +2212,21 @@
       *******  IF      TNS-KOUHATUKBN          =   ZERO
       *           MOVE    1                TO  FLG-KOUHATU
       ******   END-IF
-      *        後発医薬品がある先発品
-               IF      TNS-KOUHATUKBN          =   2
-                  MOVE    1                TO  FLG-KOUHATU
+      *        点数マスタ更新前
+               IF      SPA-DBUPDKBN        =   ZERO
+      *            後発医薬品でない
+                   IF      TNS-KOUHATUKBN      =   ZERO
+                       MOVE    1               TO  FLG-KOUHATU
+                   END-IF
+               ELSE
+      *        点数マスタ更新後
+      *            後発医薬品がある先発品
+                   IF      TNS-KOUHATUKBN      =   2
+                      MOVE    1                TO  FLG-KOUHATU
+                   END-IF
                END-IF
       *        後発医薬品
-               IF      TNS-KOUHATUKBN          =   1
+               IF      TNS-KOUHATUKBN      =   1
                   MOVE    1                TO  FLG-KOUHATU-1
                END-IF
       *---(01.00.19) LINE ADD END   ------------------------------------

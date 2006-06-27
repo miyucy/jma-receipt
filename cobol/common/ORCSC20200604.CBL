@@ -480,13 +480,16 @@
       *                    MOVE    "1"             TO  WRK-COM-CUR
       *                                                      (IDX-Z)
       *!               END-IF
+      *                マスタ更新後
+                       IF      SPA-DBUPDKBN        =   1
       *                後発医薬品区分判定
-      *T               IF      WRK-COM-KOUHATUKBN (IDX-Z - 1) =   ZERO
-      *                    MOVE    "2066"          TO  WRK-ERRCD
-      *                    MOVE    "1"             TO  WRK-COM-CUR
-      *                                                      (IDX-Z)
-      *T               END-IF
-                       CONTINUE
+                           IF      WRK-COM-KOUHATUKBN (IDX-Z - 1)
+                                                       =   ZERO
+                               MOVE    "2066"          TO  WRK-ERRCD
+                               MOVE    "1"             TO  WRK-COM-CUR
+                                                             (IDX-Z)
+                           END-IF
+                       END-IF
                    ELSE
                        MOVE    "2064"          TO  WRK-ERRCD
                        MOVE    "1"             TO  WRK-COM-CUR
@@ -1594,6 +1597,8 @@
                           (WRK-COM-INPUTCD(IDX + 1)  =   "099209903")
                        CONTINUE
                    ELSE
+      *              マスタ更新後
+                     IF      SPA-DBUPDKBN        =   1
       *                先発品のみ
                        IF      (WRK-COM-KOUHATUKBN (IDX)
                                                =   0   )
@@ -1601,6 +1606,11 @@
                        ELSE
                            MOVE    1               TO  FLG-KOUHATU-HEN2
                        END-IF
+                     ELSE
+      *              マスタ更新前
+      *                  すべて後発品ありの判定とする
+                         MOVE    1               TO  FLG-KOUHATU-HEN2
+                     END-IF
                    END-IF
                END-IF
            END-IF
