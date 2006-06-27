@@ -7114,9 +7114,6 @@
                        WHEN   "190121710"
                            MOVE "療養病棟入院基本料２（Ｅ）"
                                                TO  TNS-NAME
-                       WHEN   "190121710"
-                           MOVE "療養病棟入院基本料２（Ｅ）"
-                                               TO  TNS-NAME
                        WHEN   "190121810"
                            MOVE "療養病棟入院基本料２（特別入院基本料）"
                                                TO  TNS-NAME
