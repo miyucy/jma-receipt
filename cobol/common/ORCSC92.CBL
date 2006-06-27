@@ -2096,7 +2096,7 @@
                   (SPA-GMN-MEISYO  (IDX-T)   NOT =   SPACE   ))
                CONTINUE
            ELSE
-               MOVE    TNS-NAME      TO  SPA-GMN-MEISYO   (IDX-T)
+               MOVE    TNS-NAME      TO  SPA-GMN-MEISYO  (IDX-T)
       *        薬剤服用コメントの時、再編集
                IF      SPA-COM-INPUTCD (IDX-T)(1:3)    =   "001"
                    PERFORM 3001-FUKIYO-MEISYO-SEC
@@ -2211,6 +2211,10 @@
            MOVE    TNS-CDKBN-BU        TO  SPA-COM-CDKBN-BU  (IDX-T)
       *    労災用　区分番号
            MOVE    TNS-CDKBN-KBNNUM    TO  SPA-COM-CDKBN-KBNNUM (IDX-T)
+      *    労災用　区分番号枝番
+           MOVE    TNS-CDKBN-KBNNUM-EDA
+                                       TO  SPA-COM-CDKBN-KBNNUM-EDA
+                                                              (IDX-T)
       *    検査用　包括対象検査
            MOVE    TNS-HOUKNSKBN       TO  SPA-COM-HOUKNSKBN (IDX-T)
       *    検査用　検体検査コメント
