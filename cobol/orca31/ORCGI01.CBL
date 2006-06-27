@@ -7386,7 +7386,17 @@
       *    該当月の会計テーブルが作成済であること
            IF    ( SPA-NAI-I01-IDOYMD   =  CONST-H180701 )
             AND  ( SPA-NAI-I01-BTUSBT   =  "04"  OR "09" )
-               CONTINUE
+               MOVE    SPA-NAI-I01-IDOYMD
+                                       TO  WRK-YMD
+               MOVE    "2"             TO  WRK-ZOGENPTN
+               MOVE    -1              TO  WRK-ZOGEN
+               PERFORM 5002-CALENDAR-SEC
+               MOVE    WRK-KEISANYMD   TO  WRK-NACCT-SRYYM
+               PERFORM 4801-NYUINACCT-SEL-SEC
+               IF    ( FLG-NYUINACCTARI    =   ZERO )
+                   MOVE    "1042"      TO  SPA-ERRCD
+                   GO  TO  4801-TEKNA-CHK-EXT
+               END-IF
            ELSE
                MOVE    SPA-NAI-I01-IDOYMD (1 : 6)
                                        TO  WRK-NACCT-SRYYM
@@ -12119,18 +12129,23 @@
            IF      PTNYUINRRK-TOKUTEI-NYUIN    NOT =   SPACE
                PERFORM   4801-TOKTEI-NYUIN-SET-SEC
            ELSE
-               IF  SYS-5001-BTU-KHNSRYCD      NOT =   SPACE
-                   MOVE    SYS-5001-BTU-KHNSRYCD
+               IF    ( SPA-NAI-I01-MAEIDOYMD   =  CONST-H180701 )
+                AND  ( SPA-NAI-I01-BTUSBT       =  "04"  OR "09" )
+                   CONTINUE
+               ELSE
+                   IF  SYS-5001-BTU-KHNSRYCD      NOT =   SPACE
+                       MOVE    SYS-5001-BTU-KHNSRYCD
                                        TO  SYOKIKSN-IN-KHNSRYCD
-                   PERFORM   4801-RJNCD-CHG-SEC
-                   CALL    "ORCSSYOKIKSN"  USING   ORCSSYOKIKSNAREA
-                   IF    ( SYOKIKSN-OT-RC  NOT =   ZERO )
-                       MOVE    "4023"      TO  SPA-ERRCD
+                       PERFORM   4801-RJNCD-CHG-SEC
+                       CALL    "ORCSSYOKIKSN"  USING   ORCSSYOKIKSNAREA
+                       IF    ( SYOKIKSN-OT-RC  NOT =   ZERO )
+                           MOVE    "4023"      TO  SPA-ERRCD
+                           GO  TO  4801-IDOKAIKEI-CANCEL-EXT
+                       END-IF
+                   ELSE
+                       MOVE    "4024"      TO  SPA-ERRCD
                        GO  TO  4801-IDOKAIKEI-CANCEL-EXT
                    END-IF
-               ELSE
-                   MOVE    "4024"      TO  SPA-ERRCD
-                   GO  TO  4801-IDOKAIKEI-CANCEL-EXT
                END-IF
            END-IF
       *
@@ -15452,6 +15467,9 @@
                                        TO  SPA-ERRMSG (1 : 40)
                MOVE    "り新規に作成してください"
                                        TO  SPA-ERRMSG (41 : )
+           WHEN    "1042"
+               MOVE    "６月の会計テーブルが作成されていません"
+                                       TO  SPA-ERRMSG
            WHEN    "2012"
                MOVE    "退院計算に必要な会計情報が作成されていません"
                                        TO  SPA-ERRMSG
