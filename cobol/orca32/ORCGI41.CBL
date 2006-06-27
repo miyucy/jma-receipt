@@ -7098,6 +7098,48 @@
                PERFORM 920-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
+                   EVALUATE   TNS-SRYCD
+                       WHEN   "190121310"
+                           MOVE "немэибеОфЧ╠║╢Пкэнаё╡║йёа║к"
+                                               TO  TNS-NAME
+                       WHEN   "190121410"
+                           MOVE "немэибеОфЧ╠║╢Пкэнаё╡║йёб║к"
+                                               TO  TNS-NAME
+                       WHEN   "190121510"
+                           MOVE "немэибеОфЧ╠║╢Пкэнаё╡║йёц║к"
+                                               TO  TNS-NAME
+                       WHEN   "190121610"
+                           MOVE "немэибеОфЧ╠║╢Пкэнаё╡║йёд║к"
+                                               TO  TNS-NAME
+                       WHEN   "190121710"
+                           MOVE "немэибеОфЧ╠║╢Пкэнаё╡║йёе║к"
+                                               TO  TNS-NAME
+                       WHEN   "190121710"
+                           MOVE "немэибеОфЧ╠║╢Пкэнаё╡║йёе║к"
+                                               TO  TNS-NAME
+                       WHEN   "190121810"
+                           MOVE "немэибеОфЧ╠║╢Пкэнаё╡║йфцйлфЧ╠║╢Пкэна║к"
+                                               TO  TNS-NAME
+                       WHEN   "190122010"
+                           MOVE "©гне╫Йнемэиб╬╡фЧ╠║╢Пкэнаё╡║йёа║к"
+                                               TO  TNS-NAME
+                       WHEN   "190122110"
+                           MOVE "©гне╫Йнемэиб╬╡фЧ╠║╢Пкэнаё╡║йёб║к"
+                                               TO  TNS-NAME
+                       WHEN   "190122210"
+                           MOVE "©гне╫Йнемэиб╬╡фЧ╠║╢Пкэнаё╡║йёц║к"
+                                               TO  TNS-NAME
+                       WHEN   "190122310"
+                           MOVE "©гне╫Йнемэиб╬╡фЧ╠║╢Пкэнаё╡║йёд║к"
+                                               TO  TNS-NAME
+                       WHEN   "190122410"
+                           MOVE "©гне╫Йнемэиб╬╡фЧ╠║╢Пкэнаё╡║йёе║к"
+                                               TO  TNS-NAME
+                       WHEN   "190122510"
+                           MOVE
+                          "©гне╫Йнемэиб╬╡фЧ╠║╢Пкэнаё╡║йфцйлфЧ╠║╢Пкэна║к"
+                                               TO  TNS-NAME
+                   END-EVALUATE
                    MOVE    ZERO                TO  FLG-TENSU
                ELSE
                    INITIALIZE                  TNS-TENSU-REC
