@@ -481,11 +481,12 @@
       *                                                      (IDX-Z)
       *!               END-IF
       *                ∏Â»Ø∞ÂÃÙ… ∂Ë ¨»ΩƒÍ
-                       IF      WRK-COM-KOUHATUKBN (IDX-Z - 1) =   ZERO
-                           MOVE    "2066"          TO  WRK-ERRCD
-                           MOVE    "1"             TO  WRK-COM-CUR
-                                                             (IDX-Z)
-                       END-IF
+      *T               IF      WRK-COM-KOUHATUKBN (IDX-Z - 1) =   ZERO
+      *                    MOVE    "2066"          TO  WRK-ERRCD
+      *                    MOVE    "1"             TO  WRK-COM-CUR
+      *                                                      (IDX-Z)
+      *T               END-IF
+                       CONTINUE
                    ELSE
                        MOVE    "2064"          TO  WRK-ERRCD
                        MOVE    "1"             TO  WRK-COM-CUR
