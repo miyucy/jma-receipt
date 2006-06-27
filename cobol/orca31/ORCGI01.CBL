@@ -10785,6 +10785,7 @@
                                          TO WRK-TENROOM-SKJ20(1 IDX-SKJ)
                         END-PERFORM
                  END-EVALUATE
+                 MOVE    SPACE           TO  WRK-TENROOM-SKJ-SRYYM(1)
                END-IF
       *        入院会計マスタクローズ
                MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
@@ -11666,7 +11667,8 @@
       *    入院会計作成後に退避データの食事区分を復元
            IF  SPA-NAI-I01-IDOYMD(1:6)  >= "200604"
       *       （異動月分）
-               PERFORM    VARYING  IDX-SKJ-TAIHI  FROM  1  BY  1
+               IF   WRK-TENROOM-SKJ-SRYYM(1)  NOT =   SPACE
+                PERFORM    VARYING  IDX-SKJ-TAIHI  FROM  1  BY  1
                  UNTIL    IDX-SKJ-TAIHI   >   3
                  INITIALIZE                      NYUINACCT-REC
                  MOVE    PTNYUINRRK-HOSPID   TO  NACCT-HOSPID
@@ -11744,7 +11746,8 @@
                          MOVE    "key32"     TO  MCP-PATHNAME
                  END-EVALUATE
                  PERFORM 900-TBL-CLOSE2-SEC
-               END-PERFORM
+                END-PERFORM
+               END-IF
       *
       *       （異動翌月分）
                IF   WRK-TENROOM-SKJ-SRYYM(2)  NOT =   SPACE
