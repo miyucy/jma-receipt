@@ -125,9 +125,9 @@
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
-           03  CNT-LINE            PIC 9(02).
+           03  CNT-LINE            PIC 9(03).
            03  CNT-PAGE            PIC 9(06).
-           03  CNT-SEQ             PIC 9(03).
+           03  CNT-SEQ             PIC 9(06).
            03  CNT-INPUT-ITEM      PIC 9(03).
       *
       *    Åº»úÎÎ°è
