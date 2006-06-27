@@ -87,6 +87,7 @@
            03  FLG-END             PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-OK              PIC 9(01).
+           03  FLG-DBKANRI         PIC 9(01).
       *
       *    システム領域
        01  SYS-AREA.
@@ -153,6 +154,10 @@
       *---- (01.02.08) LINE ADD END   --------------------------------
       *    主科設定情報
            COPY  "CPSK2009.INC".
+      *
+      *    ＤＢ管理
+       01  DBKANRI-REC.
+           COPY    "CPDBKANRI.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -676,6 +681,9 @@
            MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
+      *    点数マスタ更新判定(2006/7/27分更新）
+           PERFORM 3101-DBKANRI-SET-SEC
+      *
       *     リダイレクタ不整チェック追加
            IF  MCP-DBSTATUS                =   "DISC"
                MOVE    "1006"              TO  SPA-ERRCD
@@ -692,6 +700,45 @@
       *
            .
        310-SPASET-EXT.
+           EXIT.
+      *****************************************************************
+      *    点数マスタ更新判定処理
+      *****************************************************************
+       3101-DBKANRI-SET-SEC                SECTION.
+      *
+           INITIALIZE                  DBKANRI-REC
+           MOVE    DBKANRI-REC         TO  MCPDATA-REC
+           MOVE    "tbl_dbkanri"       TO  MCP-TABLE 
+           MOVE    "all"               TO  MCP-PATHNAME 
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_dbkanri"   TO  MCP-TABLE 
+               MOVE    "all"           TO  MCP-PATHNAME 
+               PERFORM 900-DBKANRI-READ-SEC
+           ELSE
+               INITIALIZE                      DBKANRI-REC
+               MOVE    1                   TO  FLG-DBKANRI
+           END-IF
+           MOVE    ZERO                TO  SPA-DBUPDKBN
+           PERFORM UNTIL   FLG-DBKANRI     =   1
+               IF      DBKANRI-KANRICD     =   "ORCADB00"
+                   IF      DBKANRI-DBRVERSION1 >=
+                                           "R-020800-2-20060727-1"
+                       MOVE    1               TO  SPA-DBUPDKBN
+                   END-IF
+                   MOVE    1                   TO  FLG-DBKANRI
+               END-IF
+               IF      FLG-DBKANRI         =   ZERO
+                   MOVE    "tbl_dbkanri"   TO  MCP-TABLE 
+                   MOVE    "all"           TO  MCP-PATHNAME 
+                   PERFORM 900-DBKANRI-READ-SEC
+               END-IF
+           END-PERFORM
+           MOVE    "tbl_dbkanri"       TO  MCP-TABLE 
+           MOVE    "all"               TO  MCP-PATHNAME 
+           PERFORM 990-DBCLOSE-SEC
+           .
+       3101-DBKANRI-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1110,6 +1157,26 @@
       *
            .
        900-SYSKANRI-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ管理読込み処理
+      *****************************************************************
+       900-DBKANRI-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           CALL    "MONFUNC"       USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  DBKANRI-REC
+               MOVE    ZERO            TO  FLG-DBKANRI
+           ELSE
+               INITIALIZE                  DBKANRI-REC
+               MOVE    1               TO  FLG-DBKANRI
+           END-IF
+      *
+           .
+       900-DBKANRI-READ-EXT.
            EXIT.
       *****************************************************************
       *    テーブル検索処理
