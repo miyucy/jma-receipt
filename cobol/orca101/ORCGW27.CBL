@@ -165,6 +165,7 @@
       *    固定値領域
        01  CONST-AREA.
            03  CONST-H180401               PIC X(08) VALUE "20060401".
+           03  CONST-H180701               PIC X(08) VALUE "20060701".
            03  CONST-KSN-MAX               PIC 9(03) VALUE  15.
            03  CONST-SYSKSN-MAX            PIC 9(03) VALUE  12.
            03  CONST-BTUNAME-MAX           PIC 9(03) VALUE  50.
@@ -702,10 +703,15 @@
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
       *
-      *    施設基準チェック処理
-           PERFORM 4100-SSTKIJUN-CHK-SEC
-           IF    ( SPA-ERRCD       NOT =   SPACE )
-               GO  TO  4102-KIHON-CHK-EXT
+           IF    ( SPA-NAI-W27-STYUKYMD  >= CONST-H180701 )
+            AND  ( SPA-NAI-W27-SBT        =    "04" OR "09" )
+               CONTINUE
+           ELSE
+      *        施設基準チェック処理
+               PERFORM 4100-SSTKIJUN-CHK-SEC
+               IF    ( SPA-ERRCD       NOT =   SPACE )
+                   GO  TO  4102-KIHON-CHK-EXT
+               END-IF
            END-IF
       *
            .
