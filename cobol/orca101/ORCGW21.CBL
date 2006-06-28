@@ -1710,11 +1710,6 @@
       *
       *    病棟情報検索処理
            PERFORM 4100-BRM-SEL-SEC
-           IF   (  FLG-SYSKANRI    =   ZERO )
-               CONTINUE
-           ELSE
-               GO  TO  4100-RIREKI-CHK-EXT
-           END-IF
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
                UNTIL     ( FLG-SYSKANRI    NOT =   ZERO )
