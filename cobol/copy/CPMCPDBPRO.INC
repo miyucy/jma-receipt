@@ -823,8 +823,8 @@
                    MOVE "tbl_syunou" TO WRK-TABLE
                    MOVE "del5" TO WRK-PATHNAME
       *        WHEN    "DBDELETE"      ALSO   "SYUNOU-DEL6"
-                   MOVE "tbl_syunou" TO WRK-TABLE
-                   MOVE "del6" TO WRK-PATHNAME
+      *            MOVE "tbl_syunou" TO WRK-TABLE
+      *            MOVE "del6" TO WRK-PATHNAME
       *追加/*開始*01.01.45********************************************
                WHEN    "DBUPDATE"      ALSO   "SYUMEI-KEY"
                WHEN    "DBUPDATE"      ALSO   "SYUMEI-KEY2"
