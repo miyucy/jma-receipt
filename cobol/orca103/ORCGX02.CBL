@@ -1280,37 +1280,40 @@
                MOVE    "2"             TO  SPA-X98-SYORIKBN
            END-IF
       *
-           EVALUATE    SPA-X01-CHKKBN
-           WHEN    "4"
-               MOVE    "2"             TO  SPA-X98-GMN-KBN
-               MOVE    "3"             TO  SPA-X98-GMN-SYORI
-           WHEN    "5"
-               MOVE    "2"             TO  SPA-X98-GMN-KBN
-               MOVE    "8"             TO  SPA-X98-GMN-SYORI
-           END-EVALUATE
+           IF    ( WRK-INPUTCD     NOT =   SPACE )
       *
-           MOVE    WRK-INPUTCD         TO  SPA-X98-INPUTCD
-           IF    ( SPA-X98-GMN-KBN     =   "2" )
-               MOVE    "1"             TO  SPA-X98-TYPE
-           ELSE
-               MOVE    SPACE           TO  SPA-X98-TYPE
-           END-IF
+               EVALUATE    SPA-X01-CHKKBN
+               WHEN    "4"
+                   MOVE    "2"             TO  SPA-X98-GMN-KBN
+                   MOVE    "3"             TO  SPA-X98-GMN-SYORI
+               WHEN    "5"
+                   MOVE    "2"             TO  SPA-X98-GMN-KBN
+                   MOVE    "8"             TO  SPA-X98-GMN-SYORI
+               END-EVALUATE
       *
-           IF    ( FLG-KANJI           =   1 )
-               MOVE    "J"             TO  SPA-X98-CDSYUBETU
-           ELSE
-               IF    ( WRK-INPUTCD(1:1)    NUMERIC )
-                   EVALUATE    WRK-MOJI
-                   WHEN    3
-                   WHEN    6
-                       MOVE    "6"     TO  SPA-X98-CDSYUBETU
-                   WHEN    4
-                       MOVE    "4"     TO  SPA-X98-CDSYUBETU
-                   WHEN    5
-                       MOVE    "5"     TO  SPA-X98-CDSYUBETU
-                   END-EVALUATE
+               MOVE    WRK-INPUTCD         TO  SPA-X98-INPUTCD
+               IF    ( SPA-X98-GMN-KBN     =   "2" )
+                   MOVE    "1"             TO  SPA-X98-TYPE
                ELSE
-                   MOVE    "A"             TO  SPA-X98-CDSYUBETU
+                   MOVE    SPACE           TO  SPA-X98-TYPE
+               END-IF
+      *
+               IF    ( FLG-KANJI           =   1 )
+                   MOVE    "J"             TO  SPA-X98-CDSYUBETU
+               ELSE
+                   IF    ( WRK-INPUTCD(1:1)    NUMERIC )
+                       EVALUATE    WRK-MOJI
+                       WHEN    3
+                       WHEN    6
+                           MOVE    "6"     TO  SPA-X98-CDSYUBETU
+                       WHEN    4
+                           MOVE    "4"     TO  SPA-X98-CDSYUBETU
+                       WHEN    5
+                           MOVE    "5"     TO  SPA-X98-CDSYUBETU
+                       END-EVALUATE
+                   ELSE
+                       MOVE    "A"             TO  SPA-X98-CDSYUBETU
+                   END-IF
                END-IF
            END-IF
       *

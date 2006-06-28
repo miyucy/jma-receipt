@@ -409,10 +409,9 @@
        000-PROC-SEC                SECTION.
       *
            INITIALIZE                  FLG-AREA
-           INITIALIZE                  IDX-AREA
            INITIALIZE                  WRK-AREA
       *
-           MOVE    SPA-COMMON      TO  SPA-AREA
+           MOVE    SPA-COMMON      TO  SPA-AREA.
            MOVE    SPA-WORK        TO  SPA-W01KYOUTU
            MOVE    SPA-FREE        TO  SPA-W24FREE
       *
@@ -420,24 +419,24 @@
            MOVE    ZERO            TO  FLG-END
       *
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
-           WHEN    "LINK"          ALSO    ANY
-               PERFORM 100-INIT-SEC
+               WHEN    "LINK"          ALSO    ANY
+                   PERFORM 100-INIT-SEC
       *    画面遷移
-           WHEN     "PUTG"           ALSO   "CLICKED"
-               PERFORM 200-GMNSENI
+               WHEN     "PUTG"           ALSO   "CLICKED"
+                   PERFORM 200-GMNSENI
       *    入力
-           WHEN      OTHER
-               PERFORM 200-ENTRY
+               WHEN      OTHER
+                   PERFORM 200-ENTRY
            END-EVALUATE.
       *
       *    画面遷移がない時、画面表示へ
-           IF    ( FLG-END         =   ZERO )
+           IF      FLG-END             =   ZERO
                PERFORM 500-SET-SCREEN
            END-IF
       *
-           MOVE    SPA-W24FREE     TO  SPA-FREE
-           MOVE    SPA-W01KYOUTU   TO  SPA-WORK 
+           MOVE    SPA-W01KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
+           MOVE    SPA-W24FREE     TO  SPA-FREE
       *
            .
            EXIT    PROGRAM

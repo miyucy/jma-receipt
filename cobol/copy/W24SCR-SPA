@@ -264,6 +264,7 @@
            03  SPA-W25GMN-AREA.
                05  SPA-W25-GMN-MAX               PIC 9(03).
                05  SPA-W25-NEXT                  PIC 9(04).
+               05  SPA-W25-PAGE                  PIC 9(04).
                05  SPA-W25-GMN-CUR               PIC 9(03).
       *
                05  SPA-W25-GMN-SELNUM-G.
