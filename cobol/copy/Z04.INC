@@ -80,12 +80,12 @@
                 04  Z04-TENSIKIBETU.
                   05  Z04-VALUE   PIC X(20).
                 04  Z04-TENSIKIBETU-COUNT   PIC S9(9)   BINARY.
-                04  Z04-TENSIKIBETULST  PIC X(20)   OCCURS  3 TIMES.
+                04  Z04-TENSIKIBETULST  PIC X(20)   OCCURS  4 TIMES.
               03  Z04-OLDTENSKB-COMBO.
                 04  Z04-OLDTENSKB.
                   05  Z04-VALUE   PIC X(20).
                 04  Z04-OLDTENSKB-COUNT   PIC S9(9)   BINARY.
-                04  Z04-OLDTENSKBLST   PIC X(20)   OCCURS  3 TIMES.
+                04  Z04-OLDTENSKBLST   PIC X(20)   OCCURS  4 TIMES.
               03  Z04-SYUSAISKB.
                 04  Z04-VALUE   PIC S9(1).
               03  Z04-FORMALNAME.

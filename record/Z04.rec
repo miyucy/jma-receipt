@@ -91,14 +91,14 @@ Z04	{
 				value	varchar(20);
 			};
 			count	int;
-			item	varchar(20)[3];
+			item	varchar(20)[4];
 		};
 		OLDTENSKB_COMBO	{
 			OLDTENSKB	{
 				value	varchar(20);
 			};
 			count	int;
-			item	varchar(20)[3];
+			item	varchar(20)[4];
 		};
 		SYUSAISKB	{
 			value	number(1);

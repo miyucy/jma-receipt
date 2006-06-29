@@ -71,11 +71,12 @@
                05  SPA-GMN-YUKOSTYMDH          PIC X(09).
                05  SPA-GMN-YUKOEDYMDH          PIC X(09).
       * 
-               05  SPA-GMN-TENSIKIBETULST      OCCURS  3.
+               05  SPA-GMN-TENSIKIBETULST      OCCURS  4.
                    07  SPA-GMN-TENSIKIBETUL    PIC X(01).
                    07  SPA-GMN-F1L             PIC X(01).
                    07  SPA-GMN-TENSIKIBETUMEIL PIC X(18).
-               05  SPA-GMN-OLDTENSKBLST        OCCURS  3.
+               05  SPA-TENSKB-MAX              PIC 9(02).
+               05  SPA-GMN-OLDTENSKBLST        OCCURS  4.
                    07  SPA-GMN-OLDTENSKBL      PIC X(01).
                    07  SPA-GMN-F1L             PIC X(01).
                    07  SPA-GMN-OLDTENSKBMEIL   PIC X(18).
@@ -495,19 +496,24 @@
            END-IF
            MOVE  SPA-Z01-YUKOEDYMDH    TO  SPA-GMN-YUKOEDYMD
       *
-           MOVE    "1"                 TO  SPA-GMN-TENSIKIBETUL   (1)
-           MOVE    "¶â³Û"              TO  SPA-GMN-TENSIKIBETUMEIL(1)
-           MOVE    "2"                 TO  SPA-GMN-TENSIKIBETUL   (2)
-           MOVE    "ÅÔÆ»ÉÜ¸©¹ØÆþ²Á³Ê"  TO  SPA-GMN-TENSIKIBETUMEIL(2)
-           MOVE    "7"                 TO  SPA-GMN-TENSIKIBETUL   (3)
-           MOVE    "¸ºÅÀ"              TO  SPA-GMN-TENSIKIBETUMEIL(3)
+           MOVE    "0"                 TO  SPA-GMN-TENSIKIBETUL   (1)
+           MOVE    SPACE               TO  SPA-GMN-TENSIKIBETUMEIL(1)
+           MOVE    "1"                 TO  SPA-GMN-TENSIKIBETUL   (2)
+           MOVE    "¶â³Û"              TO  SPA-GMN-TENSIKIBETUMEIL(2)
+           MOVE    "2"                 TO  SPA-GMN-TENSIKIBETUL   (3)
+           MOVE    "ÅÔÆ»ÉÜ¸©¹ØÆþ²Á³Ê"  TO  SPA-GMN-TENSIKIBETUMEIL(3)
+           MOVE    "7"                 TO  SPA-GMN-TENSIKIBETUL   (4)
+           MOVE    "¸ºÅÀ"              TO  SPA-GMN-TENSIKIBETUMEIL(4)
+           MOVE    4                   TO  SPA-TENSKB-MAX
       *
-           MOVE    "1"                 TO  SPA-GMN-OLDTENSKBL     (1)
-           MOVE    "¶â³Û"              TO  SPA-GMN-OLDTENSKBMEIL  (1)
-           MOVE    "2"                 TO  SPA-GMN-OLDTENSKBL     (2)
-           MOVE    "ÅÔÆ»ÉÜ¸©¹ØÆþ²Á³Ê"  TO  SPA-GMN-OLDTENSKBMEIL  (2)
-           MOVE    "7"                 TO  SPA-GMN-OLDTENSKBL     (3)
-           MOVE    "¸ºÅÀ"              TO  SPA-GMN-OLDTENSKBMEIL  (3)
+           MOVE    "0"                 TO  SPA-GMN-OLDTENSKBL     (1)
+           MOVE    SPACE               TO  SPA-GMN-OLDTENSKBMEIL  (1)
+           MOVE    "1"                 TO  SPA-GMN-OLDTENSKBL     (2)
+           MOVE    "¶â³Û"              TO  SPA-GMN-OLDTENSKBMEIL  (2)
+           MOVE    "2"                 TO  SPA-GMN-OLDTENSKBL     (3)
+           MOVE    "ÅÔÆ»ÉÜ¸©¹ØÆþ²Á³Ê"  TO  SPA-GMN-OLDTENSKBMEIL  (3)
+           MOVE    "7"                 TO  SPA-GMN-OLDTENSKBL     (4)
+           MOVE    "¸ºÅÀ"              TO  SPA-GMN-OLDTENSKBMEIL  (4)
       *
            MOVE    "0"                 TO  SPA-GMN-MADOKUKBNL     (1)
            MOVE    "¤Ê¤·"              TO  SPA-GMN-MADOKUKBNMEIL  (1)
@@ -634,7 +640,7 @@
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-           MOVE    SPA-GMN-TENSIKIBETULST (1)
+           MOVE    SPA-GMN-TENSIKIBETULST (2)
                                       TO  SPA-GMN-TENSIKIBETU-G
            MOVE    SPA-GMN-OLDTENSKBLST (1)
                                       TO  SPA-GMN-OLDTENSKB-G
@@ -736,23 +742,23 @@
            MOVE    TNS-TEN             TO  SPA-GMN-TEN
            MOVE    TNS-TENSIKIBETU     TO  SPA-GMN-TENSIKIBETU
            PERFORM VARYING IDXX    FROM    1   BY  1
-                   UNTIL   IDXX    >       3
+                   UNTIL   IDXX    >       SPA-TENSKB-MAX
                IF      SPA-GMN-TENSIKIBETU 
                                        =   SPA-GMN-TENSIKIBETUL (IDXX)
                    MOVE    SPA-GMN-TENSIKIBETULST (IDXX)
                                            TO  SPA-GMN-TENSIKIBETU-G
-                   MOVE    3               TO  IDXX
+                   MOVE    SPA-TENSKB-MAX  TO  IDXX
                END-IF
            END-PERFORM
            MOVE    TNS-OLDTEN          TO  SPA-GMN-OLDTEN
            MOVE    TNS-OLDTENSKB       TO  SPA-GMN-OLDTENSKB
            PERFORM VARYING IDXX    FROM    1   BY  1
-                   UNTIL   IDXX    >       3
+                   UNTIL   IDXX    >       SPA-TENSKB-MAX
                IF      SPA-GMN-OLDTENSKB 
                                        =   SPA-GMN-OLDTENSKBL (IDXX)
                    MOVE    SPA-GMN-OLDTENSKBLST (IDXX)
                                            TO  SPA-GMN-OLDTENSKB-G
-                   MOVE    3               TO  IDXX
+                   MOVE    SPA-TENSKB-MAX  TO  IDXX
                END-IF
            END-PERFORM
            MOVE    TNS-TANICD          TO  SPA-GMN-TANICD
@@ -2100,13 +2106,13 @@
       *
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING     IDXX    FROM    1   BY  1
-                   UNTIL       IDXX    >   3
+                   UNTIL       IDXX    >   SPA-TENSKB-MAX
                IF      SPA-GMN-TENSIKIBETU
                                        =   SPA-GMN-TENSIKIBETUL (IDXX)
                    MOVE    SPA-GMN-TENSIKIBETULST (IDXX)
                                            TO  SPA-GMN-TENSIKIBETU-G
                    MOVE    1               TO  FLG-OK
-                   MOVE    3               TO  IDXX
+                   MOVE    SPA-TENSKB-MAX  TO  IDXX
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
@@ -2124,13 +2130,13 @@
       *
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING     IDXX    FROM    1   BY  1
-                   UNTIL       IDXX    >   3
+                   UNTIL       IDXX    >   SPA-TENSKB-MAX
                IF      SPA-GMN-OLDTENSKB
                                        =   SPA-GMN-OLDTENSKBL (IDXX)
                    MOVE    SPA-GMN-OLDTENSKBLST (IDXX)
                                            TO  SPA-GMN-OLDTENSKB-G
                    MOVE    1               TO  FLG-OK
-                   MOVE    3               TO  IDXX
+                   MOVE    SPA-TENSKB-MAX  TO  IDXX
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
@@ -2645,17 +2651,17 @@
            MOVE  SPA-GMN-KEIKASOCHIYMD TO  Z04-KEIKASOCHIYMD
       *     
            PERFORM VARYING IDXX    FROM    1   BY  1
-                   UNTIL   IDXX    >       3
+                   UNTIL   IDXX    >       SPA-TENSKB-MAX
                MOVE    SPA-GMN-TENSIKIBETULST (IDXX)
                                        TO  Z04-TENSIKIBETULST   (IDXX)
            END-PERFORM
-           MOVE    3                   TO  Z04-TENSIKIBETU-COUNT
+           MOVE    SPA-TENSKB-MAX      TO  Z04-TENSIKIBETU-COUNT
            PERFORM VARYING IDXX    FROM    1   BY  1
-                   UNTIL   IDXX    >       3
+                   UNTIL   IDXX    >       SPA-TENSKB-MAX
                MOVE    SPA-GMN-OLDTENSKBLST(IDXX)
                                        TO  Z04-OLDTENSKBLST (IDXX)
            END-PERFORM    
-           MOVE    3                   TO  Z04-OLDTENSKB-COUNT
+           MOVE    SPA-TENSKB-MAX      TO  Z04-OLDTENSKB-COUNT
       *
            MOVE    ZERO                TO  IDX
            PERFORM VARYING IDXX    FROM    1   BY  1
