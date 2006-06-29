@@ -58,3 +58,11 @@
                     06  W99-VALUE   PIC X.
                   05  W99-NYU-ORDER2.
                     06  W99-VALUE   PIC X.
+                  05  W99-MULTIHOST1.
+                    06  W99-VALUE   PIC X.
+                  05  W99-MULTIHOST2.
+                    06  W99-VALUE   PIC X.
+                  05  W99-RESEND1.
+                    06  W99-VALUE   PIC X.
+                  05  W99-RESEND2.
+                    06  W99-VALUE   PIC X.

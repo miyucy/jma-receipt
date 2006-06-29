@@ -118,6 +118,11 @@
                    07  SPA-GMN-NYU-ORDER-G.
                        09  SPA-GMN-NYU-ORDER
                                               PIC X(01) OCCURS 2.
+                   07  SPA-GMN-MULTIHOST-G.
+                       09  SPA-GMN-MULTIHOST  PIC X(01) OCCURS 2.
+                   07  SPA-GMN-RESEND-G.
+                       09  SPA-GMN-RESEND     PIC X(01) OCCURS 2.
+
                    07  SPA-GMN-TBL.            
                        09  SPA-GMN-TBL-G      OCCURS  20.
                            11  SPA-GMN-TADDRESS-G.
@@ -533,6 +538,22 @@
                    MOVE    "F"         TO  SPA-GMN-NYU-ORDER (2)
                END-IF
       *
+               IF    ( SYS-9000-MULTIHOST-FLG   =   "1" )
+                   MOVE    "F"         TO  SPA-GMN-MULTIHOST (1)
+                   MOVE    "T"         TO  SPA-GMN-MULTIHOST (2)
+               ELSE
+                   MOVE    "T"         TO  SPA-GMN-MULTIHOST (1)
+                   MOVE    "F"         TO  SPA-GMN-MULTIHOST (2)
+               END-IF
+      *
+               IF    ( SYS-9000-RESEND-FLG   =   "1" )
+                   MOVE    "F"         TO  SPA-GMN-RESEND (1)
+                   MOVE    "T"         TO  SPA-GMN-RESEND (2)
+               ELSE
+                   MOVE    "T"         TO  SPA-GMN-RESEND (1)
+                   MOVE    "F"         TO  SPA-GMN-RESEND (2)
+               END-IF
+      *
            ELSE
                MOVE    "T" 
                                        TO  SPA-GMN-UKEBUTTON (1)  
@@ -557,6 +578,10 @@
                MOVE    "F"             TO  SPA-GMN-BYOMEI-SYNC (2)
                MOVE    "T"             TO  SPA-GMN-NYU-ORDER (1)
                MOVE    "F"             TO  SPA-GMN-NYU-ORDER (2)
+               MOVE    "T"             TO  SPA-GMN-MULTIHOST (1)
+               MOVE    "F"             TO  SPA-GMN-MULTIHOST (2)
+               MOVE    "T"             TO  SPA-GMN-RESEND (1)
+               MOVE    "F"             TO  SPA-GMN-RESEND (2)
       *
            END-IF             
       *
@@ -667,6 +692,14 @@
                WHEN    "CLICKED"       ALSO    "NYU_ORDER1"
                WHEN    "CLICKED"       ALSO    "NYU_ORDER2"
                    PERFORM 450-NYU-ORDER-SEC
+      *    マルチホスト
+               WHEN    "CLICKED"       ALSO    "MULTIHOST1"
+               WHEN    "CLICKED"       ALSO    "MULTIHOST2"
+                   PERFORM 450-MULTIHOST-SEC
+      *    再送信
+               WHEN    "CLICKED"       ALSO    "RESEND1"
+               WHEN    "CLICKED"       ALSO    "RESEND2"
+                   PERFORM 450-RESEND-SEC
            END-EVALUATE
       *
            .
@@ -940,10 +973,44 @@
            MOVE    W99-NYU-ORDER2      TO  SPA-GMN-NYU-ORDER (2)
       *
       *
-           MOVE    9                   TO  SPA-GMN-CUR
+           MOVE    111                 TO  SPA-GMN-CUR
       *
            .
        450-NYU-ORDER-EXT.
+           EXIT.
+      *****************************************************************
+      *   マルチホスト
+      *****************************************************************
+       450-MULTIHOST-SEC               SECTION.
+      *
+      *    画面をＳＰＡセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *
+           MOVE    W99-MULTIHOST1      TO  SPA-GMN-MULTIHOST (1)
+           MOVE    W99-MULTIHOST2      TO  SPA-GMN-MULTIHOST (2)
+      *
+      *
+           MOVE    113                 TO  SPA-GMN-CUR
+      *
+           .
+       450-MULTIHOST-EXT.
+           EXIT.
+      *****************************************************************
+      *   再送信
+      *****************************************************************
+       450-RESEND-SEC               SECTION.
+      *
+      *    画面をＳＰＡセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *
+           MOVE    W99-RESEND1      TO  SPA-GMN-RESEND (1)
+           MOVE    W99-RESEND2      TO  SPA-GMN-RESEND (2)
+      *
+      *
+           MOVE    9                TO  SPA-GMN-CUR
+      *
+           .
+       450-RESEND-EXT.
            EXIT.
       *****************************************************************
       *   ＩＰアドレス入力チェック処理 
@@ -1016,7 +1083,7 @@
       *****************************************************************
        4104-PORT2-CHK-SEC          SECTION.
       *
-           COMPUTE WRK-GMN-CUR         =   11 +  4 * (IDX  - 1)
+           COMPUTE WRK-GMN-CUR         =   9 +  4 * (IDX  - 1)
       *
       *    半角チェック
            IF      SPA-GMN-SPORT2 (IDX) NOT =   SPACE     
@@ -1302,6 +1369,18 @@
                MOVE    SPACE               TO  SYS-9000-NYU-ORDER-FLG
            END-IF
       *     
+           IF    ( SPA-GMN-MULTIHOST (2)       =   "T" )
+               MOVE    "1"                 TO  SYS-9000-MULTIHOST-FLG
+           ELSE
+               MOVE    SPACE               TO  SYS-9000-MULTIHOST-FLG
+           END-IF
+      *     
+           IF    ( SPA-GMN-RESEND (2)       =   "T" )
+               MOVE    "1"                 TO  SYS-9000-RESEND-FLG
+           ELSE
+               MOVE    SPACE               TO  SYS-9000-RESEND-FLG
+           END-IF
+      *     
            MOVE    SYS-9000-REC            TO  SYSKANRI-REC
       *     
            IF      FLG-SYSKANRI            =   ZERO
@@ -1516,6 +1595,10 @@
            MOVE    SPA-GMN-BYOMEI-SYNC (2)     TO   W99-BYOMEI-SYNC2
            MOVE    SPA-GMN-NYU-ORDER (1)       TO   W99-NYU-ORDER1
            MOVE    SPA-GMN-NYU-ORDER (2)       TO   W99-NYU-ORDER2
+           MOVE    SPA-GMN-MULTIHOST (1)       TO   W99-MULTIHOST1
+           MOVE    SPA-GMN-MULTIHOST (2)       TO   W99-MULTIHOST2
+           MOVE    SPA-GMN-RESEND (1)          TO   W99-RESEND1
+           MOVE    SPA-GMN-RESEND (2)          TO   W99-RESEND2
       *
            PERFORM 5001-MAPCUR-SEC
       *
@@ -1763,6 +1846,14 @@
                MOVE  "NYU_ORDER1"      TO   MCP-WIDGET
            WHEN    110
                MOVE  "NYU_ORDER2"      TO   MCP-WIDGET
+           WHEN    111
+               MOVE  "MULTIHOST1"      TO   MCP-WIDGET
+           WHEN    112
+               MOVE  "MULTIHOST2"      TO   MCP-WIDGET
+           WHEN    113
+               MOVE  "RESEND1"         TO   MCP-WIDGET
+           WHEN    114
+               MOVE  "RESEND2"         TO   MCP-WIDGET
            END-EVALUATE
            .
        5001-MAPCUR-EXT.

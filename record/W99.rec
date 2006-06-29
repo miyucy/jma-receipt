@@ -226,6 +226,18 @@ W99	{
 				NYU_ORDER2	{
 					value	bool;
 				};
+				MULTIHOST1	{
+					value	bool;
+				};
+				MULTIHOST2	{
+					value	bool;
+				};
+				RESEND1	{
+					value	bool;
+				};
+				RESEND2	{
+					value	bool;
+				};
 			};
 		};
 	};

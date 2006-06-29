@@ -61,8 +61,14 @@
       *入院オーダー取込フラグ
            03  SYS-9000-NYU-ORDER-FLG
                                         PIC  X(01).
+      *マルチホストフラグ
+           03  SYS-9000-MULTIHOST-FLG
+                                        PIC  X(01).
+      *再送信フラグ
+           03  SYS-9000-RESEND-FLG
+                                        PIC  X(01).
       *予備
-           03                           PIC  X(488).
+           03                           PIC  X(486).
       *端末ＩＤ
            03  SYS-9000-TERMID          PIC  X(16).
       *オペーレータＩＤ
