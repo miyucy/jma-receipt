@@ -6577,6 +6577,7 @@
                    CONTINUE
                ELSE
                    MOVE    "1040"          TO  SPA-ERRCD
+                   GO  TO  48011-H18-KAISEI-CHK-EXT
                END-IF
            END-IF
       *
@@ -6589,6 +6590,45 @@
                    ELSE
                        MOVE    "1041"          TO  SPA-ERRCD
                        GO  TO  48011-H18-KAISEI-CHK-EXT
+                   END-IF
+               END-IF
+               IF    ( SPA-NAI-I01-MAEIDOYMD
+                                           NOT =   SPACE )
+                 AND ( SPA-NAI-I01-MAEIDOYMD
+                                               <   CONST-H180701 )
+                   IF    ( ( SPA-GMN-I01-SYORIKBN-CD
+                                               =   "02" )
+                       AND ( WRK-CHK-YMD  >=  CONST-H180701 ))
+                     OR  ( ( SPA-GMN-I01-SYORIKBN-CD
+                                               =   "08" )
+                       AND ( WRK-CHK-YMD   >  CONST-H180701 ))
+      *
+                       INITIALIZE  SYS-5001-REC
+                       MOVE    "5001"              TO  SYS-5001-KANRICD
+                       MOVE    SPA-NAI-I01-BTUNAME-MOT (1:2)
+                                                   TO  SYS-5001-KBNCD
+                       MOVE    SPA-NAI-I01-MAEIDOYMD
+                                                   TO  SYS-5001-STYUKYMD
+                                                       SYS-5001-EDYUKYMD
+                       MOVE    SYS-5001-REC        TO  MCPDATA-REC
+                       MOVE    "tbl_syskanri"      TO  MCP-TABLE
+                       MOVE    "key10"             TO  MCP-PATHNAME
+                       PERFORM 910-DBSELECT-SEC
+                       IF    ( MCP-RC      =   ZERO )
+                           MOVE    MCPDATA-REC     TO  SYS-5001-REC
+                       ELSE
+                          INITIALIZE                   SYS-5001-REC
+                       END-IF
+      *
+                       MOVE    "tbl_syskanri"      TO  MCP-TABLE
+                       MOVE    "key10"             TO  MCP-PATHNAME
+                       PERFORM 910-DBCLOSECURSOR-SEC
+      *
+                       IF    ( SYS-5001-BTU-SBT
+                                               =   "04"   OR  "09" )
+                           MOVE    "1043"      TO  SPA-ERRCD
+                       END-IF
+      *
                    END-IF
                END-IF
       *
@@ -15279,6 +15319,11 @@
            WHEN    "1042"
                MOVE    "６月の会計テーブルが作成されていません"
                                        TO  SPA-ERRMSG
+           WHEN    "1043"
+               MOVE    "異動日を７月１日にし、転科転棟転室処理を"
+                                       TO  SPA-ERRMSG (1 : 40)
+               MOVE    "行ってください"
+                                       TO  SPA-ERRMSG (41 : )
            WHEN    "2012"
                MOVE    "退院計算に必要な会計情報が作成されていません"
                                        TO  SPA-ERRMSG
