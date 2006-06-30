@@ -38,6 +38,7 @@
       *  01.00.07    NACL-森脇    05/09/01  エラーメッセージ、コミット
       *  01.00.08    NACL-森脇    05/09/28  構造変更
       *  01.00.09    NACL-多々納  06/01/12  補助区分判定、メッセージ修正
+      *  01.00.10    NACL-多々納  06/06/30  県番号設定追加（北海道用）
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -478,6 +479,8 @@
                MOVE    SYS-1001-HOSPID     TO  SPA-HOSPID
                MOVE    SYS-1001-HOSPSBT    TO  SPA-HOSPSBT
                MOVE    SYS-1001-ROUPAYKBN  TO  SPA-ROUPAYKBN
+      *        県番号
+               MOVE    SYS-1001-PREFNUM    TO  SPA-PREFNUM
            END-IF
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
