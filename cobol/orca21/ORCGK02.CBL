@@ -623,6 +623,8 @@
       *
            03  WRK-SYOKAI-YMD          PIC X(08).
       *
+           03  WRK-SPA-GMN-SYOSINYMD   PIC X(24).
+      *
       *    小児科外来診察料テーブル
       **** COPY   "CMSYONIKATBL.INC".
       *
@@ -8990,6 +8992,8 @@
       *
       *    訂正処理
            MOVE    1                   TO  SPA-SYORIFLG
+      *    初診算定日は変更しない
+           MOVE    SPA-GMN-SYOSINYMD   TO  WRK-SPA-GMN-SYOSINYMD
       *
       *    ＳＰＡ編集処理
            INITIALIZE                  SPA-SCR-REC
@@ -9019,6 +9023,9 @@
       *
       *    スパ共通編集処理
            PERFORM                     310-SPA-SET-SEC
+      *    初診算定日は変更しない
+           MOVE    WRK-SPA-GMN-SYOSINYMD   TO  SPA-GMN-SYOSINYMD
+      *
            MOVE    SPA-GMN-RRKYMD (SPA-NAI-DOSELNUM)
                                        TO  SPA-GMN-SRYYMD
       *    労災・自賠責の時、日付のみ
