@@ -185,6 +185,8 @@
       *  02.09.04    NACL-ÃÁœ∆    06/06/09  º´Œ©ªŸ±Áø¿∏Õª‘¬–±˛Ω§¿µ
       *  02.09.05    NACL-ÃÁœ∆    06/06/12  º´Œ©ªŸ±Á§ŒæÂ∏¬≥€§¨§¢§ÎæÏπÁ§Œ
       *                                     π‚Œº‘°¢ƒπ¥¸§À¥ÿ§π§Î…È√¥∑◊ªªΩ§¿µ
+      *  02.09.06    NACL-ÃÁœ∆    06/06/22   ø¿Æ£±£∏«Ø£¥∑Ó∞ πﬂ§Œ¡¥πÒ≈⁄Ã⁄∑˙√€°¢
+      *                                     ¡¥πÒ»ƒ∂‚∂»°‹£∞£≤£±¿∫ø¿¬–±˛
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -12791,6 +12793,16 @@
               END-IF
            ELSE
                  PERFORM   23072-FTNKIN-HIKAKU-TUJYO-SEC
+           END-IF.
+      *
+           IF   ( LNK-SYU-SRYYMD(1:6)   >= "200604")
+           AND  ((COMB-KOH1HKNNUM        =  "021" ) OR
+                 (COMB-KOH2HKNNUM        =  "021" ) OR
+                 (COMB-KOH3HKNNUM        =  "021" ) OR
+                 (COMB-KOH4HKNNUM        =  "021" ))
+           AND  ( FLG-SEISINJYO          =   1     )
+              MOVE     ZERO     TO    WK-KNJFTNKIN
+              MOVE     ZERO     TO    WK-KNJFTNKIN-ENTANI
            END-IF.
       *
       *    º˝«º•∆°º•÷•Î§Œ¿¡µ·≥€§Ú•ª•√•»
