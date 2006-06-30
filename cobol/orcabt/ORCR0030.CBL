@@ -258,6 +258,7 @@
       *                                     記載対応
       *  03.00.02    NACL-門脇    06/06/22  往診、在宅患者訪問診療料の
       *                                     コメント自動記載対応
+      *  03.01.01    NACL-門脇    06/06/28  実日数減算コード対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -379,6 +380,7 @@
            03  FLG-RECE05                              PIC 9(01).
            03  FLG-REWRITE                             PIC 9(01).
            03  FLG-SHOSAISIN                           PIC 9(01).       
+           03  FLG-SHOSAISIN-GEN                       PIC 9(01).
            03  FLG-SET                                 PIC 9(01).
            03  FLG-HOUSIJI-COM                         PIC 9(01).
            03  FLG-OSIN-COM                            PIC 9(01).
@@ -580,6 +582,11 @@
        01  TBL-JNISSU.
            03  TBL-JNISSU-HKN                          OCCURS   5.
                05  TBL-JNISSU-DAY                      PIC X(01)
+                                                       OCCURS   31.
+      *    実日数減カウント用領域                                         
+       01  TBL-JNISSU-GEN.
+           03  TBL-JNISSU-HKN-GEN                      OCCURS   5.
+               05  TBL-JNISSU-DAY-GEN                  PIC X(01)
                                                        OCCURS   31.
       *    医療機関（基本情報）退避用領域
        01  TBL-SYS1001-T.
@@ -1314,6 +1321,7 @@
       *
            INITIALIZE                   WRK-AREA-SAIKEI
            INITIALIZE                   TBL-JNISSU                      
+           INITIALIZE                   TBL-JNISSU-GEN
       *
            INITIALIZE                   FLG-KHNTEN-AREA
            INITIALIZE                   FLG-SAISIN-AREA
@@ -1623,6 +1631,7 @@
                            IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
                                 (ACCT-ZAIKAISU  NOT =    ZERO)
                                MOVE  ZERO  TO   FLG-SHOSAISIN           
+                               MOVE  ZERO  TO   FLG-SHOSAISIN-GEN
                                MOVE  ZERO  TO   WRK-SRYSURYO
                                MOVE  ZERO  TO   WRK-SRYSURYO2
                                MOVE  ZERO  TO   WRK-SRYSURYO3
@@ -1666,6 +1675,7 @@
                                       PERFORM   21045-TOKKI-HENSYU-SEC
                                  ELSE
                                       MOVE  ZERO  TO   FLG-SHOSAISIN    
+                                      MOVE  ZERO  TO   FLG-SHOSAISIN-GEN
                                       MOVE  ZERO  TO   WRK-SRYSURYO
                                       MOVE  ZERO  TO   WRK-SRYSURYO2
                                       MOVE  ZERO  TO   WRK-SRYSURYO3
@@ -1692,6 +1702,7 @@
                                  PERFORM   21046-SINRYO-CHECK-SEC
                                  IF   FLG-RINYAK  NOT =  ZERO
                                     MOVE  ZERO  TO   FLG-SHOSAISIN
+                                    MOVE  ZERO  TO   FLG-SHOSAISIN-GEN
                                     MOVE  ZERO  TO   WRK-SRYSURYO
                                     MOVE  ZERO  TO   WRK-SRYSURYO2
                                     MOVE  ZERO  TO   WRK-SRYSURYO3
@@ -2295,6 +2306,10 @@
                              MOVE    1      TO    FLG-SHOSAISIN         
       *
                        END-IF                                           
+      *
+                       IF    SRY-SRYCD(IDX2)  =  "099409903"
+                             MOVE    1      TO    FLG-SHOSAISIN-GEN
+                       END-IF
       *
                END-IF                                                   
       *
@@ -3066,7 +3081,16 @@
                                         TBL-JNISSU-DAY(1 ACCT-IDX)      
                       END-IF                                            
                     END-PERFORM                                         
-               END-IF                                                   
+               END-IF
+               IF   FLG-SHOSAISIN-GEN    =       1
+                    PERFORM    VARYING   ACCT-IDX   FROM   1    BY   1
+                               UNTIL    ACCT-IDX   >      31
+                      IF  ACCT-DAY(1 ACCT-IDX)   NOT =    ZERO
+                          MOVE    "1"       TO
+                                        TBL-JNISSU-DAY-GEN(1 ACCT-IDX)
+                      END-IF
+                    END-PERFORM
+               END-IF
            END-IF
       *    インデックス２
            MOVE          ZERO       TO     BUN-IDX2
@@ -3094,6 +3118,21 @@
                                  END-IF                                 
                                END-PERFORM                 
                            END-IF                                       
+                           IF   FLG-SHOSAISIN-GEN  =    1
+                               PERFORM VARYING ACCT-IDX FROM 1 BY 1
+                                    UNTIL    ACCT-IDX   >   31
+                                 IF  ACCT-DAY(1 ACCT-IDX) NOT =  ZERO
+                                    IF     FLG-FUKUSHI  =   1
+                                    AND    RECE02-KOHNUM(1)(1:1)
+                                             >=  "1" AND <=  "8"
+                                       CONTINUE
+                                    ELSE
+                                       MOVE  "1"  TO
+                                        TBL-JNISSU-DAY-GEN(2 ACCT-IDX)
+                                    END-IF
+                                 END-IF
+                               END-PERFORM
+                           END-IF
                       END-IF
                      END-IF
            END-PERFORM
@@ -3123,6 +3162,21 @@
                                  END-IF                                 
                                END-PERFORM                              
                            END-IF                                       
+                           IF   FLG-SHOSAISIN-GEN  =    1
+                               PERFORM VARYING ACCT-IDX FROM 1 BY 1
+                                    UNTIL    ACCT-IDX   >   31
+                                 IF  ACCT-DAY(1 ACCT-IDX) NOT =  ZERO
+                                    IF     FLG-FUKUSHI  =   1
+                                    AND    RECE02-KOHNUM(2)(1:1)
+                                             >=  "1" AND <=  "8"
+                                       CONTINUE
+                                    ELSE
+                                       MOVE  "1"  TO
+                                        TBL-JNISSU-DAY-GEN(3 ACCT-IDX)
+                                    END-IF
+                                 END-IF
+                               END-PERFORM
+                           END-IF
                       END-IF
                      END-IF
            END-PERFORM
@@ -3152,6 +3206,21 @@
                                  END-IF                                 
                                END-PERFORM                              
                            END-IF                                       
+                           IF   FLG-SHOSAISIN-GEN  =    1
+                               PERFORM VARYING ACCT-IDX FROM 1 BY 1
+                                    UNTIL    ACCT-IDX   >   31
+                                 IF  ACCT-DAY(1 ACCT-IDX) NOT =  ZERO
+                                    IF     FLG-FUKUSHI  =   1
+                                    AND    RECE02-KOHNUM(3)(1:1)
+                                             >=  "1" AND <=  "8"
+                                       CONTINUE
+                                    ELSE
+                                       MOVE  "1"  TO
+                                        TBL-JNISSU-DAY-GEN(4 ACCT-IDX)
+                                    END-IF
+                                 END-IF
+                               END-PERFORM
+                           END-IF
                       END-IF
                      END-IF
            END-PERFORM
@@ -3181,6 +3250,21 @@
                                  END-IF                                 
                                END-PERFORM                              
                            END-IF                                       
+                           IF   FLG-SHOSAISIN-GEN  =    1
+                               PERFORM VARYING ACCT-IDX FROM 1 BY 1
+                                    UNTIL    ACCT-IDX   >   31
+                                 IF  ACCT-DAY(1 ACCT-IDX) NOT =  ZERO
+                                    IF     FLG-FUKUSHI  =   1
+                                    AND    RECE02-KOHNUM(4)(1:1)
+                                             >=  "1" AND <=  "8"
+                                       CONTINUE
+                                    ELSE
+                                       MOVE  "1"  TO
+                                        TBL-JNISSU-DAY-GEN(5 ACCT-IDX)
+                                    END-IF
+                                 END-IF
+                               END-PERFORM
+                           END-IF
                       END-IF
                      END-IF
            END-PERFORM
@@ -5252,6 +5336,19 @@
       *    レセプト中間ファイルの項目転送２（Ｆ００２）:実日数編集
       *****************************************************************
        2106-JNISSU-SET-SEC                    SECTION.                       
+      *
+      *実日数から減する
+           PERFORM    VARYING    HKN-IDX    FROM   1   BY   1
+                       UNTIL     HKN-IDX    >      5
+             PERFORM    VARYING    ACCT-IDX    FROM    1   BY   1
+                         UNTIL     ACCT-IDX    >      31
+                IF  (TBL-JNISSU-DAY(HKN-IDX ACCT-IDX)      NOT =  SPACE)
+                AND (TBL-JNISSU-DAY-GEN(HKN-IDX ACCT-IDX)  NOT =  SPACE)
+                    MOVE  SPACE  TO  TBL-JNISSU-DAY(HKN-IDX ACCT-IDX)
+                END-IF
+             END-PERFORM
+           END-PERFORM
+      *
       *実日数編集
            PERFORM    VARYING    HKN-IDX    FROM   1   BY   1
                       UNTIL      HKN-IDX    >      5

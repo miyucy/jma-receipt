@@ -59,6 +59,7 @@
       *  01.01.10    NACL-ÌçÏÆ    05.10.06  ¿Ç¶è£¹£µ£¹£¶ÂÐ±þ
       *  01.01.11    NACL-ÌçÏÆ    05.12.01  Ï«ºÒ¥ì¥»¥×¥È²ó¿ôÂÐ±þ
       *  02.09.01    NACL-ÌçÏÆ    06.04.13  £²£°£°£¶Ç¯£´·î²þÀµÂÐ±þ
+      *  03.01.01    NACL-ÌçÏÆ    06.06.28  ¼ÂÆü¿ô¸º»»¥³¡¼¥ÉÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -137,6 +138,7 @@
            03  FLG-SRYACCT                             PIC  9(01).
            03  FLG-SHOSAISIN                           PIC  9(01).
            03  FLG-SHOSAISIN2                          PIC  9(01).      
+           03  FLG-SHOSAISIN-GEN                       PIC  9(01).
            03  FLG-KYUKYU                              PIC  9(01).
            03  FLG-GAIRAIXX                            PIC  9(01).
            03  FLG-GAIRAI26                            PIC  9(01).
@@ -247,6 +249,10 @@
        01  TBL-JNISSU2.                                                 
            03  TBL-JNISSU2-DAY                         PIC  X(01)       
                                                        OCCURS   31.     
+      *    ¼ÂÆü¿ô¸º¥«¥¦¥ó¥ÈÍÑÎÎ°è
+       01  TBL-JNISSU-GEN.
+           03  TBL-JNISSU-DAY-GEN                      PIC  X(01)
+                                                       OCCURS   31.
       *    ³°Íè´ÉÍý²Ã»»¡ÊÆÃÎã¡§£µ£²¡ËÍÑÎÎ°è
        01  TBL-G52NISSU.
          02  TBL-G52NISSU-OCC                          OCCURS   3.
@@ -790,6 +796,8 @@
               INITIALIZE                          TBL-JNISSU
               MOVE       SPACE             TO     TBL-JNISSU2           
               INITIALIZE                          TBL-JNISSU2           
+              MOVE       SPACE             TO     TBL-JNISSU-GEN
+              INITIALIZE                          TBL-JNISSU-GEN
               MOVE       SPACE             TO     TBL-G52NISSU
               INITIALIZE                          TBL-G52NISSU
               MOVE       SPACE             TO     TBL-G26NISSU
@@ -1018,6 +1026,7 @@
                         (ACCT-ZAIKAISU  NOT =    ZERO)
                                MOVE    ZERO    TO      FLG-SHOSAISIN
                                                        FLG-SHOSAISIN2   
+                                                       FLG-SHOSAISIN-GEN
                                                        FLG-KYUKYU
                                                        FLG-GAIRAIXX
                                                        FLG-GAIRAI26
@@ -1066,6 +1075,7 @@
                         (ACCT-ZAIKAISU  NOT =    ZERO)
                                MOVE    ZERO    TO      FLG-SHOSAISIN 
                                                        FLG-SHOSAISIN2   
+                                                       FLG-SHOSAISIN-GEN
                                IF   ACCT-SRYKBN  =  "11"  OR  "12" 
                                                           OR  "99" 
                                    PERFORM   21031-SHOSAISIN-HANTEI-SEC
@@ -1111,8 +1121,9 @@
       *
                    PERFORM   VARYING   IDY   FROM   1   BY   1
                              UNTIL    (IDY            >       5)  OR
-                                      (SRY-SRYCD(IDY) =   SPACE)  OR
-                                      (FLG-SHOSAISIN  =       1)
+                                      (SRY-SRYCD(IDY) =   SPACE)
+      ****                            (SRY-SRYCD(IDY) =   SPACE)  OR
+      ****                            (FLG-SHOSAISIN  =       1)
                        PERFORM   800-TENSU-TBL-SEC
                        IF  (( TNS-JITUDAY    =     2          ) AND       
                             ( TNS-DAYCNT     =     1   OR   2 ))
@@ -1133,6 +1144,9 @@
                              MOVE    1      TO    FLG-SHOSAISIN2         
       **>                 END-IF                                        
       *
+                       END-IF
+                       IF    SRY-SRYCD(IDY)  =  "099409903"
+                             MOVE    1      TO    FLG-SHOSAISIN-GEN
                        END-IF
                    END-PERFORM
       *
@@ -1628,6 +1642,15 @@
                            END-IF                                       
                     END-PERFORM                                         
                END-IF                                                   
+               IF   FLG-SHOSAISIN-GEN    =       1
+                    PERFORM    VARYING   IDZ   FROM   1    BY   1
+                                    UNTIL    IDZ     >    31
+                           IF  ACCT-DAY(1 IDZ)   NOT =    ZERO
+                               MOVE    "1"       TO
+                                             TBL-JNISSU-DAY-GEN(IDZ)
+                           END-IF
+                    END-PERFORM
+               END-IF
       *    END-IF
            .
        21038-TENSOU-EXT.
@@ -1762,6 +1785,19 @@
                   MOVE   "1"   TO     RECE41-GAITOKU-PRTKBN2
                   MOVE    26   TO     RECE41-GAITOKU-TEN2
            END-IF
+      *
+      *    ¼ÂÆü¿ô¤«¤é¸º¤¹¤ë
+           PERFORM    VARYING    IDZ    FROM    1   BY   1
+                          UNTIL      IDZ    >     31
+                IF  (TBL-JNISSU-DAY(IDZ)      NOT =  SPACE)
+                AND (TBL-JNISSU-DAY-GEN(IDZ)  NOT =  SPACE)
+                    MOVE  SPACE  TO  TBL-JNISSU-DAY(IDZ)
+                END-IF
+                IF  (TBL-JNISSU2-DAY(IDZ)     NOT =  SPACE)
+                AND (TBL-JNISSU-DAY-GEN(IDZ)  NOT =  SPACE)
+                    MOVE  SPACE  TO  TBL-JNISSU2-DAY(IDZ)
+                END-IF
+           END-PERFORM
       *
            PERFORM    VARYING    IDZ    FROM    1   BY   1
                           UNTIL      IDZ    >     31

@@ -69,6 +69,7 @@
       *                                     ÊÔ½¸½¤Àµ
       *  02.09.03    NACL-ÌçÏÆ    06/05/17  Î¬¾ÎÊÔ½¸(190123250Åù)
       *  02.09.04    NACL-ÌçÏÆ    06/05/23  ³°Çñ»þ¤ÎÆþ±¡´ðËÜÎÁ¼èÆÀ½¤Àµ
+      *  03.01.01    NACL-ÌçÏÆ    06/06/28  ¼ÂÆü¿ô¸º»»¥³¡¼¥ÉÂÐ±þ
       *****************************************************************
       *
       *
@@ -117,6 +118,7 @@
        01  FLG-AREA.
            03  FLG-END                                 PIC 9(01).
            03  FLG-SHOSAISIN                           PIC 9(01).
+           03  FLG-SHOSAISIN-GEN                       PIC 9(01).
            03  FLG-NYUINACCT                           PIC 9(01).
            03  FLG-NYUINACT                            PIC 9(01).
            03  FLG-SRYACCT                             PIC 9(01).
@@ -169,6 +171,12 @@
        01  TBL-JNISSU.
            03  TBL-JNISSU-HKN       OCCURS   5.
                05  TBL-JNISSU-DAY                      PIC X(01)
+                                                       OCCURS   31.
+      *
+      *    ¼ÂÆü¿ô¸º¥«¥¦¥ó¥ÈÍÑÎÎ°è
+       01  TBL-JNISSU-GEN.
+           03  TBL-JNISSU-HKN-GEN   OCCURS   5.
+               05  TBL-JNISSU-DAY-GEN                  PIC X(01)
                                                        OCCURS   31.
       *
       *    Ì¤¼Â»Ü¸º»»ÂàÈòÍÑ¥Õ¥é¥°¥Æ¡¼¥Ö¥ë
@@ -895,6 +903,8 @@
       *
            MOVE       SPACE             TO     TBL-JNISSU
            INITIALIZE                          TBL-JNISSU
+           MOVE       SPACE             TO     TBL-JNISSU-GEN
+           INITIALIZE                          TBL-JNISSU-GEN
       *
            MOVE       SPACE             TO     TBL-TOTALTEN
            INITIALIZE                          TBL-TOTALTEN
@@ -1029,6 +1039,7 @@
                            IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
                                 (ACCT-ZAIKAISU  NOT =    ZERO)
                                 MOVE    ZERO     TO    FLG-SHOSAISIN
+                                                       FLG-SHOSAISIN-GEN
                                 IF   ACCT-SRYKBN  =  "11"  OR
                                                      "13"  OR  "14"
                                     PERFORM 2001113-SHOSAISIN-HANTEI-SEC
@@ -1038,6 +1049,7 @@
                            IF   (ACCT-ZAITEN    =        ZERO)    AND
                                 (ACCT-ZAIKAISU  NOT =    ZERO)
                                 MOVE    ZERO     TO    FLG-SHOSAISIN
+                                                       FLG-SHOSAISIN-GEN
                                 IF   ACCT-SRYKBN  =  "11"  OR  "99" 
                                     PERFORM 2001113-SHOSAISIN-HANTEI-SEC
                                 END-IF
@@ -1221,8 +1233,9 @@
                    PERFORM   VARYING   SRYACT-IDX  FROM  1   BY   1
                              UNTIL    (SRYACT-IDX    >   5)  OR
                                       (SRY-SRYCD(SRYACT-IDX)
-                                                         =   SPACE)  OR
-                                      (FLG-SHOSAISIN     =    1)
+                                                         =   SPACE)
+      ****                                               =   SPACE)  OR
+      ****                            (FLG-SHOSAISIN     =    1)
                        MOVE    SPACE         TO   TNS-TENSU-REC
                        INITIALIZE                 TNS-TENSU-REC
                        MOVE    SRY-SRYCD(SRYACT-IDX) TO   TNS-SRYCD
@@ -1238,6 +1251,9 @@
                                                         "099120001" OR
                                                         "111011810")
                              MOVE    1      TO    FLG-SHOSAISIN
+                         END-IF
+                         IF    SRY-SRYCD(SRYACT-IDX) =  "099409903"
+                             MOVE    1      TO    FLG-SHOSAISIN-GEN
                          END-IF
                        END-IF
                    END-PERFORM
@@ -1271,6 +1287,15 @@
                            IF  ACCT-DAY(1 ACCT-IDX)   NOT =    ZERO
                                MOVE    "1"       TO
                                              TBL-JNISSU-DAY(1 ACCT-IDX)
+                           END-IF
+                    END-PERFORM
+               END-IF
+               IF   FLG-SHOSAISIN-GEN    =       1
+                    PERFORM    VARYING   ACCT-IDX   FROM   1    BY   1
+                               UNTIL    ACCT-IDX   >      31
+                           IF  ACCT-DAY(1 ACCT-IDX)   NOT =    ZERO
+                               MOVE    "1"       TO
+                                         TBL-JNISSU-DAY-GEN(1 ACCT-IDX)
                            END-IF
                     END-PERFORM
                END-IF
@@ -1313,6 +1338,21 @@
                                ELSE
                                  MOVE    "1"       TO
                                       TBL-JNISSU-DAY(KH-IDX ACCT-IDX)
+                               END-IF
+                             END-IF
+                      END-PERFORM
+                   END-IF
+                   IF   FLG-SHOSAISIN-GEN  =    1
+                      PERFORM    VARYING  ACCT-IDX   FROM   1   BY   1
+                                 UNTIL    ACCT-IDX   >      31
+                             IF  ACCT-DAY(1 ACCT-IDX)   NOT =    ZERO
+                               IF     FLG-FUKUSHI  =   1
+                               AND    RECE62-KOHNUM(KH-IDX - 1)(1:1)
+                                                   >=  "1" AND <=  "8"
+                                 CONTINUE
+                               ELSE
+                                 MOVE    "1"       TO
+                                  TBL-JNISSU-DAY-GEN(KH-IDX ACCT-IDX)
                                END-IF
                              END-IF
                       END-PERFORM
@@ -3367,6 +3407,18 @@
       *    ¼ÂÆü¿ô¤Î¹àÌÜÅ¾Á÷¡Ê£Æ£°£°£²¡Ë
       *****************************************************************
        200116-JNISSU-SET-SEC                    SECTION.
+      *
+      *¼ÂÆü¿ô¤«¤é¸º¤¹¤ë
+           PERFORM    VARYING    IDX    FROM   1   BY   1
+                       UNTIL     IDX    >      5
+             PERFORM    VARYING    IDY    FROM    1   BY   1
+                         UNTIL     IDY    >      31
+                IF  (TBL-JNISSU-DAY(IDX IDY)      NOT =  SPACE)
+                AND (TBL-JNISSU-DAY-GEN(IDX IDY)  NOT =  SPACE)
+                    MOVE  SPACE  TO  TBL-JNISSU-DAY(IDX IDY)
+                END-IF
+             END-PERFORM
+           END-PERFORM
       *
            PERFORM    VARYING    IDX    FROM   1   BY   1
                       UNTIL      IDX    >      5

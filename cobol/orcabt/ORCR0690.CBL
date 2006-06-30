@@ -98,6 +98,7 @@
       *  02.09.04    NACL-藤原    06/06/05  レセプト特記事項編集情報によ
       *                                     るレセプト請求しない地方公費の
       *                                     編集に給付割合を追加
+      *  03.01.01    NACL-門脇    06/06/28  実日数減算コード対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -678,10 +679,12 @@
            03  FILLER          PIC X(09)   VALUE   "099800151".
            03  FILLER          PIC X(09)   VALUE   "099800161".
            03  FILLER          PIC X(09)   VALUE   "099800171".
+      *    実日数減算
+           03  FILLER          PIC X(09)   VALUE   "099409903".
        01  TBL-NOSRYCD-R       REDEFINES   TBL-NOSRYCD-AREA.
-            03  TBL-NOSRYCD     PIC X(09)   OCCURS   19.       
+            03  TBL-NOSRYCD     PIC X(09)   OCCURS   20.       
       *
-       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE   19.         
+       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE   20.         
       *
       *    固定値
        01  CONST-AREA.
