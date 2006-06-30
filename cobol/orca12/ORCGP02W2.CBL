@@ -57,6 +57,8 @@
       *                                     ¾ì¹ç¤ÎÊÝ¸±ÁÈ¹ç¤»ºîÀ®½¤Àµ
       *  02.00.17    NACL-ÌçÏÆ    06/05/18  ²¬»³¸©À¾°ÀÁÒÂ¼Âà¿¦¼Ô¹ñÊÝ£²³äÂÐ±þ
       *  02.00.18    NACL-ÌçÏÆ    06/06/01  ÆÃÄê¼À´µÅù¡ÜÄ¹´üÂÐ±þ
+      *  03.01.01    NACL-ÌçÏÆ    06/06/26  ¡ãËÌ³¤Æ»¡ä£°£¹£±¡Ü£´£±Ï·¿Í¤Î
+      *                                     ÊÝ¸±ÁÈ¹ç¤»ºîÀ®
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3483,6 +3485,10 @@
                                        =   WRK-SRT-HJO-KOHNO)  OR
                         (WRK-KOH-GENHKNNUM3(WRK-COMB-HJOIDX)
                                        =   WRK-SRT-HJO-KOHNO)
+      *
+                      IF WRK-KOH-HKNNUM(WRK-COMB-HJOIDX)(1:2) = "99"
+                            PERFORM 5701413-SYUKOH-HJO-SEC
+                      ELSE
                        IF  WRK-KOH-HKNNUM(WRK-COMB-HJOIDX) =
                                "019" OR "053"
                          IF  WRK-SRT-HJO-KOHNO             =
@@ -3491,8 +3497,27 @@
                             PERFORM 5701413-SYUKOH-HJO-SEC
                          END-IF
                        ELSE
-                          PERFORM 5701413-SYUKOH-HJO-SEC
+      *******************ÃÏÊý¸øÈñ
+                         EVALUATE  SPA-PREFNUM
+                          WHEN     01
+                            IF  WRK-SRT-HJO-KOHNO  =  "091"
+                             IF WRK-KOH-HKNNUM(WRK-COMB-HJOIDX)(2:2)
+                                                          = "41"
+                                PERFORM 5701413-SYUKOH-HJO-SEC
+                             END-IF
+                            ELSE
+                             IF  WRK-SRT-HJO-KOHNO  NOT  =  "020"
+                                PERFORM 5701413-SYUKOH-HJO-SEC
+                             END-IF
+                            END-IF
+                          WHEN     OTHER
+                             IF  WRK-SRT-HJO-KOHNO  NOT  =  "020"
+                               PERFORM 5701413-SYUKOH-HJO-SEC
+                             END-IF
+                         END-EVALUATE
                        END-IF
+                      END-IF
+      *
                      END-IF
                    END-IF
                  END-PERFORM
@@ -4318,6 +4343,13 @@
                     (WRK-NYU-KBN (3)         =   "2")
                    MOVE    "3"            TO  WRK-FTN-FLG
                 END-IF
+             END-IF
+             IF   SPA-PREFNUM  =  01
+               IF  ((WRK-KCOMB-KOH1-HKNKOHSBTKBN (IDX2)  =  "3" ) AND
+                    (WRK-KCOMB-KOH2HKNNUM (IDX2)         = "091"))
+               OR  ( WRK-KCOMB-KOH1HKNNUM (IDX2)         = "091" )
+                   MOVE    "3"            TO  WRK-FTN-FLG
+               END-IF
              END-IF
            END-IF
       *
