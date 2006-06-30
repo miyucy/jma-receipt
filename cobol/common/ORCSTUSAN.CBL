@@ -35,6 +35,7 @@
       *                                     チェック追加
       *  01.00.05    NACL-太田    03.09.10  入力パラメータ特定入院料コード
       *                                     の最大数を１０に変更
+      *  03.01.00    NACL-太田    06.06.30  入院料が拾えないケースを認める
       *****************************************************************
       *
        ENVIRONMENT                         DIVISION.
@@ -484,7 +485,9 @@
                        GO  TO  2121-NYUINACCT-SEL-EXT
                    END-IF
       *
-                   PERFORM 2121-NYUINACT-TUSAN-SEC
+                   IF    ( FLG-HIT     NOT =   ZERO )
+                       PERFORM 2121-NYUINACT-TUSAN-SEC
+                   END-IF
                END-IF
       *
                MOVE    PATH-TBL-NYUINACCT-KEY7 TO  MCP-PATH
@@ -505,6 +508,8 @@
       *    入院診療行為検索処理
       *****************************************************************
        2121-NYUINACT-SEL-SEC               SECTION.
+      *
+           MOVE    ZERO                TO  FLG-HIT
       *
            MOVE    ZERO                TO  FLG-NYUINACT
            INITIALIZE                      NYUINACT-REC
@@ -532,7 +537,6 @@
                GO  TO  2121-NYUINACT-SEL-EXT
            END-IF
       *
-           MOVE    ZERO                TO  FLG-HIT
            PERFORM VARYING IDX1    FROM    1   BY  1
                UNTIL     ( IDX1        >   5 )
                 OR       ( FLG-HIT NOT =   ZERO )
@@ -555,6 +559,8 @@
                        PERFORM 2121-SENTEICDCHG-CHK-SEC
                        PERFORM 2121-TOKUTEI-CHK-SEC
                    END-IF
+               ELSE
+                   DISPLAY "SRYCD not found TNS-KEY:" TNS-KEY
                END-IF
       *
                MOVE    PATH-TBL-TENSU-KEY  TO  MCP-PATH
@@ -563,8 +569,9 @@
            END-PERFORM
       *
            IF    ( FLG-HIT             =   ZERO )
-               MOVE    05              TO  STUSAN-RC
-               GO  TO  2121-NYUINACT-SEL-EXT
+               DISPLAY "datakbn=1 not found NSRY-KEY:" NSRY-KEY
+      *        MOVE    05              TO  STUSAN-RC
+      *        GO  TO  2121-NYUINACT-SEL-EXT
            END-IF
       *
            .
