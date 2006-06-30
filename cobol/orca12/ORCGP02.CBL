@@ -115,6 +115,9 @@
       *    ユーザプログラム起動
            03  FLG-USERPG          PIC 9(01).
       *
+           03  FLG-CLAIM-MULTIHOST     PIC 9(01).
+           03  FLG-SOUSIN              PIC 9(01).
+      *
       *    カウント領域
        01  CNT-AREA.
            03  CNT-ERR             PIC 9(06).
@@ -169,8 +172,9 @@
       *
            03  WRK-IDOYMD-H            PIC X(22).
       *
+           03  WRK-GMN-SELNUM          PIC 9(02). 
       *
-           03  WRK-GMN-SELNUM        PIC 9(02). 
+           03  WRK-RENNUM              PIC 9(02).
       *    ＣＬＡＩＭファイル名
        01  CLAIM-FILE.
            03  FILLER              PIC X(30)   VALUE
@@ -918,6 +922,7 @@
                MOVE    ZERO            TO  FLG-CLAIM
            END-IF
       *
+           MOVE    ZERO                TO  FLG-CLAIM-MULTIHOST
       *    更新処理
            MOVE    1                   TO  FLG-CLAIM-OK
            PERFORM 4902-KOUSIN-SYORI-SEC
@@ -3024,6 +3029,7 @@
            INITIALIZE                  SPA-P02X-AREA
       *
            MOVE    ZERO                TO  FLG-CLAIM
+           MOVE    ZERO                TO  FLG-CLAIM-MULTIHOST
       *    ＣＬＡＩＭ接続判定
            MOVE    SPACE               TO  SYS-9000-REC
            INITIALIZE                  SYS-9000-REC
@@ -3048,6 +3054,7 @@
            MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
+           MOVE    ZERO                TO  FLG-CLAIM-MULTIHOST
            IF      FLG-SYSKANRI        =   1
                CONTINUE
            ELSE
@@ -3057,6 +3064,10 @@
       *TEST!!!
                MOVE    SYS-9000-CODE       TO  SPA-GMN-SCODE
                MOVE    1                   TO  SPA-P02X-GMN-SEL
+      *        マルチホストフラグ
+               IF      SYS-9000-MULTIHOST-FLG  =   "1"
+                    MOVE    1                   TO  FLG-CLAIM-MULTIHOST
+               END-IF
                IF     (SYS-9000-SETUZOKU   =   ZERO )  OR
                       (SYS-9000-PT-FLG NOT =   "1"  )
                    CONTINUE
@@ -3115,6 +3126,13 @@
       *****************************************************************
        4906-CLAIM-SOUSIN-SEC               SECTION.
       *
+      *    受付時間取得
+           MOVE    SPACE               TO  WRK-UKETIME
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+           MOVE    SMCNDATE-HMS        TO  WRK-UKETIME
+      *
            MOVE    SPACE               TO  SYS-9001-REC
            INITIALIZE                  SYS-9001-REC
            MOVE    "9001"              TO  SYS-9001-KANRICD
@@ -3132,31 +3150,43 @@
                INITIALIZE                  SYS-9001-REC
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       (IDX            >   10   )  OR
-                               (FLG-SYSKANRI   =   1    )
-               MOVE    MCPDATA-REC           TO  SYS-9001-REC
-               MOVE    SYS-9001-KBNCD (1:2)  TO  WRK-GMN-SELNUM
-               IF      WRK-GMN-SELNUM        =   SPA-P02X-GMN-SEL
-                 MOVE    SYS-9001-ADDRESS    TO  SHELLTBL-ARG6
-                 MOVE    SYS-9001-PORT1      TO  SHELLTBL-ARG7
-                 MOVE    99                    TO  IDX
+           MOVE    ZERO                TO  WRK-RENNUM
+           PERFORM 
+                   UNTIL       (FLG-SYSKANRI   =   1    )
+               MOVE    MCPDATA-REC         TO  SYS-9001-REC
+               MOVE    ZERO                TO  FLG-SOUSIN
+               IF      FLG-CLAIM-MULTIHOST =   1
+      *            複数送信処理
+                   MOVE    1                   TO  FLG-SOUSIN
+               ELSE
+                   MOVE    SYS-9001-KBNCD (1:2)  TO  WRK-GMN-SELNUM
+                   IF      WRK-GMN-SELNUM        =   SPA-P02X-GMN-SEL
+                       MOVE    1                   TO  FLG-SOUSIN
+                       MOVE    1                   TO  FLG-SYSKANRI
+                   END-IF
+               END-IF
+               IF      FLG-SOUSIN          =   1
+                   PERFORM 49061-CLAIM-SOUSINSYOSI-SEC
                END-IF
       *
-               MOVE    "key2"              TO  MCP-PATHNAME
-               PERFORM 900-SYSKANRI-READ-SEC
+               IF      FLG-SYSKANRI        =   ZERO
+                   MOVE    "key2"              TO  MCP-PATHNAME
+                   PERFORM 900-SYSKANRI-READ-SEC
+               END-IF
            END-PERFORM
       *    カーソルクロース
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-           MOVE    SPACE               TO  WRK-UKETIME
-      *    受付時間取得
-           INITIALIZE                  ORCSMCNDATEAREA
-           CALL    "ORCSMCNDATE"       USING
-                                       ORCSMCNDATEAREA
-           MOVE    SMCNDATE-HMS        TO  WRK-UKETIME
+           .
+       4906-CLAIM-SOUSIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＣＬＡＩＭ接続情報取得処理
+      *****************************************************************
+       49061-CLAIM-SOUSINSYOSI-SEC               SECTION.
       *
       *    フィアルデイレクトリ位置指定
            INITIALIZE                  ORCSMKPASSAREA
@@ -3172,10 +3202,18 @@
            MOVE    "XX"                TO  SHELLTBL-ARG3
            MOVE    WRK-UKETIME         TO  SHELLTBL-ARG4
            MOVE    SPA-HOSPID          TO  SHELLTBL-ARG5
+      *
+           MOVE    SYS-9001-ADDRESS    TO  SHELLTBL-ARG6
+           MOVE    SYS-9001-PORT1      TO  SHELLTBL-ARG7
       *    ドクター
            MOVE    "@@@@@"             TO  SHELLTBL-ARG8
       *    保険組合せ
            MOVE    "@@@@"              TO  SHELLTBL-ARG9
+      *    診療内容
+           MOVE    "XX"                TO  SHELLTBL-ARG10
+      *    連番
+           ADD     1                   TO  WRK-RENNUM
+           MOVE    WRK-RENNUM          TO  SHELLTBL-ARG11 (1:2)
       *
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC
@@ -3186,7 +3224,7 @@
                                        MCPDATA-REC
       *
            .
-       4906-CLAIM-SOUSIN-EXT.
+       49061-CLAIM-SOUSINSYOSI-EXT.
            EXIT.
       *
       *****************************************************************
