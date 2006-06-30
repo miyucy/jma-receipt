@@ -242,6 +242,7 @@
                    07  SPA-FLG-CLAIM                  PIC 9(01).
                    07  SPA-CLAIM-OK                   PIC 9(01).
                    07  SPA-USERPG-FLG                 PIC 9(01).
+                   07  SPA-CLAIM-MULTIHOST            PIC 9(01).
       *
       *    £Ã£Ì£Á£É£Í²èÌÌ
            03  SPA-K03X-AREA.

@@ -144,6 +144,7 @@
            03  FLG-USERPG              PIC 9(01).
       *
            03  FLG-JYOTAI              PIC 9(01).
+           03  FLG-SOUSIN              PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -314,6 +315,8 @@
       *
            03  WRK-HKNCOMBI            PIC X(04).
            03  WRK-SRYKA               PIC X(02).
+      *
+           03  WRK-RENNUM              PIC 9(02).
       *
       *    診療行為内容比較用テーブル
       *01  TBL-AREA.
@@ -2346,6 +2349,7 @@
                MOVE    ZERO            TO  FLG-CLAIM
            END-IF
       *
+           MOVE    ZERO                TO  SPA-CLAIM-MULTIHOST
       *    更新処理
            MOVE    1                   TO  FLG-CLAIM-OK
            PERFORM 4500-TOROKU-SYORI-SEC
@@ -4877,6 +4881,7 @@
            INITIALIZE                  SPA-K03X-AREA
       *
            MOVE    ZERO                TO  FLG-CLAIM
+           MOVE    ZERO                TO  SPA-CLAIM-MULTIHOST
       *    ＣＬＡＩＭ接続判定
            MOVE    SPACE               TO  SYS-9000-REC
            INITIALIZE                  SYS-9000-REC
@@ -4907,6 +4912,10 @@
                MOVE    MCPDATA-REC         TO  SYS-9000-REC
                MOVE    SYS-9000-CODE       TO  SPA-GMN-SCODE
                MOVE    1                   TO  SPA-K03X-GMN-SEL
+      *        マルチホストフラグ
+               IF      SYS-9000-MULTIHOST-FLG  =   "1"
+                    MOVE    1                   TO  SPA-CLAIM-MULTIHOST
+               END-IF
                IF      SYS-9000-SETUZOKU   =   ZERO
                    CONTINUE
                ELSE
@@ -4981,19 +4990,29 @@
                INITIALIZE                  SYS-9001-REC
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       (IDX            >   10   )  OR
-                               (FLG-SYSKANRI   =   1    )
-               MOVE    MCPDATA-REC           TO  SYS-9001-REC
-               MOVE    SYS-9001-KBNCD (1:2)  TO  WRK-GMN-SELNUM
-               IF      WRK-GMN-SELNUM        =   SPA-K03X-GMN-SEL
-                 MOVE    SYS-9001-ADDRESS    TO  SHELLTBL-ARG7
-                 MOVE    SYS-9001-PORT2      TO  SHELLTBL-ARG8
-                 MOVE    99                    TO  IDX
+           MOVE    ZERO                TO  WRK-RENNUM
+           PERFORM
+                   UNTIL       (FLG-SYSKANRI   =   1    )
+               MOVE    MCPDATA-REC         TO  SYS-9001-REC
+               MOVE    ZERO                TO  FLG-SOUSIN
+               IF      SPA-CLAIM-MULTIHOST =   1
+      *            複数送信処理
+                   MOVE    1                   TO  FLG-SOUSIN
+               ELSE
+                   MOVE    SYS-9001-KBNCD (1:2)  TO  WRK-GMN-SELNUM
+                   IF      WRK-GMN-SELNUM        =   SPA-K03X-GMN-SEL
+                       MOVE    1                   TO  FLG-SOUSIN
+                       MOVE    1                   TO  FLG-SYSKANRI
+                   END-IF
+               END-IF
+               IF      FLG-SOUSIN          =   1
+                   PERFORM 49061-CLAIM-SOUSINSYOSI-SEC
                END-IF
       *
-               MOVE    "key2"              TO  MCP-PATHNAME
-               PERFORM 960-KANRIMST-READ-SEC
+               IF      FLG-SYSKANRI        =   ZERO
+                   MOVE    "key2"              TO  MCP-PATHNAME
+                   PERFORM 960-KANRIMST-READ-SEC
+               END-IF
            END-PERFORM
       *
       *    カーソルクロース
@@ -5001,12 +5020,23 @@
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
+           .
+       4906-CLAIM-SOUSIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＣＬＡＩＭ接続情報取得処理
+      *****************************************************************
+       49061-CLAIM-SOUSINSYOSI-SEC               SECTION.
+      *
       *    フィアルデイレクトリ位置指定
            INITIALIZE                  ORCSMKPASSAREA
            MOVE    CLAIM-FILE          TO  MKPASS-IN-01
            CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
       *
            MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME
+      *    連番
+           ADD     1                   TO  WRK-RENNUM
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-SYUNOU-MAX
@@ -5024,6 +5054,8 @@
                    MOVE    SPA-SRYYMD          TO  SHELLTBL-ARG4
                    MOVE    SYU-HKNCOMBINUM     TO  SHELLTBL-ARG5
                    MOVE    SPA-HOSPID          TO  SHELLTBL-ARG6
+                   MOVE    SYS-9001-ADDRESS    TO  SHELLTBL-ARG7
+                   MOVE    SYS-9001-PORT2      TO  SHELLTBL-ARG8
       *            ドクター
                    IF      SYU-DRCD-G          =   SPACE
                        MOVE    "@@@@@"             TO  SHELLTBL-ARG9
@@ -5031,6 +5063,8 @@
                        MOVE    SYU-DRCD-G          TO  SHELLTBL-ARG9
                    END-IF
                    MOVE    SYU-DENPNUM         TO  SHELLTBL-ARG10
+      *            連番
+                   MOVE    WRK-RENNUM          TO  SHELLTBL-ARG11 (1:2)
                    MOVE    SHELLTBL            TO  MCPDATA-REC
                    MOVE    "SHELL"             TO  MCP-FUNC
                    MOVE    "shell"             TO  MCP-TABLE
@@ -5042,7 +5076,7 @@
            END-PERFORM
       *
            .
-       4906-CLAIM-SOUSIN-EXT.
+       49061-CLAIM-SOUSINSYOSI-EXT.
            EXIT.
       *****************************************************************
       *    ユーザプログラム起動処理
