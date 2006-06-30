@@ -70,7 +70,6 @@
        01  FLG-AREA.
            03  FLG-END                             PIC 9(01).
            03  FLG-ERR                             PIC 9(01).
-           03  FLG-DBRC                            PIC 9(01).
            03  FLG-SYSKANRI                        PIC 9(01).
       *
       *    Åº»úÎÎ°è
@@ -91,7 +90,6 @@
                05  WRK-SYY                         PIC 9(04).
                05  WRK-SMM                         PIC 9(02).
                05  WRK-SDD                         PIC 9(02).
-           03  WRK-DBPATH                          PIC X(20).
            03  WRK-UPDKBN                          PIC X(03).
       *
       *    ÆþÎÏ¹àÌÜÌ¾
@@ -121,7 +119,6 @@
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
       *
       *****************************************************************
       *    Ï¢ÍíÎÎ°è
@@ -323,18 +320,21 @@
            INITIALIZE                      SYSKANRI-REC
            MOVE    "1036"              TO  SYS-KANRICD
            MOVE    WRK-KBNCD           TO  SYS-KBNCD
-           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+           MOVE    SPA-SYSYMD          TO  SYS-STYUKYMD
+                                           SYS-EDYUKYMD
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
-           MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
-           PERFORM 900-TBL-SELECT-SEC
-           IF    ( FLG-DBRC    NOT =   ZERO )
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC      NOT =   ZERO )
                MOVE    1               TO  FLG-SYSKANRI
            ELSE
                MOVE    MCPDATA-REC     TO  SYS-1036-REC
            END-IF
       *
-           MOVE    "SYSKANRI-KEY2"     TO  WRK-DBPATH
-           PERFORM 900-TBL-CLOSE-SEC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        3101-SYS1036-SEL-EXT.
@@ -599,24 +599,25 @@
        4811-SYS1036-UPD-SEC          SECTION.
       *
            MOVE    SYS-1036-REC        TO MCPDATA-REC
-           MOVE    "SYSKANRI-KEY"      TO WRK-DBPATH
+           MOVE    "tbl_syskanri"      TO MCP-TABLE
+           MOVE    "key"               TO MCP-PATHNAME
       *
            EVALUATE    WRK-UPDKBN
            WHEN    "UPD"
-               PERFORM 900-TBL-UPDATE-SEC
-               IF    ( FLG-DBRC        NOT =   ZERO )
+               PERFORM 910-DBUPDATE-SEC
+               IF    ( MCP-RC          NOT =   ZERO )
                    MOVE    "1201"      TO SPA-ERRCD
                    GO  TO  4811-SYS1036-UPD-EXT
                END-IF
            WHEN    "INS"
-               PERFORM 900-TBL-INSERT-SEC
-               IF    ( FLG-DBRC        NOT =   ZERO )
+               PERFORM 910-DBINSERT-SEC
+               IF    ( MCP-RC          NOT =   ZERO )
                    MOVE    "1201"      TO SPA-ERRCD
                    GO  TO  4811-SYS1036-UPD-EXT
                END-IF
            WHEN    "DEL"
-               PERFORM 900-TBL-DELETE-SEC
-               IF    ( FLG-DBRC        NOT =   ZERO )
+               PERFORM 910-DBDELETE-SEC
+               IF    ( MCP-RC          NOT =   ZERO )
                    MOVE    "1201"      TO SPA-ERRCD
                    GO  TO  4811-SYS1036-UPD-EXT
                END-IF
@@ -938,197 +939,105 @@
        800-ZENCHK-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ë¸¡º÷½èÍý
+      *    £Ä£Â¸¡º÷½èÍý¡ÊFHETCH¤â¹Ô¤¦)
       *****************************************************************
-       900-TBL-SELECT-SEC              SECTION.
-      *
-           MOVE    ZERO            TO  FLG-DBRC
-           MOVE    WRK-DBPATH      TO  ORC-DBPATH
-           PERFORM 910-DB-SELECT-SEC
-           IF    ( MCP-RC          =   ZERO )
-               MOVE    WRK-DBPATH  TO  ORC-DBPATH
-               PERFORM 910-DB-READ-SEC
-               IF    ( MCP-RC          =   ZERO )
-                   CONTINUE
-               ELSE
-                   MOVE    1       TO  FLG-DBRC
-               END-IF
-           ELSE
-               MOVE    1           TO  FLG-DBRC
-           END-IF
-      *
-           .
-       900-TBL-SELECT-EXT.
-           EXIT.
-      *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ëÆÉ¹þ½èÍý
-      *****************************************************************
-       900-TBL-READ-SEC                SECTION.
-      *
-           MOVE    ZERO            TO  FLG-DBRC
-           MOVE    WRK-DBPATH      TO  ORC-DBPATH
-           PERFORM 910-DB-READ-SEC
-           IF    ( MCP-RC          =   ZERO )
-               CONTINUE
-           ELSE
-               MOVE    1           TO  FLG-DBRC
-           END-IF
-      *
-           .
-       900-TBL-READ-EXT.
-           EXIT.
-      *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ë¹¹¿·½èÍý
-      *****************************************************************
-       900-TBL-UPDATE-SEC              SECTION.
-      *
-           MOVE    ZERO            TO  FLG-DBRC
-           MOVE    WRK-DBPATH      TO  ORC-DBPATH
-           PERFORM 910-DB-UPDATE-SEC
-           IF    ( MCP-RC          =   ZERO )
-               CONTINUE
-           ELSE
-               MOVE    1           TO  FLG-DBRC
-           END-IF
-      *
-           .
-       900-TBL-UPDATE-EXT.
-           EXIT.
-      *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ëÄÉ²Ã½èÍý
-      *****************************************************************
-       900-TBL-INSERT-SEC              SECTION.
-      *
-           MOVE    ZERO            TO  FLG-DBRC
-           MOVE    WRK-DBPATH      TO  ORC-DBPATH
-           PERFORM 910-DB-INSERT-SEC
-           IF    ( MCP-RC          =   ZERO )
-               CONTINUE
-           ELSE
-               MOVE    1           TO  FLG-DBRC
-           END-IF
-      *
-           .
-       900-TBL-INSERT-EXT.
-           EXIT.
-      *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ëºï½ü½èÍý
-      *****************************************************************
-       900-TBL-DELETE-SEC              SECTION.
-      *
-           MOVE    ZERO            TO  FLG-DBRC
-           MOVE    WRK-DBPATH      TO  ORC-DBPATH
-           PERFORM 910-DB-DELETE-SEC
-           IF    ( MCP-RC          =   ZERO )
-               CONTINUE
-           ELSE
-               MOVE    1           TO  FLG-DBRC
-           END-IF
-      *
-           .
-       900-TBL-DELETE-EXT.
-           EXIT.
-      *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ë¥¯¥í¡¼¥º½èÍý
-      *****************************************************************
-       900-TBL-CLOSE-SEC               SECTION.
-      *
-           MOVE    WRK-DBPATH      TO  ORC-DBPATH
-           PERFORM 910-DB-CLOSE-SEC
-      *
-           .
-       900-TBL-CLOSE-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    £Ä£Âºï½ü½èÍý
-      *****************************************************************
-       910-DB-DELETE-SEC               SECTION.
-      *
-           MOVE    "DBDELETE"          TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
-      *
-           .
-      *
-       910-DB-UPDATE-EXT.
-           EXIT.
-      *****************************************************************
-      *    £Ä£Â¹¹¿·½èÍý
-      *****************************************************************
-       910-DB-UPDATE-SEC               SECTION.
-      *
-           MOVE    "DBUPDATE"          TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
-      *
-           .
-      *
-       910-DB-UPDATE-EXT.
-           EXIT.
-      *****************************************************************
-      *    £Ä£ÂÄÉ²Ã½èÍý
-      *****************************************************************
-       910-DB-INSERT-SEC               SECTION.
-      *
-           MOVE    "DBINSERT"          TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
-      *
-           .
-      *
-       910-DB-INSERT-EXT.
-           EXIT.
-      *****************************************************************
-      *    £Ä£Â¸¡º÷½èÍý
-      *****************************************************************
-       910-DB-SELECT-SEC               SECTION.
+       910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF    ( MCP-RC          =   ZERO )
+               PERFORM 910-DBFETCH-SEC
+           END-IF
       *
            .
       *
-       910-DB-SELECT-EXT.
+       910-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    £Ä£Â¸¡º÷½èÍý¡ÊFHETCH¤Ï¹Ô¤ï¤Ê¤¤)
+      *****************************************************************
+       911-DBSELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       911-DBSELECT-EXT.
            EXIT.
       *****************************************************************
       *    £Ä£ÂÆÉ¤ß¹þ¤ß½èÍý
       *****************************************************************
-       910-DB-READ-SEC                 SECTION.
+       910-DBFETCH-SEC                 SECTION.
       *
-           MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
       *
            .
       *
-       910-DB-READ-EXT.
+       910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
       *    £Ä£Â¥¯¥í¡¼¥º½èÍý
       *****************************************************************
-       910-DB-CLOSE-SEC                SECTION.
+       910-DBCLOSECURSOR-SEC                 SECTION.
       *
-           MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
       *
-       910-DB-CLOSE-EXT.
+       910-DBCLOSECURSOR-EXT.
+           EXIT.
+      *****************************************************************
+      *    £Ä£Â£Ä£Å£Ì£Å£Ô£Å½èÍý
+      *****************************************************************
+       910-DBDELETE-SEC                 SECTION.
+      *
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       910-DBDELETE-EXT.
+           EXIT.
+      *****************************************************************
+      *    £Ä£Â£É£Î£Ó£Å£Ò£Ô½èÍý
+      *****************************************************************
+       910-DBINSERT-SEC                SECTION.
+      *
+           MOVE    "DBINSERT"          TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       910-DBINSERT-EXT.
+           EXIT.
+      *****************************************************************
+      *    £Ä£Â£Õ£Ð£Ä£Á£Ô£Å½èÍý
+      *****************************************************************
+       910-DBUPDATE-SEC                SECTION.
+      *
+           MOVE    "DBUPDATE"          TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       910-DBUPDATE-EXT.
            EXIT.
       *****************************************************************
       *    £Ð£Õ£Ô¡¡½èÍý
@@ -1136,10 +1045,9 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL   "ORCMCPSUB"   USING
-                                MCPAREA
-                                ORCMCPAREA
-                                MCPDATA-REC.
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        900-PUT-WINDOW-EXT.
