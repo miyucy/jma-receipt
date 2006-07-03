@@ -597,7 +597,7 @@
 	  <y>152</y>
 	  <width>152</width>
 	  <height>24</height>
-	  <label>再送（外来）受診有無</label>
+	  <label>再送（外来）受信有無</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
