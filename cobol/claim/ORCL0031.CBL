@@ -50,6 +50,7 @@
       *  01.00.17    NACL-多々納  06/01/16  乳幼児特例対応
       *  01.00.18    NACL-藤原    06/01/25  疑いフラグからの病名の編集方
       *                                     法の変更
+      *  01.00.19    NACL-多々納  06/07/03  置換え処理追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -660,9 +661,13 @@
            MOVE    LF04-JIKANNGAIKBN   TO  WRK-JIKAN
       *    剤毎の処理
            MOVE    ZERO                TO  WRK-ZAINUM
+           MOVE    ZERO                TO  FLG-ERR
       *    入院の時、同じワーク診療行為の判定
            IF      WRK-NYUGAIKBN       =   "1"
                PERFORM 2009-WKSRYACT-CHK-SEC
+           ELSE
+      *    外来の時、同じワーク診療行為の判定
+               PERFORM 20010-WKSRYACT-CHK2-SEC
            END-IF
       *
            MOVE    ZERO                TO  FLG-NYUINIDOU
@@ -673,6 +678,7 @@
                    UNTIL      (IDX1    >   20  )  OR
                              (LF04-SRYCD (IDX1)   =   SPACE)  OR
                              (FLG-END             =   1    )
+                         OR  (FLG-ERR             =   1    )
       *        入院移動判定
                IF     (WRK-NYUGAIKBN       =   "1"   ) AND
                       (LF04-SRYCDTBL (IDX1)    =   "Claim010" )
@@ -695,6 +701,7 @@
            DISPLAY "TBL-MAX = " TBL-MAX
       *      
            IF      FLG-END             =   ZERO
+              AND (FLG-ERR             =   ZERO )
                IF      TBL-MAX         >   ZERO
                    PERFORM 2004-WKSRYACT-OUT-SEC
                END-IF
@@ -709,6 +716,7 @@
            END-IF
       *    外来の時、受付に会計待を設定
            IF      WRK-NYUGAIKBN       =   "2"
+              AND (FLG-ERR             =   ZERO )
                PERFORM 2010-UKETUKE-CHK-SEC
            END-IF
            .
@@ -2166,6 +2174,93 @@
       *
            .
        2009-WKSRYACT-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ワーク診療行為の登録済みチェック処理
+      *****************************************************************
+       20010-WKSRYACT-CHK2-SEC                 SECTION.
+      *
+           INITIALIZE                  WKSRYACT-REC
+           MOVE    WRK-HOSPID          TO  WKSRY-HOSPID
+           MOVE    WRK-NYUGAIKBN       TO  WKSRY-NYUGAIKBN
+           MOVE    WRK-PTID            TO  WKSRY-PTID
+           MOVE    WRK-SRYKA           TO  WKSRY-SRYKA
+           MOVE    WRK-SRYYMD          TO  WKSRY-SRYYMD
+           MOVE    WRK-HKNCOMBI        TO  WKSRY-HKNCOMBI
+      *
+           MOVE    WKSRYACT-REC        TO  MCPDATA-REC
+           MOVE    "tbl_wksryact"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_wksryact"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 940-WKSRYACT-READ-SEC
+           ELSE
+               INITIALIZE                  WKSRYACT-REC
+               MOVE    1               TO  FLG-WKSRYACT
+           END-IF
+           MOVE    "tbl_wksryact"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      FLG-WKSRYACT        =   ZERO
+               IF      WKSRY-MOD-FLG       =   ZERO
+                   IF      SYS-9000-RESEND-FLG =   "1"
+      *                置換えの為、データ削除
+                       PERFORM 200101-WKSRYACT-DEL-SEC
+                   ELSE
+      *                エラー
+                       DISPLAY "L0031 WKSRYACT SELECT ERR "
+                              ",HOSPID:"   WRK-HOSPID
+                              ",NYUGAIKBN:" WRK-NYUGAIKBN
+                              ",PTID:" WRK-PTID
+                              ",SRYKA:" WRK-SRYKA
+                              ",SRYYMD:" WRK-SRYYMD
+                              ",HKNCOMBI:" WRK-HKNCOMBI
+                       MOVE    1               TO  FLG-ERR
+                   END-IF
+               ELSE
+      *            展開中エラー
+                   DISPLAY "L0031 WKSRYACT MOD ERR "
+                              ",HOSPID:"   WRK-HOSPID
+                              ",NYUGAIKBN:" WRK-NYUGAIKBN
+                              ",PTID:" WRK-PTID
+                              ",SRYKA:" WRK-SRYKA
+                              ",SRYYMD:" WRK-SRYYMD
+                              ",HKNCOMBI:" WRK-HKNCOMBI
+                              ",WKSRY-MOD-FLG," WKSRY-MOD-FLG
+                   MOVE    1               TO  FLG-ERR
+               END-IF
+           END-IF
+      *
+           .
+       20010-WKSRYACT-CHK2-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ワーク診療行為削除処理
+      *****************************************************************
+       200101-WKSRYACT-DEL-SEC          SECTION.
+      *
+           INITIALIZE                  WKSRYACT-REC
+           MOVE    WRK-HOSPID          TO  WKSRY-HOSPID
+           MOVE    WRK-NYUGAIKBN       TO  WKSRY-NYUGAIKBN
+           MOVE    WRK-PTID            TO  WKSRY-PTID
+           MOVE    WRK-SRYKA           TO  WKSRY-SRYKA
+           MOVE    WRK-SRYYMD          TO  WKSRY-SRYYMD
+           MOVE    WRK-HKNCOMBI        TO  WKSRY-HKNCOMBI
+      *
+           MOVE    WKSRYACT-REC        TO  MCPDATA-REC
+           MOVE    "tbl_wksryact"      TO  MCP-TABLE
+           MOVE    "del11"             TO  MCP-PATHNAME
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           .
+       200101-WKSRYACT-DEL-EXT.
            EXIT.
       *
       *****************************************************************
