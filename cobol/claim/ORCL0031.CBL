@@ -50,7 +50,7 @@
       *  01.00.17    NACL-多々納  06/01/16  乳幼児特例対応
       *  01.00.18    NACL-藤原    06/01/25  疑いフラグからの病名の編集方
       *                                     法の変更
-      *  01.00.19    NACL-多々納  06/07/03  置換え処理追加
+      *  01.00.19    NACL-多々納  06/07/03  置換え処理追加他
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -447,6 +447,9 @@
       *
       *    病名組立サブ
            COPY    "CPORCSMKBYOMEI.INC".
+      *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
       * 
       *****************************************************************
       *    連絡　領域
@@ -482,8 +485,8 @@
       *
            INITIALIZE                  WRK-AREA
            INITIALIZE                  FLG-AREA
-           DISPLAY "LF04-PTID1 = " "[" LF04-PTID1 "]"
-           DISPLAY "LF04-PERFORM-TIME = " "[" LF04-PERFORM-TIME "]"
+      *D   DISPLAY "LF04-PTID1 = " "[" LF04-PTID1 "]"
+      *D   DISPLAY "LF04-PERFORM-TIME = " "[" LF04-PERFORM-TIME "]"
       *
       *****診療種別テーブルセット
       *    OPEN    INPUT               SRYKBN-FILE
@@ -533,7 +536,6 @@
                MOVE   20               TO    SYS-SYSYY1
                MOVE   SYS-YMD          TO    WRK-SYSYMD          
            END-IF
-           DISPLAY "WRK-SYSYMD = " WRK-SYSYMD 
            MOVE    WRK-SYSYMD          TO  WRK-SRYYMD
       *
       *    システム管理検索（医療機関情報）
@@ -562,7 +564,6 @@
       *
       *        医療機関ＩＤ
                MOVE    SYS-1001-HOSPID     TO  WRK-HOSPID
-           DISPLAY "SYS-1001-HOSPID = " "[" SYS-1001-HOSPID "]"
       *        処方区分
                MOVE    SYS-1001-SYOHOKBN       TO  WRK-SYOHOKBN
            END-IF
@@ -657,6 +658,10 @@
       *    保険者マスター編集
            PERFORM 2001-HKNCOMBI-SET-SEC
       *
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
       *    時間外区分
            MOVE    LF04-JIKANNGAIKBN   TO  WRK-JIKAN
       *    剤毎の処理
@@ -673,7 +678,6 @@
            MOVE    ZERO                TO  FLG-NYUINIDOU
            INITIALIZE                  TBL-WKSRYACT-AREA
            MOVE    ZERO                TO  TBL-MAX
-           DISPLAY "LF04-SRYCD (1) = " LF04-SRYCD (1) 
            PERFORM VARYING     IDX1    FROM    1   BY  1
                    UNTIL      (IDX1    >   20  )  OR
                              (LF04-SRYCD (IDX1)   =   SPACE)  OR
@@ -698,8 +702,6 @@
                END-IF
            END-PERFORM
       *
-           DISPLAY "TBL-MAX = " TBL-MAX
-      *      
            IF      FLG-END             =   ZERO
               AND (FLG-ERR             =   ZERO )
                IF      TBL-MAX         >   ZERO
@@ -765,7 +767,7 @@
       *    END-IF
       *
            INITIALIZE                      ORCSPTIDAREA
-           DISPLAY  "WRK-HOSPID = " "[" WRK-HOSPID "]"
+      *D   DISPLAY  "WRK-HOSPID = " "[" WRK-HOSPID "]"
            MOVE    WRK-HOSPID          TO  SPTID-HOSPID
            MOVE    LF04-PTID1          TO  SPTID-PTNUM
            CALL    "ORCSPTID"          USING   ORCSPTIDAREA
@@ -914,9 +916,9 @@
            MOVE    WRK-HOSPID          TO  LF03-HOSPID
            MOVE    WRK-PTID            TO  LF03-PTID
            MOVE    WRK-SRYKA-KEY       TO  LF03-SRYKA
-           DISPLAY "LF03-HOSPID = " "[" LF03-HOSPID "]"
-           DISPLAY "LF03-PTID = " "[" LF03-PTID "]"
-           DISPLAY "LF03-SRYKA = " "[" LF03-SRYKA "]"
+      *D   DISPLAY "LF03-HOSPID = " "[" LF03-HOSPID "]"
+      *D   DISPLAY "LF03-PTID = " "[" LF03-PTID "]"
+      *D   DISPLAY "LF03-SRYKA = " "[" LF03-SRYKA "]"
            PERFORM 900-LF03-READ-SEC
            IF      FLG-LF03        =   1
                DISPLAY "*** ORCL0031 LF03 INVALID ***"
@@ -926,8 +928,6 @@
            MOVE    ZERO                TO  WRK-HKNCOMBI
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   20
-           DISPLAY "LF03-UID (IDX) = " "[" LF03-UID (IDX) "]"
-           DISPLAY "LF04-HOKEN-UID = " "[" LF04-HOKEN-UID "]"
                IF      LF03-UID (IDX)      =   LF04-HOKEN-UID
                    MOVE    LF03-HKNCOMBINUM (IDX)  TO  WRK-HKNCOMBI
                    MOVE    20                  TO  IDX
@@ -1025,9 +1025,9 @@
            PERFORM 990-DBCLOSE-SEC
       *
       *TEST
-            DISPLAY "LF04-HKNKOH-PROVIDER1:" LF04-HKNKOH-PROVIDER(1 1)
-            DISPLAY "LF04-HKNKOH-PROVIDER2:" LF04-HKNKOH-PROVIDER(1 2)
-            DISPLAY "LF04-HKNKOH-PROVIDER3:" LF04-HKNKOH-PROVIDER(1 3)
+      *     DISPLAY "LF04-HKNKOH-PROVIDER1:" LF04-HKNKOH-PROVIDER(1 1)
+      *     DISPLAY "LF04-HKNKOH-PROVIDER2:" LF04-HKNKOH-PROVIDER(1 2)
+      *     DISPLAY "LF04-HKNKOH-PROVIDER3:" LF04-HKNKOH-PROVIDER(1 3)
       *TEST
       *    公費
            INITIALIZE                  WRK-KOH-AREA
@@ -1041,7 +1041,7 @@
                PERFORM 200111-KOH-HENSYU-SEC
            END-IF
       *TEST
-               DISPLAY "FLG-KOHARI:" FLG-KOHARI
+      *        DISPLAY "FLG-KOHARI:" FLG-KOHARI
       *TEST
       *
       *    保険組合せ決定
@@ -1079,10 +1079,10 @@
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   4
       *TEST
-               DISPLAY "LF04-HKNKOH-FTNJANUM:" 
-                             LF04-HKNKOH-FTNJANUM (1 IDX)
-               DISPLAY "LF04-HKNKOH-JKYSNUM:" 
-                             LF04-HKNKOH-JKYSNUM (1 IDX)
+      *        DISPLAY "LF04-HKNKOH-FTNJANUM:" 
+      *                      LF04-HKNKOH-FTNJANUM (1 IDX)
+      *        DISPLAY "LF04-HKNKOH-JKYSNUM:" 
+      *                      LF04-HKNKOH-JKYSNUM (1 IDX)
       *TEST
       *        未設定を空白へ
                IF      LF04-HKNKOH-FTNJANUM (1 IDX)(1:7) =   "mikinyu"
@@ -1237,8 +1237,8 @@
        2001112-KOH-SET-SEC                SECTION.
       *
       *TEST
-           DISPLAY "WRK-FTNJANUM:" WRK-FTNJANUM
-                  ",WRK-JKSNUM:" WRK-JKSNUM
+      *    DISPLAY "WRK-FTNJANUM:" WRK-FTNJANUM
+      *           ",WRK-JKSNUM:" WRK-JKSNUM
       *TEST
            MOVE    ZERO                TO  FLG-CHK
            PERFORM VARYING      IDK    FROM    1   BY  1
@@ -1277,8 +1277,8 @@
       *
            END-PERFORM
       *TEST
-           DISPLAY "IDX:" IDX
-                   ",WRK-KOHID:" WRK-KOHID(IDX)
+      *    DISPLAY "IDX:" IDX
+      *            ",WRK-KOHID:" WRK-KOHID(IDX)
       *TEST
       *
            .
@@ -1328,8 +1328,8 @@
                END-IF
                IF      LF04-IJICD(IDX1 IDX2)   NOT =   SPACE
       *        IF      LF04-IJICD(IDX1 IDX2)(1:9)   NUMERIC
-              DISPLAY  "LF04-IJICD(IDX1 IDX2)(1:9) = "  
-                        LF04-IJICD(IDX1 IDX2)(1:9)
+      ***     DISPLAY  "LF04-IJICD(IDX1 IDX2)(1:9) = "  
+      ***               LF04-IJICD(IDX1 IDX2)(1:9)
                    INITIALIZE                      ORCSNUMAREA
                    MOVE    LF04-IJICD(IDX1 IDX2)(1:9)
                                                TO  SNUM-INX
@@ -1717,7 +1717,7 @@
       *    診療区分
            MOVE    WRK-SRYKBN          TO  TBL-WKSRY-SRYKBN   (TBL-MAX)
       *    投薬で院外の時、院外へ
-           DISPLAY "LF04-MEMO (IDX1) = " "[" LF04-MEMO (IDX1) "]"
+      *DD  DISPLAY "LF04-MEMO (IDX1) = " "[" LF04-MEMO (IDX1) "]"
       *
            IF     (WRK-NYUGAIKBN       =   "2"  )  AND
                   (WRK-SRYKBN          =   "21" )
@@ -1972,15 +1972,15 @@
            IF      IDX3                =   ZERO
                COMPUTE IDX3                =   IDX1    -  1
            END-IF
-           DISPLAY "LF04-ADMINCODE(1) = " LF04-ADMINCODE(1)
-           DISPLAY "LF04-ADMINCODE(2) = " LF04-ADMINCODE(2)
-           DISPLAY "LF04-ADMINCODE(3) = " LF04-ADMINCODE(3)
-           DISPLAY "LF04-ADMINCODE(4) = " LF04-ADMINCODE(4)
-           DISPLAY "LF04-ADMINCODE(5) = " LF04-ADMINCODE(5)
-           DISPLAY "LF04-ADMINCODE(6) = " LF04-ADMINCODE(6)
-           DISPLAY "LF04-ADMINCODE(7) = " LF04-ADMINCODE(7)
-           DISPLAY "LF04-ADMINCODE(IDX3) = " LF04-ADMINCODE(IDX3)
-           DISPLAY "IDX3 = " "[" IDX3 "]"
+      ***  DISPLAY "LF04-ADMINCODE(1) = " LF04-ADMINCODE(1)
+      *    DISPLAY "LF04-ADMINCODE(2) = " LF04-ADMINCODE(2)
+      *    DISPLAY "LF04-ADMINCODE(3) = " LF04-ADMINCODE(3)
+      *    DISPLAY "LF04-ADMINCODE(4) = " LF04-ADMINCODE(4)
+      *    DISPLAY "LF04-ADMINCODE(5) = " LF04-ADMINCODE(5)
+      *    DISPLAY "LF04-ADMINCODE(6) = " LF04-ADMINCODE(6)
+      *    DISPLAY "LF04-ADMINCODE(7) = " LF04-ADMINCODE(7)
+      *    DISPLAY "LF04-ADMINCODE(IDX3) = " LF04-ADMINCODE(IDX3)
+      ***  DISPLAY "IDX3 = " "[" IDX3 "]"
            IF     (LF04-ADMINCODE(IDX3)    NOT =   SPACE )  AND
                   (TBL-WKSRY-SRYKBN(01)    =   "21"  OR  "22" OR "23")
                PERFORM 20041-YOUHOU-SET-SEC
@@ -2111,6 +2111,11 @@
                    UNTIL       IDX      >   TBL-MAX
                MOVE    TBL-WKSRYACT-REC (IDX)
                                            TO  WKSRYACT-REC
+      *
+               MOVE    SMCNDATE-YMD        TO  WKSRY-CREYMD
+               MOVE    SMCNDATE-YMD        TO  WKSRY-UPYMD
+               MOVE    SMCNDATE-HMS        TO  WKSRY-UPHMS
+      *
                MOVE    WKSRYACT-REC        TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "tbl_wksryact"      TO  MCP-TABLE
@@ -2206,12 +2211,32 @@
            PERFORM 990-DBCLOSE-SEC
       *
            IF      FLG-WKSRYACT        =   ZERO
-               IF      WKSRY-MOD-FLG       =   ZERO
+               IF     (WKSRY-MOD-FLG       =   ZERO )
                    IF      SYS-9000-RESEND-FLG =   "1"
-      *                置換えの為、データ削除
-                       PERFORM 200101-WKSRYACT-DEL-SEC
+                       IF      WKSRY-KARTE-FLG     =   1
+      *                    中途終了データは置換えなし
+                           MOVE    1               TO  FLG-ERR
+                           DISPLAY "L0031 WKSRYACT K02 INS"
+                                  ",HOSPID:"   WRK-HOSPID
+                                  ",NYUGAIKBN:" WRK-NYUGAIKBN
+                                  ",PTID:" WRK-PTID
+                                  ",SRYKA:" WRK-SRYKA
+                                  ",SRYYMD:" WRK-SRYYMD
+                                  ",HKNCOMBI:" WRK-HKNCOMBI
+                       ELSE
+      *                    置換えの為、データ削除
+                           PERFORM 200101-WKSRYACT-DEL-SEC
+      *
+                           DISPLAY "L0031 WKSRYACT UPDATE "
+                                  ",HOSPID:"   WRK-HOSPID
+                                  ",NYUGAIKBN:" WRK-NYUGAIKBN
+                                  ",PTID:" WRK-PTID
+                                  ",SRYKA:" WRK-SRYKA
+                                  ",SRYYMD:" WRK-SRYYMD
+                                  ",HKNCOMBI:" WRK-HKNCOMBI
+                       END-IF
                    ELSE
-      *                エラー
+                       MOVE    1               TO  FLG-ERR
                        DISPLAY "L0031 WKSRYACT SELECT ERR "
                               ",HOSPID:"   WRK-HOSPID
                               ",NYUGAIKBN:" WRK-NYUGAIKBN
@@ -2219,7 +2244,7 @@
                               ",SRYKA:" WRK-SRYKA
                               ",SRYYMD:" WRK-SRYYMD
                               ",HKNCOMBI:" WRK-HKNCOMBI
-                       MOVE    1               TO  FLG-ERR
+                              ",WKSRY-KARTE-FLG:" WKSRY-KARTE-FLG
                    END-IF
                ELSE
       *            展開中エラー
@@ -2795,6 +2820,10 @@
       *        転帰区分
                MOVE    WRK-TENKI           TO  PTBYO-TENKIKBN
            END-IF
+      *
+           MOVE    SMCNDATE-YMD        TO  PTBYO-CREYMD
+           MOVE    SMCNDATE-YMD        TO  PTBYO-UPYMD
+           MOVE    SMCNDATE-HMS        TO  PTBYO-UPHMS
       *
            MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
