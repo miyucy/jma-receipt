@@ -606,13 +606,13 @@
            MOVE    PTCOM-REC           TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_ptcom"         TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
+           MOVE    "key3"              TO  MCP-PATHNAME
            CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_ptcom"         TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
+               MOVE    "key3"              TO  MCP-PATHNAME
                PERFORM 915-PTCOM-NEXT2-SEC
            ELSE
                MOVE    "0002"          TO  SPA-ERRCD
@@ -628,12 +628,12 @@
                                            MCPAREA
                                            MCPDATA-REC
                MOVE    "tbl_ptcom"         TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
+               MOVE    "key3"              TO  MCP-PATHNAME
                PERFORM 915-PTCOM-NEXT2-SEC
            END-PERFORM
       *
            MOVE    "tbl_ptcom"         TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
+           MOVE    "key3"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE2-SEC
            .
       *
