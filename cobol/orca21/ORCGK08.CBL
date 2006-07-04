@@ -5052,11 +5052,6 @@
       *****************************************************************
        4010-PREVIEW-SYORI-SEC          SECTION.
       *
-      *@@@ レセプト更新まで
-      *    IF       SPA-SRYYMD(1:6)    >=   "200604"
-      *        MOVE    "9009"          TO  SPA-ERRCD
-      *    END-IF
-      *@@@
            IF      (SPA-HKNCOMBINUM    =    "9999" )  OR
                    (SPA-HKNKBN         =    1      )
                MOVE    "9001"          TO  SPA-ERRCD
@@ -5075,6 +5070,8 @@
                IF      SPA-ERRCD           =   SPACE
       *            プレビュー処理
                    PERFORM 4130-PREVIEW-SEC
+               ELSE
+                   MOVE    "9003"          TO  SPA-ERRCD
                END-IF
            END-IF
            .
@@ -5716,6 +5713,9 @@
                                        TO  SPA-ERRMSG
                WHEN    "9002"
                    MOVE    "診療内容がありません。"
+                                       TO  SPA-ERRMSG
+               WHEN    "9003"
+                   MOVE    "プレビューデータ作成が失敗しました。"
                                        TO  SPA-ERRMSG
       *@@
                WHEN    "9009"
