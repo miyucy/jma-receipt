@@ -95,18 +95,26 @@
       *    ≤ËÃÃ•π•—ŒŒ∞Ë
        01  SPA-K09.
            03  SPA-K09-AREA.
-      *********05  SPA-GMN-PAGE                  PIC 9(02).
-      *        05  SPA-MAX-PAGE                  PIC 9(02).
-      *        05  SPA-GMN-LINE                  PIC 9(02).
-      *********05  SPA-GMN-MAX1                  PIC 9(04).
-               05  SPA-GMN-MAX2                  PIC 9(04).
-               05  SPA-NAI-MAX2                  PIC 9(04).
                05  SPA-K09GMN-CUR                PIC 9(02).
       *
-      *        05  SPA-GMN-RRKTBL.
-      *            07  SPA-GMN-RRKTBLREC         OCCURS  100.
-      *                09  SPA-GMN-NO            PIC 9(03).
-      ****             09  SPA-GMN-SRYYMD        PIC X(10).
+               05  SPA-GMN-NYUGAIKBN-G.
+                   07  SPA-GMN-NYUGAIKBN           PIC X(01).
+                   07  SPA-GMN-NYUGAIKBN-F1        PIC X(01).
+                   07  SPA-GMN-NYUGAIKBN-MEI       PIC X(08).
+               05  SPA-GMN-NYUGAIKBN-LIST.
+                   07  SPA-GMN-NYUGAIKBN-LST       PIC X(10)
+                                                   OCCURS   2.
+                   07  SPA-NYUGAIKBN-MAX           PIC 9(02).
+      *
+               05  SPA-GMN-SRYKBN-G.
+                   07  SPA-GMN-SRYKBN              PIC X(02).
+                   07  SPA-GMN-SRYKBN-F1           PIC X(01).
+                   07  SPA-GMN-SRYKBN-MEI          PIC X(20).
+               05  SPA-GMN-SRYKBN-LIST.
+                   07  SPA-GMN-SRYKBN-LST          PIC X(23)
+                                                   OCCURS  20.
+                   07  SPA-SRYKBN-MAX              PIC 9(03).
+      *
                05  SPA-GMN-TBL.
                    07  SPA-GMN-TBLREC  OCCURS  400.
                        09  SPA-GMN-TBANGO      PIC 9(03).
@@ -129,17 +137,16 @@
                                13  SPA-GMN-TZAIKEI     PIC X(40).
       *
                        09  SPA-NAI-TBANGO        PIC  9(03).
+               05  SPA-GMN-MAX2                  PIC 9(04).
+               05  SPA-NAI-MAX2                  PIC 9(04).
       *
-      *****    05  SPA-GMN-SELNUM            PIC X(03).
                05  SPA-GMN-DOSEL             PIC X(40).
+               05  SPA-NAI-DOSEL-G.
+                   07  SPA-NAI-DOSEL         PIC 9(03)
+                                             OCCURS   100.
+                   07  SPA-NAI-DOSEL-MAX     PIC 9(03).
       *
                05  SPA-NAI-AREA.
-      ****         07  SPA-NAI-RRKTBL.
-      *                09  SPA-NAI-RRKTBLREC         OCCURS   100.
-      *                    11  SPA-NAI-SRYYMD        PIC  X(08).
-      *                    11  SPA-NAI-RENNUM        PIC  9(01).
-      *                    11  SPA-NAI-DOUJI-RENNUM  PIC  9(01).
-      ****         07  SPA-NAI-SELNUM            PIC 9(03).
       *
                    07  SPA-NAI-TBL.
                        09  SPA-NAI-TBLREC            OCCURS   400.
@@ -170,6 +177,7 @@
            03  FLG-INPUTCD         PIC 9(01).
       *
            03  FLG-OK              PIC 9(01).
+           03  FLG-OK2             PIC 9(01).
            03  FLG-SP              PIC 9(01).
            03  FLG-ERR             PIC 9(01).
            03  FLG-ARI             PIC 9(01).
@@ -180,6 +188,7 @@
            03  FLG-KAI             PIC 9(01).
            03  FLG-DOALL           PIC 9(01).
            03  FLG-WRITE           PIC 9(01).
+           03  FLG-HEN             PIC 9(01).
       *
       *    ≈∫ª˙ŒŒ∞Ë
        01  IDX-AREA.
@@ -235,6 +244,15 @@
            03  WRK-BANGO               PIC 9(03).
            03  WRK-DOSELNUM            PIC 9(03).
            03  WRK-BANGO-X             PIC X(03).
+      *
+           03  WRK-SELNUM-CHK-G.
+               05  WRK-SELNUM-CHK  PIC 9(03)   OCCURS  100.
+           03  WRK-HEN-SELNUM      PIC X(40).
+           03  WRK-HEN-SELNUM-2    PIC X(40).
+           03  WRK-HEN-SELNUM-HZN  PIC X(40).
+           03  WRK-SELNUM-AREA.
+               05  WRK-SELNUM-OCC    OCCURS   100.
+                   07  WRK-SEL9        PIC 9(01).
       *
            03  WRK-DOSEL.
                05  WRK-DOSEL-OCC   OCCURS   100.
@@ -541,7 +559,7 @@
            END-IF
       *
            MOVE    SPACE               TO  SPA-K09
-           INITIALIZE          SPA-K09
+           INITIALIZE                  SPA-K09
            MOVE    SPACE               TO  WRK-DATA-REC
            INITIALIZE          WRK-DATA-REC
            MOVE    ZERO                TO  FLG-SPASCR
@@ -632,32 +650,45 @@
       *****************************************************************
        300-SCREEN-SEC             SECTION.
       *
+      *    ∆‚…Ù≤ËÃÃ§Ë§Í
+           EVALUATE    SPA-MOTOPG
+               WHEN    "K07"
+                   IF      SPA-NAI-DOSELNUM    >   ZERO
+      *                ø«ª°∆‚Õ∆ ‘Ω∏
+                       PERFORM 4101-JYURRK-HEN-SEC
+                   ELSE
+                       MOVE    1               TO  SPA-K09GMN-CUR
+                   END-IF
+      *
+               WHEN    OTHER
+                   PERFORM 3001-INIT-SPA-SEC
+           END-EVALUATE
+           .
+      *
+       300-SCREEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ≤ËÃÃ ‘Ω∏ΩËÕ˝
+      *****************************************************************
+       3001-INIT-SPA-SEC                  SECTION.
+      *
            MOVE    1                   TO  FLG-GMN-INIT1
            MOVE    1                   TO  FLG-GMN-INIT2
-      *
            INITIALIZE                  SPA-K09-AREA
+           INITIALIZE                  SPA-K09KYOU-AREA
            MOVE    ZERO                TO  SPA-K09-SELOK
       *
-      *****PERFORM                 310-SPA-SET-SEC
+           PERFORM                     310-SPA-SET-SEC
            IF      SPA-NAI-DOSELNUM    >   ZERO
       *        ø«ª°∆‚Õ∆ ‘Ω∏
                PERFORM 4101-JYURRK-HEN-SEC
-               IF      SPA-GMN-MAX2        >   ZERO
-                   MOVE    2                   TO  SPA-K09GMN-CUR
-               ELSE
-                   MOVE
-                   "°·°·°·°·°·°·°·°·°°…Ωº®∆‚Õ∆§ §∑°°°·°·°·°·°·°·°·°·"
-                                               TO  SPA-GMN-TMEISYO (01)
-                   MOVE    1                   TO  SPA-GMN-MAX2
-                   MOVE    1                   TO  SPA-K09GMN-CUR
-               END-IF
            ELSE
                MOVE    1               TO  SPA-K09GMN-CUR
            END-IF
       *
-      *
            .
-       300-SCREEN-EXT.
+       3001-INIT-SPA-EXT.
            EXIT.
       *
       *****************************************************************
@@ -665,87 +696,250 @@
       *****************************************************************
        310-SPA-SET-SEC                  SECTION.
       *
+      *    ∆˛≥∞∂Ë ¨¿ﬂƒÍ
+           MOVE    SPA-NYUGAIKBN       TO  SPA-GMN-NYUGAIKBN
+           IF      SPA-K02N-TAIINYMD   =   SPACE
+               MOVE    "2 ≥∞ÕË"            TO  SPA-GMN-NYUGAIKBN-LST (1)
+               MOVE    1                   TO  SPA-NYUGAIKBN-MAX
+           ELSE
+               MOVE    "1 ∆˛±°"            TO  SPA-GMN-NYUGAIKBN-LST (1)
+               MOVE    "2 ≥∞ÕË"            TO  SPA-GMN-NYUGAIKBN-LST (2)
+               MOVE    2                   TO  SPA-NYUGAIKBN-MAX
+           END-IF
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-NYUGAIKBN-MAX
+               IF      SPA-GMN-NYUGAIKBN   =   SPA-GMN-NYUGAIKBN-LST
+                                                           (IDX)(1:1)
+                   MOVE    SPA-GMN-NYUGAIKBN-LST (IDX)
+                                           TO  SPA-GMN-NYUGAIKBN-G
+               END-IF
+           END-PERFORM
+      *
+      *    ø«Œ≈∂Ë ¨
+           INITIALIZE                  SPA-GMN-SRYKBN-LIST
+           MOVE    "00 ¡¥¬Œ"           TO  SPA-GMN-SRYKBN-LST (01)
+           MOVE    "10 ªÿ∆≥°¶∫ﬂ¬"     TO  SPA-GMN-SRYKBN-LST (02)
+           MOVE    "20 ≈ÍÃÙ"           TO  SPA-GMN-SRYKBN-LST (03)
+           MOVE    "30 √ÌºÕ"           TO  SPA-GMN-SRYKBN-LST (04)
+           MOVE    "40 ΩË√÷"           TO  SPA-GMN-SRYKBN-LST (05)
+           MOVE    "50 ºÍΩ—°¶À„øÏ"     TO  SPA-GMN-SRYKBN-LST (06)
+           MOVE    "60 ∏°∫∫"           TO  SPA-GMN-SRYKBN-LST (07)
+           MOVE    "70 ≤Ë¡¸ø«√«"       TO  SPA-GMN-SRYKBN-LST (08)
+           MOVE    "80 •Í•œ•”•Í°¶§Ω§Œ¬æ"
+                                       TO  SPA-GMN-SRYKBN-LST (09)
+           MOVE    "90 º´»Ò°¶§Ω§Œ¬æ"   TO  SPA-GMN-SRYKBN-LST (10)
+      *
+           MOVE    10                  TO  SPA-SRYKBN-MAX
+           MOVE    SPA-GMN-SRYKBN-LST (01) TO  SPA-GMN-SRYKBN-G
+      *
+      *    ºıø«Õ˙ŒÚ ‘Ω∏
+           IF      SPA-GMN-NYUGAIKBN   =   SPA-NYUGAIKBN
+               PERFORM 3102-JYURRK-SPAHEN-SEC
+           ELSE
+               PERFORM 3101-JYURRK-DBHEN-SEC
+           END-IF
+           .
+       310-SPA-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    £”£–£¡§´§È ‘Ω∏ΩËÕ˝
+      *****************************************************************
+       3102-JYURRK-SPAHEN-SEC             SECTION.
+      *
+           INITIALIZE                  SPA-K09GMN-RRKTBL
+           INITIALIZE                  SPA-K09NAI-RRKTBL
+           PERFORM   VARYING   IDX     FROM    1   BY  1
+                     UNTIL     IDX         >   SPA-GMN-MAX1
+               MOVE    SPA-GMN-NO (IDX)    TO  SPA-K09GMN-NO (IDX)
+               MOVE    SPA-GMN-RRKYMD(IDX) TO  SPA-K09GMN-RRKYMD (IDX)
+               MOVE    SPA-GMN-RRKHKNCOMBI (IDX)
+                                           TO  SPA-K09GMN-RRKHKNCOMBI
+                                                                 (IDX)
+               MOVE    SPA-GMN-RRKSRYKA (IDX)
+                                           TO  SPA-K09GMN-RRKSRYKA
+                                                                 (IDX)
+               MOVE    IDX                 TO  SPA-K09GMN-MAX1
+               MOVE    SPA-NAI-RRKTBLREC (IDX)
+                                           TO  SPA-K09NAI-RRKTBLREC(IDX)
+           END-PERFORM
+           .
+       3102-JYURRK-SPAHEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    ºıø«Õ˙ŒÚ§´§È ‘Ω∏ΩËÕ˝
+      *****************************************************************
+       3101-JYURRK-DBHEN-SEC             SECTION.
+      *
+           INITIALIZE                  SPA-K09GMN-RRKTBL
+           INITIALIZE                  SPA-K09NAI-RRKTBL
       *    ºıø«ŒÚ§Ú∏°∫˜§π§Î  ∞ÂŒ≈µ°¥ÿ°¢¥µº‘£…£ƒ
-      *****INITIALIZE                  JYURRK-REC
-      *    MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
-      *    MOVE    SPA-PTID            TO  JYURRK-PTID
-      *    MOVE    SPA-SRYKA           TO  JYURRK-SRYKA
-      **
-      *    MOVE    JYURRK-REC          TO  MCPDATA-REC
-      *    MOVE    "DBSELECT"          TO  MCP-FUNC
-      *    MOVE    "JYURRK-KEY7"       TO  ORC-DBPATH
-      *    CALL    "MCPDBSUB"          USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
-      *    IF      MCP-RC              =   ZERO
-      *        MOVE    "JYURRK-KEY7"      TO  ORC-DBPATH
-      *        PERFORM 970-JYURRK-READ-SEC
-      *    ELSE
-      *        INITIALIZE                  JYURRK-REC
-      *        MOVE    1               TO  FLG-JYURRK
-      *    END-IF
+           INITIALIZE                  JYURRK-REC
+           MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
+           MOVE    SPA-PTID            TO  JYURRK-PTID
+           MOVE    SPA-GMN-NYUGAIKBN   TO  JYURRK-NYUGAIKBN
       *
-      *    MOVE    ZERO                TO  IDX
-      *    PERFORM
-      *        UNTIL   (FLG-JYURRK         =   1   )  OR
-      *                (SPA-GMN-MAX1       >=  100 )
+           MOVE    JYURRK-REC          TO  MCPDATA-REC
+           MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 970-JYURRK-READ-SEC
+           ELSE
+               INITIALIZE                  JYURRK-REC
+               MOVE    1               TO  FLG-JYURRK
+           END-IF
+      *
+           MOVE    ZERO                TO  IDX
+           PERFORM
+               UNTIL   (FLG-JYURRK         =   1   )  OR
+                       (SPA-K09GMN-MAX1    >=  150 )
+      *
       *        ø«Œ≈∆¸°¢œ¢»÷§«£±π‘§»§π§Î
-      *        MOVE    ZERO            TO  IDX-S
-      *        PERFORM VARYING     IDX2    FROM    1   BY  1
-      *                UNTIL       IDX2    >   SPA-GMN-MAX1
-      *            IF     (JYURRK-RENNUM       =   SPA-NAI-RENNUM
-      *                                                (IDX2))  AND
-      *                   (JYURRK-SRYYMD       =   SPA-NAI-SRYYMD
-      *                                                (IDX2))
-      *                MOVE    IDX2            TO  IDX-S
-      *                MOVE    SPA-GMN-MAX1    TO  IDX2
-      *            END-IF
-      *        END-PERFORM
+               MOVE    ZERO            TO  IDX-S
+               PERFORM VARYING     IDX2    FROM    1   BY  1
+                       UNTIL       IDX2    >   SPA-K09GMN-MAX1
+                   IF     (JYURRK-RENNUM       =   SPA-K09NAI-RENNUM
+                                                       (IDX2))  AND
+                          (JYURRK-DOUJI-RENNUM =
+                                               SPA-K09NAI-DOUJI-RENNUM
+                                                       (IDX2))  AND
+                          (JYURRK-SRYYMD       =   SPA-K09NAI-RRKYMD
+                                                       (IDX2))
+                     AND  (JYURRK-SRYKA        =   SPA-K09NAI-RRK-SRYKA
+                                                       (IDX2))
+                       MOVE    IDX2            TO  IDX-S
+                       MOVE    SPA-K09GMN-MAX1 TO  IDX2
+                   END-IF
+               END-PERFORM
       *
-      *        IF      IDX-S           =   ZERO
-      *            ADD     1               TO  SPA-GMN-MAX1
-      *            MOVE    SPA-GMN-MAX1    TO  IDX
-      *        ELSE
-      *            MOVE    IDX-S           TO  IDX
-      *        END-IF
+               IF      IDX-S           =   ZERO
+                   ADD     1               TO  SPA-K09GMN-MAX1
+                   MOVE    SPA-K09GMN-MAX1 TO  IDX
+               ELSE
+                   MOVE    IDX-S           TO  IDX
+               END-IF
       *
       *        Ã¿∫Ÿπ‡Ã‹¬‡»Ú
-      *        PERFORM 3101-JYURRK-HEN-SEC
+               PERFORM 31011-JYURRK-SPAHEN-SEC
       *
-      *        MOVE    "JYURRK-KEY7"    TO  ORC-DBPATH
-      *        PERFORM 970-JYURRK-READ-SEC
-      *    END-PERFORM
+               MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 970-JYURRK-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
-      *    MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-      *    MOVE    "JYURRK-KEY7"       TO  ORC-DBPATH
-      *    CALL    "MCPDBSUB"          USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
+      *    ø«ª°∆¸§Œ∫∆ ‘Ω∏
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-K09GMN-MAX1
+               MOVE    ZERO            TO  FLG-HEN
+               PERFORM VARYING     IDX2    FROM    IDX BY  1
+                       UNTIL       IDX2    >   SPA-K09GMN-MAX1
+                   IF     (IDX2            NOT =   IDX )  AND
+                          (SPA-K09NAI-RRKYMD  (IDX)
+                                               =   SPA-K09NAI-RRKYMD 
+                                                          (IDX2)) AND
+                          (SPA-K09NAI-RRK-SRYKA(IDX)
+                                               =   SPA-K09NAI-RRK-SRYKA
+                                                          (IDX2))
+                       MOVE    1                   TO  FLG-HEN
+                       MOVE    SPA-K09GMN-MAX1     TO  IDX2
+                   ELSE
+                       IF     (SPA-K09NAI-RRKYMD(IDX)
+                                           NOT =   SPA-K09NAI-RRKYMD
+                                                       (IDX2))
+                           MOVE    SPA-K09GMN-MAX1 TO  IDX2
+                       END-IF
+                   END-IF
+               END-PERFORM
+               IF     (SPA-K09NAI-RENNUM (IDX)        >   1 ) OR
+                      (SPA-K09NAI-DOUJI-RENNUM (IDX)  >  ZERO )
+                   MOVE    1                   TO  FLG-HEN
+               END-IF
+               IF      FLG-HEN             =   1
+                   MOVE    "("             TO  SPA-K09GMN-RRKYMD (IDX)
+                                                               (10:1)
+                   MOVE    SPA-K09NAI-RENNUM (IDX) 
+                                           TO  SPA-K09GMN-RRKYMD (IDX)
+                                                              (11:1)
+                   MOVE    ")"             TO  SPA-K09GMN-RRKYMD (IDX)
+                                                              (12:1)
+                   IF      SPA-K09NAI-DOUJI-RENNUM (IDX)  NOT =   ZERO
+                       MOVE    SPA-K09NAI-DOUJI-RENNUM (IDX) 
+                                           TO  SPA-K09GMN-RRKYMD (IDX)
+                                                              (13:1)
+                   END-IF
+               END-IF
+      *         £øÙø«Œ≈≤ 
+               IF      SPA-K09NAI-RRK-FUKU-KBN (IDX)  =   "1"  OR  "2"
+                   MOVE    "F"             TO  SPA-K09GMN-RRKYMD (IDX)
+                                                              (13:1)
+               END-IF
       *
-      *    .
-      *310-SPA-SET-EXT.
-      *    EXIT.
+               MOVE    SPA-K09NAI-RRK-HKNCOMBI(IDX)
+                                             TO  SPA-K09GMN-RRKHKNCOMBI
+                                                                  (IDX)
+               IF      SPA-K09NAI-RRK-HKNKBN  (IDX)  =   "1"
+                   MOVE    "œ´"              TO  SPA-K09GMN-RRKHKNCOMBI
+                                                                  (IDX)
+               END-IF
+               IF      SPA-K09NAI-RRK-HKNKBN  (IDX)  =   "2"
+                   MOVE    "º´"              TO  SPA-K09GMN-RRKHKNCOMBI
+                                                                  (IDX)
+               END-IF
+      *        ≤ Ãæ
+               PERFORM VARYING IDY     FROM    1   BY  1
+                       UNTIL   IDY         >   SPA-SRYKA-MAX
+                   IF      SPA-K09NAI-RRK-SRYKA (IDX)
+                                           =   SPA-GMN-SRYKAL(IDY)
+                       MOVE    SPA-GMN-SRYKAMEIL(IDY)(1:2)
+                                           TO  SPA-K09GMN-RRKSRYKA(IDX)
+                       MOVE    SPA-SRYKA-MAX   TO  IDY
+                   END-IF
+               END-PERFORM
+           END-PERFORM
+      *
+           .
+       3101-JYURRK-DBHEN-EXT.
+           EXIT.
       *****************************************************************
       *    ≤ËÃÃ ‘Ω∏ΩËÕ˝
       *****************************************************************
-      *3101-JYURRK-HEN-SEC             SECTION.
+       31011-JYURRK-SPAHEN-SEC             SECTION.
       *
-      *    MOVE    IDX                 TO  SPA-GMN-NO    (IDX)
+           MOVE    IDX                 TO  SPA-K09GMN-NO    (IDX)
       *    œ¢»÷
-      *    MOVE    JYURRK-RENNUM       TO  SPA-NAI-RENNUM(IDX)
+           MOVE    JYURRK-RENNUM       TO  SPA-K09NAI-RENNUM(IDX)
       *    œ¢»÷
-      *    MOVE    JYURRK-DOUJI-RENNUM TO  SPA-NAI-DOUJI-RENNUM(IDX)
+           MOVE    JYURRK-DOUJI-RENNUM TO  SPA-K09NAI-DOUJI-RENNUM(IDX)
+      *    ≈¡…º»÷πÊ
+           MOVE    JYURRK-DENPNUM      TO  SPA-K09NAI-RRK-DENPNUM(IDX)
       *    ø«ª°∆¸
-      *    MOVE    JYURRK-SRYYMD       TO  SPA-NAI-SRYYMD(IDX)
-      *    MOVE    JYURRK-SRYYMD       TO  WRK-SYMD
-      *    PERFORM 520-SEIWA-HEN-SEC
-      *    MOVE    WRK-HENYMDG         TO  SPA-GMN-SRYYMD (IDX)
+           MOVE    JYURRK-SRYYMD       TO  SPA-K09NAI-RRKYMD(IDX)
+           MOVE    JYURRK-SRYYMD       TO  WRK-SYMD
+           PERFORM 520-SEIWA-HEN-SEC
+           MOVE    WRK-HENYMDG         TO  SPA-K09GMN-RRKYMD (IDX)
+      *     ›∏±∂Ë ¨
+           MOVE    JYURRK-HKNKBN       TO  SPA-K09NAI-RRK-HKNKBN (IDX)
+      *     ›∏±¡»πÁ§ª
+           MOVE    JYURRK-HKNCOMBINUM  TO  SPA-K09NAI-RRK-HKNCOMBI (IDX)
+      *    •…•Ø•ø°º
+           MOVE    JYURRK-DRCD         TO  SPA-K09NAI-RRK-DRCD  (IDX)
+      *    ø«Œ≈≤ 
+           MOVE    JYURRK-SRYKA        TO  SPA-K09NAI-RRK-SRYKA  (IDX)
+      *     £øÙø«Œ≈≤ °¶ ›∏±
+           MOVE    JYURRK-GRP-DENPNUM TO  SPA-K09NAI-GRP-DENPNUM (IDX)
+           MOVE    JYURRK-GRP-RENNUM  TO  SPA-K09NAI-GRP-RENNUM (IDX)
+           MOVE    JYURRK-SYU-UPDKBN  TO  SPA-K09NAI-SYU-UPDKBN (IDX)
       *
-      *    MOVE    IDX                 TO  SPA-GMN-MAX1
+           MOVE    IDX                 TO  SPA-K09GMN-MAX1
       *
-      *    .
-      *3101-JYURRK-HEN-EXT.
-      *    EXIT.
+      *
+           .
+       31011-JYURRK-SPAHEN-EXT.
+           EXIT.
       *
       *****************************************************************
       *    ≤ËÃÃ¡´∞‹ΩËÕ˝
@@ -756,9 +950,18 @@
       *        Ã·§Î
                WHEN    "CLICKED"       ALSO    "B01"
                    PERFORM 210-BACK
-      *    ºıø«Õ˙ŒÚ§ÿ
+      *        •Ø•Í•¢
+               WHEN    "CLICKED"       ALSO    "B02"
+                   PERFORM 220-CLEAR-SEC
+      *        ºıø«Õ˙ŒÚ§ÿ
                WHEN    "CLICKED"       ALSO    "B05"
                    PERFORM 450-RIREKI-SEC
+      *        ∆˛≥∞∂Ë ¨ —ππ
+               WHEN    "CLICKED"       ALSO    "B06"
+                   PERFORM 460-NYUGAIKBN-HEN-SEC
+      *        ø«Œ≈∂Ë ¨ —ππ
+               WHEN    "CLICKED"       ALSO    "B07"
+                   PERFORM 470-SRYKBN-HEN-SEC
       *        ≈–œø
                WHEN    "CLICKED"       ALSO    "B12"
                     PERFORM 450-TOROKU-SEC
@@ -786,6 +989,12 @@
       *        ∫ﬁ»÷πÊ¡™¬Ú
                WHEN    "ACTIVATE"      ALSO    "DOSEL"
                    PERFORM 420-DOSEL-CHK-SEC
+      *        ∆˛≥∞∂Ë ¨
+               WHEN    "ACTIVATE"      ALSO    "NYUGAIKBN"
+                   PERFORM 450-NYUGAIKBN-CHK-SEC
+      *        ø«Œ≈∂Ë ¨
+               WHEN    "ACTIVATE"      ALSO    "SRYKBN"
+                   PERFORM 460-SRYKBNN-CHK-SEC
            END-EVALUATE
            .
        200-ENTRY-EXT.
@@ -819,20 +1028,11 @@
            MOVE    WRK-ZZ              TO  SPA-GMN-DOSELNUM
       *
            IF      SPA-NAI-DOSELNUM    <   01   OR
-                                       >   SPA-GMN-MAX1
+                                       >   SPA-K09GMN-MAX1
                MOVE    "0001"              TO  SPA-ERRCD
            ELSE
       *        ø«ª°∆‚Õ∆ ‘Ω∏
                PERFORM 4101-JYURRK-HEN-SEC
-               IF      SPA-GMN-MAX2        >   ZERO
-                   MOVE    2                   TO  SPA-K09GMN-CUR
-               ELSE
-                   MOVE
-                   "°·°·°·°·°·°·°·°·°°…Ωº®∆‚Õ∆§ §∑°°°·°·°·°·°·°·°·°·"
-                                               TO  SPA-GMN-TMEISYO (01)
-                   MOVE    1                   TO  SPA-GMN-MAX2
-                   MOVE    1                   TO  SPA-K09GMN-CUR
-               END-IF
            END-IF
       *
            .
@@ -847,12 +1047,12 @@
            MOVE    ZERO                TO  WRK-DOSELNUM
       *
            PERFORM VARYING     IDX   FROM   1   BY  1
-                   UNTIL       IDX   >   SPA-GMN-MAX1
+                   UNTIL       IDX   >   SPA-K09GMN-MAX1
               IF      K09-RRKLIST-SELECT(IDX)  =  "T"
                   IF      IDX                  =   SPA-NAI-DOSELNUM
                       CONTINUE
                   ELSE
-                      MOVE    SPA-GMN-NO (IDX)    TO  WRK-DOSELNUM
+                      MOVE    SPA-K09GMN-NO (IDX)  TO  WRK-DOSELNUM
                   END-IF
               END-IF
            END-PERFORM
@@ -862,22 +1062,13 @@
            END-IF
       *
            IF      SPA-NAI-DOSELNUM    <   01   OR
-                                       >   SPA-GMN-MAX1
+                                       >   SPA-K09GMN-MAX1
                CONTINUE
            ELSE
                MOVE    K09-NO  (SPA-NAI-DOSELNUM)
                                            TO  SPA-GMN-DOSELNUM
       *        ø«ª°∆‚Õ∆ ‘Ω∏
                PERFORM 4101-JYURRK-HEN-SEC
-               IF      SPA-GMN-MAX2        >   ZERO
-                   MOVE    2                   TO  SPA-K09GMN-CUR
-               ELSE
-                   MOVE
-                   "°·°·°·°·°·°·°·°·°°…Ωº®∆‚Õ∆§ §∑°°°·°·°·°·°·°·°·°·"
-                                               TO  SPA-GMN-TMEISYO (01)
-                   MOVE    1                   TO  SPA-GMN-MAX2
-                   MOVE    1                   TO  SPA-K09GMN-CUR
-               END-IF
            END-IF
       *
            .
@@ -890,45 +1081,127 @@
        440-MEILIST-CHK-SEC           SECTION.
       *
            MOVE    ZERO                TO  WRK-BANGO
+           MOVE    ZERO                TO  WRK-SELNUM-CHK-G
+           MOVE    ZERO                TO  IDX2
       *
            PERFORM VARYING     IDX   FROM   1   BY  1
                    UNTIL       IDX   >   SPA-GMN-MAX2
               IF      K09-MEILIST-SELECT(IDX)  =  "T"
-                  MOVE    SPA-NAI-TBANGO (IDX)     TO  WRK-BANGO
+                  MOVE    SPA-NAI-TBANGO (IDX) TO  WRK-BANGO
+      *           ∆±§∏∫ﬁ¡™¬Ú§œ∫ÔΩ¸§»§π§Î
+                  MOVE    ZERO             TO  FLG-CHK
+                  PERFORM VARYING  IDY     FROM   1   BY  1
+                          UNTIL   (IDY     >   100 )  OR
+                                  (WRK-SELNUM-CHK (IDY)   =   ZERO)
+                      IF      WRK-SELNUM-CHK (IDY)
+                                           =   WRK-BANGO
+                          MOVE    1        TO  FLG-CHK
+                          MOVE    ZERO     TO  WRK-SELNUM-CHK (IDY)
+                      END-IF
+                  END-PERFORM
+                  IF      FLG-CHK          =   ZERO
+                      ADD     1                TO  IDX2
+                      MOVE    SPA-NAI-TBANGO (IDX)
+                                           TO  WRK-SELNUM-CHK (IDX2)
+                  END-IF
               END-IF
            END-PERFORM
       *
-           IF      WRK-BANGO           =   ZERO
-               GO      TO      440-MEILIST-CHK-EXT
+           MOVE    SPACE               TO  WRK-HEN-SELNUM
+           MOVE    ZERO                TO  IDX2
+           PERFORM VARYING     IDX     FROM   1   BY  1
+                   UNTIL      (IDX     >   100 )  OR
+                              (SPA-ERRCD   NOT =   SPACE )
+               IF      (WRK-SELNUM-CHK (IDX)   NOT =   ZERO) 
+                   MOVE    WRK-SELNUM-CHK (IDX)    TO  WRK-BANGO
+                   PERFORM 4401-SELNUM-CHK-HEN-SEC
+               END-IF
+           END-PERFORM
+      *
+           MOVE    WRK-HEN-SELNUM      TO  SPA-GMN-DOSEL
+      *
+           IF      SPA-GMN-DOSEL       =   SPACE
+               INITIALIZE                  SPA-NAI-DOSEL-G
+           ELSE
+               MOVE    SPACE               TO  SPA-ERRCD
+      *        ¡™¬Ú»÷πÊ•¡•ß•√•Ø
+               PERFORM 4201-DOSEL-CHECK-SEC
            END-IF
+      *
+      *    IF      WRK-BANGO           =   ZERO
+      *        GO      TO      440-MEILIST-CHK-EXT
+      *    END-IF
+      *
+      *    MOVE    WRK-BANGO           TO  WRK-ZZ
+      *    MOVE    SPACE               TO  WRK-BANGO-X
+      *    MOVE    ZERO                TO  IDX-D1
+      *    PERFORM VARYING     IDX-D2  FROM    1   BY  1
+      *            UNTIL       IDX-D2  >   3
+      *        IF      WRK-ZZ(IDX-D2:1)    NOT =   SPACE
+      *            ADD     1               TO  IDX-D1
+      *            MOVE    WRK-ZZ(IDX-D2:1)    TO  WRK-BANGO-X(IDX-D1:1)
+      *        END-IF
+      *    END-PERFORM
+      *
+      *    MOVE    SPA-GMN-DOSEL       TO  WRK-DOSEL
+      *    MOVE    SPACE               TO  SPA-GMN-DOSEL
+      *    IF      WRK-DOSEL           =   SPACE
+      *        STRING WRK-BANGO-X         DELIMITED   BY  SPACE
+      *               INTO                SPA-GMN-DOSEL
+      *        END-STRING
+      *    ELSE
+      *        STRING  WRK-DOSEL           DELIMITED   BY  SPACE
+      *                ","                 DELIMITED   BY  SIZE
+      *                WRK-BANGO-X         DELIMITED   BY  SPACE
+      *               INTO                SPA-GMN-DOSEL
+      *        END-STRING
+      **** END-IF
+      *
+           .
+       440-MEILIST-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¡™¬Ú»÷πÊ ‘Ω∏ΩËÕ˝
+      *****************************************************************
+       4401-SELNUM-CHK-HEN-SEC             SECTION.
       *
            MOVE    WRK-BANGO           TO  WRK-ZZ
            MOVE    SPACE               TO  WRK-BANGO-X
            MOVE    ZERO                TO  IDX-D1
            PERFORM VARYING     IDX-D2  FROM    1   BY  1
                    UNTIL       IDX-D2  >   3
-               IF      WRK-ZZ(IDX-D2:1)    NOT =   SPACE
-                   ADD     1               TO  IDX-D1
-                   MOVE    WRK-ZZ(IDX-D2:1)    TO  WRK-BANGO-X(IDX-D1:1)
+               IF      WRK-ZZ (IDX-D2:1)   NOT =   SPACE
+                   ADD     1                   TO  IDX-D1
+                   MOVE    WRK-ZZ (IDX-D2:1)   TO  WRK-BANGO-X(IDX-D1:1)
                END-IF
            END-PERFORM
+           COMPUTE IDX-D2              =   40  -  IDX-D1
+           IF      WRK-HEN-SELNUM (IDX-D2:)    NOT =   SPACE
+               MOVE    "0037"              TO  SPA-ERRCD
+               MOVE    SPACE               TO  WRK-BANGO-X
+           END-IF
       *
-           MOVE    SPA-GMN-DOSEL       TO  WRK-DOSEL
-           MOVE    SPACE               TO  SPA-GMN-DOSEL
-           IF      WRK-DOSEL           =   SPACE
-               STRING WRK-BANGO-X         DELIMITED   BY  SPACE
-                      INTO                SPA-GMN-DOSEL
+           MOVE    WRK-HEN-SELNUM      TO  WRK-HEN-SELNUM-2
+           MOVE    SPACE               TO  WRK-HEN-SELNUM
+           IF      WRK-HEN-SELNUM-2    =   SPACE
+               STRING  WRK-BANGO-X         DELIMITED   BY  SPACE
+                       INTO                WRK-HEN-SELNUM
                END-STRING
            ELSE
-               STRING  WRK-DOSEL           DELIMITED   BY  SPACE
-                       ","                 DELIMITED   BY  SIZE
-                       WRK-BANGO-X         DELIMITED   BY  SPACE
-                      INTO                SPA-GMN-DOSEL
-               END-STRING
+               IF      WRK-BANGO-X         =   SPACE
+                   MOVE    WRK-HEN-SELNUM-2    TO  WRK-HEN-SELNUM
+               ELSE
+                   STRING  WRK-HEN-SELNUM-2    DELIMITED   BY  SPACE
+                           ","                 DELIMITED   BY  SIZE
+                           WRK-BANGO-X         DELIMITED   BY  SPACE
+                           INTO                WRK-HEN-SELNUM
+                   END-STRING
+               END-IF
            END-IF
       *
            .
-       440-MEILIST-CHK-EXT.
+       4401-SELNUM-CHK-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -938,6 +1211,107 @@
       *
            MOVE    2                   TO  SPA-K09GMN-CUR
            MOVE    K09-DOSEL           TO  SPA-GMN-DOSEL
+      *    ¡™¬Ú»÷πÊ•¡•ß•√•Ø
+           PERFORM 4201-DOSEL-CHECK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      420-DOSEL-CHK-EXT
+           END-IF
+      *
+      *
+           INITIALIZE                      WRK-DOZAINUM-AREA
+           MOVE    ZERO                TO  IDX
+           PERFORM VARYING     IDX-D2      FROM    1   BY  1
+                   UNTIL      (IDX-D2      >   100  )  OR
+                              (WRK-DO(IDX-D2)  =   SPACE  )
+               IF     (IDX-D2                  >   1   )  AND
+                      (WRK-SEL  (IDX-D2 - 1)   =   "-" )
+                   COMPUTE IDX-Z           =   WRK-DONUM (IDX-D2 - 1)
+                                           +   1
+                   PERFORM VARYING     IDX2    FROM    IDX-Z  BY  1
+                           UNTIL       IDX2    >=  WRK-DONUM(IDX-D2)
+                       MOVE    IDX2                TO  IDX-ZAI
+                       ADD     1                   TO  IDX
+                       MOVE    SPA-NAI-ZAINUM (IDX-ZAI)
+                                               TO  WRK-DOZAINUM (IDX)
+                       MOVE    WRK-KAINUM(IDX-D2)  TO  WRK-DOKAI (IDX)
+      *                ≈ÍÃÙ∞ ≥∞§Œ≤ÛøÙ§œ•®•È°º
+                       IF     (WRK-KAINUM(IDX-D2)  >   1  )  AND
+                              (SPA-NAI-SRYKBN(IDX-ZAI) NOT =   "21"
+                                                           AND "22"
+                                                           AND "23")
+                           MOVE    "0004"              TO  SPA-ERRCD
+                       END-IF
+                   END-PERFORM
+               END-IF
+               MOVE    WRK-DONUM(IDX-D2)       TO  IDX-ZAI
+               ADD     1                       TO  IDX
+               MOVE    SPA-NAI-ZAINUM (IDX-ZAI)
+                                               TO  WRK-DOZAINUM (IDX)
+               MOVE    WRK-KAINUM(IDX-D2)      TO  WRK-DOKAI (IDX)
+      *        '-'§¨§¢§Í°¢≤ÛøÙ§¨Ãµ§§ª˛∏Â§Œ≤ÛøÙ
+               IF     (WRK-SEL  (IDX-D2)       =   "-" )  AND
+                      (WRK-KAINUM(IDX-D2)      =   ZERO)
+                   MOVE    WRK-KAINUM(IDX-D2 + 1)  TO  WRK-DOKAI (IDX)
+               END-IF
+      *
+      *        ≈ÍÃÙ∞ ≥∞§Œ≤ÛøÙ§œ•®•È°º
+               IF     (WRK-KAINUM(IDX-D2)      >   1  )  AND
+                      (SPA-NAI-SRYKBN(IDX-ZAI) NOT =   "21"
+                                                   AND "22"
+                                                   AND "23")
+                   MOVE    "0004"              TO  SPA-ERRCD
+               END-IF
+           END-PERFORM
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      420-DOSEL-CHK-EXT
+           END-IF
+      *
+      *
+      *    ∆±∞Ï∫ﬁ§Ú∫ÔΩ¸
+           INITIALIZE                      HZN-DOZAINUM-AREA
+           MOVE    WRK-DOZAINUM-AREA   TO  HZN-DOZAINUM-AREA
+           INITIALIZE                      WRK-DOZAINUM-AREA
+           MOVE    ZERO                TO  IDX-H
+           PERFORM VARYING     IDX1    FROM    1   BY  1
+                   UNTIL       IDX1    >   IDX
+               IF      HZN-DOZAINUM (IDX1) NOT =   ZERO
+                   MOVE    ZERO                TO  FLG-CHK
+                   PERFORM VARYING     IDX2    FROM    1   BY  1
+                           UNTIL  (IDX2        >   100)    OR
+                                  (WRK-DOZAINUM (IDX2) =   ZERO ) OR
+                                  (FLG-CHK             =   1    )
+                       IF       HZN-DOZAINUM (IDX1)    =   WRK-DOZAINUM
+                                                                (IDX2)
+                           MOVE    1                   TO  FLG-CHK
+                       END-IF
+                   END-PERFORM
+                   IF      FLG-CHK             =   ZERO
+                       ADD     1               TO  IDX-H
+                       MOVE    HZN-DOZAINUM-OCC (IDX1)
+                                               TO  WRK-DOZAINUM-OCC
+                                                                (IDX-H)
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           IF      IDX-H               =   ZERO
+               CONTINUE
+           ELSE
+      *        ¬–æ›ø«Œ≈π‘∞Ÿ∆‚Õ∆ ‘Ω∏
+               PERFORM 4201-WKSRYACT-SET-SEC
+      *        Ã·§Î
+               PERFORM 210-BACK
+           END-IF
+      *
+           .
+       420-DOSEL-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     ¡™¬Ú»÷πÊ•¡•ß•√•ØΩËÕ˝
+      *****************************************************************
+       4201-DOSEL-CHECK-SEC              SECTION.
       *
            INITIALIZE                      WRK-DOSEL
            MOVE    ZERO                TO  FLG-KAI
@@ -1068,102 +1442,117 @@
                        MOVE    SNUM-OUTNUM     TO  WRK-KAINUM(IDX-D2)
                    END-IF
                END-IF
-      *
            END-PERFORM
-      *
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      420-DOSEL-CHK-EXT
-           END-IF
-      *
-      *
-           INITIALIZE                      WRK-DOZAINUM-AREA
+      *    ≤ËÃÃ…Ωº®Õ—
+           INITIALIZE                      SPA-NAI-DOSEL-G
+           INITIALIZE                      WRK-SELNUM-AREA
            MOVE    ZERO                TO  IDX
            PERFORM VARYING     IDX-D2      FROM    1   BY  1
                    UNTIL      (IDX-D2      >   100  )  OR
-                              (WRK-DO(IDX-D2)  =   SPACE  )
+                              (WRK-DO (IDX-D2)
+                                               =   SPACE  )
+                          OR  (SPA-ERRCD   NOT =   SPACE )
                IF     (IDX-D2                  >   1   )  AND
-                      (WRK-SEL  (IDX-D2 - 1)   =   "-" )
-                   COMPUTE IDX-Z           =   WRK-DONUM (IDX-D2 - 1)
+                      (WRK-SEL (IDX-D2 - 1)    =   "-" )
+                   COMPUTE IDX-Z           =   WRK-DONUM(IDX-D2 - 1)
                                            +   1
                    PERFORM VARYING     IDX2    FROM    IDX-Z  BY  1
                            UNTIL       IDX2    >=  WRK-DONUM(IDX-D2)
-                       MOVE    IDX2                TO  IDX-ZAI
-                       ADD     1                   TO  IDX
-                       MOVE    SPA-NAI-ZAINUM (IDX-ZAI)
-                                               TO  WRK-DOZAINUM (IDX)
-                       MOVE    WRK-KAINUM(IDX-D2)  TO  WRK-DOKAI (IDX)
-      *                ≈ÍÃÙ∞ ≥∞§Œ≤ÛøÙ§œ•®•È°º
-                       IF     (WRK-KAINUM(IDX-D2)  >   1  )  AND
-                              (SPA-NAI-SRYKBN(IDX-ZAI) NOT =   "21"
-                                                           AND "22"
-                                                           AND "23")
-                           MOVE    "0004"              TO  SPA-ERRCD
-                       END-IF
+                       MOVE    1               TO  WRK-SEL9(IDX2)
                    END-PERFORM
                END-IF
-               MOVE    WRK-DONUM(IDX-D2)       TO  IDX-ZAI
-               ADD     1                       TO  IDX
-               MOVE    SPA-NAI-ZAINUM (IDX-ZAI)
-                                               TO  WRK-DOZAINUM (IDX)
-               MOVE    WRK-KAINUM(IDX-D2)      TO  WRK-DOKAI (IDX)
-      *        '-'§¨§¢§Í°¢≤ÛøÙ§¨Ãµ§§ª˛∏Â§Œ≤ÛøÙ
-               IF     (WRK-SEL  (IDX-D2)       =   "-" )  AND
-                      (WRK-KAINUM(IDX-D2)      =   ZERO)
-                   MOVE    WRK-KAINUM(IDX-D2 + 1)  TO  WRK-DOKAI (IDX)
-               END-IF
-      *
-      *        ≈ÍÃÙ∞ ≥∞§Œ≤ÛøÙ§œ•®•È°º
-               IF     (WRK-KAINUM(IDX-D2)      >   1  )  AND
-                      (SPA-NAI-SRYKBN(IDX-ZAI) NOT =   "21"
-                                                   AND "22"
-                                                   AND "23")
-                   MOVE    "0004"              TO  SPA-ERRCD
-               END-IF
+               MOVE    WRK-DONUM(IDX-D2)       TO  IDX2
+               MOVE    1                       TO  WRK-SEL9(IDX2)
            END-PERFORM
-      *
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      420-DOSEL-CHK-EXT
-           END-IF
-      *
-      *
-      *    ∆±∞Ï∫ﬁ§Ú∫ÔΩ¸
-           INITIALIZE                      HZN-DOZAINUM-AREA
-           MOVE    WRK-DOZAINUM-AREA   TO  HZN-DOZAINUM-AREA
-           INITIALIZE                      WRK-DOZAINUM-AREA
-           MOVE    ZERO                TO  IDX-H
-           PERFORM VARYING     IDX1    FROM    1   BY  1
-                   UNTIL       IDX1    >   IDX
-               IF      HZN-DOZAINUM (IDX1) NOT =   ZERO
-                   MOVE    ZERO                TO  FLG-CHK
-                   PERFORM VARYING     IDX2    FROM    1   BY  1
-                           UNTIL  (IDX2        >   100)    OR
-                                  (WRK-DOZAINUM (IDX2) =   ZERO ) OR
-                                  (FLG-CHK             =   1    )
-                       IF       HZN-DOZAINUM (IDX1)    =   WRK-DOZAINUM
-                                                                (IDX2)
-                           MOVE    1                   TO  FLG-CHK
-                       END-IF
-                   END-PERFORM
-                   IF      FLG-CHK             =   ZERO
-                       ADD     1               TO  IDX-H
-                       MOVE    HZN-DOZAINUM-OCC (IDX1)
-                                               TO  WRK-DOZAINUM-OCC
-                                                                (IDX-H)
+           MOVE    ZERO                TO  IDX
+           PERFORM VARYING     IDX-D2  FROM    1   BY  1
+                   UNTIL      (IDX-D2  >   100  )  OR
+                              (SPA-ERRCD   NOT =   SPACE )
+               IF      WRK-SEL9(IDX-D2)    =   1
+                   ADD     1               TO  IDX
+                   IF      IDX             >   100
+                       MOVE    "0008"          TO  SPA-ERRCD
+                   ELSE
+                       MOVE    IDX-D2          TO  SPA-NAI-DOSEL(IDX)
+                       MOVE    IDX             TO  SPA-NAI-DOSEL-MAX
                    END-IF
                END-IF
            END-PERFORM
-      *
-           IF      IDX-H               =   ZERO
-               CONTINUE
-           ELSE
-      *        ¬–æ›ø«Œ≈π‘∞Ÿ∆‚Õ∆ ‘Ω∏
-               PERFORM 4201-WKSRYACT-SET-SEC
-      *        Ã·§Î
-               PERFORM 210-BACK
-           END-IF
-      *
            .
-       420-DOSEL-CHK-EXT.
+       4201-DOSEL-CHECK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     ∆˛≥∞∂Ë ¨ΩËÕ˝
+      *****************************************************************
+       450-NYUGAIKBN-CHK-SEC              SECTION.
+      *
+           MOVE    K09-NYUGAIKBN       TO  SPA-GMN-NYUGAIKBN-G
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-NYUGAIKBN-MAX
+               IF      SPA-GMN-NYUGAIKBN   =   SPA-GMN-NYUGAIKBN-LST
+                                                           (IDX)(1:1)
+                   MOVE    SPA-GMN-NYUGAIKBN-LST (IDX)
+                                           TO  SPA-GMN-NYUGAIKBN-G
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    "0005"              TO  SPA-ERRCD
+               MOVE    10                  TO  SPA-K09GMN-CUR
+           ELSE
+      *        ºıø«Õ˙ŒÚ ‘Ω∏
+               IF      SPA-GMN-NYUGAIKBN   =   SPA-NYUGAIKBN
+                   PERFORM 3102-JYURRK-SPAHEN-SEC
+               ELSE
+                   PERFORM 3101-JYURRK-DBHEN-SEC
+               END-IF
+               MOVE    SPACE               TO  SPA-GMN-DOSELNUM
+               MOVE    ZERO                TO  SPA-NAI-DOSELNUM
+               IF      SPA-K09GMN-MAX1     >   ZERO
+                   MOVE    1               TO  SPA-NAI-DOSELNUM
+                   MOVE    "1"             TO  SPA-GMN-DOSELNUM
+      *            ø«ª°∆‚Õ∆ ‘Ω∏
+                   PERFORM 4101-JYURRK-HEN-SEC
+               ELSE
+                   MOVE    10              TO  SPA-K09GMN-CUR
+               END-IF
+           END-IF
+           .
+       450-NYUGAIKBN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     ø«Œ≈∂Ë ¨ΩËÕ˝
+      *****************************************************************
+       460-SRYKBNN-CHK-SEC              SECTION.
+      *
+           MOVE    K09-SRYKBN          TO  SPA-GMN-SRYKBN-G
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-SRYKBN-MAX
+               IF      SPA-GMN-SRYKBN   =   SPA-GMN-SRYKBN-LST
+                                                           (IDX)(1:2)
+                   MOVE    SPA-GMN-SRYKBN-LST (IDX)
+                                           TO  SPA-GMN-SRYKBN-G
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    "0006"              TO  SPA-ERRCD
+               MOVE    11                  TO  SPA-K09GMN-CUR
+           ELSE
+               IF      SPA-NAI-DOSELNUM    >   ZERO
+                   PERFORM 4101-JYURRK-HEN-SEC
+               ELSE
+                   MOVE    1                   TO  SPA-K09GMN-CUR
+               END-IF
+           END-IF
+           .
+       460-SRYKBNN-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1178,6 +1567,7 @@
            MOVE    ZERO                TO  IDG
       *
            INITIALIZE                  SPA-GMN-DOSEL
+           INITIALIZE                  SPA-NAI-DOSEL-G
            MOVE    SPACE               TO  SPA-GMN-TBL
            INITIALIZE                  SPA-GMN-TBL
            INITIALIZE                  SPA-NAI-TBL
@@ -1188,13 +1578,13 @@
            INITIALIZE                  JYURRK-KEY
            MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
            MOVE    SPA-PTID            TO  JYURRK-PTID
-           MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
+           MOVE    SPA-GMN-NYUGAIKBN   TO  JYURRK-NYUGAIKBN
       *****MOVE    SPA-SRYKA           TO  JYURRK-SRYKA
-           MOVE    SPA-NAI-RRK-SRYKA(SPA-NAI-DOSELNUM)
+           MOVE    SPA-K09NAI-RRK-SRYKA(SPA-NAI-DOSELNUM)
                                        TO  JYURRK-SRYKA
-           MOVE    SPA-NAI-RRKYMD(SPA-NAI-DOSELNUM)
+           MOVE    SPA-K09NAI-RRKYMD(SPA-NAI-DOSELNUM)
                                        TO  JYURRK-SRYYMD
-           MOVE    SPA-NAI-RENNUM(SPA-NAI-DOSELNUM)
+           MOVE    SPA-K09NAI-RENNUM(SPA-NAI-DOSELNUM)
                                        TO  JYURRK-RENNUM
       *
            MOVE    JYURRK-REC          TO  MCPDATA-REC
@@ -1210,14 +1600,26 @@
                MOVE    1               TO  FLG-JYURRK
            END-IF
       *
+           MOVE    ZERO                TO  FLG-OK2
            PERFORM
                    UNTIL    FLG-JYURRK     =   1
-               IF      SPA-NAI-DOUJI-RENNUM (SPA-NAI-DOSELNUM)
+               IF      SPA-K09NAI-DOUJI-RENNUM (SPA-NAI-DOSELNUM)
                                            =   JYURRK-DOUJI-RENNUM
+      *            ø«Œ≈∂Ë ¨§Œ»ΩƒÍ
+                   IF      JYURRK-EDANUM       =   1
+                       MOVE    ZERO                TO  FLG-OK2
+                       IF      SPA-GMN-SRYKBN      =   "00"
+                                                   OR  "90"
+                            MOVE    1              TO  FLG-OK2
+                       ELSE
+                            PERFORM 41012-SRYKBN-CHK-SEC
+                       END-IF
+                   END-IF
       *
                    PERFORM VARYING     IDX-R   FROM    1   BY  1
                            UNTIL      (IDG             >   400 )  OR
                                       (IDX-R           >   15  )
+                                   OR (FLG-OK2         =   ZERO)
                        IF      JYURRK-ZAINUM (IDX-R)   NOT =   ZERO
                            PERFORM 41011-ZAISET-HEN-SEC
                        END-IF
@@ -1236,8 +1638,63 @@
       *    ∫«¬Á∑ÔøÙ
            MOVE    IDG                 TO  SPA-GMN-MAX2
       *
-          .
+           IF      SPA-GMN-MAX2        >   ZERO
+               MOVE    2                   TO  SPA-K09GMN-CUR
+           ELSE
+               MOVE
+                   "°·°·°·°·°·°·°·°·°°…Ωº®∆‚Õ∆§ §∑°°°·°·°·°·°·°·°·°·"
+                                           TO  SPA-GMN-TMEISYO (01)
+               MOVE    1                   TO  SPA-GMN-MAX2
+               MOVE    1                   TO  SPA-K09GMN-CUR
+           END-IF
+      *
+           .
        4101-JYURRK-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    ø«Œ≈∂Ë ¨§Œ»ΩƒÍΩËÕ˝
+      *****************************************************************
+       41012-SRYKBN-CHK-SEC           SECTION.
+      *
+           EVALUATE    SPA-GMN-SRYKBN
+               WHEN    "10"
+                   IF      (JYURRK-SRYKBN1     =   "01" )
+                       MOVE    1                   TO  FLG-OK2
+                   END-IF
+               WHEN    "20"
+                   IF      (JYURRK-SRYKBN2     =   "01" )  OR
+                           (JYURRK-SRYKBN3     =   "01" )  OR
+                           (JYURRK-SRYKBN4     =   "01" )
+                       MOVE    1                   TO  FLG-OK2
+                   END-IF
+               WHEN    "30"
+                   IF      (JYURRK-SRYKBN5     =   "01" )
+                       MOVE    1                   TO  FLG-OK2
+                   END-IF
+               WHEN    "40"
+                   IF      (JYURRK-SRYKBN6     =   "01" )
+                       MOVE    1                   TO  FLG-OK2
+                   END-IF
+               WHEN    "50"
+                   IF      (JYURRK-SRYKBN7     =   "01" )  OR
+                           (JYURRK-SRYKBN8     =   "01" )
+                       MOVE    1                   TO  FLG-OK2
+                   END-IF
+               WHEN    "60"
+                   IF      (JYURRK-SRYKBN9     =   "01" )
+                       MOVE    1                   TO  FLG-OK2
+                   END-IF
+               WHEN    "70"
+                   IF      (JYURRK-SRYKBN10    =   "01" )
+                       MOVE    1                   TO  FLG-OK2
+                   END-IF
+               WHEN    "80"
+                   IF      (JYURRK-SRYKBN11    =   "01" )
+                       MOVE    1                   TO  FLG-OK2
+                   END-IF
+           END-EVALUATE
+           .
+       41012-SRYKBN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    ø«Œ≈π‘∞Ÿ∏°∫˜ΩËÕ˝
@@ -1254,7 +1711,7 @@
       *
            INITIALIZE                  SRYACT-REC
            MOVE    SPA-HOSPID          TO  SRY-HOSPID
-           MOVE    SPA-NYUGAIKBN       TO  SRY-NYUGAIKBN
+           MOVE    JYURRK-NYUGAIKBN    TO  SRY-NYUGAIKBN
            MOVE    SPA-PTID            TO  SRY-PTID
            MOVE    JYURRK-SRYKA        TO  SRY-SRYKA
            MOVE    JYURRK-SRYYMD(1:6)  TO  SRY-SRYYM
@@ -1292,6 +1749,66 @@
                ELSE
                    MOVE    1                   TO  FLG-OK
                END-IF
+      *        ¡™¬Úø«Œ≈∂Ë ¨»ΩƒÍ
+               EVALUATE    SPA-GMN-SRYKBN
+                   WHEN    "10"
+                       IF      SRY-SRYKBN(1:1)     =   "1"
+                           CONTINUE
+                       ELSE
+                           MOVE    ZERO            TO  FLG-OK
+                       END-IF
+                   WHEN    "20"
+                       IF     (SRY-SRYKBN(1:1)     =   "2" )  OR
+                              (SRY-SRYKBN          =   "98")
+                           CONTINUE
+                       ELSE
+                           MOVE    ZERO            TO  FLG-OK
+                       END-IF
+                   WHEN    "30"
+                       IF      SRY-SRYKBN(1:1)     =   "3"
+                           CONTINUE
+                       ELSE
+                           MOVE    ZERO            TO  FLG-OK
+                       END-IF
+                   WHEN    "40"
+                       IF      SRY-SRYKBN(1:1)     =   "4"
+                           CONTINUE
+                       ELSE
+                           MOVE    ZERO            TO  FLG-OK
+                       END-IF
+                   WHEN    "50"
+                       IF      SRY-SRYKBN(1:1)     =   "5"
+                           CONTINUE
+                       ELSE
+                           MOVE    ZERO            TO  FLG-OK
+                       END-IF
+                   WHEN    "60"
+                       IF      SRY-SRYKBN(1:1)     =   "6"
+                           CONTINUE
+                       ELSE
+                           MOVE    ZERO            TO  FLG-OK
+                       END-IF
+                   WHEN    "70"
+                       IF      SRY-SRYKBN(1:1)     =   "7"
+                           CONTINUE
+                       ELSE
+                           MOVE    ZERO            TO  FLG-OK
+                       END-IF
+                   WHEN    "80"
+                       IF      SRY-SRYKBN(1:1)     =   "8"
+                           CONTINUE
+                       ELSE
+                           MOVE    ZERO            TO  FLG-OK
+                       END-IF
+                   WHEN    "90"
+                       IF     (SRY-SRYKBN (1:1)    =   "9" )  AND
+                              (SRY-SRYKBN      NOT =   "98")
+                           CONTINUE
+                       ELSE
+                           MOVE    ZERO            TO  FLG-OK
+                       END-IF
+               END-EVALUATE
+      *
                IF      FLG-OK                  =   1
                    MOVE    ZERO                TO  WRK-DOKAISU
       *            ø«Œ≈≤Ò∑◊∏°∫˜ ‘Ω∏
@@ -2183,12 +2700,12 @@
       *
            INITIALIZE                  SRYACT-REC
            MOVE    SPA-HOSPID          TO  SRY-HOSPID
-           MOVE    SPA-NYUGAIKBN       TO  SRY-NYUGAIKBN
+           MOVE    SPA-GMN-NYUGAIKBN   TO  SRY-NYUGAIKBN
            MOVE    SPA-PTID            TO  SRY-PTID
       *****MOVE    SPA-SRYKA           TO  SRY-SRYKA
-           MOVE    SPA-NAI-RRK-SRYKA(SPA-NAI-DOSELNUM)
+           MOVE    SPA-K09NAI-RRK-SRYKA(SPA-NAI-DOSELNUM)
                                        TO  SRY-SRYKA
-           MOVE    SPA-NAI-RRKYMD(SPA-NAI-DOSELNUM)(1:6)
+           MOVE    SPA-K09NAI-RRKYMD(SPA-NAI-DOSELNUM)(1:6)
                                        TO  SRY-SRYYM
            MOVE    WRK-DOZAINUM (IDX-R)
                                        TO  SRY-ZAINUM
@@ -2260,6 +2777,7 @@
            MOVE    SPACE               TO  LINKAREA
            MOVE    SPA-K01KYOUTU       TO  SPA-WORK
            MOVE    SPA-AREA            TO  SPA-COMMON
+           MOVE    SPA-GMN-NYUGAIKBN   TO  SPA-K07-NYUGAIKBN
            MOVE    SPA-K02             TO  SPA-FREE
       *
            MOVE    "LINK"              TO  MCP-STATUS
@@ -2329,6 +2847,99 @@
            MOVE    1                   TO  FLG-END
            .
        210-BACK-EXT.
+           EXIT.
+      *****************************************************************
+      *    •Ø•Í•¢ΩËÕ˝
+      *****************************************************************
+       220-CLEAR-SEC             SECTION.
+      *
+           IF      SPA-GMN-DOSEL       =   SPACE
+               MOVE    1                   TO  SPA-K09GMN-CUR
+           ELSE
+               MOVE    SPACE               TO  SPA-GMN-DOSEL
+               INITIALIZE                  SPA-NAI-DOSEL-G
+               MOVE    2                   TO  SPA-K09GMN-CUR
+           END-IF
+           .
+       220-CLEAR-EXT.
+           EXIT.
+      *****************************************************************
+      *    ∆˛≥∞∂Ë ¨ —ππΩËÕ˝
+      *****************************************************************
+       460-NYUGAIKBN-HEN-SEC             SECTION.
+      *
+           IF      SPA-NYUGAIKBN-MAX   >   1
+               EVALUATE    SPA-GMN-NYUGAIKBN
+                   WHEN    "1"
+                       MOVE    SPA-GMN-NYUGAIKBN-LST (2)
+                                               TO  SPA-GMN-NYUGAIKBN-G
+                   WHEN    "2"
+                       MOVE    SPA-GMN-NYUGAIKBN-LST (1)
+                                               TO  SPA-GMN-NYUGAIKBN-G
+               END-EVALUATE
+      *        ºıø«Õ˙ŒÚ ‘Ω∏
+               IF      SPA-GMN-NYUGAIKBN   =   SPA-NYUGAIKBN
+                   PERFORM 3102-JYURRK-SPAHEN-SEC
+               ELSE
+                   PERFORM 3101-JYURRK-DBHEN-SEC
+               END-IF
+               MOVE    SPACE               TO  SPA-GMN-DOSELNUM
+               MOVE    ZERO                TO  SPA-NAI-DOSELNUM
+               IF      SPA-K09GMN-MAX1     >   ZERO
+                   MOVE    1               TO  SPA-NAI-DOSELNUM
+                   MOVE    "1"             TO  SPA-GMN-DOSELNUM
+      *            ø«ª°∆‚Õ∆ ‘Ω∏
+                   PERFORM 4101-JYURRK-HEN-SEC
+               ELSE
+                   INITIALIZE                  SPA-GMN-TBL
+                   INITIALIZE                  SPA-NAI-TBL
+               END-IF
+           END-IF
+           .
+       460-NYUGAIKBN-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    ø«Œ≈∂Ë ¨ —ππΩËÕ˝
+      *****************************************************************
+       470-SRYKBN-HEN-SEC             SECTION.
+      *
+           PERFORM 4701-SRYKBN-HENKOU-SEC
+      *
+           IF      SPA-NAI-DOSELNUM    >   ZERO
+               PERFORM 4101-JYURRK-HEN-SEC
+      *
+               PERFORM UNTIL  (SPA-GMN-SRYKBN  =   "00" )
+                       OR     (SPA-GMN-MAX2    >   1    )
+                   PERFORM 4701-SRYKBN-HENKOU-SEC
+                   PERFORM 4101-JYURRK-HEN-SEC
+               END-PERFORM
+           ELSE
+               MOVE    1                   TO  SPA-K09GMN-CUR
+           END-IF
+           .
+       470-SRYKBN-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    ø«Œ≈∂Ë ¨ —ππΩËÕ˝
+      *****************************************************************
+       4701-SRYKBN-HENKOU-SEC             SECTION.
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-SRYKBN-MAX
+               IF      SPA-GMN-SRYKBN  =   SPA-GMN-SRYKBN-LST
+                                                           (IDX)(1:2)
+                   IF      IDX             =   SPA-SRYKBN-MAX
+                       MOVE    SPA-GMN-SRYKBN-LST (1)
+                                           TO  SPA-GMN-SRYKBN-G
+                   ELSE
+                       MOVE    SPA-GMN-SRYKBN-LST (IDX + 1)
+                                           TO  SPA-GMN-SRYKBN-G
+                   END-IF
+                   MOVE    SPA-SRYKBN-MAX  TO  IDX
+               END-IF
+           END-PERFORM
+           .
+       4701-SRYKBN-HENKOU-EXT.
            EXIT.
       *****************************************************************
       *    ≥ŒƒÍ°°ΩËÕ˝
@@ -2435,15 +3046,32 @@
            END-IF
       *
            PERFORM   VARYING   IDX     FROM    1   BY  1
-                     UNTIL     IDX         >   SPA-GMN-MAX1
-               MOVE    SPA-GMN-NO     (IDX)    TO  WRK-ZZ
+                     UNTIL     IDX         >   SPA-NYUGAIKBN-MAX
+               MOVE    SPA-GMN-NYUGAIKBN-LST (IDX)
+                                           TO  K09-NYUGAIKBN-ITEM (IDX)
+           END-PERFORM
+           MOVE    SPA-NYUGAIKBN-MAX   TO  K09-NYUGAIKBN-COUNT
+           MOVE    SPA-GMN-NYUGAIKBN-G TO  K09-NYUGAIKBN
+      *
+           PERFORM   VARYING   IDX     FROM    1   BY  1
+                     UNTIL     IDX         >   SPA-SRYKBN-MAX
+               MOVE    SPA-GMN-SRYKBN-LST (IDX)
+                                           TO  K09-SRYKBN-ITEM (IDX)
+           END-PERFORM
+           MOVE    SPA-SRYKBN-MAX     TO  K09-SRYKBN-COUNT
+           MOVE    SPA-GMN-SRYKBN-G   TO  K09-SRYKBN
+      *
+           PERFORM   VARYING   IDX     FROM    1   BY  1
+                     UNTIL     IDX         >   SPA-K09GMN-MAX1
+               MOVE    SPA-K09GMN-NO  (IDX)    TO  WRK-ZZ
                MOVE    WRK-ZZ                  TO  K09-NO  (IDX)
-               MOVE    SPA-GMN-RRKYMD (IDX)    TO  K09-RRKYMD(IDX)
-               MOVE    SPA-GMN-RRKSRYKA (IDX)  TO  K09-RRKSRYKA(IDX)
-               MOVE    SPA-GMN-RRKHKNCOMBI(IDX)
+               MOVE    SPA-K09GMN-RRKYMD (IDX) TO  K09-RRKYMD(IDX)
+               MOVE    SPA-K09GMN-RRKSRYKA (IDX)
+                                               TO  K09-RRKSRYKA(IDX)
+               MOVE    SPA-K09GMN-RRKHKNCOMBI(IDX)
                                                TO  K09-RRKHKNCOMBI
                                                                (IDX)
-               IF      SPA-GMN-NO (IDX)    =   SPA-NAI-DOSELNUM
+               IF      SPA-K09GMN-NO (IDX)     =   SPA-NAI-DOSELNUM
                    MOVE    "T"             TO  K09-RRKLIST-SELECT (IDX)
       *            ΩÈ¥¸…Ωº®§«¡™¬Ú§¨§¢§ÎæÏπÁ°¢¡™¬Úπ‘§Ú√Ê±˚§ÿ
                    IF      FLG-GMN-INIT1   =   1
@@ -2454,10 +3082,11 @@
                    MOVE    "F"             TO  K09-RRKLIST-SELECT (IDX)
                END-IF
            END-PERFORM
-           MOVE    SPA-GMN-MAX1        TO  K09-RRKLIST-COUNT
+           MOVE    SPA-K09GMN-MAX1     TO  K09-RRKLIST-COUNT
       *
            PERFORM   VARYING   IDX     FROM    1   BY  1
                      UNTIL     IDX         >   SPA-GMN-MAX2
+               MOVE    "F"             TO  K09-MEILIST-SELECT  (IDX)
                IF      SPA-GMN-TMEISYO(IDX)(1:1)   =   "-"
                    MOVE    ALL "-"             TO  K09-MNO (IDX)
                    MOVE    ALL "°›"            TO  K09-MEISAI (IDX)
@@ -2465,6 +3094,15 @@
                    IF      SPA-GMN-TBANGO (IDX)    NOT =   ZERO
                        MOVE    SPA-GMN-TBANGO (IDX)    TO  WRK-ZZ
                        MOVE    WRK-ZZ                  TO  K09-MNO (IDX)
+                       PERFORM VARYING   IDX2  FROM    1   BY  1
+                               UNTIL     IDX2  >   SPA-NAI-DOSEL-MAX
+                           IF      SPA-NAI-DOSEL (IDX2) 
+                                               =   SPA-GMN-TBANGO (IDX)
+                               MOVE    "T"     TO  K09-MEILIST-SELECT
+                                                                 (IDX)
+                               MOVE    SPA-NAI-DOSEL-MAX  TO  IDX2
+                           END-IF
+                       END-PERFORM
                    END-IF
                    MOVE    SPA-GMN-TMEISYO (IDX)   TO  K09-MEISAI (IDX)
                END-IF
@@ -2490,6 +3128,10 @@
                    MOVE    "SELNUM"          TO  MCP-WIDGET
                WHEN    02
                    MOVE    "DOSEL"           TO  MCP-WIDGET
+               WHEN    10
+                   MOVE    "NYUGAIKBN"       TO  MCP-WIDGET
+               WHEN    11
+                   MOVE    "SRYKBN"          TO  MCP-WIDGET
            END-EVALUATE
       *
            .
@@ -2517,6 +3159,15 @@
                                        TO  SPA-ERRMSG
                    MOVE    "≈ÍÃÙ∞ ≥∞§À≤ÛøÙ —ππ§¨§¢§Í§ﬁ§π°£"
                                        TO  SPA-ERRMSG(29:)
+               WHEN    "0005"
+                   MOVE    "∆˛≥∞∂Ë ¨§¨§¢§Í§ﬁ§ª§Û°£"
+                                       TO  SPA-ERRMSG
+               WHEN    "0006"
+                   MOVE    "ø«Œ≈∂Ë ¨§¨§¢§Í§ﬁ§ª§Û°£"
+                                       TO  SPA-ERRMSG
+               WHEN    "0007"
+                   MOVE    "¡™¬Ú§œ£±£∞£∞π‘§ﬁ§«§«§π°£"
+                                       TO  SPA-ERRMSG
            END-EVALUATE
       *
            MOVE    SPACE               TO  KERR
@@ -2544,9 +3195,9 @@
       *****************************************************************
        910-TENSU-READ-SEC         SECTION.
       *
-           MOVE    SPA-NAI-RRKYMD(SPA-NAI-DOSELNUM)
+           MOVE    SPA-K09NAI-RRKYMD(SPA-NAI-DOSELNUM)
                                        TO  TNS-YUKOSTYMD
-           MOVE    SPA-NAI-RRKYMD(SPA-NAI-DOSELNUM)
+           MOVE    SPA-K09NAI-RRKYMD(SPA-NAI-DOSELNUM)
                                        TO  TNS-YUKOEDYMD
       *
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC

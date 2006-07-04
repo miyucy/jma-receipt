@@ -296,21 +296,21 @@
       *
       *    ¼õ¿ÇÎò¤ò¸¡º÷¤¹¤ë  £Ä£Ï°ìÍ÷¤«¤é¼õ¿ÇÍúÎò¤ò³ÎÄê¤¹¤ë
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-GMN-MAX1
+                   UNTIL       IDX     >   SPA-K09GMN-MAX1
                INITIALIZE                  JYURRK-REC
                MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
                MOVE    SPA-PTID            TO  JYURRK-PTID
-               MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
+               MOVE    SPA-K07-NYUGAIKBN   TO  JYURRK-NYUGAIKBN
       *        Æþ±¡
                IF      SPA-NYUGAIKBN       =   "1"
-                   MOVE    SPA-NAI-RRKYMD(IDX) TO  JYURRK-SRYYMD
-                   MOVE    SPA-NAI-RENNUM(IDX) TO  JYURRK-RENNUM
-                   MOVE    SPA-NAI-RRK-SRYKA(IDX)  TO  JYURRK-SRYKA
-                   MOVE    SPA-NAI-RRK-HKNCOMBI(IDX)
+                   MOVE    SPA-K09NAI-RRKYMD(IDX) TO  JYURRK-SRYYMD
+                   MOVE    SPA-K09NAI-RENNUM(IDX) TO  JYURRK-RENNUM
+                   MOVE    SPA-K09NAI-RRK-SRYKA(IDX)  TO  JYURRK-SRYKA
+                   MOVE    SPA-K09NAI-RRK-HKNCOMBI(IDX)
                                                TO  JYURRK-HKNCOMBINUM
                    MOVE    "key19"             TO  WRK-DBPATH
                ELSE
-                   MOVE    SPA-NAI-RRK-DENPNUM(IDX)
+                   MOVE    SPA-K09NAI-RRK-DENPNUM(IDX)
                                                TO  JYURRK-DENPNUM
                    MOVE    "key6"              TO  WRK-DBPATH
                END-IF
@@ -461,7 +461,7 @@
            MOVE    SPA-NAI-K07-SELNUM  TO  WRK-ZZ
            MOVE    WRK-ZZ              TO  SPA-GMN-K07-SELNUM
       *
-           IF      SPA-NAI-K07-SELNUM  >   SPA-GMN-MAX1
+           IF      SPA-NAI-K07-SELNUM  >   SPA-K09GMN-MAX1
                MOVE    "0001"              TO  SPA-ERRCD
            ELSE
                PERFORM 490-KAKUTEI-SEC
@@ -507,9 +507,9 @@
            MOVE    ZERO                TO  WRK-DOSELNUM
       *
            PERFORM VARYING     IDX   FROM   1   BY  1
-                   UNTIL       IDX   >   SPA-GMN-MAX1
+                   UNTIL       IDX   >   SPA-K09GMN-MAX1
               IF      K07-SELECT(IDX)         =  "T"
-                  MOVE    SPA-GMN-NO (IDX)    TO  WRK-DOSELNUM
+                  MOVE    SPA-K09GMN-NO (IDX)    TO  WRK-DOSELNUM
               END-IF
            END-PERFORM
       *
@@ -518,7 +518,7 @@
            END-IF
       *
            IF      SPA-NAI-DOSELNUM    <   01   OR
-                                       >   SPA-GMN-MAX1
+                                       >   SPA-K09GMN-MAX1
                CONTINUE
            ELSE
       *
@@ -606,10 +606,10 @@
            MOVE    SPACE               TO  K07
       *»»Äê¹àÌÜ
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-GMN-MAX1
-               MOVE    SPA-GMN-NO      (IDX)   TO  WRK-ZZ
+                   UNTIL       IDX     >   SPA-K09GMN-MAX1
+               MOVE    SPA-K09GMN-NO      (IDX)   TO  WRK-ZZ
                MOVE    WRK-ZZ                  TO  K07-NO      (IDX)
-               MOVE    SPA-GMN-RRKYMD  (IDX)   TO  K07-SRYYMD  (IDX)
+               MOVE    SPA-K09GMN-RRKYMD  (IDX)   TO  K07-SRYYMD  (IDX)
                MOVE    SPA-GMN-K07-SINSATSU(IDX)
                                                TO  K07-SINSATSU(IDX)
                MOVE    SPA-GMN-K07-NAIFUKU (IDX)   TO  K07-NAIFUKU(IDX)
@@ -624,7 +624,7 @@
                MOVE    SPA-GMN-K07-SONOTA  (IDX)   TO  K07-SONOTA (IDX)
            END-PERFORM
       *
-           MOVE    SPA-GMN-MAX1        TO  K07-COUNT
+           MOVE    SPA-K09GMN-MAX1     TO  K07-COUNT
       *
            IF      SPA-NAI-K07-SELNUM       >   ZERO
                MOVE    SPA-GMN-K07-SELNUM   TO  K07-SELNUM
