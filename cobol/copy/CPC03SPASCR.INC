@@ -28,6 +28,9 @@
       *
       *  01.01.01    NACL-藤原    03/08/28  登録数の制限をなくす
       *                                     コード別編集病名フラグを追加
+      *
+      *  03.01.01    NACL-藤原    06/06/01  病名入力コードのアルファベッ
+      *                                     ト７文字対応
       *****************************************************************
       *
       *01  SPA-SCR-REC.
@@ -119,6 +122,7 @@
       *
                    07  SPA-NAIB-AREA.
                        09  SPA-NAI-KOUMOKU.
+                           11  SPA-NAI-BYOMEIINPUTCD   PIC X(10).
                            11  SPA-NAI-CDSYU           PIC X(01).
                            11  SPA-NAI-BYOMEIMOJI      PIC 9(02).
                            11  SPA-NAI-BYOMEIHENFLG    PIC X(01).

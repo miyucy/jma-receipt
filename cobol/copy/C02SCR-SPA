@@ -66,8 +66,10 @@
       *  02.07.01    NACL-藤原    06/01/16  年齢を追加
       *  02.07.02    NACL-藤原    06/01/26  保険組合せを増やす
       *
-      *  03.00.01    NACL-藤原    06/07/19  C07,C08 レセコメント用エリア
+      *  03.00.01    NACL-藤原    06/06/19  C07,C08 レセコメント用エリア
       *                                     削除
+      *  03.00.02    NACL-藤原    06/06/01  病名入力コードのアルファベッ
+      *                                     ト７文字対応正対応
       *****************************************************************
       *
        01  SPA-C02FREE.
@@ -276,11 +278,11 @@
                                13  SPA-NAI-C02-BYOMEI-OCC  OCCURS  21.
                                    15  SPA-NAI-C02-BYOMEICD
                                                            PIC X(10).
+                                   15  SPA-NAI-C02-USERBYOMEIFLG
+                                                           PIC X(01).
                                    15  SPA-NAI-C02-BYOMEI-G.
                                        17  SPA-NAI-C02-BYOMEITOP
                                                            PIC X(01).
-                                       17  SPA-NAI-C02-USERBYOMEIFLG
-                                                           PIC X(01).                          
                                        17  SPA-NAI-C02-BYOMEI  
                                                            PIC X(80).
                                        17  SPA-NAI-C02-CHARTBYOMEI  

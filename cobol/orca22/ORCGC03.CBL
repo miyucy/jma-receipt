@@ -86,6 +86,9 @@
       *  02.08.02    NACL-森脇    06/03/22  リスト出力順設定
       *
       *  03.00.01    NACL-藤原    06/06/19   C06,C07,C08 削除
+      *
+      *  03.01.01    NACL-藤原    06/06/01  病名入力コードのアルファベッ
+      *                                     ト７文字対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1891,6 +1894,8 @@
       *
            MOVE    2                   TO  SPA-GMN-CUR
       *
+           MOVE    SPACE               TO  SPA-NAI-BYOMEIINPUTCD
+      *
            IF      C03-BYOMEIINPUTCD   =   SPACE
                MOVE    "0049"               TO  SPA-ERRCD
                GO  TO  41002-BYOMEIINPUT-CHK-EXT
@@ -1900,6 +1905,8 @@
                IF      C03-BYOMEIINPUTCD   NOT =   SPA-GMN-BYOMEIINPUTCD
                    MOVE   "0050"               TO  SPA-ERRCD
                ELSE
+                   MOVE    SPA-GMN-BYOMEIINPUTCD
+                                               TO  SPA-NAI-BYOMEIINPUTCD
                    MOVE    3                   TO  SPA-GMN-CUR
                END-IF
                GO  TO  41002-BYOMEIINPUT-CHK-EXT
@@ -1918,6 +1925,7 @@
                GO  TO  41002-BYOMEIINPUT-CHK-EXT
            END-IF
       *
+      *
       *****INITIALIZE                 SPA-GMN-KOUMOKU1
       *****                           SPA-NAI-KOUMOKU
       *****                           SPA-NAI-SELNO
@@ -1925,7 +1933,7 @@
            MOVE    C03-BYOMEIINPUTCD  TO  SPA-GMN-BYOMEIINPUTCD
       *
            MOVE    ZERO               TO  WRK-LENGTH
-      *      
+      *
            PERFORM VARYING IDX FROM    10  BY  -1
                    UNTIL   IDX <       1
                IF      SPA-GMN-BYOMEIINPUTCD(IDX:1)
@@ -1934,9 +1942,69 @@
                    MOVE    1               TO  IDX
                END-IF
            END-PERFORM                                    
-           IF      WRK-LENGTH          =   7   OR  ZERO
-               MOVE    "0009"              TO  SPA-ERRCD
-           END-IF    
+      *****IF      WRK-LENGTH          =   7   OR  ZERO
+      *****     MOVE    "0009"              TO  SPA-ERRCD
+      *****END-IF    
+      *
+      *    「.」「／」で始まる又は「+」「-」で終わるコードは入力不可
+           IF      KANACHK-SYUBETU  =   "2"
+               COMPUTE IDX     =   WRK-LENGTH  -   1
+               IF      SPA-GMN-BYOMEIINPUTCD(IDX:2)
+                                        =   "＋"    OR  "−"
+                   MOVE    "0036"              TO  SPA-ERRCD
+               END-IF
+           ELSE    
+               IF      SPA-GMN-BYOMEIINPUTCD(1:1)
+                                        =   "." OR  "/"
+                   MOVE    "0030"              TO  SPA-ERRCD
+               ELSE
+                   IF      SPA-GMN-BYOMEIINPUTCD(WRK-LENGTH:1)
+                                            =   "-" OR  "+"
+                       MOVE    "0036"              TO  SPA-ERRCD
+                   END-IF
+               END-IF
+      *
+      *       ７桁のとき数字のみ又は病名マスタ・予約コードに存在するか
+               IF    ( SPA-ERRCD           =   SPACE ) 
+               AND   ( WRK-LENGTH          =   7     )
+                   INITIALIZE                  ORCSNUMAREA
+                   MOVE    SPA-GMN-BYOMEIINPUTCD
+                                               TO  SNUM-INX
+                   CALL    "ORCSNUM"           USING
+                                               ORCSNUMAREA
+                   IF      SNUM-RC             =   ZERO
+                       MOVE    "0001"              TO  SPA-ERRCD
+                   ELSE
+                       MOVE    ZERO        TO  FLG-BYOMEI
+                       IF  (   SPA-GMN-BYOMEIINPUTCD (1:3)
+                                                       =   "ZZZ"    )
+                       AND ( ( SPA-GMN-BYOMEIINPUTCD (4:1)
+                                                       <   "1" ) OR 
+                             ( SPA-GMN-BYOMEIINPUTCD (4:1)
+                                                       =   "C" )    )
+      *                    予約病名コード検索
+                           SET     TBL-BYOMEICD-IDX  TO  1
+                           SEARCH  TBL-BYOMEICD-OCC
+                                           VARYING TBL-BYOMEICD-IDX
+                               AT  END
+                                   MOVE    1       TO  FLG-BYOMEI
+                               WHEN    SPA-GMN-BYOMEIINPUTCD    =
+                                               TBL-YYK-BYOMEICD
+                                                      (TBL-BYOMEICD-IDX)
+                                  MOVE    ZERO     TO  FLG-BYOMEI
+                           END-SEARCH
+                       ELSE
+      *                    病名マスタ検索
+                           MOVE    SPA-GMN-BYOMEIINPUTCD
+                                                   TO  BYO-BYOMEICD
+                           PERFORM 900-BYOMEI-READ-SEC
+                       END-IF
+                       IF      FLG-BYOMEI          =   ZERO
+                           MOVE    "0031"              TO  SPA-ERRCD
+                       END-IF
+                   END-IF
+               END-IF    
+           END-IF
       *
            IF      SPA-ERRCD            NOT =   SPACE     
                GO  TO  41002-BYOMEIINPUT-CHK-EXT
@@ -1979,6 +2047,9 @@
                    END-IF
                END-IF
            END-IF      
+      *
+           MOVE    SPA-GMN-BYOMEIINPUTCD
+                                       TO  SPA-NAI-BYOMEIINPUTCD
       *
            MOVE    3                   TO  SPA-GMN-CUR
            .
@@ -2705,23 +2776,31 @@
                END-IF
            END-IF
       *
+      *    入力コードのチェック
+           IF      SPA-GMN-BYOMEIINPUTCD  NOT =   SPACE
+           AND     SPA-NAI-BYOMEIINPUTCD      =   SPACE
+               MOVE    "0032"               TO  SPA-ERRCD
+               MOVE    2                    TO  SPA-GMN-CUR
+               GO  TO  450-TOUROKU-EXT
+           END-IF
+      *
            IF      SPA-GMN-BYOMEIINPUTCD  =   SPACE
                CONTINUE
            ELSE
-               MOVE    ZERO               TO  WRK-LENGTH
+      *****    MOVE    ZERO               TO  WRK-LENGTH
       *      
-               PERFORM VARYING IDX FROM    10  BY  -1
-                       UNTIL   IDX <       1
-                   IF      SPA-GMN-BYOMEIINPUTCD(IDX:1)
-                                       NOT =   SPACE
-                       MOVE    IDX             TO  WRK-LENGTH
-                       MOVE    1               TO  IDX
-                   END-IF
-               END-PERFORM                                    
-               IF      WRK-LENGTH          =   7   OR  ZERO
-                   MOVE    "0009"              TO  SPA-ERRCD
-                   GO  TO  450-TOUROKU-EXT
-               END-IF    
+      *****    PERFORM VARYING IDX FROM    10  BY  -1
+      *****            UNTIL   IDX <       1
+      *****        IF      SPA-GMN-BYOMEIINPUTCD(IDX:1)
+      *****                            NOT =   SPACE
+      *****            MOVE    IDX             TO  WRK-LENGTH
+      *****            MOVE    1               TO  IDX
+      *****        END-IF
+      *****    END-PERFORM                                    
+      *****    IF      WRK-LENGTH          =   7   OR  ZERO
+      *****        MOVE    "0009"              TO  SPA-ERRCD
+      *****        GO  TO  450-TOUROKU-EXT
+      *****    END-IF    
       *
                IF      SPA-NAI-BYOMEIMOJI   =   ZERO
                    IF      SPA-GMN-BYOMEI       =   SPACE
@@ -3486,7 +3565,9 @@
       *
            EVALUATE    SPA-ERRCD
                WHEN    "0001"
-                   MOVE    "入力エラーです"            TO  SPA-ERRMSG
+                   MOVE
+                       "数字のみ７桁での入力はできません"
+                                                       TO  SPA-ERRMSG
                WHEN    "0002"
                    MOVE    "既に同一病名入力コードが存在します" 
                                                        TO  SPA-ERRMSG
@@ -3524,10 +3605,25 @@
                WHEN    "0029"
                    MOVE    "基本病名が入力してありません"
                                                        TO  SPA-ERRMSG
+               WHEN    "0030"
+                   MOVE
+                      "先頭の文字が入力できない文字です"
+                                                       TO  SPA-ERRMSG
+               WHEN    "0031"
+                   MOVE
+                   "病名マスタ又は予約病名コードに存在するコードです"
+                                                       TO  SPA-ERRMSG
+               WHEN    "0032"
+                   MOVE
+                       "登録できない入力コードです"    TO  SPA-ERRMSG
                WHEN    "0034"
                    MOVE    "これ以上追加できません"    TO  SPA-ERRMSG
                WHEN    "0035"
                    MOVE    "不明の病名コードが入力されています"
+                                                       TO  SPA-ERRMSG
+               WHEN    "0036"
+                   MOVE
+                      "最後の文字が入力できない文字です"
                                                        TO  SPA-ERRMSG
                WHEN    "0049"
                    MOVE    "病名入力コードが未入力です"

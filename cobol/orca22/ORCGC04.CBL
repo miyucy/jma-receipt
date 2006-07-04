@@ -49,6 +49,9 @@
       *  02.08.02    NACL-藤原    06/03/30  複数病名検索時のまとめかたの修正
       *
       *  03.00.01    NACL-藤原    06/06/19   C06,C07,C08 削除
+      *
+      *  03.01.01    NACL-藤原    06/07/03   同一病名のときのエラーメッセ
+      *                                      ージ(0002)を変更
       ****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -116,6 +119,8 @@
            03  WRK-SYOKBN          PIC 9(01).
            03  WRK-BANGO           PIC S9(05).
            03  WRK-SEIGYO          PIC X(01). 
+      *
+           03  WRK-ERR-BYOMEI      PIC X(80).
       * 
            03  WRK-C04-BYO-ROW     PIC S9(09). 
       *
@@ -1712,6 +1717,7 @@
                MOVE    WRK-BYOMEI      TO  WRK-BYOMEI-O (IDY)
            END-IF
       *
+           MOVE    SPACE               TO  WRK-ERR-BYOMEI
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       6
                    OR      WRK-BYOMEI-O (IDX)  =   SPACE
@@ -1721,7 +1727,9 @@
                    IF      IDY             >   IDX
                        IF      WRK-BYOMEI-O (IDX)  =
                                                WRK-BYOMEI-O (IDY)
-                           MOVE    "0002"              TO  SPA-ERRCD
+                           MOVE    "0002"          TO  SPA-ERRCD
+                           MOVE    WRK-BYOMEI-O (IDX)
+                                                   TO  WRK-ERR-BYOMEI
                            GO  TO  450-KAKUTEI-EXT
                        END-IF
                    END-IF
@@ -1937,8 +1945,11 @@
                WHEN    "0001"
                    MOVE    "入力エラーです"            TO  SPA-ERRMSG
                WHEN    "0002"
-                   MOVE    "既に同一病名入力コードが存在します" 
-                                                       TO  SPA-ERRMSG
+                   STRING   WRK-ERR-BYOMEI     DELIMITED   BY  SPACE
+                            "が複数入力されています"
+                                               DELIMITED   BY  SIZE 
+                                               INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "0003"
                    MOVE
                        "変更処理中なので病名はひとつしか入力できません"
@@ -1980,7 +1991,8 @@
                                                        TO  SPA-ERRMSG
            END-EVALUATE
       *
-           MOVE    SPACE                TO  WRK-HAISIYMDH     
+           MOVE    SPACE                TO  WRK-HAISIYMDH
+                                            WRK-ERR-BYOMEI      
       *
            MOVE    SPACE                TO  CERR
            MOVE    SPA-ERRCD            TO  CERR-ERRCODE
