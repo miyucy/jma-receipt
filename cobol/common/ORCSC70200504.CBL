@@ -47,7 +47,6 @@
       * 01.00.18     NACL-多々納  05/01/27  酸素追加
       * 02.00.01     NACL-多々納  05/04/27  レセ電対応
       * 02.00.02     NACL-多々納  05/12/14  MONFUNC 対応
-      * 03.05.00     NACL-多々納  07/04/XX  グループ診療対応
       *****************************************************************
       *
       *
@@ -176,8 +175,8 @@
            03  WRK-SRYCD2          PIC X(09). 
       *
            03  WRK-TENSU-KEISAN.
-               05  WRK-SUM-TENSUKEI    PIC 9(08)V99.
-               05  WRK-SUM-TENGAKEI    PIC 9(08)V99.
+               05  WRK-SUM-TENSUKEI    PIC 9(08).
+               05  WRK-SUM-TENGAKEI    PIC 9(08).
       *        撮影料の点数計
                05  WRK-TENSUKEI1       PIC S9(08)V999.
       *        診断料の点数計
@@ -550,7 +549,7 @@
            INITIALIZE                  WRK-AREA
       *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   SPA-MAX-LINE     )   OR
+                   UNTIL      (IDX-Z       >   200     )   OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )  OR
                               (WRK-ERRCD       NOT =   SPACE )
       *
@@ -617,8 +616,6 @@
                            EVALUATE    WRK-COM-BUIKBN (IDX-Z)
       *                        頭部
                                WHEN    "1"
-      *                        躯幹
-                               WHEN    "2"
                                    MOVE    2       TO  FLG-BUIKBN
       *                        胸部・腹部
                                WHEN    "5"
@@ -838,7 +835,7 @@
            MOVE    "770020070"         TO  WRK-SRYCD
            MOVE    ZERO                TO  FLG-ARI
            PERFORM VARYING     IDX1    FROM    1   BY  1
-                   UNTIL      (IDX1    >   SPA-MAX-LINE  )  OR
+                   UNTIL      (IDX1    >   200  )  OR
                               (WRK-COM-INPUTCD(IDX1)   =   SPACE AND
                                WRK-GMN-INPUTCD(IDX1)   =   SPACE )
                IF     (WRK-COM-INPUTCD  (IDX1)(1:1)    =   "7" ) AND
@@ -924,7 +921,6 @@
            MOVE    SPA-SRYYMD          TO  SYS-1006-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-1006-EDYUKYMD
       *    システム管理検索
-           MOVE    SPA-HOSPNUM         TO  SYS-1006-HOSPNUM
            MOVE    SYS-1006-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -1358,10 +1354,10 @@
       *
       *    現在のチェック位置に戻す
            PERFORM VARYING     IDX     FROM    IDX-HOZ2  BY  1
-                   UNTIL       IDX     >   SPA-MAX-LINE
+                   UNTIL       IDX     >   200
                IF      WRK-COM-AUTOKBN (IDX)   =   "K"
                    MOVE    IDX             TO  IDX-Z
-                   MOVE    SPA-MAX-LINE    TO  IDX
+                   MOVE    200             TO  IDX
                END-IF
            END-PERFORM
       *
@@ -1485,7 +1481,7 @@
            MOVE    ZERO                TO  IDX-DOJI1
            MOVE    ZERO                TO  IDX-DOJI2
            PERFORM VARYING     IDX-S1  FROM    IDX-SAT   BY  1
-                   UNTIL      (IDX-S1      >   SPA-MAX-LINE )  OR
+                   UNTIL      (IDX-S1      >   200 )  OR
                               (IDX-DOJI1   >   ZERO )    OR
                               (IDX-DOJI2   >   ZERO )    OR
                               (WRK-COM-INPUTCD (IDX-S1)  =   SPACE AND
@@ -1500,7 +1496,7 @@
       *
                IF     (IDX-S1          NOT =   IDX-SAT)  AND
                       (WRK-COM-TNSSRYSYUKBN (IDX-S1)    =   "721")
-                   MOVE   SPA-MAX-LINE         TO  IDX-S1
+                   MOVE   200              TO  IDX-S1
                END-IF
            END-PERFORM
       *
@@ -1722,7 +1718,7 @@
                END-IF
            END-IF
            PERFORM VARYING     IDX1    FROM    IDXS1  BY  1
-                   UNTIL      (IDX1        >   SPA-MAX-LINE     )   OR
+                   UNTIL      (IDX1        >   200     )   OR
                               (FLG-ARI                 =   1    ) OR
                               (WRK-GMN-INPUTCD (IDX1)  =   SPACE ) OR
                               (WRK-GMN-INPUTCD(IDX1)(1:1)  =   "*")
@@ -1790,7 +1786,7 @@
            MOVE    ZERO                TO  FLG-ARI
            MOVE    ZERO                TO  WRK-NYU-IDX
            PERFORM VARYING     IDX1    FROM    IDX-HOZ  BY  1
-                   UNTIL      (IDX1        >   SPA-MAX-LINE     )   OR
+                   UNTIL      (IDX1        >   200     )   OR
                               (WRK-GMN-INPUTCD (IDX1)  =   SPACE )
                           OR  (WRK-COM-AUTOKBN (IDX1)  =   "K"   )
       *            フィルム判定
@@ -1883,7 +1879,7 @@
            MOVE    ZERO                TO  IDX-MAX
            MOVE    1                   TO  IDX-STR
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   SPA-MAX-LINE  )  OR
+                   UNTIL      (IDX-Z       >   200  )  OR
                               (WRK-GMN-INPUTCD(IDX-Z)  =   SPACE )
       *
                ADD     1                   TO  IDX-MAX
@@ -2073,11 +2069,11 @@
       *
       *    間接撮影による逓減計算
            PERFORM VARYING     IDX-Z2  FROM    IDX-STR BY  1
-                   UNTIL      (IDX-Z2      >   SPA-MAX-LINE  )  OR
+                   UNTIL      (IDX-Z2      >   200  )  OR
                               (WRK-GMN-INPUTCD(IDX-Z2)  =   SPACE )
                IF      (IDX-Z          NOT =   IDX-Z2   )  AND
                        (WRK-COM-AUTOKBN(IDX-Z2)  =   "K"   )
-                   MOVE    SPA-MAX-LINE          TO  IDX-Z2
+                   MOVE    200                 TO  IDX-Z2
                ELSE
                    IF     (WRK-COM-TENSIKIBETU (IDX-Z2) =   6 )  AND
                           (WRK-COM-KIJUNTEIGENKBN(IDX-Z2)
@@ -2091,7 +2087,7 @@
                                                -   WRK-GENTEN
                        MOVE    1               TO  WRK-COM-SANFLG
                                                           (IDX-Z2)
-                       MOVE    SPA-MAX-LINE    TO  IDX-Z2
+                       MOVE    200            TO  IDX-Z2
                    END-IF
                END-IF
            END-PERFORM
@@ -2100,7 +2096,7 @@
       *    乳幼児加算（％加算）
       **** PERFORM VARYING     IDX-Z2  FROM    1    BY  1
            PERFORM VARYING     IDX-Z2  FROM    IDX-STR  BY  1
-                   UNTIL      (IDX-Z2      >   SPA-MAX-LINE )  OR
+                   UNTIL      (IDX-Z2      >   200  )  OR
                               (WRK-GMN-INPUTCD(IDX-Z2)  =   SPACE ) OR
                               (WRK-COM-AUTOKBN(IDX-Z2)  =   "K"   )
               IF     (WRK-COM-SANFLG(IDX-Z2)  =   2 OR 5 )  AND
@@ -2116,7 +2112,7 @@
                    COMPUTE WRK-SATU-KASAN      =   WRK-COM-TEN (IDX-Z2)
                                                /   100
       *
-                   MOVE    SPA-MAX-LINE        TO  IDX-Z2
+                   MOVE    200                 TO  IDX-Z2
                END-IF
            END-PERFORM
       *
@@ -2153,7 +2149,7 @@
            IF     (WRK-CNT-SATUEI      =   1   )  AND
                   (WRK-COM-TNSSRYSYUKBN(IDX-Z)(1:2)  =  "71" )
                PERFORM VARYING     IDX-Z2  FROM    IDX-STR BY  1
-                   UNTIL      (IDX-Z2      >   SPA-MAX-LINE )  OR
+                   UNTIL      (IDX-Z2      >   200  )  OR
                               (WRK-GMN-INPUTCD(IDX-Z2)  =   SPACE ) OR
                               (WRK-COM-AUTOKBN(IDX-Z2)  =   "K"   )
                    IF     (WRK-COM-TENSIKIBETU (IDX-Z2) =   6 )  AND
@@ -2168,7 +2164,7 @@
                                                -   WRK-GENTEN
                        MOVE    1               TO  WRK-COM-SANFLG
                                                           (IDX-Z2)
-                       MOVE    SPA-MAX-LINE    TO  IDX-Z2
+                       MOVE    200            TO  IDX-Z2
                    END-IF
                END-PERFORM
            END-IF
@@ -2321,9 +2317,8 @@
                                            +   WRK-TENSUKEI3
                                            +   WRK-TENSUKEI
                WHEN    OTHER
-                   COMPUTE LNK-SC90-TENSU  =  (WRK-SUM-TENSUKEI
-                                           +   WRK-SUM-TENGAKEI )
-                                           +   0.5
+                   COMPUTE LNK-SC90-TENSU  =   WRK-SUM-TENSUKEI
+                                           +   WRK-SUM-TENGAKEI
            END-EVALUATE
       *
            .
@@ -2362,7 +2357,6 @@
                                                +   0.5
                    MOVE    WRK-TENSUKEI        TO  WRK-TENSUKEI-9
                    ADD     WRK-TENSUKEI-9      TO  WRK-TENSUKEI-K
-                   MOVE    ZERO                TO  WRK-TENSUKEI
                END-IF
       *        ％減算
                IF     (WRK-COM-INPUTCD(IDX)(1:1)   =   "1" )  AND
@@ -2375,7 +2369,6 @@
                                                /   100
                    MOVE    WRK-TENSUKEI        TO  WRK-TENSUKEI-9
                    ADD     WRK-TENSUKEI-9      TO  WRK-TENSUKEI-G
-                   MOVE    ZERO                TO  WRK-TENSUKEI
                END-IF
              END-IF
            END-PERFORM
@@ -2437,7 +2430,7 @@
            MOVE    ZERO                TO  FLG-TENTEKI
       *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   SPA-MAX-LINE     )   OR
+                   UNTIL      (IDX-Z       >   200     )   OR
                               (SPA-ERRCD           NOT =   SPACE )  OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
       *        時間外緊急院内画像診断加算
@@ -2726,7 +2719,7 @@
            INITIALIZE                      WRK-SCR-REC
            MOVE    ZERO                TO  IDX-D2
            PERFORM VARYING     IDX-D1  FROM    1   BY  1
-                   UNTIL       IDX-D1      >   SPA-MAX-LINE
+                   UNTIL       IDX-D1      >   200
                IF      IDX-T           =   IDX-D1
                    CONTINUE
                ELSE
@@ -2774,7 +2767,7 @@
            INITIALIZE                  WRK-NYUINDAY-AREA
       *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   SPA-MAX-LINE     )   OR
+                   UNTIL      (IDX-Z       >   200     )   OR
                               (SPA-ERRCD           NOT =   SPACE )  OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
                IF     (WRK-COM-SRYKBN (IDX-Z)  =   "70")  AND
@@ -3011,7 +3004,7 @@
       *
       *    今回入力にないこと
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   SPA-MAX-LINE  )  OR
+                   UNTIL      (IDX     >   200  )  OR
                               (FLG-ERR              =   1    )   OR
                               (WRK-GMN-INPUTCD(IDX) =   SPACE)
                IF      WRK-COM-INPUTCD(IDX)    =   WRK-SRYCD
@@ -3076,8 +3069,8 @@
            MOVE    WRK-SCR-REC         TO  HOZ-SCR-REC
            MOVE    WRK-GMN-MAX         TO  WRK-IDX
            ADD     1                   TO  WRK-IDX
-           IF      WRK-IDX             >   SPA-MAX-LINE
-               MOVE    SPA-MAX-LINE        TO  WRK-IDX
+           IF      WRK-IDX              >   200
+               MOVE    200                 TO  WRK-IDX
            END-IF
       *    点数マスタ編集・基本チェック
            INITIALIZE                  ORCSC92AREA
@@ -3121,7 +3114,6 @@
            MOVE    SPA-SRYYMD          TO  TNS-YUKOSTYMD
            MOVE    SPA-SRYYMD          TO  TNS-YUKOEDYMD
       *
-           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -3171,9 +3163,9 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        910-DBSELECT-EXT.
@@ -3184,9 +3176,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
       *
@@ -3199,9 +3191,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        990-DBCLOSE-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        990-DBCLOSE-EXT.
