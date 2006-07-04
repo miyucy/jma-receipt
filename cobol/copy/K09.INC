@@ -41,3 +41,15 @@
                     06  K09-MNO     PIC X(3).
                     06  K09-MEISAI  PIC X(90).
                   05  K09-MEILIST-SELECT  PIC X       OCCURS  400 TIMES.
+              03  K09-NYUGAIKBN-COMB.
+                04  K09-NYUGAIKBN.
+                  05  K09-VALUE   PIC X(10).
+                04  K09-NYUGAIKBN-COUNT   PIC S9(9)   BINARY.
+                04  K09-NYUGAIKBN-ITEM
+                        PIC X(10)   OCCURS  2 TIMES.
+              03  K09-SRYKBN-COMB.
+                04  K09-SRYKBN.
+                  05  K09-VALUE   PIC X(23).
+                04  K09-SRYKBN-COUNT   PIC S9(9)   BINARY.
+                04  K09-SRYKBN-ITEM
+                        PIC X(23)   OCCURS  20 TIMES.
