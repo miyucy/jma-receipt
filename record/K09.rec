@@ -32,5 +32,19 @@ K09	{
 				select	bool[400];
 			};
 		};
+		NYUGAIKBN_COMB	{
+			NYUGAIKBN	{
+				value	varchar(10);
+			};
+			count	int;
+			item	varchar(10)[2];
+		};
+		SRYKBN_COMB	{
+			SRYKBN	{
+				value	varchar(23);
+			};
+			count	int;
+			item	varchar(23)[20];
+		};
 	};
 };
