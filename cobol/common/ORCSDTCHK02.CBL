@@ -133,12 +133,15 @@
            PERFORM UNTIL ( FLG-HKNCOMBI    =   1 )
                     OR   ( IDX-MAX        >=   CONST-HKNCOMBI-MAX )
       *
-               COMPUTE IDX-MAX =   IDX-MAX +   1
-      *
-               MOVE    HKNCOMBI-REC     TO  LNK-HKNCOMBI-OCC (IDX-MAX)
-               PERFORM 1101-HKNCOMBIMEI-HEN-SEC
-               MOVE    WRK-HKNCOMBI     TO  SDTCHK02-O-HKNCOMBIMEI
+               IF    ( COMB-DELKBN         =   "1" )
+                   CONTINUE
+               ELSE
+                   COMPUTE IDX-MAX =   IDX-MAX +   1
+                   MOVE    HKNCOMBI-REC TO  LNK-HKNCOMBI-OCC (IDX-MAX)
+                   PERFORM 1101-HKNCOMBIMEI-HEN-SEC
+                   MOVE    WRK-HKNCOMBI TO  SDTCHK02-O-HKNCOMBIMEI
                                                              (IDX-MAX)
+               END-IF
       *
                PERFORM 900-HKNCOMBI-KEY2-FET-SEC
       *
