@@ -437,32 +437,31 @@
       *
            END-PERFORM
       *
-           IF    ( WRK-BYOCD-LEN   =   7 )
-               MOVE    WRK-BYOCD   TO  WRK-RECECD
-               PERFORM 20011-BYOMEI-KUMITATE-SEC
-               IF    ( FLG-BYOMEIERR   NOT =   ZERO )
-                   MOVE    3               TO  ERR-RC
-                   MOVE    WRK-BYOCD-IDX   TO  ERR-IDX
-                   PERFORM 2500-ERRCD-HEN-SEC
-               END-IF
-      *
-               STRING  WRK-RECECDMEI       DELIMITED   BY  SPACE
-               INTO    WRK-BYOMEI
-               WITH    POINTER WRK-BYOMEI-LEN
-               END-STRING
-           ELSE
-      *
-               PERFORM 20011-USERBYO-HEN-SEC
-               IF    ( FLG-UBYOERR     NOT =   ZERO )
-                   MOVE    4               TO  ERR-RC
-                   MOVE    WRK-BYOCD-IDX   TO  ERR-IDX
-                   PERFORM 2500-ERRCD-HEN-SEC
-               END-IF
-      *
+           PERFORM 20011-USERBYO-HEN-SEC
+           IF    ( FLG-UBYOERR         =   ZERO )
                STRING  WRK-USBYOMEI        DELIMITED   BY  SPACE
                INTO    WRK-BYOMEI
                WITH    POINTER WRK-BYOMEI-LEN
                END-STRING
+           ELSE
+               IF    ( WRK-BYOCD-LEN   =   7 )
+                   MOVE    WRK-BYOCD   TO  WRK-RECECD
+                   PERFORM 20011-BYOMEI-KUMITATE-SEC
+                   IF    ( FLG-BYOMEIERR   NOT =   ZERO )
+                       MOVE    3               TO  ERR-RC
+                       MOVE    WRK-BYOCD-IDX   TO  ERR-IDX
+                       PERFORM 2500-ERRCD-HEN-SEC
+                   END-IF
+      *
+                   STRING  WRK-RECECDMEI       DELIMITED   BY  SPACE
+                   INTO    WRK-BYOMEI
+                   WITH    POINTER WRK-BYOMEI-LEN
+                   END-STRING
+               ELSE
+                   MOVE    4               TO  ERR-RC
+                   MOVE    WRK-BYOCD-IDX   TO  ERR-IDX
+                   PERFORM 2500-ERRCD-HEN-SEC
+               END-IF
            END-IF
       *
            .
