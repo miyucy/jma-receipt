@@ -786,6 +786,9 @@
                             END-IF
                          END-IF
                      END-IF
+      *              ø«Œ≈π‘∞Ÿ•Ø•Ì°º•∫
+                     MOVE    "SRYACT-KEY9"      TO  ORC-DBPATH
+                     PERFORM   910-DB-CLOSE-SEC
       *
                      IF ( ACCT-SRYCDTOTAL(6:9)  =
                                             CONS-KEIKAKU-GENSAN1
