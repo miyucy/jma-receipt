@@ -52,6 +52,8 @@
       *
       *  03.01.01    NACL-藤原    06/07/03   同一病名のときのエラーメッセ
       *                                      ージ(0002)を変更
+      *  03.01.02    NACL-藤原    06/07/05   入力したコードにエラーがある
+      *                                      とき確定で戻らないようにする
       ****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -265,8 +267,8 @@
                        GO  TO  100-INIT-EXT
                    END-IF
       *
-                   PERFORM 5001-MAPCUR-SEC
                END-IF
+               PERFORM 5001-MAPCUR-SEC
                MOVE    SPACE           TO  SPA-C01-ERRCD
            ELSE
       *        初期画面セット
@@ -998,6 +1000,7 @@
                PERFORM 900-USBYO-INV-SEC                            
                IF      FLG-USERBYOMEI      =   1
                    MOVE    "0004"          TO  SPA-ERRCD    
+                   MOVE    "■■■"        TO  SPA-NAI-C04-BYOMEI (IDZ)
                ELSE
                    MOVE    USBYO-BYOMEI    TO  SPA-NAI-C04-BYOMEI (IDZ)
                    MOVE    USBYO-BYOMEISBT TO
@@ -1370,7 +1373,7 @@
                GO  TO  41003-INPUTCD-CHK-EXT
            END-IF     
       *
-           PERFORM 410022-BYOMEI-HENSYU-SEC 
+           PERFORM 410022-BYOMEI-HENSYU-SEC
       *
            IF      SPA-ERRCD           =   SPACE   OR  "0075"
                ADD     1                   TO  SPA-GMN-C04-CUR
@@ -1689,6 +1692,19 @@
                GO  TO  450-KAKUTEI-EXT
            END-IF
       *
+      *    コードチェック
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       6
+               IF    ( SPA-GMN-C04-INPUTCD (IDX)
+                                           NOT =   SPACE )
+               AND   ( SPA-NAI-C04-BYOMEI(IDX) (1:2)
+                                               =   "■"  )
+                   COMPUTE SPA-GMN-C04-CUR     =   IDX     +   2
+                   MOVE    "0004"              TO  SPA-ERRCD
+                   GO  TO  450-KAKUTEI-EXT
+               END-IF
+           END-PERFORM    
+      *
       *    病名重複チェック
            MOVE    SPACE                   TO  WRK-BYOMEI-AREA
            MOVE    ZERO                    TO  IDY
@@ -1908,7 +1924,7 @@
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
-         EVALUATE    SPA-GMN-C04-CUR
+           EVALUATE    SPA-GMN-C04-CUR
              WHEN    1
                      MOVE  "KENBYOMEI"  TO  MCP-WIDGET
              WHEN    2
@@ -1927,7 +1943,7 @@
                      MOVE  "INPUTCD6"   TO  MCP-WIDGET
              WHEN    9
                      MOVE  "BUNRUICD"   TO  MCP-WIDGET
-         END-EVALUATE
+           END-EVALUATE
       *
            .
        5001-MAPCUR-EXT.
