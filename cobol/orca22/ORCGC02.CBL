@@ -7844,11 +7844,10 @@
       *    文字チェック     
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       6
-               IF      SPA-GMN-C02-BYOMEICD (IDX)  NOT =   SPACE             
-                   IF      SPA-NAI-C02-BYOMEI(IDX)(1:2)   =   "■"
-                       MOVE    "0035"          TO  SPA-ERRCD
-                       GO  TO  490-USERBYOMEI-KENSAKU-EXT 
-                  END-IF
+               IF    ( SPA-GMN-C02-BYOMEICD (IDX)  NOT =   SPACE )             
+               AND   ( SPA-NAI-C02-BYOMEI(IDX)(1:2)    =   "■"  )
+                   MOVE    "0035"          TO  SPA-ERRCD
+                   GO  TO  490-USERBYOMEI-KENSAKU-EXT 
                END-IF
            END-PERFORM
       *

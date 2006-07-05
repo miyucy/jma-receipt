@@ -1897,6 +1897,7 @@
            MOVE    SPACE               TO  SPA-NAI-BYOMEIINPUTCD
       *
            IF      C03-BYOMEIINPUTCD   =   SPACE
+               MOVE    SPACE                TO  SPA-GMN-BYOMEIINPUTCD
                MOVE    "0049"               TO  SPA-ERRCD
                GO  TO  41002-BYOMEIINPUT-CHK-EXT
            END-IF
