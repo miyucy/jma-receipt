@@ -247,6 +247,7 @@
       *    患者状態コメント
            COPY    "CPSYSKANRI.INC".
            COPY    "CPSK1018.INC".
+           COPY    "CPSK1026.INC".
       *
       *    診療科
            COPY    "CPSK1005.INC".
@@ -561,6 +562,17 @@
       *    状態３コンボ初期処理
            PERFORM 3101-CONDITION3-CMB-SYOKI-SEC
       *
+      *    減免コンボ初期処理
+           PERFORM 3101-GENMEN-CMB-SYOKI-SEC
+      *
+      *    低所得コンボ初期処理
+           PERFORM 3101-TSY-CMB-SYOKI-SEC
+      *
+      *    低所得期間開始識別コンボ初期処理
+           PERFORM 3101-STTSYSKBT-CMB-SYOKI-SEC
+           MOVE    SPA-GMN-Q01-STTSYSKBTLST (1)
+                                       TO  SPA-GMN-Q01-STTSYSKBT-G
+      *
       *    電話先コンボ初期処理
            PERFORM 3101-TEL-TO-CMB-SYOKI-SEC
            MOVE    SPA-GMN-Q01-TEL-TOLST (1)
@@ -815,6 +827,86 @@
       *
            .
        3101-CONDITION3-CMB-SYOKI-EXT.
+           EXIT.
+      *****************************************************************
+      *    減免事由コンボ初期処理
+      *****************************************************************
+       3101-GENMEN-CMB-SYOKI-SEC   SECTION.
+      *
+           INITIALIZE                      SPA-GMN-Q01-GENMENLST-G
+      *
+           MOVE    ZERO                TO  FLG-SYSKANRI
+           INITIALIZE                      SYS-1026-REC
+           MOVE    "1026"              TO  SYS-1026-KANRICD
+           MOVE    SPA-SYSYMD          TO  SYS-1026-STYUKYMD
+                                           SYS-1026-EDYUKYMD
+           MOVE    SYS-1026-REC        TO  SYSKANRI-REC
+           PERFORM 900-SYSKANRI-KEY2-SEL-SEC
+      *
+           PERFORM UNTIL ( FLG-SYSKANRI    NOT =   ZERO )
+                    OR   ( SPA-GMN-Q01-GENMENLST-MAX   >=   99 )
+      *
+               MOVE    SYSKANRI-REC    TO  SYS-1026-REC
+      *
+               COMPUTE SPA-GMN-Q01-GENMENLST-MAX
+                   =   SPA-GMN-Q01-GENMENLST-MAX   +   1
+      *
+               MOVE    SPA-GMN-Q01-GENMENLST-MAX
+                                       TO  IDX5
+      *
+               MOVE    SYS-1026-KBNCD (1:2)
+                                   TO  SPA-GMN-Q01-GENMENL (IDX5)
+               MOVE    SYS-1026-DISCOUNT-BODY
+                                   TO  SPA-GMN-Q01-GENMENMEIL (IDX5)
+      *
+               PERFORM 900-SYSKANRI-KEY2-FET-SEC
+      *
+           END-PERFORM
+      *
+           MOVE    "tbl_syskanri"     TO  MCP-TABLE
+           MOVE    "key2"             TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       3101-GENMEN-CMB-SYOKI-EXT.
+           EXIT.
+      *****************************************************************
+      *    低所得コンボ初期処理
+      *****************************************************************
+       3101-TSY-CMB-SYOKI-SEC          SECTION.
+      *
+           INITIALIZE                      SPA-GMN-Q01-TSYLST-G
+      *
+           MOVE    2                   TO  SPA-GMN-Q01-TSYLST-MAX
+      *
+           MOVE    "1"                 TO  SPA-GMN-Q01-TSYL    (1)
+           MOVE    "低所得者１"        TO  SPA-GMN-Q01-TSYMEIL (1)
+           MOVE    "2"                 TO  SPA-GMN-Q01-TSYL    (2)
+           MOVE    "低所得者２"        TO  SPA-GMN-Q01-TSYMEIL (2)
+      *    MOVE    "3"                 TO  SPA-GMN-Q01-TSYL    (3)
+      *    MOVE    "低所得者１・２"    TO  SPA-GMN-Q01-TSYMEIL (3)
+      *
+           .
+       3101-TSY-CMB-SYOKI-EXT.
+           EXIT.
+      *****************************************************************
+      *    低所得期間開始識別コンボ初期処理
+      *****************************************************************
+       3101-STTSYSKBT-CMB-SYOKI-SEC        SECTION.
+      *
+           INITIALIZE                      SPA-GMN-Q01-STTSYSKBTLST-G
+      *
+           MOVE    3                   TO  SPA-GMN-Q01-STTSYSKBTLST-MAX
+      *
+           MOVE    "1"                 TO  SPA-GMN-Q01-STTSYSKBTL    (1)
+           MOVE    "有効月"            TO  SPA-GMN-Q01-STTSYSKBTMEIL (1)
+           MOVE    "2"                 TO  SPA-GMN-Q01-STTSYSKBTL    (2)
+           MOVE    "開始月"            TO  SPA-GMN-Q01-STTSYSKBTMEIL (2)
+           MOVE    "3"                 TO  SPA-GMN-Q01-STTSYSKBTL    (3)
+           MOVE    "終了月"            TO  SPA-GMN-Q01-STTSYSKBTMEIL (3)
+      *
+           .
+       3101-STTSYSKBT-CMB-SYOKI-EXT.
            EXIT.
       *****************************************************************
       *    電話先コンボ初期処理
@@ -1426,6 +1518,10 @@
                MOVE    Q01-CONDITION3 (IDXB)
                                        TO  SPA-GMN-Q01-CONDITION3-G
                                                                (IDXB)
+      *        減免事由
+               MOVE    Q01-GENMEN (IDXB)
+                                       TO  SPA-GMN-Q01-GENMEN-G
+                                                               (IDXB)
       *        コメント
                MOVE    Q01-COMMENT (IDXB)
                                        TO  SPA-GMN-Q01-COMMENT  (IDXB)
@@ -1435,6 +1531,12 @@
       *
       *    本人家族
            MOVE    Q01-HONKZKKBN       TO  SPA-GMN-Q01-HONKZKKBN-G
+      *
+      *    低所得
+           MOVE    Q01-TSY             TO  SPA-GMN-Q01-TSY-G
+           MOVE    Q01-STTSYYM         TO  SPA-GMN-Q01-STTSYYM
+           MOVE    Q01-STTSYSKBT       TO  SPA-GMN-Q01-STTSYSKBT-G
+           MOVE    Q01-EDTSYYM         TO  SPA-GMN-Q01-EDTSYYM
       *
            PERFORM VARYING IDXB    FROM    1   BY  1
                    UNTIL   IDXB    >       5
@@ -1661,6 +1763,17 @@
       *
            END-PERFORM
       *
+      *    減免事由チェック
+           PERFORM VARYING IDXA    FROM    1   BY  1
+                   UNTIL ( IDXA    >   3 )
+      *
+               PERFORM 4116-GENMEN-CHK-SEC
+               IF    ( SPA-ERRCD   NOT =   SPACE )
+                   GO  TO  4101-KHN-INPUT-CHK-EXT
+               END-IF
+      *
+           END-PERFORM
+      *
       *    コメントチェック
            PERFORM VARYING IDXA    FROM    1   BY  1
                    UNTIL ( IDXA    >   3 )
@@ -1688,6 +1801,30 @@
                END-IF
       *
            END-PERFORM
+      *
+      *    低所得コンボチェック
+           PERFORM 4117-TSY-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4101-KHN-INPUT-CHK-EXT
+           END-IF
+      *
+      *    低所得開始日識別チェック
+           PERFORM 4117-STTSYSKBT-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4101-KHN-INPUT-CHK-EXT
+           END-IF
+      *
+      *    低所得開始日チェック
+           PERFORM 4117-STTSYYM-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4101-KHN-INPUT-CHK-EXT
+           END-IF
+      *
+      *    低所得終了日チェック
+           PERFORM 4117-EDTSYYM-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4101-KHN-INPUT-CHK-EXT
+           END-IF
       *
            .
        4101-KHN-INPUT-CHK-EXT.
@@ -2684,6 +2821,39 @@
        4116-CONDITION3-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    減免事由チェック処理
+      *****************************************************************
+       4116-GENMEN-CHK-SEC         SECTION.
+      *
+           COMPUTE WRK-ERR-CUR         =   148     +   IDXA
+      *
+           IF    ( SPA-GMN-Q01-GENMEN-G (IDXA) =   SPACE )
+               GO  TO  4116-GENMEN-CHK-EXT
+           END-IF
+      *
+           PERFORM VARYING IDX2    FROM    1   BY  1
+                   UNTIL ( IDX2    >   SPA-GMN-Q01-GENMENLST-MAX )
+                      OR ( SPA-GMN-Q01-GENMEN (IDXA)
+                                   =   SPA-GMN-Q01-GENMENL (IDX2))
+      *
+               CONTINUE
+      *
+           END-PERFORM
+      *
+           IF    ( IDX2            <=  SPA-GMN-Q01-GENMENLST-MAX )
+               MOVE    SPA-GMN-Q01-GENMENLST (IDX2)
+                                       TO  SPA-GMN-Q01-GENMEN-G
+                                                               (IDXA)
+           ELSE
+               MOVE    "0123"          TO  SPA-ERRCD
+               MOVE    WRK-ERR-CUR     TO  SPA-GMN-Q01-CUR
+               GO TO   4116-GENMEN-CHK-EXT
+           END-IF
+      *
+           .
+       4116-GENMEN-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    コメントチェック処理
       *****************************************************************
        4113-COMMENT-CHK-SEC        SECTION.
@@ -2736,6 +2906,144 @@
       *
            .
        4113-TEL-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    低所得チェック処理
+      *****************************************************************
+       4117-TSY-CHK-SEC         SECTION.
+      *
+           IF    ( SPA-GMN-Q01-TSY-G   =   SPACE )
+               GO  TO  4117-TSY-CHK-EXT
+           END-IF
+      *
+           PERFORM VARYING IDX2    FROM    1   BY  1
+                   UNTIL ( IDX2    >   SPA-GMN-Q01-TSYLST-MAX )
+                      OR ( SPA-GMN-Q01-TSY
+                                   =   SPA-GMN-Q01-TSYL (IDX2))
+      *
+               CONTINUE
+      *
+           END-PERFORM
+      *
+           IF    ( IDX2            <=  SPA-GMN-Q01-TSYLST-MAX )
+               MOVE    SPA-GMN-Q01-TSYLST (IDX2)
+                                       TO  SPA-GMN-Q01-TSY-G
+           ELSE
+               MOVE    "0124"          TO  SPA-ERRCD
+               MOVE    152             TO  SPA-GMN-Q01-CUR
+               GO TO   4117-TSY-CHK-EXT
+           END-IF
+      *
+           .
+       4117-TSY-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    低所得開始日識別チェック処理
+      *****************************************************************
+       4117-STTSYSKBT-CHK-SEC          SECTION.
+      *
+           IF    ( SPA-GMN-Q01-STTSYSKBT-G =   SPACE )
+               GO  TO  4117-STTSYSKBT-CHK-EXT
+           END-IF
+      *
+           PERFORM VARYING IDX2    FROM    1   BY  1
+                   UNTIL ( IDX2    >   SPA-GMN-Q01-STTSYSKBTLST-MAX )
+                      OR ( SPA-GMN-Q01-STTSYSKBT
+                                   =   SPA-GMN-Q01-STTSYSKBTL (IDX2))
+      *
+               CONTINUE
+      *
+           END-PERFORM
+      *
+           IF    ( IDX2            <=  SPA-GMN-Q01-STTSYSKBTLST-MAX )
+               MOVE    SPA-GMN-Q01-STTSYSKBTLST (IDX2)
+                                   TO  SPA-GMN-Q01-STTSYSKBT-G
+           ELSE
+               MOVE    SPA-GMN-Q01-STTSYSKBTLST (1)
+                                   TO  SPA-GMN-Q01-STTSYSKBT-G
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-STTSYSKBT   =   "2" OR  "3" )
+               MOVE    SPACE       TO  SPA-GMN-Q01-EDTSYYM
+                                       SPA-NAI-Q01-EDTSYYM
+           END-IF
+      *
+           .
+       4117-STTSYSKBT-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    低所得開始月チェック
+      *****************************************************************
+       4117-STTSYYM-CHK-SEC            SECTION.
+      *
+           MOVE    SPACE               TO  SPA-NAI-Q01-STTSYYM
+      *
+      *    日付妥当性チェック＆編集処理
+           IF  ( SPA-GMN-Q01-STTSYYM NOT =   SPACE )
+      *
+               INITIALIZE                      ORCSGDAYAREA
+               MOVE    SPA-GMN-Q01-STTSYYM     TO  SGDAY-INDAY
+               MOVE    "1"                     TO  SGDAY-INTYPE
+               CALL    "ORCSGDAY"         USING
+                                          ORCSGDAYAREA
+               IF    ( SGDAY-RC           =   ZERO )
+                   MOVE    SGDAY-OTDAY (1:6)   TO  SPA-GMN-Q01-STTSYYM
+                   MOVE    SGDAY-SDAY          TO  SPA-NAI-Q01-STTSYYM
+               ELSE
+                   MOVE    SPA-GMN-Q01-STTSYYM
+                                           TO  WRK-YMD
+                   PERFORM 5002-HIZUKE-CHK-SEC
+                   IF  ( SPA-ERRCD         =   SPACE )
+                       MOVE    WRK-SYMD    TO  SPA-NAI-Q01-STTSYYM
+                       MOVE    WRK-HENYMDG (1:6)
+                                           TO  SPA-GMN-Q01-STTSYYM
+                   ELSE
+                       MOVE    "0125"              TO  SPA-ERRCD
+                       MOVE    154             TO  SPA-GMN-Q01-CUR
+                       GO  TO  4117-STTSYYM-CHK-EXT
+                   END-IF
+               END-IF
+           END-IF
+      *
+           .
+       4117-STTSYYM-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    低所得終了月チェック
+      *****************************************************************
+       4117-EDTSYYM-CHK-SEC            SECTION.
+      *
+           MOVE    SPACE               TO  SPA-NAI-Q01-EDTSYYM
+      *
+      *    日付妥当性チェック＆編集処理
+           IF  ( SPA-GMN-Q01-EDTSYYM NOT =   SPACE )
+      *
+               INITIALIZE                      ORCSGDAYAREA
+               MOVE    SPA-GMN-Q01-EDTSYYM     TO  SGDAY-INDAY
+               MOVE    "1"                     TO  SGDAY-INTYPE
+               CALL    "ORCSGDAY"         USING
+                                          ORCSGDAYAREA
+               IF    ( SGDAY-RC           =   ZERO )
+                   MOVE    SGDAY-OTDAY (1:6)   TO  SPA-GMN-Q01-EDTSYYM
+                   MOVE    SGDAY-SDAY          TO  SPA-NAI-Q01-EDTSYYM
+               ELSE
+                   MOVE    SPA-GMN-Q01-EDTSYYM
+                                           TO  WRK-YMD
+                   PERFORM 5002-HIZUKE-CHK-SEC
+                   IF  ( SPA-ERRCD         =   SPACE )
+                       MOVE    WRK-SYMD    TO  SPA-NAI-Q01-EDTSYYM
+                       MOVE    WRK-HENYMDG (1:6)
+                                           TO  SPA-GMN-Q01-EDTSYYM
+                   ELSE
+                       MOVE    "0127"              TO  SPA-ERRCD
+                       MOVE    155             TO  SPA-GMN-Q01-CUR
+                       GO  TO  4117-EDTSYYM-CHK-EXT
+                   END-IF
+               END-IF
+           END-IF
+      *
+           .
+       4117-EDTSYYM-CHK-EXT.
            EXIT.
       *****************************************************************
       *    本人家族チェック処理
@@ -4154,7 +4462,14 @@
       *        性別コンボ
                MOVE    SPA-GMN-Q01-SEXLST (1)
                                    TO  SPA-GMN-Q01-SEX-G
+      *        電話番号コンボ
+               MOVE    SPA-GMN-Q01-TEL-TOLST (1)
+                                   TO  SPA-GMN-Q01-TEL-TO-G
                MOVE    "F"         TO  SPA-GMN-Q01-CHKTSTPT
+      *
+      *        低所得識別コンボ
+               MOVE    SPA-GMN-Q01-STTSYSKBTLST (1)
+                                   TO  SPA-GMN-Q01-STTSYSKBT-G
       *
       *    保険　公費
            WHEN    1
@@ -4594,6 +4909,38 @@
                END-IF
            END-IF
       *
+      *    ＜低所得有効期間＞
+      *    1.開始月≠空白かつ
+      *      終了月≠空白のとき、
+      *      開始月≦終了月であること
+           IF      ( SPA-GMN-Q01-TSY         NOT =   SPACE )
+               IF      ( SPA-GMN-Q01-STTSYYM NOT =   SPACE )
+                AND    ( SPA-GMN-Q01-EDTSYYM NOT =   SPACE )
+                   IF  ( SPA-NAI-Q01-STTSYYM    <= SPA-NAI-Q01-EDTSYYM )
+                       CONTINUE
+                   ELSE
+                       MOVE    "1010"      TO   SPA-ERRCD
+                       MOVE    154         TO   SPA-GMN-Q01-CUR
+                       GO  TO  4901-TAB1-CHK-EXT
+                   END-IF
+               END-IF
+      *
+               IF      ( SPA-GMN-Q01-STTSYSKBT   =   "2" OR "3" )
+                   IF  ( SPA-NAI-Q01-STTSYYM NOT =   SPACE )
+                       CONTINUE
+                   ELSE
+                       IF    ( SPA-GMN-Q01-STTSYSKBT
+                                                =   "2" )
+                           MOVE    "1011"  TO   SPA-ERRCD
+                       ELSE
+                           MOVE    "1012"  TO   SPA-ERRCD
+                       END-IF
+                       MOVE    154         TO   SPA-GMN-Q01-CUR
+                       GO  TO  4901-TAB1-CHK-EXT
+                   END-IF
+               END-IF
+           END-IF
+      *
            .
        4901-TAB1-CHK-EXT.
            EXIT.
@@ -4709,12 +5056,20 @@
                MOVE    SPA-GMN-Q01-CONDITION3 (IDXC)
                                            TO  SPA-Q01-CONDITION3 (IDXC)
       *
+               MOVE    SPA-GMN-Q01-GENMEN (IDXC)
+                                           TO  SPA-Q01-GENMEN (IDXC)
+      *
                MOVE    SPA-GMN-Q01-COMMENT (IDXC)
                                            TO  SPA-Q01-COMMENT (IDXC)
       *
                MOVE    SPA-GMN-Q01-TEL (IDXC)
                                            TO  SPA-Q01-TEL (IDXC)
            END-PERFORM
+      *
+           MOVE    SPA-GMN-Q01-TSY         TO  SPA-Q01-TSY
+           MOVE    SPA-NAI-Q01-STTSYYM     TO  SPA-Q01-STTSYYM
+           MOVE    SPA-GMN-Q01-STTSYSKBT   TO  SPA-Q01-STTSYSKBT
+           MOVE    SPA-NAI-Q01-EDTSYYM     TO  SPA-Q01-EDTSYYM
       *
       *    保険　公費
            IF    ( SPA-GMN-Q01-RDKOHNUM-AND    =   "T" )
@@ -4952,6 +5307,14 @@
                        END-IF
                    END-IF
       *
+      *            減免事由
+                   IF    ( SPA-Q01-GENMEN (IDX6)   NOT =   SPACE )
+                       IF    ( SPA-Q01-GENMEN (IDX6)
+                                       =   SPA-Q01-GENMEN (IDX7))
+                           MOVE    SPACE   TO  SPA-Q01-GENMEN (IDX7)
+                       END-IF
+                   END-IF
+      *
       *            コメント
                    IF    ( SPA-Q01-COMMENT (IDX6)  NOT =   SPACE )
                        IF    ( SPA-Q01-COMMENT (IDX6)
@@ -5036,6 +5399,7 @@
             OR ( SPA-Q01-CONDITION1-G      NOT =   SPACE )
             OR ( SPA-Q01-CONDITION2-G      NOT =   SPACE )
             OR ( SPA-Q01-CONDITION3-G      NOT =   SPACE )
+            OR ( SPA-Q01-GENMEN-G          NOT =   SPACE )
             OR ( SPA-Q01-COMMENT-G         NOT =   SPACE )
             OR ( SPA-Q01-STBIRTHDAY        NOT =   SPACE )
             OR ( SPA-Q01-EDBIRTHDAY        NOT =   SPACE )
@@ -5060,6 +5424,13 @@
            IF  ( SPA-Q01-SRYCD-G           NOT =   SPACE )
       *
               MOVE     "1"                 TO  SPA-Q01-GTBL(9)
+      *
+           END-IF
+      *
+      *    該当（１０）
+           IF  ( SPA-Q01-TSY           NOT =   SPACE )
+      *
+              MOVE     "1"                 TO  SPA-Q01-GTBL(10)
       *
            END-IF
       *
@@ -5184,6 +5555,8 @@
       *    画面編集処理
       *****************************************************************
        500-GMNHEN-SEC                  SECTION.
+      *
+           INITIALIZE                          Q01
       *
       *    タブページ番号
            MOVE    SPA-GMN-Q01-PAGENO      TO  Q01-PAGENO
@@ -5312,6 +5685,21 @@
                MOVE    SPA-GMN-Q01-CONDITION3LST-MAX
                                            TO  Q01-CMB-CONDITION3-COUNT
                                                               (IDX1)
+      *        減免事由
+               MOVE    SPA-GMN-Q01-GENMEN-G (IDX1)
+                                           TO  Q01-GENMEN (IDX1)
+               PERFORM VARYING IDX2    FROM    1   BY  1
+                   UNTIL     ( IDX2
+                                   >   SPA-GMN-Q01-GENMENLST-MAX )
+      *
+                   MOVE    SPA-GMN-Q01-GENMENLST (IDX2)
+                               TO  Q01-CMB-GENMEN-ITEM (IDX1 IDX2)
+      *
+               END-PERFORM
+      *
+               MOVE    SPA-GMN-Q01-GENMENLST-MAX
+                                           TO  Q01-CMB-GENMEN-COUNT
+                                                              (IDX1)
       *
       *        コメント
                MOVE    SPA-GMN-Q01-COMMENT (IDX1)
@@ -5333,6 +5721,45 @@
                                    TO  Q01-CMB-TEL-TO-ITEM (IDX1)
       *
            END-PERFORM
+      *
+      *    低所得
+           MOVE    SPA-GMN-Q01-TSY-G TO  Q01-TSY
+           MOVE    SPA-GMN-Q01-TSYLST-MAX
+                                           TO  Q01-CMB-TSY-COUNT
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   SPA-GMN-Q01-TSYLST-MAX )
+      *
+               MOVE    SPA-GMN-Q01-TSYLST (IDX1)
+                                   TO  Q01-CMB-TSY-ITEM (IDX1)
+      *
+           END-PERFORM
+      *    低所得開始日
+           MOVE    SPA-GMN-Q01-STTSYYM     TO  Q01-STTSYYM
+      *
+      *    低所得開始月識別
+           MOVE    SPA-GMN-Q01-STTSYSKBT-G TO  Q01-STTSYSKBT
+           MOVE    SPA-GMN-Q01-STTSYSKBTLST-MAX
+                                           TO  Q01-CMB-STTSYSKBT-COUNT
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   SPA-GMN-Q01-STTSYSKBTLST-MAX )
+      *
+               MOVE    SPA-GMN-Q01-STTSYSKBTLST (IDX1)
+                                   TO  Q01-CMB-STTSYSKBT-ITEM (IDX1)
+      *
+           END-PERFORM
+      *
+           EVALUATE    SPA-GMN-Q01-STTSYSKBT
+           WHEN    "2"
+               MOVE    WIDGET-INSENSITIVE  TO  Q01-EDTSYYM-STATE
+           WHEN    "3"
+               MOVE    WIDGET-INSENSITIVE  TO  Q01-EDTSYYM-STATE
+           WHEN    OTHER
+               MOVE    WIDGET-NORMAL       TO  Q01-EDTSYYM-STATE
+               MOVE    "〜"                TO  Q01-LBLTSY
+           END-EVALUATE
+      *
+      *    低所得終了日
+           MOVE    SPA-GMN-Q01-EDTSYYM     TO  Q01-EDTSYYM
       *
       *    本人家族
            MOVE    SPA-GMN-Q01-HONKZKKBN-G TO  Q01-HONKZKKBN
@@ -5678,6 +6105,20 @@
                MOVE  "TEL2"        TO  MCP-WIDGET
            WHEN   148
                MOVE  "TEL3"        TO  MCP-WIDGET
+           WHEN   149
+               MOVE  "GENMEN1"     TO  MCP-WIDGET
+           WHEN   150
+               MOVE  "GENMEN2"     TO  MCP-WIDGET
+           WHEN   151
+               MOVE  "GENMEN3"     TO  MCP-WIDGET
+           WHEN   152
+               MOVE  "TSY"         TO  MCP-WIDGET
+           WHEN   153
+               MOVE  "STTSYSKBT"   TO  MCP-WIDGET
+           WHEN   154
+               MOVE  "STTSYYM"     TO  MCP-WIDGET
+           WHEN   155
+               MOVE  "EDTSYYM"     TO  MCP-WIDGET
       *
       *    保険・公費タブ
            WHEN   201
@@ -5906,7 +6347,7 @@
            WHEN   "CONDITION32"
                MOVE  140           TO  SPA-GMN-Q01-CUR
            WHEN   "CONDITION33"
-               MOVE  141           TO  SPA-GMN-Q01-CUR
+               MOVE  149           TO  SPA-GMN-Q01-CUR
            WHEN   "COMMENT1"
                MOVE  142           TO  SPA-GMN-Q01-CUR
            WHEN   "COMMENT2"
@@ -5920,6 +6361,20 @@
            WHEN   "TEL2"
                MOVE  148           TO  SPA-GMN-Q01-CUR
            WHEN   "TEL3"
+               MOVE  152           TO  SPA-GMN-Q01-CUR
+           WHEN   "GENMEN1"
+               MOVE  150           TO  SPA-GMN-Q01-CUR
+           WHEN   "GENMEN2"
+               MOVE  151           TO  SPA-GMN-Q01-CUR
+           WHEN   "GENMEN3"
+               MOVE  141           TO  SPA-GMN-Q01-CUR
+           WHEN   "TSY"
+               MOVE  153           TO  SPA-GMN-Q01-CUR
+           WHEN   "STTSYSKBT"
+               MOVE  154           TO  SPA-GMN-Q01-CUR
+           WHEN   "STTSYYM"
+               MOVE  155           TO  SPA-GMN-Q01-CUR
+           WHEN   "EDTSYYM"
                MOVE  001           TO  SPA-GMN-Q01-CUR
       *
       *    保険・公費タブ
@@ -6071,6 +6526,13 @@
                END-IF
            END-IF
       *
+           IF    ( SPA-GMN-Q01-CUR =   155 )
+               IF    ( Q01-EDTSYYM-STATE
+                                   =   WIDGET-INSENSITIVE )
+                   COMPUTE SPA-GMN-Q01-CUR =   001
+               END-IF
+           END-IF
+      *
            .
       *
        5012-CUR-SKIP-EXT.
@@ -6175,6 +6637,21 @@
            WHEN    "0122"
                MOVE    "終了転帰日入力エラー"
                                        TO  SPA-ERRMSG
+           WHEN    "0123"
+               MOVE    "減免事由入力エラー"
+                                       TO  SPA-ERRMSG
+           WHEN    "0124"
+               MOVE    "低所得１・２入力エラー"
+                                       TO  SPA-ERRMSG
+           WHEN    "0125"
+               MOVE    "低所得開始月入力エラー"
+                                       TO  SPA-ERRMSG
+           WHEN    "0126"
+               MOVE    "低所得開始月識別入力エラー"
+                                       TO  SPA-ERRMSG
+           WHEN    "0127"
+               MOVE    "低所得終了月入力エラー"
+                                       TO  SPA-ERRMSG
            WHEN    "1001"
                MOVE    "開始診療年月日＞終了診療年月日となっています"
                                        TO  SPA-ERRMSG
@@ -6201,6 +6678,15 @@
                                        TO  SPA-ERRMSG
            WHEN    "1009"
                MOVE    "開始転帰日＞終了転帰日となっています"
+                                       TO  SPA-ERRMSG
+           WHEN    "1010"
+               MOVE    "低所得の有効期間の指定に誤りがあります"
+                                       TO  SPA-ERRMSG
+           WHEN    "1011"
+               MOVE    "低所得の開始月を入力してください"
+                                       TO  SPA-ERRMSG
+           WHEN    "1012"
+               MOVE    "低所得の終了月を入力してください"
                                        TO  SPA-ERRMSG
            END-EVALUATE
       *

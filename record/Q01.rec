@@ -183,6 +183,27 @@ Q01	{
 					count	int;
 					item	varchar(23)[99];
 				};
+				CMB_GENMEN1{
+					GENMEN1{
+						value	varchar(23);
+					};
+					count	int;
+					item	varchar(23)[99];
+				};
+				CMB_GENMEN2{
+					GENMEN2{
+						value	varchar(23);
+					};
+					count	int;
+					item	varchar(23)[99];
+				};
+				CMB_GENMEN3{
+					GENMEN3{
+						value	varchar(23);
+					};
+					count	int;
+					item	varchar(23)[99];
+				};
 				COMMENT1	{
 					value	varchar(50);
 				};
@@ -207,6 +228,30 @@ Q01	{
 				};
 				TEL3	{
 					value	varchar(15);
+				};
+				CMB_TSY{
+					TSY{
+						value	varchar(30);
+					};
+					count	int;
+					item	varchar(30)[05];
+				};
+				STTSYYM	{
+					value	varchar(10);
+				};
+				CMB_STTSYSKBT{
+					STTSYSKBT{
+						value	varchar(10);
+					};
+					count	int;
+					item	varchar(10)[05];
+				};
+				EDTSYYM	{
+					value	varchar(10);
+					state	int;
+				};
+				LBLTSY	{
+					value	varchar(02);
 				};
 			};
 			fixed17	{

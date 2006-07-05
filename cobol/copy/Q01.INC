@@ -74,6 +74,13 @@
                                                            BINARY.
                       08  Q01-CMB-CONDITION3-ITEM  PIC X(23)
                                                            OCCURS 99.
+                  06  Q01-CMB-GENMEN-TBL.
+                    07  Q01-CMB-GENMEN-OCC             OCCURS 3.
+                      08  Q01-GENMEN           PIC X(23).
+                      08  Q01-CMB-GENMEN-COUNT PIC S9(9)
+                                                           BINARY.
+                      08  Q01-CMB-GENMEN-ITEM  PIC X(23)
+                                                           OCCURS 99.
                   06  Q01-COMMENT-TBL.
                     07  Q01-COMMENT            PIC X(50)   OCCURS 3.
                   06  Q01-CMB-TEL-TO.
@@ -84,6 +91,18 @@
                                                            OCCURS 5.
                   06  Q01-TEL-TBL.
                     07  Q01-TEL                    PIC X(15) OCCURS 3.
+                  06  Q01-CMB-TSY.
+                    07  Q01-TSY                    PIC X(30).
+                    07  Q01-CMB-TSY-COUNT          PIC S9(9) BINARY.
+                    07  Q01-CMB-TSY-ITEM           PIC X(30) OCCURS 5.
+                  06  Q01-STTSYYM                  PIC X(10).
+                  06  Q01-CMB-STTSYSKBT.
+                    07  Q01-STTSYSKBT              PIC X(10).
+                    07  Q01-CMB-STTSYSKBT-COUNT    PIC S9(9) BINARY.
+                    07  Q01-CMB-STTSYSKBT-ITEM     PIC X(10) OCCURS 5.
+                  06  Q01-EDTSYYM                  PIC X(10).
+                  06  Q01-EDTSYYM-STATE            PIC S9(9)   BINARY.
+                  06  Q01-LBLTSY                   PIC X(02).
                 05  Q01-FIXED17.
                   06  Q01-CMB-HONKZKKBN.
                     07  Q01-HONKZKKBN          PIC X(10).
