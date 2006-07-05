@@ -606,13 +606,13 @@
            MOVE    PTCOM-REC           TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_ptcom"         TO  MCP-TABLE
-           MOVE    "key3"              TO  MCP-PATHNAME
+           MOVE    "key2"              TO  MCP-PATHNAME
            CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_ptcom"         TO  MCP-TABLE
-               MOVE    "key3"              TO  MCP-PATHNAME
+               MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 915-PTCOM-NEXT2-SEC
            ELSE
                MOVE    "0002"          TO  SPA-ERRCD
@@ -621,19 +621,22 @@
            PERFORM
                    UNTIL       FLG-PTCOM      =   1
                MOVE    PTCOM-REC           TO  MCPDATA-REC
-               MOVE    "DBINSERT"          TO  MCP-FUNC
-               MOVE    "tbl_ptcom_prv"     TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "MONFUNC"           USING
+	       PERFORM 1001-PTCOMPRV-CHK-SEC
+	       IF      FLG-PTCOM           =   1
+                   MOVE    "DBINSERT"      TO  MCP-FUNC
+                   MOVE    "tbl_ptcom_prv" TO  MCP-TABLE
+                   MOVE    "key"           TO  MCP-PATHNAME
+                   CALL    "MONFUNC"       USING
                                            MCPAREA
                                            MCPDATA-REC
+               END-IF
                MOVE    "tbl_ptcom"         TO  MCP-TABLE
-               MOVE    "key3"              TO  MCP-PATHNAME
+               MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 915-PTCOM-NEXT2-SEC
            END-PERFORM
       *
            MOVE    "tbl_ptcom"         TO  MCP-TABLE
-           MOVE    "key3"              TO  MCP-PATHNAME
+           MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE2-SEC
            .
       *
@@ -641,6 +644,29 @@
            EXIT.
       *
       *----->take add ed
+      *
+      *****************************************************************
+      *    患者コメントチェック処理
+      *****************************************************************
+       1001-PTCOMPRV-CHK-SEC      SECTION.
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "tbl_ptcom_prv" TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           CALL    "MONFUNC"       USING
+	                           MCPAREA
+	                           MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_ptcom_prv" TO  MCP-TABLE
+               MOVE    "key"           TO  MCP-PATHNAME
+               PERFORM 915-PTCOM-NEXT2-SEC
+           END-IF
+           MOVE    "tbl_ptcom_prv" TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE2-SEC
+           .
+      *
+       1001-PTCOMPRV-CHK-EXT.
+           EXIT.
       *
       *****************************************************************
       *    患者マスター読込
