@@ -190,6 +190,7 @@
                                        ORCHCM31-SYORIKBN
                                        ORCHCM31-DSPKBN
                                        ORCHCM31-PTID
+                                       ORCHCM31-NYUGAI
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -378,7 +379,8 @@
            MOVE    SPA-HOSPID      TO  PTINF-HOSPID
            MOVE    SPA-PTID        TO  PTINF-PTID
            MOVE    PTINF-REC       TO  MCPDATA-REC
-           MOVE    PATH-TBL-PTINF-KEY  TO  MCP-PATH
+           MOVE    "tbl_ptinf"     TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC TO  PTINF-REC
@@ -386,7 +388,8 @@
                INITIALIZE              PTINF-REC
            END-IF
       *
-           MOVE    PATH-TBL-PTINF-KEY  TO  MCP-PATH
+           MOVE    "tbl_ptinf"     TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 910-DBCLOSE-SEC
       *
            .
@@ -395,10 +398,10 @@
       *****************************************************************
       *    テーブル検索処理
       *****************************************************************
-       910-DBSELECT-SEC          SECTION.
+       910-DBSELECT-SEC            SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            IF        ( MCP-RC          =   ZERO )
@@ -411,10 +414,10 @@
       *****************************************************************
       *    テーブル読込処理
       *****************************************************************
-       910-DBFETCH-SEC            SECTION.
+       910-DBFETCH-SEC             SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -424,10 +427,10 @@
       *****************************************************************
       *    テーブルクローズ処理
       *****************************************************************
-       910-DBCLOSE-SEC           SECTION.
+       910-DBCLOSE-SEC             SECTION.
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -437,20 +440,21 @@
       *****************************************************************
       *    ＤＢ　オープン処理
       *****************************************************************
-       100-DBOPEN-SEC                SECTION.
+       100-DBOPEN-SEC              SECTION.
       *
-      *
-           MOVE    LOW-VALUE           TO  MCP-PATH
-           MOVE    "DBOPEN"            TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           MOVE    "DBOPEN"        TO  MCP-FUNC.
+           MOVE    LOW-VALUE       TO  MCP-TABLE.
+           MOVE    LOW-VALUE       TO  MCP-PATHNAME.
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       MCPDATA-REC
+                                       MCPDATA-REC.
       *
-           MOVE    LOW-VALUE           TO  MCP-PATH
-           MOVE    "DBSTART"           TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           MOVE    "DBSTART"       TO  MCP-FUNC.
+           MOVE    LOW-VALUE       TO  MCP-TABLE.
+           MOVE    LOW-VALUE       TO  MCP-PATHNAME.
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       MCPDATA-REC
+                                       MCPDATA-REC.
            .
        100-DBOPEN-EXT.
            EXIT.
@@ -458,17 +462,19 @@
       *****************************************************************
       *    ＤＢ　クローズ処理
       *****************************************************************
-       900-DBDISCONNECT-SEC            SECTION.
+       900-DBDISCONNECT-SEC        SECTION.
       *
-           MOVE    LOW-VALUE           TO  MCP-PATH
-           MOVE    "DBCOMMIT"          TO  MCP-FUNC.
-           CALL    "MCPSUB"            USING
+           MOVE    "DBCOMMIT"      TO  MCP-FUNC.
+           MOVE    LOW-VALUE       TO  MCP-TABLE.
+           MOVE    LOW-VALUE       TO  MCP-PATHNAME.
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       MCPDATA-REC
+                                       MCPDATA-REC.
       *
-           MOVE    LOW-VALUE           TO  MCP-PATH
-           MOVE    "DBDISCONNECT"      TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           MOVE    "DBDISCONNECT"  TO  MCP-FUNC.
+           MOVE    LOW-VALUE       TO  MCP-TABLE.
+           MOVE    LOW-VALUE       TO  MCP-PATHNAME.
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC.
            .

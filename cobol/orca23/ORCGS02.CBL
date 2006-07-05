@@ -1387,6 +1387,8 @@
                                            TO  SHELLTBL-ARG23
                    MOVE    SPA-GMN-PTID
                                            TO  SHELLTBL-ARG24
+                   MOVE    SPA-S01-SHR-NYUGAI
+                                           TO  SHELLTBL-ARG25
                    MOVE    SHELLTBL        TO  MCPDATA-REC
                    MOVE    "SHELL"         TO  MCP-FUNC
                    MOVE    "shell"         TO  MCP-TABLE

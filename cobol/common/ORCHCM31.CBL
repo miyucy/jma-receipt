@@ -46,7 +46,7 @@
        WORKING-STORAGE             SECTION.
       *
       *    帳票
-           COPY    "HCM31V01.INC"  REPLACING   //HCM31V01//
+           COPY    "HCM31V02.INC"  REPLACING   //HCM31V02//
                                    BY          //HCM31//.
       *
       *    フラグ領域
@@ -82,10 +82,8 @@
       *
       *    一時領域
        01  WRK-AREA.
-           03  WRK-PATH.
-               05  WRK-MCP-BLOCKS  PIC S9(9)   BINARY.
-               05  WRK-MCP-RNAME   PIC S9(9)   BINARY.
-               05  WRK-MCP-PNAME   PIC S9(9)   BINARY.
+           03  WRK-TABLE           PIC X(10).
+           03  WRK-PATH            PIC X(10).
       *
            03  WRK-SYMD.
                05  WRK-SYY         PIC 9(04).
@@ -286,9 +284,11 @@
        210-HENSYU-SEC              SECTION.
       *
            IF    ( ORCHCM31-KIKANKBN   =   "2" )
-               MOVE    PATH-TBL-SYUNOU-KEY32    TO  WRK-PATH
+               MOVE    "tbl_syunou"    TO  WRK-TABLE
+               MOVE    "key50"         TO  WRK-PATH
            ELSE
-               MOVE    PATH-TBL-SYUNOU-KEY31    TO  WRK-PATH
+               MOVE    "tbl_syunou"    TO  WRK-TABLE
+               MOVE    "key49"         TO  WRK-PATH
            END-IF
       *
       *    収納マスター読み込み
@@ -313,7 +313,8 @@
       *
            END-PERFORM
       *
-           MOVE    WRK-PATH        TO  MCP-PATH
+           MOVE    WRK-TABLE       TO  MCP-TABLE
+           MOVE    WRK-PATH        TO  MCP-PATHNAME
            PERFORM 910-DBCLOSE-SEC
       *
            .
@@ -555,6 +556,14 @@
            PERFORM 31012-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  HCM31-HAKKOYMD
       *
+      *    入外
+           EVALUATE    ORCHCM31-NYUGAI
+               WHEN    "1"
+                   MOVE    "（入院）"      TO  HCM31-NYUGAI
+               WHEN    "2"
+                   MOVE    "（外来）"      TO  HCM31-NYUGAI
+           END-EVALUATE
+      *
       *    頁
            COMPUTE CNT-PAGE            =   CNT-PAGE    +   1
            MOVE    CNT-PAGE            TO  WRK-Z3
@@ -655,7 +664,7 @@
       *****************************************************************
        250-PRINT-SEC                   SECTION.
       *
-           MOVE    "HCM31V01.red"      TO  SPRT-PRTID
+           MOVE    "HCM31V02.red"      TO  SPRT-PRTID
            MOVE    HCM31               TO  SPRT-PRTDATA
            MOVE    "1"                 TO  SPRT-SITEKBN
            CALL    "ORCSPRT"           USING
@@ -715,8 +724,8 @@
                                        SYS-1001-EDYUKYMD
            MOVE    SYS-1001-REC    TO  MCPDATA-REC
       *
-           MOVE    PATH-TBL-SYSKANRI-KEY10
-                                   TO  MCP-PATH
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key10"         TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC TO  SYS-1001-REC
@@ -725,8 +734,8 @@
                INITIALIZE              SYS-1001-REC
            END-IF
       *
-           MOVE    PATH-TBL-SYSKANRI-KEY10
-                                   TO  MCP-PATH
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key10"         TO  MCP-PATHNAME
            PERFORM 910-DBCLOSE-SEC
       *
            .
@@ -748,8 +757,8 @@
                                        SYS-1002-EDYUKYMD
            MOVE    SYS-1002-REC    TO  MCPDATA-REC
       *
-           MOVE    PATH-TBL-SYSKANRI-KEY10
-                                   TO  MCP-PATH
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key10"         TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC TO  SYS-1002-REC
@@ -758,8 +767,8 @@
                INITIALIZE              SYS-1002-REC
            END-IF
       *
-           MOVE    PATH-TBL-SYSKANRI-KEY10
-                                   TO  MCP-PATH
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key10"         TO  MCP-PATHNAME
            PERFORM 910-DBCLOSE-SEC
       *
            .
@@ -777,7 +786,8 @@
            MOVE    SPA-HOSPID      TO  PTNUM-HOSPID
            MOVE    SPA-PTID        TO  PTNUM-PTID
            MOVE    PTNUM-REC       TO  MCPDATA-REC
-           MOVE    PATH-TBL-PTNUM-KEY  TO  MCP-PATH
+           MOVE    "tbl_ptnum"     TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC TO  PTNUM-REC
@@ -786,7 +796,8 @@
                INITIALIZE              PTNUM-REC
            END-IF
       *
-           MOVE    PATH-TBL-PTNUM-KEY  TO  MCP-PATH
+           MOVE    "tbl_ptnum"     TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 910-DBCLOSE-SEC
       *
            .
@@ -804,7 +815,8 @@
            MOVE    SPA-HOSPID      TO  PTINF-HOSPID
            MOVE    SPA-PTID        TO  PTINF-PTID
            MOVE    PTINF-REC       TO  MCPDATA-REC
-           MOVE    PATH-TBL-PTINF-KEY  TO  MCP-PATH
+           MOVE    "tbl_ptinf"     TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC TO  PTINF-REC
@@ -813,7 +825,8 @@
                INITIALIZE              PTINF-REC
            END-IF
       *
-           MOVE    PATH-TBL-PTINF-KEY  TO  MCP-PATH
+           MOVE    "tbl_ptinf"     TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 910-DBCLOSE-SEC
       *
            .
@@ -835,8 +848,18 @@
            MOVE    ORCHCM31-STRSRYYMD  TO  SYU-SKYSTYMD
            MOVE    ORCHCM31-ENDSRYYMD  TO  SYU-SKYEDYMD
       *
+           EVALUATE    ORCHCM31-NYUGAI
+               WHEN    "0"
+                   MOVE    "%"         TO  SYU-NYUGAIKBN
+               WHEN    "1"
+                   MOVE    "1"         TO  SYU-NYUGAIKBN
+               WHEN    "2"
+                   MOVE    "2"         TO  SYU-NYUGAIKBN
+           END-EVALUATE
+      *
            MOVE    SYUNOU-REC      TO  MCPDATA-REC
-           MOVE    WRK-PATH        TO  MCP-PATH
+           MOVE    WRK-TABLE       TO  MCP-TABLE
+           MOVE    WRK-PATH        TO  MCP-PATHNAME
       *
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
@@ -855,7 +878,8 @@
       *****************************************************************
        900-SYUNOU-READ-SEC         SECTION.
       *
-           MOVE    WRK-PATH        TO  MCP-PATH
+           MOVE    WRK-TABLE       TO  MCP-TABLE
+           MOVE    WRK-PATH        TO  MCP-PATHNAME
            PERFORM 910-DBFETCH-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC     TO  SYUNOU-REC
@@ -874,7 +898,7 @@
        910-DBSELECT-SEC          SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            IF        ( MCP-RC          =   ZERO )
@@ -890,7 +914,7 @@
        910-DBFETCH-SEC            SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -903,7 +927,7 @@
        910-DBCLOSE-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *

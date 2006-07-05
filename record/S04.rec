@@ -6,6 +6,15 @@ S04	{
 		NAME	{
 			value	varchar(50);
 		};
+		NYUGAI1	{
+			value	bool;
+		};
+		NYUGAI2	{
+			value	bool;
+		};
+		NYUGAI3	{
+			value	bool;
+		};
 		KIKANCOMBO	{
 			KIKANKBN	{
 				value	varchar(10);

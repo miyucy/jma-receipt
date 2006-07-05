@@ -58,6 +58,7 @@
            03  SPA-GMN-AREA.
                05  SPA-GMN-PTNUM           PIC X(20).
                05  SPA-GMN-NAME            PIC X(100).
+               05  SPA-GMN-NYUGAI          PIC X       OCCURS  3.
                05  SPA-GMN-KIKANKBN-G.
                    07  SPA-GMN-KIKANKBN    PIC X(01).
                    07  FILLER              PIC X(01).
@@ -97,6 +98,7 @@
                        09  SPA-GMN-DSPMEIL     PIC X(10).
       *
            03  SPA-NAI-AREA.
+               05  SPA-NAI-NYUGAI          PIC X(01).
                05  SPA-NAI-STRSRYYMD.
                    07  SPA-NAI-STRYY       PIC 9(04).
                    07  SPA-NAI-STRMM       PIC 9(02).
@@ -304,6 +306,11 @@
                MOVE    ZERO            TO  SPA-GMN-CUR
                MOVE    S04-PRTKBN(1)   TO  SPA-GMN-PRTKBN(1)
                MOVE    S04-PRTKBN(2)   TO  SPA-GMN-PRTKBN(2)
+      *    入外選択
+           WHEN    "CLICKED"   ALSO    "NYUGAI1" 
+           WHEN    "CLICKED"   ALSO    "NYUGAI2" 
+           WHEN    "CLICKED"   ALSO    "NYUGAI3" 
+               PERFORM 400-NYUGAI-SET-SEC
            END-EVALUATE
       *
            .
@@ -491,6 +498,10 @@
                                    TO  SPA-GMN-SYORIKBN-G
            MOVE    SPA-GMN-DSPLIST(1)
                                    TO  SPA-GMN-DSPKBN-G
+           MOVE    "T"             TO  SPA-GMN-NYUGAI(1)
+           MOVE    "F"             TO  SPA-GMN-NYUGAI(2)
+           MOVE    "F"             TO  SPA-GMN-NYUGAI(3)
+           MOVE    SPACE           TO  SPA-NAI-NYUGAI
       *
            MOVE    1               TO  SPA-GMN-CUR
       *
@@ -592,6 +603,34 @@
       *
            .
        400-KKNKBN-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入外来初期値
+      *****************************************************************
+       400-NYUGAI-SET-SEC          SECTION.
+      *
+           MOVE    ZERO            TO  SPA-GMN-CUR
+           MOVE    SPACE           TO  SPA-NAI-NYUGAI
+      *
+           MOVE    S04-NYUGAI(1)   TO  SPA-GMN-NYUGAI(1)
+           MOVE    S04-NYUGAI(2)   TO  SPA-GMN-NYUGAI(2)
+           MOVE    S04-NYUGAI(3)   TO  SPA-GMN-NYUGAI(3)
+      *
+           IF      SPA-GMN-NYUGAI(1)   =   "T"
+               MOVE    "0"             TO  SPA-NAI-NYUGAI
+           END-IF
+      *
+           IF      SPA-GMN-NYUGAI(2)   =   "T"
+               MOVE    "1"             TO  SPA-NAI-NYUGAI
+           END-IF
+      *
+           IF      SPA-GMN-NYUGAI(3)   =   "T"
+               MOVE    "2"             TO  SPA-NAI-NYUGAI
+           END-IF
+      *
+           .
+       400-NYUGAI-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -829,6 +868,11 @@
       *
            MOVE    SPA-SID1-FLG        TO  SPA-S01-SHR-ORDER
       *
+           IF      SPA-NAI-NYUGAI      =   SPACE
+               MOVE    "0"             TO  SPA-NAI-NYUGAI
+           END-IF
+           MOVE    SPA-NAI-NYUGAI      TO  SPA-S01-SHR-NYUGAI
+      *
            MOVE    SPA-GMN-KIKANKBN    TO  SPA-S01-SHR-KIKANKBN
            MOVE    SPA-GMN-SYORIKBN    TO  SPA-S01-SHR-SYORIKBN
            MOVE    SPA-GMN-DSPKBN      TO  SPA-S01-SHR-DSPKBN
@@ -962,6 +1006,9 @@
            MOVE    SPA-GMN-ENDSRYYMD   TO  S04-ENDSRYYMD
            MOVE    SPA-GMN-PRTKBN(1)   TO  S04-PRTKBN(1)
            MOVE    SPA-GMN-PRTKBN(2)   TO  S04-PRTKBN(2)
+           MOVE    SPA-GMN-NYUGAI(1)   TO  S04-NYUGAI(1)
+           MOVE    SPA-GMN-NYUGAI(2)   TO  S04-NYUGAI(2)
+           MOVE    SPA-GMN-NYUGAI(3)   TO  S04-NYUGAI(3)
       *
       *    期間区分コンボ
            MOVE    SPA-GMN-KIKANKBN-G  TO  S04-KIKANKBN
@@ -1117,6 +1164,10 @@
            WHEN    "PRTKBN1"
            WHEN    "PRTKBN2"
                MOVE    112             TO  SPA-GMN-CUR
+           WHEN    "NYUGAI1"
+           WHEN    "NYUGAI2"
+           WHEN    "NYUGAI3"
+               MOVE    1             TO  SPA-GMN-CUR
       *
            END-EVALUATE
       *

@@ -149,8 +149,8 @@
            MOVE    HCM31S01-DENPNUM    TO  SMEI-DENPNUM
       *
            MOVE    SYUMEI-REC          TO  MCPDATA-REC
-           MOVE    PATH-TBL-SYUMEI-KEY6
-                                       TO  MCP-PATH
+           MOVE    "tbl_syumei"    TO  MCP-TABLE
+           MOVE    "key6"          TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
                MOVE    MCPDATA-REC     TO  SYUMEI-REC
@@ -185,8 +185,8 @@
                                        TO  WRK-SIHARAI-KIN (IDX1)
                END-IF
       *
-               MOVE    PATH-TBL-SYUMEI-KEY6
-                                       TO  MCP-PATH
+               MOVE    "tbl_syumei"    TO  MCP-TABLE
+               MOVE    "key6"          TO  MCP-PATHNAME
                PERFORM 910-DBFETCH-SEC
                IF    ( MCP-RC              =   ZERO )
                    MOVE    MCPDATA-REC TO  SYUMEI-REC
@@ -197,7 +197,8 @@
       *
            END-PERFORM
       *
-           MOVE    PATH-TBL-SYUMEI-KEY6    TO  MCP-PATH
+           MOVE    "tbl_syumei"    TO  MCP-TABLE
+           MOVE    "key6"          TO  MCP-PATHNAME
            PERFORM 910-DBCLOSE-SEC
       *
            MOVE    IDX1                TO  WRK-SIHARAI-MAX
@@ -290,7 +291,7 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            IF    ( MCP-RC          =   ZERO )
@@ -307,7 +308,7 @@
        910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -322,7 +323,7 @@
        910-DBCLOSE-SEC                 SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *

@@ -18,6 +18,7 @@
             03  S04-FIXED2.
               04  S04-PTNUM            PIC X(20).
               04  S04-NAME             PIC X(50).
+              04  S04-NYUGAI           PIC X       OCCURS  3.
               04  S04-KIKANCOMBO.
                   05  S04-KIKANKBN     PIC X(10).
                   05  S04-KIKAN-COUNT  PIC S9(9)   BINARY.

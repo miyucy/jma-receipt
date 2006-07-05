@@ -38,7 +38,8 @@
            03  ORCHCM31-DSPKBN          PIC X(01).
       *    患者番号
            03  ORCHCM31-PTID            PIC  9(10).
-      *
+      *    入外
+           03  ORCHCM31-NYUGAI          PIC  X(01).
       *
            03  ORCHCM31-OT-AREA.
       *        出力件数
