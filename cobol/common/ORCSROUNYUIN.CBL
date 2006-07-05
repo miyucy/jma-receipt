@@ -771,7 +771,7 @@
                                               OR CONS-NICHIJOU-KSN2
                                               OR CONS-CHIHOU-KSN1
                                               OR CONS-CHIHOU-KSN2  )
-                           OR ((SRY-SRYCD(6:9)  =  CONS-JYOKU-KSN1
+                           OR ((SRY-SRYCD(1)  =  CONS-JYOKU-KSN1
                                                OR  CONS-JYOKU-KSN2) AND
                               (LNK-SROUNYUIN-SANTEIYM  < "200604"  ))
                            OR ((SRY-SRYCD(1)    =  CONS-KANGO-KSN1
