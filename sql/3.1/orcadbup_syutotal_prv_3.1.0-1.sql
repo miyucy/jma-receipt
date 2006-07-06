@@ -11,6 +11,7 @@
 --                                    --
 -- Create Date : 2006/07/06           --
 --                                    --
+\set ON_ERROR_STOP
 
 --    π‡Ã‹ƒ…≤√                        --
 alter table TBL_SYUTOTAL_PRV

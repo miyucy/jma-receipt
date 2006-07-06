@@ -8,6 +8,7 @@
       *  01.00.02    NACL-¾®Æ¦Âô  04.01.21  ¼ýÇ¼£Ä£Â¤ÎÊÑ¹¹¤Ë¤è¤ê½¤Àµ
       *  01.00.03    NACL-ÂÀÅÄ    04.03.17  ¼ýÇ¼£Ä£Â¤ÎÊÑ¹¹¤Ë¤è¤ê½¤Àµ
       *  01.00.04    NACL-ÂÀÅÄ    05.08.24  ¼ýÇ¼£Ä£Â¤ÎÊÑ¹¹¤Ë¤è¤ê½¤Àµ
+      *  01.00.05    NACL-¾®Æ¦Âô  06.07.06  ¼ýÇ¼£Ä£Â¤ÎÊÑ¹¹¤Ë¤è¤ê½¤Àµ
       ************************************************************
       *01  BD002-REC.
            03  BD002-KEY.
@@ -145,7 +146,7 @@
            03  BD002-SKYGK               PIC  9(07).
       *ÀÁµáÆâÍÆ
            03  BD002-SKY-NAIYOU.
-               05  BD002-SKY-TBL             OCCURS   12.
+               05  BD002-SKY-TBL             OCCURS   16.
       *    ÊÝ¸±ÅÀ¿ô
                    09  BD002-HKNTEN          PIC  9(07).
       *    ¶â³Û
@@ -198,36 +199,62 @@
                   09  BD002-SJT-MONEY           PIC  9(07).
                   09  BD002-SJT-TGMONEY         PIC  9(07).
                   09  BD002-SJT-TGMONEY-TAX     PIC  9(07).
-      *¸¡ººÎÁ(08)
+      *Ëã¿ì(08)
+              05  BD002-MSI.
+                  09  BD002-MSI-HKNTEN          PIC  9(07).
+                  09  BD002-MSI-MONEY           PIC  9(07).
+                  09  BD002-MSI-TGMONEY         PIC  9(07).
+                  09  BD002-MSI-TGMONEY-TAX     PIC  9(07).
+      *¸¡ººÎÁ(09)
               05  BD002-KNS.
                   09  BD002-KNS-HKNTEN          PIC  9(07).
                   09  BD002-KNS-MONEY           PIC  9(07).
                   09  BD002-KNS-TGMONEY         PIC  9(07).
                   09  BD002-KNS-TGMONEY-TAX     PIC  9(07).
-      *£ØÀþÎÁ(09)
+      *£ØÀþÎÁ(10)
               05  BD002-GZU.
                   09  BD002-GZU-HKNTEN          PIC  9(07).
                   09  BD002-GZU-MONEY           PIC  9(07).
                   09  BD002-GZU-TGMONEY         PIC  9(07).
                   09  BD002-GZU-TGMONEY-TAX     PIC  9(07).
-      *¤½¤ÎÂ¾(10)
+      *¥ê¥Ï(11)
               05  BD002-ETC.
                   09  BD002-ETC-HKNTEN          PIC  9(07).
                   09  BD002-ETC-MONEY           PIC  9(07).
                   09  BD002-ETC-TGMONEY         PIC  9(07).
                   09  BD002-ETC-TGMONEY-TAX     PIC  9(07).
-      *Æþ±¡ÎÁ(11)
+      *Àº¿À²ÊÀìÌçÎÅË¡(12)
+              05  BD002-SSN.
+                  09  BD002-SSN-HKNTEN          PIC  9(07).
+                  09  BD002-SSN-MONEY           PIC  9(07).
+                  09  BD002-SSN-TGMONEY         PIC  9(07).
+                  09  BD002-SSN-TGMONEY-TAX     PIC  9(07).
+      *Êü¼ÍÀþ(13)
+              05  BD002-HOU.
+                  09  BD002-HOU-HKNTEN          PIC  9(07).
+                  09  BD002-HOU-MONEY           PIC  9(07).
+                  09  BD002-HOU-TGMONEY         PIC  9(07).
+                  09  BD002-HOU-TGMONEY-TAX     PIC  9(07).
+      *ÎÅÍÜÃ´Åö¼êÅö(14)
+              05  BD002-RYO.
+                  09  BD002-RYO-HKNTEN          PIC  9(07).
+                  09  BD002-RYO-MONEY           PIC  9(07).
+                  09  BD002-RYO-TGMONEY         PIC  9(07).
+                  09  BD002-RYO-TGMONEY-TAX     PIC  9(07).
+      *Æþ±¡ÎÁ(15)
               05  BD002-NYN.
                   09  BD002-NYN-HKNTEN          PIC  9(07).
                   09  BD002-NYN-MONEY           PIC  9(07).
                   09  BD002-NYN-TGMONEY         PIC  9(07).
                   09  BD002-NYN-TGMONEY-TAX     PIC  9(07).
-      *¹ç·×  (12)
+      *¹ç·×  (16)
               05  BD002-TOTAL.
                   09  BD002-TOTAL-HKNTEN        PIC  9(07).
                   09  BD002-TOTAL-MONEY         PIC  9(07).
                   09  BD002-TOTAL-TGMONEY       PIC  9(07).
                   09  BD002-TOTAL-TGMONEY-TAX   PIC  9(07).
+      *½èÊý¤»¤óÎÁºÆ·Ç
+           03  BD002-SHOHOU-SAI                 PIC  9(07).
       *ÊÝ¸±Å¬ÍÑ³°¶â³Û¡Ý¾ÃÈñÀÇ¡ÊºÆ·Ç¡Ë
            03  BD002-TGMONEY-TAX-SAI         PIC  9(07).
       *¼«Èñ£±¤«¤é£±£°
