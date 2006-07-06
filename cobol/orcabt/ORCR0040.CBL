@@ -81,6 +81,8 @@
       *  02.09.03    NACL-ÌçÏÆ    06/05/01  ¥ê¥ÏÈ¯¾ÉÆüÅö·îÊ¬µ­ºÜ½¤Àµ
       *  02.09.04    NACL-ÌçÏÆ    05/05/10  ÆâÉþÌôºÞÄþ¸ºÊÔ½¸½¤Àµ
       *  02.09.05    NACL-ÌçÏÆ    06/05/30  ¥ê¥ÏÈ¯¾ÉÆüµ­ºÜ½¤Àµ
+      *  03.01.01    NACL-ÌçÏÆ    06/06/22  ±ý¿Ç¡¢ºßÂð´µ¼ÔË¬Ìä¿ÇÎÅÎÁ¤Î
+      *                                     ¥³¥á¥ó¥È¼«Æ°µ­ºÜÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1233,6 +1235,14 @@
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-HINKAI-HANTEI-SEC
                       END-IF
+      *            ¡Ê±ý¿Ç¡¦ÆÃÊÌ±ý¿Ç»»ÄêÆü¤Î¥»¥Ã¥È¡Ë
+      **>             IF   FLG-COMMENT  =  ZERO
+      **>               PERFORM    2001-OSIN-HANTEI-SEC
+      **>             END-IF
+      *            ¡ÊºßÂð´µ¼ÔË¬Ìä¿ÇÎÅÎÁ»»ÄêÆü¤Î¥»¥Ã¥È¡Ë
+      **>             IF   FLG-COMMENT  =  ZERO
+      **>               PERFORM    2001-ZAIHOU-HANTEI-SEC
+      **>             END-IF
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2099-RECE04-TENSOU-SEC
                       END-IF
@@ -3674,6 +3684,34 @@
            EXIT.
       *
       *****************************************************************
+      *    ±ý¿Ç¡¦ÆÃÊÌ±ý¿Ç¤¬¤¢¤ë¤«È½Äê
+      *****************************************************************
+       2001-OSIN-HANTEI-SEC          SECTION.
+      *
+           IF     RECE04-FLG-OSIN-COMMENT   =    "1"
+               MOVE       6       TO     FLG-COMMENT
+               PERFORM    20011-SHUJUTSU-ETC2-COMMENT-SEC
+           END-IF
+      *
+           .
+       2001-OSIN-HANTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ºßÂð´µ¼ÔË¬Ìä¿ÇÎÅÎÁ¤¬¤¢¤ë¤«È½Äê
+      *****************************************************************
+       2001-ZAIHOU-HANTEI-SEC          SECTION.
+      *
+           IF     RECE04-FLG-ZAIHOU-COMMENT   =    "1"
+               MOVE       6       TO     FLG-COMMENT
+               PERFORM    20011-SHUJUTSU-ETC2-COMMENT-SEC
+           END-IF
+      *
+           .
+       2001-ZAIHOU-HANTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    ºßÂð´µ¼ÔË¬ÌäÅÀÅ©Ãí¼Í´ÉÍý»ØÆ³ÎÁ»»Äê»þ¤ÎÅÀÅ©Ãí¼Í¤¬¤¢¤ë¤«È½Äê
       *****************************************************************
        2001-HOUTEN-HANTEI-SEC          SECTION.
@@ -4050,6 +4088,11 @@
                  MOVE     2          TO    WRK-KETA2
                  MOVE    WRK-KETA2   TO    WK-FREE-YUKOKETA2(IDZ)
                  MOVE    "Ê¡»ã"  TO    WK-FREE-NAME2(IDZ)(1:WRK-KETA)
+               WHEN    6
+                 MOVE     0          TO    WRK-KETA
+                                           WRK-KETA-TAIHI
+                 MOVE     0          TO    WRK-KETA2
+                 MOVE    WRK-KETA2   TO    WK-FREE-YUKOKETA2(IDZ)
            END-EVALUATE
       *
            MOVE      ZERO          TO  FLG-FIRST

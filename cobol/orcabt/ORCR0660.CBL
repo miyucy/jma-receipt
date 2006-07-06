@@ -70,6 +70,8 @@
       *  02.09.02    NACL-ÌçÏÆ    06/04/28  ¥ê¥Ï¸¡º÷¾ò·ï½¤Àµ
       *  02.09.03    NACL-ÌçÏÆ    06/05/01  ¥ê¥ÏÈ¯¾ÉÆüÅö·îÊ¬µ­ºÜ½¤Àµ
       *  02.09.04    NACL-ÌçÏÆ    06/05/30  ¥ê¥ÏÈ¯¾ÉÆüµ­ºÜ½¤Àµ
+      *  03.01.01    NACL-ÌçÏÆ    06/06/22  ±ý¿Ç¡¢ºßÂð´µ¼ÔË¬Ìä¿ÇÎÅÎÁ¤Î
+      *                                     ¥³¥á¥ó¥È¼«Æ°µ­ºÜÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -929,6 +931,10 @@
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-HINKAI-HANTEI-SEC
                       END-IF
+      *            ¡Ê±ý¿Ç¡¦ÆÃÊÌ±ý¿Ç»»ÄêÆü¤Î¥»¥Ã¥È¡Ë
+      **>             IF   FLG-COMMENT  =  ZERO
+      **>               PERFORM    2001-OSIN-HANTEI-SEC
+      **>             END-IF
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2099-RECE64-TENSOU-SEC
                       END-IF
@@ -2718,6 +2724,20 @@
            EXIT.
       *
       *****************************************************************
+      *    ±ý¿Ç¡¦ÆÃÊÌ±ý¿Ç¤¬¤¢¤ë¤«È½Äê
+      *****************************************************************
+       2001-OSIN-HANTEI-SEC          SECTION.
+      *
+           IF     RECE64-FLG-OSIN-COMMENT   =    "1"
+               MOVE       6       TO     FLG-COMMENT
+               PERFORM    20011-SHUJUTSU-ETC2-COMMENT-SEC
+           END-IF
+      *
+           .
+       2001-OSIN-HANTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    ¼ê½ÑÆü¤Î¥³¥á¥ó¥È¤¬¤¢¤ë¤«È½Äê
       *****************************************************************
        2001-SHUJUTSU-HANTEI-SEC          SECTION.
@@ -3143,6 +3163,11 @@
                                         TO  WK-FREE-NAME2(IDZ)(11:4)
                    END-IF
                  END-IF
+              WHEN    6
+                 MOVE     0          TO    WRK-KETA
+                                           WRK-KETA-TAIHI
+                 MOVE     0          TO    WRK-KETA2
+                 MOVE    WRK-KETA2   TO    WK-FREE-YUKOKETA2(IDZ)
            END-EVALUATE
       *
            MOVE      ZERO          TO  FLG-FIRST
