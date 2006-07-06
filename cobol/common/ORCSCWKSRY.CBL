@@ -3034,9 +3034,6 @@
                    WHEN    OTHER
                        ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY (11)
                    END-EVALUATE
-      *        ½èÊý¤»¤óÎÁ
-               WHEN    "82"
-                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY (04)
       *        Àº¿À²Ê
                WHEN    "83"
                    ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY (12)
@@ -3129,9 +3126,6 @@
                        ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY-TAX
                                                                    (11)
                    END-EVALUATE
-      *        ½èÊý¤»¤óÎÁ
-               WHEN    "82"
-                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY-TAX (04)
       *        Àº¿À²Ê
                WHEN    "83"
                    ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY-TAX (12)
