@@ -95,6 +95,8 @@
       *  03.00.01    NACL-Æ£¸¶    06/05/15  ÆþÂà±¡ÍúÎòµ­ºÜÂÐ±þ
       *  03.00.02    NACL-Æ£¸¶    06/06/13  ¥ì¥»¥³¥á¥ó¥È¤Î¾É¾õ¾Üµ­¶èÊ¬¤«¤é
       *                                     ¤ÎÉ½Âêµ­ºÜÂÐ±þ
+      *
+      *  03.01.01    NACL-Æ£¸¶    06/07/03  µìÁí¹çÉÂ±¡¤Î²ÊÉ½¼¨
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2245,18 +2247,31 @@
                MOVE    SYS-1002-TEL        TO  HC06-HOSPTEL
            END-IF
       *
-      **    ¿ÇÎÅ²Ê¡©¡©¡©
-      *     IF  RECE02-SRYKA        NOT =   SPACE
-      *         MOVE    SPACE           TO  HC06-SRYKA
-      *     ELSE
+      *    µìÁí¹çÉÂ±¡¤Î¤È¤­¤Î¿ÇÎÅ²Ê¤Îµ­ºÜ
+           IF      RECE02-RECEKA   NOT =   SPACE
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "2"                 TO  KANACHK-SYORI 
+               MOVE    RECE02-RECEKA       TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
+               IF      KANACHK-RC          =   ZERO
+                   STRING  "¡Ê"            DELIMITED   BY  SIZE
+                           KANACHK-OUT-INPUT(1:KANACHK-MAX)    
+                                           DELIMITED   BY  SIZE
+                           RECE02-SYUKANAME
+                                           DELIMITED   BY  SPACE 
+                           "¡Ë"            DELIMITED   BY  SIZE
+                                           INTO  HC06-SRYKA
+                   END-STRING
+               END-IF
+           ELSE
                MOVE    SPACE           TO  HC06-SRYKA
-      *     END-IF
-      *     ¸©Ã±ÍÑ¹àÌÜ
-            IF      FLG-RECE11         =   ZERO
-                IF      RECE11-SRYKA   NOT =   SPACE
-                    MOVE    RECE11-SRYKA   TO  HC06-SRYKA
-                END-IF
-            END-IF    
+           END-IF
+      *    ¸©Ã±ÍÑ¹àÌÜ
+           IF      FLG-RECE11         =   ZERO
+               IF      RECE11-SRYKA   NOT =   SPACE
+                   MOVE    RECE11-SRYKA   TO  HC06-SRYKA
+               END-IF
+           END-IF    
       *
       *    ÉÂ¾²¿ô
            IF    ( SYS-1001-BEDSU      >   ZERO )

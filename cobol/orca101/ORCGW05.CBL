@@ -31,6 +31,8 @@
       * 01.01.01     MCC-藤原     01/09/21  JOINの修正      
       * 01.01.02     NACL-多々納  02/11/12  一括入力 
       * 01.01.03     NACL-太田    03/09/11  登録時チェック追加
+      * 01.01.04     NACL-藤原    06/07/03  レセ電診療科コードのチェック
+      *                                     追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -66,6 +68,8 @@
                        09  SPA-GMN-SRYKANAME2 PIC X(06).
                        09  SPA-GMN-SRYKANAME3 PIC X(02).
                        09  SPA-GMN-RECESRYKA  PIC X(02). 
+                       09  SPA-GMN-RECESRYKANAME
+                                              PIC X(40).
       *
                05  SPA-NAIB-AREA.
                    07  SPA-NAI-STYUKYMD           PIC 9(08).
@@ -104,7 +108,9 @@
                05  WRK-WMM         PIC 9(02).
                05  WRK-WDD         PIC 9(02).
       *    入力項目名
-           03  WRK-MCP-WIDGET          PIC X(64).
+           03  WRK-MCP-WIDGET      PIC X(64).
+      *
+           03  WRK-RECESRYKANAME   PIC X(40).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -115,6 +121,10 @@
                05  WRK-HMM         PIC 9(02).
                05  FILLER          PIC X(01)   VALUE   ".".
                05  WRK-HDD         PIC 9(02).
+      *
+      *    レセ電診療科コードテーブル
+           COPY    "CMRECEDENSRYKACD.INC".
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -347,6 +357,8 @@
                MOVE    SYS-1005-SRYKANAME2     TO  SPA-GMN-SRYKANAME2
                MOVE    SYS-1005-SRYKANAME3     TO  SPA-GMN-SRYKANAME3
                MOVE    SYS-1005-RECESRYKA      TO  SPA-GMN-RECESRYKA
+               PERFORM 5003-RECESRYKA-HENSYU-SEC
+               MOVE    WRK-RECESRYKANAME       TO  SPA-GMN-RECESRYKANAME
            END-IF     
       *
            MOVE    2                   TO  SPA-GMN-CUR
@@ -557,6 +569,21 @@
       *****************************************************************
        4115-RECESRYKA-CHK-SEC        SECTION.
       *
+           MOVE    SPACE               TO  SPA-GMN-RECESRYKANAME
+      *
+           IF      SPA-GMN-RECESRYKA   =   SPACE
+               CONTINUE
+           ELSE 
+               PERFORM 5003-RECESRYKA-HENSYU-SEC
+               IF      WRK-RECESRYKANAME =   SPACE
+                   MOVE    "0001"          TO  SPA-ERRCD
+                   MOVE    6               TO  SPA-GMN-CUR
+               ELSE
+                   MOVE    WRK-RECESRYKANAME
+                                           TO  SPA-GMN-RECESRYKANAME
+               END-IF
+           END-IF
+      *
            .
        4115-RECESRYKA-CHK-EXT.
            EXIT.
@@ -757,6 +784,7 @@
            MOVE    SPA-GMN-SRYKANAME2       TO  W05-SRYKANAME2  
            MOVE    SPA-GMN-SRYKANAME3       TO  W05-SRYKANAME3
            MOVE    SPA-GMN-RECESRYKA        TO  W05-RECESRYKA
+           MOVE    SPA-GMN-RECESRYKANAME    TO  W05-RECESRYKANAME
       *
            PERFORM 5001-MAPCUR-SEC
       *
@@ -966,6 +994,31 @@
       *
            .
        5002-HIZUKE-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセプト診療科名称編集処理
+      *****************************************************************
+       5003-RECESRYKA-HENSYU-SEC    SECTION.
+      *
+           IF      SPA-GMN-RECESRYKA   =   SPACE
+               MOVE    SPACE           TO  WRK-RECESRYKANAME
+           ELSE
+               SET     TBL-RECEDENSRYKACD-IDX  TO  1
+               SEARCH  TBL-RECEDENSRYKACD-OCC  
+                                       VARYING TBL-RECEDENSRYKACD-IDX
+                   AT  END
+                       MOVE    SPACE           TO  WRK-RECESRYKANAME
+                   WHEN    SPA-GMN-RECESRYKA   =   TBL-RECEDEN-SRYKACD
+                                               (TBL-RECEDENSRYKACD-IDX)
+                       MOVE    TBL-RECEDEN-SRYKANAME
+                                           (TBL-RECEDENSRYKACD-IDX)
+                                               TO  WRK-RECESRYKANAME
+               END-SEARCH
+           END-IF
+      *
+           .
+       5003-RECESRYKA-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************

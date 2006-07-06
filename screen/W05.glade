@@ -573,9 +573,25 @@
 
     <widget>
       <class>GtkLabel</class>
+      <name>RECESRYKANAME</name>
+      <x>288</x>
+      <y>423</y>
+      <width>300</width>
+      <height>18</height>
+      <label>リハビリテーション科</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
       <name>label212</name>
       <x>80</x>
-      <y>420</y>
+      <y>423</y>
       <width>150</width>
       <height>18</height>
       <label>レセ電診療科コード</label>

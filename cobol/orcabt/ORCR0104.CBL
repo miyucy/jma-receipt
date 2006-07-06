@@ -127,6 +127,8 @@
       *  03.00.01    NACL-藤原    06/05/15  入退院履歴記載対応
       *  03.00.02    NACL-藤原    06/06/13  レセコメントの症状詳記区分から
       *                                     の表題記載対応
+      *
+      *  03.01.01    NACL-藤原    06/07/03  旧総合病院の科表示
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2315,11 +2317,25 @@
            END-IF
       *
       **    診療科
-      *     IF  RECE02-SRYKA        NOT =   SPACE
-      *         MOVE    SPACE           TO  HC06-SRYKA
-      *     ELSE
+      *    旧総合病院のときの診療科の記載
+           IF      RECE02-RECEKA   NOT =   SPACE
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "2"                 TO  KANACHK-SYORI 
+               MOVE    RECE02-RECEKA       TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
+               IF      KANACHK-RC          =   ZERO
+                   STRING  "（"            DELIMITED   BY  SIZE
+                           KANACHK-OUT-INPUT(1:KANACHK-MAX)    
+                                           DELIMITED   BY  SIZE
+                           RECE02-SYUKANAME
+                                           DELIMITED   BY  SPACE 
+                           "）"            DELIMITED   BY  SIZE
+                                           INTO  HC06-SRYKA
+                   END-STRING
+               END-IF
+           ELSE
                MOVE    SPACE           TO  HC06-SRYKA
-      *     END-IF
+           END-IF
       *     主科設定ありのときの記載
            IF      RECE02-SYUKA     NOT =   SPACE  AND "XX"
                IF      RECE02-RECESYUKA NOT =   SPACE

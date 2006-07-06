@@ -35,3 +35,5 @@
                 05  W05-VALUE   PIC X(2).
               04  W05-RECESRYKA.
                 05  W05-VALUE   PIC X(2).
+              04  W05-RECESRYKANAME.
+                05  W05-VALUE   PIC X(40).

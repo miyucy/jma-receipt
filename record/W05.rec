@@ -27,5 +27,8 @@ W05	{
 		RECESRYKA	{
 			value	varchar(2);
 		};
+		RECESRYKANAME	{
+			value	varchar(40);
+		};
 	};
 };

@@ -135,6 +135,8 @@
       *
       *  03.00.01    NACL-藤原    06/06/13  レセコメントの症状詳記区分から
       *                                     の表題記載対応
+      *
+      *  03.01.01    NACL-藤原    06/07/03  旧総合病院の科表示
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -637,6 +639,9 @@
       *
            03  WRK-MCP-TABLE       PIC X(64).
            03  WRK-MCP-PATHNAME    PIC X(64).
+      *
+           03  WRK-SRYKACD         PIC X(04).
+           03  WRK-SRYKANAME       PIC X(40).
       *                 
       *    食事基本料情報（その他）（摘要欄）
            03  WRK-SHOKUJIKHNINF-ETC-AREA.
@@ -920,6 +925,9 @@
        01  WRK-RECE07-REC. 
            COPY    "CPRCF007.INC"  REPLACING  //RECE07//
                                    BY         //WRK-RECE07//.
+      *
+      *    レセ電診療科コードテーブル
+           COPY    "CMRECEDENSRYKACD.INC".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -2327,6 +2335,8 @@
                MOVE    SYS-1002-TEL        TO  HC06-HOSPTEL
            END-IF
       *
+      *     診療科
+      *
       *     主科設定ありのときの記載
            IF    ( SYS-2009-SYUKA-KBN  =   "1"                )
            AND   ( RECE62-TEISYUTUSAKI =   "1"                )
@@ -2358,48 +2368,61 @@
                END-IF 
            ELSE
       *        診療科（シス管の設定により編集を行なう）
+               MOVE    SPACE               TO  WRK-SRYKANAME
+                                               WRK-SRYKACD
                IF      SYS-2005-SRYKAHENKBN
                                            =   ZERO
-                   MOVE    SPACE                TO  SYSKANRI-REC
-                   INITIALIZE                       SYSKANRI-REC
-                   MOVE    "1005"               TO  SYS-KANRICD
-                   MOVE    RECE62-LASTSRYKA     TO  SYS-KBNCD
-                   MOVE    RECE62-SRYYM         TO  SYS-STYUKYMD (1:6)
-                   MOVE    "01"                 TO  SYS-STYUKYMD (7:2)
-                   MOVE    SYS-STYUKYMD         TO  SYS-EDYUKYMD
-                   MOVE    "tbl_syskanri"       TO  WRK-MCP-TABLE
-                   MOVE    "key10"              TO  WRK-MCP-PATHNAME
+                   MOVE    SPACE               TO  SYSKANRI-REC
+                   INITIALIZE                      SYSKANRI-REC
+                   MOVE    "1005"              TO  SYS-KANRICD
+                   MOVE    RECE62-LASTSRYKA    TO  SYS-KBNCD
+                   MOVE    RECE62-SRYYM        TO  SYS-STYUKYMD(1:6)
+                   MOVE    "01"                TO  SYS-STYUKYMD(7:2)
+                   MOVE    SYS-STYUKYMD        TO  SYS-EDYUKYMD
+                   MOVE    "tbl_syskanri"      TO  WRK-MCP-TABLE
+                   MOVE    "key10"             TO  WRK-MCP-PATHNAME
                    PERFORM 960-KANRIMST-READ-SEC
-                   IF      FLG-KANRIMST     =   ZERO
+                   IF      FLG-KANRIMST    =   ZERO
                        MOVE    MCPDATA-REC         TO  SYS-1005-REC
                    ELSE
                        INITIALIZE                      SYS-1005-REC
                    END-IF
-                   IF      SYS-1005-RECESRYKA  NOT =   SPACE
-                       INITIALIZE                  ORCSKANACHKAREA
-                       MOVE    "2"                 TO  KANACHK-SYORI 
-                       MOVE    SYS-1005-RECESRYKA  TO  KANACHK-MAE-INPUT
-                       CALL    "ORCSKANACHK"       USING
-                                                       ORCSKANACHKAREA
-                       IF      KANACHK-RC      =   ZERO
-                           STRING  "（"            DELIMITED   BY  SIZE
-                                   KANACHK-OUT-INPUT(1:KANACHK-MAX)    
-                                                   DELIMITED   BY  SIZE
-                                   SYS-1005-SRYKANAME
-                                                   DELIMITED   BY  SPACE 
-                                   "）"            DELIMITED   BY  SIZE
-                                                   INTO  HC06-SRYKA
-                           END-STRING
-                       END-IF
+      *
+                   IF      SYS-1001-HOSPSBT1   =   1
+      *                旧総合病院のときはレセ電診療科を記載
+                       SET     TBL-RECEDENSRYKACD-IDX  TO  1
+                       SEARCH  TBL-RECEDENSRYKACD-OCC  
+                                       VARYING TBL-RECEDENSRYKACD-IDX
+                           AT  END
+                               MOVE    SPACE       TO  WRK-SRYKANAME
+                           WHEN    SYS-1005-RECESRYKA
+                                           =   TBL-RECEDEN-SRYKACD
+                                               (TBL-RECEDENSRYKACD-IDX)
+                               MOVE    TBL-RECEDEN-SRYKANAME
+                                               (TBL-RECEDENSRYKACD-IDX)
+                                                   TO  WRK-SRYKANAME
+                       END-SEARCH
                    ELSE
-                       STRING  "（"            DELIMITED   BY  SIZE
-                               SYS-1005-SRYKANAME
-                                               DELIMITED   BY  SPACE 
-                               "）"            DELIMITED   BY  SIZE
-                                               INTO  HC06-SRYKA
-                       END-STRING
+                       MOVE    SYS-1005-SRYKANAME  TO  WRK-SRYKANAME
                    END-IF
-               END-IF    
+      *
+                   INITIALIZE                  ORCSKANACHKAREA
+                   MOVE    "2"                 TO  KANACHK-SYORI 
+                   MOVE    SYS-1005-RECESRYKA  TO  KANACHK-MAE-INPUT
+                   CALL    "ORCSKANACHK"       USING
+                                               ORCSKANACHKAREA
+                   IF      KANACHK-RC          =   ZERO
+                       MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)    
+                                                   TO  WRK-SRYKACD
+                   END-IF
+      *    
+                   STRING  "（"                DELIMITED   BY  SIZE
+                           WRK-SRYKACD         DELIMITED   BY  SPACE
+                           WRK-SRYKANAME       DELIMITED   BY  SPACE
+                           "）"                DELIMITED   BY  SIZE
+                                               INTO  HC06-SRYKA
+                   END-STRING
+               END-IF
            END-IF    
       *    県単用項目
            IF      FLG-RECE67         =   ZERO

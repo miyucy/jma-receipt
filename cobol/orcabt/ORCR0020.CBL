@@ -142,6 +142,8 @@
       *  02.09.02    NACL-門脇    06/05/18  岡山県西粟倉村退職者国保２割対応
       *  3.0.0
       *  03.00.01    NACL-藤原    06/05/15  入退院履歴記載対応
+      *
+      *  03.01.01    NACL-藤原    06/07/03  旧総合病院の科表示
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -511,6 +513,9 @@
            COPY    "MCPAREA".
       *
            COPY    "COMMON-SPA".
+      *
+      *    レセ電診療科コードテーブル
+           COPY    "CMRECEDENSRYKACD.INC".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -1348,6 +1353,23 @@
                MOVE    SYS-1005-RECESRYKA  TO  RECE02-RECESYUKA
                MOVE    SYS-1005-SRYKANAME  TO  RECE02-SYUKANAME
            END-IF    
+      *
+      *    旧総合病院の場合の診療科名称
+           IF    ( IDZ                 =   1     )
+           AND   ( RECE02-RECEKA   NOT =   SPACE )
+      *        レセ電診療科コード検索
+               SET     TBL-RECEDENSRYKACD-IDX  TO  1
+               SEARCH  TBL-RECEDENSRYKACD-OCC  
+                                       VARYING TBL-RECEDENSRYKACD-IDX
+                   AT  END
+                       MOVE    SPACE           TO  RECE02-SYUKANAME
+                   WHEN    RECE02-RECEKA   =   TBL-RECEDEN-SRYKACD
+                                               (TBL-RECEDENSRYKACD-IDX)
+                       MOVE    TBL-RECEDEN-SRYKANAME
+                                       (TBL-RECEDENSRYKACD-IDX)
+                                              TO  RECE02-SYUKANAME
+               END-SEARCH
+           END-IF
       *
       *    入退院履歴出力処理
            IF    ( IDZ             =   1   )
