@@ -24,6 +24,7 @@
       *  01.00.01    NACL-æÆ∆¶¬Ù   05/07/13  º´»Òπ‡Ã‹§Œƒ…≤√
       *                                      ∏∫Ã»∂‚≥€§Œƒ…≤√
       *                                       —¬ßΩı¿Æπ‡Ã‹§Œƒ…≤√
+      *  01.00.02    NACL-æÆ∆¶¬Ù   06/07/06  …Ù Ã§Œπ‡Ã‹ƒ…≤√
       ************************************************************
       *01  SYUTTL-REC.
            03  SYUTTL-KEY.
@@ -152,7 +153,7 @@
            03  SYUTTL-SKYKUKBN            PIC  X(01).
       *¿¡µ·∆‚Õ∆
            03  SYUTTL-SKY-NAIYOU.
-               05  SYUTTL-SKY-TBL             OCCURS   12.
+               05  SYUTTL-SKY-TBL             OCCURS   16.
       *     ›∏±≈¿øÙ
                    09  SYUTTL-HKNTEN          PIC  9(07).
       *    ∂‚≥€
@@ -205,36 +206,62 @@
                   09  SYUTTL-SJT-MONEY           PIC  9(07).
                   09  SYUTTL-SJT-TGMONEY         PIC  9(07).
                   09  SYUTTL-SJT-TGMONEY-TAX     PIC  9(07).
-      *∏°∫∫Œ¡(08)
+      *À„øÏ(08)
+              05  SYUTTL-MSI.
+                  09  SYUTTL-MSI-HKNTEN          PIC  9(07).
+                  09  SYUTTL-MSI-MONEY           PIC  9(07).
+                  09  SYUTTL-MSI-TGMONEY         PIC  9(07).
+                  09  SYUTTL-MSI-TGMONEY-TAX     PIC  9(07).
+      *∏°∫∫Œ¡(09)
               05  SYUTTL-KNS.
                   09  SYUTTL-KNS-HKNTEN          PIC  9(07).
                   09  SYUTTL-KNS-MONEY           PIC  9(07).
                   09  SYUTTL-KNS-TGMONEY         PIC  9(07).
                   09  SYUTTL-KNS-TGMONEY-TAX     PIC  9(07).
-      *£ÿ¿˛Œ¡(09)
+      *£ÿ¿˛Œ¡(10)
               05  SYUTTL-GZU.
                   09  SYUTTL-GZU-HKNTEN          PIC  9(07).
                   09  SYUTTL-GZU-MONEY           PIC  9(07).
                   09  SYUTTL-GZU-TGMONEY         PIC  9(07).
                   09  SYUTTL-GZU-TGMONEY-TAX     PIC  9(07).
-      *§Ω§Œ¬æ(10)
+      *•Í•œ(11)
               05  SYUTTL-ETC.
                   09  SYUTTL-ETC-HKNTEN          PIC  9(07).
                   09  SYUTTL-ETC-MONEY           PIC  9(07).
                   09  SYUTTL-ETC-TGMONEY         PIC  9(07).
                   09  SYUTTL-ETC-TGMONEY-TAX     PIC  9(07).
-      *∆˛±°Œ¡(11)
+      *¿∫ø¿≤ ¿ÏÃÁŒ≈À°(12)
+              05  SYUTTL-SSN.
+                  09  SYUTTL-SSN-HKNTEN          PIC  9(07).
+                  09  SYUTTL-SSN-MONEY           PIC  9(07).
+                  09  SYUTTL-SSN-TGMONEY         PIC  9(07).
+                  09  SYUTTL-SSN-TGMONEY-TAX     PIC  9(07).
+      * ¸ºÕ¿˛(13)
+              05  SYUTTL-HOU.
+                  09  SYUTTL-HOU-HKNTEN          PIC  9(07).
+                  09  SYUTTL-HOU-MONEY           PIC  9(07).
+                  09  SYUTTL-HOU-TGMONEY         PIC  9(07).
+                  09  SYUTTL-HOU-TGMONEY-TAX     PIC  9(07).
+      *Œ≈Õ‹√¥≈ˆºÍ≈ˆ(14)
+              05  SYUTTL-RYO.
+                  09  SYUTTL-RYO-HKNTEN          PIC  9(07).
+                  09  SYUTTL-RYO-MONEY           PIC  9(07).
+                  09  SYUTTL-RYO-TGMONEY         PIC  9(07).
+                  09  SYUTTL-RYO-TGMONEY-TAX     PIC  9(07).
+      *∆˛±°Œ¡(15)
               05  SYUTTL-NYN.
                   09  SYUTTL-NYN-HKNTEN          PIC  9(07).
                   09  SYUTTL-NYN-MONEY           PIC  9(07).
                   09  SYUTTL-NYN-TGMONEY         PIC  9(07).
                   09  SYUTTL-NYN-TGMONEY-TAX     PIC  9(07).
-      *πÁ∑◊  (12)
+      *πÁ∑◊  (16)
               05  SYUTTL-TOTAL.
                   09  SYUTTL-TOTAL-HKNTEN        PIC  9(07).
                   09  SYUTTL-TOTAL-MONEY         PIC  9(07).
                   09  SYUTTL-TOTAL-TGMONEY       PIC  9(07).
                   09  SYUTTL-TOTAL-TGMONEY-TAX   PIC  9(07).
+      *ΩË ˝§ª§ÛŒ¡∫∆∑«
+           03  SYUTTL-SHOHOU-SAI                 PIC  9(07).
       * ›∏±≈¨Õ—≥∞∂‚≥€°›æ√»Ò¿«° ∫∆∑«°À
            03  SYUTTL-TGMONEY-TAX-SAI         PIC  9(07).
       *º´»Ò£±§´§È£±£∞

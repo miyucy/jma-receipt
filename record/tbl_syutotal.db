@@ -86,6 +86,10 @@ tbl_syutotal {
 	SJT_MONEY			number(7,0);
 	SJT_TGMONEY			number(7,0);
 	SJT_TGMONEY_TAX			number(7,0);
+	MSI_HKNTEN			number(7,0);
+	MSI_MONEY			number(7,0);
+	MSI_TGMONEY			number(7,0);
+	MSI_TGMONEY_TAX			number(7,0);
 	KNS_HKNTEN			number(7,0);
 	KNS_MONEY			number(7,0);
 	KNS_TGMONEY			number(7,0);
@@ -98,6 +102,18 @@ tbl_syutotal {
 	ETC_MONEY			number(7,0);
 	ETC_TGMONEY			number(7,0);
 	ETC_TGMONEY_TAX			number(7,0);
+	SSN_HKNTEN			number(7,0);
+	SSN_MONEY			number(7,0);
+	SSN_TGMONEY			number(7,0);
+	SSN_TGMONEY_TAX			number(7,0);
+	HOU_HKNTEN			number(7,0);
+	HOU_MONEY			number(7,0);
+	HOU_TGMONEY			number(7,0);
+	HOU_TGMONEY_TAX			number(7,0);
+	RYO_HKNTEN			number(7,0);
+	RYO_MONEY			number(7,0);
+	RYO_TGMONEY			number(7,0);
+	RYO_TGMONEY_TAX			number(7,0);
 	NYN_HKNTEN			number(7,0);
 	NYN_MONEY			number(7,0);
 	NYN_TGMONEY			number(7,0);
@@ -106,6 +122,7 @@ tbl_syutotal {
 	TOTAL_MONEY			number(7,0);
 	TOTAL_TGMONEY			number(7,0);
 	TOTAL_TGMONEY_TAX		number(7,0);
+	SHOHOU_SAI			number(7,0);
 	TGMONEY_TAX_SAI			number(7,0);
 	JIHI_1  			number(7,0);
 	JIHI_1_TAX 			number(7,0);
