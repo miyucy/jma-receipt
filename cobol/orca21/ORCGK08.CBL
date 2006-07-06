@@ -46,6 +46,7 @@
       *  01.00.17    NACL-多々納  05/11/17  MONFUNC 対応
       *  01.00.18    NACL-多々納  05/12/21  登録順追加
       *  01.00.19    NACL-多々納  06/01/23  用量割合・包括検査数追加
+      *  01.00.20    NACL-多々納  06/07/06  収納変更対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -190,7 +191,7 @@
                05  SPA-GMN-SYOSINYMD         PIC X(09).
                05  SPA-GMN-MISYUMONEY        PIC S9(08).
       *
-               05  SPA-GMN-HKNTEN-TBL        OCCURS  10.
+               05  SPA-GMN-HKNTEN-TBL        OCCURS  15.
                    07  SPA-GMN-HKNTEN        PIC S9(07).
       *
                05  SPA-GMN-SELNUM-G.
@@ -205,6 +206,7 @@
                        09  SPA-NAI-EDANUM          PIC 9(03).
                        09  SPA-NAI-ZAINUM          PIC 9(08).
                        09  SPA-NAI-SRYKBN          PIC X(02).
+                       09  SPA-NAI-SRYSYUKBN       PIC X(03).
                        09  SPA-NAI-HKNTEN          PIC 9(08).
                        09  SPA-NAI-TENSFLG         PIC 9(01).
                        09  SPA-NAI-DELFLG          PIC 9(01).
@@ -1051,7 +1053,7 @@
                    UNTIL       IDX2    >   LNK-SYUNOU-MAX
                MOVE    LNK-SYUNOU-REC (IDX2)   TO  SYUNOU-REC
                PERFORM VARYING     IDX     FROM    1   BY  1
-                       UNTIL       IDX     >   10
+                       UNTIL       IDX     >   15
                    ADD     SYU-HKNTEN (IDX)    TO  SPA-GMN-HKNTEN (IDX)
                END-PERFORM
            END-PERFORM
@@ -2030,6 +2032,8 @@
                                        TO  SPA-NAI-ZAINUM  (IDX-NAI)
            MOVE    LNK-WKSRY-SRYKBN (IDX)
                                        TO  SPA-NAI-SRYKBN  (IDX-NAI)
+           MOVE    LNK-WKSRY-SRYSYUKBN (IDX)
+                                       TO  SPA-NAI-SRYSYUKBN (IDX-NAI)
            MOVE    LNK-WKSRY-HKNCOMBI(IDX)
                                        TO  SPA-NAI-HKNCOMBI(IDX-NAI)
            MOVE    LNK-WKSRY-SRYKA   (IDX)
@@ -3057,6 +3061,11 @@
            MOVE    ZERO                TO  SPA-GMN-HKNTEN (08)
            MOVE    ZERO                TO  SPA-GMN-HKNTEN (09)
            MOVE    ZERO                TO  SPA-GMN-HKNTEN (10)
+           MOVE    ZERO                TO  SPA-GMN-HKNTEN (11)
+           MOVE    ZERO                TO  SPA-GMN-HKNTEN (12)
+           MOVE    ZERO                TO  SPA-GMN-HKNTEN (13)
+           MOVE    ZERO                TO  SPA-GMN-HKNTEN (14)
+           MOVE    ZERO                TO  SPA-GMN-HKNTEN (15)
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-K08-MAX
              IF      SPA-GMN-NAIIDX  (IDX)   >   ZERO
@@ -3064,15 +3073,13 @@
                IF      SPA-GMN-TDELFLG (IDX)   =   2
                    CONTINUE
                ELSE
-                   EVALUATE    SPA-NAI-SRYKBN (IDX-NAI)(1:1)
+                   EVALUATE    SPA-NAI-SRYKBN (IDX-NAI)
       *                指導
-                       WHEN    "1"
-                           IF      SPA-NAI-SRYKBN (IDX-NAI)  =   "13"
-                               ADD     SPA-NAI-HKNTEN(IDX-NAI)
+                       WHEN    "13"
+                           ADD     SPA-NAI-HKNTEN(IDX-NAI)
                                                TO  SPA-GMN-HKNTEN (02)
-                           END-IF
       *                投薬
-                       WHEN    "2"
+                       WHEN    "21"   THRU  "27"
                            IF      SPA-NAI-HKNSFLG (IDX-NAI) =   ZERO
                                ADD     SPA-NAI-HKNTEN (IDX-NAI)
                                                TO  SPA-GMN-HKNTEN (04)
@@ -3082,34 +3089,38 @@
                                                -   SPA-NAI-HKNTEN
                                                               (IDX-NAI)
                            END-IF
-                       WHEN    "3"
+                       WHEN    "31"
+                       WHEN    "32"
+                       WHEN    "33"
                            ADD     SPA-NAI-HKNTEN(IDX-NAI)
                                                TO  SPA-GMN-HKNTEN (05)
-                       WHEN    "4"
+                       WHEN    "40"
                            ADD     SPA-NAI-HKNTEN(IDX-NAI)
                                                TO  SPA-GMN-HKNTEN (06)
-                       WHEN    "5"
+                       WHEN    "50"
                            ADD     SPA-NAI-HKNTEN(IDX-NAI)
                                                TO  SPA-GMN-HKNTEN (07)
-                       WHEN    "6"
+                       WHEN    "54"
                            ADD     SPA-NAI-HKNTEN(IDX-NAI)
                                                TO  SPA-GMN-HKNTEN (08)
-                       WHEN    "7"
+                       WHEN    "60"
                            ADD     SPA-NAI-HKNTEN(IDX-NAI)
                                                TO  SPA-GMN-HKNTEN (09)
-                       WHEN    "8"
+                       WHEN    "70"
                            ADD     SPA-NAI-HKNTEN(IDX-NAI)
                                                TO  SPA-GMN-HKNTEN (10)
+                       WHEN    "80"
+                           PERFORM  410321-SONOTA-TENSU-SEC
       *                食事
-                       WHEN    "9"
-      **************       ADD     SPA-NAI-HKNTEN(IDX-NAI)
-      *************                            TO  SPA-GMN-HKNTEN (10)
+                       WHEN    "90"
+                       WHEN    "92"
+                       WHEN    "97"
                            IF      SPA-NAI-HKNSFLG (IDX-NAI) =   ZERO
                                ADD     SPA-NAI-HKNTEN (IDX-NAI)
-                                               TO  SPA-GMN-HKNTEN (10)
+                                               TO  SPA-GMN-HKNTEN (15)
                            ELSE
-                               COMPUTE SPA-GMN-HKNTEN (10)
-                                               =   SPA-GMN-HKNTEN (10)
+                               COMPUTE SPA-GMN-HKNTEN (15)
+                                               =   SPA-GMN-HKNTEN (15)
                                                -   SPA-NAI-HKNTEN
                                                               (IDX-NAI)
                            END-IF
@@ -3120,11 +3131,50 @@
       *    各点数
            MOVE    ZERO                TO  SPA-GMN-GOKEI
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   10
+                   UNTIL       IDX     >   15
                ADD     SPA-GMN-HKNTEN (IDX)    TO  SPA-GMN-GOKEI
            END-PERFORM
            .
        41032-TENSU-KEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    その他点数集計処理
+      *****************************************************************
+       410321-SONOTA-TENSU-SEC              SECTION.
+      *
+           EVALUATE    SPA-NAI-SRYSYUKBN (IDX-NAI)
+      *        リハビリ
+               WHEN    "800"
+                   ADD     SPA-NAI-HKNTEN(IDX-NAI)
+                                               TO  SPA-GMN-HKNTEN (11)
+      *        処方せん料
+               WHEN    "820"
+                   ADD     SPA-NAI-HKNTEN(IDX-NAI)
+                                               TO  SPA-GMN-HKNTEN (04)
+      *        精神科
+               WHEN    "830"
+                   ADD     SPA-NAI-HKNTEN(IDX-NAI)
+                                               TO  SPA-GMN-HKNTEN (12)
+      *        放射線治療
+               WHEN    "840"
+                   ADD     SPA-NAI-HKNTEN(IDX-NAI)
+                                               TO  SPA-GMN-HKNTEN (13)
+      *        療養担当手当て
+               WHEN    "850"
+                   ADD     SPA-NAI-HKNTEN(IDX-NAI)
+                                               TO  SPA-GMN-HKNTEN (14)
+      *        入院料
+               WHEN    "890"
+                   ADD     SPA-NAI-HKNTEN(IDX-NAI)
+                                               TO  SPA-GMN-HKNTEN (15)
+      *        その他
+               WHEN    OTHER
+                   ADD     SPA-NAI-HKNTEN(IDX-NAI)
+                                              TO  SPA-GMN-HKNTEN (11)
+           END-EVALUATE
+           .
+       410321-SONOTA-TENSU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3628,6 +3678,12 @@
            MOVE    ZERO                TO  SYU-HKNTEN(08)
            MOVE    ZERO                TO  SYU-HKNTEN(09)
            MOVE    ZERO                TO  SYU-HKNTEN(10)
+           MOVE    ZERO                TO  SYU-HKNTEN(11)
+           MOVE    ZERO                TO  SYU-HKNTEN(12)
+           MOVE    ZERO                TO  SYU-HKNTEN(13)
+           MOVE    ZERO                TO  SYU-HKNTEN(14)
+           MOVE    ZERO                TO  SYU-HKNTEN(15)
+           MOVE    ZERO                TO  SYU-SHOHOU-SAI
       *    各点数
            PERFORM VARYING     IDY     FROM    1   BY  1
                    UNTIL       IDY     >  600
@@ -3640,11 +3696,11 @@
                    PERFORM 450120-HKNTEN-KEI-SEC
                END-IF
            END-PERFORM
-           MOVE    ZERO                TO  SYU-HKNTEN(12)
+           MOVE    ZERO                TO  SYU-HKNTEN(16)
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   11
+                   UNTIL       IDX     >   15
       *        保険合計点数
-               ADD     SYU-HKNTEN(IDX)         TO  SYU-HKNTEN(12)
+               ADD     SYU-HKNTEN(IDX)         TO  SYU-HKNTEN(16)
            END-PERFORM
       *
            ADD     1                   TO  LNK-SYUNOU2-MAX
@@ -3700,7 +3756,7 @@
            ADD     WRK-SYU-SKYGK       TO  SYU-SKYGK
            ADD     WRK-SYU-HKNTEKMONEY TO  SYU-HKNTEKMONEY
            PERFORM VARYING     IDS2    FROM    1   BY  1
-                   UNTIL       IDS2    >   12
+                   UNTIL       IDS2    >   16
                ADD    WRK-SYU-HKNTEN (IDS2)    TO  SYU-HKNTEN(IDS2)
                ADD    WRK-SYU-MONEY (IDS2)     TO  SYU-MONEY (IDS2)
                ADD    WRK-SYU-TGMONEY (IDS2)   TO  SYU-TGMONEY(IDS2)
@@ -3714,6 +3770,8 @@
                ADD    WRK-SYU-JIHI-TAXARI (IDS2)
                                            TO  SYU-JIHI-TAXARI(IDS2)
            END-PERFORM
+      *    処方せん料再掲
+           ADD     WRK-SYU-SHOHOU-SAI      TO  SYU-SHOHOU-SAI
            ADD     WRK-SYU-JIHI-TOTAL      TO  SYU-JIHI-TOTAL
            ADD     WRK-SYU-JIHI-TOTAL-TAX  TO  SYU-JIHI-TOTAL-TAX
            ADD     WRK-SYU-JIHI-TAX        TO  SYU-JIHI-TAX
@@ -3854,46 +3912,79 @@
       *****************************************************************
        450120-HKNTEN-KEI-SEC             SECTION.
       *
-           EVALUATE    SPA-NAI-SRYKBN (IDY)(1:1)
+           EVALUATE    SPA-NAI-SRYKBN (IDY)
       *        指導
-               WHEN    "1"
-                   IF      SPA-NAI-SRYKBN (IDY)    =   "13"
-                       ADD     SPA-NAI-HKNTEN(IDY)
-                                                   TO  SYU-HKNTEN (02)
-                   END-IF
+               WHEN    "13"
+                   ADD     SPA-NAI-HKNTEN(IDY)    TO  SYU-HKNTEN (02)
       *        投薬
-                   WHEN    "2"
-                       IF      SPA-NAI-HKNSFLG (IDY)   =   ZERO
-                           ADD     SPA-NAI-HKNTEN (IDY)
+               WHEN    "21"   THRU  "27"
+                   IF      SPA-NAI-HKNSFLG (IDY)   =   ZERO
+                       ADD     SPA-NAI-HKNTEN (IDY)
                                                    TO  SYU-HKNTEN (04)
-                       ELSE
-                           COMPUTE SYU-HKNTEN (04)
+                   ELSE
+                       COMPUTE SYU-HKNTEN (04)
                                                    =   SYU-HKNTEN (04)
                                                    -   SPA-NAI-HKNTEN
                                                                  (IDY)
-                       END-IF
-                   WHEN    "3"
-                       ADD     SPA-NAI-HKNTEN(IDY)
+                   END-IF
+               WHEN    "31"
+               WHEN    "32"
+               WHEN    "33"
+                   ADD     SPA-NAI-HKNTEN(IDY)
                                                TO  SYU-HKNTEN (05)
-                   WHEN    "4"
-                       ADD     SPA-NAI-HKNTEN(IDY)
+               WHEN    "40"
+                   ADD     SPA-NAI-HKNTEN(IDY)
                                                TO  SYU-HKNTEN (06)
-                   WHEN    "5"
-                       ADD     SPA-NAI-HKNTEN(IDY)
+               WHEN    "50"
+                   ADD     SPA-NAI-HKNTEN(IDY)
                                                TO  SYU-HKNTEN (07)
-                   WHEN    "6"
-                       ADD     SPA-NAI-HKNTEN(IDY)
+               WHEN    "54"
+                   ADD     SPA-NAI-HKNTEN(IDY)
                                                TO  SYU-HKNTEN (08)
-                   WHEN    "7"
-                       ADD     SPA-NAI-HKNTEN(IDY)
+               WHEN    "60"
+                   ADD     SPA-NAI-HKNTEN(IDY)
                                                TO  SYU-HKNTEN (09)
-                   WHEN    "8"
-                       ADD     SPA-NAI-HKNTEN(IDY)
+               WHEN    "70"
+                   ADD     SPA-NAI-HKNTEN(IDY)
                                                TO  SYU-HKNTEN (10)
-      *                食事
-                   WHEN    "9"
+               WHEN    "80"
+                   EVALUATE    SPA-NAI-SRYSYUKBN (IDY)
+      *            リハビリ
+                   WHEN    "800"
                        ADD     SPA-NAI-HKNTEN(IDY)
-                                               TO  SYU-HKNTEN (10)
+                                               TO  SYU-HKNTEN (11)
+      *            処方せん料
+                   WHEN    "820"
+                       ADD     SPA-NAI-HKNTEN(IDY)
+                                               TO  SYU-HKNTEN (04)
+      *                処方せん料再掲
+                       ADD     SPA-NAI-HKNTEN(IDY)
+                                               TO  SYU-SHOHOU-SAI
+      *            精神科
+                   WHEN    "830"
+                       ADD     SPA-NAI-HKNTEN(IDY)
+                                               TO  SYU-HKNTEN (12)
+      *            放射線治療
+                   WHEN    "840"
+                       ADD     SPA-NAI-HKNTEN(IDY)
+                                               TO  SYU-HKNTEN (13)
+      *            療養担当手当て
+                   WHEN    "850"
+                       ADD     SPA-NAI-HKNTEN(IDY)
+                                               TO  SYU-HKNTEN (14)
+      *            入院料（外来）
+                   WHEN    "890"
+                       ADD     SPA-NAI-HKNTEN(IDY)
+                                               TO  SYU-HKNTEN (15)
+      *            その他
+                   WHEN    OTHER
+                       ADD     SPA-NAI-HKNTEN(IDY)
+                                              TO  SYU-HKNTEN (11)
+                   END-EVALUATE
+      *            食事
+               WHEN    "90"
+                   ADD     SPA-NAI-HKNTEN(IDY)
+                                               TO  SYU-HKNTEN (15)
            END-EVALUATE
       *
            .
@@ -5528,7 +5619,7 @@
       *
       *    各点数
            PERFORM   VARYING   IDX     FROM    1   BY  1
-                     UNTIL     IDX         >   10
+                     UNTIL     IDX         >   15
                IF      SPA-GMN-HKNTEN  (IDX)   >=  ZERO
                    MOVE    SPA-GMN-HKNTEN  (IDX)   TO  WRK-Z9
                    MOVE    WRK-Z9                  TO  WRK-Z9-X
@@ -5552,11 +5643,21 @@
                    WHEN    7
                        MOVE    WRK-Z9-X          TO  K08-SJTHKNTEN
                    WHEN    8
-                       MOVE    WRK-Z9-X          TO  K08-KNSHKNTEN
+                       MOVE    WRK-Z9-X          TO  K08-MSIHKNTEN
                    WHEN    9
-                       MOVE    WRK-Z9-X          TO  K08-GZUHKNTEN
+                       MOVE    WRK-Z9-X          TO  K08-KNSHKNTEN
                    WHEN    10
+                       MOVE    WRK-Z9-X          TO  K08-GZUHKNTEN
+                   WHEN    11
                        MOVE    WRK-Z9-X          TO  K08-ETCHKNTEN
+                   WHEN    12
+                       MOVE    WRK-Z9-X          TO  K08-SSNHKNTEN
+                   WHEN    13
+                       MOVE    WRK-Z9-X          TO  K08-HOUHKNTEN
+                   WHEN    14
+                       MOVE    WRK-Z9-X          TO  K08-RYOHKNTEN
+                   WHEN    15
+                       MOVE    WRK-Z9-X          TO  K08-NYUHKNTEN
                END-EVALUATE
            END-PERFORM
       *    選択

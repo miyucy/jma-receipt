@@ -52,6 +52,21 @@ K03	{
 		KNSHKNTEN	{
 			value	varchar(10);
 		};
+		MSIHKNTEN	{
+			value	varchar(10);
+		};
+		SSNHKNTEN	{
+			value	varchar(10);
+		};
+		HOUHKNTEN	{
+			value	varchar(10);
+		};
+		NYUHKNTEN	{
+			value	varchar(10);
+		};
+		RYOHKNTEN	{
+			value	varchar(10);
+		};
 		FTNTOTAL	{
 			value	varchar(10);
 		};
@@ -159,6 +174,21 @@ K03	{
 			value	varchar(10);
 		};
 		ETCTGMONEY	{
+			value	varchar(10);
+		};
+		MSITGMONEY	{
+			value	varchar(10);
+		};
+		SSNTGMONEY	{
+			value	varchar(10);
+		};
+		HOUTGMONEY	{
+			value	varchar(10);
+		};
+		NYUTGMONEY	{
+			value	varchar(10);
+		};
+		RYOTGMONEY	{
 			value	varchar(10);
 		};
 		SYORIMEI	{

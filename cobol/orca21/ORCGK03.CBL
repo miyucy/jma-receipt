@@ -56,6 +56,7 @@
       *  02.00.20    NACL-¬ø°π«º  05/10/11  •Ê°º•∂•◊•Ì•∞•È•‡µØ∆∞ƒ…≤√
       *  02.00.21    NACL-¬ø°π«º  05/11/18  MONFUNC ¬–±˛
       *  02.00.23    NACL-¬ø°π«º  06/04/10  ø«Œ≈»ÒÃ¿∫ŸΩÒ»Øπ‘ƒ…≤√
+      *  02.00.24    NACL-¬ø°π«º  06/07/06  º˝«º —ππ¬–±˛
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1060,21 +1061,26 @@
            END-IF
       *
       *     ›∏±Œ¡
-           MOVE    ZERO                TO  SPA-GMN-HKNRYO (11)
+           MOVE    ZERO                TO  SPA-GMN-HKNRYO (16)
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   10
+                   UNTIL       IDX     >   15
                MOVE    SYU-HKNTEN (IDX)    TO  SPA-GMN-HKNRYO (IDX)
-               ADD     SYU-HKNTEN (IDX)    TO  SPA-GMN-HKNRYO (11)
+               ADD     SYU-HKNTEN (IDX)    TO  SPA-GMN-HKNRYO (16)
       *     ›∏±≈¨Õ—≥∞
                COMPUTE SPA-GMN-TGMONEY (IDX)   =   SYU-TGMONEY (IDX)
                                                +   SYU-TGMONEY-TAX(IDX)
+      *TEST
+            DISPLAY "IDX:" IDX
+                 ",SYU-TGMONEY:" SYU-TGMONEY (IDX)
+                 ",-TAX:" SYU-TGMONEY-TAX (IDX)
+      *TEST
       *     ›∏±≈¨Õ—≥∞
       *        ADD     SYU-TGMONEY (IDX)       TO  SPA-GMN-HKNGAI
       *        ADD     SYU-TGMONEY-TAX (IDX)   TO  SPA-GMN-HKNGAI
            END-PERFORM
       *     ›∏±≈¨Õ—≥∞
-           COMPUTE SPA-GMN-HKNGAI      =   SYU-TGMONEY (12)
-                                       +   SYU-TGMONEY-TAX (12)
+           COMPUTE SPA-GMN-HKNGAI      =   SYU-TGMONEY (16)
+                                       +   SYU-TGMONEY-TAX (16)
       * ›∏±≈¨Õ—∂‚≥€
            MOVE    SYU-HKNTEKMONEY     TO  SPA-GMN-HKNTEKI
       *    œ∑øÕ∞Ï…Ù…È√¥∂‚
@@ -1580,8 +1586,9 @@
            ADD     WRK-SYU-TAX-MONEY   TO  SYU-TAX-MONEY
            ADD     WRK-SYU-SKYGK       TO  SYU-SKYGK
            ADD     WRK-SYU-HKNTEKMONEY TO  SYU-HKNTEKMONEY
+           ADD     WRK-SYU-SHOHOU-SAI  TO  SYU-SHOHOU-SAI
            PERFORM VARYING     IDS1    FROM    1   BY  1
-                   UNTIL       IDS1    >   12
+                   UNTIL       IDS1    >   16
                ADD    WRK-SYU-HKNTEN (IDS1)    TO  SYU-HKNTEN(IDS1)
                ADD    WRK-SYU-MONEY (IDS1)     TO  SYU-MONEY (IDS1)
                ADD    WRK-SYU-TGMONEY (IDS1)   TO  SYU-TGMONEY(IDS1)
@@ -2428,17 +2435,32 @@
       *    ºÍΩ—Œ¡
            MOVE    SPA-GMN-HKNRYO (07) TO  WRK-Z9
            MOVE    WRK-Z9              TO  K03-SJTHKNTEN
-      *    ∏°∫∫Œ¡
+      *    À„øÏŒ¡
            MOVE    SPA-GMN-HKNRYO (08) TO  WRK-Z9
+           MOVE    WRK-Z9              TO  K03-MSIHKNTEN
+      *    ∏°∫∫Œ¡
+           MOVE    SPA-GMN-HKNRYO (09) TO  WRK-Z9
            MOVE    WRK-Z9              TO  K03-KNSHKNTEN
       *    £ÿ¿˛Œ¡
-           MOVE    SPA-GMN-HKNRYO (09) TO  WRK-Z9
-           MOVE    WRK-Z9              TO  K03-GZUHKNTEN
-      *    §Ω§Œ¬æ
            MOVE    SPA-GMN-HKNRYO (10) TO  WRK-Z9
-           MOVE    WRK-Z9              TO  K03-ETCHKNTEN
-      *    πÁ∑◊≈¿øÙ
+           MOVE    WRK-Z9              TO  K03-GZUHKNTEN
+      *    •Í•œ•”•Í
            MOVE    SPA-GMN-HKNRYO (11) TO  WRK-Z9
+           MOVE    WRK-Z9              TO  K03-ETCHKNTEN
+      *    ¿∫ø¿¿ÏÃÁ
+           MOVE    SPA-GMN-HKNRYO (12) TO  WRK-Z9
+           MOVE    WRK-Z9              TO  K03-SSNHKNTEN
+      *     ¸ºÕ¿˛
+           MOVE    SPA-GMN-HKNRYO (13) TO  WRK-Z9
+           MOVE    WRK-Z9              TO  K03-HOUHKNTEN
+      *    ∆˛±°Œ¡≈˘
+           MOVE    SPA-GMN-HKNRYO (15) TO  WRK-Z9
+           MOVE    WRK-Z9              TO  K03-NYUHKNTEN
+      *    Œ≈Õ‹√¥≈ˆºÍ≈ˆ§∆
+           MOVE    SPA-GMN-HKNRYO (14) TO  WRK-Z9
+           MOVE    WRK-Z9              TO  K03-RYOHKNTEN
+      *    πÁ∑◊≈¿øÙ
+           MOVE    SPA-GMN-HKNRYO (16) TO  WRK-Z9
            MOVE    WRK-Z9              TO  K03-TOTALHKNTEN
       *     ›∏±≈¨Õ—≥∞
       *    ø«Œ≈Œ¡
@@ -2462,15 +2484,30 @@
       *    ºÍΩ—Œ¡
            MOVE    SPA-GMN-TGMONEY (07) TO  WRK-Z9
            MOVE    WRK-Z9              TO  K03-SJTGMONEY
-      *    ∏°∫∫Œ¡
+      *    À„øÏŒ¡
            MOVE    SPA-GMN-TGMONEY (08) TO  WRK-Z9
+           MOVE    WRK-Z9              TO  K03-MSITGMONEY
+      *    ∏°∫∫Œ¡
+           MOVE    SPA-GMN-TGMONEY (09) TO  WRK-Z9
            MOVE    WRK-Z9              TO  K03-KNSTGMONEY
       *    £ÿ¿˛Œ¡
-           MOVE    SPA-GMN-TGMONEY (09) TO  WRK-Z9
+           MOVE    SPA-GMN-TGMONEY (10) TO  WRK-Z9
            MOVE    WRK-Z9              TO  K03-GZUTGMONEY
       *    §Ω§Œ¬æ
-           MOVE    SPA-GMN-TGMONEY (10) TO  WRK-Z9
+           MOVE    SPA-GMN-TGMONEY (11) TO  WRK-Z9
            MOVE    WRK-Z9              TO  K03-ETCTGMONEY
+      *    ¿∫ø¿Œ≈À°
+           MOVE    SPA-GMN-TGMONEY (12) TO  WRK-Z9
+           MOVE    WRK-Z9              TO  K03-SSNTGMONEY
+      *     ¸ºÕ¿˛
+           MOVE    SPA-GMN-TGMONEY (13) TO  WRK-Z9
+           MOVE    WRK-Z9              TO  K03-HOUTGMONEY
+      *    ∆˛±°Œ¡
+           MOVE    SPA-GMN-TGMONEY (15) TO  WRK-Z9
+           MOVE    WRK-Z9              TO  K03-NYUTGMONEY
+      *    Œ≈Õ‹√¥≈ˆ
+           MOVE    SPA-GMN-TGMONEY (14) TO  WRK-Z9
+           MOVE    WRK-Z9              TO  K03-RYOTGMONEY
       *
       *    º´»Ò
            MOVE    SPA-GMN-JIHI (1)    TO  WRK-Z9

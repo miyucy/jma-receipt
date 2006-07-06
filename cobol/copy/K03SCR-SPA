@@ -35,8 +35,8 @@
                    07  SPA-GMN-HAKYMD            PIC X(09).
                    07  SPA-GMN-DENPNUM           PIC X(07).
       *
-                   07  SPA-GMN-HKNRYO            PIC 9(07)  OCCURS  11.
-                   07  SPA-GMN-TGMONEY           PIC 9(07)  OCCURS  11.
+                   07  SPA-GMN-HKNRYO            PIC 9(07)  OCCURS  16.
+                   07  SPA-GMN-TGMONEY           PIC 9(07)  OCCURS  16.
       *
                    07  SPA-GMN-HKNTEKI           PIC 9(10).
                    07  SPA-GMN-ROUFTN            PIC 9(07).
@@ -115,7 +115,7 @@
                        09  SPA-GMN-MEIPRTFLG-MSG    PIC X(22).
                    07  SPA-GMN-MEIPRTFLG-LIST.
                        09  SPA-GMN-MEIPRTFLGLST     PIC X(24)
-                                                    OCCURS   2.
+                                                    OCCURS   3.
                    07  SPA-MEIPRTFLG-MAX            PIC 9(04).
       *            ÌôºÞ¾ðÊó
                    07  SPA-GMN-YAKJYOFLG-G.

@@ -34,6 +34,16 @@
                 04  K03-VALUE   PIC X(10).
               03  K03-KNSHKNTEN.
                 04  K03-VALUE   PIC X(10).
+              03  K03-MSIHKNTEN.
+                04  K03-VALUE   PIC X(10).
+              03  K03-SSNHKNTEN.
+                04  K03-VALUE   PIC X(10).
+              03  K03-HOUHKNTEN.
+                04  K03-VALUE   PIC X(10).
+              03  K03-NYUHKNTEN.
+                04  K03-VALUE   PIC X(10).
+              03  K03-RYOHKNTEN.
+                04  K03-VALUE   PIC X(10).
               03  K03-FTNTOTAL.
                 04  K03-VALUE   PIC X(10).
               03  K03-TOTALHKNTEN.
@@ -106,6 +116,16 @@
               03  K03-GZUTGMONEY.
                 04  K03-VALUE   PIC X(10).
               03  K03-ETCTGMONEY.
+                04  K03-VALUE   PIC X(10).
+              03  K03-MSITGMONEY.
+                04  K03-VALUE   PIC X(10).
+              03  K03-SSNTGMONEY.
+                04  K03-VALUE   PIC X(10).
+              03  K03-HOUTGMONEY.
+                04  K03-VALUE   PIC X(10).
+              03  K03-NYUTGMONEY.
+                04  K03-VALUE   PIC X(10).
+              03  K03-RYOTGMONEY.
                 04  K03-VALUE   PIC X(10).
               03  K03-SYORIMEI.
                 04  K03-SYORIMEI-STYLE   PIC X(20).

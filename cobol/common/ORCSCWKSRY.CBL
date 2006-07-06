@@ -29,6 +29,7 @@
       *  •◊•Ì•∞•È•‡Ω§¿µÕ˙ŒÚ
       * Maj/Min/Rev  Ω§¿µº‘       ∆¸…’      ∆‚Õ∆
       *  01.00.01    NACL-¬ø°π«º  05/11/22  MONFUNC ¬–±˛
+      *  01.00.02    NACL-¬ø°π«º  06/07/06  º˝«º —ππ¬–±˛
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -172,6 +173,7 @@
            03  WRK-EN              PIC 9(08).
       *
            03  WRK-SYU-DENPNUM     PIC 9(07).
+           03  WRK-TNSSRYSYUKBN        PIC X(03).
       *
       *≤ËÃÃ∫«¬Áπ‘
        01  WRK-GYO-MAX                 PIC 9(04)   VALUE   200.
@@ -2797,21 +2799,57 @@
                    ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (06)
       *        ºÍΩ—
                WHEN    "50"
-               WHEN    "54"
                    ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (07)
+      *        À„øÏ
+               WHEN    "54"
+                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (08)
       *        ∏°∫∫
                WHEN    "60"
-                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (08)
+                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (09)
       *        £ÿ¿˛
                WHEN    "70"
-                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (09)
+                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (10)
       *        §Ω§Œ¬æ
                WHEN    "80"
-                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (10)
+                   PERFORM 45011-HKNTEN-SONOTA-SEC
            END-EVALUATE
       *
            .
        4501-SEIKYU-KEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    §Ω§Œ¬æ∏ƒ ÃΩ∏∑◊ΩËÕ˝
+      *****************************************************************
+       45011-HKNTEN-SONOTA-SEC               SECTION.
+      *
+           EVALUATE    SPA-COM-SRYSYUKBN  (IDX)
+      *        •Í•œ•”•Í
+               WHEN    "800"
+                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (11)
+      *        ΩË ˝§ª§ÛŒ¡
+               WHEN    "820"
+                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (04)
+      *        ΩË ˝§ª§ÛŒ¡∫∆∑«
+                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-SHOHOU-SAI
+      *        ¿∫ø¿≤ 
+               WHEN    "830"
+                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (12)
+      *         ¸ºÕ¿˛º£Œ≈
+               WHEN    "840"
+                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (13)
+      *        Œ≈Õ‹√¥≈ˆºÍ≈ˆ§∆
+               WHEN    "850"
+                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (14)
+      *        ∆˛±°Œ¡
+               WHEN    "890"
+                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (15)
+      *        §Ω§Œ¬æ
+               WHEN    OTHER
+                  ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (11)
+           END-EVALUATE
+           .
+       45011-HKNTEN-SONOTA-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2899,8 +2937,10 @@
       *
            IF      SPA-COM-INPUTCD(IDX)(1:3)   =   "095"  OR  "096"
                MOVE    SPA-COM-INPUTCD(IDX)(4:2)   TO  WRK-SRYKBN
+               MOVE    SPACE                       TO  WRK-TNSSRYSYUKBN
            ELSE
                MOVE    SPA-COM-TNSSRYKBN(IDX)      TO  WRK-SRYKBN
+               MOVE    SPA-COM-TNSSRYSYUKBN(IDX)   TO  WRK-TNSSRYSYUKBN
            END-IF
       *
       *    ÃÙ∫ﬁ§Œª˛°¢≈ÍÃÙ§ÿ
@@ -2959,20 +2999,59 @@
                    ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY (06)
       *        ºÍΩ—
                WHEN    "50"
-               WHEN    "54"
                    ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY (07)
+      *        À„øÏ
+               WHEN    "54"
+                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY (08)
       *        ∏°∫∫
                WHEN    "60"
-                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY (08)
+                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY (09)
       *        £ÿ¿˛
                WHEN    "70"
-                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY (09)
+                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY (10)
       *        §Ω§Œ¬æ
                WHEN    "80"
-                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY (10)
+                   EVALUATE    WRK-TNSSRYSYUKBN
+      *            •Í•œ•”•Í
+                   WHEN    "800"
+                       ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY (11)
+      *            ΩË ˝§ª§ÛŒ¡
+                   WHEN    "820"
+                       ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY (04)
+      *            ¿∫ø¿≤ 
+                   WHEN    "830"
+                       ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY (12)
+      *             ¸ºÕ¿˛º£Œ≈
+                   WHEN    "840"
+                       ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY (13)
+      *            Œ≈Õ‹√¥≈ˆºÍ≈ˆ§∆
+                   WHEN    "850"
+                       ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY (14)
+      *            ∆˛±°Œ¡
+                   WHEN    "890"
+                       ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY (15)
+      *            §Ω§Œ¬æ
+                   WHEN    OTHER
+                       ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY (11)
+                   END-EVALUATE
+      *        ΩË ˝§ª§ÛŒ¡
+               WHEN    "82"
+                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY (04)
+      *        ¿∫ø¿≤ 
+               WHEN    "83"
+                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY (12)
+      *         ¸ºÕ¿˛º£Œ≈
+               WHEN    "84"
+                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY (13)
+      *        Œ≈Õ‹√¥≈ˆºÍ≈ˆ§∆
+               WHEN    "85"
+                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY (14)
+      *        ∆˛±°Œ¡
+               WHEN    "89"
+                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY (15)
       *        §Ω§Œ¬æ
                WHEN    OTHER
-                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY (10)
+                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY (11)
            END-EVALUATE
       *
            .
@@ -3008,20 +3087,66 @@
                    ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY-TAX (06)
       *        ºÍΩ—
                WHEN    "50"
-               WHEN    "54"
                    ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY-TAX (07)
+      *        À„øÏ
+               WHEN    "54"
+                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY-TAX (08)
       *        ∏°∫∫
                WHEN    "60"
-                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY-TAX (08)
+                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY-TAX (09)
       *        £ÿ¿˛
                WHEN    "70"
-                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY-TAX (09)
+                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY-TAX (10)
       *        §Ω§Œ¬æ
                WHEN    "80"
-                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY-TAX (10)
+                   EVALUATE    WRK-TNSSRYSYUKBN
+      *            •Í•œ•”•Í
+                   WHEN    "800"
+                       ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY-TAX
+                                                                   (11)
+      *            ΩË ˝§ª§ÛŒ¡
+                   WHEN    "820"
+                       ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY-TAX
+                                                                   (04)
+      *            ¿∫ø¿≤ 
+                   WHEN    "830"
+                       ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY-TAX
+                                                                   (12)
+      *             ¸ºÕ¿˛º£Œ≈
+                   WHEN    "840"
+                       ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY-TAX
+                                                                   (13)
+      *            Œ≈Õ‹√¥≈ˆºÍ≈ˆ§∆
+                   WHEN    "850"
+                       ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY-TAX
+                                                                   (14)
+      *            ∆˛±°Œ¡
+                   WHEN    "890"
+                       ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY-TAX
+                                                                   (15)
+      *            §Ω§Œ¬æ
+                   WHEN    OTHER
+                       ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY-TAX
+                                                                   (11)
+                   END-EVALUATE
+      *        ΩË ˝§ª§ÛŒ¡
+               WHEN    "82"
+                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY-TAX (04)
+      *        ¿∫ø¿≤ 
+               WHEN    "83"
+                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY-TAX (12)
+      *         ¸ºÕ¿˛º£Œ≈
+               WHEN    "84"
+                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY-TAX (13)
+      *        Œ≈Õ‹√¥≈ˆºÍ≈ˆ§∆
+               WHEN    "85"
+                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY-TAX (14)
+      *        ∆˛±°Œ¡
+               WHEN    "89"
+                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY-TAX (15)
       *        §Ω§Œ¬æ
                WHEN    OTHER
-                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY-TAX (10)
+                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY-TAX (11)
            END-EVALUATE
       *
            .
@@ -3100,21 +3225,23 @@
                    ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (06)
       *        ºÍΩ—
                WHEN    "50"
-               WHEN    "54"
                    ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (07)
+      *        À„øÏ
+               WHEN    "54"
+                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (08)
       *        ∏°∫∫
                WHEN    "60"
-                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (08)
+                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (09)
       *        £ÿ¿˛
                WHEN    "70"
-                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (09)
+                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (10)
       *        §Ω§Œ¬æ
                WHEN    "80"
       *            œ´∫“ ›∏±°›§Ω§Œ¬æ
                    ADD     WRK-EN              TO  SYU-RSIETC-MONEY
       *            §Ω§Œ¬æ§Œ±ﬂ§»≈¿øÙ§œ∫ﬁ∆‚§«∫Æ∫ﬂ§∑§ §§§≥§»§»§π§Î(H14.8)
                    IF      WRK-EN              =   ZERO
-                       ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (10)
+                       PERFORM 45011-HKNTEN-SONOTA-SEC
                    END-IF
            END-EVALUATE
            .
@@ -3171,27 +3298,70 @@
                                                    TO  SYU-HKNTEN(06)
       *            ºÍΩ—
                    WHEN    "50"
-                   WHEN    "54"
                        ADD     ORCSCWKSRY-KSN-TENSU (IDX)
                                                    TO  SYU-HKNTEN(07)
+      *            À„øÏ
+                   WHEN    "54"
+                       ADD     ORCSCWKSRY-KSN-TENSU (IDX)
+                                                   TO  SYU-HKNTEN(08)
       *            ∏°∫∫
                    WHEN    "60"
                        ADD     ORCSCWKSRY-KSN-TENSU (IDX)
-                                                   TO  SYU-HKNTEN(08)
+                                                   TO  SYU-HKNTEN(09)
       *            £ÿ¿˛
                    WHEN    "70"
                        ADD     ORCSCWKSRY-KSN-TENSU (IDX)
-                                                   TO  SYU-HKNTEN(09)
+                                                   TO  SYU-HKNTEN(10)
       *            §Ω§Œ¬æ
                    WHEN    "80"
-                       ADD     ORCSCWKSRY-KSN-TENSU (IDX)
-                                                   TO  SYU-HKNTEN(10)
+                       PERFORM 4504-JIDOUKEI-SONOTA-SEC
                END-EVALUATE
              END-IF
            END-PERFORM
       *
            .
        4504-JIDOUKEI-EXT.
+           EXIT.
+      *****************************************************************
+      *    §Ω§Œ¬æ∏ƒ ÃΩ∏∑◊ΩËÕ˝
+      *****************************************************************
+       4504-JIDOUKEI-SONOTA-SEC               SECTION.
+      *
+           EVALUATE    ORCSCWKSRY-KSN-SRYSYUKBN (IDX)
+      *        •Í•œ•”•Í
+               WHEN    "800"
+                   ADD     ORCSCWKSRY-KSN-TENSU (IDX)
+                                               TO  SYU-HKNTEN (11)
+      *        ΩË ˝§ª§ÛŒ¡
+               WHEN    "820"
+                   ADD     ORCSCWKSRY-KSN-TENSU (IDX)
+                                               TO  SYU-HKNTEN (04)
+      *        ΩË ˝§ª§ÛŒ¡∫∆∑«
+                   ADD     ORCSCWKSRY-KSN-TENSU (IDX)
+                                               TO  SYU-SHOHOU-SAI
+      *        ¿∫ø¿≤ 
+               WHEN    "830"
+                   ADD     ORCSCWKSRY-KSN-TENSU (IDX)
+                                               TO  SYU-HKNTEN (12)
+      *         ¸ºÕ¿˛º£Œ≈
+               WHEN    "840"
+                   ADD     ORCSCWKSRY-KSN-TENSU (IDX)
+                                               TO  SYU-HKNTEN (13)
+      *        Œ≈Õ‹√¥≈ˆºÍ≈ˆ§∆
+               WHEN    "850"
+                   ADD     ORCSCWKSRY-KSN-TENSU (IDX)
+                                               TO  SYU-HKNTEN (14)
+      *        ∆˛±°Œ¡
+               WHEN    "890"
+                   ADD     ORCSCWKSRY-KSN-TENSU (IDX)
+                                               TO  SYU-HKNTEN (15)
+      *        §Ω§Œ¬æ
+               WHEN    OTHER
+                   ADD     ORCSCWKSRY-KSN-TENSU (IDX)
+                                              TO  SYU-HKNTEN (11)
+           END-EVALUATE
+           .
+       4504-JIDOUKEI-SONOTA-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3200,15 +3370,15 @@
        4506-TOTALKEI-SEC             SECTION.
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX         >   11
+                   UNTIL       IDX         >   15
       *        ›∏±≈¿øÙ
-              ADD     SYU-HKNTEN(IDX)      TO  SYU-HKNTEN(12)
+              ADD     SYU-HKNTEN(IDX)      TO  SYU-HKNTEN(16)
       *       ∂‚≥€
-              ADD     SYU-MONEY (IDX)      TO  SYU-MONEY (12)
+              ADD     SYU-MONEY (IDX)      TO  SYU-MONEY (16)
       *       ≈¨Õ—≥∞∂‚≥€
-              ADD     SYU-TGMONEY(IDX)     TO  SYU-TGMONEY(12)
+              ADD     SYU-TGMONEY(IDX)     TO  SYU-TGMONEY(16)
       *       ≈¨Õ—≥∞∂‚≥€° æ√»Ò¿«§¢§Í°À
-              ADD     SYU-TGMONEY-TAX(IDX) TO  SYU-TGMONEY-TAX(12)
+              ADD     SYU-TGMONEY-TAX(IDX) TO  SYU-TGMONEY-TAX(16)
       *
            END-PERFORM
       *

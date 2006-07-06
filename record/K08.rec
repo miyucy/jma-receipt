@@ -80,6 +80,21 @@ K08	{
 		ETCHKNTEN	{
 			value	varchar(10);
 		};
+		SSNHKNTEN	{
+			value	varchar(10);
+		};
+		HOUHKNTEN	{
+			value	varchar(10);
+		};
+		NYUHKNTEN	{
+			value	varchar(10);
+		};
+		MSIHKNTEN	{
+			value	varchar(10);
+		};
+		RYOHKNTEN	{
+			value	varchar(10);
+		};
 		SELNUM01	{
 			value	number(3);
 		};
