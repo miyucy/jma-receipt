@@ -472,6 +472,7 @@
            03  WRK-J02-DATALIST-ROW    PIC S9(09).
            03  WRK-J02-RRKLIST-ROW     PIC S9(09).
            03  FLG-GMN-INIT            PIC 9(01).
+           03  MAE-J02-DATALIST-ROW    PIC S9(09).
       *    剤変更チェック用
            03  TBL-MAE-ZAINUM-AREA.
                05  TBL-MAE-ZAINUM      PIC 9(08)
@@ -1124,6 +1125,10 @@
                        MOVE    SPA-MAE-PTID        TO  SPA-PTID
                    END-IF
       *
+                   IF      SPA-MOTOPG          =   "J04"
+                       MOVE    J02-DATALIST-ROW
+                                               TO  MAE-J02-DATALIST-ROW
+                   END-IF
                    MOVE    1                   TO  FLG-HENSYU
                    PERFORM 310-SPA-SET-SEC
                    MOVE    1                   TO  SPA-GMN-CUR
@@ -2998,6 +3003,11 @@
            IF      WRK-J02-DATALIST-ROW    NOT =   ZERO
                MOVE    WRK-J02-DATALIST-ROW    TO  J02-DATALIST-ROW
            END-IF
+           IF      MAE-J02-DATALIST-ROW    NOT =   ZERO
+               MOVE    MAE-J02-DATALIST-ROW
+                                           TO  J02-DATALIST-ROW
+               MOVE    2                   TO  J02-DATALIST-ROWATTR
+           END-IF
            IF      WRK-J02-RRKLIST-ROW     NOT =   ZERO
                MOVE    WRK-J02-RRKLIST-ROW     TO  J02-RRKLIST-ROW
            END-IF
@@ -3705,8 +3715,8 @@
       *
            IF      FLG-OK              =   1
       *        入院中の場合入院とする
-               IF      (SPA-NAI-NYUINYMD   <   SPA-NAI-SRYYM )  AND
-                       (SPA-NAI-TAIINYMD   >   SPA-NAI-SRYYM )
+               IF      (SPA-NAI-NYUINYMD(1:6)  <   SPA-NAI-SRYYM )  AND
+                       (SPA-NAI-TAIINYMD(1:6)  >   SPA-NAI-SRYYM )
                    MOVE    "1"             TO  SPA-NYUGAIKBN
                END-IF
       *        初期の設定

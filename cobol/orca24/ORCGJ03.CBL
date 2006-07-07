@@ -2171,9 +2171,9 @@
                WHEN    6
                    MOVE    "¡ã¸¡ºº¡ä"           TO  J03-MIDASI-VALUE
                WHEN    7
-                   MOVE    "¡ã£ØÀþ¡ä"           TO  J03-MIDASI-VALUE
+                   MOVE    "¡ã²èÁü¿ÇÃÇ¡ä"       TO  J03-MIDASI-VALUE
                WHEN    8
-                   MOVE    "¡ã¥ê¥Ï¥Ó¥ê¡ä"       TO  J03-MIDASI-VALUE
+                   MOVE    "¡ã¥ê¥Ï¡¦Â¾¡ä"       TO  J03-MIDASI-VALUE
            END-EVALUATE
            MOVE    "red"               TO  J03-MIDASI-STYLE
       *
