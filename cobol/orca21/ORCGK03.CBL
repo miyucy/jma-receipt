@@ -1069,11 +1069,6 @@
       *    保険適用外
                COMPUTE SPA-GMN-TGMONEY (IDX)   =   SYU-TGMONEY (IDX)
                                                +   SYU-TGMONEY-TAX(IDX)
-      *TEST
-            DISPLAY "IDX:" IDX
-                 ",SYU-TGMONEY:" SYU-TGMONEY (IDX)
-                 ",-TAX:" SYU-TGMONEY-TAX (IDX)
-      *TEST
       *    保険適用外
       *        ADD     SYU-TGMONEY (IDX)       TO  SPA-GMN-HKNGAI
       *        ADD     SYU-TGMONEY-TAX (IDX)   TO  SPA-GMN-HKNGAI
