@@ -47,6 +47,7 @@
       *  01.00.16    NACL-小豆沢  05/05/25  労災・自賠責の患者請求分は明細を
       *                                     表示するように変更
       *  01.00.17    NACL-多々納  06/04/21  MONFUNCへ変更
+      *  01.00.18    NACL-多々納  06/07/07  領収書変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -788,18 +789,40 @@
            MOVE    SYU-HKNTEN (07)     TO  WRK-Z72
            PERFORM 800-HENKAN-SEC
            MOVE    WRK-Z72-G           TO  HC03-HKNRYO7
-      *    検査科
+      *    麻酔
            MOVE    SYU-HKNTEN (08)     TO  WRK-Z72
            PERFORM 800-HENKAN-SEC
            MOVE    WRK-Z72-G           TO  HC03-HKNRYO8
-      *    Ｘ線科
+      *    検査科
            MOVE    SYU-HKNTEN (09)     TO  WRK-Z72
            PERFORM 800-HENKAN-SEC
-           MOVE    WRK-Z72-G          TO  HC03-HKNRYO9
-      *    その他料
+           MOVE    WRK-Z72-G           TO  HC03-HKNRYO9
+      *    Ｘ線科
            MOVE    SYU-HKNTEN (10)     TO  WRK-Z72
            PERFORM 800-HENKAN-SEC
-           MOVE    WRK-Z72-G           TO  HC03-HKNRYO10
+           MOVE    WRK-Z72-G          TO  HC03-HKNRYO10
+      *    リハビリ
+           MOVE    SYU-HKNTEN (11)     TO  WRK-Z72
+           PERFORM 800-HENKAN-SEC
+           MOVE    WRK-Z72-G           TO  HC03-HKNRYO11
+      *    精神科専門
+           MOVE    SYU-HKNTEN (12)     TO  WRK-Z72
+           PERFORM 800-HENKAN-SEC
+           MOVE    WRK-Z72-G           TO  HC03-HKNRYO12
+      *    放射線治療
+           MOVE    SYU-HKNTEN (13)     TO  WRK-Z72
+           PERFORM 800-HENKAN-SEC
+           MOVE    WRK-Z72-G           TO  HC03-HKNRYO13
+      *    入院料
+           MOVE    SYU-HKNTEN (15)     TO  WRK-Z72
+           PERFORM 800-HENKAN-SEC
+           MOVE    WRK-Z72-G           TO  HC03-HKNRYO14
+      *    療養担当手当て
+           MOVE    SYU-HKNTEN (14)     TO  WRK-Z72
+           PERFORM 800-HENKAN-SEC
+           MOVE    WRK-Z72-G           TO  HC03-HKNRYO15
+      *    見出し
+           PERFORM 3001-MEISAI-HEN-SEC
       *    合計点数
            COMPUTE WRK-GOKTEN          =   SYU-HKNTEN (01)
                                        +   SYU-HKNTEN (02)
@@ -811,6 +834,11 @@
                                        +   SYU-HKNTEN (08)
                                        +   SYU-HKNTEN (09)
                                        +   SYU-HKNTEN (10)
+                                       +   SYU-HKNTEN (11)
+                                       +   SYU-HKNTEN (12)
+                                       +   SYU-HKNTEN (13)
+                                       +   SYU-HKNTEN (14)
+                                       +   SYU-HKNTEN (15)
            MOVE    WRK-GOKTEN          TO  WRK-Z72
            PERFORM 800-HENKAN-SEC
            MOVE    WRK-Z72-G           TO  HC03-GOKTEN
@@ -830,6 +858,11 @@
                MOVE    SPACE               TO  HC03-HKNRYO8
                MOVE    SPACE               TO  HC03-HKNRYO9
                MOVE    SPACE               TO  HC03-HKNRYO10
+               MOVE    SPACE               TO  HC03-HKNRYO11
+               MOVE    SPACE               TO  HC03-HKNRYO12
+               MOVE    SPACE               TO  HC03-HKNRYO13
+               MOVE    SPACE               TO  HC03-HKNRYO14
+               MOVE    SPACE               TO  HC03-HKNRYO15
                MOVE    ALL "*"             TO  HC03-GOKTEN
            END-IF
       *
@@ -978,6 +1011,50 @@
        300-HC03-HEN-EXT.
            EXIT.
       *
+      *****************************************************************
+      *   明細見出し編集処理
+      *****************************************************************
+       3001-MEISAI-HEN-SEC                SECTION.
+      *
+           MOVE    "初 ・ 再 診 料"
+                                       TO  HC03-MEISAI (1)
+           MOVE    "医 学 管 理 等"
+                                       TO  HC03-MEISAI (2)
+           MOVE    "在　宅　医　療"
+                                       TO  HC03-MEISAI (3)
+           MOVE    "投　　　　　薬"
+                                       TO  HC03-MEISAI (4)
+           MOVE    "注　　　　　射"
+                                       TO  HC03-MEISAI (5)
+           MOVE    "処　　　　　置"
+                                       TO  HC03-MEISAI (6)
+           MOVE    "手　　　　　術"
+                                       TO  HC03-MEISAI (7)
+           MOVE    "麻　　　　　酔"
+                                       TO  HC03-MEISAI (8)
+           MOVE    "検　　　　　査"
+                                       TO  HC03-MEISAI (9)
+           MOVE    "画　像　診　断"
+                                       TO  HC03-MEISAI (10)
+           MOVE    "リハビリテーション"
+                                       TO  HC03-MEISAI (11)
+           MOVE    "精神科専門療法"
+                                       TO  HC03-MEISAI (12)
+           MOVE    "放 射 線 治 療"
+                                       TO  HC03-MEISAI (13)
+           MOVE    "入　院　料　等"
+                                       TO  HC03-MEISAI (14)
+           MOVE    "療養担当手当"
+                                       TO  HC03-MEISAI (15)
+      *    明細削除
+      *    療養担当手当て
+           IF      SYU-HKNTEN (14)     =   ZERO
+               MOVE    SPACE               TO  HC03-MEISAI (15)
+           END-IF
+      *
+           .
+       3001-MEISAI-HEN-EXT.
+           EXIT.
       *****************************************************************
       *   複数科・保険入力の印刷処理
       *****************************************************************

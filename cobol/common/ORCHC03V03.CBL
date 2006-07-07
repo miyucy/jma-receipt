@@ -791,18 +791,40 @@
            MOVE    SYU-HKNTEN (07)     TO  WRK-Z72
            PERFORM 800-HENKAN-SEC
            MOVE    WRK-Z72-G           TO  HC03-HKNRYO7
-      *    ¸¡ºº²Ê
+      *    Ëã¿ì
            MOVE    SYU-HKNTEN (08)     TO  WRK-Z72
            PERFORM 800-HENKAN-SEC
            MOVE    WRK-Z72-G           TO  HC03-HKNRYO8
-      *    £ØÀþ²Ê
+      *    ¸¡ºº²Ê
            MOVE    SYU-HKNTEN (09)     TO  WRK-Z72
            PERFORM 800-HENKAN-SEC
-           MOVE    WRK-Z72-G          TO  HC03-HKNRYO9
-      *    ¤½¤ÎÂ¾ÎÁ
+           MOVE    WRK-Z72-G           TO  HC03-HKNRYO9
+      *    £ØÀþ²Ê
            MOVE    SYU-HKNTEN (10)     TO  WRK-Z72
            PERFORM 800-HENKAN-SEC
-           MOVE    WRK-Z72-G           TO  HC03-HKNRYO10
+           MOVE    WRK-Z72-G          TO  HC03-HKNRYO10
+      *    ¥ê¥Ï¥Ó¥ê
+           MOVE    SYU-HKNTEN (11)     TO  WRK-Z72
+           PERFORM 800-HENKAN-SEC
+           MOVE    WRK-Z72-G           TO  HC03-HKNRYO11
+      *    Àº¿À²ÊÀìÌç
+           MOVE    SYU-HKNTEN (12)     TO  WRK-Z72
+           PERFORM 800-HENKAN-SEC
+           MOVE    WRK-Z72-G           TO  HC03-HKNRYO12
+      *    Êü¼ÍÀþ¼£ÎÅ
+           MOVE    SYU-HKNTEN (13)     TO  WRK-Z72
+           PERFORM 800-HENKAN-SEC
+           MOVE    WRK-Z72-G           TO  HC03-HKNRYO13
+      *    Æþ±¡ÎÁ
+           MOVE    SYU-HKNTEN (15)     TO  WRK-Z72
+           PERFORM 800-HENKAN-SEC
+           MOVE    WRK-Z72-G           TO  HC03-HKNRYO14
+      *    ÎÅÍÜÃ´Åö¼êÅö¤Æ
+           MOVE    SYU-HKNTEN (14)     TO  WRK-Z72
+           PERFORM 800-HENKAN-SEC
+           MOVE    WRK-Z72-G           TO  HC03-HKNRYO15
+      *    ¸«½Ð¤·
+           PERFORM 3001-MEISAI-HEN-SEC
       *    ¹ç·×ÅÀ¿ô
            COMPUTE WRK-GOKTEN          =   SYU-HKNTEN (01)
                                        +   SYU-HKNTEN (02)
@@ -814,6 +836,11 @@
                                        +   SYU-HKNTEN (08)
                                        +   SYU-HKNTEN (09)
                                        +   SYU-HKNTEN (10)
+                                       +   SYU-HKNTEN (11)
+                                       +   SYU-HKNTEN (12)
+                                       +   SYU-HKNTEN (13)
+                                       +   SYU-HKNTEN (14)
+                                       +   SYU-HKNTEN (15)
            MOVE    WRK-GOKTEN          TO  WRK-Z72
            PERFORM 800-HENKAN-SEC
            MOVE    WRK-Z72-G           TO  HC03-GOKTEN
@@ -833,6 +860,11 @@
                MOVE    SPACE               TO  HC03-HKNRYO8
                MOVE    SPACE               TO  HC03-HKNRYO9
                MOVE    SPACE               TO  HC03-HKNRYO10
+               MOVE    SPACE               TO  HC03-HKNRYO11
+               MOVE    SPACE               TO  HC03-HKNRYO12
+               MOVE    SPACE               TO  HC03-HKNRYO13
+               MOVE    SPACE               TO  HC03-HKNRYO14
+               MOVE    SPACE               TO  HC03-HKNRYO15
                MOVE    ALL "*"             TO  HC03-GOKTEN
            END-IF
       *
@@ -984,6 +1016,51 @@
       *
            .
        300-HC03-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   ÌÀºÙ¸«½Ð¤·ÊÔ½¸½èÍý
+      *****************************************************************
+       3001-MEISAI-HEN-SEC                SECTION.
+      *
+           MOVE    "½é ¡¦ ºÆ ¿Ç ÎÁ"
+                                       TO  HC03-MEISAI (1)
+           MOVE    "°å ³Ø ´É Íý Åù"
+                                       TO  HC03-MEISAI (2)
+           MOVE    "ºß¡¡Âð¡¡°å¡¡ÎÅ"
+                                       TO  HC03-MEISAI (3)
+           MOVE    "Åê¡¡¡¡¡¡¡¡¡¡Ìô"
+                                       TO  HC03-MEISAI (4)
+           MOVE    "Ãí¡¡¡¡¡¡¡¡¡¡¼Í"
+                                       TO  HC03-MEISAI (5)
+           MOVE    "½è¡¡¡¡¡¡¡¡¡¡ÃÖ"
+                                       TO  HC03-MEISAI (6)
+           MOVE    "¼ê¡¡¡¡¡¡¡¡¡¡½Ñ"
+                                       TO  HC03-MEISAI (7)
+           MOVE    "Ëã¡¡¡¡¡¡¡¡¡¡¿ì"
+                                       TO  HC03-MEISAI (8)
+           MOVE    "¸¡¡¡¡¡¡¡¡¡¡¡ºº"
+                                       TO  HC03-MEISAI (9)
+           MOVE    "²è¡¡Áü¡¡¿Ç¡¡ÃÇ"
+                                       TO  HC03-MEISAI (10)
+           MOVE    "¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥ó"
+                                       TO  HC03-MEISAI (11)
+           MOVE    "Àº¿À²ÊÀìÌçÎÅË¡"
+                                       TO  HC03-MEISAI (12)
+           MOVE    "Êü ¼Í Àþ ¼£ ÎÅ"
+                                       TO  HC03-MEISAI (13)
+           MOVE    "Æþ¡¡±¡¡¡ÎÁ¡¡Åù"
+                                       TO  HC03-MEISAI (14)
+           MOVE    "ÎÅÍÜÃ´Åö¼êÅö"
+                                       TO  HC03-MEISAI (15)
+      *    ÌÀºÙºï½ü
+      *    ÎÅÍÜÃ´Åö¼êÅö¤Æ
+           IF      SYU-HKNTEN (14)     =   ZERO
+               MOVE    SPACE               TO  HC03-MEISAI (15)
+           END-IF
+      *
+           .
+       3001-MEISAI-HEN-EXT.
            EXIT.
       *
       *****************************************************************
