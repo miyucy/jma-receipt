@@ -7,6 +7,8 @@
             02  HCM03V03-HAKYMD PIC X(22).
             02  HCM03V03-HOKEN  PIC X(20).
             02  HCM03V03-FUTAN  PIC X(3).
+            02  HCM03V03-MEISAI
+                    PIC X(20)   OCCURS  15 TIMES.
             02  HCM03V03-HKNRYO1    PIC X(18).
             02  HCM03V03-HKNRYO2    PIC X(18).
             02  HCM03V03-HKNRYO3    PIC X(18).
@@ -17,9 +19,14 @@
             02  HCM03V03-HKNRYO8    PIC X(18).
             02  HCM03V03-HKNRYO9    PIC X(18).
             02  HCM03V03-HKNRYO10   PIC X(18).
+            02  HCM03V03-HKNRYO11   PIC X(18).
+            02  HCM03V03-HKNRYO12   PIC X(18).
+            02  HCM03V03-HKNRYO13   PIC X(18).
+            02  HCM03V03-HKNRYO14   PIC X(18).
+            02  HCM03V03-HKNRYO15   PIC X(18).
             02  HCM03V03-GOKTEN PIC X(18).
             02  HCM03V03-JIHIBUN
-                    PIC X(18)   OCCURS  10 TIMES.
+                    PIC X(18)   OCCURS  15 TIMES.
             02  HCM03V03-HOKENBUN   PIC X(18).
             02  HCM03V03-HOKENGAI   PIC X(18).
             02  HCM03V03-HOKENZEI   PIC X(18).
