@@ -1169,6 +1169,9 @@ COPYS = \
 	CMRECEDENSRYKACD.INC \
         HCM43V01A.INC \
         HCM43V02A.INC \
+        HCN03A.INC \
+        HCN03V02A.INC \
+        HCN03V03A.INC \
 
 
 DBPATH = \
