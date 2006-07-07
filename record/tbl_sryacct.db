@@ -1112,17 +1112,24 @@ path	key46	{
 path	key47 	{
 	DBSELECT	{
 		DECLARE tbl_sryacct_key47_csr CURSOR FOR
-		SELECT *
-		FROM tbl_sryacct
-			WHERE   HOSPID    =   :HOSPID
-			AND   NYUGAIKBN   =   :NYUGAIKBN
-			AND   PTID        =   :PTID
-			AND   SRYYM       =   :SRYYM
-			AND   HKNCOMBI    =   :HKNCOMBI
-			AND   ZAIKAISU    >   0
-			AND   ZAITEN      >   0
-			ORDER   BY      SRYKBN,
-                                        ZAINUM
+		SELECT A.*
+		FROM tbl_sryacct A,tbl_sryact B
+			WHERE   A.HOSPID    =   :HOSPID
+			AND   A.NYUGAIKBN   =   :NYUGAIKBN
+			AND   A.PTID        =   :PTID
+			AND   A.SRYYM       =   :SRYYM
+			AND   A.HKNCOMBI    =   :HKNCOMBI
+			AND   A.ZAIKAISU    >   0
+			AND   A.ZAITEN      >   0
+                        AND   A.HOSPID     = B.HOSPID
+                        AND   A.NYUGAIKBN  = B.NYUGAIKBN
+                        AND   A.PTID       = B.PTID
+                        AND   A.SRYYM      = B.SRYYM
+                        AND   A.ZAINUM     = B.ZAINUM
+                        AND   1            = B.RENNUM
+			ORDER  BY   A.SRYKBN,
+                                    B.SRYSYUKBN,
+                                    A.ZAINUM
 		;
 	};
 };
