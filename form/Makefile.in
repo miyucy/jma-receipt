@@ -301,7 +301,8 @@ FORM_files = \
               HCG017.red \
               HCM31V02.red \
               HCM32V02.red \
-              HCM43V03.red \
+              HCM43V01A.red \
+              HCM43V02A.red \
 
 all:   
 
