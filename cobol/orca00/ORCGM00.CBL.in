@@ -698,6 +698,38 @@
       *        MOVE    "1009"              TO  SPA-ERRCD
       *    END-IF
       *
+           MOVE    ZERO                TO  FLG-DBKANRI
+           INITIALIZE                      DBKANRI-REC
+           MOVE    "ORCADB00"          TO  DBKANRI-KANRICD
+           MOVE    DBKANRI-REC         TO  MCPDATA-REC
+           MOVE    "tbl_dbkanri"       TO  MCP-TABLE 
+           MOVE    "key"               TO  MCP-PATHNAME 
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    "tbl_dbkanri"       TO  MCP-TABLE 
+               MOVE    "key"               TO  MCP-PATHNAME 
+               PERFORM 910-DBFETCH-SEC
+               IF    ( MCP-RC              =   ZERO )
+                   MOVE    MCPDATA-REC TO  DBKANRI-REC
+               ELSE
+                   MOVE    1           TO  FLG-DBKANRI
+               END-IF
+           ELSE
+                   MOVE    1           TO  FLG-DBKANRI
+           END-IF
+      *
+           MOVE    "tbl_dbkanri"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME 
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF    ( FLG-DBKANRI         =   ZERO )
+               IF    ( DBKANRI-DBSVERSION1 NOT =   DBKANRI-DBSVERSION2 )
+                   MOVE    "1010"      TO  SPA-ERRCD
+               END-IF
+           ELSE
+                   MOVE    "1011"      TO  SPA-ERRCD
+           END-IF
+      *
            .
        310-SPASET-EXT.
            EXIT.
@@ -1134,6 +1166,14 @@
       *        WHEN    "1009"
       *            MOVE    "リダイレクタ未起動です。"
       *                                        TO  SPA-ERRMSG (1:40)
+               WHEN    "1010"
+                   MOVE
+                      "ＤＢの構造バージョンに不整合が発生しています！！"
+                                               TO  SPA-ERRMSG
+               WHEN    "1011"
+                   MOVE
+                      "ＤＢの構造バージョンの取得に失敗しました。"
+                                               TO  SPA-ERRMSG
            END-EVALUATE
 	   .
       *
@@ -1192,6 +1232,19 @@
        910-DBSELECT-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    テーブルFETCH処理
+      *****************************************************************
+       910-DBFETCH-SEC                 SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       910-DBFETCH-EXT.
+           EXIT.
       *****************************************************************
       *    テーブルクローズ処理
       *****************************************************************
