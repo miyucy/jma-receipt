@@ -13803,7 +13803,7 @@
                                        TO  SUMSYUDAY-OCC (SUMSYUNOU-CNT)
       *            ÊÝ¸±ÎÁ
                    PERFORM VARYING     IDX12   FROM    1   BY  1
-                           UNTIL       IDX12   >   12
+                           UNTIL       IDX12   >   16
                      COMPUTE SUMSYU-HKNTEN   (WRK-SYU-SUM-IDX IDX12)
                          =   SUMSYU-HKNTEN   (WRK-SYU-SUM-IDX IDX12)
                          +   LNK-SYU-HKNTEN (IDX11 IDX12)

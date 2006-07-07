@@ -102,9 +102,9 @@
                        09  SPA-GMN-O04-HAKYMD          PIC X(09).
                        09  SPA-GMN-O04-DENPNO          PIC X(10).
                        09  SPA-GMN-O04-HKNRYO          PIC 9(07)
-                                                   OCCURS  12.
+                                                   OCCURS  16.
                        09  SPA-GMN-O04-TGMONEY         PIC 9(07)
-                                                   OCCURS  11.
+                                                   OCCURS  15.
                        09  SPA-GMN-O04-HKNTEKI         PIC 9(10).
                        09  SPA-GMN-O04-SKJRYOYO        PIC 9(07).
                        09  SPA-GMN-O04-SKJFTN          PIC 9(07).

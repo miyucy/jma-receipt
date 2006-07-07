@@ -557,11 +557,11 @@
                        11  SPA-GMN-I04-TAIINYMD      PIC X(09).
       *                ø«Œ≈Œ¡
                        11  SPA-GMN-I04-HKNRYO        PIC 9(07)
-                                                     OCCURS  12.
+                                                     OCCURS  16.
                        11  SPA-GMN-I04-SEIKYU-AREA.
       *                     ›∏±≈¨Õ—≥∞ø«Œ≈Œ¡
                            13  SPA-GMN-I04-TGMONEY       PIC 9(07)
-                                                         OCCURS  12.
+                                                         OCCURS  16.
       *
       *                     ›∏±≈¨Õ— ¨
                            13  SPA-GMN-I04-HKNTEKI       PIC 9(10).

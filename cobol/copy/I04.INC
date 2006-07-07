@@ -68,13 +68,21 @@
                 04  I04-VALUE   PIC X(10).
               03  I04-SJTHKNTEN.
                 04  I04-VALUE   PIC X(10).
+              03  I04-MSIHKNTEN.
+                04  I04-VALUE   PIC X(10).
               03  I04-KNSHKNTEN.
                 04  I04-VALUE   PIC X(10).
               03  I04-GZUHKNTEN.
                 04  I04-VALUE   PIC X(10).
               03  I04-ETCHKNTEN.
                 04  I04-VALUE   PIC X(10).
+              03  I04-SSNHKNTEN.
+                04  I04-VALUE   PIC X(10).
+              03  I04-HOUHKNTEN.
+                04  I04-VALUE   PIC X(10).
               03  I04-NYUHKNTEN.
+                04  I04-VALUE   PIC X(10).
+              03  I04-RYOHKNTEN.
                 04  I04-VALUE   PIC X(10).
               03  I04-TOTALHKNTEN.
                 04  I04-VALUE   PIC X(10).
@@ -92,13 +100,21 @@
                 04  I04-VALUE   PIC X(10).
               03  I04-SJTGMONEY.
                 04  I04-VALUE   PIC X(10).
+              03  I04-MSITGMONEY.
+                04  I04-VALUE   PIC X(10).
               03  I04-KNSTGMONEY.
                 04  I04-VALUE   PIC X(10).
               03  I04-GZUTGMONEY.
                 04  I04-VALUE   PIC X(10).
               03  I04-ETCTGMONEY.
                 04  I04-VALUE   PIC X(10).
+              03  I04-SSNTGMONEY.
+                04  I04-VALUE   PIC X(10).
+              03  I04-HOUTGMONEY.
+                04  I04-VALUE   PIC X(10).
               03  I04-NYUTGMONEY.
+                04  I04-VALUE   PIC X(10).
+              03  I04-RYOTGMONEY.
                 04  I04-VALUE   PIC X(10).
               03  I04-JIHIMSG1.
                 04  I04-VALUE   PIC X(12).

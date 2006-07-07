@@ -89,9 +89,9 @@
       *
                    07  SPA-GMN-KINGAKU-AREA.
                        09  SPA-GMN-HKNRYO          PIC 9(07)
-                                                   OCCURS  12.
+                                                   OCCURS  16.
                        09  SPA-GMN-TGMONEY         PIC 9(07)
-                                                   OCCURS  11.
+                                                   OCCURS  15.
                        09  SPA-GMN-HKNTEKI         PIC 9(10).
                        09  SPA-GMN-SKJRYOYO        PIC 9(07).
                        09  SPA-GMN-SKJFTN          PIC 9(07).
@@ -867,22 +867,20 @@
            END-EVALUATE
       *
       *    ÊÝ¸±ÎÁ
-           MOVE    ZERO                TO  SPA-GMN-HKNRYO (12)
            PERFORM VARYING     IDX0    FROM    1   BY  1
-                   UNTIL     ( IDX0    >   11 )
+                   UNTIL     ( IDX0    >   15 )
                MOVE    SYU-HKNTEN (IDX0)
                                        TO  SPA-GMN-HKNRYO (IDX0)
       *
-               COMPUTE SPA-GMN-HKNRYO (12)
-                   =   SPA-GMN-HKNRYO (12) +   SYU-HKNTEN (IDX0)
-      *
            END-PERFORM
+      *
+           MOVE    SYU-TOTAL-HKNTEN    TO SPA-GMN-HKNRYO (16)
       *
            MOVE    SYU-DENPJTIKBN      TO  SPA-NAI-HEAD-DENPJTIKBN
       *
       *    ÊÝ¸±Å¬ÍÑ³°
            PERFORM VARYING     IDX0     FROM    1   BY  1
-                   UNTIL     ( IDX0     >   11 )
+                   UNTIL     ( IDX0     >   15 )
       *
                MOVE    ZERO            TO   SPA-GMN-TGMONEY (IDX0)
                COMPUTE SPA-GMN-TGMONEY (IDX0)
@@ -918,7 +916,7 @@
       *    ÊÝ¸±Å¬ÍÑ³°
            MOVE    ZERO                TO  SPA-GMN-HKNGAI.
            COMPUTE  SPA-GMN-HKNGAI
-                 =  SYU-TGMONEY (12)   +   SYU-TGMONEY-TAX (12)
+                 =  SYU-TOTAL-TGMONEY  +   SYU-TOTAL-TGMONEY-TAX
       *
       *    Ï«ºÒÊÝ¸±Å¬ÍÑÊ¬
            MOVE    SYU-RSISHOSHIN-MONEY
@@ -1321,11 +1319,15 @@
            MOVE    SPA-GMN-HKNRYO (05) TO  S03N-CSYHKNTEN
            MOVE    SPA-GMN-HKNRYO (06) TO  S03N-SYCHKNTEN
            MOVE    SPA-GMN-HKNRYO (07) TO  S03N-SJTHKNTEN
-           MOVE    SPA-GMN-HKNRYO (08) TO  S03N-KNSHKNTEN
-           MOVE    SPA-GMN-HKNRYO (09) TO  S03N-GZUHKNTEN
-           MOVE    SPA-GMN-HKNRYO (10) TO  S03N-ETCHKNTEN
-           MOVE    SPA-GMN-HKNRYO (11) TO  S03N-NYUHKNTEN
-           MOVE    SPA-GMN-HKNRYO (12) TO  S03N-TOTALHKNTEN
+           MOVE    SPA-GMN-HKNRYO (08) TO  S03N-MSIHKNTEN
+           MOVE    SPA-GMN-HKNRYO (09) TO  S03N-KNSHKNTEN
+           MOVE    SPA-GMN-HKNRYO (10) TO  S03N-GZUHKNTEN
+           MOVE    SPA-GMN-HKNRYO (11) TO  S03N-ETCHKNTEN
+           MOVE    SPA-GMN-HKNRYO (12) TO  S03N-SSNHKNTEN
+           MOVE    SPA-GMN-HKNRYO (13) TO  S03N-HOUHKNTEN
+           MOVE    SPA-GMN-HKNRYO (14) TO  S03N-NYUHKNTEN
+           MOVE    SPA-GMN-HKNRYO (15) TO  S03N-RYOHKNTEN
+           MOVE    SPA-GMN-HKNRYO (16) TO  S03N-TOTALHKNTEN
            MOVE    SPA-GMN-HKNTEKI     TO  S03N-HKNTEKMONEY
            MOVE    SPA-GMN-ROUFTN      TO  S03N-RJNFTN
            MOVE    SPA-GMN-KOHFTN      TO  S03N-KOHFTN
@@ -1359,10 +1361,14 @@
            MOVE    SPA-GMN-TGMONEY (05) TO  S03N-CSYTGMONEY
            MOVE    SPA-GMN-TGMONEY (06) TO  S03N-SYCTGMONEY
            MOVE    SPA-GMN-TGMONEY (07) TO  S03N-SJTGMONEY
-           MOVE    SPA-GMN-TGMONEY (08) TO  S03N-KNSTGMONEY
-           MOVE    SPA-GMN-TGMONEY (09) TO  S03N-GZUTGMONEY
-           MOVE    SPA-GMN-TGMONEY (10) TO  S03N-ETCTGMONEY
-           MOVE    SPA-GMN-TGMONEY (11) TO  S03N-NYUTGMONEY
+           MOVE    SPA-GMN-TGMONEY (08) TO  S03N-MSITGMONEY
+           MOVE    SPA-GMN-TGMONEY (09) TO  S03N-KNSTGMONEY
+           MOVE    SPA-GMN-TGMONEY (10) TO  S03N-GZUTGMONEY
+           MOVE    SPA-GMN-TGMONEY (11) TO  S03N-ETCTGMONEY
+           MOVE    SPA-GMN-TGMONEY (12) TO  S03N-SSNTGMONEY
+           MOVE    SPA-GMN-TGMONEY (13) TO  S03N-HOUTGMONEY
+           MOVE    SPA-GMN-TGMONEY (14) TO  S03N-NYUTGMONEY
+           MOVE    SPA-GMN-TGMONEY (15) TO  S03N-RYOTGMONEY
            MOVE    SPA-GMN-HKNGAI      TO  S03N-HKNTEKGAI
            MOVE    SPA-GMN-ICHIFTN     TO  S03N-FTNTOTAL
       *    MOVE    SPA-GMN-YAKFTN      TO  S03N-YKZFTN 

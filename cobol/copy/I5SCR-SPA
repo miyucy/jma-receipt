@@ -53,11 +53,11 @@
                        11  SPA-GMN-I51-SANTEIEDYMD   PIC X(10).
       *                ø«Œ≈Œ¡
                        11  SPA-GMN-I51-HKNRYO        PIC 9(07)
-                                                     OCCURS  12.
+                                                     OCCURS  16.
                        11  SPA-GMN-I51-SEIKYU-AREA.
       *                     ›∏±≈¨Õ—≥∞ø«Œ≈Œ¡
                            13  SPA-GMN-I51-TGMONEY       PIC 9(07)
-                                                         OCCURS  12.
+                                                         OCCURS  16.
       *
       *                     ›∏±≈¨Õ— ¨
                            13  SPA-GMN-I51-HKNTEKI       PIC 9(10).

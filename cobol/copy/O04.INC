@@ -38,10 +38,14 @@
               03  O04-CSYHKNTEN PIC S9(8).
               03  O04-SYCHKNTEN PIC S9(8).
               03  O04-SJTHKNTEN PIC S9(8).
+              03  O04-MSIHKNTEN PIC S9(8).
               03  O04-KNSHKNTEN PIC S9(8).
               03  O04-GZUHKNTEN PIC S9(8).
               03  O04-ETCHKNTEN PIC S9(8).
+              03  O04-SSNHKNTEN PIC S9(8).
+              03  O04-HOUHKNTEN PIC S9(8).
               03  O04-NYUHKNTEN PIC S9(8).
+              03  O04-RYOHKNTEN PIC S9(8).
               03  O04-TOTALHKNTEN
                                 PIC S9(8).
               03  O04-SSUTGMONEY
@@ -57,14 +61,18 @@
               03  O04-SYCTGMONEY
                                 PIC S9(8).
               03  O04-SJTGMONEY PIC S9(8).
+              03  O04-MSITGMONEY PIC S9(8).
               03  O04-KNSTGMONEY
                                 PIC S9(8).
               03  O04-GZUTGMONEY
                                 PIC S9(8).
               03  O04-ETCTGMONEY
                                 PIC S9(8).
+              03  O04-SSNTGMONEY PIC S9(8).
+              03  O04-HOUTGMONEY PIC S9(8).
               03  O04-NYUTGMONEY
                                 PIC S9(8).
+              03  O04-RYOTGMONEY PIC S9(8).
               03  O04-HKNTEKMONEY
                                 PIC S9(8).
               03  O04-HKNTEKGAI PIC S9(8).

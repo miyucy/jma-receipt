@@ -55,13 +55,21 @@
                 04  I51-VALUE   PIC X(10).
               03  I51-SJTHKNTEN.
                 04  I51-VALUE   PIC X(10).
+              03  I51-MSIHKNTEN.
+                04  I51-VALUE   PIC X(10).
               03  I51-KNSHKNTEN.
                 04  I51-VALUE   PIC X(10).
               03  I51-GZUHKNTEN.
                 04  I51-VALUE   PIC X(10).
               03  I51-ETCHKNTEN.
                 04  I51-VALUE   PIC X(10).
+              03  I51-SSNHKNTEN.
+                04  I51-VALUE   PIC X(10).
+              03  I51-HOUHKNTEN.
+                04  I51-VALUE   PIC X(10).
               03  I51-NYUHKNTEN.
+                04  I51-VALUE   PIC X(10).
+              03  I51-RYOHKNTEN.
                 04  I51-VALUE   PIC X(10).
               03  I51-TOTALHKNTEN.
                 04  I51-VALUE   PIC X(10).
@@ -79,13 +87,21 @@
                 04  I51-VALUE   PIC X(10).
               03  I51-SJTGMONEY.
                 04  I51-VALUE   PIC X(10).
+              03  I51-MSITGMONEY.
+                04  I51-VALUE   PIC X(10).
               03  I51-KNSTGMONEY.
                 04  I51-VALUE   PIC X(10).
               03  I51-GZUTGMONEY.
                 04  I51-VALUE   PIC X(10).
               03  I51-ETCTGMONEY.
                 04  I51-VALUE   PIC X(10).
+              03  I51-SSNTGMONEY.
+                04  I51-VALUE   PIC X(10).
+              03  I51-HOUTGMONEY.
+                04  I51-VALUE   PIC X(10).
               03  I51-NYUTGMONEY.
+                04  I51-VALUE   PIC X(10).
+              03  I51-RYOTGMONEY.
                 04  I51-VALUE   PIC X(10).
               03  I51-JIHIMSG   PIC X(12)  OCCURS  10.
               03  I51-JIHITAXNASI

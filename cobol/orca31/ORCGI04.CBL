@@ -646,9 +646,6 @@
                MOVE    WRK-CMB-ITM2    TO  SPA-NAI-I04-NYKNJYOTAI
            END-IF
       *
-           DISPLAY "PTINF-NYUKIN-HOHO = " PTINF-NYUKIN-HOHO
-           DISPLAY "SPA-NAI-I04-NYKNJYOTAI = " SPA-NAI-I04-NYKNJYOTAI
-      *
       *    ºÁº£∞Âª·ÃæΩÈ¥¸√Õ
            MOVE    SPA-GMN-I01-DR-CD (1)
                                    TO  WRK-CMB-CD
@@ -1097,24 +1094,22 @@
       *
       *
       *     ›∏±Œ¡
-           MOVE    ZERO                TO  SPA-GMN-I04-HKNRYO (12)
            PERFORM VARYING     IDX1     FROM    1   BY  1
-                   UNTIL     ( IDX1     >   11 )
+                   UNTIL     ( IDX1     >   15 )
                MOVE    WKSYU-HKNTEN (IDX1)
                                       TO  SPA-GMN-I04-HKNRYO (IDX1)
-               COMPUTE SPA-GMN-I04-HKNRYO (12)
-                   =   SPA-GMN-I04-HKNRYO (12)
-                   +   WKSYU-HKNTEN (IDX1)
       *     ›∏±≈¨Õ—≥∞
                COMPUTE SPA-GMN-I04-TGMONEY (IDX1)
                    =   WKSYU-TGMONEY (IDX1)
                    +   WKSYU-TGMONEY-TAX(IDX1)
            END-PERFORM
       *
+           MOVE    WKSYU-HKNTEN (16)   TO  SPA-GMN-I04-HKNRYO (16)
+      *
       *     ›∏±≈¨Õ—≥∞
            COMPUTE SPA-GMN-I04-HKNGAI
-                   =   WKSYU-TGMONEY (12)
-                   +   WKSYU-TGMONEY-TAX (12)
+                   =   WKSYU-TGMONEY (16)
+                   +   WKSYU-TGMONEY-TAX (16)
       *
       *     ›∏±≈¨Õ—∂‚≥€
            MOVE    WKSYU-HKNTEKMONEY       TO  SPA-GMN-I04-HKNTEKI
@@ -1413,24 +1408,40 @@
            MOVE    SPA-GMN-I04-HKNRYO (07)
                                        TO  WRK-Z9
            MOVE    WRK-Z9              TO  I04-SJTHKNTEN
-      *    ∏°∫∫Œ¡
+      *    ºÍΩ—Œ¡
            MOVE    SPA-GMN-I04-HKNRYO (08)
+                                       TO  WRK-Z9
+           MOVE    WRK-Z9              TO  I04-MSIHKNTEN
+      *    ∏°∫∫Œ¡
+           MOVE    SPA-GMN-I04-HKNRYO (09)
                                        TO  WRK-Z9
            MOVE    WRK-Z9              TO  I04-KNSHKNTEN
       *    £ÿ¿˛Œ¡
-           MOVE    SPA-GMN-I04-HKNRYO (09)
-                                       TO  WRK-Z9
-           MOVE    WRK-Z9              TO  I04-GZUHKNTEN
-      *    §Ω§Œ¬æ
            MOVE    SPA-GMN-I04-HKNRYO (10)
                                        TO  WRK-Z9
-           MOVE    WRK-Z9              TO  I04-ETCHKNTEN
-      *    ∆˛±°Œ¡
+           MOVE    WRK-Z9              TO  I04-GZUHKNTEN
+      *    •Í•œ•”•Í
            MOVE    SPA-GMN-I04-HKNRYO (11)
                                        TO  WRK-Z9
-           MOVE    WRK-Z9              TO  I04-NYUHKNTEN
-      *    πÁ∑◊≈¿øÙ
+           MOVE    WRK-Z9              TO  I04-ETCHKNTEN
+      *    ¿∫ø¿≤ ¿ÏÃÁ
            MOVE    SPA-GMN-I04-HKNRYO (12)
+                                       TO  WRK-Z9
+           MOVE    WRK-Z9              TO  I04-SSNHKNTEN
+      *     ¸ºÕ¿˛º£Œ≈
+           MOVE    SPA-GMN-I04-HKNRYO (13)
+                                       TO  WRK-Z9
+           MOVE    WRK-Z9              TO  I04-HOUHKNTEN
+      *    ∆˛±°Œ¡
+           MOVE    SPA-GMN-I04-HKNRYO (14)
+                                       TO  WRK-Z9
+           MOVE    WRK-Z9              TO  I04-NYUHKNTEN
+      *    Œ≈Õ‹√¥≈ˆºÍ≈ˆ
+           MOVE    SPA-GMN-I04-HKNRYO (15)
+                                       TO  WRK-Z9
+           MOVE    WRK-Z9              TO  I04-RYOHKNTEN
+      *    πÁ∑◊≈¿øÙ
+           MOVE    SPA-GMN-I04-HKNRYO (16)
                                        TO  WRK-Z9
            MOVE    WRK-Z9              TO  I04-TOTALHKNTEN
       *     ›∏±≈¨Õ—≥∞
@@ -1462,23 +1473,39 @@
            MOVE    SPA-GMN-I04-TGMONEY (07)
                                        TO  WRK-Z9
            MOVE    WRK-Z9              TO  I04-SJTGMONEY
-      *    ∏°∫∫Œ¡
+      *    À„øÏŒ¡
            MOVE    SPA-GMN-I04-TGMONEY (08)
+                                       TO  WRK-Z9
+           MOVE    WRK-Z9              TO  I04-MSITGMONEY
+      *    ∏°∫∫Œ¡
+           MOVE    SPA-GMN-I04-TGMONEY (09)
                                        TO  WRK-Z9
            MOVE    WRK-Z9              TO  I04-KNSTGMONEY
       *    £ÿ¿˛Œ¡
-           MOVE    SPA-GMN-I04-TGMONEY (09)
-                                       TO  WRK-Z9
-           MOVE    WRK-Z9              TO  I04-GZUTGMONEY
-      *    §Ω§Œ¬æ
            MOVE    SPA-GMN-I04-TGMONEY (10)
                                        TO  WRK-Z9
-           MOVE    WRK-Z9              TO  I04-ETCTGMONEY
-      *
-      *    ∆˛±°Œ¡
+           MOVE    WRK-Z9              TO  I04-GZUTGMONEY
+      *    •Í•œ•”•Í
            MOVE    SPA-GMN-I04-TGMONEY (11)
                                        TO  WRK-Z9
+           MOVE    WRK-Z9              TO  I04-ETCTGMONEY
+      *    ¿∫ø¿≤ ¿ÏÃÁ
+           MOVE    SPA-GMN-I04-TGMONEY (12)
+                                       TO  WRK-Z9
+           MOVE    WRK-Z9              TO  I04-SSNTGMONEY
+      *     ¸ºÕ¿˛º£Œ≈
+           MOVE    SPA-GMN-I04-TGMONEY (13)
+                                       TO  WRK-Z9
+           MOVE    WRK-Z9              TO  I04-HOUTGMONEY
+      *
+      *    ∆˛±°Œ¡
+           MOVE    SPA-GMN-I04-TGMONEY (14)
+                                       TO  WRK-Z9
            MOVE    WRK-Z9              TO  I04-NYUTGMONEY
+      *    Œ≈Õ‹√¥≈ˆºÍ≈ˆ
+           MOVE    SPA-GMN-I04-TGMONEY (15)
+                                       TO  WRK-Z9
+           MOVE    WRK-Z9              TO  I04-RYOTGMONEY
       *
       *    º´»Ò
            MOVE    SPA-GMN-I04-JIHI1   TO  WRK-Z9

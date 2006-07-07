@@ -609,24 +609,40 @@
            MOVE    SPA-GMN-I51-HKNRYO (07)
                                        TO  WRK-Z9
            MOVE    WRK-Z9              TO  I51-SJTHKNTEN
-      *    ¸¡ººÎÁ
+      *    Ëã¿ìÎÁ
            MOVE    SPA-GMN-I51-HKNRYO (08)
+                                       TO  WRK-Z9
+           MOVE    WRK-Z9              TO  I51-MSIHKNTEN
+      *    ¸¡ººÎÁ
+           MOVE    SPA-GMN-I51-HKNRYO (09)
                                        TO  WRK-Z9
            MOVE    WRK-Z9              TO  I51-KNSHKNTEN
       *    £ØÀþÎÁ
-           MOVE    SPA-GMN-I51-HKNRYO (09)
-                                       TO  WRK-Z9
-           MOVE    WRK-Z9              TO  I51-GZUHKNTEN
-      *    ¤½¤ÎÂ¾
            MOVE    SPA-GMN-I51-HKNRYO (10)
                                        TO  WRK-Z9
-           MOVE    WRK-Z9              TO  I51-ETCHKNTEN
-      *    Æþ±¡ÎÁ
+           MOVE    WRK-Z9              TO  I51-GZUHKNTEN
+      *    ¥ê¥Ï¥Ó¥ê
            MOVE    SPA-GMN-I51-HKNRYO (11)
                                        TO  WRK-Z9
-           MOVE    WRK-Z9              TO  I51-NYUHKNTEN
-      *    ¹ç·×ÅÀ¿ô
+           MOVE    WRK-Z9              TO  I51-ETCHKNTEN
+      *    Àº¿À²ÊÀìÌç
            MOVE    SPA-GMN-I51-HKNRYO (12)
+                                       TO  WRK-Z9
+           MOVE    WRK-Z9              TO  I51-SSNHKNTEN
+      *    Êü¼ÍÀþ¼£ÎÅ
+           MOVE    SPA-GMN-I51-HKNRYO (13)
+                                       TO  WRK-Z9
+           MOVE    WRK-Z9              TO  I51-HOUHKNTEN
+      *    Æþ±¡ÎÁ
+           MOVE    SPA-GMN-I51-HKNRYO (14)
+                                       TO  WRK-Z9
+           MOVE    WRK-Z9              TO  I51-NYUHKNTEN
+      *    ÎÅÍÜÃ´Åö¼êÅö
+           MOVE    SPA-GMN-I51-HKNRYO (15)
+                                       TO  WRK-Z9
+           MOVE    WRK-Z9              TO  I51-RYOHKNTEN
+      *    ¹ç·×ÅÀ¿ô
+           MOVE    SPA-GMN-I51-HKNRYO (16)
                                        TO  WRK-Z9
            MOVE    WRK-Z9              TO  I51-TOTALHKNTEN
       *    ÊÝ¸±Å¬ÍÑ³°
@@ -658,23 +674,39 @@
            MOVE    SPA-GMN-I51-TGMONEY (07)
                                        TO  WRK-Z9
            MOVE    WRK-Z9              TO  I51-SJTGMONEY
-      *    ¸¡ººÎÁ
+      *    Ëã¿ìÎÁ
            MOVE    SPA-GMN-I51-TGMONEY (08)
+                                       TO  WRK-Z9
+           MOVE    WRK-Z9              TO  I51-MSITGMONEY
+      *    ¸¡ººÎÁ
+           MOVE    SPA-GMN-I51-TGMONEY (09)
                                        TO  WRK-Z9
            MOVE    WRK-Z9              TO  I51-KNSTGMONEY
       *    £ØÀþÎÁ
-           MOVE    SPA-GMN-I51-TGMONEY (09)
-                                       TO  WRK-Z9
-           MOVE    WRK-Z9              TO  I51-GZUTGMONEY
-      *    ¤½¤ÎÂ¾
            MOVE    SPA-GMN-I51-TGMONEY (10)
                                        TO  WRK-Z9
-           MOVE    WRK-Z9              TO  I51-ETCTGMONEY
-      *
-      *    Æþ±¡ÎÁ
+           MOVE    WRK-Z9              TO  I51-GZUTGMONEY
+      *    ¥ê¥Ï¥Ó¥ê
            MOVE    SPA-GMN-I51-TGMONEY (11)
                                        TO  WRK-Z9
+           MOVE    WRK-Z9              TO  I51-ETCTGMONEY
+      *    Àº¿À²ÊÀìÌç
+           MOVE    SPA-GMN-I51-TGMONEY (12)
+                                       TO  WRK-Z9
+           MOVE    WRK-Z9              TO  I51-SSNTGMONEY
+      *    Êü¼ÍÀþ¼£ÎÅ
+           MOVE    SPA-GMN-I51-TGMONEY (13)
+                                       TO  WRK-Z9
+           MOVE    WRK-Z9              TO  I51-HOUTGMONEY
+      *
+      *    Æþ±¡ÎÁ
+           MOVE    SPA-GMN-I51-TGMONEY (14)
+                                       TO  WRK-Z9
            MOVE    WRK-Z9              TO  I51-NYUTGMONEY
+      *    ÎÅÍÜÃ´Åö¼êÅö
+           MOVE    SPA-GMN-I51-TGMONEY (15)
+                                       TO  WRK-Z9
+           MOVE    WRK-Z9              TO  I51-RYOTGMONEY
       *
       *    ¼«Èñ
            PERFORM VARYING IDX-JIHI    FROM    1   BY  1
@@ -1831,7 +1863,7 @@
                                        TO  SUMSYUNOU-OCC (SUMSYUNOU-CNT)
       *            ÊÝ¸±ÎÁ
                    PERFORM VARYING     IDX12   FROM    1   BY  1
-                           UNTIL       IDX12   >   12
+                           UNTIL       IDX12   >   16
                      COMPUTE SUMSYU-HKNTEN   (WRK-SYU-SUM-IDX IDX12)
                          =   SUMSYU-HKNTEN   (WRK-SYU-SUM-IDX IDX12)
                          +   LNK-SYU-HKNTEN (IDX11 IDX12)
@@ -2265,24 +2297,22 @@
       *
       *
       *    ÊÝ¸±ÎÁ
-           MOVE    ZERO                TO  SPA-GMN-I51-HKNRYO (12)
            PERFORM VARYING     IDX1     FROM    1   BY  1
-                   UNTIL     ( IDX1     >   11 )
+                   UNTIL     ( IDX1     >   15 )
                MOVE    WKSYU-HKNTEN (IDX1)
                                       TO  SPA-GMN-I51-HKNRYO (IDX1)
-               COMPUTE SPA-GMN-I51-HKNRYO (12)
-                   =   SPA-GMN-I51-HKNRYO (12)
-                   +   WKSYU-HKNTEN (IDX1)
       *    ÊÝ¸±Å¬ÍÑ³°
                COMPUTE SPA-GMN-I51-TGMONEY (IDX1)
                    =   WKSYU-TGMONEY (IDX1)
                    +   WKSYU-TGMONEY-TAX(IDX1)
            END-PERFORM
       *
+           MOVE    WKSYU-HKNTEN (16)   TO  SPA-GMN-I51-HKNRYO (16)
+      *
       *    ÊÝ¸±Å¬ÍÑ³°
            COMPUTE SPA-GMN-I51-HKNGAI
-               =   WKSYU-TGMONEY (12)
-               +   WKSYU-TGMONEY-TAX (12)
+               =   WKSYU-TGMONEY (16)
+               +   WKSYU-TGMONEY-TAX (16)
       *
       *    ÊÝ¸±Å¬ÍÑ¶â³Û
            MOVE    WKSYU-HKNTEKMONEY       TO  SPA-GMN-I51-HKNTEKI

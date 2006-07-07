@@ -64,6 +64,9 @@ I04	{
 		SJTHKNTEN	{
 			value	varchar(10);
 		};
+		MSIHKNTEN	{
+			value	varchar(10);
+		};
 		KNSHKNTEN	{
 			value	varchar(10);
 		};
@@ -73,7 +76,16 @@ I04	{
 		ETCHKNTEN	{
 			value	varchar(10);
 		};
+		SSNHKNTEN	{
+			value	varchar(10);
+		};
+		HOUHKNTEN	{
+			value	varchar(10);
+		};
 		NYUHKNTEN	{
+			value	varchar(10);
+		};
+		RYOHKNTEN	{
 			value	varchar(10);
 		};
 		TOTALHKNTEN	{
@@ -100,6 +112,9 @@ I04	{
 		SJTGMONEY	{
 			value	varchar(10);
 		};
+		MSITGMONEY	{
+			value	varchar(10);
+		};
 		KNSTGMONEY	{
 			value	varchar(10);
 		};
@@ -109,7 +124,16 @@ I04	{
 		ETCTGMONEY	{
 			value	varchar(10);
 		};
+		SSNTGMONEY	{
+			value	varchar(10);
+		};
+		HOUTGMONEY	{
+			value	varchar(10);
+		};
 		NYUTGMONEY	{
+			value	varchar(10);
+		};
+		RYOTGMONEY	{
 			value	varchar(10);
 		};
 		JIHIMSG1	{

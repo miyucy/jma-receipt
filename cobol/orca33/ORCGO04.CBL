@@ -657,20 +657,19 @@
       *    ÊÝ¸±ÎÁ
            MOVE    ZERO                TO  SPA-GMN-O04-HKNRYO (12)
            PERFORM VARYING     IDX0    FROM    1   BY  1
-                   UNTIL     ( IDX0    >   11 )
+                   UNTIL     ( IDX0    >   15 )
                MOVE    SYU-HKNTEN (IDX0)
                                        TO  SPA-GMN-O04-HKNRYO (IDX0)
       *
-               COMPUTE SPA-GMN-O04-HKNRYO (12)
-                   =   SPA-GMN-O04-HKNRYO (12) +   SYU-HKNTEN (IDX0)
-      *
            END-PERFORM
+      *
+           MOVE    SYU-TOTAL-HKNTEN    TO  SPA-GMN-O04-HKNRYO (16)
       *
            MOVE    SYU-DENPJTIKBN      TO  SPA-NAI-O04-HEAD-DENPJTIKBN
       *
       *    ÊÝ¸±Å¬ÍÑ³°
            PERFORM VARYING     IDX0     FROM    1   BY  1
-                   UNTIL     ( IDX0     >   11 )
+                   UNTIL     ( IDX0     >   15 )
       *
                MOVE    ZERO            TO   SPA-GMN-O04-TGMONEY (IDX0)
                COMPUTE SPA-GMN-O04-TGMONEY (IDX0)
@@ -706,7 +705,7 @@
       *    ÊÝ¸±Å¬ÍÑ³°
            MOVE    ZERO                TO  SPA-GMN-O04-HKNGAI.
            COMPUTE  SPA-GMN-O04-HKNGAI
-                 =  SYU-TGMONEY (12)   +   SYU-TGMONEY-TAX (12)
+                 =  SYU-TOTAL-TGMONEY  +   SYU-TOTAL-TGMONEY
       *
       *    Ï«ºÒÊÝ¸±Å¬ÍÑÊ¬
            MOVE    SYU-RSISHOSHIN-MONEY
@@ -1279,11 +1278,15 @@
            MOVE    SPA-GMN-O04-HKNRYO (05) TO  O04-CSYHKNTEN
            MOVE    SPA-GMN-O04-HKNRYO (06) TO  O04-SYCHKNTEN
            MOVE    SPA-GMN-O04-HKNRYO (07) TO  O04-SJTHKNTEN
-           MOVE    SPA-GMN-O04-HKNRYO (08) TO  O04-KNSHKNTEN
-           MOVE    SPA-GMN-O04-HKNRYO (09) TO  O04-GZUHKNTEN
-           MOVE    SPA-GMN-O04-HKNRYO (10) TO  O04-ETCHKNTEN
-           MOVE    SPA-GMN-O04-HKNRYO (11) TO  O04-NYUHKNTEN
-           MOVE    SPA-GMN-O04-HKNRYO (12) TO  O04-TOTALHKNTEN
+           MOVE    SPA-GMN-O04-HKNRYO (08) TO  O04-MSIHKNTEN
+           MOVE    SPA-GMN-O04-HKNRYO (09) TO  O04-KNSHKNTEN
+           MOVE    SPA-GMN-O04-HKNRYO (10) TO  O04-GZUHKNTEN
+           MOVE    SPA-GMN-O04-HKNRYO (11) TO  O04-ETCHKNTEN
+           MOVE    SPA-GMN-O04-HKNRYO (12) TO  O04-SSNHKNTEN
+           MOVE    SPA-GMN-O04-HKNRYO (13) TO  O04-HOUHKNTEN
+           MOVE    SPA-GMN-O04-HKNRYO (14) TO  O04-NYUHKNTEN
+           MOVE    SPA-GMN-O04-HKNRYO (15) TO  O04-RYOHKNTEN
+           MOVE    SPA-GMN-O04-HKNRYO (16) TO  O04-TOTALHKNTEN
            MOVE    SPA-GMN-O04-HKNTEKI     TO  O04-HKNTEKMONEY
            MOVE    SPA-GMN-O04-ROUFTN      TO  O04-RJNFTN
            MOVE    SPA-GMN-O04-KOHFTN      TO  O04-KOHFTN
@@ -1317,10 +1320,14 @@
            MOVE    SPA-GMN-O04-TGMONEY (05) TO  O04-CSYTGMONEY
            MOVE    SPA-GMN-O04-TGMONEY (06) TO  O04-SYCTGMONEY
            MOVE    SPA-GMN-O04-TGMONEY (07) TO  O04-SJTGMONEY
-           MOVE    SPA-GMN-O04-TGMONEY (08) TO  O04-KNSTGMONEY
-           MOVE    SPA-GMN-O04-TGMONEY (09) TO  O04-GZUTGMONEY
-           MOVE    SPA-GMN-O04-TGMONEY (10) TO  O04-ETCTGMONEY
-           MOVE    SPA-GMN-O04-TGMONEY (11) TO  O04-NYUTGMONEY
+           MOVE    SPA-GMN-O04-TGMONEY (08) TO  O04-MSITGMONEY
+           MOVE    SPA-GMN-O04-TGMONEY (09) TO  O04-KNSTGMONEY
+           MOVE    SPA-GMN-O04-TGMONEY (10) TO  O04-GZUTGMONEY
+           MOVE    SPA-GMN-O04-TGMONEY (11) TO  O04-ETCTGMONEY
+           MOVE    SPA-GMN-O04-TGMONEY (12) TO  O04-SSNTGMONEY
+           MOVE    SPA-GMN-O04-TGMONEY (13) TO  O04-HOUTGMONEY
+           MOVE    SPA-GMN-O04-TGMONEY (14) TO  O04-NYUTGMONEY
+           MOVE    SPA-GMN-O04-TGMONEY (15) TO  O04-RYOTGMONEY
            MOVE    SPA-GMN-O04-HKNGAI      TO  O04-HKNTEKGAI
            MOVE    SPA-GMN-O04-ICHIFTN     TO  O04-FTNTOTAL
       *    MOVE    SPA-GMN-O04-YAKFTN      TO  O04-YKZFTN 

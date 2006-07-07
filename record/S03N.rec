@@ -78,6 +78,9 @@ S03N	{
 		SJTHKNTEN	{
 			value	number(10);
 		};
+		MSIHKNTEN	{
+			value	number(10);
+		};
 		KNSHKNTEN	{
 			value	number(10);
 		};
@@ -87,7 +90,16 @@ S03N	{
 		ETCHKNTEN	{
 			value	number(10);
 		};
+		SSNHKNTEN	{
+			value	number(10);
+		};
+		HOUHKNTEN	{
+			value	number(10);
+		};
 		NYUHKNTEN	{
+			value	number(10);
+		};
+		RYOHKNTEN	{
 			value	number(10);
 		};
 		TOTALHKNTEN	{
@@ -114,6 +126,9 @@ S03N	{
 		SJTGMONEY	{
 			value	number(10);
 		};
+		MSITGMONEY	{
+			value	number(10);
+		};
 		KNSTGMONEY	{
 			value	number(10);
 		};
@@ -123,7 +138,16 @@ S03N	{
 		ETCTGMONEY	{
 			value	number(10);
 		};
+		SSNTGMONEY	{
+			value	number(10);
+		};
+		HOUTGMONEY	{
+			value	number(10);
+		};
 		NYUTGMONEY	{
+			value	number(10);
+		};
+		RYOTGMONEY	{
 			value	number(10);
 		};
 		HKNTEKMONEY	{

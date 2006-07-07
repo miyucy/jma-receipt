@@ -45,10 +45,14 @@
               03  S03N-CSYHKNTEN PIC S9(10).
               03  S03N-SYCHKNTEN PIC S9(10).
               03  S03N-SJTHKNTEN PIC S9(10).
+              03  S03N-MSIHKNTEN PIC S9(10).
               03  S03N-KNSHKNTEN PIC S9(10).
               03  S03N-GZUHKNTEN PIC S9(10).
               03  S03N-ETCHKNTEN PIC S9(10).
+              03  S03N-SSNHKNTEN PIC S9(10).
+              03  S03N-HOUHKNTEN PIC S9(10).
               03  S03N-NYUHKNTEN PIC S9(10).
+              03  S03N-RYOHKNTEN PIC S9(10).
               03  S03N-TOTALHKNTEN
                                 PIC S9(10).
               03  S03N-SSUTGMONEY
@@ -64,14 +68,18 @@
               03  S03N-SYCTGMONEY
                                 PIC S9(10).
               03  S03N-SJTGMONEY PIC S9(10).
+              03  S03N-MSITGMONEY PIC S9(10).
               03  S03N-KNSTGMONEY
                                 PIC S9(10).
               03  S03N-GZUTGMONEY
                                 PIC S9(10).
               03  S03N-ETCTGMONEY
                                 PIC S9(10).
+              03  S03N-SSNTGMONEY PIC S9(10).
+              03  S03N-HOUTGMONEY PIC S9(10).
               03  S03N-NYUTGMONEY
                                 PIC S9(10).
+              03  S03N-RYOTGMONEY PIC S9(10).
               03  S03N-HKNTEKMONEY
                                 PIC S9(10).
               03  S03N-HKNTEKGAI PIC S9(10).
