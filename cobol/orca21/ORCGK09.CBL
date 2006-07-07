@@ -1511,6 +1511,10 @@
                END-IF
                MOVE    SPACE               TO  SPA-GMN-DOSELNUM
                MOVE    ZERO                TO  SPA-NAI-DOSELNUM
+               INITIALIZE                  SPA-GMN-TBL
+               INITIALIZE                  SPA-NAI-TBL
+               MOVE    ZERO                TO  SPA-GMN-MAX2
+               MOVE    ZERO                TO  SPA-NAI-MAX2
                IF      SPA-K09GMN-MAX1     >   ZERO
                    MOVE    1               TO  SPA-NAI-DOSELNUM
                    MOVE    "1"             TO  SPA-GMN-DOSELNUM
@@ -2893,6 +2897,8 @@
                ELSE
                    INITIALIZE                  SPA-GMN-TBL
                    INITIALIZE                  SPA-NAI-TBL
+                   MOVE    ZERO                TO  SPA-GMN-MAX2
+                   MOVE    ZERO                TO  SPA-NAI-MAX2
                END-IF
            END-IF
            .
