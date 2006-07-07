@@ -1408,7 +1408,7 @@
            MOVE    SPA-GMN-I04-HKNRYO (07)
                                        TO  WRK-Z9
            MOVE    WRK-Z9              TO  I04-SJTHKNTEN
-      *    ºÍΩ—Œ¡
+      *    À„øÏŒ¡
            MOVE    SPA-GMN-I04-HKNRYO (08)
                                        TO  WRK-Z9
            MOVE    WRK-Z9              TO  I04-MSIHKNTEN
@@ -1433,11 +1433,11 @@
                                        TO  WRK-Z9
            MOVE    WRK-Z9              TO  I04-HOUHKNTEN
       *    ∆˛±°Œ¡
-           MOVE    SPA-GMN-I04-HKNRYO (14)
+           MOVE    SPA-GMN-I04-HKNRYO (15)
                                        TO  WRK-Z9
            MOVE    WRK-Z9              TO  I04-NYUHKNTEN
       *    Œ≈Õ‹√¥≈ˆºÍ≈ˆ
-           MOVE    SPA-GMN-I04-HKNRYO (15)
+           MOVE    SPA-GMN-I04-HKNRYO (14)
                                        TO  WRK-Z9
            MOVE    WRK-Z9              TO  I04-RYOHKNTEN
       *    πÁ∑◊≈¿øÙ
@@ -1499,11 +1499,11 @@
            MOVE    WRK-Z9              TO  I04-HOUTGMONEY
       *
       *    ∆˛±°Œ¡
-           MOVE    SPA-GMN-I04-TGMONEY (14)
+           MOVE    SPA-GMN-I04-TGMONEY (15)
                                        TO  WRK-Z9
            MOVE    WRK-Z9              TO  I04-NYUTGMONEY
       *    Œ≈Õ‹√¥≈ˆºÍ≈ˆ
-           MOVE    SPA-GMN-I04-TGMONEY (15)
+           MOVE    SPA-GMN-I04-TGMONEY (14)
                                        TO  WRK-Z9
            MOVE    WRK-Z9              TO  I04-RYOTGMONEY
       *
