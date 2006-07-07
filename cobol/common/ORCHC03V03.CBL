@@ -875,12 +875,19 @@
       *
       *    保険適用外編集
            PERFORM     VARYING   IDX-JIHI FROM  1  BY  1
-                       UNTIL     IDX-JIHI  >  10
+                       UNTIL     IDX-JIHI  >  15
                MOVE   ZERO      TO    WRK-Z72
                COMPUTE   WRK-Z72   =   SYU-TGMONEY(IDX-JIHI)  +
                                        SYU-TGMONEY-TAX(IDX-JIHI)
                PERFORM   800-HENKAN-SEC
-               MOVE    WRK-Z72-G           TO  HC03-JIHIBUN(IDX-JIHI)
+               EVALUATE    IDX-JIHI
+                   WHEN    14
+                       MOVE    WRK-Z72-G   TO  HC03-JIHIBUN(15)
+                   WHEN    15
+                       MOVE    WRK-Z72-G   TO  HC03-JIHIBUN(14)
+                   WHEN    OTHER
+                       MOVE    WRK-Z72-G   TO  HC03-JIHIBUN(IDX-JIHI)
+               END-EVALUATE
            END-PERFORM
       *
       *    保険適用外消費税（再掲）
@@ -933,8 +940,8 @@
       *
       *    保険適用外分
            MOVE    ZERO                TO  WRK-GOKTEN
-           COMPUTE WRK-GOKTEN          =   SYU-TGMONEY (12)
-                                       +   SYU-TGMONEY-TAX  (12)
+           COMPUTE WRK-GOKTEN          =   SYU-TGMONEY (16)
+                                       +   SYU-TGMONEY-TAX  (16)
            MOVE    WRK-GOKTEN          TO  WRK-Z72
            PERFORM 800-HENKAN-SEC
            MOVE    WRK-Z72-G           TO  HC03-HOKENGAI
