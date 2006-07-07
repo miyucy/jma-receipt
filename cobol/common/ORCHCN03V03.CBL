@@ -223,7 +223,7 @@
            COPY    "CPSRYACCT.INC".
       *
       *    入院請求書
-           COPY "HCN03V03.INC"    REPLACING  //HCN03V03//
+           COPY "HCN03V03A.INC"    REPLACING  //HCN03V03A//
                                   BY         //HCN03//.
       *
       *    患者労災保険情報
@@ -610,13 +610,21 @@
            MOVE    ZERO                TO  WRK-KINGAKU-Z
            MOVE    SPACE               TO  WRK-ZHENSYU-G
       *
-      *    請求内容
            PERFORM VARYING     IDX1    FROM  1   BY  1
-                   UNTIL       IDX1    >     12
+                   UNTIL       IDX1    >     16
                MOVE    SYU-HKNTEN(IDX1)    TO  WRK-KINGAKU-Z
                MOVE    WRK-KINGAKU-Z       TO  WRK-ZHENSYU12
                PERFORM 800-HENKAN-SEC
-               MOVE    WRK-ZHENSYU24       TO  HCN03-HKNRYO(IDX1)
+      *
+               EVALUATE    IDX1
+               WHEN    14
+                   MOVE    WRK-ZHENSYU24   TO  HCN03-HKNRYO(15)
+               WHEN    15
+                   MOVE    WRK-ZHENSYU24   TO  HCN03-HKNRYO(14)
+               WHEN    OTHER
+                   MOVE    WRK-ZHENSYU24   TO  HCN03-HKNRYO(IDX1)
+               END-EVALUATE
+      *
            END-PERFORM
       *
       *    労災・自賠で患者請求が無い場合、点数表示なし
@@ -683,8 +691,8 @@
       *
       *    保険適用外分
            COMPUTE WRK-GOKTEN
-               =   SYU-TGMONEY (12)
-               +   SYU-TGMONEY-TAX (12)
+               =   SYU-TOTAL-TGMONEY
+               +   SYU-TOTAL-TGMONEY-TAX
       *
            MOVE    WRK-GOKTEN          TO  WRK-KINGAKU-Z
            MOVE    WRK-KINGAKU-Z       TO  WRK-ZHENSYU12
@@ -693,12 +701,20 @@
       *
       *    保険適用外内訳編集
            PERFORM     VARYING   IDX-JIHI FROM  1  BY  1
-                       UNTIL     IDX-JIHI  >  11
+                       UNTIL     IDX-JIHI  >  15
                COMPUTE   WRK-KINGAKU-Z   =  SYU-TGMONEY(IDX-JIHI)  +
                                             SYU-TGMONEY-TAX(IDX-JIHI)
                MOVE    WRK-KINGAKU-Z       TO  WRK-ZHENSYU12
                PERFORM   800-HENKAN-SEC
-               MOVE    WRK-ZHENSYU24       TO  HCN03-JIHIBUN(IDX-JIHI)
+      *
+               EVALUATE    IDX-JIHI
+               WHEN    14
+                   MOVE    WRK-ZHENSYU24   TO  HCN03-JIHIBUN(15)
+               WHEN    15
+                   MOVE    WRK-ZHENSYU24   TO  HCN03-JIHIBUN(14)
+               WHEN    OTHER
+                   MOVE    WRK-ZHENSYU24   TO  HCN03-JIHIBUN(IDX-JIHI)
+               END-EVALUATE
            END-PERFORM
       *
       *    保険適用外消費税（再掲）
@@ -818,11 +834,14 @@
                    MOVE    "（訂正）"      TO  HCN03-MIDASHI
            END-EVALUATE
       *
+      *    見出し
+           PERFORM 20011-MEISAI-HEN-SEC
+      *
       *    印刷用データ出力
            MOVE    SPACE               TO  PRT-REC
            MOVE    SYU-SRYYMD          TO  PRT-SRYYMD
            MOVE    SYU-PTID            TO  PRT-PTID
-           MOVE    "HCN03V03.red"      TO  PRT-PRTID
+           MOVE    "HCN03V03A.red"     TO  PRT-PRTID
            MOVE    WRK-PRTNM           TO  PRT-PRTNM
            MOVE    "1"                 TO  PRT-SITEKBN
            MOVE    HCN03               TO  PRT-PRTDATA
@@ -832,6 +851,50 @@
        2001-HCN03-HEN-EXT.
            EXIT.
       *
+      *****************************************************************
+      *   明細見出し編集処理
+      *****************************************************************
+       20011-MEISAI-HEN-SEC                SECTION.
+      *
+           MOVE    "初 ・ 再 診 料"
+                                       TO  HCN03-MEISAI (1)
+           MOVE    "医 学 管 理 等"
+                                       TO  HCN03-MEISAI (2)
+           MOVE    "在　宅　医　療"
+                                       TO  HCN03-MEISAI (3)
+           MOVE    "投　　　　　薬"
+                                       TO  HCN03-MEISAI (4)
+           MOVE    "注　　　　　射"
+                                       TO  HCN03-MEISAI (5)
+           MOVE    "処　　　　　置"
+                                       TO  HCN03-MEISAI (6)
+           MOVE    "手　　　　　術"
+                                       TO  HCN03-MEISAI (7)
+           MOVE    "麻　　　　　酔"
+                                       TO  HCN03-MEISAI (8)
+           MOVE    "検　　　　　査"
+                                       TO  HCN03-MEISAI (9)
+           MOVE    "画　像　診　断"
+                                       TO  HCN03-MEISAI (10)
+           MOVE    "リハビリテーション"
+                                       TO  HCN03-MEISAI (11)
+           MOVE    "精神科専門療法"
+                                       TO  HCN03-MEISAI (12)
+           MOVE    "放 射 線 治 療"
+                                       TO  HCN03-MEISAI (13)
+           MOVE    "入　院　料　等"
+                                       TO  HCN03-MEISAI (14)
+           MOVE    "療養担当手当"
+                                       TO  HCN03-MEISAI (15)
+      *    明細削除
+      *    療養担当手当て
+           IF    ( SYU-HKNTEN (14)     =   ZERO )
+               MOVE    SPACE               TO  HCN03-MEISAI (15)
+           END-IF
+      *
+           .
+       20011-MEISAI-HEN-EXT.
+           EXIT.
       *****************************************************************
       *    半角全角変換処理
       *****************************************************************
