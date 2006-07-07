@@ -41,6 +41,9 @@ db	{
 	tbl_yakujyo;
 	tbl_monthlynum;
 	tbl_jobkanri;
+	tbl_byomei;
+	tbl_ptbyomei;
+	tbl_tsyrrk;
 };
 
 /* #include "orcadb.inc" */
