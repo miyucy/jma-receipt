@@ -1442,22 +1442,6 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label25</name>
-      <x>848</x>
-      <y>560</y>
-      <width>60</width>
-      <height>20</height>
-      <label>£ÿ¿˛Œ¡</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>MSGDATA</name>
       <x>508</x>
       <y>688</y>
@@ -1544,6 +1528,22 @@
       <width>66</width>
       <height>20</height>
       <label>•Í•œ•”•Í</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label25</name>
+      <x>848</x>
+      <y>560</y>
+      <width>60</width>
+      <height>20</height>
+      <label>≤Ë¡¸ø«√«</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
