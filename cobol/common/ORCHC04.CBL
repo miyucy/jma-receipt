@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-多々納  06/07/07  領収書変更対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -656,6 +657,25 @@
                END-IF
            END-IF
            MOVE    ACCT-SRYKBN         TO  TBL-SRYKBN (IDX-TBL)
+      *    診療区分 ８０ の時、変更
+           IF      ACCT-SRYKBN         =   "80"
+               EVALUATE    WRK-SRYSYUKBN
+                   WHEN    "800"
+                       MOVE    "80"        TO  TBL-SRYKBN (IDX-TBL)
+                   WHEN    "820"
+                       MOVE    "29"        TO  TBL-SRYKBN (IDX-TBL)
+                   WHEN    "830"
+                       MOVE    "83"        TO  TBL-SRYKBN (IDX-TBL)
+                   WHEN    "840"
+                       MOVE    "84"        TO  TBL-SRYKBN (IDX-TBL)
+                   WHEN    "850"
+                       MOVE    "85"        TO  TBL-SRYKBN (IDX-TBL)
+                   WHEN    "890"
+                       MOVE    "89"        TO  TBL-SRYKBN (IDX-TBL)
+                   WHEN    OTHER
+                       MOVE    "80"        TO  TBL-SRYKBN (IDX-TBL)
+               END-EVALUATE
+           END-IF
            MOVE    WRK-SRYSYUKBN       TO  TBL-SRYSYUKBN(IDX-TBL)
            MOVE    WRK-KAISU           TO  TBL-KAISU (IDX-TBL)
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -668,6 +688,12 @@
                MOVE    WRK-TBL-JIHIMONEY (IDX)
                                            TO  TBL-JIHIMONEY
                                                         (IDX-TBL IDX)
+               IF     (WRK-TBL-SRYCD (IDX)(1:4)    =   "0959" )  AND
+                      (WRK-SRYSYUKBN           =   "800"  )  AND
+                      (TBL-SRYKBN (IDX-TBL)    =   "80"   )
+      *            自賠責ユーザコードは、その他とする
+                   MOVE    "86"            TO  TBL-SRYKBN (IDX-TBL)
+               END-IF
            END-PERFORM
       *
            .
@@ -944,6 +970,7 @@
                WHEN    "25"
                WHEN    "26"
                WHEN    "27"
+               WHEN    "29"
                    MOVE    "投　　薬"          TO  WRK-SRYMEI
                WHEN    "31"
                WHEN    "32"
@@ -960,6 +987,16 @@
                WHEN    "70"
                    MOVE    "画像診断"          TO  WRK-SRYMEI
                WHEN    "80"
+                   MOVE    "リハビリ"          TO  WRK-SRYMEI
+               WHEN    "83"
+                   MOVE    "精神科専門"        TO  WRK-SRYMEI
+               WHEN    "84"
+                   MOVE    "放射線治療"        TO  WRK-SRYMEI
+               WHEN    "85"
+                   MOVE    "療養担当"          TO  WRK-SRYMEI
+               WHEN    "89"
+                   MOVE    "入院料等"          TO  WRK-SRYMEI
+               WHEN    "86"
                    MOVE    "その他"            TO  WRK-SRYMEI
                WHEN    "90"
                WHEN    "92"
