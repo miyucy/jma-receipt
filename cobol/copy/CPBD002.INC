@@ -235,18 +235,18 @@
                   09  BD002-HOU-MONEY           PIC  9(07).
                   09  BD002-HOU-TGMONEY         PIC  9(07).
                   09  BD002-HOU-TGMONEY-TAX     PIC  9(07).
-      *Œ≈Õ‹√¥≈ˆºÍ≈ˆ(14)
-              05  BD002-RYO.
-                  09  BD002-RYO-HKNTEN          PIC  9(07).
-                  09  BD002-RYO-MONEY           PIC  9(07).
-                  09  BD002-RYO-TGMONEY         PIC  9(07).
-                  09  BD002-RYO-TGMONEY-TAX     PIC  9(07).
-      *∆˛±°Œ¡(15)
+      *∆˛±°Œ¡(14)
               05  BD002-NYN.
                   09  BD002-NYN-HKNTEN          PIC  9(07).
                   09  BD002-NYN-MONEY           PIC  9(07).
                   09  BD002-NYN-TGMONEY         PIC  9(07).
                   09  BD002-NYN-TGMONEY-TAX     PIC  9(07).
+      *Œ≈Õ‹√¥≈ˆºÍ≈ˆ(15)
+              05  BD002-RYO.
+                  09  BD002-RYO-HKNTEN          PIC  9(07).
+                  09  BD002-RYO-MONEY           PIC  9(07).
+                  09  BD002-RYO-TGMONEY         PIC  9(07).
+                  09  BD002-RYO-TGMONEY-TAX     PIC  9(07).
       *πÁ∑◊  (16)
               05  BD002-TOTAL.
                   09  BD002-TOTAL-HKNTEN        PIC  9(07).
