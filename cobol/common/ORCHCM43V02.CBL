@@ -590,12 +590,12 @@
            MOVE    WRK-Z72-G           TO  HCM43-HKNRYO13
       *
       *    ∆˛±°Œ¡
-           MOVE    SYU-HKNTEN (15)     TO  WRK-Z72
+           MOVE    SYU-HKNTEN (14)     TO  WRK-Z72
            PERFORM 800-HENKAN-SEC
            MOVE    WRK-Z72-G           TO  HCM43-HKNRYO14
       *
       *    Œ≈Õ‹√¥≈ˆºÍ≈ˆ
-           MOVE    SYU-HKNTEN (14)     TO  WRK-Z72
+           MOVE    SYU-HKNTEN (15)     TO  WRK-Z72
            PERFORM 800-HENKAN-SEC
            MOVE    WRK-Z72-G           TO  HCM43-HKNRYO15
       *
@@ -639,15 +639,7 @@
                COMPUTE WRK-Z72   = SYU-TGMONEY(IDX-JIHI)  +
                                    SYU-TGMONEY-TAX(IDX-JIHI)
                PERFORM 800-HENKAN-SEC
-      *
-               EVALUATE IDX-JIHI
-               WHEN    14
-                   MOVE    WRK-Z72-G   TO  HCM43-JIHIBUN(15)
-               WHEN    15
-                   MOVE    WRK-Z72-G   TO  HCM43-JIHIBUN(14)
-               WHEN    OTHER
-                   MOVE    WRK-Z72-G   TO  HCM43-JIHIBUN(IDX-JIHI)
-               END-EVALUATE
+               MOVE    WRK-Z72-G TO    HCM43-JIHIBUN(IDX-JIHI)
       *
            END-PERFORM
       *
@@ -831,7 +823,7 @@
                                        TO  HCM43-MEISAI (15)
       *    Ã¿∫Ÿ∫ÔΩ¸
       *    Œ≈Õ‹√¥≈ˆºÍ≈ˆ§∆
-           IF    ( SYU-HKNTEN (14)     =   ZERO )
+           IF    ( SYU-HKNTEN (15)     =   ZERO )
                MOVE    SPACE               TO  HCM43-MEISAI (15)
            END-IF
       *

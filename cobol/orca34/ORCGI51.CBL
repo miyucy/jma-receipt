@@ -634,11 +634,11 @@
                                        TO  WRK-Z9
            MOVE    WRK-Z9              TO  I51-HOUHKNTEN
       *    ∆˛±°Œ¡
-           MOVE    SPA-GMN-I51-HKNRYO (15)
+           MOVE    SPA-GMN-I51-HKNRYO (14)
                                        TO  WRK-Z9
            MOVE    WRK-Z9              TO  I51-NYUHKNTEN
       *    Œ≈Õ‹√¥≈ˆºÍ≈ˆ
-           MOVE    SPA-GMN-I51-HKNRYO (14)
+           MOVE    SPA-GMN-I51-HKNRYO (15)
                                        TO  WRK-Z9
            MOVE    WRK-Z9              TO  I51-RYOHKNTEN
       *    πÁ∑◊≈¿øÙ
@@ -700,11 +700,11 @@
            MOVE    WRK-Z9              TO  I51-HOUTGMONEY
       *
       *    ∆˛±°Œ¡
-           MOVE    SPA-GMN-I51-TGMONEY (15)
+           MOVE    SPA-GMN-I51-TGMONEY (14)
                                        TO  WRK-Z9
            MOVE    WRK-Z9              TO  I51-NYUTGMONEY
       *    Œ≈Õ‹√¥≈ˆºÍ≈ˆ
-           MOVE    SPA-GMN-I51-TGMONEY (14)
+           MOVE    SPA-GMN-I51-TGMONEY (15)
                                        TO  WRK-Z9
            MOVE    WRK-Z9              TO  I51-RYOTGMONEY
       *

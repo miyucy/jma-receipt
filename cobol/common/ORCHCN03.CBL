@@ -623,15 +623,7 @@
                MOVE    SYU-HKNTEN(IDX1)    TO  WRK-KINGAKU-Z
                MOVE    WRK-KINGAKU-Z       TO  WRK-ZHENSYU12
                PERFORM 800-HENKAN-SEC
-      *
-               EVALUATE    IDX1
-               WHEN    14
-                   MOVE    WRK-ZHENSYU24   TO  HCN03-HKNRYO(15)
-               WHEN    15
-                   MOVE    WRK-ZHENSYU24   TO  HCN03-HKNRYO(14)
-               WHEN    OTHER
-                   MOVE    WRK-ZHENSYU24   TO  HCN03-HKNRYO(IDX1)
-               END-EVALUATE
+               MOVE    WRK-ZHENSYU24   TO  HCN03-HKNRYO(IDX1)
       *
            END-PERFORM
       *
@@ -860,7 +852,7 @@
                                        TO  HCN03-MEISAI (15)
       *    Ã¿∫Ÿ∫ÔΩ¸
       *    Œ≈Õ‹√¥≈ˆºÍ≈ˆ§∆
-           IF    ( SYU-HKNTEN (14)     =   ZERO )
+           IF    ( SYU-HKNTEN (15)     =   ZERO )
                MOVE    SPACE               TO  HCN03-MEISAI (15)
            END-IF
       *
