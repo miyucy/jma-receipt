@@ -254,18 +254,18 @@
                   09  SYU-HOU-MONEY           PIC  9(07).
                   09  SYU-HOU-TGMONEY         PIC  9(07).
                   09  SYU-HOU-TGMONEY-TAX     PIC  9(07).
-      *Œ≈Õ‹√¥≈ˆºÍ≈ˆ(14)
-              05  SYU-RYO.
-                  09  SYU-RYO-HKNTEN          PIC  9(07).
-                  09  SYU-RYO-MONEY           PIC  9(07).
-                  09  SYU-RYO-TGMONEY         PIC  9(07).
-                  09  SYU-RYO-TGMONEY-TAX     PIC  9(07).
-      *∆˛±°Œ¡(15)
+      *∆˛±°Œ¡(14)
               05  SYU-NYN.
                   09  SYU-NYN-HKNTEN          PIC  9(07).
                   09  SYU-NYN-MONEY           PIC  9(07).
                   09  SYU-NYN-TGMONEY         PIC  9(07).
                   09  SYU-NYN-TGMONEY-TAX     PIC  9(07).
+      *Œ≈Õ‹√¥≈ˆºÍ≈ˆ(15)
+              05  SYU-RYO.
+                  09  SYU-RYO-HKNTEN          PIC  9(07).
+                  09  SYU-RYO-MONEY           PIC  9(07).
+                  09  SYU-RYO-TGMONEY         PIC  9(07).
+                  09  SYU-RYO-TGMONEY-TAX     PIC  9(07).
       *πÁ∑◊  (16)
               05  SYU-TOTAL.
                   09  SYU-TOTAL-HKNTEN        PIC  9(07).

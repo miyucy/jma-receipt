@@ -110,14 +110,14 @@ tbl_syutotal {
 	HOU_MONEY			number(7,0);
 	HOU_TGMONEY			number(7,0);
 	HOU_TGMONEY_TAX			number(7,0);
-	RYO_HKNTEN			number(7,0);
-	RYO_MONEY			number(7,0);
-	RYO_TGMONEY			number(7,0);
-	RYO_TGMONEY_TAX			number(7,0);
 	NYN_HKNTEN			number(7,0);
 	NYN_MONEY			number(7,0);
 	NYN_TGMONEY			number(7,0);
 	NYN_TGMONEY_TAX			number(7,0);
+	RYO_HKNTEN			number(7,0);
+	RYO_MONEY			number(7,0);
+	RYO_TGMONEY			number(7,0);
+	RYO_TGMONEY_TAX			number(7,0);
 	TOTAL_HKNTEN			number(7,0);
 	TOTAL_MONEY			number(7,0);
 	TOTAL_TGMONEY			number(7,0);

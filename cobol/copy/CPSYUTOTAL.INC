@@ -242,18 +242,18 @@
                   09  SYUTTL-HOU-MONEY           PIC  9(07).
                   09  SYUTTL-HOU-TGMONEY         PIC  9(07).
                   09  SYUTTL-HOU-TGMONEY-TAX     PIC  9(07).
-      *Œ≈Õ‹√¥≈ˆºÍ≈ˆ(14)
-              05  SYUTTL-RYO.
-                  09  SYUTTL-RYO-HKNTEN          PIC  9(07).
-                  09  SYUTTL-RYO-MONEY           PIC  9(07).
-                  09  SYUTTL-RYO-TGMONEY         PIC  9(07).
-                  09  SYUTTL-RYO-TGMONEY-TAX     PIC  9(07).
-      *∆˛±°Œ¡(15)
+      *∆˛±°Œ¡(14)
               05  SYUTTL-NYN.
                   09  SYUTTL-NYN-HKNTEN          PIC  9(07).
                   09  SYUTTL-NYN-MONEY           PIC  9(07).
                   09  SYUTTL-NYN-TGMONEY         PIC  9(07).
                   09  SYUTTL-NYN-TGMONEY-TAX     PIC  9(07).
+      *Œ≈Õ‹√¥≈ˆºÍ≈ˆ(15)
+              05  SYUTTL-RYO.
+                  09  SYUTTL-RYO-HKNTEN          PIC  9(07).
+                  09  SYUTTL-RYO-MONEY           PIC  9(07).
+                  09  SYUTTL-RYO-TGMONEY         PIC  9(07).
+                  09  SYUTTL-RYO-TGMONEY-TAX     PIC  9(07).
       *πÁ∑◊  (16)
               05  SYUTTL-TOTAL.
                   09  SYUTTL-TOTAL-HKNTEN        PIC  9(07).
