@@ -2409,7 +2409,7 @@
       *    （療養担当手当：１月１回の算定）
            IF    LNK-SYU-SYUHKNNUM       =    "973"
            AND   LNK-S01-RYOYO(IDY)  NOT =    ZERO
-               COMPUTE  LNK-SYU-HKNTEN (14)  =  LNK-SYU-HKNTEN (14)
+               COMPUTE  LNK-SYU-HKNTEN (15)  =  LNK-SYU-HKNTEN (15)
                                              -  LNK-S01-RYOYO(IDY)
                COMPUTE  LNK-SYU-HKNTEN (16)  =  LNK-SYU-HKNTEN (16)
                                              -  LNK-S01-RYOYO(IDY)
