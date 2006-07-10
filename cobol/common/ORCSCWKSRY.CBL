@@ -2840,10 +2840,10 @@
                    ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (13)
       *        Œ≈Õ‹√¥≈ˆºÍ≈ˆ§∆
                WHEN    "850"
-                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (14)
+                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (15)
       *        ∆˛±°Œ¡
                WHEN    "890"
-                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (15)
+                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (14)
       *        §Ω§Œ¬æ
                WHEN    OTHER
                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (11)
@@ -3024,11 +3024,11 @@
       *             ¸ºÕ¿˛º£Œ≈
                    WHEN    "840"
                        ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY (13)
-      *            Œ≈Õ‹√¥≈ˆºÍ≈ˆ§∆
-                   WHEN    "850"
-                       ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY (14)
       *            ∆˛±°Œ¡
                    WHEN    "890"
+                       ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY (14)
+      *            Œ≈Õ‹√¥≈ˆºÍ≈ˆ§∆
+                   WHEN    "850"
                        ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY (15)
       *            §Ω§Œ¬æ
                    WHEN    OTHER
@@ -3040,11 +3040,11 @@
       *         ¸ºÕ¿˛º£Œ≈
                WHEN    "84"
                    ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY (13)
-      *        Œ≈Õ‹√¥≈ˆºÍ≈ˆ§∆
-               WHEN    "85"
-                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY (14)
       *        ∆˛±°Œ¡
                WHEN    "89"
+                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY (14)
+      *        Œ≈Õ‹√¥≈ˆºÍ≈ˆ§∆
+               WHEN    "85"
                    ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY (15)
       *        §Ω§Œ¬æ
                WHEN    OTHER
@@ -3116,11 +3116,11 @@
       *            Œ≈Õ‹√¥≈ˆºÍ≈ˆ§∆
                    WHEN    "850"
                        ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY-TAX
-                                                                   (14)
+                                                                   (15)
       *            ∆˛±°Œ¡
                    WHEN    "890"
                        ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY-TAX
-                                                                   (15)
+                                                                   (14)
       *            §Ω§Œ¬æ
                    WHEN    OTHER
                        ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY-TAX
@@ -3134,10 +3134,10 @@
                    ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY-TAX (13)
       *        Œ≈Õ‹√¥≈ˆºÍ≈ˆ§∆
                WHEN    "85"
-                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY-TAX (14)
+                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY-TAX (15)
       *        ∆˛±°Œ¡
                WHEN    "89"
-                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY-TAX (15)
+                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY-TAX (14)
       *        §Ω§Œ¬æ
                WHEN    OTHER
                    ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY-TAX (11)
@@ -3344,11 +3344,11 @@
       *        Œ≈Õ‹√¥≈ˆºÍ≈ˆ§∆
                WHEN    "850"
                    ADD     ORCSCWKSRY-KSN-TENSU (IDX)
-                                               TO  SYU-HKNTEN (14)
+                                               TO  SYU-HKNTEN (15)
       *        ∆˛±°Œ¡
                WHEN    "890"
                    ADD     ORCSCWKSRY-KSN-TENSU (IDX)
-                                               TO  SYU-HKNTEN (15)
+                                               TO  SYU-HKNTEN (14)
       *        §Ω§Œ¬æ
                WHEN    OTHER
                    ADD     ORCSCWKSRY-KSN-TENSU (IDX)

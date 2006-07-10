@@ -781,17 +781,17 @@
            PERFORM 800-HENKAN-SEC
            MOVE    WRK-Z72-G           TO  HC03-HKNRYO13
       *    入院料
-           MOVE    SYU-HKNTEN (15)     TO  WRK-Z72
+           MOVE    SYU-HKNTEN (14)     TO  WRK-Z72
            PERFORM 800-HENKAN-SEC
            MOVE    WRK-Z72-G           TO  HC03-HKNRYO14
       *    療養担当手当て
-           MOVE    SYU-HKNTEN (14)     TO  WRK-Z72
+           MOVE    SYU-HKNTEN (15)     TO  WRK-Z72
            PERFORM 800-HENKAN-SEC
            MOVE    WRK-Z72-G           TO  HC03-HKNRYO15
       *    見出し
            PERFORM 3001-MEISAI-HEN-SEC
       *    その他料
-           MOVE    SYU-HKNTEN (10)     TO  WRK-Z72
+           MOVE    SYU-HKNTEN (11)     TO  WRK-Z72
            PERFORM 800-HENKAN-SEC
            MOVE    WRK-Z72-G           TO  HC03-HKNRYO10
       *    合計点数
@@ -849,14 +849,7 @@
                COMPUTE   WRK-Z72   =   SYU-TGMONEY(IDX-JIHI)  +
                                        SYU-TGMONEY-TAX(IDX-JIHI)
                PERFORM   800-HENKAN-SEC
-               EVALUATE    IDX-JIHI
-                   WHEN    14
-                       MOVE    WRK-Z72-G   TO  HC03-JIHIBUN(15)
-                   WHEN    15
-                       MOVE    WRK-Z72-G   TO  HC03-JIHIBUN(14)
-                   WHEN    OTHER
-                       MOVE    WRK-Z72-G   TO  HC03-JIHIBUN(IDX-JIHI)
-               END-EVALUATE
+               MOVE    WRK-Z72-G   TO  HC03-JIHIBUN(IDX-JIHI)
            END-PERFORM
       *
       *    保険適用外消費税（再掲）
@@ -1031,7 +1024,9 @@
                                        TO  HC03-MEISAI (15)
       *    明細削除
       *    療養担当手当て
-           IF      SYU-HKNTEN (14)     =   ZERO
+           IF     (SYU-HKNTEN (15)     =   ZERO ) AND
+                  (SYU-TGMONEY (15)    =   ZERO ) AND
+                  (SYU-TGMONEY-TAX(15) =   ZERO )
                MOVE    SPACE               TO  HC03-MEISAI (15)
            END-IF
       *

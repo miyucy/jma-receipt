@@ -3117,10 +3117,10 @@
                        WHEN    "97"
                            IF      SPA-NAI-HKNSFLG (IDX-NAI) =   ZERO
                                ADD     SPA-NAI-HKNTEN (IDX-NAI)
-                                               TO  SPA-GMN-HKNTEN (15)
+                                               TO  SPA-GMN-HKNTEN (14)
                            ELSE
-                               COMPUTE SPA-GMN-HKNTEN (15)
-                                               =   SPA-GMN-HKNTEN (15)
+                               COMPUTE SPA-GMN-HKNTEN (14)
+                                               =   SPA-GMN-HKNTEN (14)
                                                -   SPA-NAI-HKNTEN
                                                               (IDX-NAI)
                            END-IF
@@ -3163,11 +3163,11 @@
       *        療養担当手当て
                WHEN    "850"
                    ADD     SPA-NAI-HKNTEN(IDX-NAI)
-                                               TO  SPA-GMN-HKNTEN (14)
+                                               TO  SPA-GMN-HKNTEN (15)
       *        入院料
                WHEN    "890"
                    ADD     SPA-NAI-HKNTEN(IDX-NAI)
-                                               TO  SPA-GMN-HKNTEN (15)
+                                               TO  SPA-GMN-HKNTEN (14)
       *        その他
                WHEN    OTHER
                    ADD     SPA-NAI-HKNTEN(IDX-NAI)
@@ -3971,11 +3971,11 @@
       *            療養担当手当て
                    WHEN    "850"
                        ADD     SPA-NAI-HKNTEN(IDY)
-                                               TO  SYU-HKNTEN (14)
+                                               TO  SYU-HKNTEN (15)
       *            入院料（外来）
                    WHEN    "890"
                        ADD     SPA-NAI-HKNTEN(IDY)
-                                               TO  SYU-HKNTEN (15)
+                                               TO  SYU-HKNTEN (14)
       *            その他
                    WHEN    OTHER
                        ADD     SPA-NAI-HKNTEN(IDY)
@@ -3984,7 +3984,7 @@
       *            食事
                WHEN    "90"
                    ADD     SPA-NAI-HKNTEN(IDY)
-                                               TO  SYU-HKNTEN (15)
+                                               TO  SYU-HKNTEN (14)
            END-EVALUATE
       *
            .
@@ -5655,9 +5655,9 @@
                    WHEN    13
                        MOVE    WRK-Z9-X          TO  K08-HOUHKNTEN
                    WHEN    14
-                       MOVE    WRK-Z9-X          TO  K08-RYOHKNTEN
-                   WHEN    15
                        MOVE    WRK-Z9-X          TO  K08-NYUHKNTEN
+                   WHEN    15
+                       MOVE    WRK-Z9-X          TO  K08-RYOHKNTEN
                END-EVALUATE
            END-PERFORM
       *    選択

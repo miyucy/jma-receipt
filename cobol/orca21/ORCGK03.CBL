@@ -2449,10 +2449,10 @@
            MOVE    SPA-GMN-HKNRYO (13) TO  WRK-Z9
            MOVE    WRK-Z9              TO  K03-HOUHKNTEN
       *    Æþ±¡ÎÁÅù
-           MOVE    SPA-GMN-HKNRYO (15) TO  WRK-Z9
+           MOVE    SPA-GMN-HKNRYO (14) TO  WRK-Z9
            MOVE    WRK-Z9              TO  K03-NYUHKNTEN
       *    ÎÅÍÜÃ´Åö¼êÅö¤Æ
-           MOVE    SPA-GMN-HKNRYO (14) TO  WRK-Z9
+           MOVE    SPA-GMN-HKNRYO (15) TO  WRK-Z9
            MOVE    WRK-Z9              TO  K03-RYOHKNTEN
       *    ¹ç·×ÅÀ¿ô
            MOVE    SPA-GMN-HKNRYO (16) TO  WRK-Z9
@@ -2498,10 +2498,10 @@
            MOVE    SPA-GMN-TGMONEY (13) TO  WRK-Z9
            MOVE    WRK-Z9              TO  K03-HOUTGMONEY
       *    Æþ±¡ÎÁ
-           MOVE    SPA-GMN-TGMONEY (15) TO  WRK-Z9
+           MOVE    SPA-GMN-TGMONEY (14) TO  WRK-Z9
            MOVE    WRK-Z9              TO  K03-NYUTGMONEY
       *    ÎÅÍÜÃ´Åö
-           MOVE    SPA-GMN-TGMONEY (14) TO  WRK-Z9
+           MOVE    SPA-GMN-TGMONEY (15) TO  WRK-Z9
            MOVE    WRK-Z9              TO  K03-RYOTGMONEY
       *
       *    ¼«Èñ

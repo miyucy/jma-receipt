@@ -814,11 +814,11 @@
            PERFORM 800-HENKAN-SEC
            MOVE    WRK-Z72-G           TO  HC03-HKNRYO13
       *    入院料
-           MOVE    SYU-HKNTEN (15)     TO  WRK-Z72
+           MOVE    SYU-HKNTEN (14)     TO  WRK-Z72
            PERFORM 800-HENKAN-SEC
            MOVE    WRK-Z72-G           TO  HC03-HKNRYO14
       *    療養担当手当て
-           MOVE    SYU-HKNTEN (14)     TO  WRK-Z72
+           MOVE    SYU-HKNTEN (15)     TO  WRK-Z72
            PERFORM 800-HENKAN-SEC
            MOVE    WRK-Z72-G           TO  HC03-HKNRYO15
       *    見出し
@@ -1048,7 +1048,7 @@
                                        TO  HC03-MEISAI (15)
       *    明細削除
       *    療養担当手当て
-           IF      SYU-HKNTEN (14)     =   ZERO
+           IF      SYU-HKNTEN (15)     =   ZERO
                MOVE    SPACE               TO  HC03-MEISAI (15)
            END-IF
       *
