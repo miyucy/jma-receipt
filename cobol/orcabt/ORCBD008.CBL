@@ -527,17 +527,11 @@
       *    »áÌ¾
                MOVE    PTINF-NAME      TO  HCM41-NAME(CNT-LINE)
       *    ÊÝ¸±ÅÀ¿ô
-               MOVE    ZERO            TO  SYU-TOTAL-HKNTEN
                EVALUATE    SYU-SYUHKNNUM
                    WHEN    WRK-CONS-JIBAI-HKNNUM
                    WHEN    WRK-CONS-ROUSAI-HKNNUM
-                       CONTINUE
+                       MOVE    ZERO        TO  SYU-TOTAL-HKNTEN
                    WHEN    OTHER
-                       PERFORM VARYING IDZ FROM    1   BY  1
-                               UNTIL   IDZ >       11
-                           ADD     SYU-HKNTEN (IDZ)
-                                               TO  SYU-TOTAL-HKNTEN
-                       END-PERFORM
                        MOVE    SYU-TOTAL-HKNTEN
                                            TO  WRK-Z8
                        MOVE    WRK-Z8      TO  HCM41-HKNTEN (CNT-LINE)
