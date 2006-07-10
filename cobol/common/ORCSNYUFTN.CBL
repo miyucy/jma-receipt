@@ -3291,6 +3291,7 @@
                     END-PERFORM                                        
       *            その他
                    WHEN    "80"
+                    INITIALIZE                      SRYACT-REC
                     MOVE    ACCT-HOSPID        TO   SRY-HOSPID
                     MOVE    ACCT-NYUGAIKBN     TO   SRY-NYUGAIKBN
                     MOVE    ACCT-PTID          TO   SRY-PTID
@@ -3409,6 +3410,7 @@
       *            保険適用外及び自費
                    WHEN    "95"
                    WHEN    "96"
+                       INITIALIZE                      SRYACT-REC
                        MOVE    ACCT-HOSPID        TO   SRY-HOSPID
                        MOVE    ACCT-NYUGAIKBN     TO   SRY-NYUGAIKBN
                        MOVE    ACCT-PTID          TO   SRY-PTID

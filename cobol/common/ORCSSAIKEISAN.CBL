@@ -36,6 +36,7 @@
       *  01.00.05    NACL-æÆ∆¶¬Ù  05/07/15  º´»Ò£±£∞π‡Ã‹¬–±˛
       *  01.00.06    NACL-ÃÁœ∆    05/07/19  º˝«ºπ‡Ã‹ƒ…≤√§À»º§¶Ω§¿µ
       *  01.00.07    NACL-ÃÁœ∆    06/03/30  œ´∫“∆±∆¸ΩÈø«¬–±˛
+      *  03.01.01    NACL-ÃÁœ∆    06/07/06  ŒŒº˝ΩÒ¬–±˛
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -95,6 +96,7 @@
                  05  WRK-SAIKEISAN-DD      PIC 9(02).
            03  WRK-KAGRPFLG                PIC X(01).
            03  WRK-TYK-HKNTEN              PIC S9(07).
+           03  WRK-TYK-HKNTEN2             PIC  9(07).
            03  WRK-SKYMONEY-TBL.
               04  WRK-SKYMONEY-TBL-OCC     OCCURS  15.
                  05  WRK-SKYMONEY          PIC 9(07).
@@ -118,7 +120,7 @@
       *
       *     ›∏±≈¨Õ—≥∞∂‚≥€¬‡»ÚÕ—•∆°º•÷•Î
        01  HKNTEKGAI-TABLE.
-           03  HKNTEKGAI-TBL               OCCURS 11.
+           03  HKNTEKGAI-TBL               OCCURS 15.
                  05  TBL-TGMONEY           PIC  9(08).
                  05  TBL-TGMONEY-TAX       PIC  9(08).
        01  JIHI-TABLE.
@@ -440,6 +442,7 @@
                                       LNK-SYU-RSISAISHIN-MONEY(IDY)
                                       LNK-SYU-RSISDO-MONEY(IDY)
                                       LNK-SYU-RSIETC-MONEY(IDY)
+                                      LNK-SYU-SHOHOU-SAI(IDY)
                MOVE       SPACE   TO  LNK-SYU-KYUFUGAI(IDY)
                INITIALIZE             LNK-SYU-KYUFUGAI(IDY)
       *
@@ -945,6 +948,8 @@
            MOVE     SYUTTL-SKYKUKBN       TO  LNK-SYU-SKYKUKBN(IDY)
       *¿¡µ·∆‚Õ∆
            MOVE     SYUTTL-SKY-NAIYOU     TO  LNK-SYU-SKY-NAIYOU(IDY)
+      *ΩË ˝§ª§ÛŒ¡∫∆∑«
+           MOVE     SYUTTL-SHOHOU-SAI     TO  LNK-SYU-SHOHOU-SAI(IDY)
       * ›∏±≈¨Õ—≥∞∂‚≥€°›æ√»Ò¿«° ∫∆∑«°À
            MOVE     SYUTTL-TGMONEY-TAX-SAI
                                       TO  LNK-SYU-TGMONEY-TAX-SAI(IDY)
@@ -1087,6 +1092,7 @@
            MOVE      ZERO     TO     FLG-SENIN-SYOSIN
       *
            MOVE      ZERO     TO     WRK-TYK-HKNTEN
+           MOVE      ZERO     TO     WRK-TYK-HKNTEN2
            MOVE      ZERO     TO     IDX2
            MOVE      ZERO     TO     IDX5
       *
@@ -1134,25 +1140,89 @@
                            (TBL-ZAITEN(IDX1)  *  TBL-ZAIKAISU(IDX1))
       *            ºÍΩ—
                    WHEN    "50"
-                   WHEN    "54"
                     COMPUTE LNK-SYU-HKNTEN(IDY 07) =
                             LNK-SYU-HKNTEN(IDY 07) +
                            (TBL-ZAITEN(IDX1)  *  TBL-ZAIKAISU(IDX1))
-      *            ∏°∫∫
-                   WHEN    "60"
+      *            À„øÏ
+                   WHEN    "54"
                     COMPUTE LNK-SYU-HKNTEN(IDY 08) =
                             LNK-SYU-HKNTEN(IDY 08) +
                            (TBL-ZAITEN(IDX1)  *  TBL-ZAIKAISU(IDX1))
-      *            £ÿ¿˛
-                   WHEN    "70"
+      *            ∏°∫∫
+                   WHEN    "60"
                     COMPUTE LNK-SYU-HKNTEN(IDY 09) =
                             LNK-SYU-HKNTEN(IDY 09) +
                            (TBL-ZAITEN(IDX1)  *  TBL-ZAIKAISU(IDX1))
-      *            §Ω§Œ¬æ
-                   WHEN    "80"
+      *            £ÿ¿˛
+                   WHEN    "70"
                     COMPUTE LNK-SYU-HKNTEN(IDY 10) =
                             LNK-SYU-HKNTEN(IDY 10) +
                            (TBL-ZAITEN(IDX1)  *  TBL-ZAIKAISU(IDX1))
+      *            §Ω§Œ¬æ
+                   WHEN    "80"
+                    INITIALIZE                       SRYACT-REC
+                    MOVE    LNK-SYU-HOSPID(IDY) TO   SRY-HOSPID
+                    MOVE    LNK-SYU-NYUGAIKBN(IDY)
+                                                TO   SRY-NYUGAIKBN
+                    MOVE    LNK-SYU-PTID(IDY)   TO   SRY-PTID
+                    MOVE    LNK-SYU-SRYKA(IDY)  TO   SRY-SRYKA
+                    MOVE    LNK-SYU-SRYYMD(IDY)(1:6)
+                                                TO   SRY-SRYYM
+                    MOVE    TBL-ZAIBAN(IDX1)    TO   SRY-ZAINUM
+                    MOVE    SRYACT-REC          TO   MCPDATA-REC
+                    MOVE    "DBSELECT"          TO   MCP-FUNC
+                    MOVE    "SRYACT-KEY2"       TO   ORC-DBPATH
+                    CALL    "ORCMCPSUB"         USING
+                                                MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC
+                    IF      MCP-RC             =       ZERO
+                      MOVE     "SRYACT-KEY2"    TO   ORC-DBPATH
+                      PERFORM   900-SRYACT-READ-SEC
+                    ELSE
+                      MOVE    1                 TO   FLG-SRYACT
+                    END-IF
+                    IF      FLG-SRYACT          =   ZERO
+                      EVALUATE   SRY-SRYSYUKBN
+      *                •Í•œ
+                       WHEN         "800"
+      ***              WHEN         "810"
+                        COMPUTE LNK-SYU-HKNTEN(IDY 11) =
+                                LNK-SYU-HKNTEN(IDY 11) +
+                              (TBL-ZAITEN(IDX1)  *  TBL-ZAIKAISU(IDX1))
+      *                ΩË ˝§ª§ÛŒ¡
+                       WHEN         "820"
+                         COMPUTE WRK-TYK-HKNTEN2 =
+                                 WRK-TYK-HKNTEN2 +
+                              (TBL-ZAITEN(IDX1)  *  TBL-ZAIKAISU(IDX1))
+      *                ¿∫ø¿≤ ¿ÏÃÁŒ≈À°
+                       WHEN         "830"
+                        COMPUTE LNK-SYU-HKNTEN(IDY 12) =
+                                LNK-SYU-HKNTEN(IDY 12) +
+                              (TBL-ZAITEN(IDX1)  *  TBL-ZAIKAISU(IDX1))
+      *                 ¸ºÕ¿˛
+                       WHEN         "840"
+                        COMPUTE LNK-SYU-HKNTEN(IDY 13) =
+                                LNK-SYU-HKNTEN(IDY 13) +
+                              (TBL-ZAITEN(IDX1)  *  TBL-ZAIKAISU(IDX1))
+      *                Œ≈Õ‹√¥≈ˆºÍ≈ˆ
+                       WHEN         "850"
+                        COMPUTE LNK-SYU-HKNTEN(IDY 15) =
+                                LNK-SYU-HKNTEN(IDY 15) +
+                              (TBL-ZAITEN(IDX1)  *  TBL-ZAIKAISU(IDX1))
+      *                ∆˛±°Œ¡
+                       WHEN         "890"
+                        COMPUTE LNK-SYU-HKNTEN(IDY 14) =
+                                LNK-SYU-HKNTEN(IDY 14) +
+                              (TBL-ZAITEN(IDX1)  *  TBL-ZAIKAISU(IDX1))
+                      END-EVALUATE
+                    END-IF
+                    MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+                    MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
+                    CALL    "ORCMCPSUB"          USING
+                                                 MCPAREA
+                                                 ORCMCPAREA
+                                                 MCPDATA-REC
                END-EVALUATE
       *
                IF    (IDY                 =     1  )
@@ -1349,8 +1419,8 @@
                    MOVE    ZERO           TO  WK-RSIETC-TENSU
                    COMPUTE WK-RSIETC-TENSU   =
                            LNK-SYU-RSIETC-MONEY(IDY)      /   10
-                   COMPUTE LNK-SYU-HKNTEN(IDY 10)   =
-                           LNK-SYU-HKNTEN(IDY 10)   -
+                   COMPUTE LNK-SYU-HKNTEN(IDY 11)   =
+                           LNK-SYU-HKNTEN(IDY 11)   -
                            WK-RSIETC-TENSU
              END-IF
              MOVE     WK-RSIETC2    TO   LNK-SYU-RSIETC-MONEY(IDY)
@@ -1381,14 +1451,16 @@
            END-IF
       *
            MOVE        WRK-TYK-HKNTEN  TO   LNK-SYU-HKNTEN(IDY 04)
+           ADD         WRK-TYK-HKNTEN2 TO   LNK-SYU-HKNTEN(IDY 04)
+           MOVE        WRK-TYK-HKNTEN2 TO   LNK-SYU-SHOHOU-SAI(IDY)
       *
       *     ›∏±≈¨Õ—≥∞∂‚≥€§ŒΩ∏∑◊•∆°º•÷•Î§´§Èº˝«º•∆°º•÷•Î§ÿ§Œ•ª•√•»
            PERFORM     44024-HKNTEKGAI-SET-SEC
       *
            PERFORM   VARYING   IDX3     FROM    1   BY  1
-                      UNTIL    IDX3      >     11
-               COMPUTE   LNK-SYU-HKNTEN(IDY 12)  =
-                         LNK-SYU-HKNTEN(IDY 12)  +
+                      UNTIL    IDX3      >     15
+               COMPUTE   LNK-SYU-HKNTEN(IDY 16)  =
+                         LNK-SYU-HKNTEN(IDY 16)  +
                          LNK-SYU-HKNTEN(IDY IDX3)
            END-PERFORM
            .
@@ -1532,29 +1604,59 @@
                                             +  (SRY-JIHIMONEY(IDX3)
                                               * TBL-ZAIKAISU(IDX1)) 
                                    WHEN   "50"
-                                   WHEN   "54"
                                        COMPUTE  TBL-TGMONEY(7)
                                             =   TBL-TGMONEY(7)
                                             +  (SRY-JIHIMONEY(IDX3)
                                               * TBL-ZAIKAISU(IDX1)) 
-                                   WHEN   "60"
+                                   WHEN   "54"
                                        COMPUTE  TBL-TGMONEY(8)
                                             =   TBL-TGMONEY(8)
                                             +  (SRY-JIHIMONEY(IDX3)
                                               * TBL-ZAIKAISU(IDX1)) 
-                                   WHEN   "70"
+                                   WHEN   "60"
                                        COMPUTE  TBL-TGMONEY(9)
                                             =   TBL-TGMONEY(9)
                                             +  (SRY-JIHIMONEY(IDX3)
                                               * TBL-ZAIKAISU(IDX1)) 
-                                   WHEN   "80"
+                                   WHEN   "70"
                                        COMPUTE  TBL-TGMONEY(10)
                                             =   TBL-TGMONEY(10)
                                             +  (SRY-JIHIMONEY(IDX3)
                                               * TBL-ZAIKAISU(IDX1)) 
+                                   WHEN   "80"
+      ***                          WHEN   "81"
+                                       COMPUTE  TBL-TGMONEY(11)
+                                            =   TBL-TGMONEY(11)
+                                            +  (SRY-JIHIMONEY(IDX3)
+                                              * TBL-ZAIKAISU(IDX1)) 
+                                   WHEN   "82"
+                                       COMPUTE  TBL-TGMONEY(4)
+                                            =   TBL-TGMONEY(4)
+                                            +  (SRY-JIHIMONEY(IDX3)
+                                              * TBL-ZAIKAISU(IDX1)) 
+                                   WHEN   "83"
+                                       COMPUTE  TBL-TGMONEY(12)
+                                            =   TBL-TGMONEY(12)
+                                            +  (SRY-JIHIMONEY(IDX3)
+                                              * TBL-ZAIKAISU(IDX1)) 
+                                   WHEN   "84"
+                                       COMPUTE  TBL-TGMONEY(13)
+                                            =   TBL-TGMONEY(13)
+                                            +  (SRY-JIHIMONEY(IDX3)
+                                              * TBL-ZAIKAISU(IDX1)) 
+                                   WHEN   "85"
+                                       COMPUTE  TBL-TGMONEY(15)
+                                            =   TBL-TGMONEY(15)
+                                            +  (SRY-JIHIMONEY(IDX3)
+                                              * TBL-ZAIKAISU(IDX1)) 
+                                   WHEN   "89"
+                                       COMPUTE  TBL-TGMONEY(14)
+                                            =   TBL-TGMONEY(14)
+                                            +  (SRY-JIHIMONEY(IDX3)
+                                              * TBL-ZAIKAISU(IDX1)) 
                                    WHEN   OTHER
-                                       COMPUTE  TBL-TGMONEY(10)
-                                            =   TBL-TGMONEY(10)
+                                       COMPUTE  TBL-TGMONEY(11)
+                                            =   TBL-TGMONEY(11)
                                             +  (SRY-JIHIMONEY(IDX3)
                                               * TBL-ZAIKAISU(IDX1)) 
                                END-EVALUATE
@@ -1601,26 +1703,59 @@
                                             +  (SRY-JIHIMONEY(IDX3)
                                               * TBL-ZAIKAISU(IDX1)) 
                                    WHEN   "50"
-                                   WHEN   "54"
                                        COMPUTE  TBL-TGMONEY(7)
                                             =   TBL-TGMONEY(7)
                                             +  (SRY-JIHIMONEY(IDX3)
                                               * TBL-ZAIKAISU(IDX1)) 
-                                   WHEN   "60"
+                                   WHEN   "54"
                                        COMPUTE  TBL-TGMONEY(8)
                                             =   TBL-TGMONEY(8)
                                             +  (SRY-JIHIMONEY(IDX3)
                                               * TBL-ZAIKAISU(IDX1)) 
-                                   WHEN   "70"
+                                   WHEN   "60"
                                        COMPUTE  TBL-TGMONEY(9)
                                             =   TBL-TGMONEY(9)
                                             +  (SRY-JIHIMONEY(IDX3)
                                               * TBL-ZAIKAISU(IDX1)) 
-                                   WHEN   "80"
+                                   WHEN   "70"
                                        COMPUTE  TBL-TGMONEY(10)
                                             =   TBL-TGMONEY(10)
                                             +  (SRY-JIHIMONEY(IDX3)
                                               * TBL-ZAIKAISU(IDX1)) 
+                                   WHEN   "80"
+                                     EVALUATE   TNS-SRYSYUKBN
+                                      WHEN       "800"
+      ***                             WHEN       "810"
+                                       COMPUTE  TBL-TGMONEY(11)
+                                            =   TBL-TGMONEY(11)
+                                            +  (SRY-JIHIMONEY(IDX3)
+                                              * TBL-ZAIKAISU(IDX1)) 
+                                      WHEN       "820"
+                                       COMPUTE  TBL-TGMONEY(4)
+                                            =   TBL-TGMONEY(4)
+                                            +  (SRY-JIHIMONEY(IDX3)
+                                              * TBL-ZAIKAISU(IDX1)) 
+                                      WHEN       "830"
+                                       COMPUTE  TBL-TGMONEY(12)
+                                            =   TBL-TGMONEY(12)
+                                            +  (SRY-JIHIMONEY(IDX3)
+                                              * TBL-ZAIKAISU(IDX1)) 
+                                      WHEN       "840"
+                                       COMPUTE  TBL-TGMONEY(13)
+                                            =   TBL-TGMONEY(13)
+                                            +  (SRY-JIHIMONEY(IDX3)
+                                              * TBL-ZAIKAISU(IDX1)) 
+                                      WHEN       "850"
+                                       COMPUTE  TBL-TGMONEY(15)
+                                            =   TBL-TGMONEY(15)
+                                            +  (SRY-JIHIMONEY(IDX3)
+                                              * TBL-ZAIKAISU(IDX1)) 
+                                      WHEN       "890"
+                                       COMPUTE  TBL-TGMONEY(14)
+                                            =   TBL-TGMONEY(14)
+                                            +  (SRY-JIHIMONEY(IDX3)
+                                              * TBL-ZAIKAISU(IDX1)) 
+                                     END-EVALUATE
                                    WHEN   OTHER
                                      IF   TNS-SRYCD(1:1)    =   "6"
                                        IF    TNS-YKZKBN     =    4
@@ -1637,8 +1772,8 @@
                                      END-IF
                                      IF   TNS-SRYCD(1:1)    =   "7"
                                      OR   TNS-SRYCD(1:3)    =   "059"
-                                       COMPUTE  TBL-TGMONEY(10)
-                                            =   TBL-TGMONEY(10)
+                                       COMPUTE  TBL-TGMONEY(11)
+                                            =   TBL-TGMONEY(11)
                                             +  (SRY-JIHIMONEY(IDX3)
                                               * TBL-ZAIKAISU(IDX1)) 
                                      END-IF
@@ -1752,29 +1887,59 @@
                                             +  (SRY-JIHIMONEY(IDX3)
                                               * TBL-ZAIKAISU(IDX1)) 
                                    WHEN   "50"
-                                   WHEN   "54"
                                        COMPUTE  TBL-TGMONEY-TAX(7)
                                             =   TBL-TGMONEY-TAX(7)
                                             +  (SRY-JIHIMONEY(IDX3)
                                               * TBL-ZAIKAISU(IDX1)) 
-                                   WHEN   "60"
+                                   WHEN   "54"
                                        COMPUTE  TBL-TGMONEY-TAX(8)
                                             =   TBL-TGMONEY-TAX(8)
                                             +  (SRY-JIHIMONEY(IDX3)
                                               * TBL-ZAIKAISU(IDX1)) 
-                                   WHEN   "70"
+                                   WHEN   "60"
                                        COMPUTE  TBL-TGMONEY-TAX(9)
                                             =   TBL-TGMONEY-TAX(9)
                                             +  (SRY-JIHIMONEY(IDX3)
                                               * TBL-ZAIKAISU(IDX1)) 
-                                   WHEN   "80"
+                                   WHEN   "70"
                                        COMPUTE  TBL-TGMONEY-TAX(10)
                                             =   TBL-TGMONEY-TAX(10)
                                             +  (SRY-JIHIMONEY(IDX3)
                                               * TBL-ZAIKAISU(IDX1)) 
+                                   WHEN   "80"
+      ***                          WHEN   "81"
+                                       COMPUTE  TBL-TGMONEY-TAX(11)
+                                            =   TBL-TGMONEY-TAX(11)
+                                            +  (SRY-JIHIMONEY(IDX3)
+                                              * TBL-ZAIKAISU(IDX1)) 
+                                   WHEN   "82"
+                                       COMPUTE  TBL-TGMONEY-TAX(4)
+                                            =   TBL-TGMONEY-TAX(4)
+                                            +  (SRY-JIHIMONEY(IDX3)
+                                              * TBL-ZAIKAISU(IDX1)) 
+                                   WHEN   "83"
+                                       COMPUTE  TBL-TGMONEY-TAX(12)
+                                            =   TBL-TGMONEY-TAX(12)
+                                            +  (SRY-JIHIMONEY(IDX3)
+                                              * TBL-ZAIKAISU(IDX1)) 
+                                   WHEN   "84"
+                                       COMPUTE  TBL-TGMONEY-TAX(13)
+                                            =   TBL-TGMONEY-TAX(13)
+                                            +  (SRY-JIHIMONEY(IDX3)
+                                              * TBL-ZAIKAISU(IDX1)) 
+                                   WHEN   "85"
+                                       COMPUTE  TBL-TGMONEY-TAX(15)
+                                            =   TBL-TGMONEY-TAX(15)
+                                            +  (SRY-JIHIMONEY(IDX3)
+                                              * TBL-ZAIKAISU(IDX1)) 
+                                   WHEN   "89"
+                                       COMPUTE  TBL-TGMONEY-TAX(14)
+                                            =   TBL-TGMONEY-TAX(14)
+                                            +  (SRY-JIHIMONEY(IDX3)
+                                              * TBL-ZAIKAISU(IDX1)) 
                                    WHEN   OTHER
-                                       COMPUTE  TBL-TGMONEY-TAX(10)
-                                            =   TBL-TGMONEY-TAX(10)
+                                       COMPUTE  TBL-TGMONEY-TAX(11)
+                                            =   TBL-TGMONEY-TAX(11)
                                             +  (SRY-JIHIMONEY(IDX3)
                                               * TBL-ZAIKAISU(IDX1)) 
                                END-EVALUATE
@@ -1821,26 +1986,59 @@
                                             +  (SRY-JIHIMONEY(IDX3)
                                               * TBL-ZAIKAISU(IDX1)) 
                                    WHEN   "50"
-                                   WHEN   "54"
                                        COMPUTE  TBL-TGMONEY-TAX(7)
                                             =   TBL-TGMONEY-TAX(7)
                                             +  (SRY-JIHIMONEY(IDX3)
                                               * TBL-ZAIKAISU(IDX1)) 
-                                   WHEN   "60"
+                                   WHEN   "54"
                                        COMPUTE  TBL-TGMONEY-TAX(8)
                                             =   TBL-TGMONEY-TAX(8)
                                             +  (SRY-JIHIMONEY(IDX3)
                                               * TBL-ZAIKAISU(IDX1)) 
-                                   WHEN   "70"
+                                   WHEN   "60"
                                        COMPUTE  TBL-TGMONEY-TAX(9)
                                             =   TBL-TGMONEY-TAX(9)
                                             +  (SRY-JIHIMONEY(IDX3)
                                               * TBL-ZAIKAISU(IDX1)) 
-                                   WHEN   "80"
+                                   WHEN   "70"
                                        COMPUTE  TBL-TGMONEY-TAX(10)
                                             =   TBL-TGMONEY-TAX(10)
                                             +  (SRY-JIHIMONEY(IDX3)
                                               * TBL-ZAIKAISU(IDX1)) 
+                                   WHEN   "80"
+                                    EVALUATE   TNS-SRYSYUKBN
+                                      WHEN       "800"
+      ***                             WHEN       "810"
+                                       COMPUTE  TBL-TGMONEY-TAX(11)
+                                            =   TBL-TGMONEY-TAX(11)
+                                            +  (SRY-JIHIMONEY(IDX3)
+                                              * TBL-ZAIKAISU(IDX1)) 
+                                      WHEN       "820"
+                                       COMPUTE  TBL-TGMONEY-TAX(4)
+                                            =   TBL-TGMONEY-TAX(4)
+                                            +  (SRY-JIHIMONEY(IDX3)
+                                              * TBL-ZAIKAISU(IDX1)) 
+                                      WHEN       "830"
+                                       COMPUTE  TBL-TGMONEY-TAX(12)
+                                            =   TBL-TGMONEY-TAX(12)
+                                            +  (SRY-JIHIMONEY(IDX3)
+                                              * TBL-ZAIKAISU(IDX1)) 
+                                      WHEN       "840"
+                                       COMPUTE  TBL-TGMONEY-TAX(13)
+                                            =   TBL-TGMONEY-TAX(13)
+                                            +  (SRY-JIHIMONEY(IDX3)
+                                              * TBL-ZAIKAISU(IDX1)) 
+                                      WHEN       "850"
+                                       COMPUTE  TBL-TGMONEY-TAX(15)
+                                            =   TBL-TGMONEY-TAX(15)
+                                            +  (SRY-JIHIMONEY(IDX3)
+                                              * TBL-ZAIKAISU(IDX1)) 
+                                      WHEN       "890"
+                                       COMPUTE  TBL-TGMONEY-TAX(14)
+                                            =   TBL-TGMONEY-TAX(14)
+                                            +  (SRY-JIHIMONEY(IDX3)
+                                              * TBL-ZAIKAISU(IDX1)) 
+                                    END-EVALUATE
                                    WHEN   OTHER
                                      IF   TNS-SRYCD(1:1)    =   "6"
                                        IF    TNS-YKZKBN     =    4
@@ -1857,8 +2055,8 @@
                                      END-IF
                                      IF   TNS-SRYCD(1:1)    =   "7"
                                      OR   TNS-SRYCD(1:3)    =   "059"
-                                       COMPUTE  TBL-TGMONEY-TAX(10)
-                                            =   TBL-TGMONEY-TAX(10)
+                                       COMPUTE  TBL-TGMONEY-TAX(11)
+                                            =   TBL-TGMONEY-TAX(11)
                                             +  (SRY-JIHIMONEY(IDX3)
                                               * TBL-ZAIKAISU(IDX1)) 
                                      END-IF
@@ -1995,7 +2193,7 @@
       *
       *   ›∏±≈¨Õ—≥∞
            PERFORM     VARYING   IDX3    FROM   1    BY    1
-                         UNTIL   IDX3    >      11
+                         UNTIL   IDX3    >      15
                MOVE   TBL-TGMONEY(IDX3)
                                  TO  LNK-SYU-TGMONEY(IDY IDX3)
                MOVE   TBL-TGMONEY-TAX(IDX3)
@@ -2077,13 +2275,13 @@
        4403-GOKEI-TAIHI-SEC           SECTION.
       *
            PERFORM   VARYING   IDX3     FROM    1   BY  1
-                      UNTIL    IDX3      >     12
+                      UNTIL    IDX3      >     16
                COMPUTE   WRK-SYU-HKNTEN(IDX3) =
                          WRK-SYU-HKNTEN(IDX3) +
                          LNK-SYU-HKNTEN(IDY IDX3)
            END-PERFORM
            PERFORM   VARYING   IDX3     FROM    1   BY  1
-                      UNTIL    IDX3      >     11
+                      UNTIL    IDX3      >     15
                COMPUTE   WRK-SYU-TGMONEY(IDX3) =
                          WRK-SYU-TGMONEY(IDX3) +
                          LNK-SYU-TGMONEY(IDY IDX3)
@@ -2118,6 +2316,9 @@
                          WRK-SYU-KYUFUGAI-TEN(IDX3) +
                          LNK-SYU-KYUFUGAI-TEN(IDY IDX3)
            END-PERFORM
+           COMPUTE       WRK-SYU-SHOHOU-SAI =
+                         WRK-SYU-SHOHOU-SAI +
+                         LNK-SYU-SHOHOU-SAI(IDY)
       *
       *    º´«Â¿’ ›∏±ΩËÕ˝
       ***  IF  LNK-SYU-SYUHKNNUM(IDY)  =   "973"
@@ -2149,12 +2350,12 @@
        4404-GOKEI-HENSYU-SEC           SECTION.
       *
            PERFORM   VARYING   IDX3     FROM    1   BY  1
-                      UNTIL    IDX3      >     12
+                      UNTIL    IDX3      >     16
                MOVE      WRK-SYU-HKNTEN(IDX3)
                              TO    LNK-SYU-HKNTEN(IDY IDX3)
            END-PERFORM
            PERFORM   VARYING   IDX3     FROM    1   BY  1
-                      UNTIL    IDX3      >     11
+                      UNTIL    IDX3      >     15
                MOVE      WRK-SYU-TGMONEY(IDX3)
                              TO    LNK-SYU-TGMONEY(IDY IDX3)
                MOVE      WRK-SYU-TGMONEY-TAX(IDX3)
@@ -2180,6 +2381,8 @@
                MOVE      WRK-SYU-KYUFUGAI-TEN(IDX3)
                              TO    LNK-SYU-KYUFUGAI-TEN(IDY IDX3)
            END-PERFORM
+           MOVE    WRK-SYU-SHOHOU-SAI
+                             TO    LNK-SYU-SHOHOU-SAI(IDY)
       *
       *    º´«Â¿’ ›∏±ΩËÕ˝
       ***  IF  LNK-SYU-SYUHKNNUM(IDY)  =   "973"
@@ -2319,6 +2522,8 @@
            MOVE    LNK-SYU-SKYKUKBN(IDY)       TO  SYUTTL-SKYKUKBN
       *¿¡µ·∆‚Õ∆
            MOVE    LNK-SYU-SKY-NAIYOU(IDY)     TO  SYUTTL-SKY-NAIYOU
+      *ΩË ˝§ª§ÛŒ¡∫∆∑«
+           MOVE    LNK-SYU-SHOHOU-SAI(IDY)     TO  SYUTTL-SHOHOU-SAI
       * ›∏±≈¨Õ—≥∞∂‚≥€°›æ√»Ò¿«° ∫∆∑«°À
            MOVE    LNK-SYU-TGMONEY-TAX-SAI(IDY)
                                            TO  SYUTTL-TGMONEY-TAX-SAI
