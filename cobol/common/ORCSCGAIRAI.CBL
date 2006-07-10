@@ -3841,6 +3841,8 @@
            MOVE    SYU-SKYKUKBN        TO  SYUTTL-SKYKUKBN
       *請求内容
            MOVE    SYU-SKY-NAIYOU      TO  SYUTTL-SKY-NAIYOU
+      *処方せん料再掲
+           MOVE    SYU-SHOHOU-SAI      TO  SYUTTL-SHOHOU-SAI
       *保険適用外金額−消費税（再掲）
            MOVE    SYU-TGMONEY-TAX-SAI TO  SYUTTL-TGMONEY-TAX-SAI
       *自費１から５
