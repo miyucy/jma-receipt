@@ -54,6 +54,8 @@
       *                                      ージ(0002)を変更
       *  03.01.02    NACL-藤原    06/07/05   入力したコードにエラーがある
       *                                      とき確定で戻らないようにする
+      *  03.01.03    NACL-藤原    06/07/07   移行先病名で遷移したとき移行
+      *                                      前の病名に戻らないようにする
       ****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -370,43 +372,42 @@
       *
                  IF      SPA-C01-TUSERBYOMEIFLG (IDX)    =   "1"
                    IF      SPA-C01-INDEX   =   ZERO
-                     INITIALIZE                  USERBYOMEI-REC
-                     MOVE    SPA-HOSPID          TO  USBYO-HOSPID
-                     MOVE    SPA-GMN-C04-INPUTCD(IDX)
-                                                 TO  USBYO-BYOMEIINPUTCD
-                     PERFORM 900-USBYO-INV-SEC                            
-                     IF      FLG-USERBYOMEI      =   ZERO
-                         MOVE    USBYO-BYOMEI        TO
-                                            SPA-NAI-C04-BYOMEI   (IDX)
-                         MOVE    USBYO-BYOMEISBT     TO
+                       PERFORM VARYING IDZ FROM    1   BY  1
+                               UNTIL   IDZ >       6
+                           IF      SPA-C01-TBYOMEICD (IDX)
+                                       =   SPA-GMN-C02-BYOMEICD (IDZ)
+                               PERFORM VARYING IDX3    FROM    1   BY  1
+                                       UNTIL   IDX3    >       21
+                                       OR      SPA-NAI-C02-BYOMEICD-O
+                                                              (IDZ IDX3)
+                                                       =   SPACE
+                                       OR      SPA-NAI-C02-BYOMEICD-O
+                                                              (IDZ IDX3)
+                                                       =   ALL "9"
+                                   MOVE
+                                       SPA-NAI-C02-BYOMEICD-O (IDZ IDX3)
+                                           TO  SPA-NAI-C04-BYOMEICD-O
+                                                              (IDX IDX3)
+                                   MOVE
+                                       SPA-NAI-C02-BYOMEI-O   (IDZ IDX3)
+                                           TO  SPA-NAI-C04-BYOMEI-O
+                                                              (IDX IDX3)
+                               END-PERFORM    
+                               MOVE    SPA-NAI-C02-BYOMEI  (IDZ)
+                                           TO  SPA-NAI-C04-BYOMEI (IDX)
+      *******                  MOVE    SPA-NAI-C02-BYOMEITOP  (IDZ)
+      *******                              TO SPA-NAI-C04-BYOMEITOP(IDX)
+                               MOVE    SPA-NAI-C02-BYOMEISBT  (IDZ)
+                                           TO SPA-NAI-C04-BYOMEISBT(IDX)
+                               MOVE    6   TO  IDZ
+                           END-IF
+                       END-PERFORM 
+                     ELSE
+                       MOVE    SPA-C01-TBYOMEI (IDX)     TO
+                                           SPA-NAI-C04-BYOMEI    (IDX)
+                       MOVE    SPA-C01-TBYOMEISBT (IDX)  TO
                                            SPA-NAI-C04-BYOMEISBT (IDX)
-                         PERFORM VARYING IDY FROM    1   BY  1
-                                 UNTIL   IDY >       21
-                                 OR      USBYO-BYOMEICD(IDY) =   SPACE
-                             MOVE    USBYO-BYOMEICD (IDY)    TO
-                                       SPA-NAI-C04-BYOMEICD-O (IDX IDY)
-                             IF      SPA-NAI-C04-BYOMEICD-O (IDX IDY)
-                                                   =   WRK-CONS-BYOMEICD
-                                 MOVE    SPA-NAI-C04-BYOMEI   (IDX)
-                                           TO
-                                       SPA-NAI-C04-BYOMEI-O (IDX IDY)
-                             ELSE                           
-                                 MOVE    SPA-NAI-C04-BYOMEICD-O(IDX IDY)
-                                           TO   BYO-BYOMEICD
-                                 PERFORM 900-BYOMEI-READ-SEC
-                                 IF      FLG-BYOMEI        =   ZERO
-                                     MOVE    BYO-BYOMEI    TO
-                                       SPA-NAI-C04-BYOMEI-O    (IDX IDY)
-                                 END-IF 
-                             END-IF    
-                         END-PERFORM   
                      END-IF
-                   ELSE
-                     MOVE    SPA-C01-TBYOMEI (IDX)     TO
-                                            SPA-NAI-C04-BYOMEI   (IDX)
-                     MOVE    SPA-C01-TBYOMEISBT (IDX)  TO
-                                           SPA-NAI-C04-BYOMEISBT (IDX)
-                   END-IF
                  ELSE
                    MOVE    SPA-C01-TBYOMEI  (IDX)
                                        TO  SPA-NAI-C04-BYOMEI    (IDX)
