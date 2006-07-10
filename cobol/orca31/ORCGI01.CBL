@@ -15032,7 +15032,7 @@
            IF    ( SPA-GMN-I01-CUR =   11  )
                IF  ( I01-TAIINYMD-STT  =   WIDGET-NORMAL )
                    MOVE    "TAIINYMD"      TO  MCP-WIDGET
-                   GO  TO  5001-MAPCUR-EXT
+                   GO  TO  5012-SKIP-CUR-EXT
                ELSE
                    COMPUTE SPA-GMN-I01-CUR =   20
                END-IF
