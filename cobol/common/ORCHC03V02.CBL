@@ -790,10 +790,6 @@
            MOVE    WRK-Z72-G           TO  HC03-HKNRYO15
       *    見出し
            PERFORM 3001-MEISAI-HEN-SEC
-      *    その他料
-           MOVE    SYU-HKNTEN (11)     TO  WRK-Z72
-           PERFORM 800-HENKAN-SEC
-           MOVE    WRK-Z72-G           TO  HC03-HKNRYO10
       *    合計点数
            COMPUTE WRK-GOKTEN          =   SYU-HKNTEN (01)
                                        +   SYU-HKNTEN (02)
