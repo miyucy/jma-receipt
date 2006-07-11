@@ -718,7 +718,7 @@
       *    ¿ÇÎÅ¶èÊ¬
            INITIALIZE                  SPA-GMN-SRYKBN-LIST
            MOVE    "00 Á´ÂÎ"           TO  SPA-GMN-SRYKBN-LST (01)
-           MOVE    "10 »ØÆ³¡¦ºßÂð"     TO  SPA-GMN-SRYKBN-LST (02)
+           MOVE    "10 ´ÉÍý¡¦ºßÂð"     TO  SPA-GMN-SRYKBN-LST (02)
            MOVE    "20 ÅêÌô"           TO  SPA-GMN-SRYKBN-LST (03)
            MOVE    "30 Ãí¼Í"           TO  SPA-GMN-SRYKBN-LST (04)
            MOVE    "40 ½èÃÖ"           TO  SPA-GMN-SRYKBN-LST (05)
