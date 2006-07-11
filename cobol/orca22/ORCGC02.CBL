@@ -1875,8 +1875,8 @@
                PERFORM 410112-USERBYOMEI-HENSYU-SEC
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       6
-                   IF      SPA-C01-TBYOMEICD (IDZ)
-                                       =   SPA-GMN-C04-INPUTCD (IDX)
+                   IF      SPA-C01-TBYOMEICD-INDEX (IDZ)
+                                               =   IDX
                        PERFORM VARYING IDX3    FROM    1   BY  1
                                UNTIL   IDX3    >       21
                                OR      SPA-NAI-C04-BYOMEICD-O (IDX IDX3)
@@ -5081,6 +5081,8 @@
                                                                   (IDY)
                        MOVE    SPA-NAI-C02-BYOMEI    (IDX)
                                            TO  SPA-C01-TBYOMEI    (IDY)
+                       MOVE    IDX         TO  SPA-C01-TBYOMEICD-INDEX
+                                                                  (IDY)
                    END-IF
                END-IF                              
            END-PERFORM
@@ -7893,6 +7895,8 @@
                                            TO  SPA-C01-TBYOMEITOP (IDY)
                    MOVE    SPA-NAI-C02-BYOMEISBT (IDX)
                                            TO  SPA-C01-TBYOMEISBT (IDY)
+                   MOVE    IDX             TO  SPA-C01-TBYOMEICD-INDEX
+                                                                  (IDY)
                END-IF                              
            END-PERFORM
       *

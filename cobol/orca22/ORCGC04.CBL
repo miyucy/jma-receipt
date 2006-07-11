@@ -374,8 +374,8 @@
                    IF      SPA-C01-INDEX   =   ZERO
                        PERFORM VARYING IDZ FROM    1   BY  1
                                UNTIL   IDZ >       6
-                           IF      SPA-C01-TBYOMEICD (IDX)
-                                       =   SPA-GMN-C02-BYOMEICD (IDZ)
+                           IF      SPA-C01-TBYOMEICD-INDEX (IDX)
+                                                       =   IDZ
                                PERFORM VARYING IDX3    FROM    1   BY  1
                                        UNTIL   IDX3    >       21
                                        OR      SPA-NAI-C02-BYOMEICD-O
@@ -402,12 +402,12 @@
                                MOVE    6   TO  IDZ
                            END-IF
                        END-PERFORM 
-                     ELSE
+                   ELSE
                        MOVE    SPA-C01-TBYOMEI (IDX)     TO
                                            SPA-NAI-C04-BYOMEI    (IDX)
                        MOVE    SPA-C01-TBYOMEISBT (IDX)  TO
                                            SPA-NAI-C04-BYOMEISBT (IDX)
-                     END-IF
+                   END-IF
                  ELSE
                    MOVE    SPA-C01-TBYOMEI  (IDX)
                                        TO  SPA-NAI-C04-BYOMEI    (IDX)
@@ -1763,6 +1763,8 @@
                        ADD     1           TO  IDY    
                        MOVE    SPA-GMN-C04-INPUTCD  (IDX)
                                            TO  SPA-C01-TBYOMEICD (IDY)
+                       MOVE    IDX         TO  SPA-C01-TBYOMEICD-INDEX
+                                                                 (IDY)
                    END-IF 
                END-PERFORM
            ELSE
