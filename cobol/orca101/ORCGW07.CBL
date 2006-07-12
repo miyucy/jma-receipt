@@ -1079,8 +1079,8 @@
            MOVE    10                  TO  SPA-GMN-DOSRYKBNFLG-MAX
       *    面庞办枉山绩界
            MOVE    "0 吹荚戎规界"      TO  SPA-GMN-WKSRYHYOFLG-LST(1)
-           MOVE    "1 判峡界"          TO  SPA-GMN-WKSRYHYOFLG-LST(2)
-           MOVE    2                   TO  SPA-GMN-WKSRYHYOFLG-MAX
+      *?   MOVE    "1 判峡界"          TO  SPA-GMN-WKSRYHYOFLG-LST(2)
+           MOVE    1                   TO  SPA-GMN-WKSRYHYOFLG-MAX
       *
            MOVE    "0 券乖しない"      TO  SPA-GMN-SYUSKYPRTGLST(1)
            MOVE    "1 券乖する"        TO  SPA-GMN-SYUSKYPRTGLST(2)
