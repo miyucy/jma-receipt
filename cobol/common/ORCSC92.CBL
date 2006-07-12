@@ -2170,6 +2170,30 @@
                    WHEN    "7"
                        MOVE    "700"       TO  SPA-COM-SRYSYUKBN(IDX-T)
                END-EVALUATE
+      *        ø«Œ≈∂Ë ¨ £∏£∞ §Œ —ππ
+               IF      TNS-SRYKBN          =   "80"
+                   EVALUATE    TNS-CDKBN-KBN
+                       WHEN    "I"
+      *                    ¿∫ø¿≤ ¿ÏÃÁŒ≈À°
+                           MOVE    "830"       TO  SPA-COM-TNSSRYSYUKBN
+                                                              (IDX-T)
+      *                     ¸ºÕ¿˛º£Œ≈
+                       WHEN    "M"
+                           MOVE    "840"       TO  SPA-COM-TNSSRYSYUKBN
+                                                              (IDX-T)
+                   END-EVALUATE
+      *            Œ≈Õ‹√¥≈ˆºÍ≈ˆ
+                   IF      TNS-SRYCD           =   "199000510"
+                                               OR  "199000610"
+                       MOVE    "850"           TO  SPA-COM-TNSSRYSYUKBN
+                                                              (IDX-T)
+                   END-IF
+      *            ∆˛±°Œ¡° ≥∞ÕË)
+                   IF      TNS-SRYCD           =   "190076710"
+                       MOVE    "890"           TO  SPA-COM-TNSSRYSYUKBN
+                                                              (IDX-T)
+                   END-IF
+               END-IF
            END-IF
       *    •«°º•ø∂Ë ¨
            MOVE    TNS-DATAKBN         TO  SPA-COM-DATAKBN   (IDX-T)
