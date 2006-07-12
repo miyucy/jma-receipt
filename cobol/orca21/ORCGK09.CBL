@@ -730,7 +730,21 @@
            MOVE    "90 º´»Ò°¶§Ω§Œ¬æ"   TO  SPA-GMN-SRYKBN-LST (10)
       *
            MOVE    10                  TO  SPA-SRYKBN-MAX
-           MOVE    SPA-GMN-SRYKBN-LST (01) TO  SPA-GMN-SRYKBN-G
+           MOVE    SPA-DOSRYKBNFLG     TO  SPA-GMN-SRYKBN
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   SPA-SRYKBN-MAX )  OR
+                              (FLG-OK  =   1        )
+               IF      SPA-GMN-SRYKBN  =   SPA-GMN-SRYKBN-LST
+                                                           (IDX)(1:2)
+                   MOVE    SPA-GMN-SRYKBN-LST (IDX)
+                                           TO  SPA-GMN-SRYKBN-G
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-SRYKBN-LST (01) TO  SPA-GMN-SRYKBN-G
+           END-IF
       *
       *    ºıø«Õ˙ŒÚ ‘Ω∏
            IF      SPA-GMN-NYUGAIKBN   =   SPA-NYUGAIKBN
