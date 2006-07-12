@@ -873,6 +873,8 @@
       *    明細削除
       *    療養担当手当て
            IF    ( SYU-HKNTEN (15)     =   ZERO )
+            AND  ( SYU-TGMONEY(15)     =   ZERO )
+            AND  ( SYU-TGMONEY-TAX(15) =   ZERO )
                MOVE    SPACE               TO  HCN03-MEISAI (15)
            END-IF
       *
