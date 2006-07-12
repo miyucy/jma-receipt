@@ -19,7 +19,7 @@ K02	{
 			value	varchar(6);
 		};
 		LASTYMD	{
-			value	varchar(9);
+			value	varchar(24);
 		};
 		SYOSINYMD	{
 			value	varchar(24);
@@ -392,6 +392,9 @@ K02	{
 				}	[100];
 				select	bool[100];
 			};
+		};
+		LASTMID	{
+			value	varchar(20);
 		};
 	};
 };

@@ -73,10 +73,13 @@
                    07  SPA-GMN-JIKANMSG          PIC X(20).
       *
                    07  SPA-GMN-GOKEI             PIC 9(11).
-                   07  SPA-GMN-LASTYMD           PIC X(09).
+                   07  SPA-GMN-LASTYMD-G.
+                       09  SPA-GMN-LASTYMD           PIC X(09).
+                       09  SPA-GMN-F1                PIC X(15).
                    07  SPA-GMN-SYOSINYMD         PIC X(24).
                    07  SPA-GMN-MISYUMONEY        PIC S9(08).
                    07  SPA-GMN-ZAITENTOTAL       PIC 9(11).
+                   07  SPA-GMN-LASTMID           PIC X(20).
       *        £Ä£ÏÆâÍÆ¡Ê£Ë£°£¹¤È¶¦ÄÌ¡Ë
                05  SPA-GMN-RRKTBL.
                    07  SPA-GMN-RRKTBLREC         OCCURS  150.
@@ -480,6 +483,7 @@
            03  SPA-K10GMN-AREA.
                05  SPA-K10GMN-CUR          PIC 9(02).
                05  SPA-K10-SYORI           PIC 9(01).
+               05  SPA-K10-ORDER           PIC 9(01).
                05  SPA-K10-NEXT            PIC 9(01).
                05  SPA-K10-MAX             PIC 9(03).
                05  SPA-K10-LIST.

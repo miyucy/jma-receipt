@@ -281,6 +281,8 @@
                05  SPA-K02-NYUIN-AREA.
                    07  SPA-K02-NYUDAY         PIC 9(01)
                                               OCCURS   31.
+      *        ºÇ½ªÂà±¡Æü
+               05  SPA-NAI-LASTTAIIN          PIC X(08).
       *
       *Ê£¿ô¿ÇÎÅ²ÊÍÑ
            03  SPA-FUKU-AREA.

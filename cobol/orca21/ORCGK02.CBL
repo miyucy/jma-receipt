@@ -441,6 +441,8 @@
       *
       *    退院日
            03  WRK-TAIINYMD        PIC X(08).
+           03  WRK-LASTTAIINYMD    PIC X(08).
+           03  WRK-GMN-TAIINYMD    PIC X(09).
       *    入院期間
            03  WRK-STDD            PIC 9(02).
            03  WRK-EDDD            PIC 9(02).
@@ -3167,6 +3169,7 @@
       *    未収金
            MOVE    SPA-MISYUMONEY      TO  SPA-GMN-MISYUMONEY
       *    最終来院日
+           MOVE    SPACE               TO  SPA-GMN-LASTYMD-G
            IF      SPA-LSTYMD      NOT =   SPACE
                MOVE    SPA-LSTYMD      TO  WRK-SYMD
                PERFORM 520-SEIWA-HEN-SEC
@@ -3189,38 +3192,6 @@
                    MOVE    ")"             TO  SPA-GMN-SYOSINYMD(22:1)
                END-IF
            END-IF
-      *
-      *****年齢計算
-      *    MOVE    SPA-BIRTHDAY        TO  WRK-YMDS1
-      *    MOVE    SPA-SRYYMD          TO  WRK-YMDS2
-      *    COMPUTE SPA-NENREI-YY       =   WRK-YYS2
-      *                                -   WRK-YYS1
-      *    IF      WRK-YMDS1(5:4)      >   WRK-YMDS2(5:4)
-      *        COMPUTE SPA-NENREI-YY   =   SPA-NENREI-YY
-      *                                    -   1
-      *        COMPUTE SPA-NENREI-MM   =  (WRK-MMS2  +  12 )
-      *                                    -   WRK-MMS1
-      *    ELSE
-      *        COMPUTE SPA-NENREI-MM   =   WRK-MMS2
-      *                                    -   WRK-MMS1
-      *    END-IF
-      *    IF      WRK-DDS1            >   WRK-DDS2
-      *        COMPUTE SPA-NENREI-MM   =   SPA-NENREI-MM
-      *                                    -   1
-      *    END-IF
-      *
-      *    年齢期間算定
-      *    INITIALIZE                      STS-AREA-DAY
-      *    INITIALIZE                      LNK-DAY5-AREA
-      *    MOVE    "51"                TO  LNK-DAY5-IRAI
-      *    MOVE    SPA-BIRTHDAY        TO  LNK-DAY5-START
-      *    MOVE    SPA-SRYYMD          TO  LNK-DAY5-END
-      *    CALL    "ORCSDAY"           USING   STS-AREA-DAY
-      *                                        LNK-DAY5-AREA
-      *    IF      LNK-DAY5-NISSU2     <=  31
-      *        MOVE    LNK-DAY5-NISSU2     TO  SPA-NENREI-DD
-      *        MOVE    ZERO                TO  SPA-NENREI-MM
-      **** END-IF
       *
       *    年齢計算
            INITIALIZE                  ORCSAGECHKAREA
@@ -3248,6 +3219,36 @@
       *    ＤＯ編集
            MOVE    "F"                 TO  SPA-GMN-TEISEI
            MOVE    ZERO                TO  SPA-NAI-SYORI
+      *    入院判定
+           MOVE    SPACE               TO  SPA-KIDCD
+           PERFORM 3109-NYUIN-CHK-SEC
+           IF      SPA-KIDCD       NOT =   SPACE
+               GO      TO      310-SPA-SET-EXT
+           END-IF
+      *    最終退院日
+           IF      SPA-NAI-LASTTAIIN   =   SPACE
+               MOVE    SPACE               TO  WRK-GMN-TAIINYMD
+           ELSE
+               MOVE    SPA-NAI-LASTTAIIN   TO  WRK-SYMD
+               PERFORM 520-SEIWA-HEN-SEC
+               MOVE    WRK-HENYMDG         TO  WRK-GMN-TAIINYMD
+               MOVE    SPA-GMN-LASTYMD     TO  WRK-HENYMDG
+      *        最終来院日
+               MOVE    SPACE               TO  SPA-GMN-LASTYMD-G
+               STRING  WRK-HENYMDG         DELIMITED  BY  SIZE
+                       " ("                DELIMITED  BY  SIZE
+                       WRK-GMN-TAIINYMD    DELIMITED  BY  SIZE
+                       ")"                 DELIMITED  BY  SIZE
+                                           INTO    SPA-GMN-LASTYMD-G
+               END-STRING
+           END-IF
+           IF     (WRK-GMN-TAIINYMD    =   SPACE )  AND
+                  (SPA-BEDFLG          =   ZERO  )
+      *        入院なし
+               MOVE    "最終来院日"            TO  SPA-GMN-LASTMID
+           ELSE
+               MOVE    "最終来院日（退院日）"  TO  SPA-GMN-LASTMID
+           END-IF
       *
            .
        310-SPA-SET-EXT.
@@ -3403,8 +3404,8 @@
       *    診察料編集なし
       *****MOVE    ZERO                TO  FLG-SINSATU
       *    入院中の時、入院開始日の時のみ初診料の自動発生を行う
-           MOVE    SPACE               TO  SPA-KIDCD
-           PERFORM 3109-NYUIN-CHK-SEC
+      *?   MOVE    SPACE               TO  SPA-KIDCD
+      *?   PERFORM 3109-NYUIN-CHK-SEC
            IF      SPA-KIDCD      NOT =   SPACE
                GO      TO      310-SPA-GMNSET-EXT
            END-IF
@@ -3676,9 +3677,11 @@
       *    入院日
            MOVE    SPACE               TO  SPA-K02N-NYUINYMD
            MOVE    SPACE               TO  SPA-K02N-TAIINYMD
+           MOVE    SPACE               TO  SPA-NAI-LASTTAIIN
            INITIALIZE                      SPA-K02-NYUIN-AREA
            MOVE    ZERO                TO  SPA-K02N-NYUINFLG
            MOVE    SPACE               TO  WRK-TAIINYMD
+           MOVE    SPACE               TO  WRK-LASTTAIINYMD
       *
       *    入院履歴判定
            MOVE    SPACE               TO  PTNYUINRRK-REC
@@ -3749,11 +3752,16 @@
                    END-PERFORM
                END-IF
       *
-      *        最終退院日
+      *        診療日以前の最終退院日
                IF     (PTNYUINRRK-TAIINYMD     <=  SPA-NAI-SRYYMD ) AND
                      ((WRK-TAIINYMD            =   SPACE      )  OR
                       (PTNYUINRRK-TAIINYMD     >   WRK-TAIINYMD ))
                    MOVE    PTNYUINRRK-TAIINYMD     TO  WRK-TAIINYMD
+               END-IF
+      *        最終退院日
+               IF     (WRK-LASTTAIINYMD        =   SPACE      )  OR
+                      (PTNYUINRRK-TAIINYMD     >   WRK-LASTTAIINYMD)
+                   MOVE    PTNYUINRRK-TAIINYMD     TO  WRK-LASTTAIINYMD
                END-IF
       *
       *        入院中でなく当月の入院有無
@@ -3777,6 +3785,7 @@
            ELSE
       *        最終退院日の設定
                MOVE    WRK-TAIINYMD    TO  SPA-K02N-TAIINYMD
+               MOVE    WRK-LASTTAIINYMD    TO  SPA-NAI-LASTTAIIN
            END-IF
            .
        3109-NYUIN-CHK-EXT.
@@ -4415,7 +4424,8 @@
            END-IF
       *    スパ共通編集処理
            PERFORM                 310-SPA-SET-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
+           IF     (SPA-ERRCD       NOT =   SPACE )
+               OR (SPA-KIDCD       NOT =   SPACE )
                 GO      TO      41010-PTNUM-SYORI-EXT
            END-IF
       *
@@ -4568,7 +4578,8 @@
       *
       *    スパ共通編集処理
            PERFORM                 310-SPA-SET-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
+           IF     (SPA-ERRCD       NOT =   SPACE )
+               OR (SPA-KIDCD       NOT =   SPACE )
                GO      TO      410171-SRYYMD-OK-EXT
            END-IF
       *
@@ -5178,7 +5189,7 @@
       **** PERFORM                 3002-PARA-SET-SEC
       *
       *    スパ共通編集処理
-           PERFORM                 310-SPA-SET-SEC
+      *????PERFORM                 310-SPA-SET-SEC
       *
       *    画面用スパ編集処理
       *****PERFORM                 310-SPA-GMNSET-SEC
@@ -9017,7 +9028,7 @@
            PERFORM 3002-PARA-SET-SEC
       *
       *
-           PERFORM 3109-NYUIN-CHK-SEC
+      *?   PERFORM 3109-NYUIN-CHK-SEC
       *    訂正処理
       *****MOVE    1                   TO  SPA-SYORIFLG
       *
@@ -11730,8 +11741,16 @@
       *
            MOVE    SPA-GMN-GOKEI       TO  WRK-GOKEI-Z2
            MOVE    WRK-GOKEI-X2        TO  K02-GOKEITEN
-           MOVE    SPA-GMN-LASTYMD     TO  K02-LASTYMD
+           MOVE    SPA-GMN-LASTYMD-G   TO  K02-LASTYMD
            MOVE    SPA-GMN-SYOSINYMD   TO  K02-SYOSINYMD
+           IF      SPA-GMN-LASTMID     =   SPACE
+               IF      SPA-BEDFLG          =   ZERO
+                   MOVE    "最終来院日"            TO  SPA-GMN-LASTMID
+               ELSE
+                   MOVE    "最終来院日（退院日）"  TO  SPA-GMN-LASTMID
+               END-IF
+           END-IF
+           MOVE    SPA-GMN-LASTMID     TO  K02-LASTMID
       *
            MOVE    SPA-GMN-MISYUMONEY  TO  WRK-GOKEI-Z3
            MOVE    WRK-GOKEI-X3        TO  K02-MISYUMONEY

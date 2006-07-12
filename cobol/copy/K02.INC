@@ -30,7 +30,7 @@
               03  K02-RATE.
                 04  K02-VALUE   PIC X(6).
               03  K02-LASTYMD.
-                04  K02-VALUE   PIC X(9).
+                04  K02-VALUE   PIC X(24).
               03  K02-SYOSINYMD.
                 04  K02-VALUE   PIC X(24).
               03  K02-MISYUMONEY.
@@ -121,4 +121,6 @@
                     06  K02-BYOMEI       PIC X(22).
                   05  K02-BYOMEI-SELECT
                           PIC X       OCCURS  100 TIMES.
+              03  K02-LASTMID.
+                04  K02-VALUE   PIC X(20).
 
