@@ -81,3 +81,14 @@ path	key4 	{
 		;
 	};
 };
+
+path	key5 	{
+	DBSELECT	{
+		DECLARE tbl_ptnum_key5_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptnum
+			WHERE  HOSPID       =   :HOSPID
+			AND    CREYMD LIKE :CREYMD
+		;
+	};
+};
