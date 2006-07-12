@@ -9,14 +9,20 @@ fi
 
 . $JMARECEIPT_ENV
 
-PATH=$PATH:/usr/lib/postgresql/bin
+DBUSER="orca"
+USERCHECKSQL="SELECT usename FROM pg_user WHERE usename = '${DBUSER}';"
+DBCHECKSQL="SELECT datname FROM pg_database WHERE datname = '${DBNAME}';"
 
-if su - postgres -c "psql template1 -l|grep ${DBNAME}"
+if [ -z `su - postgres -c "psql template1 -t -c \"${USERCHECKSQL}\""` ]
 then
-    echo "Database exist."
+  su - postgres -c "createuser --createdb --no-adduser ${DBUSER}" 
+fi
+
+if [ -z `su - postgres -c "psql template1 -t -c \"${DBCHECKSQL}\""` ]
+then
+    su - ${DBUSER} -c createdb ${DBNAME} 
+    su - ${DBUSER} -c "psql -e ${DBNAME} < ${INITDIR}/orca_dbkanri_orig.dump" ]
 else
-    su - postgres -c "psql -e template1 < ${INITDIR}/orca_user.dump"
-    su - orca -c createdb
-    su - orca -c "psql -e ${DBNAME} < ${INITDIR}/orca_dbkanri_orig.dump"
+    echo "Database exist."
 fi
 echo "Done."

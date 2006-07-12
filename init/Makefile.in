@@ -7,8 +7,7 @@ INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_DATA = @INSTALL_DATA@
 
 initdump_files = \
-             orca_dbkanri_orig.dump \
-             orca_user.dump
+             orca_dbkanri_orig.dump 
 
 init_sources = \
         orca-db-create.sh \
