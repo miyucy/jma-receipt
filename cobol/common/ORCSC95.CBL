@@ -869,10 +869,20 @@
                MOVE    MCPDATA-REC         TO  SYS-1038-REC
       *        複数科まとめ集計
                MOVE    SYS-1038-KAGRPFLG       TO  SPA-KAGRPFLG
+      *        ＤＯ初期表示
+               MOVE    SYS-1038-DOSRYKBNFLG    TO  SPA-DOSRYKBNFLG
+      *        中途表示一覧
+               MOVE    SYS-1038-WKSRYHYOFLG    TO  SPA-WKSRYHYOFLG
            END-IF
            IF      SPA-KAGRPFLG        =   SPACE
                MOVE    "0"                 TO  SPA-KAGRPFLG
-          END-IF
+           END-IF
+           IF      SPA-DOSRYKBNFLG     =   SPACE
+               MOVE    "00"                TO  SPA-DOSRYKBNFLG
+           END-IF
+           IF      SPA-WKSRYHYOFLG        =   SPACE
+               MOVE    "0"                TO  SPA-WKSRYHYOFLG
+           END-IF
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -1329,6 +1339,45 @@
                MOVE    SYS-1007-SANTEI (5:1)   TO  SPA-RYOYOU-FLG
       *        特定薬剤治療管理料有無
                MOVE    SYS-1007-SANTEI (6:1)   TO  SPA-TOKUTEI-FLG
+           END-IF
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+      *    システム管理検索（診療行為情報）
+           MOVE    SPACE               TO  SYS-1038-REC
+           INITIALIZE                  SYS-1038-REC
+           MOVE    "1038"              TO  SYS-1038-KANRICD
+           MOVE    "*"                 TO  SYS-1038-KBNCD
+           MOVE    SPA-SRYYMD          TO  SYS-1038-STYUKYMD
+           MOVE    SPA-SRYYMD          TO  SYS-1038-EDYUKYMD
+           MOVE    SYS-1038-REC        TO  MCPDATA-REC
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+           ELSE
+               MOVE    SPACE               TO  SYS-1038-REC
+               INITIALIZE                  SYS-1038-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1038-REC
+      *        ＤＯ初期表示
+               MOVE    SYS-1038-DOSRYKBNFLG    TO  SPA-DOSRYKBNFLG
+      *        中途表示一覧
+               MOVE    SYS-1038-WKSRYHYOFLG    TO  SPA-WKSRYHYOFLG
+           END-IF
+           IF      SPA-DOSRYKBNFLG     =   SPACE
+               MOVE    "00"                TO  SPA-DOSRYKBNFLG
+           END-IF
+           IF      SPA-WKSRYHYOFLG        =   SPACE
+               MOVE    "0"                TO  SPA-WKSRYHYOFLG
            END-IF
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE

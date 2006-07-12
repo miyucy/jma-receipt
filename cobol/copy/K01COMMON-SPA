@@ -109,6 +109,12 @@
                05  SPA-JIKANCHK-ERR        PIC X(01).
       *複数科まとめ集計
                05  SPA-KAGRPFLG            PIC X(01).
+      *!
+      *ＤＯ初期表示
+               05  SPA-DOSRYKBNFLG         PIC  X(02).
+      *中途表示一覧
+               05  SPA-WKSRYHYOFLG         PIC  X(01).
+      *!
       *後発医薬品変更可
                05  SPA-KOUHATUKA           PIC  X(01).
       *患者取消確認チェック
