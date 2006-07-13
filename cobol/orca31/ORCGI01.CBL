@@ -3431,15 +3431,36 @@
                MOVE    ORCSHKN-GMN-HKNCOMBINUM (IDX1)
                                        TO  SPA-GMN-I01-HKNCOMBI-ITM
                                                        (IDX1)(1 : 4)
-               MOVE    ORCSHKN-GMN-HKNCOMBIMEI (IDX1)
-                                       TO  SPA-GMN-I01-HKNCOMBI-ITM
-                                                       (IDX1)(6 : )
                MOVE    ORCSHKN-GMN-FTNRATEMEI  (IDX1)
                                        TO  SPA-GMN-I01-HKNCOMBI-ITM2
                                                        (IDX1)
                MOVE    ORCSHKN-NAI-RSI-HKNKBN (IDX1)
                                        TO  SPA-GMN-I01-HKNCOMBI-ITM3
                                                        (IDX1)
+               IF    ( ORCSHKN-NAI-HKNJANUM (IDX1) =   SPACE )
+                   MOVE    ORCSHKN-GMN-HKNCOMBIMEI (IDX1)
+                                       TO  WRK-HKNCOMBI
+               ELSE
+                   MOVE    SPACE       TO  WRK-HKNCOMBI
+                   STRING  ORCSHKN-GMN-HKNCOMBIMEI (IDX1)
+                                               DELIMITED BY  "  "
+                       " ("                    DELIMITED  BY  SIZE
+                       ORCSHKN-NAI-HKNJANUM (IDX1)
+                                               DELIMITED  BY  SPACE
+                       ")"                     DELIMITED  BY  SIZE
+                   INTO    WRK-HKNCOMBI
+                   END-STRING
+                   INITIALIZE                  ORCSKANACHKAREA
+                   MOVE    "1"                 TO  KANACHK-SYORI
+                   MOVE    WRK-HKNCOMBI        TO  KANACHK-MAE-INPUT
+                   MOVE    46                  TO  KANACHK-MAX-CNT
+                   CALL    "ORCSKANACHK"       USING
+                                               ORCSKANACHKAREA
+                   MOVE    KANACHK-MAE-INPUT
+                                       TO  WRK-HKNCOMBI
+               END-IF
+               MOVE    WRK-HKNCOMBI    TO  SPA-GMN-I01-HKNCOMBI-ITM
+                                                       (IDX1)(6 : )
       *
            END-PERFORM
       *
@@ -14214,9 +14235,29 @@
       *
                IF    ( ORCSHKN-GMN-HKNCOMBINUM (IDX15)
                                    =   WRK-ORCSHKN-HKNCOMBINUM )
-                   MOVE    ORCSHKN-GMN-HKNCOMBIMEI (IDX15)
-                                           TO  WRK-HKNCOMBI
-                   MOVE    ORCSHKN-HKN-MAX TO  IDX15
+                  IF    ( ORCSHKN-NAI-HKNJANUM (IDX15) =   SPACE )
+                      MOVE    ORCSHKN-GMN-HKNCOMBIMEI (IDX15)
+                                          TO  WRK-HKNCOMBI
+                  ELSE
+                      MOVE    SPACE       TO  WRK-HKNCOMBI
+                      STRING  ORCSHKN-GMN-HKNCOMBIMEI (IDX15)
+                                                  DELIMITED BY  "  "
+                          " ("                    DELIMITED  BY  SIZE
+                          ORCSHKN-NAI-HKNJANUM (IDX15)
+                                                  DELIMITED  BY  SPACE
+                          ")"                     DELIMITED  BY  SIZE
+                      INTO    WRK-HKNCOMBI
+                      END-STRING
+                      INITIALIZE                  ORCSKANACHKAREA
+                      MOVE    "1"                 TO  KANACHK-SYORI
+                      MOVE    WRK-HKNCOMBI        TO  KANACHK-MAE-INPUT
+                      MOVE    50                  TO  KANACHK-MAX-CNT
+                      CALL    "ORCSKANACHK"       USING
+                                                  ORCSKANACHKAREA
+                      MOVE    KANACHK-MAE-INPUT
+                                          TO  WRK-HKNCOMBI
+                  END-IF
+                  MOVE    ORCSHKN-HKN-MAX TO  IDX15
                END-IF
       *
            END-PERFORM

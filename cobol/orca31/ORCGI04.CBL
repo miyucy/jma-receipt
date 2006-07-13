@@ -164,6 +164,7 @@
                05  WRK-CMB-ITM             PIC X(100).
                05  WRK-CMB-ITM2            PIC X(100).
            03  WRK-TAIINUPDCNT             PIC 9(05).
+           03  WRK-HKNCOMBI                PIC X(60).
            03  WRK-HKNCOMBINUM             PIC X(04).
            03  WRK-HKNCOMBINUM9   REDEFINES  WRK-HKNCOMBINUM
                                            PIC 9(04).
@@ -759,8 +760,29 @@
       *
            IF    ( ORCSHKN-IDX         >   ZERO )
             AND  ( ORCSHKN-IDX         <=  ORCSHKN-HKN-MAX )
-               MOVE    ORCSHKN-GMN-HKNCOMBIMEI(ORCSHKN-IDX)
-                                       TO  SPA-GMN-I04-HKNCOMBI
+               IF    ( ORCSHKN-NAI-HKNJANUM (ORCSHKN-IDX) =   SPACE )
+                   MOVE    ORCSHKN-GMN-HKNCOMBIMEI (ORCSHKN-IDX)
+                                       TO  WRK-HKNCOMBI
+               ELSE
+                   MOVE    SPACE       TO  WRK-HKNCOMBI
+                   STRING  ORCSHKN-GMN-HKNCOMBIMEI (ORCSHKN-IDX)
+                                               DELIMITED BY  "  "
+                       " ("                    DELIMITED  BY  SIZE
+                       ORCSHKN-NAI-HKNJANUM (ORCSHKN-IDX)
+                                               DELIMITED  BY  SPACE
+                       ")"                     DELIMITED  BY  SIZE
+                   INTO    WRK-HKNCOMBI
+                   END-STRING
+                   INITIALIZE                  ORCSKANACHKAREA
+                   MOVE    "1"                 TO  KANACHK-SYORI
+                   MOVE    WRK-HKNCOMBI        TO  KANACHK-MAE-INPUT
+                   MOVE    60                  TO  KANACHK-MAX-CNT
+                   CALL    "ORCSKANACHK"       USING
+                                               ORCSKANACHKAREA
+                   MOVE    KANACHK-MAE-INPUT
+                                       TO  WRK-HKNCOMBI
+               END-IF
+               MOVE    WRK-HKNCOMBI    TO  SPA-GMN-I04-HKNCOMBI
                MOVE    ORCSHKN-GMN-FTNRATEMEI (ORCSHKN-IDX)
                                        TO  SPA-GMN-I04-FTNRATE
            END-IF
