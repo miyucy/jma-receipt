@@ -1172,6 +1172,7 @@ COPYS = \
         HCN03A.INC \
         HCN03V02A.INC \
         HCN03V03A.INC \
+        CPDTCHK009.INC \
 
 
 DBPATH = \

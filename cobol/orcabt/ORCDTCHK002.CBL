@@ -70,6 +70,13 @@
                                    RECORD  KEY     IS  DTCHK008-KEY
                                    FILE    STATUS  IS  STS-DTCHK008.
       *
+      *    データチェック中間ファイル（複数病名登録チェック）
+           SELECT  DTCHK009-FILE   ASSIGN  DTCHK009PARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  DYNAMIC
+                                   RECORD  KEY     IS  DTCHK009-KEY
+                                   FILE    STATUS  IS  STS-DTCHK009.
+      *
       *    エラーファイル
            SELECT  DTCHKERR-FILE   ASSIGN  DTCHKERRPARA
                                    FILE    STATUS  IS  STS-DTCHKERR.
@@ -100,6 +107,10 @@
       *    データチェック中間ファイル（チェックマスタに存在しない診療行為）
        FD  DTCHK008-FILE.
            COPY    "CPDTCHK008.INC".
+      *
+      *    データチェック中間ファイル（複数病名登録チェック）
+       FD  DTCHK009-FILE.
+           COPY    "CPDTCHK009.INC".
       *
       *    エラーファイル
        FD  DTCHKERR-FILE.
@@ -133,6 +144,9 @@
                                    BY         //DTCHK008//.
            COPY    "CPCOMMONDAT6.INC"
                                    REPLACING  //DTCHK//
+                                   BY         //DTCHK009//.
+           COPY    "CPCOMMONDAT6.INC"
+                                   REPLACING  //DTCHK//
                                    BY         //DTCHKSRY//.
       *
       *    フラグ領域
@@ -140,6 +154,7 @@
            03  STS-DTCHK003                            PIC X(02).
            03  STS-DTCHK004                            PIC X(02).
            03  STS-DTCHK008                            PIC X(02).
+           03  STS-DTCHK009                            PIC X(02).
            03  STS-DTCHKERR                            PIC X(02).
            03  STS-DCACCT                              PIC X(02).
            03  STS-DCSRY                               PIC X(02).
@@ -160,6 +175,7 @@
            03  FLG-PTBYOMEI                            PIC 9(01).
            03  FLG-DTCHK003                            PIC 9(01).
            03  FLG-DTCHK008                            PIC 9(01).
+           03  FLG-DTCHK009                            PIC 9(01).
            03  FLG-YKZBYO                              PIC 9(01).
            03  FLG-SRYBYO                              PIC 9(01).
            03  FLG-YKZHEI                              PIC 9(01).
@@ -440,6 +456,7 @@
            03  WRK-ZAIHKNNUM                           PIC X(03).
            03  WRK-HKNJANUMLEN                         PIC 9(03).
            03  WRK-SRYYMD                              PIC X(08).
+           03  WRK-DTCHK009-SRYKA                      PIC X(02).
       *
        01  KEY-AREA.
            03  KEY-HKNCOMBI                            PIC 9(04).
@@ -1055,6 +1072,9 @@
       *
            MOVE    "DTCHK008"          TO  DTCHK008-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID TO  DTCHK008-TERMID
+      *
+           MOVE    "DTCHK009"          TO  DTCHK009-FILE-ID
+           MOVE    LNK-PRTKANRI-TERMID TO  DTCHK009-TERMID
       *
       *    初期値設定処理
            PERFORM 1001-INIT-VAL-SET-SEC
@@ -3102,6 +3122,10 @@
       *****************************************************************
        20011-DATA-CHK-SEC              SECTION.
       *
+           OPEN    OUTPUT              DTCHK009-FILE
+           CLOSE   DTCHK009-FILE
+           OPEN    I-O                 DTCHK009-FILE
+      *
       *    データチェック初期処理
            PERFORM 20011-DATA-CHK-INIT-SEC
       *
@@ -3161,6 +3185,8 @@
       *
       *    その他必須チェック処理
            PERFORM 200111-SONOTA-HISSU-CHK-SEC
+      *
+           CLOSE   DTCHK009-FILE
       *
            .
        20011-DATA-CHK-EXT.
@@ -4342,6 +4368,30 @@
                    END-IF
                END-IF
       *
+           END-IF
+      *
+           IF    ( PTBYO-TENKIKBN  =   SPACE )
+               PERFORM 2001121-PTBYO-BYOMEI-HEN-SEC
+               IF    ( SYS-1101-BYOSRYKAKBN    =   "1" OR SPACE )
+                   MOVE    PTBYO-SRYKA     TO  WRK-DTCHK009-SRYKA
+               ELSE
+                   MOVE    "00"            TO  WRK-DTCHK009-SRYKA
+               END-IF
+      *
+               INITIALIZE  DTCHK009-REC
+               MOVE    WRK-DTCHK009-SRYKA  TO  DTCHK009-SRYKA
+               MOVE    WRK-HEN-PTBYOMEI    TO  DTCHK009-BYOMEI
+               PERFORM 900-DTCHK009-READ-SEC
+               IF    ( FLG-DTCHK009    =   ZERO )
+                   MOVE    PTBYO-SRYKA         TO  SRH-1005-SRYKA
+                   MOVE    WRK-PTBYOMES-PLUS   TO  WRK-ERRMES-PLUS
+                   MOVE    "050012"            TO  WRK-ERRCD
+                   PERFORM 213-ERRMES-HEN-SEC
+               ELSE
+                   MOVE    WRK-DTCHK009-SRYKA  TO  DTCHK009-SRYKA
+                   MOVE    WRK-HEN-PTBYOMEI    TO  DTCHK009-BYOMEI
+                   WRITE   DTCHK009-REC
+               END-IF
            END-IF
       *
            .
@@ -8490,6 +8540,21 @@
       *
            .
        900-DTCHK008-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    データチェック中間ファイル読込処理
+      *****************************************************************
+       900-DTCHK009-READ-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  FLG-DTCHK009
+      *
+           READ    DTCHK009-FILE
+           INVALID KEY
+               MOVE    1               TO  FLG-DTCHK009
+           END-READ
+      *
+           .
+       900-DTCHK009-READ-EXT.
            EXIT.
       *****************************************************************
       *    データチェック診療会計START処理
