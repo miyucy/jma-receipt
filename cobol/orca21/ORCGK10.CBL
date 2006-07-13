@@ -123,6 +123,7 @@
            03  WRK-PATH            PIC X(64).
       *
            03  WRK-ZZ              PIC ZZZ.
+           03  WRK-ORDER           PIC 9(01).
       *
            03  WRK-ERRMSG          PIC X(40).
       *
@@ -271,8 +272,6 @@
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
-      *    DISPLAY "*** ORCSNPL    START  ***"
-      *
            INITIALIZE                  FLG-AREA
            INITIALIZE                  STS-AREA
            INITIALIZE                  WRK-AREA
@@ -377,9 +376,17 @@
            MOVE    SPA-NYUGAIKBN       TO  WKSRY-NYUGAIKBN
            MOVE    SPA-GMN-PTID        TO  WKSRY-PTID
            IF      SPA-GMN-PTID        =   ZERO
-               MOVE    "key8"              TO  WRK-PATH
+               IF      SPA-WKSRYHYOFLG     =   ZERO
+                   MOVE    "key8"              TO  WRK-PATH
+               ELSE
+                   MOVE    "key9"              TO  WRK-PATH
+               END-IF
            ELSE
-               MOVE    "key4"              TO  WRK-PATH
+               IF      SPA-WKSRYHYOFLG         =   ZERO
+                   MOVE    "key4"              TO  WRK-PATH
+               ELSE
+                   MOVE    "key10"             TO  WRK-PATH
+               END-IF
            END-IF
       *
            MOVE    WKSRYACT-REC        TO  MCPDATA-REC
@@ -397,7 +404,6 @@
            PERFORM
                UNTIL   (FLG-WKSRYACT   =   1 )  OR
                        (IDX            >   50 )
-      *
                IF      (WKSRY-ZAINUM       =   1   )  AND
                        (WKSRY-RENNUM       =   1   )
                    ADD     1                   TO  IDX
