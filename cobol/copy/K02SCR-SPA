@@ -483,7 +483,6 @@
            03  SPA-K10GMN-AREA.
                05  SPA-K10GMN-CUR          PIC 9(02).
                05  SPA-K10-SYORI           PIC 9(01).
-               05  SPA-K10-ORDER           PIC 9(01).
                05  SPA-K10-NEXT            PIC 9(01).
                05  SPA-K10-MAX             PIC 9(03).
                05  SPA-K10-LIST.
