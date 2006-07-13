@@ -53,6 +53,7 @@
       *
       *  03.00.01    NACL-藤原    06/06/20  レセコメントを保険組合せ・
       *                                     症状詳記区分順に記載する
+      *  03.01.01    NACL-門脇    06/07/13  項目クリア追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1787,6 +1788,7 @@
            MOVE    ZERO                TO  WRK-R061-ZAINUM-O
            MOVE    SPACE               TO  WRK-R061-SRYKBN-O
            MOVE    ZERO                TO  CNT-RECE87
+           MOVE    ZERO                TO  CNT-ZAIMEISAISU
       *
       *    パラメータ０６ファイルより編集
            INITIALIZE                      RECE87-REC

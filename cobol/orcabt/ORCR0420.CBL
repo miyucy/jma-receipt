@@ -114,6 +114,7 @@
       *                                     場合の編集修正（自賠責）
       *  03.00.01    NACL-門脇    06/06/22  往診、在宅患者訪問診療料の
       *                                     コメント自動記載対応
+      *  03.01.01    NACL-門脇    06/07/10  在支援コメント自動記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -322,6 +323,7 @@
            03  IDX3                                    PIC 9(03).
            03  IDX4                                    PIC 9(03).
            03  IDX5                                    PIC 9(03).
+           03  IDXA                                    PIC 9(01).
            03  ID1                                     PIC 9(03). 
            03  IDY                                     PIC 9(03).
            03  IDW                                     PIC 9(03).
@@ -329,6 +331,7 @@
            03  IDU                                     PIC 9(03).
            03  NUM-IDX                                 PIC 9(01).
            03  SYSKAN-IDX                              PIC 9(03).
+           03  SYSKAN-IDX2                             PIC 9(03).
            03  FUKA-IDX                                PIC 9(03).
       *
       *    パス名領域
@@ -345,6 +348,11 @@
        01  TBL-SYS1001-T.
            03  TBL-SYS1001-OCC                         OCCURS  10.
                05  TBL-SYS1001                         PIC X(610).
+      *    施設基準情報退避用領域
+       01  TBL-SYS1006-T.
+           03  TBL-SYS1006-OCC                         OCCURS  10.
+               05  TBL-SYS10061                        PIC X(610).
+               05  TBL-SYS10062                        PIC X(610).
       *
       *    点数テーブル検索用対象日領域
        01  WK-TAIHI-AREA.
@@ -422,6 +430,8 @@
       *
       *    消費税端数区分
            03  WRK-TAX1001-KBN                         PIC X(01).
+      *
+           03  WRK-SISETU613                           PIC 9(01).
       *
       *    数字半角全角変換用     
            03  WRK-CHAR-IDX                    PIC 9(02).
@@ -700,6 +710,12 @@
       *    麻薬注射
            03  CONS-MAYAKU           PIC X(09)  VALUE  "130000310".
       *
+      *    在支援フラグ編集の為のコード
+           03  CONS-ZAISIEN1         PIC X(09)  VALUE  "114001110".
+           03  CONS-ZAISIEN2         PIC X(09)  VALUE  "114011570".
+           03  CONS-ZAISIEN3         PIC X(09)  VALUE  "114011670".
+           03  CONS-ZAISIEN4         PIC X(09)  VALUE  "114011770".
+      *
       *    剤の診療内容チェックテーブル
        01  TBL-ZAICHECK-AREA.
       *    （サ）
@@ -756,6 +772,7 @@
            COPY    "CPSYSKANRI.INC".
       *    医療機関情報−基本
            COPY    "CPSK1001.INC".
+           COPY    "CPSK1006.INC".
       *
            COPY    "CPSK4003.INC".
       *
@@ -867,6 +884,28 @@
                   PERFORM 500-ERR-HENSYU-SEC
                   MOVE    1                   TO  FLG-END
               END-IF
+      *       施設基準情報
+              MOVE     ZERO     TO     WRK-SISETU613
+              PERFORM  VARYING  IDXA   FROM   1   BY  1
+                        UNTIL   IDXA     >    2
+                 INITIALIZE                   SYS-1006-REC
+                 MOVE    "1006"           TO  SYS-1006-KANRICD
+                 MOVE    IDXA             TO  SYS-1006-KBNCD
+                 MOVE    WRK-PARA-SRYYM   TO  ORC-DBYMD (1:6)
+                 MOVE    "01"             TO  ORC-DBYMD (7:2)
+                 MOVE    SYS-1006-REC     TO  MCPDATA-REC
+                 MOVE    "SYSKANRI-KEY"   TO  WRK-PATH
+                 PERFORM 800-SYSKANRI-READ-SEC
+                 IF      FLG-SYSKANRI     =   ZERO
+                   MOVE    SYSKANRI-REC   TO  SYS-1006-REC
+                   EVALUATE  IDXA
+                     WHEN     1
+                       CONTINUE
+                     WHEN     2
+                       MOVE  SYS-1006-SSTKIJUN(113)  TO  WRK-SISETU613
+                   END-EVALUATE
+                 END-IF
+              END-PERFORM
            ELSE
               MOVE     ZERO               TO  SYSKAN-IDX
               MOVE     SPACE              TO  TBL-SYS1001-T
@@ -908,6 +947,54 @@
                                            MCPAREA
                                            ORCMCPAREA
                                            MCPDATA-REC
+      *
+              MOVE     ZERO               TO  SYSKAN-IDX
+                                              SYSKAN-IDX2
+              MOVE     SPACE              TO  TBL-SYS1006-T
+              INITIALIZE                      TBL-SYS1006-T
+      *
+              PERFORM  VARYING  IDXA   FROM   1   BY  1
+                        UNTIL   IDXA     >    2
+                 INITIALIZE                   SYS-1006-REC
+                 MOVE    "1006"           TO  SYS-1006-KANRICD
+                 MOVE    IDXA             TO  SYS-1006-KBNCD
+                 MOVE    SYS-1006-REC     TO  MCPDATA-REC
+                 MOVE    "DBSELECT"       TO  MCP-FUNC
+                 MOVE    "SYSKANRI-KEY8"  TO  ORC-DBPATH
+                 CALL    "ORCMCPSUB"          USING
+                                              MCPAREA
+                                              ORCMCPAREA
+                                              MCPDATA-REC
+                 IF      MCP-RC           =   ZERO
+                     MOVE    "SYSKANRI-KEY8" TO  ORC-DBPATH
+                     PERFORM 810-SYSKANRI-READ-SEC
+                     PERFORM  UNTIL   FLG-SYSKANRI  =    1
+      *
+                       MOVE    SYSKANRI-REC  TO  SYS-1006-REC
+                       EVALUATE  IDXA
+                         WHEN     1
+                           ADD     1     TO  SYSKAN-IDX
+                           MOVE    SYS-1006-REC
+                                         TO  TBL-SYS10061(SYSKAN-IDX)
+                         WHEN     2
+                           ADD     1     TO  SYSKAN-IDX2
+                           MOVE    SYS-1006-REC
+                                         TO  TBL-SYS10062(SYSKAN-IDX2)
+                       END-EVALUATE
+      *
+                       MOVE    "SYSKANRI-KEY8" TO  ORC-DBPATH
+                       PERFORM 810-SYSKANRI-READ-SEC
+      *
+                     END-PERFORM
+                 END-IF
+                 MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+                 MOVE    "SYSKANRI-KEY8"     TO  ORC-DBPATH
+                 CALL    "ORCMCPSUB"          USING
+                                              MCPAREA
+                                              ORCMCPAREA
+                                              MCPDATA-REC
+              END-PERFORM
+      *
            END-IF
       *                             
       *    レセプト処理
@@ -2153,14 +2240,11 @@
                    MOVE  SPACE  TO    RECE44-FLG-HOUSIJI-COMMENT
                    MOVE    1    TO    FLG-HOUSIJI-COM
               END-IF
-           END-IF
-           IF      RECE44-SRYKBN      =     "14"
+      *
               IF   SRY-SRYCD(IDX2)    =     CONS-HINKAI-COMMENT
                    MOVE   "1"   TO    RECE44-FLG-HINKAI-COMMENT
               END-IF
-           END-IF
       *
-           IF      RECE44-SRYKBN      =     "14"
               IF  (SRY-SRYCD(IDX2)    =     CONS-OSIN-COMMENT
                                       OR    CONS-OSIN2-COMMENT)
               AND (FLG-OSIN-COM       =     ZERO              )
@@ -2170,8 +2254,7 @@
                    MOVE  SPACE  TO    RECE44-FLG-OSIN-COMMENT
                    MOVE    1    TO    FLG-OSIN-COM
               END-IF
-           END-IF
-           IF      RECE44-SRYKBN      =     "14"
+      *
               IF   SRY-SRYCD(IDX2)    =     CONS-ZAIHOU-COMMENT
               AND  FLG-ZAIHOU-COM     =     ZERO
                    MOVE   "1"   TO    RECE44-FLG-ZAIHOU-COMMENT
@@ -2179,6 +2262,17 @@
               IF   SRY-SRYCD(IDX2)    =     CONS-ZAIHOU2-COMMENT
                    MOVE  SPACE  TO    RECE44-FLG-ZAIHOU-COMMENT
                    MOVE    1    TO    FLG-ZAIHOU-COM
+              END-IF
+      *
+              IF  (RECE41-SRYYM      >=     "200604")
+              AND (WRK-SISETU613      =      1      )
+                IF SRY-SRYCD(IDX2)    =     CONS-ZAISIEN1    OR
+                                            CONS-ZAISIEN2    OR
+                                            CONS-ZAISIEN3    OR
+                                            CONS-ZAISIEN4
+                   MOVE   "1"   TO    RECE41-COMCNTFLG
+                   MOVE   "1"   TO    RECE44-FLG-ZAISIEN-COMMENT
+                END-IF
               END-IF
            END-IF
       *
@@ -5503,6 +5597,25 @@
                PERFORM 500-ERR-HENSYU-SEC
                MOVE    1               TO  FLG-END
                GO  TO  910-SYSKANRI-HENSYU-EXT
+             END-IF
+      *
+      *      施設基準情報
+             MOVE    ZERO                TO  FLG-SET
+      *
+             PERFORM  VARYING  SYSKAN-IDX2  FROM  1   BY  1
+                       UNTIL ( SYSKAN-IDX2               >  10   )
+                        OR   ( TBL-SYS10062(SYSKAN-IDX2) = SPACE )
+                        OR   ( FLG-SET                   =   1   )
+                 MOVE    TBL-SYS10062(SYSKAN-IDX2)  TO  SYS-1006-REC
+                 IF   ( SYS-1006-STYUKYMD  <=  WRK-SYS-SRYYMD    )
+                 AND  ( WRK-SYS-SRYYMD     <=  SYS-1006-EDYUKYMD )
+                     MOVE     1                  TO  FLG-SET
+                 END-IF
+             END-PERFORM
+             IF      FLG-SET    =   ZERO
+                 MOVE  ZERO                    TO  WRK-SISETU613
+             ELSE
+                 MOVE  SYS-1006-SSTKIJUN(113)  TO  WRK-SISETU613
              END-IF
       *
            END-IF

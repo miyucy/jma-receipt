@@ -164,6 +164,7 @@
       *                                     るレセプト請求しない地方公費の
       *                                     編集に給付割合を追加
       *  03.01.01    NACL-門脇    06/06/28  実日数減算コード対応
+      *  03.01.02    NACL-門脇    06/07/10  在支援コメント自動記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -4032,6 +4033,11 @@
                   (WRK-TENSUGOKEI     =   ZERO)                         
                GO  TO  440-TNSKAI-SET-EXT                               
            END-IF                                                       
+           IF     (FLG-COMMENT3       =    1  )   AND
+                  (RECE04-SRYKBN      =   "14")   AND
+                  (RECE04-ZAITEN      =   ZERO)
+               GO  TO  440-TNSKAI-SET-EXT
+           END-IF
            IF      RECE04-SAFLG   NOT =   SPACE
                GO  TO  440-TNSKAI-SET-EXT                              
            END-IF  

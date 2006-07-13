@@ -71,6 +71,7 @@
       *  02.09.05    NACL-門脇    06/05/30  リハ発症日記載修正
       *  03.01.01    NACL-門脇    06/06/22  往診、在宅患者訪問診療料の
       *                                     コメント自動記載対応
+      *  03.01.02    NACL-門脇    06/07/10  在支援コメント自動記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -501,6 +502,9 @@
            03  TBL-HASSYO-SYOGAI-COMMENT    PIC 9(01).
            03  TBL-HASSYO-SESSYOKU-COMMENT  PIC 9(01).
       *
+       01  TBL-ZAISIEN-INF.
+           03  TBL-ZAISIEN-COMMENT          PIC 9(01).
+      *
       *    酸素（金額・数量）情報
        01  TBL-SANSO-INF.
            03  TBL-SANSO-INF2       OCCURS    10.
@@ -790,6 +794,7 @@
                                            CNT-DOUJITU
       *
            INITIALIZE                      TBL-HASSYO-INF
+           INITIALIZE                      TBL-ZAISIEN-INF
       *
            INITIALIZE                      TBL-YAKUTEI-INF
       *
@@ -840,6 +845,12 @@
                          IF  RECE44-DOUJITUSAI-COMMENT   =  "1"
                             ADD    RECE44-ZAIKAISU   TO   CNT-DOUJITU
                          END-IF
+                      WHEN      "14"
+      *               （在支援に関する診療のカウント）
+                         IF  RECE44-FLG-ZAISIEN-COMMENT  =  "1"
+                            MOVE  RECE44-REC  TO  WRK-RECE44-REC
+                            MOVE  1           TO  TBL-ZAISIEN-COMMENT
+                         END-IF
                       WHEN      "40"
       *               （介達牽引あり）
                          IF  RECE44-KAITATU-COMMENT      =  "1"
@@ -884,6 +895,12 @@
       *               （同日再診のカウント）
                          IF  RECE44-DOUJITUSAI-COMMENT   =  "1"
                             ADD    RECE44-ZAIKAISU   TO   CNT-DOUJITU
+                         END-IF
+                      WHEN      "14"
+      *               （在支援に関する診療のカウント）
+                         IF  RECE44-FLG-ZAISIEN-COMMENT  =  "1"
+                            MOVE  RECE44-REC  TO  WRK-RECE44-REC
+                            MOVE  1           TO  TBL-ZAISIEN-COMMENT
                          END-IF
                       WHEN      "40"
       *               （介達牽引あり）
@@ -1001,6 +1018,11 @@
            IF   RECE41-HKNKBN     =   "4"
            AND  WRK-PARA-RECEKBN  =   "5"
                 PERFORM    2001-KASANRITU-COMMENT-SEC
+           END-IF
+      *
+      *    在支援コメント
+           IF     TBL-ZAISIEN-COMMENT   =   1
+               PERFORM     2001-ZAISIEN-COMMENT-SEC
            END-IF
       *
       *    パラメータ０４ファイルより編集
@@ -2511,6 +2533,54 @@
       *
            .
        20011-KASANRITU-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    在支援のコメント編集
+      *****************************************************************
+       2001-ZAISIEN-COMMENT-SEC          SECTION.
+      *
+           INITIALIZE                      RECE449-REC
+           MOVE    RECE41-HOSPID       TO  RECE449-HOSPID
+           MOVE    RECE41-SRYYM        TO  RECE449-SRYYM
+           MOVE    RECE41-NYUGAIKBN    TO  RECE449-NYUGAIKBN
+           MOVE    RECE41-PTID         TO  RECE449-PTID
+           MOVE    RECE41-RECEKA       TO  RECE449-RECEKA
+           MOVE    RECE41-HKNID        TO  RECE449-HKNID
+           MOVE    RECE41-TEKSTYMD     TO  RECE449-TEKSTYMD
+           MOVE    99999965            TO  RECE449-ZAINUM
+           MOVE    WRK-RECE44-SRYKBN   TO  RECE449-SRYKBN
+           MOVE    1                   TO  RECE449-MEISAISU
+      *
+           WRITE   RECE449-REC
+           ADD     1                   TO  CNT-RECE449
+      *
+           INITIALIZE                      RECE459-REC
+           MOVE    RECE41-HOSPID       TO  RECE459-HOSPID
+           MOVE    RECE41-SRYYM        TO  RECE459-SRYYM
+           MOVE    RECE41-NYUGAIKBN    TO  RECE459-NYUGAIKBN
+           MOVE    RECE41-PTID         TO  RECE459-PTID
+           MOVE    RECE41-RECEKA       TO  RECE459-RECEKA
+           MOVE    RECE41-HKNID        TO  RECE459-HKNID
+           MOVE    RECE41-TEKSTYMD     TO  RECE459-TEKSTYMD
+           MOVE    99999965            TO  RECE459-ZAINUM
+           MOVE    WRK-RECE44-SRYKBN   TO  RECE459-SRYKBN
+      *    在支援コメントの挿入
+           MOVE    SPACE                TO  WRK-RECE45XX-REC
+           INITIALIZE                       WRK-RECE45XX-REC
+           MOVE    "810000001"          TO  WRK-RECE45XX-SRYCD(1 1)
+           MOVE    ZERO                 TO  WRK-RECE45XX-SRYSURYO(1 1)
+           MOVE    3                    TO  WRK-RECE45XX-YUKOKETA(1 1)
+           MOVE    "在支援"             TO  WRK-RECE45XX-NAME(1 1)
+      *
+           MOVE    "1"                  TO  WRK-RECE45XX-SIKFLG(1 1)
+           MOVE    WRK-RECE45XX-SRYACT-TBL(1 1)
+                                        TO  RECE459-SRYACT-TBL(1)
+           WRITE   RECE459-REC
+           ADD     1                    TO  CNT-RECE459
+      *
+           .
+       2001-ZAISIEN-COMMENT-EXT.
            EXIT.
       *
       *****************************************************************

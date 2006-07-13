@@ -72,6 +72,7 @@
       *  02.09.04    NACL-ÃÁœ∆    06/05/30  •Í•œ»Øæ…∆¸µ≠∫‹Ω§¿µ
       *  03.01.01    NACL-ÃÁœ∆    06/06/22  ±˝ø«°¢∫ﬂ¬¥µº‘À¨Ã‰ø«Œ≈Œ¡§Œ
       *                                     •≥•·•Û•»º´∆∞µ≠∫‹¬–±˛
+      *  03.01.02    NACL-ÃÁœ∆    06/07/10  ∫ﬂªŸ±Á•≥•·•Û•»º´∆∞µ≠∫‹¬–±˛
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -500,6 +501,11 @@
                05  TBL-HASSYO-SESSYOKU-COMMENT  PIC 9(01).
                05  TBL-HASSYO-HKNCOMBI          PIC 9(04).
       *
+       01  TBL-ZAISIEN-INF.
+           03  TBL-ZAISIEN-INF2                 OCCURS  5.
+               05  TBL-ZAISIEN-COMMENT          PIC 9(01).
+               05  TBL-ZAISIEN-HKNCOMBI         PIC 9(04).
+      *
       *    ª¿¡«° ∂‚≥€°¶øÙŒÃ°Àæ Û
        01  TBL-SANSO-INF.
            03  TBL-SANSO-INF2       OCCURS    10.
@@ -704,6 +710,7 @@
        200-MAIN-SEC                SECTION.
       *
            INITIALIZE                      TBL-HASSYO-INF
+           INITIALIZE                      TBL-ZAISIEN-INF
       *
            MOVE  RECE62-KOHBUNRI-MIN   TO  WRK-KOHBUNRI-JIDO
            MOVE  ZERO                  TO  WRK-HKNCOMBI-JIDO
@@ -748,6 +755,16 @@
                OR     ( RECE62-TEKSTYMD  NOT =   RECE64-TEKSTYMD     )
       *
                EVALUATE      RECE64-SRYKBN
+                   WHEN      "14"
+      *            ° ∫ﬂªŸ±Á§À¥ÿ§π§Îø«Œ≈§Œ•´•¶•Û•»°À
+                      IF  RECE64-FLG-ZAISIEN-COMMENT   =  "1"
+                        MOVE    RECE64-REC    TO   WRK-RECE64-REC
+                        COMPUTE WRK-KOHBUNRI
+                                   =    RECE64-KOHBUNRI  +  1
+                        MOVE  1  TO  TBL-ZAISIEN-COMMENT(WRK-KOHBUNRI)
+                        MOVE  RECE64-HKNCOMBI  TO
+                                     TBL-ZAISIEN-HKNCOMBI(WRK-KOHBUNRI)
+                      END-IF
                    WHEN      "40"
       *            ° ≤√£∏£∞˙§¢§Í°À
                       IF  RECE64-KAITATU-COMMENT    =  "1"
@@ -1013,6 +1030,14 @@
                PERFORM   2001-KYUSEIHASSYO-HANTEI-SEC
            END-IF
       *
+      *    ∫ﬂªŸ±Á•≥•·•Û•»
+           PERFORM   VARYING   IDX    FROM   1   BY   1
+                      UNTIL    IDX      >    5
+              IF     TBL-ZAISIEN-COMMENT(IDX)    =   1
+                  PERFORM    2001-ZAISIEN-COMMENT-SEC
+              END-IF
+           END-PERFORM
+      *
       *****∫ππ˛ ‘Ω∏£≤********************
            PERFORM     250-SASHIKOMI2-SEC
       ***********************************
@@ -1106,6 +1131,68 @@
       *
            .
        2001-NYUINRYO-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ∫ﬂªŸ±Á§Œ•≥•·•Û•» ‘Ω∏
+      *****************************************************************
+       2001-ZAISIEN-COMMENT-SEC          SECTION.
+      *
+           INITIALIZE                      RECE649-REC
+           MOVE    RECE62-HOSPID       TO  RECE649-HOSPID
+           MOVE    RECE62-SRYYM        TO  RECE649-SRYYM
+           MOVE    RECE62-NYUGAIKBN    TO  RECE649-NYUGAIKBN
+           MOVE    RECE62-PTID         TO  RECE649-PTID
+           MOVE    RECE62-RECEKA       TO  RECE649-RECEKA
+           MOVE    RECE62-TEISYUTUSAKI TO  RECE649-TEISYUTUSAKI
+           MOVE    RECE62-RECESYUBETU  TO  RECE649-RECESYUBETU
+           MOVE    RECE62-HKNJANUM-KEY TO  RECE649-HKNJANUM
+           MOVE    RECE62-HOJOKBN-KEY  TO  RECE649-HOJOKBN
+           MOVE    RECE62-TEKSTYMD     TO  RECE649-TEKSTYMD
+           COMPUTE WRK-ZAINUM    =  99999964  +  IDX
+           MOVE    WRK-ZAINUM          TO  RECE649-ZAINUM
+           COMPUTE WRK-KOHBUNRI  =  IDX  -  1
+           MOVE    WRK-KOHBUNRI        TO  RECE649-KOHBUNRI
+           MOVE    WRK-RECE64-SRYKBN   TO  RECE649-SRYKBN
+           MOVE    TBL-ZAISIEN-HKNCOMBI(IDX)
+                                       TO  RECE649-HKNCOMBI
+      *
+           MOVE    1                   TO  RECE649-MEISAISU
+      *
+           WRITE   RECE649-REC
+           ADD     1                   TO  CNT-RECE649
+      *
+           INITIALIZE                      RECE659-REC
+           MOVE    RECE62-HOSPID       TO  RECE659-HOSPID
+           MOVE    RECE62-SRYYM        TO  RECE659-SRYYM
+           MOVE    RECE62-NYUGAIKBN    TO  RECE659-NYUGAIKBN
+           MOVE    RECE62-PTID         TO  RECE659-PTID
+           MOVE    RECE62-RECEKA       TO  RECE659-RECEKA
+           MOVE    RECE62-TEISYUTUSAKI TO  RECE659-TEISYUTUSAKI
+           MOVE    RECE62-RECESYUBETU  TO  RECE659-RECESYUBETU
+           MOVE    RECE62-HKNJANUM-KEY TO  RECE659-HKNJANUM
+           MOVE    RECE62-HOJOKBN-KEY  TO  RECE659-HOJOKBN
+           MOVE    RECE62-TEKSTYMD     TO  RECE659-TEKSTYMD
+           COMPUTE WRK-ZAINUM    =  99999964  +  IDX
+           MOVE    WRK-ZAINUM          TO  RECE659-ZAINUM
+           COMPUTE WRK-KOHBUNRI  =  IDX  -  1
+           MOVE    WRK-KOHBUNRI        TO  RECE659-KOHBUNRI
+           MOVE    WRK-RECE64-SRYKBN   TO  RECE659-SRYKBN
+      *    ∫ﬂªŸ±Á•≥•·•Û•»§Œ¡ﬁ∆˛
+           MOVE    SPACE               TO  WRK-RECE65XX-REC
+           INITIALIZE                      WRK-RECE65XX-REC
+           MOVE    "810000001"         TO  WRK-RECE65XX-SRYCD(1 1)
+           MOVE     ZERO               TO  WRK-RECE65XX-SRYSURYO(1 1)
+           MOVE     3                  TO  WRK-RECE65XX-YUKOKETA(1 1)
+           MOVE    "∫ﬂªŸ±Á"            TO  WRK-RECE65XX-NAME(1 1)
+      *
+           MOVE    WRK-RECE65XX-SRYACT-TBL(1 1)
+                                       TO  RECE659-SRYACT-TBL(1)
+           WRITE   RECE659-REC
+           ADD     1                   TO  CNT-RECE659
+      *
+           .
+       2001-ZAISIEN-COMMENT-EXT.
            EXIT.
       *
       *****************************************************************

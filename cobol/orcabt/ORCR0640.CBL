@@ -207,6 +207,7 @@
       *                                     ½¤Àµ
       *  03.01.03    NACL-ÌçÏÆ    06/07/06  ¸øÈñÃ±ÆÈ»þ¤Î¿©»öÉéÃ´³ÛÊÔ½¸
       *                                     ½¤Àµ
+      *  03.01.04    NACL-ÌçÏÆ    06/07/10  ºß»Ù±ç¥³¥á¥ó¥È¼«Æ°µ­ºÜÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -386,6 +387,7 @@
            03  IDX6                                    PIC 9(03).
            03  IDX7                                    PIC 9(02).
            03  IDX8                                    PIC 9(02).
+           03  IDXA                                    PIC 9(01).
            03  IDXX                                    PIC 9(02).
            03  IDYX                                    PIC 9(02).
            03  IDZX                                    PIC 9(02).
@@ -415,6 +417,7 @@
            03  NYUINACT-IDX                            PIC 9(03).
            03  KOHFTN-IDX                              PIC 9(03).
            03  SYSKAN-IDX                              PIC 9(03).
+           03  SYSKAN-IDX2                             PIC 9(03).
            03  KOHIDX                                  PIC 9(03).
            03  FUKA-IDX                                PIC 9(03).
       *     
@@ -621,6 +624,11 @@
        01  TBL-SYS1001-T.
            03  TBL-SYS1001-OCC     OCCURS  10.
                05  TBL-SYS1001                         PIC X(610).
+      *    »ÜÀß´ð½à¾ðÊóÂàÈòÍÑÎÎ°è
+       01  TBL-SYS1006-T.
+           03  TBL-SYS1006-OCC                         OCCURS  10.
+               05  TBL-SYS10061                        PIC X(610).
+               05  TBL-SYS10062                        PIC X(610).
       *
       *    °åÎÅµ¡´Ø¡ÊÆþ±¡´ðËÜ¡ËÂàÈòÍÑÎÎ°è
        01  TBL-SYS5000-T.
@@ -718,6 +726,8 @@
              04  WRK-SKJ-FTN-OCC                       OCCURS  5.
                05  WRK-SKJ-FTN                         PIC 9(07).
       *
+           03  WRK-SISETU613                           PIC 9(01).
+      *
       *    1·åÌÜ:À¸ÊÝ 2·åÌÜ:·ë³Ë 3·åÌÜ:Àº¿À
            03  WRK-3SYU-KBN.
                05  WRK-3SYU        PIC X(03).
@@ -781,6 +791,12 @@
            03  CONS-SIDORYO4       PIC X(09) VALUE "113700610".
            03  CONS-SIDORYO5       PIC X(09) VALUE "113700710".
            03  CONS-SIDORYO6       PIC X(09) VALUE "113700810".
+      *
+      *    ºß»Ù±ç¥Õ¥é¥°ÊÔ½¸¤Î°Ù¤Î¥³¡¼¥É
+           03  CONS-ZAISIEN1       PIC X(09) VALUE "114001110".
+           03  CONS-ZAISIEN2       PIC X(09) VALUE "114011570".
+           03  CONS-ZAISIEN3       PIC X(09) VALUE "114011670".
+           03  CONS-ZAISIEN4       PIC X(09) VALUE "114011770".
       *
       *    ¥Õ¥£¥ë¥àÎÁ¡ÊÆýÍÄ»ù¡Ë²Ã»»
            03  CONS-FILM-YOUJI-KASAN  
@@ -995,6 +1011,7 @@
            COPY    "CPSYSKANRI.INC".
       *    
            COPY    "CPSK1001.INC".
+           COPY    "CPSK1006.INC".
       *    
            COPY    "CPSK2005.INC".
       *
@@ -1147,6 +1164,40 @@
       *
               MOVE   "SYSKANRI-KEY"       TO  WK-PATH
               PERFORM   CSR-CLOSE-SEC
+      *
+      *       »ÜÀß´ð½à¾ðÊó
+              MOVE     ZERO     TO     WRK-SISETU613
+              PERFORM  VARYING  IDXA   FROM   1   BY  1
+                        UNTIL   IDXA     >    2
+                INITIALIZE                      SYSKANRI-REC
+                MOVE    "1006"              TO  SYS-KANRICD
+                MOVE    IDXA                TO  SYS-KBNCD
+                MOVE    WRK-PARA-SRYYM      TO  ORC-DBYMD (1:6)
+                MOVE    "01"                TO  ORC-DBYMD (7:2)
+                MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+                MOVE    "DBSELECT"          TO  MCP-FUNC
+                MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+                CALL    "ORCMCPSUB"             USING
+                                                MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC
+                IF      MCP-RC              =   ZERO
+                    MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
+                    PERFORM 960-KANRIMST-READ-SEC
+                    IF      FLG-SYSKANRI     =   ZERO
+                       MOVE   MCPDATA-REC   TO  SYS-1006-REC
+                       EVALUATE  IDXA
+                         WHEN     1
+                           CONTINUE
+                         WHEN     2
+                           MOVE  SYS-1006-SSTKIJUN(113)
+                                            TO  WRK-SISETU613
+                       END-EVALUATE
+                    END-IF
+                END-IF
+                MOVE   "SYSKANRI-KEY"       TO  WK-PATH
+                PERFORM   CSR-CLOSE-SEC
+              END-PERFORM
            ELSE
               MOVE     ZERO               TO  SYSKAN-IDX
               MOVE     SPACE              TO  TBL-SYS1001-T
@@ -1183,6 +1234,49 @@
       *
               MOVE   "SYSKANRI-KEY8"      TO  WK-PATH
               PERFORM   CSR-CLOSE-SEC
+      *
+              MOVE     ZERO               TO  SYSKAN-IDX
+                                              SYSKAN-IDX2
+              MOVE     SPACE              TO  TBL-SYS1006-T
+              INITIALIZE                      TBL-SYS1006-T
+      *
+              PERFORM  VARYING  IDXA   FROM   1   BY  1
+                        UNTIL   IDXA     >    2
+                 INITIALIZE                   SYSKANRI-REC
+                 MOVE    "1006"           TO  SYS-KANRICD
+                 MOVE    IDXA             TO  SYS-KBNCD
+                 MOVE    SYSKANRI-REC     TO  MCPDATA-REC
+                 MOVE    "DBSELECT"       TO  MCP-FUNC
+                 MOVE    "SYSKANRI-KEY8"  TO  ORC-DBPATH
+                 CALL    "ORCMCPSUB"          USING
+                                              MCPAREA
+                                              ORCMCPAREA
+                                              MCPDATA-REC
+                 IF      MCP-RC           =   ZERO
+                     MOVE    "SYSKANRI-KEY8" TO  ORC-DBPATH
+                     PERFORM  960-KANRIMST-READ-SEC
+                     PERFORM  UNTIL   FLG-SYSKANRI  =    1
+      *
+                       MOVE    MCPDATA-REC   TO  SYS-1006-REC
+                       EVALUATE  IDXA
+                         WHEN     1
+                           ADD     1     TO  SYSKAN-IDX
+                           MOVE    SYS-1006-REC
+                                         TO  TBL-SYS10061(SYSKAN-IDX)
+                         WHEN     2
+                           ADD     1     TO  SYSKAN-IDX2
+                           MOVE    SYS-1006-REC
+                                         TO  TBL-SYS10062(SYSKAN-IDX2)
+                       END-EVALUATE
+      *
+                       MOVE    "SYSKANRI-KEY8" TO  ORC-DBPATH
+                       PERFORM  960-KANRIMST-READ-SEC
+      *
+                     END-PERFORM
+                 END-IF
+                 MOVE   "SYSKANRI-KEY8"      TO  WK-PATH
+                 PERFORM   CSR-CLOSE-SEC
+              END-PERFORM
            END-IF
       *
            IF   WRK-PARA-SRYYM    NOT =  ZERO
@@ -2629,14 +2723,11 @@
                    MOVE  SPACE  TO    RECE64-FLG-HOUSIJI-COMMENT
                    MOVE    1    TO    FLG-HOUSIJI-COM
               END-IF
-           END-IF
-           IF      RECE64-SRYKBN      =     "14"
+      *
               IF   SRY-SRYCD(IDX2)    =     CONS-HINKAI-COMMENT
                    MOVE   "1"   TO    RECE64-FLG-HINKAI-COMMENT
               END-IF
-           END-IF
       *
-           IF      RECE64-SRYKBN      =     "14"
               IF  (SRY-SRYCD(IDX2)    =     CONS-OSIN-COMMENT
                                       OR    CONS-OSIN2-COMMENT)
               AND (FLG-OSIN-COM       =     ZERO              )
@@ -2645,6 +2736,17 @@
               IF   SRY-SRYCD(IDX2)    =     CONS-OSIN3-COMMENT
                    MOVE  SPACE  TO    RECE64-FLG-OSIN-COMMENT
                    MOVE    1    TO    FLG-OSIN-COM
+              END-IF
+      *
+              IF  (RECE62-SRYYM      >=     "200604")
+              AND (WRK-SISETU613      =      1      )
+                IF SRY-SRYCD(IDX2)    =     CONS-ZAISIEN1    OR
+                                            CONS-ZAISIEN2    OR
+                                            CONS-ZAISIEN3    OR
+                                            CONS-ZAISIEN4
+                   MOVE   "1"   TO    RECE62-COMCNTFLG
+                   MOVE   "1"   TO    RECE64-FLG-ZAISIEN-COMMENT
+                END-IF
               END-IF
            END-IF
       *
@@ -9924,6 +10026,24 @@
                   PERFORM 500-ERR-HENSYU-SEC
                   MOVE    1              TO  FLG-RECE62
                   GO  TO  910-SYSKANRI-HENSYU-EXT
+               END-IF
+      *
+      *        »ÜÀß´ð½à¾ðÊó
+               MOVE    ZERO         TO  FLG-SET
+               PERFORM  VARYING  SYSKAN-IDX2  FROM  1   BY  1
+                         UNTIL ( SYSKAN-IDX2               >  10   )
+                          OR   ( TBL-SYS10062(SYSKAN-IDX2) = SPACE )
+                          OR   ( FLG-SET                   =   1   )
+                   MOVE    TBL-SYS10062(SYSKAN-IDX2)  TO  SYS-1006-REC
+                   IF   ( SYS-1006-STYUKYMD  <=  WRK-SYS-SRYYMD    )
+                   AND  ( WRK-SYS-SRYYMD     <=  SYS-1006-EDYUKYMD )
+                       MOVE     1                  TO  FLG-SET
+                   END-IF
+               END-PERFORM
+               IF      FLG-SET    =   ZERO
+                   MOVE  ZERO                    TO  WRK-SISETU613
+               ELSE
+                   MOVE  SYS-1006-SSTKIJUN(113)  TO  WRK-SISETU613
                END-IF
       *
                MOVE      RECE62-SRYYM   TO  WRK-SRYYM-5000

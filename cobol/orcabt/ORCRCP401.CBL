@@ -59,6 +59,7 @@
       *                                     の表題記載対応
       *
       *  03.01.01    NACL-藤原    06/07/03  旧総合病院の科表示
+      *  03.01.02    NACL-門脇    06/07/13  項目クリア追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -4925,6 +4926,7 @@
            MOVE    SPACE               TO  WRK-R061-SRYKBN-O
            MOVE    ZERO                TO  WRK-R061-KOHBUNRI-O
            MOVE    ZERO                TO  CNT-RECE661
+           MOVE    ZERO                TO  CNT-ZAIMEISAISU
       *
       *    パラメータ０６ファイルより編集
            INITIALIZE                      RECE661-REC

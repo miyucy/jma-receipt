@@ -89,6 +89,7 @@
       *  02.09.02    NACL-Æ£¸¶    06/04/14  Êñ³çÂÐ¾Ý¸¡ºº¡Ö£±£±¡×¤ÎÄÉ²Ã
       *  02.09.03    NACL-ÌçÏÆ    06/05/22  ÅÅ»Ò²½²Ã»»ÊÔ½¸½¤Àµ
       *  03.01.01    NACL-ÌçÏÆ    06/06/28  ¼ÂÆü¿ô¸º»»¥³¡¼¥ÉÂÐ±þ
+      *  03.01.02    NACL-ÌçÏÆ    06/07/10  ºß»Ù±ç¥³¥á¥ó¥È¼«Æ°µ­ºÜÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -201,6 +202,7 @@
            03  FLG-TEIGEN          PIC 9(01).
            03  FLG-COMMENT         PIC 9(01).
            03  FLG-COMMENT2        PIC 9(01).
+           03  FLG-COMMENT3        PIC 9(01).
            03  FLG-HIKAKIN         PIC 9(01).
            03  FLG-SRYCD1          PIC 9(01).
            03  FLG-OK              PIC 9(01).
@@ -949,6 +951,7 @@
                MOVE    ZERO                TO  FLG-TEIGEN
                                                FLG-COMMENT
                                                FLG-COMMENT2
+                                               FLG-COMMENT3
                                                FLG-HIKAKIN 
                                                FLG-GAIJINKEN
                MOVE    ZERO                TO  WRK-RECE45
@@ -1334,6 +1337,10 @@
                                                      CONS-COMMENT8      
                            MOVE    1             TO  FLG-COMMENT2       
                        END-IF                                           
+                       IF     (RECE45-SRYCD(IDX)(1:1)   =   "8"  )
+                       OR     (RECE45-SRYCD(IDX)(1:3)   =   "008")
+                           MOVE    1             TO  FLG-COMMENT3
+                       END-IF
       *---- (01.00.05) LINE ADD END --------------------------------
       *
                        IF      RECE45-SRYCD(IDX) =   CONS-TEIGEN
@@ -2478,6 +2485,7 @@
              MOVE    ZERO                TO  FLG-TEIGEN
                                              FLG-COMMENT
                                              FLG-COMMENT2
+                                             FLG-COMMENT3
                                              FLG-HIKAKIN 
              MOVE    ZERO                TO  WRK-RECE45
              MOVE    SPACE               TO  WRK-SRYSYUKBN
@@ -3019,6 +3027,11 @@
                   (RECE44-SRYKBN      =   "11" OR "12" OR "99")         
                GO  TO  440-TNSKAI-SET-EXT                               
            END-IF                                                       
+           IF     (FLG-COMMENT3       =    1  )  AND
+                  (RECE44-SRYKBN      =   "14")  AND
+                  (RECE44-ZAITEN      =   ZERO)
+               GO  TO  440-TNSKAI-SET-EXT
+           END-IF
            IF      RECE44-SAFLG   NOT =   SPACE
                GO  TO  440-TNSKAI-SET-EXT                              
            END-IF  

@@ -99,6 +99,7 @@
       *  03.00.02    NACL-門脇    06/06/23  認知機能障害加算の編集対応
       *  03.01.01    NACL-小豆沢  06.07.04  入院料に含める加算がコメント
       *                                     と同時入力された場合の対応
+      *  03.01.02    NACL-門脇    06/07/10  在支援コメント自動記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -302,6 +303,7 @@
            03  IDX10                                   PIC 9(03).
            03  IDX11                                   PIC 9(02).
            03  IDX12                                   PIC 9(02).
+           03  IDXA                                    PIC 9(01).
            03  IDY                                     PIC 9(03).
            03  IDY2                                    PIC 9(03).
            03  IDY3                                    PIC 9(03).
@@ -318,6 +320,7 @@
            03  SYUKEI-IDX3                             PIC 9(03).
            03  SYUKEI-IDX4                             PIC 9(03).
            03  SYSKAN-IDX                              PIC 9(03).
+           03  SYSKAN-IDX2                             PIC 9(03).
            03  IDV                                     PIC 9(02).
            03  FUKA-IDX                                PIC 9(03).
       *
@@ -406,6 +409,11 @@
        01  TBL-SYS1001-T.
            03  TBL-SYS1001-OCC     OCCURS  10.
                05  TBL-SYS1001                         PIC X(610).
+      *    施設基準情報退避用領域
+       01  TBL-SYS1006-T.
+           03  TBL-SYS1006-OCC                         OCCURS  10.
+               05  TBL-SYS10061                        PIC X(610).
+               05  TBL-SYS10062                        PIC X(610).
       *
       *    手技点・薬剤等点数用領域
        01  TBL-TENSUG-JI.
@@ -483,6 +491,8 @@
       *
       *    消費税端数区分
            03  WRK-TAX1001-KBN                         PIC X(01).
+      *
+           03  WRK-SISETU613                           PIC 9(01).
       *
       *    数字半角全角変換用     
            03  WRK-CHAR-IDX                    PIC 9(02).
@@ -710,6 +720,12 @@
       *    外来迅速検体検査加算
            03  CONS-GAIJINKEN        PIC X(09)  VALUE  "160177770".
       *
+      *    在支援フラグ編集の為のコード
+           03  CONS-ZAISIEN1         PIC X(09)  VALUE  "114001110".
+           03  CONS-ZAISIEN2         PIC X(09)  VALUE  "114011570".
+           03  CONS-ZAISIEN3         PIC X(09)  VALUE  "114011670".
+           03  CONS-ZAISIEN4         PIC X(09)  VALUE  "114011770".
+      *
       *    剤の診療内容チェックテーブル
        01  TBL-ZAICHECK-AREA.
       *    （サ）
@@ -780,6 +796,7 @@
            COPY    "CPSYSKANRI.INC".
       *    医療機関情報−基本
            COPY    "CPSK1001.INC".
+           COPY    "CPSK1006.INC".
       *
            COPY    "CPSK4003.INC".
       *
@@ -927,6 +944,40 @@
               MOVE   "SYSKANRI-KEY"       TO  WK-PATH
               PERFORM   CSR-CLOSE-SEC
       *
+      *       施設基準情報
+              MOVE     ZERO     TO     WRK-SISETU613
+              PERFORM  VARYING  IDXA   FROM   1   BY  1
+                        UNTIL   IDXA     >    2
+                INITIALIZE                      SYSKANRI-REC
+                MOVE    "1006"              TO  SYS-KANRICD
+                MOVE    IDXA                TO  SYS-KBNCD
+                MOVE    WRK-PARA-SRYYM      TO  ORC-DBYMD (1:6)
+                MOVE    "01"                TO  ORC-DBYMD (7:2)
+                MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+                MOVE    "DBSELECT"          TO  MCP-FUNC
+                MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+                CALL    "ORCMCPSUB"             USING
+                                                MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC
+                IF      MCP-RC              =   ZERO
+                    MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
+                    PERFORM 960-KANRIMST-READ-SEC
+                    IF      FLG-SYSKANRI     =   ZERO
+                       MOVE   MCPDATA-REC   TO  SYS-1006-REC
+                       EVALUATE  IDXA
+                         WHEN     1
+                           CONTINUE
+                         WHEN     2
+                           MOVE  SYS-1006-SSTKIJUN(113)
+                                            TO  WRK-SISETU613
+                       END-EVALUATE
+                    END-IF
+                END-IF
+                MOVE   "SYSKANRI-KEY"       TO  WK-PATH
+                PERFORM   CSR-CLOSE-SEC
+              END-PERFORM
+      *
            ELSE
       *
               MOVE     ZERO               TO  SYSKAN-IDX
@@ -965,6 +1016,49 @@
       *
               MOVE   "SYSKANRI-KEY8"      TO  WK-PATH
               PERFORM   CSR-CLOSE-SEC
+      *
+              MOVE     ZERO               TO  SYSKAN-IDX
+                                              SYSKAN-IDX2
+              MOVE     SPACE              TO  TBL-SYS1006-T
+              INITIALIZE                      TBL-SYS1006-T
+      *
+              PERFORM  VARYING  IDXA   FROM   1   BY  1
+                        UNTIL   IDXA     >    2
+                 INITIALIZE                   SYSKANRI-REC
+                 MOVE    "1006"           TO  SYS-KANRICD
+                 MOVE    IDXA             TO  SYS-KBNCD
+                 MOVE    SYSKANRI-REC     TO  MCPDATA-REC
+                 MOVE    "DBSELECT"       TO  MCP-FUNC
+                 MOVE    "SYSKANRI-KEY8"  TO  ORC-DBPATH
+                 CALL    "ORCMCPSUB"          USING
+                                              MCPAREA
+                                              ORCMCPAREA
+                                              MCPDATA-REC
+                 IF      MCP-RC           =   ZERO
+                     MOVE    "SYSKANRI-KEY8" TO  ORC-DBPATH
+                     PERFORM  960-KANRIMST-READ-SEC
+                     PERFORM  UNTIL   FLG-SYSKANRI  =    1
+      *
+                       MOVE    MCPDATA-REC   TO  SYS-1006-REC
+                       EVALUATE  IDXA
+                         WHEN     1
+                           ADD     1     TO  SYSKAN-IDX
+                           MOVE    SYS-1006-REC
+                                         TO  TBL-SYS10061(SYSKAN-IDX)
+                         WHEN     2
+                           ADD     1     TO  SYSKAN-IDX2
+                           MOVE    SYS-1006-REC
+                                         TO  TBL-SYS10062(SYSKAN-IDX2)
+                       END-EVALUATE
+      *
+                       MOVE    "SYSKANRI-KEY8" TO  ORC-DBPATH
+                       PERFORM  960-KANRIMST-READ-SEC
+      *
+                     END-PERFORM
+                 END-IF
+                 MOVE   "SYSKANRI-KEY8"      TO  WK-PATH
+                 PERFORM   CSR-CLOSE-SEC
+              END-PERFORM
       *
            END-IF
       *
@@ -2365,20 +2459,11 @@
                    MOVE  SPACE  TO    RECE84-FLG-HOUSIJI-COMMENT
                    MOVE    1    TO    FLG-HOUSIJI-COM
               END-IF
-           END-IF
-           IF     (RECE82-HKNKBN    NOT  =  "4"    AND
-                   RECE84-SRYKBN         =  "14"       )
-           OR     (RECE82-HKNKBN         =  "4"    AND
-                   RECE84-SRYKBN         =  "80"       )
+      *
               IF   SRY-SRYCD(IDX2)    =     CONS-HINKAI-COMMENT
                    MOVE   "1"   TO    RECE84-FLG-HINKAI-COMMENT
               END-IF
-           END-IF
       *
-           IF     (RECE82-HKNKBN    NOT  =  "4"    AND
-                   RECE84-SRYKBN         =  "14"       )
-           OR     (RECE82-HKNKBN         =  "4"    AND
-                   RECE84-SRYKBN         =  "80"       )
               IF  (SRY-SRYCD(IDX2)    =     CONS-OSIN-COMMENT
                                       OR    CONS-OSIN2-COMMENT)
               AND (FLG-OSIN-COM       =     ZERO              )
@@ -2387,6 +2472,17 @@
               IF   SRY-SRYCD(IDX2)    =     CONS-OSIN3-COMMENT
                    MOVE  SPACE  TO    RECE84-FLG-OSIN-COMMENT
                    MOVE    1    TO    FLG-OSIN-COM
+              END-IF
+      *
+              IF  (RECE82-SRYYM      >=     "200604")
+              AND (WRK-SISETU613      =      1      )
+                IF SRY-SRYCD(IDX2)    =     CONS-ZAISIEN1    OR
+                                            CONS-ZAISIEN2    OR
+                                            CONS-ZAISIEN3    OR
+                                            CONS-ZAISIEN4
+                   MOVE   "1"   TO    RECE82-COMCNTFLG
+                   MOVE   "1"   TO    RECE84-FLG-ZAISIEN-COMMENT
+                END-IF
               END-IF
            END-IF
       *
@@ -6647,6 +6743,24 @@
                   PERFORM 500-ERR-HENSYU-SEC
                   MOVE    1               TO  FLG-END
                   GO  TO  910-SYSKANRI-HENSYU-EXT
+               END-IF
+      *
+      *        施設基準情報
+               MOVE    ZERO         TO  FLG-SET
+               PERFORM  VARYING  SYSKAN-IDX2  FROM  1   BY  1
+                         UNTIL ( SYSKAN-IDX2               >  10   )
+                          OR   ( TBL-SYS10062(SYSKAN-IDX2) = SPACE )
+                          OR   ( FLG-SET                   =   1   )
+                   MOVE    TBL-SYS10062(SYSKAN-IDX2)  TO  SYS-1006-REC
+                   IF   ( SYS-1006-STYUKYMD  <=  WRK-SYS-SRYYMD    )
+                   AND  ( WRK-SYS-SRYYMD     <=  SYS-1006-EDYUKYMD )
+                       MOVE     1                  TO  FLG-SET
+                   END-IF
+               END-PERFORM
+               IF      FLG-SET    =   ZERO
+                   MOVE  ZERO                    TO  WRK-SISETU613
+               ELSE
+                   MOVE  SYS-1006-SSTKIJUN(113)  TO  WRK-SISETU613
                END-IF
       *
                MOVE      RECE82-SRYYM   TO  WRK-SRYYM-5000
