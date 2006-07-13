@@ -861,9 +861,9 @@
                         PERFORM    2001-HINKAI-HANTEI-SEC
                       END-IF
       *            （往診・特別往診算定日のセット）
-      **>             IF   FLG-COMMENT  =  ZERO
-      **>               PERFORM    2001-OSIN-HANTEI-SEC
-      **>             END-IF
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2001-OSIN-HANTEI-SEC
+                      END-IF
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2099-RECE84-WRITE-SEC
                       END-IF
@@ -992,9 +992,9 @@
                         PERFORM    2001-HINKAI-HANTEI-SEC
                       END-IF
       *            （往診・特別往診算定日のセット）
-      **>             IF   FLG-COMMENT  =  ZERO
-      **>               PERFORM    2001-OSIN-HANTEI-SEC
-      **>             END-IF
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2001-OSIN-HANTEI-SEC
+                      END-IF
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2099-RECE84-WRITE-SEC
                       END-IF

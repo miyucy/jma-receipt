@@ -1262,13 +1262,13 @@
                         PERFORM    2001-HINKAI-HANTEI-SEC
                       END-IF
       *            ¡Ê±ý¿Ç¡¦ÆÃÊÌ±ý¿Ç»»ÄêÆü¤Î¥»¥Ã¥È¡Ë
-      **>             IF   FLG-COMMENT  =  ZERO
-      **>               PERFORM    2001-OSIN-HANTEI-SEC
-      **>             END-IF
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2001-OSIN-HANTEI-SEC
+                      END-IF
       *            ¡ÊºßÂð´µ¼ÔË¬Ìä¿ÇÎÅÎÁ»»ÄêÆü¤Î¥»¥Ã¥È¡Ë
-      **>             IF   FLG-COMMENT  =  ZERO
-      **>               PERFORM    2001-ZAIHOU-HANTEI-SEC
-      **>             END-IF
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2001-ZAIHOU-HANTEI-SEC
+                      END-IF
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2099-RECE04-TENSOU-SEC
                       END-IF
