@@ -910,13 +910,40 @@
            END-IF
       *    自費コードの時、コードチェック
            IF      SPA-Z01-SRYCD(1:3)  =  "095"  OR  "096"
-               IF      SPA-SRYCDCHK       =   ZERO
-                   PERFORM 41091-SRYCD-CHK-SEC
+      *        カラム位置
+               PERFORM 41092-COLUMN-CHK-SEC
+               IF      SPA-ERRCD           =   SPACE
+                   IF      SPA-SRYCDCHK       =   ZERO
+                       PERFORM 41091-SRYCD-CHK-SEC
+                   END-IF
                END-IF
            END-IF
            .
       *
        4109-TOUROKU-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    カラム位置チェック処理
+      *****************************************************************
+       41092-COLUMN-CHK-SEC          SECTION.
+      *
+      *    自費の時入力不可
+           IF      (SPA-GMN-COLUMN1    =   ZERO )  AND
+                   (SPA-GMN-DIGIT1     =   ZERO )  AND
+                   (SPA-GMN-COLUMN2    =   ZERO )  AND
+                   (SPA-GMN-DIGIT2     =   ZERO )  AND
+                   (SPA-GMN-COLUMN3    =   ZERO )  AND
+                   (SPA-GMN-DIGIT3     =   ZERO )  AND
+                   (SPA-GMN-COLUMN4    =   ZERO )  AND
+                   (SPA-GMN-DIGIT4     =   ZERO )
+               CONTINUE
+           ELSE
+               MOVE    "0008"              TO  SPA-ERRCD
+               MOVE    6                   TO  SPA-GMN-CUR
+           END-IF
+           .
+      *
+       41092-COLUMN-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1619,7 +1646,12 @@
                WHEN    "NAME"
                    MOVE    5                   TO  SPA-GMN-CUR
                WHEN    "FORMALNAME"
-                   MOVE    6                   TO  SPA-GMN-CUR
+                    MOVE    6                   TO  SPA-GMN-CUR
+                   IF      SPA-Z01-SRYCD(1:3)  =   "095"  OR
+                                                   "096"
+      *                金額へ
+                       MOVE    14                  TO  SPA-GMN-CUR
+                   END-IF
                WHEN    "COLUMN1"
                    MOVE    7                   TO  SPA-GMN-CUR
                WHEN    "DIGIT1 "
@@ -1682,11 +1714,18 @@
                WHEN    "0007"
                    MOVE    "部位区分がありません"
                                                  TO  SPA-ERRMSG
+               WHEN    "0008"
+                   STRING  "レセプト編集情報はコメントコードでのみ"
+                                                   DELIMITED BY  SIZE
+                           "設定可能です。"
+                                                   DELIMITED BY  SIZE
+                                                 INTO    SPA-ERRMSG
+                   END-STRING
       *
                WHEN    "K001"
                    MOVE    "警告！自費コードの診療区分がありません。"
                                                  TO  SPA-ERRMSG
-                   MOVE    "その他に集計されます。"
+                   MOVE    "リハビリ・その他に集計されます。"
                                                  TO  SPA-ERRMSG(41:)
                WHEN    "K000"
                    STRING    "警告！厚生労働省から提供される"
