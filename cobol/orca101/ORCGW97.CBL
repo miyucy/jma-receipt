@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-多々納  06/07/13  MONFUNC 対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -188,8 +189,8 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
-           COPY    "ORCA-DBPATH".
+      **** COPY    "CPORCMCP.INC".
+      **** COPY    "ORCA-DBPATH".
       *
       *****************************************************************
       *    連絡　領域
@@ -391,8 +392,8 @@
            MOVE    SPA-SYSYMD          TO  SYS-9700-STYUKYMD
            MOVE    SPA-SYSYMD          TO  SYS-9700-EDYUKYMD
            MOVE    SYS-9700-REC        TO  MCPDATA-REC
-           MOVE    PATH-TBL-SYSKANRI-KEY
-                                       TO  MCP-PATH
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                PERFORM 990-SYSKANRI-READ-SEC
@@ -427,7 +428,8 @@
                MOVE    "9702"          TO  SPA-9700-GYOUMU-KANRICD (2)
                MOVE    "9703"          TO  SPA-9700-GYOUMU-KANRICD (3)
            END-IF
-           MOVE    PATH-TBL-SYSKANRI-KEY   TO  MCP-PATH
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
            MOVE    "0 表示しない"      TO  SPA-GMN-GYOUMUFLG-LST (1)
@@ -565,8 +567,8 @@
            MOVE    SPA-SYSYMD          TO  SYS-9701-EDYUKYMD
       *
            MOVE    SYS-9701-REC        TO  MCPDATA-REC
-           MOVE    PATH-TBL-SYSKANRI-KEY2
-                                       TO  MCP-PATH
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                PERFORM 990-SYSKANRI-READ-SEC
@@ -586,11 +588,12 @@
                MOVE    SYS-9701-EXECUTE-SW
                                            TO  SPA-GMN-EXECUTE  (IDX)
       *
-               MOVE    PATH-TBL-SYSKANRI-KEY2
-                                           TO  MCP-PATH
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 990-SYSKANRI-READ-SEC
            END-PERFORM
-           MOVE    PATH-TBL-SYSKANRI-KEY2  TO  MCP-PATH
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
            MOVE    10                  TO  SPA-TBL-MAX
@@ -911,10 +914,12 @@
            MOVE    "00000000"          TO  SYS-9700-STYUKYMD
            MOVE    "99999999"          TO  SYS-9700-EDYUKYMD
            MOVE    SYS-9700-REC        TO  MCPDATA-REC
-           MOVE    PATH-TBL-SYSKANRI-KEY
-                                       TO  MCP-PATH
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
                PERFORM 990-SYSKANRI-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-SYSKANRI
@@ -929,6 +934,10 @@
                MOVE    "00000000"          TO  SYS-9700-STYUKYMD
                MOVE    "99999999"          TO  SYS-9700-EDYUKYMD
            END-IF
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-GYOUMU-MAX
                MOVE    SPA-9700-GYOUMUID(IDX)
@@ -948,11 +957,11 @@
       *        更新
                MOVE    SYS-9700-REC        TO  MCPDATA-REC
       *
-               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
                MOVE    "DBUPDATE"          TO  MCP-FUNC
-               CALL    "ORCMCPSUB"         USING
+               CALL    "MONFUNC"           USING
                                            MCPAREA
-                                           ORCMCPAREA
                                            MCPDATA-REC
                IF      MCP-RC          NOT =   ZERO 
                    MOVE    "1002"              TO  SPA-ERRCD
@@ -982,10 +991,10 @@
            MOVE    "99999999"          TO  SYS-9701-EDYUKYMD
       *
            MOVE    SYS-9701-REC        TO  MCPDATA-REC
-           MOVE    PATH-TBL-SYSKANRI-DEL11
-                                       TO  MCP-PATH
            MOVE    "DBDELETE"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "del11"             TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -1041,11 +1050,11 @@
       *****************************************************************
        4901-INSERT-SYORI-SEC           SECTION.
       *
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
            MOVE    "DBINSERT"          TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO 
                MOVE    "1001"              TO  SPA-ERRCD
@@ -1060,11 +1069,11 @@
       *****************************************************************
        4902-UPDATE-SYORI-SEC           SECTION.
       *
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
            MOVE    "DBUPDATE"          TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO 
                MOVE    "1002"              TO  SPA-ERRCD
@@ -1367,7 +1376,7 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -1380,7 +1389,7 @@
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -1395,7 +1404,7 @@
        990-DBCLOSE-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -1409,10 +1418,9 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL   "ORCMCPSUB"   USING
-                                MCPAREA
-                                ORCMCPAREA
-                                MCPDATA-REC.
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        900-PUT-WINDOW-EXT.
