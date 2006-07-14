@@ -197,7 +197,7 @@
                05  SPA-GMN-SELNUM-G.
                    07  SPA-GMN-SELNUM        PIC 9(03)   OCCURS  10.
       *        メッセージ
-               05  SPA-GMN-MSGDATA           PIC X(100).
+               05  SPA-GMN-MSGDATA           PIC X(50).
       *
            03  SPA-NAI-AREA.
                05  SPA-NAI-TBL.
