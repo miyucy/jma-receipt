@@ -1173,6 +1173,7 @@ COPYS = \
         HCN03V02A.INC \
         HCN03V03A.INC \
         CPDTCHK009.INC \
+        CPORCSVERSION.INC \
 
 
 DBPATH = \
