@@ -4384,7 +4384,7 @@
                PERFORM 900-DTCHK009-READ-SEC
                IF    ( FLG-DTCHK009    =   ZERO )
                    MOVE    PTBYO-SRYKA         TO  SRH-1005-SRYKA
-                   MOVE    WRK-PTBYOMES-PLUS   TO  WRK-ERRMES-PLUS
+                   MOVE    WRK-HEN-PTBYOMEI    TO  WRK-ERRMES-PLUS
                    MOVE    "050012"            TO  WRK-ERRCD
                    PERFORM 213-ERRMES-HEN-SEC
                ELSE
