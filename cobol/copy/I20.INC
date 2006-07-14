@@ -57,6 +57,10 @@
                 04  I20-JOTAI-COUNT     PIC S9(9)   BINARY.
                 04  I20-JOTAILST        PIC X(14)   OCCURS  5 TIMES.
               03  I20-CHKTESTPT         PIC X(01).
+              03  I20-TAIINCDCOMBO.
+                04  I20-TAIINCD         PIC X(23).
+                04  I20-TAIINCD-COUNT   PIC S9(9)   BINARY.
+                04  I20-TAIINCDLST      PIC X(23)   OCCURS  50 TIMES.
               03  I20-SRTKBNCOMBO.
                 04  I20-SRTKBN          PIC X(22).
                 04  I20-SRTKBN-COUNT    PIC S9(9)   BINARY.
@@ -77,9 +81,8 @@
                     06  I20-TBRMNUM    PIC X(8).
                     06  I20-TNYUINYMD  PIC X(9).
                     06  I20-TTAIINYMD  PIC X(9).
+                    06  I20-TTAIINCD   PIC X(10).
                     06  I20-TSRYKA     PIC X(20).
-                    06  I20-TGAIHAKU   PIC X(6).
-                    06  I20-TCOMMENT   PIC X(6).
                     06  I20-TPOST      PIC X(08).
                     06  I20-TADRS      PIC X(50).
                   05  I20-SELECT  PIC X       OCCURS  200 TIMES.

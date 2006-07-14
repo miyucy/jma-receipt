@@ -70,7 +70,7 @@
       *
       *    £Ã£Ó£Ö¥Õ¥¡¥¤¥ë
        FD  CSV-FILE.
-       01  CSV-REC                     PIC X(1000).
+       01  CSV-REC                     PIC X(10000).
       *
        WORKING-STORAGE             SECTION.
       *
@@ -175,6 +175,8 @@
            03  FILLER                  PIC X(01)   VALUE ",".
            03  CSV-TAIINYMD            PIC X(10).
            03  FILLER                  PIC X(01)   VALUE ",".
+           03  CSV-TAIINCD             PIC X(40).
+           03  FILLER                  PIC X(01)   VALUE ",".
            03  CSV-SRYKANAME           PIC X(80).
            03  FILLER                  PIC X(01)   VALUE ",".
            03  CSV-POST                PIC X(07).
@@ -206,6 +208,8 @@
       *
       *    ÉÂÅï¥Þ¥¹¥¿
            COPY    "CPSK5001.INC".
+      *
+           COPY    "CPSK5013.INC".
       *
       *    Æþ±¡´µ¼Ô¾È²ñ¥Ó¥å¡¼
        01  I001-REC.
@@ -517,6 +521,8 @@
                MOVE    MCPDATA-REC     TO  SYS-5001-REC
                MOVE    SYS-5001-BTU-NAME
                                        TO  CSV-BTU-NAME
+           ELSE
+               MOVE    SPACE           TO  CSV-BTU-NAME
            END-IF
       *
       *    ÉÂ¼¼Ì¾ÊÔ½¸
@@ -543,6 +549,22 @@
                MOVE    I001-TAIINYMD(7:2)  TO  CSV-TAIINYMD(9:2)
            END-IF
       *
+      *    Âà±¡»öÍ³
+           INITIALIZE                  SYS-5013-REC
+           MOVE    "5013"          TO  SYS-5013-KANRICD
+           MOVE    I001-TAIINCD    TO  SYS-5013-KBNCD
+           MOVE    WRK-PARA-SYSYMD TO  SYS-5013-STYUKYMD
+                                       SYS-5013-EDYUKYMD
+           MOVE    SYS-5013-REC    TO  MCPDATA-REC
+           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+           IF          FLG-SYSKANRI    =   ZERO
+               MOVE    MCPDATA-REC     TO  SYS-5013-REC
+               MOVE    SYS-5013-NAME
+                                       TO  CSV-TAIINCD
+           ELSE
+               MOVE    SPACE           TO  CSV-TAIINCD
+           END-IF
+      *
       *    ¿ÇÎÅ²ÊÌ¾¾Î
            MOVE    SPACE           TO  SYS-1005-REC
            INITIALIZE                  SYS-1005-REC
@@ -556,6 +578,8 @@
                MOVE    MCPDATA-REC     TO  SYS-1005-REC
                MOVE    SYS-1005-SRYKANAME
                                        TO  CSV-SRYKANAME
+           ELSE
+               MOVE    SPACE           TO  CSV-SRYKANAME
            END-IF
       *
            MOVE    I001-HOME-POST  TO  CSV-POST
@@ -644,6 +668,20 @@
            MOVE    I001-TAIINYMD   TO  WRK-SYMD
            PERFORM 800-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG1    TO  HCM40-TAIINYMD(CNT-LINE)
+      *
+      *    Âà±¡»öÍ³
+           INITIALIZE                  SYS-5013-REC
+           MOVE    "5013"          TO  SYS-5013-KANRICD
+           MOVE    I001-TAIINCD    TO  SYS-5013-KBNCD
+           MOVE    WRK-PARA-SYSYMD TO  SYS-5013-STYUKYMD
+                                       SYS-5013-EDYUKYMD
+           MOVE    SYS-5013-REC    TO  MCPDATA-REC
+           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+           IF          FLG-SYSKANRI    =   ZERO
+               MOVE    MCPDATA-REC     TO  SYS-5013-REC
+               MOVE    SYS-5013-TANNAME
+                                       TO  HCM40-TAIINCD(CNT-LINE)
+           END-IF
       *
       *    ¿ÇÎÅ²ÊÌ¾¾Î
            MOVE    SPACE           TO  SYS-1005-REC

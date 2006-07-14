@@ -55,6 +55,11 @@
                        09  SPA-GMN-F3L         PIC X(01).
                        09  SPA-GMN-JOTAIMEIL   PIC X(12).
                    07  SPA-GMN-JOTAI-MAX       PIC 9(02). 
+                   07  SPA-GMN-TAIINCDLST      OCCURS  50.
+                       09  SPA-GMN-TAIINCDL    PIC X(02).
+                       09                      PIC X(01).
+                       09  SPA-GMN-TAIINCDMEIL PIC X(20).
+                   07  SPA-GMN-TAIINCD-MAX     PIC 9(02). 
                    07  SPA-GMN-SRTKBNLST       OCCURS  5.
                        09  SPA-GMN-SRTKBNL     PIC X(01).
                        09                      PIC X(01).
@@ -95,6 +100,10 @@
                            11                      PIC X(01).
                            11  SPA-GMN-JOTAIMEI    PIC X(12).
                        09  SPA-GMN-CHKTESTPT       PIC X(1).
+                       09  SPA-GMN-TAIINCD-G.
+                           11  SPA-GMN-TAIINCD     PIC X(02).
+                           11                      PIC X(01).
+                           11  SPA-GMN-TAIINCDMEI  PIC X(20).
                        09  SPA-GMN-SRTKBN-G.
                            11  SPA-GMN-SRTKBN      PIC X(01).
                            11                      PIC X(01).
@@ -112,9 +121,8 @@
                            11  SPA-GMN-TBRMNUM     PIC X(08).
                            11  SPA-GMN-TNYUINYMD   PIC X(09).
                            11  SPA-GMN-TTAIINYMD   PIC X(09).
+                           11  SPA-GMN-TTAIINCD    PIC X(10).
                            11  SPA-GMN-TSRYKA      PIC X(20).
-                           11  SPA-GMN-TGAIHAKU    PIC X(06).
-                           11  SPA-GMN-TCOMMENT    PIC X(06).
                            11  SPA-GMN-TPOST       PIC X(08).
                            11  SPA-GMN-TADRS       PIC X(50).
                        09  SPA-GMN-TBL-SEL         PIC 9(05).

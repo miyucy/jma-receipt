@@ -74,6 +74,13 @@ I20	{
 		CHKTESTPT	{
 			value	bool;
 		};
+		TAIINCDCOMBO	{
+			TAIINCD	{
+				value	varchar(23);
+			};
+			count	int;
+			item	varchar(23)[50];
+		};
 		SRTKBNCOMBO{
 			SRTKBN {
 				value	varchar(22);
@@ -99,11 +106,10 @@ I20	{
 					value7	varchar(8);
 					value8	varchar(9);
 					value9	varchar(9);
-					value10	varchar(20);
-					value11	varchar(6);
-					value12	varchar(6);
-					value13	varchar(8);
-					value14	varchar(50);
+					value10	varchar(10);
+					value11	varchar(20);
+					value12	varchar(8);
+					value13	varchar(50);
 				}	[200];
 				select	bool[200];
 			};

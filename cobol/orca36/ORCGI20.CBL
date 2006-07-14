@@ -134,7 +134,7 @@
            03  WRK-HENFLG          PIC X(01).
       *     
            03  WRK-BRMNUM-9        PIC 9(08).
-           03  WRK-BRMNUM-Z        PIC ZZZZZZZ9.     
+           03  WRK-BRMNUM-Z        PIC ZZZZZZZ9.
       *
            03  WRK-JYOKEN-AREA.
                05  WRK-NAME        PIC X(100).
@@ -246,6 +246,8 @@
            COPY    "CPSK1005.INC".
       *
            COPY    "CPSK5001.INC".
+      *
+           COPY    "CPSK5013.INC".
       *
       *    患者マスタ−
        01  PTINF-REC.
@@ -688,6 +690,46 @@
            MOVE    "当月在院"          TO  SPA-GMN-JOTAIMEIL (3)
            MOVE    3                   TO  SPA-GMN-JOTAI-MAX
       *
+      *
+           INITIALIZE                  SYS-5013-REC
+           MOVE    "5013"          TO  SYS-5013-KANRICD
+           MOVE    SPA-SYSYMD      TO  SYS-5013-STYUKYMD
+                                       SYS-5013-EDYUKYMD
+           MOVE    SYS-5013-REC    TO  MCPDATA-REC
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key2"          TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC          =   ZERO
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key2"          TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       (IDX            >   50   )  OR
+                               (FLG-SYSKANRI   =   1    )
+               MOVE    MCPDATA-REC     TO  SYS-5013-REC
+               MOVE    SYS-5013-KBNCD  TO  SPA-GMN-TAIINCDL   (IDX)
+               MOVE    SYS-5013-NAME   TO  SPA-GMN-TAIINCDMEIL(IDX)
+      *
+               MOVE    IDX             TO  SPA-GMN-TAIINCD-MAX
+      *
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key2"          TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+           END-PERFORM
+      *    カーソルクロース
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           CALL    "MONFUNC"               USING
+                                           MCPAREA
+                                           MCPDATA-REC
+      *
       *    並び順
            MOVE    "1"                 TO  SPA-GMN-SRTKBNL (1)
            MOVE    "2"                 TO  SPA-GMN-SRTKBNL (2)
@@ -970,6 +1012,7 @@
            MOVE    I20-BTUNUM          TO  SPA-GMN-BTUNUM-G
            MOVE    I20-JOTAI           TO  SPA-GMN-JOTAI-G
            MOVE    I20-CHKTESTPT       TO  SPA-GMN-CHKTESTPT
+           MOVE    I20-TAIINCD         TO  SPA-GMN-TAIINCD-G
            MOVE    I20-SRTKBN          TO  SPA-GMN-SRTKBN-G
       *
       *****MOVE    I20-SELNUM          TO  SPA-GMN-SELNUM
@@ -1048,7 +1091,12 @@
            IF      SPA-ERRCD       NOT =   SPACE 
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
-      *    テスト患者
+      *    退院事由
+           PERFORM 41030-TAIINCD-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE 
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *    並び順
            PERFORM 41031-SRTKBN-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE 
                GO  TO  4102-KIHON-CHK-EXT
@@ -1444,6 +1492,34 @@
       *
            .
        41030-CHKTESTPT-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    退院事由入力処理
+      *****************************************************************
+       41030-TAIINCD-CHK-SEC             SECTION.
+      *
+           MOVE    16                   TO  SPA-GMN-CUR
+      *
+           IF      SPA-GMN-TAIINCD      =   SPACE
+               CONTINUE
+           ELSE    
+               MOVE    ZERO               TO  WRK-HENFLG
+               PERFORM VARYING IDY FROM   1   BY  1
+                       UNTIL   IDY >      SPA-GMN-TAIINCD-MAX
+                       OR      WRK-HENFLG =   1
+                   IF      SPA-GMN-TAIINCD 
+                                      =   SPA-GMN-TAIINCDL (IDY)
+                       MOVE    SPA-GMN-TAIINCDLST (IDY)
+                                         TO  SPA-GMN-TAIINCD-G
+                       MOVE    "1"       TO  WRK-HENFLG
+                   END-IF
+               END-PERFORM
+               IF      WRK-HENFLG         =   ZERO
+                   MOVE    "0011"               TO  SPA-ERRCD
+               END-IF
+           END-IF            
+           .
+       41030-TAIINCD-CHK-EXT.
            EXIT.
       *****************************************************************
       *    並び順区分チェック処理
@@ -2457,6 +2533,20 @@
                MOVE    1                   TO  FLG-JYOKEN
            END-IF    
       *
+      *    退院事由
+           IF      SPA-GMN-TAIINCD     =   SPACE
+               CONTINUE
+           ELSE    
+               PERFORM 45011-JYOKEN-HENSYU-SEC
+               STRING  "taiincd = '"        DELIMITED  BY  SIZE
+                       SPA-GMN-TAIINCD      DELIMITED  BY  SIZE
+                       "'"                 DELIMITED  BY  SIZE                        
+                       INTO    WRK-SQL
+                       WITH    POINTER WRK-SQL-PNT
+               END-STRING
+               MOVE    1                   TO  FLG-JYOKEN
+           END-IF    
+      *
       *    テスト患者
            IF      SPA-GMN-CHKTESTPT   =   "T"
                CONTINUE
@@ -2572,6 +2662,14 @@
                MOVE    WRK-HENYMDG     TO  SPA-GMN-TTAIINYMD   (IDX)
            END-IF
            MOVE    I001-TAIINYMD       TO  SPA-NAI-TTAIINYMD   (IDX)
+           PERFORM VARYING IDY FROM   1   BY  1
+                   UNTIL   IDY >      SPA-GMN-TAIINCD-MAX
+               IF      I001-TAIINCD   =   SPA-GMN-TAIINCDL (IDY)
+                   MOVE    SPA-GMN-TAIINCDMEIL (IDY)
+                                              TO  SPA-GMN-TTAIINCD (IDX)
+                   MOVE    SPA-GMN-TAIINCD-MAX  TO  IDY
+               END-IF
+           END-PERFORM
            PERFORM VARYING IDY FROM   1   BY  1
                    UNTIL   IDY >      SPA-GMN-SRYKA-MAX
                IF      I001-NYUINKA   =   SPA-GMN-SRYKAL (IDY)
@@ -2922,6 +3020,7 @@
            MOVE    SPA-GMN-BTUNUM-G    TO  I20-BTUNUM
            MOVE    SPA-GMN-JOTAI-G     TO  I20-JOTAI
            MOVE    SPA-GMN-CHKTESTPT   TO  I20-CHKTESTPT
+           MOVE    SPA-GMN-TAIINCD-G   TO  I20-TAIINCD
            MOVE    SPA-GMN-SRTKBN-G    TO  I20-SRTKBN
            MOVE    SPA-GMN-SELNUM      TO  I20-SELNUM
            MOVE    SPA-GMN-TOTAL       TO  I20-TOTAL
@@ -2952,6 +3051,11 @@
                MOVE    SPA-GMN-JOTAILST (IDX) TO  I20-JOTAILST (IDX)
            END-PERFORM
            MOVE    SPA-GMN-JOTAI-MAX  TO  I20-JOTAI-COUNT
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL       IDX         >   SPA-GMN-TAIINCD-MAX
+               MOVE    SPA-GMN-TAIINCDLST (IDX) TO  I20-TAIINCDLST (IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-TAIINCD-MAX  TO  I20-TAIINCD-COUNT
       *
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL       IDX         >   SPA-GMN-SRTKBN-MAX
@@ -2976,9 +3080,8 @@
                  MOVE    SPA-GMN-TBRMNUM   (IDX) TO  I20-TBRMNUM   (IDX) 
                  MOVE    SPA-GMN-TNYUINYMD (IDX) TO  I20-TNYUINYMD (IDX)
                  MOVE    SPA-GMN-TTAIINYMD (IDX) TO  I20-TTAIINYMD (IDX)
+                 MOVE    SPA-GMN-TTAIINCD  (IDX) TO  I20-TTAIINCD  (IDX)
                  MOVE    SPA-GMN-TSRYKA    (IDX) TO  I20-TSRYKA    (IDX)
-                 MOVE    SPA-GMN-TGAIHAKU  (IDX) TO  I20-TGAIHAKU  (IDX)
-                 MOVE    SPA-GMN-TCOMMENT  (IDX) TO  I20-TCOMMENT  (IDX)
                  MOVE    SPA-GMN-TPOST     (IDX) TO  I20-TPOST     (IDX)
                  MOVE    SPA-GMN-TADRS     (IDX) TO  I20-TADRS     (IDX)
       *         
@@ -3059,6 +3162,8 @@
                    MOVE  "EDTAIINYMD"      TO  MCP-WIDGET 
                WHEN    15
                    MOVE  "SRTKBN"          TO  MCP-WIDGET 
+               WHEN    16
+                   MOVE  "TAIINCD"         TO  MCP-WIDGET 
            END-EVALUATE
       *
            .
@@ -3090,15 +3195,17 @@
                WHEN    "BTUNUM"
                    MOVE    10                  TO  SPA-GMN-CUR
                WHEN    "JOTAI"
-                   MOVE    15                  TO  SPA-GMN-CUR
+                   MOVE    16                  TO  SPA-GMN-CUR
                WHEN    "SRTKBN"
                    MOVE    12                  TO  SPA-GMN-CUR
                WHEN    "CHKTESTPT"
-                   MOVE    15                  TO  SPA-GMN-CUR
+                   MOVE    16                  TO  SPA-GMN-CUR
                WHEN    "STTAIINYMD"
                    MOVE    14                  TO  SPA-GMN-CUR
                WHEN    "EDTAIINYMD"
                    MOVE    8                   TO  SPA-GMN-CUR
+               WHEN    "TAIINCD"
+                   MOVE    15                  TO  SPA-GMN-CUR
            END-EVALUATE
       *
            .
@@ -3133,6 +3240,8 @@
                    MOVE    "状態入力エラー"            TO  SPA-ERRMSG
                WHEN    "0010"
                    MOVE    "該当の番号はありません"    TO  SPA-ERRMSG
+               WHEN    "0011"
+                   MOVE    "退院事由入力エラー"        TO  SPA-ERRMSG
       *             
                WHEN    "0011"
                    MOVE    "開始退院日入力エラー"      TO  SPA-ERRMSG

@@ -9,7 +9,7 @@
               03  HCM40-PTNUMUP   PIC X(10).
               03  HCM40-PTNUMDN   PIC X(10).
               03  HCM40-NAME  PIC X(20).
-              03  HCM40-NAME2 PIC X(40).
+              03  HCM40-NAME2 PIC X(48).
               03  HCM40-SEX   PIC X(2).
               03  HCM40-AGEZ  PIC X(4).
               03  HCM40-AGEMEI    PIC X(4).
@@ -17,7 +17,8 @@
               03  HCM40-BRMNUM    PIC X(6).
               03  HCM40-NYUINYMD  PIC X(9).
               03  HCM40-TAIINYMD  PIC X(9).
+              03  HCM40-TAIINCD   PIC X(10).
               03  HCM40-SRYKA PIC X(10).
               03  HCM40-YUBINNUM  PIC X(8).
-              03  HCM40-JYUSYO    PIC X(36).
+              03  HCM40-JYUSYO    PIC X(44).
               03  HCM40-JYUSYO2   PIC X(84).
