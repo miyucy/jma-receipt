@@ -21,7 +21,7 @@ fi
 if [ -z `su - postgres -c "psql template1 -t -c \"${DBCHECKSQL}\""` ]
 then
     su - ${DBUSER} -c createdb ${DBNAME} 
-    su - ${DBUSER} -c "psql -e ${DBNAME} < ${INITDIR}/orca_dbkanri_orig.dump" ]
+    su - ${DBUSER} -c "psql -e ${DBNAME} < ${INITDIR}/orca_dbkanri_orig.dump"
 else
     echo "Database exist."
 fi
