@@ -16,6 +16,7 @@ view_I001 {
 	NYUINKA			char(2);
 	NYUINYMD		char(8);
 	TAIINYMD		char(8);
+	TAIINCD			char(2);
 	TSTPTNUMKBN			char(1);
 # ----- 取得件数退避用 -----------------------------
 	COUNT			number(10,0);	

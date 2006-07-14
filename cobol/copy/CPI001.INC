@@ -40,6 +40,8 @@
            03  I001-NYUINYMD               PIC  X(08).
       *退院日
            03  I001-TAIINYMD               PIC  X(08).
+      *退院事由
+           03  I001-TAIINCD                PIC  X(02).
       *テスト患者番号区分
            03  I001-TSTPTNUMKBN            PIC  X(01).
       *取得件数

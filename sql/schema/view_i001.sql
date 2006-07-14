@@ -15,6 +15,7 @@ CREATE VIEW "view_i001" as SELECT a.hospid,
            b.nyuinka,
            b.nyuinymd,
            b.taiinymd,
+           b.taiincd,
            a.tstptnumkbn 
       FROM tbl_ptnyuinrrk b,
            tbl_ptnyuinrrk d,
