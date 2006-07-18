@@ -128,6 +128,7 @@
       *
            03  WRK-ERRMSG          PIC X(40).
            03  WRK-PRGNAME         PIC X(08).
+           03  WRK-DBVERSION       PIC X(64).
       *
       *
       *****************************************************************
@@ -727,13 +728,17 @@
            PERFORM 990-DBCLOSE-SEC
       *
            IF    ( FLG-DBKANRI         =   ZERO )
+               MOVE    SPACE           TO  WRK-DBVERSION
+               STRING  DBKANRI-VERSION DELIMITED   BY  SPACE
+               INTO    WRK-DBVERSION
+               END-STRING
                IF    ( DBKANRI-DBSVERSION1 NOT =   DBKANRI-DBSVERSION2 )
                    MOVE    "1010"      TO  SPA-ERRCD
                ELSE
       *
                    CALL    "ORCSVERSION"       USING   SVERSION-AREA
                    IF    ( SVERSION-VERSION    NOT =   SPACE )
-                       IF    ( DBKANRI-VERSION NOT =   SVERSION-VERSION)
+                       IF    ( WRK-DBVERSION NOT =   SVERSION-VERSION)
                            MOVE    "1012"
                                        TO  SPA-ERRCD
                        END-IF
