@@ -738,6 +738,7 @@
                                        TO  SPA-ERRCD
                        END-IF
                    END-IF
+               END-IF
            ELSE
                    MOVE    "1011"      TO  SPA-ERRCD
            END-IF
