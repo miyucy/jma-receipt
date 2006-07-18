@@ -57,6 +57,7 @@
       *  03.00.01    NACL-藤原    06/06/20  レセコメントを保険組合せ・
       *                                     症状詳記区分順に記載する
       *  03.01.01    NACL-門脇    06/07/13  項目クリア追加
+      *  03.01.02    NACL-門脇    06/07/18  不要ロジック削除
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -81,12 +82,6 @@
                                    ACCESS  MODE    IS  SEQUENTIAL
                                    RECORD  KEY     IS  RECE47-KEY
                                    FILE    STATUS  IS  STS-RECE47.
-      *   
-           SELECT  RECE46-FILE    ASSIGN  RECE46PARA
-                                   ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  SEQUENTIAL
-                                   RECORD  KEY     IS  RECE46-KEY
-                                   FILE    STATUS  IS  STS-RECE46.
       *
       *    日付ファイル
            SELECT  RECEYMD-FILE    ASSIGN  RECEYMD
@@ -113,11 +108,6 @@
        FD  RECE47-FILE.
        01  RECE47-REC. 
            COPY    "CPRCF047.INC".
-      *
-      *    金額摘要欄ファイル
-       FD  RECE46-FILE.
-       01  RECE46-REC. 
-           COPY    "CPRCF046.INC".
       *
       *    日付ファイル
        FD  RECEYMD-FILE.
@@ -146,10 +136,6 @@
            COPY    "CPCOMMONDAT2.INC"
                                    REPLACING  //RECE01//
                                    BY         //RECE47//.
-      *
-           COPY    "CPCOMMONDAT2.INC"
-                                   REPLACING  //RECE01//
-                                   BY         //RECE46//.
       *
       *    日付ファイル 
            COPY    "CPCOMMONDAT2.INC"
@@ -192,7 +178,6 @@
            03  STS-RECE41          PIC X(02).
            03  STS-RECE43          PIC X(02).
            03  STS-RECE47          PIC X(02).
-           03  STS-RECE46          PIC X(02).
            03  STS-RECEERR         PIC X(02).
            03  STS-RECEYMD         PIC X(02).
       *
@@ -202,7 +187,6 @@
            03  FLG-RECE41          PIC 9(01).
            03  FLG-RECE43          PIC 9(01).
            03  FLG-RECE47          PIC 9(01).
-           03  FLG-RECE46          PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-RECE07          PIC 9(01).
            03  FLG-RECE08          PIC 9(01).
@@ -223,7 +207,6 @@
            03  CNT-RECE41          PIC 9(06).
            03  CNT-RECE03          PIC 9(06).
            03  CNT-RECE47          PIC 9(06).
-           03  CNT-RECE46         PIC 9(06).
            03  CNT-RECE09          PIC 9(06).
            03  CNT-OUT             PIC 9(06).
            03  CNT-ZAIMEISAISU     PIC 9(03).
@@ -547,9 +530,6 @@
            MOVE    "RECE470"           TO  RECE47PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE47PARA-TERMID
       *
-           MOVE    "RECE461"           TO  RECE46PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE46PARA-TERMID
-      *
            MOVE    "RECEERR"           TO  RECEERR-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
       *
@@ -561,8 +541,6 @@
            OPEN    INPUT               RECE43-FILE
       *
            OPEN    INPUT               RECE47-FILE
-      *
-           OPEN    INPUT               RECE46-FILE
       *
            MOVE    ZERO                TO  WRK-RECENUM
       *   
@@ -1873,14 +1851,12 @@
            CLOSE                       RECE41-FILE
            CLOSE                       RECE43-FILE
            CLOSE                       RECE47-FILE
-           CLOSE                       RECE46-FILE
       *
       *****IF      CNT-OUT            =   ZERO 
       *****    MOVE    "対象データがありませんでした" TO  WRK-RECEERR
       *****    PERFORM 500-ERR-HENSYU-SEC
       *****END-IF
            DISPLAY "*** ORCR0482 IN   "  CNT-RECE41
-      *    DISPLAY "*** ORCR0482 RECE46= "  CNT-RECE46
            DISPLAY "*** ORCR0482 OUT  "  CNT-OUT
            DISPLAY "*** ORCR0482 END ***"
       *
@@ -2103,26 +2079,6 @@
       *
            .
        990-RECE47-NEXT-EXT.
-           EXIT.
-      *
-      ****************************************************************
-      *    レセプト０６１データ読み
-      ****************************************************************
-       990-RECE46-NEXT-SEC           SECTION.
-      *
-           READ    RECE46-FILE       NEXT
-               AT  END
-                   MOVE    1         TO  FLG-RECE46
-               NOT AT  END
-                   MOVE    ZERO      TO  FLG-RECE46
-      *             ADD     1         TO  CNT-RECE46
-                   IF      RECE46-SRYKBN    =   "54"
-                       MOVE    "50"          TO  RECE46-SRYKBN
-                   END-IF    
-           END-READ
-      *
-           .
-       990-RECE46-NEXT-EXT.
            EXIT.
       *
       *****************************************************************
