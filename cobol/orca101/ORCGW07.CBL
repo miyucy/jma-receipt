@@ -1065,8 +1065,8 @@
                                        TO  SPA-GMN-SYUNYKNKNRKBNLST(2)
            MOVE    2                   TO  SPA-GMN-SYUNYKNKNRKBN-MAX
       *    ＤＯ初期表示
-           MOVE    "00 全科"           TO  SPA-GMN-DOSRYKBNFLG-LST(1)
-           MOVE    "10 管理・在宅"     TO  SPA-GMN-DOSRYKBNFLG-LST (02)
+           MOVE    "00 全体"           TO  SPA-GMN-DOSRYKBNFLG-LST (01)
+           MOVE    "10 医学管理・在宅" TO  SPA-GMN-DOSRYKBNFLG-LST (02)
            MOVE    "20 投薬"           TO  SPA-GMN-DOSRYKBNFLG-LST (03)
            MOVE    "30 注射"           TO  SPA-GMN-DOSRYKBNFLG-LST (04)
            MOVE    "40 処置"           TO  SPA-GMN-DOSRYKBNFLG-LST (05)
