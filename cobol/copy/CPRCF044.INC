@@ -97,7 +97,7 @@
            03  RECE44-COMCDFLG            PIC  X(01).
       *（サ）フラグ
            03  RECE44-SAFLG               PIC  X(01).
-      *診療区分置き換えフラグ
+      *診療区分置き換えフラグ（自賠責リハ用）
            03  RECE44-OKIKAEFLG           PIC  X(01).
       *
       *初診料算定科：

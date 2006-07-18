@@ -72,6 +72,7 @@
       *  03.01.01    NACL-ÌçÏÆ    06/06/22  ±ý¿Ç¡¢ºßÂð´µ¼ÔË¬Ìä¿ÇÎÅÎÁ¤Î
       *                                     ¥³¥á¥ó¥È¼«Æ°µ­ºÜÂÐ±þ
       *  03.01.02    NACL-ÌçÏÆ    06/07/10  ºß»Ù±ç¥³¥á¥ó¥È¼«Æ°µ­ºÜÂÐ±þ
+      *  03.01.03    NACL-ÌçÏÆ    06/07/14  ¿ÇÎÅ¶èÊ¬ÃÖ¤­´¹¤¨¥Õ¥é¥°¤ÎÊÔ½¸
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -390,6 +391,8 @@
       *
            03  WRK-HENYMD            PIC X(08).
            03  WRK-TAIHI-XX          PIC X(02).
+      *
+           03  WRK-OKIKAEFLG         PIC X(01).
       *
        01  WRK-RECE44-REC. 
            COPY    "CPRCF044.INC"  REPLACING   //RECE44//
@@ -2087,6 +2090,8 @@
            MOVE    "810000001"  TO  WRK-RECE45XX-SRYCD(IDX-RECE45 1)
            MOVE    ZERO         TO  WRK-RECE45XX-SRYSURYO(IDX-RECE45 1)
       *
+           MOVE    SPACE        TO  WRK-OKIKAEFLG
+      *
            EVALUATE      WRK-SRYCD
              WHEN       CONS-KYUSEI
                MOVE    16   TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
@@ -2121,6 +2126,7 @@
                     MOVE    "80" TO  WRK-SRYKBN
                ELSE
                     MOVE    "40" TO  WRK-SRYKBN
+                    MOVE    "1"  TO  WRK-OKIKAEFLG
                END-IF
              WHEN       CONS-NOUKE
                MOVE    18   TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
@@ -2142,6 +2148,7 @@
                     MOVE    "80" TO  WRK-SRYKBN
                ELSE
                     MOVE    "40" TO  WRK-SRYKBN
+                    MOVE    "1"  TO  WRK-OKIKAEFLG
                END-IF
              WHEN       CONS-UNDOKI
                MOVE    15   TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
@@ -2163,6 +2170,7 @@
                     MOVE    "80" TO  WRK-SRYKBN
                ELSE
                     MOVE    "40" TO  WRK-SRYKBN
+                    MOVE    "1"  TO  WRK-OKIKAEFLG
                END-IF
              WHEN       CONS-KOKYUKI
                MOVE    17   TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
@@ -2184,6 +2192,7 @@
                     MOVE    "80" TO  WRK-SRYKBN
                ELSE
                     MOVE    "40" TO  WRK-SRYKBN
+                    MOVE    "1"  TO  WRK-OKIKAEFLG
                END-IF
              WHEN       CONS-SESSYOKU
                MOVE    18   TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
@@ -2205,6 +2214,7 @@
                     MOVE    "80" TO  WRK-SRYKBN
                ELSE
                     MOVE    "40" TO  WRK-SRYKBN
+                    MOVE    "1"  TO  WRK-OKIKAEFLG
                END-IF
              WHEN       CONS-NANBYO
                MOVE    16   TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
@@ -2226,6 +2236,7 @@
                     MOVE    "80" TO  WRK-SRYKBN
                ELSE
                     MOVE    "40" TO  WRK-SRYKBN
+                    MOVE    "1"  TO  WRK-OKIKAEFLG
                END-IF
              WHEN       CONS-SYOGAI
                MOVE    18   TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
@@ -2247,6 +2258,7 @@
                     MOVE    "80" TO  WRK-SRYKBN
                ELSE
                     MOVE    "40" TO  WRK-SRYKBN
+                    MOVE    "1"  TO  WRK-OKIKAEFLG
                END-IF
            END-EVALUATE
       *
@@ -2314,6 +2326,7 @@
            MOVE    RECE41-TEKSTYMD     TO  RECE449-TEKSTYMD
            MOVE    WRK-ZAINUM          TO  RECE449-ZAINUM
            MOVE    WRK-SRYKBN          TO  RECE449-SRYKBN
+           MOVE    WRK-OKIKAEFLG       TO  RECE449-OKIKAEFLG
       *
            MOVE    WRK-CNT-MEISAI      TO  RECE449-MEISAISU
       *

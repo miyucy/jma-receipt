@@ -115,6 +115,7 @@
       *  03.00.01    NACL-ÌçÏÆ    06/06/22  ±ý¿Ç¡¢ºßÂð´µ¼ÔË¬Ìä¿ÇÎÅÎÁ¤Î
       *                                     ¥³¥á¥ó¥È¼«Æ°µ­ºÜÂÐ±þ
       *  03.01.01    NACL-ÌçÏÆ    06/07/10  ºß»Ù±ç¥³¥á¥ó¥È¼«Æ°µ­ºÜÂÐ±þ
+      *  03.01.02    NACL-ÌçÏÆ    06/07/14  ¿ÇÎÅ¶èÊ¬ÃÖ¤­´¹¤¨¥Õ¥é¥°¤ÎÊÔ½¸
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -574,9 +575,6 @@
            03  CONS-SOGAIKASAN PIC X(09)   VALUE   "150266970".
       *    ÎÅÍÜÃ´Åö¼êÅö¤Æ
            03  CONS-RYOYOTEATE PIC X(09)   VALUE   "199000610".
-      *
-      *    Ï«ºÒ¡Ê²Ã»»¤Ê¤·¡Ë
-           03  CONS-ROSAINASI  PIC X(09)   VALUE   "099509901".
       *
       *    ¥Õ¥£¥ë¥àÎÁ¡ÊÆýÍÄ»ù¡Ë²Ã»»
            03  CONS-FILM-YOUJI-KASAN  
@@ -1638,34 +1636,31 @@
                                               RECE45-SRYKBN
                      END-IF
                    ELSE                                                 
-                     IF      TNS-SRYKBN         =   "80"                
+                     IF      TNS-SRYKBN         =   "80"
+                         IF  TNS-GAITENTTLKBN   =   130
+                             MOVE   "13"    TO  RECE44-SRYKBN
+                                                RECE45-SRYKBN
+                         END-IF
+                     END-IF
+                     IF (( RECE44-SRYKBN     =  "80" ) AND
+                         ( RECE44-OKIKAEFLG  =  SPACE))
+                     OR (  RECE44-OKIKAEFLG  =  "1"   )
                        IF   SRY-SRYCD(IDX2)   =     CONS-SHOHOSEN1 OR   
                                                     CONS-SHOHOSEN2 OR   
                                                     CONS-SHOHOSEN3 OR   
                                                     CONS-SHOHOSEN4 OR   
                                                     CONS-SHOHOKSN1 OR   
                                                     CONS-SHOHOKSN2 OR   
-                                                    CONS-SHOHOKSN3 OR
-                                                    CONS-ROSAINASI
+                                                    CONS-SHOHOKSN3
                               CONTINUE                                  
                        ELSE                                             
-                              IF    TNS-GAITENTTLKBN   =  130           
-                                  MOVE   "13"   TO  RECE44-SRYKBN       
-                                                    RECE45-SRYKBN       
-                              ELSE                                      
-                                  MOVE   "40"   TO  RECE44-SRYKBN       
-                                                    RECE45-SRYKBN       
-                              END-IF                                    
+                              MOVE   "1"    TO  RECE44-OKIKAEFLG
+                              MOVE   "40"   TO  RECE44-SRYKBN
+                                                RECE45-SRYKBN
                        END-IF                                           
                      END-IF
                    END-IF                                               
                   END-IF                                                
-      *
-                  IF  ( ACCT-SRYKBN       =  "80"  )
-                  AND ( RECE44-SAFLG  NOT =  SPACE )
-                            MOVE   "40"   TO  RECE44-SRYKBN
-                                              RECE45-SRYKBN
-                  END-IF
       *
                END-IF                                                   
       *

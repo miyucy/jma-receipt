@@ -100,6 +100,7 @@
       *  03.01.01    NACL-小豆沢  06.07.04  入院料に含める加算がコメント
       *                                     と同時入力された場合の対応
       *  03.01.02    NACL-門脇    06/07/10  在支援コメント自動記載対応
+      *  03.01.03    NACL-門脇    06/07/14  診療区分置き換えフラグの編集
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -593,9 +594,6 @@
            03  CONS-SOGAIKASAN PIC X(09)   VALUE   "150266970".
       *    療養担当手当（入院）
            03  CONS-RYOYOTEATE PIC X(09)   VALUE   "199000510".
-      *
-      *    労災（加算なし）
-           03  CONS-ROSAINASI  PIC X(09)   VALUE   "099509901".
       *
       *    フィルム料（乳幼児）加算
            03  CONS-FILM-YOUJI-KASAN  
@@ -1972,31 +1970,28 @@
                             MOVE   "80"   TO  RECE84-SRYKBN
                                               RECE85-SRYKBN
                    ELSE                                                 
-                     IF      TNS-SRYKBN         =   "80"                
-                       IF   SRY-SRYCD(IDX2)     =   CONS-ROSAINASI
-                            CONTINUE
-                       ELSE
-                        IF    TNS-NYUTENTTLKBN   =  130           
-                            MOVE   "13"   TO  RECE84-SRYKBN       
-                                              RECE85-SRYKBN       
-                        ELSE                                      
-                            MOVE   "40"   TO  RECE84-SRYKBN       
-                                              RECE85-SRYKBN       
-                        END-IF                                    
+                     IF     TNS-SRYKBN         =   "80"
+                       IF   TNS-NYUTENTTLKBN   =   130
+                            MOVE   "13"   TO  RECE84-SRYKBN
+                                              RECE85-SRYKBN
                        END-IF
                      END-IF
-                     IF      TNS-SRYKBN         =   "14"                
+                     IF (( RECE84-SRYKBN     =  "80" ) AND
+                         ( RECE84-OKIKAEFLG  =  SPACE))
+                     OR (  RECE84-OKIKAEFLG  =  "1"   )
+                            MOVE   "1"    TO  RECE84-OKIKAEFLG
+                            MOVE   "40"   TO  RECE84-SRYKBN       
+                                              RECE85-SRYKBN       
+                     END-IF
+                     IF (( RECE84-SRYKBN     =  "14" ) AND
+                         ( RECE84-OKIKAEFLG  =  SPACE))
+                     OR (  RECE84-OKIKAEFLG  =  "2"   )
+                            MOVE   "2"    TO  RECE84-OKIKAEFLG
                             MOVE   "80"   TO  RECE84-SRYKBN       
                                               RECE85-SRYKBN       
                      END-IF
                    END-IF                                               
                   END-IF                                                
-      *
-                  IF  ( ACCT-SRYKBN       =  "80"  )
-                  AND ( RECE84-SAFLG  NOT =  SPACE )
-                            MOVE   "40"   TO  RECE84-SRYKBN
-                                              RECE85-SRYKBN
-                  END-IF
       *
                END-IF                                                   
       *

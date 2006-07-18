@@ -93,7 +93,7 @@
            03  RECE84-COMCDFLG            PIC  X(01).
       *（サ）フラグ
            03  RECE84-SAFLG               PIC  X(01).
-      *診療区分置き換えフラグ
+      *診療区分置き換えフラグ（自賠責リハ用）
            03  RECE84-OKIKAEFLG           PIC  X(01).
       *
       *リハビリ

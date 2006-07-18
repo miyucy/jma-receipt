@@ -85,5 +85,5 @@
            03  RECE86-DAY                 PIC  9(02).
       *（サ）フラグ
            03  RECE86-SAFLG               PIC  X(01).
-      *診療区分置き換えフラグ
+      *診療区分置き換えフラグ（自賠責リハ用）
            03  RECE86-OKIKAEFLG           PIC  X(01).

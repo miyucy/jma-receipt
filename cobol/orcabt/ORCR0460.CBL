@@ -90,6 +90,7 @@
       *  02.09.03    NACL-門脇    06/05/22  電子化加算編集修正
       *  03.01.01    NACL-門脇    06/06/28  実日数減算コード対応
       *  03.01.02    NACL-門脇    06/07/10  在支援コメント自動記載対応
+      *  03.01.03    NACL-門脇    06/07/14  診療区分置き換えフラグの編集
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3154,6 +3155,8 @@
                END-IF
       *
                MOVE    RECE44-SAFLG      TO  RECE46-SAFLG
+      *
+               MOVE    RECE44-OKIKAEFLG  TO  RECE46-OKIKAEFLG
       *
                WRITE   RECE46-REC
                IF  STS-RECE46          NOT =   ZERO

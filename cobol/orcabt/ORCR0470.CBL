@@ -39,6 +39,7 @@
       *  01.01.03    NACL-門脇    05/08/31  剤番号編集修正
       *  01.01.04    NACL-門脇    05.09.06  自賠責従来様式対応
       *  01.01.05    NACL-門脇    05/11/01  （検選）等コメント対応
+      *  03.01.01    NACL-門脇    06/07/14  診療区分置き換えフラグの編集
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -339,6 +340,8 @@
       *
            MOVE   RECE46-SRYSYUKBN   TO   RECE47-SRYSYUKBN
            MOVE   RECE46-DAY         TO   RECE47-DAY
+      *
+           MOVE   RECE46-OKIKAEFLG   TO   RECE47-OKIKAEFLG
       *
       *****IF     RECE46-SRYKBN  NOT =  "11" AND "95" AND "96"
            IF     RECE46-SRYKBN  NOT =  "95" AND "96"
