@@ -718,7 +718,7 @@
       *    診療区分
            INITIALIZE                  SPA-GMN-SRYKBN-LIST
            MOVE    "00 全体"           TO  SPA-GMN-SRYKBN-LST (01)
-           MOVE    "10 管理・在宅"     TO  SPA-GMN-SRYKBN-LST (02)
+           MOVE    "10 医学管理・在宅" TO  SPA-GMN-SRYKBN-LST (02)
            MOVE    "20 投薬"           TO  SPA-GMN-SRYKBN-LST (03)
            MOVE    "30 注射"           TO  SPA-GMN-SRYKBN-LST (04)
            MOVE    "40 処置"           TO  SPA-GMN-SRYKBN-LST (05)
