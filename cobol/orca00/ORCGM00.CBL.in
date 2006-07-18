@@ -738,7 +738,8 @@
       *
                    CALL    "ORCSVERSION"       USING   SVERSION-AREA
                    IF    ( SVERSION-VERSION    NOT =   SPACE )
-                       IF    ( WRK-DBVERSION NOT =   SVERSION-VERSION)
+                       IF    ( WRK-DBVERSION(1:8)
+                                       NOT =   SVERSION-VERSION)
                            MOVE    "1012"
                                        TO  SPA-ERRCD
                        END-IF
