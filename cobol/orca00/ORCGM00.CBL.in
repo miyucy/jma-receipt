@@ -97,6 +97,10 @@
                05  SYS-MM          PIC 9(02).
                05  SYS-DD          PIC 9(02).
       *
+       01  IDX-AREA.
+           03  IDX1                PIC 9(05).
+           03  IDX-PNT             PIC 9(05).
+      *
       *    一時領域
        01  WRK-AREA.
            03  IDX                   PIC 9(03).
@@ -247,6 +251,7 @@
       *
            INITIALIZE                  FLG-AREA
            INITIALIZE                  WRK-AREA
+           INITIALIZE                  IDX-AREA
       *
       *    エラー画面より
            IF      SPA-MOTOPG          =   "MERR"
@@ -729,16 +734,23 @@
       *
            IF    ( FLG-DBKANRI         =   ZERO )
                MOVE    SPACE           TO  WRK-DBVERSION
-               STRING  DBKANRI-VERSION DELIMITED   BY  SPACE
-               INTO    WRK-DBVERSION
-               END-STRING
+               MOVE    ZERO            TO  IDX-PNT
+               PERFORM VARYING IDX1    FROM    1   BY  1
+                       UNTIL ( IDX1    >   64 )
+                   IF    ( DBKANRI-VERSION (IDX1 : 1)
+                                       NOT =   SPACE )
+                       COMPUTE IDX-PNT =   IDX-PNT +   1
+                       MOVE    DBKANRI-VERSION (IDX1 : 1)
+                                       TO  WRK-DBVERSION (IDX-PNT : 1)
+                   END-IF
+               END-PERFORM
                IF    ( DBKANRI-DBSVERSION1 NOT =   DBKANRI-DBSVERSION2 )
                    MOVE    "1010"      TO  SPA-ERRCD
                ELSE
       *
                    CALL    "ORCSVERSION"       USING   SVERSION-AREA
                    IF    ( SVERSION-VERSION    NOT =   SPACE )
-                       IF    ( WRK-DBVERSION(1:8)
+                       IF    ( WRK-DBVERSION
                                        NOT =   SVERSION-VERSION)
                            MOVE    "1012"
                                        TO  SPA-ERRCD

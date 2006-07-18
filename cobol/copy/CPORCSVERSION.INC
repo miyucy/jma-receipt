@@ -24,4 +24,4 @@
       * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
        01  SVERSION-AREA.
-           03  SVERSION-VERSION        PIC X(08).
+           03  SVERSION-VERSION        PIC X(64).

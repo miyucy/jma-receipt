@@ -62,7 +62,7 @@
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
-           03  WRK-VERSION         PIC X(08).
+           03  WRK-VERSION         PIC X(64).
            03  WRK-DATA            PIC X(1000).
            03  WRK-FIL             PIC X(1000).
       *
