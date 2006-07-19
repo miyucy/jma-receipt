@@ -101,6 +101,7 @@
       *                                     と同時入力された場合の対応
       *  03.01.02    NACL-門脇    06/07/10  在支援コメント自動記載対応
       *  03.01.03    NACL-門脇    06/07/14  診療区分置き換えフラグの編集
+      *  03.01.04    NACL-門脇    06/07/19  食事項目編集修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -6196,6 +6197,25 @@
       *
                MOVE    ZERO   TO  RECE82-SHOKUJIKHNNISSU(2)
                                   RECE82-SHOKUJIKHNRYO(2)
+           END-IF
+      *
+           IF      RECE82-SHOKUJIKHNNISSU(2)      =  ZERO
+             IF    RECE82-SHOKUJIKHNNISSU(3)  NOT =  ZERO
+               MOVE    RECE82-SHOKUJIKHNNISSU(3)
+                              TO  RECE82-SHOKUJIKHNNISSU(2)
+               MOVE    RECE82-SHOKUJIKHNRYO(3)
+                              TO  RECE82-SHOKUJIKHNRYO(2)
+               MOVE    ZERO   TO  RECE82-SHOKUJIKHNNISSU(3)
+                                  RECE82-SHOKUJIKHNRYO(3)
+             END-IF
+             IF    RECE82-SHOKUJIKHNNISSU(4)  NOT =  ZERO
+               MOVE    RECE82-SHOKUJIKHNNISSU(4)
+                              TO  RECE82-SHOKUJIKHNNISSU(3)
+               MOVE    RECE82-SHOKUJIKHNRYO(4)
+                              TO  RECE82-SHOKUJIKHNRYO(3)
+               MOVE    ZERO   TO  RECE82-SHOKUJIKHNNISSU(4)
+                                  RECE82-SHOKUJIKHNRYO(4)
+             END-IF
            END-IF
       *
            .
