@@ -194,6 +194,8 @@
       *                                     特定疾患の表示をする
       *                                     自院コード検索より戻ったときの
       *                                     移行病名の特定疾患の表示をする
+      *  03.01.03    NACL-藤原    06/07/21  保険組合せの名称の編集方法の
+      *                                     修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1686,7 +1688,13 @@
       *                                 
            MOVE    COMB-HKNCOMBINUM    TO
                                        SPA-NAI-C02-THKNCOMBINUM (IDX)
-           MOVE    WRK-HKNCOMBIMEI     TO
+           INITIALIZE                      ORCSKANACHKAREA
+           MOVE    "1"                 TO  KANACHK-SYORI
+           MOVE    WRK-HKNCOMBIMEI     TO  KANACHK-MAE-INPUT
+           MOVE    40                  TO  KANACHK-MAX-CNT
+           CALL    "ORCSKANACHK"       USING
+                                           ORCSKANACHKAREA
+           MOVE    KANACHK-MAE-INPUT   TO
                                        SPA-NAI-C02-THKNCOMBIMEI (IDX)
            MOVE    COMB-TEKSTYMD       TO  SPA-NAI-C02-TEKSTYMD(IDX)
            MOVE    COMB-TEKEDYMD       TO  SPA-NAI-C02-TEKEDYMD(IDX)
