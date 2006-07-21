@@ -1682,20 +1682,19 @@
                END-IF
            END-IF    
       *     
-           MOVE    COMB-HKNCOMBINUM    TO  SPA-GMN-C02-HKNCOMBIL(IDX)
-           MOVE    WRK-HKNCOMBIMEI     TO
-                                       SPA-GMN-C02-HKNCOMBIMEIL (IDX)
-      *                                 
            MOVE    COMB-HKNCOMBINUM    TO
+                                       SPA-GMN-C02-HKNCOMBIL    (IDX)
                                        SPA-NAI-C02-THKNCOMBINUM (IDX)
            INITIALIZE                      ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI
            MOVE    WRK-HKNCOMBIMEI     TO  KANACHK-MAE-INPUT
-           MOVE    40                  TO  KANACHK-MAX-CNT
+           MOVE    35                  TO  KANACHK-MAX-CNT
            CALL    "ORCSKANACHK"       USING
                                            ORCSKANACHKAREA
            MOVE    KANACHK-MAE-INPUT   TO
                                        SPA-NAI-C02-THKNCOMBIMEI (IDX)
+                                       SPA-GMN-C02-HKNCOMBIMEIL (IDX)
+      *                                 
            MOVE    COMB-TEKSTYMD       TO  SPA-NAI-C02-TEKSTYMD(IDX)
            MOVE    COMB-TEKEDYMD       TO  SPA-NAI-C02-TEKEDYMD(IDX)
       *
