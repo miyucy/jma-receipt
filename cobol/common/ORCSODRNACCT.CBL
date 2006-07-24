@@ -276,11 +276,6 @@
        01  WRK-ROW.
            03  WRK-NYUREKILST-ROW          PIC S9(9)   BINARY.
       *
-       01  CONST-AREA.
-           03  CONST-NYUREKILST-MAX        PIC 9(05)   VALUE  100.
-           03  CONST-JOB-SHELLID           PIC X(08)   VALUE  "NYUODR".
-           03  CONST-JOB-JOBID             PIC 9(07)   VALUE  1.
-      *
       *    スパ領域 ワーク
            COPY    "COMMON-SPA"      REPLACING
                                //SPA-// BY //WRK-SPA-//.
@@ -412,10 +407,6 @@
       *
       *    通算日数取得サブ
            COPY "CPORCSTUSAN.INC".
-      *
-      *    排他制御サブパラメタ
-           COPY    "CPORCSLOCK.INC".
-      *
       *
       *    保険算定用年齢・割合計算サブ
            COPY    "CPORCSAGECHK.INC".
