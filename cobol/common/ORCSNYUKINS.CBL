@@ -261,11 +261,11 @@
                             MOVE    "key2"         TO  MCP-PATHNAME
                             PERFORM   910-SYUMEI-READ-SEC
                  END-PERFORM
+           END-IF
       *    収納明細クローズ
            MOVE    "tbl_syumei"   TO  MCP-TABLE
            MOVE    "key2"         TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
-           END-IF
       *
       *収納明細作成処理
            MOVE    SPACE               TO  SYUMEI-REC
