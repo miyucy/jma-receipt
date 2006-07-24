@@ -2115,9 +2115,9 @@
                WHEN    6
                    MOVE    "¡ã¸¡ºº¡ä"           TO  I42-MIDASI-VALUE
                WHEN    7
-                   MOVE    "¡ã£ØÀþ¡ä"           TO  I42-MIDASI-VALUE
+                   MOVE    "¡ã²èÁü¿ÇÃÇ¡ä"       TO  I42-MIDASI-VALUE
                WHEN    8
-                   MOVE    "¡ã¥ê¥Ï¥Ó¥ê¡ä"       TO  I42-MIDASI-VALUE
+                   MOVE    "¡ã¥ê¥Ï¡¦Â¾¡ä"       TO  I42-MIDASI-VALUE
            END-EVALUATE
            MOVE    "red"               TO  I42-MIDASI-STYLE
       *
