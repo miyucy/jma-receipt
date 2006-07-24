@@ -55,39 +55,16 @@
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-END                     PIC 9(01).
-           03  FLG-ERR                     PIC 9(01).
-           03  FLG-ENTRYCHK                PIC 9(01).
            03  FLG-PTNYUINRRK              PIC 9(01).
-           03  FLG-HKNCOMBICHK             PIC 9(01).
-           03  FLG-SYORIPTN                PIC 9(01).
-           03  FLG-TAISYO                  PIC 9(01).
-           03  FLG-UKETUKEGAITO            PIC 9(01).
            03  FLG-SYSKANRI                PIC 9(01).
            03  FLG-ORCSDAY                 PIC 9(01).
-           03  FLG-JYUHKNCOMBISET          PIC 9(01).
            03  FLG-NYUKSN                  PIC 9(01).
            03  FLG-HKNCOMBI                PIC 9(01).
-           03  FLG-TENKA-SRYKA             PIC 9(01).
            03  FLG-PTINF                   PIC 9(01).
-           03  FLG-ZI-SAISIN               PIC 9(01).
-           03  FLG-TOKSET-LOOP             PIC 9(01).
-           03  FLG-SYUNOU                  PIC 9(01).
-           03  FLG-SYUMEI                  PIC 9(01).
-           03  FLG-PTTEIKIRRK              PIC 9(01).
            03  FLG-TENSU                   PIC 9(01).
            03  FLG-SRYACCT                 PIC 9(01).
-           03  FLG-SYUARI                  PIC 9(01).
            03  FLG-RJN                     PIC 9(01).
            03  FLG-NYUINACCT               PIC 9(01).
-           03  FLG-NYUINACCTARI            PIC 9(01).
-           03  FLG-WKPTTEIKIRRK            PIC 9(01).
-           03  FLG-HKNCOMBIGET             PIC 9(01).
-           03  FLG-RRKCHK                  PIC 9(01).
-           03  FLG-CMB-EDIT                PIC 9(01).
-           03  FLG-NYUREKILST-ROW          PIC 9(01).
-           03  FLG-SHONUM                  PIC 9(01).
-           03  FLG-TAIINRRK                PIC 9(01).
-           03  FLG-TEIKI-CHK               PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -109,12 +86,7 @@
            03  IDX14                       PIC 9(05).
            03  IDX15                       PIC 9(05).
            03  IDX16                       PIC 9(05).
-           03  IDX-CMB                     PIC 9(05).
            03  START-IDX                   PIC 9(05).
-      *
-      *    カウント領域
-       01  CNT-AREA.
-           03  CNT-TUKISU          PIC 9(05).
       *
       *    システム領域
        01  SYS-AREA.
@@ -126,79 +98,23 @@
            03  WRK-ERRCD                   PIC X(04).
            03  WRK-NAI-I01-IDOYMD          PIC X(08).
            03  WRK-NAI-I01-IDOYMD-MAE      PIC X(08).
-           03  WRK-I0IDCD                  PIC X(04).
-           03  WRK-I0ID-FLG                PIC X(02).
-           03  WRK-I0IDMSG                 PIC X(80). 
-           03  WRK-MOTOPG                  PIC X(08).
            03  WRK-YMD                     PIC X(10). 
            03  WRK-SYMD.
                05  WRK-SYY                 PIC 9(04).
                05  WRK-SMM                 PIC 9(02).
                05  WRK-SDD                 PIC 9(02).
            03  WRK-HENYMDG                 PIC X(09).
-           03  WRK-KANACHK-MAE-INPUT       PIC X(400).
-      *    パス名領域
-           03  WRK-CALC-YMD1.
-               05  WRK-CALC-YY1            PIC 9(04).
-               05  WRK-CALC-MM1            PIC 9(02).
-               05  WRK-CALC-DD1            PIC 9(02).
       *
-           03  WRK-CALC-YMD2.
-               05  WRK-CALC-YY2            PIC 9(04).
-               05  WRK-CALC-MM2            PIC 9(02).
-               05  WRK-CALC-DD2            PIC 9(02).
            03  WRK-AGE-YY                  PIC S9(04).
            03  WRK-AGE-MM                  PIC S9(02).
            03  WRK-AGE-G.
                05  WRK-AGE-Z               PIC ---9.
                05  WRK-AGE-MEI             PIC X(04).
            03  WRK-BIRTHDAY                PIC X(08).
-           03  WRK-COMBO.
-               05  WRK-CMB-CD              PIC X(05).
-               05  WRK-CMB-IDX             PIC 9(03).
-               05  WRK-CMB-ITM             PIC X(100).
-               05  WRK-CMB-ITM2            PIC X(100).
-               05  WRK-CMB-ITM3            PIC X(100).
-               05  WRK-CMB-ITM4            PIC X(100).
-           03  WRK-CNT                     PIC 9(05).
-           03  WRK-NUM-EDIT.
-               05  WRK-99                  PIC 9(02).
-               05  WRK-99999               PIC 9(05).
-               05  WRK-999999              PIC 9(06).
-               05  WRK-ZZ9                 PIC ZZ9.
-               05  WRK-ZZZ9                PIC ZZZ9.
-               05  WRK-ZZZZ9               PIC ZZZZ9.
-               05  WRK-ZZZZZ9              PIC ZZZZZ9.
            03  WRK-SAGAKU.
                05  WRK-SAGAKU-NUM          PIC ZZZZ9.
                05  WRK-SAGAKU-EN           PIC X(02).
-           03  WRK-STR1                    PIC X(20).
-           03  WRK-STR2                    PIC X(20).
-           03  WRK-IDX1                    PIC 9(05).
-           03  WRK-IDX2                    PIC 9(05).
-           03  WRK-BTUJYOHO-TBL.
-               05  WRK-BTUJYOHO-CNT        PIC 9(05).
-               05  WRK-BTUJYOHO-OCC        OCCURS  50
-                                           INDEXED BY  WRK-BTUNUM-IDX.
-                   07  WRK-BTUJY-BTUNUM    PIC X(02).
-                   07  WRK-BTUJY-BRM-SAGAKU
-                                           PIC X(02).
-                   07  WRK-BTUJY-BRM-KA    PIC X(02).
-           03  WRK-BRM-SAGAKU-CD           PIC X(02).
-           03  WRK-BTU-KA-CD               PIC X(02).
-           03  WRK-BRM-KA-CD               PIC X(02).
            03  WRK-HKNCOMBI                PIC X(100).
-           03  WRK-FTNRATE                 PIC X(05).
-           03  WRK-HKNKBN-MEI              PIC X(02).
-           03  WRK-CREYMD                  PIC X(08).
-           03  WRK-JTIKBN                  PIC X(01).
-           03  WRK-RRKNUM                  PIC 9(03).
-           03  WRK-RRKEDANUM               PIC 9(03).
-           03  WRK-KJNYMD                  PIC X(08).
-           03  WRK-KIHON-KJNYMD            PIC X(08).
-           03  WRK-UPDKBN                  PIC X(3).
-           03  WRK-TENNYUYMD               PIC X(08).
-           03  WRK-TENSTUYMD               PIC X(08).
            03  WRK-BRMNUM                  PIC X(06).
            03  WRK-BRMNUM-IN               PIC X(06).
            03  WRK-BRMNUM-EDT              PIC X(06).
@@ -211,21 +127,6 @@
                05  WRK-TOKUTEI-KBN-KEY     PIC X(01).
                05  WRK-TOKUTEI-NYUIN-KEY   PIC X(02).
       *
-           03  WRK-REKI-BYOMEI-EDIT-AREA.
-               05  WRK-REKI-BYOMEI-EDIT-OCC
-                                           OCCURS 100
-                                           INDEXED BY  WRK-RRKBYO-IDX.
-                   07  WRK-REKI-BYO-ZITA-FLG   PIC 9(01).
-                   07  WRK-REKI-BYO-NYUINKA    PIC X(02).
-                   07  WRK-REKI-BYO-NYUINYMD   PIC X(08).
-                   07  WRK-REKI-BYO-TAIINYMD   PIC X(08).
-                   07  WRK-REKI-BYO-RENNUM     PIC 9(02).
-                   07  WRK-REKI-BYO-SRYYMD     PIC X(08).
-                   07  WRK-REKI-BYO-BYOMEI     PIC X(40).
-                   07  WRK-REKI-BYO-TENKIKBN   PIC X(01).
-           03  WRK-WIDGET-B07-STT              PIC S9(9)   BINARY.
-           03  WRK-WIDGET-B08-STT              PIC S9(9)   BINARY.
-           03  WRK-WIDGET-STT                  PIC S9(9)   BINARY.
            03  WRK-STYMD                       PIC X(08).
            03  WRK-EDYMD                       PIC X(08).
            03  WRK-NISSU                       PIC 9(05).
@@ -239,23 +140,12 @@
            03  WRK-BIRTHDAY-15R   REDEFINES    WRK-BIRTHDAY-15.
                05  WRK-BIRTHDAY-15Y            PIC 9(04).
                05  WRK-BIRTHDAY-15MD           PIC 9(04).
-           03  WRK-REKI-ZIIN-TBL.
-               05  WRK-REKI-ZIIN-CNT           PIC 9(05).
-               05  WRK-REKI-ZIIN-OCC           OCCURS  100.
-                   07  WRK-REKI-ZIIN-NYUINYMD  PIC X(08).
-                   07  WRK-REKI-ZIIN-TAIINYMD  PIC X(08).
            03  WRK-ZOGENPTN                PIC X(01).
            03  WRK-ZOGEN                   PIC S9(05).
            03  WRK-KEISANYMD               PIC X(08).
            03  WRK-HKNCOMBINUM             PIC X(04).
            03  WRK-HKNCOMBINUM9   REDEFINES  WRK-HKNCOMBINUM
                                            PIC 9(04).
-           03  WRK-SHONUM                  PIC 9(03).
-           03  WRK-SRYKAMEI                PIC X(30).
-           03  WRK-TENKA-SRYKA-TBL.
-               05  WRK-TENKA-SRYKA-CNT     PIC 9(05).
-               05  WRK-TENKA-SRYKA         PIC X(02)
-                                           OCCURS 50.
            03  WRK-SAGAKU-KBN              PIC X(02).
            03  WRK-SAGAKU-KBN9  REDEFINES  WRK-SAGAKU-KBN
                                            PIC 9(02).
@@ -272,7 +162,6 @@
            03  WRK-SYU-SUM-IDX             PIC 9(05).
            03  WRK-TAIINUPDCNT             PIC 9(05).
       *
-           03  WRK-MCP-WIDGET      PIC X(64).
            03  WRK-IDOYMD                  PIC X(08).
            03  WRK-NYUINYMD                PIC X(08).
            03  WRK-MAE-SKYEDYMD            PIC X(08).
@@ -567,7 +456,6 @@
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
            INITIALIZE                  WRK-AREA
-           INITIALIZE                  CNT-AREA
       *
       *
            DISPLAY "SODRNACCT-ORDERID = " SODRNACCT-ORDERID
@@ -3194,34 +3082,7 @@
       *
        800-MCNDATE-EXT.
            EXIT.
-      *****************************************************************
-      *    点数マスタ検索処理
-      *****************************************************************
-       900-TENSU-KEY-SEL-SEC           SECTION.
       *
-           MOVE    ZERO                TO  FLG-TENSU
-           INITIALIZE                  TNS-TENSU-REC
-      *
-           MOVE    WRK-SRYCD           TO  TNS-SRYCD
-           MOVE    WRK-KJNYMD          TO  TNS-YUKOSTYMD
-                                           TNS-YUKOEDYMD
-           MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
-      *
-           MOVE    "tbl_tensu"         TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 900-TBL-SELECT-SEC
-           IF     MCP-RC                =   ZERO
-               MOVE     MCPDATA-REC    TO  TNS-TENSU-REC
-           END-IF
-      *
-      *    点数マスタクローズ
-           MOVE    "tbl_tensu"         TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DB-CLOSE-SEC
-      *
-           .
-       900-TENSU-KEY-SEL-EXT.
-           EXIT.
       *****************************************************************
       *    テーブル検索処理
       *****************************************************************
