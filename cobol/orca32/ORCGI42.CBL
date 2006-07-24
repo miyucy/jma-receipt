@@ -53,6 +53,8 @@
                    07  TENSU-KNONO      PIC 9(03).
                    07  TENSU-KNONO2     PIC 9(02).
                05  TENSU-KNOMEI         PIC X(50).
+               05  TENSU-STYYMM         PIC X(06).
+               05  TENSU-EDYYMM         PIC X(06).
       *
        WORKING-STORAGE             SECTION.
       *
@@ -102,8 +104,8 @@
                                13  SPA-GMN-TKAISU2     PIC 9(04).
                            11  SPA-GMN-TMAX            PIC 9(04).
       *
-                   07  SPA-GMN-TENSU           PIC 9(07).
-                   07  SPA-GMN-NYUTENSU        PIC 9(07).
+                   07  SPA-GMN-TENSU           PIC S9(07).
+                   07  SPA-GMN-NYUTENSU        PIC S9(07).
                    07  SPA-GMN-RSITENSU        PIC 9(07).
                    07  SPA-GMN-JIHIKIN         PIC 9(08).
       *
@@ -233,6 +235,7 @@
       *
            03  WRK-ZZZ              PIC ZZZ.
            03  WRK-Z8               PIC ZZ,ZZZ,ZZZ.
+           03  WRK-Z82              PIC --,---,---.
       *
            03  WRK-ERRMSG          PIC X(40).
       *
@@ -341,6 +344,8 @@
                    07  MKNO-KNONO      PIC 9(03).
                    07  MKNO-KNONO2     PIC 9(02).
                05  MKNO-KNOMEI         PIC X(50).
+               05  MKNO-STYYMM         PIC X(06).
+               05  MKNO-EDYYMM         PIC X(06).
 022800*
 022900**************************************************************
 023000*    ファイルレイアウト
@@ -1027,21 +1032,37 @@
 059800 310111-SINKOUI-01-EXT.
 059900     EXIT.
 060000*
-060100*****************************************************************
-060200*   コード表ごとの編集処理
-060300*****************************************************************
-060400 310112-SINKOUI-02-SEC           SECTION.
-060500*
-060600     MOVE    ZERO                TO  TBL-IDX2
-060700*
-060800*    コード表がない時、対象外
-060900     IF     (TNS-CDKBN-KBN       =   SPACE )  AND
-061000            (TNS-CDKBN-KBNNUM    =   ZERO  )  AND
-061100            (TNS-CDKBN-KBNNUM-EDA    =   ZERO  )
-061200         GO      TO      310112-SINKOUI-02-EXT
-061300     END-IF
+      *
+      *****************************************************************
+      *   コード表ごとの編集処理
+      *****************************************************************
+       310112-SINKOUI-02-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  TBL-IDX2
+      *
+      *    コード表がない時、対象外
+           IF     (TNS-CDKBN-KBN       =   SPACE )  AND
+                  (TNS-CDKBN-KBNNUM    =   ZERO  )  AND
+                  (TNS-CDKBN-KBNNUM-EDA    =   ZERO  )
+               GO      TO      310112-SINKOUI-02-EXT
+           END-IF
+      *    療養担当手当は対象とする
+           IF     (TNS-CDKBN-KBN       =   "*"   )
+               IF     (TNS-CDKBN-KBNNUM    =   ZERO  )  AND
+                      (TNS-CDKBN-KBNNUM-EDA    =   1 )  AND
+                      (TNS-SRYKBN          =   "80"  )
+                   CONTINUE
+               ELSE
+                   GO      TO      310112-SINKOUI-02-EXT
+               END-IF
+           END-IF
       *    手技料のみ
-           IF      TNS-SRYCD(1:1)  NOT =   "1"
+           IF      SRY-SRYCD (IDZ)(1:1)    NOT =   "1"
+               GO      TO      310112-SINKOUI-02-EXT
+           END-IF
+      *    検体検査コメント以外
+           IF     (TNS-KENTAICOMMENT   NOT =   ZERO )  AND
+                  (ACCT-SRYKBN             =   "60" )
                GO      TO      310112-SINKOUI-02-EXT
            END-IF
 061400*
@@ -1111,6 +1132,8 @@
                                TO  WRK-TBL-MEISYO(IDX TBL-IDX1)
                    WHEN    WRK-TBL-KNO   (IDX TBL-IDX1)
                                      =   MKNO-KNO    (MKNO-IDX)
+                       AND (SRY-SRYYM    >=   MKNO-STYYMM (MKNO-IDX))
+                       AND (SRY-SRYYM    <=   MKNO-EDYYMM (MKNO-IDX))
                        MOVE    MKNO-KNOMEI (MKNO-IDX)
                                TO  WRK-TBL-MEISYO(IDX TBL-IDX1)
            END-SEARCH
@@ -2094,8 +2117,13 @@
            IF      SPA-GMN-NYUGAIKBN   =   "1"
                MOVE    "入院点数"          TO  I42-MIDASIN
            END-IF
-           MOVE    SPA-GMN-NYUTENSU    TO  WRK-Z8
-           MOVE    WRK-Z8              TO  I42-NYUTENSU
+           IF      SPA-GMN-NYUTENSU    <   ZERO
+               MOVE    SPA-GMN-NYUTENSU    TO  WRK-Z82
+               MOVE    WRK-Z82             TO  I42-NYUTENSU
+           ELSE
+               MOVE    SPA-GMN-NYUTENSU    TO  WRK-Z8
+               MOVE    WRK-Z8              TO  I42-NYUTENSU
+           END-IF
       *
            EVALUATE    SPA-GMN-SYORI
                WHEN    1
