@@ -769,13 +769,13 @@
                                PERFORM    900-SYUMEI-READ-SEC
                        END-PERFORM
                        PERFORM    4405-SMEI-SAKUSEI-SEC
-                       MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-                       MOVE    "SYUMEI-KEY2"       TO  ORC-DBPATH
-                       CALL    "ORCMCPSUB"          USING
-                                                    MCPAREA
-                                                    ORCMCPAREA
-                                                    MCPDATA-REC
                  END-IF
+                 MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+                 MOVE    "SYUMEI-KEY2"       TO  ORC-DBPATH
+                 CALL    "ORCMCPSUB"          USING
+                                              MCPAREA
+                                              ORCMCPAREA
+                                              MCPDATA-REC
       *
                  ADD    1         TO   IDY2
                  MOVE   LNK-SYU-DENPNUM(IDY)
