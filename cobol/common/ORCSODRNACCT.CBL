@@ -149,25 +149,8 @@
            03  WRK-SAGAKU-KBN              PIC X(02).
            03  WRK-SAGAKU-KBN9  REDEFINES  WRK-SAGAKU-KBN
                                            PIC 9(02).
-           03  WRK-ZI-SAISIN-RRKNUM        PIC 9(03).
-           03  WRK-ZI-SAISIN-RRKEDANUM     PIC 9(03).
-           03  WRK-KANRICD                 PIC X(04).
-           03  WRK-KBNCD                   PIC X(08).
-           03  WRK-TOKNYUIN-NM             PIC X(40).
-           03  WRK-TOKNYUIN-KBN            PIC X(01).
-           03  WRK-TOKNYUIN-CD             PIC X(02).
            03  WRK-TAIHI-SRYKA             PIC X(02).
-           03  WRK-NOW-SKYSTYMD            PIC X(08).
-           03  WRK-SKYSTYM                 PIC X(06).
-           03  WRK-SYU-SUM-IDX             PIC 9(05).
-           03  WRK-TAIINUPDCNT             PIC 9(05).
       *
-           03  WRK-IDOYMD                  PIC X(08).
-           03  WRK-NYUINYMD                PIC X(08).
-           03  WRK-MAE-SKYEDYMD            PIC X(08).
-           03  WRK-SKYSTYMD                PIC X(08).
-           03  WRK-SKYEDYMD                PIC X(08).
-           03  WRK-SKYMONEY                PIC  S9(07).
       *    医療機関設定の入院料加算チェック用
            03  WRK-NYUKHNKSN-SRYCD         PIC X(09)  OCCURS 20.
            03  WRK-NYUKSNKBN               PIC X(03).
@@ -329,21 +312,9 @@
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
       *
-      *    患者病名
-       01  PTBYOMEI-REC.
-           COPY    "CPPTBYOMEI.INC".
-      *
-      *    患者労災保険情報
-       01  PTRSIINF-REC.
-           COPY    "CPPTRSIINF.INC".
-      *
       *    患者他院歴付加情報
        01  PTTAINFUKA-REC.
            COPY    "CPPTTAINFUKA.INC".
-      *
-      *    受付マスタ
-       01  UKETUKE-REC.
-           COPY    "CPUKETUKE.INC".
       *
       *    老人一般コード変換
         01  SRYCDCHG-REC.
@@ -357,10 +328,6 @@
        01  NYUKSNCHK-REC.
            COPY    "CPNYUKSNCHK.INC".
       *
-      *    診療会計
-       01  SRYACCT-REC.
-           COPY    "CPSRYACCT.INC".
-      *
       *    選定療養費
        01  SENTEICDCHG-REC.
            COPY    "CPSENTEICDCHG.INC".
@@ -372,9 +339,6 @@
       *    患者公費情報
        01  PTKOHINF-REC.
            COPY    "CPPTKOHINF.INC".
-      *    ジョブ管理マスタ
-       01  JOBKANRI-REC.
-           COPY    "CPJOBKANRI.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -413,10 +377,6 @@
       *
       *    保険組合せ編集サブ
            COPY    "CPORCSHKNSET.INC".
-      *
-      *
-      *   ジョブ管理ＤＢ制御サブ
-           COPY    "CPORCSJOBKANRI.INC".
       *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
