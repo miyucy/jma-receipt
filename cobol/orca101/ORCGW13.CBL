@@ -558,13 +558,6 @@
       *
            PERFORM 900-SYSKANRI-INV-SEC
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"             USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
-      *
            IF    ( FLG-SYSKANRI        =   ZERO )
       *
                MOVE    MCPDATA-REC         TO  SYS-4001-REC
@@ -814,13 +807,6 @@
            ELSE
                INITIALIZE                  SYS-4003-REC
            END-IF
-      *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"             USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
       *
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL ( IDX         >   WRK-CONS-SYS-KIZAI-MAX )
