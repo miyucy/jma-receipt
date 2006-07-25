@@ -45,10 +45,6 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  TOKEI-KEY
                                    FILE    STATUS  IS  STS-TOKEI.
-      *    クリア用ファイル
-           SELECT  TOKEIX-FILE     ASSIGN  TOKEIPARA
-                                   ACCESS  MODE    IS  SEQUENTIAL
-                                   FILE    STATUS  IS  STS-TOKEIX.
       *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
@@ -105,9 +101,6 @@
            03  TOKEI-NAME              PIC X(26).
            03  TOKEI-NISSU             PIC 9(06).
            03  TOKEI-TENSU             PIC 9(10).
-      *    クリア用ファイル
-       FD  TOKEIX-FILE.
-       01  TOKEIX-REC                  PIC X(200).
       *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC                 PIC X(200).
@@ -131,7 +124,6 @@
       *    スパ領域
        01  STS-AREA.
            03  STS-TOKEI               PIC X(02).
-           03  STS-TOKEIX              PIC X(02).
            03  STS-RECEERR             PIC X(02).
            03  STS-RECECSV             PIC X(02).
       *
@@ -514,8 +506,8 @@
        200-MAIN-SEC                SECTION.
       *
       *    統計用ファイルをクリアする
-           OPEN    OUTPUT              TOKEIX-FILE
-           CLOSE                       TOKEIX-FILE
+           OPEN    OUTPUT              TOKEI-FILE
+           CLOSE                       TOKEI-FILE
       *    統計用ファイルを開く
            OPEN    I-O                 TOKEI-FILE
       *
@@ -574,8 +566,8 @@
            CLOSE                       RECECSV-FILE
            CLOSE                       TOKEI-FILE
       *    統計用ファイルをクリアする
-           OPEN    OUTPUT              TOKEIX-FILE
-           CLOSE                       TOKEIX-FILE
+           OPEN    OUTPUT              TOKEI-FILE
+           CLOSE                       TOKEI-FILE
       *    ファイル削除
            MOVE    ZERO            TO  IF-RESULT
            MOVE    TOKEIPARA       TO  IF-FILENAME

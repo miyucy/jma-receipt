@@ -40,10 +40,6 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  TOKEI-KEY
                                    FILE    STATUS  IS  STS-TOKEI.
-      *    クリア用ファイル
-           SELECT  TOKEIX-FILE     ASSIGN  TOKEIPARA
-                                   ACCESS  MODE    IS  SEQUENTIAL
-                                   FILE    STATUS  IS  STS-TOKEIX.
       *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
@@ -65,9 +61,6 @@
            03  TOKEI-HIHKNJA           PIC X(22).
            03  TOKEI-SRYYMD            PIC X(08).
            03  TOKEI-SEIKYU            PIC S9(08).
-      *    クリア用ファイル
-       FD  TOKEIX-FILE.
-       01  TOKEIX-REC                  PIC X(200).
       *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC                 PIC X(200).
@@ -88,7 +81,6 @@
       *    スパ領域
        01  STS-AREA.
            03  STS-TOKEI               PIC X(02).
-           03  STS-TOKEIX              PIC X(02).
            03  STS-RECEERR             PIC X(02).
       *
       *    フラグ領域
@@ -378,8 +370,8 @@
        200-MAIN-SEC                SECTION.
       *
       *    統計用ファイルをクリアする
-           OPEN    OUTPUT              TOKEIX-FILE
-           CLOSE                       TOKEIX-FILE
+           OPEN    OUTPUT              TOKEI-FILE
+           CLOSE                       TOKEI-FILE
       *    統計用ファイルを開く
            OPEN    I-O                 TOKEI-FILE
       *
@@ -397,8 +389,8 @@
       *    統計用ファイルを閉じる
            CLOSE                       TOKEI-FILE
       *    統計用ファイルをクリアする
-           OPEN    OUTPUT              TOKEIX-FILE
-           CLOSE                       TOKEIX-FILE
+           OPEN    OUTPUT              TOKEI-FILE
+           CLOSE                       TOKEI-FILE
       *    ファイル削除
            MOVE    ZERO            TO  IF-RESULT
            MOVE    TOKEIPARA       TO  IF-FILENAME
