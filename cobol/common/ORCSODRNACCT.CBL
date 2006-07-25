@@ -87,6 +87,7 @@
            03  IDX15                       PIC 9(05).
            03  IDX16                       PIC 9(05).
            03  START-IDX                   PIC 9(05).
+           03  IDX-SKJ-TAIHI               PIC 9(02).
       *
       *    システム領域
        01  SYS-AREA.
@@ -218,6 +219,9 @@
                                            PIC X(06).
                    07  WRK-TENROOM-SKJ-DD  PIC 9(02).
                    07  WRK-TENROOM-SKJ     PIC 9(03)  OCCURS  31.
+                   07  WRK-TENROOM-SKJ18   PIC 9(03)  OCCURS  31.
+                   07  WRK-TENROOM-SKJ19   PIC 9(03)  OCCURS  31.
+                   07  WRK-TENROOM-SKJ20   PIC 9(03)  OCCURS  31.
            03  WRK-NAI-NYUINYMD.
                05  WRK-NAI-NYUINYM         PIC X(06).
                05  WRK-NAI-NYUINDD         PIC 9(02).
@@ -2100,76 +2104,246 @@
            END-IF
       *
       *    入院会計作成前に会計データの食事区分を退避
-      *    （異動月分）
-           INITIALIZE                      NYUINACCT-REC
-           MOVE    LNK-PTNYUINRRK-HOSPID   TO  NACCT-HOSPID
-           MOVE    LNK-PTNYUINRRK-PTID     TO  NACCT-PTID
-           MOVE    LNK-PTNYUINRRK-TENNYUYMD(1:6)
-                                       TO  NACCT-SRYYM
-                                           WRK-TENROOM-SKJ-SRYYMX
-      *
-           MOVE    NYUINACCT-REC       TO  MCPDATA-REC
-           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-           MOVE    "key28"             TO  MCP-PATHNAME
-           PERFORM   910-DBSELECT-SEC
-           IF      MCP-RC            =   ZERO
-               MOVE     MCPDATA-REC    TO  NYUINACCT-REC
-      *        食事を退避
-               MOVE    NACCT-SRYYM     TO  WRK-TENROOM-SKJ-SRYYM(1)
-               MOVE    LNK-PTNYUINRRK-TENNYUYMD(7:2)
-                                       TO  IDX-SHOKUJIX
-               PERFORM   VARYING   IDX-SKJ FROM  IDX-SHOKUJI9  BY  1
-                         UNTIL     IDX-SKJ   >   31
-                    MOVE   NACCT-DAY(IDX-SKJ)
-                                       TO  WRK-TENROOM-SKJ(1 IDX-SKJ)
-               END-PERFORM
-           ELSE
+           IF  LNK-PTNYUINRRK-TENNYUYMD(1:6)  >= "200604"
+      *      （異動月分）
+             PERFORM   VARYING   IDX-SKJ-TAIHI  FROM  1 BY  1
+               UNTIL   IDX-SKJ-TAIHI  >    3
+               INITIALIZE                      NYUINACCT-REC
+               MOVE    LNK-PTNYUINRRK-HOSPID   TO  NACCT-HOSPID
+               MOVE    LNK-PTNYUINRRK-PTID     TO  NACCT-PTID
                MOVE    LNK-PTNYUINRRK-TENNYUYMD(1:6)
-                                       TO  WRK-TENROOM-SKJ-SRYYM(1)
-               MOVE    LNK-PTNYUINRRK-TENNYUYMD(7:2)
-                                       TO  IDX-SHOKUJIX
-               PERFORM   VARYING   IDX-SKJ FROM  IDX-SHOKUJI9  BY  1
-                         UNTIL     IDX-SKJ   >   31
-                    MOVE   ZERO        TO  WRK-TENROOM-SKJ(1 IDX-SKJ)
-               END-PERFORM
-           END-IF
-      *    入院会計マスタクローズ
-           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-           MOVE    "key28"             TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *    （異動翌月分）
-           INITIALIZE                      NYUINACCT-REC
-           MOVE    LNK-PTNYUINRRK-HOSPID   TO  NACCT-HOSPID
-           MOVE    LNK-PTNYUINRRK-PTID     TO  NACCT-PTID
-           IF      WRK-TENROOM-SKJ-SRYMM9  =  12
-               ADD   1     TO   WRK-TENROOM-SKJ-SRYYY9
-               MOVE  1     TO   WRK-TENROOM-SKJ-SRYMM9
-           ELSE
-               ADD   1     TO   WRK-TENROOM-SKJ-SRYMM9
-           END-IF
-           MOVE    WRK-TENROOM-SKJ-SRYYMX
-                                       TO  NACCT-SRYYM
+                                           TO  NACCT-SRYYM
+                                               WRK-TENROOM-SKJ-SRYYMX
       *
-           MOVE    NYUINACCT-REC       TO  MCPDATA-REC
-           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-           MOVE    "key28"             TO  MCP-PATHNAME
-           PERFORM   910-DBSELECT-SEC
-           IF      MCP-RC            =   ZERO
-               MOVE     MCPDATA-REC    TO  NYUINACCT-REC
-      *        食事を退避
-               MOVE    NACCT-SRYYM     TO  WRK-TENROOM-SKJ-SRYYM(2)
-               PERFORM   VARYING   IDX-SKJ FROM  1  BY  1
-                         UNTIL     IDX-SKJ   >   31
-                    MOVE   NACCT-DAY(IDX-SKJ)
-                                       TO  WRK-TENROOM-SKJ(2 IDX-SKJ)
-               END-PERFORM
+               EVALUATE   IDX-SKJ-TAIHI
+                   WHEN    1
+                       MOVE    "key30"     TO  MCP-PATHNAME
+                   WHEN    2
+                       MOVE    "key31"     TO  MCP-PATHNAME
+                   WHEN    3
+                       MOVE    "key32"     TO  MCP-PATHNAME
+               END-EVALUATE
+               PERFORM  910-NYUINACCT-SELECT-SEC
+               EVALUATE   IDX-SKJ-TAIHI
+                   WHEN    1
+                       MOVE    "key30"     TO  MCP-PATHNAME
+                   WHEN    2
+                       MOVE    "key31"     TO  MCP-PATHNAME
+                   WHEN    3
+                       MOVE    "key32"     TO  MCP-PATHNAME
+               END-EVALUATE
+               PERFORM  910-NYUINACCT-READ-SEC
+               IF      FLG-NYUINACCT        =   ZERO
+                 MOVE     MCPDATA-REC    TO  NYUINACCT-REC
+      *          食事を退避
+                 MOVE    NACCT-SRYYM     TO  WRK-TENROOM-SKJ-SRYYM(1)
+                 MOVE    LNK-PTNYUINRRK-TENNYUYMD(7:2)
+                                         TO  IDX-SHOKUJIX
+                 EVALUATE  IDX-SKJ-TAIHI
+                     WHEN  1
+                        PERFORM VARYING IDX-SKJ FROM IDX-SHOKUJI9 BY  1
+                           UNTIL     IDX-SKJ   >   31
+                               MOVE   NACCT-DAY(IDX-SKJ)
+                                         TO WRK-TENROOM-SKJ18(1 IDX-SKJ)
+                        END-PERFORM
+                     WHEN  2
+                        PERFORM VARYING IDX-SKJ FROM IDX-SHOKUJI9 BY  1
+                           UNTIL     IDX-SKJ   >   31
+                               MOVE   NACCT-DAY(IDX-SKJ)
+                                         TO WRK-TENROOM-SKJ19(1 IDX-SKJ)
+                        END-PERFORM
+                     WHEN  3
+                        PERFORM VARYING IDX-SKJ FROM IDX-SHOKUJI9 BY  1
+                           UNTIL     IDX-SKJ   >   31
+                               MOVE   NACCT-DAY(IDX-SKJ)
+                                         TO WRK-TENROOM-SKJ20(1 IDX-SKJ)
+                        END-PERFORM
+                 END-EVALUATE
+               ELSE
+                 MOVE    LNK-PTNYUINRRK-TENNYUYMD(1:6)
+                                         TO  WRK-TENROOM-SKJ-SRYYM(1)
+                 MOVE    LNK-PTNYUINRRK-TENNYUYMD(7:2)
+                                         TO  IDX-SHOKUJIX
+                 EVALUATE  IDX-SKJ-TAIHI
+                     WHEN  1
+                        PERFORM VARYING IDX-SKJ FROM IDX-SHOKUJI9 BY  1
+                           UNTIL     IDX-SKJ   >   31
+                               MOVE   ZERO
+                                         TO WRK-TENROOM-SKJ18(1 IDX-SKJ)
+                        END-PERFORM
+                     WHEN  2
+                        PERFORM VARYING IDX-SKJ FROM IDX-SHOKUJI9 BY  1
+                           UNTIL     IDX-SKJ   >   31
+                               MOVE   ZERO
+                                         TO WRK-TENROOM-SKJ19(1 IDX-SKJ)
+                        END-PERFORM
+                     WHEN  3
+                        PERFORM VARYING IDX-SKJ FROM IDX-SHOKUJI9 BY  1
+                           UNTIL     IDX-SKJ   >   31
+                               MOVE   ZERO
+                                         TO WRK-TENROOM-SKJ20(1 IDX-SKJ)
+                        END-PERFORM
+                 END-EVALUATE
+                 MOVE    SPACE           TO  WRK-TENROOM-SKJ-SRYYM(1)
+               END-IF
+      *        入院会計マスタクローズ
+               MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+               EVALUATE   IDX-SKJ-TAIHI
+                   WHEN    1
+                       MOVE    "key30"     TO  MCP-PATHNAME
+                   WHEN    2
+                       MOVE    "key31"     TO  MCP-PATHNAME
+                   WHEN    3
+                       MOVE    "key32"     TO  MCP-PATHNAME
+               END-EVALUATE
+               PERFORM 910-DBCLOSECURSOR-SEC
+             END-PERFORM
+      *      （異動翌月分）
+             PERFORM   VARYING   IDX-SKJ-TAIHI  FROM  1 BY  1
+                UNTIL   IDX-SKJ-TAIHI  >    3
+               INITIALIZE                      NYUINACCT-REC
+               MOVE    LNK-PTNYUINRRK-HOSPID   TO  NACCT-HOSPID
+               MOVE    LNK-PTNYUINRRK-PTID     TO  NACCT-PTID
+               IF   IDX-SKJ-TAIHI     =    1
+                   IF      WRK-TENROOM-SKJ-SRYMM9  =  12
+                       ADD   1     TO   WRK-TENROOM-SKJ-SRYYY9
+                       MOVE  1     TO   WRK-TENROOM-SKJ-SRYMM9
+                   ELSE
+                       ADD   1     TO   WRK-TENROOM-SKJ-SRYMM9
+                   END-IF
+               END-IF
+               MOVE    WRK-TENROOM-SKJ-SRYYMX
+                                           TO  NACCT-SRYYM
+      *
+               EVALUATE   IDX-SKJ-TAIHI
+                   WHEN    1
+                       MOVE    "key30"     TO  MCP-PATHNAME
+                   WHEN    2
+                       MOVE    "key31"     TO  MCP-PATHNAME
+                   WHEN    3
+                       MOVE    "key32"     TO  MCP-PATHNAME
+               END-EVALUATE
+               PERFORM  910-NYUINACCT-SELECT-SEC
+               EVALUATE   IDX-SKJ-TAIHI
+                   WHEN    1
+                       MOVE    "key30"     TO  MCP-PATHNAME
+                   WHEN    2
+                       MOVE    "key31"     TO  MCP-PATHNAME
+                   WHEN    3
+                       MOVE    "key32"     TO  MCP-PATHNAME
+               END-EVALUATE
+               PERFORM  910-NYUINACCT-READ-SEC
+               IF      FLG-NYUINACCT        =   ZERO
+                 MOVE     MCPDATA-REC      TO  NYUINACCT-REC
+      *          食事を退避
+                 MOVE    NACCT-SRYYM       TO  WRK-TENROOM-SKJ-SRYYM(2)
+                 EVALUATE  IDX-SKJ-TAIHI
+                     WHEN  1
+                       PERFORM   VARYING   IDX-SKJ FROM  1  BY  1
+                                 UNTIL     IDX-SKJ   >   31
+                            MOVE   NACCT-DAY(IDX-SKJ)
+                                        TO  WRK-TENROOM-SKJ18(2 IDX-SKJ)
+                       END-PERFORM
+                     WHEN  2
+                       PERFORM   VARYING   IDX-SKJ FROM  1  BY  1
+                                 UNTIL     IDX-SKJ   >   31
+                            MOVE   NACCT-DAY(IDX-SKJ)
+                                        TO  WRK-TENROOM-SKJ19(2 IDX-SKJ)
+                       END-PERFORM
+                     WHEN  3
+                       PERFORM   VARYING   IDX-SKJ FROM  1  BY  1
+                                 UNTIL     IDX-SKJ   >   31
+                            MOVE   NACCT-DAY(IDX-SKJ)
+                                        TO  WRK-TENROOM-SKJ20(2 IDX-SKJ)
+                       END-PERFORM
+                 END-EVALUATE
+               ELSE
+                   MOVE    SPACE           TO  WRK-TENROOM-SKJ-SRYYM(2)
+               END-IF
+      *        入院会計マスタクローズ
+               MOVE    "tbl_nyuinacct"    TO  MCP-TABLE
+               EVALUATE   IDX-SKJ-TAIHI
+                   WHEN    1
+                       MOVE    "key30"     TO  MCP-PATHNAME
+                   WHEN    2
+                       MOVE    "key31"     TO  MCP-PATHNAME
+                   WHEN    3
+                       MOVE    "key32"     TO  MCP-PATHNAME
+               END-EVALUATE
+               PERFORM 910-DBCLOSECURSOR-SEC
+             END-PERFORM
            ELSE
-               MOVE    SPACE           TO  WRK-TENROOM-SKJ-SRYYM(2)
+      *      （異動月分）
+             INITIALIZE                      NYUINACCT-REC
+             MOVE    LNK-PTNYUINRRK-HOSPID   TO  NACCT-HOSPID
+             MOVE    LNK-PTNYUINRRK-PTID     TO  NACCT-PTID
+             MOVE    LNK-PTNYUINRRK-TENNYUYMD(1:6)
+                                         TO  NACCT-SRYYM
+                                             WRK-TENROOM-SKJ-SRYYMX
+      *
+             MOVE    NYUINACCT-REC       TO  MCPDATA-REC
+             MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+             MOVE    "key28"             TO  MCP-PATHNAME
+             PERFORM   910-DBSELECT-SEC
+             IF      MCP-RC              =   ZERO
+                 MOVE     MCPDATA-REC    TO  NYUINACCT-REC
+      *          食事を退避
+                 MOVE    NACCT-SRYYM     TO  WRK-TENROOM-SKJ-SRYYM(1)
+                 MOVE    LNK-PTNYUINRRK-TENNYUYMD(7:2)
+                                         TO  IDX-SHOKUJIX
+                 PERFORM   VARYING   IDX-SKJ FROM  IDX-SHOKUJI9  BY  1
+                           UNTIL     IDX-SKJ   >   31
+                      MOVE   NACCT-DAY(IDX-SKJ)
+                                         TO  WRK-TENROOM-SKJ(1 IDX-SKJ)
+                 END-PERFORM
+             ELSE
+                 MOVE    LNK-PTNYUINRRK-TENNYUYMD(1:6)
+                                         TO  WRK-TENROOM-SKJ-SRYYM(1)
+                 MOVE    LNK-PTNYUINRRK-TENNYUYMD(7:2)
+                                         TO  IDX-SHOKUJIX
+                 PERFORM   VARYING   IDX-SKJ FROM  IDX-SHOKUJI9  BY  1
+                           UNTIL     IDX-SKJ   >   31
+                      MOVE   ZERO        TO  WRK-TENROOM-SKJ(1 IDX-SKJ)
+                 END-PERFORM
+             END-IF
+      *      入院会計マスタクローズ
+             MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+             MOVE    "key28"             TO  MCP-PATHNAME
+             PERFORM 910-DBCLOSECURSOR-SEC
+      *      （異動翌月分）
+             INITIALIZE                      NYUINACCT-REC
+             MOVE    LNK-PTNYUINRRK-HOSPID   TO  NACCT-HOSPID
+             MOVE    LNK-PTNYUINRRK-PTID     TO  NACCT-PTID
+             IF      WRK-TENROOM-SKJ-SRYMM9  =  12
+                 ADD   1     TO   WRK-TENROOM-SKJ-SRYYY9
+                 MOVE  1     TO   WRK-TENROOM-SKJ-SRYMM9
+             ELSE
+                 ADD   1     TO   WRK-TENROOM-SKJ-SRYMM9
+             END-IF
+             MOVE    WRK-TENROOM-SKJ-SRYYMX
+                                         TO  NACCT-SRYYM
+      *
+             MOVE    NYUINACCT-REC       TO  MCPDATA-REC
+             MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+             MOVE    "key28"             TO  MCP-PATHNAME
+             PERFORM   910-DBSELECT-SEC
+             IF      MCP-RC              =   ZERO
+                 MOVE     MCPDATA-REC    TO  NYUINACCT-REC
+      *          食事を退避
+                 MOVE    NACCT-SRYYM     TO  WRK-TENROOM-SKJ-SRYYM(2)
+                 PERFORM   VARYING   IDX-SKJ FROM  1  BY  1
+                           UNTIL     IDX-SKJ   >   31
+                      MOVE   NACCT-DAY(IDX-SKJ)
+                                         TO  WRK-TENROOM-SKJ(2 IDX-SKJ)
+                 END-PERFORM
+             ELSE
+                 MOVE    SPACE           TO  WRK-TENROOM-SKJ-SRYYM(2)
+             END-IF
+      *      入院会計マスタクローズ
+             MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+             MOVE    "key28"             TO  MCP-PATHNAME
+             PERFORM 910-DBCLOSECURSOR-SEC
            END-IF
-      *    入院会計マスタクローズ
-           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-           MOVE    "key28"             TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
       *
       *    入院会計作成サブの呼出し
            INITIALIZE                     ORCSNYUACCT-AREA
@@ -2673,68 +2847,185 @@
            END-IF
       *
       *    入院会計作成後に退避データの食事区分を復元
-      *    （異動月分）
-           INITIALIZE                      NYUINACCT-REC
-           MOVE    LNK-PTNYUINRRK-HOSPID   TO  NACCT-HOSPID
-           MOVE    LNK-PTNYUINRRK-PTID     TO  NACCT-PTID
-           MOVE    WRK-TENROOM-SKJ-SRYYM(1)
-                                       TO  NACCT-SRYYM
+           IF  LNK-PTNYUINRRK-TENNYUYMD(1:6)  >= "200604"
+      *       （異動月分）
+               IF   WRK-TENROOM-SKJ-SRYYM(1)  NOT =   SPACE
+                PERFORM    VARYING  IDX-SKJ-TAIHI  FROM  1  BY  1
+                 UNTIL    IDX-SKJ-TAIHI   >   3
+                 INITIALIZE                      NYUINACCT-REC
+                 MOVE    LNK-PTNYUINRRK-HOSPID   TO  NACCT-HOSPID
+                 MOVE    LNK-PTNYUINRRK-PTID     TO  NACCT-PTID
+                 MOVE    WRK-TENROOM-SKJ-SRYYM(1)
+                                             TO  NACCT-SRYYM
       *
-           MOVE    NYUINACCT-REC       TO  MCPDATA-REC
-           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-           MOVE    "key28"             TO  MCP-PATHNAME
-           PERFORM   910-DBSELECT-SEC
-           IF      MCP-RC            =   ZERO
-               MOVE     MCPDATA-REC    TO  NYUINACCT-REC
-      *        食事を復元
-               MOVE    LNK-PTNYUINRRK-TENNYUYMD(7:2)
-                                       TO  IDX-SHOKUJIX
-               PERFORM   VARYING   IDX-SKJ FROM  IDX-SHOKUJI9  BY  1
-                         UNTIL     IDX-SKJ   >   31
-                    MOVE   WRK-TENROOM-SKJ(1 IDX-SKJ)
-                                       TO  NACCT-DAY(IDX-SKJ)
-               END-PERFORM
-      *        剤回数再セット
-               MOVE  ZERO              TO  NACCT-ZAIKAISU
-               PERFORM  VARYING   IDX-SKJ FROM  1  BY  1
-                         UNTIL     IDX-SKJ   >   31
-                   IF   NACCT-DAY(IDX-SKJ)   NOT =  0
-                       ADD   1        TO  NACCT-ZAIKAISU
+                 EVALUATE   IDX-SKJ-TAIHI
+                     WHEN    1
+                         MOVE    "key30"     TO  MCP-PATHNAME
+                     WHEN    2
+                         MOVE    "key31"     TO  MCP-PATHNAME
+                     WHEN    3
+                         MOVE    "key32"     TO  MCP-PATHNAME
+                 END-EVALUATE
+                 PERFORM  910-NYUINACCT-SELECT-SEC
+                 EVALUATE   IDX-SKJ-TAIHI
+                     WHEN    1
+                         MOVE    "key30"     TO  MCP-PATHNAME
+                     WHEN    2
+                         MOVE    "key31"     TO  MCP-PATHNAME
+                     WHEN    3
+                         MOVE    "key32"     TO  MCP-PATHNAME
+                 END-EVALUATE
+                 PERFORM  910-NYUINACCT-READ-SEC
+                 IF      FLG-NYUINACCT        =   ZERO
+                     MOVE     MCPDATA-REC    TO  NYUINACCT-REC
+      *              食事を復元
+                     MOVE    LNK-PTNYUINRRK-TENNYUYMD(7:2)
+                                         TO  IDX-SHOKUJIX
+                     EVALUATE  IDX-SKJ-TAIHI
+                         WHEN  1
+                          PERFORM VARYING IDX-SKJ FROM IDX-SHOKUJI9 BY 1
+                            UNTIL     IDX-SKJ   >   31
+                               MOVE   WRK-TENROOM-SKJ18(1 IDX-SKJ)
+                                             TO  NACCT-DAY(IDX-SKJ)
+                          END-PERFORM
+                         WHEN  2
+                          PERFORM VARYING IDX-SKJ FROM IDX-SHOKUJI9 BY 1
+                            UNTIL     IDX-SKJ   >   31
+                               MOVE   WRK-TENROOM-SKJ19(1 IDX-SKJ)
+                                             TO  NACCT-DAY(IDX-SKJ)
+                          END-PERFORM
+                         WHEN  3
+                          PERFORM VARYING IDX-SKJ FROM IDX-SHOKUJI9 BY 1
+                            UNTIL     IDX-SKJ   >   31
+                               MOVE   WRK-TENROOM-SKJ20(1 IDX-SKJ)
+                                             TO  NACCT-DAY(IDX-SKJ)
+                          END-PERFORM
+                     END-EVALUATE
+      *              剤回数再セット
+                     MOVE  ZERO              TO  NACCT-ZAIKAISU
+                     PERFORM  VARYING   IDX-SKJ FROM  1  BY  1
+                              UNTIL     IDX-SKJ   >   31
+                         IF   NACCT-DAY(IDX-SKJ)   NOT =  0
+                             ADD   1        TO  NACCT-ZAIKAISU
+                         END-IF
+                     END-PERFORM   
+                 END-IF
+                 MOVE     NYUINACCT-REC      TO  MCPDATA-REC
+                 MOVE     "tbl_nyuinacct"    TO  MCP-TABLE
+                 MOVE     "key"              TO  MCP-PATHNAME
+                 PERFORM 910-DBUPDATE-SEC
+      *          入院会計マスタクローズ
+                 MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+                 EVALUATE   IDX-SKJ-TAIHI
+                     WHEN    1
+                         MOVE    "key30"     TO  MCP-PATHNAME
+                     WHEN    2
+                         MOVE    "key31"     TO  MCP-PATHNAME
+                     WHEN    3
+                         MOVE    "key32"     TO  MCP-PATHNAME
+                 END-EVALUATE
+                 PERFORM 910-DBCLOSECURSOR-SEC
+                END-PERFORM
+               END-IF
+      *
+      *       （異動翌月分）
+               IF   WRK-TENROOM-SKJ-SRYYM(2)  NOT =   SPACE
+               PERFORM    VARYING  IDX-SKJ-TAIHI  FROM  1  BY  1
+                 UNTIL    IDX-SKJ-TAIHI   >   3
+                   INITIALIZE                      NYUINACCT-REC
+                   MOVE    LNK-PTNYUINRRK-HOSPID   TO  NACCT-HOSPID
+                   MOVE    LNK-PTNYUINRRK-PTID     TO  NACCT-PTID
+                   MOVE    WRK-TENROOM-SKJ-SRYYM(2)
+                                               TO  NACCT-SRYYM
+      *
+      *
+                   EVALUATE   IDX-SKJ-TAIHI
+                       WHEN    1
+                           MOVE    "key30"     TO  MCP-PATHNAME
+                       WHEN    2
+                           MOVE    "key31"     TO  MCP-PATHNAME
+                       WHEN    3
+                           MOVE    "key32"     TO  MCP-PATHNAME
+                   END-EVALUATE
+                   PERFORM  910-NYUINACCT-SELECT-SEC
+                   EVALUATE   IDX-SKJ-TAIHI
+                       WHEN    1
+                           MOVE    "key30"     TO  MCP-PATHNAME
+                       WHEN    2
+                           MOVE    "key31"     TO  MCP-PATHNAME
+                       WHEN    3
+                           MOVE    "key32"     TO  MCP-PATHNAME
+                   END-EVALUATE
+                   PERFORM  910-NYUINACCT-READ-SEC
+                   IF      FLG-NYUINACCT        =   ZERO
+                       MOVE     MCPDATA-REC    TO  NYUINACCT-REC
+      *                食事を復元
+                       EVALUATE  IDX-SKJ-TAIHI
+                           WHEN  1
+                             PERFORM   VARYING   IDX-SKJ FROM  1  BY  1
+                                UNTIL  IDX-SKJ   >   31
+                                MOVE   WRK-TENROOM-SKJ18(2 IDX-SKJ)
+                                               TO  NACCT-DAY(IDX-SKJ)
+                             END-PERFORM
+                           WHEN  2
+                             PERFORM   VARYING   IDX-SKJ FROM  1  BY  1
+                                UNTIL  IDX-SKJ   >   31
+                                MOVE   WRK-TENROOM-SKJ19(2 IDX-SKJ)
+                                               TO  NACCT-DAY(IDX-SKJ)
+                             END-PERFORM
+                           WHEN  3
+                             PERFORM   VARYING   IDX-SKJ FROM  1  BY  1
+                                UNTIL  IDX-SKJ   >   31
+                                MOVE   WRK-TENROOM-SKJ20(2 IDX-SKJ)
+                                               TO  NACCT-DAY(IDX-SKJ)
+                             END-PERFORM
+                       END-EVALUATE
+      *                剤回数再セット
+                       MOVE  ZERO              TO  NACCT-ZAIKAISU
+                       PERFORM  VARYING   IDX-SKJ FROM  1  BY  1
+                                 UNTIL     IDX-SKJ   >   31
+                           IF   NACCT-DAY(IDX-SKJ)   NOT =  0
+                               ADD   1        TO  NACCT-ZAIKAISU
+                           END-IF
+                       END-PERFORM   
                    END-IF
-               END-PERFORM   
-           END-IF
-           MOVE     NYUINACCT-REC      TO  MCPDATA-REC
-           MOVE     "DBUPDATE"         TO  MCP-FUNC
-           MOVE     "tbl_nyuinacct"    TO  MCP-TABLE
-           MOVE     "key"              TO  MCP-PATHNAME
-           CALL     "MONFUNC"          USING  MCPAREA
-                                              MCPDATA-REC 
-      *    入院会計マスタクローズ
-           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-           MOVE    "key28"             TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *
-      *    （異動翌月分）
-           IF   WRK-TENROOM-SKJ-SRYYM(2)  NOT =   SPACE
+                   MOVE     NYUINACCT-REC      TO  MCPDATA-REC
+                   MOVE     "tbl_nyuinacct"    TO  MCP-TABLE
+                   MOVE     "key"              TO  MCP-PATHNAME
+                   PERFORM 910-DBUPDATE-SEC
+      *            入院会計マスタクローズ
+                   MOVE    "tbl_nyuinacct"    TO  MCP-TABLE
+                   EVALUATE   IDX-SKJ-TAIHI
+                       WHEN    1
+                           MOVE    "key30"     TO  MCP-PATHNAME
+                       WHEN    2
+                           MOVE    "key31"     TO  MCP-PATHNAME
+                       WHEN    3
+                           MOVE    "key32"     TO  MCP-PATHNAME
+                   END-EVALUATE
+                   PERFORM 910-DBCLOSECURSOR-SEC
+               END-PERFORM
+               END-IF
+           ELSE
+      *       （異動月分）
                INITIALIZE                      NYUINACCT-REC
                MOVE    LNK-PTNYUINRRK-HOSPID   TO  NACCT-HOSPID
                MOVE    LNK-PTNYUINRRK-PTID     TO  NACCT-PTID
-               MOVE    WRK-TENROOM-SKJ-SRYYM(2)
+               MOVE    WRK-TENROOM-SKJ-SRYYM(1)
                                            TO  NACCT-SRYYM
       *
                MOVE    NYUINACCT-REC       TO  MCPDATA-REC
                MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
                MOVE    "key28"             TO  MCP-PATHNAME
-               PERFORM   910-NYUINACCT-SELECT-SEC
-               MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-               MOVE    "key28"             TO  MCP-PATHNAME
-               PERFORM   910-NYUINACCT-READ-SEC
-               IF      FLG-NYUINACCT       =   ZERO
+               PERFORM   910-DBSELECT-SEC
+               IF      MCP-RC              =   ZERO
                    MOVE     MCPDATA-REC    TO  NYUINACCT-REC
       *            食事を復元
-                   PERFORM   VARYING   IDX-SKJ FROM  1  BY  1
+                   MOVE    LNK-PTNYUINRRK-TENNYUYMD(7:2)
+                                       TO  IDX-SHOKUJIX
+                   PERFORM   VARYING   IDX-SKJ FROM  IDX-SHOKUJI9  BY  1
                              UNTIL     IDX-SKJ   >   31
-                        MOVE   WRK-TENROOM-SKJ(2 IDX-SKJ)
+                         MOVE   WRK-TENROOM-SKJ(1 IDX-SKJ)
                                            TO  NACCT-DAY(IDX-SKJ)
                    END-PERFORM
       *            剤回数再セット
@@ -2747,15 +3038,51 @@
                    END-PERFORM   
                END-IF
                MOVE     NYUINACCT-REC      TO  MCPDATA-REC
-               MOVE     "DBUPDATE"         TO  MCP-FUNC
                MOVE     "tbl_nyuinacct"    TO  MCP-TABLE
                MOVE     "key"              TO  MCP-PATHNAME
-               CALL     "MONFUNC"          USING  MCPAREA
-                                                  MCPDATA-REC 
+               PERFORM 910-DBUPDATE-SEC
       *        入院会計マスタクローズ
                MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
                MOVE    "key28"             TO  MCP-PATHNAME
                PERFORM 910-DBCLOSECURSOR-SEC
+      *
+      *       （異動翌月分）
+               IF   WRK-TENROOM-SKJ-SRYYM(2)  NOT =   SPACE
+                   INITIALIZE                      NYUINACCT-REC
+                   MOVE    LNK-PTNYUINRRK-HOSPID   TO  NACCT-HOSPID
+                   MOVE    LNK-PTNYUINRRK-PTID     TO  NACCT-PTID
+                   MOVE    WRK-TENROOM-SKJ-SRYYM(2)
+                                               TO  NACCT-SRYYM
+      *
+                   MOVE    NYUINACCT-REC       TO  MCPDATA-REC
+                   MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+                   MOVE    "key28"             TO  MCP-PATHNAME
+                   PERFORM   910-DBSELECT-SEC
+                   IF      MCP-RC              =   ZERO
+                       MOVE     MCPDATA-REC    TO  NYUINACCT-REC
+      *                食事を復元
+                       PERFORM   VARYING   IDX-SKJ FROM  1  BY  1
+                                 UNTIL     IDX-SKJ   >   31
+                            MOVE   WRK-TENROOM-SKJ(2 IDX-SKJ)
+                                               TO  NACCT-DAY(IDX-SKJ)
+                       END-PERFORM
+      *                剤回数再セット
+                       MOVE  ZERO              TO  NACCT-ZAIKAISU
+                       PERFORM  VARYING   IDX-SKJ FROM  1  BY  1
+                                 UNTIL     IDX-SKJ   >   31
+                           IF   NACCT-DAY(IDX-SKJ)   NOT =  0
+                               ADD   1        TO  NACCT-ZAIKAISU
+                           END-IF
+                       END-PERFORM   
+                   END-IF
+                   MOVE     NYUINACCT-REC      TO  MCPDATA-REC
+                   MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+                   MOVE    "key"               TO  MCP-PATHNAME
+                   PERFORM 910-DBUPDATE-SEC
+                   MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+                   MOVE    "key28"             TO  MCP-PATHNAME
+                   PERFORM 910-DBCLOSECURSOR-SEC
+               END-IF
            END-IF
       *
            .
