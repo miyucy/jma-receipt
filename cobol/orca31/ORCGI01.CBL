@@ -8468,7 +8468,7 @@
                  MOVE    "99999999"
                                   TO LNK-SCNYUACCT-KAGEN-EDYUKYMD(2)
            END-IF
-      *    牁諦嶺譎抈撬斯慫恓匟麟ェ情恔
+      *    牁諦嶺ロ襞導撬斯慫恓匟麟ェ情恔ㄠ
            IF    SYOKIKSN-IN-KHNSRYCD   =   "190739910"
                  MOVE   SPACE       TO   SYOKIKSN-IN-KHNSRYCD
                                          LNK-SCNYUACCT-NYUKHN-SRYCD(1)
@@ -8477,7 +8477,8 @@
                      ADD    1           TO  TN-IDX
                      MOVE   "190739910" TO   LNK-SCNYUACCT-KAGEN-SRYCD
                                                                (TN-IDX)
-      *              牁諦嶺譎抈撬斯慫恓匟麟ェ情恔及ㄨㄟゥ動ま及蔽ゥ毛瘋煌遙
+      *              牁諦嶺ロ襞導撬斯慫恓匟麟ェ情恔ㄠ及ㄨㄟゥ動ま及蔽ゥ
+      *              毛瘋煌遙
                      MOVE     ZERO      TO   WK-TOKUTEI-DAY
                      COMPUTE  WK-TOKUTEI-DAY  =  90  - STUSAN-NISSU02
                      MOVE   SPA-NAI-I01-NYUINYMD
@@ -8523,7 +8524,7 @@
                                                                (TN-IDX)
            END-IF
       *
-      *    牁諦嶺譎抈撬斯慫恓匟麟ェ情恔ㄡ
+      *    牁諦嶺ロ襞導撬斯慫恓匟麟ェ情恔ㄡ
            IF    SYOKIKSN-IN-KHNSRYCD   =   "190813410"
                  MOVE   SPACE       TO   SYOKIKSN-IN-KHNSRYCD
                                          LNK-SCNYUACCT-NYUKHN-SRYCD(1)
@@ -8532,7 +8533,8 @@
                      ADD    1           TO  TN-IDX
                      MOVE   "190813410" TO   LNK-SCNYUACCT-KAGEN-SRYCD
                                                                (TN-IDX)
-      *              牁諦嶺譎抈撬斯慫恓匟麟ェ情恔及ㄨㄟゥ動ま及蔽ゥ毛瘋煌遙
+      *              牁諦嶺ロ襞導撬斯慫恓匟麟ェ情恔ㄡ及ㄨㄟゥ動ま及蔽ゥ
+      *              毛瘋煌遙
                      MOVE     ZERO      TO   WK-TOKUTEI-DAY
                      COMPUTE  WK-TOKUTEI-DAY  =  90  - STUSAN-NISSU02
                      MOVE   SPA-NAI-I01-NYUINYMD
@@ -9851,7 +9853,7 @@
                  MOVE    "99999999"
                                   TO LNK-SCNYUACCT-KAGEN-EDYUKYMD(2)
            END-IF
-      *    牁諦嶺譎抈撬斯慫恓匟麟ェ情恔
+      *    牁諦嶺ロ襞導撬斯慫恓匟麟ェ情恔ㄠ
            IF    SYOKIKSN-IN-KHNSRYCD   =   "190739910"
                  MOVE   SPACE       TO   SYOKIKSN-IN-KHNSRYCD
                                          LNK-SCNYUACCT-NYUKHN-SRYCD(1)
@@ -9886,7 +9888,7 @@
                                   TO LNK-SCNYUACCT-KAGEN-EDYUKYMD(2)
            END-IF
       *
-      *    牁諦嶺譎抈撬斯慫恓匟麟ェ情恔ㄡ
+      *    牁諦嶺ロ襞導撬斯慫恓匟麟ェ情恔ㄡ
            IF    SYOKIKSN-IN-KHNSRYCD   =   "190813410"
                  MOVE   SPACE       TO   SYOKIKSN-IN-KHNSRYCD
                                          LNK-SCNYUACCT-NYUKHN-SRYCD(1)
@@ -10816,7 +10818,7 @@
                                                                (TN-IDX)
            END-IF
       *
-      *    牁諦嶺譎抈撬斯慫恓匟麟ェ情恔
+      *    牁諦嶺ロ襞導撬斯慫恓匟麟ェ情恔ㄠ
            IF    SYOKIKSN-IN-KHNSRYCD   =   "190739910"
                  MOVE   SPACE       TO   SYOKIKSN-IN-KHNSRYCD
                                          LNK-SCNYUACCT-NYUKHN-SRYCD(1)
@@ -10825,7 +10827,8 @@
                      ADD    1           TO  TN-IDX
                      MOVE   "190739910" TO   LNK-SCNYUACCT-KAGEN-SRYCD
                                                                (TN-IDX)
-      *              牁諦嶺譎抈撬斯慫恓匟麟ェ情恔及ㄨㄟゥ動ま及蔽ゥ毛瘋煌遙
+      *              牁諦嶺ロ襞導撬斯慫恓匟麟ェ情恔ㄠ及ㄨㄟゥ動ま及蔽ゥ
+      *              毛瘋煌遙
                      MOVE     ZERO      TO   WK-TOKUTEI-DAY
                      COMPUTE  WK-TOKUTEI-DAY  =  90  - STUSAN-NISSU01
                      MOVE   SPA-NAI-I01-IDOYMD
@@ -10871,7 +10874,7 @@
                                                                (TN-IDX)
            END-IF
       *
-      *    牁諦嶺譎抈撬斯慫恓匟麟ェ情恔ㄡ
+      *    牁諦嶺ロ襞導撬斯慫恓匟麟ェ情恔ㄡ
            IF    SYOKIKSN-IN-KHNSRYCD   =   "190813410"
                  MOVE   SPACE       TO   SYOKIKSN-IN-KHNSRYCD
                                          LNK-SCNYUACCT-NYUKHN-SRYCD(1)
@@ -10880,7 +10883,8 @@
                      ADD    1           TO  TN-IDX
                      MOVE   "190813410" TO   LNK-SCNYUACCT-KAGEN-SRYCD
                                                                (TN-IDX)
-      *              牁諦嶺譎抈撬斯慫恓匟麟ェ情恔及ㄨㄟゥ動ま及蔽ゥ毛瘋煌遙
+      *              牁諦嶺ロ襞導撬斯慫恓匟麟ェ情恔ㄡ及ㄨㄟゥ動ま及蔽ゥ
+      *              毛瘋煌遙
                      MOVE     ZERO      TO   WK-TOKUTEI-DAY
                      COMPUTE  WK-TOKUTEI-DAY  =  90  - STUSAN-NISSU01
                      MOVE   SPA-NAI-I01-IDOYMD
@@ -12022,7 +12026,7 @@
                                                                (TN-IDX)
            END-IF
       *
-      *    牁諦嶺譎抈撬斯慫恓匟麟ェ情恔
+      *    牁諦嶺ロ襞導撬斯慫恓匟麟ェ情恔ㄠ
            IF    SYOKIKSN-IN-KHNSRYCD   =   "190739910"
                  MOVE   SPACE       TO   SYOKIKSN-IN-KHNSRYCD
                                          LNK-SCNYUACCT-NYUKHN-SRYCD(1)
@@ -12031,7 +12035,8 @@
                      ADD    1           TO  TN-IDX
                      MOVE   "190739910" TO   LNK-SCNYUACCT-KAGEN-SRYCD
                                                                (TN-IDX)
-      *              牁諦嶺譎抈撬斯慫恓匟麟ェ情恔及ㄨㄟゥ動ま及蔽ゥ毛瘋煌遙
+      *              牁諦嶺ロ襞導撬斯慫恓匟麟ェ情恔ㄠ及ㄨㄟゥ動ま及蔽ゥ
+      *              毛瘋煌遙
                      MOVE     ZERO      TO   WK-TOKUTEI-DAY
                      COMPUTE  WK-TOKUTEI-DAY  =  90  - STUSAN-NISSU01
                      MOVE   SPA-NAI-I01-MAEIDOYMD
@@ -12077,7 +12082,7 @@
                                                                (TN-IDX)
            END-IF
       *
-      *    牁諦嶺譎抈撬斯慫恓匟麟ェ情恔ㄡ
+      *    牁諦嶺ロ襞導撬斯慫恓匟麟ェ情恔ㄡ
            IF    SYOKIKSN-IN-KHNSRYCD   =   "190813410"
                  MOVE   SPACE       TO   SYOKIKSN-IN-KHNSRYCD
                                          LNK-SCNYUACCT-NYUKHN-SRYCD(1)
@@ -12086,7 +12091,8 @@
                      ADD    1           TO  TN-IDX
                      MOVE   "190813410" TO   LNK-SCNYUACCT-KAGEN-SRYCD
                                                                (TN-IDX)
-      *              牁諦嶺譎抈撬斯慫恓匟麟ェ情恔及ㄨㄟゥ動ま及蔽ゥ毛瘋煌遙
+      *              牁諦嶺ロ襞導撬斯慫恓匟麟ェ情恔ㄡ及ㄨㄟゥ動ま及蔽ゥ
+      *              毛瘋煌遙
                      MOVE     ZERO      TO   WK-TOKUTEI-DAY
                      COMPUTE  WK-TOKUTEI-DAY  =  90  - STUSAN-NISSU01
                      MOVE   SPA-NAI-I01-MAEIDOYMD
@@ -12835,8 +12841,8 @@
                        MOVE   "190120810"  TO  STUSAN-TOKUTEI-SRYCD(1)
                END-EVALUATE
            END-IF
-      *    牁諦嶺譎抈撬斯慫恓匟麟ェ情恔ㄠ
-      *    牁諦嶺譎抈撬斯慫恓匟麟ェ情恔ㄡ
+      *    牁諦嶺ロ襞導撬斯慫恓匟麟ェ情恔ㄠ
+      *    牁諦嶺ロ襞導撬斯慫恓匟麟ェ情恔ㄡ
            IF   PTNYUINRRK-TOKUTEI-KBN   =   "2"
                EVALUATE   PTNYUINRRK-TOKUTEI-NYUIN
                    WHEN   "05"
