@@ -168,6 +168,10 @@
            03  WRK-PRINT-PG                PIC X(20).
            03  WRK-ORCSHKN-HKNCOMBINUM     PIC X(04).
            03  WRK-TOKUBETSU-NYUIN         PIC X(01).
+      *    ¥×¥ì¥¤¥ë¡¼¥à¡¢ÊÝ°é»Î²Ã»»²Ã»»ÂàÈòÎÎ°è
+           03  WRK-BTU-HIKSISUKBN          PIC X(01).
+           03  WRK-BTU-KNGTEK-KBN          PIC X(01).
+           03  WRK-BTU-DRTEK-KBN           PIC X(01).
       *    ²ñ·×ºîÀ®ÍÑÂàÈòÎÎ°è
            03  WRK-TAIHI-HKN               PIC 9(03).
            03  WRK-TAIHI-SHOKUJI           PIC 9(03).
@@ -466,14 +470,14 @@
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 900-TBL-SELECT-SEC
+           PERFORM 910-DBSELECT-SEC
            IF     MCP-RC    =   ZERO
                MOVE    MCPDATA-REC     TO  PTINF-REC
            END-IF
       *
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DB-CLOSE-SEC
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            INITIALIZE      ORCSSYOKIKSNAREA
       *
@@ -866,7 +870,7 @@
       *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿¤Î°åÎÅµ¡´Ø¾ðÊó¤è¤ê¼èÆÀ
            MOVE    "tbl_syskanri"  TO  MCP-TABLE
            MOVE    "key2"          TO  MCP-PATHNAME
-           PERFORM 900-TBL-SELECT-SEC
+           PERFORM 910-DBSELECT-SEC
       *
            IF   MCP-RC             =    ZERO
                MOVE    MCPDATA-REC TO   SYS-5000-REC
@@ -891,7 +895,7 @@
       *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿¥¯¥í¡¼¥º
            MOVE    "tbl_syskanri"  TO  MCP-TABLE
            MOVE    "key2"          TO  MCP-PATHNAME
-           PERFORM 910-DB-CLOSE-SEC
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
       *ÉÂÅï²Ã»»¾ðÊó
            PERFORM     4801-BTUSEL-SEC
@@ -915,6 +919,19 @@
                            MOVE  "190103970"   TO
                                               WRK-NYUKHNKSN-SRYCD(IDX8)
                        WHEN     "05"
+                           MOVE  "190104070"   TO
+                                              WRK-NYUKHNKSN-SRYCD(IDX8)
+      *                Ê¿À®£±£¸Ç¯£´·î²þÀµÂÐ±þ
+                       WHEN     "06"
+                           MOVE  "190103770"   TO
+                                              WRK-NYUKHNKSN-SRYCD(IDX8)
+                       WHEN     "07"
+                           MOVE  "190103870"   TO
+                                              WRK-NYUKHNKSN-SRYCD(IDX8)
+                       WHEN     "08"
+                           MOVE  "190103970"   TO
+                                              WRK-NYUKHNKSN-SRYCD(IDX8)
+                       WHEN     "09"
                            MOVE  "190104070"   TO
                                               WRK-NYUKHNKSN-SRYCD(IDX8)
                    END-EVALUATE
@@ -943,35 +960,48 @@
                END-IF
       *
       *        ¾®»ùÆþ±¡°åÎÅ´ÉÍýÎÁ²Ã»»¡ÊÊÝ°é»Î£±¿Í°Ê¾å¡Ë
+               MOVE  SPACE       TO   WRK-BTU-HIKSISUKBN
                IF    SYS-5001-BTU-HIKSISUKBN   =   "2"
-                   ADD      1          TO     IDX8
-                   MOVE  "190111370"   TO  WRK-NYUKHNKSN-SRYCD(IDX8)
+                   MOVE   "2"    TO   WRK-BTU-HIKSISUKBN
                END-IF
       *
       *        ÉÂÅïÆþ±¡ÎÁ²Ã»»
                PERFORM   VARYING   IDX7   FROM   1  BY  1
-                 UNTIL  (IDX7                    >   12)
-                    IF   IDX7          =       6
-      *                 »ùÆ¸»×½Õ´üÀº¿À²ÊÆþ±¡°åÎÅ´ÉÍý²Ã»»¡Ê£²£°ºÍÌ¤Ëþ¡Ë
-                        IF   SYS-5001-KSNKBN(IDX7)   =   "2"
-                             PERFORM   4801-PT-AGE-SEC
-                             IF     WRK-NENREI    <      20
-                                 ADD    1                TO  IDX8
-                                 MOVE   SYS-5001-KSNCD(IDX7)  TO
-                                           WRK-NYUKHNKSN-SRYCD(IDX8)
-                             END-IF
-                        END-IF
-                    ELSE
-                        IF   IDX7  =  3  OR  4  OR  5
-                             CONTINUE
-                        ELSE
-                            IF   SYS-5001-KSNKBN(IDX7)   =   "2"
-                                 ADD    1                TO  IDX8
-                                 MOVE   SYS-5001-KSNCD(IDX7)  TO
+                 UNTIL  (IDX7                    >   14)
+                   EVALUATE   IDX7
+                       WHEN   3
+                       WHEN   4
+                       WHEN   5
+                           CONTINUE
+      *                »ùÆ¸»×½Õ´üÀº¿À²ÊÆþ±¡°åÎÅ´ÉÍý²Ã»»¡Ê£²£°ºÍÌ¤Ëþ¡Ë
+                       WHEN   6
+                           IF      SYS-5001-KSNKBN(IDX7)   =   "2"
+                               PERFORM   4801-PT-AGE-SEC
+                               IF      WRK-NENREI          <      20
+                                   ADD    1                TO  IDX8
+                                   MOVE   SYS-5001-KSNCD(IDX7) TO
+                                               WRK-NYUKHNKSN-SRYCD(IDX8)
+                               END-IF
+                           END-IF
+      *                ´Ç¸îÇÛÃÖÅ¬¹ç²Ã»»
+                       WHEN   13
+                           MOVE  SPACE       TO   WRK-BTU-KNGTEK-KBN
+                           IF    SYS-5001-KNGTEK-KBN   =   "2"
+                               MOVE   "2"    TO   WRK-BTU-KNGTEK-KBN
+                           END-IF
+      *                Ê£¿ô°å»ÕµÚ¤Ó´Ç¸îÇÛÃÖÅ¬¹ç²Ã»»
+                       WHEN   14
+                           MOVE  SPACE       TO   WRK-BTU-DRTEK-KBN
+                           IF    SYS-5001-DRTEK-KBN   =   "2"
+                               MOVE   "2"    TO   WRK-BTU-DRTEK-KBN
+                           END-IF
+                       WHEN   OTHER
+                           IF     SYS-5001-KSNKBN(IDX7)    =   "2"
+                               ADD    1                TO  IDX8
+                               MOVE   SYS-5001-KSNCD(IDX7) TO
                                             WRK-NYUKHNKSN-SRYCD(IDX8)
-                            END-IF
-                        END-IF
-                    END-IF
+                           END-IF
+                   END-EVALUATE
                END-PERFORM
            END-IF
       *
@@ -1009,22 +1039,32 @@
                     MOVE   SYS-5002-RYOYO-CD  TO
                                    WRK-NYUKHNKSN-SRYCD(IDX8)
                END-IF
+      *        ÎÅÍÜÉÂÅïÎÅÍÜ´Ä¶­²Ã»»£±¡ÊÊ¿À®£±£¸Ç¯¿·Àß¡Ë
+               IF   SYS-5002-BTU-RYOYO-H18-KBN     =   "2"
+                    ADD     1       TO     IDX8
+      *              MOVE   "190120210"  TO
+                    MOVE   SYS-5002-BTU-RYOYO-H18-CD  TO
+                                   WRK-NYUKHNKSN-SRYCD(IDX8)
+               END-IF
       *        ÎÅÍÜÉÂÅïÎÅÍÜ´Ä¶­²Ã»»£±
                IF   SYS-5002-BTU-RYOYO-KBN(1)     =   "2"
                     ADD     1       TO     IDX8
-                    MOVE   "190106070"  TO
+                    MOVE   SYS-5002-BTU-RYOYO-CD(1)  TO
+      *              MOVE   "190106070"  TO
                                    WRK-NYUKHNKSN-SRYCD(IDX8)
                END-IF
       *        ÎÅÍÜÉÂÅïÎÅÍÜ´Ä¶­²Ã»»£²
                IF   SYS-5002-BTU-RYOYO-KBN(2)     =   "2"
                     ADD     1       TO     IDX8
-                    MOVE   "190106170"  TO
+      *              MOVE   "190106170"  TO
+                    MOVE   SYS-5002-BTU-RYOYO-CD(2)  TO
                                    WRK-NYUKHNKSN-SRYCD(IDX8)
                END-IF
       *        ÎÅÍÜÉÂÅïÎÅÍÜ´Ä¶­²Ã»»£³
                IF   SYS-5002-BTU-RYOYO-KBN(3)     =   "2"
                     ADD     1       TO     IDX8
-                    MOVE   "190106270"  TO
+      *              MOVE   "190106270"  TO
+                    MOVE   SYS-5002-BTU-RYOYO-CD(3)  TO
                                    WRK-NYUKHNKSN-SRYCD(IDX8)
                END-IF
       *        ½Å¾É¼ÔÅùÎÅÍÜ´Ä¶­ÆÃÊÌ²Ã»»¡Ê¸Ä¼¼¡Ë
@@ -1059,6 +1099,30 @@
                                    LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX9)
                          END-IF
            END-PERFORM
+      *
+      *    ¾®»ùÆþ±¡°åÎÅ´ÉÍýÎÁ²Ã»»¡ÊÊÝ°é»Î£±¿Í°Ê¾å¡Ë
+           IF    (WRK-BTU-HIKSISUKBN   =   "2")  AND
+                 (IDX9    <   20 )
+               ADD    1            TO  IDX9
+               MOVE  "190111370"   TO
+                                   LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX9)
+           END-IF
+      *
+      *    ´Ç¸îÇÛÃÖÅ¬¹ç²Ã»»
+           IF    (WRK-BTU-KNGTEK-KBN   =   "2")  AND
+                 (IDX9    <   20 )
+               ADD    1            TO  IDX9
+               MOVE  "190109670"   TO
+                                   LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX9)
+           END-IF
+      *
+      *    Ê£¿ô°å»ÕµÚ¤Ó´Ç¸îÇÛÃÖÅ¬¹ç²Ã»»
+           IF    (WRK-BTU-DRTEK-KBN   =   "2")  AND
+                 (IDX9    <   20 )
+               ADD    1            TO  IDX9
+               MOVE  "190117070"   TO
+                                   LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX9)
+           END-IF
       *
            .
       *
@@ -1096,23 +1160,32 @@
            MOVE    "tbl_nyuksnchk" TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
            MOVE    NYUKSNCHK-REC   TO  MCPDATA-REC
-           PERFORM 900-TBL-SELECT-SEC
-           IF      MCP-RC        =   ZERO
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC TO  NYUKSNCHK-REC
+               IF    ( NYUKSNCHK-CHKKBN    =   "1" OR "2" )
+                   CONTINUE
+               ELSE
+                   MOVE   1        TO     FLG-NYUKSN
+               END-IF
            ELSE
                MOVE   1        TO     FLG-NYUKSN
-               GO  TO          4801-NYUKSN-CHK-EXT
            END-IF
+      *
       *
            MOVE    "tbl_nyuksnchk"      TO  MCP-TABLE
            MOVE    "key"                TO  MCP-PATHNAME
-           PERFORM 910-DB-CLOSE-SEC
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
-           IF    ( NYUKSNCHK-CHKKBN    =   "1" OR "2" )
-               CONTINUE
-           ELSE
-               MOVE   1        TO     FLG-NYUKSN
-               GO  TO  4801-NYUKSN-CHK-EXT
+      *    Ï·¿ÍÆÃÄêÆþ±¡´ðËÜÎÁ¤Î²Ã»»¥Á¥§¥Ã¥¯Ï³¤ìÂÐ±þ
+           IF   (WRK-BTU-NYUKSNKBN   =  "099")  AND
+                (WRK-KSN-NYUKSNKBN   =  "407"   OR
+                                        "408"   OR
+                                        "409"   OR
+                                        "410"   OR
+                                        "411"   OR
+                                        "412")
+               MOVE   ZERO     TO     FLG-NYUKSN
            END-IF
       *
            .
@@ -1144,7 +1217,7 @@
       *
            MOVE    "tbl_tensu"     TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
-           PERFORM 900-TBL-SELECT-SEC
+           PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC        =   ZERO )
                MOVE    MCPDATA-REC TO  TNS-TENSU-REC
            ELSE
@@ -1154,7 +1227,7 @@
       *    ÅÀ¿ô¥Þ¥¹¥¿¥¯¥í¡¼¥º
            MOVE    "tbl_tensu"     TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
-           PERFORM 910-DB-CLOSE-SEC
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            IF    ( FLG-TENSU       NOT =   ZERO )
                GO  TO  48011-TENSU-SEL-EXT
@@ -1207,7 +1280,7 @@
       *
            MOVE    "tbl_tensu"     TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
-           PERFORM 900-TBL-SELECT-SEC
+           PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC TO  TNS-TENSU-REC
            ELSE
@@ -1217,7 +1290,7 @@
       *    ÅÀ¿ô¥Þ¥¹¥¿¥¯¥í¡¼¥º
            MOVE    "tbl_tensu"     TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
-           PERFORM 910-DB-CLOSE-SEC
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            IF    ( FLG-TENSU       NOT =   ZERO )
                GO  TO  48012-TENSU-SEL-EXT
@@ -1241,7 +1314,7 @@
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 900-TBL-SELECT-SEC
+           PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC       =   ZERO  )
                MOVE    MCPDATA-REC     TO  PTINF-REC
            ELSE
@@ -1250,7 +1323,7 @@
       *
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DB-CLOSE-SEC
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            IF      FLG-PTINF           =   1
                MOVE    ZERO            TO  WRK-NENREI
@@ -1282,7 +1355,7 @@
            MOVE    SENTEICDCHG-REC TO  MCPDATA-REC
            MOVE    "tbl_senteicdchg"   TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 900-TBL-SELECT-SEC
+           PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC      =   ZERO  )
                MOVE    MCPDATA-REC TO  SENTEICDCHG-REC
            ELSE
@@ -1291,7 +1364,7 @@
       *
            MOVE    "tbl_senteicdchg"   TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 910-DB-CLOSE-SEC
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
       **     MOVE    SENCHG-SENTEISRYCD
       **                             TO  LNK-SCNYUACCT-SENTEI-SRYCD
@@ -1307,7 +1380,7 @@
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 900-TBL-SELECT-SEC
+           PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC    =   ZERO  )
                MOVE    MCPDATA-REC     TO  PTINF-REC
            ELSE
@@ -1315,7 +1388,7 @@
            END-IF
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DB-CLOSE-SEC
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
       *    £±£µºÍÌ¤Ëþ¤Î´µ¼Ô¤ÏÁªÄêÆþ±¡ÂÐ¾Ý³°
            DISPLAY "PTINF-BIRTHDAY = " PTINF-BIRTHDAY
@@ -1387,6 +1460,18 @@
                        MOVE   "190117310"  TO  STUSAN-TOKUTEI-SRYCD(1)
                    WHEN   "18"
                        MOVE   "190117410"  TO  STUSAN-TOKUTEI-SRYCD(1)
+                   WHEN   "19"
+                       MOVE   "190120810"  TO  STUSAN-TOKUTEI-SRYCD(1)
+               END-EVALUATE
+           END-IF
+      *    Ï·¿ÍÀ­Ç§ÃÎ¾É¼À´µ¼£ÎÅÉÂÅïÆþ±¡ÎÁ£±
+      *    Ï·¿ÍÀ­Ç§ÃÎ¾É¼À´µ¼£ÎÅÉÂÅïÆþ±¡ÎÁ£²
+           IF   PTNYUINRRK-TOKUTEI-KBN   =   "2"
+               EVALUATE   PTNYUINRRK-TOKUTEI-NYUIN
+                   WHEN   "05"
+                       MOVE   "190739910"  TO  STUSAN-TOKUTEI-SRYCD(1)
+                   WHEN   "15"
+                       MOVE   "190813410"  TO  STUSAN-TOKUTEI-SRYCD(1)
                END-EVALUATE
            END-IF
            CALL    "ORCSTUSAN"     USING   ORCSTUSANAREA
@@ -1451,7 +1536,7 @@
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
            MOVE    "tbl_syskanri"  TO  MCP-TABLE
            MOVE    "key10"         TO  MCP-PATHNAME
-           PERFORM 900-TBL-SELECT-SEC
+           PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC    =   ZERO )
                MOVE    MCPDATA-REC
                                   TO  SYS-5001-REC
@@ -1461,7 +1546,7 @@
       *
            MOVE    "tbl_syskanri"  TO  MCP-TABLE
            MOVE    "key10"         TO  MCP-PATHNAME
-           PERFORM 910-DB-CLOSE-SEC
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        4801-BTUSEL-EXT.
@@ -1501,7 +1586,7 @@
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
            MOVE    "tbl_syskanri"  TO  MCP-TABLE
            MOVE    "key10"         TO  MCP-PATHNAME
-           PERFORM 900-TBL-SELECT-SEC
+           PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC    =   ZERO )
                MOVE    MCPDATA-REC
                                   TO  SYS-5002-REC
@@ -1511,7 +1596,7 @@
       *
            MOVE    "tbl_syskanri"  TO  MCP-TABLE
            MOVE    "key10"         TO  MCP-PATHNAME
-           PERFORM 910-DB-CLOSE-SEC
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        4801-BRMSEL-EXT.
@@ -1549,11 +1634,23 @@
                WHEN    "09"
                        MOVE   "190028910"   TO  SYOKIKSN-IN-KHNSRYCD
                WHEN    "10"
+                   IF  SYOKIKSN-IN-SANTEISTYMD(1:6) <= "200603"
                        MOVE   "190111410"   TO  SYOKIKSN-IN-KHNSRYCD
+                   ELSE
+                       MOVE   "190121010"   TO  SYOKIKSN-IN-KHNSRYCD
+                   END-IF
                WHEN    "11"
+                   IF  SYOKIKSN-IN-SANTEISTYMD(1:6) <= "200603"
                        MOVE   "190066910"   TO  SYOKIKSN-IN-KHNSRYCD
+                   ELSE
+                       MOVE   "190121110"   TO  SYOKIKSN-IN-KHNSRYCD
+                   END-IF
                WHEN    "12"
+                   IF  SYOKIKSN-IN-SANTEISTYMD(1:6) <= "200603"
                        MOVE   "190067010"   TO  SYOKIKSN-IN-KHNSRYCD
+                   ELSE
+                       MOVE   "190121210"   TO  SYOKIKSN-IN-KHNSRYCD
+                   END-IF
                WHEN    "13"
                        MOVE   "190075910"   TO  SYOKIKSN-IN-KHNSRYCD
                WHEN    "14"
@@ -1609,6 +1706,32 @@
                        MOVE   "190799410"   TO  SYOKIKSN-IN-KHNSRYCD
                WHEN    "23"
                        MOVE   "190808910"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "24"
+                       MOVE   "190799510"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "25"
+                       MOVE   "190121310"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "26"
+                       MOVE   "190121410"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "27"
+                       MOVE   "190121510"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "28"
+                       MOVE   "190121610"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "29"
+                       MOVE   "190121710"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "30"
+                       MOVE   "190121810"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "31"
+                       MOVE   "190122010"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "32"
+                       MOVE   "190122110"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "33"
+                       MOVE   "190122210"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "34"
+                       MOVE   "190122310"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "35"
+                       MOVE   "190122410"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "36"
+                       MOVE   "190122510"   TO  SYOKIKSN-IN-KHNSRYCD
              END-EVALUATE
            END-IF
       *
@@ -1628,26 +1751,57 @@
            IF    ( FLG-RJN         =   1 )    AND
                  ( COMB-HKNNUM     NOT =   "971" )  AND
                  ( COMB-HKNNUM     NOT =   "973" )
-               INITIALIZE              SRYCDCHG-REC
       *
-               MOVE    SYOKIKSN-IN-KHNSRYCD
-                                       TO   CHG-IPNSRYCD
-               MOVE    SRYCDCHG-REC    TO   MCPDATA-REC
-               MOVE    "tbl_srycdchg"  TO   MCP-TABLE
-               MOVE    "key2"          TO   MCP-PATHNAME
-               PERFORM 900-TBL-SELECT-SEC 
-               IF    ( MCP-RC    =   ZERO )
-                   MOVE    MCPDATA-REC
-                                       TO   SRYCDCHG-REC
-                   IF   CHG-RJNSRYCD   NOT =   SPACE
-                        MOVE   CHG-RJNSRYCD
-                                       TO  SYOKIKSN-IN-KHNSRYCD
+      *        Ê¿À®£±£¸Ç¯£´·î²þÄêÂÐ±þ
+      *        Ï·¿Í¥³¡¼¥ÉÃÖ¤­´¹¤¨¤ÏÎÅÍÜÉÂÅï¡¢ÎÅÍÜÉÂ¾²¤Î¤ß
+               IF   SYOKIKSN-IN-SANTEISTYMD(1:6)  >=  "200604"
+                   IF   SYOKIKSN-IN-KHNSRYCD  =  "190080610" OR
+                                                 "190080710" OR
+                                                 "190081310" OR
+                                                 "190081410" OR
+                                                 "190098210" OR
+                                                 "190098310"
+                       INITIALIZE              SRYCDCHG-REC
+                       MOVE    SYOKIKSN-IN-KHNSRYCD
+                                           TO   CHG-IPNSRYCD
+                       MOVE    SRYCDCHG-REC    TO   MCPDATA-REC
+                       MOVE    "tbl_srycdchg"  TO MCP-TABLE
+                       MOVE    "key2"          TO MCP-PATHNAME
+                       PERFORM 910-DBSELECT-SEC 
+                       IF    ( MCP-RC      =   ZERO )
+                           MOVE    MCPDATA-REC
+                                               TO   SRYCDCHG-REC
+                           IF   CHG-RJNSRYCD   NOT =   SPACE
+                                MOVE   CHG-RJNSRYCD
+                                               TO  SYOKIKSN-IN-KHNSRYCD
+                           END-IF
+                       END-IF
+      *
+                       MOVE    "tbl_srycdchg"  TO MCP-TABLE
+                       MOVE    "key2"          TO MCP-PATHNAME
+                       PERFORM 910-DBCLOSECURSOR-SEC
                    END-IF
-               END-IF
+               ELSE
+                   INITIALIZE              SRYCDCHG-REC
+                   MOVE    SYOKIKSN-IN-KHNSRYCD
+                                           TO   CHG-IPNSRYCD
+                   MOVE    SRYCDCHG-REC    TO   MCPDATA-REC
+                   MOVE    "tbl_srycdchg"  TO MCP-TABLE
+                   MOVE    "key2"          TO MCP-PATHNAME
+                   PERFORM 910-DBSELECT-SEC 
+                   IF    ( MCP-RC      =   ZERO )
+                       MOVE    MCPDATA-REC
+                                           TO   SRYCDCHG-REC
+                       IF   CHG-RJNSRYCD   NOT =   SPACE
+                            MOVE   CHG-RJNSRYCD
+                                           TO  SYOKIKSN-IN-KHNSRYCD
+                       END-IF
+                   END-IF
       *
-               MOVE    "tbl_srycdchg"  TO   MCP-TABLE
-               MOVE    "key2"          TO   MCP-PATHNAME
-               PERFORM 910-DB-CLOSE-SEC
+                   MOVE    "tbl_srycdchg"  TO MCP-TABLE
+                   MOVE    "key2"          TO MCP-PATHNAME
+                   PERFORM 910-DBCLOSECURSOR-SEC
+               END-IF
            END-IF
       *
            .
@@ -1676,7 +1830,7 @@
            MOVE    HKNCOMBI-REC        TO   MCPDATA-REC
            MOVE    "tbl_hkncombi"      TO   MCP-TABLE
            MOVE    "key"               TO   MCP-PATHNAME
-           PERFORM 900-TBL-SELECT-SEC 
+           PERFORM 910-DBSELECT-SEC 
            IF    ( MCP-RC    =   ZERO )
                MOVE    MCPDATA-REC
                                        TO   HKNCOMBI-REC
@@ -1686,7 +1840,7 @@
       *
            MOVE    "tbl_hkncombi"      TO   MCP-TABLE
            MOVE    "key"               TO   MCP-PATHNAME
-           PERFORM 910-DB-CLOSE-SEC
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            PERFORM  4801-PT-AGE-SEC
       *    Æþ±¡´µ¼Ô¤ÎÇ¯Îð·×»»
@@ -1730,13 +1884,13 @@
            MOVE    PTKOHINF-REC     TO   MCPDATA-REC
            MOVE    "tbl_ptkohinf"   TO   MCP-TABLE
            MOVE    "key6"           TO   MCP-PATHNAME
-           PERFORM 900-TBL-SELECT-SEC 
+           PERFORM 910-DBSELECT-SEC 
            IF    ( MCP-RC    =   ZERO )
                MOVE    1            TO  FLG-RJN
            END-IF
            MOVE    "tbl_ptkohinf"   TO   MCP-TABLE
            MOVE    "key6"           TO   MCP-PATHNAME
-           PERFORM 910-DB-CLOSE-SEC
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        4801-RJN-TAISYO-CHK-EXT.
@@ -1957,7 +2111,7 @@
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
            MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
            MOVE    "key28"             TO  MCP-PATHNAME
-           PERFORM   900-TBL-SELECT-SEC
+           PERFORM   910-DBSELECT-SEC
            IF      MCP-RC            =   ZERO
                MOVE     MCPDATA-REC    TO  NYUINACCT-REC
       *        ¿©»ö¤òÂàÈò
@@ -1982,7 +2136,7 @@
       *    Æþ±¡²ñ·×¥Þ¥¹¥¿¥¯¥í¡¼¥º
            MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
            MOVE    "key28"             TO  MCP-PATHNAME
-           PERFORM 910-DB-CLOSE-SEC
+           PERFORM 910-DBCLOSECURSOR-SEC
       *    ¡Ê°ÛÆ°Íâ·îÊ¬¡Ë
            INITIALIZE                      NYUINACCT-REC
            MOVE    LNK-PTNYUINRRK-HOSPID   TO  NACCT-HOSPID
@@ -1999,7 +2153,7 @@
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
            MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
            MOVE    "key28"             TO  MCP-PATHNAME
-           PERFORM   900-TBL-SELECT-SEC
+           PERFORM   910-DBSELECT-SEC
            IF      MCP-RC            =   ZERO
                MOVE     MCPDATA-REC    TO  NYUINACCT-REC
       *        ¿©»ö¤òÂàÈò
@@ -2015,7 +2169,7 @@
       *    Æþ±¡²ñ·×¥Þ¥¹¥¿¥¯¥í¡¼¥º
            MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
            MOVE    "key28"             TO  MCP-PATHNAME
-           PERFORM 910-DB-CLOSE-SEC
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
       *    Æþ±¡²ñ·×ºîÀ®¥µ¥Ö¤Î¸Æ½Ð¤·
            INITIALIZE                     ORCSNYUACCT-AREA
@@ -2529,7 +2683,7 @@
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
            MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
            MOVE    "key28"             TO  MCP-PATHNAME
-           PERFORM   900-TBL-SELECT-SEC
+           PERFORM   910-DBSELECT-SEC
            IF      MCP-RC            =   ZERO
                MOVE     MCPDATA-REC    TO  NYUINACCT-REC
       *        ¿©»ö¤òÉü¸µ
@@ -2558,7 +2712,7 @@
       *    Æþ±¡²ñ·×¥Þ¥¹¥¿¥¯¥í¡¼¥º
            MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
            MOVE    "key28"             TO  MCP-PATHNAME
-           PERFORM 910-DB-CLOSE-SEC
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
       *    ¡Ê°ÛÆ°Íâ·îÊ¬¡Ë
            IF   WRK-TENROOM-SKJ-SRYYM(2)  NOT =   SPACE
@@ -2601,7 +2755,7 @@
       *        Æþ±¡²ñ·×¥Þ¥¹¥¿¥¯¥í¡¼¥º
                MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
                MOVE    "key28"             TO  MCP-PATHNAME
-               PERFORM 910-DB-CLOSE-SEC
+               PERFORM 910-DBCLOSECURSOR-SEC
            END-IF
       *
            .
@@ -2760,7 +2914,7 @@
       *            Æþ±¡²ñ·×¥¯¥í¡¼¥º
                    MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
                    MOVE    "key17"             TO  MCP-PATHNAME
-                   PERFORM   910-DB-CLOSE-SEC
+                   PERFORM   910-DBCLOSECURSOR-SEC
       *            ¼¡·î¤Î²ñ·×ÆÉ¤ß¹þ¤ß
                    MOVE    LNK-PTNYUINRRK-HOSPID   TO  NACCT-HOSPID
                    MOVE    LNK-PTNYUINRRK-PTID     TO  NACCT-PTID
@@ -2785,7 +2939,7 @@
       *    Æþ±¡²ñ·×¥¯¥í¡¼¥º
            MOVE     "tbl_nyuinacct"         TO  MCP-TABLE
            MOVE     "key17"                 TO  MCP-PATHNAME
-           PERFORM   910-DB-CLOSE-SEC
+           PERFORM   910-DBCLOSECURSOR-SEC
       *
            .
        4801-GAIHAKU-1-EXT.
@@ -2858,7 +3012,7 @@
       *            Æþ±¡²ñ·×¥¯¥í¡¼¥º
                    MOVE     "tbl_nyuinacct"         TO  MCP-TABLE
                    MOVE     "key17"                 TO  MCP-PATHNAME
-                   PERFORM   910-DB-CLOSE-SEC
+                   PERFORM   910-DBCLOSECURSOR-SEC
       *            ¼¡·î¤Î²ñ·×ÆÉ¤ß¹þ¤ß
                    MOVE    LNK-PTNYUINRRK-HOSPID   TO  NACCT-HOSPID
                    MOVE    LNK-PTNYUINRRK-PTID     TO  NACCT-PTID
@@ -2883,7 +3037,7 @@
       *    Æþ±¡²ñ·×¥¯¥í¡¼¥º
            MOVE     "tbl_nyuinacct"         TO  MCP-TABLE
            MOVE     "key17"                 TO  MCP-PATHNAME
-           PERFORM   910-DB-CLOSE-SEC
+           PERFORM   910-DBCLOSECURSOR-SEC
       *
            .
        4801-GAIHAKU-2-EXT.
@@ -2967,7 +3121,7 @@
       *    Æþ±¡²ñ·×¥¯¥í¡¼¥º
            MOVE     "tbl_nyuinacct"         TO  MCP-TABLE
            MOVE     "key28"                 TO  MCP-PATHNAME
-           PERFORM   910-DB-CLOSE-SEC
+           PERFORM   910-DBCLOSECURSOR-SEC
       *
       *-------------------¿©Æ²²Ã»»¤³¤³¤«¤é----------------------------
       *    ¿©»ö¤Î¥»¥Ã¥È
@@ -3017,7 +3171,7 @@
       *    Æþ±¡²ñ·×¥¯¥í¡¼¥º
            MOVE     "tbl_nyuinacct"         TO  MCP-TABLE
            MOVE     "key17"                 TO  MCP-PATHNAME
-           PERFORM   910-DB-CLOSE-SEC
+           PERFORM   910-DBCLOSECURSOR-SEC
       *-------------------¿©Æ²²Ã»»¤³¤³¤Þ¤Ç----------------------------
            .
        4801-SHOKUJI-EXT.
@@ -3037,7 +3191,7 @@
       *****************************************************************
       *    ¥Æ¡¼¥Ö¥ë¸¡º÷½èÍý
       *****************************************************************
-       900-TBL-SELECT-SEC              SECTION.
+       910-DBSELECT-SEC              SECTION.
       *
            PERFORM 910-DB-SELECT-SEC
            IF    ( MCP-RC          =   ZERO )
@@ -3045,7 +3199,7 @@
            END-IF
       *
            .
-       900-TBL-SELECT-EXT.
+       910-DBSELECT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3119,7 +3273,7 @@
       *****************************************************************
       *    £Ä£Â¥¯¥í¡¼¥º½èÍý
       *****************************************************************
-       910-DB-CLOSE-SEC                SECTION.
+       910-DBCLOSECURSOR-SEC                SECTION.
       *
            MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
            CALL    "MONFUNC"            USING
@@ -3127,5 +3281,5 @@
                                         MCPDATA-REC
       *
            .
-       910-DB-CLOSE-EXT.
+       910-DBCLOSECURSOR-EXT.
            EXIT.
