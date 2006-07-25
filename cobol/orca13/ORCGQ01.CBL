@@ -2942,10 +2942,6 @@
       *****************************************************************
        4117-STTSYSKBT-CHK-SEC          SECTION.
       *
-           IF    ( SPA-GMN-Q01-STTSYSKBT-G =   SPACE )
-               GO  TO  4117-STTSYSKBT-CHK-EXT
-           END-IF
-      *
            PERFORM VARYING IDX2    FROM    1   BY  1
                    UNTIL ( IDX2    >   SPA-GMN-Q01-STTSYSKBTLST-MAX )
                       OR ( SPA-GMN-Q01-STTSYSKBT
