@@ -7132,9 +7132,8 @@
       *-           GO  TO  4801-TEKNA-CHK-EXT
       *-   END-IF
       *
-      *    該当月の会計テーブルが作成済であること
-           IF    ( SPA-NAI-I01-IDOYMD   =  CONST-H180701 )
-            AND  ( SPA-NAI-I01-BTUSBT   =  "04"  OR "09" )
+           IF    ( SPA-NAI-I01-IDOYMD (1:6)
+                                       >   SPA-NAI-I01-NYUINYMD (1:6))
                MOVE    SPA-NAI-I01-IDOYMD
                                        TO  WRK-YMD
                MOVE    "2"             TO  WRK-ZOGENPTN
@@ -7146,7 +7145,10 @@
                    MOVE    "1042"      TO  SPA-ERRCD
                    GO  TO  4801-TEKNA-CHK-EXT
                END-IF
-           ELSE
+      *
+           END-IF
+      *
+           IF    ( SPA-NAI-I01-IDOYMD (7:2)  NOT =   "01" )
                MOVE    SPA-NAI-I01-IDOYMD (1 : 6)
                                        TO  WRK-NACCT-SRYYM
                PERFORM 4801-NYUINACCT-SEL-SEC
@@ -11928,8 +11930,8 @@
                PERFORM   4801-TOKTEI-NYUIN-SET-SEC
            ELSE
                IF    ( SPA-NAI-I01-MAEIDOYMD   =  CONST-H180701 )
-                AND  ( SPA-NAI-I01-BTUSBT       =  "04"  OR "09" )
-                   CONTINUE
+                AND  ( SYS-5001-BTU-SBT        =  "04"  OR "09" )
+                   GO  TO  4801-IDOKAIKEI-CANCEL-EXT
                ELSE
                    IF  SYS-5001-BTU-KHNSRYCD      NOT =   SPACE
                        MOVE    SYS-5001-BTU-KHNSRYCD
@@ -15364,7 +15366,7 @@
                MOVE    "り新規に作成してください"
                                        TO  SPA-ERRMSG (41 : )
            WHEN    "1042"
-               MOVE    "６月の会計テーブルが作成されていません"
+               MOVE    "異動月前月の会計テーブルが作成されていません"
                                        TO  SPA-ERRMSG
            WHEN    "1043"
                MOVE    "異動日を７月１日にし、転科転棟転室処理を"
