@@ -994,6 +994,10 @@
       *
            END-PERFORM
       *
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
            IF    ( FLG-OK              =   ZERO )
                MOVE    "ºï"            TO  WRK-NAME1
            END-IF
