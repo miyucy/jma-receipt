@@ -53,6 +53,7 @@ CREATE TABLE "tbl_ptinf_prv" (
 	"maxzainum" numeric(8,0) DEFAULT 0,
 	"rrknum" numeric(3,0) DEFAULT 0,
 	"rrkedanum" numeric(3,0) DEFAULT 0,
+	"skyprtflg" character(1),
 	"termid" character varying(16),
 	"opid" character varying(16),
 	"creymd" character(8),
@@ -64,6 +65,4 @@ CREATE TABLE "tbl_ptinf_prv" (
 CREATE INDEX idx_ptinf_prv_kananame ON tbl_ptinf_prv USING btree (kananame);
 
 CREATE INDEX idx_ptinf_prv_name ON tbl_ptinf_prv USING btree (name);
-
-COMMENT ON TABLE "tbl_ptinf_prv" IS '患者情報(プレビュー)';
 

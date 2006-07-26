@@ -13,7 +13,8 @@ CREATE TABLE "tbl_receden" (
 	"rennum" numeric(4,0) DEFAULT 0 NOT NULL,
 	"creymd" character(8),
 	"totalten" numeric(10,0) DEFAULT 0,
-	"recedata" character varying(250),
+	"sjkbn" character(2),
+	"recedata" character varying(2500),
 	Constraint "tbl_receden_primary_key" Primary Key ("hospid", "sryym", "nyugaikbn", "ptid", "receka", "teisyutusaki", "recesyubetu", "hknjanum", "hojokbn_key", "tekstymd", "reckbn", "rennum")
 );
 

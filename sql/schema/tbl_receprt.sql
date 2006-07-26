@@ -15,7 +15,7 @@ CREATE TABLE "tbl_receprt" (
 	"prefnum" character(2) NOT NULL,
 	"ptnum" character(20) NOT NULL,
 	"sryym" character(6) DEFAULT '000000',
-	"rennum" numeric(2,0) DEFAULT 0 NOT NULL,
+	"rennum" numeric(3,0) DEFAULT 0 NOT NULL,
 	"recenum" numeric(6,0) DEFAULT 0 NOT NULL,
 	"hknkbn" character(1),
 	"kananame" character varying(100),
@@ -27,6 +27,7 @@ CREATE TABLE "tbl_receprt" (
 	"hknjanum_s" character(8) DEFAULT '99999999' NOT NULL,
 	"formid" character(20),
 	"prtdata" character varying(10000),
+	"prtnm" character(16) DEFAULT ' ',
 	"termid" character varying(64),
 	"opid" character varying(16),
 	Constraint "tbl_receprt_primary_key" Primary Key ("prtid", "receym", "creymd", "crehms", "teisyutusaki", "sryka", "prefkbn_srt", "hknjanum_srt", "hknjanum", "recesyubetu", "tekstymd", "zaitaku", "chouki", "ptnum", "rennum", "recenum")

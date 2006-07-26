@@ -53,6 +53,7 @@ CREATE TABLE "tbl_ptinf" (
 	"maxzainum" numeric(8,0) DEFAULT 0,
 	"rrknum" numeric(3,0) DEFAULT 0,
 	"rrkedanum" numeric(3,0) DEFAULT 0,
+	"skyprtflg" character(1),
 	"termid" character varying(16),
 	"opid" character varying(16),
 	"creymd" character(8),

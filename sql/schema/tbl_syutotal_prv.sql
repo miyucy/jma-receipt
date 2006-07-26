@@ -166,6 +166,23 @@ CREATE TABLE "tbl_syutotal_prv" (
 	"creymd" character(8) NOT NULL,
 	"upymd" character(8),
 	"uphms" character(6),
+	"msi_hknten" numeric(7,0) DEFAULT 0,
+	"msi_money" numeric(7,0) DEFAULT 0,
+	"msi_tgmoney" numeric(7,0) DEFAULT 0,
+	"msi_tgmoney_tax" numeric(7,0) DEFAULT 0,
+	"ssn_hknten" numeric(7,0) DEFAULT 0,
+	"ssn_money" numeric(7,0) DEFAULT 0,
+	"ssn_tgmoney" numeric(7,0) DEFAULT 0,
+	"ssn_tgmoney_tax" numeric(7,0) DEFAULT 0,
+	"hou_hknten" numeric(7,0) DEFAULT 0,
+	"hou_money" numeric(7,0) DEFAULT 0,
+	"hou_tgmoney" numeric(7,0) DEFAULT 0,
+	"hou_tgmoney_tax" numeric(7,0) DEFAULT 0,
+	"ryo_hknten" numeric(7,0) DEFAULT 0,
+	"ryo_money" numeric(7,0) DEFAULT 0,
+	"ryo_tgmoney" numeric(7,0) DEFAULT 0,
+	"ryo_tgmoney_tax" numeric(7,0) DEFAULT 0,
+	"shohou_sai" numeric(7,0) DEFAULT 0,
 	Constraint "tbl_syutotal_prv_pkey" Primary Key ("hospid", "nyugaikbn", "ptid", "denpnum", "creymd")
 );
 

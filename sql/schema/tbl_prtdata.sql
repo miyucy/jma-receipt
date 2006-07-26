@@ -13,7 +13,7 @@ CREATE TABLE "tbl_prtdata" (
 	"prtflg" character(1) NOT NULL,
 	"sitekbn" character(1) DEFAULT '0' NOT NULL,
 	"prtnm" character(16) DEFAULT ' ' NOT NULL,
-	"prtdata" character varying(10000),
+	"prtdata" character varying(20000),
 	Constraint "tbl_prtdata_primary_key" Primary Key ("tbl_key", "rennum", "tbl_group", "shori_rennum", "page")
 );
 
