@@ -37,8 +37,8 @@ tbl_tekioubyomei {
 	UPHMS			char(6);
 #-----> 検索キー用項目
 	SELNAME		char(200),virtual;
-	SELYUKOSTYMD  		char(8);
-	SELYUKOEDYMD  		char(8);
+	SELYUKOSTYMD  		char(8),virtual;
+	SELYUKOEDYMD  		char(8),virtual;
 };
 primary	{
 	CHKKBN,SRYCD,RENNUM;
