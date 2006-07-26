@@ -2917,7 +2917,8 @@
                  MOVE     NYUINACCT-REC      TO  MCPDATA-REC
                  MOVE     "tbl_nyuinacct"    TO  MCP-TABLE
                  MOVE     "key"              TO  MCP-PATHNAME
-                 PERFORM 910-DBUPDATE-SEC
+                 CALL     "MONFUNC"          USING  MCPAREA
+                                                    MCPDATA-REC 
       *          入院会計マスタクローズ
                  MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
                  EVALUATE   IDX-SKJ-TAIHI
@@ -2996,7 +2997,8 @@
                    MOVE     NYUINACCT-REC      TO  MCPDATA-REC
                    MOVE     "tbl_nyuinacct"    TO  MCP-TABLE
                    MOVE     "key"              TO  MCP-PATHNAME
-                   PERFORM 910-DBUPDATE-SEC
+                   CALL     "MONFUNC"          USING  MCPAREA
+                                                      MCPDATA-REC 
       *            入院会計マスタクローズ
                    MOVE    "tbl_nyuinacct"    TO  MCP-TABLE
                    EVALUATE   IDX-SKJ-TAIHI
@@ -3044,7 +3046,8 @@
                MOVE     NYUINACCT-REC      TO  MCPDATA-REC
                MOVE     "tbl_nyuinacct"    TO  MCP-TABLE
                MOVE     "key"              TO  MCP-PATHNAME
-               PERFORM 910-DBUPDATE-SEC
+               CALL     "MONFUNC"          USING  MCPAREA
+                                                  MCPDATA-REC 
       *        入院会計マスタクローズ
                MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
                MOVE    "key28"             TO  MCP-PATHNAME
@@ -3082,7 +3085,8 @@
                    MOVE     NYUINACCT-REC      TO  MCPDATA-REC
                    MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
                    MOVE    "key"               TO  MCP-PATHNAME
-                   PERFORM 910-DBUPDATE-SEC
+                   CALL    "MONFUNC"           USING  MCPAREA
+                                                      MCPDATA-REC 
                    MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
                    MOVE    "key28"             TO  MCP-PATHNAME
                    PERFORM 910-DBCLOSECURSOR-SEC
@@ -3713,18 +3717,18 @@
       *****************************************************************
       *    入院会計マスター読込
       *****************************************************************
-       910-NYUINACCT-READ-SEC        SECTION.
+       910-NYUINACCT-READ-SEC          SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MONFUNC"            USING
-                                        MCPAREA
-                                        MCPDATA-REC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC        TO  NYUINACCT-REC
-               MOVE    ZERO               TO  FLG-NYUINACCT
+               MOVE    MCPDATA-REC     TO  NYUINACCT-REC
+               MOVE    ZERO            TO  FLG-NYUINACCT
            ELSE
-               INITIALIZE                     NYUINACCT-REC
-               MOVE    1                  TO  FLG-NYUINACCT
+               INITIALIZE                  NYUINACCT-REC
+               MOVE    1               TO  FLG-NYUINACCT
            END-IF
       *
            .
@@ -3734,7 +3738,7 @@
       *****************************************************************
       *    ＤＢクローズ処理
       *****************************************************************
-       910-DBCLOSECURSOR-SEC                SECTION.
+       910-DBCLOSECURSOR-SEC            SECTION.
       *
            MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
            CALL    "MONFUNC"            USING
