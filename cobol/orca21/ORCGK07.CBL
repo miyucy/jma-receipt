@@ -278,8 +278,6 @@
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
-      *****MOVE    ZERO                TO  SPA-GMN-MAX
-      *
            INITIALIZE                  SPA-K07-AREA
       *    ´µ¼Ô£É£Ä
       *    MOVE    SPA-PTNUM           TO  SPA-GMN-PTNUM
@@ -302,7 +300,7 @@
                MOVE    SPA-PTID            TO  JYURRK-PTID
                MOVE    SPA-K07-NYUGAIKBN   TO  JYURRK-NYUGAIKBN
       *        Æþ±¡
-               IF      SPA-NYUGAIKBN       =   "1"
+               IF      SPA-K07-NYUGAIKBN    =   "1"
                    MOVE    SPA-K09NAI-RRKYMD(IDX) TO  JYURRK-SRYYMD
                    MOVE    SPA-K09NAI-RENNUM(IDX) TO  JYURRK-RENNUM
                    MOVE    SPA-K09NAI-RRK-SRYKA(IDX)  TO  JYURRK-SRYKA
