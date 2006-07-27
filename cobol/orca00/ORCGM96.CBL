@@ -433,6 +433,9 @@
                WHEN    "ORCADB10"
                    MOVE    "住所マスタ"
                                           TO  SPA-GMN-MASTNAME(IDX2)
+               WHEN    "ORCADB11"
+                   MOVE    "適応病名マスタ"
+                                          TO  SPA-GMN-MASTNAME(IDX2)
                WHEN    OTHER
                    MOVE    DBKANRI-KANRICD
                                           TO  SPA-GMN-MASTNAME(IDX2)
