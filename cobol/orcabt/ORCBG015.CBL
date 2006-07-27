@@ -97,6 +97,7 @@
            03  FLG-SYUNOU              PIC 9(01).
            03  FLG-SYUMEI              PIC 9(01).
            03  FLG-WRKSMEI             PIC 9(01).
+           03  FLG-BREAK               PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -1274,16 +1275,23 @@
       *****************************************************************
        900-TOKEI-NEXT-SEC         SECTION.
       *
-           READ    TOKEI-FILE     NEXT
+           MOVE    ZERO                TO  FLG-BREAK
+           MOVE    ZERO                TO  FLG-TOKEI
+      *
+           PERFORM UNTIL ( FLG-TOKEI   NOT =   ZERO )
+                    OR   ( FLG-BREAK   NOT =   ZERO )
+      *
+               READ    TOKEI-FILE     NEXT
                AT  END
                    MOVE    1           TO  FLG-TOKEI
                NOT AT  END
-                   MOVE    ZERO        TO  FLG-TOKEI
-           END-READ
+                   IF    ( TOKEI-SEIKYU    NOT =   ZERO )
+                       MOVE    1       TO  FLG-BREAK
+                   END-IF
+               END-READ
       *
-           IF      TOKEI-SEIKYU    =   0
-               GO  TO  900-TOKEI-NEXT-SEC
-           END-IF
+           END-PERFORM
+      *
            .
        900-TOKEI-NEXT-EXT.
            EXIT.
