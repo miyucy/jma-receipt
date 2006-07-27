@@ -1025,17 +1025,20 @@
       *****************************************************************
        100-DBOPEN-SEC              SECTION.
       *
-           MOVE    "DBOPEN"        TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"         USING
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBOPEN"            TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC.
+                                       MCPDATA-REC
       *
-           MOVE    "DBSTART"       TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"         USING
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBSTART"           TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC.
+                                       MCPDATA-REC
+           .
        100-DBOPEN-EXT.
            EXIT.
       *
@@ -1044,18 +1047,20 @@
       *****************************************************************
        900-DBDISCONNECT-SEC        SECTION.
       *
-           MOVE    "DBCOMMIT"      TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"         USING
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBCOMMIT"          TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC.
+                                       MCPDATA-REC
       *
-           MOVE    "DBDISCONNECT"  TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"         USING
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBDISCONNECT"      TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC.
-      *
+                                       MCPDATA-REC
+           .
        900-DBDISCONNECT-EXT.
            EXIT.
       *****************************************************************
