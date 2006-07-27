@@ -402,11 +402,8 @@
            WHEN    OTHER
                EVALUATE    TRUE
                WHEN  ( SPA-Q01-STTSYYM     NOT =   SPACE )
-                   MOVE    SPA-Q01-STTSYYM TO  WRK-YMD
-                   MOVE    "01"            TO  WRK-YMD (7:2)
-                   PERFORM 10011-GET-ZENGETU-SEC
-                   MOVE    LNK-DAY6-KEISAN TO  WRK-STTSYYMD
-                   MOVE    "02"            TO  WRK-STTSYYMD(7:2)
+                   MOVE    SPA-Q01-STTSYYM TO  WRK-STTSYYMD
+                   MOVE    "01"            TO  WRK-STTSYYMD (7:2)
                WHEN  ( SPA-Q01-STSRYYMD    NOT =   SPACE )
                    MOVE    SPA-Q01-STSRYYMD TO WRK-STTSYYMD
                    MOVE    "01"            TO  WRK-STTSYYMD (7:2)
