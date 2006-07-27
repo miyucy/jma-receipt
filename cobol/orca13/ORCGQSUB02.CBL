@@ -413,13 +413,17 @@
       *
                EVALUATE    TRUE
                WHEN  ( SPA-Q01-EDTSYYM     NOT =   SPACE )
-                   MOVE    SPA-Q01-EDTSYYM TO  WRK-YMD
-                   PERFORM 10011-GET-GETUMATU-SEC
-                   MOVE    LNK-DAY7-KOYOMI TO  WRK-EDTSYYMD
+      *            MOVE    SPA-Q01-EDTSYYM TO  WRK-YMD
+      *            PERFORM 10011-GET-GETUMATU-SEC
+      *            MOVE    LNK-DAY7-KOYOMI TO  WRK-EDTSYYMD
+                   MOVE    SPA-Q01-EDTSYYM TO  WRK-EDTSYYMD
+                   MOVE    "01"            TO  WRK-EDTSYYMD (7:2)
                WHEN  ( SPA-Q01-EDSRYYMD    NOT =   SPACE )
-                   MOVE    SPA-Q01-EDSRYYMD TO WRK-YMD
-                   PERFORM 10011-GET-GETUMATU-SEC
-                   MOVE    LNK-DAY7-KOYOMI TO  WRK-EDTSYYMD
+      *            MOVE    SPA-Q01-EDSRYYMD TO WRK-YMD
+      *            PERFORM 10011-GET-GETUMATU-SEC
+      *            MOVE    LNK-DAY7-KOYOMI TO  WRK-EDTSYYMD
+                   MOVE    SPA-Q01-EDSRYYMD TO  WRK-EDTSYYMD
+                   MOVE    "01"            TO  WRK-EDTSYYMD (7:2)
                WHEN    OTHER
                    MOVE    ALL "9"         TO  WRK-EDTSYYMD
                END-EVALUATE
