@@ -348,8 +348,8 @@
            03  WRK-ZAIKEI          PIC X(40).
            03  WRK-ZAIKEIJ         PIC X(80).
            03  WRK-IDG             PIC 9(04).
-      *    マップ画面行
-           03  WRK-MAP-INDEX        PIC 9(04).
+      * 
+           03  WRK-ERRCD            PIC X(04).
       *    保険組合せ名称
            03  WRK-HKNCOMBI         PIC X(04).
            03  WRK-HKNCOMBIMEI      PIC X(100).
@@ -398,8 +398,10 @@
            03  WRK-RRKYMD              PIC X(08).
            03  WRK-RENNUM              PIC 9(01).
            03  WRK-MAE-RENNUM          PIC 9(01).
+           03  WRK-DOUJI-RENNUM        PIC 9(01).
            03  WRK-SRYKA               PIC X(02).
            03  WRK-RRK-SRYKA           PIC X(02).
+           03  WRK-MAE-HKNCOMBINUM     PIC X(04).
            03  WRK-DAY-S               PIC 9(03).
            03  WRK-DAY-MAE             PIC 9(03).
            03  IDX-D1                  PIC 9(02).
@@ -1835,7 +1837,7 @@
            MOVE    "50 手術"           TO  SPA-GMN-SRYKBN-LST (07)
            MOVE    "60 検査"           TO  SPA-GMN-SRYKBN-LST (08)
            MOVE    "70 画像診断"       TO  SPA-GMN-SRYKBN-LST (09)
-           MOVE    "80 理学・その他"   TO  SPA-GMN-SRYKBN-LST (10)
+           MOVE    "80 リハ・その他"   TO  SPA-GMN-SRYKBN-LST (10)
            MOVE    "90 自費・その他"   TO  SPA-GMN-SRYKBN-LST (11)
       *
            MOVE    11                  TO  SPA-SRYKBN-MAX
@@ -3003,11 +3005,13 @@
            IF      WRK-J02-DATALIST-ROW    NOT =   ZERO
                MOVE    WRK-J02-DATALIST-ROW    TO  J02-DATALIST-ROW
            END-IF
+      *VER.3.0
            IF      MAE-J02-DATALIST-ROW    NOT =   ZERO
                MOVE    MAE-J02-DATALIST-ROW
                                            TO  J02-DATALIST-ROW
                MOVE    2                   TO  J02-DATALIST-ROWATTR
            END-IF
+      *VER.3.0
            IF      WRK-J02-RRKLIST-ROW     NOT =   ZERO
                MOVE    WRK-J02-RRKLIST-ROW     TO  J02-RRKLIST-ROW
            END-IF
@@ -5722,6 +5726,7 @@
       *
            MOVE    ZERO                TO  WRK-RENNUM
            MOVE    ZERO                TO  WRK-MAE-RENNUM
+           MOVE    ZERO                TO  WRK-DOUJI-RENNUM
            PERFORM
                UNTIL    FLG-JYURRK         =   1
       *        受診履歴変更
@@ -5729,10 +5734,28 @@
       *
                IF      WRK-MAE-RENNUM      =   JYURRK-RENNUM
                    MOVE    WRK-RENNUM          TO  JYURRK-RENNUM
+                   IF      SPA-NYUGAIKBN       =   "1"
+      *                 同時連番
+                       IF      JYURRK-HKNCOMBINUM
+                                           NOT =   WRK-MAE-HKNCOMBINUM
+                           ADD     1               TO  WRK-DOUJI-RENNUM
+                       END-IF
+                       MOVE    WRK-DOUJI-RENNUM
+                                               TO  JYURRK-DOUJI-RENNUM
+                       MOVE    JYURRK-HKNCOMBINUM
+                                               TO  WRK-MAE-HKNCOMBINUM
+                   END-IF
                ELSE
                    MOVE    JYURRK-RENNUM       TO  WRK-MAE-RENNUM
                    IF      JYURRK-RENNUM       NOT =   WRK-RENNUM
                        ADD     1               TO  WRK-RENNUM
+                   END-IF
+                   IF      SPA-NYUGAIKBN       =   "1"
+                       MOVE    ZERO            TO  WRK-DOUJI-RENNUM
+                       MOVE    WRK-DOUJI-RENNUM
+                                               TO  JYURRK-DOUJI-RENNUM
+                       MOVE    JYURRK-HKNCOMBINUM
+                                               TO  WRK-MAE-HKNCOMBINUM
                    END-IF
                    MOVE    WRK-RENNUM          TO  JYURRK-RENNUM
                END-IF
@@ -7956,6 +7979,7 @@
                GO      TO      470-KAKUTEI-EXT
            END-IF
       *    受診履歴への反映
+           MOVE    SPACE               TO  WRK-ERRCD
            PERFORM 4701-RRK-ZAINUM-SEC
       *
       *    点滴エラークリア
@@ -8020,6 +8044,9 @@
       *    番号選択へカーソル移動
            MOVE    1                   TO  SPA-GMN-CUR
       *
+           IF      WRK-ERRCD       NOT =   SPACE
+               MOVE    "K100"          TO  SPA-ERRCD
+           END-IF
       *----(01.00.01) LINE ADD START ----------------------------------
       *    剤確定あり
            MOVE    "1"                 TO  SPA-UPDFLG
@@ -8235,6 +8262,8 @@
                                MOVE    SPA-NAIGMN-SRYKBN
                                                    TO  SPA-RRK-SRYKBN
                                                  (IDX-RRK2 WRK-IDR-MAX)
+                           ELSE
+                               MOVE    "K100"      TO  WRK-ERRCD
                            END-IF
                        END-IF
                    ELSE
@@ -11473,6 +11502,12 @@
                                        TO  WRK-ERRMSG
                    MOVE    "削除はできません。"
                                        TO  WRK-ERRMSG(33:)
+               WHEN    "K100"
+                   STRING  "警告！１回の受診履歴の剤が１３５以上に"
+                           "なります。受診履歴に登録できません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    WRK-ERRMSG
+                   END-STRING
       *
                WHEN    "K001"
                    MOVE    "受診日変更により当日の受診回数が変更"
