@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       * 01.01.01     NACL-森脇    04/03/16  点数の桁修正
+      *  01.01.02    NACL-森脇    06/07/27  フラグ追加、MONFUNC対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -167,6 +168,8 @@
       *
            COPY    "MCPAREA".
            COPY    "COMMON-SPA".
+      *    LIKE使用KEY対応
+           COPY    "CPORCSADDSIGN.INC".
       *
       ****************************************************************
        LINKAGE                     SECTION.
@@ -256,7 +259,9 @@
            MOVE    SPACE           TO  SYS-1001-REC
            INITIALIZE                  SYS-1001-REC
            MOVE    "1001"          TO  SYS-1001-KANRICD
-           MOVE    "*"             TO  SYS-1001-KBNCD
+           MOVE    "*%"                TO  SYS-1001-KBNCD
+           MOVE    WRK-PARA-MSTYMD     TO  SYS-1001-STYUKYMD
+                                           SYS-1001-EDYUKYMD
            MOVE    SYS-1001-REC    TO  MCPDATA-REC
            PERFORM 800-SYSKANRI-READ-SEC
            IF          FLG-SYSKANRI    =   ZERO
@@ -585,22 +590,24 @@
            MOVE    "600000000"     TO  TNS-SRYCD
            MOVE    "699999999"     TO  TNSUP-SRYCD
       *
+           MOVE    WRK-PARA-MSTYMD     TO  TNS-YUKOSTYMD
+                                           TNS-YUKOEDYMD
            EVALUATE    WRK-PARA-SYUKBN
            WHEN    1
-               MOVE    "TENSU-KEY23S"  TO  WRK-PATH
+           WHEN    4
+               MOVE    "key23s"  TO  WRK-PATH
            WHEN    2
-               MOVE    "TENSU-KEY23M"  TO  WRK-PATH
+               MOVE    "key23m"  TO  WRK-PATH
            WHEN    3
-               MOVE    "TENSU-KEY23K"  TO  WRK-PATH
+               MOVE    "key23k"  TO  WRK-PATH
            END-EVALUATE
       *
            MOVE    TNS-TENSU-REC   TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    WRK-PATH        TO  ORC-DBPATH
-           MOVE    WRK-PARA-MSTYMD TO  ORC-DBYMD
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_tensu"     TO  MCP-TABLE
+           MOVE    WRK-PATH        TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF          MCP-RC      =   ZERO
                PERFORM 900-DBFETCH-SEC
@@ -617,10 +624,10 @@
        900-DBFETCH-SEC             SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           MOVE    WRK-PATH        TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_tensu"     TO  MCP-TABLE
+           MOVE    WRK-PATH        TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF          MCP-RC      =   ZERO
                MOVE    ZERO            TO  FLG-TENSU
@@ -638,10 +645,10 @@
        900-DBCLOSE-SEC             SECTION.
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           MOVE    WRK-PATH        TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_tensu"     TO  MCP-TABLE
+           MOVE    WRK-PATH        TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            .
        900-DBCLOSE-EXT.
@@ -659,17 +666,17 @@
       *
            MOVE    TENSUPLUS-REC   TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "TENSUPLUS-KEY" TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_tensuplus" TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF          MCP-RC      =   ZERO
                MOVE    "DBFETCH"       TO  MCP-FUNC
-               MOVE    "TENSUPLUS-KEY" TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"         USING
+               MOVE    "tbl_tensuplus" TO  MCP-TABLE
+               MOVE    "key"           TO  MCP-PATHNAME
+               CALL    "MONFUNC"           USING
                                            MCPAREA
-                                           ORCMCPAREA
                                            MCPDATA-REC
                IF          MCP-RC      =   ZERO
                    MOVE    MCPDATA-REC     TO  TENSUPLUS-REC
@@ -684,10 +691,10 @@
            END-IF
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           MOVE    "TENSUPLUS-KEY" TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_tensuplus" TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
       *
            .
@@ -703,7 +710,12 @@
            INITIALIZE                  SYS-1036-REC
            MOVE    "1036"          TO  SYS-1036-KANRICD
            MOVE    TNSP-TENPUYAKKBN
-                                   TO  SYS-1036-KBNCD
+                                   TO  SADDSIGN-STR
+           CALL    "ORCSADDSIGN"       USING
+                                       ORCSADDSIGNAREA
+           MOVE    SADDSIGN-STR    TO  SYS-1036-KBNCD
+           MOVE    WRK-PARA-MSTYMD     TO  SYS-1036-STYUKYMD
+                                           SYS-1036-EDYUKYMD
            MOVE    SYS-1036-REC    TO  MCPDATA-REC
            PERFORM 800-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -719,19 +731,18 @@
       *****************************************************************
        800-SYSKANRI-READ-SEC       SECTION.
       *
-           MOVE    WRK-PARA-MSTYMD TO  ORC-DBYMD
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF          MCP-RC          =   ZERO
                MOVE    "DBFETCH"       TO  MCP-FUNC
-               MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"         USING
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key"           TO  MCP-PATHNAME
+               CALL    "MONFUNC"           USING
                                            MCPAREA
-                                           ORCMCPAREA
                                            MCPDATA-REC
                IF          MCP-RC          =   ZERO
                    MOVE    ZERO            TO  FLG-SYSKANRI
@@ -743,10 +754,10 @@
            END-IF
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
       *
            .
@@ -759,15 +770,17 @@
        100-DBOPEN-SEC              SECTION.
       *
            MOVE    "DBOPEN"        TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"         USING
+           MOVE    LOW-VALUE       TO  MCP-TABLE.
+           MOVE    LOW-VALUE       TO  MCP-PATHNAME.
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC.
       *
            MOVE    "DBSTART"       TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"         USING
+           MOVE    LOW-VALUE       TO  MCP-TABLE.
+           MOVE    LOW-VALUE       TO  MCP-PATHNAME.
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC.
            .
        100-DBOPEN-EXT.
@@ -779,15 +792,17 @@
        900-DBDISCONNECT-SEC        SECTION.
       *
            MOVE    "DBCOMMIT"      TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"         USING
+           MOVE    LOW-VALUE       TO  MCP-TABLE.
+           MOVE    LOW-VALUE       TO  MCP-PATHNAME.
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC.
       *
            MOVE    "DBDISCONNECT"  TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"         USING
+           MOVE    LOW-VALUE       TO  MCP-TABLE.
+           MOVE    LOW-VALUE       TO  MCP-PATHNAME.
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC.
            .
        900-DBCLOSE-EXT.

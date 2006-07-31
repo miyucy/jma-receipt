@@ -38,7 +38,15 @@
                     05  Z91-JIHCHK             PIC X.
                     05  Z91-MSTYMD             PIC X(10).
                     05  Z91-KEI                PIC X       OCCURS  2.
-                    05  Z91-CYU-G                          OCCURS  2.
-                        06  Z91-CYU            PIC X.
-                        06  Z91-CYU-STATE      PIC S9(9)   BINARY.
-                    05  Z91-SYU                PIC X       OCCURS  3.
+                    05  Z91-CYU-G.
+                        06  Z91-CYU1           PIC X.
+                        06  Z91-CYU1-STATE     PIC S9(9)   BINARY.
+                        06  Z91-CYU2           PIC X.
+                        06  Z91-CYU3           PIC X.
+                    05  Z91-SYU-G.
+                        06  Z91-SYU1           PIC X.
+                        06  Z91-SYU2           PIC X.
+                        06  Z91-SYU3           PIC X.
+                        06  Z91-SYU4           PIC X.
+                        06  Z91-SYU4-STATE     PIC S9(9)   BINARY.
+

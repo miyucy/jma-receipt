@@ -651,7 +651,7 @@ path	key10k 	{
 path	key10s1 	{
 	DBSELECT	{
 		DECLARE tbl_tensu_key10s1_csr CURSOR FOR
-		SELECT distinct a.*
+		SELECT a.*
 		FROM tbl_tensu a,tbl_inputcd b
 			WHERE a.SRYCD    =   b.SRYCD
 			AND   YUKOSTYMD  <=  :YUKOSTYMD
@@ -660,6 +660,7 @@ path	key10s1 	{
 			AND   a.SRYKBN     <=  :EDSRYKBN
 			AND   b.SRYCD    >=  :SRYCD
                         AND   b.SRYCD    <=  :UPSRYCD
+			AND   DSPSEQ     <=  1
 			ORDER  BY  a.SRYCD
 		;
 	};
@@ -668,7 +669,7 @@ path	key10s1 	{
 path	key10m1 	{
 	DBSELECT	{
 		DECLARE tbl_tensu_key10m1_csr CURSOR FOR
-		SELECT distinct a.*
+		SELECT a.*
 		FROM tbl_tensu a,tbl_inputcd b
 			WHERE YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
@@ -677,6 +678,7 @@ path	key10m1 	{
                         AND   a.SRYCD     =   b.SRYCD
 			AND   b.SRYCD    >=  :SRYCD
                         AND   b.SRYCD    <=  :UPSRYCD
+			AND   DSPSEQ     <=  1
 			ORDER  BY  KANANAME
 		;
 	};
@@ -684,7 +686,7 @@ path	key10m1 	{
 path	key10k1 	{
 	DBSELECT	{
 		DECLARE tbl_tensu_key10k1_csr CURSOR FOR
-		SELECT distinct a.*
+		SELECT a.*
 		FROM tbl_tensu a,tbl_inputcd b
 			WHERE a.SRYCD    =   b.SRYCD
 			AND   YUKOSTYMD  <=  :YUKOSTYMD
@@ -693,7 +695,26 @@ path	key10k1 	{
 			AND   a.SRYKBN     <=  :EDSRYKBN
 			AND   b.SRYCD    >=  :SRYCD
                         AND   b.SRYCD    <=  :UPSRYCD
+			AND   DSPSEQ     <=  1
 			ORDER  BY  CDKBN_KBN,CDKBN_KBNNUM,CDKBN_KBNNUM_EDA,CDKBN_KOUBAN
+		;
+	};
+};
+
+path	key10i1 	{
+	DBSELECT	{
+		DECLARE tbl_tensu_key10i1_csr CURSOR FOR
+		SELECT a.*
+		FROM tbl_tensu a,tbl_inputcd b
+			WHERE a.SRYCD    =   b.SRYCD
+			AND   YUKOSTYMD  <=  :YUKOSTYMD
+			AND   YUKOEDYMD  >=  :YUKOEDYMD
+			AND   a.SRYKBN     >=  :STSRYKBN
+			AND   a.SRYKBN     <=  :EDSRYKBN
+			AND   b.SRYCD    >=  :SRYCD
+                        AND   b.SRYCD    <=  :UPSRYCD
+			AND   DSPSEQ     <=  1
+			ORDER  BY  INPUTCD
 		;
 	};
 };
@@ -746,7 +767,7 @@ path	key11k 	{
 path	key11s1 	{
 	DBSELECT	{
 		DECLARE tbl_tensu_key11s1_csr CURSOR FOR
-		SELECT distinct a.*
+		SELECT a.*
 		FROM tbl_tensu a,tbl_inputcd b
 			WHERE a.SRYCD    =   b.SRYCD
 			AND   YUKOSTYMD  <=  :YUKOSTYMD
@@ -754,6 +775,7 @@ path	key11s1 	{
 			AND   YKZKBN      =   :YKZKBN
 			AND   b.SRYCD    >=  :SRYCD
                         AND   b.SRYCD    <=  :UPSRYCD
+			AND   DSPSEQ     <=  1
 			ORDER  BY  a.SRYCD
 		;
 	};
@@ -762,7 +784,7 @@ path	key11s1 	{
 path	key11m1 	{
 	DBSELECT	{
 		DECLARE tbl_tensu_key11m1_csr CURSOR FOR
-		SELECT distinct a.*
+		SELECT a.*
 		FROM tbl_tensu a,tbl_inputcd b
 			WHERE YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
@@ -770,6 +792,7 @@ path	key11m1 	{
                         AND   a.SRYCD    =   b.SRYCD
 			AND   b.SRYCD    >=  :SRYCD
                         AND   b.SRYCD    <=  :UPSRYCD
+			AND   DSPSEQ     <=  1
 			ORDER  BY  KANANAME
 		;
 	};
@@ -778,7 +801,7 @@ path	key11m1 	{
 path	key11k1 	{
 	DBSELECT	{
 		DECLARE tbl_tensu_key11k1_csr CURSOR FOR
-		SELECT distinct a.*
+		SELECT a.*
 		FROM tbl_tensu a,tbl_inputcd b
 			WHERE a.SRYCD    =   b.SRYCD
 			AND   YUKOSTYMD  <=  :YUKOSTYMD
@@ -786,7 +809,25 @@ path	key11k1 	{
 			AND   YKZKBN      =   :YKZKBN
 			AND   b.SRYCD    >=  :SRYCD
                         AND   b.SRYCD    <=  :UPSRYCD
+			AND   DSPSEQ     <=  1
 			ORDER  BY  CDKBN_KBN,CDKBN_KBNNUM,CDKBN_KBNNUM_EDA,CDKBN_KOUBAN
+		;
+	};
+};
+
+path	key11i1 	{
+	DBSELECT	{
+		DECLARE tbl_tensu_key11i1_csr CURSOR FOR
+		SELECT a.*
+		FROM tbl_tensu a,tbl_inputcd b
+			WHERE a.SRYCD    =   b.SRYCD
+			AND   YUKOSTYMD  <=  :YUKOSTYMD
+			AND   YUKOEDYMD  >=  :YUKOEDYMD
+			AND   YKZKBN      =   :YKZKBN
+			AND   b.SRYCD    >=  :SRYCD
+                        AND   b.SRYCD    <=  :UPSRYCD
+			AND   DSPSEQ     <=  1
+			ORDER  BY  INPUTCD
 		;
 	};
 };
@@ -836,13 +877,14 @@ path	key12k 	{
 path	key12s1 	{
 	DBSELECT	{
 		DECLARE tbl_tensu_key12s1_csr CURSOR FOR
-		SELECT distinct a.*
+		SELECT a.*
 		FROM tbl_tensu a,tbl_inputcd b
 			WHERE a.SRYCD    =   b.SRYCD
 			AND   YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
 			AND   b.SRYCD    >=  :SRYCD
                         AND   b.SRYCD    <=  :UPSRYCD
+			AND   DSPSEQ     <=  1
 			ORDER  BY  a.SRYCD
 		;
 	};
@@ -851,13 +893,14 @@ path	key12s1 	{
 path	key12m1 	{
 	DBSELECT	{
 		DECLARE tbl_tensu_key12m1_csr CURSOR FOR
-		SELECT distinct a.*
+		SELECT a.*
 		FROM tbl_tensu a,tbl_inputcd b
 			WHERE YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
                         AND   a.SRYCD    =   b.SRYCD
 			AND   b.SRYCD    >=  :SRYCD
                         AND   b.SRYCD    <=  :UPSRYCD
+			AND   DSPSEQ     <=  1
 			ORDER  BY  KANANAME
 		;
 	};
@@ -866,14 +909,31 @@ path	key12m1 	{
 path	key12k1 	{
 	DBSELECT	{
 		DECLARE tbl_tensu_key12k1_csr CURSOR FOR
-		SELECT distinct a.*
+		SELECT a.*
 		FROM tbl_tensu a,tbl_inputcd b
 			WHERE a.SRYCD    =   b.SRYCD
 			AND   YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
 			AND   b.SRYCD    >=  :SRYCD
                         AND   b.SRYCD    <=  :UPSRYCD
+			AND   DSPSEQ     <=  1
 			ORDER  BY  CDKBN_KBN,CDKBN_KBNNUM,CDKBN_KBNNUM_EDA,CDKBN_KOUBAN
+		;
+	};
+};
+
+path	key12i1 	{
+	DBSELECT	{
+		DECLARE tbl_tensu_key12i1_csr CURSOR FOR
+		SELECT a.*
+		FROM tbl_tensu a,tbl_inputcd b
+			WHERE YUKOSTYMD  <=  :YUKOSTYMD
+			AND   YUKOEDYMD  >=  :YUKOEDYMD
+                        AND   a.SRYCD    =   b.SRYCD
+			AND   b.SRYCD    >=  :SRYCD
+                        AND   b.SRYCD    <=  :UPSRYCD
+			AND   DSPSEQ     <=  1
+			ORDER  BY  INPUTCD
 		;
 	};
 };

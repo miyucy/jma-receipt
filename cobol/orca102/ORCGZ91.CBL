@@ -44,6 +44,7 @@
       *  02.00.04    NACL-森脇    04/10/27  診療行為選択変更
       *  02.00.05    NACL-多々納  05/12/12  MONFUNC対応 他
       *  02.00.06    NACL-森脇    06/03/20  プレビュー表示
+      *  02.00.07    NACL-森脇    06/07/27  抽出データと出力順に自院採用を追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -112,8 +113,10 @@
                        09  SPA-GMN-COMCHK  PIC X     OCCURS  3.
       *----(01.01.01)--ADD-END------
                    07  SPA-GMN-MSTYMD      PIC X(9).
-                   07  SPA-GMN-CYU         PIC X     OCCURS  2.
-                   07  SPA-GMN-SYU         PIC X     OCCURS  3.
+      *----(02.00.07)--UPD-START---
+                   07  SPA-GMN-CYU         PIC X     OCCURS  3.
+                   07  SPA-GMN-SYU         PIC X     OCCURS  4.
+      *----(02.00.07)--UPD-END-----
                    07  SPA-GMN-KEI         PIC X     OCCURS  2.
       *
                    07  SPA-Z91-SRYSTR.
@@ -472,9 +475,15 @@
       *----(01.01.01)--ADD-END-----
            MOVE  "T"     TO  SPA-GMN-CYU (1)
            MOVE  "F"     TO  SPA-GMN-CYU (2)
+      *----(02.00.07)--ADD-START---
+           MOVE  "F"     TO  SPA-GMN-CYU (3)
+      *----(02.00.07)--ADD-END-----
            MOVE  "T"     TO  SPA-GMN-SYU (1)
            MOVE  "F"     TO  SPA-GMN-SYU (2)
            MOVE  "F"     TO  SPA-GMN-SYU (3)
+      *----(02.00.07)--ADD-START---
+           MOVE  "F"     TO  SPA-GMN-SYU (3)
+      *----(02.00.07)--ADD-END-----
            MOVE  "T"     TO  SPA-GMN-KEI (1)
            MOVE  "F"     TO  SPA-GMN-KEI (2)
       *
@@ -853,20 +862,53 @@
                    MOVE  20             TO  SPA-GMN-CUR
       *----(02.00.01)--UPD-END-----
       *----(01.01.01)--ADD-END-----
-               WHEN    "CLICKED"       ALSO    "KEI1" 
-                   MOVE  Z91-KEI(1)           TO  SPA-GMN-KEI(1) 
-               WHEN    "CLICKED"       ALSO    "KEI2" 
-                   MOVE  Z91-KEI(2)           TO  SPA-GMN-KEI(2) 
+      *----(02.00.07)--UPD-START---
+               WHEN    "CLICKED"       ALSO    "KEI1"
+               WHEN    "CLICKED"       ALSO    "KEI2"  
+                   MOVE  Z91-KEI(1)            TO  SPA-GMN-KEI(1) 
+                   MOVE  Z91-KEI(2)            TO  SPA-GMN-KEI(2)
+      *----(02.00.07)--ADD-START---
+                   IF      SPA-GMN-KEI(1)  =   "T"
+                       MOVE    "T"         TO  SPA-GMN-CYU(1)
+                       MOVE    "F"         TO  SPA-GMN-CYU(2)
+                       MOVE    "F"         TO  SPA-GMN-CYU(3)
+                       IF      SPA-GMN-SYU(4)  =   "T"
+                           MOVE    "T"         TO  SPA-GMN-SYU(1)
+                           MOVE    "F"         TO  SPA-GMN-SYU(2)
+                           MOVE    "F"         TO  SPA-GMN-SYU(3)
+                           MOVE    "F"         TO  SPA-GMN-SYU(4)
+                       END-IF
+                   ELSE
+                       IF      SPA-GMN-CYU(1)  =   "T"
+                           MOVE    "F"         TO  SPA-GMN-CYU(1)
+                           MOVE    "T"         TO  SPA-GMN-CYU(2)
+                           MOVE    "F"         TO  SPA-GMN-CYU(3)
+                       END-IF
+                   END-IF
+      *----(02.00.07)--ADD-END-----
                WHEN    "CLICKED"       ALSO    "CYU1" 
-                   MOVE  Z91-CYU(1)           TO  SPA-GMN-CYU(1)
-               WHEN    "CLICKED"       ALSO    "CYU2" 
-                   MOVE  Z91-CYU(2)           TO  SPA-GMN-CYU(2) 
+               WHEN    "CLICKED"       ALSO    "CYU2"
+               WHEN    "CLICKED"       ALSO    "CYU3"
+                   MOVE  Z91-CYU1              TO  SPA-GMN-CYU(1)
+                   MOVE  Z91-CYU2              TO  SPA-GMN-CYU(2) 
+                   MOVE  Z91-CYU3              TO  SPA-GMN-CYU(3)
+                   IF      SPA-GMN-CYU(1)  =   "T"
+                       IF      SPA-GMN-SYU(4)  =   "T" 
+                           MOVE    "T"         TO  SPA-GMN-SYU(1)
+                           MOVE    "F"         TO  SPA-GMN-SYU(2)
+                           MOVE    "F"         TO  SPA-GMN-SYU(3)
+                           MOVE    "F"         TO  SPA-GMN-SYU(4)
+                       END-IF
+                   END-IF
                WHEN    "CLICKED"       ALSO    "SYU1" 
-                   MOVE  Z91-SYU(1)           TO  SPA-GMN-SYU(1)
-               WHEN    "CLICKED"       ALSO    "SYU2" 
-                   MOVE  Z91-SYU(2)           TO  SPA-GMN-SYU(2) 
+               WHEN    "CLICKED"       ALSO    "SYU2"
                WHEN    "CLICKED"       ALSO    "SYU3" 
-                   MOVE  Z91-SYU(3)           TO  SPA-GMN-SYU(3)
+               WHEN    "CLICKED"       ALSO    "SYU4"  
+                   MOVE  Z91-SYU1              TO  SPA-GMN-SYU(1)
+                   MOVE  Z91-SYU2              TO  SPA-GMN-SYU(2) 
+                   MOVE  Z91-SYU3              TO  SPA-GMN-SYU(3)
+                   MOVE  Z91-SYU4              TO  SPA-GMN-SYU(4)
+      *----(02.00.07)--UPD-END-----
            END-EVALUATE
       *
       *----(01.01.01)--ADD-START---
@@ -1461,12 +1503,16 @@
            END-PERFORM     
       *----(01.01.01)--ADD-END-----
       *
+      *----(02.00.07)--UPD-START---
       *    抽出区分セット
-           IF      SPA-GMN-CYU(1)      =   "T"
-               MOVE  1                     TO  SHELL-CYUKBN
-           ELSE
-               MOVE  2                     TO  SHELL-CYUKBN
-           END-IF
+           EVALUATE    TRUE
+               WHEN    SPA-GMN-CYU(1)      =   "T"
+                   MOVE  1                     TO  SHELL-CYUKBN
+               WHEN    SPA-GMN-CYU(2)      =   "T"
+                   MOVE  2                     TO  SHELL-CYUKBN
+               WHEN    SPA-GMN-CYU(3)      =   "T"
+                   MOVE  3                     TO  SHELL-CYUKBN
+           END-EVALUATE
       *
       *    出力区分セット
            EVALUATE    TRUE
@@ -1476,7 +1522,10 @@
                    MOVE    2               TO  SHELL-SYUKBN
                WHEN    SPA-GMN-SYU (3) =   "T"
                    MOVE    3               TO  SHELL-SYUKBN
+               WHEN    SPA-GMN-SYU (4) =   "T"
+                   MOVE    4               TO  SHELL-SYUKBN
            END-EVALUATE
+      *----(02.00.07)--UPD-END-----
       *
       *    マスタ日付チェック
            MOVE  SPA-NAI-MSTYMD        TO  SHELL-MSTYMD
@@ -2000,13 +2049,17 @@
       *----(02.00.01)--ADD-END-----
            MOVE  SPA-GMN-SRY(1)     TO  Z91-SRY(1)
            MOVE  SPA-GMN-SRY(2)     TO  Z91-SRY(2)
-           MOVE  SPA-GMN-SYU(1)     TO  Z91-SYU(1)
-           MOVE  SPA-GMN-SYU(2)     TO  Z91-SYU(2)
-           MOVE  SPA-GMN-SYU(3)     TO  Z91-SYU(3)
            MOVE  SPA-GMN-KEI(1)     TO  Z91-KEI(1)
            MOVE  SPA-GMN-KEI(2)     TO  Z91-KEI(2)
-           MOVE  SPA-GMN-CYU(1)     TO  Z91-CYU(1)
-           MOVE  SPA-GMN-CYU(2)     TO  Z91-CYU(2)
+      *----(02.00.07)--UPD-START---
+           MOVE  SPA-GMN-SYU(1)     TO  Z91-SYU1
+           MOVE  SPA-GMN-SYU(2)     TO  Z91-SYU2
+           MOVE  SPA-GMN-SYU(3)     TO  Z91-SYU3
+           MOVE  SPA-GMN-SYU(4)     TO  Z91-SYU4
+           MOVE  SPA-GMN-CYU(1)     TO  Z91-CYU1
+           MOVE  SPA-GMN-CYU(2)     TO  Z91-CYU2
+           MOVE  SPA-GMN-CYU(3)     TO  Z91-CYU3
+      *----(02.00.07)--UPD-END-----
            MOVE  SPA-GMN-IYKCHK(1)     TO  Z91-IYKCHK(1)
            MOVE  SPA-GMN-IYKCHK(2)     TO  Z91-IYKCHK(2)
            MOVE  SPA-GMN-IYKCHK(3)     TO  Z91-IYKCHK(3)
@@ -2051,15 +2104,16 @@
                MOVE    WIDGET-INSENSITIVE  TO  Z91-SRYEND-STATE     
            END-IF  
       *
-           IF  SPA-GMN-KEI(2)  =  "T"
-               MOVE    "F"                 TO  Z91-CYU(1)
-               MOVE    "T"                 TO  Z91-CYU(2)
-               MOVE    WIDGET-INSENSITIVE  TO  Z91-CYU-STATE(1)
-               MOVE    WIDGET-INSENSITIVE  TO  Z91-CYU-STATE(2)  
+           IF      SPA-GMN-KEI(2)  =  "T"
+               MOVE    WIDGET-INSENSITIVE  TO  Z91-CYU1-STATE
            ELSE
-               MOVE    WIDGET-NORMAL       TO  Z91-CYU-STATE(1)
-               MOVE    WIDGET-NORMAL       TO  Z91-CYU-STATE(2)     
+               MOVE    WIDGET-NORMAL       TO  Z91-CYU1-STATE 
            END-IF      
+           IF      SPA-GMN-CYU(1)  =  "T"
+               MOVE    WIDGET-INSENSITIVE  TO  Z91-SYU4-STATE
+           ELSE
+               MOVE    WIDGET-NORMAL       TO  Z91-SYU4-STATE 
+           END-IF    
       *             
       *    カーソル位置
            PERFORM 5001-MAPCUR-SEC
@@ -2136,11 +2190,15 @@
                WHEN    25
                    MOVE    "CYU2"              TO  MCP-WIDGET
                WHEN    26
-                   MOVE    "SYU1"              TO  MCP-WIDGET
+                   MOVE    "CYU3"              TO  MCP-WIDGET
                WHEN    27
-                   MOVE    "SYU2"              TO  MCP-WIDGET
+                   MOVE    "SYU1"              TO  MCP-WIDGET
                WHEN    28
+                   MOVE    "SYU2"              TO  MCP-WIDGET
+               WHEN    29
                    MOVE    "SYU3"              TO  MCP-WIDGET
+               WHEN    30
+                   MOVE    "SYU4"              TO  MCP-WIDGET
       *----(01.01.01)--UPD-END-----
                WHEN    99
                    MOVE    "B12"               TO  MCP-WIDGET

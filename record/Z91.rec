@@ -85,7 +85,9 @@ Z91	{
 		};
 		CYU2	{
 			value	bool;
-			state   int;
+		};
+		CYU3	{
+			value	bool;
 		};
 		SYU1	{
 			value	bool;
@@ -95,6 +97,10 @@ Z91	{
 		};
 		SYU3	{
 			value	bool;
+		};
+		SYU4	{
+			value	bool;
+			state   int;
 		};
 	};
 };
