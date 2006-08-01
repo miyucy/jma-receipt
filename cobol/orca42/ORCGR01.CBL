@@ -92,6 +92,8 @@
       *  02.07.03    NACL-藤原    06/02/09  エラー時のカーソル位置の変更
       *
       *  02.08.01    NACL-藤原    06/02/20  主科対応
+      *
+      *  03.02.01    NACL-藤原    06/07/26  自賠責の枠印刷選択機能対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2542,12 +2544,20 @@
                                    NOT =  "S"
                    MOVE  "NOPG"    TO  SYS-2005-PREFPRGID (2)
            END-IF
-                   IF      SYS-2005-KKHRECEKBN =   SPACE
-                       MOVE    ZERO            TO  SYS-2005-KKHRECEKBN      
-                   END-IF
-                   IF      SYS-2005-SYARECEKBN =   SPACE
-                       MOVE    ZERO            TO  SYS-2005-SYARECEKBN      
-                   END-IF
+           IF      SYS-2005-KKHRECEKBN =   SPACE
+               MOVE    ZERO            TO  SYS-2005-KKHRECEKBN      
+           END-IF
+           IF      SYS-2005-SYARECEKBN =   SPACE
+               MOVE    ZERO            TO  SYS-2005-SYARECEKBN      
+           END-IF
+           IF      SYS-2005-FRAME-JIBAIPRTKBN
+                                       =   SPACE
+               MOVE    ZERO            TO  SYS-2005-FRAME-JIBAIPRTKBN
+           END-IF
+           IF      SYS-2005-FRAME-JIBAIPRTKBN-N
+                                       =   SPACE
+               MOVE    ZERO            TO  SYS-2005-FRAME-JIBAIPRTKBN-N
+           END-IF
       *
       *    作成日・時間の設定
            ACCEPT  SYS-YMD         FROM    DATE
@@ -2639,6 +2649,16 @@
                                        TO  SHELLTBL-ARG13
            END-IF
            MOVE    WRK-PREFNUM     TO  SHELLTBL-ARG14
+           EVALUATE    SPA-R01-RECEKBN
+               WHEN    "4"
+                   IF      SPA-R01-NYUGAIKBN   =   "1"
+                       MOVE    SYS-2005-FRAME-JIBAIPRTKBN-N
+                                                   TO  SHELLTBL-ARG15
+                   ELSE
+                       MOVE    SYS-2005-FRAME-JIBAIPRTKBN
+                                                   TO  SHELLTBL-ARG15
+                   END-IF
+           END-EVALUATE
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE

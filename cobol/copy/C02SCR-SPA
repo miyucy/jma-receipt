@@ -69,7 +69,10 @@
       *  03.00.01    NACL-藤原    06/06/19  C07,C08 レセコメント用エリア
       *                                     削除
       *  03.00.02    NACL-藤原    06/06/01  病名入力コードのアルファベッ
-      *                                     ト７文字対応正対応
+      *                                     ト７文字対応
+      *
+      *  03.02.01    NACL-藤原    06/07/31  自費による保険限定の病名の重複
+      *                                     を可能とする
       *****************************************************************
       *
        01  SPA-C02FREE.
@@ -266,6 +269,7 @@
                            11  SPA-NAI-C02-PTID            PIC 9(10).
                            11  SPA-NAI-C02-BIRTHDAY        PIC X(08).
                            11  SPA-NAI-C02-HKNCOMBI-ROUSAI PIC 9(01).
+                           11  SPA-NAI-C02-HKNCOMBI-JIHI   PIC 9(01).
                        09  SPA-NAI-C02-KOUMOKU.
                            11  SPA-NAI-C02-SRYYMD          PIC X(08).
                            11  SPA-NAI-C02-RENNUM          PIC 9(02).

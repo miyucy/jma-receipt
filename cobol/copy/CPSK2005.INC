@@ -53,6 +53,10 @@
       *                                     の追加
       *  3.0.0
       *  03.00.01    NACL-藤原    06/05/15  入退院履歴の記載区分の追加
+      *
+      *  03.02.01    NACL-藤原    06/07/11  労災・自賠責のプリンタ指定の追加
+      *  03.02.02    NACL-藤原    06/07/24  マル長の別総括対応
+      *  03.02.03    NACL-藤原    06/07/26  自賠責の枠印刷選択機能対応
       ************************************************************
        01  SYS-2005-REC.
            03  SYS-2005-KEY.
@@ -154,8 +158,37 @@
       *入退院履歴記載区分（入院外レセプトのみ）
                05  SYS-2005-NYUTAIINREKI-KSIKBN
                                         PIC  X(01).
+      *労災出力先プリンタ名
+               05  SYS-2005-ROUPRTNM    PIC  X(16).
+      *労災出力先プリンタ名（続紙）
+               05  SYS-2005-ROUPRTNM-NEXT
+                                        PIC  X(16).
+      *労災出力先プリンタ名（入院）
+               05  SYS-2005-ROUPRTNM-N  PIC  X(16).
+      *労災出力先プリンタ名（続紙）（入院）
+               05  SYS-2005-ROUPRTNM-NEXT-N
+                                        PIC  X(16).
+      *自賠責出力先プリンタ名
+               05  SYS-2005-JBAIPRTNM   PIC  X(16).
+      *自賠責出力先プリンタ名（続紙）
+               05  SYS-2005-JBAIPRTNM-NEXT
+                                        PIC  X(16).
+      *自賠責出力先プリンタ名（入院）
+               05  SYS-2005-JBAIPRTNM-N PIC  X(16).
+      *自賠責出力先プリンタ名（続紙）（入院）
+               05  SYS-2005-JBAIPRTNM-NEXT-N
+                                        PIC  X(16).
+      *枠記載区分（自賠責・入院外）
+               05  SYS-2005-FRAME-JIBAIPRTKBN
+                                        PIC  X(01).
+      *枠記載区分（自賠責・入院）
+               05  SYS-2005-FRAME-JIBAIPRTKBN-N
+                                        PIC  X(01).
+      *診療報酬請求書マル長分作成区分（社保）
+               05  SYS-2005-MARUCHO-SYAPRTKBN
+                                        PIC  X(01).
       *予備
-           03  FILLER                   PIC  X(133).
+           03  FILLER                   PIC  X(50).
       *端末ＩＤ
            03  SYS-2005-TERMID          PIC  X(16).
       *オペーレータＩＤ

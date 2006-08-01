@@ -80,6 +80,8 @@
       *  02.08.01    NACL-藤原    06/02/20  主科対応
       *
       *  03.00.01    NACL-藤原    06/05/29  印刷時のプリンター指定対応
+      *
+      *  03.02.02    NACL-藤原    06/07/24  マル長の別総括対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2377,6 +2379,12 @@
                WHEN    "F"             ALSO    "T"
                    MOVE    "2"             TO  SHELLTBL-ARG23
            END-EVALUATE
+           IF      SYS-2005-MARUCHO-SYAPRTKBN
+                                   =   "1"
+               MOVE    "1"             TO  SHELLTBL-ARG24
+           ELSE
+               MOVE    "0"             TO  SHELLTBL-ARG24
+           END-IF
       *
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC

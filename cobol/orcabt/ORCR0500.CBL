@@ -81,6 +81,13 @@
       *                                     HCN21V04.red
       *  03.00.01    NACL-太田    06/06/19  PRT-PRTDATAの項目長変更
       *                                     (10000->20000)
+      *
+      *  03.02.01    NACL-藤原    06/07/11  労災・自賠責のプリンタ指定対応
+      *                                     （入院外・入院別）
+      *  03.02.02    NACL-藤原    06/07/24  自賠責の枠印刷選択機能対応
+      *                                     HCM48.red
+      *                                     HCN48.red
+      *                                     HCM49.red
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -248,6 +255,8 @@
            COPY    "HCM29V02.INC".
            COPY    "HCM25.INC".
            COPY    "HCM26.INC".
+           COPY    "HCM48.INC".
+           COPY    "HCM49.INC".
       *
            COPY    "HCN23.INC".
            COPY    "HCN23V01.INC".
@@ -255,6 +264,7 @@
            COPY    "HCN23V03.INC".
            COPY    "HCN23V04.INC".
            COPY    "HCN25.INC".
+           COPY    "HCN48.INC".
       *
       *    ファイルデイレクトリ位置指定サブ
            COPY  "CPMKPASS.INC".
@@ -348,7 +358,7 @@
                                              WRK-PARA-RECE09-KEY
                                              WRK-PARA-TERMID64
                                              WRK-PARA-SYOKBN
-                                             WRK-PARA-PRTNM
+      ***************************************WRK-PARA-PRTNM
                                              LNK-PRTKANRI-RENNUM
                                              LNK-PRTKANRI-TBL-KEY
                                              LNK-PRTKANRI-TBL-GROUP
@@ -557,7 +567,7 @@
       * 
            MOVE    SPACE               TO  PRT-REC 
            MOVE    RECE08-FORMID       TO  PRT-PRTID
-           MOVE    WRK-PARA-PRTNM      TO  PRT-PRTNM
+           MOVE    RECE08-PRTNM        TO  PRT-PRTNM
       *
       *    オフセット
            PERFORM 2002-OFFSET-GET-SEC
@@ -791,6 +801,18 @@
                        MOVE    RECE08-PRTDATA      TO  HCN25
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCN25-RENNUM
                        MOVE    HCN25               TO  RECE08-PRTDATA
+                   WHEN    "HCM48.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCM48
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM48-RENNUM
+                       MOVE    HCM48               TO  RECE08-PRTDATA
+                   WHEN    "HCN48.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCN48
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCN48-RENNUM
+                       MOVE    HCN48               TO  RECE08-PRTDATA
+                   WHEN    "HCM49.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCM49
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM49-RENNUM
+                       MOVE    HCM49               TO  RECE08-PRTDATA
                END-EVALUATE
            END-IF            
            MOVE    RECE08-PRTDATA      TO  PRT-PRTDATA
@@ -932,9 +954,11 @@
                WHEN    "HCM23V02.red"  ALSO    ANY
                WHEN    "HCM23V03.red"  ALSO    ANY
                WHEN    "HCM23V04.red"  ALSO    ANY
+               WHEN    "HCM48.red"     ALSO    ANY
                WHEN    "HCM29.red"     ALSO    "2"
                WHEN    "HCM29V01.red"  ALSO    "2"
                WHEN    "HCM29V02.red"  ALSO    "2"
+               WHEN    "HCM49.red"     ALSO    "2"
                    MOVE    "自賠責（新様式）レセプト（入院外）"
                                                        TO  SPRT-TITLE
                WHEN    "HCM25.red"     ALSO    "2"
@@ -961,9 +985,11 @@
                WHEN    "HCN23V02.red"  ALSO    ANY
                WHEN    "HCN23V03.red"  ALSO    ANY
                WHEN    "HCN23V04.red"  ALSO    ANY
+               WHEN    "HCN48.red"     ALSO    ANY
                WHEN    "HCM29.red"     ALSO    "1"
                WHEN    "HCM29V01.red"  ALSO    "1"
                WHEN    "HCM29V02.red"  ALSO    "1"
+               WHEN    "HCM49.red"     ALSO    "1"
                    MOVE    "自賠責（新様式）レセプト（入院）"
                                                        TO  SPRT-TITLE
                WHEN    "HCN25.red"     ALSO    "1"
@@ -973,7 +999,7 @@
            END-EVALUATE
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
            MOVE    LNK-PRTKANRI-OPID   TO  SPRT-OPID
-           MOVE    WRK-PARA-PRTNM      TO  SPRT-PRTNM
+           MOVE    RECE08-PRTNM        TO  SPRT-PRTNM
            MOVE    "1"                 TO  SPRT-SITEKBN
            MOVE    "1"                 TO  SPRT-PRTFLG
            CALL    "ORCSPRT"           USING
@@ -997,6 +1023,7 @@
       *    出力順エリアのクリア
            MOVE    ZERO                 TO  RECE08-PRTJYUN
            MOVE    ZERO                 TO  RECE08-PRTRENNUM     
+           MOVE    SPACE                TO  RECE08-PRTNM
       *
            MOVE    RECE08-REC           TO  MCPDATA-REC
            MOVE    "RECEPRT-KEY"        TO  ORC-DBPATH

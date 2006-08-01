@@ -45,6 +45,10 @@
       *  02.09.01    NACL-藤原    06/04/13  ２００６年４月改正対応
       *                                     HCM2LV03.red → HCM2Y.red 
       *                                     MONFUNC対応
+      *
+      *  03.02.01    NACL-藤原    06/07/24  マル長の別総括対応
+      *                                     HCM2KV03.red → HCM2KV04.red
+      *                                     HCM2Y.red    → HCM2YV01.red 
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -74,14 +78,17 @@
       *****COPY    "HCM2K.INC".
       *****COPY    "HCM2KV01.INC"  REPLACING  //HCM2KV01//
       *****COPY    "HCM2KV02.INC"  REPLACING  //HCM2KV02//
-           COPY    "HCM2KV03.INC"  REPLACING  //HCM2KV03//
+      *****COPY    "HCM2KV03.INC"  REPLACING  //HCM2KV03//
+           COPY    "HCM2KV04.INC"  REPLACING  //HCM2KV04//
                                    BY         //HCM2K//.
       *****COPY    "HCM2L.INC".
       *****COPY    "HCM2LV01.INC"  REPLACING  //HCM2LV01//
       *****COPY    "HCM2LV02.INC"  REPLACING  //HCM2LV02//
       *****COPY    "HCM2LV03.INC"  REPLACING  //HCM2LV03//
       *****                        BY         //HCM2L//.
-           COPY    "HCM2Y.INC".
+      *****COPY    "HCM2Y.INC".
+           COPY    "HCM2YV01.INC"  REPLACING  //HCM2YV01//
+                                   BY         //HCM2Y//.
       *
       *    スパ領域
        01  STS-AREA.
@@ -269,6 +276,7 @@
            03  WRK-PARA-PAGE       PIC 9(10).
            03  WRK-PARA-NYUGAIKBN  PIC X(01).
            03  WRK-PARA-SYOKBN     PIC X(01).
+           03  WRK-PARA-MARUCHO    PIC X(01).
       *
        01  WRK-SYOKBN              PIC X(01).
       *
@@ -497,6 +505,12 @@
                    MOVE    "（返戻分）"  TO  HCM2K-TITLE1
            END-EVALUATE           
       *
+           EVALUATE    WRK-PARA-MARUCHO
+               WHEN    "2"
+                   MOVE    "◯"          TO  HCM2K-MARUCHO (1)
+                   MOVE    "長"          TO  HCM2K-MARUCHO (2)
+           END-EVALUATE           
+      *
            MOVE    SYS-1005-SRYKANAME    TO  HCM2K-SRYKA
            .
        310-HEAD-HEN-01-EXT.
@@ -534,6 +548,12 @@
            ELSE   
                MOVE    "食事回数"          TO  HCM2Y-TITLE2
            END-IF
+      *
+           EVALUATE    WRK-PARA-MARUCHO
+               WHEN    "2"
+                   MOVE    "◯"        TO  HCM2Y-MARUCHO (1)
+                   MOVE    "長"        TO  HCM2Y-MARUCHO (2)
+           END-EVALUATE           
       *
            MOVE    SYS-1005-SRYKANAME  TO  HCM2Y-SRYKA
       *
@@ -898,29 +918,49 @@
       *********MOVE    "HCM2K.red"         TO  SPRT-PRTID
       *********MOVE    "HCM2KV01.red"      TO  SPRT-PRTID
       *********MOVE    "HCM2KV02.red"      TO  SPRT-PRTID
-               MOVE    "HCM2KV03.red"      TO  SPRT-PRTID
+      *********MOVE    "HCM2KV03.red"      TO  SPRT-PRTID
+               MOVE    "HCM2KV04.red"      TO  SPRT-PRTID
                MOVE    HCM2K               TO  SPRT-PRTDATA
            ELSE                          
       *********MOVE    "HCM2L.red"         TO  SPRT-PRTID
       *********MOVE    "HCM2LV01.red"      TO  SPRT-PRTID
       *********MOVE    "HCM2LV02.red"      TO  SPRT-PRTID
       *********MOVE    "HCM2LV03.red"      TO  SPRT-PRTID
-               MOVE    "HCM2Y.red"         TO  SPRT-PRTID
+      *********MOVE    "HCM2Y.red"         TO  SPRT-PRTID
+               MOVE    "HCM2YV01.red"      TO  SPRT-PRTID
                MOVE    HCM2Y               TO  SPRT-PRTDATA
            END-IF    
-           EVALUATE    IDX1    ALSO    WRK-SYOKBN
-               WHEN    1       ALSO    "1"                            
-                   MOVE    "社保総括表"        TO  SPRT-TITLE
-               WHEN    2       ALSO    "1"                            
-                   MOVE    "社保総括表（在医総等）"
-                                               TO  SPRT-TITLE
-               WHEN    1       ALSO    "2"                            
-                   MOVE    "社保総括表［返戻分］"
-                                               TO  SPRT-TITLE
-               WHEN    2       ALSO    "2"                            
-                   MOVE    "社保総括表（在医総等）［返戻分］"
-                                               TO  SPRT-TITLE
-           END-EVALUATE        
+           IF      WRK-PARA-MARUCHO    =   "2"
+               EVALUATE    IDX1    ALSO    WRK-SYOKBN
+                   WHEN    1       ALSO    "1"                      
+                       MOVE    "マル長分　社保総括表"
+                                                   TO  SPRT-TITLE
+                   WHEN    2       ALSO    "1"                        
+                       MOVE    "マル長分　社保総括表（在医総等）"
+                                                   TO  SPRT-TITLE
+                   WHEN    1       ALSO    "2"                        
+                       MOVE    "マル長分　社保総括表［返戻分］"
+                                                   TO  SPRT-TITLE
+                   WHEN    2       ALSO    "2"                        
+                       MOVE
+                           "マル長分　社保総括表（在医総等）［返戻分］"
+                                                   TO  SPRT-TITLE
+               END-EVALUATE
+           ELSE
+               EVALUATE    IDX1    ALSO    WRK-SYOKBN
+                   WHEN    1       ALSO    "1"                      
+                       MOVE    "社保総括表"        TO  SPRT-TITLE
+                   WHEN    2       ALSO    "1"                        
+                       MOVE    "社保総括表（在医総等）"
+                                                   TO  SPRT-TITLE
+                   WHEN    1       ALSO    "2"                        
+                       MOVE    "社保総括表［返戻分］"
+                                                   TO  SPRT-TITLE
+                   WHEN    2       ALSO    "2"                        
+                       MOVE    "社保総括表（在医総等）［返戻分］"
+                                                   TO  SPRT-TITLE
+               END-EVALUATE
+           END-IF
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
            MOVE    LNK-PRTKANRI-OPID   TO  SPRT-OPID
            MOVE    LNK-PRTKANRI-PRTNM  TO  SPRT-PRTNM

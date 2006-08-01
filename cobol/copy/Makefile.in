@@ -1178,6 +1178,10 @@ COPYS = \
         HCM48.INC \
         HCN48.INC \
         HCM49.INC \
+	HCM2KV04.INC \
+	HCM2YV01.INC \
+	HCM2SV01.INC \
+	HCM2TV01.INC \
 
 
 DBPATH = \

@@ -54,6 +54,9 @@
       *  02.07.03    NACL-藤原    06/03/01  通勤災害の総件数集計の訂正
       *
       *  02.08.01    NACL-藤原    06/03/08  患者番号順の範囲指定を変更
+      *
+      *  03.02.01    NACL-藤原    06/07/11  労災・自賠責のプリンタ指定対応
+      *                                     （入院外・入院別）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -151,7 +154,17 @@
       *
                05  SPA-NAI-AREA.
                    07  SPA-NAI-WIDGET              PIC X(08). 
-                   07  SPA-NAI-1031-PRTNM          PIC X(16).
+      *************07  SPA-NAI-1031-PRTNM          PIC X(16).
+                   07  SPA-NAI-2005-ROUPRTNM       PIC X(16).
+                   07  SPA-NAI-2005-JBAIPRTNM      PIC X(16).
+                   07  SPA-NAI-2005-ROUPRTNM-NEXT  PIC X(16).
+                   07  SPA-NAI-2005-JBAIPRTNM-NEXT PIC X(16).
+                   07  SPA-NAI-2005-ROUPRTNM-N     PIC X(16).
+                   07  SPA-NAI-2005-JBAIPRTNM-N    PIC X(16).
+                   07  SPA-NAI-2005-ROUPRTNM-NEXT-N
+                                                   PIC X(16).
+                   07  SPA-NAI-2005-JBAIPRTNM-NEXT-N
+                                                   PIC X(16).
                    07  SPA-NAI-TBL.
                        09  SPA-NAI-TBL-G           OCCURS  25.
                            11  SPA-NAI-PRTJYUNI    PIC X(02).
@@ -286,6 +299,8 @@
            COPY    "CPSK2003.INC".
       *    レセプト作成指示（レセプト種別）情報
            COPY    "CPSK2004.INC".
+      *
+           COPY    "CPSK2005.INC".
       *
       *    出力先プリンタ名割り当て情報
            COPY    "CPSK1031.INC".
@@ -562,6 +577,52 @@
       *
            MOVE    SPA-GMN-PREFKBNLST(01)
                                          TO  SPA-GMN-PREFKBN-G
+      *     
+      *    レセプト編集区分情報
+           MOVE    SPACE            TO  SYS-2005-REC
+           INITIALIZE                   SYS-2005-REC
+           MOVE    "2005"           TO  SYS-2005-KANRICD
+           MOVE    "*"              TO  SYS-2005-KBNCD
+           MOVE    SPA-SYSYMD       TO  SYS-2005-STYUKYMD
+                                        SYS-2005-EDYUKYMD
+           MOVE    SYS-2005-REC        TO  MCPDATA-REC
+           PERFORM 900-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-2005-REC
+           ELSE    
+               MOVE    SPACE               TO  SYS-2005-REC
+               INITIALIZE                      SYS-2005-REC
+           END-IF    
+           MOVE    SYS-2005-ROUPRTNM   TO  SPA-NAI-2005-ROUPRTNM
+           MOVE    SYS-2005-JBAIPRTNM  TO  SPA-NAI-2005-JBAIPRTNM
+           MOVE    SYS-2005-ROUPRTNM-NEXT
+                                       TO  SPA-NAI-2005-ROUPRTNM-NEXT
+           MOVE    SYS-2005-JBAIPRTNM-NEXT
+                                       TO  SPA-NAI-2005-JBAIPRTNM-NEXT
+           IF      SYS-2005-ROUPRTNM-N =   SPACE
+               MOVE   SYS-2005-ROUPRTNM    TO  SYS-2005-ROUPRTNM-N
+           END-IF
+           IF      SYS-2005-JBAIPRTNM-N
+                                       =   SPACE
+               MOVE   SYS-2005-JBAIPRTNM   TO  SYS-2005-JBAIPRTNM-N
+           END-IF
+           IF      SYS-2005-ROUPRTNM-NEXT-N
+                                       =   SPACE
+               MOVE   SYS-2005-ROUPRTNM-NEXT
+                                           TO  SYS-2005-ROUPRTNM-NEXT-N
+           END-IF
+           IF      SYS-2005-JBAIPRTNM-NEXT-N
+                                       =   SPACE
+               MOVE   SYS-2005-JBAIPRTNM-NEXT
+                                           TO  SYS-2005-JBAIPRTNM-NEXT-N
+           END-IF
+           MOVE    SYS-2005-ROUPRTNM-N TO  SPA-NAI-2005-ROUPRTNM-N
+           MOVE    SYS-2005-JBAIPRTNM-N
+                                       TO  SPA-NAI-2005-JBAIPRTNM-N
+           MOVE    SYS-2005-ROUPRTNM-NEXT-N
+                                       TO  SPA-NAI-2005-ROUPRTNM-NEXT-N
+           MOVE    SYS-2005-JBAIPRTNM-NEXT-N
+                                       TO  SPA-NAI-2005-JBAIPRTNM-NEXT-N
       *
       *    出力先プリンタ名割り当て情報編集
            MOVE    SPACE               TO  SYS-1031-REC
@@ -578,7 +639,46 @@
                INITIALIZE                  SYS-1031-REC
            END-IF                                     
       *
-           MOVE    SYS-1031-PRTNM (4)  TO  SPA-NAI-1031-PRTNM
+      *    労災印刷先
+           IF      SPA-NAI-2005-ROUPRTNM
+                                       =   SPACE
+               MOVE    SYS-1031-PRTNM (4)  TO  SPA-NAI-2005-ROUPRTNM
+           END-IF                                              
+           IF      SPA-NAI-2005-ROUPRTNM-N
+                                       =   SPACE
+               MOVE    SYS-1031-PRTNM (4)  TO  SPA-NAI-2005-ROUPRTNM-N
+           END-IF                                              
+      *    自賠責印刷先
+           IF      SPA-NAI-2005-JBAIPRTNM
+                                       =   SPACE
+               MOVE    SYS-1031-PRTNM (4)  TO  SPA-NAI-2005-JBAIPRTNM
+           END-IF                                              
+           IF      SPA-NAI-2005-JBAIPRTNM-N
+                                       =   SPACE
+               MOVE    SYS-1031-PRTNM (4)  TO  SPA-NAI-2005-JBAIPRTNM-N
+           END-IF                                              
+      *    労災印刷先（続紙）
+           IF      SPA-NAI-2005-ROUPRTNM-NEXT
+                                       =   SPACE
+               MOVE    SYS-1031-PRTNM (4)  TO
+                                           SPA-NAI-2005-ROUPRTNM-NEXT
+           END-IF                                              
+           IF      SPA-NAI-2005-ROUPRTNM-NEXT-N
+                                       =   SPACE
+               MOVE    SYS-1031-PRTNM (4)  TO
+                                           SPA-NAI-2005-ROUPRTNM-NEXT-N
+           END-IF                                              
+      *    自賠責印刷先（続紙）
+           IF      SPA-NAI-2005-JBAIPRTNM-NEXT
+                                       =   SPACE
+               MOVE    SYS-1031-PRTNM (4)  TO
+                                           SPA-NAI-2005-JBAIPRTNM-NEXT
+           END-IF                                              
+           IF      SPA-NAI-2005-JBAIPRTNM-NEXT-N
+                                       =   SPACE
+               MOVE    SYS-1031-PRTNM (4)  TO
+                                           SPA-NAI-2005-JBAIPRTNM-NEXT-N
+           END-IF
       *
            PERFORM 3101-PAGE-HENSYU-03-SEC     
       *
@@ -1443,8 +1543,8 @@
            MOVE    RECEERR             TO  SHELLTBL-ARG6
            MOVE    WRK-RECE09-KEY      TO  SHELLTBL-ARG7 
            MOVE    SPA-TERMID          TO  SHELLTBL-ARG8
-           MOVE    SPA-NAI-1031-PRTNM
-                                   TO  SHELLTBL-ARG11
+      *****MOVE    SPA-NAI-1031-PRTNM
+      *****                        TO  SHELLTBL-ARG11
       *                                 
            MOVE    SPACE           TO  LNK-PRTKANRI-AREA
            INITIALIZE                  LNK-PRTKANRI-AREA
@@ -1658,6 +1758,35 @@
            MOVE    WRK-RECE09-STDATA   TO  SHELLTBL-ARG8
            MOVE    WRK-RECE09-EDDATA   TO  SHELLTBL-ARG9
            MOVE    WRK-RECE08-PRTJYUN  TO  SHELLTBL-ARG10
+           IF      SPA-R01-RECE07-NYUGAIKBN    =   "1"
+               EVALUATE    SPA-R01-RECE07-RECEKBN
+                   WHEN    "3"
+                       MOVE    SPA-NAI-2005-ROUPRTNM-N
+                                               TO  SHELLTBL-ARG11
+                       MOVE    SPA-NAI-2005-ROUPRTNM-NEXT-N
+                                               TO  SHELLTBL-ARG24
+                   WHEN    "4"
+                   WHEN    "5"
+                       MOVE    SPA-NAI-2005-JBAIPRTNM-N
+                                               TO  SHELLTBL-ARG11
+                       MOVE    SPA-NAI-2005-JBAIPRTNM-NEXT-N
+                                               TO  SHELLTBL-ARG24
+               END-EVALUATE
+           ELSE
+               EVALUATE    SPA-R01-RECE07-RECEKBN
+                   WHEN    "3"
+                       MOVE    SPA-NAI-2005-ROUPRTNM
+                                               TO  SHELLTBL-ARG11
+                       MOVE    SPA-NAI-2005-ROUPRTNM-NEXT
+                                               TO  SHELLTBL-ARG24
+                   WHEN    "4"
+                   WHEN    "5"
+                       MOVE    SPA-NAI-2005-JBAIPRTNM
+                                               TO  SHELLTBL-ARG11
+                       MOVE    SPA-NAI-2005-JBAIPRTNM-NEXT
+                                               TO  SHELLTBL-ARG24
+               END-EVALUATE
+           END-IF
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE

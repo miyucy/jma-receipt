@@ -71,6 +71,11 @@
       *  3.0.0
       *  03.00.01    NACL-藤原    06/05/15  入退院履歴の記載区分の追加
       *                                     （入院外レセプトのみ）
+      *
+      *  03.02.01    NACL-藤原    06/07/11  労災・自賠責のプリンタ指定対応
+      *                                     （入院外・入院別）
+      *  03.02.02    NACL-藤原    06/07/24  マル長の別総括対応
+      *  03.02.03    NACL-藤原    06/07/26  自賠責の枠印刷選択機能対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -236,6 +241,32 @@
                            11  SPA-GMN-F1     PIC X(01).
                            11  SPA-GMN-AUTODSPKBNMEI
                                               PIC X(18).
+      *
+                       09  SPA-GMN-FRAME-JIBAIPRTKBN-G.
+                           11  SPA-GMN-FRAME-JIBAIPRTKBN
+                                              PIC X(01).
+                           11  SPA-GMN-F1     PIC X(01).
+                           11  SPA-GMN-FRAME-JIBAIPRTKBNMEI
+                                              PIC X(20).
+                       09  SPA-GMN-FRAME-JIBAIPRTKBN-N-G.
+                           11  SPA-GMN-FRAME-JIBAIPRTKBN-N
+                                              PIC X(01).
+                           11  SPA-GMN-F1     PIC X(01).
+                           11  SPA-GMN-FRAME-JIBAIPRTKBN-NMEI
+                                              PIC X(20).
+                       09  SPA-GMN-ROUPRTNM   PIC X(16).              
+                       09  SPA-GMN-JBAIPRTNM  PIC X(16).              
+                       09  SPA-GMN-ROUPRTNM-NEXT
+                                              PIC X(16).              
+                       09  SPA-GMN-JBAIPRTNM-NEXT
+                                              PIC X(16).              
+                       09  SPA-GMN-ROUPRTNM-N PIC X(16).              
+                       09  SPA-GMN-JBAIPRTNM-N
+                                              PIC X(16).              
+                       09  SPA-GMN-ROUPRTNM-NEXT-N
+                                              PIC X(16).              
+                       09  SPA-GMN-JBAIPRTNM-NEXT-N
+                                              PIC X(16).              
       *                                        
                        09  SPA-GMN-MOJI-KISAIKBN-G.
                            11  SPA-GMN-MOJI-KISAIKBN
@@ -262,6 +293,12 @@
                            11  SPA-GMN-F1     PIC X(01).
                            11  SPA-GMN-KKHPRTKBNMEI
                                               PIC X(18).
+                       09  SPA-GMN-SYAPRTKBN-G.
+                           11  SPA-GMN-SYAPRTKBN
+                                              PIC X(01).
+                           11  SPA-GMN-F1     PIC X(01).
+                           11  SPA-GMN-SYAPRTKBNMEI
+                                              PIC X(22).
       *
                        09  SPA-GMN-PREFKBN-PRTJYUN-G.
                            11  SPA-GMN-PREFKBN-PRTJYUN
@@ -419,6 +456,13 @@
                        09  SPA-GMN-KKHPRTKBNMEIL
                                               PIC X(18).
                    07  SPA-GMN-KKHPRTKBN-MAX  PIC 9(02).    
+      *                                        
+                   07  SPA-GMN-SYAPRTKBNLST           OCCURS  2.
+                       09  SPA-GMN-SYAPRTKBNL PIC X(01).
+                       09  SPA-GMN-F1L        PIC X(01).
+                       09  SPA-GMN-SYAPRTKBNMEIL
+                                              PIC X(22).
+                   07  SPA-GMN-SYAPRTKBN-MAX  PIC 9(02).    
       *                                        
                    07  SPA-GMN-RENNUMHENKBNLST        OCCURS  3.
                        09  SPA-GMN-RENNUMHENKBNL
@@ -633,6 +677,22 @@
                        09  SPA-GMN-SYUKA-MODEMEIL
                                               PIC X(20).
                    07  SPA-GMN-SYUKA-MODE-MAX PIC 9(02).   
+      * 
+                   07  SPA-GMN-FRAME-JIBAIPRTKBNLST  OCCURS  2.
+                       09  SPA-GMN-FRAME-JIBAIPRTKBNL
+                                              PIC X(01).
+                       09  SPA-GMN-F1L        PIC X(01).
+                       09  SPA-GMN-FRAME-JIBAIPRTKBNMEIL
+                                              PIC X(20).
+                   07  SPA-GMN-FRAME-JIBAIPRTKBN-MAX PIC 9(02).   
+      * 
+                   07  SPA-GMN-FRAME-JIBAIPRTKBN-NLST  OCCURS  2.
+                       09  SPA-GMN-FRAME-JIBAIPRTKBN-NL
+                                              PIC X(01).
+                       09  SPA-GMN-F1L        PIC X(01).
+                       09  SPA-GMN-FRAME-JIBAIPRTKBN-NMEIL
+                                              PIC X(20).
+                   07  SPA-GMN-FRAME-JIBAIPRTKBN-N-MAX PIC 9(02).   
       *
                05  SPA-NAIB-AREA.
                    07  SPA-NAI-STYUKYMD       PIC 9(08).
@@ -644,6 +704,7 @@
       *
                05  SPA-1001-PREFNUM           PIC 9(02). 
                05  SPA-1001-HOSPSBT1          PIC 9(01). 
+               05  SPA-W12-PAGENO             PIC S9(9)   BINARY.
       *
            COPY    "ENUM-VALUE".
       *
@@ -1023,6 +1084,14 @@
                                        TO  SPA-GMN-KKHPRTKBNMEIL (2)
            MOVE    2                   TO  SPA-GMN-KKHPRTKBN-MAX 
       *     
+           MOVE    "0"                 TO  SPA-GMN-SYAPRTKBNL    (1)
+           MOVE    "マル長分を別作成しない"
+                                       TO  SPA-GMN-SYAPRTKBNMEIL (1)
+           MOVE    "1"                 TO  SPA-GMN-SYAPRTKBNL    (2)
+           MOVE    "マル長分を別作成する"
+                                       TO  SPA-GMN-SYAPRTKBNMEIL (2)
+           MOVE    2                   TO  SPA-GMN-SYAPRTKBN-MAX 
+      *     
            MOVE    "0"                 TO  SPA-GMN-RENNUMHENKBNL    (1)
            MOVE    "通し番号を表示しない"
                                        TO  SPA-GMN-RENNUMHENKBNMEIL (1)
@@ -1280,6 +1349,22 @@
            MOVE    "一括バッチ"    TO  SPA-GMN-SYUKA-MODEMEIL  (2)
            MOVE    2               TO  SPA-GMN-SYUKA-MODE-MAX 
       *
+           MOVE    "0"             TO  SPA-GMN-FRAME-JIBAIPRTKBNL    (1)
+           MOVE    "枠を記載しない"
+                                   TO  SPA-GMN-FRAME-JIBAIPRTKBNMEIL (1)
+           MOVE    "1"             TO  SPA-GMN-FRAME-JIBAIPRTKBNL    (2)
+           MOVE    "枠を記載する"  TO  SPA-GMN-FRAME-JIBAIPRTKBNMEIL (2)
+           MOVE    2               TO  SPA-GMN-FRAME-JIBAIPRTKBN-MAX 
+      *
+           MOVE    "0"             TO  SPA-GMN-FRAME-JIBAIPRTKBN-NL  (1)
+           MOVE    "枠を記載しない"
+                                   TO
+                                   SPA-GMN-FRAME-JIBAIPRTKBN-NMEIL   (1)
+           MOVE    "1"             TO  SPA-GMN-FRAME-JIBAIPRTKBN-NL  (2)
+           MOVE    "枠を記載する"  TO
+                                   SPA-GMN-FRAME-JIBAIPRTKBN-NMEIL   (2)
+           MOVE    2               TO  SPA-GMN-FRAME-JIBAIPRTKBN-N-MAX 
+      *
       *       医療機関情報
            MOVE    SPACE               TO  SYS-1001-REC
            INITIALIZE                      SYS-1001-REC
@@ -1463,6 +1548,18 @@
                    END-IF                                     
                END-PERFORM
       *
+               MOVE    SYS-2005-MARUCHO-SYAPRTKBN  TO  SPA-GMN-SYAPRTKBN
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       SPA-GMN-SYAPRTKBN-MAX
+                   IF      SPA-GMN-SYAPRTKBN 
+                                   =   SPA-GMN-SYAPRTKBNL (IDY)
+                       MOVE    SPA-GMN-SYAPRTKBNLST (IDY)
+                                           TO  SPA-GMN-SYAPRTKBN-G
+                       MOVE    SPA-GMN-SYAPRTKBN-MAX
+                                           TO  IDY
+                   END-IF                                     
+               END-PERFORM
+      *
                MOVE    SYS-2005-SYAPRTNM   TO  SPA-GMN-SYAPRTNM         
                MOVE    SYS-2005-SYAPRTNM-NEXT
                                            TO  SPA-GMN-SYAPRTNM-NEXT
@@ -1477,6 +1574,22 @@
                MOVE    SYS-2005-KKHPRTNM-N TO  SPA-GMN-KKHPRTNM-N
                MOVE    SYS-2005-KKHPRTNM-NEXT-N
                                            TO  SPA-GMN-KKHPRTNM-NEXT-N
+      *
+               MOVE    SYS-2005-ROUPRTNM   TO  SPA-GMN-ROUPRTNM         
+               MOVE    SYS-2005-ROUPRTNM-NEXT
+                                           TO  SPA-GMN-ROUPRTNM-NEXT
+      *
+               MOVE    SYS-2005-JBAIPRTNM  TO  SPA-GMN-JBAIPRTNM         
+               MOVE    SYS-2005-JBAIPRTNM-NEXT
+                                           TO  SPA-GMN-JBAIPRTNM-NEXT
+               MOVE    SYS-2005-ROUPRTNM-N TO  SPA-GMN-ROUPRTNM-N
+               MOVE    SYS-2005-ROUPRTNM-NEXT-N
+                                           TO  SPA-GMN-ROUPRTNM-NEXT-N
+      *
+               MOVE    SYS-2005-JBAIPRTNM-N
+                                           TO  SPA-GMN-JBAIPRTNM-N
+               MOVE    SYS-2005-JBAIPRTNM-NEXT-N
+                                           TO  SPA-GMN-JBAIPRTNM-NEXT-N
       *         
                MOVE    SYS-2005-RENNUMHENKBN 
                                            TO  SPA-GMN-RENNUMHENKBN
@@ -1661,6 +1774,35 @@
                                            SPA-GMN-NI-JYOKEN3
                MOVE    SYS-2005-NI-JYOKEN (4) TO
                                            SPA-GMN-NI-JYOKEN4
+      *
+               MOVE    SYS-2005-FRAME-JIBAIPRTKBN
+                                           TO  SPA-GMN-FRAME-JIBAIPRTKBN
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >   SPA-GMN-FRAME-JIBAIPRTKBN-MAX
+                   IF      SPA-GMN-FRAME-JIBAIPRTKBN
+                               =   SPA-GMN-FRAME-JIBAIPRTKBNL (IDY)
+                       MOVE    SPA-GMN-FRAME-JIBAIPRTKBNLST (IDY)
+                                           TO
+                                           SPA-GMN-FRAME-JIBAIPRTKBN-G
+                       MOVE    SPA-GMN-FRAME-JIBAIPRTKBN-MAX
+                                           TO  IDY
+                   END-IF
+               END-PERFORM
+      *
+               MOVE    SYS-2005-FRAME-JIBAIPRTKBN-N
+                                           TO
+                                           SPA-GMN-FRAME-JIBAIPRTKBN-N
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >   SPA-GMN-FRAME-JIBAIPRTKBN-N-MAX
+                   IF      SPA-GMN-FRAME-JIBAIPRTKBN-N
+                               =   SPA-GMN-FRAME-JIBAIPRTKBN-NL (IDY)
+                       MOVE    SPA-GMN-FRAME-JIBAIPRTKBN-NLST (IDY)
+                                           TO
+                                           SPA-GMN-FRAME-JIBAIPRTKBN-N-G
+                       MOVE    SPA-GMN-FRAME-JIBAIPRTKBN-N-MAX
+                                           TO  IDY
+                   END-IF
+               END-PERFORM
            END-IF
       *
       *    レセプト（編綴順）情報
@@ -1994,6 +2136,7 @@
                WHEN    "CLICKED"       ALSO    "N04"
                WHEN    "CLICKED"       ALSO    "N05"
                WHEN    "CLICKED"       ALSO    "N06"
+               WHEN    "CLICKED"       ALSO    "N07"
                    PERFORM 440-TAG-CHANGE-SEC
            END-EVALUATE
       *
@@ -2046,6 +2189,7 @@
            MOVE    W12-PREFPRGID       TO  SPA-GMN-PREFPRGID
            MOVE    W12-PREFPRGID1      TO  SPA-GMN-PREFPRGID1
            MOVE    W12-KKHPRTKBN       TO  SPA-GMN-KKHPRTKBN-G 
+           MOVE    W12-SYAPRTKBN       TO  SPA-GMN-SYAPRTKBN-G 
            MOVE    W12-BYOMEIHENKBN1   TO  SPA-GMN-BYOMEIHENKBN1-G 
            MOVE    W12-SYUBYOHENFLG    TO  SPA-GMN-SYUBYOHENFLG-G 
            MOVE    W12-TENKIHENKBN     TO  SPA-GMN-TENKIHENKBN-G 
@@ -2068,6 +2212,18 @@
            MOVE    W12-PRTJYUNKBN1     TO  SPA-GMN-PRTJYUN1-G
            MOVE    W12-PRTJYUNKBN2     TO  SPA-GMN-PRTJYUN2-G
            MOVE    W12-PRTJYUNKBN3     TO  SPA-GMN-PRTJYUN3-G
+      *
+           MOVE    W12-FRAME-JIBAI     TO  SPA-GMN-FRAME-JIBAIPRTKBN-G
+           MOVE    W12-FRAME-JIBAI-N   TO  SPA-GMN-FRAME-JIBAIPRTKBN-N-G
+           MOVE    W12-ROUPRTNM        TO  SPA-GMN-ROUPRTNM
+           MOVE    W12-JBAIPRTNM       TO  SPA-GMN-JBAIPRTNM
+           MOVE    W12-ROUPRTNM-NEXT   TO  SPA-GMN-ROUPRTNM-NEXT
+           MOVE    W12-JBAIPRTNM-NEXT  TO  SPA-GMN-JBAIPRTNM-NEXT
+           MOVE    W12-ROUPRTNM-N      TO  SPA-GMN-ROUPRTNM-N
+           MOVE    W12-JBAIPRTNM-N     TO  SPA-GMN-JBAIPRTNM-N
+           MOVE    W12-ROUPRTNM-NEXT-N TO  SPA-GMN-ROUPRTNM-NEXT-N
+           MOVE    W12-JBAIPRTNM-NEXT-N
+                                       TO  SPA-GMN-JBAIPRTNM-NEXT-N
       *
            MOVE    W12-MOJI-KISAIKBN   TO  SPA-GMN-MOJI-KISAIKBN-G
            MOVE    W12-KYURATE-KISAIKBN
@@ -2136,7 +2292,27 @@
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
       *
+           PERFORM 4111-RENNUMHEKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
            PERFORM 4144-NYUTAIINREKI-KSIKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4121-SRYKAHENKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4117-RJNGNBKKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4118-JIHITEKKSIKBN-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
@@ -2147,11 +2323,6 @@
            END-IF
       *
            PERFORM 4112-PREFPRGID1-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
-           END-IF
-      *
-           PERFORM 4109-SYAPRTNM-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
@@ -2176,32 +2347,12 @@
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
       *
-           PERFORM 4111-RENNUMHEKBN-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
-           END-IF
-      *
-           PERFORM 4113-NEXTPRTKBN-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
-           END-IF
-      *
            PERFORM 4114-NEXTPRTKBN1-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
       *
-           PERFORM 4117-RJNGNBKKBN-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
-           END-IF
-      *
-           PERFORM 4118-JIHITEKKSIKBN-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
-           END-IF
-      *
-           PERFORM 4121-SRYKAHENKBN-CHK-SEC
+           PERFORM 4113-NEXTPRTKBN-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
@@ -2225,6 +2376,18 @@
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
+      *
+      *
+           PERFORM 4146-FRAME-JIBAIPRTKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4147-FRAME-JIBAIPRTKBN-N-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
       *
            PERFORM 4102-SYARECEKBN-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
@@ -2316,10 +2479,16 @@
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
       *
+           PERFORM 4145-SYAPRTKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
            PERFORM 4105-KKHPRTKBN-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
+      *
            PERFORM 4135-SYUKA-KBN-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
@@ -3548,6 +3717,93 @@
            EXIT.
       *
       *****************************************************************
+      *    診療報酬請求書マル長分作成区分（社保）チェック
+      *****************************************************************
+       4145-SYAPRTKBN-CHK-SEC       SECTION.
+      *
+           IF      SPA-GMN-SYAPRTKBN   =   SPACE
+               CONTINUE         
+           ELSE
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       SPA-GMN-SYAPRTKBN-MAX
+                   IF      SPA-GMN-SYAPRTKBN
+                                   =   SPA-GMN-SYAPRTKBNL (IDY)
+                       MOVE    SPA-GMN-SYAPRTKBNLST (IDY)
+                                           TO  SPA-GMN-SYAPRTKBN-G
+                       MOVE    SPA-GMN-SYAPRTKBN-MAX
+                                           TO  IDY
+                   END-IF                                     
+               END-PERFORM
+      *     
+               IF      SPA-GMN-SYAPRTKBNMEI    =   SPACE
+                   MOVE    150                 TO  SPA-GMN-CUR
+                   MOVE    "0036"              TO  SPA-ERRCD
+               END-IF
+           END-IF     
+      *
+           .
+       4145-SYAPRTKBN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    枠記載区分（自賠責・入院外）チェック
+      *****************************************************************
+       4146-FRAME-JIBAIPRTKBN-CHK-SEC  SECTION.
+      *
+           IF      SPA-GMN-FRAME-JIBAIPRTKBN   =   SPACE
+               CONTINUE         
+           ELSE
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       SPA-GMN-FRAME-JIBAIPRTKBN-MAX
+                   IF      SPA-GMN-FRAME-JIBAIPRTKBN
+                                   =   SPA-GMN-FRAME-JIBAIPRTKBNL (IDY)
+                       MOVE    SPA-GMN-FRAME-JIBAIPRTKBNLST (IDY)
+                                       TO  SPA-GMN-FRAME-JIBAIPRTKBN-G
+                       MOVE    SPA-GMN-FRAME-JIBAIPRTKBN-MAX
+                                       TO  IDY
+                   END-IF                                     
+               END-PERFORM
+      *     
+               IF      SPA-GMN-FRAME-JIBAIPRTKBNMEI    =   SPACE
+                   MOVE    200                 TO  SPA-GMN-CUR
+                   MOVE    "0037"              TO  SPA-ERRCD
+               END-IF
+           END-IF     
+      *
+           .
+       4146-FRAME-JIBAIPRTKBN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    枠記載区分（自賠責・入院）チェック
+      *****************************************************************
+       4147-FRAME-JIBAIPRTKBN-N-CHK-SEC  SECTION.
+      *
+           IF      SPA-GMN-FRAME-JIBAIPRTKBN-N   =   SPACE
+               CONTINUE         
+           ELSE
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >   SPA-GMN-FRAME-JIBAIPRTKBN-N-MAX
+                   IF      SPA-GMN-FRAME-JIBAIPRTKBN-N
+                                   =   SPA-GMN-FRAME-JIBAIPRTKBN-NL(IDY)
+                       MOVE    SPA-GMN-FRAME-JIBAIPRTKBN-NLST (IDY)
+                                       TO  SPA-GMN-FRAME-JIBAIPRTKBN-N-G
+                       MOVE    SPA-GMN-FRAME-JIBAIPRTKBN-N-MAX
+                                       TO  IDY
+                   END-IF                                     
+               END-PERFORM
+      *     
+               IF      SPA-GMN-FRAME-JIBAIPRTKBN-NMEI    =   SPACE
+                   MOVE    201                 TO  SPA-GMN-CUR
+                   MOVE    "0038"              TO  SPA-ERRCD
+               END-IF
+           END-IF     
+      *
+           .
+       4147-FRAME-JIBAIPRTKBN-N-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    タグ編集処理
       *****************************************************************
        440-TAG-CHANGE-SEC            SECTION.
@@ -3555,16 +3811,18 @@
            EVALUATE    MCP-WIDGET
                WHEN    "N01"
                    MOVE   0            TO  IDX
-               WHEN    "N06"
+               WHEN    "N07"
                   MOVE    1            TO  IDX
-               WHEN    "N04"
+               WHEN    "N06"
                   MOVE    2            TO  IDX
-               WHEN    "N02"
+               WHEN    "N04"
                   MOVE    3            TO  IDX
-               WHEN    "N03"
+               WHEN    "N02"
                   MOVE    4            TO  IDX
-               WHEN    "N05"
+               WHEN    "N03"
                   MOVE    5            TO  IDX
+               WHEN    "N05"
+                  MOVE    6            TO  IDX
            END-EVALUATE
       *
       *    タグが変わったとき項目チェック
@@ -3582,14 +3840,16 @@
                            WHEN    0
                                MOVE    1            TO  SPA-GMN-CUR
                            WHEN    1
-                               MOVE    100          TO  SPA-GMN-CUR
+                               MOVE    200          TO  SPA-GMN-CUR
                            WHEN    2
-                               MOVE    70           TO  SPA-GMN-CUR
+                               MOVE    100          TO  SPA-GMN-CUR
                            WHEN    3
-                               MOVE    50           TO  SPA-GMN-CUR
+                               MOVE    70           TO  SPA-GMN-CUR
                            WHEN    4
-                               MOVE    11           TO  SPA-GMN-CUR
+                               MOVE    50           TO  SPA-GMN-CUR
                            WHEN    5
+                               MOVE    150          TO  SPA-GMN-CUR
+                           WHEN    6
                                MOVE    90           TO  SPA-GMN-CUR
                        END-EVALUATE
                    END-IF
@@ -3677,6 +3937,8 @@
            MOVE    SPA-GMN-NYUTAIINREKI-KSIKBN
                                            TO
                                            SYS-2005-NYUTAIINREKI-KSIKBN
+           MOVE    SPA-GMN-SYAPRTKBN       TO
+                                           SYS-2005-MARUCHO-SYAPRTKBN
            MOVE    SPA-GMN-KKHPRTKBN       TO  SYS-2005-KKHPRTKBN
            MOVE    SPA-GMN-PREFPRGID       TO  SYS-2005-PREFPRGID (1)
            MOVE    SPA-GMN-PREFPRGID1      TO  SYS-2005-PREFPRGID (2)
@@ -3695,6 +3957,19 @@
            MOVE    SPA-GMN-KKHPRTNM-N      TO  SYS-2005-KKHPRTNM-N
            MOVE    SPA-GMN-SYAPRTNM-NEXT-N TO  SYS-2005-SYAPRTNM-NEXT-N
            MOVE    SPA-GMN-KKHPRTNM-NEXT-N TO  SYS-2005-KKHPRTNM-NEXT-N
+           MOVE    SPA-GMN-ROUPRTNM        TO  SYS-2005-ROUPRTNM
+           MOVE    SPA-GMN-JBAIPRTNM       TO  SYS-2005-JBAIPRTNM
+           MOVE    SPA-GMN-ROUPRTNM-NEXT   TO  SYS-2005-ROUPRTNM-NEXT
+           MOVE    SPA-GMN-JBAIPRTNM-NEXT  TO  SYS-2005-JBAIPRTNM-NEXT
+           MOVE    SPA-GMN-ROUPRTNM-N      TO  SYS-2005-ROUPRTNM-N
+           MOVE    SPA-GMN-JBAIPRTNM-N     TO  SYS-2005-JBAIPRTNM-N
+           MOVE    SPA-GMN-ROUPRTNM-NEXT-N TO  SYS-2005-ROUPRTNM-NEXT-N
+           MOVE    SPA-GMN-FRAME-JIBAIPRTKBN
+                                           TO
+                                           SYS-2005-FRAME-JIBAIPRTKBN
+           MOVE    SPA-GMN-FRAME-JIBAIPRTKBN-N
+                                           TO
+                                           SYS-2005-FRAME-JIBAIPRTKBN-N
            MOVE    SPA-GMN-AUTODSPKBN      TO  SYS-2005-AUTODSPKBN
            MOVE    SPA-GMN-PRTJYUN1        TO  SYS-2005-PRTJYUNKBN1
            MOVE    SPA-GMN-PRTJYUN2        TO  SYS-2005-PRTJYUNKBN2
@@ -4041,6 +4316,8 @@
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
+           INITIALIZE                       W12
+      *
            MOVE    SPA-GMN-HSTYUKYMD        TO  W12-YUKOSTYMD
            MOVE    SPA-GMN-HEDYUKYMD        TO  W12-YUKOEDYMD
       *
@@ -4054,6 +4331,7 @@
            MOVE    SPA-GMN-KKHOCRKBN-G      TO  W12-KKHOCRKBN
            MOVE    SPA-GMN-NYUTAIINREKI-KSIKBN-G
                                             TO  W12-NYUTAIINREKI
+           MOVE    SPA-GMN-SYAPRTKBN-G      TO  W12-SYAPRTKBN
            MOVE    SPA-GMN-KKHPRTKBN-G      TO  W12-KKHPRTKBN
            MOVE    SPA-GMN-RENNUMHENKBN-G   TO  W12-RENNUMHENKBN
            MOVE    SPA-GMN-NEXTPRTKBN-G     TO  W12-NEXTPRTKBN
@@ -4172,6 +4450,14 @@
            MOVE    SPA-GMN-PREFPRGID1  TO  W12-PREFPRGID1
       *     
            PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       SPA-GMN-SYAPRTKBN-MAX
+               MOVE    SPA-GMN-SYAPRTKBNLST (IDY)
+                                       TO  W12-SYAPRTKBNLST (IDY)
+           END-PERFORM
+           MOVE    SPA-GMN-SYAPRTKBN-MAX
+                                       TO  W12-SYAPRTKBN-COUNT 
+      *     
+           PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >       SPA-GMN-KKHPRTKBN-MAX
                MOVE    SPA-GMN-KKHPRTKBNLST (IDY)
                                        TO  W12-KKHPRTKBNLST (IDY)
@@ -4254,6 +4540,32 @@
       *
            MOVE    SPA-GMN-KKHPRTNM-NEXT-N
                                        TO  W12-KKHPRTNM-NEXT-N
+      *
+           MOVE    SPA-GMN-ROUPRTNM    TO  W12-ROUPRTNM
+      *
+           MOVE    SPA-GMN-ROUPRTNM-NEXT
+                                       TO  W12-ROUPRTNM-NEXT
+      *
+           MOVE    SPA-GMN-JBAIPRTNM   TO  W12-JBAIPRTNM 
+      *
+           MOVE    SPA-GMN-JBAIPRTNM-NEXT
+                                       TO  W12-JBAIPRTNM-NEXT 
+      *
+           MOVE    SPA-GMN-ROUPRTNM-N  TO  W12-ROUPRTNM-N
+      *
+           MOVE    SPA-GMN-ROUPRTNM-NEXT-N
+                                       TO  W12-ROUPRTNM-NEXT-N
+      *
+           MOVE    SPA-GMN-JBAIPRTNM-N TO  W12-JBAIPRTNM-N
+      *
+           MOVE    SPA-GMN-JBAIPRTNM-NEXT-N
+                                       TO  W12-JBAIPRTNM-NEXT-N
+      *
+           MOVE    SPA-GMN-FRAME-JIBAIPRTKBN-G
+                                       TO  W12-FRAME-JIBAI
+      *
+           MOVE    SPA-GMN-FRAME-JIBAIPRTKBN-N-G
+                                       TO  W12-FRAME-JIBAI-N
       *     
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >       SPA-GMN-AUTODSPKBN-MAX
@@ -4399,6 +4711,23 @@
            END-PERFORM
            MOVE    SPA-GMN-SYUKA-SELECT-MAX
                                            TO  W12-SYUKA-SELECT-COUNT 
+      *     
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >   SPA-GMN-FRAME-JIBAIPRTKBN-MAX
+               MOVE    SPA-GMN-FRAME-JIBAIPRTKBNLST (IDY)
+                                           TO
+                                           W12-FRAME-JIBAILST (IDY)
+           END-PERFORM
+           MOVE    SPA-GMN-FRAME-JIBAIPRTKBN-MAX
+                                           TO  W12-FRAME-JIBAI-COUNT 
+      *     
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >   SPA-GMN-FRAME-JIBAIPRTKBN-N-MAX
+               MOVE    SPA-GMN-FRAME-JIBAIPRTKBN-NLST (IDY)
+                                           TO  W12-FRAME-JIBAI-NLST(IDY)
+           END-PERFORM
+           MOVE    SPA-GMN-FRAME-JIBAIPRTKBN-N-MAX
+                                           TO  W12-FRAME-JIBAI-N-COUNT 
      *
            IF      SPA-BEDSU       >   ZERO
                MOVE    WIDGET-NORMAL       TO  W12-PREFPRGID1-STATE
@@ -4524,6 +4853,15 @@
                WHEN    "0035"
                    MOVE    "入退院履歴記載区分入力エラー"
                                                          TO  SPA-ERRMSG
+               WHEN    "0036"
+                   MOVE    "社保診療報酬請求書区分入力エラー"
+                                                         TO  SPA-ERRMSG
+               WHEN    "0037"
+                   MOVE    "自賠責・枠記載区分（入院外）入力エラー"
+                                                         TO  SPA-ERRMSG
+               WHEN    "0038"
+                   MOVE    "自賠責・枠記載区分（入院）入力エラー"
+                                                         TO  SPA-ERRMSG
       *
                WHEN    "0096"
                    STRING  "一括作成出力順（国保）の指定が編綴順です。"
@@ -4639,8 +4977,6 @@
                     MOVE  "SYAPRTNM"         TO   MCP-WIDGET
                 WHEN    10
                     MOVE  "KKHPRTNM"         TO   MCP-WIDGET
-                WHEN    11
-                    MOVE  "KKHPRTKBN"        TO   MCP-WIDGET
                 WHEN    12
                     MOVE  "RENNUMHENKBN"     TO   MCP-WIDGET
                 WHEN    13
@@ -4679,6 +5015,27 @@
                     MOVE  "PRTJYUNKBN3"      TO   MCP-WIDGET
                 WHEN    30
                     MOVE  "PRTJYUNKBN2"      TO   MCP-WIDGET
+      *
+                WHEN    200
+                    MOVE  "FRAME_JIBAI"      TO   MCP-WIDGET
+                WHEN    201
+                    MOVE  "FRAME_JIBAI_N"    TO   MCP-WIDGET
+                WHEN    202
+                    MOVE  "ROUPRTNM"         TO   MCP-WIDGET
+                WHEN    203
+                    MOVE  "ROUPRTNM_NEXT"    TO   MCP-WIDGET
+                WHEN    204
+                    MOVE  "JBAIPRTNM"        TO   MCP-WIDGET
+                WHEN    205
+                    MOVE  "JBAIPRTNM_NEXT"   TO   MCP-WIDGET
+                WHEN    206
+                    MOVE  "ROUPRTNM_N"       TO   MCP-WIDGET
+                WHEN    207
+                    MOVE  "ROUPRTNM_NEXT_N"  TO   MCP-WIDGET
+                WHEN    208
+                    MOVE  "JBAIPRTNM_N"      TO   MCP-WIDGET
+                WHEN    209
+                    MOVE  "JBAIPRTNM_NEXT_N" TO   MCP-WIDGET
       *
                 WHEN    50
                     MOVE  "MOJI_KISAIKBN"    TO   MCP-WIDGET
@@ -4730,6 +5087,11 @@
                     MOVE  "NI_JYOKEN3"        TO   MCP-WIDGET
                 WHEN    107
                     MOVE  "NI_JYOKEN4"        TO   MCP-WIDGET
+      * 
+                WHEN    11
+                    MOVE  "KKHPRTKBN"        TO   MCP-WIDGET
+                WHEN    150
+                    MOVE  "SYAPRTKBN"        TO   MCP-WIDGET
       *
                 WHEN    99
                     MOVE  "B12"              TO   MCP-WIDGET
@@ -4737,21 +5099,26 @@
       *
             EVALUATE    SPA-GMN-CUR
                 WHEN    1   THRU    10
-                WHEN    12  THRU    31
+                WHEN    12  THRU    39
                     MOVE    0                TO  W12-PAGENO
-                WHEN    100 THRU    107
+                WHEN    200 THRU    209
                     MOVE    1                TO  W12-PAGENO
-                WHEN    70  THRU    79
+                WHEN    100 THRU    107
                     MOVE    2                TO  W12-PAGENO
-                WHEN    50  THRU    52
+                WHEN    70  THRU    79
                     MOVE    3                TO  W12-PAGENO
-                WHEN    11
+                WHEN    50  THRU    52
                     MOVE    4                TO  W12-PAGENO
-                WHEN    90  THRU    98
+                WHEN    11
+                WHEN    150
                     MOVE    5                TO  W12-PAGENO
-      **********WHEN    99
-      **********    MOVE    SPA-W12-PAGENO   TO  W12-PAGENO
+                WHEN    90  THRU    98
+                    MOVE    6                TO  W12-PAGENO
+                WHEN    99
+                    MOVE    SPA-W12-PAGENO   TO  W12-PAGENO
             END-EVALUATE
+      *
+           MOVE    W12-PAGENO            TO  SPA-W12-PAGENO
            .
        5001-MAPCUR-EXT.
            EXIT.
@@ -4773,21 +5140,29 @@
                WHEN    "SYAOCRKBN"
                    MOVE    7           TO  SPA-GMN-CUR
                WHEN    "KKHOCRKBN"
-                   IF      SPA-BEDSU       >   ZERO
-                       MOVE    4           TO  SPA-GMN-CUR
-                   ELSE
-                       MOVE    8           TO  SPA-GMN-CUR
-                   END-IF
+                   MOVE    12          TO  SPA-GMN-CUR
+               WHEN    "RENNUMHENKBN"
+                   MOVE    4           TO  SPA-GMN-CUR
                WHEN    "NYUTAIINREKI"
+                   IF      SPA-BEDSU       >   ZERO
+                       MOVE    23          TO  SPA-GMN-CUR
+                   ELSE
+                       MOVE    19          TO  SPA-GMN-CUR
+                   END-IF
+               WHEN    "SRYKAHENKBN"
+                   MOVE    19          TO  SPA-GMN-CUR
+               WHEN    "RJNGNBKKBN"
+                   MOVE    20          TO  SPA-GMN-CUR
+               WHEN    "JIHITEKKSIKBN"
                    MOVE    8           TO  SPA-GMN-CUR
                WHEN    "PREFPRGID"
                    IF      SPA-BEDSU       >   ZERO
                        MOVE    13          TO  SPA-GMN-CUR
                    ELSE
-                       MOVE    12          TO  SPA-GMN-CUR
+                       MOVE    9           TO  SPA-GMN-CUR
                    END-IF
                WHEN    "PREFPRGID1"
-                   MOVE    12          TO  SPA-GMN-CUR
+                   MOVE    9           TO  SPA-GMN-CUR
                WHEN    "SYAPRTNM"
                    MOVE    17          TO  SPA-GMN-CUR
                WHEN    "SYAPRTNM_NEXT"
@@ -4796,17 +5171,21 @@
                    MOVE    18          TO  SPA-GMN-CUR
                WHEN    "KKHPRTNM_NEXT"
                    MOVE    16          TO  SPA-GMN-CUR
-               WHEN    "RENNUMHENKBN"
-                   MOVE    9           TO  SPA-GMN-CUR
                WHEN    "NEXTPRTKBN_1"
-                   MOVE    24          TO  SPA-GMN-CUR
+                   IF      SPA-BEDSU       >   ZERO
+                       MOVE    24              TO  SPA-GMN-CUR
+                   ELSE
+                       MOVE    28              TO  SPA-GMN-CUR
+                   END-IF
+               WHEN    "SYAPRTNM_N"
+                   MOVE    25          TO  SPA-GMN-CUR
+               WHEN    "SYAPRTNM_NEXT_N"
+                   MOVE    26          TO  SPA-GMN-CUR
+               WHEN    "KKHPRTNM_N"
+                   MOVE    27          TO  SPA-GMN-CUR
+               WHEN    "KKHPRTNM_NEXT_N"
+                   MOVE    14          TO  SPA-GMN-CUR
                WHEN    "NEXTPRTKBN"
-                   MOVE    19          TO  SPA-GMN-CUR
-               WHEN    "RJNGNBKKBN"
-                   MOVE    20          TO  SPA-GMN-CUR
-               WHEN    "JIHITEKKSIKBN"
-                   MOVE    23          TO  SPA-GMN-CUR
-               WHEN    "SRYKAHENKBN"
                    MOVE    28          TO  SPA-GMN-CUR
                WHEN    "AUTODSPKBN"
                    MOVE    29          TO  SPA-GMN-CUR
@@ -4816,14 +5195,31 @@
                    MOVE    30          TO  SPA-GMN-CUR
                WHEN    "PRTJYUNKBN2"
                    MOVE    99          TO  SPA-GMN-CUR
-               WHEN    "SYAPRTNM_N"
-                   MOVE    25          TO  SPA-GMN-CUR
-               WHEN    "SYAPRTNM_NEXT_N"
-                   MOVE    26          TO  SPA-GMN-CUR
-               WHEN    "KKHPRTNM_N"
-                   MOVE    27          TO  SPA-GMN-CUR
-               WHEN    "KKHPRTNM_NEXT_N"
-                   MOVE    14          TO  SPA-GMN-CUR
+      *
+               WHEN    "FRAME_JIBAI"
+                   MOVE    201         TO  SPA-GMN-CUR
+               WHEN    "FRAME_JIBAI_N"
+                   MOVE    202         TO  SPA-GMN-CUR
+               WHEN    "ROUPRTNM"
+                   MOVE    203         TO  SPA-GMN-CUR
+               WHEN    "ROUPRTNM_NEXT"
+                   MOVE    204         TO  SPA-GMN-CUR
+               WHEN    "JBAIPRTNM"
+                   MOVE    205         TO  SPA-GMN-CUR
+               WHEN    "JBAIPRTNM_NEXT"
+                   IF      SPA-BEDSU       >   ZERO
+                       MOVE    206             TO  SPA-GMN-CUR
+                   ELSE
+                       MOVE    99              TO  SPA-GMN-CUR
+                   END-IF
+               WHEN    "ROUPRTNM_N"
+                   MOVE    207         TO  SPA-GMN-CUR
+               WHEN    "ROUPRTNM_NEXT_N"
+                   MOVE    208         TO  SPA-GMN-CUR
+               WHEN    "JBAIPRTNM_N"
+                   MOVE    209         TO  SPA-GMN-CUR
+               WHEN    "JBAIPRTNM_NEXT_N"
+                   MOVE    99          TO  SPA-GMN-CUR
       *
                WHEN    "MOJI_KISAIKBN"
                    MOVE    51          TO  SPA-GMN-CUR
@@ -4862,6 +5258,8 @@
                WHEN    "SYUKA_MODE"
                    MOVE    99          TO  SPA-GMN-CUR
       *
+               WHEN    "SYAPRTKBN"
+                   MOVE    11          TO  SPA-GMN-CUR
                WHEN    "KKHPRTKBN"
                    MOVE    99          TO  SPA-GMN-CUR
       *

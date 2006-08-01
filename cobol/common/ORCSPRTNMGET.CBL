@@ -27,6 +27,8 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  03.01.01    NACL-藤原    06/07/11  労災・自賠責のプリンタ指定対応
+      *                                     （入院外・入院別）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -174,6 +176,28 @@
                                            TO  WRK-PRTNM
                PERFORM 100-PRTNM-HENSYU-SEC
                MOVE    SYS-2005-KKHPRTNM-NEXT-N
+                                           TO  WRK-PRTNM
+               PERFORM 100-PRTNM-HENSYU-SEC
+               MOVE    SYS-2005-ROUPRTNM   TO  WRK-PRTNM
+               PERFORM 100-PRTNM-HENSYU-SEC
+               MOVE    SYS-2005-JBAIPRTNM  TO  WRK-PRTNM
+               PERFORM 100-PRTNM-HENSYU-SEC
+               MOVE    SYS-2005-ROUPRTNM-NEXT
+                                           TO  WRK-PRTNM
+               PERFORM 100-PRTNM-HENSYU-SEC
+               MOVE    SYS-2005-JBAIPRTNM-NEXT
+                                           TO  WRK-PRTNM
+               PERFORM 100-PRTNM-HENSYU-SEC
+               MOVE    SYS-2005-ROUPRTNM-N 
+                                           TO  WRK-PRTNM
+               PERFORM 100-PRTNM-HENSYU-SEC
+               MOVE    SYS-2005-JBAIPRTNM-N
+                                           TO  WRK-PRTNM
+               PERFORM 100-PRTNM-HENSYU-SEC
+               MOVE    SYS-2005-ROUPRTNM-NEXT-N
+                                           TO  WRK-PRTNM
+               PERFORM 100-PRTNM-HENSYU-SEC
+               MOVE    SYS-2005-JBAIPRTNM-NEXT-N
                                            TO  WRK-PRTNM
                PERFORM 100-PRTNM-HENSYU-SEC
            END-IF     

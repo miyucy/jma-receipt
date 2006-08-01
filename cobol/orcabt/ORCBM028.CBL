@@ -44,6 +44,10 @@
       *                                     HCM2IV03.red → HCM2S.red 
       *                                     HCM2JV03.red → HCM2T.red 
       *                                     MONFUNC対応
+      *
+      *  03.02.01    NACL-藤原    06/07/24  マル長の別総括対応
+      *                                     HCM2S.red    → HCM2SV01.red
+      *                                     HCM2T.red    → HCM2TV01.red 
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -81,8 +85,12 @@
       *****COPY    "HCM2JV03.INC"  REPLACING  //HCM2JV03//
       *****COPY    "HCM2JV04.INC"  REPLACING  //HCM2JV04//
       *****                        BY         //HCM2J//.
-           COPY    "HCM2S.INC".
-           COPY    "HCM2T.INC".
+      *****COPY    "HCM2S.INC".
+           COPY    "HCM2SV01.INC"  REPLACING  //HCM2SV01//
+                                   BY         //HCM2S//.
+      *****COPY    "HCM2T.INC".
+           COPY    "HCM2TV01.INC"  REPLACING  //HCM2TV01//
+                                   BY         //HCM2T//.
       *
       *    スパ領域
        01  STS-AREA.
@@ -273,6 +281,7 @@
            03  WRK-PARA-PAGE       PIC 9(10).
            03  WRK-PARA-NYUGAIKBN  PIC X(01).
            03  WRK-PARA-SYOKBN     PIC X(01).
+           03  WRK-PARA-MARUCHO    PIC X(01).
       *
        01  WRK-NYUGAIKBN           PIC X(01).
       *
@@ -519,6 +528,12 @@
                MOVE    "回数"              TO  HCM2S-TITLE2
            END-IF
       *
+           EVALUATE    WRK-PARA-MARUCHO
+               WHEN    "2"
+                   MOVE    "◯"          TO  HCM2S-MARUCHO (1)
+                   MOVE    "長"          TO  HCM2S-MARUCHO (2)
+           END-EVALUATE           
+      *
            MOVE    SYS-1005-SRYKANAME    TO  HCM2S-SRYKA
       *
            .
@@ -568,6 +583,12 @@
                MOVE    "回数"              TO  HCM2T-TITLE2
                MOVE    "食事回数"          TO  HCM2T-TITLE3
            END-IF
+      *
+           EVALUATE    WRK-PARA-MARUCHO
+               WHEN    "2"
+                   MOVE    "◯"          TO  HCM2T-MARUCHO (1)
+                   MOVE    "長"          TO  HCM2T-MARUCHO (2)
+           END-EVALUATE           
       *
            MOVE    SYS-1005-SRYKANAME    TO  HCM2T-SRYKA
       *
@@ -1113,7 +1134,8 @@
       *********MOVE    "HCM2IV01.red"      TO  SPRT-PRTID
       *********MOVE    "HCM2IV02.red"      TO  SPRT-PRTID
       *********MOVE    "HCM2IV03.red"      TO  SPRT-PRTID
-               MOVE    "HCM2S.red"         TO  SPRT-PRTID
+      *********MOVE    "HCM2S.red"         TO  SPRT-PRTID
+               MOVE    "HCM2SV01.red"      TO  SPRT-PRTID
                MOVE    HCM2S               TO  SPRT-PRTDATA
            ELSE                          
       *********MOVE    "HCM2J.red"         TO  SPRT-PRTID
@@ -1121,29 +1143,57 @@
       *********MOVE    "HCM2JV02.red"      TO  SPRT-PRTID
       *********MOVE    "HCM2JV03.red"      TO  SPRT-PRTID
       *********MOVE    "HCM2JV04.red"      TO  SPRT-PRTID
-               MOVE    "HCM2T.red"         TO  SPRT-PRTID
+      *********MOVE    "HCM2T.red"         TO  SPRT-PRTID
+               MOVE    "HCM2TV01.red"      TO  SPRT-PRTID
                MOVE    HCM2T               TO  SPRT-PRTDATA
            END-IF    
-           EVALUATE    IDX1    ALSO    WRK-SYOKBN
-                                           ALSO    WRK-NYUGAIKBN 
-               WHEN    ANY     ALSO    "1" ALSO    "1"                           
-                   MOVE    "社保総括表・入院"  TO  SPRT-TITLE
-               WHEN    ANY     ALSO    "2" ALSO    "1"                           
-                   MOVE    "社保総括表・入院［返戻分］"
-                                               TO  SPRT-TITLE
-               WHEN    1       ALSO    "1" ALSO    "2"                           
-                   MOVE    "社保総括表・入院外"
-                                               TO  SPRT-TITLE
-               WHEN    2       ALSO    "1" ALSO    "2"
-                   MOVE    "社保総括表・入院外（在医総等）"
-                                               TO  SPRT-TITLE
-               WHEN    1       ALSO    "2" ALSO    "2"                            
-                   MOVE    "社保総括表・入院外［返戻分］"
-                                               TO  SPRT-TITLE
-               WHEN    2       ALSO    "2" ALSO    "2"          
-                   MOVE    "社保総括表・入院外（在医総等）［返戻分］"
-                                               TO  SPRT-TITLE
-           END-EVALUATE        
+           IF      WRK-PARA-MARUCHO    =   "2"
+               EVALUATE    IDX1    ALSO    WRK-SYOKBN
+                                               ALSO    WRK-NYUGAIKBN 
+                   WHEN    ANY     ALSO    "1" ALSO    "1"                           
+                       MOVE    "マル長分　社保総括表・入院"
+                                                   TO  SPRT-TITLE
+                   WHEN    ANY     ALSO    "2" ALSO    "1"                           
+                       MOVE    "マル長分　社保総括表・入院［返戻分］"
+                                                   TO  SPRT-TITLE
+                   WHEN    1       ALSO    "1" ALSO    "2"                           
+                       MOVE    "マル長分　社保総括表・入院外"
+                                                   TO  SPRT-TITLE
+                   WHEN    2       ALSO    "1" ALSO    "2"
+                       MOVE
+                           "マル長分　社保総括表・入院外（在医総等）"
+                                                   TO  SPRT-TITLE
+                   WHEN    1       ALSO    "2" ALSO    "2"                            
+                       MOVE    "マル長分　社保総括表・入院外［返戻分］"
+                                                   TO  SPRT-TITLE
+                   WHEN    2       ALSO    "2" ALSO    "2"          
+                       MOVE
+                   "マル長分　社保総括表・入院外（在医総等）［返戻分］"
+                                                   TO  SPRT-TITLE
+               END-EVALUATE
+           ELSE
+               EVALUATE    IDX1    ALSO    WRK-SYOKBN
+                                               ALSO    WRK-NYUGAIKBN 
+                   WHEN    ANY     ALSO    "1" ALSO    "1"                           
+                       MOVE    "社保総括表・入院"  TO  SPRT-TITLE
+                   WHEN    ANY     ALSO    "2" ALSO    "1"                           
+                       MOVE    "社保総括表・入院［返戻分］"
+                                                   TO  SPRT-TITLE
+                   WHEN    1       ALSO    "1" ALSO    "2"                           
+                       MOVE    "社保総括表・入院外"
+                                                   TO  SPRT-TITLE
+                   WHEN    2       ALSO    "1" ALSO    "2"
+                       MOVE    "社保総括表・入院外（在医総等）"
+                                                   TO  SPRT-TITLE
+                   WHEN    1       ALSO    "2" ALSO    "2"                            
+                       MOVE    "社保総括表・入院外［返戻分］"
+                                                   TO  SPRT-TITLE
+                   WHEN    2       ALSO    "2" ALSO    "2"          
+                       MOVE
+                           "社保総括表・入院外（在医総等）［返戻分］"
+                                                   TO  SPRT-TITLE
+               END-EVALUATE
+           END-IF
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
            MOVE    LNK-PRTKANRI-OPID   TO  SPRT-OPID
            MOVE    LNK-PRTKANRI-PRTNM  TO  SPRT-PRTNM
@@ -1156,7 +1206,7 @@
                MOVE    "印刷ＤＢに更新できませんでした"
                                           TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC                           
-           END-IF                                                              
+           END-IF                        
            .
        390-PRINT-OUT-EXT.
            EXIT.

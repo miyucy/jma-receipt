@@ -53,6 +53,9 @@
       *  02.09.01    NACL-藤原    06/04/13  ２００６年４月改正対応
       *  02.09.02    NACL-藤原    06/04/28  総括表（医科・入院外）のとき
       *                                     ２００６年３月以前を分けない
+      *
+      *  03.02.01    NACL-藤原    06/07/24  マル長の別総括対応
+      *                                     MONFUNC対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -141,6 +144,7 @@
            03  WRK-PARA-PAGE       PIC 9(10).
            03  WRK-PARA-NYUGAIKBN  PIC X(01).
            03  WRK-PARA-SYOKBN     PIC X(01).
+           03  WRK-PARA-MARUCHO    PIC X(01).
       *          
       *    一時領域
        01  WRK-AREA.
@@ -150,10 +154,8 @@
       *
            03  WRK-RECEERR         PIC X(200). 
       *
-           03  WRK-PATH.
-               05  FILLER          PIC S9(09)  BINARY.
-               05  FILLER          PIC S9(09)  BINARY.
-               05  FILLER          PIC S9(09)  BINARY.
+           03  WRK-MCP-TABLE       PIC X(64).
+           03  WRK-MCP-PATHNAME    PIC X(64).
       *
            03  WRK-INDEX           PIC 9(02).
            03  WRK-FTNMONEY        PIC 9(10).
@@ -237,7 +239,6 @@
       *    ２００６年４月改正
            03  WRK-CONS-SRYYM-200604   PIC X(06)   VALUE   "200604".
       *     
-           COPY    "ORCA-DBPATH".         
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -325,6 +326,7 @@
                                                WRK-PARA-SHELLID
                                                WRK-PARA-NYUGAIKBN
                                                WRK-PARA-SYOKBN
+                                               WRK-PARA-MARUCHO 
            END-UNSTRING  
       *
       *    ステップ管理開始処理
@@ -515,43 +517,57 @@
            MOVE    ZERO                TO  CNT-RECE10
       *
       *    その他のレセ
-           EVALUATE    WRK-SYOKBN
-               WHEN    "1"
-                   MOVE    PATH-TBL-SEIKYU-KEY28    TO  WRK-PATH
-               WHEN    "2"
-                   MOVE    PATH-TBL-SEIKYU-KEY27    TO  WRK-PATH
+           EVALUATE    WRK-SYOKBN  ALSO    WRK-PARA-MARUCHO
+               WHEN    "1"         ALSO    "0"
+                   MOVE    "key28"                  TO  WRK-MCP-PATHNAME
+               WHEN    "2"         ALSO    "0"
+                   MOVE    "key27"                  TO  WRK-MCP-PATHNAME
+               WHEN    "1"         ALSO    "1"
+                   MOVE    "key46"                  TO  WRK-MCP-PATHNAME
+               WHEN    "2"         ALSO    "1"
+                   MOVE    "key45"                  TO  WRK-MCP-PATHNAME
+               WHEN    "1"         ALSO    "2"
+                   MOVE    "key52"                  TO  WRK-MCP-PATHNAME
+               WHEN    "2"         ALSO    "2"
+                   MOVE    "key51"                  TO  WRK-MCP-PATHNAME
            END-EVALUATE  
+           MOVE    "tbl_seikyu"        TO  WRK-MCP-TABLE
            PERFORM 900-SEIKYU-SELECT-SEC
       *
            MOVE    1                   TO  WRK-INDEX
            PERFORM 2001-SYUKEI-SEC     UNTIL   FLG-RECE10   =   1 
                                        OR      FLG-ERR      =   1
       *
-           MOVE    WRK-PATH            TO  MCP-PATH
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
-                                           MCPAREA
-                                           MCPDATA-REC
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
       *
            IF      FLG-ERR             =   ZERO
       *        在総診または在医総を算定したレセ
-               EVALUATE    WRK-SYOKBN
-                   WHEN    "1"
-                       MOVE    PATH-TBL-SEIKYU-KEY30   TO  WRK-PATH
-                   WHEN    "2"
-                       MOVE    PATH-TBL-SEIKYU-KEY29   TO  WRK-PATH
+               EVALUATE    WRK-SYOKBN  ALSO    WRK-PARA-MARUCHO
+                   WHEN    "1"         ALSO    "0"
+                       MOVE    "key30"             TO  WRK-MCP-PATHNAME
+                   WHEN    "2"         ALSO    "0"
+                       MOVE    "key29"             TO  WRK-MCP-PATHNAME
+                   WHEN    "1"         ALSO    "1"
+                       MOVE    "key48"             TO  WRK-MCP-PATHNAME
+                   WHEN    "2"         ALSO    "1"
+                       MOVE    "key47"             TO  WRK-MCP-PATHNAME
+                   WHEN    "1"         ALSO    "2"
+                       MOVE    "key54"             TO  WRK-MCP-PATHNAME
+                   WHEN    "2"         ALSO    "2"
+                       MOVE    "key53"             TO  WRK-MCP-PATHNAME
                END-EVALUATE  
+               MOVE    "tbl_seikyu"        TO  WRK-MCP-TABLE
                PERFORM 900-SEIKYU-SELECT-SEC
       *
                MOVE    2                   TO  WRK-INDEX
                PERFORM 2001-SYUKEI-SEC     UNTIL   FLG-RECE10   =   1 
                                            OR      FLG-ERR      =   1
       *
-               MOVE    WRK-PATH            TO  MCP-PATH
-               MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-               CALL    "MCPSUB"            USING
-                                               MCPAREA
-                                               MCPDATA-REC
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+               PERFORM 900-CLOSE-SEC
            END-IF
            .
        2001-GAIRAI-SYUKEI-EXT.
@@ -565,23 +581,30 @@
            INITIALIZE                      SUM-AREA
            MOVE    ZERO                TO  CNT-RECE10
       *
-           EVALUATE    WRK-SYOKBN
-               WHEN    "1"
-                   MOVE    PATH-TBL-SEIKYU-KEY32       TO  WRK-PATH
-               WHEN    "2"
-                   MOVE    PATH-TBL-SEIKYU-KEY31       TO  WRK-PATH
+           EVALUATE    WRK-SYOKBN  ALSO    WRK-PARA-MARUCHO
+               WHEN    "1"         ALSO    "0"
+                   MOVE    "key32"             TO  WRK-MCP-PATHNAME
+               WHEN    "2"         ALSO    "0"
+                   MOVE    "key31"             TO  WRK-MCP-PATHNAME
+               WHEN    "1"         ALSO    "1"
+                   MOVE    "key50"             TO  WRK-MCP-PATHNAME
+               WHEN    "2"         ALSO    "1"
+                   MOVE    "key49"             TO  WRK-MCP-PATHNAME
+               WHEN    "1"         ALSO    "2"
+                   MOVE    "key56"             TO  WRK-MCP-PATHNAME
+               WHEN    "2"         ALSO    "2"
+                   MOVE    "key55"             TO  WRK-MCP-PATHNAME
            END-EVALUATE  
+           MOVE    "tbl_seikyu"        TO  WRK-MCP-TABLE
            PERFORM 900-SEIKYU-SELECT-SEC
       *
            MOVE    1                   TO  WRK-INDEX
            PERFORM 2001-SYUKEI-SEC     UNTIL   FLG-RECE10   =   1 
                                        OR      FLG-ERR      =   1
       *
-           MOVE    WRK-PATH            TO  MCP-PATH
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
-                                           MCPAREA
-                                           MCPDATA-REC
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
            .
        2001-NYUIN-SYUKEI-EXT.
            EXIT.
@@ -882,7 +905,6 @@
            IF      FLG-UPD             =   1
                PERFORM 230-UPD-FILE-HENSYU-SEC
       *
-               MOVE    WRK-PATH            TO  MCP-PATH
                PERFORM 900-SEIKYU-READ-SEC
            ELSE
                DISPLAY "*** ORCBM022 ERR KEY=" RECE10-KEY
@@ -1342,11 +1364,11 @@
                                            TO  RECE10-UPDYMD  
                    MOVE    RECE10-REC      TO  MCPDATA-REC
                    MOVE    "DBUPDATE"      TO  MCP-FUNC
-                   MOVE    "SEIKYU-KEY"    TO  ORC-DBPATH
-                   CALL    "ORCMCPSUB"      USING
-                                                MCPAREA
-                                                ORCMCPAREA
-                                                MCPDATA-REC
+                   MOVE    "tbl_seikyu"    TO  MCP-TABLE
+                   MOVE    "key"           TO  MCP-PATHNAME
+                   CALL    "MONFUNC"       USING
+                                               MCPAREA
+                                               MCPDATA-REC
                    IF      MCP-RC          =   ZERO
                        PERFORM 900-UPD-FILE-READ-SEC
                    ELSE
@@ -1413,12 +1435,12 @@
       *###
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    WRK-PATH            TO  MCP-PATH
-           CALL    "MCPSUB"          USING
-                                        MCPAREA
-                                        MCPDATA-REC
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    WRK-PATH            TO  MCP-PATH
                PERFORM 900-SEIKYU-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-RECE10
@@ -1432,11 +1454,12 @@
       *****************************************************************
        900-SEIKYU-READ-SEC           SECTION.
       *
-           MOVE    WRK-PATH            TO  MCP-PATH
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MCPSUB"          USING
-                                        MCPAREA
-                                        MCPDATA-REC
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO                TO  FLG-RECE10
                MOVE    MCPDATA-REC         TO  RECE10-REC
@@ -1530,18 +1553,18 @@
        910-SEIKYU-INV-SEC         SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SEIKYU-KEY"        TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_seikyu"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"       USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "SEIKYU-KEY"        TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+               MOVE    "tbl_seikyu"        TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               CALL    "MONFUNC"       USING
+                                           MCPAREA
+                                           MCPDATA-REC
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO                TO  FLG-SEIKYU
                    MOVE    MCPDATA-REC         TO  RECE10-REC
@@ -1552,12 +1575,9 @@
                MOVE    1                   TO  FLG-SEIKYU
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "SEIKYU-KEY"        TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_seikyu"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
       *
            .
        910-SEIKYU-INV-EXT.

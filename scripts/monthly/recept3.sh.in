@@ -29,6 +29,7 @@ RENNUM=0
 #           0:全体  1:当月・月遅れ分  2:返戻分
 #        ${23} 国保:処理対象区分
 #           0:全体  1:当月・月遅れ分  2:返戻分
+#        ${24} 1:マル長分を別総括作成
 #-------------------------------------------#
 #
 ##      エラーファイル削除
@@ -45,23 +46,58 @@ RENNUM=0
 ##      総括表（社保）
         if  [ ${13} -ne 2 ]; then
            if  [ $5 -ge '200304' ]; then
-##             返戻分
-               if  [ ${22} -eq '0' ] || [ ${22} -eq '2' ]; then
-                   RENNUM=$(expr $RENNUM + 1) 
-                   $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM022 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},2 >> /home/orca/recept3${13}.log
-                   if  [ -e ${18} ]; then
-                      exit
+               if  [ ${24} -eq '0' ]; then
+##                 返戻分
+                   if  [ ${22} -eq '0' ] || [ ${22} -eq '2' ]; then
+                       RENNUM=$(expr $RENNUM + 1) 
+                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM022 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},2,0 >> /home/orca/recept3${13}.log
+                       if  [ -e ${18} ]; then
+                          exit
+                       fi
                    fi
-               fi
-##             当月・月遅れ分
-               if  [ ${22} -eq '0' ] || [ ${22} -eq '1' ]; then
-                   RENNUM=$(expr $RENNUM + 1) 
-                   $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM022 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},1 >> /home/orca/recept3${13}.log
-                   if  [ -e ${18} ]; then
-                      exit
+##                 当月・月遅れ分
+                   if  [ ${22} -eq '0' ] || [ ${22} -eq '1' ]; then
+                       RENNUM=$(expr $RENNUM + 1) 
+                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM022 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},1,0 >> /home/orca/recept3${13}.log
+                       if  [ -e ${18} ]; then
+                          exit
+                       fi
                    fi
-               fi
-           fi    
+               else
+##                 返戻分（マル長以外）
+                   if  [ ${22} -eq '0' ] || [ ${22} -eq '2' ]; then
+                       RENNUM=$(expr $RENNUM + 1) 
+                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM022 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},2,1 >> /home/orca/recept3${13}.log
+                       if  [ -e ${18} ]; then
+                          exit
+                       fi
+                   fi
+##                 当月・月遅れ分（マル長以外）
+                   if  [ ${22} -eq '0' ] || [ ${22} -eq '1' ]; then
+                       RENNUM=$(expr $RENNUM + 1) 
+                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM022 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},1,1 >> /home/orca/recept3${13}.log
+                       if  [ -e ${18} ]; then
+                          exit
+                       fi
+                   fi
+##                 返戻分（マル長）
+                   if  [ ${22} -eq '0' ] || [ ${22} -eq '2' ]; then
+                       RENNUM=$(expr $RENNUM + 1) 
+                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM022 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},2,2 >> /home/orca/recept3${13}.log
+                       if  [ -e ${18} ]; then
+                          exit
+                       fi
+                   fi
+##                 当月・月遅れ分（マル長）
+                   if  [ ${22} -eq '0' ] || [ ${22} -eq '1' ]; then
+                       RENNUM=$(expr $RENNUM + 1) 
+                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM022 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},1,2 >> /home/orca/recept3${13}.log
+                       if  [ -e ${18} ]; then
+                          exit
+                       fi
+                   fi
+               fi    
+            fi
         fi
          
 ##      総括表（国保）
