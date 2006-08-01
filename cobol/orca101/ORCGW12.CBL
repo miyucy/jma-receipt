@@ -3964,6 +3964,8 @@
            MOVE    SPA-GMN-ROUPRTNM-N      TO  SYS-2005-ROUPRTNM-N
            MOVE    SPA-GMN-JBAIPRTNM-N     TO  SYS-2005-JBAIPRTNM-N
            MOVE    SPA-GMN-ROUPRTNM-NEXT-N TO  SYS-2005-ROUPRTNM-NEXT-N
+           MOVE    SPA-GMN-JBAIPRTNM-NEXT-N
+                                           TO  SYS-2005-JBAIPRTNM-NEXT-N
            MOVE    SPA-GMN-FRAME-JIBAIPRTKBN
                                            TO
                                            SYS-2005-FRAME-JIBAIPRTKBN
