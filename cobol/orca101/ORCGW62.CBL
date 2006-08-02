@@ -26,7 +26,8 @@
       *  06/04/01    NACL¡Ý¿¹ÏÆ    ¿·µ¬ºîÀ®
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  Maj/Min/Rev ½¤Àµ¼Ô        ÆüÉÕ      ÆâÍÆ
+      *  00.00.01    NACL-¿¹ÏÆ     06.08.02  Ï«ºÒ¡¢¼«Çå¤Î¥×¥ê¥ó¥¿ÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -97,7 +98,7 @@
       *
            03  WRK-PRTNUM          PIC X(17).
            03  WRK-PRTNAME-G.
-               05  WRK-PRTNAME     PIC X(16)   OCCURS  8.
+               05  WRK-PRTNAME     PIC X(16)   OCCURS  16.
       *
        01  WRK-CONS-AREA.
            03  WRK-CONS-FILENAME   PIC X(20)   VALUE
@@ -387,9 +388,17 @@
                MOVE    SYS-2005-KKHPRTNM-N         TO  WRK-PRTNAME(6)
                MOVE    SYS-2005-SYAPRTNM-NEXT-N    TO  WRK-PRTNAME(7)
                MOVE    SYS-2005-KKHPRTNM-NEXT-N    TO  WRK-PRTNAME(8)
+               MOVE    SYS-2005-ROUPRTNM           TO  WRK-PRTNAME(9)
+               MOVE    SYS-2005-ROUPRTNM-NEXT      TO  WRK-PRTNAME(10)
+               MOVE    SYS-2005-ROUPRTNM-N         TO  WRK-PRTNAME(11)
+               MOVE    SYS-2005-ROUPRTNM-NEXT-N    TO  WRK-PRTNAME(12)
+               MOVE    SYS-2005-JBAIPRTNM          TO  WRK-PRTNAME(13)
+               MOVE    SYS-2005-JBAIPRTNM-NEXT     TO  WRK-PRTNAME(14)
+               MOVE    SYS-2005-JBAIPRTNM-N        TO  WRK-PRTNAME(15)
+               MOVE    SYS-2005-JBAIPRTNM-NEXT-N   TO  WRK-PRTNAME(16)
       *
                PERFORM VARYING IDX     FROM    1   BY  1
-                       UNTIL   IDX     >       8
+                       UNTIL   IDX     >       16
                    MOVE    ZERO            TO  FLG-OK
                    IF      WRK-PRTNAME(IDX)    =   SPACE
                        MOVE    1           TO  FLG-OK
