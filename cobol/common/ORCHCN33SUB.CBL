@@ -740,11 +740,11 @@
                END-PERFORM
                IF   FLG-OK     =   ZERO
                    MOVE     3      TO      LNK-ORCHCN33SUB-RC
-                   GO   TO    200-MAIN-EXT
+                   GO   TO    210-NYUINTEN-GET-EXT
                END-IF
            ELSE
                MOVE     3      TO      LNK-ORCHCN33SUB-RC
-               GO   TO    200-MAIN-EXT
+               GO   TO    210-NYUINTEN-GET-EXT
            END-IF
       *    入院会計クローズ
            MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
