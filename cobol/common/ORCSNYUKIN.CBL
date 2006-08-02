@@ -242,7 +242,7 @@
            PERFORM 910-SYUNOU-SELECT-SEC
            IF      FLG-SYUNOU              NOT =   ZERO
                MOVE    11                  TO  LNK-SCNYUKIN-RC
-               GO  TO  100-PRM-CHK-EXT
+               GO  TO  200-MAIN-EXT
            ELSE
                MOVE    WRK-SYUNOU-DBPATH   TO  ORC-DBPATH
                PERFORM 910-SYUNOU-READ-SEC
