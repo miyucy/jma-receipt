@@ -248,6 +248,9 @@
                    07  SPA-K02N-NYUINYMDW          PIC X(09).
                    07  SPA-K02N-H1                 PIC X(01).
                    07  SPA-K02N-TAIINYMDW          PIC X(09).
+      *        検査処理
+               05  SPA-K02N-KENSAFLG           PIC X(01).
+      *
       *
       *    保険組合せ一覧（患者番号変更毎にクリア）
            03  SPA-HKNCOMI-AREA.

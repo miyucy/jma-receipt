@@ -417,5 +417,9 @@ K02N	{
 		B09S	{
 	           	state	int;
 		};
+		KENSA	{
+			value	bool;
+			label	varchar(10);
+		};
 	};
 };

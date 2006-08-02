@@ -99,6 +99,8 @@
            03  FLG-HOUKATU         PIC 9(01).
            03  FLG-INPUT           PIC 9(01).
       *
+           03  FLG-NYUDAY           PIC 9(01).
+      *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -138,10 +140,10 @@
            03  IDX-BC              PIC 9(04).
       *
            03  IDX-STR             PIC 9(04).
-      *
            03  IDX-SANSO           PIC 9(04).
-      *
            03  IDX-KEN             PIC 9(04).
+      *
+           03  IDX-N2              PIC 9(02).
       *    一時領域
        01  WRK-AREA.
       *
@@ -852,20 +854,6 @@
       *****************************************************************
        10011-SANSO-ADD-SEC                  SECTION.
       *
-      **** MOVE    "770020070"         TO  WRK-SRYCD
-      *    MOVE    ZERO                TO  FLG-ARI
-      *    PERFORM VARYING     IDX1    FROM    1   BY  1
-      *            UNTIL      (IDX1    >   200  )  OR
-      *                       (WRK-COM-INPUTCD(IDX1)   =   SPACE AND
-      *                        WRK-GMN-INPUTCD(IDX1)   =   SPACE )
-      *        IF       WRK-COM-INPUTCD (IDX1) =   WRK-SRYCD
-      *            MOVE    IDX1                TO  IDX-T
-      *            MOVE    1                   TO  FLG-ARI
-      *        END-IF
-      *    END-PERFORM
-      *    IF      FLG-ARI             =   ZERO
-      *        MOVE    IDX-SANSO           TO  IDX-S
-      **** END-IF
       *    酸素補正率自動加算
            MOVE    "770020070"         TO  WRK-SRYCD
            MOVE    IDX-SANSO           TO  IDX-S
@@ -1448,6 +1436,7 @@
            IF     (SPA-NYUGAIKBN       =   "1"   )  AND
                   (WRK-COM-SRYSYUKBN (IDX-Z)
                                    NOT =   "610" )
+             AND  (LNK-ORCSC-KENSAFLG  =   ZERO   )
                PERFORM VARYING     IDX1    FROM    1   BY  1
                        UNTIL       IDX1    >=  IDX-Z
                    IF      WRK-COM-INPUTCD(IDX1)
@@ -2092,12 +2081,19 @@
            IF      SPA-HKNCOMBINUM     =   "9999"
                CONTINUE
            ELSE
-               IF      SPA-NYUGAIKBN       =   "1"
-      *        入院時のチェック
-                   PERFORM 210-NYUIN-SYORI-SEC
-               ELSE
-      *        外来時のチェック
-                   PERFORM 200-GAIRAI-SYORI-SEC
+      *        包括同一検査チェック
+               IF     (SPA-NYUGAIKBN       =   "2" )  OR
+                      (LNK-ORCSC-KENSAFLG  =   1   )
+                   PERFORM 2001-DOUCHK-SEC
+               END-IF
+               IF      SPA-ERRCD           =   SPACE
+                   IF      SPA-NYUGAIKBN       =   "1"
+      *            入院時のチェック
+                       PERFORM 210-NYUIN-SYORI-SEC
+                   ELSE
+      *            外来時のチェック
+                       PERFORM 200-GAIRAI-SYORI-SEC
+                   END-IF
                END-IF
            END-IF
       *
@@ -2106,10 +2102,9 @@
            EXIT.
       *
       *****************************************************************
-      *     逓減加算算定チェック処理
+      *     同一検査チェック処理
       *****************************************************************
-       200-GAIRAI-SYORI-SEC           SECTION.
-      *
+       2001-DOUCHK-SEC           SECTION.
       *
       *    同一検査をエラーとする
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
@@ -2117,6 +2112,9 @@
                               (SPA-ERRCD           NOT =   SPACE )  OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE  AND
                                WRK-COM-INPUTCD (IDX-Z) =   SPACE )
+      *
+             IF      WRK-COM-HKNCOMBI(IDX-Z) NOT =   "9999"
+      *
                IF     (WRK-COM-SRYKBN (IDX-Z)  =   "60"  )  AND
                       (WRK-COM-INPUTCD(IDX-Z)(1:1)  =   "1" )  AND
                       (WRK-COM-DATAKBN(IDX-Z)  =   "1"   )
@@ -2130,6 +2128,9 @@
                            UNTIL      (IDX-Z2      >   200     )   OR
                                       (SPA-ERRCD   NOT =   SPACE )  OR
                                   (WRK-GMN-INPUTCD (IDX-Z2) =   SPACE )
+      *
+                     IF      WRK-COM-HKNCOMBI(IDX-Z2) NOT =   "9999"
+      *
                        IF     (IDX-Z2      NOT =   IDX-Z )  AND
                               (WRK-COM-SRYSYUKBN   (IDX-Z2)
                                            NOT =   "610"  )  AND
@@ -2154,9 +2155,20 @@
                                                              (IDX-Z2)
                            END-IF
                        END-IF
+                     END-IF
                    END-PERFORM
                END-IF
+            END-IF
            END-PERFORM
+      *
+           .
+       2001-DOUCHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     逓減加算算定チェック処理
+      *****************************************************************
+       200-GAIRAI-SYORI-SEC           SECTION.
       *
       *
            MOVE    ZERO                TO  FLG-JIKASAN
@@ -2170,6 +2182,9 @@
                               (SPA-ERRCD           NOT =   SPACE )  OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE  AND
                                WRK-COM-INPUTCD (IDX-Z) =   SPACE )
+      *
+            IF      WRK-COM-HKNCOMBI(IDX-Z) NOT =   "9999"
+      *
       *        時間外緊急院内画像診断加算
                IF      WRK-COM-INPUTCD(IDX-Z)  =   "160000210"
                    MOVE    IDX-Z           TO  IDX-JIKAN
@@ -2231,6 +2246,7 @@
       *            ２つ以上のチェック
                    PERFORM 20012-JYUFUKU-CHK2-SEC
                END-IF
+             END-IF
            END-PERFORM
       *
       *    逓減加算算定あり
@@ -2614,7 +2630,8 @@
            END-IF
       *    包括対象以外
            IF     (WRK-COM-SRYSYUKBN(IDX-Z)    =   "610" )  OR
-                  (SPA-NYUGAIKBN           =   "1"       )
+                 ((SPA-NYUGAIKBN           =   "1"  )  AND
+                  (LNK-ORCSC-KENSAFLG      =   ZERO ))
                MOVE    1               TO  FLG-HOUKATU
                MOVE    IDX-Z           TO  IDX-STR
            ELSE
@@ -2638,20 +2655,28 @@
                                                    =   SPACE  AND
                                        WRK-GMN-INPUTCD (IDX2)
                                                    =   SPACE  )
+      *
+                     IF      WRK-COM-HKNCOMBI(IDX2) NOT =   "9999"
+      *
                        IF     (WRK-COM-INPUTCD(IDX-Z)
                                                NOT =   WRK-COM-INPUTCD
                                                              (IDX2)) AND
                               (WRK-COM-INPUTCD (IDX2)  =   WRK-SRYCD)
                           AND (WRK-COM-SRYSYUKBN(IDX2) =
                                                WRK-COM-SRYSYUKBN(IDX-Z))
-                           ADD     1               TO  WRK-JYU-CNT
-                           MOVE    IDX2            TO  WRK-JYU-IDX
+                          IF      SPA-NYUGAIKBN   =   "1"
+                              PERFORM 200111-JYUFUKU-NYU-SEC
+                           ELSE
+                               ADD     1               TO  WRK-JYU-CNT
+                               MOVE    IDX2            TO  WRK-JYU-IDX
+                           END-IF
                        END-IF
       *                包括・入院の時は剤内
                        IF     (FLG-HOUKATU             =   1  )  AND
                               (WRK-COM-ZAIEND(IDX2)    =   "1" )
                            MOVE    200                 TO  IDX2
                        END-IF
+                     END-IF
                    END-PERFORM
                END-IF
            END-PERFORM
@@ -2667,6 +2692,30 @@
            .
       *
        20011-JYUFUKU-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     重複算定不可チェック処理（入院日）
+      *****************************************************************
+       200111-JYUFUKU-NYU-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  FLG-NYUDAY
+           PERFORM VARYING     IDX-N2  FROM    1   BY  1
+                    UNTIL      IDX-N2  >   31
+               IF     (WRK-COM-NYUINDAY  (IDX-Z IDX-N2)
+                                           NOT =   ZERO )  AND
+                      (WRK-COM-NYUINDAY  (IDX2 IDX-N2)
+                                           NOT =   ZERO )
+                   MOVE    1               TO  FLG-NYUDAY
+                   MOVE    31              TO  IDX-N2
+               END-IF
+           END-PERFORM
+           IF      FLG-NYUDAY          =   1
+               ADD     1               TO  WRK-JYU-CNT
+               MOVE    IDX2            TO  WRK-JYU-IDX
+           END-IF
+           .
+       200111-JYUFUKU-NYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2709,6 +2758,9 @@
                                                    =   SPACE  AND
                                        WRK-GMN-INPUTCD (IDX2)
                                                    =   SPACE  )
+      *
+                     IF      WRK-COM-HKNCOMBI(IDX2) NOT =   "9999"
+      *
                        IF     (WRK-COM-INPUTCD(IDX-Z)
                                                NOT =   WRK-COM-INPUTCD
                                                              (IDX2)) AND
@@ -2718,6 +2770,7 @@
                            ADD     1               TO  WRK-JYU-CNT
                            MOVE    IDX2            TO  WRK-JYU-IDX
                        END-IF
+                     END-IF
                    END-PERFORM
                END-IF
            END-PERFORM
@@ -2898,6 +2951,9 @@
                               (SPA-ERRCD           NOT =   SPACE )  OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE  AND
                                WRK-COM-INPUTCD (IDX-Z) =   SPACE )
+      *
+             IF      WRK-COM-HKNCOMBI(IDX-Z) NOT =   "9999"
+      *
       *        時間外緊急院内画像診断加算
                IF      WRK-COM-INPUTCD(IDX-Z)  =   "160000210"
                    MOVE    IDX-Z           TO  IDX-JIKAN
@@ -2928,6 +2984,7 @@
                       (WRK-COM-TEIGEN-FLG(IDX-Z)   =   ZERO )
                    PERFORM 20011-JYUFUKU-CHK-SEC
                END-IF
+             END-IF
            END-PERFORM
       *
       *    時間外緊急院内画像診断加算有り
@@ -3084,6 +3141,8 @@
                               (WRK-GMN-INPUTCD (IDX)   =   SPACE  AND
                                WRK-COM-INPUTCD (IDX)   =   SPACE )
       *
+             IF      WRK-COM-HKNCOMBI(IDX) NOT =   "9999"
+      *
       *        検査の時、検査等実施判断を行う
                IF     (WRK-COM-INPUTCD(IDX)(1:1)   =   "1"  )  AND
                       (WRK-COM-SRYKBN (IDX)        =   "60" )
@@ -3176,6 +3235,7 @@
                    MOVE    ZERO                TO  FLG-BA-ARI
                    MOVE    ZERO                TO  WRK-KENIDX
                END-IF
+             END-IF
            END-PERFORM
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -3787,10 +3847,14 @@
                               (FLG-INPUT   NOT =   ZERO)  OR
                              ((WRK-GMN-INPUTCD (IDX-Z) =   SPACE ) AND
                               (WRK-COM-INPUTCD (IDX-Z) =   SPACE ))
+      *
+             IF      WRK-COM-HKNCOMBI(IDX-Z) NOT =   "9999"
+      *
                IF     (WRK-COM-SRYKBN  (IDX-Z) =   "60" ) AND
                       (WRK-COM-INPUTCD (IDX-Z) =   WRK-SRYCD )
                    MOVE    1                   TO  FLG-INPUT
                END-IF
+             END-IF
            END-PERFORM
       *
       *    当日回数

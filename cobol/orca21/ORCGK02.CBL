@@ -279,6 +279,8 @@
            03  FLG-WKSRYACT-ARI       PIC 9(01).
       *
            03  FLG-HKNCHK             PIC 9(01).
+      *
+           03  FLG-KENSADEL            PIC 9(01).
       *    Åº»úÎÎ°è
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -2408,14 +2410,12 @@
                        MOVE    1               TO  SPA-MAP-IDX
                    END-IF
       *
-      *TEST
       *        Æ±°ì¸¡ºººï½ü¤Ø
                WHEN    "0160"
                    MOVE    SPACE               TO  SPA-KIDCD
                    IF      SPA-KID1-FLG        =   "OK"
                        PERFORM 30016-KENSA-DELETE-SEC
                    END-IF
-      *TEST
       *        ¥ê¥Ï¥Ó¥êÄþ¸º³ÎÇ§
                WHEN    "0180"
                    MOVE    SPACE               TO  SPA-KIDCD
@@ -2763,7 +2763,16 @@
       *    Æ±°ì¸¡ºººï½ü½èÍý
       *****************************************************************
        30016-KENSA-DELETE-SEC                  SECTION.
-      *
+      *TEST
+      *    ¿ÇÎÅ¹Ô°Ù¡¢·×·×»»½èÍý¡¢ÊÔ½¸
+           MOVE    1                   TO  FLG-KENSADEL
+           MOVE    SPACE               TO  FLG-TOROKU
+           PERFORM 510-TBLHEN-SEC
+           MOVE    ZERO                TO  FLG-KENSADEL
+           MOVE    SPACE               TO  FLG-TOROKU
+           MOVE    SPACE               TO  SPA-KID1-FLG
+           GO      TO    30016-KENSA-DELETE-EXT
+      *TEST
            INITIALIZE                  WRK-SCR-REC
            MOVE    SPA-SCR-REC         TO  WRK-SCR-REC
       *
@@ -2800,9 +2809,12 @@
                    END-PERFORM
                END-IF
            END-PERFORM
+      *
       *    ¿ÇÎÅ¹Ô°Ù¡¢·×·×»»½èÍý¡¢ÊÔ½¸
+           MOVE    1                   TO  FLG-KENSADEL
            MOVE    SPACE               TO  FLG-TOROKU
            PERFORM 510-TBLHEN-SEC
+           MOVE    ZERO                TO  FLG-KENSADEL
            MOVE    SPACE               TO  FLG-TOROKU
       *
            MOVE    SPACE               TO  SPA-KID1-FLG
@@ -7180,6 +7192,9 @@
            IF      (SPA-NETAKIRI-ARI   NOT =   ZERO )  OR
                    (SPA-NETAKIRI-ARI2  NOT =   ZERO )
                MOVE    1                   TO  LNK-SC93-NETAKIRI-ARI
+           END-IF
+           IF      FLG-KENSADEL        =   1
+               MOVE    1               TO  LNK-SC93-DELSYORIFLG
            END-IF
            CALL    "ORCSC93"           USING
                                        MCPAREA

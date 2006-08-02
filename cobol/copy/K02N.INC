@@ -100,4 +100,7 @@
                 04  K02N-B08S-STATE   PIC S9(9)   BINARY.
               03  K02N-B09S.
                 04  K02N-B09S-STATE   PIC S9(9)   BINARY.
+              03  K02N-KENSA.
+                04  K02N-KENSA-VALUE  PIC X.
+                04  K02N-KENSA-LABEL  PIC X(10).
 

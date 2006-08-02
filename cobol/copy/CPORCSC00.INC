@@ -215,6 +215,9 @@
       *    Æþ±¡´ü´Ö
            03  LNK-ORCSC-NYUINYMD           PIC X(08).
            03  LNK-ORCSC-TAIINYMD           PIC X(08).
+      *    Æþ±¡¸¡ººÊñ³ç
+           03  LNK-ORCSC-KENSAFLG           PIC 9(01).
+      *
       *    Æ±Æü½é¿Ç»»Äê²Ê¡Ê³°Íè¤Î¤ß¡Ë
            03  LNK-ORCSC-DOUSYOSIN-AREA.
                05  LNK-ORCSC-DOUSYOSIN-OCC       OCCURS   10.

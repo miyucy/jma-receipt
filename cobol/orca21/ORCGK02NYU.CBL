@@ -240,6 +240,8 @@
       *
            03  FLG-WKSRYACT-ARI       PIC 9(01).
       *
+           03  FLG-KENSADEL           PIC 9(01).
+      *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -423,8 +425,8 @@
            03  WRK-MAE-TENSU           PIC 9(08).
       *
       *    自費用
-           03  WRK-TENTTLKBN       PIC 9(03).
-           03  WRK-HOZ-KEI         PIC 9(08).
+           03  WRK-TENTTLKBN           PIC 9(03).
+           03  WRK-HOZ-KEI             PIC 9(08).
       *
            03  WRK-KEI-ERRCD           PIC X(04).
            03  WRK-KEI-ERRMSG2         PIC X(80).
@@ -1982,6 +1984,13 @@
                        PERFORM 41010-PTNUM-SYORI-SEC
                    END-IF
       *
+      *        同一検査削除へ
+               WHEN    "0160"
+                   MOVE    SPACE               TO  SPA-KIDCD
+                   IF      SPA-KID1-FLG        =   "OK"
+                       PERFORM 30016-KENSA-DELETE-SEC
+                   END-IF
+      *
       *        リハビリ逓減確認
                WHEN    "0180"
                    MOVE    SPACE               TO  SPA-KIDCD
@@ -2154,6 +2163,22 @@
       *
            .
        3014-K081-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    同一検査削除処理
+      *****************************************************************
+       30016-KENSA-DELETE-SEC                  SECTION.
+      *
+      *    診療行為、計計算処理、編集
+           MOVE    1                   TO  FLG-KENSADEL
+           MOVE    SPACE               TO  FLG-TOROKU
+           PERFORM 510-TBLHEN-SEC
+           MOVE    ZERO                TO  FLG-KENSADEL
+           MOVE    SPACE               TO  FLG-TOROKU
+           MOVE    SPACE               TO  SPA-KID1-FLG
+           .
+       30016-KENSA-DELETE-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2945,6 +2970,9 @@
       *        ヘルプ
                WHEN    "CLICKED"       ALSO    "BHELP"
                    PERFORM 4199-HELP-SYORI-SEC
+      *        検査処理（トグルボタン）
+               WHEN    "CLICKED"       ALSO    "KENSA"
+                   PERFORM 4109-KENSA-SEC
            END-EVALUATE
       *
            .
@@ -5327,13 +5355,15 @@
       *    剤分離処理
            INITIALIZE                  ORCSC93AREA
            MOVE    "K02N"              TO  LNK-SC93-PG
-      *!   小児科外来診療科算定有り
-      *    MOVE    SPA-SYONIKA-ARI2    TO  LNK-SC93-SYONIKA-ARI2
-      *    寝たきり在宅科算定有り
-      *    IF      (SPA-NETAKIRI-ARI   NOT =   ZERO  )  OR
-      *            (SPA-NETAKIRI-ARI2  NOT =   ZERO  )
-      *        MOVE    1                   TO  LNK-SC93-NETAKIRI-ARI
-      *!   END-IF
+           IF      SPA-K02N-KENSAFLG   =   "T"
+      *        検査包括まとめを行う
+               MOVE    1               TO  LNK-SC93-KENSAARIFLG
+           ELSE
+               MOVE    ZERO            TO  LNK-SC93-KENSAARIFLG
+           END-IF
+           IF      FLG-KENSADEL        =   1
+               MOVE    1               TO  LNK-SC93-DELSYORIFLG
+           END-IF
            CALL    "ORCSC93"           USING
                                        MCPAREA
                                        SPA-SCR-REC
@@ -5343,6 +5373,11 @@
            IF      SPA-ERRCD       NOT =   SPACE
               AND (FLG-INIT            =   ZERO )
                GO      TO      5101-TBLSAIHEN-EXT
+           END-IF
+      *    まとめ検査に日付指定がある時、まとめ解除
+           IF     (LNK-SC93-ERRCD  NOT =   ZERO )  AND
+                  (SPA-K02N-KENSAFLG   =   "T"  )
+               MOVE    "F"             TO  SPA-K02N-KENSAFLG
            END-IF
       *
       *!   特定診療チェック
@@ -5962,6 +5997,10 @@
            MOVE    FLG-RIHTEI          TO  LNK-ORCSC-FLG-RIHTEI
       *    リハビリ算定回数
            MOVE    SPA-RIGAKU-NCNT-AREA    TO  LNK-RIGAKU-NCNT-AREA
+      *    入院検査包括
+           IF      SPA-K02N-KENSAFLG   =   "T"
+               MOVE    1                   TO  LNK-ORCSC-KENSAFLG
+           END-IF
       *
            MOVE    SPA-SRYYMD          TO  WRK-SPA-SRYYMD
       *    入院日の最後の日を診療日とする
@@ -6924,6 +6963,10 @@
            MOVE    FLG-RIHTEI          TO  LNK-ORCSC-FLG-RIHTEI
       *    リハビリ算定回数
            MOVE    SPA-RIGAKU-NCNT-AREA    TO  LNK-RIGAKU-NCNT-AREA
+      *    入院検査包括
+           IF      SPA-K02N-KENSAFLG   =   "T"
+               MOVE    1                   TO  LNK-ORCSC-KENSAFLG
+           END-IF
       *
       *            診療
            IF      SPA-SRYKBN-CNT (01) >   ZERO
@@ -7065,6 +7108,10 @@
                MOVE    LNK-NAIACCT-AREA    TO  SPA-NAIACCT-AREA
                MOVE    LNK-ORCSC-CHK-IDX   TO  SPA-CHK-IDX
                MOVE    LNK-ORCSC-KIDCD     TO  SPA-KIDCD
+      *
+               IF      LNK-ORCSC-KIDCD     NOT =   SPACE
+                   MOVE    SPACE           TO  SPA-ERRCD
+               END-IF
            END-IF
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
                   (SPA-KIDCD       NOT =   SPACE )
@@ -7601,7 +7648,6 @@
            MOVE    SPA-HOSPID          TO  WKSRY-HOSPID
            MOVE    SPA-NYUGAIKBN       TO  WKSRY-NYUGAIKBN
            MOVE    SPA-PTID            TO  WKSRY-PTID
-           MOVE    SPA-NYUGAIKBN       TO  WKSRY-NYUGAIKBN
            MOVE    SPA-SRYYMD          TO  WKSRY-SRYYMD
       *
            MOVE    WKSRYACT-REC        TO  MCPDATA-REC
@@ -8737,6 +8783,36 @@
       *
            .
        4101-TEISEI-EXT.
+           EXIT.
+      *****************************************************************
+      *    検査処理（トグルボタン）
+      *****************************************************************
+       4109-KENSA-SEC             SECTION.
+      *
+           MOVE    1                   TO  SPA-GMN-CUR
+      *
+           EVALUATE    SPA-K02N-KENSAFLG
+      *        包括中
+               WHEN    "T"
+      *            包括終了
+                   MOVE    "F"             TO  SPA-K02N-KENSAFLG
+      *        包括なし
+               WHEN    "F"
+      *            包括開始
+                   MOVE    "T"             TO  SPA-K02N-KENSAFLG
+                   IF     (SPA-PTID    NOT =   ZERO )  AND
+                          (SPA-GMN-MAX     >   ZERO )
+                       MOVE    SPACE           TO  FLG-TOROKU
+                       PERFORM 510-TBLHEN-SEC
+                       IF      LNK-SC93-ERRCD  =   1
+                           MOVE    "1062"          TO  SPA-ERRCD
+                           MOVE    "F"             TO  SPA-K02N-KENSAFLG
+                       END-IF
+                   END-IF
+           END-EVALUATE
+      *
+           .
+       4109-KENSA-EXT.
            EXIT.
       *
       *****************************************************************
@@ -10101,6 +10177,17 @@
                    MOVE    ZERO            TO  SPA-NAI-SYORI
            END-EVALUATE
       *
+           EVALUATE    SPA-K02N-KENSAFLG
+               WHEN    "T"
+                   MOVE    "T"             TO  K02N-KENSA-VALUE
+                   MOVE    "検査まとめ"    TO  K02N-KENSA-LABEL
+               WHEN    "F"
+               WHEN    SPACE
+                   MOVE    "F"             TO  SPA-K02N-KENSAFLG
+                   MOVE    "F"             TO  K02N-KENSA-VALUE
+                   MOVE    "検査追加"      TO  K02N-KENSA-LABEL
+           END-EVALUATE
+      *
       *    処理
            EVALUATE    SPA-SYORIFLG
                WHEN    0
@@ -10506,6 +10593,11 @@
                                        TO  WRK-KIDMSG
                    MOVE    "外来の画面に遷移しますか？"
                                        TO  WRK-KIDMSG(23:)
+               WHEN    "0160"
+                   MOVE    "包括検査で同じ検査があります。"
+                                       TO  WRK-KIDMSG
+                   MOVE    "ＯＫですべての同一検査を削除します。"
+                                       TO  WRK-KIDMSG(31:)
                WHEN    "0180"
                    MOVE    "個別療法が１０単位を超えます。"
                                        TO  WRK-KIDMSG

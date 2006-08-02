@@ -99,6 +99,7 @@
            03  IDX-2               PIC 9(04).
            03  IDX-HZN             PIC 9(04).
            03  IDX-TBL             PIC 9(04).
+           03  ID2                 PIC 9(02).
       *
       *    一時領域
        01  WRK-AREA.
@@ -122,6 +123,8 @@
            03  FLG-KENSA           PIC 9(01).
            03  FLG-KENSA-ARI       PIC 9(01).
            03  FLG-KEN-ERR         PIC 9(01).
+           03  TBL-HOUKNARI-TBL.
+               05  TBL-HOUKNARI    PIC 9(01)   OCCURS 20.
       *
            03  WRK-HOUKNSKBN       PIC X(02).
       *
@@ -134,6 +137,10 @@
            03  WRK-HKNCOMBI            PIC X(04).
            03  WRK-SRYKA               PIC X(02).
            03  WRK-DRCD                PIC X(04).
+      *    入院回数
+           03  WRK-HZN-INPUTCD-G.
+               05  WRK-HZN-INPUTCD     PIC X(22)  OCCURS   10.
+           03  IDX-TBL2                PIC 9(03).
       *
       *    小児科外来診察料テーブル
            COPY   "CMSYONIKATBL.INC".
@@ -183,9 +190,14 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
+      *
+           EVALUATE    LNK-SC93-DELSYORIFLG
+               WHEN    1
+      *            同一検査削除
+                   PERFORM 300-KENSA-DELETE-SEC
+           END-EVALUATE
       *    クリア処理
            PERFORM 100-INTI-SYORI-SEC
-      *
       *    剤分離処理
            PERFORM 100-ZAI-SET-SEC
       *
@@ -223,7 +235,6 @@
                    MOVE    SPACE           TO  SPA-COM-SRYKBN    (IDX)
                    MOVE    SPACE           TO  SPA-COM-SRYSYUKBN (IDX)
                ELSE
-      *
                    IF    ( SPA-COM-SRYSYUKBN (IDX)
                                      NOT =   SPA-COM-TNSSRYSYUKBN(IDX))
                      AND ( SPA-COM-SRYSYUKBN (IDX)
@@ -246,9 +257,7 @@
                    ADD     1                   TO  SPA-GMN-MAX
                END-IF
            END-PERFORM
-      *
            .
-      *
        100-INTI-SYORI-EXT.
            EXIT.
       *
@@ -260,12 +269,17 @@
            MOVE    ZERO                TO  FLG-KENSA-ARI
       *    剤分離
            PERFORM 1002-ZAIBUNNRI-SEC
-           IF      SPA-ERRCD           =   SPACE
+           IF     (SPA-ERRCD           =   SPACE ) 
+             AND  (LNK-SC93-DELSYORIFLG    =   ZERO)
+             AND  (LNK-SC93-ERRCD          =   ZERO)
       *    検査の包括があった時、まとめる
       *    入院で診療行為入力はしない
                IF     (SPA-NYUGAIKBN       =   "1" )  AND
                       (LNK-SC93-PG         =   "K02N")
                   IF      FLG-KENSA-ARI       =   1
+                       IF      LNK-SC93-KENSAARIFLG    =   1
+                           PERFORM 200-KENSA-SORT-SEC
+                       END-IF
       *                剤分離
                        PERFORM 1002-ZAIBUNNRI-SEC
                    END-IF
@@ -338,15 +352,21 @@
       *
            MOVE    ZERO                TO  FLG-SYUGI
       *!
+           MOVE    SPACE               TO  WRK-HKNCOMBI
+           MOVE    SPACE               TO  WRK-SRYKA
+           MOVE    SPACE               TO  WRK-DRCD
+      *    外来
            IF     (SPA-NYUGAIKBN       =   "2"  )  AND
                   (LNK-SC93-PG         =   "K02")
                MOVE    SPA-HKNCOMBINUM     TO  WRK-HKNCOMBI
                MOVE    SPA-SRYKA           TO  WRK-SRYKA
                MOVE    SPA-DRCD(2:4)       TO  WRK-DRCD
-           ELSE
-               MOVE    SPACE               TO  WRK-HKNCOMBI
-               MOVE    SPACE               TO  WRK-SRYKA
-               MOVE    SPACE               TO  WRK-DRCD
+           END-IF
+      *    入院
+           IF     (SPA-NYUGAIKBN       =   "1"  )  AND
+                  (LNK-SC93-PG         =   "K02N")
+               MOVE    SPA-HKNCOMBINUM     TO  WRK-HKNCOMBI
+               MOVE    SPA-SRYKA           TO  WRK-SRYKA
            END-IF
       *!
       *    診療種別区分編集
@@ -1616,6 +1636,19 @@
            ELSE
                IF      WRK-KENSA-MAX       <=  WRK-KENSA-CNT
                    MOVE    1                   TO  FLG-KENSA-ARI
+      *            包括対象
+                   MOVE    SPA-COM-HOUKNSKBN(IDX)  TO ID2
+                   IF      TBL-HOUKNARI (ID2)  =   ZERO
+                       MOVE    1               TO  TBL-HOUKNARI (ID2)
+                   END-IF
+               END-IF
+      *        入院の日付指定がある場合、対象外
+               IF     (SPA-NYUGAIKBN       =   "1" )  AND
+                      (IDX                 <   200 )  AND
+                      (SPA-GMN-INPUTCD (IDX + 1)(1:1) =   "*" )
+                   MOVE    9               TO  TBL-HOUKNARI (ID2)
+      *            警告
+                   MOVE    1               TO  LNK-SC93-ERRCD
                END-IF
            END-IF
       *
@@ -1817,6 +1850,8 @@
                           (WRK-COM-HOUKNSKBN(IDX)  NOT =  ZERO)
                    AND    (WRK-COM-SRYSYUKBN(IDX)  NOT =  "610")
                    AND    (WRK-COM-SET      (IDX)  NOT =   "1"  )
+      *            入院の回数行
+                   AND    (WRK-GMN-INPUTCD(IDX)(1:1)   NOT =   "*")
                        IF     (IDX                 >   1          )  AND
                               (WRK-GMN-INPUTCD (IDX - 1)(1:4)
                                                        =   ".600" OR
@@ -1861,7 +1896,16 @@
                                        TO  WRK-HKNCOMBI
            MOVE    WRK-COM-SRYKA (IDX)
                                        TO  WRK-SRYKA
+      *    包括対象検査数の判定
+           MOVE    WRK-HOUKNSKBN       TO  ID2
+           IF      TBL-HOUKNARI (ID2)  =   ZERO
+                                       OR  9
+               ADD     1               TO  IDX-TBL
+               MOVE    WRK-GMN-TBL (IDX)   TO  SPA-GMN-TBL(IDX-TBL)
+               MOVE    SPACE               TO  WRK-GMN-TBL (IDX)
+           ELSE
       *
+      **** MOVE    ZERO            TO  IDX-TBL2
            PERFORM VARYING     IDX-2   FROM    IDX   BY  1
                    UNTIL       IDX-2   >   200
                IF     (WRK-COM-INPUTCD(IDX-2)    =   SPACE  AND
@@ -1912,10 +1956,27 @@
                                                               (IDX-TBL)
                        END-IF
                        MOVE    SPACE           TO  WRK-GMN-TBL (IDX-2)
+      *DDDDDDDDDDDDDDD 次の行が入院回数の時、一緒に移動する
+      *                IF      WRK-GMN-INPUTCD(IDX-2 + 1)(1:1) =   "*"
+      *                    ADD     1               TO  IDX-TBL2
+      *                    MOVE    WRK-GMN-INPUTCD (IDX-2 + 1)
+      *                                        TO  WRK-HZN-INPUTCD
+      *                                               (IDX-TBL2)
+      *                    MOVE    SPACE       TO  WRK-GMN-TBL
+      *                                               (IDX-2 + 1)
+      *dddddddddddddddDEND-IF
                    END-IF
                END-IF
            END-PERFORM
+      ***  PERFORM VARYING     IDX-2   FROM    1   BY  1
+      *            UNTIL       IDX-2   >   IDX-TBL2
+      *        ADD     1               TO  IDX-TBL
+      *        MOVE    WRK-HZN-INPUTCD (IDX-2)
+      *                                TO  SPA-GMN-INPUTCD
+      *                                               (IDX-TBL)
+      *****END-PERFORM
       *
+           END-IF
            .
        2001-KENSA-SET-EXT.
            EXIT.
@@ -1930,4 +1991,64 @@
       *
            .
        1003-SAIHENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    同一検査削除処理
+      *****************************************************************
+       300-KENSA-DELETE-SEC                  SECTION.
+      *
+           INITIALIZE                  WRK-SCR-REC
+           MOVE    SPA-SCR-REC         TO  WRK-SCR-REC
+      *
+      *    同一検査を削除
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX         >   200     )   OR
+                             ((SPA-GMN-INPUTCD (IDX) =   SPACE) AND
+                              (SPA-COM-INPUTCD (IDX) =   SPACE ))
+               IF     (SPA-COM-SRYKBN (IDX)  =   "60"  )  AND
+                      (SPA-COM-INPUTCD(IDX)(1:1)  =   "1" )  AND
+                      (SPA-COM-DATAKBN(IDX)  =   "1"   )
+      *        逓減以外
+               AND    (SPA-COM-TEIGENKBN (IDX)   NOT =   1    )
+      *        包括対象以外
+               AND    (SPA-COM-SRYSYUKBN (IDX)   NOT =   "610")
+      *        包括分
+               AND    (SPA-COM-HOUKNSKBN(IDX)    NOT =   ZERO )
+      *        検体検査コメント以外
+               AND    (SPA-COM-KENTAICOMMENT (IDX)  =   ZERO )
+                   PERFORM VARYING     IDX-2  FROM    IDX     BY  1
+                           UNTIL       IDX-2      >   200
+                       IF     (IDX-2       NOT =   IDX )  AND
+                              (SPA-COM-SRYSYUKBN (IDX-2)
+                                           NOT =   "610"  )  AND
+                              (SPA-COM-INPUTCD(IDX)
+                                               =   SPA-COM-INPUTCD
+                                                        (IDX-2))
+      *                 検体検査コメントの判定
+                         AND  (WRK-COM-KENGRP(IDX)
+                                             =   WRK-COM-KENGRP(IDX-2))
+                           MOVE    SPACE           TO  SPA-GMN-INPUTCD
+                                                        (IDX-2)
+                       END-IF
+                   END-PERFORM
+               END-IF
+           END-PERFORM 
+           INITIALIZE                  WRK-SCR-REC
+           MOVE    SPA-SCR-REC         TO  WRK-SCR-REC
+           INITIALIZE                  SPA-SCR-REC
+           MOVE    ZERO                TO  IDX-TBL
+      *    同一検査を削除
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   200     )
+               IF      WRK-GMN-INPUTCD (IDX)   =   SPACE
+                   CONTINUE
+               ELSE
+                   ADD     1               TO  IDX-TBL
+                   ADD     1               TO  SPA-GMN-MAX
+                   MOVE    WRK-GMN-TBL (IDX)   TO  SPA-GMN-TBL (IDX-TBL)
+               END-IF
+           END-PERFORM
+           .
+       300-KENSA-DELETE-EXT.
            EXIT.

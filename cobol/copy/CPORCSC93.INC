@@ -22,17 +22,25 @@
       ************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 01.00.01     NACL-多々納  06/07/20  入院検査まとめ追加
       ************************************************************
       *
        01  ORCSC93AREA.
       *
       *    処理画面
-           03  LNK-SC93-PG            PIC X(04).
+           03  LNK-SC93-PG             PIC X(04).
+      *    処理フラグ（１：同一検査削除）
+           03  LNK-SC93-DELSYORIFLG    PIC  9(01).
       *
       *    セット入力（Ｋ０５）のセットコード
-           03  LNK-SC93-SETCODE       PIC X(06).
+           03  LNK-SC93-SETCODE        PIC X(06).
       *    小児科外来診療科算定有り
-           03  LNK-SC93-SYONIKA-ARI2  PIC  9(01).
+           03  LNK-SC93-SYONIKA-ARI2   PIC  9(01).
       *    寝たきり在宅料有り
-           03  LNK-SC93-NETAKIRI-ARI  PIC  9(01).
+           03  LNK-SC93-NETAKIRI-ARI   PIC  9(01).
+      *    入院検査まとめ有り
+           03  LNK-SC93-KENSAARIFLG    PIC  9(01).
+      *
+      *    入院検査まとめエラー
+           03  LNK-SC93-ERRCD          PIC  9(01).
       *
