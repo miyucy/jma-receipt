@@ -158,6 +158,7 @@
       *
            03  FLG-CHK             PIC 9(01).
            03  FLG-OK              PIC 9(01).
+           03  FLG-OK2             PIC 9(01).
            03  FLG-SYORI           PIC 9(01).
            03  FLG-HENSYU          PIC 9(01).
            03  FLG-DOUJI           PIC 9(01).
@@ -352,6 +353,7 @@
            03  WRK-IDG             PIC 9(04).
       * 
            03  WRK-ERRCD            PIC X(04).
+           03  WRK-ERRCD02          PIC X(04).
       *    保険組合せ名称
            03  WRK-HKNCOMBI         PIC X(04).
            03  WRK-HKNCOMBIMEI      PIC X(100).
@@ -1002,6 +1004,19 @@
                        PERFORM 510-ERRSET-SEC
                        MOVE    1               TO  FLG-END
                    END-IF
+                   IF     (SPA-ERRCD           =   SPACE )  AND
+                          (SPA-JIDCD       NOT =   SPACE )
+                       PERFORM 500-GMNHEN-SEC
+                       PERFORM 520-JIDSET-SEC
+                       MOVE    1               TO  FLG-END
+                   END-IF
+                   IF     (SPA-ERRCD           =   SPACE )  AND
+                          (SPA-JIDCD           =   SPACE )  AND
+                          (SPA-JIDCD2      NOT =   SPACE )
+                       PERFORM 500-GMNHEN-SEC
+                       PERFORM 520-JID2SET-SEC
+                       MOVE    1               TO  FLG-END
+                   END-IF
       *            確認画面より
                WHEN    "JID2"
                    PERFORM 3004-JID2-SET-SEC
@@ -1370,6 +1385,30 @@
                    IF      SPA-SYUNOU-KOUSIN   =   1
                        PERFORM 49012-SYUNOU-SAIKEISAN-SEC
                    END-IF
+               WHEN    "0123"
+      *            同一日に受診あり
+                   MOVE    SPACE           TO  SPA-JIDCD
+                   IF      SPA-JID1-FLG        =   "OK"
+                       PERFORM 410162-GRP-DENPNUM-CHK-SEC
+                       IF      SPA-NAI-KEIFLG2     =   1
+                           MOVE    "0124"          TO  SPA-JIDCD
+                       ELSE
+      *                    更新の確認メッセージ
+                           PERFORM 41016-HENSRYYMD-KMSG-SEC
+                       END-IF
+                   ELSE
+                       MOVE    4                   TO  SPA-GMN-CUR
+                   END-IF
+               WHEN    "0124"
+      *            受診連番が３以上
+                   MOVE    SPACE           TO  SPA-JIDCD
+                   IF      SPA-JID1-FLG        =   "OK"
+      *                更新の確認メッセージ
+                       PERFORM 41016-HENSRYYMD-KMSG-SEC
+                   ELSE
+                       MOVE    4                   TO  SPA-GMN-CUR
+                   END-IF
+      *
                WHEN    "0130"
                    MOVE    SPACE           TO  SPA-JIDCD
       *            回数ゼロ剤削除
@@ -1413,6 +1452,7 @@
                            MOVE    SPACE           TO  SPA-NAI-HENSRYYMD
                            MOVE    SPACE           TO  SPA-GMN-HENSRYYMD
                    END-EVALUATE
+                   MOVE    ZERO            TO  SPA-NAI-KEIFLG2
            END-EVALUATE
       *
            MOVE    SPACE               TO  SPA-JIDCD2
@@ -4862,6 +4902,7 @@
            IF      J02-HENSRYYMD   NOT =   SPA-GMN-HENSRYYMD
                MOVE    ZERO                TO  SPA-NAI-KEIFLG
            END-IF
+           MOVE    ZERO                TO  SPA-NAI-KEIFLG2
       *
            MOVE    J02-HENSRYYMD       TO  SPA-GMN-HENSRYYMD
       *
@@ -4880,14 +4921,6 @@
            END-IF
       *
            IF      SPA-ERRCD           =   SPACE
-      ******** INITIALIZE                      ORCSGDAYAREA
-      *        MOVE    SPA-GMN-SRYYM       TO  SGDAY-INDAY(1:6)
-      *        MOVE    "."                 TO  SGDAY-INDAY(7:1)
-      *        MOVE    SPA-GMN-HENSRYYMD   TO  SGDAY-INDAY(8:2)
-      *        CALL    "ORCSGDAY"          USING
-      *                                    ORCSGDAYAREA
-      *        IF      SGDAY-RC            =   ZERO
-      ********     MOVE    SGDAY-SDAY          TO  SPA-NAI-HENSRYYMD
                MOVE    SPA-NAI-SRYYM       TO  SPA-NAI-HENSRYYMD(1:6)
                MOVE    SPA-GMN-HENSRYYMD   TO  SPA-NAI-HENSRYYMD(7:2)
                INITIALIZE                      STS-AREA-DAY
@@ -4917,16 +4950,49 @@
       *
       *    既に算定のある日には変更できないものとする。
            MOVE    ZERO                TO  FLG-OK
+           MOVE    ZERO                TO  FLG-OK2
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-RRK-MAX
                IF     (SPA-RRK-RRKYMD (IDX)   =   SPA-NAI-HENSRYYMD) AND
                       (SPA-RRK-SRYKA  (SPA-NAI-RRKSELNUM)
                                            =   SPA-RRK-SRYKA (IDX))
-      *!保険判定
-               AND    (SPA-RRK-HKNCOMBI(SPA-NAI-RRKSELNUM)
-                                           =   SPA-RRK-HKNCOMBI(IDX))
-                   MOVE    1               TO  FLG-OK
+                   IF      SPA-NYUGAIKBN   =   "1"
+      *                入院の時、同じ保険はエラー
+                       IF      SPA-RRK-HKNCOMBI(SPA-NAI-RRKSELNUM)
+                                           =   SPA-RRK-HKNCOMBI(IDX)
+                           MOVE    1               TO  FLG-OK2
+                       ELSE
+                           MOVE    1               TO  FLG-OK
+                       END-IF
+                   ELSE
+                       MOVE    1               TO  FLG-OK
+                   END-IF
                END-IF
+      *!保険判定
+      *        AND    (SPA-RRK-HKNCOMBI(SPA-NAI-RRKSELNUM)
+      *                                    =   SPA-RRK-HKNCOMBI(IDX))
+      *            MOVE    1               TO  FLG-OK
+      *DDDDDDDDD   IF      SPA-NYUGAIKBN   =   "1"
+      *                入院の時、同じ保険はエラー
+      *                IF      SPA-RRK-HKNCOMBI(SPA-NAI-RRKSELNUM)
+      *                                    =   SPA-RRK-HKNCOMBI(IDX)
+      *                    MOVE    1               TO  FLG-OK
+      *                END-IF
+      *            ELSE
+      *                外来の時、包括まとめ以外があればエラー
+      *                IF    (SPA-RRK-HKNCOMBI(SPA-NAI-RRKSELNUM)
+      *                                    =   "9999"  )  OR
+      *                      (SPA-RRK-HKNCOMBI(IDX)
+      *                                    =   "9999"  )
+      *                    IF      SPA-RRK-HKNCOMBI(SPA-NAI-RRKSELNUM)
+      *                                    =   SPA-RRK-HKNCOMBI(IDX)
+      *                        MOVE    1               TO  FLG-OK
+      *                    END-IF
+      *                ELSE
+      *                    MOVE    2               TO  FLG-OK
+      ***************  END-IF
+      *************END-IF
+      ******** END-IF
            END-PERFORM
            MOVE    ZERO                TO  WRK-RRK-DOUJI-RENNUM
            MOVE    ZERO                TO  WRK-RRK-RENNUM
@@ -4938,21 +5004,42 @@
       *
       *    既に算定のある日には変更できないものとする。
            IF      SPA-ERRCD           =   SPACE
-               IF      FLG-OK              =   1
+               IF      FLG-OK2             =   1
                    MOVE    "0011"          TO  SPA-ERRCD
+               ELSE
+                   IF      FLG-OK              =   1
+                       MOVE    "0123"          TO  SPA-JIDCD
+                   END-IF
+               END-IF
+      *        受診連番が３以上
+               IF     (SPA-ERRCD       =   SPACE ) AND
+                      (SPA-JIDCD       =   SPACE )
+                   IF      SPA-NAI-KEIFLG2     =   1
+                       MOVE    "0124"          TO  SPA-JIDCD
+                   END-IF
                END-IF
            END-IF
-           IF      SPA-ERRCD           =   SPACE
+           IF     (SPA-ERRCD           =   SPACE ) AND
+                  (SPA-JIDCD           =   SPACE )
       *        更新の確認メッセージ
-               MOVE    "0115"              TO  SPA-JIDCD2
-               IF      SPA-RRK-GRP-DENPNUM(SPA-NAI-RRKSELNUM)
-                                       NOT =   ZERO
-                   MOVE    "0118"              TO  SPA-JIDCD2
-               END-IF
+               PERFORM 41016-HENSRYYMD-KMSG-SEC
            END-IF
       *
            .
        41016-HENSRYYMD-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    更新の確認メッセージ処理
+      *****************************************************************
+       41016-HENSRYYMD-KMSG-SEC      SECTION.
+      *
+           MOVE    "0115"              TO  SPA-JIDCD2
+           IF      SPA-RRK-GRP-DENPNUM(SPA-NAI-RRKSELNUM)
+                                   NOT =   ZERO
+               MOVE    "0118"              TO  SPA-JIDCD2
+           END-IF
+           .
+       41016-HENSRYYMD-KMSG-EXT.
            EXIT.
       *****************************************************************
       *    まとめ入力伝票番号チェック処理
@@ -5031,24 +5118,35 @@
                                   (FLG-OK      =   1       )
                    MOVE    TBL-SRYKA (IDT)     TO  WRK-SRYKA
                    PERFORM VARYING     IDX     FROM    1   BY  1
-                           UNTIL      (IDX     >   SPA-RRK-MAX )  OR
-                                      (FLG-OK      =   1       )
+                           UNTIL      (IDX     >   SPA-RRK-MAX )
+      *********************      OR   (FLG-OK      =   1       )
                        IF     (SPA-RRK-RRKYMD (IDX)
                                                =   SPA-NAI-HENSRYYMD)
                        AND    (SPA-RRK-SRYKA (IDX)
                                                =   WRK-SRYKA   )
-                       PERFORM VARYING     IDT2    FROM    1   BY  1
-                               UNTIL      (IDT2    >   10      )  OR
-                                          (TBL-HKNCOMBI(IDT IDT2)
-                                                       =   SPACE )  OR
-                                          (FLG-OK      =   1       )
-                           IF      SPA-RRK-HKNCOMBI (IDX)
-                                               =   TBL-HKNCOMBI
-                                                           (IDT IDT2)
-                               MOVE    1               TO  FLG-OK
+                           IF      SPA-RRK-RENNUM (IDX)    >=  3
+                               MOVE    1           TO  SPA-NAI-KEIFLG2
                            END-IF
-                       END-PERFORM
+                           MOVE    1               TO  FLG-OK
                        END-IF
+      *TEST
+              DISPLAY "SPA-RRK-RRKYMD:" SPA-RRK-RRKYMD (IDX)
+                     ",SRYKA:" SPA-RRK-SRYKA (IDX)
+                     ",RENNUM:" SPA-RRK-RENNUM (IDX) 
+                     ", SPA-NAI-KEIFLG2:"  SPA-NAI-KEIFLG2
+                    ",SRYKA:" WRK-SRYKA
+      *
+      *                PERFORM VARYING     IDT2    FROM    1   BY  1
+      *                        UNTIL      (IDT2    >   10      )  OR
+      *                                   (TBL-HKNCOMBI(IDT IDT2)
+      *                                                =   SPACE )
+      *                    IF      SPA-RRK-HKNCOMBI (IDX)
+      *                                            =   TBL-HKNCOMBI
+      *                                                    (IDT IDT2)
+      *                            MOVE    1               TO  FLG-OK
+      *                    END-IF
+      *****************END-PERFORM
+      ****             END-IF
                    END-PERFORM
                END-PERFORM
            END-IF
@@ -5391,12 +5489,6 @@
       *        連番判定
                IF      JYURRK-EDANUM       =   1
                    PERFORM 41016101-RENNUM-SET-SEC
-      *TEST
-               DISPLAY "SRYKA:" JYURRK-SRYKA
-                    ",HKNCOMBI:" JYURRK-HKNCOMBINUM
-                    ",RRK-RENNUM:" WRK-RRK-RENNUM
-                    ",RRK-DOUJ-RENNUM:" WRK-RRK-DOUJI-RENNUM
-      *TEST
                END-IF
       *        対象の診療会計を更新する
       *        診療会計更新
@@ -5982,12 +6074,6 @@
       *        連番判定
                IF      JYURRK-EDANUM       =   1
                    PERFORM 41016101-RENNUM-SET-SEC
-      *TEST
-               DISPLAY "SRYKA:" JYURRK-SRYKA
-                    ",HKNCOMBI:" JYURRK-HKNCOMBINUM
-                    ",RRK-RENNUM:" WRK-RRK-RENNUM
-                    ",RRK-DOUJ-RENNUM:" WRK-RRK-DOUJI-RENNUM
-      *TEST
                END-IF
       *        対象の診療会計を更新する
                MOVE    JYURRK-REC          TO  HZN-JYURRK-REC
@@ -6314,6 +6400,9 @@
            MOVE    JYURRK-RENNUM       TO  IDX-D3
            COMPUTE IDX-D3              =   IDX-D3    +   1
            COMPUTE IDX-D4              =   WRK-RRK-RENNUM    +   1
+           IF      IDX-D4              >   4
+               MOVE    4               TO  IDX-D4
+           END-IF
       *
            MOVE    SPA-NAI-DAY (IDY IDX-D3 IDX-D1)
                                        TO  WRK-DAY-S
@@ -6360,6 +6449,9 @@
            MOVE    HZN-JYURRK-RENNUM   TO  IDX-D3
            COMPUTE IDX-D3              =   IDX-D3    +   1
            COMPUTE IDX-D4              =   WRK-RRK-RENNUM    +   1
+           IF      IDX-D4              >   4
+               MOVE    4               TO  IDX-D4
+           END-IF
       *
            MOVE    SPA-NAI-DAY (IDY IDX-D3 IDX-D1)
                                        TO  WRK-DAY-S
@@ -8421,6 +8513,9 @@
            IF      SPA-RRK-RENNUM   (IDR)  >   1
                MOVE    SPA-RRK-RENNUM   (IDR)  TO  IDD3
                ADD     1                       TO  IDD3
+               IF      IDD3                    >   4
+                   MOVE    4                   TO  IDD3
+               END-IF
                MOVE    ZERO                TO  SPA-GNAI-DAY
                                                      (2 SPA-DAY-IDX)
                MOVE    ZERO                TO  SPA-GNAI-DAY
@@ -11434,6 +11529,12 @@
                                        DELIMITED  BY  SIZE
                                        INTO  WRK-ERRMSG
                    END-STRING
+               WHEN    "0034"
+                   STRING  "既に診療日に受診があります。"
+                           "変更できません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  WRK-ERRMSG
+                   END-STRING
                WHEN    "0012"
                    MOVE
                "受診日変更処理で受診歴確定時のみ入力できます。"
@@ -11623,6 +11724,12 @@
                                        DELIMITED  BY  SIZE
                                        INTO    WRK-ERRMSG
                    END-STRING
+               WHEN    "K060"
+                   STRING  "警告！受診履歴の連番が３以上になります。"
+                           "訂正での展開はできません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    WRK-ERRMSG
+                   END-STRING
       *
                WHEN    "K001"
                    MOVE    "受診日変更により当日の受診回数が変更"
@@ -11776,6 +11883,22 @@
                                        TO  WRK-JIDMSG
                    MOVE    "復元はできません。よろしいですか？"
                                        TO  WRK-JIDMSG(35:)
+      *
+               WHEN    "0123"
+                   STRING  "既に受診のある日です。"
+                                       DELIMITED  BY  SIZE
+                           "連番号を追加します。よろしいですか？"
+                                       DELIMITED  BY  SIZE
+                                       INTO    WRK-JIDMSG
+                   END-STRING
+      *
+               WHEN    "0124"
+                   STRING  "受診の連番号が３以上になります。"
+                                       DELIMITED  BY  SIZE
+                           "訂正での展開ができません。よろしいですか？"
+                                       DELIMITED  BY  SIZE
+                                       INTO    WRK-JIDMSG
+                   END-STRING
       *
                WHEN    "0121"
                    MOVE    "ブレビューが押下されました。"
