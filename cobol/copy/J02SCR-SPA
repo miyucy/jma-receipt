@@ -170,6 +170,8 @@
       *        ÆâÊ¬ÈçÉé²Ù»î¸³
                05  SPA-NAI-NAIBUNERR       PIC X(80).
                05  SPA-NAI-NAIBUNCHK       PIC 9(01).
+      *        Ï¢ÈÖ·Ù¹ð
+               05  SPA-NAI-KEIFLG2         PIC 9(01).
       *
       *    ½é´ü¤Î¤ß
         03  SPA-J02-SYOKI.
