@@ -196,6 +196,11 @@
       *                                     移行病名の特定疾患の表示をする
       *  03.01.03    NACL-藤原    06/07/21  保険組合せの名称の編集方法の
       *                                     修正
+      *
+      *  03.02.01    NACL-藤原    06/07/25  自費による保険限定の病名の重複
+      *                                     登録を可能とする
+      *  03.02.02    NACL-藤原    06/08/04  自院検索で移行病名がないときの
+      *                                     疾患区分の表示方法の修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1626,6 +1631,12 @@
                END-STRING
            END-IF                      
       *
+      *    自費の時
+           IF      COMB-HKNNUM (1:2)   =   "98"
+               MOVE    1                   TO
+                                           SPA-NAI-C02-HKNCOMBI-JIHI
+           END-IF
+      *
       *    労災の時、コメントの追加
            IF      COMB-HKNNUM         =   "971"  OR  "973"
                MOVE    1                   TO
@@ -1891,16 +1902,21 @@
                                OR      SPA-NAI-C04-BYOMEICD-O (IDX IDX3)
                                                        =   ALL "9"
                            MOVE    SPA-NAI-C04-BYOMEICD-O (IDX IDX3)
-                                       TO  SPA-NAI-C02-BYOMEICD-O
-                                                          (IDZ IDX3)
-                                           BYO-BYOMEICD
+                                       TO  BYO-BYOMEICD
                            PERFORM 900-BYOMEI-READ-SEC
                            IF      FLG-BYOMEI      =   ZERO
                                MOVE    BYO-HAISIYMD    TO
                                            SPA-NAI-C02-HAISIYMD (IDZ)
-                               MOVE    BYO-TOKSKNCD    TO
+                               IF      SPA-NAI-C04-BYOMEICD-O (IDX IDX3)
+                                           NOT =
+                                       SPA-NAI-C02-BYOMEICD-O (IDZ IDX3)
+                                   MOVE    BYO-TOKSKNCD    TO
                                            SPA-NAI-C02-TOKSKNCD (IDZ)
+                               END-IF 
                            END-IF
+                           MOVE    SPA-NAI-C04-BYOMEICD-O (IDX IDX3)
+                                       TO  SPA-NAI-C02-BYOMEICD-O
+                                                          (IDZ IDX3)
                            MOVE    SPA-NAI-C04-BYOMEI-O (IDX IDX3)
                                        TO  SPA-NAI-C02-BYOMEI-O
                                                           (IDZ IDX3)
@@ -1927,16 +1943,21 @@
                        OR      SPA-NAI-C04-BYOMEICD-O (IDZ IDX3)
                                                =   ALL "9"
                    MOVE    SPA-NAI-C04-BYOMEICD-O (IDZ IDX3)
-                                       TO  SPA-NAI-C02-BYOMEICD-O
-                                                          (IDZ IDX3)
-                                           BYO-BYOMEICD
+                                           TO  BYO-BYOMEICD
                    PERFORM 900-BYOMEI-READ-SEC
                    IF      FLG-BYOMEI      =   ZERO
                        MOVE    BYO-HAISIYMD    TO
                                            SPA-NAI-C02-HAISIYMD (IDZ)
-                       MOVE    BYO-TOKSKNCD    TO
+                       IF      SPA-NAI-C04-BYOMEICD-O (IDZ IDX3)
+                                       NOT =   SPA-NAI-C02-BYOMEICD-O
+                                                          (IDZ IDX3)
+                           MOVE    BYO-TOKSKNCD    TO
                                            SPA-NAI-C02-TOKSKNCD (IDZ)
+                       END-IF
                    END-IF
+                   MOVE    SPA-NAI-C04-BYOMEICD-O (IDZ IDX3)
+                                       TO  SPA-NAI-C02-BYOMEICD-O
+                                                          (IDZ IDX3)
                    MOVE    SPA-NAI-C04-BYOMEI-O   (IDZ IDX3)
                                        TO  SPA-NAI-C02-BYOMEI-O
                                                           (IDZ IDX3)
@@ -7086,8 +7107,10 @@
       *****************************************************************
        45021-HKNCOMBI-DABURI-CHK-SEC   SECTION.
       *
-      *    労災または自賠責の保険がない場合はチェックしない
-           IF      SPA-NAI-C02-HKNCOMBI-ROUSAI
+      *    労災または自賠責または自費の保険がない場合はチェックしない
+           IF    ( SPA-NAI-C02-HKNCOMBI-ROUSAI )
+                                       =   ZERO
+           AND   ( SPA-NAI-C02-HKNCOMBI-JIHI   )
                                        =   ZERO
                GO  TO   45021-HKNCOMBI-DABURI-CHK-EXT
            END-IF
@@ -7134,6 +7157,26 @@
                WHEN    OTHER
                    MOVE    ZERO            TO  FLG-HKNCOMBI-DABURI
            END-EVALUATE
+      *
+      *    自費と保険限定なしまたは同じ自費の場合は登録不可とする
+           IF    ( WRK-CHK-COMB-HKNNUM (1) (1:2)
+                                   =   "98" ) 
+           OR    ( WRK-CHK-COMB-HKNNUM (2) (1:2)
+                                   =   "98" ) 
+               EVALUATE    WRK-CHK-COMB-HKNNUM (1) (1:2)
+                                   ALSO    WRK-CHK-COMB-HKNNUM (2) (1:2)
+                   WHEN    "98"       ALSO    "98"
+                       IF      WRK-CHK-COMB-HKNID (1)
+                                       NOT =    WRK-CHK-COMB-HKNID (2)
+                           MOVE    1            TO  FLG-HKNCOMBI-DABURI
+                       END-IF
+                   WHEN    "98"       ALSO    SPACE
+                   WHEN    SPACE      ALSO    "98"
+                       MOVE    ZERO            TO  FLG-HKNCOMBI-DABURI
+                   WHEN    OTHER
+                       MOVE    1               TO  FLG-HKNCOMBI-DABURI
+               END-EVALUATE
+           END-IF
       *
            .                   
        45021-HKNCOMBI-DABURI-CHK-EXT.

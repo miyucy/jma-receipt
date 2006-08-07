@@ -44,6 +44,9 @@
       *                                     疾患区分の表示を変更
       *
       *  03.00.01    NACL-藤原    06/06/19   C06,C07,C08 削除
+      *
+      *  03.02.01    NACL-藤原    06/07/25  自費による保険限定の病名の重複
+      *                                     登録を可能とする
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1448,8 +1451,10 @@
       *****************************************************************
        410112-HKNCOMBI-DABURI-CHK-SEC   SECTION.
       *
-      *    労災または自賠責の保険がない場合はチェックしない
-           IF      SPA-NAI-C02-HKNCOMBI-ROUSAI
+      *    労災または自賠責または自費の保険がない場合はチェックしない
+           IF    ( SPA-NAI-C02-HKNCOMBI-ROUSAI )
+                                       =   ZERO
+           AND   ( SPA-NAI-C02-HKNCOMBI-JIHI   )
                                        =   ZERO
                GO  TO   410112-HKNCOMBI-DABURI-CHK-EXT
            END-IF
@@ -1496,6 +1501,26 @@
                WHEN    OTHER
                    MOVE    ZERO            TO  FLG-HKNCOMBI-DABURI
            END-EVALUATE
+      *
+      *    自費と保険限定なしまたは同じ自費の場合は登録不可とする
+           IF    ( WRK-CHK-COMB-HKNNUM (1) (1:2)
+                                   =   "98" ) 
+           OR    ( WRK-CHK-COMB-HKNNUM (2) (1:2)
+                                   =   "98" ) 
+               EVALUATE    WRK-CHK-COMB-HKNNUM (1) (1:2)
+                                   ALSO    WRK-CHK-COMB-HKNNUM (2) (1:2)
+                   WHEN    "98"       ALSO    "98"
+                       IF      WRK-CHK-COMB-HKNID (1)
+                                       NOT =    WRK-CHK-COMB-HKNID (2)
+                           MOVE    1            TO  FLG-HKNCOMBI-DABURI
+                       END-IF
+                   WHEN    "98"       ALSO    SPACE
+                   WHEN    SPACE      ALSO    "98"
+                       MOVE    ZERO            TO  FLG-HKNCOMBI-DABURI
+                   WHEN    OTHER
+                       MOVE    1               TO  FLG-HKNCOMBI-DABURI
+               END-EVALUATE
+           END-IF
       *
            .                   
        410112-HKNCOMBI-DABURI-CHK-EXT.
