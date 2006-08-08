@@ -25,7 +25,8 @@
        01  SODR-AREA.
            03  SODR-IN.
                05  SODR-HOSPID             PIC X(24).
-               05  SODR-UID8               PIC X(36).
+               05  SODR-KARTE-KEY          PIC X(36).
+               05  SODR-ORDERNUM           PIC 9(02).
                05  SODR-NYUGAIKBN          PIC X(01).
                05  SODR-PTNUM              PIC X(20).
                05  SODR-PTID               PIC 9(10).
@@ -34,15 +35,16 @@
                05  SODR-HKNCOMBI           PIC 9(04).
                05  SODR-DRCD               PIC X(05).
                05  SODR-ORDERID            PIC X(04).
-               05  SODR-ORDERNUM           PIC 9(02).
                05  SODR-UKEYMD             PIC X(08).
                05  SODR-UKEHMS             PIC X(06).
                05  SODR-PROCKBN            PIC X(01).
+               05  SODR-KEYGENERATE        PIC 9(01).
                05  SODR-INF-DIALOG         PIC 9(02).
                05  SODR-OPID               PIC X(16).
                05  SODR-UPYMD              PIC X(08).
                05  SODR-UPHMS              PIC X(06).
            03  SODR-OT.
+               05  SODR-ERRFLG             PIC 9(01).
                05  SODR-ERRCD              PIC X(04).
                05  SODR-DIALOG             PIC 9(02).
                05  SODR-RC                 PIC S9(02).

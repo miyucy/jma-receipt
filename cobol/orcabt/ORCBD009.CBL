@@ -336,9 +336,9 @@
            MOVE    "tbl_order"     TO  WRK-PATH-TABLE
            IF    ( WRK-PARA-UKESTYMD   =   SPACE ) AND
                  ( WRK-PARA-UKEEDYMD   =   SPACE )
-               MOVE    "key9"          TO  WRK-PATH-PATHNAME
+               MOVE    "key7"          TO  WRK-PATH-PATHNAME
            ELSE
-               MOVE    "key8"          TO  WRK-PATH-PATHNAME
+               MOVE    "key6"          TO  WRK-PATH-PATHNAME
                IF    ( WRK-PARA-UKESTYMD   NOT =   SPACE ) AND
                      ( WRK-PARA-UKEEDYMD       =   SPACE )
                    MOVE    WRK-PARA-UKESTYMD   TO  WRK-PARA-UKEEDYMD
@@ -556,23 +556,23 @@
            END-PERFORM
       *
       *    状態セット
-           EVALUATE    BD009-ORDER-STATUS-ORDER
-               WHEN    "1"
+           EVALUATE    BD009-ORDER-STATUS
+               WHEN    1
                    MOVE    "重"        TO  HCM45-JYOTAI(CNT-LINE)
-               WHEN    "2"
+               WHEN    2
                    MOVE    "有"        TO  HCM45-JYOTAI(CNT-LINE)
-               WHEN    "3"
+               WHEN    3
                    MOVE    "削除"      TO  HCM45-JYOTAI(CNT-LINE)
-               WHEN    "4"
+               WHEN    4
                    MOVE    "未処理"    TO  HCM45-JYOTAI(CNT-LINE)
-               WHEN    "5"
+               WHEN    5
                    MOVE    "保留"      TO  HCM45-JYOTAI(CNT-LINE)
            END-EVALUATE
       *
-           IF    ( BD009-ORDER-STATUS-ORDER    =   "1" )   OR
-                 ( BD009-ORDER-STATUS-ORDER    =   "2" )   OR
-                 ( BD009-ORDER-STATUS-ORDER    =   "4" )   OR
-                 ( BD009-ORDER-STATUS-ORDER    =   "5" )
+           IF    ( BD009-ORDER-STATUS  =   1 )   OR
+                 ( BD009-ORDER-STATUS  =   2 )   OR
+                 ( BD009-ORDER-STATUS  =   4 )   OR
+                 ( BD009-ORDER-STATUS  =   5 )
       *        入院オーダーエラーサブプロ読み込み
                MOVE    BD009-ORDER-REC TO  LNK-ORDER-REC
                CALL    "ORCBD009S"         USING
@@ -815,14 +815,11 @@
                                        MCPDATA-REC
            IF      MCP-RC          =   ZERO
                MOVE    MCPDATA-REC     TO  ORDER-REC
-               IF      ORDER-ITEMNUM   NOT =   1
-                   GO  TO  900-ORDER-FETCH-SEC
-               END-IF
                IF    ( WRK-PARA-SYORIKBN   NOT =   "1" )   AND
-                     ( ORDER-STATUS-ORDER  NOT =   "1" )   AND
-                     ( ORDER-STATUS-ORDER  NOT =   "2" )   AND
-                     ( ORDER-STATUS-ORDER  NOT =   "4" )   AND
-                     ( ORDER-STATUS-ORDER  NOT =   "5" )
+                     ( ORDER-STATUS        NOT =   1 )   AND
+                     ( ORDER-STATUS        NOT =   2 )   AND
+                     ( ORDER-STATUS        NOT =   4 )   AND
+                     ( ORDER-STATUS        NOT =   5 )
                    GO  TO  900-ORDER-FETCH-SEC
                END-IF
                MOVE    ZERO            TO  FLG-ORDER

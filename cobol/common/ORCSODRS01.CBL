@@ -42,7 +42,7 @@
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-END                 PIC 9(01).
-           03  FLG-ORDER               PIC 9(01).
+           03  FLG-ODRITEM             PIC 9(01).
       *
       *    カウント領域
       *01  CNT-AREA.
@@ -62,9 +62,13 @@
       *    ファイルレイアウト
       *****************************************************************
       *
-      *    オーダーテーブル
+      *    オーダ
        01  ORDER-REC.
            COPY    "CPORDER.INC".
+      *
+      *    オーダ項目
+       01  ODRITEM-REC.
+           COPY    "CPODRITEM.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -81,11 +85,11 @@
       *    入院異動チェックサブ
            COPY    "CPORCSODR.INC".
            COPY    "CPORCSODRS01.INC".
-       01  LNK-ORDER-REC.
-           02  LNK-ORDER-MAX           PIC 9(03).
-           02  LNK-ORDER-OCC           OCCURS   30.
-           COPY    "CPORDER.INC"       REPLACING  //ORDER-//
-                                       BY         //LNK-ORDER-//.
+       01  LNK-ODRITEM-REC.
+           02  LNK-ODRITEM-MAX         PIC 9(03).
+           02  LNK-ODRITEM-OCC         OCCURS   30.
+           COPY    "CPODRITEM.INC"     REPLACING  //ODRITEM-//
+                                       BY         //LNK-ODRITEM-//.
       *
       ******************************************************************
       *
@@ -93,7 +97,7 @@
                                        USING
                                                SODR-AREA
                                                SODRS01-AREA
-                                               LNK-ORDER-REC.
+                                               LNK-ODRITEM-REC.
       *
       *****************************************************************
       *    主　　処理
@@ -130,60 +134,75 @@
       *****************************************************************
        200-MAIN-SEC                    SECTION.
       *
-           PERFORM 2101-ORDER-RECONF-SEC
+           PERFORM 2101-ODRITEM-RECONF-SEC
+      *
+           INITIALIZE                      ORDER-REC
+           MOVE    SODR-HOSPID         TO  ORDER-HOSPID
+           MOVE    SODR-KARTE-KEY      TO  ORDER-KARTE-KEY
+           MOVE    SODR-ORDERNUM       TO  ORDER-ORDERNUM
+           MOVE    ORDER-REC           TO  MCPDATA-REC
+           MOVE    "tbl_order"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBDELETE-SEC
+           IF    ( MCP-RC          NOT =   ZERO )
+               DISPLAY "ORCSODRS01 ERROR:ORDER DELETE ERR"
+                       " PTID="        SODR-PTID
+                       " KARTE-KEY="   SODR-KARTE-KEY
+               MOVE    1               TO  FLG-END
+           END-IF
       *
            .
        200-MAIN-EXT.
            EXIT.
       *
       *****************************************************************
-      *    オーダー情報再編成処理
+      *    オーダー項目情報再編成処理
       *****************************************************************
-       2101-ORDER-RECONF-SEC           SECTION.
+       2101-ODRITEM-RECONF-SEC         SECTION.
       *
-           INITIALIZE                      ORDER-REC
-           MOVE    SODR-HOSPID         TO  ORDER-HOSPID
-           MOVE    SODR-UID8           TO  ORDER-KARTE-KEY
-           MOVE    SODR-ORDERNUM       TO  ORDER-ORDERNUM
-           MOVE    "3"                 TO  ORDER-STATUS-ITEM
-           PERFORM 900-ORDER-KEY3-SEL-SEC
+           INITIALIZE                      ODRITEM-REC
+           MOVE    SODR-HOSPID         TO  ODRITEM-HOSPID
+           MOVE    SODR-KARTE-KEY      TO  ODRITEM-KARTE-KEY
+           MOVE    SODR-ORDERNUM       TO  ODRITEM-ORDERNUM
+           MOVE    3                   TO  ODRITEM-STATUS
+           PERFORM 900-ODRITEM-KEY3-SEL-SEC
       *
-           PERFORM UNTIL ( FLG-ORDER   NOT =   ZERO )
-                     OR  ( LNK-ORDER-MAX  >=   CONST-ITEMNUM-MAX )
+           PERFORM UNTIL ( FLG-ODRITEM   NOT =   ZERO )
+                     OR  ( LNK-ODRITEM-MAX  >=   CONST-ITEMNUM-MAX )
       *
-               COMPUTE LNK-ORDER-MAX
-                   =   LNK-ORDER-MAX   +   1
+               COMPUTE LNK-ODRITEM-MAX
+                   =   LNK-ODRITEM-MAX   +   1
       *
-               MOVE    SODR-SRYKA      TO  ORDER-SRYKA
-               MOVE    SODR-HKNCOMBI   TO  ORDER-HKNCOMBI
-               MOVE    LNK-ORDER-MAX   TO  ORDER-ITEMNUM
+               MOVE    LNK-ODRITEM-MAX TO  ODRITEM-ITEMNUM
       *
-               MOVE    ORDER-REC       TO  LNK-ORDER-OCC (LNK-ORDER-MAX)
+               MOVE    ODRITEM-REC     TO  LNK-ODRITEM-OCC
+                                                   (LNK-ODRITEM-MAX)
       *
-               PERFORM 900-ORDER-KEY3-FET-SEC
+               PERFORM 900-ODRITEM-KEY3-FET-SEC
       *
            END-PERFORM
       *
-           MOVE    "tbl_order"         TO  MCP-TABLE
+           MOVE    "tbl_odritem"       TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
-           INITIALIZE                      ORDER-REC
-           MOVE    SODR-HOSPID         TO  ORDER-HOSPID
-           MOVE    SODR-UID8           TO  ORDER-KARTE-KEY
-           MOVE    SODR-ORDERNUM       TO  ORDER-ORDERNUM
-           MOVE    "tbl_order"         TO  MCP-TABLE
+           INITIALIZE                      ODRITEM-REC
+           MOVE    SODR-HOSPID         TO  ODRITEM-HOSPID
+           MOVE    SODR-KARTE-KEY      TO  ODRITEM-KARTE-KEY
+           MOVE    SODR-ORDERNUM       TO  ODRITEM-ORDERNUM
+           MOVE    ODRITEM-REC         TO  MCPDATA-REC
+           MOVE    "tbl_odritem"       TO  MCP-TABLE
            MOVE    "del1"              TO  MCP-PATHNAME
            PERFORM 910-DBDELETE-SEC
            IF    ( MCP-RC          NOT =   ZERO )
-               DISPLAY "ORCSDR01 ERROR:ORDER DELETE ERR"
+               DISPLAY "ORCSODRS01 ERROR:ODRITEM DELETE ERR"
                        " PTID="        SODR-PTID
-                       " KARTE-KEY="   SODR-UID8
+                       " KARTE-KEY="   SODR-KARTE-KEY
                MOVE    1               TO  FLG-END
            END-IF
       *
            .
-       2101-ORDER-RECONF-EXT.
+       2101-ODRITEM-RECONF-EXT.
            EXIT.
       *****************************************************************
       *    終了処理
@@ -196,46 +215,46 @@
        300-END-EXT.
            EXIT.
       *****************************************************************
-      *    オーダー検索処理(KEY3)
+      *    オーダー項目検索処理(KEY3)
       *****************************************************************
-       900-ORDER-KEY3-SEL-SEC      SECTION.
+       900-ODRITEM-KEY3-SEL-SEC      SECTION.
       *
-           MOVE    ZERO                TO  FLG-ORDER
+           MOVE    ZERO                TO  FLG-ODRITEM
       *
-           MOVE    ORDER-REC           TO  MCPDATA-REC
-           MOVE    "tbl_order"         TO  MCP-TABLE
+           MOVE    ODRITEM-REC         TO  MCPDATA-REC
+           MOVE    "tbl_odritem"       TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
-               MOVE    MCPDATA-REC     TO  ORDER-REC
+               MOVE    MCPDATA-REC     TO  ODRITEM-REC
            ELSE
-               INITIALIZE                  ORDER-REC
-               MOVE    1               TO  FLG-ORDER
+               INITIALIZE                  ODRITEM-REC
+               MOVE    1               TO  FLG-ODRITEM
            END-IF
       *
            .
-       900-ORDER-KEY3-SEL-EXT.
+       900-ODRITEM-KEY3-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    オーダーFETCH処理(KEY3)
+      *    オーダー項目FETCH処理(KEY3)
       *****************************************************************
-       900-ORDER-KEY3-FET-SEC      SECTION.
+       900-ODRITEM-KEY3-FET-SEC      SECTION.
       *
-           MOVE    ZERO                TO  FLG-ORDER
+           MOVE    ZERO                TO  FLG-ODRITEM
       *
-           MOVE    ORDER-REC           TO  MCPDATA-REC
-           MOVE    "tbl_order"         TO  MCP-TABLE
+           MOVE    ODRITEM-REC         TO  MCPDATA-REC
+           MOVE    "tbl_odritem"       TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
            PERFORM 910-DBFETCH-SEC
            IF    ( MCP-RC              =   ZERO )
-               MOVE    MCPDATA-REC     TO  ORDER-REC
+               MOVE    MCPDATA-REC     TO  ODRITEM-REC
            ELSE
-               INITIALIZE                  ORDER-REC
-               MOVE    1               TO  FLG-ORDER
+               INITIALIZE                  ODRITEM-REC
+               MOVE    1               TO  FLG-ODRITEM
            END-IF
       *
            .
-       900-ORDER-KEY3-FET-EXT.
+       900-ODRITEM-KEY3-FET-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ検索処理

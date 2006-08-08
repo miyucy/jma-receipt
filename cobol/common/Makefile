@@ -123,7 +123,6 @@ SRCS = ORCHC01.CBL \
        ORCHCM31S01.CBL \
        ORCSJGNGET.CBL \
        ORCSODR01.CBL \
-       ORCSODR02.CBL \
        ORCSODRNACCT.CBL \
        ORCHCN33SUB.CBL \
        ORCHCN33.CBL \
@@ -140,7 +139,6 @@ SRCS = ORCHC01.CBL \
        ORCHC502.CBL \
        ORCHC503.CBL \
        ORCSSANFUKA.CBL \
-       ORCSODR03.CBL \
        ORCSODRS01.CBL \
        ORCBT120SUB.CBL \
        ORCSODRS02.CBL \
@@ -172,11 +170,7 @@ SRCS = ORCHC01.CBL \
        ORCSDTCHK03.CBL \
        ORCSUSERCHK.CBL \
        ORCSADDSIGN.CBL \
-       ORCSODR04.CBL \
-       ORCSODR05.CBL \
-       ORCSODR06.CBL \
        ORCSMKBYOMEI.CBL \
-       ORCSODR07.CBL \
        ORCSROUKAISU.CBL \
        ORCSTEIKIJOB.CBL \
        ORCSMEIHEN.CBL \
@@ -205,6 +199,12 @@ SRCS = ORCHC01.CBL \
        ORCHCG016S01.CBL \
        ORCHCG016S02.CBL \
        ORCSVERSION.CBL \
+       ORCSODR02.CBL \
+       ORCSODR03.CBL \
+       ORCSODR04.CBL \
+       ORCSODR05.CBL \
+       ORCSODR06.CBL \
+       ORCSODR07.CBL \
 
 top_builddir = ../..
 include $(top_builddir)/cobol/Makefile.global

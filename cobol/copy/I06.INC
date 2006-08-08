@@ -95,11 +95,12 @@
                 04  I06-NYUKBN-COUNT           PIC S9(9)   BINARY.
                 04  I06-NYUKBN-ITEM            PIC X(11)   OCCURS  2.
                 04  I06-NYUKBN-ITEM-STATE      PIC S9(9)   BINARY.
+              03  I06-LBL-TOKNYUIN             PIC X(10).
               03  I06-CMB-TOKNYUIN.
-                04  I06-TOKNYUIN               PIC X(51).
+                04  I06-TOKNYUIN               PIC X(63).
                 04  I06-TOKNYUIN-STATE         PIC S9(9)   BINARY.
                 04  I06-TOKNYUIN-COUNT         PIC S9(9)   BINARY.
-                04  I06-TOKNYUIN-ITEM          PIC X(51)   OCCURS  30.
+                04  I06-TOKNYUIN-ITEM          PIC X(63)   OCCURS  30.
                 04  I06-TOKNYUIN-ITEM-STATE    PIC S9(9)   BINARY.
               03  I06-SNTNYUIN-G.
                 04  I06-SNTNYUIN               PIC X(60).

@@ -493,6 +493,7 @@ DB_files = \
         tbl_syuka.db \
 	query_teiki.db \
 	tbl_chk004.db \
+	tbl_odritem.db \
 
 all:   
 

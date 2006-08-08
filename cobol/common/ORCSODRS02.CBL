@@ -105,18 +105,18 @@
       *
       *    入院異動チェックサブ
            COPY    "CPORCSODR.INC".
-       01  LNK-ORDER-REC.
-           02  LNK-ORDER-MAX           PIC 9(03).
-           02  LNK-ORDER-OCC           OCCURS   30.
-           COPY    "CPORDER.INC"       REPLACING  //ORDER-//
-                                       BY         //LNK-ORDER-//.
+       01  LNK-ODRITEM-REC.
+           02  LNK-ODRITEM-MAX         PIC 9(03).
+           02  LNK-ODRITEM-OCC         OCCURS   30.
+           COPY    "CPODRITEM.INC"     REPLACING  //ODRITEM-//
+                                       BY         //LNK-ODRITEM-//.
       *
       ******************************************************************
       *
        PROCEDURE                       DIVISION
                                        USING
                                                SODR-AREA
-                                               LNK-ORDER-REC.
+                                               LNK-ODRITEM-REC.
       *
       *****************************************************************
       *    主　　処理
@@ -153,7 +153,7 @@
       *****************************************************************
        200-MAIN-SEC                    SECTION.
       *
-           PERFORM 900-ORDER-KEY6-SEL-SEC
+           PERFORM 900-ORDER-KEY-SEL-SEC
       *
            PERFORM 2001-HOSPID-CHK-SEC
       *
@@ -270,10 +270,6 @@
       *****************************************************************
        300-END-SEC                     SECTION.
       *
-           IF    ( SODR-ERRCD          NOT =   SPACE )
-               MOVE    1               TO  LNK-ORDER-MAX
-               MOVE    SODR-ERRCD      TO  LNK-ORDER-ERRCD-ORDER (1)
-           END-IF
       *
            .
        300-END-EXT.
@@ -304,19 +300,19 @@
        800-SEIWA-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    オーダー検索処理(KEY6)
+      *    オーダー検索処理(KEY)
       *****************************************************************
-       900-ORDER-KEY6-SEL-SEC      SECTION.
+       900-ORDER-KEY-SEL-SEC      SECTION.
       *
            MOVE    ZERO                TO  FLG-ORDER
       *
            INITIALIZE                      ORDER-REC
            MOVE    SODR-HOSPID         TO  ORDER-HOSPID
-           MOVE    SODR-UID8           TO  ORDER-KARTE-KEY
+           MOVE    SODR-KARTE-KEY      TO  ORDER-KARTE-KEY
            MOVE    SODR-ORDERNUM       TO  ORDER-ORDERNUM
            MOVE    ORDER-REC           TO  MCPDATA-REC
            MOVE    "tbl_order"         TO  MCP-TABLE
-           MOVE    "key6"              TO  MCP-PATHNAME
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
                MOVE    MCPDATA-REC     TO  ORDER-REC
@@ -326,11 +322,11 @@
            END-IF
       *
            MOVE    "tbl_order"         TO  MCP-TABLE
-           MOVE    "key6"              TO  MCP-PATHNAME
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
-       900-ORDER-KEY6-SEL-EXT.
+       900-ORDER-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
       *    システム管理検索処理(KEY10)

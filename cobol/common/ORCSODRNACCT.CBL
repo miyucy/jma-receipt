@@ -282,6 +282,8 @@
       *
       *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
+      *    （医療機関基本情報）
+           COPY    "CPSK1001.INC".
       *    （診療科入院科情報）
            COPY    "CPSK1005.INC".
       *    （職員情報）
@@ -416,6 +418,7 @@
            INITIALIZE                  IDX-AREA
            INITIALIZE                  WRK-AREA
       *
+           PERFORM 1001-SPA-SET-SEC
       *
            DISPLAY "SODRNACCT-ORDERID = " SODRNACCT-ORDERID
            MOVE    SPACE           TO  WRK-ERRCD
@@ -466,6 +469,33 @@
       *
        000-PROC-EXT.
            EXIT    PROGRAM.
+      *
+      *****************************************************************
+      *    SPA基本情報設定処理
+      *****************************************************************
+       1001-SPA-SET-SEC                SECTION.
+      *
+           INITIALIZE                          SPA-AREA
+      *
+           INITIALIZE                          SYSKANRI-REC
+           MOVE    "1001"                  TO  SYS-KANRICD
+           MOVE    "*"                     TO  SYS-KBNCD
+           MOVE    LNK-PTNYUINRRK-TENNYUYMD TO SYS-STYUKYMD
+                                               SYS-EDYUKYMD
+           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+           MOVE    SYSKANRI-REC            TO  SYS-1001-REC
+      *
+           MOVE    LNK-PTNYUINRRK-HOSPID   TO  SPA-HOSPID
+           MOVE    SYS-1001-PREFNUM        TO  SPA-PREFNUM
+           MOVE    "1"                     TO  SPA-NYUGAIKBN
+           MOVE    LNK-PTNYUINRRK-PTID     TO  SPA-PTID
+           PERFORM 900-PTINF-KEY-SEL-SEC
+           MOVE    PTINF-BIRTHDAY          TO  SPA-BIRTHDAY
+      *
+           .
+      *
+       1001-SPA-SET-EXT.
+           EXIT.
       *
       *****************************************************************
       *    入院　会計テーブル編集処理
@@ -2917,6 +2947,7 @@
                  MOVE     NYUINACCT-REC      TO  MCPDATA-REC
                  MOVE     "tbl_nyuinacct"    TO  MCP-TABLE
                  MOVE     "key"              TO  MCP-PATHNAME
+                 MOVE     "DBUPDATE"         TO  MCP-FUNC
                  CALL     "MONFUNC"          USING  MCPAREA
                                                     MCPDATA-REC 
       *          入院会計マスタクローズ
@@ -2997,6 +3028,7 @@
                    MOVE     NYUINACCT-REC      TO  MCPDATA-REC
                    MOVE     "tbl_nyuinacct"    TO  MCP-TABLE
                    MOVE     "key"              TO  MCP-PATHNAME
+                   MOVE     "DBUPDATE"         TO  MCP-FUNC
                    CALL     "MONFUNC"          USING  MCPAREA
                                                       MCPDATA-REC 
       *            入院会計マスタクローズ
@@ -3046,6 +3078,7 @@
                MOVE     NYUINACCT-REC      TO  MCPDATA-REC
                MOVE     "tbl_nyuinacct"    TO  MCP-TABLE
                MOVE     "key"              TO  MCP-PATHNAME
+               MOVE     "DBUPDATE"         TO  MCP-FUNC
                CALL     "MONFUNC"          USING  MCPAREA
                                                   MCPDATA-REC 
       *        入院会計マスタクローズ
@@ -3085,6 +3118,7 @@
                    MOVE     NYUINACCT-REC      TO  MCPDATA-REC
                    MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
                    MOVE    "key"               TO  MCP-PATHNAME
+                   MOVE     "DBUPDATE"         TO  MCP-FUNC
                    CALL    "MONFUNC"           USING  MCPAREA
                                                       MCPDATA-REC 
                    MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
@@ -3654,6 +3688,59 @@
            EXIT.
       *
       *****************************************************************
+      *    患者情報検索処理(KEY)
+      *****************************************************************
+       900-PTINF-KEY-SEL-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  FLG-PTINF
+      *
+           INITIALIZE                      PTINF-REC
+           MOVE    LNK-PTNYUINRRK-HOSPID   TO  PTINF-HOSPID
+           MOVE    LNK-PTNYUINRRK-PTID     TO  PTINF-PTID
+           MOVE    PTINF-REC           TO  MCPDATA-REC
+           MOVE    "tbl_ptinf"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF     MCP-RC    =   ZERO
+               MOVE    MCPDATA-REC     TO  PTINF-REC
+           ELSE
+               INITIALIZE                  PTINF-REC
+               MOVE    1               TO  FLG-PTINF
+           END-IF
+      *
+           MOVE    "tbl_ptinf"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       900-PTINF-KEY-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    システム管理検索処理(KEY10)
+      *****************************************************************
+       900-SYSKANRI-KEY10-SEL-SEC          SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SYSKANRI
+      *
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF     MCP-RC    =   ZERO
+               MOVE    MCPDATA-REC     TO  SYSKANRI-REC
+           ELSE
+               INITIALIZE                  SYSKANRI-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       900-PTINF-KEY-SEL-EXT.
+           EXIT.
+      *****************************************************************
       *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC              SECTION.
@@ -3699,6 +3786,7 @@
       *****************************************************************
        910-NYUINACCT-SELECT-SEC        SECTION.
       *
+           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            CALL    "MONFUNC"            USING

@@ -52,7 +52,6 @@
            03  SPA-I06-AREA.
                05  SPA-GMN-ALLIDOLST-PAGE          PIC 9(03).
                05  SPA-GMN-CUR                     PIC 9(03).
-               05  SPA-GMN-KJNYMD                  PIC X(08).
                05  SPA-GMN-HEAD-AREA.
                    07  SPA-GMN-PTNUM               PIC X(20).
                    07  SPA-GMN-NAME                PIC X(100).
@@ -75,7 +74,10 @@
                    07  SPA-GMN-SAGAKU-G.
                        09  SPA-GMN-SAGAKU          PIC X(2).
                        09                          PIC X(1).
-                       09  SPA-GMN-SAGAKUMEI       PIC X(20).
+                       09  SPA-GMN-SAGAKUMEI.
+                           11  SPA-GMN-SAGAKUMEI-NUM PIC X(05).
+                           11  SPA-GMN-SAGAKUMEI-EN  PIC X(02).
+                           11  SPA-GMN-SAGAKUMEI-FLI PIC X(13).
                    07  SPA-GMN-NYUINYMD            PIC X(10).
                    07  SPA-GMN-NYUINKA-G.
                        09  SPA-GMN-NYUINKA         PIC X(02).
@@ -107,7 +109,7 @@
                    07  SPA-GMN-TOKNYUIN-G.
                        09  SPA-GMN-TOKNYUIN        PIC X(02).
                        09                          PIC X(01).
-                       09  SPA-GMN-TOKNYUINMEI     PIC X(46).
+                       09  SPA-GMN-TOKNYUINMEI     PIC X(60).
                    07  SPA-GMN-SNTNYUIN            PIC X(60).
                    07  SPA-GMN-SKJTIME-G.
                        09  SPA-GMN-SKJTIME         PIC X(02).
@@ -126,7 +128,7 @@
                        09  SPA-GMN-TALLIDOJIYU     PIC X(20).
                        09  SPA-GMN-TALLPTNUM       PIC X(20).
                        09  SPA-GMN-TALLNAME        PIC X(100).
-                       09  SPA-GMN-TALLSTS         PIC X(1).
+                       09  SPA-GMN-TALLSTS         PIC 9(1).
                05  SPA-GMN-KJNIDOLST-AREA.
                    07  SPA-GMN-KJNIDOLST-MAX       PIC  9(5).
                    07  SPA-GMN-KJNIDOLST-SEL       PIC  9(5).
@@ -134,7 +136,7 @@
                        09  SPA-GMN-TKJNUKEYMD      PIC X(10).
                        09  SPA-GMN-TKJNIDOYMD      PIC X(10).
                        09  SPA-GMN-TKJNIDOJIYU     PIC X(20).
-                       09  SPA-GMN-TKJNSTS         PIC X(1).
+                       09  SPA-GMN-TKJNSTS         PIC 9(1).
                05  SPA-GMN-ERRMESLST-AREA.
                    07  SPA-GMN-ERRMESLST-MAX       PIC  9(5).
                    07  SPA-GMN-ERRMESLST-SEL       PIC  9(5).
@@ -196,7 +198,7 @@
                            11  SPA-GMN-TOKNYUINLST.
                                13  SPA-GMN-TOKNYUINL       PIC X(02).
                                13                          PIC X(01).
-                               13  SPA-GMN-TOKNYUINMEIL    PIC X(46).
+                               13  SPA-GMN-TOKNYUINMEIL    PIC X(60).
                            11  SPA-GMN-TOKNYUINL2.
                                13  SPA-GMN-TOKNYUINL2-KBN    PIC X(01).
                                13  SPA-GMN-TOKNYUINL2-NYUIN  PIC X(02).
@@ -206,10 +208,11 @@
                            11  SPA-GMN-SKJTIMEL        PIC X(2).
                            11                          PIC X(1).
                            11  SPA-GMN-SKJTIMEMEIL     PIC X(8).
+               05  SPA-NAI-KJNYMD                  PIC X(08).
                05  SPA-NAI-HEAD-AREA.
                    07  SPA-NAI-KARTE-KEY           PIC X(36).
                    07  SPA-NAI-ORDERNUM            PIC 9(02).
-                   07  SPA-NAI-STATUS-ORDER        PIC X(01).
+                   07  SPA-NAI-STATUS-ORDER        PIC 9(01).
                    07  SPA-NAI-HIDOYMD             PIC X(08).
                    07  SPA-NAI-ORDERID             PIC X(04).
                    07  SPA-NAI-PTID                PIC X(20).
@@ -222,20 +225,21 @@
                    07  SPA-NAI-INF-CHK             PIC 9(05).
                05  SPA-NAI-INPUT-AREA.
                    07  SPA-NAI-STATUS-G.
-                       09  SPA-NAI-STS-NYUKBN      PIC X(01).
-                       09  SPA-NAI-STS-BRMNUM      PIC X(01).
-                       09  SPA-NAI-STS-BTUNUM      PIC X(01).
-                       09  SPA-NAI-STS-SAGAKU      PIC X(01).
-                       09  SPA-NAI-STS-SHOKAI      PIC X(01).
-                       09  SPA-NAI-STS-TAIINCD     PIC X(01).
-                       09  SPA-NAI-STS-DR          PIC X(01)
+                       09  SPA-NAI-STS-NYUKBN      PIC 9(01).
+                       09  SPA-NAI-STS-BRMNUM      PIC 9(01).
+                       09  SPA-NAI-STS-BTUNUM      PIC 9(01).
+                       09  SPA-NAI-STS-SAGAKU      PIC 9(01).
+                       09  SPA-NAI-STS-SHOKAI      PIC 9(01).
+                       09  SPA-NAI-STS-TAIINCD     PIC 9(01).
+                       09  SPA-NAI-STS-DR          PIC 9(01)
                                                    OCCURS 3.
-                       09  SPA-NAI-STS-TOKNYUIN    PIC X(01).
-                       09  SPA-NAI-STS-HKNCOMBI    PIC X(01).
-                       09  SPA-NAI-STS-NYUINKA     PIC X(01).
-                       09  SPA-NAI-STS-SKJTIME     PIC X(01).
+                       09  SPA-NAI-STS-TOKNYUIN    PIC 9(01).
+                       09  SPA-NAI-STS-HKNCOMBI    PIC 9(01).
+                       09  SPA-NAI-STS-NYUINKA     PIC 9(01).
+                       09  SPA-NAI-STS-SKJTIME     PIC 9(01).
                    07  SPA-NAI-BTU-G.
                        09  SPA-NAI-BTU-KHNSRYCD    PIC X(09).
+                       09  SPA-NAI-BTU-SBT         PIC X(02).
                        09  SPA-NAI-BTU-BTUTOK      PIC X(02).
                        09  SPA-NAI-BTU-BRMTOK      PIC X(02).
                    07  SPA-NAI-NYUINYMD            PIC X(08).
@@ -245,6 +249,7 @@
                        09  SPA-NAI-TOKUTEI-KBN     PIC X(01).
                        09  SPA-NAI-TOKUTEI-NYUIN   PIC X(02).
                    07  SPA-NAI-KHNNYUIN            PIC X(60).
+                   07  SPA-NAI-SELNYUKHN           PIC 9(01).
                05  SPA-NAI-ALLIDOLIST-INPUT-AREA.
                    07  SPA-NAI-UKEYMD              PIC X(08).
                05  SPA-NAI-ALLIDOLST-AREA.
@@ -271,6 +276,7 @@
                        09  SPA-NAI-BTUDEF-KHNSRYCD PIC X(09).
                        09  SPA-NAI-BTUDEF-BTUTOK   PIC X(02).
                        09  SPA-NAI-BTUDEF-BRMTOK   PIC X(02).
+                       09  SPA-NAI-BTUDEF-SBT      PIC X(02).
       *
       *    フラグエリア
        01  FLG-AREA.
@@ -287,11 +293,13 @@
            03  FLG-RJN                     PIC 9(01).
            03  FLG-ERR                     PIC 9(01).
            03  FLG-ORDER                   PIC 9(01).
+           03  FLG-ODRITEM                 PIC 9(01).
            03  FLG-PTINF                   PIC 9(01).
            03  FLG-PTNYUINRRK              PIC 9(01).
            03  FLG-ORCSNUM                 PIC 9(01).
            03  FLG-KHNERR                  PIC 9(01).
            03  FLG-PTNUM                   PIC 9(01).
+           03  FLG-TARGET                  PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -376,14 +384,13 @@
       *
        01  ITEM-AREA.
            03  ITEM-LASTNYINYMD            PIC X(08).
-           03  ITEM-SAGAKU                 PIC X(10).
            03  ITEM-TOKNYUIN-G.
                05  ITEM-TOKNYUIN-KBN       PIC X(01).
                05  ITEM-TOKNYUIN-NYUIN     PIC X(02).
-           03  ITEM-TAIINCD                PIC X(40).
       *
        01  CONST-AREA.
-           03  CONST-ERRCDUNCHK            PIC X(03)   VALUE "901".
+           03  CONST-H180701               PIC X(08)   VALUE "20060701".
+           03  CONST-ERRCD9001             PIC X(04)   VALUE "9001".
            03  CONST-BTUNAME-MAX           PIC 9(05)   VALUE 50.
            03  CONST-SAGAKU-MAX            PIC 9(05)   VALUE 20.
            03  CONST-NYUINKA-MAX           PIC 9(05)   VALUE 99.
@@ -394,7 +401,7 @@
            03  CONST-ALLIDOLST-MAX         PIC 9(05)   VALUE 50.
            03  CONST-KJNIDOLST-MAX         PIC 9(05)   VALUE 50.
            03  CONST-ERRCD-MAX             PIC 9(05)   VALUE 10.
-           03  CONST-ORDER-MAX             PIC 9(05)   VALUE 30.
+           03  CONST-ODRITEM-MAX           PIC 9(05)   VALUE 30.
       *
       *    スパ領域 ワーク
            COPY    "COMMON-SPA"      REPLACING
@@ -410,11 +417,13 @@
       *    エラーコード
            COPY    "CPNCLAIMERRCD.INC".
       *
-       01  ERR-ORDER-REC.
-           02  ERR-ORDER-MAX           PIC 9(03).
-           02  ERR-ORDER-OCC           OCCURS   30.
-           COPY    "CPORDER.INC"       REPLACING  //ORDER-//
-                                       BY         //ERR-ORDER-//.
+      *
+       01  ERR-ORDER-ERRCD             PIC X(04).
+       01  ERR-ODRITEM-REC.
+           02  ERR-ODRITEM-MAX         PIC 9(03).
+           02  ERR-ODRITEM-OCC         OCCURS   30.
+           COPY    "CPODRITEM.INC"     REPLACING  //ODRITEM-//
+                                       BY         //ERR-ODRITEM-//.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -469,17 +478,21 @@
        01  ORDER-REC.
            COPY    "CPORDER.INC".
       *
+      *    オーダ項目
+       01  ODRITEM-REC.
+           COPY    "CPODRITEM.INC".
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
       *
       *    入院異動チェックサブ
            COPY    "CPORCSODR.INC".
-       01  LNK-ORDER-REC.
-           02  LNK-ORDER-MAX           PIC 9(03).
-           02  LNK-ORDER-OCC           OCCURS   30.
-           COPY    "CPORDER.INC"       REPLACING  //ORDER-//
-                                       BY         //LNK-ORDER-//.
+       01  LNK-ODRITEM-REC.
+           02  LNK-ODRITEM-MAX         PIC 9(03).
+           02  LNK-ODRITEM-OCC         OCCURS   30.
+           COPY    "CPODRITEM.INC"     REPLACING  //ODRITEM-//
+                                       BY         //LNK-ODRITEM-//.
       *
       *    病室名称編集
            COPY    "CPORCSBRMNUM.INC".
@@ -646,7 +659,7 @@
            PERFORM 800-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG     TO  SPA-GMN-UKEYMD
       *
-           MOVE    SPA-SYSYMD      TO  SPA-GMN-KJNYMD
+           MOVE    SPA-SYSYMD      TO  SPA-NAI-KJNYMD
       *
       *    コンボボックス初期処理
            PERFORM 3101-COMBO-SYOKI-SEC
@@ -699,7 +712,7 @@
       *
            INITIALIZE                  SYSKANRI-REC
            MOVE    "5002"          TO  SYS-KANRICD
-           MOVE    SPA-GMN-KJNYMD  TO  SYS-STYUKYMD
+           MOVE    SPA-NAI-KJNYMD  TO  SYS-STYUKYMD
                                        SYS-EDYUKYMD
            PERFORM 900-SYSKANRI-KEY2-SEL-SEC
       *
@@ -751,7 +764,7 @@
            INITIALIZE                  SYSKANRI-REC
       *
            MOVE    "5001"          TO  SYS-KANRICD
-           MOVE    SPA-GMN-KJNYMD  TO  SYS-STYUKYMD
+           MOVE    SPA-NAI-KJNYMD  TO  SYS-STYUKYMD
                                        SYS-EDYUKYMD
            PERFORM 900-SYSKANRI-KEY2-SEL-SEC
       *
@@ -781,6 +794,8 @@
                                    TO  SPA-NAI-BTUDEF-KHNSRYCD (IDX-CMB)
                        MOVE    SYS-5001-BTU-TOKTEI-NYUIN
                                    TO  SPA-NAI-BTUDEF-BTUTOK (IDX-CMB)
+                       MOVE    SYS-5001-BTU-SBT
+                                   TO  SPA-NAI-BTUDEF-SBT (IDX-CMB)
                    END-IF
       *
                END-PERFORM
@@ -810,7 +825,7 @@
            INITIALIZE                  SYSKANRI-REC
       *
            MOVE    "5113"          TO  SYS-KANRICD
-           MOVE    SPA-GMN-KJNYMD  TO  SYS-STYUKYMD
+           MOVE    SPA-NAI-KJNYMD  TO  SYS-STYUKYMD
                                        SYS-EDYUKYMD
            PERFORM 900-SYSKANRI-KEY2-SEL-SEC
       *
@@ -857,7 +872,7 @@
            INITIALIZE                  SYSKANRI-REC
       *
            MOVE    "1005"          TO  SYS-KANRICD
-           MOVE    SPA-GMN-KJNYMD  TO  SYS-STYUKYMD
+           MOVE    SPA-NAI-KJNYMD  TO  SYS-STYUKYMD
                                        SYS-EDYUKYMD
            PERFORM 900-SYSKANRI-KEY2-SEL-SEC
       *
@@ -916,7 +931,7 @@
            INITIALIZE                  SYSKANRI-REC
       *
            MOVE    "5013"          TO  SYS-KANRICD
-           MOVE    SPA-GMN-KJNYMD  TO  SYS-STYUKYMD
+           MOVE    SPA-NAI-KJNYMD  TO  SYS-STYUKYMD
                                        SYS-EDYUKYMD
            PERFORM 900-SYSKANRI-KEY2-SEL-SEC
       *
@@ -957,7 +972,7 @@
            INITIALIZE                  SYSKANRI-REC
       *
            MOVE    "1010"          TO  SYS-KANRICD
-           MOVE    SPA-GMN-KJNYMD  TO  SYS-STYUKYMD
+           MOVE    SPA-NAI-KJNYMD  TO  SYS-STYUKYMD
                                        SYS-EDYUKYMD
            PERFORM 900-SYSKANRI-KEY2-SEL-SEC
       *
@@ -1002,7 +1017,7 @@
                                        WRK-SPA-KYOTU-SET
                                        ORCSHKNSETAREA
       *
-           MOVE    SPA-GMN-KJNYMD      TO  WRK-SPA-SRYYMD
+           MOVE    SPA-NAI-KJNYMD      TO  WRK-SPA-SRYYMD
            MOVE    SPA-GMN-NYUINKA
                                        TO  WRK-SPA-SRYKA
            MOVE    "1"                 TO  WRK-SPA-NYUGAIKBN
@@ -1094,9 +1109,49 @@
       *
            IF    ( SPA-NAI-BTU-KHNSRYCD    NOT =   SPACE )
                MOVE    SPA-NAI-BTU-KHNSRYCD    TO  WRK-TNS-SRYCD
-               MOVE    SPA-GMN-KJNYMD          TO  WRK-TNS-KJNYMD
+               MOVE    SPA-NAI-KJNYMD          TO  WRK-TNS-KJNYMD
                PERFORM 900-TENSU-KEY-SEL-SEC
                MOVE    TNS-NAME    TO   SPA-NAI-KHNNYUIN
+           END-IF
+      *
+           IF    ( SPA-NAI-KJNYMD         >=   CONST-H180701 )
+            AND  ( SPA-NAI-BTU-SBT     =   "04" OR "09" )
+      *
+               MOVE    1               TO  SPA-NAI-SELNYUKHN
+      *
+               INITIALIZE                  SYSKANRI-REC
+               MOVE    "5111"          TO  SYS-KANRICD
+               MOVE    SPA-NAI-KJNYMD  TO  SYS-STYUKYMD
+                                           SYS-EDYUKYMD
+               PERFORM 900-SYSKANRI-KEY7-SEL-SEC
+               MOVE    SYSKANRI-REC    TO  SYS-5111-REC
+               PERFORM UNTIL ( FLG-SYSKANRI    NOT =   ZERO )
+      *
+                   MOVE    ZERO        TO  FLG-TARGET
+                   IF    ( SPA-NAI-BTU-SBT             =   "04" )
+                    AND  ( SYS-5111-BRM-NYUINRYOKBN    =   "05" )
+                       MOVE    1       TO  FLG-TARGET
+                   END-IF
+      *
+                   IF    ( SPA-NAI-BTU-SBT             =   "09" )
+                    AND  ( SYS-5111-BRM-NYUINRYOKBN    =   "06" )
+                       MOVE    1       TO  FLG-TARGET
+                   END-IF
+      *
+                   IF    ( FLG-TARGET  =   1 )
+      *
+                       MOVE    "3"             TO  WRK-TOKNYUIN-KBN
+                       MOVE    SYS-5111-KBNCD  TO  WRK-TOKKBNCD
+                       PERFORM 31011-TOKNYUINLST-SET-SEC
+                   END-IF
+      *
+                   PERFORM 900-SYSKANRI-KEY7-FET-SEC
+                   MOVE    SYSKANRI-REC    TO  SYS-5111-REC
+      *
+               END-PERFORM
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key7"              TO  MCP-PATHNAME
+               PERFORM 910-DBCLOSECURSOR-SEC
            END-IF
       *
            IF    ( SPA-NAI-BTU-BTUTOK  NOT =   SPACE )
@@ -1107,7 +1162,7 @@
                    MOVE    SPA-HOSPID          TO  AGECHK-HOSPID
                    MOVE    SPA-NAI-PTID        TO  AGECHK-PTID
                    MOVE    SPA-NAI-BIRTHDAY    TO  AGECHK-BIRTHDAY
-                   MOVE    SPA-GMN-KJNYMD      TO  AGECHK-SRYYMD
+                   MOVE    SPA-NAI-KJNYMD      TO  AGECHK-SRYYMD
       *
                    CALL    "ORCSAGECHK"    USING ORCSAGECHKAREA
                    IF    ( AGECHK-NENREI2-YY   <   15 )
@@ -1179,7 +1234,7 @@
            END-IF
       *
            MOVE    WRK-TOKKBNCD    TO  SYS-KBNCD
-           MOVE    SPA-GMN-KJNYMD  TO  SYS-STYUKYMD
+           MOVE    SPA-NAI-KJNYMD  TO  SYS-STYUKYMD
                                        SYS-EDYUKYMD
            PERFORM 900-SYSKANRI-KEY10-SEL-SEC
            IF    ( FLG-SYSKANRI    =   ZERO )
@@ -1229,7 +1284,7 @@
            INITIALIZE ORCSAGECHKAREA
            MOVE    SPA-HOSPID          TO  AGECHK-HOSPID
            MOVE    SPA-NAI-PTID        TO  AGECHK-PTID
-           MOVE    SPA-GMN-KJNYMD      TO  AGECHK-SRYYMD
+           MOVE    SPA-NAI-KJNYMD      TO  AGECHK-SRYYMD
            MOVE    SPA-NAI-BIRTHDAY    TO  AGECHK-BIRTHDAY
            CALL    "ORCSAGECHK"        USING   ORCSAGECHKAREA
            IF    ( AGECHK-RC       =   ZERO )
@@ -1253,7 +1308,7 @@
            MOVE    SPA-HOSPID          TO  PTKOH-HOSPID
            MOVE    SPA-NAI-PTID        TO  PTKOH-PTID
            MOVE    "027"               TO  PTKOH-KOHNUM
-           MOVE    SPA-GMN-KJNYMD      TO  PTKOH-TEKSTYMD
+           MOVE    SPA-NAI-KJNYMD      TO  PTKOH-TEKSTYMD
                                            PTKOH-TEKEDYMD
            PERFORM 900-PTKOHINF-KEY6-SEL-SEC
            IF    ( FLG-PTKOHINF        =   ZERO )
@@ -1274,7 +1329,7 @@
                                        SPA-GMN-ALLIDOLST-AREA
                                        SPA-NAI-ALLIDOLST-AREA
       *
-           PERFORM 900-ORDER-KEY4-SEL-SEC
+           PERFORM 900-ORDER-KEY3-SEL-SEC
       *
            PERFORM 31011-ALLIDOLST-SKIP-SEC
       *
@@ -1323,16 +1378,16 @@
                PERFORM 900-PTINF-KEY-SEL-SEC
                MOVE    PTINF-NAME  TO  SPA-GMN-TALLNAME   (IDX-MAX)
       *
-               MOVE    ORDER-STATUS-ORDER  TO  SPA-GMN-TALLSTS (IDX-MAX)
+               MOVE    ORDER-STATUS    TO  SPA-GMN-TALLSTS (IDX-MAX)
       *
-               PERFORM 900-ORDER-KEY4-FET-SEC
+               PERFORM 900-ORDER-KEY3-FET-SEC
       *
            END-PERFORM
       *
            MOVE    IDX-MAX         TO  SPA-GMN-ALLIDOLST-MAX
       *
            MOVE    "tbl_order"             TO  MCP-TABLE
-           MOVE    "key4"                  TO  MCP-PATHNAME
+           MOVE    "key3"                  TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            IF    ( SPA-GMN-ALLIDOLST-MAX   =   ZERO )
@@ -1364,7 +1419,7 @@
       *
                COMPUTE CNT-SKIP    =   CNT-SKIP    +   1
       *
-               PERFORM 900-ORDER-KEY4-FET-SEC
+               PERFORM 900-ORDER-KEY3-FET-SEC
       *
            END-PERFORM
       *
@@ -1381,7 +1436,7 @@
            INITIALIZE                  SPA-GMN-KJNIDOLST-AREA
                                        SPA-NAI-KJNIDOLST-AREA
       *
-           PERFORM 900-ORDER-KEY7-SEL-SEC
+           PERFORM 900-ORDER-KEY4-SEL-SEC
       *
            MOVE    ZERO            TO  IDX-MAX
       *
@@ -1410,16 +1465,16 @@
                PERFORM 4200-ORDERID-CHK-SEC
                MOVE    WRK-CMB-ITM2    TO  SPA-GMN-TKJNIDOJIYU(IDX-MAX)
       *
-               MOVE    ORDER-STATUS-ORDER  TO  SPA-GMN-TKJNSTS (IDX-MAX)
+               MOVE    ORDER-STATUS    TO  SPA-GMN-TKJNSTS (IDX-MAX)
       *
-               PERFORM 900-ORDER-KEY7-FET-SEC
+               PERFORM 900-ORDER-KEY4-FET-SEC
       *
            END-PERFORM
       *
-           MOVE    IDX-MAX         TO  SPA-GMN-KJNIDOLST-MAX
+           MOVE    IDX-MAX             TO  SPA-GMN-KJNIDOLST-MAX
       *
            MOVE    "tbl_order"             TO  MCP-TABLE
-           MOVE    "key7"                  TO  MCP-PATHNAME
+           MOVE    "key4"                  TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
@@ -1435,45 +1490,42 @@
            INITIALIZE                  SPA-GMN-ERRMESLST-AREA
            MOVE    ZERO                TO  IDX-MAX
       *
+           IF    ( ERR-ORDER-ERRCD  NOT =   SPACE )
+               MOVE    ERR-ORDER-ERRCD TO  SPA-GMN-TERRCD (1)
+               MOVE    ERR-ORDER-ERRCD TO  WRK-CMB-CD
+               PERFORM 4200-ERRCD-CHK-SEC
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-TERRMES (1)
+               MOVE    1               TO  IDX-MAX
+           END-IF
+      *
            PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0    >   ERR-ORDER-MAX )
+                   UNTIL ( IDX0    >   ERR-ODRITEM-MAX )
       *
-               MOVE    ERR-ORDER-OCC (IDX0)    TO  ORDER-REC
+               MOVE    ERR-ODRITEM-OCC (IDX0)  TO  ODRITEM-REC
       *
-               IF    ( IDX0        =   1 )
-                   IF    ( ORDER-ERRCD-ORDER   NOT =   SPACE )
-                       MOVE    ORDER-ERRCD-ORDER
-                                               TO  SPA-GMN-TERRCD (1)
-                       MOVE    ORDER-ERRCD-ORDER   TO  WRK-CMB-CD
-                       PERFORM 4200-ERRCD-CHK-SEC
-                       MOVE    WRK-CMB-ITM     TO  SPA-GMN-TERRMES (1)
-                       MOVE    1               TO  IDX-MAX
-                   END-IF
-               END-IF
-      *
-               IF    ( ORDER-ERRCD-ITEM    NOT =   SPACE )
+               IF    ( ODRITEM-ERRCD   NOT =   SPACE )
                    IF    ( IDX-MAX    >=   CONST-ERRCD-MAX )
                        CONTINUE
                    ELSE
                        COMPUTE IDX-MAX =   IDX-MAX +   1
       *
-                       MOVE    ORDER-ERRCD-ITEM
+                       MOVE    ODRITEM-ERRCD
                                            TO  SPA-GMN-TERRCD (IDX-MAX)
-                       IF    ( ORDER-ERRCD-ITEM (2:)
-                                           =   CONST-ERRCDUNCHK )
-                           MOVE    ORDER-ERRCD-ITEM    TO  WRK-CMB-CD
+                       IF    ( ODRITEM-ERRCD
+                                           =   CONST-ERRCD9001 )
+                           MOVE    ODRITEM-ERRCD   TO  WRK-CMB-CD
                            PERFORM 4200-ERRCD-CHK-SEC
-                           MOVE    WRK-CMB-ITM         TO  WRK-STR
-                           MOVE    ORDER-ITEMID        TO  WRK-CMB-CD
+                           MOVE    WRK-CMB-ITM     TO  WRK-STR
+                           MOVE    ODRITEM-ITEMID  TO  WRK-CMB-CD
                            PERFORM 4200-NCLAIMID-CHK-SEC
                            STRING  WRK-STR         DELIMITED BY SPACE
                                    "［"            DELIMITED BY SIZE
                                    WRK-CMB-ITM     DELIMITED BY SPACE
                                    "］"            DELIMITED BY SIZE
-                           INTO                SPA-GMN-TERRMES(IDX-MAX)
+                           INTO    SPA-GMN-TERRMES(IDX-MAX)
                            END-STRING
                        ELSE
-                           MOVE    ORDER-ERRCD-ITEM    TO  WRK-CMB-CD
+                           MOVE    ODRITEM-ERRCD   TO  WRK-CMB-CD
                            PERFORM 4200-ERRCD-CHK-SEC
                            MOVE    WRK-CMB-ITM
                                            TO  SPA-GMN-TERRMES(IDX-MAX)
@@ -1670,7 +1722,7 @@
       *****************************************************************
        41011-INPUT-AREA-SEC            SECTION.
       *
-           IF    ( SPA-GMN-TALLSTS (SPA-GMN-ALLIDOLST-SEL) =   "4" )
+           IF    ( SPA-GMN-TALLSTS (SPA-GMN-ALLIDOLST-SEL) =   4 )
                PERFORM 41011-DIRECT-UPD-KHNCHK-SEC
                IF    ( FLG-KHNERR  NOT =   ZERO )
                    GO  TO  41011-INPUT-AREA-EXT
@@ -1678,9 +1730,9 @@
            END-IF
       *
            EVALUATE    SPA-GMN-TALLSTS (SPA-GMN-ALLIDOLST-SEL)
-           WHEN    "1"
+           WHEN    1
                PERFORM 41011-KHNERR-HEN-SEC
-           WHEN    "3"
+           WHEN    3
                CONTINUE
            WHEN    OTHER
                EVALUATE    SPA-NAI-TALLORDERID (SPA-GMN-ALLIDOLST-SEL)
@@ -1714,17 +1766,17 @@
            MOVE    ZERO            TO  FLG-KHNERR
       *
            INITIALIZE                  SODR-AREA
-           INITIALIZE                  LNK-ORDER-REC
+           INITIALIZE                  LNK-ODRITEM-REC
       *
            MOVE    SPA-NAI-TALLHOSPID    (SPA-GMN-ALLIDOLST-SEL)
                                    TO  SODR-HOSPID
            MOVE    SPA-NAI-TALLKARTE-KEY (SPA-GMN-ALLIDOLST-SEL)
-                                   TO  SODR-UID8
+                                   TO  SODR-KARTE-KEY
            MOVE    SPA-NAI-TALLORDERNUM (SPA-GMN-ALLIDOLST-SEL)
                                    TO  SODR-ORDERNUM
            CALL    "ORCSODRS02"        USING   SODR-AREA
-                                               LNK-ORDER-REC
-           IF    ( SODR-ERRCD  NOT =   SPACE )
+                                               LNK-ODRITEM-REC
+           IF    ( SODR-ERRFLG NOT =   ZERO )
       *
                MOVE    1           TO  FLG-KHNERR
       *
@@ -1736,7 +1788,8 @@
                                            SPA-NAI-INPUT-AREA
                PERFORM 3101-KJNIDOLST-SEC
       *
-               MOVE    LNK-ORDER-REC   TO  ERR-ORDER-REC
+               MOVE    SODR-ERRCD        TO  ERR-ORDER-ERRCD
+               MOVE    LNK-ODRITEM-REC   TO  ERR-ODRITEM-REC
                PERFORM 3101-ERRMESLST-SEC
       *
            END-IF
@@ -1753,25 +1806,29 @@
       *
            INITIALIZE                  SPA-GMN-INPUT-AREA
                                        SPA-NAI-INPUT-AREA
-                                       ERR-ORDER-REC
+                                       ERR-ODRITEM-REC
       *
-           PERFORM 900-ORDER-KEY6-SEL-SEC
+           PERFORM 900-ORDER-KEY-SEL-SEC
+           MOVE    ORDER-ERRCD1    TO  ERR-ORDER-ERRCD
       *
-           PERFORM UNTIL ( FLG-ORDER   NOT =   ZERO )
+           PERFORM 900-ODRITEM-KEY4-SEL-SEC
       *
-               IF    ( ERR-ORDER-MAX   >=  CONST-ORDER-MAX )
+           PERFORM UNTIL ( FLG-ODRITEM   NOT =   ZERO )
+      *
+               IF    ( ERR-ODRITEM-MAX   >=  CONST-ODRITEM-MAX )
                    CONTINUE
                ELSE
-                   COMPUTE ERR-ORDER-MAX   =   ERR-ORDER-MAX   +   1
-                   MOVE    ORDER-REC   TO  ERR-ORDER-OCC (ERR-ORDER-MAX)
+                   COMPUTE ERR-ODRITEM-MAX =   ERR-ODRITEM-MAX   +   1
+                   MOVE    ODRITEM-REC TO  ERR-ODRITEM-OCC
+                                                      (ERR-ODRITEM-MAX)
                END-IF
       *
-               PERFORM 900-ORDER-KEY6-FET-SEC
+               PERFORM 900-ODRITEM-KEY4-FET-SEC
       *
            END-PERFORM
       *
-           MOVE    "tbl_order"         TO  MCP-TABLE
-           MOVE    "key6"              TO  MCP-PATHNAME
+           MOVE    "tbl_odritem"       TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            PERFORM 3101-KJNIDOLST-SEC
@@ -1793,18 +1850,22 @@
       *
            INITIALIZE                  SPA-GMN-INPUT-AREA
                                        SPA-NAI-INPUT-AREA
-                                       ERR-ORDER-REC
+                                       ERR-ORDER-ERRCD
+                                       ERR-ODRITEM-REC
                                        ITEM-AREA
       *
-           MOVE    ALL "-"         TO  SPA-NAI-STATUS-G
+           MOVE    ALL "9"         TO  SPA-NAI-STATUS-G
            MOVE    ZERO            TO  CNT-ORDER
            MOVE    ZERO            TO  CNT-DRCD
       *
-           PERFORM 900-ORDER-KEY6-SEL-SEC
+           PERFORM 900-ORDER-KEY-SEL-SEC
+           MOVE    ORDER-ERRCD1    TO  ERR-ORDER-ERRCD
       *
-           PERFORM UNTIL ( FLG-ORDER   NOT =   ZERO )
+           PERFORM 900-ODRITEM-KEY4-SEL-SEC
       *
-               IF    ( ORDER-STATUS-ITEM   NOT =   "3" )
+           PERFORM UNTIL ( FLG-ODRITEM     NOT =   ZERO )
+      *
+               IF    ( ODRITEM-STATUS      NOT =   3 )
       *
                    EVALUATE    WRK-ALLORDERID
                    WHEN    NORDERID-NYUINID
@@ -1833,19 +1894,20 @@
       *
                END-IF
       *
-               IF    ( ERR-ORDER-MAX   >=  CONST-ORDER-MAX )
+               IF    ( ERR-ODRITEM-MAX      >=   CONST-ODRITEM-MAX )
                    CONTINUE
                ELSE
-                   COMPUTE ERR-ORDER-MAX   =   ERR-ORDER-MAX   +   1
-                   MOVE    ORDER-REC   TO  ERR-ORDER-OCC (ERR-ORDER-MAX)
+                   COMPUTE ERR-ODRITEM-MAX   =   ERR-ODRITEM-MAX   +   1
+                   MOVE    ODRITEM-REC TO  ERR-ODRITEM-OCC
+                                                (ERR-ODRITEM-MAX)
                END-IF
       *
-               PERFORM 900-ORDER-KEY6-FET-SEC
+               PERFORM 900-ODRITEM-KEY4-FET-SEC
       *
            END-PERFORM
       *
-           MOVE    "tbl_order"         TO  MCP-TABLE
-           MOVE    "key6"              TO  MCP-PATHNAME
+           MOVE    "tbl_odritem"       TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            PERFORM 41011-DIRECT-UPD-CHK-SEC
@@ -1880,7 +1942,7 @@
       *
            PERFORM 410111-INPUT-COMMON-HEN-SEC
       *
-           EVALUATE    ORDER-ITEMID
+           EVALUATE    ODRITEM-ITEMID
       *
            WHEN    NCLAIMID-NYUKBNJMA
                PERFORM 4101111-NYUKBN-HEN-SEC
@@ -1925,7 +1987,7 @@
       *
            PERFORM 410111-INPUT-COMMON-HEN-SEC
       *
-           EVALUATE    ORDER-ITEMID
+           EVALUATE    ODRITEM-ITEMID
       *
            WHEN    NCLAIMID-TAIINCDJMA
                PERFORM 4101111-TAIINCD-HEN-SEC
@@ -1964,7 +2026,7 @@
       *
            PERFORM 410111-INPUT-COMMON-HEN-SEC
       *
-           EVALUATE    ORDER-ITEMID
+           EVALUATE    ODRITEM-ITEMID
       *
            WHEN    NCLAIMID-SKJTIMEJMA
                PERFORM 4101111-SKJTIME-HEN-SEC
@@ -1987,7 +2049,7 @@
       *
            PERFORM 410111-INPUT-COMMON-HEN-SEC
       *
-           EVALUATE    ORDER-ITEMID
+           EVALUATE    ODRITEM-ITEMID
       *
            WHEN    NCLAIMID-DRJMA
                PERFORM 4101111-DR-HEN-SEC
@@ -2014,7 +2076,7 @@
       *
            PERFORM 410111-INPUT-COMMON-HEN-SEC
       *
-           EVALUATE    ORDER-ITEMID
+           EVALUATE    ODRITEM-ITEMID
       *
            WHEN    NCLAIMID-NYUKBNJMA
                PERFORM 4101111-NYUKBN-HEN-SEC
@@ -2064,7 +2126,7 @@
       *****************************************************************
        410111-INPUT-COMMON-HEN-SEC     SECTION.
       *
-           EVALUATE    ORDER-ITEMID
+           EVALUATE    ODRITEM-ITEMID
       *
            WHEN    NCLAIMID-NYUINKAJMA
                PERFORM 4101111-NYUINKA-HEN-SEC
@@ -2090,7 +2152,6 @@
            WHEN    NORDERID-NYUINID
       *
                PERFORM 4101112-SHOKAI-HEN-SEC
-               PERFORM 4101112-SAGAKU-HEN-SEC
                PERFORM 4101112-BTUNUM-HEN-SEC
                PERFORM 4101112-SAGAKUMEI-HEN-SEC
                PERFORM 4101112-SHOKAIMEI-HEN-SEC
@@ -2120,7 +2181,6 @@
            WHEN   NORDERID-IDOBTUID
            WHEN   NORDERID-IDOBRMID
       *
-               PERFORM 4101112-SAGAKU-HEN-SEC
                PERFORM 4101112-BTUNUM-HEN-SEC
                PERFORM 4101112-SAGAKUMEI-HEN-SEC
                PERFORM 4101112-DRMEI-HEN-SEC
@@ -2172,92 +2232,12 @@
        41011-SHONYUINYMD-EXT.
            EXIT.
       *****************************************************************
-      *    室料差額編集処理
-      *****************************************************************
-       41011-SAGAKUCD-SEC              SECTION.
-      *
-           MOVE    SPACE               TO  WRK-SAGAKUCD
-      *
-           MOVE    ITEM-SAGAKU         TO  WRK-SNUM-INX
-           PERFORM 800-ORCSNUM-SEC
-           IF    ( FLG-ORCSNUM     NOT =   ZERO )
-               GO  TO  41011-SAGAKUCD-EXT
-           END-IF
-      *
-           MOVE    WRK-SNUM-OUTNUM TO  WRK-SAGAKUNM
-      *
-           MOVE    ZERO            TO  FLG-SYSKANRI
-      *
-           INITIALIZE                  SYSKANRI-REC
-      *
-           MOVE    "5113"          TO  SYS-KANRICD
-           MOVE    SPA-GMN-KJNYMD  TO  SYS-STYUKYMD
-                                       SYS-EDYUKYMD
-           PERFORM 900-SYSKANRI-KEY2-SEL-SEC
-      *
-           PERFORM UNTIL ( FLG-SYSKANRI        =   1 )
-                    OR   ( WRK-SAGAKUCD    NOT =   SPACE )
-      *
-               MOVE    SYSKANRI-REC    TO  SYS-5113-REC
-      *
-               IF    ( WRK-SAGAKUNM    =   SYS-5113-BRM-SAGAKU-NM )
-                   MOVE    SYS-5113-KBNCD
-                                   TO  WRK-SAGAKUCD
-               END-IF
-      *
-               PERFORM 900-SYSKANRI-KEY2-FET-SEC
-      *
-           END-PERFORM
-      *
-           MOVE    "tbl_syskanri"          TO  MCP-TABLE
-           MOVE    "key2"                  TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *
-           .
-       41011-SAGAKUCD-EXT.
-           EXIT.
-      *****************************************************************
-      *    退院事由編集処理
-      *****************************************************************
-       41011-TAIINCD-SEC               SECTION.
-      *
-           MOVE    SPACE           TO  WRK-TAIINCD
-      *
-           INITIALIZE                  SYSKANRI-REC
-      *
-           MOVE    "5013"          TO  SYS-KANRICD
-           MOVE    SPA-GMN-KJNYMD  TO  SYS-STYUKYMD
-                                       SYS-EDYUKYMD
-           PERFORM 900-SYSKANRI-KEY2-SEL-SEC
-      *
-           PERFORM UNTIL ( FLG-SYSKANRI        =   1 )
-                    OR   ( WRK-TAIINCD     NOT =   SPACE )
-      *
-               MOVE    SYSKANRI-REC    TO  SYS-5013-REC
-      *
-               IF    ( ITEM-TAIINCD    =   SYS-5013-NAME )
-                   MOVE    SYS-5013-KBNCD
-                                       TO  WRK-TAIINCD
-               END-IF
-      *
-               PERFORM 900-SYSKANRI-KEY2-FET-SEC
-      *
-           END-PERFORM
-      *
-           MOVE    "tbl_syskanri"          TO  MCP-TABLE
-           MOVE    "key2"                  TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *
-           .
-       41011-TAIINCD-EXT.
-           EXIT.
-      *****************************************************************
       *    入院科編集処理
       *****************************************************************
        4101111-NYUINKA-HEN-SEC         SECTION.
       *
-           MOVE    ORDER-STATUS-ITEM   TO  SPA-NAI-STS-NYUINKA
-           MOVE    ORDER-ITEM          TO  SPA-GMN-NYUINKA-G
+           MOVE    ODRITEM-STATUS      TO  SPA-NAI-STS-NYUINKA
+           MOVE    ODRITEM-ITEM        TO  SPA-GMN-NYUINKA-G
       *
            .
        4101111-NYUINKA-HEN-EXT.
@@ -2265,10 +2245,10 @@
       *****************************************************************
       *    保険組合せ処理編集処理
       *****************************************************************
-       4101111-HKNCOMBI-HEN-SEC         SECTION.
+       4101111-HKNCOMBI-HEN-SEC        SECTION.
       *
-           MOVE    ORDER-STATUS-ITEM   TO  SPA-NAI-STS-HKNCOMBI
-           MOVE    ORDER-ITEM          TO  SPA-GMN-HKNCOMBI-G
+           MOVE    ODRITEM-STATUS      TO  SPA-NAI-STS-HKNCOMBI
+           MOVE    ODRITEM-ITEM        TO  SPA-GMN-HKNCOMBI-G
       *
            .
        4101111-HKNCOMBI-HEN-EXT.
@@ -2276,10 +2256,10 @@
       *****************************************************************
       *    入院区分編集処理
       *****************************************************************
-       4101111-NYUKBN-HEN-SEC         SECTION.
+       4101111-NYUKBN-HEN-SEC          SECTION.
       *
-           MOVE    ORDER-STATUS-ITEM   TO  SPA-NAI-STS-NYUKBN
-           MOVE    ORDER-ITEM          TO  SPA-GMN-NYUKBN-G
+           MOVE    ODRITEM-STATUS      TO  SPA-NAI-STS-NYUKBN
+           MOVE    ODRITEM-ITEM        TO  SPA-GMN-NYUKBN-G
       *
            .
        4101111-NYUKBN-HEN-EXT.
@@ -2289,10 +2269,10 @@
       *****************************************************************
        4101111-SHOKAI-HEN-SEC         SECTION.
       *
-           MOVE    ORDER-STATUS-ITEM   TO  SPA-NAI-STS-SHOKAI
-           IF    ( ORDER-ITEM      =   "01" )
+           MOVE    ODRITEM-STATUS      TO  SPA-NAI-STS-SHOKAI
+           IF    ( ODRITEM-ITEM        =   "01" )
                MOVE    "2"             TO  SPA-GMN-SHOKAI
-               MOVE    ORDER-REMARKS   TO  ITEM-LASTNYINYMD
+               MOVE    ODRITEM-MEMO   TO  ITEM-LASTNYINYMD
            END-IF
       *
            .
@@ -2303,8 +2283,8 @@
       *****************************************************************
        4101111-BTUNUM-HEN-SEC         SECTION.
       *
-           MOVE    ORDER-STATUS-ITEM   TO  SPA-NAI-STS-BTUNUM
-           MOVE    ORDER-ITEM          TO  SPA-GMN-BTUNAME-G
+           MOVE    ODRITEM-STATUS      TO  SPA-NAI-STS-BTUNUM
+           MOVE    ODRITEM-ITEM        TO  SPA-GMN-BTUNAME-G
       *
            .
        4101111-BTUNUM-HEN-EXT.
@@ -2314,8 +2294,8 @@
       *****************************************************************
        4101111-BRMNUM-HEN-SEC         SECTION.
       *
-           MOVE    ORDER-STATUS-ITEM   TO  SPA-NAI-STS-BRMNUM
-           MOVE    ORDER-ITEM          TO  SPA-GMN-BRMNUM
+           MOVE    ODRITEM-STATUS   TO  SPA-NAI-STS-BRMNUM
+           MOVE    ODRITEM-ITEM          TO  SPA-GMN-BRMNUM
       *
            .
        4101111-BRMNUM-HEN-EXT.
@@ -2325,8 +2305,8 @@
       *****************************************************************
        4101111-SAGAKU-HEN-SEC          SECTION.
       *
-           MOVE    ORDER-STATUS-ITEM   TO  SPA-NAI-STS-SAGAKU
-           MOVE    ORDER-ITEM          TO  ITEM-SAGAKU
+           MOVE    ODRITEM-STATUS   TO  SPA-NAI-STS-SAGAKU
+           MOVE    ODRITEM-ITEM     TO  SPA-GMN-SAGAKU-G
       *
            .
        4101111-SAGAKU-HEN-EXT.
@@ -2338,9 +2318,9 @@
       *
            IF    ( CNT-DRCD    <   3 )
                COMPUTE CNT-DRCD    =   CNT-DRCD    +   1
-               MOVE    ORDER-STATUS-ITEM
+               MOVE    ODRITEM-STATUS
                                        TO  SPA-NAI-STS-DR(CNT-DRCD)
-               MOVE    ORDER-ITEM (2:) TO  SPA-GMN-DR-G  (CNT-DRCD)
+               MOVE    ODRITEM-ITEM (2:) TO  SPA-GMN-DR-G  (CNT-DRCD)
            END-IF
       *
            .
@@ -2351,8 +2331,8 @@
       *****************************************************************
        4101111-TAIINCD-HEN-SEC         SECTION.
       *
-           MOVE    ORDER-STATUS-ITEM   TO  SPA-NAI-STS-TAIINCD
-           MOVE    ORDER-ITEM          TO  ITEM-TAIINCD
+           MOVE    ODRITEM-STATUS   TO  SPA-NAI-STS-TAIINCD
+           MOVE    ODRITEM-ITEM     TO  SPA-GMN-TAIINCD-G
       *
            .
        4101111-TAIINCD-HEN-EXT.
@@ -2362,8 +2342,8 @@
       *****************************************************************
        4101111-TOKNYUIN-HEN-SEC        SECTION.
       *
-           MOVE    ORDER-STATUS-ITEM   TO  SPA-NAI-STS-TOKNYUIN
-           MOVE    ORDER-ITEM          TO  ITEM-TOKNYUIN-G
+           MOVE    ODRITEM-STATUS   TO  SPA-NAI-STS-TOKNYUIN
+           MOVE    ODRITEM-ITEM          TO  ITEM-TOKNYUIN-G
       *
            .
        4101111-TOKNYUIN-HEN-EXT.
@@ -2373,8 +2353,8 @@
       *****************************************************************
        4101111-SKJTIME-HEN-SEC         SECTION.
       *
-           MOVE    ORDER-STATUS-ITEM   TO  SPA-NAI-STS-SKJTIME
-           MOVE    ORDER-ITEM          TO  SPA-GMN-SKJTIME-G
+           MOVE    ODRITEM-STATUS        TO  SPA-NAI-STS-SKJTIME
+           MOVE    ODRITEM-ITEM          TO  SPA-GMN-SKJTIME-G
       *
            .
        4101111-SKJTIME-HEN-EXT.
@@ -2397,19 +2377,6 @@
        4101112-SHOKAI-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    室料差額編集処理
-      *****************************************************************
-       4101112-SAGAKU-HEN-SEC          SECTION.
-      *
-           IF    ( ITEM-SAGAKU     NOT =   SPACE )
-               PERFORM 41011-SAGAKUCD-SEC
-               MOVE    WRK-SAGAKUCD    TO  SPA-GMN-SAGAKU
-           END-IF
-      *
-           .
-       4101112-SAGAKU-HEN-EXT.
-           EXIT.
-      *****************************************************************
       *    病棟編集処理
       *****************************************************************
        4101112-BTUNUM-HEN-SEC          SECTION.
@@ -2422,6 +2389,8 @@
                MOVE    WRK-CMB-ITM     TO  SPA-GMN-BTUNAME-G
                MOVE    SPA-NAI-BTUDEF-KHNSRYCD (WRK-CMB-IDX)
                                        TO  SPA-NAI-BTU-KHNSRYCD
+               MOVE    SPA-NAI-BTUDEF-SBT (WRK-CMB-IDX)
+                                       TO  SPA-NAI-BTU-SBT
                MOVE    SPA-NAI-BTUDEF-BTUTOK (WRK-CMB-IDX)
                                        TO  SPA-NAI-BTU-BTUTOK
                MOVE    SPA-NAI-BTUDEF-BRMTOK (WRK-CMB-IDX)
@@ -2530,14 +2499,12 @@
        4101112-TOKNYUINMEI-HEN-SEC     SECTION.
       *
            PERFORM 3101-TOKNYUINLST-SET-SEC
-           IF    ( SPA-GMN-NYUKBN  =   "02" )
-               MOVE    ITEM-TOKNYUIN-G TO WRK-CMB-CD
-               PERFORM 4201-TOKNYUINLST-CHK-SEC
-               IF    ( WRK-CMB-ITM NOT =   SPACE )
-                   MOVE    WRK-CMB-ITM TO  SPA-GMN-TOKNYUIN-G
-                   MOVE    SPA-GMN-TOKNYUINL2 (WRK-CMB-IDX)
-                                       TO  SPA-NAI-TOKUTEI-G
-               END-IF
+           MOVE    ITEM-TOKNYUIN-G TO WRK-CMB-CD
+           PERFORM 4201-TOKNYUINLST-CHK-SEC
+           IF    ( WRK-CMB-ITM NOT =   SPACE )
+               MOVE    WRK-CMB-ITM TO  SPA-GMN-TOKNYUIN-G
+               MOVE    SPA-GMN-TOKNYUINL2 (WRK-CMB-IDX)
+                                   TO  SPA-NAI-TOKUTEI-G
            END-IF
       *
            IF    ( SPA-GMN-TOKNYUINMEI NOT =   SPACE )
@@ -2586,12 +2553,12 @@
       *
            MOVE    SPA-NAI-ORDER-DAT   TO  ORDER-REC
       *
-           IF    ( SPA-NAI-STATUS-ORDER    =   "4" )
-               IF    ( SPA-NAI-STS-NYUINKA =   "-" )
+           IF    ( SPA-NAI-STATUS-ORDER    =   4 )
+               IF    ( SPA-NAI-STS-NYUINKA =   9 )
                    MOVE    ORDER-SRYKA     TO  SPA-GMN-NYUINKA
                END-IF
       *
-               IF    ( SPA-NAI-STS-HKNCOMBI    =   "-" )
+               IF    ( SPA-NAI-STS-HKNCOMBI    =   9 )
                    MOVE    ORDER-HKNCOMBI  TO  SPA-GMN-HKNCOMBI
                END-IF
            END-IF
@@ -2622,7 +2589,7 @@
       *
            MOVE    SPA-NAI-TALLIDOYMD (IDX-HEAD)
                                        TO  SPA-NAI-HIDOYMD
-                                           SPA-GMN-KJNYMD
+                                           SPA-NAI-KJNYMD
       *
            MOVE    SPA-NAI-TALLORDERID(IDX-HEAD)
                                        TO  SPA-NAI-ORDERID
@@ -2749,6 +2716,11 @@
            MOVE    SPA-NAI-ORDERID     TO  WRK-CMB-CD
            PERFORM 4200-ORDERID-CHK-SEC
            MOVE    WRK-CMB-ITM         TO  SPA-GMN-IDOJIYU
+      *
+           IF    ( SPA-NAI-PTID        NOT =   ZERO )
+               MOVE    SPA-GMN-PTNUM   TO  SPA-LAST-PTNUM
+               MOVE    SPA-NAI-PTID    TO  SPA-LAST-PTID
+           END-IF
       *
            .
        41011-HEAD-AREA-HEN-EXT.
@@ -2964,6 +2936,8 @@
                                        TO  SPA-GMN-BTUNAME-G
            MOVE    SPA-NAI-BTUDEF-KHNSRYCD (WRK-CMB-IDX)
                                        TO  SPA-NAI-BTU-KHNSRYCD
+           MOVE    SPA-NAI-BTUDEF-SBT      (WRK-CMB-IDX)
+                                       TO  SPA-NAI-BTU-SBT
            MOVE    SPA-NAI-BTUDEF-BTUTOK   (WRK-CMB-IDX)
                                        TO  SPA-NAI-BTU-BTUTOK
            MOVE    SPA-NAI-BTUDEF-BRMTOK   (WRK-CMB-IDX)
@@ -2990,7 +2964,7 @@
                     PERFORM 4200-SAGAKULST-CHK-SEC
                     MOVE    WRK-CMB-ITM         TO  SPA-GMN-SAGAKU-G
       *
-                    MOVE    WRK-BTUDEF-SAGAKU   TO  WRK-CMB-CD
+                    MOVE    WRK-BTUDEF-NYUINKA   TO  WRK-CMB-CD
                     PERFORM 4200-NYUINKALST-CHK-SEC
                     MOVE    WRK-CMB-ITM         TO  SPA-GMN-NYUINKA-G
                 END-IF
@@ -3003,7 +2977,10 @@
                                SPA-NAI-TOKUTEI-G
                                SPA-GMN-SNTNYUIN
                ELSE
-                   PERFORM 4101-TOKNYUIN-SYOKI-SEC
+                   IF    ( SPA-GMN-BRMNUM-ORG  NOT =   SPA-GMN-BRMNUM )
+                    OR   ( SPA-GMN-BTUNAME-ORG NOT =   SPA-GMN-BTUNAME )
+                           PERFORM 4101-TOKNYUIN-SYOKI-SEC
+                   END-IF
                END-IF
            END-IF
       *
@@ -3238,19 +3215,24 @@
       *
            INITIALIZE  SPA-NAI-TOKUTEI-G
       *
-           IF    ( SPA-GMN-TOKNYUIN-G    =   SPACE )
-               GO  TO  4101-TOKNYUIN-CHK-EXT
+           IF    ( SPA-GMN-TOKNYUIN-G  =   SPACE )
+               CONTINUE
+           ELSE
+      *
+               MOVE    SPA-GMN-TOKNYUIN    TO  WRK-CMB-CD
+               PERFORM 4200-TOKNYUINLST-CHK-SEC
+               IF    ( WRK-CMB-ITM         =   SPACE )
+                   MOVE    "0017"          TO  SPA-ERRCD
+                   MOVE    17              TO  SPA-GMN-CUR
+               ELSE
+                   MOVE    WRK-CMB-ITM     TO  SPA-GMN-TOKNYUIN-G
+                   MOVE    SPA-GMN-TOKNYUINL2 (WRK-CMB-IDX)
+                                           TO  SPA-NAI-TOKUTEI-G
+               END-IF
            END-IF
       *
-           MOVE    SPA-GMN-TOKNYUIN    TO  WRK-CMB-CD
-           PERFORM 4200-TOKNYUINLST-CHK-SEC
-           IF    ( WRK-CMB-ITM         =   SPACE )
-               MOVE    "0017"          TO  SPA-ERRCD
-               MOVE    17              TO  SPA-GMN-CUR
-           ELSE
-               MOVE    WRK-CMB-ITM     TO  SPA-GMN-TOKNYUIN-G
-               MOVE    SPA-GMN-TOKNYUINL2 (WRK-CMB-IDX)
-                                       TO  SPA-NAI-TOKUTEI-G
+           IF    ( WRK-MCP-WIDGET      =   "TOKNYUIN" )
+               PERFORM 4101-NYUKBN-SYOKI-SEC
            END-IF
       *
            .
@@ -3292,8 +3274,49 @@
                MOVE    SPA-NAI-KHNNYUIN    TO  SPA-GMN-SNTNYUIN
            END-IF
       *
+           PERFORM 4101-NYUKBN-SYOKI-SEC
+      *
            .
        4101-TOKNYUIN-SYOKI-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院区分初期値設定処理
+      *****************************************************************
+       4101-NYUKBN-SYOKI-SEC           SECTION.
+      *
+           MOVE    SPACE               TO  WRK-CMB-CD
+           EVALUATE    SPA-NAI-TOKUTEI-KBN
+           WHEN    SPACE
+               MOVE    "01"            TO  WRK-CMB-CD
+           WHEN    "1"
+               MOVE    "02"            TO  WRK-CMB-CD
+           WHEN    "2"
+               MOVE    "02"            TO  WRK-CMB-CD
+           WHEN    "3"
+               INITIALIZE                  SYSKANRI-REC
+               MOVE    "5111"          TO  SYS-KANRICD
+               MOVE    SPA-NAI-TOKUTEI-NYUIN
+                                       TO  SYS-KBNCD
+               MOVE    SPA-NAI-KJNYMD  TO  SYS-STYUKYMD
+                                           SYS-EDYUKYMD
+               PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+               MOVE    SYSKANRI-REC    TO  SYS-5111-REC
+               IF    ( SYS-5111-BRM-NYUINRYOKBN
+                                       =   "03" OR "05" OR "06" )
+                   MOVE    "01"        TO  WRK-CMB-CD
+               ELSE
+                   MOVE    "02"        TO  WRK-CMB-CD
+               END-IF
+           END-EVALUATE
+           PERFORM 4200-NYUKBNLST-CHK-SEC
+           IF    ( WRK-CMB-ITM         =   SPACE )
+               CONTINUE
+           ELSE
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-NYUKBN-G
+           END-IF
+      *
+           .
+       4101-NYUKBN-SYOKI-EXT.
            EXIT.
       *****************************************************************
       *    食事時間チェック処理
@@ -3648,7 +3671,7 @@
                                            SPA-NAI-KJNIDOLST-AREA
                                            SPA-GMN-COMBO-AREA
       *
-           MOVE    SPA-NAI-UKEYMD      TO  SPA-GMN-KJNYMD
+           MOVE    SPA-NAI-UKEYMD      TO  SPA-NAI-KJNYMD
       *
       *    コンボボックス初期処理
            PERFORM 3101-COMBO-SYOKI-SEC
@@ -3700,7 +3723,6 @@
                PERFORM 3101-ALLIDOLST-SEC
            ELSE
                MOVE    "4001"              TO  SPA-ERRCD
-               GO  TO  2301-DEL-EXT
            END-IF
       *
            .
@@ -3849,8 +3871,9 @@
        2121-NYUIN-TOUROKU-SEC          SECTION.
       *
            INITIALIZE                  ORDER-REC
+           INITIALIZE                  ODRITEM-REC
            INITIALIZE                  SODR-AREA
-           INITIALIZE                  LNK-ORDER-REC
+           INITIALIZE                  LNK-ODRITEM-REC
       *
            MOVE    SPA-NAI-ORDER-DAT   TO  ORDER-REC
       *
@@ -3858,54 +3881,55 @@
       *
            MOVE    ZERO                TO  IDX-ITM
       *
-           IF    ( CONST-ORDER-MAX     >   IDX-ITM )
+           IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
                PERFORM 2300-NYUKBN-SET-SEC
            END-IF
       *
-           IF    ( CONST-ORDER-MAX     >   IDX-ITM )
+           IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
                PERFORM 2300-SHOKAI-SET-SEC
            END-IF
       *
-           IF    ( CONST-ORDER-MAX     >   IDX-ITM )
+           IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
                PERFORM 2300-BTUNUM-SET-SEC
            END-IF
       *
-           IF    ( CONST-ORDER-MAX     >   IDX-ITM )
+           IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
                PERFORM 2300-BRMNUM-SET-SEC
            END-IF
       *
-           IF    ( CONST-ORDER-MAX     >   IDX-ITM )
+           IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
                PERFORM 2300-SAGAKU-SET-SEC
            END-IF
       *
            PERFORM VARYING IDX2    FROM    1   BY  1
                    UNTIL ( IDX2    >   3 )
-               IF    ( CONST-ORDER-MAX     >   IDX-ITM )
+               IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
                    PERFORM 2300-DR-SET-SEC
                END-IF
            END-PERFORM
       *
-           IF    ( CONST-ORDER-MAX     >   IDX-ITM )
+           IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
                PERFORM 2300-TOKNYUIN-SET-SEC
            END-IF
       *
-           IF    ( CONST-ORDER-MAX     >   IDX-ITM )
+           IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
                PERFORM 2300-NYUINKA-SET-SEC
            END-IF
       *
-           IF    ( CONST-ORDER-MAX     >   IDX-ITM )
+           IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
                PERFORM 2300-HKNCOMBI-SET-SEC
            END-IF
       *
-           MOVE   IDX-ITM          TO  LNK-ORDER-MAX
+           MOVE   IDX-ITM          TO  LNK-ODRITEM-MAX
       *
            CALL   "ORCSODR01"      USING   SODR-AREA
-                                           LNK-ORDER-REC
+                                           LNK-ODRITEM-REC
            EVALUATE    TRUE
            WHEN  ( SODR-RC      NOT =   ZERO )
                MOVE    "4002"   TO  SPA-ERRCD
-           WHEN  ( SODR-ERRCD   NOT =   SPACE )
-               MOVE    LNK-ORDER-REC    TO ERR-ORDER-REC
+           WHEN  ( SODR-ERRFLG  NOT =   ZERO )
+               MOVE    SODR-ERRCD       TO ERR-ORDER-ERRCD
+               MOVE    LNK-ODRITEM-REC  TO ERR-ODRITEM-REC
                PERFORM 3101-ERRMESLST-SEC
                EVALUATE    SODR-DIALOG
                WHEN    1
@@ -3929,7 +3953,7 @@
       *
            INITIALIZE                  ORDER-REC
            INITIALIZE                  SODR-AREA
-           INITIALIZE                  LNK-ORDER-REC
+           INITIALIZE                  LNK-ODRITEM-REC
       *
            MOVE    SPA-NAI-ORDER-DAT   TO  ORDER-REC
       *
@@ -3937,27 +3961,28 @@
       *
            MOVE    ZERO                TO  IDX-ITM
       *
-           IF    ( CONST-ORDER-MAX     >   IDX-ITM )
+           IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
                PERFORM 2300-TAIINCD-SET-SEC
            END-IF
       *
-           IF    ( CONST-ORDER-MAX     >   IDX-ITM )
+           IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
                PERFORM 2300-NYUINKA-SET-SEC
            END-IF
       *
-           IF    ( CONST-ORDER-MAX     >   IDX-ITM )
+           IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
                PERFORM 2300-HKNCOMBI-SET-SEC
            END-IF
       *
-           MOVE   IDX-ITM          TO  LNK-ORDER-MAX
+           MOVE   IDX-ITM          TO  LNK-ODRITEM-MAX
       *
            CALL   "ORCSODR02"      USING   SODR-AREA
-                                           LNK-ORDER-REC
+                                           LNK-ODRITEM-REC
            EVALUATE    TRUE
            WHEN  ( SODR-RC      NOT =   ZERO )
                MOVE    "4003"   TO  SPA-ERRCD
-           WHEN  ( SODR-ERRCD   NOT =   SPACE )
-               MOVE    LNK-ORDER-REC    TO ERR-ORDER-REC
+           WHEN  ( SODR-ERRFLG  NOT =   ZERO )
+               MOVE    SODR-ERRCD       TO ERR-ORDER-ERRCD
+               MOVE    LNK-ODRITEM-REC  TO ERR-ODRITEM-REC
                PERFORM 3101-ERRMESLST-SEC
                EVALUATE    SODR-DIALOG
                WHEN    1
@@ -3981,7 +4006,7 @@
       *
            INITIALIZE                  ORDER-REC
            INITIALIZE                  SODR-AREA
-           INITIALIZE                  LNK-ORDER-REC
+           INITIALIZE                  LNK-ODRITEM-REC
       *
            MOVE    SPA-NAI-ORDER-DAT   TO  ORDER-REC
       *
@@ -3989,23 +4014,24 @@
       *
            MOVE    ZERO                TO  IDX-ITM
       *
-           IF    ( CONST-ORDER-MAX     >   IDX-ITM )
+           IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
                PERFORM 2300-NYUINKA-SET-SEC
            END-IF
       *
-           IF    ( CONST-ORDER-MAX     >   IDX-ITM )
+           IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
                PERFORM 2300-HKNCOMBI-SET-SEC
            END-IF
       *
-           MOVE   IDX-ITM          TO  LNK-ORDER-MAX
+           MOVE   IDX-ITM          TO  LNK-ODRITEM-MAX
       *
            CALL   "ORCSODR03"      USING   SODR-AREA
-                                           LNK-ORDER-REC
+                                           LNK-ODRITEM-REC
            EVALUATE    TRUE
            WHEN  ( SODR-RC      NOT =   ZERO )
                MOVE    "4004"   TO  SPA-ERRCD
-           WHEN  ( SODR-ERRCD   NOT =   SPACE )
-               MOVE    LNK-ORDER-REC    TO ERR-ORDER-REC
+           WHEN  ( SODR-ERRFLG  NOT =   ZERO )
+               MOVE    SODR-ERRCD       TO ERR-ORDER-ERRCD
+               MOVE    LNK-ODRITEM-REC  TO ERR-ODRITEM-REC
                PERFORM 3101-ERRMESLST-SEC
            WHEN  OTHER
                PERFORM 220-CLEAR-SEC
@@ -4023,7 +4049,7 @@
       *
            INITIALIZE                  ORDER-REC
            INITIALIZE                  SODR-AREA
-           INITIALIZE                  LNK-ORDER-REC
+           INITIALIZE                  LNK-ODRITEM-REC
       *
            MOVE    SPA-NAI-ORDER-DAT   TO  ORDER-REC
       *
@@ -4031,27 +4057,28 @@
       *
            MOVE    ZERO                TO  IDX-ITM
       *
-           IF    ( CONST-ORDER-MAX     >   IDX-ITM )
+           IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
                PERFORM 2300-SKJTIME-SET-SEC
            END-IF
       *
-           IF    ( CONST-ORDER-MAX     >   IDX-ITM )
+           IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
                PERFORM 2300-NYUINKA-SET-SEC
            END-IF
       *
-           IF    ( CONST-ORDER-MAX     >   IDX-ITM )
+           IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
                PERFORM 2300-HKNCOMBI-SET-SEC
            END-IF
       *
-           MOVE   IDX-ITM          TO  LNK-ORDER-MAX
+           MOVE   IDX-ITM          TO  LNK-ODRITEM-MAX
       *
            CALL   "ORCSODR04"      USING   SODR-AREA
-                                           LNK-ORDER-REC
+                                           LNK-ODRITEM-REC
            EVALUATE    TRUE
            WHEN  ( SODR-RC      NOT =   ZERO )
                MOVE    "4005"   TO  SPA-ERRCD
-           WHEN  ( SODR-ERRCD   NOT =   SPACE )
-               MOVE    LNK-ORDER-REC    TO ERR-ORDER-REC
+           WHEN  ( SODR-ERRFLG  NOT =   ZERO )
+               MOVE    SODR-ERRCD       TO ERR-ORDER-ERRCD
+               MOVE    LNK-ODRITEM-REC  TO ERR-ODRITEM-REC
                PERFORM 3101-ERRMESLST-SEC
            WHEN  OTHER
                PERFORM 220-CLEAR-SEC
@@ -4069,7 +4096,7 @@
       *
            INITIALIZE                  ORDER-REC
            INITIALIZE                  SODR-AREA
-           INITIALIZE                  LNK-ORDER-REC
+           INITIALIZE                  LNK-ODRITEM-REC
       *
            MOVE    SPA-NAI-ORDER-DAT   TO  ORDER-REC
       *
@@ -4079,28 +4106,29 @@
       *
            PERFORM VARYING IDX2    FROM    1   BY  1
                    UNTIL ( IDX2    >   3 )
-               IF    ( CONST-ORDER-MAX     >   IDX-ITM )
+               IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
                    PERFORM 2300-DR-SET-SEC
                END-IF
            END-PERFORM
       *
-           IF    ( CONST-ORDER-MAX     >   IDX-ITM )
+           IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
                PERFORM 2300-NYUINKA-SET-SEC
            END-IF
       *
-           IF    ( CONST-ORDER-MAX     >   IDX-ITM )
+           IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
                PERFORM 2300-HKNCOMBI-SET-SEC
            END-IF
       *
-           MOVE   IDX-ITM          TO  LNK-ORDER-MAX
+           MOVE   IDX-ITM          TO  LNK-ODRITEM-MAX
       *
            CALL   "ORCSODR05"      USING   SODR-AREA
-                                           LNK-ORDER-REC
+                                           LNK-ODRITEM-REC
            EVALUATE    TRUE
            WHEN  ( SODR-RC      NOT =   ZERO )
                MOVE    "4006"   TO  SPA-ERRCD
-           WHEN  ( SODR-ERRCD   NOT =   SPACE )
-               MOVE    LNK-ORDER-REC    TO ERR-ORDER-REC
+           WHEN  ( SODR-ERRFLG  NOT =   ZERO )
+               MOVE    SODR-ERRCD       TO ERR-ORDER-ERRCD
+               MOVE    LNK-ODRITEM-REC  TO ERR-ODRITEM-REC
                PERFORM 3101-ERRMESLST-SEC
            WHEN  OTHER
                PERFORM 220-CLEAR-SEC
@@ -4118,7 +4146,7 @@
       *
            INITIALIZE                  ORDER-REC
            INITIALIZE                  SODR-AREA
-           INITIALIZE                  LNK-ORDER-REC
+           INITIALIZE                  LNK-ODRITEM-REC
       *
            MOVE    SPA-NAI-ORDER-DAT   TO  ORDER-REC
       *
@@ -4126,50 +4154,51 @@
       *
            MOVE    ZERO                TO  IDX-ITM
       *
-           IF    ( CONST-ORDER-MAX     >   IDX-ITM )
+           IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
                PERFORM 2300-NYUKBN-SET-SEC
            END-IF
       *
-           IF    ( CONST-ORDER-MAX     >   IDX-ITM )
+           IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
                PERFORM 2300-BTUNUM-SET-SEC
            END-IF
       *
-           IF    ( CONST-ORDER-MAX     >   IDX-ITM )
+           IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
                PERFORM 2300-BRMNUM-SET-SEC
            END-IF
       *
-           IF    ( CONST-ORDER-MAX     >   IDX-ITM )
+           IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
                PERFORM 2300-SAGAKU-SET-SEC
            END-IF
       *
            PERFORM VARYING IDX2    FROM    1   BY  1
                    UNTIL ( IDX2    >   3 )
-               IF    ( CONST-ORDER-MAX     >   IDX-ITM )
+               IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
                    PERFORM 2300-DR-SET-SEC
                END-IF
            END-PERFORM
       *
-           IF    ( CONST-ORDER-MAX     >   IDX-ITM )
+           IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
                PERFORM 2300-TOKNYUIN-SET-SEC
            END-IF
       *
-           IF    ( CONST-ORDER-MAX     >   IDX-ITM )
+           IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
                PERFORM 2300-NYUINKA-SET-SEC
            END-IF
       *
-           IF    ( CONST-ORDER-MAX     >   IDX-ITM )
+           IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
                PERFORM 2300-HKNCOMBI-SET-SEC
            END-IF
       *
-           MOVE   IDX-ITM          TO  LNK-ORDER-MAX
+           MOVE   IDX-ITM          TO  LNK-ODRITEM-MAX
       *
            CALL   "ORCSODR06"      USING   SODR-AREA
-                                           LNK-ORDER-REC
+                                           LNK-ODRITEM-REC
            EVALUATE    TRUE
            WHEN  ( SODR-RC      NOT =   ZERO )
                MOVE    "4007"   TO  SPA-ERRCD
-           WHEN  ( SODR-ERRCD   NOT =   SPACE )
-               MOVE    LNK-ORDER-REC    TO ERR-ORDER-REC
+           WHEN  ( SODR-ERRFLG  NOT =   ZERO )
+               MOVE    SODR-ERRCD       TO ERR-ORDER-ERRCD
+               MOVE    LNK-ODRITEM-REC  TO ERR-ODRITEM-REC
                PERFORM 3101-ERRMESLST-SEC
            WHEN  OTHER
                PERFORM 220-CLEAR-SEC
@@ -4186,8 +4215,9 @@
        2121-DELNYUIN-TOUROKU-SEC       SECTION.
       *
            INITIALIZE                  ORDER-REC
+           INITIALIZE                  ODRITEM-REC
            INITIALIZE                  SODR-AREA
-           INITIALIZE                  LNK-ORDER-REC
+           INITIALIZE                  LNK-ODRITEM-REC
       *
            MOVE    SPA-NAI-ORDER-DAT   TO  ORDER-REC
       *
@@ -4195,23 +4225,24 @@
       *
            MOVE    ZERO                TO  IDX-ITM
       *
-           IF    ( CONST-ORDER-MAX     >   IDX-ITM )
+           IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
                PERFORM 2300-NYUINKA-SET-SEC
            END-IF
       *
-           IF    ( CONST-ORDER-MAX     >   IDX-ITM )
+           IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
                PERFORM 2300-HKNCOMBI-SET-SEC
            END-IF
       *
-           MOVE   IDX-ITM          TO  LNK-ORDER-MAX
+           MOVE   IDX-ITM          TO  LNK-ODRITEM-MAX
       *
            CALL   "ORCSODR07"      USING   SODR-AREA
-                                           LNK-ORDER-REC
+                                           LNK-ODRITEM-REC
            EVALUATE    TRUE
            WHEN  ( SODR-RC      NOT =   ZERO )
                MOVE    "4008"   TO  SPA-ERRCD
-           WHEN  ( SODR-ERRCD   NOT =   SPACE )
-               MOVE    LNK-ORDER-REC    TO ERR-ORDER-REC
+           WHEN  ( SODR-ERRFLG  NOT =   ZERO )
+               MOVE    SODR-ERRCD       TO ERR-ORDER-ERRCD
+               MOVE    LNK-ODRITEM-REC  TO ERR-ODRITEM-REC
                PERFORM 3101-ERRMESLST-SEC
            WHEN  OTHER
                PERFORM 220-CLEAR-SEC
@@ -4227,16 +4258,16 @@
       *****************************************************************
        2300-NYUKBN-SET-SEC             SECTION.
       *
-           PERFORM 2300-ORDER-COMMON-SET-SEC
+           PERFORM 2300-ODRITEM-COMMON-SET-SEC
       *
-           MOVE    NCLAIMID-NYUKBNJMA  TO  LNK-ORDER-ITEMID (IDX-ITM)
-           IF    ( SPA-NAI-STS-NYUKBN  = "4" OR "-" )
-                MOVE    "4"        TO  LNK-ORDER-STATUS-ITEM (IDX-ITM)
+           MOVE    NCLAIMID-NYUKBNJMA  TO  LNK-ODRITEM-ITEMID (IDX-ITM)
+           IF    ( SPA-NAI-STS-NYUKBN  =   4   OR  9 )
+                MOVE     4         TO  LNK-ODRITEM-STATUS (IDX-ITM)
            ELSE
-                MOVE    "0"        TO  LNK-ORDER-STATUS-ITEM (IDX-ITM)
+                MOVE     0         TO  LNK-ODRITEM-STATUS (IDX-ITM)
            END-IF
       *
-           MOVE    SPA-GMN-NYUKBN  TO  LNK-ORDER-ITEM (IDX-ITM)
+           MOVE    SPA-GMN-NYUKBN  TO  LNK-ODRITEM-ITEM (IDX-ITM)
       *
            .
        2300-NYUKBN-SET-EXT.
@@ -4246,27 +4277,27 @@
       *****************************************************************
        2300-SHOKAI-SET-SEC             SECTION.
       *
-           IF    ( SPA-NAI-STS-SHOKAI      = "-" )
+           IF    ( SPA-NAI-STS-SHOKAI      = 9 )
             AND  ( SPA-GMN-SHOKAI          = "01" )
                GO  TO  2300-SHOKAI-SET-EXT
            END-IF
       *
-           PERFORM 2300-ORDER-COMMON-SET-SEC
+           PERFORM 2300-ODRITEM-COMMON-SET-SEC
       *
            MOVE    NCLAIMID-SHOKAIJMA
-                                   TO  LNK-ORDER-ITEMID (IDX-ITM)
+                                   TO  LNK-ODRITEM-ITEMID (IDX-ITM)
       *
            EVALUATE    TRUE
-           WHEN  ( SPA-NAI-STS-SHOKAI      = "4" )
-           WHEN  ( SPA-NAI-STS-SHOKAI      = "-" )
+           WHEN  ( SPA-NAI-STS-SHOKAI      =   4 )
+           WHEN  ( SPA-NAI-STS-SHOKAI      =   9 )
              AND ( SPA-GMN-SHOKAI          = "02" )
-                MOVE    "4"        TO  LNK-ORDER-STATUS-ITEM (IDX-ITM)
+                MOVE   4           TO  LNK-ODRITEM-STATUS (IDX-ITM)
            WHEN  OTHER
-                MOVE    "0"        TO  LNK-ORDER-STATUS-ITEM (IDX-ITM)
+                MOVE   0           TO  LNK-ODRITEM-STATUS (IDX-ITM)
            END-EVALUATE
       *
            IF    ( SPA-GMN-SHOKAI  = "2" )
-               MOVE    "01"        TO  LNK-ORDER-ITEM (IDX-ITM)
+               MOVE    "01"        TO  LNK-ODRITEM-ITEM (IDX-ITM)
       *
                INITIALIZE                  PTNYUINRRK-REC
                MOVE    SPA-HOSPID      TO  PTNYUINRRK-HOSPID
@@ -4275,7 +4306,7 @@
                MOVE    SPA-GMN-SHONUM  TO  PTNYUINRRK-SHONUM
                PERFORM 900-PTNYUINRRK-KEY35-SEL-SEC
                MOVE    PTNYUINRRK-NYUINYMD
-                                       TO  LNK-ORDER-REMARKS(IDX-ITM)
+                                       TO  LNK-ODRITEM-MEMO(IDX-ITM)
            END-IF
       *
            .
@@ -4286,16 +4317,16 @@
       *****************************************************************
        2300-BTUNUM-SET-SEC             SECTION.
       *
-           PERFORM 2300-ORDER-COMMON-SET-SEC
+           PERFORM 2300-ODRITEM-COMMON-SET-SEC
       *
-           MOVE    NCLAIMID-BTUNUMJMA  TO  LNK-ORDER-ITEMID (IDX-ITM)
-           IF    ( SPA-NAI-STS-BTUNUM  = "4" OR "-" )
-               MOVE    "4"         TO  LNK-ORDER-STATUS-ITEM (IDX-ITM)
+           MOVE    NCLAIMID-BTUNUMJMA  TO  LNK-ODRITEM-ITEMID (IDX-ITM)
+           IF    ( SPA-NAI-STS-BTUNUM  =   4   OR  9 )
+               MOVE    4           TO  LNK-ODRITEM-STATUS (IDX-ITM)
            ELSE
-               MOVE    "0"         TO  LNK-ORDER-STATUS-ITEM (IDX-ITM)
+               MOVE    0           TO  LNK-ODRITEM-STATUS (IDX-ITM)
            END-IF
       *
-           MOVE    SPA-GMN-BTUNAME TO  LNK-ORDER-ITEM (IDX-ITM)
+           MOVE    SPA-GMN-BTUNAME TO  LNK-ODRITEM-ITEM (IDX-ITM)
       *
            .
        2300-BTUNUM-SET-EXT.
@@ -4305,16 +4336,16 @@
       *****************************************************************
        2300-BRMNUM-SET-SEC             SECTION.
       *
-           PERFORM 2300-ORDER-COMMON-SET-SEC
+           PERFORM 2300-ODRITEM-COMMON-SET-SEC
       *
-           MOVE    NCLAIMID-BRMNUMJMA  TO  LNK-ORDER-ITEMID (IDX-ITM)
-           IF    ( SPA-NAI-STS-BRMNUM  = "4" OR "-" )
-               MOVE    "4"         TO  LNK-ORDER-STATUS-ITEM (IDX-ITM)
+           MOVE    NCLAIMID-BRMNUMJMA  TO  LNK-ODRITEM-ITEMID (IDX-ITM)
+           IF    ( SPA-NAI-STS-BRMNUM  =   4   OR  9 )
+               MOVE    4           TO  LNK-ODRITEM-STATUS (IDX-ITM)
            ELSE
-               MOVE    "0"         TO  LNK-ORDER-STATUS-ITEM (IDX-ITM)
+               MOVE    0           TO  LNK-ODRITEM-STATUS (IDX-ITM)
            END-IF
       *
-           MOVE    SPA-GMN-BRMNUM  TO  LNK-ORDER-ITEM (IDX-ITM)
+           MOVE    SPA-GMN-BRMNUM  TO  LNK-ODRITEM-ITEM (IDX-ITM)
       *
            .
        2300-BRMNUM-SET-EXT.
@@ -4324,35 +4355,28 @@
       *****************************************************************
        2300-SAGAKU-SET-SEC             SECTION.
       *
-           IF    ( SPA-NAI-STS-SAGAKU      = "-" )
+           IF    ( SPA-NAI-STS-SAGAKU      =   9 )
             AND  ( SPA-GMN-SAGAKU          = SPACE )
                GO  TO  2300-SAGAKU-SET-EXT
            END-IF
       *
-           PERFORM 2300-ORDER-COMMON-SET-SEC
+           PERFORM 2300-ODRITEM-COMMON-SET-SEC
       *
-           MOVE    NCLAIMID-SAGAKUJMA  TO  LNK-ORDER-ITEMID (IDX-ITM)
+           MOVE    NCLAIMID-SAGAKUJMA  TO  LNK-ODRITEM-ITEMID (IDX-ITM)
       *
            EVALUATE    TRUE
-           WHEN  ( SPA-NAI-STS-SAGAKU      = "4" )
-           WHEN  ( SPA-NAI-STS-SAGAKU      = "-" )
+           WHEN  ( SPA-NAI-STS-SAGAKU      =   4 )
+           WHEN  ( SPA-NAI-STS-SAGAKU      =   9 )
              AND ( SPA-GMN-SAGAKU      NOT = SPACE )
-               MOVE    "4"         TO  LNK-ORDER-STATUS-ITEM (IDX-ITM)
+               MOVE    4           TO  LNK-ODRITEM-STATUS (IDX-ITM)
            WHEN  OTHER
-               MOVE    "0"         TO  LNK-ORDER-STATUS-ITEM (IDX-ITM)
+               MOVE    0           TO  LNK-ODRITEM-STATUS (IDX-ITM)
            END-EVALUATE
       *
-           IF    ( SPA-GMN-SAGAKU  NOT =   SPACE )
-               INITIALIZE  SYSKANRI-REC
-               MOVE    "5113"          TO  SYS-KANRICD
-               MOVE    SPA-GMN-SAGAKU  TO  SYS-KBNCD
-               MOVE    SPA-NAI-HIDOYMD TO  SYS-STYUKYMD
-                                           SYS-EDYUKYMD
-               PERFORM 900-SYSKANRI-KEY10-SEL-SEC
-               MOVE    SYSKANRI-REC    TO  SYS-5113-REC
-               MOVE    SYS-5113-BRM-SAGAKU-NM
-                                       TO  LNK-ORDER-ITEM (IDX-ITM)
-           END-IF
+      *
+           MOVE    SPA-GMN-SAGAKU  TO  LNK-ODRITEM-ITEM (IDX-ITM)
+           MOVE    SPA-GMN-SAGAKUMEI-NUM
+                                   TO  LNK-ODRITEM-MEMO (IDX-ITM)
       *
            .
        2300-SAGAKU-SET-EXT.
@@ -4362,27 +4386,27 @@
       *****************************************************************
        2300-DR-SET-SEC                 SECTION.
       *
-           IF    ( SPA-NAI-STS-DR (IDX2)   = "-" )
-            AND  ( SPA-GMN-DR     (IDX2)   = SPACE )
+           IF    ( SPA-NAI-STS-DR (IDX2)   =   9 )
+            AND  ( SPA-GMN-DR     (IDX2)   =   SPACE )
                GO  TO  2300-DR-SET-EXT
            END-IF
       *
-           PERFORM 2300-ORDER-COMMON-SET-SEC
+           PERFORM 2300-ODRITEM-COMMON-SET-SEC
       *
-           MOVE    NCLAIMID-DRJMA      TO  LNK-ORDER-ITEMID (IDX-ITM)
+           MOVE    NCLAIMID-DRJMA      TO  LNK-ODRITEM-ITEMID (IDX-ITM)
       *
            EVALUATE    TRUE
-           WHEN  ( SPA-NAI-STS-DR (IDX2)       = "4" )
-           WHEN  ( SPA-NAI-STS-DR (IDX2)       = "-" )
+           WHEN  ( SPA-NAI-STS-DR (IDX2)       =   4 )
+           WHEN  ( SPA-NAI-STS-DR (IDX2)       =   9 )
              AND ( SPA-GMN-DR     (IDX2)   NOT = SPACE )
-               MOVE    "4"         TO  LNK-ORDER-STATUS-ITEM (IDX-ITM)
+               MOVE    4           TO  LNK-ODRITEM-STATUS (IDX-ITM)
            WHEN  OTHER
-               MOVE    "0"         TO  LNK-ORDER-STATUS-ITEM (IDX-ITM)
+               MOVE    0           TO  LNK-ODRITEM-STATUS (IDX-ITM)
            END-EVALUATE
       *
            IF    ( SPA-GMN-DR     (IDX2)     NOT =   SPACE )
-               MOVE    "1"                 TO  LNK-ORDER-ITEM (IDX-ITM)
-               MOVE    SPA-GMN-DR (IDX2)   TO  LNK-ORDER-ITEM (IDX-ITM)
+               MOVE    "1"                 TO  LNK-ODRITEM-ITEM(IDX-ITM)
+               MOVE    SPA-GMN-DR (IDX2)   TO  LNK-ODRITEM-ITEM(IDX-ITM)
                                                               (2:)
            END-IF
       *
@@ -4394,27 +4418,27 @@
       *****************************************************************
        2300-TOKNYUIN-SET-SEC           SECTION.
       *
-           IF    ( SPA-NAI-STS-TOKNYUIN    = "-" )
+           IF    ( SPA-NAI-STS-TOKNYUIN    =   9 )
             AND  ( SPA-GMN-TOKNYUIN        = SPACE )
                GO  TO  2300-TOKNYUIN-SET-EXT
            END-IF
       *
-           PERFORM 2300-ORDER-COMMON-SET-SEC
+           PERFORM 2300-ODRITEM-COMMON-SET-SEC
       *
-           MOVE    NCLAIMID-TOKNYUINJMA TO  LNK-ORDER-ITEMID (IDX-ITM)
+           MOVE    NCLAIMID-TOKNYUINJMA TO  LNK-ODRITEM-ITEMID (IDX-ITM)
       *
            EVALUATE    TRUE
-           WHEN  ( SPA-NAI-STS-TOKNYUIN    = "4" )
-           WHEN  ( SPA-NAI-STS-TOKNYUIN    = "-" )
+           WHEN  ( SPA-NAI-STS-TOKNYUIN    =   4 )
+           WHEN  ( SPA-NAI-STS-TOKNYUIN    =   9 )
              AND ( SPA-GMN-TOKNYUIN    NOT = SPACE )
-               MOVE    "4"         TO  LNK-ORDER-STATUS-ITEM (IDX-ITM)
+               MOVE    4           TO  LNK-ODRITEM-STATUS (IDX-ITM)
            WHEN  OTHER
-               MOVE    "0"         TO  LNK-ORDER-STATUS-ITEM (IDX-ITM)
+               MOVE    0           TO  LNK-ODRITEM-STATUS (IDX-ITM)
            END-EVALUATE
       *
            IF    ( SPA-GMN-TOKNYUIN    NOT =   SPACE )
                MOVE    SPA-NAI-TOKUTEI-G
-                                   TO  LNK-ORDER-ITEM (IDX-ITM)
+                                   TO  LNK-ODRITEM-ITEM (IDX-ITM)
            END-IF
       *
            .
@@ -4425,16 +4449,16 @@
       *****************************************************************
        2300-SKJTIME-SET-SEC             SECTION.
       *
-           PERFORM 2300-ORDER-COMMON-SET-SEC
+           PERFORM 2300-ODRITEM-COMMON-SET-SEC
       *
-           MOVE    NCLAIMID-SKJTIMEJMA TO  LNK-ORDER-ITEMID (IDX-ITM)
-           IF    ( SPA-NAI-STS-SKJTIME = "4" OR "-" )
-                MOVE    "4"        TO  LNK-ORDER-STATUS-ITEM (IDX-ITM)
+           MOVE    NCLAIMID-SKJTIMEJMA TO  LNK-ODRITEM-ITEMID (IDX-ITM)
+           IF    ( SPA-NAI-STS-SKJTIME =   4   OR  9 )
+                MOVE    4          TO  LNK-ODRITEM-STATUS (IDX-ITM)
            ELSE
-                MOVE    "0"        TO  LNK-ORDER-STATUS-ITEM (IDX-ITM)
+                MOVE    0          TO  LNK-ODRITEM-STATUS (IDX-ITM)
            END-IF
       *
-           MOVE    SPA-GMN-SKJTIME TO  LNK-ORDER-ITEM (IDX-ITM)
+           MOVE    SPA-GMN-SKJTIME TO  LNK-ODRITEM-ITEM (IDX-ITM)
       *
            .
        2300-SKJTIME-SET-EXT.
@@ -4444,35 +4468,27 @@
       *****************************************************************
        2300-TAIINCD-SET-SEC            SECTION.
       *
-           IF    ( SPA-NAI-STS-TAIINCD      = "-" )
+           IF    ( SPA-NAI-STS-TAIINCD      = 9 )
             AND  ( SPA-GMN-TAIINCD          = SPACE )
                GO  TO  2300-TAIINCD-SET-EXT
            END-IF
       *
-           PERFORM 2300-ORDER-COMMON-SET-SEC
+           PERFORM 2300-ODRITEM-COMMON-SET-SEC
       *
-           MOVE    NCLAIMID-TAIINCDJMA TO  LNK-ORDER-ITEMID (IDX-ITM)
+           MOVE    NCLAIMID-TAIINCDJMA TO  LNK-ODRITEM-ITEMID (IDX-ITM)
       *
            EVALUATE    TRUE
-           WHEN  ( SPA-NAI-STS-TAIINCD     = "4" )
-           WHEN  ( SPA-NAI-STS-TAIINCD     = "-" )
+           WHEN  ( SPA-NAI-STS-TAIINCD     = 4 )
+           WHEN  ( SPA-NAI-STS-TAIINCD     = 9 )
              AND ( SPA-GMN-TAIINCD     NOT = SPACE )
-               MOVE    "4"         TO  LNK-ORDER-STATUS-ITEM (IDX-ITM)
+               MOVE    4           TO  LNK-ODRITEM-STATUS (IDX-ITM)
            WHEN  OTHER
-               MOVE    "0"         TO  LNK-ORDER-STATUS-ITEM (IDX-ITM)
+               MOVE    0           TO  LNK-ODRITEM-STATUS (IDX-ITM)
            END-EVALUATE
       *
-           IF    ( SPA-GMN-TAIINCD  NOT =   SPACE )
-               INITIALIZE  SYSKANRI-REC
-               MOVE    "5013"          TO  SYS-KANRICD
-               MOVE    SPA-GMN-TAIINCD TO  SYS-KBNCD
-               MOVE    SPA-NAI-HIDOYMD TO  SYS-STYUKYMD
-                                           SYS-EDYUKYMD
-               PERFORM 900-SYSKANRI-KEY10-SEL-SEC
-               MOVE    SYSKANRI-REC    TO  SYS-5013-REC
-               MOVE    SPA-GMN-TAIINCD TO  LNK-ORDER-ITEM (IDX-ITM)
-                                           LNK-ORDER-REMARKS (IDX-ITM)
-           END-IF
+           MOVE    SPA-GMN-TAIINCD TO  LNK-ODRITEM-ITEM (IDX-ITM)
+           MOVE    SPA-GMN-TAIINCDMEI
+                                   TO  LNK-ODRITEM-MEMO (IDX-ITM)
       *
            .
        2300-TAIINCD-SET-EXT.
@@ -4482,16 +4498,16 @@
       *****************************************************************
        2300-NYUINKA-SET-SEC            SECTION.
       *
-           PERFORM 2300-ORDER-COMMON-SET-SEC
+           PERFORM 2300-ODRITEM-COMMON-SET-SEC
       *
-           MOVE    NCLAIMID-NYUINKAJMA  TO  LNK-ORDER-ITEMID (IDX-ITM)
-           IF    ( SPA-NAI-STS-NYUINKA  = "4" OR "-" )
-               MOVE    "4"         TO   LNK-ORDER-STATUS-ITEM (IDX-ITM)
+           MOVE    NCLAIMID-NYUINKAJMA  TO  LNK-ODRITEM-ITEMID (IDX-ITM)
+           IF    ( SPA-NAI-STS-NYUINKA  =   4   OR  9 )
+               MOVE    4           TO   LNK-ODRITEM-STATUS (IDX-ITM)
            ELSE
-               MOVE    "0"         TO   LNK-ORDER-STATUS-ITEM (IDX-ITM)
+               MOVE    0           TO   LNK-ODRITEM-STATUS (IDX-ITM)
            END-IF
       *
-           MOVE    SPA-GMN-NYUINKA TO  LNK-ORDER-ITEM (IDX-ITM)
+           MOVE    SPA-GMN-NYUINKA TO  LNK-ODRITEM-ITEM (IDX-ITM)
       *
            .
        2300-NYUINKA-SET-EXT.
@@ -4501,18 +4517,18 @@
       *****************************************************************
        2300-HKNCOMBI-SET-SEC           SECTION.
       *
-           PERFORM 2300-ORDER-COMMON-SET-SEC
+           PERFORM 2300-ODRITEM-COMMON-SET-SEC
       *
            MOVE    NCLAIMID-HKNCOMBIJMA
-                                   TO  LNK-ORDER-ITEMID (IDX-ITM)
-           IF    ( SPA-NAI-STS-HKNCOMBI  = "4" OR "-" )
-               MOVE    "4"         TO   LNK-ORDER-STATUS-ITEM (IDX-ITM)
+                                   TO  LNK-ODRITEM-ITEMID (IDX-ITM)
+           IF    ( SPA-NAI-STS-HKNCOMBI  = 4   OR  9 )
+               MOVE    4           TO   LNK-ODRITEM-STATUS (IDX-ITM)
            ELSE
-               MOVE    "0"         TO   LNK-ORDER-STATUS-ITEM (IDX-ITM)
+               MOVE    0           TO   LNK-ODRITEM-STATUS (IDX-ITM)
            END-IF
       *
            MOVE    SPA-GMN-HKNCOMBI
-                                   TO  LNK-ORDER-ITEM (IDX-ITM)
+                                   TO  LNK-ODRITEM-ITEM (IDX-ITM)
       *
            .
        2300-HKNCOMBI-SET-EXT.
@@ -4523,19 +4539,19 @@
        2300-SODR-COMMON-SET-SEC       SECTION.
       *
            MOVE    SPA-HOSPID          TO  SODR-HOSPID
-           MOVE    ORDER-KARTE-KEY     TO  SODR-UID8
+           MOVE    ORDER-KARTE-KEY     TO  SODR-KARTE-KEY
+           MOVE    ORDER-ORDERNUM      TO  SODR-ORDERNUM
            MOVE    ORDER-NYUGAIKBN     TO  SODR-NYUGAIKBN
            MOVE    SPA-GMN-PTNUM       TO  SODR-PTNUM
            MOVE    SPA-NAI-PTID        TO  SODR-PTID
            MOVE    ORDER-SRYKA         TO  SODR-SRYKA
            MOVE    ORDER-SRYYMD        TO  SODR-SRYYMD
            MOVE    ORDER-HKNCOMBI      TO  SODR-HKNCOMBI
-           MOVE    ORDER-DRCD          TO  SODR-DRCD
            MOVE    ORDER-ORDERID       TO  SODR-ORDERID
-           MOVE    ORDER-ORDERNUM      TO  SODR-ORDERNUM
            MOVE    ORDER-UKEYMD        TO  SODR-UKEYMD
            MOVE    ORDER-UKEHMS        TO  SODR-UKEHMS
            MOVE    "1"                 TO  SODR-PROCKBN
+           MOVE    ORDER-KEYGENERATE   TO  SODR-KEYGENERATE
            MOVE    WRK-INF-DIALOG      TO  SODR-INF-DIALOG
       *
            MOVE    SPA-OPID            TO  SODR-OPID
@@ -4549,17 +4565,18 @@
       *****************************************************************
       *    共通項目設定処理
       *****************************************************************
-       2300-ORDER-COMMON-SET-SEC       SECTION.
+       2300-ODRITEM-COMMON-SET-SEC       SECTION.
       *
            COMPUTE    IDX-ITM  =   IDX-ITM +   1
       *
-           MOVE    ORDER-KEY           TO  LNK-ORDER-KEY     (IDX-ITM)
-           MOVE    IDX-ITM             TO  LNK-ORDER-ITEMNUM (IDX-ITM)
-           MOVE    ORDER-KEYGENERATE   TO  LNK-ORDER-KEYGENERATE
-                                                             (IDX-ITM)
+           MOVE    ORDER-HOSPID        TO  LNK-ODRITEM-HOSPID  (IDX-ITM)
+           MOVE    ORDER-KARTE-KEY     TO  LNK-ODRITEM-KARTE-KEY
+                                                               (IDX-ITM)
+           MOVE    ORDER-ORDERNUM      TO  LNK-ODRITEM-ORDERNUM(IDX-ITM)
+           MOVE    IDX-ITM             TO  LNK-ODRITEM-ITEMNUM (IDX-ITM)
       *
            .
-       2300-ORDER-COMMON-SET-EXT.
+       2300-ODRITEM-COMMON-SET-EXT.
            EXIT.
       *****************************************************************
       *    自画面編集処理
@@ -4757,15 +4774,15 @@
                MOVE    SPA-GMN-TALLNAME   (IDX-LST) 
                                            TO  I06-TALLNAME   (IDX-LST)
                EVALUATE    SPA-GMN-TALLSTS (IDX-LST)
-               WHEN    "1"
+               WHEN    1
                    MOVE    "　重"          TO  I06-TALLERR    (IDX-LST)
-               WHEN    "2"
+               WHEN    2
                    MOVE    "　有"          TO  I06-TALLERR    (IDX-LST)
-               WHEN    "3"
+               WHEN    3
                    MOVE    "　削"          TO  I06-TALLERR    (IDX-LST)
-               WHEN    "4"
+               WHEN    4
                    MOVE    "　未"          TO  I06-TALLERR    (IDX-LST)
-               WHEN    "5"
+               WHEN    5
                    MOVE    "保留"          TO  I06-TALLERR    (IDX-LST)
                END-EVALUATE
       *
@@ -4792,15 +4809,15 @@
                MOVE    SPA-GMN-TKJNIDOJIYU (IDX-LST)
                                            TO  I06-TKJNIDOJIYU (IDX-LST)
                EVALUATE    SPA-GMN-TKJNSTS (IDX-LST)
-               WHEN    "1"
+               WHEN    1
                    MOVE    "重"            TO  I06-TKJNERR    (IDX-LST)
-               WHEN    "2"
+               WHEN    2
                    MOVE    "有"            TO  I06-TKJNERR    (IDX-LST)
-               WHEN    "3"
+               WHEN    3
                    MOVE    "削"            TO  I06-TKJNERR    (IDX-LST)
-               WHEN    "4"
+               WHEN    4
                    MOVE    "未"            TO  I06-TKJNERR    (IDX-LST)
-               WHEN    "5"
+               WHEN    5
                    MOVE    "保留"          TO  I06-TKJNERR    (IDX-LST)
                END-EVALUATE
       *
@@ -4824,6 +4841,12 @@
                                            TO  I06-TERRMES(IDX-LST)
       *
            END-PERFORM
+      *
+           IF    ( SPA-NAI-SELNYUKHN       =   1 )
+               MOVE    "入院料選択"        TO  I06-LBL-TOKNYUIN
+           ELSE
+               MOVE    "特定入院料"        TO  I06-LBL-TOKNYUIN
+           END-IF
       *
       *    項目状態編集
            PERFORM 500-GMNHEN-STATE-EDIT-SEC
@@ -5645,6 +5668,49 @@
        900-TENSU-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
+      *    入院オーダー検索(KEY3)
+      *****************************************************************
+       900-ORDER-KEY3-SEL-SEC          SECTION.
+      *
+           MOVE    ZERO            TO  FLG-ORDER
+      *
+           INITIALIZE                  ORDER-REC
+           MOVE    SPA-HOSPID      TO  ORDER-HOSPID
+           MOVE    SPA-NAI-UKEYMD  TO  ORDER-UKEYMD
+           MOVE    ORDER-REC       TO  MCPDATA-REC
+           MOVE    "tbl_order"     TO  MCP-TABLE
+           MOVE    "key3"          TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC TO  ORDER-REC
+           ELSE
+               INITIALIZE              ORDER-REC
+               MOVE    1           TO  FLG-ORDER
+           END-IF
+      *
+      *
+           .
+       900-ORDER-KEY3-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院オーダーFETCH(KEY3)
+      *****************************************************************
+       900-ORDER-KEY3-FET-SEC          SECTION.
+      *
+           MOVE    "tbl_order"     TO  MCP-TABLE
+           MOVE    "key3"          TO  MCP-PATHNAME
+           PERFORM 910-DBFETCH-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC TO  ORDER-REC
+           ELSE
+               INITIALIZE              ORDER-REC
+               MOVE    1           TO  FLG-ORDER
+           END-IF
+      *
+           .
+       900-ORDER-KEY3-FET-EXT.
+           EXIT.
+      *****************************************************************
       *    入院オーダー検索(KEY4)
       *****************************************************************
        900-ORDER-KEY4-SEL-SEC          SECTION.
@@ -5653,7 +5719,7 @@
       *
            INITIALIZE                  ORDER-REC
            MOVE    SPA-HOSPID      TO  ORDER-HOSPID
-           MOVE    SPA-NAI-UKEYMD  TO  ORDER-UKEYMD
+           MOVE    SPA-GMN-PTNUM   TO  ORDER-PTNUM
            MOVE    ORDER-REC       TO  MCPDATA-REC
            MOVE    "tbl_order"     TO  MCP-TABLE
            MOVE    "key4"          TO  MCP-PATHNAME
@@ -5688,90 +5754,76 @@
        900-ORDER-KEY4-FET-EXT.
            EXIT.
       *****************************************************************
-      *    入院オーダー検索(KEY7)
+      *    入院オーダー検索(KEY)
       *****************************************************************
-       900-ORDER-KEY7-SEL-SEC          SECTION.
+       900-ORDER-KEY-SEL-SEC           SECTION.
       *
-           MOVE    ZERO            TO  FLG-ORDER
-      *
-           INITIALIZE                  ORDER-REC
-           MOVE    SPA-HOSPID      TO  ORDER-HOSPID
-           MOVE    SPA-GMN-PTNUM   TO  ORDER-PTNUM
-           MOVE    ORDER-REC       TO  MCPDATA-REC
-           MOVE    "tbl_order"     TO  MCP-TABLE
-           MOVE    "key7"          TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC TO  ORDER-REC
-           ELSE
-               INITIALIZE              ORDER-REC
-               MOVE    1           TO  FLG-ORDER
-           END-IF
-      *
-      *
-           .
-       900-ORDER-KEY7-SEL-EXT.
-           EXIT.
-      *****************************************************************
-      *    入院オーダーFETCH(KEY7)
-      *****************************************************************
-       900-ORDER-KEY7-FET-SEC          SECTION.
-      *
-           MOVE    "tbl_order"     TO  MCP-TABLE
-           MOVE    "key7"          TO  MCP-PATHNAME
-           PERFORM 910-DBFETCH-SEC
-           IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC TO  ORDER-REC
-           ELSE
-               INITIALIZE              ORDER-REC
-               MOVE    1           TO  FLG-ORDER
-           END-IF
-      *
-           .
-       900-ORDER-KEY7-FET-EXT.
-           EXIT.
-      *****************************************************************
-      *    入院オーダー検索(KEY6)
-      *****************************************************************
-       900-ORDER-KEY6-SEL-SEC          SECTION.
-      *
-           MOVE    ZERO            TO  FLG-ORDER
+           MOVE    ZERO                TO  FLG-ORDER
       *
            INITIALIZE                      ORDER-REC
            MOVE    SPA-HOSPID          TO  ORDER-HOSPID
            MOVE    SPA-NAI-KARTE-KEY   TO  ORDER-KARTE-KEY
            MOVE    SPA-NAI-ORDERNUM    TO  ORDER-ORDERNUM
-           MOVE    ORDER-REC       TO  MCPDATA-REC
-           MOVE    "tbl_order"     TO  MCP-TABLE
-           MOVE    "key6"          TO  MCP-PATHNAME
+           MOVE    ORDER-REC           TO  MCPDATA-REC
+           MOVE    "tbl_order"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC TO  ORDER-REC
+               MOVE    MCPDATA-REC     TO  ORDER-REC
            ELSE
-               INITIALIZE              ORDER-REC
-               MOVE    1           TO  FLG-ORDER
+               INITIALIZE                  ORDER-REC
+               MOVE    1               TO  FLG-ORDER
            END-IF
       *
+           MOVE    "tbl_order"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
            .
-       900-ORDER-KEY6-SEL-EXT.
+       900-ORDER-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    入院オーダーFETCH(KEY6)
+      *    入院オーダ項目検索(KEY4)
       *****************************************************************
-       900-ORDER-KEY6-FET-SEC          SECTION.
+       900-ODRITEM-KEY4-SEL-SEC          SECTION.
       *
-           MOVE    "tbl_order"     TO  MCP-TABLE
-           MOVE    "key6"          TO  MCP-PATHNAME
-           PERFORM 910-DBFETCH-SEC
+           MOVE    ZERO            TO  FLG-ODRITEM
+      *
+           INITIALIZE                      ODRITEM-REC
+           MOVE    SPA-HOSPID          TO  ODRITEM-HOSPID
+           MOVE    SPA-NAI-KARTE-KEY   TO  ODRITEM-KARTE-KEY
+           MOVE    SPA-NAI-ORDERNUM    TO  ODRITEM-ORDERNUM
+           MOVE    ODRITEM-REC     TO  MCPDATA-REC
+           MOVE    "tbl_odritem"   TO  MCP-TABLE
+           MOVE    "key4"          TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC TO  ORDER-REC
+               MOVE    MCPDATA-REC TO  ODRITEM-REC
            ELSE
-               INITIALIZE              ORDER-REC
-               MOVE    1           TO  FLG-ORDER
+               INITIALIZE              ODRITEM-REC
+               MOVE    1           TO  FLG-ODRITEM
            END-IF
       *
            .
-       900-ORDER-KEY6-FET-EXT.
+       900-ODRITEM-KEY4-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院オーダ項目FETCH(KEY4)
+      *****************************************************************
+       900-ODRITEM-KEY4-FET-SEC          SECTION.
+      *
+           MOVE    "tbl_odritem"   TO  MCP-TABLE
+           MOVE    "key4"          TO  MCP-PATHNAME
+           PERFORM 910-DBFETCH-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC TO  ODRITEM-REC
+           ELSE
+               INITIALIZE              ODRITEM-REC
+               MOVE    1           TO  FLG-ODRITEM
+           END-IF
+      *
+           .
+       900-ODRITEM-KEY4-FET-EXT.
            EXIT.
       *****************************************************************
       *    患者情報検索(KEY)
@@ -5999,6 +6051,48 @@
       *
            .
        900-PTNUM-KEY2-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    システム管理マスタ検索処理(KEY7)
+      *****************************************************************
+       900-SYSKANRI-KEY7-SEL-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SYSKANRI
+      *
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key7"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYSKANRI-REC
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+               INITIALIZE                  SYSKANRI-REC
+           END-IF
+      *
+           .
+       900-SYSKANRI-KEY7-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    システム管理マスタ検索処理(KEY7)
+      *****************************************************************
+       900-SYSKANRI-KEY7-FET-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SYSKANRI
+      *
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key7"              TO  MCP-PATHNAME
+           PERFORM 910-DBFETCH-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYSKANRI-REC
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+               INITIALIZE                  SYSKANRI-REC
+           END-IF
+      *
+           .
+       900-SYSKANRI-KEY7-FET-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ検索処理（FHETCHも行う)

@@ -43,6 +43,7 @@
        01  FLG-AREA.
            03  FLG-KHNERR              PIC 9(01).
            03  FLG-ORDER               PIC 9(01).
+           03  FLG-ODRITEM             PIC 9(01).
       *
       *    カウント領域
       *01  CNT-AREA.
@@ -62,15 +63,16 @@
                05  WRK-CMB-ITM2        PIC X(200).
            03  WRK-STR                 PIC X(500).
       *
-       01  ERR-ORDER-REC.
-           02  ERR-ORDER-MAX           PIC 9(03).
-           02  ERR-ORDER-OCC           OCCURS   30.
-           COPY    "CPORDER.INC"       REPLACING  //ORDER-//
-                                       BY         //ERR-ORDER-//.
+       01  ERR-ORDER-ERRCD             PIC X(04).
+       01  ERR-ODRITEM-REC.
+           02  ERR-ODRITEM-MAX         PIC 9(03).
+           02  ERR-ODRITEM-OCC         OCCURS   30.
+           COPY    "CPODRITEM.INC"     REPLACING  //ODRITEM-//
+                                       BY         //ERR-ODRITEM-//.
        01  CONST-AREA.
            03  CONST-ERRCD-MAX             PIC 9(05)   VALUE 100.
-           03  CONST-ERRCDUNCHK            PIC X(03)   VALUE "901".
-           03  CONST-ORDER-MAX             PIC 9(05)   VALUE 30.
+           03  CONST-ERRCD9001             PIC X(04)   VALUE "9001".
+           03  CONST-ODRITEM-MAX           PIC 9(05)   VALUE 30.
            03  CONST-ITEM-MAX              PIC 9(05)   VALUE 80.
       *
       *    項目IDコピー句
@@ -90,17 +92,21 @@
        01  ORDER-REC.
            COPY    "CPORDER.INC".
       *
+      *    オーダ項目テーブル
+       01  ODRITEM-REC.
+           COPY    "CPODRITEM.INC".
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
       *
       *    入院異動チェックサブ
            COPY    "CPORCSODR.INC".
-       01  SORDER-REC.
-           02  SORDER-MAX              PIC 9(03).
-           02  SORDER-OCC              OCCURS   30.
-           COPY    "CPORDER.INC"       REPLACING  //ORDER-//
-                                       BY         //SORDER-//.
+       01  SODRITEM-REC.
+           02  SODRITEM-MAX            PIC 9(03).
+           02  SODRITEM-OCC            OCCURS   30.
+           COPY    "CPODRITEM.INC"     REPLACING  //ODRITEM-//
+                                       BY         //SODRITEM-//.
       *
            COPY    "MCPDATA.INC".
            COPY    "MCPAREA".
@@ -167,7 +173,7 @@
       *****************************************************************
        4101-EDIT-SEC                   SECTION.
       *
-           IF    ( LNK-ORDER-STATUS-ORDER  =   "4" )
+           IF    ( LNK-ORDER-STATUS    =   4 )
                PERFORM 41011-DIRECT-UPD-KHNCHK-SEC
                IF    ( FLG-KHNERR  NOT =   ZERO )
                    GO  TO  4101-EDIT-EXT
@@ -184,27 +190,29 @@
       *****************************************************************
        41011-KHNERR-HEN-SEC            SECTION.
       *
-           INITIALIZE                  ERR-ORDER-REC
+           INITIALIZE                  ERR-ODRITEM-REC
       *
-           PERFORM 900-ORDER-KEY6-SEL-SEC
+           PERFORM 900-ODRITEM-KEY4-SEL-SEC
       *
-           PERFORM UNTIL ( FLG-ORDER   NOT =   ZERO )
+           PERFORM UNTIL ( FLG-ODRITEM   NOT =   ZERO )
       *
-               IF    ( ERR-ORDER-MAX   >=  CONST-ORDER-MAX )
+               IF    ( ERR-ODRITEM-MAX   >=  CONST-ODRITEM-MAX )
                    CONTINUE
                ELSE
-                   COMPUTE ERR-ORDER-MAX   =   ERR-ORDER-MAX   +   1
-                   MOVE    ORDER-REC   TO  ERR-ORDER-OCC (ERR-ORDER-MAX)
+                   COMPUTE ERR-ODRITEM-MAX   =   ERR-ODRITEM-MAX   +   1
+                   MOVE    ODRITEM-REC   TO  ERR-ODRITEM-OCC
+                                                (ERR-ODRITEM-MAX)
                END-IF
       *
-               PERFORM 900-ORDER-KEY6-FET-SEC
+               PERFORM 900-ODRITEM-KEY4-FET-SEC
       *
            END-PERFORM
       *
-           MOVE    "tbl_order"         TO  MCP-TABLE
-           MOVE    "key6"              TO  MCP-PATHNAME
+           MOVE    "tbl_odritem"       TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
+           MOVE    LNK-ORDER-ERRCD1    TO  ERR-ORDER-ERRCD
            PERFORM 410111-EDIT-ERRMES-SEC
       *
            .
@@ -215,20 +223,21 @@
       *****************************************************************
        41011-DIRECT-UPD-KHNCHK-SEC     SECTION.
       *
-           MOVE    ZERO            TO  FLG-KHNERR
+           MOVE    ZERO                TO  FLG-KHNERR
       *
            INITIALIZE                  SODR-AREA
-           INITIALIZE                  SORDER-REC
+           INITIALIZE                  SODRITEM-REC
       *
            MOVE    LNK-ORDER-HOSPID    TO  SODR-HOSPID
-           MOVE    LNK-ORDER-KARTE-KEY TO  SODR-UID8
+           MOVE    LNK-ORDER-KARTE-KEY TO  SODR-KARTE-KEY
            MOVE    LNK-ORDER-ORDERNUM  TO  SODR-ORDERNUM
            CALL    "ORCSODRS02"        USING   SODR-AREA
-                                               SORDER-REC
-           IF    ( SODR-ERRCD  NOT =   SPACE )
+                                               SODRITEM-REC
+           IF    ( SODR-ERRFLG NOT =   ZERO )
       *
-               MOVE    1           TO  FLG-KHNERR
-               MOVE    SORDER-REC  TO  ERR-ORDER-REC
+               MOVE    1               TO  FLG-KHNERR
+               MOVE    SODR-ERRCD      TO  ERR-ORDER-ERRCD
+               MOVE    SODRITEM-REC    TO  ERR-ODRITEM-REC
                PERFORM 410111-EDIT-ERRMES-SEC
       *
            END-IF
@@ -243,35 +252,37 @@
       *
            MOVE    ZERO                TO  IDX-MAX
       *
+           DISPLAY "ERR-ORDER-ERRCD =" ERR-ORDER-ERRCD
+      *
+           IF    ( ERR-ORDER-ERRCD   NOT =   SPACE )
+               MOVE    ERR-ORDER-ERRCD TO  BD009S-ERRCD (1)
+               MOVE    ERR-ORDER-ERRCD TO  WRK-CMB-CD
+               PERFORM 4200-ERRCD-CHK-SEC
+               MOVE    WRK-CMB-ITM     TO  BD009S-ERRMES(1)
+               MOVE    1               TO  IDX-MAX
+               DISPLAY IDX-MAX ODRITEM-ERRCD "-" BD009S-ERRMES(IDX-MAX)
+           END-IF
+      *
            PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0    >   ERR-ORDER-MAX )
+                   UNTIL ( IDX0    >   ERR-ODRITEM-MAX )
       *
-               MOVE    ERR-ORDER-OCC (IDX0)    TO  ORDER-REC
+               MOVE    ERR-ODRITEM-OCC (IDX0)  TO  ODRITEM-REC
       *
-               IF    ( IDX0        =   1 )
-                   IF    ( ORDER-ERRCD-ORDER   NOT =   SPACE )
-                       MOVE    ORDER-ERRCD-ORDER   TO  BD009S-ERRCD (1)
-                       MOVE    ORDER-ERRCD-ORDER   TO  WRK-CMB-CD
-                       PERFORM 4200-ERRCD-CHK-SEC
-                       MOVE    WRK-CMB-ITM         TO  BD009S-ERRMES(1)
-                       MOVE    1                   TO  IDX-MAX
-                   END-IF
-               END-IF
-      *
-               IF    ( ORDER-ERRCD-ITEM    NOT =   SPACE )
+               IF    ( ODRITEM-ERRCD    NOT =   SPACE )
                    IF    ( IDX-MAX    >=   CONST-ERRCD-MAX )
                        CONTINUE
                    ELSE
                        COMPUTE IDX-MAX =   IDX-MAX +   1
       *
-                       MOVE    ORDER-ERRCD-ITEM
+                       MOVE    ODRITEM-ERRCD
                                            TO  BD009S-ERRCD (IDX-MAX)
-                       IF    ( ORDER-ERRCD-ITEM (2:)
-                                           =   CONST-ERRCDUNCHK )
-                           MOVE    ORDER-ERRCD-ITEM    TO  WRK-CMB-CD
+                       IF    ( ODRITEM-ERRCD
+                                           =   CONST-ERRCD9001 )
+                           MOVE    ODRITEM-ERRCD    TO  WRK-CMB-CD
                            PERFORM 4200-ERRCD-CHK-SEC
+               DISPLAY IDX-MAX ODRITEM-ERRCD ":" BD009S-ERRMES(IDX-MAX)
                            MOVE    WRK-CMB-ITM         TO  WRK-STR
-                           MOVE    ORDER-ITEMID        TO  WRK-CMB-CD
+                           MOVE    ODRITEM-ITEMID      TO  WRK-CMB-CD
                            PERFORM 4200-NCLAIMID-CHK-SEC
                            STRING  WRK-STR         DELIMITED BY SPACE
                                    "［"            DELIMITED BY SIZE
@@ -280,8 +291,9 @@
                            INTO                BD009S-ERRMES(IDX-MAX)
                            END-STRING
                        ELSE
-                           MOVE    ORDER-ERRCD-ITEM    TO  WRK-CMB-CD
+                           MOVE    ODRITEM-ERRCD    TO  WRK-CMB-CD
                            PERFORM 4200-ERRCD-CHK-SEC
+               DISPLAY IDX-MAX ODRITEM-ERRCD ":" BD009S-ERRMES(IDX-MAX)
                            MOVE    WRK-CMB-ITM
                                            TO  BD009S-ERRMES(IDX-MAX)
                        END-IF
@@ -347,47 +359,47 @@
        300-END-EXT.
            EXIT.
       *****************************************************************
-      *    入院オーダー検索(KEY6)
+      *    入院オーダ項目検索(KEY4)
       *****************************************************************
-       900-ORDER-KEY6-SEL-SEC          SECTION.
+       900-ODRITEM-KEY4-SEL-SEC          SECTION.
       *
-           MOVE    ZERO                TO  FLG-ORDER
+           MOVE    ZERO                TO  FLG-ODRITEM
       *
-           INITIALIZE                      ORDER-REC
-           MOVE    LNK-ORDER-HOSPID    TO  ORDER-HOSPID
-           MOVE    LNK-ORDER-KARTE-KEY TO  ORDER-KARTE-KEY
-           MOVE    LNK-ORDER-ORDERNUM  TO  ORDER-ORDERNUM
-           MOVE    ORDER-REC           TO  MCPDATA-REC
-           MOVE    "tbl_order"         TO  MCP-TABLE
-           MOVE    "key6"              TO  MCP-PATHNAME
+           INITIALIZE                      ODRITEM-REC
+           MOVE    LNK-ORDER-HOSPID    TO  ODRITEM-HOSPID
+           MOVE    LNK-ORDER-KARTE-KEY TO  ODRITEM-KARTE-KEY
+           MOVE    LNK-ORDER-ORDERNUM  TO  ODRITEM-ORDERNUM
+           MOVE    ODRITEM-REC           TO  MCPDATA-REC
+           MOVE    "tbl_odritem"       TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC     TO  ORDER-REC
+               MOVE    MCPDATA-REC     TO  ODRITEM-REC
            ELSE
-               INITIALIZE                  ORDER-REC
-               MOVE    1               TO  FLG-ORDER
+               INITIALIZE                  ODRITEM-REC
+               MOVE    1               TO  FLG-ODRITEM
            END-IF
       *
            .
-       900-ORDER-KEY6-SEL-EXT.
+       900-ODRITEM-KEY4-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    入院オーダーFETCH(KEY6)
+      *    入院オーダ項目FETCH(KEY4)
       *****************************************************************
-       900-ORDER-KEY6-FET-SEC          SECTION.
+       900-ODRITEM-KEY4-FET-SEC          SECTION.
       *
-           MOVE    "tbl_order"     TO  MCP-TABLE
-           MOVE    "key6"          TO  MCP-PATHNAME
+           MOVE    "tbl_odritem"   TO  MCP-TABLE
+           MOVE    "key4"          TO  MCP-PATHNAME
            PERFORM 910-DBFETCH-SEC
            IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC TO  ORDER-REC
+               MOVE    MCPDATA-REC TO  ODRITEM-REC
            ELSE
-               INITIALIZE              ORDER-REC
-               MOVE    1           TO  FLG-ORDER
+               INITIALIZE              ODRITEM-REC
+               MOVE    1           TO  FLG-ODRITEM
            END-IF
       *
            .
-       900-ORDER-KEY6-FET-EXT.
+       900-ODRITEM-KEY4-FET-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ検索処理
