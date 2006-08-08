@@ -16,7 +16,7 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *    ½»½ê                COPY (CPORDER.INC)                     *
+      *    Æþ±¡¥ª¡¼¥À                COPY (CPORDER.INC)               *
       *****************************************************************
       *****************************************************************
       *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
@@ -26,29 +26,21 @@
            03  ORDER-KEY.
                05  ORDER-HOSPID        PIC X(24).
                05  ORDER-KARTE-KEY     PIC X(36).
-               05  ORDER-NYUGAIKBN     PIC X(01).
-               05  ORDER-PTNUM         PIC X(20).
-               05  ORDER-PTID          PIC 9(10).
-               05  ORDER-SRYKA         PIC X(02).
-               05  ORDER-SRYYMD        PIC X(08).
-               05  ORDER-HKNCOMBI      PIC X(04).
-               05  ORDER-DRCD          PIC X(05).
-               05  ORDER-ORDERID       PIC X(04).
                05  ORDER-ORDERNUM      PIC 9(02).
-               05  ORDER-ITEMNUM       PIC 9(02).
-               05  ORDER-UKEYMD        PIC X(08).
-               05  ORDER-UKEHMS        PIC X(06).
+           03  ORDER-NYUGAIKBN         PIC X(01).
+           03  ORDER-PTNUM             PIC X(20).
+           03  ORDER-PTID              PIC 9(10).
+           03  ORDER-SRYKA             PIC X(02).
+           03  ORDER-SRYYMD            PIC X(08).
+           03  ORDER-HKNCOMBI          PIC X(04).
+           03  ORDER-ORDERID           PIC X(04).
+           03  ORDER-UKEYMD            PIC X(08).
+           03  ORDER-UKEHMS            PIC X(06).
            03  ORDER-ERRCD1            PIC X(04).
            03  ORDER-ERRCD2            PIC X(04).
-           03  ORDER-ITEMID            PIC X(05).
-           03  ORDER-ITEM              PIC X(10).
-           03  ORDER-REMARKS           PIC X(80).
-           03  ORDER-ERRCD-ORDER       PIC X(04).
-           03  ORDER-ERRCD-ITEM        PIC X(04).
-           03  ORDER-STATUS-ORDER      PIC X(01).
-           03  ORDER-STATUS-ITEM       PIC X(01).
-           03  ORDER-MODIFY            PIC X(01).
-           03  ORDER-KEYGENERATE       PIC X(01).
+           03  ORDER-STATUS            PIC 9(01).
+           03  ORDER-MODIFY            PIC 9(01).
+           03  ORDER-KEYGENERATE       PIC 9(01).
            03  ORDER-RRKNUM            PIC 9(03).
            03  ORDER-RRKEDANUM         PIC 9(03).
            03  ORDER-TERMID            PIC X(16).

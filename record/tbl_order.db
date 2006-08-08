@@ -1,29 +1,21 @@
 tbl_order {
 	HOSPID			 	char(24);
 	KARTE_KEY			varchar(36);
+	ORDERNUM			number(2,0);
 	NYUGAIKBN			char(1);
 	PTNUM				char(20);
 	PTID				number(10,0);
 	SRYKA				char(2);
 	SRYYMD				char(8);
 	HKNCOMBI			number(4,0);
-	DRCD				char(5);
 	ORDERID				char(4);
-	ORDERNUM			number(2,0);
-	ITEMNUM				number(2,0);
 	UKEYMD   			char(8);
 	UKEHMS   			char(6);
 	ERRCD1				char(4);
 	ERRCD2				char(4);
-	ITEMID				char(5);
-	ITEM				varchar(10);
-	REMARKS				varchar(80);
-	ERRCD_ORDER			char(4);
-	ERRCD_ITEM			char(4);
-	STATUS_ORDER		char(1);
-	STATUS_ITEM			char(1);
-	MODIFY				char(1);
-	KEYGENERATE			char(1);
+	STATUS				number(1,0);
+	MODIFY				number(1,0);
+	KEYGENERATE			number(1,0);
 	RRKNUM				number(3,0);
 	RRKEDANUM			number(3,0);
 	TERMID   			varchar(16);
@@ -36,7 +28,7 @@ tbl_order {
 	SELEDUKEYMD 	    char(8),virtual;
 };
 primary	{
-	HOSPID,KARTE_KEY,NYUGAIKBN,PTNUM,PTID,SRYKA,SRYYMD,HKNCOMBI,DRCD,ORDERID,ORDERNUM,ITEMNUM,UKEYMD,UKEHMS;
+	HOSPID,KARTE_KEY,ORDERNUM ;
 };
 
 path	key 	{
@@ -46,18 +38,7 @@ path	key 	{
 		FROM tbl_order
 			WHERE HOSPID      =   :HOSPID
 			AND   KARTE_KEY   =   :KARTE_KEY
-			AND   NYUGAIKBN   =   :NYUGAIKBN
-			AND   PTNUM       =   :PTNUM
-			AND   PTID        =   :PTID
-			AND   SRYKA       =   :SRYKA
-			AND   SRYYMD      =   :SRYYMD
-			AND   HKNCOMBI    =   :HKNCOMBI
-			AND   DRCD        =   :DRCD
-			AND   ORDERID     =   :ORDERID
 			AND   ORDERNUM    =   :ORDERNUM
-			AND   ITEMNUM     =   :ITEMNUM
-			AND   UKEYMD      =   :UKEYMD
-			AND   UKEHMS      =   :UKEHMS
 		;
 	};
 };
@@ -78,21 +59,10 @@ path	key3 	{
 		DECLARE tbl_order_key3_csr CURSOR FOR
 		SELECT *
 		FROM tbl_order
-			WHERE   HOSPID    =   :HOSPID
-			AND     KARTE_KEY =   :KARTE_KEY
-			AND     ORDERNUM  =   :ORDERNUM
-			AND     STATUS_ITEM = :STATUS_ITEM
-		;
-	};
-};
-
-path	del1 	{
-	DBDELETE	{
-		DELETE
-		FROM tbl_order
-			WHERE   HOSPID    =   :HOSPID
-			AND     KARTE_KEY =   :KARTE_KEY
-			AND     ORDERNUM  =   :ORDERNUM
+		WHERE  HOSPID        = :HOSPID
+		AND    UKEYMD        = :UKEYMD
+		AND    STATUS        <> 3
+		ORDER  BY  SRYYMD  ,UKEHMS ,KARTE_KEY ,ORDERNUM
 		;
 	};
 };
@@ -103,10 +73,9 @@ path	key4 	{
 		SELECT *
 		FROM tbl_order
 		WHERE  HOSPID        = :HOSPID
-		AND    UKEYMD        = :UKEYMD
-		AND    ITEMNUM       = 1
-		AND    STATUS_ORDER  <>    '3'
-		ORDER  BY  SRYYMD  ,UKEHMS ,KARTE_KEY ,ORDERNUM
+		AND    PTNUM         = :PTNUM
+		AND    STATUS		 <> 3
+		ORDER  BY  UKEYMD DESC,UKEHMS DESC,KARTE_KEY DESC,ORDERNUM DESC
 		;
 	};
 };
@@ -118,9 +87,18 @@ path	key5 	{
 		FROM tbl_order
 		WHERE  HOSPID        = :HOSPID
 		AND    PTID          = :PTID
-		AND    ITEMNUM       = 1
-		AND    STATUS_ORDER  <>    '3'
+		AND    STATUS		 <>    3
 		ORDER  BY  SRYYMD DESC,UKEYMD DESC,UKEHMS DESC,KARTE_KEY DESC,ORDERNUM DESC
+		;
+	};
+};
+
+path	upd1 	{
+	DBUPDATE	{
+		UPDATE  tbl_order
+		SET     STATUS    =   3
+		WHERE   KARTE_KEY =   :KARTE_KEY
+		AND     ORDERNUM  =   :ORDERNUM
 		;
 	};
 };
@@ -131,23 +109,11 @@ path	key6 	{
 		SELECT *
 		FROM tbl_order
 		WHERE  HOSPID        = :HOSPID
-		AND    KARTE_KEY     = :KARTE_KEY
-		AND    ORDERNUM      = :ORDERNUM
-		ORDER  BY  ITEMID,ITEMNUM
+		AND    UKEYMD       >= :SELSTUKEYMD
+		AND    UKEYMD       <= :SELEDUKEYMD
 		;
 	};
 };
-
-path	upd1 	{
-	DBUPDATE	{
-		UPDATE  tbl_order
-		SET  STATUS_ORDER  =  '3'
-		WHERE   KARTE_KEY =   :KARTE_KEY
-		AND     ORDERNUM  =   :ORDERNUM
-		;
-	};
-};
-
 
 path	key7 	{
 	DBSELECT	{
@@ -155,45 +121,6 @@ path	key7 	{
 		SELECT *
 		FROM tbl_order
 		WHERE  HOSPID        = :HOSPID
-		AND    PTNUM         = :PTNUM
-		AND    ITEMNUM       = 1
-		AND    STATUS_ORDER  <>    '3'
-		ORDER  BY  UKEYMD DESC,UKEHMS DESC,KARTE_KEY DESC,ORDERNUM DESC
 		;
 	};
 };
-
-
-path	all 	{
-	DBSELECT	{
-		DECLARE tbl_order_all_csr CURSOR FOR
-		SELECT *
-		FROM tbl_order
-		;
-	};
-};
-
-path	key8 	{
-	DBSELECT	{
-		DECLARE tbl_order_key8_csr CURSOR FOR
-		SELECT *
-		FROM tbl_order
-		WHERE  HOSPID        = :HOSPID
-		AND    UKEYMD       >= :SELSTUKEYMD
-		AND    UKEYMD       <= :SELEDUKEYMD
-		AND    ITEMNUM       = 1
-		;
-	};
-};
-
-path	key9 	{
-	DBSELECT	{
-		DECLARE tbl_order_key9_csr CURSOR FOR
-		SELECT *
-		FROM tbl_order
-		WHERE  HOSPID        = :HOSPID
-		AND    ITEMNUM       = 1
-		;
-	};
-};
-
