@@ -114,6 +114,7 @@
            03  IDX-LF2             PIC 9(04).
            03  IDX-JI              PIC 9(04).
            03  IDX-IJ              PIC 9(04).
+           03  IDX-IJ2             PIC 9(04).
            03  IDX-SINSATU         PIC 9(04).
            03  IDX-BUI             PIC 9(04).
            03  IDX-SATU            PIC 9(04).
@@ -1897,10 +1898,12 @@
            MOVE    SYU-TOTAL-HKNTEN     TO  TBL-TENNSUALL(IDX-LF)
       *    ÀÁµáÅÀ¿ô
            MOVE    ZERO                TO  IDX-IJ
+           MOVE    ZERO                TO  IDX-IJ2
            MOVE    ZERO                TO  FLG-ERR
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >       15
                ADD     1                   TO  IDX-IJ
+               ADD     1                   TO  IDX-IJ2
       *        ÀÁµá¥³¡¼¥É
                MOVE    IDX                 TO  TBL-IJICD(IDX-LF IDX-IJ)
                MOVE    "0"                 TO  TBL-SRYSYUBETSU
@@ -1958,7 +1961,8 @@
            END-PERFORM
       *    ÊÝ¸±Å¬ÍÑ¶â³Û
            ADD     1                   TO  IDX-IJ
-           MOVE    IDX-IJ              TO  TBL-IJICD(IDX-LF IDX-IJ)
+           ADD     1                   TO  IDX-IJ2
+           MOVE    IDX-IJ2             TO  TBL-IJICD(IDX-LF IDX-IJ)
            MOVE    "0"                 TO  TBL-SRYSYUBETSU
                                                         (IDX-LF IDX-IJ)
            MOVE    SYU-HKNTEKMONEY     TO  TBL-MEISAITANKA
@@ -1967,7 +1971,8 @@
                                                       (IDX-LF IDX-IJ)
       *    ÌôºÞ°ìÉôÉéÃ´¶â
            ADD     1                   TO  IDX-IJ
-           MOVE    IDX-IJ              TO  TBL-IJICD(IDX-LF IDX-IJ)
+           ADD     1                   TO  IDX-IJ2
+           MOVE    IDX-IJ2             TO  TBL-IJICD(IDX-LF IDX-IJ)
            MOVE    "0"                 TO  TBL-SRYSYUBETSU
                                                         (IDX-LF IDX-IJ)
            MOVE    SYU-YKZ-FTN         TO  TBL-MEISAITANKA
@@ -1976,7 +1981,8 @@
                                                       (IDX-LF IDX-IJ)
       *    Ï·¿Í°ìÉôÉéÃ´¶â
            ADD     1                   TO  IDX-IJ
-           MOVE    IDX-IJ              TO  TBL-IJICD(IDX-LF IDX-IJ)
+           ADD     1                   TO  IDX-IJ2
+           MOVE    IDX-IJ2             TO  TBL-IJICD(IDX-LF IDX-IJ)
            MOVE    "0"                 TO  TBL-SRYSYUBETSU
                                                         (IDX-LF IDX-IJ)
            MOVE    SYU-RJN-FTN         TO  TBL-MEISAITANKA
@@ -1985,7 +1991,8 @@
                                                       (IDX-LF IDX-IJ)
       *    ¸øÈñ°ìÉôÉéÃ´¶â
            ADD     1                   TO  IDX-IJ
-           MOVE    IDX-IJ              TO  TBL-IJICD(IDX-LF IDX-IJ)
+           ADD     1                   TO  IDX-IJ2
+           MOVE    IDX-IJ2             TO  TBL-IJICD(IDX-LF IDX-IJ)
            MOVE    "0"                 TO  TBL-SRYSYUBETSU
                                                         (IDX-LF IDX-IJ)
            MOVE    SYU-KOH-FTN         TO  TBL-MEISAITANKA
@@ -1994,7 +2001,8 @@
                                                       (IDX-LF IDX-IJ)
       *    Ä´À°¶â
            ADD     1                   TO  IDX-IJ
-           MOVE    IDX-IJ              TO  TBL-IJICD(IDX-LF IDX-IJ)
+           ADD     1                   TO  IDX-IJ2
+           MOVE    IDX-IJ2             TO  TBL-IJICD(IDX-LF IDX-IJ)
            MOVE    "0"                 TO  TBL-SRYSYUBETSU
                                                      (IDX-LF IDX-IJ)
            MOVE    SYU-CHOSEI          TO  TBL-MEISAITANKA
@@ -2004,13 +2012,14 @@
       *
       *    ÀÁµá¶â³Û
            ADD     1                   TO  IDX-IJ
+           ADD     1                   TO  IDX-IJ2
            IF      IDX-IJ              >   20
                PERFORM 200531-IDX-CNT-SEC
                IF      FLG-ERR            =   1
                    GO      TO      2005-SYUNOU-SET-EXT
                END-IF
            END-IF
-           MOVE    IDX-IJ              TO  TBL-IJICD(IDX-LF IDX-IJ)
+           MOVE    IDX-IJ2             TO  TBL-IJICD(IDX-LF IDX-IJ)
            MOVE    "0"                 TO  TBL-SRYSYUBETSU
                                                         (IDX-LF IDX-IJ)
            MOVE    SYU-SKYMONEY        TO  TBL-MEISAITANKA
@@ -2019,7 +2028,8 @@
                                                       (IDX-LF IDX-IJ)
       *    Æþ¶â¹ç·×³Û
            ADD     1                   TO  IDX-IJ
-           MOVE    IDX-IJ              TO  TBL-IJICD(IDX-LF IDX-IJ)
+           ADD     1                   TO  IDX-IJ2
+           MOVE    IDX-IJ2             TO  TBL-IJICD(IDX-LF IDX-IJ)
            MOVE    "0"                 TO  TBL-SRYSYUBETSU
                                                         (IDX-LF IDX-IJ)
            MOVE    SMEI-NYUHEN-MONEY   TO  TBL-MEISAITANKA
@@ -2029,7 +2039,8 @@
       *    ÄûÀµ»þ
            IF      SMEI-DENPEDANUM     >   1
                ADD     1                   TO  IDX-IJ
-               MOVE    IDX-IJ              TO  TBL-IJICD(IDX-LF IDX-IJ)
+               ADD     1                   TO  IDX-IJ2
+               MOVE    IDX-IJ2             TO  TBL-IJICD(IDX-LF IDX-IJ)
                MOVE    "0"                 TO  TBL-SRYSYUBETSU
                                                         (IDX-LF IDX-IJ)
                MOVE    SMEI-SKYMONEY       TO  TBL-MEISAITANKA
