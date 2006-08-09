@@ -370,5 +370,12 @@ W24	{
 			count	int;
 			item	varchar(20)[05];
 		};
+		CMB_HYOUKETU	{
+			HYOUKETU	{
+				value	varchar(32);
+			};
+			count	int;
+			item	varchar(32)[05];
+		};
 	};
 };

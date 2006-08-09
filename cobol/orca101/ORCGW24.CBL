@@ -42,6 +42,7 @@
       *  01.00.02    NACL-ÂÀÅÄ    04.08.23  Æþ±¡²ñ·×¼¼ÎÁº¹³Û¶èÊ¬ÄÉ²Ã
       *  01.00.03    NACL-¾®Æ¦Âô  06.01.19  ³°ÇñÅÐÏ¿»þ¤Î¼Â¹¹¿·¶èÊ¬ÄÉ²Ã
       *  02.08.00    NACL-ÂÀÅÄ    06.02.27  ¸º»»¾ðÊó¤ÎÊÔ½¸¾ì½êÊÑ¹¹
+      *  03.02.01    NACL-¾®Æ¦Âô  06.08.09  É¸·çÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -586,6 +587,9 @@
       *    Æþ±¡²ñ·×³°Çñ¶èÊ¬¥³¥ó¥Ü
            PERFORM 310-NACCT-GAIHAKULST-SET-SEC
       *
+      *    É¸·ç¸º³Û¶èÊ¬¥³¥ó¥Ü
+           PERFORM 310-HYOUKETULST-SET-SEC
+      *
            .
        310-CMB-SYOKI-EXT.
            EXIT.
@@ -851,6 +855,36 @@
        310-NACCT-GAIHAKULST-SET-EXT.
            EXIT.
       *****************************************************************
+      *    É¸·ç¸º³Û¶èÊ¬¥³¥ó¥Ü
+      *****************************************************************
+       310-HYOUKETULST-SET-SEC    SECTION.
+      *
+           MOVE    5               TO  SPA-GMN-W24-HYOUKETU-MAX
+      *
+           MOVE    "0"             TO  SPA-GMN-W24-HYOUKETUL    (1)
+           MOVE    "¸º³Û¤Ê¤·"
+                                   TO  SPA-GMN-W24-HYOUKETUMEIL (1)
+      *
+           MOVE    "1"             TO  SPA-GMN-W24-HYOUKETUL    (2)
+           MOVE    "£±£°£°Ê¬¤Î£±£°¸º³Û"
+                                   TO  SPA-GMN-W24-HYOUKETUMEIL (2)
+      *
+           MOVE    "2"             TO  SPA-GMN-W24-HYOUKETUL    (3)
+           MOVE    "£±£°£°Ê¬¤Î£±£µ¸º³Û"
+                                   TO  SPA-GMN-W24-HYOUKETUMEIL (3)
+      *
+           MOVE    "3"             TO  SPA-GMN-W24-HYOUKETUL    (4)
+           MOVE    "£±£°£°Ê¬¤Î£²¸º³Û"
+                                   TO  SPA-GMN-W24-HYOUKETUMEIL (4)
+      *
+           MOVE    "4"             TO  SPA-GMN-W24-HYOUKETUL    (5)
+           MOVE    "£±£°£°Ê¬¤Î£³¸º³Û"
+                                   TO  SPA-GMN-W24-HYOUKETUMEIL (5)
+      *
+           .
+       310-TAIKSIKBNLST-SET-EXT.
+           EXIT.
+      *****************************************************************
       *    ÆþÎÏ¾ðÊóÊÔ½¸½èÍý
       *****************************************************************
        310-INPUT-AREA-EDIT-SEC     SECTION.
@@ -945,6 +979,16 @@
            ELSE
                MOVE    SPA-GMN-W24-NACCT-GAIHAKULST (1)
                                        TO  SPA-GMN-W24-NACCT-GAIHAKU-G
+           END-IF
+      *
+      *    É¸·ç¸º³Û¶èÊ¬
+           MOVE    SYS-5000-HYOUKETUKBN  TO  WRK-CMB-CD
+           PERFORM 4200-HYOUKETULST-CHK-SEC
+           IF    ( WRK-CMB-ITM     NOT =   SPACE )
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-W24-HYOUKETU-G
+           ELSE
+               MOVE    SPA-GMN-W24-HYOUKETULST (1)
+                                       TO  SPA-GMN-W24-HYOUKETU-G
            END-IF
       *
       *    Æþ±¡ÎÁ²Ã»»¾ðÊó
@@ -1410,6 +1454,9 @@
       *    Âà±¡¾ÚÌÀ½ñµ­ºÜ¶èÊ¬
            MOVE    W24-TAIKSIKBN       TO  SPA-GMN-W24-TAIKSIKBN-G
       *
+      *    É¸·ç¸º³Û¶èÊ¬
+           MOVE    W24-HYOUKETU        TO  SPA-GMN-W24-HYOUKETU-G
+      *
            .
       *
        4101-GMN-SPA-SET-EXT.
@@ -1547,6 +1594,12 @@
       *
       *    Âà±¡¾ÚÌÀ½ñµ­ºÜ¶èÊ¬¥Á¥§¥Ã¥¯½èÍý
            PERFORM 4100-TAIKSIKBN-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
+      *    É¸·ç¸º³Û¶èÊ¬¥Á¥§¥Ã¥¯½èÍý
+           PERFORM 4100-HYOUKETU-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
@@ -1965,6 +2018,10 @@
       *    Âà±¡¾ÚÌÀ½ñµ­ºÜ¶èÊ¬
            MOVE    SPA-GMN-W24-TAIKSIKBN
                                    TO  SYS-5000-TAIKSIKBN
+      *
+      *    É¸·ç¸º³Û¶èÊ¬
+           MOVE    SPA-GMN-W24-HYOUKETU
+                                   TO  SYS-5000-HYOUKETUKBN
       *
       *    ¸º»»¾ðÊó
            IF    ( SPA-W01-EDYUKYMD    >=  CONST-H180401 )
@@ -2663,6 +2720,25 @@
        4100-TAIKSIKBN-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    É¸·ç¸º³Û¶èÊ¬¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       4100-HYOUKETU-CHK-SEC          SECTION.
+      *
+           MOVE    SPA-GMN-W24-HYOUKETU
+                                       TO  WRK-CMB-CD
+           PERFORM 4200-HYOUKETULST-CHK-SEC
+           IF    ( WRK-CMB-ITM         =   SPACE )
+               MOVE    SPA-GMN-W24-HYOUKETULST (1)
+                                       TO  SPA-GMN-W24-HYOUKETU-G
+           ELSE
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-W24-HYOUKETU-G
+           END-IF
+      *
+           .
+      *
+       4100-HYOUKETU-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    Æþ±¡»þ¿©»öÎÅÍÜ¥³¥ó¥Ü¥Á¥§¥Ã¥¯½èÍý
       *****************************************************************
        4200-SKJRYOYOLST-CHK-SEC    SECTION.
@@ -2996,6 +3072,29 @@
        4200-NACCT-GAIHAKULST-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    É¸·ç¸º³Û¶èÊ¬¥³¥ó¥Ü¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       4200-HYOUKETULST-CHK-SEC   SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM-G
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-W24-HYOUKETU-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-W24-HYOUKETUL (IDX-CMB)
+                                       =   WRK-CMB-CD )
+                   MOVE    SPA-GMN-W24-HYOUKETULST (IDX-CMB)
+                                       TO  WRK-CMB-ITM
+                   MOVE    IDX-CMB     TO  WRK-CMB-IDX
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       4200-HYOUKETULST-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    ÆþÎÏ¾ðÊóÎÎ°è½é´ü²½½èÍý
       *****************************************************************
        4201-INPUT-AREA-INIT-SEC        SECTION.
@@ -3082,6 +3181,8 @@
                                    TO  SPA-GMN-W24-TAIPRTKBN-G
            MOVE    SPA-GMN-W24-TAIKSIKBNLST (1)
                                    TO  SPA-GMN-W24-TAIKSIKBN-G
+           MOVE    SPA-GMN-W24-HYOUKETULST (1)
+                                   TO  SPA-GMN-W24-HYOUKETU-G
       *
       *
       *    Æþ±¡²Ã»»Ì¾¾ÎÊÔ½¸½èÍý
@@ -3591,6 +3692,21 @@
       *
            END-PERFORM
       *
+      *    É¸·ç¸º³Û¶èÊ¬
+           MOVE    SPA-GMN-W24-HYOUKETU-G
+                                       TO  W24-HYOUKETU
+           MOVE    SPA-GMN-W24-HYOUKETU-MAX
+                                       TO  W24-HYOUKETU-CNT
+      *
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   W24-HYOUKETU-CNT )
+      *
+      *
+               MOVE    SPA-GMN-W24-HYOUKETULST (IDX0)
+                                       TO  W24-HYOUKETU-ITM (IDX0)
+      *
+           END-PERFORM
+      *
            IF    ( SPA-W01-EDYUKYMD    >=  CONST-H180401 )
                MOVE    "Æþ±¡²Ã»»¾ðÊó"          TO  W24-FRAME3-LABEL
            ELSE
@@ -3753,6 +3869,8 @@
                MOVE    "NACCT_BRMSGK"  TO  MCP-WIDGET
            WHEN    051
                MOVE    "NACCT_GAIHAKU" TO  MCP-WIDGET
+           WHEN    053
+               MOVE    "HYOUKETU"      TO  MCP-WIDGET
            WHEN    048
                MOVE    "SENTEI_TANKAIP"
                                        TO  MCP-WIDGET
@@ -3874,6 +3992,8 @@
            WHEN    "NACCT_BRMSGK"
                MOVE    051             TO  SPA-GMN-W24-CUR
            WHEN    "NACCT_GAIHAKU"
+               MOVE    053             TO  SPA-GMN-W24-CUR
+           WHEN    "HYOUKETU"
                MOVE    008             TO  SPA-GMN-W24-CUR
            END-EVALUATE
       *

@@ -143,3 +143,9 @@
                                                BINARY.
                 05  W24-TAIKSIKBN-ITM          PIC X(20)
                                                OCCURS  5.
+              04  W24-CMB-HYOUKETU.
+                05  W24-HYOUKETU               PIC X(32).
+                05  W24-HYOUKETU-CNT           PIC S9(9)
+                                               BINARY.
+                05  W24-HYOUKETU-ITM           PIC X(32)
+                                               OCCURS  5.
