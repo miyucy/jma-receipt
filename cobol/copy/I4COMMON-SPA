@@ -133,5 +133,7 @@
       *       入院会計外泊区分
                05  SPA-5000-NACCT-GAIHAKUKBN
                                            PIC  X(01).
+      *       入院時食事療養区分
+               05  SPA-5000-NACCT-SKJKBN       PIC  X(01).
       *
       *

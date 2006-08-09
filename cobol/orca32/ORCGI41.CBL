@@ -66,6 +66,8 @@
       *                                     MONFUNC対応
       *平成１８年７月改定対応
       *  03.00.01    NACL-小豆沢  06/06/19  療養病棟、療養病床改定対応
+      *  03.02.01    NACL-小豆沢  06/08/09  入院時食事療養２の場合は特食
+      *                                     を入力不可とする
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1115,6 +1117,15 @@
       *        入院会計外泊区分
                MOVE    SYS-5000-NACCT-GAIHAKUKBN
                                            TO  SPA-5000-NACCT-GAIHAKUKBN
+      *        入院時食事療養区分
+               EVALUATE   SYS-5000-SHOKUJIRYOYOCD
+                   WHEN   "197000110"
+                       MOVE   "1"          TO  SPA-5000-NACCT-SKJKBN
+                   WHEN   "197000710"
+                       MOVE   "2"          TO  SPA-5000-NACCT-SKJKBN
+                   WHEN   OTHER
+                       MOVE   SPACE        TO  SPA-5000-NACCT-SKJKBN
+               END-EVALUATE
            END-IF.
       *
        3500-KIHON-HEN-EXT.
@@ -3083,6 +3094,12 @@
                            IF      SPA-ERRCD       =   SPACE
                                MOVE    "0049"         TO  SPA-ERRCD
                            END-IF
+                       END-IF
+                   END-IF
+      *            入院時食事療養２の場合、特食を入力不可とする
+                   IF   SPA-5000-NACCT-SKJKBN   =    "2"
+                       IF   SPA-GMN-DAY-41 (IDX-D)   =   2
+                           MOVE    "0050"         TO  SPA-ERRCD
                        END-IF
                    END-IF
       *            外泊中でないこと
@@ -6903,6 +6920,11 @@
                                        TO  WRK-ERRMSG(1:34)
                    MOVE    "のいずれかです。"
                                        TO  WRK-ERRMSG(35:16)
+               WHEN    "0050"
+                   MOVE    "入院時食事療養２の算定中は２（特食"
+                                       TO  WRK-ERRMSG(1:34)
+                   MOVE    "）は算定できません。"
+                                       TO  WRK-ERRMSG(35:20)
                WHEN    "1005"
                    MOVE    "受診履歴番号が存在しません。"
                                        TO  WRK-ERRMSG
