@@ -82,7 +82,8 @@
            03  ERRCD-ORDER             PIC X(04).
       *
        01  CONST-AREA.
-           03  CONST-ITEMNUM-MAX               PIC 9(05)   VALUE 30.
+           03  CONST-ITEMNUM-MAX       PIC 9(05)   VALUE 30.
+           03  CONST-SKJRYOYO2         PIC X(09)   VALUE "197000710".
       *
       *    項目IDコピー句
            COPY    "CPNCLAIMID.INC".
@@ -103,6 +104,8 @@
            COPY    "CPSYSKANRI.INC".
       *
            COPY    "CPSK1005.INC".
+      *
+           COPY    "CPSK5000.INC".
       *
       *    入院会計
        01  NYUINACCT-REC.
@@ -406,6 +409,11 @@
            END-IF
       *
            IF    ( ERRCD-ORDER     =   SPACE )
+      *        特別食チェック
+               PERFORM 20021-TOKSYOKU-CHK-SEC
+           END-IF
+      *
+           IF    ( ERRCD-ORDER     =   SPACE )
       *        入院履歴チェック処理
                PERFORM 20021-NYUINRRK-CHK-SEC
            END-IF
@@ -453,6 +461,27 @@
       *
            .
        20021-SKJTIME-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    特別食チェック処理
+      *****************************************************************
+       20021-TOKSYOKU-CHK-SEC          SECTION.
+      *
+           IF    ( SODR-ORDERID        =   NORDERID-FSPCLID )
+               MOVE    "5000"          TO  WRK-SYS-KANRICD
+               MOVE    "*"             TO  WRK-SYS-KBNCD
+               PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+               IF    ( FLG-SYSKANRI    =   ZERO )
+                   MOVE    MCPDATA-REC TO  SYS-5000-REC
+                   IF    ( SYS-5000-SHOKUJIRYOYOCD
+                                       =   CONST-SKJRYOYO2 )
+                       MOVE    "0136"  TO  ERRCD-ORDER
+                   END-IF
+               END-IF
+           END-IF
+      *
+           .
+       20021-TOKSYOKU-CHK-EXT.
            EXIT.
       *****************************************************************
       *    入院履歴チェック処理
