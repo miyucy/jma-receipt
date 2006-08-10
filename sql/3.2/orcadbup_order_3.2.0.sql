@@ -1,5 +1,7 @@
 \set ON_ERROR_STOP
 
+drop table tbl_order ;
+
 CREATE TABLE "tbl_order" (
 	"hospid" character(24) NOT NULL,
 	"karte_key" character varying(36) NOT NULL,
