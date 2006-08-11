@@ -91,7 +91,7 @@
       *
       *    スパ領域
            COPY    "COMMON-SPA".
-      *    入院会計作成用パラメタ
+      *    標欠取得用パラメタ
            COPY    "CPORCSHYOUKETU.INC".
       *
        PROCEDURE                   DIVISION    USING
