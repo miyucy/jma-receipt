@@ -588,7 +588,9 @@
            PERFORM 310-NACCT-GAIHAKULST-SET-SEC
       *
       *    É¸·ç¸º³Û¶èÊ¬¥³¥ó¥Ü
-           PERFORM 310-HYOUKETULST-SET-SEC
+           IF    ( SPA-W01-STYUKYMD    >=  CONST-H180401 )
+               PERFORM 310-HYOUKETULST-SET-SEC
+           END-IF
       *
            .
        310-CMB-SYOKI-EXT.
@@ -3735,6 +3737,8 @@
            MOVE    WIDGET-NORMAL       TO  W24-SYOKUJI-STATE (2)
            MOVE    WIDGET-NORMAL       TO  W24-SYOKUJI-ITM-STATE (1)
            MOVE    WIDGET-NORMAL       TO  W24-SYOKUJI-ITM-STATE (2)
+           MOVE    WIDGET-NORMAL       TO  W24-HYOUKETU-STATE
+           MOVE    WIDGET-NORMAL       TO  W24-HYOUKETU-ITM-STATE
       *
            IF    ( SPA-W01-STYUKYMD    =   ZERO )
                MOVE    WIDGET-INSENSITIVE
@@ -3757,6 +3761,12 @@
                MOVE    WIDGET-INSENSITIVE
                                        TO  W24-SYOKUJI-STATE (2)
                                            W24-SYOKUJI-ITM-STATE (2)
+           END-IF
+      *
+           IF    ( SPA-W01-STYUKYMD    <   CONST-H180401 )
+               MOVE    WIDGET-INSENSITIVE
+                                       TO  W24-HYOUKETU-STATE
+                                           W24-HYOUKETU-ITM-STATE
            END-IF
       *
            .
@@ -4042,6 +4052,13 @@
                IF    ( W24-SENTEI-TANKARJ-STATE
                                            =   WIDGET-INSENSITIVE )
                    MOVE    41          TO  SPA-GMN-W24-CUR
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-W24-CUR     =   53 )
+               IF    ( W24-HYOUKETU-STATE
+                                           =   WIDGET-INSENSITIVE )
+                   MOVE    8           TO  SPA-GMN-W24-CUR
                END-IF
            END-IF
       *

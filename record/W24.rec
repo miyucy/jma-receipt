@@ -373,9 +373,11 @@ W24	{
 		CMB_HYOUKETU	{
 			HYOUKETU	{
 				value	varchar(32);
+				state	int;
 			};
 			count	int;
 			item	varchar(32)[05];
+			state	int;
 		};
 	};
 };

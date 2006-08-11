@@ -145,7 +145,12 @@
                                                OCCURS  5.
               04  W24-CMB-HYOUKETU.
                 05  W24-HYOUKETU               PIC X(32).
+                05  W24-HYOUKETU-STATE         PIC S9(9)
+                                               BINARY.
                 05  W24-HYOUKETU-CNT           PIC S9(9)
                                                BINARY.
                 05  W24-HYOUKETU-ITM           PIC X(32)
                                                OCCURS  5.
+                05  W24-HYOUKETU-ITM-STATE     PIC S9(9)
+                                               BINARY.
+
