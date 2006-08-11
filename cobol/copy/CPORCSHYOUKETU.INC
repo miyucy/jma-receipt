@@ -29,8 +29,6 @@
       ************************************************************
        01  ORCSHYOUKETU-AREA.
       *
-      *∞ÂŒ≈µ°¥ÿ£…£ƒ
-           03  LNK-HYOUKETU-HOSPID                   PIC  X(24).
       *ªªƒÍ«Ø∑Ó
            03  LNK-HYOUKETU-SANTEIYM                 PIC  X(06).
       * ÷µ—π‡Ã‹
