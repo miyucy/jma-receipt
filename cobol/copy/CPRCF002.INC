@@ -268,9 +268,9 @@
       *負担金額（控除額）
                    07  RECE02-FTNMONEY-KOJ    PIC  9(09).
       *
-      *老人減免区分（未使用）
+      *老人減免区分（高齢者経過措置フラグとして使用）
            03  RECE02-RJNGENMENKBN        PIC  X(01).
-      *老人外来金額（未使用）
+      *老人外来金額（請求点数合計として使用）
            03  RECE02-RJNGAIFTN           PIC  9(09).
       *老人入院金額（未使用）
            03  RECE02-RJNNYUFTN           PIC  9(09).

@@ -404,9 +404,9 @@
            03  RECE62-HOSOKUKBN           PIC  X(01).
       *初診時間区分
            03  RECE62-SHOSHINTIME         PIC  X(01).
-      *老人減免区分（未使用）
+      *老人減免区分（高齢者経過措置フラグとして使用）
            03  RECE62-RJNGENMENKBN        PIC  X(01).
-      *老人外来金額（未使用）
+      *老人外来金額（請求点数合計として使用）
            03  RECE62-RJNGAIFTN           PIC  9(09).
       *老人入院金額（未使用）
            03  RECE62-RJNNYUFTN           PIC  9(09).
