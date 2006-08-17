@@ -257,6 +257,12 @@
            03  FLG-HKNKIGOERR                          PIC 9(01).
            03  FLG-HKNNUMERR                           PIC 9(01).
            03  FLG-CHK004                              PIC 9(01).
+           03  FLG-INNAI-DAY-G.
+               05  FLG-INNAI-DAY                       PIC 9(01)
+                                                       OCCURS  31.
+           03  FLG-INGAI-DAY-G.
+               05  FLG-INGAI-DAY                       PIC 9(01)
+                                                       OCCURS  31.
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -457,6 +463,8 @@
            03  WRK-HKNJANUMLEN                         PIC 9(03).
            03  WRK-SRYYMD                              PIC X(08).
            03  WRK-DTCHK009-SRYKA                      PIC X(02).
+           03  WRK-INNAI-MES                           PIC X(50).
+           03  WRK-INGAI-MES                           PIC X(50).
       *
        01  KEY-AREA.
            03  KEY-HKNCOMBI                            PIC 9(04).
@@ -6870,6 +6878,9 @@
       *
            END-IF
       *
+      *    ±¡Æâ¡¦±¡³°º®ºß¥Á¥§¥Ã¥¯½èÍý
+           PERFORM 200111-INNAI-INGAI-CHK-SEC
+      *
       *    ÆâÊ¬ÈçÉé²Ù»î¸³¥Á¥§¥Ã¥¯½èÍý
            PERFORM 200111-NBFUKA-CHK-SEC
       *
@@ -7011,6 +7022,69 @@
       *
            .
        200111-NYUKSN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    ±¡Æâ¡¦±¡³°º®ºß¥Á¥§¥Ã¥¯
+      *****************************************************************
+       200111-INNAI-INGAI-CHK-SEC      SECTION.
+      *
+           MOVE    ZERO            TO  FLG-INNAI-DAY-G
+                                       FLG-INGAI-DAY-G
+      *
+           PERFORM VARYING IDX6    FROM    1   BY  1
+                   UNTIL ( IDX6    >   TSRYCD-MAX )
+                    OR  (( FLG-INNAI-DAY-G NOT =   ZERO )
+                      AND( FLG-INGAI-DAY-G NOT =   ZERO ))
+      *
+               EVALUATE    TSRYCD-SRYCD (IDX6)
+               WHEN    "113003510"
+               WHEN    "113003610"
+                   PERFORM VARYING IDX-DAY FROM    1   BY  1
+                           UNTIL ( IDX-DAY >   31 )
+                       IF    ( TSRYCD-DAY (IDX6 IDX-DAY)   >   ZERO )
+                           MOVE    1       TO  FLG-INGAI-DAY (IDX-DAY)
+                       END-IF
+                   END-PERFORM
+               WHEN    "113003710"
+               WHEN    "113003810"
+                   PERFORM VARYING IDX-DAY FROM    1   BY  1
+                           UNTIL ( IDX-DAY >   31 )
+                       IF    ( TSRYCD-DAY (IDX6 IDX-DAY)   >   ZERO )
+                           MOVE    1       TO  FLG-INNAI-DAY (IDX-DAY)
+                       END-IF
+                   END-PERFORM
+               END-EVALUATE
+      *
+           END-PERFORM
+      *
+           IF    ( FLG-INNAI-DAY-G NOT =   ZERO )
+            AND  ( FLG-INGAI-DAY-G NOT =   ZERO )
+               INITIALIZE                  WRK-NISSU-AREA
+               MOVE    SPACE       TO      WRK-INNAI-MES
+                                           WRK-INGAI-MES
+                                           WRK-ERRMES-PLUS
+      *
+               MOVE    FLG-INNAI-DAY-G     TO  WRK-NISSU-DAY-G
+               PERFORM 200111-NISSU-HEN-SEC
+               MOVE    WRK-NISSU-MES       TO  WRK-INNAI-MES
+      *
+               MOVE    FLG-INGAI-DAY-G     TO  WRK-NISSU-DAY-G
+               PERFORM 200111-NISSU-HEN-SEC
+               MOVE    WRK-NISSU-MES       TO  WRK-INGAI-MES
+      *
+               STRING  "¾®»ù²Ê³°Íè¿ÇÎÅÎÁ¡¡±¡Æâ¡§"
+                                           DELIMITED   BY  SIZE
+                       WRK-INNAI-MES       DELIMITED   BY  SPACE
+                       "¡¡±¡³°¡§"          DELIMITED   BY  SIZE
+                       WRK-INGAI-MES       DELIMITED   BY  SPACE
+               INTO    WRK-ERRMES-PLUS
+               END-STRING
+               MOVE    "990005"    TO  WRK-ERRCD
+               PERFORM 215-ERRMES-HEN-SEC
+           END-IF
+      *
+           .
+       200111-INNAI-INGAI-CHK-EXT.
            EXIT.
       *****************************************************************
       *    ÆâÊ¬ÈçÉé²Ù»î¸³¥Á¥§¥Ã¥¯½èÍý
