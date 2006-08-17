@@ -269,6 +269,16 @@
                       07  W07-VALUE   PIC X(40).
                     06  W07-SYUNYKNKNRKBN-COUNT   PIC S9(9)   BINARY.
                     06  W07-SYUNYKNKNRKBN-ITEM    PIC X(40)   OCCURS  5.
+                  05  W07-S06SKYPRT-COMBO.
+                    06  W07-S06SKYPRT.
+                      07  W07-VALUE   PIC X(24).
+                    06  W07-S06SKYPRT-COUNT   PIC S9(9)   BINARY.
+                    06  W07-S06SKYPRT-ITEM    PIC X(24)   OCCURS  5.
+                  05  W07-S06SKYSUM-COMBO.
+                    06  W07-S06SKYSUM.
+                      07  W07-VALUE   PIC X(42).
+                    06  W07-S06SKYSUM-COUNT   PIC S9(9)   BINARY.
+                    06  W07-S06SKYSUM-ITEM    PIC X(42)   OCCURS  5.
                   05  W07-SYUSKYPRTG-COMBO.
                     06  W07-SYUSKYPRTG.
                       07  W07-VALUE   PIC X(24).

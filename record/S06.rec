@@ -76,6 +76,22 @@ S06	{
 			value	number(9);
 			state	int;
 		};
+		CMB_SKYPRTKBN	{
+			SKYPRTKBN	{
+				value	varchar(32);
+			};
+			count	int;
+			item	varchar(32)[05];
+		};
+		CMB_SKYSUMKBN	{
+			SKYSUMKBN	{
+				value	varchar(42);
+				state	int;
+			};
+			count	int;
+			item	varchar(42)[05];
+			state	int;
+		};
 		scrolledwindow1	{
 			SYULIST	{
 				count	int;

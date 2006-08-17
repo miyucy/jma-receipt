@@ -370,6 +370,20 @@ W07	{
 					count	int;
 					item	varchar(40)[5];
 				};
+				S06SKYPRT_COMBO	{
+					S06SKYPRT	{
+						value	varchar(24);
+					};
+					count	int;
+					item	varchar(24)[5];
+				};
+				S06SKYSUM_COMBO	{
+					S06SKYSUM	{
+						value	varchar(42);
+					};
+					count	int;
+					item	varchar(42)[5];
+				};
 				SYUSKYPRTG_COMBO	{
 					SYUSKYPRTG	{
 						value	varchar(24);

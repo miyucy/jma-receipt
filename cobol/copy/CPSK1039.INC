@@ -61,8 +61,17 @@
                05  SYS-1039-SRYPRTGKBN  PIC  X(01).
       *診療費明細書発行区分（入院）
                05  SYS-1039-SRYPRTNKBN  PIC  X(01).
+      *一括入金画面請求書兼領収書発行区分（入院）
+               05  SYS-1039-S06SKYPRTNKBN
+                                        PIC  X(01).
+      *一括入金画面請求書兼領収書発行区分（外来）
+               05  SYS-1039-S06SKYPRTGKBN
+                                        PIC  X(01).
+      *一括入金画面外来分発行方法
+               05  SYS-1039-S06SKYSUMKBN
+                                        PIC  X(01).
       *予備
-               05                       PIC  X(445).
+               05                       PIC  X(442).
       *端末ＩＤ
            03  SYS-1039-TERMID          PIC  X(16).
       *オペーレータＩＤ

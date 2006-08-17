@@ -173,6 +173,9 @@
                05  WRK-ZENKAKU         PIC X(02)   OCCURS   10.
            03  WRK-MOJI                PIC X(10).
            03  WRK-MOJISU              PIC 9(02).
+           03  WRK-SRYYMDG             PIC X(50).
+           03  WRK-STSRYYMDG           PIC X(22).
+           03  WRK-EDSRYYMDG           PIC X(22).
       *
       *
       *****************************************************************
@@ -241,6 +244,11 @@
        01  PTRSIINF-REC.
            COPY    "CPPTRSIINF.INC".
       *
+      *    パラメタテーブル
+       01  PARA-REC.
+           COPY    "CPPARA.INC".
+           COPY    "CPSYUPARA03.INC".
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -297,12 +305,16 @@
       *    各ＤＢ読込
            PERFORM 100-SYORI-SEC
       *
-           IF      ORCHC03-HAKHOUFLG   =   ZERO
-      *        対象の伝票番号分のみ
-               PERFORM 201-ONLY-SYUNOU-SEC
+           IF    ( ORCHC03-HAKKOFLG    =   4 )
+                   PERFORM 203-IKKATU-SYUNOU-SEC
            ELSE
-      *        発行区分による
-               PERFORM 202-KAKHOU-SYUNOU-SEC
+               IF      ORCHC03-HAKHOUFLG   =   ZERO
+      *            対象の伝票番号分のみ
+                   PERFORM 201-ONLY-SYUNOU-SEC
+               ELSE
+      *            発行区分による
+                   PERFORM 202-KAKHOU-SYUNOU-SEC
+               END-IF
            END-IF
       *
            .
@@ -744,9 +756,14 @@
                END-IF
            END-IF
       *    診療日
-           MOVE    SYU-SRYYMD          TO  WRK-SYMD
-           PERFORM 31012-SEIWA-HEN-SEC
-           MOVE    WRK-HENYMDG         TO  HC03-SRYYMD
+           IF    ( ORCHC03-HAKKOFLG    =   4 )
+               PERFORM 31012-SRYYMD-HEN-SEC
+               MOVE    WRK-SRYYMDG         TO  HC03-SRYYMD
+           ELSE
+               MOVE    SYU-SRYYMD          TO  WRK-SYMD
+               PERFORM 31012-SEIWA-HEN-SEC
+               MOVE    WRK-HENYMDG         TO  HC03-SRYYMD
+           END-IF
       *    発行日
            MOVE    SYU-DENPPRTYMD      TO  WRK-SYMD
            PERFORM 31012-SEIWA-HEN-SEC
@@ -1144,6 +1161,46 @@
            EXIT.
       *
       *****************************************************************
+      *   一括入金時の印刷処理
+      *****************************************************************
+       203-IKKATU-SYUNOU-SEC                 SECTION.
+      *
+           PERFORM 900-PARA-KEY5-SEL-SEC
+      *
+           PERFORM UNTIL ( FLG-PARA    NOT =   ZERO )
+      *
+               MOVE    PARA-DATA-REC       TO  SYUPARA03-AREA
+               MOVE    SYUPARA03-SYU-DATA  TO  SYUNOU-REC
+      *
+               MOVE    SYUPARA03-DENPNUM   TO  WRK-DENPNUM
+               MOVE    SYUPARA03-SEIKYU    TO  WRK-SKYMONEY
+               MOVE    SYUPARA03-NYUKIN    TO  WRK-NYUKIN
+               MOVE    SYUPARA03-MISYU     TO  WRK-MISYUMONEY
+               MOVE    SYUPARA03-SRYKAMEI  TO  WRK-SRYKA-MEI
+               MOVE    SYUPARA03-HKNCOMBIMEI
+                                           TO  WRK-HKNCOMBIMEI
+      *
+      *        帳票印刷開始処理
+               PERFORM 400-SYOKI-PRINT-SEC
+      *
+      *        帳票編集処理
+               PERFORM 300-HC03-HEN-SEC
+      *
+      *        帳票印刷処理
+               PERFORM 400-PRINT-SEC
+      *
+               PERFORM 900-PARA-KEY5-FET-SEC
+      *
+           END-PERFORM
+      *
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       203-IKKATU-SYUNOU-EXT.
+           EXIT.
+      *****************************************************************
       *    複数診療科編集処理
       *****************************************************************
        2021-GRP-SRYKAMEI-HEN-SEC             SECTION.
@@ -1265,6 +1322,30 @@
        3102-JIHIMSG-HEN-EXT.
            EXIT.
       *****************************************************************
+      *    診療日編集処理
+      *****************************************************************
+       31012-SRYYMD-HEN-SEC        SECTION.
+      *
+           MOVE    SPACE               TO  WRK-SRYYMDG
+      *
+           MOVE    SYUPARA03-STSRYYMD  TO  WRK-SYMD
+           PERFORM 31012-SEIWA-HEN-SEC
+           MOVE    WRK-HENYMDG         TO  WRK-STSRYYMDG
+      *
+           MOVE    SYUPARA03-EDSRYYMD  TO  WRK-SYMD
+           PERFORM 31012-SEIWA-HEN-SEC
+           MOVE    WRK-HENYMDG         TO  WRK-EDSRYYMDG
+      *
+           STRING  WRK-STSRYYMDG       DELIMITED   BY  SIZE
+                   " 〜 "              DELIMITED   BY  SIZE
+                   WRK-EDSRYYMDG       DELIMITED   BY  SIZE
+           INTO    WRK-SRYYMDG
+           END-STRING
+      *
+           .
+       31012-SRYYMD-HEN-EXT.
+           EXIT.
+      *****************************************************************
       *    西暦日本語変換処理
       *****************************************************************
        31012-SEIWA-HEN-SEC        SECTION.
@@ -1323,6 +1404,54 @@
       *
            .
        900-PTINF-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    パラメタテーブル検索
+      *****************************************************************
+       900-PARA-KEY5-SEL-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  FLG-PARA
+      *
+           INITIALIZE                      PARA-REC
+           MOVE    ORCHC03-PARA-GYOUMUID
+                                       TO  PARA-GYOUMUID
+           MOVE    ORCHC03-PARA-TERMID
+                                       TO  PARA-TERMID
+           MOVE    ORCHC03-PARA-FILEMEI
+                                       TO  PARA-FILEMEI
+           MOVE    PARA-REC            TO  MCPDATA-REC
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               PERFORM 900-PARA-KEY5-FET-SEC
+           ELSE
+               MOVE    1               TO  FLG-PARA
+               INITIALIZE                  PARA-REC
+           END-IF
+      *
+           .
+       900-PARA-KEY5-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    パラメタテーブルFETCH
+      *****************************************************************
+       900-PARA-KEY5-FET-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  FLG-PARA
+      *
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 920-DBFETCH-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  PARA-REC
+           ELSE
+               MOVE    1               TO  FLG-PARA
+               INITIALIZE                  PARA-REC
+           END-IF
+      *
+           .
+       900-PARA-KEY5-FET-EXT.
            EXIT.
       *****************************************************************
       *    収納マスター読込

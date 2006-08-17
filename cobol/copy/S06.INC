@@ -57,6 +57,17 @@
               03  S06-NYUKIN-STATE         PIC S9(9)   BINARY.
               03  S06-NYUKIN-MAX           PIC S9(9).
               03  S06-NYUKIN-MAX-STATE     PIC S9(9)   BINARY.
+              03  S06-CMB-SKYPRTKBN.
+                04  S06-SKYPRTKBN          PIC X(32).
+                04  S06-SKYPRTKBN-COUNT    PIC S9(9)   BINARY.
+                04  S06-SKYPRTKBN-ITEM     PIC X(32)   OCCURS  5 TIMES.
+              03  S06-CMB-SKYSUMKBN.
+                04  S06-SKYSUMKBN          PIC X(42).
+                04  S06-SKYSUMKBN-STATE    PIC S9(9)   BINARY.
+                04  S06-SKYSUMKBN-COUNT    PIC S9(9)   BINARY.
+                04  S06-SKYSUMKBN-ITEM     PIC X(42)   OCCURS  5 TIMES.
+                04  S06-SKYSUMKBN-ITEM-STATE
+                                           PIC S9(9)   BINARY.
               03  S06-SCROLLEDWINDOW1.
                 04  S06-SYULIST.
                   05  S06-SYULIST-COUNT    PIC S9(9)   BINARY.
