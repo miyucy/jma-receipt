@@ -109,3 +109,18 @@ path	del3 	{
 		;
 	};
 };
+
+
+path	key6 	{
+	DBSELECT	{
+		DECLARE tbl_para_key6_csr CURSOR FOR
+		SELECT *
+		FROM tbl_para
+			WHERE   GYOUMUID   =   :GYOUMUID
+			AND   TERMID       =   :TERMID
+			AND   FILEMEI      =   :FILEMEI
+			AND   EDANUM       >=  :EDANUM
+			ORDER   BY        EDANUM
+		;
+	};
+};
