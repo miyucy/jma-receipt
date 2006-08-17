@@ -23,6 +23,9 @@
               03  S05-PTNUM             PIC X(20).
               03  S05-NAME.
                 04  S05-VALUE           PIC X(50).
+              03  S05-LBLNYUHENYMD      PIC X(10).
+              03  S05-NYUHENYMD         PIC X(10).
+              03  S05-NYUHENYMD-STATE   PIC S9(9)   BINARY.
               03  S05-LBLMSG-G.
                 04  S05-LBLMSG-STYLE
                                         PIC X(20).

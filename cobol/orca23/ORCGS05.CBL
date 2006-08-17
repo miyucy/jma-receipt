@@ -20,7 +20,7 @@
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : 収納登録
-      *  コンポーネント名  : 未収検索画面　（Ｓ０５）
+      *  コンポーネント名  : 収納検索画面　（Ｓ０５）
       *  管理者            : 
       *  作成日付    作業者        記述
       *  03/09/30    NACL−太田    新規作成
@@ -58,9 +58,9 @@
                    07  SPA-GMN-HEAD.
                        09  SPA-GMN-PTID            PIC 9(10).
                        09  SPA-GMN-PTNUM           PIC X(20).
-                       09  SPA-GMN-LBLMSG          PIC X(50).
                        09  SPA-GMN-NAME            PIC X(100).
                    07  SPA-GMN-INPUT.
+                       09  SPA-GMN-NYUHENYMD       PIC X(10).
                        09  SPA-GMN-SELNUM          PIC 9(04).
                    07  SPA-GMN-MISYU.
                        09  SPA-GMN-GAI-MISYU       PIC S9(08).
@@ -94,7 +94,10 @@
                            11  SPA-NAI-TNYUGAIKBN  PIC  X(01).
                            11  SPA-NAI-TJYOTAIKBN  PIC  X(01).
                05  SPA-NAI-AREA.
+                   07  SPA-NAI-MODE                PIC  9(01).
                    07  SPA-NAI-MISYUFLG            PIC  9(01).
+                   07  SPA-NAI-INPUT.
+                       09  SPA-NAI-NYUHENYMD       PIC  X(08).
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -132,6 +135,7 @@
            03  WRK-ZZZ                     PIC ZZZ.
            03  WRK-SELNUMST                PIC 9(05).
            03  WRK-SELNUMED                PIC 9(05).
+           03  WRK-PATHNAME                PIC X(64).
       *
        01  WK-GMN-RITU.
            03  WK-GMN-FTNRITU              PIC ZZZ.
@@ -303,6 +307,8 @@
       *
            INITIALIZE                  SPA-S05.
       *
+           MOVE    ZERO                TO  SPA-NAI-MODE
+      *
            MOVE    SPA-S01-PTID        TO  SPA-GMN-PTID
            MOVE    SPA-S01-PTNUM       TO  SPA-GMN-PTNUM
            MOVE    SPA-S01-NAME        TO  SPA-GMN-NAME
@@ -317,8 +323,6 @@
       *
            IF    ( SPA-GMN-SYULIST-MAX =   ZERO )
                MOVE    1               TO  SPA-NAI-MISYUFLG
-               MOVE    "未収金（過入金）はありません"
-                                       TO  SPA-GMN-LBLMSG
            END-IF
       *
            .
@@ -339,13 +343,22 @@
       *    保険組み合わせ編集処理
            PERFORM 3101-HKNCOMBI-HEN-SEC
       *
+           MOVE    SPACE                   TO  WRK-PATHNAME
+           IF    ( SPA-NAI-MODE            =   ZERO )
+               MOVE    "key24"             TO  WRK-PATHNAME
+           ELSE
+               MOVE    "key51"             TO  WRK-PATHNAME
+           END-IF
+      *
            MOVE    ZERO                    TO  FLG-SYUNOU
            INITIALIZE                          SYUNOU-REC
       *
            MOVE    SPA-HOSPID              TO  SYU-HOSPID
            MOVE    SPA-S01-PTID            TO  SYU-PTID
+           MOVE    SPA-NAI-NYUHENYMD       TO  SYU-SRYYMD
            MOVE    SYUNOU-REC              TO  MCPDATA-REC
-           MOVE    "SYUNOU-KEY24"          TO  ORC-DBPATH
+           MOVE    "tbl_syunou"            TO  MCP-TABLE
+           MOVE    WRK-PATHNAME            TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              NOT =   ZERO )
                MOVE    1                   TO  FLG-SYUNOU
@@ -361,7 +374,8 @@
       *
                PERFORM 31011-SYULIST-HEN-SEC
       *
-               MOVE    "SYUNOU-KEY24"          TO  ORC-DBPATH
+               MOVE    "tbl_syunou"            TO  MCP-TABLE
+               MOVE    WRK-PATHNAME            TO  MCP-PATHNAME
                PERFORM 910-DBFETCH-SEC
                IF    ( MCP-RC              NOT =   ZERO )
                    MOVE    1                   TO  FLG-SYUNOU
@@ -371,11 +385,18 @@
       *
            END-PERFORM
       *
-           MOVE    "SYUNOU-KEY24"              TO  ORC-DBPATH
-           PERFORM 910-DBCLOSE-SEC
+           MOVE    "tbl_syunou"            TO  MCP-TABLE
+           MOVE    WRK-PATHNAME            TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
-           IF    ( FLG-SYUNOU              =   ZERO )
-                   MOVE    1                   TO  SPA-GMN-SYULIST-NEXT
+           IF    ( SPA-NAI-MODE            =   ZERO )
+                   MOVE    1           TO  SPA-GMN-CUR
+           ELSE
+               IF    ( SPA-GMN-SYULIST-MAX >   ZERO )
+                   MOVE    1           TO  SPA-GMN-CUR
+               ELSE
+                   MOVE    2           TO  SPA-GMN-CUR
+               END-IF
            END-IF
       *
            .
@@ -393,7 +414,8 @@
       *
            MOVE    "1005"              TO  SYS-1005-KANRICD
            MOVE    SYS-1005-REC        TO  MCPDATA-REC
-           MOVE    "SYSKANRI-KEY5"     TO  ORC-DBPATH
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          NOT =   ZERO )
                MOVE    1               TO  FLG-SYSKANRI
@@ -417,7 +439,8 @@
                MOVE    SYS-1005-SRYKANAME1 TO  S1005-SRYKAMEIL
                                                              (IDXA)
       *
-               MOVE    "SYSKANRI-KEY5"     TO  ORC-DBPATH
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
                PERFORM 910-DBFETCH-SEC
                IF    ( MCP-RC          NOT =   ZERO )
                    MOVE    1               TO  FLG-SYSKANRI
@@ -427,8 +450,9 @@
       *
            END-PERFORM
       *
-           MOVE    "SYSKANRI-KEY5"         TO  ORC-DBPATH
-           PERFORM 910-DBCLOSE-SEC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        3101-SRYKALST-HEN-EXT.
@@ -449,7 +473,8 @@
                COMPUTE WRK-SKIP-KNS    =   WRK-SKIP-KNS
                                        +   1
       *
-               MOVE    "SYUNOU-KEY24"      TO  ORC-DBPATH
+               MOVE    "tbl_syunou"            TO  MCP-TABLE
+               MOVE    WRK-PATHNAME            TO  MCP-PATHNAME
                PERFORM 910-DBFETCH-SEC
                IF    ( MCP-RC              NOT =   ZERO )
                    MOVE    1               TO  FLG-SYUNOU
@@ -668,6 +693,14 @@
                MOVE    ZERO        TO      SPA-S01-DENPNUM
                PERFORM 210-BACK
       *
+      *    未収検索
+           WHEN    "CLICKED"       ALSO    "B02"
+               PERFORM 4100-MISYU-KENSAKU-SEC
+      *
+      *    入返金日検索
+           WHEN    "CLICKED"       ALSO    "B03"
+               PERFORM 4100-NYUHENYMD-KENSAKU-SEC
+      *
       *    前頁
            WHEN    "CLICKED"       ALSO    "B06"
                PERFORM 220-PAGE-BACK-SEC
@@ -732,6 +765,7 @@
       *****************************************************************
        4101-GMN-SPA-SET-SEC            SECTION.
       *
+           MOVE    S05-NYUHENYMD       TO  SPA-GMN-NYUHENYMD
       *
            .
        4101-GMN-SPA-SET-EXT.
@@ -741,10 +775,78 @@
       *****************************************************************
        4102-KIHON-CHK-SEC              SECTION.
       *
+           IF    ( SPA-NAI-MODE    =   1 )
+               PERFORM 4101-NYUHENYMD-CHK-SEC
+           END-IF
+      *
            .
        4102-KIHON-CHK-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    入返金日チェック処理
+      *****************************************************************
+       4101-NYUHENYMD-CHK-SEC          SECTION.
+      *
+           MOVE    SPACE               TO  SPA-NAI-NYUHENYMD
+      *
+           IF    ( SPA-GMN-NYUHENYMD   =   SPACE )
+               MOVE    SPA-SYSYMD      TO  SPA-GMN-NYUHENYMD
+           END-IF
+      *
+           MOVE    SPA-GMN-NYUHENYMD   TO  WRK-YMD
+           PERFORM 800-SEIWA-HEN-SEC
+           IF    ( FLG-HIZUKE-ERR      =   ZERO )
+               MOVE    WRK-HENYMDG     TO  SPA-GMN-NYUHENYMD
+               MOVE    WRK-SYMD        TO  SPA-NAI-NYUHENYMD
+           ELSE
+               MOVE    "0002"          TO  SPA-ERRCD
+           END-IF
+      *
+           IF    ( WRK-MCP-WIDGET      =   "NYUHENYMD" )
+               MOVE    1               TO  SPA-GMN-SYULIST-PAGE
+               PERFORM 3101-SYULIST-HEN-SEC
+           END-IF
+      *
+           .
+       4101-NYUHENYMD-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    未収検索処理
+      *****************************************************************
+       4100-MISYU-KENSAKU-SEC          SECTION.
+      *
+           IF    ( SPA-NAI-MODE        =   ZERO )
+               CONTINUE
+           ELSE
+               MOVE    ZERO            TO  SPA-NAI-MODE
+               MOVE    SPACE           TO  SPA-GMN-NYUHENYMD
+                                           SPA-NAI-NYUHENYMD
+               MOVE    1               TO  SPA-GMN-SYULIST-PAGE
+               PERFORM 3101-SYULIST-HEN-SEC
+           END-IF
+      *
+           .
+       4100-MISYU-KENSAKU-EXT.
+           EXIT.
+      *****************************************************************
+      *    入返金日検索処理
+      *****************************************************************
+       4100-NYUHENYMD-KENSAKU-SEC      SECTION.
+      *
+           IF    ( SPA-NAI-MODE        =   1 )
+               CONTINUE
+           ELSE
+               MOVE    1               TO  SPA-NAI-MODE
+               MOVE    SPA-SYSYMDWH    TO  SPA-GMN-NYUHENYMD
+               MOVE    SPA-SYSYMD      TO  SPA-NAI-NYUHENYMD
+               MOVE    1               TO  SPA-GMN-SYULIST-PAGE
+               PERFORM 3101-SYULIST-HEN-SEC
+           END-IF
+      *
+           .
+       4100-NYUHENYMD-KENSAKU-EXT.
+           EXIT.
       *****************************************************************
       *    収納情報リストチェック
       *****************************************************************
@@ -784,13 +886,13 @@
       *****************************************************************
        4100-SELNUM-CHK-SEC             SECTION.
       *
-           MOVE    1                   TO  SPA-GMN-CUR
+           MOVE    ZERO                TO  SPA-GMN-CUR
       *
            MOVE    ZERO                TO  SPA-GMN-SYULIST-SEL
            MOVE    S05-SELNUM          TO  SPA-GMN-SELNUM
       *
            IF    ( SPA-GMN-SELNUM      =   ZERO )
-               MOVE    1               TO  SPA-GMN-CUR
+               MOVE    ZERO            TO  SPA-GMN-CUR
                GO  TO  4100-SELNUM-CHK-EXT
            END-IF
       *
@@ -945,6 +1047,7 @@
       *
            MOVE   SPA-GMN-PTNUM        TO  S05-PTNUM
            MOVE   SPA-GMN-NAME         TO  S05-NAME
+           MOVE   SPA-GMN-NYUHENYMD    TO  S05-NYUHENYMD
       *
            MOVE   SPA-GMN-SELNUM       TO  S05-SELNUM
            MOVE   SPA-GMN-GAI-MISYU    TO  S05-GAI-MISYU
@@ -992,9 +1095,20 @@
                MOVE    WIDGET-NORMAL       TO  S05-B07-STATE
            END-IF
       *
-           IF    ( SPA-NAI-MISYUFLG        =   1 )
-               MOVE    "blue"              TO  S05-LBLMSG-STYLE
-               MOVE    SPA-GMN-LBLMSG      TO  S05-LBLMSG
+           IF    ( SPA-NAI-MODE            =   ZERO )
+               IF    ( SPA-NAI-MISYUFLG    =   1 )
+                   MOVE    "blue"          TO  S05-LBLMSG-STYLE
+                   MOVE    "未収金（過入金）はありません"
+                                           TO  S05-LBLMSG
+               END-IF
+           END-IF
+      *
+           MOVE    WIDGET-NORMAL           TO  S05-NYUHENYMD-STATE
+      *
+           IF    ( SPA-NAI-MODE            =   ZERO )
+               MOVE    WIDGET-INSENSITIVE  TO  S05-NYUHENYMD-STATE
+           ELSE
+               MOVE    "入返金日"          TO  S05-LBLNYUHENYMD
            END-IF
       *
            PERFORM 5001-MAPCUR-SEC
@@ -1012,6 +1126,9 @@
            EVALUATE    SPA-ERRCD
            WHEN    "0001"
                MOVE    "選択番号入力エラー"
+                                           TO  SPA-ERRMSG
+           WHEN    "0002"
+               MOVE    "入返金日入力エラー"
                                            TO  SPA-ERRMSG
            END-EVALUATE
       *
@@ -1043,9 +1160,13 @@
                PERFORM 50011-GMN-CUR-SET-SEC
            END-IF
       *
+           PERFORM 50012-GMN-CUR-SKIP-SEC
+      *
            EVALUATE    SPA-GMN-CUR
            WHEN    01
                MOVE  "SELNUM"          TO  MCP-WIDGET
+           WHEN    02
+               MOVE  "NYUHENYMD"       TO  MCP-WIDGET
            END-EVALUATE
       *
            .
@@ -1059,16 +1180,27 @@
       *
            EVALUATE    WRK-MCP-WIDGET
            WHEN    "SELNUM"
-               MOVE    01              TO  SPA-GMN-CUR
-           END-EVALUATE
-      *
-           EVALUATE    WRK-MCP-WIDGET
-           WHEN    "SELNUM"
+               MOVE    02              TO  SPA-GMN-CUR
+           WHEN    "NYUHENYMD"
                MOVE    01              TO  SPA-GMN-CUR
            END-EVALUATE
       *
            .
        50011-GMN-CUR-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    カーソルスキップ編集処理
+      *****************************************************************
+       50012-GMN-CUR-SKIP-SEC          SECTION.
+      *
+           IF    ( SPA-GMN-CUR         =   2 )
+               IF    ( S05-NYUHENYMD-STATE     =   WIDGET-INSENSITIVE )
+                   MOVE    1           TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           .
+       50012-GMN-CUR-SKIP-EXT.
            EXIT.
       *****************************************************************
       *    西暦日本語変換処理
@@ -1100,9 +1232,8 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF    ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
@@ -1118,9 +1249,8 @@
        910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
       *
            .
@@ -1130,17 +1260,16 @@
       *****************************************************************
       *    ＤＢクローズ処理
       *****************************************************************
-       910-DBCLOSE-SEC                 SECTION.
+       910-DBCLOSECURSOR-SEC                 SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
       *
            .
       *
-       910-DBCLOSE-EXT.
+       910-DBCLOSECURSOR-EXT.
            EXIT.
       *************************************************************
       *    ＰＵＴ　処理
@@ -1148,9 +1277,8 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL   "ORCMCPSUB"   USING
+           CALL   "MONFUNC"     USING
                                 MCPAREA
-                                ORCMCPAREA
                                 MCPDATA-REC.
       *
            .

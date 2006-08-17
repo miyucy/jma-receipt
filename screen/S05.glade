@@ -30,7 +30,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(S05)¼ýÇ¼ÅÐÏ¿¡ÝÌ¤¼ý¸¡º÷²èÌÌ</title>
+  <title>(S05)¼ýÇ¼ÅÐÏ¿¡Ý¼ýÇ¼¸¡º÷²èÌÌ</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>False</modal>
@@ -84,7 +84,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Mon, 25 Dec 2000 06:32:42 GMT</last_modification_time>
       </signal>
-      <label></label>
+      <label>Ì¤¼ý</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -107,7 +107,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Mon, 25 Dec 2000 06:33:12 GMT</last_modification_time>
       </signal>
-      <label></label>
+      <label>ÆþÊÖ¶âÆü</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -371,22 +371,6 @@
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>LBLMSG</name>
-      <x>552</x>
-      <y>8</y>
-      <width>440</width>
-      <height>24</height>
-      <label>Ì¤¼ý¶â¡Ê²áÆþ¶â¡Ë¤Ï¤¢¤ê¤Þ¤»¤ó</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
     </widget>
 
     <widget>
@@ -671,6 +655,7 @@
       <xpad>0</xpad>
       <ypad>0</ypad>
     </widget>
+
     <widget>
       <class>GtkLabel</class>
       <name>label358</name>
@@ -686,6 +671,7 @@
       <xpad>0</xpad>
       <ypad>0</ypad>
     </widget>
+
     <widget>
       <class>GtkLabel</class>
       <name>label359</name>
@@ -697,6 +683,66 @@
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>NYUHENYMD</name>
+      <x>624</x>
+      <y>8</y>
+      <width>88</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Mon, 25 Dec 2000 06:07:43 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Mon, 25 Dec 2000 06:08:31 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>10</text_max_length>
+      <text>H99.99.99</text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLMSG</name>
+      <x>760</x>
+      <y>8</y>
+      <width>232</width>
+      <height>24</height>
+      <label>Ì¤¼ý¶â¡Ê²áÆþ¶â¡Ë¤Ï¤¢¤ê¤Þ¤»¤ó</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLNYUHENYMD</name>
+      <x>560</x>
+      <y>8</y>
+      <width>64</width>
+      <height>24</height>
+      <label>ÆþÊÖ¶âÆü</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>

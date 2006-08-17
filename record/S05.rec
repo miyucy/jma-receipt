@@ -12,6 +12,13 @@ S05	{
 		NAME	{
 			value	varchar(50);
 		};
+		LBLNYUHENYMD	{
+			value	varchar(10);
+		};
+		NYUHENYMD	{
+			value	varchar(10);
+           		state	int;
+		};
 		LBLMSG	{
 			style   varchar(20);
 			value	varchar(50);
