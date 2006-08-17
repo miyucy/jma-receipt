@@ -80,6 +80,7 @@
            03  FLG-HKNCOMBI        PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-PTRSIINF        PIC 9(01).
+           03  FLG-PTNYUINRRK      PIC 9(01).
       *
            03  FLG-SP              PIC 9(01).
            03  FLG-OK              PIC 9(01).
@@ -150,6 +151,8 @@
            03  WRK-GAI-MISYU           PIC S9(09).
            03  WRK-NYU-MISYU           PIC S9(09).
            03  WRK-SKYMONEY-SKJ        PIC S9(09).
+           03  WRK-BTUNUM              PIC X(02).
+           03  WRK-BRMNUM              PIC X(06).
       *
       *   ÆüËÜ¸ì¿ô»ú
        01  TBL-SUJI-AREA.
@@ -231,6 +234,10 @@
       *    ´µ¼ÔÏ«ºÒÊÝ¸±¾ðÊó
        01  PTRSIINF-REC.
            COPY    "CPPTRSIINF.INC".
+      *
+      *    Æþ±¡ÍúÎò
+       01  PTNYUINRRK-REC.
+           COPY    "CPPTNYUINRRK.INC".
       *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
@@ -948,12 +955,23 @@
       *****************************************************************
        3102-ROOM-HEN-SEC                 SECTION.
       *
+           MOVE    SYU-BYOTONUM        TO  WRK-BTUNUM
+           MOVE    SYU-ROOMNUM (3:)    TO  WRK-BRMNUM
+      *
+      *    Æþ±¡ÍúÎò¸¡º÷½èÍý
+           PERFORM 900-PTNYUINRRK-KEY45-SEL-SEC
+           IF    ( FLG-PTNYUINRRK  =     ZERO )
+               MOVE    PTNYUINRRK-BTUNUM
+                                       TO  WRK-BTUNUM
+               MOVE    PTNYUINRRK-BRMNUM (3:)
+                                       TO  WRK-BRMNUM
+           END-IF
+      *
       *    ÉÂÅï¾ðÊó¸¡º÷½èÍý
            PERFORM 3102-SYS-5001-SEL-SEC
       *
       *    ÉÂ¼¼Ì¾ÊÔ½¸½èÍý
-           MOVE    SYU-ROOMNUM (3 : )
-                                       TO  WRK-BRMNUM-IN
+           MOVE    WRK-BRMNUM          TO  WRK-BRMNUM-IN
            PERFORM 3102-BRMNUM-EDIT-SEC
       *
            MOVE    SPACE               TO  WRK-ROOM
@@ -984,7 +1002,7 @@
       *    ÉÂÅï¾ðÊó¸¡º÷
            MOVE    SPACE               TO  SYS-5001-REC
            MOVE    "5001"              TO  SYS-5001-KANRICD
-           MOVE    SYU-BYOTONUM        TO  SYS-5001-KBNCD
+           MOVE    WRK-BTUNUM          TO  SYS-5001-KBNCD
       *    ¥·¥¹¥Æ¥à´ÉÍý¸¡º÷
            MOVE    SYS-5001-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -1500,4 +1518,79 @@
       *
            .
        910-PTRSIINF-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    ´µ¼ÔÆþ±¡ÍúÎò¸¡º÷½èÍý(KEY45)
+      *****************************************************************
+       900-PTNYUINRRK-KEY45-SEL-SEC    SECTION.
+      *
+           MOVE    ZERO            TO  FLG-PTNYUINRRK
+      *
+           INITIALIZE                  PTNYUINRRK-REC
+           MOVE    SYU-HOSPID      TO  PTNYUINRRK-HOSPID
+           MOVE    SYU-PTID        TO  PTNYUINRRK-PTID
+           MOVE    SYU-DENPPRTYMD  TO  PTNYUINRRK-TENNYUYMD
+           MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
+           MOVE    "tbl_ptnyuinrrk" TO MCP-TABLE
+           MOVE    "key45"         TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC TO  PTNYUINRRK-REC
+           ELSE
+               INITIALIZE              PTNYUINRRK-REC
+               MOVE    1           TO  FLG-PTNYUINRRK
+           END-IF
+      *
+           MOVE    "tbl_ptnyuinrrk" TO MCP-TABLE
+           MOVE    "key45"         TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+      *
+       900-PTNYUINRRK-KEY45-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    £Ä£Â¸¡º÷½èÍý
+      *****************************************************************
+       910-DBSELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF    ( MCP-RC          =   ZERO )
+               PERFORM 910-DBFETCH-SEC
+           END-IF
+      *
+           .
+      *
+       910-DB-SELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    £Ä£ÂÆÉ¤ß¹þ¤ß½èÍý
+      *****************************************************************
+       910-DBFETCH-SEC                 SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       910-DBFETCH-EXT.
+           EXIT.
+      *****************************************************************
+      *    £Ä£Â¥¯¥í¡¼¥º½èÍý
+      *****************************************************************
+       910-DBCLOSECURSOR-SEC                 SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       910-DBCLOSECURSOR-EXT.
            EXIT.
