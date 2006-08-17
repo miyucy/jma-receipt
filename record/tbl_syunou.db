@@ -1148,3 +1148,24 @@ path	key50 	{
 		;
 	};
 };
+
+
+path	key51 	{
+	DBSELECT	{
+		DECLARE tbl_syunou_key51_csr CURSOR FOR
+		SELECT distinct a.*
+		FROM tbl_syunou a,tbl_syumei b
+		WHERE  a.HOSPID      = :HOSPID
+		AND    a.PTID        = :PTID
+		AND    a.CREATEKBN   <> '3'
+		AND    a.HOSPID      = b.HOSPID
+		AND    a.NYUGAIKBN   = b.NYUGAIKBN
+		AND    a.PTID        = b.PTID
+		AND    a.DENPNUM     = b.DENPNUM
+		AND    b.NYUHEN_YMD  = :SRYYMD
+		AND    b.NYUHEN_MONEY <> 0
+		ORDER   BY            DENPPRTYMD,NYUGAIKBN,DENPNUM
+		;
+	};
+};
+
