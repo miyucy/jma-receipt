@@ -32,6 +32,7 @@
       *  01.00.02    NACL-多々納  05/11/11  MONFUNC 対応 他
       *  01.00.03    NACL-多々納  06/03/20  Ｈ１８．４改正対応
       *  01.00.04    NACL-多々納  06/04/12  電子化加算追加
+      *  01.00.05    NACL-多々納  06/08/18  同日初診追加
       *****************************************************************
       *
       *
@@ -153,9 +154,12 @@
       *    小児科外来診察料(初診時時間外加算)
            03  FILLER              PIC X(13)   VALUE   "113009670 2 1".
       *
+      *    初診料（同日複数診療科）
+           03  FILLER              PIC X(13)   VALUE   "111011810 110".
+      *
        01  TBL-SINSATU-AREAR       REDEFINES   TBL-SINSATU-AREA.
       *****03  TBL-SINSATU-OCC         OCCURS  18    INDEXED  TBL-IDX.
-           03  TBL-SINSATU-OCC         OCCURS  22    INDEXED  TBL-IDX.
+           03  TBL-SINSATU-OCC         OCCURS  23    INDEXED  TBL-IDX.
       *        診療コード
                05  TBL-SRYCD           PIC X(09).
       *
@@ -812,6 +816,8 @@
                WHEN    "113003710"
       *        ダミー
                WHEN    "099110001"
+      *        同日複数診療科
+               WHEN    "111011810"
       *            最小の算定日編集
                    IF     (WRK-DD              =   ZERO )  OR
                           (SANTEI-MSANTEID     <   WRK-DD)
