@@ -65,6 +65,7 @@
       *  02.00.14    NACL-多々納  05/10/07  ユーザプログラム起動追加
       *  02.00.15    NACL-多々納  05/12/07  送受信フラグ追加
       *  02.00.16    NACL-多々納  05/12/07  年齢追加、警告追加
+      *  02.00.17    NACL−多々納 06/08/16  当日担当医設定追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1766,6 +1767,12 @@
                                            ORCSDRSETAREA
                MOVE    ORCSDR-DRCD-TBL-G   TO  SPA-GMN-DRCDLST-G
                MOVE    ORCSDR-DRCD-MAX     TO  SPA-DRCD-MAX
+      *TEST
+               IF      ORCSDR-DRCD-IDX     >   ZERO
+                   MOVE    SPA-GMN-DRCDLST  (ORCSDR-DRCD-IDX)
+                                           TO  SPA-GMN-DRCD-G
+               END-IF
+      *TEST
       *        受診履歴よりドクター、保険組合せを決定する
                PERFORM 41031-JYURRK-SRYKA-SEC
       *
@@ -2054,6 +2061,8 @@
            MOVE    SPA-GMN-TDRCD-G  (IDX)  TO  SPA-GMN-DRCD-G
            MOVE    SPA-GMN-TSRYNAIYOCD-G (IDX)
                                        TO  SPA-GMN-SRYNAIYOCD-G
+           PERFORM 41041-DRCDLIST-HEN-SEC
+      *
            MOVE    SPA-HOSPID          TO  PTINF-HOSPID
            MOVE    SPA-GMN-TPTID (IDX) TO  PTINF-PTID
            PERFORM 900-PTINF-READ-SEC
@@ -2122,6 +2131,24 @@
            END-IF
            .
        4104-SELNUM-EXT.
+           EXIT.
+      *****************************************************************
+      *    ドクター一覧編集処理
+      *****************************************************************
+       41041-DRCDLIST-HEN-SEC           SECTION.
+      *
+           INITIALIZE                  ORCSDRSETAREA
+           MOVE    SPA-SYSYMD          TO  ORCSDR-SYSYMD
+           MOVE    "1"                 TO  ORCSDR-KBN
+           MOVE    SPA-GMN-SRYKA       TO  ORCSDR-SRYKA
+           MOVE    SPA-GMN-DRCD-G      TO  ORCSDR-IN-DRCD-G
+           CALL    "ORCSDRSET"         USING
+                                       SPA-AREA
+                                       ORCSDRSETAREA
+           MOVE    ORCSDR-DRCD-TBL-G   TO  SPA-GMN-DRCDLST-G
+           MOVE    ORCSDR-DRCD-MAX     TO  SPA-DRCD-MAX
+           .
+       41041-DRCDLIST-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2574,6 +2601,12 @@
                                                ORCSDRSETAREA
                    MOVE    ORCSDR-DRCD-TBL-G   TO  SPA-GMN-DRCDLST-G
                    MOVE    ORCSDR-DRCD-MAX     TO  SPA-DRCD-MAX
+      *TEST
+                   IF      ORCSDR-DRCD-IDX     >   ZERO
+                       MOVE    SPA-GMN-DRCDLST  (ORCSDR-DRCD-IDX)
+                                               TO  SPA-GMN-DRCD-G
+                   END-IF
+      *TEST
                END-IF
            END-IF
            MOVE    SPA-GMN-SRYKA       TO  SPA-MAE-SRYKA
@@ -2601,11 +2634,13 @@
            END-PERFORM
            IF      FLG-CHK             =   ZERO
                IF      WRK-JRK-DRCD        =   SPACE
-                   MOVE    SPA-GMN-DRCDLST(1)  TO  SPA-GMN-DRCD-G
+                   IF      SPA-GMN-DRCD-G      =   SPACE
+                       MOVE    SPA-GMN-DRCDLST(1)  TO  SPA-GMN-DRCD-G
+                   END-IF
                ELSE
                    MOVE    WRK-JRK-DRCD(2:4)   TO  SPA-GMN-DRCD
       *           ドクター
-                   PERFORM 4105-DRCD-CHK-SEC
+                   PERFORM 4105-DRCD-CHK-03-SEC
                    IF      SPA-ERRCD       NOT =   SPACE
                        MOVE    SPA-GMN-DRCDLST(1)
                                                    TO  SPA-GMN-DRCD-G
@@ -2632,7 +2667,32 @@
            .
        4101161-DRCD-HKNCOMBI-EXT.
            EXIT.
+      *****************************************************************
+      *    ドクター初期表示
+      *****************************************************************
+       4105-DRCD-CHK-03-SEC               SECTION.
       *
+           INITIALIZE                  ORCSDRSETAREA
+           MOVE    SPA-SYSYMD          TO  ORCSDR-SYSYMD
+           MOVE    "3"                 TO  ORCSDR-KBN
+           MOVE    SPA-GMN-SRYKA       TO  ORCSDR-SRYKA
+           MOVE    SPA-GMN-DRCDLST-G   TO  ORCSDR-DRCD-TBL-G
+           MOVE    SPA-DRCD-MAX        TO  ORCSDR-DRCD-MAX
+           MOVE    SPA-GMN-DRCD-G      TO  ORCSDR-IN-DRCD-G
+           CALL    "ORCSDRSET"         USING
+                                       SPA-AREA
+                                       ORCSDRSETAREA
+           MOVE    ORCSDR-DRCD-TBL-G   TO  SPA-GMN-DRCDLST-G
+           MOVE    ORCSDR-DRCD-MAX     TO  SPA-DRCD-MAX
+           MOVE    ORCSDR-IN-DRCD-G    TO  SPA-GMN-DRCD-G
+           IF      ORCSDR-ERRCD    NOT =   ZERO
+               MOVE    "0020"              TO  SPA-ERRCD
+               MOVE    5                   TO  SPA-GMN-CUR
+           END-IF
+      *
+           .
+       4105-DRCD-CHK-03-EXT.
+           EXIT.
       *****************************************************************
       *    保険組合せ初期表示処理
       *****************************************************************

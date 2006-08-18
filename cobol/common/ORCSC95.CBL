@@ -391,6 +391,9 @@
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
       *
+      *    ドクター編集変換サブ
+           COPY    "CPORCSDRSET.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *****COPY    "CPORCMCP.INC".
@@ -2225,7 +2228,6 @@
                END-IF
            END-IF
       *
-      *
            .
        100111-CONTKBN-HANTEI-EXT.
            EXIT.
@@ -2250,6 +2252,62 @@
                MOVE    SPA-GMN-SRYKAMEIL(01)   TO  SPA-SRYKAMEI
            END-IF
       *
+      *    訂正か受付ありの場合
+           IF     (LNK-SC95-KBN        =   "4"  ) OR
+                  (FLG-UKETUKE-ARI     =   1    )
+               CONTINUE
+           ELSE
+      *
+      *    ドクター初期表示
+           IF     (SPA-SRYYMD          =   SPA-SYSYMD )
+             AND  (SPA-NYUGAIKBN       =   "2"        )
+               INITIALIZE                  ORCSDRSETAREA
+               MOVE    SPA-SYSYMD          TO  ORCSDR-SYSYMD
+               MOVE    "3"                 TO  ORCSDR-KBN
+               MOVE    SPA-SRYKA           TO  ORCSDR-SRYKA
+               MOVE    SPA-DRCD(2:4)       TO  ORCSDR-IN-DRCD
+               CALL    "ORCSDRSET"         USING
+                                           SPA-AREA
+                                           ORCSDRSETAREA
+               IF      ORCSDR-IN-DRCD  NOT =   SPACE
+                   MOVE    "1"                 TO  SPA-DRCD(1:1)
+                   MOVE    ORCSDR-IN-DRCD      TO  SPA-DRCD(2:4)
+                   MOVE    ORCSDR-IN-DRCD-G    TO  SPA-DRCD-NAME
+               END-IF
+           ELSE
+               INITIALIZE                  ORCSDRSETAREA
+               MOVE    SPA-SRYYMD          TO  ORCSDR-SYSYMD
+               MOVE    "1"                 TO  ORCSDR-KBN
+               MOVE    SPA-SRYKA           TO  ORCSDR-SRYKA
+               MOVE    SPA-DRCD(2:4)       TO  ORCSDR-IN-DRCD
+               CALL    "ORCSDRSET"         USING
+                                           SPA-AREA
+                                           ORCSDRSETAREA
+      *        訂正か受付ありの場合
+               IF      SPA-DRCD        NOT =   SPACE
+                   MOVE    ORCSDR-IN-DRCD-G    TO  SPA-DRCD-NAME
+               ELSE
+                   MOVE    "1"                 TO  SPA-DRCD (1:1)
+                   MOVE    ORCSDR-DRCD     (1) TO  SPA-DRCD (2:4)
+                   MOVE    ORCSDR-DRCD-TBL (1) TO  SPA-DRCD-NAME
+               END-IF
+           END-IF
+      *
+           END-IF
+      *
+           IF     (SPA-DRCD        NOT =   SPACE )  AND
+                  (SPA-DRCD(2:4)   NOT =   SPA-DRCD-NAME(1:4))
+               PERFORM 100122-DRCDNAME-SET-SEC
+           END-IF
+      *
+           .
+       10012-SYSKAN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ドクター名編集処理
+      *****************************************************************
+       100122-DRCDNAME-SET-SEC        SECTION.
       *
       *    職員情報（ドクター）
            MOVE    SPACE               TO  SYS-1010-REC
@@ -2257,90 +2315,30 @@
            MOVE    "1010"              TO  SYS-1010-KANRICD
            MOVE    SPA-SRYYMD          TO  SYS-1010-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-1010-EDYUKYMD
-           MOVE    "1%"                TO  SYS-1010-KBNCD(1:2)
+           MOVE    SPA-DRCD            TO  SYS-1010-KBNCD
       *    システム管理検索
            MOVE    SYS-1010-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "key"               TO  MCP-PATHNAME
+               MOVE    "key10"             TO  MCP-PATHNAME
                PERFORM 900-SYSKANRI-READ-SEC
            ELSE
                INITIALIZE                  SYS-1010-REC
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
-           MOVE    ZERO                TO  FLG-DRCDOK
-           MOVE    SPACE               TO  WRK-DRCD
-           MOVE    SPACE               TO  WRK-DRCD2
-           MOVE    SPACE               TO  WRK-DRCDNAME
-           MOVE    SPACE               TO  WRK-DRCDNAME2
-           MOVE    SPACE               TO  SPA-DRCD-NAME
-           PERFORM
-                   UNTIL      (FLG-SYSKANRI    =   1 )  OR
-                              (FLG-DRCDOK      =   1 )
-      *            訂正でドクターなしの場合
-                        OR   ((LNK-SC95-KBN        =   "4"  ) AND
-                              (SPA-DRCD            =   SPACE ))
-               MOVE    MCPDATA-REC             TO  SYS-1010-REC
-               IF      SYS-1010-KBNCD(1:1)     =   "1"
-      *            ドクターの指定がない時、最初のドクターとする
-                   IF      SPA-DRCD            =   SPACE
-                      AND  FLG-UKETUKE-ARI     =   ZERO
-      *                対象の科のドクターを優先する
-                       PERFORM 100121-SEMONKACD-CHK-SEC
-                       IF      WRK-DRCD2           =   SPACE 
-                           MOVE    SYS-1010-KBNCD(1:5) TO  WRK-DRCD2
-                           MOVE    SYS-1010-NAME       TO  WRK-DRCDNAME2
-                       END-IF
-                       IF     (WRK-DRCD            =   SPACE ) AND
-                              (FLG-DRCDCHK         =   2     )
-                           MOVE    SYS-1010-KBNCD(1:5) TO  WRK-DRCD
-                           MOVE    SYS-1010-NAME       TO  WRK-DRCDNAME
-                       END-IF
-                       IF      FLG-DRCDCHK         =   1
-                           MOVE    SYS-1010-KBNCD(1:5) TO  SPA-DRCD
-                       END-IF
-                   END-IF
-                   IF      SPA-DRCD            =   SYS-1010-KBNCD(1:5)
-                       MOVE    1                   TO  FLG-DRCDOK
-                       MOVE    SPA-DRCD(2:4)       TO  SPA-DRCD-NAME
-                       MOVE    SYS-1010-NAME       TO  SPA-DRCD-NAME
-                                                                (6:)
-                   END-IF
-               END-IF
-      *
-               IF      FLG-DRCDOK      =   ZERO
-                   MOVE    "tbl_syskanri"      TO  MCP-TABLE
-                   MOVE    "key"               TO  MCP-PATHNAME
-                   PERFORM 900-SYSKANRI-READ-SEC
-               END-IF
-           END-PERFORM
-      *
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1010-REC
+               MOVE    SPA-DRCD(2:4)       TO  SPA-DRCD-NAME(1:4)
+               MOVE    SYS-1010-NAME       TO  SPA-DRCD-NAME(6:)
+           END-IF
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-      *    訂正でドクターなしの場合
-           IF    ((LNK-SC95-KBN        =   "4"  ) AND
-                  (SPA-DRCD            =   SPACE ))  OR
-                  (SPA-DRCD        NOT =   SPACE  )
-               CONTINUE
-           ELSE
-      *    対象の科のドクターがなかった時、科指定なしか最初
-               IF      WRK-DRCD            =   SPACE
-                   MOVE    WRK-DRCD2       TO  SPA-DRCD
-                   MOVE    SPA-DRCD(2:4)   TO  SPA-DRCD-NAME
-                   MOVE    WRK-DRCDNAME2   TO  SPA-DRCD-NAME (6:)
-               ELSE
-                   MOVE    WRK-DRCD        TO  SPA-DRCD
-                   MOVE    SPA-DRCD(2:4)   TO  SPA-DRCD-NAME
-                   MOVE    WRK-DRCDNAME    TO  SPA-DRCD-NAME (6:)
-               END-IF
-           END-IF
-      *
            .
-       10012-SYSKAN-EXT.
+       100122-DRCDNAME-SET-EXT.
            EXIT.
       *
       *****************************************************************
