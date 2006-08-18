@@ -694,6 +694,7 @@
       *
                    PERFORM   210-HYOUKETU-CLEAR-SEC
       *
+                   MOVE    1      TO   FLG-NYUINACCT-UPD
       *            明細数・数量計・診療コード計
                    MOVE     ZERO    TO   WRK-MEISAISU
                                          WRK-SURYOTOTAL
