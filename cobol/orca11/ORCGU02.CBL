@@ -3672,6 +3672,7 @@
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 900-SYSKANRI-READ-SEC
            ELSE
@@ -3698,12 +3699,14 @@
                END-IF
       *
                IF      FLG-SYSKANRI        =   ZERO
+                   MOVE    "tbl_syskanri"      TO  MCP-TABLE
                    MOVE    "key2"              TO  MCP-PATHNAME
                    PERFORM 900-SYSKANRI-READ-SEC
                END-IF
            END-PERFORM
       *
       *    カーソルクロース
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
@@ -3794,6 +3797,7 @@
                MOVE    1                   TO  FLG-SYSKANRI
            END-IF
       *    カーソルクロース
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
@@ -3808,6 +3812,7 @@
                     MOVE    1                   TO  FLG-CLAIM-MULTIHOST
                END-IF
                IF      SYS-9000-SETUZOKU   =   ZERO
+                                           OR  SPACE
                    CONTINUE
                ELSE
                    MOVE    SYS-9000-CODE       TO  SPA-U02X-CODE
