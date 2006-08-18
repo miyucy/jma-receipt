@@ -328,6 +328,8 @@
            03  SYU-GRP-RENNUM          PIC 9(02).
       *まとめ入力差額
            03  SYU-GRP-SGKMONEY        PIC S9(07).
+      *まとめ発行方法フラグ
+           03  SYU-GRP-HAKHOUFLG       PIC  9(01).
       *保証金額
            03  SYU-SECMONEY            PIC  9(07).
       *保険適用金額

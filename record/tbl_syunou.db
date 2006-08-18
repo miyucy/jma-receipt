@@ -153,7 +153,7 @@ tbl_syunou {
 	GRP_DENPNUM			number(7,0);
 	GRP_RENNUM			number(2,0);
 	GRP_SGKMONEY			number(7,0);
-	GRP_HAKKOFLG		number(1,0);
+	GRP_HAKHOUFLG		number(1,0);
 	SECMONEY			number(7,0);
 	HKNTEKMONEY			number(7,0);
 	DISCOUNT_KBN			char(2);

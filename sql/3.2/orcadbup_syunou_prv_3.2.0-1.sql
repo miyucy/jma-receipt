@@ -7,8 +7,8 @@
 
 --    項目追加                        --
 alter table TBL_SYUNOU_PRV
-   add column GRP_HAKKOFLG  numeric(01);
+   add column GRP_HAKHOUFLG  numeric(01);
 
 --    ゼロ設定                       --
 alter table TBL_SYUNOU_PRV
-   alter GRP_HAKKOFLG set default 0;
+   alter GRP_HAKHOUFLG set default 0;
