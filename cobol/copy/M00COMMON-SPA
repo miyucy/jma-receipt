@@ -49,3 +49,5 @@
                05  SPA-NAI-SYSYMDW     PIC X(07).
                05  SPA-M95-MOTOPG      PIC X(08).
       *
+               05  SPA-M95-PAGE        PIC 9(01).
+      *

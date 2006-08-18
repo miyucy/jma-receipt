@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL−多々納 04/06/25  診療所で２０名以上を科別へ
+      *  01.00.02    NACL−多々納 06/08/16  当日担当医設定追加
       *****************************************************************
       *
       *
@@ -50,14 +51,18 @@
       *
            03  FLG-CHK             PIC 9(01).
            03  FLG-CHK2            PIC 9(01).
+           03  FLG-CHK3            PIC 9(01).
+           03  FLG-ARI             PIC 9(01).
            03  FLG-OK              PIC 9(01).
            03  FLG-OVER            PIC 9(01).
+           03  FLG-TANTOU            PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDX2                PIC 9(04).
            03  IDX3                PIC 9(04).
+           03  IDX-D               PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -69,6 +74,7 @@
                    07  WRK-DRCDMEI          PIC  X(24).
                05  WRK-DRCD-IDX             PIC  9(04).
       *
+           03  WRK-KEY-DRCD            PIC X(05).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -79,6 +85,8 @@
       *
       *    ドクター
            COPY    "CPSK1010.INC".
+      *    担当医設定 
+           COPY  "CPSK1011.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -128,9 +136,27 @@
       *        ドクターテーブル編集
                WHEN    "1"
                    PERFORM 100-DR-HENSYU-SEC
+      *            ドクターコードがある時、ドクター編集
+                   IF      ORCSDR-IN-DRCD  NOT =   SPACE
+                       PERFORM 200-DR-CHECK-SEC
+                   END-IF
       *        ドクターチェック
                WHEN    "2"
                    PERFORM 200-DR-CHECK-SEC
+      *        ドクターチェック（初期表示用）
+               WHEN    "3"
+                   PERFORM 300-DR-CHECK03-SEC
+      *        ドクターテーブル編集
+               WHEN    "4"
+                   PERFORM 100-DR-HENSYU-SEC
+                   IF      FLG-TANTOU          =   1
+      *                ドクター追加編集
+                       PERFORM 1003-SYS1010-ADDHEN-SEC
+                   END-IF
+      *            ドクターコードがある時、ドクター編集
+                   IF      ORCSDR-IN-DRCD  NOT =   SPACE
+                       PERFORM 200-DR-CHECK-SEC
+                   END-IF
            END-EVALUATE
       *
            .
@@ -147,6 +173,25 @@
            INITIALIZE                  ORCSDR-OUT-AREA
            INITIALIZE                  WRK-DRCD-TBL-G
            MOVE    ZERO                TO  IDX3
+           MOVE    ZERO                TO  FLG-TANTOU
+      *    当日担当医
+           IF      ORCSDR-SRYKA    NOT =   SPACE
+               PERFORM 1000-SYS1011-CHK-SEC
+           END-IF
+           IF      FLG-TANTOU          =   ZERO
+               PERFORM 1001-SYS1010-HEN-SEC
+           ELSE
+               PERFORM 1002-SYS1011-HEN-SEC
+           END-IF
+      *
+           .
+       100-HENSYU-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ドクターテーブル編集処理
+      *****************************************************************
+       1001-SYS1010-HEN-SEC            SECTION.
       *
       *    職員情報（ドクター）
            MOVE    SPACE               TO  SYS-1010-REC
@@ -221,14 +266,101 @@
                MOVE    WRK-DRCD-IDX        TO  ORCSDR-DRCD-IDX
            END-IF
       *
-      *    ドクターコードがある時、ドクター編集
-           IF      ORCSDR-IN-DRCD  NOT =   SPACE
-      *        ドクターチェック
-               PERFORM 200-DR-CHECK-SEC
+           .
+       1001-SYS1010-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    当日担当医処理
+      *****************************************************************
+       1000-SYS1011-CHK-SEC            SECTION.
+      *
+           MOVE    SPACE               TO  SYS-1011-REC
+           INITIALIZE                  SYS-1011-REC
+           MOVE    "1011"              TO  SYS-1011-KANRICD
+           MOVE    ORCSDR-SRYKA        TO  SYS-1011-KBNCD
+           MOVE    ORCSDR-SYSYMD       TO  SYS-1011-STYUKYMD
+           MOVE    ORCSDR-SYSYMD       TO  SYS-1011-EDYUKYMD
+      *    システム管理検索
+           MOVE    SYS-1011-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "key10"              TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+               IF      FLG-SYSKANRI         =   ZERO
+                   MOVE    MCPDATA-REC           TO  SYS-1011-REC
+                   IF      SYS-1011-DRCD(01)   NOT =   SPACE
+                       MOVE    1               TO  FLG-TANTOU
+                   END-IF
+               END-IF
+           ELSE
+               INITIALIZE                  SYS-1010-REC
+               MOVE    1               TO  FLG-SYSKANRI
            END-IF
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           .
+       1000-SYS1011-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    ドクターコード検索処理
+      *****************************************************************
+       1002-SYS1011-HEN-SEC            SECTION.
+      *
+           MOVE    ZERO                TO  IDX
+           PERFORM VARYING     IDX2    FROM    1   BY  1
+                   UNTIL       IDX2    >   20
+               IF      SYS-1011-DRCD(IDX2) NOT =   SPACE
+                   ADD     1               TO  IDX
+                   MOVE    SYS-1011-DRCD(IDX2)(2:4)
+                                               TO  ORCSDR-DRCD (IDX)
+                   MOVE    SYS-1011-DRCD(IDX2) TO  WRK-KEY-DRCD
+                   PERFORM 10001-DRCDNAME-HEN-SEC
+                   MOVE    SYS-1010-NAME       TO  ORCSDR-DRCDMEI
+                                                              (IDX)
+               END-IF
+           END-PERFORM
+           MOVE    IDX                 TO  ORCSDR-DRCD-MAX
+           MOVE    1                   TO  ORCSDR-DRCD-IDX
+           .
+       1002-SYS1011-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    ドクターコード検索処理
+      *****************************************************************
+       10001-DRCDNAME-HEN-SEC            SECTION.
+      *
+      *    職員情報（ドクター）
+           MOVE    SPACE               TO  SYS-1010-REC
+           INITIALIZE                  SYS-1010-REC
+           MOVE    "1010"              TO  SYS-1010-KANRICD
+           MOVE    WRK-KEY-DRCD        TO  SYS-1010-KBNCD(1:5)
+           MOVE    ORCSDR-SYSYMD       TO  SYS-1010-STYUKYMD
+           MOVE    ORCSDR-SYSYMD       TO  SYS-1010-EDYUKYMD
+      *
+      *    システム管理検索
+           MOVE    SYS-1010-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "key10"             TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+           ELSE
+               INITIALIZE                  SYS-1010-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1010-REC
+           END-IF
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
            .
-       100-HENSYU-SYORI-EXT.
+       10001-DRCDNAME-HEN-EXT.
            EXIT.
       *****************************************************************
       *    科別の編集（診療所）処理
@@ -278,6 +410,77 @@
            .
        1001-SEMONKACD-CHK-EXT.
            EXIT.
+      *****************************************************************
+      *    ドクターテーブル追加編集処理
+      *****************************************************************
+       1003-SYS1010-ADDHEN-SEC            SECTION.
+      *
+      *    職員情報（ドクター）
+           MOVE    SPACE               TO  SYS-1010-REC
+           INITIALIZE                  SYS-1010-REC
+           MOVE    "1010"              TO  SYS-1010-KANRICD
+           MOVE    ORCSDR-SYSYMD       TO  SYS-1010-STYUKYMD
+           MOVE    ORCSDR-SYSYMD       TO  SYS-1010-EDYUKYMD
+      *
+      *    システム管理検索
+           MOVE    SYS-1010-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+           ELSE
+               INITIALIZE                  SYS-1010-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           MOVE    ORCSDR-DRCD-MAX     TO  IDX
+           MOVE    ZERO                TO  FLG-OVER
+           PERFORM
+                   UNTIL       (FLG-SYSKANRI   =   1    )
+               MOVE    MCPDATA-REC             TO  SYS-1010-REC
+               IF      SYS-1010-KBNCD(1:1)     =   "1"
+                   MOVE    ZERO                TO  FLG-CHK
+                   MOVE    ZERO                TO  FLG-CHK3
+                   PERFORM VARYING     IDX-D   FROM    1   BY  1
+                           UNTIL      (IDX-D   >   ORCSDR-DRCD-MAX)
+                                  OR  (FLG-CHK3    =   1     )
+                       IF      SYS-1010-KBNCD(2:4)
+                                               =   ORCSDR-DRCD (IDX-D)
+                           MOVE    1           TO  FLG-CHK3
+                       END-IF
+                   END-PERFORM
+                   IF      FLG-CHK3            =   ZERO
+                       IF      ORCSDR-SRYKA    NOT =   SPACE
+                           PERFORM 1001-SEMONKACD-CHK-SEC
+                       END-IF
+                   END-IF
+                   IF      FLG-CHK             =   1
+                       IF      IDX                 >=  20
+                           MOVE    1               TO  FLG-OVER
+                       ELSE
+                           ADD     1                   TO  IDX
+                           MOVE    SYS-1010-KBNCD(2:4)
+                                                   TO  ORCSDR-DRCD
+                                                                (IDX)
+                           MOVE    SYS-1010-NAME   TO  ORCSDR-DRCDMEI
+                                                                (IDX)
+                       END-IF
+                   END-IF
+               END-IF
+      *
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           MOVE    IDX                 TO  ORCSDR-DRCD-MAX
+      *
+           .
+       1003-SYS1010-ADDHEN-EXT.
+           EXIT.
       *
       *****************************************************************
       *    ドクターチェック処理
@@ -288,38 +491,10 @@
                MOVE    SPACE           TO  ORCSDR-IN-DRCD-G
                GO      TO      200-DR-CHECK-EXT
            END-IF
-      *
-      *    コード変換
-           INITIALIZE                      ORCSNUMAREA
-           MOVE    ORCSDR-IN-DRCD      TO  SNUM-INX
-           CALL    "ORCSNUM"           USING
-                                       ORCSNUMAREA
-           IF     (SNUM-RC         NOT =   ZERO  )   OR
-                  (SNUM-SEISUU         >   4     )   OR
-                  (SNUM-SYOKBN         =   "1"   )   OR
-                  (SNUM-MINKBN         =   "1"   )
-               MOVE    2                   TO  ORCSDR-ERRCD
-               GO      TO      200-DR-CHECK-EXT
-           ELSE
-               MOVE    SNUM-OUTEDT(12:4)   TO  ORCSDR-IN-DRCD
-           END-IF
-           MOVE    SPACE               TO  ORCSDR-IN-DRCD-H
-           MOVE    SPACE               TO  ORCSDR-OUT-DRCDMEI
-      *
-      *    コードチェック
-           MOVE    ZERO                TO  ORCSDR-DRCD-IDX
-           MOVE    ZERO                TO  FLG-OK
-           PERFORM VARYING IDX         FROM    1   BY  1
-                   UNTIL   IDX         >   ORCSDR-DRCD-MAX
-               IF      ORCSDR-DRCD (IDX)   =   ORCSDR-IN-DRCD
-                   MOVE    ORCSDR-DRCD-TBL (IDX)
-                                           TO  ORCSDR-IN-DRCD-G
-                   MOVE    IDX             TO  ORCSDR-DRCD-IDX
-                   MOVE    ORCSDR-DRCD-MAX TO  IDX
-                   MOVE    1               TO  FLG-OK
-               END-IF
-           END-PERFORM
-           IF      FLG-OK              =   1
+      *    コード変換・テーブルチェック
+           PERFORM 2001-DRCD-TBLCHK-SEC
+           IF     (ORCSDR-ERRCD    NOT =   ZERO  )  OR
+                  (FLG-OK              =   1     )
                GO      TO      200-DR-CHECK-EXT
            END-IF
       *
@@ -366,6 +541,88 @@
       *
            .
        200-DR-CHECK-EXT.
+           EXIT.
+      *****************************************************************
+      *    リスト内容チェック処理（共通）
+      *****************************************************************
+       2001-DRCD-TBLCHK-SEC         SECTION.
+      *
+      *    コード変換
+           INITIALIZE                      ORCSNUMAREA
+           MOVE    ORCSDR-IN-DRCD      TO  SNUM-INX
+           CALL    "ORCSNUM"           USING
+                                       ORCSNUMAREA
+           IF     (SNUM-RC         NOT =   ZERO  )   OR
+                  (SNUM-SEISUU         >   4     )   OR
+                  (SNUM-SYOKBN         =   "1"   )   OR
+                  (SNUM-MINKBN         =   "1"   )
+               MOVE    2                   TO  ORCSDR-ERRCD
+               GO      TO      2001-DRCD-TBLCHK-EXT
+           ELSE
+               MOVE    SNUM-OUTEDT(12:4)   TO  ORCSDR-IN-DRCD
+           END-IF
+           MOVE    SPACE               TO  ORCSDR-IN-DRCD-H
+           MOVE    SPACE               TO  ORCSDR-OUT-DRCDMEI
+      *
+      *    コードチェック
+           MOVE    ZERO                TO  ORCSDR-DRCD-IDX
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDX         FROM    1   BY  1
+                   UNTIL   IDX         >   ORCSDR-DRCD-MAX
+               IF      ORCSDR-DRCD (IDX)   =   ORCSDR-IN-DRCD
+                   MOVE    ORCSDR-DRCD-TBL (IDX)
+                                           TO  ORCSDR-IN-DRCD-G
+                   MOVE    IDX             TO  ORCSDR-DRCD-IDX
+                   MOVE    ORCSDR-DRCD-MAX TO  IDX
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+           .
+       2001-DRCD-TBLCHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ドクターチェック処理（外来初期表示用）
+      *****************************************************************
+       300-DR-CHECK03-SEC            SECTION.
+      *
+           IF      ORCSDR-IN-DRCD      =   SPACE
+               MOVE    SPACE           TO  ORCSDR-IN-DRCD-G
+           END-IF
+           MOVE    ZERO                TO  FLG-TANTOU
+           IF      ORCSDR-DRCD-MAX     =    ZERO
+      *        ドクターテーブル編集
+               PERFORM 100-DR-HENSYU-SEC
+           ELSE
+      *        当日担当医
+               IF      ORCSDR-SRYKA    NOT =   SPACE
+                   PERFORM 1000-SYS1011-CHK-SEC
+               END-IF
+           END-IF
+           IF      FLG-TANTOU          =   ZERO
+      *        当日担当医無し
+               IF      ORCSDR-IN-DRCD      =   SPACE
+                   IF      ORCSDR-DRCD-IDX     =   ZERO
+                       MOVE    1               TO  ORCSDR-DRCD-IDX
+                   END-IF
+                   MOVE    ORCSDR-DRCD-TBL (ORCSDR-DRCD-IDX)
+                                           TO  ORCSDR-IN-DRCD-G
+               ELSE
+      *            ドクターチェック
+                   PERFORM 200-DR-CHECK-SEC
+               END-IF
+           ELSE
+      *        リストにない場合、１件目を初期とする
+               PERFORM 2001-DRCD-TBLCHK-SEC
+               IF     (ORCSDR-ERRCD        =   ZERO  ) AND
+                      (FLG-OK              =   ZERO  )
+                   MOVE    ORCSDR-DRCD-TBL (01)
+                                           TO  ORCSDR-IN-DRCD-G
+                   MOVE    01              TO  ORCSDR-DRCD-IDX
+               END-IF
+           END-IF
+           .
+       300-DR-CHECK03-EXT.
            EXIT.
       *****************************************************************
       *    システム管理マスタ読込

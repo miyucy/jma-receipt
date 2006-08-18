@@ -1,19 +1,59 @@
 M95	{
 	fixed1	{
-		CALENDAR1	{
-			year	int;
-			month	int;
-			day	int;
-		};
-		SYSYMD	{
-			value	varchar(10);
-		};
-		JIKANKBN_COMB	{
-			JIKANKBN	{
-				value	varchar(30);
+		notebook1	{
+			pageno	int;
+			fixed2	{
+				SYSYMD	{
+					value	varchar(10);
+				};
+				CALENDAR1	{
+					year	int;
+					month	int;
+					day	int;
+				};
+				JIKANKBN_COMB	{
+					JIKANKBN	{
+						value	varchar(30);
+					};
+					count	int;
+					item	varchar(30)[5];
+				};
 			};
-			count	int;
-			item	varchar(30)[5];
+			fixed3	{
+				SRYKA	{
+					value	varchar(2);
+				};
+				RENNUM	{
+					value	varchar(4);
+				};
+				DRCD_COMB	{
+					DRCD	{
+						value	varchar(30);
+					};
+					count	int;
+					item	varchar(30)[20];
+				};
+				SYORIMEI	{
+				        style   varchar(20);
+					value	varchar(30);
+				};
+				scrolledwindow1	{
+					hpos	int;
+					vpos	int;
+					SYSLIST	{
+						count	int;
+						row	int;
+						rowattr	int;
+						item	{
+							value0	varchar(2);
+							value1	varchar(20);
+							value2	varchar(4);
+							value3	varchar(50);
+						}	[100];
+						select	bool[100];
+					};
+				};
+			};
 		};
 	};
 };
