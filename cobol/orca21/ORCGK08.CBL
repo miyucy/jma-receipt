@@ -4354,6 +4354,9 @@
                                        SYUNOU-REC
       *        初診料と同日初診がある時、初診料のみ
                IF      FLG-SYU40           =   1
+                   COMPUTE SYU-KYUFUGAI-GOKEI-TEN
+                                           =   SYU-KYUFUGAI-GOKEI-TEN
+                                           -   SYU-KYUFUGAI-SHOSHIN-TEN
                    MOVE    ZERO            TO  SYU-KYUFUGAI-SHOSHIN-TEN
                END-IF
                IF      SYU-KYUFUGAI-SHOSHIN-TEN    >   ZERO
