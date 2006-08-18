@@ -39,6 +39,7 @@
       *  02.00.05    NACL-多々納  03/09/09  受診履歴、入院履歴より診療科等決定
       *  02.00.06    NACL-多々納  04/07/23  継続入力区分の削除
       *  02.00.07    NACL-多々納  05/11/17  MONFUNC 対応
+      *  02.00.08    NACL−多々納 06/08/17  当日担当医設定追加他
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1057,51 +1058,6 @@
            PERFORM 990-DBCLOSE-SEC
       *
       *    職員情報（ドクター）
-      **** MOVE    SPACE               TO  SYS-1010-REC
-      *    INITIALIZE                  SYS-1010-REC
-      *    MOVE    "1010"              TO  SYS-1010-KANRICD
-      *    MOVE    ZERO                TO  SYS-1010-STYUKYMD
-      *    MOVE    ALL "9"             TO  SYS-1010-EDYUKYMD
-      *    システム管理検索
-      *    MOVE    SYS-1010-REC        TO  MCPDATA-REC
-      *    MOVE    "DBSELECT"          TO  MCP-FUNC
-      *    MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-      *    MOVE    SPA-NAI-SRYYMDS     TO  ORC-DBYMD
-      *    CALL    "ORCMCPSUB"          USING
-      *                                 MCPAREA
-      *                                 ORCMCPAREA
-      *                                 MCPDATA-REC
-      *    IF      MCP-RC              =   ZERO
-      *        MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-      *        PERFORM 900-KANRIMST-READ-SEC
-      *    ELSE
-      *        INITIALIZE                  SYS-1010-REC
-      *        MOVE    1               TO  FLG-SYSKANRI
-      *    END-IF
-      *    MOVE    ZERO                TO  IDX
-      *    PERFORM
-      *            UNTIL       (IDX            >=  10   )  OR
-      *                        (FLG-SYSKANRI   =   1    )
-      *        MOVE    MCPDATA-REC             TO  SYS-1010-REC
-      *        IF      SYS-1010-KBNCD(1:1)     =   "1"
-      *            ADD     1                 TO  IDX
-      *            MOVE    SYS-1010-KBNCD(2:4)
-      *                                      TO  SPA-GMN-DRCDL (IDX)
-      *            MOVE    SYS-1010-NAME     TO  SPA-GMN-DRCDMEIL(IDX)
-      *        END-IF
-      *
-      *        MOVE    "SYSKANRI-KEY2"    TO  ORC-DBPATH
-      *        PERFORM 900-KANRIMST-READ-SEC
-      *    END-PERFORM
-      *
-      *    MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-      *    MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-      *    CALL    "ORCMCPSUB"          USING
-      *                                 MCPAREA
-      *                                 ORCMCPAREA
-      *****                             MCPDATA-REC
-      *
-      *    ドクター編集
            INITIALIZE                  ORCSDRSETAREA
            MOVE    SPA-NAI-SRYYMDS     TO  ORCSDR-SYSYMD
            MOVE    "1"                 TO  ORCSDR-KBN
@@ -1649,7 +1605,11 @@
       *    ドクター編集
            INITIALIZE                  ORCSDRSETAREA
            MOVE    SPA-NAI-SRYYMDS     TO  ORCSDR-SYSYMD
-           MOVE    "1"                 TO  ORCSDR-KBN
+           IF      SPA-NYUGAIKBN       =   "2"
+               MOVE    "3"                 TO  ORCSDR-KBN
+           ELSE
+               MOVE    "1"                 TO  ORCSDR-KBN
+           END-IF
            MOVE    SPA-GMN-SRYKA       TO  ORCSDR-SRYKA
            MOVE    SPA-GMN-DRCD        TO  ORCSDR-IN-DRCD
            CALL   "ORCSDRSET"          USING
@@ -1770,12 +1730,15 @@
                MOVE    WRK-HKNCOMBINUM     TO  SPA-GMN-HKNCOMBINUM
       *        ドクター編集
                PERFORM 3101-DRCD-SET-SEC
-           END-IF
-      *    ドクターがない時編集
-           IF      SPA-NAI-DRCD        =   SPACE
+           ELSE
                MOVE    WRK-DRCD            TO  SPA-NAI-DRCD
                PERFORM 3101-DRCD-SET-SEC
            END-IF
+      *****ドクターがない時編集
+      *    IF      SPA-NAI-DRCD        =   SPACE
+      * *      MOVE    WRK-DRCD            TO  SPA-NAI-DRCD
+      *        PERFORM 3101-DRCD-SET-SEC
+      **** END-IF
       *    保険組合せがない時編集
            IF      SPA-GMN-HKNCOMBINUM =   SPACE
                MOVE    WRK-HKNCOMBINUM     TO  SPA-GMN-HKNCOMBINUM

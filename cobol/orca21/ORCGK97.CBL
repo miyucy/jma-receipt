@@ -53,6 +53,7 @@
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-CHK             PIC 9(01).
+           03  FLG-CHK2            PIC 9(01).
       *
            03  FLG-UKETUKE         PIC 9(01).
       *
@@ -789,6 +790,7 @@
            END-IF
       *
            MOVE    SPACE               TO  SPA-K97-SELNUM3
+           MOVE    ZERO                TO  FLG-CHK2
            IF      WRK-DRCD            =   SPACE
                MOVE    ZERO                TO  FLG-CHK
                PERFORM VARYING     IDX     FROM    1   BY  1
@@ -798,6 +800,7 @@
                        MOVE    SPA-NAI-RRK-DRCD (IDX)(2:4)
                                                TO  WRK-DRCD
                        MOVE    1               TO  FLG-CHK
+                       MOVE    1               TO  FLG-CHK2
                    END-IF
                END-PERFORM
            END-IF
@@ -868,11 +871,12 @@
            END-PERFORM
            IF     (SPA-K97-SELNUM3 NOT =   ZERO ) AND
                   (FLG-CHK             =   ZERO )
+               MOVE    ZERO                TO  FLG-CHK2
                PERFORM 22041-DRCD-CHK-SEC
            END-IF
       *
            IF      SPA-ERRCD           =   SPACE
-               IF      SPA-K97-SELNUM3     =   ZERO
+               IF      SPA-K97-SELNUM3     =   SPACE
                    MOVE    SPACE               TO  SPA-K97-DRCD
                    MOVE    SPACE               TO  SPA-K97-SELNUM3
                ELSE
@@ -888,9 +892,15 @@
       *    ドクターチェック処理
       *****************************************************************
        22041-DRCD-CHK-SEC                   SECTION.
+      *
       *    ドクター編集
            INITIALIZE                  ORCSDRSETAREA
-           MOVE    "2"                 TO  ORCSDR-KBN
+           IF      FLG-CHK2            =   ZERO
+               MOVE    "2"                 TO  ORCSDR-KBN
+           ELSE
+      *        前回受診のドクターを判定
+               MOVE    "3"                 TO  ORCSDR-KBN
+           END-IF
            MOVE    SPA-SRYYMD          TO  ORCSDR-SYSYMD
            MOVE    SPA-K97-SRYKA       TO  ORCSDR-SRYKA
            MOVE    SPA-K97-SELNUM3     TO  ORCSDR-IN-DRCD

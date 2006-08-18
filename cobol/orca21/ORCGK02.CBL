@@ -5092,6 +5092,7 @@
            IF      SPA-SYORIFLG        =   ZERO
                MOVE    SPACE               TO  SPA-HKNCOMBINUM
                MOVE    SPACE               TO  SPA-DRCD
+               MOVE    SPACE               TO  SPA-DRCD-NAME
       *        診療内容を残さない時、展開中のクリア
                IF      SPA-KID1-FLG        =   "OK"
                    CONTINUE
@@ -9394,7 +9395,6 @@
            MOVE    SPA-HOSPID          TO  WKSRY-HOSPID
            MOVE    SPA-NYUGAIKBN       TO  WKSRY-NYUGAIKBN
            MOVE    SPA-PTID            TO  WKSRY-PTID
-           MOVE    SPA-NYUGAIKBN       TO  WKSRY-NYUGAIKBN
            MOVE    SPA-SRYYMD          TO  WKSRY-SRYYMD
       *
            MOVE    WKSRYACT-REC        TO  MCPDATA-REC
