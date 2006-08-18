@@ -224,19 +224,19 @@
            MOVE    "ORCBHYOUKETSU"     TO  JOB-PGID
            EVALUATE   WRK-PARA-KBN
                WHEN   "1"
-                 MOVE    "É¸·çÍÑ²ñ·×¹¹¿·£±£°£°Ê¬¤Î£±£°"
+                 MOVE    "É¸·ç²ñ·×¹¹¿·£±£°£°Ê¬¤Î£±£°"
                                        TO  JOB-SHELLMSG
                WHEN   "2"
-                 MOVE    "É¸·çÍÑ²ñ·×¹¹¿·£±£°£°Ê¬¤Î£±£µ"
+                 MOVE    "É¸·ç²ñ·×¹¹¿·£±£°£°Ê¬¤Î£±£µ"
                                        TO  JOB-SHELLMSG
                WHEN   "3"
-                 MOVE    "É¸·çÍÑ²ñ·×¹¹¿·£±£°£°Ê¬¤Î£²"
+                 MOVE    "É¸·ç²ñ·×¹¹¿·£±£°£°Ê¬¤Î£²"
                                        TO  JOB-SHELLMSG
                WHEN   "4"
-                 MOVE    "É¸·çÍÑ²ñ·×¹¹¿·£±£°£°Ê¬¤Î£³"
+                 MOVE    "É¸·ç²ñ·×¹¹¿·£±£°£°Ê¬¤Î£³"
                                        TO  JOB-SHELLMSG
                WHEN   "5"
-                 MOVE    "É¸·çÍÑ²ñ·×¹¹¿·¡ÊÉ¸·ç¼è¾Ã¡Ë"
+                 MOVE    "É¸·ç²ñ·×¹¹¿·¡ÊÉ¸·ç¼è¾Ã¡Ë"
                                        TO  JOB-SHELLMSG
            END-EVALUATE
       *
