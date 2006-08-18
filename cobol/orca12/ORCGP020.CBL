@@ -886,10 +886,6 @@
            PERFORM 4101-GMN-SPA-SET-SEC
       *    基本チェックと別画面処理
            PERFORM 4102-KIHON-CHK-SEC
-           IF     (SPA-ERRCD       NOT =   SPACE )  OR
-                  (SPA-FLG-END     NOT =   ZERO  )
-               GO      TO      410-INPUT-CHK-EXT
-           END-IF
       *
            .
       *
@@ -931,42 +927,35 @@
        4102-KIHON-CHK-SEC          SECTION.
       *
       *    予約番号
-           PERFORM 4101-YSELNUM-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4101-YSELNUM-CHK-SEC
            END-IF
       *    診療科
-           PERFORM 4101-SRYKA-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4101-SRYKA-CHK-SEC
            END-IF
-      *    診療科
-           PERFORM 4101-DRNAME-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+      *    ドクター
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4101-DRNAME-CHK-SEC
            END-IF
-      *    診療科
-           PERFORM 4101-SRYNAIYO-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+      *    診療内容
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4101-SRYNAIYO-CHK-SEC
            END-IF
       *
       *    カルテ発行
-           PERFORM 4101-KARUTE-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4101-KARUTE-CHK-SEC
            END-IF
       *
       *    処方発行
-           PERFORM 4101-SYOHOU-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4101-SYOHOU-CHK-SEC
            END-IF
       *
       *    保険組合せ
-           PERFORM 4101-HKNKUMI-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4101-HKNKUMI-CHK-SEC
            END-IF
            .
       *
@@ -1000,18 +989,16 @@
       *
            IF      SPA-NAI20-YSELNUM       >=  01
                                       AND  <=  SPA-NAI20-UKEMAX
-      *        入力なし
-               IF      FLG-IN-SELNUM       =   ZERO
-                   GO      TO      4101-YSELNUM-CHK-EXT
-               END-IF
+               CONTINUE
            ELSE
       *        対象外
                MOVE    "2001"              TO  SPA-ERRCD
                MOVE    1                   TO  SPA-GMN20-CUR
-               GO      TO      4101-YSELNUM-CHK-EXT
            END-IF
       *
-      *    対象あり
+           IF      (SPA-ERRCD          =   SPACE )  AND
+                   (FLG-IN-SELNUM      =   1     )
+      *        入力ありで、対象あり
                MOVE    SPA-NAI20-YSELNUM       TO  IDX
                MOVE    SPA-NAI20-SRYKA   (IDX) TO  SPA-GMN20-SRYKA
                MOVE    SPACE                   TO  SPA-GMN20-SRYKA1
@@ -1033,6 +1020,19 @@
                    MOVE    SPA-GMN20-KARUTE-LST(1)
                                        TO  SPA-GMN20-KARUTE-G
                END-IF
+               MOVE    SPA-GMN20-SRYKA     TO  SPA-GMN20-MAE-SRYKA
+      *        ドクター一覧
+               INITIALIZE                  ORCSDRSETAREA
+               MOVE    SPA-SYSYMD          TO  ORCSDR-SYSYMD
+               MOVE    "1"                 TO  ORCSDR-KBN
+               MOVE    SPA-GMN20-SRYKA     TO  ORCSDR-SRYKA
+               MOVE    SPA-GMN20-DRCD      TO  ORCSDR-IN-DRCD-G
+               CALL    "ORCSDRSET"         USING
+                                           SPA-AREA
+                                           ORCSDRSETAREA
+               MOVE    ORCSDR-DRCD-TBL-G   TO  SPA-GMN20-DRCDLST-G
+               MOVE    ORCSDR-DRCD-MAX     TO  SPA-DRCD-MAX
+           END-IF
       *
            .
        4101-YSELNUM-CHK-EXT.
@@ -1065,7 +1065,7 @@
       *        診療科が変わった時、ドクターを再編集する
                INITIALIZE                  ORCSDRSETAREA
                MOVE    SPA-SYSYMD          TO  ORCSDR-SYSYMD
-               MOVE    "1"                 TO  ORCSDR-KBN
+               MOVE    "3"                 TO  ORCSDR-KBN
                MOVE    SPA-GMN20-SRYKA     TO  ORCSDR-SRYKA
                CALL    "ORCSDRSET"         USING
                                            SPA-AREA
@@ -1083,8 +1083,12 @@
                    END-IF
                END-PERFORM
                IF      FLG-CHK             =   ZERO
-                   MOVE    SPA-GMN20-DRCDLST(1)
-                                           TO  SPA-GMN20-DRCD
+                   IF      ORCSDR-IN-DRCD  NOT =   SPACE
+                       MOVE    ORCSDR-IN-DRCD-G    TO  SPA-GMN20-DRCD
+                   ELSE
+                       MOVE    SPA-GMN20-DRCDLST(1)
+                                                   TO  SPA-GMN20-DRCD
+                   END-IF
                END-IF
            END-IF
       *
