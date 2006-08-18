@@ -825,7 +825,8 @@
            END-IF
       *    Æ±Æü½é¿ÇÊÔ½¸
            IF      WRK-DD2             >   ZERO
-               IF      WRK-DD          >   WRK-DD2
+               IF     (WRK-DD          >   WRK-DD2 )
+                  OR  (WRK-DD          =   ZERO    )
                    MOVE    WRK-DD2         TO  WRK-DD
                    MOVE    ZERO            TO  FLG-SYOSIN
                END-IF
