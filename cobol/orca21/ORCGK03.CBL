@@ -4949,6 +4949,7 @@
                     MOVE    1                   TO  SPA-CLAIM-MULTIHOST
                END-IF
                IF      SYS-9000-SETUZOKU   =   ZERO
+                                           OR  SPACE
                    CONTINUE
                ELSE
                    MOVE    SYS-9000-CODE       TO  SPA-K03X-CODE
