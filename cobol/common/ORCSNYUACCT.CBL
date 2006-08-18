@@ -38,6 +38,7 @@
       *平成１８年４月改定対応
       * 01.00.11     NACL-小豆沢  06/03/13  入院会計作成月の制限追加
       * 01.00.12     NACL-多々納  06/04/24  MONFUNC 対応
+      * 01.00.13     NACL-多々納  06/08/18  標欠対応追加
       *****************************************************************
       *
       *
@@ -96,6 +97,7 @@
            03  IDX-D               PIC 9(02).
       *
            03  IDX-TBL             PIC 9(04).
+           03  IDH                 PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -180,6 +182,22 @@
       *    療養担当手当て
            03  WRK-RYO-STYMD           PIC X(08).
            03  WRK-RYO-EDYMD           PIC X(08).
+      *    標欠
+           03  WRK-HYOU-AREA.
+               05  WRK-HYOU-SRYCD           PIC X(09).
+               05  WRK-HYOU-STYMD.
+                   07  WRK-HYOU-STYM            PIC X(06).
+                   07  WRK-HYOU-STDD            PIC X(02).
+               05  WRK-HYOU-EDYMD.
+                   07  WRK-HYOU-EDYM            PIC X(06).
+                   07  WRK-HYOU-EDDD            PIC X(02).
+               05  WRK-KHN-STYMD-H          PIC X(08).
+               05  WRK-KHN-EDYMD-H          PIC X(08).
+               05  WRK-ZEN-YMD.
+                   07  WRK-ZEN-YM.
+                       09  WRK-ZEN-YY           PIC 9(04).
+                       09  WRK-ZEN-MM           PIC 9(02).
+                   07  WRK-ZEN-DD               PIC 9(02).
       *
        01  TBL-NYUIN-AREA.
            03  TBL-NYUIN-OCC           OCCURS   10.
@@ -260,6 +278,9 @@
       *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
+      *
+      *    標欠情報取得パラメタ
+           COPY    "CPORCSHYOUKETU.INC".
       *
       *
       *****************************************************************
@@ -443,6 +464,17 @@
       *****************************************************************
        200-NYUKHN-SYORI-SEC            SECTION.
       *
+      *    標欠情報取得
+           INITIALIZE                  ORCSHYOUKETU-AREA
+           MOVE    LNK-SCNYUACCT-STSRYYMD(1:6)
+                                       TO  LNK-HYOUKETU-SANTEIYM
+           CALL    "ORCSHYOUKETU"      USING   ORCSHYOUKETU-AREA
+           IF      LNK-HYOUKETU-RC     =   ZERO
+               CONTINUE
+           ELSE
+               INITIALIZE                  LNK-HYOUKETU-HENKYAKU-AREA
+           END-IF
+      *
            MOVE    WRK-STYMD           TO  WRK-KHN-STYMD
            MOVE    WRK-EDYMD           TO  WRK-KHN-EDYMD
            MOVE    WRK-STYMD           TO  WRK-ENDYMD
@@ -525,6 +557,11 @@
                ADD     1                   TO  IDX-N
                MOVE    WRK-KAGEN-SRYCD     TO  TBL-SRYCD (IDX-N)
            END-IF
+      *    標欠設定
+           IF      LNK-HYOUKETU-SRYCD  (1) NOT =   SPACE
+               PERFORM 20011-HYOUKETU-SYORI-SEC
+           END-IF
+      *
       *    入院会計照会・診療行為作成処理
            MOVE    "1"                 TO  WRK-ACT-ZAISKBKBN
            MOVE    1                   TO  WRK-ACT-DAY
@@ -540,6 +577,108 @@
        2001-NYUKHN-HENSYU-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    標欠設定作成処理
+      *****************************************************************
+       20011-HYOUKETU-SYORI-SEC            SECTION.
+      *
+           PERFORM VARYING     IDH     FROM    1   BY  1
+                   UNTIL      (IDH     >   2   )   OR
+                              (LNK-HYOUKETU-SRYCD (IDH)  =   SPACE )
+               INITIALIZE                   WRK-HYOU-AREA
+               MOVE    LNK-HYOUKETU-SRYCD (IDH)    TO  WRK-HYOU-SRYCD
+               MOVE    LNK-HYOUKETU-STARTYM(IDH)   TO  WRK-HYOU-STYM
+               MOVE    LNK-HYOUKETU-ENDYM(IDH)     TO  WRK-HYOU-EDYM
+      *        標欠終了月の月末
+               IF      LNK-HYOUKETU-ENDYM(IDH) NOT =   "999999"
+      *            月末算定
+                   INITIALIZE                      STS-AREA-DAY
+                   INITIALIZE                      LNK-DAY7-AREA
+                   MOVE    "71"                TO  LNK-DAY7-IRAI
+                   MOVE    LNK-HYOUKETU-ENDYM(IDH)
+                                               TO  LNK-DAY7-YM
+                   CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                                   LNK-DAY7-AREA
+                   IF      STS-DAY-RC1         =   ZERO
+                       MOVE    LNK-DAY7-KOYOMI     TO  WRK-HYOU-EDYMD
+                   END-IF
+               END-IF
+               IF      (WRK-HYOU-STYM      >   WRK-KHN-EDYMD(1:6) ) OR
+                       (WRK-HYOU-EDYM      <   WRK-KHN-STYMD(1:6) )
+                   CONTINUE
+               ELSE
+                   MOVE    WRK-KHN-STYMD       TO  WRK-KHN-STYMD-H
+                   MOVE    WRK-KHN-EDYMD       TO  WRK-KHN-EDYMD-H
+                   IF      WRK-HYOU-STYM       >   WRK-KHN-STYMD(1:6)
+      *                標欠開始月以前の作成
+                       MOVE    WRK-HYOU-STYM       TO  WRK-ZEN-YM
+                       PERFORM 200111-ZEN-MATU-SEC
+                       MOVE    WRK-ZEN-YMD         TO  WRK-KHN-EDYMD
+      *                入院会計照会・診療行為作成処理
+                       MOVE    "1"                 TO  WRK-ACT-ZAISKBKBN
+                       MOVE    1                   TO  WRK-ACT-DAY
+                       PERFORM 400-NYUACT-SYORI-SEC
+      *                標欠開始月の１日
+                       MOVE    WRK-HYOU-STYM       TO  WRK-KHN-STYMD
+                                                              (1:6)
+                       MOVE    "01"                TO  WRK-KHN-STYMD
+                                                              (7:2)
+                       MOVE    WRK-KHN-EDYMD-H     TO  WRK-KHN-EDYMD
+                   END-IF
+      *            標欠 追加
+                   ADD     1                   TO  IDX-N
+                   MOVE    WRK-HYOU-SRYCD      TO  TBL-SRYCD (IDX-N)
+                   IF      WRK-KHN-EDYMD-H      >   WRK-HYOU-EDYMD
+                       MOVE    WRK-HYOU-EDYMD      TO  WRK-KHN-EDYMD
+      *                入院会計照会・診療行為作成処理
+                       MOVE    "1"                 TO  WRK-ACT-ZAISKBKBN
+                       MOVE    1                   TO  WRK-ACT-DAY
+                       PERFORM 400-NYUACT-SYORI-SEC
+      *                終了日の＋１日算定
+                       MOVE    WRK-KHN-EDYMD       TO  WRK-INYMD
+                       MOVE    1                   TO  WRK-ZOGEN
+                       PERFORM 800-HIZUKE-KEI-SEC
+                       MOVE    WRK-OTYMD           TO  WRK-KHN-STYMD
+                       MOVE    WRK-KHN-EDYMD-H     TO  WRK-KHN-EDYMD
+                       MOVE    SPACE               TO  TBL-SRYCD (IDX-N)
+                       COMPUTE IDX-N               =   IDX-N   -   1
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           .
+       20011-HYOUKETU-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    前月末日算定処理
+      *****************************************************************
+       200111-ZEN-MATU-SEC            SECTION.
+      *
+      *    開始日の翌月の末日を求める
+           IF      WRK-ZEN-MM          =   12
+               COMPUTE WRK-ZEN-YY          =   WRK-ZEN-YY
+                                           -   1
+               MOVE    1                   TO  WRK-ZEN-MM
+           ELSE
+               COMPUTE WRK-ZEN-MM          =   WRK-ZEN-MM
+                                           -   1
+           END-IF
+      *    月末算定
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY7-AREA
+           MOVE    "71"                TO  LNK-DAY7-IRAI
+           MOVE    WRK-ZEN-YM          TO  LNK-DAY7-YM
+           CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                               LNK-DAY7-AREA
+           IF      STS-DAY-RC1         =   ZERO
+               MOVE    LNK-DAY7-KOYOMI     TO  WRK-ZEN-YMD
+           END-IF
+      *
+           .
+       200111-ZEN-MATU-EXT.
+           EXIT.
+     *
       *****************************************************************
       *    入院料加算作成処理
       *****************************************************************
