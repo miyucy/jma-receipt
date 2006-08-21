@@ -512,14 +512,12 @@
            PERFORM 910-NYUINACCT-SELECT-SEC
            IF      FLG-NYUINACCT           NOT =   ZERO
                MOVE    4               TO  LNK-NYURECEDEN-RC
-               GO  TO  100-PRM-CHK-EXT
            ELSE
                MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
                MOVE    "key17"             TO  MCP-PATHNAME
                PERFORM 910-NYUINACCT-READ-SEC
                IF   FLG-NYUINACCT          NOT =   ZERO
                     MOVE    4              TO  LNK-NYURECEDEN-RC
-                    GO  TO  100-PRM-CHK-EXT
                ELSE
                     PERFORM    VARYING   IDX1   FROM   1   BY   1
                                UNTIL     IDX1   >      31
