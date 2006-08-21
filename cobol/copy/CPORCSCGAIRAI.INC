@@ -41,6 +41,8 @@
                05  ORCSCGAIRAI-NYUKIN-HOHO     PIC X(02).
       *   （１：まとめ継続、２：まとめ確定）
                05  ORCSCGAIRAI-SYORI           PIC 9(01).
+      *    発行方法
+               05  ORCSCGAIRAI-HAKHOUFLG       PIC 9(01).
       *
       *    伝票番号
       *!       05  ORCSCGAIRAI-DENPNUM         PIC 9(07).

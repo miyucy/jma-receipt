@@ -4568,6 +4568,8 @@
            MOVE    WRK-NYUKIN          TO  ORCSCGAIRAI-NYUKIN
       *    入金方法
            MOVE    SPA-GMN-NYUKINHOU   TO  ORCSCGAIRAI-NYUKIN-HOHO
+      *    発行方法
+           MOVE    SPA-GMN-HAKHOUFLG   TO  ORCSCGAIRAI-HAKHOUFLG
       *    複数科まとめ
       **** MOVE    SPA-GMN-SYORI       TO  ORCSCGAIRAI-SYORI
       *    収納情報

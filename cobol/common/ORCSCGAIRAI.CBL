@@ -980,9 +980,13 @@
                MOVE    WRK-GRP-DENPNUM     TO  SYU-GRP-DENPNUM
                ADD     1                   TO  WRK-GRP-RENNUM
                MOVE    WRK-GRP-RENNUM      TO  SYU-GRP-RENNUM
+      *        発行方法
+               MOVE    ORCSCGAIRAI-HAKHOUFLG   TO  SYU-GRP-HAKHOUFLG
            ELSE
                MOVE    ZERO                TO  SYU-GRP-DENPNUM
                MOVE    ZERO                TO  SYU-GRP-RENNUM
+      *        発行方法
+               MOVE    ZERO                TO  SYU-GRP-HAKHOUFLG
            END-IF
       *
            IF      SPA-SYORIFLG        =   ZERO
