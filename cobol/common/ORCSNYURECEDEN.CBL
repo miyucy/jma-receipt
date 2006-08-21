@@ -647,10 +647,18 @@
                END-PERFORM
                IF   FLG-OK     =   ZERO
                    MOVE     3      TO      LNK-NYURECEDEN-RC
+      *            入院会計クローズ
+                   MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
+                   MOVE    "key17"                 TO  MCP-PATHNAME
+                   PERFORM   910-DB-CLOSE-SEC
                    GO   TO    200-MAIN-EXT
                END-IF
            ELSE
                MOVE     3      TO      LNK-NYURECEDEN-RC
+      *        入院会計クローズ
+               MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
+               MOVE    "key17"                 TO  MCP-PATHNAME
+               PERFORM   910-DB-CLOSE-SEC
                GO   TO    200-MAIN-EXT
            END-IF
       *    入院会計クローズ
