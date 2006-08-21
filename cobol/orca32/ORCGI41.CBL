@@ -68,6 +68,7 @@
       *  03.00.01    NACL-小豆沢  06/06/19  療養病棟、療養病床改定対応
       *  03.02.01    NACL-小豆沢  06/08/09  入院時食事療養２の場合は特食
       *                                     を入力不可とする
+      *  03.02.02    NACL-多々納  06/08/21  食事一括変更追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -132,6 +133,9 @@
            03  FLG-CHK2            PIC 9(01).
       *
            03  FLG-SYORI-END       PIC 9(01).
+      *
+           03  FLG-ALL             PIC 9(01).
+           03  FLG-SYOKUJI         PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -3274,6 +3278,17 @@
                MOVE    03                  TO  SPA-GMN-CUR-41
                GO      TO      41017-KOMENTO-CHK-EXT
            END-IF
+      *    食事判定
+           MOVE    SPA-NAI-TBANGO (SPA-NAI-BANGO)  TO  IDG
+           IF     (SPA-NAI-TZAISKBKBN-41 (SPA-NAI-BANGO)
+                                           =   "4"   )  AND
+                  (SPA-GMN-TSRYCD (IDG)    =   "099999918" 
+                                           OR  "099999919"
+                                           OR  "099999920")
+               MOVE    1                   TO  FLG-SYOKUJI
+           ELSE
+               MOVE    ZERO                TO  FLG-SYOKUJI
+           END-IF
       *
            INITIALIZE                      WRK-DAY-AREA
            MOVE    ZERO                TO  IDW3
@@ -3282,6 +3297,7 @@
            MOVE    ZERO                TO  IDW4
            MOVE    ZERO                TO  FLG-K1
            MOVE    ZERO                TO  FLG-K2
+           MOVE    ZERO                TO  FLG-ALL
            MOVE    1                   TO  IDW1
            MOVE    ZERO                TO  FLG-IKKATUFLG
            PERFORM VARYING    IDW5     FROM    1   BY  1
@@ -3322,6 +3338,23 @@
                                                TO  WRK-DAY2 (IDW1)
                                                             (IDW4:1)
                            END-IF
+                       END-IF
+                   WHEN    "A"
+                   WHEN    "a"
+      *                食事のみ 最後に'Ａ'指定
+                       IF      FLG-SYOKUJI         =   1
+                           COMPUTE IDW6            =  IDW5  +  1
+      *D                   IF     (FLG-K1          =  1   )  AND
+      *D                          (FLG-K2          =  1   )  AND
+                           IF     ((IDW6           >  60  ) OR
+                                   (SPA-GMN-KOMENTO-41(IDW6:)
+                                                   =   SPACE  ))
+                               MOVE    1               TO  FLG-ALL
+                           ELSE
+                               MOVE    "0124"              TO  SPA-ERRCD
+                           END-IF
+                       ELSE
+                           MOVE    "0022"              TO  SPA-ERRCD
                        END-IF
                    WHEN    SPACE
                        CONTINUE
@@ -3395,7 +3428,7 @@
                                        OR  99   )  OR
                       (WRK-DAY2-9      =   ZERO )  OR
                       (WRK-DAY1-9      >   WRK-DAY2-9 )
-                   MOVE    "0122"              TO  SPA-ERRCD
+                   MOVE    "0125"              TO  SPA-ERRCD
                END-IF
       *        一括変更チェック
                IF      WRK-DAY2-9          =   99
@@ -3471,6 +3504,12 @@
                MOVE    ZERO            TO  SPA-NAI-IKKATUDAY
                MOVE    ZERO            TO  SPA-NAI-IKKATUKAI
            END-IF
+      *    食事一括
+           IF      FLG-ALL             =   1
+               MOVE    1               TO  SPA-NAI-ALL
+           ELSE
+               MOVE    ZERO            TO  SPA-NAI-ALL
+           END-IF
       *
            .
       *
@@ -3517,6 +3556,14 @@
       *    変更確定　処理
       *****************************************************************
        4701-KAKUTEI-SYORI-SEC             SECTION.
+      *
+      *    食事の時、全食事・食事加算の変更
+           MOVE    SPA-NAI-TBANGO (SPA-NAI-BANGO)  TO  IDG
+           IF     (SPA-NAI-TZAISKBKBN-41 (SPA-NAI-BANGO)
+                                           =   "4"   )  AND
+                  (SPA-NAI-ALL             =   1     )
+               PERFORM 47011-SYOKUJI-ALLCHK-SEC
+           END-IF
       *
       *    回数更新
            MOVE    SPA-GMN-DAY-G-41    TO  SPA-NAI-DAY-AREA-41
@@ -3588,6 +3635,48 @@
            END-IF
            .
        47011-SYOKUJI-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    全食事・食事加算の変更処理
+      *****************************************************************
+       47011-SYOKUJI-ALLCHK-SEC             SECTION.
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   SPA-NAI-MAX-41)
+               MOVE    ZERO                TO  IDX-KSN
+               IF      SPA-NAI-BANGO       NOT =   IDX
+                   MOVE    SPA-NAI-TBANGO (IDX)    TO  IDG
+                   IF     (SPA-NAI-TZAISKBKBN-41 (IDX)
+                                               =   "4"   ) 
+                       MOVE    IDX                 TO  IDX-KSN
+                       PERFORM VARYING     IDX-D   FROM    1   BY  1
+                               UNTIL       IDX-D   >   31
+      *                    今回変更のみ
+                           IF      SPA-GMN-DAY-41(IDX-D) 
+                                               NOT =   SPA-NAI-DAY-41
+                                                 (SPA-NAI-BANGO IDX-D)
+                              IF    SPA-GMN-TSRYCD (IDG)
+                                                   =   "197000570"
+      *                            食事加算はゼロのみ変更
+                                   IF      SPA-GMN-DAY-41(IDX-D)
+                                                   =   ZERO
+                                       MOVE    ZERO
+                                                   TO  SPA-NAI-DAY-41
+                                                      (IDX-KSN IDX-D)
+                                   END-IF
+                               ELSE
+                                   MOVE    SPA-GMN-DAY-41(IDX-D)
+                                                   TO  SPA-NAI-DAY-41
+                                                      (IDX-KSN IDX-D)
+                               END-IF
+                           END-IF
+                       END-PERFORM
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           .
+       47011-SYOKUJI-ALLCHK-EXT.
            EXIT.
       *****************************************************************
       *    外泊の時、他の削除処理
@@ -6813,6 +6902,12 @@
                                        TO  WRK-ERRMSG(21:)
                WHEN    "0123"
                    MOVE    "日が重複しています。"
+                                       TO  WRK-ERRMSG
+               WHEN    "0124"
+                   MOVE    "Aは最後に入力して下さい。"
+                                       TO  WRK-ERRMSG
+               WHEN    "0125"
+                   MOVE    "日が違います。正しい日を入力して下さい。"
                                        TO  WRK-ERRMSG
                WHEN    "0023"
                    MOVE    "全科指定では指定できません。"

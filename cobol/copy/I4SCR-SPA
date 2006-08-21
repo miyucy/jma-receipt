@@ -65,6 +65,8 @@
                        09  SPA-NAI-IKKATUOK              PIC 9(01).
                        09  SPA-NAI-IKKATUDAY             PIC 9(02).
                        09  SPA-NAI-IKKATUKAI             PIC 9(03).
+      *                ¿©»ö°ì³ç
+                       09  SPA-NAI-ALL                   PIC 9(01).
       *
                05  SPA-NAI-AREA-41.
                    07  SPA-NAI-SRYYM.
