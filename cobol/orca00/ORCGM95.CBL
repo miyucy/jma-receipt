@@ -58,8 +58,6 @@
            03  SPA-M95PAGE2-AREA.
                05  SPA-M95GMN2-AREA.
                    07  SPA-ACCTSYSYMD          PIC X(08).
-                   07  SPA-M95-INIT            PIC 9(01).
-                   07  SPA-M95-SYORI           PIC 9(01).
       *
                    07  SPA-M95GMN-SYORIYMD     PIC X(10).
                    07  SPA-M95NAI-SYORIYMD     PIC X(08).
@@ -344,6 +342,8 @@
       *    スパ初期編集処理
       *****************************************************************
        310-SPASET-SEC              SECTION.
+      *
+           INITIALIZE                  SPA-M95GMN-AREA
       *
            MOVE    SPA-SYSYMD      TO  SPA-NAI-SYSYMD
            MOVE    SPA-SYSYMDW     TO  SPA-NAI-SYSYMDW
@@ -1081,12 +1081,24 @@
            IF      SPA-M95-SYORI         =   1
                IF      IDX-S               <=  SPA-SRYKA-MAX
                    MOVE    SPACE           TO  WRK-SRYKA
-                   PERFORM 42002-ALL-SYSLIST-HEN-SEC
+                   PERFORM 42003-MAX-SYSLIST-HEN-SEC
                END-IF
            END-IF
            MOVE    IDX-H               TO  SPA-M95GMN-MAX
            .
        42001-SYSLIST-INIT-EXT.
+           EXIT.
+      *****************************************************************
+      *     担当医設定画面編集処理
+      *****************************************************************
+       42003-MAX-SYSLIST-HEN-SEC          SECTION.
+      *
+           PERFORM VARYING     IDX     FROM    IDX-S   BY  1
+                   UNTIL       IDX     >   SPA-SRYKA-MAX
+               PERFORM 4200211-SRYKA-HEN-SEC
+           END-PERFORM
+           .
+       42003-MAX-SYSLIST-HEN-EXT.
            EXIT.
       *****************************************************************
       *     担当医設定画面編集処理
@@ -1578,6 +1590,12 @@
                                            TO  M95-JIKANKBN-ITEM (IDX)
            END-PERFORM
            MOVE    5                   TO  M95-JIKANKBN-COUNT
+      *
+           IF     (SPA-M95-INIT    =   ZERO ) AND
+                  (SPA-M95-PAGE    =   1    )
+               INITIALIZE                  SPA-M95GMN-DRCD-MAX
+               INITIALIZE                  SPA-M95GMN-MAX
+           END-IF
       *
            MOVE    SPA-M95GMN-SRYKA    TO  M95-SRYKA
            MOVE    SPA-M95GMN-RENNUM   TO  M95-RENNUM
