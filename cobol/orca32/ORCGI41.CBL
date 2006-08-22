@@ -3344,8 +3344,6 @@
       *                食事のみ 最後に'Ａ'指定
                        IF      FLG-SYOKUJI         =   1
                            COMPUTE IDW6            =  IDW5  +  1
-      *D                   IF     (FLG-K1          =  1   )  AND
-      *D                          (FLG-K2          =  1   )  AND
                            IF     ((IDW6           >  60  ) OR
                                    (SPA-GMN-KOMENTO-41(IDW6:)
                                                    =   SPACE  ))
@@ -3433,6 +3431,7 @@
       *        一括変更チェック
                IF      WRK-DAY2-9          =   99
                    IF      SPA-NAI-IKKATUFLG   =   ZERO
+                       OR  FLG-ALL             =   1
                        MOVE    "0043"              TO  SPA-ERRCD
                    ELSE
                        MOVE    1                   TO  FLG-IKKATUFLG
