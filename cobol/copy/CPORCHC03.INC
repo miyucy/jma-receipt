@@ -48,7 +48,6 @@
       *****03  ORCHC03-KON-CHOSEI       PIC S9(07).
       *
       *    発行フラグ（０：新規、１：再発行、２：訂正、３：入金
-      *                ４：パラメタファイルより）
            03  ORCHC03-HAKKOFLG         PIC  9(01).
       *    前回未収額
            03  ORCHC03-ZENMISYU         PIC S9(07).
@@ -75,6 +74,8 @@
                    07  ORCHC03-OLD-NYUKIN-TOTAL  PIC S9(07).
       *    伝票番号枝番（収納からの再発行）
            03  ORCHC03-DENPEDANUM      PIC  9(02).
+      *    パラメタテーブル使用フラグ
+           03  ORCHC03-PARAFLG                 PIC 9(01).
       *    パラメタテーブルキー
            03  ORCHC03-PARA-KEY.
       *        業務ＩＤ

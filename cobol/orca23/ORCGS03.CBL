@@ -237,7 +237,7 @@
            03  WRK-HENYMDG                         PIC X(10).
            03  WRK-Z9                              PIC --,---,---.
            03  WRK-EDABAN                          PIC ZZ.
-           03  WRK-MISYU                           PIC 9(08).
+           03  WRK-MISYU                           PIC S9(08).
            03  WRK-NYUGAIKBN                       PIC X(01).
            03  WRK-GMN-RITU.
                05  FILLER                          PIC X(02).
@@ -1221,6 +1221,37 @@
       *
            .
        3101-MISYU-EXT.
+           EXIT.
+      **************************************************************
+      *   Ì¤¼ý¶â½¸·×½èÍý
+      **************************************************************
+       3101-MISYU-SUM-SEC              SECTION.
+      *
+           MOVE    ZERO                TO  WRK-MISYU
+      *
+           INITIALIZE  SYUNOU-REC
+           MOVE    SPA-HOSPID          TO  SYU-HOSPID
+           MOVE    WRK-NYUGAIKBN       TO  SYU-NYUGAIKBN
+           MOVE    SPA-S01-PTID        TO  SYU-PTID
+           MOVE    SYUNOU-REC          TO  MCPDATA-REC
+           MOVE    "tbl_syunou"        TO  MCP-TABLE
+           MOVE    "key42"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC TO  SYUNOU-REC
+           ELSE
+               INITIALIZE              SYUNOU-REC
+           END-IF
+      *
+           MOVE    "tbl_syunou"        TO  MCP-TABLE
+           MOVE    "key42"             TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           COMPUTE WRK-MISYU
+               =   SYU-SKYMONEY    -   SYU-NYUKIN-TOTAL
+      *
+           .
+       3101-MISYU-SUM-EXT.
            EXIT.
       *************************************************************
       *    ¹ç·×ÀÁµá³Û·×»»½èÍý
@@ -2347,6 +2378,16 @@
            MOVE   WRK-SKYPRT-SKYMONEY  TO  ORCHC03-SEIKYU
       *    MOVE   ????                 TO  ORCHC03-SEIKYU-TAX-SAI
            MOVE   WRK-SKYPRT-NYUKIN    TO  ORCHC03-NYUKIN
+      *
+           MOVE    "2"                 TO  WRK-NYUGAIKBN
+           PERFORM 3101-MISYU-SUM-SEC
+      *
+           PERFORM 900-SYUNOU-KEY-SEL-SEC
+      *
+           COMPUTE ORCHC03-ZENMISYU
+               =   WRK-MISYU
+               - ( SYU-SKYMONEY        -   SYU-NYUKIN-TOTAL )
+      *
            MOVE   3                    TO  ORCHC03-HAKKOFLG
            MOVE   WRK-SKYPRT-DENPEDANUM
                                        TO  ORCHC03-DENPEDANUM

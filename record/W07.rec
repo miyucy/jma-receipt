@@ -363,6 +363,13 @@ W07	{
 			  	state   int;
 			};
 			TAG4	{
+				S02SKYSAI_COMBO	{
+					S02SKYSAI	{
+						value	varchar(32);
+					};
+					count	int;
+					item	varchar(32)[5];
+				};
 				SYUNYKNKNRKBN_COMBO	{
 					SYUNYKNKNRKBN	{
 						value	varchar(40);

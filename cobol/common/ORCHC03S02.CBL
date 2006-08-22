@@ -20,7 +20,7 @@
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : 診療行為
-      *  コンポーネント名  : 請求書兼領収書収納編集（一括入金より）
+      *  コンポーネント名  : 請求書兼領収書収納編集（パラメタテーブルより）
       *  管理者            : 
       *  作成日付    作業者        記述
       *****************************************************************
@@ -81,12 +81,10 @@
                05  SRT-KEY.
                    07  SRT-SRYYM2.
                        09  SRT-SRYYM29 PIC 9(06).
-                   07  SRT-DENPNUM2.
-                       09  SRT-DENPNUM29
-                                       PIC 9(07).
+                   07  SRT-SRTDENPNUM  PIC 9(07).
+                   07  SRT-DENPNUM     PIC 9(07).
                    07  SRT-SRYYM.
                        09  SRT-SRYYM9  PIC 9(06).
-                   07  SRT-DENPNUM     PIC 9(07).
                    07  SRT-RSIJBIFLG   PIC 9(01).
                    07  SRT-SRYKA       PIC X(02).
                    07  SRT-HKNCOMBI    PIC X(04).
@@ -237,7 +235,7 @@
       *
                PERFORM 900-SYUNOU-KEY-SEL-SEC
       *
-               IF    ( SYUPARA01-SKYSUMKBN =   "0" )
+               IF    ( SYUPARA01-SKYSUMFLG =   ZERO )
                        MOVE    SYU-SRYYMD (1:6) TO WRK-SRYYM
                        MOVE    SYU-DENPNUM     TO  WRK-DENPNUM
                        MOVE    SYU-SRYKA       TO  WRK-SRYKA
@@ -256,19 +254,19 @@
                        PERFORM 20011-SYUNOU-SYUKEI-SEC
                    ELSE
       *
-                       EVALUATE    SYUPARA01-SKYSUMKBN
+                       EVALUATE    SYUPARA01-SKYSUMFLG
       *
-                       WHEN    "2"
+                       WHEN    2
                            MOVE    ZERO            TO  WRK-SRYKA
                            MOVE    SYU-HKNCOMBINUM TO  WRK-HKNCOMBI
                            PERFORM 20011-SYUNOU-SYUKEI-SEC
       *
-                       WHEN    "3"
+                       WHEN    3
                            MOVE    SYU-SRYKA       TO  WRK-SRYKA
                            MOVE    ZERO            TO  WRK-HKNCOMBI
                            PERFORM 20011-SYUNOU-SYUKEI-SEC
       *
-                       WHEN    "4"
+                       WHEN    4
       *
                            MOVE    ZERO            TO  WRK-SRYKA
                            MOVE    ZERO            TO  WRK-HKNCOMBI
@@ -317,6 +315,13 @@
            IF    ( SRT-PNT         >   ZERO )
                MOVE    SRT-PNT     TO  IDX-SYU
                PERFORM 20011-SYUNOU-GRP-SEC
+      *
+               IF    ( SRT-SRTDENPNUM(SRT-MAX)
+                                   >   SYU-DENPNUM )
+                   MOVE    SYU-DENPNUM
+                                   TO  SRT-SRTDENPNUM(SRT-MAX)
+               END-IF
+      *
            ELSE
                IF    ( SRT-MAX     <   CONST-SRT-MAX )
                    COMPUTE SRT-MAX =   SRT-MAX     +   1
@@ -331,14 +336,11 @@
                    MOVE    WRK-HKNCOMBI
                                    TO  SRT-HKNCOMBI  (SRT-MAX)
       *
-                   MOVE    ALL "9" TO  SRT-SRYYM2    (SRT-MAX)
-                                       SRT-DENPNUM2  (SRT-MAX)
+                   MOVE    SYU-DENPNUM
+                                   TO  SRT-SRTDENPNUM(SRT-MAX)
                    COMPUTE SRT-SRYYM29 (SRT-MAX)
                        =   SRT-SRYYM29 (SRT-MAX)
                        -   SRT-SRYYM9  (SRT-MAX)
-                   COMPUTE SRT-DENPNUM29 (SRT-MAX)
-                       =   SRT-DENPNUM29 (SRT-MAX)
-                       -   SRT-DENPNUM   (SRT-MAX)
       *
                    MOVE    SRT-MAX TO  IDX-SYU
                    PERFORM 20011-SYUNOU-GRP-SEC
@@ -563,10 +565,7 @@
                =   SRT-KBT-NYUKIN (IDX-SYU)
                +   SYUPARA02-NYUKIN
       *
-           COMPUTE WRK-NYUKIN-BF
-               =   SYU-NYUKIN-TOTAL    -   SYUPARA02-NYUKIN
-      *
-           IF    ( WRK-NYUKIN-BF   NOT =   ZERO )
+           IF    ( SYU-NYUKIN-TOTAL    NOT =   SYUPARA02-NYUKIN )
                MOVE    1           TO  SRT-KBT-TUIKANYUKINFLG (IDX-SYU)
            END-IF
       *
@@ -625,7 +624,13 @@
                COMPUTE PARA-EDANUM =   PARA-EDANUM +   1
                INITIALIZE              SYUPARA03-AREA
       *
-               MOVE    SRT-DENPNUM   (IDX4)    TO  SYUPARA03-DENPNUM
+               IF    ( SYUPARA01-HAKKOFLG  =   4 )
+                   CONTINUE
+               ELSE
+                   MOVE    SRT-SRTDENPNUM (IDX4)
+                                               TO  SYUPARA03-DENPNUM
+               END-IF
+      *
                MOVE    SRT-KBT-SEIKYU(IDX4)    TO  SYUPARA03-SEIKYU
       *
                IF    ( SRT-KBT-TUIKANYUKINFLG (IDX4)
@@ -636,7 +641,7 @@
       *
                IF    ( PARA-EDANUM     =   1 )
                    MOVE    SYUPARA01-GAI-MISYU
-                                               TO  SYUPARA03-MISYU
+                                   TO  SYUPARA03-MISYU
                END-IF
                MOVE    SRT-KBT-NYUKIN  (IDX4)  TO  SYUPARA03-NYUKIN
                MOVE    SRT-KBT-STSRYYMD(IDX4)  TO  SYUPARA03-STSRYYMD
@@ -707,7 +712,8 @@
       *
                MOVE    SYUPARA03-STSRYYMD  TO  LNKSYU-SRYYMD (IDX4)
       *
-               IF    ( SYUPARA01-SKYSUMKBN =   "0" )
+               IF    ( SYUPARA01-SKYSUMFLG =   0 )
+                OR   ( SYUPARA01-HAKKOFLG  =   1 )
                    MOVE    SRT-KBT-DENPPRTYMD (IDX4)
                                            TO  LNKSYU-DENPPRTYMD (IDX4)
                ELSE

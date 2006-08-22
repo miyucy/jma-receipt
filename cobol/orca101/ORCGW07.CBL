@@ -421,7 +421,12 @@
                        09  SPA-GMN-S06SKYSUM-G.
                            11  SPA-GMN-S06SKYSUM           PIC X(01).
                            11  SPA-GMN-S06SKYSUM-F1        PIC X(01).
-                           11  SPA-GMN-S06SKYSUMMEI        PIC X(40).
+                           11  SPA-GMN-S06SKYSUMMEI        PIC X(30).
+      *                請求一覧画面外来請求書兼領収書発行方法
+                       09  SPA-GMN-S02SKYSAI-G.
+                           11  SPA-GMN-S02SKYSAI           PIC X(01).
+                           11  SPA-GMN-S02SKYSAI-F1        PIC X(01).
+                           11  SPA-GMN-S02SKYSAIMEI        PIC X(40).
                        09  SPA-GMN-SYUSTIME.
                            11  SPA-GMN-SYUSTIME-HH         PIC 9(02).
                            11  SPA-GMN-SYUSTIME-MM         PIC 9(02).
@@ -492,6 +497,13 @@
                                13                          PIC X(01).
                                13  SPA-GMN-S06SKYSUMMEIL
                                                            PIC X(40).
+                       09  SPA-GMN-S02SKYSAILST-G.
+                           11  SPA-GMN-S02SKYSAI-MAX       PIC 9(03).
+                           11  SPA-GMN-S02SKYSAILST        OCCURS  5.
+                               13  SPA-GMN-S02SKYSAIL      PIC X(01).
+                               13                          PIC X(01).
+                               13  SPA-GMN-S02SKYSAIMEIL
+                                                           PIC X(30).
                    07  SPA-GMN-PAGE5-AREA.
       *                病名機能情報
                        09  SPA-GMN-MSG1-DSPKBN-G.
@@ -1138,6 +1150,11 @@
            MOVE    "4 月毎にまとめて発行"
                                        TO  SPA-GMN-S06SKYSUMLST(5)
            MOVE    5                   TO  SPA-GMN-S06SKYSUM-MAX
+      *
+           MOVE    "0 個別に発行"      TO  SPA-GMN-S02SKYSAILST(1)
+           MOVE    "1 診療行為で指定した方法で発行"
+                                       TO  SPA-GMN-S02SKYSAILST(2)
+           MOVE    2                   TO  SPA-GMN-S02SKYSAI-MAX
       *
            MOVE    "0 表示する"        TO  SPA-GMN-MSG1-DSPKBNLST(1)
            MOVE    "1 表示しない"      TO  SPA-GMN-MSG1-DSPKBNLST(2)
@@ -2018,6 +2035,11 @@
                                        TO  SPA-GMN-S06SKYSUM
            PERFORM 3101-S06SKYSUM-SYOKI-SEC
       *
+      *    収納請求一覧画面外来請求書兼領収書発行方法
+           MOVE    SYS-1039-S02SKYSAIKBN
+                                       TO  SPA-GMN-S02SKYSAI
+           PERFORM 3101-S02SKYSAI-SYOKI-SEC
+      *
            IF    ( SYS-1039-STIME          IS  NUMERIC )
                MOVE    SYS-1039-STIME      TO  SPA-GMN-SYUSTIME
            ELSE
@@ -2062,7 +2084,7 @@
                END-PERFORM
            END-PERFORM
       *
-           MOVE    40                 TO  SPA-GMN-CUR
+           MOVE    49                 TO  SPA-GMN-CUR
       *
            . 
        310-SPASET-1039-EXT.
@@ -2256,6 +2278,31 @@
       *
            . 
        3101-S06SKYSUM-SYOKI-EXT.
+           EXIT.
+      *****************************************************************
+      *    収納一括入金画面外来分発行方法初期値設定処理
+      *****************************************************************
+       3101-S02SKYSAI-SYOKI-SEC        SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY         FROM    1   BY  1
+                   UNTIL   IDY         >   SPA-GMN-S02SKYSAI-MAX
+               IF      SPA-GMN-S02SKYSAI
+                                       =   SPA-GMN-S02SKYSAIL (IDY)
+                   MOVE    SPA-GMN-S02SKYSAILST(IDY)
+                                       TO  SPA-GMN-S02SKYSAI-G
+                   MOVE    1           TO  FLG-OK
+                   MOVE    SPA-GMN-S02SKYSAI-MAX
+                                       TO  IDY
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-S02SKYSAILST (1)
+                                       TO  SPA-GMN-S02SKYSAI-G
+           END-IF
+      *
+           . 
+       3101-S02SKYSAI-SYOKI-EXT.
            EXIT.
       *****************************************************************
       *    スパ初期編集処理
@@ -2630,6 +2677,7 @@
            MOVE    W07-SYUSRYPRTN      TO  SPA-GMN-SYUSRYPRTN-G
            MOVE    W07-S06SKYPRT       TO  SPA-GMN-S06SKYPRT-G
            MOVE    W07-S06SKYSUM       TO  SPA-GMN-S06SKYSUM-G
+           MOVE    W07-S02SKYSAI       TO  SPA-GMN-S02SKYSAI-G
            MOVE    W07-SYUSTIME-HH     TO  SPA-GMN-SYUSTIME-HH
            MOVE    W07-SYUSTIME-MM     TO  SPA-GMN-SYUSTIME-MM
       *
@@ -2836,6 +2884,10 @@
       *            一括入金画面外来分発行方法チェック
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4109-S06SKYSUM-CHK-SEC
+                   END-IF
+      *            請求一覧画面外来分再発行方法チェック
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4109-S02SKYSAI-CHK-SEC
                    END-IF
       *            登録時刻チェック
                    IF      SPA-ERRCD           =   SPACE
@@ -4087,6 +4139,29 @@
        4109-S06SKYSUM-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    請求一覧画面請求書兼領収書再発行方法チェック処理（収納行為機能情報）
+      *****************************************************************
+       4109-S02SKYSAI-CHK-SEC          SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-S02SKYSAI-MAX
+               IF      SPA-GMN-S02SKYSAI
+                                       =   SPA-GMN-S02SKYSAIL (IDX)
+                   MOVE    SPA-GMN-S02SKYSAILST(IDX)
+                                          TO  SPA-GMN-S02SKYSAI-G
+                   MOVE    1              TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    49              TO  SPA-GMN-CUR
+               MOVE    "3008"          TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       4109-S02SKYSAI-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    請求書兼領収書発行区分（外来）チェック処理（収納行為機能情報）
       *****************************************************************
        4110-SYUSKYPRTG-CHK-SEC      SECTION.
@@ -5191,6 +5266,7 @@
            MOVE    SPA-GMN-S06SKYPRT       TO  SYS-1039-S06SKYPRTGKBN
                                                SYS-1039-S06SKYPRTNKBN
            MOVE    SPA-GMN-S06SKYSUM       TO  SYS-1039-S06SKYSUMKBN
+           MOVE    SPA-GMN-S02SKYSAI       TO  SYS-1039-S02SKYSAIKBN
            MOVE    SPA-GMN-SYUSKYPRTG      TO  SYS-1039-SKYPRTGKBN
            MOVE    SPA-GMN-SYUSKYPRTN      TO  SYS-1039-SKYPRTNKBN
            MOVE    SPA-GMN-SYUSRYPRTG      TO  SYS-1039-SRYPRTGKBN
@@ -5958,6 +6034,16 @@
            MOVE    SPA-GMN-S06SKYSUM-MAX
                                        TO  W07-S06SKYSUM-COUNT
       *
+      *    請求一覧画面外来分再発行方法（収納機能情報）
+           MOVE    SPA-GMN-S02SKYSAI-G TO  W07-S02SKYSAI
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-S02SKYSAI-MAX
+               MOVE    SPA-GMN-S02SKYSAILST (IDX)
+                                       TO  W07-S02SKYSAI-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-S02SKYSAI-MAX
+                                       TO  W07-S02SKYSAI-COUNT
+      *
       *    請求書兼領収書発行区分（外来）
            MOVE    SPA-GMN-SYUSKYPRTG-G TO  W07-SYUSKYPRTG
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -6351,6 +6437,9 @@
                WHEN    "3007"
                    MOVE    "外来分発行方法がありません。"
                                                        TO  SPA-ERRMSG
+               WHEN    "3008"
+                   MOVE    "再発行方法がありません。"
+                                                       TO  SPA-ERRMSG
                WHEN    "3101"
                    MOVE    "期間の指定に誤りがあります"
                                                        TO  SPA-ERRMSG
@@ -6619,6 +6708,8 @@
                    MOVE  "S06SKYPRT"       TO   MCP-WIDGET
                WHEN    48
                    MOVE  "S06SKYSUM"       TO   MCP-WIDGET
+               WHEN    49
+                   MOVE  "S02SKYSAI"       TO   MCP-WIDGET
                WHEN    43
                    MOVE  "SYUSTIME_HH"     TO   MCP-WIDGET
                WHEN    44
@@ -6849,6 +6940,8 @@
                WHEN    "HAKHOUFLG"
                    MOVE    99              TO  SPA-GMN-CUR
       *
+               WHEN    "S02SKYSAI"
+                   MOVE    40              TO  SPA-GMN-CUR
                WHEN    "SYUSKYPRTG"
                    MOVE    45              TO  SPA-GMN-CUR
                WHEN    "SYUSRYPRTG"

@@ -1,5 +1,6 @@
         01  HCM03V02.
             02  HCM03V02-NO PIC X(7).
+            02  HCM03V02-LBLSRYYMD PIC X(10).
             02  HCM03V02-SRYYMD PIC X(50).
             02  HCM03V02-KNJNAMW    PIC X(30).
             02  HCM03V02-KNJNO  PIC X(20).

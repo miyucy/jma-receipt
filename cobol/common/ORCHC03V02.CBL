@@ -178,6 +178,7 @@
                05  WRK-ZENKAKU         PIC X(02)   OCCURS   10.
            03  WRK-MOJI                PIC X(10).
            03  WRK-MOJISU              PIC 9(02).
+           03  WRK-LBLSRYYMD           PIC X(10).
            03  WRK-SRYYMDG             PIC X(50).
            03  WRK-STSRYYMDG           PIC X(22).
            03  WRK-EDSRYYMDG           PIC X(22).
@@ -310,8 +311,8 @@
       *    ³Æ£Ä£ÂÆÉ¹þ
            PERFORM 100-SYORI-SEC
       *
-           IF    ( ORCHC03-HAKKOFLG    =   4 )
-                   PERFORM 203-IKKATU-SYUNOU-SEC
+           IF    ( ORCHC03-PARAFLG     =   1 )
+                   PERFORM 203-PARA-SYUNOU-SEC
            ELSE
                IF      ORCHC03-HAKHOUFLG   =   ZERO
       *            ÂÐ¾Ý¤ÎÅÁÉ¼ÈÖ¹æÊ¬¤Î¤ß
@@ -721,14 +722,9 @@
                END-IF
            END-IF
       *    ¿ÇÎÅÆü
-           IF    ( ORCHC03-HAKKOFLG    =   4 )
-               PERFORM 31012-SRYYMD-HEN-SEC
-               MOVE    WRK-SRYYMDG         TO  HC03-SRYYMD
-           ELSE
-               MOVE    SYU-SRYYMD          TO  WRK-SYMD
-               PERFORM 31012-SEIWA-HEN-SEC
-               MOVE    WRK-HENYMDG         TO  HC03-SRYYMD
-           END-IF
+           PERFORM 3101-SRYYMD-HEN-SEC
+           MOVE    WRK-LBLSRYYMD       TO  HC03-LBLSRYYMD
+           MOVE    WRK-SRYYMDG         TO  HC03-SRYYMD
       *    È¯¹ÔÆü
            MOVE    SYU-DENPPRTYMD      TO  WRK-SYMD
            PERFORM 31012-SEIWA-HEN-SEC
@@ -1126,9 +1122,9 @@
            EXIT.
       *
       *****************************************************************
-      *   °ì³çÆþ¶â»þ¤Î°õºþ½èÍý
+      *   ¥Ñ¥é¥á¥¿¥Æ¡¼¥Ö¥ë¤«¤é¤Î°õºþ½èÍý
       *****************************************************************
-       203-IKKATU-SYUNOU-SEC                 SECTION.
+       203-PARA-SYUNOU-SEC                 SECTION.
       *
            PERFORM 900-PARA-KEY5-SEL-SEC
       *
@@ -1139,6 +1135,8 @@
       *
                MOVE    SYUPARA03-DENPNUM   TO  WRK-DENPNUM
                MOVE    SYUPARA03-SEIKYU    TO  WRK-SKYMONEY
+               MOVE    SYUPARA03-SEIKYU-TAX-SAI
+                                           TO  WRK-SKYMONEY-TAX-SAI
                MOVE    SYUPARA03-NYUKIN    TO  WRK-NYUKIN
                MOVE    SYUPARA03-MISYU     TO  WRK-MISYUMONEY
                MOVE    SYUPARA03-SRYKAMEI  TO  WRK-SRYKA-MEI
@@ -1163,7 +1161,7 @@
            PERFORM 990-DBCLOSE-SEC
       *
            .
-       203-IKKATU-SYUNOU-EXT.
+       203-PARA-SYUNOU-EXT.
            EXIT.
       *****************************************************************
       *    Ê£¿ô¿ÇÎÅ²ÊÊÔ½¸½èÍý
@@ -1280,6 +1278,36 @@
       *
            .
        3102-JIHIMSG-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¿ÇÎÅÆüÊÔ½¸½èÍý
+      *****************************************************************
+       3101-SRYYMD-HEN-SEC         SECTION.
+      *
+           MOVE    SPACE                   TO  WRK-SRYYMDG
+                                               WRK-LBLSRYYMD
+      *
+           IF    ( ORCHC03-HAKKOFLG    =   4 )
+                   MOVE    "¿ÇÎÅÇ¯·î"      TO  WRK-LBLSRYYMD
+                   MOVE    SYU-SRYYMD      TO  WRK-SYMD
+                   PERFORM 31012-SEIWA-HEN-SEC
+                   MOVE    WRK-HENYMDG  (1:16)
+                                           TO  WRK-SRYYMDG
+           ELSE
+               IF    ( ORCHC03-PARAFLG         =   1 )
+                AND  ( SYUPARA03-STSRYYMD  NOT =   SYUPARA03-EDSRYYMD )
+                   MOVE    "¿ÇÎÅÆü"        TO  WRK-LBLSRYYMD
+                   PERFORM 31012-SRYYMD-HEN-SEC
+               ELSE
+                   MOVE    "¿ÇÎÅÆü"        TO  WRK-LBLSRYYMD
+                   MOVE    SYU-SRYYMD      TO  WRK-SYMD
+                   PERFORM 31012-SEIWA-HEN-SEC
+                   MOVE    WRK-HENYMDG     TO  WRK-SRYYMDG
+               END-IF
+           END-IF
+      *
+           .
+       3101-SRYYMD-HEN-EXT.
            EXIT.
       *****************************************************************
       *    ¿ÇÎÅÆüÊÔ½¸½èÍý

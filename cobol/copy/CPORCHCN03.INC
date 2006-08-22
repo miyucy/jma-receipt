@@ -53,7 +53,6 @@
                05  ORCHCN03-NYUKIN         PIC S9(07).
       *        発行フラグ（０：新規、１：再発行、２：訂正
       *                    ３：収納請求確認画面から）
-      *                    ４：一括入金画面から）
                05  ORCHCN03-HAKKOFLG       PIC 9(01).
       *        伝票番号枝番
                05  ORCHCN03-DENPEDANUM     PIC 9(02).

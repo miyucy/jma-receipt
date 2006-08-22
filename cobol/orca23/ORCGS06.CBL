@@ -2264,27 +2264,26 @@
       *************************************************************
        4801-GAI-SKYPRT-SEC             SECTION.
       *
-      *    帳票プログラム取得（外来）
-           PERFORM 4801-PRINT-PG-SEC
-      *
-           MOVE    "2"                 TO  WRK-SPA-NYUGAIKBN
-           MOVE    WRK-GAI-SRYYMD      TO  WRK-SPA-SRYYMD
-      *
-           INITIALIZE                  SYUPARA01-AREA
-                                       SYUPARA02-AREA
-      *
            MOVE    SPA-AREA            TO  WRK-SPA-AREA
            MOVE    SPA-GMN-PTID        TO  WRK-SPA-PTID
            MOVE    "2"                 TO  WRK-SPA-NYUGAIKBN
            MOVE    SPA-GMN-PTNUM       TO  WRK-SPA-PTNUM
            MOVE    SPA-GMN-NAME        TO  WRK-SPA-NAME
       *
+      *    帳票プログラム取得（外来）
+           PERFORM 4801-PRINT-PG-SEC
+      *
+           INITIALIZE                  SYUPARA01-AREA
+                                       SYUPARA02-AREA
+      *
+      *
            MOVE    "2"                 TO  SYUPARA01-NYUGAIKBN
            MOVE    SPA-GMN-NYU-MISYU   TO  SYUPARA01-NYU-MISYU
            MOVE    SPA-GMN-GAI-MISYU   TO  SYUPARA01-GAI-MISYU
            MOVE    WRK-NYU-NYUKIN      TO  SYUPARA01-NYU-NYUKIN
            MOVE    WRK-GAI-NYUKIN      TO  SYUPARA01-GAI-NYUKIN
-           MOVE    SPA-GMN-SKYSUMKBN   TO  SYUPARA01-SKYSUMKBN
+           MOVE    SPA-GMN-SKYSUMKBN   TO  SYUPARA01-SKYSUMFLG
+           MOVE    3                   TO  SYUPARA01-HAKKOFLG
       *
            IF    ( SPA-ERRCD           =   SPACE )
                MOVE    "001%"          TO  WRK-FILEMEI
@@ -2348,16 +2347,21 @@
            IF    ( SPA-ERRCD           =       SPACE )
       *
       *
-               MOVE    "2"                 TO  WRK-SPA-NYUGAIKBN
                MOVE    WRK-GAI-SRYYMD      TO  WRK-SPA-SRYYMD
                INITIALIZE                      ORCHC03AREA
                MOVE    WRK-GAI-DENPNUM     TO  ORCHC03-DENPNUM
                MOVE    WRK-GAI-NYUKIN      TO  ORCHC03-NYUKIN
-               MOVE    4                   TO  ORCHC03-HAKKOFLG
+               MOVE    3                   TO  ORCHC03-HAKKOFLG
                MOVE    ZERO                TO  ORCHC03-HAKHOUFLG
+               MOVE    1                   TO  ORCHC03-PARAFLG
                COMPUTE ORCHC03-ZENMISYU
                    =   WRK-GAI-NYUKIN
                    +   SPA-GMN-GAI-MISYU
+               IF    ( SPA-NAI-TNYUKIN-TOTAL (IDX0) 
+                                           =   ZERO )
+                   MOVE    SYU-SKYMONEY-TAX-SAI
+                                           TO  ORCHC03-SEIKYU-TAX-SAI
+               END-IF
                MOVE    "S02"               TO  ORCHC03-PARA-GYOUMUID
                MOVE    SPA-TERMID          TO  ORCHC03-PARA-TERMID
                MOVE    "00102"             TO ORCHC03-PARA-FILEMEI
@@ -2380,11 +2384,16 @@
       *************************************************************
        4801-NYU-SKYPRT-SEC             SECTION.
       *
-      *    帳票プログラム取得（入院）
-           PERFORM 4801-NYU-PRINT-PG-SEC
+           MOVE    SPA-AREA            TO  WRK-SPA-AREA
+           MOVE    SPA-GMN-PTID        TO  WRK-SPA-PTID
+           MOVE    SPA-GMN-PTNUM       TO  WRK-SPA-PTNUM
+           MOVE    SPA-GMN-NAME        TO  WRK-SPA-NAME
       *
            MOVE    "1"                 TO  WRK-SPA-NYUGAIKBN
            MOVE    WRK-NYU-SRYYMD      TO  WRK-SPA-SRYYMD
+      *
+      *    帳票プログラム取得（入院）
+           PERFORM 4801-NYU-PRINT-PG-SEC
       *
            INITIALIZE                      ORCHCN03AREA
            MOVE    WRK-SPA-HOSPID      TO  ORCHCN03-HEAD-HOSPID
