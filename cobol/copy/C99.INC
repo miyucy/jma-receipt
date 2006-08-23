@@ -15,22 +15,22 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-        02  C19.
-          03  C19-MSG.
-            04  C19-VALUE          PIC X(80).
-          03  C19-SCROLLEDWINDOW28.
-            04  C19-JOBKANRILST.
-              05  C19-COUNT        PIC S9(9)   BINARY.
-              05  C19-ROW          PIC S9(9)   BINARY.
-              05  C19-ROWATTR      PIC S9(9)   BINARY.
-              05  C19-ITEM         OCCURS  30 TIMES.
-                06  C19-RENNUM     PIC X(7).
-                06  C19-SHORINM    PIC X(26).
-                06  C19-STARTDATE  PIC X(9).
-                06  C19-STARTTIME  PIC X(8).
-                06  C19-ENDDATE    PIC X(9).
-                06  C19-ENDTIME    PIC X(8).
-                06  C19-PAGE       PIC X(10).
-                06  C19-ERRMSG     PIC X(100).
-              05  C19-SELECT       PIC X
+        02  C99.
+          03  C99-MSG.
+            04  C99-VALUE          PIC X(80).
+          03  C99-SCROLLEDWINDOW28.
+            04  C99-JOBKANRILST.
+              05  C99-COUNT        PIC S9(9)   BINARY.
+              05  C99-ROW          PIC S9(9)   BINARY.
+              05  C99-ROWATTR      PIC S9(9)   BINARY.
+              05  C99-ITEM         OCCURS  30 TIMES.
+                06  C99-RENNUM     PIC X(7).
+                06  C99-SHORINM    PIC X(26).
+                06  C99-STARTDATE  PIC X(9).
+                06  C99-STARTTIME  PIC X(8).
+                06  C99-ENDDATE    PIC X(9).
+                06  C99-ENDTIME    PIC X(8).
+                06  C99-PAGE       PIC X(10).
+                06  C99-ERRMSG     PIC X(100).
+              05  C99-SELECT       PIC X
                                    OCCURS  30 TIMES.

@@ -315,7 +315,7 @@
            COPY    "C09.INC".
            COPY    "C10.INC".
            COPY    "C11.INC".
-           COPY    "C19.INC".
+           COPY    "C99.INC".
            COPY    "CERR.INC".
            COPY    "CID1.INC".
            COPY    "CID2.INC".
@@ -483,7 +483,7 @@
       *
       *****MOVE    SPA-WORK        TO  SPA-C01KYOUTU
       *
-           IF    SPA-MOTOPG        =   "C19"
+           IF    SPA-MOTOPG        =   "C99"
                GO  TO  300-SCREEN-EXT
            END-IF
       *
@@ -3368,7 +3368,7 @@
            MOVE    "LINK"          TO  MCP-STATUS
            MOVE    SPACE           TO  MCP-EVENT
       *
-           CALL    "ORCGC19"           USING
+           CALL    "ORCGC99"           USING
                                        MCPAREA
                                        SPAAREA
                                        LINKAREA
@@ -3380,10 +3380,10 @@
            MOVE    "B01"           TO  MCP-WIDGET
       *
            MOVE    "C03"           TO  SPA-MOTOPG
-           MOVE    "C19"           TO  SPA-SAKIPG
+           MOVE    "C99"           TO  SPA-SAKIPG
       *
            MOVE    "NEW"           TO  MCP-PUTTYPE
-           MOVE    "C19"           TO  MCP-WINDOW
+           MOVE    "C99"           TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
       *

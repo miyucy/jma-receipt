@@ -5,7 +5,7 @@ SRCS = ORCGC02.CBL \
        ORCGC09.CBL \
        ORCGC10.CBL \
        ORCGC11.CBL \
-       ORCGC19.CBL \
+       ORCGC99.CBL \
        ORCGCERR.CBL \
        ORCGCID1.CBL \
        ORCGCID2.CBL \

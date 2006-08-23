@@ -2,8 +2,8 @@
 <GTK-Interface>
 
 <project>
-  <name>C19</name>
-  <program_name>C19</program_name>
+  <name>C99</name>
+  <program_name>C99</program_name>
   <directory></directory>
   <pixmaps_directory>pixmaps</pixmaps_directory>
   <gnome_support>True</gnome_support>
@@ -12,7 +12,7 @@
 
 <widget>
   <class>GtkWindow</class>
-  <name>C19</name>
+  <name>C99</name>
   <x>0</x>
   <y>548</y>
   <width>1024</width>
@@ -32,7 +32,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(C19)処理結果</title>
+  <title>(C99)処理結果</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_NONE</position>
   <modal>True</modal>

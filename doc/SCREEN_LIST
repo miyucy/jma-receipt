@@ -95,11 +95,13 @@ C05.glade		orca22	(C05)病名登録-病名検索
 C09.glade		orca22	(C09)病名コード一覧
 C10.glade		orca22	(C10)病名登録-簡単修正
 C11.glade		orca22	(C11)手術歴レセプト記載登録
+C99.glade		orca22	(C99)処理結果
 CERR.glade		orca22	(CERR)エラー情報
 CID1.glade		orca22	(CID1)確認画面
 CID2.glade		orca22	(CID2)病名コード置換え確認画面
 CID3.glade		orca22	(CID3)確認画面
 CID4.glade		orca22	(CID4)確認画面
+CID5.glade		orca22	(CID5)確認画面
 S02.glade		orca23	(S02)収納登録-請求一覧
 S03.glade		orca23	(S03)収納登録-請求確認
 S03N.glade		orca23	(S03N)収納登録-請求確認

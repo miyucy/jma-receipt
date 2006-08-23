@@ -16,7 +16,7 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION              DIVISION.
-       PROGRAM-ID.                 ORCGC19.
+       PROGRAM-ID.                 ORCGC99.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : 患者照会
@@ -109,7 +109,7 @@
            COPY    "C09.INC".
            COPY    "C10.INC".
            COPY    "C11.INC".
-           COPY    "C19.INC".
+           COPY    "C99.INC".
            COPY    "CERR.INC".
            COPY    "CID1.INC".
            COPY    "CID2.INC".
@@ -153,7 +153,7 @@
            MOVE    SPACE           TO  LINKAREA
       *
            MOVE    SPACE           TO  MCP-PUTTYPE
-           MOVE    "C19"           TO  MCP-WINDOW
+           MOVE    "C99"           TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
       *
@@ -186,7 +186,7 @@
        210-BACK                    SECTION.
       *
            MOVE    SPA-MOTOPG      TO  SPA-SAKIPG
-           MOVE    "C19"           TO  SPA-MOTOPG
+           MOVE    "C99"           TO  SPA-MOTOPG
       *
            MOVE    "JOIN"          TO  MCP-PUTTYPE
            MOVE    SPA-SAKIPG      TO  MCP-WINDOW
@@ -204,8 +204,8 @@
       *****************************************************************
        490-KAKUNIN-SEC             SECTION.
       *
-           MOVE    SPACE           TO  C19
-           MOVE    ZERO            TO  C19-COUNT
+           MOVE    SPACE           TO  C99
+           MOVE    ZERO            TO  C99-COUNT
       *
       *    ジョブ管理チェック処理
            MOVE    "CHK"           TO  SJOBKANRI-MODE
@@ -220,21 +220,21 @@
                CONTINUE
            ELSE
                MOVE    "該当する処理はありません"
-                                       TO  C19-MSG
+                                       TO  C99-MSG
                MOVE    "B01"           TO  MCP-WIDGET
                PERFORM 4901-PUT-CURRENT-WINDOW-SEC
                GO  TO  490-KAKUNIN-EXT
            END-IF
       *
-           MOVE    JOB-JOBID       TO  C19-RENNUM   (1)
-           MOVE    JOB-SHELLMSG    TO  C19-SHORINM  (1)
+           MOVE    JOB-JOBID       TO  C99-RENNUM   (1)
+           MOVE    JOB-SHELLMSG    TO  C99-SHORINM  (1)
       *
            MOVE    JOB-STARTYMD    TO  WRK-SYMD
            PERFORM 700-SEIWA-HEN-SEC
-           MOVE    WRK-HENYMDG     TO  C19-STARTDATE (1)
+           MOVE    WRK-HENYMDG     TO  C99-STARTDATE (1)
       *
            IF    ( JOB-STARTTIME   =   SPACE )
-               MOVE    SPACE       TO  C19-STARTTIME(1)
+               MOVE    SPACE       TO  C99-STARTTIME(1)
            ELSE
                MOVE    JOB-STARTTIME(1:2)
                                    TO  WRK-HH
@@ -242,15 +242,15 @@
                                    TO  WRK-MM
                MOVE    JOB-STARTTIME(5:2)
                                    TO  WRK-SS
-               MOVE    WRK-HENTIME TO  C19-STARTTIME(1)
+               MOVE    WRK-HENTIME TO  C99-STARTTIME(1)
            END-IF
       *
            MOVE    JOB-ENDYMD      TO  WRK-SYMD
            PERFORM 700-SEIWA-HEN-SEC
-           MOVE    WRK-HENYMDG     TO  C19-ENDDATE (1)
+           MOVE    WRK-HENYMDG     TO  C99-ENDDATE (1)
       *
            IF    ( JOB-ENDTIME =   SPACE )
-               MOVE    SPACE       TO  C19-ENDTIME  (1)
+               MOVE    SPACE       TO  C99-ENDTIME  (1)
            ELSE
                MOVE    JOB-ENDTIME(1:2)
                                    TO  WRK-HH
@@ -258,30 +258,30 @@
                                    TO  WRK-MM
                MOVE    JOB-ENDTIME(5:2)
                                    TO  WRK-SS
-               MOVE    WRK-HENTIME TO  C19-ENDTIME  (1)
+               MOVE    WRK-HENTIME TO  C99-ENDTIME  (1)
            END-IF
            MOVE    JOB-UPDCNT      TO  WRK-PAGE
-           MOVE    WRK-PAGE        TO  C19-PAGE     (1)
-           MOVE    JOB-YOBI        TO  C19-ERRMSG   (1)
+           MOVE    WRK-PAGE        TO  C99-PAGE     (1)
+           MOVE    JOB-YOBI        TO  C99-ERRMSG   (1)
       *
            IF    ( JOB-ENDYMD      =   SPACE )
                MOVE    "処理中です"
-                                   TO  C19-MSG
+                                   TO  C99-MSG
            ELSE
                IF    ( JOB-ERRCD   =   SPACE )
                    MOVE    "処理は正常に終了しました"
-                                               TO  C19-MSG
+                                               TO  C99-MSG
                ELSE
                    STRING  JOB-YOBI    DELIMITED  BY  SPACE
                            "【"        DELIMITED  BY  SIZE
                           JOB-SHELLMSG DELIMITED  BY  SPACE
                           "】"         DELIMITED  BY  SIZE
-                   INTO  C19-MSG
+                   INTO  C99-MSG
                    END-STRING
                END-IF
            END-IF
       *
-           MOVE    1                TO  C19-COUNT
+           MOVE    1                TO  C99-COUNT
       *
            MOVE    "B11"            TO  MCP-WIDGET
       *
@@ -299,7 +299,7 @@
            MOVE    SPACE           TO  LINKAREA
       *
            MOVE    "CURRENT"       TO  MCP-PUTTYPE
-           MOVE    "C19    "       TO  MCP-WINDOW
+           MOVE    "C99    "       TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
       *
