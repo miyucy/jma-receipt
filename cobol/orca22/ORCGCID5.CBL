@@ -16,22 +16,16 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION              DIVISION.
-       PROGRAM-ID.                 ORCGCID3.
+       PROGRAM-ID.                 ORCGCID5.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : 病名登録
-      *  コンポーネント名  : 確認画面１（ＣＩＤ１）
+      *  コンポーネント名  : 確認画面（ＣＩＤ５）
       *  管理者            : 
-      *  00/12/01    MCC−藤原　   新規作成
+      *  06/08/07     NACL-森脇    新規作成
       *****************************************************************
       *  プログラム修正履歴
-      * Maj/Min/Rev  修正者       日付      内容
-      *  01.01.01    MCC-藤原     01/11/05  C01の削除
-      *  01.02.01    MCC-藤原     01/11/21  ORCMCPSUBへ変更  
-      *
-      *  02.07.01    NACL-藤原    05/10/31  MONFUNC対応
-      *
-      *  03.00.01    NACL-藤原    06/06/19   C06,C07,C08 削除
+      *  Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -110,7 +104,7 @@
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
       *    画面遷移
-               WHEN     "PUTG"           ALSO   "CLICKED"
+               WHEN     "PUTG"         ALSO    "CLICKED"
                    PERFORM 200-GMNSENI
            END-EVALUATE.
       *
@@ -132,20 +126,20 @@
       *****************************************************************
       *    画面遷移処理
       *****************************************************************
-       200-GMNSENI                   SECTION.
+       200-GMNSENI                 SECTION.
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
       *        戻る
                WHEN    "CLICKED"       ALSO    "B01"
-                   MOVE    SPACE           TO  SPA-CID3-FLG
+                   MOVE    SPACE       TO  SPA-CID5-FLG
                    PERFORM 210-BACK
-      *       分類のみ削除
+      *        ＣＳＶ出力
                WHEN    "CLICKED"       ALSO    "B11"
-                   MOVE    "OK"            TO  SPA-CID3-FLG
+                   MOVE    "CSV"       TO  SPA-CID5-FLG
                    PERFORM 210-BACK
-      *       分類・病名とも削除
+      *        プリンタ出力
                WHEN    "CLICKED"       ALSO    "B12"
-                   MOVE    "ALL"           TO  SPA-CID3-FLG
+                   MOVE    "OK"        TO  SPA-CID5-FLG
                    PERFORM 210-BACK
            END-EVALUATE
       *
@@ -157,16 +151,15 @@
       *****************************************************************
        210-BACK                    SECTION.
       * 
-           MOVE    SPA-MOTOPG          TO  SPA-SAKIPG
-           MOVE    "CID3"              TO  SPA-MOTOPG
+           MOVE    SPA-MOTOPG      TO  SPA-SAKIPG
+           MOVE    "CID5"          TO  SPA-MOTOPG
       *
-      ***  MOVE    "BACK"              TO  MCP-PUTTYPE
-           MOVE    "JOIN"              TO  MCP-PUTTYPE
-           MOVE    SPA-SAKIPG          TO  MCP-WINDOW
+           MOVE    "JOIN"          TO  MCP-PUTTYPE
+           MOVE    SPA-SAKIPG      TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
       *
-           MOVE    1                   TO  FLG-END
+           MOVE    1               TO  FLG-END
       *
            .
        210-BACK-EXT.
@@ -177,7 +170,7 @@
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *
-           MOVE   "PUTWINDOW"       TO  MCP-FUNC
+           MOVE   "PUTWINDOW"      TO  MCP-FUNC
            CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC

@@ -91,6 +91,7 @@
       *                                     ト７文字対応
       *  03.01.02    NACL-藤原    06/08/01  選択後すぐに登録したときに
       *                                     エラーとならないようにする
+      *  03.01.03    NACL-森脇    06/08/21  ＣＳＶ出力対応、MONFUNC対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -150,6 +151,7 @@
            03  FLG-BYOMEI          PIC 9(01).
            03  FLG-USERBYOMEI      PIC 9(01).
            03  FLG-SPASCR          PIC 9(01).
+           03  FLG-JOBEND          PIC 9(01).
       *
            03  FLG-END2            PIC 9(01).
            03  FLG-ROW             PIC 9(01).
@@ -207,6 +209,8 @@
                05  WRK-SMM         PIC 9(02).
                05  WRK-SDD         PIC 9(02).
       *
+           03  WRK-SHORIERR        PIC X(200).
+      *
       *    ファイルデイレクトリ位置指定サブ
            COPY  "CPMKPASS.INC".
       *
@@ -245,6 +249,11 @@
       *    病名システム予約コードテーブル
            COPY    "CMBYOMEICD.INC".
       *
+      *    固定値領域
+       01  CONST-AREA.
+           03  CONST-JOBID         PIC 9(07)   VALUE   1.
+           03  CONST-JOB-SHELLID   PIC X(08)   VALUE   "ORHCML09".
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -257,6 +266,10 @@
        01  USERBYOMEI-REC.
            COPY    "CPUSERBYOMEI.INC".
       *
+      *    ジョブ管理マスタ
+       01  JOBKANRI-REC.
+           COPY    "CPJOBKANRI.INC".
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -267,7 +280,7 @@
       *    半角チェックサブ
            COPY    "CPORCSKANACHK.INC".
       *
-      *   日付変換サブ
+      *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *    数字変換領域
@@ -275,6 +288,9 @@
       *
       *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
+      *
+      *    ジョブ管理ＤＢ制御サブ
+           COPY    "CPORCSJOBKANRI.INC".
       *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
@@ -285,7 +301,7 @@
       *****************************************************************
       *    連絡　領域
       *****************************************************************
-        LINKAGE                     SECTION.
+        LINKAGE                    SECTION.
       *
            COPY    MCPAREA.
            COPY    "ORCA-SPA".
@@ -299,11 +315,13 @@
            COPY    "C09.INC".
            COPY    "C10.INC".
            COPY    "C11.INC".
+           COPY    "C19.INC".
            COPY    "CERR.INC".
            COPY    "CID1.INC".
            COPY    "CID2.INC".
            COPY    "CID3.INC".
            COPY    "CID4.INC".
+           COPY    "CID5.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -333,7 +351,7 @@
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
       *    画面遷移
-               WHEN     "PUTG"           ALSO   "CLICKED"
+               WHEN     "PUTG"         ALSO    "CLICKED"
                    PERFORM 200-GMNSENI
       *    入力
                WHEN      OTHER
@@ -361,31 +379,30 @@
       *****************************************************************
       *    ＳＰＡデータセット処理
       *****************************************************************
+       1002-C03SPA-SET-SEC         SECTION.
       *
-       1002-C03SPA-SET-SEC             SECTION.
-      *
-           MOVE    SPA-TERMID          TO  FILE-TERMID
+           MOVE    SPA-TERMID      TO  FILE-TERMID
       *
            OPEN    INPUT               SPASCR-FILE
-           IF      STS-SPASCR     NOT =   ZERO
-               GO      TO         1002-C03SPA-SET-EXT
+           IF      STS-SPASCR      NOT =   ZERO
+               GO  TO  1002-C03SPA-SET-EXT
            END-IF
       *
-           INITIALIZE          SPA-SCR-REC
-           INITIALIZE          WRK-DATA-REC
-           MOVE    ZERO                TO  FLG-SPASCR
-           MOVE    ZERO                TO  IDX
-           PERFORM UNTIL       FLG-SPASCR  =   1
+           INITIALIZE                  SPA-SCR-REC
+           INITIALIZE                  WRK-DATA-REC
+           MOVE    ZERO            TO  FLG-SPASCR
+           MOVE    ZERO            TO  IDX
+           PERFORM UNTIL   FLG-SPASCR  =   1
                READ    SPASCR-FILE
                    AT  END
                        MOVE   1            TO  FLG-SPASCR
                    NOT AT  END
                        ADD    1            TO  IDX
-                       MOVE   SPA-DATA-REC     TO  WRK-DATA (IDX)
+                       MOVE   SPA-DATA-REC TO  WRK-DATA (IDX)
                END-READ
            END-PERFORM
       *
-           MOVE    WRK-DATA-REC        TO  SPA-SCR-REC 
+           MOVE    WRK-DATA-REC    TO  SPA-SCR-REC 
       *
            CLOSE                       SPASCR-FILE
            .
@@ -394,33 +411,33 @@
       *****************************************************************
       *    ＳＰＡデータＷＲＩＴＥ処理
       *****************************************************************
-       1003-C03SPA-OUT-SEC             SECTION.
+       1003-C03SPA-OUT-SEC         SECTION.
       *
-           MOVE    SPA-TERMID          TO  FILE-TERMID
+           MOVE    SPA-TERMID      TO  FILE-TERMID
       *
            OPEN    OUTPUT              SPASCR-FILE
-           IF      STS-SPASCR     NOT =   ZERO
+           IF      STS-SPASCR      NOT =   ZERO
                DISPLAY "C03SPASCR OUT OPEN ERR:"   STS-SPASCR
                GO  TO  1003-C03SPA-SET-EXT
       ***         STOP    " "
            END-IF
-           MOVE    SPACE              TO         WRK-DATA-REC
+           MOVE    SPACE           TO  WRK-DATA-REC
       *
-           MOVE    SPA-SCR-REC        TO  WRK-DATA-REC 
+           MOVE    SPA-SCR-REC     TO  WRK-DATA-REC 
            PERFORM VARYING     IDX     FROM   1   BY  1
                    UNTIL      (IDX     >   10  )  OR
                               (WRK-DATA (IDX)     =   SPACE)
       *
-               MOVE    WRK-DATA (IDX)      TO  SPA-DATA-REC
+               MOVE    WRK-DATA (IDX)  TO  SPA-DATA-REC
                WRITE                       SPA-DATA-REC
-               IF      STS-SPASCR     NOT =   ZERO
+               IF      STS-SPASCR      NOT =   ZERO
                    DISPLAY "C03SPASCR OUT WRITE ERR:"   STS-SPASCR
                    GO  TO  1003-C03SPA-SET-EXT
       ***          STOP    " "
                 END-IF
            END-PERFORM
       *
-           CLOSE                       SPASCR-FILE
+           CLOSE                   SPASCR-FILE
            .
        1003-C03SPA-SET-EXT.
            EXIT.
@@ -431,14 +448,14 @@
        100-INIT-SEC                SECTION.
       *
       *    エラー画面又はコード一覧より戻る
-           IF      SPA-MOTOPG          =   "CERR"  OR  "C09"
-               MOVE    SPACE               TO  SPA-MOTOPG
+           IF      SPA-MOTOPG      =   "CERR"  OR  "C09"
+               MOVE    SPACE           TO  SPA-MOTOPG
                PERFORM 5001-MAPCUR-SEC
            ELSE
       *        初期画面セット
                PERFORM 300-SCREEN-SEC
-               IF      FLG-END             =   1
-                   GO      TO      100-INIT-EXT
+               IF      FLG-END         =   1
+                   GO  TO  100-INIT-EXT
                END-IF
       *        画面編集
                PERFORM 500-GMNHEN-SEC
@@ -448,14 +465,14 @@
                END-IF
            END-IF
       *
-           MOVE    SPACE               TO  LINKAREA
+           MOVE    SPACE           TO  LINKAREA
       *
-           MOVE    SPACE               TO  MCP-PUTTYPE.
-           MOVE    "C03    "           TO  MCP-WINDOW.
+           MOVE    SPACE           TO  MCP-PUTTYPE.
+           MOVE    "C03    "       TO  MCP-WINDOW.
       *
            PERFORM 900-PUT-WINDOW.
       *
-           MOVE    1                   TO  FLG-END
+           MOVE    1               TO  FLG-END
            .
        100-INIT-EXT.
            EXIT.
@@ -466,24 +483,32 @@
       *
       *****MOVE    SPA-WORK        TO  SPA-C01KYOUTU
       *
+           IF    SPA-MOTOPG        =   "C19"
+               GO  TO  300-SCREEN-EXT
+           END-IF
+      *
            EVALUATE    TRUE
       *            病名検索より
                WHEN    SPA-MOTOPG(1:3)  =  "C05"
                    PERFORM 320-C05SPASET-SEC
                    MOVE    12              TO  SPA-GMN-CUR
-                   GO      TO      300-SCREEN-EXT
+                   GO  TO  300-SCREEN-EXT
       *            確認画面より
                WHEN    SPA-MOTOPG(1:4)  =  "CID1"
                    PERFORM 330-CID1-SET-SEC
-                   GO      TO      300-SCREEN-EXT
+                   GO  TO  300-SCREEN-EXT
       *            病名移行確認画面より
                WHEN    SPA-MOTOPG(1:4)  =  "CID2"
                    PERFORM 340-CID2-SET-SEC
-                   GO      TO      300-SCREEN-EXT
+                   GO  TO  300-SCREEN-EXT
       *            確認画面３より
                WHEN    SPA-MOTOPG(1:4)  =  "CID3"
                    PERFORM 350-CID3-SET-SEC
-                   GO      TO      300-SCREEN-EXT
+                   GO  TO  300-SCREEN-EXT
+      *            確認画面５より
+               WHEN    SPA-MOTOPG(1:4)  =  "CID5"
+                   PERFORM 360-CID5-SET-SEC
+                   GO  TO  300-SCREEN-EXT
            END-EVALUATE
       *
            PERFORM 310-SPASET-SEC
@@ -495,7 +520,7 @@
       *****************************************************************
       *     確認画面よりの処理
       *****************************************************************
-       330-CID1-SET-SEC                  SECTION.
+       330-CID1-SET-SEC            SECTION.
       *
            EVALUATE    CID1-ID1CODE
                WHEN    "0101"
@@ -503,11 +528,6 @@
                    IF      SPA-CID1-FLG        =   "OK"
                        MOVE    "JOIN"              TO  MCP-PUTTYPE
                        PERFORM 210-BACK
-                   END-IF
-               WHEN    "0102"
-      *            印刷の確認
-                   IF      SPA-CID1-FLG        =   "OK"
-                       PERFORM 490-PRINT-SEC
                    END-IF
                WHEN    "0103"
       *            分類名の削除の確認
@@ -622,6 +642,7 @@
                                        SPA-CIDCD2
                                        SPA-CIDCD3
                                        SPA-CIDCD4
+                                       SPA-CIDCD5
                                        SPA-CID1-AREA  
            .
        330-CID1-SET-EXT.
@@ -630,7 +651,7 @@
       *****************************************************************
       *     病名移行確認画面よりの処理
       *****************************************************************
-       340-CID2-SET-SEC                  SECTION.
+       340-CID2-SET-SEC            SECTION.
       *
            EVALUATE    SPA-CIDCD2
                WHEN    "0101"
@@ -684,6 +705,7 @@
                                        SPA-CIDCD2
                                        SPA-CIDCD3
                                        SPA-CIDCD4
+                                       SPA-CIDCD5
                                        SPA-CID1-AREA  
            .
        340-CID2-SET-EXT.
@@ -692,7 +714,7 @@
       *****************************************************************
       *     確認画面３よりの処理
       *****************************************************************
-       350-CID3-SET-SEC                  SECTION.
+       350-CID3-SET-SEC            SECTION.
       *
            IF      SPA-CIDCD3          =   "0101"
                EVALUATE    SPA-CID3-FLG
@@ -778,9 +800,31 @@
                                        SPA-CIDCD2
                                        SPA-CIDCD3
                                        SPA-CIDCD4
+                                       SPA-CIDCD5
                                        SPA-CID1-AREA  
            .
        350-CID3-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     確認画面５よりの処理
+      *****************************************************************
+       360-CID5-SET-SEC            SECTION.
+      *
+           IF      SPA-CIDCD5          =   "0101"
+               IF      SPA-CID5-FLG    NOT =   SPACE
+                   PERFORM 490-PRINT-SEC
+               END-IF
+           END-IF
+      *
+           MOVE    SPACE           TO  SPA-CIDCD
+                                       SPA-CIDCD2
+                                       SPA-CIDCD3
+                                       SPA-CIDCD4
+                                       SPA-CIDCD5
+                                       SPA-CID1-AREA  
+           .
+       360-CID5-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2687,6 +2731,18 @@
       *****************************************************************
        210-BACK                    SECTION.
       *
+      *    ジョブ管理チェック処理
+           PERFORM 900-JOBKANRI-CHK-SEC
+           IF    ( FLG-JOBEND   =   ZERO )
+               MOVE    "6666"          TO  SPA-CIDCD
+               STRING  "処理中です【"  DELIMITED  BY  SIZE
+                       JOB-SHELLMSG    DELIMITED  BY  SPACE
+                       "】"            DELIMITED  BY  SIZE
+               INTO  WRK-SHORIERR
+               END-STRING
+               GO  TO  210-BACK-EXT
+           END-IF
+      *
       *    ファイルクリア
            MOVE    SPA-TERMID          TO  FILE-TERMID
            MOVE    ZERO                TO  IF-RESULT
@@ -3247,8 +3303,21 @@
       *****************************************************************
        490-PRINT-GID-SEC             SECTION.
       *
+      *    ジョブ管理チェック処理
+           PERFORM 900-JOBKANRI-CHK-SEC
+           IF    ( FLG-JOBEND   =   ZERO )
+               MOVE    "7777"          TO  SPA-ERRCD
+               MOVE    SPACE           TO  WRK-SHORIERR
+               STRING  "処理中です【"  DELIMITED  BY  SIZE
+                       JOB-SHELLMSG    DELIMITED  BY  SPACE
+                       "】"            DELIMITED  BY  SIZE
+               INTO  WRK-SHORIERR
+               END-STRING
+               GO  TO  490-PRINT-GID-EXT
+           END-IF
+      *
            IF  SPA-GMN-MAX             >   ZERO
-               MOVE    "0102"              TO  SPA-CIDCD
+               MOVE    "0101"              TO  SPA-CIDCD5
            ELSE
                MOVE    "1003"              TO  SPA-ERRCD
            END-IF
@@ -3262,6 +3331,9 @@
       *****************************************************************
        490-PRINT-SEC             SECTION.
       *
+      *    ジョブ開始セット処理
+           PERFORM 900-JOBKANRI-HENSYU-SEC
+      *
       *    ファイルデイレクトリ位置指定
            INITIALIZE              ORCSMKPASSAREA
            MOVE    SHELL-NAME      TO  MKPASS-IN-01
@@ -3271,14 +3343,51 @@
            MOVE    SPA-TERMID      TO  SHELLTBL-ARG1
            MOVE    SPA-SYSYMD      TO  SHELLTBL-ARG2
            MOVE    SPA-HOSPID      TO  SHELLTBL-ARG3
+      *
+           EVALUATE    SPA-CID5-FLG
+               WHEN    "OK"
+                   MOVE    "0"         TO  SHELLTBL-ARG4
+               WHEN    "CSV"
+                   MOVE    "1"         TO  SHELLTBL-ARG4
+           END-EVALUATE
+      *
+           MOVE    CONST-JOBID         TO  SHELLTBL-ARG5
+           MOVE    CONST-JOB-SHELLID   TO  SHELLTBL-ARG6
       *    
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE
            MOVE    "shell"         TO  MCP-PATHNAME
-           CALL    "MONFUNC"       USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
+      *
+           MOVE    SPACE           TO  SPA-MOTOPG
+           MOVE    SPA-AREA        TO  SPA-COMMON
+      *
+           MOVE    "LINK"          TO  MCP-STATUS
+           MOVE    SPACE           TO  MCP-EVENT
+      *
+           CALL    "ORCGC19"           USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA
+      *
+           MOVE    SPA-COMMON      TO  SPA-AREA
+      *
+      *
+           MOVE    "B01"           TO  MCP-WIDGET
+      *
+           MOVE    "C03"           TO  SPA-MOTOPG
+           MOVE    "C19"           TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"           TO  MCP-PUTTYPE
+           MOVE    "C19"           TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1               TO  FLG-END
            .
       *
        490-PRINT-EXT.
@@ -3385,6 +3494,11 @@
       *
            IF      SPA-CIDCD3      NOT =   SPACE
                PERFORM 540-CIDSET3-SEC
+               GO      TO      500-SET-SCREEN-EXT
+           END-IF
+      *
+           IF      SPA-CIDCD5      NOT =   SPACE
+               PERFORM 550-CIDSET5-SEC
                GO      TO      500-SET-SCREEN-EXT
            END-IF
       *
@@ -3703,6 +3817,8 @@
                WHEN    "1005"
                    MOVE    "分類名の更新処理でエラーになりました"
                                                        TO  SPA-ERRMSG
+               WHEN    "7777"
+                   MOVE    WRK-SHORIERR    TO  SPA-ERRMSG
            END-EVALUATE
       *
            MOVE    SPACE                TO  CERR
@@ -3744,6 +3860,8 @@
                WHEN    "0104"
                    MOVE    "自院病名を削除します。よろしいですか？"
                                        TO  WRK-CIDMSG
+               WHEN    "6666"
+                   MOVE    WRK-SHORIERR    TO  WRK-CIDMSG
                WHEN    OTHER
                    MOVE    SPA-ERRCD
                                        TO  WRK-CIDMSG
@@ -3859,6 +3977,38 @@
       *
            .
        540-CIDSET3-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    確認画面５表示処理
+      *****************************************************************
+       550-CIDSET5-SEC              SECTION.
+      *
+           EVALUATE    SPA-CIDCD5
+               WHEN    "0101"
+                   MOVE    "次のいずれかの方法により選択して下さい。"
+                                       TO  WRK-CIDMSG
+           END-EVALUATE
+      *
+           MOVE    SPACE               TO  SPA-CID5-FLG
+      *
+           MOVE    SPACE               TO  CID5
+           MOVE    SPA-CIDCD5          TO  CID5-ID1CODE
+           MOVE    WRK-CIDMSG          TO  CID5-MSG
+           MOVE    "B01"               TO  MCP-WIDGET
+      *
+           MOVE    "C03"               TO  SPA-MOTOPG
+           MOVE    "CID5"              TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE.
+           MOVE    "CID5"              TO  MCP-WINDOW.
+      *
+           PERFORM 900-PUT-WINDOW.
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       550-CIDSET5-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4003,14 +4153,71 @@
            EXIT.
       *
       *****************************************************************
+      *    ジョブ開始セット処理
+      *****************************************************************
+       900-JOBKANRI-HENSYU-SEC         SECTION.
+      *
+           MOVE    "DEL"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    CONST-JOBID     TO  JOB-JOBID
+           MOVE    CONST-JOB-SHELLID
+                                   TO  JOB-SHELLID
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA 
+                                   JOBKANRI-REC
+      *
+           MOVE    "JBS"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    CONST-JOBID     TO  JOB-JOBID
+           MOVE    CONST-JOB-SHELLID
+                                   TO  JOB-SHELLID
+           MOVE    SPA-TERMID      TO  JOB-TERMID
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA 
+                                   JOBKANRI-REC
+      *
+           .
+       900-JOBKANRI-HENSYU-EXT.
+           EXIT.
+      *****************************************************************
+      *    ジョブ管理チェック処理
+      *****************************************************************
+       900-JOBKANRI-CHK-SEC        SECTION.
+      *
+           MOVE    ZERO            TO  FLG-JOBEND
+      *
+      *    ジョブ管理チェック処理
+           MOVE    "CHK"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    CONST-JOBID     TO  JOB-JOBID
+           MOVE    CONST-JOB-SHELLID
+                                   TO  JOB-SHELLID
+           CALL    "ORCSJOB"       USING
+                                       ORCSJOBKANRIAREA
+                                       JOBKANRI-REC
+           IF    ( SJOBKANRI-RETURN    =   ZERO )
+               IF    ( JOB-ENDYMD      =   SPACE )
+                   CONTINUE
+               ELSE
+                   MOVE    1           TO  FLG-JOBEND
+                   GO  TO  900-JOBKANRI-CHK-EXT
+               END-IF
+           ELSE
+               MOVE    2           TO  FLG-JOBEND
+           END-IF
+      *
+           .
+       900-JOBKANRI-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    ＰＵＴ　処理
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *
-           MOVE   "PUTWINDOW"       TO  MCP-FUNC
+           MOVE   "PUTWINDOW"      TO  MCP-FUNC
            CALL    "MONFUNC"           USING
-                                           MCPAREA
-                                           MCPDATA-REC
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        900-PUT-WINDOW-EXT.

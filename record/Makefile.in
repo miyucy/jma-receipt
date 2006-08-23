@@ -321,7 +321,8 @@ RECORD_files = \
 	C501.rec \
 	C50ERR.rec \
 	C50ID1.rec \
-
+	C19.rec \
+	CID5.rec \
 
 DEF_files = \
 	HC01.def \

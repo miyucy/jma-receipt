@@ -319,7 +319,8 @@ SCREEN_screen = \
         C501.glade \
         C50ERR.glade \
         C50ID1.glade \
-
+        C19.glade \
+        CID5.glade \
 
 SCREEN_objs = $(SCREEN_sources:.glade.in=.glade)
 

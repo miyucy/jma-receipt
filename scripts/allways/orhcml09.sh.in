@@ -14,5 +14,8 @@ fi
 #        $2 SYSYMD     X(8)
 #        $3 HOSPID     X(24)
 #        $4 SYUKBN     X(1)
+#        $5  ¥¸¥ç¥Ö£É£Ä
+#        $6  ¥·¥§¥ë£É£Ä
 #-------------------------------------------#
-    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORHCML09 -parameter $1,$2,$3,$4
+    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORHCML09 -parameter $1,$2,$3,$4,$5,$6
+    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE$5${6}

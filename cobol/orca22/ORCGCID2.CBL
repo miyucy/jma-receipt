@@ -82,11 +82,13 @@
            COPY    "C09.INC".
            COPY    "C10.INC".
            COPY    "C11.INC".
+           COPY    "C19.INC".
            COPY    "CERR.INC".
            COPY    "CID1.INC".
            COPY    "CID2.INC".
            COPY    "CID3.INC".
            COPY    "CID4.INC".
+           COPY    "CID5.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
