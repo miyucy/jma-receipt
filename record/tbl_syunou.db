@@ -900,7 +900,7 @@ path	st_key1 	{
 path	key36 	{
 	DBSELECT	{
 		DECLARE tbl_syunou_key36_csr CURSOR FOR
-		SELECT PTID
+		SELECT a.PTID
 		FROM tbl_syunou a join tbl_ptinf b using (hospid,ptid)
 			WHERE   A.HOSPID    =   :HOSPID
 			AND   a.NYUGAIKBN   =   :NYUGAIKBN
@@ -908,7 +908,7 @@ path	key36 	{
 			AND   a.CREATEKBN   <>  '3'
 			AND   a.DENPJTIKBN  <> '3'
 			AND   b.TSTPTNUMKBN <> '1'
-			GROUP BY PTID
+			GROUP BY a.PTID
 		;
 	};
 };
@@ -1166,6 +1166,20 @@ path	key51 	{
 		AND    b.NYUHEN_YMD  = :SRYYMD
 		AND    b.NYUHEN_MONEY <> 0
 		ORDER   BY            DENPPRTYMD,NYUGAIKBN,DENPNUM
+		;
+	};
+};
+
+path	key52 	{
+	DBSELECT	{
+		DECLARE tbl_syunou_key52_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syunou a join tbl_ptinf b using (hospid,ptid)
+			WHERE   A.HOSPID    =    :HOSPID
+			AND   a.NYUGAIKBN   LIKE :NYUGAIKBN
+			AND   a.SRYYMD      LIKE :SRYYMD
+			AND   a.CREATEKBN   <>  '3'
+			AND   b.TSTPTNUMKBN <>  '1'
 		;
 	};
 };
