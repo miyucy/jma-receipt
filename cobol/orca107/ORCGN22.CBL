@@ -213,6 +213,7 @@
                    MOVE    SPACE           TO  SPA-N22-FLG
                    PERFORM 450-BACK
       *    状況
+               WHEN    "CLICKED"   ALSO    "pandatimer1"
                WHEN    "CLICKED"   ALSO    "B10"
                    PERFORM 400-JYOKYO-SEC
       *    問合せ

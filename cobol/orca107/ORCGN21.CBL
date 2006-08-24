@@ -336,6 +336,11 @@
       *****************************************************************
        200-ENTRY               SECTION.
       *
+           IF      SPA-GMN-ENTRY       NOT =   SPA-NAI-ENTRY
+               PERFORM 480-TOUROKU-SEC 
+               GO  TO  200-ENTRY-EXT
+           END-IF
+      *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
                WHEN    "ACTIVATE"      ALSO    "KENCD"
                    PERFORM 4110-KENCD-SEC
@@ -496,6 +501,9 @@
       *****************************************************************
        4111-SELNUM-SEC         SECTION.
       *
+           INITIALIZE          SPA-GMN-ENTRY
+           INITIALIZE          SPA-NAI-ENTRY
+
            MOVE    3           TO  SPA-GMN-CUR
       *
            MOVE    N21-SELNUM  TO  SPA-GMN-SELNUM
@@ -541,6 +549,9 @@
                    GO  TO  4113-KEKKALST-EXT
                END-IF
       *----(00.01.01)--ADD-END------
+      *
+           INITIALIZE          SPA-GMN-ENTRY
+           INITIALIZE          SPA-NAI-ENTRY
       *
       *    ¹ÔÁªÂò
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -964,13 +975,6 @@
                    CALL    "MONFUNC"           USING
                                                MCPAREA
                                                ORCA-BLOB
-      *             MOVE    "BLOBIMPORT"    TO  MCP-FUNC
-      *             MOVE    PATH-BLOB-PRIMARY
-      *                                     TO  MCP-PATH
-      *             MOVE    SPA-GMN-PHOTO   TO  ORCA-BLOB-FILE
-      *             CALL    "MCPSUB"            USING
-      *                                         MCPAREA
-      *                                         ORCA-BLOB
                    MOVE    ORCA-BLOB-OBJECT    TO  SPA-GMN-OBJECT
                ELSE
                    MOVE    "0015"          TO  SPA-ERRCD
@@ -1192,6 +1196,7 @@
                MOVE    SPA-NAI-KENCD   TO  SPA-GMN-KENCD
                MOVE    ZERO            TO  SPA-GMN-SELNUM
                INITIALIZE          SPA-GMN-ENTRY
+               INITIALIZE          SPA-NAI-ENTRY
                MOVE    3       TO  SPA-GMN-CUR
            END-IF
       *----(00.01.04)--UPD-END------
@@ -1286,6 +1291,7 @@
                MOVE    SPA-NAI-KENCD   TO  SPA-GMN-KENCD
                MOVE    ZERO            TO  SPA-GMN-SELNUM
                INITIALIZE          SPA-GMN-ENTRY
+               INITIALIZE          SPA-NAI-ENTRY
                MOVE    3       TO  SPA-GMN-CUR
            END-IF
       *----(00.01.04)--UPD-END------
@@ -1539,6 +1545,7 @@
            MOVE    SPA-GMN-CAUTION     TO  N21-CAUTION
            MOVE    SPA-GMN-PHOTO       TO  N21-PHOTO
            MOVE    SPA-GMN-OBJECT      TO  N21-PHOTOAREA
+           DISPLAY "N21-PHOTOAREA=[" N21-PHOTOAREA "]"
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >       SPA-GMN-MAX
@@ -1850,20 +1857,19 @@
            MOVE    YAKUJYO-SHAPE       TO  SPA-GMN-SHAPE
            MOVE    YAKUJYO-MARK        TO  SPA-GMN-MARK
       *
-      *----(00.01.02)--ADD-START----
-      *----(00.01.04)--ADD-START----
            IF          FLG-YAKUJYO     =   1
                MOVE    SPA-GMN-KENNAME     TO  SPA-GMN-NAME
                MOVE    MSG-CAUTION         TO  SPA-GMN-CAUTION
-               GO  TO  800-YAKUJYO-SET-EXT
+           ELSE
+               IF      SPA-GMN-PHOTO   NOT =   SPACE
+                   PERFORM 430-GAZOCHK-SEC
+               END-IF
            END-IF
-      *----(00.01.04)--ADD-END------
-      *----(00.01.02)--ADD-END------
-           IF      SPA-GMN-PHOTO   NOT =   SPACE
-               PERFORM 430-GAZOCHK-SEC
-           END-IF
+      *
            MOVE    SPACE           TO  SPA-ERRCD
            MOVE    4               TO  SPA-GMN-CUR
+      *
+           MOVE    SPA-GMN-ENTRY   TO  SPA-NAI-ENTRY
            .
        800-YAKUJYO-SET-EXT.
            EXIT.
