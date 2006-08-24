@@ -40,6 +40,8 @@
       * 02.00.08     NACL-多々納  05/11/14  MONFUNC 対応
       * 02.00.09     NACL-多々納  06/02/24  主科対応対応
       * 02.00.10     NACL-多々納  06/05/18  請求書発行区分追加
+      * 03.00.01     NACL-多々納  06/08/25  平成１８年１０月改正対応
+      *                                     （老人割合変更）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1044,7 +1046,8 @@
       *                    老人の時
                            IF     (HKN-HKNNUM      =   "027"  )  AND
                                   (HKN-PAYKBN      =   "01"  OR
-                                                       "02"   )  AND
+                                                       "02"  OR
+                                                       "03"   )  AND
                                   (HKN-PAYKBN  NOT =   SPA-NAI-KOHPAYKBN
                                                      (SPA-GMN-KOHMAX))
                                MOVE    1               TO  FLG-OK
@@ -1114,7 +1117,8 @@
            MOVE    HKN-HKNNUM          TO  SPA-GMN-KOHNUML
                                                     (SPA-GMN-KOHMAX)
            IF    ( HKN-HKNNUM          =   "027"  )  AND
-                 ( HKN-PAYKBN      NOT =   "01"  AND "02"  )
+                 ( HKN-PAYKBN      NOT =   "01"  AND "02"
+                                                 AND "03"  )
                MOVE    "老人保健"          TO  SPA-GMN-KOHNUMMEIL
                                                     (SPA-GMN-KOHMAX)
            ELSE
@@ -1124,7 +1128,8 @@
       *
       *    老人で負担割合別の時、１，２を編集する
            IF     (HKN-HKNNUM          =   "027"  ) AND
-                  (HKN-PAYKBN          =   "01"  OR  "02"  )
+                  (HKN-PAYKBN          =   "01"  OR  "02"
+                                                 OR  "03"  )
                MOVE    HKN-PAYKBN(2:1)     TO  SPA-GMN-KOHKBNL
                                                     (SPA-GMN-KOHMAX)
            ELSE
@@ -1148,7 +1153,8 @@
       *    支払区分
       *    老人で負担割合別の時、１，２を編集する
            IF     (HKN-HKNNUM          =   "027"  ) AND
-                  (HKN-PAYKBN      NOT =   "01"  AND "02"  )
+                  (HKN-PAYKBN      NOT =   "01"  AND "02"
+                                                 AND "03"  )
                MOVE    ZERO                TO  SPA-NAI-KOHPAYKBN
                                                     (SPA-GMN-KOHMAX)
            ELSE

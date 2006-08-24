@@ -54,6 +54,8 @@
       *  02.00.09    NACL-多々納  04/04/01  患者削除のＤＢ追加
       *  02.00.10    NACL-多々納  05/11/11  MONFUNC 対応 他
       *  02.00.11    NACL-多々納  06/02/24  主科対応対応
+      *  03.00.01    NACL-多々納  06/08/25  平成１８年１０月改正対応
+      *                                     （老人割合変更）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -806,6 +808,8 @@
       *        保険重複確認
                WHEN    "0105"
                WHEN    "0104"
+               WHEN    "0110"
+               WHEN    "0111"
                WHEN    "0106"
                WHEN    "0107"
       *        保険変換確認
@@ -4275,6 +4279,20 @@
                    MOVE
                         "確認して下さい。"
                                        TO  WRK-PIDMSG(41:)
+      *        Ｈ１８．１０改正から
+               WHEN    "0110"
+                   STRING  SPA-PIDMSG    DELIMITED  BY  SPACE
+                           "の前期高齢者２割を３割に切替えます。"
+                           "よろしいですか？"
+                                       DELIMITED  BY  SIZE
+                                       INTO  WRK-PIDMSG
+                   END-STRING
+               WHEN    "0111"
+                   STRING  "老人公費の２割を３割に切替えます。"
+                           "よろしいですか？"
+                                       DELIMITED  BY  SIZE
+                                       INTO  WRK-PIDMSG
+                   END-STRING
       *
                WHEN    "9100"
                    MOVE    "保険組合の変更で保険期間外の診療が"

@@ -40,6 +40,8 @@
       * 01.00.11     NACL-多々納  05/02/10  特定の重複登録可能
       * 01.00.12     NACL-多々納  05/11/15  MONFUNC 対応
       * 01.00.13     NACL-多々納  06/03/10  '015更正','016育成'重複可
+      * 03.00.01     NACL-多々納  06/08/25  平成１８年１０月改正対応
+      *                                     （老人割合変更）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -166,6 +168,9 @@
            03  WRK-CUR                 PIC 9(02).
       *    法別番号チェックフラグ
            03  WRK-KOHHBTNUMKBN        PIC X(01).
+      *    Ｈ１８．１０改正
+           03  WRK-TEKEDYMD            PIC X(08).
+           03  WRK-TEKEDYMD-W          PIC X(10).
       *
        01  WRK-HENSYU-AREA.
            03  WRK-HENYMD.
@@ -265,6 +270,10 @@
       *        公費終了期間処理
                WHEN    "0107"
                    PERFORM 310-KOHEDYMD-SYORI-SEC
+                   MOVE    SPACE           TO  SPA-PIDCD
+      *        老人公費切替え処理
+               WHEN    "0111"
+                   PERFORM 320-RJNKOH-SYORI-SEC
                    MOVE    SPACE           TO  SPA-PIDCD
            END-EVALUATE
            IF      SPA-KOH-ADD         =   1
@@ -2016,6 +2025,114 @@
        310-KOHEDYMD-SYORI-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    老人公費切替え処理
+      *****************************************************************
+       320-RJNKOH-SYORI-SEC         SECTION.
+      *
+      *    前の終了日保存
+           MOVE    SPA-PTKOH-TEKEDYMD(SPA-KOH-IDX2)
+                                       TO  WRK-TEKEDYMD
+           MOVE    WRK-TEKEDYMD        TO  WRK-SYMD
+           PERFORM 410112-SEIYMDHEN-SEC
+           MOVE    WRK-HENYMD          TO  WRK-TEKEDYMD-W
+      *    期間変更
+           MOVE    "20060930"      TO  SPA-PTKOH-TEKEDYMD (SPA-KOH-IDX2)
+           MOVE    SPA-SYSYMD      TO  SPA-PTKOH-KAKUNINYMD
+                                                         (SPA-KOH-IDX2)
+      *    画面表示中
+           IF      SPA-KOH-GMN1        >   ZERO
+               MOVE    "20060930"      TO  SPA-NAI-KTEKEDYMD
+                                                         (SPA-KOH-GMN1)
+               MOVE    "H18.9.30"      TO  SPA-GMN-KTEKEDYMD
+                                                         (SPA-KOH-GMN1)
+               MOVE    SPA-SYSYMD      TO  SPA-NAI-KKAKUNINYMD
+                                                         (SPA-KOH-GMN1)
+               MOVE    SPA-SYSYMDWH    TO  SPA-GMN-KKAKUNINYMD
+                                                         (SPA-KOH-GMN1)
+           END-IF
+      *
+      *    ３割追加
+           MOVE    SPA-KOH-GMN2        TO  IDX-K
+           MOVE    SPA-KOH-IDX2        TO  IDX
+      *
+           MOVE    SPA-PTKOH-KOHNUM (IDX)
+                                       TO  SPA-GMN-KOHNUM (IDX-K)
+           MOVE    "3"                 TO  SPA-GMN-KOHKBN (IDX-K)
+      *    支払区分（３割）
+           MOVE    "03"                TO  SPA-NAI-PTKOH-PAYKBN(IDX-K)
+           MOVE    SPA-PTKOH-FTNJANUM (IDX)
+                                       TO  SPA-GMN-FTNJANUM (IDX-K)
+           MOVE    SPA-PTKOH-JKYSNUM (IDX)
+                                       TO  SPA-GMN-JKYSNUM (IDX-K)
+      **** MOVE    "H18.10.01"         TO  SPA-GMN-KTEKSTYMD (IDX-K)
+      *    MOVE    "20061001"          TO  SPA-NAI-KTEKSTYMD (IDX-K)
+      *    MOVE    WRK-TEKEDYMD-W      TO  SPA-GMN-KTEKEDYMD (IDX-K)
+      **** MOVE    WRK-TEKEDYMD        TO  SPA-NAI-KTEKEDYMD (IDX-K)
+           MOVE    SPA-SYSYMD          TO  SPA-NAI-KKAKUNINYMD
+                                                              (IDX-K)
+           MOVE    SPA-SYSYMDWH        TO  SPA-GMN-KKAKUNINYMD
+                                                              (IDX-K)
+      *
+            MOVE    SPA-PTKOH-HKN-SBTKBN (IDX)
+                                       TO  SPA-NAI-PTKOH-SBTKBN(IDX-K)
+      *
+      *    開始日セット
+           MOVE    SPACE               TO  HKNNUM-REC
+           MOVE    SPA-HOSPID          TO  HKN-HOSPID
+           MOVE    SPA-GMN-KOHNUM(IDX-K)
+                                       TO  HKN-HKNNUM
+           MOVE    SPA-NAI-PTKOH-PAYKBN (IDX-K)
+                                       TO  HKN-PAYKBN
+      *
+           MOVE    HKNNUM-REC          TO  MCPDATA-REC
+           MOVE    "tbl_hknnum"        TO  MCP-TABLE
+           MOVE    "key7"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_hknnum"        TO  MCP-TABLE
+               MOVE    "key7"              TO  MCP-PATHNAME
+               PERFORM 921-HKNMST-NEXT-SEC
+           ELSE
+               INITIALIZE              HKNNUM-REC
+               MOVE    1               TO  FLG-HKNNUM
+           END-IF
+           MOVE    "tbl_hknnum"       TO  MCP-TABLE
+           MOVE    "key7"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      FLG-HKNNUM          =   ZERO
+      *        開始日
+               MOVE    HKN-TEKSTYMD        TO  WRK-SYMD
+               PERFORM 410112-SEIYMDHEN-SEC
+               MOVE    HKN-TEKSTYMD        TO  SPA-NAI-KTEKSTYMD (IDX-K)
+               MOVE    WRK-HENYMD          TO  SPA-GMN-KTEKSTYMD (IDX-K)
+      *        終了日
+               IF      HKN-TEKEDYMD        =   ALL "9"
+                   MOVE    "9999999"           TO  SPA-GMN-KTEKEDYMD
+                                                                 (IDX-K)
+               ELSE
+                   MOVE    HKN-TEKEDYMD        TO  WRK-SYMD
+                   PERFORM 410112-SEIYMDHEN-SEC
+                   MOVE    WRK-HENYMD          TO  SPA-GMN-KTEKEDYMD
+                                                                (IDX-K)
+               END-IF
+               MOVE    HKN-TEKEDYMD        TO  SPA-NAI-KTEKEDYMD (IDX-K)
+           END-IF
+           MOVE    1                   TO  FLG-AUTO
+           EVALUATE    SPA-KOH-IDX1
+               WHEN    1
+                   MOVE    26              TO  SPA-GMN-CUR
+               WHEN    2
+                   MOVE    32              TO  SPA-GMN-CUR
+               WHEN    3
+                   MOVE    40              TO  SPA-GMN-CUR
+           END-EVALUATE
+           MOVE    SPA-GMN-CUR         TO  WRK-CUR
+      *
+           .
+       320-RJNKOH-SYORI-EXT.
+           EXIT.
       *****************************************************************
       *    老人公費の時、新規公費編集処理
       *****************************************************************
