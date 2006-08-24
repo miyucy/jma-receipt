@@ -313,7 +313,10 @@
       *
            03  WRK-FTNHENFLG1      PIC 9(01).
            03  WRK-FTNHENFLG2      PIC 9(01).
-           03  WRK-FILEMEI         PIC X(20).
+           03  WRK-FILEMEI  .
+               05  WRK-FILEMEI-YMD PIC X(08).
+               05  WRK-FILEMEI-HMS PIC X(06).
+               05  WRK-FILEMEI-CD  PIC X(06).
       *
            03  WRK-GAI-SRYYMD      PIC X(08).
            03  WRK-GAI-DENPNUM     PIC 9(07).
@@ -2912,7 +2915,12 @@
       **************************************************************
        4201-GAI-SAIHAKKOU-SEC          SECTION.
       *
-           MOVE    "001%"          TO  WRK-FILEMEI
+           PERFORM 800-MCNDATE-SEC
+      *
+           MOVE    SMCNDATE-YMD    TO  WRK-FILEMEI-YMD
+           MOVE    SMCNDATE-HMS    TO  WRK-FILEMEI-HMS
+      *
+           MOVE    "001%"          TO  WRK-FILEMEI-CD
            PERFORM 4801-DELETE-PARA-SEC
            IF    ( SPA-ERRCD       NOT =   SPACE )
                GO  TO  4201-GAI-SAIHAKKOU-EXT
@@ -2975,11 +2983,13 @@
            ELSE
                MOVE    ZERO            TO  SYUPARA01-SKYSUMFLG
            END-IF
+           MOVE    SPA-SYSYMD          TO  SYUPARA01-DENPPRTYMD
       *
            INITIALIZE                      PARA-REC
            MOVE    "S02"               TO  PARA-GYOUMUID
            MOVE    SPA-TERMID          TO  PARA-TERMID
-           MOVE    "00101"             TO  PARA-FILEMEI
+           MOVE    "00101"             TO  WRK-FILEMEI-CD
+           MOVE    WRK-FILEMEI         TO  PARA-FILEMEI
            MOVE    1                   TO  PARA-EDANUM
       *
            IF    ( SYU-GRP-DENPNUM     NOT =   ZERO )
@@ -3021,7 +3031,8 @@
            INITIALIZE                      PARA-REC
            MOVE    "S02"               TO  PARA-GYOUMUID
            MOVE    SPA-TERMID          TO  PARA-TERMID
-           MOVE    "00101"             TO  PARA-FILEMEI
+           MOVE    "00101"             TO  WRK-FILEMEI-CD
+           MOVE    WRK-FILEMEI         TO  PARA-FILEMEI
            MOVE    1                   TO  PARA-EDANUM
            MOVE    SYUPARA01-AREA      TO  PARA-DATA-REC
            MOVE    PARA-REC            TO  MCPDATA-REC
@@ -3036,7 +3047,8 @@
            INITIALIZE                      ORCHC03S02AREA
            MOVE    "S02"           TO      ORCHC03S02-GYOUMUID
            MOVE    SPA-TERMID      TO      ORCHC03S02-TERMID
-           MOVE    "00101"         TO      ORCHC03S02-FILEMEI
+           MOVE    "00101"         TO      WRK-FILEMEI-CD
+           MOVE    WRK-FILEMEI     TO      ORCHC03S02-FILEMEI
            CALL    "ORCHC03S02"    USING   WRK-SPA-AREA
                                            ORCHC03S02AREA
            IF    ( ORCHC03S02-RC   NOT =   ZERO )
@@ -3057,13 +3069,14 @@
                -   WRK-GAI-ZENMISYU
            MOVE    "S02"               TO  ORCHC03-PARA-GYOUMUID
            MOVE    SPA-TERMID          TO  ORCHC03-PARA-TERMID
-           MOVE    "00102"             TO  ORCHC03-PARA-FILEMEI
+           MOVE    "00102"             TO  WRK-FILEMEI-CD
+           MOVE    WRK-FILEMEI         TO  ORCHC03-PARA-FILEMEI
            CALL    WRK-SEIKYU-PG           USING
                                            WRK-SPA-AREA
                                            ORCHC03AREA
       *
            IF    ( SPA-ERRCD           =   SPACE )
-               MOVE    "001%"          TO  WRK-FILEMEI
+               MOVE    "001%"          TO  WRK-FILEMEI-CD
                PERFORM 4801-DELETE-PARA-SEC
            END-IF
       *
@@ -3123,7 +3136,12 @@
       **************************************************************
        4901-GAI-TUKISKYPRT-SEC         SECTION.
       *
-           MOVE    "001%"          TO  WRK-FILEMEI
+           PERFORM 800-MCNDATE-SEC
+      *
+           MOVE    SMCNDATE-YMD    TO  WRK-FILEMEI-YMD
+           MOVE    SMCNDATE-HMS    TO  WRK-FILEMEI-HMS
+      *
+           MOVE    "001%"          TO  WRK-FILEMEI-CD
            PERFORM 4801-DELETE-PARA-SEC
            IF    ( SPA-ERRCD       NOT =   SPACE )
                GO  TO  4901-GAI-TUKISKYPRT-EXT
@@ -3170,11 +3188,13 @@
            MOVE    ZERO                TO  SYUPARA01-GAI-NYUKIN
            MOVE    4                   TO  SYUPARA01-HAKKOFLG
            MOVE    4                   TO  SYUPARA01-SKYSUMFLG
+           MOVE    SPA-SYSYMD          TO  SYUPARA01-DENPPRTYMD
       *
            INITIALIZE                      PARA-REC
            MOVE    "S02"               TO  PARA-GYOUMUID
            MOVE    SPA-TERMID          TO  PARA-TERMID
-           MOVE    "00101"             TO  PARA-FILEMEI
+           MOVE    "00101"             TO  WRK-FILEMEI-CD
+           MOVE    WRK-FILEMEI         TO  PARA-FILEMEI
            MOVE    1                   TO  PARA-EDANUM
            MOVE    SYUPARA01-AREA      TO  PARA-DATA-REC
            MOVE    PARA-REC            TO  MCPDATA-REC
@@ -3207,7 +3227,8 @@
            INITIALIZE                      ORCHC03S02AREA
            MOVE    "S02"           TO      ORCHC03S02-GYOUMUID
            MOVE    SPA-TERMID      TO      ORCHC03S02-TERMID
-           MOVE    "00101"         TO      ORCHC03S02-FILEMEI
+           MOVE    "00101"         TO      WRK-FILEMEI-CD
+           MOVE    WRK-FILEMEI     TO      ORCHC03S02-FILEMEI
            CALL    "ORCHC03S02"    USING   WRK-SPA-AREA
                                            ORCHC03S02AREA
            IF    ( ORCHC03S02-RC   NOT =   ZERO )
@@ -3233,13 +3254,14 @@
       *
            MOVE    "S02"               TO  ORCHC03-PARA-GYOUMUID
            MOVE    SPA-TERMID          TO  ORCHC03-PARA-TERMID
-           MOVE    "00102"             TO  ORCHC03-PARA-FILEMEI
+           MOVE    "00102"             TO  WRK-FILEMEI-CD
+           MOVE    WRK-FILEMEI         TO  ORCHC03-PARA-FILEMEI
            CALL    WRK-SEIKYU-PG           USING
                                            WRK-SPA-AREA
                                            ORCHC03AREA
       *
            IF    ( SPA-ERRCD           =   SPACE )
-               MOVE    "001%"          TO  WRK-FILEMEI
+               MOVE    "001%"          TO  WRK-FILEMEI-CD
                PERFORM 4801-DELETE-PARA-SEC
            END-IF
       *

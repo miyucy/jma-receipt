@@ -23,7 +23,7 @@
       *  コンポーネント名  : 外来月別請求書発行
       *  管理者            : 
       *  作成日付    作業者        記述
-      *  04/12/03    NACL-太田     新規作成
+      *  06/08/22    NACL-太田     新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
@@ -33,13 +33,6 @@
        CONFIGURATION           SECTION.
        INPUT-OUTPUT            SECTION.
        FILE-CONTROL.
-      *
-      *    対象患者ファイル（初期化用）
-           SELECT  BG01301CL-FILE  ASSIGN   ORCBG01301PARA
-                                   ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  SEQUENTIAL
-                                   RECORD  KEY     IS  BG01301CL-KEY
-                                   FILE    STATUS  IS  STS-BG01301CL.
       *
       *    対象患者ファイル
            SELECT  BG01301-FILE    ASSIGN   ORCBG01301PARA
@@ -54,13 +47,6 @@
       *
        DATA                        DIVISION.
        FILE                        SECTION.
-      *
-      *    処理対象患者ファイル(初期化用)
-       FD  BG01301CL-FILE.
-       01  BG01301CL-REC.
-           03  BG01301CL-KEY.
-               05  BG01301CL-PTNUM             PIC X(20).
-           03  BG01301CL-PTID                  PIC 9(10).
       *
       *    処理対象患者ファイル
        FD  BG01301-FILE.
@@ -89,7 +75,6 @@
       *    ステータス領域
        01  STS-AREA.
            03  STS-RECEERR                         PIC X(02).
-           03  STS-BG01301CL                       PIC X(02).
            03  STS-BG01301                         PIC X(02).
       *
       *    フラグ領域
@@ -123,7 +108,7 @@
            03  WRK-PARA-HAKUHOUFLG                 PIC X(01).
            03  WRK-PARA-PTNUM                      PIC X(20).
            03  WRK-PARA-HAKYMD                     PIC X(08).
-           03  WRK-PARA-ZEROSKYFLG                 PIC X(01).
+           03  WRK-PARA-ZEROSKYKBN                 PIC X(01).
       *
       *    一時領域
        01  WRK-AREA.
@@ -145,8 +130,18 @@
            03  WRK-STR-LEFT-TMP                    PIC X(500).
       *        全角編集用項目
            03  WRK-N.
-               05  WRK-BG01301-KNS-N                PIC X(10).
+               05  WRK-BG01301-KNS-N               PIC X(10).
                05  WRK-BG01301-TIME-N              PIC X(16).
+           03  WRK-SEIKYU-PG                       PIC X(20).
+           03  WRK-NYUGAIKBN                       PIC X(01).
+           03  WRK-MISYU                           PIC S9(10).
+           03  WRK-NYU-MISYU                       PIC S9(10).
+           03  WRK-GAI-MISYU                       PIC S9(10).
+           03  WRK-FILEMEI  .
+               05  WRK-FILEMEI-YMD PIC X(08).
+               05  WRK-FILEMEI-HMS PIC X(06).
+               05  WRK-FILEMEI-CD  PIC X(06).
+           03  WRK-SRYYMD                          PIC X(08).
       *
        01  ERR-EDIT-AREA.
            03  ERR-PTID                            PIC 9(10).
@@ -164,6 +159,10 @@
       *
       *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
+      *
+           COPY    "CPSK1010.INC".
+      *
+           COPY    "CPSK1031.INC".
       *
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
@@ -189,9 +188,18 @@
        01  PRTDATA-REC.
            COPY    "CPPRTDATA.INC".
       *
+      *    パラメタテーブル	
+       01  PARA-REC.
+           COPY    "CPPARA.INC".
+           COPY    "CPSYUPARA01.INC".
+           COPY    "CPSYUPARA02.INC".
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
+      *
+      *    オンライン帳票名・出力先プリンタ名取得パラ
+           COPY    "CPORCSPRTNM.INC".
       *
       *
       *    ジョブ管理ＤＢ制御サブ
@@ -213,8 +221,11 @@
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
-      *    外来月別請求書
-           COPY    "CPORCHCM43.INC".
+      *    請求書データ編集サブ
+           COPY    "CPORCHC03S02.INC".
+      *
+      *    請求書パラメタ
+           COPY    "CPORCHC03.INC".
       *
       *    ＤＢ検索
            COPY    "MCPAREA".
@@ -284,7 +295,7 @@
                                        WRK-PARA-HAKUHOUFLG
                                        WRK-PARA-PTNUM
                                        WRK-PARA-HAKYMD
-                                       WRK-PARA-ZEROSKYFLG
+                                       WRK-PARA-ZEROSKYKBN
       *
            MOVE    "外来月別請求書"    TO  WRK-TITLE
       *
@@ -293,7 +304,7 @@
            INITIALIZE                      JOBKANRI-REC
            MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
-           MOVE    "ORCBG013"          TO  JOB-PGID
+           MOVE    "ORCBG013"       TO  JOB-PGID
            MOVE    WRK-TITLE           TO  JOB-SHELLMSG
       *
            CALL    "ORCSJOB"               USING
@@ -308,14 +319,50 @@
       *
            MOVE    ZERO                TO  FLG-END
       *
+           PERFORM 1001-SYS1010-SEL-SEC
+      *
       *    ＳＰＡエリアセット処理
            PERFORM 1001-SPA-SET-SEC
+      *
+           PERFORM 1001-PRTNAME-SEC
       *
       *    印刷パラメタエリアセット処理
            PERFORM 1001-ORCSPRTAREA-SET-SEC
       *
            .
        100-INIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    職員情報検索処理
+      *****************************************************************
+       1001-SYS1010-SEL-SEC            SECTION.
+      *
+           INITIALIZE                  SYSKANRI-REC
+           MOVE    "1010"              TO  SYS-KANRICD
+           MOVE    WRK-PARA-HAKYMD     TO  SYS-STYUKYMD
+                                           SYS-EDYUKYMD
+           PERFORM 900-SYSKANRI-KEY2-SEL-SEC
+           MOVE    SYSKANRI-REC    TO  SYS-1010-REC
+      *
+           PERFORM UNTIL ( FLG-SYSKANRI    NOT =   ZERO )
+                    OR   ( LNK-PRTKANRI-OPID
+                                       =   SYS-1010-USERID )
+      *
+               PERFORM 900-SYSKANRI-KEY2-FET-SEC
+               MOVE    SYSKANRI-REC    TO  SYS-1010-REC
+      *
+           END-PERFORM
+      *
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key2"          TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           IF    ( FLG-SYSKANRI    NOT =   ZERO )
+               INITIALIZE          SYS-1010-REC
+           END-IF
+      *
+           .
+       1001-SYS1010-SEL-EXT.
            EXIT.
       *****************************************************************
       *    ＳＰＡエリアセット処理
@@ -330,9 +377,28 @@
            MOVE    WRK-PARA-HOSPID     TO  SPA-HOSPID
       *
            MOVE    LNK-PRTKANRI-TERMID TO  SPA-TERMID
+           MOVE    SYS-1010-KBNCD      TO  SPA-STAFFCD
       *
            .
        1001-SPA-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    帳票プログラム取得処理
+      *****************************************************************
+       1001-PRTNAME-SEC                SECTION.
+      *
+           INITIALIZE                      ORCSPRTNMAREA
+           MOVE    "2"                 TO  ORCSPRTNM-KBN
+           MOVE    "00000003"          TO  ORCSPRTNM-KBNCD
+           MOVE    SPA-SYSYMD          TO  ORCSPRTNM-SRYYMD
+           MOVE    "2"                 TO  ORCSPRTNM-NYUGAIKBN
+           CALL    "ORCSPRTNM"         USING
+                                           ORCSPRTNMAREA
+                                           SPA-AREA
+                                           SYS-1031-REC
+      *
+           .
+       1001-PRTNAME-EXT.
            EXIT.
       *****************************************************************
       *    印刷パラメタエリアセット処理
@@ -358,7 +424,7 @@
            MOVE    WRK-TITLE           TO  SPRT-TITLE
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
            MOVE    LNK-PRTKANRI-OPID   TO  SPRT-OPID
-           MOVE    LNK-PRTKANRI-PRTNM  TO  SPRT-PRTNM
+           MOVE   SYS-1031-PRTNM(3)    TO  SPRT-PRTNM
            MOVE    "1"                 TO  SPRT-SITEKBN
       *
            .
@@ -416,14 +482,14 @@
       *****************************************************************
        2101-BG01301-OUT-SEC              SECTION.
       *
-           OPEN    OUTPUT  BG01301CL-FILE
-           CLOSE   BG01301CL-FILE
-      *
            OPEN    OUTPUT  BG01301-FILE
+           CLOSE   BG01301-FILE
+      *
+           OPEN    I-O     BG01301-FILE
       *
            MOVE    ZERO            TO  FLG-SYUNOU
       *
-           PERFORM 900-SYUNOU-KEY36-SEL-SEC
+           PERFORM 900-SYUNOU-KEY52-SEL-SEC
       *
            PERFORM UNTIL ( FLG-SYUNOU  NOT =   ZERO )
       *
@@ -439,16 +505,21 @@
       *
                INITIALIZE              BG01301-REC
                MOVE    PTNUM-PTNUM     TO  BG01301-PTNUM
-               MOVE    SYU-PTID        TO  BG01301-PTID
+               PERFORM 900-BG01301-READ-DYN-SEC
+               IF    ( FLG-BG01301     NOT =   ZERO )
       *
-               WRITE   BG01301-REC
+                   INITIALIZE          BG01301-REC
+                   MOVE    PTNUM-PTNUM TO  BG01301-PTNUM
+                   MOVE    SYU-PTID    TO  BG01301-PTID
+                   WRITE   BG01301-REC
+               END-IF
       *
-               PERFORM 900-SYUNOU-KEY36-FET-SEC
+               PERFORM 900-SYUNOU-KEY52-FET-SEC
       *
            END-PERFORM
       *
-           MOVE    PATH-TBL-SYUNOU-KEY36
-                                   TO  MCP-PATH
+           MOVE    "tbl_syunou"    TO  MCP-TABLE
+           MOVE    "key52"         TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            CLOSE   BG01301-FILE
@@ -502,7 +573,7 @@
       *
                MOVE    BG01301-PTID    TO  WRK-PTID
                MOVE    BG01301-PTNUM   TO  WRK-PTNUM
-               PERFORM 2101-ORCHCM43-CALL-SEC
+               PERFORM 2101-SEIKYU-PG-CALL-SEC
                IF    ( FLG-END     NOT =   ZERO )
                    GO  TO  2101-TUKISKY-HEN-EXT
                END-IF
@@ -584,7 +655,7 @@
       *
            MOVE    PTNUM-PTID          TO  WRK-PTID
            MOVE    PTNUM-PTNUM         TO  WRK-PTNUM
-           PERFORM 2101-ORCHCM43-CALL-SEC
+           PERFORM 2101-SEIKYU-PG-CALL-SEC
            IF    ( FLG-END         NOT =   ZERO )
                GO  TO  210-PTSHITEI-HEN-EXT
            END-IF
@@ -595,23 +666,70 @@
       *****************************************************************
       *    外来月別請求書編集サブ呼出処理
       *****************************************************************
-       2101-ORCHCM43-CALL-SEC          SECTION.
+       2101-SEIKYU-PG-CALL-SEC          SECTION.
       *
-           MOVE    WRK-PTID            TO  SPA-PTID
-           MOVE    WRK-PTNUM           TO  SPA-PTNUM
+           PERFORM 900-PTINF-KEY-SEL-SEC
       *
-           INITIALIZE                      ORCHCM43AREA
-           MOVE    "1"                 TO  ORCHCM43-KBN
-           MOVE    WRK-PARA-SRYYM      TO  ORCHCM43-STSRYYM
-           MOVE    WRK-PARA-HAKUHOUFLG TO  ORCHCM43-HAKUHOUFLG
-           MOVE    WRK-PARA-HAKYMD     TO  ORCHCM43-HAKYMD
-           MOVE    WRK-PARA-ZEROSKYFLG TO  ORCHCM43-ZEROSKYFLG
+           PERFORM 800-MCNDATE-SEC
       *
-           CALL    "ORCHCM43"          USING
-                                       SPA-AREA
-                                       ORCSPRTAREA
-                                       ORCHCM43AREA
-           IF    ( ORCHCM43-RC     NOT =   ZERO )
+           MOVE    SMCNDATE-YMD    TO  WRK-FILEMEI-YMD
+           MOVE    SMCNDATE-HMS    TO  WRK-FILEMEI-HMS
+      *
+           MOVE    WRK-PTID        TO  SPA-PTID
+           MOVE    "2"             TO  SPA-NYUGAIKBN
+           MOVE    WRK-PTNUM       TO  SPA-PTNUM
+           MOVE    PTINF-NAME      TO  SPA-NAME
+      *
+           MOVE    "001%"          TO  WRK-FILEMEI-CD
+           PERFORM 21011-DELETE-PARA-SEC
+           IF    ( FLG-END      NOT =   ZERO )
+               GO  TO  2101-SEIKYU-PG-CALL-EXT
+           END-IF
+      *
+      *    帳票プログラム取得（外来）
+           PERFORM 21011-PRINT-PG-SEC
+      *
+           MOVE    "1"                 TO  WRK-NYUGAIKBN
+           PERFORM 21011-TUKIMISYU-SUM-SEC
+           MOVE    WRK-MISYU           TO  WRK-NYU-MISYU
+           MOVE    "2"                 TO  WRK-NYUGAIKBN
+           PERFORM 21011-TUKIMISYU-SUM-SEC
+           MOVE    WRK-MISYU           TO  WRK-GAI-MISYU
+      *
+           INITIALIZE                  SYUPARA01-AREA
+                                       SYUPARA02-AREA
+      *
+           MOVE    "2"                 TO  SYUPARA01-NYUGAIKBN
+           MOVE    WRK-NYU-MISYU       TO  SYUPARA01-NYU-MISYU
+           MOVE    WRK-GAI-MISYU       TO  SYUPARA01-GAI-MISYU
+           MOVE    ZERO                TO  SYUPARA01-NYU-NYUKIN
+           MOVE    ZERO                TO  SYUPARA01-GAI-NYUKIN
+           MOVE    4                   TO  SYUPARA01-HAKKOFLG
+           EVALUATE    WRK-PARA-HAKUHOUFLG
+           WHEN    "2"
+               MOVE    2               TO  SYUPARA01-SKYSUMFLG
+           WHEN    "3"
+               MOVE    3               TO  SYUPARA01-SKYSUMFLG
+           WHEN    "4"
+               MOVE    4               TO  SYUPARA01-SKYSUMFLG
+           WHEN    OTHER
+               MOVE    1               TO  SYUPARA01-SKYSUMFLG
+           END-EVALUATE
+           MOVE    WRK-PARA-ZEROSKYKBN TO  SYUPARA01-ZEROSKYKBN
+           MOVE    WRK-PARA-HAKYMD     TO  SYUPARA01-DENPPRTYMD
+      *
+           INITIALIZE                      PARA-REC
+           MOVE    "G01"               TO  PARA-GYOUMUID
+           MOVE    SPA-TERMID          TO  PARA-TERMID
+           MOVE    "00101"             TO  WRK-FILEMEI-CD
+           MOVE    WRK-FILEMEI         TO  PARA-FILEMEI
+           MOVE    1                   TO  PARA-EDANUM
+           MOVE    SYUPARA01-AREA      TO  PARA-DATA-REC
+           MOVE    PARA-REC            TO  MCPDATA-REC
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBINSERT-SEC
+           IF    ( MCP-RC      NOT =   ZERO )
                INITIALIZE              ERR-EDIT-AREA
                MOVE    SPA-PTID        TO  ERR-PTID
                MOVE    "外来月別請求書の作成に失敗しました"
@@ -619,16 +737,197 @@
                PERFORM 800-ERRMSG-EDIT-SEC
                MOVE    ERR-HEN-ERRMSG  TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
-               GO  TO  2101-ORCHCM43-CALL-EXT
+               GO  TO  2101-SEIKYU-PG-CALL-EXT
+           END-IF
+      *
+           PERFORM 900-SYUNOU-KEY37-SEL-SEC
+      *
+           MOVE    SPACE               TO  WRK-SRYYMD
+           PERFORM UNTIL ( FLG-SYUNOU  NOT =   ZERO )
+      *
+               IF    ( WRK-SRYYMD      =   SPACE )
+                       MOVE    SYU-SRYYMD  TO  WRK-SRYYMD
+               ELSE
+                   IF    ( WRK-SRYYMD  >   SYU-SRYYMD )
+                       MOVE    SYU-SRYYMD  TO  WRK-SRYYMD
+                   END-IF
+               END-IF
+      *
+               PERFORM 21011-SYUPARA02-HEN-SEC
+               IF    ( SPA-ERRCD       NOT =   SPACE )
+                   GO  TO  2101-SEIKYU-PG-CALL-EXT
+               END-IF
+      *
+               PERFORM 900-SYUNOU-KEY37-FET-SEC
+      *
+           END-PERFORM
+      *
+           MOVE    "tbl_syunou"        TO  MCP-TABLE
+           MOVE    "key37"             TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           INITIALIZE                      ORCHC03S02AREA
+           MOVE    "G01"           TO      ORCHC03S02-GYOUMUID
+           MOVE    SPA-TERMID      TO      ORCHC03S02-TERMID
+           MOVE    "00101"         TO      WRK-FILEMEI-CD
+           MOVE    WRK-FILEMEI     TO      ORCHC03S02-FILEMEI
+           CALL    "ORCHC03S02"    USING   SPA-AREA
+                                           ORCHC03S02AREA
+           IF    ( ORCHC03S02-RC   NOT =   ZERO )
+               INITIALIZE              ERR-EDIT-AREA
+               MOVE    SPA-PTID        TO  ERR-PTID
+               MOVE    "外来月別請求書の作成に失敗しました"
+                                       TO  ERR-ERRMSG
+               PERFORM 800-ERRMSG-EDIT-SEC
+               MOVE    ERR-HEN-ERRMSG  TO  WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC
+               GO  TO  2101-SEIKYU-PG-CALL-EXT
+           END-IF
+      *
+           MOVE    WRK-SRYYMD      TO      SPA-SRYYMD
+           INITIALIZE                      ORCHC03AREA
+           MOVE    4               TO      ORCHC03-HAKKOFLG
+           MOVE    ZERO            TO      ORCHC03-HAKHOUFLG
+           MOVE    1               TO      ORCHC03-PARAFLG
+      *
+           MOVE    "G01"           TO      ORCHC03-PARA-GYOUMUID
+           MOVE    SPA-TERMID      TO      ORCHC03-PARA-TERMID
+           MOVE    "00102"         TO      WRK-FILEMEI-CD
+           MOVE    WRK-FILEMEI     TO      ORCHC03-PARA-FILEMEI
+           MOVE    "1"             TO      ORCHC03-PRTKBN
+      *
+           MOVE    SPA-PTID        TO      SPRT-PTID
+           MOVE    WRK-PARA-SRYYM  TO      SPRT-SRYYM
+      *
+           MOVE    ORCSPRTAREA     TO      ORCHC03-PRTAREA
+           CALL    WRK-SEIKYU-PG           USING
+                                           SPA-AREA
+                                           ORCHC03AREA
+      *
+           MOVE    "001%"          TO  WRK-FILEMEI-CD
+           PERFORM 21011-DELETE-PARA-SEC
+           IF    ( FLG-END      NOT =   ZERO )
+               GO  TO  2101-SEIKYU-PG-CALL-EXT
            END-IF
       *
            COMPUTE CNT-BG01301 =   CNT-BG01301 +   1
-           COMPUTE CNT-PAGE    =   CNT-PAGE    +   ORCHCM43-PAGE
+           COMPUTE CNT-PAGE    =   CNT-PAGE    +   ORCHC03S02-CNT
            COMPUTE CNT-JOB-UPDCNT  =   CNT-JOB-UPDCNT
-                                   +   ORCHCM43-PAGE
+                                   +   ORCHC03S02-CNT
       *
            .
-       2101-ORCHCM43-CALL-EXT.
+       2101-SEIKYU-PG-CALL-EXT.
+           EXIT.
+      *************************************************************
+      *    パラメタ削除処理
+      *************************************************************
+       21011-DELETE-PARA-SEC           SECTION.
+      *
+           INITIALIZE                  PARA-REC
+           MOVE    "G01"               TO  PARA-GYOUMUID
+           MOVE    SPA-TERMID          TO  PARA-TERMID
+           MOVE    WRK-FILEMEI         TO  PARA-FILEMEI
+           MOVE    PARA-REC            TO  MCPDATA-REC
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "del11"             TO  MCP-PATHNAME
+           PERFORM 910-DBDELETE-SEC
+           IF    ( MCP-RC          NOT =   ZERO )
+               INITIALIZE              ERR-EDIT-AREA
+               MOVE    SPA-PTID        TO  ERR-PTID
+               MOVE    "外来月別請求書の作成に失敗しました"
+                                       TO  ERR-ERRMSG
+               PERFORM 800-ERRMSG-EDIT-SEC
+               MOVE    ERR-HEN-ERRMSG  TO  WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC
+           END-IF
+      *
+           .
+       21011-DELETE-PARA-EXT.
+           EXIT.
+      *****************************************************************
+      *    帳票プログラム取得処理
+      *****************************************************************
+       21011-PRINT-PG-SEC              SECTION.
+      *
+      *    請求書
+           MOVE    SPACE               TO  WRK-SEIKYU-PG
+      *
+           INITIALIZE                      ORCSPRTNMAREA
+           MOVE    "1"                 TO  ORCSPRTNM-KBN
+           MOVE    "00000003"          TO  ORCSPRTNM-KBNCD
+           MOVE    SPA-SYSYMD          TO  ORCSPRTNM-SRYYMD
+           MOVE    "2"                 TO  ORCSPRTNM-NYUGAIKBN
+           CALL    "ORCSPRTNM"         USING
+                                           ORCSPRTNMAREA
+                                           SPA-AREA
+                                           SYS-1031-REC
+           IF    ( ORCSPRTNM-RC        =   ZERO )
+              MOVE    ORCSPRTNM-PRTPG     TO  WRK-SEIKYU-PG
+           ELSE
+              MOVE    "ORCHC03"           TO  WRK-SEIKYU-PG
+           END-IF
+      *
+           .
+      *
+       21011-PRINT-PG-EXT.
+           EXIT.
+      **************************************************************
+      *   未収金集計処理（月別）
+      **************************************************************
+       21011-TUKIMISYU-SUM-SEC          SECTION.
+      *
+           MOVE    ZERO                TO  WRK-MISYU
+      *
+           INITIALIZE                  SYUNOU-REC
+           MOVE    SPA-HOSPID          TO  SYU-HOSPID
+           MOVE    WRK-NYUGAIKBN       TO  SYU-NYUGAIKBN
+           MOVE    SPA-PTID            TO  SYU-PTID
+           STRING  WRK-PARA-SRYYM      DELIMITED   BY  SPACE
+                   "01"                DELIMITED   BY  SIZE
+           INTO    SYU-SRYYMD
+           END-STRING
+      *
+           MOVE    SYUNOU-REC      TO  MCPDATA-REC
+           MOVE    "tbl_syunou"    TO  MCP-TABLE
+           MOVE    "key38"         TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC TO  SYUNOU-REC
+           ELSE
+               INITIALIZE              SYUNOU-REC
+           END-IF
+      *
+           MOVE    "tbl_syunou"    TO  MCP-TABLE
+           MOVE    "key38"         TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           COMPUTE WRK-MISYU
+               =   SYU-SKYMONEY    -   SYU-NYUKIN-TOTAL
+      *
+           .
+       21011-TUKIMISYU-SUM-EXT.
+           EXIT.
+      **************************************************************
+      *    パラメタ編集処理
+      **************************************************************
+       21011-SYUPARA02-HEN-SEC         SECTION.
+      *
+           COMPUTE PARA-EDANUM =   PARA-EDANUM +   1
+      *
+           INITIALIZE              SYUPARA02-AREA
+           MOVE    SYU-DENPNUM     TO  SYUPARA02-DENPNUM
+           MOVE    SYU-NYUKIN-TOTAL TO  SYUPARA02-NYUKIN
+           MOVE    SYUPARA02-AREA  TO  PARA-DATA-REC
+           MOVE    PARA-REC    TO  MCPDATA-REC
+           MOVE    "tbl_para"      TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           PERFORM 910-DBINSERT-SEC
+           IF    ( MCP-RC      NOT =   ZERO )
+               MOVE    "4002"      TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       21011-SYUPARA02-HEN-EXT.
            EXIT.
       *****************************************************************
       *    エラー出力処理
@@ -834,9 +1133,24 @@
        900-BG01301-READ-EXT.
            EXIT.
       *****************************************************************
-      *    収納情報検索処理(KEY36)
+      *    対象患者ファイル読込処理
       *****************************************************************
-       900-SYUNOU-KEY36-SEL-SEC        SECTION.
+       900-BG01301-READ-DYN-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-BG01301
+      *
+           READ    BG01301-FILE
+           INVALID
+               MOVE    1               TO  FLG-BG01301
+           END-READ
+      *
+           .
+       900-BG01301-READ-DYN-EXT.
+           EXIT.
+      *****************************************************************
+      *    収納情報検索処理(KEY52)
+      *****************************************************************
+       900-SYUNOU-KEY52-SEL-SEC        SECTION.
       *
            INITIALIZE                  SYUNOU-REC
            MOVE    SPA-HOSPID      TO  SYU-HOSPID
@@ -847,8 +1161,8 @@
            END-STRING
       *
            MOVE    SYUNOU-REC      TO  MCPDATA-REC
-           MOVE    PATH-TBL-SYUNOU-KEY36
-                                   TO  MCP-PATH
+           MOVE    "tbl_syunou"    TO  MCP-TABLE
+           MOVE    "key52"         TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC TO  SYUNOU-REC
@@ -857,15 +1171,15 @@
            END-IF
       *
            .
-       900-SYUNOU-KEY36-SEL-EXT.
+       900-SYUNOU-KEY52-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    収納情報ＦＥＴＣＨ処理(KEY36)
+      *    収納情報ＦＥＴＣＨ処理(KEY52)
       *****************************************************************
-       900-SYUNOU-KEY36-FET-SEC        SECTION.
+       900-SYUNOU-KEY52-FET-SEC        SECTION.
       *
-           MOVE    PATH-TBL-SYUNOU-KEY36
-                                   TO  MCP-PATH
+           MOVE    "tbl_syunou"    TO  MCP-TABLE
+           MOVE    "key52"         TO  MCP-PATHNAME
            PERFORM 910-DBFETCH-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC TO  SYUNOU-REC
@@ -874,7 +1188,71 @@
            END-IF
       *
            .
-       900-SYUNOU-KEY36-FET-EXT.
+       900-SYUNOU-KEY52-FET-EXT.
+           EXIT.
+      *****************************************************************
+      *    システム管理検索処理(KEY2)
+      *****************************************************************
+       900-SYSKANRI-KEY2-SEL-SEC       SECTION.
+      *
+           MOVE    ZERO            TO  FLG-SYSKANRI
+      *
+           MOVE    SYSKANRI-REC    TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key2"          TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC TO  SYSKANRI-REC
+           ELSE
+               MOVE    1           TO  FLG-SYSKANRI
+               INITIALIZE              SYSKANRI-REC
+           END-IF
+      *
+           .
+       900-SYSKANRI-KEY2-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    システム管理FETCH処理(KEY2)
+      *****************************************************************
+       900-SYSKANRI-KEY2-FET-SEC   SECTION.
+      *
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key2"          TO  MCP-PATHNAME
+           PERFORM 910-DBFETCH-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC TO  SYSKANRI-REC
+           ELSE
+               MOVE    1           TO  FLG-SYSKANRI
+               INITIALIZE              SYSKANRI-REC
+           END-IF
+      *
+           .
+       900-SYSKANRI-KEY2-FET-EXT.
+           EXIT.
+      *****************************************************************
+      *    システム管理検索処理(KEY10)
+      *****************************************************************
+       900-SYSKANRI-KEY10-SEL-SEC      SECTION.
+      *
+           MOVE    ZERO            TO  FLG-SYSKANRI
+      *
+           MOVE    SYSKANRI-REC    TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key10"         TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC TO  SYSKANRI-REC
+           ELSE
+               MOVE    1           TO  FLG-SYSKANRI
+               INITIALIZE              SYSKANRI-REC
+           END-IF
+      *
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key10"         TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       900-SYSKANRI-KEY10-SEL-EXT.
            EXIT.
       *****************************************************************
       *    患者番号情報検索処理(KEY)
@@ -887,7 +1265,8 @@
            MOVE    WRK-PARA-HOSPID TO  PTNUM-HOSPID
            MOVE    WRK-PTID        TO  PTNUM-PTID
            MOVE    PTNUM-REC       TO  MCPDATA-REC
-           MOVE    PATH-TBL-PTNUM-KEY  TO  MCP-PATH
+           MOVE    "tbl_ptnum"     TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC TO  PTNUM-REC
@@ -896,7 +1275,8 @@
                INITIALIZE              PTNUM-REC
            END-IF
       *
-           MOVE    PATH-TBL-PTNUM-KEY  TO  MCP-PATH
+           MOVE    "tbl_ptnum"     TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
@@ -916,7 +1296,8 @@
            INTO    PTNUM-PTNUM
            END-STRING
            MOVE    PTNUM-REC       TO  MCPDATA-REC
-           MOVE    PATH-TBL-PTNUM-KEY2 TO  MCP-PATH
+           MOVE    "tbl_ptnum"     TO  MCP-TABLE
+           MOVE    "key2"          TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC TO  PTNUM-REC
@@ -925,7 +1306,8 @@
                INITIALIZE              PTNUM-REC
            END-IF
       *
-           MOVE    PATH-TBL-PTNUM-KEY2 TO  MCP-PATH
+           MOVE    "tbl_ptnum"     TO  MCP-TABLE
+           MOVE    "key2"          TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
@@ -942,7 +1324,8 @@
            MOVE    WRK-PARA-HOSPID TO  PTINF-HOSPID
            MOVE    WRK-PTID        TO  PTINF-PTID
            MOVE    PTINF-REC       TO  MCPDATA-REC
-           MOVE    PATH-TBL-PTINF-KEY  TO  MCP-PATH
+           MOVE    "tbl_ptinf"     TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC TO  PTINF-REC
@@ -951,11 +1334,60 @@
                INITIALIZE              PTINF-REC
            END-IF
       *
-           MOVE    PATH-TBL-PTINF-KEY  TO  MCP-PATH
+           MOVE    "tbl_ptinf"     TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        900-PTINF-KEY-SEL-EXT.
+           EXIT.
+      **************************************************************
+      *    収納マスター検索処理
+      **************************************************************
+       900-SYUNOU-KEY37-SEL-SEC        SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SYUNOU
+      *
+           INITIALIZE                      SYUNOU-REC
+           MOVE    WRK-PARA-HOSPID     TO  SYU-HOSPID
+           MOVE    SPA-NYUGAIKBN       TO  SYU-NYUGAIKBN
+           MOVE    SPA-PTID            TO  SYU-PTID
+           MOVE    WRK-PARA-SRYYM      TO  SYU-SRYYMD
+           MOVE     "__"               TO  SYU-SRYYMD (7:2)
+      *
+           MOVE    SYUNOU-REC          TO  MCPDATA-REC
+           MOVE    "tbl_syunou"        TO  MCP-TABLE
+           MOVE    "key37"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYUNOU-REC
+           ELSE
+               INITIALIZE                  SYUNOU-REC
+               MOVE    1               TO  FLG-SYUNOU
+           END-IF
+      *
+           .
+       900-SYUNOU-KEY37-SEL-EXT.
+           EXIT.
+      **************************************************************
+      *    収納マスターFETCH処理
+      **************************************************************
+       900-SYUNOU-KEY37-FET-SEC        SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SYUNOU
+      *
+           MOVE    "tbl_syunou"        TO  MCP-TABLE
+           MOVE    "key37"             TO  MCP-PATHNAME
+           PERFORM 910-DBFETCH-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYUNOU-REC
+           ELSE
+               INITIALIZE                  SYUNOU-REC
+               MOVE    1               TO  FLG-SYUNOU
+           END-IF
+      *
+           .
+       900-SYUNOU-KEY37-FET-EXT.
            EXIT.
       *****************************************************************
       *    テーブル検索処理
@@ -963,7 +1395,7 @@
        910-DBSELECT-SEC          SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            IF        ( MCP-RC          =   ZERO )
@@ -979,7 +1411,7 @@
        910-DBFETCH-SEC            SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -992,7 +1424,7 @@
        910-DBCLOSECURSOR-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -1000,19 +1432,49 @@
        910-DBCLOSECURSOR-EXT.
            EXIT.
       *****************************************************************
+      *    ＤＢＤＥＬＥＴＥ処理
+      *****************************************************************
+       910-DBDELETE-SEC                SECTION.
+      *
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       910-DBDELETE-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢインサート処理
+      *****************************************************************
+       910-DBINSERT-SEC                SECTION.
+      *
+           MOVE    "DBINSERT"          TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       910-DBINSERT-EXT.
+           EXIT.
+      *****************************************************************
       *    ＤＢ　オープン処理
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
-           MOVE    LOW-VALUE           TO  MCP-PATH
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
            MOVE    "DBOPEN"            TO  MCP-FUNC.
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
-           MOVE    LOW-VALUE           TO  MCP-PATH
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
            MOVE    "DBSTART"           TO  MCP-FUNC.
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            .
@@ -1024,15 +1486,17 @@
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *
-           MOVE    LOW-VALUE           TO  MCP-PATH
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
            MOVE    "DBCOMMIT"          TO  MCP-FUNC.
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
-           MOVE    LOW-VALUE           TO  MCP-PATH
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
            MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            .

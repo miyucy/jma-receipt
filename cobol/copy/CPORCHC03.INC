@@ -84,4 +84,7 @@
                05  ORCHC03-PARA-TERMID         PIC X(64).
       *        ファイル名
                05  ORCHC03-PARA-FILEMEI        PIC X(20).
-      *
+      *    印刷ＤＢ出力区分(1:印刷ＤＢに出力）
+           03  ORCHC03-PRTKBN                  PIC X(01).
+      *    一括パラメタ
+           03  ORCHC03-PRTAREA         PIC X(25000).

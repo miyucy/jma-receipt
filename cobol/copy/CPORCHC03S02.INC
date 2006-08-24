@@ -27,6 +27,13 @@
            03  ORCHC03S02-KEY.
                05  ORCHC03S02-GYOUMUID     PIC X(03).
                05  ORCHC03S02-TERMID       PIC X(64).
-               05  ORCHC03S02-FILEMEI      PIC X(20).
+               05  ORCHC03S02-FILEMEI.
+                   07  ORCHC03S02-FILEMEI-YMD
+                                           PIC X(08).
+                   07  ORCHC03S02-FILEMEI-HMS
+                                           PIC X(06).
+                   07  ORCHC03S02-FILEMEI-CD
+                                           PIC X(06).
+           03  ORCHC03S02-CNT              PIC 9(05).
            03  ORCHC03S02-RC               PIC 9(02).
       *

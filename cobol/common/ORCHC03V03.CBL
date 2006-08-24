@@ -29,6 +29,9 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-多々納  06/05/15  MONFUNC 対応
+      *  01.00.02    NACL-太田    06/08/22  パラメタテーブルより編集データ
+      *                                     を参照する区分を追加
+      *                                     月まとめ請求書発行機能追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -269,6 +272,9 @@
       *    請求書収納パラメタ
            COPY    "CPORCHC03SUB.INC".
       *
+      *    印刷ＤＢ制御サブ
+           COPY    "CPORCSPRT.INC".
+      *
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
       *****COPY    "CPORCMCP.INC".
@@ -388,6 +394,31 @@
        400-PRINT-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    帳票印刷処理 (印刷ＤＢに出力）
+      *****************************************************************
+       401-PRINT-SEC                SECTION.
+      *
+           MOVE    ORCHC03-PRTAREA     TO  ORCSPRTAREA
+      *
+           MOVE    "HCM03V03.red"      TO  SPRT-PRTID
+           MOVE    HC03                TO  SPRT-PRTDATA
+      *-----------------------------------------------------------------
+           MOVE    "1"                 TO  SPRT-SITEKBN
+      *    カスタマイズＰＧの場合"2"をセットすること。
+      *    MOVE    "2"                 TO  SPRT-SITEKBN
+      *-----------------------------------------------------------------
+           CALL    "ORCSPRT"           USING
+                                       ORCSPRTAREA
+           IF    ( SPRT-RETURN         =   ZERO )
+               CONTINUE
+           ELSE
+               DISPLAY "ORCSPRT ERR: PTID = " SPRT-PTID
+           END-IF
+      *
+           .
+       401-PRINT-EXT.
+           EXIT.
       *****************************************************************
       *   対象の伝票番号分のみ処理
       *****************************************************************
@@ -1175,17 +1206,34 @@
                MOVE    SYUPARA03-NYUKIN    TO  WRK-NYUKIN
                MOVE    SYUPARA03-MISYU     TO  WRK-MISYUMONEY
                MOVE    SYUPARA03-SRYKAMEI  TO  WRK-SRYKA-MEI
+      *
+               INITIALIZE                      HKNCOMBI-REC
+                                               PTRSIINF-REC
+               IF    ( SYUPARA03-HKNCOMBI-MAX  =   1 )
+                   PERFORM 1001-HKNCOMBI-HEN-SEC
+               END-IF
+      *
                MOVE    SYUPARA03-HKNCOMBIMEI
                                            TO  WRK-HKNCOMBIMEI
       *
-      *        帳票印刷開始処理
-               PERFORM 400-SYOKI-PRINT-SEC
+               IF    ( ORCHC03-PRTKBN      =   "1" )
       *
-      *        帳票編集処理
-               PERFORM 300-HC03-HEN-SEC
+      *            帳票編集処理
+                   PERFORM 300-HC03-HEN-SEC
       *
-      *        帳票印刷処理
-               PERFORM 400-PRINT-SEC
+      *            帳票印刷処理
+                   PERFORM 401-PRINT-SEC
+               ELSE
+      *
+      *            帳票印刷開始処理
+                   PERFORM 400-SYOKI-PRINT-SEC
+      *
+      *            帳票編集処理
+                   PERFORM 300-HC03-HEN-SEC
+      *
+      *            帳票印刷処理
+                   PERFORM 400-PRINT-SEC
+               END-IF
       *
                PERFORM 900-PARA-KEY5-FET-SEC
       *

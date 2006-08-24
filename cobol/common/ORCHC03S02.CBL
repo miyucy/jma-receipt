@@ -70,6 +70,10 @@
            03  WRK-SRYKA-MAX           PIC 9(05).
            03  WRK-SRYKA-PNT           PIC 9(05).
            03  WRK-SRYYMD              PIC X(08).
+           03  WRK-FILEMEI  .
+               05  WRK-FILEMEI-YMD PIC X(08).
+               05  WRK-FILEMEI-HMS PIC X(06).
+               05  WRK-FILEMEI-CD  PIC X(06).
       *
        01  SRT-AREA.
            03  SRT-PNT                 PIC 9(05).
@@ -195,7 +199,8 @@
                                        SRT-AREA
                                        LNKSYU-REC
       *
-           MOVE    ZERO            TO  ORCHC03S02-RC
+           MOVE    ZERO            TO  ORCHC03S02-CNT
+                                       ORCHC03S02-RC
       *
            .
        100-INIT-EXT.
@@ -316,10 +321,14 @@
                MOVE    SRT-PNT     TO  IDX-SYU
                PERFORM 20011-SYUNOU-GRP-SEC
       *
-               IF    ( SRT-SRTDENPNUM(SRT-MAX)
+               IF    ( SYUPARA01-HAKKOFLG  =   4 )
+                   CONTINUE
+               ELSE
+                   IF    ( SRT-SRTDENPNUM(SRT-MAX)
                                    >   SYU-DENPNUM )
-                   MOVE    SYU-DENPNUM
+                       MOVE    SYU-DENPNUM
                                    TO  SRT-SRTDENPNUM(SRT-MAX)
+                   END-IF
                END-IF
       *
            ELSE
@@ -336,8 +345,13 @@
                    MOVE    WRK-HKNCOMBI
                                    TO  SRT-HKNCOMBI  (SRT-MAX)
       *
-                   MOVE    SYU-DENPNUM
+                   IF    ( SYUPARA01-HAKKOFLG  =   4 )
+                       CONTINUE
+                   ELSE
+                       MOVE    SYU-DENPNUM
                                    TO  SRT-SRTDENPNUM(SRT-MAX)
+                   END-IF
+      *
                    COMPUTE SRT-SRYYM29 (SRT-MAX)
                        =   SRT-SRYYM29 (SRT-MAX)
                        -   SRT-SRYYM9  (SRT-MAX)
@@ -608,133 +622,162 @@
        2001-SYUSRT-EXT.
            EXIT.
       *****************************************************************
-      *    収納並べ替え処理
+      *    パラメタテーブル編集処理
       *****************************************************************
        2001-EDIT-PARA-SEC              SECTION.
       *
            INITIALIZE                  PARA-REC
            MOVE    ORCHC03S02-GYOUMUID TO  PARA-GYOUMUID
            MOVE    ORCHC03S02-TERMID   TO  PARA-TERMID
-           MOVE    "00102"             TO  PARA-FILEMEI
+           MOVE    ORCHC03S02-FILEMEI  TO  WRK-FILEMEI
+           MOVE    "00102"             TO  WRK-FILEMEI-CD
+           MOVE    WRK-FILEMEI         TO  PARA-FILEMEI
       *
            PERFORM VARYING IDX4    FROM    1   BY  1
                    UNTIL ( IDX4    >   SRT-MAX )
                     OR   ( ORCHC03S02-RC   NOT =   ZERO )
       *
-               COMPUTE PARA-EDANUM =   PARA-EDANUM +   1
-               INITIALIZE              SYUPARA03-AREA
-      *
-               IF    ( SYUPARA01-HAKKOFLG  =   4 )
-                   CONTINUE
+               IF    ( SYUPARA01-ZEROSKYKBN    =   "1" )
+                   IF    ( LNKSYU-SKYMONEY(IDX4)    >      ZERO )
+                       PERFORM 20011-EDIT-PARA-SEC
+                   END-IF
                ELSE
-                   MOVE    SRT-SRTDENPNUM (IDX4)
-                                               TO  SYUPARA03-DENPNUM
-               END-IF
-      *
-               MOVE    SRT-KBT-SEIKYU(IDX4)    TO  SYUPARA03-SEIKYU
-      *
-               IF    ( SRT-KBT-TUIKANYUKINFLG (IDX4)
-                                    =   ZERO )
-                   MOVE   LNKSYU-SKYMONEY-TAX-SAI(IDX4)
-                                   TO  SYUPARA03-SEIKYU-TAX-SAI
-               END-IF
-      *
-               IF    ( PARA-EDANUM     =   1 )
-                   MOVE    SYUPARA01-GAI-MISYU
-                                   TO  SYUPARA03-MISYU
-               END-IF
-               MOVE    SRT-KBT-NYUKIN  (IDX4)  TO  SYUPARA03-NYUKIN
-               MOVE    SRT-KBT-STSRYYMD(IDX4)  TO  SYUPARA03-STSRYYMD
-               MOVE    SRT-KBT-EDSRYYMD(IDX4)  TO  SYUPARA03-EDSRYYMD
-      *
-               MOVE    SRT-KBT-SRYKA-MAX (IDX4)
-                               TO  SYUPARA03-SRYKA-MAX
-      *
-               MOVE    1       TO  WRK-SRYKA-PNT
-               MOVE    SPACE   TO  WRK-SRYKAMEI
-      *
-               MOVE    SRT-KBT-SRYKA-MAX (IDX4)
-                               TO  WRK-MAX
-               PERFORM VARYING IDX5    FROM    1   BY  1
-                       UNTIL ( IDX5    >   WRK-MAX )
-      *
-                   MOVE    SRT-KBT-SRYKA (IDX4 IDX5)
-                               TO  SYUPARA03-SRYKA (IDX5)
-      *
-                   MOVE    SRT-KBT-SRYKA (IDX4 IDX5)
-                               TO  WRK-SRYKA
-                   MOVE    SRT-KBT-STSRYYMD (IDX4)
-                               TO  WRK-SRYYMD
-                   PERFORM 20011-SRYKAMEI-HEN-SEC
-      *
-               END-PERFORM
-      *
-               MOVE    WRK-SRYKAMEI    TO  SYUPARA03-SRYKAMEI
-      *
-               MOVE    SRT-KBT-HKNCOMBI-MAX (IDX4)
-                               TO  SYUPARA03-HKNCOMBI-MAX
-               MOVE    SRT-KBT-HKNCOMBI-MAX (IDX4)
-                               TO  WRK-MAX
-               PERFORM VARYING IDX5    FROM    1   BY  1
-                       UNTIL ( IDX5    >   WRK-MAX )
-      *
-                   MOVE    SRT-KBT-HKNCOMBI-OCC (IDX4 IDX5)
-                               TO  SYUPARA03-HKNCOMBI-OCC (IDX5)
-      *
-               END-PERFORM
-      *
-               IF    ( SRT-KBT-HKNCOMBI-MAX (IDX4)
-                                       >       1 )
-                   MOVE    "複数保険使用"  TO  SYUPARA03-HKNCOMBIMEI
-                   MOVE    ZERO            TO  LNKSYU-PTFTNRATE  (IDX4)
-               ELSE
-                   MOVE    SRT-KBT-HKNCOMBI (IDX4 1)
-                                           TO  LNKSYU-HKNCOMBINUM(IDX4)
-                   MOVE    SRT-KBT-PTFTNRATE(IDX4 1)
-                                           TO  LNKSYU-PTFTNRATE  (IDX4)
-                   MOVE    SRT-KBT-HKNCOMBI (IDX4 1)
-                                           TO  WRK-HKNCOMBI
-                   PERFORM 2001-HKNCOMBI-HEN-SEC
-                   MOVE    WRK-HKNCOMBIMEI TO  SYUPARA03-HKNCOMBIMEI
-               END-IF
-      *
-               MOVE    SRT-KBT-DENPNUM-MAX (IDX4)
-                               TO  SYUPARA03-GRP-DENPNUM-MAX
-               MOVE    SRT-KBT-DENPNUM-MAX (IDX4)
-                               TO  WRK-MAX
-               PERFORM VARYING IDX5    FROM    1   BY  1
-                       UNTIL ( IDX5    >   WRK-MAX )
-      *
-                   MOVE    SRT-KBT-DENPNUM (IDX4 IDX5)
-                               TO  SYUPARA03-GRP-DENPNUM (IDX5)
-      *
-               END-PERFORM
-      *
-               MOVE    SYUPARA03-STSRYYMD  TO  LNKSYU-SRYYMD (IDX4)
-      *
-               IF    ( SYUPARA01-SKYSUMFLG =   0 )
-                OR   ( SYUPARA01-HAKKOFLG  =   1 )
-                   MOVE    SRT-KBT-DENPPRTYMD (IDX4)
-                                           TO  LNKSYU-DENPPRTYMD (IDX4)
-               ELSE
-                   MOVE    SPA-SYSYMD      TO  LNKSYU-DENPPRTYMD (IDX4)
-               END-IF
-      *
-               MOVE    LNKSYU-OCC (IDX4)   TO  SYUPARA03-SYU-DATA
-      *
-               MOVE    SYUPARA03-AREA  TO  PARA-DATA-REC
-               MOVE    PARA-REC        TO  MCPDATA-REC
-               MOVE    "tbl_para"      TO  MCP-TABLE
-               MOVE    "key"           TO  MCP-PATHNAME
-               PERFORM 910-DBINSERT-SEC
-               IF    ( MCP-RC      NOT =   ZERO )
-                   MOVE    1           TO  ORCHC03S02-RC
+                       PERFORM 20011-EDIT-PARA-SEC
                END-IF
       *
            END-PERFORM
       *
+           MOVE    PARA-EDANUM         TO  ORCHC03S02-CNT
+      *
            .
        2001-EDIT-PARA-EXT.
+           EXIT.
+      *****************************************************************
+      *    パラメタテーブル編集処理
+      *****************************************************************
+       20011-EDIT-PARA-SEC               SECTION.
+      *
+           COMPUTE PARA-EDANUM =   PARA-EDANUM +   1
+           INITIALIZE              SYUPARA03-AREA
+      *
+           IF    ( SYUPARA01-HAKKOFLG  =   4 )
+               CONTINUE
+           ELSE
+               MOVE    SRT-SRTDENPNUM (IDX4)
+                                           TO  SYUPARA03-DENPNUM
+           END-IF
+      *
+           MOVE    SRT-KBT-SEIKYU(IDX4)    TO  SYUPARA03-SEIKYU
+      *
+           IF    ( SRT-KBT-TUIKANYUKINFLG (IDX4)
+                                =   ZERO )
+               MOVE   LNKSYU-SKYMONEY-TAX-SAI(IDX4)
+                               TO  SYUPARA03-SEIKYU-TAX-SAI
+           END-IF
+      *
+           IF    ( PARA-EDANUM     =   1 )
+               MOVE    SYUPARA01-GAI-MISYU
+                               TO  SYUPARA03-MISYU
+           END-IF
+           MOVE    SRT-KBT-NYUKIN  (IDX4)  TO  SYUPARA03-NYUKIN
+           MOVE    SRT-KBT-STSRYYMD(IDX4)  TO  SYUPARA03-STSRYYMD
+           MOVE    SRT-KBT-EDSRYYMD(IDX4)  TO  SYUPARA03-EDSRYYMD
+      *
+           MOVE    SRT-KBT-SRYKA-MAX (IDX4)
+                           TO  SYUPARA03-SRYKA-MAX
+      *
+           MOVE    1       TO  WRK-SRYKA-PNT
+           MOVE    SPACE   TO  WRK-SRYKAMEI
+      *
+           MOVE    SRT-KBT-SRYKA-MAX (IDX4)
+                           TO  WRK-MAX
+           PERFORM VARYING IDX5    FROM    1   BY  1
+                   UNTIL ( IDX5    >   WRK-MAX )
+      *
+               MOVE    SRT-KBT-SRYKA (IDX4 IDX5)
+                           TO  SYUPARA03-SRYKA (IDX5)
+      *
+               MOVE    SRT-KBT-SRYKA (IDX4 IDX5)
+                           TO  WRK-SRYKA
+               MOVE    SRT-KBT-STSRYYMD (IDX4)
+                           TO  WRK-SRYYMD
+               PERFORM 20011-SRYKAMEI-HEN-SEC
+      *
+           END-PERFORM
+      *
+           MOVE    WRK-SRYKAMEI    TO  SYUPARA03-SRYKAMEI
+      *
+           IF    ( SRT-KBT-SRYKA-MAX (IDX4)
+                                   >       1 )
+               CONTINUE
+           ELSE
+               MOVE    SRT-KBT-SRYKA (IDX4 1)
+                                   TO  LNKSYU-SRYKA  (IDX4)
+           END-IF
+      *
+           MOVE    SRT-KBT-HKNCOMBI-MAX (IDX4)
+                           TO  SYUPARA03-HKNCOMBI-MAX
+           MOVE    SRT-KBT-HKNCOMBI-MAX (IDX4)
+                           TO  WRK-MAX
+           PERFORM VARYING IDX5    FROM    1   BY  1
+                   UNTIL ( IDX5    >   WRK-MAX )
+      *
+               MOVE    SRT-KBT-HKNCOMBI-OCC (IDX4 IDX5)
+                           TO  SYUPARA03-HKNCOMBI-OCC (IDX5)
+      *
+           END-PERFORM
+      *
+           IF    ( SRT-KBT-HKNCOMBI-MAX (IDX4)
+                                   >       1 )
+               MOVE    "複数保険使用"  TO  SYUPARA03-HKNCOMBIMEI
+               MOVE    ZERO            TO  LNKSYU-PTFTNRATE  (IDX4)
+           ELSE
+               MOVE    SRT-KBT-HKNCOMBI (IDX4 1)
+                                       TO  LNKSYU-HKNCOMBINUM(IDX4)
+               MOVE    SRT-KBT-PTFTNRATE(IDX4 1)
+                                       TO  LNKSYU-PTFTNRATE  (IDX4)
+               MOVE    SRT-KBT-HKNCOMBI (IDX4 1)
+                                       TO  WRK-HKNCOMBI
+               PERFORM 2001-HKNCOMBI-HEN-SEC
+               MOVE    WRK-HKNCOMBIMEI TO  SYUPARA03-HKNCOMBIMEI
+           END-IF
+      *
+           MOVE    SRT-KBT-DENPNUM-MAX (IDX4)
+                           TO  SYUPARA03-GRP-DENPNUM-MAX
+           MOVE    SRT-KBT-DENPNUM-MAX (IDX4)
+                           TO  WRK-MAX
+           PERFORM VARYING IDX5    FROM    1   BY  1
+                   UNTIL ( IDX5    >   WRK-MAX )
+      *
+               MOVE    SRT-KBT-DENPNUM (IDX4 IDX5)
+                           TO  SYUPARA03-GRP-DENPNUM (IDX5)
+      *
+           END-PERFORM
+      *
+           MOVE    SYUPARA03-STSRYYMD  TO  LNKSYU-SRYYMD (IDX4)
+      *
+           IF    ( SYUPARA01-SKYSUMFLG =   0 )
+            OR   ( SYUPARA01-HAKKOFLG  =   1 )
+               MOVE    SRT-KBT-DENPPRTYMD (IDX4)
+                                       TO  LNKSYU-DENPPRTYMD (IDX4)
+           ELSE
+               MOVE    SYUPARA01-DENPPRTYMD
+                                       TO  LNKSYU-DENPPRTYMD (IDX4)
+           END-IF
+      *
+           MOVE    LNKSYU-OCC (IDX4)   TO  SYUPARA03-SYU-DATA
+      *
+           MOVE    SYUPARA03-AREA  TO  PARA-DATA-REC
+           MOVE    PARA-REC        TO  MCPDATA-REC
+           MOVE    "tbl_para"      TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           PERFORM 910-DBINSERT-SEC
+           IF    ( MCP-RC      NOT =   ZERO )
+               MOVE    1           TO  ORCHC03S02-RC
+           END-IF
+      *
+           .
+       20011-EDIT-PARA-EXT.
            EXIT.
       *****************************************************************
       *    保険組合せ名称編集処理

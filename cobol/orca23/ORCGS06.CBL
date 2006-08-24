@@ -247,7 +247,11 @@
                05  WRK-NYU-DENPNUM         PIC 9(07).
                05  WRK-GAI-SRYYMD          PIC X(08).
                05  WRK-NYU-SRYYMD          PIC X(08).
-           03  WRK-FILEMEI                 PIC X(20).
+               05  WRK-GAI-KONSEIKYU       PIC S9(10).
+           03  WRK-FILEMEI  .
+               05  WRK-FILEMEI-YMD         PIC X(08).
+               05  WRK-FILEMEI-HMS         PIC X(06).
+               05  WRK-FILEMEI-CD          PIC X(06).
            03  WRK-SYU-DENPNUM             PIC 9(07).
       *
        01  WRK-ROW-AREA.
@@ -326,6 +330,9 @@
            COPY    "CPORCSPRTNM.INC".
       *
            COPY    "CPORCHC03S02.INC".
+      *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
       *
       *************************************************************
       *    連絡　領域
@@ -2163,7 +2170,9 @@
                        MOVE    1       TO  FLG-GAI-SKYPRT
                        COMPUTE WRK-GAI-NYUKIN
                            =   WRK-GAI-NYUKIN
-                           +   SPA-GMN-TNYUKIN  (IDX0)
+                       COMPUTE WRK-GAI-KONSEIKYU
+                           =   WRK-GAI-KONSEIKYU
+                           +   SPA-GMN-TMISYU   (IDX0)
                        IF    ( SPA-GMN-TDENPNUM  (IDX0)
                                        >   WRK-GAI-DENPNUM )
                            MOVE    SPA-GMN-TDENPNUM  (IDX0)
@@ -2264,6 +2273,12 @@
       *************************************************************
        4801-GAI-SKYPRT-SEC             SECTION.
       *
+      *
+           PERFORM 800-MCNDATE-SEC
+      *
+           MOVE    SMCNDATE-YMD        TO  WRK-FILEMEI-YMD
+           MOVE    SMCNDATE-HMS        TO  WRK-FILEMEI-HMS
+      *
            MOVE    SPA-AREA            TO  WRK-SPA-AREA
            MOVE    SPA-GMN-PTID        TO  WRK-SPA-PTID
            MOVE    "2"                 TO  WRK-SPA-NYUGAIKBN
@@ -2279,14 +2294,16 @@
       *
            MOVE    "2"                 TO  SYUPARA01-NYUGAIKBN
            MOVE    SPA-GMN-NYU-MISYU   TO  SYUPARA01-NYU-MISYU
-           MOVE    SPA-GMN-GAI-MISYU   TO  SYUPARA01-GAI-MISYU
+           COMPUTE SYUPARA01-GAI-MISYU
+               =   SPA-GMN-GAI-MISYU   -   WRK-GAI-KONSEIKYU
            MOVE    WRK-NYU-NYUKIN      TO  SYUPARA01-NYU-NYUKIN
            MOVE    WRK-GAI-NYUKIN      TO  SYUPARA01-GAI-NYUKIN
            MOVE    SPA-GMN-SKYSUMKBN   TO  SYUPARA01-SKYSUMFLG
            MOVE    3                   TO  SYUPARA01-HAKKOFLG
+           MOVE    SPA-SYSYMD          TO  SYUPARA01-DENPPRTYMD
       *
            IF    ( SPA-ERRCD           =   SPACE )
-               MOVE    "001%"          TO  WRK-FILEMEI
+               MOVE    "001%"          TO  WRK-FILEMEI-CD
                PERFORM 4801-DELETE-PARA-SEC
            END-IF
       *
@@ -2294,7 +2311,8 @@
                INITIALIZE                  PARA-REC
                MOVE    "S02"           TO  PARA-GYOUMUID
                MOVE    SPA-TERMID      TO  PARA-TERMID
-               MOVE    "00101"         TO  PARA-FILEMEI
+               MOVE    "00101"         TO  WRK-FILEMEI-CD
+               MOVE    WRK-FILEMEI     TO  PARA-FILEMEI
                MOVE    1               TO  PARA-EDANUM
                MOVE    SYUPARA01-AREA  TO  PARA-DATA-REC
                MOVE    PARA-REC        TO  MCPDATA-REC
@@ -2336,7 +2354,8 @@
                INITIALIZE                      ORCHC03S02AREA
                MOVE    "S02"           TO      ORCHC03S02-GYOUMUID
                MOVE    SPA-TERMID      TO      ORCHC03S02-TERMID
-               MOVE    "00101"         TO      ORCHC03S02-FILEMEI
+               MOVE    "00101"         TO      WRK-FILEMEI-CD
+               MOVE    WRK-FILEMEI     TO      ORCHC03S02-FILEMEI
                CALL    "ORCHC03S02"    USING   WRK-SPA-AREA
                                                ORCHC03S02AREA
                IF    ( ORCHC03S02-RC   NOT =   ZERO )
@@ -2364,7 +2383,8 @@
                END-IF
                MOVE    "S02"               TO  ORCHC03-PARA-GYOUMUID
                MOVE    SPA-TERMID          TO  ORCHC03-PARA-TERMID
-               MOVE    "00102"             TO ORCHC03-PARA-FILEMEI
+               MOVE    "00102"             TO  WRK-FILEMEI-CD
+               MOVE    WRK-FILEMEI         TO  ORCHC03-PARA-FILEMEI
                CALL    WRK-GAI-SEIKYU-PG       USING
                                                WRK-SPA-AREA
                                                ORCHC03AREA
@@ -2372,7 +2392,7 @@
            END-IF
       *
            IF    ( SPA-ERRCD           =   SPACE )
-               MOVE    "001%"          TO  WRK-FILEMEI
+               MOVE    "001%"          TO  WRK-FILEMEI-CD
                PERFORM 4801-DELETE-PARA-SEC
            END-IF
       *
@@ -2964,6 +2984,17 @@
       *
            .
        800-SEIWA-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    マシン日付取得サブ
+      *****************************************************************
+       800-MCNDATE-SEC         SECTION.
+      *
+           CALL    "ORCSMCNDATE"   USING   ORCSMCNDATEAREA
+      *
+           .
+      *
+       800-MCNDATE-EXT.
            EXIT.
       *****************************************************************
       *    収納検索処理
