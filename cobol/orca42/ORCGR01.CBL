@@ -94,6 +94,8 @@
       *  02.08.01    NACL-藤原    06/02/20  主科対応
       *
       *  03.02.01    NACL-藤原    06/07/26  自賠責の枠印刷選択機能対応
+      *
+      *  03.02.01    NACL-藤原    06/08/01  国保主科対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -197,6 +199,8 @@
        01  SPA-RECE07-REC. 
            COPY    "CPRCF007.INC"  REPLACING  //RECE07//
                                    BY         //SPA-RECE07//.
+           03  SPA-RECE07-SRYKA-KOKUHO
+                                   PIC X(02).
       *
       *    ファイルデイレクトリ位置指定サブ
            COPY  "CPMKPASS.INC".
@@ -2280,7 +2284,7 @@
                MOVE    "99999999"          TO  SPA-RECE07-HKNJANUM 
                MOVE    "00"                TO  SPA-RECE07-SRYKA 
       *
-      *        一括作成で社保処理のとき主科設定の有無チェック
+      *        一括作成のとき主科設定の有無チェック
       **       IF    ( SPA-R01-FILEKBN         =   "1"         )
       **       AND   ( SPA-R01-RECEKBN         =   "0" OR  "1" )
       **       AND   ( SPA-SYUKA-KBN           =   "1"         )
@@ -2292,6 +2296,15 @@
                    PERFORM 900-RECE07-INV-SEC
                    IF      FLG-RECE07          =   ZERO
                        MOVE    RECE07-SRYKA    TO  SPA-RECE07-SRYKA
+                   END-IF
+                   MOVE    "tbl_recekanri"     TO  WRK-MCP-TABLE
+                   MOVE    "key6"              TO  WRK-MCP-PATHNAME
+                   MOVE    "2"                 TO  RECE07-TEISYUTUSAKI
+                   MOVE    RECE07-REC          TO  MCPDATA-REC
+                   PERFORM 900-RECE07-INV-SEC
+                   IF      FLG-RECE07          =   ZERO
+                       MOVE    RECE07-SRYKA    TO
+                                               SPA-RECE07-SRYKA-KOKUHO
                    END-IF
                END-IF  
            END-IF
@@ -2776,6 +2789,8 @@
                                           TO  SPA-R01-RECE07-HSEQNUM
                            MOVE    SPA-RECE07-HKNJANUM
                                           TO  SPA-R01-RECE07-HKNJANUM
+                           MOVE    SPA-RECE07-SRYKA-KOKUHO
+                                          TO SPA-R01-RECE07-SRYKA-KOKUHO
                        END-IF
                      END-IF
                    ELSE
@@ -2796,7 +2811,9 @@
                IF      R99-COUNT            >   ZERO    
                    MOVE    WIDGET-NORMAL        TO  R99-B12-STATE
                    MOVE    "B12"                TO  MCP-WIDGET
-                   IF      SPA-R01-RECE07-SRYKA    =   "XX"
+                   IF    ( SPA-R01-RECE07-SRYKA    =   "XX" )
+                   OR    ( SPA-R01-RECE07-SRYKA-KOKUHO
+                                                   =   "XX" )
                        MOVE
                       "処理は正常に終了しましたが主科未設定分があります"
                                                 TO  R99-MSG

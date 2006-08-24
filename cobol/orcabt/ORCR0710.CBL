@@ -138,7 +138,9 @@
       *
       *  03.01.01    NACL-藤原    06/07/03  旧総合病院の科表示
       *  03.01.02    NACL-門脇    06/07/13  項目クリア追加
+      *
       *  03.02.01    NACL-門脇    06/08/10  高齢者上限額経過措置対応
+      *  03.02.02    NACL-藤原    06/07/31  国保主科対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1516,6 +1518,18 @@
                                    =   SPACE
                MOVE    "0"             TO  SYS-2009-SYUKA-KBN
            END-IF
+           IF    ( SYS-2009-SYUKA-KBN
+                                   =   "1"   )
+           AND   ( SYS-2009-SYUKA-SYAHO
+                                   =   SPACE )
+               MOVE    "1"             TO  SYS-2009-SYUKA-SYAHO
+           END-IF      
+           IF    ( SYS-2009-SYUKA-KBN
+                                   =   "1"   )
+           AND   ( SYS-2009-SYUKA-KOKUHO
+                                   =   SPACE )
+               MOVE    "0"             TO  SYS-2009-SYUKA-KOKUHO
+           END-IF
       * 
       *    県内扱い保険者情報
            MOVE    SPACE            TO  WRK-1033-TABLE
@@ -2341,10 +2355,12 @@
       *
       *     診療科
       *
-      *     主科設定ありのときの記載
-           IF    ( SYS-2009-SYUKA-KBN  =   "1"                )
-           AND   ( RECE62-TEISYUTUSAKI =   "1"                )
-               IF      RECE62-SYUKA     NOT =   "XX"
+      *    主科設定ありのときの記載
+           IF  (     ( RECE62-TEISYUTUSAKI   =   "1" )
+                 AND ( SYS-2009-SYUKA-SYAHO  =   "1" ) )
+           OR  (     ( RECE62-TEISYUTUSAKI   =   "2" )
+                 AND ( SYS-2009-SYUKA-KOKUHO =   "1" ) )
+               IF      RECE62-SYUKA      NOT =   "XX"
                    IF      RECE62-RECESYUKA NOT =   SPACE
                        INITIALIZE                  ORCSKANACHKAREA
                        MOVE    "2"                 TO  KANACHK-SYORI 
@@ -6475,10 +6491,17 @@
                                            RECE08-CHOUKI
       *    主科設定
            IF    ( SYS-2009-SYUKA-KBN  =   "1"                )
-           AND   ( RECE62-TEISYUTUSAKI =   "1"                )
            AND   ( RECE62-RECESYUBETU  
-                                   NOT =   "8888"  AND "0000" )
-               MOVE    RECE62-SYUKA        TO  RECE08-SRYKA
+                                   NOT =   "8888"  AND "0000"
+                                                   AND "6666" )
+               IF  (     ( RECE62-TEISYUTUSAKI   =   "1" )
+                     AND ( SYS-2009-SYUKA-SYAHO
+                                             NOT =   "0" ) )
+               OR  (     ( RECE62-TEISYUTUSAKI   =   "2" )
+                     AND ( SYS-2009-SYUKA-KOKUHO
+                                             NOT =   "0" ) )
+                   MOVE    RECE62-SYUKA        TO  RECE08-SRYKA
+               END-IF
            END-IF
       *
       *    編綴順項目の設定（国保特別療養費以外）
@@ -6854,12 +6877,14 @@
            END-IF
       *
       *     主科設定のとき未設定なら更新しない
-           IF    ( SYS-2009-SYUKA-KBN  =   "1"                )
-           AND   ( RECE62-TEISYUTUSAKI =   "1"                )
-           AND   ( RECE62-RECESYUBETU  
-                                   NOT =   "8888"  AND "0000" )
-           AND   ( RECE62-SYUKA        =   "XX"               )
-               GO  TO  3904-RECE10-HENSYU-EXT
+           IF    ( SYS-2009-SYUKA-KBN  =   "1"  )
+           AND   ( RECE62-SYUKA        =   "XX" )
+               IF  (     ( RECE62-TEISYUTUSAKI   =   "1" )
+                     AND ( SYS-2009-SYUKA-SYAHO  =   "1" ) )
+               OR  (     ( RECE62-TEISYUTUSAKI   =   "2" )
+                     AND ( SYS-2009-SYUKA-KOKUHO =   "1" ) )
+                   GO  TO  3904-RECE10-HENSYU-EXT
+               END-IF
            END-IF
       *          
            INITIALIZE                  RECE10-REC
@@ -6867,11 +6892,21 @@
            MOVE    RECE62-SRYYM        TO  RECE10-SRYYM
            MOVE    RECE62-NYUGAIKBN    TO  RECE10-NYUGAIKBN
            MOVE    RECE62-PTID         TO  RECE10-PTID
-           IF    ( SYS-2009-SYUKA-KBN  =   "1"                )
-           AND   ( RECE62-TEISYUTUSAKI =   "1"                )
-           AND   ( RECE62-RECESYUBETU  
-                                   NOT =   "8888"  AND "0000" )
-               MOVE    RECE62-SYUKA        TO  RECE10-RECEKA
+           IF    ( SYS-2009-SYUKA-KBN  =   "1"    )
+      *****AND   ( RECE62-RECESYUBETU
+      *****                        NOT =   "6666" )
+               IF  (     ( RECE62-TEISYUTUSAKI   =   "1" )
+                     AND ( SYS-2009-SYUKA-SYAHO  =   "1" ) )
+               OR  (     ( RECE62-TEISYUTUSAKI   =   "2" )
+                     AND ( SYS-2009-SYUKA-KOKUHO =   "1" ) )
+                   MOVE    RECE62-SYUKA        TO  RECE10-RECEKA
+               ELSE
+                   IF      RECE62-RECEKA       =   SPACE
+                       MOVE    ZERO            TO  RECE10-RECEKA
+                   ELSE
+                       MOVE    RECE62-RECEKA   TO  RECE10-RECEKA
+                   END-IF
+               END-IF
            ELSE
                IF      RECE62-RECEKA       =   SPACE
                    MOVE    ZERO            TO  RECE10-RECEKA

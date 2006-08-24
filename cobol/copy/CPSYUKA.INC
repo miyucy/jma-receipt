@@ -20,6 +20,7 @@
       *****************************************************************
       *  修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  03.02.01    NACL-藤原    06/08/11  患者番号を追加
       *****************************************************************
       *
       *01  SYUKA-REC.
@@ -33,9 +34,9 @@
       *会計区分
                05  SYUKA-TEN-KBN       PIC X(01).
       *診療年月
-               05  SYUKA-SRYYM         PIC 9(06).
+               05  SYUKA-SRYYM         PIC X(06).
       *審査支払機関
-               05  SYUKA-TEISYUTUSAKI  PIC 9(01).
+               05  SYUKA-TEISYUTUSAKI  PIC X(01).
       *保険者番号
                05  SYUKA-HKNJANUM      PIC X(08).
       *補助区分
@@ -75,3 +76,5 @@
            03  SYUKA-UPYMD             PIC X(08).
       *更新時間
            03  SYUKA-UPHMS             PIC X(06).
+      *検索用項目
+           03  SYUKA-PTNUM             PIC X(20).

@@ -199,6 +199,8 @@
       *  03.00.05    NACL-藤原    06/07/11  前期高齢者の一部負担金の記載
       *  03.00.06    NACL-藤原    06/07/18  外来迅速検体検査加算にコメント
       *                                     がある場合の記載
+      *
+      *  03.02.01    NACL-藤原    06/07/31  国保主科対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1499,6 +1501,18 @@
            IF      SYS-2009-SYUKA-KBN
                                    =   SPACE
                MOVE    "0"             TO  SYS-2009-SYUKA-KBN
+           END-IF
+           IF    ( SYS-2009-SYUKA-KBN
+                                   =   "1"   )
+           AND   ( SYS-2009-SYUKA-SYAHO
+                                   =   SPACE )
+               MOVE    "1"             TO  SYS-2009-SYUKA-SYAHO
+           END-IF      
+           IF    ( SYS-2009-SYUKA-KBN
+                                   =   "1"   )
+           AND   ( SYS-2009-SYUKA-KOKUHO
+                                   =   SPACE )
+               MOVE    "0"             TO  SYS-2009-SYUKA-KOKUHO
            END-IF
       *    
            .
@@ -4781,14 +4795,24 @@
                MOVE    RECE02-SRYYM        TO  RECEDEN-SRYYM
                MOVE    RECE02-NYUGAIKBN    TO  RECEDEN-NYUGAIKBN
                MOVE    RECE02-PTID         TO  RECEDEN-PTID
-               IF    ( SYS-2009-SYUKA-KBN  =   "1"                )
-               AND   ( RECE02-TEISYUTUSAKI =   "1"                )
-                   MOVE    RECE02-SYUKA        TO  RECEDEN-RECEKA
+               IF    ( SYS-2009-SYUKA-KBN  =   "1" )
+                   IF  (     ( RECE02-TEISYUTUSAKI   =   "1" )
+                         AND ( SYS-2009-SYUKA-SYAHO  =   "1" ) )
+                   OR  (     ( RECE02-TEISYUTUSAKI   =   "2" )
+                         AND ( SYS-2009-SYUKA-KOKUHO =   "1" ) )
+                       MOVE    RECE02-SYUKA        TO  RECEDEN-RECEKA
+                   ELSE
+                       IF      RECE02-RECEKA       =   SPACE
+                           MOVE    ZERO            TO  RECEDEN-RECEKA
+                       ELSE
+                           MOVE    RECE02-RECEKA   TO  RECEDEN-RECEKA
+                       END-IF
+                   END-IF
                ELSE
                    IF      RECE02-RECEKA       =   SPACE
                        MOVE    ZERO            TO  RECEDEN-RECEKA
                    ELSE
-                       MOVE    RECE02-RECEKA   TO  RECEDEN-RECEKA
+                        MOVE    RECE02-RECEKA  TO  RECEDEN-RECEKA
                    END-IF
                END-IF
                MOVE    RECE02-TEISYUTUSAKI TO
@@ -4976,14 +5000,24 @@
            MOVE    RECE02-SRYYM        TO  RECEDEN-SRYYM
            MOVE    RECE02-NYUGAIKBN    TO  RECEDEN-NYUGAIKBN
            MOVE    RECE02-PTID         TO  RECEDEN-PTID
-           IF    ( SYS-2009-SYUKA-KBN  =   "1"                )
-           AND   ( RECE02-TEISYUTUSAKI =   "1"                )
-               MOVE    RECE02-SYUKA        TO  RECEDEN-RECEKA
+           IF    ( SYS-2009-SYUKA-KBN  =   "1" )
+               IF  (     ( RECE02-TEISYUTUSAKI   =   "1" )
+                     AND ( SYS-2009-SYUKA-SYAHO  =   "1" ) )
+               OR  (     ( RECE02-TEISYUTUSAKI   =   "2" )
+                     AND ( SYS-2009-SYUKA-KOKUHO =   "1" ) )
+                   MOVE    RECE02-SYUKA        TO  RECEDEN-RECEKA
+               ELSE
+                   IF      RECE02-RECEKA       =   SPACE
+                       MOVE    ZERO            TO  RECEDEN-RECEKA
+                   ELSE
+                       MOVE    RECE02-RECEKA   TO  RECEDEN-RECEKA
+                   END-IF
+               END-IF
            ELSE
                IF      RECE02-RECEKA       =   SPACE
                    MOVE    ZERO            TO  RECEDEN-RECEKA
                ELSE
-                   MOVE    RECE02-RECEKA   TO  RECEDEN-RECEKA
+                    MOVE    RECE02-RECEKA  TO  RECEDEN-RECEKA
                END-IF
            END-IF
            MOVE    RECE02-TEISYUTUSAKI TO  RECEDEN-TEISYUTUSAKI
@@ -5126,20 +5160,28 @@
            MOVE    RECE02-SRYYM        TO  RECEDEN-SRYYM
            MOVE    RECE02-NYUGAIKBN    TO  RECEDEN-NYUGAIKBN
            MOVE    RECE02-PTID         TO  RECEDEN-PTID
-           IF    ( SYS-2009-SYUKA-KBN  =   "1"                )
-           AND   ( RECE02-TEISYUTUSAKI =   "1"                )
-               MOVE    RECE02-SYUKA        TO  RECEDEN-RECEKA
+           IF    ( SYS-2009-SYUKA-KBN  =   "1" )
+               IF  (     ( RECE02-TEISYUTUSAKI   =   "1" )
+                     AND ( SYS-2009-SYUKA-SYAHO  =   "1" ) )
+               OR  (     ( RECE02-TEISYUTUSAKI   =   "2" )
+                     AND ( SYS-2009-SYUKA-KOKUHO =   "1" ) )
+                   MOVE    RECE02-SYUKA        TO  RECEDEN-RECEKA
+               ELSE
+                   IF      RECE02-RECEKA       =   SPACE
+                       MOVE    ZERO            TO  RECEDEN-RECEKA
+                   ELSE
+                       MOVE    RECE02-RECEKA   TO  RECEDEN-RECEKA
+                   END-IF
+               END-IF
            ELSE
                IF      RECE02-RECEKA       =   SPACE
                    MOVE    ZERO            TO  RECEDEN-RECEKA
                ELSE
-                   MOVE    RECE02-RECEKA   TO  RECEDEN-RECEKA
+                    MOVE    RECE02-RECEKA  TO  RECEDEN-RECEKA
                END-IF
            END-IF
-           MOVE    RECE02-TEISYUTUSAKI TO
-                                               RECEDEN-TEISYUTUSAKI
-           MOVE    RECE02-RECESYUBETU  TO
-                                               RECEDEN-RECESYUBETU
+           MOVE    RECE02-TEISYUTUSAKI TO      RECEDEN-TEISYUTUSAKI
+           MOVE    RECE02-RECESYUBETU  TO      RECEDEN-RECESYUBETU
            IF      RECE02-HKNJANUM-KEY =   SPACE
                MOVE    ZERO                TO  RECEDEN-HKNJANUM
            ELSE
@@ -5310,10 +5352,22 @@
                        MOVE    RECE02-NYUGAIKBN    TO  RECEDEN-NYUGAIKBN
                        MOVE    RECE02-PTID         TO  RECEDEN-PTID
                        IF    ( SYS-2009-SYUKA-KBN  =   "1" )
-                       AND   ( RECE02-TEISYUTUSAKI =   "1" )
-                           MOVE    RECE02-SYUKA    TO  RECEDEN-RECEKA
+                           IF  (     ( RECE02-TEISYUTUSAKI   =   "1" )
+                                 AND ( SYS-2009-SYUKA-SYAHO  =   "1" ) )
+                           OR  (     ( RECE02-TEISYUTUSAKI   =   "2" )
+                                 AND ( SYS-2009-SYUKA-KOKUHO =   "1" ) )
+                               MOVE    RECE02-SYUKA 
+                                                   TO  RECEDEN-RECEKA
+                           ELSE
+                               IF      RECE02-RECEKA       =   SPACE
+                                   MOVE    ZERO    TO  RECEDEN-RECEKA
+                               ELSE
+                                   MOVE    RECE02-RECEKA
+                                                   TO  RECEDEN-RECEKA
+                               END-IF
+                           END-IF
                        ELSE
-                           IF      RECE02-RECEKA   =   SPACE
+                           IF      RECE02-RECEKA       =   SPACE
                                MOVE    ZERO        TO  RECEDEN-RECEKA
                            ELSE
                                MOVE    RECE02-RECEKA
@@ -5428,10 +5482,22 @@
                        MOVE    RECE02-NYUGAIKBN    TO  RECEDEN-NYUGAIKBN
                        MOVE    RECE02-PTID         TO  RECEDEN-PTID
                        IF    ( SYS-2009-SYUKA-KBN  =   "1" )
-                       AND   ( RECE02-TEISYUTUSAKI =   "1" )
-                           MOVE    RECE02-SYUKA    TO  RECEDEN-RECEKA
+                           IF  (     ( RECE02-TEISYUTUSAKI   =   "1" )
+                                 AND ( SYS-2009-SYUKA-SYAHO  =   "1" ) )
+                           OR  (     ( RECE02-TEISYUTUSAKI   =   "2" )
+                                 AND ( SYS-2009-SYUKA-KOKUHO =   "1" ) )
+                               MOVE    RECE02-SYUKA 
+                                                   TO  RECEDEN-RECEKA
+                           ELSE
+                               IF      RECE02-RECEKA       =   SPACE
+                                   MOVE    ZERO    TO  RECEDEN-RECEKA
+                               ELSE
+                                   MOVE    RECE02-RECEKA
+                                                   TO  RECEDEN-RECEKA
+                               END-IF
+                           END-IF
                        ELSE
-                           IF      RECE02-RECEKA   =   SPACE
+                           IF      RECE02-RECEKA       =   SPACE
                                MOVE    ZERO        TO  RECEDEN-RECEKA
                            ELSE
                                MOVE    RECE02-RECEKA
@@ -5671,14 +5737,24 @@
            MOVE    RECE02-SRYYM        TO  RECEDEN-SRYYM
            MOVE    RECE02-NYUGAIKBN    TO  RECEDEN-NYUGAIKBN
            MOVE    RECE02-PTID         TO  RECEDEN-PTID
-           IF    ( SYS-2009-SYUKA-KBN  =   "1"                )
-           AND   ( RECE02-TEISYUTUSAKI =   "1"                )
-               MOVE    RECE02-SYUKA        TO  RECEDEN-RECEKA
+           IF    ( SYS-2009-SYUKA-KBN  =   "1" )
+               IF  (     ( RECE02-TEISYUTUSAKI   =   "1" )
+                     AND ( SYS-2009-SYUKA-SYAHO  =   "1" ) )
+               OR  (     ( RECE02-TEISYUTUSAKI   =   "2" )
+                     AND ( SYS-2009-SYUKA-KOKUHO =   "1" ) )
+                   MOVE    RECE02-SYUKA        TO  RECEDEN-RECEKA
+               ELSE
+                   IF      RECE02-RECEKA       =   SPACE
+                       MOVE    ZERO            TO  RECEDEN-RECEKA
+                   ELSE
+                       MOVE    RECE02-RECEKA   TO  RECEDEN-RECEKA
+                   END-IF
+               END-IF
            ELSE
                IF      RECE02-RECEKA       =   SPACE
                    MOVE    ZERO            TO  RECEDEN-RECEKA
                ELSE
-                   MOVE    RECE02-RECEKA   TO  RECEDEN-RECEKA
+                    MOVE    RECE02-RECEKA  TO  RECEDEN-RECEKA
                END-IF
            END-IF
            MOVE    RECE02-TEISYUTUSAKI TO  RECEDEN-TEISYUTUSAKI

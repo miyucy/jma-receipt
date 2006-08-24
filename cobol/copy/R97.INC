@@ -8,6 +8,11 @@
                   05  R97-VALUE   PIC X(8).
                 04  R97-NYUGAIKBN-COUNT   PIC S9(9)   BINARY.
                 04  R97-NYUGAIKBN-ITEM    PIC X(8)    OCCURS  2 TIMES.
+              03  R97-HTEISYUTUSAKICOMBO.
+                04  R97-HTEISYUTUSAKI.
+                  05  R97-VALUE   PIC X(8).
+                04  R97-HTEISYUTUSAKI-COUNT   PIC S9(9) BINARY.
+                04  R97-HTEISYUTUSAKI-ITEM    PIC X(8)  OCCURS  3 TIMES.
               03  R97-HYOUJIKBNCOMBO.
                 04  R97-HYOUJIKBN.
                   05  R97-VALUE   PIC X(10).
@@ -19,6 +24,8 @@
                 04  R97-VALUE   PIC X(20).
               03  R97-NAME.
                 04  R97-VALUE   PIC X(30).
+              03  R97-TEISYUTUSAKI.
+                04  R97-VALUE   PIC X(4).
               03  R97-RECESYUBETU.
                 04  R97-VALUE   PIC X(20).
               03  R97-HKNJANUM.
@@ -47,6 +54,7 @@
                     06  R97-SYUKA-TTSTPTNUMKBN  PIC X(2).
                     06  R97-SYUKA-TPTNUM  PIC X(20).
                     06  R97-SYUKA-TNAME   PIC X(30).
+                    06  R97-SYUKA-TTEISYUTUSAKI   PIC X(4).
                     06  R97-SYUKA-TRECESYUBETU PIC X(10).
                     06  R97-SYUKA-THKNJANUM    PIC X(8).
                     06  R97-SYUKA-THOJOKBN     PIC X(10).

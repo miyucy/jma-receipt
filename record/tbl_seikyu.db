@@ -1567,7 +1567,6 @@ path	key44	{
                   AND (      HKNNUM_S    <>   '067'       ) 
                   AND (      HKNNUM_S    <>   '068'       )
                   AND (      HKNNUM_S    <>   '069'       ) 
-                  AND (      RECESYUBETU <>   '0000'      )
                   AND (   (( SRYYM       =    :SKYYM   )
                        AND ( SKYKBN      <>   '0'      )
                        AND (( SKYYM       =   '000000' ) OR ( SKYYM = :SKYYM )))
@@ -1931,6 +1930,27 @@ path	key56	{
                         OR ( ETC_KOHNUM3 =    '972'    )  
                         OR ( ETC_KOHNUM4 =    '972'    )  )
                   ORDER BY RECEKA
+		;
+	};
+};
+
+path	key57	{
+	DBSELECT	{
+		DECLARE tbl_seikyu_key57_csr CURSOR FOR
+		SELECT *
+		FROM tbl_seikyu
+                WHERE (      HOSPID      =    :HOSPID     )
+                  AND (      HKNNUM_S    =    '060'       )
+                  AND (      HKNNUM_S    =    '067'       ) 
+                  AND (      HKNNUM_S    =    '068'       )
+                  AND (      HKNNUM_S    =    '069'       ) 
+                  AND (   (( SRYYM       =    :SKYYM   )
+                       AND ( SKYKBN      <>   '0'      )
+                       AND (( SKYYM       =   '000000' ) OR ( SKYYM = :SKYYM )))
+                       OR (( SKYYM       =    :SKYYM   )
+                       AND ( SKYKBN      <>   '0'      )))
+                  AND (      RECEKA      LIKE :RECEKA     )
+                  ORDER BY RECEKA,NYUGAIKBN,SRYYM,SKYYM,HKNJANUM,PTNUM   
 		;
 	};
 };

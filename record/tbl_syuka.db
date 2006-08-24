@@ -37,6 +37,8 @@ tbl_syuka {
     CREYMD              char(8);
     UPYMD               char(8);
     UPHMS               char(6);
+#-----> ¸¡º÷ÍÑ¹àÌÜ
+    XXPTNUM             char(20),virtual;
 };
 primary {
     HOSPID,NYUGAIKBN,PTID,TEN_KBN,SRYYM,TEISYUTUSAKI,HKNJANUM,HOJOKBN,RECESYUBETU,SRYKA;
@@ -200,10 +202,11 @@ path	key10		{
 			WHERE   a.HOSPID       =   :HOSPID
 			AND     SRYYM          =   :SRYYM
 			AND     NYUGAIKBN      =   :NYUGAIKBN
-			AND     TEISYUTUSAKI   =   '1'
+			AND     TEISYUTUSAKI   LIKE :TEISYUTUSAKI
 			AND     RECESYUBETU    <>  '8888'
 			AND     a.HOSPID       =   b.HOSPID
 			AND     a.PTID         =   b.PTID
+			AND     PTNUM          >=  :XXPTNUM
 			AND     DLT_FLG        <>   '1'
 			ORDER   BY  PTNUM,TEN_KBN,TEISYUTUSAKI,HKNJANUM,HOJOKBN,RECESYUBETU,SRYKA
 		;
@@ -218,7 +221,7 @@ path	key11		{
 			WHERE   a.HOSPID       =   :HOSPID
 			AND     SRYYM          =   :SRYYM
 			AND     NYUGAIKBN      =   :NYUGAIKBN
-			AND     TEISYUTUSAKI   =   '1'
+			AND     TEISYUTUSAKI   LIKE :TEISYUTUSAKI
 			AND     RECESYUBETU    <>  '8888'
 			AND     a.HOSPID       =   b.HOSPID
 			AND     a.PTID         =   b.PTID

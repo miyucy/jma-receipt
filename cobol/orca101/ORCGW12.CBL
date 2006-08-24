@@ -76,6 +76,7 @@
       *                                     （入院外・入院別）
       *  03.02.02    NACL-藤原    06/07/24  マル長の別総括対応
       *  03.02.03    NACL-藤原    06/07/26  自賠責の枠印刷選択機能対応
+      *  03.02.04    NACL-藤原    06/08/01  国保主科対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -370,6 +371,18 @@
                            11  SPA-GMN-F1     PIC X(01).
                            11  SPA-GMN-SYUKA-SELECTMEI
                                               PIC X(28).
+                       09  SPA-GMN-SYUKA-SYAHO-G.
+                           11  SPA-GMN-SYUKA-SYAHO
+                                              PIC X(01).
+                           11  SPA-GMN-F1     PIC X(01).
+                           11  SPA-GMN-SYUKA-SYAHOMEI
+                                              PIC X(20).
+                       09  SPA-GMN-SYUKA-KOKUHO-G.
+                           11  SPA-GMN-SYUKA-KOKUHO
+                                              PIC X(01).
+                           11  SPA-GMN-F1     PIC X(01).
+                           11  SPA-GMN-SYUKA-KOKUHOMEI
+                                              PIC X(20).
                        09  SPA-GMN-NI-JYOKEN1 PIC 9(08).
                        09  SPA-GMN-NI-JYOKEN2 PIC 9(08).
                        09  SPA-GMN-NI-JYOKEN3 PIC 9(08).
@@ -677,6 +690,23 @@
                        09  SPA-GMN-SYUKA-MODEMEIL
                                               PIC X(20).
                    07  SPA-GMN-SYUKA-MODE-MAX PIC 9(02).   
+      * 
+                   07  SPA-GMN-SYUKA-SYAHOLST  OCCURS  3.
+                       09  SPA-GMN-SYUKA-SYAHOL
+                                               PIC X(01).
+                       09  SPA-GMN-F1L         PIC X(01).
+                       09  SPA-GMN-SYUKA-SYAHOMEIL
+                                               PIC X(20).
+                   07  SPA-GMN-SYUKA-SYAHO-MAX PIC 9(02).   
+      * 
+                   07  SPA-GMN-SYUKA-KOKUHOLST OCCURS  3.
+                       09  SPA-GMN-SYUKA-KOKUHOL
+                                               PIC X(01).
+                       09  SPA-GMN-F1L         PIC X(01).
+                       09  SPA-GMN-SYUKA-KOKUHOMEIL
+                                               PIC X(20).
+                   07  SPA-GMN-SYUKA-KOKUHO-MAX
+                                               PIC 9(02).   
       * 
                    07  SPA-GMN-FRAME-JIBAIPRTKBNLST  OCCURS  2.
                        09  SPA-GMN-FRAME-JIBAIPRTKBNL
@@ -1349,6 +1379,22 @@
            MOVE    "一括バッチ"    TO  SPA-GMN-SYUKA-MODEMEIL  (2)
            MOVE    2               TO  SPA-GMN-SYUKA-MODE-MAX 
       *
+           MOVE    "0"             TO  SPA-GMN-SYUKA-SYAHOL     (1)
+           MOVE    "しない"        TO  SPA-GMN-SYUKA-SYAHOMEIL  (1)
+           MOVE    "1"             TO  SPA-GMN-SYUKA-SYAHOL     (2)
+           MOVE    "主科"          TO  SPA-GMN-SYUKA-SYAHOMEIL  (2)
+           MOVE    "2"             TO  SPA-GMN-SYUKA-SYAHOL     (3)
+           MOVE    "科表示のみ"    TO  SPA-GMN-SYUKA-SYAHOMEIL  (3)
+           MOVE    3               TO  SPA-GMN-SYUKA-SYAHO-MAX 
+      *
+           MOVE    "0"             TO  SPA-GMN-SYUKA-KOKUHOL    (1)
+           MOVE    "しない"        TO  SPA-GMN-SYUKA-KOKUHOMEIL (1)
+           MOVE    "1"             TO  SPA-GMN-SYUKA-KOKUHOL    (2)
+           MOVE    "主科"          TO  SPA-GMN-SYUKA-KOKUHOMEIL (2)
+           MOVE    "2"             TO  SPA-GMN-SYUKA-KOKUHOL    (3)
+           MOVE    "科表示のみ"    TO  SPA-GMN-SYUKA-KOKUHOMEIL (3)
+           MOVE    3               TO  SPA-GMN-SYUKA-KOKUHO-MAX 
+      *
            MOVE    "0"             TO  SPA-GMN-FRAME-JIBAIPRTKBNL    (1)
            MOVE    "枠を記載しない"
                                    TO  SPA-GMN-FRAME-JIBAIPRTKBNMEIL (1)
@@ -1934,13 +1980,24 @@
            IF      FLG-SYSKANRI            =   ZERO
                MOVE    MCPDATA-REC             TO  SYS-2009-REC
       *
+      *        主科設定フラグが「する」で社保設定フラグが未設定のとき
+      *        社保設定フラグを「主科」にする
+               IF    ( SYS-2009-SYUKA-KBN      =   "1"   )
+               AND   ( SYS-2009-SYUKA-SYAHO    =   SPACE )
+                   MOVE    "1"             TO  SYS-2009-SYUKA-SYAHO
+               END-IF      
+               IF    ( SYS-2009-SYUKA-KBN      =   "1"   )
+               AND   ( SYS-2009-SYUKA-KOKUHO   =   SPACE )
+                   MOVE    "0"             TO  SYS-2009-SYUKA-KOKUHO
+               END-IF      
+      *
                MOVE    SYS-2009-SYUKA-KBN      TO  SPA-GMN-SYUKA-KBN
                PERFORM VARYING IDY FROM    1   BY  1
                        UNTIL   IDY >       SPA-GMN-SYUKA-KBN-MAX
                    IF      SPA-GMN-SYUKA-KBN
                                    =   SPA-GMN-SYUKA-KBNL (IDY)
                        MOVE    SPA-GMN-SYUKA-KBNLST (IDY)
-                                               TO SPA-GMN-SYUKA-KBN-G
+                                               TO  SPA-GMN-SYUKA-KBN-G
                        MOVE    SPA-GMN-SYUKA-KBN-MAX
                                                TO  IDY
                    END-IF
@@ -1991,6 +2048,31 @@
                        MOVE    SPA-GMN-SYUKA-MODELST (IDY)
                                                TO  SPA-GMN-SYUKA-MODE-G
                        MOVE    SPA-GMN-SYUKA-MODE-MAX
+                                               TO  IDY
+                   END-IF
+               END-PERFORM
+      *
+               MOVE    SYS-2009-SYUKA-SYAHO    TO  SPA-GMN-SYUKA-SYAHO
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >   SPA-GMN-SYUKA-SYAHO-MAX
+                   IF      SPA-GMN-SYUKA-SYAHO
+                                   =   SPA-GMN-SYUKA-SYAHOL (IDY)
+                       MOVE    SPA-GMN-SYUKA-SYAHOLST (IDY)
+                                               TO  SPA-GMN-SYUKA-SYAHO-G
+                       MOVE    SPA-GMN-SYUKA-SYAHO-MAX
+                                               TO  IDY
+                   END-IF
+               END-PERFORM
+      *
+               MOVE    SYS-2009-SYUKA-KOKUHO   TO  SPA-GMN-SYUKA-KOKUHO
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >   SPA-GMN-SYUKA-KOKUHO-MAX
+                   IF      SPA-GMN-SYUKA-KOKUHO
+                                   =   SPA-GMN-SYUKA-KOKUHOL (IDY)
+                       MOVE    SPA-GMN-SYUKA-KOKUHOLST (IDY)
+                                               TO
+                                               SPA-GMN-SYUKA-KOKUHO-G
+                       MOVE    SPA-GMN-SYUKA-KOKUHO-MAX
                                                TO  IDY
                    END-IF
                END-PERFORM
@@ -2248,6 +2330,8 @@
            MOVE    W12-SYUKA-GAIRAI    TO  SPA-GMN-SYUKA-GAIRAI-G
            MOVE    W12-SYUKA-SELECT    TO  SPA-GMN-SYUKA-SELECT-G
            MOVE    W12-SYUKA-MODE      TO  SPA-GMN-SYUKA-MODE-G
+           MOVE    W12-SYUKA-SYAHO     TO  SPA-GMN-SYUKA-SYAHO-G
+           MOVE    W12-SYUKA-KOKUHO    TO  SPA-GMN-SYUKA-KOKUHO-G
            MOVE    W12-NI-JYOKEN1      TO  SPA-GMN-NI-JYOKEN1
            MOVE    W12-NI-JYOKEN2      TO  SPA-GMN-NI-JYOKEN2
            MOVE    W12-NI-JYOKEN3      TO  SPA-GMN-NI-JYOKEN3
@@ -2510,6 +2594,16 @@
            END-IF
       *
            PERFORM 4138-SYUKA-MODE-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4148-SYUKA-SYAHO-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4149-SYUKA-KOKUHO-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
@@ -3578,8 +3672,7 @@
       *****************************************************************
        4138-SYUKA-MODE-CHK-SEC   SECTION.
       *
-           IF      SPA-GMN-SYUKA-MODE
-                                           =   SPACE
+           IF      SPA-GMN-SYUKA-MODE      =   SPACE
                CONTINUE
            ELSE
                PERFORM VARYING IDY FROM    1   BY  1
@@ -3801,6 +3894,62 @@
       *
            .
        4147-FRAME-JIBAIPRTKBN-N-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    主科社保設定フラグチェック
+      *****************************************************************
+       4148-SYUKA-SYAHO-CHK-SEC   SECTION.
+      *
+           IF      SPA-GMN-SYUKA-SYAHO =   SPACE
+               CONTINUE
+           ELSE
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >   SPA-GMN-SYUKA-SYAHO-MAX
+                   IF      SPA-GMN-SYUKA-SYAHO
+                                       =   SPA-GMN-SYUKA-SYAHOL (IDY)
+                       MOVE    SPA-GMN-SYUKA-SYAHOLST (IDY)
+                                           TO  SPA-GMN-SYUKA-SYAHO-G
+                       MOVE    SPA-GMN-SYUKA-SYAHO-MAX
+                                           TO  IDY
+                   END-IF                                     
+               END-PERFORM
+      *     
+               IF      SPA-GMN-SYUKA-SYAHOMEI =   SPACE
+                   MOVE    95                      TO  SPA-GMN-CUR
+                   MOVE    "0039"                  TO  SPA-ERRCD
+               END-IF
+           END-IF    
+           .
+       4148-SYUKA-SYAHO-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    主科国保設定フラグチェック
+      *****************************************************************
+       4149-SYUKA-KOKUHO-CHK-SEC   SECTION.
+      *
+           IF      SPA-GMN-SYUKA-KOKUHO    =   SPACE
+               CONTINUE
+           ELSE
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >   SPA-GMN-SYUKA-KOKUHO-MAX
+                   IF      SPA-GMN-SYUKA-KOKUHO
+                                       =   SPA-GMN-SYUKA-KOKUHOL (IDY)
+                       MOVE    SPA-GMN-SYUKA-KOKUHOLST (IDY)
+                                           TO  SPA-GMN-SYUKA-KOKUHO-G
+                       MOVE    SPA-GMN-SYUKA-KOKUHO-MAX
+                                           TO  IDY
+                   END-IF                                     
+               END-PERFORM
+      *     
+               IF      SPA-GMN-SYUKA-KOKUHOMEI =   SPACE
+                   MOVE    96                      TO  SPA-GMN-CUR
+                   MOVE    "0040"                  TO  SPA-ERRCD
+               END-IF
+           END-IF    
+           .
+       4149-SYUKA-KOKUHO-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4047,6 +4196,9 @@
            MOVE    SPA-GMN-SYUKA-MODE  TO  SYS-2009-SYUKA-MODE
            MOVE    SPA-GMN-SYUKA-SELECT
                                        TO  SYS-2009-SYUKA-SELECT
+           MOVE    SPA-GMN-SYUKA-SYAHO TO  SYS-2009-SYUKA-SYAHO
+           MOVE    SPA-GMN-SYUKA-KOKUHO
+                                       TO  SYS-2009-SYUKA-KOKUHO
            MOVE    SYS-2009-REC        TO  SYSKANRI-REC
       *     
            PERFORM 800-MCNDATE-SEC
@@ -4249,6 +4401,8 @@
                AND   ( SPA-GMN-SYUKA-GAIRAI    =   SPACE )
                AND   ( SPA-GMN-SYUKA-MODE      =   SPACE )
                AND   ( SPA-GMN-SYUKA-SELECT    =   SPACE )
+               AND   ( SPA-GMN-SYUKA-SYAHO     =   SPACE )
+               AND   ( SPA-GMN-SYUKA-KOKUHO    =   SPACE )
                    CONTINUE
                ELSE
                    IF    ( SPA-GMN-SYUKA-KBN       =   ZERO )
@@ -4256,6 +4410,8 @@
                        AND   ( SPA-GMN-SYUKA-GAIRAI    =   SPACE )
                        AND   ( SPA-GMN-SYUKA-MODE      =   SPACE )
                        AND   ( SPA-GMN-SYUKA-SELECT    =   SPACE )
+                       AND   ( SPA-GMN-SYUKA-SYAHO     =   SPACE )
+                       AND   ( SPA-GMN-SYUKA-KOKUHO    =   SPACE )
                            CONTINUE
                        ELSE
                            MOVE    91                  TO  SPA-GMN-CUR
@@ -4266,13 +4422,22 @@
                            MOVE    90                  TO  SPA-GMN-CUR
                            MOVE    "0101"              TO  SPA-ERRCD
                        ELSE
-                           IF   ( SPA-GMN-SYUKA-GAIRAI     =   SPACE )
-                           OR   ( SPA-GMN-SYUKA-MODE       =   SPACE )
-                           OR   ( SPA-GMN-SYUKA-SELECT     =   SPACE )
+                           IF    ( SPA-GMN-SYUKA-GAIRAI    =   SPACE )
+                           OR    ( SPA-GMN-SYUKA-MODE      =   SPACE )
+                           OR    ( SPA-GMN-SYUKA-SELECT    =   SPACE )
                                MOVE    91              TO  SPA-GMN-CUR
                                MOVE    "0099"          TO  SPA-ERRCD
                            END-IF
-                           IF    ( SPA-BEDSU               >   ZERO  )
+                           IF    ( SPA-ERRCD               =   SPACE )
+                           AND   ( SPA-GMN-SYUKA-SYAHO     =   SPACE
+                                                           OR  "0"   )
+                           AND   ( SPA-GMN-SYUKA-KOKUHO    =   SPACE
+                                                           OR  "0"   )
+                               MOVE    95              TO  SPA-GMN-CUR
+                               MOVE    "0102"          TO  SPA-ERRCD
+                           END-IF
+                           IF    ( SPA-ERRCD               =   SPACE )
+                           AND   ( SPA-BEDSU               >   ZERO  )
                            AND   ( SPA-GMN-SYUKA-NYUIN     =   SPACE )
                                MOVE    91              TO  SPA-GMN-CUR
                                MOVE    "0099"          TO  SPA-ERRCD
@@ -4369,6 +4534,8 @@
            MOVE    SPA-GMN-SYUKA-GAIRAI-G   TO  W12-SYUKA-GAIRAI
            MOVE    SPA-GMN-SYUKA-MODE-G     TO  W12-SYUKA-MODE
            MOVE    SPA-GMN-SYUKA-SELECT-G   TO  W12-SYUKA-SELECT
+           MOVE    SPA-GMN-SYUKA-SYAHO-G    TO  W12-SYUKA-SYAHO
+           MOVE    SPA-GMN-SYUKA-KOKUHO-G   TO  W12-SYUKA-KOKUHO
            MOVE    SPA-GMN-NI-JYOKEN1       TO  W12-NI-JYOKEN1
            MOVE    SPA-GMN-NI-JYOKEN2       TO  W12-NI-JYOKEN2
            MOVE    SPA-GMN-NI-JYOKEN3       TO  W12-NI-JYOKEN3
@@ -4715,6 +4882,21 @@
                                            TO  W12-SYUKA-SELECT-COUNT 
       *     
            PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >   SPA-GMN-SYUKA-SYAHO-MAX
+               MOVE    SPA-GMN-SYUKA-SYAHOLST (IDY)
+                                           TO  W12-SYUKA-SYAHOLST (IDY)
+           END-PERFORM
+           MOVE    SPA-GMN-SYUKA-SYAHO-MAX TO  W12-SYUKA-SYAHO-COUNT 
+      *     
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >   SPA-GMN-SYUKA-KOKUHO-MAX
+               MOVE    SPA-GMN-SYUKA-KOKUHOLST (IDY)
+                                           TO  W12-SYUKA-KOKUHOLST (IDY)
+           END-PERFORM
+           MOVE    SPA-GMN-SYUKA-KOKUHO-MAX
+                                           TO  W12-SYUKA-KOKUHO-COUNT 
+     *     
+           PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >   SPA-GMN-FRAME-JIBAIPRTKBN-MAX
                MOVE    SPA-GMN-FRAME-JIBAIPRTKBNLST (IDY)
                                            TO
@@ -4864,6 +5046,10 @@
                WHEN    "0038"
                    MOVE    "自賠責・枠記載区分（入院）入力エラー"
                                                          TO  SPA-ERRMSG
+               WHEN    "0039"
+                   MOVE    "主科社保設定入力エラー"      TO  SPA-ERRMSG
+               WHEN    "0040"
+                   MOVE    "主科国保設定入力エラー"      TO  SPA-ERRMSG
       *
                WHEN    "0096"
                    STRING  "一括作成出力順（国保）の指定が編綴順です。"
@@ -4892,6 +5078,9 @@
                                                TO  SPA-ERRMSG
                WHEN    "0101"
                    MOVE    "旧総合病院であるとき主科設定はできません"
+                                               TO  SPA-ERRMSG
+               WHEN    "0102"
+                   MOVE    "社保または国保の設定の設定がありません"
                                                TO  SPA-ERRMSG
       *
                WHEN    "1003"
@@ -5072,6 +5261,10 @@
                     MOVE  "SYUKA_SELECT"     TO   MCP-WIDGET
                 WHEN    94
                     MOVE  "SYUKA_MODE"       TO   MCP-WIDGET
+                WHEN    95
+                    MOVE  "SYUKA_SYAHO"      TO   MCP-WIDGET
+                WHEN    96
+                    MOVE  "SYUKA_KOKUHO"     TO   MCP-WIDGET
       *
                 WHEN    100
                     MOVE  "SYARECEKBN"       TO   MCP-WIDGET
@@ -5258,6 +5451,10 @@
                WHEN    "SYUKA_SELECT"
                    MOVE    94          TO  SPA-GMN-CUR
                WHEN    "SYUKA_MODE"
+                   MOVE    95          TO  SPA-GMN-CUR
+               WHEN    "SYUKA_SYAHO"
+                   MOVE    96          TO  SPA-GMN-CUR
+               WHEN    "SYUKA_KOKUHO"
                    MOVE    99          TO  SPA-GMN-CUR
       *
                WHEN    "SYAPRTKBN"

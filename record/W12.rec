@@ -363,6 +363,20 @@ W12	{
 					count	int;
 					item	varchar(22)[2];
 				};
+				SYUKA_SYAHO_COMBO	{
+					SYUKA_SYAHO	{
+						value	varchar(22);
+					};
+					count	int;
+					item	varchar(22)[3];
+				};
+				SYUKA_KOKUHO_COMBO	{
+					SYUKA_KOKUHO	{
+						value	varchar(22);
+					};
+					count	int;
+					item	varchar(22)[3];
+				};
 			};
 		};
 	};

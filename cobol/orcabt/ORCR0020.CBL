@@ -144,6 +144,8 @@
       *  03.00.01    NACL-Æ£¸¶    06/05/15  ÆþÂà±¡ÍúÎòµ­ºÜÂÐ±þ
       *
       *  03.01.01    NACL-Æ£¸¶    06/07/03  µìÁí¹çÉÂ±¡¤Î²ÊÉ½¼¨
+      *
+      *  03.02.01    NACL-Æ£¸¶    06/07/31  ¹ñÊÝ¼ç²ÊÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -668,46 +670,60 @@
            END-IF
       *         
       *    ¥ì¥»¥×¥ÈÊÔ½¸¶èÊ¬¾ðÊó
-           MOVE    SPACE           TO  SYSKANRI-REC
-           INITIALIZE                  SYSKANRI-REC
-           MOVE    "2009"          TO  SYS-KANRICD
-           MOVE    "*"             TO  SYS-KBNCD
-           MOVE    WRK-PARA-SRYYM  TO  SYS-STYUKYMD (1:6)
-           MOVE    "01"            TO  SYS-STYUKYMD (7:2)
-           MOVE    SYS-STYUKYMD    TO  SYS-EDYUKYMD
-           MOVE    "tbl_syskanri"  TO  WRK-MCP-TABLE
-           MOVE    "key10"         TO  WRK-MCP-PATHNAME
-           PERFORM 960-KANRIMST-READ-SEC
-           IF      FLG-SYSKANRI    =   ZERO
-               MOVE    MCPDATA-REC     TO  SYS-2009-REC
-           ELSE    
-               INITIALIZE                  SYS-2009-REC
-           END-IF
-           IF      SYS-2009-SYUKA-KBN
-                                   =   SPACE
-               MOVE    "0"             TO  SYS-2009-SYUKA-KBN
-           END-IF
+           IF      FLG-END             =   ZERO
+               MOVE    SPACE           TO  SYSKANRI-REC
+               INITIALIZE                  SYSKANRI-REC
+               MOVE    "2009"          TO  SYS-KANRICD
+               MOVE    "*"             TO  SYS-KBNCD
+               MOVE    WRK-PARA-SRYYM  TO  SYS-STYUKYMD (1:6)
+               MOVE    "01"            TO  SYS-STYUKYMD (7:2)
+               MOVE    SYS-STYUKYMD    TO  SYS-EDYUKYMD
+               MOVE    "tbl_syskanri"  TO  WRK-MCP-TABLE
+               MOVE    "key10"         TO  WRK-MCP-PATHNAME
+               PERFORM 960-KANRIMST-READ-SEC
+               IF      FLG-SYSKANRI    =   ZERO
+                   MOVE    MCPDATA-REC     TO  SYS-2009-REC
+               ELSE    
+                   INITIALIZE                  SYS-2009-REC
+               END-IF
+               IF      SYS-2009-SYUKA-KBN
+                                       =   SPACE
+                   MOVE    "0"             TO  SYS-2009-SYUKA-KBN
+               END-IF
+               IF    ( SYS-2009-SYUKA-KBN
+                                       =   "1"   )
+               AND   ( SYS-2009-SYUKA-SYAHO
+                                       =   SPACE )
+                   MOVE    "1"             TO  SYS-2009-SYUKA-SYAHO
+               END-IF      
+               IF    ( SYS-2009-SYUKA-KBN
+                                       =   "1"   )
+               AND   ( SYS-2009-SYUKA-KOKUHO
+                                       =   SPACE )
+                   MOVE    "0"             TO  SYS-2009-SYUKA-KOKUHO
+               END-IF
       *         
-      *    ¥ì¥»¥×¥ÈÊÔ½¸¾ðÊó
-           MOVE    SPACE           TO  SYSKANRI-REC
-           INITIALIZE                  SYSKANRI-REC
-           MOVE    "2005"          TO  SYS-KANRICD
-           MOVE    "*"             TO  SYS-KBNCD
-           MOVE    WRK-PARA-SRYYM  TO  SYS-STYUKYMD (1:6)
-           MOVE    "01"            TO  SYS-STYUKYMD (7:2)
-           MOVE    SYS-STYUKYMD    TO  SYS-EDYUKYMD
-           MOVE    "tbl_syskanri"  TO  WRK-MCP-TABLE
-           MOVE    "key10"         TO  WRK-MCP-PATHNAME
-           PERFORM 960-KANRIMST-READ-SEC
-           IF      FLG-SYSKANRI    =   ZERO
-               MOVE    MCPDATA-REC     TO  SYS-2005-REC
-           ELSE    
-               INITIALIZE                  SYS-2005-REC
-           END-IF
-           IF      SYS-2005-NYUTAIINREKI-KSIKBN
-                                   =   SPACE
-               MOVE    "0"             TO  SYS-2005-NYUTAIINREKI-KSIKBN
-           END-IF
+      *        ¥ì¥»¥×¥ÈÊÔ½¸¾ðÊó
+               MOVE    SPACE           TO  SYSKANRI-REC
+               INITIALIZE                  SYSKANRI-REC
+               MOVE    "2005"          TO  SYS-KANRICD
+               MOVE    "*"             TO  SYS-KBNCD
+               MOVE    WRK-PARA-SRYYM  TO  SYS-STYUKYMD (1:6)
+               MOVE    "01"            TO  SYS-STYUKYMD (7:2)
+               MOVE    SYS-STYUKYMD    TO  SYS-EDYUKYMD
+               MOVE    "tbl_syskanri"  TO  WRK-MCP-TABLE
+               MOVE    "key10"         TO  WRK-MCP-PATHNAME
+               PERFORM 960-KANRIMST-READ-SEC
+               IF      FLG-SYSKANRI    =   ZERO
+                   MOVE    MCPDATA-REC     TO  SYS-2005-REC
+               ELSE    
+                   INITIALIZE                  SYS-2005-REC
+               END-IF
+               IF      SYS-2005-NYUTAIINREKI-KSIKBN
+                                       =   SPACE
+                   MOVE    "0"         TO  SYS-2005-NYUTAIINREKI-KSIKBN
+               END-IF
+          END-IF
       *
           .
        100-INIT-EXT.
@@ -1289,9 +1305,15 @@
       *    ¼ç²ÊÀßÄê
            IF    ( IDZ                 =   1      )
            AND   ( SYS-2009-SYUKA-KBN  =   "1"    )
-           AND   ( RECE02-TEISYUTUSAKI =   "1"    )
+      *****AND   ( RECE02-TEISYUTUSAKI =   "1"    )
            AND   ( RECE02-RECESYUBETU  
                                    NOT =   "8888" )
+             IF  (     ( RECE02-TEISYUTUSAKI   =   "1" )
+                   AND ( SYS-2009-SYUKA-SYAHO
+                                           NOT =   "0" ) )
+             OR  (     ( RECE02-TEISYUTUSAKI   =   "2" )
+                   AND ( SYS-2009-SYUKA-KOKUHO
+                                           NOT =   "0" ) )
                INITIALIZE                      ORCSSYUACCAREA
                MOVE    RECE02-HOSPID   TO  SPA-HOSPID
                MOVE    RECE02-SRYYM    TO  LNK-SYUACC-I-SRYYM
@@ -1310,8 +1332,10 @@
                                        TO  SPA-SYUKA-SELECT
                MOVE    RECE02-RECESYUBETU
                                        TO  LNK-SYUACC-IO-RECESYUBETU (1)
-               MOVE    RECE02-HKNJANUM TO  LNK-SYUACC-IO-HKNJANUM    (1)
-               MOVE    RECE02-HOJOKBN  TO  LNK-SYUACC-IO-HOJOKBN     (1)
+               MOVE    RECE02-HKNJANUM-KEY
+                                       TO  LNK-SYUACC-IO-HKNJANUM    (1)
+               MOVE    RECE02-HOJOKBN-KEY
+                                       TO  LNK-SYUACC-IO-HOJOKBN     (1)
                MOVE    RECE02-TEISYUTUSAKI
                                        TO  LNK-SYUACC-IO-TEISYUTUSAKI(1)
                MOVE    "06"            TO  LNK-SYUACC-I-KBN
@@ -1334,24 +1358,32 @@
                            MOVE    "XX"                TO  RECE02-SYUKA
                        END-IF
                    END-IF
-               END-IF    
-               MOVE    SPACE                TO  SYSKANRI-REC
-               INITIALIZE                       SYSKANRI-REC
-               MOVE    "1005"               TO  SYS-KANRICD
-               MOVE    RECE02-SYUKA         TO  SYS-KBNCD
-               MOVE    RECE02-SRYYM         TO  SYS-STYUKYMD (1:6)
-               MOVE    "01"                 TO  SYS-STYUKYMD (7:2)
-               MOVE    SYS-STYUKYMD         TO  SYS-EDYUKYMD
-               MOVE    "tbl_syskanri"       TO  WRK-MCP-TABLE
-               MOVE    "key10"              TO  WRK-MCP-PATHNAME
-               PERFORM 960-KANRIMST-READ-SEC
-               IF      FLG-SYSKANRI         =   ZERO
-                   MOVE    MCPDATA-REC         TO  SYS-1005-REC
-               ELSE
-                   INITIALIZE                      SYS-1005-REC
                END-IF
-               MOVE    SYS-1005-RECESRYKA  TO  RECE02-RECESYUKA
-               MOVE    SYS-1005-SRYKANAME  TO  RECE02-SYUKANAME
+      *
+      *        ¼ç²ÊÀßÄê»þ¤Î¤ß¿ÇÎÅ²ÊÌ¾¾Î¤òÀßÄê    
+               IF  (     ( RECE02-TEISYUTUSAKI   =   "1" )
+                     AND ( SYS-2009-SYUKA-SYAHO  =   "1" ) )
+               OR  (     ( RECE02-TEISYUTUSAKI   =   "2" )
+                     AND ( SYS-2009-SYUKA-KOKUHO =   "1" ) )
+                   MOVE    SPACE                TO  SYSKANRI-REC
+                   INITIALIZE                       SYSKANRI-REC
+                   MOVE    "1005"               TO  SYS-KANRICD
+                   MOVE    RECE02-SYUKA         TO  SYS-KBNCD
+                   MOVE    RECE02-SRYYM         TO  SYS-STYUKYMD (1:6)
+                   MOVE    "01"                 TO  SYS-STYUKYMD (7:2)
+                   MOVE    SYS-STYUKYMD         TO  SYS-EDYUKYMD
+                   MOVE    "tbl_syskanri"       TO  WRK-MCP-TABLE
+                   MOVE    "key10"              TO  WRK-MCP-PATHNAME
+                   PERFORM 960-KANRIMST-READ-SEC
+                   IF      FLG-SYSKANRI         =   ZERO
+                       MOVE    MCPDATA-REC         TO  SYS-1005-REC
+                   ELSE
+                       INITIALIZE                      SYS-1005-REC
+                   END-IF
+                   MOVE    SYS-1005-RECESRYKA  TO  RECE02-RECESYUKA
+                   MOVE    SYS-1005-SRYKANAME  TO  RECE02-SYUKANAME
+               END-IF   
+             END-IF
            END-IF    
       *
       *    µìÁí¹çÉÂ±¡¤Î¾ì¹ç¤Î¿ÇÎÅ²ÊÌ¾¾Î

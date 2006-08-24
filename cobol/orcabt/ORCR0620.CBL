@@ -100,6 +100,8 @@
       *
       *  02.08.01    NACL-Æ£¸¶    06/02/20  ¼ç²ÊÂÐ±þ
       *  02.09.01    NACL-ÌçÏÆ    06/05/18  ²¬»³¸©À¾°ÀÁÒÂ¼Âà¿¦¼Ô¹ñÊÝ£²³äÂÐ±þ
+      *
+      *  03.02.01    NACL-Æ£¸¶    06/07/31  ¹ñÊÝ¼ç²ÊÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -644,6 +646,18 @@
                IF      SYS-2009-SYUKA-KBN
                                        =   SPACE
                    MOVE    "0"             TO  SYS-2009-SYUKA-KBN
+               END-IF
+               IF    ( SYS-2009-SYUKA-KBN
+                                       =   "1"   )
+               AND   ( SYS-2009-SYUKA-SYAHO
+                                       =   SPACE )
+                   MOVE    "1"             TO  SYS-2009-SYUKA-SYAHO
+               END-IF      
+               IF    ( SYS-2009-SYUKA-KBN
+                                       =   "1"   )
+               AND   ( SYS-2009-SYUKA-KOKUHO
+                                       =   SPACE )
+                   MOVE    "0"             TO  SYS-2009-SYUKA-KOKUHO
                END-IF
            END-IF
       *
@@ -1224,9 +1238,15 @@
       *    ¼ç²ÊÀßÄê
            IF    ( IDZ                 =   1      )
            AND   ( SYS-2009-SYUKA-KBN  =   "1"    )
-           AND   ( RECE62-TEISYUTUSAKI =   "1"    )
+      *****AND   ( RECE62-TEISYUTUSAKI =   "1"    )
            AND   ( RECE62-RECESYUBETU  
                                    NOT =   "8888" )
+             IF  (     ( RECE62-TEISYUTUSAKI   =   "1" )
+                   AND ( SYS-2009-SYUKA-SYAHO
+                                           NOT =   "0" ) )
+             OR  (     ( RECE62-TEISYUTUSAKI   =   "2" )
+                   AND ( SYS-2009-SYUKA-KOKUHO
+                                           NOT =   "0" ) )
                INITIALIZE                      ORCSSYUACCAREA
                MOVE    RECE62-HOSPID   TO  SPA-HOSPID
                MOVE    RECE62-SRYYM    TO  LNK-SYUACC-I-SRYYM
@@ -1246,7 +1266,8 @@
                MOVE    RECE62-RECESYUBETU
                                        TO  LNK-SYUACC-IO-RECESYUBETU (1)
                MOVE    RECE62-HKNJANUM TO  LNK-SYUACC-IO-HKNJANUM    (1)
-               MOVE    RECE62-HOJOKBN  TO  LNK-SYUACC-IO-HOJOKBN     (1)
+               MOVE    RECE62-HOJOKBN-KEY
+                                       TO  LNK-SYUACC-IO-HOJOKBN     (1)
                MOVE    RECE62-TEISYUTUSAKI
                                        TO  LNK-SYUACC-IO-TEISYUTUSAKI(1)
                MOVE    "06"            TO  LNK-SYUACC-I-KBN
@@ -1270,20 +1291,28 @@
                        END-IF
                    END-IF
                END-IF    
-               MOVE    SPACE           TO  SYSKANRI-REC
-               INITIALIZE                  SYSKANRI-REC
-               MOVE    "1005"          TO  SYS-KANRICD
-               MOVE    RECE62-SYUKA    TO  SYS-KBNCD
-               MOVE    WRK-PARA-SRYYM  TO  ORC-DBYMD (1:6)              
-               MOVE    "01"            TO  ORC-DBYMD (7:2)              
-               PERFORM 960-SYSKANRI-READ-SEC
-               IF      FLG-SYSKANRI    =   ZERO
-                   MOVE    MCPDATA-REC     TO  SYS-1005-REC
-               ELSE
-                  INITIALIZE                   SYS-1005-REC
-               END-IF
-               MOVE    SYS-1005-RECESRYKA  TO  RECE62-RECESYUKA
-               MOVE    SYS-1005-SRYKANAME  TO  RECE62-SYUKANAME
+      *
+      *        ¼ç²ÊÀßÄê»þ¤Î¤ß¿ÇÎÅ²ÊÌ¾¾Î¤òÀßÄê    
+               IF  (     ( RECE62-TEISYUTUSAKI   =   "1" )
+                     AND ( SYS-2009-SYUKA-SYAHO  =   "1" ) )
+               OR  (     ( RECE62-TEISYUTUSAKI   =   "2" )
+                     AND ( SYS-2009-SYUKA-KOKUHO =   "1" ) )
+                   MOVE    SPACE           TO  SYSKANRI-REC
+                   INITIALIZE                  SYSKANRI-REC
+                   MOVE    "1005"          TO  SYS-KANRICD
+                   MOVE    RECE62-SYUKA    TO  SYS-KBNCD
+                   MOVE    WRK-PARA-SRYYM  TO  ORC-DBYMD (1:6)              
+                   MOVE    "01"            TO  ORC-DBYMD (7:2)              
+                   PERFORM 960-SYSKANRI-READ-SEC
+                   IF      FLG-SYSKANRI    =   ZERO
+                       MOVE    MCPDATA-REC     TO  SYS-1005-REC
+                   ELSE
+                      INITIALIZE                   SYS-1005-REC
+                   END-IF
+                   MOVE    SYS-1005-RECESRYKA  TO  RECE62-RECESYUKA
+                   MOVE    SYS-1005-SRYKANAME  TO  RECE62-SYUKANAME
+               END-IF   
+             END-IF
            END-IF    
       *
            PERFORM     220-DATA-WRITE-SEC

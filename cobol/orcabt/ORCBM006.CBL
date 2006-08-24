@@ -28,6 +28,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  03.02.01    NACL-藤原    06/07/31  国保主科対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -64,6 +65,9 @@
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-PTINF           PIC 9(01).
+           03  FLG-SYSKANRI        PIC 9(01).
+      *
+           03  FLG-SYORI           PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -97,6 +101,9 @@
       *
            03  WRK-SRYYM           PIC X(16).     
       *
+           03  WRK-MCP-TABLE       PIC X(64).
+           03  WRK-MCP-PATHNAME    PIC X(64).
+      *
            03  WRK-SYMD.
                05  WRK-SYY         PIC 9(04).
                05  WRK-SMM         PIC 9(02).
@@ -126,6 +133,11 @@
            COPY    "CPPTINF.INC".
       *
            COPY    "CPRCF010.INC".
+      *
+      *    システム管理マスタ
+           COPY    "CPSYSKANRI.INC".
+      *
+           COPY    "CPSK2009.INC".
       *
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
@@ -231,8 +243,38 @@
            MOVE    "01"                TO  WRK-SYMD(7:2)
            PERFORM 31012-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG(1:16)   TO  WRK-SRYYM
-      *
-           PERFORM 900-SEIKYU-SELECT-SEC
+      *         
+      *    レセプト編集区分情報
+           MOVE    SPACE           TO  SYSKANRI-REC
+           INITIALIZE                  SYSKANRI-REC
+           MOVE    "2009"          TO  SYS-KANRICD
+           MOVE    "*"             TO  SYS-KBNCD
+           MOVE    LNK-PRTKANRI-SRYYM
+                                   TO  SYS-STYUKYMD (1:6)
+           MOVE    "01"            TO  SYS-STYUKYMD (7:2)
+           MOVE    SYS-STYUKYMD    TO  SYS-EDYUKYMD
+           PERFORM 900-SYSKANRI-READ-SEC
+           IF      FLG-SYSKANRI     =   ZERO
+               MOVE    MCPDATA-REC     TO  SYS-2009-REC
+           ELSE    
+               INITIALIZE                  SYS-2009-REC
+           END-IF
+           IF      SYS-2009-SYUKA-KBN
+                                   =   SPACE
+               MOVE    "0"             TO  SYS-2009-SYUKA-KBN
+           END-IF
+           IF    ( SYS-2009-SYUKA-KBN
+                                   =   "1"   )
+           AND   ( SYS-2009-SYUKA-SYAHO
+                                   =   SPACE )
+               MOVE    "1"             TO  SYS-2009-SYUKA-SYAHO
+           END-IF      
+           IF    ( SYS-2009-SYUKA-KBN
+                                   =   "1"   )
+           AND   ( SYS-2009-SYUKA-KOKUHO
+                                   =   SPACE )
+               MOVE    "0"             TO  SYS-2009-SYUKA-KOKUHO
+           END-IF
            .
        100-INIT-EXT.
            EXIT.
@@ -241,6 +283,39 @@
       *    主　　処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
+      *
+      *    社保分
+           IF      SYS-2009-SYUKA-SYAHO  =   "1"
+               MOVE    ZERO            TO  FLG-END
+               MOVE    1               TO  FLG-SYORI
+      *
+               PERFORM 900-SEIKYU-SELECT-SEC
+               PERFORM 2001-HENSYU-SEC
+                       UNTIL       FLG-END     =   1
+      *
+               PERFORM 900-SEIKYU-CLOSE-SEC
+           END-IF
+      *
+      *    国保分
+           IF      SYS-2009-SYUKA-KOKUHO =   "1"
+               MOVE    ZERO            TO  FLG-END
+               MOVE    2               TO  FLG-SYORI
+      *
+               PERFORM 900-SEIKYU-SELECT-SEC
+               PERFORM 2001-HENSYU-SEC
+                       UNTIL       FLG-END     =   1
+      *
+               PERFORM 900-SEIKYU-CLOSE-SEC
+           END-IF    
+      *
+           .
+       200-MAIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    帳票作成処理
+      *****************************************************************
+       2001-HENSYU-SEC                SECTION.
       *
            MOVE    KEY-NEW         TO  KEY-OLD
            MOVE    ZERO            TO  CNT-RENNUM
@@ -260,7 +335,7 @@
       *    帳票印刷処理
            PERFORM 390-PRINT-OUT-SEC
            .
-       200-MAIN-EXT.
+       2001-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -281,11 +356,15 @@
            MOVE    CNT-PAGE            TO  WRK-PAGE
            MOVE    WRK-PAGE            TO  HC05-PAGE
       *
-           EVALUATE    KEY-N-NYUGAIKBN
-               WHEN    1
-                   MOVE    "入院"          TO  HC05-TEISYUTUNAME
-               WHEN    2
-                   MOVE    "入院外"        TO  HC05-TEISYUTUNAME
+           EVALUATE    KEY-N-NYUGAIKBN     ALSO    FLG-SYORI
+               WHEN    1                   ALSO    1
+                   MOVE    "社保　入院"        TO  HC05-TEISYUTUNAME
+               WHEN    2                   ALSO    1
+                   MOVE    "社保　入院外"      TO  HC05-TEISYUTUNAME
+               WHEN    1                   ALSO    2
+                   MOVE    "国保　入院"        TO  HC05-TEISYUTUNAME
+               WHEN    2                   ALSO    2
+                   MOVE    "国保　入院外"      TO  HC05-TEISYUTUNAME
            END-EVALUATE
       *
            .
@@ -475,8 +554,6 @@
       *    終了　　処理
       *****************************************************************
        300-END-SEC                 SECTION.
-      *
-           PERFORM 900-SEIKYU-CLOSE-SEC
       *     
       *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
@@ -492,7 +569,7 @@
            PERFORM 900-DBDISCONNECT-SEC
       *
            DISPLAY "*** ORCBM006 IN  "  CNT-IN
-           DISPLAY "***          OUT "  CNT-OUT 
+           DISPLAY "***          OUT "  CNT-OUT
            DISPLAY "*** ORCBM006 END ***"
            .
        300-END-EXT.
@@ -569,14 +646,18 @@
       *
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_seikyu"        TO  MCP-TABLE
-           MOVE    "key44"             TO  MCP-PATHNAME
+           MOVE    "tbl_seikyu"        TO  WRK-MCP-TABLE
+           IF      FLG-SYORI           =   1
+               MOVE    "key44"             TO  WRK-MCP-PATHNAME
+           ELSE
+               MOVE    "key57"             TO  WRK-MCP-PATHNAME
+           END-IF
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
            CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_seikyu"        TO  MCP-TABLE
-               MOVE    "key44"             TO  MCP-PATHNAME
                PERFORM 900-SEIKYU-FETCH-SEC
            ELSE
                MOVE    1                   TO  FLG-END
@@ -592,8 +673,8 @@
        900-SEIKYU-FETCH-SEC                SECTION.
       *           
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           MOVE    "tbl_seikyu"        TO  MCP-TABLE
-           MOVE    "key44"             TO  MCP-PATHNAME
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
            CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
@@ -630,11 +711,56 @@
       *****************************************************************
        900-SEIKYU-CLOSE-SEC                 SECTION.
       *
-           MOVE    "tbl_seikyu"        TO  MCP-TABLE
-           MOVE    "key44"             TO  MCP-PATHNAME
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
            .
        900-SEIKYU-CLOSE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    システム管理マスタ読込
+      *****************************************************************
+       900-SYSKANRI-READ-SEC         SECTION.
+      *
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "MONFUNC"       USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC          =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    ZERO            TO  FLG-SYSKANRI
+               ELSE
+                   MOVE    1               TO  FLG-SYSKANRI
+               END-IF
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+           .
+       900-SYSKANRI-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    システム管理マスタ読み込み処理
+      *****************************************************************
+       900-KANRIMST-NEXT-SEC         SECTION.
+      *
+      *
+           .
+       900-KANRIMST-NEXT-EXT.
            EXIT.
       *
       *****************************************************************

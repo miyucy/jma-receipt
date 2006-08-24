@@ -202,6 +202,7 @@ path	key8		{
                     AND     RECESYUBETU  <>  '0000'
                     AND     RECESYUBETU  <>  '8888'
                     AND     RECESYUBETU  <>  '6666'
+                    AND     SRYKA        like :SRYKA
                     GROUP BY PREFKBN_SRT,HKNJANUM_SRT,HKNJANUM
                     ORDER BY PREFKBN_SRT,HKNJANUM_SRT,HKNJANUM
 		;
@@ -211,7 +212,7 @@ path	key8		{
 path	key9		{ 	
 	DBSELECT	{
 		DECLARE tbl_recekanri_key9_csr CURSOR FOR
-		SELECT  RECESYUBETU,SUM(PAGE) AS PAGE,SUM(KENSU) AS KENSU
+		SELECT  RECESYUBETU,SRYKA,SUM(PAGE) AS PAGE,SUM(KENSU) AS KENSU
 		FROM tbl_recekanri
                     WHERE   PRTID        =   :PRTID
                     AND     SYOKBN       =   :SYOKBN
@@ -221,7 +222,7 @@ path	key9		{
                     AND     NYUGAIKBN    =   :NYUGAIKBN
                     AND     RECESYUBETU  =   :RECESYUBETU
                     AND     SRYKA        like :SRYKA
-                    GROUP BY RECESYUBETU
+                    GROUP BY RECESYUBETU,SRYKA
 		;
 	};
 };

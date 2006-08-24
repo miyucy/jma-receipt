@@ -292,3 +292,15 @@
                     06  W12-SYUKA-MODE-COUNT   PIC S9(9)   BINARY.
                     06  W12-SYUKA-MODELST
                             PIC X(22)   OCCURS  2 TIMES.
+                  05  W12-SYUKA-SYAHO-COMBO.
+                    06  W12-SYUKA-SYAHO.
+                      07  W12-VALUE   PIC X(22).
+                    06  W12-SYUKA-SYAHO-COUNT   PIC S9(9)   BINARY.
+                    06  W12-SYUKA-SYAHOLST
+                            PIC X(22)   OCCURS  3 TIMES.
+                  05  W12-SYUKA-KOKUHO-COMBO.
+                    06  W12-SYUKA-KOKUHO.
+                      07  W12-VALUE   PIC X(22).
+                    06  W12-SYUKA-KOKUHO-COUNT   PIC S9(9)   BINARY.
+                    06  W12-SYUKA-KOKUHOLST
+                            PIC X(22)   OCCURS  3 TIMES.
