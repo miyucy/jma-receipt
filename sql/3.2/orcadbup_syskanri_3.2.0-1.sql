@@ -1,5 +1,6 @@
 \set ON_ERROR_STOP
 
+delete from tbl_syskanri where kanricd = '0044' and kbncd = '1018';
 delete from tbl_syskanri where kanricd = '0044' and kbncd = '1027';
 
 COPY "tbl_syskanri" FROM stdin;

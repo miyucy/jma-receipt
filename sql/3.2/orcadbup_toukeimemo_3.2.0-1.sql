@@ -1,5 +1,6 @@
 \set ON_ERROR_STOP
 
+delete from tbl_toukeimemo where pgid in ('ORCBG013V02') and kanricd = '0000';
 delete from tbl_toukeimemo where pgid in ('ORCBHYOUKETU') and kanricd = '0000';
 
 COPY "tbl_toukeimemo" FROM stdin;
