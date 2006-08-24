@@ -1427,16 +1427,16 @@
            END-IF
       *
       *    主科設定済かチェック
-           IF    ( SPA-SYUKA-KBN               =   "1" )
-           AND   ( SPA-GMN-IKKATU              =   "T" )
-           AND   ( SPA-GMN-SYOKBN              =   "T" )
-               IF    ( SPA-GMN-DATAKBN1-VALUE      =   "T" )
-               OR    ( SPA-GMN-DATAKBN2-VALUE      =   "T" ) 
-               OR    ( SPA-GMN-DATAKBN3-VALUE      =   "T" ) 
-                   MOVE    "00??"              TO  SPA-ERRCD
-                   GO  TO  450-TOUROKU-EXT
-               END-IF
-           END-IF
+      *    IF    ( SPA-SYUKA-KBN               =   "1" )
+      *    AND   ( SPA-GMN-IKKATU              =   "T" )
+      *    AND   ( SPA-GMN-SYOKBN              =   "T" )
+      *        IF    ( SPA-GMN-DATAKBN1-VALUE      =   "T" )
+      *        OR    ( SPA-GMN-DATAKBN2-VALUE      =   "T" ) 
+      *        OR    ( SPA-GMN-DATAKBN3-VALUE      =   "T" ) 
+      *            MOVE    "00??"              TO  SPA-ERRCD
+      *            GO  TO  450-TOUROKU-EXT
+      *        END-IF
+      *    END-IF
       *   
       *    再印刷のときのチェック
            EVALUATE    SPA-GMN-SYOKBN     
