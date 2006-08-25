@@ -43,12 +43,6 @@
                                        RECORD  KEY     IS  TOKEI-KEY
                                        FILE    STATUS  IS  STS-TOKEI.
       *
-           SELECT  TOKEIX-FILE         ASSIGN    TOKEIPARA
-                                       ORGANIZATION    IS  INDEXED
-                                       ACCESS  MODE    IS  SEQUENTIAL
-                                       RECORD  KEY     IS  TOKEIX-KEY
-                                       FILE    STATUS  IS  STS-TOKEIX.
-      *
       *    エラーファイル
            SELECT  RECEERR-FILE        ASSIGN  RECEERR
                                        FILE    STATUS  IS  STS-RECEERR.
@@ -70,19 +64,6 @@
            03  TOKEI-TEN               PIC 9(07)V9(02).
            03  TOKEI-SRYSURYO          PIC 9(10)V9(03).
       *
-       FD  TOKEIX-FILE.
-       01  TOKEIX-REC. 
-           03  TOKEIX-KEY.
-               05  TOKEIX-INGAIKBN     PIC 9(01).
-               05  TOKEIX-YKZKBN       PIC 9(01).
-               05  TOKEIX-KANANAME     PIC X(200).
-               05  TOKEIX-SRYCD        PIC X(09).
-               05  TOKEIX-SRYKA        PIC X(02).
-           03  TOKEIX-NAME             PIC X(40).
-           03  TOKEIX-TANI             PIC X(10).
-           03  TOKEIX-TEN              PIC 9(07)V9(02).
-           03  TOKEIX-SRYSURYO         PIC 9(10)V9(03).
-      *
       *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC                 PIC X(200).
@@ -102,7 +83,6 @@
       *    スパ領域
        01  STS-AREA.
            03  STS-TOKEI               PIC X(02).
-           03  STS-TOKEIX              PIC X(02).
            03  STS-RECEERR             PIC X(02).
       *
       *    フラグ領域
@@ -446,13 +426,11 @@
            PERFORM 210-MAIN-SRYKA-SEC
       *
       *    データをクリアする
-           OPEN    OUTPUT              TOKEIX-FILE
-           CLOSE                       TOKEIX-FILE
+           OPEN    OUTPUT              TOKEI-FILE
+           CLOSE                       TOKEI-FILE
       *
            OPEN    I-O                 TOKEI-FILE
       *----(02.01.01)--UPD-STRAT---
-      *    診療会計集計処理
-      *     PERFORM 220-MAIN-ACCT-SEC
       *    診療行為集計処理
            PERFORM 220-MAIN-SRY-SEC
       *----(02.01.01)--UPD-END-----
@@ -468,8 +446,8 @@
            CLOSE                       TOKEI-FILE
       *
       *    データをクリアする
-           OPEN    OUTPUT              TOKEIX-FILE
-           CLOSE                       TOKEIX-FILE
+           OPEN    OUTPUT              TOKEI-FILE
+           CLOSE                       TOKEI-FILE
       *
       *    ファイル削除
            MOVE    ZERO        TO  IF-RESULT
@@ -653,139 +631,6 @@
            EXIT.
       *
       *----(02.01.01)--ADD-END-----
-      *----(02.01.01)--UPD-START---
-      *****************************************************************
-      *    診療会計集計処理
-      *****************************************************************
-      * 220-MAIN-ACCT-SEC           SECTION.
-      *
-      *    対象診療年月で検索
-      *     INITIALIZE                  SRYACCT-REC
-      *     MOVE    WRK-PARA-HOSPID TO  ACCT-HOSPID
-      *     MOVE    WRK-PARA-DENPPRTYM
-      *                             TO  ACCT-SRYYM
-      *
-      *     MOVE    SRYACCT-REC     TO  MCPDATA-REC
-      *     MOVE    "DBSELECT"      TO  MCP-FUNC
-      *     MOVE    "SRYACCT-KEY26" TO  ORC-DBPATH
-      *     CALL    "ORCMCPSUB"         USING
-      *                                 MCPAREA
-      *                                 ORCMCPAREA
-      *                                 MCPDATA-REC
-      *     IF      MCP-RC              =   ZERO
-      *         MOVE    "SRYACCT-KEY26" TO  ORC-DBPATH
-      *         PERFORM 900-ACCT-DBFETCH-SEC
-      *     ELSE
-      *         MOVE    1                   TO  FLG-SRYACCT
-      *     END-IF
-      *
-      *     PERFORM UNTIL     ( FLG-SRYACCT     =   1 )
-      *        最初の算定日を取得する
-      *         MOVE    ZERO                TO  WRK-DD
-      *         PERFORM VARYING     IDX-D   FROM    1   BY   1
-      *                 UNTIL       IDX-D   >   31
-      *             IF      ACCT-DAY (1 IDX-D)  >   ZERO
-      *                 MOVE    IDX-D           TO  WRK-DD
-      *                 MOVE    31              TO  IDX-D
-      *             END-IF
-      *         END-PERFORM
-      *        算定がある時対象
-      *         IF      WRK-DD          >   ZERO
-      *----(01.01.01)--UPD-START---
-      *            薬剤点数がなく、初診、再診、指導のときは対象外とする
-      *             IF    ( ACCT-YKZTEN     =   ZERO )  AND
-      *                  (( ACCT-SRYKBN     =   "11" )  OR
-      *                   ( ACCT-SRYKBN     =   "12" )  OR
-      *                   ( ACCT-SRYKBN     =   "13" ))
-      *                 CONTINUE
-      *             ELSE
-      *                 PERFORM 230-MAIN-SRY-SEC
-      *             END-IF
-      *----(01.01.01)--UPD-END-----
-      *         END-IF
-      *
-      *         MOVE    "SRYACCT-KEY26" TO  ORC-DBPATH
-      *         PERFORM 900-ACCT-DBFETCH-SEC
-      *     END-PERFORM
-      *
-      *     MOVE    "SRYACCT-KEY26" TO  ORC-DBPATH
-      *     PERFORM 900-ACCT-DBCLOSE-SEC
-      *
-      *     .
-      * 220-MAIN-ACCT-EXT.
-      *     EXIT.
-      *
-      *****************************************************************
-      *    診療行為処理
-      *****************************************************************
-      * 230-MAIN-SRY-SEC            SECTION.
-      *
-      *     INITIALIZE                  SRYACT-REC
-      *     MOVE    ACCT-HOSPID         TO  SRY-HOSPID
-      *     MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
-      *     MOVE    ACCT-PTID           TO  SRY-PTID
-      *     MOVE    ACCT-SRYKA          TO  SRY-SRYKA
-      *     MOVE    ACCT-SRYYM          TO  SRY-SRYYM
-      *     MOVE    ACCT-ZAINUM         TO  SRY-ZAINUM
-      *
-      *     MOVE    SRYACT-REC          TO  MCPDATA-REC
-      *     MOVE    "DBSELECT"          TO  MCP-FUNC
-      *     MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
-      *     CALL    "ORCMCPSUB"         USING
-      *                                 MCPAREA
-      *                                 ORCMCPAREA
-      *                                 MCPDATA-REC
-      *     IF      MCP-RC              =   ZERO
-      *         MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
-      *         PERFORM 900-SRY-DBFETCH-SEC
-      *     ELSE
-      *         INITIALIZE                  SRYACT-REC
-      *         MOVE    1               TO  FLG-SRYACT
-      *     END-IF
-      *
-      *     PERFORM UNTIL ( FLG-SRYACT      =   1 )
-      *----(01.01.01)--UPD-START---
-      *         IF    ( ACCT-ZAITEN         =   ZERO ) AND
-      *              (( ACCT-SRYKBN         =   "21" )  OR
-      *               ( ACCT-SRYKBN         =   "22" )  OR
-      *               ( ACCT-SRYKBN         =   "23" )  OR
-      *               ( ACCT-SRYKBN         =   "14" ))
-      *             IF    ( SRY-SRYSYUKBN       =   "213")  OR
-      *                   ( SRY-SRYSYUKBN       =   "223")  OR
-      *                   ( SRY-SRYSYUKBN       =   "233")
-      *                 MOVE    "1"         TO  WRK-INGAIKBN
-      *             ELSE
-      *                 MOVE    "2"         TO  WRK-INGAIKBN
-      *             END-IF
-      *         ELSE
-      *             MOVE    "1"         TO  WRK-INGAIKBN
-      *         END-IF
-      *
-      *        院内
-      *         IF    ( WRK-INGAIKBN    =   "1" ) AND
-      *               ( WRK-PARA-INGAIKBN   NOT =   1 )
-      *             PERFORM 240-MAIN-HEN-SEC
-      *         END-IF
-      *        院外
-      *         IF    ( WRK-INGAIKBN    =   "2" ) AND
-      *               ( WRK-PARA-INGAIKBN NOT =   0 ) AND
-      *               ( WRK-PARA-INGAIKBN NOT =   SPACE )
-      *             PERFORM 240-MAIN-HEN-SEC
-      *         END-IF
-      *----(01.01.01)--UPD-END-----
-      *
-      *         MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
-      *         PERFORM 900-SRY-DBFETCH-SEC
-      *
-      *     END-PERFORM
-      *
-      *     MOVE    "SRYACT-KEY2"   TO  ORC-DBPATH
-      *     PERFORM 900-SRY-DBCLOSE-SEC
-      *      .
-      * 230-MAIN-SRY-EXT.
-      *     EXIT.
-      *
-      *----(02.01.01)--UPD-END-----
       *****************************************************************
       *    主編集処理
       *****************************************************************
@@ -867,12 +712,6 @@
            PERFORM 900-TOKEI-READ-SEC
       *
            IF        ( FLG-TOKEI       =   1 )
-               INITIALIZE                  TOKEI-REC
-               MOVE    WRK-INGAIKBN    TO  TOKEI-INGAIKBN
-               MOVE    TNS-YKZKBN      TO  TOKEI-YKZKBN
-               MOVE    TNS-KANANAME    TO  TOKEI-KANANAME
-               MOVE    SRY-SRYCD(IDX)  TO  TOKEI-SRYCD
-               MOVE    ACCT-SRYKA      TO  TOKEI-SRYKA
                MOVE    TNS-NAME        TO  TOKEI-NAME
                MOVE    TNS-TEN         TO  TOKEI-TEN
                MOVE    TNS-TANINAME    TO  TOKEI-TANI
@@ -882,6 +721,30 @@
                WRITE   TOKEI-REC
                COMPUTE CNT-TOKEI       =   CNT-TOKEI   +   1
            ELSE
+               COMPUTE TOKEI-SRYSURYO  =   TOKEI-SRYSURYO
+                                       +   WRK-SURYO
+               REWRITE TOKEI-REC
+           END-IF
+      *
+      *    統計データ合計
+           INITIALIZE                  TOKEI-REC
+           MOVE    WRK-INGAIKBN    TO  TOKEI-INGAIKBN
+           MOVE    TNS-YKZKBN      TO  TOKEI-YKZKBN
+           MOVE    "合計"          TO  TOKEI-KANANAME
+           MOVE    "999999999"     TO  TOKEI-SRYCD
+           MOVE    ACCT-SRYKA      TO  TOKEI-SRYKA
+           PERFORM 900-TOKEI-READ-SEC
+      *
+           IF        ( FLG-TOKEI       =   1 )
+               MOVE    "合計"          TO  TOKEI-NAME
+               COMPUTE WRK-SURYO       =   TNS-TEN *   WRK-SURYO
+               MOVE    ZERO            TO  TOKEI-SRYSURYO
+               COMPUTE TOKEI-SRYSURYO  =   TOKEI-SRYSURYO
+                                       +   WRK-SURYO
+               WRITE   TOKEI-REC
+               COMPUTE CNT-TOKEI       =   CNT-TOKEI   +   1
+           ELSE
+               COMPUTE WRK-SURYO       =   TNS-TEN *   WRK-SURYO
                COMPUTE TOKEI-SRYSURYO  =   TOKEI-SRYSURYO
                                        +   WRK-SURYO
                REWRITE TOKEI-REC
@@ -934,13 +797,17 @@
            END-IF
       *
       *    薬剤毎の編集
-           MOVE    TOKEI-SRYCD         TO  WRK-NAI-SRYCD (IDY)
-           MOVE    TOKEI-NAME          TO  WRK-NAI-NAME  (IDY)
-           MOVE    TOKEI-TANI          TO  WRK-NAI-TANI  (IDY)
-      *    点数編集
-           MOVE    TOKEI-TEN           TO  WRK-TEN
-           PERFORM 400-ZHEN-TEN-SET-SEC
-           MOVE    WRK-HENTEN          TO  WRK-NAI-TEN(IDY)
+           IF      TOKEI-SRYCD         NOT =   "999999999"
+               MOVE    TOKEI-SRYCD         TO  WRK-NAI-SRYCD (IDY)
+               MOVE    TOKEI-NAME          TO  WRK-NAI-NAME  (IDY)
+               MOVE    TOKEI-TANI          TO  WRK-NAI-TANI  (IDY)
+      *        点数編集
+               MOVE    TOKEI-TEN           TO  WRK-TEN
+               PERFORM 400-ZHEN-TEN-SET-SEC
+               MOVE    WRK-HENTEN          TO  WRK-NAI-TEN(IDY)
+           ELSE
+               MOVE    TOKEI-NAME          TO  WRK-NAI-NAME  (IDY)
+           END-IF
       *
            MOVE    TOKEI-SRYCD         TO  WRK-SRYCD
            MOVE    ZERO                TO  WRK-GSURYO
@@ -956,16 +823,23 @@
                PERFORM 900-TOKEI-NEXT-SEC
            END-PERFORM
       *
-      *    科合計編集
-           MOVE    WRK-GSURYO          TO  WRK-SURYO
-           PERFORM 400-ZHEN-SURYO-SET-SEC
-           MOVE    WRK-HENSURYO        TO  WRK-NAI-SURYO(IDY CNT-MAX)
-      *    合計編集
-           MOVE    ZERO                TO  WRK-KIN
-           COMPUTE WRK-KIN         =   WRK-TEN
-                                   *   WRK-GSURYO
-           PERFORM 400-ZHEN-KIN-SET-SEC
-           MOVE    WRK-HENKIN          TO  WRK-NAI-GAKU(IDY CNT-MAX)
+           IF      WRK-SRYCD           NOT =   "999999999"
+      *        科合計編集
+               MOVE    WRK-GSURYO      TO  WRK-SURYO
+               PERFORM 400-ZHEN-SURYO-SET-SEC
+               MOVE    WRK-HENSURYO    TO  WRK-NAI-SURYO(IDY CNT-MAX)
+      *        合計編集
+               MOVE    ZERO            TO  WRK-KIN
+               COMPUTE WRK-KIN         =   WRK-TEN
+                                       *   WRK-GSURYO
+               PERFORM 400-ZHEN-KIN-SET-SEC
+               MOVE    WRK-HENKIN      TO  WRK-NAI-GAKU(IDY CNT-MAX)
+           ELSE
+      *        合計編集
+               MOVE    WRK-GSURYO      TO  WRK-KIN
+               PERFORM 400-ZHEN-KIN-SET-SEC
+               MOVE    WRK-HENKIN      TO  WRK-NAI-GAKU(IDY CNT-MAX)
+           END-IF
       *
              .
        2601-TOUKEI-HEN-EXT.
@@ -980,18 +854,27 @@
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL     ( IDX     >   CNT-SRYKA )
                IF      TOKEI-SRYKA         =   WRK-TAI-SRYKA (IDX)
-      *            数量編集
-                   MOVE    TOKEI-SRYSURYO      TO  WRK-SURYO
-                   PERFORM 400-ZHEN-SURYO-SET-SEC
-                   MOVE    WRK-HENSURYO        TO  WRK-NAI-SURYO
+                   IF      TOKEI-SRYCD     NOT =   "999999999"
+      *                数量編集
+                       MOVE    TOKEI-SRYSURYO      TO  WRK-SURYO
+                       PERFORM 400-ZHEN-SURYO-SET-SEC
+                       MOVE    WRK-HENSURYO        TO  WRK-NAI-SURYO
                                                            (IDY IDX)
-      *            合計編集
-                   COMPUTE WRK-KIN         =   TOKEI-TEN
-                                           *   TOKEI-SRYSURYO
-                   PERFORM 400-ZHEN-KIN-SET-SEC
-                   MOVE    WRK-HENKIN          TO  WRK-NAI-GAKU
+      *                合計編集
+                       COMPUTE WRK-KIN         =   TOKEI-TEN
+                                               *   TOKEI-SRYSURYO
+                       PERFORM 400-ZHEN-KIN-SET-SEC
+                       MOVE    WRK-HENKIN          TO  WRK-NAI-GAKU
                                                            (IDY IDX)
-                   MOVE    CNT-SRYKA           TO  IDX
+                       MOVE    CNT-SRYKA           TO  IDX
+                   ELSE
+      *                合計編集
+                       MOVE    TOKEI-SRYSURYO      TO  WRK-KIN
+                       PERFORM 400-ZHEN-KIN-SET-SEC
+                       MOVE    WRK-HENKIN          TO  WRK-NAI-GAKU
+                                                           (IDY IDX)
+                       MOVE    CNT-SRYKA           TO  IDX
+                   END-IF
                END-IF
            END-PERFORM
       *
