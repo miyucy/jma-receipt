@@ -182,6 +182,7 @@
       *    ½ÅÊ£¥¨¥é¡¼¤Ê¤·
            03  FLG-ERRCHK         PIC 9(01).
       *    £È£±£¸¡¥£±£°²þÀµÂÐ±þ
+           03  FLG-RJNCHK2             PIC 9(01).
            03  FLG-RJNERR              PIC 9(01).
            03  FLG-KOKUHO              PIC 9(01).
            03  FLG-RJNKOHERR           PIC 9(01).
@@ -4165,6 +4166,7 @@
        410331-RJN-HKNCHK-SEC      SECTION.
       *
            MOVE    ZERO                TO  FLG-RJNCHK
+           MOVE    ZERO                TO  FLG-RJNCHK2
            MOVE    ZERO                TO  FLG-HKNCHK
            MOVE    ZERO                TO  FLG-SEIHOGO
            MOVE    ZERO                TO  SPA-HKN-IDX1
@@ -4282,10 +4284,10 @@
                    END-IF
                END-IF
            END-PERFORM
-           IF     (FLG-RJNCHK          =   1   )
-             AND  (FLG-RJNERR          =   ZERO)
-               GO      TO      410331-RJN-HKNCHK-EXT
-           END-IF
+      ***  IF     (FLG-RJNCHK          =   1   )
+      *      AND  (FLG-RJNERR          =   ZERO)
+      *        GO      TO      410331-RJN-HKNCHK-EXT
+      ***  END-IF
       *
       *    ¸øÈñ
            MOVE    ZERO                TO  SPA-KOH-IDX2
@@ -4297,7 +4299,7 @@
       *            Ï·¿Í
                    IF     (SPA-PTKOH-KOHNUM  (IDX) =   "027" )  OR
                           (SPA-PTKOH-HKN-SBTKBN (IDX)  =   "3" )
-                       MOVE    2                   TO  FLG-RJNCHK
+                       MOVE    1                   TO  FLG-RJNCHK2
                    END-IF
       *            £È£±£¸¡¥£±£°²þÀµ Ï·¿Í£²³ä¤ò£³³ä¤Ø
                    IF     (SPA-PTKOH-KOHNUM  (IDX) =   "027" )  AND
@@ -4317,9 +4319,16 @@
                    END-IF
                END-IF
            END-PERFORM
+      *    Á°´ü¹âÎð¼Ô¶èÊ¬¤¬¤¢¤ê¡¢Ï·¿Í¸øÈñ¤¬¤Ê¤¤»þ
+           IF     (FLG-RJNCHK          =   1   )
+             AND  (FLG-RJNCHK2         =   ZERO)
+             AND  (FLG-RJNERR          =   ZERO)
+               GO      TO      410331-RJN-HKNCHK-EXT
+           END-IF
       *
       *    Ï·¿ÍÊÝ¸±¤¬¤Ê¤¯¡¢ÊÝ¸±¤¬Â¸ºß¤¹¤ë»þ
            IF     (FLG-RJNCHK          =   ZERO  )  AND
+                  (FLG-RJNCHK2         =   ZERO  )  AND
                   (FLG-HKNCHK          =   1     )
       *        £Ó£·¡¥£¹¡¥£³£°°ÊÁ°¤Î»þÏ·¿Í¸øÈñ¤¬¤¢¤ë¤³¤È¤È¤¹¤ë
                IF     (SPA-NAI-BIRTHDAY    <=  "19320930" )  OR
