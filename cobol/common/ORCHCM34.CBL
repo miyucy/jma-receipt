@@ -1414,7 +1414,7 @@
                    IF    ( IDX5            >   ZERO )
                        IF    ( HKN-HKNNUM  =   SRH-KOHNUML (IDX5))
                            IF    ( HKN-HKNNUM  =   "027"  ) 
-                             AND ( HKN-PAYKBN  =   "01" OR "02"  )
+                             AND ( HKN-PAYKBN  =   "01" OR "02" OR "03")
                                IF ( HKN-PAYKBN
                                            NOT =   SRH-PAYKBNL (IDX5))
       *                            ¸øÈñ¾ðÊóÊÔ½¸
@@ -1487,7 +1487,7 @@
            MOVE    HKN-HKNNUM          TO  SRH-KOHNUML (IDX5)
       *
            IF    ( HKN-HKNNUM          =   "027" )
-            AND  ( HKN-PAYKBN      NOT =   "01" AND "02" )
+            AND  ( HKN-PAYKBN      NOT =   "01" AND "02" AND "03" )
                MOVE    "Ï·¿ÍÊÝ·ò"      TO  SRH-KOHNUMMEIL (IDX5)
            ELSE
                MOVE    HKN-TANSEIDONAME
@@ -1495,7 +1495,7 @@
            END-IF
       *
            IF    ( HKN-HKNNUM          =   "027" )
-            AND  ( HKN-PAYKBN          =   "01" OR  "02" )
+            AND  ( HKN-PAYKBN          =   "01" OR  "02" OR "03" )
                MOVE    HKN-PAYKBN
                                        TO  SRH-PAYKBNL (IDX5)
            ELSE

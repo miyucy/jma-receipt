@@ -988,7 +988,7 @@
                        IF    ( HKN-HKNNUM 
                                        =   SPA-GMN-Q01-KOHNUML (IDX5))
                            IF    ( HKN-HKNNUM   =   "027"  ) 
-                             AND ( HKN-PAYKBN   =   "01" OR "02"  )
+                             AND ( HKN-PAYKBN   =  "01" OR "02" OR "03")
                                IF ( HKN-PAYKBN
                                     NOT =   SPA-GMN-Q01-PAYKBNL (IDX5))
       *                            ¸øÈñ¾ðÊóÊÔ½¸
@@ -1047,7 +1047,7 @@
            MOVE    HKN-HKNNUM          TO  SPA-GMN-Q01-KOHNUML (IDX5)
       *
            IF    ( HKN-HKNNUM          =   "027" )
-            AND  ( HKN-PAYKBN      NOT =   "01" AND "02" )
+            AND  ( HKN-PAYKBN      NOT =   "01" AND "02" AND "03" )
                MOVE    "Ï·¿ÍÊÝ·ò"      TO  SPA-GMN-Q01-KOHNUMMEIL (IDX5)
            ELSE
                MOVE    HKN-TANSEIDONAME
@@ -1055,7 +1055,7 @@
            END-IF
       *
            IF    ( HKN-HKNNUM          =   "027" )
-            AND  ( HKN-PAYKBN          =   "01" OR  "02" )
+            AND  ( HKN-PAYKBN          =   "01" OR  "02" OR "03")
                MOVE    HKN-PAYKBN (2:1)
                                        TO  SPA-GMN-Q01-PAYKBNL (IDX5)
            ELSE

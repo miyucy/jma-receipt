@@ -1253,7 +1253,7 @@
                    IF    ( IDX5            >   ZERO )
                        IF    ( HKN-HKNNUM  =   SRH-KOHNUML (IDX5))
                            IF    ( HKN-HKNNUM  =   "027"  ) 
-                             AND ( HKN-PAYKBN  =   "01" OR "02"  )
+                             AND ( HKN-PAYKBN  =   "01" OR "02" OR "03")
                                IF ( HKN-PAYKBN
                                            NOT =   SRH-PAYKBNL (IDX5))
       *                            ¸øÈñ¾ðÊóÊÔ½¸
@@ -1326,7 +1326,7 @@
            MOVE    HKN-HKNNUM          TO  SRH-KOHNUML (IDX5)
       *
            IF    ( HKN-HKNNUM          =   "027" )
-            AND  ( HKN-PAYKBN      NOT =   "01" AND "02" )
+            AND  ( HKN-PAYKBN      NOT =   "01" AND "02" AND "03" )
                MOVE    "Ï·¿ÍÊÝ·ò"      TO  SRH-KOHNUMMEIL (IDX5)
            ELSE
                MOVE    HKN-TANSEIDONAME
@@ -1334,7 +1334,7 @@
            END-IF
       *
            IF    ( HKN-HKNNUM          =   "027" )
-            AND  ( HKN-PAYKBN          =   "01" OR  "02" )
+            AND  ( HKN-PAYKBN          =   "01" OR  "02" OR "03" )
                MOVE    HKN-PAYKBN
                                        TO  SRH-PAYKBNL (IDX5)
            ELSE
@@ -3866,6 +3866,20 @@
                        GO  TO  200112-HKNAGE-CHK-EXT
                    END-IF
                END-IF
+      *
+               IF    ( AGECHK-RJNCHK       =   3 )
+                   MOVE    COMB-HKNNUM     TO  SRH-HKNNUM
+                   MOVE    "040004"        TO  WRK-ERRCD
+                   PERFORM 200112-HKNAGE-ERRMES-HEN-SEC
+                   PERFORM 215-ERRMES-HEN-SEC
+      *
+                   IF    ( ORCBSD01-CHKKBN (4) =   "1" )
+                       MOVE    1           TO  FLG-CHKEND (4)
+                       GO  TO  200112-HKNAGE-CHK-EXT
+                   END-IF
+               END-IF
+
+      *
            END-IF
       *
            IF    ( FLG-RJN             =   ZERO )
