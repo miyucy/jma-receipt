@@ -644,11 +644,12 @@
                   (FLG-ERR2            =   1   )
                MOVE    3               TO  AGECHK-RJNCHK
            END-IF
-      *DD
+      *
       *    国保の前期高齢者以降の確認有無
-      *    IF     FLG-KAKUNIN          =   1
-      *        MOVE    1               TO  AGECHK-KAKUNINCHK
-      *DD  END-IF
+           IF    (FLG-KAKUNIN          =   1 ) AND
+                 (FLG-OK2              =   ZERO)
+               MOVE    1               TO  AGECHK-KAKUNINCHK
+           END-IF
       *
            .
        2000-RJNCHK-SYORI-EXT.
@@ -820,13 +821,9 @@
                            MOVE    1               TO  FLG-ERR
                        END-IF
                    END-IF
-      *            有効開始日と確認年月日がＨ１８．１０以前の時、警告
-                   IF     (PTHKN-TEKSTYMD      <   "20061001" )
-                      AND (PTHKN-KAKUNINYMD    <   "20061001" )
-                       MOVE    1               TO  FLG-KAKUNIN
-                   END-IF
       *            前期高齢者開始日以降に確定がない時、警告
                    IF     (PTHKN-TEKSTYMD      <   WRK-BYMD-70 )
+                      AND (PTHKN-TEKEDYMD      >=  WRK-BYMD-70 )
                       AND (PTHKN-KAKUNINYMD    <   WRK-BYMD-70 )
                        MOVE    1               TO  FLG-KAKUNIN
                    END-IF

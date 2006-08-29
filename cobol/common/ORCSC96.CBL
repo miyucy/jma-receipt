@@ -1376,6 +1376,12 @@
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
+               WHEN    "K171"
+                   STRING  "警告！！前期高齢者到達日以降に保険確認が"
+                           "してありません。確認して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
       *!
                WHEN    "1050"
                    MOVE    "労災・自賠責、包括分入力の"
