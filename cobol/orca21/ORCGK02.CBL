@@ -3359,6 +3359,8 @@
            MOVE    ZERO                TO  SPA-HKN-ERR
            MOVE    ZERO                TO  SPA-NAI-KOHFLG-ERR
            MOVE    ZERO                TO  SPA-NAI-KOHFLG
+           MOVE    ZERO                TO  SPA-NAI-ZENKIFLG-ERR
+           MOVE    ZERO                TO  SPA-NAI-ZENKIFLG
       *
       *    Ｈ１５．４以降の保険期間が違う時
            IF      AGECHK-HKNCHK       =   1
@@ -3398,6 +3400,12 @@
            IF      AGECHK-KOHCHK       =   1
                MOVE    ZERO            TO  SPA-NAI-KOHFLG-ERR
                MOVE    1               TO  SPA-NAI-KOHFLG
+           END-IF
+      *
+      *    国保 前期高齢者変更チェック
+           IF      AGECHK-KAKUNINCHK   =   1
+               MOVE    ZERO            TO  SPA-NAI-ZENKIFLG-ERR
+               MOVE    1               TO  SPA-NAI-ZENKIFLG
            END-IF
            .
        3101-HKNCOMBI-HEN-EXT.
@@ -4542,6 +4550,8 @@
                    MOVE    ZERO                TO  SPA-RJN-ERR
                    MOVE    ZERO                TO  SPA-NAI-KOHFLG-ERR
                    MOVE    ZERO                TO  SPA-NAI-KOHFLG
+                   MOVE    ZERO                TO  SPA-NAI-ZENKIFLG-ERR
+                   MOVE    ZERO                TO  SPA-NAI-ZENKIFLG
                    GO      TO      41017-SRYYMD-SYORI-EXT
                END-IF
       *        変更のない時、以降の処理はそのまま
@@ -9134,6 +9144,8 @@
            MOVE    ZERO                TO  SPA-HKN-ERR
            MOVE    ZERO                TO  SPA-NAI-KOHFLG-ERR
            MOVE    ZERO                TO  SPA-NAI-KOHFLG
+           MOVE    ZERO                TO  SPA-NAI-ZENKIFLG-ERR
+           MOVE    ZERO                TO  SPA-NAI-ZENKIFLG
            IF      SPA-MACHIPG         =   "U02"
                MOVE    "U02"               TO  WRK-SAKIPG
                PERFORM 210-BACK-SYORI-SEC
@@ -10731,6 +10743,14 @@
                    GO      TO      41001-KIHON-CHK-EXT
                END-IF
            END-IF
+      *    国保 前期高齢者変更チェック
+           IF      SPA-NAI-ZENKIFLG      =   1
+               IF      SPA-NAI-ZENKIFLG-ERR    =   ZERO
+                   MOVE    "K171"              TO  SPA-ERRCD
+                   MOVE    5                   TO  SPA-GMN-CUR
+                   GO      TO      41001-KIHON-CHK-EXT
+               END-IF
+           END-IF
       *
       *    診療行為入力チェック
            PERFORM 41011-KOUI-ALLHEN-SEC
@@ -11500,6 +11520,16 @@
                    MOVE    "K034"              TO  SPA-ERRCD
                    MOVE    5                   TO  SPA-GMN-CUR
                    MOVE    1                   TO  SPA-NAI-KOHFLG-ERR
+               END-IF
+           END-IF
+      *    国保 前期高齢者変更チェック
+           IF     (SPA-NAI-ZENKIFLG    =   1   )  AND
+                  (SPA-ERRCD           =   SPACE
+                                       OR   "K171")
+               IF      SPA-NAI-ZENKIFLG-ERR    =   ZERO
+                   MOVE    "K171"              TO  SPA-ERRCD
+                   MOVE    5                   TO  SPA-GMN-CUR
+                   MOVE    1                   TO  SPA-NAI-ZENKIFLG-ERR
                END-IF
            END-IF
       *
