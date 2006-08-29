@@ -4182,7 +4182,7 @@
                    IF     (SPA-PTHKN-HKNNUM  (IDX) =   "060"
                                                    OR  "068" )
       *                £È£±£¸¡¥£±£°¤Þ¤Ç
-                       IF      SPA-PTHKN-TEKEDYMD (IDX) <   "20061001"
+                       IF     (SPA-PTHKN-TEKEDYMD (IDX) <  "20061001")
                            IF    (SPA-PTHKN-HOJOKBN (IDX)  =   "1"
                                                            OR  "2"
                                                            OR  "4"
@@ -4190,16 +4190,35 @@
                                MOVE    1               TO  FLG-RJNCHK
                            END-IF
                        ELSE
+                           IF    (SPA-BYMD-70          <  "20061001")
+                             AND (SPA-PTHKN-TEKSTYMD (IDX)
+                                                       <= SPA-BYMD-70)
+                             AND (SPA-SYSYMD           <  "20061001")
+                               IF    (SPA-PTHKN-HOJOKBN (IDX)
+                                                           =   "1"
+                                                           OR  "2"
+                                                           OR  "4"
+                                                           OR  "5")
+                                   MOVE    1           TO  FLG-RJNCHK
+                               END-IF
+                           ELSE
       *                £È£±£¸¡¥£±£°°Ê¹ß
-                           IF      SPA-PTHKN-HOJOKBN (IDX)  NOT =   "0"
+                            IF      SPA-PTHKN-HOJOKBN (IDX)  NOT =   "0"
                                MOVE    1               TO  FLG-RJNCHK
+                             END-IF
                            END-IF
       *                    ÁÈ¹ç¹ñÊÝ°Ê³°¤Ï£²³ä¥¨¥é¡¼
                            IF    (SPA-PTHKN-HKNJANUM(IDX)(3:1)
                                                        NOT =  "3" ) AND
                                  (SPA-PTHKN-HOJOKBN (IDX)  =   "2")
-                               MOVE    1               TO  FLG-RJNERR
-                               MOVE    IDX             TO  SPA-HKN-IDX1
+                               IF      SPA-PTHKN-TEKSTYMD (IDX)
+                                                       <  "20061001"
+                                   MOVE    1           TO  FLG-RJNERR
+                                   MOVE    IDX         TO  SPA-HKN-IDX1
+                               ELSE
+                                   MOVE    2           TO  FLG-RJNERR
+                                   MOVE    IDX         TO  SPA-HKN-IDX1
+                               END-IF
                            END-IF
       *                    ÁÈ¹ç¹ñÊÝ
                            IF    (SPA-PTHKN-HKNJANUM(IDX)(3:1)
@@ -4358,6 +4377,11 @@
                    MOVE    SPA-PTHKN-HKNNUM-MEI(SPA-HKN-IDX1)
                                                    TO  SPA-PIDMSG
                    MOVE    "0110"              TO  SPA-PIDCD
+                   MOVE    8                   TO  SPA-GMN-CUR
+               END-IF
+      *        Êä½õ¶èÊ¬ÁªÂò¥¨¥é¡¼
+               IF      FLG-RJNERR          =   2
+                   MOVE    "1067"              TO  SPA-ERRCD
                    MOVE    8                   TO  SPA-GMN-CUR
                END-IF
            END-IF

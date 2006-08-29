@@ -3668,6 +3668,11 @@
                WHEN    "1066"
                    MOVE    "補助区分は老人割合のみ入力可能です。"
                                                TO  SPA-ERRMSG
+               WHEN    "1067"
+                   STRING  "補助区分２割は老人割合ではありません。"
+                                               DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
                WHEN    "0067"
                    MOVE    "保険者番号と法別番号が違います。"
                                                TO  SPA-ERRMSG
