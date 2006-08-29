@@ -42,6 +42,7 @@
       * 01.00.13     NACL-多々納  05/01/20  ヘルプ追加
       * 01.00.14     NACL-多々納  05/02/20  入院指示せん発行追加他
       * 01.00.15     NACL-多々納  05/11/25  MONFUNC 対応
+      * 03.02.01     NACL-多々納  06/08/29  平成１８年１０月改正対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2534,6 +2535,8 @@
            MOVE    ZERO                TO  SPA-HKN-ERR
            MOVE    ZERO                TO  SPA-NAI-KOHFLG-ERR
            MOVE    ZERO                TO  SPA-NAI-KOHFLG
+           MOVE    ZERO                TO  SPA-NAI-ZENKIFLG-ERR
+           MOVE    ZERO                TO  SPA-NAI-ZENKIFLG
       *
       *    Ｈ１５．４以降の保険期間が違う時
            IF      AGECHK-HKNCHK       =   1
@@ -2571,6 +2574,12 @@
            IF      AGECHK-KOHCHK       =   1
                MOVE    ZERO            TO  SPA-NAI-KOHFLG-ERR
                MOVE    1               TO  SPA-NAI-KOHFLG
+           END-IF
+      *
+      *    国保 前期高齢者変更チェック
+           IF      AGECHK-KAKUNINCHK   =   1
+               MOVE    ZERO            TO  SPA-NAI-ZENKIFLG-ERR
+               MOVE    1               TO  SPA-NAI-ZENKIFLG
            END-IF
       *
            .
@@ -3464,6 +3473,8 @@
                    MOVE    ZERO                TO  SPA-RJN-ERR
                    MOVE    ZERO                TO  SPA-NAI-KOHFLG-ERR
                    MOVE    ZERO                TO  SPA-NAI-KOHFLG
+                   MOVE    ZERO                TO  SPA-NAI-ZENKIFLG-ERR
+                   MOVE    ZERO                TO  SPA-NAI-ZENKIFLG
                END-IF
       *        変更のない時、以降の処理はそのまま
                IF     (SGDAY-SDAY          =   SPA-NAI-SRYYMD)
@@ -7399,6 +7410,8 @@
            MOVE    ZERO                TO  SPA-HKN-ERR
            MOVE    ZERO                TO  SPA-NAI-KOHFLG-ERR
            MOVE    ZERO                TO  SPA-NAI-KOHFLG
+           MOVE    ZERO                TO  SPA-NAI-ZENKIFLG-ERR
+           MOVE    ZERO                TO  SPA-NAI-ZENKIFLG
            IF      SPA-MACHIPG         =   "U02"
                MOVE    "U02"               TO  WRK-SAKIPG
                PERFORM 210-BACK-SYORI-SEC
@@ -8886,6 +8899,14 @@
                    GO      TO      41001-KIHON-CHK-EXT
                END-IF
            END-IF
+      *    国保 前期高齢者変更チェック
+           IF      SPA-NAI-ZENKIFLG      =   1
+               IF      SPA-NAI-ZENKIFLG-ERR    =   ZERO
+                   MOVE    "K171"              TO  SPA-ERRCD
+                   MOVE    5                   TO  SPA-GMN-CUR
+                   GO      TO      41001-KIHON-CHK-EXT
+               END-IF
+           END-IF
       *
       *    診療行為入力チェック
            PERFORM 41011-KOUI-ALLHEN-SEC
@@ -9870,6 +9891,16 @@
                    MOVE    "K034"              TO  SPA-ERRCD
                    MOVE    5                   TO  SPA-GMN-CUR
                    MOVE    1                   TO  SPA-NAI-KOHFLG-ERR
+               END-IF
+           END-IF
+      *    国保 前期高齢者変更チェック
+           IF     (SPA-NAI-ZENKIFLG    =   1   )  AND
+                  (SPA-ERRCD           =   SPACE
+                                       OR   "K171")
+               IF      SPA-NAI-ZENKIFLG-ERR    =   ZERO
+                   MOVE    "K171"              TO  SPA-ERRCD
+                   MOVE    5                   TO  SPA-GMN-CUR
+                   MOVE    1                   TO  SPA-NAI-ZENKIFLG-ERR
                END-IF
            END-IF
       *
