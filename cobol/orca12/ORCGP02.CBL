@@ -3669,7 +3669,8 @@
                    MOVE    "補助区分は老人割合のみ入力可能です。"
                                                TO  SPA-ERRMSG
                WHEN    "1067"
-                   STRING  "補助区分２割は老人割合ではありません。"
+                   STRING  "補助区分２割は前期高齢者の補助区分では"
+                           "ありません。３割に変更して下さい。"
                                                DELIMITED  BY  SIZE
                                                INTO  SPA-ERRMSG
                    END-STRING
@@ -4287,13 +4288,15 @@
       *        Ｈ１８．１０改正から
                WHEN    "0110"
                    STRING  SPA-PIDMSG    DELIMITED  BY  SPACE
-                           "の前期高齢者２割を３割に切替えます。"
+                           "の前期高齢者２割を平成１８年１０月から"
+                           "３割に変更します。"
                            "よろしいですか？"
                                        DELIMITED  BY  SIZE
                                        INTO  WRK-PIDMSG
                    END-STRING
                WHEN    "0111"
-                   STRING  "老人公費の２割を３割に切替えます。"
+                   STRING  "老人公費の２割を平成１８年１０月から"
+                           "３割に変更します。"
                            "よろしいですか？"
                                        DELIMITED  BY  SIZE
                                        INTO  WRK-PIDMSG

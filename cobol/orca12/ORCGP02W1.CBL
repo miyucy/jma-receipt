@@ -4382,7 +4382,7 @@
       *        Êä½õ¶èÊ¬ÁªÂò¥¨¥é¡¼
                IF      FLG-RJNERR          =   2
                    MOVE    "1067"              TO  SPA-ERRCD
-                   MOVE    8                   TO  SPA-GMN-CUR
+                   MOVE    11                  TO  SPA-GMN-CUR
                END-IF
            END-IF
       *

@@ -2030,6 +2030,17 @@
       *****************************************************************
        320-RJNKOH-SYORI-SEC         SECTION.
       *
+      *    ³«»ÏÆü¤¬£È£±£¸¡¥£±£°°Ê¹ß¤Î¾ì¹ç¡¢Êä½õ¶èÊ¬ÊÑ¹¹
+           IF      SPA-PTKOH-TEKSTYMD(SPA-KOH-IDX2)
+                                       >=  "20061001"
+               MOVE    SPA-KOH-GMN1        TO  IDX-K
+               MOVE    "3"                 TO  SPA-GMN-KOHKBN (IDX-K)
+      *        »ÙÊ§¶èÊ¬¡Ê£³³ä¡Ë
+               MOVE    "03"                TO  SPA-NAI-PTKOH-PAYKBN
+                                                             (IDX-K)
+               GO      TO      320-RJNKOH-SYORI-EXT
+           END-IF
+      *
       *    Á°¤Î½ªÎ»ÆüÊÝÂ¸
            MOVE    SPA-PTKOH-TEKEDYMD(SPA-KOH-IDX2)
                                        TO  WRK-TEKEDYMD
