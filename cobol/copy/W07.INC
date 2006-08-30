@@ -349,6 +349,12 @@
                       07  W07-VALUE   PIC X(12).
                     06  W07-SYOKBN-DSPKBN-COUNT   PIC S9(9)   BINARY.
                     06  W07-SYOKBN-DSPKBN-ITEM    PIC X(12)   OCCURS  3.
+                  05  W07-SJKBN-COMBO.
+                    06  W07-SJKBN.
+                      07  W07-VALUE   PIC X(53).
+                    06  W07-SJKBN-COUNT   PIC S9(9)   BINARY.
+                    06  W07-SJKBN-ITEM
+                            PIC X(53)   OCCURS  20 TIMES.
                 04  W07-TAGNAME5.
                   05  W07-TAGNAME5-STATE   PIC S9(9)   BINARY.
                 04  W07-TAG6.

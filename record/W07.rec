@@ -562,6 +562,13 @@ W07	{
 					count	int;
 					item	varchar(12)[3];
 				};
+				SJKBN_COMBO	{
+					SJKBN	{
+						value	varchar(53);
+					};
+					count	int;
+					item	varchar(53)[20];
+				};
 			};
 			TAGNAME5    {
 			  	state   int;

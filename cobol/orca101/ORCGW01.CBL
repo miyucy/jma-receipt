@@ -265,7 +265,7 @@
            03  FILLER              PIC X(35)   VALUE
                "1041 入金方法情報".
            03  FILLER              PIC X(35)   VALUE
-               "1042 病名機能情報".
+               "1042 病名・コメント機能情報".
            03  FILLER              PIC X(35)   VALUE
                "1043 会計照会機能情報".
            03  FILLER              PIC X(35)   VALUE

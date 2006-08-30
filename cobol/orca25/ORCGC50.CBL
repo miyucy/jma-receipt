@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  00.00.01    NACL-多々納  06/08/29  詳記区分初期表示の追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -186,6 +187,8 @@
            COPY    "CPSK1001.INC".
       *
            COPY    "CPSK1005.INC".
+      *
+           COPY    "CPSK1042.INC".
       *
       *    保険組み合わせ
        01  HKNCOMBI-REC.
@@ -445,11 +448,51 @@
                IF      SPA-NYUGAIKBN       =   SPACE
                    PERFORM 3104-NYUGAIKBN-HEN-SEC
                END-IF
+      *        症状詳記初期表示区分
+               PERFORM 3109-SJKBN-SET-SEC
            END-IF
       *
            PERFORM 310-SPA-SET-SEC
            .
        3001-SPA-INIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    症状詳記初期表示区分処理
+      *****************************************************************
+       3109-SJKBN-SET-SEC          SECTION.
+      *
+           MOVE    SPACE               TO  SYS-1042-REC
+           MOVE    "1042"              TO  SYS-1042-KANRICD
+           MOVE    "*"                 TO  SYS-1042-KBNCD
+           MOVE    SPA-NAI-SRYYM       TO  SYS-1042-STYUKYMD(1:6)
+           MOVE    "01"                TO  SYS-1042-STYUKYMD(7:2)
+           MOVE    SYS-1042-STYUKYMD   TO  SYS-1042-EDYUKYMD
+      *    システム管理検索
+           MOVE    SYS-1042-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1042-REC
+               MOVE    SYS-1042-SJKBN-SET  TO  SPA-SJKBN-SET
+           END-IF
+           IF      SPA-SJKBN-SET       =   SPACE
+               MOVE    "01"                TO  SPA-SJKBN-SET
+           END-IF
+      *
+           .
+       3109-SJKBN-SET-EXT.
            EXIT.
       *****************************************************************
       *    入外区分編集処理
@@ -956,11 +999,33 @@
            IF      SPA-GMN-SYORI       =   2
                CONTINUE
            ELSE
-               MOVE    SPA-GMN-SJKBNLST (01)   TO  SPA-GMN-SJKBN-G
+               PERFORM 31031-SJKBN-INI-SEC
            END-IF
       *
            .
        3103-RECECOM-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    詳記区分初期表示処理
+      *****************************************************************
+       31031-SJKBN-INI-SEC             SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING    IDX      FROM    1   BY  1
+                   UNTIL     (IDX      >   SPA-SJKBN-MAX )
+                          OR (FLG-OK   =   1       )
+               IF      SPA-SJKBN-SET   =   SPA-GMN-SJKBNLST (IDX)(1:2)
+                   MOVE    SPA-GMN-SJKBN-LIST  (IDX)
+                                           TO  SPA-GMN-SJKBN-G
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF     FLG-OK               =   ZERO
+               MOVE    SPA-GMN-SJKBNLST (01)   TO  SPA-GMN-SJKBN-G
+           END-IF
+           .
+       31031-SJKBN-INI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2497,7 +2562,7 @@
                IF      SPA-GMN-SYORI       =   2
                    CONTINUE
                ELSE
-                   MOVE    SPA-GMN-SJKBNLST (01)   TO  SPA-GMN-SJKBN-G
+                   PERFORM 31031-SJKBN-INI-SEC
                END-IF
                MOVE    1                   TO  SPA-GMN-CUR
            END-IF
@@ -3079,7 +3144,7 @@
       *        コメント選択なし
                MOVE    ZERO                TO  SPA-GMN-COMSEL
                MOVE    SPACE               TO  SPA-GMN-COMMENT
-               MOVE    SPA-GMN-SJKBNLST (01)   TO  SPA-GMN-SJKBN-G
+               PERFORM 31031-SJKBN-INI-SEC
            ELSE
                INITIALIZE                  SPA-GMN-SELNUM-G
            END-IF
@@ -3972,7 +4037,7 @@
                MOVE    14                  TO  SPA-GMN-CUR
                MOVE    ZERO                TO  SPA-GMN-COMSEL
                MOVE    SPACE               TO  SPA-GMN-COMMENT
-               MOVE    SPA-GMN-SJKBNLST (01)   TO  SPA-GMN-SJKBN-G
+               PERFORM 31031-SJKBN-INI-SEC
            ELSE
                MOVE    ZERO                TO  SPA-GMN-COMSEL
                MOVE    SPACE               TO  SPA-GMN-COMMENT

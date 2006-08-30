@@ -41,6 +41,9 @@
       *患者生年月日（和暦編集）
                05  SPA-GMN-BIRTHDAYW       PIC X(09).
       *
+      *症状詳記区分初期表示
+               05  SPA-SJKBN-SET           PIC X(02).
+      *
            03  SPA-C50ID-AREA.
       *警告メッセージ
                05  SPA-C50IDCD               PIC  X(04).

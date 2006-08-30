@@ -79,6 +79,7 @@
       *  02.01.25    NACL-多々納  06/05/19  患者削除機能チェックの追加
       *  02.01.26    NACL-太田    06/08/16  収納機能情報
       *                                     請求書兼領収書発行区分追加
+      *  03.02.00    NACL-多々納  06/08/29  レセコメント詳記区分の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -579,6 +580,16 @@
                                13                          PIC X(01).
                                13  SPA-GMN-SYOKBN-DSPKBNMEIL
                                                            PIC X(10).
+      *                詳記区分初期設定
+                       09  SPA-GMN-SJKBN-G.
+                           11  SPA-GMN-SJKBN               PIC X(02).
+                           11  SPA-GMN-SJKBN-F1            PIC X(01).
+                           11  SPA-GMN-SJKBN-MEI           PIC X(50).
+                       09  SPA-GMN-SJKBN-LST-G.
+                           11  SPA-GMN-SJKBN-MAX           PIC 9(02).
+                           11  SPA-GMN-SJKBNLST            PIC X(53)
+                                                           OCCURS  20.
+      *
       *            会計照会情報
                    07  SPA-GMN-PAGE6-AREA.
       *                表示順
@@ -1183,6 +1194,29 @@
            MOVE    "1 前月"            TO  SPA-GMN-SYOKBN-DSPKBNLST(2)
            MOVE    "2 全体"            TO  SPA-GMN-SYOKBN-DSPKBNLST(3)
            MOVE    3                   TO  SPA-GMN-SYOKBN-DSPKBN-MAX
+      *    コメント症状詳記区分初期
+           MOVE    "01 主たる疾患の臨床症状"
+                                       TO  SPA-GMN-SJKBNLST (01)
+           MOVE    "02 主たる疾患の診療・検査所見"
+                                       TO  SPA-GMN-SJKBNLST (02)
+           MOVE    "03 主な治療行為の必要性"
+                                       TO  SPA-GMN-SJKBNLST (03)
+           MOVE    "04 主な治療行為の経過"
+                                       TO  SPA-GMN-SJKBNLST (04)
+           MOVE    "05 １００万点以上の薬剤に係る症状等"
+                                       TO  SPA-GMN-SJKBNLST (05)
+           MOVE    "06 １００万点以上の処置に係る症状等"
+                                       TO  SPA-GMN-SJKBNLST (06)
+           MOVE    "07 その他（１）"
+                                       TO  SPA-GMN-SJKBNLST (07)
+           MOVE    "08 その他（２）"
+                                       TO  SPA-GMN-SJKBNLST (08)
+           MOVE    "09 その他（３）"
+                                       TO  SPA-GMN-SJKBNLST (09)
+           MOVE    "99 レセプト摘要欄コメント"
+                                       TO  SPA-GMN-SJKBNLST (10)
+           MOVE    10                  TO  SPA-GMN-SJKBN-MAX
+      *
       *    会計照会情報
            MOVE    "0 診療科順"        TO  SPA-GMN-SRYKBN-LIST(1)
            MOVE    "1 診療区分順"      TO  SPA-GMN-SRYKBN-LIST(2)
@@ -1206,7 +1240,7 @@
       *        収納機能情報
                WHEN    "1039"
                    PERFORM 310-SPASET-1039-SEC
-      *        収納機能情報
+      *        病名機能情報
                WHEN    "1042"
                    PERFORM 310-SPASET-1042-SEC
       *        会計照会機能情報
@@ -2450,6 +2484,24 @@
                                        TO  SPA-GMN-SYOKBN-DSPKBN-G
            END-IF
       *
+      *    コメント症状詳記区分
+           MOVE    SYS-1042-SJKBN-SET  TO  SPA-GMN-SJKBN
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY         FROM    1   BY  1
+                   UNTIL   IDY         >   SPA-GMN-SJKBN-MAX
+               IF      SPA-GMN-SJKBN   =   SPA-GMN-SJKBNLST (IDY)(1:2)
+                   MOVE    SPA-GMN-SJKBNLST(IDY)
+                                       TO  SPA-GMN-SJKBN-G
+                   MOVE    1           TO  FLG-OK
+                   MOVE    SPA-GMN-SJKBN-MAX
+                                       TO  IDY
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-SJKBNLST (1)
+                                       TO  SPA-GMN-SJKBN-G
+           END-IF
+      *
            MOVE    70                 TO  SPA-GMN-CUR
       *
            . 
@@ -2702,6 +2754,7 @@
            MOVE    W07-MSG4-DSPKBN     TO  SPA-GMN-MSG4-DSPKBN-G
            MOVE    W07-SRYKA-DSPKBN    TO  SPA-GMN-SRYKA-DSPKBN-G
            MOVE    W07-SYOKBN-DSPKBN   TO  SPA-GMN-SYOKBN-DSPKBN-G
+           MOVE    W07-SJKBN           TO  SPA-GMN-SJKBN-G
       *
       *    会計照会機能情報 
            MOVE    W07-SRYKBN-FLG      TO  SPA-GMN-SRYKBN-FLG-G
@@ -2921,6 +2974,10 @@
       *            表示対象期間初期表示区分チェック
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4111-SYOKBN-DSPKBN-CHK-SEC
+                   END-IF
+      *            症状詳記区分初期表示チェック
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4111-SJKBN-CHK-SEC
                    END-IF
                WHEN    "1043"
       *            会計照会全科表示順
@@ -4497,6 +4554,28 @@
            .
        4111-SYOKBN-DSPKBN-CHK-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    症状詳記区分初期表示チェック処理（病名機能情報）
+      *****************************************************************
+       4111-SJKBN-CHK-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-SJKBN-MAX
+               IF      SPA-GMN-SJKBN   =   SPA-GMN-SJKBNLST (IDX)(1:2)
+                   MOVE    SPA-GMN-SJKBNLST(IDX)
+                                          TO  SPA-GMN-SJKBN-G
+                   MOVE    1              TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    76              TO  SPA-GMN-CUR
+               MOVE    "4007"          TO  SPA-ERRCD
+           END-IF
+           .
+       4111-SJKBN-CHK-EXT.
+           EXIT.
       *****************************************************************
       *    全科表示順チェック処理（会計照会機能情報）
       *****************************************************************
@@ -5378,6 +5457,7 @@
            MOVE    SPA-GMN-MSG4-DSPKBN     TO  SYS-1042-MSG4-DSPKBN
            MOVE    SPA-GMN-SRYKA-DSPKBN    TO  SYS-1042-SRYKA-DSPKBN
            MOVE    SPA-GMN-SYOKBN-DSPKBN   TO  SYS-1042-SYOKBN-DSPKBN
+           MOVE    SPA-GMN-SJKBN           TO  SYS-1042-SJKBN-SET
       *
            MOVE    SYS-1042-REC            TO  SYSKANRI-REC
       *
@@ -6173,6 +6253,16 @@
            MOVE    SPA-GMN-SYOKBN-DSPKBN-MAX
                                        TO  W07-SYOKBN-DSPKBN-COUNT
       *
+      *    表示対象期間初期表示区分（病名機能情報）
+           MOVE    SPA-GMN-SJKBN-G    TO  W07-SJKBN
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-SJKBN-MAX
+               MOVE    SPA-GMN-SJKBNLST (IDX)
+                                       TO  W07-SJKBN-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-SJKBN-MAX
+                                       TO  W07-SJKBN-COUNT
+      *
       *    全科の表示順区分（会計照会機能情報）
            MOVE    SPA-GMN-SRYKBN-FLG-G    TO  W07-SRYKBN-FLG
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -6465,6 +6555,9 @@
                WHEN    "4006"
                    MOVE
                    "同一病名警告メッセージ表示有無区分がありません。"
+                                                       TO  SPA-ERRMSG
+               WHEN    "4007"
+                   MOVE    "詳記区分初期表示がありません。"
                                                        TO  SPA-ERRMSG
       *        会計照会機能情報
                WHEN    "5001"
@@ -6759,6 +6852,8 @@
                    MOVE  "SRYKA_DSPKBN"    TO   MCP-WIDGET
                WHEN    75
                    MOVE  "SYOKBN_DSPKBN"   TO   MCP-WIDGET
+               WHEN    76
+                   MOVE  "SJKBN"           TO   MCP-WIDGET
       *
                WHEN    100
                    MOVE  "SRYKBN_FLG"      TO   MCP-WIDGET
@@ -7004,6 +7099,8 @@
                WHEN    "SRYKA_DSPKBN"
                    MOVE    75              TO  SPA-GMN-CUR
                WHEN    "SYOKBN_DSPKBN"
+                   MOVE    76              TO  SPA-GMN-CUR
+               WHEN    "SJKBN"
                    MOVE    99              TO  SPA-GMN-CUR
       *
                WHEN    "SRYKBN_FLG"

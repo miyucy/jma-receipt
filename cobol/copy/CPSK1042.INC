@@ -61,7 +61,14 @@
                05  SYS-1042-SYOKBN-DSPKBN
                                         PIC  X(01).
       *予備
-               05                       PIC  X(494).
+               05  SYS-1042-YOBI1
+                                        PIC  X(10).
+      *コメント症状詳記区分初期設定
+               05  SYS-1042-SJKBN-SET
+                                        PIC  X(02).
+      *予備
+      ******** 05                       PIC  X(494).
+               05                       PIC  X(482).
       *端末ＩＤ
            03  SYS-1042-TERMID          PIC  X(16).
       *オペーレータＩＤ
