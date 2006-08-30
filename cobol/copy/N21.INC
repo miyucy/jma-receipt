@@ -32,11 +32,11 @@
                 05  N21-KENNAIYO      PIC X(26).
                 05  N21-KENNAME       PIC X(100).
                 05  N21-SELNUM        PIC S9(3).
-                05  N21-NAME          PIC X(80).
-                05  N21-EFFECT        PIC X(186).
-                05  N21-COLOR         PIC X(136).
-                05  N21-SHAPE         PIC X(136).
-                05  N21-MARK          PIC X(136).
-                05  N21-CAUTION       PIC X(410).
+                05  N21-NAME          PIC X(100).
+                05  N21-EFFECT        PIC X(400).
+                05  N21-COLOR         PIC X(360).
+                05  N21-SHAPE         PIC X(360).
+                05  N21-MARK          PIC X(360).
+                05  N21-CAUTION       PIC X(850).
                 05  N21-PHOTO         PIC X(256).
                 05  N21-PHOTOAREA     PIC X(8).

@@ -28,22 +28,22 @@ N21	{
 			value	number(3);
 		};
 		NAME	{
-			value	varchar(80);
+			value	varchar(100);
 		};
 		EFFECT	{
-			value	varchar(186);
+			value	varchar(400);
 		};
 		COLOR	{
-			value	varchar(136);
+			value	varchar(360);
 		};
 		SHAPE	{
-			value	varchar(136);
+			value	varchar(360);
 		};
 		MARK	{
-			value	varchar(136);
+			value	varchar(360);
 		};
 		CAUTION	{
-			value	varchar(410);
+			value	varchar(850);
 		};
 		PHOTO	{
 			value	varchar(256);

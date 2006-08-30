@@ -44,25 +44,28 @@
                                        OCCURS  200.
       *
                07  SPA-GMN-ENTRY.
-                 09  SPA-GMN-NAME      PIC X(80).
-                 09  SPA-GMN-EFFECT    PIC X(186).
-                 09  SPA-GMN-COLOR     PIC X(136).
-                 09  SPA-GMN-SHAPE     PIC X(136).
-                 09  SPA-GMN-MARK      PIC X(136).
-                 09  SPA-GMN-CAUTION   PIC X(410).
+                 09  SPA-GMN-NAME      PIC X(100).
+                 09  SPA-GMN-EFFECT    PIC X(400).
+                 09  SPA-GMN-COLOR     PIC X(360).
+                 09  SPA-GMN-SHAPE     PIC X(360).
+                 09  SPA-GMN-MARK      PIC X(360).
+                 09  SPA-GMN-CAUTION   PIC X(850).
                  09  SPA-GMN-PHOTO     PIC X(256).
                  09  SPA-GMN-OBJECT    PIC X(08).
       *
            05  SPA-NAI-AREA.
                07  SPA-NAI-SRYCD       PIC X(09).
+               07  SPA-NAI-KENNAIYO    PIC X(26).
                07  SPA-NAI-KENCD       PIC X(21).
+               07  SPA-NAI-SELNUM      PIC 9(03).
+               07  SPA-NAI-EVENT       PIC X(01).
                07  SPA-NAI-ENTRY.
-                 09  SPA-NAI-NAME      PIC X(80).
-                 09  SPA-NAI-EFFECT    PIC X(186).
-                 09  SPA-NAI-COLOR     PIC X(136).
-                 09  SPA-NAI-SHAPE     PIC X(136).
-                 09  SPA-NAI-MARK      PIC X(136).
-                 09  SPA-NAI-CAUTION   PIC X(410).
+                 09  SPA-NAI-NAME      PIC X(100).
+                 09  SPA-NAI-EFFECT    PIC X(400).
+                 09  SPA-NAI-COLOR     PIC X(360).
+                 09  SPA-NAI-SHAPE     PIC X(360).
+                 09  SPA-NAI-MARK      PIC X(360).
+                 09  SPA-NAI-CAUTION   PIC X(850).
                  09  SPA-NAI-PHOTO     PIC X(256).
                  09  SPA-NAI-OBJECT    PIC X(08).
       *
@@ -112,11 +115,11 @@
                  09  SPA-N22-TGAZO     PIC X(5).
                  09  SPA-N22-TMAKER    PIC X(50).
                  09  SPA-N22-TSELLER   PIC X(50).
-                 09  SPA-N22-EFFECT    PIC X(186).
-                 09  SPA-N22-COLOR     PIC X(136).
-                 09  SPA-N22-SHAPE     PIC X(136).
-                 09  SPA-N22-MARK      PIC X(136).
-                 09  SPA-N22-CAUTION   PIC X(410).
+                 09  SPA-N22-EFFECT    PIC X(400).
+                 09  SPA-N22-COLOR     PIC X(360).
+                 09  SPA-N22-SHAPE     PIC X(360).
+                 09  SPA-N22-MARK      PIC X(360).
+                 09  SPA-N22-CAUTION   PIC X(850).
                  09  SPA-N22-PHOTO1    PIC X(256).
                  09  SPA-N22-PHOTO2    PIC X(256).
                  09  SPA-N22-PHOTO3    PIC X(256).

@@ -42,16 +42,17 @@
       * 02.01.03     NACL-森脇     04/10/22  CLOSE処理
       * 02.02.01     NACL-森脇     05/12/13  薬剤情報参照追加
       * 02.02.02     NACL-森脇     06/05/11  薬剤情報リスト追加
+      * 02.02.03     NACL-森脇     06/08/29  薬剤情報文字数チェック追加
       *****************************************************************
       *
-       ENVIRONMENT         DIVISION.
-       CONFIGURATION           SECTION.
-       INPUT-OUTPUT            SECTION.
+       ENVIRONMENT             DIVISION.
+       CONFIGURATION               SECTION.
+       INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-       DATA                DIVISION.
+       DATA                    DIVISION.
       *
-       WORKING-STORAGE         SECTION.
+       WORKING-STORAGE             SECTION.
       *
       *    スパ領域
            COPY    "COMMON-SPA".
@@ -63,73 +64,89 @@
            COPY    "ENUM-VALUE".
       *
        01  FLG-AREA.
-           03  FLG-END         PIC 9(01).
-           03  FLG-TENSU       PIC 9(01).
-           03  FLG-YAKUJYO     PIC 9(01).
-           03  FLG-INPUTCD     PIC 9(01).
-           03  FLG-OK          PIC 9(01).
-           03  FLG-GAZO        PIC 9(01).
-           03  FLG-SYSKANRI    PIC 9(01).
+           03  FLG-END             PIC 9(01).
+           03  FLG-TENSU           PIC 9(01).
+           03  FLG-YAKUJYO         PIC 9(01).
+           03  FLG-INPUTCD         PIC 9(01).
+           03  FLG-OK              PIC 9(01).
+           03  FLG-GAZO            PIC 9(01).
+           03  FLG-SYSKANRI        PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
-           03  CNT-MOJI    PIC 9(06).
-           03  CNT-DAT     PIC 9(03).
+           03  CNT-MOJI            PIC 9(06).
+           03  CNT-DAT             PIC 9(03).
       *
       *    添字領域
        01  IDX-AREA.
-           03  IDX         PIC 9(03).
-           03  IDY         PIC 9(03).
-           03  IDZ         PIC 9(03).
+           03  IDX                 PIC 9(03).
+           03  IDY                 PIC 9(03).
+           03  IDZ                 PIC 9(03).
+      *----(02.02.03)--ADD-START---
+           03  IDX-STR             PIC 9(04).
+           03  IDX-STR1            PIC 9(04).
+           03  IDX-KET             PIC 9(04).
+      *----(02.02.03)--ADD-END-----
       *
       *    システム領域
        01  SYS-AREA.
-           03  SYS-YMD     PIC X(08).
-           03  SYS-TIME    PIC X(06).
+           03  SYS-YMD             PIC X(08).
+           03  SYS-TIME            PIC X(06).
       *
       *    一時領域
        01  WRK-AREA.
-           03  WRK-SRYCD       PIC X(9).
-           03  WRK-NAME        PIC X(26).
-           03  WRK-CDSYU       PIC X(01).
-           03  WRK-CREYMD      PIC X(08).
+           03  WRK-SRYCD           PIC X(9).
+           03  WRK-NAME            PIC X(26).
+           03  WRK-CDSYU           PIC X(01).
+           03  WRK-CREYMD          PIC X(08).
+      *----(02.02.03)--ADD-START---
+           03  WRK-KENCD           PIC X(21).
+      *----(02.02.03)--ADD-END-----
       *
            03  WRK-IPCPATH         PIC X(64).
            03  WRK-PATH-TABLE      PIC X(64).
            03  WRK-PATH-PATHNAME   PIC X(64).
       *
-           03  WRK-GMN-CUR     PIC 9(02).
-           03  WRK-N21IDMSG    PIC X(70).
-           03  WRK-ZZZZ9       PIC ZZZZ9.
+           03  WRK-GMN-CUR         PIC 9(02).
+           03  WRK-N21IDMSG        PIC X(70).
+           03  WRK-ZZZZ9           PIC ZZZZ9.
+      *
+      *----(02.02.03)--ADD-START---
+      *    全角を行毎に編集
+       01  WRK-HENSYU-AREA.
+           03  WRK-NAIYOU          PIC X(800).
+           03  GYO-MAX             PIC 9(04).
+           03  KOU-MAX             PIC 9(04).
+      *----(02.02.03)--ADD-END-----
       *
       *    カナ検索用
        01  WRK-PIN-AREA.
       *----(01.01.01)--UPD-START---
-      *     03  WRK-PIN         PIC X(02).
-           03  WRK-PIN         PIC 9(02).
+      *     03  WRK-PIN            PIC X(02).
+           03  WRK-PIN             PIC 9(02).
       *----(01.01.01)--UPD-END-----
            03  WRK-PED.
-             05  WRK-PEDX      PIC X(02)   OCCURS  13.
-           03  WRK-PKANA       PIC X(02).
-           03  WRK-PMAX        PIC 9(02).
+             05  WRK-PEDX          PIC X(02)   OCCURS  13.
+           03  WRK-PKANA           PIC X(02).
+           03  WRK-PMAX            PIC 9(02).
       *
       *----(00.01.03)--ADD-START----
       *    カナ検索用テーブル
        01  PIN-TBL-AREA.
            03  KANA-TBL.
-             05  FILLER        PIC X(10)   VALUE "アイウエオ".
-             05  FILLER        PIC X(10)   VALUE "カキクケコ".
-             05  FILLER        PIC X(10)   VALUE "サシスセソ".
-             05  FILLER        PIC X(10)   VALUE "タチツテト".
-             05  FILLER        PIC X(10)   VALUE "ナニヌネノ".
-             05  FILLER        PIC X(10)   VALUE "ハヒフヘホ".
-             05  FILLER        PIC X(10)   VALUE "マミムメモ".
-             05  FILLER        PIC X(06)   VALUE "ヤユヨ".
-             05  FILLER        PIC X(10)   VALUE "ラリルレロ".
-             05  FILLER        PIC X(10)   VALUE "ワヲン゜゛".
-             05  FILLER        PIC X(08)   VALUE "ーＳＢＣ".
-           03  KANA-TBL-R      REDEFINES   KANA-TBL.
-             05  PKANA         PIC X(02)   OCCURS  52.
+             05  FILLER            PIC X(10)   VALUE "アイウエオ".
+             05  FILLER            PIC X(10)   VALUE "カキクケコ".
+             05  FILLER            PIC X(10)   VALUE "サシスセソ".
+             05  FILLER            PIC X(10)   VALUE "タチツテト".
+             05  FILLER            PIC X(10)   VALUE "ナニヌネノ".
+             05  FILLER            PIC X(10)   VALUE "ハヒフヘホ".
+             05  FILLER            PIC X(10)   VALUE "マミムメモ".
+             05  FILLER            PIC X(06)   VALUE "ヤユヨ".
+             05  FILLER            PIC X(10)   VALUE "ラリルレロ".
+             05  FILLER            PIC X(10)   VALUE "ワヲン゜゛".
+             05  FILLER            PIC X(08)   VALUE "ーＳＢＣ".
+           03  KANA-TBL-R          REDEFINES   KANA-TBL.
+             05  PKANA             PIC X(02)   OCCURS  52.
       *----(00.01.03)--ADD-END------
       *
       *----(00.01.02)--ADD-START----
@@ -137,7 +154,7 @@
            03  MSG-CAUTION.
              05  FILLER        PIC X(34)   VALUE
                           "医師の指示通りに服用してください。".
-             05  FILLER        PIC X(01)   VALUE X"0A".
+             05  FILLER        PIC X(01)   VALUE   X"0A".
              05  FILLER        PIC X(40)   VALUE
                           "発疹・かゆみ等の過敏症が現れた時は服用を".
              05  FILLER        PIC X(30)   VALUE
@@ -336,11 +353,6 @@
       *****************************************************************
        200-ENTRY               SECTION.
       *
-           IF      SPA-GMN-ENTRY       NOT =   SPA-NAI-ENTRY
-               PERFORM 480-TOUROKU-SEC 
-               GO  TO  200-ENTRY-EXT
-           END-IF
-      *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
                WHEN    "ACTIVATE"      ALSO    "KENCD"
                    PERFORM 4110-KENCD-SEC
@@ -439,10 +451,34 @@
       *            更新処理
                    WHEN  "1001"
                        PERFORM 481-KOUSHIN-SEC
+      *----(02.02.03)--ADD-START---
+      *            編集更新処理
+                   WHEN  "1003"
+                       PERFORM 486-HENSYU-KOUSHIN-SEC
+      *----(02.02.03)--ADD-END-----
                END-EVALUATE
            ELSE
                MOVE    2           TO  SPA-GMN-CUR
            END-IF
+      *
+      *----(02.02.03)--ADD-START---
+           IF      SPA-N21IDCD     =   "1003"
+               INITIALIZE          SPA-GMN-ENTRY
+               INITIALIZE          SPA-NAI-ENTRY
+               DISPLAY "SPA-NAI-EVENT=" SPA-NAI-EVENT
+               EVALUATE    SPA-NAI-EVENT
+                   WHEN    "1"
+                       MOVE    SPA-NAI-KENCD   TO  N21-KENCD
+                       PERFORM 4110-KENCD-SEC
+                   WHEN    "2"
+                       MOVE    SPA-NAI-SELNUM  TO  SPA-GMN-SELNUM
+                       PERFORM 4112-LISTSET-SEC
+                   WHEN    "3"
+                       MOVE    SPA-NAI-KENNAIYO    TO  SPA-GMN-KENNAIYO
+                       PERFORM 494-KEN-PHEN-SET-SEC
+               END-EVALUATE
+           END-IF
+      *----(02.02.03)--ADD-END-----
       *
            MOVE    SPACE       TO  SPA-N21ID1-FLG
            MOVE    SPACE       TO  SPA-N21IDCD
@@ -455,6 +491,15 @@
       *    検索コード処理
       *****************************************************************
        4110-KENCD-SEC          SECTION.
+      *
+      *----(02.02.03)--ADD-START---
+           IF      SPA-GMN-ENTRY       NOT =   SPA-NAI-ENTRY
+               PERFORM 485-HENSYU-TOUROKU-SEC
+               MOVE    "1"             TO  SPA-NAI-EVENT
+               MOVE    N21-KENCD       TO  SPA-NAI-KENCD
+               GO  TO  4110-KENCD-EXT
+           END-IF
+      *----(02.02.03)--ADD-END-----
       *
            PERFORM 310-SPASET-SEC
       *
@@ -490,6 +535,7 @@
            END-EVALUATE
       *
            MOVE    SPA-GMN-KENCD   TO  SPA-NAI-KENCD
+           MOVE    SPA-GMN-SELNUM  TO  SPA-NAI-SELNUM
       *----(00.01.01)--ADD-END------
            .
       *
@@ -501,66 +547,49 @@
       *****************************************************************
        4111-SELNUM-SEC         SECTION.
       *
-           INITIALIZE          SPA-GMN-ENTRY
-           INITIALIZE          SPA-NAI-ENTRY
-
            MOVE    3           TO  SPA-GMN-CUR
       *
            MOVE    N21-SELNUM  TO  SPA-GMN-SELNUM
       *
-           IF          SPA-GMN-SELNUM  >   ZERO
-      *    番号チェック
-               IF          SPA-GMN-SELNUM  >   SPA-GMN-MAX
-                   MOVE    "0008"          TO  SPA-ERRCD
-                   GO  TO  4111-SELNUM-EXT
-               END-IF
+      *----(02.02.03)--ADD-START---
+           IF      SPA-GMN-ENTRY       NOT =   SPA-NAI-ENTRY
+               PERFORM 485-HENSYU-TOUROKU-SEC
+               MOVE    "2"             TO  SPA-NAI-EVENT
+               MOVE    SPA-GMN-SELNUM  TO  SPA-NAI-SELNUM
+               GO  TO  4111-SELNUM-EXT
+           END-IF
+      *----(02.02.03)--ADD-END-----
       *
-      *----(00.01.01)--ADD-START----
-               IF          SPA-GMN-MAX     =   1
-                   MOVE    4           TO  SPA-GMN-CUR
-                   MOVE    ZERO        TO  SPA-GMN-SELNUM
-                   GO  TO  4111-SELNUM-EXT
-               END-IF
-      *----(00.01.01)--ADD-END------
-      *
-               MOVE    SPA-GMN-TNAME(SPA-GMN-SELNUM)
-                                       TO  SPA-GMN-KENNAME
-               MOVE    SPA-GMN-TCD(SPA-GMN-SELNUM)
-                                       TO  SPA-GMN-KENCD
-               MOVE    SPA-GMN-KENCD   TO  SPA-NAI-SRYCD
-      *
-      *        薬剤情報マスタ読み込み
-               PERFORM 800-YAKUJYO-SET-SEC
+           IF      SPA-GMN-SELNUM  =   ZERO
+              GO  TO  4111-SELNUM-EXT
            END-IF
       *
-           MOVE    4           TO  SPA-GMN-CUR
+      *    番号チェック
+           IF          SPA-GMN-SELNUM  >   SPA-GMN-MAX
+               MOVE    "0008"          TO  SPA-ERRCD
+               GO  TO  4111-SELNUM-EXT
+           END-IF
+      *
+      *----(00.01.01)--ADD-START----
+           IF          SPA-GMN-MAX     =   1
+               MOVE    4           TO  SPA-GMN-CUR
+               MOVE    ZERO        TO  SPA-GMN-SELNUM
+               GO  TO  4111-SELNUM-EXT
+           END-IF
+      *----(00.01.01)--ADD-END------
+      *
+      *----(02.02.03)--ADD-START---
+           PERFORM 4112-LISTSET-SEC 
+      *----(02.02.03)--ADD-END-----
            .
       *
        4111-SELNUM-EXT.
            EXIT.
       *
       *****************************************************************
-      *    結果リスト チェック処理
+      *     選択番号処理
       *****************************************************************
-       4113-KEKKALST-SEC        SECTION.
-      *
-      *----(00.01.01)--ADD-START----
-               IF          SPA-GMN-MAX     =   1
-                   GO  TO  4113-KEKKALST-EXT
-               END-IF
-      *----(00.01.01)--ADD-END------
-      *
-           INITIALIZE          SPA-GMN-ENTRY
-           INITIALIZE          SPA-NAI-ENTRY
-      *
-      *    行選択
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >       200
-               IF    N21-SELECT(IDX)  =   "T"
-                   MOVE    IDX             TO  SPA-GMN-SELNUM
-                   MOVE    200     TO  IDX
-               END-IF
-           END-PERFORM
+       4112-LISTSET-SEC         SECTION.
       *
            MOVE    SPA-GMN-TNAME(SPA-GMN-SELNUM)
                                    TO  SPA-GMN-KENNAME
@@ -572,6 +601,41 @@
            PERFORM 800-YAKUJYO-SET-SEC
       *
            MOVE    4           TO  SPA-GMN-CUR
+           .
+      *
+       4112-LISTSET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    結果リスト チェック処理
+      *****************************************************************
+       4113-KEKKALST-SEC        SECTION.
+      *
+      *----(00.01.01)--ADD-START----
+           IF          SPA-GMN-MAX     =   1
+               GO  TO  4113-KEKKALST-EXT
+           END-IF
+      *----(00.01.01)--ADD-END------
+      *
+      *    行選択
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >       200
+               IF    N21-SELECT(IDX)  =   "T"
+                   MOVE    IDX             TO  SPA-GMN-SELNUM
+                   MOVE    200     TO  IDX
+               END-IF
+           END-PERFORM
+      *
+      *----(02.02.03)--ADD-START---
+           IF      SPA-GMN-ENTRY       NOT =   SPA-NAI-ENTRY
+               PERFORM 485-HENSYU-TOUROKU-SEC
+               MOVE    "2"             TO  SPA-NAI-EVENT
+               MOVE    SPA-GMN-SELNUM  TO  SPA-NAI-SELNUM
+               GO  TO  4113-KEKKALST-EXT
+           END-IF
+      *
+           PERFORM 4112-LISTSET-SEC 
+      *----(02.02.03)--ADD-END-----
            .
       *
        4113-KEKKALST-EXT.
@@ -647,11 +711,8 @@
            MOVE    SPA-HOSPID      TO  ICD-HOSPID
            MOVE    WRK-CDSYU       TO  ICD-CDSYU
            IF      WRK-IPCPATH     =   "key"
-               INITIALIZE                  ORCSADDSIGNAREA
-               MOVE    SPA-GMN-KENCD   TO  SADDSIGN-STR
-               CALL    "ORCSADDSIGN"       USING
-                                           ORCSADDSIGNAREA
-               MOVE    SADDSIGN-STR    TO  ICD-INPUTCD
+               PERFORM 4124-ASUTA-HENSYU-SEC 
+               MOVE    WRK-KENCD       TO  ICD-INPUTCD
            ELSE
                MOVE    SPA-GMN-KENCD   TO  ICD-INPUTCD
            END-IF
@@ -788,6 +849,51 @@
        4123-INPUTCDLIST-CHK-EXT.
            EXIT.
       *
+      *----(02.02.03)--ADD-START---
+      *****************************************************************
+      *   ＊編集処理
+      *****************************************************************
+       4124-ASUTA-HENSYU-SEC       SECTION.
+      *
+           MOVE    1               TO  IDX-STR
+           MOVE    1               TO  IDX-STR1
+           MOVE    SPACE           TO  WRK-KENCD
+      *
+           PERFORM UNTIL  (IDX-STR     >   20 )
+                   OR     (SPA-GMN-KENCD(IDX-STR:)  =   SPACE)
+               EVALUATE    WRK-CDSYU
+                   WHEN    "J"
+      *            ＊→%に変換
+                       IF      (SPA-GMN-KENCD(IDX-STR:2)  =   "＊")
+                           MOVE    "%"     TO  WRK-KENCD(IDX-STR1:1)
+                           ADD     2               TO  IDX-STR
+                           ADD     1               TO  IDX-STR1
+                       ELSE
+                           MOVE    SPA-GMN-KENCD(IDX-STR:2)
+                                           TO  WRK-KENCD(IDX-STR1:2)
+                           ADD     2               TO  IDX-STR
+                           ADD     2               TO  IDX-STR1
+                       END-IF
+                   WHEN    "A"
+      *            *→%に変換
+                       IF      (SPA-GMN-KENCD(IDX-STR:1)  =   "*")
+                           MOVE    "%"     TO  WRK-KENCD(IDX-STR1:1)
+                       ELSE
+                           MOVE    SPA-GMN-KENCD(IDX-STR:1)
+                                           TO  WRK-KENCD(IDX-STR1:1)
+                       END-IF
+                       ADD     1               TO  IDX-STR
+                       ADD     1               TO  IDX-STR1
+               END-EVALUATE
+           END-PERFORM
+      *
+           MOVE    "%"             TO  WRK-KENCD(IDX-STR1:1)
+           .
+      *
+       4124-ASUTA-HENSYU-EXT.
+           EXIT.
+      *
+      *----(02.02.03)--ADD-END-----
       *****************************************************************
       *    テキストチェック
       *****************************************************************
@@ -807,7 +913,7 @@
            IF          SPA-GMN-NAME    NOT =   SPACE
                INITIALIZE                  ORCSKANACHKAREA
                MOVE    "1"             TO  KANACHK-SYORI
-               MOVE    80              TO  KANACHK-MAX-CNT
+               MOVE    100             TO  KANACHK-MAX-CNT
                MOVE    SPA-GMN-NAME    TO  KANACHK-MAE-INPUT
                CALL    "ORCSKANACHK"       USING
                                            ORCSKANACHKAREA
@@ -819,6 +925,19 @@
                    MOVE    "0002"      TO  SPA-ERRCD
                    MOVE    4           TO  SPA-GMN-CUR
                    GO  TO  430-TEXTCHK-EXT
+      *----(02.02.03)--ADD-START---
+               ELSE
+                   INITIALIZE                  WRK-HENSYU-AREA
+                   MOVE    SPA-GMN-NAME    TO  WRK-NAIYOU
+                   MOVE    3               TO  GYO-MAX
+                   MOVE    26              TO  KOU-MAX
+                   PERFORM 430-HENSYU-SYORI-SEC
+                   IF      WRK-NAIYOU(IDX-STR:)    NOT =   SPACE
+                       MOVE    "0016"      TO  SPA-ERRCD
+                       MOVE    4           TO  SPA-GMN-CUR
+                       GO  TO  430-TEXTCHK-EXT
+                   END-IF
+      *----(02.02.03)--ADD-END-----
                END-IF
            END-IF
       *
@@ -826,7 +945,7 @@
            IF          SPA-GMN-EFFECT  NOT =   SPACE
                INITIALIZE                  ORCSKANACHKAREA
                MOVE    "1"             TO  KANACHK-SYORI
-               MOVE    186             TO  KANACHK-MAX-CNT
+               MOVE    400             TO  KANACHK-MAX-CNT
                MOVE    SPA-GMN-EFFECT  TO  KANACHK-MAE-INPUT
                CALL    "ORCSKANACHK"       USING
                                            ORCSKANACHKAREA
@@ -838,6 +957,19 @@
                    MOVE    "0002"      TO  SPA-ERRCD
                    MOVE    5           TO  SPA-GMN-CUR
                    GO  TO  430-TEXTCHK-EXT
+               ELSE
+      *----(02.02.03)--ADD-START---
+                   INITIALIZE                  WRK-HENSYU-AREA
+                   MOVE    SPA-GMN-EFFECT  TO  WRK-NAIYOU
+                   MOVE    6               TO  GYO-MAX
+                   MOVE    30              TO  KOU-MAX
+                   PERFORM 430-HENSYU-SYORI-SEC
+                   IF      WRK-NAIYOU(IDX-STR:)    NOT =   SPACE
+                       MOVE    "0016"      TO  SPA-ERRCD
+                       MOVE    5           TO  SPA-GMN-CUR
+                       GO  TO  430-TEXTCHK-EXT
+                   END-IF
+      *----(02.02.03)--ADD-END-----
                END-IF
            END-IF
       *
@@ -845,7 +977,7 @@
            IF          SPA-GMN-COLOR   NOT =   SPACE
                INITIALIZE                  ORCSKANACHKAREA
                MOVE    "1"             TO  KANACHK-SYORI
-               MOVE    136             TO  KANACHK-MAX-CNT
+               MOVE    360             TO  KANACHK-MAX-CNT
                MOVE    SPA-GMN-COLOR   TO  KANACHK-MAE-INPUT
                CALL    "ORCSKANACHK"       USING
                                            ORCSKANACHKAREA
@@ -864,7 +996,7 @@
            IF          SPA-GMN-SHAPE   NOT =   SPACE
                INITIALIZE                  ORCSKANACHKAREA
                MOVE    "1"             TO  KANACHK-SYORI
-               MOVE    136             TO  KANACHK-MAX-CNT
+               MOVE    360             TO  KANACHK-MAX-CNT
                MOVE    SPA-GMN-SHAPE   TO  KANACHK-MAE-INPUT
                CALL    "ORCSKANACHK"       USING
                                            ORCSKANACHKAREA
@@ -884,7 +1016,7 @@
            IF          SPA-GMN-MARK    NOT =   SPACE
                INITIALIZE                  ORCSKANACHKAREA
                MOVE    "1"             TO  KANACHK-SYORI
-               MOVE    136             TO  KANACHK-MAX-CNT
+               MOVE    360             TO  KANACHK-MAX-CNT
                MOVE    SPA-GMN-MARK    TO  KANACHK-MAE-INPUT
                CALL    "ORCSKANACHK"       USING
                                            ORCSKANACHKAREA
@@ -898,13 +1030,37 @@
                    GO  TO  430-TEXTCHK-EXT
                END-IF
            END-IF
+      *
+      *----(02.02.03)--ADD-START---
+      *    形状チェック
+           IF          SPA-GMN-COLOR   NOT =   SPACE
+               OR      SPA-GMN-SHAPE   NOT =   SPACE
+               OR      SPA-GMN-MARK    NOT =   SPACE
+               INITIALIZE                  WRK-HENSYU-AREA
+               STRING  SPA-GMN-COLOR       DELIMITED  BY  SPACE
+                       X"A1"               DELIMITED  BY  SIZE
+                       SPA-GMN-SHAPE       DELIMITED  BY  SPACE
+                       X"A1"               DELIMITED  BY  SIZE
+                       SPA-GMN-MARK        DELIMITED  BY  SPACE
+                                   INTO    WRK-NAIYOU
+               END-STRING
+               MOVE    10               TO  GYO-MAX
+               MOVE    16               TO  KOU-MAX
+               PERFORM 430-HENSYU-SYORI-SEC
+               IF      WRK-NAIYOU(IDX-STR:)    NOT =   SPACE
+                   MOVE    "0017"      TO  SPA-ERRCD
+                   MOVE    6           TO  SPA-GMN-CUR
+                   GO  TO  430-TEXTCHK-EXT
+               END-IF
+           END-IF
+      *----(02.02.03)--ADD-END-----
       *----(00.01.05)--ADD-END------
       *
       *    注意事項半角文字混在チェック
            IF          SPA-GMN-CAUTION NOT =   SPACE
                INITIALIZE                  ORCSKANACHKAREA
                MOVE    "1"             TO  KANACHK-SYORI
-               MOVE    410             TO  KANACHK-MAX-CNT
+               MOVE    850             TO  KANACHK-MAX-CNT
                MOVE    SPA-GMN-CAUTION TO  KANACHK-MAE-INPUT
                CALL    "ORCSKANACHK"       USING
                                            ORCSKANACHKAREA
@@ -916,6 +1072,19 @@
                    MOVE    "0002"      TO  SPA-ERRCD
                    MOVE    9           TO  SPA-GMN-CUR
                    GO  TO  430-TEXTCHK-EXT
+      *----(02.02.03)--ADD-START---
+               ELSE
+                   INITIALIZE                  WRK-HENSYU-AREA
+                   MOVE    SPA-GMN-CAUTION TO  WRK-NAIYOU
+                   MOVE    10              TO  GYO-MAX
+                   MOVE    40              TO  KOU-MAX
+                   PERFORM 430-HENSYU-SYORI-SEC
+                   IF      WRK-NAIYOU(IDX-STR:)    NOT =   SPACE
+                       MOVE    "0016"      TO  SPA-ERRCD
+                       MOVE    9           TO  SPA-GMN-CUR
+                       GO  TO  430-TEXTCHK-EXT
+                   END-IF
+      *----(02.02.03)--ADD-END-----
                END-IF
            END-IF
       *----(02.01.02)--UPD-END-----
@@ -952,6 +1121,55 @@
        430-TEXTCHK-EXT.
            EXIT.
       *
+      *----(02.02.03)--ADD-START---
+      *****************************************************************
+      *   帳票全角編集処理
+      *****************************************************************
+       430-HENSYU-SYORI-SEC        SECTION.
+      *
+           MOVE    1               TO  IDZ
+           MOVE    1               TO  IDX-STR
+           MOVE    1               TO  IDX-KET
+      *
+           PERFORM UNTIL  (IDX-STR     >   800 )
+                   OR     (IDZ         >   GYO-MAX )
+                   OR     (WRK-NAIYOU(IDX-STR:)  =   SPACE)
+      *        改行は対象外
+               IF      (WRK-NAIYOU(IDX-STR:1)  =   X"0A")
+                   IF      IDX-STR     >   1
+                       COMPUTE IDX-STR1    =   IDX-STR   -  1
+                   END-IF
+      *            行の最後が改行の時
+                   IF     (IDX-KET     =   1)  AND
+                          (IDX-STR     >   1)  AND
+                          (WRK-NAIYOU(IDX-STR1:1)  >=  X"A1")
+                       ADD     1               TO  IDX-STR
+                   ELSE
+                       MOVE    KOU-MAX         TO  IDX-KET
+                       ADD     1               TO  IDX-STR
+                   END-IF
+               ELSE
+                   IF      WRK-NAIYOU(IDX-STR:1)   >=  X"A1"
+                       ADD     2               TO  IDX-STR
+                       ADD     2               TO  IDX-KET
+                   ELSE
+                       ADD     1               TO  IDX-STR
+                   END-IF
+               END-IF
+      *
+      *        改行、最大文字で改行
+               IF     (IDX-KET         >=  KOU-MAX)
+                   ADD     1               TO  IDZ
+                   MOVE    1               TO  IDX-KET
+               END-IF
+      *
+           END-PERFORM
+           .
+      *
+       430-HENSYU-SYORI-EXT.
+           EXIT.
+      *
+      *----(02.02.03)--ADD-END-----
       *****************************************************************
       *    画像ファイル存在チェック
       *****************************************************************
@@ -1194,7 +1412,9 @@
                PERFORM 310-SPASET-SEC
            ELSE
                MOVE    SPA-NAI-KENCD   TO  SPA-GMN-KENCD
+               MOVE    SPACE           TO  SPA-GMN-KENNAME
                MOVE    ZERO            TO  SPA-GMN-SELNUM
+                                           SPA-NAI-SELNUM
                INITIALIZE          SPA-GMN-ENTRY
                INITIALIZE          SPA-NAI-ENTRY
                MOVE    3       TO  SPA-GMN-CUR
@@ -1289,7 +1509,9 @@
                PERFORM 310-SPASET-SEC
            ELSE
                MOVE    SPA-NAI-KENCD   TO  SPA-GMN-KENCD
+               MOVE    SPACE           TO  SPA-GMN-KENNAME
                MOVE    ZERO            TO  SPA-GMN-SELNUM
+                                           SPA-NAI-SELNUM
                INITIALIZE          SPA-GMN-ENTRY
                INITIALIZE          SPA-NAI-ENTRY
                MOVE    3       TO  SPA-GMN-CUR
@@ -1300,6 +1522,90 @@
        481-KOUSHIN-EXT.
            EXIT.
       *
+      *----(02.02.03)--ADD-START---
+      *****************************************************************
+      *       登録前処理
+      *****************************************************************
+       485-HENSYU-TOUROKU-SEC      SECTION.
+      *
+      *    チェック
+           IF          SPA-NAI-SRYCD   =   SPACE
+               MOVE    "0011"   TO  SPA-ERRCD
+               MOVE    2               TO  SPA-GMN-CUR
+               GO  TO  485-HENSYU-TOUROKU-EXT
+           END-IF
+      *
+           PERFORM 430-TEXTCHK-SEC
+      *
+           IF          SPA-ERRCD    NOT    =   SPACE
+               GO  TO  485-HENSYU-TOUROKU-EXT
+           END-IF
+      *
+           IF          SPA-GMN-ENTRY   =   SPACE
+               MOVE    "0010"   TO  SPA-ERRCD
+               MOVE    4               TO  SPA-GMN-CUR
+               GO  TO  485-HENSYU-TOUROKU-EXT
+           END-IF
+      *
+           MOVE    "1003"       TO  SPA-N21IDCD
+           .
+      *
+       485-HENSYU-TOUROKU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *       登録処理
+      *****************************************************************
+       486-HENSYU-KOUSHIN-SEC      SECTION.
+      *
+      *    薬剤情報マスタ読み込み
+           PERFORM 900-YAKUJYO-READ-SEC
+      *
+           MOVE    YAKUJYO-CREYMD  TO  WRK-CREYMD
+      *
+           MOVE    SPACE       TO  YAKUJYO-REC
+           INITIALIZE              YAKUJYO-REC
+      *
+           MOVE    SPA-HOSPID      TO  YAKUJYO-HOSPID
+           MOVE    SPA-NAI-SRYCD   TO  YAKUJYO-SRYCD
+           MOVE    1               TO  YAKUJYO-TEKNUM
+      *
+           MOVE    SPA-GMN-NAME        TO  YAKUJYO-NAME
+           MOVE    SPA-GMN-EFFECT      TO  YAKUJYO-EFFECT
+           MOVE    SPA-GMN-CAUTION     TO  YAKUJYO-CAUTION
+           MOVE    SPA-GMN-PHOTO       TO  YAKUJYO-PHOTO
+           MOVE    SPA-GMN-COLOR       TO  YAKUJYO-COLOR
+           MOVE    SPA-GMN-SHAPE       TO  YAKUJYO-SHAPE
+           MOVE    SPA-GMN-MARK        TO  YAKUJYO-MARK
+      *
+           IF          FLG-YAKUJYO     =   ZERO
+               MOVE    "DBUPDATE"      TO  MCP-FUNC
+               ACCEPT  SYS-TIME        FROM    TIME
+               MOVE    SYS-TIME        TO  YAKUJYO-UPHMS
+               MOVE    SPA-SYSYMD      TO  YAKUJYO-UPYMD
+               MOVE    WRK-CREYMD      TO  YAKUJYO-CREYMD
+           ELSE
+               MOVE    "DBINSERT"      TO  MCP-FUNC
+               MOVE    SPA-SYSYMD      TO  YAKUJYO-CREYMD
+           END-IF
+      *
+           MOVE    YAKUJYO-REC     TO  MCPDATA-REC
+           MOVE    "tbl_yakujyo"   TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           IF      MCP-RC              NOT =   ZERO 
+               MOVE    "1001"          TO  SPA-ERRCD
+               GO  TO  486-HENSYU-KOUSHIN-EXT
+           END-IF
+           .
+      *
+       486-HENSYU-KOUSHIN-EXT.
+           EXIT.
+      *
+      *----(02.02.03)--ADD-END-----
       *****************************************************************
       *    カナボタン検索処理
       *****************************************************************
@@ -1345,22 +1651,15 @@
       *
       *----(00.01.01)--ADD-START----
            IF          WRK-PMAX    >=  2
-               MOVE    SPA-GMN-KENNAIYO    TO  WRK-NAME
-               INITIALIZE          SPA-GMN-AREA
-               INITIALIZE          SPA-NAI-AREA
-               PERFORM 800-TENSULIST-SET-SEC
-               MOVE    WRK-NAME    TO  SPA-GMN-KENNAIYO
-      *
-      *         IF          SPA-ERRCD   NOT     =   SPACE
-      *             GO  TO  490-KEN-PHEN-EXT
-      *         END-IF
-      *
-               EVALUATE  SPA-GMN-MAX
-                   WHEN  ZERO
-                       MOVE    4           TO  SPA-GMN-CUR
-                   WHEN  OTHER
-                       MOVE    3           TO  SPA-GMN-CUR
-               END-EVALUATE
+      *----(02.02.03)--ADD-START---
+               IF      SPA-GMN-ENTRY       NOT =   SPA-NAI-ENTRY
+                   PERFORM 485-HENSYU-TOUROKU-SEC
+                   MOVE    "3"             TO  SPA-NAI-EVENT
+                   MOVE    SPA-GMN-KENNAIYO    TO  SPA-NAI-KENNAIYO
+                   GO  TO  490-KEN-PHEN-EXT
+               END-IF
+               PERFORM 494-KEN-PHEN-SET-SEC
+      *----(02.02.03)--ADD-END-----
            END-IF
       *----(00.01.01)--ADD-END------
              .
@@ -1490,6 +1789,30 @@
        493-KEN-PHEN-EXT.
            EXIT.
       *
+      *----(02.02.03)--ADD-START---
+      *****************************************************************
+      *    カナセット処理
+      *****************************************************************
+       494-KEN-PHEN-SET-SEC        SECTION.
+      *
+           MOVE    SPA-GMN-KENNAIYO    TO  WRK-NAME
+           INITIALIZE          SPA-GMN-AREA
+           INITIALIZE          SPA-NAI-AREA
+           PERFORM 800-TENSULIST-SET-SEC
+           MOVE    WRK-NAME    TO  SPA-GMN-KENNAIYO
+      *
+           EVALUATE  SPA-GMN-MAX
+               WHEN  ZERO
+                   MOVE    4           TO  SPA-GMN-CUR
+               WHEN  OTHER
+                   MOVE    3           TO  SPA-GMN-CUR
+           END-EVALUATE
+           .
+      *
+       494-KEN-PHEN-SET-EXT.
+           EXIT.
+      *
+      *----(02.02.03)--ADD-END-----
       *****************************************************************
       *    自画面編集処理
       *****************************************************************
@@ -1505,7 +1828,7 @@
            END-IF
       *
       *    ガイドメッセージ表示処理
-           IF          SPA-N21IDCD     NOT     =   SPACE
+           IF          SPA-N21IDCD     NOT =   SPACE
                PERFORM 520-N21IDSET-SEC
                GO  TO  500-SET-SCREEN-EXT
            END-IF
@@ -1545,7 +1868,6 @@
            MOVE    SPA-GMN-CAUTION     TO  N21-CAUTION
            MOVE    SPA-GMN-PHOTO       TO  N21-PHOTO
            MOVE    SPA-GMN-OBJECT      TO  N21-PHOTOAREA
-           DISPLAY "N21-PHOTOAREA=[" N21-PHOTOAREA "]"
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >       SPA-GMN-MAX
@@ -1630,6 +1952,16 @@
                WHEN    "0015"
                    MOVE    "画像ファイルではありません"
                                            TO  SPA-ERRMSG
+      *----(02.02.03)--ADD-START---
+               WHEN    "0016"
+                   MOVE    "枠内に納まるよう編集して下さい"
+                                           TO  SPA-ERRMSG
+               WHEN    "0017"
+                   MOVE    "色、形、記号は全部で１０行以内に納まるよう"
+                                           TO  SPA-ERRMSG(1:42)
+                   MOVE    "編集して下さい"
+                                           TO  SPA-ERRMSG(43:14)
+      *----(02.02.03)--ADD-END-----
                WHEN    "1001"
                    MOVE    "登録できませんでした"
                                            TO  SPA-ERRMSG
@@ -1670,6 +2002,11 @@
                    MOVE    "薬剤情報を登録します"  TO  WRK-N21IDMSG
                WHEN    "1002"
                    MOVE    "薬剤情報を削除します"  TO  WRK-N21IDMSG
+      *----(02.02.03)--ADD-START---
+               WHEN    "1003"
+                   MOVE    "編集した薬剤情報を登録しますか？"
+                                                   TO  WRK-N21IDMSG
+      *----(02.02.03)--ADD-END-----
            END-EVALUATE
       *
            MOVE    SPACE           TO  N21ID1
@@ -1845,6 +2182,11 @@
       *****************************************************************
        800-YAKUJYO-SET-SEC     SECTION.
       *
+      *----(02.02.03)--ADD-START---
+           INITIALIZE          SPA-GMN-ENTRY
+           INITIALIZE          SPA-NAI-ENTRY
+      *----(02.02.03)--ADD-END-----
+      *
       *    薬剤情報マスタ読み込み
            PERFORM 900-YAKUJYO-READ-SEC
       *
@@ -1869,7 +2211,9 @@
            MOVE    SPACE           TO  SPA-ERRCD
            MOVE    4               TO  SPA-GMN-CUR
       *
+      *----(02.02.03)--ADD-START---
            MOVE    SPA-GMN-ENTRY   TO  SPA-NAI-ENTRY
+      *----(02.02.03)--ADD-END-----
            .
        800-YAKUJYO-SET-EXT.
            EXIT.
@@ -2027,17 +2371,17 @@
            MOVE    1               TO  YAKUJYO-TEKNUM
            MOVE    YAKUJYO-REC     TO  MCPDATA-REC
       *
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_yakujyo"       TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           MOVE    "tbl_yakujyo"   TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
            CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
            IF          MCP-RC      =   ZERO
-               MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "tbl_yakujyo"       TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
+               MOVE    "DBFETCH"       TO  MCP-FUNC
+               MOVE    "tbl_yakujyo"   TO  MCP-TABLE
+               MOVE    "key"           TO  MCP-PATHNAME
                CALL    "MONFUNC"           USING
                                            MCPAREA
                                            MCPDATA-REC
@@ -2051,9 +2395,9 @@
                MOVE    1               TO  FLG-YAKUJYO
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "tbl_yakujyo"       TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+           MOVE    "tbl_yakujyo"   TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
            CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
