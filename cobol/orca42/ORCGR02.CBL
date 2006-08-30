@@ -1748,15 +1748,33 @@
            MOVE    "6666"              TO  RECE07-RECESYUBETU
            MOVE    "%%"                TO  RECE07-SRYKA 
            MOVE    RECE07-REC          TO  MCPDATA-REC                             
-           MOVE    "tbl_recekanri"     TO  WRK-MCP-TABLE
-           MOVE    "key10"             TO  WRK-MCP-PATHNAME
-           PERFORM 900-RECE07-READ-SEC
-           IF      FLG-RECE07          =   ZERO
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "tbl_recekanri"     TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_recekanri"     TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
+               PERFORM 900-RECE07-NEXT-SEC
+           ELSE
+               MOVE    1                   TO  FLG-RECE07
+           END-IF
+      *
+           PERFORM                     UNTIL   FLG-RECE07  =   1
                ADD     RECE07-PAGE     TO  SPA-GMN-TPAGE (1 34)
                                            SPA-GMN-PAGEH
                ADD     RECE07-KENSU    TO  SPA-GMN-TKENSU(1 34)
                                            SPA-GMN-KENSUH
-           END-IF
+      *
+               MOVE    "tbl_recekanri"     TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
+               PERFORM 900-RECE07-NEXT-SEC
+           END-PERFORM    
+           MOVE    "tbl_recekanri"     TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
       *                                     
       *    自費レセプトのページ数     
            INITIALIZE                  RECE07-REC
@@ -1765,30 +1783,67 @@
            MOVE    "8888"              TO  RECE07-RECESYUBETU
            MOVE    "%%"                TO  RECE07-SRYKA 
            MOVE    RECE07-REC          TO  MCPDATA-REC                             
-           MOVE    "tbl_recekanri"     TO  WRK-MCP-TABLE
-           MOVE    "key10"             TO  WRK-MCP-PATHNAME
-           PERFORM 900-RECE07-READ-SEC
-           IF      FLG-RECE07          =   ZERO
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "tbl_recekanri"     TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_recekanri"     TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
+               PERFORM 900-RECE07-NEXT-SEC
+           ELSE
+               MOVE    1                   TO  FLG-RECE07
+           END-IF
+      *
+           PERFORM                     UNTIL   FLG-RECE07  =   1
                ADD     RECE07-PAGE     TO  SPA-GMN-TPAGE (1 35)
                                            SPA-GMN-PAGEH
                ADD     RECE07-KENSU    TO  SPA-GMN-TKENSU(1 35)
                                            SPA-GMN-KENSUH
-           END-IF
+      *
+               MOVE    "tbl_recekanri"     TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
+               PERFORM 900-RECE07-NEXT-SEC
+           END-PERFORM    
+           MOVE    "tbl_recekanri"     TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
            INITIALIZE                  RECE07-REC
            MOVE    SPA-R01-RECE07-KEY  TO  RECE07-KEY
            MOVE    "2"                 TO  RECE07-TEISYUTUSAKI 
            MOVE    "8888"              TO  RECE07-RECESYUBETU
            MOVE    "%%"                TO  RECE07-SRYKA 
            MOVE    RECE07-REC          TO  MCPDATA-REC                             
-           MOVE    "tbl_recekanri"     TO  WRK-MCP-TABLE
-           MOVE    "key10"             TO  WRK-MCP-PATHNAME
-           PERFORM 900-RECE07-READ-SEC
-           IF      FLG-RECE07          =   ZERO
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "tbl_recekanri"     TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_recekanri"     TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
+               PERFORM 900-RECE07-NEXT-SEC
+           ELSE
+               MOVE    1                   TO  FLG-RECE07
+           END-IF
+      *
+           PERFORM                     UNTIL   FLG-RECE07  =   1
                ADD     RECE07-PAGE     TO  SPA-GMN-TPAGE (1 35)
                                            SPA-GMN-PAGEH
                ADD     RECE07-KENSU    TO  SPA-GMN-TKENSU(1 35)
                                            SPA-GMN-KENSUH
-           END-IF
+      *
+               MOVE    "tbl_recekanri"     TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
+               PERFORM 900-RECE07-NEXT-SEC
+           END-PERFORM    
+           MOVE    "tbl_recekanri"     TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
       *                                     
       *    レセプト種別不明のレセプトのページ数     
            INITIALIZE                  RECE07-REC
@@ -1797,30 +1852,67 @@
            MOVE    "0000"              TO  RECE07-RECESYUBETU
            MOVE    "%%"                TO  RECE07-SRYKA 
            MOVE    RECE07-REC          TO  MCPDATA-REC                             
-           MOVE    "tbl_recekanri"     TO  WRK-MCP-TABLE
-           MOVE    "key10"             TO  WRK-MCP-PATHNAME
-           PERFORM 900-RECE07-READ-SEC
-           IF      FLG-RECE07          =   ZERO
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "tbl_recekanri"     TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_recekanri"     TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
+               PERFORM 900-RECE07-NEXT-SEC
+           ELSE
+               MOVE    1                   TO  FLG-RECE07
+           END-IF
+      *
+           PERFORM                     UNTIL   FLG-RECE07  =   1
                ADD     RECE07-PAGE     TO  SPA-GMN-TPAGE (1 36)
                                            SPA-GMN-PAGEH
                ADD     RECE07-KENSU    TO  SPA-GMN-TKENSU(1 36)
                                            SPA-GMN-KENSUH
-           END-IF
+      *
+               MOVE    "tbl_recekanri"     TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
+               PERFORM 900-RECE07-NEXT-SEC
+           END-PERFORM    
+           MOVE    "tbl_recekanri"     TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
            INITIALIZE                  RECE07-REC
            MOVE    SPA-R01-RECE07-KEY  TO  RECE07-KEY
            MOVE    "2"                 TO  RECE07-TEISYUTUSAKI 
            MOVE    "0000"              TO  RECE07-RECESYUBETU
            MOVE    "%%"                TO  RECE07-SRYKA 
            MOVE    RECE07-REC          TO  MCPDATA-REC                             
-           MOVE    "tbl_recekanri"     TO  WRK-MCP-TABLE
-           MOVE    "key10"             TO  WRK-MCP-PATHNAME
-           PERFORM 900-RECE07-READ-SEC
-           IF      FLG-RECE07          =   ZERO
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "tbl_recekanri"     TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_recekanri"     TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
+               PERFORM 900-RECE07-NEXT-SEC
+           ELSE
+               MOVE    1                   TO  FLG-RECE07
+           END-IF
+      *
+           PERFORM                     UNTIL   FLG-RECE07  =   1
                ADD     RECE07-PAGE     TO  SPA-GMN-TPAGE (1 36)
                                            SPA-GMN-PAGEH
                ADD     RECE07-KENSU    TO  SPA-GMN-TKENSU(1 36)
                                            SPA-GMN-KENSUH
-           END-IF
+      *
+               MOVE    "tbl_recekanri"     TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
+               PERFORM 900-RECE07-NEXT-SEC
+           END-PERFORM    
+           MOVE    "tbl_recekanri"     TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
            .
        31011-PAGE-HENSYU-EXT.
            EXIT.
