@@ -774,6 +774,16 @@
                       (PTHKN-HOJOKBN       =   "B"  OR  "E")
                    MOVE    2               TO  FLG-OK
                END-IF
+      *        国保で老人区分のある時ＯＫとする
+      *            前期高齢者開始日以降に確定がない時、警告
+               IF     (COMB-HKNNUM         =   "060"
+                                           OR  "068"       )
+                   IF     (PTHKN-TEKSTYMD      <   WRK-BYMD-70 )
+                      AND (PTHKN-TEKEDYMD      >=  WRK-BYMD-70 )
+                      AND (PTHKN-KAKUNINYMD    <   WRK-BYMD-70 )
+                       MOVE    1               TO  FLG-KAKUNIN
+                   END-IF
+               END-IF
            END-IF
            .
        290-HOJOKBN-CHK14-EXT.
