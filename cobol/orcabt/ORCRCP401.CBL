@@ -6178,8 +6178,9 @@
       *    ¼ç²ÊÀßÄê
            IF    ( SYS-2009-SYUKA-KBN  =   "1"                )
            AND   ( RECE62-RECESYUBETU  
-                                   NOT =   "8888"  AND "0000"
-                                                   AND "6666" )
+                                   NOT =   "8888"             )
+      *****                        NOT =   "8888"  AND "0000"
+      *****                                        AND "6666" )
                IF  (     ( RECE62-TEISYUTUSAKI   =   "1" )
                      AND ( SYS-2009-SYUKA-SYAHO
                                              NOT =   "0" ) )
