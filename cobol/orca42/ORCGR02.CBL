@@ -1500,10 +1500,7 @@
                IF      RECE07-RECESYUBETU  =   "6666"
                    CONTINUE
                ELSE
-                   ADD     RECE07-PAGE     TO  SPA-GMN-TPAGE (IDW IDX)
-                                               SPA-GMN-PAGEH
-                   ADD     RECE07-KENSU    TO  SPA-GMN-TKENSU(IDW IDX)
-                                               SPA-GMN-KENSUH
+                   PERFORM 31011-SYUKA-PAGE-HENSYU-SEC
                END-IF
                MOVE    "tbl_recekanri"     TO  MCP-TABLE
                MOVE    "key3"              TO  MCP-PATHNAME
