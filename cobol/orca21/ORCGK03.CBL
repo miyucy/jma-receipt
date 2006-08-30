@@ -2755,12 +2755,22 @@
            MOVE    ALL "*"              TO  K03-SYCHKNTEN
       *    ºÍΩ—Œ¡
            MOVE    ALL "*"              TO  K03-SJTHKNTEN
+      *    À„øÏŒ¡
+           MOVE    ALL "*"              TO  K03-MSIHKNTEN
       *    ∏°∫∫Œ¡
            MOVE    ALL "*"              TO  K03-KNSHKNTEN
       *    £ÿ¿˛Œ¡
            MOVE    ALL "*"              TO  K03-GZUHKNTEN
       *    §Ω§Œ¬æ
            MOVE    ALL "*"              TO  K03-ETCHKNTEN
+      *    ¿∫ø¿¿ÏÃÁ
+           MOVE    ALL "*"              TO  K03-SSNHKNTEN
+      *     ¸ºÕ¿˛
+           MOVE    ALL "*"              TO  K03-HOUHKNTEN
+      *    ∆˛±°Œ¡≈˘
+           MOVE    ALL "*"              TO  K03-NYUHKNTEN
+      *    Œ≈Õ‹√¥≈ˆºÍ≈ˆ§∆
+           MOVE    ALL "*"              TO  K03-RYOHKNTEN
       *    πÁ∑◊≈¿øÙ
            MOVE    ALL "*"              TO  K03-TOTALHKNTEN
       *     ›∏±≈¨Õ—≥∞
@@ -2778,12 +2788,22 @@
            MOVE    ALL "*"              TO  K03-SYCTGMONEY
       *    ºÍΩ—Œ¡
            MOVE    ALL "*"              TO  K03-SJTGMONEY
+      *    À„øÏŒ¡
+           MOVE    ALL "*"              TO  K03-MSITGMONEY
       *    ∏°∫∫Œ¡
            MOVE    ALL "*"              TO  K03-KNSTGMONEY
       *    £ÿ¿˛Œ¡
            MOVE    ALL "*"              TO  K03-GZUTGMONEY
       *    §Ω§Œ¬æ
            MOVE    ALL "*"              TO  K03-ETCTGMONEY
+      *    ¿∫ø¿Œ≈À°
+           MOVE    ALL "*"              TO  K03-SSNTGMONEY
+      *     ¸ºÕ¿˛
+           MOVE    ALL "*"              TO  K03-HOUTGMONEY
+      *    ∆˛±°Œ¡
+           MOVE    ALL "*"              TO  K03-NYUTGMONEY
+      *    Œ≈Õ‹√¥≈ˆ
+           MOVE    ALL "*"              TO  K03-RYOTGMONEY
       *
       *    º´»Ò
            MOVE    ALL "*"              TO  K03-JIHI1
