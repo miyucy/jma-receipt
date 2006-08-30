@@ -1567,6 +1567,8 @@
                MOVE    "才"                TO  WRK-NENREI-MEI
            END-IF
            MOVE    WRK-NENREI-G        TO  SPA-GMN-NENREI
+      *    保険年齢
+           MOVE    AGECHK-NENREI       TO  SPA-NAI-NENREI
            .
        41011-NENREI-SET-EXT.
            EXIT.
@@ -3372,6 +3374,15 @@
                    PERFORM 41091-UKETUKE-CHK-SEC
                END-IF
            END-IF
+      *    前期高齢者のチェック
+           IF     (FLG-TOUROKU         =   1     )  AND
+                  (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-GMN-PTID    NOT =   SPACE )  AND
+                  (SPA-NAI-NENREI      >=  70    )
+               IF      SPA-NAI-KEIFLG2     =   ZERO
+                   PERFORM 41092-HKNHOJOKBN-CHK-SEC
+               END-IF
+           END-IF
            .
        4109-TOUROKU-CHK-EXT.
            EXIT.
@@ -3425,6 +3436,46 @@
       *
            .
        41091-UKETUKE-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    前期高齢者のチェック処理
+      *****************************************************************
+       41092-HKNHOJOKBN-CHK-SEC              SECTION.
+      *
+           INITIALIZE                  ORCSAGECHKAREA
+           MOVE    SPA-HOSPID          TO  AGECHK-HOSPID
+           MOVE    SPA-GMN-PTID        TO  AGECHK-PTID
+           MOVE    SPA-SYSYMD          TO  AGECHK-SRYYMD
+           MOVE    SPA-NAI-BIRTHDAY    TO  AGECHK-BIRTHDAY
+           MOVE    SPA-GMN-COMBINUM    TO  AGECHK-HKNCOMBINUM
+           MOVE    "2"                 TO  AGECHK-NYUGAIKBN
+           CALL    "ORCSAGECHK"        USING
+                                       ORCSAGECHKAREA
+           IF      AGECHK-RJNCHK       =   ZERO
+               IF      AGECHK-KAKUNINCHK   =   1
+      *            国保で前期高齢者日以降に確認がない時
+                   MOVE    "K004"              TO  SPA-ERRCD
+               END-IF
+           ELSE
+               IF      AGECHK-RJNCHK       =   1
+      *            前期高齢者で補助区分がない時
+                   MOVE    "K002"              TO  SPA-ERRCD
+               END-IF
+               IF      AGECHK-RJNCHK       =   3
+      *            前期高齢者でＨ１８．１０の改正後の補助区分でない時
+                   MOVE    "K005"              TO  SPA-ERRCD
+               END-IF
+               IF      AGECHK-RJNCHK       =   2
+      *            老人年齢で老人公費がない時
+                   MOVE    "K003"              TO  SPA-ERRCD
+               END-IF
+           END-IF
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    4                   TO  SPA-GMN-CUR
+               MOVE    1                   TO  SPA-NAI-KEIFLG2
+           END-IF
+           .
+       41092-HKNHOJOKBN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    受付追加処理
@@ -4957,6 +5008,31 @@
                    MOVE    "これ以上受付はできません。"
                                                 TO  SPA-ERRMSG(33:)
       *
+               WHEN    "K002"
+                   STRING  "警告！！老人保険の割合が設定されていません"
+                           "。保険を変更して下さい。"
+                                                DELIMITED  BY  SIZE
+                                                INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "K003"
+                   STRING  "警告！！老人年齢に到達しました。"
+                           "老人公費を登録して下さい。"
+                                                DELIMITED  BY  SIZE
+                                                INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "K005"
+                   STRING  "警告！！老人の保険割合が２割です。"
+                           "３割に保険を登録し直して下さい。"
+                                                DELIMITED  BY  SIZE
+                                                INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "K004"
+                   STRING  "警告！！前期高齢者到達日以降に保険の確認が"
+                           "ありません。保険を確認して下さい"
+                                                DELIMITED  BY  SIZE
+                                                INTO  SPA-ERRMSG
+                   END-STRING
+      *
                WHEN    "9999"
                    MOVE    "他端末で使用中です。"
                                                TO  SPA-ERRMSG
@@ -4977,7 +5053,7 @@
       *
            PERFORM 900-PUT-WINDOW
       *
-           MOVE    1                    TO  FLG-END              
+           MOVE    1                    TO  FLG-END
 123900     .
 124000 510-ERRSET-EXT.
 124100     EXIT.

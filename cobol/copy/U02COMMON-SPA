@@ -166,9 +166,11 @@
                    07  SPA-NAI-PTID                    PIC X(10).
                    07  SPA-NAI-BIRTHDAY                PIC 9(08).
                    07  SPA-NAI-SEX                     PIC X(01).
+                   07  SPA-NAI-NENREI                  PIC 9(03).
       *---- (01.00.03) LINE MOD END -----------------------------------
       *            ·Ù¹ð
                    07  SPA-NAI-KEIFLG                 PIC 9(01).
+                   07  SPA-NAI-KEIFLG2                PIC 9(01).
       *
                    07  SPA-MAE-PTNUM                  PIC X(20).
                    07  SPA-MAE-NAME                   PIC X(50).

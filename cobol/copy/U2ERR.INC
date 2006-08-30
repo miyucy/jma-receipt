@@ -21,5 +21,5 @@
       *****************************************************************
          02  U2ERR.
             03  U2ERR-FIXED1.
-              04  U2ERR-ERRCODE    PIC X(11).
-              04  U2ERR-ERRMSG PIC X(61).
+              04  U2ERR-ERRCODE    PIC X(10).
+              04  U2ERR-ERRMSG PIC X(80).
