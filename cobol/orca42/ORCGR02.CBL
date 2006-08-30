@@ -1746,7 +1746,7 @@
            MOVE    SPA-R01-RECE07-KEY  TO  RECE07-KEY
            MOVE    "2"                 TO  RECE07-TEISYUTUSAKI 
            MOVE    "6666"              TO  RECE07-RECESYUBETU
-           MOVE    "00"                TO  RECE07-SRYKA 
+           MOVE    "%%"                TO  RECE07-SRYKA 
            MOVE    RECE07-REC          TO  MCPDATA-REC                             
            MOVE    "tbl_recekanri"     TO  WRK-MCP-TABLE
            MOVE    "key10"             TO  WRK-MCP-PATHNAME
@@ -1763,7 +1763,7 @@
            MOVE    SPA-R01-RECE07-KEY  TO  RECE07-KEY
            MOVE    "1"                 TO  RECE07-TEISYUTUSAKI
            MOVE    "8888"              TO  RECE07-RECESYUBETU
-           MOVE    "00"                TO  RECE07-SRYKA 
+           MOVE    "%%"                TO  RECE07-SRYKA 
            MOVE    RECE07-REC          TO  MCPDATA-REC                             
            MOVE    "tbl_recekanri"     TO  WRK-MCP-TABLE
            MOVE    "key10"             TO  WRK-MCP-PATHNAME
@@ -1778,7 +1778,7 @@
            MOVE    SPA-R01-RECE07-KEY  TO  RECE07-KEY
            MOVE    "2"                 TO  RECE07-TEISYUTUSAKI 
            MOVE    "8888"              TO  RECE07-RECESYUBETU
-           MOVE    "00"                TO  RECE07-SRYKA 
+           MOVE    "%%"                TO  RECE07-SRYKA 
            MOVE    RECE07-REC          TO  MCPDATA-REC                             
            MOVE    "tbl_recekanri"     TO  WRK-MCP-TABLE
            MOVE    "key10"             TO  WRK-MCP-PATHNAME
@@ -1795,7 +1795,7 @@
            MOVE    SPA-R01-RECE07-KEY  TO  RECE07-KEY
            MOVE    "1"                 TO  RECE07-TEISYUTUSAKI
            MOVE    "0000"              TO  RECE07-RECESYUBETU
-           MOVE    "00"                TO  RECE07-SRYKA 
+           MOVE    "%%"                TO  RECE07-SRYKA 
            MOVE    RECE07-REC          TO  MCPDATA-REC                             
            MOVE    "tbl_recekanri"     TO  WRK-MCP-TABLE
            MOVE    "key10"             TO  WRK-MCP-PATHNAME
@@ -1810,7 +1810,7 @@
            MOVE    SPA-R01-RECE07-KEY  TO  RECE07-KEY
            MOVE    "2"                 TO  RECE07-TEISYUTUSAKI 
            MOVE    "0000"              TO  RECE07-RECESYUBETU
-           MOVE    "00"                TO  RECE07-SRYKA 
+           MOVE    "%%"                TO  RECE07-SRYKA 
            MOVE    RECE07-REC          TO  MCPDATA-REC                             
            MOVE    "tbl_recekanri"     TO  WRK-MCP-TABLE
            MOVE    "key10"             TO  WRK-MCP-PATHNAME

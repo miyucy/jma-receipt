@@ -666,7 +666,7 @@
       **       AND   ( SPA-SYUKA-KBN           =   "1"         )
                IF    ( SPA-SYUKA-KBN           =   "1"         )
                    MOVE    "tbl_recekanri"     TO  WRK-MCP-TABLE
-                   MOVE    "key6"              TO  WRK-MCP-PATHNAME
+                   MOVE    "key11"             TO  WRK-MCP-PATHNAME
                    MOVE    "1"                 TO  RECE07-TEISYUTUSAKI
                    MOVE    RECE07-REC          TO  MCPDATA-REC
                    PERFORM 900-RECE07-INV-SEC
@@ -674,7 +674,7 @@
                        MOVE    RECE07-SRYKA    TO  SPA-RECE07-SRYKA
                    END-IF
                    MOVE    "tbl_recekanri"     TO  WRK-MCP-TABLE
-                   MOVE    "key6"              TO  WRK-MCP-PATHNAME
+                   MOVE    "key11"             TO  WRK-MCP-PATHNAME
                    MOVE    "2"                 TO  RECE07-TEISYUTUSAKI
                    MOVE    RECE07-REC          TO  MCPDATA-REC
                    PERFORM 900-RECE07-INV-SEC

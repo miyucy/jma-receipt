@@ -1425,18 +1425,6 @@
                MOVE    "0003"              TO  SPA-ERRCD
                GO  TO  450-TOUROKU-EXT
            END-IF
-      *
-      *    主科設定済かチェック
-      *    IF    ( SPA-SYUKA-KBN               =   "1" )
-      *    AND   ( SPA-GMN-IKKATU              =   "T" )
-      *    AND   ( SPA-GMN-SYOKBN              =   "T" )
-      *        IF    ( SPA-GMN-DATAKBN1-VALUE      =   "T" )
-      *        OR    ( SPA-GMN-DATAKBN2-VALUE      =   "T" ) 
-      *        OR    ( SPA-GMN-DATAKBN3-VALUE      =   "T" ) 
-      *            MOVE    "00??"              TO  SPA-ERRCD
-      *            GO  TO  450-TOUROKU-EXT
-      *        END-IF
-      *    END-IF
       *   
       *    再印刷のときのチェック
            EVALUATE    SPA-GMN-SYOKBN     
@@ -1624,7 +1612,7 @@
       **       AND   ( SPA-SYUKA-KBN           =   "1"         )
                IF    ( SPA-SYUKA-KBN           =   "1"         )
                    MOVE    "tbl_recekanri"     TO  WRK-MCP-TABLE
-                   MOVE    "key6"              TO  WRK-MCP-PATHNAME
+                   MOVE    "key11"             TO  WRK-MCP-PATHNAME
                    MOVE    "1"                 TO  RECE07-TEISYUTUSAKI
                    MOVE    RECE07-REC          TO  MCPDATA-REC
                    PERFORM 900-RECE07-INV-SEC
@@ -1632,7 +1620,7 @@
                        MOVE    RECE07-SRYKA    TO  SPA-RECE07-SRYKA
                    END-IF
                    MOVE    "tbl_recekanri"     TO  WRK-MCP-TABLE
-                   MOVE    "key6"              TO  WRK-MCP-PATHNAME
+                   MOVE    "key11"             TO  WRK-MCP-PATHNAME
                    MOVE    "2"                 TO  RECE07-TEISYUTUSAKI
                    MOVE    RECE07-REC          TO  MCPDATA-REC
                    PERFORM 900-RECE07-INV-SEC
