@@ -242,3 +242,19 @@ path	key10		{
 		;
 	};
 };
+
+path	key11		{ 	
+	DBSELECT	{
+		DECLARE tbl_recekanri_key11_csr CURSOR FOR
+		SELECT *
+		FROM tbl_recekanri
+                    WHERE   PRTID        =   :PRTID
+                    AND     SRYYM        =   :SRYYM
+                    AND     CREYMD       =   :CREYMD
+                    AND     CREHMS       =   :CREHMS
+                    AND     TEISYUTUSAKI =   :TEISYUTUSAKI
+                    AND     NYUGAIKBN    =   :NYUGAIKBN
+                    ORDER BY  SRYKA DESC
+		;
+	};
+};
