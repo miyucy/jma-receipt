@@ -3252,22 +3252,32 @@
                EVALUATE    SPA-GMN-SYUKA
                    WHEN    "00"
       *                社保出力
-                       PERFORM VARYING IDXX    FROM    2   BY  1
-                               UNTIL   IDXX    >       SPA-GMN-SYUKA-MAX
-                               OR      SPA-ERRCD   NOT =   SPACE
-                           MOVE    SPA-GMN-SYUKAL (IDXX)
-                                                   TO  WRK-SYUKA
+                       IF      SPA-R01-RECE07-SRYKA    =   "00"
+                           MOVE    "%%"             TO  WRK-SYUKA
                            PERFORM 4501-SYAHO-PRTJYUN-PRINT-SEC
-                       END-PERFORM
+                       ELSE
+                           PERFORM VARYING IDXX    FROM    2   BY  1
+                                   UNTIL   IDXX    >   SPA-GMN-SYUKA-MAX
+                                   OR      SPA-ERRCD   NOT =   SPACE
+                               MOVE    SPA-GMN-SYUKAL (IDXX)
+                                                       TO  WRK-SYUKA
+                               PERFORM 4501-SYAHO-PRTJYUN-PRINT-SEC
+                           END-PERFORM
+                       END-IF
       *
       *                国保出力
-                       PERFORM VARYING IDXX    FROM    2   BY  1
-                               UNTIL   IDXX    >       SPA-GMN-SYUKA-MAX
-                               OR      SPA-ERRCD   NOT =   SPACE
-                           MOVE    SPA-GMN-SYUKAL (IDXX)
-                                                   TO  WRK-SYUKA
+                       IF      SPA-R01-RECE07-SRYKA-KOKUHO     =   "00"
+                           MOVE    "%%"             TO  WRK-SYUKA
                            PERFORM 4501-KOKUHO-PRTJYUN-PRINT-SEC
-                       END-PERFORM
+                       ELSE
+                           PERFORM VARYING IDXX    FROM    2   BY  1
+                                   UNTIL   IDXX    >   SPA-GMN-SYUKA-MAX
+                                   OR      SPA-ERRCD   NOT =   SPACE
+                               MOVE    SPA-GMN-SYUKAL (IDXX)
+                                                       TO  WRK-SYUKA
+                               PERFORM 4501-KOKUHO-PRTJYUN-PRINT-SEC
+                           END-PERFORM
+                       END-IF
                    WHEN    SPACE
                        MOVE    "%%"             TO  WRK-SYUKA
       *                社保出力
