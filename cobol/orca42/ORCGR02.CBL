@@ -3249,13 +3249,13 @@
            IF      SPA-GMN-PRTJYUN =   "05"
                PERFORM 4502-RECEPRT-INPUT-HENSYU-SEC
            ELSE
-               EVALUATE    SPA-GMN-SYUKA
-                   WHEN    "00"
-      *                社保出力
-                       IF      SPA-R01-RECE07-SRYKA    =   "00"
-                           MOVE    "%%"             TO  WRK-SYUKA
-                           PERFORM 4501-SYAHO-PRTJYUN-PRINT-SEC
-                       ELSE
+      *        社保出力
+               IF      SPA-R01-RECE07-SRYKA    =   "00"
+                   MOVE    "%%"             TO  WRK-SYUKA
+                   PERFORM 4501-SYAHO-PRTJYUN-PRINT-SEC
+               ELSE
+                   EVALUATE    SPA-GMN-SYUKA
+                       WHEN    "00"
                            PERFORM VARYING IDXX    FROM    2   BY  1
                                    UNTIL   IDXX    >   SPA-GMN-SYUKA-MAX
                                    OR      SPA-ERRCD   NOT =   SPACE
@@ -3263,13 +3263,31 @@
                                                        TO  WRK-SYUKA
                                PERFORM 4501-SYAHO-PRTJYUN-PRINT-SEC
                            END-PERFORM
-                       END-IF
-      *
-      *                国保出力
-                       IF      SPA-R01-RECE07-SRYKA-KOKUHO     =   "00"
+                       WHEN    SPACE
                            MOVE    "%%"             TO  WRK-SYUKA
-                           PERFORM 4501-KOKUHO-PRTJYUN-PRINT-SEC
-                       ELSE
+                           PERFORM 4501-SYAHO-PRTJYUN-PRINT-SEC
+                       WHEN    OTHER
+                           MOVE    SPA-GMN-SYUKA   TO  WRK-SYUKA
+                           PERFORM VARYING IDXX    FROM    2   BY  1
+                                   UNTIL   IDXX    >   SPA-GMN-SYUKA-MAX
+                               IF      WRK-SYUKA   =
+                                               SPA-GMN-SYUKAL (IDXX)
+                                   PERFORM 4501-SYAHO-PRTJYUN-PRINT-SEC
+      *
+                                   MOVE    SPA-GMN-SYUKA-MAX   TO  IDXX
+                               END-IF
+                           END-PERFORM
+                   END-EVALUATE
+               END-IF              
+      *
+      *        国保出力
+               IF      SPA-ERRCD           =   SPACE
+                 IF      SPA-R01-RECE07-SRYKA-KOKUHO     =   "00"
+                   MOVE    "%%"             TO  WRK-SYUKA
+                   PERFORM 4501-KOKUHO-PRTJYUN-PRINT-SEC
+                 ELSE
+                   EVALUATE    SPA-GMN-SYUKA
+                       WHEN    "00"
                            PERFORM VARYING IDXX    FROM    2   BY  1
                                    UNTIL   IDXX    >   SPA-GMN-SYUKA-MAX
                                    OR      SPA-ERRCD   NOT =   SPACE
@@ -3277,34 +3295,23 @@
                                                        TO  WRK-SYUKA
                                PERFORM 4501-KOKUHO-PRTJYUN-PRINT-SEC
                            END-PERFORM
-                       END-IF
-                   WHEN    SPACE
-                       MOVE    "%%"             TO  WRK-SYUKA
-      *                社保出力
-                       PERFORM 4501-SYAHO-PRTJYUN-PRINT-SEC
-      *
-      *                国保出力
-                       IF      SPA-ERRCD        =   SPACE
+                       WHEN    SPACE
+                           MOVE    "%%"             TO  WRK-SYUKA
                            PERFORM 4501-KOKUHO-PRTJYUN-PRINT-SEC
-                       END-IF
-                   WHEN    OTHER
-                       MOVE    SPA-GMN-SYUKA   TO  WRK-SYUKA
-                       PERFORM VARYING IDXX    FROM    2   BY  1
+                       WHEN    OTHER
+                           MOVE    SPA-GMN-SYUKA   TO  WRK-SYUKA
+                           PERFORM VARYING IDXX    FROM    2   BY  1
                                UNTIL   IDXX    >       SPA-GMN-SYUKA-MAX
-                           IF      WRK-SYUKA   =   SPA-GMN-SYUKAL (IDXX)
-      *                        社保出力
-                               PERFORM 4501-SYAHO-PRTJYUN-PRINT-SEC
-      *
-      *                        国保出力
-                               IF      SPA-ERRCD        =   SPACE
+                               IF      WRK-SYUKA   =
+                                               SPA-GMN-SYUKAL (IDXX)
                                    PERFORM 4501-KOKUHO-PRTJYUN-PRINT-SEC
-                               END-IF
-                               
       *
-                               MOVE    SPA-GMN-SYUKA-MAX    TO  IDXX
-                           END-IF
-                       END-PERFORM        
-               END-EVALUATE
+                                   MOVE    SPA-GMN-SYUKA-MAX    TO  IDXX
+                               END-IF
+                           END-PERFORM        
+                   END-EVALUATE
+                 END-IF
+               END-IF 
       *
                MOVE    "%%"             TO  WRK-SYUKA
       *        特別療養費レセプト出力
@@ -3866,7 +3873,7 @@
            EXIT.
       *
       *****************************************************************
-      *    前頁　処理
+      *    編綴編集処理
       *****************************************************************
        45031-RECEPRT-HENSYU-SEC             SECTION.
       *
@@ -3880,20 +3887,30 @@
                    AND   ( SPA-GMN-TPAGE       (IDW IDX)   >   ZERO  )
                    AND   ( WRK-PREFKBN                     =
                                            SPA-NAI-TPREFKBN (IDW IDX))
-                       MOVE    1               TO  IDY
-                       IF      WRK-CHOUKI      =   "1"
-                           IF      SPA-NAI-TPAGE-CHOUKI (IDW IDX)
-                                                      >   ZERO
-                               PERFORM 45011-RECEPRT-HENSYU-SEC
-                           END-IF
-                       ELSE
-                           IF      WRK-ZAITAKU     =   "1"
-                               IF      SPA-NAI-TPAGE-ZAITAKU (IDW IDX)
+      *
+      *                診療科指定のとき
+                       IF    ( SPA-GMN-SYUKA       =   "00" )
+                       AND   ( WRK-SYUKA       NOT =   "%%" )
+                       AND   ( SPA-NAI-TPAGE-SYUKA (IDW IDX IDXX)
+                                                   =   0    )
+                           CONTINUE
+                       ELSE    
+                           MOVE    1               TO  IDY
+                           IF      WRK-CHOUKI      =   "1"
+                               IF      SPA-NAI-TPAGE-CHOUKI (IDW IDX)
                                                           >   ZERO
                                    PERFORM 45011-RECEPRT-HENSYU-SEC
                                END-IF
                            ELSE
-                               PERFORM 45011-RECEPRT-HENSYU-SEC
+                               IF      WRK-ZAITAKU     =   "1"
+                                   IF      SPA-NAI-TPAGE-ZAITAKU
+                                                           (IDW IDX)
+                                                              >   ZERO
+                                       PERFORM 45011-RECEPRT-HENSYU-SEC
+                                   END-IF
+                               ELSE
+                                   PERFORM 45011-RECEPRT-HENSYU-SEC
+                               END-IF
                            END-IF
                        END-IF
                    END-IF
