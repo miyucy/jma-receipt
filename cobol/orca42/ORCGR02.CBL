@@ -3889,12 +3889,12 @@
                                            SPA-NAI-TPREFKBN (IDW IDX))
       *
       *                ø«Œ≈≤ ªÿƒÍ§Œ§»§≠
-                       IF    ( SPA-GMN-SYUKA       =   "00" )
-                       AND   ( WRK-SYUKA       NOT =   "%%" )
-                       AND   ( SPA-NAI-TPAGE-SYUKA (IDW IDX IDXX)
-                                                   =   0    )
-                           CONTINUE
-                       ELSE    
+      *****            IF    ( SPA-GMN-SYUKA       =   "00" )
+      *****            AND   ( WRK-SYUKA       NOT =   "%%" )
+      *****            AND   ( SPA-NAI-TPAGE-SYUKA (IDW IDX IDXX)
+      *****                                        =   0    )
+      *****                CONTINUE
+      *****            ELSE    
                            MOVE    1               TO  IDY
                            IF      WRK-CHOUKI      =   "1"
                                IF      SPA-NAI-TPAGE-CHOUKI (IDW IDX)
@@ -3912,7 +3912,7 @@
                                    PERFORM 45011-RECEPRT-HENSYU-SEC
                                END-IF
                            END-IF
-                       END-IF
+      *****            END-IF
                    END-IF
                END-PERFORM
            END-PERFORM
