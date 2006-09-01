@@ -30,6 +30,7 @@ tbl_receprt	{
         PRTNM               char(16);
         TERMID              char(64);
         OPID                char(16);
+        PRTJYUN_SYUKA       number(4);
 #-----> ¸¡º÷ÍÑ¹àÌÜ
 	STKANANAME			char(100),virtual;
 	EDKANANAME			char(100),virtual;
@@ -258,10 +259,10 @@ path	key12	{
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
-                    AND     PRTJYUN      >   0
+                    AND     PRTJYUN_SYUKA      >   0
                     AND     PRTRENNUM    >   0 
                     AND     NYUGAIKBN    =   :NYUGAIKBN 
-                   ORDER BY  PRTJYUN,PRTRENNUM
+                   ORDER BY  PRTJYUN_SYUKA,PRTRENNUM
 		;
 	};
 };
@@ -274,7 +275,7 @@ path	key13	{
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
-                    AND     PRTJYUN      >   0
+                    AND     PRTJYUN_SYUKA      >   0
                     AND     PRTRENNUM    >   0 
                     AND     NYUGAIKBN    =   :NYUGAIKBN 
 		;
