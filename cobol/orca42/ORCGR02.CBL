@@ -291,6 +291,12 @@
                                13  SPA-NAI-TPAGE-SYUKA
                                                    PIC 9(04)
                                                    OCCURS 50.
+                               13  SPA-NAI-TPAGE-CHOUKI-SYUKA
+                                                   PIC 9(01)
+                                                   OCCURS 50.
+                               13  SPA-NAI-TPAGE-ZAITAKU-SYUKA
+                                                   PIC 9(01)
+                                                   OCCURS 50.
                                13  SPA-NAI-SYUBETU-G.
                                    15  SPA-NAI-SYUBETU
                                                    PIC X(04)
@@ -376,7 +382,7 @@
              05  WRK-SHELL-TERMID  PIC  X(16).
              05  WRK-SHELL-SYSYMD  PIC  X(08).  
       *
-           03  WRK-RECE08-PRTJYUN  PIC 9(03).
+           03  WRK-RECE08-PRTJYUN  PIC 9(04).
       *
            03  WRK-KBNCD.
                05  WRK-KBNCD-9     PIC 9(08).
@@ -1614,10 +1620,6 @@
                                                                (IDW IDX)
                        END-IF
                    END-IF
-                   ADD     RECE07-PAGE     TO  SPA-GMN-TPAGE   (IDW IDX)
-                                               SPA-GMN-PAGEH
-                   ADD     RECE07-KENSU    TO  SPA-GMN-TKENSU  (IDW IDX)
-                                               SPA-GMN-KENSUH
                    MOVE    IDX (3:2)       TO  SPA-NAI-PRTJYUNI(IDW IDX)
                    MOVE    "2"             TO
                                        SPA-NAI-TEISYUTUSAKI(IDW IDX)
@@ -1639,10 +1641,37 @@
                        MOVE    SPA-NAI-PRTNM-G (4)
                                        TO  SPA-GMN-TPRTNM-N-G (IDW IDX)
       *************END-IF
+                   PERFORM         UNTIL   FLG-RECE07  =   1
+                                   OR      RECE07-HKNJANUM
+                                                   NOT =
+                                           SPA-NAI-THKNJANUM (IDW IDX)
+                       PERFORM 31011-SYUKA-PAGE-HENSYU-SEC
       *
-                   MOVE    "tbl_recekanri"     TO  MCP-TABLE
-                   MOVE    "key8"              TO  MCP-PATHNAME
-                   PERFORM 900-RECE07-NEXT-SEC
+                       IF    ( SPA-GMN-SYUKA-MAX   >   ZERO )
+                       AND   ( SPA-R01-RECE07-SRYKA-KOKUHO
+                                              NOT =   "00" )
+                           PERFORM VARYING IDXX    FROM    1   BY  1
+                                  UNTIL   IDXX    >   SPA-GMN-SYUKA-MAX
+                               IF      RECE07-SRYKA
+                                              =   SPA-GMN-SYUKAL (IDXX)
+                                   IF      RECE07-PAGE-CHOUKI  >   0
+                                       MOVE    1           TO
+                                           SPA-NAI-TPAGE-CHOUKI-SYUKA
+                                                          (IDW IDX IDXX)
+                                   END-IF
+                                   IF      RECE07-PAGE-ZAITAKU >   0
+                                       MOVE    1           TO
+                                         SPA-NAI-TPAGE-ZAITAKU-SYUKA
+                                                          (IDW IDX IDXX)
+                                   END-IF 
+                               END-IF
+                           END-PERFORM
+                       END-IF
+      *
+                       MOVE    "tbl_recekanri"     TO  MCP-TABLE
+                       MOVE    "key8"              TO  MCP-PATHNAME
+                       PERFORM 900-RECE07-NEXT-SEC
+                   END-PERFORM
                END-PERFORM
            END-PERFORM    
            MOVE    "tbl_recekanri"     TO  MCP-TABLE
@@ -3889,30 +3918,48 @@
                                            SPA-NAI-TPREFKBN (IDW IDX))
       *
       *                壳闻彩回年のとき
-      *****            IF    ( SPA-GMN-SYUKA       =   "00" )
-      *****            AND   ( WRK-SYUKA       NOT =   "%%" )
-      *****            AND   ( SPA-NAI-TPAGE-SYUKA (IDW IDX IDXX)
-      *****                                        =   0    )
-      *****                CONTINUE
-      *****            ELSE    
+                       IF    ( SPA-GMN-SYUKA       =   "00" )
+                       AND   ( WRK-SYUKA       NOT =   "%%" )
+                       AND   ( SPA-NAI-TPAGE-SYUKA (IDW IDX IDXX)
+                                                  =   0    )
+                           CONTINUE
+                       ELSE    
                            MOVE    1               TO  IDY
                            IF      WRK-CHOUKI      =   "1"
                                IF      SPA-NAI-TPAGE-CHOUKI (IDW IDX)
                                                           >   ZERO
-                                   PERFORM 45011-RECEPRT-HENSYU-SEC
+      *                          壳闻彩回年のとき
+                                 IF    ( SPA-GMN-SYUKA       =   "00" )
+                                 AND   ( WRK-SYUKA       NOT =   "%%" )
+                                 AND   ( SPA-NAI-TPAGE-CHOUKI-SYUKA
+                                                     (IDW IDX IDXX)
+                                                             =   0    )
+                                     CONTINUE
+                                 ELSE    
+                                     PERFORM 45011-RECEPRT-HENSYU-SEC
+                                 END-IF
                                END-IF
                            ELSE
                                IF      WRK-ZAITAKU     =   "1"
-                                   IF      SPA-NAI-TPAGE-ZAITAKU
+                                 IF      SPA-NAI-TPAGE-ZAITAKU
                                                            (IDW IDX)
                                                               >   ZERO
+      *                            壳闻彩回年のとき
+                                   IF    ( SPA-GMN-SYUKA       =   "00")
+                                   AND   ( WRK-SYUKA       NOT =   "%%")
+                                   AND   ( SPA-NAI-TPAGE-ZAITAKU-SYUKA
+                                                       (IDW IDX IDXX)
+                                                               =   0   )
+                                       CONTINUE
+                                   ELSE    
                                        PERFORM 45011-RECEPRT-HENSYU-SEC
                                    END-IF
+                                 END-IF  
                                ELSE
                                    PERFORM 45011-RECEPRT-HENSYU-SEC
                                END-IF
                            END-IF
-      *****            END-IF
+                       END-IF
                    END-IF
                END-PERFORM
            END-PERFORM
