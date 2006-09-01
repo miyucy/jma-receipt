@@ -3890,7 +3890,11 @@
                END-EVALUATE
                EVALUATE    SPA-NAI-2008-ZAITAKU
                    WHEN    "1"
-                       MOVE    "9"                 TO  WRK-ZAITAKU
+                       IF      SPA-NAI-2008-CHOUKI =   "2"
+                           MOVE    "%"                 TO  WRK-ZAITAKU
+                       ELSE
+                           MOVE    "9"                 TO  WRK-ZAITAKU
+                       END-IF
                    WHEN    "2"
                    WHEN    SPACE
                        MOVE    "%"                 TO  WRK-ZAITAKU
