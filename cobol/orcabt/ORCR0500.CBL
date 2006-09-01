@@ -88,6 +88,9 @@
       *                                     HCM48.red
       *                                     HCN48.red
       *                                     HCM49.red
+      *
+      *  03.02.01    NACL-藤原    06/08/01  国保主科対応
+      *                                     主科用出力順識別番号追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1021,7 +1024,7 @@
        2002-RECEPRT-CLEAR-SEC          SECTION.
       *
       *    出力順エリアのクリア
-           MOVE    ZERO                 TO  RECE08-PRTJYUN
+           MOVE    ZERO                 TO  RECE08-PRTJYUN-SYUKA
            MOVE    ZERO                 TO  RECE08-PRTRENNUM     
            MOVE    SPACE                TO  RECE08-PRTNM
       *

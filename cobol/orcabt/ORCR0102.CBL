@@ -110,6 +110,9 @@
       *                                     プリンタ名をreceprt より取得
       *  03.00.02    NACL-太田    06/06/19  PRT-PRTDATAの項目長変更
       *                                     (10000->20000)
+      *
+      *  03.02.01    NACL-藤原    06/08/01  国保主科対応
+      *                                     主科用出力順識別番号追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -620,7 +623,11 @@
       *    帳票印刷処理
       *****************************************************************
        2001-RECEPRT-PRINT-SEC          SECTION.
-      *      
+      *
+           DISPLAY "2001 PTNUM=" RECE08-PTNUM "#"
+                                 RECE08-PRTJYUN-SYUKA "#"
+                                 RECE08-PRTRENNUM
+      *
            MOVE    SPACE               TO  PRT-REC 
            MOVE    RECE08-FORMID       TO  PRT-PRTID
       *     
@@ -1055,7 +1062,7 @@
       *
                DISPLAY "PTNUM=" RECE08-PTNUM
       *
-           MOVE    ZERO                 TO  RECE08-PRTJYUN
+           MOVE    ZERO                 TO  RECE08-PRTJYUN-SYUKA
            MOVE    ZERO                 TO  RECE08-PRTRENNUM
            MOVE    SPACE                TO  RECE08-PRTNM     
       *

@@ -39,7 +39,9 @@
       *
       *  03.02.01    NACL-藤原    06/07/11  労災・自賠責のプリンタ指定対応
       *                                     （入院外・入院別）
-      *****************************************************************
+      *  03.02.02    NACL-藤原    06/08/01  国保主科対応
+      *                                     主科用出力順識別番号追加
+     *****************************************************************
       *
        ENVIRONMENT             DIVISION.
        CONFIGURATION               SECTION.
@@ -269,7 +271,7 @@
            PERFORM              UNTIL   FLG-END =   1        
                ADD     1                    TO  WRK-RECE08-PRTRENNUM
       *
-               MOVE    WRK-PARA-PRTJYUN     TO  RECE08-PRTJYUN
+               MOVE    WRK-PARA-PRTJYUN     TO  RECE08-PRTJYUN-SYUKA
                MOVE    WRK-RECE08-PRTRENNUM TO  RECE08-PRTRENNUM      
                IF      RECE08-RENNUM    =   1
                    MOVE    WRK-PARA-PRTNM       TO  RECE08-PRTNM

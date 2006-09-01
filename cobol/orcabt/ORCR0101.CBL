@@ -65,6 +65,9 @@
       *  03.00.01    NACL-藤原    06/05/29  印刷時のプリンター指定対応
       *  03.00.02    NACL-藤原    06/06/29  入力順指定のときの続紙のプリ
       *                                     ンター指定
+      *
+      *  03.02.01    NACL-藤原    06/08/01  国保主科対応
+      *                                     主科用出力順識別番号追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -143,7 +146,7 @@
                    07  WRK-PARA-RECE09-HKNJANUM      PIC X(08).
                05  WRK-PARA-RECE09-STDATA            PIC X(100).
                05  WRK-PARA-RECE09-EDDATA            PIC X(100).
-               05  WRK-PARA-PRTJYUN           PIC 9(03).
+               05  WRK-PARA-PRTJYUN           PIC 9(04).
                05  WRK-PARA-SHELLID           PIC X(08).
                05  WRK-PARA-JOBID             PIC 9(07).
                05  WRK-PARA-PRTKBN            PIC X(01).
@@ -328,7 +331,7 @@
            PERFORM              UNTIL   FLG-END =   1        
                ADD     1                    TO  WRK-RECE08-PRTRENNUM
       *
-               MOVE    WRK-PARA-PRTJYUN     TO  RECE08-PRTJYUN
+               MOVE    WRK-PARA-PRTJYUN     TO  RECE08-PRTJYUN-SYUKA
                MOVE    WRK-RECE08-PRTRENNUM TO  RECE08-PRTRENNUM
                EVALUATE    WRK-PARA-RECE09-PRTJYUN
                    WHEN    "05"
@@ -359,6 +362,9 @@
                            MOVE    WRK-PARA-PRTNM-N TO  RECE08-PRTNM 
                        END-IF
                END-EVALUATE
+      *
+               DISPLAY "PTNUM=" RECE08-PTNUM "#" RECE08-PRTJYUN-SYUKA
+                                "#" RECE08-PRTRENNUM
       *
                MOVE    RECE08-REC           TO  MCPDATA-REC
                MOVE    "RECEPRT-KEY"        TO  ORC-DBPATH
