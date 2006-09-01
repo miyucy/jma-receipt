@@ -98,9 +98,9 @@
            03  FILLER               PIC X(08)   VALUE   "YKJMST".
            03  FILLER               PIC X(40)   VALUE
                                     "薬剤情報マスタ一覧".
-           03  FILLER               PIC X(08)   VALUE   "ORHCMl09".
+           03  FILLER               PIC X(08)   VALUE   "ORHCML09".
            03  FILLER               PIC X(40)   VALUE
-                                    "自院病名マスタ一覧".
+                                    "自院病名一覧".
       *
        01  MNAME-DATA-REC-R         REDEFINES   MNAME-DATA-REC.
            03  MNAME-TBL-OCC        OCCURS      22  INDEXED TBL-IDX.

@@ -92,6 +92,7 @@
       *  03.01.02    NACL-藤原    06/08/01  選択後すぐに登録したときに
       *                                     エラーとならないようにする
       *  03.01.03    NACL-森脇    06/08/21  ＣＳＶ出力対応、MONFUNC対応
+      *  03.01.04    NACL-森脇    06/08/31  ジョブ管理削除、確認ボタン追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -483,6 +484,21 @@
       *
       *****MOVE    SPA-WORK        TO  SPA-C01KYOUTU
       *
+      *----(03.01.04)--ADD-START---
+      *    他のＬＤより
+           IF    ( LINKAREA        NOT =   SPACE )
+               MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
+      *
+      *        元の画面へ戻す
+               IF    (  SPA-MOTOPG     =   "XB01" )
+                   MOVE    LNK-COMMON      TO  SPA-KYOUTU
+                   MOVE    LNK-SCRSPA      TO  SPA-C02FREE
+      *             INITIALIZE              SPA-N21KYOUTU
+                   GO  TO  300-SCREEN-EXT
+               END-IF
+           END-IF
+      *----(03.01.04)--ADD-END-----
+      *
            IF    SPA-MOTOPG        =   "C99"
                GO  TO  300-SCREEN-EXT
            END-IF
@@ -505,10 +521,12 @@
                WHEN    SPA-MOTOPG(1:4)  =  "CID3"
                    PERFORM 350-CID3-SET-SEC
                    GO  TO  300-SCREEN-EXT
+      *----(03.01.03)--ADD-START---
       *            確認画面５より
                WHEN    SPA-MOTOPG(1:4)  =  "CID5"
                    PERFORM 360-CID5-SET-SEC
                    GO  TO  300-SCREEN-EXT
+      *----(03.01.03)--ADD-END-----
            END-EVALUATE
       *
            PERFORM 310-SPASET-SEC
@@ -1145,6 +1163,14 @@
       *    登録
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 450-TOUROKU-SEC
+      *----(03.01.04)--ADD-START---
+      *    情報削除
+               WHEN    "CLICKED"       ALSO    "B11"
+                   PERFORM 480-JYOUHOU-DEL-SEC
+      *    処理確認
+               WHEN    "CLICKED"       ALSO    "B32"
+                   PERFORM 490-KAKUNIN-SEC
+      *----(03.01.04)--ADD-END-----
            END-EVALUATE
       *
            .
@@ -3393,6 +3419,73 @@
        490-PRINT-EXT.
            EXIT.
       *
+      *----(03.01.04)--ADD-START---
+      *****************************************************************
+      *    情報削除へ
+      *****************************************************************
+       480-JYOUHOU-DEL-SEC             SECTION.
+      *
+           MOVE    SPACE               TO  LINKAREA
+           MOVE    SPA-KYOUTU          TO  LNK-COMMON
+           MOVE    SPA-C02FREE         TO  LNK-SCRSPA
+      *
+      *    画面移行用のパラメタ変更
+           MOVE    "C03"               TO  SPA-MOTOPG
+           MOVE    "XB01"              TO  SPA-SAKIPG
+      *
+           MOVE    CONST-JOB-SHELLID
+                                       TO  SPA-JOB-SHELLID
+      *
+           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
+      *
+           MOVE   "CHANGE"             TO  MCP-PUTTYPE
+           MOVE   "XB01"               TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       480-JYOUHOU-DEL-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    処理確認画面
+      *****************************************************************
+       490-KAKUNIN-SEC                 SECTION.
+      *
+           MOVE    SPACE           TO  SPA-MOTOPG
+           MOVE    SPA-AREA        TO  SPA-COMMON
+      *
+           MOVE    "LINK"          TO  MCP-STATUS
+           MOVE    SPACE           TO  MCP-EVENT
+      *
+           CALL    "ORCGC99"       USING
+                                   MCPAREA
+                                   SPAAREA
+                                   LINKAREA
+                                   SCRAREA
+      *
+           MOVE    SPA-COMMON      TO  SPA-AREA
+      *
+      *
+           MOVE    "B01"           TO  MCP-WIDGET
+      *
+           MOVE    "C03"           TO  SPA-MOTOPG
+           MOVE    "C99"           TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"           TO  MCP-PUTTYPE
+           MOVE    "C99"           TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1               TO  FLG-END
+      *
+           .
+       490-KAKUNIN-EXT.
+           EXIT.
+      *
+      *----(03.01.04)--ADD-END-----
       *****************************************************************
       *    疑いフラグ編集処理
       *****************************************************************
