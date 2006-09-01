@@ -854,6 +854,8 @@ path	key37	{
                     AND     CHOUKI       LIKE :CHOUKI
                     AND     ZAITAKU      LIKE :ZAITAKU
                     AND     SRYKA        LIKE :SRYKA
+                    AND     PRTJYUN_SYUKA =   0
+                    AND     PRTRENNUM    =    0 
                    ORDER BY CHOUKI,ZAITAKU,RECESYUBETU_SRT,PTNUM,SRYYM,RENNUM
 		;
 	};
