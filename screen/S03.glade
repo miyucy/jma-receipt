@@ -1102,7 +1102,7 @@
     <widget>
       <class>GtkNumberEntry</class>
       <name>SYKMONEY</name>
-      <x>908</x>
+      <x>905</x>
       <y>320</y>
       <width>88</width>
       <height>24</height>
