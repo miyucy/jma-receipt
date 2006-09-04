@@ -201,6 +201,8 @@
       *                                     がある場合の記載
       *
       *  03.02.01    NACL-藤原    06/07/31  国保主科対応
+      *  03.02.02    NACL-藤原    06/09/04  公費レコードの負担金額の編集
+      *                                     方法の修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2232,6 +2234,13 @@
                IF      RECE02-FTNMONEY(IDX)   >   ZERO     
                    MOVE    RECE02-FTNMONEY(IDX)   TO  WRK-NUM
                    MOVE    8                      TO  WRK-NAGASA
+               ELSE
+                   IF    ( RECE02-TOTALTEN (IDX)      >   ZERO )
+                   AND   ( RECE02-FTNMONEY (IDX)      =   ZERO )
+                   AND   ( RECE02-ZEROKISAIFLG (IDX)  =   "1"  )
+                       MOVE    RECE02-FTNMONEY(IDX)   TO  WRK-NUM
+                       MOVE    8                      TO  WRK-NAGASA
+                   END-IF
                END-IF
            END-IF    
       *    県単用項目
