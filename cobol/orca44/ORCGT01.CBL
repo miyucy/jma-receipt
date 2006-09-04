@@ -81,7 +81,8 @@
       *
       *  03.00.01    NACL-藤原    06/05/29  印刷時のプリンター指定対応
       *
-      *  03.02.02    NACL-藤原    06/07/24  マル長の別総括対応
+      *  03.02.01    NACL-藤原    06/07/24  マル長の別総括対応
+      *  03.02.02    NACL-藤原    06/07/31  国保主科対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -299,6 +300,8 @@
            COPY    "CPSK2003.INC".
       *
            COPY    "CPSK2005.INC".
+      *
+           COPY    "CPSK2009.INC".
       *
            COPY    "CPSK3003.INC".
       *
@@ -658,10 +661,46 @@
                                            SPA-DATAKBN6-STATE       
                                            SPA-B21-STATE
       *
+      *    レセプト編集区分情報（主科情報）
+           MOVE    SPACE               TO  SYS-2009-REC
+           INITIALIZE                      SYS-2009-REC
+           MOVE    "2009"              TO  SYS-2009-KANRICD
+           MOVE    "*"                 TO  SYS-2009-KBNCD
+           MOVE    SPA-NAI-SKYYM       TO  SYS-2009-STYUKYMD (1:6)
+           MOVE    "01"                TO  SYS-2009-STYUKYMD (7:2)
+           MOVE    SYS-2009-STYUKYMD   TO  SYS-2009-EDYUKYMD
+           MOVE    SYS-2009-REC        TO  MCPDATA-REC
+           PERFORM 900-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-2009-REC
+           ELSE
+               INITIALIZE                  SYS-2009-REC
+           END-IF
+           IF      SYS-2009-SYUKA-KBN
+                                   =   SPACE
+               MOVE    "0"             TO  SYS-2009-SYUKA-KBN
+           END-IF
+           IF    ( SYS-2009-SYUKA-KBN
+                                   =   "1"   )
+           AND   ( SYS-2009-SYUKA-SYAHO
+                                   =   SPACE )
+               MOVE    "1"             TO  SYS-2009-SYUKA-SYAHO
+           END-IF      
+           IF    ( SYS-2009-SYUKA-KBN
+                                   =   "1"   )
+           AND   ( SYS-2009-SYUKA-KOKUHO
+                                   =   SPACE )
+               MOVE    "0"             TO  SYS-2009-SYUKA-KOKUHO
+           END-IF
            IF      SPA-SYUKA-KBN      =   "0"
                MOVE    WIDGET-INSENSITIVE  TO  SPA-B20-STATE
            ELSE
-               MOVE    WIDGET-NORMAL       TO  SPA-B20-STATE
+               IF    ( SYS-2009-SYUKA-SYAHO  =   "1" )
+               OR    ( SYS-2009-SYUKA-KOKUHO =   "1" )
+                   MOVE    WIDGET-NORMAL       TO  SPA-B20-STATE
+               ELSE
+                   MOVE    WIDGET-INSENSITIVE  TO  SPA-B20-STATE
+               END-IF
            END-IF
       *
            MOVE    "T"                TO  SPA-DATAKBN4-VALUE  
