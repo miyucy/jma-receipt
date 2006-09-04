@@ -15,3 +15,6 @@ alter table TBL_RECEPRT
 --    ¥¼¥íÀßÄê                       --
 alter table TBL_RECEPRT
    alter PRTJYUN_SYUKA set default 0;
+
+update TBL_RECEPRT set PRTJYUN_SYUKA = 0;
+
