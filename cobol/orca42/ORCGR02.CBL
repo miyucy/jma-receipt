@@ -1627,12 +1627,6 @@
                                        SPA-NAI-SYUBETU     (IDW IDX 1)
                    MOVE    "T"             TO
                                        SPA-GMN-TCHK-VALUE  (IDW IDX)
-                   ADD     RECE07-PAGE-CHOUKI
-                                           TO
-                                       SPA-NAI-TPAGE-CHOUKI(IDW IDX)
-                   ADD     RECE07-PAGE-ZAITAKU
-                                           TO
-                                       SPA-NAI-TPAGE-ZAITAKU(IDW IDX)
       *
       *            プリンタ設定
       *************IF      FLG-PRTNM-SET           =   ZERO
@@ -1646,9 +1640,17 @@
                                                    NOT =
                                            SPA-NAI-THKNJANUM (IDW IDX)
                        PERFORM 31011-SYUKA-PAGE-HENSYU-SEC
+                       ADD     RECE07-PAGE-CHOUKI
+                                           TO
+                                       SPA-NAI-TPAGE-CHOUKI  (IDW IDX)
+                       ADD     RECE07-PAGE-ZAITAKU
+                                           TO
+                                       SPA-NAI-TPAGE-ZAITAKU (IDW IDX)
       *
-                       IF    ( SPA-GMN-SYUKA-MAX   >   ZERO )
-                       AND   ( SPA-R01-RECE07-SRYKA-KOKUHO
+                       IF    ( RECE07-PAGE-CHOUKI  >   0 )
+                       OR    ( RECE07-PAGE-ZAITAKU >   0 )
+                         IF    ( SPA-GMN-SYUKA-MAX   >   ZERO )
+                         AND   ( SPA-R01-RECE07-SRYKA-KOKUHO
                                               NOT =   "00" )
                            PERFORM VARYING IDXX    FROM    1   BY  1
                                   UNTIL   IDXX    >   SPA-GMN-SYUKA-MAX
@@ -1666,7 +1668,8 @@
                                    END-IF 
                                END-IF
                            END-PERFORM
-                       END-IF
+                         END-IF
+                       END-IF 
       *
                        MOVE    "tbl_recekanri"     TO  MCP-TABLE
                        MOVE    "key8"              TO  MCP-PATHNAME
@@ -3915,7 +3918,7 @@
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       WRK-CONS-LINE-MAX
                        OR      SPA-NAI-PRTJYUNI(IDW IDX)   =   SPACE
-                       OR      SPA-ERRCD               NOT =   SPACE    
+                       OR      SPA-ERRCD               NOT =   SPACE
                    IF    ( SPA-GMN-TCHK-VALUE  (IDW IDX)   =   "T"   )
                    AND   ( SPA-GMN-TPAGE       (IDW IDX)   >   ZERO  )
                    AND   ( WRK-PREFKBN                     =
