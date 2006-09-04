@@ -1940,10 +1940,10 @@ path	key57	{
 		SELECT *
 		FROM tbl_seikyu
                 WHERE (      HOSPID      =    :HOSPID     )
-                  AND (      HKNNUM_S    =    '060'       )
-                  AND (      HKNNUM_S    =    '067'       ) 
-                  AND (      HKNNUM_S    =    '068'       )
-                  AND (      HKNNUM_S    =    '069'       ) 
+                  AND (      HKNNUM_S    =  '060'
+                        OR   HKNNUM_S    =  '067'
+                        OR   HKNNUM_S    =  '068'
+                        OR   HKNNUM_S    =  '069'        ) 
                   AND (   (( SRYYM       =    :SKYYM   )
                        AND ( SKYKBN      <>   '0'      )
                        AND (( SKYYM       =   '000000' ) OR ( SKYYM = :SKYYM )))
