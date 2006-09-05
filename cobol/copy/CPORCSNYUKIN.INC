@@ -45,8 +45,12 @@
            03  LNK-SCNYUKIN-NYKNKNRKBN       PIC X(01).
       *    入金額
            03  LNK-SCNYUKIN-NYUKIN-MONEY     PIC 9(08).
+      *    返金額
+           03  LNK-SCNYUKIN-HENKIN-MONEY     PIC 9(08).
       *    入金日
            03  LNK-SCNYUKIN-NYUKIN-YMD       PIC X(08).
+      *    入金方法
+           03  LNK-SCNYUKIN-NYUKIN-HOHO      PIC X(02).
       *出力値
            03  LNK-SCNYUKIN-OUT-AREA.
       *        入金振り分け情報
@@ -56,7 +60,10 @@
       *            請求額
                    07  LNK-SCNYUKIN-SKYMONEY   PIC 9(07).
       *            入金振り分け額
-                   07  LNK-SCNYUKIN-FURIWAKEMONEY  PIC 9(07).
+                   07  LNK-SCNYUKIN-FURIWAKEMONEY  PIC 9(07)
+                                                   OCCURS 2.
+      *        返金振り分け残額
+               05  LNK-SCNYUKIN-HENKINZAN      PIC 9(07).
       *        入金振り分け残額
                05  LNK-SCNYUKIN-FURIWAKEZAN    PIC 9(07).
       *復帰コード
