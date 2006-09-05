@@ -321,3 +321,17 @@ path	all	{
 		;
 	};
 };
+
+path	key12		{ 	
+	DBSELECT	{
+		DECLARE tbl_syuka_key12_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syuka
+			WHERE   HOSPID         =    :HOSPID
+			AND     SRYYM          =    :SRYYM
+			AND     NYUGAIKBN      =    :NYUGAIKBN
+			AND     TEISYUTUSAKI   LIKE :TEISYUTUSAKI
+			AND     DLT_FLG        <>   '1'
+		;
+	};
+};
