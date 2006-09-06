@@ -33,6 +33,8 @@
                05  TNKRRK-STYMD            PIC  X(08).
       *終了年月日
            03  TNKRRK-EDYMD                PIC  X(08).
+      *老齢福祉年金受給者証区分（０：なし　１：あり）
+           03  TNKRRK-RRI-FUKUSHI-KBN      PIC  X(01).
       *端末ＩＤ
            03  TNKRRK-TERMID               PIC  X(16).
       *オペーレータＩＤ

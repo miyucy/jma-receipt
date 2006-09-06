@@ -1,8 +1,9 @@
 tbl_tnkrrk {
 	HOSPID				char(24);
 	PTID				number(10,0);
-	STYMD	    		char(8);
-	EDYMD			    char(8);
+	STYMD	    			char(8);
+	EDYMD				char(8);
+	RRI_FUKUSHI_KBN			char(1);
 	TERMID  			varchar(16);
 	OPID    			varchar(16);
 	CREYMD  			char(8);
@@ -70,6 +71,7 @@ path	upd1	{
                    PTID                = :PTID,
                    STYMD               = :STYMD,
                    EDYMD               = :EDYMD,
+                   RRI_FUKUSHI_KBN     = :RRI_FUKUSHI_KBN,
                    TERMID              = :TERMID,
                    OPID                = :OPID,
                    CREYMD              = :CREYMD,
