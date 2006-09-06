@@ -38,8 +38,8 @@
            SELECT  PRT-FILE        ASSIGN  HC01PARA
                                    FILE    STATUS  IS  STS-PARA.
       *    エラーファイル
-           SELECT  RECEERR-FILE    ASSIGN  RECEERR
-                                   FILE    STATUS  IS  STS-RECEERR.
+           SELECT  ML09ERR-FILE    ASSIGN  ML09ERR
+                                   FILE    STATUS  IS  STS-ML09ERR.
       *    CSV用データ
            SELECT  CSV-FILE        ASSIGN  "/tmp/userbyol.csv"
                                    ORGANIZATION    IS  LINE
@@ -54,8 +54,8 @@
            COPY    "HCML09.INC".
       *
       *    エラーファイル
-       FD  RECEERR-FILE.
-       01  RECEERR-REC             PIC X(200).
+       FD  ML09ERR-FILE.
+       01  ML09ERR-REC             PIC X(200).
       *
       *    CSVファイル
        FD  CSV-FILE.
@@ -86,13 +86,13 @@
            COPY    "ORCA-DBPATH".
       *    エラーファイル 名称領域 
            COPY    "CPCOMMONDAT2.INC"  REPLACING  //RECE01PARA//
-                                       BY         //RECEERR//.
+                                       BY         //ML09ERR//.
            03                          PIC X(04)   VALUE   ".dat".
       *
       *    スパ領域
        01  STS-AREA.
            03  STS-PARA            PIC X(02).
-           03  STS-RECEERR         PIC X(02).
+           03  STS-ML09ERR         PIC X(02).
            03  STS-CSV             PIC X(02).
       *
       *    フラグ領域
@@ -122,7 +122,7 @@
                05  WRK-PARA-JOBID      PIC 9(07).
                05  WRK-PARA-SHELLID    PIC X(08).
       *
-           03  WRK-RECEERR         PIC X(200).
+           03  WRK-ML09ERR         PIC X(200).
       *  
            03  WRK-SYSYMD.
                05  WRK-SYSYY       PIC 9(04).
@@ -244,8 +244,8 @@
                                        ORCSJOBKANRIAREA
                                        JOBKANRI-REC
       *
-           MOVE    "RECEERR"       TO  RECEERR-FILE-ID
-           MOVE    WRK-PARA-TERMID TO  RECEERR-TERMID
+           MOVE    "ML09ERR"       TO  ML09ERR-FILE-ID
+           MOVE    WRK-PARA-TERMID TO  ML09ERR-TERMID
       *
       *    パラメタ編集処理
            PERFORM 110-PARA-HENSYU-SEC
@@ -483,15 +483,15 @@
       *****************************************************************
        500-ERR-HENSYU-SEC          SECTION.
       *
-           OPEN    INPUT   RECEERR-FILE
+           OPEN    INPUT   ML09ERR-FILE
       *     
-           IF      STS-RECEERR         =   ZERO
+           IF      STS-ML09ERR         =   ZERO
                CONTINUE
            ELSE
-               OPEN    OUTPUT              RECEERR-FILE
+               OPEN    OUTPUT              ML09ERR-FILE
       *
-               MOVE    WRK-RECEERR     TO  RECEERR-REC
-               WRITE   RECEERR-REC
+               MOVE    WRK-ML09ERR     TO  ML09ERR-REC
+               WRITE   ML09ERR-REC
       *        ジョブ管理開始処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
@@ -505,7 +505,7 @@
                                            JOBKANRI-REC
            END-IF
       *
-           CLOSE   RECEERR-FILE
+           CLOSE  ML09ERR-FILE
       *
            MOVE    1               TO  FLG-END
       * 
