@@ -3808,6 +3808,14 @@
                WHEN    "0097"
                    MOVE    "公費負担額対象が４０件を超えました。"
                                                TO  SPA-ERRMSG
+      *Ｈ１８．１０から
+               WHEN    "0098"
+                   STRING  "老人公費２割はＨ１８年１０月から廃止"
+                           "されています。３割に変更して下さい。"
+                                               DELIMITED   BY  SPACE
+                                               INTO   SPA-ERRMSG
+                   END-STRING
+      *
                WHEN    "0099"
                    MOVE    "日付変換エラーです。"
                                                TO  SPA-ERRMSG

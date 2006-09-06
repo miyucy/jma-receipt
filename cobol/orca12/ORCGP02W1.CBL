@@ -4320,11 +4320,16 @@
                           (SPA-PTKOH-HKN-SBTKBN (IDX)  =   "3" )
                        MOVE    1                   TO  FLG-RJNCHK2
                    END-IF
-      *            £»£±£∏°•£±£∞≤˛¿µ œ∑øÕ£≤≥‰§Ú£≥≥‰§ÿ
+      *            ¿∏≥Ë ›∏Ó
+                   IF      SPA-PTKOH-KOHNUM  (IDX) =   "012"
+                       MOVE    1                   TO  FLG-SEIHOGO
+                   END-IF
+               END-IF
+      *        £»£±£∏°•£±£∞≤˛¿µ œ∑øÕ£≤≥‰§Ú£≥≥‰§ÿ
+               IF     (SPA-PTKOH-SAKJOKBN (IDX) NOT =  "1"        )
                    IF     (SPA-PTKOH-KOHNUM  (IDX) =   "027" )  AND
                           (SPA-PTKOH-TEKEDYMD(IDX) >=  "20061001") AND
-                          (SPA-PTKOH-PAYKBN(IDX)(2:1)  =   "2"   ) AND
-                          (FLG-KOKUHO              =   ZERO    )
+                          (SPA-PTKOH-PAYKBN(IDX)(2:1)  =   "2"   )
       *                ¿⁄¬ÿ§®∏Â§Œ£≥≥‰§¨§¢§Î§≥§»
                        PERFORM 4103319-RJNKOH-CHK-SEC
                        IF      FLG-KOH27           =   1
@@ -4332,16 +4337,13 @@
                            MOVE    IDX                 TO  SPA-KOH-IDX2
                        END-IF
                    END-IF
-      *            ¿∏≥Ë ›∏Ó
-                   IF      SPA-PTKOH-KOHNUM  (IDX) =   "012"
-                       MOVE    1                   TO  FLG-SEIHOGO
-                   END-IF
                END-IF
            END-PERFORM
       *    ¡∞¥¸π‚Œº‘∂Ë ¨§¨§¢§Í°¢œ∑øÕ∏¯»Ò§¨§ §§ª˛
            IF     (FLG-RJNCHK          =   1   )
              AND  (FLG-RJNCHK2         =   ZERO)
              AND  (FLG-RJNERR          =   ZERO)
+             AND  (FLG-RJNKOHERR       =   ZERO)
                GO      TO      410331-RJN-HKNCHK-EXT
            END-IF
       *
@@ -4430,37 +4432,36 @@
        410332-RJN27-CHK-SEC      SECTION.
       *
            MOVE    ZERO                TO  FLG-RJNKOHERR
-           MOVE    ZERO                TO  FLG-KOKUHO
-           PERFORM VARYING     IDX     FROM    1  BY  1
-                   UNTIL       IDX     >   SPA-PTHKN-MAX
-               IF     (SPA-PTHKN-TEKSTYMD (IDX)    <=  SPA-SYSYMD ) AND
-                      (SPA-PTHKN-TEKEDYMD (IDX)    >=  SPA-SYSYMD ) AND
-                      (SPA-PTHKN-SAKJOKBN (IDX) NOT =  "1"        )
+      *DDD MOVE    ZERO                TO  FLG-KOKUHO
+      *    PERFORM VARYING     IDX     FROM    1  BY  1
+      *            UNTIL       IDX     >   SPA-PTHKN-MAX
+      *        IF     (SPA-PTHKN-TEKSTYMD (IDX)    <=  SPA-SYSYMD ) AND
+      *               (SPA-PTHKN-TEKEDYMD (IDX)    >=  SPA-SYSYMD ) AND
+      *               (SPA-PTHKN-SAKJOKBN (IDX) NOT =  "1"        )
       *            ¡»πÁπÒ ›§ŒÕ≠Ãµ
-                   IF     (SPA-PTHKN-HKNNUM  (IDX) =   "060"
-                                                   OR  "068" )  AND
-                          (SPA-PTHKN-TEKEDYMD (IDX) <   "20061001")
+      *            IF     (SPA-PTHKN-HKNNUM  (IDX) =   "060"
+      *                                            OR  "068" )  AND
+      *                   (SPA-PTHKN-TEKEDYMD (IDX) <   "20061001")
       *                ¡»πÁπÒ ›
-                       IF    (SPA-PTHKN-HKNJANUM(IDX)(3:1)
-                                                   =  "3" )
-                           MOVE    1               TO  FLG-KOKUHO
-                       END-IF
-                   END-IF
-               END-IF
-           END-PERFORM
+      *                IF    (SPA-PTHKN-HKNJANUM(IDX)(3:1)
+      *                                            =  "3" )
+      *                    MOVE    1               TO  FLG-KOKUHO
+      *                END-IF
+      *            END-IF
+      *        END-IF
+      *DDD END-PERFORM
       *
       *    ∏¯»Ò
            MOVE    ZERO                TO  SPA-KOH-IDX2
            PERFORM VARYING     IDX     FROM    1  BY  1
                    UNTIL       IDX     >   SPA-PTKOH-MAX
-               IF     (SPA-PTKOH-TEKSTYMD (IDX)    <=  SPA-SYSYMD ) AND
-                      (SPA-PTKOH-TEKEDYMD (IDX)    >=  SPA-SYSYMD ) AND
+      ******** IF     (SPA-PTKOH-TEKSTYMD (IDX)    <=  SPA-SYSYMD ) AND
+               IF     (SPA-PTKOH-TEKEDYMD (IDX)    >=  SPA-SYSYMD ) AND
                       (SPA-PTKOH-SAKJOKBN (IDX) NOT =  "1"        )
       *            £»£±£∏°•£±£∞≤˛¿µ œ∑øÕ£≤≥‰§Ú£≥≥‰§ÿ
                    IF     (SPA-PTKOH-KOHNUM  (IDX) =   "027" )  AND
                           (SPA-PTKOH-TEKEDYMD(IDX) >=  "20061001") AND
-                          (SPA-PTKOH-PAYKBN(IDX)(2:1)  =   "2"   ) AND
-                          (FLG-KOKUHO              =   ZERO    )
+                          (SPA-PTKOH-PAYKBN(IDX)(2:1)  =   "2"   )
       *                ¿⁄¬ÿ§®∏Â§Œ£≥≥‰§¨§¢§Î§≥§»
                        PERFORM 4103319-RJNKOH-CHK-SEC
                        IF      FLG-KOH27           =   1
