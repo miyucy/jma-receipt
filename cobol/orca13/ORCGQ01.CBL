@@ -5101,6 +5101,8 @@
                    MOVE    "01"            TO  SPA-Q01-PAYKBN  (IDXC)
                WHEN    "2"
                    MOVE    "02"            TO  SPA-Q01-PAYKBN  (IDXC)
+               WHEN    "3"
+                   MOVE    "03"            TO  SPA-Q01-PAYKBN  (IDXC)
                WHEN    OTHER
                    MOVE    SPACE           TO  SPA-Q01-PAYKBN  (IDXC)
                END-EVALUATE
