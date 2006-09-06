@@ -2065,6 +2065,10 @@
            MOVE    "20060930"      TO  SPA-PTKOH-TEKEDYMD (SPA-KOH-IDX2)
            MOVE    SPA-SYSYMD      TO  SPA-PTKOH-KAKUNINYMD
                                                          (SPA-KOH-IDX2)
+           MOVE    "H18.9.30"      TO  SPA-PTKOH-TEKEDYMDW
+                                                         (SPA-KOH-IDX2)
+           MOVE    SPA-SYSYMDWH    TO  SPA-PTKOH-KAKUNINYMDW
+                                                         (SPA-KOH-IDX2)
       *    画面表示中
            IF      SPA-KOH-GMN1        >   ZERO
                MOVE    "20060930"      TO  SPA-NAI-KTEKEDYMD
