@@ -2328,7 +2328,8 @@
                    UNTIL ( IDX0            >   SPA-GMN-SYULIST-MAX )
                     OR   ( SPA-ERRCD   NOT =   SPACE )
       *
-               IF    ( SPA-GMN-TNYUKIN (IDX0)  NOT =   ZERO )
+               IF    ( SPA-NAI-TNYUGAIKBN (IDX0)   =   "2"  )
+                AND  ( SPA-GMN-TNYUKIN (IDX0)  NOT =   ZERO )
       *
                    COMPUTE PARA-EDANUM =   PARA-EDANUM +   1
       *
