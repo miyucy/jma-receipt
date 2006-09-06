@@ -2094,10 +2094,10 @@
                                        TO  SPA-GMN-FTNJANUM (IDX-K)
            MOVE    SPA-PTKOH-JKYSNUM (IDX)
                                        TO  SPA-GMN-JKYSNUM (IDX-K)
-      **** MOVE    "H18.10.01"         TO  SPA-GMN-KTEKSTYMD (IDX-K)
-      *    MOVE    "20061001"          TO  SPA-NAI-KTEKSTYMD (IDX-K)
-      *    MOVE    WRK-TEKEDYMD-W      TO  SPA-GMN-KTEKEDYMD (IDX-K)
-      **** MOVE    WRK-TEKEDYMD        TO  SPA-NAI-KTEKEDYMD (IDX-K)
+           MOVE    "H18.10.01"         TO  SPA-GMN-KTEKSTYMD (IDX-K)
+           MOVE    "20061001"          TO  SPA-NAI-KTEKSTYMD (IDX-K)
+           MOVE    WRK-TEKEDYMD-W      TO  SPA-GMN-KTEKEDYMD (IDX-K)
+           MOVE    WRK-TEKEDYMD        TO  SPA-NAI-KTEKEDYMD (IDX-K)
            MOVE    SPA-SYSYMD          TO  SPA-NAI-KKAKUNINYMD
                                                               (IDX-K)
            MOVE    SPA-SYSYMDWH        TO  SPA-GMN-KKAKUNINYMD
@@ -2106,48 +2106,6 @@
             MOVE    SPA-PTKOH-HKN-SBTKBN (IDX)
                                        TO  SPA-NAI-PTKOH-SBTKBN(IDX-K)
       *
-      *    開始日セット
-           MOVE    SPACE               TO  HKNNUM-REC
-           MOVE    SPA-HOSPID          TO  HKN-HOSPID
-           MOVE    SPA-GMN-KOHNUM(IDX-K)
-                                       TO  HKN-HKNNUM
-           MOVE    SPA-NAI-PTKOH-PAYKBN (IDX-K)
-                                       TO  HKN-PAYKBN
-      *
-           MOVE    HKNNUM-REC          TO  MCPDATA-REC
-           MOVE    "tbl_hknnum"        TO  MCP-TABLE
-           MOVE    "key7"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_hknnum"        TO  MCP-TABLE
-               MOVE    "key7"              TO  MCP-PATHNAME
-               PERFORM 921-HKNMST-NEXT-SEC
-           ELSE
-               INITIALIZE              HKNNUM-REC
-               MOVE    1               TO  FLG-HKNNUM
-           END-IF
-           MOVE    "tbl_hknnum"       TO  MCP-TABLE
-           MOVE    "key7"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           IF      FLG-HKNNUM          =   ZERO
-      *        開始日
-               MOVE    HKN-TEKSTYMD        TO  WRK-SYMD
-               PERFORM 410112-SEIYMDHEN-SEC
-               MOVE    HKN-TEKSTYMD        TO  SPA-NAI-KTEKSTYMD (IDX-K)
-               MOVE    WRK-HENYMD          TO  SPA-GMN-KTEKSTYMD (IDX-K)
-      *        終了日
-               IF      HKN-TEKEDYMD        =   ALL "9"
-                   MOVE    "9999999"           TO  SPA-GMN-KTEKEDYMD
-                                                                 (IDX-K)
-               ELSE
-                   MOVE    HKN-TEKEDYMD        TO  WRK-SYMD
-                   PERFORM 410112-SEIYMDHEN-SEC
-                   MOVE    WRK-HENYMD          TO  SPA-GMN-KTEKEDYMD
-                                                                (IDX-K)
-               END-IF
-               MOVE    HKN-TEKEDYMD        TO  SPA-NAI-KTEKEDYMD (IDX-K)
-           END-IF
            MOVE    1                   TO  FLG-AUTO
            EVALUATE    SPA-KOH-IDX1
                WHEN    1
