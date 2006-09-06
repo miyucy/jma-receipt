@@ -1384,7 +1384,7 @@
            MOVE    "1"             TO  SPA-GMN-SYUKA-SYAHOL     (2)
            MOVE    "ºÁ≤ "          TO  SPA-GMN-SYUKA-SYAHOMEIL  (2)
            MOVE    "2"             TO  SPA-GMN-SYUKA-SYAHOL     (3)
-           MOVE    "≤ …Ωº®§Œ§ﬂ"    TO  SPA-GMN-SYUKA-SYAHOMEIL  (3)
+           MOVE    "≤  Ã∞ı∫˛§Œ§ﬂ"  TO  SPA-GMN-SYUKA-SYAHOMEIL  (3)
            MOVE    3               TO  SPA-GMN-SYUKA-SYAHO-MAX 
       *
            MOVE    "0"             TO  SPA-GMN-SYUKA-KOKUHOL    (1)
@@ -1392,7 +1392,7 @@
            MOVE    "1"             TO  SPA-GMN-SYUKA-KOKUHOL    (2)
            MOVE    "ºÁ≤ "          TO  SPA-GMN-SYUKA-KOKUHOMEIL (2)
            MOVE    "2"             TO  SPA-GMN-SYUKA-KOKUHOL    (3)
-           MOVE    "≤ …Ωº®§Œ§ﬂ"    TO  SPA-GMN-SYUKA-KOKUHOMEIL (3)
+           MOVE    "≤  Ã∞ı∫˛§Œ§ﬂ"  TO  SPA-GMN-SYUKA-KOKUHOMEIL (3)
            MOVE    3               TO  SPA-GMN-SYUKA-KOKUHO-MAX 
       *
            MOVE    "0"             TO  SPA-GMN-FRAME-JIBAIPRTKBNL    (1)
