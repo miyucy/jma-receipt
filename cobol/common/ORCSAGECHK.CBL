@@ -162,7 +162,7 @@
       *
       *
            COPY    "MCPDATA.INC".
-      *    COPY    "CPORCMCP.INC".
+      *****COPY    "CPORCMCP.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -697,14 +697,7 @@
                   (COMB-KOH3PAYKBN     =   "02" ))  OR
                  ((COMB-KOH4HKNNUM     =   "027" )  AND
                   (COMB-KOH4PAYKBN     =   "02" ))
-      *        組合国保以外２割はエラ−
-               IF     (COMB-HKNNUM         =   "060"
-                                           OR  "068" )  AND
-                      (PTHKN-HKNJANUM(3:1) =   "3"   )
-                   CONTINUE
-               ELSE
-                   MOVE    1               TO  FLG-ERR2
-               END-IF
+               MOVE    1               TO  FLG-ERR2
            END-IF
            .
        294-KOH027-18-CHK-EXT.
