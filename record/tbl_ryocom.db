@@ -79,7 +79,7 @@ path	key2 	{
 path	del1 	{
 	DBDELETE	{
 		DELETE
-		FROM tbl_nyuinacct
+		FROM tbl_ryocom
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 		;
@@ -89,7 +89,7 @@ path	del1 	{
 path	del2 	{
 	DBDELETE	{
 		DELETE
-		FROM tbl_nyuinacct
+		FROM tbl_ryocom
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 			AND   SRYYM       =   :SRYYM
