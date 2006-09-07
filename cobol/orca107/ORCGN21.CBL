@@ -899,6 +899,7 @@
       *****************************************************************
        430-TEXTCHK-SEC         SECTION.
       *
+           INITIALIZE              SPA-GMN-ENTRY
            MOVE    N21-NAME        TO  SPA-GMN-NAME
            MOVE    N21-EFFECT      TO  SPA-GMN-EFFECT
            MOVE    N21-COLOR       TO  SPA-GMN-COLOR
@@ -906,7 +907,7 @@
            MOVE    N21-MARK        TO  SPA-GMN-MARK
            MOVE    N21-CAUTION     TO  SPA-GMN-CAUTION
            MOVE    N21-PHOTO       TO  SPA-GMN-PHOTO
-           MOVE    N21-PHOTOAREA   TO  SPA-GMN-OBJECT
+      *     MOVE    N21-PHOTOAREA   TO  SPA-GMN-OBJECT
       *
       *----(02.01.02)--UPD-START---
       *    名前半角文字混在チェック
@@ -1265,13 +1266,40 @@
       *****************************************************************
        440-SANSYO-SEC              SECTION.
       *
-           IF          SPA-NAI-SRYCD   =   SPACE
-               MOVE    "0011"          TO  SPA-ERRCD
-               MOVE    2               TO  SPA-GMN-CUR
-               GO  TO  440-SANSYO-EXT
-           END-IF
+           INITIALIZE                  SPA-N22-AREA
+           MOVE    SPA-NAI-SRYCD   TO  SPA-N22-KENCD
+           MOVE    SPA-GMN-KENNAME TO  SPA-N22-KENNAME
       *
-           MOVE    "OK"            TO  SPA-N22-FLG
+           MOVE    SPACE           TO  SPA-MOTOPG
+           MOVE    SPA-N21KYOUTU   TO  SPA-WORK
+           MOVE    SPA-AREA        TO  SPA-COMMON
+           MOVE    SPA-N21SCRAREA  TO  SPA-FREE
+      *
+           MOVE    "LINK"          TO  MCP-STATUS
+           MOVE    SPACE           TO  MCP-EVENT
+      *
+           CALL    "ORCGN22"           USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA.
+      *
+           MOVE    SPA-COMMON      TO  SPA-AREA
+           MOVE    SPA-FREE        TO  SPA-N21SCRAREA
+           MOVE    SPA-WORK        TO  SPA-N21KYOUTU
+      *
+           MOVE    "SELNUM"        TO  MCP-WIDGET
+      *
+           MOVE    "N21"       TO  SPA-MOTOPG
+           MOVE    "N22"       TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"       TO  MCP-PUTTYPE
+           MOVE    "N22"       TO  MCP-WINDOW
+      *
+      *    ＰＵＴ処理
+           PERFORM 900-PUT-WINDOW.
+      *
+           MOVE    1           TO  FLG-END
            .
       *
        440-SANSYO-EXT.
@@ -1832,11 +1860,6 @@
                PERFORM 520-N21IDSET-SEC
                GO  TO  500-SET-SCREEN-EXT
            END-IF
-      *    ガイドメッセージ表示処理
-           IF          SPA-N22-FLG    =   "OK"
-               PERFORM 520-N22SET-SEC
-               GO  TO  500-SET-SCREEN-EXT
-           END-IF
       *
            MOVE    SPACE       TO  LINKAREA
       *
@@ -2027,50 +2050,6 @@
            .
       *
        520-N21IDSET-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    参照画面表示処理
-      *****************************************************************
-       520-N22SET-SEC              SECTION.
-      *
-           INITIALIZE                  SPA-N22-AREA
-           MOVE    SPA-NAI-SRYCD   TO  SPA-N22-KENCD
-           MOVE    SPA-GMN-KENNAME TO  SPA-N22-KENNAME
-      *
-           MOVE    SPACE           TO  SPA-MOTOPG
-           MOVE    SPA-N21KYOUTU   TO  SPA-WORK
-           MOVE    SPA-AREA        TO  SPA-COMMON
-           MOVE    SPA-N21SCRAREA  TO  SPA-FREE
-      *
-           MOVE    "LINK"          TO  MCP-STATUS
-           MOVE    SPACE           TO  MCP-EVENT
-      *
-           CALL    "ORCGN22"           USING
-                                       MCPAREA
-                                       SPAAREA
-                                       LINKAREA
-                                       SCRAREA.
-      *
-           MOVE    SPA-COMMON      TO  SPA-AREA
-           MOVE    SPA-FREE        TO  SPA-N21SCRAREA
-           MOVE    SPA-WORK        TO  SPA-N21KYOUTU
-      *
-           MOVE    "SELNUM"        TO  MCP-WIDGET
-      *
-           MOVE    "N21"       TO  SPA-MOTOPG
-           MOVE    "N22"       TO  SPA-SAKIPG
-      *
-           MOVE    "NEW"       TO  MCP-PUTTYPE
-           MOVE    "N22"       TO  MCP-WINDOW
-      *
-      *    ＰＵＴ処理
-           PERFORM 900-PUT-WINDOW.
-      *
-           MOVE    1           TO  FLG-END
-           .
-      *
-       520-N22SET-EXT.
            EXIT.
       *
       *****************************************************************

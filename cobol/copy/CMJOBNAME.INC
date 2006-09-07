@@ -97,7 +97,7 @@
                                     "定期請求−請求削除".
            03  FILLER               PIC X(08)   VALUE   "YKJMST".
            03  FILLER               PIC X(40)   VALUE
-                                    "薬剤情報マスタ一覧".
+                                    "薬剤情報マスタ".
            03  FILLER               PIC X(08)   VALUE   "ORHCML09".
            03  FILLER               PIC X(40)   VALUE
                                     "自院病名一覧".

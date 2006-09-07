@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者        日付      内容
+      *  01.01.01    NACL-森脇     06/09/09  ジョブ管理削除
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -75,7 +76,6 @@
            03  WRK-GAZO            PIC X(256).
            03  WRK-GAZOFILE        PIC X(256).
            03  WRK-OBJECT          PIC X(8).
-           03  WRK-SHELLID         PIC X(8).
       *
        01  SHELL-AREA.
            03  SHELL-NAME1         PIC X(34)  VALUE
@@ -84,6 +84,12 @@
                "scripts/daily/orc_medphoto_copy.sh".
        01  WRK-FILE-AREA.
            03  WRK-FILE-FOLDER     PIC X(14)  VALUE "/tmp/medphoto/".
+      *
+       01  WRK-CONS-AREA.
+      *    ジョブ管理ＤＢのキー値  
+           03  WRK-CONS-JOB-SHELLID
+                                   PIC X(08)   VALUE   "YKJMST".
+           03  WRK-CONS-JOB-JOBID  PIC 9(07)   VALUE   ZERO.
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -190,11 +196,13 @@
       *    画面編集
            PERFORM 500-GMNHEN-SEC
       *
+      *----(01.01.01)--UPD-START---
            MOVE    SPACE           TO  LINKAREA
       *
-      *    ＰＵＴ処理
-           MOVE    "NEW"           TO  MCP-PUTTYPE
-           MOVE    "N22"           TO  MCP-WINDOW
+           MOVE    "NEW"           TO  MCP-PUTTYPE.
+           MOVE    "N22"           TO  MCP-WINDOW.
+      *----(01.01.01)--UPD-END-----
+      *
            PERFORM 900-PUT-WINDOW
            MOVE    1               TO  FLG-END
            .
@@ -222,7 +230,6 @@
                WHEN    "CLICKED"   ALSO    "B12"
                    PERFORM 480-TOUROKU-SEC
            END-EVALUATE
-      *
            .
       *
        200-GMNSENI-EXT.
@@ -290,7 +297,7 @@
       *****************************************************************
        400-JYOUHOU-SEC             SECTION.
       *
-           MOVE    "SIORI1"        TO  WRK-SHELLID
+           MOVE    3               TO  WRK-CONS-JOB-JOBID
            PERFORM 820-JOBKANRI-READ-SEC
       *
            IF      SKBN-RUN        =   "RUN"
@@ -312,8 +319,10 @@
            MOVE    SHELL-NAME1     TO  MKPASS-IN-01
            MOVE    SPA-N22-KENCD   TO  SHELLTBL-ARG1
            MOVE    SPA-TERMID      TO  SHELLTBL-ARG2
-           MOVE    "0000001"       TO  SHELLTBL-ARG3
-           MOVE    "SIORI1"        TO  SHELLTBL-ARG4
+           MOVE    WRK-CONS-JOB-JOBID
+                                   TO  SHELLTBL-ARG3
+           MOVE    WRK-CONS-JOB-SHELLID
+                                   TO  SHELLTBL-ARG4
       *
            CALL    "ORCSMKPASS"        USING
                                        ORCSMKPASSAREA
@@ -337,7 +346,7 @@
       *****************************************************************
        400-JYOKYO-SEC              SECTION.
       *
-           MOVE    "SIORI1"        TO  WRK-SHELLID
+           MOVE    3               TO  WRK-CONS-JOB-JOBID
            PERFORM 820-JOBKANRI-READ-SEC
       *
            IF      SKBN-RUN        =   "RUN"
@@ -423,7 +432,11 @@
       *
            MOVE    WRK-GAZOFILE    TO  SPA-GMN-PHOTO
       *
-           MOVE    "SIORI2"        TO  WRK-SHELLID
+           IF      SPA-GMN-PHOTO   =   SPACE
+               GO  TO  400-GAZOCOPY-SEC-EXT
+           END-IF
+      *
+           MOVE    4               TO  WRK-CONS-JOB-JOBID
            PERFORM 820-JOBKANRI-READ-SEC
       *
            IF      SKBN-RUN        =   "RUN"
@@ -446,8 +459,10 @@
            MOVE    SPA-N22-KENCD   TO  SHELLTBL-ARG1
            MOVE    WRK-GAZO        TO  SHELLTBL-ARG2
            MOVE    SPA-GMN-FOLDER  TO  SHELLTBL-ARG3
-           MOVE    "0000001"       TO  SHELLTBL-ARG4
-           MOVE    "SIORI2"        TO  SHELLTBL-ARG5
+           MOVE    WRK-CONS-JOB-JOBID
+                                   TO  SHELLTBL-ARG4
+           MOVE    WRK-CONS-JOB-SHELLID
+                                   TO  SHELLTBL-ARG5
       *
            CALL    "ORCSMKPASS"        USING
                                        ORCSMKPASSAREA
@@ -797,6 +812,8 @@
                GO  TO  480-TOUROKU-EXT
            END-IF
       *
+           PERFORM 400-GAZOCOPY-SEC
+      *
            MOVE    "OK"            TO  SPA-N22-FLG
       *
            EVALUATE    SPA-N22-COPYKBN
@@ -835,8 +852,6 @@
            END-EVALUATE
            MOVE    SPA-N22-COPYKBN     TO  SPA-N22-COPY
       *
-           PERFORM 400-GAZOCOPY-SEC
-      *
            PERFORM 450-BACK
            .
       *
@@ -867,6 +882,7 @@
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
+           INITIALIZE                  N22
            MOVE    SPA-N22-KENCD   TO  N22-KENCD
            MOVE    SPA-N22-KENNAME TO  N22-KENNAME
            MOVE    SPA-N22-SELNUM  TO  N22-SELNUM
@@ -951,8 +967,10 @@
       *
            MOVE    "CHK"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
-           MOVE    1               TO  JOB-JOBID
-           MOVE    WRK-SHELLID     TO  JOB-SHELLID
+           MOVE    WRK-CONS-JOB-JOBID
+                                   TO  JOB-JOBID
+           MOVE    WRK-CONS-JOB-SHELLID
+                                   TO  JOB-SHELLID
            CALL    "ORCSJOB"           USING
                                        ORCSJOBKANRIAREA
                                        JOBKANRI-REC
@@ -988,8 +1006,10 @@
       *    ジョブ管理削除
            MOVE    "DEL"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
-           MOVE    1               TO  JOB-JOBID
-           MOVE    WRK-SHELLID     TO  JOB-SHELLID
+           MOVE    WRK-CONS-JOB-JOBID
+                                   TO  JOB-JOBID
+           MOVE    WRK-CONS-JOB-SHELLID
+                                   TO  JOB-SHELLID
            CALL    "ORCSJOB"           USING
                                        ORCSJOBKANRIAREA
                                        JOBKANRI-REC
@@ -1005,8 +1025,19 @@
       *
            MOVE    "JBS"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
-           MOVE    1               TO  JOB-JOBID
-           MOVE    WRK-SHELLID     TO  JOB-SHELLID
+           MOVE    WRK-CONS-JOB-JOBID
+                                   TO  JOB-JOBID
+           MOVE    WRK-CONS-JOB-SHELLID
+                                   TO  JOB-SHELLID
+           EVALUATE    WRK-CONS-JOB-JOBID
+               WHEN    3
+                   MOVE    "薬剤情報問合せ"
+                                   TO  JOB-SHELLMSG
+               WHEN    4
+                   MOVE    "薬剤情報取込み"
+                                   TO  JOB-SHELLMSG
+           END-EVALUATE
+      *
            CALL    "ORCSJOB"           USING
                                        ORCSJOBKANRIAREA
                                        JOBKANRI-REC
