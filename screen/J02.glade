@@ -182,7 +182,7 @@
     <widget>
       <class>GtkButton</class>
       <name>B01</name>
-      <x>12</x>
+      <x>8</x>
       <y>724</y>
       <width>80</width>
       <height>24</height>
@@ -205,7 +205,7 @@
     <widget>
       <class>GtkButton</class>
       <name>B02</name>
-      <x>92</x>
+      <x>88</x>
       <y>724</y>
       <width>80</width>
       <height>24</height>
@@ -228,7 +228,7 @@
     <widget>
       <class>GtkButton</class>
       <name>B03</name>
-      <x>172</x>
+      <x>168</x>
       <y>724</y>
       <width>80</width>
       <height>24</height>
@@ -251,7 +251,7 @@
     <widget>
       <class>GtkButton</class>
       <name>B04</name>
-      <x>252</x>
+      <x>248</x>
       <y>724</y>
       <width>80</width>
       <height>24</height>
@@ -274,7 +274,7 @@
     <widget>
       <class>GtkButton</class>
       <name>B05</name>
-      <x>344</x>
+      <x>352</x>
       <y>724</y>
       <width>80</width>
       <height>24</height>
@@ -297,7 +297,7 @@
     <widget>
       <class>GtkButton</class>
       <name>B06</name>
-      <x>424</x>
+      <x>432</x>
       <y>724</y>
       <width>80</width>
       <height>24</height>
@@ -320,7 +320,7 @@
     <widget>
       <class>GtkButton</class>
       <name>B07</name>
-      <x>504</x>
+      <x>512</x>
       <y>724</y>
       <width>80</width>
       <height>24</height>
@@ -343,7 +343,7 @@
     <widget>
       <class>GtkButton</class>
       <name>B08</name>
-      <x>584</x>
+      <x>592</x>
       <y>724</y>
       <width>80</width>
       <height>24</height>
@@ -366,7 +366,7 @@
     <widget>
       <class>GtkButton</class>
       <name>B09</name>
-      <x>672</x>
+      <x>696</x>
       <y>724</y>
       <width>80</width>
       <height>24</height>
@@ -389,7 +389,7 @@
     <widget>
       <class>GtkButton</class>
       <name>B10</name>
-      <x>752</x>
+      <x>776</x>
       <y>724</y>
       <width>80</width>
       <height>24</height>
@@ -412,7 +412,7 @@
     <widget>
       <class>GtkButton</class>
       <name>B11</name>
-      <x>832</x>
+      <x>856</x>
       <y>724</y>
       <width>80</width>
       <height>24</height>
@@ -435,7 +435,7 @@
     <widget>
       <class>GtkButton</class>
       <name>B12</name>
-      <x>912</x>
+      <x>936</x>
       <y>724</y>
       <width>80</width>
       <height>24</height>
@@ -1511,7 +1511,7 @@
     <widget>
       <class>GtkButton</class>
       <name>B03S</name>
-      <x>172</x>
+      <x>168</x>
       <y>700</y>
       <width>80</width>
       <height>24</height>
@@ -2074,7 +2074,7 @@
     <widget>
       <class>GtkButton</class>
       <name>B04S</name>
-      <x>252</x>
+      <x>248</x>
       <y>700</y>
       <width>80</width>
       <height>24</height>
@@ -2097,7 +2097,7 @@
     <widget>
       <class>GtkButton</class>
       <name>B10S</name>
-      <x>752</x>
+      <x>768</x>
       <y>700</y>
       <width>84</width>
       <height>24</height>
@@ -2163,7 +2163,7 @@
     <widget>
       <class>GtkButton</class>
       <name>B06S</name>
-      <x>424</x>
+      <x>432</x>
       <y>700</y>
       <width>80</width>
       <height>24</height>
@@ -2186,7 +2186,7 @@
     <widget>
       <class>GtkButton</class>
       <name>B07S</name>
-      <x>504</x>
+      <x>512</x>
       <y>700</y>
       <width>80</width>
       <height>24</height>
@@ -2209,7 +2209,7 @@
     <widget>
       <class>GtkButton</class>
       <name>B11S</name>
-      <x>840</x>
+      <x>852</x>
       <y>700</y>
       <width>84</width>
       <height>24</height>
@@ -2232,7 +2232,7 @@
     <widget>
       <class>GtkButton</class>
       <name>B12S</name>
-      <x>924</x>
+      <x>936</x>
       <y>700</y>
       <width>80</width>
       <height>24</height>
@@ -2613,7 +2613,7 @@
     <widget>
       <class>GtkButton</class>
       <name>B09S</name>
-      <x>672</x>
+      <x>688</x>
       <y>700</y>
       <width>80</width>
       <height>24</height>
@@ -2636,7 +2636,7 @@
     <widget>
       <class>GtkButton</class>
       <name>B02S</name>
-      <x>92</x>
+      <x>88</x>
       <y>700</y>
       <width>80</width>
       <height>24</height>
@@ -2675,7 +2675,7 @@
     <widget>
       <class>GtkButton</class>
       <name>B01S</name>
-      <x>12</x>
+      <x>8</x>
       <y>700</y>
       <width>80</width>
       <height>24</height>

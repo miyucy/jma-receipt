@@ -186,7 +186,7 @@
     <widget>
       <class>GtkButton</class>
       <name>B09S</name>
-      <x>676</x>
+      <x>696</x>
       <y>696</y>
       <width>80</width>
       <height>24</height>
@@ -209,7 +209,7 @@
     <widget>
       <class>GtkButton</class>
       <name>B12S</name>
-      <x>916</x>
+      <x>936</x>
       <y>696</y>
       <width>80</width>
       <height>24</height>
@@ -254,7 +254,7 @@
     <widget>
       <class>GtkButton</class>
       <name>B05</name>
-      <x>344</x>
+      <x>352</x>
       <y>720</y>
       <width>80</width>
       <height>24</height>
@@ -277,7 +277,7 @@
     <widget>
       <class>GtkButton</class>
       <name>B06</name>
-      <x>424</x>
+      <x>432</x>
       <y>720</y>
       <width>80</width>
       <height>24</height>
@@ -300,7 +300,7 @@
     <widget>
       <class>GtkButton</class>
       <name>B07</name>
-      <x>504</x>
+      <x>512</x>
       <y>720</y>
       <width>80</width>
       <height>24</height>
@@ -323,7 +323,7 @@
     <widget>
       <class>GtkButton</class>
       <name>B08</name>
-      <x>584</x>
+      <x>592</x>
       <y>720</y>
       <width>80</width>
       <height>24</height>
@@ -369,7 +369,7 @@
     <widget>
       <class>GtkButton</class>
       <name>B10</name>
-      <x>756</x>
+      <x>776</x>
       <y>720</y>
       <width>80</width>
       <height>24</height>
@@ -392,7 +392,7 @@
     <widget>
       <class>GtkButton</class>
       <name>B11</name>
-      <x>836</x>
+      <x>856</x>
       <y>720</y>
       <width>80</width>
       <height>24</height>
@@ -415,7 +415,7 @@
     <widget>
       <class>GtkButton</class>
       <name>B12</name>
-      <x>916</x>
+      <x>936</x>
       <y>720</y>
       <width>80</width>
       <height>24</height>
@@ -2800,7 +2800,7 @@
     <widget>
       <class>GtkButton</class>
       <name>B05S</name>
-      <x>344</x>
+      <x>352</x>
       <y>696</y>
       <width>80</width>
       <height>24</height>
@@ -2823,7 +2823,7 @@
     <widget>
       <class>GtkButton</class>
       <name>B06S</name>
-      <x>424</x>
+      <x>432</x>
       <y>696</y>
       <width>80</width>
       <height>24</height>
@@ -2846,7 +2846,7 @@
     <widget>
       <class>GtkButton</class>
       <name>B07S</name>
-      <x>504</x>
+      <x>512</x>
       <y>696</y>
       <width>80</width>
       <height>24</height>
@@ -2869,7 +2869,7 @@
     <widget>
       <class>GtkButton</class>
       <name>B08S</name>
-      <x>584</x>
+      <x>592</x>
       <y>696</y>
       <width>80</width>
       <height>24</height>
@@ -2892,7 +2892,7 @@
     <widget>
       <class>GtkButton</class>
       <name>B10S</name>
-      <x>756</x>
+      <x>776</x>
       <y>696</y>
       <width>80</width>
       <height>24</height>
@@ -2915,7 +2915,7 @@
     <widget>
       <class>GtkButton</class>
       <name>B11S</name>
-      <x>836</x>
+      <x>856</x>
       <y>696</y>
       <width>80</width>
       <height>24</height>
@@ -2938,7 +2938,7 @@
     <widget>
       <class>GtkButton</class>
       <name>B09</name>
-      <x>676</x>
+      <x>696</x>
       <y>720</y>
       <width>80</width>
       <height>24</height>
@@ -3037,7 +3037,7 @@
     <widget>
       <class>GtkButton</class>
       <name>B12CS</name>
-      <x>916</x>
+      <x>936</x>
       <y>664</y>
       <width>80</width>
       <height>24</height>
