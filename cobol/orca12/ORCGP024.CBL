@@ -38,6 +38,7 @@
       *  02.00.04    NACL-多々納  05/02/10  特定の受給者番号表示追加
       *  02.00.05    NACL-多々納  05/11/11  MONFUNC 対応 他
       *  02.00.06    NACL-多々納  06/03/10  精神通院、名称変更対応
+      *  03.02.00    NACL-多々納  06/09/07  老齢福祉年金受給証追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -101,6 +102,8 @@
      *
            03  IDP-1               PIC 9(04).
            03  IDP-2               PIC 9(04).
+      *
+           03  IDF                 PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -174,7 +177,7 @@
       *
       *   年金履歴
        01  LNK-TNK-AREA.
-           02  LNK-TNK-REC           OCCURS  10.
+           02  LNK-TNK-REC           OCCURS  20.
            COPY    "CPTNKRRK.INC"
                               REPLACING  //TNKRRK-// BY //LNK-TNK-//.
       *
@@ -351,7 +354,7 @@
       *
            PERFORM
                UNTIL   FLG-PARA            =   1
-               IF      PARA-EDANUM         <=  10
+               IF      PARA-EDANUM         <=  20
                    MOVE    PARA-DATA-REC   TO  LNK-TNK-REC
                                                          (PARA-EDANUM)
                    MOVE    PARA-EDANUM     TO  SPA-TNK-MAX
@@ -444,9 +447,8 @@
            END-PERFORM
       *
       *    年金編集
-      *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL     ( IDX     >   10 )
+                   UNTIL     ( IDX     >   20 )
                    OR        ( IDX     >   SPA-TNK-MAX )
       *
                MOVE    LNK-TNK-STYMD (IDX)
@@ -464,6 +466,18 @@
                    PERFORM 410112-SE-WAFORMAT-YMDEDIT-SEC
                    MOVE    WRK-HENYMD  TO  SPA-GMN24-TNKDPEDYMDW(IDX)
                END-IF
+      *        高齢者福祉
+               MOVE    LNK-TNK-RRI-FUKUSHI-KBN(IDX)
+                                       TO  SPA-GMN24-TFUKUSHI-KBN(IDX)
+               PERFORM VARYING     IDF     FROM    1   BY  1
+                       UNTIL       IDF     >   SPA-GMN24-FUKUSHI-MAX
+                   IF      SPA-GMN24-TFUKUSHI-KBN(IDX)
+                                        =   SPA-GMN24-FUKUSHI-LST(IDF)
+                                                              (1:1)
+                       MOVE    SPA-GMN24-FUKUSHI-LST(IDF)(3:)
+                                        TO  SPA-GMN24-TFUKUSHI-MEI(IDX)
+                   END-IF
+               END-PERFORM
            END-PERFORM
       *
       *TEST
@@ -642,21 +656,24 @@
                    MOVE    "P024_TSYSTYMD"      TO  MCP-WIDGET
                WHEN    03
                    MOVE    "P024_TSYEDYMD"      TO  MCP-WIDGET
-               WHEN   12
-                   MOVE    "P024_TSYSKJGNSTYMD"      TO  MCP-WIDGET
                WHEN    04
-                   MOVE    "BT1"                TO  MCP-WIDGET
-               WHEN    05
-                   MOVE    "BT2"                TO  MCP-WIDGET
-               WHEN    06
-                   MOVE    "P024_TNKSELNUM"     TO  MCP-WIDGET
-               WHEN    07
-                   MOVE    "P024_TNKSTYMD"      TO  MCP-WIDGET
+                   MOVE    "P024_TSYSKJGNSTYMD"      TO  MCP-WIDGET
                WHEN    08
-                   MOVE    "P024_TNKEDYMD"      TO  MCP-WIDGET
+                   MOVE    "BT1"                TO  MCP-WIDGET
                WHEN    09
-                   MOVE    "BN1"                TO  MCP-WIDGET
+                   MOVE    "BT2"                TO  MCP-WIDGET
+      *        所得１（年金）
                WHEN    10
+                   MOVE    "P024_TNKSELNUM"     TO  MCP-WIDGET
+               WHEN    11
+                   MOVE    "P024_TNKSTYMD"      TO  MCP-WIDGET
+               WHEN    12
+                   MOVE    "P024_TNKEDYMD"      TO  MCP-WIDGET
+               WHEN    13
+                   MOVE    "P024_FUKUSHI"       TO  MCP-WIDGET
+               WHEN    18
+                   MOVE    "BN1"                TO  MCP-WIDGET
+               WHEN    19
                    MOVE    "BN2"                TO  MCP-WIDGET
       *        公費負担
                WHEN    30
@@ -693,18 +710,20 @@
                WHEN    "P024_TSYSTYMD"
                    MOVE    3           TO  SPA-GMN24-CUR
                WHEN    "P024_TSYEDYMD"
-                   MOVE    12          TO  SPA-GMN24-CUR
+                   MOVE    4           TO  SPA-GMN24-CUR
                WHEN    "P024_TSYSKJGNSTYMD"
-                   MOVE    4            TO  SPA-GMN24-CUR
+                   MOVE    8            TO  SPA-GMN24-CUR
       *
                WHEN    "P024_TNKLIST"
-                   MOVE    7           TO  SPA-GMN24-CUR
+                   MOVE    11          TO  SPA-GMN24-CUR
                WHEN    "P024_TNKSELNUM"
-                   MOVE    7           TO  SPA-GMN24-CUR
+                   MOVE    11          TO  SPA-GMN24-CUR
                WHEN    "P024_TNKSTYMD"
-                   MOVE    8           TO  SPA-GMN24-CUR
+                   MOVE    12          TO  SPA-GMN24-CUR
                WHEN    "P024_TNKEDYMD"
-                   MOVE    9           TO  SPA-GMN24-CUR
+                   MOVE    13          TO  SPA-GMN24-CUR
+               WHEN    "P024_FUKUSHI"
+                   MOVE    18          TO  SPA-GMN24-CUR
       *        公費負担
                WHEN    "P024_FTNSELNUM"
                    MOVE    31          TO  SPA-GMN24-CUR
@@ -783,7 +802,7 @@
                IF      SPA-TSY-MAX         >   20
                    MOVE   "0008"       TO  SPA-ERRCD
       *----(01.00.01) LINE ADD START --------------------------------
-                   MOVE    2           TO  SPA-GMN24-CUR
+                   MOVE    1           TO  SPA-GMN24-CUR
       *----(01.00.01) LINE ADD END   --------------------------------
                    COMPUTE SPA-TSY-MAX =   SPA-TSY-MAX   -   1
                    GO     TO           411-TSKRRK-KOUSIN-EXT
@@ -804,7 +823,7 @@
       *
            INITIALIZE                  SPA-GMN24-TSYS-AREA
       *
-           MOVE    2                   TO  SPA-GMN24-CUR
+           MOVE    1                   TO  SPA-GMN24-CUR
       *
            .
        411-TSKRRK-KOUSIN-EXT.
@@ -857,10 +876,10 @@
            IF      SPA-GMN24-TNKSELNUM =   ZERO  OR  SPACE
                COMPUTE SPA-NAI24-TNKSELNUM =   SPA-TNK-MAX   +   1
                ADD     1               TO  SPA-TNK-MAX
-               IF  SPA-TNK-MAX         >   10
+               IF  SPA-TNK-MAX         >   20
                    MOVE   "0008"       TO  SPA-ERRCD
       *----(01.00.01) LINE ADD START --------------------------------
-                   MOVE    6           TO  SPA-GMN24-CUR
+                   MOVE    10          TO  SPA-GMN24-CUR
       *----(01.00.01) LINE ADD END   --------------------------------
                    COMPUTE SPA-TNK-MAX =   SPA-TNK-MAX   -   1
                    GO     TO           413-TNKRRK-KOUSIN-EXT
@@ -873,9 +892,14 @@
            MOVE    SPA-GMN24-TNKSTYMD  TO  SPA-GMN24-TNKDPSTYMD (IDX)
            MOVE    SPA-GMN24-TNKEDYMD  TO  SPA-GMN24-TNKDPEDYMD (IDX)
       *
+           MOVE    SPA-GMN24-FUKUSHI-KBN   TO  SPA-GMN24-TFUKUSHI-KBN
+                                                                (IDX)
+           MOVE    SPA-GMN24-FUKUSHI-MEI   TO  SPA-GMN24-TFUKUSHI-MEI
+                                                                (IDX)
+      *
            INITIALIZE                  SPA-GMN24-TNK-AREA
       *
-           MOVE    7                   TO  SPA-GMN24-CUR
+           MOVE    10                  TO  SPA-GMN24-CUR
            .
        413-TNKRRK-KOUSIN-EXT.
            EXIT.
@@ -1130,7 +1154,7 @@
       *
            MOVE    ZERO                TO  IDY
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL     ( IDX         >   10          )
+                   UNTIL     ( IDX         >   20          )
                    OR        ( IDX         >   SPA-TNK-MAX )
       *********MOVE    SPACE               TO  LNK-TNK-KEY-O(IDX)
       *        初期表示時の所得レコード数以内の場合
@@ -1157,6 +1181,13 @@
                          MOVE    SPA-GMN24-TNKDPEDYMD (IDX)
                                            TO  LNK-TNK-EDYMD   (IDX)
                        END-IF
+      *                高齢者福祉
+                       IF  (SPA-GMN24-TFUKUSHI-KBN(IDX)
+                                   NOT =   LNK-TNK-RRI-FUKUSHI-KBN(IDX))
+                           MOVE    SPA-GMN24-TFUKUSHI-KBN(IDX)
+                                       TO  LNK-TNK-RRI-FUKUSHI-KBN(IDX)
+                           MOVE    SPA-SYSYMD  TO  LNK-TNK-UPYMD (IDX)
+                       END-IF
                    END-IF
                    MOVE    IDX             TO  IDY
                    PERFORM 510-PARA-TNKRRK-OUT-SEC
@@ -1172,6 +1203,9 @@
                                                TO  LNK-TNK-STYMD  (IDY)
                        MOVE    SPA-GMN24-TNKDPEDYMD (IDX)
                                                TO  LNK-TNK-EDYMD  (IDY)
+                       MOVE    SPA-GMN24-TFUKUSHI-KBN(IDX)
+                                           TO  LNK-TNK-RRI-FUKUSHI-KBN
+                                                                  (IDY)
                        MOVE    SPA-TERMID      TO  LNK-TNK-TERMID (IDY)
                        MOVE    SPA-SYSYMD      TO  LNK-TNK-CREYMD (IDY)
                        PERFORM 510-PARA-TNKRRK-OUT-SEC
@@ -1326,8 +1360,8 @@
            END-IF
       *
            IF      SPA-NAI24-TSYSELNUM NOT =   ZERO
-               MOVE     SPA-NAI24-TSYSELNUM    TO   WRK-RENNUMZ
-               MOVE     WRK-RENNUMZ        TO   P02-P024-TSRSELNUM
+               MOVE    SPA-NAI24-TSYSELNUM TO   WRK-RENNUMZ
+               MOVE    WRK-RENNUMZ         TO   P02-P024-TSRSELNUM
                MOVE    2                   TO  SPA-GMN24-CUR
            END-IF
       *
@@ -1361,7 +1395,7 @@
            IF      SPA-NAI24-TNKSELNUM   NOT =   ZERO
                MOVE     SPA-NAI24-TNKSELNUM    TO   WRK-RENNUMZ
                MOVE     WRK-RENNUMZ        TO  P02-P024-TNKSELNUM
-               MOVE    7                   TO  SPA-GMN24-CUR
+               MOVE    11                  TO  SPA-GMN24-CUR
            END-IF
       *
            .
@@ -1875,6 +1909,7 @@
            MOVE    P02-P024-TNKSELNUM  TO  SPA-GMN24-TNKSELNUM
            MOVE    P02-P024-TNKSTYMD   TO  SPA-GMN24-TNKSTYMDW
            MOVE    P02-P024-TNKEDYMD   TO  SPA-GMN24-TNKEDYMDW
+           MOVE    P02-P024-FUKUSHI    TO  SPA-GMN24-FUKUSHI-G
       *
       *    公費負担金　選択番号
       *****MOVE    P02-P024-FTNSELNUM2 TO  SPA-GMN24-FTNSELNUM2
@@ -1894,59 +1929,50 @@
       *
       *    低所得　選択番号
            PERFORM 41012-TSYSELNUM-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
-           END-IF
       *    低所得開始年月日
-           PERFORM 41012-TSYSTYMD-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 41012-TSYSTYMD-SEC
            END-IF
       *    低所得終了年月日
-           PERFORM 41012-TSYEDYMD-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 41012-TSYEDYMD-SEC
            END-IF
       *    食事標準負担減額開始日
-           PERFORM 41012-TSYSKJGNSTYMD-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 41012-TSYSKJGNSTYMD-SEC
            END-IF
       *    低年金　選択番号
-           PERFORM 41012-NENINSELNUM-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 41012-NENINSELNUM-SEC
            END-IF
       *    低年金開始年月日
-           PERFORM 41012-TNKSTYMD-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 41012-TNKSTYMD-SEC
            END-IF
       *    低年金終了年月日
-           PERFORM 41012-TNKEDYMD-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 41012-TNKEDYMD-SEC
+           END-IF
+      *    低年金高齢福祉年金
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 41012-FUKUSHI-SEC
            END-IF
       *
       *    公費負担 開始日
-           PERFORM 41031-FTNSTYMD-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 41031-FTNSTYMD-SEC
            END-IF
       *    公費負担 終了日
-           PERFORM 41031-FTNEDYMD-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 41031-FTNEDYMD-SEC
            END-IF
       *    公費負担 外来上限額
-           PERFORM 41031-GAIJGNGAK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 41031-GAIJGNGAK-SEC
            END-IF
       *    公費負担 入院上限額
-           PERFORM 41032-NYUJGNGAK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 41032-NYUJGNGAK-SEC
            END-IF
            .
       *
@@ -2108,7 +2134,7 @@
                MOVE    SGDAY-SDAY          TO  SPA-GMN24-TSYSKJGNSTYMD
            ELSE
                MOVE    "2413"              TO  SPA-ERRCD
-               MOVE    12                  TO  SPA-GMN24-CUR
+               MOVE    4                   TO  SPA-GMN24-CUR
                GO  TO                   41012-TSYSKJGNSTYMD-EXT
            END-IF
       *
@@ -2117,7 +2143,7 @@
                CONTINUE
            ELSE
                MOVE    "2414"              TO  SPA-ERRCD
-               MOVE    12                  TO  SPA-GMN24-CUR
+               MOVE    4                   TO  SPA-GMN24-CUR
            END-IF
       *
            .
@@ -2142,7 +2168,7 @@
                   (SNUM-MINKBN      NOT =   SPACE )   OR
                   (SNUM-SYOKBN      NOT =   SPACE )
                MOVE    "2406"           TO  SPA-ERRCD
-               MOVE    6                TO  SPA-GMN24-CUR
+               MOVE    10               TO  SPA-GMN24-CUR
                GO      TO               41012-NENINSELNUM-EXT
            ELSE
                MOVE    SNUM-OUTNUM      TO  SPA-NAI24-TNKSELNUM
@@ -2167,6 +2193,7 @@
                MOVE    SPACE            TO  SPA-GMN24-TNKEDYMDW
                MOVE    SPACE            TO  SPA-GMN24-TNKSTYMD
                MOVE    SPACE            TO  SPA-GMN24-TNKEDYMD
+               MOVE    SPACE            TO  SPA-GMN24-FUKUSHI-G
            ELSE
                MOVE  SPA-GMN24-TNKDPSTYMDW (WRK-N-IDX)
                                         TO  SPA-GMN24-TNKSTYMDW
@@ -2176,6 +2203,10 @@
                                         TO  SPA-GMN24-TNKSTYMD
                MOVE  SPA-GMN24-TNKDPEDYMD  (WRK-N-IDX)
                                         TO  SPA-GMN24-TNKEDYMD
+               MOVE  SPA-GMN24-TFUKUSHI-KBN  (WRK-N-IDX)
+                                        TO  SPA-GMN24-FUKUSHI-KBN
+               MOVE  SPA-GMN24-TFUKUSHI-MEI  (WRK-N-IDX)
+                                        TO  SPA-GMN24-FUKUSHI-MEI
            END-IF
            .
        41012-NENINSELNUM-EXT.
@@ -2201,7 +2232,7 @@
                MOVE    SGDAY-OTDAY         TO  SPA-GMN24-TNKSTYMDW
                MOVE    SGDAY-SDAY          TO  SPA-GMN24-TNKSTYMD
            ELSE
-               MOVE    7                   TO  SPA-GMN24-CUR
+               MOVE    11                  TO  SPA-GMN24-CUR
                MOVE    "2407"              TO  SPA-ERRCD
            END-IF
             .
@@ -2236,7 +2267,7 @@
                MOVE    SGDAY-OTDAY         TO  SPA-GMN24-TNKEDYMDW
                MOVE    SGDAY-SDAY          TO  SPA-GMN24-TNKEDYMD
            ELSE
-               MOVE    8                   TO  SPA-GMN24-CUR
+               MOVE    12                  TO  SPA-GMN24-CUR
                MOVE    "2408"              TO  SPA-ERRCD
                GO  TO                   41012-TNKEDYMD-EXT
            END-IF
@@ -2245,12 +2276,39 @@
                CONTINUE
            ELSE
                MOVE    "2409"              TO  SPA-ERRCD
-               MOVE    8                   TO  SPA-GMN24-CUR
+               MOVE    12                  TO  SPA-GMN24-CUR
            END-IF
            .
        41012-TNKEDYMD-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    年金／老齢福祉年金受給者証チェック
+      *****************************************************************
+       41012-FUKUSHI-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDF     FROM    1   BY  1
+                   UNTIL       IDF     >   SPA-GMN24-FUKUSHI-MAX
+               IF      SPA-GMN24-FUKUSHI-KBN
+                                       =   SPA-GMN24-FUKUSHI-LST(IDF)
+                                                              (1:1)
+                   MOVE    SPA-GMN24-FUKUSHI-LST(IDF)
+                                        TO  SPA-GMN24-FUKUSHI-G
+                   MOVE    1            TO  FLG-OK
+                   MOVE    SPA-GMN24-FUKUSHI-MAX   TO  IDF
+               END-IF
+           END-PERFORM
+      *
+           IF      SPA-GMN24-FUKUSHI-KBN   NOT =   SPACE
+               IF      FLG-OK              =   ZERO
+                   MOVE    "2416"              TO  SPA-ERRCD
+                   MOVE    13                  TO  SPA-GMN24-CUR
+               END-IF
+           END-IF
+           .
+       41012-FUKUSHI-EXT.
+           EXIT.
       *****************************************************************
       *    公費負担／開始年月日
       *****************************************************************
@@ -2479,7 +2537,13 @@
            IF     (SPA-GMN24-TNKSTYMD  =   SPACE )  OR
                   (SPA-GMN24-TNKEDYMD  =   SPACE )
                MOVE    "2412"          TO  SPA-ERRCD
-               MOVE    7               TO  SPA-GMN24-CUR
+               MOVE    10              TO  SPA-GMN24-CUR
+               GO      TO      41092-RFUKUSI-CHK-EXT
+           END-IF
+      *
+           IF      SPA-GMN24-FUKUSHI-KBN   =   SPACE
+               MOVE    "2415"              TO  SPA-ERRCD
+               MOVE    13                  TO  SPA-GMN24-CUR
                GO      TO      41092-RFUKUSI-CHK-EXT
            END-IF
       *
@@ -2538,7 +2602,7 @@
       *    年金テーブルより取得
            WHEN    2
                PERFORM   VARYING   IDX    FROM    1   BY  1
-                         UNTIL    (IDX            >   10         )
+                         UNTIL    (IDX            >   20         )
                          OR       (IDX            >   SPA-TNK-MAX)
                          OR       (WRK-N-IDX      >   ZERO       )
                  IF  SPA-GMN24-TNKDELKBN (IDX)    =   SPACE

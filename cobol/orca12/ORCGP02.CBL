@@ -4040,6 +4040,12 @@
                                                TO  SPA-ERRMSG
                    MOVE    "範囲内で入力して下さい"
                                                TO  SPA-ERRMSG(31:)
+               WHEN    "2415"
+                   MOVE    "老齢福祉年金受給者証区分を入力して下さい"
+                                               TO  SPA-ERRMSG
+               WHEN    "2416"
+                   MOVE    "老齢福祉年金受給者証区分入力エラー"
+                                               TO  SPA-ERRMSG
       *
                WHEN    "2430"
                    MOVE    "公費負担選択番号入力エラー"

@@ -1245,6 +1245,10 @@
            MOVE    3                   TO  SPA-SKYPRTFLG-MAX
            MOVE    SPACE               TO  SPA-GMN-SKYPRTFLG-G
       *
+      *    所得者２（高齢者福祉年金受給者証）
+           MOVE    "0 なし"            TO  SPA-GMN24-FUKUSHI-LST (1)
+           MOVE    "1 あり"            TO  SPA-GMN24-FUKUSHI-LST (2)
+           MOVE    2                   TO  SPA-GMN24-FUKUSHI-MAX
            .
        1005-COMB-SET-EXT.
            EXIT.
@@ -3336,7 +3340,7 @@
            MOVE    ZERO                TO  IDY
            PERFORM VARYING     IDX     FROM    1   BY  1
                     UNTIL    ( IDX     >   SPA-TNK-MAX )
-                    OR       ( IDY     >=  10          )
+                    OR       ( IDY     >=  20          )
              IF  SPA-GMN24-TNKDELKBN(IDX)  =   SPACE
                  ADD     1                 TO  IDY
                  MOVE    IDY               TO  WRK-RENNUMZ3
@@ -3345,6 +3349,9 @@
                                            TO  P02-P024-TNKLSTYMD(IDY)
                  MOVE    SPA-GMN24-TNKDPEDYMDW (IDX)
                                            TO  P02-P024-TNKLEDYMD(IDY)
+                 MOVE    SPA-GMN24-TFUKUSHI-MEI (IDX)
+                                           TO  P02-P024-TNKLFUKUSHI
+                                                           (IDY)
       *
                  IF      IDX           =   SPA-NAI24-TNKSELNUM
                      MOVE    "T"           TO  P02-P024-TNKLIST-SELECT
@@ -3359,6 +3366,15 @@
            MOVE    SPA-GMN24-TNKSELNUM TO  P02-P024-TNKSELNUM
            MOVE    SPA-GMN24-TNKSTYMDW TO  P02-P024-TNKSTYMD
            MOVE    SPA-GMN24-TNKEDYMDW TO  P02-P024-TNKEDYMD
+      *
+           MOVE    SPA-GMN24-FUKUSHI-G TO  P02-P024-FUKUSHI
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                    UNTIL      IDX     >   SPA-GMN24-FUKUSHI-MAX
+               MOVE    SPA-GMN24-FUKUSHI-LST (IDX)
+                                           TO  P02-P024-FUKUSHI-ITEM
+                                                                   (IDX)
+           END-PERFORM
+           MOVE    SPA-GMN24-FUKUSHI-MAX   TO  P02-P024-FUKUSHI-COUNT
       *
            MOVE    SPA-GMN24-JKYSNUM   TO  P02-P024-JKYSNUM
       *

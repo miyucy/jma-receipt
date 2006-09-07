@@ -536,12 +536,19 @@
                       07  P02-P024-TNKLIST-COUNT PIC S9(9) BINARY.
                       07  P02-P024-TNKLIST-ROW   PIC S9(9) BINARY.
                       07  P02-P024-TNKLIST-ROWATTR   PIC S9(9) BINARY.
-                      07  P02-P024-TNKLIST-ITEM OCCURS  10 TIMES.
+                      07  P02-P024-TNKLIST-ITEM OCCURS  20 TIMES.
                         08  P02-P024-TNKLNUM   PIC X(3).
                         08  P02-P024-TNKLSTYMD PIC X(10).
                         08  P02-P024-TNKLEDYMD PIC X(10).
+                        08  P02-P024-TNKLFUKUSHI PIC X(10).
                       07  P02-P024-TNKLIST-SELECT PIC X
-                                               OCCURS  10 TIMES.
+                                               OCCURS  20 TIMES.
+                  05  P02-P024-FUKUSHI-COMB.
+                    06  P02-P024-FUKUSHI.
+                      07  P02-VALUE   PIC X(10).
+                    06  P02-P024-FUKUSHI-COUNT   PIC S9(9)   BINARY.
+                    06  P02-P024-FUKUSHI-ITEM
+                            PIC X(10)   OCCURS  2 TIMES.
                   05  P02-P024-FTNTEKSTYMD.
                     06  P02-VALUE   PIC X(10).
                   05  P02-P024-FTNTEKEDYMD.
