@@ -107,7 +107,7 @@ path	upd1 	{
 	SRYYM				=	:SRYYM,
 	ZAINUM				=	:ZAINUM,
 	ZAISKBKBN			=	:ZAISKBKBN,
-	MONTHTEN			=	:MONTHTEN,
+	MONTH				=	:MONTH,
 	DAY_1				=	:DAY_1,
 	DAY_2				=	:DAY_2,
 	DAY_3				=	:DAY_3,
