@@ -1246,8 +1246,8 @@
            MOVE    SPACE               TO  SPA-GMN-SKYPRTFLG-G
       *
       *    所得者２（高齢者福祉年金受給者証）
-           MOVE    "0 なし"            TO  SPA-GMN24-FUKUSHI-LST (1)
-           MOVE    "1 あり"            TO  SPA-GMN24-FUKUSHI-LST (2)
+           MOVE    "0 無し"            TO  SPA-GMN24-FUKUSHI-LST (1)
+           MOVE    "1 有り"            TO  SPA-GMN24-FUKUSHI-LST (2)
            MOVE    2                   TO  SPA-GMN24-FUKUSHI-MAX
            .
        1005-COMB-SET-EXT.
