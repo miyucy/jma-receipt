@@ -108,4 +108,5 @@ db	{
         tbl_syuka;
         tbl_chk004;
         tbl_odritem;
+        tbl_ryocom;
 };
