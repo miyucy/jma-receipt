@@ -37,7 +37,7 @@
       *剤識別区分（１：ＡＤＬ点数　２：医療区分）
            03  RYOCOM-ZAISKBKBN          PIC  X(01).           
       *月固定値
-           03  RYOCOM-MONTHTEN           PIC  9(02).
+           03  RYOCOM-MONTH              PIC  9(02).
       *区分（点数）テーブル
            03  RYOCOM-DAY-AREA.
       *        区分点数テーブル
