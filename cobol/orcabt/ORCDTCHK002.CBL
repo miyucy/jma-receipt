@@ -3637,7 +3637,7 @@
                IF    ( FLG-CHKEND (3)          =   ZERO )
       *
       *            長期以外を対象とする
-                   IF    ( PTKOH-KOHNUM    NOT =   "972" )
+                   IF    ( PTKOH-KOHNUM    NOT =   "972" AND "974" )
                         PERFORM 200111-FTNJKYNUM-CHK-SEC
                    END-IF
                END-IF
@@ -7788,7 +7788,7 @@
            PERFORM VARYING SRH-IDX FROM    1   BY  1
                    UNTIL ( SRH-IDX >   SRH-KOHNUM-MAX )
                IF    ( SRH-KOHNUM  =   "027" )
-                AND  ( SRH-PAYKBN  =   "01" OR "02" )
+                AND  ( SRH-PAYKBN  =   "01" OR "02" OR "03" )
                    IF    ( SRH-KOHNUM  =   SRH-KOHNUML (SRH-IDX) )
                     AND  ( SRH-PAYKBN  =   SRH-PAYKBNL (SRH-IDX) )
                        MOVE    SRH-KOHNUMMEIL (SRH-IDX)

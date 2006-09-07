@@ -531,6 +531,8 @@
                05  RSIJBI-NAME                     PIC X(200).
       *
        01  CONST-AREA.
+           03  CONST-H141001           PIC X(08)   VALUE "20021001".
+           03  CONST-H181001           PIC X(08)   VALUE "20061001".
       *    Ï«ºÒ¼«ÇåÊÔ½¸ÎÎ°èºÇÂç¹Ô
            03  CONST-RSIJBI-MAX        PIC 9(05)   VALUE 20.
       *    ²ñ·×¥«¡¼¥É¿ÇÎÅ¹Ô°ÙºÇÂç¹Ô
@@ -1941,27 +1943,48 @@
            EVALUATE    WRK-PTHKN-HKNNUM
       *    Á¥°÷
            WHEN    "002"
-               IF    ( PTHKN-TEKSTYMD  >=  "20021001" )
+               IF    ( PTHKN-TEKSTYMD  >=  CONST-H141001 )
                 AND  ( WRK-AGE70-YMD   >   ZERO       )
                 AND  ( PTHKN-TEKSTYMD  >=  WRK-AGE70-YMD )
-                   EVALUATE    WRK-PTHKN-HOJOKBN
-                   WHEN    "8"
-                       MOVE    "£²³ä"      TO  WRK-PTHKN-HOJOKBNMEI
-                   WHEN    "9"
-                       MOVE    "£±³ä"      TO  WRK-PTHKN-HOJOKBNMEI
-                   WHEN    "A" 
-                       MOVE    "£±³ä¿¦Ì³"  TO  WRK-PTHKN-HOJOKBNMEI
-                   WHEN    "B" 
-                       MOVE    "£±³ä²¼Á¥"  TO  WRK-PTHKN-HOJOKBNMEI
-                   WHEN    "C" 
-                       MOVE    "£±³äÄÌ¶Ð"  TO  WRK-PTHKN-HOJOKBNMEI
-                   WHEN    "D" 
-                       MOVE    "£²³ä¿¦Ì³"  TO  WRK-PTHKN-HOJOKBNMEI
-                   WHEN    "E" 
-                       MOVE    "£²³ä²¼Á¥"  TO  WRK-PTHKN-HOJOKBNMEI
-                   WHEN    "F" 
-                       MOVE    "£²³äÄÌ¶Ð"  TO  WRK-PTHKN-HOJOKBNMEI
-                   END-EVALUATE
+                   IF    ( PTHKN-TEKSTYMD  >=  CONST-H181001 )
+                       EVALUATE    WRK-PTHKN-HOJOKBN
+                       WHEN    "7"
+                           MOVE    "£³³ä"      TO  WRK-PTHKN-HOJOKBNMEI
+                       WHEN    "9"
+                           MOVE    "£±³ä"      TO  WRK-PTHKN-HOJOKBNMEI
+                       WHEN    "A" 
+                           MOVE    "£±³ä¿¦Ì³"  TO  WRK-PTHKN-HOJOKBNMEI
+                       WHEN    "B" 
+                           MOVE    "£±³ä²¼Á¥"  TO  WRK-PTHKN-HOJOKBNMEI
+                       WHEN    "C" 
+                           MOVE    "£±³äÄÌ¶Ð"  TO  WRK-PTHKN-HOJOKBNMEI
+                       WHEN    "G" 
+                           MOVE    "£³³ä¿¦Ì³"  TO  WRK-PTHKN-HOJOKBNMEI
+                       WHEN    "H" 
+                           MOVE    "£³³ä²¼Á¥"  TO  WRK-PTHKN-HOJOKBNMEI
+                       WHEN    "I" 
+                           MOVE    "£³³äÄÌ¶Ð"  TO  WRK-PTHKN-HOJOKBNMEI
+                       END-EVALUATE
+                   ELSE
+                       EVALUATE    WRK-PTHKN-HOJOKBN
+                       WHEN    "8"
+                           MOVE    "£²³ä"      TO  WRK-PTHKN-HOJOKBNMEI
+                       WHEN    "9"
+                           MOVE    "£±³ä"      TO  WRK-PTHKN-HOJOKBNMEI
+                       WHEN    "A" 
+                           MOVE    "£±³ä¿¦Ì³"  TO  WRK-PTHKN-HOJOKBNMEI
+                       WHEN    "B" 
+                           MOVE    "£±³ä²¼Á¥"  TO  WRK-PTHKN-HOJOKBNMEI
+                       WHEN    "C" 
+                           MOVE    "£±³äÄÌ¶Ð"  TO  WRK-PTHKN-HOJOKBNMEI
+                       WHEN    "D" 
+                           MOVE    "£²³ä¿¦Ì³"  TO  WRK-PTHKN-HOJOKBNMEI
+                       WHEN    "E" 
+                           MOVE    "£²³ä²¼Á¥"  TO  WRK-PTHKN-HOJOKBNMEI
+                       WHEN    "F" 
+                           MOVE    "£²³äÄÌ¶Ð"  TO  WRK-PTHKN-HOJOKBNMEI
+                       END-EVALUATE
+                   END-IF
                ELSE
                    EVALUATE    WRK-PTHKN-HOJOKBN
                    WHEN    "1"
@@ -1990,19 +2013,32 @@
            WHEN    "032"
            WHEN    "033"
            WHEN    "034"
-               IF    ( PTHKN-TEKSTYMD  >=  "20021001" )
+               IF    ( PTHKN-TEKSTYMD  >=  CONST-H141001 )
                 AND  ( WRK-AGE70-YMD   >   ZERO       )
                 AND  ( PTHKN-TEKSTYMD  >=  WRK-AGE70-YMD )
-                   EVALUATE    WRK-PTHKN-HOJOKBN
-                   WHEN    "8"
-                       MOVE    "£²³ä"      TO  WRK-PTHKN-HOJOKBNMEI
-                   WHEN    "9"
-                       MOVE    "£±³ä"      TO  WRK-PTHKN-HOJOKBNMEI
-                   WHEN    "B"
-                       MOVE    "£±³ä²¼Á¥"  TO  WRK-PTHKN-HOJOKBNMEI
-                   WHEN    "E"
-                       MOVE    "£²³ä²¼Á¥"  TO  WRK-PTHKN-HOJOKBNMEI
-                   END-EVALUATE
+                   IF    ( PTHKN-TEKSTYMD  >=  CONST-H181001 )
+                       EVALUATE    WRK-PTHKN-HOJOKBN
+                       WHEN    "7"
+                           MOVE    "£³³ä"      TO  WRK-PTHKN-HOJOKBNMEI
+                       WHEN    "9"
+                           MOVE    "£±³ä"      TO  WRK-PTHKN-HOJOKBNMEI
+                       WHEN    "B"
+                           MOVE    "£±³ä²¼Á¥"  TO  WRK-PTHKN-HOJOKBNMEI
+                       WHEN    "H"
+                           MOVE    "£³³ä²¼Á¥"  TO  WRK-PTHKN-HOJOKBNMEI
+                       END-EVALUATE
+                   ELSE
+                       EVALUATE    WRK-PTHKN-HOJOKBN
+                       WHEN    "8"
+                           MOVE    "£²³ä"      TO  WRK-PTHKN-HOJOKBNMEI
+                       WHEN    "9"
+                           MOVE    "£±³ä"      TO  WRK-PTHKN-HOJOKBNMEI
+                       WHEN    "B"
+                           MOVE    "£±³ä²¼Á¥"  TO  WRK-PTHKN-HOJOKBNMEI
+                       WHEN    "E"
+                           MOVE    "£²³ä²¼Á¥"  TO  WRK-PTHKN-HOJOKBNMEI
+                       END-EVALUATE
+                   END-IF
                ELSE
                    EVALUATE    WRK-PTHKN-HOJOKBN
                    WHEN    "2"
@@ -2021,16 +2057,25 @@
                    END-EVALUATE
                ELSE
       *            £È£±£´¡¥£±£° ²þÀµ¤è¤ê
-                   IF    ( PTHKN-TEKSTYMD        >=    "20021001" )
+                   IF    ( PTHKN-TEKSTYMD        >=    CONST-H141001 )
                     AND  ( WRK-AGE70-YMD         >     ZERO       )
                     AND  ( PTHKN-TEKSTYMD        >=    WRK-AGE70-YMD)
                     AND  ( PTHKN-HKNNUM (1:1) NOT =    "9")
-                       EVALUATE    WRK-PTHKN-HOJOKBN
-                       WHEN    "8"
-                           MOVE    "£²³ä"  TO  WRK-PTHKN-HOJOKBNMEI
-                       WHEN    "9"
-                           MOVE    "£±³ä"  TO  WRK-PTHKN-HOJOKBNMEI
-                       END-EVALUATE
+                       IF    ( PTHKN-TEKSTYMD  >=  CONST-H181001 )
+                           EVALUATE    WRK-PTHKN-HOJOKBN
+                           WHEN    "7"
+                               MOVE    "£³³ä"  TO  WRK-PTHKN-HOJOKBNMEI
+                           WHEN    "9"
+                               MOVE    "£±³ä"  TO  WRK-PTHKN-HOJOKBNMEI
+                           END-EVALUATE
+                       ELSE
+                           EVALUATE    WRK-PTHKN-HOJOKBN
+                           WHEN    "8"
+                               MOVE    "£²³ä"  TO  WRK-PTHKN-HOJOKBNMEI
+                           WHEN    "9"
+                               MOVE    "£±³ä"  TO  WRK-PTHKN-HOJOKBNMEI
+                           END-EVALUATE
+                       END-IF
                    END-IF
                END-IF
            END-EVALUATE
@@ -2164,7 +2209,7 @@
            PERFORM VARYING SRH-IDX FROM    1   BY  1
                    UNTIL ( SRH-IDX >   SRH-KOHNUM-MAX )
                IF    ( SRH-KOHNUM  =   "027" )
-                AND  ( SRH-PAYKBN  =   "01" OR "02" )
+                AND  ( SRH-PAYKBN  =   "01" OR "02" OR "03" )
                    IF    ( SRH-KOHNUM  =   SRH-KOHNUML (SRH-IDX) )
                     AND  ( SRH-PAYKBN  =   SRH-PAYKBNL (SRH-IDX) )
                        MOVE    SRH-KOHNUMMEIL (SRH-IDX)
