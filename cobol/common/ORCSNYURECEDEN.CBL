@@ -42,6 +42,7 @@
       *  01.00.06    NACL-¾®Æ¦Âô  06/04/05  MONFUNCÂÐ±þ
       *  01.00.07    NACL-¾®Æ¦Âô  06/04/19  ¿©»öµ­Ï¿ÊýË¡¤ÎÊÑ¹¹ÂÐ±þ
       *  01.00.08    NACL-¾®Æ¦Âô  06/05/23  ³°Çñ»þ¤ÎÆþ±¡´ðËÜÎÁ¼èÆÀ½¤Àµ
+      *  01.00.09    NACL-¾®Æ¦Âô  06/09/08  É¸·çÂÐ±þ
       *****************************************************************
       *
       *
@@ -145,6 +146,7 @@
                    07  WRK-SRYKBN          PIC X(02).
                    07  WRK-NYUINKHN        PIC X(09).
                    07  WRK-SHOKIKSN        PIC X(09).
+                   07  WRK-HYOUKETSU       PIC X(09).
                    07  WRK-GAIHAKU         PIC X(09).
                    07  WRK-NYUKHNKSNKBN    PIC 9(03).
                    07  WRK-GAIHAKU-KBN     PIC 9(01).
@@ -622,9 +624,31 @@
                                MOVE    NSRY-SRYCD(1)   TO  
                                                    WRK-NYUINKHN(IDX1)
       *
-                               IF   NSRY-SRYCD(2)  NOT =   SPACE
+                               IF  (NSRY-SRYCD(2) NOT =  SPACE)  AND
+                                   (NSRY-SRYCD(2) NOT = "190107890" AND
+                                                        "190107990" AND
+                                                        "190108590" AND
+                                                        "190108690")
                                    MOVE   NSRY-SRYCD(2)  TO
                                                    WRK-SHOKIKSN(IDX1)
+                               END-IF
+      *                        É¸·ç¥³¡¼¥É
+                               IF  (NSRY-SRYCD(2)  NOT =   SPACE)  AND
+                                   (NSRY-SRYCD(2)  =   "190107890" OR
+                                                       "190107990" OR
+                                                       "190108590" OR
+                                                       "190108690")
+                                   MOVE   NSRY-SRYCD(2)  TO
+                                                   WRK-HYOUKETSU(IDX1)
+                               END-IF
+      *                        É¸·ç¥³¡¼¥É
+                               IF  (NSRY-SRYCD(3)  NOT =   SPACE)  AND
+                                   (NSRY-SRYCD(3)  =   "190107890" OR
+                                                       "190107990" OR
+                                                       "190108590" OR
+                                                       "190108690")
+                                   MOVE   NSRY-SRYCD(3)  TO
+                                                   WRK-HYOUKETSU(IDX1)
                                END-IF
       *                        ¿ÇÎÅ¶èÊ¬
                                MOVE    NACCT-SRYKBN
@@ -1172,6 +1196,13 @@
                        (WRK-SHOKIKSN(IDX1)   NOT =         SPACE)
                    ADD      1               TO  WRK-MEISAISU
                    MOVE   WRK-SHOKIKSN(IDX1) TO  WRK-SO-SRYCD
+                                           (IDX1 WRK-MEISAISU)
+               END-IF
+      *
+      *        É¸·ç
+               IF      WRK-HYOUKETSU(IDX1)   NOT =         SPACE
+                   ADD      1               TO  WRK-MEISAISU
+                   MOVE   WRK-HYOUKETSU(IDX1) TO  WRK-SO-SRYCD
                                            (IDX1 WRK-MEISAISU)
                END-IF
       *        ³°Çñ
