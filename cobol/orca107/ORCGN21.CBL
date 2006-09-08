@@ -432,6 +432,7 @@
       *
            IF      SPA-GMN-PHOTO   NOT =   SPACE
                PERFORM 430-GAZOCHK-SEC
+               MOVE    SPACE       TO  SPA-ERRCD
            END-IF
            .
       *
