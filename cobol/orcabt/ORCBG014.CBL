@@ -820,10 +820,12 @@
       *
       *    レセプト種別区分分類
            EVALUATE    RECE10-KYURATE
+      *----(00.00.03)--UPD-START---
                WHEN    9
                    MOVE    "01"            TO  WRK-SYUBETUKBN
                WHEN    8
                    MOVE    "02"            TO  WRK-SYUBETUKBN
+      *----(00.00.03)--UPD-END-----
       *----(00.00.03)--ADD-START---
                WHEN    7
                    MOVE    "03"            TO  WRK-SYUBETUKBN
@@ -871,6 +873,7 @@
                OR    ( RECE10-HKNNUM       NOT =   SPACE )
                GO  TO  220-KOH-SYAHO-SYUKEI-EXT
            ELSE
+      *----(00.00.03)--UPD-SATRT---
                IF      RECE10-KOHNUM(2)    NOT =   SPACE
       *            公費と公費の併用欄
                    MOVE    "01"            TO  WRK-SYUBETUKBN
@@ -878,6 +881,7 @@
       *            公費単独欄
                    MOVE    "02"            TO  WRK-SYUBETUKBN
                END-IF
+      *----(00.00.03)--UPD-END-----
            END-IF
       *
       *    詳細区分に公費番号セット
@@ -918,6 +922,7 @@
            MOVE    1                   TO  IDX
       *
       *----(00.00.02)--UPD-START---
+      *----(00.00.03)--UPD-START---
       *    レセプト種別区分分類
            EVALUATE    RECE10-HKNNUM-S
                WHEN    "060"
@@ -934,17 +939,14 @@
       *----(00.00.03)--ADD-END-----
                        END-EVALUATE
                    ELSE
-      *----(00.00.03)--UPD-START---
                        IF      RECE10-AGE      <   3
                            MOVE    "05"        TO  WRK-SYUBETUKBN
                        ELSE
                            MOVE    "04"        TO  WRK-SYUBETUKBN
                        END-IF
-      *----(00.00.03)--UPD-END-----
                    END-IF
                WHEN    "067"
                WHEN    "069"
-      *----(00.00.03)--UPD-START---
                    IF      RECE10-AGE          >=  70
                        EVALUATE    RECE10-KYURATE
                            WHEN    9
@@ -967,8 +969,8 @@
                            END-IF
                        END-IF
                    END-IF
-      *----(00.00.03)--UPD-END-----
            END-EVALUATE
+      *----(00.00.03)--UPD-END-----
       *----(00.00.02)--UPD-END-----
       *
       *    保健集計処理
@@ -995,10 +997,12 @@
       *
       *    レセプト種別区分分類
            EVALUATE    RECE10-KYURATE
+      *----(00.00.03)--UPD-START---
                WHEN    9
                    MOVE    "01"            TO  WRK-SYUBETUKBN
                WHEN    8
                    MOVE    "02"            TO  WRK-SYUBETUKBN
+      *----(00.00.03)--UPD-END-----
       *----(00.00.03)--ADD-START---
                WHEN    7
                    MOVE    "03"            TO  WRK-SYUBETUKBN
