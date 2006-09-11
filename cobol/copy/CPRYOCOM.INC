@@ -35,7 +35,9 @@
       *剤番号
                05  RYOCOM-ZAINUM         PIC  9(08).
       *剤識別区分（１：ＡＤＬ点数　２：医療区分）
-           03  RYOCOM-ZAISKBKBN          PIC  X(01).           
+           03  RYOCOM-ZAISKBKBN          PIC  X(01).
+      *診療コード（コメントコード）
+           03  RYOCOM-SRYCD              PIC  X(09).
       *月固定値
            03  RYOCOM-MONTH              PIC  9(02).
       *区分（点数）テーブル

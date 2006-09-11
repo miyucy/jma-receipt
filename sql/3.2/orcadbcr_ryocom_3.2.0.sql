@@ -5,6 +5,7 @@ create	table	tbl_ryocom	(
 	SRYYM	        char(6) not null,
 	ZAINUM	        numeric(8,0) not null,
 	ZAISKBKBN	char(1),
+	SRYCD		char(9),
 	MONTH	        numeric(2,0),
 	DAY_1	        numeric(2,0),
 	DAY_2	        numeric(2,0),

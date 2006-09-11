@@ -5,6 +5,7 @@ tbl_ryocom {
 	SRYYM				char(6);
 	ZAINUM				number(8,0);
 	ZAISKBKBN			char(1);
+	SRYCD				char(9);
 	MONTH				number(2,0);
 	DAY_1				number(2,0);
 	DAY_2				number(2,0);
@@ -107,6 +108,7 @@ path	upd1 	{
 	SRYYM				=	:SRYYM,
 	ZAINUM				=	:ZAINUM,
 	ZAISKBKBN			=	:ZAISKBKBN,
+	SRYCD				=	:SRYCD,
 	MONTH				=	:MONTH,
 	DAY_1				=	:DAY_1,
 	DAY_2				=	:DAY_2,
