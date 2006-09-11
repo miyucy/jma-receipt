@@ -519,6 +519,10 @@
       *
            MOVE    ZERO                TO  WRK-ITEMNUM
       *
+           IF    ( FLG-END     =   ZERO )
+               PERFORM 20011-ORDER-INSERT-SEC
+           END-IF
+      *
            PERFORM VARYING IDXB    FROM    1   BY  1
                    UNTIL ( IDXB    >   CONST-SRYTBLC-MAX )
                     OR   ( FLG-END =   1 )
@@ -531,10 +535,6 @@
       *
                        MOVE    NCLAIMID-ITEMJMA (IDX-IJI)
                                        TO  WRK-ITEMJMA
-      *
-                       IF    ( FLG-END     =   ZERO )
-                           PERFORM 20011-ORDER-INSERT-SEC
-                       END-IF
       *
                        IF    ( FLG-END     =   ZERO )
                            PERFORM 20011-ODRITEM-INSERT-SEC
