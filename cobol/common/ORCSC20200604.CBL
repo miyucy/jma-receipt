@@ -1986,6 +1986,12 @@
                    IF      SPA-CHOKITOFLG-CHK  =   ZERO
                        MOVE    "K019"          TO  SPA-ERRCD
                        MOVE    1               TO  SPA-CHOKITOFLG-CHK
+      *TEST
+                   ELSE
+                       MOVE    "0113"          TO  LNK-ORCSC-KIDCD
+                       MOVE    1                   TO  SPA-CHOKITOFLG
+                       GO      TO      30011-INGAITOKUTEIKSN-CHK-EXT
+      *TEST
                    END-IF
                    MOVE    9               TO  SPA-TOKUTEIFLG
                    MOVE    9               TO  SPA-CHOKITOFLG
@@ -2536,6 +2542,12 @@
                    IF      SPA-CHOKITOFLG-CHK  =   ZERO
                        MOVE    "K019"          TO  SPA-ERRCD
                        MOVE    1               TO  SPA-CHOKITOFLG-CHK
+      *TEST
+                   ELSE
+                       MOVE    "0113"          TO  LNK-ORCSC-KIDCD
+                       MOVE    1                   TO  SPA-CHOKITOFLG
+                       GO      TO      30021-INNAITOKUTEIKSN-CHK-EXT
+      *TEST
                    END-IF
                    MOVE    9               TO  SPA-TOKUTEIFLG
                    MOVE    9               TO  SPA-CHOKITOFLG
