@@ -737,6 +737,14 @@
            MOVE    WRK-ITEM            TO  LNK-ODRITEM-ITEM    (IDX-ODR)
       *
            EVALUATE    WRK-ITEMJMA
+           WHEN    NCLAIMID-DRJMA
+               IF    ( LNK-ODRITEM-ITEM(IDX-ODR)   NOT =   SPACE )
+                AND  ( LNK-ODRITEM-ITEM(IDX-ODR) (5:)  =   SPACE )
+                   MOVE    "1"         TO  WRK-ITEM
+                   MOVE    LNK-ODRITEM-ITEM(IDX-ODR)
+                                       TO  WRK-ITEM (2:)
+                   MOVE    WRK-ITEM    TO  LNK-ODRITEM-ITEM    (IDX-ODR)
+               END-IF
            WHEN    NCLAIMID-SAGAKUJMA
                PERFORM 200111-SAGAKU-SET-SEC
                MOVE    WRK-ITEM        TO  LNK-ODRITEM-ITEM    (IDX-ODR)
