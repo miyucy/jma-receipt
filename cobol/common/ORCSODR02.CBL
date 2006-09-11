@@ -1068,7 +1068,7 @@
       *
                MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
                MOVE    "key4"              TO  MCP-PATHNAME
-               PERFORM 910-DBSELECT-SEC
+               PERFORM 910-DBFETCH-SEC
                IF    ( MCP-RC          =   ZERO )
                    MOVE    MCPDATA-REC TO  PTNYUINRRK-REC
                ELSE
