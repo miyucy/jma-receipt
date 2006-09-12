@@ -527,6 +527,11 @@
                 MOVE    "1"             TO  SPA-COM-CUR (SPA-GMN-IDX)
            END-IF
       *    警告の時、表示する
+           IF     (SPA-ERRCD   (1:1)   =   "K"  )
+               MOVE    SPACE           TO  SPA-ERRCD
+               MOVE    SPACE           TO  SPA-COM-KZMFLG (SPA-GMN-IDX)
+           END-IF
+      *    警告の時、表示する
            IF     (LNK-SC92-ERRCD3  (1:1)   =   "K"  )  OR
                   (LNK-SC92-ERRCD6  (1:1)   =   "K"  )
                MOVE    SPACE           TO  LNK-SC92-ERRAREA

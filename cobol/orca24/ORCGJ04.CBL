@@ -2571,6 +2571,20 @@
                    END-IF
                END-IF
            END-PERFORM
+      *
+      *    警告判定
+           IF      SPA-ERRCD(1:1)      =   "K"
+             AND  (SPA-ERRCD       NOT =   "K033" )
+               IF      SPA-COM-KZMFLG (SPA-GMN-IDX)  =   SPACE
+                   MOVE    "1"             TO  SPA-COM-KZMFLG
+                                                          (SPA-GMN-IDX)
+                   MOVE    "2"             TO  SPA-COM-CUR(SPA-GMN-IDX)
+               ELSE
+                   MOVE    SPACE           TO  SPA-ERRCD
+                   MOVE    SPACE           TO  SPA-COM-CUR(SPA-GMN-IDX)
+               END-IF
+           END-IF
+      *
            IF      SPA-ERRCD       NOT =   SPACE
                MOVE    SPACE           TO  SPA-COM-CHKFLG (SPA-GMN-IDX)
                GO      TO      4101113-INPUTCD-CHK-EXT
@@ -2961,12 +2975,12 @@
                        IF      WRK-SUR-MCNT    NOT =   ZERO
                            MOVE    "0002"          TO  SPA-ERRCD
                        END-IF
-                   ELSE
+      ************ ELSE
       *                数量　＞　きざみ値上限の時、エラー
-                       IF      SPA-COM-SURYO(SPA-GMN-IDX)
-                                                   >  TNS-KZMJGN
-                           MOVE    "0037"          TO  SPA-ERRCD
-                       END-IF
+      *                IF      SPA-COM-SURYO(SPA-GMN-IDX)
+      *                                            >  TNS-KZMJGN
+      *                    MOVE    "0037"          TO  SPA-ERRCD
+      **************   END-IF
                    END-IF
       *
       *
@@ -3242,6 +3256,9 @@
                                                SPA-SCR-REC
                                                SPA-AREA
       *
+                  IF      SPA-ERRCD(1:1)      =   "K"
+                       MOVE    SPACE               TO  SPA-ERRCD
+                   END-IF
       *           エラー時、追加しない
                   IF     (SPA-ERRCD           NOT =   SPACE )  OR
                          (LNK-SC92-ERRAREA    NOT =   SPACE )

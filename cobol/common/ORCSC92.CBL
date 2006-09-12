@@ -825,8 +825,10 @@
            MOVE    LNK-SC92-INPUT-G    TO  LNK-SC97-INPUT-G
       *
       *    数量ゼロはエラーとする
-           IF     (LNK-SC97-SURYOCNT   >   ZERO  )  AND
-                  (LNK-SC97-SURYO      =   ZERO  )
+           IF      LNK-SC92-PG         =   "K02"
+                                       OR  "J04"
+             IF     (LNK-SC97-SURYOCNT   >   ZERO  )  AND
+                    (LNK-SC97-SURYO      =   ZERO  )
                IF     (SPA-COM-INPUTCD(IDX-T)(1:1)
                                                =   "6"  OR  "7") OR
                       (SPA-COM-INPUTCD(IDX-T)(1:3)
@@ -835,6 +837,10 @@
                ELSE
                    MOVE    "A002"              TO  SPA-ERRCD
                END-IF
+               MOVE    TNS-NAME            TO  SPA-GMN-MEISYO
+                                                        (IDX-T)
+             END-IF
+           ELSE
                MOVE    TNS-NAME            TO  SPA-GMN-MEISYO
                                                         (IDX-T)
            END-IF
