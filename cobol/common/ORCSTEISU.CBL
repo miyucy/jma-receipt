@@ -1,0 +1,332 @@
+      *******************************************************************
+      * Project code name "ORCA"
+      * 日医標準レセプトソフト（JMA standard receipt software）
+      * Copyright(C) 2002 JMA (Japan Medical Association)
+      *
+      * This program is part of "JMA standard receipt software".
+      *
+      *     This program is distributed in the hope that it will be useful
+      * for further advancement in medical care, according to JMA Open
+      * Source License, but WITHOUT ANY WARRANTY.
+      *     Everyone is granted permission to use, copy, modify and
+      * redistribute this program, but only under the conditions described
+      * in the JMA Open Source License. You should have received a copy of
+      * this license along with this program. If not, stop using this
+      * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
+      * 113-8621, Japan.
+      ********************************************************************
+       IDENTIFICATION              DIVISION.
+       PROGRAM-ID.                 ORCSTEISU.
+      *****************************************************************
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 入院
+      *  コンポーネント名  : 定数超過情報取得サブ
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  06/09/12    NACL−小豆沢  新規作成
+      *****************************************************************
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *****************************************************************
+      *
+      *
+       ENVIRONMENT                 DIVISION.
+       CONFIGURATION               SECTION.
+       INPUT-OUTPUT                SECTION.
+       FILE-CONTROL.
+      *
+      *
+       DATA                        DIVISION.
+      *FILE                        SECTION.
+      *
+       WORKING-STORAGE             SECTION.
+      *
+      *    フラグ領域
+       01  FLG-AREA.
+           03  FLG-SYSKANRI                PIC 9(01).
+      *    添字領域
+       01  IDX-AREA.
+           03  IDX                         PIC 9(04).
+      *
+      *    コンスタント値
+       01  CONSTANT-AREA.
+      *    定数超過入院ん基本料減額（１００分の１０）
+           03  CONS-TEISU1                 PIC X(09) VALUE "190107690".
+      *    定数超過入院ん基本料減額（１００分の２０）
+           03  CONS-TEISU2                 PIC X(09) VALUE "190107790".
+      *    定数超過入院ん基本料減額（１００分の１０）（特定入院料）
+           03  CONS-TEISU3                 PIC X(09) VALUE "190122990".
+      *    定数超過入院ん基本料減額（１００分の２０）（特定入院料）
+           03  CONS-TEISU4                 PIC X(09) VALUE "190123090".
+      *
+      *    一時領域
+       01  WRK-AREA.
+      *
+           03  WRK-SANTEIYM.
+             05  WRK-SANTEI-YY             PIC 9(04).
+             05  WRK-SANTEI-MM             PIC 9(02).
+      *
+           03  WRK-TEISUKBN                PIC X(01).
+      *
+      *
+      *****************************************************************
+      *    ファイルレイアウト
+      *****************************************************************
+      *
+      *    システム管理マスタ
+           COPY    "CPSYSKANRI.INC".
+      *
+           COPY    "CPSK5000.INC".
+      *
+      *
+      *    ＤＢ検索
+           COPY    "MCPDATA.INC".
+      *
+           COPY    "MCPAREA".
+      *
+      *****************************************************************
+      *    連絡　領域
+      *****************************************************************
+        LINKAGE                     SECTION.
+      *
+      *    スパ領域
+           COPY    "COMMON-SPA".
+      *    標欠取得用パラメタ
+           COPY    "CPORCSTEISU.INC".
+      *
+       PROCEDURE                   DIVISION    USING
+      *     SPA-AREA
+            ORCSTEISU-AREA
+           .
+      *
+      *****************************************************************
+      *    主　　処理
+      *****************************************************************
+       000-PROC-SEC                SECTION.
+      *
+           INITIALIZE                  FLG-AREA
+           INITIALIZE                  IDX-AREA
+           INITIALIZE                  WRK-AREA
+           INITIALIZE                  LNK-TEISU-HENKYAKU-AREA
+           MOVE    ZERO            TO  LNK-TEISU-RC
+      *
+      *    パラメータチェック
+           PERFORM 100-PRM-CHK-SEC
+           IF    ( LNK-TEISU-RC       NOT =   ZERO )
+               GO  TO  000-PROC-EXT
+           END-IF
+      *
+      *    主処理
+           IF      LNK-TEISU-RC      =    ZERO
+               PERFORM 200-MAIN-SEC
+           END-IF
+      *
+           .
+       000-PROC-EXT.
+      *
+           EXIT    PROGRAM
+           .
+      *
+      *****************************************************************
+      *    パラメータチェック
+      *****************************************************************
+       100-PRM-CHK-SEC                     SECTION.
+      *
+      *    算定年月チェック
+           IF    ( LNK-TEISU-SANTEIYM   =   SPACE )
+               MOVE    1               TO  LNK-TEISU-RC
+               GO  TO  100-PRM-CHK-EXT
+           END-IF
+      *
+           .
+       100-PRM-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    主取得
+      *****************************************************************
+       200-MAIN-SEC            SECTION.
+      *
+      *定数超過情報の取得（システム管理テーブルより）
+           MOVE    SPACE               TO  WRK-TEISUKBN
+           MOVE    ZERO                TO  FLG-SYSKANRI
+           INITIALIZE                      SYSKANRI-REC
+           MOVE    "5000"              TO  SYS-KANRICD
+           MOVE    "*"                 TO  SYS-KBNCD
+           MOVE    LNK-TEISU-SANTEIYM
+                                       TO  SYS-STYUKYMD(1:6)
+           MOVE    "01"                TO  SYS-STYUKYMD(7:2)
+           MOVE    SYS-STYUKYMD        TO  SYS-EDYUKYMD
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           CALL    "MONFUNC"               USING
+                                           MCPAREA
+                                           MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key10"         TO  MCP-PATHNAME
+               PERFORM  910-SYSKANRI-READ-SEC
+               IF  FLG-SYSKANRI     =      ZERO
+                   IF   SYS-5000-TEISUKBN  =  SPACE OR  "0"
+                       MOVE   3        TO  LNK-TEISU-RC
+                   ELSE
+                       MOVE  SYS-5000-TEISUKBN  TO  WRK-TEISUKBN
+                       EVALUATE  LNK-TEISU-TOKUTEINYUIN-KBN
+                           WHEN  "0"
+                               EVALUATE  LNK-TEISU-SANTEISRYCD
+      *                            療養病棟入院基本料１
+                                   WHEN  "190080610"
+                                   WHEN  "190080710"
+                                   WHEN  "190113910"
+                                   WHEN  "190113810"
+                                   WHEN  "190081310"
+                                   WHEN  "190081410"
+                                   WHEN  "190114510"
+                                   WHEN  "190114610"
+                                   WHEN  "190799810"
+                                   WHEN  "190799910"
+                                   WHEN  "190800510"
+                                   WHEN  "190800610"
+                                   WHEN  "190811410"
+                                   WHEN  "190811510"
+                                   WHEN  "190812110"
+                                   WHEN  "190812210"
+      *                            療養病棟入院基本料２
+                                   WHEN  "190121310"
+                                   WHEN  "190121410"
+                                   WHEN  "190121510"
+                                   WHEN  "190121610"
+                                   WHEN  "190121710"
+                                   WHEN  "190121810"
+      *                            有床診療所療養病床入院基本料１
+                                   WHEN  "190098210"
+                                   WHEN  "190116110"
+                                   WHEN  "190806910"
+                                   WHEN  "190812910"
+                                   WHEN  "190098310"
+                                   WHEN  "190116210"
+                                   WHEN  "190807010"
+                                   WHEN  "190813010"
+      *                            有床診療所療養病床入院基本料２
+                                   WHEN  "190122010"
+                                   WHEN  "190122110"
+                                   WHEN  "190122210"
+                                   WHEN  "190122310"
+                                   WHEN  "190122410"
+                                   WHEN  "190122510"
+      *                            老人特定入院基本料
+                                   WHEN  "190799410"
+                                   WHEN  "190799510"
+                                   WHEN  "190811210"
+                                   WHEN  "190811310"
+                                      MOVE   CONS-TEISU1  TO
+                                                LNK-TEISU-SRYCD(1)
+                                   WHEN   OTHER
+                                      MOVE   CONS-TEISU2  TO
+                                                LNK-TEISU-SRYCD(1)
+                               END-EVALUATE
+                           WHEN  "1"
+                               MOVE  CONS-TEISU4   TO  
+                                                LNK-TEISU-SRYCD(1)
+                       END-EVALUATE
+                       MOVE    LNK-TEISU-SANTEIYM   TO
+                                                LNK-TEISU-STARTYM(1)
+                       MOVE    SYS-5000-EDYUKYMD(1:6)   TO
+                                                LNK-TEISU-ENDYM(1)
+                   END-IF
+               ELSE
+                   MOVE  2     TO    LNK-TEISU-RC
+               END-IF
+           END-IF
+      *    システム管理クローズ
+           MOVE    "tbl_syskanri"          TO  MCP-TABLE
+           MOVE    "key10"                 TO  MCP-PATHNAME
+           PERFORM   910-DB-CLOSE-SEC
+      *
+      *定数超過情報の取得（システム管理テーブルより翌月分を取得）
+           MOVE    LNK-TEISU-SANTEIYM  
+                                       TO  WRK-SANTEIYM
+           IF      LNK-TEISU-SANTEIYM(5:2)  = "12"
+               ADD    1                TO  WRK-SANTEI-YY
+               MOVE   1                TO  WRK-SANTEI-MM
+           ELSE
+               ADD    1                TO  WRK-SANTEI-MM
+           END-IF
+           MOVE    ZERO                TO  FLG-SYSKANRI
+           INITIALIZE                      SYSKANRI-REC
+           MOVE    "5000"              TO  SYS-KANRICD
+           MOVE    "*"                 TO  SYS-KBNCD
+           MOVE    WRK-SANTEIYM        TO  SYS-STYUKYMD(1:6)
+           MOVE    "01"                TO  SYS-STYUKYMD(7:2)
+           MOVE    SYS-STYUKYMD        TO  SYS-EDYUKYMD
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           CALL    "MONFUNC"               USING
+                                           MCPAREA
+                                           MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key10"         TO  MCP-PATHNAME
+               PERFORM  910-SYSKANRI-READ-SEC
+               IF  FLG-SYSKANRI     =      ZERO
+                   IF   SYS-5000-TEISUKBN  =  SPACE OR "0"
+                       CONTINUE
+                   ELSE
+                       MOVE  LNK-TEISU-SRYCD(1)  TO  LNK-TEISU-SRYCD(2)
+                       MOVE    WRK-SANTEIYM   TO
+                                                LNK-TEISU-STARTYM(2)
+                       MOVE    SYS-5000-EDYUKYMD(1:6)   TO
+                                                LNK-TEISU-ENDYM(2)
+                   END-IF
+               ELSE
+                   MOVE  2     TO    LNK-TEISU-RC
+               END-IF
+           END-IF
+      *    システム管理クローズ
+           MOVE    "tbl_syskanri"          TO  MCP-TABLE
+           MOVE    "key10"                 TO  MCP-PATHNAME
+           PERFORM   910-DB-CLOSE-SEC
+      *
+           .
+       200-MAIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    システム管理マスター読込
+      *****************************************************************
+       910-SYSKANRI-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "MONFUNC"               USING
+                                           MCPAREA
+                                           MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-5000-REC
+               MOVE    ZERO                TO  FLG-SYSKANRI
+           ELSE
+               INITIALIZE                      SYS-5000-REC
+               MOVE    1                   TO  FLG-SYSKANRI
+           END-IF
+      *
+           .
+       910-SYSKANRI-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢクローズ処理
+      *****************************************************************
+       910-DB-CLOSE-SEC                 SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
+           CALL    "MONFUNC"            USING
+                                        MCPAREA
+                                        MCPDATA-REC
+      *
+           .
+      *
+       910-DB-CLOSE-EXT.
+           EXIT.
