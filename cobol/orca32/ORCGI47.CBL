@@ -834,7 +834,17 @@
       *****************************************************************
        4102-KIHON-CHK-SEC              SECTION.
       *
-           PERFORM 4101-DAY-CHK-SEC
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 4101-SELNUM-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 4101-GRPINPUT-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 4101-DAY-CHK-SEC
+           END-IF
       *
            .
        4102-KIHON-CHK-EXT.
@@ -848,7 +858,9 @@
                                        SPA-NAI-DAY-G
       *
            IF    ( SPA-I47-NYUIN-DAY-G =   ZERO )
+            AND  ( SPA-GMN-DAYALL  NOT =   SPACE )
                MOVE    "0007"      TO  SPA-ERRCD
+               MOVE    100         TO  SPA-GMN-CUR
                GO  TO  4101-DAY-CHK-EXT
            END-IF
       *
