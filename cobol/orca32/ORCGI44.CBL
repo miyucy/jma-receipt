@@ -497,6 +497,7 @@
            COPY    "I41.INC".
            COPY    "I42.INC".
            COPY    "I44.INC".
+           COPY    "I47.INC".
            COPY    "I48.INC".
            COPY    "I49.INC".
            COPY    "I4ERR.INC".

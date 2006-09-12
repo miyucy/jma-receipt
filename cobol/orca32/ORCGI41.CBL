@@ -548,6 +548,7 @@
            COPY    "I41.INC".
            COPY    "I42.INC".
            COPY    "I44.INC".
+           COPY    "I47.INC".
            COPY    "I48.INC".
            COPY    "I49.INC".
            COPY    "I4ERR.INC".
@@ -2397,6 +2398,9 @@
       *    室料差額リスト編集処理
                WHEN    "CLICKED"       ALSO    "B05"
                    PERFORM 450-SAGAKULIST-HEN-SEC
+      *    ＡＤＬ区分・医療区分入力画面へ
+               WHEN    "CLICKED"       ALSO    "B05S"
+                   PERFORM 450-I47-SENI-SEC
       *    前月選択
                WHEN    "CLICKED"       ALSO    "B06"
                    PERFORM 41018-ZENGETU-HEN-SEC
@@ -4222,6 +4226,47 @@
       *
            .
        450-SAGAKULIST-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＡＤＬ区分・医療区分入力画面へ
+      *****************************************************************
+       450-I47-SENI-SEC             SECTION.
+      *
+      *    剤修正のチェック
+           IF      SPA-NAI-NUM-41   NOT =   ZERO
+               MOVE    "0009"          TO  SPA-ERRCD
+               GO      TO      450-I47-SENI-EXT
+           END-IF.
+      *    患者選択チェック
+           IF      SPA-GMN-PTNUM       =   SPACE
+               MOVE    "0019"          TO  SPA-ERRCD
+               GO      TO      450-I47-SENI-EXT
+           END-IF.
+           IF      SPA-UPDFLG-41       =   "1"
+               PERFORM 4901-NYUINACCT-UPD-SEC
+               IF     (SPA-ERRCD       NOT =   SPACE)   OR
+                      (SPA-IIDCD       NOT =   SPACE)
+                   GO      TO      450-I47-SENI-EXT
+               END-IF
+           END-IF.
+      *
+      *
+           MOVE    SPA-GMN-SRYYM       TO  SPA-I40-SRYYMDW(1:6).
+           MOVE    SPA-NAI-SRYYM       TO  SPA-I40-SRYYMD (1:6).
+           MOVE    SPA-GMN-SRYKA-I-41  TO  SPA-I40-SRYKA.
+           MOVE    SPA-GMN-SRYKAMEI-I-41  TO  SPA-I40-SRYKAMEI.
+      *
+           MOVE    "I41"               TO  SPA-MOTOPG.
+           MOVE    "I47"               TO  SPA-SAKIPG.
+      *
+           MOVE   "CHANGE"             TO  MCP-PUTTYPE.
+           MOVE   "I47"                TO  MCP-WINDOW.
+      *
+           PERFORM 900-PUT-WINDOW.
+      *
+           MOVE    1                   TO  FLG-END.
+      *
+       450-I47-SENI-EXT.
            EXIT.
       *****************************************************************
       *    前月選択　処理
