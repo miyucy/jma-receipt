@@ -463,16 +463,6 @@
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
-      *    Â¾¤Î£Ì£Ä¤è¤ê
-           IF    ( LINKAREA        NOT =   SPACE )
-               MOVE    LNK-KYOUTU      TO  SPA-KYOUTU
-      *
-               MOVE    SPA-MOTOPG      TO  SPA-MOTOPG2
-      *
-               MOVE    SPACE           TO  SPA-IIDCD
-               MOVE    SPACE           TO  SPA-I4ID-FLG
-           END-IF
-      *
            EVALUATE    SPA-MOTOPG
            WHEN    "I4ID1"
                PERFORM 330-I4ID1-SET-SEC
@@ -680,6 +670,8 @@
       *
            MOVE    "I41"               TO  SPA-SAKIPG
            MOVE    "I47"               TO  SPA-MOTOPG
+      *
+           MOVE    SPACE               TO  LINKAREA
       *
            MOVE    SPA-SAKIPG          TO  MCP-WINDOW
       *
@@ -1611,8 +1603,6 @@
                PERFORM 520-I4IDSET-SEC
                GO  TO  500-SET-SCREEN-EXT
            END-IF
-      *
-           MOVE    SPACE               TO  LINKAREA
       *
            MOVE    "CURRENT"           TO  MCP-PUTTYPE.
            MOVE    "I47    "           TO  MCP-WINDOW.
