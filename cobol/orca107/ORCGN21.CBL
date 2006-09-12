@@ -1267,6 +1267,12 @@
       *****************************************************************
        440-SANSYO-SEC              SECTION.
       *
+           IF          SPA-NAI-SRYCD   =   SPACE
+               MOVE    "0011"          TO  SPA-ERRCD
+               MOVE    2               TO  SPA-GMN-CUR
+               GO  TO  440-SANSYO-EXT
+           END-IF
+      *
            INITIALIZE                  SPA-N22-AREA
            MOVE    SPA-NAI-SRYCD   TO  SPA-N22-KENCD
            MOVE    SPA-GMN-KENNAME TO  SPA-N22-KENNAME
