@@ -1455,7 +1455,45 @@
       *****MOVE    PTHKN-TEKSTYMD      TO  WRK-RECE01-TEKSTYMD
            MOVE    ZERO                TO  WRK-RECE01-TEKSTYMD 
       *****MOVE    PTHKN-HONKZKKBN     TO  WRK-RECE01-HONKZKKBN
-           EVALUATE    PTHKN-HKNNUM
+           IF      WRK-STYMD (1:6)     <=   "200609"
+             EVALUATE    PTHKN-HKNNUM
+               WHEN    "002"
+               WHEN    "031"   THRU    "034"
+                   IF      PTHKN-HOJOKBN   =   SPACE
+                       CONTINUE
+                   ELSE    
+                       MOVE    PTHKN-HOJOKBN   TO
+                                               WRK-RECE01-HOJOKBN
+                   END-IF
+               WHEN    "060" 
+               WHEN    "068" 
+      *****        IF     (WRK-NENREI  >=   70)  AND
+      *****               (WRK-NENREI  <=   74)
+                       EVALUATE   PTHKN-HOJOKBN
+                           WHEN   "1"
+                           WHEN   "4"
+                               MOVE    "1"             TO
+                                               WRK-RECE01-HOJOKBN
+                           WHEN   "2"
+                           WHEN   "5"
+                               MOVE    "2"             TO
+                                               WRK-RECE01-HOJOKBN
+                           WHEN   "3"
+                           WHEN   "6"
+                               MOVE    "3"             TO
+                                               WRK-RECE01-HOJOKBN
+                       END-EVALUATE
+      *****        END-IF     
+               WHEN    OTHER 
+                   EVALUATE   PTHKN-HOJOKBN
+                      WHEN   "9"
+                      WHEN   "8"
+                          MOVE    PTHKN-HOJOKBN   TO
+                                               WRK-RECE01-HOJOKBN
+                   END-EVALUATE
+             END-EVALUATE
+           ELSE
+             EVALUATE    PTHKN-HKNNUM
                WHEN    "002"
                WHEN    "031"   THRU    "034"
                    IF      PTHKN-HOJOKBN   =   SPACE
@@ -1491,7 +1529,8 @@
                           MOVE    PTHKN-HOJOKBN   TO
                                                WRK-RECE01-HOJOKBN
                    END-EVALUATE
-           END-EVALUATE             
+             END-EVALUATE
+           END-IF           
       *
       *    レセのとき地方公費のみの場合は出力しない
            IF      WRK-SYOKBN             =   "1"        

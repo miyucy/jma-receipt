@@ -1011,7 +1011,53 @@
       *
            MOVE    PTHKN-HKNJANUM      TO  WRK-RECE61-HKNJANUM       
            MOVE    ZERO                TO  WRK-RECE61-TEKSTYMD 
-           EVALUATE    PTHKN-HKNNUM
+           IF      LNK-SYUBETU-SRYYM   <=   "200609"
+             EVALUATE    PTHKN-HKNNUM
+               WHEN    "002"
+               WHEN    "031"   THRU    "034"
+                   IF      PTHKN-HOJOKBN   =   SPACE
+                       CONTINUE
+                   ELSE    
+                       MOVE    PTHKN-HOJOKBN   TO  WRK-RECE61-HOJOKBN
+                   END-IF
+               WHEN    "060" 
+               WHEN    "068" 
+                   EVALUATE    LNK-SYUBETU-NYUGAIKBN
+                       WHEN    "1"
+                           EVALUATE   PTHKN-HOJOKBN
+                               WHEN   "0"
+                               WHEN   "4"
+                                   MOVE    "0" TO  WRK-RECE61-HOJOKBN
+                               WHEN   "1"
+                               WHEN   "5"
+                                   MOVE    "1" TO  WRK-RECE61-HOJOKBN
+                               WHEN   "2"
+                               WHEN   "6"
+                                   MOVE    "2" TO  WRK-RECE61-HOJOKBN
+                           END-EVALUATE
+                       WHEN    "2"
+                           EVALUATE   PTHKN-HOJOKBN
+                               WHEN   "1"
+                               WHEN   "4"
+                                   MOVE    "1" TO  WRK-RECE61-HOJOKBN
+                               WHEN   "2"
+                               WHEN   "5"
+                                   MOVE    "2" TO  WRK-RECE61-HOJOKBN
+                               WHEN   "3"
+                               WHEN   "6"
+                                   MOVE    "3" TO  WRK-RECE61-HOJOKBN
+                           END-EVALUATE
+                   END-EVALUATE
+               WHEN    OTHER 
+                   EVALUATE   PTHKN-HOJOKBN
+                       WHEN   "9"
+                       WHEN   "8"
+                           MOVE    PTHKN-HOJOKBN
+                                               TO  WRK-RECE61-HOJOKBN
+                   END-EVALUATE             
+             END-EVALUATE
+           ELSE
+             EVALUATE    PTHKN-HKNNUM
                WHEN    "002"
                WHEN    "031"   THRU    "034"
                    IF      PTHKN-HOJOKBN   =   SPACE
@@ -1057,7 +1103,8 @@
                            MOVE    PTHKN-HOJOKBN
                                                TO  WRK-RECE61-HOJOKBN
                    END-EVALUATE             
-           END-EVALUATE             
+             END-EVALUATE
+           END-IF             
            MOVE    SPACE               TO WRK-RECE61-RECEKA
       *
            PERFORM VARYING IDXX    FROM    1   BY  1
@@ -1766,7 +1813,7 @@
                                MOVE   "?"   TO   WK-HONKZKKBN
                        END-EVALUATE
                END-EVALUATE
-              IF      WRK-RECE61-KOHID >   ZERO
+               IF      WRK-RECE61-KOHID >   ZERO
                    EVALUATE   WRK-RECE61-RJNPAYKBN
                        WHEN   "01"
                            MOVE   "9"   TO   WK-RJN

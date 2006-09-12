@@ -1796,7 +1796,8 @@
            MOVE    PTHKN-HKNJANUM      TO  WRK-RECE61-HKNJANUM       
            MOVE    ZERO                TO  WRK-RECE61-TEKSTYMD 
       *****MOVE    PTHKN-HONKZKKBN     TO  WRK-RECE61-HONKZKKBN
-           EVALUATE    PTHKN-HKNNUM
+           IF      WRK-STYMD (1:6)     <=   "200609"
+             EVALUATE    PTHKN-HKNNUM
                WHEN    "002"
                WHEN    "031"   THRU    "034"
                    IF      PTHKN-HOJOKBN   =   SPACE
@@ -1821,11 +1822,44 @@
                            WHEN   "6"
                                MOVE    "2"             TO
                                                WRK-RECE61-HOJOKBN
-                           WHEN   "3"
-                               MOVE    "3"             TO
-                                               WRK-RECE61-HOJOKBN
                        END-EVALUATE
       *****        END-IF     
+               WHEN    OTHER 
+                   EVALUATE   PTHKN-HOJOKBN
+                       WHEN   "9"
+                       WHEN   "8"
+                           MOVE    PTHKN-HOJOKBN   TO
+                                               WRK-RECE61-HOJOKBN
+                   END-EVALUATE             
+             END-EVALUATE
+           ELSE
+             EVALUATE    PTHKN-HKNNUM
+               WHEN    "002"
+               WHEN    "031"   THRU    "034"
+                   IF      PTHKN-HOJOKBN   =   SPACE
+                       CONTINUE
+                   ELSE    
+                       MOVE    PTHKN-HOJOKBN   TO  WRK-RECE61-HOJOKBN
+                   END-IF
+               WHEN    "060" 
+               WHEN    "068" 
+                   EVALUATE   PTHKN-HOJOKBN
+                       WHEN   "0"
+                       WHEN   "4"
+                           MOVE    "0"             TO
+                                               WRK-RECE61-HOJOKBN
+                       WHEN   "1"
+                       WHEN   "5"
+                           MOVE    "1"             TO
+                                               WRK-RECE61-HOJOKBN
+                       WHEN   "2"
+                       WHEN   "6"
+                           MOVE    "2"             TO
+                                               WRK-RECE61-HOJOKBN
+                       WHEN   "3"
+                           MOVE    "3"             TO
+                                               WRK-RECE61-HOJOKBN
+                   END-EVALUATE
                WHEN    OTHER 
                    EVALUATE   PTHKN-HOJOKBN
                        WHEN   "9"
@@ -1834,7 +1868,8 @@
                            MOVE    PTHKN-HOJOKBN   TO
                                                WRK-RECE61-HOJOKBN
                    END-EVALUATE             
-           END-EVALUATE             
+             END-EVALUATE
+           END-IF               
            MOVE    SPACE               TO WRK-RECE61-RECEKA
       *
       *    レセのとき地方公費のみの場合は出力しない
