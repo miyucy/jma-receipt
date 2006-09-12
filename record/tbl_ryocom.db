@@ -154,3 +154,15 @@ path	upd1 	{
 		;
 	};
 };
+
+path	del3 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_ryocom
+			WHERE   HOSPID    =   :HOSPID
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+			AND   PTID        =   :PTID
+			AND   SRYYM       =   :SRYYM
+		;
+	};
+};
