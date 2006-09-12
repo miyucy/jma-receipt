@@ -2720,12 +2720,12 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label1025</name>
-      <x>685</x>
-      <y>50</y>
-      <width>110</width>
+      <name>label1026</name>
+      <x>720</x>
+      <y>96</y>
+      <width>72</width>
       <height>25</height>
-      <label>標欠の取り扱い</label>
+      <label>定数超過</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>True</wrap>
       <xalign>0.5</xalign>
@@ -2736,12 +2736,12 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label1026</name>
-      <x>720</x>
-      <y>96</y>
-      <width>72</width>
+      <name>label1025</name>
+      <x>685</x>
+      <y>50</y>
+      <width>110</width>
       <height>25</height>
-      <label>定数超過</label>
+      <label>標欠による減額</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>True</wrap>
       <xalign>0.5</xalign>
