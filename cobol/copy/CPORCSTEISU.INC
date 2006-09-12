@@ -31,7 +31,7 @@
       *算定年月
            03  LNK-TEISU-SANTEIYM                 PIC  X(06).
       *算定入院料
-           03  LNK-TEISU-SANTEIYM                 PIC  X(06).
+           03  LNK-TEISU-SANTEISRYCD              PIC  X(09).
       *返却項目
            03  LNK-TEISU-HENKYAKU-AREA.
       *定数超過返却テーブル
