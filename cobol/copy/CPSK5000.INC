@@ -125,10 +125,11 @@
                05  SYS-5000-NACCT-GAIHAKUKBN
                                            PIC  X(01).
       *É¸·ç¸º³Û¶èÊ¬
-               05  SYS-5000-HYOUKETUKBN
-                                           PIC  X(01).
+               05  SYS-5000-HYOUKETUKBN    PIC  X(01).
+      *Äê¿ôÄ¶²á¶èÊ¬
+               05  SYS-5000-TEISUKBN       PIC  X(01).
       *Í½È÷¡Ê£²¡Ë
-               05                          PIC  X(05).
+               05                          PIC  X(04).
       *Ã¼Ëö£É£Ä
            03  SYS-5000-TERMID             PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
