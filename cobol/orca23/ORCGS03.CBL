@@ -2388,6 +2388,12 @@
                =   WRK-MISYU
                - ( SYU-SKYMONEY        -   SYU-NYUKIN-TOTAL )
       *
+           IF    ( ORCHC03-ZENMISYU    <   ZERO )
+               MOVE    ORCHC03-ZENMISYU
+                                       TO  ORCHC03-HENKIN
+               MOVE    ZERO            TO  ORCHC03-ZENMISYU
+           END-IF
+      *
            MOVE   3                    TO  ORCHC03-HAKKOFLG
            MOVE   WRK-SKYPRT-DENPEDANUM
                                        TO  ORCHC03-DENPEDANUM

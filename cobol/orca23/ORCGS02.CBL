@@ -3067,6 +3067,11 @@
            COMPUTE ORCHC03-ZENMISYU
                =   WRK-GAI-MISYU
                -   WRK-GAI-ZENMISYU
+           IF    ( ORCHC03-ZENMISYU    <   ZERO )
+               MOVE    ORCHC03-ZENMISYU
+                                       TO  ORCHC03-HENKIN
+               MOVE    ZERO            TO  ORCHC03-ZENMISYU
+           END-IF
            MOVE    "S02"               TO  ORCHC03-PARA-GYOUMUID
            MOVE    SPA-TERMID          TO  ORCHC03-PARA-TERMID
            MOVE    "00102"             TO  WRK-FILEMEI-CD
@@ -3251,6 +3256,11 @@
            COMPUTE ORCHC03-ZENMISYU
                =   WRK-GAI-MISYU
                -   WRK-GAI-ZENMISYU
+           IF    ( ORCHC03-ZENMISYU    <   ZERO )
+               MOVE    ORCHC03-ZENMISYU
+                                       TO  ORCHC03-HENKIN
+               MOVE    ZERO            TO  ORCHC03-ZENMISYU
+           END-IF
       *
            MOVE    "S02"               TO  ORCHC03-PARA-GYOUMUID
            MOVE    SPA-TERMID          TO  ORCHC03-PARA-TERMID

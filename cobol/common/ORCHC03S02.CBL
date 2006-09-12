@@ -676,8 +676,13 @@
            END-IF
       *
            IF    ( PARA-EDANUM     =   1 )
-               MOVE    SYUPARA01-GAI-MISYU
+               IF    ( SYUPARA01-GAI-MISYU >=  ZERO )
+                   MOVE    SYUPARA01-GAI-MISYU
                                TO  SYUPARA03-MISYU
+               ELSE
+                   MOVE    SYUPARA01-GAI-MISYU
+                               TO  SYUPARA03-HENKIN
+               END-IF
            END-IF
            MOVE    SRT-KBT-NYUKIN  (IDX4)  TO  SYUPARA03-NYUKIN
            MOVE    SRT-KBT-STSRYYMD(IDX4)  TO  SYUPARA03-STSRYYMD

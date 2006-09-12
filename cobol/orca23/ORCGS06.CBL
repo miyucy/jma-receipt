@@ -2377,6 +2377,11 @@
                COMPUTE ORCHC03-ZENMISYU
                    =   WRK-GAI-NYUKIN
                    +   SPA-GMN-GAI-MISYU
+               IF    ( ORCHC03-ZENMISYU    <   ZERO )
+                   MOVE    ORCHC03-ZENMISYU
+                                           TO  ORCHC03-HENKIN
+                   MOVE    ZERO            TO  ORCHC03-ZENMISYU
+               END-IF
                IF    ( SPA-NAI-TNYUKIN-TOTAL (IDX0) 
                                            =   ZERO )
                    MOVE    SYU-SKYMONEY-TAX-SAI
