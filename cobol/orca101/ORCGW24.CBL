@@ -43,6 +43,7 @@
       *  01.00.03    NACL-小豆沢  06.01.19  外泊登録時の実更新区分追加
       *  02.08.00    NACL-太田    06.02.27  減算情報の編集場所変更
       *  03.02.01    NACL-小豆沢  06.08.09  標欠対応
+      *  03.02.02    NACL-小豆沢  06.09.12  定数超過対応
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -592,6 +593,11 @@
                PERFORM 310-HYOUKETULST-SET-SEC
            END-IF
       *
+      *    定数超過区分コンボ
+           IF    ( SPA-W01-STYUKYMD    >=  CONST-H180401 )
+               PERFORM 310-TEISULST-SET-SEC
+           END-IF
+      *
            .
        310-CMB-SYOKI-EXT.
            EXIT.
@@ -884,7 +890,25 @@
                                    TO  SPA-GMN-W24-HYOUKETUMEIL (5)
       *
            .
-       310-TAIKSIKBNLST-SET-EXT.
+       310-HYOUKETULST-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    定数超過区分コンボ
+      *****************************************************************
+       310-TEISULST-SET-SEC    SECTION.
+      *
+           MOVE    2               TO  SPA-GMN-W24-TEISU-MAX
+      *
+           MOVE    "0"             TO  SPA-GMN-W24-TEISUL    (1)
+           MOVE    "定数超過なし"
+                                   TO  SPA-GMN-W24-TEISUMEIL (1)
+      *
+           MOVE    "1"             TO  SPA-GMN-W24-TEISUL    (2)
+           MOVE    "定数超過あり"
+                                   TO  SPA-GMN-W24-TEISUMEIL (2)
+      *
+           .
+       310-TEISULST-SET-EXT.
            EXIT.
       *****************************************************************
       *    入力情報編集処理
@@ -991,6 +1015,16 @@
            ELSE
                MOVE    SPA-GMN-W24-HYOUKETULST (1)
                                        TO  SPA-GMN-W24-HYOUKETU-G
+           END-IF
+      *
+      *    定数超過区分
+           MOVE    SYS-5000-TEISUKBN  TO  WRK-CMB-CD
+           PERFORM 4200-TEISULST-CHK-SEC
+           IF    ( WRK-CMB-ITM     NOT =   SPACE )
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-W24-TEISU-G
+           ELSE
+               MOVE    SPA-GMN-W24-TEISULST (1)
+                                       TO  SPA-GMN-W24-TEISU-G
            END-IF
       *
       *    入院料加算情報
@@ -1459,6 +1493,9 @@
       *    標欠減額区分
            MOVE    W24-HYOUKETU        TO  SPA-GMN-W24-HYOUKETU-G
       *
+      *    定数超過区分
+           MOVE    W24-TEISU           TO  SPA-GMN-W24-TEISU-G
+      *
            .
       *
        4101-GMN-SPA-SET-EXT.
@@ -1602,6 +1639,12 @@
       *
       *    標欠減額区分チェック処理
            PERFORM 4100-HYOUKETU-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
+      *    定数超過区分チェック処理
+           PERFORM 4100-TEISU-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
@@ -2024,6 +2067,10 @@
       *    標欠減額区分
            MOVE    SPA-GMN-W24-HYOUKETU
                                    TO  SYS-5000-HYOUKETUKBN
+      *
+      *    定数超過区分
+           MOVE    SPA-GMN-W24-TEISU
+                                   TO  SYS-5000-TEISUKBN
       *
       *    減算情報
            IF    ( SPA-W01-EDYUKYMD    >=  CONST-H180401 )
@@ -2741,6 +2788,25 @@
        4100-HYOUKETU-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    定数超過区分チェック処理
+      *****************************************************************
+       4100-TEISU-CHK-SEC          SECTION.
+      *
+           MOVE    SPA-GMN-W24-TEISU
+                                       TO  WRK-CMB-CD
+           PERFORM 4200-TEISULST-CHK-SEC
+           IF    ( WRK-CMB-ITM         =   SPACE )
+               MOVE    SPA-GMN-W24-TEISULST (1)
+                                       TO  SPA-GMN-W24-TEISU-G
+           ELSE
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-W24-TEISU-G
+           END-IF
+      *
+           .
+      *
+       4100-TEISU-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    入院時食事療養コンボチェック処理
       *****************************************************************
        4200-SKJRYOYOLST-CHK-SEC    SECTION.
@@ -3097,6 +3163,29 @@
        4200-HYOUKETULST-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    定数超過区分コンボチェック処理
+      *****************************************************************
+       4200-TEISULST-CHK-SEC   SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM-G
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-W24-TEISU-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-W24-TEISUL (IDX-CMB)
+                                       =   WRK-CMB-CD )
+                   MOVE    SPA-GMN-W24-TEISULST (IDX-CMB)
+                                       TO  WRK-CMB-ITM
+                   MOVE    IDX-CMB     TO  WRK-CMB-IDX
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       4200-TEISULST-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    入力情報領域初期化処理
       *****************************************************************
        4201-INPUT-AREA-INIT-SEC        SECTION.
@@ -3185,6 +3274,8 @@
                                    TO  SPA-GMN-W24-TAIKSIKBN-G
            MOVE    SPA-GMN-W24-HYOUKETULST (1)
                                    TO  SPA-GMN-W24-HYOUKETU-G
+           MOVE    SPA-GMN-W24-TEISULST (1)
+                                   TO  SPA-GMN-W24-TEISU-G
       *
       *
       *    入院加算名称編集処理
@@ -3709,6 +3800,21 @@
       *
            END-PERFORM
       *
+      *    定数超過区分
+           MOVE    SPA-GMN-W24-TEISU-G
+                                       TO  W24-TEISU
+           MOVE    SPA-GMN-W24-TEISU-MAX
+                                       TO  W24-TEISU-CNT
+      *
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   W24-TEISU-CNT )
+      *
+      *
+               MOVE    SPA-GMN-W24-TEISULST (IDX0)
+                                       TO  W24-TEISU-ITM (IDX0)
+      *
+           END-PERFORM
+      *
            IF    ( SPA-W01-EDYUKYMD    >=  CONST-H180401 )
                MOVE    "入院加算情報"          TO  W24-FRAME3-LABEL
            ELSE
@@ -3738,6 +3844,7 @@
            MOVE    WIDGET-NORMAL       TO  W24-SYOKUJI-ITM-STATE (1)
            MOVE    WIDGET-NORMAL       TO  W24-SYOKUJI-ITM-STATE (2)
            MOVE    WIDGET-NORMAL       TO  W24-HYOUKETU-STATE
+           MOVE    WIDGET-NORMAL       TO  W24-TEISU-STATE
            MOVE    WIDGET-NORMAL       TO  W24-HYOUKETU-ITM-STATE
       *
            IF    ( SPA-W01-STYUKYMD    =   ZERO )
@@ -3767,6 +3874,12 @@
                MOVE    WIDGET-INSENSITIVE
                                        TO  W24-HYOUKETU-STATE
                                            W24-HYOUKETU-ITM-STATE
+           END-IF
+      *
+           IF    ( SPA-W01-STYUKYMD    <   CONST-H180401 )
+               MOVE    WIDGET-INSENSITIVE
+                                       TO  W24-TEISU-STATE
+                                           W24-TEISU-ITM-STATE
            END-IF
       *
            .
@@ -3881,6 +3994,8 @@
                MOVE    "NACCT_GAIHAKU" TO  MCP-WIDGET
            WHEN    053
                MOVE    "HYOUKETU"      TO  MCP-WIDGET
+           WHEN    054
+               MOVE    "TEISU"         TO  MCP-WIDGET
            WHEN    048
                MOVE    "SENTEI_TANKAIP"
                                        TO  MCP-WIDGET
@@ -4004,6 +4119,8 @@
            WHEN    "NACCT_GAIHAKU"
                MOVE    053             TO  SPA-GMN-W24-CUR
            WHEN    "HYOUKETU"
+               MOVE    054             TO  SPA-GMN-W24-CUR
+           WHEN    "TEISU"
                MOVE    008             TO  SPA-GMN-W24-CUR
            END-EVALUATE
       *
@@ -4057,6 +4174,13 @@
       *
            IF    ( SPA-GMN-W24-CUR     =   53 )
                IF    ( W24-HYOUKETU-STATE
+                                           =   WIDGET-INSENSITIVE )
+                   MOVE    54           TO  SPA-GMN-W24-CUR
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-W24-CUR     =   54 )
+               IF    ( W24-TEISU-STATE
                                            =   WIDGET-INSENSITIVE )
                    MOVE    8           TO  SPA-GMN-W24-CUR
                END-IF

@@ -379,5 +379,14 @@ W24	{
 			item	varchar(32)[05];
 			state	int;
 		};
+		CMB_TEISU	{
+			TEISU	{
+				value	varchar(32);
+				state	int;
+			};
+			count	int;
+			item	varchar(32)[02];
+			state	int;
+		};
 	};
 };

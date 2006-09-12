@@ -74,6 +74,11 @@
                    13  SPA-GMN-W24-HYOUKETU            PIC X(01).
                    13                                  PIC X(01).
                    13  SPA-GMN-W24-HYOUKETUMEI         PIC X(32).
+      *          定数超過区分
+                 11  SPA-GMN-W24-TEISU-G.
+                   13  SPA-GMN-W24-TEISU               PIC X(01).
+                   13                                  PIC X(01).
+                   13  SPA-GMN-W24-TEISUMEI            PIC X(32).
       *          入院加算情報
                  11  SPA-GMN-W24-FRAME3.
                    13  SPA-GMN-W24-NYUKSN-G.
@@ -263,6 +268,14 @@
                        15  SPA-GMN-W24-HYOUKETUL       PIC X(01).
                        15                              PIC X(01).
                        15  SPA-GMN-W24-HYOUKETUMEIL    PIC X(32).
+      *
+      *          定数超過区分
+                 11  SPA-GMN-W24-TEISULST-G.
+                   13  SPA-GMN-W24-TEISU-MAX           PIC 9(03).
+                   13  SPA-GMN-W24-TEISULST            OCCURS  2.
+                       15  SPA-GMN-W24-TEISUL          PIC X(01).
+                       15                              PIC X(01).
+                       15  SPA-GMN-W24-TEISUMEIL       PIC X(32).
       *
              07  SPA-NAI-W24-AREA.
                09  SPA-NAI-W24-SKJSRY-SRYCD-G.

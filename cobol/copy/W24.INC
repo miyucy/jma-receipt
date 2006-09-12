@@ -153,4 +153,14 @@
                                                OCCURS  5.
                 05  W24-HYOUKETU-ITM-STATE     PIC S9(9)
                                                BINARY.
+              04  W24-CMB-TEISU.
+                05  W24-TEISU                  PIC X(32).
+                05  W24-TEISU-STATE            PIC S9(9)
+                                               BINARY.
+                05  W24-TEISU-CNT              PIC S9(9)
+                                               BINARY.
+                05  W24-TEISU-ITM              PIC X(32)
+                                               OCCURS  2.
+                05  W24-TEISU-ITM-STATE        PIC S9(9)
+                                               BINARY.
 
