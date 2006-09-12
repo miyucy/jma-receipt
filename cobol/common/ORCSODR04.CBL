@@ -498,6 +498,7 @@
                MOVE    PTNYUINRRK-REC  TO  TRRK-REC
            ELSE
                MOVE    "0083"          TO  ERRCD-ORDER
+               GO  TO  20021-NYUINRRK-CHK-EXT
            END-IF
       *
       *    診療科と保険組合せの変更は不可
