@@ -2483,22 +2483,6 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>KEIKOKU</name>
-      <x>520</x>
-      <y>584</y>
-      <width>470</width>
-      <height>24</height>
-      <label>*</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>label132</name>
       <x>372</x>
       <y>88</y>
@@ -2674,7 +2658,7 @@
       <can_focus>True</can_focus>
       <accelerator>
 	<modifiers>GDK_SHIFT_MASK</modifiers>
-	<key>GDK_F5S</key>
+	<key>GDK_F5</key>
 	<signal>clicked</signal>
       </accelerator>
       <signal>
@@ -2685,6 +2669,22 @@
       </signal>
       <label>£Á£Ä£ÌÆþÎÏ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>KEIKOKU</name>
+      <x>520</x>
+      <y>584</y>
+      <width>470</width>
+      <height>24</height>
+      <label>*</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
     </widget>
   </widget>
 </widget>
