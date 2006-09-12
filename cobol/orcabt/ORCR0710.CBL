@@ -141,6 +141,7 @@
       *
       *  03.02.01    NACL-門脇    06/08/10  高齢者上限額経過措置対応
       *  03.02.02    NACL-藤原    06/07/31  国保主科対応
+      *  03.02.03    NACL-藤原    06/09/07  福岡地方公費対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -7741,6 +7742,7 @@
                          AND   ( RECE62-TEISYUTUSAKI =   "2"     )
                          AND   ( RECE62-RECESYUBETU  
                                                  NOT =   "6666"  )
+                         AND   ( RECE62-SRYYM        <=  "200609")
                            GO  TO  900-RECE62-READ-SEC
                          ELSE
       *

@@ -113,6 +113,10 @@
       *
       *  02.09.01    NACL-Æ£¸¶    06/04/14  £²£°£°£¶Ç¯£´·î²þÀµÂÐ±þ
       *                                     MONFUNCÂÐ±þ
+      *
+      *  03.02.01    NACL-ÌçÏÆ    06/09/05  £²£°£°£¶Ç¯£±£°·î²þÀµÂÐ±þ
+      *                                     Ä¹´ü£¹£·£´ÂÐ±þ
+      *                                     Ê¡²¬ÃÏÊý¸øÈñÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -364,6 +368,7 @@
                05  FILLER              PIC X(03)   VALUE   "053".  
                05  FILLER              PIC X(03)   VALUE   "012".
                05  FILLER              PIC X(03)   VALUE   "972".
+               05  FILLER              PIC X(03)   VALUE   "974".
       *
                05  FILLER              PIC X(03)   VALUE   "027".  
                05  FILLER              PIC X(03)   VALUE   "013".  
@@ -387,11 +392,12 @@
                05  FILLER              PIC X(03)   VALUE   "053".  
                05  FILLER              PIC X(03)   VALUE   "012".
                05  FILLER              PIC X(03)   VALUE   "972".
+               05  FILLER              PIC X(03)   VALUE   "974".
       *
            03  WRK-SRT-TABLE-R         REDEFINES   WRK-SRT-TABLE.
                05  WRK-SRT-OCC         OCCURS  2.
                    07  WRK-SRT-KOHHKNNUM
-                                       PIC X(03)   OCCURS  22.
+                                       PIC X(03)   OCCURS  23.
       *
       *    °åÎÅµ¡´Ø¡Ê´ðËÜ¾ðÊó¡ËÂàÈòÍÑÎÎ°è
        01  TBL-SYS1001-T.
@@ -1073,12 +1079,14 @@
                    AND   ( HKN-HBTNUM      NOT =   "41"              )    
                    AND   ( COMB-KOHHKNNUM(IDX)(1:1)
                                               >=  "1" AND <=  "8"    )
+                   AND   ( WRK-STYMD (1:6)    <=   "200609"         ) 
                        PERFORM 20011-PREFKBN-40-CHECK-SEC
                    ELSE
       *                Ê¡²¬¸©¤Î¼ÒÊÝ¤Î¤È¤­¡Ê£´£±Ï·¿Í¡Ë
                        IF    ( COMB-HKNNUM     NOT =   "060" AND "067" )
                        AND   ( SYS-1001-PREFNUM    =   "40"            )
                        AND   ( HKN-HBTNUM          =   "41"            )    
+                       AND   ( WRK-STYMD (1:6)     <=   "200609"       ) 
                            IF      COMB-HONKZKKBN      =   "1" 
                                MOVE    2                   TO  IDX1
                            ELSE
@@ -1124,7 +1132,7 @@
                    END-IF
                ELSE
                    MOVE    1                      TO  IDX1
-                   IF   COMB-KOHHKNNUM (IDX)  =  "972"
+                   IF   COMB-KOHHKNNUM (IDX)  =  "972" OR "974"
       *                Ä¹´ü¹â³ÛÎÅÍÜ¥ì¥»µ­ºÜÈ½Äê
                        MOVE    ZERO        TO  FLG-KOHRECEDSP
                        INITIALIZE          ORCSFTNJGNCHKAREA
@@ -1161,7 +1169,8 @@
                                                =   "40"              )
                        AND   ( HKN-HBTNUM  NOT =   "41"              )    
                        AND   ( COMB-KOHHKNNUM(IDX)(1:1)
-                                              >=  "1" AND <=  "8"    )
+                                               >=  "1" AND <=  "8"   )
+                       AND   ( WRK-STYMD (1:6) <=   "200609"         ) 
                            ADD     1                      TO  IDZ    
                            MOVE    COMB-KOHHKNNUM (IDX)   TO 
                                           WRK-SEIKYU-KOHHKNNUM(2 IDZ)
@@ -1392,6 +1401,11 @@
                                WHEN   "F"
                                WHEN   "8"
                                    MOVE    "0" TO  WRK-RECE01-HONKZKKBN
+                               WHEN   "G"
+                               WHEN   "H"
+                               WHEN   "I"
+                               WHEN   "7"
+                                   MOVE    "0" TO  WRK-RECE01-HONKZKKBN
                            END-EVALUATE
                        WHEN    "031"  THRU    "034"  
                            EVALUATE   PTHKN-HOJOKBN
@@ -1400,6 +1414,9 @@
                                    MOVE    "0" TO  WRK-RECE01-HONKZKKBN
                                WHEN   "E"
                                WHEN   "8"
+                                   MOVE    "0" TO  WRK-RECE01-HONKZKKBN
+                               WHEN   "H"
+                               WHEN   "7"
                                    MOVE    "0" TO  WRK-RECE01-HONKZKKBN
                              END-EVALUATE
                        WHEN    "060" 
@@ -1426,6 +1443,8 @@
                              WHEN   "9"
                                  MOVE    "0" TO  WRK-RECE01-HONKZKKBN
                              WHEN   "8"
+                                 MOVE    "0" TO  WRK-RECE01-HONKZKKBN
+                             WHEN   "7"
                                  MOVE    "0" TO  WRK-RECE01-HONKZKKBN
                          END-EVALUATE
                    END-EVALUATE
@@ -1468,6 +1487,7 @@
                    EVALUATE   PTHKN-HOJOKBN
                       WHEN   "9"
                       WHEN   "8"
+                      WHEN   "7"
                           MOVE    PTHKN-HOJOKBN   TO
                                                WRK-RECE01-HOJOKBN
                    END-EVALUATE
@@ -1815,7 +1835,7 @@
                MOVE    2                   TO  IDXX
            END-IF
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       22
+                   UNTIL   IDX >       23
                    OR      TBL-MAX     =   4 
                PERFORM VARYING IDY FROM    1   BY  1
                        UNTIL   IDY >       4

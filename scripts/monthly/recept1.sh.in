@@ -138,7 +138,7 @@ fi
                             if  [ ${11} -eq '06' ] && [ $8 -lt '200601' ]; then
 	                            $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCRCP060 -parameter $9${10}$1$2$3$8$5$6 >> $LOG_FILE
                             fi
-                            if  [ ${11} -eq '40' ]; then
+                            if  [ ${11} -eq '40' ] && [ $8 -lt '200610' ]; then
 	                            $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCRCP400 -parameter $9${10}$1$2$3$8$5$6 >> $LOG_FILE
                             fi
 	                    fi

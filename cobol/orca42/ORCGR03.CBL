@@ -83,8 +83,7 @@
       *  02.08.01    NACL-藤原    06/02/20  主科対応
       *
       *  03.02.01    NACL-藤原    06/07/26  自賠責の枠印刷選択機能対応
-      *
-      *  03.02.01    NACL-藤原    06/08/01  国保主科対応
+      *  03.02.02    NACL-藤原    06/08/01  国保主科対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -184,6 +183,7 @@
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-RECE07          PIC 9(01).
            03  FLG-BTPARA          PIC 9(01).
+           03  FLG-SYUKA           PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -300,6 +300,10 @@
       *    パラメタ
        01  BTPARA-REC.
            COPY    "CPBTPARA.INC".
+      *
+      *    主科
+       01  SYUKA-REC.
+           COPY    "CPSYUKA.INC".
       *
       *    定期請求ジョブチェックサブ
            COPY    "CPORCSTEIKIJOB.INC".
@@ -1425,6 +1429,37 @@
                MOVE    "0003"              TO  SPA-ERRCD
                GO  TO  450-TOUROKU-EXT
            END-IF
+      *
+      *****主科設定済かチェック
+      *****IF    ( SPA-SYUKA-KBN               =   "1" )
+      *****AND   ( SPA-GMN-IKKATU              =   "T" )
+      *****AND   ( SPA-GMN-SYOKBN              =   "T" )
+      *****    IF    ( SPA-DATAKBN1-VALUE          =   "T" )
+      *****    OR    ( SPA-DATAKBN2-VALUE          =   "T" ) 
+      *****    OR    ( SPA-DATAKBN3-VALUE          =   "T" ) 
+      *****        INITIALIZE                  SYUKA-REC
+      *****        MOVE    SPA-HOSPID      TO  SYUKA-HOSPID
+      *****        MOVE    SPA-NAI-SRYYM   TO  SYUKA-SRYYM
+      *****        MOVE    SPA-GMN-NYUGAIKBN
+      *****                                TO  SYUKA-NYUGAIKBN
+      *****        EVALUATE    TRUE
+      *****            WHEN    SPA-DATAKBN1-VALUE  =   "T"
+      *****                MOVE    "%"         TO  SYUKA-TEISYUTUSAKI
+      *****            WHEN    SPA-DATAKBN1-VALUE  =   "T"
+      *****                MOVE    "1"         TO  SYUKA-TEISYUTUSAKI
+      *****            WHEN    SPA-DATAKBN1-VALUE  =   "T"
+      *****                MOVE    "2"         TO  SYUKA-TEISYUTUSAKI
+      *****        END-EVALUATE
+      *****        MOVE    SYUKA-REC       TO  MCPDATA-REC
+      *****        MOVE    "tbl_syuka"     TO  WRK-MCP-TABLE
+      *****        MOVE    "key12"         TO  WRK-MCP-PATHNAME
+      *****        PERFORM 900-SYUKA-READ-SEC
+      *****        IF      FLG-SYUKA       =   1 
+      *****            MOVE    "0100"              TO  SPA-ERRCD
+      *****            GO  TO  450-TOUROKU-EXT
+      *****        END-IF
+      *****    END-IF
+      *****END-IF
       *   
       *    再印刷のときのチェック
            EVALUATE    SPA-GMN-SYOKBN     
@@ -2431,14 +2466,13 @@
                WHEN    "0008"
                    MOVE    "入院のとき労災・自賠責は選択できません"
                                                        TO  SPA-ERRMSG
+               WHEN    "0100"
+                   MOVE    "主科が設定されていません"  TO  SPA-ERRMSG
                WHEN    "1001"
                    MOVE    "レセプト指示コードが更新できません"
                                                        TO  SPA-ERRMSG
                WHEN    "1002"
                    MOVE    "パラメタＤＢが更新できません"
-                                                       TO  SPA-ERRMSG
-               WHEN    "0010"
-                   MOVE    "作成済みの帳票管理ファイルがありません"
                                                        TO  SPA-ERRMSG
                WHEN    "7777"
                    MOVE    WRK-RECEERR                 TO  SPA-ERRMSG
@@ -2659,6 +2693,43 @@
            .
        900-SYSKANRI-INV-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    主科公費情報読込
+      *****************************************************************
+       900-SYUKA-READ-SEC         SECTION.
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+               MOVE    "DBFETCH"       TO  MCP-FUNC
+               CALL    "MONFUNC"       USING
+                                           MCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    ZERO            TO  FLG-SYUKA
+                   MOVE    MCPDATA-REC     TO  SYUKA-REC
+               ELSE
+                   MOVE    1               TO  FLG-SYUKA
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-SYUKA
+           END-IF
+      *
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           .
+       900-SYUKA-READ-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    テーブルクローズ処理
