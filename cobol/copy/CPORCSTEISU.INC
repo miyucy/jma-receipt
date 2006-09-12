@@ -32,6 +32,8 @@
            03  LNK-TEISU-SANTEIYM                 PIC  X(06).
       *算定入院料
            03  LNK-TEISU-SANTEISRYCD              PIC  X(09).
+      *特定入院料区分（０：一般入院料　１：特定入院料）
+           03  LNK-TEISU-TOKUTEINYUIN-KBN         PIC  X(01).
       *返却項目
            03  LNK-TEISU-HENKYAKU-AREA.
       *定数超過返却テーブル
