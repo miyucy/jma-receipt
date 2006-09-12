@@ -3508,6 +3508,14 @@
                END-IF
            END-IF
       *
+      *    標欠と定数超過は同時設定不可とする
+           IF    ( SPA-GMN-W24-HYOUKETU    NOT = SPACE AND "0") AND
+                 ( SPA-GMN-W24-TEISU       NOT = SPACE AND "0")
+                       MOVE    54      TO  SPA-GMN-W24-CUR
+                       MOVE    "1009"  TO  SPA-ERRCD
+                       GO  TO  4900-KANRENCHK-EXT
+           END-IF
+      *
            .
       *
        4900-KANRENCHK-EXT.
@@ -4253,6 +4261,9 @@
                                            DELIMITED   BY  SIZE
                INTO  SPA-ERRMSG
                END-STRING
+           WHEN    "1009"
+               MOVE    "標欠と定数超過は同時設定できません"
+                                       TO  SPA-ERRMSG
            WHEN    "1201"
                MOVE    "更新できませんでした"
                                        TO  SPA-ERRMSG
