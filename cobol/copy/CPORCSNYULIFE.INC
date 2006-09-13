@@ -63,6 +63,6 @@
                    07  LNK-NYULIFE-KANFTN-MONEY       PIC  9(07).
       *
       *復帰コード（１：算定年月エラー　２：患者検索エラー
-      *            ３：入院会計なし）
+      *            ３：入院会計なし　４：入院時生活療養対象外）
            03  LNK-NYULIFE-RC                     PIC S9(9) BINARY.
       *
