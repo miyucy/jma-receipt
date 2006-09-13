@@ -170,7 +170,7 @@
                PERFORM  910-SYSKANRI-READ-SEC
                IF  FLG-SYSKANRI     =      ZERO
                    IF   SYS-5000-HYOUKETUKBN  =  SPACE OR "0"
-                       MOVE   3        TO  LNK-HYOUKETU-RC
+                       CONTINUE
                    ELSE
                        MOVE  SYS-5000-HYOUKETUKBN  TO  WRK-HYOUKETUKBN
                        EVALUATE  SYS-5000-HYOUKETUKBN
@@ -264,6 +264,10 @@
            MOVE    "key10"                 TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
       *
+           IF    (LNK-HYOUKETU-SRYCD(1)    =   SPACE)   AND
+                 (LNK-HYOUKETU-SRYCD(2)    =   SPACE)
+                 MOVE   3        TO  LNK-HYOUKETU-RC
+           END-IF
            .
        200-MAIN-EXT.
            EXIT.

@@ -170,7 +170,7 @@
                PERFORM  910-SYSKANRI-READ-SEC
                IF  FLG-SYSKANRI     =      ZERO
                    IF   SYS-5000-TEISUKBN  =  SPACE OR  "0"
-                       MOVE   3        TO  LNK-TEISU-RC
+                       CONTINUE
                    ELSE
                        MOVE  SYS-5000-TEISUKBN  TO  WRK-TEISUKBN
                        EVALUATE  LNK-TEISU-TOKUTEINYUIN-KBN
@@ -279,8 +279,64 @@
                        IF   WRK-TEISUKBN   =  SYS-5000-TEISUKBN
                            CONTINUE
                        ELSE
-                           MOVE  LNK-TEISU-SRYCD(1) 
-                                              TO  LNK-TEISU-SRYCD(2)
+                           EVALUATE  LNK-TEISU-TOKUTEINYUIN-KBN
+                               WHEN  "0"
+                                   EVALUATE  LNK-TEISU-SANTEISRYCD
+      *                                Œ≈Õ‹…¬≈Ô∆˛±°¥À‹Œ¡£±
+                                       WHEN  "190080610"
+                                       WHEN  "190080710"
+                                       WHEN  "190113910"
+                                       WHEN  "190113810"
+                                       WHEN  "190081310"
+                                       WHEN  "190081410"
+                                       WHEN  "190114510"
+                                       WHEN  "190114610"
+                                       WHEN  "190799810"
+                                       WHEN  "190799910"
+                                       WHEN  "190800510"
+                                       WHEN  "190800610"
+                                       WHEN  "190811410"
+                                       WHEN  "190811510"
+                                       WHEN  "190812110"
+                                       WHEN  "190812210"
+      *                                Œ≈Õ‹…¬≈Ô∆˛±°¥À‹Œ¡£≤
+                                       WHEN  "190121310"
+                                       WHEN  "190121410"
+                                       WHEN  "190121510"
+                                       WHEN  "190121610"
+                                       WHEN  "190121710"
+                                       WHEN  "190121810"
+      *                                Õ≠æ≤ø«Œ≈ΩÍŒ≈Õ‹…¬æ≤∆˛±°¥À‹Œ¡£±
+                                       WHEN  "190098210"
+                                       WHEN  "190116110"
+                                       WHEN  "190806910"
+                                       WHEN  "190812910"
+                                       WHEN  "190098310"
+                                       WHEN  "190116210"
+                                       WHEN  "190807010"
+                                       WHEN  "190813010"
+      *                                Õ≠æ≤ø«Œ≈ΩÍŒ≈Õ‹…¬æ≤∆˛±°¥À‹Œ¡£≤
+                                       WHEN  "190122010"
+                                       WHEN  "190122110"
+                                       WHEN  "190122210"
+                                       WHEN  "190122310"
+                                       WHEN  "190122410"
+                                       WHEN  "190122510"
+      *                                œ∑øÕ∆√ƒÍ∆˛±°¥À‹Œ¡
+                                       WHEN  "190799410"
+                                       WHEN  "190799510"
+                                       WHEN  "190811210"
+                                       WHEN  "190811310"
+                                          MOVE   CONS-TEISU1  TO
+                                                    LNK-TEISU-SRYCD(2)
+                                       WHEN   OTHER
+                                          MOVE   CONS-TEISU2  TO
+                                                    LNK-TEISU-SRYCD(2)
+                                   END-EVALUATE
+                               WHEN  "1"
+                                   MOVE  CONS-TEISU4   TO  
+                                                    LNK-TEISU-SRYCD(2)
+                           END-EVALUATE
                            MOVE    WRK-SANTEIYM   TO
                                                 LNK-TEISU-STARTYM(2)
                            MOVE    SYS-5000-EDYUKYMD(1:6)   TO
@@ -295,6 +351,11 @@
            MOVE    "tbl_syskanri"          TO  MCP-TABLE
            MOVE    "key10"                 TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
+      *
+           IF    (LNK-TEISU-SRYCD(1)    =   SPACE)   AND
+                 (LNK-TEISU-SRYCD(2)    =   SPACE)
+                 MOVE   3        TO  LNK-TEISU-RC
+           END-IF
       *
            .
        200-MAIN-EXT.
