@@ -276,11 +276,16 @@
                    IF   SYS-5000-TEISUKBN  =  SPACE OR "0"
                        CONTINUE
                    ELSE
-                       MOVE  LNK-TEISU-SRYCD(1)  TO  LNK-TEISU-SRYCD(2)
-                       MOVE    WRK-SANTEIYM   TO
+                       IF   WRK-TEISUKBN   =  SYS-5000-TEISUKBN
+                           CONTINUE
+                       ELSE
+                           MOVE  LNK-TEISU-SRYCD(1) 
+                                              TO  LNK-TEISU-SRYCD(2)
+                           MOVE    WRK-SANTEIYM   TO
                                                 LNK-TEISU-STARTYM(2)
-                       MOVE    SYS-5000-EDYUKYMD(1:6)   TO
+                           MOVE    SYS-5000-EDYUKYMD(1:6)   TO
                                                 LNK-TEISU-ENDYM(2)
+                       END-IF
                    END-IF
                ELSE
                    MOVE  2     TO    LNK-TEISU-RC
