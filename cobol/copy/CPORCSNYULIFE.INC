@@ -49,18 +49,18 @@
                    07  LNK-NYULIFE-SKJ-SRYCD          PIC  X(09).
       *入院時生活療養費−食事−金額
                    07  LNK-NYULIFE-SKJ-MONEY          PIC  9(07).
-      *入院時生活療養費−水光熱費−診療コード
-                   07  LNK-NYULIFE-SUI-SRYCD          PIC  X(09).
-      *入院時生活療養費−水光熱費−金額
-                   07  LNK-NYULIFE-SUI-MONEY          PIC  9(07).
+      *入院時生活療養費−環境療養−診療コード
+                   07  LNK-NYULIFE-KAN-SRYCD          PIC  X(09).
+      *入院時生活療養費−環境療養−金額
+                   07  LNK-NYULIFE-KAN-MONEY          PIC  9(07).
       *入院時生活療養費−食事負担−診療コード
                    07  LNK-NYULIFE-SKJFTN-SRYCD       PIC  X(09).
       *入院時生活療養費−食事負担−金額
                    07  LNK-NYULIFE-SKJFTN-MONEY       PIC  9(07).
-      *入院時生活療養費−水光熱費負担−診療コード
-                   07  LNK-NYULIFE-SUIFTN-SRYCD       PIC  X(09).
-      *入院時生活療養費−水光熱費負担−金額
-                   07  LNK-NYULIFE-SUIFTN-MONEY       PIC  9(07).
+      *入院時生活療養費−環境療養負担−診療コード
+                   07  LNK-NYULIFE-KANFTN-SRYCD       PIC  X(09).
+      *入院時生活療養費−環境療養負担−金額
+                   07  LNK-NYULIFE-KANFTN-MONEY       PIC  9(07).
       *
       *復帰コード（１：算定年月エラー　２：患者検索エラー
       *            ３：入院会計なし）
