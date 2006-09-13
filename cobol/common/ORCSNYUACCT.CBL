@@ -39,6 +39,7 @@
       * 01.00.11     NACL-小豆沢  06/03/13  入院会計作成月の制限追加
       * 01.00.12     NACL-多々納  06/04/24  MONFUNC 対応
       * 01.00.13     NACL-多々納  06/08/18  標欠対応追加
+      * 01.00.14     NACL-多々納  06/09/13  定数超過追加
       *****************************************************************
       *
       *
@@ -98,6 +99,7 @@
       *
            03  IDX-TBL             PIC 9(04).
            03  IDH                 PIC 9(04).
+           03  IDH-MAX             PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -182,7 +184,7 @@
       *    療養担当手当て
            03  WRK-RYO-STYMD           PIC X(08).
            03  WRK-RYO-EDYMD           PIC X(08).
-      *    標欠
+      *    標欠・超過
            03  WRK-HYOU-AREA.
                05  WRK-HYOU-SRYCD           PIC X(09).
                05  WRK-HYOU-STYMD.
@@ -198,6 +200,12 @@
                        09  WRK-ZEN-YY           PIC 9(04).
                        09  WRK-ZEN-MM           PIC 9(02).
                    07  WRK-ZEN-DD               PIC 9(02).
+      *    標欠・超過テーブル
+       01  WRK-HYOU-TEISU-TBL.
+           03  WRK-HYOU-TEISU-OCC      OCCURS  2.
+               05  WRK-HYOU-TEISU-SRYCD        PIC  X(09).
+               05  WRK-HYOU-TEISU-STYM         PIC  X(06).
+               05  WRK-HYOU-TEISU-EDYM         PIC  X(06).
       *
        01  TBL-NYUIN-AREA.
            03  TBL-NYUIN-OCC           OCCURS   10.
@@ -281,6 +289,9 @@
       *
       *    標欠情報取得パラメタ
            COPY    "CPORCSHYOUKETU.INC".
+      *
+      *    定数超過情報取得パラメタ
+           COPY    "CPORCSTEISU.INC".
       *
       *
       *****************************************************************
@@ -464,16 +475,8 @@
       *****************************************************************
        200-NYUKHN-SYORI-SEC            SECTION.
       *
-      *    標欠情報取得
-           INITIALIZE                  ORCSHYOUKETU-AREA
-           MOVE    LNK-SCNYUACCT-STSRYYMD(1:6)
-                                       TO  LNK-HYOUKETU-SANTEIYM
-           CALL    "ORCSHYOUKETU"      USING   ORCSHYOUKETU-AREA
-           IF      LNK-HYOUKETU-RC     =   ZERO
-               CONTINUE
-           ELSE
-               INITIALIZE                  LNK-HYOUKETU-HENKYAKU-AREA
-           END-IF
+      *    標欠・超過情報取得
+           PERFORM 2009-HYOU-TEISU-SEC
       *
            MOVE    WRK-STYMD           TO  WRK-KHN-STYMD
            MOVE    WRK-EDYMD           TO  WRK-KHN-EDYMD
@@ -534,6 +537,73 @@
            EXIT.
       *
       *****************************************************************
+      *    標欠・超過情報取得処理
+      *****************************************************************
+       2009-HYOU-TEISU-SEC            SECTION.
+      *
+           INITIALIZE                  WRK-HYOU-TEISU-TBL
+      *    標欠情報取得
+           INITIALIZE                  ORCSHYOUKETU-AREA
+           MOVE    LNK-SCNYUACCT-STSRYYMD(1:6)
+                                       TO  LNK-HYOUKETU-SANTEIYM
+           CALL    "ORCSHYOUKETU"      USING   ORCSHYOUKETU-AREA
+           IF      LNK-HYOUKETU-RC     =   ZERO
+               CONTINUE
+           ELSE
+               INITIALIZE                  LNK-HYOUKETU-HENKYAKU-AREA
+           END-IF
+           MOVE    ZERO                TO  IDH-MAX
+           PERFORM VARYING     IDH     FROM    1   BY  1
+                   UNTIL      (IDH     >   2   )
+               MOVE    LNK-HYOUKETU-SRYCD (IDH)
+                                       TO  WRK-HYOU-TEISU-SRYCD (IDH)
+               MOVE    LNK-HYOUKETU-STARTYM(IDH)
+                                       TO  WRK-HYOU-TEISU-STYM (IDH)
+               MOVE    LNK-HYOUKETU-ENDYM(IDH)
+                                       TO  WRK-HYOU-TEISU-EDYM (IDH)
+           END-PERFORM
+      *
+      *    定数超過
+           INITIALIZE                  ORCSTEISU-AREA
+           MOVE    LNK-SCNYUACCT-STSRYYMD(1:6)
+                                       TO  LNK-TEISU-SANTEIYM
+      *    算定入院料
+           MOVE    LNK-SCNYUACCT-NYUKHN-SRYCD (1)
+                                       TO  LNK-TEISU-SANTEISRYCD
+      *    特定入院料区分
+           MOVE    LNK-SCNYUACCT-TOKUTEINYUIN-KBN
+                                       TO  LNK-TEISU-TOKUTEINYUIN-KBN
+           CALL    "ORCSTEISU"         USING   ORCSTEISU-AREA
+           IF      LNK-TEISU-RC        =   ZERO
+               CONTINUE
+           ELSE
+               INITIALIZE              LNK-TEISU-HENKYAKU-AREA
+           END-IF
+           PERFORM VARYING     IDH     FROM    1   BY  1
+                   UNTIL      (IDH     >   2   )
+               IF      LNK-TEISU-SRYCD (IDH)   NOT =   SPACE
+                   MOVE    LNK-TEISU-SRYCD (IDH)
+                                       TO  WRK-HYOU-TEISU-SRYCD
+                                                             (IDH)
+                   MOVE    LNK-TEISU-STARTYM(IDH)
+                                       TO  WRK-HYOU-TEISU-STYM
+                                                             (IDH)
+                   MOVE    LNK-TEISU-ENDYM(IDH)
+                                       TO  WRK-HYOU-TEISU-EDYM
+                                                             (IDH)
+               END-IF
+           END-PERFORM
+           IF     (WRK-HYOU-TEISU-SRYCD(1)     =   SPACE )  AND
+                  (WRK-HYOU-TEISU-SRYCD(2) NOT =   SPACE )
+               MOVE    WRK-HYOU-TEISU-OCC (2)
+                                       TO  WRK-HYOU-TEISU-OCC (1)
+               MOVE    SPACE           TO  WRK-HYOU-TEISU-OCC (2)
+           END-IF
+           .
+       2009-HYOU-TEISU-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    入院基本編集処理
       *****************************************************************
        2001-NYUKHN-HENSYU-SEC            SECTION.
@@ -558,7 +628,7 @@
                MOVE    WRK-KAGEN-SRYCD     TO  TBL-SRYCD (IDX-N)
            END-IF
       *    標欠設定
-           IF      LNK-HYOUKETU-SRYCD  (1) NOT =   SPACE
+           IF      WRK-HYOU-TEISU-SRYCD  (1) NOT =   SPACE
                PERFORM 20011-HYOUKETU-SYORI-SEC
            END-IF
       *
@@ -584,20 +654,21 @@
       *
            PERFORM VARYING     IDH     FROM    1   BY  1
                    UNTIL      (IDH     >   2   )   OR
-                              (LNK-HYOUKETU-SRYCD (IDH)  =   SPACE )
+                              (WRK-HYOU-TEISU-SRYCD (IDH) =   SPACE )
                INITIALIZE                   WRK-HYOU-AREA
-               MOVE    LNK-HYOUKETU-SRYCD (IDH)    TO  WRK-HYOU-SRYCD
-               MOVE    LNK-HYOUKETU-STARTYM(IDH)   TO  WRK-HYOU-STYM
-               MOVE    LNK-HYOUKETU-ENDYM(IDH)     TO  WRK-HYOU-EDYM
+               MOVE    WRK-HYOU-TEISU-SRYCD (IDH)  TO  WRK-HYOU-SRYCD
+               MOVE    WRK-HYOU-TEISU-STYM  (IDH)  TO  WRK-HYOU-STYM
+               MOVE    WRK-HYOU-TEISU-EDYM  (IDH)  TO  WRK-HYOU-EDYM
       *        標欠終了月の月末
-               IF      LNK-HYOUKETU-ENDYM(IDH) NOT =   "999999"
+               IF      WRK-HYOU-TEISU-EDYM (IDH) NOT =   "999999"
       *            月末算定
                    INITIALIZE                      STS-AREA-DAY
                    INITIALIZE                      LNK-DAY7-AREA
                    MOVE    "71"                TO  LNK-DAY7-IRAI
-                   MOVE    LNK-HYOUKETU-ENDYM(IDH)
+                   MOVE    WRK-HYOU-TEISU-EDYM(IDH)
                                                TO  LNK-DAY7-YM
-                   CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                   CALL    "ORCSDAY"           USING
+                                                   STS-AREA-DAY
                                                    LNK-DAY7-AREA
                    IF      STS-DAY-RC1         =   ZERO
                        MOVE    LNK-DAY7-KOYOMI     TO  WRK-HYOU-EDYMD
