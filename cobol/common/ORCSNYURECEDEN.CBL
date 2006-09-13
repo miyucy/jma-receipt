@@ -43,6 +43,7 @@
       *  01.00.07    NACL-小豆沢  06/04/19  食事記録方法の変更対応
       *  01.00.08    NACL-小豆沢  06/05/23  外泊時の入院基本料取得修正
       *  01.00.09    NACL-小豆沢  06/09/08  標欠対応
+      *  01.00.10    NACL-小豆沢  06/09/13  定数超過対応
       *****************************************************************
       *
       *
@@ -147,6 +148,7 @@
                    07  WRK-NYUINKHN        PIC X(09).
                    07  WRK-SHOKIKSN        PIC X(09).
                    07  WRK-HYOUKETSU       PIC X(09).
+                   07  WRK-TEISU           PIC X(09).
                    07  WRK-GAIHAKU         PIC X(09).
                    07  WRK-NYUKHNKSNKBN    PIC 9(03).
                    07  WRK-GAIHAKU-KBN     PIC 9(01).
@@ -628,7 +630,11 @@
                                    (NSRY-SRYCD(2) NOT = "190107890" AND
                                                         "190107990" AND
                                                         "190108590" AND
-                                                        "190108690")
+                                                        "190108690" AND
+                                                        "190107690" AND
+                                                        "190107790" AND
+                                                        "190122990" AND
+                                                        "190123090")
                                    MOVE   NSRY-SRYCD(2)  TO
                                                    WRK-SHOKIKSN(IDX1)
                                END-IF
@@ -649,6 +655,24 @@
                                                        "190108690")
                                    MOVE   NSRY-SRYCD(3)  TO
                                                    WRK-HYOUKETSU(IDX1)
+                               END-IF
+      *                        定数超過コード
+                               IF  (NSRY-SRYCD(2)  NOT =   SPACE)  AND
+                                   (NSRY-SRYCD(2)  =   "190107690" OR
+                                                       "190107790" OR
+                                                       "190122990" OR
+                                                       "190123090")
+                                   MOVE   NSRY-SRYCD(2)  TO
+                                                   WRK-TEISU(IDX1)
+                               END-IF
+      *                        定数超過コード
+                               IF  (NSRY-SRYCD(3)  NOT =   SPACE)  AND
+                                   (NSRY-SRYCD(3)  =   "190107690" OR
+                                                       "190107790" OR
+                                                       "190122990" OR
+                                                       "190123090")
+                                   MOVE   NSRY-SRYCD(3)  TO
+                                                   WRK-TEISU(IDX1)
                                END-IF
       *                        診療区分
                                MOVE    NACCT-SRYKBN
@@ -1205,6 +1229,14 @@
                    MOVE   WRK-HYOUKETSU(IDX1) TO  WRK-SO-SRYCD
                                            (IDX1 WRK-MEISAISU)
                END-IF
+      *
+      *        定数超過
+               IF      WRK-TEISU(IDX1)      NOT =         SPACE
+                   ADD      1               TO  WRK-MEISAISU
+                   MOVE   WRK-TEISU(IDX1)  TO  WRK-SO-SRYCD
+                                           (IDX1 WRK-MEISAISU)
+               END-IF
+      *
       *        外泊
                IF         WRK-GAIHAKU(IDX1)   NOT =        SPACE
                    ADD      1               TO  WRK-MEISAISU
