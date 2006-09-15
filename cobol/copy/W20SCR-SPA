@@ -164,7 +164,7 @@
       *                    病棟種別
                            11  SPA-GMN-W20-TSBT            PIC X(20).
       *                    特定入院料
-                           11  SPA-GMN-W20-TTOKNYUIN       PIC X(10).
+                           11  SPA-GMN-W20-TTOKNYUIN       PIC X(24).
       *                    病棟科名
                            11  SPA-GMN-W20-TSRYKA          PIC X(20).
       *                    入院基本料点数コード

@@ -468,6 +468,7 @@
            03  WRK-NYUREKILST-ROW          PIC S9(9)   BINARY.
       *
        01  CONST-AREA.
+           03  CONST-H181001               PIC X(08)   VALUE "20061001".
            03  CONST-H180401               PIC X(08)   VALUE "20060401".
            03  CONST-H180701               PIC X(08)   VALUE "20060701".
            03  CONST-NYUREKILST-MAX        PIC 9(05)   VALUE   100.
@@ -4252,12 +4253,28 @@
                        MOVE    ZERO        TO  FLG-TARGET
                        IF    ( SYS-5001-BTU-SBT            =   "04" )
                         AND  ( SYS-5111-BRM-NYUINRYOKBN    =   "05" )
-                           MOVE    1       TO  FLG-TARGET
+                           PERFORM 41011-PT-AGE-SEC
+                           IF    ( WRK-NENREI >=  70 )
+                               MOVE    1       TO  FLG-TARGET
+                           ELSE
+                               IF    ( SYS-5111-SEIKATU-RYOKBN
+                                                           =   SPACE )
+                                   MOVE    1   TO  FLG-TARGET
+                               END-IF
+                           END-IF
                        END-IF
       *
                        IF    ( SYS-5001-BTU-SBT            =   "09" )
                         AND  ( SYS-5111-BRM-NYUINRYOKBN    =   "06" )
-                           MOVE    1       TO  FLG-TARGET
+                           PERFORM 41011-PT-AGE-SEC
+                           IF    ( WRK-NENREI >=  70 )
+                               MOVE    1       TO  FLG-TARGET
+                           ELSE
+                               IF    ( SYS-5111-SEIKATU-RYOKBN
+                                                           =   SPACE )
+                                   MOVE    1   TO  FLG-TARGET
+                               END-IF
+                           END-IF
                        END-IF
       *
                        IF    ( FLG-TARGET  =   1 )
@@ -4415,7 +4432,7 @@
        4101-CMB-TOKNYUIN-SET-EXT.
            EXIT.
       *****************************************************************
-      *    特定入院料コンボ設定処理
+      *    年齢チェック
       *****************************************************************
        41011-PT-AGE-SEC            SECTION.
       *
@@ -15692,6 +15709,30 @@
            .
       *
        800-MCNDATE-EXT.
+           EXIT.
+      *****************************************************************
+      *    年齢計算処理
+      *****************************************************************
+       800-AGECHK-SEC                  SECTION.
+      *
+           INITIALIZE ORCSAGECHKAREA
+           MOVE    SPA-HOSPID          TO  AGECHK-HOSPID
+           MOVE    SPA-NAI-I01-PTID
+                                       TO  AGECHK-PTID
+           MOVE    WRK-KJNYMD          TO  AGECHK-SRYYMD
+           MOVE    SPA-NAI-I01-BIRTHDAY
+                                       TO  AGECHK-BIRTHDAY
+           CALL    "ORCSAGECHK"        USING
+                                           ORCSAGECHKAREA
+           IF    ( AGECHK-RC       =   ZERO )
+               CONTINUE
+           ELSE
+               INITIALIZE  ORCSAGECHKAREA
+           END-IF
+      *
+           .
+      *
+       800-AGECHK-EXT.
            EXIT.
       *****************************************************************
       *    主科決定サブ

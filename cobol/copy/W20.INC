@@ -140,7 +140,7 @@
                     07  W20-TBTUNUM        PIC X(04).
                     07  W20-TNAME          PIC X(20).
                     07  W20-TSBT           PIC X(20).
-                    07  W20-TTOKUTEINYUIN  PIC X(10).
+                    07  W20-TTOKUTEINYUIN  PIC X(24).
                     07  W20-TSRYKA         PIC X(20).
                     07  W20-TKHNRYO        PIC X(30).
                     07  W20-TKHNTEN        PIC X(12).

@@ -43,9 +43,12 @@
                                         PIC  X(40).
       *ÆÃÄêÆþ±¡ÎÁÌ¾¾Î£²
                05  SYS-5110-BTU-TOKUTEINYUIN-NM2
-                                        PIC  X(20).
+                                        PIC  X(24).
+      *À¸³èÎÅÍÜ¶èÊ¬
+               05  SYS-5110-SEIKATU-RYOKBN
+                                        PIC  X(01).
       *Í½È÷
-               05                       PIC  X(431).
+               05                       PIC  X(426).
       *Ã¼Ëö£É£Ä
            03  SYS-5110-TERMID          PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä

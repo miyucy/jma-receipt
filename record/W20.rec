@@ -138,7 +138,7 @@ W20	{
 					value0	varchar(4);
 					value1	varchar(20);
 					value2	varchar(20);
-					value3	varchar(10);
+					value3	varchar(24);
 					value4	varchar(20);
 					value5	varchar(30);
 					value6	varchar(12);
