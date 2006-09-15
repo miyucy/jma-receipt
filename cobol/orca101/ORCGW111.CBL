@@ -144,6 +144,7 @@
            COPY    "W28.INC".
            COPY    "W29.INC".
            COPY    "W30.INC".
+           COPY    "W31.INC".
            COPY    "W60.INC".
            COPY    "W61.INC".
            COPY    "W62.INC".

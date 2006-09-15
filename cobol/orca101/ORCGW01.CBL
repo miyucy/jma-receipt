@@ -75,6 +75,7 @@
       *  01.05.25    NACL-多々納  05/08/31  9700 ユーザプログラム起動追加
       *  01.05.26    NACL-多々納  06/06/09  1102 チェックマスタ機能情報３追加
       *  01.05.27    NACL-多々納  06/07/13  MONFUNC 対応
+      *  01.05.28    NACL-太田    06/09/14  医療区分表示設定画面追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -336,6 +337,8 @@
            03  FILLER              PIC X(35)   VALUE
                "5013 退院事由情報".
            03  FILLER              PIC X(35)   VALUE
+               "5014 医療区分表示情報".
+           03  FILLER              PIC X(35)   VALUE
                "9000 ＣＬＡＩＭ接続情報".
            03  FILLER              PIC X(35)   VALUE
                "9700 ユーザプログラム起動情報".
@@ -343,11 +346,11 @@
                "9800 排他制御情報".
       *
        01  TBL-KANRICD-N-AREAR         REDEFINES   TBL-KANRICD-N-AREA.
-           03  TBL-KANRICD-N-TBL           OCCURS   13.
+           03  TBL-KANRICD-N-TBL           OCCURS   14.
                05  TBL-KANRICD-N           PIC X(04).
                05  TBL-FILLER              PIC X(01).
                05  TBL-KANRICDMEI-N        PIC X(30).
-       01  TBL-KANRICDN-MAX                PIC 9(04)   VALUE   13.
+       01  TBL-KANRICDN-MAX                PIC 9(04)   VALUE   14.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -387,6 +390,8 @@
            COPY    "CPSK1041.INC".
       *
            COPY    "CPSK5013.INC".
+      *
+           COPY    "CPSK5014.INC".
       *
            COPY    "CPSK1101.INC".
       *
@@ -455,6 +460,7 @@
            COPY    "W28.INC".
            COPY    "W29.INC".
            COPY    "W30.INC".
+           COPY    "W31.INC".
            COPY    "W60.INC".
            COPY    "W61.INC".
            COPY    "W62.INC".
@@ -1795,6 +1801,8 @@
                    MOVE    "W23"               TO  SPA-SAKIPG
                WHEN    "5013" 
                    MOVE    "W29"               TO  SPA-SAKIPG
+               WHEN    "5014"
+                   MOVE    "W31"               TO  SPA-SAKIPG
                WHEN    "9000"
                    MOVE    "W99"               TO  SPA-SAKIPG
                WHEN    "9700"
@@ -1886,6 +1894,24 @@
                        MOVE    3                   TO  SPA-GMN-CUR
                        MOVE    "0021"              TO  SPA-ERRCD
                        GO  TO  4101-KAKUTEI-CHK-EXT
+                   END-IF
+      *
+               WHEN    "5014"
+                   IF    ( SPA-GMN-SELNUM      =   ZERO )
+                           MOVE    3           TO  SPA-GMN-CUR
+                           MOVE    "0022"      TO  SPA-ERRCD
+                           GO  TO  4101-KAKUTEI-CHK-EXT
+                   ELSE
+                       IF    ( SPA-NAI-STYUKYMD
+                                           NOT =   SPA-NAI-TSTYUKYMD
+                                                       (SPA-GMN-SELNUM))
+                        OR   ( SPA-NAI-EDYUKYMD
+                                           NOT =   SPA-NAI-TEDYUKYMD
+                                                       (SPA-GMN-SELNUM))
+                           MOVE    3           TO  SPA-GMN-CUR
+                           MOVE    "0022"      TO  SPA-ERRCD
+                           GO  TO  4101-KAKUTEI-CHK-EXT
+                       END-IF
                    END-IF
            END-EVALUATE
       *
@@ -2181,6 +2207,9 @@
                                                    TO  SPA-ERRMSG
                    MOVE    "期間なしで登録して下さい。"
                                                    TO  SPA-ERRMSG(29:)
+               WHEN    "0022"
+                   MOVE    "有効期間の変更はできません。"
+                                                   TO  SPA-ERRMSG
            END-EVALUATE
       *
            MOVE    SPACE                TO  WERR

@@ -56,3 +56,17 @@
                   07  I47-TDAY  PIC X(2) OCCURS 31.
               05  I47-RYOLIST-SELECT
                       PIC X       OCCURS  100 TIMES.
+          03  I47-SCROLLEDWINDOW2.
+            04  I47-NYULIST.
+              05  I47-NYULIST-COUNT   PIC S9(9)   BINARY.
+              05  I47-NYULIST-ROW PIC S9(9)   BINARY.
+              05  I47-NYULIST-ROWATTR PIC S9(9)   BINARY.
+              05  I47-NYULIST-ITEM    OCCURS  3 TIMES.
+                06  I47-TNL-NUM        PIC X(2).
+                06  I47-TNL-MARK       PIC X(1).
+                06  I47-TNL-NAME       PIC X(100).
+                06  I47-TNL-DAYALL     PIC X(2).
+                06  I47-TNL-DAY-G.
+                  07  I47-TNL-DAY      PIC X(2) OCCURS 31.
+              05  I47-NYULIST-SELECT
+                      PIC X       OCCURS  3 TIMES.

@@ -324,6 +324,7 @@ RECORD_files = \
 	C99.rec \
 	CID5.rec \
 	I47.rec \
+	W31.rec \
 
 DEF_files = \
 	HC01.def \
