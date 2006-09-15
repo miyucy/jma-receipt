@@ -4212,7 +4212,6 @@
                        SPA-NAI-I01-BRMKHNKBNCD
                        SPA-NAI-I01-SELNYUKHN
       *
-           MOVE    ZERO            TO  FLG-CMB-EDIT
       *    病棟情報からコンボ項目を設定
            MOVE    "5001"          TO  WRK-KANRICD
            MOVE    SPA-GMN-I01-BTUNAME-CD
@@ -4251,6 +4250,7 @@
                    PERFORM UNTIL ( FLG-SYSKANRI    NOT =   ZERO )
       *
                        MOVE    ZERO        TO  FLG-TARGET
+      *
                        IF    ( SYS-5001-BTU-SBT            =   "04" )
                         AND  ( SYS-5111-BRM-NYUINRYOKBN    =   "05" )
                            PERFORM 41011-PT-AGE-SEC
@@ -4296,34 +4296,39 @@
                    PERFORM 910-DBCLOSECURSOR-SEC
                END-IF
       *
-               IF    ( SYS-5001-BTU-TOKTEI-NYUIN
-                               NOT =   SPACE )
-                   MOVE    "5110"      TO  WRK-KANRICD
-                   IF    ( SYS-5001-BTU-TOKTEI-NYUIN
+               IF    ( SYS-5001-BTU-TOKTEI-NYUIN   NOT =   SPACE )
+                   EVALUATE    TRUE
+                   WHEN  ( SYS-5001-BTU-TOKTEI-NYUIN
                                        =   "01" OR "02" OR "14" )
                        PERFORM 41011-PT-AGE-SEC
                        IF    ( WRK-NENREI  <   15 )
-                           MOVE    1   TO  FLG-CMB-EDIT
+                           MOVE    "5110"      TO  WRK-KANRICD
+                           MOVE    SYS-5001-BTU-TOKTEI-NYUIN
+                                               TO  WRK-KBNCD
+                           MOVE    "2"         TO  WRK-TOKNYUIN-KBN
+                           PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
                        END-IF
-                   ELSE
-                       MOVE        1   TO  FLG-CMB-EDIT
-                   END-IF
-      *
-                   IF    ( FLG-CMB-EDIT    =   1 )
+                   WHEN  ( SYS-5001-BTU-TOKTEI-NYUIN
+                                       =   "13" OR "16" )
+                       MOVE    "5110"      TO  WRK-KANRICD
+                       MOVE    "13"        TO  WRK-KBNCD
+                       MOVE    "2"         TO  WRK-TOKNYUIN-KBN
+                       PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
+                       PERFORM 41011-PT-AGE-SEC
+                       IF    ( WRK-NENREI  >=  70 )
+                           MOVE    "5110"      TO  WRK-KANRICD
+                           MOVE    "16"        TO  WRK-KBNCD
+                           MOVE    "2"         TO  WRK-TOKNYUIN-KBN
+                           PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
+                       END-IF
+                   WHEN    OTHER
+                       MOVE    "5110"      TO  WRK-KANRICD
                        MOVE    SYS-5001-BTU-TOKTEI-NYUIN
-                                       TO  WRK-KBNCD
-                       PERFORM 900-SYSKANRI-KEY10-SEL-SEC
-                       IF    ( FLG-SYSKANRI    =   ZERO )
-                           MOVE    MCPDATA-REC
-                                       TO  SYS-5110-REC
-                           MOVE    SYS-5110-BTU-TOKUTEINYUIN-NM
-                                       TO  WRK-TOKNYUIN-NM
-                           MOVE    "2"     TO  WRK-TOKNYUIN-KBN
-                           MOVE    SYS-5110-KBNCD
-                                       TO  WRK-TOKNYUIN-CD
-                           PERFORM 4101-CMB-TOKNYUIN-DAT-SET-SEC
-                       END-IF
-                   END-IF
+                                           TO  WRK-KBNCD
+                       MOVE    "2"         TO  WRK-TOKNYUIN-KBN
+                       PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
+                   END-EVALUATE
+      *
                END-IF
            END-IF
       *
@@ -4343,40 +4348,34 @@
       *
                IF    ( SYS-5002-BRM-TOKTEI-NYUIN
                                NOT =   SPACE )
-                   MOVE    "5111"      TO  WRK-KANRICD
-                   MOVE    SYS-5002-BRM-TOKTEI-NYUIN
-                                       TO  WRK-KBNCD
-                   PERFORM 900-SYSKANRI-KEY10-SEL-SEC
-                   IF    ( FLG-SYSKANRI    =   ZERO )
-                       MOVE    MCPDATA-REC
-                                       TO  SYS-5111-REC
-                       MOVE    SYS-5111-BRM-TOKUTEINYUIN-NM
-                                       TO  WRK-TOKNYUIN-NM
-                       MOVE    "3"     TO  WRK-TOKNYUIN-KBN
-                       MOVE    SYS-5111-KBNCD
-                                       TO  WRK-TOKNYUIN-CD
-                       PERFORM 4101-CMB-TOKNYUIN-DAT-SET-SEC
-                   END-IF
+                   EVALUATE    TRUE
+                   WHEN    ( SYS-5002-BRM-TOKTEI-NYUIN   =   "02"
+                                                          OR "49")
+                       MOVE    "5111"      TO  WRK-KANRICD
+                       MOVE    "02"        TO  WRK-KBNCD
+                       MOVE    "3"         TO  WRK-TOKNYUIN-KBN
+                       PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
       *
-      *            病室の特定入院料が、診療所老人医療管理料の場合、
-      *            診療所老人医療管理料（３０日以内再入院）もコンボへ
-      *            追加する
-                   IF    ( SYS-5002-BRM-TOKTEI-NYUIN   =   "02" )
                        MOVE    "5111"      TO  WRK-KANRICD
                        MOVE    "23"        TO  WRK-KBNCD
-                       PERFORM 900-SYSKANRI-KEY10-SEL-SEC
-                       IF    ( FLG-SYSKANRI    =   ZERO )
-                           MOVE    MCPDATA-REC
-                                       TO  SYS-5111-REC
-                           MOVE    SYS-5111-BRM-TOKUTEINYUIN-NM
-                                       TO  WRK-TOKNYUIN-NM
-                           MOVE    "3"     TO  WRK-TOKNYUIN-KBN
-                           MOVE    SYS-5111-KBNCD
-                                       TO  WRK-TOKNYUIN-CD
-                           PERFORM 4101-CMB-TOKNYUIN-DAT-SET-SEC
+                       MOVE    "3"         TO  WRK-TOKNYUIN-KBN
+                       PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
+      *
+                       PERFORM 41011-PT-AGE-SEC
+                       IF    ( WRK-NENREI  >=  70 )
+                           MOVE    "5111"      TO  WRK-KANRICD
+                           MOVE    "49"        TO  WRK-KBNCD
+                           MOVE    "3"         TO  WRK-TOKNYUIN-KBN
+                           PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
                        END-IF
       *
-                   END-IF
+                   WHEN    OTHER
+                       MOVE    "5111"      TO  WRK-KANRICD
+                       MOVE    SYS-5002-BRM-TOKTEI-NYUIN
+                                           TO  WRK-KBNCD
+                       MOVE    "3"         TO  WRK-TOKNYUIN-KBN
+                       PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
+                   END-EVALUATE
       *
                END-IF
            END-IF
@@ -4387,46 +4386,29 @@
            IF    ( FLG-RJN         =   1 )
                MOVE    "5111"      TO  WRK-KANRICD
                MOVE    "22"        TO  WRK-KBNCD
-               PERFORM 900-SYSKANRI-KEY10-SEL-SEC
-               IF    ( FLG-SYSKANRI    =   ZERO )
-                   MOVE    MCPDATA-REC     TO  SYS-5111-REC
-                   MOVE    SYS-5111-BRM-TOKUTEINYUIN-NM
-                                           TO  WRK-TOKNYUIN-NM
-                   MOVE    "3"             TO  WRK-TOKNYUIN-KBN
-                   MOVE    SYS-5111-KBNCD
-                                           TO  WRK-TOKNYUIN-CD
-                   PERFORM 4101-CMB-TOKNYUIN-DAT-SET-SEC
-               END-IF
+               MOVE    "3"         TO  WRK-TOKNYUIN-KBN
+               PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
       *
                MOVE    "5111"      TO  WRK-KANRICD
                MOVE    "24"        TO  WRK-KBNCD
-               PERFORM 900-SYSKANRI-KEY10-SEL-SEC
-               IF    ( FLG-SYSKANRI    =   ZERO )
-                   MOVE    MCPDATA-REC     TO  SYS-5111-REC
-                   MOVE    SYS-5111-BRM-TOKUTEINYUIN-NM
-                                           TO  WRK-TOKNYUIN-NM
-                   MOVE    "3"             TO  WRK-TOKNYUIN-KBN
-                   MOVE    SYS-5111-KBNCD
-                                           TO  WRK-TOKNYUIN-CD
-                   PERFORM 4101-CMB-TOKNYUIN-DAT-SET-SEC
-               END-IF
+               MOVE    "3"         TO  WRK-TOKNYUIN-KBN
+               PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
       *
            END-IF
       *
       *    短期滞在手術基本料をコンボに設定
            MOVE    "5111"      TO  WRK-KANRICD
            MOVE    "21"        TO  WRK-KBNCD
-           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
-           IF    ( FLG-SYSKANRI    =   ZERO )
-               MOVE    MCPDATA-REC     TO  SYS-5111-REC
-               MOVE    SYS-5111-BRM-TOKUTEINYUIN-NM
-                                       TO  WRK-TOKNYUIN-NM
-               MOVE    "3"             TO  WRK-TOKNYUIN-KBN
-               MOVE    SYS-5111-KBNCD
-                                       TO  WRK-TOKNYUIN-CD
-               PERFORM 4101-CMB-TOKNYUIN-DAT-SET-SEC
-           END-IF
+           MOVE    "3"         TO  WRK-TOKNYUIN-KBN
+           PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
       *
+           PERFORM 41011-PT-AGE-SEC
+           IF    ( WRK-NENREI  >=  70 )
+               MOVE    "5111"      TO  WRK-KANRICD
+               MOVE    "50"        TO  WRK-KBNCD
+               MOVE    "3"         TO  WRK-TOKNYUIN-KBN
+               PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
+           END-IF
       *
            .
        4101-CMB-TOKNYUIN-SET-EXT.
@@ -4449,6 +4431,32 @@
       *
            .
        41011-PT-AGE-EXT.
+           EXIT.
+      *****************************************************************
+      *    特定入院料コンボデータセット処理
+      *****************************************************************
+       4100-CMB-TOKNYUIN-DAT-SET-SEC   SECTION.
+      *
+           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+           IF    ( FLG-SYSKANRI    =   ZERO )
+               IF    ( WRK-TOKNYUIN-KBN    =   "3" )
+                   MOVE    MCPDATA-REC     TO  SYS-5111-REC
+                   MOVE    SYS-5111-BRM-TOKUTEINYUIN-NM
+                                           TO  WRK-TOKNYUIN-NM
+                   MOVE    SYS-5111-KBNCD
+                                           TO  WRK-TOKNYUIN-CD
+               ELSE
+                   MOVE    MCPDATA-REC     TO  SYS-5110-REC
+                   MOVE    SYS-5110-BTU-TOKUTEINYUIN-NM
+                                           TO  WRK-TOKNYUIN-NM
+                   MOVE    SYS-5110-KBNCD
+                                           TO  WRK-TOKNYUIN-CD
+               END-IF
+               PERFORM 4101-CMB-TOKNYUIN-DAT-SET-SEC
+           END-IF
+      *
+           .
+       4100-CMB-TOKNYUIN-DAT-SET-EXT.
            EXIT.
       *****************************************************************
       *    特定入院料コンボデータセット処理
