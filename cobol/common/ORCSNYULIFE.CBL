@@ -454,7 +454,7 @@
                     PERFORM   VARYING   IDX1   FROM   1  BY  1
                               UNTIL     IDX1   >    31
                         IF    LNK-NYULIFE-KBN(IDX1)   =   "1"
-                            IF  TNKRRK-RRI-FUKUSHI-KBN    =   SPACE
+                            IF  TNKRRK-RRI-FUKUSHI-KBN = SPACE OR "0"
                                 MOVE  "3"   TO
                                             LNK-NYULIFE-FTNKBN1(IDX1)
                             ELSE
