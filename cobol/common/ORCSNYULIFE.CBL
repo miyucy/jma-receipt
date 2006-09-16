@@ -326,8 +326,8 @@
                PERFORM  910-SYSKANRI-READ-SEC
       *        食事情報の退避
                IF     SYS-5000-SHOKUJIRYOYOCD  NOT =  SPACE
-                   PERFORM    VARYING   IDX  FROM  1  BY  1
-                          UNTIL     IDX   >    31
+                   PERFORM    VARYING   IDX1  FROM  1  BY  1
+                          UNTIL     IDX1   >    31
                        IF    LNK-NYULIFE-KBN(IDX1)   =   "1"
       *                   入院時食事療養費
                            IF   SYS-5000-SHOKUJIRYOYOCD  = "197000110"
@@ -517,6 +517,15 @@
                                          LNK-NYULIFE-SKJFTN-MONEY(IDX1)
                     END-EVALUATE
                 END-IF
+                DISPLAY "IDX1 = " IDX1
+                DISPLAY "LNK-NYULIFE-FTNKBN1(IDX1) = " 
+                         LNK-NYULIFE-FTNKBN1(IDX1)
+                DISPLAY "LNK-NYULIFE-FTNKBN2(IDX1) = " 
+                         LNK-NYULIFE-FTNKBN2(IDX1)
+                DISPLAY  "LNK-NYULIFE-SKJFTN-SRYCD(IDX1) = "
+                          LNK-NYULIFE-SKJFTN-SRYCD(IDX1)
+                DISPLAY "LNK-NYULIFE-SKJFTN-MONEY(IDX1) = "
+                         LNK-NYULIFE-SKJFTN-MONEY(IDX1)
              END-PERFORM
       *
       *      生活療養食事標準負担額設定（軽減ありの患者）
@@ -525,6 +534,7 @@
                 IF   LNK-NYULIFE-KBN(IDX1)   =   "1"
                     EVALUATE  LNK-NYULIFE-FTNKBN2(IDX1)
                         WHEN  SPACE
+                              CONTINUE
       *                   所得の状況による軽減
                         WHEN  "1"
                             EVALUATE   LNK-NYULIFE-FTNKBN1(IDX1)
