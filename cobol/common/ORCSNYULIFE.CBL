@@ -280,14 +280,14 @@
       *                        ÉÂ¾õ¤ÎÄøÅÙ¡¢¼£ÎÅ¤ÎÆâÍÆ¤ò¤·¤ó¼à¤·¤ÆÉ¸½à
       *                        ÉéÃ´³Û¤ò·Ú¸º¤¹¤ë´µ¼Ô¤ÎÈ½Äê¡ÊÆþ±¡ÎÁÈ½ÃÇ¡Ë
                                IF  NSRY-SRYCD(1)  =  CONS-RYOYO2A  OR
-                                                       CONS-RYOYO2B  OR
-                                                       CONS-RYOYO2C  OR
-                                                       CONS-SRYOYO2A OR
-                                                       CONS-SRYOYO2B OR
-                                                       CONS-SRYOYO2C OR
-                                                       CONS-KAIFUKU  OR
-                                                       CONS-ROUKAN1  OR
-                                                       CONS-TANKI2
+                                                     CONS-RYOYO2B  OR
+                                                     CONS-RYOYO2C  OR
+                                                     CONS-SRYOYO2A OR
+                                                     CONS-SRYOYO2B OR
+                                                     CONS-SRYOYO2C OR
+                                                     CONS-KAIFUKU  OR
+                                                     CONS-ROUKAN1  OR
+                                                     CONS-TANKI2
                                    MOVE   "1"   TO   
                                              LNK-NYULIFE-FTNKBN2(IDX1)
                                END-IF
@@ -393,7 +393,7 @@
                     PERFORM   VARYING   IDX1   FROM   1  BY  1
                               UNTIL     IDX1   >    31
                         IF   LNK-NYULIFE-KBN(IDX1)   =   "1"
-                            MOVE   "1"    TO  LNK-NYULIFE-FTNKBN2(IDX1)
+                            MOVE   "1"    TO  LNK-NYULIFE-FTNKBN1(IDX1)
                         END-IF
                     END-PERFORM
                   END-IF
@@ -418,7 +418,7 @@
                    PERFORM   VARYING   IDX1   FROM   TSY90-IDX  BY  1
                              UNTIL     IDX1   >    31
                         IF   LNK-NYULIFE-KBN(IDX1)   =   "1"
-                            MOVE   "2"    TO  LNK-NYULIFE-FTNKBN2(IDX1)
+                            MOVE   "2"    TO  LNK-NYULIFE-FTNKBN1(IDX1)
                         END-IF
                    END-PERFORM
                  END-IF
@@ -456,7 +456,7 @@
                         IF    LNK-NYULIFE-KBN(IDX1)   =   "1"
                             IF  TNKRRK-RRI-FUKUSHI-KBN    =   SPACE
                                 MOVE  "3"   TO
-                                            LNK-NYULIFE-FTNKBN2(IDX1)
+                                            LNK-NYULIFE-FTNKBN1(IDX1)
                             ELSE
                                 MOVE  "4"   TO
                                             LNK-NYULIFE-FTNKBN2(IDX1)
@@ -535,9 +535,7 @@
                 IF   LNK-NYULIFE-KBN(IDX1)   =   "1"
                     EVALUATE  LNK-NYULIFE-FTNKBN2(IDX1)
                         WHEN  SPACE
-                              CONTINUE
       *                   ½êÆÀ¤Î¾õ¶·¤Ë¤è¤ë·Ú¸º
-                        WHEN  "1"
                             EVALUATE   LNK-NYULIFE-FTNKBN1(IDX1)
                                 WHEN   "1"
                                 WHEN   "2"
@@ -566,6 +564,7 @@
                                     MOVE   100          TO
                                          LNK-NYULIFE-SKJFTN-MONEY(IDX1)
                             END-EVALUATE
+                        WHEN  "1"
       *                   ÉÂ¾õ¤ÎÄøÅÙ¤Ë¤è¤ë·Ú¸º
                             EVALUATE   LNK-NYULIFE-FTNKBN1(IDX1)
                                 WHEN   SPACE
