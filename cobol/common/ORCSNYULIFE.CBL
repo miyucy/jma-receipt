@@ -459,7 +459,7 @@
                                             LNK-NYULIFE-FTNKBN1(IDX1)
                             ELSE
                                 MOVE  "4"   TO
-                                            LNK-NYULIFE-FTNKBN2(IDX1)
+                                            LNK-NYULIFE-FTNKBN1(IDX1)
                             END-IF
                         END-IF
                     END-PERFORM
