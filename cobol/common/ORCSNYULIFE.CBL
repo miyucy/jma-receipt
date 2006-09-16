@@ -259,6 +259,7 @@
                                                CONS-RYOYO2B     OR
                                                CONS-RYOYO2C     OR
                                                CONS-RYOYO2D     OR
+                                               CONS-RYOYO2E     OR
                                                CONS-RYOYO2TOKU  OR
                                                CONS-SRYOYO2A    OR
                                                CONS-SRYOYO2B    OR
