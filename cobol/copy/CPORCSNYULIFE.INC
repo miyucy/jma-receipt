@@ -43,8 +43,10 @@
                05  LNK-NYULIFE-HENKYAKU-TABLE         OCCURS  31.
       *入院時生活療養費対象区分
                    07  LNK-NYULIFE-KBN                PIC  X(01).
-      *入院時生活療養費負担軽減区分
-                   07  LNK-NYULIFE-FTNKBN             PIC  X(01).
+      *入院時生活療養費負担軽減区分１（所得の状況より軽減）
+                   07  LNK-NYULIFE-FTNKBN1            PIC  X(01).
+      *入院時生活療養費負担軽減区分２（病状の程度等より軽減）
+                   07  LNK-NYULIFE-FTNKBN2            PIC  X(01).
       *入院時生活療養費−食事−診療コード
                    07  LNK-NYULIFE-SKJ-SRYCD          PIC  X(09).
       *入院時生活療養費−食事−金額
