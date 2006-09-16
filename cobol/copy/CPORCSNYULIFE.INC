@@ -42,10 +42,17 @@
       *入院時生活療養費返却テーブル
                05  LNK-NYULIFE-HENKYAKU-TABLE         OCCURS  31.
       *入院時生活療養費対象区分
+      *  （空白：対象外　１：対象）
                    07  LNK-NYULIFE-KBN                PIC  X(01).
+      *入院時食事療養費区分
+      *  （１：食事療養費１　２：食事療養費２）
+                   07  LNK-NYULIFE-SKJKBN             PIC  X(01).
       *入院時生活療養費負担軽減区分１（所得の状況より軽減）
+      *  （空白：軽減無し　１：低所得２　２：低所得２−９０日越
+      *    ３：低所得１　４：低所得１−老齢福祉年金受給者）
                    07  LNK-NYULIFE-FTNKBN1            PIC  X(01).
       *入院時生活療養費負担軽減区分２（病状の程度等より軽減）
+      *  （空白：軽減無し　１：軽減有り）
                    07  LNK-NYULIFE-FTNKBN2            PIC  X(01).
       *入院時生活療養費−食事−診療コード
                    07  LNK-NYULIFE-SKJ-SRYCD          PIC  X(09).
