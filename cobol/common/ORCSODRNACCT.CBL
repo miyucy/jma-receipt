@@ -765,6 +765,30 @@
                MOVE     "0"     TO  LNK-SCNYUACCT-TOKUTEINYUIN-KBN
            ELSE
                MOVE     "1"     TO  LNK-SCNYUACCT-TOKUTEINYUIN-KBN
+      *        œ∑øÕ∆√ƒÍ∆˛±°¥À‹Œ¡µ⁄§” ø¿Æ£±£∏«Ø£∑∑Ó∞ πﬂ§ŒŒ≈Õ‹…¬≈Ô°¢
+      *        Œ≈Õ‹…¬æ≤§ŒæÏπÁ§œ∆√ƒÍ∆˛±°Œ¡∞∑§§§´§È≥∞§π
+               IF    LNK-SCNYUACCT-NYUKHN-SRYCD(1)  =  "190799410" OR
+                                                       "190799510" OR
+                                                       "190121310" OR
+                                                       "190121410" OR
+                                                       "190121510" OR
+                                                       "190121610" OR
+                                                       "190121710" OR
+                                                       "190121810" OR
+                                                       "190122010" OR
+                                                       "190122110" OR
+                                                       "190122210" OR
+                                                       "190122310" OR
+                                                       "190122410" OR
+                                                       "190121510" OR
+                                                       "190123710" OR
+                                                       "190123810" OR
+                                                       "190123910" OR
+                                                       "190124010" OR
+                                                       "190124110" OR
+                                                       "190124210"
+                   MOVE  "0"     TO  LNK-SCNYUACCT-TOKUTEINYUIN-KBN
+               END-IF
            END-IF
       *    ≥∞«Ò
            MOVE   "099999911"   TO  LNK-SCNYUACCT-GAIHAKU-SRYCD
@@ -1695,6 +1719,8 @@
                        MOVE   "190075810"   TO  SYOKIKSN-IN-KHNSRYCD
                WHEN    "15"
                        MOVE   "190813410"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "16"
+                       MOVE   "190124910"   TO  SYOKIKSN-IN-KHNSRYCD
              END-EVALUATE
            END-IF
       *    …¬ºº
@@ -1770,6 +1796,34 @@
                        MOVE   "190122410"   TO  SYOKIKSN-IN-KHNSRYCD
                WHEN    "36"
                        MOVE   "190122510"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "37"
+                       MOVE   "190123710"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "38"
+                       MOVE   "190123810"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "39"
+                       MOVE   "190123910"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "40"
+                       MOVE   "190124010"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "41"
+                       MOVE   "190124110"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "42"
+                       MOVE   "190124210"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "43"
+                       MOVE   "190124310"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "44"
+                       MOVE   "190124410"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "45"
+                       MOVE   "190124510"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "46"
+                       MOVE   "190124610"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "47"
+                       MOVE   "190124710"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "48"
+                       MOVE   "190124810"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "49"
+                       MOVE   "190125010"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "50"
+                       MOVE   "190125310"   TO  SYOKIKSN-IN-KHNSRYCD
              END-EVALUATE
            END-IF
       *
@@ -2820,6 +2874,30 @@
                MOVE     "0"     TO  LNK-SCNYUACCT-TOKUTEINYUIN-KBN
            ELSE
                MOVE     "1"     TO  LNK-SCNYUACCT-TOKUTEINYUIN-KBN
+      *        œ∑øÕ∆√ƒÍ∆˛±°¥À‹Œ¡µ⁄§” ø¿Æ£±£∏«Ø£∑∑Ó∞ πﬂ§ŒŒ≈Õ‹…¬≈Ô°¢
+      *        Œ≈Õ‹…¬æ≤§ŒæÏπÁ§œ∆√ƒÍ∆˛±°Œ¡∞∑§§§´§È≥∞§π
+               IF    LNK-SCNYUACCT-NYUKHN-SRYCD(1)  =  "190799410" OR
+                                                       "190799510" OR
+                                                       "190121310" OR
+                                                       "190121410" OR
+                                                       "190121510" OR
+                                                       "190121610" OR
+                                                       "190121710" OR
+                                                       "190121810" OR
+                                                       "190122010" OR
+                                                       "190122110" OR
+                                                       "190122210" OR
+                                                       "190122310" OR
+                                                       "190122410" OR
+                                                       "190121510" OR
+                                                       "190123710" OR
+                                                       "190123810" OR
+                                                       "190123910" OR
+                                                       "190124010" OR
+                                                       "190124110" OR
+                                                       "190124210"
+                   MOVE  "0"     TO  LNK-SCNYUACCT-TOKUTEINYUIN-KBN
+               END-IF
            END-IF
       *    ≥∞«Ò
            MOVE   "099999911"   TO  LNK-SCNYUACCT-GAIHAKU-SRYCD
