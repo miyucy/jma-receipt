@@ -745,10 +745,12 @@
            MOVE    WRK-KINGAKU-Z       TO  WRK-ZHENSYU12
            PERFORM 800-HENKAN-SEC
            MOVE    WRK-ZHENSYU24       TO  HCN03-JIHI(11)
-      *    ø©ªˆ…È√¥≥€
+      *    ø©ªˆ°¶∆˛±°ª˛¿∏≥ËŒ≈Õ‹»Ò…È√¥≥€
            COMPUTE WRK-SKYMONEY-SKJ
                =   SYU-SKYMONEY-SKJ-KEI
                +   SYU-SKYMONEY-SKJ-JIHI-KEI
+               +   SYU-SKYMONEY-LIFE-KEI
+               +   SYU-SKYMONEY-LIFE-JIHI-KEI
            MOVE    WRK-SKYMONEY-SKJ    TO  WRK-KINGAKU-Z
            MOVE    WRK-KINGAKU-Z       TO  WRK-ZHENSYU12
            PERFORM 800-HENKAN-SEC
