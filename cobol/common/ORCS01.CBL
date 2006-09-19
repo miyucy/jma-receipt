@@ -953,7 +953,7 @@
            MOVE    SPACE           TO  LNK-SYU-KOHTAIYKZKBN.
       *
            PERFORM   VARYING   IDX   FROM   1    BY   1
-             UNTIL   IDX   >   7
+             UNTIL   IDX   >   10
                   MOVE    ZERO     TO  LNK-SYU-SHOKUJI(IDX)
                                        LNK-SYU-SHOKUJI-NISSU(IDX)
            END-PERFORM.              

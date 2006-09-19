@@ -617,15 +617,25 @@
                05  WK-SHOKUJI-HYOJYUNFTN   PIC 9(07)  OCCURS  4.
            03  WK-SHOKUJI-NISSU        PIC 9(02).
            03  WK-SHOKUJI-RYOYOHI      PIC 9(07).
+           03  WK-SHOKUJI-RYOYOHIS     PIC 9(07).
+           03  WK-SHOKUJI-RYOYOHIL     PIC 9(07).
            03  WK-SHOKUJI-RYOYOHI95    PIC 9(07).
            03  WK-SHOKUJI-RYOYOHI96    PIC 9(07).
+           03  WK-SHOKUJI-RYOYOHI95L   PIC 9(07).
+           03  WK-SHOKUJI-RYOYOHI96L   PIC 9(07).
            03  WK-SHOKUJI-JIHI         PIC 9(07).
            03  WK-SHOKUJI-FTN          PIC 9(07).
+           03  WK-SHOKUJI-FTNS         PIC 9(07).
+           03  WK-SHOKUJI-FTNL         PIC 9(07).
            03  WK-SHOKUJI-FTN95        PIC 9(07).
            03  WK-SHOKUJI-FTN96        PIC 9(07).
+           03  WK-SHOKUJI-FTN95L       PIC 9(07).
+           03  WK-SHOKUJI-FTN96L       PIC 9(07).
            03  WK-NYUSKJRYYKBN         PIC X(01).
            03  WK-KNJFTNKIN-SKJ        PIC 9(07).
-           03  WK-RYOYOHI-SKJ          PIC 9(07).
+           03  WK-KNJFTNKIN-SKJ-KEISAN PIC 9(07).
+           03  WK-KNJFTNKIN-SKJS       PIC 9(07).
+           03  WK-KNJFTNKIN-SKJL       PIC 9(07).
            03  WK-SRYCD                PIC X(09).
       *
            03  WK-SHOKUJI-KAIKEI       OCCURS   31.
@@ -641,10 +651,6 @@
                05  WK-ROSAITOKU95      PIC 9(04).
                05  WK-ROSAITOKU96      PIC 9(04).
                05  WK-ROSAITOKU97      PIC 9(04).
-      *
-               05  WK-ROSAITOKU95-X    PIC 9(04).
-               05  WK-ROSAITOKU96-X    PIC 9(04).
-               05  WK-ROSAITOKU97-X    PIC 9(04).
       *
            03  WK-NYULIFE-AREA         OCCURS   31.
                05  WK-NYULIFE-KBN           PIC  X(01).
@@ -836,7 +842,7 @@
            MOVE    ZERO            TO  LNK-SYU-RESE-YKZ-FTN.
       *
            PERFORM   VARYING   IDX   FROM   1    BY   1
-             UNTIL   IDX   >   7
+             UNTIL   IDX   >   10
                   MOVE    ZERO     TO  LNK-SYU-SHOKUJI(IDX)
                                        LNK-SYU-SHOKUJI-NISSU(IDX)
            END-PERFORM.              
@@ -861,6 +867,15 @@
            MOVE           ZERO     TO  LNK-SYU-SKYMONEY-SKJ-JIHI.
            MOVE           ZERO     TO  LNK-SYU-SKYMONEY-SKJ-JIHI-TAX.
            MOVE           ZERO     TO  LNK-SYU-SKYMONEY-SKJ-JIHI-KEI.
+      *
+           MOVE           ZERO     TO  LNK-SYU-RYOYOHI-LIFE.
+           MOVE           ZERO     TO  LNK-SYU-SKYMONEY-LIFE.
+           MOVE           ZERO     TO  LNK-SYU-SKYMONEY-LIFE-TAX.
+           MOVE           ZERO     TO  LNK-SYU-SKYMONEY-LIFE-KEI.
+           MOVE           ZERO     TO  LNK-SYU-RYOYOHI-LIFE-JIHI.
+           MOVE           ZERO     TO  LNK-SYU-SKYMONEY-LIFE-JIHI.
+           MOVE           ZERO     TO  LNK-SYU-SKYMONEY-LIFE-JIHI-TAX.
+           MOVE           ZERO     TO  LNK-SYU-SKYMONEY-LIFE-JIHI-KEI.
       *
            MOVE    ZERO            TO  LNK-SYU-TGMONEY-TAX-SAI
                                        LNK-SYU-RSI-TAX-SAI
@@ -1150,26 +1165,30 @@
       *
       *    ¿¡µ·∂‚≥€§Œ∑◊ªª° ƒ¥¿∞∂‚¥ﬁ§ﬁ§∫°À
            COMPUTE    LNK-SYU-SKYMONEY  =   
-                                 LNK-SYU-SKYMONEY              +
-                                 LNK-SYU-RMSAGAKU              +
-                                 LNK-SYU-SKYMONEY-SKJ-KEI      +
-                                 LNK-SYU-SKYMONEY-SKJ-JIHI-KEI +
-                                 LNK-SYU-TGMONEY(16)           +
-                                 LNK-SYU-TGMONEY-TAX(16)       +
-                                 LNK-SYU-JIHI-TOTAL            +
-                                 LNK-SYU-JIHI-TOTAL-TAX        +
-                                 LNK-SYU-JIHI-TAX.
+                               LNK-SYU-SKYMONEY               +
+                               LNK-SYU-RMSAGAKU               +
+                               LNK-SYU-SKYMONEY-SKJ-KEI       +
+                               LNK-SYU-SKYMONEY-SKJ-JIHI-KEI  +
+                               LNK-SYU-SKYMONEY-LIFE-KEI      +
+                               LNK-SYU-SKYMONEY-LIFE-JIHI-KEI +
+                               LNK-SYU-TGMONEY(16)            +
+                               LNK-SYU-TGMONEY-TAX(16)        +
+                               LNK-SYU-JIHI-TOTAL             +
+                               LNK-SYU-JIHI-TOTAL-TAX         +
+                               LNK-SYU-JIHI-TAX.
       *
            IF   WK-HKNKBN  =   "1"
-                  COMPUTE    LNK-SYU-RSIJIBAI-SKYMONEY     =
-                             LNK-SYU-RSIJIBAI-SKYMONEY     +
-                             LNK-SYU-RMSAGAKU              +
-      *****                  LNK-SYU-SKYMONEY-SKJ-KEI      +
-                             LNK-SYU-SKYMONEY-SKJ-JIHI-KEI +
-                             LNK-SYU-TGMONEY(16)           +
-                             LNK-SYU-TGMONEY-TAX(16)       +
-                             LNK-SYU-JIHI-TOTAL            +
-                             LNK-SYU-JIHI-TOTAL-TAX        +
+                  COMPUTE    LNK-SYU-RSIJIBAI-SKYMONEY      =
+                             LNK-SYU-RSIJIBAI-SKYMONEY      +
+                             LNK-SYU-RMSAGAKU               +
+      *****                  LNK-SYU-SKYMONEY-SKJ-KEI       +
+                             LNK-SYU-SKYMONEY-SKJ-JIHI-KEI  +
+      *****                  LNK-SYU-SKYMONEY-LIFE-KEI      +
+                             LNK-SYU-SKYMONEY-LIFE-JIHI-KEI +
+                             LNK-SYU-TGMONEY(16)            +
+                             LNK-SYU-TGMONEY-TAX(16)        +
+                             LNK-SYU-JIHI-TOTAL             +
+                             LNK-SYU-JIHI-TOTAL-TAX         +
                              LNK-SYU-JIHI-TAX
            END-IF.
       *
@@ -1196,7 +1215,9 @@
                        LNK-SYU-TGMONEY-TAX-SAI        +
                        LNK-SYU-RMSAGAKU-TAX-SAI       +
                        LNK-SYU-SKYMONEY-SKJ-TAX       +
-                       LNK-SYU-SKYMONEY-SKJ-JIHI-TAX
+                       LNK-SYU-SKYMONEY-SKJ-JIHI-TAX  +
+                       LNK-SYU-SKYMONEY-LIFE-TAX      +
+                       LNK-SYU-SKYMONEY-LIFE-JIHI-TAX
       *
            END-IF.     
       *
@@ -1250,13 +1271,14 @@
                 (LNK-SYU-PTFTNRATE       =    ZERO )
                  MOVE    ZERO      TO       LNK-SYU-SKYMONEY
                  COMPUTE    LNK-SYU-SKYMONEY  =   
-                            LNK-SYU-SKYMONEY              +
-                            LNK-SYU-RMSAGAKU              +
-                            LNK-SYU-SKYMONEY-SKJ-JIHI-KEI +
-                            LNK-SYU-TGMONEY(16)           +
-                            LNK-SYU-TGMONEY-TAX(16)       +
-                            LNK-SYU-JIHI-TOTAL            +
-                            LNK-SYU-JIHI-TOTAL-TAX        +
+                            LNK-SYU-SKYMONEY               +
+                            LNK-SYU-RMSAGAKU               +
+                            LNK-SYU-SKYMONEY-SKJ-JIHI-KEI  +
+                            LNK-SYU-SKYMONEY-LIFE-JIHI-KEI +
+                            LNK-SYU-TGMONEY(16)            +
+                            LNK-SYU-TGMONEY-TAX(16)        +
+                            LNK-SYU-JIHI-TOTAL             +
+                            LNK-SYU-JIHI-TOTAL-TAX         +
                             LNK-SYU-JIHI-TAX
            END-IF.
       *    °„»Ûœ´∫“ªÿƒÍ° £±£∞£∞°Û°À°‰
@@ -1335,13 +1357,14 @@
       *
                  MOVE    ZERO      TO       LNK-SYU-SKYMONEY
                  COMPUTE    LNK-SYU-SKYMONEY  =
-                            LNK-SYU-SKYMONEY              +
-                            LNK-SYU-RMSAGAKU              +
-                            LNK-SYU-SKYMONEY-SKJ-JIHI-KEI +
-                            LNK-SYU-TGMONEY(16)           +
-                            LNK-SYU-TGMONEY-TAX(16)       +
-                            LNK-SYU-JIHI-TOTAL            +
-                            LNK-SYU-JIHI-TOTAL-TAX        +
+                            LNK-SYU-SKYMONEY               +
+                            LNK-SYU-RMSAGAKU               +
+                            LNK-SYU-SKYMONEY-SKJ-JIHI-KEI  +
+                            LNK-SYU-SKYMONEY-LIFE-JIHI-KEI +
+                            LNK-SYU-TGMONEY(16)            +
+                            LNK-SYU-TGMONEY-TAX(16)        +
+                            LNK-SYU-JIHI-TOTAL             +
+                            LNK-SYU-JIHI-TOTAL-TAX         +
                             LNK-SYU-JIHI-TAX
            END-IF.
       *
@@ -8391,52 +8414,8 @@
       ******************************************************************
        23043-ROSAITOKU-TAIHI-SEC         SECTION.
       *
-           IF    LNK-SYU-SRYYMD(1:6)   >=   "200604"
-             EVALUATE     ACCT-SRYCDTOTAL
-      *        …∏Ω‡…È√¥≥€° œ´∫“∆˛±°√Ê°À
-               WHEN         197001210
-                 PERFORM    VARYING   IDY   FROM   1   BY   1
-                             UNTIL    IDY    >    31
-                   IF   ACCT-SRYKBN   =   "95"
-                     IF       ACCT-DAY(1 IDY)   NOT =  ZERO
-                       MOVE  ACCT-DAY(1 IDY)  TO  WK-ROSAITOKU95(IDY)
-                     END-IF
-                   END-IF
-                   IF   ACCT-SRYKBN   =   "96"
-                     IF       ACCT-DAY(1 IDY)   NOT =  ZERO
-                       MOVE  ACCT-DAY(1 IDY)  TO  WK-ROSAITOKU96(IDY)
-                     END-IF
-                   END-IF
-                   IF   ACCT-SRYKBN   =   "97"
-                     IF       ACCT-DAY(1 IDY)   NOT =  ZERO
-                       MOVE  ACCT-DAY(1 IDY)  TO  WK-ROSAITOKU97(IDY)
-                     END-IF
-                   END-IF
-                 END-PERFORM
-      *        ∆√ Ãø©≤√ªª
-               WHEN         197000470
-                 PERFORM    VARYING   IDY   FROM   1   BY   1
-                             UNTIL    IDY    >    31
-                   IF   ACCT-SRYKBN   =   "95"
-                     IF       ACCT-DAY(1 IDY)   NOT =  ZERO
-                       MOVE  ACCT-DAY(1 IDY)  TO  WK-ROSAITOKU95-X(IDY)
-                     END-IF
-                   END-IF
-                   IF   ACCT-SRYKBN   =   "96"
-                     IF       ACCT-DAY(1 IDY)   NOT =  ZERO
-                       MOVE  ACCT-DAY(1 IDY)  TO  WK-ROSAITOKU96-X(IDY)
-                     END-IF
-                   END-IF
-                   IF   ACCT-SRYKBN   =   "97"
-                     IF       ACCT-DAY(1 IDY)   NOT =  ZERO
-                       MOVE  ACCT-DAY(1 IDY)  TO  WK-ROSAITOKU97-X(IDY)
-                     END-IF
-                   END-IF
-                 END-PERFORM
-             END-EVALUATE
-           ELSE
-             PERFORM    VARYING   IDY   FROM   1   BY   1
-                         UNTIL    IDY    >    31
+           PERFORM    VARYING   IDY   FROM   1   BY   1
+                       UNTIL    IDY    >    31
                IF   ACCT-SRYKBN   =   "95"
                   IF       ACCT-DAY(1 IDY)   NOT =  ZERO
                       MOVE   ACCT-DAY(1 IDY)  TO   WK-ROSAITOKU95(IDY)
@@ -8452,8 +8431,7 @@
                       MOVE   ACCT-DAY(1 IDY)  TO   WK-ROSAITOKU97(IDY)
                   END-IF
                END-IF
-             END-PERFORM
-           END-IF
+           END-PERFORM
       *
            .
       *
@@ -9346,17 +9324,6 @@
                     COMPUTE   WK-KEISAN    =   WK-KEISAN  *  1.2
                  END-IF
                  MOVE   WK-KEISAN  TO  WK-NYULIFE-SKJ-MONEY(IDY)
-      *
-                 COMPUTE   WK-KEISAN    =   WK-NYULIFE-KAN-MONEY(IDY)
-                                        *   1.2
-                 COMPUTE   WK-KEISAN    =   WK-KEISAN  +   5
-                 COMPUTE   WK-KEISAN    =   WK-KEISAN  /  10
-                 COMPUTE   WK-KEISAN    =   WK-KEISAN  *  10
-                 IF    LNK-SYU-SYUHKNNUM   =   "973"
-                 AND   WK-4001-SKJKBN      =   "2"
-                    COMPUTE   WK-KEISAN    =   WK-KEISAN  *  1.2
-                 END-IF
-                 MOVE   WK-KEISAN  TO  WK-NYULIFE-KAN-MONEY(IDY)
                END-IF
       *
                EVALUATE   WK-SHOKUJIRYOYO(IDY)
@@ -9368,6 +9335,7 @@
                   COMPUTE WK-KEISAN-XX     =  WK-NYULIFE-SKJ-MONEY(IDY)
                                            *  WK-SHOKUJI-NYUINJI(IDY)
                   ADD     WK-KEISAN-XX     TO WK-SHOKUJI-RYOYOHI
+                                              WK-SHOKUJI-RYOYOHIL
                                               WK-SHOKUJI-JIHI
                   ADD     WK-SHOKUJI-NYUINJI(IDY)
                                            TO LNK-SYU-SHOKUJI5-NISSU
@@ -9378,24 +9346,22 @@
                       COMPUTE WK-KEISAN-XX =  WK-SHOKUJI-KINGAKU(6)
                                            *  WK-SHOKUJI-TOKUSYO(IDY)
                       ADD     WK-KEISAN-XX TO WK-SHOKUJI-RYOYOHI
+                                              WK-SHOKUJI-RYOYOHIL
                                               WK-SHOKUJI-JIHI
                       ADD     WK-SHOKUJI-TOKUSYO(IDY)
-                                           TO LNK-SYU-SHOKUJI3-NISSU
-      ***                                  TO LNK-SYU-SHOKUJI8-NISSU
+                                           TO LNK-SYU-SHOKUJI7-NISSU
                       MOVE    WK-SHOKUJI-KINGAKU(6)
-                                           TO LNK-SYU-SHOKUJI3
-      ***                                  TO LNK-SYU-SHOKUJI8
+                                           TO LNK-SYU-SHOKUJI7
                   END-IF
       *
                   IF   WK-SHOKUDOKASAN(IDY)     NOT =  ZERO
                       COMPUTE WK-KEISAN-XX =  WK-SHOKUJI-KINGAKU(7)
                       ADD     WK-KEISAN-XX TO WK-SHOKUJI-RYOYOHI
+                                              WK-SHOKUJI-RYOYOHIL
                                               WK-SHOKUJI-JIHI
-                      ADD     1            TO LNK-SYU-SHOKUJI4-NISSU
-      ***             ADD     1            TO LNK-SYU-SHOKUJI9-NISSU
+                      ADD     1            TO LNK-SYU-SHOKUJI8-NISSU
                       MOVE    WK-SHOKUJI-KINGAKU(7)
-                                           TO LNK-SYU-SHOKUJI4
-      ***                                  TO LNK-SYU-SHOKUJI9
+                                           TO LNK-SYU-SHOKUJI8
                   END-IF
       *
                 WHEN        2
@@ -9405,6 +9371,7 @@
                   COMPUTE WK-KEISAN-XX     =  WK-NYULIFE-SKJ-MONEY(IDY)
                                            *  WK-SHOKUJI-NYUINJI(IDY)
                   ADD     WK-KEISAN-XX     TO WK-SHOKUJI-RYOYOHI
+                                              WK-SHOKUJI-RYOYOHIL
                                               WK-SHOKUJI-JIHI
                   ADD     WK-SHOKUJI-NYUINJI(IDY)
                                            TO LNK-SYU-SHOKUJI6-NISSU
@@ -9417,10 +9384,12 @@
                OR   ( COMB-HKNNUM             =  "971"  OR  "973"  OR
                                                  "068"  OR  "069")
                  ADD   WK-SHOKUJI-JIHI    TO   WK-SHOKUJI-FTN
+                                               WK-SHOKUJI-FTNL
                ELSE
                  COMPUTE WK-KEISAN-XX =  WK-NYULIFE-SKJFTN-MONEY(IDY)
                                       *  WK-SHOKUJI-NYUINJI(IDY)
                  ADD     WK-KEISAN-XX TO WK-SHOKUJI-FTN
+                                         WK-SHOKUJI-FTNL
                  ADD     WK-KEISAN-XX TO WK-DAY-SKJFTN(IDY)
                  MOVE    WK-SHOKUJI-NYUINJI(IDY)
                                       TO WK-DAY-KAISU(IDY)
@@ -9433,20 +9402,52 @@
               IF       ( LNK-SYU-DAY(IDY)              =  "1"  )
               AND      ( WK-GAIHAKU(IDY)        =  ZERO  OR  4 )
       *
-                COMPUTE WK-KEISAN-XX  =   WK-NYULIFE-KAN-MONEY(IDY)
-                ADD     WK-KEISAN-XX  TO  WK-SHOKUJI-RYOYOHI
-                                          WK-SHOKUJI-JIHI
-                ADD     1             TO  LNK-SYU-SHOKUJI7-NISSU
-                MOVE    WK-NYULIFE-KAN-MONEY(IDY)
-                                      TO  LNK-SYU-SHOKUJI7
+                IF    LNK-SYU-SYUHKNNUM   =   "971" OR "973"
+                  COMPUTE   WK-KEISAN    =   WK-NYULIFE-KAN-MONEY(IDY)
+                                         *   1.2
+                  COMPUTE   WK-KEISAN    =   WK-KEISAN  +   5
+                  COMPUTE   WK-KEISAN    =   WK-KEISAN  /  10
+                  COMPUTE   WK-KEISAN    =   WK-KEISAN  *  10
+                  IF    LNK-SYU-SYUHKNNUM   =   "973"
+                  AND   WK-4001-SKJKBN      =   "2"
+                     COMPUTE   WK-KEISAN    =   WK-KEISAN  *  1.2
+                  END-IF
+                  MOVE   WK-KEISAN  TO  WK-NYULIFE-KAN-MONEY(IDY)
+                END-IF
+      *
+                EVALUATE   WK-SHOKUJIRYOYO(IDY)
+      *
+                 WHEN        1
+      *
+                  COMPUTE WK-KEISAN-XX  =   WK-NYULIFE-KAN-MONEY(IDY)
+                  ADD     WK-KEISAN-XX  TO  WK-SHOKUJI-RYOYOHI
+                                            WK-SHOKUJI-RYOYOHIL
+                                            WK-SHOKUJI-JIHI
+                  ADD     1             TO  LNK-SYU-SHOKUJI9-NISSU
+                  MOVE    WK-NYULIFE-KAN-MONEY(IDY)
+                                        TO  LNK-SYU-SHOKUJI9
+      *
+                 WHEN        2
+      *
+                  COMPUTE WK-KEISAN-XX  =   WK-NYULIFE-KAN-MONEY(IDY)
+                  ADD     WK-KEISAN-XX  TO  WK-SHOKUJI-RYOYOHI
+                                            WK-SHOKUJI-RYOYOHIL
+                                            WK-SHOKUJI-JIHI
+                  ADD     1             TO  LNK-SYU-SHOKUJI10-NISSU
+                  MOVE    WK-NYULIFE-KAN-MONEY(IDY)
+                                        TO  LNK-SYU-SHOKUJI10
+      *
+                END-EVALUATE
       *
                 IF   ( COMB-SYU-HKNKOHSBTKBN   =   "8"            )
                 OR   ( COMB-HKNNUM             =  "971"  OR  "973"  OR
                                                   "068"  OR  "069")
                   ADD   WK-SHOKUJI-JIHI    TO   WK-SHOKUJI-FTN
+                                                WK-SHOKUJI-FTNL
                 ELSE
                   COMPUTE WK-KEISAN-XX =  WK-NYULIFE-KANFTN-MONEY(IDY)
                   ADD     WK-KEISAN-XX TO WK-SHOKUJI-FTN
+                                          WK-SHOKUJI-FTNL
                   ADD     WK-KEISAN-XX TO WK-DAY-SKJFTN(IDY)
                 END-IF
       *
@@ -9467,6 +9468,7 @@
                   COMPUTE WK-KEISAN-XX     =  WK-SHOKUJI-KINGAKU(1)
                                            *  WK-SHOKUJI-NYUINJI(IDY)
                   ADD     WK-KEISAN-XX     TO WK-SHOKUJI-RYOYOHI
+                                              WK-SHOKUJI-RYOYOHIS
                                               WK-SHOKUJI-JIHI
                   ADD     WK-SHOKUJI-NYUINJI(IDY)
                                            TO LNK-SYU-SHOKUJI1-NISSU
@@ -9477,6 +9479,7 @@
                       COMPUTE WK-KEISAN-XX =  WK-SHOKUJI-KINGAKU(3)
                                            *  WK-SHOKUJI-TOKUSYO(IDY)
                       ADD     WK-KEISAN-XX TO WK-SHOKUJI-RYOYOHI
+                                              WK-SHOKUJI-RYOYOHIS
                                               WK-SHOKUJI-JIHI
                       ADD     WK-SHOKUJI-TOKUSYO(IDY)
                                            TO LNK-SYU-SHOKUJI3-NISSU
@@ -9487,6 +9490,7 @@
                   IF   WK-SHOKUDOKASAN(IDY)     NOT =  ZERO
                       COMPUTE WK-KEISAN-XX =  WK-SHOKUJI-KINGAKU(4)
                       ADD     WK-KEISAN-XX TO WK-SHOKUJI-RYOYOHI
+                                              WK-SHOKUJI-RYOYOHIS
                                               WK-SHOKUJI-JIHI
                       ADD     1            TO LNK-SYU-SHOKUJI4-NISSU
                       MOVE    WK-SHOKUJI-KINGAKU(4)
@@ -9500,6 +9504,7 @@
                   COMPUTE WK-KEISAN-XX     =  WK-SHOKUJI-KINGAKU(2)
                                            *  WK-SHOKUJI-NYUINJI(IDY)
                   ADD     WK-KEISAN-XX     TO WK-SHOKUJI-RYOYOHI
+                                              WK-SHOKUJI-RYOYOHIS
                                               WK-SHOKUJI-JIHI
                   ADD     WK-SHOKUJI-NYUINJI(IDY)
                                            TO LNK-SYU-SHOKUJI2-NISSU
@@ -9512,6 +9517,7 @@
                OR   ( COMB-HKNNUM             =  "971"  OR  "973"  OR
                                                 "068"  OR  "069")
                 ADD   WK-SHOKUJI-JIHI    TO   WK-SHOKUJI-FTN
+                                              WK-SHOKUJI-FTNS
                ELSE
                 EVALUATE   FLG-SKJ
                   WHEN       0
@@ -9519,6 +9525,7 @@
                      COMPUTE WK-KEISAN-XX =  WK-SHOKUJI-HYOJYUNFTN(1)
                                           *  WK-SHOKUJI-NYUINJI(IDY)
                      ADD     WK-KEISAN-XX TO WK-SHOKUJI-FTN
+                                             WK-SHOKUJI-FTNS
                      MOVE    WK-KEISAN-XX TO WK-DAY-SKJFTN(IDY)
                      MOVE    WK-SHOKUJI-NYUINJI(IDY)
                                           TO WK-DAY-KAISU(IDY)
@@ -9527,6 +9534,7 @@
                      COMPUTE WK-KEISAN-XX =  WK-SHOKUJI-HYOJYUNFTN(2)
                                           *  WK-SHOKUJI-NYUINJI(IDY)
                      ADD     WK-KEISAN-XX TO WK-SHOKUJI-FTN
+                                             WK-SHOKUJI-FTNS
                      MOVE    WK-KEISAN-XX TO WK-DAY-SKJFTN(IDY)
                      MOVE    WK-SHOKUJI-NYUINJI(IDY)
                                           TO WK-DAY-KAISU(IDY)
@@ -9535,6 +9543,7 @@
                      COMPUTE WK-KEISAN-XX =  WK-SHOKUJI-HYOJYUNFTN(3)
                                           *  WK-SHOKUJI-NYUINJI(IDY)
                      ADD     WK-KEISAN-XX TO WK-SHOKUJI-FTN
+                                             WK-SHOKUJI-FTNS
                      MOVE    WK-KEISAN-XX TO WK-DAY-SKJFTN(IDY)
                      MOVE    WK-SHOKUJI-NYUINJI(IDY)
                                           TO WK-DAY-KAISU(IDY)
@@ -9543,6 +9552,7 @@
                      COMPUTE WK-KEISAN-XX =  WK-SHOKUJI-HYOJYUNFTN(4)
                                           *  WK-SHOKUJI-NYUINJI(IDY)
                      ADD     WK-KEISAN-XX TO WK-SHOKUJI-FTN
+                                             WK-SHOKUJI-FTNS
                      MOVE    WK-KEISAN-XX TO WK-DAY-SKJFTN(IDY)
                      MOVE    WK-SHOKUJI-NYUINJI(IDY)
                                           TO WK-DAY-KAISU(IDY)
@@ -9553,82 +9563,80 @@
       *
              END-IF
       *
-             IF       ( WK-ROSAITOKU95(IDY)  NOT =  ZERO       )
-             AND      ( LNK-SYU-DAY(IDY)         =  "2"        )
-      *        …∏Ω‡…È√¥≥€° œ´∫“∆˛±°√Ê°À
-               COMPUTE WK-KEISAN-XX =  WK-SHOKUJI-KINGAKU(5)
-                                    *  WK-ROSAITOKU95(IDY)
-               ADD     WK-KEISAN-XX TO WK-SHOKUJI-RYOYOHI95
-                                       WK-SHOKUJI-FTN95
-             END-IF
-             IF       ( WK-ROSAITOKU95-X(IDY)  NOT =  ZERO     )
-             AND      ( LNK-SYU-DAY(IDY)           =  "2"      )
-      *        ∆√ Ãø©≤√ªª
-               COMPUTE WK-KEISAN-XX =  WK-SHOKUJI-KINGAKU(3)
-                                    *  WK-ROSAITOKU95-X(IDY)
-               ADD     WK-KEISAN-XX TO WK-SHOKUJI-RYOYOHI95
-                                       WK-SHOKUJI-FTN95
-             END-IF
-      *
-             IF       ( WK-ROSAITOKU96(IDY)  NOT =  ZERO       )
-             AND      ( LNK-SYU-DAY(IDY)         =  "2"        )
-      *        …∏Ω‡…È√¥≥€° œ´∫“∆˛±°√Ê°À
-               COMPUTE WK-KEISAN-XX =  WK-SHOKUJI-KINGAKU(5)
-                                    *  WK-ROSAITOKU96(IDY)
-               ADD     WK-KEISAN-XX TO WK-SHOKUJI-RYOYOHI96
-                                       WK-SHOKUJI-FTN96
-             END-IF
-             IF       ( WK-ROSAITOKU96-X(IDY)  NOT =  ZERO     )
-             AND      ( LNK-SYU-DAY(IDY)           =  "2"      )
-      *        ∆√ Ãø©≤√ªª
-               COMPUTE WK-KEISAN-XX =  WK-SHOKUJI-KINGAKU(3)
-                                    *  WK-ROSAITOKU96-X(IDY)
-               ADD     WK-KEISAN-XX TO WK-SHOKUJI-RYOYOHI96
-                                       WK-SHOKUJI-FTN96
-             END-IF
-      *
-             MOVE     ZERO     TO      WK-SHOKUJI-JIHI
-      *
-             IF       ( WK-ROSAITOKU97(IDY)  NOT =  ZERO       )
-             AND      ( LNK-SYU-DAY(IDY)         =  "2"        )
-      *
-      *         …∏Ω‡…È√¥≥€° œ´∫“∆˛±°√Ê°À
-                ADD     WK-ROSAITOKU97(IDY)
-                                          TO  WK-SHOKUJI-NISSU
-                COMPUTE WK-KEISAN-XX  =  WK-SHOKUJI-KINGAKU(5)
-                                      *  WK-ROSAITOKU97(IDY)
-                ADD     WK-KEISAN-XX      TO  WK-SHOKUJI-RYOYOHI
-                                              WK-SHOKUJI-JIHI
-                ADD     WK-ROSAITOKU97(IDY)
-                                          TO  LNK-SYU-SHOKUJI3-NISSU
-                MOVE    WK-SHOKUJI-KINGAKU(5)
-                                          TO  LNK-SYU-SHOKUJI3
-      *
-                IF   COMB-SYU-HKNKOHSBTKBN   =   "8"
-                  ADD   WK-SHOKUJI-JIHI   TO  WK-SHOKUJI-FTN
-                END-IF
-      *
-             END-IF
-      *
-             IF       ( WK-ROSAITOKU97-X(IDY)  NOT =  ZERO     )
-             AND      ( LNK-SYU-DAY(IDY)           =  "2"      )
-      *
-      *         ∆√ Ãø©≤√ªª
-                ADD     WK-ROSAITOKU97-X(IDY)
-                                          TO  WK-SHOKUJI-NISSU
-                COMPUTE WK-KEISAN-XX  =  WK-SHOKUJI-KINGAKU(3)
-                                      *  WK-ROSAITOKU97-X(IDY)
-                ADD     WK-KEISAN-XX      TO  WK-SHOKUJI-RYOYOHI
-                                              WK-SHOKUJI-JIHI
-                ADD     WK-ROSAITOKU97-X(IDY)
-                                          TO  LNK-SYU-SHOKUJI3-NISSU
-                MOVE    WK-SHOKUJI-KINGAKU(3)
-                                          TO  LNK-SYU-SHOKUJI3
-      *
-                IF   COMB-SYU-HKNKOHSBTKBN   =   "8"
-                  ADD   WK-SHOKUJI-JIHI   TO  WK-SHOKUJI-FTN
-                END-IF
-      *
+             IF     WK-NYULIFE-KBN(IDY)   NOT =   SPACE
+               IF       ( WK-ROSAITOKU95(IDY)  NOT =  ZERO       )
+               AND      ( LNK-SYU-DAY(IDY)         =  "2"        )
+      *          …∏Ω‡…È√¥≥€° œ´∫“∆˛±°√Ê°À
+                 COMPUTE WK-KEISAN-XX =  WK-SHOKUJI-KINGAKU(5)
+                                      *  WK-ROSAITOKU95(IDY)
+                 ADD     WK-KEISAN-XX TO WK-SHOKUJI-RYOYOHI95L
+                                         WK-SHOKUJI-FTN95L
+               END-IF
+               IF       ( WK-ROSAITOKU96(IDY)  NOT =  ZERO       )
+               AND      ( LNK-SYU-DAY(IDY)         =  "2"        )
+      *          …∏Ω‡…È√¥≥€° œ´∫“∆˛±°√Ê°À
+                 COMPUTE WK-KEISAN-XX =  WK-SHOKUJI-KINGAKU(5)
+                                      *  WK-ROSAITOKU96(IDY)
+                 ADD     WK-KEISAN-XX TO WK-SHOKUJI-RYOYOHI96L
+                                         WK-SHOKUJI-FTN96L
+               END-IF
+               MOVE     ZERO     TO      WK-SHOKUJI-JIHI
+               IF       ( WK-ROSAITOKU97(IDY)  NOT =  ZERO       )
+               AND      ( LNK-SYU-DAY(IDY)         =  "2"        )
+      *           …∏Ω‡…È√¥≥€° œ´∫“∆˛±°√Ê°À
+                  ADD     WK-ROSAITOKU97(IDY)
+                                            TO  WK-SHOKUJI-NISSU
+                  COMPUTE WK-KEISAN-XX  =  WK-SHOKUJI-KINGAKU(5)
+                                        *  WK-ROSAITOKU97(IDY)
+                  ADD     WK-KEISAN-XX      TO  WK-SHOKUJI-RYOYOHI
+                                                WK-SHOKUJI-RYOYOHIL
+                                                WK-SHOKUJI-JIHI
+                  ADD     WK-ROSAITOKU97(IDY)
+                                            TO  LNK-SYU-SHOKUJI7-NISSU
+                  MOVE    WK-SHOKUJI-KINGAKU(5)
+                                            TO  LNK-SYU-SHOKUJI7
+                  IF   COMB-SYU-HKNKOHSBTKBN   =   "8"
+                    ADD   WK-SHOKUJI-JIHI   TO  WK-SHOKUJI-FTN
+                                                WK-SHOKUJI-FTNL
+                  END-IF
+               END-IF
+             ELSE
+               IF       ( WK-ROSAITOKU95(IDY)  NOT =  ZERO       )
+               AND      ( LNK-SYU-DAY(IDY)         =  "2"        )
+      *          …∏Ω‡…È√¥≥€° œ´∫“∆˛±°√Ê°À
+                 COMPUTE WK-KEISAN-XX =  WK-SHOKUJI-KINGAKU(5)
+                                      *  WK-ROSAITOKU95(IDY)
+                 ADD     WK-KEISAN-XX TO WK-SHOKUJI-RYOYOHI95
+                                         WK-SHOKUJI-FTN95
+               END-IF
+               IF       ( WK-ROSAITOKU96(IDY)  NOT =  ZERO       )
+               AND      ( LNK-SYU-DAY(IDY)         =  "2"        )
+      *          …∏Ω‡…È√¥≥€° œ´∫“∆˛±°√Ê°À
+                 COMPUTE WK-KEISAN-XX =  WK-SHOKUJI-KINGAKU(5)
+                                      *  WK-ROSAITOKU96(IDY)
+                 ADD     WK-KEISAN-XX TO WK-SHOKUJI-RYOYOHI96
+                                         WK-SHOKUJI-FTN96
+               END-IF
+               MOVE     ZERO     TO      WK-SHOKUJI-JIHI
+               IF       ( WK-ROSAITOKU97(IDY)  NOT =  ZERO       )
+               AND      ( LNK-SYU-DAY(IDY)         =  "2"        )
+      *           …∏Ω‡…È√¥≥€° œ´∫“∆˛±°√Ê°À
+                  ADD     WK-ROSAITOKU97(IDY)
+                                            TO  WK-SHOKUJI-NISSU
+                  COMPUTE WK-KEISAN-XX  =  WK-SHOKUJI-KINGAKU(5)
+                                        *  WK-ROSAITOKU97(IDY)
+                  ADD     WK-KEISAN-XX      TO  WK-SHOKUJI-RYOYOHI
+                                                WK-SHOKUJI-RYOYOHIS
+                                                WK-SHOKUJI-JIHI
+                  ADD     WK-ROSAITOKU97(IDY)
+                                            TO  LNK-SYU-SHOKUJI3-NISSU
+                  MOVE    WK-SHOKUJI-KINGAKU(5)
+                                            TO  LNK-SYU-SHOKUJI3
+                  IF   COMB-SYU-HKNKOHSBTKBN   =   "8"
+                    ADD   WK-SHOKUJI-JIHI   TO  WK-SHOKUJI-FTN
+                                                WK-SHOKUJI-FTNS
+                  END-IF
+               END-IF
              END-IF
       *
            END-PERFORM
@@ -13459,54 +13467,50 @@
                  PERFORM   23092-FTNKIN-HIKAKU-TUJYO-SEC
            END-IF.
       *
-      *ø©ªˆŒ≈Õ‹»Ò»Ê≥”
-           IF  ( COMB-KOH1HKNNUM          =   "027" )  OR
-               ( COMB-HKNNUM              =   SPACE ) 
-             MOVE        LNK-SYU-KOH1SKJ-RYOYOHI TO  WK-RYOYOHI-SKJ 
-             IF   LNK-SYU-KOH2HKNNUM   NOT =  SPACE
-               IF  LNK-SYU-KOH2SKJ-RYOYOHI <  WK-RYOYOHI-SKJ
-                   MOVE  LNK-SYU-KOH2SKJ-RYOYOHI TO  WK-RYOYOHI-SKJ
-               END-IF
-             END-IF
-             IF   LNK-SYU-KOH3HKNNUM   NOT =  SPACE
-               IF  LNK-SYU-KOH3SKJ-RYOYOHI <  WK-RYOYOHI-SKJ
-                   MOVE  LNK-SYU-KOH3SKJ-RYOYOHI TO  WK-RYOYOHI-SKJ          
-               END-IF
-             END-IF
-             IF   LNK-SYU-KOH4HKNNUM   NOT =  SPACE
-               IF  LNK-SYU-KOH4SKJ-RYOYOHI <  WK-RYOYOHI-SKJ
-                   MOVE  LNK-SYU-KOH4SKJ-RYOYOHI TO  WK-RYOYOHI-SKJ          
-               END-IF
-             END-IF
-           ELSE
-             MOVE        LNK-SYU-SYUSKJ-RYOYOHI  TO  WK-RYOYOHI-SKJ 
-             IF   LNK-SYU-KOH1HKNNUM   NOT =  SPACE
-               IF  LNK-SYU-KOH1SKJ-RYOYOHI <  WK-RYOYOHI-SKJ
-                   MOVE  LNK-SYU-KOH1SKJ-RYOYOHI TO  WK-RYOYOHI-SKJ
-               END-IF 
-             END-IF
-             IF   LNK-SYU-KOH2HKNNUM   NOT =  SPACE
-               IF  LNK-SYU-KOH2SKJ-RYOYOHI <  WK-RYOYOHI-SKJ
-                   MOVE  LNK-SYU-KOH2SKJ-RYOYOHI TO  WK-RYOYOHI-SKJ
-               END-IF
-             END-IF
-             IF   LNK-SYU-KOH3HKNNUM   NOT =  SPACE
-               IF  LNK-SYU-KOH3SKJ-RYOYOHI <  WK-RYOYOHI-SKJ
-                   MOVE  LNK-SYU-KOH3SKJ-RYOYOHI TO  WK-RYOYOHI-SKJ
-               END-IF
-             END-IF 
-             IF   LNK-SYU-KOH4HKNNUM   NOT =  SPACE
-               IF  LNK-SYU-KOH4SKJ-RYOYOHI <  WK-RYOYOHI-SKJ
-                   MOVE  LNK-SYU-KOH4SKJ-RYOYOHI TO  WK-RYOYOHI-SKJ
-               END-IF
-             END-IF
-           END-IF.
-      *
       *    º˝«º•∆°º•÷•Î§Œ¿¡µ·≥€§Ú•ª•√•»
            MOVE    WK-KNJFTNKIN             TO  LNK-SYU-SKYMONEY.
+      *
+           IF   LNK-SYU-SRYYMD(1:6)       <   "200610"
+              MOVE   WK-SHOKUJI-RYOYOHI     TO  WK-SHOKUJI-RYOYOHIS
+              MOVE   ZERO                   TO  WK-SHOKUJI-RYOYOHIL
+              MOVE   WK-KNJFTNKIN-SKJ       TO  WK-KNJFTNKIN-SKJS
+              MOVE   ZERO                   TO  WK-KNJFTNKIN-SKJL
+           ELSE
+              COMPUTE  WK-KNJFTNKIN-SKJ-KEISAN  =  WK-SHOKUJI-FTNS
+                                                +  WK-SHOKUJI-FTNL
+              IF     WK-KNJFTNKIN-SKJ  =  ZERO
+                 MOVE     ZERO       TO  WK-KNJFTNKIN-SKJS
+                 MOVE     ZERO       TO  WK-KNJFTNKIN-SKJL
+              ELSE
+                 IF  WK-KNJFTNKIN-SKJ  =  WK-KNJFTNKIN-SKJ-KEISAN
+                    MOVE   WK-SHOKUJI-FTNS  TO  WK-KNJFTNKIN-SKJS
+                    MOVE   WK-SHOKUJI-FTNL  TO  WK-KNJFTNKIN-SKJL
+                 ELSE
+                    IF     WK-NYULIFE-KBN(1)  =   SPACE
+                      IF   WK-KNJFTNKIN-SKJ  >=  WK-SHOKUJI-FTNS
+                         MOVE   WK-SHOKUJI-FTNS  TO  WK-KNJFTNKIN-SKJS
+                         COMPUTE  WK-KNJFTNKIN-SKJL =  WK-KNJFTNKIN-SKJ
+                                                    -  WK-SHOKUJI-FTNS
+                      ELSE
+                         MOVE   WK-KNJFTNKIN-SKJ TO  WK-KNJFTNKIN-SKJS
+                         MOVE   ZERO             TO  WK-KNJFTNKIN-SKJL
+                      END-IF
+                    ELSE
+                      IF   WK-KNJFTNKIN-SKJ  >=  WK-SHOKUJI-FTNL
+                         MOVE   WK-SHOKUJI-FTNL  TO  WK-KNJFTNKIN-SKJL
+                         COMPUTE  WK-KNJFTNKIN-SKJS =  WK-KNJFTNKIN-SKJ
+                                                    -  WK-SHOKUJI-FTNL
+                      ELSE
+                         MOVE   WK-KNJFTNKIN-SKJ TO  WK-KNJFTNKIN-SKJL
+                         MOVE   ZERO             TO  WK-KNJFTNKIN-SKJS
+                      END-IF
+                    END-IF
+                 END-IF
+              END-IF
+           END-IF
       *    ø©ªˆŒ≈Õ‹»Ò°¶ø©ªˆ…È√¥≥€§Ú•ª•√•»
-           MOVE    WK-RYOYOHI-SKJ           TO  LNK-SYU-RYOYOHI-SKJ.
-           MOVE    WK-KNJFTNKIN-SKJ         TO  LNK-SYU-SKYMONEY-SKJ.
+           MOVE    WK-SHOKUJI-RYOYOHIS      TO  LNK-SYU-RYOYOHI-SKJ.
+           MOVE    WK-KNJFTNKIN-SKJS        TO  LNK-SYU-SKYMONEY-SKJ.
            IF   LNK-SYU-SYUSKJ-FTNKBN  =  "4"
              IF    COMB-SYU-HKNKOHSBTKBN  =  "8" 
                IF    COMB-HOJOKBN           =  "1" 
@@ -13524,6 +13528,27 @@
            END-IF.
            COMPUTE  LNK-SYU-SKYMONEY-SKJ-KEI = LNK-SYU-SKYMONEY-SKJ
                                              + LNK-SYU-SKYMONEY-SKJ-TAX.
+      *    ø©ªˆŒ≈Õ‹»Ò°¶ø©ªˆ…È√¥≥€§Ú•ª•√•»° ¿∏≥Ë°À
+           MOVE    WK-SHOKUJI-RYOYOHIL     TO  LNK-SYU-RYOYOHI-LIFE.
+           MOVE    WK-KNJFTNKIN-SKJL       TO  LNK-SYU-SKYMONEY-LIFE.
+           IF   LNK-SYU-SYUSKJ-FTNKBN  =  "4"
+             IF    COMB-SYU-HKNKOHSBTKBN  =  "8"
+               IF    COMB-HOJOKBN           =  "1"
+                 CONTINUE
+               ELSE
+                 IF    WK-TAX1001-KBN  =  "1"
+                    COMPUTE LNK-SYU-SKYMONEY-LIFE-TAX   =
+                          ( LNK-SYU-SKYMONEY-LIFE *   0.05 )  +  0.5
+                 ELSE
+                    COMPUTE LNK-SYU-SKYMONEY-LIFE-TAX   =
+                            LNK-SYU-SKYMONEY-LIFE *   0.05
+                 END-IF
+               END-IF
+             END-IF
+           END-IF.
+           COMPUTE  LNK-SYU-SKYMONEY-LIFE-KEI
+                                    = LNK-SYU-SKYMONEY-LIFE
+                                    + LNK-SYU-SKYMONEY-LIFE-TAX.
       *    ∆√ƒÍº¿¥µ§¨§¢§Î ˝§Œ∆√Œ„ΩËÕ˝
            IF  ((LNK-SYU-KOH1HKNNUM    =  "051") AND (FLG-HIKAKU = 1))
            OR  ((LNK-SYU-KOH2HKNNUM    =  "051") AND (FLG-HIKAKU = 2))
@@ -13532,28 +13557,38 @@
              IF    LNK-SYU-SRYYMD(1:6)   <  "200310"
                COMPUTE   WK-FTN   =   LNK-SYU-SKYMONEY  
                                   +   LNK-SYU-SKYMONEY-SKJ-KEI
+                                  +   LNK-SYU-SKYMONEY-LIFE-KEI
                COMPUTE   WK-FTN   =   WK-FTN     +   5
                COMPUTE   WK-FTN   =   WK-FTN     /  10
                COMPUTE   WK-FTN   =   WK-FTN     *  10
                IF        WK-FTN    >=  14000
                  COMPUTE  LNK-SYU-SKYMONEY  =  LNK-SYU-SKYMONEY    
                                             +  LNK-SYU-SKYMONEY-SKJ-KEI
+                                            +  LNK-SYU-SKYMONEY-LIFE-KEI
                  MOVE      ZERO            TO  LNK-SYU-SKYMONEY-SKJ
                                                LNK-SYU-SKYMONEY-SKJ-TAX
                                                LNK-SYU-SKYMONEY-SKJ-KEI
+                 MOVE      ZERO            TO  LNK-SYU-SKYMONEY-LIFE
+                                               LNK-SYU-SKYMONEY-LIFE-TAX
+                                               LNK-SYU-SKYMONEY-LIFE-KEI
                END-IF
              ELSE
                COMPUTE   WK-FTN   =   LNK-SYU-SKYMONEY  
                                   +   LNK-SYU-SKYMONEY-SKJ-KEI
+                                  +   LNK-SYU-SKYMONEY-LIFE-KEI
                COMPUTE   WK-FTN   =   WK-FTN     +   5
                COMPUTE   WK-FTN   =   WK-FTN     /  10
                COMPUTE   WK-FTN   =   WK-FTN     *  10
                IF        WK-FTN    >=  WK-TAIHI-NYUJGNGAK(FLG-HIKAKU)
                  COMPUTE  LNK-SYU-SKYMONEY  =  LNK-SYU-SKYMONEY    
                                             +  LNK-SYU-SKYMONEY-SKJ-KEI
+                                            +  LNK-SYU-SKYMONEY-LIFE-KEI
                  MOVE      ZERO            TO  LNK-SYU-SKYMONEY-SKJ
                                                LNK-SYU-SKYMONEY-SKJ-TAX
                                                LNK-SYU-SKYMONEY-SKJ-KEI
+                 MOVE      ZERO            TO  LNK-SYU-SKYMONEY-LIFE
+                                               LNK-SYU-SKYMONEY-LIFE-TAX
+                                               LNK-SYU-SKYMONEY-LIFE-KEI
                END-IF
              END-IF
            END-IF.
@@ -13570,15 +13605,20 @@
              OR ((LNK-SYU-KOH4HKNNUM    =  "015") AND (FLG-HIKAKU = 4))
                COMPUTE   WK-FTN   =   LNK-SYU-SKYMONEY  
                                   +   LNK-SYU-SKYMONEY-SKJ-KEI
+                                  +   LNK-SYU-SKYMONEY-LIFE-KEI
                COMPUTE   WK-FTN   =   WK-FTN     +   5
                COMPUTE   WK-FTN   =   WK-FTN     /  10
                COMPUTE   WK-FTN   =   WK-FTN     *  10
                IF        WK-FTN    >=  WK-TAIHI-NYUJGNGAK(FLG-HIKAKU)
                  COMPUTE  LNK-SYU-SKYMONEY  =  LNK-SYU-SKYMONEY    
                                             +  LNK-SYU-SKYMONEY-SKJ-KEI
+                                            +  LNK-SYU-SKYMONEY-LIFE-KEI
                  MOVE      ZERO            TO  LNK-SYU-SKYMONEY-SKJ
                                                LNK-SYU-SKYMONEY-SKJ-TAX
                                                LNK-SYU-SKYMONEY-SKJ-KEI
+                 MOVE      ZERO            TO  LNK-SYU-SKYMONEY-LIFE
+                                               LNK-SYU-SKYMONEY-LIFE-TAX
+                                               LNK-SYU-SKYMONEY-LIFE-KEI
                END-IF
              END-IF
       *      ∞È¿Æ§¨§¢§Î ˝§Œ∆√Œ„ΩËÕ˝
@@ -13588,15 +13628,20 @@
              OR ((LNK-SYU-KOH4HKNNUM    =  "016") AND (FLG-HIKAKU = 4))
                COMPUTE   WK-FTN   =   LNK-SYU-SKYMONEY  
                                   +   LNK-SYU-SKYMONEY-SKJ-KEI
+                                  +   LNK-SYU-SKYMONEY-LIFE-KEI
                COMPUTE   WK-FTN   =   WK-FTN     +   5
                COMPUTE   WK-FTN   =   WK-FTN     /  10
                COMPUTE   WK-FTN   =   WK-FTN     *  10
                IF        WK-FTN    >=  WK-TAIHI-NYUJGNGAK(FLG-HIKAKU)
                  COMPUTE  LNK-SYU-SKYMONEY  =  LNK-SYU-SKYMONEY    
                                             +  LNK-SYU-SKYMONEY-SKJ-KEI
+                                            +  LNK-SYU-SKYMONEY-LIFE-KEI
                  MOVE      ZERO            TO  LNK-SYU-SKYMONEY-SKJ
                                                LNK-SYU-SKYMONEY-SKJ-TAX
                                                LNK-SYU-SKYMONEY-SKJ-KEI
+                 MOVE      ZERO            TO  LNK-SYU-SKYMONEY-LIFE
+                                               LNK-SYU-SKYMONEY-LIFE-TAX
+                                               LNK-SYU-SKYMONEY-LIFE-KEI
                END-IF
              END-IF
             END-IF
@@ -13617,15 +13662,20 @@
                                               AND (FLG-HIKAKU = 4))
                 COMPUTE   WK-FTN   =   LNK-SYU-SKYMONEY  
                                    +   LNK-SYU-SKYMONEY-SKJ-KEI
+                                   +   LNK-SYU-SKYMONEY-LIFE-KEI
                 COMPUTE   WK-FTN   =   WK-FTN     +   5
                 COMPUTE   WK-FTN   =   WK-FTN     /  10
                 COMPUTE   WK-FTN   =   WK-FTN     *  10
                 IF        WK-FTN    >=  WK-TAIHI-NYUJGNGAK(FLG-HIKAKU)
-                  COMPUTE  LNK-SYU-SKYMONEY  =  LNK-SYU-SKYMONEY    
-                                             +  LNK-SYU-SKYMONEY-SKJ-KEI
-                  MOVE      ZERO            TO  LNK-SYU-SKYMONEY-SKJ
-                                                LNK-SYU-SKYMONEY-SKJ-TAX
-                                                LNK-SYU-SKYMONEY-SKJ-KEI
+                 COMPUTE  LNK-SYU-SKYMONEY  =  LNK-SYU-SKYMONEY    
+                                            +  LNK-SYU-SKYMONEY-SKJ-KEI
+                                            +  LNK-SYU-SKYMONEY-LIFE-KEI
+                 MOVE      ZERO            TO  LNK-SYU-SKYMONEY-SKJ
+                                               LNK-SYU-SKYMONEY-SKJ-TAX
+                                               LNK-SYU-SKYMONEY-SKJ-KEI
+                 MOVE      ZERO            TO  LNK-SYU-SKYMONEY-LIFE
+                                               LNK-SYU-SKYMONEY-LIFE-TAX
+                                               LNK-SYU-SKYMONEY-LIFE-KEI
                 END-IF
                END-IF
              END-IF
@@ -13642,15 +13692,20 @@
                OR ((LNK-SYU-KOH4HKNNUM = "186") AND (FLG-HIKAKU = 4))
                 COMPUTE   WK-FTN   =   LNK-SYU-SKYMONEY  
                                    +   LNK-SYU-SKYMONEY-SKJ-KEI
+                                   +   LNK-SYU-SKYMONEY-LIFE-KEI
                 COMPUTE   WK-FTN   =   WK-FTN     +   5
                 COMPUTE   WK-FTN   =   WK-FTN     /  10
                 COMPUTE   WK-FTN   =   WK-FTN     *  10
                 IF        WK-FTN    >=  WK-TAIHI-NYUJGNGAK(FLG-HIKAKU)
-                  COMPUTE  LNK-SYU-SKYMONEY  =  LNK-SYU-SKYMONEY    
-                                             +  LNK-SYU-SKYMONEY-SKJ-KEI
-                  MOVE      ZERO            TO  LNK-SYU-SKYMONEY-SKJ
-                                                LNK-SYU-SKYMONEY-SKJ-TAX
-                                                LNK-SYU-SKYMONEY-SKJ-KEI
+                 COMPUTE  LNK-SYU-SKYMONEY  =  LNK-SYU-SKYMONEY    
+                                            +  LNK-SYU-SKYMONEY-SKJ-KEI
+                                            +  LNK-SYU-SKYMONEY-LIFE-KEI
+                 MOVE      ZERO            TO  LNK-SYU-SKYMONEY-SKJ
+                                               LNK-SYU-SKYMONEY-SKJ-TAX
+                                               LNK-SYU-SKYMONEY-SKJ-KEI
+                 MOVE      ZERO            TO  LNK-SYU-SKYMONEY-LIFE
+                                               LNK-SYU-SKYMONEY-LIFE-TAX
+                                               LNK-SYU-SKYMONEY-LIFE-KEI
                 END-IF
                END-IF
              END-IF
@@ -13666,15 +13721,20 @@
              OR ((LNK-SYU-KOH4HKNNUM    =  "052") AND (FLG-HIKAKU = 4))
                COMPUTE   WK-FTN   =   LNK-SYU-SKYMONEY  
                                   +   LNK-SYU-SKYMONEY-SKJ-KEI
+                                  +   LNK-SYU-SKYMONEY-LIFE-KEI
                COMPUTE   WK-FTN   =   WK-FTN     +   5
                COMPUTE   WK-FTN   =   WK-FTN     /  10
                COMPUTE   WK-FTN   =   WK-FTN     *  10
                IF        WK-FTN    >=  WK-TAIHI-NYUJGNGAK(FLG-HIKAKU)
                  COMPUTE  LNK-SYU-SKYMONEY  =  LNK-SYU-SKYMONEY    
                                             +  LNK-SYU-SKYMONEY-SKJ-KEI
+                                            +  LNK-SYU-SKYMONEY-LIFE-KEI
                  MOVE      ZERO            TO  LNK-SYU-SKYMONEY-SKJ
                                                LNK-SYU-SKYMONEY-SKJ-TAX
                                                LNK-SYU-SKYMONEY-SKJ-KEI
+                 MOVE      ZERO            TO  LNK-SYU-SKYMONEY-LIFE
+                                               LNK-SYU-SKYMONEY-LIFE-TAX
+                                               LNK-SYU-SKYMONEY-LIFE-KEI
                END-IF
              END-IF
            END-IF.
@@ -13698,6 +13758,26 @@
            COMPUTE  LNK-SYU-SKYMONEY-SKJ-JIHI-KEI
                                       = LNK-SYU-SKYMONEY-SKJ-JIHI
                                       + LNK-SYU-SKYMONEY-SKJ-JIHI-TAX.
+      *
+           COMPUTE  LNK-SYU-RYOYOHI-LIFE-JIHI  = WK-SHOKUJI-RYOYOHI95L
+                                               + WK-SHOKUJI-RYOYOHI96L.
+           COMPUTE  LNK-SYU-SKYMONEY-LIFE-JIHI = WK-SHOKUJI-FTN95L
+                                               + WK-SHOKUJI-FTN96L.
+           IF  ( COMB-SYU-HKNKOHSBTKBN  =  "8" ) AND
+               ( COMB-HOJOKBN           =  "1" )
+             CONTINUE
+           ELSE
+             IF    WK-TAX1001-KBN  =  "1"
+                 COMPUTE  LNK-SYU-SKYMONEY-LIFE-JIHI-TAX  =
+                        ( WK-SHOKUJI-FTN96L  *  0.05 )  +  0.5
+             ELSE
+                 COMPUTE  LNK-SYU-SKYMONEY-LIFE-JIHI-TAX  =
+                          WK-SHOKUJI-FTN96L  *  0.05
+             END-IF
+           END-IF.
+           COMPUTE  LNK-SYU-SKYMONEY-LIFE-JIHI-KEI
+                                 = LNK-SYU-SKYMONEY-LIFE-JIHI
+                                 + LNK-SYU-SKYMONEY-LIFE-JIHI-TAX.
       *
       *    º˝«º•∆°º•÷•Î§Œ∏¯»ÒÀË§Œ¥µº‘…È√¥∂‚≥€§Ú•ª•√•»§π§Î
            IF   (COMB-KOH1HKNNUM         NOT = SPACE)   AND
