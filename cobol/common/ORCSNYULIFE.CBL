@@ -293,6 +293,7 @@
                                END-IF
                             END-IF
                           END-PERFORM
+                       END-IF
                    END-IF
                    MOVE    "tbl_nyuinacct"      TO  MCP-TABLE
                    MOVE    "key17"              TO  MCP-PATHNAME
