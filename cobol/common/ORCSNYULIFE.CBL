@@ -274,7 +274,7 @@
                                                CONS-TANKI2
                           PERFORM    VARYING   IDX1   FROM   1   BY   1
                                   UNTIL     IDX1   >   31
-                           IF     NACCT-DAY(IDX1)  NOT =  ZERO
+                            IF     NACCT-DAY(IDX1)  NOT =  ZERO
                                MOVE   "1"     TO   LNK-NYULIFE-KBN(IDX1)
                                MOVE    1      TO   FLG-OK
       *                        病状の程度、治療の内容をしん酌して標準
@@ -291,6 +291,7 @@
                                    MOVE   "1"   TO   
                                              LNK-NYULIFE-FTNKBN2(IDX1)
                                END-IF
+                            END-IF
                           END-PERFORM
                    END-IF
                    MOVE    "tbl_nyuinacct"      TO  MCP-TABLE
