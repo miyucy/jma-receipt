@@ -43,5 +43,9 @@ M96	{
 		        style   varchar(20);
 			value	varchar(62);
 		};
+		MSG2	{
+		        style   varchar(20);
+			value	varchar(62);
+		};
 	};
 };

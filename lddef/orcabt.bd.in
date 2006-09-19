@@ -193,6 +193,8 @@ bind	"ORCBREV200604"	"OpenCOBOL";
 bind	"ORCBN21"	"OpenCOBOL";
 bind	"ORCR0487"	"OpenCOBOL";
 bind	"ORCR0957"	"OpenCOBOL";
+bind	"ORCXRMST3"	"OpenCOBOL";
+bind	"ORCXRMST4"	"OpenCOBOL";
 
 #include "orcadb.inc"
 #include "orcadbh.inc"

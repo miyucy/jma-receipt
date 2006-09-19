@@ -38,3 +38,6 @@
             03  M96-MSG1.
               04  M96-MSG1-STYLE PIC X(20).
               04  M96-MSG1-VALUE     PIC X(62).
+            03  M96-MSG2.
+              04  M96-MSG2-STYLE PIC X(20).
+              04  M96-MSG2-VALUE     PIC X(62).

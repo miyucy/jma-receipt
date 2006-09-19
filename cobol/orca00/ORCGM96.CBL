@@ -34,6 +34,7 @@
       *  01.00.03    NACL-伊藤    04/02/05  M97の追加
       *  01.00.04    NACL-多々納  05/04/04  マスタ更新管理情報の分割
       *  01.00.05    NACL-伊藤    06/02/22  MONFUNC 対応
+      *  01.00.06    NACL-伊藤    06/07/12  ライセンスマスタ対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -61,6 +62,8 @@
            03  FLG-JOBKANRI        PIC 9(01).
            03  FLG-ERR             PIC 9(01).
            03  FLG-INIT            PIC 9(01).
+           03  FLG-SJOBKANRI       PIC 9(01).
+           03  FLG-SJOBKANRI1      PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -111,6 +114,10 @@
       *    ジョブ管理
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
+      *
+       01  JOBKANRI1-REC.
+           COPY    "CPJOBKANRI.INC"    REPLACING  //JOB-//
+                                       BY         //JOB1-//.
       *
            COPY    "MCPDATA.INC".
       *
@@ -334,12 +341,14 @@
       *
            IF      FLG-INIT             =   ZERO
                MOVE    SPACE                TO  SPA-GMN-MSG1
+                                                SPA-GMN-MSG2
                MOVE    1                    TO  ID1
            ELSE
                MOVE    "前回処理分"         TO  SPA-GMN-MSG1
+                                                SPA-GMN-MSG2
                MOVE    11                   TO  ID1
            END-IF
-           IF      SJOBKANRI-RETURN    =   ZERO
+           IF      FLG-SJOBKANRI        =   ZERO
                IF      JOB-ERRCD(1:2)   =   "99"
                    MOVE    "マスタ更新は異常終了しました。"
                                            TO  SPA-GMN-MSG1(ID1:30)
@@ -364,6 +373,39 @@
                END-IF
            ELSE
                MOVE    SPACE           TO  SPA-GMN-MSG1
+           END-IF
+      *    ライセンスマスタ
+           IF      FLG-SJOBKANRI1       =   ZERO
+               IF      JOB1-ERRCD(1:2)  =   "99"
+                   MOVE    "マスタ更新は異常終了しました。"
+                                           TO  SPA-GMN-MSG2(ID1:30)
+                   MOVE    "red"           TO  SPA-GMN-MSG2-STYLE
+               ELSE
+                 IF      JOB1-ERRCD(1:2)  =   "98"
+                   MOVE    "提供サーバへ接続できませんでした。"
+                                           TO  SPA-GMN-MSG2(ID1:34)
+                   MOVE    "blue"          TO  SPA-GMN-MSG2-STYLE
+                 ELSE
+                   IF  JOB1-ERRCD(1:2)  =   "01"
+                       MOVE    "更新データはありませんでした。"
+                                             TO  SPA-GMN-MSG2(ID1:30)
+                       MOVE    "blue"        TO  SPA-GMN-MSG2-STYLE
+                   ELSE
+                       IF  (JOB1-ENDTIME      NOT =   SPACE)  AND
+                           (JOB1-ENDYMD       NOT =   SPACE)
+                           MOVE    "マスタ更新は正常に終了しました。"
+                                                TO  SPA-GMN-MSG2(ID1:32)
+                           MOVE    "blue"       TO  SPA-GMN-MSG2-STYLE
+                       ELSE
+                           MOVE    "マスタ更新中です。"
+                                                TO  SPA-GMN-MSG2(ID1:18)
+                           MOVE    "blue"       TO  SPA-GMN-MSG2-STYLE
+                       END-IF
+                   END-IF
+                 END-IF
+               END-IF
+           ELSE
+               MOVE    SPACE           TO  SPA-GMN-MSG2
            END-IF
            .
        310-DBHENSYU-EXT.
@@ -542,7 +584,7 @@
       *    ＪＯＢ管理検索
            PERFORM 820-JOBKANRI-READ-SEC
       *
-           IF      SJOBKANRI-RETURN    =   ZERO
+           IF      FLG-SJOBKANRI       =   ZERO
                MOVE    "0101"              TO  SPA-MIDCD
            ELSE
                MOVE    "0005"              TO  SPA-ERRCD
@@ -573,7 +615,7 @@
            PERFORM 820-JOBKANRI-READ-SEC
       *
            MOVE    ZERO                 TO  FLG-ERR
-           IF      SJOBKANRI-RETURN     =   ZERO
+           IF      FLG-SJOBKANRI        =   ZERO
                IF      JOB-ERRCD(1:2)       =   "99"
                                             OR  "01" 
                    CONTINUE
@@ -602,7 +644,7 @@
       *
            PERFORM 820-JOBKANRI-READ-SEC
       *
-           IF      SJOBKANRI-RETURN    =   ZERO
+           IF      FLG-SJOBKANRI       =   ZERO
       *        ジョブ管理削除
                MOVE    "DEL"               TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
@@ -621,6 +663,26 @@
            CALL    "ORCSJOB"           USING
                                        ORCSJOBKANRIAREA
                                        JOBKANRI-REC
+      *    ライセンスマスタ
+           IF      FLG-SJOBKANRI1      =   ZERO
+      *        ジョブ管理削除
+               MOVE    "DEL"               TO  SJOBKANRI-MODE
+               INITIALIZE                  JOBKANRI1-REC
+               MOVE    1                   TO  JOB1-JOBID
+               MOVE    "MSTMLI"            TO  JOB1-SHELLID
+               CALL    "ORCSJOB"           USING
+                                           ORCSJOBKANRIAREA
+                                           JOBKANRI1-REC
+           END-IF
+      *
+      *    ジョブ管理作成
+           MOVE    "JBS"               TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI1-REC
+           MOVE    1                   TO  JOB1-JOBID
+           MOVE    "MSTMLI"            TO  JOB1-SHELLID
+           CALL    "ORCSJOB"           USING
+                                       ORCSJOBKANRIAREA
+                                       JOBKANRI1-REC
       *
       *    最新情報編集
            MOVE    ZERO                TO  FLG-INIT
@@ -632,6 +694,7 @@
            MOVE    SHELL-NAME           TO  MKPASS-IN-01
            CALL    "ORCSMKPASS"         USING  ORCSMKPASSAREA
            MOVE    MKPASS-OT-01         TO  SHELLTBL-NAME
+           MOVE    SPA-HOSPID           TO  SHELLTBL-ARG1
            MOVE    SHELLTBL             TO  MCPDATA-REC
       *
            MOVE    "SHELL"              TO  MCP-FUNC
@@ -652,7 +715,7 @@
       *
            PERFORM 820-JOBKANRI-READ-SEC
       *
-           IF      SJOBKANRI-RETURN    =   ZERO
+           IF      FLG-SJOBKANRI       =   ZERO
                IF      (JOB-ENDTIME    =   SPA-NAI-ENDTIME(2)) AND
                        (JOB-ENDYMD     =   SPA-NAI-ENDYMD (2))
       *    ジョブ管理削除
@@ -669,6 +732,18 @@
                    MOVE    "0004"         TO  SPA-ERRCD
                END-IF
            END-IF
+      *    ライセンスマスタ
+           IF      FLG-SJOBKANRI1      =   ZERO
+      *    ジョブ管理削除
+                   MOVE    "DEL"          TO  SJOBKANRI-MODE
+                   INITIALIZE             JOBKANRI1-REC
+                   MOVE    1              TO  JOB1-JOBID
+                   MOVE    "MSTMLI"       TO  JOB1-SHELLID
+                   CALL    "ORCSJOB"      USING
+                                          ORCSJOBKANRIAREA
+                                          JOBKANRI1-REC
+                   MOVE    SPACE          TO  SPA-GMN-MSG2
+           END-IF
       *
            .
        30011-DELETE-SYORI-EXT.
@@ -682,7 +757,7 @@
            PERFORM 820-JOBKANRI-READ-SEC
       *
            MOVE    SPACE                TO  SPA-MIDCD
-           IF      SJOBKANRI-RETURN     =   ZERO
+           IF      FLG-SJOBKANRI        =   ZERO
                IF      JOB-ERRCD(1:2)       =   "99"
                                             OR  "01"
                    CONTINUE
@@ -818,6 +893,8 @@
       *
            MOVE    SPA-GMN-MSG1            TO  M96-MSG1-VALUE
            MOVE    SPA-GMN-MSG1-STYLE      TO  M96-MSG1-STYLE
+           MOVE    SPA-GMN-MSG2            TO  M96-MSG2-VALUE
+           MOVE    SPA-GMN-MSG2-STYLE      TO  M96-MSG2-STYLE
       *
            PERFORM 5001-MAPCUR-SEC
            .
@@ -931,6 +1008,8 @@
        820-JOBKANRI-READ-SEC     SECTION.
       *
       *    ＪＯＢ管理 
+           MOVE    ZERO                TO  FLG-SJOBKANRI
+                                           FLG-SJOBKANRI1
            INITIALIZE                  ORCSJOBKANRIAREA
            MOVE    "CHK"               TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
@@ -941,6 +1020,7 @@
                                        ORCSJOBKANRIAREA
                                        JOBKANRI-REC
            IF      SJOBKANRI-RETURN    NOT =   ZERO
+               MOVE    1               TO  FLG-SJOBKANRI
                INITIALIZE                  JOBKANRI-REC
            END-IF
       *    日付の再編集
@@ -955,6 +1035,33 @@
                MOVE    "20"               TO  WRK-SYMD(1:2)
                MOVE    JOB-STARTYMD(1:6)  TO  WRK-SYMD(3:6)
                MOVE    WRK-SYMD           TO  JOB-STARTYMD
+           END-IF
+      *    ライセンスマスタ
+           INITIALIZE                  ORCSJOBKANRIAREA
+           MOVE    "CHK"               TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI1-REC
+           MOVE    1                   TO  JOB1-JOBID
+           MOVE    "MSTMLI"            TO  JOB1-SHELLID
+      *
+           CALL    "ORCSJOB"           USING
+                                       ORCSJOBKANRIAREA
+                                       JOBKANRI1-REC
+           IF      SJOBKANRI-RETURN    NOT =   ZERO
+               MOVE    1               TO  FLG-SJOBKANRI1
+               INITIALIZE                  JOBKANRI1-REC
+           END-IF
+      *    日付の再編集
+           IF     (JOB1-ENDYMD     NOT =   SPACE)  AND
+                  (JOB1-ENDYMD(7:2)    =   SPACE)
+               MOVE    "20"               TO  WRK-SYMD(1:2)
+               MOVE    JOB1-ENDYMD(1:6)   TO  WRK-SYMD(3:6)
+               MOVE    WRK-SYMD           TO  JOB1-ENDYMD
+           END-IF
+           IF     (JOB1-STARTYMD   NOT =   SPACE)  AND
+                  (JOB1-STARTYMD(7:2)  =   SPACE)
+               MOVE    "20"               TO  WRK-SYMD(1:2)
+               MOVE    JOB1-STARTYMD(1:6) TO  WRK-SYMD(3:6)
+               MOVE    WRK-SYMD           TO  JOB1-STARTYMD
            END-IF
       *
            .
