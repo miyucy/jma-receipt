@@ -94,7 +94,9 @@
                                                    OCCURS  15.
                        09  SPA-GMN-HKNTEKI         PIC 9(10).
                        09  SPA-GMN-SKJRYOYO        PIC 9(07).
+                       09  SPA-GMN-LIFERYOYO       PIC 9(07).
                        09  SPA-GMN-SKJFTN          PIC 9(07).
+                       09  SPA-GMN-LIFEFTN         PIC 9(07).
                        09  SPA-GMN-ROUFTN          PIC 9(07).
                        09  SPA-GMN-KOHFTN          PIC 9(07).
                        09  SPA-GMN-JIHI-G          OCCURS  2.
@@ -931,10 +933,20 @@
                =   SYU-RYOYOHI-SKJ
                +   SYU-RYOYOHI-SKJ-JIHI
       *
+      *    ¿∏≥ËŒ≈Õ‹»Ò
+           COMPUTE SPA-GMN-LIFERYOYO
+               =   SYU-RYOYOHI-LIFE
+               +   SYU-RYOYOHI-LIFE-JIHI
+      *
       *    ø©ªˆ…È√¥≥€
            COMPUTE SPA-GMN-SKJFTN
                =   SYU-SKYMONEY-SKJ-KEI
                +   SYU-SKYMONEY-SKJ-JIHI-KEI
+      *
+      *    ¿∏≥Ë…È√¥≥€
+           COMPUTE SPA-GMN-LIFEFTN
+               =   SYU-SKYMONEY-LIFE-KEI
+               +   SYU-SKYMONEY-LIFE-JIHI-KEI
       *
       *    ÃÙ∫ﬁ∞Ï…Ù…È√¥  
            MOVE    SYU-YKZ-FTN         TO  SPA-GMN-YAKFTN.
@@ -1373,7 +1385,9 @@
            MOVE    SPA-GMN-ICHIFTN     TO  S03N-FTNTOTAL
       *    MOVE    SPA-GMN-YAKFTN      TO  S03N-YKZFTN 
            MOVE    SPA-GMN-SKJFTN      TO  S03N-SKJFTN
+           MOVE    SPA-GMN-LIFEFTN     TO  S03N-LIFEFTN
            MOVE    SPA-GMN-SKJRYOYO    TO  S03N-SKJRYOYO
+           MOVE    SPA-GMN-LIFERYOYO   TO  S03N-LIFERYOYO
            MOVE    SPA-GMN-RMSAGAKU    TO  S03N-RMSAGAKU
            MOVE    SPA-GMN-CHOSEI      TO  S03N-NYUKINGK1
            MOVE    SPA-GMN-SKYMONEY    TO  S03N-SYKMONEY

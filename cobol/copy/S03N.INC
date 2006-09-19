@@ -110,7 +110,9 @@
                                  PIC S9(10).
               03  S03N-JIHITAX   PIC S9(10).
               03  S03N-SKJRYOYO  PIC S9(10).
+              03  S03N-LIFERYOYO PIC S9(10).
               03  S03N-SKJFTN    PIC S9(10).
+              03  S03N-LIFEFTN   PIC S9(10).
               03  S03N-RJNFTN    PIC S9(10).
               03  S03N-KOHFTN    PIC S9(10).
               03  S03N-FTNTOTAL  PIC S9(10).

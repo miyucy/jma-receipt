@@ -258,7 +258,13 @@ S03N	{
 		SKJRYOYO	{
 			value	number(10);
 		};
+		LIFERYOYO	{
+			value	number(10);
+		};
 		SKJFTN	{
+			value	number(10);
+		};
+		LIFEFTN	{
 			value	number(10);
 		};
 		RJNFTN	{
