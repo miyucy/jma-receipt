@@ -7321,23 +7321,60 @@
                            MOVE "療養病棟入院基本料２（特別入院基本料）"
                                                TO  TNS-NAME
                        WHEN   "190122010"
-                           MOVE "診療所療養病床入院基本料２（Ａ）"
+                           MOVE "療養病床入院基本料２（Ａ）"
                                                TO  TNS-NAME
                        WHEN   "190122110"
-                           MOVE "診療所療養病床入院基本料２（Ｂ）"
+                           MOVE "療養病床入院基本料２（Ｂ）"
                                                TO  TNS-NAME
                        WHEN   "190122210"
-                           MOVE "診療所療養病床入院基本料２（Ｃ）"
+                           MOVE "療養病床入院基本料２（Ｃ）"
                                                TO  TNS-NAME
                        WHEN   "190122310"
-                           MOVE "診療所療養病床入院基本料２（Ｄ）"
+                           MOVE "療養病床入院基本料２（Ｄ）"
                                                TO  TNS-NAME
                        WHEN   "190122410"
-                           MOVE "診療所療養病床入院基本料２（Ｅ）"
+                           MOVE "療養病床入院基本料２（Ｅ）"
                                                TO  TNS-NAME
                        WHEN   "190122510"
                            MOVE
-                          "診療所療養病床入院基本料２（特別入院基本料）"
+                          "療養病床入院基本料２（特別入院基本料）"
+                                               TO  TNS-NAME
+                       WHEN   "190123710"
+                           MOVE "療養病棟入院基本料２（Ａ生活）"
+                                               TO  TNS-NAME
+                       WHEN   "190123810"
+                           MOVE "療養病棟入院基本料２（Ｂ生活）"
+                                               TO  TNS-NAME
+                       WHEN   "190123910"
+                           MOVE "療養病棟入院基本料２（Ｃ生活）"
+                                               TO  TNS-NAME
+                       WHEN   "190124010"
+                           MOVE "療養病棟入院基本料２（Ｄ生活）"
+                                               TO  TNS-NAME
+                       WHEN   "190124110"
+                           MOVE "療養病棟入院基本料２（Ｅ生活）"
+                                               TO  TNS-NAME
+                       WHEN   "190124210"
+                           MOVE "療養病棟入院基本料２（特別生活）"
+                                               TO  TNS-NAME
+                       WHEN   "190124310"
+                           MOVE "療養病床入院基本料２（Ａ生活）"
+                                               TO  TNS-NAME
+                       WHEN   "190124410"
+                           MOVE "療養病床入院基本料２（Ｂ生活）"
+                                               TO  TNS-NAME
+                       WHEN   "190124510"
+                           MOVE "療養病床入院基本料２（Ｃ生活）"
+                                               TO  TNS-NAME
+                       WHEN   "190124610"
+                           MOVE "療養病床入院基本料２（Ｄ生活）"
+                                               TO  TNS-NAME
+                       WHEN   "190124710"
+                           MOVE "療養病床入院基本料２（Ｅ生活）"
+                                               TO  TNS-NAME
+                       WHEN   "190124810"
+                           MOVE
+                          "療養病床入院基本料２（特別生活）"
                                                TO  TNS-NAME
                    END-EVALUATE
                    MOVE    ZERO                TO  FLG-TENSU
