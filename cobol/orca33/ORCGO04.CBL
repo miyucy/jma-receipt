@@ -743,6 +743,7 @@
                                        +   SPA-GMN-O04-KOHFTN
                                        +   SPA-GMN-O04-YAKFTN
                                        +   SPA-GMN-O04-SKJFTN
+                                       +   SPA-GMN-O04-LIFEFTN
       *    ººŒ¡∫π≥€
            MOVE    SYU-RMSAGAKU        TO  SPA-GMN-O04-RMSAGAKU
       *
