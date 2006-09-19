@@ -2374,8 +2374,6 @@
       *
            PERFORM UNTIL ( FLG-NYUINACCT   NOT =   ZERO )
       *
-               DISPLAY "NACCT-SRYCDTOTAL =" NACCT-SRYCDTOTAL
-      *
                IF   ( NACCT-SRYCDTOTAL =   197000570 )
                    PERFORM VARYING     IDX1    FROM    1   BY  1
                            UNTIL     ( IDX1    >   31 )
