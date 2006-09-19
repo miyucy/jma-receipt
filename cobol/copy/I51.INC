@@ -115,7 +115,11 @@
                 04  I51-VALUE   PIC X(10).
               03  I51-RYOYOHI-SKJ.
                 04  I51-VALUE   PIC X(10).
+              03  I51-RYOYOHI-LIFE.
+                04  I51-VALUE   PIC X(10).
               03  I51-SKYMONEY-SKJ.
+                04  I51-VALUE   PIC X(10).
+              03  I51-SKYMONEY-LIFE.
                 04  I51-VALUE   PIC X(10).
               03  I51-RJNFTN.
                 04  I51-VALUE   PIC X(10).

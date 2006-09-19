@@ -63,8 +63,12 @@
                            13  SPA-GMN-I51-HKNTEKI       PIC 9(10).
       *                    ø©ªˆŒ≈Õ‹»Ò
                            13  SPA-GMN-I51-RYOYOHI-SKJ   PIC 9(07).
+      *                    ¿∏≥ËŒ≈Õ‹»Ò
+                           13  SPA-GMN-I51-RYOYOHI-LIFE  PIC 9(07).
       *                    ø©ªˆ…È√¥≥€
                            13  SPA-GMN-I51-SKYMONEY-SKJ  PIC 9(07).
+      *                    ¿∏≥Ë…È√¥≥€
+                           13  SPA-GMN-I51-SKYMONEY-LIFE PIC 9(07).
       *                    œ∑øÕ∞Ï…Ù…È√¥∂‚
                            13  SPA-GMN-I51-ROUFTN        PIC 9(07).
       *                    ∏¯»Ò∞Ï…Ù…È√¥∂‚

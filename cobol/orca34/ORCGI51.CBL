@@ -738,10 +738,17 @@
       *    ø©ªˆŒ≈Õ‹»Ò
            MOVE    SPA-GMN-I51-RYOYOHI-SKJ TO  WRK-Z9
            MOVE    WRK-Z9              TO  I51-RYOYOHI-SKJ
+      *    ¿∏≥ËŒ≈Õ‹»Ò
+           MOVE    SPA-GMN-I51-RYOYOHI-LIFE TO  WRK-Z9
+           MOVE    WRK-Z9              TO  I51-RYOYOHI-LIFE
       *    ø©ªˆ…È√¥≥€
            MOVE    SPA-GMN-I51-SKYMONEY-SKJ
                                            TO  WRK-Z9
            MOVE    WRK-Z9              TO  I51-SKYMONEY-SKJ
+      *    ¿∏≥Ë…È√¥≥€
+           MOVE    SPA-GMN-I51-SKYMONEY-LIFE
+                                           TO  WRK-Z9
+           MOVE    WRK-Z9              TO  I51-SKYMONEY-LIFE
       *    œ∑øÕ∞Ï…Ù…È√¥∂‚
            MOVE    SPA-GMN-I51-ROUFTN      TO  WRK-Z9
            MOVE    WRK-Z9              TO  I51-RJNFTN
@@ -2107,6 +2114,74 @@
                        =   TTLSYU-SKYMONEY-SKJ-JIHI-KEI
                        +   LNK-SYU-SKYMONEY-SKJ-JIHI-KEI (IDX11)
       *
+      *            ¿∏≥ËŒ≈Õ‹»Ò°  ›∏±°À
+                   COMPUTE SUMSYU-RYOYOHI-LIFE (WRK-SYU-SUM-IDX)
+                       =   SUMSYU-RYOYOHI-LIFE (WRK-SYU-SUM-IDX)
+                       +   LNK-SYU-RYOYOHI-LIFE (IDX11)
+                   COMPUTE TTLSYU-RYOYOHI-LIFE
+                       =   TTLSYU-RYOYOHI-LIFE
+                       +   LNK-SYU-RYOYOHI-LIFE (IDX11)
+      *
+      *            ¿∏≥Ë…È√¥≥€°  ›∏±°ßº´∏ …È√¥°À
+                   COMPUTE SUMSYU-SKYMONEY-LIFE (WRK-SYU-SUM-IDX)
+                       =   SUMSYU-SKYMONEY-LIFE (WRK-SYU-SUM-IDX)
+                       +   LNK-SYU-SKYMONEY-LIFE (IDX11)
+                   COMPUTE TTLSYU-SKYMONEY-LIFE
+                       =   TTLSYU-SKYMONEY-LIFE
+                       +   LNK-SYU-SKYMONEY-LIFE (IDX11)
+      *
+      *            ¿∏≥Ë…È√¥≥€°  ›∏±°ßº´∏ …È√¥æ√»Ò¿«°À
+                   COMPUTE SUMSYU-SKYMONEY-LIFE-TAX (WRK-SYU-SUM-IDX)
+                       =   SUMSYU-SKYMONEY-LIFE-TAX (WRK-SYU-SUM-IDX)
+                       +   LNK-SYU-SKYMONEY-LIFE-TAX (IDX11)
+                   COMPUTE TTLSYU-SKYMONEY-LIFE-TAX
+                       =   TTLSYU-SKYMONEY-LIFE-TAX
+                       +   LNK-SYU-SKYMONEY-LIFE-TAX (IDX11)
+      *
+      *            ¿∏≥Ë…È√¥≥€°  ›∏±°ßº´∏ …È√¥πÁ∑◊°À
+                   COMPUTE SUMSYU-SKYMONEY-LIFE-KEI (WRK-SYU-SUM-IDX)
+                       =   SUMSYU-SKYMONEY-LIFE-KEI (WRK-SYU-SUM-IDX)
+                       +   LNK-SYU-SKYMONEY-LIFE-KEI (IDX11)
+                   COMPUTE TTLSYU-SKYMONEY-LIFE-KEI
+                       =   TTLSYU-SKYMONEY-LIFE-KEI
+                       +   LNK-SYU-SKYMONEY-LIFE-KEI (IDX11)
+      *
+      *            ¿∏≥ËŒ≈Õ‹»Ò° º´»Ò°À
+                   COMPUTE SUMSYU-RYOYOHI-LIFE-JIHI (WRK-SYU-SUM-IDX)
+                       =   SUMSYU-RYOYOHI-LIFE-JIHI (WRK-SYU-SUM-IDX)
+                       +   LNK-SYU-RYOYOHI-LIFE-JIHI (IDX11)
+                   COMPUTE TTLSYU-RYOYOHI-LIFE-JIHI
+                       =   TTLSYU-RYOYOHI-LIFE-JIHI
+                       +   LNK-SYU-RYOYOHI-LIFE-JIHI (IDX11)
+      *
+      *            ¿∏≥Ë…È√¥≥€° º´»Ò°ßº´∏ …È√¥°À
+                   COMPUTE SUMSYU-SKYMONEY-LIFE-JIHI (WRK-SYU-SUM-IDX)
+                       =   SUMSYU-SKYMONEY-LIFE-JIHI (WRK-SYU-SUM-IDX)
+                       +   LNK-SYU-SKYMONEY-LIFE-JIHI (IDX11)
+                   COMPUTE TTLSYU-SKYMONEY-LIFE-JIHI
+                       =   TTLSYU-SKYMONEY-LIFE-JIHI
+                       +   LNK-SYU-SKYMONEY-LIFE-JIHI (IDX11)
+      *
+      *            ¿∏≥Ë…È√¥≥€° º´»Ò°ßº´∏ …È√¥æ√»Ò¿«°À
+                   COMPUTE SUMSYU-SKYMONEY-LIFE-JIHI-TAX
+                                                    (WRK-SYU-SUM-IDX)
+                       =   SUMSYU-SKYMONEY-LIFE-JIHI-TAX
+                                                    (WRK-SYU-SUM-IDX)
+                       +   LNK-SYU-SKYMONEY-LIFE-JIHI-TAX (IDX11)
+                   COMPUTE TTLSYU-SKYMONEY-LIFE-JIHI-TAX
+                       =   TTLSYU-SKYMONEY-LIFE-JIHI-TAX
+                       +   LNK-SYU-SKYMONEY-LIFE-JIHI-TAX (IDX11)
+      *
+      *            ¿∏≥Ë…È√¥≥€° º´»Ò°ßº´∏ …È√¥πÁ∑◊°À
+                   COMPUTE SUMSYU-SKYMONEY-LIFE-JIHI-KEI
+                                                    (WRK-SYU-SUM-IDX)
+                       =   SUMSYU-SKYMONEY-LIFE-JIHI-KEI
+                                                    (WRK-SYU-SUM-IDX)
+                       +   LNK-SYU-SKYMONEY-LIFE-JIHI-KEI (IDX11)
+                   COMPUTE TTLSYU-SKYMONEY-LIFE-JIHI-KEI
+                       =   TTLSYU-SKYMONEY-LIFE-JIHI-KEI
+                       +   LNK-SYU-SKYMONEY-LIFE-JIHI-KEI (IDX11)
+      *
       *            ººŒ¡∫π≥€
                    COMPUTE SUMSYU-RMSAGAKU (WRK-SYU-SUM-IDX)
                        =   SUMSYU-RMSAGAKU (WRK-SYU-SUM-IDX)
@@ -2337,15 +2412,24 @@
            COMPUTE SPA-GMN-I51-SKYMONEY-SKJ
                =   WKSYU-SKYMONEY-SKJ-KEI
                +   WKSYU-SKYMONEY-SKJ-JIHI-KEI
+      *    ¿∏≥Ë…È√¥≥€
+           COMPUTE SPA-GMN-I51-SKYMONEY-LIFE
+               =   WKSYU-SKYMONEY-LIFE-KEI
+               +   WKSYU-SKYMONEY-LIFE-JIHI-KEI
       *    ø©ªˆŒ≈Õ‹»Ò
            COMPUTE SPA-GMN-I51-RYOYOHI-SKJ
                =   WKSYU-RYOYOHI-SKJ
                +   WKSYU-RYOYOHI-SKJ-JIHI
+      *    ¿∏≥ËŒ≈Õ‹»Ò
+           COMPUTE SPA-GMN-I51-RYOYOHI-LIFE
+               =   WKSYU-RYOYOHI-LIFE
+               +   WKSYU-RYOYOHI-LIFE-JIHI
       *
       *    ∞Ï…Ù…È√¥∂‚
            COMPUTE SPA-GMN-I51-ICHIFTN =   SPA-GMN-I51-ROUFTN
                                        +   SPA-GMN-I51-KOHFTN
                                        +   SPA-GMN-I51-SKYMONEY-SKJ
+                                       +   SPA-GMN-I51-SKYMONEY-LIFE
       *
       *    œ´∫“ΩÈø«
            MOVE    WKSYU-RSISHOSHIN-MONEY  TO  SPA-GMN-I51-ROUSYOSIN
