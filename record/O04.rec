@@ -246,7 +246,13 @@ O04	{
 		SKJRYOYO	{
 			value	number(8);
 		};
+		LIFERYOYO	{
+			value	number(8);
+		};
 		SKJFTN	{
+			value	number(8);
+		};
+		LIFEFTN	{
 			value	number(8);
 		};
 		RJNFTN	{

@@ -720,10 +720,20 @@
                =   SYU-RYOYOHI-SKJ
                +   SYU-RYOYOHI-SKJ-JIHI
       *
+      *    ¿∏≥ËŒ≈Õ‹»Ò
+           COMPUTE SPA-GMN-O04-LIFERYOYO
+               =   SYU-RYOYOHI-LIFE
+               +   SYU-RYOYOHI-LIFE-JIHI
+      *
       *    ø©ªˆ…È√¥≥€
            COMPUTE SPA-GMN-O04-SKJFTN
                =   SYU-SKYMONEY-SKJ-KEI
                +   SYU-SKYMONEY-SKJ-JIHI-KEI
+      *
+      *    ¿∏≥Ë…È√¥≥€
+           COMPUTE SPA-GMN-O04-LIFEFTN
+               =   SYU-SKYMONEY-LIFE-KEI
+               +   SYU-SKYMONEY-LIFE-JIHI-KEI
       *
       *    ÃÙ∫ﬁ∞Ï…Ù…È√¥  
            MOVE    SYU-YKZ-FTN         TO  SPA-GMN-O04-YAKFTN.
@@ -1332,7 +1342,9 @@
            MOVE    SPA-GMN-O04-ICHIFTN     TO  O04-FTNTOTAL
       *    MOVE    SPA-GMN-O04-YAKFTN      TO  O04-YKZFTN 
            MOVE    SPA-GMN-O04-SKJFTN      TO  O04-SKJFTN
+           MOVE    SPA-GMN-O04-LIFEFTN     TO  O04-LIFEFTN
            MOVE    SPA-GMN-O04-SKJRYOYO    TO  O04-SKJRYOYO
+           MOVE    SPA-GMN-O04-LIFERYOYO   TO  O04-LIFERYOYO
            MOVE    SPA-GMN-O04-RMSAGAKU    TO  O04-RMSAGAKU
            MOVE    SPA-GMN-O04-CHOSEI      TO  O04-CHOSEI
            MOVE    SPA-GMN-O04-SKYMONEY    TO  O04-SYKMONEY

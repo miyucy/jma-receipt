@@ -103,7 +103,9 @@
                                 PIC S9(8).
               03  O04-JIHITAX   PIC S9(8).
               03  O04-SKJRYOYO  PIC S9(8).
+              03  O04-LIFERYOYO PIC S9(8).
               03  O04-SKJFTN    PIC S9(8).
+              03  O04-LIFEFTN   PIC S9(8).
               03  O04-RJNFTN    PIC S9(8).
               03  O04-KOHFTN    PIC S9(8).
               03  O04-FTNTOTAL  PIC S9(8).

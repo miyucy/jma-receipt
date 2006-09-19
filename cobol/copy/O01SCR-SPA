@@ -107,7 +107,9 @@
                                                    OCCURS  15.
                        09  SPA-GMN-O04-HKNTEKI         PIC 9(10).
                        09  SPA-GMN-O04-SKJRYOYO        PIC 9(07).
+                       09  SPA-GMN-O04-LIFERYOYO       PIC 9(07).
                        09  SPA-GMN-O04-SKJFTN          PIC 9(07).
+                       09  SPA-GMN-O04-LIFEFTN         PIC 9(07).
                        09  SPA-GMN-O04-ROUFTN          PIC 9(07).
                        09  SPA-GMN-O04-KOHFTN          PIC 9(07).
                        09  SPA-GMN-O04-JIHI-G          OCCURS  2.
