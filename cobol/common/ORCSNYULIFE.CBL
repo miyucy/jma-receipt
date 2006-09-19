@@ -47,6 +47,7 @@
            03  FLG-NYUINACCT               PIC 9(01).
            03  FLG-NYUINACT                PIC 9(01).
            03  FLG-PTINF                   PIC 9(01).
+           03  FLG-PTKOHINF                PIC 9(01).
            03  FLG-SYSKANRI                PIC 9(01).
            03  FLG-OK                      PIC 9(01).
            03  FLG-TSYRRK                  PIC 9(01).
@@ -359,7 +360,26 @@
                MOVE    LNK-NYULIFE-HOSPID   TO  PTKOH-HOSPID
                MOVE    LNK-NYULIFE-PTID     TO  PTKOH-PTID
                MOVE    "027"                TO  PTKOH-KOHNUM
-               PERFORM 900-PTKOHINF-READ-SEC
+               MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
+               MOVE    "key4"               TO  MCP-PATHNAME
+               PERFORM 910-PTKOHINF-SELECT-SEC
+               IF      FLG-PTKOHINF         =   ZERO
+                   MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
+                   MOVE    "key4"               TO  MCP-PATHNAME
+                   PERFORM   910-PTKOHINF-READ-SEC
+                   PERFORM   UNTIL   (FLG-PTKOHINF   =   1)
+                       IF    PTKOH-SAKJOKBN     =    SPACE
+                             MOVE   1           TO   FLG-RJN
+                       END-IF
+                       MOVE    "tbl_ptkohinf"   TO  MCP-TABLE
+                       MOVE    "key4"           TO  MCP-PATHNAME
+                       PERFORM 910-PTKOHINF-READ-SEC
+                   END-PERFORM
+               END-IF
+      *        ´µ¼Ô¸øÈñ¾ðÊó¥¯¥í¡¼¥º
+               MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
+               MOVE    "key4"               TO  MCP-PATHNAME
+               PERFORM   910-DB-CLOSE-SEC
       *
       *¡Ý¡Ý¡Ý¡Ý½êÆÀ¾ðÊó¤Î¼èÆÀ¤³¤³¤«¤é¡Ý¡Ý¡Ý¡Ý¡Ý¡Ý¡Ý¡Ý¡Ý¡Ý¡Ý¡Ý¡Ý¡Ý¡Ý
       *
@@ -729,38 +749,44 @@
            EXIT.
       *
       *****************************************************************
-      *    ´µ¼Ô¸øÈñ¾ðÊó¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *    ´µ¼Ô¸øÈñ¾ðÊó¥Þ¥¹¥¿¡¼¸¡º÷
       *****************************************************************
-       900-PTKOHINF-READ-SEC         SECTION.
+       910-PTKOHINF-SELECT-SEC        SECTION.
       *
            MOVE    PTKOHINF-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
-           MOVE    "key4"              TO  MCP-PATHNAME
-           CALL    "MONFUNC"               USING
-                                           MCPAREA
-                                           MCPDATA-REC
+           CALL    "MONFUNC"            USING
+                                        MCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"       TO  MCP-FUNC
-               MOVE    "tbl_ptkohinf"  TO  MCP-TABLE
-               MOVE    "key4"          TO  MCP-PATHNAME
-               CALL    "MONFUNC"           USING
-                                           MCPAREA
-                                           MCPDATA-REC
-               IF      MCP-RC          =   ZERO
-                   MOVE    1           TO  FLG-RJN
-               END-IF
+               MOVE    ZERO               TO  FLG-PTKOHINF
            ELSE
-               INITIALIZE                  PTINF-REC
-               MOVE    1               TO  FLG-PTINF
+               MOVE    1                  TO  FLG-PTKOHINF
            END-IF
       *
-           MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
-           MOVE    "key4"              TO  MCP-PATHNAME
-           PERFORM   910-DB-CLOSE-SEC
+           .
+       910-PTKOHINF-SELECT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ´µ¼Ô¸øÈñ¾ðÊó¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *****************************************************************
+       910-PTKOHINF-READ-SEC        SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "MONFUNC"            USING
+                                        MCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC        TO  PTKOHINF-REC
+               MOVE    ZERO               TO  FLG-PTKOHINF
+           ELSE
+               INITIALIZE                     PTKOHINF-REC
+               MOVE    1                  TO  FLG-PTKOHINF
+           END-IF
       *
            .
-       900-PTKOHINF-READ-EXT.
+       910-PTKOHINF-READ-EXT.
            EXIT.
       *
       *****************************************************************
