@@ -70,8 +70,10 @@
       *            ５：保険組合せ　６：入院料加算　７：療養担当手当）
                    07  HCM34S01-ZAISKBKBN      PIC  X(01).
       *並び優先順位
-                   07  HCM34S01-PRIORITY       PIC  9(03).
-                   07  HCM34S01-PRIORITY2      PIC  9(03).
+                   07  HCM34S01-PRIORITY-G.
+                       09  HCM34S01-PRIORITY   PIC  9(03).
+                       09  HCM34S01-PRIORITY2  PIC  9(03).
+                       09  HCM34S01-PRIORITY3  PIC  9(03).
       *剤点数
                    07  HCM34S01-ZAITEN         PIC  9(08).
       *剤回数

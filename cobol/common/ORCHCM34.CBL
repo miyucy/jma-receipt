@@ -78,6 +78,7 @@
            03  HCM34ACCT-ZAISKBKBN                 PIC X(01).
            03  HCM34ACCT-PRIORITY                  PIC 9(03).
            03  HCM34ACCT-PRIORITY2                 PIC 9(03).
+           03  HCM34ACCT-PRIORITY3                 PIC 9(03).
       *
       *    診療行為ファイル
        FD  HCM34SRY-FILE.
@@ -481,6 +482,7 @@
                        09 SRT-SRYACCT-ZAISKBKBN    PIC X(01).
                        09 SRT-SRYACCT-PRIORITY     PIC 9(03).
                        09 SRT-SRYACCT-PRIORITY2    PIC 9(03).
+                       09 SRT-SRYACCT-PRIORITY3    PIC 9(03).
                        09 SRT-SRYACCT-YKZHKTKBN    PIC 9(01).
                        09 SRT-SRYACCT-YKZINGAIKBN  PIC 9(01).
                        09 SRT-SRYACCT-KNSJISKBN    PIC 9(01).
@@ -667,6 +669,7 @@
                03 WKACCT-ZAISKBKBN        PIC X(01).
                03 WKACCT-PRIORITY         PIC 9(03).
                03 WKACCT-PRIORITY2        PIC 9(03).
+               03 WKACCT-PRIORITY3        PIC 9(03).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -2613,6 +2616,7 @@
                END-IF
       *
                MOVE    ZERO            TO  HCM34ACCT-PRIORITY2
+                                           HCM34ACCT-PRIORITY3
       *
                WRITE   HCM34ACCT-REC
       *
@@ -2728,6 +2732,8 @@
                MOVE    HCM34ACCT-PRIORITY  TO  WKACCT-PRIORITY
                                                      (WKSRYACCT-MAX)
                MOVE    HCM34ACCT-PRIORITY2 TO  WKACCT-PRIORITY2
+                                                     (WKSRYACCT-MAX)
+               MOVE    HCM34ACCT-PRIORITY3 TO  WKACCT-PRIORITY3
                                                      (WKSRYACCT-MAX)
       *
            END-IF
@@ -2860,6 +2866,9 @@
                                                            (SRT-IDX1)
                MOVE    WKACCT-PRIORITY2(SRT-IDX1)
                                        TO  SRT-SRYACCT-PRIORITY2
+                                                           (SRT-IDX1)
+               MOVE    WKACCT-PRIORITY3(SRT-IDX1)
+                                       TO  SRT-SRYACCT-PRIORITY3
                                                            (SRT-IDX1)
                IF    ( WRK-SRYCD   NOT =   SPACE )
                    PERFORM 200111-TENSU-SEL-SEC
@@ -5035,6 +5044,8 @@
                                        TO  HCM34ACCT-PRIORITY
            MOVE    HCM34S01-PRIORITY2  (IDX28)
                                        TO  HCM34ACCT-PRIORITY2
+           MOVE    HCM34S01-PRIORITY3  (IDX28)
+                                       TO  HCM34ACCT-PRIORITY3
       *
            WRITE   HCM34ACCT-REC
       *
