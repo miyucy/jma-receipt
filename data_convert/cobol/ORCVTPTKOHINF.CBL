@@ -1545,9 +1545,9 @@
                MOVE    01              TO  WRK-BDD
            END-IF
       *    Ç¯Îð
-           COMPUTE WRK-AGE         =   WRK-SYY - WRK-BYY
+           COMPUTE WRK-AGE         =   WRK-SYSYY - WRK-BYY
            IF      WRK-AGE         >   0
-               IF      SPA-SYSYMD(5:2)     <   WRK-BMM
+               IF      WRK-SYSMM     <   WRK-BMM
                    COMPUTE WRK-AGE     =   WRK-AGE - 1
                END-IF
            END-IF
