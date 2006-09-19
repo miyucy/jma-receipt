@@ -7376,6 +7376,9 @@
                            MOVE
                           "Œ≈Õ‹…¬æ≤∆˛±°¥À‹Œ¡£≤° ∆√ Ã¿∏≥Ë°À"
                                                TO  TNS-NAME
+                       WHEN   "197000570"
+                           MOVE
+                          "ø©∆≤≤√ªª"           TO  TNS-NAME
                    END-EVALUATE
                    MOVE    ZERO                TO  FLG-TENSU
                ELSE
