@@ -523,6 +523,21 @@
       <ypad>0</ypad>
     </widget>
 
+    <widget>
+      <class>GtkLabel</class>
+      <name>teikyo</name>
+      <x>612</x>
+      <y>488</y>
+      <width>300</width>
+      <height>24</height>
+      <label>データ提供「くすりの適正使用協議会」様</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
   </widget>
 </widget>
 
