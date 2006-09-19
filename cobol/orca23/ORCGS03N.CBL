@@ -956,6 +956,7 @@
                                        +   SPA-GMN-KOHFTN
                                        +   SPA-GMN-YAKFTN
                                        +   SPA-GMN-SKJFTN
+                                       +   SPA-GMN-LIFEFTN
       *    ººŒ¡∫π≥€
            MOVE    SYU-RMSAGAKU        TO  SPA-GMN-RMSAGAKU
       *
