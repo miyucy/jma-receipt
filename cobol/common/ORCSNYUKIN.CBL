@@ -205,8 +205,11 @@
            MOVE    WRK-PATHNAME        TO  MCP-PATHNAME
            PERFORM 900-SYUNOU-SELECT-SEC
            IF    ( FLG-SYUNOU      NOT =   ZERO )
-               MOVE    11              TO  LNK-SCNYUKIN-RC
-               GO  TO  200-MAIN-EXT
+               IF    ( LNK-SCNYUKIN-HENKIN-MONEY
+                                       =   ZERO )
+                   MOVE    11          TO  LNK-SCNYUKIN-RC
+                   GO  TO  200-MAIN-EXT
+               END-IF
            END-IF
       *
            MOVE    LNK-SCNYUKIN-NYUKIN-MONEY
