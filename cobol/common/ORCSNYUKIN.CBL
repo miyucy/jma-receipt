@@ -204,13 +204,6 @@
            MOVE    "tbl_syunou"        TO  MCP-TABLE
            MOVE    WRK-PATHNAME        TO  MCP-PATHNAME
            PERFORM 900-SYUNOU-SELECT-SEC
-           IF    ( FLG-SYUNOU      NOT =   ZERO )
-               IF    ( LNK-SCNYUKIN-HENKIN-MONEY
-                                       =   ZERO )
-                   MOVE    11          TO  LNK-SCNYUKIN-RC
-                   GO  TO  200-MAIN-EXT
-               END-IF
-           END-IF
       *
            MOVE    LNK-SCNYUKIN-NYUKIN-MONEY
                                        TO  WRK-NYUKIN-ZAN
@@ -280,6 +273,14 @@
            MOVE    "tbl_syunou"        TO  MCP-TABLE
            MOVE    WRK-PATHNAME        TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           IF    ( IDX                 =   ZERO )
+               IF    ( LNK-SCNYUKIN-HENKIN-MONEY
+                                       =   ZERO )
+                   MOVE    11          TO  LNK-SCNYUKIN-RC
+                   GO  TO  200-MAIN-EXT
+               END-IF
+           END-IF
       *
       *    返金振り分け残額の設定
            IF    ( WRK-HENKIN-ZAN      NOT =   ZERO )
