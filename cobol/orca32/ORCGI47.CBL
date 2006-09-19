@@ -2086,13 +2086,14 @@
                MOVE    WRK-ZZ          TO  I47-TDAYALL (IDX-LST)
                PERFORM VARYING IDX-DAY FROM    1   BY  1
                        UNTIL ( IDX-DAY >   31 )
-               IF    ( SPA-NAI-TZAISKBKBN (IDX0)   =   "2" )
-                AND  ( SPA-NAI-TALLKBN (IDX0)      =   1 )
-                   MOVE    "--"        TO  I47-TDAY (IDX-LST IDX-DAY)
-               ELSE
-                   MOVE    SPA-GMN-TDAY (IDX0 IDX-DAY)
-                                       TO  WRK-ZZ
-                   MOVE    WRK-ZZ      TO  I47-TDAY (IDX-LST IDX-DAY)
+                   IF    ( SPA-NAI-TZAISKBKBN (IDX0)   =   "2" )
+                    AND  ( SPA-NAI-TALLKBN (IDX0)      =   1 )
+                       MOVE    "--"        TO  I47-TDAY(IDX-LST IDX-DAY)
+                   ELSE
+                       MOVE    SPA-GMN-TDAY (IDX0 IDX-DAY)
+                                           TO  WRK-ZZ
+                       MOVE    WRK-ZZ      TO  I47-TDAY(IDX-LST IDX-DAY)
+                   END-IF
                END-PERFORM
       *
                IF    ( SPA-GMN-RYOLIST-SEL =   IDX0 )
@@ -2222,12 +2223,10 @@
       *
            EVALUATE    TRUE
            WHEN      ( MEDKBN-DAYALL (1)   =    1 )
-               MOVE    3               TO  WRK-ZZ
-               MOVE    WRK-ZZ          TO  I47-TNL-DAYALL(2)
+               MOVE    "£³"            TO  I47-TNL-DAYALL(2)
            WHEN      ( MEDKBN-DAY-G  (1)   =    ZERO )
                AND   ( MEDKBN-DAYALL (2)   =    1    )
-               MOVE    2               TO  WRK-ZZ
-               MOVE    WRK-ZZ          TO  I47-TNL-DAYALL(2)
+               MOVE    "£²"            TO  I47-TNL-DAYALL(2)
            WHEN      ( MEDKBN-DAY-G  (1)   =    ZERO )
                AND   ( MEDKBN-DAY-G  (2)   =    ZERO )
                MOVE    1               TO  WRK-ZZ
@@ -2240,12 +2239,10 @@
       *
                        EVALUATE    TRUE
                        WHEN  ( MEDKBN-DAY (1 IDX-DAY)   =  1 )
-                           MOVE    3       TO  WRK-ZZ
-                           MOVE    WRK-ZZ  TO  I47-TNL-DAY (2 IDX-DAY)
+                           MOVE    "£³"    TO  I47-TNL-DAY (2 IDX-DAY)
                        WHEN  ( MEDKBN-DAYALL (2)        =  1 )
                        WHEN  ( MEDKBN-DAY (2 IDX-DAY)   =  1 )
-                           MOVE    2       TO  WRK-ZZ
-                           MOVE    WRK-ZZ  TO  I47-TNL-DAY (2 IDX-DAY)
+                           MOVE    "£²"    TO  I47-TNL-DAY (2 IDX-DAY)
                        WHEN    OTHER
                            MOVE    1       TO  WRK-ZZ
                            MOVE    WRK-ZZ  TO  I47-TNL-DAY (2 IDX-DAY)
