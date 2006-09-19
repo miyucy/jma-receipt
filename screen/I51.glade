@@ -1030,7 +1030,7 @@
       <class>GtkPandaEntry</class>
       <name>SKYMONEY_SKJ</name>
       <x>696</x>
-      <y>349</y>
+      <y>352</y>
       <width>88</width>
       <height>24</height>
       <editable>False</editable>
@@ -2460,7 +2460,7 @@
       <class>GtkPandaEntry</class>
       <name>SKYMONEY_LIFE</name>
       <x>696</x>
-      <y>377</y>
+      <y>378</y>
       <width>88</width>
       <height>24</height>
       <editable>False</editable>
@@ -2577,12 +2577,12 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label484</name>
+      <name>label508</name>
       <x>600</x>
-      <y>349</y>
+      <y>377</y>
       <width>96</width>
       <height>24</height>
-      <label>ø©ªˆ…È√¥≥€</label>
+      <label>¿∏≥Ë…È√¥≥€</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -2593,12 +2593,12 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label508</name>
+      <name>label484</name>
       <x>600</x>
-      <y>377</y>
+      <y>352</y>
       <width>96</width>
       <height>24</height>
-      <label>¿∏≥Ë…È√¥≥€</label>
+      <label>ø©ªˆ…È√¥≥€</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>

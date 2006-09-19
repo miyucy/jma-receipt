@@ -238,7 +238,13 @@ I04	{
 		RYOYOHI_SKJ	{
 			value	varchar(10);
 		};
+		RYOYOHI_LIFE	{
+			value	varchar(10);
+		};
 		SKYMONEY_SKJ	{
+			value	varchar(10);
+		};
+		SKYMONEY_LIFE	{
 			value	varchar(10);
 		};
 		RJNFTN	{

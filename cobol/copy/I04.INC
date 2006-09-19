@@ -184,7 +184,11 @@
                 04  I04-VALUE   PIC X(10).
               03  I04-RYOYOHI-SKJ.
                 04  I04-VALUE   PIC X(10).
+              03  I04-RYOYOHI-LIFE.
+                04  I04-VALUE   PIC X(10).
               03  I04-SKYMONEY-SKJ.
+                04  I04-VALUE   PIC X(10).
+              03  I04-SKYMONEY-LIFE.
                 04  I04-VALUE   PIC X(10).
               03  I04-RJNFTN.
                 04  I04-VALUE   PIC X(10).

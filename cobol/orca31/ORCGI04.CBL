@@ -1170,15 +1170,24 @@
            COMPUTE SPA-GMN-I04-SKYMONEY-SKJ
                =   WKSYU-SKYMONEY-SKJ-KEI
                +   WKSYU-SKYMONEY-SKJ-JIHI-KEI
+      *    ¿∏≥Ë…È√¥≥€
+           COMPUTE SPA-GMN-I04-SKYMONEY-LIFE
+               =   WKSYU-SKYMONEY-LIFE-KEI
+               +   WKSYU-SKYMONEY-LIFE-JIHI-KEI
       *    ø©ªˆŒ≈Õ‹»Ò
            COMPUTE SPA-GMN-I04-RYOYOHI-SKJ
                =   WKSYU-RYOYOHI-SKJ
                +   WKSYU-RYOYOHI-SKJ-JIHI
+      *    ¿∏≥ËŒ≈Õ‹»Ò
+           COMPUTE SPA-GMN-I04-RYOYOHI-LIFE
+               =   WKSYU-RYOYOHI-LIFE
+               +   WKSYU-RYOYOHI-LIFE-JIHI
       *
       *    ∞Ï…Ù…È√¥∂‚
            COMPUTE SPA-GMN-I04-ICHIFTN =   SPA-GMN-I04-ROUFTN
                                        +   SPA-GMN-I04-KOHFTN
                                        +   SPA-GMN-I04-SKYMONEY-SKJ
+                                       +   SPA-GMN-I04-SKYMONEY-LIFE
       *
       *    œ´∫“ΩÈø«
            MOVE    WKSYU-RSISHOSHIN-MONEY  TO  SPA-GMN-I04-ROUSYOSIN
@@ -1593,10 +1602,17 @@
       *    ø©ªˆŒ≈Õ‹»Ò
            MOVE    SPA-GMN-I04-RYOYOHI-SKJ TO  WRK-Z9
            MOVE    WRK-Z9              TO  I04-RYOYOHI-SKJ
+      *    ¿∏≥ËŒ≈Õ‹»Ò
+           MOVE    SPA-GMN-I04-RYOYOHI-LIFE TO  WRK-Z9
+           MOVE    WRK-Z9              TO  I04-RYOYOHI-LIFE
       *    ø©ªˆ…È√¥≥€
            MOVE    SPA-GMN-I04-SKYMONEY-SKJ
                                            TO  WRK-Z9
            MOVE    WRK-Z9              TO  I04-SKYMONEY-SKJ
+      *    ¿∏≥Ë…È√¥≥€
+           MOVE    SPA-GMN-I04-SKYMONEY-LIFE
+                                           TO  WRK-Z9
+           MOVE    WRK-Z9              TO  I04-SKYMONEY-LIFE
       *    œ∑øÕ∞Ï…Ù…È√¥∂‚
            MOVE    SPA-GMN-I04-ROUFTN      TO  WRK-Z9
            MOVE    WRK-Z9              TO  I04-RJNFTN
