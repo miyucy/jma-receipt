@@ -665,11 +665,11 @@
                     OR   ( SPA-GMN-W21-TOKNYUIN-MAX >=  30 )
       *
                IF    ( SYS-5111-BRM-NYUINRYOKBN    =  "01"  )
+                AND  ( SYS-5111-SEIKATU-RYOKBN     =  SPACE )
                    COMPUTE SPA-GMN-W21-TOKNYUIN-MAX
                        =   SPA-GMN-W21-TOKNYUIN-MAX    +   1
                    MOVE    SPA-GMN-W21-TOKNYUIN-MAX
                                        TO  IDX1
-      *
       *
                    MOVE    SYS-5111-KBNCD
                                        TO  SPA-GMN-W21-TOKNYUINL(IDX1)
@@ -800,11 +800,13 @@
       *
                IF    ( SPA-NAI-W21-BTUSBT          =   "04" )
                 AND  ( SYS-5111-BRM-NYUINRYOKBN    =   "05" )
+                AND  ( SYS-5111-SEIKATU-RYOKBN     =   SPACE )
                    MOVE    1       TO  FLG-TARGET
                END-IF
       *
                IF    ( SPA-NAI-W21-BTUSBT          =   "09" )
                 AND  ( SYS-5111-BRM-NYUINRYOKBN    =   "06" )
+                AND  ( SYS-5111-SEIKATU-RYOKBN     =   SPACE )
                    MOVE    1       TO  FLG-TARGET
                END-IF
       *

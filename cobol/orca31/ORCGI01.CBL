@@ -356,6 +356,7 @@
            03  WRK-TOKNYUIN-NM             PIC X(60).
            03  WRK-TOKNYUIN-KBN            PIC X(01).
            03  WRK-TOKNYUIN-CD             PIC X(02).
+           03  WRK-TOKNYUIN-NYUINRYOKBN    PIC X(02).
            03  WRK-TAIHI-SRYKA             PIC X(02).
            03  WRK-NOW-SKYSTYMD            PIC X(08).
            03  WRK-SKYSTYM                 PIC X(06).
@@ -475,6 +476,59 @@
            03  CONST-TOKNYUIN-MAX          PIC 9(05)   VALUE   30.
            03  CONST-JOB-SHELLID           PIC X(08)   VALUE   "TEIKI1".
            03  CONST-JOB-JOBID             PIC 9(07)   VALUE   1.
+           03  CONST-TOK-LIFECD-G.
+               05  CONST-TOK-LIFECD-VAL.
+                   07                      PIC X(03)   VALUE   "213".
+                   07                      PIC X(03)   VALUE   "216".
+      *
+                   07                      PIC X(03)   VALUE   "302".
+                   07                      PIC X(03)   VALUE   "349".
+      *
+                   07                      PIC X(03)   VALUE   "321".
+                   07                      PIC X(03)   VALUE   "350".
+      *
+                   07                      PIC X(03)   VALUE   "325".
+                   07                      PIC X(03)   VALUE   "337".
+      *
+                   07                      PIC X(03)   VALUE   "326".
+                   07                      PIC X(03)   VALUE   "338".
+      *
+                   07                      PIC X(03)   VALUE   "327".
+                   07                      PIC X(03)   VALUE   "339".
+      *
+                   07                      PIC X(03)   VALUE   "328".
+                   07                      PIC X(03)   VALUE   "340".
+      *
+                   07                      PIC X(03)   VALUE   "329".
+                   07                      PIC X(03)   VALUE   "341".
+      *
+                   07                      PIC X(03)   VALUE   "330".
+                   07                      PIC X(03)   VALUE   "342".
+      *
+                   07                      PIC X(03)   VALUE   "331".
+                   07                      PIC X(03)   VALUE   "343".
+      *
+                   07                      PIC X(03)   VALUE   "332".
+                   07                      PIC X(03)   VALUE   "344".
+      *
+                   07                      PIC X(03)   VALUE   "333".
+                   07                      PIC X(03)   VALUE   "345".
+      *
+                   07                      PIC X(03)   VALUE   "334".
+                   07                      PIC X(03)   VALUE   "346".
+      *
+                   07                      PIC X(03)   VALUE   "335".
+                   07                      PIC X(03)   VALUE   "347".
+      *
+                   07                      PIC X(03)   VALUE   "336".
+                   07                      PIC X(03)   VALUE   "348".
+               05  CONST-TOK-LIFECD-R  REDEFINES   CONST-TOK-LIFECD-VAL.
+                   07  CONST-TOK-LIFECD-OCC    OCCURS  15.
+                       09  CONST-TOK-LIFECD-IPN
+                                           PIC X(03).
+                       09  CONST-TOK-LIFECD-LIFE
+                                           PIC X(03).
+               05  CONST-TOK-LIFECD-MAX    PIC 9(05)   VALUE   15.
       *
       *    •π•—ŒŒ∞Ë •Ô°º•Ø
            COPY    "COMMON-SPA"      REPLACING
@@ -4284,6 +4338,8 @@
                            MOVE    "3"             TO  WRK-TOKNYUIN-KBN
                            MOVE    SYS-5111-KBNCD
                                                    TO  WRK-TOKNYUIN-CD
+                           MOVE    SYS-5111-BRM-NYUINRYOKBN
+                                           TO  WRK-TOKNYUIN-NYUINRYOKBN
                            PERFORM 4101-CMB-TOKNYUIN-DAT-SET-SEC
                        END-IF
       *
@@ -4445,12 +4501,15 @@
                                            TO  WRK-TOKNYUIN-NM
                    MOVE    SYS-5111-KBNCD
                                            TO  WRK-TOKNYUIN-CD
+                   MOVE    SYS-5111-BRM-NYUINRYOKBN
+                                           TO  WRK-TOKNYUIN-NYUINRYOKBN
                ELSE
                    MOVE    MCPDATA-REC     TO  SYS-5110-REC
                    MOVE    SYS-5110-BTU-TOKUTEINYUIN-NM
                                            TO  WRK-TOKNYUIN-NM
                    MOVE    SYS-5110-KBNCD
                                            TO  WRK-TOKNYUIN-CD
+                   MOVE    SPACE           TO  WRK-TOKNYUIN-NYUINRYOKBN
                END-IF
                PERFORM 4101-CMB-TOKNYUIN-DAT-SET-SEC
            END-IF
@@ -4485,6 +4544,9 @@
                MOVE    WRK-TOKNYUIN-CD
                                        TO  SPA-GMN-I01-TOKNYUIN-ITM2
                                                        (IDX10) (2 : 2)
+               MOVE    WRK-TOKNYUIN-NYUINRYOKBN
+                                       TO  SPA-GMN-I01-TOKNYUIN-ITM3
+                                                       (IDX10)
            END-IF
       *
            .
@@ -4503,17 +4565,26 @@
                    UNTIL ( IDX10   <   1 )
                     OR   ( SPA-GMN-I01-TOKNYUIN NOT =   SPACE )
       *
+               MOVE    ZERO            TO  FLG-TARGET
+      *
                IF    ( SPA-GMN-I01-TOKNYUIN-ITM2 (IDX10) (1 : 1)
                                    =   "1" OR  "2" OR  "3" )
-                   IF    ( SPA-GMN-I01-TOKNYUIN-ITM2 (IDX10)
-                                   >=  "321" )
-                       CONTINUE
+                   IF    ( SPA-GMN-I01-TOKNYUIN-ITM2 (IDX10) (1:1)
+                                   =  "3" )
+                       IF    ( SPA-GMN-I01-TOKNYUIN-ITM3 (IDX10)
+                                   =   "01" )
+                           MOVE    1   TO  FLG-TARGET
+                       END-IF
                    ELSE
-                       MOVE    SPA-GMN-I01-TOKNYUIN-ITM (IDX10)
-                                       TO  SPA-GMN-I01-TOKNYUIN
-                       MOVE    SPA-GMN-I01-TOKNYUIN-ITM2 (IDX10)
-                                       TO  SPA-NAI-I01-TOKNYUIN-ORG
+                           MOVE    1   TO  FLG-TARGET
                    END-IF
+               END-IF
+      *
+               IF    ( FLG-TARGET      =   1 )
+                   MOVE    SPA-GMN-I01-TOKNYUIN-ITM (IDX10)
+                                       TO  SPA-GMN-I01-TOKNYUIN
+                   MOVE    SPA-GMN-I01-TOKNYUIN-ITM2 (IDX10)
+                                       TO  SPA-NAI-I01-TOKNYUIN-ORG
                END-IF
       *
            END-PERFORM
@@ -4521,7 +4592,10 @@
            IF    ( SPA-GMN-I01-TOKNYUIN            =   SPACE )
                IF    ( SPA-NAI-I01-BRMKHNKBNCD NOT =   SPACE )
                    MOVE    SPA-NAI-I01-BRMKHNKBNCD
-                                       TO  WRK-CMB-CD
+                                           TO  WRK-CMB-CD
+                   IF    ( WRK-KJNYMD      >=  CONST-H181001 )
+                       PERFORM 41011-TOKNYUIN-SYOKI-SEC
+                   END-IF
                    PERFORM 4103-CMB-TOKNYUIN-SRH2-SEC
                    MOVE    WRK-CMB-ITM     TO  SPA-GMN-I01-TOKNYUIN
                    MOVE    WRK-CMB-ITM2    TO  SPA-NAI-I01-TOKNYUIN-ORG
@@ -4532,6 +4606,9 @@
                IF    ( SPA-NAI-I01-BTUKHNKBNCD NOT =   SPACE )
                    MOVE    SPA-NAI-I01-BTUKHNKBNCD
                                        TO  WRK-CMB-CD
+                   IF    ( WRK-KJNYMD      >=  CONST-H181001 )
+                       PERFORM 41011-TOKNYUIN-SYOKI-SEC
+                   END-IF
                    PERFORM 4103-CMB-TOKNYUIN-SRH2-SEC
                    MOVE    WRK-CMB-ITM     TO  SPA-GMN-I01-TOKNYUIN
                    MOVE    WRK-CMB-ITM2    TO  SPA-NAI-I01-TOKNYUIN-ORG
@@ -4549,6 +4626,27 @@
       *
            .
        4101-TOKNYUIN-SYOKI-EXT.
+           EXIT.
+      *****************************************************************
+      *    ∆√ƒÍ∆˛±°Œ¡ΩÈ¥¸√Õ¿ﬂƒÍΩËÕ˝
+      *****************************************************************
+       41011-TOKNYUIN-SYOKI-SEC        SECTION.
+      *
+           PERFORM 41011-PT-AGE-SEC
+           IF    ( WRK-NENREI  >=  70 )
+               PERFORM VARYING IDX10   FROM    1   BY  1
+                       UNTIL ( IDX10 > CONST-TOK-LIFECD-MAX)
+                   IF    ( WRK-CMB-CD  =   CONST-TOK-LIFECD-IPN (IDX10))
+                       MOVE    CONST-TOK-LIFECD-LIFE (IDX10)
+                                       TO  WRK-CMB-CD
+                       MOVE    CONST-TOK-LIFECD-MAX
+                                       TO  IDX10
+                   END-IF
+               END-PERFORM
+           END-IF
+      *
+           .
+       41011-TOKNYUIN-SYOKI-EXT.
            EXIT.
       *****************************************************************
       *    …¬≈ÔÃææŒ•¡•ß•√•ØΩËÕ˝
@@ -14248,6 +14346,74 @@
                    COMPUTE TTLSYU-SKYMONEY-SKJ-JIHI-KEI
                        =   TTLSYU-SKYMONEY-SKJ-JIHI-KEI
                        +   LNK-SYU-SKYMONEY-SKJ-JIHI-KEI (IDX11)
+      *
+      *            ¿∏≥ËŒ≈Õ‹»Ò°  ›∏±°À
+                   COMPUTE SUMSYU-RYOYOHI-LIFE (WRK-SYU-SUM-IDX)
+                       =   SUMSYU-RYOYOHI-LIFE (WRK-SYU-SUM-IDX)
+                       +   LNK-SYU-RYOYOHI-LIFE (IDX11)
+                   COMPUTE TTLSYU-RYOYOHI-LIFE
+                       =   TTLSYU-RYOYOHI-LIFE
+                       +   LNK-SYU-RYOYOHI-LIFE (IDX11)
+      *
+      *            ¿∏≥Ë…È√¥≥€°  ›∏±°ßº´∏ …È√¥°À
+                   COMPUTE SUMSYU-SKYMONEY-LIFE (WRK-SYU-SUM-IDX)
+                       =   SUMSYU-SKYMONEY-LIFE (WRK-SYU-SUM-IDX)
+                       +   LNK-SYU-SKYMONEY-LIFE (IDX11)
+                   COMPUTE TTLSYU-SKYMONEY-LIFE
+                       =   TTLSYU-SKYMONEY-LIFE
+                       +   LNK-SYU-SKYMONEY-LIFE (IDX11)
+      *
+      *            ¿∏≥Ë…È√¥≥€°  ›∏±°ßº´∏ …È√¥æ√»Ò¿«°À
+                   COMPUTE SUMSYU-SKYMONEY-LIFE-TAX (WRK-SYU-SUM-IDX)
+                       =   SUMSYU-SKYMONEY-LIFE-TAX (WRK-SYU-SUM-IDX)
+                       +   LNK-SYU-SKYMONEY-LIFE-TAX (IDX11)
+                   COMPUTE TTLSYU-SKYMONEY-LIFE-TAX
+                       =   TTLSYU-SKYMONEY-LIFE-TAX
+                       +   LNK-SYU-SKYMONEY-LIFE-TAX (IDX11)
+      *
+      *            ¿∏≥Ë…È√¥≥€°  ›∏±°ßº´∏ …È√¥πÁ∑◊°À
+                   COMPUTE SUMSYU-SKYMONEY-LIFE-KEI (WRK-SYU-SUM-IDX)
+                       =   SUMSYU-SKYMONEY-LIFE-KEI (WRK-SYU-SUM-IDX)
+                       +   LNK-SYU-SKYMONEY-LIFE-KEI (IDX11)
+                   COMPUTE TTLSYU-SKYMONEY-LIFE-KEI
+                       =   TTLSYU-SKYMONEY-LIFE-KEI
+                       +   LNK-SYU-SKYMONEY-LIFE-KEI (IDX11)
+      *
+      *            ¿∏≥ËŒ≈Õ‹»Ò° º´»Ò°À
+                   COMPUTE SUMSYU-RYOYOHI-LIFE-JIHI (WRK-SYU-SUM-IDX)
+                       =   SUMSYU-RYOYOHI-LIFE-JIHI (WRK-SYU-SUM-IDX)
+                       +   LNK-SYU-RYOYOHI-LIFE-JIHI (IDX11)
+                   COMPUTE TTLSYU-RYOYOHI-LIFE-JIHI
+                       =   TTLSYU-RYOYOHI-LIFE-JIHI
+                       +   LNK-SYU-RYOYOHI-LIFE-JIHI (IDX11)
+      *
+      *            ¿∏≥Ë…È√¥≥€° º´»Ò°ßº´∏ …È√¥°À
+                   COMPUTE SUMSYU-SKYMONEY-LIFE-JIHI (WRK-SYU-SUM-IDX)
+                       =   SUMSYU-SKYMONEY-LIFE-JIHI (WRK-SYU-SUM-IDX)
+                       +   LNK-SYU-SKYMONEY-LIFE-JIHI (IDX11)
+                   COMPUTE TTLSYU-SKYMONEY-LIFE-JIHI
+                       =   TTLSYU-SKYMONEY-LIFE-JIHI
+                       +   LNK-SYU-SKYMONEY-LIFE-JIHI (IDX11)
+      *
+      *            ¿∏≥Ë…È√¥≥€° º´»Ò°ßº´∏ …È√¥æ√»Ò¿«°À
+                   COMPUTE SUMSYU-SKYMONEY-LIFE-JIHI-TAX
+                                                    (WRK-SYU-SUM-IDX)
+                       =   SUMSYU-SKYMONEY-LIFE-JIHI-TAX
+                                                    (WRK-SYU-SUM-IDX)
+                       +   LNK-SYU-SKYMONEY-LIFE-JIHI-TAX (IDX11)
+                   COMPUTE TTLSYU-SKYMONEY-LIFE-JIHI-TAX
+                       =   TTLSYU-SKYMONEY-LIFE-JIHI-TAX
+                       +   LNK-SYU-SKYMONEY-LIFE-JIHI-TAX (IDX11)
+      *
+      *            ¿∏≥Ë…È√¥≥€° º´»Ò°ßº´∏ …È√¥πÁ∑◊°À
+                   COMPUTE SUMSYU-SKYMONEY-LIFE-JIHI-KEI
+                                                    (WRK-SYU-SUM-IDX)
+                       =   SUMSYU-SKYMONEY-LIFE-JIHI-KEI
+                                                    (WRK-SYU-SUM-IDX)
+                       +   LNK-SYU-SKYMONEY-LIFE-JIHI-KEI (IDX11)
+                   COMPUTE TTLSYU-SKYMONEY-LIFE-JIHI-KEI
+                       =   TTLSYU-SKYMONEY-LIFE-JIHI-KEI
+                       +   LNK-SYU-SKYMONEY-LIFE-JIHI-KEI (IDX11)
       *
       *            ººŒ¡∫π≥€
                    COMPUTE SUMSYU-RMSAGAKU (WRK-SYU-SUM-IDX)

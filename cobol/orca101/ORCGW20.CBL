@@ -542,18 +542,21 @@
            PERFORM UNTIL ( FLG-SYSKANRI    =   1 )
                     OR   ( IDX-CMB        >=   CONST-TOKNYUIN-MAX )
       *
-               COMPUTE IDX-CMB =   IDX-CMB +   1
-               MOVE    IDX-CMB         TO  SPA-GMN-W20-TOKNYUIN-MAX
-      *
                MOVE    SYSKANRI-REC    TO  SYS-5110-REC
       *
-               MOVE    SYS-5110-KBNCD
-                           TO  SPA-GMN-W20-TOKNYUINL   (IDX-CMB)
-               MOVE    SYS-5110-BTU-TOKUTEINYUIN-NM
-                           TO  SPA-GMN-W20-TOKNYUINMEIL
+               IF    ( SYS-5110-SEIKATU-RYOKBN =   SPACE )
+      *
+                   COMPUTE IDX-CMB =   IDX-CMB +   1
+                   MOVE    IDX-CMB     TO  SPA-GMN-W20-TOKNYUIN-MAX
+      *
+                   MOVE    SYS-5110-KBNCD
+                               TO  SPA-GMN-W20-TOKNYUINL   (IDX-CMB)
+                   MOVE    SYS-5110-BTU-TOKUTEINYUIN-NM
+                               TO  SPA-GMN-W20-TOKNYUINMEIL
                                                        (IDX-CMB)
-               MOVE    SYS-5110-BTU-TOKUTEINYUIN-NM2
-                           TO  SPA-NAI-W20-TOKNYUINLST (IDX-CMB)
+                   MOVE    SYS-5110-BTU-TOKUTEINYUIN-NM2
+                               TO  SPA-NAI-W20-TOKNYUINLST (IDX-CMB)
+               END-IF
       *
                PERFORM 900-SYSKANRI-KEY2-FET-SEC
       *
@@ -2251,7 +2254,22 @@
                                         OR "190080610" 
                                         OR "190080710" 
                                         OR "190098210" 
-                                        OR "190098310" )
+                                        OR "190098310"
+      *以下生活療養コード
+                                        OR "190123710"
+                                        OR "190123810"
+                                        OR "190123910"
+                                        OR "190124010"
+                                        OR "190124110"
+                                        OR "190124210"
+                                        OR "190124310"
+                                        OR "190124410"
+                                        OR "190124510"
+                                        OR "190124610"
+                                        OR "190124710"
+                                        OR "190124810"
+      *
+                                                        )
                        MOVE    ZERO    TO  FLG-SETKHNRYO
                    END-IF
                END-IF

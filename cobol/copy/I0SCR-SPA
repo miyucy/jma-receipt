@@ -321,6 +321,8 @@
       *              (先頭１バイトに特定入院料の区分を付加）
                      15    SPA-GMN-I01-TOKNYUIN-ITM2
                                                    PIC X(3).
+                     15    SPA-GMN-I01-TOKNYUIN-ITM3
+                                                   PIC X(2).
       *          定期請求コンボ
                  11  SPA-GMN-I01-CMB-SEIKYU.
                    13  SPA-GMN-I01-SEIKYU-CNT      PIC 9(5).
