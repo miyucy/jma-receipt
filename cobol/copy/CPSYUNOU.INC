@@ -398,8 +398,14 @@
                05  SYU-SHOKUJI6        PIC  9(07).
                05  SYU-SHOKUJI7-NISSU  PIC  9(02).
                05  SYU-SHOKUJI7        PIC  9(07).
+               05  SYU-SHOKUJI8-NISSU  PIC  9(02).
+               05  SYU-SHOKUJI8        PIC  9(07).
+               05  SYU-SHOKUJI9-NISSU  PIC  9(02).
+               05  SYU-SHOKUJI9        PIC  9(07).
+               05  SYU-SHOKUJI10-NISSU PIC  9(02).
+               05  SYU-SHOKUJI10       PIC  9(07).
            03  SYU-SYOKUJI-NAIYOUR     REDEFINES   SYU-SHOKUJI-NAIYOU.
-               05  SYU-SYOKUJI-TBL     OCCURS   7.
+               05  SYU-SYOKUJI-TBL     OCCURS   10.
                  07  SYU-SHOKUJI-NISSU   PIC  9(02).
                  07  SYU-SHOKUJI         PIC  9(07).
       *咯祸闻蛙锐攫鼠∈咯祸泣眶ˇ咯祸闻蛙锐ˇ筛洁砷么驰∷
@@ -454,6 +460,24 @@
                                        PIC  9(07).
       *咯祸砷么驰∈极锐¨极甘砷么圭纷∷
            03  SYU-SKYMONEY-SKJ-JIHI-KEI
+                                       PIC  9(07).
+      *掐薄箕栏宠闻蛙锐∈瘦副∷
+           03  SYU-RYOYOHI-LIFE        PIC  9(07).
+      *掐薄箕栏宠闻蛙锐砷么驰∈瘦副¨极甘砷么∷
+           03  SYU-SKYMONEY-LIFE       PIC  9(07).
+      *掐薄箕栏宠闻蛙锐砷么驰∈瘦副¨极甘砷么久锐狼∷
+           03  SYU-SKYMONEY-LIFE-TAX   PIC  9(07).
+      *掐薄箕栏宠闻蛙锐砷么驰∈瘦副¨极甘砷么圭纷∷
+           03  SYU-SKYMONEY-LIFE-KEI   PIC  9(07).
+      *掐薄箕栏宠闻蛙锐锐∈极锐∷
+           03  SYU-RYOYOHI-LIFE-JIHI   PIC  9(07).
+      *掐薄箕栏宠闻蛙锐砷么驰∈极锐¨极甘砷么∷
+           03  SYU-SKYMONEY-LIFE-JIHI  PIC  9(07).
+      *掐薄箕栏宠闻蛙锐砷么驰∈极锐¨极甘砷么久锐狼∷
+           03  SYU-SKYMONEY-LIFE-JIHI-TAX
+                                       PIC  9(07).
+      *掐薄箕栏宠闻蛙锐砷么驰∈极锐¨极甘砷么圭纷∷
+           03  SYU-SKYMONEY-LIFE-JIHI-KEI
                                        PIC  9(07).
       *咯祸砷么∈砷么驰侍瓷妄脱∷
            03  SYU-SKJ-PTFTN           OCCURS 3.
