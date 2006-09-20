@@ -531,13 +531,16 @@
       *
                    07                      PIC X(03)   VALUE   "336".
                    07                      PIC X(03)   VALUE   "348".
+      *
+                   07                      PIC X(03)   VALUE   "323".
+                   07                      PIC X(03)   VALUE   "351".
                05  CONST-TOK-LIFECD-R  REDEFINES   CONST-TOK-LIFECD-VAL.
-                   07  CONST-TOK-LIFECD-OCC    OCCURS  15.
+                   07  CONST-TOK-LIFECD-OCC    OCCURS  16.
                        09  CONST-TOK-LIFECD-IPN
                                            PIC X(03).
                        09  CONST-TOK-LIFECD-LIFE
                                            PIC X(03).
-               05  CONST-TOK-LIFECD-MAX    PIC 9(05)   VALUE   15.
+               05  CONST-TOK-LIFECD-MAX    PIC 9(05)   VALUE   16.
       *
       *    スパ領域 ワーク
            COPY    "COMMON-SPA"      REPLACING
@@ -4437,6 +4440,12 @@
                            MOVE    "49"        TO  WRK-KBNCD
                            MOVE    "3"         TO  WRK-TOKNYUIN-KBN
                            PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
+      *
+                           MOVE    "5111"      TO  WRK-KANRICD
+                           MOVE    "51"        TO  WRK-KBNCD
+                           MOVE    "3"         TO  WRK-TOKNYUIN-KBN
+                           PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
+      *
                        END-IF
       *
                    WHEN    OTHER
