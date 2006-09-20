@@ -3533,6 +3533,18 @@
                MOVE    "0110"          TO  SPA-IIDCD
                GO      TO      470-KAKUTEI-EXT
            END-IF
+      *    入院時食事療養２の場合、特食を入力不可とする
+           IF   SPA-NAI-TZAISKBKBN-41(SPA-NAI-BANGO)  =  "4"
+               IF      SPA-5000-NACCT-SKJKBN  =   "2"
+                   PERFORM   VARYING   IDX   FROM   1   BY  1
+                             UNTIL     IDX   >   31
+                       IF    SPA-GMN-DAY-41 (IDX)   =   2
+                           MOVE   "0050"     TO   SPA-ERRCD
+                           GO      TO      470-KAKUTEI-EXT
+                       END-IF
+                   END-PERFORM
+               END-IF
+           END-IF
            IF      SPA-NAI-SRYYM       =   SPA-NAI-NYUINBI(1:6)
                MOVE    SPA-NAI-NYUINBI(7:2)    TO  IDX-D
       *
