@@ -186,6 +186,7 @@
            03  FLG-TAINDOUJITU             PIC 9(01).
            03  FLG-TAINTUSANMINUS          PIC 9(01).
            03  FLG-TARGET                  PIC 9(01).
+           03  FLG-ROUJIN                  PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -447,6 +448,14 @@
                05  WRK-SYUKA-KBN           PIC X(02).
                05  WRK-SYUKA-YMD           PIC X(08).
            03  WRK-CHK-YMD                 PIC X(08).
+      *
+       01  BAK-AREA.
+           03  BAK-AGE-G.
+               05  BAK-AGE-PTID            PIC 9(10).
+               05  BAK-AGE-BIRTHDAY        PIC X(08).
+               05  BAK-AGE-KJNYMD          PIC X(08).
+               05  BAK-AGE-NENREI          PIC 9(03).
+               03  BAK-AGE-FLG-ROUJIN      PIC 9(01).
       *
       *    ´µ¼ÔÇ¯Îð»»½ÐÍÑ¥¨¥ê¥¢
        01  WRK-NENREI-AREA.
@@ -795,6 +804,7 @@
            INITIALIZE                  IDX-AREA
            INITIALIZE                  WRK-AREA
            INITIALIZE                  CNT-AREA
+           INITIALIZE                  BAK-AREA
       *
            MOVE    SPA-COMMON      TO  SPA-AREA.
            MOVE    SPA-FREE        TO  SPA-I0FREE.
@@ -4309,6 +4319,7 @@
                         AND  ( SYS-5111-BRM-NYUINRYOKBN    =   "05" )
                            PERFORM 41011-PT-AGE-SEC
                            IF    ( WRK-NENREI >=  70 )
+                            OR   ( FLG-ROUJIN  =   1 )
                                MOVE    1       TO  FLG-TARGET
                            ELSE
                                IF    ( SYS-5111-SEIKATU-RYOKBN
@@ -4322,6 +4333,7 @@
                         AND  ( SYS-5111-BRM-NYUINRYOKBN    =   "06" )
                            PERFORM 41011-PT-AGE-SEC
                            IF    ( WRK-NENREI >=  70 )
+                            OR   ( FLG-ROUJIN  =   1 )
                                MOVE    1       TO  FLG-TARGET
                            ELSE
                                IF    ( SYS-5111-SEIKATU-RYOKBN
@@ -4372,6 +4384,7 @@
                        PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
                        PERFORM 41011-PT-AGE-SEC
                        IF    ( WRK-NENREI  >=  70 )
+                        OR   ( FLG-ROUJIN  =   1 )
                            MOVE    "5110"      TO  WRK-KANRICD
                            MOVE    "16"        TO  WRK-KBNCD
                            MOVE    "2"         TO  WRK-TOKNYUIN-KBN
@@ -4419,6 +4432,7 @@
       *
                        PERFORM 41011-PT-AGE-SEC
                        IF    ( WRK-NENREI  >=  70 )
+                        OR   ( FLG-ROUJIN  =   1 )
                            MOVE    "5111"      TO  WRK-KANRICD
                            MOVE    "49"        TO  WRK-KBNCD
                            MOVE    "3"         TO  WRK-TOKNYUIN-KBN
@@ -4460,6 +4474,7 @@
       *
            PERFORM 41011-PT-AGE-SEC
            IF    ( WRK-NENREI  >=  70 )
+            OR   ( FLG-ROUJIN   =   1 )
                MOVE    "5111"      TO  WRK-KANRICD
                MOVE    "50"        TO  WRK-KBNCD
                MOVE    "3"         TO  WRK-TOKNYUIN-KBN
@@ -4475,18 +4490,66 @@
        41011-PT-AGE-SEC            SECTION.
       *
            MOVE    ZERO                TO  WRK-NENREI
+                                           FLG-ROUJIN
       *
-           MOVE    SPA-NAI-I01-BIRTHDAY
-                                       TO  WRK-YMDS1
-           MOVE    WRK-KJNYMD          TO  WRK-YMDS2
-           COMPUTE WRK-NENREI      =   WRK-YYS2
+           IF    ( BAK-AGE-PTID            =   ZERO )
+            OR  (( BAK-AGE-PTID        NOT =   SPA-NAI-I01-PTID )
+             OR  ( BAK-AGE-BIRTHDAY    NOT =   SPA-NAI-I01-BIRTHDAY )
+             OR  ( BAK-AGE-KJNYMD      NOT =   WRK-KJNYMD ))
+      *
+               MOVE    SPA-NAI-I01-BIRTHDAY
+                                           TO  WRK-YMDS1
+               MOVE    WRK-KJNYMD          TO  WRK-YMDS2
+               COMPUTE WRK-NENREI      =   WRK-YYS2
                                    -   WRK-YYS1
-           IF    ( WRK-YMDS1(5:4)     >   WRK-YMDS2(5:4) )
-                COMPUTE WRK-NENREI =   WRK-NENREI  -   1
+               IF    ( WRK-YMDS1(5:4)     >   WRK-YMDS2(5:4) )
+                    COMPUTE WRK-NENREI =   WRK-NENREI  -   1
+               END-IF
+      *
+               PERFORM 410111-ROUJIN-CHK-SEC
+      *
+               MOVE    SPA-NAI-I01-PTID    TO  BAK-AGE-PTID
+               MOVE    SPA-NAI-I01-BIRTHDAY
+                                           TO  BAK-AGE-BIRTHDAY
+               MOVE    WRK-KJNYMD          TO  BAK-AGE-KJNYMD
+               MOVE    WRK-NENREI          TO  BAK-AGE-NENREI
+               MOVE    FLG-ROUJIN          TO  BAK-AGE-FLG-ROUJIN
+           ELSE
+               MOVE    BAK-AGE-NENREI      TO  WRK-NENREI
+               MOVE    BAK-AGE-FLG-ROUJIN  TO  FLG-ROUJIN
            END-IF
       *
            .
        41011-PT-AGE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Ï·¿Í¸øÈñÈ½Äê½èÍý
+      *****************************************************************
+       410111-ROUJIN-CHK-SEC          SECTION.
+      *
+           INITIALIZE                  PTKOHINF-REC
+           MOVE    AGECHK-HOSPID       TO  PTKOH-HOSPID
+           MOVE    AGECHK-PTID         TO  PTKOH-PTID
+           MOVE    "027"               TO  PTKOH-KOHNUM
+           MOVE    WRK-KJNYMD          TO  PTKOH-TEKSTYMD
+           MOVE    WRK-KJNYMD          TO  PTKOH-TEKEDYMD
+      *
+           MOVE    PTKOHINF-REC        TO  MCPDATA-REC
+           MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+           MOVE    "key6"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    1               TO  FLG-ROUJIN
+           END-IF
+      *
+           MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+           MOVE    "key6"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+      *
+       410111-ROUJIN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    ÆÃÄêÆþ±¡ÎÁ¥³¥ó¥Ü¥Ç¡¼¥¿¥»¥Ã¥È½èÍý
@@ -4634,6 +4697,7 @@
       *
            PERFORM 41011-PT-AGE-SEC
            IF    ( WRK-NENREI  >=  70 )
+            OR   ( FLG-ROUJIN  =   1 )
                PERFORM VARYING IDX10   FROM    1   BY  1
                        UNTIL ( IDX10 > CONST-TOK-LIFECD-MAX)
                    IF    ( WRK-CMB-CD  =   CONST-TOK-LIFECD-IPN (IDX10))
