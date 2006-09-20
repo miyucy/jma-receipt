@@ -2464,6 +2464,8 @@
                        MOVE   "190125010"   TO  SYOKIKSN-IN-KHNSRYCD
                    WHEN    "50"
                        MOVE   "190125310"   TO  SYOKIKSN-IN-KHNSRYCD
+                   WHEN    "51"
+                       MOVE   "190125210"   TO  SYOKIKSN-IN-KHNSRYCD
                END-EVALUATE
            END-IF
       *
