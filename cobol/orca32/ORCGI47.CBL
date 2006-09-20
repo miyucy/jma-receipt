@@ -107,6 +107,7 @@
            03  FLG-MEDKBN3                 PIC 9(01).
            03  FLG-MEDKBN2                 PIC 9(01).
            03  FLG-ADLKBN                  PIC 9(01).
+           03  FLG-TARGET                  PIC 9(01).
       *
       *    •´•¶•Û•»ŒŒ∞Ë
        01  CNT-AREA.
@@ -137,6 +138,7 @@
            03  WRK-TNS-KJNYMD              PIC X(08).
            03  WRK-I4IDMSG                 PIC X(80). 
            03  WRK-ZZ                      PIC ZZ.
+           03  WRK-Z9                      PIC Z9.
            03  WRK-ZZ9                     PIC ZZ9.
            03  WRK-ZZZ-G.
                05  WRK-ZZZ                 PIC ZZZ.
@@ -1740,8 +1742,15 @@
                IF    ( WRK-GRPINPUT-DAYALL (IDX0) =   1 )
                    MOVE    WRK-GRPINPUT-TENSU (IDX0)
                                        TO  SPA-NAI-DAYALL
-                                           WRK-ZZ
-                   MOVE    WRK-ZZ      TO  SPA-GMN-DAYALL
+                   IF    ( SPA-NAI-INPUT-MODE     =   1 )
+                       MOVE    WRK-GRPINPUT-TENSU (IDX0)
+                                       TO  WRK-ZZ
+                       MOVE    WRK-ZZ  TO  SPA-GMN-DAYALL
+                   ELSE
+                       MOVE    WRK-GRPINPUT-TENSU (IDX0)
+                                       TO  WRK-Z9
+                       MOVE    WRK-Z9  TO  SPA-GMN-DAYALL
+                   END-IF
                END-IF
       *
                PERFORM VARYING IDX-DAY FROM    1   BY  1
@@ -1750,8 +1759,15 @@
                    IF    ( WRK-GRPINPUT-DAY (IDX0 IDX-DAY)  =   1 )
                        MOVE    WRK-GRPINPUT-TENSU (IDX0)
                                        TO  SPA-NAI-DAY (IDX-DAY)
-                                           WRK-ZZ
-                       MOVE    WRK-ZZ  TO  SPA-GMN-DAY (IDX-DAY)
+                       IF    ( SPA-NAI-INPUT-MODE     =   1 )
+                           MOVE    WRK-GRPINPUT-TENSU (IDX0)
+                                           TO  WRK-ZZ
+                           MOVE    WRK-ZZ  TO  SPA-GMN-DAY (IDX-DAY)
+                       ELSE
+                           MOVE    WRK-GRPINPUT-TENSU (IDX0)
+                                           TO  WRK-Z9
+                           MOVE    WRK-Z9  TO  SPA-GMN-DAY (IDX-DAY)
+                       END-IF
                    END-IF
       *
                END-PERFORM
@@ -1895,15 +1911,33 @@
       *
                MOVE    ZERO                TO  WRK-DAY
       *
-               IF    ( SPA-NAI-DAYALL      >   ZERO )
-                   IF    ( SPA-NAI-TZAISKBKBN (IDX-LST)    =   "1" )
-                       MOVE    SPA-NAI-DAYALL  TO  WRK-DAY
-                   ELSE
-                       MOVE    1               TO  WRK-DAY
+               IF    ( SPA-NAI-INPUT-MODE  =   1 )
+                   IF    ( SPA-NAI-DAYALL      >   ZERO )
+                       IF    ( SPA-NAI-TZAISKBKBN (IDX-LST)    =   "1" )
+                           MOVE    SPA-NAI-DAYALL  TO  WRK-DAY
+                       ELSE
+                           MOVE    1       TO  WRK-DAY
+                       END-IF
+                   END-IF
+      *
+                   MOVE    WRK-DAY         TO  SPA-GMN-TDAYALL (IDX-LST)
+               ELSE
+                   IF    ( SPA-GMN-DAYALL  NOT =   SPACE )
+                       IF    ( SPA-NAI-DAYALL      =   ZERO )
+                               MOVE    ZERO            TO  WRK-DAY
+                       ELSE
+                           IF    ( SPA-NAI-TZAISKBKBN (IDX-LST)
+                                                   =   "1" )
+                               MOVE    SPA-NAI-DAYALL  TO  WRK-DAY
+                           ELSE
+                               MOVE    1               TO  WRK-DAY
+                           END-IF
+                       END-IF
+      *
+                       MOVE    WRK-DAY     TO  SPA-GMN-TDAYALL (IDX-LST)
+      *
                    END-IF
                END-IF
-      *
-               MOVE    WRK-DAY             TO  SPA-GMN-TDAYALL (IDX-LST)
       *
            END-IF
       *
@@ -1917,17 +1951,38 @@
       *
                    MOVE    ZERO            TO  WRK-DAY
       *
-                   IF    ( SPA-NAI-DAY (IDX-DAY)   >   ZERO )
-                       IF    ( SPA-NAI-TZAISKBKBN (IDX-LST)    =   "1" )
-                           MOVE    SPA-NAI-DAY (IDX-DAY)
-                                           TO  WRK-DAY
-                       ELSE
-                           MOVE    1       TO  WRK-DAY
+                   IF    ( SPA-NAI-INPUT-MODE  =   1 )
+                       IF    ( SPA-NAI-DAY (IDX-DAY)   >   ZERO )
+                           IF    ( SPA-NAI-TZAISKBKBN(IDX-LST) =   "1" )
+                               MOVE    SPA-NAI-DAY (IDX-DAY)
+                                               TO  WRK-DAY
+                           ELSE
+                               MOVE    1       TO  WRK-DAY
+                           END-IF
+                       END-IF
+      *
+                       MOVE    WRK-DAY         TO  SPA-GMN-TDAY
+                                                   (IDX-LST IDX-DAY)
+                   ELSE
+                       IF    ( SPA-GMN-DAY (IDX-DAY)
+                                               NOT =   SPACE )
+                           IF    ( SPA-NAI-DAY (IDX-DAY)   =   ZERO)
+                               MOVE    ZERO    TO  WRK-DAY
+                           ELSE
+                               IF    ( SPA-NAI-TZAISKBKBN(IDX-LST)
+                                                           =   "1" )
+                                   MOVE    SPA-NAI-DAY (IDX-DAY)
+                                               TO  WRK-DAY
+                               ELSE
+                                   MOVE    1   TO  WRK-DAY
+                               END-IF
+                           END-IF
+      *
+                           MOVE    WRK-DAY     TO  SPA-GMN-TDAY
+                                                   (IDX-LST IDX-DAY)
+      *
                        END-IF
                    END-IF
-      *
-                   MOVE    WRK-DAY         TO  SPA-GMN-TDAY
-                                                   (IDX-LST IDX-DAY)
       *
                END-PERFORM
            ELSE
@@ -2428,7 +2483,7 @@
       *
            EVALUATE    SPA-IIDCD
            WHEN    "2001"
-               MOVE    "£¡£ƒ£Ã∂Ë ¨°¶∞ÂŒ≈∂Ë ¨§Ú≈–œø§∑§ﬁ§π"
+               MOVE    "∞ÂŒ≈∂Ë ¨°¶£¡£ƒ£Ã∂Ë ¨§Ú≈–œø§∑§ﬁ§π"
                                        TO  WRK-I4IDMSG
            END-EVALUATE
       *
