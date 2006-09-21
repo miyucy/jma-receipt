@@ -3210,6 +3210,9 @@
                    MOVE    SPA-NAI-W24-SKJSRY-SRYCD (IDX0)
                                        TO  WRK-SRYCD
                    PERFORM 900-TENSU-KEY-SEL-SEC
+                   IF  SPA-NAI-W24-SKJSRY-SRYCD (IDX0)  =  "197000570"
+                       MOVE  "¿©Æ²²Ã»»"     TO    TNS-NAME
+                   END-IF
                    MOVE    TNS-NAME    TO  SPA-GMN-W24-LBLSKJSRY (IDX0)
                END-IF
       *
