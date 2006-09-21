@@ -286,6 +286,21 @@ CREATE TABLE "tbl_syunou" (
 	"ryo_tgmoney" numeric(7,0) DEFAULT 0,
 	"ryo_tgmoney_tax" numeric(7,0) DEFAULT 0,
 	"shohou_sai" numeric(7,0) DEFAULT 0,
+	"grp_hakhouflg" numeric(1,0) DEFAULT 0,
+	"shokuji8_nissu" numeric(2,0) DEFAULT 0,
+	"shokuji8" numeric(7,0) DEFAULT 0,
+	"shokuji9_nissu" numeric(2,0) DEFAULT 0,
+	"shokuji9" numeric(7,0) DEFAULT 0,
+	"shokuji10_nissu" numeric(2,0) DEFAULT 0,
+	"shokuji10" numeric(7,0) DEFAULT 0,
+	"ryoyohi_life" numeric(7,0) DEFAULT 0,
+	"skymoney_life" numeric(7,0) DEFAULT 0,
+	"skymoney_life_tax" numeric(7,0) DEFAULT 0,
+	"skymoney_life_kei" numeric(7,0) DEFAULT 0,
+	"ryoyohi_life_jihi" numeric(7,0) DEFAULT 0,
+	"skymoney_life_jihi" numeric(7,0) DEFAULT 0,
+	"skymoney_life_jihi_tax" numeric(7,0) DEFAULT 0,
+	"skymoney_life_jihi_kei" numeric(7,0) DEFAULT 0,
 	Constraint "tbl_syunou_primary_key" Primary Key ("hospid", "nyugaikbn", "ptid", "denpnum")
 );
 

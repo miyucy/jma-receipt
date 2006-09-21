@@ -30,8 +30,7 @@ CREATE TABLE "tbl_receprt" (
 	"prtnm" character(16) DEFAULT ' ',
 	"termid" character varying(64),
 	"opid" character varying(16),
+	"prtjyun_syuka" numeric(4,0) DEFAULT 0,
 	Constraint "tbl_receprt_primary_key" Primary Key ("prtid", "receym", "creymd", "crehms", "teisyutusaki", "sryka", "prefkbn_srt", "hknjanum_srt", "hknjanum", "recesyubetu", "tekstymd", "zaitaku", "chouki", "ptnum", "rennum", "recenum")
 );
-
-COMMENT ON TABLE "tbl_receprt" IS 'レセプト明細書';
 
