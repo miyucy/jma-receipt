@@ -9,6 +9,7 @@
       *  01.00.03    NACL-太田    04.03.17  収納ＤＢの変更により修正
       *  01.00.04    NACL-太田    05.08.24  収納ＤＢの変更により修正
       *  01.00.05    NACL-小豆沢  06.07.06  収納ＤＢの変更により修正
+      *  01.00.06    NACL-太田    06.09.21  収納ＤＢの変更により修正
       ************************************************************
       *01  BD002-REC.
            03  BD002-KEY.
@@ -279,7 +280,7 @@
                05  BD002-JIHI-9-TAX          PIC  9(07). 
                05  BD002-JIHI-10             PIC  9(07). 
                05  BD002-JIHI-10-TAX         PIC  9(07). 
-           03  BD002-JIHI-NAIYOU-R         REDEFINES  BD002-JIHI-NAIYOU.
+           03  BD002-JIHI-NAIYOU-R     REDEFINES  BD002-JIHI-NAIYOU.
                05  BD002-JIHI-TBL            OCCURS   10.
                  07  BD002-JIHI-TAXNASI        PIC  9(07).
                  07  BD002-JIHI-TAXARI         PIC  9(07).
@@ -309,6 +310,8 @@
            03  BD002-GRP-RENNUM          PIC 9(02).
       *まとめ入力差額
            03  BD002-GRP-SGKMONEY        PIC S9(07).
+      *まとめ発行方法フラグ
+           03  BD002-GRP-HAKHOUFLG       PIC  9(01).
       *保証金額
            03  BD002-SECMONEY            PIC  9(07).
       *保険適用金額
@@ -361,7 +364,7 @@
            03  BD002-RMSAGAKU            PIC  9(07).
       *室料差額−消費税（再掲）
            03  BD002-RMSAGAKU-TAX-SAI    PIC  9(07).
-      *食事１から食事７
+      *食事１から食事１０
            03  BD002-SHOKUJI-NAIYOU.
                05  BD002-SHOKUJI1-NISSU  PIC  9(02).
                05  BD002-SHOKUJI1        PIC  9(07).
@@ -377,8 +380,14 @@
                05  BD002-SHOKUJI6        PIC  9(07).
                05  BD002-SHOKUJI7-NISSU  PIC  9(02).
                05  BD002-SHOKUJI7        PIC  9(07).
-           03  BD002-SYOKUJI-NAIYOUR   REDEFINES   BD002-SHOKUJI-NAIYOU.
-               05  BD002-SYOKUJI-TBL     OCCURS   7.
+               05  BD002-SHOKUJI8-NISSU  PIC  9(02).
+               05  BD002-SHOKUJI8        PIC  9(07).
+               05  BD002-SHOKUJI9-NISSU  PIC  9(02).
+               05  BD002-SHOKUJI9        PIC  9(07).
+               05  BD002-SHOKUJI10-NISSU PIC  9(02).
+               05  BD002-SHOKUJI10       PIC  9(07).
+           03  BD002-SYOKUJI-NAIYOUR REDEFINES   BD002-SHOKUJI-NAIYOU.
+               05  BD002-SYOKUJI-TBL     OCCURS   10.
                  07  BD002-SHOKUJI-NISSU   PIC  9(02).
                  07  BD002-SHOKUJI         PIC  9(07).
       *食事療養費情報（食事日数・食事療養費・標準負担額）
@@ -433,6 +442,24 @@
                                        PIC  9(07).
       *食事負担額（自費：自己負担合計）
            03  BD002-SKYMONEY-SKJ-JIHI-KEI
+                                       PIC  9(07).
+      *入院時生活療養費（保険）
+           03  BD002-RYOYOHI-LIFE        PIC  9(07).
+      *入院時生活療養費負担額（保険：自己負担）
+           03  BD002-SKYMONEY-LIFE       PIC  9(07).
+      *入院時生活療養費負担額（保険：自己負担消費税）
+           03  BD002-SKYMONEY-LIFE-TAX   PIC  9(07).
+      *入院時生活療養費負担額（保険：自己負担合計）
+           03  BD002-SKYMONEY-LIFE-KEI   PIC  9(07).
+      *入院時生活療養費費（自費）
+           03  BD002-RYOYOHI-LIFE-JIHI   PIC  9(07).
+      *入院時生活療養費負担額（自費：自己負担）
+           03  BD002-SKYMONEY-LIFE-JIHI  PIC  9(07).
+      *入院時生活療養費負担額（自費：自己負担消費税）
+           03  BD002-SKYMONEY-LIFE-JIHI-TAX
+                                       PIC  9(07).
+      *入院時生活療養費負担額（自費：自己負担合計）
+           03  BD002-SKYMONEY-LIFE-JIHI-KEI
                                        PIC  9(07).
       *食事負担（負担額別管理用）
            03  BD002-SKJ-PTFTN           OCCURS 3.
@@ -534,6 +561,5 @@
            03  BD002-UPYMD               PIC  X(08).
       *更新時間
            03  BD002-UPHMS               PIC  X(06).
-      *
       *患者番号
            03  BD002-PTNUM               PIC  X(20).
