@@ -382,7 +382,7 @@
            03  SYU-RMSAGAKU            PIC  9(07).
       *¼¼ÎÁº¹³Û¡Ý¾ÃÈñÀÇ¡ÊºÆ·Ç¡Ë
            03  SYU-RMSAGAKU-TAX-SAI    PIC  9(07).
-      *¿©»ö£±¤«¤é¿©»ö£·
+      *¿©»ö£±¤«¤é¿©»ö£±£°
            03  SYU-SHOKUJI-NAIYOU.
                05  SYU-SHOKUJI1-NISSU  PIC  9(02).
                05  SYU-SHOKUJI1        PIC  9(07).
