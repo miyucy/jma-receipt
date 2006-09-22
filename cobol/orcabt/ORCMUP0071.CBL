@@ -420,7 +420,6 @@
       *
            INITIALIZE                  INTERACT-REC
            MOVE    IN-REC(2:)          TO  INTERACT-REC
-           MOVE    "TEST"              TO  INTERACT-TERMID
            MOVE    INTERACT-REC        TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    "tbl_interact"      TO  MCP-TABLE
