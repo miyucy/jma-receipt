@@ -14,7 +14,8 @@ MSTDIR=lics-$(date +%Y%m%d)
 WGETRCFL=/tmp/.wgetrc.license-master
 LIUPWD=$1
 
-UPDKANRIFILE=info/ORCADBR-LI.DAT
+KANRIFILE=ORCADBR-LI.DAT
+UPDKANRIFILE=info/$KANRIFILE
 
 UPDFILE=/home/orca/$MSTDIR/ORCADBR.OUT
 LEN=100
@@ -119,11 +120,12 @@ else
 	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001MSTMLI98
         exit 99
     fi
-    if  [  -s	$UPDKANRIFILE	]
+    if  [  -s	$HOME/$MSTDIR/$KANRIFILE	]
     then
 	echo "センタからのDBレコード管理情報は正常でした"
     else
 	echo "センタからのDBレコード管理情報は空でした"
+	rm -r $HOME/$MSTDIR
 	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001MSTMLI01
         exit 99
     fi
