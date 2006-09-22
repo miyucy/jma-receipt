@@ -174,6 +174,9 @@
            03  WRK-SRYCD           PIC X(09).
            03  WRK-KAISU           PIC 9(03).
            03  WRK-PTID            PIC 9(10).
+           03  WRK-KANACHK-G.
+               05  WRK-KANACHK-INPUT   PIC X(100).
+               05  WRK-KANACHK-MAX     PIC 9(05).
       *
        01  TOTAL-AREA.
            03  TOTAL-PTNUM         PIC 9(08).
@@ -288,6 +291,9 @@
       *    指定診療行為件数調サブ１
            COPY    "CPORCHCG016S01.INC".
       *
+      *    カナチェックパラメタ
+           COPY    "CPORCSKANACHK.INC".
+      *
       *    指定診療行為件数調サブ２
            COPY    "CPORCHCG016S02.INC".
       *
@@ -398,6 +404,52 @@
       *****************************************************************
        110-PARA-HENSYU-SEC         SECTION.
       *
+          MOVE    SPACE                TO  WRK-KANACHK-INPUT
+          MOVE    1                    TO  WRK-KANACHK-MAX
+          STRING  WRK-PARA-SRYYM       DELIMITED   BY  SIZE
+          INTO    WRK-KANACHK-INPUT
+          WITH    POINTER WRK-KANACHK-MAX
+          END-STRING
+          COMPUTE WRK-KANACHK-MAX      =   WRK-KANACHK-MAX -   1
+          PERFORM 800-HANKAKU-CHK-SEC
+          MOVE    WRK-KANACHK-INPUT    TO  WRK-PARA-SRYYM
+      *
+          MOVE    SPACE                TO  WRK-KANACHK-INPUT
+          MOVE    1                    TO  WRK-KANACHK-MAX
+          STRING  WRK-PARA-NYUGAIKBN   DELIMITED   BY  SIZE
+          INTO    WRK-KANACHK-INPUT
+          WITH    POINTER WRK-KANACHK-MAX
+          END-STRING
+          COMPUTE WRK-KANACHK-MAX      =   WRK-KANACHK-MAX -   1
+          PERFORM 800-HANKAKU-CHK-SEC
+          MOVE    WRK-KANACHK-INPUT    TO  WRK-PARA-NYUGAIKBN
+      *
+          MOVE    SPACE                TO  WRK-KANACHK-INPUT
+          MOVE    1                    TO  WRK-KANACHK-MAX
+          STRING  WRK-PARA-SRYKA       DELIMITED   BY  SIZE
+          INTO    WRK-KANACHK-INPUT
+          WITH    POINTER WRK-KANACHK-MAX
+          END-STRING
+          COMPUTE WRK-KANACHK-MAX      =   WRK-KANACHK-MAX -   1
+          PERFORM 800-HANKAKU-CHK-SEC
+          MOVE    WRK-KANACHK-INPUT    TO  WRK-PARA-SRYKA
+      *
+      *
+          PERFORM VARYING IDX0   FROM  1   BY  1
+                  UNTIL ( IDX0   >     CONST-PARA-SRYCD-MAX )
+      *
+              MOVE    SPACE                TO  WRK-KANACHK-INPUT
+              MOVE    1                    TO  WRK-KANACHK-MAX
+              STRING  WRK-PARA-SRYCD (IDX0)    DELIMITED   BY  SIZE
+              INTO    WRK-KANACHK-INPUT
+              WITH    POINTER WRK-KANACHK-MAX
+              END-STRING
+              COMPUTE WRK-KANACHK-MAX      =   WRK-KANACHK-MAX -   1
+              PERFORM 800-HANKAKU-CHK-SEC
+              MOVE    WRK-KANACHK-INPUT    TO  WRK-PARA-SRYCD (IDX0)
+      *
+          END-PERFORM
+      *
            MOVE    WRK-PARA-SRYYM      TO  WRK-SRYYMD
            MOVE    "01"                TO  WRK-SRYYMD(7:)
       *
@@ -465,6 +517,7 @@
       *
                IF    ( WRK-PARA-SRYCD (IDX0)   NOT =   SPACE )
       *
+      *
                    COMPUTE CNT-INPUT-ITEM  =   CNT-INPUT-ITEM  +   1
       *
                    MOVE    SPACE   TO  WRK-SRYCD
@@ -478,6 +531,16 @@
                    INTO        WRK-SRYCD
                                WRK-STR
                    END-UNSTRING
+      *
+                   MOVE    SPACE               TO  WRK-KANACHK-INPUT
+                   MOVE    1                   TO  WRK-KANACHK-MAX
+                   STRING  WRK-SRYCD    DELIMITED   BY  SIZE
+                   INTO    WRK-KANACHK-INPUT
+                   WITH    POINTER WRK-KANACHK-MAX
+                   END-STRING
+                   COMPUTE WRK-KANACHK-MAX     =   WRK-KANACHK-MAX -   1
+                   PERFORM 800-HANKAKU-CHK-SEC
+                   MOVE    WRK-KANACHK-INPUT   TO  WRK-SRYCD
       *
                    MOVE    ZERO                TO  WRK-KAISU
       *
@@ -1165,6 +1228,26 @@
        300-END-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    半角文字チェック
+      *****************************************************************
+       800-HANKAKU-CHK-SEC              SECTION.
+      *
+           IF  ( WRK-KANACHK-INPUT NOT =   SPACE )
+               MOVE    SPACE           TO  ORCSKANACHKAREA
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "1"             TO  KANACHK-SYORI
+               MOVE    WRK-KANACHK-INPUT
+                                       TO  KANACHK-MAE-INPUT
+               MOVE    WRK-KANACHK-MAX TO  KANACHK-MAX-CNT
+               CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+               MOVE    KANACHK-OUT-INPUT
+                                       TO  WRK-KANACHK-INPUT
+           END-IF
+      *
+           .
+       800-HANKAKU-CHK-EXT.
+           EXIT.
       *****************************************************************
       *    西暦日本語変換処理
       *****************************************************************
