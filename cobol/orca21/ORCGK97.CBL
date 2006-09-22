@@ -876,7 +876,7 @@
            END-IF
       *
            IF      SPA-ERRCD           =   SPACE
-               IF      SPA-K97-SELNUM3     =   SPACE
+               IF      SPA-K97-SELNUM3     =   ZERO
                    MOVE    SPACE               TO  SPA-K97-DRCD
                    MOVE    SPACE               TO  SPA-K97-SELNUM3
                ELSE
