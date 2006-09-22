@@ -184,12 +184,17 @@ for UPD in $UPDLIST
 do
 	echo ${UPD:34:$LEN}
 	if  [ $OFFLINE = "offline" ]; then
-	    if  [ -e $OFFLINEPATH/${UPD:34:$LEN} ]; then
-		cp $OFFLINEPATH/${UPD:34:$LEN} ./
-		echo ${UPD:34:$LEN} "複写が終了しました" >>master_log
+	    DWNFL=`echo ${UPD:34:$LEN} | awk '{i=split($0,arr,"/"); print arr[i]} ' `
+	    if [ ${DWNFL:1:10}	= "XXXXXXXXXX"	] ;	then
+		echo ${UPD:34:$LEN} "オリジナルダンプスキップしました" >>master_log
 	    else
-		echo ${UPD:34:$LEN} "複写に失敗しました" >>master_log
-	        exit 99
+		if  [ -e $OFFLINEPATH/${UPD:34:$LEN} ]; then
+		    cp $OFFLINEPATH/${UPD:34:$LEN} ./
+		    echo ${UPD:34:$LEN} "複写が終了しました" >>master_log
+		else
+		    echo ${UPD:34:$LEN} "複写に失敗しました" >>master_log
+	            exit 99
+		fi
 	    fi
 	else
 	    if	orcawget ${UPD:34:$LEN} ;	then
