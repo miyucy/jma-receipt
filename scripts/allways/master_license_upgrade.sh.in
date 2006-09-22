@@ -117,6 +117,7 @@ else
 	echo "センタからのDBレコード管理情報のダウンロードが終了しました"
     else
 	echo "センタからのDBレコード管理情報のダウンロードに失敗しました"
+	rm -r $HOME/$MSTDIR
 	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001MSTMLI98
         exit 99
     fi
