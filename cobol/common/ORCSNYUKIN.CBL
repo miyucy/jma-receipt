@@ -288,7 +288,8 @@
       *
       *    返金振り分け残額の設定
            IF    ( LNK-SCNYUKIN-HENKINKBN  =   "1" )
-               CONTINUE
+               MOVE    LNK-SCNYUKIN-HENKIN-MONEY
+                                           TO  LNK-SCNYUKIN-HENKINZAN
            ELSE
                IF    ( WRK-HENKIN-ZAN      NOT =   ZERO )
                    MOVE  WRK-HENKIN-ZAN    TO  LNK-SCNYUKIN-HENKINZAN
