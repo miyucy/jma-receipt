@@ -41,6 +41,9 @@
       *      １：未収仮処理（収納実更新なし）
       *      ２：未収更新
            03  LNK-SCNYUKIN-KOUSHINKBN       PIC X(01).
+      *    返金区分
+      *      １：返金額からの充当をしない
+           03  LNK-SCNYUKIN-HENKINKBN        PIC X(01).
       *    入金管理区分
            03  LNK-SCNYUKIN-NYKNKNRKBN       PIC X(01).
       *    入金額

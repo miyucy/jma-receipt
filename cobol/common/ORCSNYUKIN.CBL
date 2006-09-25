@@ -207,8 +207,12 @@
       *
            MOVE    LNK-SCNYUKIN-NYUKIN-MONEY
                                        TO  WRK-NYUKIN-ZAN
-           MOVE    LNK-SCNYUKIN-HENKIN-MONEY
+           IF    ( LNK-SCNYUKIN-HENKINKBN  =   "1" )
+               MOVE    ZERO            TO  WRK-HENKIN-ZAN
+           ELSE
+               MOVE    LNK-SCNYUKIN-HENKIN-MONEY
                                        TO  WRK-HENKIN-ZAN
+           END-IF
       *
            MOVE    ZERO                TO  IDX
       *
@@ -283,8 +287,12 @@
            END-IF
       *
       *    返金振り分け残額の設定
-           IF    ( WRK-HENKIN-ZAN      NOT =   ZERO )
-               MOVE  WRK-HENKIN-ZAN    TO  LNK-SCNYUKIN-HENKINZAN
+           IF    ( LNK-SCNYUKIN-HENKINKBN  =   "1" )
+               CONTINUE
+           ELSE
+               IF    ( WRK-HENKIN-ZAN      NOT =   ZERO )
+                   MOVE  WRK-HENKIN-ZAN    TO  LNK-SCNYUKIN-HENKINZAN
+               END-IF
            END-IF
       *
       *    入金振り分け残額の設定
