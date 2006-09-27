@@ -281,6 +281,7 @@
            IF    ( IDX                 =   ZERO )
                IF    ( LNK-SCNYUKIN-HENKIN-MONEY
                                        =   ZERO )
+                AND  ( LNK-SCNYUKIN-HENKINKBN  =   SPACE )
                    MOVE    11          TO  LNK-SCNYUKIN-RC
                    GO  TO  200-MAIN-EXT
                END-IF
