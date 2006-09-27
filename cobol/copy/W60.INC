@@ -26,6 +26,10 @@
                 04  W60-UTAGAIKKNKBN       PIC X(10).
                 04  W60-UTAGAIKKNKBN-COUNT PIC S9(9)   BINARY.
                 04  W60-UTAGAIKKNKBN-ITEM  PIC X(10)   OCCURS  2.
+              03  W60-CMB-KYUSEIKKNKBN.
+                04  W60-KYUSEIKKNKBN       PIC X(10).
+                04  W60-KYUSEIKKNKBN-COUNT PIC S9(9)   BINARY.
+                04  W60-KYUSEIKKNKBN-ITEM  PIC X(10)   OCCURS  2.
               03  W60-MTRX             PIC X(02)
                                        OCCURS 5.
               03  W60-CHKMTRX          PIC X(01)

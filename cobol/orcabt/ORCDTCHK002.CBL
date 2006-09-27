@@ -376,7 +376,8 @@
            03  WRK-STR                                 PIC X(500).
            03  WRK-STR-TMP                             PIC X(500).
            03  WRK-PNT                                 PIC 9(05).
-           03  WRK-UTAIGAI-CHK-YM                      PIC X(06).
+           03  WRK-UTAGAI-CHK-YM                       PIC X(06).
+           03  WRK-KYUSEI-CHK-YM                       PIC X(06).
            03  WRK-YMD.
                05  WRK-YY                              PIC 9(04).
                05  WRK-MM                              PIC 9(02).
@@ -4044,7 +4045,7 @@
            END-IF
       *
       *    疑い病名開始日チェック用年月
-           MOVE    SPACE               TO  WRK-UTAIGAI-CHK-YM
+           MOVE    SPACE               TO  WRK-UTAGAI-CHK-YM
            MOVE    WRK-KJNYMD          TO  WRK-SYMD
            MOVE    "2"                 TO  WRK-ZOGENPTN
            IF    ( SYS-1101-UTAGAIKKN-X    IS  NUMERIC )
@@ -4054,7 +4055,20 @@
                MOVE    -2              TO  WRK-ZOGEN
            END-IF
            PERFORM 800-CALENDAR-SEC
-           MOVE    WRK-SYMD (1:6)      TO  WRK-UTAIGAI-CHK-YM
+           MOVE    WRK-SYMD (1:6)      TO  WRK-UTAGAI-CHK-YM
+      *
+      *    急性病名開始日チェック用年月
+           MOVE    SPACE               TO  WRK-KYUSEI-CHK-YM
+           MOVE    WRK-KJNYMD          TO  WRK-SYMD
+           MOVE    "2"                 TO  WRK-ZOGENPTN
+           IF    ( SYS-1101-KYUSEIKKN-X    IS  NUMERIC )
+               COMPUTE WRK-ZOGEN
+                   =   SYS-1101-KYUSEIKKN  *   -1
+           ELSE
+               MOVE    -2              TO  WRK-ZOGEN
+           END-IF
+           PERFORM 800-CALENDAR-SEC
+           MOVE    WRK-SYMD (1:6)      TO  WRK-KYUSEI-CHK-YM
       *
            .
        200111-PTBYOMEI-CHK-INIT-EXT.
@@ -4239,6 +4253,11 @@
       *        疑い病名チェック
                IF    ( FLG-CHKEND (7)  =   ZERO )
                    PERFORM 2001121-PTBYO-UTAGAI-CHK-SEC
+               END-IF
+      *
+      *        急性病名チェック
+               IF    ( FLG-CHKEND (7)  =   ZERO )
+                   PERFORM 2001121-PTBYO-KYUSEI-CHK-SEC
                END-IF
       *
            END-IF
@@ -4620,7 +4639,7 @@
       *
            IF    ( PTBYO-UTAGAIFLG     = "1" OR "3")
             AND  ( PTBYO-TENKIKBN      = SPACE)
-            AND  ( PTBYO-SRYYMD (1:6) <= WRK-UTAIGAI-CHK-YM )
+            AND  ( PTBYO-SRYYMD (1:6) <= WRK-UTAGAI-CHK-YM )
                MOVE    PTBYO-SRYKA         TO  SRH-1005-SRYKA
                MOVE    WRK-PTBYOMES-PLUS   TO  WRK-ERRMES-PLUS
                MOVE    "070001"            TO  WRK-ERRCD
@@ -4634,6 +4653,28 @@
       *
            .
        2001121-PTBYO-UTAGAI-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    急性病名チェック処理
+      *****************************************************************
+       2001121-PTBYO-KYUSEI-CHK-SEC    SECTION.
+      *
+           IF    ( PTBYO-UTAGAIFLG     = "2" OR "3")
+            AND  ( PTBYO-TENKIKBN      = SPACE)
+            AND  ( PTBYO-SRYYMD (1:6) <= WRK-KYUSEI-CHK-YM )
+               MOVE    PTBYO-SRYKA         TO  SRH-1005-SRYKA
+               MOVE    WRK-PTBYOMES-PLUS   TO  WRK-ERRMES-PLUS
+               MOVE    "070002"            TO  WRK-ERRCD
+               PERFORM 213-ERRMES-HEN-SEC
+      *
+               IF    ( ORCBSD01-CHKKBN (7) =   "1" )
+                   MOVE    1           TO  FLG-CHKEND (7)
+                   GO  TO  2001121-PTBYO-KYUSEI-CHK-EXT
+               END-IF
+           END-IF
+      *
+           .
+       2001121-PTBYO-KYUSEI-CHK-EXT.
            EXIT.
       *****************************************************************
       *    病名診療開始日編集処理

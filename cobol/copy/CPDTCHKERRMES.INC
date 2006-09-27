@@ -232,10 +232,15 @@
            05 PIC  X(30)   VALUE   "さい                          ".
            05 PIC  X(30)   VALUE   "                              ".
       *
-      *    ** 070xxx 疑い病名
+      *    ** 070xxx 急性病名・疑い病名
       *                            +---------+---------+---------+.
            05 PIC  X(06)   VALUE   "070001".
            05 PIC  X(30)   VALUE   "疑い病名が長期間継続しています".
+           05 PIC  X(30)   VALUE   "                              ".
+           05 PIC  X(30)   VALUE   "                              ".
+      *                            +---------+---------+---------+.
+           05 PIC  X(06)   VALUE   "070002".
+           05 PIC  X(30)   VALUE   "急性病名が長期間継続しています".
            05 PIC  X(30)   VALUE   "                              ".
            05 PIC  X(30)   VALUE   "                              ".
       *
@@ -409,7 +414,7 @@
            05 PIC  X(30)   VALUE   "                              ".
       *
          03  ERRMES-RED    REDEFINES   ERRMES-VAL.
-           05 ERRMES-OCC   OCCURS  69.
+           05 ERRMES-OCC   OCCURS  70.
               07  ERRMES-CD            PIC X(06).
               07  ERRMES-MESSAGE       PIC X(90).
-         03  ERRMES-MAX                PIC 9(05)   VALUE   69.
+         03  ERRMES-MAX                PIC 9(05)   VALUE   70.

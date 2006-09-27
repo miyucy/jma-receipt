@@ -203,7 +203,7 @@
                05                          PIC X(40)   VALUE
                "診療開始日".
                05                          PIC X(40)   VALUE
-               "疑い病名".
+               "疑い病名・急性病名".
                05                          PIC X(40)   VALUE
                "薬剤と病名".
                05                          PIC X(40)   VALUE

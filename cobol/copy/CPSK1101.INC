@@ -48,7 +48,10 @@
                05  SYS-1101-UTAGAIKKN   REDEFINES  SYS-1101-UTAGAIKKN-X
                                         PIC  9(03).
                05  SYS-1101-YBUTAGAIKBN PIC  X(1).
-               05                       PIC  X(488).
+               05  SYS-1101-KYUSEIKKN-X PIC  X(3).
+               05  SYS-1101-KYUSEIKKN   REDEFINES  SYS-1101-KYUSEIKKN-X
+                                        PIC  9(03).
+               05                       PIC  X(485).
       
       *Ã¼Ëö£É£Ä
            03  SYS-1101-TERMID          PIC  X(16).
