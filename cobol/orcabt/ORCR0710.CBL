@@ -143,6 +143,7 @@
       *  03.02.02    NACL-Æ£¸¶    06/07/31  ¹ñÊÝ¼ç²ÊÂÐ±þ
       *  03.02.03    NACL-Æ£¸¶    06/09/07  Ê¡²¬ÃÏÊý¸øÈñÂÐ±þ
       *  03.03.01    NACL-ÌçÏÆ    06/09/26  ²¬»³¸©ÃÏÊý¸øÈñÀÁµáÅÀÊÔ½¸
+      *  03.03.02    NACL-ÌçÏÆ    06/09/27  ÆÃµ­»ö¹à£±£¶Ä¹£²ÂÐ±þÂ¾
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -723,8 +724,10 @@
            03  FILLER          PIC X(10)   VALUE   "£±£´À©Ä¶".
            03  FILLER          PIC X(02)   VALUE   "15".
            03  FILLER          PIC X(10)   VALUE   "£±£µ·Ð²á".
+           03  FILLER          PIC X(02)   VALUE   "16".
+           03  FILLER          PIC X(10)   VALUE   "£±£¶Ä¹£²".
        01  TBL-TOKKI-R         REDEFINES   TBL-TOKKI-AREA.
-           03  TBL-TOKKI       OCCURS   14.
+           03  TBL-TOKKI       OCCURS   15.
                05  TBL-TOKKICD             PIC X(02).
                05  TBL-TOKKINAME           PIC X(10).
       *
@@ -3602,7 +3605,7 @@
                    OR    ( IDZ                 =   4     ) 
       *
                PERFORM VARYING IDY     FROM    1   BY  1
-                       UNTIL ( IDY             >   14    )
+                       UNTIL ( IDY             >   15    )
                    IF      RECE62-TOKKI(IDX)   =   TBL-TOKKICD(IDY)
                        ADD     1                TO  IDZ
                        MOVE    TBL-TOKKINAME(IDY)
@@ -3611,7 +3614,7 @@
                        AND  RECE62-SRYYM      >=  "200504"
                           MOVE   "£±£²´ï¼£"     TO  HC06-TOKKI (IDZ)
                        END-IF
-                       MOVE    14               TO  IDY
+                       MOVE    15               TO  IDY
                    END-IF
                END-PERFORM
            END-PERFORM
@@ -6669,7 +6672,7 @@
                    PERFORM VARYING IDX     FROM    1   BY  1
                            UNTIL   IDX     >       4
                            OR      RECE62-ETC-KOHNUM (IDX) =   SPACE
-                       IF      RECE62-ETC-KOHNUM (IDX)     =   "972"
+                       IF      RECE62-ETC-KOHNUM (IDX) =  "972" OR "974"
                            MOVE    "1"             TO  RECE08-CHOUKI
                            MOVE    4               TO  IDX
                        END-IF

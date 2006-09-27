@@ -104,6 +104,7 @@
       *  03.02.01    NACL-Æ£¸¶    06/07/31  ¹ñÊÝ¼ç²ÊÂÐ±þ
       *  03.02.02    NACL-Æ£¸¶    06/09/07  £²£°£°£¶Ç¯£±£°·î²þÀµÂÐ±þ
       *                                     Ê¡²¬ÃÏÊý¸øÈñÂÐ±þ
+      *  03.03.01    NACL-ÌçÏÆ    06/09/27  ÆÃµ­»ö¹à£±£¶Ä¹£²ÂÐ±þÂ¾
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -974,9 +975,16 @@
                    PERFORM  HKNNUM-READ-SEC
                    IF       FLG-HKNNUM    =   0
                        IF   HKN-HKNKOHSBTKBN   =   "2"
-                           ADD      1           TO  TOKKI-IDX
-                           MOVE    "02"         TO  RECE62-TOKKI
+                           EVALUATE  HKN-HKNNUM
+                            WHEN     "972"
+                              ADD      1           TO  TOKKI-IDX
+                              MOVE    "02"         TO  RECE62-TOKKI
                                                        (TOKKI-IDX)
+                            WHEN     "974"
+                              ADD      1           TO  TOKKI-IDX
+                              MOVE    "16"         TO  RECE62-TOKKI
+                                                       (TOKKI-IDX)
+                           END-EVALUATE
                            MOVE    RECE61-KOHHKNNUM-O(IDX)  TO
                                                     WRK-CHOKI 
                            MOVE    1            TO  FLG-HKNNUM
@@ -1029,6 +1037,8 @@
                                        NOT =   "027"       )
                    AND  ( RECE61-KOHNUMHC (IDX IDY2) (1:1)
                                            =   "0" OR  "9" )
+                   AND  ( RECE61-KOHNUMHC (IDX IDY2) (1:2)
+                                       NOT =   "99"        )
                        MOVE    1           TO  RECE62-HKNCOMBIFLG(IDX)
                        MOVE    4           TO  IDY2
                    END-IF
@@ -2150,6 +2160,7 @@
                     WHEN   "3"
                     WHEN   "C"
                     WHEN   "F"
+                    WHEN   "I"
                         MOVE     "1"     TO     RECE62-SENIN-TUUSAI
                END-EVALUATE
            END-IF

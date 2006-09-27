@@ -215,6 +215,7 @@
       *  03.02.03    NACL-ÃÁœ∆    06/08/30  ∆˛±°≈¿≈©§Œ∫ﬁ»÷πÊ ‘Ω∏Ω§¿µ
       *  03.02.04    NACL-ÃÁœ∆    06/09/08  •’•§•Î•‡§Œ√±≤¡ ‘Ω∏Ω§¿µ
       *  03.03.01    NACL-ÃÁœ∆    06/09/26  ≤¨ª≥∏©√œ ˝∏¯»Ò∞Ï…Ù…È√¥∂‚ ‘Ω∏
+      *  03.03.02    NACL-ÃÁœ∆    06/09/27  ∆√µ≠ªˆπ‡£±£∂ƒπ£≤¬–±˛
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -802,6 +803,7 @@
            03  CONS-TOKKI13        PIC X(14) VALUE "00000099990113".
            03  CONS-TOKKI14        PIC X(14) VALUE "00000099990114".
            03  CONS-TOKKI15        PIC X(14) VALUE "00000099990115".
+           03  CONS-TOKKI16        PIC X(14) VALUE "00000099990116".
       *
       *    …¬æ≤øÙ ‘Ω∏•’•È•∞ ‘Ω∏§Œ∞Ÿ§Œ•≥°º•…° ∆√ƒÍº¿¥µŒ≈Õ‹ªÿ∆≥Œ¡≈˘°À
            03  CONS-SIDORYO1       PIC X(09) VALUE "113001810".
@@ -1881,7 +1883,8 @@
                                                        CONS-TOKKI12 OR
                                                        CONS-TOKKI13 OR
                                                        CONS-TOKKI14 OR
-                                                       CONS-TOKKI15
+                                                       CONS-TOKKI15 OR
+                                                       CONS-TOKKI16
                                       MOVE    1    TO      FLG-TOKKI
                                       PERFORM   21013-TOKKI-HENSYU-SEC
                                  ELSE
@@ -2210,7 +2213,8 @@
                                      OR  CONS-TOKKI12(6:9)
                                      OR  CONS-TOKKI13(6:9)
                                      OR  CONS-TOKKI14(6:9)
-                                     OR  CONS-TOKKI15(6:9) )
+                                     OR  CONS-TOKKI15(6:9)
+                                     OR  CONS-TOKKI16(6:9) )
                   COMPUTE   RECE64-MEISAISU    =  RECE64-MEISAISU
                                                -  1
                   MOVE      SRY-SRYCD(IDX2)   TO  WRK-SRYCD
@@ -2257,7 +2261,8 @@
                                        OR  CONS-TOKKI12(6:9)
                                        OR  CONS-TOKKI13(6:9)
                                        OR  CONS-TOKKI14(6:9)
-                                       OR  CONS-TOKKI15(6:9) )
+                                       OR  CONS-TOKKI15(6:9)
+                                       OR  CONS-TOKKI16(6:9) )
               OR     ( SRY-SRYCD(IDX2)(1:3)  =  "001"        )
               OR     ((SRY-SRYCD(IDX2)(1:3)  =  "059") AND
                       (TNS-TEN               =  ZERO )       )
@@ -3764,6 +3769,8 @@
                        MOVE    "14"      TO      WRK-TOKKI
                    WHEN    CONS-TOKKI15
                        MOVE    "15"      TO      WRK-TOKKI
+                   WHEN    CONS-TOKKI16
+                       MOVE    "16"      TO      WRK-TOKKI
                END-EVALUATE
              WHEN        2
                EVALUATE    SRY-SRYCD(IDX2)
@@ -3795,6 +3802,8 @@
                        MOVE    "14"      TO      WRK-TOKKI
                    WHEN    CONS-TOKKI15(6:9)
                        MOVE    "15"      TO      WRK-TOKKI
+                   WHEN    CONS-TOKKI16(6:9)
+                       MOVE    "16"      TO      WRK-TOKKI
                END-EVALUATE
              WHEN        3
                        MOVE    "14"      TO      WRK-TOKKI
