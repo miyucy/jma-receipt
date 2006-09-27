@@ -134,6 +134,7 @@
       *  03.02.01    NACL-ÃÁœ∆    06/08/10  π‚Œº‘æÂ∏¬≥€∑–≤·¡º√÷¬–±˛
       *  03.02.02    NACL-∆£∏∂    06/07/31  πÒ ›ºÁ≤ ¬–±˛
       *  03.02.03    NACL-∆£∏∂    06/09/07   °≤¨√œ ˝∏¯»Ò¬–±˛
+      *  03.03.01    NACL-ÃÁœ∆    06/09/26  ≤¨ª≥∏©√œ ˝∏¯»Ò¿¡µ·≈¿ ‘Ω∏
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -4214,6 +4215,14 @@
                MOVE    RECE02-TOTALTEN (IDX2) TO  WRK-KGK6
                MOVE    WRK-KGK6               TO  HC06-TOTALTEN(2)
            END-IF
+           IF     (RECE02-SRYYM          >=  "200610"  )
+           AND    (SYS-1001-PREFNUM       =    33      )
+           AND    (RECE02-KOHNUM(1)(1:1)
+                                    >=  "1" AND <=  "8")
+           AND    (RECE02-TOTALTEN (IDX2) >   ZERO     )
+               MOVE    RECE02-TOTALTEN (IDX2) TO  WRK-KGK6
+               MOVE    WRK-KGK6               TO  HC06-TOTALTEN(2)
+           END-IF
       *    ∏¯»Ò£≤
            IF    (RECE02-TOTALTEN (IDX3) >   ZERO                      )
            AND   ((RECE02-TOTALTEN (IDX3)
@@ -4255,6 +4264,14 @@
                    MOVE    RECE02-TOTALTEN (IDX3) TO  WRK-KGK6
                    MOVE    WRK-KGK6               TO  HC06-TOTALTEN(3)
                END-IF
+           END-IF
+           IF     (RECE02-SRYYM          >=  "200610"  )
+           AND    (SYS-1001-PREFNUM       =    33      )
+           AND    (RECE02-KOHNUM(2)(1:1)
+                                    >=  "1" AND <=  "8")
+           AND    (RECE02-TOTALTEN (IDX3) >   ZERO     )
+               MOVE    RECE02-TOTALTEN (IDX3) TO  WRK-KGK6
+               MOVE    WRK-KGK6               TO  HC06-TOTALTEN(3)
            END-IF
       *
       *    ∏©√±Õ—π‡Ã‹

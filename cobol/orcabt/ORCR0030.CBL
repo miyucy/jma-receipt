@@ -264,6 +264,7 @@
       *  03.01.03    NACL-ÌçÏÆ    06/07/10  ºß»Ù±ç¥³¥á¥ó¥È¼«Æ°µ­ºÜÂÐ±þ
       *  03.02.01    NACL-ÌçÏÆ    06/08/10  ¹âÎð¼Ô¾å¸Â³Û·Ð²áÁ¼ÃÖÂÐ±þ
       *  03.02.02    NACL-ÌçÏÆ    06/09/08  ¥Õ¥¤¥ë¥à¤ÎÃ±²ÁÊÔ½¸½¤Àµ
+      *  03.03.01    NACL-ÌçÏÆ    06/09/26  ²¬»³¸©ÃÏÊý¸øÈñ°ìÉôÉéÃ´¶âÊÔ½¸
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -5446,16 +5447,15 @@
                                            RECE02-FTNMONEY(KH-IDX)
                                            RECE02-FTNMONEY-KOJ(KH-IDX)
               ELSE
-      ***       IF     ( SYS-1001-PREFNUM        =  14        )
-      ***       AND    ((RECE02-HKNJANUM(1:3)    = "145"     ) OR
-      ***               (RECE02-HKNJANUM(1:5)    = "67145"   ) OR
-      ***               (RECE02-HKNJANUM(1:6)    = "140103"  ) OR
-      ***               (RECE02-HKNJANUM         = "67140103"))
-      ***       AND    ( RECE02-KOHNUM(KH-IDX - 1)  = "021"   )
-      ***         ADD   SYU-KOH-HKNFTNMONEY(IDX3)  TO
-      ***                                  RECE02-FTNMONEY(KH-IDX)
-      ***                                  RECE02-FTNMONEY-KOJ(KH-IDX)
-      ***       ELSE
+                IF     (RECE02-ZAITAKU    NOT  =    SPACE )
+                AND    (RECE02-SRYYM          >=  "200610")
+                AND    (SYS-1001-PREFNUM       =   33     )
+                AND    (RECE02-KOHNUM(KH-IDX - 1)(1:1)
+                                       >=  "1" AND <=  "8")
+                  ADD   SYU-KOH-HKNFTNMONEY(IDX3)  TO
+                                           RECE02-FTNMONEY(KH-IDX)
+                                           RECE02-FTNMONEY-KOJ(KH-IDX)
+                ELSE
                   IF    (RECE02-FTNMONEY(1)         =  ZERO )
                   AND   (RECE02-KOHNUM(KH-IDX - 1)  =  "010")
                       ADD   SYU-KOH-COMPFTN(IDX3)  TO
@@ -5465,7 +5465,7 @@
                                            RECE02-FTNMONEY(KH-IDX)
                                            RECE02-FTNMONEY-KOJ(KH-IDX)
                   END-IF
-      ***       END-IF
+                END-IF
               END-IF
               IF   RECE02-KOHNUM(KH-IDX - 1)  =  "051"
               AND  FLG-KOH                NOT =   2
@@ -5988,6 +5988,25 @@
                          MOVE   SPACE  TO
                              RECE02-ZEROKISAIFLG(KOHFTN-IDX + 1)
                      END-IF
+               END-IF
+      *
+             END-PERFORM
+      *
+           END-IF
+      *
+      *    ²¬»³¸©ÃÏÊý¸øÈñ
+           IF    RECE02-SRYYM        >=  "200610"
+      *
+             PERFORM    VARYING   KOHFTN-IDX   FROM   1   BY   1
+                         UNTIL    KOHFTN-IDX     >    4
+      *
+               IF  (SYS-1001-PREFNUM =   33           ) AND
+                   (RECE02-KOHNUM(KOHFTN-IDX)(1:1)
+                                   >=  "1" AND <=  "8")
+                     MOVE  "1"  TO
+                                 RECE02-KISAIFLG(KOHFTN-IDX + 1)
+                     MOVE  "1"  TO
+                             RECE02-ZEROKISAIFLG(KOHFTN-IDX + 1)
                END-IF
       *
              END-PERFORM
