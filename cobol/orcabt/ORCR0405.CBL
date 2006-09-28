@@ -42,6 +42,8 @@
       *                                     SRYACCT-KEY30 -> SRYACCT-KEY37
       *  01.01.02    NACL-藤原    05/01/21  受診日指定対応
       *  01.01.03    NACL-藤原    05/02/10  訂正日指定対応
+      *
+      *  03.03.01    NACL-藤原    06/09/19  月途中での氏名変更対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -696,6 +698,12 @@
            MOVE    COMB-HKNCOMBINUM   TO  WRK-RECE40-HKNCOMBI
            MOVE    ACCT-SRYKA         TO  WRK-RECE40-SRYKA (1)
            MOVE    WRK-TEISEIKBN      TO  WRK-RECE40-TEISEIKBN
+           MOVE    WRK-RECE40-TEKSTYMD TO  WRK-RECE40-TEKSTYMD-X
+           IF      PTRSI-HKNKBN        =   "3"
+               MOVE    WRK-RECE40-TEKSTYMD-X   TO  WRK-RECE40-TEKEDYMD-X
+           ELSE
+               MOVE    COMB-TEKEDYMD           TO  WRK-RECE40-TEKEDYMD-X
+           END-IF
       *
            MOVE    WRK-RECE40-REC      TO  RECE40-REC
            WRITE   RECE40-REC

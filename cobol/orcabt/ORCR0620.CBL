@@ -104,7 +104,10 @@
       *  03.02.01    NACL-藤原    06/07/31  国保主科対応
       *  03.02.02    NACL-藤原    06/09/07  ２００６年１０月改正対応
       *                                     福岡地方公費対応
-      *  03.03.01    NACL-門脇    06/09/27  特記事項１６長２対応他
+      *
+      *  03.03.01    NACL-門脇    06/09/27  ２００６年１０月改正対応
+      *                                     特記事項１６長２対応他
+      *  03.03.02    NACL-藤原    06/09/19  月途中での氏名変更対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -256,6 +259,8 @@
            03  FLG-PTNYUINRRK12                        PIC 9(01).
            03  FLG-PTNYUINRRK22                        PIC 9(01).
            03  FLG-PTNYUINRRK23                        PIC 9(01).
+           03  FLG-KYUSEIRRK                           PIC 9(01).
+      *   
            03  FLG-ARI                                 PIC 9(01).
            03  FLG-SET                                 PIC 9(01).
            03  FLG-ROUJINHOKEN                         PIC 9(01).
@@ -453,6 +458,10 @@
       *    入院履歴
        01  PTNYUINRRK-REC.
            COPY    "CPPTNYUINRRK.INC".
+      *
+      *    旧姓履歴情報
+       01  KYUSEIRRK-REC.
+           COPY    "CPKYUSEIRRK.INC".
       *
       *
       *****************************************************************
@@ -862,6 +871,28 @@
            MOVE    RECE61-TSTPTNUMKBN  TO  RECE62-TSTPTNUMKBN
            MOVE    RECE61-AGE          TO  WRK-NENREI
                                            RECE62-AGE
+      *    旧姓履歴の取得（月途中で保険変更があるとき）
+           IF    ( RECE61-TEISEIKBN    NOT =   "1"   )
+           AND   ( RECE62-TEKSTYMD-X   NOT =   SPACE )
+               INITIALIZE                      STS-AREA-DAY
+               INITIALIZE                      LNK-DAY7-AREA
+               MOVE    "71"                TO  LNK-DAY7-IRAI
+               MOVE    RECE62-SRYYM        TO  LNK-DAY7-YM
+               CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                                   LNK-DAY7-AREA
+               IF    ( RECE62-TEKEDYMD-X   <   LNK-DAY7-KOYOMI )
+                   INITIALIZE                      KYUSEIRRK-REC
+                   MOVE    RECE62-HOSPID       TO  KYUSEI-HOSPID
+                   MOVE    RECE62-PTID         TO  KYUSEI-PTID
+                   MOVE    RECE62-TEKEDYMD-X   TO  KYUSEI-CHGYMD
+                   MOVE    KYUSEIRRK-REC       TO  MCPDATA-REC
+                   PERFORM 900-KYUSEIRRK-READ-SEC
+                   IF       FLG-KYUSEIRRK      =   ZERO
+                       MOVE    KYUSEI-NAME         TO  RECE62-NAME
+                       MOVE    KYUSEI-KANANAME     TO  RECE62-KANANAME
+                   END-IF
+               END-IF
+           END-IF
       *    県番号
            MOVE    RECE61-PREFNUM      TO  RECE62-PREFNUM
       *    患者保険情報テーブルから主保険情報の取得
@@ -3168,6 +3199,42 @@
            EXIT.
       *
       *****************************************************************
+      *    旧姓履歴マスタ読み込み
+      *****************************************************************
+       900-KYUSEIRRK-READ-SEC          SECTION.
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "tbl_kyuseirrk"     TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    "tbl_kyuseirrk"     TO  MCP-TABLE
+               MOVE    "key3"              TO  MCP-PATHNAME
+               CALL    "MONFUNC"           USING
+                                               MCPAREA
+                                               MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  KYUSEIRRK-REC
+                   MOVE    ZERO                TO  FLG-KYUSEIRRK
+               ELSE
+                   MOVE    1                   TO  FLG-KYUSEIRRK
+               END-IF
+           ELSE
+               MOVE    1               TO  FLG-KYUSEIRRK
+           END-IF
+      *
+           MOVE    "tbl_kyuseirrk"     TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           .
+       900-KYUSEIRRK-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    カーソルクローズ処理
       *****************************************************************
        CSR-CLOSE-SEC            SECTION.
@@ -3254,42 +3321,61 @@
        900-RECE68-READ-EXT.
            EXIT.
       *      
+      *
       *****************************************************************
-      *    ＤＢ　オープン処理
+      *    テーブルクローズ処理
+      *****************************************************************
+       900-CLOSE-SEC               SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
+      *
+           .
+       900-CLOSE-EXT.
+           EXIT.
+      *      
+      *****************************************************************
+      *    ＤＢオープン処理
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
-           MOVE    "DBOPEN"            TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBOPEN"            TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
-           MOVE    "DBSTART"           TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBSTART"           TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            .
        100-DBOPEN-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ＤＢ　クローズ処理
+      *    ＤＢクローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *
-           MOVE    "DBCOMMIT"          TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBCOMMIT"          TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
-           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBDISCONNECT"      TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            .
        900-DBDISCONNECT-EXT.
            EXIT.

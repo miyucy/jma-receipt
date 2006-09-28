@@ -41,6 +41,9 @@
       *                                     （入院外・入院別）
       *  03.02.02    NACL-藤原    06/08/01  国保主科対応
       *                                     主科用出力順識別番号追加
+      *
+      *  03.03.01    NACL-藤原    06/09/19  月途中での氏名変更対応
+      *                                     MONFUNC対応
      *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -124,16 +127,14 @@
                05  WRK-PARA-PRTNM             PIC X(16).
                05  WRK-PARA-PRTNM-NEXT        PIC X(16).
       *
-      *****03  WRK-IN                          PIC X(01).
+           03  WRK-MCP-TABLE           PIC X(64).
+           03  WRK-MCP-PATHNAME        PIC X(64).
       *
            03  WRK-RECE08-PRTRENNUM    PIC 9(06).
       *
            03  WRK-RECEERR             PIC X(200). 
       *
-      *
            COPY    "CPSHELLTBL.INC".
-      *     
-           COPY    "ORCA-DBPATH".         
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -245,9 +246,9 @@
            MOVE    WRK-PARA-RECE09-CREHMS       TO  RECE08-CREHMS
            MOVE    WRK-PARA-RECE09-PREFKBN      TO  RECE08-PREFKBN
            MOVE    WRK-PARA-RECE09-TEISYUTUSAKI TO  RECE08-TEISYUTUSAKI
-      **** MOVE    WRK-PARA-RECE09-RECESYUBETU  TO  RECE08-RECESYUBETU
+           MOVE    WRK-PARA-RECE09-RECESYUBETU  TO  RECE08-RECESYUBETU
            MOVE    WRK-PARA-RECE09-NYUGAIKBN    TO  RECE08-NYUGAIKBN
-           MOVE    "%%"                         TO  RECE08-SRYKA
+      **** MOVE    "%%"                         TO  RECE08-SRYKA
       *
            MOVE    WRK-PARA-RECE09-STDATA       TO  RECE08-STKANANAME
            MOVE    WRK-PARA-RECE09-EDDATA       TO  RECE08-EDKANANAME
@@ -280,12 +281,12 @@
                END-IF
       *
                MOVE    RECE08-REC           TO  MCPDATA-REC
-               MOVE    "RECEPRT-KEY"        TO  ORC-DBPATH
+               MOVE    "tbl_receprt"        TO  MCP-TABLE
+               MOVE    "key"                TO  MCP-PATHNAME
                MOVE    "DBUPDATE"           TO  MCP-FUNC
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+               CALL    "MONFUNC"           USING
+                                               MCPAREA
+                                               MCPDATA-REC
       *
       *        エラーチェック
                IF      MCP-RC             =   ZERO
@@ -304,7 +305,9 @@
                END-IF    
            END-PERFORM    
       *
-           PERFORM 900-RECEPRT-CLS-SEC 
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
       *
            .
        200-MAIN-EXT.
@@ -427,19 +430,19 @@
       *
            MOVE    RECE08-REC          TO  MCPDATA-REC
       *
+           MOVE    "tbl_receprt"       TO  WRK-MCP-TABLE
            IF      WRK-PARA-RECE09-PRTJYUN      =   "03"
-      *********    MOVE    "RECEPRT-KEY7"          TO  ORC-DBPATH
-                   MOVE    "RECEPRT-KEY16"         TO  ORC-DBPATH
-               ELSE
-      *********    MOVE    "RECEPRT-KEY8"          TO  ORC-DBPATH
-                   MOVE    "RECEPRT-KEY17"         TO  ORC-DBPATH
+               MOVE    "key14"              TO  WRK-MCP-PATHNAME
+           ELSE
+               MOVE    "key15"              TO  WRK-MCP-PATHNAME
            END-IF
       *
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
       *
       *    エラーチェック
            IF      MCP-RC             =   ZERO
@@ -457,96 +460,81 @@
       *****************************************************************
        900-RECEPRT-FET-SEC            SECTION.
       *
-           IF      WRK-PARA-RECE09-PRTJYUN      =   "03"
-      *********    MOVE    "RECEPRT-KEY7"          TO  ORC-DBPATH
-                   MOVE    "RECEPRT-KEY16"         TO  ORC-DBPATH
-               ELSE
-      *********    MOVE    "RECEPRT-KEY8"          TO  ORC-DBPATH
-                   MOVE    "RECEPRT-KEY17"         TO  ORC-DBPATH
-           END-IF
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
       *                                  
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-END
                MOVE    MCPDATA-REC     TO  RECE08-REC
-               IF      RECE08-RECESYUBETU  =
-                                           WRK-PARA-RECE09-RECESYUBETU
-                   ADD     1               TO  CNT-IN-CANCEL
-                                               CNT-IN
-               ELSE
-                   GO  TO  900-RECEPRT-FET-SEC
-               END-IF          
+               ADD     1               TO  CNT-IN-CANCEL
+                                           CNT-IN
            ELSE
                MOVE    1               TO  FLG-END
            END-IF
             .
        900-RECEPRT-FET-EXT.
            EXIT.
+           EXIT.
       *
-      *******************************************************
-      *     入力コードマスター クロース１処理
       *****************************************************************
-       900-RECEPRT-CLS-SEC            SECTION.
-      *
-           IF      WRK-PARA-RECE09-PRTJYUN      =   "03"
-      *********    MOVE    "RECEPRT-KEY7"          TO  ORC-DBPATH
-                   MOVE    "RECEPRT-KEY16"         TO  ORC-DBPATH
-               ELSE
-      *********    MOVE    "RECEPRT-KEY8"          TO  ORC-DBPATH
-                   MOVE    "RECEPRT-KEY17"         TO  ORC-DBPATH
-           END-IF
+      *    クローズ処理
+      *****************************************************************
+       900-CLOSE-SEC                  SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
            .
-       900-RECEPRT-CLS-EXT.
+       900-CLOSE-EXT.
            EXIT.
       *      
       *****************************************************************
-      *    ＤＢ　オープン処理
+      *    ＤＢオープン処理
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
-           MOVE    "DBOPEN"            TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBOPEN"            TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
-           MOVE    "DBSTART"           TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBSTART"           TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            .
        100-DBOPEN-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ＤＢ　クローズ処理
+      *    ＤＢクローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *
-           MOVE    "DBCOMMIT"          TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBCOMMIT"          TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
-           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
-      *
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBDISCONNECT"      TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            .
        900-DBDISCONNECT-EXT.
            EXIT.

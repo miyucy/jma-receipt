@@ -44,6 +44,8 @@
       *  01.01.05    NACL-門脇    05/08/18  転帰事由編集修正
       *  01.01.06    NACL-門脇    05/12/01  労災レセプト回数対応
       *  01.01.07    NACL-門脇    06/01/26  対象データ編集修正
+      *
+      *  03.03.01    NACL-藤原    06/09/19  月途中での氏名変更対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1060,7 +1062,12 @@
            MOVE    WRK-RECE82-SRYYM    TO  LNK-DAY7-YM
            CALL    "ORCSDAY"           USING   STS-AREA-DAY
                                                LNK-DAY7-AREA
-           MOVE    LNK-DAY7-KOYOMI     TO  KYUSEI-CHGYMD
+           IF    ( WRK-TEISEIKBN     NOT =   "1"         )
+           AND   ( COMB-TEKEDYMD        <   LNK-DAY7-KOYOMI )
+               MOVE    COMB-TEKEDYMD        TO  KYUSEI-CHGYMD
+           ELSE
+               MOVE    LNK-DAY7-KOYOMI      TO  KYUSEI-CHGYMD
+           END-IF
            MOVE    KYUSEIRRK-REC       TO  MCPDATA-REC
            PERFORM 900-KYUSEIRRK-READ-SEC
            IF       FLG-KYUSEIRRK      =   ZERO
