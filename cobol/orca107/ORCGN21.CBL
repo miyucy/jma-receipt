@@ -911,6 +911,38 @@
            MOVE    N21-PHOTO       TO  SPA-GMN-PHOTO
       *     MOVE    N21-PHOTOAREA   TO  SPA-GMN-OBJECT
       *
+      *    画像半角文字混在チェック
+           IF          SPA-GMN-PHOTO   NOT =   SPACE
+               INITIALIZE              ORCSKANACHKAREA
+               MOVE    "1"             TO  KANACHK-SYORI
+               MOVE    SPA-GMN-PHOTO   TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"       USING
+                                           ORCSKANACHKAREA
+      *
+               MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-PHOTO
+               IF    ( KANACHK-SYUBETU     NOT =   1    )  OR
+                     ( KANACHK-RC          NOT =   ZERO )  OR
+                     ( KANACHK-RC2             =   7    )
+                   MOVE    "0003"      TO  SPA-ERRCD
+               ELSE
+                   IF          KANACHK-RC2     =   8
+                       MOVE    "0013"      TO  SPA-ERRCD
+                   END-IF
+               END-IF
+      *
+               IF          SPA-ERRCD   NOT     =   SPACE
+                   MOVE    10          TO  SPA-GMN-CUR
+                   GO  TO  430-TEXTCHK-EXT
+               END-IF
+      *
+               PERFORM 430-GAZOCHK-SEC
+      *
+               IF          SPA-ERRCD   NOT     =   SPACE
+                   MOVE    10          TO  SPA-GMN-CUR
+                   GO  TO  430-TEXTCHK-EXT
+               END-IF
+           END-IF
+      *
       *----(02.01.02)--UPD-START---
       *    名前半角文字混在チェック
            IF          SPA-GMN-NAME    NOT =   SPACE
@@ -1091,34 +1123,6 @@
                END-IF
            END-IF
       *----(02.01.02)--UPD-END-----
-      *
-      *    画像半角文字混在チェック
-           IF          SPA-GMN-PHOTO   NOT =   SPACE
-               INITIALIZE              ORCSKANACHKAREA
-               MOVE    "1"             TO  KANACHK-SYORI
-               MOVE    SPA-GMN-PHOTO   TO  KANACHK-MAE-INPUT
-               CALL    "ORCSKANACHK"       USING
-                                           ORCSKANACHKAREA
-      *
-               MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-PHOTO
-               IF    ( KANACHK-SYUBETU     NOT =   1    )  OR
-                     ( KANACHK-RC          NOT =   ZERO )  OR
-                     ( KANACHK-RC2             =   7    )
-                   MOVE    "0003"      TO  SPA-ERRCD
-               ELSE
-                   IF          KANACHK-RC2     =   8
-                       MOVE    "0013"      TO  SPA-ERRCD
-                   END-IF
-               END-IF
-      *
-               IF          SPA-ERRCD   NOT     =   SPACE
-                   MOVE    10          TO  SPA-GMN-CUR
-                   GO  TO  430-TEXTCHK-EXT
-               END-IF
-      *
-               PERFORM 430-GAZOCHK-SEC
-           END-IF
-      *
            .
       *
        430-TEXTCHK-EXT.
