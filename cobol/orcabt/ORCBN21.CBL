@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  00.00.01    NACL-森脇    06/09/28  条件なしの処理
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -979,7 +980,8 @@
                        MOVE    TNS-NAME        TO  YAKUJYO-NAME
                    END-IF
       *            薬剤区分をチェック
-                   IF      WRK-PARA-KBN    NOT =   "4"
+                   IF        ( WRK-PARA-JYO        =   "1" )
+                       OR    ( WRK-PARA-KBN    NOT =   "4" )
                        MOVE    1               TO  FLG-OK
                    ELSE
                        EVALUATE    WRK-PARA-IYK    ALSO    TNS-YKZKBN
