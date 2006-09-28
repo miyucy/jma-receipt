@@ -26,7 +26,6 @@
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô        ÆüÉÕ      ÆâÍÆ
-      *  00.00.01    NACL-¿¹ÏÆ     06/09/28  ¾ò·ïÁªÂò»þ¤Î½èÍý
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -504,12 +503,6 @@
                IF      SPA-N23-JYO(1)  =   "F"
                    MOVE    "T"         TO  SPA-N23-JYO(1)
                    MOVE    "F"         TO  SPA-N23-JYO(2)
-      *----(00.00.01)--ADD-START---
-                   MOVE    "T"         TO  SPA-N23-KBN(1)
-                   MOVE    "F"         TO  SPA-N23-KBN(2)
-                   MOVE    "F"         TO  SPA-N23-KBN(3)
-                   MOVE    "F"         TO  SPA-N23-KBN(4)
-      *----(00.00.01)--ADD-END-----
                END-IF
                MOVE    13          TO  SPA-N23-CUR
            WHEN    "CLICKED"       ALSO    "JYO2"
@@ -525,11 +518,6 @@
                    MOVE    "F"         TO  SPA-N23-KBN(2)
                    MOVE    "F"         TO  SPA-N23-KBN(3)
                    MOVE    "F"         TO  SPA-N23-KBN(4)
-      *----(00.00.01)--ADD-START---
-                   MOVE    "F"         TO  SPA-N23-IYK(1)
-                   MOVE    "F"         TO  SPA-N23-IYK(2)
-                   MOVE    "F"         TO  SPA-N23-IYK(3)
-      *----(00.00.01)--ADD-END-----
                END-IF
                MOVE    7           TO  SPA-N23-CUR
            WHEN    "CLICKED"       ALSO    "KBN2"
@@ -538,11 +526,6 @@
                    MOVE    "T"         TO  SPA-N23-KBN(2)
                    MOVE    "F"         TO  SPA-N23-KBN(3)
                    MOVE    "F"         TO  SPA-N23-KBN(4)
-      *----(00.00.01)--ADD-START---
-                   MOVE    "F"         TO  SPA-N23-IYK(1)
-                   MOVE    "F"         TO  SPA-N23-IYK(2)
-                   MOVE    "F"         TO  SPA-N23-IYK(3)
-      *----(00.00.01)--ADD-END-----
                END-IF
                MOVE    8           TO  SPA-N23-CUR
            WHEN    "CLICKED"       ALSO    "KBN3"
@@ -551,11 +534,6 @@
                    MOVE    "F"         TO  SPA-N23-KBN(2)
                    MOVE    "T"         TO  SPA-N23-KBN(3)
                    MOVE    "F"         TO  SPA-N23-KBN(4)
-      *----(00.00.01)--ADD-START---
-                   MOVE    "F"         TO  SPA-N23-IYK(1)
-                   MOVE    "F"         TO  SPA-N23-IYK(2)
-                   MOVE    "F"         TO  SPA-N23-IYK(3)
-      *----(00.00.01)--ADD-END-----
                END-IF
                MOVE    9           TO  SPA-N23-CUR
            WHEN    "CLICKED"       ALSO    "KBN4"
