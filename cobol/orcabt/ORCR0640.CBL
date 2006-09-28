@@ -216,6 +216,8 @@
       *  03.02.04    NACL-ÌçÏÆ    06/09/08  ¥Õ¥¤¥ë¥à¤ÎÃ±²ÁÊÔ½¸½¤Àµ
       *  03.03.01    NACL-ÌçÏÆ    06/09/26  ²¬»³¸©ÃÏÊý¸øÈñ°ìÉôÉéÃ´¶âÊÔ½¸
       *  03.03.02    NACL-ÌçÏÆ    06/09/27  ÆÃµ­»ö¹à£±£¶Ä¹£²ÂÐ±þ
+      *  03.03.03    NACL-ÌçÏÆ    06/09/29  £È£±£¸Ç¯£±£°·î²þÀµ¤ËÈ¼¤¦°ìÉô
+      *                                     ÉéÃ´¶âÊÔ½¸ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -7965,9 +7967,24 @@
                        PERFORM   2104421-ICHIBUFTN-KOH-SET-SEC
                    END-EVALUATE
                  ELSE
-                   IF   (  RECE62-KYURATE         =  20     )
-                   AND  (  FLG-ZENKOH-ARI         =  ZERO   )
-                   AND  (  RECE62-RJNGENMENKBN    =  SPACE  )
+                   IF   (  RECE62-KYURATE         =  20 OR 30 )
+                   AND  (  FLG-ZENKOH-ARI         =  ZERO     )
+                   AND  (  RECE62-RJNGENMENKBN    =  SPACE    )
+                     IF    RECE62-SRYYM   >=  "200610"
+                      COMPUTE   WRK-CHIHOU-KIN   =
+                                WRK-CHIHOU-KIN   +
+                               (SYU-TOTAL-HKNTEN * 10)
+                      IF   WRK-CHIHOU-KIN  >  267000
+                         COMPUTE  WRK-KINGAKU2 =
+                        (( WRK-CHIHOU-KIN -  267000 ) * 0.01 )
+                                                      + 0.5
+                         COMPUTE  WRK-KINGAKU  =   80100
+                                               +   WRK-KINGAKU2
+                      ELSE
+                         MOVE    80100  TO   WRK-KINGAKU
+                      END-IF                     
+                      PERFORM   2104421-ICHIBUFTN-KOH-SET-SEC
+                     ELSE
                       COMPUTE   WRK-CHIHOU-KIN   =
                                 WRK-CHIHOU-KIN   +
                                (SYU-TOTAL-HKNTEN * 10)
@@ -7981,9 +7998,24 @@
                          MOVE    72300  TO   WRK-KINGAKU
                       END-IF                     
                       PERFORM   2104421-ICHIBUFTN-KOH-SET-SEC
+                     END-IF
                    ELSE
-                      MOVE       40200  TO   WRK-KINGAKU
-                      PERFORM   2104421-ICHIBUFTN-KOH-SET-SEC
+                     IF  (SYU-KOH-HKNNUM(1) = "974")
+                     OR  (SYU-KOH-HKNNUM(2) = "974")
+                     OR  (SYU-KOH-HKNNUM(3) = "974")
+                     OR  (SYU-KOH-HKNNUM(4) = "974")
+                         MOVE       2      TO   FLG-CYOKI
+                         MOVE       20000  TO   WRK-KINGAKU
+                         PERFORM   2104421-ICHIBUFTN-KOH-SET-SEC
+                     ELSE
+                       IF    RECE62-SRYYM   >=  "200610"
+                         MOVE       44400  TO   WRK-KINGAKU
+                         PERFORM   2104421-ICHIBUFTN-KOH-SET-SEC
+                       ELSE
+                         MOVE       40200  TO   WRK-KINGAKU
+                         PERFORM   2104421-ICHIBUFTN-KOH-SET-SEC
+                       END-IF
+                     END-IF
                    END-IF
                  END-IF
                END-IF
@@ -8697,14 +8729,28 @@
       *
              IF    RECE62-KOUREI  NOT =    SPACE
                IF     RECE62-KOHNUM(KOHFTN-IDX) =  "012"
-      ******       IF    WRK-NYUJGNGAK    >  15000
-      ******               MOVE    15000    TO   WRK-NYUJGNGAK
-      ******       END-IF
                    CONTINUE
                ELSE
+                 IF    RECE62-SRYYM       >=  "200610"
+                   IF    WRK-NYUJGNGAK    >  44400
+                           MOVE    44400    TO   WRK-NYUJGNGAK
+                   END-IF
+                 ELSE
                    IF    WRK-NYUJGNGAK    >  40200
                            MOVE    40200    TO   WRK-NYUJGNGAK
                    END-IF
+                 END-IF
+                 EVALUATE   RECE62-TEISYOTOKU
+                   WHEN  "1"
+                     IF  WRK-NYUJGNGAK    >  15000
+                           MOVE    15000    TO   WRK-NYUJGNGAK
+                     END-IF
+                   WHEN  "2"
+                   WHEN  "3"
+                     IF  WRK-NYUJGNGAK    >  24600
+                           MOVE    24600    TO   WRK-NYUJGNGAK
+                     END-IF
+                 END-EVALUATE
                END-IF
              END-IF
       *
@@ -8775,11 +8821,18 @@
                COMPUTE  WRK-CHK-KEIKASOCHIXX
                                   =   WRK-KOH-GAI  +  WRK-CHK-KEISAN1
       *
-               IF    FLG-CYOKI   =    1
+               EVALUATE   FLG-CYOKI
+                 WHEN      ZERO
+                   IF    RECE62-SRYYM  >=  "200610"
+                     MOVE    44400    TO    WRK-CHK-KINGAKU
+                   ELSE
+                     MOVE    40200    TO    WRK-CHK-KINGAKU
+                   END-IF
+                 WHEN       1
                    MOVE      10000    TO    WRK-CHK-KINGAKU
-               ELSE
-                   MOVE      40200    TO    WRK-CHK-KINGAKU
-               END-IF
+                 WHEN       2
+                   MOVE      20000    TO    WRK-CHK-KINGAKU
+               END-EVALUATE
       *
                COMPUTE  WRK-CHK-KEIKASOCHI1  =  WRK-CHK-KINGAKU -
                                                (WRK-CHK-FTNGAKU +
@@ -8820,8 +8873,25 @@
                             END-IF
                       END-EVALUATE
                    ELSE
-                      IF  (RECE62-KYURATE        =    20  )
-                      AND (RECE62-RJNGENMENKBN   =   SPACE)
+                      IF  (RECE62-KYURATE        =    20 OR 30)
+                      AND (RECE62-RJNGENMENKBN   =   SPACE    )
+                       IF    RECE62-SRYYM  >=  "200610"
+                         COMPUTE   WRK-CHIHOU-KIN       =
+                                   RECE62-TOTALTEN(1)   *   10
+                         IF   WRK-CHIHOU-KIN  >  267000
+                              COMPUTE  WRK-KINGAKU2 =
+                             (( WRK-CHIHOU-KIN -  267000 ) * 0.01 )
+                                                           + 0.5
+                              COMPUTE  WRK-KINGAKU  =   80100
+                                                    +   WRK-KINGAKU2
+                         ELSE
+                              MOVE   80100   TO   WRK-KINGAKU
+                         END-IF
+                         IF     RECE62-FTNMONEY(1)  >  WRK-KINGAKU
+                               MOVE  WRK-KINGAKU
+                                             TO   RECE62-FTNMONEY(1)
+                         END-IF
+                       ELSE
                          COMPUTE   WRK-CHIHOU-KIN       =
                                    RECE62-TOTALTEN(1)   *   10
                          IF   WRK-CHIHOU-KIN  >  361500
@@ -8837,7 +8907,17 @@
                                MOVE  WRK-KINGAKU
                                              TO   RECE62-FTNMONEY(1)
                          END-IF
+                       END-IF
                       ELSE
+                       IF    RECE62-SRYYM  >=  "200610"
+                         IF     RECE62-FTNMONEY(1)  >  44400
+                               MOVE  44400   TO   RECE62-FTNMONEY(1)
+                               IF   RECE62-RJNGENMENKBN   =   "1"
+                                  MOVE    4    TO      FLG-TOKKI
+                                  PERFORM   21013-TOKKI-HENSYU-SEC
+                               END-IF
+                         END-IF
+                       ELSE
                          IF     RECE62-FTNMONEY(1)  >  40200
                                MOVE  40200   TO   RECE62-FTNMONEY(1)
                                IF   RECE62-RJNGENMENKBN   =   "1"
@@ -8845,6 +8925,7 @@
                                   PERFORM   21013-TOKKI-HENSYU-SEC
                                END-IF
                          END-IF
+                       END-IF
                       END-IF
                    END-IF
       *
@@ -8906,7 +8987,7 @@
       *    °ìÈÌ·Ð²áÁ¼ÃÖÂÐ¾Ý¼Ô
            IF   (RECE62-SRYYM   >=  "200608")
            AND  (RECE62-SRYYM   <=  "200808")
-           AND  (RECE62-KYURATE  =   20     )
+           AND  (RECE62-KYURATE  =  20 OR 30)
       *
               INITIALIZE                      PTKOHINF-REC
               MOVE    RECE62-HOSPID       TO  PTKOH-HOSPID

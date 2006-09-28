@@ -508,6 +508,7 @@
                        AND   LNK-FTNJGNCHK-NYUGAIKBN  =  "1"
                        AND   WRK-TEISYOTOKU           =   SPACE
                        AND   FLG-OK                   =   ZERO
+                       AND   LNK-FTNJGNCHK-SRYYM      <  "200610"
       *
                          MOVE    1           TO  FLG-OK
       *

@@ -266,6 +266,8 @@
       *  03.02.02    NACL-ÌçÏÆ    06/09/08  ¥Õ¥¤¥ë¥à¤ÎÃ±²ÁÊÔ½¸½¤Àµ
       *  03.03.01    NACL-ÌçÏÆ    06/09/26  ²¬»³¸©ÃÏÊý¸øÈñ°ìÉôÉéÃ´¶âÊÔ½¸
       *  03.03.02    NACL-ÌçÏÆ    06/09/27  ÆÃµ­»ö¹à£±£¶Ä¹£²ÂÐ±þ
+      *  03.03.03    NACL-ÌçÏÆ    06/09/29  £È£±£¸Ç¯£±£°·î²þÀµ¤ËÈ¼¤¦°ìÉô
+      *                                     ÉéÃ´¶âÊÔ½¸ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1558,7 +1560,7 @@
       *    °ìÈÌ·Ð²áÁ¼ÃÖÂÐ¾Ý¼Ô
            IF   (RECE02-SRYYM   >=  "200608")
            AND  (RECE02-SRYYM   <=  "200808")
-           AND  (RECE02-KYURATE  =   20     )
+           AND  (RECE02-KYURATE  =  20 OR 30)
       *
               INITIALIZE                      PTKOHINF-REC
               MOVE    RECE02-HOSPID       TO  PTKOH-HOSPID
@@ -5287,14 +5289,38 @@
                    MOVE  8000     TO   WRK-KINGAKU
                    PERFORM   2105211-ICHIBUFTN-KOH-SET-SEC
                  ELSE
-                   IF   (  RECE02-KYURATE         =  20     )
-                   AND  (  FLG-ZENKOH-ARI         =  ZERO   )
-                   AND  (  RECE02-RJNGENMENKBN    =  SPACE  )
+                   IF   (  RECE02-KYURATE         =  20 OR 30 )
+                   AND  (  FLG-ZENKOH-ARI         =  ZERO     )
+                   AND  (  RECE02-RJNGENMENKBN    =  SPACE    )
+                     IF    RECE02-SRYYM   >=  "200610"
+                      MOVE 44400     TO   WRK-KINGAKU
+                      PERFORM   2105211-ICHIBUFTN-KOH-SET-SEC
+                     ELSE
                       MOVE 40200     TO   WRK-KINGAKU
                       PERFORM   2105211-ICHIBUFTN-KOH-SET-SEC
+                     END-IF
                    ELSE
-                      MOVE 12000     TO   WRK-KINGAKU
-                      PERFORM   2105211-ICHIBUFTN-KOH-SET-SEC
+                     IF (  RECE02-RJNGENMENKBN    = "1"    )
+                     OR (((SYU-KOH-HKNNUM(1)  NOT = "027") AND
+                          (SYU-KOH-HKNNUM(1)(1:1) = "0"  )) OR
+                         ( SYU-KOH-HKNNUM(2)(1:1) = "0"   ) OR
+                         ( SYU-KOH-HKNNUM(3)(1:1) = "0"   ) OR
+                         ( SYU-KOH-HKNNUM(4)(1:1) = "0"   ))
+                         MOVE 12000     TO   WRK-KINGAKU
+                         PERFORM   2105211-ICHIBUFTN-KOH-SET-SEC
+                     ELSE
+                       IF   ( RECE02-KYURATE    =  20 OR 30 )
+                       AND  ((SYU-KOH-HKNNUM(1) = "974"    ) OR
+                             (SYU-KOH-HKNNUM(2) = "974"    ) OR
+                             (SYU-KOH-HKNNUM(3) = "974"    ) OR
+                             (SYU-KOH-HKNNUM(4) = "974"    ))
+                         MOVE 20000     TO   WRK-KINGAKU
+                         PERFORM   2105211-ICHIBUFTN-KOH-SET-SEC
+                       ELSE
+                         MOVE 12000     TO   WRK-KINGAKU
+                         PERFORM   2105211-ICHIBUFTN-KOH-SET-SEC
+                       END-IF
+                     END-IF
                    END-IF
                  END-IF
                END-IF
@@ -5743,11 +5769,17 @@
                             MOVE  8000   TO   RECE02-FTNMONEY(1)
                       END-IF
                   ELSE
-                      IF  (RECE02-KYURATE        =    20  )
-                      AND (RECE02-RJNGENMENKBN   =   SPACE)
+                      IF  (RECE02-KYURATE        =    20 OR 30)
+                      AND (RECE02-RJNGENMENKBN   =   SPACE    )
+                        IF    RECE02-SRYYM   >=  "200610"
+                         IF  RECE02-FTNMONEY(1)  >  44400
+                            MOVE  44400  TO   RECE02-FTNMONEY(1)
+                         END-IF
+                        ELSE
                          IF  RECE02-FTNMONEY(1)  >  40200
                             MOVE  40200  TO   RECE02-FTNMONEY(1)
                          END-IF
+                        END-IF
                       ELSE
                          IF  RECE02-FTNMONEY(1)  >  12000
                             MOVE  12000  TO   RECE02-FTNMONEY(1)
