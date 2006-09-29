@@ -2304,6 +2304,7 @@
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-SYSKANRI
+               MOVE    MCPDATA-REC     TO  SYSKANRI-REC 
            ELSE
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
