@@ -44,6 +44,7 @@
       * 02.02.02     NACL-森脇     06/05/11  薬剤情報リスト追加
       * 02.02.03     NACL-森脇     06/08/29  薬剤情報文字数チェック追加
       * 02.02.04     NACL-森脇     06/09/21  参照処理前スパセット
+      * 02.02.05     NACL-森脇     06/09/29  登録後内容スパクリア
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -467,7 +468,6 @@
            IF      SPA-N21IDCD     =   "1003"
                INITIALIZE          SPA-GMN-ENTRY
                INITIALIZE          SPA-NAI-ENTRY
-               DISPLAY "SPA-NAI-EVENT=" SPA-NAI-EVENT
                EVALUATE    SPA-NAI-EVENT
                    WHEN    "1"
                        MOVE    SPA-NAI-KENCD   TO  N21-KENCD
@@ -1455,13 +1455,15 @@
       *        画面初期化
                PERFORM 310-SPASET-SEC
            ELSE
-               MOVE    SPA-NAI-KENCD   TO  SPA-GMN-KENCD
-               MOVE    SPACE           TO  SPA-GMN-KENNAME
-               MOVE    ZERO            TO  SPA-GMN-SELNUM
-                                           SPA-NAI-SELNUM
-               INITIALIZE          SPA-GMN-ENTRY
-               INITIALIZE          SPA-NAI-ENTRY
-               MOVE    3       TO  SPA-GMN-CUR
+      *----(02.02.05)--UPD-START---
+               MOVE    SPA-NAI-KENCD       TO  SPA-GMN-KENCD
+               MOVE    SPA-NAI-KENNAIYO    TO  SPA-GMN-KENNAIYO
+               MOVE    ZERO                TO  SPA-GMN-SELNUM
+               MOVE    SPACE               TO  SPA-GMN-KENNAME
+               INITIALIZE                      SPA-GMN-ENTRY
+               INITIALIZE                      SPA-NAI-AREA
+               MOVE    3                   TO  SPA-GMN-CUR
+      *----(02.02.05)--UPD-END-----
            END-IF
       *----(00.01.04)--UPD-END------
            .
@@ -1552,13 +1554,15 @@
       *        画面初期化
                PERFORM 310-SPASET-SEC
            ELSE
-               MOVE    SPA-NAI-KENCD   TO  SPA-GMN-KENCD
-               MOVE    SPACE           TO  SPA-GMN-KENNAME
-               MOVE    ZERO            TO  SPA-GMN-SELNUM
-                                           SPA-NAI-SELNUM
-               INITIALIZE          SPA-GMN-ENTRY
-               INITIALIZE          SPA-NAI-ENTRY
-               MOVE    3       TO  SPA-GMN-CUR
+      *----(02.02.05)--UPD-START---
+               MOVE    SPA-NAI-KENCD       TO  SPA-GMN-KENCD
+               MOVE    SPA-NAI-KENNAIYO    TO  SPA-GMN-KENNAIYO
+               MOVE    ZERO                TO  SPA-GMN-SELNUM
+               MOVE    SPACE               TO  SPA-GMN-KENNAME
+               INITIALIZE                      SPA-GMN-ENTRY
+               INITIALIZE                      SPA-NAI-AREA
+               MOVE    3                   TO  SPA-GMN-CUR
+      *----(02.02.05)--UPD-END-----
            END-IF
       *----(00.01.04)--UPD-END------
            .
@@ -1975,8 +1979,11 @@
                    MOVE    "データを入力して下さい"
                                            TO  SPA-ERRMSG
                WHEN    "0011"
-                   MOVE    "コードを入力して下さい"
+      *----(02.02.05)--UPD-START---
+      *             MOVE    "コードを入力して下さい"
+                   MOVE    "薬剤を指定して下さい"
                                            TO  SPA-ERRMSG
+      *----(02.02.05)--UPD-END-----
       *----(00.01.01)--ADD-START----
       *         WHEN    "0012"
       *             MOVE    "該当データがありません"
