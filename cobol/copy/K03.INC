@@ -1,5 +1,5 @@
         02  K03.
-    ******  02  K03-FIXED3.
+     *******02  K03-FIXED3.
               03  K03-PTNUM.
                 04  K03-VALUE   PIC X(20).
               03  K03-SRYYMD.
@@ -85,8 +85,9 @@
                 04  K03-CHOSEI   PIC X(10).
               03  K03-GOKSKY.
                 04  K03-VALUE   PIC X(10).
-              03  K03-MISYUZAN.
-                04  K03-VALUE   PIC X(10).
+              03  K03-MISYUZAN-G.
+                04  K03-MISYUZAN-STYLE   PIC X(20).
+                04  K03-MISYUZAN   PIC X(10).
               03  K03-SKYMONEY.
                 04  K03-VALUE   PIC X(10).
               03  K03-JIHITAX.
@@ -181,8 +182,9 @@
                 04  K03-VALUE   PIC X(8).
               03  K03-JIHIMSG10.
                 04  K03-VALUE   PIC X(8).
-              03  K03-CHOUKAKIN.
-                04  K03-VALUE   PIC X(10).
+              03  K03-CHOUKAKIN-G.
+                04  K03-CHOUKAKIN-STYLE   PIC X(20).
+                04  K03-CHOUKAKIN   PIC X(10).
               03  K03-HKNCOMBI-COMB.
                 04  K03-HKNCOMBI.
                   05  K03-VALUE   PIC X(65).
@@ -247,7 +249,8 @@
                 04  K03-FUKUMSG-STYLE   PIC X(20).
                 04  K03-FUKUMSG-VALUE   PIC X(50).
               03  K03-NYUKINMSG.
-                04  K03-VALUE   PIC X(50).
+                04  K03-NYUKINMSG-STYLE   PIC X(20).
+                04  K03-NYUKINMSG-VALUE   PIC X(50).
               03  K03-NYUMISYU.
                 04  K03-NYUMISYU-STYLE   PIC X(20).
                 04  K03-NYUMISYU-VALUE   PIC X(40).
@@ -263,3 +266,9 @@
                 04  K03-MEIPRTFLG-COUNT   PIC S9(9)   BINARY.
                 04  K03-MEIPRTFLG-ITEM
                         PIC X(24)   OCCURS  3 TIMES.
+              03  K03-HENKIN-G.
+                04  K03-HENKIN-STATE   PIC S9(9)   BINARY.
+                04  K03-HENKIN   PIC X(10).
+              03  K03-JYOGENMSG.
+                04  K03-JYOGENMSG-STYLE   PIC X(20).
+                04  K03-JYOGENMSG-VALUE   PIC X(30).

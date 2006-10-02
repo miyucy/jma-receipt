@@ -35,6 +35,7 @@
                05  ORCHC03SUB-SKYMONEY         PIC S9(07).
                05  ORCHC03SUB-SKYMONEY-TAX-SAI PIC S9(07).
                05  ORCHC03SUB-NYUKIN-TOTAL     PIC S9(07).
+               05  ORCHC03SUB-HENKIN           PIC S9(07).
       *        Æ±»þ¿ÇÎÅ²Ê
                05  ORCHC03SUB-DOUJI-SRYKA-G.
                    07  ORCHC03SUB-DOUJI-SRYKA  PIC  X(02)

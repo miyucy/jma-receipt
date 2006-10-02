@@ -21,6 +21,7 @@
       ************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  03.02.00    NACL-多々納  06/09/XX  返金処理対応
       ************************************************************
       *
        01  SPA-K03.
@@ -57,11 +58,14 @@
                    07  SPA-GMN-CHOSEI            PIC S9(07).
                    07  SPA-GMN-CHOSEI-X          PIC  X(10).
                    07  SPA-GMN-SEIKYU            PIC S9(07).
-                   07  SPA-GMN-ZENMISYU          PIC S9(07).
-                   07  SPA-GMN-CHOKAKIN          PIC S9(07).
+      ********     07  SPA-GMN-ZENMISYU          PIC S9(07).
+      ********     07  SPA-GMN-CHOKAKIN          PIC S9(07).
                    07  SPA-GMN-SEIGOK            PIC S9(07).
                    07  SPA-GMN-NYUKIN            PIC S9(07).
                    07  SPA-GMN-NYUKIN-X          PIC  X(10).
+      *
+                   07  SPA-GMN-HENKIN            PIC S9(07).
+                   07  SPA-GMN-HENKIN-X          PIC  X(10).
       *
                    07  SPA-GMN-ROUSYOSIN         PIC S9(07).
                    07  SPA-GMN-ROUSAISIN         PIC S9(07).
@@ -72,7 +76,6 @@
                        09  SPA-GMN-DRCD        PIC X(04).
                        09  SPA-GMN-F1          PIC X(01).
                        09  SPA-GMN-DRCDMEI     PIC X(24).
-      *
       *
                05  SPA-GMN-SYOKI-AREA.
                    07  SPA-GMN-DRCDLST-G.
@@ -202,24 +205,36 @@
       *            入院未収金合計
                    07  SPA-GMN-NYUMISYU          PIC X(40).
       *
+                   07  SPA-GMN-ZENMISYU          PIC S9(07).
+                   07  SPA-GMN-CHOKAKIN          PIC S9(07).
+      *            今回入金上限額
+                   07  SPA-NAI-JYOGENKIN         PIC S9(07).
+                   07  SPA-GMN-JYOGENMSG         PIC X(50).
+      *
                05  SPA-NAI-AREA.
                    07  SPA-NAI-SEIKYU            PIC S9(07).
                    07  SPA-KON-SKYMONEY          PIC S9(07).
                    07  SPA-NAI-CHOSEI            PIC S9(07).
                    07  SPA-NAI-SKYMONEY-TAX-SAI  PIC S9(07).
+                   07  SPA-NAI-HENKIN            PIC S9(07).
+                   07  SPA-NAI-HENKBN            PIC X(01).
       *
                    07  SPA-MAE-NYUKINKBN         PIC X(01).
                    07  SPA-MAE-CHOSEI            PIC S9(07).
                    07  SPA-MAE-NYUKIN            PIC S9(07).
+                   07  SPA-MAE-HENKIN            PIC S9(07).
       *            入金入力あり
                    07  SPA-NAI-NYUKINFLG         PIC 9(01).
                    07  SPA-GOK-NYUKIN            PIC S9(07).
                    07  SPA-GOK-SKYMONEY          PIC S9(07).
                    07  SPA-GOK-CHOSEI            PIC S9(07).
+                   07  SPA-GOK-HENKIN            PIC S9(07).
                    07  SPA-OLD-SKYMONEY          PIC S9(07).
                    07  SPA-OLD-SEIKYU            PIC S9(07).
       *            前回未収額入金額
                    07  SPA-NYU-ZENMISYU          PIC S9(07).
+      *            前回返金額充当額
+                   07  SPA-NYU-ZENHENKIN         PIC S9(07).
       *
                    07  SPA-GOK-SRYKA             PIC X(02).
                    07  SPA-GOK-HKNCOMBI          PIC X(04).
@@ -227,6 +242,8 @@
                    07  SPA-IDX-KOUI              PIC 9(04).
       *            対象なし
                    07  SPA-NAI-FLG               PIC 9(01).
+      *            返金入力区分
+                   07  SPA-NAI-HENFLG            PIC 9(01).
       *            警告済み
                    07  SPA-KEI-FLG               PIC 9(01).
       *            入金方法入金状態
@@ -284,4 +301,8 @@
                    07  SPA-TEIKEI-SKYMONEY     PIC  9(07).
       *            今回入金額
                    07  SPA-TEI-NYUKIN-TOTAL    PIC S9(07).
+      *H18/9
+      *            今回返金額
+                   07  SPA-SYU-HENKIN          PIC S9(07).
+                   07  SPA-SYU-HENKBN          PIC  X(01).
       *

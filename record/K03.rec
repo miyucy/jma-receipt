@@ -129,6 +129,7 @@ K03	{
 			value	varchar(10);
 		};
 		MISYUZAN	{
+		    style   varchar(20);
 			value	varchar(10);
 		};
 		SKYMONEY	{
@@ -272,6 +273,7 @@ K03	{
 			value	varchar(8);
 		};
 		CHOUKAKIN	{
+		    style   varchar(20);
 			value	varchar(10);
 		};
 		HKNCOMBI_COMB	{
@@ -351,6 +353,7 @@ K03	{
 			value	varchar(50);
 		};
 		NYUKINMSG	{
+		    style   varchar(20);
 			value	varchar(50);
 		};
 		NYUMISYU	{
@@ -370,6 +373,14 @@ K03	{
 			};
 			count	int;
 			item	varchar(24)[3];
+		};
+		HENKIN	{
+	           	state	int;
+			value	varchar(10);
+		};
+		JYOGENMSG	{
+		    style   varchar(20);
+			value	varchar(30);
 		};
 	};
 };

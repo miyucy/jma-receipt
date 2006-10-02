@@ -71,6 +71,7 @@
                05  WRK-SKYMONEY           PIC S9(07).
                05  WRK-SKYMONEY-TAX       PIC S9(07).
                05  WRK-NYUKIN-TOTAL       PIC S9(07).
+               05  WRK-HENKIN             PIC S9(07).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -106,6 +107,7 @@
                05  TBL-SKYMONEY           PIC S9(07).
                05  TBL-SKYMONEY-TAX       PIC S9(07).
                05  TBL-NYUKIN-TOTAL       PIC S9(07).
+               05  TBL-HENKIN             PIC S9(07).
       *
       *    保存用収納ワーク２
        01  LNK-SYUNOU-AREA.
@@ -127,6 +129,7 @@
                05  LNK-SKYMONEY           PIC S9(07).
                05  LNK-SKYMONEY-TAX       PIC S9(07).
                05  LNK-NYUKIN-TOTAL       PIC S9(07).
+               05  LNK-HENKIN             PIC S9(07).
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -232,6 +235,7 @@
                                                             (IDX-SYU)
            MOVE    WRK-NYUKIN-TOTAL
                                    TO  ORCHC03SUB-NYUKIN-TOTAL(IDX-SYU)
+           MOVE    WRK-HENKIN      TO  ORCHC03SUB-HENKIN(IDX-SYU)
            MOVE    IDX-SYU         TO  ORCHC03SUB-MAX
            .
        200-ONLY-SYUNOU-HEN-EXT.
@@ -245,6 +249,7 @@
            MOVE    SYU-SKYMONEY            TO  WRK-SKYMONEY
            MOVE    SYU-SKYMONEY-TAX-SAI    TO  WRK-SKYMONEY-TAX
            MOVE    SYU-NYUKIN-TOTAL        TO  WRK-NYUKIN-TOTAL
+           MOVE    ZERO                    TO  WRK-HENKIN
            PERFORM VARYING     IDY     FROM    1   BY  1
                    UNTIL      (IDY     >   15  )   OR
                               (ORCHC03-OLD-DENPNUM(IDY)    =   ZERO)
@@ -261,6 +266,9 @@
       *            今回入金額
                    MOVE    ORCHC03-OLD-NYUKIN-TOTAL (IDY)
                                            TO  WRK-NYUKIN-TOTAL
+      *            今回返金
+                   MOVE    ORCHC03-KON-HENKIN (IDY)
+                                           TO  WRK-HENKIN
                    MOVE    15              TO  IDY
                END-IF
            END-PERFORM
@@ -307,6 +315,7 @@
                                            TO  TBL-SKYMONEY-TAX
                                                             (IDX-TBL)
                MOVE    WRK-NYUKIN-TOTAL    TO  TBL-NYUKIN-TOTAL(IDX-TBL)
+               MOVE    WRK-HENKIN          TO  TBL-HENKIN   (IDX-TBL)
       *
                MOVE    "tbl_syunou"        TO  MCP-TABLE
                MOVE    "key27"             TO  MCP-PATHNAME
@@ -354,6 +363,9 @@
                MOVE    TBL-NYUKIN-TOTAL (IDX)
                                            TO  ORCHC03SUB-NYUKIN-TOTAL
                                                            (IDX-SYU)
+               MOVE    TBL-HENKIN       (IDX)
+                                           TO  ORCHC03SUB-HENKIN
+                                                           (IDX-SYU)
                MOVE    IDX-SYU             TO  ORCHC03SUB-MAX
            END-PERFORM
            .
@@ -376,6 +388,7 @@
                MOVE    TBL-SKYMONEY   (IDX)    TO  WRK-SKYMONEY
                MOVE    TBL-SKYMONEY-TAX (IDX)  TO  WRK-SKYMONEY-TAX
                MOVE    TBL-NYUKIN-TOTAL (IDX)  TO  WRK-NYUKIN-TOTAL
+               MOVE    TBL-HENKIN       (IDX)  TO  WRK-HENKIN
                MOVE    ZERO                TO  FLG-OK
                PERFORM VARYING  IDX-SYU    FROM    1   BY  1
                        UNTIL   (IDX-SYU    >   15  )  OR
@@ -393,6 +406,9 @@
                                                        (IDX-SYU)
                            MOVE    TBL-NYUKIN-TOTAL   (IDX)
                                                    TO  LNK-NYUKIN-TOTAL
+                                                       (IDX-SYU)
+                           MOVE    TBL-HENKIN    (IDX)
+                                                   TO  LNK-HENKIN
                                                        (IDX-SYU)
                        ELSE
                            PERFORM 30022-SYUTOTAL-CHK-SEC
@@ -441,6 +457,9 @@
                                                            (IDX-SYU)
                    MOVE    LNK-NYUKIN-TOTAL  (IDX)
                                        TO  ORCHC03SUB-NYUKIN-TOTAL
+                                                           (IDX-SYU)
+                   MOVE    LNK-HENKIN        (IDX)
+                                       TO  ORCHC03SUB-HENKIN
                                                            (IDX-SYU)
                    MOVE    LNK-DOUJI-SRYKA-G(IDX)
                                        TO  ORCHC03SUB-DOUJI-SRYKA-G
@@ -560,6 +579,7 @@
            MOVE    SYUTTL-SKYMONEY         TO  WRK-SKYMONEY
            MOVE    SYUTTL-SKYMONEY-TAX-SAI TO  WRK-SKYMONEY-TAX
            MOVE    SYUTTL-NYUKIN-TOTAL     TO  WRK-NYUKIN-TOTAL
+           MOVE    ZERO                    TO  WRK-HENKIN
            PERFORM VARYING     IDY     FROM    1   BY  1
                    UNTIL      (IDY     >   15  )   OR
                               (ORCHC03-OLD-DENPNUM(IDY)    =   ZERO)
@@ -575,6 +595,8 @@
                                                              (IDY)
                    MOVE    ORCHC03-OLD-NYUKIN-TOTAL (IDY)
                                            TO  WRK-NYUKIN-TOTAL
+                   MOVE    ORCHC03-KON-HENKIN (IDY)
+                                           TO  WRK-HENKIN
                    MOVE    15              TO  IDY
                END-IF
            END-PERFORM
@@ -584,6 +606,7 @@
            MOVE    WRK-SKYMONEY        TO  LNK-SKYMONEY (IDX-SYU)
            MOVE    WRK-SKYMONEY-TAX    TO  LNK-SKYMONEY-TAX (IDX-SYU)
            MOVE    WRK-NYUKIN-TOTAL    TO  LNK-NYUKIN-TOTAL (IDX-SYU)
+           MOVE    WRK-HENKIN          TO  LNK-HENKIN       (IDX-SYU)
       *
            .
        30022-SYUTOTAL-CHK-EXT.
@@ -652,6 +675,7 @@
            ADD     WRK-SKYMONEY        TO  LNK-SKYMONEY (IDX-SYU)
            ADD     WRK-SKYMONEY-TAX    TO  LNK-SKYMONEY-TAX (IDX-SYU)
            ADD     WRK-NYUKIN-TOTAL    TO  LNK-NYUKIN-TOTAL (IDX-SYU)
+           ADD     WRK-HENKIN          TO  LNK-HENKIN       (IDX-SYU)
            .
        30021-SYUNOU-ADD-EXT.
            EXIT.
@@ -672,6 +696,7 @@
                MOVE    TBL-SKYMONEY   (IDX)    TO  WRK-SKYMONEY
                MOVE    TBL-SKYMONEY-TAX (IDX)  TO  WRK-SKYMONEY-TAX
                MOVE    TBL-NYUKIN-TOTAL (IDX)  TO  WRK-NYUKIN-TOTAL
+               MOVE    TBL-HENKIN       (IDX)  TO  WRK-HENKIN
                MOVE    ZERO                TO  FLG-OK
                PERFORM VARYING  IDX-SYU    FROM    1   BY  1
                        UNTIL   (IDX-SYU    >   15  )  OR
@@ -688,6 +713,9 @@
                                                        (IDX-SYU)
                        MOVE    TBL-NYUKIN-TOTAL   (IDX)
                                                    TO  LNK-NYUKIN-TOTAL
+                                                       (IDX-SYU)
+                       MOVE    TBL-HENKIN         (IDX)
+                                                   TO  LNK-HENKIN
                                                        (IDX-SYU)
                        MOVE    1               TO  FLG-OK
                    ELSE
@@ -756,6 +784,7 @@
                MOVE    TBL-SKYMONEY   (IDX)    TO  WRK-SKYMONEY
                MOVE    TBL-SKYMONEY-TAX (IDX)  TO  WRK-SKYMONEY-TAX
                MOVE    TBL-NYUKIN-TOTAL (IDX)  TO  WRK-NYUKIN-TOTAL
+               MOVE    TBL-HENKIN       (IDX)  TO  WRK-HENKIN
                MOVE    1                   TO  IDX-SYU
                IF      IDX                 =   1
                    MOVE    TBL-SYUNOU-REC(IDX)
@@ -769,6 +798,9 @@
                                                        (IDX-SYU)
                    MOVE    TBL-NYUKIN-TOTAL (IDX)
                                            TO  LNK-NYUKIN-TOTAL
+                                                       (IDX-SYU)
+                   MOVE    TBL-HENKIN       (IDX)
+                                           TO  LNK-HENKIN
                                                        (IDX-SYU)
                    IF      ORCHC03SUB-MAX      >  1
       *                複数保険

@@ -55,4 +55,8 @@
                        09  ORCSCGAIRAI-SYUNOU-REC  PIC X(2000).
       *                受診履歴番号
                        09  ORCSCGAIRAI-JYURRK-RENNUM   PIC 9(01).
+      *H18/9
+      *                今回返金額
+                       09  ORCSCGAIRAI-SYU-HENKIN      PIC S9(07).
+                       09  ORCSCGAIRAI-SYU-HENKBN      PIC  X(01).
       *

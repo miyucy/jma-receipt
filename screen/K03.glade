@@ -728,7 +728,7 @@
       <class>GtkPandaEntry</class>
       <name>CHOSEI</name>
       <x>904</x>
-      <y>312</y>
+      <y>296</y>
       <width>88</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -771,7 +771,7 @@
       <class>GtkPandaEntry</class>
       <name>MISYUZAN</name>
       <x>904</x>
-      <y>412</y>
+      <y>380</y>
       <width>88</width>
       <height>24</height>
       <editable>False</editable>
@@ -786,7 +786,7 @@
       <class>GtkPandaEntry</class>
       <name>SKYMONEY</name>
       <x>904</x>
-      <y>380</y>
+      <y>344</y>
       <width>88</width>
       <height>24</height>
       <editable>False</editable>
@@ -1197,8 +1197,8 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>CHOUKAKIN</name>
-      <x>712</x>
-      <y>584</y>
+      <x>904</x>
+      <y>412</y>
       <width>88</width>
       <height>24</height>
       <editable>False</editable>
@@ -1207,15 +1207,6 @@
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator11</name>
-      <x>696</x>
-      <y>468</y>
-      <width>292</width>
-      <height>16</height>
     </widget>
 
     <widget>
@@ -1369,38 +1360,6 @@
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>label467</name>
-      <x>816</x>
-      <y>312</y>
-      <width>80</width>
-      <height>24</height>
-      <label>調整金</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label183</name>
-      <x>760</x>
-      <y>380</y>
-      <width>128</width>
-      <height>24</height>
-      <label>今回診療分請求額</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
       <class>GtkPandaCombo</class>
       <name>SRYKA_COMB</name>
       <x>632</x>
@@ -1478,22 +1437,6 @@
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>NYUKINMSG</name>
-      <x>784</x>
-      <y>520</y>
-      <width>220</width>
-      <height>24</height>
-      <label></label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
     </widget>
 
     <widget>
@@ -1865,22 +1808,6 @@
       <width>100</width>
       <height>24</height>
       <label>保険分（点）</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label482</name>
-      <x>784</x>
-      <y>488</y>
-      <width>120</width>
-      <height>24</height>
-      <label>入金額</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -2595,15 +2522,6 @@
     </widget>
 
     <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator9</name>
-      <x>812</x>
-      <y>288</y>
-      <width>200</width>
-      <height>16</height>
-    </widget>
-
-    <widget>
       <class>GtkLabel</class>
       <name>label478</name>
       <x>816</x>
@@ -2755,22 +2673,6 @@
       <width>62</width>
       <height>24</height>
       <label>伝票番号</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label184</name>
-      <x>760</x>
-      <y>412</y>
-      <width>128</width>
-      <height>24</height>
-      <label>前回までの未収額</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -2967,38 +2869,6 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>FUKUZENMDS</name>
-      <x>16</x>
-      <y>556</y>
-      <width>264</width>
-      <height>24</height>
-      <label>あああああ</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>FUKUZENMDS2</name>
-      <x>12</x>
-      <y>588</y>
-      <width>380</width>
-      <height>24</height>
-      <label>あああああああ</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>label185</name>
       <x>804</x>
       <y>584</y>
@@ -3031,12 +2901,138 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label485</name>
-      <x>596</x>
-      <y>584</y>
-      <width>114</width>
+      <name>FUKUMSG</name>
+      <x>688</x>
+      <y>684</y>
+      <width>330</width>
       <height>24</height>
-      <label>前回までの返金</label>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator9</name>
+      <x>812</x>
+      <y>276</y>
+      <width>200</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label467</name>
+      <x>816</x>
+      <y>296</y>
+      <width>80</width>
+      <height>24</height>
+      <label>調整金</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label183</name>
+      <x>760</x>
+      <y>344</y>
+      <width>128</width>
+      <height>24</height>
+      <label>今回診療分請求額</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator11</name>
+      <x>696</x>
+      <y>440</y>
+      <width>292</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>HENKIN</name>
+      <x>904</x>
+      <y>456</y>
+      <width>88</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Mon, 25 Dec 2000 09:23:36 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Mon, 25 Dec 2000 09:23:48 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>10</text_max_length>
+      <text></text>
+      <input_mode>ASCII</input_mode>
+      <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label184</name>
+      <x>760</x>
+      <y>384</y>
+      <width>128</width>
+      <height>24</height>
+      <label>前回までの未収額</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label485</name>
+      <x>760</x>
+      <y>412</y>
+      <width>128</width>
+      <height>24</height>
+      <label>前回までの超過額</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label482</name>
+      <x>804</x>
+      <y>488</y>
+      <width>72</width>
+      <height>24</height>
+      <label>入金額</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -3052,7 +3048,7 @@
       <y>584</y>
       <width>216</width>
       <height>24</height>
-      <label>あああああ</label>
+      <label></label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -3063,12 +3059,108 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>FUKUMSG</name>
-      <x>688</x>
-      <y>684</y>
-      <width>330</width>
+      <name>FUKUZENMDS2</name>
+      <x>12</x>
+      <y>588</y>
+      <width>380</width>
       <height>24</height>
       <label></label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>FUKUZENMDS</name>
+      <x>16</x>
+      <y>556</y>
+      <width>264</width>
+      <height>24</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>NYUKINMSG</name>
+      <x>784</x>
+      <y>520</y>
+      <width>220</width>
+      <height>24</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label495</name>
+      <x>808</x>
+      <y>456</y>
+      <width>68</width>
+      <height>24</height>
+      <label>返金額</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label497</name>
+      <x>992</x>
+      <y>456</y>
+      <width>16</width>
+      <height>26</height>
+      <label>*</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>JYOGENMSG</name>
+      <x>604</x>
+      <y>488</y>
+      <width>200</width>
+      <height>24</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>KIGO</name>
+      <x>880</x>
+      <y>460</y>
+      <width>20</width>
+      <height>20</height>
+      <label>−</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>

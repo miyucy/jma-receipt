@@ -51,6 +51,7 @@
       *  01.00.19    NACL-太田    06/08/22  パラメタテーブルより編集データ
       *                                     を参照する区分を追加
       *                                     月まとめ請求書発行機能追加
+      *  03.03.00    NACL-多々納  06/09/27  返金対応追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -476,6 +477,27 @@
            MOVE    ORCHC03-SEIKYU      TO  WRK-SKYMONEY
            MOVE    ORCHC03-NYUKIN      TO  WRK-NYUKIN
            MOVE    ORCHC03-ZENMISYU    TO  WRK-MISYUMONEY
+      *---(03.03.00) LINE ADD  START -----------------------------------
+      *    前回請求額
+           IF      ORCHC03-ZEN-HENKIN  >   ZERO
+      *        今回返金額
+               COMPUTE WRK-MISYUMONEY      =   WRK-MISYUMONEY
+                                           -   ORCHC03-ZEN-HENKIN
+           ELSE
+      *        前回までの超過額
+               COMPUTE WRK-MISYUMONEY      =   WRK-MISYUMONEY
+                                           -   ORCHC03-HENKIN
+           END-IF
+      *    返金対応
+           IF      (ORCHC03-HAKKOFLG   =   ZERO )  AND
+                   (ORCHC03-NYUKIN     =   ZERO )  AND
+                   ((WRK-MISYUMONEY * -1 )
+                                       >   WRK-SKYMONEY)
+      *        返金額が今回請求額より多い時、マイナス入金とする
+               COMPUTE WRK-NYUKIN          =   WRK-SKYMONEY
+                                           +   WRK-MISYUMONEY
+           END-IF
+      *---(03.03.00) LINE ADD  END   -----------------------------------
       *
       *    帳票印刷開始処理
            PERFORM 400-SYOKI-PRINT-SEC
@@ -1160,6 +1182,27 @@
                ELSE
                    MOVE    ZERO                TO  WRK-MISYUMONEY
                END-IF
+      *---(03.03.00) LINE ADD  START -----------------------------------
+               IF      IDX-SYU             =   1
+                   COMPUTE WRK-MISYUMONEY  =   WRK-MISYUMONEY
+                                           -   ORCHC03-ZEN-HENKIN
+                                           -   ORCHC03SUB-HENKIN
+                                                         (IDX-SYU)
+      *             返金対応
+                    IF      (ORCHC03-HAKKOFLG   =   ZERO )  AND
+                            (WRK-NYUKIN         =   ZERO )  AND
+                            ((WRK-MISYUMONEY * -1)
+                                                >   WRK-SKYMONEY)
+      *             返金額が今回請求額より多い時、マイナス入金とする
+                       COMPUTE WRK-NYUKIN      =   WRK-SKYMONEY
+                                               +   WRK-MISYUMONEY
+                   END-IF
+               ELSE
+                   COMPUTE WRK-MISYUMONEY  =   WRK-MISYUMONEY
+                                           -   ORCHC03SUB-HENKIN
+                                                         (IDX-SYU)
+               END-IF
+      *---(03.03.00) LINE ADD  END   -----------------------------------
       *
       *        帳票印刷開始処理
                PERFORM 400-SYOKI-PRINT-SEC
