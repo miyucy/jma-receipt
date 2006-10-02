@@ -303,7 +303,8 @@
            END-IF
       *
            IF    ( LNK-SCNYUKIN-KOUSHINKBN =   "2" )
-            AND  ( LNK-SCNYUKIN-HENKIN-MONEY   >   ZERO )
+            AND (( LNK-SCNYUKIN-HENKINKBN  =   "1" )
+             OR  ( LNK-SCNYUKIN-HENKIN-MONEY   >   ZERO ))
                PERFORM 210-SYUNOU-HENKIN-SEC
                IF    ( LNK-SCNYUKIN-RC NOT =   ZERO )
                    GO  TO  200-MAIN-EXT
