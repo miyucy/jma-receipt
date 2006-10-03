@@ -1248,34 +1248,6 @@
            ELSE
                MOVE    SPACE               TO  SPA-GMN-FUKUZENMDS
            END-IF
-      *    合計入金額
-      *    IF      SPA-ERRCD           =   SPACE
-      *
-      *    IF     (SPA-SYUNOU-MAX      >   1    )  OR
-      *           (SPA-GMN-CHOKAKIN    >   ZERO )  OR
-      *           (SPA-GOK-NYUKIN      >   ZERO )
-      *        MOVE    SPACE               TO  SPA-GMN-NYUKINMSG
-      *        IF      SPA-SYORIFLG        =   ZERO
-      *            IF      SPA-GOK-NYUKIN      =   ZERO
-      *                MOVE    ZERO                TO  WRK-KIN
-      *            ELSE
-      *                COMPUTE WRK-KIN             =   SPA-GOK-NYUKIN
-      *                                            +   SPA-NAI-HENKIN
-      *            END-IF
-      *        ELSE
-      *            COMPUTE WRK-KIN             =   SPA-GOK-NYUKIN
-      *                                        -   SPA-NAI-HENKIN
-      *        END-IF
-      *        MOVE    WRK-KIN             TO  WRK-Z9
-      *        STRING  "合計入金額："      DELIMITED  BY  SIZE
-      *                WRK-Z9              DELIMITED  BY  SIZE
-      *                                INTO    SPA-GMN-NYUKINMSG
-      *        END-STRING
-      *    ELSE
-      *        MOVE    SPACE               TO  SPA-GMN-NYUKINMSG
-      *    END-IF
-      *
-      *    END-IF
       *
            .
        31021-SYUNOU-GMN-HEN-EXT.
@@ -2159,28 +2131,6 @@
       *****************************************************************
       *    合計請求額計算処理
       *****************************************************************
-      *310411-SYUNOU-ADD-SEC           SECTION.
-      *
-      *    請求額
-      *    ADD     SYU-SKYMONEY        TO  WRK-SUM-SKYMONEY
-      *    点数
-      *    ADD     SYU-TOTAL-HKNTEN    TO  WRK-SUM-HKNTEN
-      *    各金額
-      *    ADD     SYU-TOTAL-MONEY     TO  WRK-SUM-MONEY
-      *    ADD     SYU-TOTAL-TGMONEY   TO  WRK-SUM-TGMONEY
-      *    ADD     SYU-TOTAL-TGMONEY-TAX   TO  WRK-SUM-TGMONEY-TAX
-      *
-      *    ADD     SYU-JIHI-TOTAL      TO  WRK-SUM-JIHI-TOTAL
-      *    ADD     SYU-JIHI-TOTAL-TAX  TO  WRK-SUM-JIHI-TOTAL-TAX
-      *    ADD     SYU-JIHI-TAX        TO  WRK-SUM-JIHI-TAX
-      *    ADD     SYU-YKZ-FTN         TO  WRK-SUM-YKZ-FTN
-      *    .
-      *310411-SYUNOU-ADD-EXT.
-      *    EXIT.
-      *
-      *****************************************************************
-      *    合計請求額計算処理
-      *****************************************************************
        3101-SEIKYU-KEI-SEC                  SECTION.
       *
       *    今回請求額
@@ -2218,9 +2168,6 @@
       *****************************************************************
        3103-NYUKIN-KEI-SEC                  SECTION.
       *
-      *TEST
-           DISPLAY "3103-NYUKIN-KEI-SEC"
-      *TEST
            MOVE    ZERO            TO  SPA-GOK-NYUKIN
            MOVE    ZERO            TO  SPA-GOK-CHOSEI
            MOVE    ZERO            TO  SPA-GOK-SKYMONEY
@@ -2263,11 +2210,6 @@
       *            END-IF
       *        END-IF
       ***  END-IF
-      *TEST
-           DISPLAY "SPA-GOK-NYUKIN:" SPA-GOK-NYUKIN
-                ",SPA-NYU-ZENMISYU:" SPA-NYU-ZENMISYU
-               ",SPA-NAI-HENKIN:" SPA-NAI-HENKIN
-      *TEST
       *
            COMPUTE SPA-GOK-NYUKIN      =   SPA-GOK-NYUKIN
                                        +   SPA-NYU-ZENMISYU
@@ -2285,13 +2227,6 @@
                                        +   SPA-GMN-ZENMISYU
                                        -   SPA-GMN-CHOKAKIN
            END-IF
-      *TEST
-           DISPLAY "SPA-GMN-SEIGOK:" SPA-GMN-SEIGOK
-                  ",SPA-GOK-SKYMONEY:" SPA-GOK-SKYMONEY
-                 ",SPA-GOK-CHOSEI:" SPA-GOK-CHOSEI
-                 ",SPA-GMN-ZENMISYU:" SPA-GMN-ZENMISYU
-                 ",SPA-GMN-CHOKAKIN:" SPA-GMN-CHOKAKIN
-      *TEST
       *    入金額上限
            PERFORM 31031-JYOGENKIN-KEI-SEC
       *
@@ -2301,12 +2236,6 @@
                   (SPA-GOK-NYUKIN      >   ZERO )
                IF      SPA-SYORIFLG        =   ZERO
                    MOVE    SPA-GOK-NYUKIN      TO  WRK-KIN
-      **           IF      SPA-GOK-NYUKIN      =   ZERO
-      *                MOVE    ZERO                TO  WRK-KIN
-      *            ELSE
-      *                COMPUTE WRK-KIN             =   SPA-GOK-NYUKIN
-      *                                            +   SPA-NAI-HENKIN
-      ***          END-IF
                ELSE
                    COMPUTE WRK-KIN             =   SPA-GOK-NYUKIN
                                                -   SPA-NAI-HENKIN
@@ -2664,12 +2593,10 @@
            MOVE    WRK-Z92             TO  K03-CHOUKAKIN
            MOVE    "red"               TO  K03-CHOUKAKIN-STYLE
       *    合計請求額
-      *TEST
+      *    MOVE    SPA-GMN-SEIGOK      TO  WRK-Z99
            COMPUTE WRK-KIN             =   SPA-GMN-SEIGOK
                                        -   SPA-GOK-NYUKIN
-      *    MOVE    SPA-GMN-SEIGOK      TO  WRK-Z99
            MOVE    WRK-KIN             TO  WRK-Z99
-      *TEST
            MOVE    WRK-Z99             TO  K03-GOKSKY
       *    請求書発行
            MOVE    SPA-GMN-HAKFLG-G    TO  K03-HAKFLG
@@ -3376,13 +3303,6 @@
            END-IF
       *
       *    関連チェック
-      *TEST
-           DISPLAY "SPA-GMN-NYUKIN:" SPA-GMN-NYUKIN
-                 ",SPA-MAE-NYUKIN:" SPA-MAE-NYUKIN
-                 ",SPA-GMN-HENKIN:" SPA-GMN-HENKIN
-                 ",SPA-MAE-HENKIN:" SPA-MAE-HENKIN
-              ",SPA-NAI-HENFLG :" SPA-NAI-HENFLG 
-      *TEST
       *    変更が無い時
            IF    ((SPA-GMN-NYUKINKBN   =   SPA-MAE-NYUKINKBN )  AND
                   (SPA-GMN-NYUKIN      =   SPA-MAE-NYUKIN    )  AND
@@ -3412,9 +3332,6 @@
       *****************************************************************
        450-HENKIN-CHK-SEC                SECTION.
       *
-      *TEST
-           DISPLAY "450-HENKIN-CHK-SEC:" 
-      *TEST
            IF      SPA-GMN-HENKIN-X(1:1)   =   "*"
       *        返金額複写
                IF      SPA-SYORIFLG        =   ZERO
@@ -3679,41 +3596,6 @@
                        END-IF
                    END-IF
            END-EVALUATE
-      ***  合計入金額
-      *    IF      SPA-ERRCD           =   SPACE
-      *
-      *    IF     (SPA-SYUNOU-MAX      >   1    )  OR
-      *           (SPA-GMN-CHOKAKIN    >   ZERO )  OR
-      *           (SPA-GOK-NYUKIN      >   ZERO )
-      *        IF      SPA-SYORIFLG        =   ZERO
-      *            IF      SPA-GOK-NYUKIN      =   ZERO
-      *                MOVE    ZERO                TO  WRK-KIN
-      *            ELSE
-      *                COMPUTE WRK-KIN             =   SPA-GOK-NYUKIN
-      *                                            +   SPA-NAI-HENKIN
-      *            END-IF
-      *        ELSE
-      *            COMPUTE WRK-KIN             =   SPA-GOK-NYUKIN
-      *                                        -   SPA-NAI-HENKIN
-      *        END-IF
-      *        MOVE    SPACE               TO  SPA-GMN-NYUKINMSG
-      *        MOVE    WRK-KIN             TO  WRK-Z9
-      *        IF      WRK-KIN             >=  ZERO
-      *            STRING  "合計入金額："      DELIMITED  BY  SIZE
-      *                    WRK-Z9              DELIMITED  BY  SIZE
-      *                                    INTO    SPA-GMN-NYUKINMSG
-      *            END-STRING
-      *        ELSE
-      *            STRING  "合計返金額："      DELIMITED  BY  SIZE
-      *                    WRK-Z9              DELIMITED  BY  SIZE
-      *                                    INTO    SPA-GMN-NYUKINMSG
-      *            END-STRING
-      *        END-IF
-      *    ELSE
-      *        MOVE    SPACE               TO  SPA-GMN-NYUKINMSG
-      *    END-IF
-      *
-      *****END-IF
            .
        31051-NYUKIN-KEISAN-EXT.
            EXIT.
@@ -3806,20 +3688,6 @@
                MOVE    SPA-GOK-HENKIN      TO  WRK-HENKIN-GAKU
            END-IF
       *
-      *TEST
-               DISPLAY "WRK-SEIKYU:" WRK-SEIKYU
-                ",SPA-GOK-NYUKIN:" SPA-GOK-NYUKIN
-                ",SPA-GOK-HENKIN:" SPA-GOK-HENKIN
-                ",WRK-NYUKIN:" WRK-NYUKIN
-                ",WRK-HENKIN:" WRK-HENKIN-GAKU
-      *TEST
-      *    IF      SPA-GMN-ZENMISYU    =   ZERO
-      *        IF      WRK-SEIKYU          <   SPA-GOK-NYUKIN
-      *            MOVE    "0008"              TO  SPA-ERRCD
-      *            MOVE    1                   TO  SPA-GMN-CUR
-      *        END-IF
-      *        GO      TO      310512-NYUKIN-JYUTOU-EXT
-      **** END-IF
       *    まとめなし
            IF     ((SPA-GMN-ZENMISYU   =   ZERO )  AND
                    (SPA-GOK-HENKIN     =   ZERO ))  OR
@@ -3856,21 +3724,11 @@
                   (WRK-HENKIN-GAKU     =   ZERO         )
                MOVE    "1"                 TO  LNK-SCNYUKIN-HENKINKBN
            END-IF
-      *TEST
-           DISPLAY "LNK-SCNYUKIN-HENKINKBN:" LNK-SCNYUKIN-HENKINKBN
-               ",SPA-GOK-HENKIN:" SPA-GOK-HENKIN 
-               ",WRK-HENKIN:" WRK-HENKIN-GAKU
-      *TEST
       *
            CALL    "ORCSNYUKIN"        USING
                                        ORCSNYUKINAREA
                                        SPA-AREA
       *
-      *TEST
-           DISPLAY "LNK-SCNYUKIN-RC:" LNK-SCNYUKIN-RC
-                ",LNK-SCNYUKIN-FURIWAKEZAN:" LNK-SCNYUKIN-FURIWAKEZAN
-                ",LNK-SCNYUKIN-HENKINZAN:" LNK-SCNYUKIN-HENKINZAN
-      *TEST
            IF      LNK-SCNYUKIN-RC NOT =   ZERO
                MOVE    "0013"              TO  SPA-ERRCD
                MOVE    1                   TO  SPA-GMN-CUR
@@ -3910,13 +3768,6 @@
            ELSE
                MOVE    LNK-SCNYUKIN-FURIWAKEZAN  TO  WRK-NYUKIN
            END-IF
-      *TEST
-           DISPLAY "LNK-SCNYUKIN-HENKINZAN:" LNK-SCNYUKIN-HENKINZAN
-                 ",WRK-NYUKIN:" WRK-NYUKIN
-                 ",WRK-SEIKYU:" WRK-SEIKYU
-                 ",LNK-SCNYUKIN-FURIWAKEZAN:" LNK-SCNYUKIN-FURIWAKEZAN
-                 ",SPA-NYU-ZENMISYU:" SPA-NYU-ZENMISYU
-      *TEST
            .
        310512-NYUKIN-JYUTOU-EXT.
            EXIT.
@@ -3926,9 +3777,6 @@
       *****************************************************************
        31050-NYUKIN-SYOKICHK-SEC           SECTION.
       *
-      *TEST
-           DISPLAY "31050-NYUKIN-SYOKICHK-SEC"
-      *TEST
       *    返金額のクリア
            IF     (SPA-NAI-HENFLG      =   1    ) AND
                   (SPA-GMN-NYUKINKBN   =   "1"  )
@@ -3977,12 +3825,6 @@
                        MOVE    SYU-NYUKIN-TOTAL    TO
                                                    SPA-TEI-NYUKIN-TOTAL
                                                                   (IDX)
-      *TEST
-              DISPLAY "SYU-SRYKA:" SYU-SRYKA
-              ",SYU-HKNCOMBINUM:"  SYU-HKNCOMBINUM
-              ",SYU-SKYMONEY:"  SYU-SKYMONEY
-              ",SYU-NYUKIN-TOTAL:"  SYU-NYUKIN-TOTAL
-      *TEST
                    END-IF
                END-PERFORM
            END-IF
@@ -4006,18 +3848,6 @@
                    MOVE    1                   TO  SPA-GMN-CUR
                END-IF
            END-IF
-      *TEST
-               DISPLAY "SPA-GMN-SEIKYU:" SPA-GMN-SEIKYU
-                ",SPA-GMN-NYUKIN:" SPA-GMN-NYUKIN
-                ",WRK-SEIKYU:" WRK-SEIKYU
-      *TEST
-      *!       訂正で合計請求額以上の時
-      *        IF      (SPA-SYORIFLG       =   1   )  AND
-      *                (WRK-SEIKYU         <   SPA-GMN-NYUKIN)
-      *            MOVE    "0008"              TO  SPA-ERRCD
-      *            MOVE    1                   TO  SPA-GMN-CUR
-      *!       END-IF
-      *    END-IF
       *
            IF      SPA-SYORIFLG        =   ZERO
                IF     (SPA-NAI-HENFLG  =   1    )  AND
@@ -4047,10 +3877,6 @@
                IF     (SYU-SRYKA       NOT =   ZERO    )
                    COMPUTE WRK-SKYMONEY        =   SYU-SKYMONEY
                                                +   SYU-CHOSEI
-      *TEST
-           DISPLAY "WRK-SKYMONEY:" WRK-SKYMONEY
-               ",WRK-HENKIN:" WRK-HENKIN
-      *TEST
                    IF      WRK-SKYMONEY        <=  WRK-HENKIN
                        MOVE    WRK-SKYMONEY    TO  SPA-SYU-HENKIN
                                                                 (IDX)
@@ -4077,11 +3903,6 @@
                        END-IF
                        MOVE    ZERO            TO  WRK-HENKIN
                    END-IF
-      *TEST
-           DISPLAY "SPA-SYU-HENKIN:" SPA-SYU-HENKIN (IDX)
-                ",SPA-SYU-HENKBN:" SPA-SYU-HENKBN (IDX)
-                ",SYU-NYUKIN-TOTAL:" SYU-NYUKIN-TOTAL
-      *TEST
                    ADD     SYU-NYUKIN-TOTAL    TO  SPA-GOK-NYUKIN
                    ADD     SPA-SYU-HENKIN (IDX)    TO  SPA-NAI-HENKIN
       *
@@ -5130,10 +4951,6 @@
            MOVE    SPA-GMN-NYUKINHOU   TO  ORCSCGAIRAI-NYUKIN-HOHO
       *    発行方法
            MOVE    SPA-GMN-HAKHOUFLG   TO  ORCSCGAIRAI-HAKHOUFLG
-      *TEST 
-             DISPLAY "ORCSCGAIRAI-NYUKIN:" ORCSCGAIRAI-NYUKIN
-              ",SKYMONEY:" ORCSCGAIRAI-KON-SKYMONEY
-      *TEST
       *    複数科まとめ
       **** MOVE    SPA-GMN-SYORI       TO  ORCSCGAIRAI-SYORI
       *    収納情報
@@ -5152,10 +4969,6 @@
                    UNTIL       IDX     >   SPA-SYUNOU-MAX
                MOVE    SPA-SYUNOU-REC(IDX) TO  ORCSCGAIRAI-SYUNOU-REC
                                                                (IDX)
-      *TEST 
-             DISPLAY "SPA-SYU-HENKBN:" SPA-SYU-HENKBN(IDX) 
-              ",HENKIN:" SPA-SYU-HENKIN(IDX)
-      *TEST
                IF      SPA-SYU-HENKBN(IDX) =   "1"
                     MOVE    SPA-SYU-HENKIN(IDX)
                                            TO  ORCSCGAIRAI-SYU-HENKIN
@@ -5198,9 +5011,6 @@
       *****************************************************************
        450011-NYUKIN-KEISAN-SEC           SECTION.
       *
-      *TEST
-           DISPLAY "450011-NYUKIN-KEISAN-SEC"
-      *TEST
       *    今回請求額合計
            COMPUTE WRK-SEIKYU          =  (SPA-GOK-SKYMONEY
                                        +   SPA-GOK-CHOSEI )
@@ -5208,14 +5018,6 @@
       *
            COMPUTE WRK-SEIKYU          =   WRK-SEIKYU
                                        -   SPA-GOK-HENKIN
-      *TEST
-           DISPLAY "SPA-GOK-SKYMONEY:" SPA-GOK-SKYMONEY
-                 ",SPA-GOK-CHOSEI:" SPA-GOK-CHOSEI
-                 ",SPA-OLD-SKYMONEY:" SPA-OLD-SKYMONEY
-                 ",WRK-SEIKYU :" WRK-SEIKYU 
-                 ",SPA-GOK-NYUKIN:" SPA-GOK-NYUKIN
-                 ",SPA-GOK-HENKIN:" SPA-GOK-HENKIN
-                 ",SPA-NYU-ZENMISYU:" SPA-NYU-ZENMISYU
       *
            IF      SPA-GMN-NYUKINKBN   =   "2"  OR  "3"
       *        入金額−今回請求額
@@ -5276,23 +5078,10 @@
                   (WRK-HENKIN-GAKU     =   ZERO         )
                MOVE    "1"                 TO  LNK-SCNYUKIN-HENKINKBN
            END-IF
-      *TEST
-           DISPLAY "LNK-SCNYUKIN-NYUKIN-MONEY:" 
-                     LNK-SCNYUKIN-NYUKIN-MONEY
-                 ",LNK-SCNYUKIN-HENKIN-MONEY:" LNK-SCNYUKIN-HENKIN-MONEY
-                 ",LNK-SCNYUKIN-HENKINKBN:" LNK-SCNYUKIN-HENKINKBN
       *
            CALL    "ORCSNYUKIN"        USING
                                        ORCSNYUKINAREA
                                        SPA-AREA
-      *TEST
-           DISPLAY "LNK-SCNYUKIN-HENKINZAN:" LNK-SCNYUKIN-HENKINZAN
-                 ",LNK-SCNYUKIN-FURIWAKEZAN:" LNK-SCNYUKIN-FURIWAKEZAN
-                 ",LNK-SCNYUKIN-RC:" LNK-SCNYUKIN-RC
-                 ",SPA-GMN-HENKIN:" SPA-GMN-HENKIN
-                 ",SPA-GMN-NYUKINHOU:" SPA-GMN-NYUKINHOU
-                 ",WRK-NYUKIN:" WRK-NYUKIN
-      *TEST
       *
            IF      LNK-SCNYUKIN-RC NOT =   ZERO
                MOVE    "0015"              TO  SPA-ERRCD
@@ -5318,11 +5107,6 @@
            ELSE
                MOVE    LNK-SCNYUKIN-FURIWAKEZAN    TO  WRK-NYUKIN
            END-IF
-      *TEST
-           DISPLAY "END WRK-NYUKIN:" WRK-NYUKIN
-                 ",SPA-GOK-NYUKIN:" SPA-GOK-NYUKIN
-                 ",SPA-NYU-ZENMISYU:" SPA-NYU-ZENMISYU
-      *TEST
       *    合計入金額に変更があった時、振り分けへ
            IF      SPA-GOK-NYUKIN      =   WRK-NYUKIN
                GO      TO      450011-NYUKIN-KEISAN-EXT
@@ -5437,13 +5221,6 @@
                COMPUTE ORCHC03-NYUKIN  =   ORCHC03-NYUKIN
                                        -   SPA-NAI-HENKIN
            END-IF
-      *TEST
-           DISPLAY "ORCHC03 SEIKYU:" ORCHC03-SEIKYU
-                ",NYUKIN:" ORCHC03-NYUKIN
-                ",ZENMISYU:" ORCHC03-ZENMISYU
-                ",HENKIN:" ORCHC03-HENKIN
-                ",SEIKYU:" ORCHC03-SEIKYU
-      *TEST
       *    発行フラグ
            IF      SPA-SYORIFLG        =   1
       *        訂正分
@@ -5485,16 +5262,8 @@
                    MOVE    SPA-SYU-HENKIN (IDX)
                                        TO  ORCHC03-KON-HENKIN (IDX)
                END-IF
-      *TEST
-              DISPLAY "ORCHC03 SRYKA:" ORCHC03-OLD-SRYKA   (IDX)
-                ",HKNCOMBI:" ORCHC03-OLD-HKNCOMBI (IDX)
-                ",SKYMONEY:" ORCHC03-OLD-SKYMONEY (IDX)
-                ",NYUKIN:" ORCHC03-OLD-NYUKIN-TOTAL (IDX)
-                ",HENKIN:" ORCHC03-KON-HENKIN (IDX)
-      *TEST
            END-PERFORM
       *    今回返金充当額
-      **** MOVE    SPA-GOK-HENKIN      TO  ORCHC03-ZEN-HENKIN
            MOVE    WRK-HENKIN-GAKU     TO  ORCHC03-ZEN-HENKIN
       *
            IF      SPA-GMN-HAKFLG  NOT =   ZERO
