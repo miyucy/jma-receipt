@@ -893,7 +893,7 @@
       *    入金額
            MOVE    SYU-NYUKIN-TOTAL    TO  WRK-KON-NYUKIN
       **
-      *    充当分の加算
+      *    返金充当分の加算
            IF      ORCSCGAIRAI-SYU-HENKIN (IDH-GAI) >  ZERO
                COMPUTE SYU-NYUKIN-TOTAL    =   SYU-NYUKIN-TOTAL
                                            +   ORCSCGAIRAI-SYU-HENKIN
@@ -1462,7 +1462,9 @@
       *入金方法
            MOVE    "01"                TO  SMEI-NYUKIN-HOHO
       *状態区分
-           MOVE    "4"                 TO  SMEI-JOUTAIKBN
+           MOVE    "2"                 TO  SMEI-JOUTAIKBN
+      *明細状態区分
+           MOVE    "1"                 TO  SMEI-MEISAIJOUTAIKBN
       *
            MOVE    SMCNDATE-YMD        TO  SMEI-CREYMD
            MOVE    SMCNDATE-YMD        TO  SMEI-UPYMD
