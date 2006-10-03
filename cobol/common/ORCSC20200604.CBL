@@ -1986,15 +1986,18 @@
                    IF      SPA-CHOKITOFLG-CHK  =   ZERO
                        MOVE    "K019"          TO  SPA-ERRCD
                        MOVE    1               TO  SPA-CHOKITOFLG-CHK
-      *TEST
+                       MOVE    9               TO  SPA-TOKUTEIFLG
+                       MOVE    9               TO  SPA-CHOKITOFLG
                    ELSE
-                       MOVE    "0113"          TO  LNK-ORCSC-KIDCD
-                       MOVE    1                   TO  SPA-CHOKITOFLG
-                       GO      TO      30011-INGAITOKUTEIKSN-CHK-EXT
-      *TEST
+      *                特定疾患処方管理チェック
+                       PERFORM 300111-INGAITOKU-CHK-SEC
+                       IF      LNK-ORCSC-KIDCD =   SPACE
+                           MOVE    9               TO  SPA-TOKUTEIFLG
+                           MOVE    9               TO  SPA-CHOKITOFLG
+                       ELSE
+                           MOVE    1               TO  SPA-CHOKITOFLG
+                       END-IF
                    END-IF
-                   MOVE    9               TO  SPA-TOKUTEIFLG
-                   MOVE    9               TO  SPA-CHOKITOFLG
                    GO      TO      30011-INGAITOKUTEIKSN-CHK-EXT
                END-IF
       *        以外のエラー
@@ -2008,22 +2011,33 @@
            END-IF
       *
            IF      SPA-TOKUTEIFLG      =   ZERO
-      *        特定疾患処方管理
-               MOVE    "120002570"         TO  WRK-SRYCD
-               MOVE    WRK-SRYKA           TO  SPA-TOKUTEI-SRYKA
-      *        算定可能かのチェック
-               PERFORM 3001-KYOUTU-CHEK-SEC
-      *        算定エラー
-               IF      FLG-ERR             =   1
-                   MOVE    9               TO  SPA-TOKUTEIFLG
-               ELSE
-      *            算定可能
-                   MOVE    "0113"          TO  LNK-ORCSC-KIDCD
-               END-IF
+      *        特定疾患処方管理チェック
+               PERFORM 300111-INGAITOKU-CHK-SEC
            END-IF
       *
            .
        30011-INGAITOKUTEIKSN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    院外特定疾患処方管理チェック処理
+      *****************************************************************
+       300111-INGAITOKU-CHK-SEC        SECTION.
+      *
+      *    特定疾患処方管理
+           MOVE    "120002570"         TO  WRK-SRYCD
+           MOVE    WRK-SRYKA           TO  SPA-TOKUTEI-SRYKA
+      *    算定可能かのチェック
+           PERFORM 3001-KYOUTU-CHEK-SEC
+      *    算定エラー
+           IF      FLG-ERR             =   1
+               MOVE    9               TO  SPA-TOKUTEIFLG
+           ELSE
+      *        算定可能
+               MOVE    "0113"          TO  LNK-ORCSC-KIDCD
+           END-IF
+           .
+       300111-INGAITOKU-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2542,15 +2556,18 @@
                    IF      SPA-CHOKITOFLG-CHK  =   ZERO
                        MOVE    "K019"          TO  SPA-ERRCD
                        MOVE    1               TO  SPA-CHOKITOFLG-CHK
-      *TEST
+                       MOVE    9               TO  SPA-TOKUTEIFLG
+                       MOVE    9               TO  SPA-CHOKITOFLG
                    ELSE
-                       MOVE    "0113"          TO  LNK-ORCSC-KIDCD
-                       MOVE    1                   TO  SPA-CHOKITOFLG
-                       GO      TO      30021-INNAITOKUTEIKSN-CHK-EXT
-      *TEST
+      *                特定疾患処方管理チェック
+                       PERFORM 300211-INNAITOKU-CHK-SEC
+                       IF      LNK-ORCSC-KIDCD =   SPACE
+                           MOVE    9               TO  SPA-TOKUTEIFLG
+                           MOVE    9               TO  SPA-CHOKITOFLG
+                       ELSE
+                           MOVE    1               TO  SPA-CHOKITOFLG
+                       END-IF
                    END-IF
-                   MOVE    9               TO  SPA-TOKUTEIFLG
-                   MOVE    9               TO  SPA-CHOKITOFLG
                    GO      TO      30021-INNAITOKUTEIKSN-CHK-EXT
                END-IF
       *        以外のエラー
@@ -2565,22 +2582,32 @@
       *
            IF      SPA-TOKUTEIFLG      =   ZERO
       *        特定疾患処方管理
-               MOVE    "120002270"         TO  WRK-SRYCD
-               MOVE    WRK-SRYKA           TO  SPA-TOKUTEI-SRYKA
-      *        算定可能かのチェック
-               PERFORM 3001-KYOUTU-CHEK-SEC
-      *        算定エラー
-               IF      FLG-ERR             =   1
-                   MOVE    9               TO  SPA-TOKUTEIFLG
-               ELSE
-      *            算定可能
-                   MOVE    "0113"          TO  LNK-ORCSC-KIDCD
-                   GO      TO      30021-INNAITOKUTEIKSN-CHK-EXT
-               END-IF
+               PERFORM 300211-INNAITOKU-CHK-SEC
            END-IF
       *
            .
        30021-INNAITOKUTEIKSN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    院内特定疾患処方管理チェック処理
+      *****************************************************************
+       300211-INNAITOKU-CHK-SEC            SECTION.
+      *
+      *    特定疾患処方管理
+           MOVE    "120002270"         TO  WRK-SRYCD
+           MOVE    WRK-SRYKA           TO  SPA-TOKUTEI-SRYKA
+      *    算定可能かのチェック
+           PERFORM 3001-KYOUTU-CHEK-SEC
+      *    算定エラー
+           IF      FLG-ERR             =   1
+               MOVE    9               TO  SPA-TOKUTEIFLG
+           ELSE
+      *        算定可能
+               MOVE    "0113"          TO  LNK-ORCSC-KIDCD
+           END-IF
+           .
+       300211-INNAITOKU-CHK-EXT.
            EXIT.
       *
       *****************************************************************
