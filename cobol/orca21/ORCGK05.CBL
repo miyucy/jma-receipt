@@ -38,6 +38,7 @@
       *  02.00.06    NACL−多々納 04/01/16  数量ゼロ追加
       *  02.00.07    NACL-多々納  05/11/17  MONFUNC 対応
       *  02.00.08    NACL-多々納  06/03/02  セット期間追加対応
+      *  03.03.00    NACL-多々納  06/10/03  約束セット期間追加対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2327,8 +2328,8 @@
            MOVE    "key5"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-           IF     (SPA-K05-RRK-MAX     =   1 )  OR
-                  (SPA-GMN-SETCODE(1:1)    =   "P" )
+           IF     (SPA-K05-RRK-MAX     =   1 ) 
+      ****     OR (SPA-GMN-SETCODE(1:1)    =   "P" )
                MOVE    1                   TO  SPA-K05-SELNUM
                MOVE    SPA-K05-TYUKOSTYMD(1)
                                            TO  WRK-YUKOSTYMD
@@ -2506,10 +2507,10 @@
                IF      SGDAY-RC            =   ZERO
                    MOVE    SGDAY-OTDAY     TO  SPA-K05-GMN-YUKOSTYMD
                    MOVE    SGDAY-SDAY      TO  SPA-K05-NAI-YUKOSTYMD
-                   IF      SPA-GMN-SETCODE(1:1)    =   "P"
-                       MOVE    "5026"          TO  SPA-ERRCD
-                       MOVE    11              TO  SPA-GMN5-CUR
-                   END-IF
+      *D           IF      SPA-GMN-SETCODE(1:1)    =   "P"
+      *                MOVE    "5026"          TO  SPA-ERRCD
+      *                MOVE    11              TO  SPA-GMN5-CUR
+      *D           END-IF
                ELSE
                    MOVE    "5022"          TO  SPA-ERRCD
                    MOVE    11              TO  SPA-GMN5-CUR
@@ -2541,17 +2542,17 @@
                IF      SGDAY-RC            =   ZERO
                    MOVE    SGDAY-OTDAY     TO  SPA-K05-GMN-YUKOEDYMD
                    MOVE    SGDAY-SDAY      TO  SPA-K05-NAI-YUKOEDYMD
-                   IF      SPA-GMN-SETCODE(1:1)    =   "P"
-                       MOVE    "5026"          TO  SPA-ERRCD
-                       MOVE    12              TO  SPA-GMN5-CUR
-                   ELSE
+      *D           IF      SPA-GMN-SETCODE(1:1)    =   "P"
+      *                MOVE    "5026"          TO  SPA-ERRCD
+      *D               MOVE    12              TO  SPA-GMN5-CUR
+      *D           ELSE
                        IF      SPA-K05-NAI-YUKOEDYMD
                                            NOT =   SPA-SRYYMD
                            MOVE    SPA-K05-NAI-YUKOEDYMD
                                                TO  SPA-SRYYMD
                            PERFORM 410121-SAIHEN-SEC
                        END-IF
-                   END-IF
+      *d           END-IF
                ELSE
                    MOVE    "5023"          TO  SPA-ERRCD
                    MOVE    12              TO  SPA-GMN5-CUR
@@ -5738,8 +5739,8 @@
                GO      TO      4100-TOROKU-EXT
            END-IF
       *
-           IF     (SPA-GMN-SETCODE(1:1)    =   "S" ) AND
-                  (SPA-K05-SYORI           =   "2" )
+      *****IF     (SPA-GMN-SETCODE(1:1)    =   "S" ) AND
+           IF     (SPA-K05-SYORI           =   "2" )
       *        約束処方で期間変更があった時
                IF      (SPA-K05-SELNUM     =   ZERO  )  OR
                        (SPA-K05-NAI-YUKOSTYMD
@@ -6391,8 +6392,8 @@
       *****************************************************************
        4100223-INPUTSET-DEL-SEC        SECTION.
       *
-           IF      (SPA-GMN-SETCODE(1:1)   =   "S" ) AND
-                   (SPA-K05-SELNUM         >   ZERO )
+      *****IF      (SPA-GMN-SETCODE(1:1)   =   "S" ) AND
+           IF      (SPA-K05-SELNUM         >   ZERO )
                MOVE    SPA-K05-TYUKOSTYMD(SPA-K05-SELNUM)
                                            TO  WRK-YUKOSTYMD
                MOVE    SPA-K05-TYUKOEDYMD(SPA-K05-SELNUM)
