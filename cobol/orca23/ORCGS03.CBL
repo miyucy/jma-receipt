@@ -201,6 +201,7 @@
                    07  SPA-NAI-SMEITBL-OCC         OCCURS  50.
                        09  SPA-NAI-TNYKN-HOHO      PIC X(02).
                        09  SPA-NAI-TJOUTAIKBN      PIC X(1).
+                       09  SPA-NAI-TMEIJOUTAIKBN   PIC X(1).
                        09  SPA-NAI-TSYORIYMD       PIC X(08).
       *
       *    ¥Õ¥é¥°ÎÎ°è
@@ -1019,6 +1020,8 @@
                MOVE    SMEI-SKYMONEY       TO  SPA-GMN-TSKYMONEY (IDX1)
                MOVE    SMEI-NYUHEN-MONEY   TO  SPA-GMN-TNYUKIN (IDX1)
                MOVE    SMEI-JOUTAIKBN      TO  SPA-NAI-TJOUTAIKBN (IDX1)
+               MOVE    SMEI-MEISAIJOUTAIKBN TO SPA-NAI-TMEIJOUTAIKBN
+                                                                  (IDX1)
       *
                EVALUATE    SMEI-JOUTAIKBN
                WHEN    SPACE
@@ -1467,8 +1470,16 @@
                MOVE    WRK-Z9              TO  S03-TNYUKINMONEY(IDX0)
                MOVE    SPA-GMN-TSYORIYMD (IDX0)
                                            TO  S03-TSYORIYMD   (IDX0)
-               MOVE    SPA-GMN-TJOUTAI  (IDX0)
+               IF    ( SPA-NAI-TMEIJOUTAIKBN  (IDX0)   =   "1" )
+                   STRING  SPA-GMN-TJOUTAI  (IDX0)
+                                           DELIMITED   BY  SPACE
+                           "*"             DELIMITED   BY  SIZE
+                   INTO    S03-TJTI        (IDX0)
+                   END-STRING
+               ELSE
+                   MOVE    SPA-GMN-TJOUTAI  (IDX0)
                                            TO  S03-TJTI        (IDX0)
+               END-IF
                MOVE    SPA-GMN-TNYKN-HOHO(IDX0)
                                            TO  S03-TNYKN-NAME  (IDX0)
                IF    ( SPA-GMN-SMEILIST-SEL    =   IDX0 )
