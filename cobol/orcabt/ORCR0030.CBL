@@ -264,10 +264,13 @@
       *  03.01.03    NACL-門脇    06/07/10  在支援コメント自動記載対応
       *  03.02.01    NACL-門脇    06/08/10  高齢者上限額経過措置対応
       *  03.02.02    NACL-門脇    06/09/08  フイルムの単価編集修正
+      *
       *  03.03.01    NACL-門脇    06/09/26  岡山県地方公費一部負担金編集
       *  03.03.02    NACL-門脇    06/09/27  特記事項１６長２対応
       *  03.03.03    NACL-門脇    06/09/29  Ｈ１８年１０月改正に伴う一部
       *                                     負担金編集対応
+      *  03.03.04    NACL-藤原    06/09/29  検査の判断料の記載方法の変更
+      *                                     検査等実施判断の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2333,6 +2336,11 @@
                  IF    TNS-KNSJISGRPKBN = 1 OR 2 OR 3 OR 4 OR 5 OR 6
                   MOVE  TNS-KNSJISGRPKBN  TO    RECE04-KNSJISGRPKBN
                  END-IF
+               END-IF
+      *
+               IF    ( SRY-SRYKBN         =     "60" )
+               AND   ( TNS-KNSJISKBN      =     2    )
+                   MOVE    TNS-KNSJISKBN        TO  RECE04-KNSJISKBN
                END-IF
       *
                IF     SRY-SRYCD(IDX2)  IS  NUMERIC

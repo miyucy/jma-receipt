@@ -39,6 +39,9 @@
       *
       *  ２００６年４月改正対応
       *  02.09.01    NACL-藤原    06/04/20  検査等実施判断グループの追加
+      *
+      *  03.03.01    NACL-藤原    06/09/29  検査の判断料の記載方法の変更
+      *                                     検査等実施判断の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -309,6 +312,7 @@
            MOVE    RECE04-ZAIREQFLG    TO  RECE041-ZAIREQFLG
            MOVE    RECE04-TEIGENRATE   TO  RECE041-TEIGENRATE
            MOVE    RECE04-KNSJISGRPKBN TO  RECE041-KNSJISGRPKBN
+           MOVE    RECE04-KNSJISKBN    TO  RECE041-KNSJISKBN
            MOVE    RECE04-DAY-AREA     TO  RECE041-DAY-AREA
       *
            WRITE   RECE041-REC
