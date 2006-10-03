@@ -133,6 +133,11 @@
       *                                     病名の記載の修正
       *  03.02.03    NACL-藤原    06/09/04  公費レコードの負担金額の編集
       *                                     方法の修正
+      *  03.02.04    NACL-藤原    06/10/02  全角空白のみのコメントを出力
+      *                                     しないようにする
+      *
+      *  03.03.01    NACL-藤原    06/09/29  検査の判断料の記載方法の変更
+      *                                     検査等実施判断の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -967,6 +972,85 @@
          02  TBL-KENTAI-RECE64-MAX PIC 9(03).
          02  TBL-KENTAI-RECE65-MAX PIC 9(03).
       *
+      *    検査（判断料）用退避エリア
+       01  TBL-KENSA-RECE64-AREA.
+         02  TBL-KENSA-RECE64-REC  OCCURS  100.
+      *
+           COPY    "CPRCF0641.INC"  REPLACING  //RECE641//
+                                    BY          //TBL-KENSA-RECE64//.
+      *
+           03  TBL-KENSA-RECE65-REC        OCCURS  50.
+               05  TBL-KENSA-RECE65-SRYACTINF.
+      *            診療コード
+                   07  TBL-KENSA-RECE65-SRYCD           PIC  X(09).
+      *            診療種別区分
+                   07  TBL-KENSA-RECE65-SRYSYUKBN       PIC  X(03).
+      *            数量
+                   07  TBL-KENSA-RECE65-SRYSURYO      PIC  9(05)V9(03).
+      *            回数
+                   07  TBL-KENSA-RECE65-SRYKAISU        PIC  9(03).
+      *            単位コード
+                   07  TBL-KENSA-RECE65-TANICD          PIC  9(03).
+      *            単位名称有効桁数
+                   07  TBL-KENSA-RECE65-TANIMOJISU      PIC  9(01).
+      *            単位名称
+                   07  TBL-KENSA-RECE65-TANINAME        PIC  X(24).
+      *            点数識別区分
+                   07  TBL-KENSA-RECE65-TENSIKIBETU     PIC  9(01).
+      *            点数
+                   07  TBL-KENSA-RECE65-TEN            PIC 9(09)V9(02).
+      *            明細請求フラグ
+                   07  TBL-KENSA-RECE65-MEISKYFLG       PIC  X(01).
+      *            自動算定区分
+                   07  TBL-KENSA-RECE65-AUTOKBN         PIC  X(01).
+      *            名称入力番号
+                   07  TBL-KENSA-RECE65-INPUTNUM        PIC  9(03).
+      *            点数欄集計先識別
+                   07  TBL-KENSA-RECE65-TENTTLKBN       PIC  9(03).
+      *            データ区分
+                   07  TBL-KENSA-RECE65-DATAKBN         PIC  9(01).
+      *            包括対象検査
+                   07  TBL-KENSA-RECE65-HOUKNSKBN       PIC  9(02).
+      *            検査等実施判断
+                   07  TBL-KENSA-RECE65-KNSJISKBN       PIC  9(01).
+      *            検査等実施判断グループ
+                   07  TBL-KENSA-RECE65-KNSJISGRPKBN    PIC  9(02).
+      *            各種番号等
+                   07  TBL-KENSA-RECE65-CDKBNINF.
+                       09  TBL-KENSA-RECE65-CDKBN-KBN   PIC  X(01).
+                       09  TBL-KENSA-RECE65-CDKBN-SYO   PIC  9(01).
+                       09  TBL-KENSA-RECE65-CDKBN-BU    PIC  9(02).
+                       09  TBL-KENSA-RECE65-CDKBN-KBNNUM     PIC 9(03).
+                       09  TBL-KENSA-RECE65-CDKBN-KBNNUM-EDA PIC 9(02).
+                       09  TBL-KENSA-RECE65-CDKBN-KOUBAN     PIC 9(02).
+                       09  TBL-KENSA-RECE65-KOUHYOJYUNNUM    PIC 9(09).
+      *            告示等識別区分１
+                   07  TBL-KENSA-RECE65-KOKUJISKBKBN1   PIC  9(01).
+      *            きざみ値計算識別
+                   07  TBL-KENSA-RECE65-KZMCOMPSIKIBETU PIC  9(01).
+      *            注加算コード
+                   07  TBL-KENSA-RECE65-CHUKSNINF.
+      *                コード
+                       09  TBL-KENSA-RECE65-CHUKSNCD    PIC  X(04).
+      *                通番
+                       09  TBL-KENSA-RECE65-CHUKSNTUBAN PIC  X(01).
+      *            検体検査コメント
+                   07  TBL-KENSA-RECE65-KENTAICOMMENT   PIC  9(01).
+      *            入力コメント
+                   07  TBL-KENSA-RECE65-INPUTCOMENT     PIC  X(80). 
+      *        名称情報
+               05  TBL-KENSA-RECE65-NAMEINF.
+      *            漢字有効桁数
+                   07  TBL-KENSA-RECE65-YUKOKETA        PIC  9(02).
+      *            漢字名称
+                   07  TBL-KENSA-RECE65-NAME            PIC  X(200).
+      *
+           03  TBL-KENSA-SRYCD-MAX
+                                  PIC 9(02).
+      *
+         02  TBL-KENSA-RECE64-MAX PIC 9(03).
+         02  TBL-KENSA-RECE65-MAX PIC 9(03).
+      *
        01  WRK-CONS-AREA.
       *    日計表レコード記載の条件点数
            03  WRK-CONS-JYOKEN-TENSU   PIC 9(08)   VALUE   350000.
@@ -1518,6 +1602,7 @@
                                                    WRK-COM-FTNKBN
                    INITIALIZE                 TBL-KASAN-RECE64-AREA
                                               TBL-KENTAI-RECE64-AREA
+                                              TBL-KENSA-RECE64-AREA
       *
       *            実日数・合計点数等のＩＮＤＥＸ
                    MOVE    1                   TO  IDX1
@@ -2757,6 +2842,22 @@
                                                TBL-KENTAI-RECE64-AREA
                END-IF
       *
+      *        検査に判断料がある場合の検査の編集
+               IF    ( RECE641-SRYKBN      >   "60"     )
+               AND   ( TBL-KENSA-RECE64-MAX
+                                           >   0        )
+                   MOVE    RECE641-REC         TO  WRK-TAIHI-RECE641-REC
+                   MOVE    WRK-FTNKBN          TO  WRK-TAIHI-FTNKBN
+      *
+                   PERFORM 20078-KENSA-HANDANRYO-HENSYU-SEC
+      *
+                   MOVE    WRK-TAIHI-RECE641-REC
+                                               TO  RECE641-REC
+                   MOVE    WRK-TAIHI-FTNKBN    TO  WRK-FTNKBN
+      *
+                   INITIALIZE                  TBL-KENSA-RECE64-AREA
+               END-IF
+      *
       *        明細テーブル退避処理
                PERFORM 20071-ZAI-TAIHI-SEC
       *       摘要データ編集処理
@@ -2776,6 +2877,14 @@
       *
                INITIALIZE                  TBL-KASAN-RECE64-AREA
                                            TBL-KENTAI-RECE64-AREA
+           END-IF
+      *
+      *    検査に判断料がある場合の検査の編集
+           IF     ( TBL-KENSA-RECE64-MAX
+                                       >   0        )
+               PERFORM 20078-KENSA-HANDANRYO-HENSYU-SEC
+      *
+               INITIALIZE                  TBL-KENSA-RECE64-AREA
            END-IF
       *
       *    入退院履歴編集処理
@@ -3137,6 +3246,14 @@
            MOVE    ZERO                 TO  TBL-KENTAI-RECE65-MAX
                                             TBL-KASAN-RECE65-MAX 
       *
+      *    検査（判断料）の退避
+           IF     ( RECE641-KNSJISKBN   =   2 )
+               ADD     1               TO  TBL-KENSA-RECE64-MAX
+               MOVE    RECE641-REC     TO  TBL-KENSA-RECE64-REC
+                                           (TBL-KENSA-RECE64-MAX)
+           END-IF
+           MOVE    ZERO                 TO  TBL-KENSA-RECE65-MAX
+      *
            INITIALIZE                      RECE65-REC
            MOVE    RECE641-HOSPID       TO  RECE65-HOSPID
            MOVE    RECE641-SRYYM        TO  RECE65-SRYYM
@@ -3188,18 +3305,23 @@
                    EVALUATE    RECE65-SRYCD (IDX) (1:1)
                        WHEN    "0"
                        WHEN    "8"
-                           IF    ( RECE62-KENTAIKASANFLG   =   "1"  )
-                           AND   ( RECE641-KNSJISGRPKBN    >   ZERO )
-      *                        外来迅速検体検査加算がある場合の検査退避
-                               PERFORM 20012-KENSA-TAIHI-SEC
+      *                    検査（判断料）の場合の退避
+                           IF      RECE641-KNSJISKBN   =   2
+                               PERFORM 20013-KENSA-HANDANRYO-TAIHI-SEC
                            ELSE
-                               IF      RECE641-SRYKBN  =   "13"    OR 
-                                                           "14"    OR
-                                                           "70"
-                                   PERFORM
-                                       200711-SRYKBN13-COMMENT-TAIHI-SEC
+                               IF    ( RECE62-KENTAIKASANFLG   =   "1" )
+                               AND   ( RECE641-KNSJISGRPKBN    >   ZERO)
+      *                        外来迅速検体検査加算がある場合の検査退避
+                                   PERFORM 20012-KENSA-TAIHI-SEC
                                ELSE
-                                   PERFORM 200711-COMMENT-TAIHI-SEC
+                                   IF      RECE641-SRYKBN  =   "13"  OR 
+                                                               "14"  OR
+                                                               "70"
+                                       PERFORM
+                                       200711-SRYKBN13-COMMENT-TAIHI-SEC
+                                   ELSE
+                                       PERFORM 200711-COMMENT-TAIHI-SEC
+                                   END-IF
                                END-IF
                            END-IF
                        WHEN    "1"
@@ -3213,7 +3335,13 @@
       *                        外来迅速検体検査加算がある場合の検査退避
                                PERFORM 20012-KENSA-TAIHI-SEC
                            ELSE
-                               PERFORM 200711-KOUI-TAIHI-SEC
+      *                        検査（判断料）の場合の退避
+                               IF     ( RECE641-KNSJISKBN   =   2 )
+                                   PERFORM
+                                       20013-KENSA-HANDANRYO-TAIHI-SEC
+                               ELSE
+                                   PERFORM 200711-KOUI-TAIHI-SEC
+                               END-IF
                            END-IF
                        WHEN    "6"
                            PERFORM 200711-YKZ-TAIHI-SEC
@@ -3606,6 +3734,46 @@
            EXIT. 
       *
       *****************************************************************
+      *    検査（判断料）の場合の退避処理
+      *****************************************************************
+       20013-KENSA-HANDANRYO-TAIHI-SEC           SECTION.
+      *
+           ADD     1               TO  TBL-KENSA-RECE65-MAX
+           MOVE    RECE65-SRYACTINF (IDX)
+                                   TO  TBL-KENSA-RECE65-SRYACTINF
+                           (TBL-KENSA-RECE64-MAX TBL-KENSA-RECE65-MAX)
+           MOVE    RECE65-NAMEINF (IDX)
+                                   TO  TBL-KENSA-RECE65-NAMEINF
+                           (TBL-KENSA-RECE64-MAX TBL-KENSA-RECE65-MAX)
+           IF      RECE65-SRYCD (IDX) (1:1)  =   "1"
+               MOVE    TBL-KENSA-RECE65-MAX 
+                                       TO  TBL-KENSA-SRYCD-MAX
+                                                (TBL-KENSA-RECE64-MAX)
+           ELSE
+               IF      RECE65-SRYCD (IDX)   =   "810000001"
+                   CONTINUE
+               ELSE
+      *            部位／薬剤／ユーザーコメント
+                   IF      RECE65-SRYCD (IDX) (1:1)     =   "0"
+                       MOVE    "810000001"     TO  
+                                       TBL-KENSA-RECE65-SRYCD
+                           (TBL-KENSA-RECE64-MAX TBL-KENSA-RECE65-MAX)
+                   END-IF
+      *            コメント
+                   IF    ( RECE65-SRYCD (IDX) (1:1)     =   "8"   )
+                   OR    ( RECE65-SRYCD (IDX) (1:3)     =   "008" )
+                       MOVE    RECE65-INPUTCOMENT (IDX)     TO
+                                       TBL-KENSA-RECE65-NAME
+                           (TBL-KENSA-RECE64-MAX TBL-KENSA-RECE65-MAX)
+                   END-IF
+               END-IF
+           END-IF
+      *
+           .
+       20013-KENSA-HANDANRYO-TAIHI-EXT.
+           EXIT. 
+      *
+      *****************************************************************
       *    摘要データ（医薬品）退避処理
       *****************************************************************
        200711-YKZ-TAIHI-SEC          SECTION.
@@ -3900,6 +4068,39 @@
            END-PERFORM
            .
        20078-KENSA-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    検査に判断料がある場合の検査の編集処理
+      *****************************************************************
+       20078-KENSA-HANDANRYO-HENSYU-SEC      SECTION.
+      *
+           PERFORM VARYING IDZ3 FROM    1   BY  1
+                   UNTIL   IDZ3 >   TBL-KENSA-RECE64-MAX
+               IF      TBL-KENSA-RECE64-ZAIKAISU (IDZ3)
+                                           >   0
+      *            負担区分編集処理
+                   MOVE    TBL-KENSA-RECE64-REC (IDZ3)
+                                               TO  RECE641-REC
+                   PERFORM 20070-FTNKBN-HENSYU-SEC
+                   MOVE    "60"                TO  WRK-SRYKBN
+                   PERFORM VARYING IDZ4    FROM    1   BY  1
+                           UNTIL   IDZ4    >       50
+                           OR      TBL-KENSA-RECE65-REC  (IDZ3 IDZ4)
+                                                   =   SPACE
+                       MOVE    TBL-KENSA-SRYCD-MAX (IDZ3) 
+                                           TO  IDZ5
+                       INITIALIZE      WRK-RECE65-REC
+                       MOVE    TBL-KENSA-RECE65-SRYACTINF  (IDZ3 IDZ4)
+                                           TO  WRK-RECE65-SRYACTINF (1)
+                       MOVE    TBL-KENSA-RECE65-NAMEINF    (IDZ3 IDZ4)
+                                           TO  WRK-RECE65-NAMEINF   (1)
+                       PERFORM 200781-KENSA-HENSYU-SEC
+                   END-PERFORM
+               END-IF
+           END-PERFORM
+           .
+       20078-KENSA-HANDANRYO-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -5776,6 +5977,20 @@
            IF      SYS-2005-RECECOMKBN =   "1"
                GO  TO  20099-COMMENT-HENSYU-EXT
            END-IF
+      *
+      *    全角スペースのみのレコードは記載しない
+           MOVE    ZERO                TO  WRK-SJ-CHK
+           PERFORM VARYING IDX FROM    1   BY  2
+                   UNTIL   IDX >       2500
+                   OR      RECEDEN-RECEDATA(IDX:2) =   SPACE
+                   OR      WRK-SJ-CHK              =   1
+               IF      RECEDEN-RECEDATA(IDX:2) NOT =   "　"
+                   MOVE    1               TO  WRK-SJ-CHK
+               END-IF
+           END-PERFORM 
+           IF      WRK-SJ-CHK          =   ZERO
+               GO  TO  20099-COMMENT-HENSYU-EXT
+           END-IF   
       *
            MOVE    SPACE               TO  WRK-REC
            MOVE    ZERO                TO  WRK-REC-LENGTH
