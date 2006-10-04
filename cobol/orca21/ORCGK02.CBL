@@ -5350,6 +5350,15 @@
                                                           (SPA-GMN-IDX)
                    MOVE    "1"                 TO  SPA-COM-IN2
                                                            (SPA-GMN-IDX)
+      *            ø«Œ≈ºÔ Ã»ΩƒÍ
+                   IF     (SPA-GMN-INPUTCD(SPA-GMN-IDX)
+                                           =   SPA-MAE-INPUTCD
+                                                         (SPA-GMN-IDX))
+                     AND  (SPA-GMN-INPUTCD(SPA-GMN-IDX)(1:1)
+                                           =   "."          )
+                        MOVE    SPACE               TO  SPA-COM-IN2
+                                                          (SPA-GMN-IDX)
+                   END-IF
                    IF     (K02-INPUTCD (WRK-IDX2)  =   SPACE )  AND
                           (SPA-MAE-INPUTCD (SPA-GMN-IDX)
                                                    =   SPACE )  AND
