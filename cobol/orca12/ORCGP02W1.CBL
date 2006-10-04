@@ -188,6 +188,8 @@
            03  FLG-RJNKOHERR           PIC 9(01).
            03  FLG-KOH27               PIC 9(01).
       *
+           03  FLG-KANA                PIC 9(01).
+      *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
            03  CNT-ERR             PIC 9(06).
@@ -2257,6 +2259,7 @@
                MOVE    ZERO                TO  FLG-IN-KANANAME
            ELSE
                MOVE    1                   TO  FLG-IN-KANANAME
+               MOVE    ZERO                TO  SPA-NAI-KANAFLG
                MOVE    ZERO                TO  SPA-P02A-FLG1
                MOVE    ZERO                TO  SPA-P02A-FLG2
            END-IF
@@ -2885,6 +2888,34 @@
            END-IF
       *
            MOVE    SPA-GMN-KANANAME    TO  SPA-MAE-KANANAME
+      *    ¥«¥¿¥«¥Ê¤Î¤ß¤ÎÈ½Äê
+           MOVE    ZERO                TO  FLG-KANA
+           PERFORM VARYING     IDX     FROM    1   BY  2
+                   UNTIL      (IDX     >    100 )  OR
+                              (SPA-GMN-KANANAME(IDX:1) =  SPACE)
+               IF     (SPA-GMN-KANANAME (IDX:2)
+                                       =   "¡¡" 
+                                       OR  "¡¼" 
+                                       OR  "¡Ý"  )  OR
+                      (SPA-GMN-KANANAME (IDX:2)
+                                       >=  "¥¡"  AND
+                                       <=  "¥ö"   )  OR
+                      (SPA-GMN-KANANAME (IDX:2)
+                                       >=  "£°"  AND
+                                       <=  "£ú"   )
+                   CONTINUE
+               ELSE
+                   MOVE    1               TO  FLG-KANA
+               END-IF
+           END-PERFORM
+           IF      FLG-KANA            =   1
+               IF      SPA-NAI-KANAFLG     =   ZERO
+                   MOVE    "K101"              TO  SPA-ERRCD
+                   MOVE    1                   TO  SPA-GMN-CUR
+                   MOVE    1                   TO  SPA-NAI-KANAFLG
+                   GO      TO      4101-KANANAME-CHK-EXT
+               END-IF
+           END-IF
       *
       *    ´Á»ú»áÌ¾¸¡º÷½èÍý
            IF     (FLG-IN-KANANAME         =   1    )  AND
