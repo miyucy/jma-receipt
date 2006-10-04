@@ -369,6 +369,7 @@
       *            氏名変更有無
                    07  SPA-HZN-NAME            PIC X(50).
                    07  SPA-HEN-FLG             PIC 9(01).
+                   07  SPA-NAI-KANAFLG         PIC 9(01).
       *
                    07  SPA-OLD-NAME            PIC X(50).
                    07  SPA-OLD-KANANAME        PIC X(50).
