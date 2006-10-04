@@ -210,6 +210,10 @@
       *
       *  03.03.01    NACL-藤原    06/09/29  検査の判断料の記載方法の変更
       *                                     検査等実施判断の追加
+      *  03.03.02    NACL-藤原    06/10/03  酸素ボンベ併用時の補正率の記
+      *                                     載方法の修正
+      *  03.03.03    NACL-藤原    06/10/04  同日に複数の外来迅速検体検査
+      *                                     加算を算定したときの記載
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -547,6 +551,7 @@
            03  WRK-KOKUJISKBKBN1-KOUI-TEN
                                        PIC 9(09)V9(02). 
            03  WRK-RECE04-ZAIKAISU     PIC 9(04).    
+           03  WRK-KENSASU             PIC 9(04).    
       *    日付変換用
            03  WRK-SYMD                PIC X(08).
       *
@@ -1257,6 +1262,9 @@
       *    超音波内視鏡加算
            03  WRK-CONS-CHOONPA-KASAN
                                       PIC X(09)   VALUE   "160148670".
+      *
+      *    酸素補正率１．３（１気圧）
+           03  WRK-CONS-SANSO-HOSEI   PIC X(09)   VALUE   "770020070".
       *
       *    出力対象のコメント
            03  WRK-CONS-COMMENT-G.
@@ -3530,6 +3538,11 @@
                    GO  TO  200711-KIZAI-TAIHI-EXT
                END-IF
            END-IF
+      *
+      *    酸素補正率１．３（１気圧）のとき
+           IF     RECE05-SRYCD (IDX)    =   WRK-CONS-SANSO-HOSEI
+               GO  TO  200711-KIZAI-TAIHI-EXT
+           END-IF
       *                                   
            ADD     1                   TO  WRK-TBLMAX7
       *     
@@ -3572,16 +3585,33 @@
                        MOVE    WRK-TBLMAX7        TO  WRK-SRYCD72-MAX 
                    END-IF
                END-IF
+           END-IF
       *
-      *         INITIALIZE                  TNS-TENSU-REC
-      *         IF      RECE05-SRYCD (IDX)  =   "777770000"
-      *             MOVE    WRK-KIZAI-SRYCD     TO  TNS-SRYCD
-      *             PERFORM 900-TENSU-READ-SEC
-      *             IF      FLG-TENSU           =   ZERO
-      *                 MOVE    TNS-TANICD          TO
-      *                             TBL-ZAIW-TANICD (2 WRK-TBLMAX7)
-      *             END-IF
-      *         END-IF
+      *    酸素のとき補正率を編集
+           IF    ( RECE05-SRYCD (IDX)  =   WRK-CONS-SANSO1
+                                       OR  WRK-CONS-SANSO2
+                                       OR  WRK-CONS-SANSO3
+                                       OR  WRK-CONS-SANSO4
+                                       OR  WRK-CONS-SANSO5
+                                       OR  WRK-CONS-SANSO6
+                                       OR  WRK-CONS-SANSO7
+                                       OR  WRK-CONS-SANSO8 )
+               ADD     1                   TO  WRK-TBLMAX7
+      *     
+               IF      WRK-TBLMAX7         >   100
+                   MOVE    "*** ORCR0300 TABLE 100 OVER  ***"
+                                               TO  WRK-RECEERR
+                   PERFORM 500-ERR-HENSYU-SEC
+                   MOVE    1                   TO  FLG-END
+               ELSE
+                   MOVE    WRK-CONS-SANSO-HOSEI TO
+                                   TBL-ZAIW-SRYCD      (2 WRK-TBLMAX7)
+                   MOVE    1                   TO
+                                   TBL-ZAIW-SRYSURYO   (2 WRK-TBLMAX7)
+                   MOVE    2                  TO
+                                   TBL-ZAIW-DATSKB     (2 WRK-TBLMAX7)
+                   MOVE    WRK-TBLMAX7        TO  WRK-SRYCD72-MAX
+               END-IF
            END-IF
            .
        200711-KIZAI-TAIHI-EXT.
@@ -4396,9 +4426,11 @@
                        PERFORM 20070-FTNKBN-HENSYU-SEC
                        MOVE    "60"            TO  WRK-SRYKBN
       *
-      *                日毎の同じ項目数の外来迅速検体検査加算の回数をまとめる
-                       MOVE    TBL-KASAN-RECE04-KAISU (IDZ2 1 IDZ1)
-                                               TO  WRK-RECE04-ZAIKAISU
+      *                日毎の外来迅速検体検査加算の検査数をまとめる
+                       COMPUTE WRK-KENSASU     =
+                                   TBL-KASAN-RECE04-KAISU  (IDZ2 1 IDZ1)
+                               *   TBL-KASAN-RECE04-SYUTEN1(IDZ2)
+                       MOVE    WRK-KENSASU     TO  WRK-RECE04-ZAIKAISU
                        PERFORM VARYING IDZ6    FROM    IDZ2    BY  1
                                UNTIL   IDZ6    >   TBL-KASAN-RECE04-MAX
                            IF    ( TBL-KASAN-RECE04-KAISU (IDZ6 1 IDZ1)
@@ -4407,17 +4439,16 @@
                                                        =
                                      TBL-KASAN-RECE04-KOHBUNRI (IDZ6) )
                            AND   ( IDZ6                >   IDZ2       )    
-                               ADD   TBL-KASAN-RECE04-KAISU
-                                                   (IDZ6 1 IDZ1)
+                               COMPUTE WRK-KENSASU     =
+                                   TBL-KASAN-RECE04-KAISU  (IDZ6 1 IDZ1)
+                               *   TBL-KASAN-RECE04-SYUTEN1(IDZ6)
+                               ADD   WRK-KENSASU
                                                TO  WRK-RECE04-ZAIKAISU
                            END-IF
                        END-PERFORM
       *
                        PERFORM VARYING IDZ3 FROM    1   BY  1
                                UNTIL   IDZ3 >   TBL-KENTAI-RECE04-MAX
-      **                     IF    ( TBL-KENTAI-RECE04-KAISU (IDZ3 1 IDZ1)
-      **                                             =
-      **                             TBL-KASAN-RECE04-KAISU (IDZ2 1 IDZ1))
                            IF    ( TBL-KENTAI-RECE04-KAISU (IDZ3 1 IDZ1)
                                                    >   0               )
                            AND   ( TBL-KASAN-RECE04-KOHBUNRI (IDZ2)
@@ -4445,18 +4476,6 @@
                                    PERFORM 200781-KENSA-HENSYU-SEC
                                END-PERFORM
       *
-      **                         COMPUTE
-      **                             TBL-KENTAI-RECE04-KAISU (IDZ3 1 IDZ1)
-      **                                 =
-      **                             TBL-KENTAI-RECE04-KAISU (IDZ3 1 IDZ1)
-      **                                 -
-      **                             TBL-KASAN-RECE04-KAISU (IDZ2 1 IDZ1)
-      **                         COMPUTE
-      **                             TBL-KENTAI-RECE04-ZAIKAISU (IDZ3)
-      **                                 =
-      **                             TBL-KENTAI-RECE04-ZAIKAISU (IDZ3)
-      **                                 -
-      **                             TBL-KASAN-RECE04-KAISU (IDZ2 1 IDZ1)
                                COMPUTE
                                    TBL-KENTAI-RECE04-ZAIKAISU (IDZ3)
                                        =
@@ -4472,7 +4491,8 @@
                        MOVE    TBL-KASAN-RECE04-REC (IDZ2)
                                                TO  RECE041-REC
                        MOVE    WRK-RECE04-ZAIKAISU
-                                               TO  RECE041-ZAIKAISU
+                                               TO  RECE041-SYUTEN1
+                       MOVE    1               TO  RECE041-ZAIKAISU
                        MOVE    1               TO  IDZ4
                        MOVE    1               TO  IDZ5
                        INITIALIZE                  WRK-RECE05-REC
@@ -4480,6 +4500,8 @@
                                            TO  WRK-RECE05-SRYACTINF (1)
                        MOVE    TBL-KASAN-RECE05-NAMEINF   (IDZ2 1)
                                            TO  WRK-RECE05-NAMEINF   (1)
+                       MOVE    WRK-RECE04-ZAIKAISU
+                                           TO  WRK-RECE05-SRYSURYO  (1)
                        PERFORM 200781-KENSA-HENSYU-SEC
       *
       *                外来迅速検体検査加算と同剤のその他の入力

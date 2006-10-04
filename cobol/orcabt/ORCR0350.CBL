@@ -138,6 +138,10 @@
       *
       *  03.03.01    NACL-Æ£¸¶    06/09/29  ¸¡ºº¤ÎÈ½ÃÇÎÁ¤Îµ­ºÜÊýË¡¤ÎÊÑ¹¹
       *                                     ¸¡ººÅù¼Â»ÜÈ½ÃÇ¤ÎÄÉ²Ã
+      *  03.03.02    NACL-Æ£¸¶    06/10/03  »ÀÁÇ¥Ü¥ó¥ÙÊ»ÍÑ»þ¤ÎÊäÀµÎ¨¤Îµ­
+      *                                     ºÜÊýË¡¤Î½¤Àµ
+      *  03.03.03    NACL-Æ£¸¶    06/10/04  Æ±Æü¤ËÊ£¿ô¤Î³°Íè¿×Â®¸¡ÂÎ¸¡ºº
+      *                                     ²Ã»»¤ò»»Äê¤·¤¿¤È¤­¤Îµ­ºÜ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -473,6 +477,7 @@
            03  WRK-KOKUJISKBKBN1-KOUI-TEN
                                        PIC 9(09)V9(02).     
            03  WRK-RECE64-ZAIKAISU     PIC 9(04).    
+           03  WRK-KENSASU             PIC 9(04).    
       *    ÆüÉÕÊÑ´¹ÍÑ
            03  WRK-SYMD                PIC X(08).
       *
@@ -1192,6 +1197,9 @@
       *    Ä¶²»ÇÈÆâ»ë¶À²Ã»»
            03  WRK-CONS-CHOONPA-KASAN
                                       PIC X(09)   VALUE   "160148670".
+      *
+      *    »ÀÁÇÊäÀµÎ¨£±¡¥£³¡Ê£±µ¤°µ¡Ë
+           03  WRK-CONS-SANSO-HOSEI   PIC X(09)   VALUE   "770020070".
       *
       *    ½ÐÎÏÂÐ¾Ý¤Î¥³¥á¥ó¥È
            03  WRK-CONS-COMMENT-G.
@@ -3831,6 +3839,11 @@
            AND   ( RECE641-KIZAITEN    =   ZERO )
                GO  TO  200711-KIZAI-TAIHI-EXT
            END-IF
+      *
+      *    »ÀÁÇÊäÀµÎ¨£±¡¥£³¡Ê£±µ¤°µ¡Ë¤Î¤È¤­
+           IF     RECE65-SRYCD (IDX)    =   WRK-CONS-SANSO-HOSEI
+               GO  TO  200711-KIZAI-TAIHI-EXT
+           END-IF
       *                                   
            ADD     1                   TO  WRK-TBLMAX7
       *     
@@ -3873,16 +3886,33 @@
                        MOVE    WRK-TBLMAX7        TO  WRK-SRYCD72-MAX 
                    END-IF
                END-IF
+           END-IF
       *
-      *         INITIALIZE                  TNS-TENSU-REC
-      *         IF      RECE65-SRYCD (IDX)  =   "777770000"
-      *             MOVE    WRK-KIZAI-SRYCD     TO  TNS-SRYCD
-      *             PERFORM 900-TENSU-READ-SEC
-      *             IF      FLG-TENSU           =   ZERO
-      *                 MOVE    TNS-TANICD          TO
-      *                                 TBL-ZAIW-TANICD (2 WRK-TBLMAX7)
-      *             END-IF
-      *         END-IF
+      *    »ÀÁÇ¤Î¤È¤­ÊäÀµÎ¨¤òÊÔ½¸
+           IF    ( RECE65-SRYCD (IDX)  =   WRK-CONS-SANSO1
+                                       OR  WRK-CONS-SANSO2
+                                       OR  WRK-CONS-SANSO3
+                                       OR  WRK-CONS-SANSO4
+                                       OR  WRK-CONS-SANSO5
+                                       OR  WRK-CONS-SANSO6
+                                       OR  WRK-CONS-SANSO7
+                                       OR  WRK-CONS-SANSO8 )
+               ADD     1                   TO  WRK-TBLMAX7
+      *     
+               IF      WRK-TBLMAX7         >   100
+                   MOVE    "*** ORCR0350 TABLE 100 OVER  ***"
+                                               TO  WRK-RECEERR
+                   PERFORM 500-ERR-HENSYU-SEC
+                   MOVE    1                   TO  FLG-END
+               ELSE
+                   MOVE    WRK-CONS-SANSO-HOSEI TO
+                                   TBL-ZAIW-SRYCD      (2 WRK-TBLMAX7)
+                   MOVE    1                   TO
+                                   TBL-ZAIW-SRYSURYO   (2 WRK-TBLMAX7)
+                   MOVE    2                  TO
+                                   TBL-ZAIW-DATSKB     (2 WRK-TBLMAX7)
+                   MOVE    WRK-TBLMAX7        TO  WRK-SRYCD72-MAX
+               END-IF
            END-IF
            .
        200711-KIZAI-TAIHI-EXT.
@@ -3907,8 +3937,10 @@
                        MOVE    "60"                TO  WRK-SRYKBN
       *
       *                ÆüËè¤ÎÆ±¤¸¹àÌÜ¿ô¤Î³°Íè¿×Â®¸¡ÂÎ¸¡ºº²Ã»»¤Î²ó¿ô¤ò¤Þ¤È¤á¤ë
-                       MOVE    TBL-KASAN-RECE64-KAISU (IDZ2 1 IDZ1)
-                                               TO  WRK-RECE64-ZAIKAISU
+                       COMPUTE WRK-KENSASU     =
+                                   TBL-KASAN-RECE64-KAISU  (IDZ2 1 IDZ1)
+                               *   TBL-KASAN-RECE64-SYUTEN1(IDZ2)
+                       MOVE    WRK-KENSASU     TO  WRK-RECE64-ZAIKAISU
                        PERFORM VARYING IDZ6    FROM    IDZ2    BY  1
                                UNTIL   IDZ6    >   TBL-KASAN-RECE64-MAX
                            IF    ( TBL-KASAN-RECE64-KAISU (IDZ6 1 IDZ1)
@@ -3917,8 +3949,10 @@
                                                        =
                                      TBL-KASAN-RECE64-KOHBUNRI (IDZ6) )
                            AND   ( IDZ6                >   IDZ2       )    
-                               ADD   TBL-KASAN-RECE64-KAISU
-                                                       (IDZ6 1 IDZ1)
+                               COMPUTE WRK-KENSASU     =
+                                   TBL-KASAN-RECE64-KAISU  (IDZ6 1 IDZ1)
+                               *   TBL-KASAN-RECE64-SYUTEN1(IDZ6)
+                               ADD   WRK-KENSASU
                                                TO  WRK-RECE64-ZAIKAISU
                            END-IF
                        END-PERFORM
@@ -3956,18 +3990,6 @@
                                    PERFORM 200781-KENSA-HENSYU-SEC
                                END-PERFORM
       *
-      **                         COMPUTE
-      **                             TBL-KENTAI-RECE64-KAISU (IDZ3 1 IDZ1)
-      **                                 =
-      **                             TBL-KENTAI-RECE64-KAISU (IDZ3 1 IDZ1)
-      **                                 -
-      **                             TBL-KASAN-RECE64-KAISU (IDZ2 1 IDZ1)
-      **                         COMPUTE
-      **                             TBL-KENTAI-RECE64-ZAIKAISU (IDZ3)
-      **                                 =
-      **                             TBL-KENTAI-RECE64-ZAIKAISU (IDZ3)
-      **                                 -
-      **                             TBL-KASAN-RECE64-KAISU (IDZ2 1 IDZ1)
                                COMPUTE
                                    TBL-KENTAI-RECE64-ZAIKAISU (IDZ3)
                                        =
@@ -3983,7 +4005,8 @@
                        MOVE    TBL-KASAN-RECE64-REC (IDZ2)
                                                TO  RECE641-REC
                        MOVE    WRK-RECE64-ZAIKAISU
-                                               TO  RECE641-ZAIKAISU
+                                               TO  RECE641-SYUTEN1
+                       MOVE    1               TO  RECE641-ZAIKAISU
                        MOVE    1               TO  IDZ4
                        MOVE    1               TO  IDZ5
                        INITIALIZE                  WRK-RECE65-REC
@@ -3991,6 +4014,8 @@
                                            TO  WRK-RECE65-SRYACTINF (1)
                        MOVE    TBL-KASAN-RECE65-NAMEINF   (IDZ2 1)
                                            TO  WRK-RECE65-NAMEINF   (1)
+                       MOVE    WRK-RECE64-ZAIKAISU
+                                           TO  WRK-RECE65-SRYSURYO  (1)
                        PERFORM 200781-KENSA-HENSYU-SEC
       *
       *                ³°Íè¿×Â®¸¡ÂÎ¸¡ºº²Ã»»¤ÈÆ±ºÞ¤Î¤½¤ÎÂ¾¤ÎÆþÎÏ
