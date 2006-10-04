@@ -256,6 +256,11 @@
                      "´ã²Ê³ØÅª¸¡ºº".
            03  FILLER              PIC X(20)   VALUE
                      "´ã²Ê³ØÅª¸¡ºº".
+           03  FILLER              PIC X(02)   VALUE   "23".
+           03  FILLER              PIC X(40)   VALUE
+                     "ÈéÉæ²Ê³ØÅª¸¡ºº".
+           03  FILLER              PIC X(20)   VALUE
+                     "ÈéÉæ²Ê³ØÅª¸¡ºº".
            03  FILLER              PIC X(02)   VALUE   "18".
            03  FILLER              PIC X(40)   VALUE
                      "Î×¾²¿´Íý¿À·Ð¿´Íý¸¡ºº".
@@ -290,7 +295,7 @@
            03  FILLER              PIC X(40)   VALUE   "¤½¤ÎÂ¾¤Î¸¡ºº".
            03  FILLER              PIC X(20)   VALUE   "¤½¤ÎÂ¾¤Î¸¡ºº".
        01  WRK-TBL-GRP-R           REDEFINES   WRK-TBL-GRP.
-           03  TBL-GRP-OCC         OCCURS  24  INDEXED  BY  TBL-IDX.
+           03  TBL-GRP-OCC         OCCURS  25  INDEXED  BY  TBL-IDX.
                05  TBL-GRP-KBN     PIC X(02).
                05  TBL-GRP-MEI     PIC X(40).
                05  TBL-GRP-RMEI    PIC X(20).
@@ -2735,7 +2740,7 @@
            MOVE    SPACE               TO  SPA-Z98-GMN-INPUT
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   24
+                   UNTIL       IDX     >   25
       *
                SET     TBL-IDX                 TO  IDX
                MOVE    TBL-GRP-KBN (TBL-IDX)   TO  SPA-Z98-GMN-NO-X
