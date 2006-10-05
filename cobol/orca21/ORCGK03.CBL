@@ -1031,11 +1031,13 @@
            MOVE    ZERO                TO  SPA-NAI-NYUKINFLG
            MOVE    ZERO                TO  SPA-NAI-HENFLG
       *
+      *    科合計の入金額を編集する
+           PERFORM 310515-KAGOK-NYUKIN-SEC
       *    合計入金額算処理
            PERFORM 3103-NYUKIN-KEI-SEC
       *
       *    対象の保険の収納
-           PERFORM  3100-SYUNOU-HEN-SEC
+           PERFORM 3100-SYUNOU-HEN-SEC
            IF      (SPA-SYUNOU-IDX     =   ZERO )  AND
                    (FLG-FUKU           =   ZERO )
       *        対象が無い時
@@ -1378,7 +1380,6 @@
        31091-SYUTTL-MAE-SEC             SECTION.
       *
       *    複数科まとめ集計
-      *****IF      SPA-KAGRPFLG        =   "0"
            INITIALIZE                  SYUTTL-REC
            MOVE    SYU-HOSPID          TO  SYUTTL-HOSPID 
            MOVE    SYU-NYUGAIKBN       TO  SYUTTL-NYUGAIKBN 
@@ -2137,10 +2138,10 @@
            COMPUTE SPA-GMN-SEIKYU      =  (SPA-NAI-SEIKYU
                                        +   SPA-GMN-CHOSEI )
                                        -   SPA-OLD-SEIKYU
-      *    今回入金
-           IF      SPA-GMN-SEIKYU      <   ZERO
-               MOVE    ZERO            TO  SPA-GMN-NYUKIN
-           END-IF
+      *?   今回入金
+      *    IF      SPA-GMN-SEIKYU      <   ZERO
+      *        MOVE    ZERO            TO  SPA-GMN-NYUKIN
+      *?   END-IF
       *
       *    返金額入力可
            MOVE    ZERO                TO  SPA-NAI-HENFLG
@@ -3072,6 +3073,9 @@
       *        複数科表示
                WHEN    "CLICKED"       ALSO    "B06"
                     PERFORM 490-FUKU-SRYKA-SEC
+      *        返金
+               WHEN    "CLICKED"       ALSO    "B08"
+                    PERFORM 408-HENKIN-SYORI-SEC
            END-EVALUATE
           .
       *
@@ -3512,7 +3516,14 @@
            ELSE
                IF      FLG-JYOTAI        =   1
       *            入金額へ
-                   MOVE    1                 TO  SPA-GMN-CUR
+                   IF    ((SPA-GMN-SRYKA       NOT =   ZERO ) AND
+                          (SPA-GMN-HKNCOMBI    NOT =   ZERO )) OR
+                         ( SPA-NAI-NYUKINFLG   =   1    )
+                       IF     (SPA-NAI-FLG         =   ZERO )  AND
+                              (SPA-IDX-KOUI        >   ZERO )
+                          MOVE    1                 TO  SPA-GMN-CUR
+                       END-IF
+                   END-IF
                END-IF
            END-IF
            .
@@ -4549,6 +4560,49 @@
       *
            .
        49011-FUKU-SRYKA-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    一括返金処理
+      *****************************************************************
+       408-HENKIN-SYORI-SEC             SECTION.
+      *
+           IF      SPA-SYORIFLG        =   ZERO
+               IF      SPA-NAI-HENFLG      =   1
+      *            超過額を返金へ
+                   MOVE    SPA-GMN-CHOKAKIN    TO  SPA-GMN-HENKIN-X
+      *            基本チェックと画面処理
+                   PERFORM 4102-KIHON-CHK-SEC
+               END-IF
+           ELSE
+               PERFORM 4081-TEI-HENKIN-SYORI-SEC
+           END-IF
+           .
+       408-HENKIN-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    訂正返金処理
+      *****************************************************************
+       4081-TEI-HENKIN-SYORI-SEC             SECTION.
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-SYUNOU-MAX
+               MOVE    SPA-SYUNOU-REC (IDX)    TO  SYUNOU-REC
+               IF      SYU-SRYKA       NOT =   ZERO
+                   COMPUTE WRK-HENKIN  =   SPA-TEIKEI-SKYMONEY (IDX)
+                                       +   SYU-CHOSEI
+                                       -   SPA-MAE-SKYMONEY(IDX)
+                   IF      WRK-HENKIN      <   ZERO
+                       COMPUTE SPA-SYU-HENKIN (IDX)
+                                           =   WRK-HENKIN   *  -1
+                   END-IF
+               END-IF
+           END-PERFORM
+      *    対象の保険の収納編集処理
+           PERFORM 3102-SYUNOU-HEN-SEC
+           .
+       4081-TEI-HENKIN-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
