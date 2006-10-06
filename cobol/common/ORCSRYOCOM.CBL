@@ -330,6 +330,9 @@
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 910-NYUINACT-SELECT-SEC
            IF      FLG-NYUINACT        =   ZERO
+               MOVE    "tbl_nyuinact"  TO  MCP-TABLE
+               MOVE    "key2"          TO  MCP-PATHNAME
+               PERFORM 910-NYUINACT-READ-SEC
                PERFORM   VARYING  IDX   FROM   1   BY  1
                  UNTIL  (IDX      >     26)
                    IF   NSRY-SRYCD(1)   =    CONS-RYOYO-SRYCD(IDX)
@@ -393,6 +396,7 @@
            PERFORM   VARYING   IDX   FROM  1  BY  1
              UNTIL   IDX    >   31
                IF   LNK-RYOCOM-NYUINKBN(IDX)  =  "1"
+                  MOVE   "840000103"   TO   LNK-RYOCOM-ADL-SRYCD(IDX)
                   IF   LNK-RYOCOM-ADL-TEN(IDX)   =  ZERO
                       MOVE  "£°£°"     TO
                                        LNK-RYOCOM-ADL-TEN-MOJI(IDX)
