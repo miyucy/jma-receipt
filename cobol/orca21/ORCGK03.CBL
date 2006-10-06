@@ -2167,11 +2167,6 @@
                       (SPA-GMN-SRYKA   NOT =   ZERO )  AND
                       (SPA-GMN-HKNCOMBI    NOT =   ZERO )
       *            前回入金が未収の時
-      *TEST
-              DISPLAY "SPA-OLD-SEIKYU:" SPA-OLD-SEIKYU
-                 ",SPA-NAI-CHOSEI:" SPA-NAI-CHOSEI
-                 ",SPA-NAI-NYUKIN:" SPA-NAI-NYUKIN
-      *TEST
                    IF     (SPA-OLD-SEIKYU  +   SPA-NAI-CHOSEI)
                                                <=  SPA-NAI-NYUKIN
                        MOVE    1               TO  SPA-NAI-HENFLG
@@ -3776,8 +3771,11 @@
                    MOVE    1                   TO  SPA-GMN-CUR
                END-IF
            ELSE
-               IF      LNK-SCNYUKIN-FURIWAKEZAN    >  WRK-SEIKYU
-      *            今回請求額＜入金振り分け残額はエラー
+      *?       IF      LNK-SCNYUKIN-FURIWAKEZAN    >  WRK-SEIKYU
+               IF     (LNK-SCNYUKIN-FURIWAKEZAN
+                                       +   LNK-SCNYUKIN-HENKINZAN)
+                                               >  WRK-SEIKYU
+      *            今回請求額＜入金振り分け残額+返金振り分け残額はエラー
                    MOVE    "0014"              TO  SPA-ERRCD
                    MOVE    1                   TO  SPA-GMN-CUR
                END-IF
@@ -4617,12 +4615,6 @@
                                        +   SYU-CHOSEI
                                        -   SPA-MAE-SKYMONEY(IDX)
       *            前回入金額判定
-      *TEST
-              DISPLAY "WRK-HENKIN :" WRK-HENKIN 
-               ",SYU-SKYMONEY:" SPA-MAE-SKYMONEY (IDX)
-               ",SYU-CHOSEI:" SPA-TMAE-CHOSEI (IDX)
-               ",SYU-NYUKIN-TOTALY:" SPA-MAE-NYUKIN-TOTAL (IDX)
-      *TEST
                    IF     (SPA-MAE-SKYMONEY (IDX)
                                    +  SPA-TMAE-CHOSEI (IDX))
                                            <=  SPA-MAE-NYUKIN-TOTAL(IDX)
