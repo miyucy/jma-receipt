@@ -397,7 +397,8 @@
                       MOVE  "£°£°"     TO
                                        LNK-RYOCOM-ADL-TEN-MOJI(IDX)
                   ELSE
-                      MOVE  TBL-ADLTEN(LNK-RYOCOM-ADL-TEN)
+                      MOVE  LNK-RYOCOM-ADL-TEN(IDX)   TO  IDX1
+                      MOVE  TBL-ADLTEN(IDX1)
                                    TO  LNK-RYOCOM-ADL-TEN-MOJI(IDX)
                   END-IF
                END-IF
