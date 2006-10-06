@@ -45,6 +45,7 @@
       * 02.02.03     NACL-森脇     06/08/29  薬剤情報文字数チェック追加
       * 02.02.04     NACL-森脇     06/09/21  参照処理前スパセット
       * 02.02.05     NACL-森脇     06/09/29  登録後内容スパクリア
+      * 02.02.06     NACL-森脇     06/10/06  薬剤名クリア処理修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1518,7 +1519,14 @@
            MOVE    SPA-NAI-SRYCD   TO  YAKUJYO-SRYCD
            MOVE    1               TO  YAKUJYO-TEKNUM
       *
-           MOVE    SPA-GMN-NAME        TO  YAKUJYO-NAME
+      *----(02.02.06)--UPD-START---
+           IF     ( SPA-GMN-NAME   =   SPACE )
+               OR ( SPA-GMN-NAME   =   SPA-GMN-KENNAME )
+               MOVE    SPACE           TO  YAKUJYO-NAME
+           ELSE
+               MOVE    SPA-GMN-NAME    TO  YAKUJYO-NAME
+           END-IF
+      *----(02.02.06)--UPD-END-----
            MOVE    SPA-GMN-EFFECT      TO  YAKUJYO-EFFECT
            MOVE    SPA-GMN-CAUTION     TO  YAKUJYO-CAUTION
            MOVE    SPA-GMN-PHOTO       TO  YAKUJYO-PHOTO
@@ -2193,7 +2201,13 @@
            PERFORM 900-YAKUJYO-READ-SEC
       *
       *    薬剤情報セット
-           MOVE    YAKUJYO-NAME        TO  SPA-GMN-NAME
+      *----(02.02.06)--UPD-START---
+           IF      YAKUJYO-NAME    =   SPACE
+               MOVE    SPA-GMN-KENNAME     TO  SPA-GMN-NAME
+           ELSE
+               MOVE    YAKUJYO-NAME        TO  SPA-GMN-NAME
+           END-IF
+      *----(02.02.06)--UPD-END-----
            MOVE    YAKUJYO-EFFECT      TO  SPA-GMN-EFFECT
            MOVE    YAKUJYO-CAUTION     TO  SPA-GMN-CAUTION
            MOVE    YAKUJYO-PHOTO       TO  SPA-GMN-PHOTO
