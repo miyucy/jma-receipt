@@ -272,3 +272,5 @@
               03  K03-JYOGENMSG.
                 04  K03-JYOGENMSG-STYLE   PIC X(20).
                 04  K03-JYOGENMSG-VALUE   PIC X(30).
+              03  K03-TEISEIMSG.
+                04  K03-VALUE   PIC X(30).

@@ -1487,6 +1487,7 @@
       *    MOVE    ZERO                TO  SPA-GOK-NYUKIN
            MOVE    ZERO                TO  SPA-OLD-SEIKYU
            MOVE    ZERO                TO  SPA-NAI-SEIKYU
+           MOVE    ZERO                TO  SPA-NAI-NYUKIN
            MOVE    ZERO                TO  SPA-NAI-CHOSEI
            MOVE    ZERO                TO  SPA-NAI-SKYMONEY-TAX-SAI
            MOVE    ZERO                TO  SPA-NAI-HENKIN
@@ -1525,6 +1526,9 @@
                                            TO  SPA-NAI-CHOSEI
                ADD     SPA-MAE-SKYMONEY(SPA-SYUNOU-IDX)
                                            TO  SPA-OLD-SEIKYU
+      *        Æþ¶âº¹³Û
+               ADD     SPA-MAE-NYUKIN-TOTAL(SPA-SYUNOU-IDX)
+                                           TO  SPA-NAI-NYUKIN
       *        ÊÖ¶â³Û
                ADD     SPA-SYU-HENKIN  (SPA-SYUNOU-IDX)
                                            TO  SPA-NAI-HENKIN
@@ -1596,6 +1600,8 @@
                                            TO  SPA-NAI-CHOSEI
                            ADD     SPA-MAE-SKYMONEY(IDX)
                                            TO  SPA-OLD-SEIKYU
+                           ADD     SPA-MAE-NYUKIN-TOTAL(IDX)
+                                           TO  SPA-NAI-NYUKIN
       *                    ÊÖ¶â³Û
                            ADD     SPA-SYU-HENKIN  (IDX)
                                            TO  SPA-NAI-HENKIN
@@ -1678,6 +1684,8 @@
                                            TO  SPA-NAI-CHOSEI
                ADD     SPA-MAE-SKYMONEY(IDX)
                                            TO  SPA-OLD-SEIKYU
+               ADD     SPA-MAE-NYUKIN-TOTAL(IDX)
+                                           TO  SPA-NAI-NYUKIN
       *        ÊÖ¶â³Û
                ADD     SPA-SYU-HENKIN (IDX)
                                            TO  SPA-NAI-HENKIN
@@ -2144,6 +2152,7 @@
       *?   END-IF
       *
       *    ÊÖ¶â³ÛÆþÎÏ²Ä
+           MOVE    SPACE               TO  SPA-GMN-TEISEIMSG
            MOVE    ZERO                TO  SPA-NAI-HENFLG
            IF      SPA-SYORIFLG        =   ZERO
                IF     (SPA-GMN-SRYKA       =   SPA-GOK-SRYKA ) AND
@@ -2157,7 +2166,19 @@
                       (SPA-IDX-KOUI        >   ZERO )  AND
                       (SPA-GMN-SRYKA   NOT =   ZERO )  AND
                       (SPA-GMN-HKNCOMBI    NOT =   ZERO )
-                   MOVE    1               TO  SPA-NAI-HENFLG
+      *            Á°²óÆþ¶â¤¬Ì¤¼ý¤Î»þ
+      *TEST
+              DISPLAY "SPA-OLD-SEIKYU:" SPA-OLD-SEIKYU
+                 ",SPA-NAI-CHOSEI:" SPA-NAI-CHOSEI
+                 ",SPA-NAI-NYUKIN:" SPA-NAI-NYUKIN
+      *TEST
+                   IF     (SPA-OLD-SEIKYU  +   SPA-NAI-CHOSEI)
+                                               <=  SPA-NAI-NYUKIN
+                       MOVE    1               TO  SPA-NAI-HENFLG
+                   ELSE
+                       MOVE    "¡ã¼ýÇ¼¤¬Ì¤¼ý¤Ç¤¹¡ä"
+                                               TO  SPA-GMN-TEISEIMSG
+                   END-IF
                END-IF
            END-IF
            .
@@ -2726,6 +2747,8 @@
                MOVE    "red"               TO  K03-NYUMISYU-STYLE
                MOVE    SPA-GMN-NYUMISYU    TO  K03-NYUMISYU-VALUE
            END-IF
+      *
+           MOVE    SPA-GMN-TEISEIMSG       TO  K03-TEISEIMSG
       *
       *    ÂÐ¾Ý¤Ê¤·¤Î¾ì¹ç
            IF      SPA-NAI-FLG         =   1
@@ -4593,9 +4616,20 @@
                    COMPUTE WRK-HENKIN  =   SPA-TEIKEI-SKYMONEY (IDX)
                                        +   SYU-CHOSEI
                                        -   SPA-MAE-SKYMONEY(IDX)
-                   IF      WRK-HENKIN      <   ZERO
-                       COMPUTE SPA-SYU-HENKIN (IDX)
+      *            Á°²óÆþ¶â³ÛÈ½Äê
+      *TEST
+              DISPLAY "WRK-HENKIN :" WRK-HENKIN 
+               ",SYU-SKYMONEY:" SPA-MAE-SKYMONEY (IDX)
+               ",SYU-CHOSEI:" SPA-TMAE-CHOSEI (IDX)
+               ",SYU-NYUKIN-TOTALY:" SPA-MAE-NYUKIN-TOTAL (IDX)
+      *TEST
+                   IF     (SPA-MAE-SKYMONEY (IDX)
+                                   +  SPA-TMAE-CHOSEI (IDX))
+                                           <=  SPA-MAE-NYUKIN-TOTAL(IDX)
+                       IF      WRK-HENKIN      <   ZERO
+                           COMPUTE SPA-SYU-HENKIN (IDX)
                                            =   WRK-HENKIN   *  -1
+                       END-IF
                    END-IF
                END-IF
            END-PERFORM

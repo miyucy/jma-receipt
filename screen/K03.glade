@@ -3102,22 +3102,6 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>JYOGENMSG</name>
-      <x>604</x>
-      <y>488</y>
-      <width>200</width>
-      <height>24</height>
-      <label></label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>KIGO</name>
       <x>880</x>
       <y>460</y>
@@ -3174,6 +3158,38 @@
       <label>前回までの過入金額</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>JYOGENMSG</name>
+      <x>604</x>
+      <y>488</y>
+      <width>200</width>
+      <height>24</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>TEISEIMSG</name>
+      <x>604</x>
+      <y>456</y>
+      <width>200</width>
+      <height>24</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
       <xalign>0.5</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>

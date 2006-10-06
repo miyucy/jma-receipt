@@ -1068,9 +1068,14 @@
                END-IF
       *         ÷∂‚»ø±«
                IF      ORCSCGAIRAI-SYU-HENKIN (IDH-GAI) <  ZERO
-                   COMPUTE SYU-NYUKIN-TOTAL  =   SYU-NYUKIN-TOTAL
+                   IF     (ORCSCGAIRAI-SYU-HENKIN (IDH-GAI) * -1)
+                                             <=  SYU-NYUKIN-TOTAL
+                       COMPUTE SYU-NYUKIN-TOTAL  =   SYU-NYUKIN-TOTAL
                                              +   ORCSCGAIRAI-SYU-HENKIN
                                                        (IDH-GAI)
+                   ELSE
+                       MOVE    ZERO          TO  SYU-NYUKIN-TOTAL
+                   END-IF
                END-IF
       *        ≈¡…ºæı¬÷∂Ë ¨
                IF      SYU-DENPJTIKBN  NOT =   "7"

@@ -219,6 +219,9 @@
                    07  SPA-NAI-HENKIN            PIC S9(07).
                    07  SPA-NAI-HENKBN            PIC X(01).
       *
+                   07  SPA-NAI-NYUKIN            PIC S9(07).
+                   07  SPA-GMN-TEISEIMSG         PIC X(50).
+      *
                    07  SPA-MAE-NYUKINKBN         PIC X(01).
                    07  SPA-MAE-CHOSEI            PIC S9(07).
                    07  SPA-MAE-NYUKIN            PIC S9(07).
