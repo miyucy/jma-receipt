@@ -264,6 +264,7 @@
                PERFORM 910-NYUINACCT-READ-SEC
                IF   FLG-NYUINACCT          NOT =   ZERO
                     MOVE    3              TO  LNK-RYOCOM-RC
+               END-IF
            END-IF
       *
       *    入院会計クローズ
@@ -292,7 +293,7 @@
                         MOVE    4              TO  LNK-RYOCOM-RC
                    ELSE
                         PERFORM   UNTIL  FLG-NYUINACCT    =   1
-                            PERFORM   100-PRM-RYOYO-NYUIN-CHK
+                            PERFORM   100-PRM-RYOYO-NYUINCHK-SEC
                             MOVE    "tbl_nyuinacct"   TO  MCP-TABLE
                             MOVE    "key17"           TO  MCP-PATHNAME
                             PERFORM 910-NYUINACCT-READ-SEC
@@ -316,7 +317,7 @@
       *****************************************************************
       *    療養病棟（病床）での入院チェック
       *****************************************************************
-       100-PRM-RYOYO-NYUIN-SEC          SECTION.
+       100-PRM-RYOYO-NYUINCHK-SEC          SECTION.
       *
            INITIALIZE                      NYUINACT-REC
            MOVE    NACCT-HOSPID        TO  NSRY-HOSPID
@@ -345,10 +346,10 @@
       *
            MOVE    "tbl_nyuinact"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 900-TBL-CLOSE-SEC
+           PERFORM 910-DB-CLOSE-SEC
       *
            .
-       100-PRM-RYOYO-NYUIN-EXT.
+       100-PRM-RYOYO-NYUINCHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -392,7 +393,7 @@
            PERFORM   VARYING   IDX   FROM  1  BY  1
              UNTIL   IDX    >   31
                IF   LNK-RYOCOM-NYUINKBN(IDX)  =  "1"
-                  IF   TBL-ADLTEN(LNK-RYOCOM-ADL-TEN)  =  ZERO
+                  IF   LNK-RYOCOM-ADL-TEN(IDX)   =  ZERO
                       MOVE  "００"     TO
                                        LNK-RYOCOM-ADL-TEN-MOJI(IDX)
                   ELSE
