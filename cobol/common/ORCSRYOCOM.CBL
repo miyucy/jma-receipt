@@ -370,13 +370,15 @@
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 910-RYOUYOCOM-SELECT-SEC
            IF      FLG-RYOUYOCOM       NOT =   ZERO
-               MOVE    5               TO  LNK-RYOCOM-RC
+      *         MOVE    5               TO  LNK-RYOCOM-RC
+               CONTINUE
            ELSE
                MOVE    "tbl_ryocom"    TO  MCP-TABLE
                MOVE    "key2"          TO  MCP-PATHNAME
                PERFORM 910-RYOUYOCOM-READ-SEC
                IF   FLG-RYOUYOCOM      NOT =   ZERO
-                    MOVE    5          TO  LNK-RYOCOM-RC
+      *              MOVE    5          TO  LNK-RYOCOM-RC
+                    CONTINUE
                ELSE
                     PERFORM   UNTIL  FLG-RYOUYOCOM    =   1
                         PERFORM   210-RYOCOM-REC-SEC
