@@ -382,5 +382,8 @@ K03	{
 		    style   varchar(20);
 			value	varchar(30);
 		};
+		TEISEIMSG	{
+			value	varchar(30);
+		};
 	};
 };
