@@ -1613,7 +1613,7 @@
                    MOVE    ORCSCGAIRAI-SYU-HENKIN (IDH-GAI)
                                            TO  SMEI-NYUHEN-MONEY
       *            入金方法は現金とする
-                   MOVE    "01"            TO  SMEI-NYUKIN-HOHO
+                   MOVE    "00"            TO  SMEI-NYUKIN-HOHO
                END-IF
            END-IF
       *
