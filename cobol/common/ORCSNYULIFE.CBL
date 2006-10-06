@@ -631,30 +631,30 @@
                MOVE   4      TO   LNK-NYULIFE-RC
            END-IF
       *
-           PERFORM   VARYING  IDX1   FROM  1   BY  1
-                     UNTIL  IDX1   >   31
-                DISPLAY "IDX1 = " IDX1
-                DISPLAY "LNK-NYULIFE-FTNKBN1(IDX1) = " 
-                         LNK-NYULIFE-FTNKBN1(IDX1)
-                DISPLAY "LNK-NYULIFE-FTNKBN2(IDX1) = " 
-                         LNK-NYULIFE-FTNKBN2(IDX1)
-                DISPLAY  "LNK-NYULIFE-SKJ-SRYCD(IDX1) = "
-                          LNK-NYULIFE-SKJ-SRYCD(IDX1)
-                DISPLAY "LNK-NYULIFE-SKJ-MONEY(IDX1) = "
-                         LNK-NYULIFE-SKJ-MONEY(IDX1)
-                DISPLAY  "LNK-NYULIFE-SKJFTN-SRYCD(IDX1) = "
-                          LNK-NYULIFE-SKJFTN-SRYCD(IDX1)
-                DISPLAY "LNK-NYULIFE-SKJFTN-MONEY(IDX1) = "
-                         LNK-NYULIFE-SKJFTN-MONEY(IDX1)
-                DISPLAY  "LNK-NYULIFE-KAN-SRYCD(IDX1) = "
-                          LNK-NYULIFE-KAN-SRYCD(IDX1)
-                DISPLAY "LNK-NYULIFE-KAN-MONEY(IDX1) = "
-                         LNK-NYULIFE-KAN-MONEY(IDX1)
-                DISPLAY  "LNK-NYULIFE-KANFTN-SRYCD(IDX1) = "
-                          LNK-NYULIFE-KANFTN-SRYCD(IDX1)
-                DISPLAY "LNK-NYULIFE-KANFTN-MONEY(IDX1) = "
-                         LNK-NYULIFE-KANFTN-MONEY(IDX1)
-           END-PERFORM
+      *     PERFORM   VARYING  IDX1   FROM  1   BY  1
+      *               UNTIL  IDX1   >   31
+      *          DISPLAY "IDX1 = " IDX1
+      *          DISPLAY "LNK-NYULIFE-FTNKBN1(IDX1) = " 
+      *                   LNK-NYULIFE-FTNKBN1(IDX1)
+      *          DISPLAY "LNK-NYULIFE-FTNKBN2(IDX1) = " 
+      *                   LNK-NYULIFE-FTNKBN2(IDX1)
+      *          DISPLAY  "LNK-NYULIFE-SKJ-SRYCD(IDX1) = "
+      *                    LNK-NYULIFE-SKJ-SRYCD(IDX1)
+      *          DISPLAY "LNK-NYULIFE-SKJ-MONEY(IDX1) = "
+      *                   LNK-NYULIFE-SKJ-MONEY(IDX1)
+      *          DISPLAY  "LNK-NYULIFE-SKJFTN-SRYCD(IDX1) = "
+      *                    LNK-NYULIFE-SKJFTN-SRYCD(IDX1)
+      *          DISPLAY "LNK-NYULIFE-SKJFTN-MONEY(IDX1) = "
+      *                   LNK-NYULIFE-SKJFTN-MONEY(IDX1)
+      *          DISPLAY  "LNK-NYULIFE-KAN-SRYCD(IDX1) = "
+      *                    LNK-NYULIFE-KAN-SRYCD(IDX1)
+      *          DISPLAY "LNK-NYULIFE-KAN-MONEY(IDX1) = "
+      *                   LNK-NYULIFE-KAN-MONEY(IDX1)
+      *          DISPLAY  "LNK-NYULIFE-KANFTN-SRYCD(IDX1) = "
+      *                    LNK-NYULIFE-KANFTN-SRYCD(IDX1)
+      *          DISPLAY "LNK-NYULIFE-KANFTN-MONEY(IDX1) = "
+      *                   LNK-NYULIFE-KANFTN-MONEY(IDX1)
+      *     END-PERFORM
            .
        200-MAIN-EXT.
            EXIT.
