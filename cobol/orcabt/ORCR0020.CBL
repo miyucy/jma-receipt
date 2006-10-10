@@ -150,7 +150,9 @@
       *                                     Ê¡²¬ÃÏÊý¸øÈñÂÐ±þ
       *
       *  03.03.01    NACL-ÌçÏÆ    06/09/27  £²£°£°£¶Ç¯£±£°·î²þÀµÂÐ±þ
-      *                                     ÆÃµ­»ö¹à£±£¶Ä¹£²ÂÐ±þÂ¾
+      *                                     ÆÃµ­»ö¹à£±£¶Ä¹£²ÂÐ±þ
+      *                                     ¥ì¥»¥×¥È¼ïÊÌ
+      *                                     Ï·ÎðÊ¡»ãÇ¯¶â 
       *  03.03.02    NACL-Æ£¸¶    06/09/19  ·îÅÓÃæ¤Ç¤Î»áÌ¾ÊÑ¹¹ÂÐ±þ
       *****************************************************************
       *
@@ -483,6 +485,9 @@
            03  WRK-CONS-TERMID     PIC X(32)   VALUE
                                    "0100007FZZZZZZZZZZZZZZZZZZZZZZZZ". 
       *
+           03  WRK-CONS-SRYYM-200609
+                                   PIC 9(06)   VALUE   200609.      
+      *
       *    ºßÁí¿Ç¥Æ¡¼¥Ö¥ë
        01  TBL-ZAITAKU-AREA.
       *    ¿²¤¿¤­¤êÏ·¿ÍºßÂðÁí¹ç¿ÇÎÅÎÁ¡Ê±¡Æâ½èÊý¤»¤ó¤ò¸òÉÕ¤¹¤ë¡Ë
@@ -615,6 +620,9 @@
       *    ¼ç²Ê¼èÆÀ¥µ¥Ö
        01  ORCSSYUACCAREA.
            COPY    "CPORCSSYUACC.INC".
+      *
+      *    ¥ì¥»¥×¥È¼ïÊÌÊÖµÑ¥µ¥Ö
+           COPY    "CPORCSSYUBETUGET.INC".
       *
       ****************************************************************
        LINKAGE                 SECTION.
@@ -1152,20 +1160,6 @@
                PERFORM   KOHNUMHC-SET-SEC
            END-PERFORM
       *
-      *****ÊäÂ­¶èÊ¬¡¦¥ì¥»¥×¥Èµ­ºÜ³°¸øÈñ¤Î¥»¥Ã¥È
-      *****IF      RECE01-ETC-HKNNUM   NOT =   SPACE
-      *****    MOVE    "1"                 TO  RECE02-HOSOKUKBN
-      *****    MOVE    RECE01-ETC-HKNNUM   TO  RECE02-ETC-KOHNUM (1)
-      *****END-IF  
-      *****IF      WRK-CHOKI           NOT =   SPACE
-      *****    PERFORM VARYING IDX FROM    1   BY  1
-      *****            UNTIL   IDX >       4
-      *****        IF         RECE02-ETC-KOHNUM (IDX)  =   SPACE
-      *****            MOVE    WRK-CHOKI   TO  RECE02-ETC-KOHNUM (IDX)
-      *****            MOVE    4           TO  IDX
-      *****        END-IF
-      *****    END-PERFORM  
-      *****END-IF  
       *
       *    ÆÃµ­»ö¹à¤Î¥»¥Ã¥È
       *    Ï·ÊÝ¤ÎÊÔ½¸
@@ -1284,6 +1278,11 @@
                  WHEN    0             ALSO     0
                  WHEN    1             ALSO     0
                        MOVE     "1"     TO       RECE02-TEISYOTOKU
+                       IF  (RECE02-SRYYM     >   WRK-CONS-SRYYM-200609 )
+                       AND (TNKRRK-RRI-FUKUSHI-KBN
+                                             =   "1"                   )
+                           MOVE  "4"         TO       RECE02-TEISYOTOKU
+                       END-IF
              END-EVALUATE
       *
            END-IF
@@ -1634,8 +1633,8 @@
            END-IF
       *
       *    Ê¡²¬ÃÏÊý¸øÈñÂÐ±þ
-           IF    ( RECE02-PREFNUM      =   "40"     )
-           AND   ( RECE02-SRYYM        <=  "200609" )
+           IF    ( RECE02-PREFNUM      =   "40"                  )
+           AND   ( RECE02-SRYYM        <=  WRK-CONS-SRYYM-200609 )
                IF  WK-KOKUHO               =   "1" OR  "2"
                    IF   (RECE02-KOHNUM   (1)(1:1)  =   "1" OR  "2")
                    AND  (RECE02-KOHHBTNUM(1)   NOT =   "41"       )     
@@ -1688,7 +1687,7 @@
       *    Ï·¿ÍÊÝ¸±¤Î¾ì¹ç¤Ï£×£Ë¡Ý£Ò£Ê£Î¤Ë¥»¥Ã¥È¤¹¤ë
            IF  RECE02-HKNID             NOT =   ZERO
                EVALUATE    TRUE
-                   WHEN    RECE02-SRYYM     >=      "200610"
+                   WHEN    RECE02-SRYYM     >   WRK-CONS-SRYYM-200609
                      EVALUATE    RECE02-HKNNUM
                        WHEN    "002" 
                            EVALUATE   RECE02-HOJOKBN
@@ -1706,7 +1705,7 @@
                                WHEN   "H"
                                WHEN   "I"
                                WHEN   "7"
-                                   MOVE   "?"   TO   WK-HONKZKKBN
+                                   MOVE   "7"   TO   WK-HONKZKKBN
                            END-EVALUATE
                        WHEN    "031"  THRU    "034"  
                            EVALUATE   RECE02-HOJOKBN
@@ -1718,7 +1717,7 @@
                                    MOVE   "?"   TO   WK-HONKZKKBN
                                WHEN   "H"
                                WHEN   "7"
-                                   MOVE   "?"   TO   WK-HONKZKKBN
+                                   MOVE   "7"   TO   WK-HONKZKKBN
                            END-EVALUATE
                        WHEN    "060" 
                        WHEN    "068" 
@@ -1733,7 +1732,7 @@
                                        MOVE   "8"   TO   WK-HONKZKKBN
                                    WHEN   "3"
                                    WHEN   "6"
-                                       MOVE   "?"   TO   WK-HONKZKKBN
+                                       MOVE   "7"   TO   WK-HONKZKKBN
                                END-EVALUATE
                            END-IF     
                        WHEN    OTHER 
@@ -1743,7 +1742,7 @@
                                WHEN   "8"
                                    MOVE   "?"   TO   WK-HONKZKKBN
                                WHEN   "7"
-                                   MOVE   "?"   TO   WK-HONKZKKBN
+                                   MOVE   "7"   TO   WK-HONKZKKBN
                            END-EVALUATE
                      END-EVALUATE
                      IF      RECE02-RJNHKNID >   ZERO
@@ -1753,7 +1752,7 @@
                            WHEN   "02"
                                MOVE   "?"   TO   WK-RJN
                            WHEN   "03"
-                               MOVE   "?"   TO   WK-RJN
+                               MOVE   "7"   TO   WK-RJN
                        END-EVALUATE
                      END-IF
                    WHEN    RECE02-SRYYM     >=      "200210"
@@ -1821,7 +1820,7 @@
                END-IF
            END-IF
       *
-           IF      RECE02-SRYYM        >=  "200610"
+           IF      RECE02-SRYYM        >  WRK-CONS-SRYYM-200609
                IF    ( WK-HONKZKKBN        =   "?" )
                OR    ( WK-RJN              =   "?" )
                    MOVE    7                    TO  RECE02-ERR-ERRKBN
@@ -1836,534 +1835,23 @@
       *      DISPLAY "WK-KOKUHO: " WK-KOKUHO 
       *      DISPLAY "WK-RJN: " WK-RJN 
       *      DISPLAY "WK-KOHI-CNT: " WK-KOHI-CNT 
-      *      ACCEPT     WRK-IN FROM CONSOLE
       *
-      *----(01.00.13) LINE MOD START --------------------------
-      *    ¤³¤ÎÉ¾²ÁÊ¸¤ÏÊ¿À®£±£´Ç¯£¹·î¤Þ¤ÇÍ­¸ú
-           IF      RECE02-SRYYM     <=      "200209"
-             EVALUATE  WK-HONKZKKBN ALSO RECE01-NYUGAIKBN  ALSO
-                    WK-IHO ALSO WK-KOKUHO ALSO WK-RJN ALSO WK-KOHI-CNT
-               WHEN    "1"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  ZERO
-                   MOVE    1111            TO    RECE02-RECESYUBETU
-               WHEN    ANY   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1111            TO    RECE02-RECESYUBETU
-               WHEN    "1"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  ZERO
-                   MOVE    1112            TO    RECE02-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1112            TO    RECE02-RECESYUBETU
-               WHEN    "2"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  ZERO
-                   MOVE    1115            TO    RECE02-RECESYUBETU
-               WHEN    "2"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  ZERO
-                   MOVE    1116            TO    RECE02-RECESYUBETU
-               WHEN    "1"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO   1
-                   MOVE    1121            TO    RECE02-RECESYUBETU
-               WHEN    ANY   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO   1
-                   MOVE    1121            TO    RECE02-RECESYUBETU
-               WHEN    "1"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO   1
-                   MOVE    1122            TO    RECE02-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO   1
-                   MOVE    1122            TO    RECE02-RECESYUBETU
-               WHEN    "2"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO   1
-                   MOVE    1125            TO    RECE02-RECESYUBETU
-               WHEN    "2"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO   1
-                   MOVE    1126            TO    RECE02-RECESYUBETU
-               WHEN    "1"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO   2
-                   MOVE    1131            TO    RECE02-RECESYUBETU
-               WHEN    ANY   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO   2
-                   MOVE    1131            TO    RECE02-RECESYUBETU
-               WHEN    "1"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO   2
-               WHEN    "1"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO   3
-                   MOVE    1132            TO    RECE02-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO   2
-                   MOVE    1132            TO    RECE02-RECESYUBETU
-               WHEN    "2"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO   2
-                   MOVE    1135            TO    RECE02-RECESYUBETU
-               WHEN    "2"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO   2
-                   MOVE    1136            TO    RECE02-RECESYUBETU
-               WHEN    ANY   ALSO   "1"    ALSO
-                       SPACE ALSO   SPACE  ALSO  SPACE  ALSO   1
-                   MOVE    1211            TO    RECE02-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       SPACE ALSO   SPACE  ALSO  SPACE  ALSO   1
-                   MOVE    1212            TO    RECE02-RECESYUBETU
-               WHEN    ANY   ALSO   "1"    ALSO
-                       SPACE ALSO   SPACE  ALSO  SPACE  ALSO   2
-                   MOVE    1221            TO    RECE02-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       SPACE ALSO   SPACE  ALSO  SPACE  ALSO   2
-                   MOVE    1222            TO    RECE02-RECESYUBETU
-               WHEN    ANY   ALSO   "1"    ALSO
-                       SPACE ALSO   SPACE  ALSO  SPACE  ALSO   3
-                   MOVE    1231            TO    RECE02-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       SPACE ALSO   SPACE  ALSO  SPACE  ALSO   3
-                   MOVE    1232            TO    RECE02-RECESYUBETU
-               WHEN    ANY   ALSO   "1"    ALSO
-                       ANY   ALSO   ANY    ALSO  "1"    ALSO   ZERO
-                   MOVE    1311            TO    RECE02-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       ANY   ALSO   ANY    ALSO  "1"    ALSO   ZERO
-                   MOVE    1312            TO    RECE02-RECESYUBETU
-               WHEN    ANY   ALSO   "1"    ALSO
-                       ANY   ALSO   ANY    ALSO  "1"    ALSO   1
-                   MOVE    1321            TO    RECE02-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       ANY   ALSO   ANY    ALSO  "1"    ALSO   1
-                   MOVE    1322            TO    RECE02-RECESYUBETU
-               WHEN    ANY   ALSO   "1"    ALSO
-                       ANY   ALSO   ANY    ALSO  "1"    ALSO   2
-                   MOVE    1331            TO    RECE02-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       ANY   ALSO   ANY    ALSO  "1"    ALSO   2
-                   MOVE    1332            TO    RECE02-RECESYUBETU
-               WHEN    "1"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO   ZERO
-                   MOVE    1411            TO    RECE02-RECESYUBETU
-               WHEN    "1"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO   ZERO
-                   MOVE    1412            TO    RECE02-RECESYUBETU
-               WHEN    "2"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO   ZERO
-                   MOVE    1415            TO    RECE02-RECESYUBETU
-               WHEN    "2"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO   ZERO
-                   MOVE    1416            TO    RECE02-RECESYUBETU
-               WHEN    "1"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO   1
-                   MOVE    1421            TO    RECE02-RECESYUBETU
-               WHEN    "1"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO   1
-                   MOVE    1422            TO    RECE02-RECESYUBETU
-               WHEN    "2"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO   1
-                   MOVE    1425            TO    RECE02-RECESYUBETU
-               WHEN    "2"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO   1
-                   MOVE    1426            TO    RECE02-RECESYUBETU
-               WHEN    "1"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO   2
-                   MOVE    1431            TO    RECE02-RECESYUBETU
-               WHEN    "1"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO   2
-                   MOVE    1432            TO    RECE02-RECESYUBETU
-               WHEN    "1"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO   2
-                   MOVE    1435            TO    RECE02-RECESYUBETU
-               WHEN    "2"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO   2
-                   MOVE    1436            TO    RECE02-RECESYUBETU
-             END-EVALUATE
-           END-IF
-      *----(01.00.13) LINE MOD END   --------------------------
+           INITIALIZE                  ORCSSYUBETUGETAREA  
+           MOVE    WK-KOKUHO           TO  LNK-SYUBETUGET-KOKUHO
+           MOVE    WK-IHO              TO  LNK-SYUBETUGET-IHO
+           MOVE    WK-RJN              TO  LNK-SYUBETUGET-RJN
+           MOVE    WK-KOHI-CNT         TO  LNK-SYUBETUGET-KOHI-CNT
+           MOVE    WK-HONKZKKBN        TO  LNK-SYUBETUGET-HONKZKKBN
+           MOVE    RECE01-NYUGAIKBN    TO  LNK-SYUBETUGET-NYUGAIKBN
+           MOVE    RECE02-SRYYM        TO  LNK-SYUBETUGET-SRYYM
+           MOVE    RECE02-HKNNUM       TO  LNK-SYUBETUGET-HKNNUM
+           CALL    "ORCSSYUBETUGET"    USING   ORCSSYUBETUGETAREA
       *
-      *----(01.00.13) LINE ADD START --------------------------
-      *    Ê¿À®£±£´Ç¯£±£°·î²þÀµÂÐ±þ
-           IF      RECE02-SRYYM     >=      "200210"
-             EVALUATE  WK-HONKZKKBN ALSO RECE01-NYUGAIKBN  ALSO
-                    WK-IHO ALSO WK-KOKUHO ALSO WK-RJN ALSO WK-KOHI-CNT
-      *ÊÝ¸±Ã±ÆÈ
-               WHEN    "1"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  ZERO
-                   MOVE    1111            TO    RECE02-RECESYUBETU
-               WHEN    "1"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1111            TO    RECE02-RECESYUBETU
-               WHEN    "1"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  ZERO
-                   MOVE    1112            TO    RECE02-RECESYUBETU
-               WHEN    "1"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1112            TO    RECE02-RECESYUBETU
-               WHEN    "3"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  ZERO
-                   MOVE    1113            TO    RECE02-RECESYUBETU
-               WHEN    "3"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1113            TO    RECE02-RECESYUBETU
-               WHEN    "3"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  ZERO
-                   MOVE    1114            TO    RECE02-RECESYUBETU
-               WHEN    "3"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1114            TO    RECE02-RECESYUBETU
-               WHEN    "2"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  ZERO
-                   MOVE    1115            TO    RECE02-RECESYUBETU
-               WHEN    "2"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1115            TO    RECE02-RECESYUBETU
-               WHEN    "2"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  ZERO
-                   MOVE    1116            TO    RECE02-RECESYUBETU
-               WHEN    "2"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1116            TO    RECE02-RECESYUBETU
-               WHEN    "9"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  ZERO
-                   MOVE    1117            TO    RECE02-RECESYUBETU
-               WHEN    "9"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1117            TO    RECE02-RECESYUBETU
-               WHEN    "9"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  ZERO
-                   MOVE    1118            TO    RECE02-RECESYUBETU
-               WHEN    "9"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1118            TO    RECE02-RECESYUBETU
-               WHEN    "8"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  ZERO
-                   MOVE    1119            TO    RECE02-RECESYUBETU
-               WHEN    "8"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1119            TO    RECE02-RECESYUBETU
-               WHEN    "8"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  ZERO
-                   MOVE    1110            TO    RECE02-RECESYUBETU
-               WHEN    "8"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1110            TO    RECE02-RECESYUBETU
-               WHEN    "1"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO   1
-                   MOVE    1121            TO    RECE02-RECESYUBETU
-      *ÊÝ¸±¤È¸øÈñ£±¼ï¤ÎÊ»ÍÑ
-               WHEN    "1"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  1
-                   MOVE    1121            TO    RECE02-RECESYUBETU
-               WHEN    "1"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  1
-                   MOVE    1121            TO    RECE02-RECESYUBETU
-               WHEN    "1"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  1
-                   MOVE    1122            TO    RECE02-RECESYUBETU
-               WHEN    "1"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  1
-                   MOVE    1122            TO    RECE02-RECESYUBETU
-               WHEN    "3"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  1
-                   MOVE    1123            TO    RECE02-RECESYUBETU
-               WHEN    "3"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  1
-                   MOVE    1123            TO    RECE02-RECESYUBETU
-               WHEN    "3"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  1
-                   MOVE    1124            TO    RECE02-RECESYUBETU
-               WHEN    "3"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  1
-                   MOVE    1124            TO    RECE02-RECESYUBETU
-               WHEN    "2"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  1
-                   MOVE    1125            TO    RECE02-RECESYUBETU
-               WHEN    "2"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  1
-                   MOVE    1125            TO    RECE02-RECESYUBETU
-               WHEN    "2"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  1
-                   MOVE    1126            TO    RECE02-RECESYUBETU
-               WHEN    "2"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  1
-                   MOVE    1126            TO    RECE02-RECESYUBETU
-               WHEN    "9"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  1
-                   MOVE    1127            TO    RECE02-RECESYUBETU
-               WHEN    "9"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  1
-                   MOVE    1127            TO    RECE02-RECESYUBETU
-               WHEN    "9"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  1
-                   MOVE    1128            TO    RECE02-RECESYUBETU
-               WHEN    "9"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  1
-                   MOVE    1128            TO    RECE02-RECESYUBETU
-               WHEN    "8"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  1
-                   MOVE    1129            TO    RECE02-RECESYUBETU
-               WHEN    "8"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  1
-                   MOVE    1129            TO    RECE02-RECESYUBETU
-               WHEN    "8"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  1
-                   MOVE    1120            TO    RECE02-RECESYUBETU
-               WHEN    "8"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  1
-                   MOVE    1120            TO    RECE02-RECESYUBETU
-      *ÊÝ¸±¤È¸øÈñ£²¼ï¤ÎÊ»ÍÑ
-               WHEN    "1"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  2
-                   MOVE    1131            TO    RECE02-RECESYUBETU
-               WHEN    "1"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  2
-                   MOVE    1131            TO    RECE02-RECESYUBETU
-               WHEN    "1"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  2
-                   MOVE    1132            TO    RECE02-RECESYUBETU
-               WHEN    "1"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  2
-                   MOVE    1132            TO    RECE02-RECESYUBETU
-               WHEN    "3"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  2
-                   MOVE    1133            TO    RECE02-RECESYUBETU
-               WHEN    "3"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  2
-                   MOVE    1133            TO    RECE02-RECESYUBETU
-               WHEN    "3"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  2
-                   MOVE    1134            TO    RECE02-RECESYUBETU
-               WHEN    "3"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  2
-                   MOVE    1134            TO    RECE02-RECESYUBETU
-               WHEN    "2"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  2
-                   MOVE    1135            TO    RECE02-RECESYUBETU
-               WHEN    "2"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  2
-                   MOVE    1135            TO    RECE02-RECESYUBETU
-               WHEN    "2"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  2
-                   MOVE    1136            TO    RECE02-RECESYUBETU
-               WHEN    "2"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  2
-                   MOVE    1136            TO    RECE02-RECESYUBETU
-               WHEN    "9"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  2
-                   MOVE    1137            TO    RECE02-RECESYUBETU
-               WHEN    "9"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  2
-                   MOVE    1137            TO    RECE02-RECESYUBETU
-               WHEN    "9"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  2
-                   MOVE    1138            TO    RECE02-RECESYUBETU
-               WHEN    "9"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  2
-                   MOVE    1138            TO    RECE02-RECESYUBETU
-               WHEN    "8"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  2
-                   MOVE    1139            TO    RECE02-RECESYUBETU
-               WHEN    "8"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  2
-                   MOVE    1139            TO    RECE02-RECESYUBETU
-               WHEN    "8"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  2
-                   MOVE    1130            TO    RECE02-RECESYUBETU
-               WHEN    "8"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  2
-                   MOVE    1130            TO    RECE02-RECESYUBETU
-      *¸øÈñÃ±ÆÈ
-               WHEN    ANY   ALSO   "1"    ALSO
-                       SPACE ALSO   SPACE  ALSO  SPACE  ALSO   1
-                   MOVE    1211            TO    RECE02-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       SPACE ALSO   SPACE  ALSO  SPACE  ALSO   1
-                   MOVE    1212            TO    RECE02-RECESYUBETU
-      *£²¼ï¤Î¸øÈñÊ»ÍÑ
-               WHEN    ANY   ALSO   "1"    ALSO
-                       SPACE ALSO   SPACE  ALSO  SPACE  ALSO   2
-                   MOVE    1221            TO    RECE02-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       SPACE ALSO   SPACE  ALSO  SPACE  ALSO   2
-                   MOVE    1222            TO    RECE02-RECESYUBETU
-      *£³¼ï¤Î¸øÈñÊ»ÍÑ
-               WHEN    ANY   ALSO   "1"    ALSO
-                       SPACE ALSO   SPACE  ALSO  SPACE  ALSO   3
-                   MOVE    1231            TO    RECE02-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       SPACE ALSO   SPACE  ALSO  SPACE  ALSO   3
-                   MOVE    1232            TO    RECE02-RECESYUBETU
-      *Ï·¿ÍÃ±ÆÈ
-               WHEN    ANY   ALSO   "1"    ALSO
-                       "1"   ALSO   ANY    ALSO  "9"    ALSO   ZERO
-                   MOVE    1317            TO    RECE02-RECESYUBETU
-               WHEN    ANY   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  "9"    ALSO   ZERO
-                   MOVE    1317            TO    RECE02-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       "1"   ALSO   ANY    ALSO  "9"    ALSO   ZERO
-                   MOVE    1318            TO    RECE02-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  "9"    ALSO   ZERO
-                   MOVE    1318            TO    RECE02-RECESYUBETU
-               WHEN    ANY   ALSO   "1"    ALSO
-                       "1"   ALSO   ANY    ALSO  "8"    ALSO   ZERO
-                   MOVE    1319            TO    RECE02-RECESYUBETU
-               WHEN    ANY   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  "8"    ALSO   ZERO
-                   MOVE    1319            TO    RECE02-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       "1"   ALSO   ANY    ALSO  "8"    ALSO   ZERO
-                   MOVE    1310            TO    RECE02-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  "8"    ALSO   ZERO
-                   MOVE    1310            TO    RECE02-RECESYUBETU
-      *Ï·¿Í¤È¸øÈñ£±¼ï¤ÎÊ»ÍÑ
-               WHEN    ANY   ALSO   "1"    ALSO
-                       "1"   ALSO   ANY    ALSO  "9"    ALSO   1
-                   MOVE    1327            TO    RECE02-RECESYUBETU
-               WHEN    ANY   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  "9"    ALSO   1
-                   MOVE    1327            TO    RECE02-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       "1"   ALSO   ANY    ALSO  "9"    ALSO   1
-                   MOVE    1328            TO    RECE02-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  "9"    ALSO   1
-                   MOVE    1328            TO    RECE02-RECESYUBETU
-               WHEN    ANY   ALSO   "1"    ALSO
-                       "1"   ALSO   ANY    ALSO  "8"    ALSO   1
-                   MOVE    1329            TO    RECE02-RECESYUBETU
-               WHEN    ANY   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  "8"    ALSO   1
-                   MOVE    1329            TO    RECE02-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       "1"   ALSO   ANY    ALSO  "8"    ALSO   1
-                   MOVE    1320            TO    RECE02-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  "8"    ALSO   1
-                   MOVE    1320            TO    RECE02-RECESYUBETU
-      *Ï·¿Í¤È¸øÈñ£²¼ï¤ÎÊ»ÍÑ
-               WHEN    ANY   ALSO   "1"    ALSO
-                       "1"   ALSO   ANY    ALSO  "9"    ALSO   2
-                   MOVE    1337            TO    RECE02-RECESYUBETU
-               WHEN    ANY   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  "9"    ALSO   2
-                   MOVE    1337            TO    RECE02-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       "1"   ALSO   ANY    ALSO  "9"    ALSO   2
-                   MOVE    1338            TO    RECE02-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  "9"    ALSO   2
-                   MOVE    1338            TO    RECE02-RECESYUBETU
-               WHEN    ANY   ALSO   "1"    ALSO
-                       "1"   ALSO   ANY    ALSO  "8"    ALSO   2
-                   MOVE    1339            TO    RECE02-RECESYUBETU
-               WHEN    ANY   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  "8"    ALSO   2
-                   MOVE    1339            TO    RECE02-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       "1"   ALSO   ANY    ALSO  "8"    ALSO   2
-                   MOVE    1330            TO    RECE02-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  "8"    ALSO   2
-                   MOVE    1330            TO    RECE02-RECESYUBETU
-      *Âà¿¦¼ÔÃ±ÆÈ
-               WHEN    "1"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1411            TO    RECE02-RECESYUBETU
-               WHEN    "1"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1412            TO    RECE02-RECESYUBETU
-               WHEN    "3"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1413            TO    RECE02-RECESYUBETU
-               WHEN    "3"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1414            TO    RECE02-RECESYUBETU
-               WHEN    "2"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1415            TO    RECE02-RECESYUBETU
-               WHEN    "2"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1416            TO    RECE02-RECESYUBETU
-               WHEN    "9"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1417            TO    RECE02-RECESYUBETU
-               WHEN    "9"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1418            TO    RECE02-RECESYUBETU
-               WHEN    "8"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1409            TO    RECE02-RECESYUBETU
-               WHEN    "8"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1410            TO    RECE02-RECESYUBETU
-      *Âà¿¦¼Ô¤È¸øÈñ£±¼ï¤ÎÊ»ÍÑ
-               WHEN    "1"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  1
-                   MOVE    1421            TO    RECE02-RECESYUBETU
-               WHEN    "1"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  1
-                   MOVE    1422            TO    RECE02-RECESYUBETU
-               WHEN    "3"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  1
-                   MOVE    1423            TO    RECE02-RECESYUBETU
-               WHEN    "3"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  1
-                   MOVE    1424            TO    RECE02-RECESYUBETU
-               WHEN    "2"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  1
-                   MOVE    1425            TO    RECE02-RECESYUBETU
-               WHEN    "2"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  1
-                   MOVE    1426            TO    RECE02-RECESYUBETU
-               WHEN    "9"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  1
-                   MOVE    1427            TO    RECE02-RECESYUBETU
-               WHEN    "9"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  1
-                   MOVE    1428            TO    RECE02-RECESYUBETU
-               WHEN    "8"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  1
-                   MOVE    1429            TO    RECE02-RECESYUBETU
-               WHEN    "8"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  1
-                   MOVE    1420            TO    RECE02-RECESYUBETU
-      *Âà¿¦¼Ô¤È¸øÈñ£²¼ï¤ÎÊ»ÍÑ
-               WHEN    "1"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  2
-                   MOVE    1431            TO    RECE02-RECESYUBETU
-               WHEN    "1"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  2
-                   MOVE    1432            TO    RECE02-RECESYUBETU
-               WHEN    "3"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  2
-                   MOVE    1433            TO    RECE02-RECESYUBETU
-               WHEN    "3"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  2
-                   MOVE    1434            TO    RECE02-RECESYUBETU
-               WHEN    "2"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  2
-                   MOVE    1435            TO    RECE02-RECESYUBETU
-               WHEN    "2"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  2
-                   MOVE    1436            TO    RECE02-RECESYUBETU
-               WHEN    "9"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  2
-                   MOVE    1437            TO    RECE02-RECESYUBETU
-               WHEN    "9"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  2
-                   MOVE    1438            TO    RECE02-RECESYUBETU
-               WHEN    "8"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  2
-                   MOVE    1439            TO    RECE02-RECESYUBETU
-               WHEN    "8"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  2
-                   MOVE    1430            TO    RECE02-RECESYUBETU
-             END-EVALUATE
-           END-IF
-      *     
-      *    ÆÃÊÌÎÅÍÜÈñ¤Î¤È¤­¤Î¥ì¥»¥×¥È¼ïÊÌ¤òÊÔ½¸
-           IF      RECE02-HKNNUM        =   "068"   OR  "069"
-               MOVE    RECE02-RECESYUBETU   TO  RECE02-RECESYUBETU-X 
-               MOVE    6666                 TO  RECE02-RECESYUBETU    
-           END-IF
-      *----(01.00.13) LINE ADD END   --------------------------
+           MOVE    LNK-SYUBETUGET-RECESYUBETU
+                                       TO  RECE02-RECESYUBETU
+           MOVE    LNK-SYUBETUGET-RECESYUBETU-X
+                                       TO  RECE02-RECESYUBETU-X
+      *
       *     DISPLAY   "RECE02-RECESYUBETU: " RECE02-RECESYUBETU
            .
        RECESYUBETU-SET-EXT.
@@ -2411,7 +1899,8 @@
       *Ê¿À®£±£´Ç¯£±£°·î²þÀµÂÐ±þ
       *Ê¿À®£±£´Ç¯£±£°·î°Ê¹ßÍ­¸ú
       *    ¼çÊÝ¸±¾ðÊó¤ÎÊä½õ¶èÊ¬¤«¤é´µ¼Ô¤ÎÉéÃ´³ä¹ç¤òºÆ¥»¥Ã¥È
-           IF      RECE02-SRYYM     >=      "200210"
+           IF    ( RECE02-SRYYM     >=      "200210" )
+           AND   ( RECE02-SRYYM     <=      WRK-CONS-SRYYM-200609 ) 
                EVALUATE    RECE02-HKNNUM
                    WHEN    "060"
                    WHEN    "068"
@@ -2508,6 +1997,111 @@
                            MOVE   10        TO  RECE02-KYURATE
                        WHEN   "2"
                            MOVE   20        TO  RECE02-KYURATE
+                   END-EVALUATE
+               END-IF
+           END-IF
+      *
+      *Ê¿À®£±£¸Ç¯£±£°·î²þÀµÂÐ±þ
+      *    ¼çÊÝ¸±¾ðÊó¤ÎÊä½õ¶èÊ¬¤«¤é´µ¼Ô¤ÎÉéÃ´³ä¹ç¤òºÆ¥»¥Ã¥È
+           IF    ( RECE02-SRYYM    >   WRK-CONS-SRYYM-200609 )
+               EVALUATE    RECE02-HKNNUM
+                   WHEN    "060"
+                   WHEN    "068"
+                       IF       WRK-NENREI           <     3
+                           IF    RECE02-HOJOKBN =    "0"  OR   "1" OR
+                                                     "4"
+                               EVALUATE   RECE02-HOJOKBN
+                                  WHEN   "0"
+                                      MOVE   ZERO    TO   RECE02-KYURATE
+                                  WHEN   "1"
+                                      MOVE   10      TO   RECE02-KYURATE
+                                  WHEN   "4"
+                                      MOVE   10      TO   RECE02-KYURATE
+                               END-EVALUATE
+                           ELSE
+                               MOVE  20      TO    RECE02-KYURATE
+                           END-IF
+                       ELSE
+                           EVALUATE   RECE02-HOJOKBN
+                              WHEN   "0"
+                                  MOVE   ZERO      TO   RECE02-KYURATE
+                              WHEN   "1"
+                                  MOVE   10        TO   RECE02-KYURATE
+                              WHEN   "2"
+                                  MOVE   20        TO   RECE02-KYURATE
+                              WHEN   "3"
+                                  MOVE   30        TO   RECE02-KYURATE
+                              WHEN   "4"
+                                  MOVE   10        TO   RECE02-KYURATE
+                              WHEN   "5"
+                                  MOVE   20        TO   RECE02-KYURATE
+                              WHEN   "6"
+                                  MOVE   30        TO   RECE02-KYURATE
+                              WHEN   "8"
+                                  MOVE   20        TO   RECE02-KYURATE
+                              WHEN   "9"
+                                  MOVE   10        TO   RECE02-KYURATE
+                           END-EVALUATE
+                       END-IF
+                   WHEN    "067"
+                   WHEN    "069"
+                       IF       WRK-NENREI           <     3
+                           MOVE  20      TO    RECE02-KYURATE
+                       ELSE
+                           IF      RECE02-HOJOKBN      NOT =  SPACE
+                               EVALUATE   RECE02-HOJOKBN
+                                   WHEN   "7"
+                                       MOVE    30  TO  RECE02-KYURATE
+                                   WHEN   "8"
+                                       MOVE    20  TO  RECE02-KYURATE
+                                   WHEN   "9"
+                                       MOVE    10  TO  RECE02-KYURATE
+                               END-EVALUATE
+                           ELSE
+                               IF   RECE02-HKNJANUM = "67330753"
+                                 MOVE   20         TO  RECE02-KYURATE
+                               ELSE
+                                 IF RECE02-HONKZKKBN      =    "1"
+                                   MOVE   WRK-HKN-HON-GAIKFTNRATE
+                                                   TO  RECE02-KYURATE
+                                 ELSE
+                                   MOVE   WRK-HKN-KZK-GAIKFTNRATE
+                                                   TO  RECE02-KYURATE
+                                 END-IF
+                               END-IF
+                           END-IF
+                       END-IF
+                   WHEN    SPACE
+                       MOVE    ZERO            TO  RECE02-KYURATE
+                   WHEN    OTHER
+                       IF      WRK-NENREI           <     3
+                           MOVE    20          TO  RECE02-KYURATE
+                       ELSE
+                           IF      RECE02-HOJOKBN      =     SPACE
+                               IF      RECE02-HONKZKKBN    =     "1"
+                                   MOVE   WRK-HKN-HON-GAIKFTNRATE
+                                                   TO  RECE02-KYURATE
+                               ELSE
+                                   MOVE   WRK-HKN-KZK-GAIKFTNRATE
+                                                   TO  RECE02-KYURATE
+                               END-IF
+                           ELSE
+                               EVALUATE   RECE02-HOJOKBN
+                                   WHEN   "7"
+                                       MOVE    30  TO  RECE02-KYURATE
+                                   WHEN   "9"
+                                       MOVE    10  TO  RECE02-KYURATE
+                              END-EVALUATE
+                          END-IF
+                      END-IF
+               END-EVALUATE
+      *
+               IF      RJN-RATE-KBN      NOT =    SPACE
+                   EVALUATE   RJN-RATE-KBN
+                       WHEN   "1"
+                           MOVE   10        TO  RECE02-KYURATE
+                       WHEN   "3"
+                           MOVE   30        TO  RECE02-KYURATE
                    END-EVALUATE
                END-IF
            END-IF

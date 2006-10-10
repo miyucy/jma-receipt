@@ -134,8 +134,12 @@
       *  03.02.01    NACL-ÌçÏÆ    06/08/10  ¹âÎð¼Ô¾å¸Â³Û·Ð²áÁ¼ÃÖÂÐ±þ
       *  03.02.02    NACL-Æ£¸¶    06/07/31  ¹ñÊÝ¼ç²ÊÂÐ±þ
       *  03.02.03    NACL-Æ£¸¶    06/09/07  Ê¡²¬ÃÏÊý¸øÈñÂÐ±þ
+      *
       *  03.03.01    NACL-ÌçÏÆ    06/09/26  ²¬»³¸©ÃÏÊý¸øÈñÀÁµáÅÀÊÔ½¸
-      *  03.03.02    NACL-ÌçÏÆ    06/09/27  ÆÃµ­»ö¹à£±£¶Ä¹£²ÂÐ±þÂ¾
+      *  03.03.02    NACL-ÌçÏÆ    06/09/27  £²£°£°£¶Ç¯£±£°·î²þÀµÂÐ±þ
+      *                                     ÆÃµ­»ö¹à£±£¶Ä¹£²ÂÐ±þ
+      *                                     ¥ì¥»¥×¥È¼ïÊÌ
+      *                                     Ï·ÎðÊ¡»ãÇ¯¶â
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2306,14 +2310,17 @@
                        WHEN    "1"
                        WHEN    "A"
                        WHEN    "D"
+                       WHEN    "G"
                            MOVE    "¿¦Ì³¾å"              TO  HC06-JIYU
                        WHEN    "2"
                        WHEN    "B"
-                       WHEN    "E"
+                       WHEN    "D"
+                       WHEN    "H"
                            MOVE    "²¼Á¥¸å£³¥ö·î°ÊÆâ"    TO  HC06-JIYU
                        WHEN    "3"
                        WHEN    "C"
                        WHEN    "F"
+                       WHEN    "I"
                            MOVE    "ÄÌ¶ÐºÒ³²"            TO  HC06-JIYU
                    END-EVALUATE
            END-EVALUATE        
@@ -2574,8 +2581,8 @@
                    END-IF
                WHEN    6
                    MOVE    WRK-ERR-MSG-4   TO   HC06-HEAD4-G (5:)
-               WHEN    7
-                   MOVE    WRK-ERR-MSG-6   TO   HC06-HEAD4-G (5:)
+      *********WHEN    7
+      *********    MOVE    WRK-ERR-MSG-6   TO   HC06-HEAD4-G (5:)
            END-EVALUATE        
            INSPECT HC06-HEAD4-G  REPLACING ALL "  "    BY  "¡¡"
       *
@@ -2935,8 +2942,9 @@
            IF      RECE02-RECESYUBETU  =    ZERO    OR  8888
                CONTINUE
            ELSE                                        
-               IF      RECE02-RECESYUBETU  =   6666
-                   EVALUATE    RECE02-RECESYUBETU-X (4:1)
+               IF      RECE02-SRYYM         <     "200610"
+                   IF      RECE02-RECESYUBETU  =   6666
+                     EVALUATE    RECE02-RECESYUBETU-X (4:1)
                        WHEN    "0"
                            MOVE    "£°¹â³°£¸"     TO  HC06-HONKZK
                        WHEN    "2"
@@ -2947,11 +2955,30 @@
                            MOVE    "£¶²È³°"       TO  HC06-HONKZK
                        WHEN    "8"
                            MOVE    "£¸¹â³°£¹"     TO  HC06-HONKZK
-                   END-EVALUATE
+                     END-EVALUATE
+                   ELSE
+                     EVALUATE    RECE02-RECESYUBETU (4:1)
+                       WHEN    "0"
+                           MOVE    "£°¹â³°£¸"     TO  HC06-HONKZK
+                       WHEN    "2"
+                           MOVE    "£²ËÜ³°"       TO  HC06-HONKZK
+                       WHEN    "4"
+                           MOVE    "£´»°³°"       TO  HC06-HONKZK
+                       WHEN    "6"
+                           MOVE    "£¶²È³°"       TO  HC06-HONKZK
+                       WHEN    "8"
+                           MOVE    "£¸¹â³°£¹"     TO  HC06-HONKZK
+                     END-EVALUATE
+                   END-IF
                ELSE
-                   EVALUATE    RECE02-RECESYUBETU (4:1)
+                   IF      RECE02-RECESYUBETU  =   6666
+                     EVALUATE    RECE02-RECESYUBETU-X (4:1)
                        WHEN    "0"
-                           MOVE    "£°¹â³°£¸"     TO  HC06-HONKZK
+                           IF      RECE02-KYURATE     =   20
+                               MOVE    "£°¹â³°£¸"     TO  HC06-HONKZK
+                           ELSE
+                               MOVE    "£°¹â³°£·"     TO  HC06-HONKZK
+                           END-IF
                        WHEN    "2"
                            MOVE    "£²ËÜ³°"       TO  HC06-HONKZK
                        WHEN    "4"
@@ -2960,7 +2987,25 @@
                            MOVE    "£¶²È³°"       TO  HC06-HONKZK
                        WHEN    "8"
                            MOVE    "£¸¹â³°£¹"     TO  HC06-HONKZK
-                   END-EVALUATE
+                     END-EVALUATE
+                   ELSE
+                     EVALUATE    RECE02-RECESYUBETU (4:1)
+                       WHEN    "0"
+                           IF      RECE02-KYURATE     =   20
+                               MOVE    "£°¹â³°£¸"     TO  HC06-HONKZK
+                           ELSE
+                               MOVE    "£°¹â³°£·"     TO  HC06-HONKZK
+                           END-IF
+                       WHEN    "2"
+                           MOVE    "£²ËÜ³°"       TO  HC06-HONKZK
+                       WHEN    "4"
+                           MOVE    "£´»°³°"       TO  HC06-HONKZK
+                       WHEN    "6"
+                           MOVE    "£¶²È³°"       TO  HC06-HONKZK
+                       WHEN    "8"
+                           MOVE    "£¸¹â³°£¹"     TO  HC06-HONKZK
+                     END-EVALUATE
+                   END-IF
                END-IF
            END-IF    
       *
@@ -4842,6 +4887,7 @@
                IF      CNT-PAGE        =   1   
                    EVALUATE    RECE02-TEISYOTOKU
                        WHEN    "1"
+                       WHEN    "4"
                            MOVE    "Äã½êÆÀ£±"
                                        TO  HC06-TEKIYO(WRK-LINETEK)
                        WHEN    "2"
@@ -4853,6 +4899,7 @@
                        WHEN    "0"   
                            EVALUATE    RECE02-TEISYOTOKU
                                WHEN    "1"
+                               WHEN    "4"
                                    MOVE    "Äã½êÆÀ£±"
                                        TO  HC06-TEKIYO(WRK-LINETEK)
                                WHEN    "2"
@@ -4862,6 +4909,7 @@
                        WHEN    "1"   
                            EVALUATE    RECE02-TEISYOTOKU
                                WHEN    "1"
+                               WHEN    "4"
                                    MOVE    "Äã½êÆÀ£±"
                                        TO  HC061-TEKIYO(WRK-LINETEK)
                                WHEN    "2"
@@ -4871,6 +4919,7 @@
                        WHEN    "2"   
                            EVALUATE    RECE02-TEISYOTOKU
                                WHEN    "1"
+                               WHEN    "4"
                                    MOVE    "Äã½êÆÀ£±"
                                        TO  HC062-TEKIYO(WRK-LINETEK)
                                WHEN    "2"
@@ -4880,6 +4929,7 @@
                        WHEN    "3"   
                            EVALUATE    RECE02-TEISYOTOKU
                                WHEN    "1"
+                               WHEN    "4"
                                    MOVE    "Äã½êÆÀ£±"
                                        TO  HC063-TEKIYO(WRK-LINETEK)
                                WHEN    "2"

@@ -29,6 +29,9 @@
       *  03.02.01    NACL-∆£∏∂    06/09/05  £≤£∞£∞£∂«Ø£±£∞∑Ó≤˛¿µ¬–±˛
       *                                     ƒπ¥¸£π£∑£¥¬–±˛
       *                                      °≤¨√œ ˝∏¯»Ò¬–±˛
+      *
+      *  03.03.01    NACL-ÃÁœ∆    06/09/27  £≤£∞£∞£∂«Ø£±£∞∑Ó≤˛¿µ¬–±˛
+      *                                     •Ï•ª•◊•»ºÔ Ã 
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -279,6 +282,9 @@
       *
       *     ›∏±«ØŒ°¶…È√¥≥‰πÁªªƒÍ•µ•÷
            COPY    "CPORCSAGECHK.INC".
+      *
+      *    •Ï•ª•◊•»ºÔ Ã ÷µ—•µ•÷
+           COPY    "CPORCSSYUBETUGET.INC".
       *
       *    £ƒ£¬∏°∫˜
            COPY    "MCPDATA.INC".
@@ -1604,9 +1610,9 @@
            END-IF
       *
       *    ø¿∆‡¿Ó√œ ˝∏¯»Ò¬–±˛
-           IF    ( LNK-SYUBETU-PREFNUM     =   "14"           )
+           IF    ( LNK-SYUBETU-PREFNUM     =   "14" )
            AND   ( LNK-SYUBETU-TEISYUTUSAKI (IDXX)
-                                       =   "2"            )
+                                       =   "2"      )
                PERFORM VARYING IDX     FROM    1   BY  1
                        UNTIL   IDX     >       4
                    IF      WRK-RECE61-KOHHKNNUM-O  (IDX)
@@ -1759,7 +1765,7 @@
                            WHEN   "H"
                            WHEN   "I"
                            WHEN   "7"
-                               MOVE   "?"   TO   WK-HONKZKKBN
+                               MOVE   "7"   TO   WK-HONKZKKBN
                        END-EVALUATE
                    WHEN    "031"  THRU    "034"  
                        EVALUATE   WRK-RECE61-HOJOKBN
@@ -1771,7 +1777,7 @@
                                MOVE   "?"   TO   WK-HONKZKKBN
                            WHEN   "H"
                            WHEN   "7"
-                               MOVE   "?"   TO   WK-HONKZKKBN
+                               MOVE   "7"   TO   WK-HONKZKKBN
                        END-EVALUATE
                    WHEN    "060" 
                    WHEN    "068" 
@@ -1787,7 +1793,7 @@
                                        WHEN   "6"
                                            MOVE   "8"  TO  WK-HONKZKKBN
                                        WHEN   "3"
-                                           MOVE   "?"  TO  WK-HONKZKKBN
+                                           MOVE   "7"  TO  WK-HONKZKKBN
                                    END-EVALUATE
                                WHEN    "2"
                                    EVALUATE   WRK-RECE61-HOJOKBN
@@ -1799,7 +1805,7 @@
                                            MOVE   "8"  TO  WK-HONKZKKBN
                                        WHEN   "3"
                                        WHEN   "6"
-                                           MOVE   "?"  TO  WK-HONKZKKBN
+                                           MOVE   "7"  TO  WK-HONKZKKBN
                                    END-EVALUATE
                            END-EVALUATE
                        END-IF     
@@ -1810,7 +1816,7 @@
                            WHEN   "8"
                                MOVE   "?"   TO   WK-HONKZKKBN
                            WHEN   "7"
-                               MOVE   "?"   TO   WK-HONKZKKBN
+                               MOVE   "7"   TO   WK-HONKZKKBN
                        END-EVALUATE
                END-EVALUATE
                IF      WRK-RECE61-KOHID >   ZERO
@@ -1820,7 +1826,7 @@
                        WHEN   "02"
                            MOVE   "?"   TO   WK-RJN
                        WHEN   "03"
-                           MOVE   "?"   TO   WK-RJN
+                           MOVE   "7"   TO   WK-RJN
                    END-EVALUATE
                END-IF
              END-IF
@@ -1834,398 +1840,22 @@
                                                "075"
                    MOVE    "2"          TO  WK-IHO
                END-IF
-           END-IF    
-      *
-      *     ø¿Æ£±£¥«Ø£±£∞∑Ó≤˛¿µ¬–±˛
-           EVALUATE  WK-HONKZKKBN ALSO LNK-SYUBETU-NYUGAIKBN   ALSO
-                    WK-IHO ALSO WK-KOKUHO ALSO WK-RJN ALSO WK-KOHI-CNT
-      * ›∏±√±∆»
-               WHEN    "1"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  ZERO
-                   MOVE    "1111"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "1"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    "1111"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "1"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  ZERO
-                   MOVE    "1112"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "1"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    "1112"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "3"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  ZERO
-                   MOVE    "1113"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "3"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    "1113"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "3"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  ZERO
-                   MOVE    "1114"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "3"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    "1114"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "2"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  ZERO
-                   MOVE    "1115"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "2"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    "1115"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "2"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  ZERO
-                   MOVE    "1116"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "2"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    "1116"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "9"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  ZERO
-                   MOVE    "1117"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "9"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    "1117"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "9"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  ZERO
-                   MOVE    "1118"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "9"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    "1118"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "8"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  ZERO
-                   MOVE    "1119"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "8"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    "1119"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "8"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  ZERO
-                   MOVE    "1110"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "8"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    "1110"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "1"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO   1
-                   MOVE    "1121"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-      * ›∏±§»∏¯»Ò£±ºÔ§Œ ªÕ—
-               WHEN    "1"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  1
-                   MOVE    "1121"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "1"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  1
-                   MOVE    "1121"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "1"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  1
-                   MOVE    "1122"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "1"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  1
-                   MOVE    "1122"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "3"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  1
-                   MOVE    "1123"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "3"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  1
-                   MOVE    "1123"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "3"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  1
-                   MOVE    "1124"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "3"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  1
-                   MOVE    "1124"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "2"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  1
-                   MOVE    "1125"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "2"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  1
-                   MOVE    "1125"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "2"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  1
-                   MOVE    "1126"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "2"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  1
-                   MOVE    "1126"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "9"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  1
-                   MOVE    "1127"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "9"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  1
-                   MOVE    "1127"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "9"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  1
-                   MOVE    "1128"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "9"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  1
-                   MOVE    "1128"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "8"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  1
-                   MOVE    "1129"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "8"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  1
-                   MOVE    "1129"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "8"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  1
-                   MOVE    "1120"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "8"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  1
-                   MOVE    "1120"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-      * ›∏±§»∏¯»Ò£≤ºÔ§Œ ªÕ—
-               WHEN    "1"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  2
-                   MOVE    "1131"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "1"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  2
-                   MOVE    "1131"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "1"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  2
-                   MOVE    "1132"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "1"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  2
-                   MOVE    "1132"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "3"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  2
-                   MOVE    "1133"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "3"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  2
-                   MOVE    "1133"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "3"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  2
-                   MOVE    "1134"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "3"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  2
-                   MOVE    "1134"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "2"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  2
-                   MOVE    "1135"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "2"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  2
-                   MOVE    "1135"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "2"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  2
-                   MOVE    "1136"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "2"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  2
-                   MOVE    "1136"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "9"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  2
-                   MOVE    "1137"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "9"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  2
-                   MOVE    "1137"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "9"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  2
-                   MOVE    "1138"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "9"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  2
-                   MOVE    "1138"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "8"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  2
-                   MOVE    "1139"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "8"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  2
-                   MOVE    "1139"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "8"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  2
-                   MOVE    "1130"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "8"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  2
-                   MOVE    "1130"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-      *∏¯»Ò√±∆»
-               WHEN    ANY   ALSO   "1"    ALSO
-                       SPACE ALSO   SPACE  ALSO  SPACE  ALSO   1
-                   MOVE    "1211"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    ANY   ALSO   "2"    ALSO
-                       SPACE ALSO   SPACE  ALSO  SPACE  ALSO   1
-                   MOVE    "1212"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-      *£≤ºÔ§Œ∏¯»Ò ªÕ—
-               WHEN    ANY   ALSO   "1"    ALSO
-                       SPACE ALSO   SPACE  ALSO  SPACE  ALSO   2
-                   MOVE    "1221"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    ANY   ALSO   "2"    ALSO
-                       SPACE ALSO   SPACE  ALSO  SPACE  ALSO   2
-                   MOVE    "1222"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-      *£≥ºÔ§Œ∏¯»Ò ªÕ—
-               WHEN    ANY   ALSO   "1"    ALSO
-                       SPACE ALSO   SPACE  ALSO  SPACE  ALSO   3
-                   MOVE    "1231"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    ANY   ALSO   "2"    ALSO
-                       SPACE ALSO   SPACE  ALSO  SPACE  ALSO   3
-                   MOVE    "1232"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-      *œ∑øÕ√±∆»
-               WHEN    ANY   ALSO   "1"    ALSO
-                       "1"   ALSO   ANY    ALSO  "9"    ALSO   ZERO
-                   MOVE    "1317"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    ANY   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  "9"    ALSO   ZERO
-                   MOVE    "1317"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    ANY   ALSO   "2"    ALSO
-                       "1"   ALSO   ANY    ALSO  "9"    ALSO   ZERO
-                   MOVE    "1318"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    ANY   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  "9"    ALSO   ZERO
-                   MOVE    "1318"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    ANY   ALSO   "1"    ALSO
-                       "1"   ALSO   ANY    ALSO  "8"    ALSO   ZERO
-                   MOVE    "1319"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    ANY   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  "8"    ALSO   ZERO
-                   MOVE    "1319"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    ANY   ALSO   "2"    ALSO
-                       "1"   ALSO   ANY    ALSO  "8"    ALSO   ZERO
-                   MOVE    "1310"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    ANY   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  "8"    ALSO   ZERO
-                   MOVE    "1310"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-      *œ∑øÕ§»∏¯»Ò£±ºÔ§Œ ªÕ—
-               WHEN    ANY   ALSO   "1"    ALSO
-                       "1"   ALSO   ANY    ALSO  "9"    ALSO   1
-                   MOVE    "1327"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    ANY   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  "9"    ALSO   1
-                   MOVE    "1327"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    ANY   ALSO   "2"    ALSO
-                       "1"   ALSO   ANY    ALSO  "9"    ALSO   1
-                   MOVE    "1328"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    ANY   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  "9"    ALSO   1
-                   MOVE    "1328"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    ANY   ALSO   "1"    ALSO
-                       "1"   ALSO   ANY    ALSO  "8"    ALSO   1
-                   MOVE    "1329"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    ANY   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  "8"    ALSO   1
-                   MOVE    "1329"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    ANY   ALSO   "2"    ALSO
-                       "1"   ALSO   ANY    ALSO  "8"    ALSO   1
-                   MOVE    "1320"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    ANY   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  "8"    ALSO   1
-                   MOVE    "1320"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-      *œ∑øÕ§»∏¯»Ò£≤ºÔ§Œ ªÕ—
-               WHEN    ANY   ALSO   "1"    ALSO
-                       "1"   ALSO   ANY    ALSO  "9"    ALSO   2
-                   MOVE    "1337"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    ANY   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  "9"    ALSO   2
-                   MOVE    "1337"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    ANY   ALSO   "2"    ALSO
-                       "1"   ALSO   ANY    ALSO  "9"    ALSO   2
-                   MOVE    "1338"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    ANY   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  "9"    ALSO   2
-                   MOVE    "1338"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    ANY   ALSO   "1"    ALSO
-                       "1"   ALSO   ANY    ALSO  "8"    ALSO   2
-                   MOVE    "1339"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    ANY   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  "8"    ALSO   2
-                   MOVE    "1339"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    ANY   ALSO   "2"    ALSO
-                       "1"   ALSO   ANY    ALSO  "8"    ALSO   2
-                   MOVE    "1330"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    ANY   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  "8"    ALSO   2
-                   MOVE    "1330"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-      *¬‡ø¶º‘√±∆»
-               WHEN    "1"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    "1411"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "1"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    "1412"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "3"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    "1413"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "3"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    "1414"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "2"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    "1415"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "2"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    "1416"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "9"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    "1417"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "9"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    "1418"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "8"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    "1409"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "8"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    "1410"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-      *¬‡ø¶º‘§»∏¯»Ò£±ºÔ§Œ ªÕ—
-               WHEN    "1"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  1
-                   MOVE    "1421"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "1"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  1
-                   MOVE    "1422"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "3"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  1
-                   MOVE    "1423"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "3"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  1
-                   MOVE    "1424"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "2"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  1
-                   MOVE    "1425"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "2"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  1
-                   MOVE    "1426"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "9"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  1
-                   MOVE    "1427"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "9"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  1
-                   MOVE    "1428"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "8"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  1
-                   MOVE    "1429"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "8"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  1
-                   MOVE    "1420"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-      *¬‡ø¶º‘§»∏¯»Ò£≤ºÔ§Œ ªÕ—
-               WHEN    "1"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  2
-                   MOVE    "1431"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "1"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  2
-                   MOVE    "1432"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "3"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  2
-                   MOVE    "1433"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "3"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  2
-                   MOVE    "1434"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "2"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  2
-                   MOVE    "1435"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "2"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  2
-                   MOVE    "1436"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "9"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  2
-                   MOVE    "1437"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "9"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  2
-                   MOVE    "1438"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "8"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  2
-                   MOVE    "1439"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-               WHEN    "8"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  2
-                   MOVE    "1430"      TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-           END-EVALUATE
-      *     
-      *    ∆√ ÃŒ≈Õ‹»Ò§Œ§»§≠§Œ•Ï•ª•◊•»ºÔ Ã§Ú ‘Ω∏
-           IF      WRK-RECE61-HKNNUM     =   "068"   OR  "069"
-               MOVE    "6666"        TO  LNK-SYUBETU-RECESYUBETU(IDXX)
            END-IF
       *
-      *    ¿ﬂƒÍ§ §∑§Œ§»§≠§œ…‘Ã¿ ¨§À§π§Î
-           IF      LNK-SYUBETU-RECESYUBETU(IDXX)
-                                         =   SPACE
-               MOVE    "0000"        TO  LNK-SYUBETU-RECESYUBETU(IDXX)
-           END-IF
+           INITIALIZE                  ORCSSYUBETUGETAREA  
+           MOVE    WK-KOKUHO           TO  LNK-SYUBETUGET-KOKUHO
+           MOVE    WK-IHO              TO  LNK-SYUBETUGET-IHO
+           MOVE    WK-RJN              TO  LNK-SYUBETUGET-RJN
+           MOVE    WK-KOHI-CNT         TO  LNK-SYUBETUGET-KOHI-CNT
+           MOVE    WK-HONKZKKBN        TO  LNK-SYUBETUGET-HONKZKKBN
+           MOVE    LNK-SYUBETU-NYUGAIKBN
+                                       TO  LNK-SYUBETUGET-NYUGAIKBN
+           MOVE    LNK-SYUBETU-SRYYM   TO  LNK-SYUBETUGET-SRYYM
+           MOVE    WRK-RECE61-HKNNUM   TO  LNK-SYUBETUGET-HKNNUM
+           CALL    "ORCSSYUBETUGET"    USING   ORCSSYUBETUGETAREA
+      *
+           MOVE    LNK-SYUBETUGET-RECESYUBETU
+                                       TO  LNK-SYUBETU-RECESYUBETU(IDXX)
       *??
       *     DISPLAY "SYUBETU=" LNK-SYUBETU-RECESYUBETU(IDXX) 
       *??          

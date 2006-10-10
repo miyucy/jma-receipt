@@ -214,6 +214,9 @@
       *                                     載方法の修正
       *  03.03.03    NACL-藤原    06/10/04  同日に複数の外来迅速検体検査
       *                                     加算を算定したときの記載
+      *  03.03.04    NACL-藤原    06/10/10  ２００６年１０月改正対応
+      *                                     一部負担金・食事療養費・生活
+      *                                     療養日標準負担額区分コード
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1791,6 +1794,8 @@
                        MOVE    "3"             TO  WRK-DATA
                    WHEN    "2"
                        MOVE    "1"             TO  WRK-DATA
+                   WHEN    "4"
+                       MOVE    "4"             TO  WRK-DATA
                END-EVALUATE
            END-IF
            MOVE    1                   TO  WRK-NAGASA
