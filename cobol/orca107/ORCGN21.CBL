@@ -46,6 +46,7 @@
       * 02.02.04     NACL-森脇     06/09/21  参照処理前スパセット
       * 02.02.05     NACL-森脇     06/09/29  登録後内容スパクリア
       * 02.02.06     NACL-森脇     06/10/06  薬剤名クリア処理修正
+      * 02.02.07     NACL-森脇     06/10/10  画面リスト位置固定処理
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -74,6 +75,9 @@
            03  FLG-OK              PIC 9(01).
            03  FLG-GAZO            PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
+      *----(02.02.07)--ADD-START---
+           03  FLG-ROW             PIC 9(01).
+      *----(02.02.07)--ADD-END-----
       *
       *    カウント領域
        01  CNT-AREA.
@@ -113,6 +117,12 @@
            03  WRK-GMN-CUR         PIC 9(02).
            03  WRK-N21IDMSG        PIC X(70).
            03  WRK-ZZZZ9           PIC ZZZZ9.
+      *----(02.02.07)--ADD-START---
+           03  WRK-SELNUM          PIC 9(03). 
+      *
+       01  WRK-ROW-AREA.
+           03  WRK-ROW             PIC S9(9)   BINARY.
+      *----(02.02.07)--ADD-END-----
       *
       *----(02.02.03)--ADD-START---
       *    全角を行毎に編集
@@ -230,6 +240,11 @@
       *    主　　処理
       *****************************************************************
        000-PROC-SEC            SECTION.
+      *
+           INITIALIZE          FLG-AREA
+           INITIALIZE          CNT-AREA
+           INITIALIZE          IDX-AREA
+           INITIALIZE          WRK-AREA
       *
            MOVE    SPA-COMMON  TO  SPA-AREA
            MOVE    SPA-WORK    TO  SPA-N21KYOUTU
@@ -410,6 +425,9 @@
            INITIALIZE          SPA-N21-AREA
            INITIALIZE          WRK-PIN-AREA
       *
+      *----(02.02.07)--ADD-START---
+           MOVE    1           TO  FLG-ROW
+      *----(02.02.07)--ADD-END-----
            MOVE    2           TO  SPA-GMN-CUR
       *
            PERFORM 900-SYS1030-READ-SEC
@@ -620,14 +638,25 @@
            END-IF
       *----(00.01.01)--ADD-END------
       *
-      *    行選択
+      *----(02.02.07)--UPD-START----
+           MOVE    ZERO                TO  WRK-SELNUM
+      *     
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >       200
-               IF    N21-SELECT(IDX)  =   "T"
-                   MOVE    IDX             TO  SPA-GMN-SELNUM
-                   MOVE    200     TO  IDX
-               END-IF
+                   UNTIL       IDX     >   SPA-GMN-MAX
+               IF      N21-SELECT (IDX)    =   "T"
+                   IF      IDX             =   SPA-GMN-SELNUM
+                       CONTINUE
+                   ELSE        
+                       MOVE    IDX             TO  WRK-SELNUM
+                       MOVE    SPA-GMN-MAX     TO  IDX
+                   END-IF
+               END-IF    
            END-PERFORM
+      *
+           IF      WRK-SELNUM          >   ZERO
+               MOVE    WRK-SELNUM          TO  SPA-GMN-SELNUM
+           END-IF
+      *----(02.02.07)--UPD-END-----
       *
       *----(02.02.03)--ADD-START---
            IF      SPA-GMN-ENTRY       NOT =   SPA-NAI-ENTRY
@@ -1905,7 +1934,22 @@
       *****************************************************************
        500-GMNHEN-SEC          SECTION.
       *
+      *----(02.02.07)--ADD-START---
+           MOVE    N21-ROW             TO  WRK-ROW
+      *----(02.02.07)--ADD-END-----
+      *
            MOVE    SPACE               TO  N21
+      *
+      *----(02.02.07)--ADD-START---
+           EVALUATE    FLG-ROW
+           WHEN    1
+               MOVE    ZERO            TO  N21-ROW
+               MOVE    ZERO            TO  N21-ROWATTR
+           WHEN    OTHER
+               MOVE    WRK-ROW         TO  N21-ROW
+               MOVE    ZERO            TO  N21-ROWATTR
+           END-EVALUATE
+      *----(02.02.07)--ADD-END-----
       *
            MOVE    SPA-GMN-KENCD       TO  N21-KENCD
            MOVE    SPA-GMN-KENNAIYO    TO  N21-KENNAIYO
@@ -1930,6 +1974,8 @@
                    MOVE    "F"         TO  N21-SELECT(IDX)
                END-IF
            END-PERFORM
+           DISPLAY "N21-ROW=" N21-ROW
+           DISPLAY "N21-ROWATTR=" N21-ROWATTR
       *
            MOVE    SPA-GMN-MAX     TO  N21-COUNT
       *
