@@ -81,6 +81,7 @@
       *  03.02.01    NACL-ÌçÏÆ    06/08/10  ¹âÎð¼Ô¾å¸Â³Û·Ð²áÁ¼ÃÖÂÐ±þ
       *  03.02.02    NACL-ÌçÏÆ    06/08/18  Ê¡²¬¸©µëÉÕ³°ÅÀ¿ô·×»»½¤Àµ
       *  03.02.03    NACL-ÌçÏÆ    06/09/05  ·ò¹¯ÊÝ¸±Ë¡£±£°·î²þÀµÂÐ±þ
+      *  03.02.04    NACL-ÌçÏÆ    06/10/04  ·×»»¤ÎÍ¥Àè½ç°ÌÊÔ½¸½¤Àµ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -141,6 +142,8 @@
               03   WRK-HI-ED               PIC 9(02).
       *       ¸©ÈÖ¹æ
               03   WRK-PREFNUM             PIC 9(02).
+              03   WRK-DAY-TX    OCCURS   31.
+                 04   WRK-DAY5X            PIC 9(04).
       *
        01  WRK-DAY-TABLE.
            02  WRK-DAY-TBL       OCCURS    2.
@@ -152,7 +155,9 @@
            02  WRK-HANBETU-TBL OCCURS   10.
               03 WRK-HANBETU-KEY.
                 05 WRK-HANBETU-SKYYM       PIC X(06).
-                05 WRK-HANBETU-YUSENYMD    PIC X(08).
+                05 WRK-HANBETU-YUSENYMD.
+                   07 WRK-HANBETU-YUSENYM  PIC 9(06).
+                   07 WRK-HANBETU-YUSENDD  PIC 9(02).
                 05 WRK-HANBETU-YUSENBAN    PIC 9(03).
                 05 WRK-HANBETU-KAISHI      PIC X(02).
               03 WRK-HANBETU-HKNCOMBINUM   PIC 9(04).
@@ -286,6 +291,8 @@
            03  IDX1                        PIC 9(02).
            03  IDX2                        PIC 9(02).
            03  IDX3                        PIC 9(03).
+           03  IDX4                        PIC 9(02).
+           03  IDX5                        PIC 9(02).
            03  IDX6                        PIC 9(02).
            03  SYU-IDX                     PIC 9(02).
            03  NYUINACT-IDX                PIC 9(02).
@@ -933,6 +940,17 @@
              END-IF
       *
            END-PERFORM.
+      **
+           PERFORM    VARYING   IDY   FROM   1   BY   1
+                       UNTIL    IDY    >    31
+      *
+             IF       NACCT-DAY(IDY)   NOT =  ZERO
+               IF     NACCT-ZAISKBKBN    =    "5"
+                    MOVE   NACCT-DAY(IDY)  TO   WRK-DAY5X(IDX IDY)
+               END-IF 
+             END-IF
+      *
+           END-PERFORM.
       *
        NYUIN-DAY-TAIHI-EXT.
            EXIT.
@@ -1160,6 +1178,29 @@
                  MOVE "01"            TO WRK-HANBETU-YUSENYMD(IDX)(7:2)
               ELSE
                  MOVE COMB-TEKSTYMD   TO WRK-HANBETU-YUSENYMD(IDX)
+              END-IF
+      *
+              MOVE     ZERO    TO    IDX5
+              IF   WRK-HANBETU-SKYYM(IDX)  =   WRK-SKYYM(1)
+                   PERFORM   VARYING   IDX4   FROM  1  BY   1
+                              UNTIL    IDX4    >   31
+                     IF   WRK-DAY5X(1 IDX4)   NOT =  ZERO
+                         MOVE     IDX4    TO   IDX5
+                         MOVE      31     TO   IDX4
+                     END-IF
+                   END-PERFORM
+              END-IF
+              IF   WRK-HANBETU-SKYYM(IDX)  =   WRK-SKYYM(2)
+                   PERFORM   VARYING   IDX4   FROM  1  BY   1
+                              UNTIL    IDX4    >   31
+                     IF   WRK-DAY5X(2 IDX4)   NOT =  ZERO
+                         MOVE     IDX4    TO   IDX5
+                         MOVE      31     TO   IDX4
+                     END-IF
+                   END-PERFORM
+              END-IF
+              IF   WRK-HANBETU-YUSENDD(IDX)  <  IDX5
+                  MOVE    IDX5   TO   WRK-HANBETU-YUSENDD(IDX)
               END-IF
       *
       *       ÆÃ¼ì·×»»¥Õ¥é¥°¥»¥Ã¥È
