@@ -105,6 +105,7 @@
       *  03.02.01    NACL-ÌçÏÆ    06/08/10  ¹âÎð¼Ô¾å¸Â³Û·Ð²áÁ¼ÃÖÂÐ±þ
       *  03.02.02    NACL-ÌçÏÆ    06/09/08  ¥Õ¥¤¥ë¥à¤ÎÃ±²ÁÊÔ½¸½¤Àµ
       *  03.03.01    NACL-ÌçÏÆ    06/09/27  ÆÃµ­»ö¹à£±£¶Ä¹£²ÂÐ±þ
+      *  03.03.02    NACL-ÌçÏÆ    06/10/11  Æþ±¡»þÀ¸³èÎÅÍÜÈñÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -280,6 +281,7 @@
            03  FLG-SYODOU-COM                          PIC 9(01).
            03  FLG-TAIGAI                              PIC 9(01).
            03  FLG-RINYAK                              PIC 9(01).
+           03  FLG-KHNRYO-SKJ                          PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -5960,6 +5962,8 @@
       *****************************************************************
        260-FTN-SET-SEC                SECTION.
       *
+           MOVE    ZERO                 TO      FLG-KHNRYO-SKJ
+      *
            MOVE    ZERO                 TO      FLG-NYUINRYO
       *
            INITIALIZE                           SYUNOU-REC
@@ -5995,6 +5999,7 @@
       *    ¿©»öÎ¬¾ÎÊÔ½¸
       *
            IF   RECE82-SRYYM  >= "200604"
+           AND  RECE82-SRYYM  <  "200610"
                 PERFORM    2602-SKJ-RAYKU-HENSYU-SEC
            END-IF
       *
@@ -6012,7 +6017,78 @@
                PERFORM         26011-NYUINRYOFLG-SET-SEC
            END-IF
       *
-           IF   RECE82-SRYYM  >= "200604"
+           IF    RECE82-SRYYM  >= "200610"
+      *
+             PERFORM  VARYING  ID1    FROM    1   BY  1
+                       UNTIL   ID1      >    10
+      *
+               IF  SYU-SHOKUJI(ID1)   =   ZERO
+                   CONTINUE
+               ELSE
+                   EVALUATE    ID1
+                     WHEN       1
+                     WHEN       5
+                      ADD   SYU-SHOKUJI-NISSU(ID1)  TO
+                                       RECE82-SHOKUJIKHNNISSU(1)
+                      IF   FLG-KHNRYO-SKJ   =   ZERO
+                        IF   RECE82-SHOKUJIKHNRYO(1)     =  ZERO
+                          MOVE  SYU-SHOKUJI(ID1)
+                                     TO  RECE82-SHOKUJIKHNRYO(1)
+                        ELSE
+                          IF RECE82-SHOKUJIKHNRYO(1) NOT =
+                                                SYU-SHOKUJI(ID1)
+                            MOVE   ZERO  TO  RECE82-SHOKUJIKHNRYO(1)
+                            MOVE   1     TO  FLG-KHNRYO-SKJ
+                          END-IF
+                        END-IF
+                      END-IF
+                      MOVE  "£±"   TO  RECE82-SHOKUJISYUBETU(1)
+                     WHEN       2
+                     WHEN       6
+                      ADD   SYU-SHOKUJI-NISSU(ID1)  TO
+                                       RECE82-SHOKUJIKHNNISSU(1)
+                      IF   FLG-KHNRYO-SKJ   =   ZERO
+                        IF   RECE82-SHOKUJIKHNRYO(1)     =  ZERO
+                          MOVE  SYU-SHOKUJI(ID1)
+                                     TO  RECE82-SHOKUJIKHNRYO(1)
+                        ELSE
+                          IF RECE82-SHOKUJIKHNRYO(1) NOT =
+                                                SYU-SHOKUJI(ID1)
+                            MOVE   ZERO  TO  RECE82-SHOKUJIKHNRYO(1)
+                            MOVE   1     TO  FLG-KHNRYO-SKJ
+                          END-IF
+                        END-IF
+                      END-IF
+                      MOVE  "£²"   TO  RECE82-SHOKUJISYUBETU(1)
+                     WHEN       3
+                     WHEN       7
+                      ADD   SYU-SHOKUJI-NISSU(ID1)  TO
+                                       RECE82-SHOKUJIKHNNISSU(2)
+                      MOVE  SYU-SHOKUJI(ID1)        TO
+                                       RECE82-SHOKUJIKHNRYO(2)
+                      MOVE  "ÆÃÊÌ" TO  RECE82-SHOKUJISYUBETU(2)
+                     WHEN       4
+                     WHEN       8
+                      ADD   SYU-SHOKUJI-NISSU(ID1)  TO
+                                       RECE82-SHOKUJIKHNNISSU(3)
+                      MOVE  SYU-SHOKUJI(ID1)        TO
+                                       RECE82-SHOKUJIKHNRYO(3)
+                      MOVE  "¿©Æ²" TO  RECE82-SHOKUJISYUBETU(3)
+                     WHEN       9
+                     WHEN      10
+                      ADD   SYU-SHOKUJI-NISSU(ID1)  TO
+                                       RECE82-SHOKUJIKHNNISSU(4)
+                      MOVE  SYU-SHOKUJI(ID1)        TO
+                                       RECE82-SHOKUJIKHNRYO(4)
+                      MOVE  "´Ä¶­" TO  RECE82-SHOKUJISYUBETU(4)
+                   END-EVALUATE
+               END-IF
+      *
+             END-PERFORM
+      *
+           ELSE
+      *
+            IF   RECE82-SRYYM  >= "200604"
       *
              PERFORM  VARYING  ID1    FROM    1   BY  1
                        UNTIL   ID1      >     4
@@ -6028,7 +6104,7 @@
       *
              END-PERFORM
       *
-           ELSE
+            ELSE
       *
              PERFORM  VARYING  ID1    FROM    1   BY  1
                        UNTIL   ID1      >     5
@@ -6093,6 +6169,8 @@
                    MOVE  SYU-SHOKUJI(7)        TO
                                        RECE82-SHOKUJIKHNRYO(4)
              END-IF
+      *
+            END-IF
       *
            END-IF
       *

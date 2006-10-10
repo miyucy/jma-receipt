@@ -31,6 +31,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
+      *  03.03.01    NACL-門脇    06/10/11  入院時生活療養費対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1685,6 +1686,8 @@
                      RECE82-SHOKUJISYUBETU (2) DELIMITED   BY  SPACE
                      "　"                      DELIMITED   BY  SIZE
                      RECE82-SHOKUJISYUBETU (3) DELIMITED   BY  SPACE
+                     "　"                      DELIMITED   BY  SIZE
+                     RECE82-SHOKUJISYUBETU (4) DELIMITED   BY  SPACE
                                                INTO  HC23-KIJYUN
            END-STRING 
            PERFORM   VARYING   IDX   FROM    1   BY  1

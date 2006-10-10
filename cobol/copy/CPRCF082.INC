@@ -33,6 +33,7 @@
       *
       *  02.09.01    NACL-藤原    06/04/14  ２００６年４月改正対応
       *                                     外来迅速検体検査加算フラグ追加
+      *  03.03.01    NACL-門脇    06/10/10  入院時生活療養費食事対応
       ************************************************************
       *01  RECE82-REC.
            03  RECE82-KEY.
@@ -217,7 +218,7 @@
            03  RECE82-HEYA-NISSU          PIC  9(02).
       *
       *食事種別情報
-           03  RECE82-SHOKUJISYUINF       OCCURS   3.
+           03  RECE82-SHOKUJISYUINF       OCCURS   4.
       *食事種別
                05  RECE82-SHOKUJISYUBETU  PIC  X(04).
       *

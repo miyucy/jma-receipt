@@ -54,6 +54,7 @@
       *  03.00.01    NACL-藤原    06/06/20  レセコメントを保険組合せ・
       *                                     症状詳記区分順に記載する
       *  03.01.01    NACL-門脇    06/07/13  項目クリア追加
+      *  03.03.01    NACL-門脇    06/10/11  入院時生活療養費対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1715,6 +1716,8 @@
                      RECE82-SHOKUJISYUBETU (2) DELIMITED   BY  SPACE
                      "　"                      DELIMITED   BY  SIZE
                      RECE82-SHOKUJISYUBETU (3) DELIMITED   BY  SPACE
+                     "　"                      DELIMITED   BY  SIZE
+                     RECE82-SHOKUJISYUBETU (4) DELIMITED   BY  SPACE
                                                INTO  HC23-KIJYUN
            END-STRING 
            PERFORM   VARYING   IDX   FROM    1   BY  1
