@@ -8180,7 +8180,6 @@
                                        RECE62-SHOKUJIKHNRYO(2)
                       MOVE  "ÆÃÊÌ" TO  RECE62-SHOKUJISYUBETU(1)
                      WHEN       4
-                     WHEN       8
                       ADD   SYU-SHOKUJI-NISSU(ID1)  TO
                                        RECE62-SHOKUJIKHNNISSU(3)
                       MOVE  SYU-SHOKUJI(ID1)        TO
@@ -8192,17 +8191,27 @@
                       MOVE  SYU-SHOKUJI(ID1)        TO
                                        RECE62-SHOKUJIKHNRYO-SEI(1)
                       MOVE  "£±"   TO  RECE62-SHOKUJISYUBETU-KHNSEI
+                      MOVE  "1"    TO  RECE62-SEIKATURYOYO
                      WHEN       6
                       ADD   SYU-SHOKUJI-NISSU(ID1)  TO
                                        RECE62-SHOKUJIKHNNISSU-SEI(1)
                       MOVE  SYU-SHOKUJI(ID1)        TO
                                        RECE62-SHOKUJIKHNRYO-SEI(1)
                       MOVE  "£²"   TO  RECE62-SHOKUJISYUBETU-KHNSEI
+                      MOVE  "1"    TO  RECE62-SEIKATURYOYO
                      WHEN       7
                       ADD   SYU-SHOKUJI-NISSU(ID1)  TO
                                        RECE62-SHOKUJIKHNNISSU-SEI(2)
                       MOVE  SYU-SHOKUJI(ID1)        TO
                                        RECE62-SHOKUJIKHNRYO-SEI(2)
+                      MOVE  "1"    TO  RECE62-SEIKATURYOYO
+                     WHEN       8
+                      ADD   SYU-SHOKUJI-NISSU(ID1)  TO
+                                       RECE62-SHOKUJIKHNNISSU(3)
+                      MOVE  SYU-SHOKUJI(ID1)        TO
+                                       RECE62-SHOKUJIKHNRYO(3)
+                      MOVE  "¿©Æ²" TO  RECE62-SHOKUJISYUBETU(2)
+                      MOVE  "1"    TO  RECE62-SEIKATURYOYO
                      WHEN       9
                      WHEN      10
                       ADD   SYU-SHOKUJI-NISSU(ID1)  TO
@@ -8210,6 +8219,7 @@
                       MOVE  SYU-SHOKUJI(ID1)        TO
                                        RECE62-SHOKUJIKHNRYO(4)
                       MOVE  "´Ä¶­" TO  RECE62-SHOKUJISYUBETU(3)
+                      MOVE  "1"    TO  RECE62-SEIKATURYOYO
                    END-EVALUATE
                END-IF
       *

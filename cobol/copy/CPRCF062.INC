@@ -340,6 +340,9 @@
       *食事日数
                05  RECE62-SHOKUJIKHNNISSU-ETC PIC  9(02).
       *
+      *入院時生活療養費に係る生活療養食事算定フラグ
+           03  RECE62-SEIKATURYOYO        PIC  X(01).
+      *
       *最終診療科
            03  RECE62-LASTSRYKA           PIC  X(02).
       *
