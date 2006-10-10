@@ -112,7 +112,10 @@
       *    °ì»þÎÎ°è
        01  WRK-AREA.
       *
-           03  WRK-SYS5000-COUNT           PIC 9(02).
+      *    ¿ÇÎÅ¥³¡¼¥É·×½¸·×ÍÑ
+           03  WRK-SRYCD-X                 PIC X(09).
+           03  WRK-SRYCD-9    REDEFINES    WRK-SRYCD-X
+                                           PIC 9(09).
       *
       *    £Á£Ä£ÌÅÀ¿ôÁ´³ÑÊÑ´¹ÎÎ°è
        01  TBL-ADLTEN-AREA.
@@ -399,6 +402,7 @@
              UNTIL   IDX    >   31
                IF   LNK-RYOCOM-NYUINKBN(IDX)  =  "1"
                   MOVE   "840000103"   TO   LNK-RYOCOM-ADL-SRYCD(IDX)
+                  ADD    1             TO   LNK-RYOCOM-MEISAISU(IDX)
                   IF   LNK-RYOCOM-ADL-TEN(IDX)   =  ZERO
                       MOVE  "£°£°"     TO
                                        LNK-RYOCOM-ADL-TEN-MOJI(IDX)
@@ -407,6 +411,26 @@
                       MOVE  TBL-ADLTEN(IDX1)
                                    TO  LNK-RYOCOM-ADL-TEN-MOJI(IDX)
                   END-IF
+               END-IF
+           END-PERFORM
+      *
+      *    ¿ÇÎÅ¥³¡¼¥É·×¤Î¼èÆÀ
+           PERFORM   VARYING   IDX   FROM  1  BY  1
+             UNTIL   IDX    >   31
+               IF   LNK-RYOCOM-NYUINKBN(IDX)  =  "1"
+                  PERFORM   VARYING   IDX1   FROM   1  BY  1
+                    UNTIL  (IDX1   >   30)    OR
+                           (LNK-RYOCOM-IRYO-SRYCD(IDX IDX1) = SPACE)
+                        MOVE   LNK-RYOCOM-IRYO-SRYCD(IDX IDX1)
+                                           TO    WRK-SRYCD-X
+                        ADD    WRK-SRYCD-9 TO
+                                    LNK-RYOCOM-SRYCDTOTAL(IDX)
+                  END-PERFORM
+                  MOVE   LNK-RYOCOM-ADL-SRYCD(IDX)  TO  WRK-SRYCD-X
+                  ADD    WRK-SRYCD-9   TO  LNK-RYOCOM-SRYCDTOTAL(IDX)
+                  COMPUTE   LNK-RYOCOM-SRYCDTOTAL2(IDX)   =
+                            LNK-RYOCOM-SRYCDTOTAL(IDX)   +
+                            LNK-RYOCOM-ADL-TEN(IDX)
                END-IF
            END-PERFORM
       *

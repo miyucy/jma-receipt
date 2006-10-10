@@ -95,6 +95,7 @@
            03  TSY90-IDX                   PIC 9(02).
            03  ETC-IDX                     PIC 9(02).
            03  IDX-TSY90                   PIC 9(02).
+           03  IDX-ADL                     PIC 9(02).
       *
       *    コンスタント値
        01  CONSTANT-AREA.
@@ -163,6 +164,9 @@
                    07  WRK-SO-SRYCDTOTAL   PIC 9(14).
                    07  WRK-SO-TEN          PIC 9(07).
                    07  WRK-SO-KAISU        PIC 9(02).
+                   07  WRK-SO-ADL-TEN-MOJI PIC X(04).
+                   07  WRK-SO-ADL-DAY-ST   PIC 9(02).
+                   07  WRK-SO-ADL-DAY-ED   PIC 9(02).
                    07  WRK-SO-GAIHAKU-TBL.
                      09  WRK-SO-GAIHAKU-KBN  PIC 9(01)  OCCURS 31.
       *
@@ -431,6 +435,9 @@
       *
       *    保険算定用年齢・割合計算サブ
            COPY    "CPORCSAGECHK.INC".
+      *
+      *    療養レセコメント取得サブ
+           COPY    "CPORCSRYOCOM.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -1419,6 +1426,93 @@
       **          DISPLAY  "WRK-SO-KAISU    = " WRK-SO-KAISU(IDX1)
       **     END-PERFORM
       *
+      *    医療区分、ＡＤＬ点数情報の取得
+           INITIALIZE                          ORCSRYOCOM-AREA
+           MOVE    LNK-NYURECEDEN-HOSPID   TO  LNK-RYOCOM-HOSPID
+           MOVE    LNK-NYURECEDEN-PTID     TO  LNK-RYOCOM-PTID
+           MOVE    LNK-NYURECEDEN-SANTEIYM TO  LNK-RYOCOM-SANTEIYM
+           CALL    "ORCSRYOCOM"     USING  ORCSRYOCOM-AREA
+           IF      LNK-RYOCOM-RC           NOT =  ZERO
+               DISPLAY  "LNK-RYOCOM-RC = " LNK-RYOCOM-RC
+           END-IF
+      *
+           PERFORM   VARYING  IDX1   FROM  1   BY   1
+                     UNTIL    IDX1    >   31
+             DISPLAY "IDX1 = " IDX1
+             DISPLAY "LNK-RYOCOM-NYUINKBN = " LNK-RYOCOM-NYUINKBN(IDX1)
+             DISPLAY "LNK-RYOCOM-MEISAISU = " LNK-RYOCOM-MEISAISU(IDX1)
+             DISPLAY "LNK-RYOCOM-SRYCDTOTAL = " 
+                                           LNK-RYOCOM-SRYCDTOTAL(IDX1)
+             DISPLAY "LNK-RYOCOM-SRYCDTOTAL2 = " 
+                                           LNK-RYOCOM-SRYCDTOTAL2(IDX1)
+             DISPLAY "LNK-RYOCOM-IRYO-SRYCD (IDX1 1) = "
+                                   LNK-RYOCOM-IRYO-SRYCD(IDX1 1)
+             DISPLAY "LNK-RYOCOM-IRYO-SRYCD (IDX1 2) = "
+                                   LNK-RYOCOM-IRYO-SRYCD(IDX1 2)
+             DISPLAY "LNK-RYOCOM-IRYO-SRYCD (IDX1 3) = "
+                                   LNK-RYOCOM-IRYO-SRYCD(IDX1 3)
+             DISPLAY "LNK-RYOCOM-IRYO-SRYCD (IDX1 4) = "
+                                   LNK-RYOCOM-IRYO-SRYCD(IDX1 4)
+             DISPLAY "LNK-RYOCOM-IRYO-SRYCD (IDX1 5) = "
+                                   LNK-RYOCOM-IRYO-SRYCD(IDX1 5)
+             DISPLAY "LNK-RYOCOM-ADL-SRYCD (IDX1) = "
+                                   LNK-RYOCOM-ADL-SRYCD(IDX1)
+             DISPLAY "LNK-RYOCOM-ADL-TEN (IDX1) = "
+                                   LNK-RYOCOM-ADL-TEN(IDX1)
+             DISPLAY "LNK-RYOCOM-ADL-TEN-MOJI (IDX1) = "
+                                   LNK-RYOCOM-ADL-TEN-MOJI(IDX1)
+           END-PERFORM
+      *
+      *    医療区分、ＡＤＬ点数情報の返却結果を反映
+           IF     LNK-RYOCOM-RC   =   ZERO
+             PERFORM    VARYING   IDX1   FROM  1  BY  1
+                      UNTIL     (IDX1   >     31)
+               IF   (LNK-RYOCOM-NYUINKBN(IDX1)   =   "1")   AND
+                    (LNK-RYOCOM-MEISAISU(IDX1)   NOT =  ZERO)
+                   MOVE    ZERO     TO   IDX-ADL
+                   ADD  LNK-RYOCOM-SRYCDTOTAL2(IDX1)
+                                    TO  WRK-SO-SRYCDTOTAL(IDX1)
+                   PERFORM   VARYING  IDX2   FROM   1  BY  1
+                     UNTIL   (IDX2     >    20)       OR
+                             (LNK-RYOCOM-IRYO-SRYCD(IDX1 IDX2) = SPACE)
+                         COMPUTE IDX-ADL = WRK-SO-MEISAISU(IDX1) +
+                                           IDX2
+                         MOVE  LNK-RYOCOM-IRYO-SRYCD(IDX1 IDX2)
+                                        TO  WRK-SO-SRYCD(IDX1 IDX-ADL)
+                   END-PERFORM
+                   IF    IDX-ADL     =   ZERO
+                       COMPUTE  IDX-ADL  =  WRK-SO-MEISAISU(IDX1)  +  1
+                   ELSE
+                       ADD   1      TO   IDX-ADL
+                   END-IF
+                   MOVE  LNK-RYOCOM-ADL-SRYCD(IDX1)
+                                        TO  WRK-SO-SRYCD(IDX1 IDX-ADL)
+                   MOVE  LNK-RYOCOM-ADL-TEN-MOJI(IDX1)
+                                        TO  WRK-SO-ADL-TEN-MOJI(IDX1)
+                   ADD   LNK-RYOCOM-MEISAISU(IDX1)
+                                        TO  WRK-SO-MEISAISU(IDX1)
+               END-IF
+             END-PERFORM
+           END-IF
+      *
+           PERFORM    VARYING   IDX1   FROM  1  BY  1
+                      UNTIL     (IDX1   >     31)
+                DISPLAY  "IDX1 = " IDX1
+                DISPLAY  "WRK-SO-HKNCOMBI-DAY = " WRK-SO-HKNCOMBI-DAY
+                                                               (IDX1)
+                DISPLAY  "WRK-SO-SRYKBN   = " WRK-SO-SRYKBN(IDX1)
+                DISPLAY  "WRK-SO-MEISAISU = " WRK-SO-MEISAISU(IDX1)
+                DISPLAY  "WRK-SO-SRYCD(1) = " WRK-SO-SRYCD(IDX1 1)
+                DISPLAY  "WRK-SO-SRYCD(2) = " WRK-SO-SRYCD(IDX1 2)
+                DISPLAY  "WRK-SO-SRYCD(3) = " WRK-SO-SRYCD(IDX1 3)
+                DISPLAY  "WRK-SO-SRYCD(4) = " WRK-SO-SRYCD(IDX1 4)
+                DISPLAY  "WRK-SO-SRYCD(5) = " WRK-SO-SRYCD(IDX1 5)
+                DISPLAY  "WRK-SO-SRYCDTOTAL = " WRK-SO-SRYCDTOTAL(IDX1)
+                DISPLAY  "WRK-SO-TEN      = " WRK-SO-TEN(IDX1)
+                DISPLAY  "WRK-SO-KAISU    = " WRK-SO-KAISU(IDX1)
+           END-PERFORM
+      *
+      *
       *    再構築した入院会計情報から同一剤のまとめ処理
            PERFORM      VARYING    IDX1   FROM   1  BY  1
                         UNTIL      IDX1   >   31
@@ -1488,8 +1582,13 @@
                      PERFORM   VARYING   IDX3   FROM   1   BY  1
                                UNTIL (WRK-SO-SRYCD(IDX1 IDX3) = SPACE)
                                   OR (IDX3   >   20)
-                         MOVE   "SI"   TO   
+                         MOVE   "SI"   TO
                                     LNK-NYURECEDEN-RECSKB(1 IDX2 IDX3)
+      *                  医療区分コメント時の区分再セット
+                         IF    WRK-SO-SRYCD(IDX1 IDX3)(1:1)  =  "8"
+                             MOVE   "CO"   TO
+                                    LNK-NYURECEDEN-RECSKB(1 IDX2 IDX3)
+                         END-IF
                          IF    IDX3   =    1
                                MOVE   WRK-SO-SRYKBN(IDX1)  TO   
                                     LNK-NYURECEDEN-SRYSKB(1 IDX2 IDX3)
@@ -1498,12 +1597,21 @@
                                     LNK-NYURECEDEN-SRYCD(1 IDX2 IDX3)
                          MOVE  ZERO     TO    IDX4
                          COMPUTE   IDX4 =    IDX3   +   1
-                         IF    WRK-SO-SRYCD(IDX1 IDX4)    =    SPACE
+                         IF  ((WRK-SO-SRYCD(IDX1 IDX4)    =   SPACE) OR
+                              (WRK-SO-SRYCD(IDX1 IDX4)(1:1) = "8"))  AND
+                              (WRK-SO-SRYCD(IDX1 IDX3)(1:1) NOT = "8")
                                MOVE   WRK-SO-TEN(IDX1)   TO
                                       LNK-NYURECEDEN-TEN(1 IDX2 IDX3)
                                MOVE   WRK-SO-KAISU(IDX1)   TO
                                      LNK-NYURECEDEN-KAISU(1 IDX2 IDX3)
                          END-IF
+      *
+      *                  ＡＤＬ点数のセット
+                         IF   WRK-SO-SRYCD(IDX1 IDX3)  =  "840000103"
+                             MOVE  WRK-SO-ADL-TEN-MOJI(IDX1)   TO
+                                     LNK-NYURECEDEN-COMMENT(1 IDX2 IDX3)
+                         END-IF
+      *
                      END-PERFORM
       *              外泊コメントセット処理
                      INITIALIZE    WRK-GAIHAKU-DAY-TABLE
