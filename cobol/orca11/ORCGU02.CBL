@@ -178,6 +178,8 @@
                07  WRK-PTNUM                           PIC X(20).
                07  WRK-PTID                            PIC X(10).
                07  WRK-NAME                            PIC X(50).
+               07  WRK-NAME1                           PIC X(50).
+               07  WRK-NAME2                           PIC X(50).
       *---- (01.00.03) LINE MOD START ---------------------------------
       **       07  WRK-SEX                             PIC X(02).
                07  WRK-SEX                             PIC X(01).
@@ -536,11 +538,18 @@
                        MOVE    ZERO               TO  SPA-PTID
                    END-IF
                    IF      SPA-PTNUM       NOT =   SPACE
-                       MOVE    SPA-PTNUM           TO  U02-PTNUM
-                       MOVE    SPA-PTNUM           TO  SPA-GMN-PTNUM
-                       MOVE    1                   TO  FLG-IN-PTNUM
-                       PERFORM 4101-PTNUM-CHK-SEC
-                       MOVE    4                   TO  SPA-GMN-CUR
+      *TEST
+                       IF      SPA-P02-UKEID       NOT =   ZERO
+                           PERFORM 3009-P02UKEID-CHK-SEC
+                       END-IF
+                       IF      SPA-GMN-SELNUM      =   ZERO
+      *TEST
+                           MOVE    SPA-PTNUM           TO  U02-PTNUM
+                           MOVE    SPA-PTNUM           TO  SPA-GMN-PTNUM
+                           MOVE    1                   TO  FLG-IN-PTNUM
+                           PERFORM 4101-PTNUM-CHK-SEC
+                           MOVE    4                   TO  SPA-GMN-CUR
+                       END-IF
                    END-IF
            END-EVALUATE
            IF      SPA-MOTOPG(1:3)     =   "K02"
@@ -549,6 +558,30 @@
       *
            .
        300-SCREEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    £Ì£Ä³°¤Î¹àÌÜÆþÎÏÊÔ½¸½èÍý
+      *****************************************************************
+       3009-P02UKEID-CHK-SEC              SECTION.
+      *
+           MOVE    ZERO                 TO  SPA-GMN-SELNUM
+           PERFORM VARYING     IDX   FROM   1   BY  1
+                   UNTIL       IDX   >   SPA-UKE-MAX
+      *        ¼õÉÕ£É£Ä
+               IF      SPA-GMN-TUKEID (IDX)    =   SPA-P02-UKEID
+                   IF     (SPA-PTNUM       NOT =   SPACE  )  AND
+                          (SPA-GMN-TPTNUM(IDX) =   SPA-PTNUM)
+                       MOVE    IDX             TO  SPA-GMN-SELNUM
+                   END-IF
+                   MOVE    SPA-UKE-MAX         TO  IDX
+               END-IF
+           END-PERFORM
+           IF      SPA-GMN-SELNUM      NOT =   ZERO
+               PERFORM 4104-SELNUM-CHK-SEC
+           END-IF
+          .
+       3009-P02UKEID-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1660,6 +1693,8 @@
                COMPUTE IDX                 =   KANACHK-MAX  +  1
                MOVE    "%"                 TO  WRK-NAME-KEY(IDX:1)
            END-IF
+      *    ÉôÊ¬¸¡º÷
+           PERFORM 201-NAME-HEN-SEC
       *    ´Á»ú¸¡º÷
            INITIALIZE                  PTINF-REC
            MOVE    SPA-HOSPID          TO  PTINF-HOSPID
@@ -1695,6 +1730,59 @@
       *
            .
        41021-KNJKEN-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    »áÌ¾ÉôÊ¬¸¡º÷ÊÔ½¸½èÍý
+      *****************************************************************
+       201-NAME-HEN-SEC                 SECTION.
+      *
+           MOVE    SPACE               TO  WRK-NAME1
+           MOVE    SPACE               TO  WRK-NAME2
+           MOVE    1                   TO  IDX2
+           PERFORM VARYING     IDX     FROM    1   BY  2
+                   UNTIL       IDX     >   KANACHK-MAX
+               IF      SPA-GMN-NAME(IDX:2) =   "¡ö"
+                   COMPUTE IDX3            =   IDX     +  2
+                   IF      SPA-GMN-NAME (IDX3:2)    =   "¡¡"
+                       COMPUTE IDX3            =   IDX3     +  2
+                   END-IF
+                   IF      SPA-GMN-NAME (IDX3:) =   SPACE
+                       MOVE    SPACE               TO  WRK-NAME2
+                   ELSE
+                       MOVE    SPA-GMN-NAME(IDX3:) TO  WRK-NAME2
+                   END-IF
+                   MOVE    KANACHK-MAX             TO  IDX
+               ELSE
+                   MOVE    SPA-GMN-NAME(IDX:2)     TO  WRK-NAME1
+                                                               (IDX2:2)
+                   ADD     2                       TO  IDX2
+               END-IF
+           END-PERFORM
+      *
+           IF     (WRK-NAME1       NOT =   SPACE ) AND
+                  (WRK-NAME2       NOT =   SPACE )
+               MOVE    SPACE               TO  WRK-NAME-KEY
+               STRING  WRK-NAME1       DELIMITED  BY  SPACE
+                       "%"             DELIMITED  BY  SIZE
+                       "¡¡"            DELIMITED  BY  SIZE
+                       WRK-NAME2       DELIMITED  BY  SPACE
+                       "%"             DELIMITED  BY  SIZE
+                                       INTO    WRK-NAME-KEY
+               END-STRING
+           END-IF
+           IF     (WRK-NAME1           =   SPACE ) AND
+                  (WRK-NAME2       NOT =   SPACE )
+               MOVE    SPACE               TO  WRK-NAME-KEY
+               STRING  "%"             DELIMITED  BY  SIZE
+                       "¡¡"            DELIMITED  BY  SIZE
+                       WRK-NAME2       DELIMITED  BY  SPACE
+                       "%"             DELIMITED  BY  SIZE
+                                       INTO    WRK-NAME-KEY
+               END-STRING
+           END-IF
+      *
+           .
+       201-NAME-HEN-EXT.
            EXIT.
       *
       *****************************************************************

@@ -39,6 +39,7 @@
       *                                      いる場合は全角変換して使う
       *   01.00.09    NACL-多々納  04/07/22  保険の追加
       *   01.00.10    NACL-多々納  05/11/10  MONFUNCの修正
+      *   03.03.00    NACL-多々納  06/10/06  名前検索の追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -158,6 +159,8 @@
            03  WRK-NAME            PIC X(15).
            03  WRK-YY              PIC 9(02).
            03  WRK-SAKIPG          PIC X(08).
+           03  WRK-NAME1           PIC X(30).
+           03  WRK-NAME2           PIC X(30).
       *
            03  WRK-STR             PIC 9(04).
       *
@@ -563,14 +566,73 @@
            IF      SPA-GMN-NAMEKEN     =   SPACE
                MOVE    SPACE           TO  SPA-NAI-NAMEKEN
            ELSE
-               COMPUTE IDK             =   KANACHK-MAX    +   1
                MOVE    SPACE               TO  SPA-NAI-NAMEKEN
-               MOVE    SPA-GMN-NAMEKEN     TO  SPA-NAI-NAMEKEN
-               MOVE    "%"                 TO  SPA-NAI-NAMEKEN (IDK:1)
+      *        氏名検索用編集
+               PERFORM 2091-NAME-HEN-SEC
            END-IF
       *
            .
        209-NAMEKEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    氏名編集処理
+      *****************************************************************
+       2091-NAME-HEN-SEC                 SECTION.
+      *
+           MOVE    SPACE               TO  WRK-NAME1
+           MOVE    SPACE               TO  WRK-NAME2
+           MOVE    1                   TO  IDX2
+           PERFORM VARYING     IDX     FROM    1   BY  2
+                   UNTIL       IDX     >   KANACHK-MAX
+               IF      SPA-GMN-NAMEKEN(IDX:2)  =   "＊"
+                   COMPUTE IDX3            =   IDX     +  2
+                   IF      SPA-GMN-NAMEKEN (IDX3:2)    =   "　"
+                       COMPUTE IDX3            =   IDX3     +  2
+                   END-IF
+                   IF      SPA-GMN-NAMEKEN (IDX3:) =   SPACE
+                       MOVE    SPACE               TO  WRK-NAME2
+                   ELSE
+                       MOVE    SPA-GMN-NAMEKEN (IDX3:) TO  WRK-NAME2
+                   END-IF
+                   MOVE    KANACHK-MAX             TO  IDX
+               ELSE
+                   MOVE    SPA-GMN-NAMEKEN (IDX:2) TO  WRK-NAME1
+                                                               (IDX2:2)
+                   ADD     2                   TO  IDX2
+               END-IF
+           END-PERFORM
+      *
+           MOVE    SPACE           TO  SPA-NAI-NAMEKEN
+           IF     (WRK-NAME1       NOT =   SPACE ) AND
+                  (WRK-NAME2           =   SPACE )
+               STRING  WRK-NAME1       DELIMITED  BY  SPACE
+                       "%"             DELIMITED  BY  SIZE
+                                       INTO    SPA-NAI-NAMEKEN
+               END-STRING
+           END-IF
+           IF     (WRK-NAME1       NOT =   SPACE ) AND
+                  (WRK-NAME2       NOT =   SPACE )
+               STRING  WRK-NAME1       DELIMITED  BY  SPACE
+                       "%"             DELIMITED  BY  SIZE
+                       "　"            DELIMITED  BY  SIZE
+                       WRK-NAME2       DELIMITED  BY  SPACE
+                       "%"             DELIMITED  BY  SIZE
+                                       INTO    SPA-NAI-NAMEKEN
+               END-STRING
+           END-IF
+           IF     (WRK-NAME1           =   SPACE ) AND
+                  (WRK-NAME2       NOT =   SPACE )
+               STRING  "%"             DELIMITED  BY  SIZE
+                       "　"            DELIMITED  BY  SIZE
+                       WRK-NAME2       DELIMITED  BY  SPACE
+                       "%"             DELIMITED  BY  SIZE
+                                       INTO    SPA-NAI-NAMEKEN
+               END-STRING
+           END-IF
+      *
+           .
+       2091-NAME-HEN-EXT.
            EXIT.
       *
       *****************************************************************

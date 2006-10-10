@@ -33,6 +33,7 @@
       *  01.00.05    NACL-多々納  03/12/01  一覧表を２００件へ
       *  01.00.06    NACL-多々納  05/09/21  患者予約日検索追加他
       *  01.00.07    NACL-多々納  06/05/12  MONFUNC 対応
+      *  03.03.00    NACL-多々納  06/10/10  名前検索の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -267,6 +268,8 @@
            03  IDX-T               PIC 9(04).
            03  IDX-T1              PIC 9(04).
            03  IDX-T2              PIC 9(04).
+           03  IDX2                PIC 9(04).
+           03  IDX3                PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -317,9 +320,13 @@
            03  WRK-KNJ.
                05  WRK-PTNUM       PIC X(20).
                05  WRK-PTID        PIC X(10).
-               05  WRK-NAME        PIC X(30).
+               05  WRK-NAME        PIC X(50).
                05  WRK-SEX         PIC X(02).
                05  WRK-BIRTHDAYH   PIC X(09).
+      *
+           03  WRK-NAME-KEY        PIC X(50).
+           03  WRK-NAME1           PIC X(50).
+           03  WRK-NAME2           PIC X(50).
       *
            03  WRK-YYKID           PIC 9(02).
       *
@@ -1629,13 +1636,18 @@
       *
            MOVE    ZERO                TO  IDZ
       *
+           MOVE    SPACE               TO  WRK-NAME-KEY
       *    漢字検索
            INITIALIZE                  PTINF-REC
            MOVE    SPA-HOSPID          TO  PTINF-HOSPID
            STRING  SPA-GMN-YYKNAME     DELIMITED  BY  SPACE
                    "%"                 DELIMITED  BY  SIZE
-                                       INTO    PTINF-NAME
+      **************************       INTO    PTINF-NAME
+                                       INTO    WRK-NAME-KEY
            END-STRING
+      *    部分検索
+           PERFORM 410141-NAME-HEN-SEC
+           MOVE    WRK-NAME-KEY        TO  PTINF-NAME
       *****MOVE    SPA-GMN-YYKNAME     TO  PTINF-NAME
       *
       *    患者マスターを漢字氏名で検索
@@ -1670,10 +1682,11 @@
                INITIALIZE                  PTINF-REC
                MOVE    SPA-HOSPID          TO  PTINF-HOSPID
      ********* MOVE    SPA-GMN-YYKNAME     TO  PTINF-KANANAME
-               STRING  SPA-GMN-YYKNAME     DELIMITED  BY  SPACE
-                       "%"                 DELIMITED  BY  SIZE
-                                           INTO    PTINF-KANANAME
-               END-STRING
+     *         STRING  SPA-GMN-YYKNAME     DELIMITED  BY  SPACE
+     *                 "%"                 DELIMITED  BY  SIZE
+     *                                     INTO    PTINF-KANANAME
+     ********* END-STRING
+               MOVE    WRK-NAME-KEY        TO  PTINF-KANANAME
       *
       *        患者マスターをかな氏名で検索
                MOVE    PTINF-REC           TO  MCPDATA-REC
@@ -1706,6 +1719,59 @@
        410141-KNJKEN-HEN-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    氏名編集処理
+      *****************************************************************
+       410141-NAME-HEN-SEC          SECTION.
+      *
+           MOVE    SPACE               TO  WRK-NAME1
+           MOVE    SPACE               TO  WRK-NAME2
+           MOVE    1                   TO  IDX2
+           PERFORM VARYING     IDX     FROM    1   BY  2
+                   UNTIL       IDX     >   KANACHK-MAX
+               IF      SPA-GMN-YYKNAME (IDX:2) =   "＊"
+                   COMPUTE IDX3            =   IDX     +  2
+                   IF      SPA-GMN-YYKNAME (IDX3:2)    =   "　"
+                       COMPUTE IDX3            =   IDX3     +  2
+                   END-IF
+                   IF      SPA-GMN-YYKNAME (IDX3:) =   SPACE
+                       MOVE    SPACE               TO  WRK-NAME2
+                   ELSE
+                       MOVE    SPA-GMN-YYKNAME(IDX3:) TO  WRK-NAME2
+                   END-IF
+                   MOVE    KANACHK-MAX             TO  IDX
+               ELSE
+                   MOVE    SPA-GMN-YYKNAME(IDX:2)  TO  WRK-NAME1
+                                                               (IDX2:2)
+                   ADD     2                       TO  IDX2
+               END-IF
+           END-PERFORM
+      *
+           IF     (WRK-NAME1       NOT =   SPACE ) AND
+                  (WRK-NAME2       NOT =   SPACE )
+               MOVE    SPACE               TO  WRK-NAME-KEY
+               STRING  WRK-NAME1       DELIMITED  BY  SPACE
+                       "%"             DELIMITED  BY  SIZE
+                       "　"            DELIMITED  BY  SIZE
+                       WRK-NAME2       DELIMITED  BY  SPACE
+                       "%"             DELIMITED  BY  SIZE
+                                       INTO    WRK-NAME-KEY
+               END-STRING
+           END-IF
+           IF     (WRK-NAME1           =   SPACE ) AND
+                  (WRK-NAME2       NOT =   SPACE )
+               MOVE    SPACE               TO  WRK-NAME-KEY
+               STRING  "%"             DELIMITED  BY  SIZE
+                       "　"            DELIMITED  BY  SIZE
+                       WRK-NAME2       DELIMITED  BY  SPACE
+                       "%"             DELIMITED  BY  SIZE
+                                       INTO    WRK-NAME-KEY
+               END-STRING
+           END-IF
+      *
+           .
+       410141-NAME-HEN-EXT.
+           EXIT.
       *****************************************************************
       *    患者マスタ編集処理
       *****************************************************************

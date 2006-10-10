@@ -30,6 +30,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者        日付      内容
       *  02.07.00    NACL-太田     05/10/24  MONFUNC 対応
+      *  03.03.00    NACL-多々納   06/10/06  名前検索の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -55,6 +56,7 @@
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
            03  IDX2                PIC 9(04).
+           03  IDX3                PIC 9(04).
       *
       *    ワーク領域
        01  WRK-AREA.
@@ -62,6 +64,8 @@
            03  WRK-PTID            PIC 9(10).
       *
            03  WRK-NAME            PIC X(50).
+           03  WRK-NAME1           PIC X(50).
+           03  WRK-NAME2           PIC X(50).
       *
       *
       *****************************************************************
@@ -206,6 +210,8 @@
                                        TO  WRK-NAME
            COMPUTE IDX                 =   KANACHK-MAX  +  1
            MOVE    "%"                 TO  WRK-NAME(IDX:1)
+      *    部分検索
+           PERFORM 201-NAME-HEN-SEC
       *
       *    漢字検索
            INITIALIZE                  PTINF-REC
@@ -275,6 +281,60 @@
       *
            .
        200-NAME-SET-EXT.
+           EXIT.
+      *    
+      *****************************************************************
+      *    氏名部分検索編集処理
+      *****************************************************************
+       201-NAME-HEN-SEC                 SECTION.
+      *
+           MOVE    SPACE               TO  WRK-NAME1
+           MOVE    SPACE               TO  WRK-NAME2
+           MOVE    1                   TO  IDX2
+           PERFORM VARYING     IDX     FROM    1   BY  2
+                   UNTIL       IDX     >   KANACHK-MAX
+               IF      SPTNUM-PTNUM(IDX:2) =   "＊"
+                   COMPUTE IDX3            =   IDX     +  2
+                   IF      SPTNUM-PTNUM (IDX3:2)    =   "　"
+                       COMPUTE IDX3            =   IDX3     +  2
+                   END-IF
+                   IF      SPTNUM-PTNUM (IDX3:) =   SPACE
+                       MOVE    SPACE               TO  WRK-NAME2
+                   ELSE
+                       MOVE    SPTNUM-PTNUM(IDX3:) TO  WRK-NAME2
+                   END-IF
+                   MOVE    KANACHK-MAX             TO  IDX
+               ELSE
+                   MOVE    SPTNUM-PTNUM(IDX:2)     TO  WRK-NAME1
+                                                               (IDX2:2)
+                   ADD     2                       TO  IDX2
+               END-IF
+           END-PERFORM
+      *
+           IF     (WRK-NAME1       NOT =   SPACE ) AND
+                  (WRK-NAME2       NOT =   SPACE )
+               MOVE    SPACE           TO  WRK-NAME
+               STRING  WRK-NAME1       DELIMITED  BY  SPACE
+                       "%"             DELIMITED  BY  SIZE
+                       "　"            DELIMITED  BY  SIZE
+                       WRK-NAME2       DELIMITED  BY  SPACE
+                       "%"             DELIMITED  BY  SIZE
+                                       INTO    WRK-NAME
+               END-STRING
+           END-IF
+           IF     (WRK-NAME1           =   SPACE ) AND
+                  (WRK-NAME2       NOT =   SPACE )
+               MOVE    SPACE           TO  WRK-NAME
+               STRING  "%"             DELIMITED  BY  SIZE
+                       "　"            DELIMITED  BY  SIZE
+                       WRK-NAME2       DELIMITED  BY  SPACE
+                       "%"             DELIMITED  BY  SIZE
+                                       INTO    WRK-NAME
+               END-STRING
+           END-IF
+      *
+           .
+       201-NAME-HEN-EXT.
            EXIT.
       *
       *****************************************************************
