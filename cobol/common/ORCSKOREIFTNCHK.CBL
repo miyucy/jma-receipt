@@ -29,6 +29,7 @@
       *  03.02.01    NACL-門脇    06/08/10  高齢者上限額経過措置対応
       *  03.03.01    NACL-門脇    06/09/29  Ｈ１８年１０月改正に伴う一部
       *                                     負担金編集対応
+      *  03.03.02    NACL-門脇    06/10/10  老齢福祉年金についての対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -380,6 +381,7 @@
                         AND  (  FLG-ZENKOH-ARI         =  ZERO   )
                           EVALUATE   LNK-KOREIFTNCHK-TEISYOTOKU
                             WHEN  "1"
+                            WHEN  "4"
                               MOVE    15000     TO   WRK-KINGAKU
                               PERFORM   2201-ICHIBUFTN-KOH-SET-SEC
                             WHEN  "2"

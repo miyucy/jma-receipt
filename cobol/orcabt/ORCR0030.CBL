@@ -271,6 +271,7 @@
       *                                     負担金編集対応
       *  03.03.04    NACL-藤原    06/09/29  検査の判断料の記載方法の変更
       *                                     検査等実施判断の追加
+      *  03.03.05    NACL-門脇    06/10/10  老齢福祉年金についての対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -6069,6 +6070,8 @@
                        MOVE    "3"   TO   RECE02-SHOKUJIFTNKBN
                    WHEN    "2"
                        MOVE    "1"   TO   RECE02-SHOKUJIFTNKBN
+                   WHEN    "4"
+                       MOVE    "4"   TO   RECE02-SHOKUJIFTNKBN
            END-EVALUATE
       *
       *    在総診＋老人保険＋全国公費

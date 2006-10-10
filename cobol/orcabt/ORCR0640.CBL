@@ -220,6 +220,7 @@
       *                                     ÉéÃ´¶âÊÔ½¸ÂÐ±þ
       *  03.03.04    NACL-Æ£¸¶    06/09/29  ¸¡ºº¤ÎÈ½ÃÇÎÁ¤Îµ­ºÜÊýË¡¤ÎÊÑ¹¹
       *                                     ¸¡ººÅù¼Â»ÜÈ½ÃÇ¤ÎÄÉ²Ã
+      *  03.03.05    NACL-ÌçÏÆ    06/10/10  Ï·ÎðÊ¡»ãÇ¯¶â¤Ë¤Ä¤¤¤Æ¤ÎÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -7966,6 +7967,7 @@
                  AND  (  FLG-ZENKOH-ARI         =  ZERO   )
                    EVALUATE   RECE62-TEISYOTOKU
                      WHEN  "1"
+                     WHEN  "4"
                        MOVE    15000     TO   WRK-KINGAKU
                        PERFORM   2104421-ICHIBUFTN-KOH-SET-SEC
                      WHEN  "2"
@@ -8678,6 +8680,8 @@
                        MOVE    "1"   TO   RECE62-SHOKUJIFTNKBN
                    WHEN    "3"
                        MOVE    "2"   TO   RECE62-SHOKUJIFTNKBN
+                   WHEN    "4"
+                       MOVE    "4"   TO   RECE62-SHOKUJIFTNKBN
            END-EVALUATE
       *
       *    Åçº¬¸©ÆýÍÄ»ù¡¦Ê¡»ã
@@ -8749,6 +8753,7 @@
                  END-IF
                  EVALUATE   RECE62-TEISYOTOKU
                    WHEN  "1"
+                   WHEN  "4"
                      IF  WRK-NYUJGNGAK    >  15000
                            MOVE    15000    TO   WRK-NYUJGNGAK
                      END-IF
@@ -8870,6 +8875,7 @@
                    IF     RECE62-TEISYOTOKU  NOT =  SPACE
                       EVALUATE   RECE62-TEISYOTOKU
                           WHEN  "1"
+                          WHEN  "4"
                             IF     RECE62-FTNMONEY(1)  >  15000
                                MOVE  15000   TO   RECE62-FTNMONEY(1)
                             END-IF
