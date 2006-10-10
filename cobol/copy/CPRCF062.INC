@@ -68,6 +68,7 @@
       *
       *  02.09.01    NACL-藤原    06/04/14  ２００６年４月改正対応
       *                                     外来迅速検体検査加算フラグ追加
+      *  03.03.01    NACL-門脇    06/10/10  入院時生活療養費食事対応
       ************************************************************
       *01  RECE62-REC.
            03  RECE62-KEY.
@@ -307,6 +308,9 @@
       *一部負担金・食事療養費標準負担額区分
            03  RECE62-SHOKUJIFTNKBN       PIC  X(01).
       *
+      *食事種別情報‐基本
+           03  RECE62-SHOKUJISYUBETU-KHN  PIC  X(02).
+      *
       *食事種別情報
            03  RECE62-SHOKUJISYUINF       OCCURS   3.
       *食事種別
@@ -318,6 +322,23 @@
                05  RECE62-SHOKUJIKHNRYO   PIC  9(09).
       *食事日数
                05  RECE62-SHOKUJIKHNNISSU PIC  9(02).
+      *
+      *食事種別情報‐基本（生活）
+           03  RECE62-SHOKUJISYUBETU-KHNSEI   PIC  X(02).
+      *
+      *食事基本料情報（生活）
+           03  RECE62-SHOKUJIKHNINF-SEI   OCCURS   2.
+      *食事基本料
+               05  RECE62-SHOKUJIKHNRYO-SEI   PIC  9(09).
+      *食事日数
+               05  RECE62-SHOKUJIKHNNISSU-SEI PIC  9(02).
+      *
+      *食事基本料情報（その他）
+           03  RECE62-SHOKUJIKHNINF-ETC       OCCURS   3.
+      *食事基本料
+               05  RECE62-SHOKUJIKHNRYO-ETC   PIC  9(09).
+      *食事日数
+               05  RECE62-SHOKUJIKHNNISSU-ETC PIC  9(02).
       *
       *最終診療科
            03  RECE62-LASTSRYKA           PIC  X(02).
@@ -532,11 +553,4 @@
       *
       *福岡県公費給付外点数
            03  RECE62-KYUFUGAITEN         PIC  9(06).
-      *
-      *食事基本料情報（その他）
-           03  RECE62-SHOKUJIKHNINF-ETC       OCCURS   3.
-      *食事基本料
-               05  RECE62-SHOKUJIKHNRYO-ETC   PIC  9(09).
-      *食事日数
-               05  RECE62-SHOKUJIKHNNISSU-ETC PIC  9(02).
       *
