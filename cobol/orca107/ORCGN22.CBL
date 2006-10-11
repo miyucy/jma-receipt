@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者        日付      内容
       *  01.01.01    NACL-森脇     06/09/09  ジョブ管理削除
+      *  01.01.02    NACL-森脇     06/10/11  タイマーイベント追加
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -221,6 +222,9 @@
                    MOVE    SPACE           TO  SPA-N22-FLG
                    PERFORM 450-BACK
       *    状況
+      *----(01.01.02)---ADD-START---
+               WHEN    "CLICKED"   ALSO    "pandatimer1"
+      *----(01.01.02)---ADD-END-----
                WHEN    "CLICKED"   ALSO    "B10"
                    PERFORM 400-JYOKYO-SEC
       *    問合せ
