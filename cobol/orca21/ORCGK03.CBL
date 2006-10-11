@@ -3801,7 +3801,11 @@
                  OR   (WRK-SEIKYU          <   ZERO  )
                    MOVE    ZERO                TO  WRK-NYUKIN
                ELSE
-                   MOVE    WRK-SEIKYU          TO  WRK-NYUKIN
+                   IF      SPA-GOK-NYUKIN      >   WRK-SEIKYU
+                       MOVE    WRK-SEIKYU          TO  WRK-NYUKIN
+                   ELSE
+                       MOVE    SPA-GOK-NYUKIN      TO  WRK-NYUKIN
+                   END-IF
                END-IF
            ELSE
                MOVE    LNK-SCNYUKIN-FURIWAKEZAN  TO  WRK-NYUKIN
