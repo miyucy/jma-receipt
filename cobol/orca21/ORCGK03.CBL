@@ -3771,13 +3771,19 @@
                    MOVE    1                   TO  SPA-GMN-CUR
                END-IF
            ELSE
-      *?       IF      LNK-SCNYUKIN-FURIWAKEZAN    >  WRK-SEIKYU
-               IF     (LNK-SCNYUKIN-FURIWAKEZAN
+               IF     (LNK-SCNYUKIN-HENKINZAN  >=  WRK-SEIKYU)
+                   IF      LNK-SCNYUKIN-FURIWAKEZAN   >   ZERO
+                       MOVE    "0014"              TO  SPA-ERRCD
+                       MOVE    1                   TO  SPA-GMN-CUR
+                   END-IF
+               ELSE
+                   IF     (LNK-SCNYUKIN-FURIWAKEZAN
                                        +   LNK-SCNYUKIN-HENKINZAN)
                                                >  WRK-SEIKYU
       *            今回請求額＜入金振り分け残額+返金振り分け残額はエラー
-                   MOVE    "0014"              TO  SPA-ERRCD
-                   MOVE    1                   TO  SPA-GMN-CUR
+                       MOVE    "0014"              TO  SPA-ERRCD
+                       MOVE    1                   TO  SPA-GMN-CUR
+                   END-IF
                END-IF
            END-IF
       *    充当額
