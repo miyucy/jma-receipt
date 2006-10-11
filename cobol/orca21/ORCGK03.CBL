@@ -5325,6 +5325,7 @@
                MOVE    ZERO                TO  ORCHC03-HAKHOUFLG
            END-IF
       *
+           MOVE    ZERO                TO  WRK-HENKIN
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-SYUNOU-MAX
                MOVE    SPA-SYUNOU-REC(IDX) TO  SYUNOU-REC
@@ -5351,10 +5352,16 @@
       *            充当
                    MOVE    SPA-SYU-HENKIN (IDX)
                                        TO  ORCHC03-KON-HENKIN (IDX)
+                   ADD     SPA-SYU-HENKIN (IDX)    TO  WRK-HENKIN
                END-IF
            END-PERFORM
       *    今回返金充当額
            MOVE    WRK-HENKIN-GAKU     TO  ORCHC03-ZEN-HENKIN
+      *
+           IF     (SPA-GMN-NYUKINKBN   =   "4"  OR  "5")
+               COMPUTE ORCHC03-ZEN-HENKIN  =   WRK-HENKIN-GAKU
+                                           -   WRK-HENKIN
+           END-IF
       *
            IF      SPA-GMN-HAKFLG  NOT =   ZERO
                CALL    WRK-SEIKYU-PG       USING
