@@ -461,6 +461,7 @@
       *    返金対応
            IF      (ORCHC03-HAKKOFLG   =   ZERO )  AND
                    (ORCHC03-NYUKIN     =   ZERO )  AND
+                   (ORCHC03-ZEN-HENKIN >   ZERO )  AND
                    (WRK-MISYUMONEY     <   ZERO )  AND
                    ((WRK-MISYUMONEY * -1 )
                                        >   WRK-SKYMONEY)
@@ -1171,6 +1172,7 @@
       *             返金対応
                     IF      (ORCHC03-HAKKOFLG   =   ZERO )  AND
                             (WRK-NYUKIN         =   ZERO )  AND
+                            (ORCHC03-ZEN-HENKIN >   ZERO )  AND
                             (WRK-MISYUMONEY     <   ZERO )  AND
                             ((WRK-MISYUMONEY * -1)
                                                 >   WRK-SKYMONEY)
