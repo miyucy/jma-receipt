@@ -451,6 +451,8 @@
       *        今回返金額
                COMPUTE WRK-MISYUMONEY      =   WRK-MISYUMONEY
                                            -   ORCHC03-ZEN-HENKIN
+                                           -   ORCHC03-KON-HENKIN
+                                                             (1)
            ELSE
       *        前回までの超過額
                COMPUTE WRK-MISYUMONEY      =   WRK-MISYUMONEY
@@ -459,6 +461,7 @@
       *    返金対応
            IF      (ORCHC03-HAKKOFLG   =   ZERO )  AND
                    (ORCHC03-NYUKIN     =   ZERO )  AND
+                   (WRK-MISYUMONEY     <   ZERO )  AND
                    ((WRK-MISYUMONEY * -1 )
                                        >   WRK-SKYMONEY)
       *        返金額が今回請求額より多い時、マイナス入金とする
@@ -1168,6 +1171,7 @@
       *             返金対応
                     IF      (ORCHC03-HAKKOFLG   =   ZERO )  AND
                             (WRK-NYUKIN         =   ZERO )  AND
+                            (WRK-MISYUMONEY     <   ZERO )  AND
                             ((WRK-MISYUMONEY * -1)
                                                 >   WRK-SKYMONEY)
       *             返金額が今回請求額より多い時、マイナス入金とする
