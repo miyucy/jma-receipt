@@ -754,6 +754,10 @@
       *
            03  WRK-SISETU613                           PIC 9(01).
       *
+           03  WRK-TOKUSYU-SKJFLG-T.
+             04  WRK-TOKUSYU-SKJFLG-OCC                OCCURS  4.
+               05  WRK-TOKUSYU-SKJFLG                  PIC 9(01).
+      *
       *    1∑ÂÃ‹:¿∏ › 2∑ÂÃ‹:∑Î≥À 3∑ÂÃ‹:¿∫ø¿
            03  WRK-3SYU-KBN.
                05  WRK-3SYU        PIC X(03).
@@ -7520,6 +7524,8 @@
       *
            MOVE    ZERO                 TO      FLG-NYUINRYO
       *
+           INITIALIZE                           WRK-TOKUSYU-SKJFLG-T
+      *
            INITIALIZE                           WRK-SKJ-FTN-T
       *
            INITIALIZE                           SYUNOU-REC
@@ -8450,8 +8456,10 @@
                             RECE62-FUKUSHIFLG-SKJIPA(KH-IDX - 1)
                         MOVE    "1"      TO
                             RECE62-FUKUSHIFLG-SKJSEI(KH-IDX - 1)
+                        MOVE     1       TO
+                                  WRK-TOKUSYU-SKJFLG(KH-IDX - 1)
                   ELSE
-                    IF   RECE62-SHOKUJINISSU(KH-IDX)  =  ZERO
+                    IF  WRK-TOKUSYU-SKJFLG(KH-IDX - 1)  =  ZERO
                         MOVE    "1"      TO
                             RECE62-FUKUSHIFLG-SKJIPA(KH-IDX - 1)
                         MOVE    "1"      TO
