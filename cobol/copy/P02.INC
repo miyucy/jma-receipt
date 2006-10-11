@@ -328,6 +328,9 @@
                     06  P02-P02-SKYPRTFLG-COUNT   PIC S9(9)   BINARY.
                     06  P02-P02-SKYPRTFLG-ITEM
                             PIC X(30)   OCCURS  4 TIMES.
+                  05  P02-TEIMSG.
+                    06  P02-TEIMSG-STYLE   PIC X(20).
+                    06  P02-TEIMSG-VALUE   PIC X(20).
                 04 P02-FP3.
                   05  P02-P027-SELNUM.
                     06  P02-VALUE   PIC X(4).

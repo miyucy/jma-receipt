@@ -1019,6 +1019,7 @@
        500-SPA-PARA-TSYRRK-SEC         SECTION.
       *
            MOVE    ZERO                TO  IDY
+           MOVE    ZERO                TO  SPA-NAI-TSYRRK
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL     ( IDX         >   20          )
                    OR        ( IDX         >   SPA-TSY-MAX )
@@ -1072,6 +1073,12 @@
                        MOVE    SPA-TERMID      TO  LNK-TSY-TERMID (IDY)
                        MOVE    SPA-SYSYMD      TO  LNK-TSY-CREYMD (IDY)
                        PERFORM 510-PARA-TSYRRK-OUT-SEC
+                   END-IF
+               END-IF
+               IF      SPA-GMN24-TSYDELKBN (IDX)   =   SPACE
+                   IF     (SPA-GMN24-TSYDPSTYMD (IDX)  <=  SPA-SYSYMD)
+                     AND  (SPA-GMN24-TSYDPEDYMD (IDX)  >=  SPA-SYSYMD)
+                       MOVE    1               TO  SPA-NAI-TSYRRK
                    END-IF
                END-IF
            END-PERFORM
@@ -1153,6 +1160,7 @@
        500-SPA-PARA-TNKRRK-SEC         SECTION.
       *
            MOVE    ZERO                TO  IDY
+           MOVE    ZERO                TO  SPA-NAI-TNKRRK
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL     ( IDX         >   20          )
                    OR        ( IDX         >   SPA-TNK-MAX )
@@ -1209,6 +1217,12 @@
                        MOVE    SPA-TERMID      TO  LNK-TNK-TERMID (IDY)
                        MOVE    SPA-SYSYMD      TO  LNK-TNK-CREYMD (IDY)
                        PERFORM 510-PARA-TNKRRK-OUT-SEC
+                   END-IF
+               END-IF
+               IF      SPA-GMN24-TNKDELKBN (IDX)   =   SPACE
+                   IF      (SPA-GMN24-TNKDPSTYMD (IDX) <=  SPA-SYSYMD)
+                      AND  (SPA-GMN24-TNKDPEDYMD (IDX) >=  SPA-SYSYMD)
+                       MOVE    1                   TO  SPA-NAI-TNKRRK
                    END-IF
                END-IF
            END-PERFORM

@@ -402,6 +402,10 @@
                        09  SPA-NAI-SYUKA           PIC X(02).
                        09  SPA-NAI-SYUKAYM         PIC X(06).
                        09  SPA-NAI-SYUKAYMG        PIC X(06).
+      *
+      *            低所得有無
+                   07  SPA-NAI-TSYRRK          PIC 9(01).
+                   07  SPA-NAI-TNKRRK          PIC 9(01).
       *            保険表示連番
       **************7  SPA-NAI-HKNEDANUM       PIC 9(04).
       *

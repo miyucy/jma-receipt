@@ -170,6 +170,11 @@
            03  WRK-HKNID-MAX           PIC 9(10).
            03  WRK-KOHID-MAX           PIC 9(10).
       *
+           03  WRK-TEIMSG-G.
+               05  WRK-TMSG1           PIC X(10).
+               05  WRK-TMSG2           PIC X(02).
+               05  WRK-TMSG3           PIC X(10).
+           03  WRK-TEIMSG              PIC X(20).
       *
            03  WRK-HFTNLST2-ROW        PIC S9(09).
       *   年齢表示
@@ -1976,6 +1981,7 @@
            PERFORM 990-DBCLOSE-SEC
       *
       *    低所得より
+           MOVE    ZERO                TO  SPA-NAI-TSYRRK
            INITIALIZE                      TSYRRK-REC
            MOVE    SPA-HOSPID          TO  TSYRRK-HOSPID
            MOVE    SPA-GMN-PTID        TO  TSYRRK-PTID
@@ -2004,6 +2010,11 @@
                MOVE    TSYRRK-HOSPID       TO  TSYRRK-HOSPID-O
                MOVE    TSYRRK-PTID         TO  TSYRRK-PTID-O
                MOVE    TSYRRK-NINSTYMD     TO  TSYRRK-NINSTYMD-O
+      *        当日に有効
+               IF     (TSYRRK-NINSTYMD     <=  SPA-SYSYMD )
+                  AND (TSYRRK-NINEDYMD     >=  SPA-SYSYMD )
+                   MOVE    1                   TO  SPA-NAI-TSYRRK
+               END-IF
       *
                MOVE    TSYRRK-REC          TO  PARA-DATA-REC
                PERFORM 400-PARA-INSERT-SEC
@@ -2019,6 +2030,7 @@
            PERFORM 990-DBCLOSE-SEC
       *
       *    年金履歴より
+           MOVE    ZERO                TO  SPA-NAI-TNKRRK
            INITIALIZE                      TNKRRK-REC
            MOVE    SPA-HOSPID          TO  TNKRRK-HOSPID
            MOVE    SPA-GMN-PTID        TO  TNKRRK-PTID
@@ -2044,6 +2056,11 @@
                MOVE    TNKRRK-HOSPID       TO  TNKRRK-HOSPID-O
                MOVE    TNKRRK-PTID         TO  TNKRRK-PTID-O
                MOVE    TNKRRK-STYMD        TO  TNKRRK-STYMD-O
+      *        当日に有効
+               IF     (TNKRRK-STYMD        <=  SPA-SYSYMD )
+                  AND (TNKRRK-EDYMD        >=  SPA-SYSYMD )
+                   MOVE    1                   TO  SPA-NAI-TNKRRK
+               END-IF
       *
                MOVE    TNKRRK-REC          TO  PARA-DATA-REC
                PERFORM 400-PARA-INSERT-SEC
@@ -2722,6 +2739,30 @@
                                        TO  P02-P02-USERPG-ITEM (IDX)
                MOVE    IDX             TO  P02-P02-USERPG-COUNT
            END-PERFORM
+      *    低所得有無
+           MOVE    SPACE               TO  WRK-TEIMSG-G
+           IF      SPA-NAI-TNKRRK      =   1
+               MOVE    "低所１"            TO  WRK-TMSG1
+           END-IF
+           IF      SPA-NAI-TSYRRK      =   1
+               MOVE    "低所２"            TO  WRK-TMSG3
+           END-IF
+           IF      (SPA-NAI-TSYRRK     =   1  )  AND
+                   (SPA-NAI-TNKRRK     =   1  )
+               MOVE    "、"                TO  WRK-TMSG2
+           END-IF
+           IF      (SPA-NAI-TSYRRK     =   1  )  OR
+                   (SPA-NAI-TNKRRK     =   1  )
+               STRING    "【"              DELIMITED  BY  SIZE
+                         WRK-TMSG1         DELIMITED  BY  SPACE
+                         WRK-TMSG2         DELIMITED  BY  SPACE
+                         WRK-TMSG3         DELIMITED  BY  SPACE
+                             "】"          DELIMITED  BY  SIZE
+                                           INTO  WRK-TEIMSG
+               END-STRING
+           END-IF
+           MOVE    WRK-TEIMSG          TO  P02-TEIMSG-VALUE
+           MOVE    "blue"              TO  P02-TEIMSG-STYLE
       *
            MOVE    SPA-GMN-TABOO-1         TO  P02-P02-TABOO1
            MOVE    SPA-GMN-TABOO-2         TO  P02-P02-TABOO2

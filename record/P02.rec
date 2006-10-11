@@ -421,6 +421,10 @@ P02	{
 					count	int;
 					item	varchar(30)[4];
 				};
+				TEIMSG	{
+					style	varchar(20);
+					value	varchar(20);
+				};
 			};
 			FP3	{
 				P027_SELNUM	{

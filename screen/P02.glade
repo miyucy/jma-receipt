@@ -3022,22 +3022,6 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <name>label2010</name>
-	  <x>604</x>
-	  <y>8</y>
-	  <width>76</width>
-	  <height>24</height>
-	  <label>ª‡À¥∂Ë ¨</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
 	  <name>label991</name>
 	  <x>780</x>
 	  <y>8</y>
@@ -3338,31 +3322,6 @@
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkCheckButton</class>
-	  <name>P02_DEATHKBN</name>
-	  <x>688</x>
-	  <y>8</y>
-	  <width>90</width>
-	  <height>24</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>toggled</name>
-	    <handler>button_toggled</handler>
-	    <last_modification_time>Tue, 06 Feb 2001 04:43:39 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>clicked</name>
-	    <handler>send_event</handler>
-	    <after>True</after>
-	    <data>CLICKED</data>
-	    <last_modification_time>Tue, 06 Feb 2001 04:44:05 GMT</last_modification_time>
-	  </signal>
-	  <label></label>
-	  <active>False</active>
-	  <draw_indicator>True</draw_indicator>
 	</widget>
 
 	<widget>
@@ -3987,6 +3946,63 @@
 	    <input_mode>XIM</input_mode>
 	    <xim_enabled>False</xim_enabled>
 	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkCheckButton</class>
+	  <name>P02_DEATHKBN</name>
+	  <x>700</x>
+	  <y>8</y>
+	  <width>80</width>
+	  <height>24</height>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>toggled</name>
+	    <handler>button_toggled</handler>
+	    <last_modification_time>Tue, 06 Feb 2001 04:43:39 GMT</last_modification_time>
+	  </signal>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>send_event</handler>
+	    <after>True</after>
+	    <data>CLICKED</data>
+	    <last_modification_time>Tue, 06 Feb 2001 04:44:05 GMT</last_modification_time>
+	  </signal>
+	  <label></label>
+	  <active>False</active>
+	  <draw_indicator>True</draw_indicator>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label2010</name>
+	  <x>624</x>
+	  <y>8</y>
+	  <width>76</width>
+	  <height>24</height>
+	  <label>ª‡À¥∂Ë ¨</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>TEIMSG</name>
+	  <x>480</x>
+	  <y>8</y>
+	  <width>140</width>
+	  <height>24</height>
+	  <label></label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
 	</widget>
       </widget>
 
