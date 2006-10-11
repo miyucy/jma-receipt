@@ -484,13 +484,27 @@
            03  RECE62-KENTAIKASANFLG      PIC  X(01).
       *福祉編集フラグ
            03  RECE62-FUKUSHIFLG          PIC  X(01).
-      *福祉編集フラグ（食事療養）情報
+      *
+      *レセプト用：食事療養編集情報
            03  RECE62-FUKUSHIFLG-SKJINF-AREA.
                05  RECE62-FUKUSHIFLG-SKJINF
                                           OCCURS  4.
-      *福祉編集フラグ（食事療養）
                    07  RECE62-FUKUSHIFLG-SKJ
                                           PIC  X(01).
+      *
+      *レセ電用：食事療養（一般）編集情報
+           03  RECE62-FUKUSHIFLG-SKJIPAINF-AREA.
+               05  RECE62-FUKUSHIFLG-SKJIPAINF
+                                          OCCURS  4.
+                   07  RECE62-FUKUSHIFLG-SKJIPA
+                                          PIC  X(01).
+      *レセ電用：食事療養（生活）編集情報
+           03  RECE62-FUKUSHIFLG-SKJSEIINF-AREA.
+               05  RECE62-FUKUSHIFLG-SKJSEIINF
+                                          OCCURS  4.
+                   07  RECE62-FUKUSHIFLG-SKJSEI
+                                          PIC  X(01).
+      *
       *合計点数情報（ぶん点・公費分離区分編集用）
            03  RECE62-HENTOTALTENINF-AREA.
                05  RECE62-HENTOTALTENINF  OCCURS  5.

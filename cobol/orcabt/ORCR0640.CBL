@@ -374,6 +374,7 @@
            03  FLG-RINYAK                              PIC 9(01).
            03  FLG-TOKKI                               PIC 9(01).
            03  FLG-PTKOHINF                            PIC 9(01).
+           03  FLG-TOKUSYU-SKJ                         PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -8359,6 +8360,18 @@
                   END-IF
                 END-IF
       *
+                IF   RECE62-SRYYM    >=  "200610"
+                  IF   (WRK-PREFNUM               = "10"    ) AND
+                       (RECE62-KOHNUM(KH-IDX - 1) =
+                            "146" OR "246" OR "143" OR "243")
+                      MOVE     1     TO    FLG-TOKUSYU-SKJ
+                  ELSE
+                      MOVE    ZERO   TO    FLG-TOKUSYU-SKJ
+                  END-IF
+                ELSE
+                      MOVE    ZERO   TO    FLG-TOKUSYU-SKJ
+                END-IF
+      *
                 IF ((WRK-PREFNUM           =  "38"          ) AND
                     (RECE62-KOHNUM(KH-IDX - 1)(1:1)
                                      >=  "1" AND <=  "8"    ) AND
@@ -8383,6 +8396,13 @@
                    IF   RECE62-SHOKUJINISSU(KH-IDX)  =  ZERO
                        MOVE    "1"      TO
                                RECE62-FUKUSHIFLG-SKJ(KH-IDX - 1)
+                       IF   RECE62-SRYYM    >= "200610"
+                       AND  FLG-TOKUSYU-SKJ  =  ZERO
+                          MOVE    "1"      TO
+                            RECE62-FUKUSHIFLG-SKJIPA(KH-IDX - 1)
+                          MOVE    "1"      TO
+                            RECE62-FUKUSHIFLG-SKJSEI(KH-IDX - 1)
+                       END-IF
                    END-IF
                 ELSE
                   IF    (SYU-SYUHKNNUM       =   SPACE         )
@@ -8398,6 +8418,13 @@
                                    RECE62-SHOKUJIRYOYOHI(KH-IDX)
                      MOVE  SPACE                  TO
                                    RECE62-FUKUSHIFLG-SKJ(KH-IDX - 1)
+                     IF   RECE62-SRYYM    >=  "200610"
+                     AND  FLG-TOKUSYU-SKJ  =   ZERO
+                        MOVE  SPACE               TO
+                                RECE62-FUKUSHIFLG-SKJIPA(KH-IDX - 1)
+                        MOVE  SPACE               TO
+                                RECE62-FUKUSHIFLG-SKJSEI(KH-IDX - 1)
+                     END-IF
                   ELSE
                      ADD   SYU-SKJ-NISSU(IDX3)    TO
                                    RECE62-SHOKUJINISSU(KH-IDX)
@@ -8407,6 +8434,29 @@
                                    RECE62-SHOKUJIFTN(KH-IDX)
                      MOVE  SPACE                  TO
                                    RECE62-FUKUSHIFLG-SKJ(KH-IDX - 1)
+                     IF   RECE62-SRYYM    >=  "200610"
+                     AND  FLG-TOKUSYU-SKJ  =   ZERO
+                        MOVE  SPACE               TO
+                                RECE62-FUKUSHIFLG-SKJIPA(KH-IDX - 1)
+                        MOVE  SPACE               TO
+                                RECE62-FUKUSHIFLG-SKJSEI(KH-IDX - 1)
+                     END-IF
+                  END-IF
+                END-IF
+      *
+                IF   FLG-TOKUSYU-SKJ  =   1
+                  IF    SYU-SKJ-NISSU(IDX3)  NOT =  ZERO
+                        MOVE    SPACE    TO
+                            RECE62-FUKUSHIFLG-SKJIPA(KH-IDX - 1)
+                        MOVE    "1"      TO
+                            RECE62-FUKUSHIFLG-SKJSEI(KH-IDX - 1)
+                  ELSE
+                    IF   RECE62-SHOKUJINISSU(KH-IDX)  =  ZERO
+                        MOVE    "1"      TO
+                            RECE62-FUKUSHIFLG-SKJIPA(KH-IDX - 1)
+                        MOVE    "1"      TO
+                            RECE62-FUKUSHIFLG-SKJSEI(KH-IDX - 1)
+                    END-IF
                   END-IF
                 END-IF
       *
@@ -9122,20 +9172,22 @@
        2106-RECESKYKBN-HENSYU-SEC      SECTION.
       *
       *    初期化
-           MOVE    RECE62-REC          TO  WRK-RECE62-REC
-           INITIALIZE                      RECE62-KOHINF-AREA
-                                           RECE62-HKNCOMBIINF-AREA
-                                           RECE62-JNISSUINF-AREA
-                                           RECE62-TOTALTENINF-AREA
-                                           RECE62-FTNMONEYINF-AREA
-                                           RECE62-SHOKUJIINF-AREA
-                                           RECE62-FUKUSHIFLG-SKJINF-AREA
-                                           RECE62-ETC-KOH-G
-                                           RECE62-HENTOTALTENINF-AREA
-                                           RECE62-NYUKHNINF2
-                                           RECE62-NYUTOKINF2
-                                           RECE62-KISAIFLGINF-AREA
-                                           RECE62-ZEROKISAIFLGINF-AREA
+           MOVE    RECE62-REC     TO  WRK-RECE62-REC
+           INITIALIZE                 RECE62-KOHINF-AREA
+                                      RECE62-HKNCOMBIINF-AREA
+                                      RECE62-JNISSUINF-AREA
+                                      RECE62-TOTALTENINF-AREA
+                                      RECE62-FTNMONEYINF-AREA
+                                      RECE62-SHOKUJIINF-AREA
+                                      RECE62-FUKUSHIFLG-SKJINF-AREA
+                                      RECE62-FUKUSHIFLG-SKJIPAINF-AREA
+                                      RECE62-FUKUSHIFLG-SKJSEIINF-AREA
+                                      RECE62-ETC-KOH-G
+                                      RECE62-HENTOTALTENINF-AREA
+                                      RECE62-NYUKHNINF2
+                                      RECE62-NYUTOKINF2
+                                      RECE62-KISAIFLGINF-AREA
+                                      RECE62-ZEROKISAIFLGINF-AREA
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       30
                INITIALIZE              RECE62-TENSUINF-AREA (IDX)
@@ -9199,6 +9251,12 @@
                                            TO  RECE62-KOHINF (IDY)
                            MOVE    WRK-RECE62-FUKUSHIFLG-SKJINF (IDX)
                                            TO  RECE62-FUKUSHIFLG-SKJINF
+                                                             (IDY)
+                           MOVE    WRK-RECE62-FUKUSHIFLG-SKJIPAINF (IDX)
+                                        TO  RECE62-FUKUSHIFLG-SKJIPAINF
+                                                             (IDY)
+                           MOVE    WRK-RECE62-FUKUSHIFLG-SKJSEIINF (IDX)
+                                        TO  RECE62-FUKUSHIFLG-SKJSEIINF
                                                              (IDY)
                            COMPUTE IDYX    =   IDY +   1
                            MOVE    WRK-RECE62-JNISSU      (IDXX)
