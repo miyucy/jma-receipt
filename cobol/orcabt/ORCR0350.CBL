@@ -142,6 +142,9 @@
       *                                     ºÜÊýË¡¤Î½¤Àµ
       *  03.03.03    NACL-Æ£¸¶    06/10/04  Æ±Æü¤ËÊ£¿ô¤Î³°Íè¿×Â®¸¡ÂÎ¸¡ºº
       *                                     ²Ã»»¤ò»»Äê¤·¤¿¤È¤­¤Îµ­ºÜ
+      *  03.03.04    NACL-Æ£¸¶    06/10/10  £²£°£°£¶Ç¯£±£°·î²þÀµÂÐ±þ
+      *                                     °ìÉôÉéÃ´¶â¡¦¿©»öÎÅÍÜÈñ¡¦À¸³è
+      *                                     ÎÅÍÜÆüÉ¸½àÉéÃ´³Û¶èÊ¬¥³¡¼¥É
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2019,6 +2022,8 @@
                    MOVE    "1"             TO  WRK-DATA
                WHEN    "3"
                    MOVE    "2"             TO  WRK-DATA
+               WHEN    "4"
+                   MOVE    "4"             TO  WRK-DATA
            END-EVALUATE
            MOVE    1                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC         
@@ -4971,7 +4976,7 @@
       *
       *    Æþ±¡ÎÁ
            PERFORM VARYING IDZ1    FROM    1   BY  1
-                   UNTIL   IDZ1    >       3
+                   UNTIL   IDZ1    >       4
                PERFORM VARYING IDZ2    FROM    1   BY  1
                        UNTIL   IDZ2    >       31
                        OR      LNK-NYURECEDEN-HKNCOMBI (IDZ1 IDZ2)
