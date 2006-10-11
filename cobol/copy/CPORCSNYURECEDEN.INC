@@ -41,8 +41,9 @@
       *返却項目
            03  LNK-NYURECEDEN-HENKYAKU-AREA.
       *入院返却テーブル（添字１：入院料　添字２：特定入院料　３：食事
-      *                  添字４：生活療養（環境療養）
-             04  LNK-NYURECEDEN-HENKYAKU-TABLE       OCCURS  4.
+      *                  添字４：生活療養（食事療養）
+      *                  添字５：生活療養（環境療養））
+             04  LNK-NYURECEDEN-HENKYAKU-TABLE       OCCURS  5.
       *入院料返却テーブル
                05  LNK-NYURECEDEN-HENKYAKU-TBL       OCCURS  31.
       *保険組合せ

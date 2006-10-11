@@ -4976,7 +4976,7 @@
       *
       *    Æþ±¡ÎÁ
            PERFORM VARYING IDZ1    FROM    1   BY  1
-                   UNTIL   IDZ1    >       4
+                   UNTIL   IDZ1    >       5
                PERFORM VARYING IDZ2    FROM    1   BY  1
                        UNTIL   IDZ2    >       31
                        OR      LNK-NYURECEDEN-HKNCOMBI (IDZ1 IDZ2)
