@@ -4321,6 +4321,7 @@
                GO      TO      1010-SINSATU-HEN-EXT
            END-IF
       *
+           MOVE    SPACE               TO  SPA-ERRCD
            MOVE    SPA-SCR-REC         TO  HZN-SCR-REC
            MOVE    SPACE               TO  SPA-SCR-REC
            INITIALIZE                  SPA-SCR-REC
