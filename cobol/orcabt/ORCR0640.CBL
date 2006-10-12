@@ -9257,14 +9257,14 @@
                            ADD     1       TO  IDY
                            MOVE    WRK-RECE62-KOHINF (IDX)
                                            TO  RECE62-KOHINF (IDY)
-                           MOVE    WRK-RECE62-FUKUSHIFLG-SKJINF (IDX)
-                                           TO  RECE62-FUKUSHIFLG-SKJINF
+                           MOVE    WRK-RECE62-FUKUSHIFLG-SKJ (IDX)
+                                           TO  RECE62-FUKUSHIFLG-SKJ
                                                              (IDY)
-                           MOVE    WRK-RECE62-FUKUSHIFLG-SKJIPAINF (IDX)
-                                        TO  RECE62-FUKUSHIFLG-SKJIPAINF
+                           MOVE    WRK-RECE62-FUKUSHIFLG-SKJIPA (IDX)
+                                        TO  RECE62-FUKUSHIFLG-SKJIPA
                                                              (IDY)
-                           MOVE    WRK-RECE62-FUKUSHIFLG-SKJSEIINF (IDX)
-                                        TO  RECE62-FUKUSHIFLG-SKJSEIINF
+                           MOVE    WRK-RECE62-FUKUSHIFLG-SKJSEI (IDX)
+                                        TO  RECE62-FUKUSHIFLG-SKJSEI
                                                              (IDY)
                            COMPUTE IDYX    =   IDY +   1
                            MOVE    WRK-RECE62-JNISSU      (IDXX)
