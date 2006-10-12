@@ -145,6 +145,9 @@
       *  03.03.04    NACL-Æ£¸¶    06/10/10  £²£°£°£¶Ç¯£±£°·î²þÀµÂÐ±þ
       *                                     °ìÉôÉéÃ´¶â¡¦¿©»öÎÅÍÜÈñ¡¦À¸³è
       *                                     ÎÅÍÜÆüÉ¸½àÉéÃ´³Û¶èÊ¬¥³¡¼¥É
+      *                                     À¸³èÎÅÍÜ¤Ç¿©»öÉéÃ´¤¢¤ê¤Î¸øÈñ¤¬ 
+      *                                     ¤¢¤ë¾ì¹ç¤Ï³ºÅö¤Î¸øÈñ¤ò¤Ï¤º¤·¤¿
+      *                                     ÉéÃ´¶èÊ¬¤È¤¹¤ë
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1234,6 +1237,8 @@
       *        É¸½àÉéÃ´³Û¡ÊÄã½êÆÀ£²¡¦£¹£°ÆüÄ¶¡Ë
                05  WRK-CONS-HYOJYUN-FUTAN4
                                       PIC X(09)   VALUE   "197001010".
+      *
+           03  WRK-CONS-SRYYM-200609   PIC 9(06)   VALUE   200609.      
       *
       *    ²þ¹Ô¥³¡¼¥É
        01  WRK-CONS-RETURN          PIC X(01)   VALUE   X"0A".
@@ -5006,12 +5011,13 @@
                            MOVE    ZERO                TO  FLG-CHK
                        ELSE
       *
-      *                    ¿©»öÎÅÍÜ¤Ç¿©»öÉéÃ´¤¢¤ê¤Î¸øÈñ¤¬¤¢¤ë¾ì¹ç¤Ï 
-      *                    ³ºÅö¤Î¸øÈñ¤ò¤Ï¤º¤·¤¿ÉéÃ´¶èÊ¬¤È¤¹¤ë
-                           IF    ( IDZ1                =   3     )
-      *********************AND   ( SYS-1001-PREFNUM    =   "38"  )
-                           AND   ( RECE62-FUKUSHIFLG-SKJINF-AREA
-                                                   NOT =   SPACE )
+      *                  ¿©»öÎÅÍÜ¡¦À¸³èÎÅÍÜ¤Ç¿©»öÉéÃ´¤¢¤ê¤Î¸øÈñ¤¬
+      *                  ¤¢¤ë¾ì¹ç¤Ï ³ºÅö¤Î¸øÈñ¤ò¤Ï¤º¤·¤¿ÉéÃ´¶èÊ¬¤È¤¹¤ë
+                         IF    ( IDZ1              >=  3      )
+                         AND   ( RECE62-FUKUSHIFLG-SKJINF-AREA
+                                                NOT =   SPACE )
+                           IF      RECE62-SRYYM
+                                               <=  WRK-CONS-SRYYM-200609
                                EVALUATE    WRK-FTNKBN
                                    WHEN    "2"
                                        IF    ( RECE62-FUKUSHIFLG-SKJ (1)
@@ -5123,7 +5129,274 @@
                                IF      WRK-FTNKBN          =   SPACE
                                    MOVE    ZERO            TO  FLG-CHK
                                END-IF
-                           END-IF 
+                           ELSE 
+                               IF    ( IDZ1                =  3  )
+                                 EVALUATE    WRK-FTNKBN
+                                   WHEN    "2"
+                                       IF    ( RECE62-FUKUSHIFLG-SKJIPA
+                                                                     (1)
+                                                           =   "1" )
+                                           MOVE    "1" TO WRK-FTNKBN
+                                       END-IF
+                                   WHEN    "3"
+                                       IF      RECE62-RJNHKNNUM
+                                                           =   SPACE
+                                           IF  RECE62-FUKUSHIFLG-SKJIPA
+                                                                     (2)
+                                                           =   "1"
+                                               MOVE    "1" TO WRK-FTNKBN
+                                           END-IF
+                                       ELSE
+                                           IF  RECE62-FUKUSHIFLG-SKJIPA
+                                                                     (1)
+                                                           =   "1"
+                                               MOVE    "1" TO WRK-FTNKBN
+                                           END-IF
+                                       END-IF
+                                   WHEN    "8"
+                                       IF    ( RECE62-FUKUSHIFLG-SKJIPA
+                                                                     (2)
+                                                           =   "1" )
+                                           MOVE    "1" TO WRK-FTNKBN
+                                       END-IF
+                                   WHEN    "4"
+                                       IF    ( RECE62-FUKUSHIFLG-SKJIPA
+                                                                     (1)
+                                                           =   "1" )
+                                       AND   ( RECE62-FUKUSHIFLG-SKJIPA
+                                                                     (2)
+                                                           =   "1" )
+                                           MOVE    "1" TO  WRK-FTNKBN
+                                       ELSE
+                                           IF  RECE62-FUKUSHIFLG-SKJIPA
+                                                                     (1)
+                                                           =   "1"
+                                               MOVE   "3" TO  WRK-FTNKBN
+                                           ELSE
+                                               MOVE   "2" TO  WRK-FTNKBN
+                                           END-IF
+                                       END-IF
+                                   WHEN    "A"
+                                       IF    ( RECE62-FUKUSHIFLG-SKJIPA
+                                                                     (1)
+                                                           =   "1" )
+                                       AND   ( RECE62-FUKUSHIFLG-SKJIPA
+                                                                     (2)
+                                                           =   "1" )
+                                           MOVE    "1" TO  WRK-FTNKBN
+                                       ELSE
+                                           IF  RECE62-FUKUSHIFLG-SKJIPA
+                                                                     (1)
+                                                           =   "1"
+                                               MOVE   "8" TO  WRK-FTNKBN
+                                           ELSE
+                                               MOVE   "3" TO  WRK-FTNKBN
+                                           END-IF
+                                       END-IF
+                                   WHEN    "7"
+                                       IF    ( RECE62-FUKUSHIFLG-SKJIPA
+                                                                     (1)
+                                                           =   "1" )
+                                       AND   ( RECE62-FUKUSHIFLG-SKJIPA
+                                                                     (2)
+                                                           =   "1" )
+                                           MOVE    SPACE
+                                                       TO  WRK-FTNKBN
+                                       ELSE
+                                           IF  RECE62-FUKUSHIFLG-SKJIPA
+                                                                     (1)
+                                                           =   "1"
+                                               MOVE    "6" TO WRK-FTNKBN
+                                           ELSE
+                                               MOVE    "5" TO WRK-FTNKBN
+                                           END-IF
+                                       END-IF
+                                   WHEN    "D"
+                                       IF    ( RECE62-FUKUSHIFLG-SKJIPA
+                                                                     (1)
+                                                           =   "1" )
+                                       AND   ( RECE62-FUKUSHIFLG-SKJIPA
+                                                                     (2)
+                                                           =   "1" )
+                                           MOVE    SPACE
+                                                       TO  WRK-FTNKBN
+                                       ELSE
+                                           IF  RECE62-FUKUSHIFLG-SKJIPA
+                                                                     (1)
+                                                           =   "1"
+                                               MOVE    "F" TO WRK-FTNKBN
+                                           ELSE
+                                               MOVE    "6" TO WRK-FTNKBN
+                                           END-IF
+                                       END-IF
+                                   WHEN    "5"
+                                       IF    ( RECE62-FUKUSHIFLG-SKJIPA
+                                                                     (1)
+                                                           =   "1" )
+                                           MOVE    SPACE   TO WRK-FTNKBN
+                                       END-IF
+                                   WHEN    "F"
+                                       IF    ( RECE62-FUKUSHIFLG-SKJIPA
+                                                                     (2)
+                                                           =   "1" )
+                                           MOVE    SPACE   TO WRK-FTNKBN
+                                       END-IF
+                                   WHEN    "6"
+                                       IF      RECE62-RJNHKNNUM
+                                                           =   SPACE
+                                           IF  RECE62-FUKUSHIFLG-SKJIPA
+                                                                     (2)
+                                                           =   "1"
+                                               MOVE    SPACE
+                                                           TO WRK-FTNKBN
+                                           END-IF
+                                       ELSE
+                                           IF  RECE62-FUKUSHIFLG-SKJIPA
+                                                                     (1)
+                                                           =   "1"
+                                               MOVE    SPACE
+                                                           TO WRK-FTNKBN
+                                           END-IF
+                                       END-IF
+                                 END-EVALUATE
+                                 IF      WRK-FTNKBN          =   SPACE
+                                     MOVE    ZERO            TO  FLG-CHK
+                                 END-IF
+                               ELSE
+                                 EVALUATE    WRK-FTNKBN
+                                   WHEN    "2"
+                                       IF    ( RECE62-FUKUSHIFLG-SKJSEI
+                                                                     (1)
+                                                           =   "1" )
+                                           MOVE    "1" TO WRK-FTNKBN
+                                       END-IF
+                                   WHEN    "3"
+                                       IF      RECE62-RJNHKNNUM
+                                                           =   SPACE
+                                           IF  RECE62-FUKUSHIFLG-SKJSEI
+                                                                     (2)
+                                                           =   "1"
+                                               MOVE    "1" TO WRK-FTNKBN
+                                           END-IF
+                                       ELSE
+                                           IF  RECE62-FUKUSHIFLG-SKJSEI
+                                                                     (1)
+                                                           =   "1"
+                                               MOVE    "1" TO WRK-FTNKBN
+                                           END-IF
+                                       END-IF
+                                   WHEN    "8"
+                                       IF    ( RECE62-FUKUSHIFLG-SKJSEI
+                                                                     (2)
+                                                           =   "1" )
+                                           MOVE    "1" TO WRK-FTNKBN
+                                       END-IF
+                                   WHEN    "4"
+                                       IF    ( RECE62-FUKUSHIFLG-SKJSEI
+                                                                     (1)
+                                                           =   "1" )
+                                       AND   ( RECE62-FUKUSHIFLG-SKJSEI
+                                                                     (2)
+                                                           =   "1" )
+                                           MOVE    "1" TO  WRK-FTNKBN
+                                       ELSE
+                                           IF  RECE62-FUKUSHIFLG-SKJSEI
+                                                                     (1)
+                                                           =   "1"
+                                               MOVE   "3" TO  WRK-FTNKBN
+                                           ELSE
+                                               MOVE   "2" TO  WRK-FTNKBN
+                                           END-IF
+                                       END-IF
+                                   WHEN    "A"
+                                       IF    ( RECE62-FUKUSHIFLG-SKJSEI
+                                                                     (1)
+                                                           =   "1" )
+                                       AND   ( RECE62-FUKUSHIFLG-SKJSEI
+                                                                     (2)
+                                                           =   "1" )
+                                           MOVE    "1" TO  WRK-FTNKBN
+                                       ELSE
+                                           IF  RECE62-FUKUSHIFLG-SKJSEI
+                                                                     (1)
+                                                           =   "1"
+                                               MOVE   "8" TO  WRK-FTNKBN
+                                           ELSE
+                                               MOVE   "3" TO  WRK-FTNKBN
+                                           END-IF
+                                       END-IF
+                                   WHEN    "7"
+                                       IF    ( RECE62-FUKUSHIFLG-SKJSEI
+                                                                     (1)
+                                                           =   "1" )
+                                       AND   ( RECE62-FUKUSHIFLG-SKJSEI
+                                                                     (2)
+                                                           =   "1" )
+                                           MOVE    SPACE
+                                                       TO  WRK-FTNKBN
+                                       ELSE
+                                           IF  RECE62-FUKUSHIFLG-SKJSEI
+                                                                     (1)
+                                                           =   "1"
+                                               MOVE    "6" TO WRK-FTNKBN
+                                           ELSE
+                                               MOVE    "5" TO WRK-FTNKBN
+                                           END-IF
+                                       END-IF
+                                   WHEN    "D"
+                                       IF    ( RECE62-FUKUSHIFLG-SKJSEI
+                                                                     (1)
+                                                           =   "1" )
+                                       AND   ( RECE62-FUKUSHIFLG-SKJSEI
+                                                                     (2)
+                                                           =   "1" )
+                                           MOVE    SPACE
+                                                       TO  WRK-FTNKBN
+                                       ELSE
+                                           IF  RECE62-FUKUSHIFLG-SKJSEI
+                                                                     (1)
+                                                           =   "1"
+                                               MOVE    "F" TO WRK-FTNKBN
+                                           ELSE
+                                               MOVE    "6" TO WRK-FTNKBN
+                                           END-IF
+                                       END-IF
+                                   WHEN    "5"
+                                       IF    ( RECE62-FUKUSHIFLG-SKJSEI
+                                                                     (1)
+                                                           =   "1" )
+                                           MOVE    SPACE   TO WRK-FTNKBN
+                                       END-IF
+                                   WHEN    "F"
+                                       IF    ( RECE62-FUKUSHIFLG-SKJSEI
+                                                                     (2)
+                                                           =   "1" )
+                                           MOVE    SPACE   TO WRK-FTNKBN
+                                       END-IF
+                                   WHEN    "6"
+                                       IF      RECE62-RJNHKNNUM
+                                                           =   SPACE
+                                           IF  RECE62-FUKUSHIFLG-SKJSEI
+                                                                     (2)
+                                                           =   "1"
+                                               MOVE    SPACE
+                                                           TO WRK-FTNKBN
+                                           END-IF
+                                       ELSE
+                                           IF  RECE62-FUKUSHIFLG-SKJSEI
+                                                                     (1)
+                                                           =   "1"
+                                               MOVE    SPACE
+                                                           TO WRK-FTNKBN
+                                           END-IF
+                                       END-IF
+                                 END-EVALUATE
+                                 IF      WRK-FTNKBN          =   SPACE
+                                     MOVE    ZERO            TO  FLG-CHK
+                                 END-IF
+                               END-IF 
+                           END-IF
+                         END-IF 
                        END-IF
                    END-IF
       *
