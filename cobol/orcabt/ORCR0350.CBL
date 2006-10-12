@@ -5013,11 +5013,10 @@
       *
       *                  ¿©»öÎÅÍÜ¡¦À¸³èÎÅÍÜ¤Ç¿©»öÉéÃ´¤¢¤ê¤Î¸øÈñ¤¬
       *                  ¤¢¤ë¾ì¹ç¤Ï ³ºÅö¤Î¸øÈñ¤ò¤Ï¤º¤·¤¿ÉéÃ´¶èÊ¬¤È¤¹¤ë
-                         IF    ( IDZ1              >=  3      )
-                         AND   ( RECE62-FUKUSHIFLG-SKJINF-AREA
+                         IF      RECE62-SRYYM  <=  WRK-CONS-SRYYM-200609
+                           IF    ( IDZ1              =  3     )
+                           AND   ( RECE62-FUKUSHIFLG-SKJINF-AREA
                                                 NOT =   SPACE )
-                           IF      RECE62-SRYYM
-                                               <=  WRK-CONS-SRYYM-200609
                                EVALUATE    WRK-FTNKBN
                                    WHEN    "2"
                                        IF    ( RECE62-FUKUSHIFLG-SKJ (1)
@@ -5129,8 +5128,11 @@
                                IF      WRK-FTNKBN          =   SPACE
                                    MOVE    ZERO            TO  FLG-CHK
                                END-IF
-                           ELSE 
-                               IF    ( IDZ1                =  3  )
+                             END-IF
+                         ELSE 
+                             IF    ( IDZ1              =  3     )
+                               IF      RECE62-FUKUSHIFLG-SKJIPAINF-AREA
+                                                       NOT =   SPACE
                                  EVALUATE    WRK-FTNKBN
                                    WHEN    "2"
                                        IF    ( RECE62-FUKUSHIFLG-SKJIPA
@@ -5262,7 +5264,10 @@
                                  IF      WRK-FTNKBN          =   SPACE
                                      MOVE    ZERO            TO  FLG-CHK
                                  END-IF
-                               ELSE
+                               END-IF
+                             ELSE
+                               IF      RECE62-FUKUSHIFLG-SKJSEIINF-AREA
+                                                       NOT =   SPACE
                                  EVALUATE    WRK-FTNKBN
                                    WHEN    "2"
                                        IF    ( RECE62-FUKUSHIFLG-SKJSEI
@@ -5395,7 +5400,7 @@
                                      MOVE    ZERO            TO  FLG-CHK
                                  END-IF
                                END-IF 
-                           END-IF
+                             END-IF
                          END-IF 
                        END-IF
                    END-IF
