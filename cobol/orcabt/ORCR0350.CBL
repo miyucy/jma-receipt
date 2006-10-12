@@ -5128,9 +5128,9 @@
                                IF      WRK-FTNKBN          =   SPACE
                                    MOVE    ZERO            TO  FLG-CHK
                                END-IF
-                             END-IF
+                           END-IF
                          ELSE 
-                             IF    ( IDZ1              =  3     )
+                           IF    ( IDZ1              =  3     )
                                IF      RECE62-FUKUSHIFLG-SKJIPAINF-AREA
                                                        NOT =   SPACE
                                  EVALUATE    WRK-FTNKBN
@@ -5265,7 +5265,8 @@
                                      MOVE    ZERO            TO  FLG-CHK
                                  END-IF
                                END-IF
-                             ELSE
+                           END-IF
+                           IF    ( IDZ1              >  3     )
                                IF      RECE62-FUKUSHIFLG-SKJSEIINF-AREA
                                                        NOT =   SPACE
                                  EVALUATE    WRK-FTNKBN
@@ -5400,7 +5401,7 @@
                                      MOVE    ZERO            TO  FLG-CHK
                                  END-IF
                                END-IF 
-                             END-IF
+                           END-IF
                          END-IF 
                        END-IF
                    END-IF
