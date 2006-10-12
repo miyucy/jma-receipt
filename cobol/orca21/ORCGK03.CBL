@@ -2167,6 +2167,11 @@
                       (SPA-GMN-SRYKA   NOT =   ZERO )  AND
                       (SPA-GMN-HKNCOMBI    NOT =   ZERO )
       *            前回入金が未収の時
+      *TEST
+              DISPLAY "SPA-OLD-SEIKYU:" SPA-OLD-SEIKYU
+                 ",SPA-NAI-CHOSEI:" SPA-NAI-CHOSEI
+                 ",SPA-NAI-NYUKIN:" SPA-NAI-NYUKIN
+      *TEST
                    IF     (SPA-OLD-SEIKYU  +   SPA-NAI-CHOSEI)
                                                <=  SPA-NAI-NYUKIN
                        MOVE    1               TO  SPA-NAI-HENFLG
@@ -3091,9 +3096,12 @@
       *        複数科表示
                WHEN    "CLICKED"       ALSO    "B06"
                     PERFORM 490-FUKU-SRYKA-SEC
-      *        返金
+      *        入金
                WHEN    "CLICKED"       ALSO    "B08"
-                    PERFORM 408-HENKIN-SYORI-SEC
+                    PERFORM 408-NYUKIN-SYORI-SEC
+      *        返金
+               WHEN    "CLICKED"       ALSO    "B09"
+                    PERFORM 409-HENKIN-SYORI-SEC
            END-EVALUATE
           .
       *
@@ -3325,6 +3333,12 @@
            END-IF
       *
       *    関連チェック
+      *TEST
+           DISPLAY "SPA-GMN-NYUKIN:" SPA-GMN-NYUKIN
+                ",SPA-MAE-NYUKIN:" SPA-MAE-NYUKIN
+           DISPLAY "SPA-GMN-HENKIN:" SPA-GMN-HENKIN
+                ",SPA-MAE-HENKIN:" SPA-MAE-HENKIN
+      *TEST
       *    変更が無い時
            IF    ((SPA-GMN-NYUKINKBN   =   SPA-MAE-NYUKINKBN )  AND
                   (SPA-GMN-NYUKIN      =   SPA-MAE-NYUKIN    )  AND
@@ -4596,7 +4610,7 @@
       *****************************************************************
       *    一括返金処理
       *****************************************************************
-       408-HENKIN-SYORI-SEC             SECTION.
+       409-HENKIN-SYORI-SEC             SECTION.
       *
            IF      SPA-SYORIFLG        =   ZERO
                IF      SPA-NAI-HENFLG      =   1
@@ -4604,18 +4618,22 @@
                    MOVE    SPA-GMN-CHOKAKIN    TO  SPA-GMN-HENKIN-X
       *            基本チェックと画面処理
                    PERFORM 4102-KIHON-CHK-SEC
+               ELSE
+                   IF      SPA-GMN-CHOKAKIN     >   ZERO
+                       MOVE    "0112"           TO  SPA-ERRCD
+                   END-IF
                END-IF
            ELSE
-               PERFORM 4081-TEI-HENKIN-SYORI-SEC
+               PERFORM 4091-TEI-HENKIN-SYORI-SEC
            END-IF
            .
-       408-HENKIN-SYORI-EXT.
+       409-HENKIN-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
       *    訂正返金処理
       *****************************************************************
-       4081-TEI-HENKIN-SYORI-SEC             SECTION.
+       4091-TEI-HENKIN-SYORI-SEC             SECTION.
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-SYUNOU-MAX
@@ -4638,7 +4656,62 @@
       *    対象の保険の収納編集処理
            PERFORM 3102-SYUNOU-HEN-SEC
            .
-       4081-TEI-HENKIN-SYORI-EXT.
+       4091-TEI-HENKIN-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    一括入金処理
+      *****************************************************************
+       408-NYUKIN-SYORI-SEC             SECTION.
+      *
+           IF      SPA-SYORIFLG        =   ZERO
+               IF     (SPA-GMN-SRYKA       =   SPA-GOK-SRYKA ) AND
+                      (SPA-GMN-HKNCOMBI    =   SPA-GOK-HKNCOMBI)  AND
+                      (SPA-GMN-ZENMISYU    >   ZERO         )
+      *            入金上限額を入金へ
+                   IF      SPA-NAI-JYOGENKIN   >=  ZERO
+                       MOVE    SPA-NAI-JYOGENKIN   TO  SPA-GMN-NYUKIN-X
+                   ELSE
+                       MOVE    ZERO                TO  SPA-GMN-NYUKIN-X
+                   END-IF
+      *            基本チェックと画面処理
+                   PERFORM 4102-KIHON-CHK-SEC
+               ELSE
+                   IF      (SPA-GMN-ZENMISYU    >   ZERO )  AND
+                           (SPA-NAI-JYOGENKIN   >   ZERO )
+                       MOVE    "0111"           TO  SPA-ERRCD
+                   END-IF
+               END-IF
+           ELSE
+               PERFORM 4081-TEI-NYUKIN-SYORI-SEC
+           END-IF
+           .
+       408-NYUKIN-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    訂正返金処理
+      *****************************************************************
+       4081-TEI-NYUKIN-SYORI-SEC             SECTION.
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-SYUNOU-MAX
+               MOVE    SPA-SYUNOU-REC (IDX)    TO  SYUNOU-REC
+               IF      SYU-SRYKA       NOT =   ZERO
+                   COMPUTE WRK-HENKIN  =   SPA-TEIKEI-SKYMONEY (IDX)
+                                       +   SYU-CHOSEI
+                                       -   SPA-MAE-SKYMONEY(IDX)
+      *            入金額判定
+                   IF      WRK-HENKIN      >   ZERO
+                       MOVE    WRK-HENKIN      TO  SYU-NYUKIN-TOTAL
+                   END-IF
+                   MOVE    SYUNOU-REC      TO  SPA-SYUNOU-REC (IDX) 
+               END-IF
+           END-PERFORM
+      *    対象の保険の収納編集処理
+           PERFORM 3102-SYUNOU-HEN-SEC
+           .
+       4081-TEI-NYUKIN-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -5920,6 +5993,16 @@
                WHEN    "0110"
                    STRING  "入金額は今回請求額＋返金額以下に"
                            "して下さい。"
+                                       DELIMITED   BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "0111"
+                   STRING  "一括入金は合計表示で押下して下さい。"
+                                       DELIMITED   BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "0112"
+                   STRING  "一括返金は合計表示で押下して下さい。"
                                        DELIMITED   BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
