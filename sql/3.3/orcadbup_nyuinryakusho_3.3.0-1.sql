@@ -1,27 +1,37 @@
 \set ON_ERROR_STOP
-delete from tbl_nyuinryakusho where srycd = '190121310' and yukostymd = '20060701' and yukoedymd = '99999999';
-delete from tbl_nyuinryakusho where srycd = '190121410' and yukostymd = '20060701' and yukoedymd = '99999999';
-delete from tbl_nyuinryakusho where srycd = '190121510' and yukostymd = '20060701' and yukoedymd = '99999999';
-delete from tbl_nyuinryakusho where srycd = '190121610' and yukostymd = '20060701' and yukoedymd = '99999999';
-delete from tbl_nyuinryakusho where srycd = '190121710' and yukostymd = '20060701' and yukoedymd = '99999999';
-delete from tbl_nyuinryakusho where srycd = '190121810' and yukostymd = '20060701' and yukoedymd = '99999999';
-delete from tbl_nyuinryakusho where srycd = '190122010' and yukostymd = '20060701' and yukoedymd = '99999999';
-delete from tbl_nyuinryakusho where srycd = '190122110' and yukostymd = '20060701' and yukoedymd = '99999999';
-delete from tbl_nyuinryakusho where srycd = '190122210' and yukostymd = '20060701' and yukoedymd = '99999999';
-delete from tbl_nyuinryakusho where srycd = '190122310' and yukostymd = '20060701' and yukoedymd = '99999999';
-delete from tbl_nyuinryakusho where srycd = '190122410' and yukostymd = '20060701' and yukoedymd = '99999999';
-delete from tbl_nyuinryakusho where srycd = '190122510' and yukostymd = '20060701' and yukoedymd = '99999999';
+delete from tbl_nyuinryakusho where srycd = '190123710' and yukostymd = '20061001' and yukoedymd = '99999999';
+delete from tbl_nyuinryakusho where srycd = '190123810' and yukostymd = '20061001' and yukoedymd = '99999999';
+delete from tbl_nyuinryakusho where srycd = '190123910' and yukostymd = '20061001' and yukoedymd = '99999999';
+delete from tbl_nyuinryakusho where srycd = '190124010' and yukostymd = '20061001' and yukoedymd = '99999999';
+delete from tbl_nyuinryakusho where srycd = '190124110' and yukostymd = '20061001' and yukoedymd = '99999999';
+delete from tbl_nyuinryakusho where srycd = '190124210' and yukostymd = '20061001' and yukoedymd = '99999999';
+delete from tbl_nyuinryakusho where srycd = '190124310' and yukostymd = '20061001' and yukoedymd = '99999999';
+delete from tbl_nyuinryakusho where srycd = '190124410' and yukostymd = '20061001' and yukoedymd = '99999999';
+delete from tbl_nyuinryakusho where srycd = '190124510' and yukostymd = '20061001' and yukoedymd = '99999999';
+delete from tbl_nyuinryakusho where srycd = '190124610' and yukostymd = '20061001' and yukoedymd = '99999999';
+delete from tbl_nyuinryakusho where srycd = '190124710' and yukostymd = '20061001' and yukoedymd = '99999999';
+delete from tbl_nyuinryakusho where srycd = '190124810' and yukostymd = '20061001' and yukoedymd = '99999999';
+delete from tbl_nyuinryakusho where srycd = '190124910' and yukostymd = '20061001' and yukoedymd = '99999999';
+delete from tbl_nyuinryakusho where srycd = '190125010' and yukostymd = '20061001' and yukoedymd = '99999999';
+delete from tbl_nyuinryakusho where srycd = '190125110' and yukostymd = '20061001' and yukoedymd = '99999999';
+delete from tbl_nyuinryakusho where srycd = '190125210' and yukostymd = '20061001' and yukoedymd = '99999999';
+delete from tbl_nyuinryakusho where srycd = '190125310' and yukostymd = '20061001' and yukoedymd = '99999999';
 COPY "tbl_nyuinryakusho" FROM stdin;
-190121310	20060701	99999999	闻Ａ						
-190121410	20060701	99999999	闻Ｂ						
-190121510	20060701	99999999	闻Ｃ						
-190121610	20060701	99999999	闻Ｄ						
-190121710	20060701	99999999	闻Ｅ						
-190121810	20060701	99999999	闻泼						
-190122010	20060701	99999999	壳闻Ａ						
-190122110	20060701	99999999	壳闻Ｂ						
-190122210	20060701	99999999	壳闻Ｃ						
-190122310	20060701	99999999	壳闻Ｄ						
-190122410	20060701	99999999	壳闻Ｅ						
-190122510	20060701	99999999	壳闻２泼						
+190123710	20061001	99999999	闻Ａ栏						
+190123810	20061001	99999999	闻Ｂ栏						
+190123910	20061001	99999999	闻Ｃ栏						
+190124010	20061001	99999999	闻Ｄ栏						
+190124110	20061001	99999999	闻Ｅ栏						
+190124210	20061001	99999999	闻泼栏						
+190124310	20061001	99999999	壳闻Ａ栏						
+190124410	20061001	99999999	壳闻Ｂ栏						
+190124510	20061001	99999999	壳闻Ｃ栏						
+190124610	20061001	99999999	壳闻Ｄ栏						
+190124710	20061001	99999999	壳闻Ｅ栏						
+190124810	20061001	99999999	壳闻２泼栏						
+190124910	20061001	99999999	牲リ掐栏						
+190125010	20061001	99999999	壳板闻瓷栏						
+190125110	20061001	99999999	壳板闻瓷栏						
+190125210	20061001	99999999	壳板闻瓷栏						
+190125310	20061001	99999999	没缄２栏						
 \.
