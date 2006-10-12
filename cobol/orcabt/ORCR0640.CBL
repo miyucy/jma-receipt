@@ -8616,9 +8616,10 @@
                 END-IF
       *
                 IF   RECE62-SRYYM    >=  "200610"
-                  IF   (WRK-PREFNUM               = "10"    ) AND
-                       (RECE62-KOHNUM(KH-IDX - 1) =
-                            "146" OR "246" OR "143" OR "243")
+                  IF   (WRK-PREFNUM                   =    "10"   )
+                  AND  (RECE62-KOHNUM(KH-IDX - 1)     =
+                                "146" OR "246" OR "143" OR "243"  )
+                  AND  (RECE62-HON-NYUSKJRYYKBN(KH-IDX - 1)  = "3")
                       MOVE     1     TO    FLG-TOKUSYU-SKJ
                   ELSE
                       MOVE    ZERO   TO    FLG-TOKUSYU-SKJ

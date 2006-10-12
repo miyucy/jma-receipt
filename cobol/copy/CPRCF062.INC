@@ -197,6 +197,9 @@
       *公費−本人−入院−月−上限回数
                    07  RECE62-HON-NYUMJGNCNT
                                           PIC  9(02).
+      *公費−本人−入院−食事療養区分
+                   07  RECE62-HON-NYUSKJRYYKBN
+                                          PIC  X(01).
       *
       *保険組合せ番号情報
            03  RECE62-HKNCOMBIINF-AREA.
