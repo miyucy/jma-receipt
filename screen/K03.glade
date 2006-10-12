@@ -294,7 +294,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Thu, 05 Oct 2006 01:59:25 GMT</last_modification_time>
       </signal>
-      <label>一括返金</label>
+      <label>一括入金</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -317,7 +317,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Thu, 27 Feb 2003 04:22:24 GMT</last_modification_time>
       </signal>
-      <label></label>
+      <label>一括返金</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
