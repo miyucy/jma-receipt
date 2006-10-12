@@ -1005,6 +1005,11 @@
       *----(02.02.03)--ADD-END-----
                END-IF
            END-IF
+      *----(02.02.06)--ADD-START---
+           IF          SPA-GMN-NAME        =   SPACE
+               MOVE    SPA-GMN-KENNAME     TO  SPA-GMN-NAME
+           END-IF
+      *----(02.02.06)--ADD-END-----
       *
       *    効能効果半角文字混在チェック
            IF          SPA-GMN-EFFECT  NOT =   SPACE
