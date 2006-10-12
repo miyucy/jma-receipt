@@ -829,7 +829,7 @@
                        MOVE    SPACE           TO  SPA-COM-ZAIEND
                                                              (IDX - 1)
                    ELSE
-                       MOVE    "0013"          TO  SPA-ERRCD
+                       MOVE    "0047"          TO  SPA-ERRCD
                    END-IF
            END-EVALUATE
       *
@@ -1250,7 +1250,7 @@
                                                 "33" OR  "40" OR
                                                 "50" OR  "54" OR
                                                 "60" OR  "70" OR
-                                                "13" OR  "14" OR
+                                                "80" OR  "14" OR
                                                 "21" OR  "22" OR
                                                 "23"          )
                        MOVE    SPA-COM-SRYKBN(IDX - 1)
@@ -1258,7 +1258,7 @@
                        MOVE    SPACE           TO  SPA-COM-ZAIEND
                                                              (IDX - 1)
                    ELSE
-                       MOVE    "0013"          TO  SPA-ERRCD
+                       MOVE    "0047"          TO  SPA-ERRCD
                    END-IF
       *        コメント（前の剤に付属する）
                WHEN    "008"
