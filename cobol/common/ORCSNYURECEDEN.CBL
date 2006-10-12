@@ -3878,6 +3878,11 @@
                IF    WRK-SKJ5-TOKU-SHOKU(IDX1)  NOT =   SPACE
                    MOVE  WRK-SKJ5-TOKU-SHOKU(IDX1)
                                        TO  WRK-SKJ7-TOKU-SHOKU(IDX1)
+      *            入院時生活療養費の置換え
+                   IF   LNK-NYULIFE-SKJ-SRYCD(IDX1)  NOT =  SPACE
+                       MOVE  "197001570"
+                                       TO  WRK-SKJ7-TOKU-SHOKU(IDX1)
+                   END-IF
                    ADD   1             TO  WRK-SKJ7-TOKU-SHOKU-SU(IDX1)
                END-IF
       *        食事負担（朝）
@@ -3910,6 +3915,11 @@
                IF    WRK-SKJ5-TOKU-SHOKU(IDX2)  NOT =   SPACE
                    MOVE  WRK-SKJ5-TOKU-SHOKU(IDX2)
                                        TO  WRK-SKJ7-TOKU-SHOKU(IDX1)
+      *            入院時生活療養費の置換え
+                   IF   LNK-NYULIFE-SKJ-SRYCD(IDX1)  NOT =  SPACE
+                       MOVE  "197001570"
+                                       TO  WRK-SKJ7-TOKU-SHOKU(IDX1)
+                   END-IF
                    ADD   1             TO  WRK-SKJ7-TOKU-SHOKU-SU(IDX1)
                END-IF
       *        食事負担（昼）
@@ -3942,6 +3952,11 @@
                IF    WRK-SKJ5-TOKU-SHOKU(IDX3)  NOT =   SPACE
                    MOVE  WRK-SKJ5-TOKU-SHOKU(IDX3)
                                        TO  WRK-SKJ7-TOKU-SHOKU(IDX1)
+      *            入院時生活療養費の置換え
+                   IF   LNK-NYULIFE-SKJ-SRYCD(IDX1)  NOT =  SPACE
+                       MOVE  "197001570"
+                                       TO  WRK-SKJ7-TOKU-SHOKU(IDX1)
+                   END-IF
                    ADD   1             TO  WRK-SKJ7-TOKU-SHOKU-SU(IDX1)
                END-IF
       *        食事負担（夕）
@@ -3965,6 +3980,11 @@
                IF    WRK-SKJ6-SHOKUDOU(IDX1)  NOT =   SPACE
                    MOVE  WRK-SKJ6-SHOKUDOU(IDX1)
                                        TO  WRK-SKJ7-SHOKUDOU(IDX1)
+      *            入院時生活療養費の置換え
+                   IF   LNK-NYULIFE-SKJ-SRYCD(IDX1)  NOT =  SPACE
+                       MOVE  "197001670"
+                                       TO  WRK-SKJ7-SHOKUDOU(IDX1)
+                   END-IF
                END-IF
            END-PERFORM
       *
