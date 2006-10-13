@@ -2583,7 +2583,7 @@
            MOVE    WRK-Z99             TO  K03-SKYMONEY
       *    入金額
            MOVE    SPA-GMN-NYUKIN      TO  WRK-Z99
-           MOVE    WRK-Z99             TO  K03-NYUKIN
+           MOVE    WRK-Z99(2:)         TO  K03-NYUKIN
       *
       *    返金額
            IF      SPA-NAI-HENKBN      =   "1"
@@ -2596,7 +2596,7 @@
                END-IF
            ELSE
                MOVE    SPA-GMN-HENKIN      TO  WRK-Z92
-               MOVE    WRK-Z92             TO  K03-HENKIN
+               MOVE    WRK-Z92(2:)         TO  K03-HENKIN
            END-IF
       *    入金上限額
            MOVE    SPA-GMN-JYOGENMSG   TO  K03-JYOGENMSG-VALUE
