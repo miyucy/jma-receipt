@@ -4028,10 +4028,11 @@
                                                  (SPA-SYUNOU-IDX)
       *        返金
                IF     (WRK-SRYKA       NOT =   ZERO ) AND
-                      (WRK-HKNCOMBI    NOT =   ZERO ) AND
-                      (SPA-NAI-HENFLG      =   1    )
+                      (WRK-HKNCOMBI    NOT =   ZERO )
                    IF      SPA-SYORIFLG        =   ZERO
-                       MOVE    SPA-GMN-HENKIN  TO  SPA-GOK-HENKIN
+                       IF      (SPA-NAI-HENFLG      =   1    )
+                           MOVE    SPA-GMN-HENKIN  TO  SPA-GOK-HENKIN
+                       END-IF
                    ELSE
       *                訂正
                        MOVE    SPA-GMN-HENKIN  TO  SPA-SYU-HENKIN
@@ -4142,6 +4143,15 @@
            IF     (SPA-NAI-NYUKIN-JYOTAI   =   "2" ) 
                MOVE    ZERO            TO  SPA-GMN-NYUKIN
            END-IF
+      *    訂正時入金可能へ
+           IF      SPA-SYORIFLG        =   1
+               IF      SPA-GMN-SEIKYU      <   ZERO
+                   MOVE    1               TO  SPA-NAI-HENFLG
+               ELSE
+                   MOVE    ZERO            TO  SPA-NAI-HENFLG
+               END-IF
+           END-IF
+      *
       *    返金額対応
            IF      SPA-GMN-HENKIN      >   ZERO
                IF      SPA-SYORIFLG        =   ZERO
