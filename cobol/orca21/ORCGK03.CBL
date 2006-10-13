@@ -2167,11 +2167,6 @@
                       (SPA-GMN-SRYKA   NOT =   ZERO )  AND
                       (SPA-GMN-HKNCOMBI    NOT =   ZERO )
       *            前回入金が未収の時
-      *TEST
-              DISPLAY "SPA-OLD-SEIKYU:" SPA-OLD-SEIKYU
-                 ",SPA-NAI-CHOSEI:" SPA-NAI-CHOSEI
-                 ",SPA-NAI-NYUKIN:" SPA-NAI-NYUKIN
-      *TEST
                    IF     (SPA-OLD-SEIKYU  +   SPA-NAI-CHOSEI)
                                                <=  SPA-NAI-NYUKIN
                        MOVE    1               TO  SPA-NAI-HENFLG
@@ -2313,20 +2308,23 @@
                MOVE    SPA-NAI-JYOGENKIN   TO  WRK-Z9
                PERFORM 31091-KINHENSYU-SEC
            END-IF
-           IF      SPA-NAI-JYOGENKIN   >=  ZERO
+      *    訂正時は表示なし
+           IF      SPA-SYORIFLG        =   ZERO
+             IF      SPA-NAI-JYOGENKIN   >=  ZERO
                STRING  "入金上限額：" 
                                        DELIMITED  BY  SIZE
                    WRK-HEN             DELIMITED  BY  SPACE
                    "円"                DELIMITED  BY  SIZE
                                        INTO    SPA-GMN-JYOGENMSG
                END-STRING
-           ELSE
+             ELSE
                STRING  "今回返金額：" 
                                        DELIMITED  BY  SIZE
                    WRK-HEN             DELIMITED  BY  SPACE
                    "円"                DELIMITED  BY  SIZE
                                        INTO    SPA-GMN-JYOGENMSG
                END-STRING
+             END-IF
            END-IF
            .
        31031-JYOGENKIN-KEI-EXT.
@@ -3333,12 +3331,6 @@
            END-IF
       *
       *    関連チェック
-      *TEST
-           DISPLAY "SPA-GMN-NYUKIN:" SPA-GMN-NYUKIN
-                ",SPA-MAE-NYUKIN:" SPA-MAE-NYUKIN
-           DISPLAY "SPA-GMN-HENKIN:" SPA-GMN-HENKIN
-                ",SPA-MAE-HENKIN:" SPA-MAE-HENKIN
-      *TEST
       *    変更が無い時
            IF    ((SPA-GMN-NYUKINKBN   =   SPA-MAE-NYUKINKBN )  AND
                   (SPA-GMN-NYUKIN      =   SPA-MAE-NYUKIN    )  AND
