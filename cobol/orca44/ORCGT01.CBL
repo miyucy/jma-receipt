@@ -3032,7 +3032,7 @@
            EXIT.
       *
       *****************************************************************
-      *    データ収集処理        
+      *    データ収集処理
       *****************************************************************
        470-COLLECT-SYORI-SEC      SECTION.
       *
@@ -3044,7 +3044,7 @@
            MOVE    WRK-CONS-JOB-SHELLID-COLLECT
                                    TO  JOB-SHELLID
            CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA 
+                                   ORCSJOBKANRIAREA
                                    JOBKANRI-REC
       *
            MOVE    "JBS"           TO  SJOBKANRI-MODE
@@ -3055,9 +3055,9 @@
                                    TO  JOB-SHELLID
            MOVE    SPA-TERMID      TO  JOB-TERMID
            CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA 
+                                   ORCSJOBKANRIAREA
                                    JOBKANRI-REC
-      *             
+      *
       *    ファイルデイレクトリ位置指定
            MOVE    "scripts/monthly/collectdata1.sh"
                                    TO  WRK-SHELL-NAME
@@ -3067,8 +3067,15 @@
       *
            MOVE    SPACE           TO  SHELLTBL
            MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
-           MOVE    " "             TO  SHELLTBL-ARG1
-           MOVE    " "             TO  SHELLTBL-ARG2
+           MOVE    SPA-TERMID      TO  SHELLTBL-ARG1
+           MOVE    SPA-HOSPID      TO  SHELLTBL-ARG2
+           MOVE    SPA-PREFNUM     TO  SHELLTBL-ARG3
+           MOVE    SPA-NAI-SRYYM   TO  SHELLTBL-ARG4
+           MOVE    SPA-BEDFLG      TO  SHELLTBL-ARG5
+           MOVE    WRK-CONS-JOB-JOBID-COLLECT
+                                   TO  SHELLTBL-ARG6
+           MOVE    WRK-CONS-JOB-SHELLID-COLLECT
+                                   TO  SHELLTBL-ARG7
       *
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
