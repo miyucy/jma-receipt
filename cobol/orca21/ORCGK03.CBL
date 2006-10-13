@@ -3603,9 +3603,9 @@
       *
            IF      SPA-SYORIFLG        =   ZERO
       *        未収・返金なし
-               IF    ((SPA-GMN-ZENMISYU    =   ZERO )  AND
-                      (SPA-GMN-CHOKAKIN    =   ZERO ))  OR
-                     ( SPA-GMN-NYUKINKBN   =   "1"  )
+      *?       IF    ((SPA-GMN-ZENMISYU    =   ZERO )  AND
+      *?              (SPA-GMN-CHOKAKIN    =   ZERO ))  OR
+               IF    ( SPA-GMN-NYUKINKBN   =   "1"  )
       *            今回分のみ
                    MOVE    ZERO                TO  SPA-NYU-ZENMISYU
                    PERFORM 31050-NYUKIN-SYOKICHK-SEC
@@ -4666,8 +4666,7 @@
       *
            IF      SPA-SYORIFLG        =   ZERO
                IF     (SPA-GMN-SRYKA       =   SPA-GOK-SRYKA ) AND
-                      (SPA-GMN-HKNCOMBI    =   SPA-GOK-HKNCOMBI)  AND
-                      (SPA-GMN-ZENMISYU    >   ZERO         )
+                      (SPA-GMN-HKNCOMBI    =   SPA-GOK-HKNCOMBI)
       *            入金上限額を入金へ
                    IF      SPA-NAI-JYOGENKIN   >=  ZERO
                        MOVE    SPA-NAI-JYOGENKIN   TO  SPA-GMN-NYUKIN-X
@@ -4677,8 +4676,7 @@
       *            基本チェックと画面処理
                    PERFORM 4102-KIHON-CHK-SEC
                ELSE
-                   IF      (SPA-GMN-ZENMISYU    >   ZERO )  AND
-                           (SPA-NAI-JYOGENKIN   >   ZERO )
+                   IF      (SPA-NAI-JYOGENKIN   >   ZERO )
                        MOVE    "0111"           TO  SPA-ERRCD
                    END-IF
                END-IF
