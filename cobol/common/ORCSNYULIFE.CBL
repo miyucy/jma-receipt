@@ -620,6 +620,11 @@
                         MOVE  320       TO
                                         LNK-NYULIFE-KANFTN-MONEY(IDX1)
                     END-IF
+      *             œ∑Œ °ª„«Ø∂‚ºıµÎº‘§œ¥ƒ∂≠Œ≈Õ‹¥µº‘…È√¥Ãµ§∑§À√÷¥π§®
+                    IF  LNK-NYULIFE-FTNKBN1(IDX1)   =   "4"
+                        MOVE  SPACE  TO   LNK-NYULIFE-KANFTN-SRYCD(IDX1)
+                        MOVE  ZERO   TO   LNK-NYULIFE-KANFTN-MONEY(IDX1)
+                    END-IF
                 END-IF
              END-PERFORM
       *
