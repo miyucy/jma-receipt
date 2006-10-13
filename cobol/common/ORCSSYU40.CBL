@@ -33,9 +33,6 @@
       *  01.00.03    NACL-多々納  06/03/20  Ｈ１８．４改正対応
       *  01.00.04    NACL-多々納  06/04/12  電子化加算追加
       *  01.00.05    NACL-多々納  06/08/18  同日初診追加
-      *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
-      *  04.08.00    NACL-多々納  12/03/XX  Ｈ２５年４月改正対応
-      *  04.08.00    NACL-多々納  12/03/XX  Ｈ２７年１月改正対応
       *****************************************************************
       *
       *
@@ -164,21 +161,10 @@
       *
       *    初診料（同日複数診療科）
            03  FILLER              PIC X(13)   VALUE   "111011810 110".
-      *H25.4 から
-      *    初診料（紹介状なし）
-           03  FILLER              PIC X(13)   VALUE   "111012510 1 0".
-      *    同日初診（紹介状なし）
-           03  FILLER              PIC X(13)   VALUE   "111012610 110".
-      *H27.1 から
-      *    初診料（妥結率５割以下）
-           03  FILLER              PIC X(13)   VALUE   "111012710 1 0".
-      *H29.2
-      *    初診料（同一日２科目・妥結率５割以下）
-           03  FILLER              PIC X(13)   VALUE   "111012810 110".
       *
        01  TBL-SINSATU-AREAR       REDEFINES   TBL-SINSATU-AREA.
       *****03  TBL-SINSATU-OCC         OCCURS  18    INDEXED  TBL-IDX.
-           03  TBL-SINSATU-OCC         OCCURS  27    INDEXED  TBL-IDX.
+           03  TBL-SINSATU-OCC         OCCURS  23    INDEXED  TBL-IDX.
       *        診療コード
                05  TBL-SRYCD           PIC X(09).
       *
@@ -330,7 +316,6 @@
            MOVE    WRK-SRYYMD          TO  SYS-1006-STYUKYMD
            MOVE    WRK-SRYYMD          TO  SYS-1006-EDYUKYMD
       *    システム管理検索（施設基準）
-           MOVE    SPA-HOSPNUM         TO  SYS-1006-HOSPNUM
            MOVE    SYS-1006-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -667,9 +652,6 @@
                    WHEN    "7"
       *                乳幼児深夜
                        MOVE    "111011770"         TO  WRK-SRYCD
-                   WHEN    "8"
-      *                乳幼児夜間早朝等
-                       MOVE    "111012470"         TO  WRK-SRYCD
                    WHEN    OTHER
       *                時間外なし
                        MOVE    "111000370"         TO  WRK-SRYCD
@@ -725,7 +707,7 @@
       *    受診歴を検索する
            MOVE    SPACE               TO  JYURRK-REC
            INITIALIZE                  JYURRK-KEY
-           MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
+           MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
            MOVE    SPA-PTID            TO  JYURRK-PTID
            MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
            MOVE    ORCS40-DENPNUM      TO  JYURRK-DENPNUM
@@ -806,7 +788,7 @@
       *    算定履歴検索
            MOVE    SPACE               TO  SANTEI-REC
            INITIALIZE                  SANTEI-REC
-           MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
+           MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
            MOVE    SPA-PTID            TO  SANTEI-PTID
            MOVE    WRK-SRYYMD (1:6)    TO  SANTEI-SRYYM
       *
@@ -879,8 +861,6 @@
                    END-IF
       *        同日複数診療科
                WHEN    "111011810"
-      *H25.4   同日初診（紹介状なし）
-               WHEN    "111012610"
       *            最小の算定日編集
                    IF     (WRK-DD2             =   ZERO )  OR
                           (SANTEI-MSANTEID     <   WRK-DD2)
@@ -900,7 +880,7 @@
            MOVE    ZERO                TO  FLG-SYORI-END
      *
            INITIALIZE                      SRYACCT-REC
-           MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
+           MOVE    SPA-HOSPID          TO  ACCT-HOSPID
            MOVE    JYURRK-NYUGAIKBN    TO  ACCT-NYUGAIKBN
            MOVE    JYURRK-PTID         TO  ACCT-PTID
            MOVE    JYURRK-SRYKA        TO  ACCT-SRYKA
@@ -954,7 +934,7 @@
       *
       *    診療行為マスター読み込み
            INITIALIZE                      SRYACT-REC
-           MOVE    ACCT-HOSPNUM        TO  SRY-HOSPNUM
+           MOVE    ACCT-HOSPID         TO  SRY-HOSPID
            MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
            MOVE    ACCT-PTID           TO  SRY-PTID
            MOVE    ACCT-SRYKA          TO  SRY-SRYKA
@@ -1129,15 +1109,17 @@
            MOVE    WRK-SRYYMD          TO  TNS-YUKOSTYMD
            MOVE    WRK-SRYYMD          TO  TNS-YUKOEDYMD
       *
-           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
+               MOVE    "DBFETCH"           TO  MCP-FUNC
                MOVE    "tbl_tensu"         TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 920-DBFETCH-SEC
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
                    MOVE    ZERO                TO  FLG-TENSU
@@ -1163,7 +1145,10 @@
        900-SYSKANRI-READ-SEC         SECTION.
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           PERFORM 920-DBFETCH-SEC
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO                TO  FLG-SYSKANRI
            ELSE
@@ -1179,7 +1164,10 @@
        920-SANTEI-READ-SEC         SECTION.
       *
            MOVE    "tbl_santei"        TO  MCP-TABLE
-           PERFORM 920-DBFETCH-SEC
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  SANTEI-REC
                MOVE    ZERO                TO  FLG-SANTEI
@@ -1199,7 +1187,10 @@
       *
            MOVE    "tbl_sryact"        TO  MCP-TABLE
       *
-           PERFORM 920-DBFETCH-SEC
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  SRYACT-REC
                MOVE    ZERO                TO  FLG-SRYACT
@@ -1218,7 +1209,10 @@
       *
            MOVE    "tbl_sryacct"       TO  MCP-TABLE
       *
-           PERFORM 920-DBFETCH-SEC
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  SRYACCT-REC
                MOVE    ZERO                TO  FLG-SRYACCT
@@ -1237,7 +1231,10 @@
       *
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
       *
-           PERFORM 920-DBFETCH-SEC
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  JYURRK-REC 
                MOVE    ZERO                TO  FLG-JYURRK
@@ -1254,26 +1251,12 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        910-DBSELECT-EXT.
-           EXIT.
-      *****************************************************************
-      *    ＤＢ読み込み処理
-      *****************************************************************
-       920-DBFETCH-SEC                 SECTION.
-      *
-           MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-           .
-      *
-       920-DBFETCH-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1282,9 +1265,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        990-DBCLOSE-EXT.
