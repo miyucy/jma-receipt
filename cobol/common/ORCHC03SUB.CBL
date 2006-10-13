@@ -251,8 +251,13 @@
            MOVE    SYU-NYUKIN-TOTAL        TO  WRK-NYUKIN-TOTAL
            MOVE    ZERO                    TO  WRK-HENKIN
            PERFORM VARYING     IDY     FROM    1   BY  1
-                   UNTIL      (IDY     >   15  )   OR
-                              (ORCHC03-OLD-DENPNUM(IDY)    =   ZERO)
+                   UNTIL      (IDY     >   15  )
+      *DDD              OR    (ORCHC03-OLD-DENPNUM(IDY)    =   ZERO)
+      *TEST
+              DISPLAY "ORCHC03-OLD-DENPNUM:" ORCHC03-OLD-DENPNUM (IDY)
+                ",SYU-DENPNUM:" SYU-DENPNUM
+                ",SYU-SRYKA:" SYU-SRYKA
+      *TEST
                IF     (ORCHC03-OLD-DENPNUM(IDY)    =   SYU-DENPNUM)
                   AND (SYU-SRYKA               NOT =   ZERO  )
       *            ÄûÀµ»þ¤ÎÀÁµá³Ûº¹³Û
@@ -269,6 +274,10 @@
       *            º£²óÊÖ¶â
                    MOVE    ORCHC03-KON-HENKIN (IDY)
                                            TO  WRK-HENKIN
+      *TEST
+              DISPLAY "WRK-HENKIN:" WRK-HENKIN
+                       ",WRK-NYUKIN-TOTAL:" WRK-NYUKIN-TOTAL
+      *TEST
                    MOVE    15              TO  IDY
                END-IF
            END-PERFORM
@@ -581,8 +590,8 @@
            MOVE    SYUTTL-NYUKIN-TOTAL     TO  WRK-NYUKIN-TOTAL
            MOVE    ZERO                    TO  WRK-HENKIN
            PERFORM VARYING     IDY     FROM    1   BY  1
-                   UNTIL      (IDY     >   15  )   OR
-                              (ORCHC03-OLD-DENPNUM(IDY)    =   ZERO)
+                   UNTIL      (IDY     >   15  )
+      *D                 OR   (ORCHC03-OLD-DENPNUM(IDY)    =   ZERO)
                IF     (ORCHC03-OLD-SRYKA (IDY)     =   SYU-SRYKA  )
                  AND  (ORCHC03-OLD-HKNCOMBI(IDY)   =   SYU-HKNCOMBINUM)
       *            ÄûÀµ»þ¤ÎÀÁµá³Ûº¹³Û
