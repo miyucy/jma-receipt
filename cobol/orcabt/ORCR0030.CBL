@@ -6665,6 +6665,12 @@
                MOVE    RECE02-JNISSU  (IDX6)   TO  OCR2-JNISSU
                MOVE    RECE02-TOTALTEN(IDX6)   TO  OCR2-TENSU
            END-IF
+           IF   (RECE02-SRYYM      >=  "200610"       )
+           AND  (SYS-1001-PREFNUM   =   33            )
+           AND  (RECE02-KOHNUM(IDA)(1:1)
+                                   >=  "1" AND <=  "8")
+               MOVE    RECE02-TOTALTEN(IDX6)   TO  OCR2-TENSU
+           END-IF
       *チェックディジット４
            INITIALIZE                           LNK-CHKDGT-AREA
            MOVE    1                    TO      LNK-I-SYORIKBN
@@ -6776,6 +6782,12 @@
                                                 OCR3-TENSU   
            ELSE    
                MOVE    RECE02-JNISSU  (IDX7)   TO  OCR3-JNISSU
+               MOVE    RECE02-TOTALTEN(IDX7)   TO  OCR3-TENSU
+           END-IF
+           IF   (RECE02-SRYYM      >=  "200610"       )
+           AND  (SYS-1001-PREFNUM   =   33            )
+           AND  (RECE02-KOHNUM(IDB)(1:1)
+                                   >=  "1" AND <=  "8")
                MOVE    RECE02-TOTALTEN(IDX7)   TO  OCR3-TENSU
            END-IF
       *チェックディジット２
