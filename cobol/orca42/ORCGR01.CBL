@@ -96,6 +96,10 @@
       *  03.02.01    NACL-Æ£¸¶    06/07/26  ¼«ÇåÀÕ¤ÎÏÈ°õºþÁªÂòµ¡Ç½ÂÐ±þ
       *
       *  03.02.01    NACL-Æ£¸¶    06/08/01  ¹ñÊÝ¼ç²ÊÂÐ±þ
+      *
+      *  03.03.01    NACL-Æ£¸¶    06/09/27  £²£°£°£¶Ç¯£±£°·î²þÀµÂÐ±þ
+      *                                     ¸ÄÊÌºîÀ®»þ¤Î¥Ñ¥é¥á¥¿¤Ø¤Î¿ÇÎÅ
+      *                                     Ç¯·î¤ÎÀßÄê¤ÎÊÑ¹¹ 
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -320,6 +324,8 @@
       *
            03  WRK-MCP-TABLE       PIC X(64).
            03  WRK-MCP-PATHNAME    PIC X(64).
+      *
+           03  WRK-SRYYM           PIC 9(06).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -1536,7 +1542,7 @@
            MOVE    SPA-GMN-SRYYM        TO  SPA-GMN-TSRYYM     (IDX)
            MOVE    SPA-NAI-SRYYM        TO  SPA-NAI-TSRYYM     (IDX)
            MOVE    SPA-GMN-NYUGAIKBN    TO  SPA-GMN-TNYUGAIKBN (IDX)
-      *
+      * 
            INITIALIZE                   SPA-GMN-KOUMOKU
                                         SPA-NAI-KOUMOKU
            MOVE    ZERO                 TO  SPA-NAI-SELNO                             
@@ -2391,8 +2397,14 @@
                END-IF
       *
       *        ¸ÄÊÌ»Ø¼¨ÅÐÏ¿½èÍý
+               MOVE    SPA-NAI-TSRYYM (1)  TO  WRK-SRYYM
                PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       SPA-GMN-MAX 
+                       UNTIL   IDX >       SPA-GMN-MAX
+      *
+                   IF      WRK-SRYYM       <   SPA-NAI-TSRYYM(IDX)
+                       MOVE    SPA-NAI-TSRYYM(IDX)  TO  WRK-SRYYM
+                   END-IF
+      * 
                    INITIALIZE                  SYS-2002-REC
                    MOVE    "2002"              TO  SYS-2002-KANRICD
                    MOVE    IDX (2:3)           TO  SYS-2002-KBNCD
@@ -2634,8 +2646,7 @@
            END-IF
            EVALUATE    SPA-GMN-SYORI
                WHEN    "1"
-                   MOVE    SPA-NAI-TSRYYM (1)
-                                           TO  SHELLTBL-ARG8
+                   MOVE    WRK-SRYYM       TO  SHELLTBL-ARG8
                WHEN    "2"
                    MOVE    SPA-NAI-TEISEIYM
                                            TO  SHELLTBL-ARG8

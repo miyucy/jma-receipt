@@ -21,6 +21,7 @@
       *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
       *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : ¥ì¥»¥×¥È¡ÊÆþ±¡¡Ë
       *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : ¥ì¥»¥×¥È°õºþÍÑ¥Õ¥¡¥¤¥ëºîÀ®
+      *                      £²£°£°£¶Ç¯£±£°·î²þÀµ°ÊÁ°
       *  ´ÉÍý¼Ô            : 
       *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò 
       *  02/12/10    NACL¡ÝÆ£¸¶¡¡  ¿·µ¬ºîÀ®
@@ -142,8 +143,11 @@
       *  03.02.01    NACL-ÌçÏÆ    06/08/10  ¹âÎð¼Ô¾å¸Â³Û·Ð²áÁ¼ÃÖÂÐ±þ
       *  03.02.02    NACL-Æ£¸¶    06/07/31  ¹ñÊÝ¼ç²ÊÂÐ±þ
       *  03.02.03    NACL-Æ£¸¶    06/09/07  Ê¡²¬ÃÏÊý¸øÈñÂÐ±þ
+      *
       *  03.03.01    NACL-ÌçÏÆ    06/09/26  ²¬»³¸©ÃÏÊý¸øÈñÀÁµáÅÀÊÔ½¸
-      *  03.03.02    NACL-ÌçÏÆ    06/09/27  ÆÃµ­»ö¹à£±£¶Ä¹£²ÂÐ±þÂ¾
+      *  03.03.02    NACL-ÌçÏÆ    06/09/27  £²£°£°£¶Ç¯£±£°·î²þÀµÂÐ±þ
+      *                                     £²£°£°£¶Ç¯£±£°·îÊ¬°Ê¹ß¤ÏÂÐ¾Ý
+      *                                     ¤È¤·¤Ê¤¤
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -934,7 +938,9 @@
       *    ²þ¹Ô¥³¡¼¥É
            03  WRK-CONS-RETURN         PIC X(01)   VALUE   X"0A".
       *
-           03  WRK-CONS-SRYYM-200604  PIC 9(06)   VALUE   200604. 
+           03  WRK-CONS-SRYYM-200604   PIC 9(06)   VALUE   200604. 
+      *
+           03  WRK-CONS-SRYYM-200609   PIC 9(06)   VALUE   200609.      
       *
        01  WRK-RECE07-REC. 
            COPY    "CPRCF007.INC"  REPLACING  //RECE07//
@@ -2651,8 +2657,8 @@
                    MOVE    WRK-ERR-MSG-4   TO   HC06-HEAD4-G (5:)
                WHEN    7
                    MOVE    WRK-ERR-MSG-5   TO   HC06-HEAD4-G (5:)
-               WHEN    8
-                   MOVE    WRK-ERR-MSG-7   TO   HC06-HEAD4-G (5:)
+      *********WHEN    8
+      *********    MOVE    WRK-ERR-MSG-7   TO   HC06-HEAD4-G (5:)
            END-EVALUATE
            INSPECT HC06-HEAD4-G  REPLACING ALL "  "    BY  "¡¡"
       *
@@ -7721,10 +7727,13 @@
       *
            READ    RECE62-FILE       NEXT
                AT  END
-                   MOVE    1                   TO  FLG-RECE62
-                   MOVE    HIGH-VALUE          TO  KEY-NEW
+                 MOVE    1                   TO  FLG-RECE62
+                 MOVE    HIGH-VALUE          TO  KEY-NEW
                NOT AT  END
-                   MOVE    ZERO                TO  FLG-RECE62
+                 MOVE    ZERO                TO  FLG-RECE62
+                 IF      RECE62-SRYYM        >   WRK-CONS-SRYYM-200609
+                     GO  TO  900-RECE62-READ-SEC
+                 ELSE
                    IF    ( RECE62-TOTALTEN (1) =   ZERO            )
                    AND   ( RECE62-TOTALTEN (2) =   ZERO            )
                    AND   ( RECE62-TOTALTEN (3) =   ZERO            )
@@ -7798,7 +7807,8 @@
                          END-IF
       *
                      END-IF
-                   END-IF    
+                   END-IF
+                 END-IF      
            END-READ
       *
            .

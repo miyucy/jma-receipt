@@ -34,6 +34,8 @@
       *
       *  03.00.01    NACL-藤原    06/05/29  印刷時のプリンター指定対応
       *  03.00.01    NACL-竹田    06/06/07  算定履歴取り込み変更
+      *
+      *  03.03.01    NACL-門脇    06/09/27  ２００６年１０月改正対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -45,7 +47,14 @@
        DATA                    DIVISION.
       *
        WORKING-STORAGE             SECTION.
+      *
        01  LNK-TIMEOFDAY       PIC X(100).
+      *
+      *    エラーファイル 名称領域 
+           COPY    "CPCOMMONDAT2.INC"
+                                   REPLACING  //RECE01PARA//
+                                   BY         //RECEERR//.
+           03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *    カウント領域
        01  FLG-AREA.
@@ -174,6 +183,8 @@
                                        PIC X(01).
                05  WRK-CONS-ARG-PRTJYUN
                                        PIC X(02)   VALUE   "05".
+      *
+           03  WRK-CONS-SRYYM-200609   PIC 9(06)   VALUE   200609.      
       *
            COPY    "MCPAREA".
       *
@@ -350,6 +361,10 @@
            MOVE    WRK-PARA-NYUGAIKBN
                                    TO  WRK-CONS-ARG-NYUGAIKBN 
       *
+      *    エラーファイル名
+           MOVE    "RECEERR"           TO  RECEERR-FILE-ID
+           MOVE    WRK-PARA-A1-2       TO  RECEERR-TERMID
+      *
            .
        100-INIT-EXT.
            EXIT.
@@ -465,12 +480,13 @@
                                    WRK-PARA3
       *
            IF    ( WRK-PARA-A11    =   "06"     )
-           AND   ( WRK-PARA-A1-1   <   "200601" )
+           AND   ( WRK-PARA-A8     <   "200601" )
                CALL    "ORCRCP060"     USING
                                        WRK-PARA3
            END-IF
       *
-           IF      WRK-PARA-A11    =   "40"
+           IF    ( WRK-PARA-A11    =   "40"                  )
+           AND   ( WRK-PARA-A8     <=  WRK-CONS-SRYYM-200609 )
                CALL    "ORCRCP400"     USING
                                        WRK-PARA3
            END-IF
@@ -653,15 +669,30 @@
       *
            PERFORM 200101-PRVDATA-DEL-SEC
       **   CALL "timeofday" USING LNK-TIMEOFDAY.
-      **   DISPLAY "orcr0710 START"
-      **           " "  LNK-TIMEOFDAY(1:20).
-           CALL    "ORCR0710"          USING
-                                   WRK-PARA3
       *
+           DISPLAY "WRK-PARA-A8=" WRK-PARA-A8 "#"
+      *???
+           IF      WRK-PARA-A8     <=  WRK-CONS-SRYYM-200609     
+             DISPLAY "orcr0710 START"
+      **               " "  LNK-TIMEOFDAY(1:20).
+               CALL    "ORCR0710"          USING
+                                           WRK-PARA3
       *
-           IF      WRK-PARA-A11    =   "40"
-               CALL    "ORCRCP401"     USING
-                                       WRK-PARA3
+               IF      WRK-PARA-A11    =   "40"
+                   CALL    "ORCRCP401"     USING
+                                           WRK-PARA3
+               END-IF
+           ELSE    
+             DISPLAY "orcr0720 START"
+      **               " "  LNK-TIMEOFDAY(1:20).
+               MOVE     SPACE       TO WRK-ARG
+               STRING   WRK-PARA3      DELIMITED   BY  SIZE
+                        ","            DELIMITED   BY  SIZE
+                        RECEERR        DELIMITED   BY  SPACE
+                                       INTO    WRK-ARG
+               END-STRING
+               CALL    "ORCR0720"          USING
+                                           WRK-ARG
            END-IF
       *
       *

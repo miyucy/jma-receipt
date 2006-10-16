@@ -113,6 +113,8 @@
       *
       *  03.02.01    NACL-藤原    06/08/01  国保主科対応
       *                                     主科用出力順識別番号追加
+      *
+      *  03.03.01    NACL-藤原    06/09/27  ２００６年１０月改正対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -164,8 +166,6 @@
                                    REPLACING  //RECE01PARA//
                                    BY         //RECEERR//.
            03  FILLER              PIC X(04)   VALUE   ".dat".
-      *    シェル用領域
-      *****COPY    "CPCOMMONSHELL.INC".
       *
       *    システム領域
        01  SYS-AREA.
@@ -276,6 +276,7 @@
            COPY    "HCRCP401V01.INC".
            COPY    "HCM10.INC".
            COPY    "HCN07.INC".
+           COPY    "HCN08.INC".
            COPY    "HCRCP402.INC".
            COPY    "HCRCP403.INC".
       *
@@ -831,6 +832,10 @@
                        MOVE    RECE08-PRTDATA      TO  HCN07
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCN07-RENNUM
                        MOVE    HCN07               TO  RECE08-PRTDATA
+                   WHEN    "HCN08.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCN08
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCN08-RENNUM
+                       MOVE    HCN08               TO  RECE08-PRTDATA
                    WHEN    "HCRCP402.red"                  
                        MOVE    RECE08-PRTDATA      TO  HCRCP402
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCRCP402-RENNUM
@@ -1001,6 +1006,7 @@
                WHEN    "HCRCP401V01.red"
                                        ALSO    ANY                
                WHEN    "HCN07.red"     ALSO    ANY               
+               WHEN    "HCN08.red"     ALSO    ANY               
                WHEN    "HCRCP403.red"  ALSO    ANY                
                    MOVE    "医科レセプト（入院）"      TO  SPRT-TITLE
                END-EVALUATE

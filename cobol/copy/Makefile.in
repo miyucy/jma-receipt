@@ -1207,6 +1207,7 @@ COPYS = \
         CPCDF002.INC \
         CPCDF003.INC \
         CPCDF901.INC \
+        HCN08.INC \
 
 DBPATH = \
 	ORCA-DBPATH

@@ -88,6 +88,15 @@
       *****************************************************************
        200-MAIN-SEC               SECTION.
       *
+      *    DISPLAY "SRYYM     : " LNK-SYUBETUGET-SRYYM
+      *    DISPLAY "HKNNUM    : " LNK-SYUBETUGET-HKNNUM
+      *    DISPLAY "HONKZKKBN : " LNK-SYUBETUGET-HONKZKKBN 
+      *    DISPLAY "-NYUGAIKBN: " LNK-SYUBETUGET-NYUGAIKBN 
+      *    DISPLAY "IHO       : " LNK-SYUBETUGET-IHO 
+      *    DISPLAY "KOKUHO    : " LNK-SYUBETUGET-KOKUHO 
+      *    DISPLAY "RJN       : " LNK-SYUBETUGET-RJN 
+      *    DISPLAY "KOHI-CNT  : " LNK-SYUBETUGET-KOHI-CNT
+      *
       *    Ê¿À®£±£´Ç¯£¹·î¤Þ¤Ç
            IF      LNK-SYUBETUGET-SRYYM    <=  WRK-CONS-SRYYM-200209
              EVALUATE  LNK-SYUBETUGET-HONKZKKBN ALSO
@@ -671,7 +680,7 @@
                WHEN    "9"   ALSO   "2"    ALSO
                        SPACE ALSO   "1"    ALSO  SPACE  ALSO  ZERO
                    MOVE    1118     TO  LNK-SYUBETUGET-RECESYUBETU
-               WHEN    "8"   ALSO   "1"    ALSO
+               WHEN    "7"   ALSO   "1"    ALSO
                        "1"   ALSO   SPACE  ALSO  SPACE  ALSO  ZERO
                    MOVE    1119     TO  LNK-SYUBETUGET-RECESYUBETU
                WHEN    "8"   ALSO   "1"    ALSO
@@ -679,7 +688,7 @@
                WHEN    "7"   ALSO   "1"    ALSO
                        SPACE ALSO   "1"    ALSO  SPACE  ALSO  ZERO
                    MOVE    1119     TO  LNK-SYUBETUGET-RECESYUBETU
-               WHEN    "8"   ALSO   "2"    ALSO
+               WHEN    "7"   ALSO   "2"    ALSO
                        "1"   ALSO   SPACE  ALSO  SPACE  ALSO  ZERO
                    MOVE    1110     TO  LNK-SYUBETUGET-RECESYUBETU
                WHEN    "8"   ALSO   "2"    ALSO
@@ -736,7 +745,7 @@
                WHEN    "9"   ALSO   "2"    ALSO
                        SPACE ALSO   "1"    ALSO  SPACE  ALSO  1
                    MOVE    1128     TO  LNK-SYUBETUGET-RECESYUBETU
-               WHEN    "8"   ALSO   "1"    ALSO
+               WHEN    "7"   ALSO   "1"    ALSO
                        "1"   ALSO   SPACE  ALSO  SPACE  ALSO  1
                    MOVE    1129     TO  LNK-SYUBETUGET-RECESYUBETU
                WHEN    "8"   ALSO   "1"    ALSO
@@ -744,7 +753,7 @@
                WHEN    "7"   ALSO   "1"    ALSO
                        SPACE ALSO   "1"    ALSO  SPACE  ALSO  1
                    MOVE    1129     TO  LNK-SYUBETUGET-RECESYUBETU
-               WHEN    "8"   ALSO   "2"    ALSO
+               WHEN    "7"   ALSO   "2"    ALSO
                        "1"   ALSO   SPACE  ALSO  SPACE  ALSO  1
                    MOVE    1120     TO  LNK-SYUBETUGET-RECESYUBETU
                WHEN    "8"   ALSO   "2"    ALSO
@@ -801,7 +810,7 @@
                WHEN    "9"   ALSO   "2"    ALSO
                        SPACE ALSO   "1"    ALSO  SPACE  ALSO  2
                    MOVE    1138     TO  LNK-SYUBETUGET-RECESYUBETU
-               WHEN    "8"   ALSO   "1"    ALSO
+               WHEN    "7"   ALSO   "1"    ALSO
                        "1"   ALSO   SPACE  ALSO  SPACE  ALSO  2
                    MOVE    1139     TO  LNK-SYUBETUGET-RECESYUBETU
                WHEN    "8"   ALSO   "1"    ALSO
@@ -809,7 +818,7 @@
                WHEN    "7"   ALSO   "1"    ALSO
                        SPACE ALSO   "1"    ALSO  SPACE  ALSO  2
                    MOVE    1139     TO  LNK-SYUBETUGET-RECESYUBETU
-               WHEN    "8"   ALSO   "2"    ALSO
+               WHEN    "7"   ALSO   "2"    ALSO
                        "1"   ALSO   SPACE  ALSO  SPACE  ALSO  2
                    MOVE    1130     TO  LNK-SYUBETUGET-RECESYUBETU
                WHEN    "8"   ALSO   "2"    ALSO
@@ -1028,7 +1037,8 @@
                MOVE    6666             TO  LNK-SYUBETUGET-RECESYUBETU    
            END-IF
       *??
-      *     DISPLAY "SYUBETU=" LNK-SYUBETUGET-RECESYUBETU
+      *     DISPLAY "SYUBETU   : " LNK-SYUBETUGET-RECESYUBETU
+      *     DISPLAY "SYUBETU-X : " LNK-SYUBETUGET-RECESYUBETU-X
       *??          
            .
         200-MAIN-EXT.
