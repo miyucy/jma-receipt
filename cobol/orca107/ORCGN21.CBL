@@ -46,7 +46,8 @@
       * 02.02.04     NACL-森脇     06/09/21  参照処理前スパセット
       * 02.02.05     NACL-森脇     06/09/29  登録後内容スパクリア
       * 02.02.06     NACL-森脇     06/10/06  薬剤名クリア処理修正
-      * 02.02.07     NACL-森脇     06/10/10  画面リスト位置固定処理
+      * 03.03.01     NACL-森脇     06/10/10  画面リスト位置固定処理
+      * 03.03.02     NACL-森脇     06/10/13  テキストエリア有効文字チェック
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -75,9 +76,9 @@
            03  FLG-OK              PIC 9(01).
            03  FLG-GAZO            PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
-      *----(02.02.07)--ADD-START---
+      *----(03.03.01)--ADD-START---
            03  FLG-ROW             PIC 9(01).
-      *----(02.02.07)--ADD-END-----
+      *----(03.03.01)--ADD-END-----
       *
       *    カウント領域
        01  CNT-AREA.
@@ -117,12 +118,12 @@
            03  WRK-GMN-CUR         PIC 9(02).
            03  WRK-N21IDMSG        PIC X(70).
            03  WRK-ZZZZ9           PIC ZZZZ9.
-      *----(02.02.07)--ADD-START---
+      *----(03.03.01)--ADD-START---
            03  WRK-SELNUM          PIC 9(03). 
       *
        01  WRK-ROW-AREA.
            03  WRK-ROW             PIC S9(9)   BINARY.
-      *----(02.02.07)--ADD-END-----
+      *----(03.03.01)--ADD-END-----
       *
       *----(02.02.03)--ADD-START---
       *    全角を行毎に編集
@@ -425,9 +426,9 @@
            INITIALIZE          SPA-N21-AREA
            INITIALIZE          WRK-PIN-AREA
       *
-      *----(02.02.07)--ADD-START---
+      *----(03.03.01)--ADD-START---
            MOVE    1           TO  FLG-ROW
-      *----(02.02.07)--ADD-END-----
+      *----(03.03.01)--ADD-END-----
            MOVE    2           TO  SPA-GMN-CUR
       *
            PERFORM 900-SYS1030-READ-SEC
@@ -638,7 +639,7 @@
            END-IF
       *----(00.01.01)--ADD-END------
       *
-      *----(02.02.07)--UPD-START----
+      *----(03.03.01)--UPD-START----
            MOVE    ZERO                TO  WRK-SELNUM
       *     
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -656,7 +657,7 @@
            IF      WRK-SELNUM          >   ZERO
                MOVE    WRK-SELNUM          TO  SPA-GMN-SELNUM
            END-IF
-      *----(02.02.07)--UPD-END-----
+      *----(03.03.01)--UPD-END-----
       *
       *----(02.02.03)--ADD-START---
            IF      SPA-GMN-ENTRY       NOT =   SPA-NAI-ENTRY
@@ -926,11 +927,21 @@
            EXIT.
       *
       *----(02.02.03)--ADD-END-----
+      *----(03.03.02)--UPD-START---
       *****************************************************************
       *    テキストチェック
       *****************************************************************
        430-TEXTCHK-SEC         SECTION.
       *
+      *----(03.03.02)--ADD-START---
+      *    チェック
+           IF          SPA-NAI-SRYCD   =   SPACE
+               MOVE    "0011"   TO  SPA-ERRCD
+               MOVE    2               TO  SPA-GMN-CUR
+               GO  TO  430-TEXTCHK-EXT
+           END-IF
+      *----(03.03.02)--ADD-END-----
+
            INITIALIZE              SPA-GMN-ENTRY
            MOVE    N21-NAME        TO  SPA-GMN-NAME
            MOVE    N21-EFFECT      TO  SPA-GMN-EFFECT
@@ -943,115 +954,100 @@
       *
       *    画像半角文字混在チェック
            IF          SPA-GMN-PHOTO   NOT =   SPACE
-               INITIALIZE              ORCSKANACHKAREA
-               MOVE    "1"             TO  KANACHK-SYORI
-               MOVE    SPA-GMN-PHOTO   TO  KANACHK-MAE-INPUT
-               CALL    "ORCSKANACHK"       USING
-                                           ORCSKANACHKAREA
-      *
-               MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-PHOTO
+               INITIALIZE                  WRK-HENSYU-AREA
+               MOVE    SPA-GMN-PHOTO   TO  WRK-NAIYOU
+      *        末尾文字編集
+               PERFORM 430-SPACE-HENSYU-SEC
+               MOVE    WRK-NAIYOU      TO  SPA-GMN-PHOTO
+      *        カナチェック
                IF    ( KANACHK-SYUBETU     NOT =   1    )  OR
                      ( KANACHK-RC          NOT =   ZERO )  OR
                      ( KANACHK-RC2             =   7    )
                    MOVE    "0003"      TO  SPA-ERRCD
-               ELSE
-                   IF          KANACHK-RC2     =   8
-                       MOVE    "0013"      TO  SPA-ERRCD
-                   END-IF
-               END-IF
-      *
-               IF          SPA-ERRCD   NOT     =   SPACE
                    MOVE    10          TO  SPA-GMN-CUR
                    GO  TO  430-TEXTCHK-EXT
                END-IF
-      *
+               IF          KANACHK-RC2     =   8
+                   MOVE    "0013"      TO  SPA-ERRCD
+                   MOVE    10          TO  SPA-GMN-CUR
+                   GO  TO  430-TEXTCHK-EXT
+               END-IF
+      *        画像チェック
                PERFORM 430-GAZOCHK-SEC
-      *
                IF          SPA-ERRCD   NOT     =   SPACE
                    MOVE    10          TO  SPA-GMN-CUR
                    GO  TO  430-TEXTCHK-EXT
                END-IF
            END-IF
       *
-      *----(02.01.02)--UPD-START---
       *    名前半角文字混在チェック
            IF          SPA-GMN-NAME    NOT =   SPACE
-               INITIALIZE                  ORCSKANACHKAREA
-               MOVE    "1"             TO  KANACHK-SYORI
-               MOVE    100             TO  KANACHK-MAX-CNT
-               MOVE    SPA-GMN-NAME    TO  KANACHK-MAE-INPUT
-               CALL    "ORCSKANACHK"       USING
-                                           ORCSKANACHKAREA
-      *
-               MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-NAME
+               INITIALIZE                  WRK-HENSYU-AREA
+               MOVE    SPA-GMN-NAME    TO  WRK-NAIYOU
+      *        末尾文字編集
+               PERFORM 430-SPACE-HENSYU-SEC
+               MOVE    WRK-NAIYOU      TO  SPA-GMN-NAME
+      *        カナチェック
                IF    ( KANACHK-SYUBETU     NOT =   2    )  OR
                      ( KANACHK-RC          NOT =   ZERO )  OR
                      ( KANACHK-RC2             =   7    )
                    MOVE    "0002"      TO  SPA-ERRCD
                    MOVE    4           TO  SPA-GMN-CUR
                    GO  TO  430-TEXTCHK-EXT
-      *----(02.02.03)--ADD-START---
-               ELSE
-                   INITIALIZE                  WRK-HENSYU-AREA
-                   MOVE    SPA-GMN-NAME    TO  WRK-NAIYOU
-                   MOVE    3               TO  GYO-MAX
-                   MOVE    26              TO  KOU-MAX
-                   PERFORM 430-HENSYU-SYORI-SEC
-                   IF      WRK-NAIYOU(IDX-STR:)    NOT =   SPACE
-                       MOVE    "0016"      TO  SPA-ERRCD
-                       MOVE    4           TO  SPA-GMN-CUR
-                       GO  TO  430-TEXTCHK-EXT
-                   END-IF
-      *----(02.02.03)--ADD-END-----
                END-IF
-      *----(02.02.06)--ADD-START---
-           ELSE
+      *        文字数チェック
+               INITIALIZE                  WRK-HENSYU-AREA
+               MOVE    SPA-GMN-NAME    TO  WRK-NAIYOU
+               MOVE    3               TO  GYO-MAX
+               MOVE    26              TO  KOU-MAX
+               PERFORM 430-HENSYU-SYORI-SEC
+               IF      WRK-NAIYOU(IDX-STR:)    NOT =   SPACE
+                   MOVE    "0016"      TO  SPA-ERRCD
+                   MOVE    4           TO  SPA-GMN-CUR
+                   GO  TO  430-TEXTCHK-EXT
+               END-IF
+           END-IF
+      *    薬剤名が空白ならセット
+           IF          SPA-GMN-NAME    =   SPACE
                MOVE    SPA-GMN-KENNAME     TO  SPA-GMN-NAME
-      *----(02.02.06)--ADD-END-----
            END-IF
       *
       *    効能効果半角文字混在チェック
-           IF          SPA-GMN-EFFECT  NOT =   SPACE
-               INITIALIZE                  ORCSKANACHKAREA
-               MOVE    "1"             TO  KANACHK-SYORI
-               MOVE    400             TO  KANACHK-MAX-CNT
-               MOVE    SPA-GMN-EFFECT  TO  KANACHK-MAE-INPUT
-               CALL    "ORCSKANACHK"       USING
-                                           ORCSKANACHKAREA
-      *
-               MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-EFFECT
+           IF          SPA-GMN-EFFECT      NOT =   SPACE
+               INITIALIZE                  WRK-HENSYU-AREA
+               MOVE    SPA-GMN-EFFECT  TO  WRK-NAIYOU
+      *        末尾文字編集
+               PERFORM 430-SPACE-HENSYU-SEC
+               MOVE    WRK-NAIYOU      TO  SPA-GMN-EFFECT
+      *        カナチェック
                IF    ( KANACHK-SYUBETU     NOT =   2    )  OR
                      ( KANACHK-RC          NOT =   ZERO )  OR
                      ( KANACHK-RC2             =   7    )
                    MOVE    "0002"      TO  SPA-ERRCD
                    MOVE    5           TO  SPA-GMN-CUR
                    GO  TO  430-TEXTCHK-EXT
-               ELSE
-      *----(02.02.03)--ADD-START---
-                   INITIALIZE                  WRK-HENSYU-AREA
-                   MOVE    SPA-GMN-EFFECT  TO  WRK-NAIYOU
-                   MOVE    6               TO  GYO-MAX
-                   MOVE    30              TO  KOU-MAX
-                   PERFORM 430-HENSYU-SYORI-SEC
-                   IF      WRK-NAIYOU(IDX-STR:)    NOT =   SPACE
-                       MOVE    "0016"      TO  SPA-ERRCD
-                       MOVE    5           TO  SPA-GMN-CUR
-                       GO  TO  430-TEXTCHK-EXT
-                   END-IF
-      *----(02.02.03)--ADD-END-----
+               END-IF
+      *        文字数チェック
+               INITIALIZE                  WRK-HENSYU-AREA
+               MOVE    SPA-GMN-EFFECT  TO  WRK-NAIYOU
+               MOVE    6               TO  GYO-MAX
+               MOVE    30              TO  KOU-MAX
+               PERFORM 430-HENSYU-SYORI-SEC
+               IF      WRK-NAIYOU(IDX-STR:)    NOT =   SPACE
+                   MOVE    "0016"      TO  SPA-ERRCD
+                   MOVE    5           TO  SPA-GMN-CUR
+                   GO  TO  430-TEXTCHK-EXT
                END-IF
            END-IF
       *
       *    色半角文字混在チェック
            IF          SPA-GMN-COLOR   NOT =   SPACE
-               INITIALIZE                  ORCSKANACHKAREA
-               MOVE    "1"             TO  KANACHK-SYORI
-               MOVE    360             TO  KANACHK-MAX-CNT
-               MOVE    SPA-GMN-COLOR   TO  KANACHK-MAE-INPUT
-               CALL    "ORCSKANACHK"       USING
-                                           ORCSKANACHKAREA
-      *
-               MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-COLOR
+               INITIALIZE                  WRK-HENSYU-AREA
+               MOVE    SPA-GMN-COLOR   TO  WRK-NAIYOU
+      *        末尾文字編集
+               PERFORM 430-SPACE-HENSYU-SEC
+               MOVE    WRK-NAIYOU      TO  SPA-GMN-COLOR
+      *        カナチェック
                IF    ( KANACHK-SYUBETU     NOT =   2    )  OR
                      ( KANACHK-RC          NOT =   ZERO )  OR
                      ( KANACHK-RC2             =   7    )
@@ -1063,14 +1059,12 @@
       *
       *    形半角文字混在チェック
            IF          SPA-GMN-SHAPE   NOT =   SPACE
-               INITIALIZE                  ORCSKANACHKAREA
-               MOVE    "1"             TO  KANACHK-SYORI
-               MOVE    360             TO  KANACHK-MAX-CNT
-               MOVE    SPA-GMN-SHAPE   TO  KANACHK-MAE-INPUT
-               CALL    "ORCSKANACHK"       USING
-                                           ORCSKANACHKAREA
-      *
-               MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-SHAPE
+               INITIALIZE                  WRK-HENSYU-AREA
+               MOVE    SPA-GMN-SHAPE   TO  WRK-NAIYOU
+      *        末尾文字編集
+               PERFORM 430-SPACE-HENSYU-SEC
+               MOVE    WRK-NAIYOU      TO  SPA-GMN-SHAPE
+      *        カナチェック
                IF    ( KANACHK-SYUBETU     NOT =   2    )  OR
                      ( KANACHK-RC          NOT =   ZERO )  OR
                      ( KANACHK-RC2             =   7    )
@@ -1080,17 +1074,14 @@
                END-IF
            END-IF
       *
-      *----(00.01.05)--ADD-START----
       *    記号半角文字混在チェック
            IF          SPA-GMN-MARK    NOT =   SPACE
-               INITIALIZE                  ORCSKANACHKAREA
-               MOVE    "1"             TO  KANACHK-SYORI
-               MOVE    360             TO  KANACHK-MAX-CNT
-               MOVE    SPA-GMN-MARK    TO  KANACHK-MAE-INPUT
-               CALL    "ORCSKANACHK"       USING
-                                           ORCSKANACHKAREA
-      *
-               MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-MARK
+               INITIALIZE                  WRK-HENSYU-AREA
+               MOVE    SPA-GMN-MARK    TO  WRK-NAIYOU
+      *        末尾文字編集
+               PERFORM 430-SPACE-HENSYU-SEC
+               MOVE    WRK-NAIYOU      TO  SPA-GMN-MARK
+      *        カナチェック
                IF    ( KANACHK-SYUBETU         =   ZERO )  OR
                      ( KANACHK-RC          NOT =   ZERO )  OR
                      ( KANACHK-RC2             =   7    )
@@ -1100,11 +1091,11 @@
                END-IF
            END-IF
       *
-      *----(02.02.03)--ADD-START---
       *    形状チェック
            IF          SPA-GMN-COLOR   NOT =   SPACE
                OR      SPA-GMN-SHAPE   NOT =   SPACE
                OR      SPA-GMN-MARK    NOT =   SPACE
+      *        文字数チェック
                INITIALIZE                  WRK-HENSYU-AREA
                STRING  SPA-GMN-COLOR       DELIMITED  BY  SPACE
                        X"A1"               DELIMITED  BY  SIZE
@@ -1122,47 +1113,40 @@
                    GO  TO  430-TEXTCHK-EXT
                END-IF
            END-IF
-      *----(02.02.03)--ADD-END-----
-      *----(00.01.05)--ADD-END------
       *
       *    注意事項半角文字混在チェック
            IF          SPA-GMN-CAUTION NOT =   SPACE
-               INITIALIZE                  ORCSKANACHKAREA
-               MOVE    "1"             TO  KANACHK-SYORI
-               MOVE    850             TO  KANACHK-MAX-CNT
-               MOVE    SPA-GMN-CAUTION TO  KANACHK-MAE-INPUT
-               CALL    "ORCSKANACHK"       USING
-                                           ORCSKANACHKAREA
-      *
-               MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-CAUTION
+               INITIALIZE                  WRK-HENSYU-AREA
+               MOVE    SPA-GMN-CAUTION TO  WRK-NAIYOU
+      *        末尾文字編集
+               PERFORM 430-SPACE-HENSYU-SEC
+               MOVE    WRK-NAIYOU      TO  SPA-GMN-CAUTION
+      *        カナチェック
                IF    ( KANACHK-SYUBETU     NOT =   2    )  OR
                      ( KANACHK-RC          NOT =   ZERO )  OR
                      ( KANACHK-RC2             =   7    )
                    MOVE    "0002"      TO  SPA-ERRCD
                    MOVE    9           TO  SPA-GMN-CUR
                    GO  TO  430-TEXTCHK-EXT
-      *----(02.02.03)--ADD-START---
-               ELSE
-                   INITIALIZE                  WRK-HENSYU-AREA
-                   MOVE    SPA-GMN-CAUTION TO  WRK-NAIYOU
-                   MOVE    10              TO  GYO-MAX
-                   MOVE    40              TO  KOU-MAX
-                   PERFORM 430-HENSYU-SYORI-SEC
-                   IF      WRK-NAIYOU(IDX-STR:)    NOT =   SPACE
-                       MOVE    "0016"      TO  SPA-ERRCD
-                       MOVE    9           TO  SPA-GMN-CUR
-                       GO  TO  430-TEXTCHK-EXT
-                   END-IF
-      *----(02.02.03)--ADD-END-----
+               END-IF
+      *        文字数チェック
+               INITIALIZE                  WRK-HENSYU-AREA
+               MOVE    SPA-GMN-CAUTION TO  WRK-NAIYOU
+               MOVE    10              TO  GYO-MAX
+               MOVE    40              TO  KOU-MAX
+               PERFORM 430-HENSYU-SYORI-SEC
+               IF      WRK-NAIYOU(IDX-STR:)    NOT =   SPACE
+                   MOVE    "0016"      TO  SPA-ERRCD
+                   MOVE    9           TO  SPA-GMN-CUR
+                   GO  TO  430-TEXTCHK-EXT
                END-IF
            END-IF
-      *----(02.01.02)--UPD-END-----
            .
       *
        430-TEXTCHK-EXT.
            EXIT.
       *
-      *----(02.02.03)--ADD-START---
+      *----(03.03.02)--UPD-END-----
       *****************************************************************
       *   帳票全角編集処理
       *****************************************************************
@@ -1171,6 +1155,7 @@
            MOVE    1               TO  IDZ
            MOVE    1               TO  IDX-STR
            MOVE    1               TO  IDX-KET
+           MOVE    1               TO  IDX-STR1
       *
            PERFORM UNTIL  (IDX-STR     >   800 )
                    OR     (IDZ         >   GYO-MAX )
@@ -1210,7 +1195,49 @@
        430-HENSYU-SYORI-EXT.
            EXIT.
       *
-      *----(02.02.03)--ADD-END-----
+      *----(03.03.02)--ADD-START---
+      *****************************************************************
+      *    項目空白処理
+      *****************************************************************
+       430-SPACE-HENSYU-SEC        SECTION.
+      *
+      *    カナチェック
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "1"             TO  KANACHK-SYORI
+           MOVE    800             TO  KANACHK-MAX-CNT
+           MOVE    WRK-NAIYOU      TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+      *
+           MOVE    SPACE           TO  WRK-NAIYOU
+      *
+           IF      KANACHK-OUT-INPUT   =   SPACE
+               GO  TO  430-SPACE-HENSYU-EXT
+           END-IF
+      *
+      *    末尾空白削除
+           MOVE    KANACHK-MAX     TO  IDZ
+      *
+           PERFORM UNTIL   IDZ <       1
+               IF        ( KANACHK-OUT-INPUT(IDZ:1)    =   SPACE )
+                   OR    ( KANACHK-OUT-INPUT(IDZ:1)    =   X"0A" )
+                   OR    ( KANACHK-OUT-INPUT(IDZ:1)    =   X"A1" )
+                   COMPUTE IDZ =   IDZ -   1
+               ELSE
+                   IF    ( KANACHK-OUT-INPUT(IDZ:2)    =   "　"  )
+                       COMPUTE IDZ =   IDZ -   2
+                   ELSE
+                       MOVE    KANACHK-OUT-INPUT(1:IDZ)
+                                                       TO  WRK-NAIYOU
+                       MOVE    ZERO                    TO  IDZ 
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           .
+       430-SPACE-HENSYU-EXT.
+           EXIT.
+      *----(03.03.02)--ADD-END-----
       *****************************************************************
       *    画像ファイル存在チェック
       *****************************************************************
@@ -1310,9 +1337,7 @@
            PERFORM 430-TEXTCHK-SEC
       *----(02.02.02)--ADD-END-----
       *
-           IF          SPA-NAI-SRYCD   =   SPACE
-               MOVE    "0011"          TO  SPA-ERRCD
-               MOVE    2               TO  SPA-GMN-CUR
+           IF          SPA-ERRCD    NOT    =   SPACE
                GO  TO  440-SANSYO-EXT
            END-IF
       *
@@ -1510,13 +1535,6 @@
       *****************************************************************
        480-TOUROKU-SEC             SECTION.
       *
-      *    チェック
-           IF          SPA-NAI-SRYCD   =   SPACE
-               MOVE    "0011"   TO  SPA-ERRCD
-               MOVE    2               TO  SPA-GMN-CUR
-               GO  TO  480-TOUROKU-EXT
-           END-IF
-      *
            PERFORM 430-TEXTCHK-SEC
       *
            IF          SPA-ERRCD    NOT    =   SPACE
@@ -1616,13 +1634,6 @@
       *       登録前処理
       *****************************************************************
        485-HENSYU-TOUROKU-SEC      SECTION.
-      *
-      *    チェック
-           IF          SPA-NAI-SRYCD   =   SPACE
-               MOVE    "0011"   TO  SPA-ERRCD
-               MOVE    2               TO  SPA-GMN-CUR
-               GO  TO  485-HENSYU-TOUROKU-EXT
-           END-IF
       *
            PERFORM 430-TEXTCHK-SEC
       *
@@ -1938,13 +1949,13 @@
       *****************************************************************
        500-GMNHEN-SEC          SECTION.
       *
-      *----(02.02.07)--ADD-START---
+      *----(03.03.01)--ADD-START---
            MOVE    N21-ROW             TO  WRK-ROW
-      *----(02.02.07)--ADD-END-----
+      *----(03.03.01)--ADD-END-----
       *
            MOVE    SPACE               TO  N21
       *
-      *----(02.02.07)--ADD-START---
+      *----(03.03.01)--ADD-START---
            EVALUATE    FLG-ROW
            WHEN    1
                MOVE    ZERO            TO  N21-ROW
@@ -1953,7 +1964,7 @@
                MOVE    WRK-ROW         TO  N21-ROW
                MOVE    ZERO            TO  N21-ROWATTR
            END-EVALUATE
-      *----(02.02.07)--ADD-END-----
+      *----(03.03.01)--ADD-END-----
       *
            MOVE    SPA-GMN-KENCD       TO  N21-KENCD
            MOVE    SPA-GMN-KENNAIYO    TO  N21-KENNAIYO
@@ -1978,8 +1989,6 @@
                    MOVE    "F"         TO  N21-SELECT(IDX)
                END-IF
            END-PERFORM
-           DISPLAY "N21-ROW=" N21-ROW
-           DISPLAY "N21-ROWATTR=" N21-ROWATTR
       *
            MOVE    SPA-GMN-MAX     TO  N21-COUNT
       *
