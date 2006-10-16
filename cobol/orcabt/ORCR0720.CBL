@@ -3282,6 +3282,14 @@
                                               TO  WRK-JINISSU2Z
                       MOVE    WRK-JINISSU2    TO  HC06-JINISSU1
                   END-IF
+                  IF  (RECE62-SRYYM          >=  "200610"  )
+                  AND (SYS-1001-PREFNUM       =    33      )
+                  AND (RECE62-KOHNUM(1)(1:1)
+                                        >=  "1" AND <=  "8")
+                      MOVE    RECE62-JNISSU (IDX2)
+                                              TO  WRK-JINISSU2Z
+                      MOVE    WRK-JINISSU2    TO  HC06-JINISSU1
+                  END-IF
                END-IF
                IF  RECE62-FUKUSHIFLG  =  "1"
                    IF  RECE62-JNISSU (IDX2)
@@ -3294,6 +3302,14 @@
                    IF      RECE62-TOTALTEN (IDX3)     >   ZERO
                       IF  RECE62-JNISSU (IDX2)
                                           NOT =   RECE62-JNISSU (IDX3)
+                          MOVE    RECE62-JNISSU (IDX3)
+                                                  TO  WRK-JINISSU2Z
+                          MOVE    WRK-JINISSU2    TO  HC06-JINISSU2
+                      END-IF
+                      IF  (RECE62-SRYYM          >=  "200610"  )
+                      AND (SYS-1001-PREFNUM       =    33      )
+                      AND (RECE62-KOHNUM(2)(1:1)
+                                            >=  "1" AND <=  "8")
                           MOVE    RECE62-JNISSU (IDX3)
                                                   TO  WRK-JINISSU2Z
                           MOVE    WRK-JINISSU2    TO  HC06-JINISSU2

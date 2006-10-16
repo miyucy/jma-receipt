@@ -140,6 +140,7 @@
       *                                     ÆÃµ­»ö¹à£±£¶Ä¹£²ÂÐ±þ
       *                                     ¥ì¥»¥×¥È¼ïÊÌ
       *                                     Ï·ÎðÊ¡»ãÇ¯¶â
+      *  03.03.03    NACL-ÌçÏÆ    06/10/16  ²¬»³¸©ÃÏÊý¸øÈñ¼ÂÆü¿ôÊÔ½¸
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -3395,6 +3396,14 @@
                                               TO  WRK-JINISSU2Z
                       MOVE    WRK-JINISSU2    TO  HC06-JINISSU1
                   END-IF
+                  IF  (RECE02-SRYYM          >=  "200610"  )
+                  AND (SYS-1001-PREFNUM       =    33      )
+                  AND (RECE02-KOHNUM(1)(1:1)
+                                        >=  "1" AND <=  "8")
+                      MOVE    RECE02-JNISSU (IDX2)
+                                              TO  WRK-JINISSU2Z
+                      MOVE    WRK-JINISSU2    TO  HC06-JINISSU1
+                  END-IF
                END-IF
                IF  RECE02-FUKUSHIFLG  =  "1"
                    IF  RECE02-JNISSU (IDX2)
@@ -3407,6 +3416,14 @@
                    IF      RECE02-TOTALTEN (IDX3)     >   ZERO
                       IF  RECE02-JNISSU (IDX2)
                                           NOT =   RECE02-JNISSU (IDX3)
+                          MOVE    RECE02-JNISSU (IDX3)
+                                                  TO  WRK-JINISSU2Z
+                          MOVE    WRK-JINISSU2    TO  HC06-JINISSU2
+                      END-IF
+                      IF  (RECE02-SRYYM          >=  "200610"  )
+                      AND (SYS-1001-PREFNUM       =    33      )
+                      AND (RECE02-KOHNUM(2)(1:1)
+                                            >=  "1" AND <=  "8")
                           MOVE    RECE02-JNISSU (IDX3)
                                                   TO  WRK-JINISSU2Z
                           MOVE    WRK-JINISSU2    TO  HC06-JINISSU2
