@@ -58,3 +58,6 @@
             02  HCM2SV02-TITLE2 PIC X(4).
             02  HCM2SV02-MARUCHO
                     PIC X(2)    OCCURS  2 TIMES.
+            02  HCM2SV02-TITLE3 PIC X(18).
+            02  HCM2SV02-TITLE4 PIC X(2).
+            02  HCM2SV02-TITLE5 PIC X(2).

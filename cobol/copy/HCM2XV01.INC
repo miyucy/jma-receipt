@@ -32,3 +32,6 @@
             02  HCM2XV01-TITLE2
                     PIC X(4)    OCCURS  2 TIMES.
             02  HCM2XV01-SRYKA  PIC X(40).
+            02  HCM2XV01-TITLE3 PIC X(18).
+            02  HCM2XV01-TITLE4 PIC X(18).
+            02  HCM2XV01-TITLE5 PIC X(2).

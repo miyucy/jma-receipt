@@ -26,3 +26,6 @@
             02  HCM2WV01-MOJI   PIC X(10).
             02  HCM2WV01-TITLE2 PIC X(4).
             02  HCM2WV01-SRYKA  PIC X(40).
+            02  HCM2WV01-TITLE3 PIC X(18).
+            02  HCM2WV01-TITLE4 PIC X(2).
+            02  HCM2WV01-TITLE5 PIC X(2).

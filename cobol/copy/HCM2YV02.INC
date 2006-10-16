@@ -28,3 +28,5 @@
             02  HCM2YV02-TITLE2 PIC X(8).
             02  HCM2YV02-MARUCHO
                     PIC X(2)    OCCURS  2 TIMES.
+            02  HCM2YV02-TITLE3 PIC X(2).
+            02  HCM2YV02-TITLE4 PIC X(2).

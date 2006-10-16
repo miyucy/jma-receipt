@@ -34,3 +34,5 @@
             02  HCM2KV05-SRYKA  PIC X(40).
             02  HCM2KV05-MARUCHO
                     PIC X(2)    OCCURS  2 TIMES.
+            02  HCM2KV05-TITLE2 PIC X(2).
+            02  HCM2KV05-TITLE3 PIC X(2).

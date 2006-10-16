@@ -23,3 +23,6 @@
               03  HCM2QV01-SYO-KENSU  PIC X(4).
               03  HCM2QV01-SYO-TENSU  PIC X(8).
               03  HCM2QV01-SYO-ITBFTN PIC X(8).
+            02  HCM2QV01-TITLE1 PIC X(18).
+            02  HCM2QV01-TITLE2 PIC X(2).
+            02  HCM2QV01-TITLE3 PIC X(2).
