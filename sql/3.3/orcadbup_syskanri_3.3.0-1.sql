@@ -1,6 +1,6 @@
 update tbl_syskanri set edyukymd = '20060930' where kanricd = '2003' and styukymd = '20021001' and edyukymd = '99999999' and kbncd in ('027','030','033','035','037','039','044','049','054','056','058','060','063','066','069','105','110','115','117','119','121','126','131','136','138','140','142','147','152','157');
 
-COPY tbl_syskanri (kanricd, kbncd, styukymd, edyukymd, kanritbl, termid, opid, creymd, upymd, uphms) FROM stdin;
+COPY "tbl_syskanri"  FROM stdin;
 2003	161     	20061001	99999999	¼ÒÊÝ¡¡Ï·¿ÍÃ±ÆÈ¡¡¡¡£·³ä                  11310                                    2020			        	        	      
 2003	162     	20061001	99999999	¼ÒÊÝ¡¡Ï·¿ÍÊ»ÍÑ    £·³ä                  11320                                    2022			        	        	      
 2003	163     	20061001	99999999	¼ÒÊÝ¡¡Ï·¿ÍÊ»ÍÑ£²  £·³ä                  11330                                    2024			        	        	      
