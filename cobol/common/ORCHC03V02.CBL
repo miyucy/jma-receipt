@@ -1157,6 +1157,9 @@
       *
       *        １枚目に前回未収額を表示する
                IF      IDX-SYU             =   1
+      *---(03.03.00) LINE ADD  START -----------------------------------
+                  AND  (ORCHC03-HAKKOFLG   =   ZERO )
+      *---(03.03.00) LINE ADD  END   -----------------------------------
                    MOVE    ORCHC03-ZENMISYU    TO  WRK-MISYUMONEY
                    COMPUTE WRK-NYUKIN          =   WRK-NYUKIN
                                                +   WRK-ZENMISYU
