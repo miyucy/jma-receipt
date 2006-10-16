@@ -705,6 +705,7 @@
            03  TBL-TOKKI       OCCURS   15.
                05  TBL-TOKKICD             PIC X(02).
                05  TBL-TOKKINAME           PIC X(10).
+       01  TBL-TOKKI-MAX                   PIC 9(02)   VALUE   15.
       *
       *   ¾É¾õ¾Üµ­¶èÊ¬¤ÎÉ½Âê
        01  TBL-RECECOM-AREA.
@@ -900,6 +901,7 @@
       *
            03  WRK-CONS-SRYYM          PIC 9(06)   VALUE   200304. 
            03  WRK-CONS-SRYYM-200604   PIC 9(06)   VALUE   200604. 
+           03  WRK-CONS-SRYYM-200609   PIC 9(06)   VALUE   200609. 
       *
        01  WRK-RECE07-REC. 
            COPY    "CPRCF007.INC"  REPLACING  //RECE07//
@@ -3586,16 +3588,21 @@
                    OR    ( IDZ                 =   4     ) 
       *
                PERFORM VARYING IDY     FROM    1   BY  1
-                       UNTIL ( IDY             >   15    )
-                   IF      RECE02-TOKKI(IDX)   =   TBL-TOKKICD(IDY)
-                       ADD     1                TO  IDZ
-                       MOVE    TBL-TOKKINAME(IDY)
+                       UNTIL ( IDY             >   TBL-TOKKI-MAX  )
+                   IF    ( RECE02-TOKKI(IDX) =   "05"                  )
+                   AND   ( RECE02-SRYYM      >   WRK-CONS-SRYYM-200609 )
+                       MOVE    TBL-TOKKI-MAX    TO  IDY
+                   ELSE
+                       IF      RECE02-TOKKI(IDX)   =   TBL-TOKKICD(IDY)
+                           ADD     1                TO  IDZ
+                           MOVE    TBL-TOKKINAME(IDY)
                                                 TO  HC06-TOKKI (IDZ)
-                       IF   IDY                =   11
-                       AND  RECE02-SRYYM      >=  "200504"
-                          MOVE   "£±£²´ï¼£"     TO  HC06-TOKKI (IDZ)
+                           IF   IDY                =   11
+                           AND  RECE02-SRYYM      >=  "200504"
+                              MOVE   "£±£²´ï¼£"     TO  HC06-TOKKI (IDZ)
+                           END-IF
+                           MOVE    TBL-TOKKI-MAX    TO  IDY
                        END-IF
-                       MOVE    15               TO  IDY
                    END-IF
                END-PERFORM
            END-PERFORM
