@@ -3180,7 +3180,7 @@
           <attribute name="string">
             <string>#&#207;&#183;
 &#191;&#205;
-&#200;&#172;
+&#188;&#183;
 &#179;&#228;#</string>
           </attribute>
           <attribute name="font">
@@ -4666,15 +4666,15 @@
     </object>
     <object type="Standard - Text" version="0" id="O189">
       <attribute name="obj_pos">
-        <point val="14.95,10.1"/>
+        <point val="15.6,10.1"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="14.95,9.88109;16.9296,10.1611"/>
+        <rectangle val="14.3274,9.88109;16.8726,10.1611"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#191;&#169;&#161;&#161;&#187;&#246;&#161;&#161;&#206;&#197;&#161;&#161;&#205;&#220;#</string>
+            <string>#&#191;&#169;&#187;&#246;&#206;&#197;&#205;&#220;&#161;&#166;&#192;&#184;&#179;&#232;&#206;&#197;&#205;&#220;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -4683,13 +4683,13 @@
             <real val="0.28"/>
           </attribute>
           <attribute name="pos">
-            <point val="14.95,10.1"/>
+            <point val="15.6,10.1"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
           </attribute>
           <attribute name="alignment">
-            <enum val="0"/>
+            <enum val="1"/>
           </attribute>
           <attribute name="single">
             <real val="0.16968"/>
@@ -5101,12 +5101,12 @@
         <point val="15.6,3.3"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="14.6102,3.08109;16.5898,3.36109"/>
+        <rectangle val="14.3274,3.08109;16.8726,3.36109"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#191;&#169;&#161;&#161;&#187;&#246;&#161;&#161;&#206;&#197;&#161;&#161;&#205;&#220;#</string>
+            <string>#&#191;&#169;&#187;&#246;&#206;&#197;&#205;&#220;&#161;&#166;&#192;&#184;&#179;&#232;&#206;&#197;&#205;&#220;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>

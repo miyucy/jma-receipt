@@ -1208,6 +1208,12 @@ COPYS = \
         CPCDF003.INC \
         CPCDF901.INC \
         HCN08.INC \
+        HCM2KV05.INC \
+        HCM2YV02.INC \
+        HCM2SV02.INC \
+        HCM2TV02.INC \
+        HCM2QV01.INC \
+        HCM2RV01.INC \
 
 DBPATH = \
 	ORCA-DBPATH
