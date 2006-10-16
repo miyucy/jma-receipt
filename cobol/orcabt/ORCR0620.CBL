@@ -2226,7 +2226,7 @@
                     MOVE    WRK-BYOTOKBN(IDX3)
                                          TO  RECE62-BYOTOKBN(IDX3)
                 ELSE  
-                    EVALUATE    RECE62-BYOTOKBN (IDX3)
+                    EVALUATE    WRK-BYOTOKBN(IDX3)
                         WHEN    "01"                                            
                         WHEN    "02"                                            
                         WHEN    "07"
