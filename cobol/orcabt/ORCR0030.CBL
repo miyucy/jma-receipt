@@ -6669,6 +6669,7 @@
            AND  (SYS-1001-PREFNUM   =   33            )
            AND  (RECE02-KOHNUM(IDA)(1:1)
                                    >=  "1" AND <=  "8")
+               MOVE    RECE02-JNISSU  (IDX6)   TO  OCR2-JNISSU
                MOVE    RECE02-TOTALTEN(IDX6)   TO  OCR2-TENSU
            END-IF
       *チェックディジット４
@@ -6788,6 +6789,7 @@
            AND  (SYS-1001-PREFNUM   =   33            )
            AND  (RECE02-KOHNUM(IDB)(1:1)
                                    >=  "1" AND <=  "8")
+               MOVE    RECE02-JNISSU  (IDX7)   TO  OCR3-JNISSU
                MOVE    RECE02-TOTALTEN(IDX7)   TO  OCR3-TENSU
            END-IF
       *チェックディジット２
