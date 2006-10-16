@@ -570,8 +570,6 @@
            03  FILLER          PIC X(10)   VALUE   "£∞£≥ƒπΩË".
            03  FILLER          PIC X(02)   VALUE   "04".
            03  FILLER          PIC X(10)   VALUE   "£∞£¥œ∑ ›".
-           03  FILLER          PIC X(02)   VALUE   "05".
-           03  FILLER          PIC X(10)   VALUE   "£∞£µπ‚≈Ÿ".
            03  FILLER          PIC X(02)   VALUE   "07".
            03  FILLER          PIC X(10)   VALUE   "£∞£∑œ∑ ª".
            03  FILLER          PIC X(02)   VALUE   "08".
@@ -583,7 +581,7 @@
            03  FILLER          PIC X(02)   VALUE   "11".
            03  FILLER          PIC X(10)   VALUE   "£±£±ÃÙº£".
            03  FILLER          PIC X(02)   VALUE   "12".
-           03  FILLER          PIC X(10)   VALUE   "£±£≤∫‡º£".
+           03  FILLER          PIC X(10)   VALUE   "£±£≤¥Ôº£".
            03  FILLER          PIC X(02)   VALUE   "13".
            03  FILLER          PIC X(10)   VALUE   "£±£≥¿Ëø ".
            03  FILLER          PIC X(02)   VALUE   "14".
@@ -593,9 +591,10 @@
            03  FILLER          PIC X(02)   VALUE   "16".
            03  FILLER          PIC X(10)   VALUE   "£±£∂ƒπ£≤".
        01  TBL-TOKKI-R         REDEFINES   TBL-TOKKI-AREA.
-           03  TBL-TOKKI       OCCURS   15.
+           03  TBL-TOKKI       OCCURS   14.
                05  TBL-TOKKICD             PIC X(02).
                05  TBL-TOKKINAME           PIC X(10).
+       01  TBL-TOKKI-MAX           PIC 9(02)   VALUE   14.
       *
       *   æ…æıæ‹µ≠∂Ë ¨§Œ…Ω¬Í
        01  TBL-RECECOM-AREA.
@@ -3475,16 +3474,12 @@
                    OR    ( IDZ                 =   4     ) 
       *
                PERFORM VARYING IDY     FROM    1   BY  1
-                       UNTIL ( IDY             >   15    )
+                       UNTIL ( IDY             >   TBL-TOKKI-MAX  )
                    IF      RECE62-TOKKI(IDX)   =   TBL-TOKKICD(IDY)
                        ADD     1                TO  IDZ
                        MOVE    TBL-TOKKINAME(IDY)
                                                 TO  HC06-TOKKI (IDZ)
-                       IF   IDY                =   11
-                       AND  RECE62-SRYYM      >=  "200504"
-                          MOVE   "£±£≤¥Ôº£"     TO  HC06-TOKKI (IDZ)
-                       END-IF
-                       MOVE    15               TO  IDY
+                       MOVE    TBL-TOKKI-MAX    TO  IDY
                    END-IF
                END-PERFORM
            END-PERFORM
@@ -3535,20 +3530,8 @@
                    WHEN "02"                                            
                       MOVE  "∑Î≥À°°"   TO  HC06-NYUINKBN(IDY5:6)        
                       ADD    6         TO  IDY5                         
-                   WHEN "03"                                            
-                      MOVE  "∆√Œ„°°"   TO  HC06-NYUINKBN(IDY5:6)        
-                      ADD    6         TO  IDY5                         
-                   WHEN "05"                                            
-                      MOVE  "œ∑øÕ°°"   TO  HC06-NYUINKBN(IDY5:6)        
-                      ADD    6         TO  IDY5                         
                    WHEN "07"                                            
                       MOVE  "Œ≈Õ‹°°"   TO  HC06-NYUINKBN(IDY5:6)        
-                      ADD    6         TO  IDY5                         
-                   WHEN "08"                                            
-                      MOVE  " £πÁ°°"   TO  HC06-NYUINKBN(IDY5:6)        
-                      ADD    6         TO  IDY5                         
-                   WHEN "09"                                            
-                      MOVE  " £Œ≈°°"   TO  HC06-NYUINKBN(IDY5:6)        
                       ADD    6         TO  IDY5                         
                 END-EVALUATE                                            
       *                                                                 
@@ -4820,6 +4803,7 @@
            ELSE                                                        
                EVALUATE    RECE62-TEISYOTOKU                           
                    WHEN    "1"                                         
+                   WHEN    "4"                                         
                       MOVE    "ƒ„ΩÍ∆¿£±"  TO  HC06-GENGAKUMEI          
                    WHEN    "2"                                         
                       MOVE    "ƒ„ΩÍ∆¿£≤"  TO  HC06-GENGAKUMEI          

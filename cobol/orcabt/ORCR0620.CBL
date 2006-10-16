@@ -108,7 +108,8 @@
       *  03.03.01    NACL-ÌçÏÆ    06/09/27  £²£°£°£¶Ç¯£±£°·î²þÀµÂÐ±þ
       *                                     ÆÃµ­»ö¹à£±£¶Ä¹£²ÂÐ±þ
       *                                     ¥ì¥»¥×¥È¼ïÊÌ
-      *                                     Ï·ÎðÊ¡»ãÇ¯¶â 
+      *                                     Ï·ÎðÊ¡»ãÇ¯¶â
+      *                                     ÉÂÅï¶èÊ¬£°£±¡¢£°£²¡¢£°£·
       *  03.03.02    NACL-Æ£¸¶    06/09/19  ·îÅÓÃæ¤Ç¤Î»áÌ¾ÊÑ¹¹ÂÐ±þ
       *****************************************************************
       *
@@ -2217,10 +2218,23 @@
                 END-IF                                                 
              END-PERFORM                                               
            END-PERFORM                                                 
-      *                                                                
+      *
+           MOVE    ZERO                  TO  IDX4                                                                
            PERFORM    VARYING   IDX3     FROM    1   BY  1             
-                  UNTIL   IDX3    >     4                              
-                MOVE    WRK-BYOTOKBN(IDX3)  TO  RECE62-BYOTOKBN(IDX3)  
+                      UNTIL   IDX3    >     4
+                IF      RECE62-SRYYM     <=  WRK-CONS-SRYYM-200609
+                    MOVE    WRK-BYOTOKBN(IDX3)
+                                         TO  RECE62-BYOTOKBN(IDX3)
+                ELSE  
+                    EVALUATE    RECE62-BYOTOKBN (IDX3)
+                        WHEN    "01"                                            
+                        WHEN    "02"                                            
+                        WHEN    "07"
+                            ADD     1        TO  IDX4                                           
+                            MOVE    WRK-BYOTOKBN(IDX3)
+                                             TO  RECE62-BYOTOKBN (IDX4)  
+                    END-EVALUATE
+                END-IF                                                
            END-PERFORM                                                 
       *                                                                
            .
