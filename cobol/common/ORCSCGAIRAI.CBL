@@ -1342,45 +1342,26 @@
       *****************************************************************
        45001-SINMEI-SYORI-SEC          SECTION.
       *
+           MOVE    ZERO                TO  WRK-DENPEDANUM
+           MOVE    ZERO                TO  WRK-NYUKINRENNUM
+      *    共通編集
            MOVE    SPACE               TO  SYUMEI-REC
            INITIALIZE                      SYUMEI-REC
-           MOVE    SYU-HOSPID          TO  SMEI-HOSPID
-           MOVE    SYU-NYUGAIKBN       TO  SMEI-NYUGAIKBN
-           MOVE    SYU-PTID            TO  SMEI-PTID
-      *伝票番号
-           MOVE    SYU-DENPNUM         TO  SMEI-DENPNUM
-      *伝票番号枝番
-           MOVE    01                  TO  SMEI-DENPEDANUM
-      *伝票状態区分
-           MOVE    SPACE               TO  SMEI-MEISAIJOUTAIKBN
-      *請求発行日（発行日の西暦）
-           MOVE    SPA-SYSYMD          TO  SMEI-SKYPRINTYMD
-      *請求再発行日
-           MOVE    SPACE               TO  SMEI-SKYREPRINTYMD
-      *領収書発行日
-           MOVE    SMEI-SKYPRINTYMD    TO  SMEI-RYOSYUPRINTYMD
-      *領収書再発行日
-           MOVE    SPACE               TO  SMEI-RYOSYUREPRINTYMD
-      *請求金額
+      *    請求金額
            MOVE    WRK-KON-SKYMONEY    TO  SMEI-SKYMONEY
-      *入返金日
-           MOVE    SMEI-SKYPRINTYMD    TO  SMEI-NYUHEN-YMD
-      *入金連番
-           MOVE    01                  TO  SMEI-NYUKINRENNUM
-      *診療科
-           MOVE    SYU-SRYKA           TO  SMEI-SRYKA
       *
       *    入金額がゼロの時
-           IF      WRK-KON-NYUKIN      =   ZERO
+           IF     (WRK-KON-NYUKIN      =   ZERO ) AND
+                  (ORCSCGAIRAI-SYU-HENKIN (IDH-GAI)  =   ZERO)
                MOVE    ORCSCGAIRAI-NYUKIN-HOHO  TO  SMEI-NYUKIN-HOHO
            ELSE
-      *入返金区分
-               MOVE    "1"                 TO  SMEI-NYUHEN-KBN
-      *入返金額
-               MOVE    WRK-KON-NYUKIN      TO  SMEI-NYUHEN-MONEY
-      *入金方法
-               MOVE    ORCSCGAIRAI-NYUKIN-HOHO
-                                           TO  SMEI-NYUKIN-HOHO
+               IF      ORCSCGAIRAI-SYU-HENKIN (IDH-GAI)  =   ZERO
+      *            入金編集
+                   PERFORM 450012-SMEI-NYUKIN-SEC
+               ELSE
+      *            返金編集
+                   PERFORM 450013-SMEI-HENKIN-SEC
+               END-IF
            END-IF
       *状態区分
            IF      SYU-SKYMONEY        =   ZERO
@@ -1392,6 +1373,84 @@
            IF      SPA-CONTKBN         =   "1"
                MOVE    "7"                 TO  SMEI-JOUTAIKBN
            END-IF
+      *
+      *    出力編集
+           PERFORM 450013-SMEI-INSERT-SEC
+      *
+      *    入金を作成
+           IF     (ORCSCGAIRAI-SYU-HENKIN  (IDH-GAI)
+                                   NOT =   ZERO ) AND
+                  (WRK-KON-NYUKIN  NOT =   ZERO )
+               PERFORM 45002-SMEI-NYUKINSYORI-SEC
+           END-IF
+           .
+       45001-SINMEI-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    収納明細入金編集追加処理
+      *****************************************************************
+       450012-SMEI-NYUKIN-SEC          SECTION.
+      *
+      *入返金区分
+           MOVE    "1"                 TO  SMEI-NYUHEN-KBN
+      *入返金額
+           MOVE    WRK-KON-NYUKIN      TO  SMEI-NYUHEN-MONEY
+      *入金方法
+           MOVE    ORCSCGAIRAI-NYUKIN-HOHO
+                                       TO  SMEI-NYUKIN-HOHO
+           .
+       450012-SMEI-NYUKIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    収納明細返金編集追加処理
+      *****************************************************************
+       450013-SMEI-HENKIN-SEC          SECTION.
+      *
+      *入返金区分
+           MOVE    "1"                 TO  SMEI-NYUHEN-KBN
+      *入返金額
+           MOVE    ORCSCGAIRAI-SYU-HENKIN  (IDH-GAI)
+                                       TO  SMEI-NYUHEN-MONEY
+      *入金方法
+           MOVE    "01"                TO  SMEI-NYUKIN-HOHO
+      *明細状態区分
+           MOVE    "1"                 TO  SMEI-MEISAIJOUTAIKBN
+           .
+       450013-SMEI-HENKIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    収納明細共通編集追加処理
+      *****************************************************************
+       450013-SMEI-INSERT-SEC          SECTION.
+      *
+           MOVE    SYU-HOSPID          TO  SMEI-HOSPID
+           MOVE    SYU-NYUGAIKBN       TO  SMEI-NYUGAIKBN
+           MOVE    SYU-PTID            TO  SMEI-PTID
+      *伝票番号
+           MOVE    SYU-DENPNUM         TO  SMEI-DENPNUM
+      *伝票状態区分
+           MOVE    SPACE               TO  SMEI-MEISAIJOUTAIKBN
+      *請求発行日（発行日の西暦）
+           MOVE    SPA-SYSYMD          TO  SMEI-SKYPRINTYMD
+      *請求再発行日
+           MOVE    SPACE               TO  SMEI-SKYREPRINTYMD
+      *領収書発行日
+           MOVE    SMEI-SKYPRINTYMD    TO  SMEI-RYOSYUPRINTYMD
+      *領収書再発行日
+           MOVE    SPACE               TO  SMEI-RYOSYUREPRINTYMD
+      *診療科
+           MOVE    SYU-SRYKA           TO  SMEI-SRYKA
+      *入返金日
+           MOVE    SMEI-SKYPRINTYMD    TO  SMEI-NYUHEN-YMD
+      *伝票番号枝番
+           ADD     1                   TO  WRK-DENPEDANUM
+           MOVE    WRK-DENPEDANUM      TO  SMEI-DENPEDANUM
+      *入金連番
+           ADD     1                   TO  WRK-NYUKINRENNUM
+           MOVE    WRK-NYUKINRENNUM    TO  SMEI-NYUKINRENNUM
       *
            MOVE    SMCNDATE-YMD        TO  SMEI-CREYMD
            MOVE    SMCNDATE-YMD        TO  SMEI-UPYMD
@@ -1416,87 +1475,28 @@
                DISPLAY "K03 SINMEI-SYORI MCP-RC:" MCP-RC
                         ",KEY:" SMEI-KEY
            END-IF
-      *
-      *    返金を作成
-           IF      ORCSCGAIRAI-SYU-HENKIN  (IDH-GAI) NOT =   ZERO
-               PERFORM 45002-SMEI-HENKIN-SEC
-           END-IF
            .
-       45001-SINMEI-SYORI-EXT.
+       450013-SMEI-INSERT-EXT.
            EXIT.
       *
       *****************************************************************
-      *    収納明細マスター作成処理（返金）
+      *    収納明細マスター作成処理（入金）
       *****************************************************************
-       45002-SMEI-HENKIN-SEC          SECTION.
+       45002-SMEI-NYUKINSYORI-SEC          SECTION.
       *
            MOVE    SPACE               TO  SYUMEI-REC
            INITIALIZE                      SYUMEI-REC
-           MOVE    SYU-HOSPID          TO  SMEI-HOSPID
-           MOVE    SYU-NYUGAIKBN       TO  SMEI-NYUGAIKBN
-           MOVE    SYU-PTID            TO  SMEI-PTID
-      *伝票番号
-           MOVE    SYU-DENPNUM         TO  SMEI-DENPNUM
-      *伝票番号枝番
-           MOVE    02                  TO  SMEI-DENPEDANUM
-      *伝票状態区分
-           MOVE    SPACE               TO  SMEI-MEISAIJOUTAIKBN
-      *請求発行日（発行日の西暦）
-           MOVE    SPA-SYSYMD          TO  SMEI-SKYPRINTYMD
-      *請求再発行日
-           MOVE    SPACE               TO  SMEI-SKYREPRINTYMD
-      *領収書発行日
-           MOVE    SMEI-SKYPRINTYMD    TO  SMEI-RYOSYUPRINTYMD
-      *領収書再発行日
-           MOVE    SPACE               TO  SMEI-RYOSYUREPRINTYMD
-      *請求金額
-      *****MOVE    WRK-KON-SKYMONEY    TO  SMEI-SKYMONEY
+      *    請求金額
            MOVE    ZERO                TO  SMEI-SKYMONEY
-      *入返金日
-           MOVE    SMEI-SKYPRINTYMD    TO  SMEI-NYUHEN-YMD
-      *入金連番
-           MOVE    02                  TO  SMEI-NYUKINRENNUM
-      *診療科
-           MOVE    SYU-SRYKA           TO  SMEI-SRYKA
-      *
-      *入返金区分
-           MOVE    "2"                 TO  SMEI-NYUHEN-KBN
-      *入返金額
-           MOVE    ORCSCGAIRAI-SYU-HENKIN  (IDH-GAI)
-                                       TO  SMEI-NYUHEN-MONEY
-      *入金方法
-           MOVE    "01"                TO  SMEI-NYUKIN-HOHO
-      *状態区分
+      *    入金編集
+           PERFORM 450012-SMEI-NYUKIN-SEC
+      *    状態区分
            MOVE    "2"                 TO  SMEI-JOUTAIKBN
-      *明細状態区分
-           MOVE    "1"                 TO  SMEI-MEISAIJOUTAIKBN
-      *
-           MOVE    SMCNDATE-YMD        TO  SMEI-CREYMD
-           MOVE    SMCNDATE-YMD        TO  SMEI-UPYMD
-           MOVE    SMCNDATE-HMS        TO  SMEI-UPHMS
-           MOVE    SMCNDATE-HMS        TO  SMEI-CREHMS
-      *
-           MOVE    SMEI-CREYMD         TO  SDAILYKEY-CREYMD
-           MOVE    SMEI-CREHMS         TO  SDAILYKEY-CREHMS
-           MOVE    SMEI-NYUHEN-YMD     TO  SDAILYKEY-BASEYMD
-           PERFORM 800-DAILYKEY-SEC
-           MOVE    SDAILYKEY-DAILYKEY  TO  SMEI-DAILYKEY
-      *
-           MOVE    SYUMEI-REC          TO  MCPDATA-REC
-           MOVE    "DBINSERT"          TO  MCP-FUNC
-           MOVE    "tbl_syumei"        TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
-           IF      MCP-RC          NOT =   ZERO
-               MOVE    "0005"          TO  SPA-ERRCD
-               DISPLAY "K03 SMEI-HENKIN MCP-RC:" MCP-RC
-                        ",KEY:" SMEI-KEY
-           END-IF
+      *    出力編集
+           PERFORM 450013-SMEI-INSERT-SEC
       *
            .
-       45002-SMEI-HENKIN-EXT.
+       45002-SMEI-NYUKINSYORI-EXT.
            EXIT.
       *
       *****************************************************************
