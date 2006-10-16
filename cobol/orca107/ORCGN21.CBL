@@ -1098,9 +1098,9 @@
       *        文字数チェック
                INITIALIZE                  WRK-HENSYU-AREA
                STRING  SPA-GMN-COLOR       DELIMITED  BY  SPACE
-                       X"A1"               DELIMITED  BY  SIZE
+                       X"0A"               DELIMITED  BY  SIZE
                        SPA-GMN-SHAPE       DELIMITED  BY  SPACE
-                       X"A1"               DELIMITED  BY  SIZE
+                       X"0A"               DELIMITED  BY  SIZE
                        SPA-GMN-MARK        DELIMITED  BY  SPACE
                                    INTO    WRK-NAIYOU
                END-STRING
