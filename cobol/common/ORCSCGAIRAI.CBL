@@ -1431,8 +1431,6 @@
            MOVE    SYU-PTID            TO  SMEI-PTID
       *伝票番号
            MOVE    SYU-DENPNUM         TO  SMEI-DENPNUM
-      *伝票状態区分
-           MOVE    SPACE               TO  SMEI-MEISAIJOUTAIKBN
       *請求発行日（発行日の西暦）
            MOVE    SPA-SYSYMD          TO  SMEI-SKYPRINTYMD
       *請求再発行日
