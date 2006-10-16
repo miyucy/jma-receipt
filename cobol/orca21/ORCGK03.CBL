@@ -1470,6 +1470,9 @@
                END-IF
       *
                MOVE    SYUNOU-REC          TO  SPA-SYUNOU-REC (IDX)
+      *        今回入金額
+               MOVE    SYU-NYUKIN-TOTAL    TO  SPA-TEI-NYUKIN-TOTAL
+                                                              (IDX)
            END-PERFORM
       *
            .
@@ -3595,8 +3598,6 @@
       *
            IF      SPA-SYORIFLG        =   ZERO
       *        未収・返金なし
-      *?       IF    ((SPA-GMN-ZENMISYU    =   ZERO )  AND
-      *?              (SPA-GMN-CHOKAKIN    =   ZERO ))  OR
                IF    ( SPA-GMN-NYUKINKBN   =   "1"  )
       *            今回分のみ
                    MOVE    ZERO                TO  SPA-NYU-ZENMISYU
@@ -5149,6 +5150,7 @@
                                        ORCSCGAIRAIAREA
            MOVE    SPA-WORK        TO  SPA-K01KYOUTU
       *
+      *TEST
       *    伝票番号を編集する
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   SPA-SYUNOU-MAX ) OR
@@ -5413,6 +5415,14 @@
                MOVE    SPA-TEI-NYUKIN-TOTAL (IDX)
                                        TO  ORCHC03-OLD-NYUKIN-TOTAL
                                                                (IDX)
+      *TEST
+      *      DISPLAY "SYU-SRYKA:" SYU-SRYKA
+      *        ",SYU-HKNCOMBINUM:" SYU-HKNCOMBINUM
+      *        ",SYU-DENPNUM:" SYU-DENPNUM
+      *        ",SYU-NYUKIN-TOTAL:" SYU-NYUKIN-TOTAL
+      *        ",SPA-TEI-NYUKIN-TOTAL:" SPA-TEI-NYUKIN-TOTAL (IDX)
+      *        ",SPA-SYU-HENKIN:" SPA-SYU-HENKIN(IDX)
+      *TEST
       *        返金対応
                IF      SPA-SYORIFLG        =   1
                    IF      SPA-SYU-HENKIN(IDX) NOT =   ZERO
@@ -5425,16 +5435,23 @@
       *            充当
                    MOVE    SPA-SYU-HENKIN (IDX)
                                        TO  ORCHC03-KON-HENKIN (IDX)
-                   ADD     SPA-SYU-HENKIN (IDX)    TO  WRK-HENKIN
+                   IF      SYU-SRYKA       NOT =   ZERO
+                       ADD     SPA-SYU-HENKIN (IDX)    TO  WRK-HENKIN
+                   END-IF
                END-IF
            END-PERFORM
       *    今回返金充当額
-           MOVE    WRK-HENKIN-GAKU     TO  ORCHC03-ZEN-HENKIN
-      *
-           IF     (SPA-GMN-NYUKINKBN   =   "4"  OR  "5")
-               COMPUTE ORCHC03-ZEN-HENKIN  =   WRK-HENKIN-GAKU
+           IF      SPA-SYORIFLG        =   1
+               MOVE    ZERO                TO  ORCHC03-ZEN-HENKIN
+           ELSE
+               COMPUTE ORCHC03-ZEN-HENKIN  =   SPA-GOK-HENKIN
                                            -   WRK-HENKIN
            END-IF
+      *TEST
+      *    DISPLAY "ORCHC03-ZEN-HENKIN:" ORCHC03-ZEN-HENKIN
+      *          ",SPA-GOK-HENKIN:" SPA-GOK-HENKIN
+      *          ",WRK-HENKIN:" WRK-HENKIN
+      *         ",ORCHC03-NYUKIN:" ORCHC03-NYUKIN
       *
            IF      SPA-GMN-HAKFLG  NOT =   ZERO
                CALL    WRK-SEIKYU-PG       USING
