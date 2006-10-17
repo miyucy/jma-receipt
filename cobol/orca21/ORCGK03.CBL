@@ -4616,14 +4616,18 @@
        409-HENKIN-SYORI-SEC             SECTION.
       *
            IF      SPA-SYORIFLG        =   ZERO
-               IF      SPA-NAI-HENFLG      =   1
-      *            超過額を返金へ
-                   MOVE    SPA-GMN-CHOKAKIN    TO  SPA-GMN-HENKIN-X
-      *            基本チェックと画面処理
-                   PERFORM 4102-KIHON-CHK-SEC
+               IF      SPA-GMN-NYUKINKBN   =   "1"
+                   MOVE    "0109"           TO  SPA-ERRCD
                ELSE
-                   IF      SPA-GMN-CHOKAKIN     >   ZERO
-                       MOVE    "0112"           TO  SPA-ERRCD
+                   IF      SPA-NAI-HENFLG      =   1
+      *                超過額を返金へ
+                       MOVE    SPA-GMN-CHOKAKIN    TO  SPA-GMN-HENKIN-X
+      *                基本チェックと画面処理
+                       PERFORM 4102-KIHON-CHK-SEC
+                   ELSE
+                       IF      SPA-GMN-CHOKAKIN     >   ZERO
+                           MOVE    "0112"           TO  SPA-ERRCD
+                       END-IF
                    END-IF
                END-IF
            ELSE
@@ -5426,14 +5430,6 @@
                MOVE    SPA-TEI-NYUKIN-TOTAL (IDX)
                                        TO  ORCHC03-OLD-NYUKIN-TOTAL
                                                                (IDX)
-      *TEST
-      *      DISPLAY "SYU-SRYKA:" SYU-SRYKA
-      *        ",SYU-HKNCOMBINUM:" SYU-HKNCOMBINUM
-      *        ",SYU-DENPNUM:" SYU-DENPNUM
-      *        ",SYU-NYUKIN-TOTAL:" SYU-NYUKIN-TOTAL
-      *        ",SPA-TEI-NYUKIN-TOTAL:" SPA-TEI-NYUKIN-TOTAL (IDX)
-      *        ",SPA-SYU-HENKIN:" SPA-SYU-HENKIN(IDX)
-      *TEST
       *        返金対応
                IF      SPA-SYORIFLG        =   1
                    IF      SPA-SYU-HENKIN(IDX) NOT =   ZERO
@@ -5458,11 +5454,6 @@
                COMPUTE ORCHC03-ZEN-HENKIN  =   SPA-GOK-HENKIN
                                            -   WRK-HENKIN
            END-IF
-      *TEST
-      *    DISPLAY "ORCHC03-ZEN-HENKIN:" ORCHC03-ZEN-HENKIN
-      *          ",SPA-GOK-HENKIN:" SPA-GOK-HENKIN
-      *          ",WRK-HENKIN:" WRK-HENKIN
-      *         ",ORCHC03-NYUKIN:" ORCHC03-NYUKIN
       *
            IF      SPA-GMN-HAKFLG  NOT =   ZERO
                CALL    WRK-SEIKYU-PG       USING
