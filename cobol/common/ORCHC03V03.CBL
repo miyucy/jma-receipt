@@ -473,7 +473,7 @@
            ELSE
       *        前回までの超過額
                COMPUTE WRK-MISYUMONEY      =   WRK-MISYUMONEY
-                                           -   ORCHC03-HENKIN
+                                           -   ORCHC03-KANYUKIN
            END-IF
       *    返金対応
            IF      (ORCHC03-HAKKOFLG   =   ZERO )  AND
