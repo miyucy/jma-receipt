@@ -1151,7 +1151,7 @@
                GO  TO  2410-JKYSNUM-SET-EXT
            END-IF
       *
-           IF      WRK-MO-CNT      >   8
+           IF      WRK-MO-CNT      >   20
                GO  TO  2410-JKYSNUM-SET-EXT
                MOVE    2           TO  FLG-ERR
            END-IF
