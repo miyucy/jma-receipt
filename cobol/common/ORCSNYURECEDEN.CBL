@@ -1750,8 +1750,8 @@
       *              月日セット
                      PERFORM   VARYING  CIDX   FROM   1  BY  1
                        UNTIL   CIDX     >   31
-                     IF   WRK-SO-IRYOADL-DAY(IDX1)  =
-                            WRK-IRYOADL-DAY(CIDX)
+                      IF   WRK-SO-IRYOADL-DAY(IDX1)  =
+                                         WRK-IRYOADL-DAY(CIDX)
                        INITIALIZE    WRK-RYOYO-DAY-TABLE
                        IF   WRK-IRYOADL-GAITOU-TBL(CIDX)   =  ALL"0"
                          CONTINUE
@@ -1864,7 +1864,7 @@
                          ADD    1     TO   IDX3
       *
                        END-IF
-                     END-IF
+                      END-IF
                      END-PERFORM
       *
                END-IF
