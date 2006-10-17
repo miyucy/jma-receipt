@@ -44,9 +44,9 @@
                05  LNK-RYOCOM-NYUINKBN           PIC  X(01).
       *明細数
                05  LNK-RYOCOM-MEISAISU           PIC  9(03).
-      *診療コード計
+      *診療コード計（ＡＤＬコメント含む）
                05  LNK-RYOCOM-SRYCDTOTAL         PIC  9(14).
-      *診療コード計２（診療コード計＋ＡＤＬ点数）
+      *診療コード計２（診療コード計（ＡＤＬコメント含む）＋ＡＤＬ点数）
                05  LNK-RYOCOM-SRYCDTOTAL2        PIC  9(14).
       *コメント記録エリア
                05  LNK-RYOCOM-RECORD             OCCURS 30.
