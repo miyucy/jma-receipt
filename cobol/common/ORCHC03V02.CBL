@@ -458,6 +458,9 @@
       *        前回までの超過額
                COMPUTE WRK-MISYUMONEY      =   WRK-MISYUMONEY
                                            -   ORCHC03-KANYUKIN
+               IF      WRK-MISYUMONEY      <   ZERO
+                   MOVE    ZERO            TO  WRK-MISYUMONEY
+               END-IF
            END-IF
       *    返金対応
            IF      (ORCHC03-HAKKOFLG   =   ZERO )  AND
@@ -1170,10 +1173,19 @@
                END-IF
       *---(03.03.00) LINE ADD  START -----------------------------------
                IF      IDX-SYU             =   1
-                   COMPUTE WRK-MISYUMONEY  =   WRK-MISYUMONEY
-                                           -   ORCHC03-ZEN-HENKIN
-                                           -   ORCHC03SUB-HENKIN
+                   IF     (ORCHC03-ZEN-HENKIN  >   ZERO )  OR
+                          (ORCHC03SUB-HENKIN (IDX-SYU) >  ZERO)
+                       COMPUTE WRK-MISYUMONEY  =   WRK-MISYUMONEY
+                                               -   ORCHC03-ZEN-HENKIN
+                                               -   ORCHC03SUB-HENKIN
                                                          (IDX-SYU)
+                   ELSE
+                       COMPUTE WRK-MISYUMONEY  =   WRK-MISYUMONEY
+                                               -   ORCHC03-KANYUKIN
+                       IF      WRK-MISYUMONEY      <   ZERO
+                           MOVE    ZERO            TO  WRK-MISYUMONEY
+                       END-IF
+                   END-IF
       *             返金対応
                     IF      (ORCHC03-HAKKOFLG   =   ZERO )  AND
                             (WRK-NYUKIN         =   ZERO )  AND
