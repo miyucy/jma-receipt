@@ -516,8 +516,12 @@
                       (SPA-ERRCD   NOT =   SPACE     )
       *
                MOVE    PARA-DATA-REC       TO  PTKOHINF-REC
-               IF     (PTKOH-SAKJOKBN      =   SPACE          )
-               AND    (PTKOH-KOHNUM    NOT =   "978" AND "979")
+               IF     (PTKOH-SAKJOKBN  NOT =   SPACE          )  OR
+                      (PTKOH-KOHNUM        =   "978" OR  "979" ) OR
+                      (PTKOH-KOHNUM        >=  "960"   AND
+                                           <=  "963"           )
+                   CONTINUE
+               ELSE
                    ADD     1               TO  CNT-KOH
                    IF  CNT-KOH             >   100
                        MOVE    "0015"      TO  SPA-ERRCD

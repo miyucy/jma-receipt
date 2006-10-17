@@ -74,6 +74,7 @@
       *  02.00.21    NACL-Â¿¡¹Ç¼  06/05/19  Âà¿¦¹ñÊÝ¡¦Ï·¿Í¸øÈñ¥Á¥§¥Ã¥¯ÄÉ²Ã
       *  03.00.01    NACL-Â¿¡¹Ç¼  06/08/25  Ê¿À®£±£¸Ç¯£±£°·î²þÀµÂÐ±þ
       *                                     ¡ÊÏ·¿Í³ä¹çÊÑ¹¹¡Ë
+      *  03.03.00    NACL-Â¿¡¹Ç¼  06/10/17  ¸ºÌÈ³ä¹ç¡¦¶â³ÛÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -4444,12 +4445,6 @@
                            MOVE    IDX-K           TO  SPA-KOH-GMN1
                        END-IF
                    END-PERFORM
-      *TEST
-              DISPLAY "SPA-KOH-GMN2:" SPA-KOH-GMN2
-               ",SPA-KOH-GMN1:" SPA-KOH-GMN1
-                ",SPA-KOH-IDX2:" SPA-KOH-IDX2
-                ",FLG-KOH27:" FLG-KOH27
-      *TEST
                    MOVE    "0111"              TO  SPA-PIDCD
                    MOVE    21                  TO  SPA-GMN-CUR
                END-IF
@@ -4528,12 +4523,6 @@
                            MOVE    IDX-K           TO  SPA-KOH-GMN1
                        END-IF
                    END-PERFORM
-      *TEST
-              DISPLAY "SPA-KOH-GMN2:" SPA-KOH-GMN2
-               ",SPA-KOH-GMN1:" SPA-KOH-GMN1
-                ",SPA-KOH-IDX2:" SPA-KOH-IDX2
-                ",FLG-KOH27:" FLG-KOH27
-      *TEST
                    MOVE    "0111"              TO  SPA-PIDCD
                    MOVE    21                  TO  SPA-GMN-CUR
                END-IF
@@ -5381,6 +5370,11 @@
       *            Àº¿ÀÄÌ±¡¡Ê£°£²£±¡Ë¡Ê£È£±£¸¡¥£°£´°Ê¹ß¡Ë
                  OR  ((SPA-PTKOH-KOHNUM(IDX)   =   "021" )  AND
                       (SPA-PTKOH-TEKSTYMD(IDX) >=  "20060401"))
+      *
+      *            ¸ºÌÈ¡Ê£¹£¶£°¡¢£¹£¶£±¡Ë¡Ê£È£±£¸¡¥£±£°°Ê¹ß¡Ë
+                 OR  ((SPA-PTKOH-KOHNUM(IDX)   =   "960"
+                                               OR  "961"  )  AND
+                      (SPA-PTKOH-TEKSTYMD(IDX) >=  "20061001"))
       *
                    MOVE    ZERO                TO  IDY
                    PERFORM VARYING     IDX2    FROM    1   BY  1

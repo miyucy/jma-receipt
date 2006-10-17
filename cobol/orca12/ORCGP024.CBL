@@ -1516,6 +1516,21 @@
                    MOVE    "外来上限額"         TO  SPA-GMN24-FTNMSG1
                    MOVE    "入院上限額"         TO  SPA-GMN24-FTNMSG2
                END-IF
+      *
+               IF     (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
+                                           =   "960"   )  AND
+                      (SPA-NAI24-TKOHSTYMD (SPA-NAI24-FTNSELNUM)
+                                           >=   "20061001"  )
+                   MOVE    "外来減免割合"       TO  SPA-GMN24-FTNMSG1
+                   MOVE    "入院減免割合"       TO  SPA-GMN24-FTNMSG2
+               END-IF
+               IF     (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
+                                           =   "961"   )  AND
+                      (SPA-NAI24-TKOHSTYMD (SPA-NAI24-FTNSELNUM)
+                                           >=   "20061001"  )
+                   MOVE    "外来減免額"         TO  SPA-GMN24-FTNMSG1
+                   MOVE    "入院減免額"         TO  SPA-GMN24-FTNMSG2
+               END-IF
            END-IF
       *
       *    対象のデータをパラメタファイルより編集する
