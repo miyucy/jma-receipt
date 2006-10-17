@@ -5375,17 +5375,28 @@
       *    消費税（再掲）
            MOVE    SPA-NAI-SKYMONEY-TAX-SAI
                                        TO  ORCHC03-SEIKYU-TAX-SAI
-      *    前回未収額
-           MOVE    SPA-GMN-ZENMISYU    TO  ORCHC03-ZENMISYU
-      *    前回返金額
-           MOVE    SPA-GMN-CHOKAKIN    TO  ORCHC03-HENKIN
-           IF      SPA-SYORIFLG        =   1
-               MOVE    ZERO                TO  ORCHC03-ZENMISYU
+      *    前回未収額−前回返金額
+           IF      SPA-GMN-ZENMISYU    >   SPA-GMN-CHOKAKIN
+               COMPUTE ORCHC03-ZENMISYU    =   SPA-GMN-ZENMISYU
+                                           -   SPA-GMN-CHOKAKIN
                MOVE    ZERO                TO  ORCHC03-HENKIN
+           ELSE
+               COMPUTE ORCHC03-HENKIN      =   SPA-GMN-ZENMISYU
+                                           -   SPA-GMN-CHOKAKIN
+               MOVE    ZERO                TO  ORCHC03-ZENMISYU
+           END-IF
+      *    前回未収額２
+           MOVE    SPA-GMN-ZENMISYU    TO  ORCHC03-ZENMISYU-2
+      *    前回過入金
+           MOVE    SPA-GMN-CHOKAKIN    TO  ORCHC03-KANYUKIN
+           IF      SPA-SYORIFLG        =   1
+               MOVE    ZERO                TO  ORCHC03-ZENMISYU-2
+               MOVE    ZERO                TO  ORCHC03-KANYUKIN
       *        入金額は返金との差額とする
                COMPUTE ORCHC03-NYUKIN  =   ORCHC03-NYUKIN
                                        -   SPA-NAI-HENKIN
            END-IF
+      *TEST
       *    発行フラグ
            IF      SPA-SYORIFLG        =   1
       *        訂正分

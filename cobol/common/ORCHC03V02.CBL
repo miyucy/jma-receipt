@@ -444,8 +444,9 @@
            MOVE    ORCHC03-SEIKYU      TO  WRK-SKYMONEY
            MOVE    ORCHC03-NYUKIN      TO  WRK-NYUKIN
            MOVE    ORCHC03-SEIKYU-TAX-SAI  TO  WRK-SKYMONEY-TAX-SAI
-           MOVE    ORCHC03-ZENMISYU    TO  WRK-MISYUMONEY
+      **** MOVE    ORCHC03-ZENMISYU    TO  WRK-MISYUMONEY
       *---(03.03.00) LINE ADD  START -----------------------------------
+           MOVE    ORCHC03-ZENMISYU-2  TO  WRK-MISYUMONEY
       *    ¡∞≤Û¿¡µ·≥€
            IF      ORCHC03-ZEN-HENKIN  >   ZERO
       *        ∫£≤Û ÷∂‚≥€
@@ -1159,8 +1160,9 @@
                IF      IDX-SYU             =   1
       *---(03.03.00) LINE ADD  START -----------------------------------
                   AND  (ORCHC03-HAKKOFLG   =   ZERO )
+      ***********  MOVE    ORCHC03-ZENMISYU    TO  WRK-MISYUMONEY
+                   MOVE    ORCHC03-ZENMISYU-2  TO  WRK-MISYUMONEY
       *---(03.03.00) LINE ADD  END   -----------------------------------
-                   MOVE    ORCHC03-ZENMISYU    TO  WRK-MISYUMONEY
                    COMPUTE WRK-NYUKIN          =   WRK-NYUKIN
                                                +   WRK-ZENMISYU
                ELSE

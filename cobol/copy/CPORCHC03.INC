@@ -78,6 +78,10 @@
                    07  ORCHC03-KON-HENKIN        PIC S9(07).
       *    今回の前回までの返金額
            03  ORCHC03-ZEN-HENKIN         PIC S9(07).
+      *    前回未収額
+           03  ORCHC03-ZENMISYU-2         PIC S9(07).
+      *    前回過入金
+           03  ORCHC03-KANYUKIN           PIC S9(07).
       *
       *    伝票番号枝番（収納からの再発行）
            03  ORCHC03-DENPEDANUM      PIC  9(02).

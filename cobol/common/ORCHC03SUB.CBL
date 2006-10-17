@@ -253,11 +253,6 @@
            PERFORM VARYING     IDY     FROM    1   BY  1
                    UNTIL      (IDY     >   15  )
       *DDD              OR    (ORCHC03-OLD-DENPNUM(IDY)    =   ZERO)
-      *TEST
-              DISPLAY "ORCHC03-OLD-DENPNUM:" ORCHC03-OLD-DENPNUM (IDY)
-                ",SYU-DENPNUM:" SYU-DENPNUM
-                ",SYU-SRYKA:" SYU-SRYKA
-      *TEST
                IF     (ORCHC03-OLD-DENPNUM(IDY)    =   SYU-DENPNUM)
                   AND (SYU-SRYKA               NOT =   ZERO  )
       *            ƒ˚¿µª˛§Œ¿¡µ·≥€∫π≥€
@@ -274,10 +269,6 @@
       *            ∫£≤Û ÷∂‚
                    MOVE    ORCHC03-KON-HENKIN (IDY)
                                            TO  WRK-HENKIN
-      *TEST
-              DISPLAY "WRK-HENKIN:" WRK-HENKIN
-                       ",WRK-NYUKIN-TOTAL:" WRK-NYUKIN-TOTAL
-      *TEST
                    MOVE    15              TO  IDY
                END-IF
            END-PERFORM
