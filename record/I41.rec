@@ -3,6 +3,10 @@ I41	{
 		B05	{
 			label	varchar(10);
 		};
+		B05S	{
+			label	varchar(10);
+			state	int;
+		};
 		PTNUM	{
 			value	varchar(20);
 		};

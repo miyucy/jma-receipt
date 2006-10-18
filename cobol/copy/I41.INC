@@ -18,6 +18,8 @@
         02  I41.
           03  I41-B05.
             04  I41-B05-LABEL   PIC X(10).
+          03  I41-B05S-LABEL    PIC X(10).
+          03  I41-B05S-STATE    PIC S9(9)   BINARY.
           03  I41-PTNUM.
             04  I41-VALUE       PIC X(20).
           03  I41-SRYYM.

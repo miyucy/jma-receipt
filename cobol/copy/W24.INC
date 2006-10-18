@@ -163,4 +163,14 @@
                                                OCCURS  2.
                 05  W24-TEISU-ITM-STATE        PIC S9(9)
                                                BINARY.
+              04  W24-CMB-ADLINPUT.
+                05  W24-ADLINPUT               PIC X(10).
+                05  W24-ADLINPUT-STATE         PIC S9(9)
+                                               BINARY.
+                05  W24-ADLINPUT-CNT           PIC S9(9)
+                                               BINARY.
+                05  W24-ADLINPUT-ITM           PIC X(10)
+                                               OCCURS  5.
+                05  W24-ADLINPUT-ITM-STATE     PIC S9(9)
+                                               BINARY.
 

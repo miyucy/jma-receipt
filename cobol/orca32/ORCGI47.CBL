@@ -2137,9 +2137,15 @@
                MOVE    SPA-GMN-TNAME (IDX0)
                                        TO  I47-TNAME(IDX-LST)
       *
-               MOVE    SPA-GMN-TDAYALL (IDX0)
+               IF    ( SPA-NAI-TZAISKBKBN (IDX0)   =   "2" )
+                AND  ( SPA-NAI-TALLKBN (IDX0)      =   ZERO )
+                       MOVE    "--"    TO  I47-TDAYALL (IDX-LST)
+               ELSE
+                   MOVE    SPA-GMN-TDAYALL (IDX0)
                                        TO  WRK-ZZ
-               MOVE    WRK-ZZ          TO  I47-TDAYALL (IDX-LST)
+                   MOVE    WRK-ZZ      TO  I47-TDAYALL (IDX-LST)
+               END-IF
+      *
                PERFORM VARYING IDX-DAY FROM    1   BY  1
                        UNTIL ( IDX-DAY >   31 )
                    IF    ( SPA-NAI-TZAISKBKBN (IDX0)   =   "2" )

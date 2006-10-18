@@ -135,5 +135,6 @@
                                            PIC  X(01).
       *       Æþ±¡»þ¿©»öÎÅÍÜ¶èÊ¬
                05  SPA-5000-NACCT-SKJKBN       PIC  X(01).
+               05  SPA-5000-ADLINPUTKBN        PIC  X(01).
       *
       *

@@ -599,6 +599,9 @@
                PERFORM 310-TEISULST-SET-SEC
            END-IF
       *
+      *    £Á£Ä£ÌÆþÎÏ¶èÊ¬¥³¥ó¥Ü
+           PERFORM 310-ADLINPUTLST-SET-SEC
+      *
            .
        310-CMB-SYOKI-EXT.
            EXIT.
@@ -912,6 +915,24 @@
        310-TEISULST-SET-EXT.
            EXIT.
       *****************************************************************
+      *    £Á£Ä£ÌÆþÎÏ¶èÊ¬¥³¥ó¥Ü
+      *****************************************************************
+       310-ADLINPUTLST-SET-SEC    SECTION.
+      *
+           MOVE    2               TO  SPA-GMN-W24-ADLINPUT-MAX
+      *
+           MOVE    "0"             TO  SPA-GMN-W24-ADLINPUTL    (1)
+           MOVE    "¤·¤Ê¤¤"
+                                   TO  SPA-GMN-W24-ADLINPUTMEIL (1)
+      *
+           MOVE    "1"             TO  SPA-GMN-W24-ADLINPUTL    (2)
+           MOVE    "¤¹¤ë"
+                                   TO  SPA-GMN-W24-ADLINPUTMEIL (2)
+      *
+           .
+       310-ADLINPUTLST-SET-EXT.
+           EXIT.
+      *****************************************************************
       *    ÆþÎÏ¾ðÊóÊÔ½¸½èÍý
       *****************************************************************
        310-INPUT-AREA-EDIT-SEC     SECTION.
@@ -1026,6 +1047,16 @@
            ELSE
                MOVE    SPA-GMN-W24-TEISULST (1)
                                        TO  SPA-GMN-W24-TEISU-G
+           END-IF
+      *
+      *    £Á£Ä£ÌÆþÎÏ¶èÊ¬
+           MOVE    SYS-5000-ADLINPUTKBN  TO  WRK-CMB-CD
+           PERFORM 4200-ADLINPUTLST-CHK-SEC
+           IF    ( WRK-CMB-ITM     NOT =   SPACE )
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-W24-ADLINPUT-G
+           ELSE
+               MOVE    SPA-GMN-W24-ADLINPUTLST (2)
+                                       TO  SPA-GMN-W24-ADLINPUT-G
            END-IF
       *
       *    Æþ±¡ÎÁ²Ã»»¾ðÊó
@@ -1497,6 +1528,9 @@
       *    Äê¿ôÄ¶²á¶èÊ¬
            MOVE    W24-TEISU           TO  SPA-GMN-W24-TEISU-G
       *
+      *    £Á£Ä£Ì¶èÊ¬
+           MOVE    W24-ADLINPUT        TO  SPA-GMN-W24-ADLINPUT-G
+      *
            .
       *
        4101-GMN-SPA-SET-EXT.
@@ -1646,6 +1680,12 @@
       *
       *    Äê¿ôÄ¶²á¶èÊ¬¥Á¥§¥Ã¥¯½èÍý
            PERFORM 4100-TEISU-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
+      *    £Á£Ä£ÌÆþÎÏ¶èÊ¬¥Á¥§¥Ã¥¯½èÍý
+           PERFORM 4100-ADLINPUT-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
@@ -2072,6 +2112,10 @@
       *    Äê¿ôÄ¶²á¶èÊ¬
            MOVE    SPA-GMN-W24-TEISU
                                    TO  SYS-5000-TEISUKBN
+      *
+      *    £Á£Ä£ÌÆþÎÏ¶èÊ¬
+           MOVE    SPA-GMN-W24-ADLINPUT
+                                   TO  SYS-5000-ADLINPUTKBN
       *
       *    ¸º»»¾ðÊó
            IF    ( SPA-W01-EDYUKYMD    >=  CONST-H180401 )
@@ -2808,6 +2852,25 @@
        4100-TEISU-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    £Á£Ä£ÌÆþÎÏ¶èÊ¬¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       4100-ADLINPUT-CHK-SEC          SECTION.
+      *
+           MOVE    SPA-GMN-W24-ADLINPUT
+                                       TO  WRK-CMB-CD
+           PERFORM 4200-ADLINPUTLST-CHK-SEC
+           IF    ( WRK-CMB-ITM         =   SPACE )
+               MOVE    SPA-GMN-W24-ADLINPUTLST (2)
+                                       TO  SPA-GMN-W24-ADLINPUT-G
+           ELSE
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-W24-ADLINPUT-G
+           END-IF
+      *
+           .
+      *
+       4100-ADLINPUT-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    Æþ±¡»þ¿©»öÎÅÍÜ¥³¥ó¥Ü¥Á¥§¥Ã¥¯½èÍý
       *****************************************************************
        4200-SKJRYOYOLST-CHK-SEC    SECTION.
@@ -3187,6 +3250,29 @@
        4200-TEISULST-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    £Á£Ä£ÌÆþÎÏ¶èÊ¬¥³¥ó¥Ü¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       4200-ADLINPUTLST-CHK-SEC   SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM-G
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-W24-ADLINPUT-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-W24-ADLINPUTL (IDX-CMB)
+                                       =   WRK-CMB-CD )
+                   MOVE    SPA-GMN-W24-ADLINPUTLST (IDX-CMB)
+                                       TO  WRK-CMB-ITM
+                   MOVE    IDX-CMB     TO  WRK-CMB-IDX
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       4200-ADLINPUTLST-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    ÆþÎÏ¾ðÊóÎÎ°è½é´ü²½½èÍý
       *****************************************************************
        4201-INPUT-AREA-INIT-SEC        SECTION.
@@ -3280,6 +3366,8 @@
                                    TO  SPA-GMN-W24-HYOUKETU-G
            MOVE    SPA-GMN-W24-TEISULST (1)
                                    TO  SPA-GMN-W24-TEISU-G
+           MOVE    SPA-GMN-W24-ADLINPUTLST (2)
+                                   TO  SPA-GMN-W24-ADLINPUT-G
       *
       *
       *    Æþ±¡²Ã»»Ì¾¾ÎÊÔ½¸½èÍý
@@ -3827,6 +3915,22 @@
       *
            END-PERFORM
       *
+      *
+      *    £Á£Ä£ÌÆþÎÏ¶èÊ¬
+           MOVE    SPA-GMN-W24-ADLINPUT-G
+                                       TO  W24-ADLINPUT
+           MOVE    SPA-GMN-W24-ADLINPUT-MAX
+                                       TO  W24-ADLINPUT-CNT
+      *
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   W24-ADLINPUT-CNT )
+      *
+      *
+               MOVE    SPA-GMN-W24-ADLINPUTLST (IDX0)
+                                       TO  W24-ADLINPUT-ITM (IDX0)
+      *
+           END-PERFORM
+      *
            IF    ( SPA-W01-EDYUKYMD    >=  CONST-H180401 )
                MOVE    "Æþ±¡²Ã»»¾ðÊó"          TO  W24-FRAME3-LABEL
            ELSE
@@ -4008,6 +4112,8 @@
                MOVE    "HYOUKETU"      TO  MCP-WIDGET
            WHEN    054
                MOVE    "TEISU"         TO  MCP-WIDGET
+           WHEN    055
+               MOVE    "ADLINPUT"      TO  MCP-WIDGET
            WHEN    048
                MOVE    "SENTEI_TANKAIP"
                                        TO  MCP-WIDGET
@@ -4133,6 +4239,8 @@
            WHEN    "HYOUKETU"
                MOVE    054             TO  SPA-GMN-W24-CUR
            WHEN    "TEISU"
+               MOVE    055             TO  SPA-GMN-W24-CUR
+           WHEN    "ADLINPUT"
                MOVE    008             TO  SPA-GMN-W24-CUR
            END-EVALUATE
       *
@@ -4194,7 +4302,7 @@
            IF    ( SPA-GMN-W24-CUR     =   54 )
                IF    ( W24-TEISU-STATE
                                            =   WIDGET-INSENSITIVE )
-                   MOVE    8           TO  SPA-GMN-W24-CUR
+                   MOVE    55           TO  SPA-GMN-W24-CUR
                END-IF
            END-IF
       *

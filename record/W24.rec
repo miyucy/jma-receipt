@@ -388,5 +388,14 @@ W24	{
 			item	varchar(32)[02];
 			state	int;
 		};
+		CMB_ADLINPUT	{
+			ADLINPUT	{
+				value	varchar(10);
+				state	int;
+			};
+			count	int;
+			item	varchar(10)[05];
+			state	int;
+		};
 	};
 };

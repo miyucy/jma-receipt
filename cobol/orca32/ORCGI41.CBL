@@ -1131,6 +1131,9 @@
                    WHEN   OTHER
                        MOVE   SPACE        TO  SPA-5000-NACCT-SKJKBN
                END-EVALUATE
+      *
+               MOVE    SYS-5000-ADLINPUTKBN TO SPA-5000-ADLINPUTKBN
+      *
            END-IF.
       *
        3500-KIHON-HEN-EXT.
@@ -2329,6 +2332,13 @@
            IF      SPA-GMN-KEIKOKU     NOT =   SPACE
                MOVE    "red"               TO  I41-KEIKOKU-STYLE
                MOVE    SPA-GMN-KEIKOKU     TO  I41-KEIKOKU
+           END-IF
+      *
+           MOVE    WIDGET-NORMAL       TO  I41-B05S-STATE
+           MOVE    "£Á£Ä£ÌÆþÎÏ"        TO  I41-B05S-LABEL
+           IF    ( SPA-5000-ADLINPUTKBN    =   "0" )
+               MOVE    SPACE               TO  I41-B05S-LABEL
+               MOVE    WIDGET-INSENSITIVE  TO  I41-B05S-STATE
            END-IF
       *
       *    ¥«¡¼¥½¥ë
