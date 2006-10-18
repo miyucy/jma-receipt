@@ -464,7 +464,8 @@
       *---(03.03.00) LINE ADD  START -----------------------------------
            MOVE    ORCHC03-ZENMISYU-2  TO  WRK-MISYUMONEY
       *    ¡∞≤Û¿¡µ·≥€
-           IF      ORCHC03-ZEN-HENKIN  >   ZERO
+           IF     (ORCHC03-ZEN-HENKIN  >   ZERO ) OR
+                  (ORCHC03-KON-HENKIN (1)  >   ZERO )
       *        ∫£≤Û ÷∂‚≥€
                COMPUTE WRK-MISYUMONEY      =   WRK-MISYUMONEY
                                            -   ORCHC03-ZEN-HENKIN
