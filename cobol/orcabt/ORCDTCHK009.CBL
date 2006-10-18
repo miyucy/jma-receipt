@@ -16,11 +16,11 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION                  DIVISION.
-       PROGRAM-ID.                     ORCDTCHK005.
+       PROGRAM-ID.                     ORCDTCHK009.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : データチェック
-      *  コンポーネント名  : 診療行為情報抽出
+      *  コンポーネント名  : 受診履歴情報抽出
       *  管理者            :
       *  作成日付    作業者        記述
       *  05/03/31    NACL−太田    新規作成
@@ -40,29 +40,6 @@
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-DTCHK002.
       *
-      *    データチェック中間ファイル（診療行為:入院）
-           SELECT  DTCHK006N-FILE
-                                   ASSIGN  DTCHK006NPARA
-                                   ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  SEQUENTIAL
-                                   RECORD  KEY     IS  DTCHK006N-KEY
-                                   FILE    STATUS  IS  STS-DTCHK006.
-      *
-      *    データチェック中間ファイル（診療行為:外来）
-           SELECT  DTCHK006G-FILE
-                                   ASSIGN  DTCHK006GPARA
-                                   ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  SEQUENTIAL
-                                   RECORD  KEY     IS  DTCHK006G-KEY
-                                   FILE    STATUS  IS  STS-DTCHK006.
-      *
-      *    データチェック診療行為
-           SELECT  DCSRY-FILE
-                                   ASSIGN  DTCHKSRYPARA
-                                   ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  DYNAMIC
-                                   RECORD  KEY     IS  DCSRY-KEY
-                                   FILE    STATUS  IS  STS-DCSRY.
       *    エラーファイル
            SELECT  DTCHKERR-FILE   ASSIGN  DTCHKERRPARA
                                    FILE    STATUS  IS  STS-DTCHKERR.
@@ -73,23 +50,6 @@
       *    データチェック中間ファイル（受診患者）
        FD  DTCHK002-FILE.
            COPY    "CPDTCHK002.INC".
-      *
-      *    データチェック中間ファイル（診療行為:入院）
-       FD  DTCHK006N-FILE.
-           COPY    "CPDTCHK006.INC"
-                                   REPLACING  //DTCHK006//
-                                   BY         //DTCHK006N//.
-      *
-      *    データチェック中間ファイル（診療行為:外来）
-       FD  DTCHK006G-FILE.
-           COPY    "CPDTCHK006.INC"
-                                   REPLACING  //DTCHK006//
-                                   BY         //DTCHK006G//.
-      *
-      *    データチェック診療行為
-       FD  DCSRY-FILE.
-       01  DCSRY-REC.
-           COPY    "CPDCSRY.INC".
       *
       *    エラーファイル
        FD  DTCHKERR-FILE.
@@ -106,37 +66,23 @@
            COPY    "CPCOMMONDAT6.INC"
                                    REPLACING  //DTCHK//
                                    BY         //DTCHK002//.
-           COPY    "CPCOMMONDAT6.INC"
-                                   REPLACING  //DTCHK//
-                                   BY         //DTCHK006N//.
-           COPY    "CPCOMMONDAT6.INC"
-                                   REPLACING  //DTCHK//
-                                   BY         //DTCHK006G//.
-           COPY    "CPCOMMONDAT6.INC"
-                                   REPLACING  //DTCHK//
-                                   BY         //DTCHKSRY//.
       *
       *    フラグ領域
        01  STS-AREA.
            03  STS-DTCHK002                            PIC X(02).
-           03  STS-DTCHK006                            PIC X(02).
            03  STS-DTCHKERR                            PIC X(02).
-           03  STS-DCSRY                               PIC X(02).
       *
        01  FLG-AREA.
            03  FLG-END                                 PIC 9(01).
            03  FLG-ERR                                 PIC 9(01).
-           03  FLG-SRYACT                              PIC 9(01).
-           03  FLG-DTCHK002                            PIC 9(01).
+           03  FLG-JYURRK                              PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
-           03  CNT-DCSRY                               PIC 9(08). 
+           03  CNT-DTCHK002                            PIC 9(08).
       *
        01  IDX-AREA.
-           03  IDX0                                    PIC 9(05). 
-           03  IDX1                                    PIC 9(05). 
-           03  IDX2                                    PIC 9(05). 
+           03  IDX0                                    PIC 9(05).
       *
        01  WRK-AREA.
            03  WRK-SYMD                                PIC X(08).
@@ -145,6 +91,9 @@
                05  WRK-SRYDAY                          PIC 9(02).
            03  WRK-DTCHKERR                            PIC X(200).
            03  WRK-JOB-YOBI                            PIC X(500).
+      *
+       01  KEY-AREA.
+           03  KEY-PTID                                PIC 9(10).
       *
       *    パラメタ領域
        01  WRK-PARA.
@@ -156,12 +105,9 @@
       *    データチェック一括処理パラメータ
            COPY    "CPORCBSD01PARA.INC".
       *
-           COPY    "CPDTCHK006.INC".
-      *
       *    固定値領域
-       01  CONST-AREA.
-           03  CONST-SRYCD-MAX                         PIC 9(05)
-                                                       VALUE   5.
+      *01  CONST-AREA.
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -170,9 +116,9 @@
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
-      *    診療行為
-       01  SRYACT-REC.
-           COPY    "CPSRYACT.INC".
+      *    受診履歴
+       01  JYURRK-REC.
+           COPY    "CPJYURRK.INC".
       *
       *****************************************************************
       *    サブプロ用領域
@@ -183,7 +129,6 @@
       *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
-      *
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -205,7 +150,7 @@
       *****************************************************************
        000-PROC-SEC                    SECTION.
       *
-           DISPLAY "*** ORCDTCHK005 START ***"
+           DISPLAY "*** ORCDTCHK009 START ***"
       *
            PERFORM 100-INIT-SEC
       *
@@ -229,6 +174,7 @@
                                        FLG-AREA
                                        WRK-AREA
                                        WRK-PARA
+                                       KEY-AREA
                                        ORCBSD01PARA
       *
            UNSTRING   COMMAND-PARAM    DELIMITED  BY  ","
@@ -269,9 +215,8 @@
            INITIALIZE                      JOBKANRI-REC
            MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
-           MOVE    "ORCDTCHK005"       TO  JOB-PGID
-           MOVE    "診療行為情報抽出"
-                                       TO  JOB-SHELLMSG
+           MOVE    "ORCDTCHK009"       TO  JOB-PGID
+           MOVE    "受診患者抽出"      TO  JOB-SHELLMSG
            CALL    "ORCSJOB"           USING
                                        ORCSJOBKANRIAREA
                                        JOBKANRI-REC
@@ -283,17 +228,12 @@
            MOVE    "DTCHK002"          TO  DTCHK002-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID TO  DTCHK002-TERMID
       *
-           MOVE    "DTCHK06N"          TO  DTCHK006N-FILE-ID
-           MOVE    LNK-PRTKANRI-TERMID TO  DTCHK006N-TERMID
-      *
-           MOVE    "DTCHK06G"          TO  DTCHK006G-FILE-ID
-           MOVE    LNK-PRTKANRI-TERMID TO  DTCHK006G-TERMID
-      *
-           MOVE    "DCSRY000"          TO  DTCHKSRY-FILE-ID
-           MOVE    LNK-PRTKANRI-TERMID TO  DTCHKSRY-TERMID
-      *
       *    初期値設定処理
            PERFORM 1001-INIT-VAL-SET-SEC
+      *
+           PERFORM 900-DBCOMMIT-SEC
+      *
+           PERFORM 900-DBSTART-SEC
       *
            .
        100-INIT-EXT.
@@ -314,17 +254,10 @@
       *****************************************************************
        200-MAIN-SEC                    SECTION.
       *
-           MOVE    ZERO            TO  FLG-SRYACT
+           MOVE    ZERO            TO  FLG-JYURRK
       *
-      *    診療行為編集処理
-           IF    ( ORCBSD01-SRYYMDKBN  =   SPACE )
-               PERFORM 2001-SRYACT-EDIT-SEC
-           ELSE
-               PERFORM 2002-SRYACT-EDIT-SEC
-           END-IF
-      *
-      *    データチェック診療行為追加処理
-           PERFORM 2001-DCSRY-INS-SEC
+      *    受診患者編集処理
+           PERFORM 2001-PTID-EDIT-SEC
       *
            MOVE    1               TO  FLG-END
       *
@@ -332,191 +265,39 @@
        200-MAIN-EXT.
            EXIT.
       *****************************************************************
-      *    診療行為編集処理
+      *    受診患者編集処理
       *****************************************************************
-       2001-SRYACT-EDIT-SEC            SECTION.
+       2001-PTID-EDIT-SEC              SECTION.
       *
-           OPEN    OUTPUT  DTCHK006N-FILE
-           OPEN    OUTPUT  DTCHK006G-FILE
+           OPEN    OUTPUT  DTCHK002-FILE
       *
-           PERFORM 900-SRYACT-ALL2-SEL-SEC
+           PERFORM 900-JYURRK-KEY36-SEL-SEC
       *
-           PERFORM UNTIL ( FLG-SRYACT  NOT =   ZERO )
+           PERFORM UNTIL ( FLG-JYURRK  NOT =   ZERO )
       *
-               PERFORM 20011-SRYACT-EDIT-SEC
+               MOVE    JYURRK-PTID     TO  KEY-PTID
       *
-               PERFORM 900-SRYACT-ALL2-FET-SEC
+               PERFORM UNTIL ( FLG-JYURRK  NOT =   ZERO )
+                        OR   ( KEY-PTID    NOT =   JYURRK-PTID )
       *
-           END-PERFORM
-      *
-           MOVE    "tbl_sryact"            TO  MCP-TABLE
-           MOVE    "all2"                  TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *
-           CLOSE   DTCHK006N-FILE
-           CLOSE   DTCHK006G-FILE
-      *
-           .
-       2001-SRYACT-EDIT-EXT.
-           EXIT.
-      *****************************************************************
-      *    診療行為編集処理
-      *****************************************************************
-       20011-SRYACT-EDIT-SEC           SECTION.
-      *
-            INITIALIZE                  DTCHK006-REC
-            MOVE    SRY-PTID        TO  DTCHK006-PTID
-            MOVE    SRY-ZAINUM      TO  DTCHK006-ZAINUM
-            MOVE    SRY-SRYSYUKBN   TO  DTCHK006-SRYSYUKBN
-      *
-            PERFORM VARYING IDX0    FROM    1   BY  1
-                    UNTIL ( IDX0    >   CONST-SRYCD-MAX )
-                     OR   ( SRY-SRYCD (IDX0)    =   SPACE )
-      *
-                COMPUTE DTCHK006-SRYRENNUM
-                    = ( SRY-RENNUM  -   1 ) *   CONST-SRYCD-MAX
-                    +   IDX0
-      *
-                MOVE    SRY-SRYCD (IDX0)
-                                    TO  DTCHK006-SRYCD
-      *
-                IF    ( SRY-NYUGAIKBN   =   "1" )
-      *
-                    MOVE    DTCHK006-REC    TO  DTCHK006N-REC
-                    WRITE   DTCHK006N-REC
-      *
-                ELSE
-      *
-                    MOVE    DTCHK006-REC    TO  DTCHK006G-REC
-                    WRITE   DTCHK006G-REC
-      *
-                END-IF
-      *
-            END-PERFORM
-      *
-        .
-       20011-SRYACT-EDIT-EXT.
-           EXIT.
-      *****************************************************************
-      *    診療行為編集処理
-      *****************************************************************
-       2002-SRYACT-EDIT-SEC            SECTION.
-      *
-           OPEN    INPUT   DTCHK002-FILE
-           OPEN    OUTPUT  DTCHK006N-FILE
-           OPEN    OUTPUT  DTCHK006G-FILE
-      *
-           PERFORM 900-DTCHK002-READ-SEC
-      *
-           PERFORM UNTIL ( FLG-DTCHK002    NOT =   ZERO )
-      *
-               PERFORM 900-SRYACT-KEY15-SEL-SEC
-      *
-               PERFORM UNTIL ( FLG-SRYACT  NOT =   ZERO )
-      *
-                   PERFORM 20011-SRYACT-EDIT-SEC
-      *
-                   PERFORM 900-SRYACT-KEY15-FET-SEC
+                   PERFORM 900-JYURRK-KEY36-FET-SEC
       *
                END-PERFORM
       *
-               MOVE    "tbl_sryact"    TO  MCP-TABLE
-               MOVE    "key15"         TO  MCP-PATHNAME
-               PERFORM 910-DBCLOSECURSOR-SEC
-      *
-               PERFORM 900-DTCHK002-READ-SEC
+               INITIALIZE                  DTCHK002-REC
+               MOVE    KEY-PTID        TO  DTCHK002-PTID
+               WRITE   DTCHK002-REC
       *
            END-PERFORM
+      *
+           MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+           MOVE    "key36"             TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            CLOSE   DTCHK002-FILE
-           CLOSE   DTCHK006N-FILE
-           CLOSE   DTCHK006G-FILE
       *
            .
-       2002-SRYACT-EDIT-EXT.
-           EXIT.
-      *****************************************************************
-      *    データチェック診療行為テーブル追加処理
-      *****************************************************************
-       2001-DCSRY-INS-SEC              SECTION.
-      *
-           OPEN    INPUT               DTCHK006N-FILE
-           OPEN    INPUT               DTCHK006G-FILE
-      *
-           OPEN    OUTPUT              DCSRY-FILE
-      *
-           PERFORM 900-DTCHK006N-READ-SEC
-           PERFORM 900-DTCHK006G-READ-SEC
-      *
-           PERFORM UNTIL ( DTCHK006N-KEY   =   HIGH-VALUE )
-                    AND  ( DTCHK006G-KEY   =   HIGH-VALUE )
-      *
-               EVALUATE    TRUE
-               WHEN  ( DTCHK006N-PTID-X    >   DTCHK006G-PTID-X  )
-                   IF    ( ORCBSD01-NYUGAIKBN  =   "1" )
-                       PERFORM 900-DTCHK006G-READ-SEC
-                   ELSE
-                       MOVE    DTCHK006G-REC   TO  DTCHK006-REC
-                       PERFORM 20011-DCSRY-INS-SEC
-                       PERFORM 900-DTCHK006G-READ-SEC
-                   END-IF
-               WHEN  ( DTCHK006N-PTID-X    <   DTCHK006G-PTID-X  )
-                   IF    ( ORCBSD01-NYUGAIKBN  =   "1" )
-                       MOVE    DTCHK006N-REC   TO  DTCHK006-REC
-                       PERFORM 20011-DCSRY-INS-SEC
-                       PERFORM 900-DTCHK006N-READ-SEC
-                   ELSE
-                       PERFORM 900-DTCHK006N-READ-SEC
-                   END-IF
-               WHEN  ( DTCHK006N-PTID-X    =   DTCHK006G-PTID-X  )
-      *
-                   IF    ( ORCBSD01-NYUGAIKBN  =   "1" )
-                       MOVE    DTCHK006G-REC   TO  DTCHK006-REC
-                       PERFORM 20011-DCSRY-INS-SEC
-                       PERFORM 900-DTCHK006G-READ-SEC
-                   ELSE
-                       MOVE    DTCHK006N-REC   TO  DTCHK006-REC
-                       PERFORM 20011-DCSRY-INS-SEC
-                       PERFORM 900-DTCHK006N-READ-SEC
-                   END-IF
-               END-EVALUATE
-      *
-           END-PERFORM
-      *
-      *
-           CLOSE   DTCHK006N-FILE
-           CLOSE   DTCHK006G-FILE
-      *
-           CLOSE   DCSRY-FILE
-      *
-           .
-       2001-DCSRY-INS-EXT.
-           EXIT.
-      *****************************************************************
-      *    データチェック診療行為テーブル追加処理
-      *****************************************************************
-       20011-DCSRY-INS-SEC              SECTION.
-      *
-           INITIALIZE              DCSRY-REC
-      *
-           MOVE    DTCHK006-PTID   TO  DCSRY-PTID
-           MOVE    DTCHK006-ZAINUM TO  DCSRY-ZAINUM
-           MOVE    "1"             TO  DCSRY-ACCTKBN
-           MOVE    DTCHK006-SRYRENNUM
-                                       TO  DCSRY-SRYRENNUM
-           MOVE    DTCHK006-SRYSYUKBN
-                                       TO  DCSRY-SRYSYUKBN
-           MOVE    DTCHK006-SRYCD  TO  DCSRY-SRYCD
-      *
-           PERFORM 800-MCNDATE-SEC
-           MOVE    SMCNDATE-YMD    TO  DCSRY-CREYMD
-                                       DCSRY-UPYMD
-           MOVE    SMCNDATE-HMS    TO  DCSRY-UPHMS
-      *
-           WRITE   DCSRY-REC
-      *
-           .
-       20011-DCSRY-INS-EXT.
+       2001-PTID-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    エラー出力処理
@@ -570,28 +351,9 @@
       *
            PERFORM 900-DBCOMMIT-SEC
       *     
-           DISPLAY "*** ORCDTCHK005 END ***"
+           DISPLAY "*** ORCDTCHK009 END ***"
            .
        300-END-EXT.
-           EXIT.
-      *****************************************************************
-      *    ジョブ管理途中経過表示処理
-      *****************************************************************
-       800-ORCSJOB-STM-SEC             SECTION.
-      *
-           MOVE    "STM"               TO  SJOBKANRI-MODE
-           INITIALIZE                      JOBKANRI-REC
-           MOVE    WRK-JOB-YOBI        TO  JOB-YOBI
-           MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
-           MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
-           MOVE    "ORCDTCHK004"       TO  JOB-PGID
-           MOVE    "診療行為情報抽出"  TO  JOB-SHELLMSG
-      *
-           CALL    "ORCSJOB"               USING
-                                           ORCSJOBKANRIAREA
-                                           JOBKANRI-REC
-           .
-       800-ORCSJOB-STM-EXT.
            EXIT.
       *****************************************************************
       *    マシン日付取得サブ
@@ -605,135 +367,52 @@
        800-MCNDATE-EXT.
            EXIT.
       *****************************************************************
-      *    データチェック中間ファイル（診療行為：入院）読込処理
+      *    受診履歴検索処理
       *****************************************************************
-       900-DTCHK006N-READ-SEC          SECTION.
+       900-JYURRK-KEY36-SEL-SEC        SECTION.
       *
-           READ    DTCHK006N-FILE      NEXT
-           AT  END
-               MOVE    HIGH-VALUE  TO  DTCHK006N-KEY
-           END-READ
-      *
-           .
-       900-DTCHK006N-READ-EXT.
-           EXIT.
-      *****************************************************************
-      *    データチェック中間ファイル（診療行為：外来）読込処理
-      *****************************************************************
-       900-DTCHK006G-READ-SEC          SECTION.
-      *
-           READ    DTCHK006G-FILE      NEXT
-           AT  END
-               MOVE    HIGH-VALUE  TO  DTCHK006G-KEY
-           END-READ
-      *
-           .
-       900-DTCHK006G-READ-EXT.
-           EXIT.
-      *****************************************************************
-      *    データチェック中間ファイル（受診患者）読込処理
-      *****************************************************************
-       900-DTCHK002-READ-SEC           SECTION.
-      *
-           MOVE    ZERO            TO  FLG-DTCHK002
-      *
-           READ    DTCHK002-FILE
-           AT  END
-               MOVE    1           TO  FLG-DTCHK002
-           END-READ
-      *
-           .
-       900-DTCHK002-READ-EXT.
-           EXIT.
-      *****************************************************************
-      *    診療行為検索処理(ALL2)
-      *****************************************************************
-       900-SRYACT-ALL2-SEL-SEC         SECTION.
-      *
-           MOVE    ZERO                TO  FLG-SRYACT
-           INITIALIZE                  SRYACT-REC
-      *
-           MOVE    ORCBSD01-SRYYM      TO  SRY-SRYYM
-           MOVE    SRYACT-REC          TO  MCPDATA-REC
-           MOVE    "tbl_sryact"            TO  MCP-TABLE
-           MOVE    "all2"                  TO  MCP-PATHNAME
+           MOVE    ZERO                TO  FLG-JYURRK
+           INITIALIZE                      JYURRK-REC
+           MOVE    WRK-PARA-HOSPID     TO  JYURRK-HOSPID
+           MOVE    ORCBSD01-NYUGAIKBN  TO  JYURRK-NYUGAIKBN
+           MOVE    ORCBSD01-SRYYM      TO  JYURRK-SRYYMD
+                                           JYURRK-UPSRYYMD
+           MOVE    ORCBSD01-STSRYYMD   TO  JYURRK-SRYYMD   (7:2)
+           MOVE    ORCBSD01-EDSRYYMD   TO  JYURRK-UPSRYYMD (7:2)
+           MOVE    JYURRK-REC          TO  MCPDATA-REC
+           MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+           MOVE    "key36"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC     TO  SRYACT-REC
+               MOVE    MCPDATA-REC     TO  JYURRK-REC
            ELSE
-               MOVE    1               TO  FLG-SRYACT
-               INITIALIZE                  SRYACT-REC
+               MOVE    1               TO  FLG-JYURRK
+               INITIALIZE                  JYURRK-REC
            END-IF
       *
            .
-       900-SRYACT-ALL2-SEL-EXT.
+       900-JYURRK-KEY36-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    診療行為FETCH処理(ALL2)
+      *    受診履歴FETCH処理
       *****************************************************************
-       900-SRYACT-ALL2-FET-SEC         SECTION.
+       900-JYURRK-KEY36-FET-SEC        SECTION.
       *
-           MOVE    ZERO                TO  FLG-SRYACT
-           INITIALIZE                  SRYACT-REC
+           MOVE    ZERO                TO  FLG-JYURRK
+           INITIALIZE                      JYURRK-REC
       *
-           MOVE    "tbl_sryact"            TO  MCP-TABLE
-           MOVE    "all2"                  TO  MCP-PATHNAME
+           MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+           MOVE    "key36"             TO  MCP-PATHNAME
            PERFORM 910-DBFETCH-SEC
            IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC     TO  SRYACT-REC
+               MOVE    MCPDATA-REC     TO  JYURRK-REC
            ELSE
-               MOVE    1               TO  FLG-SRYACT
-               INITIALIZE                  SRYACT-REC
+               MOVE    1               TO  FLG-JYURRK
+               INITIALIZE                  JYURRK-REC
            END-IF
       *
            .
-       900-SRYACT-ALL2-FET-EXT.
-           EXIT.
-      *****************************************************************
-      *    診療行為検索処理
-      *****************************************************************
-       900-SRYACT-KEY15-SEL-SEC       SECTION.
-      *
-           MOVE    ZERO                TO  FLG-SRYACT
-           INITIALIZE                  SRYACT-REC
-      *
-           MOVE    WRK-PARA-HOSPID     TO  SRY-HOSPID
-           MOVE    ORCBSD01-SRYYM      TO  SRY-SRYYM
-           MOVE    DTCHK002-PTID       TO  SRY-PTID
-           MOVE    SRYACT-REC          TO  MCPDATA-REC
-           MOVE    "tbl_sryact"        TO  MCP-TABLE
-           MOVE    "key15"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC     TO  SRYACT-REC
-           ELSE
-               MOVE    1               TO  FLG-SRYACT
-               INITIALIZE                  SRYACT-REC
-           END-IF
-      *
-           .
-       900-SRYACT-KEY15-SEL-EXT.
-           EXIT.
-      *****************************************************************
-      *    診療行為FETCH処理
-      *****************************************************************
-       900-SRYACT-KEY15-FET-SEC       SECTION.
-      *
-           MOVE    ZERO                TO  FLG-SRYACT
-           INITIALIZE                  SRYACT-REC
-      *
-           MOVE    "tbl_sryact"        TO  MCP-TABLE
-           MOVE    "key15"             TO  MCP-PATHNAME
-           PERFORM 910-DBFETCH-SEC
-           IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC     TO  SRYACT-REC
-           ELSE
-               MOVE    1               TO  FLG-SRYACT
-               INITIALIZE                  SRYACT-REC
-           END-IF
-      *
-           .
-       900-SRYACT-KEY15-FET-EXT.
+       900-JYURRK-KEY36-FET-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ検索処理（FHETCHも行う)

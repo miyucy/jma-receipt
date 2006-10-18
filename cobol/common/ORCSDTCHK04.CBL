@@ -128,6 +128,9 @@
                    MOVE    1       TO  SDTCHK04-KAKKO
                WHEN    OTHER
                    MOVE    1       TO  SDTCHK04-ETC
+                   IF    ( SDTCHK04-KIGONUM (IDX0:2)   =   "¡¡" )
+                       MOVE    1   TO  SDTCHK04-SPACE
+                   END-IF
                END-EVALUATE
       *
            END-PERFORM

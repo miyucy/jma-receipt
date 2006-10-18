@@ -29,6 +29,12 @@
             04  D01-PRTSRTKBN          PIC X(22).
             04  D01-PRTSRTKBN-COUNT    PIC S9(9)   BINARY.
             04  D01-PRTSRTKBN-ITEM     PIC X(22)   OCCURS  5.
+          03  D01-CHK-SRYYMD-STATE     PIC S9(9)   BINARY.
+          03  D01-CHK-SRYYMD           PIC X(01).
+          03  D01-STSRYYMD-STATE       PIC S9(9)   BINARY.
+          03  D01-STSRYYMD             PIC S9(2).
+          03  D01-EDSRYYMD-STATE       PIC S9(9)   BINARY.
+          03  D01-EDSRYYMD             PIC S9(2).
           03  D01-CHKMSG-G.
             04  D01-CHKMSG             PIC X(40)   OCCURS 19 TIMES.
           03  D01-INGAIPROCMSG         PIC X(40).

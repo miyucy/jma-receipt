@@ -1049,6 +1049,9 @@
                                                ORCBSD01-INGAIPROCKBN
                                                ORCBSD01-PRTSRTKBN
                                                ORCBSD01-PRTPTLSTKBN
+                                               ORCBSD01-SRYYMDKBN
+                                               ORCBSD01-STSRYYMD
+                                               ORCBSD01-EDSRYYMD
       *
            PERFORM 900-DBSTART-SEC
       *
@@ -3421,14 +3424,21 @@
            MOVE    PTHKN-KIGO      TO  SDTCHK04-KIGONUM
            CALL    "ORCSDTCHK04"   USING   SDTCHK04AREA
       *
-           EVALUATE    PTHKN-HKNNUM
-           WHEN    "001"
-           WHEN    "033"
-               IF    ( SDTCHK04-KANJI      =   ZERO )
-                   MOVE    "020009"    TO  WRK-ERRCD
-                   PERFORM 2001111-HKN-KIGO-ERR-SET-SEC
-               END-IF
-           END-EVALUATE
+      *    IF    ( SDTCHK04-SPACE  =   1 )
+      *        MOVE    "020012"    TO  WRK-ERRCD
+      *        PERFORM 2001111-HKN-KIGO-ERR-SET-SEC
+      *    END-IF
+      *
+           IF    ( FLG-HKNKIGOERR      =   ZERO )
+               EVALUATE    PTHKN-HKNNUM
+               WHEN    "001"
+               WHEN    "033"
+                   IF    ( SDTCHK04-KANJI      =   ZERO )
+                       MOVE    "020009"    TO  WRK-ERRCD
+                       PERFORM 2001111-HKN-KIGO-ERR-SET-SEC
+                   END-IF
+               END-EVALUATE
+           END-IF
       *
            IF    ( FLG-HKNKIGOERR      =   ZERO )
       *

@@ -262,6 +262,9 @@
                                                ORCBSD01-INGAIPROCKBN
                                                ORCBSD01-PRTSRTKBN
                                                ORCBSD01-PRTPTLSTKBN
+                                               ORCBSD01-SRYYMDKBN
+                                               ORCBSD01-STSRYYMD
+                                               ORCBSD01-EDSRYYMD
       *
            PERFORM 900-DBSTART-SEC
       *

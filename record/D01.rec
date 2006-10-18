@@ -29,6 +29,18 @@ D01	{
 			count	int;
 			item	varchar(22)[5];
 		};
+		CHK_SRYYMD	{
+	        state	int;
+			value	bool;
+		};
+		STSRYYMD	{
+	        state	int;
+			value	number(2);
+		};
+		EDSRYYMD	{
+	        state	int;
+			value	number(2);
+		};
 		CHKMSG1	{
 			value	varchar(40);
 		};

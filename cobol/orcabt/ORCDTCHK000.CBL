@@ -136,6 +136,9 @@
                                                ORCBSD01-INGAIPROCKBN
                                                ORCBSD01-PRTSRTKBN
                                                ORCBSD01-PRTPTLSTKBN
+                                               ORCBSD01-SRYYMDKBN
+                                               ORCBSD01-STSRYYMD
+                                               ORCBSD01-EDSRYYMD
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -148,6 +151,18 @@
        200-MAIN-SEC                    SECTION.
       *
            MOVE    ZERO                TO  DTCHK-RC
+      *
+           IF    ( DTCHK-RC            =   ZERO )
+               IF    ( ORCBSD01-SRYYMDKBN  =   "1" )
+                   PERFORM 800-MCNDATE-SEC
+                   DISPLAY SMCNDATE-HMS "ST:ORCDTCHK009"
+                   CALL    "ORCDTCHK009"       USING
+                                               DTCHK-RC
+                                               COMMAND-PARAM
+                   PERFORM 800-MCNDATE-SEC
+                   DISPLAY SMCNDATE-HMS "ED:ORCDTCHK009"
+               END-IF
+           END-IF
       *
            IF    ( DTCHK-RC            =   ZERO )
                    PERFORM 800-MCNDATE-SEC

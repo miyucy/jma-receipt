@@ -1304,22 +1304,6 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label510</name>
-      <x>25</x>
-      <y>45</y>
-      <width>70</width>
-      <height>25</height>
-      <label>¿ÇÎÅÇ¯·î</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>label512</name>
       <x>285</x>
       <y>45</y>
@@ -1348,30 +1332,6 @@
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_JIHI</name>
-      <x>45</x>
-      <y>215</y>
-      <width>107</width>
-      <height>25</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Wed, 17 Aug 2005 01:11:53 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Wed, 17 Aug 2005 01:11:59 GMT</last_modification_time>
-      </signal>
-      <label>¼«Èñ</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
     </widget>
 
     <widget>
@@ -1418,30 +1378,6 @@
 	<last_modification_time>Wed, 17 Aug 2005 01:11:25 GMT</last_modification_time>
       </signal>
       <label>¹ñÊÝ</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_SYAHO</name>
-      <x>45</x>
-      <y>125</y>
-      <width>107</width>
-      <height>25</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Wed, 17 Aug 2005 01:10:54 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Wed, 17 Aug 2005 01:11:02 GMT</last_modification_time>
-      </signal>
-      <label>¼ÒÊÝ</label>
       <active>False</active>
       <draw_indicator>True</draw_indicator>
     </widget>
@@ -1667,10 +1603,98 @@
     </widget>
 
     <widget>
+      <class>GtkCheckButton</class>
+      <name>CHK_JIHI</name>
+      <x>45</x>
+      <y>215</y>
+      <width>107</width>
+      <height>25</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>toggled</name>
+	<handler>button_toggled</handler>
+	<last_modification_time>Wed, 17 Aug 2005 01:11:53 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Wed, 17 Aug 2005 01:11:59 GMT</last_modification_time>
+      </signal>
+      <label>¼«Èñ</label>
+      <active>False</active>
+      <draw_indicator>True</draw_indicator>
+    </widget>
+
+    <widget>
+      <class>GtkNumberEntry</class>
+      <name>STSRYYMD</name>
+      <x>20</x>
+      <y>380</y>
+      <width>35</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Wed, 27 Sep 2006 08:05:04 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Wed, 27 Sep 2006 08:05:28 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <format>ZZ</format>
+    </widget>
+
+    <widget>
+      <class>GtkCheckButton</class>
+      <name>CHK_SYAHO</name>
+      <x>45</x>
+      <y>125</y>
+      <width>107</width>
+      <height>25</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>toggled</name>
+	<handler>button_toggled</handler>
+	<last_modification_time>Wed, 17 Aug 2005 01:10:54 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Wed, 17 Aug 2005 01:11:02 GMT</last_modification_time>
+      </signal>
+      <label>¼ÒÊÝ</label>
+      <active>False</active>
+      <draw_indicator>True</draw_indicator>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label510</name>
+      <x>25</x>
+      <y>45</y>
+      <width>70</width>
+      <height>25</height>
+      <label>¿ÇÎÅÇ¯·î</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
       <class>GtkLabel</class>
       <name>label513</name>
-      <x>15</x>
-      <y>285</y>
+      <x>20</x>
+      <y>300</y>
       <width>49</width>
       <height>23</height>
       <label>°õºþ½ç</label>
@@ -1685,8 +1709,8 @@
     <widget>
       <class>GtkPandaCombo</class>
       <name>CMB_PRTSRTKBN</name>
-      <x>70</x>
-      <y>285</y>
+      <x>75</x>
+      <y>300</y>
       <width>170</width>
       <height>25</height>
       <value_in_list>False</value_in_list>
@@ -1720,6 +1744,102 @@
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label516</name>
+      <x>155</x>
+      <y>380</y>
+      <width>25</width>
+      <height>25</height>
+      <label>Æü</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label514</name>
+      <x>80</x>
+      <y>380</y>
+      <width>25</width>
+      <height>25</height>
+      <label>¡Á</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label515</name>
+      <x>60</x>
+      <y>380</y>
+      <width>25</width>
+      <height>25</height>
+      <label>Æü</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkNumberEntry</class>
+      <name>EDSRYYMD</name>
+      <x>115</x>
+      <y>380</y>
+      <width>35</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Wed, 27 Sep 2006 08:05:04 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Wed, 27 Sep 2006 08:05:28 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <format>ZZ</format>
+    </widget>
+
+    <widget>
+      <class>GtkCheckButton</class>
+      <name>CHK_SRYYMD</name>
+      <x>20</x>
+      <y>355</y>
+      <width>136</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>toggled</name>
+	<handler>button_toggled</handler>
+	<last_modification_time>Wed, 17 Aug 2005 01:11:53 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Wed, 17 Aug 2005 01:11:59 GMT</last_modification_time>
+      </signal>
+      <label>¿ÇÎÅÆü¤ò»ØÄê¤¹¤ë</label>
+      <active>False</active>
+      <draw_indicator>True</draw_indicator>
     </widget>
   </widget>
 </widget>

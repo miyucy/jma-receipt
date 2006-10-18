@@ -35,6 +35,11 @@
        FILE-CONTROL.
       *
       *
+      *    データチェック中間ファイル（受診患者）
+           SELECT  DTCHK002-FILE   ASSIGN  DTCHK002PARA
+                                   ORGANIZATION    IS  LINE SEQUENTIAL
+                                   FILE    STATUS  IS  STS-DTCHK002.
+      *
       *    データチェック中間ファイル（診療会計:入院）
            SELECT  DTCHK005N-FILE
                                    ASSIGN  DTCHK005NPARA
@@ -66,6 +71,10 @@
       *
        DATA                            DIVISION.
        FILE                            SECTION.
+      *
+      *    データチェック中間ファイル（受診患者）
+       FD  DTCHK002-FILE.
+           COPY    "CPDTCHK002.INC".
       *
       *    データチェック中間ファイル（診療会計:入院）
        FD  DTCHK005N-FILE.
@@ -99,6 +108,9 @@
       *    中間ファイルファイル名称領域 
            COPY    "CPCOMMONDAT6.INC"
                                    REPLACING  //DTCHK//
+                                   BY         //DTCHK002//.
+           COPY    "CPCOMMONDAT6.INC"
+                                   REPLACING  //DTCHK//
                                    BY         //DTCHK005N//.
            COPY    "CPCOMMONDAT6.INC"
                                    REPLACING  //DTCHK//
@@ -109,6 +121,7 @@
       *
       *    フラグ領域
        01  STS-AREA.
+           03  STS-DTCHK002                            PIC X(02).
            03  STS-DTCHK005                            PIC X(02).
            03  STS-DTCHKERR                            PIC X(02).
            03  STS-DCACCT                              PIC X(02).
@@ -117,6 +130,7 @@
            03  FLG-END                                 PIC 9(01).
            03  FLG-ERR                                 PIC 9(01).
            03  FLG-SRYACCT                             PIC 9(01).
+           03  FLG-DTCHK002                            PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -191,7 +205,6 @@
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "MCPAREA".
-           COPY    "ORCA-DBPATH".
       *
       ****************************************************************
        LINKAGE                         SECTION.
@@ -263,6 +276,9 @@
                                                ORCBSD01-INGAIPROCKBN
                                                ORCBSD01-PRTSRTKBN
                                                ORCBSD01-PRTPTLSTKBN
+                                               ORCBSD01-SRYYMDKBN
+                                               ORCBSD01-STSRYYMD
+                                               ORCBSD01-EDSRYYMD
       *
            PERFORM 900-DBSTART-SEC
       *
@@ -281,6 +297,9 @@
                                            FLG-ERR
       *
       *    データチェック中間ファイル名
+           MOVE    "DTCHK002"          TO  DTCHK002-FILE-ID
+           MOVE    LNK-PRTKANRI-TERMID TO  DTCHK002-TERMID
+      *
            MOVE    "DTCHK05N"          TO  DTCHK005N-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID TO  DTCHK005N-TERMID
       *
@@ -319,7 +338,11 @@
            MOVE    ZERO            TO  FLG-SRYACCT
       *
       *    診療会計編集処理
-           PERFORM 2001-SRYACCT-EDIT-SEC
+           IF    ( ORCBSD01-SRYYMDKBN  =   SPACE )
+               PERFORM 2001-SRYACCT-EDIT-SEC
+           ELSE
+               PERFORM 2002-SRYACCT-EDIT-SEC
+           END-IF
       *
       *    データチェック診療会計テーブル追加処理
            PERFORM 2001-DCACCT-INS-SEC
@@ -341,52 +364,14 @@
       *
            PERFORM UNTIL ( FLG-SRYACCT  NOT =   ZERO )
       *
-               IF    ( ACCT-ZAIKAISU   >   ZERO )
-                   INITIALIZE                  DTCHK005-REC
-                   MOVE    ACCT-PTID       TO  DTCHK005-PTID
-                   MOVE    ACCT-ZAINUM     TO  DTCHK005-ZAINUM
-                   MOVE    ACCT-SRYKA      TO  DTCHK005-SRYKA
-                   MOVE    ACCT-SRYKBN     TO  DTCHK005-SRYKBN
-                   MOVE    ACCT-HKNCOMBI   TO  DTCHK005-HKNCOMBI
-                   MOVE    ACCT-ZAITEN     TO  DTCHK005-ZAITEN
-                   MOVE    ACCT-ZAIKAISU   TO  DTCHK005-ZAIKAISU
-                   MOVE    ACCT-NYUGAIKBN  TO  DTCHK005-NYUGAIKBN
-                   MOVE    ACCT-SRYYM      TO  WRK-SRYYM
-      *
-                   PERFORM VARYING IDX0    FROM    1   BY  1
-                           UNTIL ( IDX0    >   31 )
-                       IF    ( ACCT-DAY (1 IDX0)   >   ZERO )
-      *
-                           COMPUTE DTCHK005-ACCTRENNUM
-                               =   DTCHK005-ACCTRENNUM  +   1
-      *
-                           MOVE    IDX0        TO  WRK-SRYDAY
-                           MOVE    WRK-SRYYMD  TO  DTCHK005-SRYYMD
-                           MOVE    IDX0        TO  DTCHK005-DAY
-                           MOVE    ACCT-DAY (1 IDX0)
-                                               TO  DTCHK005-DAYCNT
-                           IF    ( ACCT-NYUGAIKBN  =   "1" )
-      *
-                               MOVE    DTCHK005-REC    TO  DTCHK005N-REC
-                               WRITE   DTCHK005N-REC
-      *
-                           ELSE
-      *
-                               MOVE    DTCHK005-REC    TO  DTCHK005G-REC
-                               WRITE   DTCHK005G-REC
-      *
-                           END-IF
-      *
-                       END-IF
-      *
-                   END-PERFORM
-               END-IF
+               PERFORM 20011-SRYACCT-EDIT-SEC
       *
                PERFORM 900-SRYACCT-ALL2-FET-SEC
       *
            END-PERFORM
       *
-           MOVE    PATH-TBL-SRYACCT-ALL2   TO  MCP-PATH
+           MOVE    "tbl_sryacct"       TO  MCP-TABLE
+           MOVE    "all2"              TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            CLOSE   DTCHK005N-FILE
@@ -394,6 +379,93 @@
       *
            .
        2001-SRYACCT-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療会計編集処理
+      *****************************************************************
+       20011-SRYACCT-EDIT-SEC          SECTION.
+      *
+           IF    ( ACCT-ZAIKAISU   >   ZERO )
+               INITIALIZE                  DTCHK005-REC
+               MOVE    ACCT-PTID       TO  DTCHK005-PTID
+               MOVE    ACCT-ZAINUM     TO  DTCHK005-ZAINUM
+               MOVE    ACCT-SRYKA      TO  DTCHK005-SRYKA
+               MOVE    ACCT-SRYKBN     TO  DTCHK005-SRYKBN
+               MOVE    ACCT-HKNCOMBI   TO  DTCHK005-HKNCOMBI
+               MOVE    ACCT-ZAITEN     TO  DTCHK005-ZAITEN
+               MOVE    ACCT-ZAIKAISU   TO  DTCHK005-ZAIKAISU
+               MOVE    ACCT-NYUGAIKBN  TO  DTCHK005-NYUGAIKBN
+               MOVE    ACCT-SRYYM      TO  WRK-SRYYM
+      *
+               PERFORM VARYING IDX0    FROM    1   BY  1
+                       UNTIL ( IDX0    >   31 )
+                   IF    ( ACCT-DAY (1 IDX0)   >   ZERO )
+      *
+                       COMPUTE DTCHK005-ACCTRENNUM
+                           =   DTCHK005-ACCTRENNUM  +   1
+      *
+                       MOVE    IDX0        TO  WRK-SRYDAY
+                       MOVE    WRK-SRYYMD  TO  DTCHK005-SRYYMD
+                       MOVE    IDX0        TO  DTCHK005-DAY
+                       MOVE    ACCT-DAY (1 IDX0)
+                                           TO  DTCHK005-DAYCNT
+                       IF    ( ACCT-NYUGAIKBN  =   "1" )
+      *
+                           MOVE    DTCHK005-REC    TO  DTCHK005N-REC
+                           WRITE   DTCHK005N-REC
+      *
+                       ELSE
+      *
+                           MOVE    DTCHK005-REC    TO  DTCHK005G-REC
+                           WRITE   DTCHK005G-REC
+      *
+                       END-IF
+      *
+                   END-IF
+      *
+               END-PERFORM
+           END-IF
+      *
+           .
+       20011-SRYACCT-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療会計編集処理
+      *****************************************************************
+       2002-SRYACCT-EDIT-SEC           SECTION.
+      *
+           OPEN    INPUT   DTCHK002-FILE
+           OPEN    OUTPUT  DTCHK005N-FILE
+           OPEN    OUTPUT  DTCHK005G-FILE
+      *
+           PERFORM 900-DTCHK002-READ-SEC
+      *
+           PERFORM UNTIL ( FLG-DTCHK002    NOT =   ZERO )
+      *
+               PERFORM 900-SRYACCT-KEY48-SEL-SEC
+      *
+               PERFORM UNTIL ( FLG-SRYACCT  NOT =   ZERO )
+      *
+                   PERFORM 20011-SRYACCT-EDIT-SEC
+      *
+                   PERFORM 900-SRYACCT-KEY48-FET-SEC
+      *
+               END-PERFORM
+      *
+               MOVE    "tbl_sryacct"       TO  MCP-TABLE
+               MOVE    "key48"             TO  MCP-PATHNAME
+               PERFORM 910-DBCLOSECURSOR-SEC
+      *
+               PERFORM 900-DTCHK002-READ-SEC
+      *
+           END-PERFORM
+      *
+           CLOSE   DTCHK002-FILE
+           CLOSE   DTCHK005N-FILE
+           CLOSE   DTCHK005G-FILE
+      *
+           .
+       2002-SRYACCT-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    データチェック診療会計テーブル追加処理
@@ -655,6 +727,21 @@
        900-DTCHK005G-READ-EXT.
            EXIT.
       *****************************************************************
+      *    データチェック中間ファイル（受診患者）読込処理
+      *****************************************************************
+       900-DTCHK002-READ-SEC           SECTION.
+      *
+           MOVE    ZERO            TO  FLG-DTCHK002
+      *
+           READ    DTCHK002-FILE
+           AT  END
+               MOVE    1           TO  FLG-DTCHK002
+           END-READ
+      *
+           .
+       900-DTCHK002-READ-EXT.
+           EXIT.
+      *****************************************************************
       *    診療会計検索処理(ALL2)
       *****************************************************************
        900-SRYACCT-ALL2-SEL-SEC        SECTION.
@@ -664,7 +751,8 @@
       *
            MOVE    ORCBSD01-SRYYM      TO  ACCT-SRYYM
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
-           MOVE    PATH-TBL-SRYACCT-ALL2   TO  MCP-PATH
+           MOVE    "tbl_sryacct"       TO  MCP-TABLE
+           MOVE    "all2"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC     TO  SRYACCT-REC
@@ -684,7 +772,8 @@
            MOVE    ZERO                TO  FLG-SRYACCT
            INITIALIZE                  SRYACCT-REC
       *
-           MOVE    PATH-TBL-SRYACCT-ALL2   TO  MCP-PATH
+           MOVE    "tbl_sryacct"       TO  MCP-TABLE
+           MOVE    "all2"              TO  MCP-PATHNAME
            PERFORM 910-DBFETCH-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC     TO  SRYACCT-REC
@@ -697,12 +786,58 @@
        900-SRYACCT-ALL2-FET-EXT.
            EXIT.
       *****************************************************************
+      *    診療会計検索処理
+      *****************************************************************
+       900-SRYACCT-KEY48-SEL-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SRYACCT
+           INITIALIZE                  SRYACCT-REC
+      *
+           MOVE    WRK-PARA-HOSPID     TO  ACCT-HOSPID
+           MOVE    ORCBSD01-SRYYM      TO  ACCT-SRYYM
+           MOVE    DTCHK002-PTID       TO  ACCT-PTID
+           MOVE    SRYACCT-REC         TO  MCPDATA-REC
+           MOVE    "tbl_sryacct"       TO  MCP-TABLE
+           MOVE    "key48"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC     TO  SRYACCT-REC
+           ELSE
+               MOVE    1               TO  FLG-SRYACCT
+               INITIALIZE                  SRYACCT-REC
+           END-IF
+      *
+           .
+       900-SRYACCT-KEY48-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療会計FETCH処理
+      *****************************************************************
+       900-SRYACCT-KEY48-FET-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SRYACCT
+           INITIALIZE                  SRYACCT-REC
+      *
+           MOVE    "tbl_sryacct"       TO  MCP-TABLE
+           MOVE    "key48"             TO  MCP-PATHNAME
+           PERFORM 910-DBFETCH-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC     TO  SRYACCT-REC
+           ELSE
+               MOVE    1               TO  FLG-SRYACCT
+               INITIALIZE                  SRYACCT-REC
+           END-IF
+      *
+           .
+       900-SRYACCT-KEY48-FET-EXT.
+           EXIT.
+      *****************************************************************
       *    ＤＢ検索処理（FHETCHも行う)
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            IF    ( MCP-RC          =   ZERO )
@@ -719,7 +854,7 @@
        911-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -733,7 +868,7 @@
        910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -747,7 +882,7 @@
        910-DBCLOSECURSOR-SEC               SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -761,7 +896,7 @@
        910-DBDELETE-SEC                 SECTION.
       *
            MOVE    "DBDELETE"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -775,7 +910,7 @@
        910-DBINSERT-SEC                SECTION.
       *
            MOVE    "DBINSERT"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -789,7 +924,7 @@
        910-DBUPDATE-SEC                SECTION.
       *
            MOVE    "DBUPDATE"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -802,9 +937,10 @@
       *****************************************************************
        900-DBSTART-SEC                 SECTION.
       *
-           MOVE    LOW-VALUE           TO  MCP-PATH
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
            MOVE    "DBSTART"           TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            .
@@ -815,9 +951,10 @@
       *****************************************************************
        900-DBCOMMIT-SEC                SECTION.
       *
-           MOVE    LOW-VALUE           TO  MCP-PATH
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
            MOVE    "DBCOMMIT"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            .

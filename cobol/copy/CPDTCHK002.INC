@@ -15,16 +15,12 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-      *
-       01  SDTCHK04AREA.
-           03  SDTCHK04-IN.
-               05  SDTCHK04-KIGONUM        PIC X(100).
-           03  SDTCHK04-OT.
-               05  SDTCHK04-SUJI           PIC 9(01).
-               05  SDTCHK04-KANJI          PIC 9(01).
-               05  SDTCHK04-ALPHABET       PIC 9(01).
-               05  SDTCHK04-HYPHEN         PIC 9(01).
-               05  SDTCHK04-TYOON          PIC 9(01).
-               05  SDTCHK04-KAKKO          PIC 9(01).
-               05  SDTCHK04-ETC            PIC 9(01).
-               05  SDTCHK04-SPACE          PIC 9(01).
+      ************************************************************
+      *    データチェック中間ファイル     COPY (CPDTCHK002.INC)  *
+      ************************************************************
+      ************************************************************
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      ************************************************************
+       01  DTCHK002-REC.
+           03  DTCHK002-PTID               PIC 9(10).

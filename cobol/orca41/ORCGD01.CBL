@@ -82,6 +82,9 @@
                        09  SPA-GMN-D01-CHK-KOKUHO          PIC X(01).
                        09  SPA-GMN-D01-CHK-RSIJBI          PIC X(01).
                        09  SPA-GMN-D01-CHK-JIHI            PIC X(01).
+                       09  SPA-GMN-D01-CHK-SRYYMD          PIC X(01).
+                       09  SPA-GMN-D01-STSRYYMD            PIC 9(02).
+                       09  SPA-GMN-D01-EDSRYYMD            PIC 9(02).
                        09  SPA-GMN-D01-PRTSRTKBN-G.
                            11  SPA-GMN-D01-PRTSRTKBN       PIC X(01).
                            11                              PIC X(01).
@@ -130,6 +133,7 @@
                05  SPA-NAIB-D01-AREA.
                    07  SPA-NAI-D01-INPUT-AREA.
                        09  SPA-NAI-D01-SRYYM               PIC X(06).
+                       09  SPA-NAI-D01-STSRYYMD-BF         PIC 9(02).
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -184,6 +188,10 @@
            03  WRK-EDTYMD3                 PIC X(22).
            03  WRK-Z9                      PIC Z9.
            03  WRK-PRT-PAGE                PIC 9(10).
+           03  WRK-SRYYMD.
+               05  WRK-SRYYMD-YYYY         PIC 9(04).
+               05  WRK-SRYYMD-MM           PIC 9(02).
+               05  WRK-SRYYMD-DD           PIC 9(02).
       *
        01  CONST-AREA.
            03  CONST-LINE                  PIC X(40)   VALUE
@@ -832,6 +840,25 @@
                                    TO  ORCBSD01-PRTPTLSTKBN
            END-IF
       *
+           IF    ( SPA-GMN-D01-CHK-SRYYMD      =   "T" )
+               MOVE    "1"         TO  ORCBSD01-SRYYMDKBN
+               IF    ( SPA-GMN-D01-STSRYYMD    =   ZERO )
+                   MOVE    1       TO  ORCBSD01-STSRYYMD
+               ELSE
+                   MOVE    SPA-GMN-D01-STSRYYMD
+                                   TO  ORCBSD01-STSRYYMD
+               END-IF
+               IF    ( SPA-GMN-D01-EDSRYYMD    =   ZERO )
+                   MOVE    LNK-PRTKANRI-SRYYM
+                                   TO  WRK-SYMD
+                   PERFORM 800-GETUMATU-SEC
+                   MOVE    WRK-SYMD TO ORCBSD01-EDSRYYMD
+               ELSE
+                   MOVE    SPA-GMN-D01-EDSRYYMD
+                                   TO  ORCBSD01-EDSRYYMD
+               END-IF
+           END-IF
+      *
            MOVE    SPACE           TO  SHELLTBL
       *    ファイルデイレクトリ位置指定
            INITIALIZE              ORCSMKPASSAREA
@@ -890,6 +917,12 @@
            MOVE    ORCBSD01-PRTSRTKBN      TO  SHELLTBL-ARG25
       *
            MOVE    ORCBSD01-PRTPTLSTKBN    TO  SHELLTBL-ARG26
+      *
+           MOVE    ORCBSD01-SRYYMDKBN      TO  SHELLTBL-ARG27
+      *
+           MOVE    ORCBSD01-STSRYYMD       TO  SHELLTBL-ARG28
+      *
+           MOVE    ORCBSD01-EDSRYYMD       TO  SHELLTBL-ARG29
       *
            MOVE    SHELLTBL                TO  MCPDATA-REC
            MOVE    "SHELL"                 TO  MCP-FUNC
@@ -1095,6 +1128,12 @@
            WHEN    "CLICKED"       ALSO    "B12S"
       *        処理確認
                PERFORM 490-SYORIKAKUNIN-SEC
+           WHEN    "CLICKED"       ALSO    "B12S"
+      *        処理確認
+               PERFORM 490-SYORIKAKUNIN-SEC
+           WHEN    "CLICKED"       ALSO    "CHK_SRYYMD"
+      *        診療日指定チェックボタン押下時の処理
+               PERFORM 4100-CHK-SRYYMD-CHK-SEC
            END-EVALUATE.
       *
        200-GMNSENI-EXT.
@@ -1171,6 +1210,10 @@
       *    印刷順
            MOVE    D01-PRTSRTKBN       TO  SPA-GMN-D01-PRTSRTKBN-G
       *
+      *    診療日指定期間
+           MOVE    D01-STSRYYMD        TO  SPA-GMN-D01-STSRYYMD
+           MOVE    D01-EDSRYYMD        TO  SPA-GMN-D01-EDSRYYMD
+      *
       *    チェック項目
            PERFORM VARYING IDX0    FROM    1   BY  1
                    UNTIL ( IDX0    >   CONST-CHKKBN-MAX )
@@ -1194,38 +1237,43 @@
        4102-KIHON-CHK-SEC              SECTION.
       *
       *    診療年月チェック
-           PERFORM 4101-SRYYM-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  4102-KIHON-CHK-EXT
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4101-SRYYM-CHK-SEC
            END-IF
       *
       *    入外区分処理チェック
-           PERFORM 4101-NYUGAIKBN-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  4102-KIHON-CHK-EXT
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4101-NYUGAIKBN-CHK-SEC
            END-IF
       *
       *    印刷順チェック
-           PERFORM 4101-PRTSRTKBN-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  4102-KIHON-CHK-EXT
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4101-PRTSRTKBN-CHK-SEC
+           END-IF
+      *
+      *    診療日指定開始日チェック
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4101-STSRYYMD-CHK-SEC
+           END-IF
+      *
+      *    診療日指定終了日チェック
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4101-EDSRYYMD-CHK-SEC
            END-IF
       *
       *    チェック項目チェック
            PERFORM VARYING IDXA    FROM    1   BY  1
                        UNTIL ( IDXA    >   CONST-CHKKBN-MAX )
       *
-               PERFORM 4101-CHKKBN-CHK-SEC
-               IF    ( SPA-ERRCD   NOT =   SPACE )
-                   GO  TO  4102-KIHON-CHK-EXT
+               IF    ( SPA-ERRCD   =   SPACE )
+                   PERFORM 4101-CHKKBN-CHK-SEC
                END-IF
       *
            END-PERFORM
       *
       *    院外処方の処理項目チェック
-           PERFORM 4101-INGAIPROCKBN-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  4102-KIHON-CHK-EXT
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4101-INGAIPROCKBN-CHK-SEC
            END-IF
       *
            .
@@ -1292,6 +1340,12 @@
                MOVE    WRK-CMB-ITM         TO  SPA-GMN-D01-NYUGAIKBN-G
            END-IF
       *
+           IF    ( SPA-GMN-D01-NYUGAIKBN   =   "1" )
+               MOVE    "F"                 TO  SPA-GMN-D01-CHK-SRYYMD
+               MOVE    ZERO                TO  SPA-GMN-D01-STSRYYMD
+                                               SPA-GMN-D01-EDSRYYMD
+           END-IF
+      *
            .
        4101-NYUGAIKBN-CHK-EXT.
            EXIT.
@@ -1312,6 +1366,60 @@
            .
       *
        4101-PRTSRTKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療日指定開始日チェック処理
+      *****************************************************************
+       4101-STSRYYMD-CHK-SEC           SECTION.
+      *
+           IF    ( SPA-GMN-D01-STSRYYMD        =   "99" )
+               MOVE    SPA-SYSYMD              TO  WRK-SRYYMD
+               MOVE    WRK-SRYYMD-DD           TO  SPA-GMN-D01-STSRYYMD
+                                                   SPA-GMN-D01-EDSRYYMD
+           END-IF
+      *
+           IF    ( SPA-GMN-D01-STSRYYMD    NOT =   ZERO )
+               MOVE    SPA-NAI-D01-SRYYM       TO  WRK-YMD
+               MOVE    SPA-GMN-D01-STSRYYMD    TO  WRK-YMD (7:2)
+               PERFORM 800-YMD-CHK-SEC
+               IF    ( FLG-HIZUKE-ERR  =   ZERO )
+                   IF    ( SPA-GMN-D01-EDSRYYMD    =   ZERO )
+                    AND  ( SPA-NAI-D01-STSRYYMD-BF =   ZERO )
+                       MOVE    SPA-GMN-D01-STSRYYMD
+                                               TO  SPA-GMN-D01-EDSRYYMD
+                   END-IF
+               ELSE
+                   MOVE    "0003"      TO  SPA-ERRCD
+                   MOVE    107         TO  SPA-GMN-D01-CUR
+               END-IF
+           END-IF
+      *
+           MOVE    SPA-GMN-D01-STSRYYMD    TO  SPA-NAI-D01-STSRYYMD-BF
+      *
+           .
+      *
+       4101-STSRYYMD-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療日指定終了日チェック処理
+      *****************************************************************
+       4101-EDSRYYMD-CHK-SEC           SECTION.
+      *
+           IF    ( SPA-GMN-D01-EDSRYYMD    NOT =   ZERO )
+               MOVE    SPA-NAI-D01-SRYYM       TO  WRK-YMD
+               MOVE    SPA-GMN-D01-EDSRYYMD    TO  WRK-YMD (7:2)
+               PERFORM 800-YMD-CHK-SEC
+               IF    ( FLG-HIZUKE-ERR  =   ZERO )
+                   CONTINUE
+               ELSE
+                   MOVE    "0004"      TO  SPA-ERRCD
+                   MOVE    108         TO  SPA-GMN-D01-CUR
+               END-IF
+           END-IF
+      *
+           .
+      *
+       4101-EDSRYYMD-CHK-EXT.
            EXIT.
       *****************************************************************
       *    チェック項目チェック
@@ -1356,6 +1464,30 @@
       *
            .
        4101-INGAIPROCKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療日指定ボタン押下時の処理
+      *****************************************************************
+       4100-CHK-SRYYMD-CHK-SEC         SECTION.
+      *
+           MOVE    ZERO                TO  SPA-GMN-D01-CUR
+      *
+           MOVE    D01-CHK-SRYYMD      TO  SPA-GMN-D01-CHK-SRYYMD
+      *
+           PERFORM 410-INPUT-CHK-SEC
+      *
+      *    IF    ( SPA-GMN-D01-CHK-SRYYMD  =   "T" )
+      *     AND  ( SPA-SYSYMD (1:6)    =   SPA-NAI-D01-SRYYM )
+      *        MOVE    SPA-SYSYMD (7:2)
+      *                                TO  SPA-GMN-D01-STSRYYMD
+      *                                    SPA-GMN-D01-EDSRYYMD
+      *    ELSE
+               MOVE    ZERO            TO  SPA-GMN-D01-STSRYYMD
+                                           SPA-GMN-D01-EDSRYYMD
+      *    END-IF
+      *
+           .
+       4100-CHK-SRYYMD-CHK-EXT.
            EXIT.
       *****************************************************************
       *    戻る　処理
@@ -1430,6 +1562,7 @@
            MOVE    "T"                 TO  SPA-GMN-D01-CHK-KOKUHO
            MOVE    "T"                 TO  SPA-GMN-D01-CHK-RSIJBI
            MOVE    "F"                 TO  SPA-GMN-D01-CHK-JIHI
+           MOVE    "F"                 TO  SPA-GMN-D01-CHK-SRYYMD
       *
       *    入外区分のデフォルトを外来として設定
            MOVE    "2"                 TO  WRK-CMB-CD
@@ -1759,6 +1892,25 @@
                GO  TO  4900-KANRENCHK-EXT
            END-IF
       *
+           IF    ( SPA-GMN-D01-CHK-SRYYMD  =   "T" )
+               IF    ( SPA-GMN-D01-STSRYYMD    =   ZERO )
+                AND  ( SPA-GMN-D01-EDSRYYMD    =   ZERO )
+                   MOVE    "1004"      TO  SPA-ERRCD
+                   MOVE    107         TO  SPA-GMN-D01-CUR
+                   GO  TO  4900-KANRENCHK-EXT
+               END-IF
+      *
+               IF    ( SPA-GMN-D01-STSRYYMD    NOT =   ZERO )
+                AND  ( SPA-GMN-D01-EDSRYYMD    NOT =   ZERO )
+                   IF    ( SPA-GMN-D01-STSRYYMD
+                                               >   SPA-GMN-D01-EDSRYYMD)
+                       MOVE    "1005"      TO  SPA-ERRCD
+                       MOVE    107         TO  SPA-GMN-D01-CUR
+                       GO  TO  4900-KANRENCHK-EXT
+                   END-IF
+               END-IF
+           END-IF
+      *
       *    確認項目がいずれか一つは入力されていること
            PERFORM VARYING IDX0    FROM    1   BY  1
                    UNTIL ( IDX0        >   CONST-CHKKBN-MAX )
@@ -1941,6 +2093,10 @@
       *
            END-PERFORM
       *
+           MOVE    SPA-GMN-D01-CHK-SRYYMD  TO  D01-CHK-SRYYMD
+           MOVE    SPA-GMN-D01-STSRYYMD    TO  D01-STSRYYMD
+           MOVE    SPA-GMN-D01-EDSRYYMD    TO  D01-EDSRYYMD
+      *
            PERFORM VARYING IDXA    FROM    1   BY  1
                    UNTIL ( IDXA    >   CONST-CHKKBN-MAX )
       *
@@ -1990,11 +2146,36 @@
       *
            END-PERFORM
       *
+           PERFORM 500-GMNHEN-STATE-EDIT-SEC
+      *
       *    カーソル位置
            PERFORM 5001-MAPCUR-SEC
            .
       *
        500-GMNHEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    項目状態編集処理
+      *****************************************************************
+       500-GMNHEN-STATE-EDIT-SEC       SECTION.
+      *
+           MOVE    WIDGET-NORMAL       TO  D01-CHK-SRYYMD-STATE
+                                           D01-STSRYYMD-STATE
+                                           D01-EDSRYYMD-STATE
+      *
+           IF    ( SPA-GMN-D01-NYUGAIKBN   =   "1" )
+               MOVE    WIDGET-INSENSITIVE  TO  D01-CHK-SRYYMD-STATE
+                                               D01-STSRYYMD-STATE
+                                               D01-EDSRYYMD-STATE
+           END-IF
+      *
+           IF    ( SPA-GMN-D01-CHK-SRYYMD  =   "F" )
+               MOVE    WIDGET-INSENSITIVE  TO  D01-STSRYYMD-STATE
+                                               D01-EDSRYYMD-STATE
+           END-IF
+      *
+           .
+       500-GMNHEN-STATE-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    カーソル位置処理
@@ -2005,6 +2186,8 @@
              AND ( SPA-GMN-D01-CUR     =   ZERO )
                PERFORM 5011-INPUT-CUR-SEC
            END-IF
+      *
+           PERFORM 5011-INPUT-CUR-SKIP-SEC
       *
            EVALUATE    SPA-GMN-D01-CUR
            WHEN    01
@@ -2061,6 +2244,12 @@
                MOVE    "CHK_JIHI"      TO  MCP-WIDGET
            WHEN    105
                MOVE    "PRTSRTKBN"     TO  MCP-WIDGET
+           WHEN    106
+               MOVE    "CHK_SRYYMD"    TO  MCP-WIDGET
+           WHEN    107
+               MOVE    "STSRYYMD"      TO  MCP-WIDGET
+           WHEN    108
+               MOVE    "EDSRYYMD"      TO  MCP-WIDGET
            WHEN    212
                MOVE    "B12"           TO  MCP-WIDGET
            END-EVALUATE
@@ -2123,6 +2312,12 @@
            WHEN    "INGAIPROCKBN"
                MOVE    212             TO  SPA-GMN-D01-CUR
            WHEN    "PRTSRTKBN"
+               MOVE    106             TO  SPA-GMN-D01-CUR
+           WHEN    "CHK_SRYYMD"
+               MOVE    107             TO  SPA-GMN-D01-CUR
+           WHEN    "STSRYYMD"
+               MOVE    108             TO  SPA-GMN-D01-CUR
+           WHEN    "EDSRYYMD"
                MOVE    003             TO  SPA-GMN-D01-CUR
            END-EVALUATE
       *
@@ -2131,6 +2326,33 @@
        5011-INPUT-CUR-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    カーソルスキップ処理
+      *****************************************************************
+       5011-INPUT-CUR-SKIP-SEC         SECTION.
+      *
+           IF    ( SPA-GMN-D01-CUR     =   106 )
+               IF    ( D01-CHK-SRYYMD-STATE    =   WIDGET-INSENSITIVE )
+                   MOVE    107         TO  SPA-GMN-D01-CUR
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-D01-CUR     =   107 )
+               IF    ( D01-STSRYYMD-STATE      =   WIDGET-INSENSITIVE )
+                   MOVE    108         TO  SPA-GMN-D01-CUR
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-D01-CUR     =   108 )
+               IF    ( D01-EDSRYYMD-STATE      =   WIDGET-INSENSITIVE )
+                   MOVE    003         TO  SPA-GMN-D01-CUR
+               END-IF
+           END-IF
+      *
+           .
+      *
+       5011-INPUT-CUR-SKIP-EXT.
+           EXIT.
       *****************************************************************
       *    エラーメッセージ表示理
       *****************************************************************
@@ -2145,11 +2367,23 @@
            WHEN    "0002"
                MOVE    "確認項目入力エラー"
                                        TO  SPA-ERRMSG
+           WHEN    "0003"
+               MOVE    "診療日指定開始日入力エラー"
+                                       TO  SPA-ERRMSG
+           WHEN    "0004"
+               MOVE    "診療日指定終了日入力エラー"
+                                       TO  SPA-ERRMSG
            WHEN    "1001"
                MOVE    "診療年月を入力してください"
                                        TO  SPA-ERRMSG
            WHEN    "1002"
                MOVE    "確認項目を入力してください"
+                                       TO  SPA-ERRMSG
+           WHEN    "1004"
+               MOVE    "診療日を指定してください"
+                                       TO  SPA-ERRMSG
+           WHEN    "1005"
+               MOVE    "診療日の指定に誤りがあります"
                                        TO  SPA-ERRMSG
            WHEN    "4001"              THRU    "4999"
                MOVE    "更新処理に失敗しました"
@@ -2275,6 +2509,31 @@
        5003-NENGETSU-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    年月チェック・編集処理
+      *****************************************************************
+       800-YMD-CHK-SEC                 SECTION.
+      *
+           MOVE    ZERO                TO  FLG-HIZUKE-ERR
+      *
+           MOVE    ZERO                TO  WRK-SYMD
+           MOVE    SPACE               TO  WRK-HENYMDG
+      *
+      *    日付画面チェックサブ
+           INITIALIZE                      ORCSGDAYAREA
+           MOVE    WRK-YMD             TO  SGDAY-INDAY
+           CALL    "ORCSGDAY"          USING
+                                           ORCSGDAYAREA
+           IF  ( SGDAY-RC              =   ZERO )
+               MOVE    SGDAY-OTDAY     TO  WRK-HENYMDG
+               MOVE    SGDAY-SDAY      TO  WRK-SYMD
+           ELSE
+               MOVE    1               TO  FLG-HIZUKE-ERR
+           END-IF
+      *
+           .
+       800-YMD-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    西暦日本語変換処理
       *****************************************************************
        800-SEIWA-HEN-SEC         SECTION.
@@ -2299,6 +2558,22 @@
            .
        800-SEIWA-HEN-EXT.
            EXIT.
+      *****************************************************************
+      *    月末日取得処理
+      *****************************************************************
+       800-GETUMATU-SEC                SECTION.
+      *
+           INITIALIZE                  STS-AREA-DAY
+           INITIALIZE                  LNK-DAY1-AREA
+           MOVE    "71"                TO   LNK-DAY7-IRAI
+           MOVE    WRK-SYMD (1 : 6)    TO   LNK-DAY7-YM
+           CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                       LNK-DAY7-AREA
+           MOVE    LNK-DAY7-KOYOMI     TO  WRK-SYMD
+      *
+           .
+       800-GETUMATU-EXT.
+            EXIT.
       *****************************************************************
       *    マシン日付取得サブ
       *****************************************************************
