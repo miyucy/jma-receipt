@@ -165,6 +165,7 @@
            03  CONST-DRTEKCD           PIC X(09) VALUE "190117070".
            03  CONST-H180401           PIC X(08) VALUE "20060401".
            03  CONST-H180701           PIC X(08) VALUE "20060701".
+           03  CONST-H181001           PIC X(08) VALUE "20061001".
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -766,31 +767,48 @@
            INITIALIZE  SPA-GMN-W20-RECEDSPKBNLST-G
                        SPA-NAI-W20-RECEDSPKBNLST-G
       *
-           MOVE    "01"    TO  SPA-GMN-W20-RECEDSPKBNL (1)
-           MOVE    "02"    TO  SPA-GMN-W20-RECEDSPKBNL (2)
-           MOVE    "03"    TO  SPA-GMN-W20-RECEDSPKBNL (3)
-           MOVE    "05"    TO  SPA-GMN-W20-RECEDSPKBNL (4)
-           MOVE    "07"    TO  SPA-GMN-W20-RECEDSPKBNL (5)
-           MOVE    "08"    TO  SPA-GMN-W20-RECEDSPKBNL (6)
-           MOVE    "09"    TO  SPA-GMN-W20-RECEDSPKBNL (7)
+           IF    ( SPA-NAI-W20-YUKOSTYMD   >=    CONST-H181001 )
+               MOVE    "01"    TO  SPA-GMN-W20-RECEDSPKBNL (1)
+               MOVE    "02"    TO  SPA-GMN-W20-RECEDSPKBNL (2)
+               MOVE    "07"    TO  SPA-GMN-W20-RECEDSPKBNL (3)
       *
-           MOVE    "Àº¿À"  TO  SPA-GMN-W20-RECEDSPKBNMEIL(1)
-           MOVE    "·ë³Ë"  TO  SPA-GMN-W20-RECEDSPKBNMEIL(2)
-           MOVE    "ÆÃÎã"  TO  SPA-GMN-W20-RECEDSPKBNMEIL(3)
-           MOVE    "Ï·¿Í"  TO  SPA-GMN-W20-RECEDSPKBNMEIL(4)
-           MOVE    "ÎÅÍÜ"  TO  SPA-GMN-W20-RECEDSPKBNMEIL(5)
-           MOVE    "Ê£¹ç"  TO  SPA-GMN-W20-RECEDSPKBNMEIL(6)
-           MOVE    "Ê£ÎÅ"  TO  SPA-GMN-W20-RECEDSPKBNMEIL(7)
+               MOVE    "Àº¿À"  TO  SPA-GMN-W20-RECEDSPKBNMEIL(1)
+               MOVE    "·ë³Ë"  TO  SPA-GMN-W20-RECEDSPKBNMEIL(2)
+               MOVE    "ÎÅÍÜ"  TO  SPA-GMN-W20-RECEDSPKBNMEIL(3)
       *
-           MOVE    "02"        TO  SPA-NAI-W20-RECEDSPKBNLST (1)
-           MOVE    "03"        TO  SPA-NAI-W20-RECEDSPKBNLST (2)
-           MOVE    "**"        TO  SPA-NAI-W20-RECEDSPKBNLST (3)
-           MOVE    "07"        TO  SPA-NAI-W20-RECEDSPKBNLST (4)
-           MOVE    "04"        TO  SPA-NAI-W20-RECEDSPKBNLST (5)
-           MOVE    "**"        TO  SPA-NAI-W20-RECEDSPKBNLST (6)
-           MOVE    "**"        TO  SPA-NAI-W20-RECEDSPKBNLST (7)
+               MOVE    "02"    TO  SPA-NAI-W20-RECEDSPKBNLST (1)
+               MOVE    "03"    TO  SPA-NAI-W20-RECEDSPKBNLST (2)
+               MOVE    "04"    TO  SPA-NAI-W20-RECEDSPKBNLST (3)
       *
-           MOVE    7           TO  SPA-GMN-W20-RECEDSPKBN-MAX
+               MOVE    3       TO  SPA-GMN-W20-RECEDSPKBN-MAX
+           ELSE
+      *
+               MOVE    "01"    TO  SPA-GMN-W20-RECEDSPKBNL (1)
+               MOVE    "02"    TO  SPA-GMN-W20-RECEDSPKBNL (2)
+               MOVE    "03"    TO  SPA-GMN-W20-RECEDSPKBNL (3)
+               MOVE    "05"    TO  SPA-GMN-W20-RECEDSPKBNL (4)
+               MOVE    "07"    TO  SPA-GMN-W20-RECEDSPKBNL (5)
+               MOVE    "08"    TO  SPA-GMN-W20-RECEDSPKBNL (6)
+               MOVE    "09"    TO  SPA-GMN-W20-RECEDSPKBNL (7)
+      *
+               MOVE    "Àº¿À"  TO  SPA-GMN-W20-RECEDSPKBNMEIL(1)
+               MOVE    "·ë³Ë"  TO  SPA-GMN-W20-RECEDSPKBNMEIL(2)
+               MOVE    "ÆÃÎã"  TO  SPA-GMN-W20-RECEDSPKBNMEIL(3)
+               MOVE    "Ï·¿Í"  TO  SPA-GMN-W20-RECEDSPKBNMEIL(4)
+               MOVE    "ÎÅÍÜ"  TO  SPA-GMN-W20-RECEDSPKBNMEIL(5)
+               MOVE    "Ê£¹ç"  TO  SPA-GMN-W20-RECEDSPKBNMEIL(6)
+               MOVE    "Ê£ÎÅ"  TO  SPA-GMN-W20-RECEDSPKBNMEIL(7)
+      *
+               MOVE    "02"    TO  SPA-NAI-W20-RECEDSPKBNLST (1)
+               MOVE    "03"    TO  SPA-NAI-W20-RECEDSPKBNLST (2)
+               MOVE    "**"    TO  SPA-NAI-W20-RECEDSPKBNLST (3)
+               MOVE    "07"    TO  SPA-NAI-W20-RECEDSPKBNLST (4)
+               MOVE    "04"    TO  SPA-NAI-W20-RECEDSPKBNLST (5)
+               MOVE    "**"    TO  SPA-NAI-W20-RECEDSPKBNLST (6)
+               MOVE    "**"    TO  SPA-NAI-W20-RECEDSPKBNLST (7)
+      *
+               MOVE    7           TO  SPA-GMN-W20-RECEDSPKBN-MAX
+           END-IF
       *
            .
        3101-RECEDSPKBN-GET-EXT.
