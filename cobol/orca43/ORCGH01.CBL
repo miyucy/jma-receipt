@@ -62,6 +62,9 @@
       *                                      の診療年月による表示の変更
       *                                     「在宅寝たきり等」の表示を
       *                                     「在医総等」に変更
+      *
+      *  03.03.01    NACL-藤原    06/09/27  ２００６年１０月改正対応
+      *                                     更新前チェックを追加 
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -142,8 +145,10 @@
       *
       *    スパ領域（ワーク）
            COPY    "COMMON-SPA"
-                                   REPLACING  //SPA-//
-                                   BY         //WRK-SPA-//.
+                                   REPLACING   //SPA-//
+                                   BY          //WRK-SPA-//.
+      * 
+        01  WRK-CONS-SRYYM-200610  PIC 9(06)   VALUE   200610. 
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -1237,7 +1242,18 @@
                        MOVE    "高９"          TO  SPA-H01GMN-HONKZKKBN
                    WHEN    "9"
                    WHEN    "0"
-                       MOVE    "高８"          TO  SPA-H01GMN-HONKZKKBN
+                       IF      RECE10-SRYYM    <   WRK-CONS-SRYYM-200610
+                           MOVE    "高８"      TO  SPA-H01GMN-HONKZKKBN
+                       ELSE
+                           EVALUATE    RECE10-KYURATE
+                               WHEN    8
+                                   MOVE    "高８"
+                                               TO  SPA-H01GMN-HONKZKKBN
+                               WHEN    7
+                                   MOVE    "高７"
+                                               TO  SPA-H01GMN-HONKZKKBN
+                           END-EVALUATE
+                       END-IF
                END-EVALUATE
            END-IF             
       * 
