@@ -217,6 +217,7 @@
       *  03.03.04    NACL-∆£∏∂    06/10/10  £≤£∞£∞£∂«Ø£±£∞∑Ó≤˛¿µ¬–±˛
       *                                     ∞Ï…Ù…È√¥∂‚°¶ø©ªˆŒ≈Õ‹»Ò°¶¿∏≥Ë
       *                                     Œ≈Õ‹∆¸…∏Ω‡…È√¥≥€∂Ë ¨•≥°º•…
+      *                                     ø¶Ã≥æÂ§ŒªˆÕ≥§Œ»ΩƒÍæÚ∑Ôƒ…≤√
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1971,16 +1972,19 @@
                    WHEN    "1"
                    WHEN    "A"
                    WHEN    "D"
+                   WHEN    "G"
                        MOVE    "1"                   TO  WRK-DATA
                        MOVE    1                     TO  WRK-NAGASA
                    WHEN    "2"
                    WHEN    "B"
                    WHEN    "E"
+                   WHEN    "H"
                        MOVE    "2"                   TO  WRK-DATA
                        MOVE    1                     TO  WRK-NAGASA
                    WHEN    "3" 
                    WHEN    "C"
                    WHEN    "F"
+                   WHEN    "I"
                        MOVE    "3"                   TO  WRK-DATA
                        MOVE    1                     TO  WRK-NAGASA
                END-EVALUATE
@@ -1990,6 +1994,7 @@
                    WHEN    "2"
                    WHEN    "B"
                    WHEN    "E"
+                   WHEN    "H"
                        MOVE    "2"                   TO  WRK-DATA
                        MOVE    1                     TO  WRK-NAGASA
                END-EVALUATE

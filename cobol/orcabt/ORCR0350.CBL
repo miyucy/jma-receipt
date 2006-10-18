@@ -148,6 +148,7 @@
       *                                     生活療養で食事負担ありの公費が 
       *                                     ある場合は該当の公費をはずした
       *                                     負担区分とする
+      *                                     職務上の事由の判定条件追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2184,16 +2185,19 @@
                    WHEN    "1"
                    WHEN    "A"
                    WHEN    "D"
+                   WHEN    "G"
                        MOVE    "1"                   TO  WRK-DATA
                        MOVE    1                     TO  WRK-NAGASA
                    WHEN    "2"
                    WHEN    "B"
                    WHEN    "E"
+                   WHEN    "H"
                        MOVE    "2"                   TO  WRK-DATA
                        MOVE    1                     TO  WRK-NAGASA
                    WHEN    "3" 
                    WHEN    "C"
                    WHEN    "F"
+                   WHEN    "I"
                        MOVE    "3"                   TO  WRK-DATA
                        MOVE    1                     TO  WRK-NAGASA
                END-EVALUATE
@@ -2203,6 +2207,7 @@
                    WHEN    "2"
                    WHEN    "B"
                    WHEN    "E"
+                   WHEN    "H"
                        MOVE    "2"                   TO  WRK-DATA
                        MOVE    1                     TO  WRK-NAGASA
                END-EVALUATE
