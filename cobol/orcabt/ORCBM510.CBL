@@ -502,29 +502,10 @@
                MOVE    "£³£³Ê»"        TO  HCM37-HKNSBT2
            END-EVALUATE
       *
-      *    ËÜ¿Í¡¦²ÈÂ²
-           EVALUATE    RECE10-RECESYUBETU (4:1)
-           WHEN    "1"
-              MOVE     "£±ËÜÆþ"        TO  HCM37-HONKZK
-           WHEN    "2"
-               MOVE    "£²ËÜ³°"        TO  HCM37-HONKZK
-           WHEN    "3"
-               MOVE    "£³»°Æþ"        TO  HCM37-HONKZK
-           WHEN    "4"
-               MOVE    "£´»°³°"        TO  HCM37-HONKZK
-           WHEN    "5"
-               MOVE    "£µ²ÈÆþ"        TO  HCM37-HONKZK
-           WHEN    "6"
-               MOVE    "£¶²È³°"        TO  HCM37-HONKZK
-           WHEN    "7"
-               MOVE    "£·¹âÆþ£¹"      TO  HCM37-HONKZK
-           WHEN    "8"
-               MOVE    "£¸¹â³°£¹"      TO  HCM37-HONKZK
-           WHEN    "9"
-               MOVE    "£¹¹âÆþ£¸"      TO  HCM37-HONKZK
-           WHEN    "0"
-               MOVE    "£°¹â³°£¸"      TO  HCM37-HONKZK
-           END-EVALUATE
+      *----(03.03.01)--ADD-START---
+      *    ËÜ²ÈÂ²¶èÊ¬
+           PERFORM 220-HONKZK-SET-SEC
+      *----(03.03.01)--ADD-END-----
       *
       *    ¿ÇÎÅÇ¯·î
            MOVE    RECE10-SRYYM        TO  WRK-SYMD(1:6)
@@ -644,7 +625,60 @@
            .
        210-HEAD-HEN-EXT.
            EXIT.
+      *----(03.03.01)--ADD-START---
+      *****************************************************************
+      *    Ä¢É¼  <ËÜ¿Í¡¦²ÈÂ²>ÊÔ½¸½èÍý
+      *****************************************************************
+       220-HONKZK-SET-SEC          SECTION.
       *
+      *    ÉÔÌÀÊ¬¡¦¼«Èñ¤ÏÊÔ½¸¤·¤Ê¤¤
+           IF      RECE10-RECESYUBETU  =   ZERO    OR  8888
+               CONTINUE
+           ELSE
+               EVALUATE    RECE10-RECESYUBETU(4:1)
+                   WHEN    "1"
+                       MOVE    "£±ËÜÆþ"        TO  HCM37-HONKZK
+                   WHEN    "2"
+                       MOVE    "£²ËÜ³°"        TO  HCM37-HONKZK
+                   WHEN    "3"
+                       MOVE    "£³»°Æþ"        TO  HCM37-HONKZK
+                   WHEN    "4"
+                       MOVE    "£´»°³°"        TO  HCM37-HONKZK
+                   WHEN    "5"
+                       MOVE    "£µ²ÈÆþ"        TO  HCM37-HONKZK
+                   WHEN    "6"
+                       MOVE    "£¶²È³°"        TO  HCM37-HONKZK
+                   WHEN    "7"
+                       MOVE    "£·¹âÆþ£¹"      TO  HCM37-HONKZK
+                   WHEN    "8"
+                       MOVE    "£¸¹â³°£¹"      TO  HCM37-HONKZK
+                   WHEN    "9"
+                       IF      RECE10-SRYYM    <   "200610"
+                           MOVE    "£¹¹âÆþ£¸"      TO  HCM37-HONKZK
+                       ELSE
+                           IF      RECE10-KYURATE  =   20
+                               MOVE    "£¹¹âÆþ£¸"  TO  HCM37-HONKZK
+                           ELSE
+                               MOVE    "£¹¹âÆþ£·"  TO  HCM37-HONKZK
+                           END-IF
+                       END-IF
+                   WHEN    "0"
+                       IF      RECE10-SRYYM    <   "200610"
+                           MOVE    "£°¹â³°£¸"      TO  HCM37-HONKZK
+                       ELSE
+                           IF      RECE10-KYURATE  =   20
+                               MOVE    "£°¹â³°£¸"  TO  HCM37-HONKZK
+                           ELSE
+                               MOVE    "£°¹â³°£·"  TO  HCM37-HONKZK
+                           END-IF
+                       END-IF
+               END-EVALUATE
+           END-IF    
+      *
+           .
+       220-HONKZK-SET-EXT.
+           EXIT.
+      *----(03.03.01)--ADD-END-----
       *****************************************************************
       *    Ä¢É¼°õºþ½èÍý
       *****************************************************************
