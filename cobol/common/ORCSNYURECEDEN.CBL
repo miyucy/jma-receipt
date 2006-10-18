@@ -1534,8 +1534,8 @@
                                 (LNK-RYOCOM-MEISAISU(IDX3) NOT =  ZERO)
                                  MOVE  MATOME-IDX    TO  
                                                  WRK-IRYOADL-DAY(IDX3)
-                                 ADD     1    TO    WRK-SO-KAISU(IDX1)
                              END-IF
+                             ADD     1    TO    WRK-SO-KAISU(IDX1)
                              IF  WRK-SO-GAIHAKU-KBN(IDX3 IDX3)
                                                              NOT = ZERO
                                  MOVE  WRK-SO-GAIHAKU-KBN(IDX3 IDX3)
