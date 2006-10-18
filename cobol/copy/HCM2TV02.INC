@@ -47,3 +47,4 @@
             02  HCM2TV02-TITLE4 PIC X(18).
             02  HCM2TV02-TITLE5 PIC X(2).
             02  HCM2TV02-TITLE6 PIC X(2).
+            02  HCM2TV02-TITLE7 PIC X(24).
