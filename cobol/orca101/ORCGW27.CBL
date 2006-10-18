@@ -750,6 +750,9 @@
                        SPA-GMN-W27-INPUT-AREA
                        SPA-NAI-W27-INPUT-AREA
       *
+           MOVE    SPA-NAI-W27-KJNYMD
+                               TO   SPA-NAI-W27-BRMSTYUKYMD
+      *
            MOVE    ALL  "F"    TO  SPA-GMN-W27-CHK-KSN-G
            MOVE    SPA-NAI-W27-KJNYMD  TO  WRK-KSNKJNYMD
            PERFORM 42011-KSN-SYOKI-SEC
@@ -1019,6 +1022,8 @@
       *
            MOVE    SPA-NAI-W27-KJNYMD  TO  WRK-KJNYMD-BAK
       *
+           DISPLAY "WRK-KJNYMD-BAK =" WRK-KJNYMD-BAK
+      *
            MOVE    SPACE               TO  SPA-NAI-W27-KJNYMD
       *
            MOVE    W27-KJNYMD          TO  SPA-GMN-W27-KJNYMD
@@ -1041,7 +1046,7 @@
       *
            MOVE    SPA-GMN-W27-KJNYMD  TO   WRK-YMD
            PERFORM 800-SEIWA-HEN-SEC
-           IF    ( SPA-ERRCD   NOT =    SPACE )
+           IF    ( FLG-HIZUKE-ERR   NOT =   ZERO )
                MOVE    WRK-KJNYMD-BAK  TO   WRK-YMD
                PERFORM 800-SEIWA-HEN-SEC
                MOVE    WRK-HENYMDG     TO  SPA-GMN-W27-KJNYMD
@@ -1214,7 +1219,10 @@
            MOVE    "5002"              TO  SYS-KANRICD
            MOVE    SPA-GMN-W27-TBRMNUM  (SPA-GMN-W27-STSELNUM)
                                        TO  SYS-KBNCD
-           MOVE    SPA-NAI-W27-KJNYMD  TO  SYS-STYUKYMD
+           MOVE    SPA-NAI-W27-TSTYUKYMD  (SPA-GMN-W27-STSELNUM)
+                                       TO  SPA-NAI-W27-BRMSTYUKYMD
+           MOVE    SPA-NAI-W27-BRMSTYUKYMD
+                                       TO  SYS-STYUKYMD
                                            SYS-EDYUKYMD
            PERFORM 900-SYSKANRI-KEY10-SEL-SEC
            IF    ( FLG-SYSKANRI    NOT =   ZERO )
@@ -1335,8 +1343,7 @@
                                    TO  IDX1
       *
       *        Í­¸ú
-               IF    ( SYS-5002-EDYUKYMD    >= SPA-SYSYMD )
-                AND  ( SYS-5002-STYUKYMD    <= SPA-NAI-W27-KJNYMD )
+               IF    ( SYS-5002-STYUKYMD    <= SPA-NAI-W27-KJNYMD )
                 AND  ( SYS-5002-EDYUKYMD    >= SPA-NAI-W27-KJNYMD )
                    MOVE    1       TO  SPA-GMN-W27-TYUKO-FLG (IDX1)
                ELSE
@@ -1357,7 +1364,7 @@
                MOVE    "5111"          TO  SYS-KANRICD
                MOVE    SYS-5002-BRM-TOKTEI-NYUIN
                                        TO  SYS-KBNCD
-               MOVE    SPA-NAI-W27-KJNYMD
+               MOVE    SYS-5002-STYUKYMD
                                        TO  SYS-STYUKYMD
                                            SYS-EDYUKYMD
                PERFORM 900-SYSKANRI-KEY10-SEL-SEC
@@ -1370,7 +1377,7 @@
                INITIALIZE                  SYSKANRI-REC
                MOVE    "5108"          TO  SYS-KANRICD
                MOVE    SYS-5002-BRM-SBT    TO  SYS-KBNCD
-               MOVE    SPA-NAI-W27-KJNYMD  TO  SYS-STYUKYMD
+               MOVE    SYS-5002-STYUKYMD   TO  SYS-STYUKYMD
                                                SYS-EDYUKYMD
                PERFORM 900-SYSKANRI-KEY10-SEL-SEC
                MOVE    SYSKANRI-REC        TO  SYS-5108-REC
@@ -1381,7 +1388,7 @@
                MOVE    "5113"          TO  SYS-KANRICD
                MOVE    SYS-5002-BRM-SAGAKU
                                        TO  SYS-KBNCD
-               MOVE    SPA-NAI-W27-KJNYMD  TO  SYS-STYUKYMD
+               MOVE    SYS-5002-STYUKYMD   TO  SYS-STYUKYMD
                                                SYS-EDYUKYMD
                PERFORM 900-SYSKANRI-KEY10-SEL-SEC
                MOVE    SYSKANRI-REC        TO  SYS-5113-REC
@@ -1633,8 +1640,12 @@
            INITIALIZE  SPA-GMN-W27-INPUT-AREA
                        SPA-NAI-W27-INPUT-AREA
       *
+           MOVE    SPA-NAI-W27-KJNYMD
+                               TO  SPA-NAI-W27-BRMSTYUKYMD
+      *
            MOVE    ALL  "F"    TO  SPA-GMN-W27-CHK-KSN-G
-           MOVE    SPA-NAI-W27-KJNYMD  TO  WRK-KSNKJNYMD
+           MOVE    SPA-NAI-W27-BRMSTYUKYMD
+                               TO  WRK-KSNKJNYMD
            PERFORM 42011-KSN-SYOKI-SEC
       *
            MOVE   ZERO         TO  SPA-GMN-W27-BRMLST-SEL
@@ -1654,7 +1665,12 @@
            MOVE    SPA-GMN-W27-EDBRMNUM
                                    TO  WRK-EDBRMNUM
       *
+           MOVE    SPA-NAI-W27-KJNYMD
+                                   TO  WRK-KJNYMD-BAK
+           MOVE    SPA-NAI-W27-BRMSTYUKYMD
+                                   TO  SPA-NAI-W27-KJNYMD
            PERFORM 4201-INPUT-AREA-CLEAR-SEC
+           MOVE    WRK-KJNYMD-BAK  TO  SPA-NAI-W27-KJNYMD
       *
            MOVE    WRK-EDSELNUM    TO  SPA-GMN-W27-EDSELNUM
            MOVE    WRK-EDBRMNUM    TO  SPA-GMN-W27-EDBRMNUM
@@ -2505,7 +2521,8 @@
                MOVE    WRK-BTU-NYUKSNKBN   TO  NYUKSNCHK-NYUINKBN
            END-IF
            MOVE    WRK-KSN-NYUKSNKBN   TO  NYUKSNCHK-KSNKBN
-           MOVE    SPA-NAI-W27-KJNYMD  TO  NYUKSNCHK-YUKOSTYMD
+           MOVE    SPA-NAI-W27-BRMSTYUKYMD
+                                       TO  NYUKSNCHK-YUKOSTYMD
                                            NYUKSNCHK-YUKOEDYMD
            MOVE    NYUKSNCHK-REC       TO  MCPDATA-REC
            MOVE    "tbl_nyuksnchk"     TO  MCP-TABLE
