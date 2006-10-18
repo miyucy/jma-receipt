@@ -502,7 +502,9 @@
       *診療科
            MOVE    SYU-SRYKA           TO  SMEI-SRYKA
       *伝票状態区分
-           MOVE    SPACE               TO  SMEI-MEISAIJOUTAIKBN
+           IF    ( IDX2                =   1 )
+               MOVE    "1"             TO  SMEI-MEISAIJOUTAIKBN
+           END-IF
       *請求発行日（発行日の西暦）
            MOVE    SPACE               TO  SMEI-SKYPRINTYMD
       *請求再発行日

@@ -683,6 +683,14 @@
                    MOVE    SYUPARA01-GAI-MISYU
                                TO  SYUPARA03-HENKIN
                END-IF
+      *
+               MOVE    SYUPARA01-GAI-MISYU-P
+                               TO  SYUPARA03-MISYU-P
+               MOVE    SYUPARA01-GAI-MISYU-M
+                               TO  SYUPARA03-MISYU-M
+               MOVE    SYUPARA01-NYU-MISYU
+                               TO  SYUPARA03-NYU-MISYU
+      *
            END-IF
            MOVE    SRT-KBT-NYUKIN  (IDX4)  TO  SYUPARA03-NYUKIN
            MOVE    SRT-KBT-STSRYYMD(IDX4)  TO  SYUPARA03-STSRYYMD

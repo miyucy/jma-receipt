@@ -134,9 +134,14 @@
                05  WRK-BG01301-TIME-N              PIC X(16).
            03  WRK-SEIKYU-PG                       PIC X(20).
            03  WRK-NYUGAIKBN                       PIC X(01).
-           03  WRK-MISYU                           PIC S9(10).
+           03  WRK-MISYU-G.
+               05  WRK-MISYU                       PIC S9(10).
+               05  WRK-MISYU-P                     PIC S9(10).
+               05  WRK-MISYU-M                     PIC S9(10).
            03  WRK-NYU-MISYU                       PIC S9(10).
            03  WRK-GAI-MISYU                       PIC S9(10).
+           03  WRK-GAI-MISYU-P                     PIC S9(10).
+           03  WRK-GAI-MISYU-M                     PIC S9(10).
            03  WRK-FILEMEI  .
                05  WRK-FILEMEI-YMD PIC X(08).
                05  WRK-FILEMEI-HMS PIC X(06).
@@ -695,6 +700,8 @@
            MOVE    "2"                 TO  WRK-NYUGAIKBN
            PERFORM 21011-TUKIMISYU-SUM-SEC
            MOVE    WRK-MISYU           TO  WRK-GAI-MISYU
+           MOVE    WRK-MISYU-P         TO  WRK-GAI-MISYU-P
+           MOVE    WRK-MISYU-M         TO  WRK-GAI-MISYU-M
       *
            INITIALIZE                  SYUPARA01-AREA
                                        SYUPARA02-AREA
@@ -702,6 +709,8 @@
            MOVE    "2"                 TO  SYUPARA01-NYUGAIKBN
            MOVE    WRK-NYU-MISYU       TO  SYUPARA01-NYU-MISYU
            MOVE    WRK-GAI-MISYU       TO  SYUPARA01-GAI-MISYU
+           MOVE    WRK-GAI-MISYU-P     TO  SYUPARA01-GAI-MISYU-P
+           MOVE    WRK-GAI-MISYU-M     TO  SYUPARA01-GAI-MISYU-M
            MOVE    ZERO                TO  SYUPARA01-NYU-NYUKIN
            MOVE    ZERO                TO  SYUPARA01-GAI-NYUKIN
            MOVE    4                   TO  SYUPARA01-HAKKOFLG
@@ -876,7 +885,7 @@
       **************************************************************
        21011-TUKIMISYU-SUM-SEC          SECTION.
       *
-           MOVE    ZERO                TO  WRK-MISYU
+           INITIALIZE                  WRK-MISYU-G
       *
            INITIALIZE                  SYUNOU-REC
            MOVE    SPA-HOSPID          TO  SYU-HOSPID
@@ -889,7 +898,7 @@
       *
            MOVE    SYUNOU-REC      TO  MCPDATA-REC
            MOVE    "tbl_syunou"    TO  MCP-TABLE
-           MOVE    "key38"         TO  MCP-PATHNAME
+           MOVE    "key55"         TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC TO  SYUNOU-REC
@@ -898,11 +907,41 @@
            END-IF
       *
            MOVE    "tbl_syunou"    TO  MCP-TABLE
-           MOVE    "key38"         TO  MCP-PATHNAME
+           MOVE    "key55"         TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
-           COMPUTE WRK-MISYU
+           COMPUTE WRK-MISYU-P
                =   SYU-SKYMONEY    -   SYU-NYUKIN-TOTAL
+      *
+           INITIALIZE                  SYUNOU-REC
+           MOVE    SPA-HOSPID          TO  SYU-HOSPID
+           MOVE    WRK-NYUGAIKBN       TO  SYU-NYUGAIKBN
+           MOVE    SPA-PTID            TO  SYU-PTID
+           STRING  WRK-PARA-SRYYM      DELIMITED   BY  SPACE
+                   "01"                DELIMITED   BY  SIZE
+           INTO    SYU-SRYYMD
+           END-STRING
+      *
+           MOVE    SYUNOU-REC      TO  MCPDATA-REC
+           MOVE    "tbl_syunou"    TO  MCP-TABLE
+           MOVE    "key56"         TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC TO  SYUNOU-REC
+           ELSE
+               INITIALIZE              SYUNOU-REC
+           END-IF
+      *
+           MOVE    "tbl_syunou"    TO  MCP-TABLE
+           MOVE    "key56"         TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           COMPUTE WRK-MISYU-M
+               =   SYU-SKYMONEY    -   SYU-NYUKIN-TOTAL
+      *
+           COMPUTE WRK-MISYU
+               =   WRK-MISYU-P
+               +   WRK-MISYU-M
       *
            .
        21011-TUKIMISYU-SUM-EXT.

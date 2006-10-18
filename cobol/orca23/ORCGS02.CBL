@@ -302,7 +302,10 @@
            03  WRK-SEIKYU-PG       PIC X(20).
            03  WRK-NYUGAIKBN       PIC X(01).
            03  WRK-PTNUM           PIC X(20).
-           03  WRK-MISYU           PIC S9(08).
+           03  WRK-MISYU-G.
+               05  WRK-MISYU       PIC S9(08).
+               05  WRK-MISYU-P     PIC S9(08).
+               05  WRK-MISYU-M     PIC S9(08).
            03  WRK-TBL-SEL-MOT     PIC 9(05).
            03  WRK-STPAGE          PIC 9(05).
            03  WRK-EDPAGE          PIC 9(05).
@@ -322,7 +325,10 @@
            03  WRK-GAI-DENPNUM     PIC 9(07).
            03  WRK-GAI-SEIKYU      PIC S9(10).
            03  WRK-GAI-NYUKIN      PIC S9(10).
-           03  WRK-GAI-MISYU       PIC S9(10).
+           03  WRK-GAI-MISYU-G.
+               05  WRK-GAI-MISYU   PIC S9(10).
+               05  WRK-GAI-MISYU-P PIC S9(10).
+               05  WRK-GAI-MISYU-M PIC S9(10).
            03  WRK-NYU-MISYU       PIC S9(10).
            03  WRK-GAI-ZENMISYU    PIC S9(10).
       *
@@ -1714,7 +1720,7 @@
       **************************************************************
        3101-MISYU-SUM-SEC              SECTION.
       *
-           MOVE    ZERO                TO  WRK-MISYU
+           INITIALIZE                      WRK-MISYU-G
       *
            INITIALIZE  SYUNOU-REC
            MOVE    SPA-HOSPID          TO  SYU-HOSPID
@@ -1722,7 +1728,7 @@
            MOVE    SPA-GMN-PTID        TO  SYU-PTID
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "tbl_syunou"        TO  MCP-TABLE
-           MOVE    "key42"             TO  MCP-PATHNAME
+           MOVE    "key53"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC TO  SYUNOU-REC
@@ -1731,11 +1737,36 @@
            END-IF
       *
            MOVE    "tbl_syunou"        TO  MCP-TABLE
-           MOVE    "key42"             TO  MCP-PATHNAME
+           MOVE    "key53"             TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
-           COMPUTE WRK-MISYU
+           COMPUTE WRK-MISYU-P
                =   SYU-SKYMONEY    -   SYU-NYUKIN-TOTAL
+      *
+           INITIALIZE  SYUNOU-REC
+           MOVE    SPA-HOSPID          TO  SYU-HOSPID
+           MOVE    WRK-NYUGAIKBN       TO  SYU-NYUGAIKBN
+           MOVE    SPA-GMN-PTID        TO  SYU-PTID
+           MOVE    SYUNOU-REC          TO  MCPDATA-REC
+           MOVE    "tbl_syunou"        TO  MCP-TABLE
+           MOVE    "key54"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC TO  SYUNOU-REC
+           ELSE
+               INITIALIZE              SYUNOU-REC
+           END-IF
+      *
+           MOVE    "tbl_syunou"        TO  MCP-TABLE
+           MOVE    "key54"             TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           COMPUTE WRK-MISYU-M
+               =   SYU-SKYMONEY    -   SYU-NYUKIN-TOTAL
+      *
+           COMPUTE WRK-MISYU
+               =   WRK-MISYU-P
+               +   WRK-MISYU-M
       *
            .
        3101-MISYU-SUM-EXT.
@@ -1745,7 +1776,7 @@
       **************************************************************
        3101-TUKIMISYU-SUM-SEC          SECTION.
       *
-           MOVE    ZERO                TO  WRK-MISYU
+           INITIALIZE                  WRK-MISYU-G
       *
            INITIALIZE                  SYUNOU-REC
            MOVE    SPA-HOSPID          TO  SYU-HOSPID
@@ -1758,7 +1789,7 @@
       *
            MOVE    SYUNOU-REC      TO  MCPDATA-REC
            MOVE    "tbl_syunou"    TO  MCP-TABLE
-           MOVE    "key38"         TO  MCP-PATHNAME
+           MOVE    "key55"         TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC TO  SYUNOU-REC
@@ -1767,11 +1798,41 @@
            END-IF
       *
            MOVE    "tbl_syunou"    TO  MCP-TABLE
-           MOVE    "key38"         TO  MCP-PATHNAME
+           MOVE    "key55"         TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
-           COMPUTE WRK-MISYU
+           COMPUTE WRK-MISYU-P
                =   SYU-SKYMONEY    -   SYU-NYUKIN-TOTAL
+      *
+           INITIALIZE                  SYUNOU-REC
+           MOVE    SPA-HOSPID          TO  SYU-HOSPID
+           MOVE    WRK-NYUGAIKBN       TO  SYU-NYUGAIKBN
+           MOVE    SPA-GMN-PTID        TO  SYU-PTID
+           STRING  SPA-NAI-SRYYM       DELIMITED   BY  SPACE
+                   "01"                DELIMITED   BY  SIZE
+           INTO    SYU-SRYYMD
+           END-STRING
+      *
+           MOVE    SYUNOU-REC      TO  MCPDATA-REC
+           MOVE    "tbl_syunou"    TO  MCP-TABLE
+           MOVE    "key56"         TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC TO  SYUNOU-REC
+           ELSE
+               INITIALIZE              SYUNOU-REC
+           END-IF
+      *
+           MOVE    "tbl_syunou"    TO  MCP-TABLE
+           MOVE    "key56"         TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           COMPUTE WRK-MISYU-M
+               =   SYU-SKYMONEY    -   SYU-NYUKIN-TOTAL
+      *
+           COMPUTE WRK-MISYU
+               =   WRK-MISYU-P
+               +   WRK-MISYU-M
       *
            .
        3101-TUKIMISYU-SUM-EXT.
@@ -2950,6 +3011,8 @@
            MOVE    "2"                 TO  WRK-NYUGAIKBN
            PERFORM 3101-MISYU-SUM-SEC
            MOVE    WRK-MISYU           TO  WRK-GAI-MISYU
+           MOVE    WRK-MISYU-P         TO  WRK-GAI-MISYU-P
+           MOVE    WRK-MISYU-M         TO  WRK-GAI-MISYU-M
       *
            INITIALIZE                      SYUNOU-REC
            MOVE    WRK-SPA-HOSPID      TO  SYU-HOSPID
@@ -2973,6 +3036,8 @@
            MOVE    "2"                 TO  SYUPARA01-NYUGAIKBN
            MOVE    WRK-NYU-MISYU       TO  SYUPARA01-NYU-MISYU
            MOVE    WRK-GAI-MISYU       TO  SYUPARA01-GAI-MISYU
+           MOVE    WRK-GAI-MISYU-P     TO  SYUPARA01-GAI-MISYU-P
+           MOVE    WRK-GAI-MISYU-M     TO  SYUPARA01-GAI-MISYU-M
            MOVE    ZERO                TO  SYUPARA01-NYU-NYUKIN
            MOVE    ZERO                TO  SYUPARA01-GAI-NYUKIN
            MOVE    1                   TO  SYUPARA01-HAKKOFLG
@@ -3003,6 +3068,16 @@
                        =   SYUPARA01-GAI-MISYU
                        - ( SYU-SKYMONEY    -   SYU-NYUKIN-TOTAL )
       *
+                   IF    ( SYU-SKYMONEY        <   SYU-NYUKIN-TOTAL )
+                       COMPUTE SYUPARA01-GAI-MISYU-M
+                           =   SYUPARA01-GAI-MISYU-M
+                           - ( SYU-SKYMONEY    -   SYU-NYUKIN-TOTAL )
+                   ELSE
+                       COMPUTE SYUPARA01-GAI-MISYU-P
+                           =   SYUPARA01-GAI-MISYU-P
+                           - ( SYU-SKYMONEY    -   SYU-NYUKIN-TOTAL )
+                   END-IF
+      *
                    PERFORM 42011-SYUPARA02-HEN-SEC
                    IF    ( SPA-ERRCD       NOT =   SPACE )
                        GO  TO  4201-GAI-SAIHAKKOU-EXT
@@ -3021,6 +3096,16 @@
                COMPUTE SYUPARA01-GAI-MISYU
                    =   SYUPARA01-GAI-MISYU
                    - ( SYU-SKYMONEY    -   SYU-NYUKIN-TOTAL )
+      *
+               IF    ( SYU-SKYMONEY        <   SYU-NYUKIN-TOTAL )
+                   COMPUTE SYUPARA01-GAI-MISYU-M
+                       =   SYUPARA01-GAI-MISYU-M
+                       - ( SYU-SKYMONEY    -   SYU-NYUKIN-TOTAL )
+               ELSE
+                   COMPUTE SYUPARA01-GAI-MISYU-P
+                       =   SYUPARA01-GAI-MISYU-P
+                       - ( SYU-SKYMONEY    -   SYU-NYUKIN-TOTAL )
+               END-IF
       *
                PERFORM 42011-SYUPARA02-HEN-SEC
                IF    ( SPA-ERRCD       NOT =   SPACE )
@@ -3071,6 +3156,21 @@
                MOVE    ORCHC03-ZENMISYU
                                        TO  ORCHC03-HENKIN
                MOVE    ZERO            TO  ORCHC03-ZENMISYU
+           END-IF
+      *
+           MOVE    WRK-GAI-MISYU-P     TO  ORCHC03-ZENMISYU-2
+      *
+           COMPUTE ORCHC03-KANYUKIN
+               =   WRK-GAI-MISYU-M     *   -1
+      *
+           IF    ( WRK-GAI-ZENMISYU    <   ZERO )
+               COMPUTE ORCHC03-KANYUKIN
+                   =   ORCHC03-KANYUKIN
+                   - ( WRK-GAI-ZENMISYU    *   -1 )
+           ELSE
+               COMPUTE ORCHC03-ZENMISYU-2
+                   =   ORCHC03-ZENMISYU-2
+                   -   WRK-GAI-ZENMISYU
            END-IF
            MOVE    "S02"               TO  ORCHC03-PARA-GYOUMUID
            MOVE    SPA-TERMID          TO  ORCHC03-PARA-TERMID
@@ -3167,6 +3267,8 @@
            MOVE    "2"                 TO  WRK-NYUGAIKBN
            PERFORM 3101-TUKIMISYU-SUM-SEC
            MOVE    WRK-MISYU           TO  WRK-GAI-MISYU
+           MOVE    WRK-MISYU-P         TO  WRK-GAI-MISYU-P
+           MOVE    WRK-MISYU-M         TO  WRK-GAI-MISYU-M
       *
            INITIALIZE                      SYUNOU-REC
            MOVE    WRK-SPA-HOSPID      TO  SYU-HOSPID
@@ -3180,15 +3282,14 @@
            MOVE    SYU-DENPNUM         TO  WRK-GAI-DENPNUM
            MOVE    SYU-NYUKIN-TOTAL    TO  WRK-GAI-NYUKIN
       *
-           COMPUTE WRK-GAI-ZENMISYU
-               =   SYU-SKYMONEY        -   SYU-NYUKIN-TOTAL
-      *
            INITIALIZE                  SYUPARA01-AREA
                                        SYUPARA02-AREA
       *
            MOVE    "2"                 TO  SYUPARA01-NYUGAIKBN
            MOVE    WRK-NYU-MISYU       TO  SYUPARA01-NYU-MISYU
            MOVE    WRK-GAI-MISYU       TO  SYUPARA01-GAI-MISYU
+           MOVE    WRK-GAI-MISYU-P     TO  SYUPARA01-GAI-MISYU-P
+           MOVE    WRK-GAI-MISYU-M     TO  SYUPARA01-GAI-MISYU-M
            MOVE    ZERO                TO  SYUPARA01-NYU-NYUKIN
            MOVE    ZERO                TO  SYUPARA01-GAI-NYUKIN
            MOVE    4                   TO  SYUPARA01-HAKKOFLG
@@ -3255,12 +3356,16 @@
       *
            COMPUTE ORCHC03-ZENMISYU
                =   WRK-GAI-MISYU
-               -   WRK-GAI-ZENMISYU
            IF    ( ORCHC03-ZENMISYU    <   ZERO )
                MOVE    ORCHC03-ZENMISYU
                                        TO  ORCHC03-HENKIN
                MOVE    ZERO            TO  ORCHC03-ZENMISYU
            END-IF
+      *
+           MOVE    WRK-GAI-MISYU-P     TO  ORCHC03-ZENMISYU-2
+      *
+           COMPUTE ORCHC03-KANYUKIN
+               =   WRK-GAI-MISYU-M     *   -1
       *
            MOVE    "S02"               TO  ORCHC03-PARA-GYOUMUID
            MOVE    SPA-TERMID          TO  ORCHC03-PARA-TERMID

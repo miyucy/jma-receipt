@@ -192,6 +192,7 @@
                        09  SPA-NAI-NYUKIN-MOTO     PIC S9(10).
                        09  SPA-NAI-DENPEDANUM      PIC X(02).
                        09  SPA-NAI-DENPJTIKBN      PIC X(01).
+                       09  SPA-NAI-MAINUS          PIC X(01).
                    07  SPA-NAI-NYKN-HOHOLST-G.
                        09  SPA-NAI-NYKN-HOHOLST    OCCURS  50.
                            11  SPA-NAI-NYKN-HOHOMEIL
@@ -203,6 +204,7 @@
                        09  SPA-NAI-TJOUTAIKBN      PIC X(1).
                        09  SPA-NAI-TMEIJOUTAIKBN   PIC X(1).
                        09  SPA-NAI-TSYORIYMD       PIC X(08).
+                       09  SPA-NAI-TMAINUS         PIC X(1).
       *
       *    ¥Õ¥é¥°ÎÎ°è
        01  FLG-AREA.
@@ -238,7 +240,10 @@
            03  WRK-HENYMDG                         PIC X(10).
            03  WRK-Z9                              PIC --,---,---.
            03  WRK-EDABAN                          PIC ZZ.
-           03  WRK-MISYU                           PIC S9(08).
+           03  WRK-MISYU-G.
+               05  WRK-MISYU                       PIC S9(08).
+               05  WRK-MISYU-P                     PIC S9(08).
+               05  WRK-MISYU-M                     PIC S9(08).
            03  WRK-NYUGAIKBN                       PIC X(01).
            03  WRK-GMN-RITU.
                05  FILLER                          PIC X(02).
@@ -1022,6 +1027,11 @@
                MOVE    SMEI-JOUTAIKBN      TO  SPA-NAI-TJOUTAIKBN (IDX1)
                MOVE    SMEI-MEISAIJOUTAIKBN TO SPA-NAI-TMEIJOUTAIKBN
                                                                   (IDX1)
+               IF    ( SMEI-JOUTAIKBN      =   "4" OR  "6" )
+                OR  (( SMEI-JOUTAIKBN      =   "8" )
+                 AND ( SMEI-NYUHEN-MONEY   <   ZERO ))
+                   MOVE    "1"             TO  SPA-NAI-TMAINUS (IDX1)
+               END-IF
       *
                EVALUATE    SMEI-JOUTAIKBN
                WHEN    SPACE
@@ -1230,7 +1240,7 @@
       **************************************************************
        3101-MISYU-SUM-SEC              SECTION.
       *
-           MOVE    ZERO                TO  WRK-MISYU
+           INITIALIZE                      WRK-MISYU-G
       *
            INITIALIZE  SYUNOU-REC
            MOVE    SPA-HOSPID          TO  SYU-HOSPID
@@ -1238,7 +1248,7 @@
            MOVE    SPA-S01-PTID        TO  SYU-PTID
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "tbl_syunou"        TO  MCP-TABLE
-           MOVE    "key42"             TO  MCP-PATHNAME
+           MOVE    "key53"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC TO  SYUNOU-REC
@@ -1247,11 +1257,36 @@
            END-IF
       *
            MOVE    "tbl_syunou"        TO  MCP-TABLE
-           MOVE    "key42"             TO  MCP-PATHNAME
+           MOVE    "key53"             TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
-           COMPUTE WRK-MISYU
+           COMPUTE WRK-MISYU-P
                =   SYU-SKYMONEY    -   SYU-NYUKIN-TOTAL
+      *
+           INITIALIZE  SYUNOU-REC
+           MOVE    SPA-HOSPID          TO  SYU-HOSPID
+           MOVE    WRK-NYUGAIKBN       TO  SYU-NYUGAIKBN
+           MOVE    SPA-S01-PTID        TO  SYU-PTID
+           MOVE    SYUNOU-REC          TO  MCPDATA-REC
+           MOVE    "tbl_syunou"        TO  MCP-TABLE
+           MOVE    "key54"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC TO  SYUNOU-REC
+           ELSE
+               INITIALIZE              SYUNOU-REC
+           END-IF
+      *
+           MOVE    "tbl_syunou"        TO  MCP-TABLE
+           MOVE    "key54"             TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           COMPUTE WRK-MISYU-M
+               =   SYU-SKYMONEY    -   SYU-NYUKIN-TOTAL
+      *
+           COMPUTE WRK-MISYU
+               =   WRK-MISYU-P
+               +   WRK-MISYU-M
       *
            .
        3101-MISYU-SUM-EXT.
@@ -1421,7 +1456,7 @@
                MOVE    SPA-GMN-NYUKINYMD   TO  S03-NYUKINYMD
       *
                IF    ( SPA-S01-SYORINO     =   CONST-PROC-RRKSYU )
-                AND  ( SPA-NAI-DENPJTIKBN  =   "4" OR "6" )
+                AND  ( SPA-NAI-MAINUS      =   "1" )
                    CONTINUE
                ELSE
                    MOVE    SPA-GMN-NYKN-HOHO-G TO  S03-NYUKINHOUHOU
@@ -1517,7 +1552,7 @@
                                            S03-NAIYOLST-STATE
       *
            IF    ( SPA-S01-SYORINO     =   CONST-PROC-RRKSYU )
-               IF    ( SPA-NAI-DENPJTIKBN  =   "4" OR "6" )
+               IF    ( SPA-NAI-MAINUS  =   "1" )
                    MOVE    WIDGET-INSENSITIVE
                                            TO  S03-NYUKINHOUHOU-STATE
                                                S03-NYUKINHOUHOULST-STATE
@@ -1862,7 +1897,7 @@
            PERFORM 4101-SELNUM-CHK-SEC
       *
            IF    ( SPA-ERRCD           =   SPACE )
-               IF    ( SPA-NAI-DENPJTIKBN  =   "4" OR  "6" )
+               IF    ( SPA-NAI-MAINUS  =   "1" )
                    PERFORM 4102-NYUKIN-CHK-SEC
                ELSE
                    PERFORM 4101-NYUKIN-CHK-SEC
@@ -2065,6 +2100,8 @@
                                        TO  SPA-NAI-DENPEDANUM
            MOVE    SPA-NAI-TJOUTAIKBN(SPA-GMN-SELNUM)
                                        TO  SPA-NAI-DENPJTIKBN
+           MOVE    SPA-NAI-TMAINUS    (SPA-GMN-SELNUM)
+                                       TO  SPA-NAI-MAINUS
       *
            .
        41001-INPUT-AREA-HEN-EXT.
@@ -2405,6 +2442,21 @@
                MOVE    ZERO            TO  ORCHC03-ZENMISYU
            END-IF
       *
+           MOVE    WRK-MISYU-P         TO  ORCHC03-ZENMISYU-2
+      *
+           COMPUTE ORCHC03-KANYUKIN
+               =   WRK-MISYU-M         *   -1
+      *
+           IF    ( SYU-SKYMONEY        <   SYU-NYUKIN-TOTAL )
+               COMPUTE ORCHC03-KANYUKIN
+                   =   ORCHC03-KANYUKIN
+                   - ( SYU-NYUKIN-TOTAL    -   SYU-SKYMONEY )
+           ELSE
+               COMPUTE ORCHC03-ZENMISYU-2
+                   =   ORCHC03-ZENMISYU-2
+                   - ( SYU-SKYMONEY        -   SYU-NYUKIN-TOTAL )
+           END-IF
+      *
            MOVE   3                    TO  ORCHC03-HAKKOFLG
            MOVE   WRK-SKYPRT-DENPEDANUM
                                        TO  ORCHC03-DENPEDANUM
@@ -2622,13 +2674,10 @@
            END-IF
       *
            IF    ( SPA-ERRCD           =   SPACE )
-               IF    ( SPA-NAI-DENPJTIKBN  =   "4" OR "6" )
-                   CONTINUE
-               ELSE
-                   IF    ( SPA-GMN-NYKN-HOHO-G =   SPACE )
+               IF    ( SPA-GMN-NYUKIN  >   ZERO )
+                AND  ( SPA-GMN-NYKN-HOHO-G =   SPACE )
                        MOVE    4           TO  SPA-GMN-CUR
                        MOVE    "0004"      TO  SPA-ERRCD
-                   END-IF
                END-IF
            END-IF
       *

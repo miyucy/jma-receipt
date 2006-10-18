@@ -2652,13 +2652,10 @@
            END-IF
       *
            IF    ( SPA-ERRCD           =   SPACE )
-               IF    ( SPA-NAI-DENPJTIKBN  =   "4" OR "6" )
-                   CONTINUE
-               ELSE
-                   IF    ( SPA-GMN-NYKN-HOHO-G =   SPACE )
+               IF    ( SPA-GMN-NYUKIN  >   ZERO )
+                AND  ( SPA-GMN-NYKN-HOHO-G =   SPACE )
                        MOVE    4           TO  SPA-GMN-CUR
                        MOVE    "0004"      TO  SPA-ERRCD
-                   END-IF
                END-IF
            END-IF
       *

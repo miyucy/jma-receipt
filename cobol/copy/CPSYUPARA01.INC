@@ -23,6 +23,8 @@
            03  SYUPARA01-NYUGAIKBN         PIC X(01).
            03  SYUPARA01-NYU-MISYU         PIC S9(10).
            03  SYUPARA01-GAI-MISYU         PIC S9(10).
+           03  SYUPARA01-GAI-MISYU-P       PIC S9(10).
+           03  SYUPARA01-GAI-MISYU-M       PIC S9(10).
            03  SYUPARA01-NYU-NYUKIN        PIC S9(10).
            03  SYUPARA01-GAI-NYUKIN        PIC S9(10).
       *    発行フラグ（０：新規、１：再発行、２：訂正、３：入金 ４：月別）

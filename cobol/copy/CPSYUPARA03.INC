@@ -24,6 +24,9 @@
            03  SYUPARA03-SEIKYU            PIC S9(10).
            03  SYUPARA03-SEIKYU-TAX-SAI    PIC S9(10).
            03  SYUPARA03-MISYU             PIC S9(10).
+           03  SYUPARA03-MISYU-P           PIC S9(10).
+           03  SYUPARA03-MISYU-M           PIC S9(10).
+           03  SYUPARA03-NYU-MISYU         PIC S9(10).
            03  SYUPARA03-HENKIN            PIC S9(10).
            03  SYUPARA03-NYUKIN            PIC S9(10).
            03  SYUPARA03-STSRYYMD          PIC X(08).

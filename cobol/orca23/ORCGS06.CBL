@@ -248,6 +248,8 @@
                05  WRK-GAI-SRYYMD          PIC X(08).
                05  WRK-NYU-SRYYMD          PIC X(08).
                05  WRK-GAI-KONSEIKYU       PIC S9(10).
+               05  WRK-GAI-MISYU-P         PIC S9(10).
+               05  WRK-GAI-MISYU-M         PIC S9(10).
            03  WRK-FILEMEI  .
                05  WRK-FILEMEI-YMD         PIC X(08).
                05  WRK-FILEMEI-HMS         PIC X(06).
@@ -2170,6 +2172,7 @@
                        MOVE    1       TO  FLG-GAI-SKYPRT
                        COMPUTE WRK-GAI-NYUKIN
                            =   WRK-GAI-NYUKIN
+                           +   SPA-GMN-TNYUKIN  (IDX0)
                        COMPUTE WRK-GAI-KONSEIKYU
                            =   WRK-GAI-KONSEIKYU
                            +   SPA-GMN-TMISYU   (IDX0)
@@ -2182,6 +2185,18 @@
                        END-IF
                    END-IF
       *
+               ELSE
+                   IF    ( SPA-NAI-TNYUGAIKBN (IDX0)   =   "2" )
+                       IF    ( SPA-GMN-TMISYU (IDX0)  >=   ZERO )
+                           COMPUTE WRK-GAI-MISYU-P
+                               =   WRK-GAI-MISYU-P
+                               +   SPA-GMN-TMISYU (IDX0)
+                       ELSE
+                           COMPUTE WRK-GAI-MISYU-M
+                               =   WRK-GAI-MISYU-M
+                               +   SPA-GMN-TMISYU (IDX0)
+                       END-IF
+                   END-IF
                END-IF
       *
            END-PERFORM
@@ -2296,6 +2311,8 @@
            MOVE    SPA-GMN-NYU-MISYU   TO  SYUPARA01-NYU-MISYU
            COMPUTE SYUPARA01-GAI-MISYU
                =   SPA-GMN-GAI-MISYU   -   WRK-GAI-KONSEIKYU
+           MOVE    WRK-GAI-MISYU-P     TO  SYUPARA01-GAI-MISYU-P
+           MOVE    WRK-GAI-MISYU-M     TO  SYUPARA01-GAI-MISYU-M
            MOVE    WRK-NYU-NYUKIN      TO  SYUPARA01-NYU-NYUKIN
            MOVE    WRK-GAI-NYUKIN      TO  SYUPARA01-GAI-NYUKIN
            MOVE    SPA-GMN-SKYSUMKBN   TO  SYUPARA01-SKYSUMFLG
@@ -2382,6 +2399,11 @@
                                            TO  ORCHC03-HENKIN
                    MOVE    ZERO            TO  ORCHC03-ZENMISYU
                END-IF
+      *
+               MOVE    WRK-GAI-MISYU-P     TO  ORCHC03-ZENMISYU-2
+               COMPUTE ORCHC03-KANYUKIN
+                   =   WRK-GAI-MISYU-M     *   -1
+      *
                IF    ( SPA-NAI-TNYUKIN-TOTAL (IDX0) 
                                            =   ZERO )
                    MOVE    SYU-SKYMONEY-TAX-SAI
