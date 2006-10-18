@@ -383,6 +383,10 @@
        01  SYUKA-REC.
            COPY    "CPSYUKA.INC".
       *
+      *    療養レセプトコメントマスタ
+       01  RYOCOM-REC.
+           COPY    "CPRYOCOM.INC".
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -2604,6 +2608,19 @@
            MOVE    SYUKA-REC           TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_syuka"         TO  MCP-TABLE
+           MOVE    "del1"              TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+      *    療養レセプトコメント
+           INITIALIZE                  RYOCOM-REC
+           MOVE    SPA-HOSPID          TO  RYOCOM-HOSPID
+           MOVE    SPA-GMN-PTID        TO  RYOCOM-PTID
+      *
+           MOVE    RYOCOM-REC          TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_ryocom"        TO  MCP-TABLE
            MOVE    "del1"              TO  MCP-PATHNAME
            CALL    "MONFUNC"           USING
                                        MCPAREA
