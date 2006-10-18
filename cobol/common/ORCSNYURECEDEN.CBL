@@ -1786,9 +1786,10 @@
                          PERFORM   VARYING  IDX5  FROM  1  BY  1
                          UNTIL   (IDX5  >  31)   OR
                                (WRK-RYOYO-DAY-ST(IDX5) =  ZERO)
-                           ADD    1     TO
+                           IF   LNK-NYURECEDEN-MEISAISU(1 IDX2) < 100
+                             ADD    1     TO
                                        LNK-NYURECEDEN-MEISAISU(1 IDX2)
-                           IF   WRK-RYOYO-DAY-ST(IDX5) = 
+                             IF   WRK-RYOYO-DAY-ST(IDX5) = 
                                                WRK-RYOYO-DAY-ED(IDX5)
                                 MOVE   "CO"   TO   
                                     LNK-NYURECEDEN-RECSKB(1 IDX2 IDX3)
@@ -1806,7 +1807,7 @@
                                 MOVE   TBL-DAY(IDX6)  TO
                                     LNK-NYURECEDEN-COMMENT(1 IDX2 IDX3)
                                                           (7:4)
-                           ELSE
+                             ELSE
                                 MOVE   "CO"   TO   
                                     LNK-NYURECEDEN-RECSKB(1 IDX2 IDX3)
                                 MOVE  "810000001"  TO
@@ -1829,39 +1830,44 @@
                                 MOVE   TBL-DAY(IDX6)  TO
                                     LNK-NYURECEDEN-COMMENT(1 IDX2 IDX3)
                                                           (21:4)
+                             END-IF
+                             ADD    1     TO   IDX3
                            END-IF
-                           ADD    1     TO   IDX3
                          END-PERFORM
       *
       *                  °åÎÅ¶èÊ¬¥³¥á¥ó¥È
                          PERFORM   VARYING  IDX5  FROM  1  BY  1
                          UNTIL   (IDX5  >  30)   OR
                            (WRK-IRYOADL-SRYCD(CIDX IDX5) =  SPACE)
-                            ADD    1     TO
+                           IF   LNK-NYURECEDEN-MEISAISU(1 IDX2) < 100
+                             ADD    1     TO
                                    LNK-NYURECEDEN-MEISAISU(1 IDX2)
-                            MOVE   "CO"   TO   
+                             MOVE   "CO"   TO   
                                 LNK-NYURECEDEN-RECSKB(1 IDX2 IDX3)
-                            MOVE  WRK-IRYOADL-SRYCD(CIDX IDX5)  TO
+                             MOVE  WRK-IRYOADL-SRYCD(CIDX IDX5)  TO
                                   LNK-NYURECEDEN-SRYCD(1 IDX2 IDX3)
-                            ADD    1     TO   IDX3
+                             ADD    1     TO   IDX3
+                           END-IF
                          END-PERFORM
       *
       *                  £Á£Ä£Ì¥³¥á¥ó¥È
-                         ADD    1     TO
+                         IF   LNK-NYURECEDEN-MEISAISU(1 IDX2) < 100
+                           ADD    1     TO
                                    LNK-NYURECEDEN-MEISAISU(1 IDX2)
-                         MOVE   "CO"   TO   
+                           MOVE   "CO"   TO   
                                 LNK-NYURECEDEN-RECSKB(1 IDX2 IDX3)
-                         MOVE  "840000103"   TO
+                           MOVE  "840000103"   TO
                                   LNK-NYURECEDEN-SRYCD(1 IDX2 IDX3)
-                         IF   WRK-IRYOADL-TEN(CIDX)   =   ZERO
+                           IF   WRK-IRYOADL-TEN(CIDX)   =   ZERO
                              MOVE  "£°£°"    TO
                                     LNK-NYURECEDEN-COMMENT(1 IDX2 IDX3)
-                         ELSE
+                           ELSE
                              MOVE   WRK-IRYOADL-TEN(CIDX) TO IDX6
-                                MOVE   TBL-DAY(IDX6)  TO
+                             MOVE   TBL-DAY(IDX6)  TO
                                     LNK-NYURECEDEN-COMMENT(1 IDX2 IDX3)
+                           END-IF
+                           ADD    1     TO   IDX3
                          END-IF
-                         ADD    1     TO   IDX3
       *
                        END-IF
                       END-IF
