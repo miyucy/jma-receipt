@@ -1134,3 +1134,24 @@ path	key47 	{
 	};
 };
 
+path	key48 	{
+	DBSELECT	{
+		DECLARE tbl_sryacct_key48_csr CURSOR FOR
+		SELECT a.* from (
+			SELECT *
+			FROM tbl_sryacct
+			WHERE   HOSPID    =   :HOSPID
+			AND   NYUGAIKBN   =   '1'
+			AND   PTID        =   :PTID
+			AND   SRYYM       =   :SRYYM
+			UNION
+			SELECT *
+			FROM tbl_sryacct
+			WHERE   HOSPID    =   :HOSPID
+			AND   NYUGAIKBN   =   '2'
+			AND   PTID        =   :PTID
+			AND   SRYYM       =   :SRYYM
+			) a
+		;
+	};
+};
