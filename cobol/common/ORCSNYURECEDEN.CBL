@@ -1549,7 +1549,8 @@
            END-PERFORM
       *
       *    療養レセコメントの同一剤まとめ処理
-           IF    MATOME-IDX     NOT =   ZERO
+           IF    (MATOME-IDX     NOT =   ZERO)   AND
+                 (LNK-RYOCOM-RC  =       ZERO)
       *      療養レセコメント取得サブの返却結果をまとめワークに転送
              PERFORM      VARYING    IDX1   FROM   1  BY  1
                UNTIL      IDX1   >   31
@@ -1746,6 +1747,7 @@
                        END-PERFORM
                      END-IF
       *
+                     IF  LNK-RYOCOM-RC  =       ZERO
       *              療養レセプトコメントセット処理
       *              月日セット
                      PERFORM   VARYING  CIDX   FROM   1  BY  1
@@ -1872,6 +1874,8 @@
                        END-IF
                       END-IF
                      END-PERFORM
+      *
+                     END-IF
       *
                END-IF
            END-PERFORM
@@ -4038,7 +4042,7 @@
            MOVE    LNK-NYURECEDEN-SANTEIYM TO  LNK-NYULIFE-SANTEIYM
            CALL    "ORCSNYULIFE"     USING  ORCSNYULIFE-AREA
            IF      LNK-NYULIFE-RC          NOT =  ZERO
-               DISPLAY  "LNK-NYULIFE-RC = " LNK-RYOCOM-RC
+               DISPLAY  "LNK-NYULIFE-RC = " LNK-NYULIFE-RC
            END-IF
       *
       *    食事ワーク７の編集（同一剤まとめ用）
