@@ -51,7 +51,7 @@
       *明細数
                    07  LNK-NYURECEDEN-MEISAISU       PIC  9(03).
       *レセ電記録エリア
-                   07  LNK-NYURECEDEN-NYUIN          OCCURS 50.
+                   07  LNK-NYURECEDEN-NYUIN          OCCURS 100.
       *レコード識別
                        09  LNK-NYURECEDEN-RECSKB     PIC  X(02).
       *診療識別
