@@ -272,6 +272,7 @@
       *  03.03.04    NACL-Æ£¸¶    06/09/29  ¸¡ºº¤ÎÈ½ÃÇÎÁ¤Îµ­ºÜÊýË¡¤ÎÊÑ¹¹
       *                                     ¸¡ººÅù¼Â»ÜÈ½ÃÇ¤ÎÄÉ²Ã
       *  03.03.05    NACL-ÌçÏÆ    06/10/10  Ï·ÎðÊ¡»ãÇ¯¶â¤Ë¤Ä¤¤¤Æ¤ÎÂÐ±þ
+      *  03.03.06    NACL-ÌçÏÆ    06/10/17  ¸º³Û¡¦ÌÈ½ü¡¦»ÙÊ§Í±Í½ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -481,7 +482,8 @@
            03  SYSKAN-IDX                              PIC 9(03).
            03  SYSKAN-IDX2                             PIC 9(03).
            03  FUKA-IDX                                PIC 9(03).
-      *     
+           03  GEN-IDX                                 PIC 9(02).
+      *
            03  IDA                 PIC 9(04).
            03  IDB                 PIC 9(04).
            03  IDX5                PIC 9(03).
@@ -716,6 +718,11 @@
            03  WRK-FUKA-VALUE                  PIC 9(01).
       *
            03  WRK-BIRTHDAY                    PIC X(08).
+      *
+           03  WK-GENGAKUKBN                   PIC  9(01).
+           03  WK-GENGAKU-KOHID                PIC  9(10).
+           03  WK-GENGAKU-RITU                 PIC  9(03).
+           03  WK-GENGAKU-KIN                  PIC  9(07).
       *
       *---------------------------------------------------------------
       *  ²ó¿ô¸º»»ÍÑÂàÈòÎÎ°è
@@ -1004,6 +1011,18 @@
            03  TBL-ZAICHECK    PIC X(09)   OCCURS    4.
       *
        01  TBL-ZAICHECK-MAX    PIC 9(02)   VALUE     4.
+      *
+      *    ¸º³Û¡¦ÌÈ½ü¡¦»ÙÊ§Í±Í½È½ÄêÍÑ¥Æ¡¼¥Ö¥ë
+       01  TBL-GENGAKU-AREA.
+           03  FILLER          PIC X(03)   VALUE    "960".
+           03  FILLER          PIC X(03)   VALUE    "961".
+           03  FILLER          PIC X(03)   VALUE    "962".
+           03  FILLER          PIC X(03)   VALUE    "963".
+      *
+       01  TBL-GENGAKU-R       REDEFINES   TBL-GENGAKU-AREA.
+           03  TBL-GENGAKU     PIC X(03)   OCCURS    4.
+      *
+       01  TBL-GENGAKU-MAX     PIC 9(02)   VALUE     4.
       *
       *    »ÀÁÇ 
            COPY    "CMSANSOTBL.INC".
@@ -1445,6 +1464,8 @@
       *
            INITIALIZE                   TBL-TOKUSYU-KEISAN
       *
+           PERFORM     2117-GENGAKU-HANTEI-SEC
+      *
            IF    RECE02-ZAITAKU      NOT =    SPACE
                PERFORM     2116-KEIKASOCHI-HANTEI-SEC
                PERFORM     2101-KOREISYA-KOHI-SEC
@@ -1554,6 +1575,133 @@
            PERFORM     RECE02-REWRITE-SEC
            .
        210-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¸º³Û¡¦ÌÈ½ü¡¦»ÙÊ§Í±Í½¼Ô¤ÎÈ½Äê
+      *****************************************************************
+       2117-GENGAKU-HANTEI-SEC      SECTION.
+      *
+           MOVE     ZERO     TO     WK-GENGAKUKBN
+           MOVE     ZERO     TO     WK-GENGAKU-KOHID
+           MOVE     ZERO     TO     WK-GENGAKU-RITU
+           MOVE     ZERO     TO     WK-GENGAKU-KIN
+      *
+           IF   (RECE02-SRYYM       >=  "200610")
+           AND  (RECE02-HKNNUM   NOT =   SPACE  )
+      *
+            IF  (RECE02-HKNNUM(1:2)  =   "98"          )
+            OR  (RECE02-HKNNUM       =   "068" OR "069")
+              CONTINUE
+            ELSE
+              PERFORM   VARYING   GEN-IDX   FROM   1    BY   1
+                         UNTIL   (GEN-IDX    >    TBL-GENGAKU-MAX)
+                           OR    (WK-GENGAKUKBN   NOT = ZERO     )
+                INITIALIZE                       PTKOHINF-REC
+                MOVE    RECE02-HOSPID        TO  PTKOH-HOSPID
+                MOVE    RECE02-PTID          TO  PTKOH-PTID
+                MOVE    TBL-GENGAKU(GEN-IDX) TO  PTKOH-KOHNUM
+                MOVE    PTKOHINF-REC         TO  MCPDATA-REC
+                MOVE    "DBSELECT"           TO  MCP-FUNC
+                MOVE    "PTKOHINF-KEY4"      TO  ORC-DBPATH
+                CALL    "ORCMCPSUB"          USING   MCPAREA
+                                                     ORCMCPAREA
+                                                     MCPDATA-REC
+                IF      MCP-RC               =       ZERO
+                  MOVE    "PTKOHINF-KEY4" TO  ORC-DBPATH
+                  PERFORM  900-PTKOHINF-READ-SEC
+                  PERFORM  UNTIL   FLG-PTKOHINF    =   1
+                     IF  (PTKOH-TEKSTYMD(1:6)  <=   RECE02-SRYYM       )
+                     AND (RECE02-SRYYM         <=   PTKOH-TEKEDYMD(1:6))
+                     AND (PTKOH-SAKJOKBN        =   SPACE              )
+                         EVALUATE   GEN-IDX
+                           WHEN        1
+                             MOVE   1           TO  WK-GENGAKUKBN
+                             MOVE   PTKOH-KOHID TO  WK-GENGAKU-KOHID
+                           WHEN        2
+                             MOVE   2           TO  WK-GENGAKUKBN
+                             MOVE   PTKOH-KOHID TO  WK-GENGAKU-KOHID
+                           WHEN        3
+                             MOVE   3           TO  WK-GENGAKUKBN
+                           WHEN        4
+                             MOVE   4           TO  WK-GENGAKUKBN
+                         END-EVALUATE
+                         MOVE       1           TO  FLG-PTKOHINF
+                     ELSE
+                         MOVE    "PTKOHINF-KEY4"  TO  ORC-DBPATH
+                         PERFORM  900-PTKOHINF-READ-SEC
+                     END-IF
+                  END-PERFORM
+                END-IF
+                MOVE   "PTKOHINF-KEY4"      TO  WK-PATH
+                PERFORM   900-CSR-CLOSE-SEC
+              END-PERFORM
+            END-IF
+      *
+           END-IF
+      *
+           IF   WK-GENGAKUKBN   =   1   OR   2
+      *
+      *       ¸øÈñ·î¾å¸Â³Û¼èÆÀ
+              INITIALIZE                  LNK-ORCSJGNGET-REC
+              MOVE  RECE02-HOSPID     TO  LNK-ORCSJGNGET-HOSPID
+              MOVE  RECE02-NYUGAIKBN  TO  LNK-ORCSJGNGET-NYUGAIKBN
+              MOVE  RECE02-PTID       TO  LNK-ORCSJGNGET-PTID
+              EVALUATE   WK-GENGAKUKBN
+                WHEN         1
+                   MOVE    "960"      TO  LNK-ORCSJGNGET-KOHHKNNUM
+                WHEN         2
+                   MOVE    "961"      TO  LNK-ORCSJGNGET-KOHHKNNUM
+              END-EVALUATE
+              MOVE  WK-GENGAKU-KOHID  TO  LNK-ORCSJGNGET-KOHID
+              MOVE  RECE02-SRYYM      TO  LNK-ORCSJGNGET-SRYYM
+      *
+              CALL    "ORCSJGNGET"    USING
+                                      LNK-ORCSJGNGET-REC
+      *
+              IF    LNK-ORCSJGNGET-RC   =   ZERO
+                 EVALUATE   WK-GENGAKUKBN
+                   WHEN          1
+                      MOVE    LNK-ORCSJGNGET-GAIJGNGAK
+                                       TO  WK-GENGAKU-RITU
+                      IF   WK-GENGAKU-RITU  >  100
+                          MOVE   100   TO  WK-GENGAKU-RITU
+                      END-IF
+                      IF   WK-GENGAKU-RITU  =  ZERO
+                          MOVE   ZERO  TO  WK-GENGAKUKBN
+                      END-IF
+                   WHEN          2
+                      MOVE    LNK-ORCSJGNGET-GAIJGNGAK
+                                       TO  WK-GENGAKU-KIN
+                      IF   WK-GENGAKU-KIN   =  ZERO
+                          MOVE   ZERO  TO  WK-GENGAKUKBN
+                      END-IF
+                 END-EVALUATE
+              END-IF
+      *
+           END-IF
+      *
+           IF   WK-GENGAKUKBN    NOT =   ZERO
+              EVALUATE   WK-GENGAKUKBN
+      *           ¸º³Û¡Ê³ä¡Ë
+                  WHEN        1
+                     MOVE    1                TO  RECE02-GENMENKBN
+                     MOVE    WK-GENGAKU-RITU  TO  RECE02-GENGAKURATE
+      *           ¸º³Û¡Ê±ß¡Ë
+                  WHEN        2
+                     MOVE    1                TO  RECE02-GENMENKBN
+                     MOVE    WK-GENGAKU-KIN   TO  RECE02-GENGAKU
+      *           ÌÈ½ü
+                  WHEN        3
+                     MOVE    2                TO  RECE02-GENMENKBN
+      *           »ÙÊ§Í±Í½
+                  WHEN        4
+                     MOVE    3                TO  RECE02-GENMENKBN
+              END-EVALUATE
+           END-IF
+      *
+           .
+       2117-GENGAKU-HANTEI-EXT.
            EXIT.
       *
       *****************************************************************

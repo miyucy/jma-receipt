@@ -427,8 +427,6 @@
            03  RECE62-KOUREI-SAIKEI       PIC  9(09).
       *船員保険（被保険者）＋通勤災害フラグ
            03  RECE62-SENIN-TUUSAI        PIC  X(01).
-      *補足区分（未使用）
-           03  RECE62-HOSOKUKBN           PIC  X(01).
       *初診時間区分
            03  RECE62-SHOSHINTIME         PIC  X(01).
       *老人減免区分（高齢者経過措置フラグとして使用）
@@ -437,12 +435,12 @@
            03  RECE62-RJNGAIFTN           PIC  9(09).
       *老人入院金額（未使用）
            03  RECE62-RJNNYUFTN           PIC  9(09).
-      *国保減免区分（未使用）
-           03  RECE62-KKHGENMENKBN        PIC  X(01).
-      *国保減額割合（未使用）
-           03  RECE62-KKHGENGAKURATE      PIC  X(03).
-      *国保減額金額（未使用）
-           03  RECE62-KKHGENGAKU          PIC  X(03).
+      *減免区分
+           03  RECE62-GENMENKBN           PIC  9(01).
+      *減額割合
+           03  RECE62-GENGAKURATE         PIC  9(03).
+      *減額金額
+           03  RECE62-GENGAKU             PIC  9(07).
       *割引点数単価（未使用）
            03  RECE62-DISCOUNTTENTNK      PIC  X(02).
       *老人公費負担金額情報（未使用）

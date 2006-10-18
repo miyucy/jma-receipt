@@ -274,12 +274,12 @@
            03  RECE02-RJNGAIFTN           PIC  9(09).
       *老人入院金額（未使用）
            03  RECE02-RJNNYUFTN           PIC  9(09).
-      *国保減免区分（未使用）
-           03  RECE02-KKHGENMENKBN        PIC  X(01).
-      *国保減額割合（未使用）
-           03  RECE02-KKHGENGAKURATE      PIC  X(03).
-      *国保減額金額（未使用）
-           03  RECE02-KKHGENGAKU          PIC  X(03).
+      *減免区分
+           03  RECE02-GENMENKBN           PIC  9(01).
+      *減額割合
+           03  RECE02-GENGAKURATE         PIC  9(03).
+      *減額金額
+           03  RECE02-GENGAKU             PIC  9(07).
       *割引点数単価（未使用）
            03  RECE02-DISCOUNTTENTNK      PIC  X(02).
       *食事療養費情報
