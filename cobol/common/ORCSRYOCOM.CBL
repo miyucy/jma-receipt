@@ -48,6 +48,7 @@
            03  FLG-PTINF                   PIC 9(01).
            03  FLG-RYOUYOCOM               PIC 9(01).
            03  FLG-RYOYO-NYUIN             PIC 9(01).
+           03  FLG-SYSKANRI                PIC 9(01).
       *    添字領域
        01  IDX-AREA.
            03  IDX                         PIC 9(04).
@@ -313,6 +314,37 @@
                END-IF
            END-IF
       *
+      *    医療機関情報の取得（ＡＤＬ入力）
+           MOVE    ZERO                TO  FLG-SYSKANRI
+           INITIALIZE                      SYSKANRI-REC
+           MOVE    "5000"              TO  SYS-KANRICD
+           MOVE    "*"                 TO  SYS-KBNCD
+           MOVE    LNK-RYOCOM-SANTEIYM TO  SYS-STYUKYMD(1:6)
+           MOVE    "01"                TO  SYS-STYUKYMD(7:2)
+           MOVE    SYS-STYUKYMD        TO  SYS-EDYUKYMD
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           CALL    "MONFUNC"               USING
+                                           MCPAREA
+                                           MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key10"         TO  MCP-PATHNAME
+               PERFORM  910-SYSKANRI-READ-SEC
+               IF    FLG-SYSKANRI   =    ZERO
+                   IF   SYS-5000-ADLINPUTKBN   =   "0"
+                       MOVE     5      TO  LNK-RYOCOM-RC
+                   END-IF
+               END-IF
+           END-IF
+
+      *    システム管理クローズ
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM   910-DB-CLOSE-SEC
+      *
            .
        100-PRM-CHK-EXT.
            EXIT.
@@ -534,6 +566,27 @@
       *
            .
        900-PTINF-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    システム管理マスター読込
+      *****************************************************************
+       910-SYSKANRI-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "MONFUNC"            USING
+                                        MCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-5000-REC
+               MOVE    ZERO                TO  FLG-SYSKANRI
+           ELSE
+               INITIALIZE                      SYS-5000-REC
+               MOVE    1                   TO  FLG-SYSKANRI
+           END-IF
+      *
+           .
+       910-SYSKANRI-READ-EXT.
            EXIT.
       *
       *****************************************************************
