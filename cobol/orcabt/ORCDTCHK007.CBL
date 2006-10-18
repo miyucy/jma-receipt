@@ -104,6 +104,7 @@
            03  WRK-OUT-INPUT                           PIC X(300).
            03  WRK-OUT-MAX                             PIC 9(05).
            03  WRK-NYUGAIMES                           PIC X(08).
+           03  WRK-KIKANMES                            PIC X(20).
            03  WRK-SRYYMD.
                05  WRK-SRYYMD-G                        PIC X(04).
                05  WRK-SRYYMD-Y                        PIC X(04).
@@ -144,6 +145,9 @@
                05  WRK-PAGE2                           PIC Z9.
            03  WRK-HKNMES                              PIC X(20).
            03  WRK-HKNKBN                              PIC X(01).
+           03  WRK-Z9                                  PIC Z9.
+           03  WRK-STDAYMES                            PIC X(04).
+           03  WRK-EDDAYMES                            PIC X(04).
       *
        01  KEY-AREA.
            03  KEY-NEW.
@@ -340,6 +344,9 @@
        1001-INIT-VAL-SET-SEC           SECTION.
       *
            MOVE    1                   TO  WRK-SHORI-RENNUM
+           MOVE    SPACE               TO  WRK-KIKANMES
+                                           WRK-STDAYMES
+                                           WRK-EDDAYMES
       *
            MOVE    ORCBSD01-SRYYM      TO  WRK-SYMD
            MOVE    "01"                TO  WRK-SYMD(7:2)
@@ -352,8 +359,38 @@
                MOVE    "外来"          TO  WRK-NYUGAIMES
            END-IF
       *
+           IF    ( ORCBSD01-SRYYMDKBN  =   "1" )
+      *
+               MOVE    ORCBSD01-STSRYYMD   TO  WRK-Z9
+               MOVE    WRK-Z9              TO  WRK-MAE-INPUT
+               PERFORM 800-ZENKAKU-HEN-SEC
+               MOVE    WRK-OUT-INPUT       TO  WRK-STDAYMES
+      *
+               MOVE    ORCBSD01-EDSRYYMD   TO  WRK-Z9
+               MOVE    WRK-Z9              TO  WRK-MAE-INPUT
+               PERFORM 800-ZENKAKU-HEN-SEC
+               MOVE    WRK-OUT-INPUT       TO  WRK-EDDAYMES
+      *
+               IF    ( WRK-STDAYMES    =   WRK-EDDAYMES )
+                   STRING    WRK-STDAYMES      DELIMITED   BY  SIZE
+                             "日"              DELIMITED   BY  SIZE
+                   INTO      WRK-KIKANMES
+                   END-STRING
+               ELSE
+                   STRING    WRK-STDAYMES      DELIMITED   BY  SIZE
+                             "日〜"            DELIMITED   BY  SIZE
+                             WRK-EDDAYMES      DELIMITED   BY  SIZE
+                             "日"              DELIMITED   BY  SIZE
+                   INTO      WRK-KIKANMES
+                   END-STRING
+               END-IF
+      *
+           ELSE
+               MOVE    WRK-EDTYMD3(1:16)   TO  WRK-KIKANMES
+           END-IF
+      *
            MOVE    SPACE               TO  WRK-SPRT-TITLE
-           STRING  WRK-EDTYMD3(1:16)           DELIMITED   BY  SIZE
+           STRING  WRK-KIKANMES                DELIMITED   BY  SPACE
                    "分患者別（"                DELIMITED   BY  SIZE
                    WRK-NYUGAIMES               DELIMITED   BY  SPACE
                    "）"                        DELIMITED   BY  SIZE
