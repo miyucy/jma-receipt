@@ -108,6 +108,8 @@
            03  IDX5                                PIC 9(04).
            03  IDX6                                PIC 9(04).
            03  IDX7                                PIC 9(04).
+           03  IDX8                                PIC 9(04).
+           03  IDX9                                PIC 9(04).
            03  IDXA                                PIC 9(04).
            03  IDXB                                PIC 9(04).
            03  IDXC                                PIC 9(04).
@@ -117,6 +119,7 @@
        01  CNT-AREA.
            03  CNT-ADRS                            PIC 9(04).
            03  CNT-PNT                             PIC 9(04).
+           03  CNT-STR                             PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -155,6 +158,10 @@
            03  WRK-CD-MCNT                         PIC 9(02).
            03  WRK-KANACHK-MAE-INPUT               PIC X(500).
            03  WRK-KANACHK-OUT-INPUT               PIC X(500).
+           03  WRK-SELWORD                         PIC X(500).
+           03  WRK-SIZE                            PIC S9(05).
+           03  WRK-SIZE-STR                        PIC X(500).
+           03  WRK-SIZE-TMP                        PIC X(500).
       *
       *
        01  WRK-WIDGET-AREA.
@@ -1296,6 +1303,7 @@
                                     TO  SPA-GMN-Q01-UBYOMEI-STATE
                MOVE    "T"          TO  SPA-GMN-Q01-RDBYOMEI-U
                MOVE    "F"          TO  SPA-GMN-Q01-RDBYOMEI-A
+               PERFORM 4118-BYOMEISEL-CHK-SEC
            WHEN    "CLICKED"       ALSO    "RDBYOMEI_A"
       *
       *        画面ＳＰＡ編集処理
@@ -1309,6 +1317,7 @@
                IF  ( SPA-GMN-Q01-CUR   =   301 )
                        MOVE    302  TO  SPA-GMN-Q01-CUR
                END-IF
+               PERFORM 4118-BYOMEISEL-CHK-SEC
       *    並び順トグルボタン
            WHEN    "CLICKED"       ALSO    "RDIO11"
            WHEN    "CLICKED"       ALSO    "RDIO12"
@@ -1349,6 +1358,14 @@
                PERFORM 4101-GMN-SPA-SET-SEC
                MOVE    Q01-RDSRYACT-AND    TO  SPA-GMN-Q01-RDSRYACT-AND
                MOVE    Q01-RDSRYACT-OR     TO  SPA-GMN-Q01-RDSRYACT-OR
+           WHEN    "CLICKED"       ALSO    "BTBYOBUBUN"
+               PERFORM 4101-BTBYOBUBUN-CHK-SEC
+           WHEN    "CLICKED"       ALSO    "BTBYOKOHO"
+               PERFORM 4101-BTBYOKOHO-CHK-SEC
+           WHEN    "CLICKED"       ALSO    "BTSRYBUBUN"
+               PERFORM 4101-BTSRYBUBUN-CHK-SEC
+           WHEN    "CLICKED"       ALSO    "BTSRYKOHO"
+               PERFORM 4101-BTSRYKOHO-CHK-SEC
            END-EVALUATE
       *
            .
@@ -3321,8 +3338,11 @@
       *
            INITIALIZE                      USERBYOMEI-REC
            MOVE    SPA-HOSPID          TO  USBYO-HOSPID
+      *
            MOVE    SPA-GMN-Q01-BYOMEISEL
-                                       TO  USBYO-BYOMEI
+                                       TO  WRK-SELWORD
+           PERFORM 800-SELWORD-SEC
+           MOVE    WRK-SELWORD         TO  USBYO-BYOMEI
       *
       *    病名で自院病名マスターを検索
            PERFORM 900-USERBYOMEI-KEY8-SEL-SEC
@@ -3343,6 +3363,7 @@
            MOVE    "tbl_userbyomei"    TO  MCP-TABLE
            MOVE    "key8"              TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
+      *
            .
       *
        4118-USERBYOMEI-LST-EDIT-EXT.
@@ -3401,9 +3422,10 @@
       *
            INITIALIZE                      BYOMEI-REC
       *
-      *
            MOVE    SPA-GMN-Q01-BYOMEISEL
-                                       TO  BYO-BYOMEI
+                                       TO  WRK-SELWORD
+           PERFORM 800-SELWORD-SEC
+           MOVE    WRK-SELWORD         TO  BYO-BYOMEI
                                            BYO-BYOMEIKANA
       *
       *    病名漢字（カナ）で病名マスターを検索
@@ -3817,7 +3839,9 @@
       *    点数マスタ検索（診療行為名存在チェック）
            INITIALIZE                  TNS-TENSU-REC
            MOVE    SPA-GMN-Q01-SRYACTSEL
-                                       TO  TNS-NAME
+                                       TO  WRK-SELWORD
+           PERFORM 800-SELWORD-SEC
+           MOVE    WRK-SELWORD         TO  TNS-NAME
                                            TNS-KANANAME
       *
            PERFORM 900-TENSU-KEY2-SEL-SEC
@@ -4307,6 +4331,82 @@
       *
            .
        450-RDIO-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    病名部分検索処理
+      *****************************************************************
+       4101-BTBYOBUBUN-CHK-SEC         SECTION.
+      *
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *
+           MOVE    Q01-BYOMEISEL       TO  SPA-GMN-Q01-BYOMEISEL
+      *
+           MOVE    SPA-GMN-Q01-BYOMEISEL
+                                       TO  WRK-SELWORD
+           PERFORM 800-SELWORD-BUBUN-SEC
+           MOVE    WRK-SELWORD         TO  Q01-BYOMEISEL
+      *
+           PERFORM 4118-BYOMEISEL-CHK-SEC
+      *
+           .
+       4101-BTBYOBUBUN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    病名後方検索処理
+      *****************************************************************
+       4101-BTBYOKOHO-CHK-SEC          SECTION.
+      *
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *
+           MOVE    Q01-BYOMEISEL       TO  SPA-GMN-Q01-BYOMEISEL
+      *
+           MOVE    SPA-GMN-Q01-BYOMEISEL
+                                       TO  WRK-SELWORD
+           PERFORM 800-SELWORD-KOHO-SEC
+           MOVE    WRK-SELWORD         TO  Q01-BYOMEISEL
+      *
+           PERFORM 4118-BYOMEISEL-CHK-SEC
+      *
+           .
+       4101-BTBYOKOHO-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療行為部分検索処理
+      *****************************************************************
+       4101-BTSRYBUBUN-CHK-SEC         SECTION.
+      *
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *
+           MOVE    Q01-SRYACTSEL       TO  SPA-GMN-Q01-SRYACTSEL
+      *
+           MOVE    SPA-GMN-Q01-SRYACTSEL
+                                       TO  WRK-SELWORD
+           PERFORM 800-SELWORD-BUBUN-SEC
+           MOVE    WRK-SELWORD         TO  Q01-SRYACTSEL
+      *
+           PERFORM 4120-SRYACTSEL-CHK-SEC
+      *
+           .
+       4101-BTSRYBUBUN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療行為後方検索処理
+      *****************************************************************
+       4101-BTSRYKOHO-CHK-SEC          SECTION.
+      *
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *
+           MOVE    Q01-SRYACTSEL       TO  SPA-GMN-Q01-SRYACTSEL
+      *
+           MOVE    SPA-GMN-Q01-SRYACTSEL
+                                       TO  WRK-SELWORD
+           PERFORM 800-SELWORD-KOHO-SEC
+           MOVE    WRK-SELWORD         TO  Q01-SRYACTSEL
+      *
+           PERFORM 4120-SRYACTSEL-CHK-SEC
+      *
+           .
+       4101-BTSRYKOHO-CHK-EXT.
            EXIT.
       *****************************************************************
       *    戻る　処理
@@ -6734,6 +6834,125 @@
        800-KANACHK-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    検索文字列編集処理
+      *****************************************************************
+       800-SELWORD-SEC                 SECTION.
+      *
+           MOVE    1                   TO  WRK-SIZE
+           MOVE    SPACE               TO  WRK-SIZE-STR
+           STRING  WRK-SELWORD         DELIMITED   BY  SIZE
+           INTO    WRK-SIZE-STR
+           WITH    POINTER WRK-SIZE
+           END-STRING
+      *
+           COMPUTE WRK-SIZE    =   WRK-SIZE    -   1
+      *
+           INSPECT WRK-SIZE-STR    TALLYING
+                   CNT-STR         FOR ALL "＊"
+      *
+           INSPECT WRK-SIZE-STR
+                   REPLACING   ALL "＊" BY "%%"
+      *
+           IF    ( CNT-STR     =   ZERO )
+               PERFORM VARYING IDX8    FROM    1   BY  1
+                       UNTIL ( IDX8    >   WRK-SIZE )
+                   IF    ( WRK-SIZE-STR (IDX8 : )  =   SPACE )
+                       MOVE    "%"     TO  WRK-SIZE-STR (IDX8 : 1)
+                   END-IF
+               END-PERFORM
+           END-IF
+      *
+           MOVE    WRK-SIZE-STR    TO  WRK-SELWORD
+      *
+           .
+       800-SELWORD-EXT.
+           EXIT.
+      *****************************************************************
+      *    検索文字列編集処理
+      *****************************************************************
+       800-SELWORD-BUBUN-SEC           SECTION.
+      *
+           MOVE    1                   TO  WRK-SIZE
+           MOVE    SPACE               TO  WRK-SIZE-STR
+           STRING  WRK-SELWORD         DELIMITED   BY  SIZE
+           INTO    WRK-SIZE-STR
+           WITH    POINTER WRK-SIZE
+           END-STRING
+      *
+           COMPUTE WRK-SIZE    =   WRK-SIZE    -   1
+      *
+           INSPECT WRK-SIZE-STR
+                   REPLACING   ALL "＊" BY "  "
+      *
+           IF    ( WRK-SIZE-STR    NOT =   SPACE )
+      *
+               MOVE    ZERO                TO  IDX9
+               MOVE    SPACE               TO  WRK-SIZE-TMP
+               PERFORM VARYING IDX8    FROM    1   BY  1
+                       UNTIL ( IDX8    >   WRK-SIZE )
+                   IF    ( WRK-SIZE-STR (IDX8 : 1)  =   SPACE )
+                       CONTINUE
+                   ELSE
+                       COMPUTE IDX9    =   IDX9    +   1
+                       MOVE    WRK-SIZE-STR (IDX8 : 1)
+                                       TO  WRK-SIZE-TMP (IDX9 : 1)
+                   END-IF
+               END-PERFORM
+      *
+               MOVE    SPACE               TO  WRK-SELWORD
+               STRING  "＊"                DELIMITED   BY  SIZE
+                       WRK-SIZE-TMP        DELIMITED   BY  SPACE
+                       "＊"                DELIMITED   BY  SIZE
+               INTO    WRK-SELWORD
+               END-STRING
+           END-IF
+      *
+           .
+       800-SELWORD-BUBUN-EXT.
+           EXIT.
+      *****************************************************************
+      *    検索文字列編集処理
+      *****************************************************************
+       800-SELWORD-KOHO-SEC            SECTION.
+      *
+           MOVE    1                   TO  WRK-SIZE
+           MOVE    SPACE               TO  WRK-SIZE-STR
+           STRING  WRK-SELWORD         DELIMITED   BY  SIZE
+           INTO    WRK-SIZE-STR
+           WITH    POINTER WRK-SIZE
+           END-STRING
+      *
+           COMPUTE WRK-SIZE    =   WRK-SIZE    -   1
+      *
+           INSPECT WRK-SIZE-STR
+                   REPLACING   ALL "＊" BY "  "
+      *
+           IF    ( WRK-SIZE-STR    NOT =   SPACE )
+      *
+               MOVE    ZERO                TO  IDX9
+               MOVE    SPACE               TO  WRK-SIZE-TMP
+               PERFORM VARYING IDX8    FROM    1   BY  1
+                       UNTIL ( IDX8    >   WRK-SIZE )
+                   IF    ( WRK-SIZE-STR (IDX8 : 1)  =   SPACE )
+                       CONTINUE
+                   ELSE
+                       COMPUTE IDX9    =   IDX9    +   1
+                       MOVE    WRK-SIZE-STR (IDX8 : 1)
+                                       TO  WRK-SIZE-TMP (IDX9 : 1)
+                   END-IF
+               END-PERFORM
+      *
+               MOVE    SPACE               TO  WRK-SELWORD
+               STRING  "＊"                DELIMITED   BY  SIZE
+                       WRK-SIZE-TMP        DELIMITED   BY  SPACE
+               INTO    WRK-SELWORD
+               END-STRING
+           END-IF
+      *
+           .
+       800-SELWORD-KOHO-EXT.
+           EXIT.
+      *****************************************************************
       *    全角変換処理
       *****************************************************************
        800-ZENKAKU-CHG-SEC             SECTION.
@@ -6812,12 +7031,6 @@
       *
            MOVE    ZERO                TO  FLG-USERBYOMEI
       *
-           INITIALIZE                  ORCSADDSIGNAREA
-           MOVE    "1"                 TO  SADDSIGN-KBN
-           MOVE    USBYO-BYOMEI        TO  SADDSIGN-STR
-           CALL    "ORCSADDSIGN"       USING   ORCSADDSIGNAREA
-           MOVE    SADDSIGN-STR        TO  USBYO-BYOMEI
-      *
            MOVE    USERBYOMEI-REC      TO  MCPDATA-REC
            MOVE    "tbl_userbyomei"    TO  MCP-TABLE
            MOVE    "key8"              TO  MCP-PATHNAME
@@ -6854,13 +7067,6 @@
        900-BYOMEI-KEY2-SEL-SEC         SECTION.
       *
            MOVE    ZERO                TO  FLG-BYOMEI
-      *
-           INITIALIZE                  ORCSADDSIGNAREA
-           MOVE    "1"             TO  SADDSIGN-KBN
-           MOVE    BYO-BYOMEI      TO  SADDSIGN-STR
-           CALL    "ORCSADDSIGN"       USING   ORCSADDSIGNAREA
-           MOVE    SADDSIGN-STR    TO  BYO-BYOMEI
-                                       BYO-BYOMEIKANA
       *
            MOVE    BYOMEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_byomei"        TO  MCP-TABLE
@@ -6924,13 +7130,6 @@
        900-TENSU-KEY2-SEL-SEC          SECTION.
       *
            MOVE    ZERO                TO  FLG-TENSU
-      *
-           INITIALIZE                      ORCSADDSIGNAREA
-           MOVE    "1"                 TO  SADDSIGN-KBN
-           MOVE    TNS-NAME            TO  SADDSIGN-STR
-           CALL    "ORCSADDSIGN"       USING   ORCSADDSIGNAREA
-           MOVE    SADDSIGN-STR        TO  TNS-NAME
-                                           TNS-KANANAME
       *
            MOVE    SPA-SYSYMD          TO  TNS-YUKOSTYMD
                                            TNS-YUKOEDYMD
