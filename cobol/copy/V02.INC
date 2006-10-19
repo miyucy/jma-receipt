@@ -75,7 +75,7 @@
                     06  V02-NYUSKJRYYKBN.
                       07  V02-VALUE   PIC X(28).
                     06  V02-NYUSKJRYYKBN-COUNT   PIC S9(9)   BINARY.
-                    06  V02-NYUSKJRYYKBNLST      PIC X(28)   OCCURS  8.
+                    06  V02-NYUSKJRYYKBNLST      PIC X(28)   OCCURS 10.
                   05  V02-NYUSKJJYOGAK.
                     06  V02-VALUE   PIC S9(6).
               03  V02-HKNNUM.

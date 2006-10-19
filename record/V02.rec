@@ -83,7 +83,7 @@ V02	{
 						value	varchar(28);
 					};
 					count	int;
-					item	varchar(28)[8];
+					item	varchar(28)[10];
 				};
 				NYUSKJJYOGAK1	{
 					value	number(6);
@@ -161,7 +161,7 @@ V02	{
 						value	varchar(28);
 					};
 					count	int;
-					item	varchar(28)[8];
+					item	varchar(28)[10];
 				};
 				NYUSKJJYOGAK2	{
 					value	number(6);
@@ -239,7 +239,7 @@ V02	{
 						value	varchar(28);
 					};
 					count	int;
-					item	varchar(28)[8];
+					item	varchar(28)[10];
 				};
 				NYUSKJJYOGAK3	{
 					value	number(6);
@@ -317,7 +317,7 @@ V02	{
 						value	varchar(28);
 					};
 					count	int;
-					item	varchar(28)[8];
+					item	varchar(28)[10];
 				};
 				NYUSKJJYOGAK4	{
 					value	number(6);
