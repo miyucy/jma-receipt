@@ -5032,7 +5032,7 @@
                END-IF
            END-PERFORM
       *
-      *    レセ電サブ返却エリアへの食事セット
+      *    レセ電サブ返却エリアへの環境療養セット
            MOVE       ZERO    TO   IDX2
            PERFORM    VARYING   IDX1   FROM  1  BY  1
                       UNTIL     (IDX1   >     31)
