@@ -4850,7 +4850,7 @@
                        IF    ( KANACHK-RC      =   ZERO )
                        AND   ( KANACHK-MAX     >   ZERO )
                            MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
-                                                   TO  HC06-KYURATE(5:)
+                                                   TO  HC06-GENMEN(5:)
                        END-IF    
                        MOVE   "¸º³Û"               TO  HC06-GENMEN(1:4)
                        MOVE   "³ä"                 TO  HC06-GENMEN(9:2)

@@ -4254,7 +4254,7 @@
                    ELSE
                        COMPUTE WRK-KYURATE-9   =
                                        RECE02-GENGAKURATE  /   10 
-                       MOVE    WRK-KYURATE-9       TO  WRK-KYURATE
+                       MOVE    WRK-KYURATE-9   TO  WRK-KYURATE
                        INITIALIZE              ORCSKANACHKAREA
                        MOVE    "2"             TO  KANACHK-SYORI 
                        MOVE    WRK-KYURATE     TO  KANACHK-MAE-INPUT
@@ -4262,7 +4262,7 @@
                        IF    ( KANACHK-RC      =   ZERO )
                        AND   ( KANACHK-MAX     >   ZERO )
                            MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
-                                                   TO  HC06-KYURATE(5:)
+                                                   TO  HC06-GENMEN(5:)
                        END-IF    
                        MOVE   "¸º³Û"               TO  HC06-GENMEN(1:4)
                        MOVE   "³ä"                 TO  HC06-GENMEN(9:2)
