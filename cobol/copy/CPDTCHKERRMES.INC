@@ -214,6 +214,11 @@
            05 PIC  X(30)   VALUE   "同じ病名が複数登録されています".
            05 PIC  X(30)   VALUE   "                              ".
            05 PIC  X(30)   VALUE   "                              ".
+      *                            +---------+---------+---------+.
+           05 PIC  X(06)   VALUE   "050013".
+           05 PIC  X(30)   VALUE   "主病名が未登録です            ".
+           05 PIC  X(30)   VALUE   "                              ".
+           05 PIC  X(30)   VALUE   "                              ".
       *
       *    ** 060xxx 診療開始日
       *                            +---------+---------+---------+.
@@ -414,7 +419,7 @@
            05 PIC  X(30)   VALUE   "                              ".
       *
          03  ERRMES-RED    REDEFINES   ERRMES-VAL.
-           05 ERRMES-OCC   OCCURS  70.
+           05 ERRMES-OCC   OCCURS  71.
               07  ERRMES-CD            PIC X(06).
               07  ERRMES-MESSAGE       PIC X(90).
-         03  ERRMES-MAX                PIC 9(05)   VALUE   70.
+         03  ERRMES-MAX                PIC 9(05)   VALUE   71.

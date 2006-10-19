@@ -275,6 +275,7 @@
            03  CNT-PTBYOMEI1                           PIC 9(06).
       *    CNT-PTBYOMEI1から、さらに入外区分、適用期間で絞った件数
            03  CNT-PTBYOMEI2                           PIC 9(06).
+           03  CNT-PTSYUBYO                            PIC 9(06).
            03  CNT-BYOMEIMOJI                          PIC 9(06).
            03  CNT-TAISYO                              PIC 9(06).
            03  CNT-STR                                 PIC 9(06).
@@ -524,6 +525,7 @@
            03  TSRYKA-OCC                              OCCURS 30.
                05  TSRYKA-PTBYO-CNT1                   PIC 9(05).
                05  TSRYKA-PTBYO-CNT2                   PIC 9(05).
+               05  TSRYKA-PTSYUBYO-CNT                 PIC 9(05).
                05  TSRYKA-SRYKA                        PIC X(02).
                05  TSRYKA-SYOSIN-DAY                   PIC 9(01)
                                                        OCCURS 31.
@@ -3999,6 +4001,8 @@
                                        TO  CNT-PTBYOMEI1
                        MOVE    TSRYKA-PTBYO-CNT2 (IDX4)
                                        TO  CNT-PTBYOMEI2
+                       MOVE    TSRYKA-PTSYUBYO-CNT (IDX4)
+                                       TO  CNT-PTSYUBYO
                        MOVE    TSRYKA-SRYKA (IDX4)
                                        TO  WRK-SRYKA
                        PERFORM 2001121-PTBYO-TOUROKU-CHK-SEC
@@ -4247,9 +4251,17 @@
                IF    ( SYS-1101-BYOSRYKAKBN    =   "1" OR SPACE )
                    COMPUTE TSRYKA-PTBYO-CNT2 (IDX4)
                        =   TSRYKA-PTBYO-CNT2 (IDX4)    +   1
+                   IF    ( PTBYO-SYUBYOFLG     =   "1" )
+                       COMPUTE TSRYKA-PTSYUBYO-CNT (IDX4)
+                           =   TSRYKA-PTSYUBYO-CNT (IDX4)    +   1
+                   END-IF
                ELSE
                    COMPUTE CNT-PTBYOMEI2
                        =   CNT-PTBYOMEI2   +   1
+                   IF    ( PTBYO-SYUBYOFLG     =   "1" )
+                       COMPUTE CNT-PTSYUBYO
+                           =   CNT-PTSYUBYO    +   1
+                   END-IF
                END-IF
       *
       *        患者病名エラーメッセージ付加情報編集
@@ -4786,6 +4798,22 @@
                    ELSE
                        MOVE    "050003"    TO  WRK-ERRCD
                    END-IF
+                   PERFORM 214-ERRMES-HEN-SEC
+      *
+                   IF    ( ORCBSD01-CHKKBN (5) =   "1" )
+                       MOVE    1       TO  FLG-CHKEND (5)
+                       GO  TO  2001121-PTBYO-TOUROKU-CHK-EXT
+                   END-IF
+               END-IF
+           END-IF
+      *
+           IF    ( FLG-CHKEND (5) =   ZERO )
+               IF    ( SYS-1101-SYUBYOCHKKBN   =   "1" )
+                AND  ( CNT-PTBYOMEI1  >   ZERO )
+                AND  ( CNT-PTBYOMEI2  >   ZERO )
+                AND  ( CNT-PTSYUBYO   =   ZERO )
+                   MOVE    WRK-SRYKA       TO  SRH-1005-SRYKA
+                   MOVE    "050013"        TO  WRK-ERRCD
                    PERFORM 214-ERRMES-HEN-SEC
       *
                    IF    ( ORCBSD01-CHKKBN (5) =   "1" )

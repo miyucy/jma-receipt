@@ -55,6 +55,10 @@
                    07  SPA-GMN-BYOSRYKAKBN     PIC X(01).
                    07                          PIC X(01).
                    07  SPA-GMN-BYOSRYKAKBNMEI  PIC X(08).
+               05  SPA-GMN-SYUBYOCHK-G.
+                   07  SPA-GMN-SYUBYOCHK       PIC X(01).
+                   07                          PIC X(01).
+                   07  SPA-GMN-SYUBYOCHKMEI    PIC X(08).
                05  SPA-GMN-UTAGAIKKNKBN-G.
                    07  SPA-GMN-UTAGAIKKNKBN    PIC X(01).
                    07                          PIC X(01).
@@ -85,6 +89,12 @@
                        09  SPA-GMN-BYOSRYKAKBNL    PIC X(01).
                        09                          PIC X(01).
                        09  SPA-GMN-BYOSRYKAKBNMEIL PIC X(08).
+               05  SPA-GMN-SYUBYOCHKLST-G.
+                   07  SPA-GMN-SYUBYOCHK-MAX       PIC 9(03).
+                   07  SPA-GMN-SYUBYOCHKLST        OCCURS   2.
+                       09  SPA-GMN-SYUBYOCHKL      PIC X(01).
+                       09                          PIC X(01).
+                       09  SPA-GMN-SYUBYOCHKMEIL   PIC X(08).
                05  SPA-GMN-UTAGAIKKNKBNLST-G.
                    07  SPA-GMN-UTAGAIKKNKBN-MAX    PIC 9(03).
                    07  SPA-GMN-UTAGAIKKNKBNLST     OCCURS   2.
@@ -365,6 +375,9 @@
                MOVE    SYS-1101-BYOSRYKAKBN
                                        TO  SPA-GMN-BYOSRYKAKBN
       *
+               MOVE    SYS-1101-SYUBYOCHKKBN
+                                       TO  SPA-GMN-SYUBYOCHK
+      *
                IF    ( SYS-1101-UTAGAIKKN-X  IS NUMERIC )
       *
                    EVALUATE    SYS-1101-UTAGAIKKN
@@ -405,6 +418,15 @@
                                    TO  SPA-GMN-BYOSRYKAKBN-G
            ELSE
                MOVE    WRK-CMB-ITM TO  SPA-GMN-BYOSRYKAKBN-G
+           END-IF
+      *
+           MOVE    SPA-GMN-SYUBYOCHK TO  WRK-CMB-CD
+           PERFORM 4200-SYUBYOCHKLST-CHK-SEC
+           IF    ( WRK-CMB-ITM     =   SPACE )
+               MOVE    SPA-GMN-SYUBYOCHKLST (2)
+                                   TO  SPA-GMN-SYUBYOCHK-G
+           ELSE
+               MOVE    WRK-CMB-ITM TO  SPA-GMN-SYUBYOCHK-G
            END-IF
       *
            MOVE    SPA-GMN-UTAGAIKKNKBN TO  WRK-CMB-CD
@@ -466,6 +488,9 @@
       *    診療科別チェックコンボ設定処理
            PERFORM 3101-BYOSRYKAKBNLST-SEC
       *
+      *    主病名チェックコンボ設定処理
+           PERFORM 3101-SYUBYOCHKLST-SEC
+      *
       *    疑い病名期間チェックコンボ設定処理
            PERFORM 3101-UTAGAIKKNKBNLST-SEC
       *
@@ -504,6 +529,27 @@
       *
            . 
        3101-BYOSRYKAKBNLST-EXT.
+           EXIT.
+      *****************************************************************
+      *    主病名チェックコンボ設定処理
+      *****************************************************************
+       3101-SYUBYOCHKLST-SEC           SECTION.
+      *
+           INITIALIZE                  SPA-GMN-SYUBYOCHKLST-G
+      *
+           MOVE    2               TO  SPA-GMN-SYUBYOCHK-MAX
+      *
+           MOVE    "1"             TO  SPA-GMN-SYUBYOCHKL    (1)
+           MOVE    "する"          TO  SPA-GMN-SYUBYOCHKMEIL (1)
+      *
+           MOVE    "2"             TO  SPA-GMN-SYUBYOCHKL    (2)
+           MOVE    "しない"        TO  SPA-GMN-SYUBYOCHKMEIL (2)
+      *
+           MOVE    SPA-GMN-SYUBYOCHKLST  (2)
+                                   TO  SPA-GMN-SYUBYOCHK-G
+      *
+           . 
+       3101-SYUBYOCHKLST-EXT.
            EXIT.
       *****************************************************************
       *    疑い病名期間チェックコンボ設定処理
@@ -763,6 +809,7 @@
        4101-GMN-SPA-SET-SEC            SECTION.
       *
            MOVE    W60-BYOSRYKAKBN     TO  SPA-GMN-BYOSRYKAKBN-G
+           MOVE    W60-SYUBYOCHK       TO  SPA-GMN-SYUBYOCHK-G
            MOVE    W60-UTAGAIKKNKBN    TO  SPA-GMN-UTAGAIKKNKBN-G
            MOVE    W60-KYUSEIKKNKBN    TO  SPA-GMN-KYUSEIKKNKBN-G
            MOVE    W60-YBUTAGAIKBN     TO  SPA-GMN-YBUTAGAIKBN-G
@@ -780,6 +827,11 @@
        4102-KIHON-CHK-SEC              SECTION.
       *
            PERFORM 4101-BYOSRYKAKBN-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4101-SYUBYOCHK-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
@@ -830,6 +882,24 @@
            .
       *
        4101-BYOSRYKAKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    主病名チェック区分チェック処理
+      *****************************************************************
+       4101-SYUBYOCHK-CHK-SEC          SECTION.
+      *
+           MOVE    SPA-GMN-SYUBYOCHK   TO  WRK-CMB-CD
+           PERFORM 4200-SYUBYOCHKLST-CHK-SEC
+           IF    ( WRK-CMB-ITM     =   SPACE )
+               MOVE    SPA-GMN-SYUBYOCHKLST (2)
+                                   TO  SPA-GMN-SYUBYOCHK-G
+           ELSE
+               MOVE    WRK-CMB-ITM TO  SPA-GMN-SYUBYOCHK-G
+           END-IF
+      *
+           .
+      *
+       4101-SYUBYOCHK-CHK-EXT.
            EXIT.
       *****************************************************************
       *    疑い期間区分チェック処理
@@ -944,6 +1014,30 @@
       *
            .
        4200-BYOSRYKAKBNLST-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    主病名チェック区分コンボチェック処理
+      *****************************************************************
+       4200-SYUBYOCHKLST-CHK-SEC       SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM-G
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB         >   SPA-GMN-SYUBYOCHK-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-SYUBYOCHKL (IDX-CMB)
+                                   =   WRK-CMB-CD )
+      *
+                   MOVE    SPA-GMN-SYUBYOCHKLST (IDX-CMB)
+                                   TO  WRK-CMB-ITM
+      *
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       4200-SYUBYOCHKLST-CHK-EXT.
            EXIT.
       *****************************************************************
       *    疑い期間区分コンボチェック処理
@@ -1195,6 +1289,8 @@
       *
            MOVE    SPA-GMN-BYOSRYKAKBN TO  SYS-1101-BYOSRYKAKBN
       *
+           MOVE    SPA-GMN-SYUBYOCHK   TO  SYS-1101-SYUBYOCHKKBN
+      *
            EVALUATE    SPA-GMN-UTAGAIKKNKBN
            WHEN    "1"
                MOVE    1               TO  SYS-1101-UTAGAIKKN
@@ -1323,6 +1419,18 @@
       *
            END-PERFORM
       *
+           MOVE    SPA-GMN-SYUBYOCHK-G     TO  W60-SYUBYOCHK
+      *
+           MOVE    SPA-GMN-SYUBYOCHK-MAX
+                                           TO  W60-SYUBYOCHK-COUNT
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0        >   SPA-GMN-SYUBYOCHK-MAX )
+      *
+               MOVE    SPA-GMN-SYUBYOCHKLST (IDX0)
+                                           TO  W60-SYUBYOCHK-ITEM (IDX0)
+      *
+           END-PERFORM
+      *
            MOVE    SPA-GMN-UTAGAIKKNKBN-G   TO  W60-UTAGAIKKNKBN
       *
            MOVE    SPA-GMN-UTAGAIKKNKBN-MAX
@@ -1447,6 +1555,8 @@
                MOVE    "PRTPTLSTKBN"   TO  MCP-WIDGET
            WHEN    010
                MOVE    "YBUTAGAIKBN"   TO  MCP-WIDGET
+           WHEN    011
+               MOVE    "SYUBYOCHK"     TO  MCP-WIDGET
            WHEN    212
                MOVE    "B12"           TO  MCP-WIDGET
            END-EVALUATE
@@ -1462,6 +1572,8 @@
       *
            EVALUATE    WRK-MCP-WIDGET
            WHEN    "BYOSRYKAKBN"
+               MOVE    11              TO  SPA-GMN-CUR
+           WHEN    "SYUBYOCHK"
                MOVE    02              TO  SPA-GMN-CUR
            WHEN    "UTAGAIKKNKBN"
                MOVE    11              TO  SPA-GMN-CUR
