@@ -2048,14 +2048,14 @@
            END-IF                                 
            PERFORM 5005-NUM-HENSYU-SEC     
       *    ¸º³Û³ä¹ç 
-           IF      RECE02-GENMENKBN    >   ZERO
+           IF      RECE02-GENGAKURATE  >   ZERO
                MOVE    RECE02-GENGAKURATE  TO  WRK-NUM
                MOVE    3                   TO  WRK-NAGASA
            END-IF                                 
            PERFORM 5005-NUM-HENSYU-SEC  
       *    ¸º³Û¶â³Û 
            MOVE    1                   TO  WRK-END 
-           IF      RECE02-GENMENKBN    >   ZERO
+           IF      RECE02-GENGAKU      >   ZERO
                MOVE    RECE02-GENGAKU      TO  WRK-NUM
                MOVE    6                   TO  WRK-NAGASA
            END-IF                                 
