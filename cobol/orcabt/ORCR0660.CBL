@@ -74,6 +74,7 @@
       *                                     ¥³¥á¥ó¥È¼«Æ°µ­ºÜÂÐ±þ
       *  03.01.02    NACL-ÌçÏÆ    06/07/10  ºß»Ù±ç¥³¥á¥ó¥È¼«Æ°µ­ºÜÂÐ±þ
       *  03.02.01    NACL-ÌçÏÆ    06/08/01  ¥ê¥ÏÈ¯¾ÉÆüµ­ºÜ½¤Àµ
+      *  03.03.01    NACL-ÌçÏÆ    06/10/19  ÎÅÍÜÉÂÅï¥ì¥»¥³¥á¥ó¥Èµ­ºÜÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -280,6 +281,9 @@
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-RIHA            PIC 9(01).
            03  FLG-TENSU           PIC 9(01).
+           03  FLG-RYOCOM          PIC 9(01).
+           03  FLG-RYOCOM2         PIC 9(01).
+           03  FLG-ARI             PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -313,7 +317,10 @@
            03  IDX-RECE65          PIC 9(04).
            03  IDV                 PIC 9(04).
            03  IDW                 PIC 9(04).
-      *     
+           03  RYO-IDX             PIC 9(03).
+           03  RYO-IDX2            PIC 9(03).
+           03  RYO-IDX3            PIC 9(03).
+      *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
            03  WRK-PARA.
@@ -401,6 +408,11 @@
          02 WRK-RECE65XX-TBL       OCCURS 50.
            COPY    "CPRCF065.INC"  REPLACING   //RECE65//
                                    BY          //WRK-RECE65XX//.
+      *
+       01  WRK-RECE65XX2-REC.
+         02 WRK-RECE65XX2-TBL      OCCURS 100.
+           COPY    "CPRCF065.INC"  REPLACING   //RECE65//
+                                   BY          //WRK-RECE65XX2//.
       *
        01  WRK-FREE-AREA.
            03  WRK-FREEINF                     OCCURS 49.         
@@ -516,6 +528,33 @@
            03  TBL-SANSO-INF3.
                05  TBL-KASAN-SRYSURYO      PIC 9(05)V9(03).
       *
+      *    ÎÅÍÜ¥ì¥»¥³¥á¥ó¥È¾ðÊó
+       01  TBL-RYOCOM-INF.
+           03  TBL-RYOCOM-INF2                 OCCURS  31.
+               05  TBL-RYOCOM-NYUINKBN         PIC  X(01).
+               05  TBL-RYOCOM-AREA.
+                 06  TBL-RYOCOM-MEISAISU       PIC  9(03).
+                 06  TBL-RYOCOM-SRYCDTOTAL     PIC  9(14).
+                 06  TBL-RYOCOM-INF3           OCCURS  30.
+                   07  TBL-RYOCOM-IRYO-SRYCD   PIC  X(09).
+                 06  TBL-RYOCOM-ADL-SRYCD      PIC  X(09).
+                 06  TBL-RYOCOM-ADL-TEN        PIC  9(02).
+                 06  TBL-RYOCOM-ADL-TEN-MOJI   PIC  X(04).
+      *
+      *    ÎÅÍÜ¥ì¥»¥³¥á¥ó¥È¾ðÊó¡Ê³ºÅöÊ¬¤Î¤Þ¤È¤á¡Ë
+       01  TBL-RYOCOM2-INF.
+           03  TBL-RYOCOM2-INF2                OCCURS  31.
+               05  TBL-RYOCOM2-AREA.
+                 06  TBL-RYOCOM2-MEISAISU      PIC  9(03).
+                 06  TBL-RYOCOM2-SRYCDTOTAL    PIC  9(14).
+                 06  TBL-RYOCOM2-INF3          OCCURS  30.
+                   07  TBL-RYOCOM2-IRYO-SRYCD  PIC  X(09).
+                 06  TBL-RYOCOM2-ADL-SRYCD     PIC  X(09).
+                 06  TBL-RYOCOM2-ADL-TEN       PIC  9(02).
+                 06  TBL-RYOCOM2-ADL-TEN-MOJI  PIC  X(04).
+               05  TBL-RYOCOM2-INF4            OCCURS  31.
+                 06  TBL-RYOCOM2-DAY           PIC  9(01).
+      *
       *    ¥Ñ¥¹Ì¾ÎÎ°è
        01  WRK-PATH                        PIC X(64).
       *
@@ -578,6 +617,9 @@
       *
       *    Á´³Ñ¥Á¥§¥Ã¥¯¥Ñ¥é¥á¥¿
            COPY    "CPORCSKANACHK.INC".
+      *
+      *    ÎÅÍÜ¥ì¥»¥³¥á¥ó¥È¼èÆÀ¥µ¥Ö
+           COPY    "CPORCSRYOCOM.INC".
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
@@ -716,6 +758,7 @@
       *
            INITIALIZE                      TBL-HASSYO-INF
            INITIALIZE                      TBL-ZAISIEN-INF
+           INITIALIZE                      TBL-RYOCOM-INF
       *
            MOVE  RECE62-KOHBUNRI-MIN   TO  WRK-KOHBUNRI-JIDO
            MOVE  ZERO                  TO  WRK-HKNCOMBI-JIDO
@@ -1042,6 +1085,42 @@
                   PERFORM    2001-ZAISIEN-COMMENT-SEC
               END-IF
            END-PERFORM
+      *
+      *    ÎÅÍÜ¥ì¥»¥³¥á¥ó¥È¼èÆÀ
+      *
+           MOVE      ZERO     TO      FLG-RYOCOM
+      *
+           IF    RECE62-SRYYM   >=  "200610"
+             INITIALIZE                   ORCSRYOCOM-AREA
+             MOVE    RECE62-HOSPID    TO  LNK-RYOCOM-HOSPID
+             MOVE    RECE62-PTID      TO  LNK-RYOCOM-PTID
+             MOVE    RECE62-SRYYM     TO  LNK-RYOCOM-SANTEIYM
+             CALL    "ORCSRYOCOM"         USING
+                                          ORCSRYOCOM-AREA
+             IF      LNK-RYOCOM-RC    =   ZERO
+               MOVE       1           TO  FLG-RYOCOM
+               PERFORM  VARYING  RYO-IDX  FROM  1  BY  1
+                         UNTIL   RYO-IDX   >   31
+                 MOVE  LNK-RYOCOM-NYUINKBN(RYO-IDX)
+                                 TO  TBL-RYOCOM-NYUINKBN(RYO-IDX)
+                 MOVE  LNK-RYOCOM-MEISAISU(RYO-IDX)
+                                 TO  TBL-RYOCOM-MEISAISU(RYO-IDX)
+                 MOVE  LNK-RYOCOM-SRYCDTOTAL(RYO-IDX)
+                                 TO  TBL-RYOCOM-SRYCDTOTAL(RYO-IDX)
+                 PERFORM  VARYING  RYO-IDX2  FROM  1  BY  1
+                           UNTIL   RYO-IDX2   >   30
+                   MOVE  LNK-RYOCOM-IRYO-SRYCD(RYO-IDX RYO-IDX2)
+                           TO  TBL-RYOCOM-IRYO-SRYCD(RYO-IDX RYO-IDX2)
+                 END-PERFORM
+                 MOVE  LNK-RYOCOM-ADL-SRYCD(RYO-IDX)
+                                 TO  TBL-RYOCOM-ADL-SRYCD(RYO-IDX)
+                 MOVE  LNK-RYOCOM-ADL-TEN(RYO-IDX)
+                                 TO  TBL-RYOCOM-ADL-TEN(RYO-IDX)
+                 MOVE  LNK-RYOCOM-ADL-TEN-MOJI(RYO-IDX)
+                                 TO  TBL-RYOCOM-ADL-TEN-MOJI(RYO-IDX)
+               END-PERFORM
+             END-IF
+           END-IF
       *
       *****º¹¹þÊÔ½¸£²********************
            PERFORM     250-SASHIKOMI2-SEC
@@ -3701,25 +3780,25 @@
                              TO  WRK-RECE65XX-SRYCD(MAX-MEISAISU 1)
                MOVE    ZERO  TO  WRK-RECE65XX-SRYSURYO(MAX-MEISAISU 1)
                IF    TBL-NYU-DAY-CD(IDX)  =  CONS-SANTEI-COMMENT1
-                 MOVE    4   TO  WRK-RECE65XX-YUKOKETA(MAX-MEISAISU 1)
-                 MOVE    "¡¡¡¡¡¡Æü"
+                 MOVE    3   TO  WRK-RECE65XX-YUKOKETA(MAX-MEISAISU 1)
+                 MOVE    "¡¡¡¡Æü"
                              TO  WRK-RECE65XX-NAME(MAX-MEISAISU 1)
                  MOVE    TBL-NYU-DAY-ST(IDX)
                              TO  DAY-IDX
                  MOVE    TBL-DAY(DAY-IDX)
-                             TO  WRK-RECE65XX-NAME(MAX-MEISAISU 1)(3:4)
+                             TO  WRK-RECE65XX-NAME(MAX-MEISAISU 1)(1:4)
                ELSE
-                 MOVE    8   TO  WRK-RECE65XX-YUKOKETA(MAX-MEISAISU 1)
-                 MOVE    "¡¡¡¡¡¡Æü¡Á¡¡¡¡Æü"
+                 MOVE    7   TO  WRK-RECE65XX-YUKOKETA(MAX-MEISAISU 1)
+                 MOVE    "¡¡¡¡Æü¡Á¡¡¡¡Æü"
                              TO  WRK-RECE65XX-NAME(MAX-MEISAISU 1)
                  MOVE    TBL-NYU-DAY-ST(IDX)
                              TO  DAY-IDX
                  MOVE    TBL-DAY(DAY-IDX)
-                             TO  WRK-RECE65XX-NAME(MAX-MEISAISU 1)(3:4)
+                             TO  WRK-RECE65XX-NAME(MAX-MEISAISU 1)(1:4)
                  MOVE    TBL-NYU-DAY-ED(IDX)
                              TO  DAY-IDX
                  MOVE    TBL-DAY(DAY-IDX)
-                             TO  WRK-RECE65XX-NAME(MAX-MEISAISU 1)(11:4)
+                             TO  WRK-RECE65XX-NAME(MAX-MEISAISU 1)(9:4)
                END-IF
            END-PERFORM
       *
@@ -4049,14 +4128,30 @@
                                          NOT =   RECE649-HOJOKBN      )
                OR     ( RECE62-TEKSTYMD  NOT =   RECE649-TEKSTYMD     )
       *
-               MOVE   ZERO   TO  FLG-COMMENT
-      *        ¡Ê»ÀÁÇ·×»»¼°¤Î¥³¥á¥ó¥È¤Î¥»¥Ã¥È¡Ë
-               IF   FLG-COMMENT  =  ZERO
-                 PERFORM    2501-SANSO-HANTEI-SEC
-               END-IF
-               IF   FLG-COMMENT  =  ZERO
-                 PERFORM    2599-RECE649-TENSOU-SEC
-               END-IF
+               EVALUATE  RECE649-SRYKBN
+                 WHEN      "90"
+                 WHEN      "92"
+                    IF    FLG-RYOCOM  =  ZERO
+                       PERFORM       2599-RECE649-TENSOU-SEC
+                    ELSE
+                       EVALUATE  RECE649-ZAISKBKBN
+                         WHEN     "1"
+                         WHEN     "2"
+                           PERFORM   2502-RYOCOM-HANTEI-SEC
+                         WHEN   OTHER
+                           PERFORM   2599-RECE649-TENSOU-SEC
+                       END-EVALUATE
+                    END-IF
+                 WHEN      OTHER
+                    MOVE   ZERO   TO  FLG-COMMENT
+      *             ¡Ê»ÀÁÇ·×»»¼°¤Î¥³¥á¥ó¥È¤Î¥»¥Ã¥È¡Ë
+                    IF   FLG-COMMENT  =  ZERO
+                        PERFORM   2501-SANSO-HANTEI-SEC
+                    END-IF
+                    IF   FLG-COMMENT  =  ZERO
+                        PERFORM   2599-RECE649-TENSOU-SEC
+                    END-IF
+               END-EVALUATE
       *
                PERFORM 990-RECE649-NEXT-SEC
       *
@@ -4552,6 +4647,372 @@
       *
            .
        250111-SRYACTINF2-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÎÅÍÜÉÂÅï¥³¥á¥ó¥È¤¬¤¢¤ë¤«È½Äê
+      *****************************************************************
+       2502-RYOCOM-HANTEI-SEC          SECTION.
+      *
+           MOVE     ZERO     TO     FLG-RYOCOM2
+           INITIALIZE               TBL-RYOCOM2-INF
+      *
+           PERFORM  VARYING  RYO-IDX  FROM  1  BY  1
+                     UNTIL   RYO-IDX   >   31
+      *
+               IF    (RECE649-KAISU(1 RYO-IDX)   NOT =  ZERO)
+               AND   (TBL-RYOCOM-NYUINKBN(RYO-IDX)   =  "1" )
+      *
+                  MOVE     ZERO     TO    FLG-ARI
+                  PERFORM  VARYING  RYO-IDX3  FROM  1  BY  1
+                            UNTIL  (RYO-IDX3   >   31)
+                             OR    (TBL-RYOCOM2-MEISAISU(RYO-IDX3)
+                                               = ZERO)
+                             OR    (FLG-ARI    =    1)
+                     IF  (TBL-RYOCOM2-MEISAISU  (RYO-IDX3) =
+                                    TBL-RYOCOM-MEISAISU  (RYO-IDX))
+                     AND (TBL-RYOCOM2-SRYCDTOTAL(RYO-IDX3) =
+                                    TBL-RYOCOM-SRYCDTOTAL(RYO-IDX))
+                     AND (TBL-RYOCOM2-ADL-TEN   (RYO-IDX3) =
+                                    TBL-RYOCOM-ADL-TEN   (RYO-IDX))
+                        MOVE   1   TO  TBL-RYOCOM2-DAY(RYO-IDX3 RYO-IDX)
+                        MOVE   1   TO  FLG-ARI
+                     END-IF
+                  END-PERFORM
+                  IF  FLG-ARI  =  ZERO
+                     MOVE  TBL-RYOCOM-AREA(RYO-IDX)
+                               TO  TBL-RYOCOM2-AREA(RYO-IDX3)
+                     MOVE  1   TO  TBL-RYOCOM2-DAY (RYO-IDX3 RYO-IDX)
+                  END-IF
+      *
+                  MOVE      1      TO     FLG-RYOCOM2
+      *
+               END-IF
+      *
+           END-PERFORM
+      *
+           IF  FLG-RYOCOM2   =   ZERO
+              PERFORM   2599-RECE649-TENSOU-SEC
+           ELSE
+              PERFORM   25021-RYOCOM-HENSYU-SEC
+           END-IF
+      *
+           .
+       2502-RYOCOM-HANTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÎÅÍÜÉÂÅï¥³¥á¥ó¥ÈÊÔ½¸
+      *****************************************************************
+       25021-RYOCOM-HENSYU-SEC          SECTION.
+      *
+           PERFORM  250111-RECE659-TAIHI-SEC
+      *
+      *    £Ò£Å£Ã£Å£°£µ¥Õ¥¡¥¤¥ë¤ÎÆâÍÆ¤ò¥Æ¡¼¥Ö¥ë¤ËÂàÈò
+           MOVE    ZERO                 TO  IDX-RECE65
+           MOVE    SPACE                TO  WRK-RECE65XX2-REC
+           INITIALIZE                       WRK-RECE65XX2-REC
+      *
+           MOVE    RECE649-MEISAISU     TO  MAX-MEISAISU
+      *
+      *
+           PERFORM  VARYING  RYO-IDX3  FROM  1  BY  1
+                     UNTIL  (RYO-IDX3   >   31                    )
+                      OR    (TBL-RYOCOM2-MEISAISU(RYO-IDX3) = ZERO)
+      *
+              INITIALIZE                TBL-NYU-DAY
+      *
+              MOVE    ZERO          TO  DAY-IDX
+              MOVE    ZERO          TO  FLG-NYU-RENZOKU
+      *
+              PERFORM    VARYING    IDX  FROM   1   BY   1
+                          UNTIL    (IDX      >   31)  OR
+                                   (DAY-IDX  >   31)
+                IF    TBL-RYOCOM2-DAY(RYO-IDX3 IDX)   =  ZERO
+                      MOVE  ZERO  TO  FLG-NYU-RENZOKU
+                ELSE
+                      IF    FLG-NYU-RENZOKU  =  ZERO
+                         ADD   1     TO  DAY-IDX
+                         MOVE  IDX   TO  TBL-NYU-DAY-ST(DAY-IDX)
+                      END-IF
+                      MOVE  IDX      TO  TBL-NYU-DAY-ED(DAY-IDX)
+                      MOVE  1        TO  FLG-NYU-RENZOKU
+                END-IF
+              END-PERFORM
+      *
+              PERFORM  VARYING  DAY-IDX  FROM   1   BY   1
+                        UNTIL  (DAY-IDX                  >   31)
+                         OR    (TBL-NYU-DAY-ST(DAY-IDX)  = ZERO)
+                IF    TBL-NYU-DAY-ST(DAY-IDX) 
+                                    =   TBL-NYU-DAY-ED(DAY-IDX)
+                      MOVE  "840000059"
+                                    TO  TBL-NYU-DAY-CD(DAY-IDX)
+                ELSE
+                      MOVE  "810000001"
+                                    TO  TBL-NYU-DAY-CD(DAY-IDX)
+                END-IF
+              END-PERFORM
+      *
+      *       »»ÄêÆü¥³¥á¥ó¥È¤ÎÁÞÆþ
+              PERFORM  VARYING   IDX    FROM  1   BY   1
+                        UNTIL   (IDX                  >    31)
+                         OR     (TBL-NYU-DAY-ST(IDX)  =  ZERO)
+                 COMPUTE  MAX-MEISAISU   =   MAX-MEISAISU  +  1
+                 MOVE  "810000001"
+                             TO  WRK-RECE65XX2-SRYCD(MAX-MEISAISU 1)
+                 MOVE   ZERO TO  WRK-RECE65XX2-SRYSURYO(MAX-MEISAISU 1)
+                 IF    TBL-NYU-DAY-CD(IDX)  =  "840000059"
+                   MOVE   6  TO  WRK-RECE65XX2-YUKOKETA(MAX-MEISAISU 1)
+                   MOVE   "¡¡¡¡·î¡¡¡¡Æü"
+                           TO  WRK-RECE65XX2-NAME(MAX-MEISAISU 1)
+                   MOVE   RECE62-SRYYM(5:2)   TO  DAY-IDX2
+                   MOVE   TBL-DAY(DAY-IDX2)
+                           TO  WRK-RECE65XX2-NAME(MAX-MEISAISU 1)(1:4)
+                   MOVE   TBL-NYU-DAY-ST(IDX) TO  DAY-IDX2
+                   MOVE   TBL-DAY(DAY-IDX2)
+                           TO  WRK-RECE65XX2-NAME(MAX-MEISAISU 1)(7:4)
+                 ELSE
+                   MOVE   13 TO  WRK-RECE65XX2-YUKOKETA(MAX-MEISAISU 1)
+                   MOVE   "¡¡¡¡·î¡¡¡¡Æü¡Á¡¡¡¡·î¡¡¡¡Æü"
+                           TO  WRK-RECE65XX2-NAME(MAX-MEISAISU 1)
+                   MOVE   RECE62-SRYYM(5:2)   TO  DAY-IDX2
+                   MOVE   TBL-DAY(DAY-IDX2)
+                           TO  WRK-RECE65XX2-NAME(MAX-MEISAISU 1)(1:4)
+                               WRK-RECE65XX2-NAME(MAX-MEISAISU 1)(15:4)
+                   MOVE   TBL-NYU-DAY-ST(IDX) TO  DAY-IDX2
+                   MOVE   TBL-DAY(DAY-IDX2)
+                           TO  WRK-RECE65XX2-NAME(MAX-MEISAISU 1)(7:4)
+                   MOVE   TBL-NYU-DAY-ED(IDX) TO  DAY-IDX2
+                   MOVE   TBL-DAY(DAY-IDX2)
+                           TO  WRK-RECE65XX2-NAME(MAX-MEISAISU 1)(21:4)
+                 END-IF
+              END-PERFORM
+      *
+              PERFORM  VARYING  IDX  FROM   1   BY   1
+                  UNTIL  (IDX                                  >  30  )
+                   OR    (TBL-RYOCOM2-IRYO-SRYCD(RYO-IDX3 IDX) = SPACE)
+      *
+                   COMPUTE  MAX-MEISAISU  =  MAX-MEISAISU  +  1
+                   MOVE "810000001"
+                              TO WRK-RECE65XX2-SRYCD(MAX-MEISAISU 1)
+                   MOVE  ZERO TO WRK-RECE65XX2-SRYSURYO(MAX-MEISAISU 1)
+                   MOVE  4    TO WRK-RECE65XX2-YUKOKETA(MAX-MEISAISU 1)
+                   EVALUATE  TBL-RYOCOM2-IRYO-SRYCD(RYO-IDX3 IDX)
+                     WHEN      "820000057"
+                       MOVE "¡Ö£°£±¡×"
+                              TO WRK-RECE65XX2-NAME(MAX-MEISAISU 1)
+                     WHEN      "820000058"
+                       MOVE "¡Ö£°£²¡×"
+                              TO WRK-RECE65XX2-NAME(MAX-MEISAISU 1)
+                     WHEN      "820000059"
+                       MOVE "¡Ö£°£³¡×"
+                              TO WRK-RECE65XX2-NAME(MAX-MEISAISU 1)
+                     WHEN      "820000060"
+                       MOVE "¡Ö£°£´¡×"
+                              TO WRK-RECE65XX2-NAME(MAX-MEISAISU 1)
+                     WHEN      "820000061"
+                       MOVE "¡Ö£°£µ¡×"
+                              TO WRK-RECE65XX2-NAME(MAX-MEISAISU 1)
+                     WHEN      "820000062"
+                       MOVE "¡Ö£°£¶¡×"
+                              TO WRK-RECE65XX2-NAME(MAX-MEISAISU 1)
+                     WHEN      "820000063"
+                       MOVE "¡Ö£°£·¡×"
+                              TO WRK-RECE65XX2-NAME(MAX-MEISAISU 1)
+                     WHEN      "820000064"
+                       MOVE "¡Ö£°£¸¡×"
+                              TO WRK-RECE65XX2-NAME(MAX-MEISAISU 1)
+                     WHEN      "820000065"
+                       MOVE "¡Ö£°£¹¡×"
+                              TO WRK-RECE65XX2-NAME(MAX-MEISAISU 1)
+                     WHEN      "820000066"
+                       MOVE "¡Ö£±£°¡×"
+                              TO WRK-RECE65XX2-NAME(MAX-MEISAISU 1)
+                     WHEN      "820000067"
+                       MOVE "¡Ö£±£±¡×"
+                              TO WRK-RECE65XX2-NAME(MAX-MEISAISU 1)
+                     WHEN      "820000068"
+                       MOVE "¡Ö£±£²¡×"
+                              TO WRK-RECE65XX2-NAME(MAX-MEISAISU 1)
+                     WHEN      "820000069"
+                       MOVE "¡Ö£±£³¡×"
+                              TO WRK-RECE65XX2-NAME(MAX-MEISAISU 1)
+                     WHEN      "820000070"
+                       MOVE "¡Ö£±£´¡×"
+                              TO WRK-RECE65XX2-NAME(MAX-MEISAISU 1)
+                     WHEN      "820000071"
+                       MOVE "¡Ö£±£µ¡×"
+                              TO WRK-RECE65XX2-NAME(MAX-MEISAISU 1)
+                     WHEN      "820000072"
+                       MOVE "¡Ö£±£¶¡×"
+                              TO WRK-RECE65XX2-NAME(MAX-MEISAISU 1)
+                     WHEN      "820000073"
+                       MOVE "¡Ö£±£·¡×"
+                              TO WRK-RECE65XX2-NAME(MAX-MEISAISU 1)
+                     WHEN      "820000074"
+                       MOVE "¡Ö£±£¸¡×"
+                              TO WRK-RECE65XX2-NAME(MAX-MEISAISU 1)
+                     WHEN      "820000075"
+                       MOVE "¡Ö£±£¹¡×"
+                              TO WRK-RECE65XX2-NAME(MAX-MEISAISU 1)
+                     WHEN      "820000076"
+                       MOVE "¡Ö£²£°¡×"
+                              TO WRK-RECE65XX2-NAME(MAX-MEISAISU 1)
+                     WHEN      "820000077"
+                       MOVE "¡Ö£²£±¡×"
+                              TO WRK-RECE65XX2-NAME(MAX-MEISAISU 1)
+                     WHEN      "820000078"
+                       MOVE "¡Ö£²£²¡×"
+                              TO WRK-RECE65XX2-NAME(MAX-MEISAISU 1)
+                     WHEN      "820000079"
+                       MOVE "¡Ö£²£³¡×"
+                              TO WRK-RECE65XX2-NAME(MAX-MEISAISU 1)
+                     WHEN      "820000080"
+                       MOVE "¡Ö£²£´¡×"
+                              TO WRK-RECE65XX2-NAME(MAX-MEISAISU 1)
+                     WHEN      "820000081"
+                       MOVE "¡Ö£²£µ¡×"
+                              TO WRK-RECE65XX2-NAME(MAX-MEISAISU 1)
+                     WHEN      "820000082"
+                       MOVE "¡Ö£²£¶¡×"
+                              TO WRK-RECE65XX2-NAME(MAX-MEISAISU 1)
+                     WHEN      "820000083"
+                       MOVE "¡Ö£²£·¡×"
+                              TO WRK-RECE65XX2-NAME(MAX-MEISAISU 1)
+                     WHEN      "820000084"
+                       MOVE "¡Ö£²£¸¡×"
+                              TO WRK-RECE65XX2-NAME(MAX-MEISAISU 1)
+                     WHEN      "820000085"
+                       MOVE "¡Ö£²£¹¡×"
+                              TO WRK-RECE65XX2-NAME(MAX-MEISAISU 1)
+                     WHEN      "820000086"
+                       MOVE "¡Ö£³£°¡×"
+                              TO WRK-RECE65XX2-NAME(MAX-MEISAISU 1)
+                     WHEN      "820000087"
+                       MOVE "¡Ö£³£±¡×"
+                              TO WRK-RECE65XX2-NAME(MAX-MEISAISU 1)
+                     WHEN      "820000088"
+                       MOVE "¡Ö£³£²¡×"
+                              TO WRK-RECE65XX2-NAME(MAX-MEISAISU 1)
+                     WHEN      "820000089"
+                       MOVE "¡Ö£³£³¡×"
+                              TO WRK-RECE65XX2-NAME(MAX-MEISAISU 1)
+                     WHEN      "820000090"
+                       MOVE "¡Ö£³£´¡×"
+                              TO WRK-RECE65XX2-NAME(MAX-MEISAISU 1)
+                     WHEN      "820000091"
+                       MOVE "¡Ö£³£µ¡×"
+                              TO WRK-RECE65XX2-NAME(MAX-MEISAISU 1)
+                     WHEN      "820000092"
+                       MOVE "¡Ö£³£¶¡×"
+                              TO WRK-RECE65XX2-NAME(MAX-MEISAISU 1)
+                     WHEN      "820000093"
+                       MOVE "¡Ö£³£·¡×"
+                              TO WRK-RECE65XX2-NAME(MAX-MEISAISU 1)
+                   END-EVALUATE
+      *
+              END-PERFORM
+      *
+              IF   TBL-RYOCOM2-ADL-SRYCD(RYO-IDX3)  NOT =  SPACE
+                COMPUTE  MAX-MEISAISU  =  MAX-MEISAISU  +  1
+                MOVE   "810000001"
+                             TO WRK-RECE65XX2-SRYCD(MAX-MEISAISU 1)
+                MOVE   ZERO  TO WRK-RECE65XX2-SRYSURYO(MAX-MEISAISU 1)
+                MOVE   7     TO WRK-RECE65XX2-YUKOKETA(MAX-MEISAISU 1)
+                MOVE   "£Á£Ä£Ì¡¡¡¡¡¡ÅÀ"
+                             TO WRK-RECE65XX2-NAME(MAX-MEISAISU 1)
+                MOVE   TBL-RYOCOM2-ADL-TEN-MOJI(RYO-IDX3)
+                             TO WRK-RECE65XX2-NAME(MAX-MEISAISU 1)(9:4)
+              END-IF
+      *
+           END-PERFORM
+      *
+      *
+           PERFORM    250211-SRYACTINF3-HENSYU-SEC
+      *
+           .
+       25021-RYOCOM-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    £¶£µ£¹¡¡£Ó£Ò£Ù£Á£Ã£Ô£É£Î£ÆÊÔ½¸½èÍý
+      *****************************************************************
+       250211-SRYACTINF3-HENSYU-SEC     SECTION.
+      *
+           PERFORM
+               UNTIL  ( FLG-RECE659           =   1                    )
+               OR     ( RECE649-HOSPID    NOT =   RECE659-HOSPID       )
+               OR     ( RECE649-SRYYM     NOT =   RECE659-SRYYM        )
+               OR     ( RECE649-NYUGAIKBN NOT =   RECE659-NYUGAIKBN    )
+               OR     ( RECE649-PTID      NOT =   RECE659-PTID         )
+               OR     ( RECE649-RECEKA    NOT =   RECE659-RECEKA       )
+               OR     ( RECE649-TEISYUTUSAKI
+                                          NOT =   RECE659-TEISYUTUSAKI )
+               OR     ( RECE649-RECESYUBETU
+                                          NOT =   RECE659-RECESYUBETU  )
+               OR     ( RECE649-HKNJANUM  NOT =   RECE659-HKNJANUM     )
+               OR     ( RECE649-HOJOKBN   NOT =   RECE659-HOJOKBN      )
+               OR     ( RECE649-TEKSTYMD  NOT =   RECE659-TEKSTYMD     )
+               OR     ( RECE649-ZAINUM    NOT =   RECE659-ZAINUM       )
+               OR     ( RECE649-ZAIREN    NOT =   RECE659-ZAIREN       )
+      *
+               PERFORM   VARYING   IDX   FROM    1   BY  1
+                          UNTIL  ( IDX                >   5     )
+                           OR    ( RECE659-SRYCD(IDX) =   SPACE )
+                    ADD    1    TO    IDX-RECE65
+                    MOVE   RECE659-SRYACT-TBL(IDX)
+                           TO   WRK-RECE65XX2-SRYACT-TBL(IDX-RECE65 1)
+               END-PERFORM
+      *
+               PERFORM 990-RECE659-NEXT-SEC
+      *
+           END-PERFORM
+      *
+      *    ¥³¥á¥ó¥È¤ò´Þ¤ó¤ÀÆâÍÆ¤ÇÃæ´Ö¥Õ¥¡¥¤¥ë¤ÎºÆºîÀ®
+           MOVE       ZERO             TO      FLG-WRKRECE65
+           MOVE       ZERO             TO      IDX
+           MOVE       ZERO             TO      IDX-RECE65
+           MOVE       ZERO             TO      WRK-RENNUM
+           MOVE       ZERO             TO      WRK-CNT-MEISAI
+           PERFORM    UNTIL     FLG-WRKRECE65  =    1
+               INITIALIZE                        RECE651-REC
+               MOVE    WRK-RECE65-KEY       TO   RECE651-KEY
+               ADD     1                    TO   WRK-RENNUM
+               MOVE    WRK-RENNUM           TO   RECE651-RENNUM
+               MOVE    WRK-RECE65-KOHBUNRI  TO   RECE651-KOHBUNRI
+               MOVE    WRK-RECE65-PTNUM     TO   RECE651-PTNUM
+               MOVE    WRK-RECE65-SRYKA     TO   RECE651-SRYKA
+               MOVE    WRK-RECE65-SRYKBN    TO   RECE651-SRYKBN
+               MOVE    WRK-RECE65-SRYSYUKBN TO   RECE651-SRYSYUKBN
+               MOVE    WRK-RECE65-JIHIMONEY TO   RECE651-JIHIMONEY
+               PERFORM  VARYING   IDX   FROM   1   BY   1
+                         UNTIL   (IDX             >   5)
+                          OR     (FLG-WRKRECE65   =   1)
+                   ADD        1             TO   IDX-RECE65
+                   IF  WRK-RECE65XX2-SRYCD(IDX-RECE65 1) = SPACE
+                      MOVE    1             TO    FLG-WRKRECE65
+                   ELSE
+                      MOVE  WRK-RECE65XX2-SRYACT-TBL(IDX-RECE65 1)
+                                       TO   RECE651-SRYACT-TBL(IDX)
+                      ADD   1          TO   WRK-CNT-MEISAI
+                   END-IF
+               END-PERFORM
+               IF  RECE651-SRYCD(1)  NOT =  SPACE
+                  WRITE   RECE651-REC
+                  ADD     1            TO   CNT-RECE65
+               END-IF
+           END-PERFORM
+      *
+           MOVE    RECE649-REC       TO      RECE641-REC
+           MOVE    WRK-CNT-MEISAI    TO      RECE641-MEISAISU
+      *
+           MOVE    RECE649-MEISAISU  TO      RECE641-RYOTENKISAISU
+      *
+           WRITE   RECE641-REC
+           ADD     1                 TO      CNT-RECE64
+      *
+           .
+       250211-SRYACTINF3-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************

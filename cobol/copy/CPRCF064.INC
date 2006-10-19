@@ -105,6 +105,8 @@
            03  RECE64-COMCDFLG            PIC  X(01).
       *（サ）フラグ
            03  RECE64-SAFLG               PIC  X(01).
+      *療養病棟入院料剤点記載明細数
+           03  RECE64-RYOTENKISAISU       PIC  9(04).
       *
       *リハビリ
            03  RECE64-RIHABIRI-COMMENT    PIC  X(01).

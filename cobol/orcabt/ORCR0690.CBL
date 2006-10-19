@@ -100,6 +100,7 @@
       *                                     編集に給付割合を追加
       *  03.01.01    NACL-門脇    06/06/28  実日数減算コード対応
       *  03.01.02    NACL-門脇    06/07/10  在支援コメント自動記載対応
+      *  03.03.01    NACL-門脇    06/10/19  療養病棟レセコメント記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1190,7 +1191,7 @@
                MOVE    ZERO                TO  WRK-RECE65
                                                IDY
                MOVE    SPACE               TO  WRK-SRYSYUKBN
-      *         
+      *
                PERFORM 2002-TBLZAIW-TAIHI-SEC
       *
                IF      SPA-STS          =   ZERO
@@ -1331,6 +1332,14 @@
                    OR      RECE64-SRYKBN     =   "33"                   
                        MOVE    1             TO  IDY
                    ELSE                          
+      *              療養病棟レセコメントがある剤
+                     IF    RECE64-RYOTENKISAISU  NOT = ZERO
+                       IF    WRK-ZAIWMAX(3) >= RECE64-RYOTENKISAISU
+                          MOVE    5          TO  IDY
+                       ELSE
+                          MOVE    3          TO  IDY
+                       END-IF
+                     ELSE
                        EVALUATE    RECE65-SRYCD (IDX) (1:1)
                            WHEN    "0"
                              IF   (RECE62-RECESYUBETU    =  8888   )
@@ -1390,6 +1399,7 @@
                                MOVE    2             TO  SPA-STS
                                GO  TO  2002-TBLZAIW-TAIHI-EXT
                        END-EVALUATE
+                     END-IF
                    END-IF
       *
                    IF      RECE65-KENTAICOMMENT (IDX)   =   1
@@ -2055,10 +2065,12 @@
                IF      RECE64-SRYKBN   <=   "33"
                    MOVE    "＊"            TO  WRK-ZAI-MK
                END-IF    
-               IF    (    (RECE64-YKZTEN     =   ZERO )
-                      AND (IDX1              =   5    ) )
-               OR    (    (RECE64-KIZAITEN   =   ZERO )
-                      AND (IDX1              =   4    ) )
+               IF    ((RECE64-YKZTEN        =   ZERO ) AND
+                      (IDX1                 =   5    ) AND
+                      (RECE64-RYOTENKISAISU =   ZERO ))
+               OR    ((RECE64-KIZAITEN      =   ZERO ) AND
+                      (IDX1                 =   4    ) AND
+                      (RECE64-RYOTENKISAISU =   ZERO ))
                    CONTINUE
                ELSE    
                    IF   (( RECE64-SRYKBN     =   "31"  AND
