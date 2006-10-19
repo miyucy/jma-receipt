@@ -533,6 +533,21 @@
         <embed object="string" length="2"/>
       </appinfo>
     </element>
+    <element name="GENMEN" occurs="1">
+      <appinfo>
+        <embed object="string" length="10"/>
+      </appinfo>
+    </element>
+    <element name="GENMENKIN" occurs="1">
+      <appinfo>
+        <embed object="string" length="7"/>
+      </appinfo>
+    </element>
+    <element name="FTNMONEY-GEN" occurs="1">
+      <appinfo>
+        <embed object="string" length="8"/>
+      </appinfo>
+    </element>
   </dictionarydata>
   <diagramdata>
     <attribute name="background">
@@ -30278,6 +30293,132 @@
           </attribute>
           <attribute name="multi">
             <real val="0.202"/>
+          </attribute>
+        </composite>
+      </attribute>
+    </object>
+    <object type="Embed - Text" version="0" id="O783">
+      <attribute name="obj_pos">
+        <point val="7.975,25.6"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="7.975,25.4045;9.2375,25.6545"/>
+      </attribute>
+      <attribute name="dnode_path">
+        <string>#GENMEN#</string>
+      </attribute>
+      <attribute name="embed_text_string">
+        <enum val="0"/>
+      </attribute>
+      <attribute name="text">
+        <composite type="text">
+          <attribute name="string">
+            <string>#&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;#</string>
+          </attribute>
+          <attribute name="font">
+            <font name="Courier"/>
+          </attribute>
+          <attribute name="height">
+            <real val="0.25"/>
+          </attribute>
+          <attribute name="pos">
+            <point val="7.975,25.6"/>
+          </attribute>
+          <attribute name="color">
+            <color val="#000000"/>
+          </attribute>
+          <attribute name="alignment">
+            <enum val="0"/>
+          </attribute>
+          <attribute name="single">
+            <real val="0.1515"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.12625"/>
+          </attribute>
+        </composite>
+      </attribute>
+    </object>
+    <object type="Embed - Text" version="0" id="O784">
+      <attribute name="obj_pos">
+        <point val="10.45,25.6"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="9.1774,25.3655;10.45,25.6655"/>
+      </attribute>
+      <attribute name="dnode_path">
+        <string>#GENMENKIN#</string>
+      </attribute>
+      <attribute name="embed_text_string">
+        <enum val="1"/>
+      </attribute>
+      <attribute name="text">
+        <composite type="text">
+          <attribute name="string">
+            <string>#9999999#</string>
+          </attribute>
+          <attribute name="font">
+            <font name="Courier"/>
+          </attribute>
+          <attribute name="height">
+            <real val="0.3"/>
+          </attribute>
+          <attribute name="pos">
+            <point val="10.45,25.6"/>
+          </attribute>
+          <attribute name="color">
+            <color val="#000000"/>
+          </attribute>
+          <attribute name="alignment">
+            <enum val="2"/>
+          </attribute>
+          <attribute name="single">
+            <real val="0.1818"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.1515"/>
+          </attribute>
+        </composite>
+      </attribute>
+    </object>
+    <object type="Embed - Text" version="0" id="O785">
+      <attribute name="obj_pos">
+        <point val="10.45,25.375"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="8.7532,25.1014;10.45,25.4514"/>
+      </attribute>
+      <attribute name="dnode_path">
+        <string>#FTNMONEY-GEN#</string>
+      </attribute>
+      <attribute name="embed_text_string">
+        <enum val="1"/>
+      </attribute>
+      <attribute name="text">
+        <composite type="text">
+          <attribute name="string">
+            <string>#99999999#</string>
+          </attribute>
+          <attribute name="font">
+            <font name="Courier"/>
+          </attribute>
+          <attribute name="height">
+            <real val="0.35"/>
+          </attribute>
+          <attribute name="pos">
+            <point val="10.45,25.375"/>
+          </attribute>
+          <attribute name="color">
+            <color val="#000000"/>
+          </attribute>
+          <attribute name="alignment">
+            <enum val="2"/>
+          </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
