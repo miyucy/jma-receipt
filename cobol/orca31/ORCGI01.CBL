@@ -4538,8 +4538,8 @@
        410111-ROUJIN-CHK-SEC          SECTION.
       *
            INITIALIZE                  PTKOHINF-REC
-           MOVE    AGECHK-HOSPID       TO  PTKOH-HOSPID
-           MOVE    AGECHK-PTID         TO  PTKOH-PTID
+           MOVE    SPA-HOSPID          TO  PTKOH-HOSPID
+           MOVE    SPA-NAI-I01-PTID    TO  PTKOH-PTID
            MOVE    "027"               TO  PTKOH-KOHNUM
            MOVE    WRK-KJNYMD          TO  PTKOH-TEKSTYMD
            MOVE    WRK-KJNYMD          TO  PTKOH-TEKEDYMD
