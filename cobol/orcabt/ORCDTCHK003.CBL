@@ -143,7 +143,6 @@
            03  WRK-HKNMES                              PIC X(20).
            03  WRK-ERRMSG                              PIC X(500).
            03  WRK-HKNKBN                              PIC X(01).
-           03  WRK-Z9                                  PIC Z9.
            03  WRK-STDAYMES                            PIC X(04).
            03  WRK-EDDAYMES                            PIC X(04).
       *
