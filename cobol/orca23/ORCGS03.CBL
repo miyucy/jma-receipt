@@ -2917,6 +2917,7 @@
       *
       *        入金方法
                IF    ( SPA-GMN-NYUKIN      >   ZERO )
+                OR   ( SMEI-DENPEDANUM     =   1 )
                    MOVE  SPA-GMN-NYKN-HOHO TO  SMEI-NYUKIN-HOHO
                ELSE
                    MOVE   "00"             TO  SMEI-NYUKIN-HOHO
