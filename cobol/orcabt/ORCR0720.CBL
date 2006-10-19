@@ -4836,8 +4836,8 @@
            EVALUATE    RECE62-GENMENKBN
                WHEN    1
                    IF      RECE62-GENGAKU      >   ZERO
-                       MOVE    RECE62-GENGAKU      TO  WRK-KGK7
-                       MOVE    WRK-KGK7            TO  HC06-GENMENKIN
+                       MOVE    RECE62-GENGAKU      TO  WRK-KGK6
+                       MOVE    WRK-KGK6            TO  HC06-GENMENKIN
                        MOVE    "¸º³Û¡Ê±ß¡Ë"        TO  HC06-GENMEN
                    ELSE
                        COMPUTE WRK-KYURATE-9   =
