@@ -240,6 +240,12 @@
                GO  TO  100-PRM-CHK-EXT
            END-IF
       *
+      *    算定年月チェック
+           IF    ( LNK-RYOCOM-SANTEIYM    <   "200610" )
+               MOVE    1               TO  LNK-RYOCOM-RC
+               GO  TO  100-PRM-CHK-EXT
+           END-IF
+      *
       *    患者マスター検索
            INITIALIZE                      PTINF-REC
            MOVE    LNK-RYOCOM-HOSPID   TO  PTINF-HOSPID
