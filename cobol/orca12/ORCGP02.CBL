@@ -4097,6 +4097,9 @@
                WHEN    "2438"
                    MOVE    "给锐砷么努脱倡幌泣°姜位泣で掐蜗して布さい"
                                                TO  SPA-ERRMSG
+               WHEN    "2439"
+                   MOVE    "给锐砷么は１００◇までです。"
+                                               TO  SPA-ERRMSG
                WHEN    "2499"
                    MOVE    "给锐砷么驰滦据给锐が５０凤笆惧です。"
                                                TO  SPA-ERRMSG

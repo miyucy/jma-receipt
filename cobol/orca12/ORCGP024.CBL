@@ -1521,15 +1521,15 @@
                                            =   "960"   )  AND
                       (SPA-NAI24-TKOHSTYMD (SPA-NAI24-FTNSELNUM)
                                            >=   "20061001"  )
-                   MOVE    "³°Íè¸ºÌÈ³ä¹ç"       TO  SPA-GMN24-FTNMSG1
-                   MOVE    "Æþ±¡¸ºÌÈ³ä¹ç"       TO  SPA-GMN24-FTNMSG2
+                   MOVE    "³°Íè¸º³Û¡Ê¡ó¡Ë"     TO  SPA-GMN24-FTNMSG1
+                   MOVE    "Æþ±¡¸º³Û¡Ê¡ó¡Ë"     TO  SPA-GMN24-FTNMSG2
                END-IF
                IF     (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
                                            =   "961"   )  AND
                       (SPA-NAI24-TKOHSTYMD (SPA-NAI24-FTNSELNUM)
                                            >=   "20061001"  )
-                   MOVE    "³°Íè¸ºÌÈ³Û"         TO  SPA-GMN24-FTNMSG1
-                   MOVE    "Æþ±¡¸ºÌÈ³Û"         TO  SPA-GMN24-FTNMSG2
+                   MOVE    "³°Íè¸º³Û¡Ê±ß¡Ë"     TO  SPA-GMN24-FTNMSG1
+                   MOVE    "Æþ±¡¸º³Û¡Ê±ß¡Ë"     TO  SPA-GMN24-FTNMSG2
                END-IF
            END-IF
       *
@@ -2452,13 +2452,22 @@
                   (SNUM-SEISUU          >   7     )
                MOVE    "2435"           TO  SPA-ERRCD
                MOVE    34               TO  SPA-GMN24-CUR
-               GO      TO               41031-GAIJGNGAK-EXT
            ELSE
                MOVE    SNUM-OUTNUM      TO  SPA-NAI24-GAIJGNGAK
                MOVE    SNUM-OUTNUM      TO  WRK-Z7
                MOVE    WRK-Z7           TO  SPA-GMN24-GAIJGNGAK
+      *        ¸º³Û³ä¹ç¤Î»þ¡¢£±£°£°¤Þ¤Ç
+               IF     (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
+                                           =   "960"   )
+                   IF      SPA-NAI24-GAIJGNGAK  >=  ZERO
+                                           AND  <=  100
+                       CONTINUE
+                   ELSE
+                       MOVE    "2439"           TO  SPA-ERRCD
+                       MOVE    34               TO  SPA-GMN24-CUR
+                   END-IF
+               END-IF
            END-IF
-      *
       *
            .
        41031-GAIJGNGAK-EXT.
@@ -2479,11 +2488,21 @@
                   (SNUM-SEISUU          >   7     )
                MOVE    "2436"           TO  SPA-ERRCD
                MOVE    35               TO  SPA-GMN24-CUR
-               GO      TO               41032-NYUJGNGAK-EXT
            ELSE
                MOVE    SNUM-OUTNUM      TO  SPA-NAI24-NYUJGNGAK
                MOVE    SNUM-OUTNUM      TO  WRK-Z7
                MOVE    WRK-Z7           TO  SPA-GMN24-NYUJGNGAK
+      *        ¸º³Û³ä¹ç¤Î»þ¡¢£±£°£°¤Þ¤Ç
+               IF     (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
+                                           =   "960"   )
+                   IF      SPA-NAI24-NYUJGNGAK  >=  ZERO
+                                           AND  <=  100
+                       CONTINUE
+                   ELSE
+                       MOVE    "2439"           TO  SPA-ERRCD
+                       MOVE    35               TO  SPA-GMN24-CUR
+                   END-IF
+               END-IF
            END-IF
       *
            .
