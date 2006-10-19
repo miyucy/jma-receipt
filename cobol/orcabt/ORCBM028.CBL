@@ -47,7 +47,11 @@
       *
       *  03.02.01    NACL-Æ£¸¶    06/07/24  ¥Þ¥ëÄ¹¤ÎÊÌÁí³çÂÐ±þ
       *                                     HCM2S.red    ¢ª HCM2SV01.red
-      *                                     HCM2T.red    ¢ª HCM2TV01.red 
+      *                                     HCM2T.red    ¢ª HCM2TV02.red
+      *
+      *  03.03.01    NACL-Æ£¸¶    06/10/10  £²£°£°£¶Ç¯£±£°·î²þÀµÂÐ±þ
+      *                                     HCM2SV01.red ¢ª HCM2SV02.red
+      *                                     HCM2TV01.red ¢ª HCM2TV02.red 
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -86,10 +90,12 @@
       *****COPY    "HCM2JV04.INC"  REPLACING  //HCM2JV04//
       *****                        BY         //HCM2J//.
       *****COPY    "HCM2S.INC".
-           COPY    "HCM2SV01.INC"  REPLACING  //HCM2SV01//
+      *****COPY    "HCM2SV01.INC"  REPLACING  //HCM2SV01//
+           COPY    "HCM2SV02.INC"  REPLACING  //HCM2SV02//
                                    BY         //HCM2S//.
       *****COPY    "HCM2T.INC".
-           COPY    "HCM2TV01.INC"  REPLACING  //HCM2TV01//
+      *****COPY    "HCM2TV01.INC"  REPLACING  //HCM2TV01//
+           COPY    "HCM2TV02.INC"  REPLACING  //HCM2TV02//
                                    BY         //HCM2T//.
       *
       *    ¥¹¥ÑÎÎ°è
@@ -528,6 +534,20 @@
                MOVE    "²ó¿ô"              TO  HCM2S-TITLE2
            END-IF
       *
+           EVALUATE    WRK-PRTFLG
+               WHEN    1
+               WHEN    2
+                   MOVE    "¡¡¿©¡¡»ö¡¡ÎÅ¡¡ÍÜ"
+                                         TO  HCM2S-TITLE3
+                   MOVE    "£¸"          TO  HCM2S-TITLE4
+                   MOVE    "È¬"          TO  HCM2S-TITLE5
+               WHEN    3
+                   MOVE    "¿©»öÎÅÍÜ¡¦À¸³èÎÅÍÜ"
+                                         TO  HCM2S-TITLE3
+                   MOVE    "£·"          TO  HCM2S-TITLE4
+                   MOVE    "¼·"          TO  HCM2S-TITLE5
+           END-EVALUATE
+      *
            EVALUATE    WRK-PARA-MARUCHO
                WHEN    "2"
                    MOVE    "¢þ"          TO  HCM2S-MARUCHO (1)
@@ -583,6 +603,24 @@
                MOVE    "²ó¿ô"              TO  HCM2T-TITLE2
                MOVE    "¿©»ö²ó¿ô"          TO  HCM2T-TITLE3
            END-IF
+      *
+           EVALUATE    WRK-PRTFLG
+               WHEN    1
+               WHEN    2
+                   MOVE    "¡¡¿©¡¡»ö¡¡ÎÅ¡¡ÍÜ"
+                                         TO  HCM2T-TITLE4
+                   MOVE    "£¸"          TO  HCM2T-TITLE5
+                   MOVE    "È¬"          TO  HCM2T-TITLE6
+                   MOVE    "¡¡¿©»öÎÅÍÜ¡¡¡¡¤Î¶â³Û"
+                                         TO  HCM2T-TITLE7
+               WHEN    3
+                   MOVE    "¿©»öÎÅÍÜ¡¦À¸³èÎÅÍÜ"
+                                         TO  HCM2T-TITLE4
+                   MOVE    "£·"          TO  HCM2T-TITLE5
+                   MOVE    "¼·"          TO  HCM2T-TITLE6
+                   MOVE    "¿©»öÎÅÍÜ¡¦À¸³èÎÅÍÜ¤Î¶â³Û"
+                                         TO  HCM2T-TITLE7
+           END-EVALUATE
       *
            EVALUATE    WRK-PARA-MARUCHO
                WHEN    "2"
@@ -1135,7 +1173,8 @@
       *********MOVE    "HCM2IV02.red"      TO  SPRT-PRTID
       *********MOVE    "HCM2IV03.red"      TO  SPRT-PRTID
       *********MOVE    "HCM2S.red"         TO  SPRT-PRTID
-               MOVE    "HCM2SV01.red"      TO  SPRT-PRTID
+      *********MOVE    "HCM2SV01.red"      TO  SPRT-PRTID
+               MOVE    "HCM2SV02.red"      TO  SPRT-PRTID
                MOVE    HCM2S               TO  SPRT-PRTDATA
            ELSE                          
       *********MOVE    "HCM2J.red"         TO  SPRT-PRTID
@@ -1144,7 +1183,8 @@
       *********MOVE    "HCM2JV03.red"      TO  SPRT-PRTID
       *********MOVE    "HCM2JV04.red"      TO  SPRT-PRTID
       *********MOVE    "HCM2T.red"         TO  SPRT-PRTID
-               MOVE    "HCM2TV01.red"      TO  SPRT-PRTID
+      *********MOVE    "HCM2TV01.red"      TO  SPRT-PRTID
+               MOVE    "HCM2TV02.red"      TO  SPRT-PRTID
                MOVE    HCM2T               TO  SPRT-PRTDATA
            END-IF    
            IF      WRK-PARA-MARUCHO    =   "2"

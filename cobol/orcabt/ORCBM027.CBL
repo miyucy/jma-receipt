@@ -49,6 +49,10 @@
       *  03.02.01    NACL-Æ£¸¶    06/07/24  ¥Þ¥ëÄ¹¤ÎÊÌÁí³çÂÐ±þ
       *                                     HCM2KV03.red ¢ª HCM2KV04.red
       *                                     HCM2Y.red    ¢ª HCM2YV01.red 
+      *
+      *  03.03.01    NACL-Æ£¸¶    06/10/10  £²£°£°£¶Ç¯£±£°·î²þÀµÂÐ±þ
+      *                                     HCM2KV04.red ¢ª HCM2KV05.red
+      *                                     HCM2YV01.red ¢ª HCM2YV02.red 
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -79,7 +83,8 @@
       *****COPY    "HCM2KV01.INC"  REPLACING  //HCM2KV01//
       *****COPY    "HCM2KV02.INC"  REPLACING  //HCM2KV02//
       *****COPY    "HCM2KV03.INC"  REPLACING  //HCM2KV03//
-           COPY    "HCM2KV04.INC"  REPLACING  //HCM2KV04//
+      *****COPY    "HCM2KV04.INC"  REPLACING  //HCM2KV04//
+           COPY    "HCM2KV05.INC"  REPLACING  //HCM2KV05//
                                    BY         //HCM2K//.
       *****COPY    "HCM2L.INC".
       *****COPY    "HCM2LV01.INC"  REPLACING  //HCM2LV01//
@@ -87,7 +92,8 @@
       *****COPY    "HCM2LV03.INC"  REPLACING  //HCM2LV03//
       *****                        BY         //HCM2L//.
       *****COPY    "HCM2Y.INC".
-           COPY    "HCM2YV01.INC"  REPLACING  //HCM2YV01//
+      *****COPY    "HCM2YV01.INC"  REPLACING  //HCM2YV01//
+           COPY    "HCM2YV02.INC"  REPLACING  //HCM2YV02//
                                    BY         //HCM2Y//.
       *
       *    ¥¹¥ÑÎÎ°è
@@ -500,6 +506,16 @@
                    END-IF
            END-EVALUATE
       *
+           EVALUATE    WRK-PRTFLG
+               WHEN    1
+               WHEN    2
+                   MOVE    "£¸"          TO  HCM2K-TITLE2
+                   MOVE    "È¬"          TO  HCM2K-TITLE3
+               WHEN    3
+                   MOVE    "£·"          TO  HCM2K-TITLE2
+                   MOVE    "¼·"          TO  HCM2K-TITLE3
+           END-EVALUATE
+      * 
            EVALUATE    WRK-SYOKBN
                WHEN    "2"
                    MOVE    "¡ÊÊÖÌáÊ¬¡Ë"  TO  HCM2K-TITLE1
@@ -548,6 +564,20 @@
            ELSE   
                MOVE    "¿©»ö²ó¿ô"          TO  HCM2Y-TITLE2
            END-IF
+      *
+           EVALUATE    WRK-PRTFLG
+               WHEN    1
+               WHEN    2
+                   MOVE    "£¸"          TO  HCM2Y-TITLE3
+                   MOVE    "È¬"          TO  HCM2Y-TITLE4
+                   MOVE    "¡¡¿©»öÎÅÍÜ¡¡¡¡¤Î¶â³Û"
+                                         TO  HCM2Y-TITLE5
+               WHEN    3
+                   MOVE    "£·"          TO  HCM2Y-TITLE3
+                   MOVE    "¼·"          TO  HCM2Y-TITLE4
+                   MOVE    "¿©»öÎÅÍÜ¡¦À¸³èÎÅÍÜ¤Î¶â³Û"
+                                         TO  HCM2Y-TITLE5
+           END-EVALUATE
       *
            EVALUATE    WRK-PARA-MARUCHO
                WHEN    "2"
@@ -919,7 +949,8 @@
       *********MOVE    "HCM2KV01.red"      TO  SPRT-PRTID
       *********MOVE    "HCM2KV02.red"      TO  SPRT-PRTID
       *********MOVE    "HCM2KV03.red"      TO  SPRT-PRTID
-               MOVE    "HCM2KV04.red"      TO  SPRT-PRTID
+      *********MOVE    "HCM2KV04.red"      TO  SPRT-PRTID
+               MOVE    "HCM2KV05.red"      TO  SPRT-PRTID
                MOVE    HCM2K               TO  SPRT-PRTDATA
            ELSE                          
       *********MOVE    "HCM2L.red"         TO  SPRT-PRTID
@@ -927,8 +958,9 @@
       *********MOVE    "HCM2LV02.red"      TO  SPRT-PRTID
       *********MOVE    "HCM2LV03.red"      TO  SPRT-PRTID
       *********MOVE    "HCM2Y.red"         TO  SPRT-PRTID
-               MOVE    "HCM2YV01.red"      TO  SPRT-PRTID
-               MOVE    HCM2Y               TO  SPRT-PRTDATA
+      *********MOVE    "HCM2YV01.red"      TO  SPRT-PRTID
+               MOVE    "HCM2YV02.red"      TO  SPRT-PRTID
+              MOVE    HCM2Y               TO  SPRT-PRTDATA
            END-IF    
            IF      WRK-PARA-MARUCHO    =   "2"
                EVALUATE    IDX1    ALSO    WRK-SYOKBN

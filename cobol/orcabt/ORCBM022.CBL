@@ -56,6 +56,8 @@
       *
       *  03.02.01    NACL-Æ£¸¶    06/07/24  ¥Þ¥ëÄ¹¤ÎÊÌÁí³çÂÐ±þ
       *                                     MONFUNCÂÐ±þ
+      *
+      *  03.03.01    NACL-Æ£¸¶    06/10/13  £²£°£°£¶Ç¯£±£°·î²þÀµÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -238,6 +240,8 @@
            03  WRK-CONS-SRYYM-200304   PIC X(06)   VALUE   "200304".
       *    £²£°£°£¶Ç¯£´·î²þÀµ
            03  WRK-CONS-SRYYM-200604   PIC X(06)   VALUE   "200604".
+      *    £²£°£°£¶Ç¯£±£°·î²þÀµ
+           03  WRK-CONS-SRYYM-200610   PIC X(06)   VALUE   "200610".
       *     
       *
       *****************************************************************
@@ -442,36 +446,42 @@
       *    Æþ±¡³°Ê¬
       *
            MOVE    "2"                 TO  WRK-NYUGAIKBN
-      *   
-           PERFORM VARYING WRK-PRTFLG  FROM    1   BY  1
-                   UNTIL   WRK-PRTFLG  >       2
       *
-               IF    ( WRK-PRTFLG          =   2                     )
-               AND   ( LNK-PRTKANRI-SRYYM  <   WRK-CONS-SRYYM-200604 )
+      *    1:-200603 2:200604-200609 3:200610-   
+           PERFORM VARYING WRK-PRTFLG  FROM    1   BY  1
+                   UNTIL   WRK-PRTFLG  >       3
+      *
+               IF    ( WRK-PRTFLG          =   3                     )
+               AND   ( LNK-PRTKANRI-SRYYM  <   WRK-CONS-SRYYM-200610 )
                    CONTINUE
                ELSE
-                   IF    ( WRK-PRTFLG          =   1   )
-      *************AND   ( WRK-PARA-NYUGAIKBN  =   "2" )
-                   AND   ( LNK-PRTKANRI-SRYYM  >=
+                   IF    ( WRK-PRTFLG          >=  2                 )
+                   AND   ( LNK-PRTKANRI-SRYYM  <
                                                WRK-CONS-SRYYM-200604 )
                        CONTINUE
                    ELSE
-                       PERFORM 2001-GAIRAI-SYUKEI-SEC
+                       IF    ( WRK-PRTFLG          =   1   )
+                       AND   ( LNK-PRTKANRI-SRYYM  >=
+                                               WRK-CONS-SRYYM-200604 )
+                           CONTINUE
+                       ELSE
+                           PERFORM 2001-GAIRAI-SYUKEI-SEC
       *
-                       IF      CNT-RECE10          >   ZERO 
-                           IF      WRK-PARA-NYUGAIKBN  =   "1"
-                               CALL    "ORCBM028"      USING 
-                                                   SUM-AREA
-                                                   WRK-PARA
-                                                   WRK-NYUGAIKBN
-                                                   WRK-SYOKBN
-                                                   WRK-PRTFLG
-                           ELSE
-                               CALL    "ORCBM027"      USING 
-                                                   SUM-AREA
-                                                   WRK-PARA
-                                                   WRK-SYOKBN
-                                                   WRK-PRTFLG
+                           IF      CNT-RECE10          >   ZERO 
+                               IF      WRK-PARA-NYUGAIKBN  =   "1"
+                                   CALL    "ORCBM028"      USING 
+                                                       SUM-AREA
+                                                       WRK-PARA
+                                                       WRK-NYUGAIKBN
+                                                       WRK-SYOKBN
+                                                       WRK-PRTFLG
+                               ELSE
+                                   CALL    "ORCBM027"      USING 
+                                                       SUM-AREA
+                                                       WRK-PARA
+                                                       WRK-SYOKBN
+                                                       WRK-PRTFLG
+                               END-IF
                            END-IF
                        END-IF
                    END-IF
@@ -485,22 +495,28 @@
            IF    ( WRK-PARA-NYUGAIKBN  =   "1"  )
            AND   ( FLG-ERR             =   ZERO )
                PERFORM VARYING WRK-PRTFLG  FROM    1   BY  1
-                       UNTIL   WRK-PRTFLG  >       2
-                   IF    ( WRK-PRTFLG      =   2                     )
-                   AND   ( LNK-PRTKANRI-SRYYM
-                                           <   WRK-CONS-SRYYM-200604 )
+                       UNTIL   WRK-PRTFLG  >       3
+                   IF    ( WRK-PRTFLG          =   3                 )
+                   AND   ( LNK-PRTKANRI-SRYYM  <
+                                               WRK-CONS-SRYYM-200610 )
                        CONTINUE
                    ELSE
-                       PERFORM 2001-NYUIN-SYUKEI-SEC
+                       IF    ( WRK-PRTFLG          >=  2             )
+                       AND   ( LNK-PRTKANRI-SRYYM  <
+                                               WRK-CONS-SRYYM-200604 )
+                           CONTINUE
+                       ELSE
+                           PERFORM 2001-NYUIN-SYUKEI-SEC
       *
-                       IF      CNT-RECE10          >   ZERO 
-                           CALL    "ORCBM028"      USING 
-                                                       SUM-AREA
-                                                       WRK-PARA
-                                                       WRK-NYUGAIKBN
-                                                       WRK-SYOKBN
-                                                       WRK-PRTFLG
-                       END-IF
+                           IF      CNT-RECE10          >   ZERO 
+                               CALL    "ORCBM028"      USING 
+                                                           SUM-AREA
+                                                           WRK-PARA
+                                                           WRK-NYUGAIKBN
+                                                           WRK-SYOKBN
+                                                           WRK-PRTFLG
+                           END-IF
+                       END-IF 
                    END-IF
                END-PERFORM
            END-IF
@@ -643,6 +659,7 @@
                    WHEN    9
                        MOVE    1                   TO  IDY1
                    WHEN    8
+                   WHEN    7
                        MOVE    2                   TO  IDY1
                END-EVALUATE        
                IF      RECE10-KOHNUM (1)   NOT =   SPACE
@@ -707,6 +724,10 @@
                                    WHEN    "D"
                                    WHEN    "E"
                                    WHEN    "F"
+                                   WHEN    "7"    
+                                   WHEN    "G"
+                                   WHEN    "H"
+                                   WHEN    "I"
                                        MOVE    2               TO  IDY1
                                END-EVALUATE
                            ELSE            
@@ -719,6 +740,8 @@
                                            MOVE    1           TO  IDY1
                                        WHEN    "8"
                                        WHEN    "E"
+                                       WHEN    "7"
+                                       WHEN    "H"
                                            MOVE    2           TO  IDY1
                                    END-EVALUATE
                                ELSE            
@@ -726,6 +749,7 @@
                                        WHEN    9
                                            MOVE    1           TO  IDY1
                                        WHEN    8
+                                       WHEN    7
                                            MOVE    2           TO  IDY1
                                    END-EVALUATE
                                END-IF
@@ -787,13 +811,18 @@
                                        WHEN    "D"
                                        WHEN    "E"
                                        WHEN    "F"
+                                       WHEN    "G"
+                                       WHEN    "H"
+                                       WHEN    "I"
                                            MOVE    3       TO  IDY2
                                        WHEN    "8"
+                                       WHEN    "7"
                                            MOVE    4       TO  IDY2
                                    END-EVALUATE        
                                WHEN    "031"  THRU  "034"
                                    EVALUATE    RECE10-HOJOKBN
                                        WHEN    "E"
+                                       WHEN    "H"
                                            MOVE    5       TO  IDY2
                                        WHEN    OTHER
                                            MOVE    6       TO  IDY2
@@ -1409,23 +1438,29 @@
            INITIALIZE                      RECE10-REC
            MOVE    WRK-PARA-HOSPID     TO  RECE10-HOSPID
            MOVE    LNK-PRTKANRI-SRYYM  TO  RECE10-SKYYM
-           IF      WRK-PRTFLG          =   1
-               MOVE    WRK-CONS-SRYYM-200304
-                                           TO  RECE10-SRYYM
-               MOVE    WRK-CONS-SRYYM-200604
-                                           TO  RECE10-XXSRYYM
-           ELSE
-               IF    ( WRK-PRTFLG          =   2   )
-               AND   ( WRK-NYUGAIKBN       =   "2" )
+           EVALUATE    WRK-PRTFLG
+               WHEN    "1"
                    MOVE    WRK-CONS-SRYYM-200304
-                                               TO  RECE10-SRYYM
-                   MOVE    999999              TO  RECE10-XXSRYYM
-               ELSE
+                                           TO  RECE10-SRYYM
                    MOVE    WRK-CONS-SRYYM-200604
+                                           TO  RECE10-XXSRYYM
+               WHEN    "2"
+                   IF      WRK-NYUGAIKBN       =   "2"
+                       MOVE    WRK-CONS-SRYYM-200304
+                                               TO  RECE10-SRYYM
+                       MOVE    WRK-CONS-SRYYM-200610
+                                               TO  RECE10-XXSRYYM
+                   ELSE
+                       MOVE    WRK-CONS-SRYYM-200604
+                                               TO  RECE10-SRYYM
+                       MOVE    WRK-CONS-SRYYM-200610
+                                               TO  RECE10-XXSRYYM
+                   END-IF
+               WHEN    "3"
+                   MOVE    WRK-CONS-SRYYM-200610
                                                TO  RECE10-SRYYM
                    MOVE    999999              TO  RECE10-XXSRYYM
-               END-IF
-           END-IF
+           END-EVALUATE
            MOVE    WRK-NYUGAIKBN        TO  RECE10-NYUGAIKBN
       *
       *###

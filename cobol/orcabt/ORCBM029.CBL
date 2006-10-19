@@ -42,6 +42,10 @@
       *  02.09.01    NACL-Æ£¸¶    06/04/13  £²£°£°£¶Ç¯£´·î²þÀµÂÐ±þ
       *                                     HCM2M02.red ¢ª HCM2W.red 
       *                                     HCM2N02.red ¢ª HCM2X.red 
+      *
+      *  03.03.01    NACL-Æ£¸¶    06/10/10  £²£°£°£¶Ç¯£±£°·î²þÀµÂÐ±þ
+      *                                     HCM2W.red ¢ª HCM2WV01.red
+      *                                     HCM2X.red ¢ª HCM2XV01.red 
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -89,12 +93,16 @@
       *****COPY    "HCM2MV01.INC"  REPLACING  //HCM2MV01//
       *****COPY    "HCM2MV02.INC"  REPLACING  //HCM2MV02//
       *****                        BY         //HCM2M//.
-           COPY    "HCM2W.INC".
+      *****COPY    "HCM2W.INC".
+           COPY    "HCM2WV01.INC"  REPLACING  //HCM2WV01//
+                                   BY         //HCM2W//.
       *****COPY    "HCM2N.INC".
       *****COPY    "HCM2NV01.INC"  REPLACING  //HCM2NV01//
       *****COPY    "HCM2NV02.INC"  REPLACING  //HCM2NV02//
       *****                        BY         //HCM2N//.
-           COPY    "HCM2X.INC".
+      *****COPY    "HCM2X.INC".
+           COPY    "HCM2XV01.INC"  REPLACING  //HCM2XV01//
+                                   BY         //HCM2X//.
       *
       *    ¥¹¥ÑÎÎ°è
        01  STS-AREA.
@@ -237,6 +245,8 @@
            03  WRK-CONS-SRYYM-200304   PIC X(06)   VALUE   "200304".
       *    £²£°£°£¶Ç¯£´·î²þÀµ
            03  WRK-CONS-SRYYM-200604   PIC X(06)   VALUE   "200604".
+      *    £²£°£°£¶Ç¯£±£°·î²þÀµ
+           03  WRK-CONS-SRYYM-200610   PIC X(06)   VALUE   "200610".
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -462,13 +472,18 @@
       *****************************************************************
        2001-SYOKBN-SYUKEI-SEC         SECTION.
       *
+      *    1:-200603 2:200604-200609 3:200610-   
            PERFORM VARYING WRK-PRTFLG  FROM    1   BY  1
-                   UNTIL   WRK-PRTFLG  >       2
+                   UNTIL   WRK-PRTFLG  >       3
       *
-               IF    ( WRK-PRTFLG          =   2                     )
-               AND   ( LNK-PRTKANRI-SRYYM  <   WRK-CONS-SRYYM-200604 )
+               IF    ( WRK-PRTFLG          =   3                     )
+               AND   ( LNK-PRTKANRI-SRYYM  <   WRK-CONS-SRYYM-200610 )
                    CONTINUE
                ELSE
+                 IF    ( WRK-PRTFLG          >=  2                     )
+                 AND   ( LNK-PRTKANRI-SRYYM  <   WRK-CONS-SRYYM-200604 )
+                     CONTINUE
+                 ELSE
       *
       *            Æþ±¡³°¡Ê¤½¤ÎÂ¾¤Î¥ì¥»¡Ë¡¦Æþ±¡½¸·×
       *    
@@ -522,6 +537,7 @@
                                                        MCPAREA
                                                        MCPDATA-REC
                    END-IF
+                 END-IF
                END-IF
            END-PERFORM 
       *     
@@ -572,6 +588,7 @@
                    WHEN    9
                        MOVE    10                  TO  IDX
                    WHEN    8
+                   WHEN    7
                        MOVE    11                  TO  IDX
                END-EVALUATE        
            ELSE
@@ -584,6 +601,7 @@
                                    WHEN    9
                                        MOVE    1           TO  IDX
                                    WHEN    8
+                                   WHEN    7
                                        MOVE    2           TO  IDX
                                END-EVALUATE        
                            ELSE
@@ -600,6 +618,7 @@
                                    WHEN    9
                                        MOVE    6           TO  IDX
                                    WHEN    8
+                                   WHEN    7
                                        MOVE    7           TO  IDX
                                END-EVALUATE        
                            ELSE
@@ -851,6 +870,20 @@
                MOVE    "²ó¿ô"              TO  HCM2W-TITLE2
            END-IF
       *
+           EVALUATE    WRK-PRTFLG
+               WHEN    1
+               WHEN    2
+                   MOVE    "¡¡¿©¡¡»ö¡¡ÎÅ¡¡ÍÜ"
+                                         TO  HCM2W-TITLE3
+                   MOVE    "È¬"          TO  HCM2W-TITLE4
+                                             HCM2W-TITLE5
+               WHEN    3
+                   MOVE    "¿©»öÎÅÍÜ¡¦À¸³èÎÅÍÜ"
+                                         TO  HCM2W-TITLE3
+                   MOVE    "¼·"          TO  HCM2W-TITLE4
+                                             HCM2W-TITLE5
+           END-EVALUATE
+      *
            .
        20021-HEAD-HEN-01-EXT.
            EXIT.
@@ -894,6 +927,20 @@
                MOVE    "²ó¿ô"              TO  HCM2X-TITLE2 (1)
                                                HCM2X-TITLE2 (2)
            END-IF
+      *
+           EVALUATE    WRK-PRTFLG
+               WHEN    1
+               WHEN    2
+                   MOVE    "¡¡¿©¡¡»ö¡¡ÎÅ¡¡ÍÜ"
+                                         TO  HCM2X-TITLE3
+                                             HCM2X-TITLE4
+                   MOVE    "È¬"          TO  HCM2X-TITLE5
+               WHEN    3
+                   MOVE    "¿©»öÎÅÍÜ¡¦À¸³èÎÅÍÜ"
+                                         TO  HCM2X-TITLE3
+                                             HCM2X-TITLE4
+                   MOVE    "¼·"          TO  HCM2X-TITLE5
+           END-EVALUATE
       *        
            MOVE    KEY-O-HKNJANUM      TO  HCM2X-HKNJANUM
       *
@@ -1146,14 +1193,16 @@
       *************MOVE    "HCM2M.red"         TO  SPRT-PRTID
       *************MOVE    "HCM2MV01.red"      TO  SPRT-PRTID
       *************MOVE    "HCM2MV02.red"      TO  SPRT-PRTID
-                   MOVE    "HCM2W.red"         TO  SPRT-PRTID
+      *************MOVE    "HCM2W.red"         TO  SPRT-PRTID
+                   MOVE    "HCM2WV01.red"      TO  SPRT-PRTID
                    MOVE    HCM2W               TO  SPRT-PRTDATA
                WHEN    1                            
                    MOVE    WRK-PAGE            TO  HCM2X-PAGE
       *************MOVE    "HCM2N.red"         TO  SPRT-PRTID
       *************MOVE    "HCM2NV01.red"      TO  SPRT-PRTID
       *************MOVE    "HCM2NV02.red"      TO  SPRT-PRTID
-                   MOVE    "HCM2X.red"         TO  SPRT-PRTID
+      *************MOVE    "HCM2X.red"         TO  SPRT-PRTID
+                   MOVE    "HCM2XV01.red"      TO  SPRT-PRTID
                    MOVE    HCM2X               TO  SPRT-PRTDATA
            END-EVALUATE        
            EVALUATE    WRK-INDEX    ALSO    WRK-SYOKBN
@@ -1353,16 +1402,22 @@
            INITIALIZE                      RECE10-REC
            MOVE    WRK-PARA-HOSPID     TO  RECE10-HOSPID
            MOVE    LNK-PRTKANRI-SRYYM  TO  RECE10-SKYYM
-           IF      WRK-PRTFLG          =   1
-               MOVE    WRK-CONS-SRYYM-200304
+           EVALUATE    WRK-PRTFLG
+               WHEN    "1"
+                   MOVE    WRK-CONS-SRYYM-200304
                                            TO  RECE10-SRYYM
-               MOVE    WRK-CONS-SRYYM-200604
+                   MOVE    WRK-CONS-SRYYM-200604
                                            TO  RECE10-XXSRYYM
-           ELSE
-               MOVE    WRK-CONS-SRYYM-200604
+               WHEN    "2"
+                   MOVE    WRK-CONS-SRYYM-200604
                                            TO  RECE10-SRYYM
-               MOVE    999999              TO  RECE10-XXSRYYM
-           END-IF
+                   MOVE    WRK-CONS-SRYYM-200610
+                                           TO  RECE10-XXSRYYM
+               WHEN    "3"
+                   MOVE    WRK-CONS-SRYYM-200610
+                                           TO  RECE10-SRYYM
+                   MOVE    999999          TO  RECE10-XXSRYYM
+           END-EVALUATE
            IF      WRK-PARA-HKNJANUM   NOT =   ZERO
                MOVE    WRK-PARA-HKNJANUM   TO  RECE10-XXSTHKNJANUM
                                                RECE10-XXEDHKNJANUM

@@ -140,6 +140,7 @@
       *                                     ÆÃµ­»ö¹à£±£¶Ä¹£²ÂÐ±þ
       *                                     ¥ì¥»¥×¥È¼ïÊÌ
       *                                     Ï·ÎðÊ¡»ãÇ¯¶â
+      *                                     ¸ºÌÈ
       *  03.03.03    NACL-ÌçÏÆ    06/10/16  ²¬»³¸©ÃÏÊý¸øÈñ¼ÂÆü¿ôÊÔ½¸
       *****************************************************************
       *
@@ -283,7 +284,8 @@
       ***  COPY    "HCM09V02.INC"  REPLACING  //HCM09V02//
       ***  COPY    "HCM09V03.INC"  REPLACING  //HCM09V03//
       ***  COPY    "HCM09V04.INC"  REPLACING  //HCM09V04//
-           COPY    "HCM10.INC"     REPLACING  //HCM10//
+      ***  COPY    "HCM10.INC"     REPLACING  //HCM10//
+           COPY    "HCM10V01.INC"  REPLACING  //HCM10V01//
                                    BY         //HC06//.
       ***  COPY    "HCN061.INC"    REPLACING  //HCN061//
       ***  COPY    "HCN061V01.INC" REPLACING  //HCN061V01//
@@ -4242,6 +4244,34 @@
                MOVE    2               TO  IDX2
                MOVE    3               TO  IDX3
            END-IF    
+      *    ÊÝ¸±¡Ê¸ºÌÈ¡Ë
+           EVALUATE    RECE02-GENMENKBN
+               WHEN    1
+                   IF      RECE02-GENGAKU      >   ZERO
+                       MOVE    RECE02-GENGAKU      TO  WRK-KGK7
+                       MOVE    WRK-KGK7            TO  HC06-GENMENKIN
+                       MOVE    "¸º³Û¡Ê±ß¡Ë"        TO  HC06-GENMEN
+                   ELSE
+                       COMPUTE WRK-KYURATE-9   =
+                                       RECE02-GENGAKURATE  /   10 
+                       MOVE    WRK-KYURATE-9       TO  WRK-KYURATE
+                       INITIALIZE              ORCSKANACHKAREA
+                       MOVE    "2"             TO  KANACHK-SYORI 
+                       MOVE    WRK-KYURATE     TO  KANACHK-MAE-INPUT
+                       CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+                       IF    ( KANACHK-RC      =   ZERO )
+                       AND   ( KANACHK-MAX     >   ZERO )
+                           MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                                                   TO  HC06-KYURATE(5:)
+                       END-IF    
+                       MOVE   "¸º³Û"               TO  HC06-GENMEN(1:4)
+                       MOVE   "³ä"                 TO  HC06-GENMEN(9:2)
+                   END-IF
+               WHEN    2
+                   MOVE    "ÌÈ½ü"             TO  HC06-GENMEN
+               WHEN    3
+                   MOVE    "»ÙÊ§Í±Í½"         TO  HC06-GENMEN
+           END-EVALUATE 
       *    ÊÝ¸±
            IF      RECE02-TOTALTEN (IDX1)     >   ZERO
                MOVE    RECE02-TOTALTEN (IDX1) TO  WRK-KGK6
@@ -4249,7 +4279,11 @@
                IF    ( RECE02-FTNMONEY (IDX1) >    ZERO   )
                OR    ( RECE02-ZAITAKU     NOT =    SPACE  )
                    MOVE    RECE02-FTNMONEY (IDX1) TO  WRK-KGK7
-                   MOVE    WRK-KGK7               TO  HC06-FTNMONEY(1)
+                   IF      RECE02-GENMENKBN   =   ZERO
+                       MOVE    WRK-KGK7           TO  HC06-FTNMONEY (1)
+                   ELSE
+                       MOVE    WRK-KGK7           TO  HC06-FTNMONEY-GEN
+                   END-IF
                END-IF
            END-IF
            IF      RECE02-ZAITAKU-SAIKEI  >   ZERO
@@ -4365,7 +4399,11 @@
                    ELSE
                        MOVE    RECE11-FTNMONEY (IDX1)  TO  WRK-KGK7
                    END-IF
-                   MOVE    WRK-KGK7                TO  HC06-FTNMONEY(1)
+                   IF      RECE02-GENMENKBN    =   ZERO
+                       MOVE    WRK-KGK7            TO  HC06-FTNMONEY(1)
+                   ELSE
+                       MOVE    WRK-KGK7           TO  HC06-FTNMONEY-GEN
+                   END-IF
                END-IF
       *        ¸øÈñ£±
                IF      RECE11-TOTALTEN (IDX2)  >   ZERO                     
@@ -5924,7 +5962,8 @@
            IF      CNT-PAGE            =   1
       *********MOVE    "HCM09V03.red"      TO
       *********MOVE    "HCM09V04.red"      TO
-               MOVE    "HCM10.red"         TO
+      *********MOVE    "HCM10.red"         TO
+               MOVE    "HCM10V01.red"      TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
                MOVE    HC06                TO
                                        TBL-RECE-PRTDATA (TBL-RECE-MAX)
@@ -5933,7 +5972,8 @@
                    WHEN    ZERO
       *********        MOVE    "HCM09V03.red"  TO
       *********        MOVE    "HCM09V04.red"  TO
-                       MOVE    "HCM10.red"     TO
+      *********        MOVE    "HCM10.red"     TO
+                       MOVE    "HCM10V01.red"      TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
                        MOVE    HC06            TO
                                        TBL-RECE-PRTDATA (TBL-RECE-MAX)
@@ -6316,7 +6356,8 @@
                    EVALUATE    RECE08-FORMID
       *********        WHEN    "HCM09V03.red"                  
       *********        WHEN    "HCM09V04.red"                  
-                       WHEN    "HCM10.red"                  
+      *********        WHEN    "HCM10.red"                  
+                       WHEN    "HCM10V01.red"                  
                            MOVE    RECE08-PRTDATA  TO HC06
                            MOVE    WRK-HEN-PAGE-AREA
                                                    TO HC06-PAGE

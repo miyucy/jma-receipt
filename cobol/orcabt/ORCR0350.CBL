@@ -149,6 +149,7 @@
       *                                     ある場合は該当の公費をはずした
       *                                     負担区分とする
       *                                     職務上の事由の判定条件追加
+      *                                     徴収猶予及び減免の記録
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2251,13 +2252,25 @@
                END-IF
            END-IF
            PERFORM 5005-NUM-HENSYU-SEC
-      *    国保減免区分                                 
-           PERFORM 5004-MOJI-HENSYU-SEC     
-      *    国保減額割合 
-           PERFORM 5004-MOJI-HENSYU-SEC  
-      *    国保減額金額 
+      *    減免区分
+           IF      RECE62-GENMENKBN    >   ZERO
+               MOVE    RECE62-GENMENKBN    TO  WRK-NUM
+               MOVE    1                   TO  WRK-NAGASA
+           END-IF                                 
+           PERFORM 5005-NUM-HENSYU-SEC     
+      *    減額割合 
+           IF      RECE62-GENMENKBN    >   ZERO
+               MOVE    RECE62-GENGAKURATE  TO  WRK-NUM
+               MOVE    3                   TO  WRK-NAGASA
+           END-IF                                 
+           PERFORM 5005-NUM-HENSYU-SEC  
+      *    減額金額 
            MOVE    1                   TO  WRK-END 
-           PERFORM 5004-MOJI-HENSYU-SEC  
+           IF      RECE62-GENMENKBN    >   ZERO
+               MOVE    RECE62-GENGAKU      TO  WRK-NUM
+               MOVE    6                   TO  WRK-NAGASA
+           END-IF                                 
+           PERFORM 5005-NUM-HENSYU-SEC  
       *
            PERFORM 5001-FILE-WRITE-SEC
            .
@@ -2568,23 +2581,14 @@
            END-IF
            PERFORM 5005-NUM-HENSYU-SEC
       *    負担金額（老人公費給付対象老人外来一部負担金）
-           IF      RECE62-NYUGAIKBN      =   "2"
-           AND     RECE62-RJNHKNNUM  NOT =   SPACE
-      ****     MOVE                          TO  WRK-NUM
-      ****     MOVE    6                     TO  WRK-NAGASA
-               CONTINUE      
-           END-IF
            PERFORM 5005-NUM-HENSYU-SEC
       *    負担金額（老人公費給付対象老人入院一部負担金）
-           IF      RECE62-NYUGAIKBN      =   "1"
-           AND     RECE62-RJNHKNNUM  NOT =   SPACE
-      ****     MOVE                          TO  WRK-NUM
-      ****     MOVE    6                     TO  WRK-NAGASA
-               CONTINUE      
+           IF      RECE62-KOUREI-SAIKEI    >   ZERO
+               MOVE   RECE62-KOUREI-SAIKEI     TO  WRK-NUM
+               MOVE    6                       TO  WRK-NAGASA
            END-IF
            PERFORM 5005-NUM-HENSYU-SEC
       *    薬剤一部負担金
-           MOVE    ZERO                  TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
       *    食事療養費（日数）
            MOVE    RECE62-SHOKUJINISSU(IDX)

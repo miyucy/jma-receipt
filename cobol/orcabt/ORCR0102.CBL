@@ -275,6 +275,7 @@
            COPY    "HCRCP401.INC".
            COPY    "HCRCP401V01.INC".
            COPY    "HCM10.INC".
+           COPY    "HCM10V01.INC".
            COPY    "HCN07.INC".
            COPY    "HCN08.INC".
            COPY    "HCRCP402.INC".
@@ -828,6 +829,10 @@
                        MOVE    RECE08-PRTDATA      TO  HCM10
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM10-RENNUM
                        MOVE    HCM10               TO  RECE08-PRTDATA
+                   WHEN    "HCM10V01.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCM10V01
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM10V01-RENNUM
+                       MOVE    HCM10V01            TO  RECE08-PRTDATA
                    WHEN    "HCN07.red"                  
                        MOVE    RECE08-PRTDATA      TO  HCN07
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCN07-RENNUM
@@ -972,6 +977,7 @@
                WHEN    "HCRCP400V03.red"  
                                        ALSO    ANY                
                WHEN    "HCM10.red"     ALSO    ANY               
+               WHEN    "HCM10V01.red"  ALSO    ANY               
                WHEN    "HCRCP402.red"  ALSO    ANY                
                WHEN    "HCN061.red"    ALSO    "2"              
                WHEN    "HCN061V01.red" ALSO    "2"              

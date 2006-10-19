@@ -218,6 +218,9 @@
       *                                     ∞Ï…Ù…È√¥∂‚°¶ø©ªˆŒ≈Õ‹»Ò°¶¿∏≥Ë
       *                                     Œ≈Õ‹∆¸…∏Ω‡…È√¥≥€∂Ë ¨•≥°º•…
       *                                     ø¶Ã≥æÂ§ŒªˆÕ≥§Œ»ΩƒÍæÚ∑Ôƒ…≤√
+      *                                     ƒßº˝Õ±ÕΩµ⁄§”∏∫Ã»§Œµ≠œø
+      *  03.03.05    NACL-∆£∏∂    06/10/18   ¨≈¿øÙ§¨¿∏§∏§ÎæÏπÁ§Œ∏¯»Ò•Ï•≥
+      *                                     °º•…§Œ∞Ï…Ù…È√¥∂‚§Œµ≠œø¬–±˛
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2038,13 +2041,25 @@
                END-IF
            END-IF
            PERFORM 5005-NUM-HENSYU-SEC
-      *    πÒ ›∏∫Ã»∂Ë ¨                                 
-           PERFORM 5004-MOJI-HENSYU-SEC     
-      *    πÒ ›∏∫≥€≥‰πÁ 
-           PERFORM 5004-MOJI-HENSYU-SEC  
-      *    πÒ ›∏∫≥€∂‚≥€ 
+      *    ∏∫Ã»∂Ë ¨
+           IF      RECE02-GENMENKBN    >   ZERO
+               MOVE    RECE02-GENMENKBN    TO  WRK-NUM
+               MOVE    1                   TO  WRK-NAGASA
+           END-IF                                 
+           PERFORM 5005-NUM-HENSYU-SEC     
+      *    ∏∫≥€≥‰πÁ 
+           IF      RECE02-GENMENKBN    >   ZERO
+               MOVE    RECE02-GENGAKURATE  TO  WRK-NUM
+               MOVE    3                   TO  WRK-NAGASA
+           END-IF                                 
+           PERFORM 5005-NUM-HENSYU-SEC  
+      *    ∏∫≥€∂‚≥€ 
            MOVE    1                   TO  WRK-END 
-           PERFORM 5004-MOJI-HENSYU-SEC  
+           IF      RECE02-GENMENKBN    >   ZERO
+               MOVE    RECE02-GENGAKU      TO  WRK-NUM
+               MOVE    6                   TO  WRK-NAGASA
+           END-IF                                 
+           PERFORM 5005-NUM-HENSYU-SEC  
       *
            PERFORM 5001-FILE-WRITE-SEC
            .
@@ -2357,38 +2372,19 @@
                END-IF
            END-IF
            PERFORM 5005-NUM-HENSYU-SEC
-      *    …È√¥∂‚≥€° œ∑øÕ∏¯»ÒµÎ…’¬–æ›œ∑øÕ≥∞ÕË∞Ï…Ù…È√¥∂‚°À
-           IF      RECE02-NYUGAIKBN      =   "2"
-           AND     RECE02-RJNHKNNUM  NOT =   SPACE
-      ****     MOVE                          TO  WRK-NUM
-      ****     MOVE    6                     TO  WRK-NAGASA
-               CONTINUE      
+      *    …È√¥∂‚≥€° ∏¯»ÒµÎ…’¬–æ›≥∞ÕË∞Ï…Ù…È√¥∂‚°À
+           IF      RECE02-ZAITAKU-SAIKEI   >   ZERO
+               MOVE   RECE02-ZAITAKU-SAIKEI    TO  WRK-NUM
+               MOVE    6                       TO  WRK-NAGASA
            END-IF
            PERFORM 5005-NUM-HENSYU-SEC
-      *    …È√¥∂‚≥€° œ∑øÕ∏¯»ÒµÎ…’¬–æ›œ∑øÕ∆˛±°∞Ï…Ù…È√¥∂‚°À
-           IF      RECE02-NYUGAIKBN      =   "1"
-           AND     RECE02-RJNHKNNUM  NOT =   SPACE
-      ****     MOVE                          TO  WRK-NUM
-      ****     MOVE    6                     TO  WRK-NAGASA
-               CONTINUE      
-           END-IF
+      *    …È√¥∂‚≥€° ∏¯»ÒµÎ…’¬–æ›∆˛±°∞Ï…Ù…È√¥∂‚°À
            PERFORM 5005-NUM-HENSYU-SEC
       *    ÃÙ∫ﬁ∞Ï…Ù…È√¥∂‚
-           MOVE    ZERO                  TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
       *    ø©ªˆŒ≈Õ‹»Ò° ∆¸øÙ°À
-           IF      RECE02-NYUGAIKBN      =   "1"
-               MOVE    RECE02-SHOKUJINISSU(IDX)
-                                             TO  WRK-NUM
-               MOVE    2                     TO  WRK-NAGASA
-           END-IF    
            PERFORM 5005-NUM-HENSYU-SEC    
       *    ø©ªˆŒ≈Õ‹»Ò° πÁ∑◊∂‚≥€°À
-           IF      RECE02-NYUGAIKBN      =   "1"
-               MOVE    RECE02-SHOKUJIRYOYOHI(IDX)
-                                             TO  WRK-NUM
-               MOVE    5                     TO  WRK-NAGASA
-           END-IF    
            MOVE    1                   TO  WRK-END 
            PERFORM 5005-NUM-HENSYU-SEC
       *

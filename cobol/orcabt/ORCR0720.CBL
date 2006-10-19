@@ -4832,6 +4832,34 @@
                MOVE    2               TO  IDX2
                MOVE    3               TO  IDX3
            END-IF    
+      *    ÊÝ¸±¡Ê¸ºÌÈ¡Ë
+           EVALUATE    RECE62-GENMENKBN
+               WHEN    1
+                   IF      RECE62-GENGAKU      >   ZERO
+                       MOVE    RECE62-GENGAKU      TO  WRK-KGK7
+                       MOVE    WRK-KGK7            TO  HC06-GENMENKIN
+                       MOVE    "¸º³Û¡Ê±ß¡Ë"        TO  HC06-GENMEN
+                   ELSE
+                       COMPUTE WRK-KYURATE-9   =
+                                       RECE62-GENGAKURATE  /   10 
+                       MOVE    WRK-KYURATE-9   TO  WRK-KYURATE
+                       INITIALIZE              ORCSKANACHKAREA
+                       MOVE    "2"             TO  KANACHK-SYORI 
+                       MOVE    WRK-KYURATE     TO  KANACHK-MAE-INPUT
+                       CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+                       IF    ( KANACHK-RC      =   ZERO )
+                       AND   ( KANACHK-MAX     >   ZERO )
+                           MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                                                   TO  HC06-KYURATE(5:)
+                       END-IF    
+                       MOVE   "¸º³Û"               TO  HC06-GENMEN(1:4)
+                       MOVE   "³ä"                 TO  HC06-GENMEN(9:2)
+                   END-IF
+               WHEN    2
+                   MOVE    "ÌÈ½ü"             TO  HC06-GENMEN
+               WHEN    3
+                   MOVE    "»ÙÊ§Í±Í½"         TO  HC06-GENMEN
+           END-EVALUATE 
       *    ÊÝ¸±
            IF      RECE62-TOTALTEN (IDX1)     >   ZERO
                MOVE    RECE62-TOTALTEN (IDX1) TO  WRK-KGK10
@@ -4839,7 +4867,11 @@
                IF    ( RECE62-FTNMONEY (IDX1) >    ZERO   )
                OR    ( RECE62-KOUREI      NOT =    SPACE  )
                    MOVE    RECE62-FTNMONEY (IDX1) TO  WRK-KGK7
-                   MOVE    WRK-KGK7               TO  HC06-FTNMONEY(1)
+                   IF      RECE62-GENMENKBN   =   ZERO
+                       MOVE    WRK-KGK7           TO  HC06-FTNMONEY(1)
+                   ELSE
+                       MOVE    WRK-KGK7           TO  HC06-FTNMONEY-GEN
+                   END-IF
                END-IF
            END-IF
            IF      RECE62-KOUREI-SAIKEI  >   ZERO
@@ -5056,7 +5088,11 @@
                    ELSE
                        MOVE    RECE67-FTNMONEY (IDX1)  TO  WRK-KGK7
                    END-IF
-                   MOVE    WRK-KGK7                TO  HC06-FTNMONEY(1)
+                   IF      RECE62-GENMENKBN    =   ZERO
+                       MOVE    WRK-KGK7           TO  HC06-FTNMONEY(1)
+                   ELSE
+                       MOVE    WRK-KGK7           TO  HC06-FTNMONEY-GEN
+                   END-IF
                END-IF
                IF      RECE67-SHOKUJINISSU (IDX1)  >   ZERO
                    IF      RECE67-SHOKUJINISSU (IDX1)  =   99
