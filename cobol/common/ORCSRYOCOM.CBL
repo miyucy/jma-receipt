@@ -455,8 +455,12 @@
                            (LNK-RYOCOM-IRYO-SRYCD(IDX IDX1) = SPACE)
                         MOVE   LNK-RYOCOM-IRYO-SRYCD(IDX IDX1)
                                            TO    WRK-SRYCD-X
-                        ADD    WRK-SRYCD-9 TO
-                                    LNK-RYOCOM-SRYCDTOTAL(IDX)
+      *                  ADD    WRK-SRYCD-9 TO
+      *                              LNK-RYOCOM-SRYCDTOTAL(IDX)
+                        COMPUTE  LNK-RYOCOM-SRYCDTOTAL(IDX)  =
+                                 LNK-RYOCOM-SRYCDTOTAL(IDX)  +
+                                (WRK-SRYCD-9  *  LNK-RYOCOM-IRYO-ZAINUM
+                                                    (IDX IDX1))
                   END-PERFORM
                   MOVE   LNK-RYOCOM-ADL-SRYCD(IDX)  TO  WRK-SRYCD-X
                   ADD    WRK-SRYCD-9   TO  LNK-RYOCOM-SRYCDTOTAL(IDX)
@@ -509,6 +513,8 @@
                            MOVE   LNK-RYOCOM-MEISAISU(IDX)  TO  IDX2
                            MOVE   RYOCOM-SRYCD  TO
                                         LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
+                           MOVE   RYOCOM-ZAINUM  TO
+                                        LNK-RYOCOM-IRYO-ZAINUM(IDX IDX2)
                        END-IF
                    END-PERFORM
                ELSE
@@ -520,6 +526,8 @@
                            MOVE   LNK-RYOCOM-MEISAISU(IDX)  TO  IDX2
                            MOVE   RYOCOM-SRYCD  TO
                                         LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
+                           MOVE   RYOCOM-ZAINUM  TO
+                                        LNK-RYOCOM-IRYO-ZAINUM(IDX IDX2)
                        END-IF
                    END-PERFORM
                END-IF

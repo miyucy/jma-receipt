@@ -52,6 +52,8 @@
                05  LNK-RYOCOM-RECORD             OCCURS 30.
       *医療区分コメントコード
                    07  LNK-RYOCOM-IRYO-SRYCD     PIC  X(09).
+      *医療区分コメント剤番号
+                   07  LNK-RYOCOM-IRYO-ZAINUM    PIC  9(08).
       *ＡＤＬコメントコード
                05  LNK-RYOCOM-ADL-SRYCD          PIC  X(09).
       *ＡＤＬ点数（数字）
