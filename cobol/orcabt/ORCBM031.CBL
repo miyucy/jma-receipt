@@ -201,6 +201,7 @@
       *
            COPY    "CPSHELLTBL.INC".
       *
+       01  WRK-CONS-AREA.
       *    £²£°£°£¶Ç¯£´·î²þÀµ
            03  WRK-CONS-SRYYM-200604   PIC X(06)   VALUE   "200604".
       *    £²£°£°£¶Ç¯£±£°·î²þÀµ
