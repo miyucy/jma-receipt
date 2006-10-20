@@ -36,6 +36,7 @@
       *  01.01.05     NACL-森脇    05/01/24  記号・番号を追加
       *  01.01.06     NACL-森脇    05/05/12  公費単独の場合条件変更
       *  01.01.07     NACL-森脇    06/06/16  症状詳記区分追加monfunc対応
+      *  03.03.01     NACL-森脇    06/10/18  老人三割対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -656,21 +657,13 @@
                        IF      RECE10-SRYYM    <   "200610"
                            MOVE    "９高入８"      TO  HCM37-HONKZK
                        ELSE
-                           IF      RECE10-KYURATE  =   20
-                               MOVE    "９高入８"  TO  HCM37-HONKZK
-                           ELSE
-                               MOVE    "９高入７"  TO  HCM37-HONKZK
-                           END-IF
+                           MOVE    "９高入７"  TO  HCM37-HONKZK
                        END-IF
                    WHEN    "0"
                        IF      RECE10-SRYYM    <   "200610"
                            MOVE    "０高外８"      TO  HCM37-HONKZK
                        ELSE
-                           IF      RECE10-KYURATE  =   20
-                               MOVE    "０高外８"  TO  HCM37-HONKZK
-                           ELSE
-                               MOVE    "０高外７"  TO  HCM37-HONKZK
-                           END-IF
+                           MOVE    "０高外７"  TO  HCM37-HONKZK
                        END-IF
                END-EVALUATE
            END-IF    
