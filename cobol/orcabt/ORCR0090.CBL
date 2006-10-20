@@ -1323,9 +1323,9 @@
            INITIALIZE                      TBL-DENSHI-INF
       *
       *    外来迅速検体検査加算算定日を確認
-           IF      RECE02-KENTAIKASANFLG     =   '1'
-               PERFORM 2009-KENTAIKASAN-KAKUNIN-SEC
-           END-IF
+      ***  IF      RECE02-KENTAIKASANFLG     =   '1'
+      ***      PERFORM 2009-KENTAIKASAN-KAKUNIN-SEC
+      ***  END-IF
       *
       *    パラメータ０４ファイルより編集
            INITIALIZE                      RECE04-REC
