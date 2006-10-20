@@ -2760,7 +2760,7 @@
                                                                (IDX)
            END-PERFORM
       *
-           MOVE    24                  TO  SPA-W25-GMN-MAX
+           MOVE    25                  TO  SPA-W25-GMN-MAX
       *
            MOVE    1                   TO  SPA-W25-GMN-CUR
       *
