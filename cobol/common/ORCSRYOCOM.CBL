@@ -375,7 +375,7 @@
                MOVE    "key2"          TO  MCP-PATHNAME
                PERFORM 910-NYUINACT-READ-SEC
                PERFORM   VARYING  IDX   FROM   1   BY  1
-                 UNTIL  (IDX      >     26)
+                 UNTIL  (IDX      >     24)
                    IF   NSRY-SRYCD(1)   =    CONS-RYOYO-SRYCD(IDX)
                        PERFORM   VARYING  IDX1   FROM   1  BY  1
                          UNTIL  (IDX1    >   31)
