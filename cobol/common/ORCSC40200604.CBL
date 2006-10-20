@@ -41,6 +41,7 @@
       * 01.00.11     NACL-Â¿¡¹Ç¼  04/11/25  ½èÃÖ¥Õ¥£¥ë¥àÄÉ²Ã
       * 01.00.12     NACL-Â¿¡¹Ç¼  05/07/20  Ï«ºÒ»þ´Ö³°·×»»½¤Àµ
       * 01.00.13     NACL-Â¿¡¹Ç¼  05/12/14  MONFUNC ÂÐ±þ
+      * 03.03.00     NACL-Â¿¡¹Ç¼  06/10/20  ¶ºÀµ¸ÇÄêÅùÄÉ²Ã
       *****************************************************************
       *
       *
@@ -195,12 +196,25 @@
            03  FILLER              PIC X(12)   VALUE   "03 140002310".
       *    ²ðÃ£¸£°ú
            03  FILLER              PIC X(12)   VALUE   "04 140048010".
+      *    ¶ºÀµ¸ÇÄê
+           03  FILLER              PIC X(12)   VALUE   "04 140030350".
+      *    ÊÑ·Áµ¡³£¶ºÀµ½Ñ
+           03  FILLER              PIC X(12)   VALUE   "04 140048250".
+      *
+      *    ¹øÉô¸ÇÄêÂÓ
+           03  FILLER              PIC X(12)   VALUE   "05 140048350".
+           03  FILLER              PIC X(12)   VALUE   "05 140048450".
+      *    Äã½ÐÎÏ¥ì¡¼¥¶¡¼¾È¼Í
+           03  FILLER              PIC X(12)   VALUE   "06 140048550".
+      *    æêÌç½èÃÖ
+           03  FILLER              PIC X(12)   VALUE   "06 140002450".
+      *
        01  TBL-SYOCHI-AREA-R       REDEFINES   TBL-SYOCHI-AREA.
-           03  TBL-SYOCHI-OCC      OCCURS   5  INDEXED  TBL-IDX.
+           03  TBL-SYOCHI-OCC      OCCURS   11 INDEXED  TBL-IDX.
                05  TBL-KBN         PIC X(02).
                05  TBL-FILLER      PIC X(01).
                05  TBL-SRYCD       PIC X(09).
-       01  TBL-SYOCHI-MAX              PIC 9(04)   VALUE   5.
+       01  TBL-SYOCHI-MAX              PIC 9(04)   VALUE   11.
       *
       *    »ÀÁÇ¥³¡¼¥É¥Æ¡¼¥Ö¥ë
            COPY     "CMSANSOTBL.INC".
@@ -604,6 +618,7 @@
       *
       *    Êñ³ç¤Þ¤È¤áÆþÎÏ¤Ï°Ê²¼ÂÐ¾Ý³°
            IF      SPA-HKNCOMBINUM     =   "9999"
+           OR     (WRK-COM-HKNCOMBI(IDX-Z) =   "9999" )
                GO      TO      100112-SYOEN-CHK-EXT
            END-IF
       *
@@ -901,16 +916,23 @@
       *    Ï«ºÒÍÑ¡¡¶èÊ¬ÈÖ¹æ
            IF      WRK-COM-CDKBN-KBN (IDX-ZS)   =   "J"
                EVALUATE    WRK-COM-CDKBN-KBNNUM (IDX-ZS)
+                                ALSO WRK-COM-CDKBN-KBNNUM-EDA (IDX-ZS)
       *            ÁÏ½ý½èÃÖ
-                   WHEN    "000"
-      *            ½Ñ¸åÁÏ½ý½èÃÖ
-                   WHEN    "001"
+                   WHEN    "000"    ALSO  "00"
+      *            Ç®½ý½èÃÖ
+                   WHEN    "001"    ALSO  "00"
+      *            å«ÁÏ¹ü¸ÇÄê½Ñ
+                   WHEN    "001"    ALSO  "02"
+      *            º¿¹üËô¤ÏÏ¾¹ü¹üÀÞ¸ÇÄê½Ñ
+                   WHEN    "001"    ALSO  "03"
+      *            ½ÅÅÙêóáì½èÍý
+                   WHEN    "001"    ALSO  "04"
       *            ¥É¥ì¡¼¥óË¡
-                   WHEN    "002"
+                   WHEN    "002"    ALSO  "00"
       *            ÈéÉæ²ÊÆð¹Ñ
-                   WHEN    "053"
+                   WHEN    "053"    ALSO  "00"
       *            ´ÖÀÜ
-                   WHEN    "116"
+                   WHEN    "116"    ALSO  "00"
                        EVALUATE    SPA-RSI-SISIKBN
                            WHEN    1
       *                        £±¡¥£µÇÜ
@@ -922,9 +944,9 @@
                        MOVE    1                    TO  FLG-ROUSAI
       *
       *            ÈéÉæ²ÊÆð¹Ñ½èÃÖ
-                   WHEN    "054"
+                   WHEN    "054"     ALSO  "00"
       *            ¹ÝÀþÅù¤Ë¤è¤ëÄ¾ÀÜ¸£°ú
-                   WHEN    "117"
+                   WHEN    "117"     ALSO  "00"
                        EVALUATE    SPA-RSI-SISIKBN
                            WHEN    1
       *                        £±¡¥£µÇÜ
@@ -942,7 +964,7 @@
                        END-EVALUATE
                        MOVE    2                    TO  FLG-ROUSAI
       *            ¾Ã±êÄÃÄË½èÃÖ
-                   WHEN    "119"
+                   WHEN    "119"    ALSO  "00"
                        EVALUATE    SPA-RSI-SISIKBN
                            WHEN    1
       *                        £±¡¥£µÇÜ
@@ -971,7 +993,9 @@
                            MOVE    1                    TO  FLG-ROUSAI
                        END-IF
       *            ²ðÃ£¸£°ú
-                   WHEN    "118"
+                   WHEN    "118"    ALSO  ANY
+      *            Äã½ÐÎÏ¥ì¡¼¥¶¡¼¾È¼Í
+                   WHEN    "119"    ALSO  "03"
                        EVALUATE    SPA-RSI-SISIKBN
                            WHEN    1
       *                        £±¡¥£µÇÜ

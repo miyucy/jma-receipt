@@ -28,6 +28,7 @@
       *  01.00.02    NACL-Â¿¡¹Ç¼  02.12.05  ËýÀ­áÖÄË¼À´µ´ÉÍýÎÁ¤Î½é²ó»»ÄêÆü½¤Àµ
       *  01.00.03    NACL-Â¿¡¹Ç¼  05.03.05  ÆâÊ¬ÈçÉé²Ù»î¸³ÅÀ¿ô¤ÎÄÉ²Ã
       *  01.00.04    NACL-Â¿¡¹Ç¼  05/11/18  MONFUNC ÂÐ±þ Â¾
+      *  03.03.00    NACL-Â¿¡¹Ç¼  06/10/20  ¶ºÀµ¸ÇÄêÅùÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -719,6 +720,15 @@
                    MOVE    TBL-RIGAKU-RYO (TBL-SAN)
                                            TO  WRK-RIGAKU-RYO
            END-SEARCH
+      *    £È£±£¸¡¿£´·î¤«¤éÂÐ±þ
+           IF      WRK-RIGAKU-RYO      =   "H"
+               IF      SSANTEI-SRYYMD  >=  "20060401"
+                   MOVE    SPACE           TO  WRK-RIGAKU-RYO
+               ELSE
+                   MOVE    ZERO            TO  FLG-HKNSAN
+                   MOVE    SPACE           TO  WRK-RIGAKU-RYO
+               END-IF
+           END-IF
       *
            IF      WRK-RIGAKU-RYO      =   SPACE
                MOVE    ZERO                TO  FLG-HKN-SANTEI

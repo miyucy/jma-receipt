@@ -817,7 +817,7 @@
                    MOVE    "日付−日付の期間が違います。"
                                        TO  SPA-ERRMSG
                WHEN    "9014"
-                   MOVE    "消炎鎮痛処理は逓減になります。"
+                   MOVE    "消炎鎮痛等処理などは逓減になります。"
                                        TO  SPA-ERRMSG
                    MOVE    "分けて入力して下さい。"
                                        TO  SPA-ERRMSG(31:)
@@ -1286,7 +1286,7 @@
                    MOVE    "処方料・処方せん料は１つのみの算定です。"
                                        TO  SPA-ERRMSG
                WHEN    "1022"
-                   MOVE    "消炎鎮痛処置は既に算定済みです。"
+                   MOVE    "消炎鎮痛等処置などは既に同日算定済みです。"
                                        TO  SPA-ERRMSG
                WHEN    "1023"
                    MOVE    "初診算定日が自動算定されています。"

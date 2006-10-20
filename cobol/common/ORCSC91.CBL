@@ -36,6 +36,7 @@
       *  01.00.06    NACL-Â¿¡¹Ç¼  03.03.17  ²ðÃ£¸£°ú¤òÆ±»þ»»Äê¤ØÄÉ²Ã
       *  01.00.07    NACL-Â¿¡¹Ç¼  04.09.02  Ï«ºÒ¤Î¼¾ÉÛ½èÃÖ»»Äê½¤Àµ
       *  01.00.08    NACL-Â¿¡¹Ç¼  05/11/22  MONFUNC ÂÐ±þ Â¾
+      *  03.03.00    NACL-Â¿¡¹Ç¼  06/10/20  ¶ºÀµ¸ÇÄêÅùÄÉ²Ã
       *****************************************************************
       *
       *
@@ -161,6 +162,26 @@
       *    ²ðÃ£¸£°ú
            03  FILLER                  PIC X(04)   VALUE   "005".
            03  FILLER                  PIC X(09)   VALUE   "140048010".
+      *H18/04¤«¤é
+      *    ²ðÃ£¸£°ú¡Ê¶ºÀµ¸ÇÄê¡Ë
+           03  FILLER                  PIC X(04)   VALUE   "005H".
+           03  FILLER                  PIC X(09)   VALUE   "140030350".
+      *    ²ðÃ£¸£°ú¡ÊÊÑ·Áµ¡³£¶ºÀµ½Ñ¡Ë
+           03  FILLER                  PIC X(04)   VALUE   "005H".
+           03  FILLER                  PIC X(09)   VALUE   "140048250".
+      *    ¹øÉô¸ÇÄêÂÓ¸ÇÄê
+           03  FILLER                  PIC X(04)   VALUE   "005H".
+           03  FILLER                  PIC X(09)   VALUE   "140048350".
+      *    ¶»Éô¸ÇÄêÂÓ¸ÇÄê
+           03  FILLER                  PIC X(04)   VALUE   "005H".
+           03  FILLER                  PIC X(09)   VALUE   "140048450".
+      *    Äã½ÐÎÏ¥ì¡¼¥¶¾È¼Í
+           03  FILLER                  PIC X(04)   VALUE   "005H".
+           03  FILLER                  PIC X(09)   VALUE   "140048550".
+      *    æêÌç½èÃÖ
+           03  FILLER                  PIC X(04)   VALUE   "005H".
+           03  FILLER                  PIC X(09)   VALUE   "140002450".
+      *¤Þ¤Ç
       *
       *    ·ÑÂ³´ÉÍý²Ã»»¡Ê°ìÈÌ¡Ë
            03  FILLER                  PIC X(04)   VALUE   "006".
@@ -179,12 +200,13 @@
        01  TBL-DOUJI-AREA-R            REDEFINES  TBL-DOUJI-AREA.
       *****03  TBL-DOUJI-OCC           OCCURS   9   INDEXED   TBL-IDX.
       *****03  TBL-DOUJI-OCC           OCCURS   13  INDEXED   TBL-IDX.
-           03  TBL-DOUJI-OCC           OCCURS   18  INDEXED   TBL-IDX.
+           03  TBL-DOUJI-OCC           OCCURS   24  INDEXED   TBL-IDX.
                05  TBL-CODE                PIC X(03).
                05  TBL-CHK                 PIC X(01).
                05  TBL-SRYCD               PIC X(09).
       *01  TBL-MAX                     PIC 9(04)   VALUE   9.
-       01  TBL-MAX                     PIC 9(04)   VALUE   18.
+      *01  TBL-MAX                     PIC 9(04)   VALUE   18.
+       01  TBL-MAX                     PIC 9(04)   VALUE   24.
       *
       *    ÊÝ¸±ÊÌ»»ÄêÍúÎò¥Æ¡¼¥Ö¥ë
            COPY   "CMSANTEITBL.INC".
@@ -366,6 +388,17 @@
                    MOVE    TBL-RSI-KBN    (TBL-SAN)
                                            TO  WRK-RSI-KBN
            END-SEARCH
+      *    £È£±£¸¡¿£´·î¤«¤éÂÐ±þ
+           IF      WRK-RIGAKU-RYO      =   "H"
+               IF      SPA-SRYYMD      >=  "20060401"
+                   MOVE    SPACE           TO  WRK-RIGAKU-RYO
+               ELSE
+                   MOVE    ZERO            TO  FLG-HKNSAN
+                   MOVE    SPACE           TO  WRK-RIGAKU-RYO
+                   MOVE    SPACE           TO  WRK-RIGAKU-KBN
+                   MOVE    SPACE           TO  WRK-RSI-KBN
+               END-IF
+           END-IF
       *
            IF      WRK-RIGAKU-RYO      =   SPACE
                MOVE    ZERO                TO  FLG-HKN-SANTEI
@@ -841,6 +874,16 @@
                        MOVE    TBL-CHK    (TBL-IDX)    TO  WRK-CHK
            END-SEARCH
       *
+      *    £È£±£¸¡¿£´·î¤«¤é¾Ã±êÄÃÄËÅù½èÃÖ¤ÈÆ±»þ¥Á¥§¥Ã¥¯
+           IF      WRK-CHK             =   "H"
+               IF      SPA-SRYYMD      >=  "20060401"
+                   MOVE    SPACE           TO  WRK-CHK
+               ELSE
+                   MOVE    SPACE           TO  WRK-CODE
+                   MOVE    SPACE           TO  WRK-CHK
+               END-IF
+           END-IF
+      *
            .
        1001-CODECHK-EXT.
            EXIT.
@@ -895,8 +938,8 @@
       *                    º£²óÆþÎÏÊ¬¥«¥¦¥ó¥È
                            PERFORM 2003-DOJINPUT-CHK-SEC
                       END-IF
-                      IF      (SPA-HKNKBN      NOT =   ZERO    ) AND
-                              (TBL-CHK (TBL-IDX)   NOT =   SPACE)
+                      IF      (SPA-HKNKBN      NOT =   ZERO ) AND
+                              (TBL-CHK (TBL-IDX)   =   "P"  )
       *                    Ï«ºÒ¤Ç¼¾ÉÛ¤Î»þ
                            IF      WRK-DOCNT       >   ZERO
                                MOVE    1           TO  WRK-DOCNT-P
@@ -912,7 +955,7 @@
                           PERFORM 2001-DOJSANTEI-YMD-SEC
                       END-IF
                       IF      (SPA-HKNKBN      NOT =   ZERO    ) AND
-                              (TBL-CHK (TBL-IDX)   NOT =   SPACE)
+                              (TBL-CHK (TBL-IDX)   =   "P"     )
       *                    Ï«ºÒ¤Ç¼¾ÉÛ¤Î»þ
                            IF      WRK-DAYCNT      >   ZERO
                                MOVE    1           TO  WRK-DOCNT-P

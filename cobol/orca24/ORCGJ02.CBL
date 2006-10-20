@@ -6591,6 +6591,14 @@
       *       Æþ±¡´ü´Ö
                PERFORM 410101-NYUINRRK-CHK-SEC
                MOVE    "1"             TO  SPA-NYUGAIKBN
+               IF     (SPA-NAI-SRYKA-FLG   =   0    )  OR
+                      (SPA-J01-SRYKA       =   SPACE)
+      *        É¸½à¤ÏÆþ±¡²Ê¤ÇÉ½¼¨
+                   IF     (SPA-NAI-NYUINKA NOT =   SPACE )
+                       MOVE    SPA-NAI-NYUINKA     TO  SPA-J01-SRYKA
+                       PERFORM 3101-SRYKA-HEN-SEC
+                   END-IF
+               END-IF
            END-IF
       *
       *    ¼õ¿ÇÍúÎòÊÔ½¸
@@ -6996,6 +7004,12 @@
                WHEN    WRK-SRYCD       =   TBL-SANTEI-SRYCD
                                                           (TBL-SAN)
                    MOVE    1               TO  FLG-HKNSAN
+      *            £È£±£¸¡¿£´·î¤«¤éÂÐ±þ
+                   IF      TBL-RIGAKU-RYO(TBL-SAN) =   "H"
+                       IF      ACCT-SRYYM      >=  "200604"
+                           MOVE    ZERO            TO  FLG-HKNSAN
+                       END-IF
+                   END-IF
            END-SEARCH
       *
       *    »»ÄêÍúÎò¸¡º÷
@@ -10612,7 +10626,13 @@
                WHEN    WRK-SRYCD       =   TBL-SANTEI-SRYCD
                                                           (TBL-SAN)
                    MOVE    1               TO  FLG-HKNSAN
-           END-SEARCH
+      *            £È£±£¸¡¿£´·î¤«¤éÂÐ±þ
+                   IF      TBL-RIGAKU-RYO(TBL-SAN) =   "H"
+                       IF      WRK-SRYYMD      >=  "20060401"
+                           MOVE    ZERO            TO  FLG-HKNSAN
+                       END-IF
+                   END-IF
+          END-SEARCH
       *
       *    »»ÄêÍúÎò¸¡º÷
            MOVE    SPACE               TO  SANTEI-REC

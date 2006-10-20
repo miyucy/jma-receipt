@@ -52,6 +52,7 @@
       * 02.00.05     NACL-多々納  05/11/18  MONFUNC 対応 他
       * 02.00.06     NACL-多々納  05/11/21  開放型病院共同指導料チェック追加
       * 02.00.07     NACL-多々納  05/12/14  .213 自動変換対応
+      * 03.03.00     NACL-多々納  06/10/20  矯正固定等追加
       *****************************************************************
       *
       *
@@ -1368,6 +1369,26 @@
       *        介達牽引
                WHEN    "140048010"
                    ADD     WRK-SYOEN-CNT       TO  SPA-SYOEN-CNT
+      *H18/04から
+      *        介達牽引（矯正固定）
+               WHEN    "140030350"
+                   ADD     WRK-SYOEN-CNT       TO  SPA-SYOEN-CNT
+      *        介達牽引（変形機械矯正術）
+               WHEN    "140048250"
+                   ADD     WRK-SYOEN-CNT       TO  SPA-SYOEN-CNT
+      *        腰部固定帯固定
+               WHEN    "140048350"
+                   ADD     WRK-SYOEN-CNT       TO  SPA-SYOEN-CNT
+      *        胸部固定帯固定
+               WHEN    "140048450"
+                   ADD     WRK-SYOEN-CNT       TO  SPA-SYOEN-CNT
+      *        低出力レーザ照射
+               WHEN    "140048550"
+                   ADD     WRK-SYOEN-CNT       TO  SPA-SYOEN-CNT
+      *        肛門処置
+               WHEN    "140002450"
+                   ADD     WRK-SYOEN-CNT       TO  SPA-SYOEN-CNT
+      *まで
       *        在宅療養指導料の判定
                WHEN    OTHER
                    IF      SANTEI-SRYCD(1:3)   =   "114"

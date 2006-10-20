@@ -2954,7 +2954,7 @@
                                                                (IDX)
            END-PERFORM
       *
-           MOVE    24                  TO  SPA-K98-GMN-MAX
+           MOVE    25                  TO  SPA-K98-GMN-MAX
       *
            MOVE    1                   TO  SPA-GMN-CUR
       *

@@ -1112,6 +1112,12 @@
                WHEN    WRK-SRYCD       =   TBL-SANTEI-SRYCD
                                                           (TBL-SAN)
                    MOVE    1               TO  FLG-HKNSAN
+      *            £È£±£¸¡¿£´·î¤«¤éÂÐ±þ
+                   IF      TBL-RIGAKU-RYO (TBL-SAN)    =   "H"
+                       IF      SPA-NAI-SRYYM   <   "200604"
+                           MOVE    ZERO            TO  FLG-HKNSAN
+                       END-IF
+                   END-IF
            END-SEARCH
       *
            .

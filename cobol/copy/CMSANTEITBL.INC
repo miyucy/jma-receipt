@@ -85,6 +85,19 @@
            03  FILLER              PIC X(12)   VALUE   " P 140002310".
       *    介達牽引
            03  FILLER              PIC X(12)   VALUE   " T 140048010".
+      *H18/04から
+      *    介達牽引（矯正固定）
+           03  FILLER              PIC X(12)   VALUE   "HT 140030350".
+      *    介達牽引（変形機械矯正術）
+           03  FILLER              PIC X(12)   VALUE   "HT 140048250".
+      *    腰部固定帯固定
+           03  FILLER              PIC X(12)   VALUE   "HE 140048350".
+      *    胸部固定帯固定
+           03  FILLER              PIC X(12)   VALUE   "HE 140048450".
+      *    低出力レーザ照射
+           03  FILLER              PIC X(12)   VALUE   "HE 140048550".
+      *    肛門処置
+           03  FILLER              PIC X(12)   VALUE   "HE 140002450".
       *
       *    労災の救急医療管理加算
            03  FILLER              PIC X(12)   VALUE   "  R101110020".
@@ -117,12 +130,12 @@
        01  TBL-SANTEI-AREA-R       REDEFINES   TBL-SANTEI-AREA.
       **** 03  TBL-SANTEI-OCC      OCCURS   39  INDEXED   TBL-SAN.
       *****03  TBL-SANTEI-OCC      OCCURS   41  INDEXED   TBL-SAN.
-           03  TBL-SANTEI-OCC      OCCURS   51  INDEXED   TBL-SAN.
-      *        リハビリ（K:個別、S:集団）
+           03  TBL-SANTEI-OCC      OCCURS   57  INDEXED   TBL-SAN.
+      *        リハビリ（K:個別、S:集団）(H:Ｈ１８．４から）
                05  TBL-RIGAKU-RYO      PIC X(01).
       *        リハビリ（R:理学,S:作業, G:言語)
       *        消炎鎮痛処置(M:マッサージ等,K:器具等、P:湿布
-      *                     T:介達牽引)
+      *                     T:介達牽引、E:その他)
                05  TBL-RIGAKU-KBN      PIC X(01).
       *        (R:労災毎１回)
                05  TBL-RSI-KBN         PIC X(01).

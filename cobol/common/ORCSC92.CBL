@@ -54,6 +54,7 @@
       *  02.00.14    NACL-Â¿¡¹Ç¼  05/11/22  MONFUNC ÂÐ±þ Â¾
       *  02.00.15    NACL-Â¿¡¹Ç¼  06/01/23  ÍÑÎÌ³ä¹ç¥³¡¼¥ÉÄÉ²Ã
       *  02.00.16    NACL-Â¿¡¹Ç¼  06/03/06  ·Ð²áÁ¼ÃÖÂÐ±þ¡¢ÆþÎÏÃÍÀßÄêÂ¾
+      *  03.03.00    NACL-Â¿¡¹Ç¼  06/10/20  ¶ºÀµ¸ÇÄêÅùÄÉ²Ã
       *****************************************************************
       *
       *
@@ -94,6 +95,8 @@
            03  FLG-INPUT-CHK           PIC  9(01).
       *
            03  FLG-SP              PIC 9(01).
+      *
+           03  FLG-MANSEI-CHK          PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -161,6 +164,7 @@
                05  WRK-DD              PIC 9(02).
       *
            03  WRK-CHK-CD              PIC X(09).
+           03  WRK-CHK-CD2             PIC X(09).
       *
            03  WRK-MOJI                PIC X(01).
            03  WRK-BUNGSU              PIC 9(08).
@@ -1637,6 +1641,13 @@
                    MOVE    1               TO  FLG-HKNSAN
                    MOVE    TBL-RSI-KBN    (TBL-SAN)
                                            TO  WRK-RSI-KBN
+      *            £È£±£¸¡¿£´·î¤«¤éÂÐ±þ
+                   IF      TBL-RIGAKU-RYO(TBL-SAN) =   "H"
+                       IF      SPA-SRYYMD      >=  "20060401"
+                           MOVE    ZERO            TO  FLG-HKNSAN
+                           MOVE    SPACE           TO  WRK-RSI-KBN
+                       END-IF
+                   END-IF
            END-SEARCH
       *
            .
@@ -1722,8 +1733,9 @@
       *****************************************************************
       *     ËýÀ­áÖÄË¼À´µ´ÉÍýÎÁ¤Î¥Á¥§¥Ã¥¯½èÍý
       *****************************************************************
-       20053-MANSEI-CHK-SEC        SECTION.
+       200531-MANSEI-SYOCHI-SEC     SECTION.
       *
+           MOVE    ZERO                TO  FLG-MANSEI-CHK
       *    Íý³ØÎÅË¡£´¡¢¾Ã±êÄÃÄËÅù½èÃÖ¤Î»þ¥Á¥§¥Ã¥¯
            IF     (LNK-SC92-SRYCD      =   "180707410"
                                        OR  "180022710"
@@ -1735,7 +1747,7 @@
                                        OR  "140002310"
       *            ²ðÃ£¸£°ú
                                        OR  "140048010")  OR
-                  (WRK-CHK-CD          =   "180707410"
+                  (WRK-CHK-CD2         =   "180707410"
                                        OR  "180022710"
                                        OR  "180022810"
                                        OR  "180707510"
@@ -1745,8 +1757,40 @@
                                        OR  "140002310" 
       *            ²ðÃ£¸£°ú
                                        OR  "140048010") 
-               CONTINUE
+               MOVE    1               TO  FLG-MANSEI-CHK
            ELSE
+      *        £È£±£¸¡¥£´ ¤«¤é¤ÎÄÉ²Ã
+               IF      SPA-SRYYMD      >=  "20060401"
+      *            ¶ºÀµ¸ÇÄê¡ÁæêÌç½èÃÖ
+                   IF     (LNK-SC92-SRYCD      =   "140030350"
+                                               OR  "140048250"
+                                               OR  "140048350"
+                                               OR  "140048450"
+                                               OR  "140048550"
+                                               OR  "140002450" )  OR
+                          (WRK-CHK-CD2         =   "140030350"
+                                               OR  "140048250"
+                                               OR  "140048350"
+                                               OR  "140048450"
+                                               OR  "140048550"
+                                               OR  "140002450" )
+                       MOVE    1               TO  FLG-MANSEI-CHK
+                   END-IF
+               END-IF
+           END-IF
+           .
+       200531-MANSEI-SYOCHI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     ËýÀ­áÖÄË¼À´µ´ÉÍýÎÁ¤Î¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       20053-MANSEI-CHK-SEC        SECTION.
+      *
+           MOVE    WRK-CHK-CD          TO  WRK-CHK-CD2
+      *    Íý³ØÎÅË¡£´¡¢¾Ã±êÄÃÄËÅù½èÃÖ¤Î»þ¥Á¥§¥Ã¥¯
+           PERFORM 200531-MANSEI-SYOCHI-SEC
+           IF      FLG-MANSEI-CHK      =   ZERO
                GO      TO      20053-MANSEI-CHK-EXT
            END-IF
       *
@@ -1797,29 +1841,11 @@
       *     ËýÀ­áÖÄË¼À´µ´ÉÍýÎÁ¤ÎÆþ±¡¥Á¥§¥Ã¥¯½èÍý
       *****************************************************************
        20055-NYUIN-MANSEI-CHK-SEC        SECTION.
+      *
+           MOVE    CHK-CD (IDX-C)      TO  WRK-CHK-CD2
       *    Íý³ØÎÅË¡£´¡¢¾Ã±êÄÃÄËÅù½èÃÖ¤Î»þ¥Á¥§¥Ã¥¯
-           IF     (LNK-SC92-SRYCD      =   "180707410"
-                                       OR  "180022710"
-                                       OR  "180022810"
-                                       OR  "180707510"
-                                       OR  "140029610"
-                                       OR  "140040310"
-                                       OR  "140002210"
-                                       OR  "140002310"
-      *            ²ðÃ£¸£°ú
-                                       OR  "140048010")  OR
-                  (CHK-CD (IDX-C)      =   "180707410"
-                                       OR  "180022710"
-                                       OR  "180022810"
-                                       OR  "180707510"
-                                       OR  "140029610"
-                                       OR  "140040310"
-                                       OR  "140002210"
-                                       OR  "140002310" 
-      *            ²ðÃ£¸£°ú
-                                       OR  "140048010") 
-               CONTINUE
-           ELSE
+           PERFORM 200531-MANSEI-SYOCHI-SEC
+           IF      FLG-MANSEI-CHK      =   ZERO
                GO      TO      20055-NYUIN-MANSEI-CHK-EXT
            END-IF
       *
@@ -1839,7 +1865,15 @@
                                            OR  "140002210"
                                            OR  "140002310" 
       *            ²ðÃ£¸£°ú
-                                           OR  "140048010") 
+                                           OR  "140048010")
+               OR    ((SPA-SRYYMD          >=  "20060401" )  AND
+      *               ¶ºÀµ¸ÇÄê¡ÁæêÌç½èÃÖ
+                       (CHK-CD (IDX-C)     =   "140030350"
+                                           OR  "140048250"
+                                           OR  "140048350"
+                                           OR  "140048450"
+                                           OR  "140048550"
+                                           OR  "140002450" ))
                    PERFORM 200541-NYUIN-CHK-SEC
                END-IF
            END-IF
@@ -1959,6 +1993,13 @@
                    MOVE    1               TO  FLG-HKNSAN
                    MOVE    TBL-RSI-KBN    (TBL-SAN)
                                            TO  WRK-RSI-KBN
+      *            £È£±£¸¡¿£´·î¤«¤éÂÐ±þ
+                   IF      TBL-RIGAKU-RYO(TBL-SAN) =   "H"
+                       IF      SPA-SRYYMD      >=  "20060401"
+                           MOVE    ZERO            TO  FLG-HKNSAN
+                           MOVE    SPACE           TO  WRK-RSI-KBN
+                       END-IF
+                   END-IF
            END-SEARCH
       *
            INITIALIZE                  HZN-SANTEI-REC
