@@ -1899,7 +1899,28 @@
                                        OR  "114005810") 
                CONTINUE
            ELSE
-               GO      TO      20054-NETAKIRI-CHK-EXT
+      *        £È£±£¸¡¥£´ ¤«¤é¤ÎÄÉ²Ã
+               IF      SPA-SRYYMD      >=  "20060401"
+      *            ¶ºÀµ¸ÇÄê¡ÁæêÌç½èÃÖ
+                   IF     (LNK-SC92-SRYCD      =   "140030350"
+                                               OR  "140048250"
+                                               OR  "140048350"
+                                               OR  "140048450"
+                                               OR  "140048550"
+                                               OR  "140002450" )  OR
+                          (CHK-CD (IDX-C)      =   "140030350"
+                                               OR  "140048250"
+                                               OR  "140048350"
+                                               OR  "140048450"
+                                               OR  "140048550"
+                                               OR  "140002450" )
+                       CONTINUE
+                   ELSE
+                       GO      TO      20054-NETAKIRI-CHK-EXT
+                   END-IF
+               ELSE
+                   GO      TO      20054-NETAKIRI-CHK-EXT
+               END-IF
            END-IF
       *
       *    Æþ±¡Ãæ¤Î¾ì¹çÂÐ¾Ý³°
@@ -1913,9 +1934,19 @@
            IF     (CHK-CD (IDX-C)      =   "140029610"
                                        OR  "140040310"
                                        OR  "140002210"
-                                       OR  "140002310")
-              AND (SPA-K02N-NYUINFLG    =   1         )
-              PERFORM 200541-NYUIN-CHK-SEC
+                                       OR  "140002310"
+                                       OR  "114005810") 
+           OR    ((SPA-SRYYMD          >=  "20060401" )  AND
+      *           ¶ºÀµ¸ÇÄê¡ÁæêÌç½èÃÖ
+                   (CHK-CD (IDX-C)     =   "140030350"
+                                       OR  "140048250"
+                                       OR  "140048350"
+                                       OR  "140048450"
+                                       OR  "140048550"
+                                       OR  "140002450" ))
+               IF      (SPA-K02N-NYUINFLG    =   1         )
+                  PERFORM 200541-NYUIN-CHK-SEC
+               END-IF
            END-IF
       *
            .
