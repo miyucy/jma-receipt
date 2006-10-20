@@ -273,6 +273,7 @@
       *                                     ¸¡ººÅù¼Â»ÜÈ½ÃÇ¤ÎÄÉ²Ã
       *  03.03.05    NACL-ÌçÏÆ    06/10/10  Ï·ÎðÊ¡»ãÇ¯¶â¤Ë¤Ä¤¤¤Æ¤ÎÂÐ±þ
       *  03.03.06    NACL-ÌçÏÆ    06/10/17  ¸º³Û¡¦ÌÈ½ü¡¦»ÙÊ§Í±Í½ÂÐ±þ
+      *  03.03.07    NACL-ÌçÏÆ    06/10/18  ËÌ³¤Æ»ÃÏÊý¸øÈñÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -5578,6 +5579,7 @@
            END-IF
       *
       *    µÜ¾ë¸©ÆýÍÄ»ù
+      *    ËÌ³¤Æ»Àº¿À½õÀ®
       *
            MOVE     ZERO     TO    FLG-MIYAGI
       *
@@ -5612,6 +5614,29 @@
                         END-EVALUATE
       *
                      END-IF
+      *
+                 END-IF
+      *
+               END-IF
+      *
+             WHEN    "01"
+      *
+               IF    RECE02-SRYYM         >=   "200604"
+      *
+                 IF  SYU-KOH-HKNNUM(IDX3)  =  "121"
+      *
+                     MOVE        1    TO  TBL-KEISAN-FLG(KH-IDX)
+      *
+                     EVALUATE   IDX3
+                       WHEN      1
+                         ADD   SYU-SYUCOMPFTN-ENTANI
+                                      TO  TBL-KEISAN-ENTANI(KH-IDX)
+                       WHEN      2
+                       WHEN      3
+                       WHEN      4
+                         ADD   SYU-KOH-COMPFTN-ENTANI(IDX3 - 1)
+                                      TO  TBL-KEISAN-ENTANI(KH-IDX)
+                     END-EVALUATE
       *
                  END-IF
       *
@@ -6263,6 +6288,7 @@
            END-EVALUATE
       *
       *    µÜ¾ë¸©ÆýÍÄ»ù
+      *    ËÌ³¤Æ»Àº¿ÀÊä½õ
       *
            EVALUATE   SYS-1001-PREFNUM
       *
@@ -6300,6 +6326,31 @@
       *
                       COMPUTE   WRK-JYOSEIGAKU      =
                                 WRK-KEISAN-COMPFTN  *  WRK-KEISU
+                      COMPUTE   RECE02-FTNMONEY(KOHFTN-IDX)     =
+                                WRK-KEISAN-COMPFTN  -  WRK-JYOSEIGAKU
+                      COMPUTE   RECE02-FTNMONEY-KOJ(KOHFTN-IDX) =
+                                WRK-KEISAN-COMPFTN  -  WRK-JYOSEIGAKU
+      *
+                   END-IF
+      *
+                 END-PERFORM
+      *
+               END-IF
+      *
+             WHEN    "01"
+      *
+               IF   RECE02-SRYYM    >=   "200604"
+      *
+                 PERFORM    VARYING   KOHFTN-IDX   FROM   2   BY   1
+                             UNTIL    KOHFTN-IDX     >    5
+      *
+                   IF   TBL-KEISAN-FLG(KOHFTN-IDX)   NOT =  ZERO
+      *
+                      MOVE      TBL-KEISAN-ENTANI(KOHFTN-IDX)
+                                              TO     WRK-KEISAN-COMPFTN
+      *
+                      COMPUTE   WRK-JYOSEIGAKU      =
+                                WRK-KEISAN-COMPFTN  *  0.5
                       COMPUTE   RECE02-FTNMONEY(KOHFTN-IDX)     =
                                 WRK-KEISAN-COMPFTN  -  WRK-JYOSEIGAKU
                       COMPUTE   RECE02-FTNMONEY-KOJ(KOHFTN-IDX) =
