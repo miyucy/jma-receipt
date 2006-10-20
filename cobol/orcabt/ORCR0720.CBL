@@ -2871,11 +2871,7 @@
                        WHEN    "7"
                            MOVE    "７光掐９"   TO  HC06-HONKZK
                        WHEN    "9"
-                           IF      RECE62-KYURATE     =   20
-                               MOVE    "９光掐８"     TO  HC06-HONKZK
-                           ELSE
-                               MOVE    "９光掐７"     TO  HC06-HONKZK
-                           END-IF
+                           MOVE    "９光掐７"   TO  HC06-HONKZK
                    END-EVALUATE
                ELSE
                    EVALUATE    RECE62-RECESYUBETU (4:1)
@@ -2888,11 +2884,7 @@
                        WHEN    "7"
                            MOVE    "７光掐９"   TO  HC06-HONKZK
                        WHEN    "9"
-                           IF      RECE62-KYURATE     =   20
-                               MOVE    "９光掐８"     TO  HC06-HONKZK
-                           ELSE
-                               MOVE    "９光掐７"     TO  HC06-HONKZK
-                           END-IF
+                           MOVE    "９光掐７"     TO  HC06-HONKZK
                    END-EVALUATE
                END-IF
            END-IF    

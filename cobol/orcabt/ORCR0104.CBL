@@ -2981,11 +2981,7 @@
                    IF      RECE02-RECESYUBETU  =   6666
                      EVALUATE    RECE02-RECESYUBETU-X (4:1)
                        WHEN    "0"
-                           IF      RECE02-KYURATE     =   20
-                               MOVE    "ㄟ嫖陸ㄧ"     TO  HC06-HONKZK
-                           ELSE
-                               MOVE    "ㄟ嫖陸ㄦ"     TO  HC06-HONKZK
-                           END-IF
+                           MOVE    "ㄟ嫖陸ㄦ"     TO  HC06-HONKZK
                        WHEN    "2"
                            MOVE    "ㄡ呿陸"       TO  HC06-HONKZK
                        WHEN    "4"
@@ -2998,11 +2994,7 @@
                    ELSE
                      EVALUATE    RECE02-RECESYUBETU (4:1)
                        WHEN    "0"
-                           IF      RECE02-KYURATE     =   20
-                               MOVE    "ㄟ嫖陸ㄧ"     TO  HC06-HONKZK
-                           ELSE
-                               MOVE    "ㄟ嫖陸ㄦ"     TO  HC06-HONKZK
-                           END-IF
+                           MOVE    "ㄟ嫖陸ㄦ"     TO  HC06-HONKZK
                        WHEN    "2"
                            MOVE    "ㄡ呿陸"       TO  HC06-HONKZK
                        WHEN    "4"
