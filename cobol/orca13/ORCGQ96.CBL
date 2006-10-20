@@ -2722,7 +2722,7 @@
                                                                (IDX)
            END-PERFORM
       *
-           MOVE    24                  TO  SPA-Q96-GMN-MAX
+           MOVE    25                  TO  SPA-Q96-GMN-MAX
       *
            MOVE    1                   TO  SPA-Q96-GMN-CUR
       *
