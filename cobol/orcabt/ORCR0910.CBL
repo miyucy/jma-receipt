@@ -66,6 +66,7 @@
       *  03.01.01    NACL-門脇    06/06/28  実日数減算コード対応
       *  03.01.02    NACL-門脇    06/07/10  在支援コメント自動記載対応
       *  03.01.03    NACL-門脇    06/07/14  診療区分置き換えフラグの編集
+      *  03.03.01    NACL-門脇    06/10/19  療養病棟レセコメント記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1040,6 +1041,14 @@
                    OR      RECE84-SRYKBN     =   "33"                   
                        MOVE    1             TO  IDY
                    ELSE                          
+      *              療養病棟レセコメントがある剤
+                     IF    RECE84-RYOTENKISAISU  NOT = ZERO
+                       IF    WRK-ZAIWMAX(3) >= RECE84-RYOTENKISAISU
+                          MOVE    5          TO  IDY
+                       ELSE
+                          MOVE    3          TO  IDY
+                       END-IF
+                     ELSE
                        EVALUATE    RECE85-SRYCD (IDX) (1:1)
                            WHEN    "0"
                             IF   RECE82-HKNKBN    NOT  =  "4" 
@@ -1127,6 +1136,7 @@
                                MOVE    2             TO  SPA-STS
                                GO  TO  2002-TBLZAIW-TAIHI-EXT
                        END-EVALUATE
+                     END-IF
                    END-IF            
       *
                    IF      RECE85-KENTAICOMMENT (IDX)   =   1
@@ -1791,10 +1801,12 @@
                IF      RECE84-SRYKBN   <=   "33"
                    MOVE    "＊"            TO  WRK-ZAI-MK
                END-IF    
-               IF    (    (RECE84-YKZTEN     =   ZERO )
-                      AND (IDX1              =   5    ) )
-               OR    (    (RECE84-KIZAITEN   =   ZERO )
-                      AND (IDX1              =   4    ) )
+               IF    ((RECE84-YKZTEN        =   ZERO ) AND
+                      (IDX1                 =   5    ) AND
+                      (RECE84-RYOTENKISAISU =   ZERO ))
+               OR    ((RECE84-KIZAITEN      =   ZERO ) AND
+                      (IDX1                 =   4    ) AND
+                      (RECE84-RYOTENKISAISU =   ZERO ))
                    CONTINUE
                ELSE    
                    IF   (( RECE84-SRYKBN     =   "31"  AND

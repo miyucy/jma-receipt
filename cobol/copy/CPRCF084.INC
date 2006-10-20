@@ -95,6 +95,8 @@
            03  RECE84-SAFLG               PIC  X(01).
       *診療区分置き換えフラグ（自賠責リハ用）
            03  RECE84-OKIKAEFLG           PIC  X(01).
+      *療養病棟入院料剤点記載明細数
+           03  RECE84-RYOTENKISAISU       PIC  9(04).
       *
       *リハビリ
            03  RECE84-RIHABIRI-COMMENT    PIC  X(01).
