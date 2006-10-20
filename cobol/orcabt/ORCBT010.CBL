@@ -2068,7 +2068,7 @@
                                WHEN   "I"
                                WHEN   "7"
                                    MOVE   "7"   TO   WK-HONKZKKBN
-                               END-EVALUATE
+                           END-EVALUATE
                        WHEN    "031"  THRU    "034"  
                            EVALUATE   TOUKEI01-THOJOKBN (IDY)
                                WHEN   "B"
@@ -2108,7 +2108,8 @@
                                        WHEN   "3"
                                        WHEN   "6"
                                            MOVE   "7"  TO  WK-HONKZKKBN
-                               END-EVALUATE
+                                   END-EVALUATE
+                             END-EVALUATE
                            END-IF     
                        WHEN    OTHER 
                            EVALUATE   TOUKEI01-THOJOKBN (IDY)
