@@ -3,6 +3,7 @@ view_I001 {
 	PTID				number(10,0);
 	RRKNUM			number(3,0);
 	RRKEDANUM		number(3,0);
+	RRKEDANUM_MAX	number(3,0);
 	PTNUM			char(20);
 	KANANAME			varchar(100);
 	NAME 				varchar(100);
@@ -17,6 +18,8 @@ view_I001 {
 	NYUINYMD		char(8);
 	TAIINYMD		char(8);
 	TAIINCD			char(2);
+	TENNYUYMD		char(8);
+	TENSTUYMD		char(8);
 	TSTPTNUMKBN			char(1);
 # ----- ºË∆¿∑ÔøÙ¬‡»ÚÕ— -----------------------------
 	COUNT			number(10,0);	
