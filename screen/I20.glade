@@ -2981,22 +2981,6 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label504</name>
-      <x>672</x>
-      <y>40</y>
-      <width>42</width>
-      <height>24</height>
-      <label>轉情ゥ</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>label901</name>
       <x>536</x>
       <y>44</y>
@@ -3704,6 +3688,38 @@
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label504</name>
+      <x>672</x>
+      <y>40</y>
+      <width>42</width>
+      <height>24</height>
+      <label>轉情ゥ</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>KJNYMDMES</name>
+      <x>728</x>
+      <y>88</y>
+      <width>100</width>
+      <height>24</height>
+      <label>H99.99.99</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
     </widget>
   </widget>
 </widget>

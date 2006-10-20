@@ -65,6 +65,7 @@
                 04  I20-SRTKBN          PIC X(22).
                 04  I20-SRTKBN-COUNT    PIC S9(9)   BINARY.
                 04  I20-SRTKBNLST       PIC X(22)   OCCURS  5 TIMES.
+              03  I20-KJNYMDMES         PIC X(10).
               03  I20-TOTAL             PIC X(22).
               03  I20-SCROLLEDWINDOW28.
                 04  I20-KANJYALST.

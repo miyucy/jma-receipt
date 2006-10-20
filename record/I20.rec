@@ -88,6 +88,9 @@ I20	{
 			count	int;
 			item	varchar(22)[5];
 		};
+		KJNYMDMES	{
+			value	varchar(10);
+		};
 		TOTAL	{
 			value	varchar(22);
 		};

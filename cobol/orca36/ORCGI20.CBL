@@ -685,10 +685,12 @@
            MOVE    "1"                 TO  SPA-GMN-JOTAIL (1)
            MOVE    "2"                 TO  SPA-GMN-JOTAIL (2)
            MOVE    "3"                 TO  SPA-GMN-JOTAIL (3)
+           MOVE    "4"                 TO  SPA-GMN-JOTAIL (4)
            MOVE    "Æþ±¡Ãæ"            TO  SPA-GMN-JOTAIMEIL (1)
            MOVE    "Âà±¡ºÑ"            TO  SPA-GMN-JOTAIMEIL (2)
            MOVE    "Åö·îºß±¡"          TO  SPA-GMN-JOTAIMEIL (3)
-           MOVE    3                   TO  SPA-GMN-JOTAI-MAX
+           MOVE    "ÅöÆüºß±¡"          TO  SPA-GMN-JOTAIMEIL (4)
+           MOVE    4                   TO  SPA-GMN-JOTAI-MAX
       *
       *
            INITIALIZE                  SYS-5013-REC
@@ -2528,8 +2530,39 @@
                    INTO    WRK-SQL
                    WITH    POINTER WRK-SQL-PNT
                    END-STRING
+               WHEN    "4"
+      *
+                   STRING  "(tennyuymd <= '"        DELIMITED  BY  SIZE
+                           SPA-SYSYMD               DELIMITED  BY  SIZE
+                           "' and tenstuymd >= '"   DELIMITED  BY  SIZE
+                           SPA-SYSYMD              DELIMITED  BY  SIZE
+                           "')"                    DELIMITED  BY  SIZE
+                   INTO    WRK-SQL
+                   WITH    POINTER WRK-SQL-PNT
+                   END-STRING
                END-EVALUATE
       *
+               MOVE    1                   TO  FLG-JYOKEN
+           END-IF    
+      *
+      *    ¾õÂÖ
+           IF      SPA-GMN-JOTAI      =   "4"
+               PERFORM 45011-JYOKEN-HENSYU-SEC
+               STRING  "(tenstuymd <> '"    DELIMITED  BY  SIZE
+                       SPA-SYSYMD           DELIMITED  BY  SIZE
+                       "' or rrkedanum = rrkedanum_max)"
+                                            DELIMITED  BY  SIZE
+                       INTO    WRK-SQL
+                       WITH    POINTER WRK-SQL-PNT
+               END-STRING
+               MOVE    1                   TO  FLG-JYOKEN
+           ELSE    
+               PERFORM 45011-JYOKEN-HENSYU-SEC
+               STRING  "rrkedanum = rrkedanum_max"
+                                            DELIMITED  BY  SIZE
+                       INTO    WRK-SQL
+                       WITH    POINTER WRK-SQL-PNT
+               END-STRING
                MOVE    1                   TO  FLG-JYOKEN
            END-IF    
       *
@@ -3094,6 +3127,12 @@
                MOVE    SPA-GMN-MAX         TO  I20-COUNT   
            END-IF                  
       *
+           EVALUATE    SPA-GMN-JOTAI
+           WHEN    "3"
+               MOVE    SPA-SYSYMDWH (1:6)  TO  I20-KJNYMDMES
+           WHEN    "4"
+               MOVE    SPA-SYSYMDWH        TO  I20-KJNYMDMES
+           END-EVALUATE
       *
            IF    ( SPA-GMN-PAGE           <=   1 )
                MOVE    WIDGET-INSENSITIVE  TO  I20-B06-STATE

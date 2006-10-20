@@ -14,6 +14,8 @@
            03  I001-RRKNUM                 PIC  9(03).
       *入院履歴枝番号
            03  I001-RRKEDANUM              PIC  9(03).
+      *入院履歴枝番号（歴内最大番号）
+           03  I001-RRKEDANUM-MAX          PIC  9(03).
       *患者番号
            03  I001-PTNUM                  PIC  X(20).
       *カナ氏名
@@ -42,6 +44,10 @@
            03  I001-TAIINYMD               PIC  X(08).
       *退院事由
            03  I001-TAIINCD                PIC  X(02).
+      *転入日
+           03  I001-TENNYUYMD              PIC  X(08).
+      *転出日
+           03  I001-TENSTUYMD              PIC  X(08).
       *テスト患者番号区分
            03  I001-TSTPTNUMKBN            PIC  X(01).
       *取得件数
