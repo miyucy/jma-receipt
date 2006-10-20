@@ -1104,14 +1104,17 @@
                        WHEN    "1"
                        WHEN    "A"
                        WHEN    "D"
+                       WHEN    "G"
                            MOVE    "¿¦Ì³¾å"    TO  SPA-H01GMN-HHOJOKBN
                        WHEN    "2"
                        WHEN    "B"
                        WHEN    "E"
+                       WHEN    "H"
                            MOVE    "²¼Á¥£³·î"  TO  SPA-H01GMN-HHOJOKBN
                        WHEN    "3"
                        WHEN    "C"
                        WHEN    "F"
+                       WHEN    "I"
                            MOVE    "ÄÌ¶ÐºÒ³²"  TO  SPA-H01GMN-HHOJOKBN
                    END-EVALUATE
            END-EVALUATE
@@ -1758,11 +1761,45 @@
       *
            IF      SPA-HENFLG          =   SPACE
                MOVE    "0015"              TO  SPA-ERRCD
+               GO  TO  450-KOUSIN-GIDMSG-EXT
            END-IF
       *
            IF      SPA-UPDFLG          =   SPACE
                MOVE    "0010"              TO  SPA-ERRCD
+               GO  TO  450-KOUSIN-GIDMSG-EXT
            END-IF
+      *
+           IF    ( SPA-H01GMN-SKYYM
+                                   NOT =   SPACE )
+           AND   ( SPA-H01NAI-SKYYM    =   ZERO  )
+               MOVE    "0002"              TO  SPA-ERRCD
+               MOVE    4                   TO  SPA-H01GMN-CUR  
+               GO  TO  450-KOUSIN-GIDMSG-EXT
+           END-IF       
+      *
+           IF    ( SPA-H01GMN-HENREIYM
+                                   NOT =   SPACE )
+           AND   ( SPA-H01NAI-HENREIYM =   ZERO  )
+              MOVE    "0002"               TO  SPA-ERRCD
+               MOVE    5                   TO  SPA-H01GMN-CUR  
+               GO  TO  450-KOUSIN-GIDMSG-EXT
+           END-IF
+      *       
+           IF    ( SPA-H01NAI-SKYYM    >   ZERO  )
+           AND   ( SPA-H01NAI-SRYYM    >   ZERO  )
+               IF      SPA-H01NAI-SKYYM    <   SPA-H01NAI-SRYYM
+                   MOVE    "0002"              TO  SPA-ERRCD
+                   MOVE    4                   TO  SPA-H01GMN-CUR  
+                   GO  TO  450-KOUSIN-GIDMSG-EXT
+               END-IF
+           END-IF 
+      *        
+           IF      SPA-H01GMN-SKYKBNMEI
+                                       =   SPACE
+              MOVE    "0001"               TO  SPA-ERRCD
+               MOVE    6                   TO  SPA-H01GMN-CUR  
+               GO  TO  450-KOUSIN-GIDMSG-EXT
+           END-IF       
       *         
       *    ¥¬¥¤¥É¥á¥Ã¥»¡¼¥¸¥»¥Ã¥È
            IF      SPA-ERRCD           =   SPACE

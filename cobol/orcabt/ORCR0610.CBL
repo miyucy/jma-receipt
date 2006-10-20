@@ -79,6 +79,9 @@
       *  03.02.01    NACL-ÌçÏÆ    06/09/05  £²£°£°£¶Ç¯£±£°·î²þÀµÂÐ±þ
       *                                     Ä¹´ü£¹£·£´ÂÐ±þ
       *                                     Ê¡²¬ÃÏÊý¸øÈñÂÐ±þ
+      *
+      *  03.03.01    NACL-Æ£¸¶    06/10/15  £²£°£°£¶Ç¯£±£°·î²þÀµÂÐ±þ
+      *                                     ¸øÈñ¤ÎÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -346,6 +349,8 @@
                05                      PIC X(03)   VALUE   "012".
                05                      PIC X(03)   VALUE   "972".
                05                      PIC X(03)   VALUE   "974".
+               05  FILLER              PIC X(03)   VALUE   SPACE.
+               05  FILLER              PIC X(03)   VALUE   SPACE.
       *
                05  FILLER              PIC X(03)   VALUE   "027".  
                05  FILLER              PIC X(03)   VALUE   "013".  
@@ -361,12 +366,14 @@
                05  FILLER              PIC X(03)   VALUE   "022".  
                05  FILLER              PIC X(03)   VALUE   "028".  
                05  FILLER              PIC X(03)   VALUE   "017".  
+               05                      PIC X(03)   VALUE   "079".  
                05  FILLER              PIC X(03)   VALUE   "019".  
                05  FILLER              PIC X(03)   VALUE   "023".  
                05  FILLER              PIC X(03)   VALUE   "051".  
                05  FILLER              PIC X(03)   VALUE   "091".  
                05  FILLER              PIC X(03)   VALUE   "052".  
                05  FILLER              PIC X(03)   VALUE   "053".  
+               05                      PIC X(03)   VALUE   "066".  
                05  FILLER              PIC X(03)   VALUE   "012".
                05  FILLER              PIC X(03)   VALUE   "972".
                05  FILLER              PIC X(03)   VALUE   "974".
@@ -374,7 +381,9 @@
            03  WRK-SRT-TABLE-R         REDEFINES   WRK-SRT-TABLE.
                05  WRK-SRT-OCC         OCCURS  2.
                    07  WRK-SRT-KOHHKNNUM
-                                       PIC X(03)   OCCURS  23.
+                                       PIC X(03)   OCCURS  25.
+      *
+           03  WRK-SRT-KOHHKNNUM-MAX   PIC 9(02)   VALUE   25.
       *     
       *    ¥ï¡¼¥¯ÊÝ¸±ÁÈ¹ç¤»¡ÊÆþ±¡²ñ·×ÍÑ¡Ë 
        01  WRK-HKNCOMBI-TABLE.
@@ -2226,7 +2235,9 @@
                MOVE    2                   TO  IDXX
            END-IF
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       23
+                   UNTIL   IDX >       WRK-SRT-KOHHKNNUM-MAX
+                   OR      WRK-SRT-KOHHKNNUM (IDXX IDX)
+                                       =   SPACE
                    OR      TBL-MAX     =   4 
                PERFORM VARYING IDY FROM    1   BY  1
                        UNTIL   IDY >       4

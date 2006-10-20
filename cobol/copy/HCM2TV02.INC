@@ -40,11 +40,5 @@
               03  HCM2TV02-BKO-SYOFTNGAK  PIC X(13).
             02  HCM2TV02-TITLE1 PIC X(10).
             02  HCM2TV02-SRYKA  PIC X(40).
-            02  HCM2TV02-TITLE2 PIC X(4).
-            02  HCM2TV02-TITLE3 PIC X(8).
             02  HCM2TV02-MARUCHO
                     PIC X(2)    OCCURS  2 TIMES.
-            02  HCM2TV02-TITLE4 PIC X(18).
-            02  HCM2TV02-TITLE5 PIC X(2).
-            02  HCM2TV02-TITLE6 PIC X(2).
-            02  HCM2TV02-TITLE7 PIC X(24).

@@ -44,6 +44,8 @@
       *  02.07.02    NACL-Æ£¸¶    05/10/31  MONFUNCÂÐ±þ
       *
       *  02.08.01    NACL-Æ£¸¶    06/02/20  ¼ç²ÊÂÐ±þ
+      *
+      *  03.03.01    NACL-Æ£¸¶    06/09/27  £²£°£°£¶Ç¯£±£°·î²þÀµÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -480,16 +482,19 @@
                            WHEN    "1"
                            WHEN    "A"
                            WHEN    "D"
+                           WHEN    "G"
                                MOVE    "¿¦Ì³¾å"    TO
                                                SPA-H99GMN-THOJOKBN(IDX)
                            WHEN    "2"
                            WHEN    "B"
                            WHEN    "E"
+                           WHEN    "H"
                                MOVE    "²¼Á¥£³·î"  TO
                                                SPA-H99GMN-THOJOKBN(IDX)
                            WHEN    "3"
                            WHEN    "C"
                            WHEN    "F"
+                           WHEN    "I"
                                MOVE    "ÄÌ¶ÐºÒ³²"  TO
                                                SPA-H99GMN-THOJOKBN(IDX)
                        END-EVALUATE

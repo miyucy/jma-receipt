@@ -468,19 +468,36 @@
                            PERFORM 2001-GAIRAI-SYUKEI-SEC
       *
                            IF      CNT-RECE10          >   ZERO 
-                               IF      WRK-PARA-NYUGAIKBN  =   "1"
-                                   CALL    "ORCBM028"      USING 
-                                                       SUM-AREA
-                                                       WRK-PARA
-                                                       WRK-NYUGAIKBN
-                                                       WRK-SYOKBN
-                                                       WRK-PRTFLG
+                               IF      WRK-PRTFLG          <   3
+                                   IF      WRK-PARA-NYUGAIKBN  =   "1"
+                                       CALL    "ORCBM028"  USING 
+                                                           SUM-AREA
+                                                           WRK-PARA
+                                                           WRK-NYUGAIKBN
+                                                           WRK-SYOKBN
+                                                           WRK-PRTFLG
+                                   ELSE
+                                       CALL    "ORCBM027"  USING 
+                                                           SUM-AREA
+                                                           WRK-PARA
+                                                           WRK-SYOKBN
+                                                           WRK-PRTFLG
+                                   END-IF
                                ELSE
-                                   CALL    "ORCBM027"      USING 
-                                                       SUM-AREA
-                                                       WRK-PARA
-                                                       WRK-SYOKBN
-                                                       WRK-PRTFLG
+                                   IF      WRK-PARA-NYUGAIKBN  =   "1"
+                                       CALL    "ORCBM033"  USING 
+                                                           SUM-AREA
+                                                           WRK-PARA
+                                                           WRK-NYUGAIKBN
+                                                           WRK-SYOKBN
+                                                           WRK-PRTFLG
+                                   ELSE
+                                       CALL    "ORCBM032"  USING 
+                                                           SUM-AREA
+                                                           WRK-PARA
+                                                           WRK-SYOKBN
+                                                           WRK-PRTFLG
+                                   END-IF
                                END-IF
                            END-IF
                        END-IF
@@ -509,12 +526,21 @@
                            PERFORM 2001-NYUIN-SYUKEI-SEC
       *
                            IF      CNT-RECE10          >   ZERO 
-                               CALL    "ORCBM028"      USING 
+                               IF      WRK-PRTFLG          <   3
+                                   CALL    "ORCBM028"      USING 
                                                            SUM-AREA
                                                            WRK-PARA
                                                            WRK-NYUGAIKBN
                                                            WRK-SYOKBN
                                                            WRK-PRTFLG
+                               ELSE
+                                   CALL    "ORCBM033"      USING 
+                                                           SUM-AREA
+                                                           WRK-PARA
+                                                           WRK-NYUGAIKBN
+                                                           WRK-SYOKBN
+                                                           WRK-PRTFLG
+                               END-IF
                            END-IF
                        END-IF 
                    END-IF
@@ -1467,6 +1493,7 @@
            DISPLAY "SYOKBN=" WRK-SYOKBN
                    " SRYYM=" RECE10-SRYYM "-" RECE10-XXSRYYM 
                    " NYUGAIKBN= " RECE10-NYUGAIKBN
+                   " PATHNAME=" WRK-MCP-PATHNAME
       *###
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC

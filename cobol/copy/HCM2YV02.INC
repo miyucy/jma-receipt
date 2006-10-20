@@ -25,9 +25,5 @@
               03  HCM2YV02-BKO-KOJYO  PIC X(9).
             02  HCM2YV02-TITLE1 PIC X(10).
             02  HCM2YV02-SRYKA  PIC X(40).
-            02  HCM2YV02-TITLE2 PIC X(8).
             02  HCM2YV02-MARUCHO
                     PIC X(2)    OCCURS  2 TIMES.
-            02  HCM2YV02-TITLE3 PIC X(2).
-            02  HCM2YV02-TITLE4 PIC X(2).
-            02  HCM2YV02-TITLE5 PIC X(24).

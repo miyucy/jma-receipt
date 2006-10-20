@@ -16,45 +16,21 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION          DIVISION.
-       PROGRAM-ID.             ORCBM027.
+       PROGRAM-ID.             ORCBM032.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : 月次帳票
-      *  コンポーネント名  : 社保・総括表（医科・入院外）
-      *                      ＨＣＭ２Ｋ、ＨＣＭ２Ｌ
-      *                      ２００３．４改正対応
+      *  コンポーネント名  : 社保・診療報酬請求書（医科・入院外）
+      *                      ２００６．１０改正対応
       *  管理者            : 
       *  作成日付    作業者        記述
-      *  02/10/08    NACL-藤原      新規作成
+      *  06/10/01    NACL-藤原     新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  01.00.01    NACL-藤原    03/06/10  老人保険の一部負担金の編集
-      *  01.00.02    NACL-藤原    03/07/21  公費欄の特定疾患の名称の変更
-      *  01.00.03    NACL-藤原    03/10/30  備考欄に老人再掲を追加
-      *  01.00.04    NACL-藤原    04/01/19  公費欄の保険番号の表示を法別番号
-      *                                     に修正
-      *  01.00.05    NACL-藤原    04/09/14  開設者氏名の文字数変更
-      *  01.00.06    NACL-藤原    04/12/10  備考欄の一部負担金等の記載
-      *返戻分対応  
-      *  01.01.01    NACL-藤原    05/02/25  返戻分対応
-      *
-      *  02.08.01    NACL-藤原    06/02/20  主科対応
-      *
-      *  ２００６年４月改正対応
-      *  02.09.01    NACL-藤原    06/04/13  ２００６年４月改正対応
-      *                                     HCM2LV03.red → HCM2Y.red 
-      *                                     MONFUNC対応
-      *
-      *  03.02.01    NACL-藤原    06/07/24  マル長の別総括対応
-      *                                     HCM2KV03.red → HCM2KV04.red
-      *                                     HCM2Y.red    → HCM2YV01.red 
-      *
-      *  03.03.01    NACL-藤原    06/10/10  ２００６年１０月改正対応
-      *                                     HCM2KV04.red → HCM2KV05.red
       *****************************************************************
       *
-       ENVIRONMENT             DIVISION.
+       ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
@@ -78,20 +54,9 @@
                                    BY         //RECEERR//.
            03  FILLER              PIC X(04)   VALUE   ".dat".
       *
-      *****COPY    "HCM2K.INC".
-      *****COPY    "HCM2KV01.INC"  REPLACING  //HCM2KV01//
-      *****COPY    "HCM2KV02.INC"  REPLACING  //HCM2KV02//
-      *****COPY    "HCM2KV03.INC"  REPLACING  //HCM2KV03//
-      *****COPY    "HCM2KV04.INC"  REPLACING  //HCM2KV04//
            COPY    "HCM2KV05.INC"  REPLACING  //HCM2KV05//
                                    BY         //HCM2K//.
-      *****COPY    "HCM2L.INC".
-      *****COPY    "HCM2LV01.INC"  REPLACING  //HCM2LV01//
-      *****COPY    "HCM2LV02.INC"  REPLACING  //HCM2LV02//
-      *****COPY    "HCM2LV03.INC"  REPLACING  //HCM2LV03//
-      *****                        BY         //HCM2L//.
-      *****COPY    "HCM2Y.INC".
-           COPY    "HCM2YV01.INC"  REPLACING  //HCM2YV01//
+           COPY    "HCM2YV02.INC"  REPLACING  //HCM2YV02//
                                    BY         //HCM2Y//.
       *
       *    スパ領域
@@ -314,7 +279,7 @@
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
-           DISPLAY "*** ORCBM027 START ***"
+           DISPLAY "*** ORCBM032 START ***"
       * 
       *
            INITIALIZE                  FLG-AREA
@@ -504,8 +469,8 @@
                    END-IF
            END-EVALUATE
       *
-           MOVE    "８"          TO  HCM2K-TITLE2
-           MOVE    "八"          TO  HCM2K-TITLE3
+           MOVE    "７"          TO  HCM2K-TITLE2
+           MOVE    "七"          TO  HCM2K-TITLE3
       * 
            EVALUATE    WRK-SYOKBN
                WHEN    "2"
@@ -549,12 +514,6 @@
                WHEN    "2"
                    MOVE    "（返戻分）"  TO  HCM2Y-TITLE1
            END-EVALUATE           
-      *
-           IF      WRK-PRTFLG          =   1
-               MOVE    "食事日数"          TO  HCM2Y-TITLE2
-           ELSE   
-               MOVE    "食事回数"          TO  HCM2Y-TITLE2
-           END-IF
       *
            EVALUATE    WRK-PARA-MARUCHO
                WHEN    "2"
@@ -935,7 +894,8 @@
       *********MOVE    "HCM2LV02.red"      TO  SPRT-PRTID
       *********MOVE    "HCM2LV03.red"      TO  SPRT-PRTID
       *********MOVE    "HCM2Y.red"         TO  SPRT-PRTID
-               MOVE    "HCM2YV01.red"      TO  SPRT-PRTID
+      *********MOVE    "HCM2YV01.red"      TO  SPRT-PRTID
+               MOVE    "HCM2YV02.red"      TO  SPRT-PRTID
               MOVE    HCM2Y               TO  SPRT-PRTDATA
            END-IF    
            IF      WRK-PARA-MARUCHO    =   "2"
@@ -1044,8 +1004,8 @@
       *
            ADD     CNT-PAGE        TO  WRK-PARA-PAGE
       *
-           DISPLAY "*** ORCBM027 PAGE  "  CNT-PAGE 
-           DISPLAY "*** ORCBM027 END ***"
+           DISPLAY "*** ORCBM032 PAGE  "  CNT-PAGE 
+           DISPLAY "*** ORCBM032 END ***"
            .
        300-END-EXT.
            EXIT.

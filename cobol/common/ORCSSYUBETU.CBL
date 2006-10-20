@@ -173,17 +173,21 @@
                05                      PIC X(03)   VALUE   "015".  
                05                      PIC X(03)   VALUE   "016".  
                05                      PIC X(03)   VALUE   "017".  
+               05                      PIC X(03)   VALUE   "079".  
                05                      PIC X(03)   VALUE   "019".  
                05                      PIC X(03)   VALUE   "023".  
                05                      PIC X(03)   VALUE   "051".  
                05                      PIC X(03)   VALUE   "091".  
                05                      PIC X(03)   VALUE   "052".  
                05                      PIC X(03)   VALUE   "053".  
+               05                      PIC X(03)   VALUE   "066".  
                05                      PIC X(03)   VALUE   "012".
                05                      PIC X(03)   VALUE   "972".
                05                      PIC X(03)   VALUE   "974".
            03  WRK-SRT-TABLE-R         REDEFINES   WRK-SRT-TABLE.
-               05  WRK-SRT-KOHHKNNUM   PIC X(03)   OCCURS  23.
+               05  WRK-SRT-KOHHKNNUM   PIC X(03)   OCCURS  25.
+      *
+           03  WRK-SRT-KOHHKNNUM-MAX   PIC 9(02)   VALUE   25.
       *     
       *    ワーク保険組合せ（入院会計用） 
        01  WRK-HKNCOMBI-TABLE.
@@ -1407,7 +1411,7 @@
            MOVE    ZERO                    TO  TBL-MAX
       *
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       23
+                   UNTIL   IDX >       WRK-SRT-KOHHKNNUM-MAX
                    OR      TBL-MAX     =   4 
                PERFORM VARYING IDY FROM    1   BY  1
                        UNTIL   IDY >       4

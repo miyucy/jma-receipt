@@ -46,6 +46,13 @@
                05  LNK-SYUBETUGET-KOHI-CNT     PIC 9(01).
                05  LNK-SYUBETUGET-HONKZKKBN    PIC X(01).
       *
+               05  LNK-SYUBETUGET-KOHID        PIC 9(10).
+               05  LNK-SYUBETUGET-RJNPAYKBN    PIC X(02).
+               05  LNK-SYUBETUGET-HKN-HONKZKKBN
+                                               PIC X(01).
+               05  LNK-SYUBETUGET-HKN-HOJOKBN  PIC X(01).
+               05  LNK-SYUBETUGET-NENREI       PIC 9(03).
+      *
            03  LNK-SYUBETUGET-OT.
                05  LNK-SYUBETUGET-RECESYUBETU  PIC 9(04).
                05  LNK-SYUBETUGET-RECESYUBETU-X
