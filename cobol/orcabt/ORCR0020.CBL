@@ -1048,6 +1048,8 @@
                                     MOVE      "1"   TO  RJN-RATE-KBN
                                 WHEN    "02"
                                     MOVE      "2"   TO  RJN-RATE-KBN
+                                WHEN    "03"
+                                    MOVE      "3"   TO  RJN-RATE-KBN
                             END-EVALUATE
                        END-IF
       *----(01.00.14) LINE ADD END   --------------------------
