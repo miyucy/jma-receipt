@@ -161,6 +161,7 @@
                     PIC X(8)    OCCURS  4 TIMES.
             02  HCN08-SYONISSU1
                     PIC X(2)    OCCURS  4 TIMES.
+            02  HCN08-FTNMONEY-GEN  PIC X(8).
             02  HCN08-GENMEN    PIC X(10).
             02  HCN08-GENMENKIN PIC X(7).
-            02  HCN08-FTNMONEY-GEN  PIC X(8).
+            02  HCN08-GENMEN2   PIC X(2).

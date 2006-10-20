@@ -4250,7 +4250,8 @@
                    IF      RECE02-GENGAKU      >   ZERO
                        MOVE    RECE02-GENGAKU      TO  WRK-KGK6
                        MOVE    WRK-KGK6            TO  HC06-GENMENKIN
-                       MOVE    "¸º³Û¡Ê±ß¡Ë"        TO  HC06-GENMEN
+                       MOVE    "¸º³Û"              TO  HC06-GENMEN
+                       MOVE    "±ß"                TO  HC06-GENMEN2
                    ELSE
                        COMPUTE WRK-KYURATE-9   =
                                        RECE02-GENGAKURATE  /   10 

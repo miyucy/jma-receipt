@@ -115,6 +115,7 @@
             02  HCM10V01-FTNMONEY1
                     PIC X(8)    OCCURS  4 TIMES.
             02  HCM10V01-TITLE  PIC X(8).
+            02  HCM10V01-FTNMONEY-GEN   PIC X(8).
             02  HCM10V01-GENMEN PIC X(10).
             02  HCM10V01-GENMENKIN  PIC X(7).
-            02  HCM10V01-FTNMONEY-GEN   PIC X(8).
+            02  HCM10V01-GENMEN2    PIC X(2).

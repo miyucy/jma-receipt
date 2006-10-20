@@ -1249,6 +1249,11 @@
                                WHEN   "F"
                                WHEN   "8"
                                    MOVE    "0" TO  TOUKEI01-HONKZKKBN
+                               WHEN   "G"
+                               WHEN   "H"
+                               WHEN   "I"
+                               WHEN   "7"
+                                   MOVE    "0" TO  TOUKEI01-HONKZKKBN
                            END-EVALUATE
                        WHEN    "031"  THRU    "034"  
                            EVALUATE   PTHKN-HOJOKBN
@@ -1257,6 +1262,9 @@
                                    MOVE    "0" TO  TOUKEI01-HONKZKKBN
                                WHEN   "E"
                                WHEN   "8"
+                                   MOVE    "0" TO  TOUKEI01-HONKZKKBN
+                               WHEN   "H"
+                               WHEN   "7"
                                    MOVE    "0" TO  TOUKEI01-HONKZKKBN
                              END-EVALUATE
                        WHEN    "060" 
@@ -1278,13 +1286,16 @@
                                  MOVE    "0" TO  TOUKEI01-HONKZKKBN
                              WHEN   "8"
                                  MOVE    "0" TO  TOUKEI01-HONKZKKBN
+                             WHEN   "7"
+                                 MOVE    "0" TO  TOUKEI01-HONKZKKBN
                          END-EVALUATE
                    END-EVALUATE
                END-IF 
            END-IF
       *
            MOVE    PTHKN-HKNJANUM      TO  TOUKEI01-HKNJANUM
-           EVALUATE    PTHKN-HKNNUM
+           IF      WRK-PARA-SRYYM      <=   "200609"
+             EVALUATE    PTHKN-HKNNUM
                WHEN    "002"
                WHEN    "031"   THRU    "034"
                    IF      PTHKN-HOJOKBN   =   SPACE
@@ -1334,7 +1345,56 @@
                           MOVE    PTHKN-HOJOKBN   TO
                                                TOUKEI01-HOJOKBN
                    END-EVALUATE
-           END-EVALUATE             
+             END-EVALUATE             
+           ELSE
+             EVALUATE    PTHKN-HKNNUM
+               WHEN    "002"
+               WHEN    "031"   THRU    "034"
+                   IF      PTHKN-HOJOKBN   =   SPACE
+                       CONTINUE
+                   ELSE    
+                       MOVE    PTHKN-HOJOKBN   TO  TOUKEI01-HOJOKBN
+                   END-IF
+               WHEN    "060" 
+               WHEN    "068" 
+                   EVALUATE    WRK-PARA-NYUGAIKBN
+                       WHEN    "1"
+                           EVALUATE   PTHKN-HOJOKBN
+                               WHEN   "0"
+                               WHEN   "4"
+                                   MOVE    "0" TO  TOUKEI01-HOJOKBN
+                               WHEN   "1"
+                               WHEN   "5"
+                                   MOVE    "1" TO  TOUKEI01-HOJOKBN
+                               WHEN   "2"
+                               WHEN   "6"
+                                   MOVE    "2" TO  TOUKEI01-HOJOKBN
+                               WHEN   "3"
+                                   MOVE    "3" TO  TOUKEI01-HOJOKBN
+                           END-EVALUATE
+                       WHEN    "2"
+                           EVALUATE   PTHKN-HOJOKBN
+                               WHEN   "1"
+                               WHEN   "4"
+                                   MOVE    "1" TO  TOUKEI01-HOJOKBN
+                               WHEN   "2"
+                               WHEN   "5"
+                                   MOVE    "2" TO  TOUKEI01-HOJOKBN
+                               WHEN   "3"
+                               WHEN   "6"
+                                   MOVE    "3" TO  TOUKEI01-HOJOKBN
+                           END-EVALUATE
+                   END-EVALUATE
+               WHEN    OTHER 
+                   EVALUATE   PTHKN-HOJOKBN
+                       WHEN   "9"
+                       WHEN   "8"
+                       WHEN   "7"
+                           MOVE    PTHKN-HOJOKBN
+                                               TO  TOUKEI01-HOJOKBN
+                   END-EVALUATE             
+             END-EVALUATE
+           END-IF             
       *
            PERFORM VARYING IDXX    FROM    1   BY  1
                    UNTIL   IDXX    >       100
@@ -1982,11 +2042,98 @@
                END-PERFORM
                MOVE    TOUKEI01-THONKZKKBN (IDY)   TO  WK-HONKZKKBN
       *
-               IF      WRK-PARA-SRYYM      >=  "200210"
+               IF    ( WRK-PARA-SRYYM      >=  "200210" )
       *            £³ºÐÌ¤Ëþ¤Î¾ì¹ç¡¢£×£Ë¡Ý£È£Ï£Î£Ë£Ú£Ë£Ë£Â£Î¤Ë"£³"¤ò¥»¥Ã¥È
                    IF      TOUKEI01-AGE         <     3
                                MOVE   "3"     TO   WK-HONKZKKBN
                    END-IF
+               END-IF
+      * 
+               IF    ( WRK-PARA-SRYYM      >=  "200610" )
+                   EVALUATE    TOUKEI01-HKNNUM
+                       WHEN    "002" 
+                           EVALUATE   TOUKEI01-THOJOKBN (IDY)
+                               WHEN   "A"
+                               WHEN   "B"
+                               WHEN   "C"
+                               WHEN   "9"
+                                   MOVE   "9"   TO   WK-HONKZKKBN
+                               WHEN   "D"
+                               WHEN   "E"
+                               WHEN   "F"
+                               WHEN   "8"
+                                   MOVE   "?"   TO   WK-HONKZKKBN
+                               WHEN   "G"
+                               WHEN   "H"
+                               WHEN   "I"
+                               WHEN   "7"
+                                   MOVE   "7"   TO   WK-HONKZKKBN
+                               END-EVALUATE
+                       WHEN    "031"  THRU    "034"  
+                           EVALUATE   TOUKEI01-THOJOKBN (IDY)
+                               WHEN   "B"
+                               WHEN   "9"   
+                                   MOVE   "9"   TO   WK-HONKZKKBN
+                               WHEN   "E"
+                               WHEN   "8"
+                                   MOVE   "?"   TO   WK-HONKZKKBN
+                               WHEN   "H"
+                               WHEN   "7"
+                                   MOVE   "7"   TO   WK-HONKZKKBN
+                           END-EVALUATE
+                       WHEN    "060" 
+                       WHEN    "068" 
+                           IF  (TOUKEI01-AGE  >=   70)  AND
+                               (TOUKEI01-AGE  <=   74)
+                             EVALUATE    WRK-PARA-NYUGAIKBN
+                               WHEN    "1"
+                                   EVALUATE   TOUKEI01-THOJOKBN (IDY)
+                                       WHEN   "1"
+                                       WHEN   "5"
+                                           MOVE   "9"  TO  WK-HONKZKKBN
+                                       WHEN   "2"
+                                       WHEN   "6"
+                                           MOVE   "8"  TO  WK-HONKZKKBN
+                                       WHEN   "3"
+                                           MOVE   "7"  TO  WK-HONKZKKBN
+                                   END-EVALUATE
+                               WHEN    "2"
+                                   EVALUATE   TOUKEI01-THOJOKBN (IDY)
+                                       WHEN   "1"
+                                       WHEN   "4"
+                                           MOVE   "9"  TO  WK-HONKZKKBN
+                                       WHEN   "2"
+                                       WHEN   "5"
+                                           MOVE   "8"  TO  WK-HONKZKKBN
+                                       WHEN   "3"
+                                       WHEN   "6"
+                                           MOVE   "7"  TO  WK-HONKZKKBN
+                               END-EVALUATE
+                           END-IF     
+                       WHEN    OTHER 
+                           EVALUATE   TOUKEI01-THOJOKBN (IDY)
+                               WHEN   "9"
+                                   MOVE   "9"   TO   WK-HONKZKKBN
+                               WHEN   "8"
+                                   MOVE   "?"   TO   WK-HONKZKKBN
+                               WHEN   "7"
+                                   MOVE   "7"   TO   WK-HONKZKKBN
+                           END-EVALUATE
+                   END-EVALUATE
+                   IF      TOUKEI01-RJNHKNNUM      =    "027"
+                       EVALUATE   TOUKEI01-RJNPAYKBN
+                           WHEN   "01"
+                               MOVE   "9"   TO   WK-RJN                     
+                           WHEN   "02"
+                               MOVE   "?"   TO   WK-RJN
+                           WHEN   "03"
+                               MOVE   "7"   TO   WK-RJN
+                       END-EVALUATE
+                   END-IF
+               END-IF
+      *
+               IF    ( WRK-PARA-SRYYM      >=  "200210" )
+               AND   ( WRK-PARA-SRYYM      <=  "200609" )
       *
       *            £±³ä¡¢£²³äÉéÃ´¤Î¹âÎð¼Ô¤Î¾ì¹ç£×£Ë¡Ý£È£Ï£Î£Ë£Ú£Ë£Ë£Â£Î¤Ë
       *            "£¹"¤Þ¤¿¤Ï"£¸"¤ò¥»¥Ã¥È
