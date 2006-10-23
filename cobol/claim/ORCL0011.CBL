@@ -40,6 +40,9 @@
       * 01.00.05     NACL-ÃÝÅÄ    05/03/02  ¸øÈñ½ÐÎÏ½çÊÑ¹¹
       * 01.00.06     NACL-Â¿¡¹Ç¼  06/03/20  £È£±£¸Ç¯£´·î²þÀµÂÐ±þ
       * 01.00.07     NACL-Â¿¡¹Ç¼  06/05/25  MONFUNCÂÐ±þ
+      *
+      * 03.03.01     NACL-Æ£¸¶    06/10/15  £²£°£°£¶Ç¯£±£°·î²þÀµÂÐ±þ
+      *                                     ¸øÈñ¤ÎÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -193,30 +196,32 @@
       *
        01  WRK-SRT-AREA.
            03  WRK-SRT-TABLE.
-               05                      PIC X(03)   VALUE   "027".  
-               05                      PIC X(03)   VALUE   "013".  
-               05                      PIC X(03)   VALUE   "014".  
-               05                      PIC X(03)   VALUE   "018".  
-               05                      PIC X(03)   VALUE   "029".  
-               05                      PIC X(03)   VALUE   "010".  
-               05                      PIC X(03)   VALUE   "011".  
-               05                      PIC X(03)   VALUE   "020".  
-               05                      PIC X(03)   VALUE   "021".  
-               05                      PIC X(03)   VALUE   "022".  
-               05                      PIC X(03)   VALUE   "028".  
-               05                      PIC X(03)   VALUE   "015".  
-               05                      PIC X(03)   VALUE   "016".  
-               05                      PIC X(03)   VALUE   "017".  
-               05                      PIC X(03)   VALUE   "019".  
-               05                      PIC X(03)   VALUE   "023".  
-               05                      PIC X(03)   VALUE   "051".  
-               05                      PIC X(03)   VALUE   "091".  
-               05                      PIC X(03)   VALUE   "052".  
-               05                      PIC X(03)   VALUE   "053".  
-               05                      PIC X(03)   VALUE   "012".
-      *        05                      PIC X(03)   VALUE   "972".
+               05  FILLER              PIC X(03)   VALUE   "027".  
+               05  FILLER              PIC X(03)   VALUE   "013".  
+               05  FILLER              PIC X(03)   VALUE   "014".  
+               05  FILLER              PIC X(03)   VALUE   "018".  
+               05  FILLER              PIC X(03)   VALUE   "029".  
+               05  FILLER              PIC X(03)   VALUE   "010".  
+               05  FILLER              PIC X(03)   VALUE   "011".  
+               05  FILLER              PIC X(03)   VALUE   "020".  
+               05  FILLER              PIC X(03)   VALUE   "021".  
+               05  FILLER              PIC X(03)   VALUE   "015".  
+               05  FILLER              PIC X(03)   VALUE   "016".  
+               05  FILLER              PIC X(03)   VALUE   "022".  
+               05  FILLER              PIC X(03)   VALUE   "028".  
+               05  FILLER              PIC X(03)   VALUE   "017".  
+               05                      PIC X(03)   VALUE   "079".  
+               05  FILLER              PIC X(03)   VALUE   "019".  
+               05  FILLER              PIC X(03)   VALUE   "023".  
+               05  FILLER              PIC X(03)   VALUE   "051".  
+               05  FILLER              PIC X(03)   VALUE   "091".  
+               05  FILLER              PIC X(03)   VALUE   "052".  
+               05  FILLER              PIC X(03)   VALUE   "053".  
+               05                      PIC X(03)   VALUE   "066".  
+               05  FILLER              PIC X(03)   VALUE   "012".
+               05  FILLER              PIC X(03)   VALUE   "972".
            03  WRK-SRT-TABLE-R         REDEFINES   WRK-SRT-TABLE.      
-               05  WRK-SRT-KOHHKNNUM   PIC X(03)   OCCURS  21.
+               05  WRK-SRT-KOHHKNNUM   PIC X(03)   OCCURS  24.
       *  
        01  WRK-HENYMD.
            03  WRK-HENYY           PIC X(04).
@@ -1452,7 +1457,7 @@
       *
       *    Í¥Àè½ç°Ì¤ËÊÂ¤ÙÂØ¤¨
            PERFORM VARYING IDZ FROM    1   BY  1
-                   UNTIL   IDZ >       22
+                   UNTIL   IDZ >       24
                    OR      TBL-MAX     =   4 
                PERFORM VARYING IDY FROM    1   BY  1
                        UNTIL   IDY >       4
