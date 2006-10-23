@@ -100,6 +100,8 @@
       *  03.03.01    NACL-藤原    06/09/27  ２００６年１０月改正対応
       *                                     個別作成時のパラメタへの診療
       *                                     年月の設定の変更 
+      *                                     労災のとき２００６年１０月改
+      *                                     正前
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1219,10 +1221,14 @@
                GO  TO  41041-TUIKA-EXT
            END-IF    
       *
-           PERFORM 4204-SRYYM-CHK-SEC
-           IF      SPA-ERRCD    NOT =   SPACE
-               GO  TO  41041-TUIKA-EXT
-           END-IF    
+           EVALUATE    SPA-R01-RECEKBN
+               WHEN    "0"
+               WHEN    "3"
+                   PERFORM 4204-SRYYM-CHK-SEC
+                   IF      SPA-ERRCD    NOT =   SPACE
+                       GO  TO  41041-TUIKA-EXT
+                   END-IF
+           END-EVALUATE    
       *
            COMPUTE IDY     =   SPA-GMN-MAX  +   1
            PERFORM 4202-INTBL-CHK-SEC
@@ -1465,30 +1471,57 @@
       *****************************************************************
        4204-SRYYM-CHK-SEC           SECTION.
       *
-      *    追加のときまたは１行
-           IF    ( SPA-GMN-MAX      =   ZERO         )
-           OR    ( SPA-GMN-MAX      =   1       AND 
-                   SPA-GMN-RENNUM   =   1            )
-               IF      SPA-NAI-SRYYM    <   200210
-                   MOVE    "1"              TO  SPA-NAI-SYOKBN
-               ELSE
-                   MOVE    "2"              TO  SPA-NAI-SYOKBN
-               END-IF
-           ELSE
-               IF      SPA-NAI-SYOKBN   =   "1"
-                   IF      SPA-NAI-SRYYM    <   200210
-                       CONTINUE
+           EVALUATE    SPA-R01-RECEKBN ALSO    SPA-R01-NYUGAIKBN
+               WHEN    "0"             ALSO    ANY
+      *            追加のときまたは１行
+                   IF    ( SPA-GMN-MAX      =   ZERO         )
+                   OR    ( SPA-GMN-MAX      =   1       AND 
+                           SPA-GMN-RENNUM   =   1            )
+                       IF      SPA-NAI-SRYYM    <   200210
+                           MOVE    "1"              TO  SPA-NAI-SYOKBN
+                       ELSE
+                           MOVE    "2"              TO  SPA-NAI-SYOKBN
+                       END-IF
                    ELSE
-                       MOVE    "0007"           TO  SPA-ERRCD
-                   END-IF                                  
-               ELSE
-                   IF      SPA-NAI-SRYYM    >=  200210
-                       CONTINUE
+                       IF      SPA-NAI-SYOKBN   =   "1"
+                           IF      SPA-NAI-SRYYM    <   200210
+                               CONTINUE
+                           ELSE
+                               MOVE    "0007"           TO  SPA-ERRCD
+                           END-IF                                  
+                       ELSE
+                           IF      SPA-NAI-SRYYM    >=  200210
+                               CONTINUE
+                           ELSE
+                               MOVE    "0007"           TO  SPA-ERRCD
+                           END-IF                                  
+                       END-IF
+                   END-IF              
+               WHEN    "3"             ALSO    "1"
+      *            追加のときまたは１行
+                   IF    ( SPA-GMN-MAX      =   ZERO         )
+                   OR    ( SPA-GMN-MAX      =   1       AND 
+                           SPA-GMN-RENNUM   =   1            )
+                       IF      SPA-NAI-SRYYM    <   200610
+                           MOVE    "1"              TO  SPA-NAI-SYOKBN
+                       ELSE
+                           MOVE    "2"              TO  SPA-NAI-SYOKBN
+                       END-IF
                    ELSE
-                       MOVE    "0007"           TO  SPA-ERRCD
-                   END-IF                                  
-               END-IF
-           END-IF              
+                       IF      SPA-NAI-SYOKBN   =   "1"
+                           IF      SPA-NAI-SRYYM    <   200610
+                               CONTINUE
+                           ELSE
+                               MOVE    "0029"           TO  SPA-ERRCD
+                           END-IF                                  
+                       ELSE
+                           IF      SPA-NAI-SRYYM    >=  200610
+                               CONTINUE
+                           ELSE
+                               MOVE    "0029"           TO  SPA-ERRCD
+                           END-IF                                  
+                       END-IF
+           END-EVALUATE              
       *
            IF      SPA-ERRCD            =   SPACE
                CONTINUE
@@ -3162,9 +3195,12 @@
                    MOVE    "対象の診療会計がありません"
                                                        TO  SPA-ERRMSG
                WHEN    "0007"
-                   MOVE
-                       "改正前と改正後のレセプトは同時に処理できません"
-                                                       TO  SPA-ERRMSG
+                   STRING  "改正前と改正後（２００２年１０月）の"
+                                           DELIMITED   BY  SIZE
+                           "レセプトは同時に処理できません"
+                                           DELIMITED   BY  SIZE
+                                           INTO        SPA-ERRMSG
+                   END-STRING
                WHEN    "0008"
                    MOVE    "対象の保険組合せが無い会計があります"
                                                        TO  SPA-ERRMSG
@@ -3222,6 +3258,13 @@
                WHEN    "0028"
                    MOVE    "訂正日の範囲が誤っています"
                                                        TO  SPA-ERRMSG
+               WHEN    "0029"
+                   STRING  "改正前と改正後（２００６年１０月）の"
+                                           DELIMITED   BY  SIZE
+                           "レセプトは同時に処理できません"
+                                           DELIMITED   BY  SIZE
+                                           INTO        SPA-ERRMSG
+                   END-STRING
                WHEN    "1001"
                    MOVE    "レセプト指示コード（個別）が削除できません"
                                                        TO  SPA-ERRMSG

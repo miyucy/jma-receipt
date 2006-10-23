@@ -139,6 +139,8 @@ bind	"ORCR0935"	"OpenCOBOL";
 bind	"ORCR0940"	"OpenCOBOL";
 bind	"ORCR0950"	"OpenCOBOL";
 bind	"ORCR0951"	"OpenCOBOL";
+bind	"ORCR0960"	"OpenCOBOL";
+bind	"ORCR0961"	"OpenCOBOL";
 bind	"ORCR0955"	"OpenCOBOL";
 bind	"ORCT0010"	"OpenCOBOL";
 bind	"ORCT0020"	"OpenCOBOL";

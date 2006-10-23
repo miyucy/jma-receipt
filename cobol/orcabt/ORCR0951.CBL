@@ -51,6 +51,8 @@
       *  03.00.01    NACL-藤原    06/06/20  レセコメントを保険組合せ・
       *                                     症状詳記区分順に記載する
       *  03.01.01    NACL-門脇    06/07/13  項目クリア追加
+      *
+      *  03.03.01    NACL-藤原    06/10/13  ２００６年１０月改正対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -480,6 +482,8 @@
       *
       *    改行コード
        01  WRK-CONS-RETURN          PIC X(01)   VALUE   X"0A".
+      *
+       01  WRK-CONS-SRYYM-200610   PIC 9(06)   VALUE   200610.
       *
        01  WRK-BYOMEI-AREA.
       * 
@@ -2838,6 +2842,9 @@
                    MOVE    HIGH-VALUE          TO  KEY-NEW
                NOT AT  END
                    MOVE    ZERO                TO  FLG-RECE82
+                   IF      RECE82-SRYYM        >=  WRK-CONS-SRYYM-200610
+                       GO  TO  990-RECE82-READ-SEC
+                   END-IF
                    IF      RECE82-HKNKBN           =   "2"
                    AND     RECE82-RECESYUBETU  NOT =    "0000"
       *

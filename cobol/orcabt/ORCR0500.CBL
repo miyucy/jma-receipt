@@ -91,6 +91,11 @@
       *
       *  03.02.01    NACL-Æ£¸¶    06/08/01  ¹ñÊÝ¼ç²ÊÂÐ±þ
       *                                     ¼ç²ÊÍÑ½ÐÎÏ½ç¼±ÊÌÈÖ¹æÄÉ²Ã
+      *
+      *  03.03.01    NACL-Æ£¸¶    06/10/13  £²£°£°£¶Ç¯£±£°·î²þÀµÂÐ±þ
+      *                                     Ï«ºÒ¡ÊÆþ±¡¡Ë
+      *                                     HCN50.red
+      *                                     HCN51.red
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -246,6 +251,8 @@
            COPY    "HCN22V02.INC".
            COPY    "HCN22V03.INC".
            COPY    "HCN22V04.INC".
+           COPY    "HCN50.INC".
+           COPY    "HCN51.INC".
       *
       *    ¼«ÇåÀÕ¥ì¥»¥×¥È
            COPY    "HCM23.INC".
@@ -816,6 +823,14 @@
                        MOVE    RECE08-PRTDATA      TO  HCM49
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM49-RENNUM
                        MOVE    HCM49               TO  RECE08-PRTDATA
+                   WHEN    "HCN50.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCN50
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCN50-RENNUM
+                       MOVE    HCN50               TO  RECE08-PRTDATA
+                   WHEN    "HCN51.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCN51
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCN51-RENNUM
+                       MOVE    HCN51               TO  RECE08-PRTDATA
                END-EVALUATE
            END-IF            
            MOVE    RECE08-PRTDATA      TO  PRT-PRTDATA
@@ -978,6 +993,8 @@
                WHEN    "HCN22V02.red"  ALSO    ANY
                WHEN    "HCN22V03.red"  ALSO    ANY
                WHEN    "HCN22V04.red"  ALSO    ANY
+               WHEN    "HCN50.red"     ALSO    ANY
+               WHEN    "HCN51.red"     ALSO    ANY
                WHEN    "HCM24V01.red"  ALSO    "1"
                WHEN    "HCM24V02.red"  ALSO    "1"
                WHEN    "HCM24V03.red"  ALSO    "1"

@@ -116,6 +116,8 @@ SRCS = ORCBD001.CBL \
        ORCR0940.CBL \
        ORCR0950.CBL \
        ORCR0951.CBL \
+       ORCR0960.CBL \
+       ORCR0961.CBL \
        ORCR0955.CBL \
        ORCRCP060.CBL \
        ORCBM026.CBL \

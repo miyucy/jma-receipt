@@ -17,44 +17,19 @@
       ********************************************************************
       *
        IDENTIFICATION              DIVISION.
-       PROGRAM-ID.                 ORCR0950.
+       PROGRAM-ID.                 ORCR0960.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : レセプト入院（労災・自賠責）
       *  コンポーネント名  : 月次業務　労災自賠責明細書ファイル作成
       *                      短期給付・印刷データ編集（労災）
+      *                      ２００６年１０月改正
       *  管理者            : 
       *  作成日付    作業者        記述
-      *  03/06/06    NACL-藤原     新規作成
+      *  06/10/10    NACL−藤原    新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  01.00.01    NACL-門脇    04/01/26  カナ氏名の長さ等修正
-      *
-      *  ２００４年４月改正
-      *  01.01.01    NACL-藤原    04/03/29  請求点の桁数の変更
-      *  01.01.02    NACL-藤原    04/03/30  手術歴の記載
-      *  01.01.03    NACL-藤原    04/05/13  傷病の経過の編集の修正
-      *  01.01.04    NACL-藤原    04/09/13  帳票別指定編集情報からの編集
-      *  中止処理追加
-      *  01.01.01    NACL-藤原    04/10/13  中止処理の追加
-      *  01.01.02    NACL-藤原    05/01/21  受診日指定対応
-      *
-      *  02.06.01    NACL-藤原    05/07/20  レセコメントのコメントの長さ
-      *                                     変更による対応
-      *  02.06.02    NACL-藤原    05/09/05  複数枚レセの連番記載
-      *  02.06.03    NACL-門脇    05/12/01  労災レセプト回数対応
-      *
-      *  02.07.01    NACL-藤原    05/12/12  国保レセプト編綴順対応
-      *  02.07.02    NACL-門脇    06/01/24  DBCLOSECURSOR追加
-      *  02.07.03    NACL-門脇    06/02/08  食事基本料情報（その他）編集
-      *  02.09.01    NACL-門脇    06/04/13  ２００６年４月改正対応
-      *
-      *  03.00.01    NACL-藤原    06/06/20  レセコメントを保険組合せ・
-      *                                     症状詳記区分順に記載する
-      *  03.01.01    NACL-門脇    06/07/13  項目クリア追加
-      *
-      *  03.03.01    NACL-藤原    06/10/13  ２００６年１０月改正対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -178,18 +153,9 @@
            03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *    短期（３４７０２）     
-      *****COPY    "HCN22.INC"     REPLACING  //HCN22//
-      *****COPY    "HCN22V01.INC"  REPLACING  //HCN22V01//
-      *****                        BY         //HC22//.
-      *****COPY    "HCN22V02.INC"  REPLACING  //HCN22V02//
-      *****COPY    "HCN22V03.INC"  REPLACING  //HCN22V03//
-           COPY    "HCN22V04.INC"  REPLACING  //HCN22V04//
-                                   BY         //HC22//.
+           COPY    "HCN50.INC".
       *
       *    長期・短期（続紙）     
-      *****COPY    "HCM24V01.INC"  REPLACING  //HCM24V01//
-      *****COPY    "HCM24V02.INC"  REPLACING  //HCM24V02//
-      *****COPY    "HCM24V03.INC"  REPLACING  //HCM24V03//
            COPY    "HCM24V04.INC"  REPLACING  //HCM24V04//
                                    BY         //HC24//.
       *
@@ -506,7 +472,7 @@
            03  WRK-BYOMEI-LINE     PIC 9(02)   VALUE   3.
       *     
       *    傷病の経過欄最大行数
-           03  WRK-KEIKA-HC22-LINE PIC 9(02)   VALUE   4.
+           03  WRK-KEIKA-HCN50-LINE PIC 9(02)   VALUE   4.
       *     
       *    適用欄最大行数（続紙）
            03  WRK-TEKIYOU-HC24-LINE
@@ -521,6 +487,7 @@
        01  WRK-RECE07-REC. 
            COPY    "CPRCF007.INC"  REPLACING  //RECE07//
                                    BY         //WRK-RECE07//.
+      
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -648,7 +615,7 @@
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
-           MOVE    "ORCR0950"      TO  JOB-PGID
+           MOVE    "ORCR0960"      TO  JOB-PGID
            MOVE    "短期給付・印刷データ編集（労災）"
                                    TO  JOB-SHELLMSG
            CALL    "ORCSJOB"       USING
@@ -1095,7 +1062,7 @@
       *
            MOVE    WRK-TEKIYOU-LINE    TO  WRK-LINE-MAX
       *     
-           INITIALIZE                      HC22
+           INITIALIZE                      HCN50
       *
       *    災害区分
            IF      RECE82-RECESYUBETU  =   ZERO
@@ -1103,63 +1070,63 @@
            ELSE    
                EVALUATE    RECE82-SAIGAIKBN
                    WHEN    "1"
-                       MOVE    "ギョウム"      TO  HC22-SAIGAIKBN
+                       MOVE    "ギョウム"      TO  HCN50-SAIGAIKBN
                    WHEN    "2"
-                       MOVE    "ツウサイ"      TO  HC22-SAIGAIKBN
+                       MOVE    "ツウサイ"      TO  HCN50-SAIGAIKBN
                END-EVALUATE
            END-IF        
       *    患者番号
-           MOVE    RECE82-PTNUM    TO  HC22-PTNUM
+           MOVE    RECE82-PTNUM    TO  HCN50-PTNUM
       *    指定病院等の番号
-           MOVE    SYS-4001-RSIIRYOCDN TO  HC22-RSIIRYOCD
+           MOVE    SYS-4001-RSIIRYOCDN TO  HCN50-RSIIRYOCD
       *    病院等の名称
            IF      FLG-SYS-1901        =   1
-               MOVE    SYS-1901-HOSPNAME1  TO  HC22-HOSPNAME (1:)
-               MOVE    SYS-1901-HOSPNAME2  TO  HC22-HOSPNAME (31:)
-               MOVE    SYS-1901-HOSPNAME3  TO  HC22-HOSPNAME (61:)
+               MOVE    SYS-1901-HOSPNAME1  TO  HCN50-HOSPNAME (1:)
+               MOVE    SYS-1901-HOSPNAME2  TO  HCN50-HOSPNAME (31:)
+               MOVE    SYS-1901-HOSPNAME3  TO  HCN50-HOSPNAME (61:)
            ELSE 
-               MOVE    SYS-1001-HOSPNAME   TO  HC22-HOSPNAME
+               MOVE    SYS-1001-HOSPNAME   TO  HCN50-HOSPNAME
            END-IF  
       *    労働保険者番号
-           MOVE    RECE82-KOFUNUM      TO  HC22-KOFUNUM
+           MOVE    RECE82-KOFUNUM      TO  HCN50-KOFUNUM
       *    新継区分
-           MOVE    RECE82-SINKEI       TO  HC22-SINKEI
+           MOVE    RECE82-SINKEI       TO  HCN50-SINKEI
       *    転帰事由
-           MOVE    RECE82-TENKI        TO  HC22-TENKI
+           MOVE    RECE82-TENKI        TO  HCN50-TENKI
       *    生年月日
            MOVE    RECE82-BIRTHDAY     TO  WRK-SYMD
            PERFORM 31012-SE-WA-YMDEDIT-SEC
            EVALUATE    WRK-HENGENGO
                WHEN    "M"
-                   MOVE    "1"             TO  HC22-TANJYOYMD (1:1)      
+                   MOVE    "1"             TO  HCN50-TANJYOYMD (1:1)      
                WHEN    "T"
-                   MOVE    "3"             TO  HC22-TANJYOYMD (1:1)      
+                   MOVE    "3"             TO  HCN50-TANJYOYMD (1:1)      
                WHEN    "S"
-                   MOVE    "5"             TO  HC22-TANJYOYMD (1:1)      
+                   MOVE    "5"             TO  HCN50-TANJYOYMD (1:1)      
                WHEN    "H"
-                   MOVE    "7"             TO  HC22-TANJYOYMD (1:1)      
+                   MOVE    "7"             TO  HCN50-TANJYOYMD (1:1)      
            END-EVALUATE     
-           MOVE    WRK-HENYMD          TO  HC22-TANJYOYMD (2:)
+           MOVE    WRK-HENYMD          TO  HCN50-TANJYOYMD (2:)
       *    傷病年月日
            MOVE    RECE82-SHOBYOYMD    TO  WRK-SYMD
            PERFORM 31012-SE-WA-YMDEDIT-SEC
-           MOVE    WRK-HENYMD          TO  HC22-SYOBYOYMD 
+           MOVE    WRK-HENYMD          TO  HCN50-SYOBYOYMD 
       *    療養開始年月日
            IF    RECE82-RYOSTYMD   NOT =  SPACE
              IF      RECE82-RYOSTYMD     <   WRK-STYMD
-                 MOVE    WRK-STYMDW          TO  HC22-STRYMD
+                 MOVE    WRK-STYMDW          TO  HCN50-STRYMD
              ELSE      
                  MOVE    RECE82-RYOSTYMD     TO  WRK-SYMD
                  PERFORM 31012-SE-WA-YMDEDIT-SEC
-                 MOVE    WRK-HENYMD          TO  HC22-STRYMD
+                 MOVE    WRK-HENYMD          TO  HCN50-STRYMD
              END-IF    
            ELSE
-             MOVE   WRK-STYMDW(1:4)   TO   HC22-STRYMD (1:4)
+             MOVE   WRK-STYMDW(1:4)   TO   HCN50-STRYMD (1:4)
              PERFORM VARYING IDX FROM    1   BY  1
                      UNTIL   IDX >       31
                  IF      RECE82-DAY (IDX)    =   RECE82-HKNCOMBI
                      MOVE    IDX                 TO  WRK-KGK2
-                     MOVE    WRK-KGK2            TO  HC22-STRYMD (5:2)
+                     MOVE    WRK-KGK2            TO  HCN50-STRYMD (5:2)
                      MOVE    31                  TO  IDX
                  END-IF
              END-PERFORM
@@ -1167,34 +1134,34 @@
       *    療養終了年月日
            IF    RECE82-RYOEDYMD   NOT =  SPACE
              IF      RECE82-RYOEDYMD     >   WRK-EDYMD
-                 MOVE    WRK-EDYMDW          TO  HC22-ENDYMD
+                 MOVE    WRK-EDYMDW          TO  HCN50-ENDYMD
              ELSE      
                  MOVE    RECE82-RYOEDYMD     TO  WRK-SYMD
                  PERFORM 31012-SE-WA-YMDEDIT-SEC
-                 MOVE    WRK-HENYMD          TO  HC22-ENDYMD
+                 MOVE    WRK-HENYMD          TO  HCN50-ENDYMD
              END-IF    
            ELSE
-             MOVE   WRK-EDYMDW(1:4)   TO   HC22-ENDYMD (1:4)
+             MOVE   WRK-EDYMDW(1:4)   TO   HCN50-ENDYMD (1:4)
              PERFORM VARYING IDX FROM    31  BY  -1
                      UNTIL   IDX <       1
                  IF      RECE82-DAY (IDX)    =   RECE82-HKNCOMBI
                      MOVE    IDX                 TO  WRK-KGK2
-                     MOVE    WRK-KGK2            TO  HC22-ENDYMD (5:2)
+                     MOVE    WRK-KGK2            TO  HCN50-ENDYMD (5:2)
                      MOVE    1                   TO  IDX
                  END-IF
              END-PERFORM
            END-IF
       *    実日数
            MOVE    RECE82-JNISSU       TO  WRK-JNISSU
-           MOVE    WRK-JNISSU          TO  HC22-NISSU
+           MOVE    WRK-JNISSU          TO  HCN50-NISSU
       *    合計額
            COMPUTE WRK-GOKEI   =   RECE82-TOTALKIN
                                +   RECE82-KINGAKU2-SYO
                                +   RECE82-SHOKUJITOTALKIN
            MOVE    WRK-GOKEI           TO  WRK-KHNTENZ
-           MOVE    WRK-KHNTENZ         TO  HC22-GOKEI
+           MOVE    WRK-KHNTENZ         TO  HCN50-GOKEI
       *    カナ氏名
-           MOVE    RECE82-KANANAME     TO  HC22-KANANAME
+           MOVE    RECE82-KANANAME     TO  HCN50-KANANAME
       *    氏名
            MOVE    ZERO    TO   IDW2
            PERFORM   VARYING   IDW1   FROM   50   BY  -2
@@ -1205,43 +1172,43 @@
                END-IF
            END-PERFORM
            IF     IDW2   > 13
-                MOVE    RECE82-NAME     TO  HC22-NAME2
+                MOVE    RECE82-NAME     TO  HCN50-NAME2
            ELSE
-                MOVE    RECE82-NAME     TO  HC22-NAME
+                MOVE    RECE82-NAME     TO  HCN50-NAME
            END-IF
       *    年齢
            MOVE    RECE82-BIRTHDAY     TO  WRK-BIRTHDAY    
            COMPUTE WRK-NENREI          =   RECE82-SRYYM
                                        -   WRK-BIRTHYM
            MOVE    WRK-NENREI-R1       TO  WRK-NENREI-X                            
-           MOVE    WRK-NENREI-X        TO  HC22-NENREI 
+           MOVE    WRK-NENREI-X        TO  HCN50-NENREI 
       *    事業の名称
-           MOVE    RECE82-JIGYOUNAME   TO  HC22-JIGYOUNAME
+           MOVE    RECE82-JIGYOUNAME   TO  HCN50-JIGYOUNAME
       *    事業場の所在地
-           MOVE    RECE82-PREFNAME     TO  HC22-TODOFUKEN
-           MOVE    RECE82-CITYNAME     TO  HC22-GUNSIKU
+           MOVE    RECE82-PREFNAME     TO  HCN50-TODOFUKEN
+           MOVE    RECE82-CITYNAME     TO  HCN50-GUNSIKU
            EVALUATE    RECE82-PREFKBN
                WHEN    "1"  
-                   MOVE    "○"        TO  HC22-TODOFUKENKBN1
+                   MOVE    "○"        TO  HCN50-TODOFUKENKBN1
                WHEN    "2"  
-                   MOVE    "○"        TO  HC22-TODOFUKENKBN2
+                   MOVE    "○"        TO  HCN50-TODOFUKENKBN2
                WHEN    "3"  
-                   MOVE    "○"        TO  HC22-TODOFUKENKBN3
+                   MOVE    "○"        TO  HCN50-TODOFUKENKBN3
                WHEN    "4"  
-                   MOVE    "○"        TO  HC22-TODOFUKENKBN4
+                   MOVE    "○"        TO  HCN50-TODOFUKENKBN4
            END-EVALUATE
            EVALUATE    RECE82-CITYKBN
                WHEN    "1"
-                   MOVE    "○"        TO  HC22-GUNSIKUKBN1
+                   MOVE    "○"        TO  HCN50-GUNSIKUKBN1
                WHEN    "2"
-                   MOVE    "○"        TO  HC22-GUNSIKUKBN2
+                   MOVE    "○"        TO  HCN50-GUNSIKUKBN2
                WHEN    "3"
-                   MOVE    "○"        TO  HC22-GUNSIKUKBN3
+                   MOVE    "○"        TO  HCN50-GUNSIKUKBN3
            END-EVALUATE                             
       *
       *    労災レセプト回数
            MOVE    RECE82-RECEKAISU    TO  WRK-RECEKAISU
-           MOVE    WRK-RECEKAISU       TO  HC22-KAI
+           MOVE    WRK-RECEKAISU       TO  HCN50-KAI
       *
            .
        20021-HEAD-HEN-EXT.
@@ -1312,16 +1279,16 @@
                CONTINUE
            ELSE
                ADD     1               TO  WRK-LINEBYO
-               MOVE    RECE82-COMMENT  TO  HC22-SYOBYOMEI (WRK-LINEBYO)
+               MOVE    RECE82-COMMENT  TO  HCN50-SYOBYOMEI (WRK-LINEBYO)
                IF      RECE82-COMMENT (45:)    NOT =   SPACE
                    ADD     1           TO  WRK-LINEBYO
                    MOVE    RECE82-COMMENT (45:44)
-                                       TO  HC22-SYOBYOMEI (WRK-LINEBYO)
+                                       TO  HCN50-SYOBYOMEI (WRK-LINEBYO)
                END-IF                        
                IF      RECE82-COMMENT (89:)    NOT =   SPACE
                    ADD     1           TO  WRK-LINEBYO
                    MOVE    RECE82-COMMENT (89:)
-                                       TO  HC22-SYOBYOMEI (WRK-LINEBYO)
+                                       TO  HCN50-SYOBYOMEI (WRK-LINEBYO)
               END-IF                        
            END-IF
       *
@@ -1464,7 +1431,7 @@
       *
            ADD     1               TO  WRK-LINEBYO
       *
-           MOVE    WRK-BYOMEI1     TO  HC22-SYOBYOMEI (WRK-LINEBYO)
+           MOVE    WRK-BYOMEI1     TO  HCN50-SYOBYOMEI (WRK-LINEBYO)
       *
       *    クリア
            MOVE    SPACE           TO  WRK-BYOMEI1
@@ -1489,7 +1456,7 @@
                            REPLACING    ALL   "  "   BY   "　"
       *
            IF      CNT-PAGE        =   1
-               MOVE    WRK-BYOMEI2     TO  HC22-TEKIYO2 (WRK-LINETEK)
+               MOVE    WRK-BYOMEI2     TO  HCN50-TEKIYO2 (WRK-LINETEK)
            ELSE
                MOVE    WRK-BYOMEI2     TO  HC24-TEKIYO  (WRK-LINETEK)
            END-IF    
@@ -1544,7 +1511,7 @@
                EVALUATE    TRUE        
                    WHEN    WRK-LINETEK1        <   WRK-TEKIYOU1-LINE
                        ADD     1                   TO  WRK-LINETEK1
-                       MOVE    RECE871-TEKIYO-INF  TO  HC22-TEKIYO1
+                       MOVE    RECE871-TEKIYO-INF  TO  HCN50-TEKIYO1
                                                        (WRK-LINETEK1)
                    WHEN    WRK-LINETEK1        =   WRK-TEKIYOU1-LINE
                        IF      WRK-LINETEK         >   ZERO
@@ -1555,10 +1522,10 @@
                                                    WRK-LINETEK1
                            IF      CNT-PAGE        =   1 
                                MOVE    WRK-KUGIRI2     TO 
-                                               HC22-TEKIYO2(WRK-LINETEK)
+                                           HCN50-TEKIYO2(WRK-LINETEK)
                            ELSE
                                MOVE    WRK-KUGIRI2     TO 
-                                               HC24-TEKIYO (WRK-LINETEK)
+                                           HC24-TEKIYO (WRK-LINETEK)
                            END-IF
                        END-IF
       ***              ADD     1                   TO  WRK-LINETEK
@@ -1568,10 +1535,10 @@
                        ADD     1                   TO  WRK-LINETEK
                        IF      CNT-PAGE        =   1 
                            MOVE    RECE871-TEKIYO-INF  TO
-                                               HC22-TEKIYO2(WRK-LINETEK)
+                                           HCN50-TEKIYO2(WRK-LINETEK)
                        ELSE
                            MOVE    RECE871-TEKIYO-INF  TO
-                                               HC24-TEKIYO (WRK-LINETEK)
+                                           HC24-TEKIYO (WRK-LINETEK)
                        END-IF
                    WHEN    WRK-LINETEK1        >   WRK-TEKIYOU1-LINE
                        IF      WRK-LINETEK     >=  WRK-LINE-MAX
@@ -1580,10 +1547,10 @@
                        ADD     1                   TO  WRK-LINETEK
                        IF      CNT-PAGE        =   1 
                            MOVE    RECE871-TEKIYO-INF  TO
-                                               HC22-TEKIYO2(WRK-LINETEK)
+                                           HCN50-TEKIYO2(WRK-LINETEK)
                        ELSE
                            MOVE    RECE871-TEKIYO-INF  TO
-                                               HC24-TEKIYO (WRK-LINETEK)
+                                           HC24-TEKIYO (WRK-LINETEK)
                        END-IF
                END-EVALUATE        
       *
@@ -1604,11 +1571,11 @@
       *    初診                           
            EVALUATE    RECE82-SHOSHINTIME
                WHEN    "1"
-                   MOVE  "○"       TO  HC22-SYOSHIN1
+                   MOVE  "○"       TO  HCN50-SYOSHIN1
                WHEN    "2"
-                   MOVE  "○"       TO  HC22-SYOSHIN2
+                   MOVE  "○"       TO  HCN50-SYOSHIN2
                WHEN    "3"
-                   MOVE  "○"       TO  HC22-SYOSHIN3
+                   MOVE  "○"       TO  HCN50-SYOSHIN3
            END-EVALUATE
       *
       *    １１初診〜８０他         
@@ -1616,10 +1583,10 @@
                      UNTIL     IDX       >   22
       *        <回数>
                MOVE    RECE82-KAISU(IDX)         TO  WRK-KAISUZ
-               MOVE    WRK-KAISUZ                TO  HC22-KAISU   (IDX)
+               MOVE    WRK-KAISUZ                TO  HCN50-KAISU   (IDX)
       *        <点数>
                MOVE    RECE82-TENSU(IDX)         TO  WRK-TENSUZ
-               MOVE    WRK-TENSUZ                TO  HC22-TENSU   (IDX)
+               MOVE    WRK-TENSUZ                TO  HCN50-TENSU   (IDX)
            END-PERFORM
       *
       *    ９０入院            
@@ -1629,15 +1596,15 @@
       *        <基本料>
                MOVE    RECE82-NYUKHNRYO (IDX)
                                              TO  WRK-KHNTENZ
-               MOVE    WRK-KHNTENZ           TO  HC22-NYUKHNTEN (IDX)
+               MOVE    WRK-KHNTENZ           TO  HCN50-NYUKHNTEN (IDX)
       *        <日数>
                MOVE    RECE82-NYUKHNNISSU(IDX)
                                              TO  WRK-KAISUZ
-               MOVE    WRK-KAISUZ            TO  HC22-NYUKAISU  (IDX)
+               MOVE    WRK-KAISUZ            TO  HCN50-NYUKAISU  (IDX)
       *        <金額>
                MOVE    RECE82-NYUKHNKEI(IDX)
                                              TO  WRK-TENSUZ
-               MOVE    WRK-TENSUZ            TO  HC22-NYUTENSU  (IDX)
+               MOVE    WRK-TENSUZ            TO  HCN50-NYUTENSU  (IDX)
            END-PERFORM
       *
            IF        RECE82-NYUKHNRYO (5)    >   ZERO
@@ -1653,22 +1620,22 @@
                                                  TO  SUM-NYUKHNKEI (1)
                END-PERFORM    
       *        <基本料>
-               MOVE    SPACE                 TO  HC22-NYUKHNTEN (4)
+               MOVE    SPACE                 TO  HCN50-NYUKHNTEN (4)
       *        <日数>
                MOVE    SUM-NYUKHNNISSU       TO  WRK-KAISUZ
-               MOVE    WRK-KAISUZ            TO  HC22-NYUKAISU  (4)
+               MOVE    WRK-KAISUZ            TO  HCN50-NYUKAISU  (4)
       *        <金額>
                MOVE    SUM-NYUKHNKEI(1)      TO  WRK-TENSUZ
-               MOVE    WRK-TENSUZ            TO  HC22-NYUTENSU  (4)
+               MOVE    WRK-TENSUZ            TO  HCN50-NYUTENSU  (4)
            END-IF
       *    <入院基本料・加算>
            MOVE    RECE82-NYUKHNKEI2         TO  WRK-TENSUZ
-           MOVE    WRK-TENSUZ                 TO  HC22-NYUTENSU  (5)
+           MOVE    WRK-TENSUZ                 TO  HCN50-NYUTENSU  (5)
            IF      RECE82-NYUKHNKEI2         <   ZERO
                PERFORM VARYING IDZ FROM    6   BY  -1
                        UNTIL   IDZ <       1
                    IF      WRK-TENSUZ (IDZ:1)  =   SPACE
-                       MOVE    "▲"        TO  HC22-NYUTENSUN (5 IDZ)
+                       MOVE    "▲"        TO  HCN50-NYUTENSUN (5 IDZ)
                        MOVE    1           TO  IDZ
                    END-IF
                END-PERFORM
@@ -1680,26 +1647,26 @@
                IF      RECE82-NYUTOKNISSU(IDX) >   ZERO      
                    COMPUTE IDY     =   IDX     +   5
       *
-                   MOVE    "×"              TO  HC22-KAKERU    (IDX)                    
-                   MOVE    "日間"           TO  HC22-NICHI     (IDX)                    
+                   MOVE    "×"              TO  HCN50-KAKERU    (IDX)                    
+                   MOVE    "日間"           TO  HCN50-NICHI     (IDX)                    
       *            <基本料>
                    IF      RECE82-NYUTOKRYO-RYAKU (IDX)
                                              =   SPACE
                        MOVE    RECE82-NYUTOKRYO (IDX)
                                              TO  WRK-KHNTENZ
-                       MOVE    WRK-KHNTENZ   TO  HC22-NYUKHNTEN (IDY)
+                       MOVE    WRK-KHNTENZ   TO  HCN50-NYUKHNTEN (IDY)
                    ELSE
                        MOVE    RECE82-NYUTOKRYO-RYAKU (IDX)
-                                             TO  HC22-NYUKHNTENN(IDY)
+                                             TO  HCN50-NYUKHNTENN(IDY)
                    END-IF    
       *            <日数>
                    MOVE    RECE82-NYUTOKNISSU(IDX)
                                              TO  WRK-KAISUZ
-                   MOVE    WRK-KAISUZ        TO  HC22-NYUKAISU  (IDY)
+                   MOVE    WRK-KAISUZ        TO  HCN50-NYUKAISU  (IDY)
       *            <金額>
                    MOVE    RECE82-NYUTOKKEI(IDX)
                                              TO  WRK-TENSUZ
-                   MOVE    WRK-TENSUZ        TO  HC22-NYUTENSU  (IDY)
+                   MOVE    WRK-TENSUZ        TO  HCN50-NYUTENSU  (IDY)
                END-IF    
            END-PERFORM
       *
@@ -1716,23 +1683,23 @@
                                                  TO  SUM-NYUKHNKEI (1)
                END-PERFORM    
       *        <基本料>
-               MOVE    SPACE                 TO  HC22-NYUKHNTEN (8)
+               MOVE    SPACE                 TO  HCN50-NYUKHNTEN (8)
       *        <日数>
                MOVE    SUM-NYUKHNNISSU       TO  WRK-KAISUZ
-               MOVE    WRK-KAISUZ            TO  HC22-NYUKAISU  (8)
+               MOVE    WRK-KAISUZ            TO  HCN50-NYUKAISU  (8)
       *        <金額>
                MOVE    SUM-NYUKHNKEI(1)      TO  WRK-TENSUZ
-               MOVE    WRK-TENSUZ            TO  HC22-NYUTENSU  (8)
+               MOVE    WRK-TENSUZ            TO  HCN50-NYUTENSU  (8)
            END-IF
       *    <特定入院料・その他>
            MOVE    RECE82-NYUTOKKEI2       TO  WRK-TENSUZ
-           MOVE    WRK-TENSUZ              TO  HC22-NYUTENSU  (9)
+           MOVE    WRK-TENSUZ              TO  HCN50-NYUTENSU  (9)
            IF      RECE82-NYUTOKKEI2       <   ZERO
                PERFORM VARYING IDZ FROM    6   BY  -1
                        UNTIL   IDZ <       1
                    IF      WRK-TENSUZ (IDZ:1)  =   SPACE
                        MOVE    "▲"        TO
-                                           HC22-NYUTENSUN (9 IDZ)
+                                           HCN50-NYUTENSUN (9 IDZ)
                        MOVE    1           TO  IDZ
                    END-IF
                END-PERFORM
@@ -1741,22 +1708,22 @@
       *        <入院年月日>
            MOVE    RECE82-NYUINYMD     TO  WRK-SYMD
            PERFORM 31012-SEIWA-HEN-SEC
-           MOVE    LNK-DAY2-EDTYMD1-Y  TO  HC22-NYUINYY
-           MOVE    LNK-DAY2-EDTYMD1-M  TO  HC22-NYUINMM
-           MOVE    LNK-DAY2-EDTYMD1-D  TO  HC22-NYUINDD
+           MOVE    LNK-DAY2-EDTYMD1-Y  TO  HCN50-NYUINYY
+           MOVE    LNK-DAY2-EDTYMD1-M  TO  HCN50-NYUINMM
+           MOVE    LNK-DAY2-EDTYMD1-D  TO  HCN50-NYUINDD
       *
       *        <医療機関種別>
            EVALUATE    RECE82-HOSPSBT
                WHEN    "1"
-                   MOVE    "○"        TO  HC22-HOSPSBT (1)
+                   MOVE    "○"        TO  HCN50-HOSPSBT (1)
                WHEN    "2"
-                   MOVE    "○"        TO  HC22-HOSPSBT (2)
+                   MOVE    "○"        TO  HCN50-HOSPSBT (2)
                WHEN    "3"
-                   MOVE    "○"        TO  HC22-HOSPSBT (1)
-                                           HC22-HOSPSBT (3)
+                   MOVE    "○"        TO  HCN50-HOSPSBT (1)
+                                           HCN50-HOSPSBT (3)
                WHEN    "4"
-                   MOVE    "○"        TO  HC22-HOSPSBT (2)
-                                           HC22-HOSPSBT (3)
+                   MOVE    "○"        TO  HCN50-HOSPSBT (2)
+                                           HCN50-HOSPSBT (3)
            END-EVALUATE        
       *
       *       <入院基本料種別>
@@ -1764,15 +1731,15 @@
                    UNTIL   IDX >       11
                    OR      RECE82-NYUSYUBETU (IDX) =   SPACE
                MOVE    RECE82-NYUSYUBETU (IDX)
-                                     TO  HC22-NYUSYUBETSU (IDX)
+                                     TO  HCN50-NYUSYUBETSU (IDX)
            END-PERFORM
       *
       *    小計イ
            MOVE    RECE82-TOTALTEN        TO  WRK-TOTALTEN
-           MOVE    WRK-TOTALTEN           TO  HC22-TOTALTEN
+           MOVE    WRK-TOTALTEN           TO  HCN50-TOTALTEN
            IF      RECE82-TOTALKIN            >   ZERO
                MOVE    RECE82-TOTALKIN        TO  WRK-KGK9
-               MOVE    WRK-KGK9               TO  HC22-TOTALMONEY
+               MOVE    WRK-KGK9               TO  HCN50-TOTALMONEY
            END-IF
       *
       *    診療内容・金額                     
@@ -1780,60 +1747,48 @@
                      UNTIL     IDX       >   5
       *        <金額>
                MOVE    RECE82-KINGAKU2(IDX)      TO  WRK-KINGAKUZ
-               MOVE    WRK-KINGAKUZ              TO  HC22-KINGAKU (IDX)
+               MOVE    WRK-KINGAKUZ              TO  HCN50-KINGAKU (IDX)
            END-PERFORM
       *
       *    <小計ロ>
            IF      RECE82-KINGAKU2-SYO        >   ZERO
                MOVE    RECE82-KINGAKU2-SYO    TO  WRK-TOTALTEN2
-               MOVE    WRK-TOTALTEN2          TO  HC22-SYOKEI
+               MOVE    WRK-TOTALTEN2          TO  HCN50-SYOKEI
            END-IF
       *
       *    ９７食事
-           STRING    RECE82-SHOKUJISYUBETU (1) DELIMITED   BY  SPACE
-                     "　"                      DELIMITED   BY  SIZE
-                     RECE82-SHOKUJISYUBETU (2) DELIMITED   BY  SPACE
-                     "　"                      DELIMITED   BY  SIZE
-                     RECE82-SHOKUJISYUBETU (3) DELIMITED   BY  SPACE
-                                               INTO  HC22-SYOKJN
-           END-STRING 
+           PERFORM   VARYING   IDX   FROM    1   BY  1
+                     UNTIL     IDX       >   4
+               MOVE    RECE82-SHOKUJISYUBETU (IDX)
+                                             TO  HCN50-SYOKJN (IDX)
+           END-PERFORM
+      * 
            PERFORM   VARYING   IDX   FROM    1   BY  1
                      UNTIL     IDX       >   4
                IF      RECE82-SHOKUJIKHNRYO (IDX)    >   ZERO      
                    MOVE    RECE82-SHOKUJIKHNRYO (IDX)
                                              TO  WRK-KINGAKUZ
-                   MOVE    WRK-KINGAKUZ      TO  HC22-SYOKHNTEN(IDX)          
+                   MOVE    WRK-KINGAKUZ      TO  HCN50-SYOKHNTEN(IDX)          
                    MOVE    RECE82-SHOKUJIKHNNISSU (IDX)
                                              TO  WRK-ZZZ
-                   MOVE    WRK-ZZZ           TO  HC22-SYOKAISU (IDX)
-                   IF   RECE82-SRYYM  >=  "200604"
-                     EVALUATE    IDX
+                   MOVE    WRK-ZZZ           TO  HCN50-SYOKAISU (IDX)
+                   EVALUATE    IDX
                        WHEN    4
-                           MOVE    "円×"    TO  HC22-SYOKAKERU
-                           MOVE    "日間"    TO  HC22-SYONICHI
-                     END-EVALUATE
-                   ELSE
-                     EVALUATE    IDX
-                       WHEN    3
-                           MOVE    "特"      TO  HC22-SYOKBN (IDX)
-                       WHEN    4
-                           MOVE    "選"      TO  HC22-SYOKBN (IDX)
-                           MOVE    "円×"    TO  HC22-SYOKAKERU
-                           MOVE    "日間"    TO  HC22-SYONICHI
-                     END-EVALUATE
-                   END-IF
+                           MOVE    "円×"    TO  HCN50-SYOKAKERU
+                           MOVE    "　日"    TO  HCN50-SYONICHI
+                   END-EVALUATE
                END-IF                                        
            END-PERFORM
       *
       *    食事療養（日）          
            MOVE    RECE82-SHOKUJITOTALDAY
                                      TO  WRK-KGK2
-           MOVE    WRK-KGK2          TO  HC22-SYONISSU
+           MOVE    WRK-KGK2          TO  HCN50-SYONISSU
       *
       *    食事療養（ハ）          
            MOVE    RECE82-SHOKUJITOTALKIN
                                      TO  WRK-KGK4
-           MOVE    WRK-KGK4          TO  HC22-SYOMONEY
+           MOVE    WRK-KGK4          TO  HCN50-SYOMONEY
       *
            .
        20022-TENSU-HEN-EXT.
@@ -1931,7 +1886,7 @@
       *            診療区分
                    ADD     1               TO  WRK-LINETEK
                    IF      CNT-PAGE        =   1
-                       MOVE    RECE87-SRYKBN  TO  HC22-SRYKBN
+                       MOVE    RECE87-SRYKBN  TO  HCN50-SRYKBN
                                                        (WRK-LINETEK)
                    ELSE
                        MOVE    RECE87-SRYKBN  TO  HC24-SRYKBN
@@ -1946,7 +1901,7 @@
                    ADD     1             TO  WRK-LINETEK
                    IF  RECE87-SRYKBN    NOT =   WRK-R061-SRYKBN-O
                        IF      CNT-PAGE        =   1
-                           MOVE    RECE87-SRYKBN  TO  HC22-SRYKBN
+                           MOVE    RECE87-SRYKBN  TO  HCN50-SRYKBN
                                                        (WRK-LINETEK)
                        ELSE
                            MOVE    RECE87-SRYKBN  TO  HC24-SRYKBN
@@ -1962,7 +1917,7 @@
            INSPECT RECE87-TEKIYO-INF
                            REPLACING    ALL   "  "   BY   "　"
            IF      CNT-PAGE        =   1
-               MOVE    RECE87-TEKIYO-INF  TO  HC22-TEKIYO2(WRK-LINETEK)
+               MOVE    RECE87-TEKIYO-INF  TO  HCN50-TEKIYO2(WRK-LINETEK)
            ELSE    
                MOVE    RECE87-TEKIYO-INF  TO  HC24-TEKIYO (WRK-LINETEK)
            END-IF    
@@ -1979,7 +1934,7 @@
            ADD     1               TO  WRK-LINETEK
       *
            IF      CNT-PAGE        =   1
-               MOVE    WRK-KUGIRI1 TO  HC22-TEKIYO2 (WRK-LINETEK)
+               MOVE    WRK-KUGIRI1 TO  HCN50-TEKIYO2 (WRK-LINETEK)
            ELSE    
                MOVE    WRK-KUGIRI1 TO  HC24-TEKIYO  (WRK-LINETEK)
            END-IF    
@@ -2099,12 +2054,12 @@
                    PERFORM VARYING IDX FROM    1   BY  1
                            UNTIL   IDX >       16
                            OR      WRK-COMMENT (IDX)   =   SPACE
-                       IF      WRK-KEIKA-LINE  <   WRK-KEIKA-HC22-LINE
+                       IF      WRK-KEIKA-LINE  <   WRK-KEIKA-HCN50-LINE
       *                    傷病の経過欄へ編集
                            ADD     1           TO  WRK-KEIKA-LINE       
                            MOVE    WRK-COMMENT (IDX)
                                                TO
-                                           HC22-KEIKA (WRK-KEIKA-LINE)
+                                           HCN50-KEIKA (WRK-KEIKA-LINE)
                        ELSE
       *                    摘要欄へ編集
                            IF      WRK-RECECOM         =   ZERO
@@ -2125,10 +2080,10 @@
                            ADD     1               TO  WRK-LINETEK
                            IF      CNT-PAGE    =   1 
                                MOVE    WRK-COMMENT (IDX)
-                                           TO  HC22-TEKIYO2(WRK-LINETEK)
+                                       TO  HCN50-TEKIYO2(WRK-LINETEK)
                            ELSE
                                MOVE    WRK-COMMENT (IDX)
-                                           TO  HC24-TEKIYO (WRK-LINETEK)
+                                       TO  HC24-TEKIYO (WRK-LINETEK)
                            END-IF
                        END-IF                    
                    END-PERFORM
@@ -2213,10 +2168,10 @@
                                                                BY  "　"  
                    IF      CNT-PAGE        =   1   
                        MOVE    WRK-NYUTAI-RIREKI-AREA
-                                           TO  HC22-TEKIYO2(WRK-LINETEK)
+                                       TO  HCN50-TEKIYO2(WRK-LINETEK)
                    ELSE                    
                        MOVE    WRK-NYUTAI-RIREKI-AREA
-                                           TO  HC24-TEKIYO(WRK-LINETEK)
+                                       TO  HC24-TEKIYO(WRK-LINETEK)
                    END-IF                    
                    MOVE    SPACE           TO  WRK-NYUTAI-RIREKI-AREA
                END-IF
@@ -2238,7 +2193,7 @@
                                                            BY  "　"  
                IF      CNT-PAGE        =   1   
                    MOVE    WRK-NYUTAI-RIREKI-AREA
-                                       TO  HC22-TEKIYO2(WRK-LINETEK)
+                                       TO  HCN50-TEKIYO2(WRK-LINETEK)
                ELSE                    
                    MOVE    WRK-NYUTAI-RIREKI-AREA
                                        TO  HC24-TEKIYO(WRK-LINETEK)
@@ -2266,7 +2221,7 @@
                    ADD     1                   TO  WRK-LINETEK
                    IF      CNT-PAGE        =   1   
                        MOVE    RECE82-NYUSYUBETU (IDXX)
-                                       TO  HC22-TEKIYO2(WRK-LINETEK)
+                                       TO  HCN50-TEKIYO2(WRK-LINETEK)
                    ELSE                    
                            MOVE    RECE82-NYUSYUBETU (IDXX)
                                        TO  HC24-TEKIYO(WRK-LINETEK)
@@ -2327,7 +2282,7 @@
       *
                    IF      CNT-PAGE        =   1
                        MOVE    WRK-SHOKUJIKHNINF-ETC-AREA
-                                       TO  HC22-TEKIYO2(WRK-LINETEK)
+                                       TO  HCN50-TEKIYO2(WRK-LINETEK)
                    ELSE
                        MOVE    WRK-SHOKUJIKHNINF-ETC-AREA
                                        TO  HC24-TEKIYO(WRK-LINETEK)
@@ -2460,9 +2415,9 @@
            END-IF
            ADD     1                   TO  WRK-LINETEK
            IF      CNT-PAGE            =   1   
-               MOVE    WRK-OPECOM-HEN      TO  HC22-TEKIYO2(WRK-LINETEK)
+               MOVE    WRK-OPECOM-HEN  TO  HCN50-TEKIYO2(WRK-LINETEK)
            ELSE                
-               MOVE    WRK-OPECOM-HEN      TO  HC24-TEKIYO (WRK-LINETEK)
+               MOVE    WRK-OPECOM-HEN  TO  HC24-TEKIYO (WRK-LINETEK)
            END-IF                
       *
            MOVE    SPACE               TO  WRK-OPECOM-HEN
@@ -2485,9 +2440,9 @@
       * 
            MOVE    CNT-PAGE            TO  TBL-RECE-RENNUM(TBL-RECE-MAX)
            IF      CNT-PAGE            =   1
-               MOVE    "HCN22V04.red"      TO
+               MOVE    "HCN50.red"         TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
-               MOVE    HC22                TO
+               MOVE    HCN50                TO
                                        TBL-RECE-PRTDATA (TBL-RECE-MAX)
            ELSE
                MOVE    "HCM24V04.red"      TO
@@ -2603,11 +2558,11 @@
                    MOVE    "/"                 TO  WRK-PAGE-HEN
                    MOVE    TBL-RECE-MAX        TO  WRK-PAGE2
                    EVALUATE    RECE08-FORMID
-                       WHEN    "HCN22V04.red"                  
-                           MOVE    RECE08-PRTDATA  TO HC22
+                       WHEN    "HCN50.red"                  
+                           MOVE    RECE08-PRTDATA  TO HCN50
                            MOVE    WRK-HEN-PAGE-AREA
-                                                   TO HC22-PAGE
-                           MOVE    HC22            TO RECE08-PRTDATA
+                                                   TO HCN50-PAGE
+                           MOVE    HCN50           TO RECE08-PRTDATA
                        WHEN    "HCM24V04.red"                  
                            MOVE    RECE08-PRTDATA  TO HC24
                            MOVE    WRK-HEN-PAGE-AREA
@@ -2725,7 +2680,7 @@
            IF      MCP-RC     =   ZERO
                CONTINUE
            ELSE
-               DISPLAY "ORCR0950 MCP-RC= "  MCP-RC   
+               DISPLAY "ORCR0960 MCP-RC= "  MCP-RC   
                IF      FLG-RECE07         =   1    
                MOVE    "レセプト管理ＤＢに追加できませんでした"
                                                TO  WRK-RECEERR
@@ -2985,10 +2940,10 @@
            CLOSE                       RECE88-FILE
            CLOSE                       RECEYMD-FILE 
       *
-           DISPLAY "*** ORCR0950 IN       "  CNT-RECE82
-      *    DISPLAY "*** ORCR0950 RECE871= "  CNT-RECE871
-           DISPLAY "*** ORCR0950 OUT      "  CNT-OUT
-           DISPLAY "*** ORCR0950 END ***"
+           DISPLAY "*** ORCR0960 IN       "  CNT-RECE82
+      *    DISPLAY "*** ORCR0960 RECE871= "  CNT-RECE871
+           DISPLAY "*** ORCR0960 OUT      "  CNT-OUT
+           DISPLAY "*** ORCR0960 END ***"
       *
       *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
@@ -3018,9 +2973,10 @@
                    MOVE    HIGH-VALUE          TO  KEY-NEW
                NOT AT  END
                    MOVE    ZERO                TO  FLG-RECE82
-                   IF      RECE82-SRYYM        >=  WRK-CONS-SRYYM-200610
+                   IF      RECE82-SRYYM        <   WRK-CONS-SRYYM-200610
                        GO  TO  990-RECE82-READ-SEC
                    END-IF
+      * 
                    IF      RECE82-PTNUM        =   SPACE
                    OR      RECE82-HKNKBN       =   "1"
                    OR      RECE82-RECESYUBETU  =    "0000"
