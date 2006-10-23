@@ -219,9 +219,9 @@
                05  FILLER              PIC X(03)   VALUE   "053".  
                05                      PIC X(03)   VALUE   "066".  
                05  FILLER              PIC X(03)   VALUE   "012".
-               05  FILLER              PIC X(03)   VALUE   "972".
+      *        05  FILLER              PIC X(03)   VALUE   "972".
            03  WRK-SRT-TABLE-R         REDEFINES   WRK-SRT-TABLE.      
-               05  WRK-SRT-KOHHKNNUM   PIC X(03)   OCCURS  24.
+               05  WRK-SRT-KOHHKNNUM   PIC X(03)   OCCURS  23.
       *  
        01  WRK-HENYMD.
            03  WRK-HENYY           PIC X(04).
@@ -1457,7 +1457,7 @@
       *
       *    Í¥Àè½ç°Ì¤ËÊÂ¤ÙÂØ¤¨
            PERFORM VARYING IDZ FROM    1   BY  1
-                   UNTIL   IDZ >       24
+                   UNTIL   IDZ >       23
                    OR      TBL-MAX     =   4 
                PERFORM VARYING IDY FROM    1   BY  1
                        UNTIL   IDY >       4
