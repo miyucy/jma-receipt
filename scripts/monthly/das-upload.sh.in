@@ -1,0 +1,31 @@
+#!/bin/sh
+
+if test -z "$JMARECEIPT_ENV" ; then
+    JMARECEIPT_ENV="@jma-receipt-env@"
+fi
+if ! test -f "$JMARECEIPT_ENV"; then
+    exit 0
+fi
+
+. $JMARECEIPT_ENV
+
+DASDIR="./das-test"
+FILE_PREFIX="collect-"
+UPLOAD_COMMAND=`dirname $0`/das-upload.rb
+
+if [ -f "$DASDIR"/"$FILE_PREFIX"*tar.gz ]; then
+  for file in "$DASDIR"/"$FILE_PREFIX"*tar.gz
+  do
+    RESULT=`$UPLOAD_COMMAND $file 2>&1|head -1`
+    if [ "UP $file" = "$RESULT" ]; then
+       echo "RES: 000" $RESULT
+       # $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter
+       rm $file
+    else
+       # $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter
+       echo "ERR:" $RESULT
+    fi
+  done
+else
+  echo "ERR: 900 No file"
+fi

@@ -57,6 +57,7 @@ shell_sources = \
 	monthly/toukei1.sh.in \
 	monthly/receden_sokatu.sh.in \
 	monthly/collectdata1.sh.in \
+	monthly/das-upload.sh.in \
 	claim/HL01.sh.in \
 	claim/HL02.sh.in \
 	claim/HL03.sh.in \
@@ -83,6 +84,10 @@ ruby_scripts = \
 	daily/monlib.rb \
 	allways/cachedl.rb \
 	allways/cachetoprgdir.rb \
+	monthly/das-upload.rb \
+	monthly/lib/orcadas/command.rb \
+	monthly/lib/orcadas/formdata.rb \
+	monthly/lib/orcadas/utils.rb 
 
 claim_scripts = \
 	claim/rb/clm_rcv.rb \
