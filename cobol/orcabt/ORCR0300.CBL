@@ -221,6 +221,8 @@
       *                                     徴収猶予及び減免の記録
       *  03.03.05    NACL-藤原    06/10/18  分点数が生じる場合の公費レコ
       *                                     ードの一部負担金の記録対応
+      *  03.03.06    NACL-藤原    06/10/23  外来迅速検体検査加算の検査日
+      *                                     の記録をやめる
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -4539,19 +4541,19 @@
                            END-IF
                        END-PERFORM    
       *
-      *                検査日
-                       INITIALIZE                  WRK-RECE05-REC
-                       MOVE    WRK-CONS-COMMENT
-                                               TO  WRK-RECE05-SRYCD (1)
-                       INITIALIZE              ORCSKANACHKAREA
-                       MOVE    "2"             TO  KANACHK-SYORI 
-                       MOVE    IDZ1            TO  KANACHK-MAE-INPUT
-                       CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
-                       IF      KANACHK-RC      =   ZERO
-                           MOVE    KANACHK-OUT-INPUT(3:4)
-                                               TO  WRK-RECE05-NAME (1)
-                       END-IF
-                       PERFORM 200781-KENSA-HENSYU-SEC
+      *****************検査日
+      *****************INITIALIZE                  WRK-RECE05-REC
+      *****************MOVE    WRK-CONS-COMMENT
+      *****************                        TO  WRK-RECE05-SRYCD (1)
+      *****************INITIALIZE              ORCSKANACHKAREA
+      *****************MOVE    "2"             TO  KANACHK-SYORI 
+      *****************MOVE    IDZ1            TO  KANACHK-MAE-INPUT
+      *****************CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+      *****************IF      KANACHK-RC      =   ZERO
+      *****************    MOVE    KANACHK-OUT-INPUT(3:4)
+      *****************                        TO  WRK-RECE05-NAME (1)
+      *****************END-IF
+      *****************PERFORM 200781-KENSA-HENSYU-SEC
                    END-IF
                END-PERFORM
            END-PERFORM

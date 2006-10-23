@@ -150,6 +150,8 @@
       *                                     ÉéÃ´¶èÊ¬¤È¤¹¤ë
       *                                     ¿¦Ì³¾å¤Î»öÍ³¤ÎÈ½Äê¾ò·ïÄÉ²Ã
       *                                     Ä§¼ýÍ±Í½µÚ¤Ó¸ºÌÈ¤Îµ­Ï¿
+      *  03.03.06    NACL-Æ£¸¶    06/10/23  ³°Íè¿×Â®¸¡ÂÎ¸¡ºº²Ã»»¤Î¸¡ººÆü
+      *                                     ¤Îµ­Ï¿¤ò¤ä¤á¤ë
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -4066,19 +4068,19 @@
                            END-IF
                        END-PERFORM    
       *
-      *                ¸¡ººÆü
-                       INITIALIZE                  WRK-RECE65-REC
-                       MOVE    WRK-CONS-COMMENT
-                                               TO  WRK-RECE65-SRYCD (1)
-                       INITIALIZE              ORCSKANACHKAREA
-                       MOVE    "2"             TO  KANACHK-SYORI 
-                       MOVE    IDZ1            TO  KANACHK-MAE-INPUT
-                       CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
-                       IF      KANACHK-RC      =   ZERO
-                           MOVE    KANACHK-OUT-INPUT(3:4)
-                                               TO  WRK-RECE65-NAME (1)
-                       END-IF
-                       PERFORM 200781-KENSA-HENSYU-SEC
+      *****************¸¡ººÆü
+      *****************INITIALIZE                  WRK-RECE65-REC
+      *****************MOVE    WRK-CONS-COMMENT
+      *****************                        TO  WRK-RECE65-SRYCD (1)
+      *****************INITIALIZE              ORCSKANACHKAREA
+      *****************MOVE    "2"             TO  KANACHK-SYORI 
+      *****************MOVE    IDZ1            TO  KANACHK-MAE-INPUT
+      *****************CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+      *****************IF      KANACHK-RC      =   ZERO
+      *****************    MOVE    KANACHK-OUT-INPUT(3:4)
+      *****************                        TO  WRK-RECE65-NAME (1)
+      *****************END-IF
+      *****************PERFORM 200781-KENSA-HENSYU-SEC
                    END-IF
                END-PERFORM
            END-PERFORM
