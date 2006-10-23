@@ -3465,7 +3465,7 @@
                    MOVE    "カナ氏名は全角で入力して下さい"
                                                TO  SPA-ERRMSG
                WHEN    "K101"
-                   STRING  "カナ氏名にカナ以外の文字があります。"
+                   STRING  "警告！カナ氏名にカナ以外の文字があります。"
                            "確認して下さい。"
                                                DELIMITED  BY  SIZE
                                                INTO    SPA-ERRMSG
