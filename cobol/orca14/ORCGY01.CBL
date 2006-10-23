@@ -1648,16 +1648,16 @@
       *    部分検索
            PERFORM 410141-NAME-HEN-SEC
            MOVE    WRK-NAME-KEY        TO  PTINF-NAME
-      *****MOVE    SPA-GMN-YYKNAME     TO  PTINF-NAME
+           MOVE    WRK-NAME-KEY        TO  PTINF-KANANAME
       *
       *    患者マスターを漢字氏名で検索
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
+           MOVE    "key5"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_ptinf"         TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
+               MOVE    "key5"              TO  MCP-PATHNAME
                PERFORM 910-PTINF-READ-SEC
            ELSE
                INITIALIZE                  PTINF-REC
@@ -1669,51 +1669,51 @@
                PERFORM 410141-PTINF-HENSYU-SEC
       *
                MOVE    "tbl_ptinf"         TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
+               MOVE    "key5"              TO  MCP-PATHNAME
                PERFORM 910-PTINF-READ-SEC
            END-PERFORM
       *    カーソルクロース
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
+           MOVE    "key5"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
       *    かな検索
-           IF      IDZ                 =   ZERO
-               INITIALIZE                  PTINF-REC
-               MOVE    SPA-HOSPID          TO  PTINF-HOSPID
+      *    IF      IDZ                 =   ZERO
+      *        INITIALIZE                  PTINF-REC
+      *        MOVE    SPA-HOSPID          TO  PTINF-HOSPID
      ********* MOVE    SPA-GMN-YYKNAME     TO  PTINF-KANANAME
-     *         STRING  SPA-GMN-YYKNAME     DELIMITED  BY  SPACE
-     *                 "%"                 DELIMITED  BY  SIZE
-     *                                     INTO    PTINF-KANANAME
+     **        STRING  SPA-GMN-YYKNAME     DELIMITED  BY  SPACE
+     **                "%"                 DELIMITED  BY  SIZE
+     **                                    INTO    PTINF-KANANAME
      ********* END-STRING
-               MOVE    WRK-NAME-KEY        TO  PTINF-KANANAME
+      *        MOVE    WRK-NAME-KEY        TO  PTINF-KANANAME
       *
       *        患者マスターをかな氏名で検索
-               MOVE    PTINF-REC           TO  MCPDATA-REC
-               MOVE    "tbl_ptinf"         TO  MCP-TABLE
-               MOVE    "key3"              TO  MCP-PATHNAME
-               PERFORM 910-DBSELECT-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    "tbl_ptinf"         TO  MCP-TABLE
-                   MOVE    "key3"              TO  MCP-PATHNAME
-                   PERFORM 910-PTINF-READ-SEC
-               ELSE
-                   INITIALIZE                  PTINF-REC
-                   MOVE    1                   TO  FLG-PTINF
-               END-IF
-               PERFORM UNTIL      (IDZ             >   1     ) OR
-                                  (FLG-PTINF       =   1     )
-                   PERFORM 410141-PTINF-HENSYU-SEC
+      *        MOVE    PTINF-REC           TO  MCPDATA-REC
+      *        MOVE    "tbl_ptinf"         TO  MCP-TABLE
+      *        MOVE    "key3"              TO  MCP-PATHNAME
+      *        PERFORM 910-DBSELECT-SEC
+      *        IF      MCP-RC              =   ZERO
+      *            MOVE    "tbl_ptinf"         TO  MCP-TABLE
+      *            MOVE    "key3"              TO  MCP-PATHNAME
+      *            PERFORM 910-PTINF-READ-SEC
+      *        ELSE
+      *            INITIALIZE                  PTINF-REC
+      *            MOVE    1                   TO  FLG-PTINF
+      *        END-IF
+      *        PERFORM UNTIL      (IDZ             >   1     ) OR
+      *                           (FLG-PTINF       =   1     )
+      *            PERFORM 410141-PTINF-HENSYU-SEC
       *
-                   MOVE    "tbl_ptinf"         TO  MCP-TABLE
-                   MOVE    "key3"              TO  MCP-PATHNAME
-                   PERFORM 910-PTINF-READ-SEC
-               END-PERFORM
+      *            MOVE    "tbl_ptinf"         TO  MCP-TABLE
+      *            MOVE    "key3"              TO  MCP-PATHNAME
+      *            PERFORM 910-PTINF-READ-SEC
+      *        END-PERFORM
       *        カーソルクロース
-               MOVE    "tbl_ptinf"         TO  MCP-TABLE
-               MOVE    "key3"              TO  MCP-PATHNAME
-               PERFORM 990-DBCLOSE-SEC
-            END-IF
+      *        MOVE    "tbl_ptinf"         TO  MCP-TABLE
+      *        MOVE    "key3"              TO  MCP-PATHNAME
+      *        PERFORM 990-DBCLOSE-SEC
+      ******END-IF
       *
            .
        410141-KNJKEN-HEN-EXT.
