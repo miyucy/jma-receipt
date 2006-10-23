@@ -2467,7 +2467,7 @@
        3901-RECE08-INSERT-SEC        SECTION.
       *
            INITIALIZE                  RECE08-REC
-           MOVE    "HCN51"              TO  RECE08-PRTID
+           MOVE    "HC21"              TO  RECE08-PRTID
            MOVE    WRK-PARA-SRYYM      TO  RECE08-RECEYM
            MOVE    WRK-PARA-CREYMD     TO  RECE08-CREYMD
            MOVE    WRK-PARA-CREHMS (1:6)

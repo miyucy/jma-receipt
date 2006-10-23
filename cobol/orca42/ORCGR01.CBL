@@ -1521,6 +1521,7 @@
                                MOVE    "0029"           TO  SPA-ERRCD
                            END-IF                                  
                        END-IF
+                   END-IF 
            END-EVALUATE              
       *
            IF      SPA-ERRCD            =   SPACE
