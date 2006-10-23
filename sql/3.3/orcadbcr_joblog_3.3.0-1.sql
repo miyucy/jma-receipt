@@ -14,7 +14,7 @@ CREATE TABLE tbl_joblog (
   kbnid character(1) NOT NULL,
   objectyym character(6),
   result character(1),
-  errcode character(4),
+  errcd character(4),
   msg character varying(200),
   constraint tbl_joblog_primary_key PRIMARY KEY
 	 (logymd, logtime, progname, kbnid)
