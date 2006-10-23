@@ -58,6 +58,7 @@
       * 02.00.15     NACL-多々納  06/04/10  診療費明細書追加
       *                                     MONFUNC 対応
       * 02.00.16     NACL-多々納  06/05/02  帳票編集区分削除追加他
+      * 03.03.01     NACL-森脇    06/10/23  画像フォルダデフォルト設定
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -169,6 +170,11 @@
                05  WRK-WIDGET10    PIC 9(02).
                05  FILLER          PIC X(08).
       *
+      *----(03.03.01)--ADD-START---
+       01  WRK-CONS-AREA.
+           03  WRK-CONS-PASS       PIC X(30)   VALUE
+                           "/var/lib/jma-receipt/medphoto/".
+      *----(03.03.01)--ADD-END-----
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -492,6 +498,11 @@
                                        TO  SPA-GMN-KOUHATUKA-G
            END-IF
       *
+      *----(03.03.01)--ADD-START---
+           IF      SPA-GMN-GAZOFOLDER  =   SPACE
+               MOVE    WRK-CONS-PASS   TO  SPA-GMN-GAZOFOLDER
+           END-IF
+      *----(03.03.01)--ADD-END-----
       *
            MOVE    305                 TO  SPA-GMN-CUR
       *
@@ -2558,6 +2569,10 @@
       *
                MOVE    SPA-GMN-GAZOFOLDER
                                        TO  SYS-1030-GAZOFOLDER
+      *----(03.03.01)--ADD-START---
+           ELSE
+               MOVE    WRK-CONS-PASS   TO  SYS-1030-GAZOFOLDER
+      *----(03.03.01)--ADD-END-----
            END-IF
       *----(02.00.12)--ADD-END-----
       *
