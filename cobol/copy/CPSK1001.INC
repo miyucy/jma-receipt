@@ -101,11 +101,13 @@
                05  SYS-1001-JIHIPOSITION     PIC  X(01).
       *ø«Œ≈»ÒÃ¿∫ŸΩÒ»Øπ‘∂Ë ¨
                05  SYS-1001-MEIPRTFLG        PIC  X(01).
+      *√œ ˝∏¯»Ò ›∏±»÷πÊ•ø•÷∂Ë ¨
+               05  SYS-1001-CHIHOUNUMKBN     PIC  X(01).
       *ÕΩ»˜
       ***  03                           PIC  X(94).
       ***  03                           PIC  X(86).
       **** 03                           PIC  X(83).
-           03                           PIC  X(82).
+           03                           PIC  X(81).
       *----(01.00.02) LINE ADD END   ----------------------------------
       *√ºÀˆ£…£ƒ
            03  SYS-1001-TERMID          PIC  X(16).
