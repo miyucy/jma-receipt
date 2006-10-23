@@ -9,7 +9,6 @@ fi
 
 . $JMARECEIPT_ENV
 
-DASDIR="./das-test"
 FILE_PREFIX="collect-"
 UPLOAD_COMMAND=`dirname $0`/das-upload.rb
 
