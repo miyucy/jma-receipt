@@ -48,6 +48,7 @@
       * 02.02.06     NACL-森脇     06/10/06  薬剤名クリア処理修正
       * 03.03.01     NACL-森脇     06/10/10  画面リスト位置固定処理
       * 03.03.02     NACL-森脇     06/10/13  テキストエリア有効文字チェック
+      * 03.03.03     NACL-森脇     06/10/23  画像パス名省略処理
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -120,6 +121,11 @@
            03  WRK-ZZZZ9           PIC ZZZZ9.
       *----(03.03.01)--ADD-START---
            03  WRK-SELNUM          PIC 9(03). 
+      *----(03.03.03)--ADD-START---
+       01  WRK-FILE-AREA.
+           03  WRK-PASSMEI         PIC X(256).
+           03  WRK-FILEMEI         PIC X(128). 
+      *----(03.03.03)--ADD-END-----
       *
        01  WRK-ROW-AREA.
            03  WRK-ROW             PIC S9(9)   BINARY.
@@ -166,14 +172,20 @@
       *----(00.01.02)--ADD-START----
        01  MSG-AREA.
            03  MSG-CAUTION.
-             05  FILLER        PIC X(34)   VALUE
-                          "医師の指示通りに服用してください。".
-             05  FILLER        PIC X(01)   VALUE   X"0A".
-             05  FILLER        PIC X(40)   VALUE
-                          "発疹・かゆみ等の過敏症が現れた時は服用を".
-             05  FILLER        PIC X(30)   VALUE
-                          "中止し、医師に相談して下さい。".
+             05  FILLER            PIC X(34)   VALUE
+                           "医師の指示通りに服用してください。".
+             05  FILLER            PIC X(01)   VALUE   X"0A".
+             05  FILLER            PIC X(40)   VALUE
+                           "発疹・かゆみ等の過敏症が現れた時は服用を".
+             05  FILLER            PIC X(30)   VALUE
+                           "中止し、医師に相談して下さい。".
       *----(00.01.02)--ADD-END------
+      *
+      *----(03.03.03)--ADD-START----
+       01  WRK-CONS-AREA.
+           03  WRK-CONS-PASS       PIC X(30)   VALUE
+                           "/var/lib/jma-receipt/medphoto/".
+      *----(03.03.03)--ADD-END------
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -433,8 +445,13 @@
       *
            PERFORM 900-SYS1030-READ-SEC
       *
-           MOVE    SYS-1030-GAZOFOLDER
-                               TO  SPA-GMN-FOLDER
+      *----(03.03.03)--UPD-START---
+           IF      SYS-1030-GAZOFOLDER     =   SPACE
+               MOVE    WRK-CONS-PASS       TO  SPA-GMN-FOLDER
+           ELSE
+               MOVE    SYS-1030-GAZOFOLDER TO  SPA-GMN-FOLDER
+           END-IF
+      *----(03.03.03)--UPD-END-----
            . 
       *
        31O-SPASET-EXT.
@@ -949,8 +966,14 @@
            MOVE    N21-SHAPE       TO  SPA-GMN-SHAPE
            MOVE    N21-MARK        TO  SPA-GMN-MARK
            MOVE    N21-CAUTION     TO  SPA-GMN-CAUTION
-           MOVE    N21-PHOTO       TO  SPA-GMN-PHOTO
       *     MOVE    N21-PHOTOAREA   TO  SPA-GMN-OBJECT
+      *----(03.03.03)--UPD-START---
+           INITIALIZE                  WRK-FILE-AREA
+           MOVE    N21-PHOTO       TO  WRK-FILEMEI
+           PERFORM 430-PASSCHK-SEC
+           MOVE    WRK-PASSMEI     TO  SPA-GMN-PHOTO
+      *----(03.03.03)--UPD-END-----
+
       *
       *    画像半角文字混在チェック
            IF          SPA-GMN-PHOTO   NOT =   SPACE
@@ -1303,6 +1326,68 @@
        430-GAZOCHK2-EXT.
            EXIT.
       *
+      *----(03.03.03)--ADD-START---
+      *****************************************************************
+      *    画像フォルダチェック
+      *****************************************************************
+       430-FOLDERCHK-SEC           SECTION.
+      *
+           MOVE    SPACE           TO  WRK-FILEMEI
+      *
+           IF      WRK-PASSMEI     =   SPACE
+               GO  TO  430-FOLDERCHK-EXT
+           END-IF
+      *
+           PERFORM VARYING IDZ FROM 128 BY -1 
+                   UNTIL   IDZ <    1
+               IF  SPA-GMN-FOLDER(IDZ:)    NOT =   SPACE
+                   IF  SPA-GMN-FOLDER(1:IDZ)   =   WRK-PASSMEI(1:IDZ)
+                       COMPUTE IDZ  =  IDZ +   1
+                       MOVE    WRK-PASSMEI(IDZ:)   TO  WRK-FILEMEI
+                   ELSE
+                       MOVE    WRK-PASSMEI         TO  WRK-FILEMEI
+                   END-IF
+                   MOVE  1     TO  IDZ
+               END-IF
+           END-PERFORM
+           .
+      *
+       430-FOLDERCHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画像パスチェック
+      *****************************************************************
+       430-PASSCHK-SEC           SECTION.
+      *
+           MOVE    SPACE           TO  WRK-PASSMEI
+      *
+           IF      WRK-FILEMEI     =   SPACE
+               GO  TO  430-PASSCHK-EXT
+           END-IF
+      *
+           PERFORM VARYING IDZ FROM 128 BY -1 
+                   UNTIL   IDZ <    1
+               IF  WRK-FILEMEI(IDZ:)   NOT =   SPACE
+                   IF  WRK-FILEMEI(IDZ:1)  =   "/"
+                       MOVE    WRK-FILEMEI     TO  WRK-PASSMEI
+                       MOVE  1     TO  IDZ
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           IF  WRK-PASSMEI        =   SPACE      
+               STRING  SPA-GMN-FOLDER      DELIMITED  BY  SPACE
+                       WRK-FILEMEI         DELIMITED  BY  SPACE
+                                   INTO    WRK-PASSMEI
+               END-STRING
+           END-IF
+           .
+      *
+       430-PASSCHK-EXT.
+           EXIT.
+      *
+      *----(03.03.03)--ADD-END-----
       *----(02.02.02)--ADD-START---
       *****************************************************************
       *    リスト印刷処理
@@ -1976,8 +2061,13 @@
            MOVE    SPA-GMN-SHAPE       TO  N21-SHAPE
            MOVE    SPA-GMN-MARK        TO  N21-MARK
            MOVE    SPA-GMN-CAUTION     TO  N21-CAUTION
-           MOVE    SPA-GMN-PHOTO       TO  N21-PHOTO
            MOVE    SPA-GMN-OBJECT      TO  N21-PHOTOAREA
+      *----(03.03.03)--UPD-START---
+           INITIALIZE                      WRK-FILE-AREA
+           MOVE    SPA-GMN-PHOTO       TO  WRK-PASSMEI
+           PERFORM 430-FOLDERCHK-SEC
+           MOVE    WRK-FILEMEI         TO  N21-PHOTO
+      *----(03.03.03)--UPD-END-----
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >       SPA-GMN-MAX
