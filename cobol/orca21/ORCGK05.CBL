@@ -1290,20 +1290,6 @@
       *    画面編集処理
            PERFORM 3103-SAIHEN-HEN-SEC
       *
-      *****入力コードの画面用再編集
-      *    PERFORM VARYING     IDX     FROM    1   BY  1
-      *            UNTIL      (IDX             >   200  )  OR
-      *                       (SPA-GMN-INPUTCD(IDX)   =   SPACE  AND
-      *                        SPA-COM-INPUTCD(IDX)   =   SPACE )
-      *        IF     (SPA-GMN-INPUTCD(IDX)(1:1)   =   "."  OR "S" ) OR
-      *               (SPA-COM-SET (IDX)           =   "1"         )
-      *            CONTINUE
-      *        ELSE
-      *            入力コードの画面用再編集
-      *            PERFORM 3101-INPUTCD-HEN-SEC
-      *        END-IF
-      *****END-PERFORM
-      *
       *    診療行為、計計算処理、編集
            MOVE    "2"             TO  FLG-TOROKU
            PERFORM 510-TBLHEN-SEC
@@ -3454,6 +3440,7 @@
       *****************************************************************
        4101-K98-SET-SEC       SECTION.
       *
+           MOVE    "K05"               TO  SPA-K98-MOTOPG
       *
            MOVE    SPA-K01KYOUTU       TO  SPA-WORK
            MOVE    SPA-AREA            TO  SPA-COMMON
