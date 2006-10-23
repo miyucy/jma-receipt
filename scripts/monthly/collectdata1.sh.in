@@ -20,7 +20,6 @@ fi
 #        $7  SHELLID
 #-------------------------------------------#
 
-DASDIR=/var/lib/jma-receipt/das
 COLLECTG=collectg.csv
 COLLECTN=collectn.csv
 #                                collect-yyyymm.tar.gz (collectg.csv,collectn.csv)
@@ -41,7 +40,7 @@ ERRFILE=/tmp/datacollecterror
     if  [ -e $ERRFILE ]; then
 	exit
     else
-	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBC020 -parameter $1,$4,$6,$7,$DASDIR/$COLLECTG,$ERRFILE 2>&1 | tee -a $LOGFILE
+	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBC020 -parameter $1,$4,$6,$7,/tmp/$COLLECTG,$ERRFILE 2>&1 | tee -a $LOGFILE
 	if  [ -e $ERRFILE ]; then
 	    exit 
 	fi
@@ -55,11 +54,17 @@ ERRFILE=/tmp/datacollecterror
 	if  [ -e $ERRFILE ]; then
 	    exit
 	else
-	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBC020 -parameter $1,$4,$6,$7,$DASDIR/$COLLECTN,$ERRFILE 2>&1 | tee -a $LOGFILE
+	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBC020 -parameter $1,$4,$6,$7,/tmp/$COLLECTN,$ERRFILE 2>&1 | tee -a $LOGFILE
 	    if  [ -e $ERRFILE ]; then
 		exit 
 	    fi
 	fi
+    fi
+
+    if  [ $5 -eq '1' ]; then
+	tar cvfz $DASDIR/collect-$4.tar.gz /tmp/$COLLECTG /tmp/$COLLECTN
+    else
+	tar cvfz $DASDIR/collect-$4.tar.gz /tmp/$COLLECTG
     fi
 
     $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE$6$7 2>&1 | tee -a $LOGFILE
