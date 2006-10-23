@@ -10775,6 +10775,7 @@
            IF      SPA-GMN-I01-TOKNYUIN-CD    NOT =   SPACE
                PERFORM   4801-TOKTEI-NYUIN-SET-SEC
            ELSE
+               PERFORM   4801-BTUSEL-SEC
                IF  SYS-5001-BTU-KHNSRYCD      NOT =   SPACE
                    MOVE    SYS-5001-BTU-KHNSRYCD
                                        TO  SYOKIKSN-IN-KHNSRYCD
