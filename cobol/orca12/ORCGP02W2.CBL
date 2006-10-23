@@ -62,6 +62,7 @@
       *  03.02.01    NACL-門脇    06/07/31  高齢者上限額経過措置対応
       *  03.02.02    NACL-多々納  06/08/25  平成１８年１０月改正対応
       *                                     （老人割合変更）
+      *  03.03.01    NACL-門脇    06/10/23  長期併用の保険組み合わせ修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3835,6 +3836,25 @@
                      ((WRK-KCOMB-KOH4HKNNUM(IDX2) >=  "100")  AND
                       (WRK-KCOMB-KOH4HKNNUM(IDX2) <=  "899")       ) OR
                      ( WRK-KCOMB-KOH4HKNNUM(IDX2)(1:2)  =  "99"    ))   
+      *
+                   IF ((WRK-KCOMB-KOH1HKNNUM(IDX2)  NOT =
+                           "027" AND "015" AND "016" AND
+                           "019" AND "051" AND "052" AND "091"  ) AND
+                       (WRK-KCOMB-KOH1HKNNUM(IDX2)(1:1) =  "0"  ))  OR
+                      ((WRK-KCOMB-KOH2HKNNUM(IDX2)  NOT =
+                           "027" AND "015" AND "016" AND
+                           "019" AND "051" AND "052" AND "091"  ) AND
+                       (WRK-KCOMB-KOH2HKNNUM(IDX2)(1:1) =  "0"  ))  OR
+                      ((WRK-KCOMB-KOH3HKNNUM(IDX2)  NOT =
+                           "027" AND "015" AND "016" AND
+                           "019" AND "051" AND "052" AND "091"  ) AND
+                       (WRK-KCOMB-KOH3HKNNUM(IDX2)(1:1) =  "0"  ))  OR
+                      ((WRK-KCOMB-KOH4HKNNUM(IDX2)  NOT =
+                           "027" AND "015" AND "016" AND
+                           "019" AND "051" AND "052" AND "091"  ) AND
+                       (WRK-KCOMB-KOH4HKNNUM(IDX2)(1:1) =  "0"  ))
+                     CONTINUE
+                   ELSE
       *              公費表中より長期高額を検索し、
       *                            適用開始日順にインデックス取得
                      MOVE    WRK-KCOMB-TEKSTYMD (IDX2)
@@ -3851,6 +3871,7 @@
                              PERFORM 570144-FUTAN-KONZAI-SEH-SEC
                          END-PERFORM
                      END-IF
+                   END-IF
                  END-IF
                END-IF
            END-PERFORM
