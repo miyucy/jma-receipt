@@ -677,7 +677,10 @@
                   (SPA-HKNKBN          =   1   )  AND
                   (WRK-SYOCHI-KBN      =   "01" OR  "02"
       *        ²ðÃ£¸£°ú
-                                       OR  "04"   )
+                                       OR  "04"
+      *        ¹øÉô¸ÇÄêÂÓÅù
+                                       OR  "05"
+                                       OR  "06"   )
                PERFORM 1001121-RSI-SYOEN-CHK-SEC
                IF      WRK-ERRCD       NOT =   SPACE
                    GO      TO      100112-SYOEN-CHK-EXT

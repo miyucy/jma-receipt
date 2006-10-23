@@ -497,6 +497,9 @@
       *            湿布
                    WHEN    "P"
                        MOVE    ZERO            TO  LNK-SC91-DAYMAXCNT
+      *            腰部固定帯固定等
+                   WHEN    "E"
+                       MOVE    3               TO  LNK-SC91-DAYMAXCNT
                END-EVALUATE
            END-IF
       *    当日上限
@@ -1011,6 +1014,9 @@
       *           湿布
                    WHEN    "P"
                        MOVE    ZERO            TO  WRK-DAYMAXCNT
+      *            腰部固定帯固定等
+                   WHEN    "E"
+                       MOVE    3               TO  WRK-DAYMAXCNT
                END-EVALUATE
            END-IF
       *    当日のＭＡＸ
