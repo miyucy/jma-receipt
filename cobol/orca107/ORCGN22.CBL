@@ -287,10 +287,6 @@
            MOVE    1               TO  SPA-N22-CUR
       *
            PERFORM 400-JYOKYO-SEC
-           IF      SPA-N22-MAX     =   ZERO
-               MOVE    SPACE       TO  SPA-N22-MESSAGE
-               MOVE    SPACE       TO  SPA-N22-MESSAGE-STYLE
-           END-IF
            .
       *
        300-SCREEN-EXT.
@@ -338,6 +334,9 @@
            CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
+      *----(01.01.02)--ADD-START---
+           MOVE    1                TO  SPA-N22-JYOKYOFLG
+      *----(01.01.02)--ADD-END-----
       *
            PERFORM 400-JYOKYO-SEC
       *
@@ -390,6 +389,12 @@
            PERFORM 900-TEMP-CLOSE-SEC
       *
            MOVE    IDX             TO  SPA-N22-MAX
+      *
+      *----(01.01.02)--ADD-START---
+           IF      SPA-N22-JYOKYOFLG   NOT =   1
+               GO  TO  400-JYOKYO-EXT
+           END-IF
+      *----(01.01.02)--ADD-END-----
       *
            IF      SPA-N22-MAX     =  ZERO
                MOVE    SPACE         TO  SKBN-RUN
