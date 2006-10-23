@@ -12,7 +12,7 @@ CREATE TABLE tbl_joblog (
   logtime character(6) NOT NULL,
   progname character varying(20) NOT NULL,
   kbnid character(1) NOT NULL,
-  object_yym character(6),
+  objectyym character(6),
   result character(1),
   errcode character(4),
   msg character varying(200),
