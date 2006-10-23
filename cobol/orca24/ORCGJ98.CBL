@@ -70,6 +70,7 @@
            03  FLG-END             PIC 9(01).
            03  FLG-INPUTCD         PIC 9(01).
            03  FLG-TENSU           PIC 9(01).
+           03  FLG-INPUTSET        PIC 9(01).
       *
            03  FLG-CHK             PIC 9(01).
            03  FLG-OK              PIC 9(01).
@@ -85,6 +86,8 @@
       *
            03  FLG-TOUROKU         PIC 9(01).
            03  FLG-ARI             PIC 9(01).
+      *
+           03  FLG-KIKAN           PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -311,6 +314,9 @@
       *    入力コードマスタ−
        01  INPUTCD-REC.
            COPY    "CPINPUTCD.INC".
+      *    入力セットコード
+       01  INPUTSET-REC.
+           COPY    "CPINPUTSET.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -970,6 +976,11 @@
       *****************************************************************
        31013-SET-HEN-SEC                 SECTION.
       *
+           PERFORM 310131-INPUTSET-CHK-SEC
+           IF      FLG-KIKAN           =   ZERO
+               GO      TO      31013-SET-HEN-EXT
+           END-IF
+      *
            ADD     1               TO  IDX2
       *    次ページの時、表示分は読み飛ばし
            IF      IDX2            >=  WRK-STR
@@ -995,6 +1006,55 @@
       *
            .
        31013-SET-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   入力セットマスタチェック処理
+      *****************************************************************
+       310131-INPUTSET-CHK-SEC                 SECTION.
+      *
+      *    入力セットマスタ検索
+           MOVE    SPACE               TO  INPUTSET-REC
+           INITIALIZE                      INPUTSET-REC
+           MOVE    SPA-HOSPID          TO  ISET-HOSPID
+           MOVE    ICD-INPUTCD         TO  ISET-SETCD
+           MOVE    SPA-SRYYMD          TO  ISET-YUKOSTYMD
+           MOVE    SPA-SRYYMD          TO  ISET-YUKOEDYMD
+      *
+           MOVE    INPUTSET-REC        TO  MCPDATA-REC
+           MOVE    "tbl_inputset"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_inputset"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 975-INPUTSET-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-INPUTSET
+           END-IF
+           MOVE    ZERO                TO  FLG-KIKAN
+           PERFORM
+               UNTIL    FLG-INPUTSET    =   1
+               IF      (ISET-YUKOSTYMD     <=  SPA-SRYYMD ) AND
+                       (ISET-YUKOEDYMD     >=  SPA-SRYYMD )
+                   MOVE    1               TO  FLG-KIKAN
+                   MOVE    1               TO  FLG-INPUTSET
+               ELSE
+                   MOVE    2               TO  FLG-KIKAN
+               END-IF
+               IF      FLG-INPUTSET        =   ZERO
+                   MOVE    "tbl_inputset"      TO  MCP-TABLE
+                   MOVE    "key2"              TO  MCP-PATHNAME
+                   PERFORM 975-INPUTSET-READ-SEC
+               END-IF
+           END-PERFORM
+      *
+           MOVE    "tbl_inputset"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       310131-INPUTSET-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3294,6 +3354,25 @@
       *
            .
        920-INPUTCD-NEXT-EXT.
+           EXIT.
+      *****************************************************************
+      *    入力セットデータ次読込
+      *****************************************************************
+       975-INPUTSET-READ-SEC         SECTION.
+      *
+           MOVE    "tbl_inputset"      TO  MCP-TABLE
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  INPUTSET-REC
+               MOVE    ZERO                TO  FLG-INPUTSET
+           ELSE
+               INITIALIZE                      INPUTSET-REC
+               MOVE    1                   TO  FLG-INPUTSET
+           END-IF
+      *
+           .
+       975-INPSET-READ-EXT.
            EXIT.
       *****************************************************************
       *    テーブル検索処理
