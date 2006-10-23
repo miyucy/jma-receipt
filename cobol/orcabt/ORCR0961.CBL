@@ -1742,7 +1742,8 @@
            END-PERFORM
            PERFORM   VARYING   IDX   FROM    1   BY  1
                      UNTIL     IDX       >   4
-               IF      RECE82-SHOKUJIKHNRYO (IDX)    >   ZERO      
+      *        IF      RECE82-SHOKUJIKHNRYO (IDX)    >   ZERO      
+               IF      RECE82-SHOKUJIKHNNISSU(IDX)   >   ZERO      
                    MOVE    RECE82-SHOKUJIKHNRYO (IDX)
                                              TO  WRK-KINGAKUZ
                    MOVE    WRK-KINGAKUZ      TO  HCN51-SYOKHNTEN(IDX)          
