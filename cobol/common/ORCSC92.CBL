@@ -1643,7 +1643,7 @@
                                            TO  WRK-RSI-KBN
       *            £È£±£¸¡¿£´·î¤«¤éÂÐ±þ
                    IF      TBL-RIGAKU-RYO(TBL-SAN) =   "H"
-                       IF      SPA-SRYYMD      >=  "20060401"
+                       IF      SPA-SRYYMD      <   "20061001"
                            MOVE    ZERO            TO  FLG-HKNSAN
                            MOVE    SPACE           TO  WRK-RSI-KBN
                        END-IF
@@ -1759,8 +1759,8 @@
                                        OR  "140048010") 
                MOVE    1               TO  FLG-MANSEI-CHK
            ELSE
-      *        £È£±£¸¡¥£´ ¤«¤é¤ÎÄÉ²Ã
-               IF      SPA-SRYYMD      >=  "20060401"
+      *        £È£±£¸¡¥£±£° ¤«¤é¤ÎÄÉ²Ã
+               IF      SPA-SRYYMD      >=  "20061001"
       *            ¶ºÀµ¸ÇÄê¡ÁæêÌç½èÃÖ
                    IF     (LNK-SC92-SRYCD      =   "140030350"
                                                OR  "140048250"
@@ -1866,7 +1866,7 @@
                                            OR  "140002310" 
       *            ²ðÃ£¸£°ú
                                            OR  "140048010")
-               OR    ((SPA-SRYYMD          >=  "20060401" )  AND
+               OR    ((SPA-SRYYMD          >=  "20061001" )  AND
       *               ¶ºÀµ¸ÇÄê¡ÁæêÌç½èÃÖ
                        (CHK-CD (IDX-C)     =   "140030350"
                                            OR  "140048250"
@@ -1899,8 +1899,8 @@
                                        OR  "114005810") 
                CONTINUE
            ELSE
-      *        £È£±£¸¡¥£´ ¤«¤é¤ÎÄÉ²Ã
-               IF      SPA-SRYYMD      >=  "20060401"
+      *        £È£±£¸¡¥£±£° ¤«¤é¤ÎÄÉ²Ã
+               IF      SPA-SRYYMD      >=  "20061001"
       *            ¶ºÀµ¸ÇÄê¡ÁæêÌç½èÃÖ
                    IF     (LNK-SC92-SRYCD      =   "140030350"
                                                OR  "140048250"
@@ -1936,7 +1936,7 @@
                                        OR  "140002210"
                                        OR  "140002310"
                                        OR  "114005810") 
-           OR    ((SPA-SRYYMD          >=  "20060401" )  AND
+           OR    ((SPA-SRYYMD          >=  "20061001" )  AND
       *           ¶ºÀµ¸ÇÄê¡ÁæêÌç½èÃÖ
                    (CHK-CD (IDX-C)     =   "140030350"
                                        OR  "140048250"

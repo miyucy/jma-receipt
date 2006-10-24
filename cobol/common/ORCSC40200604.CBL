@@ -165,6 +165,7 @@
            03  WRK-IDX-ERR         PIC 9(04).
       *    ¾Ã±êÄÃÄË½èÍý
            03  WRK-SYOCHI-KBN      PIC X(02).
+           03  WRK-SYOCHI-KBN2     PIC X(01).
       *
       *    ¾Ã±êÄÃÄË½èÍý
            03  WRK-DAY-CNT         PIC 9(04).
@@ -196,11 +197,11 @@
            03  FILLER              PIC X(12)   VALUE   "03 140002310".
       *    ²ðÃ£¸£°ú
            03  FILLER              PIC X(12)   VALUE   "04 140048010".
+      *£È£±£¸¡¥£±£°¤«¤é
       *    ¶ºÀµ¸ÇÄê
-           03  FILLER              PIC X(12)   VALUE   "04 140030350".
+           03  FILLER              PIC X(12)   VALUE   "041140030350".
       *    ÊÑ·Áµ¡³£¶ºÀµ½Ñ
-           03  FILLER              PIC X(12)   VALUE   "04 140048250".
-      *
+           03  FILLER              PIC X(12)   VALUE   "041140048250".
       *    ¹øÉô¸ÇÄêÂÓ
            03  FILLER              PIC X(12)   VALUE   "05 140048350".
            03  FILLER              PIC X(12)   VALUE   "05 140048450".
@@ -212,7 +213,7 @@
        01  TBL-SYOCHI-AREA-R       REDEFINES   TBL-SYOCHI-AREA.
            03  TBL-SYOCHI-OCC      OCCURS   11 INDEXED  TBL-IDX.
                05  TBL-KBN         PIC X(02).
-               05  TBL-FILLER      PIC X(01).
+               05  TBL-KBN2        PIC X(01).
                05  TBL-SRYCD       PIC X(09).
        01  TBL-SYOCHI-MAX              PIC 9(04)   VALUE   11.
       *
@@ -632,11 +633,23 @@
            SEARCH  TBL-SYOCHI-OCC       VARYING   TBL-IDX
                    AT   END
                        MOVE    SPACE           TO  WRK-SYOCHI-KBN
+                       MOVE    SPACE           TO  WRK-SYOCHI-KBN2
                    WHEN    WRK-COM-INPUTCD (IDX-Z)
                                                =   TBL-SRYCD (TBL-IDX)
                        MOVE    TBL-KBN  (TBL-IDX)
                                                TO  WRK-SYOCHI-KBN
+                       MOVE    TBL-KBN2 (TBL-IDX)
+                                               TO  WRK-SYOCHI-KBN2
            END-SEARCH
+      *    ¶ºÀµ¸ÇÄê¤«¤éæêÌç½èÃÖ¤Ï£È£±£¸¡¥£±£°¤«¤é¤È¤¹¤ë
+           IF      SPA-SRYYMD          <   "20061001"
+               IF    ((WRK-SYOCHI-KBN      =   "04" )  AND
+                      (WRK-SYOCHI-KBN2     =   "1"  ))  OR
+                     ( WRK-SYOCHI-KBN      =   "05"
+                                           OR  "06"  )
+                   MOVE    SPACE           TO  WRK-SYOCHI-KBN
+               END-IF
+           END-IF
       *    ¾Ã±êÄÃÄË½èÃÖ¤Ê¤·
            IF      WRK-SYOCHI-KBN      =   SPACE
                GO      TO      100112-SYOEN-CHK-EXT

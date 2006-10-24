@@ -388,9 +388,9 @@
                    MOVE    TBL-RSI-KBN    (TBL-SAN)
                                            TO  WRK-RSI-KBN
            END-SEARCH
-      *    £È£±£¸¡¿£´·î¤«¤éÂÐ±þ
+      *    £È£±£¸¡¥£±£°¤«¤éÂÐ±þ
            IF      WRK-RIGAKU-RYO      =   "H"
-               IF      SPA-SRYYMD      >=  "20060401"
+               IF      SPA-SRYYMD      >=  "20061001"
                    MOVE    SPACE           TO  WRK-RIGAKU-RYO
                ELSE
                    MOVE    ZERO            TO  FLG-HKNSAN
@@ -877,9 +877,9 @@
                        MOVE    TBL-CHK    (TBL-IDX)    TO  WRK-CHK
            END-SEARCH
       *
-      *    £È£±£¸¡¿£´·î¤«¤é¾Ã±êÄÃÄËÅù½èÃÖ¤ÈÆ±»þ¥Á¥§¥Ã¥¯
+      *    £È£±£¸.£±£°¤«¤é¾Ã±êÄÃÄËÅù½èÃÖ¤ÈÆ±»þ¥Á¥§¥Ã¥¯
            IF      WRK-CHK             =   "H"
-               IF      SPA-SRYYMD      >=  "20060401"
+               IF      SPA-SRYYMD      >=  "20061001"
                    MOVE    SPACE           TO  WRK-CHK
                ELSE
                    MOVE    SPACE           TO  WRK-CODE
