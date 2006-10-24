@@ -1303,10 +1303,11 @@
                        MOVE    7                   TO  SPA-GMN-CUR
                    END-IF
                WHEN    "7"
-                   IF      SPA-GMN-HKNKOHKBN   =   SPACE
-                       MOVE    "0010"              TO  SPA-ERRCD
-                       MOVE    7                   TO  SPA-GMN-CUR
-                   END-IF
+                   CONTINUE
+      *             IF      SPA-GMN-HKNKOHKBN   =   SPACE
+      *                 MOVE    "0010"              TO  SPA-ERRCD
+      *                 MOVE    7                   TO  SPA-GMN-CUR
+      *             END-IF
            END-EVALUATE
       *
            .
@@ -2088,6 +2089,15 @@
            MOVE    SPACE                TO  SPA-ERRCD
            MOVE    SPA-GMN-CUR          TO  WRK-GMN-CUR
       *
+      *    保険公費種別区分が一般公費であれば、公費主保区分が
+      *    設定されていること
+           IF    SPA-GMN-HKNKOHSBTKBN   =   "7"
+               IF   SPA-GMN-HKNKOHKBN   =   SPACE
+                   MOVE   "0013"        TO  SPA-ERRCD
+                   MOVE    7            TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
            IF      SPA-ERRCD            =   SPACE
                MOVE    WRK-GMN-CUR          TO SPA-GMN-CUR
            END-IF         
@@ -2350,6 +2360,9 @@
                                                TO  SPA-ERRMSG
                WHEN    "0012"
                    MOVE    "レセプト記載入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "0013"
+                   MOVE    "一般公費のとき公費主保区分が必須です"
                                                TO  SPA-ERRMSG
                WHEN    "0020"
                    MOVE    "制度名入力エラー"
