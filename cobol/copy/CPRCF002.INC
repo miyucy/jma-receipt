@@ -350,6 +350,25 @@
       *    给锐砷么荚戎规
                    07  RECE02-KOHSKY-KOHFTNJANUM
                                           PIC  X(08).
+      *
+      *懒滇爬がない给锐挝拌
+           03 RECE02-SEINOT-KOHI-AREA.
+               05  RECE02-SEINOT-KOHI-TBL OCCURS  4.
+      *    给锐ＩＤ
+                   07  RECE02-SEINOT-KOHID
+                                          PIC  9(10).
+      *    给锐瘦副戎规
+                   07  RECE02-SEINOT-KOHNUM
+                                          PIC  X(03).
+      *    给锐砷么荚戎规
+                   07  RECE02-SEINOT-KOHFTNJANUM
+                                          PIC  X(08).
+      *
+      *懒滇爬がない给锐を崔む瘦副寥圭せ戎规攫鼠
+           03 RECE02-SEINOT-HKNCOMBIINF-AREA.
+               05  RECE02-SEINOT-HKNCOMBIINF     OCCURS  10.
+                   07  RECE02-SEINOT-HKNCOMBI    PIC  9(04).
+      *
       *介壳箕粗惰尸
            03  RECE02-SHOSHINTIME         PIC  X(01).
       *浩壳纽妥磅湖惰尸
