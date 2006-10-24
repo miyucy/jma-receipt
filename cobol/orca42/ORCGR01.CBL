@@ -3260,9 +3260,9 @@
                    MOVE    "訂正日の範囲が誤っています"
                                                        TO  SPA-ERRMSG
                WHEN    "0029"
-                   STRING  "改正前と改正後（２００６年１０月）の"
+                   STRING  "様式改正前と改正後（２００６年１０月診療分"
                                            DELIMITED   BY  SIZE
-                           "レセプトは同時に処理できません"
+                           "以降）のレセプトは同時に処理できません"
                                            DELIMITED   BY  SIZE
                                            INTO        SPA-ERRMSG
                    END-STRING
