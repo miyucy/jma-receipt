@@ -73,6 +73,7 @@ else
     else
 	if [ `cat $HOME/$PRGDIR/$PGKUPDCNTFILE` -eq "0000" ];	then
 	    echo "プログラム管理テーブル更新件数は０件でした"
+	    rm -r $HOME/$PRGDIR
 	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT01
 	    exit 99
 	fi
