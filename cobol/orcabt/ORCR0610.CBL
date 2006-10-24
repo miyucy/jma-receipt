@@ -82,6 +82,8 @@
       *
       *  03.03.01    NACL-藤原    06/10/15  ２００６年１０月改正対応
       *                                     公費の追加
+      *  03.03.02    NACL-藤原    06/10/10  主保険がない場合、精神入院は
+      *                                     公費単独のレセプトとする
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1800,8 +1802,14 @@
                END-IF 
            END-IF
       *
-           MOVE    PTHKN-HKNJANUM      TO  WRK-RECE61-HKNJANUM       
+           MOVE    PTHKN-HKNJANUM      TO  WRK-RECE61-HKNJANUM
+      *
            MOVE    ZERO                TO  WRK-RECE61-TEKSTYMD 
+           IF      COMB-HKNNUM         =   SPACE
+               IF      COMB-KOH1HKNNUM     =   "020"
+                   MOVE    COMB-TEKSTYMD       TO  WRK-RECE61-TEKSTYMD
+               END-IF
+           END-IF
       *****MOVE    PTHKN-HONKZKKBN     TO  WRK-RECE61-HONKZKKBN
            IF      WRK-STYMD (1:6)     <=   "200609"
              EVALUATE    PTHKN-HKNNUM
@@ -1947,6 +1955,11 @@
            END-IF
            MOVE    PTHKN-TEKSTYMD     TO  WRK-RECE61-TEKSTYMDX  (1)
            MOVE    PTHKN-TEKEDYMD     TO  WRK-RECE61-TEKEDYMDX  (1)
+           IF    ( COMB-HKNNUM        =   SPACE )
+           AND   ( COMB-KOH1HKNNUM    =   "020" )
+               MOVE    COMB-TEKSTYMD       TO  WRK-RECE61-TEKSTYMDX  (1)
+               MOVE    COMB-TEKEDYMD       TO  WRK-RECE61-TEKEDYMDX  (1)
+           END-IF
       *    
       *    主保険情報
            MOVE    PTHKN-HKNID        TO  WRK-RECE61-HKNID
