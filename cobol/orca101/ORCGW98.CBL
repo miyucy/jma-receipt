@@ -28,6 +28,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  03.03.00    NACL-多々納  06/10/24  初期設定修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -424,15 +425,15 @@
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC     TO  SYS-9800-REC
-               MOVE    SYS-9800-HAITA  TO  SPA-GMN-HAITA 
+               MOVE    SYS-9800-HAITA  TO  SPA-GMN-HAITA
              IF      SPA-GMN-HAITA     =   "0"
                MOVE    "しない"        TO  SPA-GMN-HAITAMEI
              ELSE
                MOVE    "する"          TO  SPA-GMN-HAITAMEI
              END-IF             
            ELSE
-               MOVE    "0"              TO  SPA-GMN-HAITA
-               MOVE    "しない"         TO  SPA-GMN-HAITAMEI
+               MOVE    "1"              TO  SPA-GMN-HAITA
+               MOVE    "する"           TO  SPA-GMN-HAITAMEI
            END-IF             
       *
            MOVE    SPACE               TO  TBL-LDMAP
