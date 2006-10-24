@@ -257,7 +257,7 @@
            PERFORM    VARYING   NYUIN-IDX   FROM   1   BY   1
              UNTIL   (LNK-ORCHCN02SUB-SYUBETUCD(NYUIN-IDX) = SPACE) OR
                      (FLG-MATCH        =   1 )     OR
-                     (NYUIN-IDX    >   5)
+                     (NYUIN-IDX    >   10)
       *        点数マスタより入院料名称の取得（ワークとの比較用）
                INITIALIZE    TNS-TENSU-REC
                MOVE   NSRY-SRYCD(1)   TO    TNS-SRYCD
@@ -312,7 +312,7 @@
            END-PERFORM
       *
            IF   (FLG-MATCH     =     ZERO)   AND
-                (NYUIN-IDX     <=       5)
+                (NYUIN-IDX     <=       10)
                MOVE  NSRY-SRYCD(1)   TO
                                  LNK-ORCHCN02SUB-SYUBETUCD(NYUIN-IDX)
       *        点数マスタより入院料名称の取得
