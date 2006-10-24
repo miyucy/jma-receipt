@@ -550,6 +550,14 @@
                    MOVE    1               TO  FLG-OK2
                END-IF
            END-IF
+      *    擎螃ェ情及心凜
+           IF     (COMB-HKNNUM         =   SPACE )  AND
+                 ((COMB-KOH1HKNNUM     =   "020" )  OR
+                  (COMB-KOH2HKNNUM     =   "020" )  OR
+                  (COMB-KOH3HKNNUM     =   "020" )  OR
+                  (COMB-KOH4HKNNUM     =   "020" ))
+               MOVE    1               TO  FLG-OK2
+           END-IF
       *    擎螃騷情及心凜
            IF     (COMB-HKNNUM         =   SPACE )  AND
                  ((COMB-KOH1HKNNUM     =   "021" )  OR
