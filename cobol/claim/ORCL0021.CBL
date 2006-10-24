@@ -34,6 +34,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-多々納  06/05/09  自費他追加
       *  01.00.02    NACL-多々納  06/08/08  収納変更対応
+      *  03.03.00    NACL-多々納  06/10/23  返金対応追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -180,6 +181,8 @@
       *
            03  WRK-ZZZ             PIC Z99.
            03  WRK-999             PIC 9(03).
+      *    今回入金充当額
+           03  WRK-JYUTO-MONEY     PIC S9(07).
       *
       *    自費名称テーブル
        01  TBL-JIHIMSG-AREA.
@@ -296,6 +299,11 @@
       *    収納明細マスタ−
        01  SYUMEI-REC.
            COPY    "CPSYUMEI.INC".
+      *    収納明細マスタ−
+       01  HZN-SYUMEI-REC.
+           COPY    "CPSYUMEI.INC"      REPLACING
+                                       //SMEI-// BY //HZN-SMEI-//.
+      *
       *    保険組合せ
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
@@ -1813,27 +1821,6 @@
            IF      FLG-SYUNOU          =   1
                GO      TO      2005-SYUNOU-SET-EXT
            END-IF
-      *    収納明細
-           INITIALIZE                      SYUMEI-REC
-           MOVE    SYU-HOSPID          TO  SMEI-HOSPID
-           MOVE    SYU-NYUGAIKBN       TO  SMEI-NYUGAIKBN
-           MOVE    SYU-PTID            TO  SMEI-PTID
-           MOVE    SYU-DENPNUM         TO  SMEI-DENPNUM
-      *
-           MOVE    SYUMEI-REC          TO  MCPDATA-REC
-           MOVE    "tbl_syumei"        TO  MCP-TABLE
-           MOVE    "key7"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_syumei"        TO  MCP-TABLE
-               MOVE    "key7"              TO  MCP-PATHNAME
-               PERFORM 980-SYUMEI-READ-SEC
-           ELSE
-               MOVE    1                   TO  FLG-SYUMEI
-           END-IF
-           MOVE    "tbl_syumei"        TO  MCP-TABLE
-           MOVE    "key7"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
       *
       *    請求点数
            ADD     1                   TO  IDX-LF2
@@ -2026,6 +2013,52 @@
                                                     (IDX-LF IDX-IJ)
            MOVE    "請求金額"          TO  TBL-ALSNAME
                                                       (IDX-LF IDX-IJ)
+      *    収納明細（入金額）
+           INITIALIZE                      SYUMEI-REC
+           MOVE    SYU-HOSPID          TO  SMEI-HOSPID
+           MOVE    SYU-NYUGAIKBN       TO  SMEI-NYUGAIKBN
+           MOVE    SYU-PTID            TO  SMEI-PTID
+           MOVE    SYU-DENPNUM         TO  SMEI-DENPNUM
+      *
+           MOVE    SYUMEI-REC          TO  MCPDATA-REC
+           MOVE    "tbl_syumei"        TO  MCP-TABLE
+           MOVE    "key7"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syumei"        TO  MCP-TABLE
+               MOVE    "key7"              TO  MCP-PATHNAME
+               PERFORM 980-SYUMEI-READ-SEC
+           ELSE
+               INITIALIZE                      SYUMEI-REC
+               MOVE    1                   TO  FLG-SYUMEI
+           END-IF
+           MOVE    SPACE               TO  HZN-SYUMEI-REC
+           MOVE    ZERO                TO  WRK-JYUTO-MONEY
+      *    新規で複数の伝票の場合
+           IF      SMEI-JOUTAIKBN      NOT =   "8"
+               IF      SMEI-MEISAIJOUTAIKBN    =   "1"
+                   MOVE    SMEI-NYUHEN-MONEY   TO  WRK-JYUTO-MONEY
+                   MOVE    ZERO                TO  SMEI-NYUHEN-MONEY
+               END-IF
+               MOVE    SYUMEI-REC          TO  HZN-SYUMEI-REC
+      *
+               MOVE    "tbl_syumei"        TO  MCP-TABLE
+               MOVE    "key7"              TO  MCP-PATHNAME
+               PERFORM 980-SYUMEI-READ-SEC
+               IF      FLG-SYUMEI          =   1
+                   MOVE    HZN-SYUMEI-REC      TO  SYUMEI-REC
+               ELSE
+                   IF      SMEI-MEISAIJOUTAIKBN    =   "1"
+                       MOVE    SMEI-NYUHEN-MONEY   TO  WRK-JYUTO-MONEY
+                       MOVE    HZN-SMEI-NYUHEN-MONEY
+                                                   TO  SMEI-NYUHEN-MONEY
+                   END-IF
+               END-IF
+           END-IF
+           MOVE    "tbl_syumei"        TO  MCP-TABLE
+           MOVE    "key7"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
       *    入金合計額
            ADD     1                   TO  IDX-IJ
            ADD     1                   TO  IDX-IJ2
@@ -2036,8 +2069,9 @@
                                                     (IDX-LF IDX-IJ)
            MOVE    "今回入金額"        TO  TBL-ALSNAME
                                                       (IDX-LF IDX-IJ)
+      *
       *    訂正時
-           IF      SMEI-DENPEDANUM     >   1
+           IF      SMEI-JOUTAIKBN      =   "8"
                ADD     1                   TO  IDX-IJ
                ADD     1                   TO  IDX-IJ2
                MOVE    IDX-IJ2             TO  TBL-IJICD(IDX-LF IDX-IJ)
@@ -2047,6 +2081,19 @@
                                                     (IDX-LF IDX-IJ)
                MOVE    "訂正分請求金額"    TO  TBL-ALSNAME
                                                       (IDX-LF IDX-IJ)
+           END-IF
+      *
+      *    新規で充当額がある場合
+           IF      WRK-JYUTO-MONEY NOT =   ZERO
+               ADD     1                   TO  IDX-IJ
+               ADD     1                   TO  IDX-IJ2
+               MOVE    IDX-IJ2             TO  TBL-IJICD(IDX-LF IDX-IJ)
+               MOVE    "0"                 TO  TBL-SRYSYUBETSU
+                                                        (IDX-LF IDX-IJ)
+               MOVE    WRK-JYUTO-MONEY     TO  TBL-MEISAITANKA
+                                                        (IDX-LF IDX-IJ)
+               MOVE    "入金（充当額）"    TO  TBL-ALSNAME
+                                                        (IDX-LF IDX-IJ)
            END-IF
            .
        2005-SYUNOU-SET-EXT.
