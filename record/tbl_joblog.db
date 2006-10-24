@@ -1,0 +1,38 @@
+tbl_jobkanri	{
+	LOGYMD			char(8);
+	LOGTIME			char(6);
+	PROGNAME		varchar(20);
+	KBNID			char(1);
+	OBJECTYYM		char(6);
+	RESULT			char(1);
+	ERRCD			char(4);
+	MSG			varchar(200);
+};
+
+primary	{
+	LOGYMD, LOGTIME, PROGNAME, KBNID;
+};
+
+path	key		{ 	
+	DBSELECT	{
+		DECLARE tbl_joblog_key_csr CURSOR FOR
+		SELECT *
+		FROM tbl_joblog
+			WHERE   PROGNAME = 	:PROGNAME
+			  AND   KBNID =    	:KBNID
+			ORDER   BY        LOGYMD, LOGTIME DESC 
+		;
+	};
+};
+path	del1	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_jobkanri
+			WHERE   PROGNAME = 	:PROGNAME
+			  AND   KBNID =    	:KBNID
+			  AND   LOGYMD = 	:LOGYMD
+			  AND	LOGTIME = 	:LOGTIME
+		;
+	};
+};
+

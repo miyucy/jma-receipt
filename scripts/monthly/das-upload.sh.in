@@ -9,6 +9,12 @@ fi
 
 . $JMARECEIPT_ENV
 
+export CLIENT_CONFIG_FILE="$SYSCONFDIR/das-upload.conf"
+echo $CLIENT_CONFIG_FILE
+if [ ! -f $CLIENT_CONFIG_FILE ]; then
+    exit
+fi
+
 FILE_PREFIX="collect-"
 UPLOAD_COMMAND=`dirname $0`/das-upload.rb
 
@@ -17,14 +23,16 @@ if [ -f "$DASDIR"/"$FILE_PREFIX"*tar.gz ]; then
   do
     RESULT=`$UPLOAD_COMMAND $file 2>&1|head -1`
     if [ "UP $file" = "$RESULT" ]; then
-       echo "RES: 000" $RESULT
-       # $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter
+       echo "000" $RESULT
+       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOBLOG -parameter "das-upload","2","0","000","Upload success"
        rm $file
     else
-       # $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter
-       echo "ERR:" $RESULT
+       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOBLOG -parameter "das-upload","2","1","${RESULT:0:3}","${RESULT:4}"
+       echo "${RESULT:0:3}","${RESULT:4}"
     fi
   done
 else
-  echo "ERR: 900 No file"
+  RESULT="900 No file"
+       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOBLOG -parameter "das-upload","2","1","${RESULT:0:3}","${RESULT:4}"
+  echo "${RESULT:0:3}","${RESULT:4}"
 fi

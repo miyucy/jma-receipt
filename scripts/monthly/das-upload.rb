@@ -9,8 +9,6 @@ require "digest/sha1"
 require "orcadas/formdata"
 require "orcadas/utils"
 
-CLIENT_CONFIG_FILE = "/etc/jma-receipt/das-upload.conf"
-
 module OrcaDAS
   class Command
     def initialize()
@@ -111,4 +109,5 @@ module OrcaDAS
   end
 end
 
+CLIENT_CONFIG_FILE = ENV['CLIENT_CONFIG_FILE']
 OrcaDAS::Command.main(ARGV) if $0 == __FILE__
