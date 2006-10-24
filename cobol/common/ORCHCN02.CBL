@@ -62,6 +62,7 @@
            03  FLG-END             PIC 9(01).
            03  FLG-PTINF           PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
+           03  FLG-YOBI            PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -79,6 +80,8 @@
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDX2                PIC 9(04).
+           03  MEISAI-IDX          PIC 9(04).
+           03  KISAI-IDX           PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -102,6 +105,7 @@
            03  WRK-ADRS            PIC X(200).
            03  WRK-NENREI-X.
                05  WRK-NENREI      PIC 9(03).
+           03  WRK-YOBI-NISSU      PIC 9(04).
       *
       *    文字変換
            03  WRK-ZENKAKU-G.
@@ -559,7 +563,7 @@
            EXIT.
       *
       *****************************************************************
-      *    入退院日編集処理（入院料等の記載なし）
+      *    入退院日編集処理（入院料等の記載あり）
       *****************************************************************
        3101-NTYMD-HEN2-SEC              SECTION.
       *
@@ -618,48 +622,54 @@
                DISPLAY "LNK-ORCHCN02SUB-RC=" LNK-ORCHCN02SUB-RC 
            END-IF
       *
-           IF    LNK-ORCHCN02SUB-SYUBETUCD(1)   NOT =   SPACE
-               MOVE    LNK-ORCHCN02SUB-SYUBETUMEI(1)
-                                           TO   HCN02-SYUBETU(1)
-               MOVE  LNK-ORCHCN02SUB-NISSU(1)
+           MOVE    ZERO      TO     KISAI-IDX
+      *
+           PERFORM    VARYING   MEISAI-IDX  FROM  1   BY   1
+              UNTIL   (MEISAI-IDX            >   10)     OR
+                      (LNK-ORCHCN02SUB-SYUBETUCD(MEISAI-IDX) = SPACE) OR
+                      (KISAI-IDX             >=   3)                       
+               IF   (LNK-ORCHCN02SUB-SYUBETUCD(MEISAI-IDX) NOT = SPACE)
+                AND (LNK-ORCHCN02SUB-NISSU(MEISAI-IDX)   NOT =   ZERO)
+                   ADD     1                   TO   KISAI-IDX
+                   MOVE  LNK-ORCHCN02SUB-SYUBETUMEI(MEISAI-IDX)
+                                           TO   HCN02-SYUBETU(KISAI-IDX)
+                   MOVE  LNK-ORCHCN02SUB-NISSU(MEISAI-IDX)
                                            TO   WRK-Z4
-               MOVE  WRK-Z4                TO   HCN02-NISSU(1)
-               MOVE  "日間"                TO   HCN02-NISSU(1)(5:)
-           END-IF
-           IF    LNK-ORCHCN02SUB-SYUBETUCD(2)   NOT =   SPACE
-               MOVE    LNK-ORCHCN02SUB-SYUBETUMEI(2)
-                                           TO   HCN02-SYUBETU(2)
-               MOVE  LNK-ORCHCN02SUB-NISSU(2)
-                                           TO   WRK-Z4
-               MOVE  WRK-Z4                TO   HCN02-NISSU(2)
-               MOVE  "日間"                TO   HCN02-NISSU(2)(5:)
-           END-IF
-           IF    LNK-ORCHCN02SUB-SYUBETUCD(3)   NOT =   SPACE
-               MOVE    LNK-ORCHCN02SUB-SYUBETUMEI(3)
-                                           TO   HCN02-SYUBETU(3)
-               MOVE  LNK-ORCHCN02SUB-NISSU(3)
-                                           TO   WRK-Z4
-               MOVE  WRK-Z4                TO   HCN02-NISSU(3)
-               MOVE  "日間"                TO   HCN02-NISSU(3)(5:)
-           END-IF
+                   MOVE  WRK-Z4            TO   HCN02-NISSU(KISAI-IDX)
+                   MOVE  "日間"            TO   HCN02-NISSU(KISAI-IDX)
+                                                           (5:)
+               END-IF
+           END-PERFORM
            COMPUTE   WRK-Z4   =   LNK-ORCHCN02SUB-NISSU(1)   +
                                   LNK-ORCHCN02SUB-NISSU(2)   +
                                   LNK-ORCHCN02SUB-NISSU(3)   +
                                   LNK-ORCHCN02SUB-NISSU(4)   +
-                                  LNK-ORCHCN02SUB-NISSU(5)
+                                  LNK-ORCHCN02SUB-NISSU(5)   +
+                                  LNK-ORCHCN02SUB-NISSU(6)   +
+                                  LNK-ORCHCN02SUB-NISSU(7)   +
+                                  LNK-ORCHCN02SUB-NISSU(8)   +
+                                  LNK-ORCHCN02SUB-NISSU(9)   +
+                                  LNK-ORCHCN02SUB-NISSU(10)
            MOVE  WRK-Z4                    TO   HCN02-KIKAN
       *
            MOVE   LNK-ORCHCN02SUB-TKIKAN   TO   WRK-Z4
            MOVE   WRK-Z4                   TO   HCN02-TKIKAN
       *
       *    予備エリアの印字
-           IF    (LNK-ORCHCN02SUB-SYUBETUCD(4)   =  SPACE)  AND
-                 (LNK-ORCHCN02SUB-SYUBETUCD(5)   =  SPACE)
-               CONTINUE
-           ELSE
+           MOVE      ZERO         TO      FLG-YOBI
+           MOVE      ZERO         TO      WRK-YOBI-NISSU
+           PERFORM   VARYING   IDX   FROM  MEISAI-IDX  BY  1
+             UNTIL  (IDX        >    10)    OR
+                    (LNK-ORCHCN02SUB-SYUBETUCD(IDX)   =   SPACE)
+                IF   LNK-ORCHCN02SUB-NISSU(IDX)    NOT =   ZERO
+                     MOVE   1      TO     FLG-YOBI
+                     ADD    LNK-ORCHCN02SUB-NISSU(IDX)
+                                   TO     WRK-YOBI-NISSU
+               END-IF
+           END-PERFORM
+           IF     FLG-YOBI     =     1
                MOVE  "上記他"              TO   HCN02-YOBI(1:6)
-               COMPUTE   WRK-Z4   =   LNK-ORCHCN02SUB-NISSU(4)   +
-                                      LNK-ORCHCN02SUB-NISSU(5)
+               MOVE  WRK-YOBI-NISSU        TO   WRK-Z4
                MOVE  WRK-Z4                TO   HCN02-YOBI(7:4)
                MOVE  "日有"                TO   HCN02-YOBI(11:4)
            END-IF
