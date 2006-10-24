@@ -48,6 +48,7 @@
       * 02.00.01     NACL-Â¿¡¹Ç¼  06/01/12  »ùÆ¸ÊÝ¸î¡Ê£°£µ£³¡ËÄÉ²Ã
       * 03.00.01     NACL-Â¿¡¹Ç¼  06/08/25  Ê¿À®£±£¸Ç¯£±£°·î²þÀµÂÐ±þ
       *                                     ¡ÊÏ·¿Í³ä¹çÊÑ¹¹¡Ë
+      * 03.03.00     NACL-Â¿¡¹Ç¼  06/10/24  Àº¿ÀÆþ±¡Ã±ÆÈÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1025,6 +1026,11 @@
                        (COMB-KOH2HKNNUM     =   "021" )  OR
                        (COMB-KOH3HKNNUM     =   "021" )  OR
                        (COMB-KOH4HKNNUM     =   "021" ))
+      *            Àº¿ÀÆþ±¡
+                 OR  ((COMB-KOH1HKNNUM     =   "020" )  OR
+                      (COMB-KOH2HKNNUM     =   "020" )  OR
+                      (COMB-KOH3HKNNUM     =   "020" )  OR
+                      (COMB-KOH4HKNNUM     =   "020" ))
                    PERFORM 2009-ROUJIN-CHK-SEC
                END-IF
            END-IF
