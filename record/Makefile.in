@@ -498,6 +498,7 @@ DB_files = \
 	tbl_chk004.db \
 	tbl_odritem.db \
 	tbl_ryocom.db \
+	tbl_joblog.db \
 
 all:   
 

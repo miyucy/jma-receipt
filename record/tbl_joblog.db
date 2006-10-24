@@ -1,4 +1,4 @@
-tbl_jobkanri	{
+tbl_joblog	{
 	LOGYMD			char(8);
 	LOGTIME			char(6);
 	PROGNAME		varchar(20);
@@ -27,7 +27,7 @@ path	key		{
 path	del1	{
 	DBDELETE	{
 		DELETE
-		FROM tbl_jobkanri
+		FROM tbl_joblog
 			WHERE   PROGNAME = 	:PROGNAME
 			  AND   KBNID =    	:KBNID
 			  AND   LOGYMD = 	:LOGYMD
