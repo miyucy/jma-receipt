@@ -58,6 +58,7 @@
       *  01.00.27    NACL-藤原    06/03/18  旧総合病院フラグと主科設定の
       *                                     チェック追加
       *  01.00.28    NACL-多々納  06/07/13  MONFUNC 対応
+      *  03.03.00    NACL-太田    06/10/24  地方公費保険番号タブ区分追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -139,6 +140,13 @@
                            11  SPA-GMN-MEIPRTFLGMEIL
                                                       PIC X(12).
                        09  SPA-MEIPRTFLG-MAX          PIC 9(02).
+      *
+                       09  SPA-GMN-CHIHOUNUMKBNLST    OCCURS  2.
+                           11  SPA-GMN-CHIHOUNUMKBNL  PIC X(01).
+                           11  SPA-GMN-F14L           PIC X(01).
+                           11  SPA-GMN-CHIHOUNUMKBNMEIL
+                                                      PIC X(08).
+                       09  SPA-CHIHOUNUMKBN-MAX       PIC 9(02).
       *
                        09  SPA-GMN-DISCOUNT-HASU-KBNLST
                                                       OCCURS  4.
@@ -248,6 +256,12 @@
                                13  SPA-GMN-F14        PIC X(01).
                                13  SPA-GMN-MEIPRTFLGMEI
                                                       PIC X(12).
+                           11  SPA-GMN-CHIHOUNUMKBN-G.
+                               13  SPA-GMN-CHIHOUNUMKBN
+                                                      PIC X(01).
+                               13  SPA-GMN-F17        PIC X(01).
+                               13  SPA-GMN-CHIHOUNUMKBNMEI
+                                                      PIC X(08).
                            11  SPA-GMN-DISCOUNT-HASU-KBN-G.
                                13  SPA-GMN-DISCOUNT-HASU-KBN
                                                       PIC X(01).
@@ -860,6 +874,12 @@
            MOVE    "発行する"         TO  SPA-GMN-MEIPRTFLGMEIL (2)
            MOVE    2                  TO  SPA-MEIPRTFLG-MAX
       *
+           MOVE    "0"                TO  SPA-GMN-CHIHOUNUMKBNL    (1)
+           MOVE    "無効"             TO  SPA-GMN-CHIHOUNUMKBNMEIL (1)
+           MOVE    "1"                TO  SPA-GMN-CHIHOUNUMKBNL    (2)
+           MOVE    "有効"             TO  SPA-GMN-CHIHOUNUMKBNMEIL (2)
+           MOVE    2                  TO  SPA-CHIHOUNUMKBN-MAX
+      *
            MOVE    "1"         TO  SPA-GMN-DISCOUNT-HASU-KBNL    (1)
            MOVE    "１０円未満四捨五入"  
                                TO  SPA-GMN-DISCOUNT-HASU-KBNMEIL (1)
@@ -1391,6 +1411,20 @@
                    MOVE    SPA-MEIPRTFLG-MAX   TO  IDY
                END-IF
            END-PERFORM
+      *    地方公費保険番号タブ区分空白の時、ゼロとする
+           IF      SYS-1001-CHIHOUNUMKBN  =   SPACE
+               MOVE    ZERO                TO  SYS-1001-CHIHOUNUMKBN
+           END-IF
+           MOVE    SYS-1001-CHIHOUNUMKBN  TO  SPA-GMN-CHIHOUNUMKBN
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       SPA-CHIHOUNUMKBN-MAX
+               IF      SYS-1001-CHIHOUNUMKBN
+                                       =   SPA-GMN-CHIHOUNUMKBNL (IDY)
+                   MOVE    SPA-GMN-CHIHOUNUMKBNLST (IDY)
+                                           TO  SPA-GMN-CHIHOUNUMKBN-G
+                   MOVE    SPA-CHIHOUNUMKBN-MAX   TO  IDY
+               END-IF
+           END-PERFORM
       *    請求額端数区分（減免有） 空白の時、"1"とする
            IF      SYS-1001-DISCOUNT-HASU-KBN    =   SPACE
                MOVE    "1"             TO  SYS-1001-DISCOUNT-HASU-KBN
@@ -1691,6 +1725,7 @@
            MOVE    W02-ZENSYOHOFLG     TO  SPA-GMN-ZENSYOHOFLG-G
            MOVE    W02-YAKUJYOFLG      TO  SPA-GMN-YAKUJYOFLG-G
            MOVE    W02-MEIPRTFLG       TO  SPA-GMN-MEIPRTFLG-G
+           MOVE    W02-CHIHOUNUMKBN    TO  SPA-GMN-CHIHOUNUMKBN-G
            MOVE    W02-DISCOUNTHASU    TO  SPA-GMN-DISCOUNT-HASU-KBN-G
            MOVE    W02-DISCOUNTHASU2   TO  SPA-GMN-DISCOUNT-HASU-KBN2-G
            MOVE    W02-TAXHASU         TO  SPA-GMN-TAX-HASU-KBN-G
@@ -1868,6 +1903,11 @@
            END-IF
       *
            PERFORM 4129-MEIPRTFLG-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      41021-KIHON-1001-EXT
+           END-IF
+      *
+           PERFORM 4129-CHIHOUNUMKBN-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      41021-KIHON-1001-EXT
            END-IF
@@ -2434,6 +2474,29 @@
       *
            .
        4129-MEIPRTFLG-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    地方公費保険番号タブ区分フラグ
+      *****************************************************************
+       4129-CHIHOUNUMKBN-CHK-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       SPA-CHIHOUNUMKBN-MAX
+               IF      SPA-GMN-CHIHOUNUMKBN =   SPA-GMN-CHIHOUNUMKBNL
+                                                              (IDY)
+                   MOVE    SPA-GMN-CHIHOUNUMKBNLST (IDY)
+                                           TO  SPA-GMN-CHIHOUNUMKBN-G
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    "0026"              TO  SPA-ERRCD
+               MOVE    207                 TO  SPA-GMN-CUR
+           END-IF
+      *
+           .
+       4129-CHIHOUNUMKBN-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3074,6 +3137,8 @@
       *----(01.00.09) LINE ADD END   ----------------------------------
                    MOVE    SPA-GMN-MEIPRTFLG
                                        TO  SYS-1001-MEIPRTFLG
+                   MOVE    SPA-GMN-CHIHOUNUMKBN
+                                       TO  SYS-1001-CHIHOUNUMKBN
                    MOVE    SPA-GMN-DISCOUNT-HASU-KBN
                                        TO  SYS-1001-DISCOUNT-HASU-KBN
                    MOVE    SPA-GMN-DISCOUNT-HASU-KBN2
@@ -3558,6 +3623,16 @@
            END-PERFORM
            MOVE    SPA-MEIPRTFLG-MAX   TO  W02-MEIPRTFLG-COUNT
       *
+      *    地方公費保険番号タブ区分
+           MOVE    SPA-GMN-CHIHOUNUMKBN-G
+                                       TO  W02-CHIHOUNUMKBN
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       SPA-CHIHOUNUMKBN-MAX
+               MOVE    SPA-GMN-CHIHOUNUMKBNLST(IDX)
+                                       TO  W02-CHIHOUNUMKBN-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-CHIHOUNUMKBN-MAX   TO  W02-CHIHOUNUMKBN-COUNT
+      *
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       4
                MOVE    SPA-GMN-DISCOUNT-HASU-KBNLST(IDX)
@@ -3804,6 +3879,9 @@
                WHEN    "0025"
                    MOVE    "診療費明細書発行フラグ入力エラー"
                                                TO  SPA-ERRMSG
+               WHEN    "0026"
+                   MOVE    "地方公費保険番号タブ区分入力エラー"
+                                               TO  SPA-ERRMSG
                WHEN    "0012"
                    MOVE    "全角で入力して下さい。"
                                                TO  SPA-ERRMSG
@@ -4007,6 +4085,8 @@
                     MOVE  "JIHIPOSITION"   TO   MCP-WIDGET
                 WHEN    206
                     MOVE  "MEIPRTFLG"      TO   MCP-WIDGET
+                WHEN    207
+                    MOVE  "CHIHOUNUMKBN"   TO   MCP-WIDGET
       *
                 WHEN    40
                     MOVE  "TEIRITU"        TO   MCP-WIDGET
@@ -4136,6 +4216,8 @@
               WHEN    "DATATEISYU"
                   MOVE    205              TO  SPA-GMN-CUR
               WHEN    "JIHIPOSITION"
+                  MOVE    207              TO  SPA-GMN-CUR
+              WHEN    "CHIHOUNUMKBN"
                   MOVE    01               TO  SPA-GMN-CUR
       *       連絡先情報
               WHEN    "POST"

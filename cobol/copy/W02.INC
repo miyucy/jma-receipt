@@ -132,6 +132,12 @@
                     06  W02-MEIPRTFLG-COUNT   PIC S9(9)   BINARY.
                     06  W02-MEIPRTFLG-ITEM
                             PIC X(14)   OCCURS  2 TIMES.
+                  05  W02-CHIHOUNUMKBN-COMB.
+                    06  W02-CHIHOUNUMKBN.
+                      07  W02-VALUE   PIC X(10).
+                    06  W02-CHIHOUNUMKBN-COUNT   PIC S9(9)   BINARY.
+                    06  W02-CHIHOUNUMKBN-ITEM
+                            PIC X(10)   OCCURS  2 TIMES.
                 04  W02-N01-STATE   PIC S9(9)   BINARY.
                 04  W02-FIXED24.
                   05  W02-POST.
