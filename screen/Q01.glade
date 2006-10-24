@@ -6518,12 +6518,11 @@
 
 	<widget>
 	  <class>GtkButton</class>
-	  <child_name>Notebook:tab</child_name>
 	  <name>BTBYOKOHO</name>
 	  <x>932</x>
 	  <y>56</y>
 	  <width>48</width>
-	  <height>0</height>
+	  <height>24</height>
 	  <can_focus>True</can_focus>
 	  <signal>
 	    <name>clicked</name>
@@ -6537,12 +6536,11 @@
 
 	<widget>
 	  <class>GtkButton</class>
-	  <child_name>Notebook:tab</child_name>
 	  <name>BTBYOBUBUN</name>
 	  <x>882</x>
 	  <y>56</y>
 	  <width>48</width>
-	  <height>0</height>
+	  <height>24</height>
 	  <can_focus>True</can_focus>
 	  <signal>
 	    <name>clicked</name>
@@ -6581,12 +6579,11 @@
 
 	<widget>
 	  <class>GtkButton</class>
-	  <child_name>Notebook:tab</child_name>
 	  <name>BTSRYBUBUN</name>
 	  <x>882</x>
 	  <y>356</y>
 	  <width>48</width>
-	  <height>0</height>
+	  <height>24</height>
 	  <can_focus>True</can_focus>
 	  <signal>
 	    <name>clicked</name>
@@ -6600,12 +6597,11 @@
 
 	<widget>
 	  <class>GtkButton</class>
-	  <child_name>Notebook:tab</child_name>
 	  <name>BTSRYKOHO</name>
 	  <x>932</x>
 	  <y>356</y>
 	  <width>48</width>
-	  <height>0</height>
+	  <height>24</height>
 	  <can_focus>True</can_focus>
 	  <signal>
 	    <name>clicked</name>
