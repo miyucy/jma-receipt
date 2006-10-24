@@ -459,7 +459,9 @@
            PERFORM UNTIL      (IDX            >   100) OR
                               (FLG-JOBKANRI   =     1)
                IF  (SPA-JOB-SHELLID   =   JOB-SHELLID) OR
-                   (SPA-JOB-SHELLID   =   "SHEL-ALL")
+                   (SPA-JOB-SHELLID   =   "SHEL-ALL") OR
+                  ((SPA-JOB-SHELLID   =   "SOKATU") AND
+                   (JOB-SHELLID       =   "COLLECT"))
                    PERFORM 2012-JOBKANRI-HENSYU-SEC
                END-IF
                MOVE    "tbl_jobkanri"   TO  MCP-TABLE

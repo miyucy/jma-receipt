@@ -43,8 +43,10 @@
                05  COLDAT91-NYUGAIKBN      PIC  X(01).
       *        データ年月
                05  COLDAT91-DATAYM         PIC  X(06).
+      *        プログラム識別番号
+               05  COLDAT91-PRGSKBNO       PIC  X(08).
       *
-               05  FILLER                  PIC  X(76).
+               05  FILLER                  PIC  X(68).
            03  COLDAT91-BODY-2             REDEFINES
                                            COLDAT91-BODY-1.
       *        診療科コード

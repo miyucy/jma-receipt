@@ -70,6 +70,12 @@
            03  COLDAT01-HKNJNISSU          PIC  9(02).
       *    合計点数
            03  COLDAT01-HKNTOTALTENSU      PIC  9(08).
+      *    食事療養回数
+           03  COLDAT01-HKNSKJNISSU        PIC  9(02).
+      *    食事療養費
+           03  COLDAT01-HKNSKJRYOYOHI      PIC  9(08).
+      *    食事療養費標準負担額
+           03  COLDAT01-HKNSKJFTN          PIC  9(08).
       *
       *    老人保健情報
            03  COLDAT01-RJNHKN.
@@ -105,6 +111,12 @@
                    07  COLDAT01-TKOHJNISSU      PIC  9(02).
       *            合計点数
                    07  COLDAT01-TKOHTOTALTENSU  PIC  9(08).
+      *            食事療養回数
+                   07  COLDAT01-TKOHSKJNISSU    PIC  9(02).
+      *            食事療養費
+                   07  COLDAT01-TKOHSKJRYOYOHI  PIC  9(08).
+      *            食事療養費標準負担額
+                   07  COLDAT01-TKOHSKJFTN      PIC  9(08).
       *
       *    労災情報
            03  COLDAT01-HKN.

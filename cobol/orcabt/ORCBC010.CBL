@@ -18,6 +18,8 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCBC010.
       *****************************************************************
+      *  ¡ú½¤Àµ»þ¤Ë¤ÏÉ¬¤º¥×¥í¥°¥é¥à¼±ÊÌÈÖ¹æ¤ò¥ê¥»¥Ã¥È¤¹¤ë¤³¤È
+      *****************************************************************
       *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
       *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : ¥Ç¡¼¥¿¼ý½¸
       *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : ¥Ç¡¼¥¿¼ý½¸ÍÑ´ðËÜ¾ðÊóºîÀ®
@@ -138,6 +140,8 @@
       *
        WORKING-STORAGE             SECTION.
       *
+       01  PRGSKBNO                PIC X(08)  VALUE "20061001".
+      *
            COPY    "CPCOMMONDAT5.INC"
                                    REPLACING  //TEIKI01PARA//
                                    BY         //COLDAT91//.
@@ -181,6 +185,7 @@
            03  FLG-PTBYOMEI                    PIC 9(01).
            03  FLG-NYUINACCT                   PIC 9(01).
            03  FLG-SRYACCT                     PIC 9(01).
+           03  FLG-PTNYUINRRK                  PIC 9(01).
       *
            03  FLG-KOH                         PIC 9(01).
            03  FLG-CONTKBN                     PIC 9(01).
@@ -188,6 +193,7 @@
            03  FLG-LASTHKNID                   PIC 9(01).
            03  FLG-SHOSAISIN                   PIC 9(01).
            03  FLG-SHOSAISIN-GEN               PIC 9(01).
+           03  FLG-CHK                         PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -206,11 +212,16 @@
            03  IDX5                            PIC 9(03).
            03  IDY                             PIC 9(03).
            03  IDZ                             PIC 9(03).
+           03  IDZ1                            PIC 9(03).
+           03  IDZ2                            PIC 9(03).
+           03  IDZ3                            PIC 9(03).
+           03  IDXZ                            PIC 9(03).
            03  IDXX                            PIC 9(03).
            03  JN-IDX                          PIC 9(03).
            03  HC-IDX                          PIC 9(03).
            03  KH-IDX                          PIC 9(03).
            03  ACCT-IDX                        PIC 9(02).
+           03  IDX-DAY                         PIC 9(02).
       **** 03  SYSKAN-IDX                      PIC 9(03).
       *
        01  KEY-AREA                            VALUE   LOW-VALUE.
@@ -261,6 +272,7 @@
                05  WRK-SDD             PIC 9(02).
       *
            03  WRK-RENNUM              PIC 9(03).
+           03  WRK-ZAINUM              PIC 9(08).
       *
            03  WRK-PREFKBN             PIC X(01).
            03  WRK-PREFNUM             PIC X(02).
@@ -294,9 +306,10 @@
                    07  WRK-1033-EDYUKYMD 
                                    PIC X(08).
       *
-      *    ¿ÇÎÅ²ó¿ô¥Æ¡¼¥Ö¥ë¡ÊÆþ±¡²ñ·×ÍÑ¡¡£±¡§´ðËÜ¡¡£²¡§ÁÈ¹ç¤»¡Ë
+      *    ¿ÇÎÅ²ó¿ô¥Æ¡¼¥Ö¥ë¡ÊÆþ±¡²ñ·×ÍÑ  £±¡§´ðËÜ  £²¡§ÁÈ¹ç¤»
+      *                                  £³¡§¿©»ö  £´¡§³°Çñ¡Ë
            03  WRK-DAY-AREA.
-               05  WRK-DAY-TBL         OCCURS  2.
+               05  WRK-DAY-TBL         OCCURS  4.
                    07  WRK-DAY         PIC 9(03)
                                            OCCURS   31.
       *
@@ -356,8 +369,37 @@
        01  TBL-TOTALTENSU-INF.
            03  TBL-TOTALTENSU                          PIC 9(08)
                                                        OCCURS   5.
+      *    ¿©»öÎÅÍÜ²ó¿ô¥«¥¦¥ó¥ÈÍÑÎÎ°è
+       01  TBL-SKJNISSU-INF.
+           03  TBL-SKJNISSU-OCC                        OCCURS   5.
+               05  TBL-SKJNISSU                        PIC 9(02)
+                                                       OCCURS   31.
+      *    ¿©»öÎÅÍÜÈñÎÎ°è
+       01  TBL-SKJRYOYOHI-INF.
+           03  TBL-SKJRYOYOHI                          PIC 9(08)
+                                                       OCCURS   5.
+      *    ¿©»öÎÅÍÜÈñÉ¸½àÉéÃ´³ÛÎÎ°è
+       01  TBL-SKJFTN-INF.
+           03  TBL-SKJFTN                              PIC 9(08)
+                                                       OCCURS   5.
       *    ¥ì¥»¥×¥È¼ïÊÌÊÖµÑ¥µ¥Ö
            COPY    "CPORCSSYUBETUGET.INC".
+      *
+       01  TBL-NYUINKA-G.
+           03  TBL-NYUINKA                 PIC X(02)   OCCURS  31.
+           03  TBL-STIDX                   PIC 9(02).
+           03  TBL-EDIDX                   PIC 9(02).
+      *
+      *    É¸½àÉéÃ´³Û¥Æ¡¼¥Ö¥ë
+           03  SKJFTN-DAY-AREA.
+               05  SKJFTN-MAX              PIC  9(02).
+               05  SKJFTN-KAISUINF         OCCURS  31.
+                   07  SKJFTN-SRYKA        PIC  X(02).
+                   07  SKJFTN-KAISU        PIC  9(02).
+      *
+       01  COLDATWRK-REC.
+           COPY    "CPCDF002.INC"  REPLACING  //COLDAT02//
+                                   BY         //COLDATWRK//.
       *
        01  WRK-CONS-AREA.
       *
@@ -399,6 +441,58 @@
            03  CONS-TOKKI13        PIC X(09) VALUE "099990113".
            03  CONS-TOKKI14        PIC X(09) VALUE "099990114".
            03  CONS-TOKKI15        PIC X(09) VALUE "099990115".
+           03  CONS-TOKKI16        PIC X(09) VALUE "099990116".
+      *
+      *    É¸½àÉéÃ´³Û
+           03  WRK-CONS-HYOJYUN-FUTAN-G.
+      *        É¸½àÉéÃ´³Û¡Ê°ìÈÌ¡Ë
+               05  WRK-CONS-HYOJYUN-FUTAN1
+                                      PIC X(09)   VALUE   "197000810".
+      *        É¸½àÉéÃ´³Û¡ÊÄã½êÆÀ£±¡Ë
+               05  WRK-CONS-HYOJYUN-FUTAN2
+                                      PIC X(09)   VALUE   "197001110".
+      *        É¸½àÉéÃ´³Û¡ÊÄã½êÆÀ£²¡¦£¹£°Æü°Ê²¼¡Ë
+               05  WRK-CONS-HYOJYUN-FUTAN3
+                                      PIC X(09)   VALUE   "197000910".
+      *        É¸½àÉéÃ´³Û¡ÊÄã½êÆÀ£²¡¦£¹£°ÆüÄ¶¡Ë
+               05  WRK-CONS-HYOJYUN-FUTAN4
+                                      PIC X(09)   VALUE   "197001010".
+      *        ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡ÊÏ«ºÒÆþ±¡Ãæ¡Ë
+               05  WRK-CONS-HYOJYUN-FUTAN5
+                                      PIC X(09)   VALUE   "197001210".
+      *        À¸³èÎÅÍÜ´Ä¶­ÎÅÍÜÉ¸½àÉéÃ´³Û
+               05  WRK-CONS-HYOJYUN-FUTAN6
+                                      PIC X(09)   VALUE   "197001910".
+      *        À¸³èÎÅÍÜ¡Ê£±¡Ë¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê°ìÈÌ¡Ë
+               05  WRK-CONS-HYOJYUN-FUTAN7
+                                      PIC X(09)   VALUE   "197002010".
+      *        À¸³èÎÅÍÜ¡Ê£²¡Ë¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê°ìÈÌ¡Ë
+               05  WRK-CONS-HYOJYUN-FUTAN8
+                                      PIC X(09)   VALUE   "197002110".
+      *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡ÊÄã£²¡Ë
+               05  WRK-CONS-HYOJYUN-FUTAN9
+                                      PIC X(09)   VALUE   "197002210".
+      *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡ÊÄã£±¡Ë
+               05  WRK-CONS-HYOJYUN-FUTAN10
+                                      PIC X(09)   VALUE   "197002310".
+      *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡ÊÏ·¿ÍÄã£±¡ÊÏ·Ê¡°Ê³°¡Ë¡Ë
+               05  WRK-CONS-HYOJYUN-FUTAN11
+                                      PIC X(09)   VALUE   "197002410".
+      *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡ÊÏ·¿ÍÄã£±¡ÊÏ·Ê¡¡Ë¡Ë
+               05  WRK-CONS-HYOJYUN-FUTAN12
+                                      PIC X(09)   VALUE   "197002510".
+      *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡Ê°ìÈÌ¡Ë
+               05  WRK-CONS-HYOJYUN-FUTAN13
+                                      PIC X(09)   VALUE   "197002710".
+      *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡ÊÄã£²¡¦£¹£°Æü°Ê²¼¡Ë
+               05  WRK-CONS-HYOJYUN-FUTAN14
+                                      PIC X(09)   VALUE   "197002810".
+      *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡ÊÄã£²¡¦£¹£°ÆüÄ¶¡Ë
+               05  WRK-CONS-HYOJYUN-FUTAN15
+                                      PIC X(09)   VALUE   "197002910".
+      *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡ÊÄã£±¡Ë
+               05  WRK-CONS-HYOJYUN-FUTAN16
+                                      PIC X(09)   VALUE   "197003010".
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -477,16 +571,18 @@
        01  NYUINACCT-REC.
            COPY    "CPNYUINACCT.INC".
       *
+      *    Æþ±¡ÍúÎò
+       01  PTNYUINRRK-REC.
+           COPY    "CPPTNYUINRRK.INC".
+      *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑÎÎ°è
       *****************************************************************
       *
       *    Æþ±¡²ñ·×ÊÔ½¸¥µ¥Ö
            COPY    "CPORCHCM34S01.INC".
-      *
       *    ¸øÈñÉÕ²Ã¾ðÊó¼èÆÀ¥µ¥Ö
            COPY    "CPORCSKOHPLUS.INC".
-      *
       *   ÆüÉÕÊÑ´¹¥µ¥Ö
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
@@ -498,10 +594,10 @@
            COPY    "CPORCSAGECHK.INC".
       *    ´µ¼Ô¼«¸ÊÉéÃ´¶â¥ì¥»¥×¥Èµ­ºÜÈ½Äê
            COPY    "CPORCSFTNJGNCHK.INC".
-      *
       *    ÉÂÌ¾ÁÈÎ©¥µ¥Ö
            COPY    "CPORCSMKBYOMEI.INC".
-      *
+      *    Æþ±¡²ñ·×ºîÀ®ÍÑ¥Ñ¥é¥á¥¿
+           COPY    "CPORCSNYURECEDEN.INC".
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
            COPY    "COMMON-SPA".
@@ -561,7 +657,7 @@
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
            MOVE    "ORCBC010"      TO  JOB-PGID
-           MOVE    "¼ý½¸¥Ç¡¼¥¿ºîÀ®"
+           MOVE    "¼ý½¸¥Ç¡¼¥¿ºîÀ®¡ÊÃê½Ð¡Ë"
                                    TO  JOB-SHELLMSG
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA
@@ -749,6 +845,7 @@
            MOVE    SYS-1001-BEDSUIPN   TO  COLDAT91-BEDSUIPN
            MOVE    WRK-PARA-NYUGAIKBN  TO  COLDAT91-NYUGAIKBN
            MOVE    WRK-PARA-SRYYM      TO  COLDAT91-DATAYM
+           MOVE    PRGSKBNO            TO  COLDAT91-PRGSKBNO
            WRITE   COLDAT91-REC
            ADD     1                   TO  CNT-COLDAT91
            .
@@ -913,13 +1010,13 @@
                    MOVE    NYUINACCT-REC       TO  MCPDATA-REC
                    MOVE    "DBSELECT"          TO  MCP-FUNC
                    MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-                   MOVE    "key13"             TO  MCP-PATHNAME
+                   MOVE    "key18"             TO  MCP-PATHNAME
                    CALL    "MONFUNC"           USING
                                                MCPAREA
                                                MCPDATA-REC
                    IF      MCP-RC              =   ZERO
                        MOVE    "tbl_nyuinacct" TO  MCP-TABLE
-                       MOVE    "key13"         TO  MCP-PATHNAME
+                       MOVE    "key18"         TO  MCP-PATHNAME
                        PERFORM 900-NYUINACCT-READ-SEC
                    ELSE
                        INITIALIZE                  NYUINACCT-REC
@@ -930,7 +1027,7 @@
                                        UNTIL   FLG-NYUINACCT   =   1
       *
                    MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-                   MOVE    "key13"             TO  MCP-PATHNAME
+                   MOVE    "key18"             TO  MCP-PATHNAME
                    PERFORM 900-DBCLOSE-SEC
                WHEN    "2"
       *            ¿ÇÎÅ²ñ·×ÆÉ¤ß¹þ¤ß¡Ê´µ¼Ô£É£Ä¡¢ÊÝ¸±ÁÈ¹ç¤»½ç¡Ë
@@ -973,6 +1070,13 @@
        2001-NYUIN-HENSYU-SEC              SECTION.
       *
            INITIALIZE                  WRK-COLDAT01-TABLE
+           INITIALIZE                  TBL-JNISSU
+           INITIALIZE                  TBL-JNISSU-GEN
+           INITIALIZE                  TBL-TOTALTENSU-INF
+           INITIALIZE                  TBL-SKJNISSU-INF
+           INITIALIZE                  TBL-SKJRYOYOHI-INF
+           INITIALIZE                  TBL-SKJFTN-INF
+           MOVE    ZERO                TO  WRK-ZAINUM
       *
       *    ¥Æ¥¹¥È´µ¼Ô¤Î¤È¤­¤ÏÆÉ¤ßÈô¤Ð¤¹
            MOVE    WRK-PARA-HOSPID         TO  PTINF-HOSPID
@@ -987,7 +1091,7 @@
                PERFORM         UNTIL   FLG-NYUINACCT   =   1 
                                OR      NACCT-PTID  NOT =   PTINF-PTID
                    MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
-                   MOVE    "key13"                 TO  MCP-PATHNAME
+                   MOVE    "key18"                 TO  MCP-PATHNAME
                    PERFORM 900-NYUINACCT-READ-SEC
                END-PERFORM
            ELSE
@@ -996,23 +1100,41 @@
       *
                PERFORM         UNTIL   FLG-NYUINACCT   =   1 
                                OR      NACCT-PTID  NOT =   PTINF-PTID
+                 IF    NACCT-ZAISKBKBN    =  "1"  OR  "2"  OR
+                                             "4"  OR  "5"
       *            ºÞ¼±ÊÌ¶èÊ¬ÊÌ¥Æ¡¼¥Ö¥ëÊÔ½¸
                    EVALUATE    NACCT-ZAISKBKBN
                        WHEN    "1"
                            MOVE    1               TO  IDX
+                       WHEN    "2"
+                           MOVE    4               TO  IDX
+                       WHEN    "4"
+                           MOVE    3               TO  IDX
                        WHEN    "5"
                            MOVE    2               TO  IDX
                    END-EVALUATE
                    PERFORM VARYING IDX1    FROM    1   BY  1
                            UNTIL   IDX1    >       31
                        IF      NACCT-DAY  (IDX1)       >   ZERO
+                         IF    IDX         =       3
+                           IF  NACCT-SRYYM >       "200603"
+                               ADD   1     TO      WRK-DAY (IDX IDX1)
+                           ELSE
+                               MOVE  1     TO      WRK-DAY (IDX IDX1)
+                           END-IF
+                         ELSE
                            MOVE    NACCT-DAY (IDX1)    TO
                                                    WRK-DAY (IDX IDX1)
+                         END-IF
                        END-IF
                    END-PERFORM
-                   MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
-                   MOVE    "key13"                 TO  MCP-PATHNAME
-                   PERFORM 900-NYUINACCT-READ-SEC
+                   IF      WRK-ZAINUM              <   NACCT-ZAINUM
+                       MOVE    NACCT-ZAINUM        TO  WRK-ZAINUM
+                   END-IF
+                 END-IF
+                 MOVE    "tbl_nyuinacct"           TO  MCP-TABLE
+                 MOVE    "key18"                   TO  MCP-PATHNAME
+                 PERFORM 900-NYUINACCT-READ-SEC
                END-PERFORM
       *
       *        Æþ±¡²ñ·×¤ÎÊÝ¸±ÁÈ¹ç¤»¤ò¤Þ¤È¤á¤ë
@@ -1039,8 +1161,21 @@
                    END-IF
                END-PERFORM
       *
+               PERFORM 20011-SKJFTN-SEC
+               PERFORM 200111-NYUIN-JNISSU-TAIHI-SEC
+               PERFORM 200112-SKJNISSU-TAIHI-SEC
       *        ¿ÇÎÅ²ñ·×ÊÔ½¸½èÍý
                PERFORM 20012-NYUIN-SRYACCT-HENSYU-SEC
+      *
+      *        ¼ÂÆü¿ôÊÔ½¸
+               PERFORM   20012-JNISSU-SET-SEC
+               PERFORM   20013-TOTALTENSU-SET-SEC
+               INITIALIZE                  TBL-JNISSU
+               INITIALIZE                  TBL-JNISSU-GEN
+               INITIALIZE                  TBL-TOTALTENSU-INF
+               INITIALIZE                  TBL-SKJNISSU-INF
+               INITIALIZE                  TBL-SKJRYOYOHI-INF
+               INITIALIZE                  TBL-SKJFTN-INF
       *
       *        ´ðËÜ¥Õ¥¡¥¤¥ë½ÐÎÏ½èÍý
                PERFORM 2002-KIHON-WRITE-SEC
@@ -1099,7 +1234,301 @@
            END-PERFORM
            .
        20011-NYUINACCT-HENSYU-EXT.
-           EXIT. 
+           EXIT.
+      *
+      *****************************************************************
+      *    É¸½àÉéÃ´ºîÀ®
+      *****************************************************************
+       20011-SKJFTN-SEC            SECTION.
+      *
+           INITIALIZE                      ORCSNYURECEDEN-AREA
+           MOVE    WRK-PARA-HOSPID     TO  LNK-NYURECEDEN-HOSPID
+           MOVE    PTINF-PTID          TO  LNK-NYURECEDEN-PTID
+           MOVE    WRK-PARA-SRYYM      TO  LNK-NYURECEDEN-SANTEIYM
+           IF      COLDAT01-HKNNUM     =   "060" OR "067" OR
+                                           "068" OR "069"
+               MOVE    "2"             TO  LNK-NYURECEDEN-HKNKBN
+           ELSE
+               MOVE    "1"             TO  LNK-NYURECEDEN-HKNKBN
+           END-IF
+           CALL    "ORCSNYURECEDEN"    USING   ORCSNYURECEDEN-AREA
+           IF      LNK-NYURECEDEN-RC   NOT =   ZERO
+                   DISPLAY "LNK-NYURECEDEN-RC=" LNK-NYURECEDEN-RC
+                   GO    TO    20011-SKJFTN-EXT
+           END-IF
+      *
+           PERFORM VARYING IDZ1    FROM    3   BY  1
+                   UNTIL   IDZ1    >       4
+             PERFORM VARYING IDZ2    FROM    1   BY  1
+                     UNTIL   IDZ2    >       31
+                     OR      LNK-NYURECEDEN-HKNCOMBI (IDZ1 IDZ2)
+                                               =   ZERO
+               MOVE    ZERO                    TO  FLG-CHK
+               PERFORM VARYING IDXZ    FROM    1   BY  1
+                       UNTIL   IDXZ    >       10
+                       OR      COLDAT01-HKNCOMBI (IDXZ)  =   ZERO
+                       IF      LNK-NYURECEDEN-HKNCOMBI (IDZ1 IDZ2)
+                                           =   COLDAT01-HKNCOMBI (IDXZ)
+                           MOVE    1           TO  FLG-CHK
+                           MOVE    10          TO  IDXZ
+                       END-IF
+               END-PERFORM
+               PERFORM VARYING IDXZ    FROM    1   BY  1
+                       UNTIL   IDXZ    >
+                                   LNK-NYURECEDEN-MEISAISU (IDZ1 IDZ2)
+                       OR      FLG-CHK =       ZERO
+                 IF  ( LNK-NYURECEDEN-SRYCD (IDZ1 IDZ2 IDXZ)
+                                       =   WRK-CONS-HYOJYUN-FUTAN1
+                                       OR  WRK-CONS-HYOJYUN-FUTAN2
+                                       OR  WRK-CONS-HYOJYUN-FUTAN3
+                                       OR  WRK-CONS-HYOJYUN-FUTAN4
+                                       OR  WRK-CONS-HYOJYUN-FUTAN5
+                                       OR  WRK-CONS-HYOJYUN-FUTAN6
+                                       OR  WRK-CONS-HYOJYUN-FUTAN7
+                                       OR  WRK-CONS-HYOJYUN-FUTAN8
+                                       OR  WRK-CONS-HYOJYUN-FUTAN9
+                                       OR  WRK-CONS-HYOJYUN-FUTAN10
+                                       OR  WRK-CONS-HYOJYUN-FUTAN11
+                                       OR  WRK-CONS-HYOJYUN-FUTAN12
+                                       OR  WRK-CONS-HYOJYUN-FUTAN13
+                                       OR  WRK-CONS-HYOJYUN-FUTAN14
+                                       OR  WRK-CONS-HYOJYUN-FUTAN15
+                                       OR  WRK-CONS-HYOJYUN-FUTAN16 )
+                   MOVE    SPACE           TO  COLDAT02-REC
+                   INITIALIZE                  COLDAT02-REC
+      *            ¿ÇÎÅ²ñ·×¥Ç¡¼¥¿ÊÔ½¸
+                   MOVE    COLDAT01-KEY    TO  COLDAT02-KEY
+                   COMPUTE WRK-ZAINUM      =   WRK-ZAINUM  +  1
+                   MOVE    WRK-ZAINUM      TO  COLDAT02-ZAINUM
+                   MOVE    1               TO  COLDAT02-SEQNO
+                   MOVE    COMB-HKNID      TO  COLDAT02-HKNID
+                   PERFORM VARYING IDZ3    FROM    1   BY  1
+                           UNTIL   IDZ3    >   4
+                     MOVE  COMB-KOHID (IDZ3)
+                                           TO  COLDAT02-TKOHID(IDZ3)
+                   END-PERFORM
+                   MOVE    "97"            TO  COLDAT02-SRYKBN
+                   MOVE    "970"           TO  COLDAT02-SRYSYUKBN
+                   MOVE    LNK-NYURECEDEN-TEN (IDZ1 IDZ2 IDXZ)
+                                           TO  COLDAT02-ZAITEN
+                                               COLDAT02-SYUTEN1
+                   MOVE    LNK-NYURECEDEN-KAISU (IDZ1 IDZ2 IDXZ)
+                                           TO  COLDAT02-ZAIKAISU
+                   MOVE    LNK-NYURECEDEN-HKNCOMBI (IDZ1 IDZ2)
+                                           TO  COLDAT02-HKNCOMBI
+                   MOVE    SKJFTN-DAY-AREA TO  COLDAT02-DAY-AREA
+                   MOVE    LNK-NYURECEDEN-SRYCD (IDZ1 IDZ2 IDXZ)
+                                           TO  COLDAT02-SRYCD
+                   MOVE    LNK-NYURECEDEN-SURYO (IDZ1 IDZ2 IDXZ)
+                                           TO  COLDAT02-SRYSURYO
+                   IF      COLDAT02-SRYSURYO   =   ZERO
+                       MOVE  1             TO  COLDAT02-SRYSURYO
+                   END-IF
+      *
+                   INITIALIZE                  TNS-TENSU-REC
+                   MOVE    COLDAT02-SRYCD  TO  TNS-SRYCD
+                   MOVE    TNS-TENSU-REC   TO  MCPDATA-REC
+                   PERFORM 900-TENSU-READ-SEC
+                   MOVE    TNS-TANICD      TO  COLDAT02-TANICD
+                   MOVE    TNS-TANINAME    TO  COLDAT02-TANINAME
+                   MOVE    TNS-FORMALNAME  TO  COLDAT02-FORMALNAME
+                   MOVE    TNS-TENSIKIBETU TO  COLDAT02-TENSIKIBETU
+                   MOVE    TNS-TEN         TO  COLDAT02-TEN
+                   IF      TNS-TENSIKIBETU     =   1   OR   3
+                       MOVE  TNS-NYUTENTTLKBN
+                                           TO  COLDAT02-TENTTLKBN
+                   END-IF
+                   MOVE    TNS-NAME        TO  COLDAT02-NAME
+                   IF   SKJFTN-MAX         =   1
+                        MOVE  SKJFTN-SRYKA(1)
+                                           TO  COLDAT02-SRYKA
+                   ELSE
+                     PERFORM VARYING IDZ3  FROM  1  BY  1
+                             UNTIL  (IDZ3  >   31)
+                             OR     (SKJFTN-SRYKA (IDZ3)
+                                           =   SPACE)
+                       IF  COLDAT02-ZAIKAISU = SKJFTN-KAISU(IDZ3)
+                           MOVE SKJFTN-SRYKA(IDZ3)
+                                           TO  COLDAT02-SRYKA
+                           MOVE 31         TO  IDZ3
+                       END-IF
+                     END-PERFORM
+                   END-IF
+                   IF      COLDAT02-SRYKA  =   SPACE
+                       MOVE  SKJFTN-SRYKA(1)
+                                           TO  COLDAT02-SRYKA
+                   END-IF
+                   PERFORM 200313-SKJFTN-TAIHI-SEC
+                   WRITE   COLDAT02-REC
+                   ADD     1               TO  CNT-COLDAT02
+                 END-IF
+               END-PERFORM
+             END-PERFORM
+           END-PERFORM
+           .
+       20011-SKJFTN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¼ÂÆü¿ôÂàÈò
+      *****************************************************************
+       200111-NYUIN-JNISSU-TAIHI-SEC     SECTION.
+      *
+           PERFORM VARYING    IDX2   FROM  1  BY  1
+                   UNTIL      IDX2     >   31
+               IF  WRK-DAY (1 IDX2)    >   ZERO    AND
+                   WRK-DAY (2 IDX2)    >   ZERO
+                 IF  (COLDAT01-HKNNUM      NOT =   SPACE)   OR
+                     (COLDAT01-RJNHKNNUM   NOT =   SPACE)
+                     MOVE    "1"       TO  TBL-JNISSU-DAY(1 IDX2)
+                 END-IF
+                 PERFORM VARYING  IDX3   FROM   1   BY   1
+                         UNTIL    IDX3     >    10
+                     IF  COLDAT01-HKNCOMBI(IDX3) = WRK-DAY(2 IDX2)
+                           MOVE  IDX3       TO  HC-IDX
+                           MOVE  10         TO  IDX3
+                     END-IF
+                 END-PERFORM
+                 PERFORM VARYING  IDX3   FROM   1   BY   1
+                         UNTIL    IDX3     >    4
+                     IF   COLDAT01-KOHNUMHC(HC-IDX IDX3) NOT =  SPACE
+                      IF  COLDAT01-KOHNUMHC(HC-IDX IDX3) =
+                                                COLDAT01-TKOHHKNNUM(1)
+                      AND COLDAT01-KOHIDHC(HC-IDX IDX3) =
+                                                COLDAT01-TKOHID(1)
+                          MOVE    "1"       TO  TBL-JNISSU-DAY(2 IDX2)
+                      END-IF
+                     ELSE
+                         MOVE  10      TO     IDX3
+                     END-IF
+                 END-PERFORM
+                 PERFORM VARYING  IDX3   FROM   1   BY   1
+                         UNTIL    IDX3     >    4
+                     IF   COLDAT01-KOHNUMHC(HC-IDX IDX3) NOT =  SPACE
+                      IF  COLDAT01-KOHNUMHC(HC-IDX IDX3) =
+                                                COLDAT01-TKOHHKNNUM(2)
+                      AND COLDAT01-KOHIDHC(HC-IDX IDX3) =
+                                                COLDAT01-TKOHID(2)
+                          MOVE    "1"       TO  TBL-JNISSU-DAY(3 IDX2)
+                      END-IF
+                     ELSE
+                         MOVE  10      TO     IDX3
+                     END-IF
+                 END-PERFORM
+                 PERFORM VARYING  IDX3   FROM   1   BY   1
+                         UNTIL    IDX3     >    4
+                     IF   COLDAT01-KOHNUMHC(HC-IDX IDX3) NOT =  SPACE
+                      IF  COLDAT01-KOHNUMHC(HC-IDX IDX3) =
+                                                COLDAT01-TKOHHKNNUM(3)
+                      AND COLDAT01-KOHIDHC(HC-IDX IDX3) =
+                                                COLDAT01-TKOHID(3)
+                          MOVE    "1"       TO  TBL-JNISSU-DAY(4 IDX2)
+                      END-IF
+                     ELSE
+                         MOVE  10      TO     IDX3
+                     END-IF
+                 END-PERFORM
+                 PERFORM VARYING  IDX3   FROM   1   BY   1
+                         UNTIL    IDX3     >    4
+                     IF   COLDAT01-KOHNUMHC(HC-IDX IDX3) NOT =  SPACE
+                      IF  COLDAT01-KOHNUMHC(HC-IDX IDX3) =
+                                                COLDAT01-TKOHHKNNUM(4)
+                      AND COLDAT01-KOHIDHC(HC-IDX IDX3) =
+                                                COLDAT01-TKOHID(4)
+                          MOVE    "1"       TO  TBL-JNISSU-DAY(5 IDX2)
+                      END-IF
+                     ELSE
+                         MOVE  10      TO     IDX3
+                     END-IF
+                 END-PERFORM
+               END-IF
+           END-PERFORM
+           .
+       200111-NYUIN-JNISSU-TAIHI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¿©»öÆü¿ôÂàÈò
+      *****************************************************************
+       200112-SKJNISSU-TAIHI-SEC     SECTION.
+      *
+           PERFORM VARYING    IDX2   FROM  1  BY  1
+                   UNTIL      IDX2     >   31
+               IF (WRK-DAY (3 IDX2)    >   ZERO)        AND
+                  (WRK-DAY (2 IDX2)    NOT =   ZERO)    AND
+                  (WRK-DAY (4 IDX2)    =   ZERO  OR  4)
+                 IF  (COLDAT01-HKNNUM      NOT =   SPACE)   OR
+                     (COLDAT01-RJNHKNNUM   NOT =   SPACE)
+                     MOVE WRK-DAY (3 IDX2)  TO  TBL-SKJNISSU(1 IDX2)
+                 END-IF
+                 PERFORM VARYING  IDX3   FROM   1   BY   1
+                         UNTIL    IDX3     >    10
+                     IF  COLDAT01-HKNCOMBI(IDX3) = WRK-DAY(2 IDX2)
+                           MOVE  IDX3       TO  HC-IDX
+                           MOVE  10         TO  IDX3
+                     END-IF
+                 END-PERFORM
+                 PERFORM VARYING  IDX3   FROM   1   BY   1
+                         UNTIL    IDX3     >    4
+                     IF   COLDAT01-KOHNUMHC(HC-IDX IDX3) NOT =  SPACE
+                      IF  COLDAT01-KOHNUMHC(HC-IDX IDX3) =
+                                                COLDAT01-TKOHHKNNUM(1)
+                      AND COLDAT01-KOHIDHC(HC-IDX IDX3) =
+                                                COLDAT01-TKOHID(1)
+                          MOVE WRK-DAY (3 IDX2)
+                                            TO  TBL-SKJNISSU(2 IDX2)
+                      END-IF
+                     ELSE
+                         MOVE  10      TO     IDX3
+                     END-IF
+                 END-PERFORM
+                 PERFORM VARYING  IDX3   FROM   1   BY   1
+                         UNTIL    IDX3     >    4
+                     IF   COLDAT01-KOHNUMHC(HC-IDX IDX3) NOT =  SPACE
+                      IF  COLDAT01-KOHNUMHC(HC-IDX IDX3) =
+                                                COLDAT01-TKOHHKNNUM(2)
+                      AND COLDAT01-KOHIDHC(HC-IDX IDX3) =
+                                                COLDAT01-TKOHID(2)
+                          MOVE WRK-DAY (3 IDX2)
+                                            TO  TBL-SKJNISSU(3 IDX2)
+                      END-IF
+                     ELSE
+                         MOVE  10      TO     IDX3
+                     END-IF
+                 END-PERFORM
+                 PERFORM VARYING  IDX3   FROM   1   BY   1
+                         UNTIL    IDX3     >    4
+                     IF   COLDAT01-KOHNUMHC(HC-IDX IDX3) NOT =  SPACE
+                      IF  COLDAT01-KOHNUMHC(HC-IDX IDX3) =
+                                                COLDAT01-TKOHHKNNUM(3)
+                      AND COLDAT01-KOHIDHC(HC-IDX IDX3) =
+                                                COLDAT01-TKOHID(3)
+                          MOVE WRK-DAY (3 IDX2)
+                                            TO  TBL-SKJNISSU(4 IDX2)
+                      END-IF
+                     ELSE
+                         MOVE  10      TO     IDX3
+                     END-IF
+                 END-PERFORM
+                 PERFORM VARYING  IDX3   FROM   1   BY   1
+                         UNTIL    IDX3     >    4
+                     IF   COLDAT01-KOHNUMHC(HC-IDX IDX3) NOT =  SPACE
+                      IF  COLDAT01-KOHNUMHC(HC-IDX IDX3) =
+                                                COLDAT01-TKOHHKNNUM(4)
+                      AND COLDAT01-KOHIDHC(HC-IDX IDX3) =
+                                                COLDAT01-TKOHID(4)
+                          MOVE WRK-DAY (3 IDX2)
+                                            TO  TBL-SKJNISSU(5 IDX2)
+                      END-IF
+                     ELSE
+                         MOVE  10      TO     IDX3
+                     END-IF
+                 END-PERFORM
+               END-IF
+           END-PERFORM
+           .
+       200112-SKJNISSU-TAIHI-EXT.
+           EXIT.
       *
       *****************************************************************
       *    ¿ÇÎÅ²ñ·×ÊÔ½¸½èÍý¡ÊÆþ±¡¡Ë
@@ -1157,7 +1586,7 @@
                PERFORM         UNTIL   FLG-SRYACCT     =   1
                                OR      KEY-NEW     NOT =   KEY-OLD
                    MOVE    "2"                 TO  WRK-DATAKBN
-                   PERFORM 2001-FILE-SYORI-SEC 
+                   PERFORM 2001-FILE-SYORI-SEC
       *
                    IF      WRK-UPDKBN          =   SPACE
       *                Æ±¤¸´µ¼Ô£É£Ä¡¦¿ÇÎÅ²Ê¡¦ÊÝ¸±ÁÈ¹ç¤»¤ÏÆÉ¤ßÈô¤Ð¤¹
@@ -1192,6 +1621,9 @@
       *
            INITIALIZE                      HCM34S01-AREA
                                            WRK-SPA-AREA
+                                           SKJFTN-DAY-AREA
+      *
+           PERFORM 200131-NYUINKA-HEN-SEC
       *
            MOVE    WRK-PARA-HOSPID     TO  HCM34S01-HOSPID
            MOVE    PTINF-PTID          TO  HCM34S01-PTID
@@ -1211,16 +1643,19 @@
            PERFORM VARYING IDX4    FROM    1   BY  1
                    UNTIL   IDX4    >       HCM34S01-HENKYAKU-MAX
       *
-               PERFORM VARYING IDX5    FROM    1   BY  1
-                       UNTIL ( IDX5                >   20    )
-                       OR    ( HCM34S01-SRYCD (IDX4 IDX5)
-                                                   =   SPACE )
+             COMPUTE WRK-ZAINUM            =   WRK-ZAINUM  +  1
+             MOVE    ZERO                  TO  WRK-RENNUM
+             PERFORM VARYING IDX5    FROM    1   BY  1
+                     UNTIL ( IDX5                >   20    )
+                     OR    ( HCM34S01-SRYCD (IDX4 IDX5)
+                                                 =   SPACE )
       *
                MOVE    SPACE               TO  COLDAT02-REC
                INITIALIZE                      COLDAT02-REC
       *
       *        ¿ÇÎÅ²ñ·×¥Ç¡¼¥¿ÊÔ½¸
                MOVE    COLDAT01-KEY        TO  COLDAT02-KEY
+               MOVE    WRK-ZAINUM          TO  COLDAT02-ZAINUM
                ADD     1                   TO  WRK-RENNUM
                MOVE    WRK-RENNUM          TO  COLDAT02-SEQNO
                MOVE    COMB-HKNID          TO  COLDAT02-HKNID
@@ -1230,41 +1665,140 @@
                END-PERFORM
                MOVE    HCM34S01-SRYKBN  (IDX4) TO  COLDAT02-SRYKBN
                MOVE    HCM34S01-ZAITEN  (IDX4) TO  COLDAT02-ZAITEN
+                                                   COLDAT02-SYUTEN1
                MOVE    HCM34S01-ZAIKAISU(IDX4) TO  COLDAT02-ZAIKAISU
                MOVE    HCM34S01-HKNCOMBI       TO  COLDAT02-HKNCOMBI
                MOVE    HCM34S01-DAY-TBL (IDX4) TO  COLDAT02-DAY-AREA
-      *
-      *        ¿ÇÎÅ¹Ô°Ù¥Ç¡¼¥¿ÊÔ½¸
-               MOVE    HCM34S01-SRYKBN  (IDX4) TO  COLDAT02-SRYSYUKBN
                MOVE    HCM34S01-SRYCD   (IDX4 IDX5)
                                                TO  COLDAT02-SRYCD
+               MOVE    HCM34S01-SURYO   (IDX4 IDX5)
+                                               TO  COLDAT02-SRYSURYO
       *
                INITIALIZE                      TNS-TENSU-REC
                MOVE    HCM34S01-SRYCD   (IDX4 IDX5)
                                                TO  TNS-SRYCD
                MOVE    TNS-TENSU-REC           TO  MCPDATA-REC
                PERFORM 900-TENSU-READ-SEC
+               MOVE    TNS-SRYSYUKBN           TO  COLDAT02-SRYSYUKBN
                MOVE    TNS-TANICD              TO  COLDAT02-TANICD
                MOVE    TNS-TANINAME            TO  COLDAT02-TANINAME
                MOVE    TNS-FORMALNAME          TO  COLDAT02-FORMALNAME
                MOVE    TNS-TENSIKIBETU         TO  COLDAT02-TENSIKIBETU
                MOVE    TNS-TEN                 TO  COLDAT02-TEN
                IF      TNS-TENSIKIBETU     =   1   OR   3
-                   IF      ACCT-NYUGAIKBN      =   "1"
                        MOVE  TNS-NYUTENTTLKBN  TO  COLDAT02-TENTTLKBN
-                   ELSE
-                       MOVE  TNS-GAITENTTLKBN  TO  COLDAT02-TENTTLKBN
-                   END-IF
                END-IF
                MOVE    TNS-NAME                TO  COLDAT02-NAME
+               MOVE    COLDAT02-REC            TO  COLDATWRK-REC
       *
-               WRITE   COLDAT02-REC
-               ADD     1               TO  CNT-COLDAT02 
+               IF      COLDAT02-SEQNO          =   1
+                 INITIALIZE                        SRYACCT-REC
+                 MOVE  COLDAT02-SRYKBN         TO  ACCT-SRYKBN
+                 MOVE  ZERO                    TO  ACCT-SRYCDTOTAL
+                 MOVE  COLDAT02-ZAITEN         TO  ACCT-ZAITEN
+                 MOVE  COLDAT02-ZAIKAISU       TO  ACCT-ZAIKAISU
+                 PERFORM 200312-TOTALTEN-TAIHI-SEC
+               END-IF
+      *ito ------------------------------------------------
+      *  ¿ÇÎÅ²Ê¤¬°Û¤Ê¤ë¾ì¹ç¤ÎZAINUM¤ÈZAISEQ¤ÎÂÐ±þ
+      *----------------------------------------------------
+               PERFORM UNTIL   COLDATWRK-ZAIKAISU  =   ZERO
+                   MOVE    COLDATWRK-REC       TO  COLDAT02-REC
+                   MOVE    ZERO                TO  COLDAT02-ZAIKAISU
+                   MOVE    ZERO                TO  COLDAT02-DAY-AREA
+                   PERFORM VARYING IDX-DAY   FROM  1  BY  1
+                                   UNTIL     IDX-DAY  >   31
+                     IF    COLDATWRK-KAISU(IDX-DAY)   >   ZERO
+                       IF (COLDAT02-SRYKA   =   SPACE)  OR
+                          (COLDAT02-SRYKA   =   TBL-NYUINKA(IDX-DAY))
+                           MOVE    TBL-NYUINKA(IDX-DAY)
+                                   TO  COLDAT02-SRYKA
+                           COMPUTE COLDAT02-ZAIKAISU
+                                   =   COLDAT02-ZAIKAISU
+                                   +   COLDATWRK-KAISU(IDX-DAY)
+                           MOVE    COLDATWRK-KAISU(IDX-DAY)
+                                   TO  COLDAT02-KAISU(IDX-DAY)
+                           COMPUTE COLDATWRK-ZAIKAISU
+                                   =   COLDATWRK-ZAIKAISU
+                                   -   COLDATWRK-KAISU(IDX-DAY)
+                           MOVE    ZERO
+                                   TO  COLDATWRK-KAISU(IDX-DAY)
+                       END-IF
+                     END-IF
+                   END-PERFORM
+                   IF   (COLDAT02-SEQNO        =   1)    AND
+                        (COLDAT02-SRYKBN       =   "97")
+                     PERFORM VARYING IDZ1      FROM    1   BY  1
+                             UNTIL   IDZ1      >   31
+                       IF    SKJFTN-SRYKA (IDZ1)   =   SPACE
+                         MOVE COLDAT02-SRYKA   TO  SKJFTN-SRYKA(IDZ1)
+                         MOVE COLDAT02-ZAIKAISU
+                                               TO  SKJFTN-KAISU(IDZ1)
+                         IF   IDZ1             >   SKJFTN-MAX
+                              MOVE  IDZ1       TO  SKJFTN-MAX
+                         END-IF
+                         MOVE 31               TO  IDZ1
+                       ELSE
+                         IF  SKJFTN-SRYKA (IDZ1)   =   COLDAT02-SRYKA
+                             COMPUTE SKJFTN-KAISU(IDZ1)
+                                   = SKJFTN-KAISU(IDZ1)
+                                   + COLDAT02-ZAIKAISU
+                             IF   IDZ1         >   SKJFTN-MAX
+                                  MOVE  IDZ1   TO  SKJFTN-MAX
+                             END-IF
+                             MOVE 31           TO  IDZ1
+                         END-IF
+                       END-IF
+                     END-PERFORM
+                   END-IF
+                   WRITE   COLDAT02-REC
+                   ADD     1               TO  CNT-COLDAT02
                END-PERFORM
+             END-PERFORM
            END-PERFORM
            .
        20013-NYUIN-KIHON-EXT.
            EXIT. 
+      *
+      *****************************************************************
+      *    Æþ±¡ÆüÊÌ¿ÇÎÅ²ÊÊÔ½¸½èÍý
+      *****************************************************************
+       200131-NYUINKA-HEN-SEC      SECTION.
+      *
+           MOVE    SPACE               TO  TBL-NYUINKA-G
+           INITIALIZE                      TBL-NYUINKA-G
+      *
+           PERFORM 900-PTNYUINRRK-KEY41-SEL-SEC
+           PERFORM UNTIL ( FLG-PTNYUINRRK  NOT =   ZERO )
+             IF    ( PTNYUINRRK-TENNYUYMD (1:6)    <=  WRK-PARA-SRYYM )
+             AND   ( PTNYUINRRK-TENSTUYMD (1:6)    >=  WRK-PARA-SRYYM )
+               IF    ( PTNYUINRRK-TENNYUYMD (1:6)  <   WRK-PARA-SRYYM )
+                   MOVE    1           TO  TBL-STIDX
+               ELSE
+                   MOVE    PTNYUINRRK-TENNYUYMD (7:2)
+                                       TO  TBL-STIDX
+               END-IF
+               IF    ( PTNYUINRRK-TENSTUYMD (1:6)  >   WRK-PARA-SRYYM )
+                   MOVE    31          TO  TBL-EDIDX
+               ELSE
+                   MOVE    PTNYUINRRK-TENSTUYMD (7:2)
+                                       TO  TBL-EDIDX
+               END-IF
+               PERFORM VARYING IDX-DAY     FROM    TBL-STIDX   BY  1
+                       UNTIL ( IDX-DAY     >       TBL-EDIDX )
+                   MOVE    PTNYUINRRK-NYUINKA
+                                       TO  TBL-NYUINKA (IDX-DAY)
+               END-PERFORM
+             END-IF
+             PERFORM 900-PTNYUINRRK-KEY41-FET-SEC
+           END-PERFORM
+      *
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key41"             TO  MCP-PATHNAME
+           PERFORM 900-DBCLOSE-SEC
+           .
+       200131-NYUINKA-HEN-EXT.
+           EXIT.
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë½èÍý
@@ -1358,6 +1892,9 @@
                    INITIALIZE                  TBL-JNISSU
                    INITIALIZE                  TBL-JNISSU-GEN
                    INITIALIZE                  TBL-TOTALTENSU-INF
+                   INITIALIZE                  TBL-SKJNISSU-INF
+                   INITIALIZE                  TBL-SKJRYOYOHI-INF
+                   INITIALIZE                  TBL-SKJFTN-INF
                END-PERFORM
       *
       *        ´ðËÜ¥Õ¥¡¥¤¥ë½ÐÎÏ½èÍý
@@ -1468,6 +2005,11 @@
                                WHEN   "F"
                                WHEN   "8"
                                    MOVE    "0" TO  COLDAT01-HONKZKKBN
+                               WHEN   "G"
+                               WHEN   "H"
+                               WHEN   "I"
+                               WHEN   "7"
+                                   MOVE    "0" TO  COLDAT01-HONKZKKBN
                            END-EVALUATE
                        WHEN    "031"  THRU    "034"
                            EVALUATE   PTHKN-HOJOKBN
@@ -1476,6 +2018,9 @@
                                    MOVE    "0" TO  COLDAT01-HONKZKKBN
                                WHEN   "E"
                                WHEN   "8"
+                                   MOVE    "0" TO  COLDAT01-HONKZKKBN
+                               WHEN   "H"
+                               WHEN   "7"
                                    MOVE    "0" TO  COLDAT01-HONKZKKBN
                              END-EVALUATE
                        WHEN    "060"
@@ -1497,13 +2042,16 @@
                                  MOVE    "0" TO  COLDAT01-HONKZKKBN
                              WHEN   "8"
                                  MOVE    "0" TO  COLDAT01-HONKZKKBN
+                             WHEN   "7"
+                                 MOVE    "0" TO  COLDAT01-HONKZKKBN
                          END-EVALUATE
                    END-EVALUATE
                END-IF
            END-IF
       *
            MOVE    PTHKN-HKNJANUM      TO  COLDAT01-HKNJANUM
-           EVALUATE    PTHKN-HKNNUM
+           IF      WRK-PARA-SRYYM      <=  "200609"
+             EVALUATE    PTHKN-HKNNUM
                WHEN    "002"
                WHEN    "031"   THRU    "034"
                    IF      PTHKN-HOJOKBN   =   SPACE
@@ -1553,7 +2101,56 @@
                           MOVE    PTHKN-HOJOKBN   TO
                                                COLDAT01-HOJOKBN
                    END-EVALUATE
-           END-EVALUATE
+             END-EVALUATE
+           ELSE
+             EVALUATE    PTHKN-HKNNUM
+               WHEN    "002"
+               WHEN    "031"   THRU    "034"
+                   IF      PTHKN-HOJOKBN   =   SPACE
+                       CONTINUE
+                   ELSE
+                       MOVE    PTHKN-HOJOKBN   TO  COLDAT01-HOJOKBN
+                   END-IF
+               WHEN    "060"
+               WHEN    "068"
+                   EVALUATE    WRK-PARA-NYUGAIKBN
+                       WHEN    "1"
+                           EVALUATE   PTHKN-HOJOKBN
+                               WHEN   "0"
+                               WHEN   "4"
+                                   MOVE    "0" TO  COLDAT01-HOJOKBN
+                               WHEN   "1"
+                               WHEN   "5"
+                                   MOVE    "1" TO  COLDAT01-HOJOKBN
+                               WHEN   "2"
+                               WHEN   "6"
+                                   MOVE    "2" TO  COLDAT01-HOJOKBN
+                               WHEN   "3"
+                                   MOVE    "3" TO  COLDAT01-HOJOKBN
+                           END-EVALUATE
+                       WHEN    "2"
+                           EVALUATE   PTHKN-HOJOKBN
+                               WHEN   "1"
+                               WHEN   "4"
+                                   MOVE    "1" TO  COLDAT01-HOJOKBN
+                               WHEN   "2"
+                               WHEN   "5"
+                                   MOVE    "2" TO  COLDAT01-HOJOKBN
+                               WHEN   "3"
+                               WHEN   "6"
+                                   MOVE    "3" TO  COLDAT01-HOJOKBN
+                           END-EVALUATE
+                   END-EVALUATE
+               WHEN    OTHER 
+                   EVALUATE   PTHKN-HOJOKBN
+                       WHEN   "9"
+                       WHEN   "8"
+                       WHEN   "7"
+                           MOVE    PTHKN-HOJOKBN
+                                               TO  COLDAT01-HOJOKBN
+                   END-EVALUATE
+             END-EVALUATE
+           END-IF
       *
            PERFORM VARYING IDXX    FROM    1   BY  1
                    UNTIL   IDXX    >       100
@@ -2023,6 +2620,8 @@
                                         NOT =  SPACE
                           ADD    1      TO    COLDAT01-HKNJNISSU
                     END-IF
+                    ADD   TBL-SKJNISSU(1 ACCT-IDX)
+                                        TO    COLDAT01-HKNSKJNISSU
            END-PERFORM
       *    ¸øÈñ
            PERFORM    VARYING    JN-IDX    FROM   2   BY   1
@@ -2034,6 +2633,9 @@
                           ADD    1      TO
                                        COLDAT01-TKOHJNISSU(JN-IDX - 1)
                     END-IF
+                    ADD   TBL-SKJNISSU(JN-IDX ACCT-IDX)
+                                        TO
+                                     COLDAT01-TKOHSKJNISSU(JN-IDX - 1)
                END-PERFORM
            END-PERFORM
            .
@@ -2045,14 +2647,19 @@
       *****************************************************************
        20013-TOTALTENSU-SET-SEC    SECTION.
       *
-      *¼ÂÆü¿ôÊÔ½¸
       *    ¼çÊÝ¸±
            MOVE    TBL-TOTALTENSU (1)  TO  COLDAT01-HKNTOTALTENSU
+           MOVE    TBL-SKJRYOYOHI (1)  TO  COLDAT01-HKNSKJRYOYOHI
+           MOVE    TBL-SKJFTN     (1)  TO  COLDAT01-HKNSKJFTN
       *    ¸øÈñ
            PERFORM    VARYING    JN-IDX    FROM   2   BY   1
                       UNTIL      JN-IDX    >      5
                MOVE   TBL-TOTALTENSU (JN-IDX)
                                TO  COLDAT01-TKOHTOTALTENSU(JN-IDX - 1)
+               MOVE   TBL-SKJRYOYOHI (JN-IDX)
+                               TO  COLDAT01-TKOHSKJRYOYOHI(JN-IDX - 1)
+               MOVE   TBL-SKJFTN (JN-IDX)
+                               TO  COLDAT01-TKOHSKJFTN(JN-IDX - 1)
            END-PERFORM
       *    ¥Æ¡¼¥Ö¥ë¥ì¥³¡¼¥ÉÆþ¤ìÂØ¤¨
            PERFORM VARYING IDXX    FROM    1   BY  1
@@ -2064,7 +2671,7 @@
                END-IF
            END-PERFORM
            .
-       20012-TOTALTENSU-SET-EXT.
+       20013-TOTALTENSU-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2192,11 +2799,99 @@
                END-PERFORM
                MOVE    COLDAT01-THONKZKKBN (IDY)   TO  WK-HONKZKKBN
       *
-               IF      WRK-PARA-SRYYM      >=  "200210"
+               IF    ( WRK-PARA-SRYYM      >=  "200210" )
       *            £³ºÐÌ¤Ëþ¤Î¾ì¹ç¡¢£×£Ë¡Ý£È£Ï£Î£Ë£Ú£Ë£Ë£Â£Î¤Ë"£³"¤ò¥»¥Ã¥È
                    IF      COLDAT01-AGE         <     3
                                MOVE   "3"     TO   WK-HONKZKKBN
                    END-IF
+               END-IF
+      *
+               IF    ( WRK-PARA-SRYYM      >=  "200610" )
+                   EVALUATE    COLDAT01-HKNNUM
+                       WHEN    "002"
+                           EVALUATE   COLDAT01-THOJOKBN (IDY)
+                               WHEN   "A"
+                               WHEN   "B"
+                               WHEN   "C"
+                               WHEN   "9"
+                                   MOVE   "9"   TO   WK-HONKZKKBN
+                               WHEN   "D"
+                               WHEN   "E"
+                               WHEN   "F"
+                               WHEN   "8"
+                                   MOVE   "?"   TO   WK-HONKZKKBN
+                               WHEN   "G"
+                               WHEN   "H"
+                               WHEN   "I"
+                               WHEN   "7"
+                                   MOVE   "7"   TO   WK-HONKZKKBN
+                           END-EVALUATE
+                       WHEN    "031"  THRU    "034"
+                           EVALUATE   COLDAT01-THOJOKBN (IDY)
+                               WHEN   "B"
+                               WHEN   "9"
+                                   MOVE   "9"   TO   WK-HONKZKKBN
+                               WHEN   "E"
+                               WHEN   "8"
+                                   MOVE   "?"   TO   WK-HONKZKKBN
+                               WHEN   "H"
+                               WHEN   "7"
+                                   MOVE   "7"   TO   WK-HONKZKKBN
+                           END-EVALUATE
+                       WHEN    "060"
+                       WHEN    "068"
+                           IF  (COLDAT01-AGE  >=   70)  AND
+                               (COLDAT01-AGE  <=   74)
+                             EVALUATE    WRK-PARA-NYUGAIKBN
+                               WHEN    "1"
+                                   EVALUATE   COLDAT01-THOJOKBN (IDY)
+                                       WHEN   "1"
+                                       WHEN   "5"
+                                           MOVE   "9"  TO  WK-HONKZKKBN
+                                       WHEN   "2"
+                                       WHEN   "6"
+                                           MOVE   "8"  TO  WK-HONKZKKBN
+                                       WHEN   "3"
+                                           MOVE   "7"  TO  WK-HONKZKKBN
+                                   END-EVALUATE
+                               WHEN    "2"
+                                   EVALUATE   COLDAT01-THOJOKBN (IDY)
+                                       WHEN   "1"
+                                       WHEN   "4"
+                                           MOVE   "9"  TO  WK-HONKZKKBN
+                                       WHEN   "2"
+                                       WHEN   "5"
+                                           MOVE   "8"  TO  WK-HONKZKKBN
+                                       WHEN   "3"
+                                       WHEN   "6"
+                                           MOVE   "7"  TO  WK-HONKZKKBN
+                                   END-EVALUATE
+                             END-EVALUATE
+                           END-IF
+                       WHEN    OTHER
+                           EVALUATE   COLDAT01-THOJOKBN (IDY)
+                               WHEN   "9"
+                                   MOVE   "9"   TO   WK-HONKZKKBN
+                               WHEN   "8"
+                                   MOVE   "?"   TO   WK-HONKZKKBN
+                               WHEN   "7"
+                                   MOVE   "7"   TO   WK-HONKZKKBN
+                           END-EVALUATE
+                   END-EVALUATE
+                   IF      COLDAT01-RJNHKNNUM      =    "027"
+                       EVALUATE   COLDAT01-RJNPAYKBN
+                           WHEN   "01"
+                               MOVE   "9"   TO   WK-RJN
+                           WHEN   "02"
+                               MOVE   "?"   TO   WK-RJN
+                           WHEN   "03"
+                               MOVE   "7"   TO   WK-RJN
+                       END-EVALUATE
+                   END-IF
+               END-IF
+      *
+               IF    ( WRK-PARA-SRYYM      >=  "200210" )
+               AND   ( WRK-PARA-SRYYM      <=  "200609" )
       *
       *            £±³ä¡¢£²³äÉéÃ´¤Î¹âÎð¼Ô¤Î¾ì¹ç£×£Ë¡Ý£È£Ï£Î£Ë£Ú£Ë£Ë£Â£Î¤Ë
       *            "£¹"¤Þ¤¿¤Ï"£¸"¤ò¥»¥Ã¥È
@@ -2629,7 +3324,8 @@
                                       OR  CONS-TOKKI12
                                       OR  CONS-TOKKI13
                                       OR  CONS-TOKKI14
-                                      OR  CONS-TOKKI15 )
+                                      OR  CONS-TOKKI15
+                                      OR  CONS-TOKKI16 )
               OR     ( SRY-SRYCD(IDX2)(1:3)  =  "001"        )
               OR     ((SRY-SRYCD(IDX2)(1:3)  =  "059") AND
                       (TNS-TEN               =  ZERO )       )
@@ -2877,7 +3573,13 @@
       *
            IF    (COLDAT01-HKNNUM        NOT =   SPACE)   OR
                  (COLDAT01-RJNHKNNUM     NOT =   SPACE)
-               IF        ACCT-SRYKBN        =    "95"   OR  "96"
+             IF          ACCT-SRYKBN         =   "97"
+                   COMPUTE  TBL-SKJRYOYOHI (1)
+                                             =  TBL-SKJRYOYOHI (1)
+                                             + (ACCT-ZAITEN
+                                             *  ACCT-ZAIKAISU)
+             ELSE
+               IF        ACCT-SRYKBN         =   "95"   OR  "96"
                    CONTINUE
                ELSE
                  IF        ACCT-SRYCDTOTAL    =    630010002
@@ -2890,6 +3592,7 @@
                                                   ACCT-ZAIKAISU)
                  END-IF
                END-IF
+             END-IF
            END-IF
       *
            PERFORM    VARYING   IDX3    FROM   1   BY   1
@@ -2931,6 +3634,12 @@
                  END-IF
       *
                  IF   KH-IDX             NOT =    ZERO
+                  IF        ACCT-SRYKBN      =   "97"
+                      COMPUTE  TBL-SKJRYOYOHI (KH-IDX)
+                                             =  TBL-SKJRYOYOHI (KH-IDX)
+                                             + (ACCT-ZAITEN
+                                             *  ACCT-ZAIKAISU)
+                  ELSE
                   IF        ACCT-SRYKBN        =    "95"   OR  "96"
                      CONTINUE
                   ELSE
@@ -2946,11 +3655,74 @@
                                               ACCT-ZAIKAISU)
                      END-IF
                   END-IF
+                  END-IF
                  END-IF
                END-IF  
            END-PERFORM
            .
        200312-TOTALTEN-TAIHI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¿©»öÉ¸½àÉéÃ´³ÛÊÔ½¸
+      *****************************************************************
+       200313-SKJFTN-TAIHI-SEC     SECTION.
+      *
+           IF    (COLDAT01-HKNNUM        NOT =   SPACE)   OR
+                 (COLDAT01-RJNHKNNUM     NOT =   SPACE)
+                 COMPUTE  TBL-SKJFTN(1)      =   TBL-SKJFTN (1)
+                                             +  (COLDAT02-ZAITEN
+                                             *   COLDAT02-ZAIKAISU)
+           END-IF
+      *
+           PERFORM    VARYING   IDX3    FROM   1   BY   1
+              UNTIL   (IDX3      >      10)
+                      IF   COLDAT01-HKNCOMBI(IDX3) = COLDAT02-HKNCOMBI
+                           MOVE  IDX3       TO  HC-IDX
+                           MOVE  10         TO  IDX3
+                      END-IF
+           END-PERFORM
+      *
+           MOVE       ZERO              TO   KH-IDX
+           PERFORM    VARYING   IDX3    FROM   1   BY   1
+             UNTIL   (IDX3      >       4)
+               MOVE   ZERO               TO        KH-IDX
+               IF    COLDAT01-KOHNUMHC(HC-IDX IDX3) NOT =  SPACE
+                 IF  COLDAT01-KOHNUMHC(HC-IDX IDX3) =
+                                                COLDAT01-TKOHHKNNUM(1)
+                 AND  COLDAT01-KOHIDHC(HC-IDX IDX3) =
+                                                COLDAT01-TKOHID(1)
+                      MOVE    2          TO        KH-IDX
+                 END-IF
+                 IF  COLDAT01-KOHNUMHC(HC-IDX IDX3) =
+                                                COLDAT01-TKOHHKNNUM(2)
+                 AND  COLDAT01-KOHIDHC(HC-IDX IDX3) =
+                                                COLDAT01-TKOHID(2)
+                      MOVE    3          TO        KH-IDX
+                 END-IF
+                 IF  COLDAT01-KOHNUMHC(HC-IDX IDX3) =
+                                                COLDAT01-TKOHHKNNUM(3)
+                 AND  COLDAT01-KOHIDHC(HC-IDX IDX3) =
+                                                COLDAT01-TKOHID(3)
+                      MOVE    4          TO        KH-IDX
+                 END-IF
+                 IF  COLDAT01-KOHNUMHC(HC-IDX IDX3) =
+                                                COLDAT01-TKOHHKNNUM(4)
+                 AND  COLDAT01-KOHIDHC(HC-IDX IDX3) =
+                                                COLDAT01-TKOHID(4)
+                      MOVE    5          TO        KH-IDX
+                 END-IF
+      *
+                 IF   KH-IDX             NOT =    ZERO
+                      COMPUTE  TBL-SKJFTN(KH-IDX)
+                                             =   TBL-SKJFTN (KH-IDX)
+                                             +  (COLDAT02-ZAITEN
+                                             *   COLDAT02-ZAIKAISU)
+                 END-IF
+               END-IF  
+           END-PERFORM
+           .
+       200313-SKJFTN-TAIHI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3094,24 +3866,7 @@
                MOVE    1               TO  FLG-SRYACCT
            END-IF
       *
-      *ito
-      *    IF      ACCT-PTID           >   1000
-      *        MOVE    1               TO  FLG-SRYACCT
-      *    END-IF
-      *
            IF      FLG-SRYACCT         =   ZERO
-      *ito     Êñ³ç¤ò´Þ¤Þ¤Ê¤¤¤È¤­
-      *        IF    ( WRK-PARA-HOUKATUKBN =   "1"  )
-      *            IF    ( ACCT-ZAITEN         =   ZERO   )
-      *            OR    ( ACCT-HKNCOMBI       =   "9999" )
-      *                GO  TO  900-SRYACCT-READ-SEC
-      *            END-IF
-      *        END-IF
-               IF    ( ACCT-ZAITEN         =   ZERO   )
-               OR    ( ACCT-HKNCOMBI       =   "9999" )
-                    DISPLAY "## HOUKATU PTID = " ACCT-PTID
-               END-IF
-      *
                MOVE    ACCT-PTID           TO  KEY-N-PTID
                MOVE    ACCT-HKNCOMBI       TO  KEY-N-HKNCOMBI
            END-IF
@@ -3134,18 +3889,64 @@
            ELSE
                MOVE    1               TO  FLG-NYUINACCT
            END-IF
-      *
-      *ito
-      *    IF      NACCT-PTID          >   50
-      *        MOVE    1               TO  FLG-NYUINACCT
-      *    END-IF
-      *
-      ***     IF      FLG-NYUINACCT       =   ZERO
-      ***         MOVE    NACCT-PTID          TO  KEY-N-PTID
-      ***         MOVE    ZERO                TO  KEY-N-HKNCOMBI 
-      ***     END-IF
            .
        900-NYUINACCT-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Æþ±¡ÍúÎò¸¡º÷½èÍý(KEY41)
+      *****************************************************************
+       900-PTNYUINRRK-KEY41-SEL-SEC    SECTION.
+      *
+           MOVE    ZERO                TO  FLG-PTNYUINRRK
+           INITIALIZE                  PTNYUINRRK-REC
+      *
+           MOVE    WRK-PARA-HOSPID     TO  PTNYUINRRK-HOSPID
+           MOVE    PTINF-PTID          TO  PTNYUINRRK-PTID
+           MOVE    WRK-PARA-SRYYM      TO  PTNYUINRRK-TENNYUYMD
+           MOVE    "31"                TO  PTNYUINRRK-TENNYUYMD
+           MOVE    WRK-PARA-SRYYM      TO  PTNYUINRRK-TENSTUYMD
+           MOVE    "01"                TO  PTNYUINRRK-TENSTUYMD
+           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key41"             TO  MCP-PATHNAME
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "DBFETCH"       TO  MCP-FUNC
+               CALL    "MONFUNC"       USING
+                                       MCPAREA
+                                       MCPDATA-REC
+               MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
+           ELSE
+               MOVE    1               TO  FLG-PTNYUINRRK
+               INITIALIZE                  PTNYUINRRK-REC
+           END-IF
+           .
+       900-PTNYUINRRK-KEY41-SEL-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Æþ±¡ÍúÎòFETCH½èÍý(KEY41)
+      *****************************************************************
+       900-PTNYUINRRK-KEY41-FET-SEC     SECTION.
+      *
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key41"             TO  MCP-PATHNAME
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
+           ELSE
+               MOVE    1               TO  FLG-PTNYUINRRK
+               INITIALIZE                  PTNYUINRRK-REC
+           END-IF
+           .
+       900-PTNYUINRRK-KEY41-FET-EXT.
            EXIT.
       *
       *****************************************************************

@@ -26,6 +26,8 @@ COLLECTN=collectn.csv
 LOGFILE=/home/orca/datacollect1.log
 ERRFILE=/tmp/datacollecterror
 
+DASUPLOAD=$SCRIPTSDIR/monthly/das-upload.sh
+
 #   エラーファイル削除
     if  [ -e $ERRFILE ]; then
 	rm  $ERRFILE
@@ -68,5 +70,7 @@ ERRFILE=/tmp/datacollecterror
     fi
 
     $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE$6$7 2>&1 | tee -a $LOGFILE
+
+    $DASUPLOAD &
 
     exit

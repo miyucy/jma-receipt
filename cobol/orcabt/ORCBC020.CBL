@@ -18,6 +18,8 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCBC020.
       *****************************************************************
+      *  ★修正時には必ずプログラム識別番号をリセットすること
+      *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : データ収集
       *  コンポーネント名  : ＣＳＶデータ作成
@@ -116,6 +118,8 @@
        01  COLDATERR-REC           PIC X(200). 
       *
        WORKING-STORAGE             SECTION.
+      *
+       01  PRGSKBNO                PIC X(08)  VALUE "20061001".
       *
       *    病院基本情報データ
            COPY    "CPCOMMONDAT5.INC"
@@ -345,7 +349,7 @@
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
            MOVE    "ORCBC020"      TO  JOB-PGID
-           MOVE    "ＣＳＶデータ作成"
+           MOVE    "収集データ作成（ＣＳＶ）"
                                    TO  JOB-SHELLMSG
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA
@@ -424,6 +428,14 @@
       *        医療機関ＩＤ
                MOVE    COLDAT91-HOSPID   TO  WRK-DATA
                MOVE    24                TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+      *        プログラム識別番号（抽出）
+               MOVE    COLDAT91-PRGSKBNO TO  WRK-DATA
+               MOVE    8                 TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+      *        プログラム識別番号（ＣＳＶ）
+               MOVE    PRGSKBNO          TO  WRK-DATA
+               MOVE    8                 TO  WRK-NAGASA
                MOVE    1                 TO  WRK-END
                PERFORM 5004-MOJI-HENSYU-SEC
              WHEN    "2"
@@ -645,35 +657,121 @@
            MOVE    3                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *    実日数（保険）
-           MOVE    COLDAT01-HKNJNISSU  TO  WRK-NUM
-           MOVE    2                   TO  WRK-NAGASA
-           PERFORM 5005-NUM-HENSYU-SEC
+           IF        COLDAT01-HKNJNISSU    =   0
+             MOVE    SPACE                 TO  WRK-DATA
+             MOVE    1                     TO  WRK-NAGASA
+             PERFORM 5004-MOJI-HENSYU-SEC
+           ELSE
+             MOVE    COLDAT01-HKNJNISSU    TO  WRK-NUM
+             MOVE    2                     TO  WRK-NAGASA
+             PERFORM 5005-NUM-HENSYU-SEC
+           END-IF
       *    合計点数（保険）
-           MOVE    COLDAT01-HKNTOTALTENSU
-                                       TO  WRK-NUM
-           MOVE    8                   TO  WRK-NAGASA
-           PERFORM 5005-NUM-HENSYU-SEC
+           IF        COLDAT01-HKNTOTALTENSU  =   0
+             MOVE    SPACE                   TO  WRK-DATA
+             MOVE    1                       TO  WRK-NAGASA
+             PERFORM 5004-MOJI-HENSYU-SEC
+           ELSE
+             MOVE    COLDAT01-HKNTOTALTENSU  TO  WRK-NUM
+             MOVE    8                       TO  WRK-NAGASA
+             PERFORM 5005-NUM-HENSYU-SEC
+           END-IF
+      *    食事療養回数（保険）
+           IF        COLDAT01-HKNSKJNISSU  =   0
+             MOVE    SPACE                 TO  WRK-DATA
+             MOVE    1                     TO  WRK-NAGASA
+             PERFORM 5004-MOJI-HENSYU-SEC
+           ELSE
+             MOVE    COLDAT01-HKNSKJNISSU  TO  WRK-NUM
+             MOVE    2                     TO  WRK-NAGASA
+             PERFORM 5005-NUM-HENSYU-SEC
+           END-IF
+      *    食事療養費（保険）
+           IF        COLDAT01-HKNSKJRYOYOHI  =   0
+             MOVE    SPACE                   TO  WRK-DATA
+             MOVE    1                       TO  WRK-NAGASA
+             PERFORM 5004-MOJI-HENSYU-SEC
+           ELSE
+             MOVE    COLDAT01-HKNSKJRYOYOHI  TO  WRK-NUM
+             MOVE    8                       TO  WRK-NAGASA
+             PERFORM 5005-NUM-HENSYU-SEC
+           END-IF
+      *    食事療養費標準負担額（保険）
+           IF        COLDAT01-HKNSKJFTN    =   0
+             MOVE    SPACE                 TO  WRK-DATA
+             MOVE    1                     TO  WRK-NAGASA
+             PERFORM 5004-MOJI-HENSYU-SEC
+           ELSE
+             MOVE    COLDAT01-HKNSKJFTN    TO  WRK-NUM
+             MOVE    8                     TO  WRK-NAGASA
+             PERFORM 5005-NUM-HENSYU-SEC
+           END-IF
       *公費情報
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL   IDX1    >       4
       *      公費番号
-             MOVE    COLDAT01-TKOHHKNNUM (IDX1)
-                                       TO  WRK-DATA
-             MOVE    3                 TO  WRK-NAGASA
+             MOVE    COLDAT01-TKOHHKNNUM (IDX1)    TO  WRK-DATA
+             MOVE    3                             TO  WRK-NAGASA
              PERFORM 5004-MOJI-HENSYU-SEC
       *      実日数
-             MOVE    COLDAT01-TKOHJNISSU (IDX1)
-                                       TO  WRK-NUM
-             MOVE    2                 TO  WRK-NAGASA
-             PERFORM 5005-NUM-HENSYU-SEC
-      *      合計点数
-             MOVE    COLDAT01-TKOHTOTALTENSU (IDX1)
-                                       TO  WRK-NUM
-             MOVE    8                 TO  WRK-NAGASA
-             IF      IDX1              =   4
-               MOVE    1               TO  WRK-END
+             IF        COLDAT01-TKOHJNISSU (IDX1)  =   0
+               MOVE    SPACE                       TO  WRK-DATA
+               MOVE    1                           TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+             ELSE
+               MOVE    COLDAT01-TKOHJNISSU (IDX1)  TO  WRK-NUM
+               MOVE    2                           TO  WRK-NAGASA
+               PERFORM 5005-NUM-HENSYU-SEC
              END-IF
-             PERFORM 5005-NUM-HENSYU-SEC
+      *      合計点数
+             IF        COLDAT01-TKOHTOTALTENSU (IDX1)  =   0
+               MOVE    SPACE                       TO  WRK-DATA
+               MOVE    1                           TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+             ELSE
+               MOVE    COLDAT01-TKOHTOTALTENSU (IDX1)
+                                                   TO  WRK-NUM
+               MOVE    8                           TO  WRK-NAGASA
+               PERFORM 5005-NUM-HENSYU-SEC
+             END-IF
+      *      食事療養回数
+             IF        COLDAT01-TKOHSKJNISSU (IDX1)  =   0
+               MOVE    SPACE                       TO  WRK-DATA
+               MOVE    1                           TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+             ELSE
+               MOVE    COLDAT01-TKOHSKJNISSU (IDX1)
+                                                   TO  WRK-NUM
+               MOVE    2                           TO  WRK-NAGASA
+               PERFORM 5005-NUM-HENSYU-SEC
+             END-IF
+      *      食事療養費
+             IF        COLDAT01-TKOHSKJRYOYOHI (IDX1)  =   0
+               MOVE    SPACE                       TO  WRK-DATA
+               MOVE    1                           TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+             ELSE
+               MOVE    COLDAT01-TKOHSKJRYOYOHI (IDX1)
+                                                   TO  WRK-NUM
+               MOVE    8                           TO  WRK-NAGASA
+               PERFORM 5005-NUM-HENSYU-SEC
+             END-IF
+      *      食事療養費標準負担額
+             IF        COLDAT01-TKOHSKJFTN (IDX1)  =   0
+               MOVE    SPACE                       TO  WRK-DATA
+               MOVE    1                           TO  WRK-NAGASA
+               IF      IDX1                        =   4
+                       MOVE    1                   TO  WRK-END
+               END-IF
+               PERFORM 5004-MOJI-HENSYU-SEC
+             ELSE
+               MOVE    COLDAT01-TKOHSKJFTN (IDX1)  TO  WRK-NUM
+               MOVE    8                           TO  WRK-NAGASA
+               IF      IDX1                        =   4
+                       MOVE    1                   TO  WRK-END
+               END-IF
+               PERFORM 5005-NUM-HENSYU-SEC
+             END-IF
            END-PERFORM
       *
            PERFORM 5001-FILE-WRITE-SEC

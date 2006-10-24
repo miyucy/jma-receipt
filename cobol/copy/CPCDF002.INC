@@ -82,7 +82,7 @@
            03  COLDAT02-KIZAITEN           PIC  9(07).
       *日数回数テーブル
            03  COLDAT02-DAY-AREA.
-      *        診療回数テーブル（1:合計,2:１回,3:２回, 4:３回以上）
+      *        診療回数テーブル
                05  COLDAT02-KAISUINF       OCCURS  31.
                    07  COLDAT02-KAISU      PIC  9(03).
       *診療行為情報
