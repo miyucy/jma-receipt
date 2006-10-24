@@ -4874,15 +4874,15 @@
                MOVE    ")"                    TO
                                               HC06-FTNMONEYSAI(11:1)
            END-IF    
-           IF      RECE62-SHOKUJINISSU (IDX1)   >   ZERO
-               MOVE    RECE62-SHOKUJINISSU (IDX1)
+      *    IF      RECE62-SHOKUJINISSU (IDX1)   >   ZERO
+           IF      RECE62-SHOKUJIRYOYOHI(IDX1)  >   ZERO
+               IF      RECE62-SHOKUJINISSU (IDX1)  >  ZERO
+                   MOVE    RECE62-SHOKUJINISSU (IDX1)
                                                TO  WRK-KGK2
-               MOVE    WRK-KGK2                TO  HC06-SYONISSU(1)
-               IF      RECE62-SHOKUJIRYOYOHI (IDX1)
-                                               >   ZERO
-                   MOVE    RECE62-SHOKUJIRYOYOHI (IDX1) TO  WRK-KGK6
-                   MOVE    WRK-KGK6            TO  HC06-SYOTOTALTEN(1)
+                   MOVE    WRK-KGK2            TO  HC06-SYONISSU(1)
                END-IF
+               MOVE    RECE62-SHOKUJIRYOYOHI (IDX1) TO  WRK-KGK6
+               MOVE    WRK-KGK6                TO  HC06-SYOTOTALTEN(1)
                IF      RECE62-SHOKUJIFTN (IDX1) >   ZERO
                    MOVE    RECE62-SHOKUJIFTN (IDX1)
                                                TO  WRK-KGK7
@@ -4929,21 +4929,22 @@
                MOVE    WRK-KGK10              TO  HC06-TOTALTEN(2)
            END-IF
       *         
-           IF    ( RECE62-SHOKUJINISSU (IDX2) >   ZERO                 )
+      *    IF    ( RECE62-SHOKUJINISSU (IDX2) >   ZERO                 )
+           IF    ( RECE62-SHOKUJIRYOYOHI(IDX2) >   ZERO                )
            AND   ((RECE62-SHOKUJINISSU (IDX2)     NOT =
                                       RECE62-SHOKUJINISSU   (IDX1)) OR
                   (RECE62-SHOKUJIRYOYOHI (IDX2)   NOT =
                                       RECE62-SHOKUJIRYOYOHI (IDX1)) OR
                   (RECE62-SHOKUJIFTN (IDX2)       NOT =
                                       RECE62-SHOKUJIFTN     (IDX1))    )
-               MOVE    RECE62-SHOKUJINISSU (IDX2)
-                                              TO  WRK-KGK2 
-               MOVE    WRK-KGK2               TO  HC06-SYONISSU(2)
-               IF      RECE62-SHOKUJIRYOYOHI (IDX2) >   ZERO
-                   MOVE    RECE62-SHOKUJIRYOYOHI (IDX2)
-                                           TO  WRK-KGK6
-                   MOVE    WRK-KGK6        TO  HC06-SYOTOTALTEN(2)
+               IF      RECE62-SHOKUJINISSU (IDX2)  >  ZERO
+                   MOVE    RECE62-SHOKUJINISSU (IDX2)
+                                           TO  WRK-KGK2 
+                   MOVE    WRK-KGK2        TO  HC06-SYONISSU(2)
                END-IF
+               MOVE    RECE62-SHOKUJIRYOYOHI (IDX2)
+                                           TO  WRK-KGK6
+               MOVE    WRK-KGK6            TO  HC06-SYOTOTALTEN(2)
                IF      RECE62-SHOKUJIFTN (IDX2) >   ZERO
                    MOVE    RECE62-SHOKUJIFTN (IDX2)
                                            TO  WRK-KGK7
@@ -5022,25 +5023,25 @@
                MOVE    WRK-KGK10              TO  HC06-TOTALTEN(3)
            END-IF
       *         
-           IF    ( RECE62-SHOKUJINISSU (IDX3) >   ZERO                 )
+      *    IF    ( RECE62-SHOKUJINISSU (IDX3) >   ZERO                 )
+           IF    ( RECE62-SHOKUJIRYOYOHI(IDX3) >   ZERO                )
            AND   ((RECE62-SHOKUJINISSU (IDX3)     NOT =
                                       RECE62-SHOKUJINISSU   (IDX2)) OR
                   (RECE62-SHOKUJIRYOYOHI (IDX3)   NOT =
                                       RECE62-SHOKUJIRYOYOHI (IDX2)) OR
                   (RECE62-SHOKUJIFTN (IDX3)       NOT =
                                       RECE62-SHOKUJIFTN     (IDX2))    )
-               MOVE    RECE62-SHOKUJINISSU (IDX3)
-                                               TO  WRK-KGK2
-               MOVE    WRK-KGK2            TO  HC06-SYONISSU(3)
-               IF      RECE62-SHOKUJIRYOYOHI (IDX3)
-                                               >   ZERO
-                   MOVE    RECE62-SHOKUJIRYOYOHI (IDX3)
-                                               TO  WRK-KGK6
-                   MOVE    WRK-KGK6        TO  HC06-SYOTOTALTEN(3)
+               IF      RECE62-SHOKUJINISSU (IDX3)  >  ZERO
+                   MOVE    RECE62-SHOKUJINISSU (IDX3)
+                                           TO  WRK-KGK2
+                   MOVE    WRK-KGK2        TO  HC06-SYONISSU(3)
                END-IF
+               MOVE    RECE62-SHOKUJIRYOYOHI (IDX3)
+                                           TO  WRK-KGK6
+               MOVE    WRK-KGK6            TO  HC06-SYOTOTALTEN(3)
                IF      RECE62-SHOKUJIFTN (IDX3) >   ZERO
                    MOVE    RECE62-SHOKUJIFTN (IDX3)
-                                               TO  WRK-KGK7
+                                           TO  WRK-KGK7
                    MOVE    WRK-KGK7        TO  HC06-SYOFTNMONEY(3)
                END-IF
            ELSE

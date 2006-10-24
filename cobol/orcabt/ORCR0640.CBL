@@ -8796,8 +8796,10 @@
                     (RECE62-SRYYM         >=  "200510"      ))
                 OR ((SYU-SKJ-FTNKBN(IDX3)  =  "1" OR "2"       ) AND
                     (SYU-SKJ-FTN(IDX3) = SYU-SKJ-FTN-RECE(IDX3)))
-                OR ( SYU-SKJ-NISSU(IDX3)   =   ZERO          )
-                   IF   RECE62-SHOKUJINISSU(KH-IDX)  =  ZERO
+      *         OR ( SYU-SKJ-NISSU(IDX3)   =   ZERO          )
+                OR ( SYU-SKJ-RYOYOHI(IDX3) =   ZERO          )
+      *            IF   RECE62-SHOKUJINISSU(KH-IDX)  =  ZERO
+                   IF   RECE62-SHOKUJIRYOYOHI(KH-IDX) =  ZERO
                        MOVE    "1"      TO
                                RECE62-FUKUSHIFLG-SKJ(KH-IDX - 1)
                        IF   RECE62-SRYYM    >= "200610"
@@ -8849,7 +8851,8 @@
                 END-IF
       *
                 IF   FLG-TOKUSYU-SKJ  =   1
-                  IF    SYU-SKJ-NISSU(IDX3)  NOT =  ZERO
+      *           IF    SYU-SKJ-NISSU(IDX3)  NOT =  ZERO
+                  IF    SYU-SKJ-RYOYOHI(IDX3) NOT =  ZERO
                         MOVE    SPACE    TO
                             RECE62-FUKUSHIFLG-SKJIPA(KH-IDX - 1)
                         MOVE    "1"      TO
