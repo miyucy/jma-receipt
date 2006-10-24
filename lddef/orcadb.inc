@@ -109,4 +109,5 @@ db	{
         tbl_chk004;
         tbl_odritem;
         tbl_ryocom;
+        tbl_joblog;
 };
