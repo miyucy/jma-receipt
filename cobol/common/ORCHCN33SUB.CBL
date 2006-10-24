@@ -39,6 +39,7 @@
       *                                     ³°ÇñÃÖ¤­´¹¤¨½èÍý
       *  01.00.07    NACL-ÌçÏÆ    06/03/27  ¿©»ö²þÀµÂÐ±þ¡Ê£²£°£°£¶Ç¯£´·î¡Ë
       *  01.00.08    NACL-¾®Æ¦Âô  06/05/23  ³°Çñ»þ¤ÎÆþ±¡´ðËÜÎÁ¼èÆÀ½¤Àµ
+      *  01.00.09    NACL-¾®Æ¦Âô  06/10/24  Æþ±¡»þÀ¸³èÎÅÍÜÂÐ±þ
       *****************************************************************
       *
       *
@@ -372,6 +373,9 @@
       *
       *    ÊÝ¸±»»ÄêÍÑÇ¯Îð¡¦³ä¹ç·×»»¥µ¥Ö
            COPY    "CPORCSAGECHK.INC".
+      *
+      *    Æþ±¡»þÀ¸³èÎÅÍÜÈñÉéÃ´³Û¼èÆÀ¥µ¥Ö
+           COPY    "CPORCSNYULIFE.INC".
       *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
@@ -2356,6 +2360,13 @@
            PERFORM 910-TENSU-READ-SEC
            MOVE    TNS-TEN             TO  WRK-SKJ200604-KINGAKU(4)
       *
+      *    Æþ±¡»þÀ¸³èÎÅÍÜ¡Ê¿©»öÎÅÍÜ¡¦´Ä¶­ÎÅÍÜ¡Ë¤Î¼èÆÀ
+           INITIALIZE                           ORCSNYULIFE-AREA
+           MOVE    LNK-ORCHCN33SUB-HOSPID   TO  LNK-NYULIFE-HOSPID
+           MOVE    LNK-ORCHCN33SUB-PTID     TO  LNK-NYULIFE-PTID
+           MOVE    LNK-ORCHCN33SUB-SANTEIYM TO  LNK-NYULIFE-SANTEIYM
+           CALL    "ORCSNYULIFE"    USING  ORCSNYULIFE-AREA
+      *    
       *    ¿©»öÎÅÍÜÈñ·×»»
            PERFORM    VARYING   IDX1   FROM   1   BY   1
                        UNTIL    IDX1     >   31
@@ -2371,6 +2382,11 @@
       *
                    COMPUTE WRK-KEISAN   =  WRK-SKJ200604-KINGAKU(1)
                                         *  WRK-SKJ200604-NYUINJI(IDX1)
+                   IF   LNK-NYULIFE-SKJ-MONEY(IDX1)   NOT = ZERO
+                        COMPUTE  WRK-KEISAN  =
+                                         LNK-NYULIFE-SKJ-MONEY(IDX1) *
+                                         WRK-SKJ200604-NYUINJI(IDX1)
+                   END-IF
                    ADD     WRK-KEISAN   TO LNK-ORCHCN33SUB-SKJ(IDX1)
       *
                    IF   WRK-SKJ200604-TOKUSYO(IDX1)  NOT = ZERO
@@ -2388,9 +2404,27 @@
       *
                    COMPUTE WRK-KEISAN   =  WRK-SKJ200604-KINGAKU(2)
                                         *  WRK-SKJ200604-NYUINJI(IDX1)
+                   IF   LNK-NYULIFE-SKJ-MONEY(IDX1)   NOT = ZERO
+                        COMPUTE  WRK-KEISAN  =
+                                         LNK-NYULIFE-SKJ-MONEY(IDX1) *
+                                         WRK-SKJ200604-NYUINJI(IDX1)
+                   END-IF
                    ADD     WRK-KEISAN   TO LNK-ORCHCN33SUB-SKJ(IDX1)
       *
                END-EVALUATE
+      *
+             END-IF
+      *
+             IF    (WRK-SRYKA-DAY(IDX1)          NOT = SPACE)
+             AND   (WRK-NYUINKHN(IDX1)           NOT = SPACE)
+             AND   (WRK-GAIHAKU-KBN(IDX1)     =  ZERO  OR  4)
+      *
+                 MOVE    ZERO    TO   WRK-KEISAN
+                 IF   LNK-NYULIFE-KAN-SRYCD(IDX1)   NOT = SPACE
+                      MOVE  LNK-NYULIFE-KAN-MONEY(IDX1)
+                                        TO   WRK-KEISAN
+                 END-IF
+                 ADD     WRK-KEISAN   TO LNK-ORCHCN33SUB-SKJ(IDX1)
       *
              END-IF
       *
