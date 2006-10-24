@@ -53,6 +53,8 @@ filecheck:
 	-name "*.bak" -o \
 	-name "*.so" -o \
 	-name "ORCXSMST1" -o \
+	-name "ORCGM00.CBL.in" -o \
+	-name "kanaconv.h" -o \
 	-printf "file\t%f\n") \
 	|sort +1 |uniq -u -f1 
 
