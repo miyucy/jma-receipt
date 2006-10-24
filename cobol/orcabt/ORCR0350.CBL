@@ -2853,23 +2853,23 @@
                MOVE    RECE641-REC         TO  WRK-RECE641-REC  
                PERFORM 20070-FTNKBN-HENSYU-SEC
       *
-      *        外来迅速検体検査加算がある場合の検査の編集
-               IF    ( RECE62-KENTAIKASANFLG   =   "1"  )
-               AND   ( RECE641-SRYKBN      >   "60"     )
-               AND   ( TBL-KASAN-RECE64-MAX
-                                           >   0        )
-                   MOVE    RECE641-REC         TO  WRK-TAIHI-RECE641-REC
-                   MOVE    WRK-FTNKBN          TO  WRK-TAIHI-FTNKBN
+      *****    外来迅速検体検査加算がある場合の検査の編集
+      *****    IF    ( RECE62-KENTAIKASANFLG   =   "1"  )
+      *****    AND   ( RECE641-SRYKBN      >   "60"     )
+      *****    AND   ( TBL-KASAN-RECE64-MAX
+      *****                                >   0        )
+      *****        MOVE    RECE641-REC         TO  WRK-TAIHI-RECE641-REC
+      *****        MOVE    WRK-FTNKBN          TO  WRK-TAIHI-FTNKBN
       *
-                   PERFORM 20078-KENSA-HENSYU-SEC
+      *****        PERFORM 20078-KENSA-HENSYU-SEC
       *
-                   MOVE    WRK-TAIHI-RECE641-REC
-                                               TO  RECE641-REC
-                   MOVE    WRK-TAIHI-FTNKBN    TO  WRK-FTNKBN
+      *****        MOVE    WRK-TAIHI-RECE641-REC
+      *****                                    TO  RECE641-REC
+      *****        MOVE    WRK-TAIHI-FTNKBN    TO  WRK-FTNKBN
       *
-                   INITIALIZE                  TBL-KASAN-RECE64-AREA
-                                               TBL-KENTAI-RECE64-AREA
-               END-IF
+      *****        INITIALIZE                  TBL-KASAN-RECE64-AREA
+      *****                                    TBL-KENTAI-RECE64-AREA
+      *****    END-IF
       *
       *        検査に判断料がある場合の検査の編集
                IF    ( RECE641-SRYKBN      >   "60"     )
@@ -2898,15 +2898,15 @@
                END-IF     
            END-PERFORM
       *
-      *    外来迅速検体検査加算がある場合の検査の編集
-           IF    ( RECE62-KENTAIKASANFLG   =   "1"  )
-           AND   ( TBL-KASAN-RECE64-MAX
-                                       >   0        )
-               PERFORM 20078-KENSA-HENSYU-SEC
+      *****外来迅速検体検査加算がある場合の検査の編集
+      *****IF    ( RECE62-KENTAIKASANFLG   =   "1"  )
+      *****AND   ( TBL-KASAN-RECE64-MAX
+      *****                            >   0        )
+      *****    PERFORM 20078-KENSA-HENSYU-SEC
       *
-               INITIALIZE                  TBL-KASAN-RECE64-AREA
-                                           TBL-KENTAI-RECE64-AREA
-           END-IF
+      *****    INITIALIZE                  TBL-KASAN-RECE64-AREA
+      *****                                TBL-KENTAI-RECE64-AREA
+      *****END-IF
       *
       *    検査に判断料がある場合の検査の編集
            IF     ( TBL-KENSA-RECE64-MAX
@@ -3259,21 +3259,21 @@
       *                                     
            MOVE    RECE641-SRYKBN      TO  WRK-SRYKBN
       *
-      *    外来迅速検体検査加算がある場合の検査退避
-           IF    ( RECE62-KENTAIKASANFLG   =   "1"  )
-           AND   ( RECE641-KNSJISGRPKBN    >   ZERO )
-               IF      RECE641-KNSJISGRPKBN    =   99
-                   ADD     1               TO  TBL-KASAN-RECE64-MAX
-                   MOVE    RECE641-REC     TO  TBL-KASAN-RECE64-REC
-                                               (TBL-KASAN-RECE64-MAX)
-               ELSE
-                   ADD     1               TO  TBL-KENTAI-RECE64-MAX
-                   MOVE    RECE641-REC     TO  TBL-KENTAI-RECE64-REC
-                                               (TBL-KENTAI-RECE64-MAX)
-               END-IF
-           END-IF
-           MOVE    ZERO                 TO  TBL-KENTAI-RECE65-MAX
-                                            TBL-KASAN-RECE65-MAX 
+      *****外来迅速検体検査加算がある場合の検査退避
+      *****IF    ( RECE62-KENTAIKASANFLG   =   "1"  )
+      *****AND   ( RECE641-KNSJISGRPKBN    >   ZERO )
+      *****    IF      RECE641-KNSJISGRPKBN    =   99
+      *****        ADD     1               TO  TBL-KASAN-RECE64-MAX
+      *****        MOVE    RECE641-REC     TO  TBL-KASAN-RECE64-REC
+      *****                                    (TBL-KASAN-RECE64-MAX)
+      *****    ELSE
+      *****        ADD     1               TO  TBL-KENTAI-RECE64-MAX
+      *****        MOVE    RECE641-REC     TO  TBL-KENTAI-RECE64-REC
+      *****                                    (TBL-KENTAI-RECE64-MAX)
+      *****    END-IF
+      *****END-IF
+      *****MOVE    ZERO                 TO  TBL-KENTAI-RECE65-MAX
+      *****                                 TBL-KASAN-RECE65-MAX 
       *
       *    検査（判断料）の退避
            IF     ( RECE641-KNSJISKBN   =   2 )
@@ -3338,11 +3338,11 @@
                            IF      RECE641-KNSJISKBN   =   2
                                PERFORM 20013-KENSA-HANDANRYO-TAIHI-SEC
                            ELSE
-                               IF    ( RECE62-KENTAIKASANFLG   =   "1" )
-                               AND   ( RECE641-KNSJISGRPKBN    >   ZERO)
-      *                        外来迅速検体検査加算がある場合の検査退避
-                                   PERFORM 20012-KENSA-TAIHI-SEC
-                               ELSE
+      *************************IF    ( RECE62-KENTAIKASANFLG   =   "1" )
+      *************************AND   ( RECE641-KNSJISGRPKBN    >   ZERO)
+      *************************外来迅速検体検査加算がある場合の検査退避
+      *************************    PERFORM 20012-KENSA-TAIHI-SEC
+      *************************ELSE
                                    IF      RECE641-SRYKBN  =   "13"  OR 
                                                                "14"  OR
                                                                "70"
@@ -3351,19 +3351,19 @@
                                    ELSE
                                        PERFORM 200711-COMMENT-TAIHI-SEC
                                    END-IF
-                               END-IF
+      *************************END-IF
                            END-IF
                        WHEN    "1"
-                           IF    ( RECE62-KENTAIKASANFLG   =   "1"  )
-                           AND   ( RECE641-KNSJISGRPKBN    >   ZERO )
-                           AND   ( RECE65-KNSJISKBN (IDX)
-                                                       NOT =   2    )
+      *********************IF    ( RECE62-KENTAIKASANFLG   =   "1"  )
+      *********************AND   ( RECE641-KNSJISGRPKBN    >   ZERO )
+      *********************AND   ( RECE65-KNSJISKBN (IDX)
+      *********************                            NOT =   2    )
       *****                AND  (( RECE65-KNSJISKBN (IDX)  =   1    ) OR
       *****                      ( RECE65-SRYCD (IDX)      =
       *****                                            WRK-CONS-SRYCD )) 
-      *                        外来迅速検体検査加算がある場合の検査退避
-                               PERFORM 20012-KENSA-TAIHI-SEC
-                           ELSE
+      *********************    外来迅速検体検査加算がある場合の検査退避
+      *********************    PERFORM 20012-KENSA-TAIHI-SEC
+      *********************ELSE
       *                        検査（判断料）の場合の退避
                                IF     ( RECE641-KNSJISKBN   =   2 )
                                    PERFORM
@@ -3371,7 +3371,7 @@
                                ELSE
                                    PERFORM 200711-KOUI-TAIHI-SEC
                                END-IF
-                           END-IF
+      *********************END-IF
                        WHEN    "6"
                            PERFORM 200711-YKZ-TAIHI-SEC
                        WHEN    "7"
@@ -5474,7 +5474,10 @@
                                                                "C" OR
                                                                "D" OR 
                                                                "E" OR
-                                                               "F"    )
+                                                               "F" OR
+                                                               "G" OR 
+                                                               "H" OR
+                                                               "I"    )
                                  AND   (  LNK-NYURECEDEN-SRYCD
                                                        (IDZ1 IDZ2 IDXZ)
                                            =   WRK-CONS-HYOJYUN-FUTAN1
@@ -5487,7 +5490,8 @@
                                                           =   "03"   )
                                   AND   ( RECE62-HOJOKBN  =   "2" OR 
                                                               "B" OR
-                                                              "E"    )
+                                                              "E" OR
+                                                              "H"    )
                                   AND   (  LNK-NYURECEDEN-SRYCD
                                                        (IDZ1 IDZ2 IDXZ)
                                            =   WRK-CONS-HYOJYUN-FUTAN1
