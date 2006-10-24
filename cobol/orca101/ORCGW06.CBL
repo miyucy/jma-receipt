@@ -213,6 +213,8 @@
                    07  SPA-MAE-STYUKYMD       PIC X(08).
                    07  SPA-MAE-EDYUKYMD       PIC X(08).
       *
+                   07  SPA-NAI-KEIFLG         PIC 9(01).
+      *
            COPY    "ENUM-VALUE".
       *
        01  FLG-AREA.
@@ -2409,8 +2411,18 @@
                    END-IF
                END-IF
            END-IF
+      *    医師でゼロの場合、警告
+           IF     (SPA-GMN-SYOKUKBN    =   "1"  )  AND
+                  (SPA-GMN-SYOKUCOD    =   ZERO )
+               IF      SPA-NAI-KEIFLG      =   ZERO
+                   MOVE    "K001"              TO  SPA-ERRCD
+                   MOVE    2                   TO  SPA-GMN-CUR
+                   MOVE    1                   TO  SPA-NAI-KEIFLG
+               END-IF
+           END-IF
       *    オペレータＩＤ
-           IF      SPA-GMN-USERID      =   SPACE
+           IF     (SPA-GMN-USERID      =   SPACE )
+             AND  (SPA-ERRCD           =   SPACE )
                MOVE    "0008"              TO  SPA-ERRCD
                MOVE    6                   TO  SPA-GMN-CUR
            END-IF
@@ -3101,6 +3113,12 @@
                    MOVE
                    "オルカマスターはシステム管理を有効にして下さい"
                                                TO  SPA-ERRMSG
+               WHEN    "K001"
+                   STRING    "警告！医師の職員番号がゼロです。"
+                             "診療行為の複数科入力に使用できません。"
+                                               DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
                WHEN    "1001"
                    MOVE    "更新ができませんでした"
                                                TO  SPA-ERRMSG
