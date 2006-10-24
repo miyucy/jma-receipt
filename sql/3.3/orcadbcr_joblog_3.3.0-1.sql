@@ -1,11 +1,13 @@
 --                                --
 -- ORCA DataBase Table Definition --
 --                                --
--- „Ç∏„Éß„Éñ„É≠„Ç∞ÁÆ°ÁêÜ                 --
+-- •∏•Á•÷•Ì•∞¥…Õ˝                 --
 --                                --
--- Table Name  : TBL_KOHPLUS      --
+-- Table Name  : TBL_JOBLOG       --
 -- Create Date : 2006/10/23       --
 --                                --
+
+\set ON_ERROR_STOP
 
 CREATE TABLE tbl_joblog (
   logymd character(8) NOT NULL,
