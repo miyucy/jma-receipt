@@ -30,20 +30,21 @@ DASUPLOAD=$SCRIPTSDIR/monthly/das-upload.sh
 
 #   エラーファイル削除
     if  [ -e $ERRFILE ]; then
-	rm  $ERRFILE
+	rm -f $ERRFILE
     fi
 
-    rm  /var/tmp/COLDT*
+    rm -f /var/tmp/COLDT*
 
 #   外来分処理
 
     $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBC010 -parameter $1,$2,$3,$4,2,$6,$7,$ERRFILE 2>&1 | tee $LOGFILE
-
     if  [ -e $ERRFILE ]; then
+	rm -f /var/tmp/COLDT*
 	exit
     else
 	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBC020 -parameter $1,$4,$6,$7,/tmp/$COLLECTG,$ERRFILE 2>&1 | tee -a $LOGFILE
 	if  [ -e $ERRFILE ]; then
+	    rm -f /var/tmp/COLDT*
 	    exit 
 	fi
     fi
@@ -54,10 +55,12 @@ DASUPLOAD=$SCRIPTSDIR/monthly/das-upload.sh
 
 	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBC010 -parameter $1,$2,$3,$4,1,$6,$7,$ERRFILE 2>&1 | tee $LOGFILE
 	if  [ -e $ERRFILE ]; then
+	    rm -f /var/tmp/COLDT*
 	    exit
 	else
 	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBC020 -parameter $1,$4,$6,$7,/tmp/$COLLECTN,$ERRFILE 2>&1 | tee -a $LOGFILE
 	    if  [ -e $ERRFILE ]; then
+		rm -f /var/tmp/COLDT*
 		exit 
 	    fi
 	fi
@@ -65,9 +68,14 @@ DASUPLOAD=$SCRIPTSDIR/monthly/das-upload.sh
 
     if  [ $5 -eq '1' ]; then
 	tar cvfz $DASDIR/collect-$4.tar.gz /tmp/$COLLECTG /tmp/$COLLECTN
+	rm -f /tmp/$COLLECTG
+	rm -f /tmp/$COLLECTN
     else
 	tar cvfz $DASDIR/collect-$4.tar.gz /tmp/$COLLECTG
+	rm -f /tmp/$COLLECTG
     fi
+
+    rm -f /var/tmp/COLDT*
 
     $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE$6$7 2>&1 | tee -a $LOGFILE
 
