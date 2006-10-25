@@ -27,6 +27,7 @@
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  03.03.01    NACL-Æ£¸¶    06/09/27  £²£°£°£¶Ç¯£±£°·î²þÀµÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -310,6 +311,9 @@
            COPY    "CPORCSAGECHK.INC".
       *    ´µ¼Ô¼«¸ÊÉéÃ´¶â¥ì¥»¥×¥Èµ­ºÜÈ½Äê
            COPY    "CPORCSFTNJGNCHK.INC".
+      *
+      *    ¥ì¥»¥×¥È¼ïÊÌÊÖµÑ¥µ¥Ö
+           COPY    "CPORCSSYUBETUGET.INC".
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
@@ -1300,6 +1304,96 @@
                    IF      WRK-AGE             <     3
                        MOVE    "3"             TO   WK-HONKZKKBN
                    END-IF
+               END-IF
+      * 
+               IF    ( WRK-PARA-SRYYMD(1:6)    >=  "200610" )
+                   EVALUATE    COMB-HKNNUM
+                       WHEN    "002" 
+                           EVALUATE   COMB-HOJOKBN
+                               WHEN   "A"
+                               WHEN   "B"
+                               WHEN   "C"
+                               WHEN   "9"
+                                   MOVE   "9"   TO   WK-HONKZKKBN
+                               WHEN   "D"
+                               WHEN   "E"
+                               WHEN   "F"
+                               WHEN   "8"
+                                   MOVE   "?"   TO   WK-HONKZKKBN
+                               WHEN   "G"
+                               WHEN   "H"
+                               WHEN   "I"
+                               WHEN   "7"
+                                   MOVE   "7"   TO   WK-HONKZKKBN
+                           END-EVALUATE
+                       WHEN    "031"  THRU    "034"  
+                           EVALUATE   COMB-HOJOKBN
+                               WHEN   "B"
+                               WHEN   "9"   
+                                   MOVE   "9"   TO   WK-HONKZKKBN
+                               WHEN   "E"
+                               WHEN   "8"
+                                   MOVE   "?"   TO   WK-HONKZKKBN
+                               WHEN   "H"
+                               WHEN   "7"
+                                   MOVE   "7"   TO   WK-HONKZKKBN
+                           END-EVALUATE
+                       WHEN    "060" 
+                       WHEN    "068" 
+                           IF  (WRK-AGE  >=   70)  AND
+                               (WRK-AGE  <=   74)
+                             EVALUATE    WRK-PARA-NYUGAIKBN
+                               WHEN    "1"
+                                   EVALUATE   COMB-HOJOKBN
+                                       WHEN   "1"
+                                       WHEN   "5"
+                                           MOVE   "9"  TO  WK-HONKZKKBN
+                                       WHEN   "2"
+                                       WHEN   "6"
+                                           MOVE   "8"  TO  WK-HONKZKKBN
+                                       WHEN   "3"
+                                           MOVE   "7"  TO  WK-HONKZKKBN
+                                   END-EVALUATE
+                               WHEN    "2"
+                                   EVALUATE   COMB-HOJOKBN
+                                       WHEN   "1"
+                                       WHEN   "4"
+                                           MOVE   "9"  TO  WK-HONKZKKBN
+                                       WHEN   "2"
+                                       WHEN   "5"
+                                           MOVE   "8"  TO  WK-HONKZKKBN
+                                       WHEN   "3"
+                                       WHEN   "6"
+                                           MOVE   "7"  TO  WK-HONKZKKBN
+                                   END-EVALUATE
+                             END-EVALUATE
+                           END-IF     
+                       WHEN    OTHER 
+                           EVALUATE   COMB-HOJOKBN
+                               WHEN   "9"
+                                   MOVE   "9"   TO   WK-HONKZKKBN
+                               WHEN   "8"
+                                   MOVE   "?"   TO   WK-HONKZKKBN
+                               WHEN   "7"
+                                   MOVE   "7"   TO   WK-HONKZKKBN
+                           END-EVALUATE
+                   END-EVALUATE
+                   IF      COMB-KOH1HKNNUM      =    "027"
+                       EVALUATE   COMB-KOH1PAYKBN
+                           WHEN   "01"
+                               MOVE   "9"   TO   WK-RJN                     
+                           WHEN   "02"
+                               MOVE   "?"   TO   WK-RJN
+                           WHEN   "03"
+                               MOVE   "7"   TO   WK-RJN
+                       END-EVALUATE
+                   END-IF
+               END-IF
+      *
+               IF    ( WRK-PARA-SRYYMD(1:6)
+                                           >=  "200210" )
+               AND   ( WRK-PARA-SRYYMD(1:6)
+                                           <=  "200609" )
       *
       *            £±³ä¡¢£²³äÉéÃ´¤Î¹âÎð¼Ô¤Î¾ì¹ç£×£Ë¡Ý£È£Ï£Î£Ë£Ú£Ë£Ë£Â£Î¤Ë
       *            "£¹"¤Þ¤¿¤Ï"£¸"¤ò¥»¥Ã¥È
@@ -1328,8 +1422,9 @@
                                    MOVE   "8"   TO   WK-HONKZKKBN
                            END-EVALUATE
                        WHEN    "060" 
-                           IF  (WRK-AGE        >=   70)  AND
-                               (WRK-AGE        <=   74)
+                       WHEN    "068" 
+                           IF  (WRK-AGE  >=   70)  AND
+                               (WRK-AGE  <=   74)
                                EVALUATE   COMB-HOJOKBN
                                    WHEN   "1"
                                    WHEN   "4"
@@ -1350,7 +1445,7 @@
                    IF      COMB-KOH1HKNNUM      =    "027"
                        EVALUATE   COMB-KOH1PAYKBN
                            WHEN   "01"
-                               MOVE   "9"   TO   WK-RJN
+                               MOVE   "9"   TO   WK-RJN                     
                            WHEN   "02"
                                MOVE   "8"   TO   WK-RJN
                        END-EVALUATE
@@ -1367,528 +1462,22 @@
                END-IF
            END-IF    
       *
-      *      DISPLAY "HONKZKKBN : " WK-HONKZKKBN 
-      *      DISPLAY "NYUGAIKBN : " TOUKEI04-NYUGAIKBN 
-      *      DISPLAY "IHO       : " WK-IHO 
-      *      DISPLAY "KOKUHO    : " WK-KOKUHO 
-      *      DISPLAY "RJN       : " WK-RJN 
-      *      DISPLAY "KOHI-CNT  : " WK-KOHI-CNT 
+           INITIALIZE                  ORCSSYUBETUGETAREA  
+           MOVE    WK-KOKUHO           TO  LNK-SYUBETUGET-KOKUHO
+           MOVE    WK-IHO              TO  LNK-SYUBETUGET-IHO
+           MOVE    WK-RJN              TO  LNK-SYUBETUGET-RJN
+           MOVE    WK-KOHI-CNT         TO  LNK-SYUBETUGET-KOHI-CNT
+           MOVE    WK-HONKZKKBN        TO  LNK-SYUBETUGET-HONKZKKBN
+           MOVE    TOUKEI04-NYUGAIKBN  TO  LNK-SYUBETUGET-NYUGAIKBN
+           MOVE    WRK-PARA-SRYYMD(1:6)
+                                       TO  LNK-SYUBETUGET-SRYYM
+           MOVE    TOUKEI04-HKNNUM     TO  LNK-SYUBETUGET-HKNNUM
+           CALL    "ORCSSYUBETUGET"    USING   ORCSSYUBETUGETAREA
       *
-      *    Ê¿À®£±£´Ç¯£¹·î¤Þ¤Ç
-           IF      WRK-PARA-SRYYMD(1:6)    <=      "200209"
-             EVALUATE  WK-HONKZKKBN ALSO TOUKEI04-NYUGAIKBN   ALSO
-                    WK-IHO ALSO WK-KOKUHO ALSO WK-RJN ALSO WK-KOHI-CNT
-               WHEN    "1"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  ZERO
-                   MOVE    1111            TO    TOUKEI04-RECESYUBETU
-               WHEN    ANY   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1111            TO    TOUKEI04-RECESYUBETU
-               WHEN    "1"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  ZERO
-                   MOVE    1112            TO    TOUKEI04-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1112            TO    TOUKEI04-RECESYUBETU
-               WHEN    "2"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  ZERO
-                   MOVE    1115            TO    TOUKEI04-RECESYUBETU
-               WHEN    "2"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  ZERO
-                   MOVE    1116            TO    TOUKEI04-RECESYUBETU
-               WHEN    "1"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO   1
-                   MOVE    1121            TO    TOUKEI04-RECESYUBETU
-               WHEN    ANY   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO   1
-                   MOVE    1121            TO    TOUKEI04-RECESYUBETU
-               WHEN    "1"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO   1
-                   MOVE    1122            TO    TOUKEI04-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO   1
-                   MOVE    1122            TO    TOUKEI04-RECESYUBETU
-               WHEN    "2"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO   1
-                   MOVE    1125            TO    TOUKEI04-RECESYUBETU
-               WHEN    "2"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO   1
-                   MOVE    1126            TO    TOUKEI04-RECESYUBETU
-               WHEN    "1"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO   2
-                   MOVE    1131            TO    TOUKEI04-RECESYUBETU
-               WHEN    ANY   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO   2
-                   MOVE    1131            TO    TOUKEI04-RECESYUBETU
-               WHEN    "1"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO   2
-               WHEN    "1"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO   3
-                   MOVE    1132            TO    TOUKEI04-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO   2
-                   MOVE    1132            TO    TOUKEI04-RECESYUBETU
-               WHEN    "2"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO   2
-                   MOVE    1135            TO    TOUKEI04-RECESYUBETU
-               WHEN    "2"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO   2
-                   MOVE    1136            TO    TOUKEI04-RECESYUBETU
-               WHEN    ANY   ALSO   "1"    ALSO
-                       SPACE ALSO   SPACE  ALSO  SPACE  ALSO   1
-                   MOVE    1211            TO    TOUKEI04-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       SPACE ALSO   SPACE  ALSO  SPACE  ALSO   1
-                   MOVE    1212            TO    TOUKEI04-RECESYUBETU
-               WHEN    ANY   ALSO   "1"    ALSO
-                       SPACE ALSO   SPACE  ALSO  SPACE  ALSO   2
-                   MOVE    1221            TO    TOUKEI04-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       SPACE ALSO   SPACE  ALSO  SPACE  ALSO   2
-                   MOVE    1222            TO    TOUKEI04-RECESYUBETU
-               WHEN    ANY   ALSO   "1"    ALSO
-                       SPACE ALSO   SPACE  ALSO  SPACE  ALSO   3
-                   MOVE    1231            TO    TOUKEI04-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       SPACE ALSO   SPACE  ALSO  SPACE  ALSO   3
-                   MOVE    1232            TO    TOUKEI04-RECESYUBETU
-               WHEN    ANY   ALSO   "1"    ALSO
-                       ANY   ALSO   ANY    ALSO  "1"    ALSO   ZERO
-                   MOVE    1311            TO    TOUKEI04-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       ANY   ALSO   ANY    ALSO  "1"    ALSO   ZERO
-                   MOVE    1312            TO    TOUKEI04-RECESYUBETU
-               WHEN    ANY   ALSO   "1"    ALSO
-                       ANY   ALSO   ANY    ALSO  "1"    ALSO   1
-                   MOVE    1321            TO    TOUKEI04-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       ANY   ALSO   ANY    ALSO  "1"    ALSO   1
-                   MOVE    1322            TO    TOUKEI04-RECESYUBETU
-               WHEN    ANY   ALSO   "1"    ALSO
-                       ANY   ALSO   ANY    ALSO  "1"    ALSO   2
-                   MOVE    1331            TO    TOUKEI04-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       ANY   ALSO   ANY    ALSO  "1"    ALSO   2
-                   MOVE    1332            TO    TOUKEI04-RECESYUBETU
-               WHEN    "1"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO   ZERO
-                   MOVE    1411            TO    TOUKEI04-RECESYUBETU
-               WHEN    "1"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO   ZERO
-                   MOVE    1412            TO    TOUKEI04-RECESYUBETU
-               WHEN    "2"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO   ZERO
-                   MOVE    1415            TO    TOUKEI04-RECESYUBETU
-               WHEN    "2"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO   ZERO
-                   MOVE    1416            TO    TOUKEI04-RECESYUBETU
-               WHEN    "1"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO   1
-                   MOVE    1421            TO    TOUKEI04-RECESYUBETU
-               WHEN    "1"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO   1
-                   MOVE    1422            TO    TOUKEI04-RECESYUBETU
-               WHEN    "2"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO   1
-                   MOVE    1425            TO    TOUKEI04-RECESYUBETU
-               WHEN    "2"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO   1
-                   MOVE    1426            TO    TOUKEI04-RECESYUBETU
-               WHEN    "1"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO   2
-                   MOVE    1431            TO    TOUKEI04-RECESYUBETU
-               WHEN    "1"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO   2
-                   MOVE    1432            TO    TOUKEI04-RECESYUBETU
-               WHEN    "1"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO   2
-                   MOVE    1435            TO    TOUKEI04-RECESYUBETU
-               WHEN    "2"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO   2
-                   MOVE    1436            TO    TOUKEI04-RECESYUBETU
-             END-EVALUATE
-           END-IF
-      *    Ê¿À®£±£´Ç¯£±£°·î²þÀµÂÐ±þ
-           IF      WRK-PARA-SRYYMD(1:6)    >=      "200210"
-             EVALUATE  WK-HONKZKKBN ALSO TOUKEI04-NYUGAIKBN   ALSO
-                    WK-IHO ALSO WK-KOKUHO ALSO WK-RJN ALSO WK-KOHI-CNT
-      *ÊÝ¸±Ã±ÆÈ
-               WHEN    "1"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  ZERO
-                   MOVE    1111            TO    TOUKEI04-RECESYUBETU
-               WHEN    "1"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1111            TO    TOUKEI04-RECESYUBETU
-               WHEN    "1"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  ZERO
-                   MOVE    1112            TO    TOUKEI04-RECESYUBETU
-               WHEN    "1"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1112            TO    TOUKEI04-RECESYUBETU
-               WHEN    "3"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  ZERO
-                   MOVE    1113            TO    TOUKEI04-RECESYUBETU
-               WHEN    "3"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1113            TO    TOUKEI04-RECESYUBETU
-               WHEN    "3"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  ZERO
-                   MOVE    1114            TO    TOUKEI04-RECESYUBETU
-               WHEN    "3"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1114            TO    TOUKEI04-RECESYUBETU
-               WHEN    "2"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  ZERO
-                   MOVE    1115            TO    TOUKEI04-RECESYUBETU
-               WHEN    "2"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1115            TO    TOUKEI04-RECESYUBETU
-               WHEN    "2"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  ZERO
-                   MOVE    1116            TO    TOUKEI04-RECESYUBETU
-               WHEN    "2"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1116            TO    TOUKEI04-RECESYUBETU
-               WHEN    "9"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  ZERO
-                   MOVE    1117            TO    TOUKEI04-RECESYUBETU
-               WHEN    "9"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1117            TO    TOUKEI04-RECESYUBETU
-               WHEN    "9"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  ZERO
-                   MOVE    1118            TO    TOUKEI04-RECESYUBETU
-               WHEN    "9"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1118            TO    TOUKEI04-RECESYUBETU
-               WHEN    "8"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  ZERO
-                   MOVE    1119            TO    TOUKEI04-RECESYUBETU
-               WHEN    "8"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1119            TO    TOUKEI04-RECESYUBETU
-               WHEN    "8"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  ZERO
-                   MOVE    1110            TO    TOUKEI04-RECESYUBETU
-               WHEN    "8"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1110            TO    TOUKEI04-RECESYUBETU
-               WHEN    "1"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO   1
-                   MOVE    1121            TO    TOUKEI04-RECESYUBETU
-      *ÊÝ¸±¤È¸øÈñ£±¼ï¤ÎÊ»ÍÑ
-               WHEN    "1"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  1
-                   MOVE    1121            TO    TOUKEI04-RECESYUBETU
-               WHEN    "1"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  1
-                   MOVE    1121            TO    TOUKEI04-RECESYUBETU
-               WHEN    "1"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  1
-                   MOVE    1122            TO    TOUKEI04-RECESYUBETU
-               WHEN    "1"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  1
-                   MOVE    1122            TO    TOUKEI04-RECESYUBETU
-               WHEN    "3"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  1
-                   MOVE    1123            TO    TOUKEI04-RECESYUBETU
-               WHEN    "3"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  1
-                   MOVE    1123            TO    TOUKEI04-RECESYUBETU
-               WHEN    "3"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  1
-                   MOVE    1124            TO    TOUKEI04-RECESYUBETU
-               WHEN    "3"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  1
-                   MOVE    1124            TO    TOUKEI04-RECESYUBETU
-               WHEN    "2"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  1
-                   MOVE    1125            TO    TOUKEI04-RECESYUBETU
-               WHEN    "2"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  1
-                   MOVE    1125            TO    TOUKEI04-RECESYUBETU
-               WHEN    "2"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  1
-                   MOVE    1126            TO    TOUKEI04-RECESYUBETU
-               WHEN    "2"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  1
-                   MOVE    1126            TO    TOUKEI04-RECESYUBETU
-               WHEN    "9"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  1
-                   MOVE    1127            TO    TOUKEI04-RECESYUBETU
-               WHEN    "9"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  1
-                   MOVE    1127            TO    TOUKEI04-RECESYUBETU
-               WHEN    "9"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  1
-                   MOVE    1128            TO    TOUKEI04-RECESYUBETU
-               WHEN    "9"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  1
-                   MOVE    1128            TO    TOUKEI04-RECESYUBETU
-               WHEN    "8"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  1
-                   MOVE    1129            TO    TOUKEI04-RECESYUBETU
-               WHEN    "8"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  1
-                   MOVE    1129            TO    TOUKEI04-RECESYUBETU
-               WHEN    "8"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  1
-                   MOVE    1120            TO    TOUKEI04-RECESYUBETU
-               WHEN    "8"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  1
-                   MOVE    1120            TO    TOUKEI04-RECESYUBETU
-      *ÊÝ¸±¤È¸øÈñ£²¼ï¤ÎÊ»ÍÑ
-               WHEN    "1"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  2
-                   MOVE    1131            TO    TOUKEI04-RECESYUBETU
-               WHEN    "1"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  2
-                   MOVE    1131            TO    TOUKEI04-RECESYUBETU
-               WHEN    "1"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  2
-                   MOVE    1132            TO    TOUKEI04-RECESYUBETU
-               WHEN    "1"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  2
-                   MOVE    1132            TO    TOUKEI04-RECESYUBETU
-               WHEN    "3"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  2
-                   MOVE    1133            TO    TOUKEI04-RECESYUBETU
-               WHEN    "3"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  2
-                   MOVE    1133            TO    TOUKEI04-RECESYUBETU
-               WHEN    "3"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  2
-                   MOVE    1134            TO    TOUKEI04-RECESYUBETU
-               WHEN    "3"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  2
-                   MOVE    1134            TO    TOUKEI04-RECESYUBETU
-               WHEN    "2"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  2
-                   MOVE    1135            TO    TOUKEI04-RECESYUBETU
-               WHEN    "2"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  2
-                   MOVE    1135            TO    TOUKEI04-RECESYUBETU
-               WHEN    "2"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  2
-                   MOVE    1136            TO    TOUKEI04-RECESYUBETU
-               WHEN    "2"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  2
-                   MOVE    1136            TO    TOUKEI04-RECESYUBETU
-               WHEN    "9"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  2
-                   MOVE    1137            TO    TOUKEI04-RECESYUBETU
-               WHEN    "9"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  2
-                   MOVE    1137            TO    TOUKEI04-RECESYUBETU
-               WHEN    "9"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  2
-                   MOVE    1138            TO    TOUKEI04-RECESYUBETU
-               WHEN    "9"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  2
-                   MOVE    1138            TO    TOUKEI04-RECESYUBETU
-               WHEN    "8"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  2
-                   MOVE    1139            TO    TOUKEI04-RECESYUBETU
-               WHEN    "8"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  2
-                   MOVE    1139            TO    TOUKEI04-RECESYUBETU
-               WHEN    "8"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  2
-                   MOVE    1130            TO    TOUKEI04-RECESYUBETU
-               WHEN    "8"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  2
-                   MOVE    1130            TO    TOUKEI04-RECESYUBETU
-      *¸øÈñÃ±ÆÈ
-               WHEN    ANY   ALSO   "1"    ALSO
-                       SPACE ALSO   SPACE  ALSO  SPACE  ALSO   1
-                   MOVE    1211            TO    TOUKEI04-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       SPACE ALSO   SPACE  ALSO  SPACE  ALSO   1
-                   MOVE    1212            TO    TOUKEI04-RECESYUBETU
-      *£²¼ï¤Î¸øÈñÊ»ÍÑ
-               WHEN    ANY   ALSO   "1"    ALSO
-                       SPACE ALSO   SPACE  ALSO  SPACE  ALSO   2
-                   MOVE    1221            TO    TOUKEI04-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       SPACE ALSO   SPACE  ALSO  SPACE  ALSO   2
-                   MOVE    1222            TO    TOUKEI04-RECESYUBETU
-      *£³¼ï¤Î¸øÈñÊ»ÍÑ
-               WHEN    ANY   ALSO   "1"    ALSO
-                       SPACE ALSO   SPACE  ALSO  SPACE  ALSO   3
-                   MOVE    1231            TO    TOUKEI04-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       SPACE ALSO   SPACE  ALSO  SPACE  ALSO   3
-                   MOVE    1232            TO    TOUKEI04-RECESYUBETU
-      *Ï·¿ÍÃ±ÆÈ
-               WHEN    ANY   ALSO   "1"    ALSO
-                       "1"   ALSO   ANY    ALSO  "9"    ALSO   ZERO
-                   MOVE    1317            TO    TOUKEI04-RECESYUBETU
-               WHEN    ANY   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  "9"    ALSO   ZERO
-                   MOVE    1317            TO    TOUKEI04-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       "1"   ALSO   ANY    ALSO  "9"    ALSO   ZERO
-                   MOVE    1318            TO    TOUKEI04-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  "9"    ALSO   ZERO
-                   MOVE    1318            TO    TOUKEI04-RECESYUBETU
-               WHEN    ANY   ALSO   "1"    ALSO
-                       "1"   ALSO   ANY    ALSO  "8"    ALSO   ZERO
-                   MOVE    1319            TO    TOUKEI04-RECESYUBETU
-               WHEN    ANY   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  "8"    ALSO   ZERO
-                   MOVE    1319            TO    TOUKEI04-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       "1"   ALSO   ANY    ALSO  "8"    ALSO   ZERO
-                   MOVE    1310            TO    TOUKEI04-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  "8"    ALSO   ZERO
-                   MOVE    1310            TO    TOUKEI04-RECESYUBETU
-      *Ï·¿Í¤È¸øÈñ£±¼ï¤ÎÊ»ÍÑ
-               WHEN    ANY   ALSO   "1"    ALSO
-                       "1"   ALSO   ANY    ALSO  "9"    ALSO   1
-                   MOVE    1327            TO    TOUKEI04-RECESYUBETU
-               WHEN    ANY   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  "9"    ALSO   1
-                   MOVE    1327            TO    TOUKEI04-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       "1"   ALSO   ANY    ALSO  "9"    ALSO   1
-                   MOVE    1328            TO    TOUKEI04-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  "9"    ALSO   1
-                   MOVE    1328            TO    TOUKEI04-RECESYUBETU
-               WHEN    ANY   ALSO   "1"    ALSO
-                       "1"   ALSO   ANY    ALSO  "8"    ALSO   1
-                   MOVE    1329            TO    TOUKEI04-RECESYUBETU
-               WHEN    ANY   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  "8"    ALSO   1
-                   MOVE    1329            TO    TOUKEI04-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       "1"   ALSO   ANY    ALSO  "8"    ALSO   1
-                   MOVE    1320            TO    TOUKEI04-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  "8"    ALSO   1
-                   MOVE    1320            TO    TOUKEI04-RECESYUBETU
-      *Ï·¿Í¤È¸øÈñ£²¼ï¤ÎÊ»ÍÑ
-               WHEN    ANY   ALSO   "1"    ALSO
-                       "1"   ALSO   ANY    ALSO  "9"    ALSO   2
-                   MOVE    1337            TO    TOUKEI04-RECESYUBETU
-               WHEN    ANY   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  "9"    ALSO   2
-                   MOVE    1337            TO    TOUKEI04-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       "1"   ALSO   ANY    ALSO  "9"    ALSO   2
-                   MOVE    1338            TO    TOUKEI04-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  "9"    ALSO   2
-                   MOVE    1338            TO    TOUKEI04-RECESYUBETU
-               WHEN    ANY   ALSO   "1"    ALSO
-                       "1"   ALSO   ANY    ALSO  "8"    ALSO   2
-                   MOVE    1339            TO    TOUKEI04-RECESYUBETU
-               WHEN    ANY   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  "8"    ALSO   2
-                   MOVE    1339            TO    TOUKEI04-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       "1"   ALSO   ANY    ALSO  "8"    ALSO   2
-                   MOVE    1330            TO    TOUKEI04-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  "8"    ALSO   2
-                   MOVE    1330            TO    TOUKEI04-RECESYUBETU
-      *Âà¿¦¼ÔÃ±ÆÈ
-               WHEN    "1"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1411            TO    TOUKEI04-RECESYUBETU
-               WHEN    "1"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1412            TO    TOUKEI04-RECESYUBETU
-               WHEN    "3"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1413            TO    TOUKEI04-RECESYUBETU
-               WHEN    "3"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1414            TO    TOUKEI04-RECESYUBETU
-               WHEN    "2"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1415            TO    TOUKEI04-RECESYUBETU
-               WHEN    "2"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1416            TO    TOUKEI04-RECESYUBETU
-               WHEN    "9"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1417            TO    TOUKEI04-RECESYUBETU
-               WHEN    "9"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1418            TO    TOUKEI04-RECESYUBETU
-               WHEN    "8"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1409            TO    TOUKEI04-RECESYUBETU
-               WHEN    "8"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1410            TO    TOUKEI04-RECESYUBETU
-      *Âà¿¦¼Ô¤È¸øÈñ£±¼ï¤ÎÊ»ÍÑ
-               WHEN    "1"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  1
-                   MOVE    1421            TO    TOUKEI04-RECESYUBETU
-               WHEN    "1"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  1
-                   MOVE    1422            TO    TOUKEI04-RECESYUBETU
-               WHEN    "3"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  1
-                   MOVE    1423            TO    TOUKEI04-RECESYUBETU
-               WHEN    "3"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  1
-                   MOVE    1424            TO    TOUKEI04-RECESYUBETU
-               WHEN    "2"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  1
-                   MOVE    1425            TO    TOUKEI04-RECESYUBETU
-               WHEN    "2"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  1
-                   MOVE    1426            TO    TOUKEI04-RECESYUBETU
-               WHEN    "9"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  1
-                   MOVE    1427            TO    TOUKEI04-RECESYUBETU
-               WHEN    "9"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  1
-                   MOVE    1428            TO    TOUKEI04-RECESYUBETU
-               WHEN    "8"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  1
-                   MOVE    1429            TO    TOUKEI04-RECESYUBETU
-               WHEN    "8"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  1
-                   MOVE    1420            TO    TOUKEI04-RECESYUBETU
-      *Âà¿¦¼Ô¤È¸øÈñ£²¼ï¤ÎÊ»ÍÑ
-               WHEN    "1"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  2
-                   MOVE    1431            TO    TOUKEI04-RECESYUBETU
-               WHEN    "1"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  2
-                   MOVE    1432            TO    TOUKEI04-RECESYUBETU
-               WHEN    "3"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  2
-                   MOVE    1433            TO    TOUKEI04-RECESYUBETU
-               WHEN    "3"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  2
-                   MOVE    1434            TO    TOUKEI04-RECESYUBETU
-               WHEN    "2"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  2
-                   MOVE    1435            TO    TOUKEI04-RECESYUBETU
-               WHEN    "2"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  2
-                   MOVE    1436            TO    TOUKEI04-RECESYUBETU
-               WHEN    "9"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  2
-                   MOVE    1437            TO    TOUKEI04-RECESYUBETU
-               WHEN    "9"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  2
-                   MOVE    1438            TO    TOUKEI04-RECESYUBETU
-               WHEN    "8"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  2
-                   MOVE    1439            TO    TOUKEI04-RECESYUBETU
-               WHEN    "8"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  2
-                   MOVE    1430            TO    TOUKEI04-RECESYUBETU
-             END-EVALUATE
-           END-IF
+           MOVE    LNK-SYUBETUGET-RECESYUBETU
+                                        TO  TOUKEI04-RECESYUBETU
+      *
+      *    DISPLAY "TOUKEI04-RECESYUBETU=" TOUKEI04-RECESYUBETU
            .
        20021-RECESYUBETU-SET-EXT.
            EXIT.
