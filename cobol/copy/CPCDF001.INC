@@ -136,7 +136,7 @@
       *        自宅−郵便番号
                05  COLDAT01-HOME-POST       PIC  X(07).
       *    保険組合せ
-           03 COLDAT01-HKNCOMBIINF.
+           03  COLDAT01-HKNCOMBIINF.
                05  COLDAT01-HKNCOMBIINF     OCCURS  10.
       *保険組合せ番号
                    07  COLDAT01-HKNCOMBI    PIC  9(04).
@@ -150,9 +150,12 @@
       *組合せ公費保険ＩＤ
                        09  COLDAT01-KOHIDHC PIC  9(10).
       *    診療科情報
-           03 COLDAT01-SRYKAINF.
+           03  COLDAT01-SRYKAINF.
                05  COLDAT01-SRYKA           PIC  X(02)  OCCURS  20.
-      *
+      *    入院年月日
+           03  COLDAT01-NYUINYMD            PIC  X(08).
+      *    退院年月日
+           03  COLDAT01-TAIINYMD            PIC  X(08).
       *    審査支払機関
            03  COLDAT01-TEISYUTUSAKI        PIC  9(01).
       *    レセプト種別

@@ -1790,6 +1790,10 @@
                                        TO  TBL-NYUINKA (IDX-DAY)
                END-PERFORM
              END-IF
+             MOVE    PTNYUINRRK-NYUINYMD
+                                       TO  COLDAT01-NYUINYMD
+             MOVE    PTNYUINRRK-TAIINYMD
+                                       TO  COLDAT01-TAIINYMD
              PERFORM 900-PTNYUINRRK-KEY41-FET-SEC
            END-PERFORM
       *
@@ -1809,6 +1813,9 @@
            INITIALIZE                  TBL-JNISSU
            INITIALIZE                  TBL-JNISSU-GEN
            INITIALIZE                  TBL-TOTALTENSU-INF
+           INITIALIZE                  TBL-SKJNISSU-INF
+           INITIALIZE                  TBL-SKJRYOYOHI-INF
+           INITIALIZE                  TBL-SKJFTN-INF
       *
       *    テスト患者のときは読み飛ばす
            MOVE    WRK-PARA-HOSPID         TO  PTINF-HOSPID

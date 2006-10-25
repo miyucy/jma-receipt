@@ -611,11 +611,11 @@
            MOVE    8                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *    入院年月日
-           MOVE    SPACE               TO  WRK-DATA
+           MOVE    COLDAT01-NYUINYMD   TO  WRK-DATA
            MOVE    8                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *    退院年月日
-           MOVE    SPACE               TO  WRK-DATA
+           MOVE    COLDAT01-TAIINYMD   TO  WRK-DATA
            MOVE    8                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *    診療実日数
