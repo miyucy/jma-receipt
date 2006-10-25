@@ -513,7 +513,7 @@
       <y>592</y>
       <width>300</width>
       <height>20</height>
-      <label>「社会保険研究所」様の著作物です。</label>
+      <label>（株）社会保険研究所の著作物です。</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>True</wrap>
       <xalign>0.5</xalign>
