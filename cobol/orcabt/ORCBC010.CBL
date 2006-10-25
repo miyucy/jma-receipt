@@ -401,6 +401,10 @@
            COPY    "CPCDF002.INC"  REPLACING  //COLDAT02//
                                    BY         //COLDATWRK//.
       *
+       01  WRK-NYUTAIIN.
+           03  WRK-NYUINYMD                PIC  X(08).
+           03  WRK-TAIINYMD                PIC  X(08).
+      *
        01  WRK-CONS-AREA.
       *
       *    生活保護保険番号 
@@ -1076,6 +1080,7 @@
            INITIALIZE                  TBL-SKJNISSU-INF
            INITIALIZE                  TBL-SKJRYOYOHI-INF
            INITIALIZE                  TBL-SKJFTN-INF
+           MOVE    SPACE               TO  WRK-NYUTAIIN
            MOVE    ZERO                TO  WRK-ZAINUM
       *
       *    テスト患者のときは読み飛ばす
@@ -1699,9 +1704,6 @@
                  MOVE  COLDAT02-ZAIKAISU       TO  ACCT-ZAIKAISU
                  PERFORM 200312-TOTALTEN-TAIHI-SEC
                END-IF
-      *ito ------------------------------------------------
-      *  診療科が異なる場合のZAINUMとZAISEQの対応
-      *----------------------------------------------------
                PERFORM UNTIL   COLDATWRK-ZAIKAISU  =   ZERO
                    MOVE    COLDATWRK-REC       TO  COLDAT02-REC
                    MOVE    ZERO                TO  COLDAT02-ZAIKAISU
@@ -1791,9 +1793,9 @@
                END-PERFORM
              END-IF
              MOVE    PTNYUINRRK-NYUINYMD
-                                       TO  COLDAT01-NYUINYMD
+                                       TO  WRK-NYUINYMD
              MOVE    PTNYUINRRK-TAIINYMD
-                                       TO  COLDAT01-TAIINYMD
+                                       TO  WRK-TAIINYMD
              PERFORM 900-PTNYUINRRK-KEY41-FET-SEC
            END-PERFORM
       *
@@ -2700,6 +2702,14 @@
                END-IF
       *        レセプト種別
                PERFORM 20021-RECESYUBETU-SET-SEC
+      *
+               IF      WRK-PARA-NYUGAIKBN   =  "1"
+                   MOVE    WRK-NYUINYMD TO  COLDAT01-NYUINYMD
+                   MOVE    WRK-TAIINYMD TO  COLDAT01-TAIINYMD
+               ELSE
+                   MOVE    SPACE        TO  COLDAT01-NYUINYMD
+                   MOVE    SPACE        TO  COLDAT01-TAIINYMD
+               END-IF
       *
                WRITE   COLDAT01-REC
                ADD     1                    TO  CNT-COLDAT01
