@@ -830,15 +830,15 @@
                    PERFORM 900-HKNNUM-INV-SEC
       *            Ê¡²¬¸©¤Î¹ñÊÝ¤Î¤È¤­¡Ê£´£±Ï·¿Í°Ê³°¡Ë
                    IF    ( COMB-HKNNUM         =   "060"   OR  "067" )
-                   AND   ( LNK-SYUBETU-PREFNUM =   "40"              )
-                   AND   ( HKN-HBTNUM      NOT =   "41"              )    
+                   AND   ( LNK-SYUBETU-PREFNUM =   40                )
+                   AND   ( HKN-HBTNUM      NOT =   "41"              )
                    AND   ( COMB-KOHHKNNUM(IDX)(1:1)
-                                              >=  "1" AND <=  " 8"   )
+                                              >=  "1" AND <=  "8"   )
                        PERFORM 200191-PREFKBN-40-CHECK-SEC
                    ELSE
       *                Ê¡²¬¸©¤Î¼ÒÊÝ¤Î¤È¤­¡Ê£´£±Ï·¿Í¡Ë
                        IF    ( COMB-HKNNUM     NOT =   "060" AND "067" )
-                       AND   ( LNK-SYUBETU-PREFNUM =   "40"            )
+                       AND   ( LNK-SYUBETU-PREFNUM =    40            )
                        AND   ( HKN-HBTNUM          =   "41"            )    
                            IF      COMB-HONKZKKBN      =   "1" 
                                MOVE    2                   TO  IDX1
@@ -1144,6 +1144,7 @@
       *    Ê¡²¬¸©¸øÈñ¥Á¥§¥Ã¥¯½èÍý
       *****************************************************************
        200191-PREFKBN-40-CHECK-SEC      SECTION.
+      *??
       *
            IF    ( LNK-SYUBETU-SRYYM    >  WRK-CONS-SRYYM-200609 )
            AND   ( COMB-KOHHKNNUM (IDX)
