@@ -121,6 +121,8 @@
       *  03.03.01    NACL-Æ£¸¶    06/09/27  ·îÅÓÃæ¤Ç¤Î»áÌ¾ÊÑ¹¹ÂÐ±þ
       *  03.03.02    NACL-Æ£¸¶    06/10/15  £²£°£°£¶Ç¯£±£°·î²þÀµÂÐ±þ
       *                                     ¸øÈñ¤ÎÄÉ²Ã
+      *  03.03.03    NACL-Æ£¸¶    06/10/25  £²£°£°£¶Ç¯£±£°·î²þÀµÂÐ±þ
+      *                                     Ê¡²¬ÃÏÊý¸øÈñ¤Î¾ã³²
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1089,14 +1091,12 @@
                    AND   ( HKN-HBTNUM      NOT =   "41"              )    
                    AND   ( COMB-KOHHKNNUM(IDX)(1:1)
                                               >=  "1" AND <=  "8"    )
-                   AND   ( WRK-STYMD (1:6)    <=   "200609"         ) 
                        PERFORM 20011-PREFKBN-40-CHECK-SEC
                    ELSE
       *                Ê¡²¬¸©¤Î¼ÒÊÝ¤Î¤È¤­¡Ê£´£±Ï·¿Í¡Ë
                        IF    ( COMB-HKNNUM     NOT =   "060" AND "067" )
                        AND   ( SYS-1001-PREFNUM    =   "40"            )
                        AND   ( HKN-HBTNUM          =   "41"            )    
-                       AND   ( WRK-STYMD (1:6)     <=   "200609"       ) 
                            IF      COMB-HONKZKKBN      =   "1" 
                                MOVE    2                   TO  IDX1
                            ELSE
@@ -1231,6 +1231,12 @@
       *    Ê¡²¬¸©¸øÈñ¥Á¥§¥Ã¥¯½èÍý
       *****************************************************************
        20011-PREFKBN-40-CHECK-SEC      SECTION.
+      *
+           IF    ( WRK-STYMD (1:6)    >=  "200610" )
+           AND   ( COMB-KOHHKNNUM (IDX)
+                                   NOT =   "180"   )
+               GO  TO  20011-PREFKBN-40-CHECK-EXT
+           END-IF 
       *
            MOVE    SPACE               TO  WRK-PREFKBN
                                            WRK-PREFNUM
