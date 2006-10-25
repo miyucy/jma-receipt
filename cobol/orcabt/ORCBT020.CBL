@@ -28,6 +28,9 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-藤原    04/02/01  病名コード２１に変更
+      *
+      *  03.03.01    NACL-藤原    06/10/10  主保険がない場合、精神入院は
+      *                                     公費単独のレセプトとする
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -626,8 +629,10 @@
            MOVE    10                  TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
       *    保険者番号
-           MOVE    TOUKEI02-HKNJANUM   TO  WRK-DATA
-           MOVE    8                   TO  WRK-NAGASA
+           IF      TOUKEI02-HKNNUM NOT =   SPACE    
+               MOVE    TOUKEI02-HKNJANUM   TO  WRK-DATA
+               MOVE    8                   TO  WRK-NAGASA
+           END-IF
            PERFORM 5004-MOJI-HENSYU-SEC  
       *
       *    保険情報取得

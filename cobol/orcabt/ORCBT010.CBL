@@ -60,6 +60,8 @@
       *  03.00.01    NACL-藤原    06/06/07  包括の場合のデータ作成の修正
       *
       *  03.03.02    NACL-藤原    06/09/27  ２００６年１０月改正対応
+      *  03.03.02    NACL-藤原    06/10/10  主保険がない場合、精神入院は
+      *                                     公費単独のレセプトとする
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1294,6 +1296,11 @@
            END-IF
       *
            MOVE    PTHKN-HKNJANUM      TO  TOUKEI01-HKNJANUM
+           IF    ( COMB-HKNNUM        =   SPACE )
+           AND   ( COMB-KOH1HKNNUM    =   "020" )
+               MOVE    COMB-KOH1HKNNUM       TO  TOUKEI01-HKNJANUM
+           END-IF
+      *
            IF      WRK-PARA-SRYYM      <=   "200609"
              EVALUATE    PTHKN-HKNNUM
                WHEN    "002"
