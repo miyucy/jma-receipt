@@ -47,6 +47,7 @@
            03  WRK-PARA-PROGNAME         PIC  X(20).
            03  WRK-PARA-KBNID            PIC  X(01).
            03  WRK-PARA-RESULT           PIC  X(01).
+           03  WRK-PARA-OBJECTYYM        PIC  X(06).
            03  WRK-PARA-ERRCD            PIC  X(04).
            03  WRK-PARA-MSG              PIC  X(200).
       *    ジョブ管理マスタ
@@ -92,6 +93,7 @@
                                        INTO    WRK-PARA-PROGNAME
                                                WRK-PARA-KBNID
                                                WRK-PARA-RESULT
+                                               WRK-PARA-OBJECTYYM
                                                WRK-PARA-ERRCD
                                                WRK-PARA-MSG
            PERFORM 500-SYSYMD-HENSYU-SEC
@@ -107,6 +109,7 @@
            DISPLAY "ORCBJOBLOG:" WRK-PARA-PROGNAME "##"
            DISPLAY "ORCBJOBLOG:" WRK-PARA-KBNID "##"
            DISPLAY "ORCBJOBLOG:" WRK-PARA-RESULT "##"
+           DISPLAY "ORCBJOBLOG:" WRK-PARA-OBJECTYYM "##"
            DISPLAY "ORCBJOBLOG:" WRK-PARA-ERRCD "##"
            DISPLAY "ORCBJOBLOG:" WRK-PARA-MSG "##"
            DISPLAY "ORCBJOBLOG:" WRK-SYSYMD-8 "##"
