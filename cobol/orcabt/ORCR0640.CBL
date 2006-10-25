@@ -9750,8 +9750,10 @@
                                            NOT =   SPACE
                            PERFORM VARYING IDXX    FROM    1   BY  1
                                    UNTIL   IDXX    >       4
-                               IF      WRK-RECE62-KOHNUMHC (IDX IDY)   =
-                                                   RECE62-KOHNUM (IDXX)
+                               IF   (WRK-RECE62-KOHNUMHC (IDX IDY)   =
+                                                  RECE62-KOHNUM (IDXX))
+                               AND  (WRK-RECE62-KOHIDHC  (IDX IDY)   =
+                                                  RECE62-KOHID  (IDXX))
                                    MOVE    WRK-RECE62-KOHNUMHCINF
                                                          (IDX IDY)
                                                    TO
