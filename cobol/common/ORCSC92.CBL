@@ -518,6 +518,12 @@
            IF     (SPA-ERRCD           =   SPACE  )  AND
                   (LNK-SC92-INFLG      =   "1"    )
                PERFORM 200-INPUT-SURYO-CHK-SEC
+               IF     (LNK-SC92-SRYCD(1:1) =   "6" ) AND
+                      (SPA-ERRCD(1:1)      =   "A" )
+                   PERFORM 3002-KOUHATU-MEISYO-SEC
+                   MOVE    WRK-MEISYO      TO  SPA-GMN-MEISYO
+                                                        (IDX-T)
+               END-IF
            END-IF
       *    算定回数チェック
            IF      LNK-SC92-KBN    NOT =   "6"
@@ -1761,7 +1767,7 @@
            ELSE
       *        Ｈ１８．１０ からの追加
                IF      SPA-SRYYMD      >=  "20061001"
-      *            矯正固定〜肛門処置
+      *             矯正固定〜肛門処置
                    IF     (LNK-SC92-SRYCD      =   "140030350"
                                                OR  "140048250"
                                                OR  "140048350"
@@ -2182,15 +2188,8 @@
                    MOVE    WRK-MEISYO    TO  SPA-GMN-MEISYO (IDX-T)
                END-IF
       *        後発医薬品区分編集
-               IF     (SPA-COM-INPUTCD (IDX-T)(1:1)    =   "6") AND
-                      (TNS-KOUHATUKBN                  =   1  )
+               IF     (SPA-COM-INPUTCD (IDX-T)(1:1)    =   "6")
                    PERFORM 3002-KOUHATU-MEISYO-SEC
-                   MOVE    WRK-MEISYO    TO  SPA-GMN-MEISYO (IDX-T)
-               END-IF
-      *        後発医薬品あり編集
-               IF     (SPA-COM-INPUTCD (IDX-T)(1:1)    =   "6") AND
-                      (TNS-KOUHATUKBN                  =   2  )
-                   PERFORM 3002-KOUHATU-MEISYO-2-SEC
                    MOVE    WRK-MEISYO    TO  SPA-GMN-MEISYO (IDX-T)
                END-IF
       *       後発医薬品変更再編集
@@ -2489,28 +2488,25 @@
       *****************************************************************
        3002-KOUHATU-MEISYO-SEC        SECTION.
       *
-           MOVE    SPACE               TO  WRK-MEISYO
-      *
-           STRING     "【後】"         DELIMITED   BY  SIZE
-                      TNS-NAME         DELIMITED   BY  SIZE
-                      INTO             WRK-MEISYO
-           END-STRING
+           MOVE    TNS-NAME            TO  WRK-MEISYO
+           EVALUATE    TNS-KOUHATUKBN
+               WHEN    1
+      *            後発品
+                   MOVE    SPACE               TO  WRK-MEISYO
+                   STRING      "【後】"         DELIMITED   BY  SIZE
+                               TNS-NAME         DELIMITED   BY  SIZE
+                               INTO             WRK-MEISYO
+                   END-STRING
+               WHEN    2
+      *            後発品のある先発品
+                   MOVE    SPACE               TO  WRK-MEISYO
+                   STRING      "【先】"         DELIMITED   BY  SIZE
+                               TNS-NAME         DELIMITED   BY  SIZE
+                               INTO             WRK-MEISYO
+                   END-STRING
+           END-EVALUATE
            .
        3002-KOUHATU-MEISYO-EXT.
-           EXIT.
-      *****************************************************************
-      *     後発医薬品あり区分再編集処理
-      *****************************************************************
-       3002-KOUHATU-MEISYO-2-SEC        SECTION.
-      *
-           MOVE    SPACE               TO  WRK-MEISYO
-      *
-           STRING     "【先】"         DELIMITED   BY  SIZE
-                      TNS-NAME         DELIMITED   BY  SIZE
-                      INTO             WRK-MEISYO
-           END-STRING
-           .
-       3002-KOUHATU-MEISYO-2-EXT.
            EXIT.
       ******************************************************************
       *     後発医薬品変更再編集処理
