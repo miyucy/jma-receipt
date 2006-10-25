@@ -101,11 +101,14 @@
            03  FILLER               PIC X(08)   VALUE   "ORHCML09".
            03  FILLER               PIC X(40)   VALUE
                                     "自院病名一覧".
+           03  FILLER               PIC X(08)   VALUE   "COLLECT".
+           03  FILLER               PIC X(40)   VALUE
+                                    "データ収集".
       *
        01  MNAME-DATA-REC-R         REDEFINES   MNAME-DATA-REC.
-           03  MNAME-TBL-OCC        OCCURS      22  INDEXED TBL-IDX.
+           03  MNAME-TBL-OCC        OCCURS      23  INDEXED TBL-IDX.
                05  MNAME-SHELLID    PIC X(08).
                05  MNAME-JOBNAME    PIC X(40).
       *
-       01  MNAME-MAX                PIC 9(04)   VALUE   22.
+       01  MNAME-MAX                PIC 9(04)   VALUE   23.
       *
