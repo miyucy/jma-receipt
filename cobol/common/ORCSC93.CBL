@@ -53,21 +53,6 @@
       * 01.00.22     NACL-多々納  05/08/12  包括検査 ０９，１０の追加
       * 01.00.23     NACL-多々納  06/01/23  用量割合コード追加
       * 01.00.24     NACL-多々納  06/03/XX  Ｈ１８．４改正対応
-      * 03.04.00     NACL-多々納  06/12/19  外用薬の内服算定追加
-      * 04.01.00     NACL-多々納  07/10/XX  悪性腫瘍検査自動設定対応
-      * 04.03.00     NACL-多々納  08/07/01  検査加算種別対応他
-      * 04.04.00     NACL-多々納  08/12/21  出来高算定コード対応
-      * 04.04.00     NACL-多々納  09/01/09  包括検査コメント編集追加
-      * 04.04.00     NACL-多々納  09/02/12  外来まとめ対応
-      * 04.05.00     NACL-多々納  10/01/XX  治験対応
-      * 04.06.00     NACL-多々納  10/12/01  自賠責金額入力対応
-      * 04.07.00     NACL-多々納  12/08/28  薬剤料減点対応
-      * 04.07.00     NACL-多々納  13/07/XX  第三者行為対応
-      * 04.07.00     NACL-多々納  14/06/XX  外用薬（臨時投薬）対応
-      * 04.07.00     NACL-多々納  14/09/XX  Ｈ２６年１０月改正対応
-      * 04.07.00     NACL-多々納  15/03/XX  Ｈ２７年４月改正対応他
-      * 04.08.00     NACL-多々納  16/03/XX  Ｈ２８年４月改正対応他
-      * 04.08.00     NACL-多々納  16/08/XX  持参薬予約コード対応
       *****************************************************************
       *
       *
@@ -95,31 +80,12 @@
            03  FLG-JIHI            PIC 9(01).
       *    手技料フラグ
            03  FLG-SYUGI           PIC 9(01).
-      *H28.4
-           03  FLG-KSNARI          PIC 9(01).
       *    １剤フラグ
            03  FLG-ZAI             PIC 9(01).
       *    発生日フラグ
            03  FLG-HASSYO          PIC 9(01).
-      *    処方せん料フラグ
-           03  FLG-SYOHO           PIC 9(01).
       *
            03  FLG-ZEN             PIC 9(01).
-           03  FLG-HOUKATU         PIC 9(01).
-      *@@
-      *    悪性腫瘍指導料あり
-           03  FLG-AKUSEI-ARI      PIC 9(01).
-      *    コメント以外あり
-           03  FLG-CONTCHK         PIC 9(01).
-      *    薬評・器評
-           03  FLG-YAKUHYO         PIC 9(01).
-      *    減点分
-           03  FLG-GENTEN          PIC 9(01).
-      *H28.9 持参薬予約コード
-           03  FLG-JISANYAKU       PIC 9(01).
-      *
-       01  FLG-AREA2.
-           03  FLG-KENSA-CHK       PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -135,9 +101,6 @@
            03  IDX-TBL             PIC 9(04).
            03  ID2                 PIC 9(02).
       *
-           03  IDX-S               PIC 9(04).
-           03  IDX-4               PIC 9(04).
-           03  IDX-5               PIC 9(04).
       *    一時領域
        01  WRK-AREA.
       *
@@ -162,10 +125,8 @@
            03  FLG-KEN-ERR         PIC 9(01).
            03  TBL-HOUKNARI-TBL.
                05  TBL-HOUKNARI    PIC 9(01)   OCCURS 20.
-           03  FLG-KENSA-OK        PIC 9(01).
       *
            03  WRK-HOUKNSKBN       PIC X(02).
-           03  WRK-HOU-IDX         PIC 9(04).
       *
            03  WRK-INPUTCD         PIC X(22).
       *
@@ -173,12 +134,9 @@
       *    小児科外来診察料加算判定
            03  WRK-SYONIKA-KBN         PIC X(01).
       *
-           03  WRK-ERRCD               PIC X(04).
-      *
            03  WRK-HKNCOMBI            PIC X(04).
            03  WRK-SRYKA               PIC X(02).
            03  WRK-DRCD                PIC X(04).
-           03  WRK-CHIKENKBN           PIC X(01).
       *    入院回数
            03  WRK-HZN-INPUTCD-G.
                05  WRK-HZN-INPUTCD     PIC X(22)  OCCURS   10.
@@ -195,27 +153,6 @@
        01  HZN-SCR-REC.
            COPY    "CPK02SPASCR.INC"  REPLACING
                                        //SPA-// BY //HZN-//.
-      *
-      *H24.5
-       01  CONS-AREA.
-      *    時間外対応加算２（地域医療貢献加算２）
-           03  TBL-CHISRYCD2       PIC X(09)   VALUE   "112015670".
-      *    時間外対応加算１
-           03  TBL-CHISRYCD1       PIC X(09)   VALUE   "112016070".
-      *    時間外対応加算３
-           03  TBL-CHISRYCD3       PIC X(09)   VALUE   "112016170".
-      *
-      *H28.9
-      *持参薬予約コード
-           03  CONS-JSNYCD1        PIC X(09)    VALUE   "099209811".
-           03  CONS-JSNYCD2        PIC X(09)    VALUE   "099209812".
-           03  CONS-JSNYCD3        PIC X(09)    VALUE   "099209821".
-           03  CONS-JSNYCD4        PIC X(09)    VALUE   "099209822".
-      *
-           03  CONS-JSNYCD5        PIC X(09)    VALUE   "099209711".
-           03  CONS-JSNYCD6        PIC X(09)    VALUE   "099209712".
-           03  CONS-JSNYCD7        PIC X(09)    VALUE   "099209721".
-           03  CONS-JSNYCD8        PIC X(09)    VALUE   "099209722".
       *
       *****************************************************************
       *    連絡　領域
@@ -283,7 +220,7 @@
            MOVE    ZERO                TO  SPA-GMN-MAX
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-MAX-LINE
+                   UNTIL       IDX     >   200
                MOVE    SPACE           TO  SPA-COM-ZAIEND (IDX)
       *        計算チェック済フラグ
                MOVE    ZERO            TO  SPA-COM-SANFLG (IDX)
@@ -312,10 +249,6 @@
                END-IF
       *        同一検査判定コード
                MOVE    SPACE               TO  SPA-COM-KENGRP (IDX)
-      *        薬評クリア
-               MOVE    SPACE               TO  SPA-COM-YAKUHYO (IDX)
-               MOVE    SPACE               TO  SPA-COM-GENTEN  (IDX)
-               MOVE    SPACE               TO  SPA-COM-JISANYAKU(IDX)
       *
                IF      (SPA-GMN-INPUTCD(IDX) =   SPACE )   AND
                        (SPA-COM-INPUTCD(IDX) =   SPACE )
@@ -334,8 +267,6 @@
        100-ZAI-SET-SEC              SECTION.
       *
            MOVE    ZERO                TO  FLG-KENSA-ARI
-      *H27.10
-           MOVE    ZERO                TO  FLG-KENSA-CHK
       *    剤分離
            PERFORM 1002-ZAIBUNNRI-SEC
            IF     (SPA-ERRCD           =   SPACE ) 
@@ -343,23 +274,18 @@
              AND  (LNK-SC93-ERRCD          =   ZERO)
       *    検査の包括があった時、まとめる
       *    入院で診療行為入力はしない
-               IF    ((SPA-NYUGAIKBN       =   "1" )  AND
-                      (LNK-SC93-PG         =   "K02N") )
-               OR     (LNK-SC93-PG         =   "KT01")
+               IF     (SPA-NYUGAIKBN       =   "1" )  AND
+                      (LNK-SC93-PG         =   "K02N")
                   IF      FLG-KENSA-ARI       =   1
                        IF      LNK-SC93-KENSAARIFLG    =   1
                            PERFORM 200-KENSA-SORT-SEC
                        END-IF
-      *H27.10
-                       MOVE    1               TO  FLG-KENSA-CHK
       *                剤分離
                        PERFORM 1002-ZAIBUNNRI-SEC
                    END-IF
                ELSE
                    IF      FLG-KENSA-ARI       =   1
                        PERFORM 200-KENSA-SORT-SEC
-      *H27.10
-                       MOVE    1               TO  FLG-KENSA-CHK
       *                剤分離
                        PERFORM 1002-ZAIBUNNRI-SEC
                    END-IF
@@ -369,22 +295,18 @@
            MOVE    ZERO                TO  WRK-ZAINUM
            MOVE    ZERO                TO  WRK-ZAI-CNT
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX             >   SPA-MAX-LINE )  OR
-                             ((SPA-GMN-INPUTCD(IDX) =   SPACE ) AND
-                              (SPA-COM-INPUTCD(IDX) =   SPACE ))
+                   UNTIL      (IDX             >   200        )  OR
+                              (SPA-GMN-INPUTCD(IDX) =   SPACE )  OR
+                              (SPA-ERRCD       NOT  =   SPACE )
       *
-               MOVE    SPACE               TO  SPA-GMN-SRYKBN (IDX)
       *        剤毎の同一項目再編集
                IF     (IDX                         =   1   )  OR
                       (SPA-GMN-INPUTCD(IDX)(1:1)   =   "." )  OR
                       (SPA-COM-ZAIEND (IDX - 1)    =   "1" )
-                   MOVE    SPA-COM-SRYKBN (IDX)    TO  SPA-GMN-SRYKBN
-                                                                (IDX)
                    MOVE    SPA-COM-SRYSYUKBN (IDX) TO  WRK-H-SRYSYUKBN
                    MOVE    SPA-COM-SRYKBN (IDX)    TO  WRK-H-SRYKBN
                    ADD     1                       TO  WRK-ZAINUM
                    MOVE    ZERO                    TO  WRK-ZAI-CNT
-                   MOVE    ZERO                    TO  FLG-CONTCHK
                END-IF
       *        剤回数チェック
                EVALUATE    LNK-SC93-PG
@@ -403,121 +325,10 @@
                    CONTINUE
                ELSE
                    ADD     1                   TO  WRK-ZAI-CNT
-      *            コメント以外
-                   IF     (SPA-COM-INPUTCD(IDX)(1:1)   =   "1"
-                                                       OR  "6"
-                                                       OR  "7" )  OR
-                          (SPA-COM-INPUTCD(IDX)(1:3)   =   "059")
-                       MOVE    1                   TO  FLG-CONTCHK
-                   END-IF
                END-IF
                IF      WRK-ZAI-CNT         >   50
                    MOVE    "7006"          TO  SPA-ERRCD
                    MOVE    "1"             TO  SPA-COM-CUR(IDX)
-               END-IF
-      *!!
-      *        継続コメントのチェック
-               IF      SPA-COM-INPUTCONT (IDX) =   "1"
-                   IF      FLG-CONTCHK         =   ZERO
-                       MOVE    "0208"          TO  SPA-ERRCD
-                       MOVE    "1"             TO  SPA-COM-CUR(IDX)
-                   END-IF
-      *            入院料・食事加算はエラー
-                   IF     (SPA-ERRCD           =   SPACE )
-                   AND    (WRK-H-SRYKBN        =   "90"
-                                               OR  "92"
-                                               OR  "97"  )
-                       MOVE    "0209"          TO  SPA-ERRCD
-                       MOVE    "1"             TO  SPA-COM-CUR(IDX)
-                   END-IF
-               END-IF
-      *        内服１種類入力のチェック
-               IF      SPA-COM-INPUTNAIF (IDX) =   "1"
-      *            内服以外はエラー
-                   IF     (SPA-ERRCD           =   SPACE )
-                   AND    (WRK-H-SRYKBN    NOT =   "21"  )
-                       MOVE    "0203"          TO  SPA-ERRCD
-                       MOVE    "1"             TO  SPA-COM-CUR(IDX)
-                   END-IF
-               END-IF
-      *!!
-      *!!!  H24.4 削除
-      *    医療観察法専用のコード判定
-      *        IF      SPA-ERRCD           =   SPACE
-      *            IF     (SPA-COM-INPUTCD (IDX)(1:3)  =   "188"  )
-      *            AND    (SPA-COM-KZMFLG  (IDX)   =   SPACE      )
-      *                MOVE    "K269"          TO  SPA-ERRCD
-      *                MOVE    "1"             TO  SPA-COM-KZMFLG(IDX)
-      *                MOVE    "1"             TO  SPA-COM-CUR(IDX)
-      *            END-IF
-      *        END-IF
-      *!!!
-           END-PERFORM
-      *    剤内をすべて同じ区分
-           MOVE    ZERO                TO  IDX
-           MOVE    1                   TO  IDX-S
-           MOVE    ZERO                TO  FLG-HOUKATU
-           MOVE    ZERO                TO  FLG-YAKUHYO
-           MOVE    ZERO                TO  FLG-GENTEN
-      *H28.9 持参薬予約コード
-           MOVE    ZERO                TO  FLG-JISANYAKU
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX         >   SPA-MAX-LINE  )   OR
-                             ((SPA-GMN-INPUTCD (IDX)   =   SPACE ) AND
-                              (SPA-COM-INPUTCD (IDX)   =   SPACE ))
-               IF     (SPA-COM-HOUKATU-FLG (IDX)   =   1  )
-                   MOVE    1                   TO  FLG-HOUKATU
-               END-IF
-               IF     (SPA-COM-GENTEN (IDX)    =   "1"  )
-                   MOVE    1                   TO  FLG-GENTEN
-               END-IF
-               IF     (SPA-COM-YAKUHYO(IDX)    =   "1"  )
-                   MOVE    1                   TO  FLG-YAKUHYO
-               END-IF
-               IF     (SPA-COM-JISANYAKU(IDX)   =   "1"  )
-                   MOVE    1                   TO  FLG-JISANYAKU
-               END-IF
-               IF     (SPA-COM-JISANYAKU(IDX)   =   "2"  )
-                   MOVE    2                   TO  FLG-JISANYAKU
-               END-IF
-               IF     (SPA-COM-ZAIEND (IDX)    =   "1"   )
-                   PERFORM VARYING     IDX-Z   FROM    IDX-S  BY  1
-                           UNTIL      (IDX-Z       >   IDX    )
-                       MOVE    FLG-HOUKATU     TO  SPA-COM-HOUKATU-ZAI
-                                                              (IDX-Z)
-                       IF      FLG-GENTEN      =   1
-                           MOVE    "1"         TO  SPA-COM-GENTEN (IDX)
-                       ELSE
-                           MOVE    SPACE       TO  SPA-COM-GENTEN (IDX)
-                       END-IF
-                       IF      FLG-YAKUHYO     =   1
-                           MOVE    "1"         TO  SPA-COM-YAKUHYO (IDX)
-                       ELSE
-                           MOVE    SPACE       TO  SPA-COM-YAKUHYO (IDX)
-                       END-IF
-      *H28.9 持参薬予約コード
-                       MOVE    SPACE           TO  SPA-COM-JISANYAKU
-                                                               (IDX-Z)
-                       IF      FLG-JISANYAKU   =   1
-                           MOVE    "1"         TO  SPA-COM-JISANYAKU
-                                                              (IDX-Z)
-      *                    包括扱い
-                           MOVE    1           TO  SPA-COM-HOUKATU-ZAI
-                                                              (IDX-Z)
-                       END-IF
-                       IF      FLG-JISANYAKU   =   2
-                           MOVE    "2"         TO  SPA-COM-JISANYAKU
-                                                              (IDX-Z)
-      *                    包括扱い
-                           MOVE    1           TO  SPA-COM-HOUKATU-ZAI
-                                                              (IDX-Z)
-                       END-IF
-                   END-PERFORM
-                   MOVE    IDX-Z               TO  IDX-S
-                   MOVE    ZERO                TO  FLG-HOUKATU
-                   MOVE    ZERO                TO  FLG-YAKUHYO
-                   MOVE    ZERO                TO  FLG-GENTEN
-                   MOVE    ZERO                TO  FLG-JISANYAKU
                END-IF
            END-PERFORM
            .
@@ -535,23 +346,19 @@
       *
       *    クリア
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-MAX-LINE
+                   UNTIL       IDX     >   200
                MOVE    SPACE           TO  SPA-COM-ZAIEND (IDX)
            END-PERFORM
       *
            MOVE    ZERO                TO  FLG-SYUGI
-      *H28.4
-           MOVE    ZERO                TO  FLG-KSNARI
       *!
            MOVE    SPACE               TO  WRK-HKNCOMBI
-           MOVE    SPACE               TO  WRK-CHIKENKBN
            MOVE    SPACE               TO  WRK-SRYKA
            MOVE    SPACE               TO  WRK-DRCD
       *    外来
            IF     (SPA-NYUGAIKBN       =   "2"  )  AND
                   (LNK-SC93-PG         =   "K02")
                MOVE    SPA-HKNCOMBINUM     TO  WRK-HKNCOMBI
-               MOVE    SPA-CHIKENKBN       TO  WRK-CHIKENKBN
                MOVE    SPA-SRYKA           TO  WRK-SRYKA
                MOVE    SPA-DRCD(2:4)       TO  WRK-DRCD
            END-IF
@@ -560,19 +367,11 @@
                   (LNK-SC93-PG         =   "K02N")
                MOVE    SPA-HKNCOMBINUM     TO  WRK-HKNCOMBI
                MOVE    SPA-SRYKA           TO  WRK-SRYKA
-               MOVE    SPA-CHIKENKBN       TO  WRK-CHIKENKBN
-           END-IF
-      *    外来まとめ
-           IF     (LNK-SC93-PG         =   "KT01")
-               MOVE    SPA-HKNCOMBINUM     TO  WRK-HKNCOMBI
-               MOVE    SPA-SRYKA           TO  WRK-SRYKA
-               MOVE    SPA-DRCD(2:4)       TO  WRK-DRCD
-               MOVE    SPA-CHIKENKBN       TO  WRK-CHIKENKBN
            END-IF
       *!
       *    診療種別区分編集
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX              >   SPA-MAX-LINE)   OR
+                   UNTIL      (IDX              >   200       )   OR
                               (SPA-ERRCD        NOT =   SPACE )   OR
                              ((SPA-GMN-INPUTCD(IDX) =   SPACE ) AND
                               (SPA-COM-INPUTCD(IDX) =   SPACE ))
@@ -580,7 +379,6 @@
                IF      SPA-GMN-INPUTCD(IDX)(1:1)   =   "*"
       *            入院以外エラー
                    IF      LNK-SC93-PG         =   "K02N"
-                                               OR  "KT01"
                        IF     (IDX             =   1  )  OR
                               (SPA-GMN-INPUTCD(IDX - 1)  =   ".")
                            MOVE    "9005"          TO  SPA-ERRCD
@@ -596,35 +394,16 @@
                       (SPA-GMN-INPUTCD(IDX)(1:1)   =   "#"
                                                    OR  "$")
                    IF      LNK-SC93-PG         =   "K02"
-      *!               １行目はエラー
-                       IF      IDX             =   1
-                           MOVE    "1056"          TO  SPA-ERRCD
-                           MOVE    "1"             TO  SPA-COM-CUR(IDX)
-                       END-IF
+                       CONTINUE
                    ELSE
                        MOVE    "1055"          TO  SPA-ERRCD
                        MOVE    "1"             TO  SPA-COM-CUR(IDX)
-                   END-IF
-      *H28.1
-                   IF      SPA-ERRCD       NOT =   SPACE
-                       IF      WRK-ERRCD       =   SPACE
-                           MOVE    SPA-ERRCD       TO  WRK-ERRCD
-                       END-IF
-                       MOVE    SPACE           TO  SPA-ERRCD
                    END-IF
                END-IF
                IF      SPA-ERRCD           =   SPACE
       *            剤分離
                    PERFORM 5101-SYRKBN-SET-SEC
-      *!!!!!!!!!!!!!
-                   IF      SPA-ERRCD       NOT =   SPACE
-                       IF      WRK-ERRCD       =   SPACE
-                           MOVE    SPA-ERRCD       TO  WRK-ERRCD
-                       END-IF
-                       MOVE    SPACE           TO  SPA-ERRCD
-                   END-IF
                END-IF
-      *
       *        各処理のチェック
                IF      SPA-ERRCD           =   SPACE
                    EVALUATE    LNK-SC93-PG
@@ -637,14 +416,10 @@
                                MOVE    "1020"          TO  SPA-ERRCD
                                MOVE    "1"             TO  SPA-COM-CUR
                                                                  (IDX)
-                           END-IF
+                       END-IF
                    END-EVALUATE
                END-IF
            END-PERFORM
-      *
-           IF      WRK-ERRCD       NOT =   SPACE
-               MOVE    WRK-ERRCD           TO  SPA-ERRCD
-           END-IF
            .
       *
        1002-ZAIBUNNRI-EXT.
@@ -710,17 +485,11 @@
            MOVE    WRK-HKNCOMBI        TO  SPA-COM-HKNCOMBI (IDX)
            MOVE    WRK-SRYKA           TO  SPA-COM-SRYKA    (IDX)
            MOVE    WRK-DRCD            TO  SPA-COM-DRCD     (IDX)
-           IF      SPA-GMN-INPUTCD(IDX)(1:1)   =   "#"
-               CONTINUE
-           ELSE
-               MOVE    WRK-CHIKENKBN       TO  SPA-COM-CHIKENKBN(IDX)
-           END-IF
       *
            EVALUATE    SPA-GMN-INPUTCD(IDX)(1:1)
                WHEN    "#"
       *            保険入力時、剤の終了とする
                    MOVE    SPA-GMN-INPUTCD(IDX)(2:4)   TO  WRK-HKNCOMBI
-                   MOVE    SPA-COM-CHIKENKBN(IDX)  TO  WRK-CHIKENKBN
                    MOVE    "1"                 TO  SPA-COM-ZAIEND (IDX)
                    IF      IDX                 >   1
                        MOVE    "1"                 TO  SPA-COM-ZAIEND
@@ -729,20 +498,11 @@
                    MOVE    ZERO                TO  FLG-JIHI
                    MOVE    ZERO                TO  FLG-BUIKBN
                    MOVE    ZERO                TO  FLG-SYUGI
-      *H28.4
-                   MOVE    ZERO            TO  FLG-KSNARI
                    MOVE    ZERO                TO  FLG-HASSYO
-                   MOVE    ZERO                TO  FLG-AKUSEI-ARI
-                   MOVE    ZERO                TO  FLG-YAKUHYO
-                   MOVE    ZERO                TO  FLG-GENTEN
                    MOVE    ZERO                TO  WRK-KENSA-CNT
                    MOVE    SPACE               TO  WRK-SRYKBN
                    MOVE    SPACE               TO  WRK-SRYSYUKBN
-                   MOVE    SPACE               TO  WRK-HOUKNSKBN
-                   MOVE    ZERO                TO  WRK-HOU-IDX
                    MOVE    WRK-HKNCOMBI        TO  SPA-COM-HKNCOMBI
-                                                              (IDX)
-                   MOVE    WRK-CHIKENKBN       TO  SPA-COM-CHIKENKBN
                                                               (IDX)
       *        診療科、剤の終了とする
                WHEN    "$"
@@ -756,17 +516,10 @@
                    MOVE    ZERO                TO  FLG-JIHI
                    MOVE    ZERO                TO  FLG-BUIKBN
                    MOVE    ZERO                TO  FLG-SYUGI
-      *H28.4
-                   MOVE    ZERO            TO  FLG-KSNARI
                    MOVE    ZERO                TO  FLG-HASSYO
-                   MOVE    ZERO                TO  FLG-AKUSEI-ARI
-                   MOVE    ZERO                TO  FLG-YAKUHYO
-                   MOVE    ZERO                TO  FLG-GENTEN
                    MOVE    ZERO                TO  WRK-KENSA-CNT
                    MOVE    SPACE               TO  WRK-SRYKBN
                    MOVE    SPACE               TO  WRK-SRYSYUKBN
-                   MOVE    SPACE               TO  WRK-HOUKNSKBN
-                   MOVE    ZERO                TO  WRK-HOU-IDX
                    MOVE    WRK-SRYKA           TO  SPA-COM-SRYKA(IDX)
                    MOVE    WRK-DRCD            TO  SPA-COM-DRCD (IDX)
       *!
@@ -784,8 +537,6 @@
                        MOVE    SPACE       TO  SPA-COM-ZAIEND (IDX)
                        MOVE    IDX                 TO  IDX-SET
                        MOVE    ZERO                TO  FLG-SYUGI
-      *H28.4
-                       MOVE    ZERO            TO  FLG-KSNARI
                    END-IF
       *
                WHEN    "."
@@ -793,9 +544,6 @@
                    MOVE    SPA-GMN-INPUTCD(IDX)(2:3)   TO  WRK-SRYSYUKBN
       *            診療種別区分名称、診療行為区分セット
                    PERFORM 510-SRYKBN-MEI-SEC
-                   IF      SPA-ERRCD       NOT =   SPACE
-                       MOVE    "1"             TO  SPA-COM-CUR (IDX)
-                   END-IF
                    MOVE    WRK-SRYSYUKBNMEI    TO  SPA-GMN-MEISYO (IDX)
                    MOVE    WRK-SRYKBN          TO  SPA-GMN-SRYKBN (IDX)
       *
@@ -809,23 +557,14 @@
                    MOVE    SPACE               TO  SPA-COM-ZAIEND (IDX)
       *            自費の時、回数入力まで自費とする
                    IF      WRK-SRYSYUKBN       =   "950"  OR  "960"
-      *H25.10
-                                                          OR  "961"
                        MOVE    1                   TO  FLG-JIHI
                    ELSE
                        MOVE    ZERO                TO  FLG-JIHI
                    END-IF
                    MOVE    ZERO                TO  FLG-BUIKBN
                    MOVE    ZERO                TO  FLG-SYUGI
-      *H28.4
-                   MOVE    ZERO            TO  FLG-KSNARI
                    MOVE    ZERO                TO  FLG-HASSYO
-                   MOVE    ZERO                TO  FLG-AKUSEI-ARI
-                   MOVE    ZERO                TO  FLG-YAKUHYO
-                   MOVE    ZERO                TO  FLG-GENTEN
                    MOVE    ZERO                TO  WRK-KENSA-CNT
-                   MOVE    SPACE               TO  WRK-HOUKNSKBN
-                   MOVE    ZERO                TO  WRK-HOU-IDX
       *!           処方コメントは入院のみ
       *            IF      WRK-SRYSYUKBN       =   "980"
       *                IF      SPA-NYUGAIKBN       =   "1"
@@ -833,79 +572,6 @@
       *                    MOVE    "1"             TO  SPA-COM-CUR(IDX)
       *                END-IF
       *!           END-IF
-      *!           退院時院外処方コメントは入院のみ
-                   IF      WRK-SRYSYUKBN       =   "982"
-                       IF      SPA-NYUGAIKBN       =   "2"
-                           MOVE    "9024"          TO  SPA-ERRCD
-                           MOVE    "1"             TO  SPA-COM-CUR(IDX)
-                       END-IF
-                   END-IF
-      *ver.4.5.0
-      *            処置読み替え対象外はＨ２０年４月から
-                   IF      WRK-SRYSYUKBN       =   "409"
-                       IF      SPA-SRYYMD          <   "20080401"
-                           MOVE    "0501"          TO  SPA-ERRCD
-                           MOVE    "1"             TO  SPA-COM-CUR(IDX)
-                       END-IF
-                       IF     (SPA-HKNKBN          =   1   )
-                         AND  (SPA-RSI-JUNKYO  NOT =   "1" )
-                         AND  (SPA-NYUGAIKBN       =   "2" )
-                           CONTINUE
-                       ELSE
-                           IF      SPA-ERRCD       =   SPACE
-                               MOVE    "0502"          TO  SPA-ERRCD
-                               MOVE    "1"             TO  SPA-COM-CUR
-                                                                 (IDX)
-                           END-IF
-                       END-IF
-                   END-IF
-      *ver.4.6.0
-      *            自賠責金額入力はＨ２２年４月から
-                   IF      WRK-SRYSYUKBN       =   "809"
-                       IF      SPA-SRYYMD          <   "20100401"
-                           MOVE    "0503"          TO  SPA-ERRCD
-                           MOVE    "1"             TO  SPA-COM-CUR(IDX)
-                       END-IF
-                       IF     (SPA-HKNKBN          =   1   )
-      ************       AND  (SPA-RSI-JUNKYO  NOT =   "1" )
-                           CONTINUE
-                       ELSE
-                           IF      SPA-ERRCD       =   SPACE
-                               MOVE    "0502"          TO  SPA-ERRCD
-                               MOVE    "1"             TO  SPA-COM-CUR
-                                                                 (IDX)
-                           END-IF
-                       END-IF
-                   END-IF
-      *ver.4.7.0
-      *            臨時投薬（外用）はH２６年４月から
-                   IF      WRK-SRYSYUKBN       =   "293"
-                                               OR  "294"
-                                               OR  "295"
-                       IF      SPA-SRYYMD          <   "20140401"
-                           MOVE    "0504"          TO  SPA-ERRCD
-                           MOVE    "1"             TO  SPA-COM-CUR(IDX)
-                       END-IF
-                   END-IF
-      *            臨時投薬（頓服）はH２６年１０月から
-                   IF      WRK-SRYSYUKBN       =   "296"
-                                               OR  "297"
-                                               OR  "298"
-                       IF      SPA-SRYYMD          <   "20141001"
-                           MOVE    "0505"          TO  SPA-ERRCD
-                           MOVE    "1"             TO  SPA-COM-CUR(IDX)
-                       END-IF
-                   END-IF
-      *H28.9
-      *            初診・再診加算のみはＨ２８年４月から
-                   IF      WRK-SRYSYUKBN       =   "114"
-                                               OR  "124"
-                                               OR  "133"
-                       IF      SPA-SRYYMD          <   "20160401"
-                           MOVE    "0506"          TO  SPA-ERRCD
-                           MOVE    "1"             TO  SPA-COM-CUR(IDX)
-                       END-IF
-                   END-IF
                WHEN    OTHER
       *        その他
                    IF      FLG-JIHI            =   1
@@ -926,14 +592,6 @@
       *
            MOVE    WRK-SRYSYUKBN       TO  SPA-COM-SRYSYUKBN (IDX)
            MOVE    WRK-SRYKBN          TO  SPA-COM-SRYKBN (IDX)
-      *
-      *    きざみ値以外は点数再編集（労災円変換）
-           IF     (SPA-COM-INPUTCD (IDX)(1:1)  =   "1"  )   AND
-                  (SPA-COM-KZMCOMPSIKIBETU (IDX)   =   1 )
-               CONTINUE
-           ELSE
-               MOVE    SPA-COM-TEN (IDX)   TO  SPA-COM-KISOTEN  (IDX)
-           END-IF
            IF      SPA-COM-KAIFLG(IDX)     =   "1"
                MOVE    "1"             TO  SPA-COM-ZAIEND (IDX)
                MOVE    SPACE           TO  WRK-SRYSYUKBN
@@ -948,9 +606,6 @@
                MOVE    ZERO            TO  FLG-JIHI
            END-IF
            MOVE    ZERO                TO  FLG-SYUGI
-      *H28.4
-           MOVE    ZERO                TO  FLG-KSNARI
-           MOVE    ZERO                TO  FLG-AKUSEI-ARI
       *
            .
        5101-JIHI-HEN-EXT.
@@ -1003,12 +658,6 @@
       *                END-IF
       *            END-IF
       *---(01.00.0X)--
-      *            薬評・器評はエラー
-                   IF      FLG-YAKUHYO         =   1
-                       MOVE    ZERO            TO  FLG-YAKUHYO
-                       MOVE    "1"             TO  SPA-COM-ZAIEND
-                                                           (IDX - 1)
-                   END-IF
       *
                WHEN    "0"
                    MOVE    SPACE           TO  SPA-COM-SRYSYUKBN(IDX)
@@ -1022,9 +671,6 @@
                           (SPA-COM-KAIFLG (IDX - 1 )   =   "1" ) OR
                           (SPA-GMN-INPUTCD(IDX - 1 )(1:1)  =  "#"
                                                            OR "$")
-      *H26.10
-                       OR (SPA-COM-INPUTCD(IDX - 1)
-                                               =   "099140012" )
       *                薬剤料逓減の時、内服薬剤とする
                        IF      SPA-COM-INPUTCD (IDX)   =   "820000047"
                            MOVE    "21"            TO  SPA-COM-SRYKBN
@@ -1038,8 +684,7 @@
                    ELSE
       *                薬剤料逓減の時、内服薬剤とする
                        IF      (SPA-COM-INPUTCD(IDX)  =   "820000047")
-      *???               AND   (SPA-COM-AUTOKBN(IDX)  =   "3"        )
-                         AND   (SPA-COM-AUTOKBN(IDX)  =   SPACE      )
+                         AND   (SPA-COM-AUTOKBN(IDX)  =   "3"        )
                            MOVE    "21"            TO  SPA-COM-SRYKBN
                                                                 (IDX)
                        ELSE
@@ -1051,14 +696,6 @@
                                                                 (IDX)
                            MOVE    SPACE           TO  SPA-COM-ZAIEND
                                                               (IDX - 1)
-      *                    診療種別入力
-      *                    IF      WRK-SRYSYUKBN   NOT =   SPACE
-      *                        MOVE    WRK-SRYSYUKBN
-      *                                            TO  SPA-COM-SRYSYUKBN
-      *                                                         (IDX)
-      *                        MOVE    SPACE       TO  SPA-COM-ZAIEND
-      *                                                         (IDX)
-      *                    END-IF
                        END-IF
                    END-IF
       *            時間入力の時、前のコードをチェックする
@@ -1066,44 +703,8 @@
                                                        "840000044"  )
                        PERFORM 510112-JIKAN-INP-SEC
                    END-IF
-      *            薬評・器評
-                   IF      FLG-YAKUHYO     =   1
-                       MOVE    "1"             TO  SPA-COM-YAKUHYO
-                                                              (IDX)
-                   END-IF
-      *            薬評・器評
-                   IF      (SPA-COM-INPUTCD (IDX)  =   "820000094"  OR
-                                                       "820000095"
-      *H26.12          （加評）
-                                                   OR  "820000171"
-      *H28.4           （体評）
-                                                   OR  "820000226"  )
-      *                診療種別の直下
-                       IF     (IDX             >   1     )  AND
-                              (SPA-GMN-INPUTCD (IDX - 1)(1:1)
-                                                =   "."  )
-                           MOVE    "1"             TO  SPA-COM-YAKUHYO
-                                                              (IDX)
-                           MOVE    "1"             TO  SPA-COM-YAKUHYO
-                                                              (IDX - 1)
-                           MOVE    1               TO  FLG-YAKUHYO
-                       ELSE
-                           MOVE    "0221"          TO  SPA-ERRCD
-                       END-IF
-                   END-IF
-      *            減点
-                   IF      SPA-ERRCD           =   SPACE
-                       IF      FLG-GENTEN          =   1
-                           MOVE    "1"             TO  SPA-COM-GENTEN
-                                                               (IDX)
-                       END-IF
-                   END-IF
                WHEN    "6"
                    MOVE    SPACE           TO  SPA-COM-SRYSYUKBN(IDX)
-      *
-      *H24.4改正
-      *点数を戻す
-                   MOVE    SPA-COM-TEN (IDX)   TO  SPA-COM-KISOTEN(IDX)
       *
       *            薬剤の時、内服・外用を決定する
                    EVALUATE    SPA-COM-YKZKBN(IDX)
@@ -1115,16 +716,6 @@
                        WHEN    "8"
                        WHEN    "9"
                            MOVE    "23"            TO  WRK-SRYKBN
-      *ver.4.7
-                       WHEN    "3"
-      *                    その他
-      *                    薬剤料減点は注射とする
-                           IF      SPA-COM-INPUTCD (IDX) =   "630010001"
-                               MOVE    "30"            TO  WRK-SRYKBN
-                           ELSE
-                               MOVE    "21"            TO  WRK-SRYKBN
-                           END-IF
-      *
                        WHEN    OTHER
                            MOVE    "21"            TO  WRK-SRYKBN
                    END-EVALUATE
@@ -1134,59 +725,13 @@
                                                    "232"
                                                OR  "233"
                                                OR  "234"
-      *H26.4 から　臨時投薬追加
-                                               OR  "293"
-                                               OR  "294"
-                                               OR  "295"
                        MOVE    "23"            TO  WRK-SRYKBN
-                   END-IF
-      *!
-      *            外用薬で内服算定の判定
-                   IF     (WRK-SRYKBN          =   "23"  )  AND
-                          (SPA-COM-NAIFUKUKBN (IDX)
-                                               =   1     )  AND
-                          (WRK-SRYSYUKBN       =   "210" OR
-                                                   "211" OR
-                                                   "212"
-                                               OR  "213"
-                                               OR  "214"
-                                               OR  "290"
-                                               OR  "291"
-                                               OR  "292"  )
-                       MOVE    "21"            TO  WRK-SRYKBN
-                   END-IF
-      *!
-      *            注射薬で内服算定の判定
-                   IF     (WRK-SRYKBN          =   "30"  )  AND
-                          (SPA-COM-NAIFUKUKBN (IDX)
-                                               =   1     )  AND
-                          (WRK-SRYSYUKBN       =   "210" OR
-                                                   "211" OR
-                                                   "212"
-                                               OR  "213"
-                                               OR  "214"
-                                               OR  "290"
-                                               OR  "291"
-                                               OR  "292"  )
-                       MOVE    "21"            TO  WRK-SRYKBN
-                   END-IF
-      *            前が処方せん料は薬剤は入力しない
-                   IF     (IDX                     >   1     ) AND
-                          (SPA-COM-SRYKBN (IDX - 1) =   "80" ) AND
-                          (SPA-COM-SRYSYUKBN (IDX - 1)
-                                                   =   "820" )
-                       MOVE    1               TO  FLG-SYOHO
-                   ELSE
-                       MOVE    ZERO            TO  FLG-SYOHO
                    END-IF
       *            内服の時、前の行為が薬剤に付属できるか判定
                    IF     (IDX                     >   1     ) AND
                           (SPA-COM-KAIFLG(IDX - 1) =   SPACE ) AND
                           (WRK-SRYKBN              =   "21"  )
                      AND  (FLG-HASSYO              =   ZERO  )
-                     AND  (FLG-SYOHO               =   ZERO  )
-                     AND  (SPA-COM-SRYSYUKBN(IDX - 1)
-                                               NOT =   "809" )
                        EVALUATE    SPA-COM-SRYKBN(IDX - 1)
                            WHEN    "21"
                            WHEN    "22"
@@ -1202,7 +747,6 @@
                            WHEN    "50"
                            WHEN    "54"
                            WHEN    "60"
-                           WHEN    "64"
                            WHEN    "70"
                            WHEN    "80"
                                MOVE    SPA-COM-SRYKBN(IDX - 1)
@@ -1216,9 +760,6 @@
                           (SPA-COM-KAIFLG(IDX - 1) =   SPACE ) AND
                           (WRK-SRYKBN              =   "23"  )
                      AND  (FLG-HASSYO              =   ZERO  )
-                     AND  (FLG-SYOHO               =   ZERO  )
-                     AND  (SPA-COM-SRYSYUKBN(IDX - 1)
-                                               NOT =   "809" )
                        EVALUATE    SPA-COM-SRYKBN(IDX - 1)
       ****指導料削除       WHEN    "13"
                            WHEN    "14"
@@ -1231,7 +772,6 @@
                            WHEN    "50"
                            WHEN    "54"
                            WHEN    "60"
-                           WHEN    "64"
                            WHEN    "70"
                            WHEN    "80"
                                MOVE    SPA-COM-SRYKBN(IDX - 1)
@@ -1245,9 +785,6 @@
                        IF     (IDX                     >   1   )  AND
                               (SPA-COM-KAIFLG(IDX - 1) =   SPACE )
                          AND  (FLG-HASSYO              =   ZERO  )
-                         AND  (FLG-SYOHO               =   ZERO  )
-                         AND  (SPA-COM-SRYSYUKBN(IDX - 1)
-                                                   NOT =   "809" )
                            EVALUATE    SPA-COM-SRYKBN(IDX - 1)
       ****指導料削除           WHEN    "13"
                                WHEN    "14"
@@ -1258,7 +795,6 @@
                                WHEN    "50"
                                WHEN    "54"
                                WHEN    "60"
-                               WHEN    "64"
                                WHEN    "70"
                                WHEN    "80"
                                    MOVE    SPA-COM-SRYKBN(IDX - 1)
@@ -1273,68 +809,7 @@
                        END-IF
                    END-IF
                    MOVE    WRK-SRYKBN      TO  SPA-COM-SRYKBN(IDX)
-      *            薬評・器評
-                   IF      FLG-YAKUHYO     =   1
-                       MOVE    "1"             TO  SPA-COM-YAKUHYO
-                                                              (IDX)
-                   END-IF
-      *            薬評・器評
-                   IF      (SPA-COM-INPUTCD (IDX)  =   "630010011"
-                                                   OR  "630010012"
-                                                   OR  "630010013"  )
-      *                診療種別の直下
-                       IF     (IDX             >   1     )  AND
-                              (SPA-GMN-INPUTCD (IDX - 1)(1:1)
-                                                =   "."  )
-                           MOVE    "1"             TO  SPA-COM-YAKUHYO
-                                                              (IDX)
-                           MOVE    "1"             TO  SPA-COM-YAKUHYO
-                                                              (IDX - 1)
-                           MOVE    1               TO  FLG-YAKUHYO
-                       ELSE
-                           MOVE    "0221"          TO  SPA-ERRCD
-                       END-IF
-                   END-IF
-      *ver.4.7
-      *            減点入力
-                   IF     (SPA-COM-TENSIKIBETU (IDX)   =   7  )
-      *                診療種別の直下
-                       IF     (IDX             >   1     )  AND
-                              (SPA-GMN-INPUTCD (IDX - 1)(1:1)
-                                                =   "."  )
-                           MOVE    "1"             TO  SPA-COM-GENTEN
-                                                              (IDX)
-                           MOVE    "1"             TO  SPA-COM-GENTEN
-                                                              (IDX - 1)
-                           MOVE    1               TO  FLG-GENTEN
-                       ELSE
-                           MOVE    "0240"          TO  SPA-ERRCD
-                       END-IF
-      *                薬剤料減点のチェック（その他注射・入院）
-                       IF     (SPA-COM-INPUTCD (IDX) =   "630010001" )
-                           IF     (SPA-NYUGAIKBN         =   "2"   )
-                             AND  (SPA-ERRCD             =   SPACE )
-                               MOVE    "0242"          TO  SPA-ERRCD
-                           END-IF
-                           IF     (WRK-SRYSYUKBN     NOT =   "340" )
-                             AND  (SPA-ERRCD             =   SPACE )
-                               MOVE    "0241"          TO  SPA-ERRCD
-                               MOVE    "1"             TO  SPA-COM-CUR
-                                                            (IDX - 1)
-                           END-IF
-                       END-IF
-                   END-IF
-      *!!!!
                WHEN    "7"
-      *            前が処方せん料は薬剤は入力しない
-                   IF     (IDX                     >   1     ) AND
-                          (SPA-COM-SRYKBN (IDX - 1) =   "80" ) AND
-                          (SPA-COM-SRYSYUKBN (IDX - 1)
-                                                   =   "820" )
-                       MOVE    1               TO  FLG-SYOHO
-                   ELSE
-                       MOVE    ZERO            TO  FLG-SYOHO
-                   END-IF
                    MOVE    SPACE           TO  SPA-COM-SRYSYUKBN(IDX)
       *            器材（前の剤に付属する）
                    IF     (IDX             >   1   )  AND
@@ -1344,21 +819,15 @@
                                                "33"  OR  "40"  OR
                                                "50"  OR  "54"  OR
                                                "60"  OR  "70"  OR
+      *****************************************"13"  OR  "14"   )
                                                "80"  OR  "14"
-                                           OR  "64"
                                            OR  "21" OR  "22" OR
                                                "23"          )
                      AND  (FLG-HASSYO              =   ZERO  )
-                     AND  (FLG-SYOHO               =   ZERO  )
                        MOVE    SPA-COM-SRYKBN(IDX - 1)
                                                TO  SPA-COM-SRYKBN(IDX)
                        MOVE    SPACE           TO  SPA-COM-ZAIEND
                                                              (IDX - 1)
-      *                薬評・器評
-                       IF      FLG-YAKUHYO     =   1
-                           MOVE    "1"             TO  SPA-COM-YAKUHYO
-                                                              (IDX)
-                       END-IF
                    ELSE
                        MOVE    "0047"          TO  SPA-ERRCD
                    END-IF
@@ -1399,30 +868,13 @@
                MOVE    1               TO  FLG-SYORI
            END-IF
       *    診察の時、手技料で剤分離とする
+      *****IF     (IDX                 >   1         )  AND
            IF     (SPA-COM-SRYKBN (IDX)(1:1)    =   "1" )  AND
                   (SPA-COM-DATAKBN (IDX)   =   "1"  )
                IF      FLG-SYUGI           =   1
-                  OR   FLG-KSNARI          =   1
                    MOVE    2               TO  FLG-SYORI
                END-IF
                MOVE    1               TO  FLG-SYUGI
-           END-IF
-           IF     (SPA-COM-SRYKBN (IDX)(1:1)    =   "1" )  AND
-                  (SPA-COM-DATAKBN (IDX)   =   "2"  )
-               MOVE    1                TO  FLG-KSNARI
-           END-IF
-      *
-      *H25.7
-      *    労災コードのその他８０は剤分離
-           IF     (SPA-SRYYMD          >=  "20130701" )
-               IF     (SPA-COM-SRYKBN (IDX)    =   "80" )
-                AND   (SPA-COM-INPUTCD(IDX)(1:3)   =   "101")
-                AND   (SPA-COM-DATAKBN (IDX)   =   "1"  )
-                   IF      FLG-SYUGI           =   1
-                       MOVE    2               TO  FLG-SYORI
-                   END-IF
-                   MOVE    1               TO  FLG-SYUGI
-               END-IF
            END-IF
       *!!
       *    処方せん料は手技料で剤分離とする
@@ -1452,7 +904,7 @@
            END-IF
       *
       *    約束セット終了時、終了とする
-           IF      IDX                 <   SPA-MAX-LINE
+           IF      IDX                 <   200
                IF     (SPA-COM-SET (IDX)        =   "1" )  AND
                       (SPA-COM-SET (IDX + 1)    =   SPACE)
                    MOVE    1               TO  FLG-SYORI
@@ -1470,32 +922,120 @@
            END-IF
       *---(02.00.05)  LINE ADD  START  --------------------------------
       *    検査の時、包括対象検査により、剤を決定する
-           IF     (SPA-COM-SRYKBN (IDX)    =   "60"
-                                           OR  "64"  )  AND
+           IF     (SPA-COM-SRYKBN (IDX)    =   "60" )  AND
                   (SPA-GMN-INPUTCD(IDX)(1:1)   NOT =   "." )  AND
                   (SPA-COM-DATAKBN(IDX)    =   "1"  )
               AND (SPA-COM-SET (IDX)   NOT =   "1"  )
-               PERFORM 5101121-HKTKENSA-HEN-SEC
+      *           (SPA-COM-DATAKBN(IDX)    =   "1"  )  AND
+      *           (IDX                     >   1    )
+                IF      IDX                =   1
+                     MOVE    1             TO  IDX-1
+                ELSE
+                    COMPUTE IDX-1          =   IDX    -   1
+                END-IF
+      *    包括対象外は対象としない
+               IF    (SPA-COM-SRYSYUKBN(IDX)  =   "610" )
+                OR   (SPA-COM-KENTAICOMMENT (IDX) =   1)
+                   CONTINUE
+               ELSE
+      *
+      *         包括対象検査件数チェック
+                PERFORM 51013-KENSA-ZAI-CHK-SEC
+      *
+               END-IF
+      *
+               IF     (SPA-GMN-INPUTCD(IDX-1)(1:1)   =   "." )  OR
+                      (SPA-COM-SRYKBN (IDX-1)   NOT =  SPA-COM-SRYKBN
+                                                                 (IDX))
+                   CONTINUE
+               ELSE
+      *            検体検査コメントの判定
+                   IF      SPA-COM-KENTAICOMMENT (IDX-1) =   1
+      *                検査等実施判断グループ判定
+                       IF      SPA-COM-KNSJISGRPKBN (IDX)  >=  01
+                                                       AND <=  07
+                           MOVE    SPA-COM-HOUKNSKBN(IDX)
+                                                   TO  SPA-COM-HOUKNSKBN
+                                                               (IDX-1)
+      *                    診療種別
+                           MOVE    SPA-COM-SRYSYUKBN (IDX-1 - 1)
+                                                 TO  SPA-COM-SRYSYUKBN
+                                                             (IDX-1)
+      *                    同一検査判定コード
+                           MOVE    SPA-COM-INPUTCD(IDX-1)
+                                                   TO  SPA-COM-KENGRP
+                                                               (IDX)
+                           MOVE    SPACE           TO  SPA-COM-ZAIEND
+                                                         (IDX-1)
+                           MOVE    SPACE           TO  SPA-COM-ZAIEND
+                                                         (IDX-1 - 1)
+                           MOVE    SPA-COM-SRYSYUKBN (IDX-1 - 1)
+                                                   TO  WRK-SRYSYUKBN
+                           IF      FLG-SYORI       =   2
+                               MOVE    1               TO  FLG-SYORI
+                           END-IF
+                       END-IF
+                   END-IF
+      *            包括対象検査なし
+                   IF      SPA-COM-HOUKNSKBN(IDX)   =   ZERO
+                       MOVE    2                    TO  FLG-SYORI
+      *                検体検査コメントの判定
+                       IF    ( SPA-COM-KENTAICOMMENT (IDX-1) =   1)
+      *                検査等実施判断グループ判定
+                          AND (SPA-COM-KNSJISGRPKBN (IDX)  >=  01
+                                                       AND <=  07 )
+                           MOVE    1                TO  FLG-SYORI
+                       END-IF
+                   ELSE
+      **************** MOVE    1                    TO  FLG-KENSA-ARI
+      *                包括対象検査変更時
+                       IF      SPA-COM-HOUKNSKBN(IDX)
+                                              NOT =  SPA-COM-HOUKNSKBN
+                                                             (IDX-1)
+                           MOVE    2                    TO  FLG-SYORI
+                       END-IF
+      *                前が検体検査コメント
+                       IF     (SPA-COM-KENTAICOMMENT (IDX-1) =   1)
+                         AND  (IDX-1             >   1   )
+                           IF      SPA-COM-HOUKNSKBN(IDX)
+                                                 =   SPA-COM-HOUKNSKBN
+                                                           (IDX-1 - 1)
+                               MOVE    ZERO      TO  FLG-SYORI
+                               MOVE    SPA-COM-SRYSYUKBN (IDX-1 - 1)
+                                                 TO  SPA-COM-SRYSYUKBN
+                                                             (IDX)
+                               MOVE    SPA-COM-SRYSYUKBN (IDX-1 - 1)
+                                                 TO  SPA-COM-SRYSYUKBN
+                                                             (IDX-1)
+                               MOVE    SPACE     TO  SPA-COM-ZAIEND
+                                                             (IDX-1)
+                               MOVE    SPA-COM-SRYSYUKBN (IDX-1 - 1)
+                                                 TO  WRK-SRYSYUKBN
+                           END-IF
+                       END-IF
+                   END-IF
+      *
+      *            包括対象外の剤終了時、診療種別を検査にする
+                   IF    (SPA-COM-SRYSYUKBN(IDX)  =   "610" ) AND
+                         (FLG-SYORI               =   2     )
+                       MOVE    SPA-COM-TNSSRYSYUKBN (IDX)
+                                            TO  SPA-COM-SRYSYUKBN (IDX)
+                   END-IF
+               END-IF
            END-IF
       *
       *    前行が急性発生の時終了とする
            IF     (SPA-COM-INPUTCD(IDX)    =   "099800101"
                                            OR  "099800102"
       *        在総診算定終了
-                                           OR  "099140001"
-                                           OR  "099140004" )
-      *H26.10  在宅訪問診療他
-            OR    (SPA-COM-INPUTCD(IDX)    =   "099140011"
-                                           OR  "099140012" )
+                                           OR  "099140001" )
                MOVE    1               TO  FLG-HASSYO
            ELSE
                IF      FLG-HASSYO          =   1
                    IF     (SPA-COM-SRYKBN(IDX)
                                        =   SPA-COM-SRYKBN(IDX - 1)) AND
-                         ((SPA-COM-INPUTCD(IDX)(1:1)
-                                               =   "8"  )  OR
-                          (SPA-COM-INPUTCD(IDX)(1:3)
-                                               =   "008"  ))
+                          (SPA-COM-INPUTCD(IDX)(1:1)
+                                               =   "8"  )
                        CONTINUE
                    ELSE
                        MOVE    ZERO            TO  FLG-HASSYO
@@ -1503,34 +1043,16 @@
                    END-IF
                END-IF
            END-IF
-      *    減点分はコメント以外は終了
-           IF      FLG-GENTEN          =   1
-               IF      (SPA-COM-INPUTCD (IDX)(1:1) =   "8" )
-                   OR  (SPA-COM-INPUTCD (IDX)(1:3) =   "008")
-                   OR  (SPA-COM-TENSIKIBETU(IDX)   =   7    )
-                   CONTINUE
-               ELSE
-                   MOVE    ZERO                TO  FLG-GENTEN
-                   MOVE    2                   TO  FLG-SYORI
-               END-IF
-           END-IF
       *
       *    会計照時、剤変更時、診療区分変更エラー
            IF      LNK-SC93-PG         =   "J04"
                IF      FLG-SYORI           =   2
       *            検体検査コメントの判定
-                   IF    ((SPA-COM-KENTAICOMMENT (IDX) =   1) AND
-                          (IDX                 <   SPA-GMN-MAX))
-                      OR ( IDX                 =   1          )
+                   IF     (SPA-COM-KENTAICOMMENT (IDX) =   1) AND
+                          (IDX                 <   SPA-GMN-MAX)
                        CONTINUE
                    ELSE
-                       IF     (SPA-COM-SRYKBN (IDX - 1)
-                                           =   SPA-COM-SRYKBN(IDX))
-                         AND  (SPA-COM-SRYKBN (IDX)    =   "60"   )
-                           MOVE    "1034"          TO  SPA-ERRCD
-                       ELSE
-                           MOVE    "1020"          TO  SPA-ERRCD
-                       END-IF
+                       MOVE    "1020"          TO  SPA-ERRCD
                        MOVE    "1"             TO  SPA-COM-CUR(IDX)
                    END-IF
                END-IF
@@ -1547,18 +1069,6 @@
                    MOVE    1               TO  FLG-SYORI
                END-IF
            END-IF
-      *    １剤１明細のコード（自賠責その他）の時は、剤終了とする
-           IF      FLG-ZAI             =   2
-               IF     (IDX             >   1   )  AND
-                     ((SPA-COM-SRYSYUKBN (IDX - 1)
-                                       NOT =   SPA-COM-SRYSYUKBN(IDX))
-                 OR   (SPA-GMN-INPUTCD   (IDX - 1)(1:1)
-                                       NOT =   "."               ))
-                   MOVE    2               TO  FLG-SYORI
-               ELSE
-                   MOVE    1               TO  FLG-SYORI
-               END-IF
-           END-IF
       *
            IF      FLG-SYORI           =   ZERO
       *        剤継続
@@ -1566,7 +1076,7 @@
                IF     (IDX             >   1  )  AND
                       (SPA-COM-ZAIEND(IDX - 1)   =   SPACE )
                    MOVE    SPA-COM-SRYSYUKBN(IDX - 1)
-                                           TO  SPA-COM-SRYSYUKBN (IDX)
+                                       TO  SPA-COM-SRYSYUKBN (IDX)
                END-IF
            ELSE
       *        剤終了
@@ -1577,9 +1087,6 @@
                    MOVE    SPACE           TO  WRK-SRYSYUKBN
                    MOVE    ZERO            TO  IDX-SET
                    MOVE    ZERO            TO  FLG-SYUGI
-      *H28.4
-                   MOVE    ZERO            TO  FLG-KSNARI
-                   MOVE    ZERO            TO  FLG-AKUSEI-ARI
                END-IF
                IF      FLG-SYORI           =   2
                    IF      IDX             >   1
@@ -1589,8 +1096,6 @@
                    MOVE    ZERO            TO  IDX-SET
                ELSE
                    MOVE    ZERO            TO  FLG-SYUGI
-      *H28.4
-                   MOVE    ZERO            TO  FLG-KSNARI
                END-IF
            END-IF
       *
@@ -1599,13 +1104,6 @@
                   (SPA-COM-KAIFLG (IDX - 1)    =   "1" )  AND
                   (SPA-GMN-INPUTCD(IDX - 1)(1:1)   NOT =  ".")
                MOVE    "1"             TO  SPA-COM-ZAIEND (IDX - 1)
-      *H28.8   削除
-      *        IF     (SPA-COM-SRYKBN(IDX - 1) NOT =   "13" )
-      *        AND    (SPA-COM-SRYKBN(IDX)     =   "13"     )
-      *            CONTINUE
-      *        ELSE
-      *            MOVE    ZERO            TO  FLG-AKUSEI-ARI
-      ****     END-IF
            END-IF
       *
       *    入院回数入力時、終了とする
@@ -1627,181 +1125,11 @@
       *
       *    部位フラグクリア
            IF      SPA-COM-ZAIEND (IDX)    =   "1"
-               MOVE    ZERO                TO  FLG-BUIKBN
-               MOVE    ZERO                TO  WRK-KENSA-CNT
-               MOVE    ZERO                TO  FLG-AKUSEI-ARI
-               MOVE    SPACE               TO  WRK-HOUKNSKBN
-               MOVE    ZERO                TO  WRK-HOU-IDX
-               MOVE    ZERO                TO  FLG-YAKUHYO
-               MOVE    ZERO                TO  FLG-GENTEN
+               MOVE    ZERO            TO  FLG-BUIKBN
+               MOVE    ZERO            TO  WRK-KENSA-CNT
            END-IF
            .
        510112-ZAIEND-HEN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    包括検査の剤終了判定処理
-      *****************************************************************
-       5101121-HKTKENSA-HEN-SEC           SECTION.
-      *
-      *    前行位置
-           IF      IDX                 =   1
-               MOVE    1               TO  IDX-1
-           ELSE
-               COMPUTE IDX-1           =   IDX    -   1
-           END-IF
-      *    包括対象外は対象としない
-           IF      (SPA-COM-SRYSYUKBN(IDX)  =   "610" )
-               OR  (SPA-COM-KENTAICOMMENT (IDX) =   1    )
-               OR  (SPA-COM-INPUTCD (IDX)(1:1)  NOT =   "1"  )
-                CONTINUE
-           ELSE
-      *         包括対象検査件数チェック
-                PERFORM 51013-KENSA-ZAI-CHK-SEC
-           END-IF
-      *
-           IF      (SPA-GMN-INPUTCD(IDX-1)(1:1)  =   "." )  OR
-                   (SPA-COM-SRYKBN (IDX-1)   NOT =  SPA-COM-SRYKBN
-                                                             (IDX))
-      *        包括出来高
-             OR    (SPA-COM-INPUTCD (IDX-1)      =   "099999903" )
-      *        包括算定（剤）
-             OR    (SPA-COM-INPUTCD (IDX-1)      =   "099999908" )
-      *        コメント
-             OR    (SPA-COM-INPUTCD (IDX)(1:1)   =   "8"    )
-             OR    (SPA-COM-INPUTCD (IDX)(1:3)   =   "008"  )
-               CONTINUE
-           ELSE
-      *        検体検査コメントの判定
-               IF     (SPA-COM-KENTAICOMMENT (IDX-1)   =   1 )
-      *            検査等実施判断グループ判定
-                   IF      SPA-COM-KNSJISGRPKBN (IDX)  >=  01
-                                                   AND <=  07
-                       MOVE    SPA-COM-HOUKNSKBN(IDX)
-                                                   TO  SPA-COM-HOUKNSKBN
-                                                               (IDX-1)
-      *                診療種別
-                       IF    (SPA-COM-SRYKBN (IDX-1 - 1)
-                                                   =  SPA-COM-SRYKBN
-                                                             (IDX-1))
-                       AND   (SPA-COM-HOUKNSKBN(IDX-1)
-                                                   =  SPA-COM-HOUKNSKBN
-                                                          (IDX-1 - 1))
-                       AND   (SPA-COM-HOUKNSKBN(IDX-1)
-                                               NOT =   ZERO        )
-                           MOVE    SPA-COM-SRYSYUKBN (IDX-1 - 1)
-                                                   TO  SPA-COM-SRYSYUKBN
-                                                             (IDX-1)
-                           MOVE    SPACE           TO  SPA-COM-ZAIEND
-                                                             (IDX-1 - 1)
-                           MOVE    SPA-COM-SRYSYUKBN (IDX-1 - 1)
-                                                   TO  WRK-SRYSYUKBN
-                       END-IF
-      *                同一検査判定コード
-                       MOVE    SPA-COM-INPUTCD(IDX-1)
-                                                   TO  SPA-COM-KENGRP
-                                                               (IDX)
-                       MOVE    SPACE               TO  SPA-COM-ZAIEND
-                                                         (IDX-1)
-                       IF      FLG-SYORI           =   2
-                           MOVE    1               TO  FLG-SYORI
-                       END-IF
-                   END-IF
-               END-IF
-      *        包括対象検査なし
-               IF      SPA-COM-HOUKNSKBN(IDX)   =   ZERO
-                   MOVE    2                    TO  FLG-SYORI
-      *            検体検査コメントの判定
-                   IF     (SPA-COM-KENTAICOMMENT(IDX-1) =   1)
-      *            検査等実施判断グループ判定
-                      AND (SPA-COM-KNSJISGRPKBN (IDX)  >=  01
-                                                   AND <=  07 )
-                       MOVE    1               TO  FLG-SYORI
-                   END-IF
-      *            前が包括出来高コードは前行で終了
-                   IF      (SPA-COM-INPUTCD (IDX-1)
-                                                   =   "099999903"
-      *            包括算定（剤）
-                                                   OR  "099999908" )
-                       MOVE    1                   TO  FLG-SYORI
-                   END-IF
-      *H27.10
-                   IF      FLG-SYORI               =   2
-                       MOVE    SPACE               TO  WRK-HOUKNSKBN
-                       MOVE    ZERO                TO  WRK-KENSA-CNT
-                   END-IF
-               ELSE
-      *            包括対象検査変更時
-                   IF     (SPA-COM-HOUKNSKBN(IDX)
-                                               =  SPA-COM-HOUKNSKBN
-                                                             (IDX-1)
-                                               OR  WRK-HOUKNSKBN  )
-      *            包括出来高
-                      OR  (SPA-COM-INPUTCD (IDX-1)
-                                               =   "099999903"
-      *            包括算定（剤）
-                                               OR  "099999908" )
-                       CONTINUE
-                   ELSE
-                       MOVE    2                    TO  FLG-SYORI
-                   END-IF
-      *
-      *            前が検体検査コメント
-                   IF     (SPA-COM-KENTAICOMMENT (IDX-1) =   1)
-                     AND  (IDX-1             >   1   )
-                       IF     (SPA-COM-HOUKNSKBN(IDX)
-                                               =   WRK-HOUKNSKBN )
-                           IF      WRK-HOU-IDX     =   ZERO
-                               COMPUTE WRK-HOU-IDX     =   IDX-1  -  1
-                           END-IF
-                           MOVE    ZERO      TO  FLG-SYORI
-                           MOVE    SPA-COM-SRYSYUKBN (WRK-HOU-IDX)
-                                                 TO  SPA-COM-SRYSYUKBN
-                                                             (IDX)
-                           MOVE    SPA-COM-SRYSYUKBN (WRK-HOU-IDX)
-                                                 TO  SPA-COM-SRYSYUKBN
-                                                             (IDX-1)
-                           MOVE    SPACE         TO  SPA-COM-ZAIEND
-                                                             (IDX-1)
-                           MOVE    SPA-COM-SRYSYUKBN (WRK-HOU-IDX)
-                                                 TO  WRK-SRYSYUKBN
-                       END-IF
-      *! !!!                                     =   SPA-COM-HOUKNSKBN
-      *                                                    (IDX-1 - 1)
-      *                    MOVE    ZERO      TO  FLG-SYORI
-      *                    MOVE    SPA-COM-SRYSYUKBN (IDX-1 - 1)
-      *                                          TO  SPA-COM-SRYSYUKBN
-      *                                                      (IDX)
-      *                    MOVE    SPA-COM-SRYSYUKBN (IDX-1 - 1)
-      *                                          TO  SPA-COM-SRYSYUKBN
-      *                                                      (IDX-1)
-      *                    MOVE    SPACE         TO  SPA-COM-ZAIEND
-      *                                                      (IDX-1)
-      *                    MOVE    SPA-COM-SRYSYUKBN (IDX-1 - 1)
-      *                                          TO  WRK-SRYSYUKBN
-      *!!!!!!!!1       END-IF
-                   END-IF
-               END-IF
-      *
-      *        包括対象外の剤終了時、診療種別を検査にする
-               IF    (SPA-COM-SRYSYUKBN(IDX)  =   "610" ) AND
-                     (FLG-SYORI               =   2     )
-                   MOVE    SPA-COM-TNSSRYSYUKBN (IDX)
-                                            TO  SPA-COM-SRYSYUKBN (IDX)
-               END-IF
-           END-IF
-      *
-      *    検査等実施判断グループ判定
-           IF     (SPA-COM-HOUKNSKBN(IDX)  NOT =   ZERO  )
-              AND (SPA-COM-INPUTCD  (IDX)(1:1) =   "1"   )
-              AND (SPA-COM-KNSJISGRPKBN (IDX)  >=  01
-                                           AND <=  07     )
-      *
-               MOVE    SPA-COM-HOUKNSKBN(IDX)  TO  WRK-HOUKNSKBN
-               MOVE    IDX                     TO  WRK-HOU-IDX
-           END-IF
-           .
-       5101121-HKTKENSA-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1875,39 +1203,25 @@
                    MOVE    "1"             TO  SPA-COM-ZAIEND (IDX)
                    MOVE    1               TO  FLG-ZAI
       *            自賠責の時、８０とする
-                   IF     (SPA-RSI-HKNKBN            =  "4" )  AND
+                   IF     (SPA-RSI-HKNKBN            =  "4") AND
                           (SPA-COM-INPUTCD(IDX)(1:5) =  "09591"
                                                     OR  "09592"
                                                     OR  "09593")
                        MOVE    "80"        TO  SPA-COM-SRYKBN (IDX)
                        MOVE    "800"       TO  SPA-COM-SRYSYUKBN
                                                                (IDX)
-      *                点数マスタ金額＝０
-                       IF     (SPA-COM-TEN (IDX)    =   ZERO )
-                       AND    (SPA-SRYYMD           >=  "20100401")
-                           MOVE    "809"       TO  SPA-COM-SRYSYUKBN
-                                                               (IDX)
-                       END-IF
                        MOVE    "1"         TO  SPA-COM-ZAIEND (IDX)
-                       MOVE    2           TO  FLG-ZAI
+                       MOVE    1           TO  FLG-ZAI
                    END-IF
       *            労災の時、８０とする
                    IF     (SPA-RSI-HKNKBN            =  "1"
                                                      OR "2"
-                                                     OR "3"
-      *                   公務災害
-                                                     OR "5") AND
+                                                     OR "3") AND
                           (SPA-COM-INPUTCD(IDX)(1:5) =  "09593")
                        MOVE    "80"        TO  SPA-COM-SRYKBN  (IDX)
                        MOVE    "800"       TO  SPA-COM-SRYSYUKBN(IDX)
-      *                点数マスタ金額＝０
-                       IF     (SPA-COM-TEN (IDX)    =   ZERO )
-                       AND    (SPA-SRYYMD           >=  "20100401")
-                           MOVE    "809"       TO  SPA-COM-SRYSYUKBN
-                                                               (IDX)
-                       END-IF
                        MOVE    "1"         TO  SPA-COM-ZAIEND  (IDX)
-                       MOVE    2           TO  FLG-ZAI
+                       MOVE    1           TO  FLG-ZAI
                    END-IF
       *            労災・自賠責で入院の時、８０とする
                    IF     (SPA-HKNKBN                =  1  ) AND
@@ -1916,36 +1230,9 @@
                        MOVE    "80"        TO  SPA-COM-SRYKBN (IDX)
                        MOVE    "800"       TO  SPA-COM-SRYSYUKBN
                                                                (IDX)
-      *                点数マスタ金額＝０
-                       IF     (SPA-COM-TEN (IDX)    =   ZERO )
-                       AND    (SPA-SRYYMD           >=  "20100401")
-                           MOVE    "809"       TO  SPA-COM-SRYSYUKBN
-                                                               (IDX)
-                       END-IF
                        MOVE    "1"         TO  SPA-COM-ZAIEND  (IDX)
-                       MOVE    2           TO  FLG-ZAI
+                       MOVE    1           TO  FLG-ZAI
                    END-IF
-      *H25.7
-      *            第三者行為の時　８０とする
-                   IF     (SPA-RSI-HKNKBN            =  "6" )
-                    AND  ((SPA-COM-INPUTCD(IDX)(1:5) =  "09591"
-                                                    OR  "09592"
-                                                    OR  "09593")  OR
-                         ((SPA-NYUGAIKBN             =  "1"  ) AND
-                          (SPA-COM-INPUTCD(IDX)(1:5) =  "09594")))
-                       MOVE    "80"        TO  SPA-COM-SRYKBN (IDX)
-                       MOVE    "800"       TO  SPA-COM-SRYSYUKBN
-                                                               (IDX)
-      *                点数マスタ金額＝０
-                       IF     (SPA-COM-TEN (IDX)    =   ZERO )
-                       AND    (SPA-SRYYMD           >=  "20100401")
-                           MOVE    "809"       TO  SPA-COM-SRYSYUKBN
-                                                               (IDX)
-                       END-IF
-                       MOVE    "1"         TO  SPA-COM-ZAIEND (IDX)
-                       MOVE    2           TO  FLG-ZAI
-                   END-IF
-      *
       *        保険外（自費）（1行１剤とする）
                WHEN    "096"
                    MOVE    "96"            TO  SPA-COM-SRYKBN (IDX)
@@ -1953,7 +1240,6 @@
                    MOVE    "1"             TO  SPA-COM-ZAIEND  (IDX)
                    MOVE    1               TO  FLG-ZAI
       *        特定器材（前の剤に付属する）
-               WHEN    "058"
                WHEN    "059"
                    MOVE    SPACE           TO  SPA-COM-SRYSYUKBN (IDX)
       *            器材（前の剤に付属する）
@@ -1966,8 +1252,7 @@
                                                 "60" OR  "70" OR
                                                 "80" OR  "14" OR
                                                 "21" OR  "22" OR
-                                                "23" OR  "13"
-                                            OR  "64"           )
+                                                "23" OR  "13" )
                        MOVE    SPA-COM-SRYKBN(IDX - 1)
                                                TO  SPA-COM-SRYKBN(IDX)
                        MOVE    SPACE           TO  SPA-COM-ZAIEND
@@ -1982,17 +1267,12 @@
                    IF     (SPA-COM-INPUTCD (IDX)(1:4)
                                            NOT =   "0082"
                                                AND "0083"
-                                               AND "0084"
-                                               AND "0086"
-                                               AND "0085" )  OR
+                                               AND "0084" )  OR
                          ((IDX                 =   1   )  OR
                           (SPA-COM-KAIFLG (IDX - 1 )   =   "1")
                        OR (SPA-GMN-INPUTCD(IDX - 1 )(1:1)
                                                        =   "#"
-                                                       OR  "$" )
-      *H26.10
-                       OR (SPA-COM-INPUTCD(IDX - 1)
-                                               =   "099140012" ))
+                                                       OR  "$" ))
                        MOVE    "99"            TO  SPA-COM-SRYKBN(IDX)
                        MOVE    "990"           TO  SPA-COM-SRYSYUKBN
                                                                  (IDX)
@@ -2009,7 +1289,17 @@
                    EVALUATE    SPA-COM-INPUTCD (IDX)
       *            残量廃棄の時、注射であること
                        WHEN    "099309901"
-                           PERFORM 51019-ZANHAIKI-CHK-SEC
+                           IF      SPA-COM-SRYKBN(IDX - 1) =   "31"
+                                                           OR  "32"
+                                                           OR  "33"
+      *                      処置追加
+                                                           OR  "40"
+                               MOVE    SPA-COM-SRYKBN(IDX - 1)
+                                                     TO  SPA-COM-SRYKBN
+                                                                  (IDX)
+                           ELSE
+                               MOVE    "0061"        TO  SPA-ERRCD
+                           END-IF
       *            粉砕の時、内服とする
                        WHEN    "099209901"
                            MOVE    "21"            TO  SPA-COM-SRYKBN
@@ -2075,45 +1365,10 @@
                            MOVE    1               TO  FLG-ZAI
       *                在総診終了
                        WHEN    "099140001"
-      *                在宅患者共同開始日
-                       WHEN    "099140004"
                            MOVE    "14"            TO  SPA-COM-SRYKBN
                                                                   (IDX)
                            MOVE    "140"           TO  SPA-COM-SRYSYUKBN
                                                                   (IDX)
-      *                    １剤１明細とする
-                           MOVE    "1"             TO  SPA-COM-ZAIEND
-                                                                  (IDX)
-                           MOVE    1               TO  FLG-ZAI
-      *H26.10
-      *                訪問診療に掛かる記録書
-                       WHEN    "099140011"
-                           MOVE    "99"            TO  SPA-COM-SRYKBN
-                                                                  (IDX)
-      *                    1行前が診療種別以外
-                           IF     (IDX             >   1  )  AND
-                                  (SPA-GMN-INPUTCD(IDX - 1)(1:4)
-                                                   =   ".990"
-                                                   OR  ".991" )
-                               CONTINUE
-                           ELSE
-                               MOVE    "991"       TO  SPA-COM-SRYSYUKBN
-                                                                  (IDX)
-                           END-IF
-      *                診療人数合計
-                       WHEN    "099140012"
-                           MOVE    "99"            TO  SPA-COM-SRYKBN
-                                                                  (IDX)
-      *                    1行前が診療種別以外
-                           IF     (IDX             >   1  )  AND
-                                  (SPA-GMN-INPUTCD(IDX - 1)(1:4)
-                                                   =   ".990"
-                                                   OR  ".991" )
-                               CONTINUE
-                           ELSE
-                               MOVE    "991"       TO  SPA-COM-SRYSYUKBN
-                                                                  (IDX)
-                           END-IF
       *                    １剤１明細とする
                            MOVE    "1"             TO  SPA-COM-ZAIEND
                                                                   (IDX)
@@ -2124,9 +1379,6 @@
                        WHEN    "099200012"
                        WHEN    "099200013"
                        WHEN    "099200014"
-                       WHEN    "099200015"
-      *H27.4           ３０日投薬可能
-                       WHEN    "099200101"
                            IF     (SPA-COM-SRYKBN(IDX - 1) =   "21"
                                                            OR  "22"
                                                            OR  "23" )
@@ -2136,45 +1388,12 @@
                            ELSE
                                MOVE    "2062"        TO  SPA-ERRCD
                            END-IF
-      *H30.4
-      *               分割調剤
-                       WHEN    "099208101"
-                           IF     (SPA-COM-SRYKBN(IDX - 1) =   "21"
-                                                           OR  "22"
-                                                           OR  "23" )
-                              AND (SPA-COM-ZAIEND (IDX - 1)
-                                                            =  SPACE )
-                               MOVE    SPA-COM-SRYKBN(IDX - 1)
-                                                     TO  SPA-COM-SRYKBN
-                                                                  (IDX)
-                           ELSE
-                               MOVE    "0281"        TO  SPA-ERRCD
-                           END-IF
-      *
       *                後発医薬品への変更可（処方せん毎）
                        WHEN    "099209902"
-      *                後発医薬品への変更不可
-                       WHEN    "099209904"
-      *H28.4           湿布薬枚数制限解除
-                       WHEN    "099200201"
-      *                保険医療機関へ疑義照会した上で調剤
-                       WHEN    "099209921"
-      *                保険医療機関へ情報提供
-                       WHEN    "099209922"
-      *H28.11          残薬指示プログラムオプション解除
-                       WHEN    "099209923"
                            MOVE    "98"            TO  SPA-COM-SRYKBN
                                                                   (IDX)
                            MOVE    "980"           TO  SPA-COM-SRYSYUKBN
                                                                   (IDX)
-      *                    入院時は982 へ
-                           IF      SPA-NYUGAIKBN   =   "1"
-                               IF      SPA-COM-SRYSYUKBN(IDX - 1)
-                                                   NOT =   "980"
-                                   MOVE    "982"   TO  SPA-COM-SRYSYUKBN
-                                                                  (IDX)
-                               END-IF
-                           END-IF
       *                    １剤１明細とする
                            MOVE    "1"             TO  SPA-COM-ZAIEND
                                                                   (IDX)
@@ -2191,190 +1410,7 @@
                            ELSE
                                MOVE    "2063"        TO  SPA-ERRCD
                            END-IF
-      *                含量規格変更不可（薬剤毎）
-                       WHEN    "099209905"
-      *                剤型変更不可（薬剤毎）
-                       WHEN    "099209906"
-                           IF     (SPA-COM-SRYKBN(IDX - 1) =   "21"
-                                                           OR  "22"
-                                                           OR  "23"
-                                                           OR  "14" )
-                               MOVE    SPA-COM-SRYKBN(IDX - 1)
-                                                     TO  SPA-COM-SRYKBN
-                                                                  (IDX)
-                           ELSE
-                               MOVE    "0268"        TO  SPA-ERRCD
-                           END-IF
-      *H24.4 改正
-      *                銘柄名記載
-                       WHEN    "099209907"
-      *                一般名記載
-                       WHEN    "099209908"
-                           IF     (SPA-COM-SRYKBN(IDX - 1) =   "21"
-                                                           OR  "22"
-                                                           OR  "23"
-                                                           OR  "14" )
-                               MOVE    SPA-COM-SRYKBN(IDX - 1)
-                                                     TO  SPA-COM-SRYKBN
-                                                                  (IDX)
-                           ELSE
-                               MOVE    "2071"        TO  SPA-ERRCD
-                           END-IF
-      *H28.9 持参薬予約コード
-                       WHEN    CONS-JSNYCD1
-                       WHEN    CONS-JSNYCD2
-                       WHEN    CONS-JSNYCD3
-                       WHEN    CONS-JSNYCD4
-      *                    投薬の１件目とする
-                           IF     (IDX             >   ZERO )
-                             AND  (SPA-GMN-INPUTCD (IDX - 1)(1:1)
-                                                   =   "."  )
-                             AND  (SPA-COM-SRYKBN(IDX - 1) =   "21"
-                                                           OR  "22"
-                                                           OR  "23"
-                                                           OR  "14" )
-                               MOVE    SPA-COM-SRYKBN(IDX - 1)
-                                                     TO  SPA-COM-SRYKBN
-                                                                  (IDX)
-                               MOVE    SPA-COM-SRYSYUKBN(IDX - 1)
-                                                   TO  SPA-COM-SRYSYUKBN
-                                                                  (IDX)
-      *                        持参薬区分
-                               MOVE    "1"         TO  SPA-COM-JISANYAKU
-                                                              (IDX)
-                               MOVE    "1"         TO  SPA-COM-JISANYAKU
-                                                              (IDX - 1)
-                           ELSE
-                               MOVE    "0227"        TO  SPA-ERRCD
-                           END-IF
-      *                    包括保険はエラー
-                           IF      SPA-COM-HKNCOMBI (IDX)  =   "9999"
-                               MOVE    "0228"        TO  SPA-ERRCD
-                           END-IF
-      *                数量不明
-                       WHEN    CONS-JSNYCD5
-                       WHEN    CONS-JSNYCD6
-                       WHEN    CONS-JSNYCD7
-                       WHEN    CONS-JSNYCD8
-      *                    投薬の１件目とする
-                           IF     (IDX             >   ZERO )
-                             AND  (SPA-GMN-INPUTCD (IDX - 1)(1:1)
-                                                   =   "."  )
-                             AND  (SPA-COM-SRYKBN(IDX - 1) =   "21"
-                                                           OR  "22"
-                                                           OR  "23"
-                                                           OR  "14" )
-                               MOVE    SPA-COM-SRYKBN(IDX - 1)
-                                                     TO  SPA-COM-SRYKBN
-                                                                  (IDX)
-                               MOVE    SPA-COM-SRYSYUKBN(IDX - 1)
-                                                   TO  SPA-COM-SRYSYUKBN
-                                                                  (IDX)
-      *                        持参薬区分
-                               MOVE    "2"         TO  SPA-COM-JISANYAKU
-                                                              (IDX)
-                               MOVE    "2"         TO  SPA-COM-JISANYAKU
-                                                              (IDX - 1)
-                           ELSE
-                               MOVE    "0227"        TO  SPA-ERRCD
-                           END-IF
-      *                    包括保険はエラー
-                           IF      SPA-COM-HKNCOMBI (IDX)  =   "9999"
-                               MOVE    "0228"        TO  SPA-ERRCD
-                           END-IF
-      *H27.4
-      *                後発医薬品への変更可（処方せん毎）
-                       WHEN    "099209910"
-      *                後発医薬品への変更不可（処方せん毎）
-                       WHEN    "099209911"
-                           MOVE    "98"            TO  SPA-COM-SRYKBN
-                                                                  (IDX)
-                           MOVE    "980"           TO  SPA-COM-SRYSYUKBN
-                                                                  (IDX)
-      *                    入院時は982 へ
-                           IF      SPA-NYUGAIKBN   =   "1"
-                               MOVE    "982"       TO  SPA-COM-SRYSYUKBN
-                                                                  (IDX)
-                           END-IF
-      *                    １剤１明細とする
-                           MOVE    "1"             TO  SPA-COM-ZAIEND
-                                                                  (IDX)
-      *                    コメントも不可
-                           MOVE   "1"              TO  SPA-COM-KAIFLG
-                                                                  (IDX)
-                           MOVE    1               TO  FLG-ZAI
       *
-      *                包括出来高算定（剤）
-                       WHEN    "099999903"
-                           IF     (IDX             >   ZERO )  AND
-                                  (SPA-GMN-INPUTCD (IDX - 1)(1:1)
-                                                   =   "."  )
-                               MOVE    SPA-COM-SRYKBN(IDX - 1)
-                                                     TO  SPA-COM-SRYKBN
-                                                                  (IDX)
-                               MOVE    SPA-COM-SRYSYUKBN(IDX - 1)
-                                                   TO  SPA-COM-SRYSYUKBN
-                                                                  (IDX)
-                           ELSE
-                               MOVE    "0219"          TO  SPA-ERRCD
-                           END-IF
-      *                包括算定（剤）
-                       WHEN    "099999908"
-                           IF     (IDX             >   ZERO )  AND
-                                  (SPA-GMN-INPUTCD (IDX - 1)(1:1)
-                                                   =   "."  )
-                               MOVE    SPA-COM-SRYKBN(IDX - 1)
-                                                     TO  SPA-COM-SRYKBN
-                                                                  (IDX)
-                               MOVE    SPA-COM-SRYSYUKBN(IDX - 1)
-                                                   TO  SPA-COM-SRYSYUKBN
-                                                                  (IDX)
-                           ELSE
-                               MOVE    "0229"          TO  SPA-ERRCD
-                           END-IF
-      *                包括出来高算定日
-                       WHEN    "099999904"
-                           MOVE    "99"            TO  SPA-COM-SRYKBN
-                                                                  (IDX)
-                           MOVE    "990"           TO  SPA-COM-SRYSYUKBN
-                                                                  (IDX)
-      *                    １剤１明細とする
-                           MOVE    "1"             TO  SPA-COM-ZAIEND
-                                                                  (IDX)
-                           MOVE    1               TO  FLG-ZAI
-      *H26.4
-      *                磁気による刺激法開始日
-                       WHEN    "099400001"
-                           MOVE    "40"            TO  SPA-COM-SRYKBN
-                                                                  (IDX)
-                           MOVE    "400"           TO  SPA-COM-SRYSYUKBN
-                                                                  (IDX)
-      *                    １剤１明細とする
-                           MOVE    "1"             TO  SPA-COM-ZAIEND
-                                                                  (IDX)
-                           MOVE    1               TO  FLG-ZAI
-      *ver.4.7         精神科ケア開始
-                       WHEN    "099830101"
-      *H26.4           通院・在宅精神療法開始
-                       WHEN    "099830102"
-                           MOVE    "80"            TO  SPA-COM-SRYKBN
-                                                                  (IDX)
-                           MOVE    "830"           TO  SPA-COM-SRYSYUKBN
-                                                                  (IDX)
-      *                    １剤１明細とする
-                           MOVE    "1"             TO  SPA-COM-ZAIEND
-                                                                  (IDX)
-                           MOVE    1               TO  FLG-ZAI
-      *H28.4           依存症集団療法開始
-                       WHEN    "099830103"
-                           MOVE    "80"            TO  SPA-COM-SRYKBN
-                                                                  (IDX)
-                           MOVE    "830"           TO  SPA-COM-SRYSYUKBN
-                                                                  (IDX)
-      *                    １剤１明細とする
-                           MOVE    "1"             TO  SPA-COM-ZAIEND
-                                                                  (IDX)
-                           MOVE    1               TO  FLG-ZAI
                        WHEN    OTHER
       *                Ｈ１８．４からリハビリ発生日
                        IF       SPA-COM-INPUTCD (IDX)(1:6) =   "099800"
@@ -2387,7 +1423,6 @@
                                                                   (IDX)
                            MOVE    1               TO  FLG-ZAI
                        ELSE
-      *                    コメントとする
                            MOVE    "99"            TO  SPA-COM-SRYKBN
                                                                   (IDX)
       *!                   MOVE    "990"           TO  SPA-COM-SRYSYUKBN
@@ -2396,107 +1431,14 @@
                    END-EVALUATE
            END-EVALUATE
       *
-      *    薬評・器評
-           IF     (FLG-YAKUHYO         =   1  )
-             AND  (SPA-ERRCD           =   SPACE )
-               EVALUATE    SPA-COM-INPUTCD (IDX)(1:3)
-                   WHEN    "008"
-                   WHEN    "059"
-                       MOVE    "1"             TO  SPA-COM-YAKUHYO (IDX)
-                   WHEN    OTHER
-                       MOVE    ZERO            TO  FLG-YAKUHYO
-                       IF      SPA-COM-SRYKBN (IDX)
-                                               =   SPA-COM-SRYKBN
-                                                           (IDX - 1)
-                           MOVE    "0225"          TO  SPA-ERRCD
-                       END-IF
-               END-EVALUATE
-           END-IF
-      *    減点
-           IF     (FLG-GENTEN          =   1     )
-             AND  (SPA-ERRCD           =   SPACE )
-               IF      SPA-COM-INPUTCD (IDX)(1:3)  =   "008"
-                   MOVE    "1"             TO  SPA-COM-GENTEN (IDX)
-               ELSE
-                   MOVE    ZERO            TO  FLG-GENTEN
-                   IF      SPA-COM-SRYSYUKBN (IDX)
-                                           =   SPA-COM-SRYSYUKBN
-                                                           (IDX - 1)
-                       MOVE    "0226"          TO  SPA-ERRCD
-                   END-IF
-               END-IF
-           END-IF
-      *
            .
        5101-SRYKBN-0-HEN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    残量廃棄チェック処理
-      *****************************************************************
-       51019-ZANHAIKI-CHK-SEC           SECTION.
-      *
-           IF      LNK-SC93-HAIKIKBN-FLG   =   "2"
-      *        注射・処置・検査・手術・麻酔・画像診断・リハビリ等
-               IF      SPA-COM-SRYKBN(IDX - 1)(1:1)    =   "3"
-                                                       OR  "4"
-                                                       OR  "5"
-                                                       OR  "6"
-                                                       OR  "7"
-                                                       OR  "8"
-                   MOVE    SPA-COM-SRYKBN(IDX - 1)
-                                               TO  SPA-COM-SRYKBN (IDX)
-               ELSE
-                   MOVE    "0061"              TO  SPA-ERRCD
-               END-IF
-           ELSE
-      *        注射・処置のみ
-               IF      SPA-COM-SRYKBN(IDX - 1) =   "31"
-                                               OR  "32"
-                                               OR  "33"
-      *             処置追加
-                                               OR  "40"
-                   MOVE    SPA-COM-SRYKBN(IDX - 1)
-                                               TO  SPA-COM-SRYKBN (IDX)
-               ELSE
-                   MOVE    "0061"              TO  SPA-ERRCD
-               END-IF
-           END-IF
-           .
-       51019-ZANHAIKI-CHK-EXT.
            EXIT.
       *
       *****************************************************************
       *    点数マスタの診療種別より診療区判定処理
       *****************************************************************
        51011-SRYSYUKBN-KBN-SEC           SECTION.
-      *
-      *ver.4.5.0
-      *    治験減点分
-           IF     (SPA-COM-TENSIKIBETU (IDX)   =   7  )
-              IF      (IDX                 >   1      )  AND
-                      (SPA-GMN-INPUTCD (IDX - 1)(1:1)
-                                           =   "."    )  AND
-                      (WRK-SRYSYUKBN       =   "120"
-                                           OR  "130"
-                                           OR  "140"
-                                           OR  "900"
-                                           OR  "920"  )
-                   MOVE    1                   TO  FLG-GENTEN
-                   MOVE    WRK-SRYSYUKBN       TO  SPA-COM-SRYSYUKBN
-                                                                  (IDX)
-                   MOVE    SPA-COM-SRYKBN (IDX - 1)    TO  WRK-SRYKBN
-                   MOVE    WRK-SRYKBN          TO  SPA-COM-SRYKBN
-                                                                  (IDX)
-                   MOVE    "1"                 TO  SPA-COM-GENTEN
-                                                                  (IDX)
-                   MOVE    "1"                 TO  SPA-COM-GENTEN
-                                                              (IDX - 1)
-               ELSE
-                   MOVE    "0222"              TO  SPA-ERRCD
-               END-IF
-               GO      TO      51011-SRYSYUKBN-KBN-EXT
-           END-IF
       *
       *    在宅指導料の時、在宅指導料とする
            IF     (WRK-SRYSYUKBN           =   "143" )  AND
@@ -2510,16 +1452,6 @@
       *    検査包括なしの時、診療種別を編集する
            IF     (WRK-SRYSYUKBN           =   "610" )  AND
                   (SPA-COM-TNSSRYKBN (IDX) =   "60"  )
-               MOVE    WRK-SRYSYUKBN       TO  SPA-COM-SRYSYUKBN (IDX)
-               MOVE    SPA-COM-TNSSRYKBN (IDX) TO  WRK-SRYKBN
-               MOVE    WRK-SRYKBN          TO  SPA-COM-SRYKBN   (IDX)
-               GO      TO      51011-SRYSYUKBN-KBN-EXT
-           END-IF
-      *
-      *ver.4.5.0
-      *    労災読み替え対象外処置
-           IF     (WRK-SRYSYUKBN           =   "409" )  AND
-                  (SPA-COM-TNSSRYKBN (IDX) =   "40"  )
                MOVE    WRK-SRYSYUKBN       TO  SPA-COM-SRYSYUKBN (IDX)
                MOVE    SPA-COM-TNSSRYKBN (IDX) TO  WRK-SRYKBN
                MOVE    WRK-SRYKBN          TO  SPA-COM-SRYKBN   (IDX)
@@ -2550,9 +1482,6 @@
            IF      SPA-COM-SRYSYUKBN (IDX) =   "960"  OR
                                                "950"  OR
                                                SPACE
-      *H26.10
-                                           OR  "961"
-      *
                MOVE    SPA-COM-TNSSRYSYUKBN(IDX)
                                            TO  SPA-COM-SRYSYUKBN (IDX)
                MOVE    SPACE               TO  SPA-COM-KEIFLG    (IDX)
@@ -2561,24 +1490,10 @@
                    WHEN    "7"
                        MOVE    "700"       TO  SPA-COM-SRYSYUKBN(IDX)
                END-EVALUATE
-      *!
-      *         労災コードの円変換
-               IF     (SPA-HKNKBN          =   1  )
-                 AND  (SPA-COM-INPUTCD (IDX)(1:3)  =   "101")
-                 AND  (SPA-COM-TNSSRYKBN(IDX)  NOT =   "97" )
-                   IF     (SPA-COM-TENSIKIBETU(IDX)    =   "1"  )
-      *                金額を点数へ置換える
-                       COMPUTE SPA-COM-KISOTEN(IDX)    =   SPA-COM-TEN
-                                                             (IDX)
-                                                       /   10
-                   END-IF
-               END-IF
-      *!
            END-IF
       *
-      *    初診時ブラッシング料判定（Ｈ２５年７月からは手術あり）
-           IF     (SPA-COM-INPUTCD(IDX)    =   "101400030" )
-             AND  (SPA-SRYYMD              <   "20130701"  )
+      *    初診時ブラッシング料判定
+           IF      SPA-COM-INPUTCD(IDX)    =   "101400030"
                IF     (IDX                 >   1  )  AND
                      ((SPA-GMN-INPUTCD(IDX - 1)(1:1) =   ".") OR
                       (SPA-COM-ZAIEND(IDX -  1)   =  SPACE  ))
@@ -2593,31 +1508,6 @@
                    END-IF
                END-IF
            END-IF
-      *!@
-      *悪性腫瘍治療管理料チェック（Ｈ１８．４から）
-           IF      SPA-SRYYMD              >=  "20060401"
-               IF      SPA-COM-INPUTCD (IDX)   =   "113001210"  OR
-                                                   "113001310"  OR
-                                                   "113002110"
-                   MOVE    1                   TO  FLG-AKUSEI-ARI
-               END-IF
-      *        悪性腫瘍と同一剤内の腫瘍検査はコメント扱い
-               IF     (FLG-AKUSEI-ARI          =   1   )  AND
-                      (SPA-COM-SRYKBN(IDX - 1) =   "13"    )  AND
-                      (SPA-COM-INPUTCD (IDX)(1:1)  =   "1" )  AND
-                      (SPA-COM-CDKBN-KBN (IDX)     =   "D"  )  AND
-                      (SPA-COM-CDKBN-KBNNUM(IDX)   =   "009"  )
-                   MOVE    SPACE               TO  SPA-COM-DATAKBN (IDX)
-                   MOVE    SPA-COM-SRYKBN(IDX - 1) 
-                                               TO  WRK-SRYKBN
-                   MOVE    SPA-COM-SRYSYUKBN(IDX - 1)
-                                               TO  WRK-SRYSYUKBN
-                   MOVE    WRK-SRYKBN          TO  SPA-COM-SRYKBN (IDX)
-                   MOVE    WRK-SRYSYUKBN       TO  SPA-COM-SRYSYUKBN
-                                                                  (IDX)
-               END-IF
-           END-IF
-      *!@
            .
        51011-SRYSYUKBN-KBN-EXT.
            EXIT.
@@ -2694,9 +1584,7 @@
                    MOVE    2             TO  WRK-KENSA-MAX
                WHEN    08
       *            内部泌負荷試験の包括（保留）
-      ****         MOVE    1             TO  WRK-KENSA-MAX
-      *H29.12      まとめ廃止
-                   MOVE    ZERO          TO  WRK-KENSA-MAX
+                   MOVE    1             TO  WRK-KENSA-MAX
       *平成１５年９月
                WHEN    09
       *            ウイルス抗体価
@@ -2708,19 +1596,14 @@
                WHEN    11
       *            特異的ＩＧＥ
                    MOVE    2             TO  WRK-KENSA-MAX
-      *平成３０年４月
-               WHEN    12
-      *            悪性腫瘍遺伝子検査
-                   MOVE    2             TO  WRK-KENSA-MAX
                WHEN    OTHER
                    MOVE    ZERO          TO  WRK-KENSA-MAX
            END-EVALUATE
       *
            MOVE    ZERO                TO  WRK-KENSA-CNT
            PERFORM VARYING     IDX-KEN     FROM    1   BY  1
-                   UNTIL       IDX-KEN     >   SPA-MAX-LINE
-               IF      (SPA-COM-SRYKBN (IDX-KEN)   =   "60"
-                                                   OR  "64"  ) AND
+                   UNTIL       IDX-KEN     >   200
+               IF      (SPA-COM-SRYKBN (IDX-KEN)   =   "60" ) AND
                        (SPA-COM-SRYSYUKBN (IDX-KEN)
                                                NOT =   "610")  AND
                        (SPA-COM-INPUTCD (IDX-KEN)(1:1)
@@ -2746,37 +1629,7 @@
                                                         (IDX-KEN) )
                        ADD     1                 TO  WRK-KENSA-CNT
                    END-IF
-      *H27.10
-      *            包括区分変更で終了
-                   IF      FLG-KENSA-CHK       =   1
-      *
-                       IF     (WRK-KENSA-CNT       >   ZERO )  AND
-                             ((SPA-COM-HOUKNSKBN(IDX)
-                                           NOT =   SPA-COM-HOUKNSKBN
-                                                        (IDX-KEN) )
-                        OR    (SPA-COM-KAIFLG (IDX-KEN)   =   "1" ))
-                           IF      IDX             >   IDX-KEN
-                               MOVE    ZERO        TO  WRK-KENSA-CNT
-                           ELSE
-                               MOVE    SPA-MAX-LINE    TO  IDX-KEN
-                           END-IF
-                       END-IF
-                   END-IF
-      *
                END-IF
-      *H29.6
-      *        診療種別入力で終了
-               IF     (SPA-GMN-INPUTCD (IDX-KEN)(1:1)  =   "."
-                                                       OR  "*" )
-                 AND  (SPA-NYUGAIKBN        =   1     )
-                 AND  (FLG-KENSA-CHK        =   1    )
-                    IF      IDX             >   IDX-KEN
-                        MOVE    ZERO        TO  WRK-KENSA-CNT
-                    ELSE
-                        MOVE    SPA-MAX-LINE    TO  IDX-KEN
-                    END-IF
-               END-IF
-      *
            END-PERFORM
            IF      WRK-KENSA-MAX       =   ZERO
                CONTINUE
@@ -2790,10 +1643,9 @@
                    END-IF
                END-IF
       *        入院の日付指定がある場合、対象外
-      ******** IF     (SPA-NYUGAIKBN       =   "1" )  AND
-               IF     (IDX                 <   SPA-MAX-LINE )  AND
+               IF     (SPA-NYUGAIKBN       =   "1" )  AND
+                      (IDX                 <   200 )  AND
                       (SPA-GMN-INPUTCD (IDX + 1)(1:1) =   "*" )
-                 AND  (ID2                 >   ZERO  )
                    MOVE    9               TO  TBL-HOUKNARI (ID2)
       *            警告
                    MOVE    1               TO  LNK-SC93-ERRCD
@@ -2803,12 +1655,6 @@
            IF    ((WRK-KENSA-MAX       >   1             )  AND
                   (WRK-KENSA-MAX       <=  WRK-KENSA-CNT )) OR
                   (SPA-GMN-INPUTCD(IDX-1)(1:1)   =   "." ) 
-              OR  (SPA-COM-INPUTCD(IDX-1)   =   "099999903" )
-              OR  (SPA-COM-INPUTCD(IDX-1)   =   "099999908" )
-      *       会計照会で最終行の判定
-              OR  (IDX                  =   1     ) 
-              OR  ((LNK-SC93-PG         =   "J04" ) AND
-                   (IDX             NOT =   SPA-GMN-MAX ))
                CONTINUE
            ELSE
                MOVE    2               TO  FLG-SYORI
@@ -2868,16 +1714,6 @@
                        END-IF
                    END-IF
                END-IF
-      *H26.4
-      *        地域包括診療料時間外
-               IF     (IDX                 >   1 )  AND
-                      (SPA-GMN-INPUTCD(IDX - 1)(1:4)
-                                           =   ".130")
-                    IF      SPA-COM-TIMEKSNKBN (IDX)   NOT =   ZERO
-                        MOVE    1           TO  FLG-ARI
-                    END-IF
-               END-IF
-      *
       *        在宅指導料の時、点数加算はＯＫ
       ******** IF      LNK-SC93-NETAKIRI-ARI   =   1
                    IF     (WRK-SRYSYUKBN           =   "143" )  AND
@@ -2905,22 +1741,6 @@
                            MOVE    1                   TO  FLG-ARI
                        END-IF
                    END-IF
-      *H28.5
-               ELSE
-      *            外来は、332,340のみ
-                   IF      (SPA-COM-TNSSRYSYUKBN (IDX) =   "300" OR
-                                                           "330" OR
-                                                           "340" )  AND
-                           (IDX                    >   1 )  AND
-                           (SPA-GMN-INPUTCD(IDX - 1)(1:4)
-                                                   =   ".332"
-                                                   OR  ".340" )
-      *                通則加算のみ
-                       IF     (SPA-COM-CDKBN-KBN (IDX)     =   "G"  )
-                         AND  (SPA-COM-CDKBN-KBNNUM(IDX)   =   "000")
-                           MOVE    1                   TO  FLG-ARI
-                       END-IF
-                   END-IF
                END-IF
       *
       *        入院種別が入力されていること
@@ -2943,28 +1763,6 @@
       *        処置加算のみ
                IF     (WRK-SRYSYUKBN           =   "403" )  AND
                       (SPA-COM-TNSSRYKBN (IDX) =   "40"  )
-                   MOVE    1               TO  FLG-ARI
-               END-IF
-      *!
-      *        検査加算のみ
-               IF     (WRK-SRYSYUKBN           =   "603" )  AND
-                      (SPA-COM-TNSSRYKBN (IDX) =   "60"  )
-                   MOVE    1               TO  FLG-ARI
-               END-IF
-      *        病理診断加算のみ
-               IF     (WRK-SRYSYUKBN           =   "643" )  AND
-                      (SPA-COM-TNSSRYKBN (IDX) =   "64"  )
-                   MOVE    1               TO  FLG-ARI
-               END-IF
-      *
-      *H28.1
-      *        初診・再診加算のみ
-               IF    ((WRK-SRYSYUKBN           =   "114" )  AND
-                      (SPA-COM-TNSSRYKBN (IDX) =   "11"  ))
-               OR    ((WRK-SRYSYUKBN           =   "124" )  AND
-                      (SPA-COM-TNSSRYKBN (IDX) =   "12"  ))
-               OR    ((WRK-SRYSYUKBN           =   "133" )  AND
-                      (SPA-COM-TNSSRYKBN (IDX) =   "13"  ))
                    MOVE    1               TO  FLG-ARI
                END-IF
            END-IF
@@ -3043,13 +1841,12 @@
       *
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-MAX-LINE
-               IF     (WRK-COM-INPUTCD(IDX)    =   SPACE ) AND
-                      (WRK-GMN-INPUTCD(IDX)    =   SPACE )
+                   UNTIL       IDX     >   200
+               IF      WRK-COM-INPUTCD(IDX)    =   SPACE  AND
+                       WRK-GMN-INPUTCD(IDX)    =   SPACE
                    CONTINUE
                ELSE
-                   IF     (WRK-COM-SRYKBN (IDX)    =   "60"
-                                                   OR  "64" ) AND
+                   IF     (WRK-COM-SRYKBN (IDX)    =   "60" ) AND
                           (WRK-COM-HOUKNSKBN(IDX)  NOT =  ZERO)
                    AND    (WRK-COM-SRYSYUKBN(IDX)  NOT =  "610")
                    AND    (WRK-COM-SET      (IDX)  NOT =   "1"  )
@@ -3107,96 +1904,43 @@
                MOVE    WRK-GMN-TBL (IDX)   TO  SPA-GMN-TBL(IDX-TBL)
                MOVE    SPACE               TO  WRK-GMN-TBL (IDX)
            ELSE
-               PERFORM 20011-KENSA-SYORI-SEC
-           END-IF
-           .
-       2001-KENSA-SET-EXT.
-           EXIT.
       *
-      *****************************************************************
-      *    包括検査ソート処理
-      *****************************************************************
-       20011-KENSA-SYORI-SEC              SECTION.
-      *
+      **** MOVE    ZERO            TO  IDX-TBL2
            PERFORM VARYING     IDX-2   FROM    IDX   BY  1
-                   UNTIL       IDX-2   >   SPA-MAX-LINE
-               MOVE    ZERO            TO  FLG-KENSA-OK
-               IF     (WRK-COM-INPUTCD(IDX-2)    =   SPACE  )  AND
-                      (WRK-GMN-INPUTCD(IDX-2)    =   SPACE  )
-                   MOVE    1                TO  FLG-KENSA-OK
-               END-IF
-               IF      (IDX-2               >   1          )  AND
+                   UNTIL       IDX-2   >   200
+               IF     (WRK-COM-INPUTCD(IDX-2)    =   SPACE  AND
+                       WRK-GMN-INPUTCD(IDX-2)    =   SPACE  )
+                  OR  ((IDX-2               >   1          )  AND
                        (WRK-COM-SRYKBN (IDX-2)    =   "60" )  AND
                        (WRK-GMN-INPUTCD (IDX-2 - 1)(1:4)
                                                    =   ".600" OR
                         WRK-COM-ZAIEND  (IDX-2 - 1) =  "1"   )  AND
                        (WRK-COM-KAISU   (IDX-2)    >  1 ) AND
-                       (WRK-COM-KAIFLG  (IDX-2)    =  "1")
-                   MOVE    1                TO  FLG-KENSA-OK
-               END-IF
-               IF      (WRK-COM-SRYSYUKBN (IDX-2) =   "610" )
+                       (WRK-COM-KAIFLG  (IDX-2)    =  "1"))
+                  OR   (WRK-COM-SRYSYUKBN (IDX-2) =   "610" )
                   OR   (WRK-COM-SET      (IDX-2)  =   "1"  )
-                   MOVE    1                TO  FLG-KENSA-OK
-               END-IF
-               IF      FLG-KENSA-OK         =   ZERO
+                   CONTINUE
+               ELSE
                    IF     (WRK-COM-SRYKBN (IDX-2)    =   "60" )  AND
                           (WRK-COM-HOUKNSKBN(IDX-2)  =   WRK-HOUKNSKBN)
                      AND  (WRK-COM-HKNCOMBI (IDX-2)  =   WRK-HKNCOMBI )
                      AND  (WRK-COM-SRYKA    (IDX-2)  =   WRK-SRYKA    )
-                       CONTINUE
-                   ELSE
-                       MOVE    1                TO  FLG-KENSA-OK
-                   END-IF
-               END-IF
-               IF      FLG-KENSA-OK         =   ZERO
-      *            前の行が診療種別で削除できるかどうかの判定
-                   IF     ((IDX-2              >   1  )  AND
-                           (WRK-GMN-INPUTCD(IDX-2 - 1)(1:4)
-                                               =   ".600")) AND
-                           (IDX-2              >   IDX   )
-                       MOVE    SPACE           TO  WRK-GMN-TBL
-                                                       (IDX-2 - 1)
-                   END-IF
-      *
-                   ADD     1               TO  IDX-TBL
-                   MOVE    WRK-GMN-TBL (IDX-2)
-                                               TO  SPA-GMN-TBL(IDX-TBL)
-                   IF     (SPA-COM-KAISU  (IDX-TBL)  >  1 )
-                     AND  (SPA-COM-KAIFLG (IDX-TBL)  =  "1")
-                       CONTINUE
-                   ELSE
-                       IF      SPA-COM-KAIFLG (IDX-TBL)  =   "1"
-                           MOVE    SPACE           TO  WRK-INPUTCD
-                           STRING  SPA-GMN-INPUTCD(IDX-TBL)
-                                                   DELIMITED  BY  "*"
-                                                   INTO    WRK-INPUTCD
-                           END-STRING
-                           MOVE    WRK-INPUTCD TO  SPA-GMN-INPUTCD
-                                                            (IDX-TBL)
-                       END-IF
-                       MOVE    SPACE           TO  SPA-COM-KAIFLG
-                                                              (IDX-TBL)
-                       MOVE    SPACE           TO  SPA-COM-ZAIEND
-                                                              (IDX-TBL)
-                   END-IF
-                   MOVE    SPACE           TO  WRK-GMN-TBL (IDX-2)
-      *            次の行のコメントを一緒に移動する
-                   COMPUTE IDX-5               =   IDX-2  +  1
-                   PERFORM VARYING     IDX-4   FROM    IDX-5   BY  1
-                           UNTIL       IDX-4   >   SPA-MAX-LINE
-                       IF    ((WRK-COM-INPUTCD (IDX-4) (1:1)
-                                                   =   "8"    )  OR
-                              (WRK-COM-INPUTCD (IDX-4) (1:3)
-                                                   =   "008"  ))
-                       AND    (WRK-COM-KAISU  (IDX-4)  <= 1 )
-                           ADD     1               TO  IDX-TBL
-                           MOVE    WRK-GMN-TBL (IDX-4)
-                                                   TO  SPA-GMN-TBL
-                                                             (IDX-TBL)
+      *              前の行が診療種別で削除できるかどうかの判定
+                       IF     ((IDX-2              >   1  )  AND
+                               (WRK-GMN-INPUTCD(IDX-2 - 1)(1:4)
+                                                   =   ".600")) AND
+                               (IDX-2              >   IDX   )
                            MOVE    SPACE           TO  WRK-GMN-TBL
-                                                             (IDX-4)
-                           MOVE    IDX-4           TO  IDX-2
-      *                    回数削除
+                                                       (IDX-2 - 1)
+                       END-IF
+      *
+                       ADD     1               TO  IDX-TBL
+                       MOVE    WRK-GMN-TBL (IDX-2)
+                                               TO  SPA-GMN-TBL(IDX-TBL)
+                       IF     (SPA-COM-KAISU (IDX-TBL)   >  1 ) AND
+                              (SPA-COM-KAIFLG (IDX-TBL)  =  "1")
+                           CONTINUE
+                       ELSE
                            IF      SPA-COM-KAIFLG (IDX-TBL)  =   "1"
                                MOVE    SPACE           TO  WRK-INPUTCD
                                STRING  SPA-GMN-INPUTCD(IDX-TBL)
@@ -3210,15 +1954,31 @@
                                                               (IDX-TBL)
                            MOVE    SPACE           TO  SPA-COM-ZAIEND
                                                               (IDX-TBL)
-                       ELSE
-                           MOVE    SPA-MAX-LINE    TO  IDX-4
                        END-IF
-                   END-PERFORM
+                       MOVE    SPACE           TO  WRK-GMN-TBL (IDX-2)
+      *DDDDDDDDDDDDDDD 次の行が入院回数の時、一緒に移動する
+      *                IF      WRK-GMN-INPUTCD(IDX-2 + 1)(1:1) =   "*"
+      *                    ADD     1               TO  IDX-TBL2
+      *                    MOVE    WRK-GMN-INPUTCD (IDX-2 + 1)
+      *                                        TO  WRK-HZN-INPUTCD
+      *                                               (IDX-TBL2)
+      *                    MOVE    SPACE       TO  WRK-GMN-TBL
+      *                                               (IDX-2 + 1)
+      *dddddddddddddddDEND-IF
+                   END-IF
                END-IF
            END-PERFORM
+      ***  PERFORM VARYING     IDX-2   FROM    1   BY  1
+      *            UNTIL       IDX-2   >   IDX-TBL2
+      *        ADD     1               TO  IDX-TBL
+      *        MOVE    WRK-HZN-INPUTCD (IDX-2)
+      *                                TO  SPA-GMN-INPUTCD
+      *                                               (IDX-TBL)
+      *****END-PERFORM
       *
+           END-IF
            .
-       20011-KENSA-SYORI-EXT.
+       2001-KENSA-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3243,7 +2003,7 @@
       *
       *    同一検査を削除
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX         >   SPA-MAX-LINE  )   OR
+                   UNTIL      (IDX         >   200     )   OR
                              ((SPA-GMN-INPUTCD (IDX) =   SPACE) AND
                               (SPA-COM-INPUTCD (IDX) =   SPACE ))
                IF     (SPA-COM-SRYKBN (IDX)  =   "60"  )  AND
@@ -3258,7 +2018,7 @@
       *        検体検査コメント以外
                AND    (SPA-COM-KENTAICOMMENT (IDX)  =   ZERO )
                    PERFORM VARYING     IDX-2  FROM    IDX     BY  1
-                           UNTIL       IDX-2      >   SPA-MAX-LINE
+                           UNTIL       IDX-2      >   200
                        IF     (IDX-2       NOT =   IDX )  AND
                               (SPA-COM-SRYSYUKBN (IDX-2)
                                            NOT =   "610"  )  AND
@@ -3280,7 +2040,7 @@
            MOVE    ZERO                TO  IDX-TBL
       *    同一検査を削除
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   SPA-MAX-LINE     )
+                   UNTIL      (IDX     >   200     )
                IF      WRK-GMN-INPUTCD (IDX)   =   SPACE
                    CONTINUE
                ELSE
