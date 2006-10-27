@@ -18,11 +18,14 @@
       *    °åÎÅµ¡´Ø¾ðÊó¡¼Æþ±¡´ðËÜ²èÌÌ£Ó£Ð£Á    (SPA-FREE ¤ÎÆâÍÆ)
       *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  03.04.00    NACL-Â¿¡¹Ç¼  06/10/26  ¸¡º÷²èÌÌÏ¢Íí¾ðÊó°ÜÆ°Â¾ 
       *****************************************************************
       *
        01  SPA-W24FREE.
+      *
+         03  SPA-W24                   PIC X(20000).
       *  °åÎÅµ¡´ØÆþ±¡¾ðÊó²èÌÌ£Ó£Ð£Á
-         03  SPA-W24.
+         03  SPA-W24-R          REDEFINES   SPA-W24.
            05  SPA-W24-AREA.
              07  SPA-GMN-W24-PAGE                      PIC 9(02).
              07  SPA-GMN-W24-LINE                      PIC 9(02).
@@ -298,65 +301,6 @@
                  11  SPA-NAI-W24-NYUKSN-SRYCD-OCC      OCCURS  20.
                      13  SPA-NAI-W24-NYUKSN-SRYCD      PIC X(09).
       *
-      *    ¿ÇÎÅ¹Ô°Ù¸¡º÷²èÌÌ£Ó£Ð£Á
-           03  SPA-W25-MOTOPG                    PIC X(08).
-           03  SPA-W25GMN-AREA.
-               05  SPA-W25-GMN-MAX               PIC 9(03).
-               05  SPA-W25-NEXT                  PIC 9(04).
-               05  SPA-W25-PAGE                  PIC 9(04).
-               05  SPA-W25-GMN-CUR               PIC 9(03).
+      *    ¸¡º÷²èÌÌ¶¦ÄÌ
+           03  SPA-W25-KYOUTU            PIC X(30000).
       *
-               05  SPA-W25-GMN-SELNUM-G.
-                   07  SPA-W25-GMN-SELNUM        PIC X(03)
-                                                 OCCURS  5.
-               05  SPA-W25-NAI-SELNUM-G.
-                   07  SPA-W25-NAI-SELNUM        PIC 9(03)
-                                                 OCCURS  5.
-               05  SPA-W25-GMN-INPUT             PIC X(22).
-               05  SPA-W25-GMN-SYORI             PIC X(01).
-               05  SPA-W25-GMN-SYORI2            PIC X(01).
-               05  SPA-W25-GMN-SYORI3            PIC X(02).
-               05  SPA-W25-NAI-KENSA.
-                   07  SPA-W25-NAI-KENSANO       PIC 9(02).
-                   07  SPA-W25-NAI-HOUKATU       PIC X(01).
-      *
-               05  SPA-W25-GMN-TBL.
-                   07  SPA-W25-GMN-TBLREC        OCCURS   200.
-                       11  SPA-W25-GMN-NO         PIC 9(03).
-                       11  SPA-W25-GMN-NO-X       REDEFINES
-                           SPA-W25-GMN-NO         PIC X(03).
-                       11  SPA-W25-GMN-INPUTCD    PIC X(20).
-                       11  SPA-W25-GMN-SRYCD      PIC X(09).
-                       11  SPA-W25-GMN-NAME       PIC X(70).
-                       11  SPA-W25-GMN-TANI       PIC X(10).
-                       11  SPA-W25-GMN-KISOTEN    PIC 9(07)V99.
-      *
-                       11  SPA-W25-NAI-NO         PIC 9(03).
-      *        ¼«±¡ºÎÍÑ
-               05  SPA-W25-JIIN-G.
-                   07  SPA-W25-JIIN               PIC X(01).
-                   07  SPA-W25-JIINF              PIC X(01).
-                   07  SPA-W25-JIINMEI            PIC X(18).
-               05  SPA-W25-JIIN-COB               OCCURS  10.
-                   07  SPA-W25-JIINLST            PIC X(20).
-      *
-               05  SPA-W25-USER-G.
-                   07  SPA-W25-USER               PIC X(01).
-                   07  SPA-W25-USERF              PIC X(01).
-                   07  SPA-W25-USERMEI            PIC X(18).
-               05  SPA-W25-USER-COB               OCCURS  10.
-                   07  SPA-W25-USERLST            PIC X(20).
-      *    ¿ÇÎÅ¹Ô°Ù¸¡º÷²èÌÌÏ¢Íí¾ðÊó
-           03  SPA-W25-AREA.
-               07  SPA-W25-CDSYUBETU       PIC X(01).
-               07  SPA-W25-INPUTCD         PIC X(22).
-               07  SPA-W25-NAIYOU          PIC X(07).
-               07  SPA-W25-MOJI            PIC 9(02).
-               07  SPA-W25-TYPE            PIC X(01).
-      *
-               07  SPA-W25-GMN-ALL         PIC X(01).
-      *
-               07  SPA-W25-SRYCD           PIC X(09).
-               07  SPA-W25-NAME            PIC X(60).
-      *
-               07  SPA-W25-RC              PIC 9(04).

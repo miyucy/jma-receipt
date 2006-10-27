@@ -77,7 +77,13 @@
 	<key>GDK_F2</key>
 	<signal>clicked</signal>
       </accelerator>
-      <label></label>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Thu, 19 Oct 2006 08:29:41 GMT</last_modification_time>
+      </signal>
+      <label>¥¯¥ê¥¢</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -122,22 +128,6 @@
 	<data>CLICKED</data>
 	<last_modification_time>Fri, 09 Feb 2001 02:55:26 GMT</last_modification_time>
       </signal>
-      <label></label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>B05</name>
-      <x>344</x>
-      <y>720</y>
-      <width>80</width>
-      <height>24</height>
-      <accelerator>
-	<modifiers>0</modifiers>
-	<key>GDK_F5</key>
-	<signal>clicked</signal>
-      </accelerator>
       <label></label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
@@ -195,7 +185,19 @@
       <y>720</y>
       <width>80</width>
       <height>24</height>
-      <label></label>
+      <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>0</modifiers>
+	<key>GDK_F8</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Wed, 18 Oct 2006 05:19:23 GMT</last_modification_time>
+      </signal>
+      <label>¢ª</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -233,6 +235,12 @@
 	<key>GDK_F10</key>
 	<signal>clicked</signal>
       </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Wed, 18 Oct 2006 05:19:40 GMT</last_modification_time>
+      </signal>
       <label></label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
@@ -2339,8 +2347,8 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>SELCD</name>
-      <x>108</x>
-      <y>616</y>
+      <x>104</x>
+      <y>576</y>
       <width>50</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -2365,10 +2373,63 @@
     </widget>
 
     <widget>
+      <class>GtkPandaEntry</class>
+      <name>SRYCD</name>
+      <x>104</x>
+      <y>616</y>
+      <width>108</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Wed, 18 Oct 2006 05:20:40 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Wed, 18 Oct 2006 05:20:58 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>9</text_max_length>
+      <text></text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>MEISYO</name>
+      <x>212</x>
+      <y>616</y>
+      <width>408</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <editable>True</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>100</text_max_length>
+      <text></text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
       <class>GtkHSeparator</class>
       <name>hseparator1</name>
       <x>20</x>
-      <y>588</y>
+      <y>556</y>
+      <width>864</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator2</name>
+      <x>20</x>
+      <y>600</y>
       <width>864</width>
       <height>16</height>
     </widget>
@@ -2377,7 +2438,7 @@
       <class>GtkLabel</class>
       <name>label165</name>
       <x>24</x>
-      <y>616</y>
+      <y>576</y>
       <width>84</width>
       <height>24</height>
       <label>ÁªÂò¥³¡¼¥É</label>
@@ -2387,6 +2448,372 @@
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label166</name>
+      <x>20</x>
+      <y>616</y>
+      <width>84</width>
+      <height>24</height>
+      <label>¿ÇÎÅ¥³¡¼¥É</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label170</name>
+      <x>24</x>
+      <y>680</y>
+      <width>120</width>
+      <height>24</height>
+      <label>Äþ¸ºÂÐ¾Ý»ÜÀß´ð½à</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label167</name>
+      <x>636</x>
+      <y>616</y>
+      <width>68</width>
+      <height>24</height>
+      <label>Í­¸ú´ü´Ö</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label168</name>
+      <x>24</x>
+      <y>648</y>
+      <width>68</width>
+      <height>24</height>
+      <label>»ÜÀß´ð½à</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>B05</name>
+      <x>344</x>
+      <y>720</y>
+      <width>80</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>0</modifiers>
+	<key>GDK_F5</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Fri, 09 Feb 2001 02:54:52 GMT</last_modification_time>
+      </signal>
+      <label>¢«</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkNumberEntry</class>
+      <name>KIJUN01</name>
+      <x>104</x>
+      <y>648</y>
+      <width>48</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Wed, 18 Oct 2006 05:24:12 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Wed, 18 Oct 2006 05:24:35 GMT</last_modification_time>
+      </signal>
+      <editable>False</editable>
+      <format>ZZZ</format>
+    </widget>
+
+    <widget>
+      <class>GtkNumberEntry</class>
+      <name>KIJUN02</name>
+      <x>156</x>
+      <y>648</y>
+      <width>48</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Wed, 18 Oct 2006 05:24:12 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Wed, 18 Oct 2006 05:24:35 GMT</last_modification_time>
+      </signal>
+      <editable>False</editable>
+      <format>ZZZ</format>
+    </widget>
+
+    <widget>
+      <class>GtkNumberEntry</class>
+      <name>KIJUN03</name>
+      <x>208</x>
+      <y>648</y>
+      <width>48</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Wed, 18 Oct 2006 05:24:12 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Wed, 18 Oct 2006 05:24:35 GMT</last_modification_time>
+      </signal>
+      <editable>False</editable>
+      <format>ZZZ</format>
+    </widget>
+
+    <widget>
+      <class>GtkNumberEntry</class>
+      <name>KIJUN04</name>
+      <x>260</x>
+      <y>648</y>
+      <width>48</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Wed, 18 Oct 2006 05:24:12 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Wed, 18 Oct 2006 05:24:35 GMT</last_modification_time>
+      </signal>
+      <editable>False</editable>
+      <format>ZZZ</format>
+    </widget>
+
+    <widget>
+      <class>GtkNumberEntry</class>
+      <name>KIJUN05</name>
+      <x>312</x>
+      <y>648</y>
+      <width>48</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Wed, 18 Oct 2006 05:24:12 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Wed, 18 Oct 2006 05:24:35 GMT</last_modification_time>
+      </signal>
+      <editable>False</editable>
+      <format>ZZZ</format>
+    </widget>
+
+    <widget>
+      <class>GtkNumberEntry</class>
+      <name>KIJUN06</name>
+      <x>380</x>
+      <y>648</y>
+      <width>48</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Wed, 18 Oct 2006 05:24:12 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Wed, 18 Oct 2006 05:24:35 GMT</last_modification_time>
+      </signal>
+      <editable>False</editable>
+      <format>ZZZ</format>
+    </widget>
+
+    <widget>
+      <class>GtkNumberEntry</class>
+      <name>KIJUN07</name>
+      <x>432</x>
+      <y>648</y>
+      <width>48</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Wed, 18 Oct 2006 05:24:12 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Wed, 18 Oct 2006 05:24:35 GMT</last_modification_time>
+      </signal>
+      <editable>False</editable>
+      <format>ZZZ</format>
+    </widget>
+
+    <widget>
+      <class>GtkNumberEntry</class>
+      <name>KIJUN08</name>
+      <x>484</x>
+      <y>648</y>
+      <width>48</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Wed, 18 Oct 2006 05:24:12 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Wed, 18 Oct 2006 05:24:35 GMT</last_modification_time>
+      </signal>
+      <editable>False</editable>
+      <format>ZZZ</format>
+    </widget>
+
+    <widget>
+      <class>GtkNumberEntry</class>
+      <name>KIJUN09</name>
+      <x>536</x>
+      <y>648</y>
+      <width>48</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Wed, 18 Oct 2006 05:24:12 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Wed, 18 Oct 2006 05:24:35 GMT</last_modification_time>
+      </signal>
+      <editable>False</editable>
+      <format>ZZZ</format>
+    </widget>
+
+    <widget>
+      <class>GtkNumberEntry</class>
+      <name>KIJUN10</name>
+      <x>588</x>
+      <y>648</y>
+      <width>48</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Wed, 18 Oct 2006 05:24:12 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Wed, 18 Oct 2006 05:24:35 GMT</last_modification_time>
+      </signal>
+      <editable>False</editable>
+      <format>ZZZ</format>
+    </widget>
+
+    <widget>
+      <class>GtkNumberEntry</class>
+      <name>TEIGENCD</name>
+      <x>156</x>
+      <y>680</y>
+      <width>48</width>
+      <height>24</height>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Wed, 18 Oct 2006 05:24:12 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Wed, 18 Oct 2006 05:24:35 GMT</last_modification_time>
+      </signal>
+      <editable>False</editable>
+      <format>ZZZ</format>
+    </widget>
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>YUKOKIKAN</name>
+      <x>704</x>
+      <y>616</y>
+      <width>190</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <editable>True</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>30</text_max_length>
+      <text></text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>False</xim_enabled>
     </widget>
   </widget>
 </widget>

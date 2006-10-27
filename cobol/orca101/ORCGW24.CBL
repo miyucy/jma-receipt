@@ -44,6 +44,7 @@
       *  02.08.00    NACL-太田    06.02.27  減算情報の編集場所変更
       *  03.02.01    NACL-小豆沢  06.08.09  標欠対応
       *  03.02.02    NACL-小豆沢  06.09.12  定数超過対応
+      *  03.04.00    NACL-多々納  06/10/26  検索画面連絡情報追加 
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -67,6 +68,8 @@
       *
       *    画面用ＳＰＡ
            COPY    "W24SCR-SPA".
+      *    画面用ＳＰＡ
+           COPY    "W25SCR-SPA".
       *
       *    フラグエリア
        01  FLG-AREA.
@@ -525,7 +528,8 @@
       *****************************************************************
        3101-SPASET-SEC             SECTION.
       *
-           INITIALIZE                  SPA-W24
+           MOVE    SPACE           TO  SPA-W24
+           INITIALIZE                  SPA-W24-R 
                                            W24
       *
       *    コンボボックス初期化
@@ -1789,9 +1793,10 @@
       *****************************************************************
        41011-W25-SET-SEC                           SECTION.
       *
-      *
+           MOVE    SPACE               TO  SPA-MOTOPG
+           MOVE    SPA-W01KYOUTU       TO  SPA-WORK
            MOVE    SPA-AREA            TO  SPA-COMMON
-           MOVE    SPA-WORK            TO  SPA-W01KYOUTU
+           MOVE    SPA-W25-GMN-AREA    TO  SPA-W25-KYOUTU
            MOVE    SPA-W24FREE         TO  SPA-FREE
       *
            MOVE    "LINK"              TO  MCP-STATUS
@@ -1803,10 +1808,10 @@
                                        LINKAREA
                                        SCRAREA.
       *
-      *
-           MOVE    SPA-COMMON           TO  SPA-AREA
-           MOVE    SPA-W01KYOUTU        TO  SPA-WORK 
-           MOVE    SPA-FREE             TO  SPA-W24FREE
+           MOVE    SPA-COMMON          TO  SPA-AREA
+           MOVE    SPA-WORK            TO  SPA-W01KYOUTU
+           MOVE    SPA-FREE            TO  SPA-W24FREE
+           MOVE    SPA-W25-KYOUTU      TO  SPA-W25-GMN-AREA
       *
            .
        41011-W25-SET-EXT.

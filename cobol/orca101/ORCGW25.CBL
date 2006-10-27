@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  03.04.00    NACL-多々納  06/10/26  検索画面連絡情報変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -48,6 +49,8 @@
       *
       *    第一画面ＳＰＡエリア
            COPY    "W24SCR-SPA".
+      *
+           COPY    "W25SCR-SPA".
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -391,9 +394,10 @@
            INITIALIZE                  WRK-AREA
       *
       *
-           MOVE    SPA-COMMON      TO  SPA-AREA.
-           MOVE    SPA-WORK        TO  SPA-W01KYOUTU
-           MOVE    SPA-FREE        TO  SPA-W24FREE
+           MOVE    SPA-COMMON          TO  SPA-AREA.
+           MOVE    SPA-WORK            TO  SPA-W01KYOUTU
+           MOVE    SPA-FREE            TO  SPA-W24FREE
+           MOVE    SPA-W25-KYOUTU      TO  SPA-W25-GMN-AREA
       *
            MOVE    SPACE           TO  SPA-ERRCD
            MOVE    ZERO            TO  FLG-END
@@ -414,9 +418,10 @@
                PERFORM 500-SET-SCREEN
            END-IF
       *
-           MOVE    SPA-W01KYOUTU   TO  SPA-WORK
-           MOVE    SPA-AREA        TO  SPA-COMMON
-           MOVE    SPA-W24FREE     TO  SPA-FREE
+           MOVE    SPA-W01KYOUTU       TO  SPA-WORK
+           MOVE    SPA-AREA            TO  SPA-COMMON
+           MOVE    SPA-W25-GMN-AREA    TO  SPA-W25-KYOUTU
+           MOVE    SPA-W24FREE         TO  SPA-FREE
       *
            .
            EXIT    PROGRAM

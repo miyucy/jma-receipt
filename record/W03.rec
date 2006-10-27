@@ -4,153 +4,203 @@ W03	{
 	           	state	int;
 	        };
 		CD01	{
+			style   varchar(20);
 			value	varchar(4);
 		};
 		CD02	{
+			style   varchar(20);
 			value	varchar(4);
 		};
 		CD03	{
+			style   varchar(20);
 			value	varchar(4);
 		};
 		CD04	{
+			style   varchar(20);
 			value	varchar(4);
 		};
 		CD05	{
+			style   varchar(20);
 			value	varchar(4);
 		};
 		CD06	{
+			style   varchar(20);
 			value	varchar(4);
 		};
 		CD07	{
+			style   varchar(20);
 			value	varchar(4);
 		};
 		CD08	{
+			style   varchar(20);
 			value	varchar(4);
 		};
 		CD09	{
+			style   varchar(20);
 			value	varchar(4);
 		};
 		CD10	{
+			style   varchar(20);
 			value	varchar(4);
 		};
 		CD11	{
+			style   varchar(20);
 			value	varchar(4);
 		};
 		CD12	{
+			style   varchar(20);
 			value	varchar(4);
 		};
 		CD13	{
+			style   varchar(20);
 			value	varchar(4);
 		};
 		CD14	{
+			style   varchar(20);
 			value	varchar(4);
 		};
 		CD15	{
+			style   varchar(20);
 			value	varchar(4);
 		};
 		CD16	{
+			style   varchar(20);
 			value	varchar(4);
 		};
 		CD17	{
+			style   varchar(20);
 			value	varchar(4);
 		};
 		CD18	{
+			style   varchar(20);
 			value	varchar(4);
 		};
 		CD19	{
+			style   varchar(20);
 			value	varchar(4);
 		};
 		CD20	{
+			style   varchar(20);
 			value	varchar(4);
 		};
 		CD21	{
+			style   varchar(20);
 			value	varchar(4);
 		};
 		CD22	{
+			style   varchar(20);
 			value	varchar(4);
 		};
 		CD23	{
+			style   varchar(20);
 			value	varchar(4);
 		};
 		CD24	{
+			style   varchar(20);
 			value	varchar(4);
 		};
 		CD25	{
+			style   varchar(20);
 			value	varchar(4);
 		};
 		DSPNAME01	{
+			style   varchar(20);
 			value	varchar(100);
 		};
 		DSPNAME02	{
+			style   varchar(20);
 			value	varchar(100);
 		};
 		DSPNAME03	{
+			style   varchar(20);
 			value	varchar(100);
 		};
 		DSPNAME04	{
+			style   varchar(20);
 			value	varchar(100);
 		};
 		DSPNAME05	{
+			style   varchar(20);
 			value	varchar(100);
 		};
 		DSPNAME06	{
+			style   varchar(20);
 			value	varchar(100);
 		};
 		DSPNAME07	{
+			style   varchar(20);
 			value	varchar(100);
 		};
 		DSPNAME08	{
+			style   varchar(20);
 			value	varchar(100);
 		};
 		DSPNAME09	{
+			style   varchar(20);
 			value	varchar(100);
 		};
 		DSPNAME10	{
+			style   varchar(20);
 			value	varchar(100);
 		};
 		DSPNAME11	{
+			style   varchar(20);
 			value	varchar(100);
 		};
 		DSPNAME12	{
+			style   varchar(20);
 			value	varchar(100);
 		};
 		DSPNAME13	{
+			style   varchar(20);
 			value	varchar(100);
 		};
 		DSPNAME14	{
+			style   varchar(20);
 			value	varchar(100);
 		};
 		DSPNAME15	{
+			style   varchar(20);
 			value	varchar(100);
 		};
 		DSPNAME16	{
+			style   varchar(20);
 			value	varchar(100);
 		};
 		DSPNAME17	{
+			style   varchar(20);
 			value	varchar(100);
 		};
 		DSPNAME18	{
+			style   varchar(20);
 			value	varchar(100);
 		};
 		DSPNAME19	{
+			style   varchar(20);
 			value	varchar(100);
 		};
 		DSPNAME20	{
+			style   varchar(20);
 			value	varchar(100);
 		};
 		DSPNAME21	{
+			style   varchar(20);
 			value	varchar(100);
 		};
 		DSPNAME22	{
+			style   varchar(20);
 			value	varchar(100);
 		};
 		DSPNAME23	{
+			style   varchar(20);
 			value	varchar(100);
 		};
 		DSPNAME24	{
+			style   varchar(20);
 			value	varchar(100);
 		};
 		DSPNAME25	{
+			style   varchar(20);
 			value	varchar(100);
 		};
 		STYUKYMD	{
@@ -236,6 +286,48 @@ W03	{
 		};
 		SELCD	{
 			value	varchar(4);
+		};
+		SRYCD	{
+			value	varchar(9);
+		};
+		MEISYO	{
+			value	varchar(100);
+		};
+		KIJUN01	{
+			value	number(3);
+		};
+		KIJUN02	{
+			value	number(3);
+		};
+		KIJUN03	{
+			value	number(3);
+		};
+		KIJUN04	{
+			value	number(3);
+		};
+		KIJUN05	{
+			value	number(3);
+		};
+		KIJUN06	{
+			value	number(3);
+		};
+		KIJUN07	{
+			value	number(3);
+		};
+		KIJUN08	{
+			value	number(3);
+		};
+		KIJUN09	{
+			value	number(3);
+		};
+		KIJUN10	{
+			value	number(3);
+		};
+		TEIGENCD	{
+			value	number(3);
+		};
+		YUKOKIKAN	{
+			value	varchar(30);
 		};
 	};
 };
