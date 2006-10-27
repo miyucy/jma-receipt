@@ -13,7 +13,5 @@
           03  CSV-PTNUM           PIC X(20).
           03  CSV-RENNUM          PIC 9(01).
           03  CSV-NAME            PIC X(26).
-          03  CSV-NISSU           PIC X(6).
-          03  CSV-TENSU           PIC X(10).
-          03  CSV-RYOYOHI         PIC X(9).
-          03  CSV-SHOKUJIFTN      PIC X(9).
+          03  CSV-NISSU           PIC ZZZZZ9.
+          03  CSV-TENSU           PIC ZZZZZZZZZ9.
