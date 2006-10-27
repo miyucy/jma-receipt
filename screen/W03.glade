@@ -2407,8 +2407,7 @@
       <y>616</y>
       <width>408</width>
       <height>24</height>
-      <can_focus>True</can_focus>
-      <editable>True</editable>
+      <editable>False</editable>
       <text_visible>True</text_visible>
       <text_max_length>100</text_max_length>
       <text></text>
@@ -2544,7 +2543,6 @@
       <y>648</y>
       <width>48</width>
       <height>24</height>
-      <can_focus>True</can_focus>
       <signal>
 	<name>activate</name>
 	<handler>send_event</handler>
@@ -2568,7 +2566,6 @@
       <y>648</y>
       <width>48</width>
       <height>24</height>
-      <can_focus>True</can_focus>
       <signal>
 	<name>activate</name>
 	<handler>send_event</handler>
@@ -2592,7 +2589,6 @@
       <y>648</y>
       <width>48</width>
       <height>24</height>
-      <can_focus>True</can_focus>
       <signal>
 	<name>activate</name>
 	<handler>send_event</handler>
@@ -2616,7 +2612,6 @@
       <y>648</y>
       <width>48</width>
       <height>24</height>
-      <can_focus>True</can_focus>
       <signal>
 	<name>activate</name>
 	<handler>send_event</handler>
@@ -2640,7 +2635,6 @@
       <y>648</y>
       <width>48</width>
       <height>24</height>
-      <can_focus>True</can_focus>
       <signal>
 	<name>activate</name>
 	<handler>send_event</handler>
@@ -2664,7 +2658,6 @@
       <y>648</y>
       <width>48</width>
       <height>24</height>
-      <can_focus>True</can_focus>
       <signal>
 	<name>activate</name>
 	<handler>send_event</handler>
@@ -2688,7 +2681,6 @@
       <y>648</y>
       <width>48</width>
       <height>24</height>
-      <can_focus>True</can_focus>
       <signal>
 	<name>activate</name>
 	<handler>send_event</handler>
@@ -2712,7 +2704,6 @@
       <y>648</y>
       <width>48</width>
       <height>24</height>
-      <can_focus>True</can_focus>
       <signal>
 	<name>activate</name>
 	<handler>send_event</handler>
@@ -2736,7 +2727,6 @@
       <y>648</y>
       <width>48</width>
       <height>24</height>
-      <can_focus>True</can_focus>
       <signal>
 	<name>activate</name>
 	<handler>send_event</handler>
@@ -2760,7 +2750,6 @@
       <y>648</y>
       <width>48</width>
       <height>24</height>
-      <can_focus>True</can_focus>
       <signal>
 	<name>activate</name>
 	<handler>send_event</handler>
@@ -2807,8 +2796,7 @@
       <y>616</y>
       <width>190</width>
       <height>24</height>
-      <can_focus>True</can_focus>
-      <editable>True</editable>
+      <editable>False</editable>
       <text_visible>True</text_visible>
       <text_max_length>30</text_max_length>
       <text></text>
