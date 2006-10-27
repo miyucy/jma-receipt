@@ -2012,9 +2012,12 @@
       *
                PERFORM 20011-NYUINACCT-DELDAY-SEC
       *        回数がゼロか、外泊で月をすべて削除する時
-               IF    ((NACCT-ZAISKBKBN NOT =   "2"  )  AND
+      *        食事追加
+               IF    ((NACCT-ZAISKBKBN NOT =   "2"
+                                           AND "4"   )  AND
                       (NACCT-ZAIKAISU      =   ZERO ))   OR
-                     ((NACCT-ZAISKBKBN     =   "2"  )  AND
+                     ((NACCT-ZAISKBKBN     =   "2"
+                                           OR  "4"  )  AND
                       (NACCT-ZAIKAISU      =   ZERO )  AND
                       (WRK-STDD            =   01   ))
       *            退院月の時は削除しない
