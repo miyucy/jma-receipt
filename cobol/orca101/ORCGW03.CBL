@@ -702,16 +702,19 @@
                MOVE    SPACE               TO  WRK-INPUTCD
                PERFORM 4202-W25-SYORI-SEC
            ELSE
-               PERFORM 4201-INPUTCD-CHK-SEC
-      *        半角で９文字の時、点数マスタチェックへ
-               IF     (WRK-CD-MCNT         =   9  )  AND
-                      (FLG-KANJI           =   ZERO )  AND
-                      (SPA-GMN-SRYCD   IS  NUMERIC  )
-                   PERFORM 4203-SYRCD-SYORI-SEC
-               ELSE
-                   MOVE    SPA-GMN-SRYCD       TO  WRK-INPUTCD
-                   PERFORM 4202-W25-SYORI-SEC
+               IF      SPA-GMN-SRYCD   NOT =   SPACE
+                   PERFORM 4201-INPUTCD-CHK-SEC
+      *            半角で９文字の時、点数マスタチェックへ
+                   IF     (WRK-CD-MCNT         =   9  )  AND
+                          (FLG-KANJI           =   ZERO )  AND
+                          (SPA-GMN-SRYCD   IS  NUMERIC  )
+                       PERFORM 4203-SYRCD-SYORI-SEC
+                   ELSE
+                       MOVE    SPA-GMN-SRYCD       TO  WRK-INPUTCD
+                       PERFORM 4202-W25-SYORI-SEC
+                   END-IF
                END-IF
+      *
            END-IF
       *
            .
@@ -1592,6 +1595,12 @@
                IF      SPA-GMN-CUR         =   26
                    MOVE    90              TO  SPA-GMN-CUR
                END-IF
+               EVALUATE    WRK-MCP-WIDGET
+                   WHEN    "SELCD"
+                       MOVE    50              TO  SPA-GMN-CUR
+                   WHEN    "SRYCD"
+                       MOVE    1               TO  SPA-GMN-CUR
+               END-EVALUATE
            END-IF
       *
            EVALUATE    SPA-GMN-CUR
