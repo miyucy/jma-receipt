@@ -699,7 +699,7 @@
            MOVE    W03-SRYCD           TO  SPA-GMN-SRYCD
       *
            IF      SPA-GMN-SRYCD(1:1)  =   "/"
-               MOVE    SPA-GMN-SRYCD       TO  WRK-INPUTCD
+               MOVE    SPACE               TO  WRK-INPUTCD
                PERFORM 4202-W25-SYORI-SEC
            ELSE
                PERFORM 4201-INPUTCD-CHK-SEC
@@ -768,7 +768,7 @@
                IF      TNS-SRYCD(1:1)      =   "1"
                    PERFORM 42031-TENSU-HEN-SEC
                ELSE
-                   MOVE    "0101"              TO  SPA-ERRCD
+                   MOVE    "0104"              TO  SPA-ERRCD
                    MOVE    50                  TO  SPA-GMN-CUR
                END-IF
            END-IF
@@ -1189,6 +1189,7 @@
                    PERFORM 41011-W25-SET-SEC
                END-IF
            ELSE
+               MOVE    "8"                 TO  SPA-W25-GMN-SYORI
       *        画面編集
                PERFORM 41011-W25-SET-SEC
            END-IF
@@ -1522,7 +1523,7 @@
                END-IF
       *
                MOVE    "black"             TO  W03-CD-STYLE (IDX)
-               MOVE    SPA-GMN-TCD (IDX)(2:3)  TO  WRK-TCD
+               MOVE    SPA-GMN-TCD (IDX)   TO  WRK-TCD
                PERFORM VARYING      IDZ    FROM    1   BY  1
                        UNTIL        IDZ    >   SPA-KIJUN-MAX
                    IF      SPA-GMN-SSTKIJUNCD (IDZ)
@@ -1688,6 +1689,9 @@
                                                        TO  SPA-ERRMSG
                WHEN    "0103"
                    MOVE    "施設基準コードがありません。"
+                                                       TO  SPA-ERRMSG
+               WHEN    "0104"
+                   MOVE    "診療コードではありません。"
                                                        TO  SPA-ERRMSG
                WHEN    "1001"
                    MOVE    "更新ができませんでした"
