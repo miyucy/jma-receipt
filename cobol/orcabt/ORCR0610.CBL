@@ -1508,7 +1508,7 @@
                    END-IF
                ELSE
                    MOVE    1                      TO  IDX1
-                   IF   COMB-KOHHKNNUM (IDX)  =  "972" OR "974"
+                   IF   COMB-KOHHKNNUM (IDX)  =  "972" OR "974" OR "012"
       *                墓袋光驰闻蛙レセ淡很冉年
                        MOVE    ZERO        TO  FLG-KOHRECEDSP
                        INITIALIZE          ORCSFTNJGNCHKAREA
