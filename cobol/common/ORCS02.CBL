@@ -12282,7 +12282,7 @@
                                                   =  "024" OR "079")
                          IF    LNK-SYU-SKJ-FTN(KOH-IDX)   >
                                               ZAN-KOHI-SKJ(KOH-IDX)
-                            MOVE   "6"  TO LNK-SYU-SKJ-RYOYOHI(KOH-IDX)
+                            MOVE   "6"  TO LNK-SYU-SKJ-FTNKBN(KOH-IDX)
                             MOVE   ZAN-KOHI-SKJ(KOH-IDX)   TO
                                         LNK-SYU-SKJ-FTN(KOH-IDX)
       *                                 LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
