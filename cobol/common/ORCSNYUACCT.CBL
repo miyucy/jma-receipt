@@ -2026,9 +2026,10 @@
                    IF     (NACCT-SRYYM(1:6)    =   WRK-RRK-YMD(1:6))
                      AND  (WRK-RRK-YMD(7:2)        NOT =   "01" )
                      AND  (LNK-SCNYUACCT-SYORI-KBN NOT =   "8"  )
-      *                異動取消で選定入院料の場合、削除
+      *                異動取消で入院料の場合、削除
                        IF     (LNK-SCNYUACCT-SYORI-KBN =   "4"  )  AND
-                              (NACCT-ZAISKBKBN         =   "1"  )
+                              (NACCT-ZAISKBKBN         =   "1"
+                                                       OR  "6"  )
                            PERFORM 20019-NYUINACCT-CHK-SEC
                        ELSE
       *                    診療会計更新
@@ -2058,39 +2059,42 @@
       *   診療会計マスター編集処理
       *****************************************************************
        20019-NYUINACCT-CHK-SEC          SECTION.
-      *    診療会計マスターから診療行為マスターを検索する
-           INITIALIZE                      NYUINACT-REC
-           MOVE    NACCT-HOSPID        TO  NSRY-HOSPID
-           MOVE    NACCT-NYUGAIKBN     TO  NSRY-NYUGAIKBN
-           MOVE    NACCT-PTID          TO  NSRY-PTID
-           MOVE    NACCT-SRYKA         TO  NSRY-SRYKA
-           MOVE    NACCT-SRYYM         TO  NSRY-SRYYM
-           MOVE    NACCT-ZAINUM        TO  NSRY-ZAINUM
       *
-           MOVE    NYUINACT-REC        TO  MCPDATA-REC
-           MOVE    "tbl_nyuinact"      TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
+           MOVE    ZERO                TO  FLG-DEL
+           IF      NACCT-ZAISKBKBN     =   "1"
+      *    診療会計マスターから診療行為マスターを検索する
+               INITIALIZE                      NYUINACT-REC
+               MOVE    NACCT-HOSPID        TO  NSRY-HOSPID
+               MOVE    NACCT-NYUGAIKBN     TO  NSRY-NYUGAIKBN
+               MOVE    NACCT-PTID          TO  NSRY-PTID
+               MOVE    NACCT-SRYKA         TO  NSRY-SRYKA
+               MOVE    NACCT-SRYYM         TO  NSRY-SRYYM
+               MOVE    NACCT-ZAINUM        TO  NSRY-ZAINUM
+      *
+               MOVE    NYUINACT-REC        TO  MCPDATA-REC
                MOVE    "tbl_nyuinact"      TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
-               PERFORM 920-NYUINACT-READ-SEC
-           ELSE
-               MOVE    1                   TO  FLG-NYUINACT
-               INITIALIZE                      NYUINACT-REC
-           END-IF
-           MOVE    "tbl_nyuinact"      TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-           MOVE    ZERO                TO  FLG-DEL
-           PERFORM VARYING     IDX2    FROM    1   BY  1
-                   UNTIL      (IDX2        >   5   )  OR
-                              (FLG-DEL     =   1     )  OR
-                              (NSRY-SRYCD(IDX2)    =   SPACE )
-               IF      NSRY-SRYCD  (IDX2)  =   "099999916"
-                   MOVE    1               TO  FLG-DEL
+               PERFORM 910-DBSELECT-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    "tbl_nyuinact"      TO  MCP-TABLE
+                   MOVE    "key2"              TO  MCP-PATHNAME
+                   PERFORM 920-NYUINACT-READ-SEC
+                ELSE
+                   MOVE    1                   TO  FLG-NYUINACT
+                   INITIALIZE                      NYUINACT-REC
                END-IF
-           END-PERFORM
+               MOVE    "tbl_nyuinact"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 990-DBCLOSE-SEC
+               PERFORM VARYING     IDX2    FROM    1   BY  1
+                       UNTIL      (IDX2        >   5   )  OR
+                                  (FLG-DEL     =   1     )  OR
+                                  (NSRY-SRYCD(IDX2)    =   SPACE )
+                   IF      NSRY-SRYCD  (IDX2)  =   "099999916"
+                       MOVE    1               TO  FLG-DEL
+                   END-IF
+               END-PERFORM
+           END-IF
       *
            IF      FLG-DEL             =   1
       *        診療会計更新
