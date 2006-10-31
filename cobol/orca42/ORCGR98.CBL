@@ -54,6 +54,8 @@
       *                                     ようにボタンを追加 
       *
       *  02.07.01    NACL-藤原    05/10/31  MONFUNC対応
+      *
+      *  03.04.01    NACL-藤原    06/10/31  受給者番号警告チェックを追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -103,10 +105,12 @@
                            11  SPA-NAI-TBL-G       OCCURS  25.
                                13  SPA-NAI-TPTID   PIC 9(10).
                                13  SPA-NAI-TSRYYM  PIC 9(06).
+                               13  SPA-NAI-JKYSNUM-CHK
+                                                   PIC 9(01).
       *            表示フラグ(1:全体、2:未入力分)
                    07  SPA-NAI-HYOUJIFLG           PIC 9(01).
       *           受給者検証番号チェック区分
-                   07  SPA-NAI-JKYSKENSNUMCHKKBN   PIC  X(01).
+                   07  SPA-NAI-JKYSKENSNUMCHKKBN   PIC X(01).
       *        入力項目名
                05  SPA-MCP-WIDGET                  PIC X(64).
       *
@@ -995,19 +999,29 @@
       *        受給者検証番号チェック区分よりチェック
                IF    ( SPA-ERRCD       =   SPACE )
                AND   ( SPA-NAI-JKYSKENSNUMCHKKBN )
-                                       =   "1"
+                                       =   "1" OR  "3"
                    INITIALIZE                      LNK-CHKDGT-AREA
                    MOVE    2                   TO  LNK-I-SYORIKBN
                    MOVE    SPA-GMN-TJKYSNUM (IDX1 IDX)
                                                TO  LNK-I-CODE
                    CALL    "ORCSCHKDGT"    USING   LNK-CHKDGT-AREA
                    IF      LNK-O-ERRCD     NOT =   ZERO
-                       MOVE    "0005"          TO  SPA-ERRCD
+                       IF      SPA-NAI-JKYSKENSNUMCHKKBN
+                                                   =   "1"
+                           MOVE    "0005"          TO  SPA-ERRCD
+                       ELSE
+                           IF      SPA-NAI-JKYSNUM-CHK (IDX1 IDX)
+                                                   =   ZERO
+                               MOVE    1               TO
+                                       SPA-NAI-JKYSNUM-CHK (IDX1 IDX)
+                               MOVE    "0200"          TO  SPA-ERRCD
+                           END-IF
+                       END-IF 
                    END-IF
                END-IF
            END-IF
       *
-           IF      SPA-ERRCD       NOT =   SPACE
+           IF      SPA-ERRCD       NOT =   SPACE   AND "0200"
                COMPUTE SPA-GMN-CUR         =   IDX *   2
            END-IF
            .
@@ -1744,6 +1758,9 @@
                    MOVE    "患者番号が未入力です"      TO  SPA-ERRMSG
                WHEN    "0102"
                    MOVE    "受給者番号が未入力です"    TO  SPA-ERRMSG
+               WHEN    "0200"
+                   MOVE    "警告！受給者番号検証番号がエラーです。"
+                                               TO  SPA-ERRMSG
                WHEN    "1001"
                    MOVE    "月代わり受給者番号マスタが更新できません"
                                                        TO  SPA-ERRMSG
