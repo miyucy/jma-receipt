@@ -48,7 +48,7 @@
              05  LNK-ORCSJGNGET-GAIJGNGAK   PIC  9(07).
       *入院上限額
              05  LNK-ORCSJGNGET-NYUJGNGAK   PIC  9(07).
-      *他医療機関等一部負担累計
+      *他医療機関等一部負担累計（024,079:食事療養上限額）
              05  LNK-ORCSJGNGET-TAFTNRUIKEI PIC  9(07).
       *
       *復帰コード
