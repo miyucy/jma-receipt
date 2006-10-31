@@ -2098,7 +2098,7 @@
                END-IF
            END-PERFORM
       *
-           IF      FLG-DEL             =   ZERO
+           IF      FLG-DEL             =   1
       *        ¿ÇÎÅ²ñ·×¹¹¿·
                PERFORM 20013-NYUINACCT-UPDATE-SEC
            ELSE
