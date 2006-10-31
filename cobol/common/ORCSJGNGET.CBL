@@ -30,21 +30,6 @@
       *  01.00.01    NACL-ÃÁœ∆    06/03/20  º´Œ©ªŸ±ÁÀ°¬–±˛
       *  01.00.02    NACL-ÃÁœ∆    06/10/30  æ„≥≤ª˘ª‹¿ﬂ∞ÂŒ≈°¶Œ≈Õ‹≤∏Ó∞ÂŒ≈
       *                                     ¬–±˛
-      *  03.04.01    NACL-ÃÁœ∆    07/02/14   °≈Á∏©»”¥€¬º¬–±˛
-      *
-      *  03.05.01    NACL-∆£∏∂    07/04/19  •∞•Î°º•◊ø«Œ≈¬–±˛
-      *  04.02.01    NACL-ÃÁœ∆    08/03/21  ¥Œ±Íº£Œ≈¬–±˛
-      *
-      *  04.05.01    NACL-ÃÁœ∆    09/07/28  ΩÍ∆¿º‘æ Û§Œ∏¯»Ò∆˛Œœµ°«Ω∏˛æÂ
-      *  04.05.02    NACL-ÃÁœ∆    12/05/16  ∞¶√Œ°¶ª∞Ω≈∏©√œ ˝∏¯»Ò¬–±˛
-      *
-      *  04.06.01    NACL-ÃÁœ∆    13/05/01  ¬Á∫Â…‹√œ ˝∏¯»Ò¬–±˛
-      *
-      *  04.07.01    NACL-ÃÁœ∆    11/09/01  •∑•π•∆•‡¥…Õ˝£≤£∞£±£∞µ°«Ωƒ…≤√¬–±˛
-      *  04.07.02    NACL-ÃÁœ∆    14/11/04   ø¿Æ£≤£∑«Ø£±∑Ó≤˛¿µ¬–±˛
-      *                                     ° £∞£µ£¥°¢£∞£µ£≤¬–±˛°À
-      *  04.07.03    NACL-ÃÁœ∆    15/01/26   ø¿Æ£≤£∑«Ø£±∑Ó≤˛¿µ¬–±˛
-      *                                     ° ≈‘∆ª…‹∏©∆»º´∆Ò…¬¬–±˛°À
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -66,12 +51,10 @@
        01  FLG-AREA.
            03  FLG-SYSKANRI                PIC 9(01).
            03  FLG-PTKOHFTN                PIC 9(01).
-           03  FLG-PTKOHFTNETC             PIC 9(01).
            03  FLG-HKNCOMBI                PIC 9(01).
            03  FLG-NYUINACCT               PIC 9(01).
            03  FLG-SRYACCT                 PIC 9(01).
            03  FLG-ARI                     PIC 9(01).
-           03  FLG-TAISYO                  PIC 9(01).
       *
       *    •Ô°º•ØŒŒ∞Ë
        01  WRK-AREA.
@@ -130,10 +113,6 @@
        01  PTKOHFTN-REC.
            COPY    "CPPTKOHFTN.INC".
       *
-      *    ¥µº‘∏¯»Ò…È√¥¬æ±°•«°º•ø
-       01  PTKOHFTNETC-REC.
-           COPY    "CPPTKOHFTNETC.INC".
-      *
       *     ›∏±¡»§ﬂπÁ§Ô§ª
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
@@ -148,7 +127,6 @@
       *
       *    •∑•π•∆•‡¥…Õ˝
            COPY    "CPSK1001.INC".
-           COPY    "CPSK2010.INC".
       *
       *****************************************************************
       *    •µ•÷•◊•ÌÕ—°°ŒŒ∞Ë
@@ -160,18 +138,15 @@
       *    £ƒ£¬∏°∫˜
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
-      ***  COPY    "CPORCMCP.INC".
+           COPY    "CPORCMCP.INC".
       *
       /
       ***
        LINKAGE             SECTION.
            COPY  "CPORCSJGNGET.INC".
-           COPY  "COMMON-SPA".
       /
        PROCEDURE           DIVISION  USING
-                                     LNK-ORCSJGNGET-REC
-                                     SPA-AREA
-                                     .
+                                     LNK-ORCSJGNGET-REC.
       ******************************************************************
       *        ∞ÕÕÍ¿©∏ÊΩËÕ˝
       ******************************************************************
@@ -185,67 +160,23 @@
                                        FLG-AREA
                                        WRK-AREA
       *
-      *    ≈ˆ≥∫√œ ˝∏¯»Ò§Œ¬–æ›•¡•ß•√•Ø
-           MOVE       ZERO          TO   FLG-TAISYO
-           EVALUATE   LNK-ORCSJGNGET-HENFLG
-             WHEN     SPACE
-                IF    LNK-ORCSJGNGET-KOHHKNNUM(1:1) >=  "1" AND <=  "8"
-                   IF    LNK-ORCSJGNGET-SETKBN  NOT = ZERO
-                     MOVE   LNK-ORCSJGNGET-SETKBN
-                                      TO   LNK-ORCSJGNGET-TAISYOKBN
-                     MOVE   LNK-ORCSJGNGET-SETKBN2
-                                      TO   LNK-ORCSJGNGET-TEKIYOFLG
-                   ELSE
-                     MOVE       1     TO   LNK-ORCSJGNGET-TAISYOKBN
-                   END-IF
-                ELSE
-                   MOVE         9     TO   LNK-ORCSJGNGET-TAISYOKBN
-                END-IF
-                MOVE            1     TO   FLG-TAISYO
-             WHEN     "1"
-                IF    LNK-ORCSJGNGET-KOHHKNNUM(1:1) >=  "1" AND <=  "8"
-                   PERFORM  300-TAISYO-CHECK-SEC
-                   MOVE       ZERO    TO   FLG-TAISYO
-                ELSE
-                   MOVE        21     TO   LNK-ORCSJGNGET-RC
-                END-IF
-             WHEN     "2"
-                IF    LNK-ORCSJGNGET-KOHHKNNUM(1:1) >=  "1" AND <=  "8"
-                   PERFORM  300-TAISYO-CHECK-SEC
-                   IF    LNK-ORCSJGNGET-TAISYOKBN  =  1  OR  2
-                        MOVE    1     TO   FLG-TAISYO
-                   END-IF
-                ELSE
-                   MOVE        21     TO   LNK-ORCSJGNGET-RC
-                END-IF
-           END-EVALUATE
-      *
-           IF   (LNK-ORCSJGNGET-RC  =  ZERO)
-           AND  (FLG-TAISYO         =   1  )
-      *
-            IF     LNK-ORCSJGNGET-SRYYM    >=   "200604"
+           IF     LNK-ORCSJGNGET-SRYYM    >=   "200604"
              PERFORM    100-KEISAN1-SEC
-            ELSE
+           ELSE
       *      ππ¿µ°¶∞È¿Æ∑◊ªª∂Ë ¨§ŒºË∆¿
              INITIALIZE                         SYS-1001-REC
              MOVE    "1001"               TO    SYS-1001-KANRICD
              MOVE    "*"                  TO    SYS-1001-KBNCD
-             MOVE    LNK-ORCSJGNGET-HOSPNUM
-                                          TO    SYS-1001-HOSPNUM
-             MOVE    LNK-ORCSJGNGET-SRYYM TO    SYS-1001-STYUKYMD(1:6)
-             MOVE    "01"                 TO    SYS-1001-STYUKYMD(7:2)
-             MOVE    LNK-ORCSJGNGET-SRYYM TO    SYS-1001-EDYUKYMD(1:6)
-             MOVE    "01"                 TO    SYS-1001-EDYUKYMD(7:2)
+             MOVE    LNK-ORCSJGNGET-SRYYM TO    ORC-DBYMD(1:6)
+             MOVE    "01"                 TO    ORC-DBYMD(7:2)
              MOVE    SYS-1001-REC         TO    MCPDATA-REC
              MOVE    "DBSELECT"           TO    MCP-FUNC
-             MOVE    "tbl_syskanri"       TO    MCP-TABLE
-             MOVE    "key10"              TO    MCP-PATHNAME
-             CALL    "ORCDBMAIN"          USING   MCPAREA
-                                                  MCPDATA-REC
-                                                  SPA-AREA
+             MOVE    "SYSKANRI-KEY"       TO    ORC-DBPATH
+             CALL    "ORCMCPSUB"    USING       MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC
              IF      MCP-RC               =     ZERO
-                 MOVE    "tbl_syskanri"       TO    MCP-TABLE
-                 MOVE    "key10"              TO    MCP-PATHNAME
+                 MOVE     "SYSKANRI-KEY"  TO    ORC-DBPATH
                  PERFORM   900-SYSKANRI-READ-SEC
                  IF    FLG-SYSKANRI   =   ZERO
                     MOVE  SYS-1001-HIWARIKBN  TO    WRK-HIWARIKBN
@@ -259,9 +190,12 @@
                     MOVE     11           TO    LNK-ORCSJGNGET-RC
              END-IF
       *
-             MOVE     "tbl_syskanri"      TO    MCP-TABLE
-             MOVE     "key10"             TO    MCP-PATHNAME
-             PERFORM   910-DB-CLOSE-SEC
+             MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
+             MOVE    "SYSKANRI-KEY"       TO  ORC-DBPATH
+             CALL    "ORCMCPSUB"          USING
+                                          MCPAREA
+                                          ORCMCPAREA
+                                          MCPDATA-REC
       *
              IF    LNK-ORCSJGNGET-RC   =   ZERO
                  EVALUATE   LNK-ORCSJGNGET-KOHHKNNUM
@@ -277,8 +211,6 @@
                             PERFORM    100-KEISAN1-SEC
                  END-EVALUATE
              END-IF
-            END-IF
-      *
            END-IF
       *
            .
@@ -292,20 +224,56 @@
       *****************************************************************
        100-KEISAN1-SEC         SECTION.
       *
+      ***     INITIALIZE                              PTKOHFTN-REC
+      ***     MOVE    LNK-ORCSJGNGET-HOSPID   TO      PTKOHFTN-HOSPID
+      ***     MOVE    LNK-ORCSJGNGET-PTID     TO      PTKOHFTN-PTID
+      ***     MOVE    LNK-ORCSJGNGET-KOHID    TO      PTKOHFTN-KOHID
+      ***     MOVE    PTKOHFTN-REC            TO      MCPDATA-REC
+      ***     MOVE    "DBSELECT"              TO      MCP-FUNC
+      ***     MOVE    "PTKOHFTN-KEY5"         TO      ORC-DBPATH
+      ***     CALL    "ORCMCPSUB"             USING   MCPAREA
+      ***                                             ORCMCPAREA
+      ***                                             MCPDATA-REC
+      ***     IF      MCP-RC               =       ZERO
+      ***       MOVE    "PTKOHFTN-KEY5"       TO      ORC-DBPATH
+      ***       PERFORM  900-PTKOHFTN-READ-SEC
+      ***       PERFORM  UNTIL
+      ***           (FLG-PTKOHFTN       =   1)    OR
+      ***          ((PTKOHFTN-TEKSTYMD(1:6) <=  LNK-ORCSJGNGET-SRYYM  ) AND
+      ***           (LNK-ORCSJGNGET-SRYYM   <=  PTKOHFTN-TEKEDYMD(1:6)))
+      ***         MOVE     "PTKOHFTN-KEY5"    TO      ORC-DBPATH
+      ***         PERFORM   900-PTKOHFTN-READ-SEC
+      ***       END-PERFORM
+      ***     ELSE
+      ***       MOVE      1                   TO      FLG-PTKOHFTN
+      ***     END-IF
+      *
+      ***     IF   FLG-PTKOHFTN  =  ZERO
+      *
+      ***       MOVE   PTKOHFTN-GAIJGNGAK     TO   LNK-ORCSJGNGET-GAIJGNGAK
+      ***       MOVE   PTKOHFTN-NYUJGNGAK     TO   LNK-ORCSJGNGET-NYUJGNGAK
+      *
+      ***     END-IF
+      *
+      ***     MOVE    "DBCLOSECURSOR"       TO  MCP-FUNC
+      ***     MOVE    "PTKOHFTN-KEY5"       TO  ORC-DBPATH
+      ***     CALL    "ORCMCPSUB"           USING
+      ***                                   MCPAREA
+      ***                                   ORCMCPAREA
+      ***                                   MCPDATA-REC
+      *
            INITIALIZE                              PTKOHFTN-REC
-           MOVE    LNK-ORCSJGNGET-HOSPNUM  TO      PTKOHFTN-HOSPNUM
+           MOVE    LNK-ORCSJGNGET-HOSPID   TO      PTKOHFTN-HOSPID
            MOVE    LNK-ORCSJGNGET-PTID     TO      PTKOHFTN-PTID
            MOVE    LNK-ORCSJGNGET-KOHID    TO      PTKOHFTN-KOHID
            MOVE    PTKOHFTN-REC            TO      MCPDATA-REC
            MOVE    "DBSELECT"              TO      MCP-FUNC
-           MOVE    "tbl_ptkohftn"          TO      MCP-TABLE
-           MOVE    "key5"                  TO      MCP-PATHNAME
-           CALL    "ORCDBMAIN"             USING   MCPAREA
+           MOVE    "PTKOHFTN-KEY5"         TO      ORC-DBPATH
+           CALL    "ORCMCPSUB"             USING   MCPAREA
+                                                   ORCMCPAREA
                                                    MCPDATA-REC
-                                                   SPA-AREA
            IF      MCP-RC               =       ZERO
-             MOVE    "tbl_ptkohftn"        TO      MCP-TABLE
-             MOVE    "key5"                TO      MCP-PATHNAME
+             MOVE    "PTKOHFTN-KEY5"       TO      ORC-DBPATH
              PERFORM  900-PTKOHFTN-READ-SEC
              PERFORM  UNTIL     FLG-PTKOHFTN      =     1
                IF   (PTKOHFTN-TEKSTYMD(1:6) <=  LNK-ORCSJGNGET-SRYYM  )
@@ -315,15 +283,17 @@
                  ADD   PTKOHFTN-NYUJGNGAK  TO  LNK-ORCSJGNGET-NYUJGNGAK
       *
                END-IF
-               MOVE    "tbl_ptkohftn"      TO      MCP-TABLE
-               MOVE    "key5"              TO      MCP-PATHNAME
+               MOVE     "PTKOHFTN-KEY5"    TO      ORC-DBPATH
                PERFORM   900-PTKOHFTN-READ-SEC
              END-PERFORM
            END-IF
       *
-           MOVE    "tbl_ptkohftn"          TO      MCP-TABLE
-           MOVE    "key5"                  TO      MCP-PATHNAME
-           PERFORM  910-DB-CLOSE-SEC
+           MOVE    "DBCLOSECURSOR"       TO  MCP-FUNC
+           MOVE    "PTKOHFTN-KEY5"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"           USING
+                                         MCPAREA
+                                         ORCMCPAREA
+                                         MCPDATA-REC
       *
            IF     LNK-ORCSJGNGET-SRYYM   >=   "200604"
                EVALUATE   LNK-ORCSJGNGET-KOHHKNNUM
@@ -334,8 +304,6 @@
                                 TO  LNK-ORCSJGNGET-TAFTNRUIKEI
                      MOVE   LNK-ORCSJGNGET-GAIJGNGAK
                                 TO  LNK-ORCSJGNGET-NYUJGNGAK
-      *
-                     PERFORM 1001-TAFTNRUIKEI-HENSYU-SEC
                END-EVALUATE
            END-IF
            IF     LNK-ORCSJGNGET-SRYYM   >=   "200610"
@@ -349,80 +317,9 @@
                END-EVALUATE
            END-IF
       *
-           IF     LNK-ORCSJGNGET-SRYYM   >=   "200804"
-               EVALUATE   LNK-ORCSJGNGET-KOHHKNNUM
-                  WHEN     "038"
-                     MOVE   LNK-ORCSJGNGET-NYUJGNGAK
-                                TO  LNK-ORCSJGNGET-TAFTNRUIKEI
-                     MOVE   LNK-ORCSJGNGET-GAIJGNGAK
-                                TO  LNK-ORCSJGNGET-NYUJGNGAK
-      *
-                     PERFORM 1001-TAFTNRUIKEI-HENSYU-SEC
-               END-EVALUATE
-           END-IF
-      *
-           IF     LNK-ORCSJGNGET-SRYYM   >=   "201501"
-               EVALUATE   LNK-ORCSJGNGET-KOHHKNNUM
-                  WHEN     "052"
-                  WHEN     "054"
-                     MOVE   LNK-ORCSJGNGET-NYUJGNGAK
-                                TO  LNK-ORCSJGNGET-TAFTNRUIKEI
-                     MOVE   LNK-ORCSJGNGET-GAIJGNGAK
-                                TO  LNK-ORCSJGNGET-NYUJGNGAK
-      *
-                     PERFORM 1001-TAFTNRUIKEI-HENSYU-SEC
-               END-EVALUATE
-           END-IF
-      *
-      *    √œ ˝∏¯»Ò§Œ∆˛≥∞æÂ∏¬≥€°¶¬æ∞Ï…Ù…È√¥Œﬂ∑◊∆˛Œœ ¨
-           IF    (LNK-ORCSJGNGET-KOHHKNNUM(1:1) >=  "1" AND <=  "8")
-           AND   (LNK-ORCSJGNGET-TAISYOKBN       =   2             )
-                     MOVE   LNK-ORCSJGNGET-NYUJGNGAK
-                                TO  LNK-ORCSJGNGET-TAFTNRUIKEI
-                     MOVE   LNK-ORCSJGNGET-GAIJGNGAK
-                                TO  LNK-ORCSJGNGET-NYUJGNGAK
-      *
-                     PERFORM 1001-TAFTNRUIKEI-HENSYU-SEC
-           END-IF
-      *
            .
       *
        100-KEISAN1-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ¬æ∞Ï…Ù…È√¥∂‚≥€Ω∏∑◊
-      *****************************************************************
-       1001-TAFTNRUIKEI-HENSYU-SEC         SECTION.
-      *
-           INITIALIZE                        PTKOHFTNETC-REC
-           MOVE  LNK-ORCSJGNGET-HOSPNUM  TO  PTKOHFTNETC-HOSPNUM
-           MOVE  LNK-ORCSJGNGET-PTID     TO  PTKOHFTNETC-PTID
-           MOVE  LNK-ORCSJGNGET-KOHID    TO  PTKOHFTNETC-KOHID
-           MOVE  LNK-ORCSJGNGET-SRYYM    TO  PTKOHFTNETC-SRYYMD(1:6)
-           MOVE  "__"                    TO  PTKOHFTNETC-SRYYMD(7:2)
-           MOVE  PTKOHFTNETC-REC         TO  MCPDATA-REC
-           MOVE  "DBSELECT"              TO  MCP-FUNC
-           MOVE  "tbl_ptkohftnetc"       TO  MCP-TABLE
-           MOVE  "key2"                  TO  MCP-PATHNAME
-           CALL  "ORCDBMAIN"             USING   MCPAREA
-                                                 MCPDATA-REC
-                                                 SPA-AREA
-           IF     MCP-RC   =    ZERO
-             MOVE    "tbl_ptkohftnetc"   TO  MCP-TABLE
-             MOVE    "key2"              TO  MCP-PATHNAME
-             PERFORM  900-PTKOHFTNETC-READ-SEC
-             IF       FLG-PTKOHFTNETC = ZERO
-                 MOVE     1    TO   LNK-ORCSJGNGET-TAFTNFLG
-             END-IF
-           END-IF
-           MOVE      "tbl_ptkohftnetc"   TO  MCP-TABLE
-           MOVE      "key2"              TO  MCP-PATHNAME
-           PERFORM    910-DB-CLOSE-SEC
-      *
-           .
-      *
-       1001-TAFTNRUIKEI-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -464,7 +361,7 @@
        2001-HKNCOMBINUM-GET-SEC.
       *
            INITIALIZE                          HKNCOMBI-REC
-           MOVE    LNK-ORCSJGNGET-HOSPNUM  TO  COMB-HOSPNUM
+           MOVE    LNK-ORCSJGNGET-HOSPID   TO  COMB-HOSPID
            MOVE    LNK-ORCSJGNGET-PTID     TO  COMB-PTID
            MOVE    LNK-ORCSJGNGET-KOHID    TO  COMB-KOHID(1)
            MOVE    LNK-ORCSJGNGET-KOHID    TO  COMB-KOHID(2)
@@ -472,29 +369,29 @@
            MOVE    LNK-ORCSJGNGET-KOHID    TO  COMB-KOHID(4)
            MOVE    HKNCOMBI-REC            TO  MCPDATA-REC
            MOVE    "DBSELECT"              TO  MCP-FUNC
-           MOVE    "tbl_hkncombi"          TO  MCP-TABLE
-           MOVE    "key4"                  TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"             USING   MCPAREA
+           MOVE    "HKNCOMBI-KEY4"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"             USING   MCPAREA
+                                                   ORCMCPAREA
                                                    MCPDATA-REC
-                                                   SPA-AREA
            IF      MCP-RC               =       ZERO
-              MOVE    "tbl_hkncombi"       TO  MCP-TABLE
-              MOVE    "key4"               TO  MCP-PATHNAME
+              MOVE    "HKNCOMBI-KEY4"      TO  ORC-DBPATH
               PERFORM  900-HKNCOMBI-READ-SEC
               PERFORM   VARYING   IDX1   FROM  1  BY  1
                 UNTIL   (IDX1              >    50 )   OR
                         (FLG-HKNCOMBI      =     1 )
                   MOVE     COMB-HKNCOMBINUM  TO
                                        WRK-HKNCOMBINUM(IDX1)
-                  MOVE    "tbl_hkncombi"   TO  MCP-TABLE
-                  MOVE    "key4"           TO  MCP-PATHNAME
+                  MOVE    "HKNCOMBI-KEY4"      TO  ORC-DBPATH
                   PERFORM  900-HKNCOMBI-READ-SEC
               END-PERFORM
            END-IF
       *
-           MOVE    "tbl_hkncombi"   TO  MCP-TABLE
-           MOVE    "key4"           TO  MCP-PATHNAME
-           PERFORM  910-DB-CLOSE-SEC
+           MOVE    "DBCLOSECURSOR"       TO  MCP-FUNC
+           MOVE    "HKNCOMBI-KEY4"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"           USING
+                                         MCPAREA
+                                         ORCMCPAREA
+                                         MCPDATA-REC
       *
            IF   WRK-HKNCOMBINUM(1)  =  ZERO
                   MOVE     12            TO  LNK-ORCSJGNGET-RC
@@ -512,65 +409,65 @@
       *
       *    ø«Œ≈≤Ò∑◊ΩËÕ˝
            INITIALIZE                            SRYACCT-REC
-           MOVE    LNK-ORCSJGNGET-HOSPNUM   TO   ACCT-HOSPNUM
+           MOVE    LNK-ORCSJGNGET-HOSPID    TO   ACCT-HOSPID
            MOVE    "1"                      TO   ACCT-NYUGAIKBN
            MOVE    LNK-ORCSJGNGET-PTID      TO   ACCT-PTID
            MOVE    LNK-ORCSJGNGET-SRYYM     TO   ACCT-SRYYM
            MOVE    SRYACCT-REC              TO   MCPDATA-REC
            MOVE    "DBSELECT"               TO   MCP-FUNC
-           MOVE    "tbl_sryacct"            TO   MCP-TABLE
-           MOVE    "key33"                  TO   MCP-PATHNAME
-           CALL    "ORCDBMAIN"              USING   MCPAREA
+           MOVE    "SRYACCT-KEY33"          TO   ORC-DBPATH
+           CALL    "ORCMCPSUB"              USING   MCPAREA
+                                                    ORCMCPAREA
                                                     MCPDATA-REC
-                                                    SPA-AREA
            IF      MCP-RC             =       ZERO
-               MOVE    "tbl_sryacct"        TO   MCP-TABLE
-               MOVE    "key33"              TO   MCP-PATHNAME
+               MOVE    "SRYACCT-KEY33"      TO   ORC-DBPATH
                PERFORM  900-SRYACCT-READ-SEC
                PERFORM  UNTIL   FLG-SRYACCT  =    1
       *
                   PERFORM    20021-SRYACCT-NISUU-GET-SEC
       *
-                  MOVE    "tbl_sryacct"     TO   MCP-TABLE
-                  MOVE    "key33"           TO   MCP-PATHNAME
+                  MOVE      "SRYACCT-KEY33"  TO   ORC-DBPATH
                   PERFORM    900-SRYACCT-READ-SEC
                END-PERFORM
            END-IF
       *
-           MOVE    "tbl_sryacct"     TO   MCP-TABLE
-           MOVE    "key33"           TO   MCP-PATHNAME
-           PERFORM  910-DB-CLOSE-SEC
+           MOVE    "DBCLOSECURSOR"         TO  MCP-FUNC
+           MOVE    "SRYACCT-KEY33"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"             USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
       *
       *    ∆˛±°≤Ò∑◊ΩËÕ˝
            INITIALIZE                            NYUINACCT-REC
-           MOVE    LNK-ORCSJGNGET-HOSPNUM   TO   NACCT-HOSPNUM
+           MOVE    LNK-ORCSJGNGET-HOSPID    TO   NACCT-HOSPID
            MOVE    LNK-ORCSJGNGET-PTID      TO   NACCT-PTID
            MOVE    LNK-ORCSJGNGET-SRYYM     TO   NACCT-SRYYM
            MOVE    "5"                      TO   NACCT-ZAISKBKBN
            MOVE    NYUINACCT-REC            TO   MCPDATA-REC
            MOVE    "DBSELECT"               TO   MCP-FUNC
-           MOVE    "tbl_nyuinacct"          TO   MCP-TABLE
-           MOVE    "key17"                  TO   MCP-PATHNAME
-           CALL    "ORCDBMAIN"              USING   MCPAREA
+           MOVE    "NYUINACCT-KEY17"        TO   ORC-DBPATH
+           CALL    "ORCMCPSUB"              USING   MCPAREA
+                                                    ORCMCPAREA
                                                     MCPDATA-REC
-                                                    SPA-AREA
            IF      MCP-RC             =       ZERO
-               MOVE    "tbl_nyuinacct"      TO   MCP-TABLE
-               MOVE    "key17"              TO   MCP-PATHNAME
+               MOVE    "NYUINACCT-KEY17"    TO   ORC-DBPATH
                PERFORM  900-NYUINACCT-READ-SEC
                PERFORM  UNTIL  FLG-NYUINACCT  =    1
       *
                  PERFORM   20022-NYUINACCT-NISUU-GET-SEC
       *
-                 MOVE    "tbl_nyuinacct"    TO   MCP-TABLE
-                 MOVE    "key17"            TO   MCP-PATHNAME
+                 MOVE     "NYUINACCT-KEY17" TO   ORC-DBPATH
                  PERFORM   900-NYUINACCT-READ-SEC
                END-PERFORM
            END-IF
       *
-           MOVE    "tbl_nyuinacct"    TO   MCP-TABLE
-           MOVE    "key17"            TO   MCP-PATHNAME
-           PERFORM  910-DB-CLOSE-SEC
+           MOVE    "DBCLOSECURSOR"         TO  MCP-FUNC
+           MOVE    "NYUINACCT-KEY17"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"             USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
       *
            .
       *
@@ -710,19 +607,17 @@
            MOVE         ZERO               TO      IDX1
       *
            INITIALIZE                              PTKOHFTN-REC
-           MOVE    LNK-ORCSJGNGET-HOSPNUM  TO      PTKOHFTN-HOSPNUM
+           MOVE    LNK-ORCSJGNGET-HOSPID   TO      PTKOHFTN-HOSPID
            MOVE    LNK-ORCSJGNGET-PTID     TO      PTKOHFTN-PTID
            MOVE    LNK-ORCSJGNGET-KOHID    TO      PTKOHFTN-KOHID
            MOVE    PTKOHFTN-REC            TO      MCPDATA-REC
            MOVE    "DBSELECT"              TO      MCP-FUNC
-           MOVE    "tbl_ptkohftn"          TO      MCP-TABLE
-           MOVE    "key5"                  TO      MCP-PATHNAME
-           CALL    "ORCDBMAIN"             USING   MCPAREA
+           MOVE    "PTKOHFTN-KEY5"         TO      ORC-DBPATH
+           CALL    "ORCMCPSUB"             USING   MCPAREA
+                                                   ORCMCPAREA
                                                    MCPDATA-REC
-                                                   SPA-AREA
            IF      MCP-RC               =       ZERO
-             MOVE    "tbl_ptkohftn"        TO      MCP-TABLE
-             MOVE    "key5"                TO      MCP-PATHNAME
+             MOVE    "PTKOHFTN-KEY5"       TO      ORC-DBPATH
              PERFORM  900-PTKOHFTN-READ-SEC
              PERFORM  UNTIL   (IDX1             >=    31)  OR
                               (FLG-PTKOHFTN      =     1)
@@ -748,15 +643,17 @@
                  MOVE  PTKOHFTN-GAIJGNGAK TO  WRK-KOHFTN-GAIJGNGAK(IDX1)
                  MOVE  PTKOHFTN-NYUJGNGAK TO  WRK-KOHFTN-NYUJGNGAK(IDX1)
                END-IF
-               MOVE    "tbl_ptkohftn"     TO      MCP-TABLE
-               MOVE    "key5"             TO      MCP-PATHNAME
+               MOVE     "PTKOHFTN-KEY5"    TO      ORC-DBPATH
                PERFORM   900-PTKOHFTN-READ-SEC
              END-PERFORM
            END-IF
       *
-           MOVE    "tbl_ptkohftn"     TO      MCP-TABLE
-           MOVE    "key5"             TO      MCP-PATHNAME
-           PERFORM  910-DB-CLOSE-SEC
+           MOVE    "DBCLOSECURSOR"       TO  MCP-FUNC
+           MOVE    "PTKOHFTN-KEY5"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"           USING
+                                         MCPAREA
+                                         ORCMCPAREA
+                                         MCPDATA-REC
       *
       *    ¥¸¥÷ÀË§Œ∆¸øÙªªΩ–
            PERFORM   VARYING   IDX1   FROM  1  BY  1
@@ -874,196 +771,20 @@
            EXIT.
       *
       *****************************************************************
-      *    ≈ˆ≥∫√œ ˝∏¯»Ò§Œ¬–æ›•¡•ß•√•Ø£≤
-      *****************************************************************
-       300-TAISYO-CHECK-SEC         SECTION.
-      *
-           IF  LNK-ORCSJGNGET-TEKSTYMD  =  SPACE
-                   MOVE    22     TO   LNK-ORCSJGNGET-RC
-           END-IF
-           IF  LNK-ORCSJGNGET-PREFNUM   =  SPACE
-                   MOVE    23     TO   LNK-ORCSJGNGET-RC
-           END-IF
-      *
-           IF  LNK-ORCSJGNGET-RC  =  ZERO
-      *
-             EVALUATE   LNK-ORCSJGNGET-PREFNUM
-               WHEN       "01"
-                 IF  (LNK-ORCSJGNGET-KOHHKNNUM      = "183"   )
-                 AND (LNK-ORCSJGNGET-TEKSTYMD(1:6) >= "200810")
-                   MOVE     1     TO   LNK-ORCSJGNGET-TAISYOKBN
-                 END-IF
-               WHEN       "13"
-                 IF  (LNK-ORCSJGNGET-KOHHKNNUM      = "151"   )
-                 AND (LNK-ORCSJGNGET-TEKSTYMD(1:6) >= "200310")
-                   MOVE     1     TO   LNK-ORCSJGNGET-TAISYOKBN
-                 END-IF
-               WHEN       "23"
-                 IF  (LNK-ORCSJGNGET-KOHHKNNUM      = "191"   )
-                 AND (LNK-ORCSJGNGET-TEKSTYMD(1:6) >= "200910")
-                   MOVE     1     TO   LNK-ORCSJGNGET-TAISYOKBN
-                 END-IF
-                 IF  (LNK-ORCSJGNGET-KOHHKNNUM      = "152"   )
-                 AND (LNK-ORCSJGNGET-TEKSTYMD(1:6) >= "201104")
-                   MOVE     2     TO   LNK-ORCSJGNGET-TAISYOKBN
-                 END-IF
-               WHEN       "24"
-                 IF  (LNK-ORCSJGNGET-KOHHKNNUM      = "152"   )
-                 AND (LNK-ORCSJGNGET-TEKSTYMD(1:6) >= "201104")
-                   MOVE     2     TO   LNK-ORCSJGNGET-TAISYOKBN
-                 END-IF
-             END-EVALUATE
-      *
-             IF    LNK-ORCSJGNGET-TAISYOKBN   =   ZERO
-               INITIALIZE                   SYS-2010-REC
-               MOVE   "2010"            TO  SYS-2010-KANRICD
-               MOVE   LNK-ORCSJGNGET-KOHHKNNUM
-                                        TO  SYS-2010-KBNCD
-               MOVE   LNK-ORCSJGNGET-HOSPNUM
-                                        TO  SYS-2010-HOSPNUM
-               MOVE   LNK-ORCSJGNGET-TEKSTYMD(1:6)
-                                        TO  SYS-2010-STYUKYMD(1:6)
-               MOVE   "01"              TO  SYS-2010-STYUKYMD(7:2)
-               MOVE   LNK-ORCSJGNGET-TEKSTYMD(1:6)
-                                        TO  SYS-2010-EDYUKYMD(1:6)
-               MOVE   "01"              TO  SYS-2010-EDYUKYMD(7:2)
-               MOVE   SYS-2010-REC      TO  MCPDATA-REC
-               MOVE   "DBSELECT"        TO  MCP-FUNC
-               MOVE   "tbl_syskanri"    TO  MCP-TABLE
-               MOVE   "key10"           TO  MCP-PATHNAME
-               CALL   "ORCDBMAIN"       USING   MCPAREA
-                                                MCPDATA-REC
-                                                SPA-AREA
-               IF     MCP-RC   =   ZERO
-                  MOVE  "tbl_syskanri"  TO  MCP-TABLE
-                  MOVE  "key10"         TO  MCP-PATHNAME
-                  PERFORM   900-SYSKANRI-READ-SEC
-               ELSE
-                  INITIALIZE                SYS-2010-REC
-               END-IF
-               EVALUATE  SYS-2010-PTJGNKBN
-                 WHEN      SPACE
-                    MOVE   ZERO   TO   LNK-ORCSJGNGET-TAISYOKBN
-                    EVALUATE   LNK-ORCSJGNGET-PREFNUM
-                     WHEN       "07"
-                       IF  (LNK-ORCSJGNGET-KOHHKNNUM      = "281"   )
-                       AND (LNK-ORCSJGNGET-TEKSTYMD(1:6) >= "200702")
-                         MOVE     2     TO   LNK-ORCSJGNGET-TAISYOKBN
-                       END-IF
-                     WHEN       "08"
-                       IF  (LNK-ORCSJGNGET-KOHHKNNUM      = "152"   )
-                       AND (LNK-ORCSJGNGET-TEKSTYMD(1:6) >= "200904")
-                         MOVE     1     TO   LNK-ORCSJGNGET-TAISYOKBN
-                       END-IF
-                     WHEN       "27"
-                       IF  (LNK-ORCSJGNGET-KOHHKNNUM      = "192"   )
-                       AND (LNK-ORCSJGNGET-TEKSTYMD(1:6) >= "201211")
-                         MOVE     2     TO   LNK-ORCSJGNGET-TAISYOKBN
-                       END-IF
-                     WHEN       "28"
-                       IF  (LNK-ORCSJGNGET-KOHHKNNUM      = "186"   )
-                       AND (LNK-ORCSJGNGET-TEKSTYMD(1:6) >= "200310")
-                         MOVE     1     TO   LNK-ORCSJGNGET-TAISYOKBN
-                       END-IF
-                    END-EVALUATE
-                 WHEN      "0"
-                    MOVE   ZERO   TO   LNK-ORCSJGNGET-TAISYOKBN
-                 WHEN      "1"
-                    IF  ((LNK-ORCSJGNGET-PREFNUM       = "01"    ) AND
-                         (LNK-ORCSJGNGET-KOHHKNNUM     = "183"   ) AND
-                         (LNK-ORCSJGNGET-TEKSTYMD(1:6) < "200810"))
-                    OR  ((LNK-ORCSJGNGET-PREFNUM       = "13"    ) AND
-                         (LNK-ORCSJGNGET-KOHHKNNUM     = "151"   ) AND
-                         (LNK-ORCSJGNGET-TEKSTYMD(1:6) < "200310"))
-                    OR  ((LNK-ORCSJGNGET-PREFNUM       = "23"    ) AND
-                         (LNK-ORCSJGNGET-KOHHKNNUM     = "191"   ) AND
-                         (LNK-ORCSJGNGET-TEKSTYMD(1:6) < "200910"))
-                    OR  ((LNK-ORCSJGNGET-PREFNUM       = "23"    ) AND
-                         (LNK-ORCSJGNGET-KOHHKNNUM     = "152"   ) AND
-                         (LNK-ORCSJGNGET-TEKSTYMD(1:6) < "201104"))
-                    OR  ((LNK-ORCSJGNGET-PREFNUM       = "24"    ) AND
-                         (LNK-ORCSJGNGET-KOHHKNNUM     = "152"   ) AND
-                         (LNK-ORCSJGNGET-TEKSTYMD(1:6) < "201104"))
-                    OR  ((LNK-ORCSJGNGET-PREFNUM       = "07"    ) AND
-                         (LNK-ORCSJGNGET-KOHHKNNUM     = "281"   ) AND
-                         (LNK-ORCSJGNGET-TEKSTYMD(1:6) < "200702"))
-                    OR  ((LNK-ORCSJGNGET-PREFNUM       = "08"    ) AND
-                         (LNK-ORCSJGNGET-KOHHKNNUM     = "152"   ) AND
-                         (LNK-ORCSJGNGET-TEKSTYMD(1:6) < "200904"))
-                    OR  ((LNK-ORCSJGNGET-PREFNUM       = "27"    ) AND
-                         (LNK-ORCSJGNGET-KOHHKNNUM     = "192"   ) AND
-                         (LNK-ORCSJGNGET-TEKSTYMD(1:6) < "201211"))
-                    OR  ((LNK-ORCSJGNGET-PREFNUM       = "28"    ) AND
-                         (LNK-ORCSJGNGET-KOHHKNNUM     = "186"   ) AND
-                         (LNK-ORCSJGNGET-TEKSTYMD(1:6) < "200310"))
-                         MOVE   ZERO    TO   LNK-ORCSJGNGET-TAISYOKBN
-                    ELSE
-                         MOVE    1      TO   LNK-ORCSJGNGET-TAISYOKBN
-                    END-IF
-                 WHEN      "2"
-                    IF  ((LNK-ORCSJGNGET-PREFNUM       = "01"    ) AND
-                         (LNK-ORCSJGNGET-KOHHKNNUM     = "183"   ) AND
-                         (LNK-ORCSJGNGET-TEKSTYMD(1:6) < "200810"))
-                    OR  ((LNK-ORCSJGNGET-PREFNUM       = "13"    ) AND
-                         (LNK-ORCSJGNGET-KOHHKNNUM     = "151"   ) AND
-                         (LNK-ORCSJGNGET-TEKSTYMD(1:6) < "200310"))
-                    OR  ((LNK-ORCSJGNGET-PREFNUM       = "23"    ) AND
-                         (LNK-ORCSJGNGET-KOHHKNNUM     = "191"   ) AND
-                         (LNK-ORCSJGNGET-TEKSTYMD(1:6) < "200910"))
-                    OR  ((LNK-ORCSJGNGET-PREFNUM       = "23"    ) AND
-                         (LNK-ORCSJGNGET-KOHHKNNUM     = "152"   ) AND
-                         (LNK-ORCSJGNGET-TEKSTYMD(1:6) < "201104"))
-                    OR  ((LNK-ORCSJGNGET-PREFNUM       = "24"    ) AND
-                         (LNK-ORCSJGNGET-KOHHKNNUM     = "152"   ) AND
-                         (LNK-ORCSJGNGET-TEKSTYMD(1:6) < "201104"))
-                    OR  ((LNK-ORCSJGNGET-PREFNUM       = "07"    ) AND
-                         (LNK-ORCSJGNGET-KOHHKNNUM     = "281"   ) AND
-                         (LNK-ORCSJGNGET-TEKSTYMD(1:6) < "200702"))
-                    OR  ((LNK-ORCSJGNGET-PREFNUM       = "08"    ) AND
-                         (LNK-ORCSJGNGET-KOHHKNNUM     = "152"   ) AND
-                         (LNK-ORCSJGNGET-TEKSTYMD(1:6) < "200904"))
-                    OR  ((LNK-ORCSJGNGET-PREFNUM       = "27"    ) AND
-                         (LNK-ORCSJGNGET-KOHHKNNUM     = "192"   ) AND
-                         (LNK-ORCSJGNGET-TEKSTYMD(1:6) < "201211"))
-                    OR  ((LNK-ORCSJGNGET-PREFNUM       = "28"    ) AND
-                         (LNK-ORCSJGNGET-KOHHKNNUM     = "186"   ) AND
-                         (LNK-ORCSJGNGET-TEKSTYMD(1:6) < "200310"))
-                         MOVE   ZERO    TO   LNK-ORCSJGNGET-TAISYOKBN
-                    ELSE
-                         MOVE    2      TO   LNK-ORCSJGNGET-TAISYOKBN
-                    END-IF
-                 WHEN      "3"
-                         MOVE    2      TO   LNK-ORCSJGNGET-TAISYOKBN
-                         MOVE    1      TO   LNK-ORCSJGNGET-TEKIYOFLG
-               END-EVALUATE
-               MOVE     "tbl_syskanri"  TO  MCP-TABLE
-               MOVE     "key10"         TO  MCP-PATHNAME
-               PERFORM   910-DB-CLOSE-SEC
-             END-IF
-      *
-           END-IF
-      *
-           .
-      *
-       300-TAISYO-CHECK-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    •∑•π•∆•‡¥…Õ˝∆…π˛
       *****************************************************************
        900-SYSKANRI-READ-SEC         SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           MOVE    "DBFETCH"            TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  SYS-1001-REC
-                                           SYS-2010-REC
                MOVE    ZERO            TO  FLG-SYSKANRI
            ELSE
                INITIALIZE                  SYS-1001-REC
-                                           SYS-2010-REC
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
       *
@@ -1078,9 +799,10 @@
        900-PTKOHFTN-READ-SEC          SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  PTKOHFTN-REC
                MOVE    ZERO            TO  FLG-PTKOHFTN
@@ -1095,36 +817,15 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥µº‘∏¯»Ò…È√¥¬æ±°•«°º•ø•ﬁ•π•ø°º∆…π˛
-      *****************************************************************
-       900-PTKOHFTNETC-READ-SEC          SECTION.
-      *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC     TO  PTKOHFTNETC-REC
-               MOVE    ZERO            TO  FLG-PTKOHFTNETC
-           ELSE
-               INITIALIZE                  PTKOHFTNETC-REC
-               MOVE    1               TO  FLG-PTKOHFTNETC
-           END-IF
-      *
-           .
-      *
-       900-PTKOHFTNETC-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *     ›∏±¡»πÁ§ª•ﬁ•π•ø°º∆…π˛
       *****************************************************************
        900-HKNCOMBI-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  HKNCOMBI-REC
                MOVE    ZERO            TO  FLG-HKNCOMBI
@@ -1144,9 +845,10 @@
        900-NYUINACCT-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  NYUINACCT-REC
                MOVE    ZERO            TO  FLG-NYUINACCT
@@ -1166,9 +868,10 @@
        900-SRYACCT-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  SRYACCT-REC
                MOVE    ZERO            TO  FLG-SRYACCT
@@ -1180,20 +883,5 @@
            .
       *
        900-SRYACCT-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    £ƒ£¬•Ø•Ì°º•∫ΩËÕ˝
-      *****************************************************************
-       910-DB-CLOSE-SEC                 SECTION.
-      *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-           .
-      *
-       910-DB-CLOSE-EXT.
            EXIT.
       *
