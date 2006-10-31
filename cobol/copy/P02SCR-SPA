@@ -50,6 +50,9 @@
                05  SPA-GMN-KYUSEIH         PIC X(50).
                05  SPA-GMN-CONDITIONH      PIC X(10)   OCCURS  3.
       *
+               05  SPA-NAI-KYUSEIH         PIC X(50).
+               05  SPA-KYUSEI-IDX          PIC 9(02).
+      *
       *    P02 (基本情報）
            03  SPA-P02W-AREA.
                05  SPA-GMN-AREA.
@@ -298,6 +301,8 @@
       *                    保険者異動日警告
                            11  SPA-PTKOH-IDOYMD            PIC X(08).
                            11  SPA-NAI-PTKOH-KEIFLG        PIC X(01).
+      *                    受給者番号警告
+                           11  SPA-NAI-JYUCHK              PIC 9(01).
       *
                        09  SPA-KOH-MAX             PIC 9(04).
       *            対象開始位置

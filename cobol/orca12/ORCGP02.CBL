@@ -3772,6 +3772,9 @@
                WHEN    "0084"
                    MOVE    "受給者番号検証番号エラーです。"
                                                TO  SPA-ERRMSG
+               WHEN    "K084"
+                   MOVE    "警告！受給者番号検証番号がエラーです。"
+                                               TO  SPA-ERRMSG
                WHEN    "0085"
                  MOVE    "公費に適用年齢の指定があります。"
                                                TO  SPA-ERRMSG

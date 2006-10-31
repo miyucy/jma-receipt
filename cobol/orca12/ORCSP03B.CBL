@@ -42,6 +42,7 @@
       * 01.00.13     NACL-多々納  06/03/10  '015更正','016育成'重複可
       * 03.00.01     NACL-多々納  06/08/25  平成１８年１０月改正対応
       *                                     （老人割合変更）
+      * 03.04.00     NACL-多々納  06/10/30  受給者検証番号警告追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1442,6 +1443,7 @@
            END-IF
       *    受給者番号モジュラス10チェック
            IF      HKN-JKYSKENSNUMCHKKBN   =   "1"
+                                           OR  "3"
                PERFORM 4912-JKYSNUM-CHECK-SEC
            END-IF
       *
@@ -1490,9 +1492,18 @@
                                        TO  LNK-I-CODE
            CALL    "ORCSCHKDGT"    USING   LNK-CHKDGT-AREA
            IF      LNK-O-ERRCD     NOT =   ZERO
-               MOVE    "0084"          TO  SPA-ERRCD
-               MOVE    22              TO  SPA-GMN-CUR
-               GO  TO               4912-JKYSNUM-CHECK-EXT
+      *        警告
+               IF      HKN-JKYSKENSNUMCHKKBN   =  "3"
+                   IF      SPA-NAI-JYUCHK (IDX-K)  =   ZERO
+                       MOVE    "K084"          TO  SPA-ERRCD
+                       MOVE    22              TO  SPA-GMN-CUR
+                       MOVE    1               TO  SPA-NAI-JYUCHK
+                                                           (IDX-K)
+                   END-IF
+               ELSE
+                   MOVE    "0084"          TO  SPA-ERRCD
+                   MOVE    22              TO  SPA-GMN-CUR
+               END-IF
            END-IF
       *
           .

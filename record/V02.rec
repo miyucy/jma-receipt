@@ -383,7 +383,7 @@ V02	{
 				value	varchar(16);
 			};
 			count	int;
-			item	varchar(16)[2];
+			item	varchar(16)[3];
 		};
 		RECESKYKBN_CMB	{
 			RECESKYKBN	{

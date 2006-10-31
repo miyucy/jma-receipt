@@ -401,6 +401,8 @@
       *            ÊÝ¸±¼Ô°ÛÆ°Æü·Ù¹ð
                    07  WRK-PTKOH-IDOYMD            PIC X(08).
                    07  WRK-NAI-PTKOH-KEIFLG        PIC X(01).
+      *            ¼õµë¼ÔÈÖ¹æ·Ù¹ð
+                   07  WRK-NAI-JYUCHK              PIC 9(01).
                05  WRK-KOH-MAX             PIC 9(04).
       *
       *    ÊÝ¸±ÁÈ¹ç¤»¡Ê£Ó£Ð£Á¤ÈÆ±¤¸¡Ë
@@ -1669,6 +1671,8 @@
                MOVE    1                   TO  SPA-NAI-AGE65 (IDY)
                MOVE    1                   TO  SPA-NAI-AGECHK(IDY)
                MOVE    1                   TO  SPA-NAI-FTNCHK(IDY)
+      *        ¼õµë¼ÔÈÖ¹æ·Ù¹ð
+               MOVE    1                   TO  SPA-NAI-JYUCHK(IDY)
            END-IF
       *
       *    ¸øÈñ¾ðÊó
@@ -2405,6 +2409,16 @@
            END-IF
            IF     (P02-P02-FTNJANUM3   NOT =   SPA-GMN-FTNJANUM (3))
                MOVE    ZERO                TO  SPA-NAI-FTNCHK   (3)
+           END-IF
+      *    ¼õµë¼Ô¼ÔÈÖ¹æ·Ù¹ð¥¯¥ê¥¢¤¹¤ë
+           IF     (P02-P02-JKYSNUM1    NOT =   SPA-GMN-JKYSNUM (1))
+               MOVE    ZERO                TO  SPA-NAI-JYUCHK  (1)
+           END-IF
+           IF     (P02-P02-JKYSNUM2    NOT =   SPA-GMN-JKYSNUM (2))
+               MOVE    ZERO                TO  SPA-NAI-JYUCHK  (2)
+           END-IF
+           IF     (P02-P02-JKYSNUM3    NOT =   SPA-GMN-JKYSNUM (3))
+               MOVE    ZERO                TO  SPA-NAI-JYUCHK  (3)
            END-IF
       *    ¸øÈñ£±
            MOVE    P02-P02-FTNJANUM1   TO  SPA-GMN-FTNJANUM (1)

@@ -113,7 +113,7 @@
                        09  SPA-GMN-KENSNUMCHKKBNMEIL
                                                   PIC X(14).
                    07  SPA-GMN-KENSNUMCHKKBN-MAX  PIC 9(01).
-                   07  SPA-GMN-JKYSKENSNUMCHKKBNLST   OCCURS  2.
+                   07  SPA-GMN-JKYSKENSNUMCHKKBNLST   OCCURS  3.
                        09  SPA-GMN-JKYSKENSNUMCHKKBNL PIC X(01).
                        09  SPA-GMN-F1L            PIC X(01).
                        09  SPA-GMN-JKYSKENSNUMCHKKBNMEIL
@@ -498,7 +498,11 @@
                                        SPA-GMN-JKYSKENSNUMCHKKBNL   (2)
            MOVE    "チェックしない"    TO
                                        SPA-GMN-JKYSKENSNUMCHKKBNMEIL(2)
-           MOVE    2                   TO  
+           MOVE    "3"                 TO
+                                       SPA-GMN-JKYSKENSNUMCHKKBNL   (3)
+           MOVE    "警告チェック"      TO
+                                       SPA-GMN-JKYSKENSNUMCHKKBNMEIL(3)
+           MOVE    3                   TO  
                                        SPA-GMN-JKYSKENSNUMCHKKBN-MAX
       *
            MOVE    "1"                 TO  SPA-GMN-HKNKOHKBNL    (1)

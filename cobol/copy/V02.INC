@@ -116,7 +116,7 @@
                 04  V02-JKYSKENSNUMCHKKBN.
                   05  V02-VALUE   PIC X(16).
                 04  V02-JKYSKENSNUMCHKKBN-COUNT   PIC S9(9)   BINARY.
-                04  V02-JKYSKENSNUMCHKKBNLST      PIC X(16)   OCCURS  2.
+                04  V02-JKYSKENSNUMCHKKBNLST      PIC X(16)   OCCURS  3.
               03  V02-RECESKYKBN-CMB.
                 04  V02-RECESKYKBN.
                   05  V02-VALUE   PIC X(24).
