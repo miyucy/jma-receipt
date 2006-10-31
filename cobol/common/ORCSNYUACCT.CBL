@@ -2082,17 +2082,11 @@
            MOVE    "tbl_nyuinact"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
-      *TEST
-           DISPLAY "FLG-NYUINACT:" FLG-NYUINACT
-      *TEST
            MOVE    ZERO                TO  FLG-DEL
            PERFORM VARYING     IDX2    FROM    1   BY  1
                    UNTIL      (IDX2        >   5   )  OR
                               (FLG-DEL     =   1     )  OR
                               (NSRY-SRYCD(IDX2)    =   SPACE )
-      *TEST
-              DISPLAY "NSRY-SRYCD(IDX2):" NSRY-SRYCD(IDX2)
-      *TEST
                IF      NSRY-SRYCD  (IDX2)  =   "099999916"
                    MOVE    1               TO  FLG-DEL
                END-IF
