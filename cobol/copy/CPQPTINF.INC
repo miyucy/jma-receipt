@@ -46,6 +46,8 @@
            03  QUERY-PTINF-HOME-BANTI          PIC  X(200).
       *自宅−電話番号
            03  QUERY-PTINF-HOME-TEL1           PIC  X(15).
+      *テスト患者区分
+           03  QUERY-PTINF-TSTPTNUMKBN         PIC  X(1).
       *患者番号
            03  QUERY-PTINF-PTNUM               PIC  X(20).
       *
