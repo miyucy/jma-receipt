@@ -203,6 +203,8 @@
       *                                     疾患区分の表示方法の修正
       *  03.02.03    NACL-藤原    06/08/16  自院コードのみのときの自院検索
       *                                     遷移がエラーにならないようにする
+      *
+      *  03.04.01    NACL-藤原    06/11/01  病名一括削除機能対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2040,10 +2042,14 @@
                    PERFORM VARYING IDX     FROM
                                            WRK-STNUM-O (IDXX)  BY  1
                            UNTIL   IDX     >   WRK-EDNUM-O (IDXX)
-                       IF      WRK-HENSYU-DATA-O (8)   =   SPACE
-                           PERFORM 4101131-KANTAN-SYUSEI-KOUSIN-SEC
+                       IF      SPA-CID1-FLG        =   "DL"
+                           PERFORM 3202-BYOMEI-DELETE-KOUSIN-SEC
                        ELSE
-                           PERFORM 3201-BYOMEI-COPY-KOUSIN-SEC
+                           IF      WRK-HENSYU-DATA-O (8)   =   SPACE
+                               PERFORM 4101131-KANTAN-SYUSEI-KOUSIN-SEC
+                           ELSE
+                               PERFORM 3201-BYOMEI-COPY-KOUSIN-SEC
+                           END-IF
                        END-IF
                        IF      SPA-ERRCD   NOT =   SPACE
                            GO  TO  320-C10SPASET-EXT
@@ -2053,6 +2059,7 @@
            END-PERFORM
       *
            MOVE    SPACE               TO  WRK-HAISIYMDH
+                                           SPA-CID1-FLG
            MOVE    ZERO                TO  SPA-C02-IKOFLG
            INITIALIZE                      SPA-GMN-C02-KOUMOKU
                                            SPA-NAI-C02-KOUMOKU
@@ -2248,6 +2255,58 @@
        3201-BYOMEI-COPY-KOUSIN-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    病名削除処理
+      *****************************************************************
+       3202-BYOMEI-DELETE-KOUSIN-SEC   SECTION.
+      *
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+      *
+           INITIALIZE                      PTBYO-KEY
+           MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
+           MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
+           MOVE    SPA-NAI-C02-TSRYKA  (IDX)
+                                       TO  PTBYO-SRYKA
+           MOVE    SPA-NAI-C02-TSRYYMD (IDX)
+                                       TO  PTBYO-SRYYMD
+           MOVE    SPA-NAI-C02-TRENNUM (IDX)
+                                       TO  PTBYO-RENNUM 
+           MOVE    "tbl_ptbyomei"      TO  WRK-MCP-TABLE
+           MOVE    "key"               TO  WRK-MCP-PATHNAME
+           PERFORM 900-PTBYO-INV-SEC
+           IF      FLG-PTBYOMEI        =   1
+               MOVE    "1003"              TO  SPA-ERRCD
+               DISPLAY "INV PTBYOMEI-KEY =>" PTBYO-KEY 
+               GO  TO  3202-BYOMEI-DELETE-KOUSIN-EXT
+           END-IF
+      *    削除フラグ
+           MOVE    "1"                 TO  PTBYO-DLTFLG
+           MOVE    SPA-OPID            TO  PTBYO-DLT-OPID
+      *
+           MOVE    SMCNDATE-YMD        TO  PTBYO-UPYMD
+           MOVE    SMCNDATE-HMS        TO  PTBYO-UPHMS
+           MOVE    "DBUPDATE"          TO  MCP-FUNC
+      *???
+           DISPLAY "PTBYO=" PTBYO-KEY "#" MCP-FUNC "#"
+      *???                
+           MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
+           MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC          NOT =   ZERO 
+               MOVE    "1001"              TO  SPA-ERRCD
+               DISPLAY MCP-FUNC "PTBYOMEI-KEY =>"  PTBYO-KEY 
+           ELSE
+               PERFORM 450221-RECEUPD-UPDATE-SEC
+           END-IF
+           .
+       3202-BYOMEI-DELETE-KOUSIN-EXT.
+           EXIT.
       *
       *****************************************************************
       *    最終受診診療科情報 編集処理
@@ -6308,16 +6367,38 @@
       *****************************************************************
        440-SAKUJYO-SEC             SECTION.
       *
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+      *
            INITIALIZE                      PTBYO-KEY
            MOVE    SPA-HOSPID              TO  PTBYO-HOSPID
            MOVE    SPA-NAI-C02-PTID        TO  PTBYO-PTID
            MOVE    SPA-NAI-C02-SRYKA-OLD   TO  PTBYO-SRYKA
            MOVE    SPA-NAI-C02-SRYYMD-OLD  TO  PTBYO-SRYYMD
            MOVE    SPA-NAI-C02-RENNUM      TO  PTBYO-RENNUM 
-           MOVE    PTBYOMEI-REC            TO  MCPDATA-REC
-           MOVE    "DBDELETE"              TO  MCP-FUNC
-           MOVE    "tbl_ptbyomei"          TO  MCP-TABLE
-           MOVE    "key"                   TO  MCP-PATHNAME
+           MOVE    "tbl_ptbyomei"      TO  WRK-MCP-TABLE
+           MOVE    "key"               TO  WRK-MCP-PATHNAME
+           PERFORM 900-PTBYO-INV-SEC
+           IF      FLG-PTBYOMEI        =   1
+               MOVE    "1003"              TO  SPA-ERRCD
+               DISPLAY "INV PTBYOMEI-KEY =>" PTBYO-KEY 
+               GO  TO  440-SAKUJYO-EXT
+           END-IF
+      *    削除フラグ
+           MOVE    "1"                 TO  PTBYO-DLTFLG
+           MOVE    SPA-OPID            TO  PTBYO-DLT-OPID
+      *
+           MOVE    SMCNDATE-YMD        TO  PTBYO-UPYMD
+           MOVE    SMCNDATE-HMS        TO  PTBYO-UPHMS
+           MOVE    "DBUPDATE"          TO  MCP-FUNC
+      *???
+           DISPLAY "PTBYO=" PTBYO-KEY "#" MCP-FUNC "#"
+      *???                
+           MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
+           MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC

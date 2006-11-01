@@ -27,6 +27,9 @@
       *  01.02.01    NACL-藤原    04/01/07  新しいレイアウトに変更
       *ver.2.6.0 
       *  01.02.02    NACL-藤原    05/05/26  病名検索用項目を追加
+      *
+      *  03.04.01    NACL-藤原    06/10/31  削除フラグ、削除オペレータ
+      *                                     ＩＤを追加
       *****************************************************************
       *
       *01  PTBYOMEI-REC.
@@ -116,9 +119,13 @@
            03  PTBYO-KHNBUICD-G.
                05  PTBYO-KHNBUICD      PIC X(07)
                                        OCCURS  3.
+      *削除フラグ
+           03  PTBYO-DLTFLG            PIC X(01).
+      *削除オペレータＩＤ
+           03  PTBYO-DLT-OPID          PIC X(16).
       *端末ＩＤ
            03  PTBYO-TERMID            PIC X(16).
-      *オペーレータＩＤ
+      *オペレータＩＤ
            03  PTBYO-OPID              PIC X(16).
       *作成年月日
            03  PTBYO-CREYMD            PIC X(08).

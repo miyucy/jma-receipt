@@ -47,6 +47,8 @@
       *
       *  03.02.01    NACL-藤原    06/07/25  自費による保険限定の病名の重複
       *                                     登録を可能とする
+      *
+      *  03.04.01    NACL-藤原    06/11/01  病名一括削除機能対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -422,7 +424,7 @@
       *
       *    確認画面より
            IF      SPA-MOTOPG      =   "CID1"
-               IF      SPA-CIDCD       =   "0103"
+               IF      SPA-CIDCD       =   "0103"  OR  "0101"
                    IF      SPA-CID1-FLG    =   "OK"
                        PERFORM 4501-TOUROKU-SYORI-SEC
                        GO  TO  300-SCREEN-EXT
@@ -528,6 +530,9 @@
                WHEN    "CLICKED"       ALSO    "B01"
                    MOVE    SPACE               TO  SPA-CID1-FLG
                    PERFORM 210-BACK
+      *    削除
+               WHEN    "CLICKED"       ALSO    "B03"
+                   PERFORM 450-DELETE-SEC
       *    複写
                WHEN    "CLICKED"       ALSO    "B10"
                    PERFORM 450-COPY-SEC
@@ -1878,6 +1883,17 @@
            EXIT.
       *
       *****************************************************************
+      *    病名削除処理
+      *****************************************************************
+       450-DELETE-SEC                    SECTION.
+      *
+           MOVE    "0101"                TO SPA-CIDCD
+      *
+           .
+       450-DELETE-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    病名複写処理
       *****************************************************************
        450-COPY-SEC                    SECTION.
@@ -1929,7 +1945,11 @@
       *****************************************************************
        4501-TOUROKU-SYORI-SEC             SECTION.
       *
-           MOVE    "OK"            TO  SPA-CID1-FLG
+           IF      SPA-CIDCD       =   "0103"    OR  SPACE
+               MOVE    "OK"            TO  SPA-CID1-FLG
+           ELSE
+               MOVE    "DL"            TO  SPA-CID1-FLG
+           END-IF
       *
            MOVE    SPA-C01KYOUTU   TO  SPA-WORK
       *
@@ -2470,6 +2490,9 @@
            MOVE    SPA-CIDCD           TO  CID1-ID1CODE
       *
            EVALUATE    SPA-CIDCD
+               WHEN    "0101"
+                   MOVE    "選択された病名を削除しますか？"
+                                        TO  CID1-ID1MSG
                WHEN    "0103"
                    STRING
                        "この病名は"            DELIMITED   BY  SIZE 

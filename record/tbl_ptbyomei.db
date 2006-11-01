@@ -53,6 +53,8 @@ tbl_ptbyomei {
 	KHNBUICD_1  		char(7);
 	KHNBUICD_2  		char(7);
 	KHNBUICD_3  		char(7);
+	DLTFLG  			char(1);
+	DLT_OPID    		varchar(16);
 	TERMID  			varchar(16);
 	OPID    			varchar(16);
 	CREYMD  			char(8);
@@ -76,6 +78,7 @@ path	key		{
 			AND   SRYKA       =   :SRYKA 
 			AND   SRYYMD      =   :SRYYMD
 			AND   RENNUM      =   :RENNUM
+			AND   DLTFLG      =   ' '
 		;
 	};
 };
@@ -88,6 +91,7 @@ path	key2	{
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 			AND   SRYKA       =   :SRYKA
+			AND   DLTFLG      =   ' '
 			ORDER BY SRYYMD,RENNUM 
 		;
 	};
@@ -100,6 +104,7 @@ path	key3	{
 		FROM tbl_ptbyomei
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
+			AND   DLTFLG      =   ' '
 			ORDER  BY  PTID,SRYYMD,SRYKA
 		;
 	};
@@ -111,6 +116,7 @@ path	key4	{
 		SELECT *
 		FROM tbl_ptbyomei
 			WHERE   HOSPID    =   :HOSPID
+			AND   DLTFLG      =   ' '
 			ORDER  BY  PTID,SRYYMD,SRYKA
 		;
 	};
@@ -145,6 +151,7 @@ path	key5	{
 			 OR  (BYOMEICD_19 =   :BYOMEICD_19)
 			 OR  (BYOMEICD_20 =   :BYOMEICD_20)
 			 OR  (BYOMEICD_21 =   :BYOMEICD_21))
+			 AND  DLTFLG      =   ' '
 		;
 	};
 };
@@ -156,6 +163,7 @@ path	key6	{
 		FROM tbl_ptbyomei
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
+			AND   DLTFLG      =   ' '
 			ORDER  BY  SRYYMD DESC,SRYKA,RENNUM
 		;
 	};
@@ -170,6 +178,7 @@ path	key7		{
 			AND   PTID        =   :PTID
 			AND   SRYKA       =   :SRYKA 
 			AND   SRYYMD      =   :SRYYMD
+			AND   DLTFLG      =   ' '
 			ORDER  BY  RENNUM DESC
 		;
 	};
@@ -183,6 +192,7 @@ path	key8		{
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 			AND   HKNCOMBI    =   :HKNCOMBI
+			AND   DLTFLG      =   ' '
 			ORDER  BY  SRYKA,
                                    SRYYMD
 		;
@@ -212,6 +222,7 @@ path	key9		{
 		        	AND   PTID        =   :PTID
                                 AND   SRYYMD      <   :SRYYMD
                                 AND   TENKIKBN    =   '3'))) 
+			AND   DLTFLG      =   ' '
 			ORDER  BY  TENKIKBN DESC,
                                    SRYYMD
 		;
@@ -230,6 +241,7 @@ path	key10	{
                         AND   MANSEIKBN  <>   :MANSEIKBN
 			AND  (TENKIKBN    =   :TENKIKBN  OR
                               TENKIYMD    >   :SRYYMD)
+			AND   DLTFLG      =   ' '
 			ORDER BY SRYYMD,RENNUM 
 		;
 	};
@@ -246,6 +258,7 @@ path	key11	{
 			AND   NYUGAIKBN   IN (' ',:NYUGAIKBN)
 			AND  (TENKIKBN    =   :TENKIKBN  OR
                   TENKIYMD    >=  :TENKIYMD)
+			AND   DLTFLG      =   ' '
 			ORDER BY SRYKA,SYUBYOFLG DESC,SRYYMD,RENNUM
 		;
 	};
@@ -261,6 +274,7 @@ path	key12	{
             AND     SRYYMD    <=  :SRYYMD
 			AND     HKNCOMBI  =   :HKNCOMBI
             AND     REZEFLG   <>  '1'
+			AND   DLTFLG      =   ' '
 			ORDER  BY  SRYYMD,BYOMEI,TENKIKBN DESC,TENKIYMD DESC,SYUBYOFLG DESC
 		;
 	};
@@ -312,6 +326,7 @@ path	key13	{
 			AND     PTID      =   :PTID
 			AND     SRYKA     =   :SRYKA
 			AND     BYOMEI    =   :BYOMEI
+			AND   DLTFLG      =   ' '
 		;
 	};
 };
@@ -324,6 +339,7 @@ path	key14	{
 			AND   PTID        =   :PTID
 			AND     SRYKA     =   :SRYKA
 			AND     SYUBYOFLG =   '1'
+			AND   DLTFLG      =   ' '
 		;
 	};
 };
@@ -336,6 +352,7 @@ path	key15	{
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 			AND     SYUBYOFLG =   '1'
+			AND   DLTFLG      =   ' '
 		;
 	};
 };
@@ -349,6 +366,7 @@ path	key16	{
 			AND   PTID        =   :PTID
 			AND   SRYKA       =   :SRYKA
 			AND   SRYYMD      <=  :SRYYMD
+			AND   DLTFLG      =   ' '
 			ORDER BY SRYYMD,RENNUM 
 		;
 	};
@@ -362,6 +380,7 @@ path	key17	{
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 			AND   SRYYMD      <=  :SRYYMD
+			AND   DLTFLG      =   ' '
 			ORDER  BY  PTID,SRYYMD,SRYKA,RENNUM
 		;
 	};
@@ -375,6 +394,7 @@ path	key18	{
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 			AND   SRYKA       =   :SRYKA
+			AND   DLTFLG      =   ' '
 			ORDER BY SRYYMD DESC,RENNUM 
 		;
 	};
@@ -409,6 +429,7 @@ path	key19	{
 			                       BYOMEICD_19,
 			                       BYOMEICD_20,
 			                       BYOMEICD_21 )
+			AND   DLTFLG      =   ' '
 			ORDER BY SRYYMD DESC,RENNUM 
 		;
 	};
@@ -423,6 +444,7 @@ path	key20	{
 			AND     PTID      =   :PTID
 			AND     SRYYMD    =   :SRYYMD
 			AND     BYOMEI    =  :BYOMEI
+			AND   DLTFLG      =   ' '
 			ORDER  BY  SRYKA
 		;
 	};
@@ -438,6 +460,7 @@ path	key21	{
 			AND     SRYKA     =   :SRYKA
 			AND   NYUGAIKBN   IN (' ',:NYUGAIKBN)
 			AND     BYOMEI    =   :BYOMEI
+			AND   DLTFLG      =   ' '
 		;
 	};
 };
@@ -452,6 +475,7 @@ path	key22	{
 			AND   SRYKA       =   :SRYKA
 			AND   SRYYMD      <=  :SRYYMD
 			AND   NYUGAIKBN   IN (' ',:NYUGAIKBN)
+			AND   DLTFLG      =   ' '
 			ORDER BY SRYYMD,RENNUM 
 		;
 	};
@@ -466,6 +490,7 @@ path	key23	{
 			AND   PTID        =   :PTID
 			AND   SRYYMD      <=  :SRYYMD
 			AND   NYUGAIKBN   IN (' ',:NYUGAIKBN)
+			AND   DLTFLG      =   ' '
 			ORDER  BY  PTID,SRYYMD,SRYKA,RENNUM
 		;
 	};
@@ -482,6 +507,7 @@ path	key24	{
                         AND   MANSEIKBN  <>   :MANSEIKBN
 			AND  (TENKIKBN    =   :TENKIKBN  OR
                               TENKIYMD    >=  :SRYYMD)
+			AND   DLTFLG      =   ' '
 			ORDER BY SRYYMD,RENNUM 
 		;
 	};
@@ -498,6 +524,7 @@ path	key25	{
 			AND   SRYYMD      <=  :SRYYMD
 			AND  (TENKIKBN    =   :TENKIKBN  OR
                               TENKIYMD    >=  :SRYYMD)
+			AND   DLTFLG      =   ' '
 			ORDER BY SRYYMD,SRYKA,RENNUM
 		;
 	};
@@ -512,6 +539,7 @@ path	key26	{
 		AND    SRYYMD       >= :SRYYMD
 		AND    SRYYMD       <= :UPYMD
 		AND	   BYOMEI    LIKE :BYOMEI
+		AND   DLTFLG      =   ' '
 		GROUP  BY  BYOMEI
 		ORDER  BY  COUNT(*) DESC,BYOMEI
 		;
@@ -528,6 +556,7 @@ path	key27	{
 			AND     PTID      =   :PTID
 			AND     SRYKA     <>  :SRYKA
 			AND     BYOMEI    =   :BYOMEI
+			AND   DLTFLG      =   ' '
 			ORDER  BY  SRYKA,RENNUM
 		;
 	};
@@ -543,6 +572,7 @@ path	key28	{
 			AND     SRYKA     <>  :SRYKA
 			AND   NYUGAIKBN   IN (' ',:NYUGAIKBN)
 			AND     BYOMEI    =   :BYOMEI
+			AND   DLTFLG      =   ' '
 			ORDER  BY  SRYKA,RENNUM
 		;
 	};
@@ -559,6 +589,7 @@ path	key29	{
 			AND     SRYYMD    =   :SRYYMD
 			AND   ( BYOMEI    =  :BYOMEI  OR
 			        BYOMEI    =  :XXBYOMEI )
+			AND   DLTFLG      =   ' '
 			ORDER  BY  SRYKA,BYOMEI
 		;
 	};
@@ -576,7 +607,19 @@ path	key30	{
 			AND   NYUGAIKBN   IN (' ',:NYUGAIKBN)
 			AND  (TENKIKBN    =   :TENKIKBN  OR
                   TENKIYMD    >=  :TENKIYMD)
+			AND   DLTFLG      =   ' '
 			ORDER BY SRYKA,SYUBYOFLG DESC,SRYYMD,RENNUM
+		;
+	};
+};
+
+path	del31	{ 	
+	DBDELETE	{
+		DELETE
+		FROM tbl_ptbyomei
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   DLTFLG      =   '1'
 		;
 	};
 };
