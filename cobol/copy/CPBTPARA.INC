@@ -39,11 +39,11 @@
       *パラメタ区分
            03  BTPARA-INFO-KBN          PIC X(02).
       *パラメタ
-           03  BTPARA-INFO-PARA         PIC X(50).
+           03  BTPARA-INFO-PARA         PIC X(500).
            03  BRPARA-INFO-PARA-X       REDEFINES    BTPARA-INFO-PARA.
                05  BTPARA-INFO-PTID     PIC 9(10).
                05  BTPARA-INFO-PTNUM    PIC X(20).
-               05  FILLER               PIC X(20).
+               05  FILLER               PIC X(470).
       *端末ＩＤ
            03  BTPARA-TERMID            PIC X(16).
       *オペーレータＩＤ

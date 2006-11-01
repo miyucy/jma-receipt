@@ -6,7 +6,7 @@ tbl_btpara {
 	JOBID			number(3,0);
 	SCRIPTID		char(20);
 	INFO_KBN		char(02);
-	INFO_PARA		varchar(50);
+	INFO_PARA		varchar(500);
 	TERMID			varchar(16);
 	OPID			varchar(16);
 	CREYMD			char(8);
@@ -127,5 +127,15 @@ path	all	{
 		SELECT *
 		FROM tbl_btpara
  		;
+	};
+};
+
+path	del3	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_btpara
+			WHERE   SHELLID     =   :SHELLID  AND
+					JOBID       =   :JOBID
+		;
 	};
 };
