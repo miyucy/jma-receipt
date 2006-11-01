@@ -997,9 +997,9 @@
                END-IF    
       *
       *        受給者検証番号チェック区分よりチェック
-               IF    ( SPA-ERRCD       =   SPACE )
-               AND   ( SPA-NAI-JKYSKENSNUMCHKKBN )
-                                       =   "1" OR  "3"
+               IF    ( SPA-ERRCD       =   SPACE        )
+               AND   ( SPA-NAI-JKYSKENSNUMCHKKBN
+                                       =   "1" OR  "3"  )
                    INITIALIZE                      LNK-CHKDGT-AREA
                    MOVE    2                   TO  LNK-I-SYORIKBN
                    MOVE    SPA-GMN-TJKYSNUM (IDX1 IDX)
