@@ -100,7 +100,7 @@
       *    ∏«ƒÍ√ÕŒŒ∞Ë
        01  CONST-AREA.
            03  CONST-ITEM-AREA.
-               05  CONST-ITEM-MAX          PIC 9(03) VALUE 10.
+               05  CONST-ITEM-MAX          PIC 9(03) VALUE 11.
                05  CONST-ITEM-VAL.
                    07  CONST-PTID-TBL      PIC X(01) VALUE "A".
                    07  CONST-PTID          PIC X(20) VALUE "PTID".
@@ -120,10 +120,13 @@
                    07  CONST-BANTI         PIC X(20) VALUE "HOME_BANTI".
                    07  CONST-TEL1-TBL      PIC X(01) VALUE "A".
                    07  CONST-TEL1          PIC X(20) VALUE "HOME_TEL1".
+                   07  CONST-TSTPTNUMKBN-TBL
+                                           PIC X(01) VALUE "A".
+                   07  CONST-TSTPTNUMKBN  PIC X(20) VALUE "TSTPTNUMKBN".
                    07  CONST-PTNUM-TBL     PIC X(01) VALUE "H".
                    07  CONST-PTNUM         PIC X(20) VALUE "PTNUM".
                05  CONST-ITEM-R    REDEFINES   CONST-ITEM-VAL.
-                   07  CONST-ITEM-OCC      OCCURS    10.
+                   07  CONST-ITEM-OCC      OCCURS    12.
                        09  CONST-ITEM-TBL  PIC X(01).
                        09  CONST-ITEM      PIC X(20).
            03  CONST-TABLE-AREA.

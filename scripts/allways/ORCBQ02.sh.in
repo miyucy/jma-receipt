@@ -1,0 +1,44 @@
+#!/bin/sh
+
+if test -z "$JMARECEIPT_ENV" ; then
+    JMARECEIPT_ENV="@jma-receipt-env@"
+fi
+if ! test -f "$JMARECEIPT_ENV"; then
+    exit 0
+fi
+
+. $JMARECEIPT_ENV
+
+#-------------------------------------------#
+#        明細書連携データ作成
+#        $1  パラメータファイル名
+#        $2  TERMID
+#        $3  SYSYMD
+#        $4  SYSDATE
+#        $5  HOSPID
+#        $6  OPID
+#        $7  エラーファイル
+#        $8  ジョブＩＤ
+#        $9  シェルＩＤ
+#
+#-------------------------------------------#
+##      エラーファイル削除
+	echo "echo " $7
+        if  [ -e $7 ]; then
+            rm  $7
+        fi
+##
+
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBQ02 -parameter $1,$2,$3,$4,$5,$6,$7,$8,$9
+        if  [ -e $7 ]; then
+            exit
+        fi
+
+##      パラメータファイル削除
+        if  [ -e $1 ]; then
+            rm  $1
+        fi
+
+       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE$8$9
+
+        exit

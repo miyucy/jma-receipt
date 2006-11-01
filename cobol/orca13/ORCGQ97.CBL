@@ -50,12 +50,16 @@
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
+           03  IDX-LST             PIC 9(04).
       *
        01  WRK-AREA.
            03  WRK-SYMD            PIC X(08).
            03  WRK-SYMD-TAIHI      PIC X(08).
            03  WRK-HENYMDG         PIC X(09).
            03  WRK-PAGE            PIC ZZ,ZZZ,ZZ9.
+           03  WRK-JOBID           PIC 9(07).
+           03  WRK-MSG             PIC X(100).
+           03  WRK-RUNJOB          PIC 9(05).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENTIME.
@@ -67,6 +71,7 @@
       *
        01  CONST-AREA.
            03  CONST-JOBID         PIC 9(07)   VALUE   1.
+           03  CONST-JOBID2        PIC 9(07)   VALUE   2.
            03  CONST-JOB-SHELLID   PIC X(08)   VALUE   "ORCBQ01".
       *
       *****************************************************************
@@ -104,6 +109,7 @@
        01  SCRAREA.
            COPY    "Q01.INC".
            COPY    "Q02.INC".
+           COPY    "Q03.INC".
            COPY    "Q96.INC".
            COPY    "Q97.INC".
            COPY    "Q98.INC".
@@ -199,86 +205,34 @@
       *****************************************************************
        490-KAKUNIN-SEC            SECTION.
       *
-           MOVE    SPACE               TO  Q97
-           MOVE    ZERO                TO  Q97-COUNT
-      *
-      *    ジョブ管理チェック処理
-           MOVE    "CHK"           TO  SJOBKANRI-MODE
-           INITIALIZE                  JOBKANRI-REC
-           MOVE    CONST-JOBID     TO  JOB-JOBID
-           MOVE    CONST-JOB-SHELLID
-                                   TO  JOB-SHELLID
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA
-                                   JOBKANRI-REC 
-           IF    ( SJOBKANRI-RETURN    =   ZERO )
-               CONTINUE
-           ELSE
-               MOVE    "該当する処理はありません"
-                                               TO  Q97-MSG
-               MOVE    "B01"               TO  MCP-WIDGET
-               PERFORM 4901-PUT-CURRENT-WINDOW-SEC
-               GO  TO  490-KAKUNIN-EXT
-           END-IF
-      *
-           MOVE    JOB-JOBID       TO  Q97-RENNUM   (1)
-           MOVE    JOB-SHELLMSG    TO  Q97-SHORINM  (1)
-      *
-           MOVE    JOB-STARTYMD    TO  WRK-SYMD
-           PERFORM 700-SEIWA-HEN-SEC
-           MOVE    WRK-HENYMDG     TO  Q97-STARTDATE (1)
-      *
-           IF    ( JOB-STARTTIME   =   SPACE )
-               MOVE    SPACE   TO  Q97-STARTTIME(1)
-           ELSE
-               MOVE    JOB-STARTTIME(1:2)
-                                   TO  WRK-HH
-               MOVE    JOB-STARTTIME(3:2)
-                                   TO  WRK-MM
-               MOVE    JOB-STARTTIME(5:2)
-                                   TO  WRK-SS
-               MOVE    WRK-HENTIME TO  Q97-STARTTIME(1)
-           END-IF
-      *
-           MOVE    JOB-ENDYMD      TO  WRK-SYMD
-           PERFORM 700-SEIWA-HEN-SEC
-           MOVE    WRK-HENYMDG     TO  Q97-ENDDATE (1)
-      *
-           IF    ( JOB-ENDTIME =   SPACE )
-               MOVE    SPACE       TO  Q97-ENDTIME  (1)
-           ELSE
-               MOVE    JOB-ENDTIME(1:2)
-                                   TO  WRK-HH
-               MOVE    JOB-ENDTIME(3:2)
-                                   TO  WRK-MM
-               MOVE    JOB-ENDTIME(5:2)
-                                   TO  WRK-SS
-               MOVE    WRK-HENTIME TO  Q97-ENDTIME  (1)
-           END-IF
-           MOVE    JOB-UPDCNT      TO  WRK-PAGE
-           MOVE    WRK-PAGE        TO  Q97-PAGE     (1)
-           MOVE    JOB-YOBI        TO  Q97-ERRMSG   (1)
-      *
-           IF    ( JOB-ENDYMD      =   SPACE )
-               MOVE    "処理中です"
-                                   TO  Q97-MSG
-           ELSE
-               IF    ( JOB-ERRCD   =   SPACE )
-                   MOVE    "処理は正常に終了しました"
-                                               TO  Q97-MSG
-               ELSE
-                   STRING  JOB-YOBI    DELIMITED  BY  SPACE
-                           "【"        DELIMITED  BY  SIZE
-                          JOB-SHELLMSG DELIMITED  BY  SPACE
-                          "】"         DELIMITED  BY  SIZE
-                   INTO  Q97-MSG
-                   END-STRING
-               END-IF
-           END-IF
-      *
-           MOVE    1                TO  Q97-COUNT
+           INITIALIZE                   Q97
+           MOVE    ZERO             TO  IDX-LST
+           MOVE    ZERO             TO  WRK-RUNJOB
+           MOVE    SPACE            TO  WRK-MSG
       *
            MOVE    "B11"            TO  MCP-WIDGET
+      *
+           MOVE    CONST-JOBID      TO  WRK-JOBID
+           PERFORM 4901-KAKUNIN-SEC
+      *
+           MOVE    CONST-JOBID2     TO  WRK-JOBID
+           PERFORM 4901-KAKUNIN-SEC
+      *
+           MOVE    IDX-LST          TO  Q97-COUNT
+      *
+           EVALUATE    TRUE
+           WHEN  ( IDX-LST          =   ZERO )
+               MOVE    "該当する処理はありません"
+                                    TO  Q97-MSG
+           WHEN  ( WRK-MSG      NOT =   SPACE )
+               MOVE    WRK-MSG      TO  Q97-MSG
+           WHEN  ( WRK-RUNJOB   NOT =   ZERO )
+               MOVE    "処理中です"
+                                   TO  Q97-MSG
+           WHEN  OTHER
+               MOVE    "処理は正常に終了しました"
+                                   TO  Q97-MSG
+           END-EVALUATE
       *
            PERFORM 4901-PUT-CURRENT-WINDOW-SEC
       *
@@ -286,6 +240,84 @@
        490-KAKUNIN-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    処理確認処理
+      *****************************************************************
+       4901-KAKUNIN-SEC                SECTION.
+      *
+      *    ジョブ管理チェック処理
+           MOVE    "CHK"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-JOBID       TO  JOB-JOBID
+           MOVE    CONST-JOB-SHELLID
+                                   TO  JOB-SHELLID
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA
+                                   JOBKANRI-REC 
+           IF    ( SJOBKANRI-RETURN    =   ZERO )
+      *
+               COMPUTE IDX-LST     =   IDX-LST +   1
+      *
+               MOVE    JOB-JOBID       TO  Q97-RENNUM   (IDX-LST)
+               MOVE    JOB-SHELLMSG    TO  Q97-SHORINM  (IDX-LST)
+      *
+               MOVE    JOB-STARTYMD    TO  WRK-SYMD
+               PERFORM 700-SEIWA-HEN-SEC
+               MOVE    WRK-HENYMDG     TO  Q97-STARTDATE (IDX-LST)
+      *
+               IF    ( JOB-STARTTIME   =   SPACE )
+                   MOVE    SPACE   TO  Q97-STARTTIME(IDX-LST)
+               ELSE
+                   MOVE    JOB-STARTTIME(1:2)
+                                   TO  WRK-HH
+                   MOVE    JOB-STARTTIME(3:2)
+                                   TO  WRK-MM
+                   MOVE    JOB-STARTTIME(5:2)
+                                   TO  WRK-SS
+                   MOVE    WRK-HENTIME TO  Q97-STARTTIME(IDX-LST)
+               END-IF
+      *
+               MOVE    JOB-ENDYMD      TO  WRK-SYMD
+               PERFORM 700-SEIWA-HEN-SEC
+               MOVE    WRK-HENYMDG     TO  Q97-ENDDATE (IDX-LST)
+      *
+               IF    ( JOB-ENDTIME =   SPACE )
+                   MOVE    SPACE       TO  Q97-ENDTIME  (IDX-LST)
+               ELSE
+                   MOVE    JOB-ENDTIME(1:2)
+                                       TO  WRK-HH
+                   MOVE    JOB-ENDTIME(3:2)
+                                       TO  WRK-MM
+                   MOVE    JOB-ENDTIME(5:2)
+                                       TO  WRK-SS
+                   MOVE    WRK-HENTIME TO  Q97-ENDTIME  (IDX-LST)
+               END-IF
+               MOVE    JOB-UPDCNT      TO  WRK-PAGE
+               MOVE    WRK-PAGE        TO  Q97-PAGE     (IDX-LST)
+               MOVE    JOB-YOBI        TO  Q97-ERRMSG   (IDX-LST)
+      *
+               IF    ( JOB-ENDYMD      =   SPACE )
+                   COMPUTE WRK-RUNJOB  =   WRK-RUNJOB  +   1
+               ELSE
+                   IF    ( JOB-ERRCD   =   SPACE )
+                       CONTINUE
+                   ELSE
+                       IF    ( WRK-MSG =    SPACE )
+                           STRING  JOB-YOBI    DELIMITED  BY  SPACE
+                                   "【"        DELIMITED  BY  SIZE
+                                  JOB-SHELLMSG DELIMITED  BY  SPACE
+                                  "】"         DELIMITED  BY  SIZE
+                           INTO  WRK-MSG
+                           END-STRING
+                       END-IF
+                   END-IF
+               END-IF
+      *
+           END-IF
+      *
+           .
+       4901-KAKUNIN-EXT.
+           EXIT.
       *****************************************************************
       *    次画面再表示処理
       *****************************************************************

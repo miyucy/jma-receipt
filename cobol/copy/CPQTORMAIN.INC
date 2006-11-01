@@ -16,36 +16,22 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
+      *    レセプト連携データ   （主）                           *
+      ************************************************************
+      ************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  01.00.02    MCC-太田     02.07.09  基準日追加
       ************************************************************
-       01  BQ01.
-      *    処理区分（0:ＣＳＶ出力／1:帳票印刷）
-           03  BQ01-PROC-FLG           PIC 9(01).
-      *    ＣＳＶファイル名
-           03  BQ01-CSVFILENAME        PIC X(100).
-      *    表題
-           03  BQ01-HYODAI             PIC X(100).
-      *    条件１
-           03  BQ01-JYOKEN1            PIC X(100).
-      *    条件２
-           03  BQ01-JYOKEN2            PIC X(100).
-      *    開始ページ数
-           03  BQ01-STPAGE             PIC 9(09).
-      *    終了ページ数
-           03  BQ01-EDPAGE             PIC 9(09).
-      *    開始件数
-           03  BQ01-STKNS              PIC 9(09).
-      *    終了件数
-           03  BQ01-EDKNS              PIC 9(09).
-      *----(01.00.02) LINE ADD START ----------------------------------
-      *    基準日
-           03  BQ01-KJYNYMD            PIC 9(08).
-      *----(01.00.02) LINE ADD END   ----------------------------------
-      *    診療年月
-           03  BQ01-SRYYM              PIC 9(06).
-      *    入外区分
-           03  BQ01-NYUGAIKBN          PIC X(01).
-      *    SQL
-           03  BQ01-SQL                PIC X(15000).
+       01  QTORMAIN-AREA.
+           03  QTORM-SRYYM             PIC X(06).
+           03  QTORM-NYUGAIKBN         PIC X(01).
+           03  QTORM-CREYMD            PIC X(08).
+           03  QTORM-CREHMS            PIC X(06).
+           03  QTORM-PTINF-CNT         PIC 9(06).
+           03  QTORM-GIHO-CNT          PIC 9(06).
+           03  QTORM-GRSI-CNT          PIC 9(06).
+           03  QTORM-GJBI-CNT          PIC 9(06).
+           03  QTORM-NIHO-CNT          PIC 9(06).
+           03  QTORM-NRSI-CNT          PIC 9(06).
+           03  QTORM-NJBI-CNT          PIC 9(06).
+      *

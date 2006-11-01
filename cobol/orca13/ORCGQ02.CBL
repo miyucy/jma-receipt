@@ -96,6 +96,13 @@
            03  PRFNAME-SYSYMD      PIC X(08).
            03  PRFNAME-SYSTIME     PIC 9(08).
            03  FILLER              PIC X(04)   VALUE   ".TXT".
+       01  ERRFNAME.
+           03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
+           03  FILLER              PIC X(08)   VALUE   "ORCBQERR".
+           03  ERRFNAME-TERMID     PIC X(64).
+           03  ERRFNAME-SYSYMD     PIC X(08).
+           03  ERRFNAME-SYSTIME    PIC 9(08).
+           03  FILLER              PIC X(04)   VALUE   ".TXT".
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-END                             PIC 9(01).
@@ -161,6 +168,7 @@
                05  WRK-AGE-MEI                     PIC X(04).
            03  WRK-KJYNYMD                         PIC 9(08).
            03  WRK-MCP-WIDGET                      PIC X(64).
+           03  WRK-JOBID                           PIC 9(07).
       *
        01  WRK-ROW-AREA.
            03  WRK-KEKKALST-ROW                    PIC S9(9)   BINARY.
@@ -220,12 +228,17 @@
                05  CONST-JYOKENMEI PIC X(10)   OCCURS  5.
            03  CONST-SHELNAME      PIC X(100)
                VALUE   "scripts/allways/ORCBQ01.sh".
+           03  CONST-SHELNAME2     PIC X(100)
+               VALUE   "scripts/allways/ORCBQ02.sh".
            03  CONST-LINE                          PIC 9(05)
                VALUE   30.
            03  CONST-JOBID                         PIC 9(07)
                VALUE   1.
+           03  CONST-JOBID2                        PIC 9(07)
+               VALUE   2.
            03  CONST-JOB-SHELLID                   PIC X(08)
                VALUE   "ORCBQ01".
+           03  CONST-RECE-MAX      PIC 9(05)   VALUE 500.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -287,6 +300,7 @@
        01  SCRAREA.
            COPY    "Q01.INC".
            COPY    "Q02.INC".
+           COPY    "Q03.INC".
            COPY    "Q96.INC".
            COPY    "Q97.INC".
            COPY    "Q98.INC".
@@ -410,6 +424,10 @@
            WHEN    "Q100"
                PERFORM 3001-Q100SPASET-SEC
                GO  TO      300-SCREEN-EXT
+      *    明細書連携確認画面
+           WHEN    "Q03"
+               PERFORM 3001-Q03SPASET-SEC
+               GO  TO      300-SCREEN-EXT
       *    確認メッセージ画面
            WHEN    "QID1"
                PERFORM 3001-QID1SPASET-SEC
@@ -523,6 +541,7 @@
            CLOSE   BQ01-FILE
       *
       *    ジョブ開始セット処理
+           MOVE    CONST-JOBID     TO  WRK-JOBID
            PERFORM 900-JOBKANRI-HENSYU-SEC
       *
       *    印刷用スクリプト処理
@@ -559,6 +578,84 @@
       *
            .
        3001-Q100SPASET-EXT.
+           EXIT.
+      *****************************************************************
+      *    Ｑ０３戻りスパ編集処理
+      *****************************************************************
+       3001-Q03SPASET-SEC             SECTION.
+      *
+           IF  ( SPA-Q02-Q03-RTOK-FLG =   ZERO )
+               GO  TO  3001-Q03SPASET-EXT
+           END-IF
+      *
+           MOVE    SPA-TERMID          TO  PRFNAME-TERMID
+           MOVE    SPA-SYSYMD          TO  PRFNAME-SYSYMD
+           ACCEPT  PRFNAME-SYSTIME     FROM    TIME
+      *
+           MOVE    PRFNAME-TERMID      TO  ERRFNAME-TERMID
+           MOVE    PRFNAME-SYSYMD      TO  ERRFNAME-SYSYMD
+           MOVE    PRFNAME-SYSTIME     TO  ERRFNAME-SYSTIME
+           OPEN    OUTPUT              BQ01-FILE
+      *
+           INITIALIZE                  BQ01
+      *
+           MOVE    SPA-GMN-Q02-HYODAI  TO  BQ01-HYODAI
+           MOVE    SPA-GMN-Q02-JYOKEN1 TO  BQ01-JYOKEN1
+           MOVE    SPA-GMN-Q02-JYOKEN2 TO  BQ01-JYOKEN2
+      *
+           MOVE    SPA-SYSYMD          TO  BQ01-KJYNYMD
+           MOVE    SPA-Q02-Q03-SRYYM   TO  BQ01-SRYYM
+           MOVE    SPA-Q02-Q03-NYUGAIKBN TO BQ01-NYUGAIKBN
+      *
+      *     PERFORM 3101-SQL-EDIT-SEC
+           CALL    "ORCGQSUB02"    USING
+                                   SPA-AREA
+                                   SPA-Q01FREE
+                                   QSUB02-LNK
+      *
+           MOVE    QSUB02-SQL      TO  BQ01-SQL
+      *
+           WRITE   BQ01
+      *
+           CLOSE   BQ01-FILE
+      *
+      *    ジョブ開始セット処理
+           MOVE    CONST-JOBID2    TO  WRK-JOBID
+           PERFORM 900-JOBKANRI-HENSYU-SEC
+      *
+      *    印刷用スクリプト処理
+      *
+      *    フィアルデイレクトリ位置指定
+           INITIALIZE              ORCSMKPASSAREA
+           MOVE    CONST-SHELNAME2 TO  MKPASS-IN-01
+           CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
+           MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
+      *
+           MOVE    PRFNAME         TO  SHELLTBL-ARG1
+           MOVE    PRFNAME-TERMID  TO  SHELLTBL-ARG2
+           MOVE    PRFNAME-SYSYMD  TO  SHELLTBL-ARG3
+           MOVE    PRFNAME-SYSTIME TO  SHELLTBL-ARG4
+           MOVE    SPA-HOSPID      TO  SHELLTBL-ARG5
+           MOVE    SPA-OPID        TO  SHELLTBL-ARG6
+           MOVE    ERRFNAME        TO  SHELLTBL-ARG7
+           MOVE    CONST-JOBID2    TO  SHELLTBL-ARG8
+      *    IDは検索結果印刷に併せる
+           MOVE    CONST-JOB-SHELLID
+                                   TO  SHELLTBL-ARG9
+      *
+           MOVE    SHELLTBL        TO  MCPDATA-REC
+           MOVE    "SHELL"         TO  MCP-FUNC
+           MOVE    "shell"         TO  MCP-TABLE
+           MOVE    "shell"         TO  MCP-PATHNAME
+           CALL    "MONFUNC"       USING
+                                   MCPAREA
+                                   MCPDATA-REC
+      *
+           PERFORM 490-KAKUNIN-SEC
+      *
+      *
+           .
+       3001-Q03SPASET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1009,6 +1106,9 @@
       *    次頁
                WHEN    "CLICKED"       ALSO    "B07"
                    PERFORM 210-TUGI-PAGE-SEC
+      *    明細書連携
+               WHEN    "CLICKED"       ALSO    "B09"
+                   PERFORM 480-Q03-SENI-SEC
       *    情報削除
                WHEN    "CLICKED"       ALSO    "B10"
                    PERFORM 480-JYOUHOU-DEL-SEC
@@ -1468,6 +1568,90 @@
            EXIT.
       *
       *****************************************************************
+      *    明細書連携確認画面
+      *****************************************************************
+       480-Q03-SENI-SEC                SECTION.
+      *
+           PERFORM 410-INPUT-CHK-SEC
+           IF    ( SPA-ERRCD    NOT =  SPACE )
+               GO  TO  480-Q03-SENI-EXT
+           END-IF
+      *
+      *    ジョブ管理チェック処理
+           PERFORM 900-JOBKANRI-CHK-SEC
+           IF    ( FLG-JOBEND   =   ZERO )
+               MOVE    "7777"          TO  SPA-ERRCD
+               MOVE    SPACE           TO  WRK-SHORIERR
+               STRING  "処理中です【"  DELIMITED  BY  SIZE
+                       JOB-SHELLMSG    DELIMITED  BY  SPACE
+                       "】"            DELIMITED  BY  SIZE
+               INTO  WRK-SHORIERR
+               END-STRING
+               GO  TO  480-Q03-SENI-EXT
+           END-IF
+      *
+           MOVE    ZERO            TO  WRK-PROC-FLG
+      *
+           PERFORM 4801-Q03-SENI-SEC
+      *
+           .
+       480-Q03-SENI-EXT.
+           EXIT.
+      *****************************************************************
+      *    明細書連携確認画面
+      *****************************************************************
+       4801-Q03-SENI-SEC               SECTION.
+      *
+           MOVE    SPACE           TO  SPA-Q02-Q03-SENI-AREA
+           INITIALIZE                  SPA-Q02-Q03-SENI-AREA
+      *
+           MOVE    SPA-Q01-NYUGAIKBN
+                                   TO  SPA-Q02-Q03-NYUGAIKBN
+           EVALUATE    TRUE
+           WHEN  ( SPA-Q01-EDSRYYMD    NOT =   SPACE )
+               MOVE    SPA-Q01-EDSRYYMD (1 : 6)
+                                   TO  SPA-Q02-Q03-SRYYM
+           WHEN  ( SPA-Q01-STSRYYMD    NOT =   SPACE )
+               MOVE    SPA-Q01-STSRYYMD (1 : 6)
+                                   TO  SPA-Q02-Q03-SRYYM
+           WHEN    OTHER
+               MOVE    SPA-SYSYMD (1:6)
+                                   TO  SPA-Q02-Q03-SRYYM
+           END-EVALUATE
+      *
+           MOVE    SPACE           TO  SPA-MOTOPG
+           MOVE    SPA-AREA        TO  SPA-COMMON
+           MOVE    SPA-Q01FREE     TO  SPA-FREE
+      *
+           MOVE    "LINK"          TO  MCP-STATUS
+           MOVE    SPACE           TO  MCP-EVENT
+      *
+           CALL    "ORCGQ03"      USING
+                                   MCPAREA
+                                   SPAAREA
+                                   LINKAREA
+                                   SCRAREA
+      *
+      *
+           MOVE    SPA-COMMON      TO  SPA-AREA
+           MOVE    SPA-FREE        TO  SPA-Q01FREE
+      *
+           MOVE  "B12"             TO  MCP-WIDGET
+      *
+           MOVE  "Q02"             TO  SPA-MOTOPG
+           MOVE  "Q03"            TO  SPA-SAKIPG
+      *
+           MOVE  "NEW"             TO  MCP-PUTTYPE
+           MOVE  "Q03"            TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE  1                 TO  FLG-END
+      *
+           .
+       4801-Q03-SENI-EXT.
+           EXIT.
+      *****************************************************************
       *    印刷確認
       *****************************************************************
        480-CSV-KAKUNIN-SEC             SECTION.
@@ -1719,6 +1903,7 @@
       *
            MOVE    WIDGET-NORMAL           TO  Q02-B10-STATE
                                                Q02-B24-STATE
+                                               Q02-B09-STATE
       *    検索結果件数がゼロ件でない場合はボタンを活性にする
            IF  ( SPA-GMN-Q02-TOTAL-NUM     >   ZERO )
                MOVE    WIDGET-NORMAL       TO  Q02-B05-STATE
@@ -1732,8 +1917,13 @@
                MOVE    WIDGET-INSENSITIVE  TO  Q02-B05-STATE
                                                Q02-B06-STATE
                                                Q02-B07-STATE
+                                               Q02-B09-STATE
                                                Q02-B11-STATE
                                                Q02-B12-STATE
+           END-IF
+      *
+           IF  ( SPA-GMN-Q02-TOTAL-NUM     >   CONST-RECE-MAX )
+               MOVE    WIDGET-INSENSITIVE  TO  Q02-B09-STATE
            END-IF
       *
            IF    ( SPA-GSRAUTH-12          =   "1" )
@@ -2130,9 +2320,18 @@
                                    ORCSJOBKANRIAREA 
                                    JOBKANRI-REC
       *
+           MOVE    "DEL"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    CONST-JOBID2     TO  JOB-JOBID
+           MOVE    CONST-JOB-SHELLID
+                                   TO  JOB-SHELLID
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA 
+                                   JOBKANRI-REC
+      *
            MOVE    "JBS"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
-           MOVE    CONST-JOBID     TO  JOB-JOBID
+           MOVE    WRK-JOBID       TO  JOB-JOBID
            MOVE    CONST-JOB-SHELLID
                                    TO  JOB-SHELLID
            MOVE    SPA-TERMID      TO  JOB-TERMID
@@ -2161,13 +2360,35 @@
                                        JOBKANRI-REC
            IF    ( SJOBKANRI-RETURN    =   ZERO )
                IF    ( JOB-ENDYMD      =   SPACE )
-                   CONTINUE
+                   MOVE    ZERO        TO  FLG-JOBEND
                ELSE
                    MOVE    1           TO  FLG-JOBEND
-                   GO  TO  900-JOBKANRI-CHK-EXT
                END-IF
            ELSE
                    MOVE    2           TO  FLG-JOBEND
+           END-IF
+      *
+           IF    ( FLG-JOBEND      =   ZERO )
+               CONTINUE
+           ELSE
+      *        ジョブ管理チェック処理
+               MOVE    "CHK"           TO  SJOBKANRI-MODE
+               INITIALIZE                  JOBKANRI-REC
+               MOVE    CONST-JOBID2    TO  JOB-JOBID
+               MOVE    CONST-JOB-SHELLID
+                                       TO  JOB-SHELLID
+               CALL    "ORCSJOB"       USING
+                                           ORCSJOBKANRIAREA
+                                           JOBKANRI-REC
+               IF    ( SJOBKANRI-RETURN    =   ZERO )
+                   IF    ( JOB-ENDYMD      =   SPACE )
+                       MOVE    ZERO    TO  FLG-JOBEND
+                   ELSE
+                       MOVE    1       TO  FLG-JOBEND
+                   END-IF
+               ELSE
+                       MOVE    2       TO  FLG-JOBEND
+               END-IF
            END-IF
       *
            .

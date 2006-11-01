@@ -1,0 +1,20 @@
+Q03	{
+	fixed1	{
+		ID1CODE	{
+			value	varchar(10);
+		};
+		ID1MSG	{
+			value	varchar(80);
+		};
+		SRYYM	{
+			value	varchar(10);
+		};
+		CMB_NYUGAIKBN	{
+			NYUGAIKBN	{
+				value	varchar(12);
+			};
+			count	int;
+			item	varchar(12)[2];
+		};
+	};
+};

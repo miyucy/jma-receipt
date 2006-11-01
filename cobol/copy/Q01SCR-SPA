@@ -589,6 +589,28 @@
                        09  SPA-GMN-Q02-ERRCD-OCC OCCURS  50.
                           11  SPA-GMN-Q02-ERRCD        PIC X(04).
       *
+      *    £Ñ£°£³
+           03  SPA-Q03.
+               05  SPA-Q03-GMN-AREA.
+                   07  SPA-GMN-Q03-CUR                 PIC 9(05).
+                   07  SPA-GMN-Q03-CD                  PIC X(04).
+                   07  SPA-GMN-Q03-MSG                 PIC X(80).
+                   07  SPA-GMN-Q03-SRYYM               PIC X(10).
+                   07  SPA-GMN-Q03-NYUGAIKBN-G.
+                       13  SPA-GMN-Q03-NYUGAIKBN       PIC X(01).
+                       13                              PIC X(01).
+                       13  SPA-GMN-Q03-NYUGAIKBNMEI    PIC X(10).
+                   07  SPA-GMN-Q03-NYUGAIKBNLST-G.
+                       13  SPA-GMN-Q03-NYUGAIKBNLST-MAX
+                                                       PIC 9(05).
+                       13  SPA-GMN-Q03-NYUGAIKBNLST    OCCURS  2.
+                           15  SPA-GMN-Q03-NYUGAIKBNL  PIC X(01).
+                           15                          PIC X(01).
+                           15  SPA-GMN-Q03-NYUGAIKBNMEIL
+                                                       PIC X(10).
+               05  SPA-Q03-NAI-AREA.
+                   07  SPA-NAI-Q03-SRYYM               PIC X(08).
+      *
       *    £Ñ£¹£¶ÍÑ
            03  SPA-Q96-AREA.
                05  SPA-Q96-MOTOPG                    PIC X(08).
@@ -822,6 +844,14 @@
                            11  SPA-Q01-NARABE          PIC 9(01)
                                                        OCCURS  3.
       *
+      *        Q02¢«¢ªQ03Á«°Ü¾ðÊó
+               05  SPA-Q02-Q03-SENI-AREA.
+      *            ¿ÇÎÅÇ¯·î
+                   07  SPA-Q02-Q03-SRYYM               PIC  X(08).
+      *            Æþ³°¶èÊ¬
+                   07  SPA-Q02-Q03-NYUGAIKBN           PIC  X(01).
+      *            Ìá¤ë¡¿£Ï£Ë¥Õ¥é¥°(O)
+                   07  SPA-Q02-Q03-RTOK-FLG            PIC  9(01).
       *        Q01¢«¢ªQ96Á«°Ü¾ðÊó
                05  SPA-Q01-Q96-SENI-AREA.
                    07  SPA-Q01-Q96-MOTOIDX             PIC 9(05).

@@ -72,6 +72,7 @@
        01  SCRAREA.
            COPY    "Q01.INC".
            COPY    "Q02.INC".
+           COPY    "Q03.INC".
            COPY    "Q96.INC".
            COPY    "Q97.INC".
            COPY    "Q98.INC".

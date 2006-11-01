@@ -70,7 +70,8 @@ shell_sources = \
 	monthly/teiki3.sh.in \
 	allways/ykjmst.sh.in \
 	allways/master_standard_upgrade.sh.in \
-	allways/master_license_upgrade.sh.in
+	allways/master_license_upgrade.sh.in \
+	allways/ORCBQ02.sh.in \
 
 ruby_scripts = \
 	daily/print-data.rb \

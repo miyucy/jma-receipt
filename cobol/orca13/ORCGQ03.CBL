@@ -16,11 +16,11 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION              DIVISION.
-       PROGRAM-ID.                 ORCGQ100.
+       PROGRAM-ID.                 ORCGQ03.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : 患者照会
-      *  コンポーネント名  : 出力指示画面（Ｑ１００）
+      *  コンポーネント名  : 明細書連携確認画面（Ｑ０３）
       *  管理者            : 
       *  作成日付    作業者        記述
       *  00/06/11    MCC−太田     新規作成
@@ -53,20 +53,22 @@
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
+           03  FLG-HIZUKE-ERR      PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
-           03  IDX1                                PIC 9(05).
+           03  IDX1                PIC 9(05).
+           03  IDX-CMB             PIC 9(05).
       *
       *    一時領域
        01  WRK-AREA.
-           03  WRK-NUM                             PIC 9(09).
-           03  WRK-MCP-WIDGET                      PIC X(64).
-      *
-      *    固定値領域
-       01  CONST-AREA.
-           03  CONST-LINE                          PIC 9(05)
-               VALUE   30.
+           03  WRK-MCP-WIDGET      PIC X(64).
+           03  WRK-SYMD            PIC X(10).
+           03  WRK-HENYMDG         PIC X(10).
+           03  WRK-CMB-CD          PIC X(10).
+           03  WRK-CMB-ITM-G.
+               05  WRK-CMB-IDX     PIC 9(05).
+               05  WRK-CMB-ITM     PIC X(100).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -78,6 +80,9 @@
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
+      *
+      *    画面日付変換サブ
+           COPY    "CPORCSGDAY.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -112,11 +117,10 @@
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
-      *----(01.00.02) LINE ADD START ----------------------------------
            INITIALIZE                  FLG-AREA
                                        IDX-AREA
                                        WRK-AREA
-      *----(01.00.02) LINE ADD END   ----------------------------------
+      *
            MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-FREE        TO  SPA-Q01FREE
       *
@@ -168,7 +172,7 @@
            MOVE    SPACE               TO  LINKAREA
       *
            MOVE    SPACE               TO  MCP-PUTTYPE
-           MOVE    "Q100"              TO  MCP-WINDOW
+           MOVE    "Q03"              TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
       *
@@ -182,40 +186,56 @@
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
-           MOVE    SPACE               TO  SPA-Q100
-           INITIALIZE                      SPA-Q100
+           INITIALIZE                      SPA-Q03
       *
-           MOVE  4                     TO  SPA-GMN-Q100-CUR
+           PERFORM 3101-COMBO-SYOKI-SEC
       *
-           IF  ( SPA-Q02-Q100-PROC-FLG     =   ZERO )
-      *        ＣＳＶ出力処理
-               MOVE    "3001"          TO  SPA-GMN-Q100-CD
-               MOVE    "ＣＳＶ出力を開始します"
-                                       TO  SPA-GMN-Q100-MSG
-               MOVE    "出力ファイル名"
-                                       TO  SPA-GMN-Q100-LBLFILENAME
-               MOVE    "/tmp/OUTPUT.csv"
-                                       TO  SPA-GMN-Q100-FILENAME
-               MOVE    WIDGET-NORMAL   TO  SPA-GMN-Q100-FILENAME-STATE
-               MOVE    "件数指定"      TO  SPA-GMN-Q100-LBLNUMSEL
-           ELSE
-               MOVE    "3002"          TO  SPA-GMN-Q100-CD
-               MOVE    "印刷処理を開始します"
-                                       TO  SPA-GMN-Q100-MSG
-               MOVE    SPACE           TO  SPA-GMN-Q100-LBLFILENAME
-                                           SPA-GMN-Q100-FILENAME
-               MOVE    WIDGET-INSENSITIVE
-                                       TO  SPA-GMN-Q100-FILENAME-STATE
-               MOVE    "ページ指定"    TO  SPA-GMN-Q100-LBLNUMSEL
-           END-IF
+           MOVE    212                     TO  SPA-GMN-Q03-CUR
       *
-           MOVE    SPA-Q02-Q100-STNUM      TO  SPA-GMN-Q100-STNUM
-           MOVE    SPA-Q02-Q100-EDNUM      TO  SPA-GMN-Q100-EDNUM
+           MOVE    SPA-Q02-Q03-SRYYM       TO  WRK-SYMD
+           PERFORM 800-NENGETU-HEN-SEC
+           MOVE    WRK-HENYMDG             TO  SPA-GMN-Q03-SRYYM
+           MOVE    WRK-SYMD                TO  SPA-NAI-Q03-SRYYM
+      *
+           MOVE    SPA-Q02-Q03-NYUGAIKBN   TO  WRK-CMB-CD
+           PERFORM 4200-NYUGAIKBNLST-CHK-SEC
+           MOVE    WRK-CMB-ITM             TO  SPA-GMN-Q03-NYUGAIKBN-G
       *
            .
        300-SCREEN-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    コンボボックス初期処理
+      *****************************************************************
+       3101-COMBO-SYOKI-SEC            SECTION.
+      *
+           PERFORM 3101-NYUGAIKBNLST-SET-SEC
+      *
+           .
+       3101-COMBO-SYOKI-EXT.
+           EXIT.
+      *****************************************************************
+      *    入外区分コンボ編集処理
+      *****************************************************************
+       3101-NYUGAIKBNLST-SET-SEC       SECTION.
+      *
+           INITIALIZE                  SPA-GMN-Q03-NYUGAIKBNLST-G
+      *
+           MOVE    2               TO  SPA-GMN-Q03-NYUGAIKBNLST-MAX
+      *
+           MOVE    "1"             TO  SPA-GMN-Q03-NYUGAIKBNL (1)
+      *
+           MOVE    "2"             TO  SPA-GMN-Q03-NYUGAIKBNL (2)
+      *
+           MOVE    "入院"          TO  SPA-GMN-Q03-NYUGAIKBNMEIL (1)
+      *
+           MOVE    "外来"          TO  SPA-GMN-Q03-NYUGAIKBNMEIL (2)
+      *
+           .
+      *
+       3101-NYUGAIKBNLST-SET-EXT.
+           EXIT.
       *****************************************************************
       *    画面遷移処理
       *****************************************************************
@@ -224,12 +244,12 @@
            MOVE    MCP-WIDGET          TO        WRK-MCP-WIDGET
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *     戻る
-               WHEN    "CLICKED"       ALSO    "B01"
-                   PERFORM 210-BACK
-      *     確定
-               WHEN    "CLICKED"       ALSO    "B12"
-                   PERFORM 490-KAKUTEI
+      *    戻る
+           WHEN    "CLICKED"       ALSO    "B01"
+               PERFORM 210-BACK
+      *    確定
+           WHEN    "CLICKED"       ALSO    "B12"
+               PERFORM 490-KAKUTEI
            END-EVALUATE
       *
            .
@@ -258,7 +278,7 @@
       *****************************************************************
        400-GMN-INPUT-SEC           SECTION.
       *
-           MOVE    ZERO        TO      SPA-GMN-Q100-CUR
+           MOVE    ZERO        TO      SPA-GMN-Q03-CUR
       *
            .
       *
@@ -272,22 +292,14 @@
       *    画面をＳＰＡにセット
            PERFORM 4101-GMN-SPA-SET-SEC
       *
-      *    ファイル名チェック
-           PERFORM 4100-FILENAME-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  410-INPUT-CHK-EXT
+           IF    ( SPA-ERRCD   =   SPACE )
+      *        診療年月チェック
+               PERFORM 4100-SRYYM-CHK-SEC
            END-IF
       *
-      *    開始件数（ページ数）チェック
-           PERFORM 4100-STNUM-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  410-INPUT-CHK-EXT
-           END-IF
-      *
-      *    終了件数（ページ数）チェック
-           PERFORM 4100-EDNUM-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  410-INPUT-CHK-EXT
+           IF    ( SPA-ERRCD   =   SPACE )
+      *        入外区分チェック
+               PERFORM 4100-NYUGAIKBN-CHK-SEC
            END-IF
       *
            .
@@ -299,84 +311,76 @@
       *****************************************************************
        4101-GMN-SPA-SET-SEC        SECTION.
       *
-      *    ファイル名
-           MOVE    Q100-FILENAME   TO  SPA-GMN-Q100-FILENAME
+      *    診療年月
+           MOVE    Q03-SRYYM      TO  SPA-GMN-Q03-SRYYM
       *
-      *    開始件数（ページ数）
-           MOVE    Q100-STNUM      TO  SPA-GMN-Q100-STNUM
-      *
-      *    終了件数（ページ数）
-           MOVE    Q100-EDNUM      TO  SPA-GMN-Q100-EDNUM
+      *    入外区分
+           MOVE    Q03-NYUGAIKBN  TO  SPA-GMN-Q03-NYUGAIKBN-G
       *
            .
        4101-GMN-SPA-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ファイル名チェック
+      *    診療年月チェック
       *****************************************************************
-       4100-FILENAME-CHK-SEC           SECTION.
+       4100-SRYYM-CHK-SEC              SECTION.
       *
-           .
-       4100-FILENAME-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    開始件数（ページ数）チェック
-      *****************************************************************
-       4100-STNUM-CHK-SEC              SECTION.
-      *
-           MOVE    SPA-GMN-Q100-STNUM
-                                   TO  WRK-NUM
-      *
-      *    件数（ページ数）範囲チェック
-           PERFORM 4100-NUM-HANI-CHK-SEC
-      *
-           MOVE    WRK-NUM         TO  SPA-GMN-Q100-STNUM
-      *
-           .
-       4100-STNUM-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    終了件数（ページ数）チェック
-      *****************************************************************
-       4100-EDNUM-CHK-SEC              SECTION.
-      *
-           MOVE    SPA-GMN-Q100-EDNUM
-                                   TO  WRK-NUM
-      *
-      *    件数（ページ数）範囲チェック
-           PERFORM 4100-NUM-HANI-CHK-SEC
-      *
-           MOVE    WRK-NUM         TO  SPA-GMN-Q100-EDNUM
-      *
-           .
-       4100-STNUM-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    件数（ページ数）範囲チェック
-      *****************************************************************
-       4100-NUM-HANI-CHK-SEC           SECTION.
-      *
-           IF    ( WRK-NUM         <   1 )
-               MOVE    1           TO  WRK-NUM
-           END-IF
-      *
-           IF    ( WRK-NUM         >   SPA-Q02-Q100-EDNUM )
-               MOVE    SPA-Q02-Q100-EDNUM
-                                   TO  WRK-NUM
+           MOVE    SPA-GMN-Q03-SRYYM   TO  WRK-SYMD
+           PERFORM 800-NENGETU-HEN-SEC
+           IF    ( FLG-HIZUKE-ERR      =   ZERO )
+               MOVE    WRK-SYMD        TO  SPA-NAI-Q03-SRYYM
+               MOVE    WRK-HENYMDG     TO  SPA-GMN-Q03-SRYYM
+           ELSE
+               MOVE    "0001"          TO  SPA-ERRCD
+               MOVE    1               TO  SPA-GMN-Q03-CUR
            END-IF
       *
            .
-       4100-NUM-HANI-EXT.
+       4100-SRYYM-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    入外区分チェック
+      *****************************************************************
+       4100-NYUGAIKBN-CHK-SEC          SECTION.
+      *
+           MOVE    SPA-GMN-Q03-NYUGAIKBN   TO  WRK-CMB-CD
+           PERFORM 4200-NYUGAIKBNLST-CHK-SEC
+           MOVE    WRK-CMB-ITM             TO  SPA-GMN-Q03-NYUGAIKBN-G
+      *
+           .
+       4100-NYUGAIKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    入外区分コンボチェック処理
+      *****************************************************************
+       4200-NYUGAIKBNLST-CHK-SEC       SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM-G
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB     >   SPA-GMN-Q03-NYUGAIKBNLST-MAX)
+                    OR   ( WRK-CMB-ITM 
+                                   NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-Q03-NYUGAIKBNL (IDX-CMB)  =   WRK-CMB-CD)
+                   MOVE    SPA-GMN-Q03-NYUGAIKBNLST (IDX-CMB)
+                                       TO  WRK-CMB-ITM
+                   MOVE    IDX-CMB     TO  WRK-CMB-IDX
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       4200-NYUGAIKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
       *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
       *
-           MOVE    ZERO                TO  SPA-Q02-Q100-RTOK-FLG
+           MOVE    ZERO                TO  SPA-Q02-Q03-RTOK-FLG
       *
            MOVE    "Q02"               TO  SPA-SAKIPG
-           MOVE    "Q100"              TO  SPA-MOTOPG
+           MOVE    "Q03"               TO  SPA-MOTOPG
       *
       *****MOVE    "BACK"              TO  MCP-PUTTYPE
            MOVE    "JOIN"              TO  MCP-PUTTYPE.
@@ -401,59 +405,14 @@
                GO  TO  490-KAKUTEI-EXT
            END-IF
       *
-      *    出力ファイル名未入力チェック（ＣＳＶ出力時）
-           IF  ( SPA-Q02-Q100-PROC-FLG     =   ZERO )
-               IF  ( SPA-GMN-Q100-FILENAME
-                                       =   SPACE )
-                   MOVE    "1001"      TO  SPA-ERRCD
-                   MOVE    1           TO  SPA-GMN-Q100-CUR
-                   GO  TO  490-KAKUTEI-EXT
-               END-IF
-           END-IF
+           MOVE    SPA-NAI-Q03-SRYYM   TO  SPA-Q02-Q03-SRYYM
+           MOVE    SPA-GMN-Q03-NYUGAIKBN
+                                       TO  SPA-Q02-Q03-NYUGAIKBN
       *
-      *    件数(ぺージ数）指定チェック
-           IF  ( SPA-GMN-Q100-STNUM    >   SPA-GMN-Q100-EDNUM )
-      *
-               IF  ( SPA-Q02-Q100-PROC-FLG =   ZERO )
-                   MOVE    "1002"      TO  SPA-ERRCD
-               ELSE
-                   MOVE    "1003"      TO  SPA-ERRCD
-               END-IF
-      *
-               MOVE    2           TO  SPA-GMN-Q100-CUR
-               GO  TO  490-KAKUTEI-EXT
-           END-IF
-      *
-      *    Ｑ０２に戻る
-           MOVE    SPA-GMN-Q100-FILENAME
-                                       TO  SPA-Q02-Q100-FILENAME
-      *
-           IF  ( SPA-Q02-Q100-PROC-FLG     =   1 )
-      *        開始件数
-               COMPUTE SPA-Q02-Q100-STKNS
-                   = ( SPA-GMN-Q100-STNUM  -   1 ) *   CONST-LINE  +   1
-      *        終了件数
-               COMPUTE SPA-Q02-Q100-EDKNS
-                   =   SPA-GMN-Q100-EDNUM          *   CONST-LINE
-      *        開始ページ
-               MOVE    SPA-GMN-Q100-STNUM
-                                       TO  SPA-Q02-Q100-STPAGE
-      *        終了ページ
-               MOVE    SPA-GMN-Q100-EDNUM
-                                       TO  SPA-Q02-Q100-EDPAGE
-           ELSE
-      *        開始件数
-               MOVE    SPA-GMN-Q100-STNUM
-                                       TO  SPA-Q02-Q100-STKNS
-      *        終了件数
-               MOVE    SPA-GMN-Q100-EDNUM
-                                       TO  SPA-Q02-Q100-EDKNS
-           END-IF
-      *
-           MOVE    1                   TO  SPA-Q02-Q100-RTOK-FLG
+           MOVE    1                   TO  SPA-Q02-Q03-RTOK-FLG
       *
            MOVE    "Q02"               TO  SPA-SAKIPG
-           MOVE    "Q100"              TO  SPA-MOTOPG
+           MOVE    "Q03"               TO  SPA-MOTOPG
       *
            MOVE    "JOIN"              TO  MCP-PUTTYPE
            MOVE    "Q02"               TO  MCP-WINDOW
@@ -480,7 +439,7 @@
            MOVE    SPACE               TO  LINKAREA
       *
            MOVE    "CURRENT"           TO  MCP-PUTTYPE.
-           MOVE    "Q100"              TO  MCP-WINDOW.
+           MOVE    "Q03"               TO  MCP-WINDOW.
       *
            PERFORM 900-PUT-WINDOW.
            .
@@ -492,33 +451,24 @@
       *****************************************************************
        500-GMNHEN-SEC                  SECTION.
       *
-      *    メッセージコード
-           MOVE    SPA-GMN-Q100-CD     TO  Q100-ID1CODE
+           INITIALIZE                  Q03
       *
-      *    メッセージ
-           MOVE    SPA-GMN-Q100-MSG    TO  Q100-ID1MSG
+           MOVE    "3101"                  TO  Q03-ID1CODE
+           MOVE    "個別明細書連携データを作成します"
+                                           TO  Q03-ID1MSG
       *
-      *    ファイル名（ラベル）
-           MOVE    SPA-GMN-Q100-LBLFILENAME
-                                       TO  Q100-LBLFILENAME
+           MOVE    SPA-GMN-Q03-SRYYM       TO  Q03-SRYYM
       *
-      *    ファイル名
-           MOVE    SPA-GMN-Q100-FILENAME
-                                       TO  Q100-FILENAME
-           MOVE    SPA-GMN-Q100-FILENAME-STATE
-                                       TO  Q100-FILENAME-STATE
+           MOVE    SPA-GMN-Q03-NYUGAIKBN-G TO  Q03-NYUGAIKBN
+           MOVE    SPA-GMN-Q03-NYUGAIKBNLST-MAX
+                                           TO  Q03-CMB-NYUGAIKBN-COUNT
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   SPA-GMN-Q03-NYUGAIKBNLST-MAX )
       *
-      *    ファイル名（ラベル）
-           MOVE    SPA-GMN-Q100-LBLNUMSEL
-                                       TO  Q100-LBLNUMSEL
-      *
-      *    開始件数（ページ）数
-           MOVE    SPA-GMN-Q100-STNUM
-                                       TO  Q100-STNUM
-      *
-      *    終了件数（ページ）数
-           MOVE    SPA-GMN-Q100-EDNUM
-                                       TO  Q100-EDNUM
+               MOVE    SPA-GMN-Q03-NYUGAIKBNLST (IDX1)
+                                           TO  Q03-CMB-NYUGAIKBN-ITEM
+                                                                (IDX1)
+           END-PERFORM
       *
            PERFORM 5001-MAPCUR-SEC
       *
@@ -532,26 +482,16 @@
        5001-MAPCUR-SEC             SECTION.
       *
            IF     (SPA-ERRCD           =   SPACE)  AND
-                  (SPA-GMN-Q100-CUR    =   ZERO )
+                  (SPA-GMN-Q03-CUR    =   ZERO )
                PERFORM 5011-INPUT-CUR-SEC
            END-IF
       *
-           EVALUATE    SPA-GMN-Q100-CUR
-      *
-      *    ファイル名
+           EVALUATE    SPA-GMN-Q03-CUR
            WHEN   001
-               MOVE  "FILENAME"    TO  MCP-WIDGET
-      *
-      *    開始件数（ページ）数
+               MOVE  "SRYYM"       TO  MCP-WIDGET
            WHEN   002
-               MOVE  "STNUM"       TO  MCP-WIDGET
-      *
-      *    終了件数（ページ）数
-           WHEN   003
-               MOVE  "EDNUM"       TO  MCP-WIDGET
-      *
-      *    確定ボタン
-           WHEN   004
+               MOVE  "NYUGAIKBN"   TO  MCP-WIDGET
+           WHEN   212
                MOVE  "B12"         TO  MCP-WIDGET
            END-EVALUATE
       *
@@ -565,27 +505,11 @@
        5011-INPUT-CUR-SEC          SECTION.
       *
            EVALUATE    WRK-MCP-WIDGET
+           WHEN    "SRYYM"
+               MOVE    002         TO  SPA-GMN-Q03-CUR
+           WHEN    "NYUGAIKBN"
+               MOVE    212         TO  SPA-GMN-Q03-CUR
       *
-      *    表題
-           WHEN    "FILENAME"
-               MOVE    001         TO  SPA-GMN-Q100-CUR
-      *
-      *    条件上段
-           WHEN    "STNUM"
-               MOVE    002         TO  SPA-GMN-Q100-CUR
-      *
-      *    条件下段
-           WHEN    "EDNUM"
-               MOVE    003         TO  SPA-GMN-Q100-CUR
-      *
-           END-EVALUATE
-      *
-      *    次カーソル位置を設定
-           EVALUATE    WRK-MCP-WIDGET
-           WHEN    "EDNUM"
-               MOVE    004         TO  SPA-GMN-Q100-CUR
-           WHEN    OTHER
-               COMPUTE SPA-GMN-Q100-CUR    =   SPA-GMN-Q100-CUR +   1
            END-EVALUATE
       *
            .
@@ -600,14 +524,8 @@
            MOVE    SPACE               TO  SPA-ERRMSG
       *
            EVALUATE    SPA-ERRCD
-           WHEN    "1001"
-               MOVE    "出力ファイル名が入力されいていません"
-                                       TO  SPA-ERRMSG
-           WHEN    "1002"
-               MOVE    "開始件数＞終了件数となっています"
-                                       TO  SPA-ERRMSG
-           WHEN    "1003"
-               MOVE    "開始ページ＞終了ページとなっています"
+           WHEN    "0001"
+               MOVE    "診療年月入力エラー"
                                        TO  SPA-ERRMSG
            END-EVALUATE
       *
@@ -616,7 +534,7 @@
            MOVE    SPA-ERRMSG           TO  QERR-ERRMSG
            MOVE    "B01"                TO  MCP-WIDGET
       *
-           MOVE    "Q100"               TO  SPA-MOTOPG
+           MOVE    "Q03"               TO  SPA-MOTOPG
            MOVE    "QERR"               TO  SPA-SAKIPG
       *
            MOVE    "NEW"                TO  MCP-PUTTYPE
@@ -630,6 +548,32 @@
        510-ERRSET-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    年月日本語変換処理
+      *****************************************************************
+       800-NENGETU-HEN-SEC             SECTION.
+      *
+           MOVE    ZERO                TO  FLG-HIZUKE-ERR
+           MOVE    SPACE               TO  WRK-HENYMDG
+      *
+      *    日付画面チェックサブ
+           INITIALIZE                      ORCSGDAYAREA
+           MOVE    "1"                 TO  SGDAY-INTYPE
+           MOVE    WRK-SYMD            TO  SGDAY-INDAY
+           CALL    "ORCSGDAY"          USING
+                                           ORCSGDAYAREA
+           IF  ( SGDAY-RC              =   ZERO )
+               MOVE    SGDAY-OTDAY (1:6)
+                                       TO  WRK-HENYMDG
+               MOVE    SGDAY-SDAY  (1:6)
+                                       TO  WRK-SYMD
+           ELSE
+               MOVE    1               TO  FLG-HIZUKE-ERR
+           END-IF
+      *
+           .
+       800-NENGETU-HEN-EXT.
+           EXIT.
       *****************************************************************
       *    ＰＵＴ　処理
       *****************************************************************
