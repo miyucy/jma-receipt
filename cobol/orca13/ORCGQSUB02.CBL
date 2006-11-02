@@ -126,7 +126,7 @@
                    07  CONST-PTNUM-TBL     PIC X(01) VALUE "H".
                    07  CONST-PTNUM         PIC X(20) VALUE "PTNUM".
                05  CONST-ITEM-R    REDEFINES   CONST-ITEM-VAL.
-                   07  CONST-ITEM-OCC      OCCURS    12.
+                   07  CONST-ITEM-OCC      OCCURS    11.
                        09  CONST-ITEM-TBL  PIC X(01).
                        09  CONST-ITEM      PIC X(20).
            03  CONST-TABLE-AREA.
