@@ -398,6 +398,11 @@
                            11  SPA-GMN-SYUSKYPRTG          PIC X(01).
                            11  SPA-GMN-SYUSKYPRTG-F1       PIC X(01).
                            11  SPA-GMN-SYUSKYPRTGMEI       PIC X(22).
+      *                ¿¡µ·ΩÒ∑ÛŒŒº˝ΩÒ¡∞≤ÛÃ§º˝≥€∞ıª˙° ≥∞ÕË°À
+                       09  SPA-GMN-S03SKYMISYUPRT-G.
+                           11  SPA-GMN-S03SKYMISYUPRT     PIC X(01).
+                           11  SPA-GMN-S03SKYMISYUPRT-F1  PIC X(01).
+                           11  SPA-GMN-S03SKYMISYUPRTMEI  PIC X(30).
       *                ø«Œ≈»ÒÃ¿∫ŸΩÒ»Øπ‘° ≥∞ÕË°À
                        09  SPA-GMN-SYUSRYPRTG-G.
                            11  SPA-GMN-SYUSRYPRTG          PIC X(01).
@@ -428,6 +433,10 @@
                            11  SPA-GMN-S02SKYSAI           PIC X(01).
                            11  SPA-GMN-S02SKYSAI-F1        PIC X(01).
                            11  SPA-GMN-S02SKYSAIMEI        PIC X(40).
+                       09  SPA-GMN-S02SKYMISYUPRT-G.
+                           11  SPA-GMN-S02SKYMISYUPRT      PIC X(01).
+                           11  SPA-GMN-S02SKYMISYUPRT-F1   PIC X(01).
+                           11  SPA-GMN-S02SKYMISYUPRTMEI   PIC X(30).
                        09  SPA-GMN-SYUSTIME.
                            11  SPA-GMN-SYUSTIME-HH         PIC 9(02).
                            11  SPA-GMN-SYUSTIME-MM         PIC 9(02).
@@ -463,6 +472,13 @@
                                13                          PIC X(01).
                                13  SPA-GMN-SYUSKYPRTGMEIL
                                                            PIC X(22).
+                       09  SPA-GMN-S03SKYMISYUPRTLST-G.
+                           11  SPA-GMN-S03SKYMISYUPRT-MAX  PIC 9(03).
+                           11  SPA-GMN-S03SKYMISYUPRTLST   OCCURS  2.
+                               13  SPA-GMN-S03SKYMISYUPRTL PIC X(01).
+                               13                          PIC X(01).
+                               13  SPA-GMN-S03SKYMISYUPRTMEIL
+                                                           PIC X(30).
                        09  SPA-GMN-SYUSRYPRTGLST-G.
                            11  SPA-GMN-SYUSRYPRTG-MAX      PIC 9(03).
                            11  SPA-GMN-SYUSRYPRTGLST       OCCURS  2.
@@ -504,6 +520,13 @@
                                13  SPA-GMN-S02SKYSAIL      PIC X(01).
                                13                          PIC X(01).
                                13  SPA-GMN-S02SKYSAIMEIL
+                                                           PIC X(30).
+                       09  SPA-GMN-S02SKYMISYUPRTLST-G.
+                           11  SPA-GMN-S02SKYMISYUPRT-MAX  PIC 9(03).
+                           11  SPA-GMN-S02SKYMISYUPRTLST   OCCURS  5.
+                               13  SPA-GMN-S02SKYMISYUPRTL PIC X(01).
+                               13                          PIC X(01).
+                               13  SPA-GMN-S02SKYMISYUPRTMEIL
                                                            PIC X(30).
                    07  SPA-GMN-PAGE5-AREA.
       *                …¬Ãæµ°«Ωæ Û
@@ -1136,6 +1159,12 @@
            MOVE    "1 »Øπ‘§π§Î"        TO  SPA-GMN-SYUSKYPRTGLST(2)
            MOVE    2                   TO  SPA-GMN-SYUSKYPRTG-MAX
       *
+           MOVE    "0 ¡∞≤Û¿¡µ·≥€§Ú∞ıª˙§∑§ §§"
+                                       TO  SPA-GMN-S03SKYMISYUPRTLST(1)
+           MOVE    "1 ¡∞≤Û¿¡µ·≥€§Ú∞ıª˙§π§Î"
+                                       TO  SPA-GMN-S03SKYMISYUPRTLST(2)
+           MOVE    2                   TO  SPA-GMN-S03SKYMISYUPRT-MAX
+      *
            MOVE    "0 »Øπ‘§∑§ §§"      TO  SPA-GMN-SYUSRYPRTGLST(1)
            MOVE    "1 »Øπ‘§π§Î"        TO  SPA-GMN-SYUSRYPRTGLST(2)
            MOVE    2                   TO  SPA-GMN-SYUSRYPRTG-MAX
@@ -1167,6 +1196,12 @@
            MOVE    "1 ø«Œ≈π‘∞Ÿ§«ªÿƒÍ§∑§ø ˝À°§«»Øπ‘"
                                        TO  SPA-GMN-S02SKYSAILST(2)
            MOVE    2                   TO  SPA-GMN-S02SKYSAI-MAX
+      *
+           MOVE    "0 ¡∞≤Û¿¡µ·≥€§Ú∞ıª˙§∑§ §§"
+                                       TO  SPA-GMN-S02SKYMISYUPRTLST(1)
+           MOVE    "1 ¡∞≤Û¿¡µ·≥€§Ú∞ıª˙§π§Î"
+                                       TO  SPA-GMN-S02SKYMISYUPRTLST(2)
+           MOVE    2                   TO  SPA-GMN-S02SKYMISYUPRT-MAX
       *
            MOVE    "0 …Ωº®§π§Î"        TO  SPA-GMN-MSG1-DSPKBNLST(1)
            MOVE    "1 …Ωº®§∑§ §§"      TO  SPA-GMN-MSG1-DSPKBNLST(2)
@@ -2048,6 +2083,11 @@
            MOVE    SYS-1039-SKYPRTGKBN TO  SPA-GMN-SYUSKYPRTG
            PERFORM 3101-SYUSKYPRTG-SYOKI-SEC
       *
+      *    ¿¡µ·ΩÒ∑ÛŒŒº˝ΩÒ¡∞≤Û¿¡µ·≥€∞ıª˙∂Ë ¨° ≥∞ÕË°À
+           MOVE    SYS-1039-S03SKYMISYUPRTKBN
+                                       TO  SPA-GMN-S03SKYMISYUPRT
+           PERFORM 3101-S03SKYMISYUPRT-SYOKI-SEC
+      *
       *    ø«Œ≈»ÒÃ¿∫ŸΩÒ»Øπ‘∂Ë ¨° ≥∞ÕË°À
            MOVE    SYS-1039-SRYPRTGKBN TO  SPA-GMN-SYUSRYPRTG
            PERFORM 3101-SYUSRYPRTG-SYOKI-SEC
@@ -2074,6 +2114,11 @@
            MOVE    SYS-1039-S02SKYSAIKBN
                                        TO  SPA-GMN-S02SKYSAI
            PERFORM 3101-S02SKYSAI-SYOKI-SEC
+      *
+      *    ¿¡µ·ΩÒ∑ÛŒŒº˝ΩÒ¡∞≤Û¿¡µ·≥€∞ıª˙∂Ë ¨° ≥∞ÕË°À
+           MOVE    SYS-1039-S02SKYMISYUPRTKBN
+                                       TO  SPA-GMN-S02SKYMISYUPRT
+           PERFORM 3101-S02SKYMISYUPRT-SYOKI-SEC
       *
            IF    ( SYS-1039-STIME          IS  NUMERIC )
                MOVE    SYS-1039-STIME      TO  SPA-GMN-SYUSTIME
@@ -2168,6 +2213,31 @@
       *
            . 
        3101-SYUSKYPRTG-SYOKI-EXT.
+           EXIT.
+      *****************************************************************
+      *    º˝«º¿¡µ·ΩÒ∑ÛŒŒº˝ΩÒ¡∞≤Û¿¡µ·≥€∞ıª˙∂Ë ¨ΩÈ¥¸√Õ¿ﬂƒÍΩËÕ˝
+      *****************************************************************
+       3101-S03SKYMISYUPRT-SYOKI-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY         FROM    1   BY  1
+                   UNTIL   IDY         >   SPA-GMN-S03SKYMISYUPRT-MAX
+               IF      SPA-GMN-S03SKYMISYUPRT
+                                       =   SPA-GMN-S03SKYMISYUPRTL (IDY)
+                   MOVE    SPA-GMN-S03SKYMISYUPRTLST(IDY)
+                                       TO  SPA-GMN-S03SKYMISYUPRT-G
+                   MOVE    1           TO  FLG-OK
+                   MOVE    SPA-GMN-S03SKYMISYUPRT-MAX
+                                       TO  IDY
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-S03SKYMISYUPRTLST (2)
+                                       TO  SPA-GMN-S03SKYMISYUPRT-G
+           END-IF
+      *
+           . 
+       3101-S03SKYMISYUPRT-SYOKI-EXT.
            EXIT.
       *****************************************************************
       *    º˝«ºø«Œ≈»ÒÃ¿∫ŸΩÒ≥∞ÕËΩÈ¥¸√Õ¿ﬂƒÍΩËÕ˝
@@ -2338,6 +2408,31 @@
       *
            . 
        3101-S02SKYSAI-SYOKI-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¿¡µ·ΩÒ∑ÛŒŒº˝ΩÒ¡∞≤Û¿¡µ·≥€∞ıª˙∂Ë ¨° ≥∞ÕË°ÀΩÈ¥¸√Õ¿ﬂƒÍΩËÕ˝
+      *****************************************************************
+       3101-S02SKYMISYUPRT-SYOKI-SEC        SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY         FROM    1   BY  1
+                   UNTIL   IDY         >   SPA-GMN-S02SKYMISYUPRT-MAX
+               IF      SPA-GMN-S02SKYMISYUPRT
+                                       =   SPA-GMN-S02SKYMISYUPRTL (IDY)
+                   MOVE    SPA-GMN-S02SKYMISYUPRTLST(IDY)
+                                       TO  SPA-GMN-S02SKYMISYUPRT-G
+                   MOVE    1           TO  FLG-OK
+                   MOVE    SPA-GMN-S02SKYMISYUPRT-MAX
+                                       TO  IDY
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-S02SKYMISYUPRTLST (2)
+                                       TO  SPA-GMN-S02SKYMISYUPRT-G
+           END-IF
+      *
+           . 
+       3101-S02SKYMISYUPRT-SYOKI-EXT.
            EXIT.
       *****************************************************************
       *    •π•—ΩÈ¥¸ ‘Ω∏ΩËÕ˝
@@ -2725,12 +2820,14 @@
       *    º˝«ºµ°«Ωæ Û
            MOVE    W07-SYUNYKNKNRKBN   TO  SPA-GMN-SYUNYKNKNRKBN-G
            MOVE    W07-SYUSKYPRTG      TO  SPA-GMN-SYUSKYPRTG-G
+           MOVE    W07-S03SKYMISYUPRT  TO  SPA-GMN-S03SKYMISYUPRT-G
            MOVE    W07-SYUSRYPRTG      TO  SPA-GMN-SYUSRYPRTG-G
            MOVE    W07-SYUSKYPRTN      TO  SPA-GMN-SYUSKYPRTN-G
            MOVE    W07-SYUSRYPRTN      TO  SPA-GMN-SYUSRYPRTN-G
            MOVE    W07-S06SKYPRT       TO  SPA-GMN-S06SKYPRT-G
            MOVE    W07-S06SKYSUM       TO  SPA-GMN-S06SKYSUM-G
            MOVE    W07-S02SKYSAI       TO  SPA-GMN-S02SKYSAI-G
+           MOVE    W07-S02SKYMISYUPRT  TO  SPA-GMN-S02SKYMISYUPRT-G
            MOVE    W07-SYUSTIME-HH     TO  SPA-GMN-SYUSTIME-HH
            MOVE    W07-SYUSTIME-MM     TO  SPA-GMN-SYUSTIME-MM
       *
@@ -2915,6 +3012,10 @@
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4110-SYUSKYPRTG-CHK-SEC
                    END-IF
+      *            ¿¡µ·ΩÒ∑ÛŒŒº˝ΩÒ¡∞≤Û¿¡µ·≥€∞ıª˙∂Ë ¨•¡•ß•√•Ø
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4110-S03SKYMISYUPRT-CHK-SEC
+                   END-IF
       *            ø«Œ≈»ÒÃ¿∫ŸΩÒ»Øπ‘∂Ë ¨° ≥∞ÕË°À•¡•ß•√•Ø
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4110-SYUSRYPRTG-CHK-SEC
@@ -2942,6 +3043,10 @@
       *            ¿¡µ·∞ÏÕ˜≤ËÃÃ≥∞ÕË ¨∫∆»Øπ‘ ˝À°•¡•ß•√•Ø
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4109-S02SKYSAI-CHK-SEC
+                   END-IF
+      *            ¿¡µ·ΩÒ∑ÛŒŒº˝ΩÒ¡∞≤Û¿¡µ·≥€∞ıª˙∂Ë ¨•¡•ß•√•Ø
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4110-S02SKYMISYUPRT-CHK-SEC
                    END-IF
       *            ≈–œøª˛πÔ•¡•ß•√•Ø
                    IF      SPA-ERRCD           =   SPACE
@@ -4220,6 +4325,29 @@
        4109-S02SKYSAI-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    ¿¡µ·ΩÒ∑ÛŒŒº˝ΩÒ¡∞≤Û¿¡µ·≥€∞ıª˙∂Ë ¨•¡•ß•√•Ø
+      *****************************************************************
+       4110-S02SKYMISYUPRT-CHK-SEC      SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-S02SKYMISYUPRT-MAX
+               IF      SPA-GMN-S02SKYMISYUPRT
+                                       =   SPA-GMN-S02SKYMISYUPRTL (IDX)
+                   MOVE    SPA-GMN-S02SKYMISYUPRTLST(IDX)
+                                          TO  SPA-GMN-S02SKYMISYUPRT-G
+                   MOVE    1              TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-S02SKYMISYUPRTLST(2)
+                                          TO  SPA-GMN-S02SKYMISYUPRT-G
+           END-IF
+      *
+           .
+       4110-S02SKYMISYUPRT-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    ¿¡µ·ΩÒ∑ÛŒŒº˝ΩÒ»Øπ‘∂Ë ¨° ≥∞ÕË°À•¡•ß•√•ØΩËÕ˝° º˝«ºπ‘∞Ÿµ°«Ωæ Û°À
       *****************************************************************
        4110-SYUSKYPRTG-CHK-SEC      SECTION.
@@ -4241,6 +4369,29 @@
       *
            .
        4110-SYUSKYPRTG-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¿¡µ·ΩÒ∑ÛŒŒº˝ΩÒ¡∞≤Û¿¡µ·≥€∞ıª˙∂Ë ¨•¡•ß•√•Ø
+      *****************************************************************
+       4110-S03SKYMISYUPRT-CHK-SEC      SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-S03SKYMISYUPRT-MAX
+               IF      SPA-GMN-S03SKYMISYUPRT
+                                       =   SPA-GMN-S03SKYMISYUPRTL (IDX)
+                   MOVE    SPA-GMN-S03SKYMISYUPRTLST(IDX)
+                                          TO  SPA-GMN-S03SKYMISYUPRT-G
+                   MOVE    1              TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-S03SKYMISYUPRTLST(2)
+                                          TO  SPA-GMN-S03SKYMISYUPRT-G
+           END-IF
+      *
+           .
+       4110-S03SKYMISYUPRT-CHK-EXT.
            EXIT.
       *****************************************************************
       *    ø«Œ≈»ÒÃ¿∫ŸΩÒ»Øπ‘∂Ë ¨° ≥∞ÕË°À•¡•ß•√•ØΩËÕ˝° º˝«ºπ‘∞Ÿµ°«Ωæ Û°À
@@ -5353,6 +5504,9 @@
            MOVE    SPA-GMN-SYUSRYPRTN      TO  SYS-1039-SRYPRTNKBN
            MOVE    SPA-GMN-SYUSTIME        TO  SYS-1039-STIME
       *
+           MOVE    SPA-GMN-S02SKYMISYUPRT  TO SYS-1039-S02SKYMISYUPRTKBN
+           MOVE    SPA-GMN-S03SKYMISYUPRT  TO SYS-1039-S03SKYMISYUPRTKBN
+      *
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL ( IDX1    >   2 )
                PERFORM VARYING IDX2    FROM    1   BY  1
@@ -6125,6 +6279,16 @@
            MOVE    SPA-GMN-S02SKYSAI-MAX
                                        TO  W07-S02SKYSAI-COUNT
       *
+      *    ¿¡µ·ΩÒ∑ÛŒŒº˝ΩÒ¡∞≤Û¿¡µ·≥€∞ıª˙∂Ë ¨
+           MOVE    SPA-GMN-S02SKYMISYUPRT-G TO  W07-S02SKYMISYUPRT
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-S02SKYMISYUPRT-MAX
+               MOVE    SPA-GMN-S02SKYMISYUPRTLST (IDX)
+                                       TO  W07-S02SKYMISYUPRT-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-S02SKYMISYUPRT-MAX
+                                       TO  W07-S02SKYMISYUPRT-COUNT
+      *
       *    ¿¡µ·ΩÒ∑ÛŒŒº˝ΩÒ»Øπ‘∂Ë ¨° ≥∞ÕË°À
            MOVE    SPA-GMN-SYUSKYPRTG-G TO  W07-SYUSKYPRTG
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -6134,6 +6298,16 @@
            END-PERFORM
            MOVE    SPA-GMN-SYUSKYPRTG-MAX
                                        TO  W07-SYUSKYPRTG-COUNT
+      *
+      *    ¿¡µ·ΩÒ∑ÛŒŒº˝ΩÒ¡∞≤Û¿¡µ·≥€∞ıª˙∂Ë ¨
+           MOVE    SPA-GMN-S03SKYMISYUPRT-G TO  W07-S03SKYMISYUPRT
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-S03SKYMISYUPRT-MAX
+               MOVE    SPA-GMN-S03SKYMISYUPRTLST (IDX)
+                                       TO  W07-S03SKYMISYUPRT-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-S03SKYMISYUPRT-MAX
+                                       TO  W07-S03SKYMISYUPRT-COUNT
       *
       *    ø«Œ≈»ÒÃ¿∫ŸΩÒ»Øπ‘∂Ë ¨° ≥∞ÕË°À
            MOVE    SPA-GMN-SYUSRYPRTG-G TO  W07-SYUSRYPRTG
@@ -6790,6 +6964,9 @@
       *
                WHEN    40
                    MOVE  "SYUSKYPRTG"      TO   MCP-WIDGET
+      *
+               WHEN    416
+                   MOVE  "S03SKYMISYUPRT"  TO   MCP-WIDGET
                WHEN    45
                    MOVE  "SYUSRYPRTG"      TO   MCP-WIDGET
                WHEN    41
@@ -6804,6 +6981,8 @@
                    MOVE  "S06SKYSUM"       TO   MCP-WIDGET
                WHEN    49
                    MOVE  "S02SKYSAI"       TO   MCP-WIDGET
+               WHEN    417
+                   MOVE  "S02SKYMISYUPRT"  TO   MCP-WIDGET
                WHEN    43
                    MOVE  "SYUSTIME_HH"     TO   MCP-WIDGET
                WHEN    44
@@ -7037,8 +7216,12 @@
                    MOVE    99              TO  SPA-GMN-CUR
       *
                WHEN    "S02SKYSAI"
+                   MOVE    417             TO  SPA-GMN-CUR
+               WHEN    "S02SKYMISYUPRT"
                    MOVE    40              TO  SPA-GMN-CUR
                WHEN    "SYUSKYPRTG"
+                   MOVE    416             TO  SPA-GMN-CUR
+               WHEN    "S03SKYMISYUPRT"
                    MOVE    45              TO  SPA-GMN-CUR
                WHEN    "SYUSRYPRTG"
                    MOVE    41              TO  SPA-GMN-CUR

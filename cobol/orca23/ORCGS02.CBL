@@ -3034,10 +3034,15 @@
                                        SYUPARA02-AREA
       *
            MOVE    "2"                 TO  SYUPARA01-NYUGAIKBN
-           MOVE    WRK-NYU-MISYU       TO  SYUPARA01-NYU-MISYU
-           MOVE    WRK-GAI-MISYU       TO  SYUPARA01-GAI-MISYU
-           MOVE    WRK-GAI-MISYU-P     TO  SYUPARA01-GAI-MISYU-P
-           MOVE    WRK-GAI-MISYU-M     TO  SYUPARA01-GAI-MISYU-M
+           IF    ( SYS-1039-S02SKYMISYUPRTKBN  =   "0" )
+               CONTINUE
+           ELSE
+               MOVE    WRK-NYU-MISYU   TO  SYUPARA01-NYU-MISYU
+               MOVE    WRK-GAI-MISYU   TO  SYUPARA01-GAI-MISYU
+               MOVE    WRK-GAI-MISYU-P TO  SYUPARA01-GAI-MISYU-P
+               MOVE    WRK-GAI-MISYU-M TO  SYUPARA01-GAI-MISYU-M
+           END-IF
+      *
            MOVE    ZERO                TO  SYUPARA01-NYU-NYUKIN
            MOVE    ZERO                TO  SYUPARA01-GAI-NYUKIN
            MOVE    1                   TO  SYUPARA01-HAKKOFLG
@@ -3149,28 +3154,32 @@
            MOVE    1                   TO  ORCHC03-HAKKOFLG
            MOVE    ZERO                TO  ORCHC03-HAKHOUFLG
            MOVE    1                   TO  ORCHC03-PARAFLG
-           COMPUTE ORCHC03-ZENMISYU
-               =   WRK-GAI-MISYU
-               -   WRK-GAI-ZENMISYU
-           IF    ( ORCHC03-ZENMISYU    <   ZERO )
-               MOVE    ORCHC03-ZENMISYU
-                                       TO  ORCHC03-HENKIN
-               MOVE    ZERO            TO  ORCHC03-ZENMISYU
-           END-IF
-      *
-           MOVE    WRK-GAI-MISYU-P     TO  ORCHC03-ZENMISYU-2
-      *
-           COMPUTE ORCHC03-KANYUKIN
-               =   WRK-GAI-MISYU-M     *   -1
-      *
-           IF    ( WRK-GAI-ZENMISYU    <   ZERO )
-               COMPUTE ORCHC03-KANYUKIN
-                   =   ORCHC03-KANYUKIN
-                   - ( WRK-GAI-ZENMISYU    *   -1 )
+           IF    ( SYS-1039-S02SKYMISYUPRTKBN  =   "0" )
+               CONTINUE
            ELSE
-               COMPUTE ORCHC03-ZENMISYU-2
-                   =   ORCHC03-ZENMISYU-2
+               COMPUTE ORCHC03-ZENMISYU
+                   =   WRK-GAI-MISYU
                    -   WRK-GAI-ZENMISYU
+               IF    ( ORCHC03-ZENMISYU    <   ZERO )
+                   MOVE    ORCHC03-ZENMISYU
+                                       TO  ORCHC03-HENKIN
+                   MOVE    ZERO        TO  ORCHC03-ZENMISYU
+               END-IF
+      *
+               MOVE    WRK-GAI-MISYU-P TO  ORCHC03-ZENMISYU-2
+      *
+               COMPUTE ORCHC03-KANYUKIN
+                   =   WRK-GAI-MISYU-M     *   -1
+      *
+               IF    ( WRK-GAI-ZENMISYU    <   ZERO )
+                   COMPUTE ORCHC03-KANYUKIN
+                       =   ORCHC03-KANYUKIN
+                       - ( WRK-GAI-ZENMISYU    *   -1 )
+               ELSE
+                   COMPUTE ORCHC03-ZENMISYU-2
+                       =   ORCHC03-ZENMISYU-2
+                       -   WRK-GAI-ZENMISYU
+               END-IF
            END-IF
            MOVE    "S02"               TO  ORCHC03-PARA-GYOUMUID
            MOVE    SPA-TERMID          TO  ORCHC03-PARA-TERMID

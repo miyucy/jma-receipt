@@ -73,8 +73,14 @@
       *ÀÁµá°ìÍ÷²èÌÌ³°ÍèÀÁµá½ñ·óÎÎ¼ý½ñÈ¯¹ÔÊýË¡
                05  SYS-1039-S02SKYSAIKBN
                                         PIC  X(01).
+      *ÀÁµá°ìÍ÷²èÌÌ³°ÍèÀÁµá½ñ·óÎÎ¼ý½ñÌ¤¼ý°õ»ú¶èÊ¬
+               05  SYS-1039-S02SKYMISYUPRTKBN
+                                        PIC  X(01).
+      *ÀÁµá³ÎÇ§²èÌÌ³°ÍèÀÁµá½ñ·óÎÎ¼ý½ñÌ¤¼ý°õ»ú¶èÊ¬
+               05  SYS-1039-S03SKYMISYUPRTKBN
+                                        PIC  X(01).
       *Í½È÷
-               05                       PIC  X(441).
+               05                       PIC  X(439).
       *Ã¼Ëö£É£Ä
            03  SYS-1039-TERMID          PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä

@@ -2432,29 +2432,33 @@
       *
            PERFORM 900-SYUNOU-KEY-SEL-SEC
       *
-           COMPUTE ORCHC03-ZENMISYU
-               =   WRK-MISYU
-               - ( SYU-SKYMONEY        -   SYU-NYUKIN-TOTAL )
-      *
-           IF    ( ORCHC03-ZENMISYU    <   ZERO )
-               MOVE    ORCHC03-ZENMISYU
-                                       TO  ORCHC03-HENKIN
-               MOVE    ZERO            TO  ORCHC03-ZENMISYU
-           END-IF
-      *
-           MOVE    WRK-MISYU-P         TO  ORCHC03-ZENMISYU-2
-      *
-           COMPUTE ORCHC03-KANYUKIN
-               =   WRK-MISYU-M         *   -1
-      *
-           IF    ( SYU-SKYMONEY        <   SYU-NYUKIN-TOTAL )
-               COMPUTE ORCHC03-KANYUKIN
-                   =   ORCHC03-KANYUKIN
-                   - ( SYU-NYUKIN-TOTAL    -   SYU-SKYMONEY )
+           IF    ( SYS-1039-S03SKYMISYUPRTKBN  =   "0" )
+               CONTINUE
            ELSE
-               COMPUTE ORCHC03-ZENMISYU-2
-                   =   ORCHC03-ZENMISYU-2
+               COMPUTE ORCHC03-ZENMISYU
+                   =   WRK-MISYU
                    - ( SYU-SKYMONEY        -   SYU-NYUKIN-TOTAL )
+      *
+               IF    ( ORCHC03-ZENMISYU    <   ZERO )
+                   MOVE    ORCHC03-ZENMISYU
+                                       TO  ORCHC03-HENKIN
+                   MOVE    ZERO        TO  ORCHC03-ZENMISYU
+               END-IF
+      *
+               MOVE    WRK-MISYU-P     TO  ORCHC03-ZENMISYU-2
+      *
+               COMPUTE ORCHC03-KANYUKIN
+                   =   WRK-MISYU-M         *   -1
+      *
+               IF    ( SYU-SKYMONEY        <   SYU-NYUKIN-TOTAL )
+                   COMPUTE ORCHC03-KANYUKIN
+                       =   ORCHC03-KANYUKIN
+                       - ( SYU-NYUKIN-TOTAL    -   SYU-SKYMONEY )
+               ELSE
+                   COMPUTE ORCHC03-ZENMISYU-2
+                       =   ORCHC03-ZENMISYU-2
+                       - ( SYU-SKYMONEY        -   SYU-NYUKIN-TOTAL )
+               END-IF
            END-IF
       *
            MOVE   3                    TO  ORCHC03-HAKKOFLG

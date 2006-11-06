@@ -370,6 +370,13 @@ W07	{
 					count	int;
 					item	varchar(32)[5];
 				};
+				S02SKYMISYUPRT_COMBO	{
+					S02SKYMISYUPRT	{
+						value	varchar(32);
+					};
+					count	int;
+					item	varchar(32)[5];
+				};
 				SYUNYKNKNRKBN_COMBO	{
 					SYUNYKNKNRKBN	{
 						value	varchar(40);
@@ -411,6 +418,13 @@ W07	{
 					};
 					count	int;
 					item	varchar(24)[2];
+				};
+				S03SKYMISYUPRT_COMBO	{
+					S03SKYMISYUPRT	{
+						value	varchar(32);
+					};
+					count	int;
+					item	varchar(32)[5];
 				};
 				SYUSRYPRTN_COMBO	{
 					SYUSRYPRTN	{
