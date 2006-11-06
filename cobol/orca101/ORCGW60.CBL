@@ -103,7 +103,7 @@
                        09  SPA-GMN-UTAGAIKKNKBNMEIL PIC X(08).
                05  SPA-GMN-KYUSEIKKNKBNLST-G.
                    07  SPA-GMN-KYUSEIKKNKBN-MAX    PIC 9(03).
-                   07  SPA-GMN-KYUSEIKKNKBNLST     OCCURS   2.
+                   07  SPA-GMN-KYUSEIKKNKBNLST     OCCURS   15.
                        09  SPA-GMN-KYUSEIKKNKBNL   PIC X(01).
                        09                          PIC X(01).
                        09  SPA-GMN-KYUSEIKKNKBNMEIL PIC X(08).
@@ -392,10 +392,16 @@
                IF    ( SYS-1101-KYUSEIKKN-X  IS NUMERIC )
       *
                    EVALUATE    SYS-1101-KYUSEIKKN
+                   WHEN    0
+                       MOVE    "0"     TO  SPA-GMN-KYUSEIKKNKBN
                    WHEN    1
                        MOVE    "1"     TO  SPA-GMN-KYUSEIKKNKBN
                    WHEN    2
                        MOVE    "2"     TO  SPA-GMN-KYUSEIKKNKBN
+                   WHEN    3
+                       MOVE    "3"     TO  SPA-GMN-KYUSEIKKNKBN
+                   WHEN    4
+                       MOVE    "4"     TO  SPA-GMN-KYUSEIKKNKBN
                    END-EVALUATE
       *
                END-IF
@@ -441,7 +447,7 @@
            MOVE    SPA-GMN-KYUSEIKKNKBN TO  WRK-CMB-CD
            PERFORM 4200-KYUSEIKKNKBNLST-CHK-SEC
            IF    ( WRK-CMB-ITM     =   SPACE )
-               MOVE    SPA-GMN-KYUSEIKKNKBNLST (2)
+               MOVE    SPA-GMN-KYUSEIKKNKBNLST (1)
                                    TO  SPA-GMN-KYUSEIKKNKBN-G
            ELSE
                MOVE    WRK-CMB-ITM TO  SPA-GMN-KYUSEIKKNKBN-G
@@ -579,15 +585,24 @@
       *
            INITIALIZE                  SPA-GMN-KYUSEIKKNKBNLST-G
       *
-           MOVE    2               TO  SPA-GMN-KYUSEIKKNKBN-MAX
+           MOVE    5               TO  SPA-GMN-KYUSEIKKNKBN-MAX
       *
-           MOVE    "1"             TO  SPA-GMN-KYUSEIKKNKBNL    (1)
-           MOVE    "£±¥ö·î"        TO  SPA-GMN-KYUSEIKKNKBNMEIL (1)
+           MOVE    "0"             TO  SPA-GMN-KYUSEIKKNKBNL    (1)
+           MOVE    "¤·¤Ê¤¤"        TO  SPA-GMN-KYUSEIKKNKBNMEIL (1)
       *
-           MOVE    "2"             TO  SPA-GMN-KYUSEIKKNKBNL    (2)
-           MOVE    "£²¥ö·î"        TO  SPA-GMN-KYUSEIKKNKBNMEIL (2)
+           MOVE    "1"             TO  SPA-GMN-KYUSEIKKNKBNL    (2)
+           MOVE    "£±¥ö·î"        TO  SPA-GMN-KYUSEIKKNKBNMEIL (2)
       *
-           MOVE    SPA-GMN-KYUSEIKKNKBNLST  (2)
+           MOVE    "2"             TO  SPA-GMN-KYUSEIKKNKBNL    (3)
+           MOVE    "£²¥ö·î"        TO  SPA-GMN-KYUSEIKKNKBNMEIL (3)
+      *
+           MOVE    "3"             TO  SPA-GMN-KYUSEIKKNKBNL    (4)
+           MOVE    "£³¥ö·î"        TO  SPA-GMN-KYUSEIKKNKBNMEIL (4)
+      *
+           MOVE    "4"             TO  SPA-GMN-KYUSEIKKNKBNL    (5)
+           MOVE    "£´¥ö·î"        TO  SPA-GMN-KYUSEIKKNKBNMEIL (5)
+      *
+           MOVE    SPA-GMN-KYUSEIKKNKBNLST  (1)
                                    TO  SPA-GMN-KYUSEIKKNKBN-G
       *
            . 
@@ -927,7 +942,7 @@
            MOVE    SPA-GMN-KYUSEIKKNKBN TO  WRK-CMB-CD
            PERFORM 4200-KYUSEIKKNKBNLST-CHK-SEC
            IF    ( WRK-CMB-ITM     =   SPACE )
-               MOVE    SPA-GMN-KYUSEIKKNKBNLST (2)
+               MOVE    SPA-GMN-KYUSEIKKNKBNLST (1)
                                    TO  SPA-GMN-KYUSEIKKNKBN-G
            ELSE
                MOVE    WRK-CMB-ITM TO  SPA-GMN-KYUSEIKKNKBN-G
@@ -1299,10 +1314,16 @@
            END-EVALUATE
       *
            EVALUATE    SPA-GMN-KYUSEIKKNKBN
+           WHEN    "0"
+               MOVE    0               TO  SYS-1101-KYUSEIKKN
            WHEN    "1"
                MOVE    1               TO  SYS-1101-KYUSEIKKN
            WHEN    "2"
                MOVE    2               TO  SYS-1101-KYUSEIKKN
+           WHEN    "3"
+               MOVE    3               TO  SYS-1101-KYUSEIKKN
+           WHEN    "4"
+               MOVE    4               TO  SYS-1101-KYUSEIKKN
            END-EVALUATE
       *
            MOVE    SPA-GMN-YBUTAGAIKBN TO   SYS-1101-YBUTAGAIKBN

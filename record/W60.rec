@@ -29,7 +29,7 @@ W60	{
 				value	varchar(10);
 			};
 			count	int;
-			item	varchar(10)[2];
+			item	varchar(10)[15];
 		};
 		MTRX01	{
 			value	varchar(2);
