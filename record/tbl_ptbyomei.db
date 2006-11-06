@@ -178,7 +178,6 @@ path	key7		{
 			AND   PTID        =   :PTID
 			AND   SRYKA       =   :SRYKA 
 			AND   SRYYMD      =   :SRYYMD
-			AND   DLTFLG      =   ' '
 			ORDER  BY  RENNUM DESC
 		;
 	};
@@ -609,6 +608,19 @@ path	key30	{
                   TENKIYMD    >=  :TENKIYMD)
 			AND   DLTFLG      =   ' '
 			ORDER BY SRYKA,SYUBYOFLG DESC,SRYYMD,RENNUM
+		;
+	};
+};
+
+path	key31	{ 	
+	DBSELECT	{
+		DECLARE tbl_ptbyomei_key31_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptbyomei
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   DLTFLG      =   '1'
+			ORDER BY UPYMD,UPHMS,SRYYMD,SRYKA,RENNUM
 		;
 	};
 };

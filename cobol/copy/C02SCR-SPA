@@ -73,6 +73,8 @@
       *
       *  03.02.01    NACL-藤原    06/07/31  自費による保険限定の病名の重複
       *                                     を可能とする
+      *
+      *  03.04.01    NACL-藤原    06/11/01  病名一括削除機能対応
       *****************************************************************
       *
        01  SPA-C02FREE.
@@ -658,3 +660,23 @@
                            11  SPA-NAI-C11-COM-TSRYYMD     PIC X(8).
                            11  SPA-NAI-C11-COM-TSRYCD      PIC X(09).
                            11  SPA-NAI-C11-COM-TRENNUM     PIC 9(03).
+      *              
+      *    削除病名一覧画面
+           03  SPA-C12.
+               05  SPA-GMN-C12-MAX         PIC 9(04).
+               05  SPA-GMN-C12-CUR         PIC 9(02).
+               05  SPA-GMN-C12-PAGE        PIC 9(02).
+               05  SPA-GMN-C12-NEXT        PIC 9(01).
+               05  SPA-GMN-C12-AREA.
+                   07  SPA-GMN-C12-TBL.
+                       09  SPA-GMN-C12-TBLO            OCCURS   200.
+                           11  SPA-GMN-C12-TBANGO      PIC 9(05).
+                           11  SPA-GMN-C12-TSRYKA      PIC X(04).
+                           11  SPA-GMN-C12-TSRYYMD     PIC X(09).
+                           11  SPA-GMN-C12-TBYOMEI     PIC X(80).
+                           11  SPA-GMN-C12-TTENKIKBN   PIC X(04).
+                           11  SPA-GMN-C12-TTENKIYMD   PIC X(09).
+                           11  SPA-GMN-C12-TDLTYMD     PIC X(09).
+                           11  SPA-GMN-C12-TDLT-OPID   PIC X(16).
+
+

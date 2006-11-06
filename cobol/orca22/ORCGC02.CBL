@@ -595,6 +595,7 @@
            COPY    "C09.INC".
            COPY    "C10.INC".
            COPY    "C11.INC".
+           COPY    "C12.INC".
            COPY    "C99.INC".
            COPY    "CERR.INC".
            COPY    "CID1.INC".
@@ -818,6 +819,7 @@
                WHEN    "C03"
                WHEN    "C09"
                WHEN    "C11"
+               WHEN    "C12"
                    GO      TO      300-SCREEN-EXT
                WHEN    "C04"
       *            自院病名セット処理
@@ -2380,6 +2382,9 @@
       *    手術歴登録処理
                WHEN    "CLICKED"       ALSO    "B18"
                    PERFORM 430-OPECOM-SEC
+      *    削除病名一覧表示
+               WHEN    "CLICKED"       ALSO    "B20"
+                   PERFORM 430-DELETE-LIST-SEC
       *    入外区分表示切替え処理
                WHEN    "CLICKED"       ALSO    "B23"
                    PERFORM 430-HNYUGAIKBN-CHANGE-SEC
@@ -7729,6 +7734,42 @@
            EXIT.
       *
       *****************************************************************
+      *    削除病名一覧表示画面
+      *****************************************************************
+       430-DELETE-LIST-SEC              SECTION.
+      *
+      *    修正のチェック
+           IF      SPA-NAI-C02-PTID    =   ZERO
+               MOVE    "0086"          TO  SPA-ERRCD
+               GO  TO  430-DELETE-LIST-EXT
+           END-IF
+      *
+           MOVE    SPACE               TO  SPA-MOTOPG
+           INITIALIZE                  SPA-C01KYOUTU
+           MOVE    SPA-C01KYOUTU       TO  SPA-WORK
+           MOVE    SPA-AREA            TO  SPA-COMMON
+           MOVE    SPA-C02FREE         TO  SPA-FREE
+      *
+           MOVE    "LINK"              TO  MCP-STATUS
+           MOVE    SPACE               TO  MCP-EVENT
+      *
+           CALL    "ORCGC12"           USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA
+      *
+           MOVE    SPA-COMMON      TO  SPA-AREA
+           MOVE    SPA-WORK        TO  SPA-C01KYOUTU
+           MOVE    SPA-FREE        TO  SPA-C02FREE
+      *
+           MOVE    1               TO  FLG-END
+      *
+           .
+       430-DELETE-LIST-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    表示切替え処理
       *****************************************************************
        430-SYOKBN-CHANGE-SEC          SECTION.
@@ -9103,6 +9144,9 @@
                                                DELIMITED   BY  SIZE 
                                                INTO    SPA-ERRMSG
                    END-STRING
+               WHEN    "0086"
+                   MOVE    "患者番号の入力がありません" 
+                                                   TO  SPA-ERRMSG
                WHEN    "0090"
                    MOVE    "簡単修正処理中です"    TO  SPA-ERRMSG   
                WHEN    "0103"
