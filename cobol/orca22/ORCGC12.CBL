@@ -469,7 +469,11 @@
       *****************************************************************
        480-DELETE-GID-SEC          SECTION.
       *
-           MOVE    "0101"              TO  SPA-CIDCD4
+           IF      SPA-GMN-C12-MAX >   ZERO
+               MOVE    "0101"              TO  SPA-CIDCD4
+           ELSE
+               MOVE    1                   TO  SPA-GMN-C12-CUR
+           END-IF
           .
        480-DELETE-GID-EXT.
            EXIT.
