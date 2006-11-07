@@ -28,6 +28,7 @@ path	srycd	{
 				tbl_yakujyo_temp
 			WHERE
 				srycd = :srycd
+			ORDER  BY  yjcd,rennum
 		;
 	};
 	operation	DBFETCH	{
