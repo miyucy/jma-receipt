@@ -120,6 +120,7 @@
            03  IDY                               PIC 9(04).
            03  IDZ                               PIC 9(04).
            03  IDZ1                              PIC 9(04).
+           03  IDZ2                              PIC 9(04).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -1511,7 +1512,7 @@
            COMPUTE IDY     =   SPA-GMN-PAGE    *   25
            COMPUTE IDZ     =   IDY             -   24
       *
-           MOVE    ZERO                TO  IDX
+           MOVE    ZERO                 TO  IDX
            PERFORM VARYING     IDZ1     FROM    IDZ   BY  1
                    UNTIL       IDZ1     >       IDY
                ADD     1                        TO  IDX
@@ -1529,27 +1530,14 @@
       *
                MOVE    "black"             TO  W03-CD-STYLE (IDX)
                MOVE    SPA-GMN-TCD (IDX)   TO  WRK-TCD
-      *TEST
-               DISPLAY "IDX:" IDX
-                      ",SPA-GMN-TCD (IDX):" SPA-GMN-TCD (IDX) 
-                ",WRK-TCD:" WRK-TCD
-                ",SPA-KIJUN-MAX:" SPA-KIJUN-MAX
-      *TEST
-               PERFORM VARYING      IDZ    FROM    1   BY  1
-                       UNTIL        IDZ    >   SPA-KIJUN-MAX
-      *TEST
-               DISPLAY "SPA-GMN-SSTKIJUNCD:" SPA-GMN-SSTKIJUNCD (IDZ)
-      *TEST
-                   IF      SPA-GMN-SSTKIJUNCD (IDZ)
+               PERFORM VARYING      IDZ2   FROM    1   BY  1
+                       UNTIL        IDZ2   >   SPA-KIJUN-MAX
+                   IF      SPA-GMN-SSTKIJUNCD (IDZ2)
                                                =   WRK-TCD
                        MOVE    "red"       TO  W03-CD-STYLE (IDX)
-                       MOVE    SPA-KIJUN-MAX   TO  IDZ
+                       MOVE    SPA-KIJUN-MAX   TO  IDZ2
                    END-IF
                END-PERFORM
-      *TEST
-               DISPLAY "SPA-GMN-KIJUNTEIGENCD:" SPA-GMN-KIJUNTEIGENCD
-             ",WRK-TCD :" WRK-TCD 
-      *TEST
                IF     (SPA-GMN-KIJUNTEIGENCD   NOT =   ZERO )  AND
                       (SPA-GMN-KIJUNTEIGENCD   =   WRK-TCD  )
                    MOVE    "red"               TO  W03-CD-STYLE (IDX)
