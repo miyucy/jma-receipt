@@ -1102,8 +1102,12 @@
                MOVE    SPA-GMN-KIJUNTEIGENCD   TO  SPA-GMN-SELCD
            ELSE
                MOVE    SPA-NAI-KIJUNFLG        TO  IDX
-               IF      SPA-GMN-SSTKIJUNCD(IDX) NOT =   ZERO
-                   MOVE    SPA-GMN-SSTKIJUNCD(IDX) TO  SPA-GMN-SELCD
+               IF      IDX                     =   ZERO
+                   CONTINUE
+               ELSE
+                   IF      SPA-GMN-SSTKIJUNCD(IDX) NOT =   ZERO
+                       MOVE    SPA-GMN-SSTKIJUNCD(IDX) TO  SPA-GMN-SELCD
+                   END-IF
                END-IF
            END-IF
       *
@@ -1137,8 +1141,10 @@
                MOVE    SPA-GMN-KIJUNTEIGENCD   TO  SPA-GMN-SELCD
            ELSE
                MOVE    SPA-NAI-KIJUNFLG        TO  IDX
-               IF      SPA-GMN-SSTKIJUNCD(IDX) NOT =   ZERO
-                   MOVE    SPA-GMN-SSTKIJUNCD(IDX) TO  SPA-GMN-SELCD
+               IF      IDX                     >   ZERO
+                   IF      SPA-GMN-SSTKIJUNCD(IDX) NOT =   ZERO
+                       MOVE    SPA-GMN-SSTKIJUNCD(IDX) TO  SPA-GMN-SELCD
+                   END-IF
                END-IF
            END-IF
       *
