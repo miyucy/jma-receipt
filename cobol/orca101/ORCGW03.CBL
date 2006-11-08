@@ -1529,14 +1529,27 @@
       *
                MOVE    "black"             TO  W03-CD-STYLE (IDX)
                MOVE    SPA-GMN-TCD (IDX)   TO  WRK-TCD
+      *TEST
+               DISPLAY "IDX:" IDX
+                      ",SPA-GMN-TCD (IDX):" SPA-GMN-TCD (IDX) 
+                ",WRK-TCD:" WRK-TCD
+                ",SPA-KIJUN-MAX:" SPA-KIJUN-MAX
+      *TEST
                PERFORM VARYING      IDZ    FROM    1   BY  1
                        UNTIL        IDZ    >   SPA-KIJUN-MAX
+      *TEST
+               DISPLAY "SPA-GMN-SSTKIJUNCD:" SPA-GMN-SSTKIJUNCD (IDZ)
+      *TEST
                    IF      SPA-GMN-SSTKIJUNCD (IDZ)
                                                =   WRK-TCD
                        MOVE    "red"       TO  W03-CD-STYLE (IDX)
                        MOVE    SPA-KIJUN-MAX   TO  IDZ
                    END-IF
                END-PERFORM
+      *TEST
+               DISPLAY "SPA-GMN-KIJUNTEIGENCD:" SPA-GMN-KIJUNTEIGENCD
+             ",WRK-TCD :" WRK-TCD 
+      *TEST
                IF     (SPA-GMN-KIJUNTEIGENCD   NOT =   ZERO )  AND
                       (SPA-GMN-KIJUNTEIGENCD   =   WRK-TCD  )
                    MOVE    "red"               TO  W03-CD-STYLE (IDX)
