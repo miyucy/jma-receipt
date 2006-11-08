@@ -362,6 +362,8 @@
       *
            MOVE    SPACE               TO  SPA-W03
            INITIALIZE                  SPA-W03-AREA-R
+           INITIALIZE                  SPA-W03-GMN-AREA
+           INITIALIZE                  SPA-GMN-INPUT-AREA
       *
            MOVE    SPA-W01-STYUKYMDH   TO  SPA-GMN-STYUKYMD
            MOVE    SPA-W01-EDYUKYMDH   TO  SPA-GMN-EDYUKYMD
