@@ -396,8 +396,8 @@
       *
            MOVE    SPA-COMMON          TO  SPA-AREA.
            MOVE    SPA-WORK            TO  SPA-W01KYOUTU
-           MOVE    SPA-FREE            TO  SPA-W24FREE
-           MOVE    SPA-W25-KYOUTU      TO  SPA-W25-GMN-AREA
+           MOVE    SPA-FREE(1:3000)    TO  SPA-W25-GMN-AREA
+      **** MOVE    SPA-W25-KYOUTU      TO  SPA-W25-GMN-AREA
       *
            MOVE    SPACE           TO  SPA-ERRCD
            MOVE    ZERO            TO  FLG-END
@@ -420,8 +420,7 @@
       *
            MOVE    SPA-W01KYOUTU       TO  SPA-WORK
            MOVE    SPA-AREA            TO  SPA-COMMON
-           MOVE    SPA-W25-GMN-AREA    TO  SPA-W25-KYOUTU
-           MOVE    SPA-W24FREE         TO  SPA-FREE
+           MOVE    SPA-W25-GMN-AREA    TO  SPA-FREE(1:3000)
       *
            .
            EXIT    PROGRAM
