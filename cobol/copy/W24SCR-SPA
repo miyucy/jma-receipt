@@ -22,10 +22,11 @@
       *****************************************************************
       *
        01  SPA-W24FREE.
+      *    検索画面共通
+           03  SPA-W25-KYOUTU            PIC X(30000).
       *
-         03  SPA-W24                   PIC X(20000).
       *  医療機関入院情報画面ＳＰＡ
-         03  SPA-W24-R          REDEFINES   SPA-W24.
+         03  SPA-W24.
            05  SPA-W24-AREA.
              07  SPA-GMN-W24-PAGE                      PIC 9(02).
              07  SPA-GMN-W24-LINE                      PIC 9(02).
@@ -300,7 +301,4 @@
                09  SPA-NAI-W24-NYUKSN-SRYCD-G.
                  11  SPA-NAI-W24-NYUKSN-SRYCD-OCC      OCCURS  20.
                      13  SPA-NAI-W24-NYUKSN-SRYCD      PIC X(09).
-      *
-      *    検索画面共通
-           03  SPA-W25-KYOUTU            PIC X(30000).
       *
