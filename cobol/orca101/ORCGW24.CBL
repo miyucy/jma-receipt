@@ -529,7 +529,7 @@
        3101-SPASET-SEC             SECTION.
       *
            MOVE    SPACE           TO  SPA-W24
-           INITIALIZE                  SPA-W24-R 
+           INITIALIZE                  SPA-W24
                                            W24
       *
       *    コンボボックス初期化

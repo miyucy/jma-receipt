@@ -52,13 +52,10 @@
       *
       *    画面用ＳＰＡ
        01  SPA-W03.
-           03  SPA-W03-AREA            PIC X(20000).
       *    検索画面共通
            03  SPA-W25-KYOUTU          PIC X(30000).
       *
-      *    （バージョンによって初期化ができない為、ワークとして設定）
-       01  WRK-SPA-AREA.
-           03  SPA-W03-AREA-R.
+           03  SPA-W03-AREA.
                05  SPA-W03-GMN-AREA.
                    07  SPA-GMN-PAGE        PIC 9(04).
                    07  SPA-GMN-LINE        PIC 9(02).
@@ -272,7 +269,6 @@
            MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-WORK        TO  SPA-W01KYOUTU
            MOVE    SPA-FREE        TO  SPA-W03
-           MOVE    SPA-W03-AREA    TO  SPA-W03-AREA-R
       *
            MOVE    SPACE           TO  SPA-ERRCD
            MOVE    ZERO            TO  FLG-END
@@ -293,7 +289,6 @@
                PERFORM 500-SET-SCREEN
            END-IF
       *
-           MOVE    SPA-W03-AREA-R      TO  SPA-W03-AREA
            MOVE    SPA-W03             TO  SPA-FREE
            MOVE    SPA-W01KYOUTU       TO  SPA-WORK 
            MOVE    SPA-AREA            TO  SPA-COMMON
@@ -366,7 +361,7 @@
        310-SPASET-SEC              SECTION.
       *
            MOVE    SPACE               TO  SPA-W03
-           INITIALIZE                  SPA-W03-AREA-R
+           INITIALIZE                  SPA-W03-AREA
            INITIALIZE                  SPA-W03-GMN-AREA
            INITIALIZE                  SPA-GMN-INPUT-AREA
       *
