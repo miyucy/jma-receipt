@@ -29,7 +29,7 @@ fi
         fi
 ##
 
-        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBQ02 -parameter $1,$2,$3,$4,$5,$6,$7,$8,$9
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBQ02 -parameter $1,$2,$3,$4,$5,$6,$7,$8,$9 > /tmp/ORCBQ02.log 2>&1
         if  [ -e $7 ]; then
             exit
         fi
