@@ -3276,10 +3276,10 @@
       *    END-IF
       *
       *    時間外がないこと
-           IF      FLG-JKNKSN      NOT =   ZERO
-               MOVE    "0010"              TO  SPA-ERRCD
-               GO  TO                 410119-INPSET-EXT
-           END-IF
+      *    IF      FLG-JKNKSN      NOT =   ZERO
+      *        MOVE    "0010"              TO  SPA-ERRCD
+      *        GO  TO                 410119-INPSET-EXT
+      *    END-IF
       *
       *
            MOVE    1                   TO  FLG-SETSYORI
@@ -3338,9 +3338,14 @@
            PERFORM
                    UNTIL     (FLG-INPUTSET     =   1 )  OR
                              (SPA-ERRCD    NOT =   SPACE )
+               IF     (SPA-GMN-INPUTCD(SPA-GMN-IDX)(1:1)  =   "P" )  AND
+                      (IDX-IP                  =   ZERO  )
+                   CONTINUE
+               ELSE
       *        行を挿入して追加する
-               ADD     1               TO  SPA-GMN-IDX
-               PERFORM 41014-GYOINSN-SEC
+                   ADD     1               TO  SPA-GMN-IDX
+                   PERFORM 41014-GYOINSN-SEC
+               END-IF
       *
                ADD     1               TO  IDX-IP
       *
