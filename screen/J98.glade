@@ -13,9 +13,9 @@
 <widget>
   <class>GtkWindow</class>
   <name>J98</name>
-  <x>290</x>
+  <x>260</x>
   <y>180</y>
-  <width>720</width>
+  <width>754</width>
   <height>574</height>
   <signal>
     <name>map_event</name>
@@ -32,7 +32,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(J98)壳闻乖百办枉联买サブ</title>
+  <title>(J98)柴纷救柴办枉联买サブ</title>
   <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_NONE</position>
   <modal>True</modal>
@@ -49,7 +49,7 @@
       <class>GtkButton</class>
       <name>B01</name>
       <x>12</x>
-      <y>540</y>
+      <y>536</y>
       <width>62</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -64,7 +64,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 10 Jan 2001 07:56:38 GMT</last_modification_time>
       </signal>
-      <label> 提る</label>
+      <label>提る</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -99,8 +99,8 @@
     <widget>
       <class>GtkButton</class>
       <name>B02</name>
-      <x>100</x>
-      <y>540</y>
+      <x>96</x>
+      <y>536</y>
       <width>72</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -122,8 +122,8 @@
     <widget>
       <class>GtkButton</class>
       <name>B06</name>
-      <x>396</x>
-      <y>540</y>
+      <x>392</x>
+      <y>536</y>
       <width>90</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -232,7 +232,7 @@
       <name>SENTAKU</name>
       <x>504</x>
       <y>8</y>
-      <width>192</width>
+      <width>200</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -245,8 +245,8 @@
     <widget>
       <class>GtkButton</class>
       <name>B04</name>
-      <x>244</x>
-      <y>540</y>
+      <x>240</x>
+      <y>536</y>
       <width>72</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -268,8 +268,8 @@
     <widget>
       <class>GtkButton</class>
       <name>B03</name>
-      <x>172</x>
-      <y>540</y>
+      <x>168</x>
+      <y>536</y>
       <width>72</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -291,8 +291,8 @@
     <widget>
       <class>GtkButton</class>
       <name>B05</name>
-      <x>324</x>
-      <y>540</y>
+      <x>320</x>
+      <y>536</y>
       <width>72</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -314,8 +314,8 @@
     <widget>
       <class>GtkButton</class>
       <name>B08</name>
-      <x>608</x>
-      <y>540</y>
+      <x>580</x>
+      <y>536</y>
       <width>88</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -477,8 +477,8 @@
     <widget>
       <class>GtkButton</class>
       <name>B07</name>
-      <x>512</x>
-      <y>540</y>
+      <x>500</x>
+      <y>536</y>
       <width>66</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -535,7 +535,7 @@
       <x>352</x>
       <y>480</y>
       <width>136</width>
-      <height>24</height>
+      <height>28</height>
       <value_in_list>False</value_in_list>
       <ok_if_empty>True</ok_if_empty>
       <case_sensitive>False</case_sensitive>
@@ -567,6 +567,29 @@
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>B12</name>
+      <x>684</x>
+      <y>536</y>
+      <width>66</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>0</modifiers>
+	<key>GDK_F12</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Wed, 10 Jan 2001 07:56:38 GMT</last_modification_time>
+      </signal>
+      <label>F12 澄年</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
     <widget>
@@ -610,53 +633,12 @@
     </widget>
 
     <widget>
-      <class>GtkButton</class>
-      <name>B07S</name>
-      <x>496</x>
-      <y>516</y>
-      <width>90</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <accelerator>
-	<modifiers>GDK_SHIFT_MASK</modifiers>
-	<key>GDK_F7</key>
-	<signal>clicked</signal>
-      </accelerator>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Wed, 10 Jan 2001 07:56:38 GMT</last_modification_time>
-      </signal>
-      <label>Shift+F7 涟是</label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkVSeparator</class>
-      <name>vseparator2</name>
-      <x>584</x>
-      <y>532</y>
-      <width>16</width>
-      <height>44</height>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator1</name>
-      <x>592</x>
-      <y>524</y>
-      <width>112</width>
-      <height>16</height>
-    </widget>
-
-    <widget>
       <class>GtkScrolledWindow</class>
       <name>scrolledwindow26</name>
       <x>5</x>
       <y>40</y>
-      <width>707</width>
-      <height>424</height>
+      <width>736</width>
+      <height>432</height>
       <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
       <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
       <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
@@ -693,7 +675,7 @@
 	  <last_modification_time>Thu, 07 Feb 2002 06:04:20 GMT</last_modification_time>
 	</signal>
 	<columns>5</columns>
-	<column_widths>25,473,46,80,30</column_widths>
+	<column_widths>25,495,50,80,30</column_widths>
 	<selection_mode>GTK_SELECTION_SINGLE</selection_mode>
 	<show_titles>True</show_titles>
 	<shadow_type>GTK_SHADOW_IN</shadow_type>
@@ -763,6 +745,56 @@
 	  <ypad>0</ypad>
 	</widget>
       </widget>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>B07S</name>
+      <x>488</x>
+      <y>510</y>
+      <width>88</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>GDK_SHIFT_MASK</modifiers>
+	<key>GDK_F7</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Wed, 10 Jan 2001 07:56:38 GMT</last_modification_time>
+      </signal>
+      <label>Shift+F7 涟是</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkVSeparator</class>
+      <name>vseparator3</name>
+      <x>668</x>
+      <y>532</y>
+      <width>16</width>
+      <height>36</height>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator1</name>
+      <x>572</x>
+      <y>524</y>
+      <width>102</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkVSeparator</class>
+      <name>vseparator2</name>
+      <x>567</x>
+      <y>532</y>
+      <width>16</width>
+      <height>36</height>
     </widget>
   </widget>
 </widget>

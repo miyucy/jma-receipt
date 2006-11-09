@@ -170,4 +170,7 @@
            03  SPA-MAE-PTID            PIC  9(10).
            03  SPA-MAE-HKNKBN          PIC  9(01).
            03  SPA-MAE-SISIKBN         PIC  9(01).
+           03  SPA-MAE-ZAINUM          PIC  9(08).
+      *
+           03  SPA-J04-SYORI           PIC  9(01).
       *

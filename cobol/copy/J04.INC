@@ -38,13 +38,18 @@
                 04  J04-VALUE   PIC X(9).
               03  J04-SEX.
                 04  J04-VALUE   PIC X(2).
-              03  J04-HKNCOMBI.
-                04  J04-VALUE   PIC X(40).
-              03  J04-SRYKA.
-                04  J04-VALUE   PIC X(10).
               03  J04-RATE.
                 04  J04-VALUE   PIC X(6).
               03  J04-RRKYMD.
                 04  J04-VALUE   PIC X(13).
               03  J04-DAY       OCCURS  31.
                 04  J04-VALUE   PIC X(3).
+              03  J04-HKNCOMBI-COMB.
+                04  J04-HKNCOMBI.
+                  05  J04-VALUE   PIC X(55).
+                04  J04-HKNCOMBI-COUNT   PIC S9(9)   BINARY.
+                04  J04-HKNCOMBI-ITEM
+                        PIC X(55)   OCCURS  20 TIMES.
+              03  J04-SRYKA.
+                04  J04-VALUE   PIC X(20).
+

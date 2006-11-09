@@ -36,13 +36,6 @@
                05  SPA-GMN-IDXED                 PIC 9(02).
                05  SPA-GMN-CUR                   PIC 9(02).
       *
-      *********    Ç¯Îð 
-      *        05  SPA-NAI-AREA.
-      *            07  SPA-FLG-NENREI            PIC 9(01).
-      *            07  SPA-NAI-NENREI.
-      *                09  SPA-NAI-NENREI-YY     PIC 9(03).
-      *                09  SPA-NAI-NENREI-MM     PIC 9(02).
-      *****************09  SPA-NAI-NENREI-DD     PIC 9(02).
       *        ±¡³°¶èÊ¬
                05  SPA-NAI-INGAIKBN              PIC 9(01).
       *    ¿ÇÎÅ¼ïÊÌ¥Á¥§¥Ã¥¯ÍÑ¥Æ¡¼¥Ö¥ë
@@ -73,6 +66,14 @@
                05  SPA-CHOKIKAISU          PIC  9(05).
       *        ·Ù¹ðºÑ¤ß
                05  SPA-KEI-FLG             PIC 9(01).
+      *        ÊÝ¸±ÁÈ¹ç¤»
+               05  SPA-GMN-HKNCOMBI-G.
+                   07  SPA-GMN-HKNCOMBI        PIC X(04).
+                   07  SPA-GMN-HKNCOMBIF1      PIC X(01).
+                   07  SPA-GMN-HKNCOMBI-MEI    PIC X(50).
+      *        ¿ÇÎÅ¶èÊ¬
+               03  SPA-J04-SRYKBN              PIC X(02).
+      *
       *    Å¸³«»þ¤Î¿ÇÎÅ¥³¡¼¥É
            03  SPA-J04-TEISEI-AREA.
                05  SPA-J04-TEISEI-OCC          OCCURS   200.
@@ -81,6 +82,34 @@
       *    ÆâÉþÄþ¸º
            03  SPA-NEIGEN-KBN          PIC 9(01).
            03  SPA-NEIGEN-FLG          PIC 9(01).
+      *
+           03  SPA-J04-INIT.
+      *
+               05  SPA-J04-HKNCOMBI    PIC X(04).
+      *
+      *        ÊÝ¸±ÁÈ¹ç¤»°ìÍ÷
+               05  SPA-HKNCOMBI-AREA.
+                   07  SPA-GMN-HKNCOMBI-LISTG.
+                       09  SPA-GMN-HKN-LIST    OCCURS  20.
+                           11  SPA-GMN-THKNCOMBINUM-G.
+                               13  SPA-GMN-THKNCOMBINUM    PIC X(04).
+                               13  SPA-GMN-THKNCOMBY1      PIC X(01).
+                               13  SPA-GMN-THKNCOMBIMEI    PIC X(50).
+      *
+                           11  SPA-NAI-TFTNRATE        PIC  9(03).
+                           11  SPA-NAI-THKNID          PIC  9(10).
+                           11  SPA-NAI-THKNNUM         PIC  X(03).
+                           11  SPA-NAI-THKNKBN         PIC X(01).
+                           11  SPA-NAI-TRSI-SISIKBN    PIC  X(01).
+                           11  SPA-NAI-TRSI-SHOBYOYMD  PIC  X(08).
+                           11  SPA-NAI-TRSI-HKNKBN     PIC  X(01).
+                           11  SPA-NAI-TKOH1HKNNUM     PIC  X(03).
+                           11  SPA-NAI-TKOH2HKNNUM     PIC  X(03).
+                           11  SPA-NAI-TKOH3HKNNUM     PIC  X(03).
+                           11  SPA-NAI-TKOH4HKNNUM     PIC  X(03).
+                           11  SPA-NAI-TTEKSTYMD       PIC  X(08).
+                           11  SPA-NAI-TTEKEDYMD       PIC  X(08).
+                       09  SPA-HKN-MAX             PIC  9(04).
       *
       *    £Ë£¹£¸²èÌÌÍÑ
            03  SPA-J98-MOTOPG              PIC X(08).
@@ -103,6 +132,7 @@
                    07  SPA-J98-NAI-KENSANO       PIC 9(02).
                    07  SPA-J98-NAI-HOUKATU       PIC X(01).
                05  SPA-J98-GMN-ALL               PIC X(01).
+               05  SPA-J98-OLD-SYORI             PIC X(01).
       *
                05  SPA-J98-GMN-TBL.
                    07  SPA-J98-GMN-TBLREC        OCCURS   200.

@@ -201,6 +201,7 @@
            03  WRK-RENNUM-KEY          PIC 9(01).
            03  WRK-RENNUM              PIC 9(01).
            03  WRK-DOUJI-RENNUM-KEY    PIC 9(01).
+           03  WRK-CNT-DOUJI           PIC 9(01).
       *
       *    診療行為内容比較用テーブル
        01  TBL-AREA.
@@ -1734,7 +1735,7 @@
            MOVE    ZERO                TO  WRK-JYURRK-EDANUM
            MOVE    ZERO                TO  WRK-JYURRK-DOUJI-RENNUM
            IF      SPA-DOUJI-RENNUM    NOT =   ZERO
-               MOVE    SPA-DOUJI-RENNUM    TO  WRK-JYURRK-DOUJI-RENNUM
+               MOVE    SPA-DOUJI-RENNUM    TO  WRK-JYURRK-RENNUM
            END-IF
       *
            MOVE    SPACE               TO  JYURRK-REC
@@ -1761,6 +1762,7 @@
            END-IF
            MOVE    ZERO                TO  FLG-OK
            MOVE    ZERO                TO  WRK-JYURRK-DOUJI-RENNUM
+           MOVE    ZERO                TO  WRK-CNT-DOUJI
            PERFORM
                    UNTIL      (FLG-JYURRK      =   1 )  OR
                               (FLG-OK          =   1 )
@@ -1772,7 +1774,10 @@
                ELSE
                    MOVE    JYURRK-DOUJI-RENNUM
                                            TO  WRK-JYURRK-DOUJI-RENNUM
-                   ADD     1               TO  WRK-JYURRK-DOUJI-RENNUM
+                   IF      JYURRK-EDANUM   =   1
+                       ADD     1           TO  WRK-JYURRK-DOUJI-RENNUM
+                       ADD     1           TO  WRK-CNT-DOUJI
+                   END-IF
                END-IF
       *
                MOVE    "tbl_jyurrk"        TO  MCP-TABLE
@@ -1787,6 +1792,10 @@
            IF     (SPA-SYORIFLG        =   1  )  AND
                   (SPA-SRYKA           =   SPA-OLD-SRYKA )
                MOVE    SPA-DOUJI-RENNUM    TO  WRK-JYURRK-DOUJI-RENNUM
+      *        他の保険組合せがない時、ゼロ
+               IF      WRK-CNT-DOUJI       =   ZERO
+                   MOVE    ZERO            TO  WRK-JYURRK-DOUJI-RENNUM
+               END-IF
            END-IF
       *
            IF      FLG-OK              =   ZERO

@@ -480,6 +480,8 @@
            03  WRK-J02-RRKLIST-ROW     PIC S9(09).
            03  FLG-GMN-INIT            PIC 9(01).
            03  MAE-J02-DATALIST-ROW    PIC S9(09).
+           03  WRK-MAE-ZAINUM          PIC 9(08).
+      *
       *    剤変更チェック用
            03  TBL-MAE-ZAINUM-AREA.
                05  TBL-MAE-ZAINUM      PIC 9(08)
@@ -1147,8 +1149,9 @@
                    END-IF
       *
                    IF      SPA-MOTOPG          =   "J04"
-                       MOVE    J02-DATALIST-ROW
-                                               TO  MAE-J02-DATALIST-ROW
+      *?               MOVE    J02-DATALIST-ROW
+      *?                                       TO  MAE-J02-DATALIST-ROW
+                       MOVE    SPA-MAE-ZAINUM  TO  WRK-MAE-ZAINUM
                    END-IF
                    MOVE    1                   TO  FLG-HENSYU
                    PERFORM 310-SPA-SET-SEC
@@ -1237,6 +1240,7 @@
                    END-IF
       *
                WHEN    "0104"
+               WHEN    "0134"
                    MOVE    SPACE           TO  SPA-JIDCD
       *            剤変更の確認
                    IF      SPA-JID1-FLG        =   "OK"
@@ -3128,6 +3132,11 @@
       *    訂正日
            MOVE    SPA-GMN-HENSRYYMD   TO  J02-HENSRYYMD
       *
+      *    Ｊ０４からの時、変更した剤を表示する
+           MOVE    ZERO                TO  WRK-BANGO
+           IF      WRK-MAE-ZAINUM      NOT =   ZERO
+               PERFORM 5001-J04SELECT-SEC
+           END-IF
       *    明細
            PERFORM   VARYING   IDX     FROM    1   BY  1
                      UNTIL     IDX         >   SPA-GMN-MAX
@@ -3172,6 +3181,13 @@
                    MOVE    2               TO  J02-DATALIST-ROWATTR
                ELSE
                    MOVE    "F"             TO  J02-DATALIST-SELECT(IDX)
+               END-IF
+      *        Ｊ０４からのリスト表示位置
+               IF     (SPA-GMN-BANGO           =   ZERO  )  AND
+                      (SPA-GMN-TBANGO(IDX) NOT =   ZERO  )  AND
+                      (SPA-GMN-TBANGO(IDX)     =   WRK-BANGO )
+                   MOVE    IDX             TO  J02-DATALIST-ROW
+                   MOVE    2               TO  J02-DATALIST-ROWATTR
                END-IF
            END-PERFORM
            MOVE    SPA-GMN-MAX         TO  J02-DATALIST-COUNT
@@ -3223,6 +3239,22 @@
            PERFORM 5001-MAPCUR-SEC
            .
        500-GMNHEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   剤表示位置処理
+      *****************************************************************
+       5001-J04SELECT-SEC             SECTION.
+      *    Ｊ０４からの時、変更した剤を表示する
+           PERFORM   VARYING   IDG     FROM    1   BY  1
+                     UNTIL     IDG         >   SPA-GMN-MAX
+               IF      SPA-NAI-ZAINUM (IDG)    =   WRK-MAE-ZAINUM
+                   MOVE    SPA-NAI-TBANGO  (IDG)   TO  IDX
+                   MOVE    SPA-GMN-TBANGO (IDX)    TO  WRK-BANGO
+               END-IF
+           END-PERFORM
+           .
+       5001-J04SELECT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -7089,8 +7121,19 @@
        420-ZAIHENKOU-SEC        SECTION.
       *
            IF      SPA-GMN-BANGO       =   ZERO
-               MOVE    1                   TO  SPA-GMN-CUR
-               MOVE    "0013"              TO  SPA-ERRCD
+      *        入院は新規作成可能
+               IF     (SPA-GMN-NYUGAIKBN   =   "1" ) AND
+                      (SPA-NAI-NYUINYMD    NOT =   SPACE )
+                   IF      SPA-GMN-SRYKA       =   "00"
+                       MOVE    06                  TO  SPA-GMN-CUR
+                       MOVE    "0035"              TO  SPA-ERRCD
+                   ELSE
+                       MOVE    "0134"              TO  SPA-JIDCD
+                   END-IF
+               ELSE
+                   MOVE    1                   TO  SPA-GMN-CUR
+                   MOVE    "0013"              TO  SPA-ERRCD
+               END-IF
                GO      TO      420-ZAIHENKOU-EXT
            END-IF
       *
@@ -7171,6 +7214,22 @@
            MOVE    SPA-NAI-SRYYM       TO  SPA-J02-SRYYMD(1:6)
            MOVE    SPA-GMN-SRYYM       TO  SPA-J02-SRYYMDW(1:6)
       *
+           IF      SPA-NAI-BANGO       =   ZERO
+               MOVE    SPA-GMN-SRYKAMEI    TO  SPA-J01-SRYKAMEI
+               MOVE    SPA-GMN-SRYKA       TO  SPA-J01-SRYKA
+               IF      SPA-GMN-HHKNCOMBI   =   "0000"
+                   MOVE    SPACE               TO  SPA-HKNCOMBINUM
+                   MOVE    SPACE               TO  SPA-J02-HKNCOMBIMEI
+               ELSE
+                   MOVE    SPA-GMN-HHKNCOMBI   TO  SPA-HKNCOMBINUM
+                   MOVE    SPA-GMN-HHKNCOMBIMEI
+                                               TO  SPA-J02-HKNCOMBIMEI
+               END-IF
+               MOVE    ZERO                TO  SPA-ZAINUM
+               MOVE    1                   TO  SPA-J04-SYORI
+           ELSE
+               MOVE    ZERO                TO  SPA-J04-SYORI
+      *
            MOVE    SPA-NAI-BANGO       TO  IDX
       *    見出し
            MOVE    SPA-GMN-SRYKAMEI    TO  SPA-J01-SRYKAMEI
@@ -7197,6 +7256,8 @@
            MOVE    SPA-GMN-HKNCOMBIMEI TO  SPA-J02-HKNCOMBIMEI
       *    診療種別
            MOVE    SPA-GMN-SRYKBN      TO  SPA-GMN-SRYKBN-MAE
+      *
+           END-IF
       *
       *    保険算定年齢チェック等
            INITIALIZE                  ORCSAGECHKAREA
@@ -7251,6 +7312,9 @@
                    MOVE    31              TO  IDX-D
                END-IF
            END-PERFORM
+           IF      SPA-NAI-BANGO       =   ZERO
+               MOVE    "01"                TO  SPA-J02-SRYYMD(7:2)
+           END-IF
       *
            MOVE    SPA-SRYYMD          TO  SPA-MAE-SRYYMD
            MOVE    SPA-PTID            TO  SPA-MAE-PTID
@@ -9447,7 +9511,6 @@
        49011212-DENPNUM-SET-EXT.
            EXIT.
       *
-      *
       *****************************************************************
       *    受診履歴種別編集処理
       *****************************************************************
@@ -10718,6 +10781,7 @@
            IF      SPA-ERRCD           =   SPACE
                IF      SPA-J01-SRYKA       =   ZERO
                    MOVE    "0022"          TO  SPA-ERRCD
+                   MOVE    06              TO  SPA-GMN-CUR
                ELSE
                    MOVE    "0109"          TO  SPA-JIDCD
                END-IF
@@ -11637,6 +11701,12 @@
                WHEN    "0033"
                    MOVE    "診療種別がありません。"
                                        TO  WRK-ERRMSG
+               WHEN    "0035"
+                   STRING  "全科では剤の新規登録はできません。"
+                           "診療科を選択して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    WRK-ERRMSG
+                   END-STRING
                WHEN    "0040"
                    MOVE    "算定できる点滴手技料がありません。"
                                        TO  WRK-ERRMSG
@@ -11834,6 +11904,14 @@
                                        TO  WRK-JIDMSG1
                    MOVE    "で当日の剤内容を追加修正します"
                                        TO  WRK-JIDMSG2
+      *
+               WHEN    "0134"
+                   STRING  "現在までの修正分を登録後、"
+                           "剤を新規登録へ遷移します。"
+                                               DELIMITED  BY SIZE
+                                               INTO   WRK-JIDMSG
+                   END-STRING
+      *
                WHEN    "0106"
                MOVE
            "診療年月が変更されました。現在までの修正分を登録します。"

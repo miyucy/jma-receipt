@@ -278,12 +278,6 @@ J04	{
 		SEX	{
 			value	varchar(2);
 		};
-		HKNCOMBI	{
-			value	varchar(40);
-		};
-		SRYKA	{
-			value	varchar(10);
-		};
 		RATE	{
 			value	varchar(6);
 		};
@@ -382,6 +376,16 @@ J04	{
 		};
 		DAY31	{
 			value	varchar(3);
+		};
+		HKNCOMBI_COMB	{
+			HKNCOMBI	{
+				value	varchar(55);
+			};
+			count	int;
+			item	varchar(55)[20];
+		};
+		SRYKA	{
+			value	varchar(20);
 		};
 	};
 };

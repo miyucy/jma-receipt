@@ -1715,6 +1715,17 @@
                WHEN    "1031"
                    MOVE    "明細がありません。変更できません。"
                                        TO  SPA-ERRMSG
+      *        剤追加・保険変更
+               WHEN    "1033"
+                   MOVE    "保険組合せ選択エラー。"
+                                       TO  SPA-ERRMSG
+               WHEN    "1034"
+                   STRING  "検査は剤分離になります。"
+                           "１剤分のみ入力して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+      *
                WHEN    "K001"
                    MOVE    "警告！！時間外算定がありません"
                                        TO  SPA-ERRMSG

@@ -416,7 +416,7 @@
                                MOVE    "1020"          TO  SPA-ERRCD
                                MOVE    "1"             TO  SPA-COM-CUR
                                                                  (IDX)
-                       END-IF
+                           END-IF
                    END-EVALUATE
                END-IF
            END-PERFORM
@@ -1052,7 +1052,13 @@
                           (IDX                 <   SPA-GMN-MAX)
                        CONTINUE
                    ELSE
-                       MOVE    "1020"          TO  SPA-ERRCD
+                       IF     (SPA-COM-SRYKBN (IDX - 1)
+                                           =   SPA-COM-SRYKBN(IDX))
+                         AND  (SPA-COM-SRYKBN (IDX)    =   "60"   )
+                           MOVE    "1034"          TO  SPA-ERRCD
+                       ELSE
+                           MOVE    "1020"          TO  SPA-ERRCD
+                       END-IF
                        MOVE    "1"             TO  SPA-COM-CUR(IDX)
                    END-IF
                END-IF
@@ -1655,6 +1661,10 @@
            IF    ((WRK-KENSA-MAX       >   1             )  AND
                   (WRK-KENSA-MAX       <=  WRK-KENSA-CNT )) OR
                   (SPA-GMN-INPUTCD(IDX-1)(1:1)   =   "." ) 
+      *       会計照会で最終行の判定
+              OR  (IDX                  =   1     ) 
+              OR  ((LNK-SC93-PG         =   "J04" ) AND
+                   (IDX             NOT =   SPA-GMN-MAX ))
                CONTINUE
            ELSE
                MOVE    2               TO  FLG-SYORI
