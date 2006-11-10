@@ -185,6 +185,7 @@
       *
            03  FLG-CHK-RSI         PIC 9(01).
            03  FLG-CHK             PIC 9(01).
+           03  FLG-HKNHEN          PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -1232,6 +1233,7 @@
       *
       *    保険組合せ
            MOVE    SPA-HKNCOMBINUM     TO  SPA-J04-HKNCOMBI
+           MOVE    SPA-HKNKBN          TO  SPA-J04-HKNKBN
            MOVE    SPA-HKNCOMBINUM     TO  SPA-GMN-HKNCOMBI
            IF     (SPA-NYUGAIKBN       =   1   )
                PERFORM 31031-HKNCOMBI-HEN-SEC
@@ -1281,8 +1283,6 @@
            PERFORM 510-TBLHEN-SEC
            MOVE    SPACE           TO  FLG-TOROKU
       *
-      *    カーソルの位置を最初の行へ
-      *****MOVE    "1"                 TO  SPA-COM-CUR (01)
            MOVE    SPA-ZAINUM          TO  SPA-MAE-ZAINUM
       *
            .
@@ -2008,12 +2008,6 @@
       *    次頁
                WHEN    "CLICKED"       ALSO    "B07"
                    PERFORM 460-ATOGMN-SEC
-      *    予約登録へ
-               WHEN    "CLICKED"       ALSO    "B10"
-                   PERFORM 480-YOYAKU-SEC
-      *    受付一覧へ
-               WHEN    "CLICKED"       ALSO    "B11"
-                   PERFORM 490-UKEICHI-SEC
       **    登録
                WHEN    "CLICKED"       ALSO    "B12"
                     PERFORM 4100-TOROKU-SEC
@@ -2058,8 +2052,10 @@
                MOVE    10                  TO  SPA-GMN-CUR
            ELSE
                PERFORM 41001-HKNCOMBI-HEN-SEC
-               MOVE    SPA-GMN-HKNCOMBI    TO  SPA-HKNCOMBINUM
-               MOVE    1                   TO  SPA-GMN-CUR
+               IF      SPA-ERRCD           =   SPACE
+                   MOVE    SPA-GMN-HKNCOMBI    TO  SPA-HKNCOMBINUM
+                   MOVE    1                   TO  SPA-GMN-CUR
+               END-IF
            END-IF
            .
        4100-HKNCOMBI-CHK-EXT.
@@ -2090,9 +2086,35 @@
                                        TO  SPA-RSI-SISIKBN
            MOVE    SPA-NAI-TRSI-HKNKBN (IDX)
                                        TO  SPA-RSI-HKNKBN
+      *    適用期間判定
+           MOVE    ZERO                TO  WRK-YMDS1
+           MOVE    ZERO                TO  WRK-YMDS2
+           MOVE    SPA-J02-SRYYMD(1:6) TO  WRK-YMDS1(1:6)
+           MOVE    SPA-J02-SRYYMD(1:6) TO  WRK-YMDS2(1:6)
+           PERFORM   VARYING   IDX-D   FROM    1   BY  1
+                     UNTIL     IDX-D       >   31
+               IF      SPA-SEL-DAY (IDX-D)     >   ZERO
+                   MOVE    IDX-D               TO  WRK-DDS2
+                   IF      WRK-DDS1            =   ZERO
+                       MOVE    IDX-D               TO  WRK-DDS1
+                   END-IF
+               END-IF
+           END-PERFORM
+           IF      (WRK-YMDS1          <   SPA-NAI-TTEKSTYMD (IDX)  OR
+                                       >   SPA-NAI-TTEKEDYMD (IDX))
+               OR  (WRK-YMDS2          <   SPA-NAI-TTEKSTYMD (IDX)  OR
+                                       >   SPA-NAI-TTEKEDYMD (IDX))
+               MOVE    "1036"              TO  SPA-ERRCD
+               MOVE    10                  TO  SPA-GMN-CUR
+           END-IF
+      *
       *    労災判定
-           MOVE    SPA-NAI-THKNKBN  (IDX)
-                                       TO  SPA-HKNKBN
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-NAI-THKNKBN  (IDX)  NOT =   SPA-HKNKBN
+                   MOVE    1                   TO  FLG-HKNHEN
+               END-IF
+               MOVE    SPA-NAI-THKNKBN  (IDX)  TO  SPA-HKNKBN
+           END-IF
            .
        41001-HKNCOMBI-HEN-EXT.
            EXIT.
@@ -2317,6 +2339,10 @@
                    UNTIL      (SPA-GMN-IDX     >   200   )  OR
                               (SPA-ERRCD   NOT =   SPACE )  OR
                               (FLG-END     NOT =   ZERO  )
+               IF     (FLG-HKNHEN          =   1 )
+                   MOVE    SPACE           TO  SPA-MAE-INPUTCD
+                                                       (SPA-GMN-IDX)
+               END-IF
                IF     (SPA-MAE-INPUTCD (SPA-GMN-IDX)  NOT =
                                        SPA-GMN-INPUTCD (SPA-GMN-IDX)) OR
                       (SPA-COM-IN2 (SPA-GMN-IDX)   =   "1"  )
@@ -2413,7 +2439,6 @@
                                        TO  SPA-GMN-INPUTCD(SPA-GMN-IDX)
                MOVE    "1030"          TO  SPA-ERRCD
                MOVE    "1"             TO  SPA-COM-CUR    (SPA-GMN-IDX)
-               GO  TO                  41011-KOUI-HENDEL-EXT
            END-IF
       *
            .
@@ -4838,92 +4863,6 @@
            EXIT.
       *
       *****************************************************************
-      *    予約登録へ
-      *****************************************************************
-       480-YOYAKU-SEC             SECTION.
-      *
-      *    診療行為入力チェック
-           PERFORM 41001-KOUI-ALLCHK-SEC
-           IF     (SPA-ERRCD       NOT =   SPACE )  OR
-                  (FLG-END             =   1     )
-               GO      TO      480-YOYAKU-EXT
-           END-IF
-      *
-      *    更新前のチェック
-      *    MOVE    "1"                 TO  FLG-TOROKU
-      *    PERFORM 510-TBLHEN-SEC
-      *    MOVE    SPACE               TO  FLG-TOROKU
-      *    IF      SPA-ERRCD       NOT =   SPACE
-      *        GO      TO      480-YOYAKU-EXT
-      **** END-IF
-      *
-      *    画面移行用のパラメタ変更
-           MOVE    "J04"               TO  SPA-MOTOPG
-           MOVE    "J04"               TO  SPA-MOTOPG3
-           MOVE    "Y01"               TO  SPA-SAKIPG
-           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
-      *
-      *    戻り時、画面を元へ戻す
-           MOVE    SPACE               TO  LINKAREA
-           MOVE    SPA-KYOTUKEY        TO  LNK-COMMON
-           MOVE    SPA-J04             TO  LNK-SCRSPA
-           INITIALIZE                  SPA-KYOTUKEY
-           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
-      *
-           MOVE   "CHANGE"             TO  MCP-PUTTYPE.
-      **** MOVE    "JOIN"              TO  MCP-PUTTYPE
-           MOVE   "Y01"                TO  MCP-WINDOW.
-      *
-           PERFORM 900-PUT-WINDOW.
-      *
-           MOVE    1                   TO  FLG-END
-      *
-           .
-       480-YOYAKU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    受付一覧へ
-      *****************************************************************
-       490-UKEICHI-SEC             SECTION.
-      *
-      *    診療行為入力チェック
-           PERFORM 41001-KOUI-ALLCHK-SEC
-           IF     (SPA-ERRCD       NOT =   SPACE )  OR
-                  (FLG-END             =   1     )
-               GO      TO      490-UKEICHI-EXT
-           END-IF
-      *    更新前のチェック
-      *    MOVE    "1"                 TO  FLG-TOROKU
-      *    PERFORM 510-TBLHEN-SEC
-      **** MOVE    SPACE               TO  FLG-TOROKU
-      *    IF      SPA-ERRCD       NOT =   SPACE
-      *        GO      TO      490-UKEICHI-EXT
-      *****END-IF
-      *
-           MOVE    "U01"               TO  SPA-SAKIPG
-           MOVE    "J04"               TO  SPA-MOTOPG
-      *
-      *    戻り時、画面を元へ戻す
-           MOVE    SPACE               TO  LINKAREA
-           MOVE    SPA-KYOTUKEY        TO  LNK-COMMON
-           MOVE    SPA-J04             TO  LNK-SCRSPA
-           INITIALIZE                  SPA-KYOTUKEY
-           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
-      *
-           MOVE   "CHANGE"             TO  MCP-PUTTYPE
-      *****MOVE    "JOIN"              TO  MCP-PUTTYPE
-           MOVE    "U01"               TO  MCP-WINDOW
-      *
-           PERFORM 900-PUT-WINDOW
-      *
-           MOVE    1                   TO  FLG-END
-      *
-           .
-       490-UKEICHI-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    更新前チェック処理
       *****************************************************************
        41001-KOUI-ALLCHK-SEC       SECTION.
@@ -5612,6 +5551,10 @@
            MOVE    SPA-SEL-DAY-G       TO  SSANTEI-DAY-AREA
       *    特定薬剤の初回日
            MOVE    SPA-TOKTEI-YMD      TO  SSANTEI-SYOKAIYMD
+      *    保険組合せ
+           MOVE    SPA-J04-HKNCOMBI    TO  SSANTEI-HKNCOMBINUM
+      *    保険区分
+           MOVE    SPA-J04-HKNKBN      TO  SSANTEI-HKNKBN
       *
            CALL    "ORCSSANTEI"        USING
                                        ORCSSANTEIAREA
@@ -5659,7 +5602,8 @@
                                        MCPAREA
                                        MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
-               DISPLAY "PTINF UPDTE ERR:"   MCP-RC
+               DISPLAY "J04 PTINF UPD ERR:"   MCP-RC
+                      ",KEY:" PTINF-KEY
                MOVE    "1028"              TO  SPA-ERRCD
            END-IF 
       *
@@ -5883,6 +5827,7 @@
                                        MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "J04 SRYACT INS ERR;"    MCP-RC 
+                    ",SRY-KEY:"  SRY-KEY
                MOVE    "1024"          TO  SPA-ERRCD
            END-IF
       *
@@ -5975,6 +5920,8 @@
                                        MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "J04 SRYACCT UPD ERR:"  MCP-RC
+                      ",ACCT-KEY:" ACCT-KEY
+               MOVE    "1099"          TO  SPA-ERRCD
            END-IF
       *    受診履歴修正
            IF     (SPA-NYUGAIKBN       =   "1"  )  AND
@@ -6246,7 +6193,7 @@
            IF      MCP-RC          NOT =   ZERO
               DISPLAY "J04 JYURRK INS ERR:" JYURRK-KEY  "."
               DISPLAY "MCP-RC:" MCP-RC ":" 
-              MOVE    "1032"          TO  SPA-ERRCD
+              MOVE    "1099"          TO  SPA-ERRCD
            END-IF
            .
        450211-JYURRK-INS-EXT.
@@ -6269,7 +6216,7 @@
            IF      MCP-RC          NOT =   ZERO
               DISPLAY "J04 JYURRK UPD ERR:" JYURRK-KEY  "."
               DISPLAY "MCP-RC:" MCP-RC ":" 
-              MOVE    "1032"          TO  SPA-ERRCD
+              MOVE    "1099"          TO  SPA-ERRCD
            END-IF
            .
        450211-JYURRK-UPD-EXT.
@@ -6594,6 +6541,10 @@
                                         TO  SSANTEI-MSANTEITENKBN
                MOVE    1                TO  FLG-NAIBUN
            END-IF
+      *    保険組合せ
+           MOVE    SPA-HKNCOMBINUM      TO  SSANTEI-HKNCOMBINUM
+      *    保険区分
+           MOVE    SPA-HKNKBN           TO  SSANTEI-HKNKBN
       *
            CALL    "ORCSSANTEI"        USING
                                        ORCSSANTEIAREA
@@ -6780,6 +6731,8 @@
                                        MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "J04 SRYACCT UPD ERR:"  MCP-RC
+                    ",KEY:" ACCT-KEY
+               MOVE    "1099"          TO  SPA-ERRCD
            END-IF
       *
            .
@@ -6847,6 +6800,7 @@
            IF      MCP-RC          NOT =   ZERO
                MOVE    "1026"          TO  SPA-ERRCD
                DISPLAY "J04 SRYACCT INS ERR:"  MCP-RC
+                       ",KEY:" ACCT-KEY
            END-IF
       *
       *    算定履歴追加
