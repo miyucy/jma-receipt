@@ -357,6 +357,9 @@
            03  WRK-TOKNYUIN-NM             PIC X(60).
            03  WRK-TOKNYUIN-KBN            PIC X(01).
            03  WRK-TOKNYUIN-CD             PIC X(02).
+           03  WRK-TOKNYUIN-SRYCD-X.
+               05  WRK-TOKNYUIN-SRYCD      PIC 9(09).
+           03  WRK-TOKNYUIN-SRYCDTTL       PIC 9(14).
            03  WRK-TOKNYUIN-NYUINRYOKBN    PIC X(02).
            03  WRK-TAIHI-SRYKA             PIC X(02).
            03  WRK-NOW-SKYSTYMD            PIC X(08).
@@ -448,6 +451,7 @@
                05  WRK-SYUKA-KBN           PIC X(02).
                05  WRK-SYUKA-YMD           PIC X(08).
            03  WRK-CHK-YMD                 PIC X(08).
+           03  WRK-CMB-TOKNYUIN-AREA           PIC X(3000).
       *
        01  BAK-AREA.
            03  BAK-AGE-G.
@@ -4320,28 +4324,34 @@
       *
                        IF    ( SYS-5001-BTU-SBT            =   "04" )
                         AND  ( SYS-5111-BRM-NYUINRYOKBN    =   "05" )
-                           PERFORM 41011-PT-AGE-SEC
-                           IF    ( WRK-NENREI >=  70 )
-                            OR   ( FLG-ROUJIN  =   1 )
-                               MOVE    1       TO  FLG-TARGET
-                           ELSE
-                               IF    ( SYS-5111-SEIKATU-RYOKBN
+                           IF    ( SYS-5111-SEIKATU-RYOKBN
                                                            =   SPACE )
-                                   MOVE    1   TO  FLG-TARGET
+                               MOVE    1   TO  FLG-TARGET
+                           ELSE
+                               PERFORM 41011-PT-AGE-SEC
+                               IF    ( WRK-NENREI >=  70 )
+                                OR   ( FLG-ROUJIN  =   1 )
+                                    IF    ( SPA-NAI-I01-RSI-HKNKBN
+                                                   =   SPACE )
+                                        MOVE    1  TO  FLG-TARGET
+                                    END-IF
                                END-IF
                            END-IF
                        END-IF
       *
                        IF    ( SYS-5001-BTU-SBT            =   "09" )
                         AND  ( SYS-5111-BRM-NYUINRYOKBN    =   "06" )
-                           PERFORM 41011-PT-AGE-SEC
-                           IF    ( WRK-NENREI >=  70 )
-                            OR   ( FLG-ROUJIN  =   1 )
-                               MOVE    1       TO  FLG-TARGET
-                           ELSE
-                               IF    ( SYS-5111-SEIKATU-RYOKBN
+                           IF    ( SYS-5111-SEIKATU-RYOKBN
                                                            =   SPACE )
-                                   MOVE    1   TO  FLG-TARGET
+                               MOVE    1   TO  FLG-TARGET
+                           ELSE
+                               PERFORM 41011-PT-AGE-SEC
+                               IF    ( WRK-NENREI >=  70 )
+                                OR   ( FLG-ROUJIN  =   1 )
+                                    IF    ( SPA-NAI-I01-RSI-HKNKBN
+                                                   =   SPACE )
+                                        MOVE    1  TO  FLG-TARGET
+                                    END-IF
                                END-IF
                            END-IF
                        END-IF
@@ -4355,6 +4365,8 @@
                                                    TO  WRK-TOKNYUIN-CD
                            MOVE    SYS-5111-BRM-NYUINRYOKBN
                                            TO  WRK-TOKNYUIN-NYUINRYOKBN
+                           MOVE    SYS-5111-SRYCD
+                                               TO  WRK-TOKNYUIN-SRYCD-X
                            PERFORM 4101-CMB-TOKNYUIN-DAT-SET-SEC
                        END-IF
       *
@@ -4436,15 +4448,18 @@
                        PERFORM 41011-PT-AGE-SEC
                        IF    ( WRK-NENREI  >=  70 )
                         OR   ( FLG-ROUJIN  =   1 )
-                           MOVE    "5111"      TO  WRK-KANRICD
-                           MOVE    "49"        TO  WRK-KBNCD
-                           MOVE    "3"         TO  WRK-TOKNYUIN-KBN
-                           PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
+                           IF    ( SPA-NAI-I01-RSI-HKNKBN
+                                                   =   SPACE )
+                               MOVE    "5111"      TO  WRK-KANRICD
+                               MOVE    "49"        TO  WRK-KBNCD
+                               MOVE    "3"         TO  WRK-TOKNYUIN-KBN
+                               PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
       *
-                           MOVE    "5111"      TO  WRK-KANRICD
-                           MOVE    "51"        TO  WRK-KBNCD
-                           MOVE    "3"         TO  WRK-TOKNYUIN-KBN
-                           PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
+                               MOVE    "5111"      TO  WRK-KANRICD
+                               MOVE    "51"        TO  WRK-KBNCD
+                               MOVE    "3"         TO  WRK-TOKNYUIN-KBN
+                               PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
+                           END-IF
       *
                        END-IF
       *
@@ -4484,10 +4499,12 @@
            PERFORM 41011-PT-AGE-SEC
            IF    ( WRK-NENREI  >=  70 )
             OR   ( FLG-ROUJIN   =   1 )
-               MOVE    "5111"      TO  WRK-KANRICD
-               MOVE    "50"        TO  WRK-KBNCD
-               MOVE    "3"         TO  WRK-TOKNYUIN-KBN
-               PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
+               IF    ( SPA-NAI-I01-RSI-HKNKBN  =   SPACE )
+                   MOVE    "5111"      TO  WRK-KANRICD
+                   MOVE    "50"        TO  WRK-KBNCD
+                   MOVE    "3"         TO  WRK-TOKNYUIN-KBN
+                   PERFORM 4100-CMB-TOKNYUIN-DAT-SET-SEC
+               END-IF
            END-IF
       *
            .
@@ -4575,6 +4592,7 @@
                                            TO  WRK-TOKNYUIN-CD
                    MOVE    SYS-5111-BRM-NYUINRYOKBN
                                            TO  WRK-TOKNYUIN-NYUINRYOKBN
+                   MOVE    SYS-5111-SRYCD  TO  WRK-TOKNYUIN-SRYCD-X
                ELSE
                    MOVE    MCPDATA-REC     TO  SYS-5110-REC
                    MOVE    SYS-5110-BTU-TOKUTEINYUIN-NM
@@ -4582,6 +4600,7 @@
                    MOVE    SYS-5110-KBNCD
                                            TO  WRK-TOKNYUIN-CD
                    MOVE    SPACE           TO  WRK-TOKNYUIN-NYUINRYOKBN
+                   MOVE    SYS-5110-SRYCD  TO  WRK-TOKNYUIN-SRYCD-X
                END-IF
                PERFORM 4101-CMB-TOKNYUIN-DAT-SET-SEC
            END-IF
@@ -4619,6 +4638,13 @@
                MOVE    WRK-TOKNYUIN-NYUINRYOKBN
                                        TO  SPA-GMN-I01-TOKNYUIN-ITM3
                                                        (IDX10)
+      *
+               IF    ( WRK-TOKNYUIN-SRYCD-X    IS  NUMERIC )
+                   COMPUTE SPA-GMN-I01-TOKNYUIN-SRYCDTTL
+                       =   SPA-GMN-I01-TOKNYUIN-SRYCDTTL
+                       +   WRK-TOKNYUIN-SRYCD
+               END-IF
+      *
            END-IF
       *
            .
@@ -4707,15 +4733,18 @@
            PERFORM 41011-PT-AGE-SEC
            IF    ( WRK-NENREI  >=  70 )
             OR   ( FLG-ROUJIN  =   1 )
-               PERFORM VARYING IDX10   FROM    1   BY  1
-                       UNTIL ( IDX10 > CONST-TOK-LIFECD-MAX)
-                   IF    ( WRK-CMB-CD  =   CONST-TOK-LIFECD-IPN (IDX10))
-                       MOVE    CONST-TOK-LIFECD-LIFE (IDX10)
+               IF    ( SPA-NAI-I01-RSI-HKNKBN  =   SPACE )
+                   PERFORM VARYING IDX10   FROM    1   BY  1
+                           UNTIL ( IDX10 > CONST-TOK-LIFECD-MAX)
+                       IF    ( WRK-CMB-CD
+                               =   CONST-TOK-LIFECD-IPN (IDX10))
+                           MOVE    CONST-TOK-LIFECD-LIFE (IDX10)
                                        TO  WRK-CMB-CD
-                       MOVE    CONST-TOK-LIFECD-MAX
+                           MOVE    CONST-TOK-LIFECD-MAX
                                        TO  IDX10
-                   END-IF
-               END-PERFORM
+                       END-IF
+                   END-PERFORM
+               END-IF
            END-IF
       *
            .
@@ -4986,6 +5015,19 @@
                MOVE    "0023"      TO  SPA-ERRCD
                MOVE    15          TO  SPA-GMN-I01-CUR
                GO  TO  4101-HKNCOMBI-CHK-EXT
+           END-IF
+      *
+           IF    ( WRK-MCP-WIDGET  =   "HKNCOMBI" )
+               MOVE    SPA-GMN-I01-TOKNYUIN-SRYCDTTL
+                                   TO  WRK-TOKNYUIN-SRYCDTTL
+               MOVE    WRK-KIHON-KJNYMD    TO  WRK-KJNYMD
+               PERFORM 4101-CMB-TOKNYUIN-SET-SEC
+               IF    ( SPA-GMN-I01-TOKNYUIN-SRYCDTTL
+                               NOT =   WRK-TOKNYUIN-SRYCDTTL  )
+                   MOVE    WRK-KIHON-KJNYMD    TO  WRK-KJNYMD
+                   PERFORM 4101-TOKNYUIN-SYOKI-SEC
+               END-IF
+      *
            END-IF
       *
            .

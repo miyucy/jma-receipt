@@ -311,6 +311,8 @@
                                            
       *          特定入院コンボ
                  11  SPA-GMN-I01-CMB-TOKNYUIN.
+                   13  SPA-GMN-I01-TOKNYUIN-SRYCDTTL
+                                                   PIC 9(14).
                    13  SPA-GMN-I01-TOKNYUIN-CNT    PIC 9(5).
                    13  SPA-GMN-I01-TOKNYUIN-ITM-OCC    OCCURS  30.
                      15    SPA-GMN-I01-TOKNYUIN-ITM.
