@@ -1719,12 +1719,27 @@
                WHEN    "1033"
                    MOVE    "保険組合せ選択エラー。"
                                        TO  SPA-ERRMSG
-               WHEN    "1034"
-                   STRING  "検査は剤分離になります。"
-                           "１剤分のみ入力して下さい。"
+               WHEN    "1036"
+                   STRING  "保険組合せの有効期間外に回数設定が"
+                           "あります。選択できません。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
+               WHEN    "1034"
+                   STRING  "包括検査が包括数以下です。"
+                           "１検査のみ入力して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "1035"
+                   STRING  "検査が違います。剤分離になりますので"
+                           "１検査のみ入力して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "1099"
+                   MOVE    "ＤＢ更新エラー。"
+                                       TO  SPA-ERRMSG
       *
                WHEN    "K001"
                    MOVE    "警告！！時間外算定がありません"
