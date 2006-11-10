@@ -1297,6 +1297,7 @@
            END-IF
       *
            MOVE    ZERO                TO  IDY
+                                           IDZ
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX         >   SPA-NAI-BTPARA-MAX
                    OR      FLG-TAISYO  =   1
@@ -1357,6 +1358,7 @@
                    END-IF          
                    IF      SPA-NAI-BTPARA-TTAISYO (IDX)
                                                        =   1
+                       ADD     1           TO  IDZ
                        MOVE    1           TO   SPA-NAI-TTAISYO (IDY)
                        IF      SPA-NAI-BTPARA-HYOUJI-FLG   =   0
                            MOVE    "¡û"        TO   SPA-GMN-TTAISYO(IDY)
@@ -1372,7 +1374,7 @@
       *
       *   ·ï¿ôÉ½¼¨
            MOVE    SPACE               TO  SPA-GMN-BTPARA-KENSU
-           MOVE    SPA-GMN-MAX         TO  WRK-BTPARA-KENSU1
+           MOVE    IDZ                 TO  WRK-BTPARA-KENSU1
            MOVE    SPA-NAI-BTPARA-MAX  TO  WRK-BTPARA-KENSU2
            MOVE    "/"                 TO  WRK-BTPARA-FL
            MOVE    WRK-BTPARA-KENSU    TO  SPA-GMN-BTPARA-KENSU
