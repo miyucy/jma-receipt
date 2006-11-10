@@ -744,6 +744,7 @@
            MOVE    "*"                 TO  L03-MARKNINI
       *
            MOVE    SPA-GMN-L03-NUM     TO  L03-NUM
+           MOVE    SPA-GMN-L03-PRGNAME TO  L03-PRGNAME
            MOVE    SPA-GMN-L03-CHK-VALUE
                                        TO  L03-CHK-VALUE
            MOVE    SPA-GMN-L03-HCNAME  TO  L03-CHK-LABEL

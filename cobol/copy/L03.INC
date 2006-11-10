@@ -39,5 +39,6 @@
                   05  L03-PARAMARK    PIC X(01).
               03  L03-NUM-G.
                 04  L03-NUM           PIC X(03).
+              03  L03-PRGNAME         PIC X(20).
               03  L03-SCROLLEDWINDOW1.
                 06  L03-MEMO          PIC X(6000).

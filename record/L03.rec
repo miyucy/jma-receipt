@@ -103,6 +103,9 @@ L03	{
 		NUM1	{
 			value	varchar(3);
 		};
+		PRGNAME	{
+			value	varchar(20);
+		};
 		scrolledwindow1	{
 			MEMO	{
 				value	varchar(6000);
