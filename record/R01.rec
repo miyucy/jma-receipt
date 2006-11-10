@@ -1,5 +1,18 @@
 R01	{
 	fixed6	{
+		B02	{
+			state	int;
+		};
+		B04	{
+			state	int;
+		};
+		B05	{
+			state	int;
+			label   varchar(8);
+		};
+		B08	{
+			state	int;
+		};
 		B09	{
 			state	int;
 		};
@@ -49,12 +62,17 @@ R01	{
 				rowattr int;
 				item	{
 					value1	varchar(4);
-					value2	varchar(20);
-					value3	varchar(50);
-					value4	varchar(7);
-					value5	varchar(1);
-				}	[100];
-				select	bool[100];
+					value2	varchar(2);
+					value3	varchar(20);
+					value4	varchar(50);
+					value5	varchar(7);
+					value6	varchar(1);
+					value7	varchar(2);
+					value8	varchar(4);
+					value9	varchar(4);
+					value10	varchar(4);
+				}	[500];
+				select	bool[500];
 			};
 		};
 		SYOKBN	{
@@ -72,6 +90,24 @@ R01	{
 		};
 		CREYMD	{
 			value	varchar(22);
+		};
+		HYODAI	{
+			value	varchar(30);
+		};
+		JYOKEN1	{
+			value	varchar(30);
+		};
+		SRYYMH	{
+			value	varchar(6);
+		};
+		NYUGAIKBNH	{
+			value	varchar(12);
+		};
+		CREYMDH	{
+			value	varchar(13);
+		};
+		KENSU	{
+			value	varchar(7);
 		};
 	};
 };

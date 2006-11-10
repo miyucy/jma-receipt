@@ -96,6 +96,8 @@
       *  02.07.03    NACL-藤原    05/12/12  保険履歴を年月日記載へ変更
       *  02.07.04    NACL-藤原    06/01/05  平成１８年１月分から標準的な
       *                                     レセプト様式へ変更
+      *
+      *  03.04.01    NACL-藤原    06/11/01  照会機能連携対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -5491,6 +5493,10 @@
                                                    TO  RECE07-STYMD
                            MOVE    BTPARA-INFO-PARA (9:8)
                                                    TO  RECE07-EDYMD
+                       WHEN    "04"
+                           MOVE    "3"             TO  RECE07-SYORISBT
+                           MOVE    BTPARA-INFO-PARA (1:6)
+                                                   TO  RECE07-STYMD
                    END-EVALUATE
            ELSE
                ADD     1                   TO  RECE07-PAGE

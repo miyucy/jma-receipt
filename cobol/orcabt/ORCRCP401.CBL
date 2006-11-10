@@ -64,6 +64,8 @@
       *  03.02.01    NACL-門脇    06/08/10  高齢者上限額経過措置対応
       *  03.02.02    NACL-藤原    06/07/31  国保主科対応
       *  03.02.03    NACL-藤原    06/09/07  福岡地方公費対応
+      *
+      *  03.04.01    NACL-藤原    06/11/01  照会機能連携対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -256,6 +258,7 @@
            03  FLG-PTINF           PIC 9(01).
            03  FLG-OPECOM          PIC 9(01).
            03  FLG-SYUNOU          PIC 9(01).
+           03  FLG-BTPARA          PIC 9(01).
       *
            03  FLG-KOHSKY          PIC 9(01).
            03  FLG-RECE62X         PIC 9(01).
@@ -913,6 +916,10 @@
        01  SYUNOU-REC.
            COPY    "CPSYUNOU.INC".
       *
+      *    パラメタ
+       01  BTPARA-REC.
+           COPY    "CPBTPARA.INC".
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -1462,6 +1469,21 @@
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key5"              TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
+      *
+      *    パラメタＤＢ読み込み
+           INITIALIZE                      BTPARA-REC
+           IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
+               MOVE    WRK-PARA-SHELLID    TO  BTPARA-SHELLID
+               MOVE    WRK-PARA-JOBID      TO  BTPARA-JOBID
+               PERFORM 900-BTPARA-READ-SEC
+               IF      FLG-BTPARA          =   1
+                   MOVE
+                   "パラメタ情報が取得できませんでした。"
+                                           TO  WRK-RECEERR
+                   PERFORM 500-ERR-HENSYU-SEC
+                   MOVE    2               TO  SPA-STS
+               END-IF
+           END-IF
            .
        120-HOSPINF-GET-EXT.
            EXIT.
@@ -6164,9 +6186,13 @@
            IF      WRK-PARA-SYOKBN     =   "1"
                MOVE    WRK-RECENUM         TO  RECE08-RECENUM
            ELSE
-               COMPUTE RECE08-RECENUM  =
-                       RECE62-PRTSEQ   *   100 +   
+               IF      BTPARA-INFO-KBN     =   "01"
+                   COMPUTE RECE08-RECENUM  =
+                           RECE62-PRTSEQ   *   100 +   
                                                TBL-RECE-RENNUM (IDXY)
+               ELSE
+                   MOVE    WRK-RECENUM         TO  RECE08-RECENUM
+               END-IF
            END-IF
       *
            MOVE    "00"               TO  RECE08-SRYKA
@@ -6497,7 +6523,14 @@
                MOVE    RECE08-TERMID       TO  RECE07-TERMID
                MOVE    RECE08-OPID         TO  RECE07-OPID
                IF      WRK-PARA-SYOKBN     =   "2"
-                   MOVE    ZERO            TO  RECE07-SYORISBT
+                   EVALUATE    BTPARA-INFO-KBN
+                       WHEN    "01"
+                           MOVE    ZERO            TO  RECE07-SYORISBT
+                       WHEN    "04"
+                           MOVE    "3"             TO  RECE07-SYORISBT
+                           MOVE    BTPARA-INFO-PARA (1:6)
+                                                   TO  RECE07-STYMD
+                   END-EVALUATE
                END-IF
                MOVE    1                   TO  RECE07-PAGE
                MOVE    1                   TO  RECE07-KENSU
@@ -7576,6 +7609,56 @@
       *
            .
        900-SYUNOU-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    パラメタ読込
+      *****************************************************************
+       900-BTPARA-READ-SEC         SECTION.
+      *
+           MOVE    BTPARA-REC          TO  MCPDATA-REC
+           MOVE    "tbl_btpara"        TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_btpara"        TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
+               PERFORM 900-BTPARA-READ-N-SEC
+           ELSE
+               MOVE    1                   TO  FLG-BTPARA
+               INITIALIZE                      BTPARA-REC
+           END-IF
+      *
+           MOVE    "tbl_btpara"        TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           .
+       900-BTPARA-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    パラメタ読込
+      *****************************************************************
+       900-BTPARA-READ-N-SEC          SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  BTPARA-REC
+               MOVE    ZERO                TO  FLG-BTPARA
+           ELSE
+               MOVE    1                   TO  FLG-BTPARA
+               INITIALIZE                      BTPARA-REC
+           END-IF
+      *
+           .
+       900-BTPARA-READ-N-EXT.
            EXIT.
       *
       *****************************************************************

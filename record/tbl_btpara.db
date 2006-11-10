@@ -139,3 +139,15 @@ path	del3	{
 		;
 	};
 };
+
+path	key7		{ 	
+	DBSELECT	{
+		DECLARE tbl_btpara_key7_csr CURSOR FOR
+		SELECT *
+		FROM tbl_btpara
+			WHERE   SHELLID     =   :SHELLID  AND
+					SCRIPTID    =   :SCRIPTID
+					ORDER  BY  DSP_RENNUM,RENNUM
+		;
+	};
+};

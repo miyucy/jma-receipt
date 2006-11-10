@@ -98,6 +98,8 @@
       *
       *  03.03.01    NACL-藤原    06/09/27  ２００６年１０月改正対応
       *                                     前期高齢者の表示
+      *
+      *  03.04.01    NACL-藤原    06/11/01  照会機能連携対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -757,6 +759,18 @@
                                    "〜"           DELIMITED  BY SIZE
                                    WRK-EDYMD (17:6)
                                                   DELIMITED  BY SIZE
+                                   INTO    SPA-GMN-FILEKBN
+                           END-STRING
+                       WHEN    "3"
+                           MOVE    SPA-R01-RECE07-STYMD
+                                                      TO  WRK-SYMD
+                           MOVE    "01"               TO  WRK-SYMD (7:)
+                           PERFORM 5002-HIZUKE-HEN-SEC
+                           STRING  WRK-NYUGAIKBN  DELIMITED  BY SPACE 
+                                   "　照会連携　" DELIMITED  BY SIZE
+                                   WRK-HENYMDG3 (1:16)
+                                                  DELIMITED  BY SIZE
+                                   "分"           DELIMITED  BY SIZE
                                    INTO    SPA-GMN-FILEKBN
                            END-STRING
                    END-EVALUATE

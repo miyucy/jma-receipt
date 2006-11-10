@@ -102,6 +102,8 @@
       *  03.02.01    NACL-門脇    06/08/10  高齢者上限額経過措置対応
       *  03.02.02    NACL-藤原    06/07/31  国保主科対応
       *  03.02.03    NACL-藤原    06/09/07  福岡地方公費対応
+      *
+      *  03.04.01    NACL-藤原    06/11/01  照会機能連携対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -6034,6 +6036,10 @@
                                                TO  RECE07-STYMD
                        MOVE    BTPARA-INFO-PARA (9:8)
                                                TO  RECE07-EDYMD
+                       WHEN    "04"
+                           MOVE    "3"             TO  RECE07-SYORISBT
+                           MOVE    BTPARA-INFO-PARA (1:6)
+                                                   TO  RECE07-STYMD
                END-EVALUATE
                MOVE    1                   TO  RECE07-PAGE
                MOVE    1                   TO  RECE07-KENSU
