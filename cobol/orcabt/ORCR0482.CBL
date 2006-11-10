@@ -58,6 +58,8 @@
       *                                     症状詳記区分順に記載する
       *  03.01.01    NACL-門脇    06/07/13  項目クリア追加
       *  03.01.02    NACL-門脇    06/07/18  不要ロジック削除
+      *
+      *  03.04.01    NACL-藤原    06/11/01  照会機能連携対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1736,6 +1738,10 @@
                                                    TO  RECE07-STYMD
                            MOVE    BTPARA-INFO-PARA (9:8)
                                                    TO  RECE07-EDYMD
+                       WHEN    "04"
+                           MOVE    "3"             TO  RECE07-SYORISBT
+                           MOVE    BTPARA-INFO-PARA (1:6)
+                                                   TO  RECE07-STYMD
                    END-EVALUATE
                END-IF 
                MOVE    1                   TO  RECE07-PAGE

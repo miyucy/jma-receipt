@@ -3516,7 +3516,9 @@
            MOVE    SPA-GMN-BTPARA-NYUGAIKBNH
                                           TO  R01-NYUGAIKBNH
            MOVE    SPA-GMN-BTPARA-CREYMD  TO  R01-CREYMDH
-           MOVE    "作成"                 TO  R01-CREYMDH (10:)
+           IF      SPA-GMN-BTPARA-CREYMD  NOT =   SPACE
+               MOVE    "作成"                 TO  R01-CREYMDH (10:)
+           END-IF
            MOVE    SPA-GMN-BTPARA-KENSU   TO  R01-KENSU
       *
       **     IF      SPA-R01-NYUGAIKBN   =   "1"
