@@ -945,6 +945,11 @@
                            MOVE    1                   TO  FLG-ERR02
                        END-IF
                    END-IF
+      *            処方せん料は対象外
+                   IF      SRY-SRYSYUKBN           =   "820"
+                       MOVE    1                   TO  FLG-ERR02
+                   END-IF
+      *
                    IF      FLG-ERR02               =   ZERO
       *                点数マスタを取得する
                        MOVE    SRY-SRYCD (IDZ)     TO  TNS-SRYCD

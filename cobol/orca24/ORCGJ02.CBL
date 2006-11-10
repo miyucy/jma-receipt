@@ -3183,11 +3183,15 @@
                    MOVE    "F"             TO  J02-DATALIST-SELECT(IDX)
                END-IF
       *        Ｊ０４からのリスト表示位置
-               IF     (SPA-GMN-BANGO           =   ZERO  )  AND
-                      (SPA-GMN-TBANGO(IDX) NOT =   ZERO  )  AND
-                      (SPA-GMN-TBANGO(IDX)     =   WRK-BANGO )
-                   MOVE    IDX             TO  J02-DATALIST-ROW
-                   MOVE    2               TO  J02-DATALIST-ROWATTR
+               IF      SPA-GMN-TMEISYO (IDX)   =   ALL "-"
+                   CONTINUE
+               ELSE
+                   IF     (SPA-GMN-BANGO           =   ZERO  )  AND
+                          (SPA-GMN-TBANGO(IDX) NOT =   ZERO  )  AND
+                          (SPA-GMN-TBANGO(IDX)     =   WRK-BANGO )
+                       MOVE    IDX             TO  J02-DATALIST-ROW
+                       MOVE    2               TO  J02-DATALIST-ROWATTR
+                   END-IF
                END-IF
            END-PERFORM
            MOVE    SPA-GMN-MAX         TO  J02-DATALIST-COUNT
