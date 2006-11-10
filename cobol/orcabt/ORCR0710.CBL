@@ -6531,7 +6531,7 @@
            IF      WRK-PARA-SYOKBN     =   "1"
                MOVE    WRK-RECENUM         TO  RECE08-RECENUM
            ELSE
-               IF      BTPARA-INFO-KBN     =   "01"
+               IF      BTPARA-INFO-KBN     =   "01"    OR  "04"
                    COMPUTE RECE08-RECENUM  =
                            RECE62-PRTSEQ   *   100 +   
                                                TBL-RECE-RENNUM (IDXY)

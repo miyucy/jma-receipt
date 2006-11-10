@@ -743,19 +743,28 @@
            END-EVALUATE
       *
       *    パラメタＤＢ読み込み
+           INITIALIZE                  BTPARA-REC
+           MOVE    WRK-CONS-JOB-SHELLID
+                                       TO  BTPARA-SHELLID
+           MOVE    WRK-CONS-JOB-JOBID  TO  BTPARA-JOBID
+           MOVE    "tbl_btpara"        TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 900-BTPARA-READ-SEC
            EVALUATE    SPA-R01-NYUGAIKBN
                WHEN    "1"
-                   MOVE    SPA-GMN-SYORILST (1)  TO  SPA-GMN-SYORI-G
-               WHEN    "2"
-                   INITIALIZE                  BTPARA-REC
-                   MOVE    WRK-CONS-JOB-SHELLID
-                                           TO  BTPARA-SHELLID
-                   MOVE    WRK-CONS-JOB-JOBID
-                                           TO  BTPARA-JOBID
-                   MOVE    "tbl_btpara"    TO  MCP-TABLE
-                   MOVE    "key5"          TO  MCP-PATHNAME
-                   PERFORM 900-BTPARA-READ-SEC
                    EVALUATE    BTPARA-INFO-KBN
+                       WHEN    "04"
+                           MOVE    SPA-GMN-SYORILST (2)
+                                               TO  SPA-GMN-SYORI-G
+                       WHEN    OTHER
+                           MOVE    SPA-GMN-SYORILST (1)
+                                               TO  SPA-GMN-SYORI-G
+                   END-EVALUATE
+               WHEN    "2"
+                   EVALUATE    BTPARA-INFO-KBN
+                       WHEN    "04"
+                           MOVE    SPA-GMN-SYORILST (4)
+                                               TO  SPA-GMN-SYORI-G
                        WHEN    "03"
                            MOVE    SPA-GMN-SYORILST (3)
                                                TO  SPA-GMN-SYORI-G

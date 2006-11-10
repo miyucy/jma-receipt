@@ -92,6 +92,8 @@
       *  03.03.06    NACL-藤原    06/10/31  療養介護医療２４の追加
       *  03.03.07    NACL-藤原    06/11/02  福岡地方公費の障害のついて全て
       *                                     公費付加情報より記載判定を行う
+      *
+      *  03.04.01    NACL-藤原    06/11/01  照会機能連携対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -194,6 +196,7 @@
            03  FLG-SEIKYU                              PIC 9(01).
            03  FLG-NYUINACCT                           PIC 9(01).
            03  FLG-KYUSEIRRK                           PIC 9(01).
+           03  FLG-BTPARA                              PIC 9(01).
       * 
            03  FLG-KOH                                 PIC 9(01).
            03  FLG-CONTKBN                             PIC 9(01).
@@ -485,6 +488,10 @@
        01  KYUSEIRRK-REC.
            COPY    "CPKYUSEIRRK.INC".
       *
+      *    パラメタ
+       01  BTPARA-REC.
+           COPY    "CPBTPARA.INC".
+      *
       *****************************************************************
       *    サブプロ用領域
       *****************************************************************
@@ -716,6 +723,20 @@
                IF      SYS-2005-RJNGNBKKBN =   SPACE
                    MOVE    ZERO                TO  SYS-2005-RJNGNBKKBN
                END-IF
+      *
+             IF        WRK-PARA-SHELLID    NOT =   "RECEPTX"
+      *        パラメタＤＢ読み込み
+               INITIALIZE                  BTPARA-REC
+               MOVE    WRK-PARA-SHELLID
+                                       TO  BTPARA-SHELLID
+               MOVE    WRK-PARA-JOBID  TO  BTPARA-JOBID
+               PERFORM 900-BTPARA-READ-SEC
+               IF      FLG-BTPARA      NOT =   ZERO
+                   MOVE    "パラメタ情報が取得できませんでした。"
+                                           TO  WRK-RECEERR
+                   PERFORM 500-ERR-HENSYU-SEC
+               END-IF
+             END-IF
            END-IF
       *
            OPEN    OUTPUT              RECE611-FILE
@@ -2051,6 +2072,7 @@
       *    印刷順
            IF    ( WRK-PARA-SYOKBN     =   "2" )
            AND   ( WRK-SYOKBN          =   "1" )
+           AND   ( BTPARA-INFO-KBN     =   "01"    OR  "04" )
                ADD     1                       TO  WRK-PRTSEQ
                MOVE    WRK-PRTSEQ              TO  WRK-RECE61-PRTSEQ
            END-IF 
@@ -3254,6 +3276,70 @@
       *
            .
        900-KYUSEIRRK-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    パラメタ読込
+      *****************************************************************
+       900-BTPARA-READ-SEC         SECTION.
+      *
+           MOVE    BTPARA-REC          TO  MCPDATA-REC
+           MOVE    "tbl_btpara"        TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_btpara"        TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
+               PERFORM 900-BTPARA-READ-N-SEC
+           ELSE
+               MOVE    1                   TO  FLG-BTPARA
+               INITIALIZE                      BTPARA-REC
+           END-IF
+      *
+           MOVE    "tbl_btpara"        TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           .
+       900-BTPARA-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    パラメタ読込
+      *****************************************************************
+       900-BTPARA-READ-N-SEC          SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  BTPARA-REC
+               MOVE    ZERO                TO  FLG-BTPARA
+           ELSE
+               MOVE    1                   TO  FLG-BTPARA
+               INITIALIZE                      BTPARA-REC
+           END-IF
+      *
+           .
+       900-BTPARA-READ-N-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    クローズ処理
+      *****************************************************************
+       900-CLOSE-SEC                  SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       900-CLOSE-EXT.
            EXIT.
       *
       *****************************************************************

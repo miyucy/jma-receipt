@@ -1694,7 +1694,7 @@
       *    印刷順（個別作成時の個別指定のみ）
            IF    ( WRK-PARA-SYOKBN     =   "2"  )
            AND   ( WRK-SYOKBN          =   "1"  )
-           AND   ( BTPARA-INFO-KBN     =   "01" )
+           AND   ( BTPARA-INFO-KBN     =   "01"    OR  "04" )
                ADD     1                       TO  WRK-PRTSEQ
                MOVE    WRK-PRTSEQ              TO  WRK-RECE01-PRTSEQ
            END-IF

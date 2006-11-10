@@ -801,9 +801,9 @@
            MOVE    "カナ会叹界"          TO  SPA-GMN-PRTJYUNMEIL (3)
            MOVE    "04"                  TO  SPA-GMN-PRTJYUNL    (4)
            MOVE    "吹荚戎规界"          TO  SPA-GMN-PRTJYUNMEIL (4)
-           IF    ( SPA-R01-FILEKBN       =   "2"  )
+           IF    ( SPA-R01-FILEKBN       =   "2"             )
            AND   ( SPA-R01-RECE07-SYORISBT
-                                         =   ZERO )
+                                         =   ZERO    OR  "3" )
                MOVE    "05"                  TO  SPA-GMN-PRTJYUNL    (5)
                MOVE    "掐蜗界"              TO  SPA-GMN-PRTJYUNMEIL (5)
            END-IF
