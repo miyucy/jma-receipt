@@ -29,8 +29,6 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  01.01.01    NACL-伊藤    08/ 4/28  Dカレンダーレコード追加
-      *  04.05.01    NACL-伊藤    10/01/28  小数点５桁対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -120,10 +118,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *01  PRGSKBNO                PIC X(08)  VALUE "20070809".
-      *01  PRGSKBNO                PIC X(08)  VALUE "20080428".
-      *01  PRGSKBNO                PIC X(08)  VALUE "20090327".
-       01  PRGSKBNO                PIC X(08)  VALUE "20100128".
+       01  PRGSKBNO                PIC X(08)  VALUE "20061113".
       *
       *    病院基本情報データ
            COPY    "CPCOMMONDAT5.INC"
@@ -169,22 +164,19 @@
            03  CNT-COLDAT04                    PIC 9(06).
       *
        01  INDEX-AREA.
-           03  IDX                             PIC 9(03).
-           03  IDY                             PIC 9(03).
+           03  IDX                             PIC 9(03). 
+           03  IDY                             PIC 9(03). 
            03  IDZ                             PIC 9(03).
-           03  IDU                             PIC 9(03).
-           03  IDV                             PIC 9(03).
            03  IDW                             PIC 9(03).
-           03  IDX1                            PIC 9(03).
-           03  IDX2                            PIC 9(03).
-           03  IDX3                            PIC 9(03).
+           03  IDX1                            PIC 9(03). 
+           03  IDX2                            PIC 9(03). 
+           03  IDX3                            PIC 9(03). 
       *
       *    一時領域
       *
        01  WRK-AREA.
            03  WRK-PARA.
                05  WRK-PARA-TERMID             PIC X(16).
-               05  WRK-PARA-HOSPNUM            PIC 9(02).
                05  WRK-PARA-SRYYM              PIC X(06).
                05  WRK-PARA-JOBID              PIC 9(07).
                05  WRK-PARA-SHELLID            PIC X(08).
@@ -214,7 +206,7 @@
            03  WRK-REC-LENGTH          PIC 9(04).
            03  WRK-HENSYU-AREA.
                05  WRK-DATA            PIC X(200).
-               05  WRK-NUM             PIC ZZZZZZZZZ9.99999.
+               05  WRK-NUM             PIC ZZZZZZZZZ9.999.
                05  WRK-NAGASA          PIC 9(03).
                05  WRK-ST              PIC 9(02).
                05  WRK-SYOSUU          PIC 9(01).
@@ -297,9 +289,6 @@
       *****************************************************************
       *    サブプロ用領域
       *****************************************************************
-      *   日付変換サブ
-           COPY    "CPORCSDAY.INC".
-           COPY    "CPORCSLNK.INC".
       *    数字変換領域
            COPY    "CPORCSNUM.INC".
       *   ジョブ管理ＤＢ制御サブ
@@ -343,14 +332,12 @@
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA-TERMID
-                                               WRK-PARA-HOSPNUM
                                                WRK-PARA-SRYYM
                                                WRK-PARA-JOBID
                                                WRK-PARA-SHELLID
                                                WRK-PARA-COLFILENM
                                                WRK-PARA-ERRFILENM
            END-UNSTRING
-           MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -361,37 +348,21 @@
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
            MOVE    "ORCBC020"      TO  JOB-PGID
-           INITIALIZE                  STS-AREA-DAY
-           INITIALIZE                  LNK-DAY2-AREA
-           MOVE    "21"            TO  LNK-DAY2-IRAI
-           MOVE    WRK-PARA-SRYYM  TO  WRK-SYMD (1:6)
-           MOVE    "01"            TO  WRK-SYMD (7:2)
-           MOVE    WRK-SYMD        TO  LNK-DAY2-YMD
-           CALL    "ORCSDAY"       USING   STS-AREA-DAY
-                                           LNK-DAY2-AREA
-           STRING  LNK-DAY2-EDTYMD3(5:12)       DELIMITED BY SIZE
-                   "分収集データ作成（ＣＳＶ）" DELIMITED BY SIZE
-                                 INTO  JOB-SHELLMSG
-           END-STRING
-           MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
+           MOVE    "収集データ作成（ＣＳＶ）"
+                                   TO  JOB-SHELLMSG
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA
                                    JOBKANRI-REC
-                                   SPA-AREA
       *
-           MOVE    SPA-HOSPNUM         TO  COLDAT91-HOSPNUM
            MOVE    "COLDT910"          TO  COLDAT91-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  COLDAT91-TERMID
       *
-           MOVE    SPA-HOSPNUM         TO  COLDAT01-HOSPNUM
            MOVE    "COLDT010"          TO  COLDAT01-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  COLDAT01-TERMID
       *
-           MOVE    SPA-HOSPNUM         TO  COLDAT02-HOSPNUM
            MOVE    "COLDT020"          TO  COLDAT02-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  COLDAT02-TERMID
       *
-           MOVE    SPA-HOSPNUM         TO  COLDAT03-HOSPNUM
            MOVE    "COLDT030"          TO  COLDAT03-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  COLDAT03-TERMID
       *
@@ -399,13 +370,9 @@
                                        COLDAT01-FILE
                                        COLDAT02-FILE
                                        COLDAT03-FILE
+                   OUTPUT              COLDAT04-FILE
       *
            PERFORM 900-COLDAT91-READ-SEC
-           IF      CNT-COLDAT91        >   ZERO
-               OPEN    OUTPUT              COLDAT04-FILE
-           ELSE
-               MOVE    1               TO  FLG-END
-           END-IF
            PERFORM UNTIL        FLG-COLDAT91    =   1
                    PERFORM 1001-FILE-HENSYU-SEC
                    PERFORM 900-COLDAT91-READ-SEC
@@ -558,7 +525,6 @@
       *
            PERFORM 2001-FILE-HENSYU-SEC
            PERFORM 20011-FILE-HENSYU-SEC
-           PERFORM 2002-FILE-HENSYU-SEC
       *
       *    診療情報（１件目先読み）
            INITIALIZE                          COLDAT02-REC
@@ -571,6 +537,9 @@
                    NOT INVALID
                        PERFORM 900-COLDAT02-READ-SEC
            END-START
+      *
+      *    保険情報
+           PERFORM 2002-FILE-HENSYU-SEC
       *
       *    病名情報
            INITIALIZE                          COLDAT03-REC
@@ -810,38 +779,34 @@
       *****************************************************************
        2002-FILE-HENSYU-SEC         SECTION.
       *
-           PERFORM VARYING IDX     FROM    1   BY  1
-                   UNTIL   IDX     >       10
-                   OR      COLDAT01-HKNCOMBI (IDX)  =   ZERO 
-      *
-             MOVE    SPACE               TO  WRK-REC
-             MOVE    ZERO                TO  WRK-REC-LENGTH
-      *      レコード識別
-             MOVE    "H"                 TO  WRK-DATA
-             MOVE    1                   TO  WRK-NAGASA
-             PERFORM 5004-MOJI-HENSYU-SEC
-      *      保険組合せ
-             MOVE    COLDAT01-HKNCOMBI (IDX)   TO  WRK-NUM
-             MOVE    4                         TO  WRK-NAGASA
-             PERFORM 5005-NUM-HENSYU-SEC
-      *      保険番号
-             MOVE    COLDAT01-HKNNUM     TO  WRK-DATA
-             MOVE    3                   TO  WRK-NAGASA
-             PERFORM 5004-MOJI-HENSYU-SEC
-      *      本人家族区分
-             MOVE    COLDAT01-HONKZKKBN  TO  WRK-DATA
-             MOVE    1                   TO  WRK-NAGASA
-             PERFORM 5004-MOJI-HENSYU-SEC
-      *      補助区分
-             MOVE    COLDAT01-HOJOKBN    TO  WRK-DATA
-             MOVE    1                   TO  WRK-NAGASA
-             PERFORM 5004-MOJI-HENSYU-SEC
+           MOVE    SPACE               TO  WRK-REC
+           MOVE    ZERO                TO  WRK-REC-LENGTH
+      *    レコード識別
+           MOVE    "H"                 TO  WRK-DATA
+           MOVE    1                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *    保険組合せ
+           MOVE    COLDAT02-HKNCOMBI   TO  WRK-NUM
+           MOVE    4                   TO  WRK-NAGASA
+           PERFORM 5005-NUM-HENSYU-SEC
+      *    保険番号
+           MOVE    COLDAT02-HKNNUM     TO  WRK-DATA
+           MOVE    3                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *    本人家族区分
+           MOVE    COLDAT02-HONKZKKBN  TO  WRK-DATA
+           MOVE    1                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *    補助区分
+           MOVE    COLDAT02-HOJOKBN    TO  WRK-DATA
+           MOVE    1                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC
       *
       *公費情報
       *
-             MOVE    ZERO                TO  WRK-KOH-MAX
+           MOVE    ZERO                TO  WRK-KOH-MAX
       *
-             IF      COLDAT01-KOHID      >   ZERO
+           IF      COLDAT01-KOHID      >   ZERO
                MOVE    COLDAT01-RJNHKNNUM  TO  WRK-KOHHKNNUM
                MOVE    COLDAT01-KOHID      TO  WRK-KOHID
                MOVE    COLDAT01-RJNPAYKBN  TO  WRK-KOHPAYKBN
@@ -850,17 +815,17 @@
                MOVE    COLDAT01-RJNTEKEDYMD
                                            TO  WRK-KOHTEKEDYMD
                PERFORM 20021-KOH-HENSYU-SEC
-             END-IF
+           END-IF
       *
-             PERFORM VARYING IDX1    FROM    1   BY  1
-                     UNTIL   IDX1    >       4
-                     OR      WRK-KOH-MAX     =   4 
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL   IDX1    >       4
+                   OR      WRK-KOH-MAX     =   4 
                INITIALIZE                  WRK-KOHI-AREA
-               IF      COLDAT01-KOHIDHC (IDX IDX1)  >   ZERO
+               IF      COLDAT02-TKOHID (IDX1)  >   ZERO
                    PERFORM VARYING IDX2    FROM    1   BY  1
                            UNTIL   IDX2    >       10
                            OR      COLDAT01-TKOHID (IDX2)  =   ZERO
-                       IF      COLDAT01-KOHIDHC (IDX IDX1)  =
+                       IF      COLDAT02-TKOHID (IDX1)  =
                                                COLDAT01-TKOHID (IDX2)
                            MOVE    COLDAT01-KOHI-TBL (IDX2)
                                                        TO  WRK-KOHI-AREA
@@ -869,25 +834,24 @@
                        END-IF
                    END-PERFORM
                END-IF
-             END-PERFORM
+           END-PERFORM
       *
-             PERFORM VARYING IDX1    FROM    1   BY  1
-                     UNTIL   IDX1    >       4
-                     OR      WRK-KOH-MAX     =   4 
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL   IDX1    >       4
+                   OR      WRK-KOH-MAX     =   4 
                INITIALIZE                  WRK-KOHI-AREA
                PERFORM 20021-KOH-HENSYU-SEC
-             END-PERFORM
+           END-PERFORM
       *
       *労災情報
       *
-      *      保険区分
-             MOVE    COLDAT01-HKNKBN         TO  WRK-DATA
-             MOVE    1                       TO  WRK-NAGASA
-             MOVE    1                       TO  WRK-END
-             PERFORM 5004-MOJI-HENSYU-SEC
+      *    保険区分
+           MOVE    COLDAT01-HKNKBN         TO  WRK-DATA
+           MOVE    1                       TO  WRK-NAGASA
+           MOVE    1                       TO  WRK-END
+           PERFORM 5004-MOJI-HENSYU-SEC
       *
-             PERFORM 5001-FILE-WRITE-SEC
-           END-PERFORM
+           PERFORM 5001-FILE-WRITE-SEC
            .
        2002-FILE-HENSYU-EXT.
            EXIT. 
@@ -1028,24 +992,12 @@
            EVALUATE  COLDAT02-SRYCD (1:1)
                WHEN  "6"
                    MOVE    "Y"         TO  WRK-DATA
-                   IF  COLDAT02-JIHOKBN    =  "1"
-                       MOVE    "Q"     TO  WRK-DATA
-                   END-IF
                WHEN  "7"
                    MOVE    "Z"         TO  WRK-DATA
-                   IF  COLDAT02-JIHOKBN    =  "1"
-                       MOVE    "R"     TO  WRK-DATA
-                   END-IF
                WHEN  "8"
                    MOVE    "C"         TO  WRK-DATA
-                   IF  COLDAT02-JIHOKBN    =  "1"
-                       MOVE    "U"     TO  WRK-DATA
-                   END-IF
                WHEN  OTHER
                    MOVE    "S"         TO  WRK-DATA
-                   IF  COLDAT02-JIHOKBN    =  "1"
-                       MOVE    "O"     TO  WRK-DATA
-                   END-IF
            END-EVALUATE
            MOVE    1                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
@@ -1095,8 +1047,8 @@
            IF      WRK-REC(1:1)    NOT =   "C"
       *      数量
              MOVE    COLDAT02-SRYSURYO   TO  WRK-NUM
-             MOVE    5                   TO  WRK-NAGASA
-             MOVE    5                   TO  WRK-SYOSUU
+             MOVE    8                   TO  WRK-NAGASA
+             MOVE    3                   TO  WRK-SYOSUU
              PERFORM 5005-NUM-HENSYU-SEC
              IF      FLG-KOIHEAD       =   ZERO
       *        剤点数
@@ -1110,8 +1062,7 @@
                  MOVE    1               TO  WRK-END
                END-IF
                PERFORM 5005-NUM-HENSYU-SEC
-               IF     (WRK-REC(1:1)    NOT =   "S")  AND
-                      (WRK-REC(1:1)    NOT =   "O")
+               IF      WRK-REC(1:1)    NOT =   "S"
                    MOVE    1                 TO  FLG-KOIHEAD
                END-IF
              ELSE
@@ -1129,7 +1080,7 @@
              END-IF
            END-IF
       *
-           IF      WRK-REC(1:1)        =   "S"  OR  "O"
+           IF      WRK-REC(1:1)        =   "S"
              IF      FLG-KOIHEAD       =   ZERO
       *        手技点数１
                IF    COLDAT02-SYUTEN1    =   0
@@ -1196,7 +1147,7 @@
            IF     (COLDAT02-TENSIKIBETU =  2)  OR
                   (FLG-SANSO            =  1)
                MOVE    COLDAT02-TEN    TO  WRK-NUM
-               MOVE    9               TO  WRK-NAGASA
+               MOVE    11              TO  WRK-NAGASA
                MOVE    2               TO  WRK-SYOSUU
                PERFORM 5005-NUM-HENSYU-SEC
            ELSE
@@ -1208,23 +1159,18 @@
            END-IF
       *
            IF      (WRK-REC(1:1)       =   "Z" OR "C")
-             OR  (((WRK-REC(1:1)       =   "S")
-             OR    (WRK-REC(1:1)       =   "O"))
+             OR   ((WRK-REC(1:1)       =   "S")
              AND   (COLDAT02-SRYCD (1:3) < "099"))
       *
       *      名称
              MOVE    COLDAT02-NAME       TO  WRK-DATA
              MOVE    40                  TO  WRK-NAGASA
-             MOVE    1                   TO  WRK-END
+             MOVE    1                   TO  WRK-END 
              PERFORM 5004-MOJI-HENSYU-SEC
       *
            END-IF
       *
            PERFORM 5001-FILE-WRITE-SEC
-      *
-           IF      COLDAT02-SEQNO      =   1
-             PERFORM 20042-CALENDAR-MAKE-SEC
-           END-IF
            .
        2004-FILE-HENSYU-EXT.
            EXIT.
@@ -1248,36 +1194,6 @@
            END-IF
            .
        20041-SANSO-CHECK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    カレンダーレコード作成
-      *****************************************************************
-       20042-CALENDAR-MAKE-SEC     SECTION.
-      *
-           MOVE    "D,"                TO  WRK-REC
-           MOVE    2                   TO  WRK-REC-LENGTH
-      *
-           PERFORM VARYING    IDX3     FROM  1  BY  1
-                   UNTIL      IDX3     >     31
-               IF    IDX3              =   31
-                   MOVE    1                   TO  WRK-END
-               END-IF
-               IF      COLDAT02-KAISU(IDX3)    =   ZERO
-                   MOVE    SPACE               TO  WRK-DATA
-                   MOVE    1                   TO  WRK-NAGASA
-                   PERFORM 5004-MOJI-HENSYU-SEC
-               ELSE
-                   MOVE    COLDAT02-KAISU(IDX3)
-                                               TO  WRK-NUM
-                   MOVE    3                   TO  WRK-NAGASA
-                   PERFORM 5005-NUM-HENSYU-SEC
-               END-IF
-           END-PERFORM
-      *
-           PERFORM 5001-FILE-WRITE-SEC
-           .
-       20042-CALENDAR-MAKE-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1366,7 +1282,7 @@
            EXIT.
       *
       *****************************************************************
-      *    出力レコード処理（数字）ZZZZZZZZZ9.99999の編集
+      *    出力レコード処理（数字）ZZZZZZZZZ9.999の編集
       *****************************************************************
        5005-NUM-HENSYU-SEC          SECTION.
       *
@@ -1375,25 +1291,27 @@
            ELSE
       *        開始位置
                COMPUTE WRK-ST  =   11      -   WRK-NAGASA
+               IF      WRK-SYOSUU          >   ZERO
+                   COMPUTE WRK-ST  =   WRK-ST  +   WRK-SYOSUU
+                                               +   1
+               END-IF
       *
                PERFORM VARYING IDW FROM    WRK-ST    BY  1
                        UNTIL   IDW >       10
                    IF      WRK-NUM (IDW:1)   NOT =   SPACE
-                        COMPUTE IDZ     =    11  -   IDW
+                        COMPUTE IDZ     =    11  +   WRK-SYOSUU
+                                                 -   IDW
                         IF      WRK-SYOSUU       >   ZERO
-                          COMPUTE IDU     =    11  + WRK-SYOSUU
-                          COMPUTE IDZ     =    IDU - IDW  +  1
-                          PERFORM VARYING IDV FROM   IDU  BY  -1
-                                  UNTIL   IDV <      12
-                            IF  WRK-NUM(IDV:1)   =   "0"
-                                COMPUTE IDZ      =   IDZ  -  1
-                                IF  IDV              =    12
-                                    COMPUTE IDZ      =    IDZ  -  1
+                            ADD     1                TO  IDZ
+                            IF  WRK-NUM(14:1)    =   "0"
+                                COMPUTE IDZ      =   IDZ   -   1
+                                IF  WRK-NUM(13:1) =  "0"
+                                    COMPUTE IDZ   =  IDZ   -   1
+                                    IF  WRK-NUM(12:1) =  "0"
+                                        COMPUTE IDZ   =  IDZ   -   2
+                                    END-IF
                                 END-IF
-                            ELSE
-                                MOVE    11       TO  IDV
                             END-IF
-                          END-PERFORM
                         END-IF
                         STRING  WRK-REC(1:WRK-REC-LENGTH)
                                                  DELIMITED  BY  SIZE
@@ -1443,11 +1361,9 @@
                                        TO  JOB-SHELLID
                MOVE    WRK-COLDATERR   TO  JOB-YOBI
                MOVE    "9999"          TO  JOB-ERRCD
-               MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
                CALL    "ORCSJOB"       USING
                                        ORCSJOBKANRIAREA
                                        JOBKANRI-REC
-                                       SPA-AREA
            END-IF
       *
            MOVE    1                   TO  FLG-END
@@ -1463,16 +1379,13 @@
            CLOSE   COLDAT91-FILE
                    COLDAT01-FILE
                    COLDAT02-FILE
-                   COLDAT03-FILE
-           IF      CNT-COLDAT91        >   ZERO
-               CLOSE   COLDAT04-FILE
-           END-IF
+                   COLDAT04-FILE
       *
-      **   IF      CNT-COLDAT01           =   ZERO  
-      **       MOVE    "処理対象のデータがありませんでした"
-      **                                   TO  WRK-COLDATERR
-      **       PERFORM 500-ERR-HENSYU-SEC
-      **   END-IF
+           IF      CNT-COLDAT01           =   ZERO  
+               MOVE    "処理対象のデータがありませんでした"
+                                           TO  WRK-COLDATERR
+               PERFORM 500-ERR-HENSYU-SEC
+           END-IF
       *
       *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
@@ -1480,11 +1393,9 @@
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
-           MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA
                                    JOBKANRI-REC
-                                   SPA-AREA
       *
            PERFORM 900-DBDISCONNECT-SEC
       *
@@ -1564,12 +1475,16 @@
            MOVE    LOW-VALUE           TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBOPEN"            TO  MCP-FUNC
-grpsys     PERFORM 900-ORCDBMAIN-SEC
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
       *
            MOVE    LOW-VALUE           TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBSTART"           TO  MCP-FUNC
-grpsys     PERFORM 900-ORCDBMAIN-SEC
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
            .
        100-DBOPEN-EXT.
            EXIT.
@@ -1582,26 +1497,16 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    LOW-VALUE           TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBCOMMIT"          TO  MCP-FUNC
-grpsys     PERFORM 900-ORCDBMAIN-SEC
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
       *
            MOVE    LOW-VALUE           TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBDISCONNECT"      TO  MCP-FUNC
-grpsys     PERFORM 900-ORCDBMAIN-SEC
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
            .
        900-DBCLOSE-EXT.
            EXIT.
-      *
-      *****************************************************************
-      *    テーブルアクセス処理
-      *****************************************************************
-       900-ORCDBMAIN-SEC               SECTION.
-      *
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           .
-      *
-       900-ORCDBMAIN-EXT.
-           EXIT.
-      *      
