@@ -49,6 +49,7 @@
       * 03.03.01     NACL-森脇     06/10/10  画面リスト位置固定処理
       * 03.03.02     NACL-森脇     06/10/13  テキストエリア有効文字チェック
       * 03.03.03     NACL-森脇     06/10/23  画像パス名省略処理
+      * 03.04.01     NACL-森脇     06/11/13  半角記号文字数チェック
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -92,6 +93,8 @@
            03  IDY                 PIC 9(03).
            03  IDZ                 PIC 9(03).
       *----(02.02.03)--ADD-START---
+           03  IDZ2                PIC 9(03).
+           03  IDZ-MAX             PIC 9(03).
            03  IDX-STR             PIC 9(04).
            03  IDX-STR1            PIC 9(04).
            03  IDX-KET             PIC 9(04).
@@ -108,9 +111,6 @@
            03  WRK-NAME            PIC X(26).
            03  WRK-CDSYU           PIC X(01).
            03  WRK-CREYMD          PIC X(08).
-      *----(02.02.03)--ADD-START---
-           03  WRK-KENCD           PIC X(21).
-      *----(02.02.03)--ADD-END-----
       *
            03  WRK-IPCPATH         PIC X(64).
            03  WRK-PATH-TABLE      PIC X(64).
@@ -761,8 +761,12 @@
            MOVE    SPA-HOSPID      TO  ICD-HOSPID
            MOVE    WRK-CDSYU       TO  ICD-CDSYU
            IF      WRK-IPCPATH     =   "key"
-               PERFORM 4124-ASUTA-HENSYU-SEC 
-               MOVE    WRK-KENCD       TO  ICD-INPUTCD
+               INITIALIZE                  ORCSADDSIGNAREA
+               MOVE    SPA-GMN-KENCD   TO  SADDSIGN-STR
+               MOVE    "1"             TO  SADDSIGN-KBN
+               CALL    "ORCSADDSIGN"       USING
+                                           ORCSADDSIGNAREA
+               MOVE    SADDSIGN-STR    TO  ICD-INPUTCD
            ELSE
                MOVE    SPA-GMN-KENCD   TO  ICD-INPUTCD
            END-IF
@@ -899,51 +903,6 @@
        4123-INPUTCDLIST-CHK-EXT.
            EXIT.
       *
-      *----(02.02.03)--ADD-START---
-      *****************************************************************
-      *   ＊編集処理
-      *****************************************************************
-       4124-ASUTA-HENSYU-SEC       SECTION.
-      *
-           MOVE    1               TO  IDX-STR
-           MOVE    1               TO  IDX-STR1
-           MOVE    SPACE           TO  WRK-KENCD
-      *
-           PERFORM UNTIL  (IDX-STR     >   20 )
-                   OR     (SPA-GMN-KENCD(IDX-STR:)  =   SPACE)
-               EVALUATE    WRK-CDSYU
-                   WHEN    "J"
-      *            ＊→%に変換
-                       IF      (SPA-GMN-KENCD(IDX-STR:2)  =   "＊")
-                           MOVE    "%"     TO  WRK-KENCD(IDX-STR1:1)
-                           ADD     2               TO  IDX-STR
-                           ADD     1               TO  IDX-STR1
-                       ELSE
-                           MOVE    SPA-GMN-KENCD(IDX-STR:2)
-                                           TO  WRK-KENCD(IDX-STR1:2)
-                           ADD     2               TO  IDX-STR
-                           ADD     2               TO  IDX-STR1
-                       END-IF
-                   WHEN    "A"
-      *            *→%に変換
-                       IF      (SPA-GMN-KENCD(IDX-STR:1)  =   "*")
-                           MOVE    "%"     TO  WRK-KENCD(IDX-STR1:1)
-                       ELSE
-                           MOVE    SPA-GMN-KENCD(IDX-STR:1)
-                                           TO  WRK-KENCD(IDX-STR1:1)
-                       END-IF
-                       ADD     1               TO  IDX-STR
-                       ADD     1               TO  IDX-STR1
-               END-EVALUATE
-           END-PERFORM
-      *
-           MOVE    "%"             TO  WRK-KENCD(IDX-STR1:1)
-           .
-      *
-       4124-ASUTA-HENSYU-EXT.
-           EXIT.
-      *
-      *----(02.02.03)--ADD-END-----
       *----(03.03.02)--UPD-START---
       *****************************************************************
       *    テキストチェック
@@ -973,11 +932,11 @@
            PERFORM 430-PASSCHK-SEC
            MOVE    WRK-PASSMEI     TO  SPA-GMN-PHOTO
       *----(03.03.03)--UPD-END-----
-
+      *
+           INITIALIZE                  WRK-HENSYU-AREA
       *
       *    画像半角文字混在チェック
            IF          SPA-GMN-PHOTO   NOT =   SPACE
-               INITIALIZE                  WRK-HENSYU-AREA
                MOVE    SPA-GMN-PHOTO   TO  WRK-NAIYOU
       *        末尾文字編集
                PERFORM 430-SPACE-HENSYU-SEC
@@ -1005,7 +964,6 @@
       *
       *    名前半角文字混在チェック
            IF          SPA-GMN-NAME    NOT =   SPACE
-               INITIALIZE                  WRK-HENSYU-AREA
                MOVE    SPA-GMN-NAME    TO  WRK-NAIYOU
       *        末尾文字編集
                PERFORM 430-SPACE-HENSYU-SEC
@@ -1019,8 +977,7 @@
                    GO  TO  430-TEXTCHK-EXT
                END-IF
       *        文字数チェック
-               INITIALIZE                  WRK-HENSYU-AREA
-               MOVE    SPA-GMN-NAME    TO  WRK-NAIYOU
+               MOVE    1               TO  IDZ2
                MOVE    3               TO  GYO-MAX
                MOVE    26              TO  KOU-MAX
                PERFORM 430-HENSYU-SYORI-SEC
@@ -1037,7 +994,6 @@
       *
       *    効能効果半角文字混在チェック
            IF          SPA-GMN-EFFECT      NOT =   SPACE
-               INITIALIZE                  WRK-HENSYU-AREA
                MOVE    SPA-GMN-EFFECT  TO  WRK-NAIYOU
       *        末尾文字編集
                PERFORM 430-SPACE-HENSYU-SEC
@@ -1051,8 +1007,7 @@
                    GO  TO  430-TEXTCHK-EXT
                END-IF
       *        文字数チェック
-               INITIALIZE                  WRK-HENSYU-AREA
-               MOVE    SPA-GMN-EFFECT  TO  WRK-NAIYOU
+               MOVE    1               TO  IDZ2
                MOVE    6               TO  GYO-MAX
                MOVE    30              TO  KOU-MAX
                PERFORM 430-HENSYU-SYORI-SEC
@@ -1063,83 +1018,14 @@
                END-IF
            END-IF
       *
-      *    色半角文字混在チェック
-           IF          SPA-GMN-COLOR   NOT =   SPACE
-               INITIALIZE                  WRK-HENSYU-AREA
-               MOVE    SPA-GMN-COLOR   TO  WRK-NAIYOU
-      *        末尾文字編集
-               PERFORM 430-SPACE-HENSYU-SEC
-               MOVE    WRK-NAIYOU      TO  SPA-GMN-COLOR
-      *        カナチェック
-               IF    ( KANACHK-SYUBETU     NOT =   2    )  OR
-                     ( KANACHK-RC          NOT =   ZERO )  OR
-                     ( KANACHK-RC2             =   7    )
-                   MOVE    "0002"      TO  SPA-ERRCD
-                   MOVE    6           TO  SPA-GMN-CUR
-                   GO  TO  430-TEXTCHK-EXT
-               END-IF
-           END-IF
-      *
-      *    形半角文字混在チェック
-           IF          SPA-GMN-SHAPE   NOT =   SPACE
-               INITIALIZE                  WRK-HENSYU-AREA
-               MOVE    SPA-GMN-SHAPE   TO  WRK-NAIYOU
-      *        末尾文字編集
-               PERFORM 430-SPACE-HENSYU-SEC
-               MOVE    WRK-NAIYOU      TO  SPA-GMN-SHAPE
-      *        カナチェック
-               IF    ( KANACHK-SYUBETU     NOT =   2    )  OR
-                     ( KANACHK-RC          NOT =   ZERO )  OR
-                     ( KANACHK-RC2             =   7    )
-                   MOVE    "0002"      TO  SPA-ERRCD
-                   MOVE    7           TO  SPA-GMN-CUR
-                   GO  TO  430-TEXTCHK-EXT
-               END-IF
-           END-IF
-      *
-      *    記号半角文字混在チェック
-           IF          SPA-GMN-MARK    NOT =   SPACE
-               INITIALIZE                  WRK-HENSYU-AREA
-               MOVE    SPA-GMN-MARK    TO  WRK-NAIYOU
-      *        末尾文字編集
-               PERFORM 430-SPACE-HENSYU-SEC
-               MOVE    WRK-NAIYOU      TO  SPA-GMN-MARK
-      *        カナチェック
-               IF    ( KANACHK-SYUBETU         =   ZERO )  OR
-                     ( KANACHK-RC          NOT =   ZERO )  OR
-                     ( KANACHK-RC2             =   7    )
-                   MOVE    "0005"      TO  SPA-ERRCD
-                   MOVE    8           TO  SPA-GMN-CUR
-                   GO  TO  430-TEXTCHK-EXT
-               END-IF
-           END-IF
-      *
       *    形状チェック
-           IF          SPA-GMN-COLOR   NOT =   SPACE
-               OR      SPA-GMN-SHAPE   NOT =   SPACE
-               OR      SPA-GMN-MARK    NOT =   SPACE
-      *        文字数チェック
-               INITIALIZE                  WRK-HENSYU-AREA
-               STRING  SPA-GMN-COLOR       DELIMITED  BY  SPACE
-                       X"0A"               DELIMITED  BY  SIZE
-                       SPA-GMN-SHAPE       DELIMITED  BY  SPACE
-                       X"0A"               DELIMITED  BY  SIZE
-                       SPA-GMN-MARK        DELIMITED  BY  SPACE
-                                   INTO    WRK-NAIYOU
-               END-STRING
-               MOVE    10               TO  GYO-MAX
-               MOVE    16               TO  KOU-MAX
-               PERFORM 430-HENSYU-SYORI-SEC
-               IF      WRK-NAIYOU(IDX-STR:)    NOT =   SPACE
-                   MOVE    "0017"      TO  SPA-ERRCD
-                   MOVE    6           TO  SPA-GMN-CUR
-                   GO  TO  430-TEXTCHK-EXT
-               END-IF
+           PERFORM 430-KEIJYO-SET-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO  TO  430-TEXTCHK-EXT
            END-IF
       *
       *    注意事項半角文字混在チェック
            IF          SPA-GMN-CAUTION NOT =   SPACE
-               INITIALIZE                  WRK-HENSYU-AREA
                MOVE    SPA-GMN-CAUTION TO  WRK-NAIYOU
       *        末尾文字編集
                PERFORM 430-SPACE-HENSYU-SEC
@@ -1153,8 +1039,7 @@
                    GO  TO  430-TEXTCHK-EXT
                END-IF
       *        文字数チェック
-               INITIALIZE                  WRK-HENSYU-AREA
-               MOVE    SPA-GMN-CAUTION TO  WRK-NAIYOU
+               MOVE    1               TO  IDZ2
                MOVE    10              TO  GYO-MAX
                MOVE    40              TO  KOU-MAX
                PERFORM 430-HENSYU-SYORI-SEC
@@ -1170,18 +1055,151 @@
            EXIT.
       *
       *----(03.03.02)--UPD-END-----
+      *----(03.04.01)--ADD-START---
       *****************************************************************
-      *   帳票全角編集処理
+      *   帳票形状データセット処理
       *****************************************************************
-       430-HENSYU-SYORI-SEC        SECTION.
+       430-KEIJYO-SET-SEC          SECTION.
       *
-           MOVE    1               TO  IDZ
+           MOVE    1                TO  IDZ2
+           MOVE    10               TO  GYO-MAX
+           MOVE    16               TO  KOU-MAX
+      *
+      *    色半角文字混在チェック
+           IF          SPA-GMN-COLOR   NOT =   SPACE
+               MOVE    SPA-GMN-COLOR   TO  WRK-NAIYOU
+      *        末尾文字編集
+               PERFORM 430-SPACE-HENSYU-SEC
+               MOVE    WRK-NAIYOU      TO  SPA-GMN-COLOR
+      *        カナチェック
+               IF    ( KANACHK-SYUBETU     NOT =   2    )  OR
+                     ( KANACHK-RC          NOT =   ZERO )  OR
+                     ( KANACHK-RC2             =   7    )
+                   MOVE    "0002"      TO  SPA-ERRCD
+                   MOVE    6           TO  SPA-GMN-CUR
+                   GO  TO  430-KEIJYO-SET-EXT
+               END-IF
+      *        文字数チェック
+               PERFORM 430-HENSYU-SYORI-SEC
+               IF      WRK-NAIYOU(IDX-STR:)    NOT =   SPACE
+                   MOVE    "0017"      TO  SPA-ERRCD
+                   MOVE    6           TO  SPA-GMN-CUR
+                   GO  TO  430-KEIJYO-SET-EXT
+               END-IF
+           END-IF
+      *
+      *    形半角文字混在チェック
+           IF          SPA-GMN-SHAPE   NOT =   SPACE
+               MOVE    SPA-GMN-SHAPE   TO  WRK-NAIYOU
+      *        末尾文字編集
+               PERFORM 430-SPACE-HENSYU-SEC
+               MOVE    WRK-NAIYOU      TO  SPA-GMN-SHAPE
+      *        カナチェック
+               IF    ( KANACHK-SYUBETU     NOT =   2    )  OR
+                     ( KANACHK-RC          NOT =   ZERO )  OR
+                     ( KANACHK-RC2             =   7    )
+                   MOVE    "0002"      TO  SPA-ERRCD
+                   MOVE    7           TO  SPA-GMN-CUR
+                   GO  TO  430-KEIJYO-SET-EXT
+               END-IF
+      *        文字数チェック
+               PERFORM 430-HENSYU-SYORI-SEC
+               IF      WRK-NAIYOU(IDX-STR:)    NOT =   SPACE
+                   MOVE    "0017"      TO  SPA-ERRCD
+                   MOVE    7           TO  SPA-GMN-CUR
+                   GO  TO  430-KEIJYO-SET-EXT
+               END-IF
+           END-IF
+      *
+      *    記号半角文字混在チェック
+           IF          SPA-GMN-MARK    NOT =   SPACE
+               MOVE    SPA-GMN-MARK    TO  WRK-NAIYOU
+      *        末尾文字編集
+               PERFORM 430-SPACE-HENSYU-SEC
+               MOVE    WRK-NAIYOU      TO  SPA-GMN-MARK
+      *        カナチェック
+               IF    ( KANACHK-SYUBETU         =   ZERO )  OR
+                     ( KANACHK-RC          NOT =   ZERO )  OR
+                     ( KANACHK-RC2             =   7    )
+                   MOVE    "0005"      TO  SPA-ERRCD
+                   MOVE    8           TO  SPA-GMN-CUR
+                   GO  TO  430-KEIJYO-SET-EXT
+               END-IF
+      *        文字数チェック
+               IF      KANACHK-SYUBETU =   1
+                   MOVE    14              TO  KOU-MAX
+                   PERFORM 430-MARK-HENSYU-SYORI-SEC
+               ELSE
+                   PERFORM 430-HENSYU-SYORI-SEC
+               END-IF
+               IF      WRK-NAIYOU(IDX-STR:)    NOT =   SPACE
+                   MOVE    "0017"      TO  SPA-ERRCD
+                   MOVE    8           TO  SPA-GMN-CUR
+                   GO  TO  430-KEIJYO-SET-EXT
+               END-IF
+           END-IF
+           .
+      *
+       430-KEIJYO-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   記号半角編集処理
+      *****************************************************************
+       430-MARK-HENSYU-SYORI-SEC   SECTION.
+      *
            MOVE    1               TO  IDX-STR
            MOVE    1               TO  IDX-KET
            MOVE    1               TO  IDX-STR1
       *
            PERFORM UNTIL  (IDX-STR     >   800 )
-                   OR     (IDZ         >   GYO-MAX )
+                   OR     (IDZ2        >   GYO-MAX )
+                   OR     (WRK-NAIYOU(IDX-STR:)  =   SPACE)
+      *        改行は対象外
+               IF      (WRK-NAIYOU(IDX-STR:1)  =   X"0A")
+                   IF      IDX-STR     >   1
+                       COMPUTE IDX-STR1    =   IDX-STR   -  1
+                   END-IF
+      *            行の最後が改行の時
+                   IF     (IDX-KET     =   1)  AND
+                          (IDX-STR     >   1)  AND
+                          (WRK-NAIYOU(IDX-STR1:1)  >=  X"A1")
+                       ADD     1               TO  IDX-STR
+                   ELSE
+                       MOVE    KOU-MAX         TO  IDX-KET
+                       ADD     1               TO  IDX-STR
+                   END-IF
+               ELSE
+                   ADD     1               TO  IDX-STR
+                   ADD     1               TO  IDX-KET
+               END-IF
+      *
+      *        改行、最大文字で改行
+               IF         (IDX-KET         >=  KOU-MAX)
+                   ADD     1               TO  IDZ2
+                   MOVE    1               TO  IDX-KET
+                   IF      WRK-NAIYOU(IDX-STR:1)    =   X"0A"
+                       COMPUTE IDX-STR =   IDX-STR     +   1
+                   END-IF
+               END-IF
+           END-PERFORM
+           .
+      *
+       430-MARK-HENSYU-SYORI-EXT.
+           EXIT.
+      *
+      *----(03.04.01)--ADD-END-----
+      *****************************************************************
+      *   帳票全角編集処理
+      *****************************************************************
+       430-HENSYU-SYORI-SEC        SECTION.
+      *
+           MOVE    1               TO  IDX-STR
+           MOVE    1               TO  IDX-KET
+           MOVE    1               TO  IDX-STR1
+      *
+           PERFORM UNTIL  (IDX-STR     >   800 )
+                   OR     (IDZ2        >   GYO-MAX )
                    OR     (WRK-NAIYOU(IDX-STR:)  =   SPACE)
       *        改行は対象外
                IF      (WRK-NAIYOU(IDX-STR:1)  =   X"0A")
@@ -1208,10 +1226,9 @@
       *
       *        改行、最大文字で改行
                IF     (IDX-KET         >=  KOU-MAX)
-                   ADD     1               TO  IDZ
+                   ADD     1               TO  IDZ2
                    MOVE    1               TO  IDX-KET
                END-IF
-      *
            END-PERFORM
            .
       *
