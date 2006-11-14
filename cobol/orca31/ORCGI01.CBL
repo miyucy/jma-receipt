@@ -6834,7 +6834,7 @@
            IF    ( MCP-RC      =   ZERO )
                MOVE    MCPDATA-REC     TO  SYS-5000-REC
            ELSE
-              MOVE        ZERO         TO  FLG-SYS5000
+              MOVE        1            TO  FLG-SYS5000
               INITIALIZE                  SYS-5000-REC
            END-IF
       *
