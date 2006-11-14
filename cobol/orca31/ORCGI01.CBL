@@ -6754,9 +6754,15 @@
                END-IF
            END-IF
       *
-           PERFORM 48011-H18-KAISEI-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  4801-KANREN-CHK-EXT
+           IF    ( SPA-GMN-I01-SYORIKBN-CD     =   "01"
+                                                OR "02"
+                                                OR "10"
+                                                OR "11"
+                                                OR "08" )
+               PERFORM 48011-H18-KAISEI-CHK-SEC
+               IF    ( SPA-ERRCD   NOT =   SPACE )
+                   GO  TO  4801-KANREN-CHK-EXT
+               END-IF
            END-IF
       *
            .
@@ -15969,7 +15975,7 @@
            WHEN    "1044"
                MOVE    SPACE           TO  SPA-ERRMSG
                STRING  WRK-ERRMSG          DELIMITED   BY  SPACE
-                       "有効期間な医療機関情報−入院基本の設定が"
+                       "有効な医療機関情報−入院基本の設定が"
                                            DELIMITED   BY  SIZE
                        "存在しません"      DELIMITED   BY  SIZE
                INTO    SPA-ERRMSG
@@ -15977,7 +15983,7 @@
            WHEN    "1045"
                MOVE    SPACE           TO  SPA-ERRMSG
                STRING  WRK-ERRMSG          DELIMITED   BY  SPACE
-                       "有効期間な病棟管理情報が存在しません"
+                       "有効な病棟管理情報が存在しません"
                                            DELIMITED   BY  SIZE
                INTO    SPA-ERRMSG
                END-STRING
