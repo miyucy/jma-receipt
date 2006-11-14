@@ -348,7 +348,9 @@
                    MOVE    1               TO  FLG-PTNYUINRRK
                END-IF
       *
-               PERFORM 900-PTNYUINRRK-KEY11-FET-SEC
+               IF    ( FLG-PTNYUINRRK      =   ZERO )
+                   PERFORM 900-PTNYUINRRK-KEY11-FET-SEC
+               END-IF
       *
            END-PERFORM
       *
