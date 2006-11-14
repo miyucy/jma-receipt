@@ -92,18 +92,23 @@ R01	{
 			value	varchar(22);
 		};
 		HYODAI	{
+			style   varchar(20); 
 			value	varchar(30);
 		};
 		JYOKEN1	{
+			style   varchar(20); 
 			value	varchar(30);
 		};
 		SRYYMH	{
-			value	varchar(6);
+			style   varchar(20); 
+			value	varchar(22);
 		};
 		NYUGAIKBNH	{
+			style   varchar(20); 
 			value	varchar(12);
 		};
 		CREYMDH	{
+			style   varchar(20); 
 			value	varchar(13);
 		};
 		KENSU	{

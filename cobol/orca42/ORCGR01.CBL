@@ -199,7 +199,7 @@
                        09  SPA-GMN-BTPARA-KENSU    PIC X(07).
                        09  SPA-GMN-BTPARA-NYUGAIKBNH
                                                    PIC X(12).
-                       09  SPA-GMN-BTPARA-SRYYMH   PIC X(07).
+                       09  SPA-GMN-BTPARA-SRYYMH   PIC X(22).
       *
                05  SPA-NAI-SELNO                   PIC 9(03).                   
       *
@@ -225,6 +225,7 @@
                    07  SPA-NAI-BTPARA-AREA.
                        09  SPA-NAI-BTPARA-QTORMAIN-AREA
                                                    PIC X(100).
+                       09  SPA-NAI-BTPARA-SRYYMH   PIC X(07).
                        09  SPA-NAI-BTPARA-TBL-G    OCCURS   500.
                            11  SPA-NAI-BTPARA-TQTORSUB-AREA
                                                    PIC X(100).
@@ -236,6 +237,7 @@
                                                    PIC 9(01).
       *                     
                    07  SPA-NAI-BTPARA-MAX          PIC 9(03).
+                   07  SPA-NAI-BTPARA-TAISYO-MAX   PIC 9(03).
                    07  SPA-NAI-BTPARA-HYOUJI-FLG   PIC 9(01).
       *
        01  SPA-RECE07-REC. 
@@ -263,7 +265,6 @@
            03  FLG-ROW             PIC 9(01).
            03  FLG-ZAISKBKBN       PIC 9(01). 
            03  FLG-TOUROKU         PIC 9(01).
-           03  FLG-TAISYO          PIC 9(01).
       *
       *    フラグ領域
        01  STS-AREA.
@@ -376,6 +377,7 @@
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
+           03  WRK-HENYMDG3        PIC X(22).
            03  WRK-HENYMD.
                05  WRK-HGO         PIC X(01).
                05  WRK-HYY         PIC 9(02).
@@ -1090,6 +1092,7 @@
            INITIALIZE                      SPA-NAI-BTPARA-AREA
                                            SPA-GMN-BTPARA-AREA
            MOVE    ZERO                TO  SPA-NAI-BTPARA-MAX
+                                           SPA-NAI-BTPARA-TAISYO-MAX
       *
            INITIALIZE                      BTPARA-REC
            MOVE    WRK-CONS-BTPARA-SHELLID
@@ -1112,11 +1115,6 @@
                INITIALIZE                      BTPARA-REC
            END-IF
       *
-           IF      FLG-BTPARA          =   1
-               MOVE    "0031"              TO  SPA-ERRCD
-               GO  TO  41071-RENKEI-DATA-HENSYU-EXT
-           END-IF 
-      *
            MOVE    ZERO                TO  IDX
            PERFORM                     UNTIL   FLG-BTPARA  =   1
               EVALUATE    BTPARA-DSP-RENNUM
@@ -1130,7 +1128,11 @@
                        MOVE    QTORM-SRYYM TO  WRK-SYMD (1:6)
                        MOVE    "01"        TO  WRK-SYMD (7:2) 
                        PERFORM 5002-HIZUKE-HEN-SEC
-                       MOVE    WRK-HENYMDG TO  SPA-GMN-BTPARA-SRYYMH
+                       MOVE    WRK-HENYMDG TO  SPA-NAI-BTPARA-SRYYMH
+                       STRING  WRK-HENYMDG3 (1:16) DELIMITED  BY  SIZE
+                               "診療分"            DELIMITED  BY  SIZE
+                                           INTO    SPA-GMN-BTPARA-SRYYMH
+                       END-STRING
                        MOVE    QTORM-CREYMD
                                            TO  WRK-SYMD
                        PERFORM 5002-HIZUKE-HEN-SEC
@@ -1213,6 +1215,11 @@
                                            SPA-NAI-BTPARA-TTAISYO (IDX)
                                END-IF          
                        END-EVALUATE     
+                       IF      SPA-NAI-BTPARA-TTAISYO (IDX)
+                                                       =   1
+                           ADD     1       TO
+                                           SPA-NAI-BTPARA-TAISYO-MAX
+                       END-IF          
                END-EVALUATE
       *
                MOVE    "tbl_btpara"        TO  MCP-TABLE
@@ -1225,11 +1232,15 @@
            PERFORM 900-CLOSE-SEC
       *
            MOVE    IDX                 TO  SPA-NAI-BTPARA-MAX
-
       *
-      *    照会連携データ表示処理
-      *    MOVE    1                   TO  SPA-NAI-BTPARA-HYOUJI-FLG
-           PERFORM 410711-RENKEI-DATA-JYOKEN-SEC
+           IF      SPA-NAI-BTPARA-MAX  =   ZERO
+               MOVE    "0031"              TO  SPA-ERRCD
+               MOVE    8                   TO  SPA-GMN-CUR
+           ELSE
+      *        照会連携データ表示処理
+               MOVE    1                   TO  SPA-NAI-BTPARA-HYOUJI-FLG
+               PERFORM 410711-RENKEI-DATA-JYOKEN-SEC
+           END-IF 
            .
        41071-RENKEI-DATA-HENSYU-EXT.
            EXIT.
@@ -1243,64 +1254,15 @@
            INITIALIZE                  SPA-GMN-TBL
                                        SPA-NAI-TBL
            MOVE    ZERO            TO  SPA-NAI-SELNO
-                                       FLG-TAISYO
       *
       *    レセプト連携データ（主）
            MOVE    SPA-NAI-BTPARA-QTORMAIN-AREA
                                            TO  QTORMAIN-AREA
       *
-      *    対象表示のとき
-           IF      SPA-NAI-BTPARA-HYOUJI-FLG   =   1
-               EVALUATE    QTORM-NYUGAIKBN
-                   WHEN    "1"
-                       IF      SPA-R01-NYUGAIKBN   =   "1"
-                           CONTINUE
-                       ELSE
-                           MOVE    1           TO  FLG-TAISYO
-                       END-IF
-                   WHEN    "2"
-                       IF      SPA-R01-NYUGAIKBN   =   "2"
-                           CONTINUE
-                       ELSE
-                           MOVE    1           TO  FLG-TAISYO
-                       END-IF
-               END-EVALUATE
-               EVALUATE    SPA-R01-NYUGAIKBN
-                               ALSO    SPA-R01-RECEKBN
-                   WHEN    "1" ALSO    "0"
-                       IF      QTORM-NIHO-CNT      =   0
-                           MOVE    1           TO  FLG-TAISYO
-                       END-IF 
-                   WHEN    "1" ALSO    "3"     
-                       IF      QTORM-NRSI-CNT      =   0
-                           MOVE    1           TO  FLG-TAISYO
-                       END-IF 
-                   WHEN    "1" ALSO    "4"     
-                   WHEN    "1" ALSO    "5"
-                       IF      QTORM-NJBI-CNT      =   0
-                           MOVE    1           TO  FLG-TAISYO
-                       END-IF 
-                   WHEN    "2" ALSO    "0"
-                       IF      QTORM-GIHO-CNT      =   0
-                           MOVE    1           TO  FLG-TAISYO
-                       END-IF 
-                   WHEN    "2" ALSO    "3"     
-                       IF      QTORM-GRSI-CNT      =   0
-                           MOVE    1           TO  FLG-TAISYO
-                       END-IF 
-                   WHEN    "2" ALSO    "4"     
-                   WHEN    "2" ALSO    "5"
-                       IF      QTORM-GJBI-CNT      =   0
-                           MOVE    1           TO  FLG-TAISYO
-                       END-IF 
-               END-EVALUATE     
-           END-IF
-      *
            MOVE    ZERO                TO  IDY
                                            IDZ
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX         >   SPA-NAI-BTPARA-MAX
-                   OR      FLG-TAISYO  =   1
       *        レセプト連携データ（患者情報）
                MOVE    SPA-NAI-BTPARA-TQTORSUB-AREA (IDX)
                                            TO  QTORSUB-AREA
@@ -1320,7 +1282,7 @@
                    MOVE    SPA-NAI-BTPARA-TNAME (IDX)
                                            TO  SPA-GMN-TNAME   (IDY)
                    MOVE    QTORM-SRYYM     TO  SPA-NAI-TSRYYM  (IDY)
-                   MOVE    SPA-GMN-BTPARA-SRYYMH
+                   MOVE    SPA-NAI-BTPARA-SRYYMH
                                            TO  SPA-GMN-TSRYYM  (IDY)
                    IF      QTORS-TSTPTNUMKBN   =   "1"
                        MOVE    "テ"        TO
@@ -1379,10 +1341,16 @@
            MOVE    "/"                 TO  WRK-BTPARA-FL
            MOVE    WRK-BTPARA-KENSU    TO  SPA-GMN-BTPARA-KENSU
       *
-           IF      SPA-GMN-MAX         =   ZERO
-               MOVE    "0030"              TO  SPA-ERRCD
+           IF      SPA-NAI-BTPARA-MAX  =   ZERO
+               MOVE    "0031"              TO  SPA-ERRCD
            ELSE
-               MOVE    7                   TO  SPA-GMN-CUR
+               IF    ( SPA-NAI-BTPARA-HYOUJI-FLG   =   1    )
+               AND   ( SPA-NAI-BTPARA-TAISYO-MAX   =   ZERO )
+                   MOVE    "0030"              TO  SPA-ERRCD
+                   MOVE    8                   TO  SPA-GMN-CUR
+               ELSE
+                   MOVE    7                   TO  SPA-GMN-CUR
+               END-IF
            END-IF
            .
        410711-RENKEI-DATA-JYOKEN-EXT.
@@ -2331,6 +2299,7 @@
       *
            MOVE    ZERO            TO  SPA-GMN-MAX
                                        SPA-NAI-BTPARA-MAX
+                                       SPA-NAI-BTPARA-TAISYO-MAX
            INITIALIZE                  SPA-GMN-TBL
                                        SPA-NAI-TBL
                                        SPA-GMN-KOUMOKU
@@ -2555,6 +2524,20 @@
                OR    ( SPA-GMN-PTNUM   NOT =   SPACE )
                OR    ( SPA-GMN-SRYYM   NOT =   SPACE )
                    MOVE    "0022"              TO  SPA-ERRCD
+                   GO  TO  450-TOUROKU-EXT
+               END-IF
+           END-IF
+      *
+           IF      SPA-GMN-SYORI       =   "4"
+               IF      SPA-NAI-BTPARA-MAX  =   ZERO
+                   MOVE    "0031"              TO  SPA-ERRCD
+                   MOVE    8                   TO  SPA-GMN-CUR
+                   GO  TO  450-TOUROKU-EXT
+               END-IF
+               IF      SPA-NAI-BTPARA-TAISYO-MAX
+                                           =   ZERO
+                   MOVE    "0030"              TO  SPA-ERRCD
+                   MOVE    8                   TO  SPA-GMN-CUR
                    GO  TO  450-TOUROKU-EXT
                END-IF
            END-IF
@@ -3410,6 +3393,7 @@
                CALL    "ORCSDAY"            USING   STS-AREA-DAY
                                                    LNK-DAY2-AREA
                MOVE    LNK-DAY2-EDTYMD1    TO  WRK-HENYMDG
+               MOVE    LNK-DAY2-EDTYMD3    TO  WRK-HENYMDG3
            END-IF
       *
            .
@@ -3523,6 +3507,12 @@
            END-IF
            MOVE    SPA-GMN-BTPARA-KENSU   TO  R01-KENSU
       *
+           MOVE    "blue"                 TO  R01-HYODAI-STYLE
+                                              R01-JYOKEN1-STYLE
+                                              R01-SRYYMH-STYLE
+                                              R01-NYUGAIKBNH-STYLE
+                                              R01-CREYMDH-STYLE
+      *
       **     IF      SPA-R01-NYUGAIKBN   =   "1"
       **         MOVE    WIDGET-INSENSITIVE  TO  R01-SYORI-STATE
       **     ELSE
@@ -3557,7 +3547,9 @@
                    MOVE    WIDGET-NORMAL       TO  R01-STJYUSINYMD-STATE
                                                    R01-EDJYUSINYMD-STATE
                WHEN    "4"
-                   MOVE    WIDGET-NORMAL       TO  R01-B05-STATE
+                   IF      SPA-NAI-BTPARA-MAX  >   ZERO
+                       MOVE    WIDGET-NORMAL       TO  R01-B05-STATE
+                   END-IF 
            END-EVALUATE
       *
            EVALUATE   SPA-NAI-BTPARA-HYOUJI-FLG

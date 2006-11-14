@@ -62,14 +62,19 @@
                 04  R01-VALUE   PIC X(14).
               03  R01-CREYMD.
                 04  R01-VALUE   PIC X(22).
+              03  R01-HYODAI-STYLE   PIC X(20).
               03  R01-HYODAI.
                 04  R01-VALUE   PIC X(30).
+              03  R01-JYOKEN1-STYLE   PIC X(20).
               03  R01-JYOKEN1.
                 04  R01-VALUE   PIC X(30).
+              03  R01-SRYYMH-STYLE   PIC X(20).
               03  R01-SRYYMH.
-                04  R01-VALUE   PIC X(6).
+                04  R01-VALUE   PIC X(22).
+              03  R01-NYUGAIKBNH-STYLE   PIC X(20).
               03  R01-NYUGAIKBNH.
                 04  R01-VALUE   PIC X(12).
+              03  R01-CREYMDH-STYLE   PIC X(20).
               03  R01-CREYMDH.
                 04  R01-VALUE   PIC X(13).
               03  R01-KENSU.

@@ -694,92 +694,12 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>HYODAI</name>
-      <x>350</x>
-      <y>3</y>
-      <width>300</width>
-      <height>24</height>
-      <label></label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>SRYYMH</name>
-      <x>350</x>
-      <y>25</y>
-      <width>50</width>
-      <height>24</height>
-      <label>H10.10</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>NYUGAIKBNH</name>
-      <x>420</x>
-      <y>25</y>
-      <width>100</width>
-      <height>24</height>
-      <label>Æþ±¡³°¡¦Æþ±¡</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>CREYMDH</name>
-      <x>550</x>
-      <y>25</y>
-      <width>100</width>
-      <height>24</height>
-      <label>H10.10.10</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>KENSU</name>
       <x>800</x>
       <y>25</y>
       <width>80</width>
       <height>24</height>
       <label>999/999</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>JYOKEN1</name>
-      <x>660</x>
-      <y>3</y>
-      <width>300</width>
-      <height>24</height>
-      <label></label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -1024,6 +944,86 @@
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>HYODAI</name>
+      <x>350</x>
+      <y>3</y>
+      <width>220</width>
+      <height>24</height>
+      <label>£±£²£³£´£µ£¶£·£¸£¹£°£±£²£³£´£µ</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>CREYMDH</name>
+      <x>630</x>
+      <y>25</y>
+      <width>100</width>
+      <height>24</height>
+      <label>H10.10.10ºîÀ®</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>SRYYMH</name>
+      <x>350</x>
+      <y>25</y>
+      <width>160</width>
+      <height>24</height>
+      <label>Ê¿À®£±£¸Ç¯£±£°·î¿ÇÎÅÊ¬</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>JYOKEN1</name>
+      <x>570</x>
+      <y>3</y>
+      <width>220</width>
+      <height>24</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>NYUGAIKBNH</name>
+      <x>510</x>
+      <y>25</y>
+      <width>100</width>
+      <height>24</height>
+      <label>Æþ±¡³°¡¦Æþ±¡</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
     </widget>
   </widget>
 </widget>
