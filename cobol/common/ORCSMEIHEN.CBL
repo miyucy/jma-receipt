@@ -181,6 +181,15 @@
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
+      *    検査正式名称
+           IF      SPA-FORMALFLG       =   "1"
+               IF     (TNS-SRYCD(1:1)      =   "1") AND
+                      (TNS-SRYKBN          =   "60")  AND
+                      (TNS-FORMALNAME  NOT =   SPACE )  AND
+                      (TNS-FORMALNAME  NOT =   TNS-NAME )
+                   MOVE    TNS-FORMALNAME  TO  TNS-NAME
+               END-IF
+           END-IF
            MOVE    TNS-NAME            TO  ORCSMEIHEN-TNS-NAME
            .
        100-TNS-NAME-HEN-EXT.
@@ -260,10 +269,16 @@
            END-IF
       *
            MOVE    SPACE               TO  ORCSMEIHEN-MEISYO
+           MOVE    SPACE               TO  ORCSMEIHEN-MEISYO2
            STRING  ORCSMEIHEN-TNS-NAME DELIMITED  BY  SPACE
                    "　　項目数："      DELIMITED  BY  SIZE
                    WRK-KANJI           DELIMITED  BY  SIZE
                                        INTO    ORCSMEIHEN-MEISYO
+           END-STRING
+      *    項目数のみ
+           STRING  "　　項目数："      DELIMITED  BY  SIZE
+                   WRK-KANJI           DELIMITED  BY  SPACE
+                                       INTO    ORCSMEIHEN-MEISYO2
            END-STRING
            .
        200-HOUKATU-HEN-EXT.

@@ -144,6 +144,12 @@
                     06  W06-MEIPRTFLG-COUNT   PIC S9(9)   BINARY.
                     06  W06-MEIPRTFLG-ITEM
                             PIC X(26)   OCCURS  3 TIMES.
+                  05  W06-FORMALFLG-COMB.
+                    06  W06-FORMALFLG.
+                      07  W06-VALUE   PIC X(40).
+                    06  W06-FORMALFLG-COUNT   PIC S9(9)   BINARY.
+                    06  W06-FORMALFLG-ITEM
+                            PIC X(40)   OCCURS  5 TIMES.
               03  W06-STYUKYMD.
                 04  W06-VALUE   PIC X(10).
               03  W06-EDYUKYMD.

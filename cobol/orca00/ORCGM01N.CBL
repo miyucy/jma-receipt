@@ -49,6 +49,7 @@
       *  01.02.10    NACL-多々納  04/02/02  環境設定と外来時間外区分追加
       *  01.02.11    NACL-伊藤    04/02/05  M97の追加
       *  01.02.12    NACL-伊藤    06/02/22  MONFUNC 対応
+      *  03.04.00    NACL-多々納  06/11/13  検査正式名称表示フラグ追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -137,6 +138,8 @@
            COPY  "CPSK1010.INC".
       *    医療機関情報
            COPY  "CPSK1001.INC".
+      *
+           COPY  "CPSK1038.INC".
       *
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
@@ -488,8 +491,52 @@
       *    入院会計照会
            MOVE    SYS-1010-GSRAUTH(37:1)  TO  SPA-GSRAUTH-32
       *
+      *    検査正式名称表示
+           MOVE    SYS-1010-FORMALFLG  TO  SPA-FORMALFLG
+           IF      SYS-1010-FORMALFLG  =   SPACE
+               PERFORM 3201-SYS-1038-SET-SEC
+           END-IF
+           IF      SPA-FORMALFLG       =   SPACE
+               MOVE    "0"             TO  SPA-FORMALFLG
+           END-IF
            .
        320-SYS-1010-SPASET-EXT.
+           EXIT.
+      *****************************************************************
+      *    検査正式名称表示処理
+      *****************************************************************
+       3201-SYS-1038-SET-SEC          SECTION.
+      *
+           MOVE    SPACE               TO  SYS-1038-REC
+           INITIALIZE                  SYS-1038-REC
+           MOVE    "1038"              TO  SYS-1038-KANRICD
+           MOVE    "*"                 TO  SYS-1038-KBNCD
+           MOVE    SPA-SYSYMD          TO  SYS-1038-STYUKYMD
+           MOVE    SPA-SYSYMD          TO  SYS-1038-EDYUKYMD
+           MOVE    SYS-1038-REC        TO  MCPDATA-REC
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+           ELSE
+               MOVE    SPACE               TO  SYS-1038-REC
+               INITIALIZE                  SYS-1038-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1038-REC
+      *        検査正式名称表示
+               MOVE    SYS-1038-FORMALFLG  TO  SPA-FORMALFLG
+           END-IF
+           .
+       3201-SYS-1038-SET-EXT.
            EXIT.
       *
       *****************************************************************

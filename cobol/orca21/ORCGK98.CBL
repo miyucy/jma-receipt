@@ -43,6 +43,7 @@
       *  01.00.11    NACL¡ÝÂ¿¡¹Ç¼ 03/10/31  ¥»¥Ã¥È¤«¤é¤Î¼¡ÊÇÄÉ²Ã
       *  01.00.12    NACL¡ÝÂ¿¡¹Ç¼ 04/12/07  ÅÀ¿ô¸¡ºº¸¡º÷ÄÉ²ÃÂ¾
       *  01.00.13    NACL-Â¿¡¹Ç¼  05/11/17  MONFUNC ÂÐ±þ
+      *  03.04.00    NACL-Â¿¡¹Ç¼  06/11/13  ¸¡ººÀµ¼°Ì¾¾ÎÉ½¼¨ÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -169,6 +170,13 @@
       *
            03  WRK-K98-ROW         PIC S9(09).
            03  FLG-GMN-INIT        PIC  9(01).
+      *
+           03  WRK-NAME1-G.
+               05  WRK-NAME11           PIC X(20).
+               05  WRK-NAME12           PIC X(50).
+           03  WRK-NAME2-G.
+               05  WRK-NAME21           PIC X(30).
+               05  WRK-NAME22           PIC X(40).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMD.
@@ -1200,6 +1208,21 @@
                                INTO        SPA-K98-GMN-NAME(IDX)
                 END-STRING
            END-IF
+      *!!
+      *    ¸¡ººÀµ¼°Ì¾¾Î
+           IF     (TNS-SRYCD(1:1)      =   "1") AND
+                  (TNS-SRYKBN          =   "60")  AND
+                  (TNS-FORMALNAME  NOT =   SPACE )  AND
+                  (TNS-FORMALNAME  NOT =   TNS-NAME )
+                MOVE    SPACE              TO  SPA-K98-GMN-NAME (IDX)
+                STRING  TNS-NAME           DELIMITED   BY  SPACE
+                        "¡¡¡Ú"             DELIMITED   BY  SIZE
+                        TNS-FORMALNAME     DELIMITED   BY  SPACE
+                        "¡Û"               DELIMITED   BY  SIZE
+                               INTO        SPA-K98-GMN-NAME(IDX)
+                END-STRING
+                PERFORM 310211-KENSA-NAME-SEC
+           END-IF
       *
            .
        31012-INPUTCD-HEN-EXT.
@@ -1261,7 +1284,7 @@
                        MOVE    "key6j"        TO  WRK-PATH
       *            ¿ÇÎÅ¹Ô°Ù
                    WHEN    "8"
-                       MOVE    "key7j"        TO  WRK-PATH
+                       MOVE    "key7j1"       TO  WRK-PATH
       *            ¸¡ºº
                    WHEN    "9"
                        MOVE    "key42jk"       TO  WRK-PATH
@@ -1287,7 +1310,7 @@
                        MOVE    "key6"        TO  WRK-PATH
       *            ¿ÇÎÅ¹Ô°Ù
                    WHEN    "8"
-                       MOVE    "key7"        TO  WRK-PATH
+                       MOVE    "key71"        TO  WRK-PATH
       *            ¸¡ºº
                    WHEN    "9"
                        MOVE    "key42k"      TO  WRK-PATH
@@ -1688,6 +1711,21 @@
                                INTO        SPA-K98-GMN-NAME(IDX)
                 END-STRING
            END-IF
+      *!!
+      *    ¸¡ººÀµ¼°Ì¾¾Î
+           IF     (TNS-SRYCD(1:1)      =   "1") AND
+                  (TNS-SRYKBN          =   "60")  AND
+                  (TNS-FORMALNAME  NOT =   SPACE )  AND
+                  (TNS-FORMALNAME  NOT =   TNS-NAME )
+                MOVE    SPACE              TO  SPA-K98-GMN-NAME (IDX)
+                STRING  TNS-NAME           DELIMITED   BY  SPACE
+                        "¡¡¡Ú"             DELIMITED   BY  SIZE
+                        TNS-FORMALNAME     DELIMITED   BY  SPACE
+                        "¡Û"               DELIMITED   BY  SIZE
+                               INTO        SPA-K98-GMN-NAME(IDX)
+                END-STRING
+                PERFORM 310211-KENSA-NAME-SEC
+           END-IF
       *
       *    ¸¡ºº¤Î»þ¡¢Êñ³ç¤ÎÊÔ½¸
            IF      SPA-K98-GMN-SYORI   =   "9"
@@ -1759,6 +1797,39 @@
       *
            .
        31021-TENSU-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¸¡ººÌ¾¾ÎºÆÊÔ½¸½èÍý
+      *****************************************************************
+       310211-KENSA-NAME-SEC             SECTION.
+      *
+           MOVE    SPACE               TO  WRK-NAME1-G
+           MOVE    TNS-NAME            TO  WRK-NAME1-G
+           IF      WRK-NAME12          =   SPACE
+               STRING  "¡Ú"                DELIMITED   BY  SIZE
+                        TNS-FORMALNAME     DELIMITED   BY  SPACE
+                        "¡Û"               DELIMITED   BY  SIZE
+                               INTO        WRK-NAME12
+               END-STRING
+               INSPECT WRK-NAME1-G         REPLACING  ALL "  "  BY  "¡¡"
+               MOVE    WRK-NAME1-G         TO  SPA-K98-GMN-NAME (IDX)
+           ELSE
+               MOVE    SPACE               TO  WRK-NAME2-G
+               MOVE    TNS-NAME            TO  WRK-NAME2-G
+               IF      WRK-NAME22          =   SPACE
+                   STRING  "¡Ú"                DELIMITED   BY  SIZE
+                            TNS-FORMALNAME     DELIMITED   BY  SPACE
+                            "¡Û"               DELIMITED   BY  SIZE
+                                   INTO        WRK-NAME22
+                   END-STRING
+                   INSPECT WRK-NAME2-G     REPLACING  ALL "  "  BY  "¡¡"
+                   MOVE    WRK-NAME2-G     TO  SPA-K98-GMN-NAME (IDX)
+               END-IF
+           END-IF
+      *
+           .
+       310211-KENSA-NAME-EXT.
            EXIT.
       *
       *****************************************************************

@@ -46,6 +46,7 @@
       * 03.00.02     NACL-多々納  05/12/01  請求書発行フラグ等追加
       *                                     MONFUNC 対応
       * 03.00.03     NACL-多々納  06/04/11  診療費明細書発行追加
+      * 03.04.00     NACL-多々納  06/11/13  検査正式名称表示区分の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -178,11 +179,17 @@
                        09  SPA-GMN-MEIPRTFLG-LST   PIC X(26)
                                                    OCCURS  3. 
                    07  SPA-MEIPRTFLG-MAX      PIC 9(04).  
+      *            検査正式名称表示
+                   07  SPA-GMN-FORMALFLG-LSTG.
+                       09  SPA-GMN-FORMALFLG-LST   PIC X(40)
+                                                   OCCURS  5. 
+                   07  SPA-FORMALFLG-MAX      PIC 9(04).  
       *            基本情報の発行区分
                    07  SPA-1001-SKYPRTFLG      PIC  X(01).
                    07  SPA-1001-SYOHOPRTFLG    PIC  X(01).
                    07  SPA-1001-YAKUJYOPRTFLG  PIC  X(01).
                    07  SPA-1001-MEIPRTFLG      PIC  X(01).
+                   07  SPA-1038-FORMALFLG      PIC  X(01).
       *
                05  SPA-PAGE2-G.
       *            請求書
@@ -205,6 +212,11 @@
                        09  SPA-GMN-MEIPRTFLG        PIC X(01).
                        09  SPA-GMN-MEIPRTFLG-F1     PIC X(01).
                        09  SPA-GMN-MEIPRTFLG-MEI    PIC X(24).
+      *            検査正式名称表示
+                   07  SPA-GMN-FORMALFLG-G. 
+                       09  SPA-GMN-FORMALFLG        PIC X(01).
+                       09  SPA-GMN-FORMALFLG-F1     PIC X(01).
+                       09  SPA-GMN-FORMALFLG-MEI    PIC X(24).
       *
                05  SPA-NAIB-AREA.
                    07  SPA-NAI-STYUKYMD       PIC X(08).
@@ -289,6 +301,8 @@
            COPY  "CPSK1010.INC".
       *    基本情報
            COPY  "CPSK1001.INC".
+      *    基本情報
+           COPY  "CPSK1038.INC".
       *
       *
       *****************************************************************
@@ -547,6 +561,10 @@
            MOVE    "0 発行しない"      TO  SPA-GMN-MEIPRTFLG-LST (1)
            MOVE    "1 発行する"        TO  SPA-GMN-MEIPRTFLG-LST (2)
            MOVE    2                   TO  SPA-MEIPRTFLG-MAX
+      *    検査正式名称表示
+           MOVE    "0 使用しない"      TO  SPA-GMN-FORMALFLG-LST(1)
+           MOVE    "1 使用する"        TO  SPA-GMN-FORMALFLG-LST(2)
+           MOVE    2                   TO  SPA-FORMALFLG-MAX
       *
       *    基本情報の発行フラグ
            PERFORM 3202-KIHON-HEN-SEC
@@ -814,6 +832,22 @@
            MOVE    SYS-1001-SYOHOPRTFLG    TO  SPA-1001-SYOHOPRTFLG
            MOVE    SYS-1001-YAKUJYOPRTFLG  TO  SPA-1001-YAKUJYOPRTFLG
            MOVE    SYS-1001-MEIPRTFLG      TO  SPA-1001-MEIPRTFLG
+      *
+      *    検査正式名称表示
+           INITIALIZE                      SYS-1038-REC
+           MOVE    "1038"              TO  SYS-1038-KANRICD
+           MOVE    "*"                 TO  SYS-1038-KBNCD
+           MOVE    SPA-SYSYMD          TO  SYS-1038-STYUKYMD 
+           MOVE    SPA-SYSYMD          TO  SYS-1038-EDYUKYMD 
+           MOVE    SYS-1038-REC        TO  MCPDATA-REC
+           PERFORM 900-SYSKANRI-KEY-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1038-REC
+           ELSE
+               INITIALIZE                      SYS-1038-REC
+           END-IF
+      *
+           MOVE    SYS-1038-FORMALFLG      TO  SPA-1038-FORMALFLG 
            . 
        3202-KIHON-HEN-EXT.
            EXIT.
@@ -1262,6 +1296,7 @@
                MOVE    SYS-1010-MEIPRTFLG      TO  SPA-GMN-MEIPRTFLG
                MOVE    SYS-1010-SYOHOPRTFLG    TO  SPA-GMN-SYOHOPRTFLG
                MOVE    SYS-1010-YAKUJYOPRTFLG  TO  SPA-GMN-YAKUJYOFLG
+               MOVE    SYS-1010-FORMALFLG      TO  SPA-GMN-FORMALFLG
                PERFORM 20091-PRTFLG-HEN-SEC
            END-IF
       *
@@ -1311,6 +1346,16 @@
                    MOVE    SPA-GMN-YAKUJYOFLG-LST (IDX)
                                            TO  SPA-GMN-YAKUJYOFLG-G
                    MOVE    SPA-YAKUJYOFLG-MAX   TO  IDX
+               END-IF
+           END-PERFORM
+      *
+           PERFORM VARYING IDX     FROM    1   BY  1
+                   UNTIL   IDX     >       SPA-FORMALFLG-MAX
+               IF      SPA-GMN-FORMALFLG   =   SPA-GMN-FORMALFLG-LST
+                                                      (IDX)(1:1)
+                   MOVE    SPA-GMN-FORMALFLG-LST (IDX)
+                                           TO  SPA-GMN-FORMALFLG-G
+                   MOVE    SPA-FORMALFLG-MAX   TO  IDX
                END-IF
            END-PERFORM
       *
@@ -1594,6 +1639,7 @@
            MOVE    W06-MEIPRTFLG       TO  SPA-GMN-MEIPRTFLG-G
            MOVE    W06-SYOHOPRTFLG     TO  SPA-GMN-SYOHOPRTFLG-G
            MOVE    W06-YAKUJYOFLG      TO  SPA-GMN-YAKUJYOFLG-G
+           MOVE    W06-FORMALFLG       TO  SPA-GMN-FORMALFLG-G
       *
            .
        4101-GMN-SPA-SET-EXT.
@@ -1674,6 +1720,9 @@
       *
            IF      SPA-ERRCD           =   SPACE
                PERFORM 4121-MEIPRTFLG-CHK-SEC
+           END-IF
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4121-FORMALFLG-CHK-SEC
            END-IF
            .
        4102-KIHON-CHK-EXT.
@@ -2246,6 +2295,34 @@
        4121-MEIPRTFLG-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    検査正式名称表示フラグチェック処理
+      *****************************************************************
+       4121-FORMALFLG-CHK-SEC        SECTION.
+      *
+           MOVE    ZERO                TO  FLG-CHK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-FORMALFLG-MAX
+               IF      SPA-GMN-FORMALFLG   =   SPA-GMN-FORMALFLG-LST
+                                                       (IDX)(1:1)
+                   MOVE    SPA-GMN-FORMALFLG-LST (IDX)
+                                               TO  SPA-GMN-FORMALFLG-G
+                   MOVE    1                   TO  FLG-CHK
+                   MOVE    SPA-FORMALFLG-MAX   TO  IDX
+               END-IF
+           END-PERFORM
+           IF     (FLG-CHK             =   ZERO )
+               IF      SPA-GMN-FORMALFLG   =   SPACE
+                   MOVE    SPACE           TO  SPA-GMN-FORMALFLG-G
+               ELSE
+                   MOVE    "0022"          TO  SPA-ERRCD
+                   MOVE    25              TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           .
+       4121-FORMALFLG-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    タグ切替え処理
       *****************************************************************
        460-TAGUCHG-SEC           SECTION.
@@ -2534,6 +2611,7 @@
            MOVE    SPA-GMN-SYOHOPRTFLG     TO  SYS-1010-SYOHOPRTFLG
            MOVE    SPA-GMN-YAKUJYOFLG      TO  SYS-1010-YAKUJYOPRTFLG
            MOVE    SPA-GMN-MEIPRTFLG       TO  SYS-1010-MEIPRTFLG
+           MOVE    SPA-GMN-FORMALFLG       TO  SYS-1010-FORMALFLG
       *
            IF     (FLG-SYSKANRI        =   ZERO ) AND
                   (SPA-GMN-SYORI       =   2    )
@@ -2994,6 +3072,14 @@
            END-PERFORM
            MOVE  SPA-MEIPRTFLG-MAX     TO  W06-MEIPRTFLG-COUNT
            MOVE  SPA-GMN-MEIPRTFLG-G   TO  W06-MEIPRTFLG
+      *    検査正式名称表示
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-FORMALFLG-MAX
+               MOVE    SPA-GMN-FORMALFLG-LST(IDX)
+                                       TO  W06-FORMALFLG-ITEM(IDX)
+           END-PERFORM
+           MOVE  SPA-FORMALFLG-MAX     TO  W06-FORMALFLG-COUNT
+           MOVE  SPA-GMN-FORMALFLG-G   TO  W06-FORMALFLG
       *
            EVALUATE    SPA-GMN-PAGENO
                WHEN    1
@@ -3108,6 +3194,9 @@
                                                TO  SPA-ERRMSG
                WHEN    "0021"
                    MOVE    "職員の選択がしてありません。"
+                                               TO  SPA-ERRMSG
+               WHEN    "0022"
+                   MOVE    "検査正式名称表示フラグ入力エラー"
                                                TO  SPA-ERRMSG
                WHEN    "0100"
                    MOVE
@@ -3246,6 +3335,8 @@
                     MOVE  "YAKUJYOFLG"     TO   MCP-WIDGET
                 WHEN    24
                     MOVE  "MEIPRTFLG"      TO   MCP-WIDGET
+                WHEN    25
+                    MOVE  "FORMALFLG"      TO   MCP-WIDGET
       *
                 WHEN    99
                     MOVE  "B12"            TO   MCP-WIDGET
@@ -3311,6 +3402,8 @@
                WHEN     "YAKUJYOFLG"
                    MOVE    24              TO  SPA-GMN-CUR
                WHEN     "MEIPRTFLG"
+                   MOVE    25              TO  SPA-GMN-CUR
+               WHEN     "FORMALFLG"
                    MOVE    99              TO  SPA-GMN-CUR
       *
                WHEN     OTHER

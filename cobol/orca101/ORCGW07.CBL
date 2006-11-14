@@ -80,6 +80,7 @@
       *  02.01.26    NACL-太田    06/08/16  収納機能情報
       *                                     請求書兼領収書発行区分追加
       *  03.02.00    NACL-多々納  06/08/29  レセコメント詳記区分の追加
+      *  03.04.00    NACL-多々納  06/11/13  検査正式名称表示区分の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -387,6 +388,15 @@
                            11  SPA-GMN-WKSRYHYOFLG-LST   PIC X(40)
                                                        OCCURS  5.
                            11  SPA-GMN-WKSRYHYOFLG-MAX   PIC 9(03).
+      *                検査正式名称表示
+                       09  SPA-GMN-FORMALFLG-G.
+                           11  SPA-GMN-FORMALFLG       PIC X(01).
+                           11  SPA-GMN-FORMALFLG-F1    PIC X(01).
+                           11  SPA-GMN-FORMALFLG-MEI   PIC X(38).
+                       09  SPA-GMN-FORMALFLGLST-G.
+                           11  SPA-GMN-FORMALFLG-LST   PIC X(40)
+                                                       OCCURS  5.
+                           11  SPA-GMN-FORMALFLG-MAX   PIC 9(03).
                    07  SPA-GMN-PAGE4-AREA.
       *                入金管理情報（収納機能情報）
                        09  SPA-GMN-SYUNYKNKNRKBN-G.
@@ -1154,6 +1164,10 @@
            MOVE    "0 患者番号順"      TO  SPA-GMN-WKSRYHYOFLG-LST(1)
            MOVE    "1 登録順"          TO  SPA-GMN-WKSRYHYOFLG-LST(2)
            MOVE    2                   TO  SPA-GMN-WKSRYHYOFLG-MAX
+      *    検査正式名称表示
+           MOVE    "0 使用しない"      TO  SPA-GMN-FORMALFLG-LST(1)
+           MOVE    "1 使用する"        TO  SPA-GMN-FORMALFLG-LST(2)
+           MOVE    2                   TO  SPA-GMN-FORMALFLG-MAX
       *
            MOVE    "0 発行しない"      TO  SPA-GMN-SYUSKYPRTGLST(1)
            MOVE    "1 発行する"        TO  SPA-GMN-SYUSKYPRTGLST(2)
@@ -1945,6 +1959,8 @@
            MOVE    SYS-1038-HAKHOUFLG  TO  SPA-GMN-HAKHOUFLG
            MOVE    SYS-1038-DOSRYKBNFLG    TO  SPA-GMN-DOSRYKBNFLG
            MOVE    SYS-1038-WKSRYHYOFLG    TO  SPA-GMN-WKSRYHYOFLG
+      *    検査正式名称表示
+           MOVE    SYS-1038-FORMALFLG      TO  SPA-GMN-FORMALFLG
       *
       *    入金管理区分
            MOVE    ZERO                TO  FLG-OK
@@ -2032,6 +2048,24 @@
            IF      FLG-OK              =   ZERO
                MOVE    SPA-GMN-WKSRYHYOFLG-LST (1)
                                        TO  SPA-GMN-WKSRYHYOFLG-G
+           END-IF
+      *    検査正式名称表示
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY         FROM    1   BY  1
+                   UNTIL   IDY         >   SPA-GMN-FORMALFLG-MAX
+               IF      SPA-GMN-FORMALFLG
+                                       =   SPA-GMN-FORMALFLG-LST (IDY)
+                                                             (1:1)
+                   MOVE    SPA-GMN-FORMALFLG-LST (IDY)
+                                       TO  SPA-GMN-FORMALFLG-G
+                   MOVE    1           TO  FLG-OK
+                   MOVE    SPA-GMN-FORMALFLG-MAX
+                                       TO  IDY
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-FORMALFLG-LST (1)
+                                       TO  SPA-GMN-FORMALFLG-G
            END-IF
       *
            MOVE    33                  TO  SPA-GMN-CUR
@@ -2816,6 +2850,7 @@
            MOVE    W07-HAKHOUFLG       TO  SPA-GMN-HAKHOUFLG-G
            MOVE    W07-DOSRYKBN-FLG    TO  SPA-GMN-DOSRYKBNFLG-G
            MOVE    W07-WKSRYHYO-FLG    TO  SPA-GMN-WKSRYHYOFLG-G
+           MOVE    W07-FORMAL-FLG      TO  SPA-GMN-FORMALFLG-G
       *
       *    収納機能情報
            MOVE    W07-SYUNYKNKNRKBN   TO  SPA-GMN-SYUNYKNKNRKBN-G
@@ -2994,6 +3029,10 @@
       *            中途表示一覧
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4108-WKSRYHYOFLG-CHK-SEC
+                   END-IF
+      *            検査正式名称表示
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4108-FORMALFLG-CHK-SEC
                    END-IF
       *            入金管理区分チェック
                    IF      SPA-ERRCD           =   SPACE
@@ -4233,6 +4272,30 @@
        4108-WKSRYHYOFLG-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    検査正式名称表示チェック処理（診療行為機能情報）
+      *****************************************************************
+       4108-FORMALFLG-CHK-SEC      SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-FORMALFLG-MAX
+               IF      SPA-GMN-FORMALFLG
+                                       =   SPA-GMN-FORMALFLG-LST (IDX)
+                                                          (1:1)
+                   MOVE    SPA-GMN-FORMALFLG-LST(IDX)
+                                          TO  SPA-GMN-FORMALFLG-G
+                   MOVE    1              TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    35              TO  SPA-GMN-CUR
+               MOVE    "2006"          TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       4108-FORMALFLG-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    入金管理区分チェック処理（収納行為機能情報）
       *****************************************************************
        4109-SYUNYKNKNRKBN-CHK-SEC      SECTION.
@@ -5416,6 +5479,7 @@
            MOVE    SPA-GMN-HAKHOUFLG       TO  SYS-1038-HAKHOUFLG
            MOVE    SPA-GMN-DOSRYKBNFLG     TO  SYS-1038-DOSRYKBNFLG
            MOVE    SPA-GMN-WKSRYHYOFLG     TO  SYS-1038-WKSRYHYOFLG
+           MOVE    SPA-GMN-FORMALFLG       TO  SYS-1038-FORMALFLG
       *
            MOVE    SYS-1038-REC            TO  SYSKANRI-REC
       *
@@ -6228,6 +6292,15 @@
            END-PERFORM
            MOVE    SPA-GMN-WKSRYHYOFLG-MAX
                                        TO  W07-WKSRYHYO-FLG-COUNT
+      *    検査正式名称表示（診療行為機能情報）
+           MOVE    SPA-GMN-FORMALFLG-G   TO  W07-FORMAL-FLG
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-FORMALFLG-MAX
+               MOVE    SPA-GMN-FORMALFLG-LST (IDX)
+                                       TO  W07-FORMAL-FLG-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-FORMALFLG-MAX
+                                       TO  W07-FORMAL-FLG-COUNT
       *
       *    複数科まとめ（診療行為機能情報）
            MOVE    SPA-GMN-KAGRPFLG-G  TO  W07-KAGRPFLG
@@ -6680,6 +6753,9 @@
                WHEN    "2005"
                    MOVE    "中途終了一覧区分がありません。"
                                                        TO  SPA-ERRMSG
+               WHEN    "2006"
+                   MOVE    "検査正式名称表示区分がありません。"
+                                                       TO  SPA-ERRMSG
       *
                WHEN    "3001"
                    MOVE    "請求書兼領収書発行区分がありません。"
@@ -6961,6 +7037,8 @@
                    MOVE  "DOSRYKBN_FLG"    TO   MCP-WIDGET
                WHEN    34
                    MOVE  "WKSRYHYO_FLG"    TO   MCP-WIDGET
+               WHEN    35
+                   MOVE  "FORMAL_FLG"      TO   MCP-WIDGET
       *
                WHEN    40
                    MOVE  "SYUSKYPRTG"      TO   MCP-WIDGET
@@ -7207,6 +7285,8 @@
                WHEN    "DOSRYKBN_FLG"
                    MOVE    34              TO  SPA-GMN-CUR
                WHEN    "WKSRYHYO_FLG"
+                   MOVE    35              TO  SPA-GMN-CUR
+               WHEN    "FORMAL_FLG"
                    MOVE    30              TO  SPA-GMN-CUR
                WHEN    "SRYNYKNKNRKBN"
                    MOVE    31              TO  SPA-GMN-CUR

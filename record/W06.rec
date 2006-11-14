@@ -201,6 +201,13 @@ W06	{
 					count	int;
 					item	varchar(26)[3];
 				};
+				FORMALFLG_COMB	{
+					FORMALFLG	{
+						value	varchar(40);
+					};
+					count	int;
+					item	varchar(40)[5];
+				};
 			};
 		};
 		STYUKYMD	{

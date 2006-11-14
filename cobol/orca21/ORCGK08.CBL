@@ -48,6 +48,7 @@
       *  01.00.19    NACL-多々納  06/01/23  用量割合・包括検査数追加
       *  01.00.20    NACL-多々納  06/07/06  収納変更対応
       *  01.00.21    NACL-多々納  06/08/18  福岡県地方公費に同日初診追加
+      *  03.04.00    NACL-多々納  06/11/14  検査正式名称表示追加他
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -147,7 +148,7 @@
                05  SPA-GMN-CUR                   PIC 9(02).
       *
                05  SPA-GMN-TBL.
-                   07  SPA-GMN-TBLREC  OCCURS  600.
+                   07  SPA-GMN-TBLREC-G    OCCURS  600.
                        09  SPA-GMN-TBANGO      PIC 9(03).
                        09  SPA-GMN-TDELFLG     PIC 9(01).
                        09  SPA-GMN-TMEISYO     PIC X(200).
@@ -274,6 +275,8 @@
            03  IDZ                 PIC 9(04).
            03  IDS                 PIC 9(04).
            03  IDG                 PIC 9(04).
+           03  IDG2                PIC 9(04).
+           03  IDG3                PIC 9(04).
            03  IDM                 PIC 9(04).
            03  IDK1                PIC 9(04).
            03  IDK2                PIC 9(04).
@@ -434,7 +437,7 @@
                05  WRK-SRYKBN          PIC  X(02).
            03  WRK-MAX                 PIC  9(04).
       *    日数
-           03  WRK-NISUU               PIC  9(02).
+           03  WRK-NISUU               PIC  9(03).
       *
       *    粉砕判定用
            03  WRK-FUNSA-AREA.
@@ -1484,7 +1487,7 @@
                    ELSE
                        PERFORM 31011-GYO1-HEN-SEC
                    END-IF
-               END-IF
+              END-IF
       *
       *        剤明細編集
                PERFORM VARYING     IDZ     FROM    1   BY  1
@@ -1637,8 +1640,43 @@
            CALL    "ORCSMEIHEN"        USING
                                        SPA-AREA
                                        ORCSMEIHENAREA
-           MOVE    ORCSMEIHEN-MEISYO   TO  SPA-GMN-TMEISYO2
-                                                   (WRK-HOUKNS-IDX)
+           IF      WRK-HOUKNS-NAME(45:)    =   SPACE
+               MOVE    ORCSMEIHEN-MEISYO   TO  SPA-GMN-TMEISYO2
+                                                  (WRK-HOUKNS-IDX)
+           ELSE
+               IF      IDG             =   WRK-HOUKNS-IDX
+                   ADD     1               TO  IDG
+                   MOVE    IDG             TO  WRK-HOUKNS-IDX
+               ELSE
+                   MOVE    ZERO                TO  IDG2
+                   PERFORM VARYING     IDG3    FROM    IDG   BY  -1
+                           UNTIL       IDG3    <=  WRK-HOUKNS-IDX
+                       MOVE    SPA-GMN-TBLREC-G (IDG3)
+                                               TO  SPA-GMN-TBLREC-G
+                                                           (IDG3 + 1)
+                   END-PERFORM
+                   COMPUTE WRK-HOUKNS-IDX  =   WRK-HOUKNS-IDX  +  1
+                   INITIALIZE                  SPA-GMN-TBLREC-G
+                                                        (WRK-HOUKNS-IDX)
+                   ADD     1               TO  IDG
+               END-IF
+               IF      WRK-HOUKNS-IDX      <=   600
+                   MOVE    ORCSMEIHEN-MEISYO2
+                                       TO  SPA-GMN-TMEISYO2
+                                                  (WRK-HOUKNS-IDX)
+                                                  (45:)
+                   INSPECT SPA-GMN-TBANGO2 (WRK-HOUKNS-IDX)   REPLACING
+                                               ALL "  "  BY  "　"
+                   INSPECT SPA-GMN-TMEISYO2(WRK-HOUKNS-IDX)   REPLACING
+                                               ALL "  "  BY  "　"
+                   INSPECT SPA-GMN-TYOBI   (WRK-HOUKNS-IDX)   REPLACING
+                                               ALL "  "  BY  "　"
+                   INSPECT SPA-GMN-TZAIKEI (WRK-HOUKNS-IDX)   REPLACING
+                                               ALL "  "  BY  "　"
+                   INSPECT SPA-GMN-TYOBI2  (WRK-HOUKNS-IDX)   REPLACING
+                                               ALL "  "  BY  "　"
+               END-IF
+           END-IF
       *
            MOVE    ZERO                TO  WRK-HOUKNS-CNT
            MOVE    ZERO                TO  WRK-HOUKNS-IDX
@@ -2376,8 +2414,8 @@
                END-PERFORM
                MOVE   "×"                 TO  SPA-GMN-TZAIKEI4 (IDG)
                                                                (3:2)
-               MOVE   WRK-KAISU-J(1:4)     TO  SPA-GMN-TZAIKEI4 (IDG)
-                                                               (5:4)
+               MOVE   WRK-KAISU-J(1:6)     TO  SPA-GMN-TZAIKEI4 (IDG)
+                                                               (5:)
       *        計
                COMPUTE WRK-KEI             =   LNK-WKSRY-JIHIMONEY
                                                             (IDX IDZ)
@@ -4645,6 +4683,7 @@
            MOVE    "1"                 TO  ORCSCNYUIN-KBN
       *    退院日
            MOVE    SPA-K02N-TAIINYMD   TO  ORCSCNYUIN-TAIINYMD
+      *
            CALL    "ORCSCNYUIN"        USING
                                        SPA-AREA
                                        ORCSCNYUINAREA
@@ -5992,6 +6031,16 @@
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
+      *!
+      *    検査正式名称
+           IF      SPA-FORMALFLG       =   "1"
+               IF     (TNS-SRYCD(1:1)      =   "1") AND
+                      (TNS-SRYKBN          =   "60")  AND
+                      (TNS-FORMALNAME  NOT =   SPACE )  AND
+                      (TNS-FORMALNAME  NOT =   TNS-NAME )
+                   MOVE    TNS-FORMALNAME  TO  TNS-NAME
+               END-IF
+           END-IF
       *
            .
        910-TENSU-READ-EXT.

@@ -9688,7 +9688,6 @@
       *    保存パラメタを作成
            PERFORM 4410-WSINPARA-SEC
       *
-      *
            MOVE    SPA-K01KYOUTU       TO  SPA-WORK
       *
            MOVE    SPACE               TO  LINKAREA

@@ -55,6 +55,7 @@
       *  02.00.15    NACL-多々納  06/01/23  用量割合コード追加
       *  02.00.16    NACL-多々納  06/03/06  経過措置対応、入力値設定他
       *  03.03.00    NACL-多々納  06/10/20  矯正固定等追加
+      *  03.04.00    NACL-多々納  06/11/13  検査正式名称表示追加
       *****************************************************************
       *
       *
@@ -3193,6 +3194,16 @@
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
+      *!
+      *    検査正式名称
+           IF      SPA-FORMALFLG       =   "1"
+               IF     (TNS-SRYCD(1:1)      =   "1") AND
+                      (TNS-SRYKBN          =   "60")  AND
+                      (TNS-FORMALNAME  NOT =   SPACE )  AND
+                      (TNS-FORMALNAME  NOT =   TNS-NAME )
+                   MOVE    TNS-FORMALNAME  TO  TNS-NAME
+               END-IF
+           END-IF
            .
        910-TENSU-READ-EXT.
            EXIT.
@@ -3228,6 +3239,16 @@
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key22"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
+      *!
+      *    検査正式名称
+           IF      SPA-FORMALFLG       =   "1"
+               IF     (TNS-SRYCD(1:1)      =   "1") AND
+                      (TNS-SRYKBN          =   "60")  AND
+                      (TNS-FORMALNAME  NOT =   SPACE )  AND
+                      (TNS-FORMALNAME  NOT =   TNS-NAME )
+                   MOVE    TNS-FORMALNAME  TO  TNS-NAME
+               END-IF
+           END-IF
       *
            .
        911-TENSU-READ22-EXT.

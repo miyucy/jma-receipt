@@ -1255,4 +1255,43 @@ path	key13m1 	{
 		;
 	};
 };
+path	key7j1 	{
+	DBSELECT	{
+		DECLARE tbl_tensu_key7j1_csr CURSOR FOR
+		SELECT distinct a.*
+		FROM tbl_tensu a,tbl_inputcd b
+			WHERE   (NAME       LIKE :NAME
+			OR     KANANAME     LIKE :KANANAME 
+			OR    (FORMALNAME   <> ' '   AND
+			       FORMALNAME   LIKE :NAME   ))
+			AND   YUKOSTYMD  <=  :YUKOSTYMD
+			AND   YUKOEDYMD  >=  :YUKOEDYMD
+			AND   a.SRYCD    =   b.SRYCD
+                        AND  (b.SRYCD    LIKE '1%'
+                          OR  b.SRYCD    LIKE '8%'
+                          OR  b.SRYCD    LIKE '9%'
+                          OR  b.SRYCD    LIKE '0%' )
+			ORDER   BY       KANANAME
+		;
+	};
+};
+path	key71 	{
+	DBSELECT	{
+		DECLARE tbl_tensu_key71_csr CURSOR FOR
+		SELECT *
+		FROM tbl_tensu
+			WHERE   (NAME       LIKE :NAME
+			OR     KANANAME   LIKE :KANANAME
+			OR    (FORMALNAME   <> ' '   AND
+			       FORMALNAME   LIKE :NAME   ))
+			AND   YUKOSTYMD  <=  :YUKOSTYMD
+			AND   YUKOEDYMD  >=  :YUKOEDYMD
+			AND  (SRYCD  LIKE '1%'  OR
+                              SRYCD  LIKE '8%'  OR
+                              SRYCD  LIKE '9%'  OR
+                              SRYCD  LIKE '0%' )
+			ORDER   BY       KANANAME
+		;
+	};
+};
 

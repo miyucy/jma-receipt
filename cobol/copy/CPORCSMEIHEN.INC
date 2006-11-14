@@ -37,4 +37,5 @@
       *╫пно
            03  ORCSMEIHEN-OUT-AREA.
                05  ORCSMEIHEN-MEISYO           PIC X(80).
+               05  ORCSMEIHEN-MEISYO2          PIC X(20).
       *

@@ -261,6 +261,12 @@
                     06  W07-WKSRYHYO-FLG-COUNT   PIC S9(9)   BINARY.
                     06  W07-WKSRYHYO-FLG-ITEM
                             PIC X(40)   OCCURS  5  TIMES.
+                  05  W07-FORMAL-FLG-COMB.
+                    06  W07-FORMAL-FLG.
+                      07  W07-VALUE   PIC X(40).
+                    06  W07-FORMAL-FLG-COUNT   PIC S9(9)   BINARY.
+                    06  W07-FORMAL-FLG-ITEM
+                            PIC X(40)   OCCURS  5 TIMES.
                 04  W07-TAGNAME3.
                   05  W07-TAGNAME3-STATE   PIC S9(9)   BINARY.
                 04  W07-TAG4.
