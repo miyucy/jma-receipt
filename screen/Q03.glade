@@ -124,7 +124,7 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>SRYYM</name>
-      <x>80</x>
+      <x>105</x>
       <y>80</y>
       <width>76</width>
       <height>24</height>
@@ -154,9 +154,9 @@
       <name>label2</name>
       <x>12</x>
       <y>80</y>
-      <width>68</width>
+      <width>100</width>
       <height>24</height>
-      <label>©гнег╞╥Н</label>
+      <label>бп╬щ©гнег╞╥Н</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -168,7 +168,7 @@
     <widget>
       <class>GtkPandaCombo</class>
       <name>CMB_NYUGAIKBN</name>
-      <x>160</x>
+      <x>185</x>
       <y>80</y>
       <width>96</width>
       <height>24</height>

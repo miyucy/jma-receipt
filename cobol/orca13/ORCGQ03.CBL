@@ -70,6 +70,9 @@
                05  WRK-CMB-IDX     PIC 9(05).
                05  WRK-CMB-ITM     PIC X(100).
       *
+       01  CONST-AREA.
+           03  CONST-H1504         PIC X(06)   VALUE "200304".
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -330,6 +333,11 @@
            IF    ( FLG-HIZUKE-ERR      =   ZERO )
                MOVE    WRK-SYMD        TO  SPA-NAI-Q03-SRYYM
                MOVE    WRK-HENYMDG     TO  SPA-GMN-Q03-SRYYM
+               IF    ( SPA-NAI-Q03-SRYYM   >=  CONST-H1504 )
+                   CONTINUE
+               ELSE
+                   MOVE    "0002"      TO  SPA-ERRCD
+               END-IF
            ELSE
                MOVE    "0001"          TO  SPA-ERRCD
                MOVE    1               TO  SPA-GMN-Q03-CUR
@@ -526,6 +534,9 @@
            EVALUATE    SPA-ERRCD
            WHEN    "0001"
                MOVE    "診療年月入力エラー"
+                                       TO  SPA-ERRMSG
+           WHEN    "0002"
+               MOVE    "平成１５年４月以降を指定してください"
                                        TO  SPA-ERRMSG
            END-EVALUATE
       *
