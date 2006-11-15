@@ -6749,7 +6749,7 @@
            MOVE    ZERO                 TO  RECE64-KOHBUNRI
            MOVE    "97"                 TO  RECE64-SRYKBN
            MOVE    "4"                  TO  RECE64-ZAISKBKBN
-           COMPUTE WRK-ZAINUM  =  99996200  +  SYUKEI-IDX3
+           COMPUTE WRK-ZAINUM  =  99996300  +  SYUKEI-IDX3
            MOVE    WRK-ZAINUM           TO  RECE64-ZAINUM
            MOVE    CNT-ZAIREN           TO  RECE64-ZAIREN
            MOVE    RECE62-PTNUM         TO  RECE64-PTNUM
@@ -6803,7 +6803,7 @@
            MOVE    "4"                  TO  RECE64-ZAISKBKBN
            EVALUATE  FLG-SKJ200610FTN
              WHEN        1
-               COMPUTE WRK-ZAINUM  =  99996300  +  SYUKEI-IDX3
+               COMPUTE WRK-ZAINUM  =  99996200  +  SYUKEI-IDX3
                MOVE    WRK-ZAINUM       TO  RECE64-ZAINUM
              WHEN        2
                COMPUTE WRK-ZAINUM  =  99996400  +  SYUKEI-IDX3
@@ -7131,7 +7131,7 @@
            MOVE    RECE62-HOJOKBN-KEY   TO   RECE65-HOJOKBN
            MOVE    RECE62-TEKSTYMD      TO   RECE65-TEKSTYMD
            MOVE    ZERO                 TO   RECE65-KOHBUNRI
-           COMPUTE WRK-ZAINUM   =  99996200  +  SYUKEI-IDX3
+           COMPUTE WRK-ZAINUM   =  99996300  +  SYUKEI-IDX3
            MOVE    WRK-ZAINUM           TO   RECE65-ZAINUM
            MOVE    CNT-ZAIREN           TO   RECE65-ZAIREN
            MOVE    1                    TO   RECE65-RENNUM
@@ -7214,7 +7214,7 @@
            MOVE    ZERO                 TO   RECE65-KOHBUNRI
            EVALUATE  FLG-SKJ200610FTN
              WHEN        1
-               COMPUTE WRK-ZAINUM  =  99996300  +  SYUKEI-IDX3
+               COMPUTE WRK-ZAINUM  =  99996200  +  SYUKEI-IDX3
                MOVE    WRK-ZAINUM       TO  RECE65-ZAINUM
              WHEN        2
                COMPUTE WRK-ZAINUM  =  99996400  +  SYUKEI-IDX3
