@@ -3327,7 +3327,7 @@
                DISPLAY "I44 NYUINACT INS ERR;"    MCP-RC
                                      ",KEY:"  NSRY-KEY 
                MOVE    "1029"          TO  SPA-ERRCD
-           END-IF.
+           END-IF
       *
            MOVE    ZERO                  TO  IDS.
            INITIALIZE                    NYUINACT-REC.
@@ -3367,7 +3367,7 @@
            IF      FLG-NYUINACCT      NOT =  ZERO
                MOVE    "1027"              TO  SPA-ERRCD
                GO      TO      4502-NYUKAI-KOU-EXT
-           END-IF.
+           END-IF
       *
       *    ºÞÅÀ¿ô
            MOVE    WRK-ZAITEN          TO  NACCT-ZAITEN.
@@ -3392,17 +3392,18 @@
       *
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC.
            MOVE    "DBUPDATE"          TO  MCP-FUNC.
-           MOVE    "tbl_nyuinact"      TO  MCP-TABLE
+           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "I44 NYUINACCT UPD ERR:"  MCP-RC
+                       ",KEY:"  NACCT-KEY
            ELSE
                PERFORM   600-SYUKA-SET-SEC
-           END-IF.
-      *
+           END-IF
+           .
        4502-NYUKAI-KOU-EXT.
            EXIT.
       *
