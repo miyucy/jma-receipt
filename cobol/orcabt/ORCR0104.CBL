@@ -4273,6 +4273,7 @@
                MOVE    WRK-KGK6               TO  HC06-TOTALTEN(1)
                IF    ( RECE02-FTNMONEY (IDX1) >    ZERO   )
                OR    ( RECE02-ZAITAKU     NOT =    SPACE  )
+               OR    ( RECE02-RJNNYUFTN       =    1      )
                    MOVE    RECE02-FTNMONEY (IDX1) TO  WRK-KGK7
                    IF      RECE02-GENMENKBN   =   ZERO
                        MOVE    WRK-KGK7           TO  HC06-FTNMONEY (1)

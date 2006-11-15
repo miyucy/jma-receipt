@@ -272,7 +272,7 @@
            03  RECE02-RJNGENMENKBN        PIC  X(01).
       *老人外来金額（請求点数合計として使用）
            03  RECE02-RJNGAIFTN           PIC  9(09).
-      *老人入院金額（未使用）
+      *老人入院金額（老人減免一部負担金記載フラグとして使用）
            03  RECE02-RJNNYUFTN           PIC  9(09).
       *減免区分
            03  RECE02-GENMENKBN           PIC  9(01).
