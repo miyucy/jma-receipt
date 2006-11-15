@@ -140,3 +140,16 @@ path	key7 	{
 		;
 	};
 };
+
+path	key8 	{
+	DBSELECT	{
+		DECLARE tbl_ptkohinf_key8_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptkohinf
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   KOHID       =   :KOHID
+			AND   SAKJOKBN    <>   '1'
+		;
+	};
+};
