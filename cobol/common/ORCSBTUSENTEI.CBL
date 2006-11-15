@@ -30,7 +30,6 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  00.00.01    NACL-小豆沢  05/01/14  選定自己負担定額時に一般と
       *                                     老人患者の算定額を取得可能に変更
-      *  03.05.00    NACL-太田    07/05/09  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                         DIVISION.
@@ -68,19 +67,12 @@
            03  WRK-EDYMD                   PIC X(08).
            03  WRK-NISSU1                  PIC 9(05).
            03  WRK-NISSU2                  PIC 9(05).
-           03  WRK-MMSTYMD.
-               05  WRK-MMSTYM              PIC X(06).
-               05  WRK-MMSTDD              PIC 9(02).
-           03  WRK-MMEDYMD.
-               05  WRK-MMEDYM              PIC X(06).
-               05  WRK-MMEDDD              PIC 9(02).
+           03  WRK-MMSTYMD                 PIC X(08).
+           03  WRK-MMEDYMD                 PIC X(08).
            03  WRK-STIDX                   PIC 9(02).
            03  WRK-EDIDX                   PIC 9(02).
            03  WRK-CHK-BTUNUM              PIC X(02).
            03  WRK-CHK-YMD                 PIC X(08).
-           03  WRK-SRYYMD.
-               05  WRK-SRYYM               PIC X(06).
-               05  WRK-SRYDD               PIC 9(02).
       *
        01  SRH-5001-AREA.
            03  SRH-5001-OCC                OCCURS  300
@@ -128,11 +120,9 @@
        LINKAGE                             SECTION.
       *
            COPY    "CPORCSBTUSENTEI.INC".
-           COPY    "COMMON-SPA".
       *
        PROCEDURE                           DIVISION    USING
-           ORCSBTUSENTEIAREA
-           SPA-AREA.
+           ORCSBTUSENTEIAREA.
       *
       *****************************************************************
       *    主　　処理
@@ -201,15 +191,15 @@
            MOVE    WRK-YMD             TO  WRK-MMEDYMD
       *
       *
-           PERFORM 900-PTNYUINRRK-KEY41-SEL-SEC
+           PERFORM 900-PTNYUINRRK-KEY11-SEL-SEC
       *
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-           MOVE    "key41"             TO  MCP-PATHNAME
+           MOVE    "key11"             TO  MCP-PATHNAME
            PERFORM  910-DBCLOSECURSOR-SEC
       *
       *    入院患者の老人判定
            INITIALIZE   ORCSAGECHKAREA
-           MOVE    SBTUSENTEI-HOSPNUM  TO  AGECHK-HOSPNUM
+           MOVE    SBTUSENTEI-HOSPID   TO  AGECHK-HOSPID
            MOVE    SBTUSENTEI-PTID     TO  AGECHK-PTID
            MOVE    WRK-MMSTYMD         TO  AGECHK-SRYYMD
            IF    ( WRK-MMSTYMD         <   PTNYUINRRK-NYUINYMD )
@@ -218,7 +208,6 @@
            END-IF
            CALL    "ORCSAGECHK"        USING
                                        ORCSAGECHKAREA
-                                       SPA-AREA
            IF      ( AGECHK-RC    =    ZERO )
                CONTINUE
            ELSE
@@ -265,7 +254,6 @@
            INITIALIZE                      SRH-5001-AREA
       *
            INITIALIZE                      SYSKANRI-REC
-           MOVE    SBTUSENTEI-HOSPNUM  TO  SYS-HOSPNUM
            MOVE    "5001"              TO  SYS-KANRICD
            MOVE    WRK-MMEDYMD         TO  SYS-STYUKYMD
            MOVE    WRK-MMSTYMD         TO  SYS-EDYUKYMD
@@ -348,7 +336,7 @@
       *****************************************************************
        2100-PTNYUINRRK-EDIT-SEC            SECTION.
       *
-           PERFORM 900-PTNYUINRRK-KEY41-SEL-SEC
+           PERFORM 900-PTNYUINRRK-KEY11-SEL-SEC
       *
            PERFORM UNTIL ( FLG-PTNYUINRRK  NOT =   ZERO )
       *
@@ -361,13 +349,13 @@
                END-IF
       *
                IF    ( FLG-PTNYUINRRK      =   ZERO )
-                   PERFORM 900-PTNYUINRRK-KEY41-FET-SEC
+                   PERFORM 900-PTNYUINRRK-KEY11-FET-SEC
                END-IF
       *
            END-PERFORM
       *
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-           MOVE    "key41"             TO  MCP-PATHNAME
+           MOVE    "key11"             TO  MCP-PATHNAME
            PERFORM  910-DBCLOSECURSOR-SEC
       *
            .
@@ -378,15 +366,24 @@
       *****************************************************************
        2100-DAY-BTUINF-EDIT-SEC             SECTION.
       *
-           PERFORM VARYING IDX2    FROM    WRK-MMSTDD  BY  1
-                   UNTIL ( IDX2    >   WRK-MMEDDD )
+           IF    ( PTNYUINRRK-TENNYUYMD    <   WRK-MMSTYMD )
+               MOVE    WRK-MMSTYMD (7:2)   TO  WRK-STIDX
+           ELSE
+               MOVE    PTNYUINRRK-TENNYUYMD (7:2)
+                                           TO  WRK-STIDX
+           END-IF
       *
-               MOVE    SBTUSENTEI-SRYYM    TO  WRK-SRYYM
-               MOVE    IDX2                TO  WRK-SRYDD
+           IF    ( PTNYUINRRK-TENSTUYMD    >   WRK-MMEDYMD )
+               MOVE    WRK-MMEDYMD (7:2)   TO  WRK-EDIDX
+           ELSE
+               MOVE    PTNYUINRRK-TENSTUYMD (7:2)
+                                           TO  WRK-EDIDX
+           END-IF
       *
-               IF    ( PTNYUINRRK-TENNYUYMD    <=    WRK-SRYYMD )
-                AND  ( PTNYUINRRK-TENSTUYMD    >=    WRK-SRYYMD )
+           PERFORM VARYING IDX2    FROM    WRK-STIDX   BY  1
+                   UNTIL ( IDX2    >   WRK-EDIDX )
       *
+               IF    ( SBTUSENTEI-DAY-BTUNUM (IDX2)    =   SPACE )
       *            選定入院料情報設定処理
                    PERFORM 2100-SENTEI-SET-SEC
                    IF    ( SBTUSENTEI-RC       NOT =   ZERO )
@@ -533,18 +530,18 @@
       *****************************************************************
       *    患者入院履歴検索処理(KEY11)
       *****************************************************************
-       900-PTNYUINRRK-KEY41-SEL-SEC    SECTION.
+       900-PTNYUINRRK-KEY11-SEL-SEC    SECTION.
       *
            MOVE    ZERO                TO  FLG-PTNYUINRRK
       *
            INITIALIZE  PTNYUINRRK-REC
-           MOVE    SBTUSENTEI-HOSPNUM  TO  PTNYUINRRK-HOSPNUM
+           MOVE    SBTUSENTEI-HOSPID   TO  PTNYUINRRK-HOSPID
            MOVE    SBTUSENTEI-PTID     TO  PTNYUINRRK-PTID
-           MOVE    WRK-MMEDYMD         TO  PTNYUINRRK-TENNYUYMD
-           MOVE    WRK-MMSTYMD         TO  PTNYUINRRK-TENSTUYMD
+           MOVE    WRK-MMEDYMD         TO  PTNYUINRRK-NYUINYMD
+           MOVE    WRK-MMSTYMD         TO  PTNYUINRRK-TAIINYMD
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-           MOVE    "key41"             TO  MCP-PATHNAME
+           MOVE    "key11"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
                MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
@@ -554,17 +551,17 @@
            END-IF
       *
            .
-       900-PTNYUINRRK-KEY41-SEL-EXT.
+       900-PTNYUINRRK-KEY11-SEL-EXT.
            EXIT.
       *****************************************************************
       *    患者入院履歴FETCH処理(KEY11)
       *****************************************************************
-       900-PTNYUINRRK-KEY41-FET-SEC    SECTION.
+       900-PTNYUINRRK-KEY11-FET-SEC    SECTION.
       *
            MOVE    ZERO                TO  FLG-PTNYUINRRK
       *
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-           MOVE    "key41"             TO  MCP-PATHNAME
+           MOVE    "key11"             TO  MCP-PATHNAME
            PERFORM 910-DBFETCH-SEC
            IF    ( MCP-RC              =   ZERO )
                MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
@@ -574,7 +571,7 @@
            END-IF
       *
            .
-       900-PTNYUINRRK-KEY41-FET-EXT.
+       900-PTNYUINRRK-KEY11-FET-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ検索処理
@@ -582,9 +579,9 @@
        910-DBSELECT-SEC                     SECTION.
       *
            MOVE    "DBSELECT"           TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "MONFUNC"                USING
+                                            MCPAREA
+                                            MCPDATA-REC
            IF    ( MCP-RC          =    ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
@@ -599,9 +596,9 @@ grpsys                            SPA-AREA
        910-DBFETCH-SEC                     SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "MONFUNC"                USING
+                                            MCPAREA
+                                            MCPDATA-REC
       *
            .
       *
@@ -613,9 +610,9 @@ grpsys                            SPA-AREA
        910-DBCLOSECURSOR-SEC               SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "MONFUNC"                USING
+                                            MCPAREA
+                                            MCPDATA-REC
       *
            .
       *
