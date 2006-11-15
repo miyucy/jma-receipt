@@ -31,6 +31,7 @@
       *  01.00.02    NACL-Â¿¡¹Ç¼  05/03/08  Ì¾¾Î£²£µÊ¸»ú°Ê¾å¤ËÂÐ±þ
       *                                     £Í£Ï£Î£Ð£Å¤ËÂÐ±þ
       *  01.00.03    NACL-Â¿¡¹Ç¼  05/11/17  MONFUNC ÂÐ±þ
+      *  03.04.00    NACL-Â¿¡¹Ç¼  06/11/14  ¸¡ººÀµ¼°Ì¾¾ÎÉ½¼¨ÄÉ²Ã
       *****************************************************************
       *
       *
@@ -205,7 +206,7 @@
            03  WRK-B01-KAISU-HEN           PIC X(05).
       *
        01  WRK-HEN-NAME.
-           03  WRK-NAME                PIC X(100).
+           03  WRK-NAME                PIC X(140).
       *
        01  WRK-HEN-SURYO.
            03  B01-SURYO1              PIC ZZZZ9.999.
@@ -876,6 +877,21 @@
            PERFORM UNTIL    (FLG-TENSU     =   1  )  OR
                             (FLG-OK        =   1  )
                MOVE    TNS-NAME            TO  WRK-NAME
+      *!
+      *        ¸¡ººÀµ¼°Ì¾¾Î
+               IF     (TNS-SRYCD(1:1)      =   "1") AND
+                      (TNS-SRYKBN          =   "60")  AND
+                      (TNS-FORMALNAME  NOT =   SPACE )  AND
+                      (TNS-FORMALNAME  NOT =   TNS-NAME )
+                   MOVE    SPACE               TO  WRK-NAME
+                   STRING  TNS-NAME        DELIMITED  BY  SPACE
+                           "¡¡¡Ú"          DELIMITED  BY  SIZE
+                           TNS-FORMALNAME  DELIMITED  BY  SPACE
+                           "¡Û"            DELIMITED  BY  SIZE
+                                           INTO  WRK-NAME
+                   END-STRING
+               END-IF
+      *
                IF     (TNS-YUKOSTYMD       <=  SPA-SRYYMD )  AND
                       (TNS-YUKOEDYMD       >=  SPA-SRYYMD )
       *            ¿ÇÎÅÆüÂÐ¾ÝÊ¬
