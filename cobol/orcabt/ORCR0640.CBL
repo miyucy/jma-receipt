@@ -4586,6 +4586,9 @@
                                                         NOT =  SPACE
                         AND  WRK-NYULIFE-SKJFTN-MONEY(SYUKEI-IDX3)
                                                         NOT =  ZERO
+                        AND  WRK-SKJ200604-SURYOUTOTALFTN
+                                                (IDX1 SYUKEI-IDX3)
+                                                        NOT =  ZERO
                           MOVE    1    TO   FLG-SKJ200610FTN
                           PERFORM 210221-RECE64-TENSOU2-SKJ200610FTN-SEC
                           PERFORM 210222-RECE65-HENSYU2-SKJ200610FTN-SEC
