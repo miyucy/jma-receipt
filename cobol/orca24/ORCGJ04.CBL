@@ -38,6 +38,7 @@
       * 02.00.07     NACL-多々納  05/04/20  診療会計附加情報追加
       * 02.00.08     NACL-多々納  05/11/30  MONFUNC 対応
       * 03.04.00     NACL-多々納  06/11/XX  剤追加他
+      * 03.04.00     NACL-多々納  06/11/13  検査正式名称表示フラグ追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -186,6 +187,8 @@
            03  FLG-CHK-RSI         PIC 9(01).
            03  FLG-CHK             PIC 9(01).
            03  FLG-HKNHEN          PIC 9(01).
+      *
+           03  FLG-SRYKBN-HEN      PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -664,6 +667,10 @@
       *    診療会計マスタ−
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
+      *    診療会計マスタ−
+       01  HZN-SRYACCT-REC.
+           COPY    "CPSRYACCT.INC"    REPLACING
+                                     //ACCT-// BY //HZN-ACCT-//.
       *
       *    チェックマスタ−
        01  CHK-REC.
@@ -3684,7 +3691,7 @@
                                        SPA-AREA
                                        ORCSC93AREA
                                        MSYU-DATA-REC
-           IF      SPA-J04-SYORI       =   1
+           IF      SPA-NYUGAIKBN       =   1
                MOVE    SPA-COM-SRYKBN(01)  TO  SPA-J04-SRYKBN
            END-IF
            IF      (SPA-J04-SRYKBN NOT =   SPA-COM-SRYKBN(01))
@@ -6644,13 +6651,72 @@
            EXIT.
       *
       *****************************************************************
+      *    診療会計マスタ更新処理
+      *****************************************************************
+       4505-SRYACCT-DEL-SEC          SECTION.
+      *
+           INITIALIZE                      SRYACCT-REC
+           MOVE    SPA-HOSPID          TO  ACCT-HOSPID
+           MOVE    SPA-NYUGAIKBN       TO  ACCT-NYUGAIKBN
+           MOVE    SPA-GMN-PTID        TO  ACCT-PTID
+           MOVE    SPA-J01-SRYKA       TO  ACCT-SRYKA
+           MOVE    SPA-J02-SRYYMD(1:6) TO  ACCT-SRYYM
+           MOVE    SPA-SRYKBN          TO  ACCT-SRYKBN
+           MOVE    SPA-ZAINUM          TO  ACCT-ZAINUM
+      *
+           MOVE    SRYACCT-REC         TO  MCPDATA-REC
+           MOVE    "tbl_sryacct"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_sryacct"       TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 940-SRYACCT-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SRYACCT
+           END-IF
+           MOVE    "tbl_sryacct"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      FLG-SRYACCT          =  ZERO
+               MOVE    SRYACCT-REC         TO  HZN-SRYACCT-REC
+      *
+               MOVE    SRYACCT-REC         TO  MCPDATA-REC
+               MOVE    "DBDELETE"          TO  MCP-FUNC
+               MOVE    "tbl_sryacct"       TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC          NOT =   ZERO
+                   DISPLAY "J04 SRYACCT DEL ERR:"  MCP-RC
+                          ",ACCT-KEY:" ACCT-KEY
+                   MOVE    "1099"          TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+           .
+       4505-SRYACCT-DEL-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *   診療会計マスタ追加、受診履歴変更処理
       *****************************************************************
        4504-SRYACCT-ADD-SEC          SECTION.
       *
+           MOVE    ZERO                TO  FLG-SRYKBN-HEN
       *    変更前の診療会計マスタを修正する
            IF      SPA-J04-SYORI       =   ZERO
-               PERFORM 45041-SRYACCT-MAE-SEC
+               IF     (SPA-SEL-RRKYMD      =   SPACE )
+                 AND  (SPA-J04-SYORI       =   ZERO  )
+                 AND  (SPA-SRYKBN      NOT =   SPA-J04-SRYKBN)
+      *            診療区分が変更になった時、診療会計の削除
+                   PERFORM 4505-SRYACCT-DEL-SEC
+                   MOVE    1               TO  FLG-SRYKBN-HEN
+               ELSE
+                   PERFORM 45041-SRYACCT-MAE-SEC
+               END-IF
            ELSE
                MOVE    ZERO            TO  WRK-DAY
            END-IF
@@ -6774,6 +6840,10 @@
            MOVE    WRK-KIZAITEN        TO  ACCT-KIZAITEN
       *
            IF      SPA-J04-SYORI       =   ZERO
+               IF      FLG-SRYKBN-HEN      =   1
+                   MOVE    HZN-ACCT-ZAIKAISU   TO  ACCT-ZAIKAISU
+                   MOVE    HZN-ACCT-DAY-AREA   TO  ACCT-DAY-AREA
+               ELSE
       *    剤回数
                MOVE    WRK-DAY             TO  ACCT-ZAIKAISU
       *    診療日
@@ -6783,6 +6853,8 @@
                                                  (IDX-D1 IDX-D2)
                MOVE    WRK-DAY             TO  ACCT-DAY
                                                  (1    IDX-D2)
+               END-IF
+      *
            END-IF
       *
            MOVE    SMCNDATE-YMD        TO  ACCT-CREYMD
@@ -7762,6 +7834,15 @@
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
+      *    検査正式名称
+           IF      SPA-FORMALFLG       =   "1"
+               IF     (TNS-SRYCD(1:1)      =   "1") AND
+                      (TNS-SRYKBN          =   "60")  AND
+                      (TNS-FORMALNAME  NOT =   SPACE )  AND
+                      (TNS-FORMALNAME  NOT =   TNS-NAME )
+                   MOVE    TNS-FORMALNAME  TO  TNS-NAME
+               END-IF
+           END-IF
       *
            .
        910-TENSU-READ-EXT.
