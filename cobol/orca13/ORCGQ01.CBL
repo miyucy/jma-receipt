@@ -162,6 +162,12 @@
            03  WRK-SIZE                            PIC S9(05).
            03  WRK-SIZE-STR                        PIC X(500).
            03  WRK-SIZE-TMP                        PIC X(500).
+           03  WRK-NAME1-G.
+               05  WRK-NAME11           PIC X(20).
+               05  WRK-NAME12           PIC X(50).
+           03  WRK-NAME2-G.
+               05  WRK-NAME21           PIC X(30).
+               05  WRK-NAME22           PIC X(40).
       *
       *
        01  WRK-WIDGET-AREA.
@@ -3845,7 +3851,7 @@
            MOVE    WRK-SELWORD         TO  TNS-NAME
                                            TNS-KANANAME
       *
-           PERFORM 900-TENSU-KEY2-SEL-SEC
+           PERFORM 900-TENSU-KEY72-SEL-SEC
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL      (IDX1            >   200  )   OR
@@ -3855,13 +3861,13 @@
                PERFORM 41201-SRYACT-HENSYU-SEC
       *
       *        点数マスタ読込
-               PERFORM 900-TENSU-KEY2-FET-SEC
+               PERFORM 900-TENSU-KEY72-FET-SEC
       *
            END-PERFORM
       *
       *    点数マスタクローズ
            MOVE    "tbl_tensu"         TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
+           MOVE    "key72"             TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            IF      ( IDX1              >   200 )
@@ -3892,7 +3898,22 @@
            ELSE
                MOVE    TNS-NAME        TO  SPA-GMN-Q01-TSRYACT(IDX1)
            END-IF
-
+      *
+           IF    ( TNS-SRYCD(1:1)      =   "1") 
+            AND  ( TNS-SRYKBN          =   "60")
+            AND  ( TNS-FORMALNAME  NOT =   SPACE )
+            AND  ( TNS-FORMALNAME  NOT =   TNS-NAME )
+                MOVE    SPACE              TO  SPA-GMN-Q01-TSRYACT(IDX1)
+                STRING  TNS-NAME           DELIMITED   BY  SPACE
+                        "　【"             DELIMITED   BY  SIZE
+                        TNS-FORMALNAME     DELIMITED   BY  SPACE
+                        "】"               DELIMITED   BY  SIZE
+                               INTO        SPA-GMN-Q01-TSRYACT(IDX1)
+                END-STRING
+                PERFORM 310211-KENSA-NAME-SEC
+           END-IF
+      
+      *
            MOVE    IDX1                TO  SPA-GMN-Q01-SRYACT-MAX
            MOVE    1                   TO  SPA-GMN-Q01-SRYACT-SEL
       *
@@ -3901,6 +3922,38 @@
        41201-SRYACT-HENSYU-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    検査名称再編集処理
+      *****************************************************************
+       310211-KENSA-NAME-SEC             SECTION.
+      *
+           MOVE    SPACE               TO  WRK-NAME1-G
+           MOVE    TNS-NAME            TO  WRK-NAME1-G
+           IF      WRK-NAME12          =   SPACE
+               STRING  "【"                DELIMITED   BY  SIZE
+                        TNS-FORMALNAME     DELIMITED   BY  SPACE
+                        "】"               DELIMITED   BY  SIZE
+                               INTO        WRK-NAME12
+               END-STRING
+               INSPECT WRK-NAME1-G         REPLACING  ALL "  "  BY  "　"
+               MOVE    WRK-NAME1-G         TO  SPA-GMN-Q01-TSRYACT(IDX1)
+           ELSE
+               MOVE    SPACE               TO  WRK-NAME2-G
+               MOVE    TNS-NAME            TO  WRK-NAME2-G
+               IF      WRK-NAME22          =   SPACE
+                   STRING  "【"                DELIMITED   BY  SIZE
+                            TNS-FORMALNAME     DELIMITED   BY  SPACE
+                            "】"               DELIMITED   BY  SIZE
+                                   INTO        WRK-NAME22
+                   END-STRING
+                   INSPECT WRK-NAME2-G     REPLACING  ALL "  "  BY  "　"
+                   MOVE    WRK-NAME2-G     TO  SPA-GMN-Q01-TSRYACT(IDX1)
+               END-IF
+           END-IF
+      *
+           .
+       310211-KENSA-NAME-EXT.
+           EXIT.
       *****************************************************************
       *    診療行為コードチェック処理
       *****************************************************************
@@ -6859,6 +6912,7 @@
                        UNTIL ( IDX8    >   WRK-SIZE )
                    IF    ( WRK-SIZE-STR (IDX8 : )  =   SPACE )
                        MOVE    "%"     TO  WRK-SIZE-STR (IDX8 : 1)
+                       MOVE    WRK-SIZE TO IDX8
                    END-IF
                END-PERFORM
            END-IF
@@ -7128,7 +7182,7 @@
       *****************************************************************
       *    点数マスター検索（漢字・カナ名）
       *****************************************************************
-       900-TENSU-KEY2-SEL-SEC          SECTION.
+       900-TENSU-KEY72-SEL-SEC          SECTION.
       *
            MOVE    ZERO                TO  FLG-TENSU
       *
@@ -7137,7 +7191,7 @@
       *
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
+           MOVE    "key72"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF  ( MCP-RC                =   ZERO )
                MOVE    MCPDATA-REC     TO  TNS-TENSU-REC
@@ -7146,16 +7200,16 @@
            END-IF
       *
            .
-       900-TENSU-KEY2-SEL-EXT.
+       900-TENSU-KEY72-SEL-EXT.
            EXIT.
       *****************************************************************
       *    点数マスター読込（漢字・カナ名）
       *****************************************************************
-       900-TENSU-KEY2-FET-SEC           SECTION.
+       900-TENSU-KEY72-FET-SEC           SECTION.
       *
            MOVE    ZERO                TO  FLG-TENSU
            MOVE    "tbl_tensu"         TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
+           MOVE    "key72"             TO  MCP-PATHNAME
            PERFORM 910-DBFETCH-SEC
            IF  ( MCP-RC                =   ZERO )
                MOVE    MCPDATA-REC     TO  TNS-TENSU-REC
@@ -7165,7 +7219,7 @@
       *
            .
       *
-       900-TENSU-KEY2-FET-EXT.
+       900-TENSU-KEY72-FET-EXT.
            EXIT.
       *****************************************************************
       *    入力コードマスター読込処理
