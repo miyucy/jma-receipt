@@ -4295,8 +4295,24 @@
                    MOVE    SPA-GMN-Q01-TSRYCD (IDX2)
                                            TO  SPA-GMN-Q01-SRYCD (IDX1)
                                                SPA-NAI-Q01-SRYCD (IDX1)
-                   MOVE    SPA-GMN-Q01-TSRYACT (IDX2)
-                                           TO  SPA-GMN-Q01-SRYACT(IDX1)
+                   INITIALIZE          TNS-TENSU-REC
+                   MOVE   SPA-NAI-Q01-SRYCD (IDX1)
+                                   TO  TNS-SRYCD
+      *
+                   MOVE   SPA-SYSYMD
+                                   TO  TNS-YUKOSTYMD
+                                       TNS-YUKOEDYMD
+      *            点数マスタ−読み込み処理
+                   PERFORM 900-TENSU-KEY-SEL-SEC
+                   IF     (TNS-ROUTEKKBN       =   2   )
+                       MOVE    SPACE       TO  SPA-GMN-Q01-SRYACT (IDX1)
+                       STRING  "［老］"    DELIMITED   BY  SIZE
+                               TNS-NAME    DELIMITED   BY  SPACE
+                               INTO        SPA-GMN-Q01-SRYACT (IDX1)
+                       END-STRING
+                   ELSE
+                       MOVE    TNS-NAME    TO  SPA-GMN-Q01-SRYACT(IDX1)
+                   END-IF
                    MOVE    200             TO  IDX2
                END-IF
            END-PERFORM
@@ -7265,6 +7281,16 @@
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
+      *!
+      *    検査正式名称
+           IF    ( SPA-FORMALFLG           =   "1" )
+               IF    ( TNS-SRYCD(1:1)      =   "1")
+                AND  ( TNS-SRYKBN          =   "60")
+                AND  ( TNS-FORMALNAME  NOT =   SPACE )
+                AND  ( TNS-FORMALNAME  NOT =   TNS-NAME )
+                   MOVE    TNS-FORMALNAME  TO  TNS-NAME
+               END-IF
+           END-IF
       *
            .
       *
