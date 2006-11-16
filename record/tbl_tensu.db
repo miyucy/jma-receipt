@@ -1295,3 +1295,21 @@ path	key71 	{
 	};
 };
 
+path	key72 	{
+	DBSELECT	{
+		DECLARE tbl_tensu_key72_csr CURSOR FOR
+		SELECT *
+		FROM tbl_tensu
+			WHERE
+			   ((NAME       LIKE :NAME)
+			OR (KANANAME   LIKE :KANANAME)
+			OR ( FORMALNAME   <> ' '   
+		     AND FORMALNAME   LIKE :NAME   
+			 AND SRYCD  LIKE '1%'  ))
+	   	    AND   YUKOSTYMD  <=  :YUKOSTYMD
+			AND   YUKOEDYMD  >=  :YUKOEDYMD
+			ORDER   BY       KANANAME
+		;
+	};
+};
+
