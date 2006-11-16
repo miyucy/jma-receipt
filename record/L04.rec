@@ -403,15 +403,18 @@ L04	{
 			value	varchar(2);
 		};
 		EDSRYYMD	{
+	           	state	int;
 			value	varchar(10);
 		};
 		EDNO	{
 			value	number (2);
 		};
 		EDHR	{
+	           	state	int;
 			value	number (2);
 		};
 		EDMIN	{
+	           	state	int;
 			value	number (2);
 		};
 		LBL_KIKAN1	{
@@ -425,7 +428,7 @@ L04	{
 				value	varchar(10);
 			};
 			count	int;
-			item	varchar(10)[5];
+			item	varchar(10)[10];
 		};
 	};
 };

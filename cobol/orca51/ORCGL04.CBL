@@ -122,6 +122,7 @@
                05  CONST-SELTERM           PIC X(01)   VALUE   "3".
                05  CONST-INS               PIC X(01)   VALUE   "4".
                05  CONST-DEL               PIC X(01)   VALUE   "5".
+               05  CONST-UPD               PIC X(01)   VALUE   "6".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -407,7 +408,7 @@
       *
            INITIALIZE                  SPA-GMN-L04-PROCKBNLST-G
       *
-           MOVE    5               TO  SPA-GMN-L04-PROCKBN-MAX
+           MOVE    6               TO  SPA-GMN-L04-PROCKBN-MAX
       *
            MOVE    "1"             TO  SPA-GMN-L04-PROCKBNL   (1)
            MOVE    "本締め"        TO  SPA-GMN-L04-PROCKBNMEIL(1)
@@ -423,6 +424,9 @@
       *
            MOVE    "5"             TO  SPA-GMN-L04-PROCKBNL   (5)
            MOVE    "削除"          TO  SPA-GMN-L04-PROCKBNMEIL(5)
+      *
+           MOVE    "6"             TO  SPA-GMN-L04-PROCKBNL   (6)
+           MOVE    "締め変更"      TO  SPA-GMN-L04-PROCKBNMEIL(6)
       *
            .
        31011-PROCKBNLST-SET-EXT.
@@ -809,6 +813,8 @@
                MOVE    L04-EDHR        TO  SPA-GMN-L04-EDHR
                MOVE    L04-EDMIN       TO  SPA-GMN-L04-EDMIN
                MOVE    L04-HOURSKBN    TO  SPA-GMN-L04-HOURSKBN-G
+           WHEN    CONST-UPD
+               MOVE    L04-HOURSKBN    TO  SPA-GMN-L04-HOURSKBN-G
            WHEN    CONST-DEL
                CONTINUE
            END-EVALUATE
@@ -831,6 +837,8 @@
                PERFORM 4102-SELTERM-KIHON-CHK-SEC
            WHEN    CONST-INS
                PERFORM 4102-INS-KIHON-CHK-SEC
+           WHEN    CONST-UPD
+               PERFORM 4102-UPD-KIHON-CHK-SEC
            WHEN    CONST-DEL
                PERFORM 4102-DEL-KIHON-CHK-SEC
            END-EVALUATE
@@ -924,6 +932,18 @@
        4102-INS-KIHON-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    変更基本チェック処理
+      *****************************************************************
+       4102-UPD-KIHON-CHK-SEC          SECTION.
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 4101-HOURSKBN-CHK-SEC
+           END-IF
+           .
+      *
+       4102-UPD-KIHON-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    削除基本チェック処理
       *****************************************************************
        4102-DEL-KIHON-CHK-SEC          SECTION.
@@ -974,6 +994,8 @@
                PERFORM 41011-SELTERM-SYOKI-SEC
            WHEN    CONST-INS
                PERFORM 41011-INS-SYOKI-SEC
+           WHEN    CONST-UPD
+               PERFORM 41011-UPD-SYOKI-SEC
            WHEN    CONST-DEL
                PERFORM 41011-DEL-SYOKI-SEC
            END-EVALUATE
@@ -1019,6 +1041,7 @@
        4100-CHK-TO-CHK-SEC         SECTION.
       *
            IF    ( SPA-GMN-L04-PROCKBN =   CONST-SELTERM
+                                        OR CONST-UPD 
                                         OR CONST-DEL )
                CONTINUE
            ELSE
@@ -1099,6 +1122,7 @@
            MOVE    ZERO            TO  SPA-GMN-L04-TERM-EDSEL
       *
            IF    ( SPA-GMN-L04-PROCKBN =   CONST-SELTERM
+                                        OR CONST-UPD 
                                         OR CONST-DEL )
                CONTINUE
            ELSE
@@ -1327,6 +1351,18 @@
       *
            .
        41011-DEL-SYOKI-EXT.
+           EXIT.
+      *****************************************************************
+      *    変更初期処理
+      *****************************************************************
+       41011-UPD-SYOKI-SEC             SECTION.
+      *
+           PERFORM 31011-HOURSKBNLST-SET-SEC
+      *
+           MOVE    6                   TO  SPA-GMN-L04-CUR
+      *
+           .
+       41011-UPD-SYOKI-EXT.
            EXIT.
       *****************************************************************
       *    番号自編集処理
@@ -1640,6 +1676,8 @@
                PERFORM 212-TOUROKU-SELTERM-CHK-SEC
            WHEN    CONST-INS
                PERFORM 212-TOUROKU-INS-CHK-SEC
+           WHEN    CONST-UPD
+               PERFORM 212-TOUROKU-UPD-CHK-SEC
            WHEN    CONST-DEL
                PERFORM 212-TOUROKU-DEL-CHK-SEC
            END-EVALUATE
@@ -1809,6 +1847,38 @@
        212-TOUROKU-INS-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    登録時変更処理チェック処理
+      *****************************************************************
+       212-TOUROKU-UPD-CHK-SEC         SECTION.
+      *
+           IF    ( SPA-GMN-L04-EDNO    =   ZERO )
+               MOVE    "1009"          TO  SPA-ERRCD
+               MOVE    06              TO  SPA-GMN-L04-CUR
+               GO  TO  212-TOUROKU-UPD-CHK-EXT
+           END-IF
+      *
+           IF    ( SPA-GMN-L04-HOURSKBN    =   SPACE )
+               MOVE    "1004"          TO  SPA-ERRCD
+               MOVE    10              TO  SPA-GMN-L04-CUR
+               GO  TO  212-TOUROKU-UPD-CHK-EXT
+           END-IF
+      *
+           PERFORM 2121-HOURS-DEL-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  212-TOUROKU-UPD-CHK-EXT
+           END-IF
+      *
+           PERFORM 2121-HOURS-INS-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  212-TOUROKU-UPD-CHK-EXT
+           END-IF
+      *
+           PERFORM 230-CLEAR-SEC
+      *
+           .
+       212-TOUROKU-UPD-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    登録時削除処理チェック処理
       *****************************************************************
        212-TOUROKU-DEL-CHK-SEC         SECTION.
@@ -1846,6 +1916,7 @@
            WHEN    CONST-SIME-KARI
                MOVE    "2"                 TO  HOURS-HOURSKBN
            WHEN    CONST-INS
+           WHEN    CONST-UPD
                MOVE    SPA-GMN-L04-HOURSKBN
                                            TO  HOURS-HOURSKBN
            END-EVALUATE
@@ -2026,13 +2097,19 @@
                    MOVE    "◎"        TO  L04-MARK       (IDX-TERM)
                END-IF
       *
-               IF    ( SPA-GMN-L04-PROCKBN         =   CONST-DEL )
-                   IF    ( SPA-GMN-L04-TERM-EDSEL  =   IDX-TERM )
-                       MOVE    "yellow-rev"
+               IF    ( SPA-GMN-L04-TERM-EDSEL  =   IDX-TERM )
+                   EVALUATE    SPA-GMN-L04-PROCKBN
+                   WHEN    CONST-UPD
+                           MOVE    "blue-rev"
                                        TO  L04-SRYYMD-STYLE (IDX-TERM 2)
-                       MOVE    "yellow-rev"
+                           MOVE    "blue-rev"
                                        TO  L04-TIME-STYLE   (IDX-TERM 2)
-                   END-IF
+                   WHEN    CONST-DEL
+                           MOVE    "yellow-rev"
+                                       TO  L04-SRYYMD-STYLE (IDX-TERM 2)
+                           MOVE    "yellow-rev"
+                                       TO  L04-TIME-STYLE   (IDX-TERM 2)
+                   END-EVALUATE
                END-IF
       *
                IF    ( SPA-GMN-L04-PROCKBN         =   CONST-SELTERM )
@@ -2121,10 +2198,22 @@
                END-EVALUATE
            END-IF
       *
-           IF    ( SPA-GMN-L04-PROCKBN     =   CONST-DEL )
+           EVALUATE    SPA-GMN-L04-PROCKBN
+           WHEN    CONST-UPD
+               MOVE    "変更"              TO  L04-B12-LABEL
+           WHEN    CONST-DEL
                MOVE    "削除"              TO  L04-B12-LABEL
-           ELSE
+           WHEN    OTHER
                MOVE    "登録"              TO  L04-B12-LABEL
+           END-EVALUATE
+      *
+           MOVE    WIDGET-NORMAL           TO  L04-EDSRYYMD-STATUS
+                                               L04-EDHR-STATUS
+                                               L04-EDMIN-STATUS
+           IF    ( SPA-GMN-L04-PROCKBN     =   CONST-UPD )
+               MOVE    WIDGET-INSENSITIVE  TO  L04-EDSRYYMD-STATUS
+                                               L04-EDHR-STATUS
+                                               L04-EDMIN-STATUS
            END-IF
       *
       *    カーソル位置
@@ -2144,9 +2233,9 @@
       *
                PERFORM 5011-INPUT-CUR-SEC
       *
-               PERFORM 5012-CUR-SKIP-SEC
-      *
            END-IF
+      *
+           PERFORM 5012-CUR-SKIP-SEC
       *
            EVALUATE    SPA-GMN-L04-CUR
            WHEN    01
@@ -2231,12 +2320,13 @@
                IF    ( SPA-GMN-L04-CUR     = 10 )
                    MOVE    212     TO  SPA-GMN-L04-CUR
                END-IF
+           WHEN    CONST-UPD
            WHEN    CONST-DEL
                IF    ( SPA-GMN-L04-CUR     = 2 OR 3 OR 4 OR 5 )
                    MOVE    6       TO  SPA-GMN-L04-CUR
                END-IF
-               IF    ( SPA-GMN-L04-CUR     = 7 OR 8 OR 9 OR 10 )
-                   MOVE    212     TO  SPA-GMN-L04-CUR
+               IF    ( SPA-GMN-L04-CUR     = 7 OR 8 OR 9  )
+                   MOVE    10      TO  SPA-GMN-L04-CUR
                END-IF
            END-EVALUATE
       *

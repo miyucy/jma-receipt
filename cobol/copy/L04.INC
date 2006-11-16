@@ -58,9 +58,12 @@
               03  L04-STNO             PIC S9(02).
               03  L04-STHR             PIC X(02).
               03  L04-STMIN            PIC X(02).
+              03  L04-EDSRYYMD-STATUS  PIC S9(9)   BINARY.
               03  L04-EDSRYYMD         PIC X(10).
               03  L04-EDNO             PIC S9(02).
+              03  L04-EDHR-STATUS      PIC S9(9)   BINARY.
               03  L04-EDHR             PIC S9(02).
+              03  L04-EDMIN-STATUS     PIC S9(9)   BINARY.
               03  L04-EDMIN            PIC S9(02).
               03  L04-LBL-KIKAN1       PIC X(08).
               03  L04-LBL-KIKAN2       PIC X(02).
@@ -69,4 +72,4 @@
                   05  L04-VALUE        PIC X(10).
                 04  L04-HOURSKBN-COUNT PIC S9(9)   BINARY.
                 04  L04-HOURSKBN-ITEM  PIC X(10)
-                                       OCCURS  5 TIMES.
+                                       OCCURS  10 TIMES.
