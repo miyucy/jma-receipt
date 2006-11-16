@@ -51,6 +51,7 @@
       *  01.00.20    NACL-多々納  06/01/20  診療科初期表示追加
       *  01.00.21    NACL-多々納  06/01/23  用量割合・包括検査数追加
       *  01.00.22    NACL-多々納  06/05/14  コメント入力画面変更
+      *  03.04.00    NACL-多々納  06/11/13  検査正式名称表示追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -210,6 +211,7 @@
            03  IDX2                PIC 9(04).
            03  IDY                 PIC 9(04).
            03  IDG                 PIC 9(04).
+           03  IDG3                PIC 9(04).
            03  IDH                 PIC 9(04).
            03  IDK                 PIC 9(04).
            03  IDZ                 PIC 9(04).
@@ -2557,8 +2559,32 @@
            CALL    "ORCSMEIHEN"        USING
                                        SPA-AREA
                                        ORCSMEIHENAREA
-           MOVE    ORCSMEIHEN-MEISYO   TO  SPA-GMN-TMEISYO
-                                                   (WRK-HOUKNS-IDX)
+           IF      WRK-HOUKNS-NAME(17:)    =   SPACE
+               MOVE    ORCSMEIHEN-MEISYO   TO  SPA-GMN-TMEISYO
+                                                  (WRK-HOUKNS-IDX)
+           ELSE
+               IF      IDG             =   WRK-HOUKNS-IDX
+                   ADD     1               TO  IDG
+                   MOVE    IDG             TO  WRK-HOUKNS-IDX
+               ELSE
+                   PERFORM VARYING     IDG3    FROM    IDG   BY  -1
+                           UNTIL       IDG3    <=  WRK-HOUKNS-IDX
+                       MOVE    SPA-GMN-TBLREC (IDG3)
+                                               TO  SPA-GMN-TBLREC
+                                                           (IDG3 + 1)
+                   END-PERFORM
+                   COMPUTE WRK-HOUKNS-IDX  =   WRK-HOUKNS-IDX  +  1
+                   INITIALIZE                  SPA-GMN-TBLREC
+                                                        (WRK-HOUKNS-IDX)
+                   ADD     1               TO  IDG
+               END-IF
+               IF      WRK-HOUKNS-IDX      <=   400
+                   MOVE    ORCSMEIHEN-MEISYO2
+                                       TO  SPA-GMN-TMEISYO
+                                                  (WRK-HOUKNS-IDX)
+               END-IF
+           END-IF
+      *
       *
            MOVE    ZERO                TO  WRK-HOUKNS-CNT
            MOVE    ZERO                TO  WRK-HOUKNS-IDX
@@ -11913,7 +11939,7 @@
       *
                WHEN    "0134"
                    STRING  "現在までの修正分を登録後、"
-                           "剤を新規登録へ遷移します。"
+                           "剤新規登録へ遷移します。"
                                                DELIMITED  BY SIZE
                                                INTO   WRK-JIDMSG
                    END-STRING
@@ -12138,6 +12164,15 @@
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
+      *    検査正式名称
+           IF      SPA-FORMALFLG       =   "1"
+               IF     (TNS-SRYCD(1:1)      =   "1") AND
+                      (TNS-SRYKBN          =   "60")  AND
+                      (TNS-FORMALNAME  NOT =   SPACE )  AND
+                      (TNS-FORMALNAME  NOT =   TNS-NAME )
+                   MOVE    TNS-FORMALNAME  TO  TNS-NAME
+               END-IF
+           END-IF
       *
            .
        910-TENSU-READ-EXT.
