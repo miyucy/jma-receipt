@@ -15,20 +15,20 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-       01  SDTCHK02AREA.
-           03  SDTCHK02-IN.
-               05  SDTCHK02-HOSPID             PIC X(24).
-               05  SDTCHK02-PTID               PIC 9(10).
-           03  SDTCHK02-OT.
-               05  SDTCHK02-O-MAX              PIC 9(05).
-               05  SDTCHK02-O-HKNCOMBIMEI      PIC X(50)
-                                               OCCURS  100.
-           03  SDTCHK02-OT-HKNINF.
-               05  SDTCHK02-O-HKNINF-MAX       PIC 9(05).
-               05  SDTCHK02-O-HKNINF-OCC       OCCURS  50.
-                   07  SDTCHK02-O-SYAHO        PIC 9(01).
-                   07  SDTCHK02-O-KOKUHO       PIC 9(01).
-                   07  SDTCHK02-O-ROSAI        PIC 9(01).
-                   07  SDTCHK02-O-JIBAI        PIC 9(01).
-                   07  SDTCHK02-O-JIHI         PIC 9(01).
-                   07  SDTCHK02-O-HKNNUM       PIC X(03).
+      *
+       01  SDTCHK05AREA.
+           03  SDTCHK05-IN.
+               05  SDTCHK05-HOSPID         PIC X(24).
+               05  SDTCHK05-PTID           PIC X(100).
+               05  SDTCHK05-HKNKBN         PIC X(01).
+           03  SDTCHK05-OT.
+               05  SDTCHK05-OT-MAX         PIC 9(05).
+               05  SDTCHK05-OT-OCC         OCCURS 50.
+      *        ¼çÊÝ¸±:0/¸øÈñ:1
+                   07  SDTCHK05-HKNKOHKBN  PIC X(01).
+                   07  SDTCHK05-HKNNUM     PIC X(03).
+                   07  SDTCHK05-HKNNUMMEI  PIC X(20).
+                   07  SDTCHK05-PAYKBN     PIC X(02).
+                   07  SDTCHK05-HKNJANUM   PIC X(08).
+                   07  SDTCHK05-HONKZKKBN  PIC X(01).
+

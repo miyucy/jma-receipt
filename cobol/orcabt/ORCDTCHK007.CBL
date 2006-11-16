@@ -83,6 +83,7 @@
            03  FLG-END                                 PIC 9(01).
            03  FLG-ERR                                 PIC 9(01).
            03  FLG-DTCHK004                            PIC 9(01).
+           03  FLG-FIL                                 PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -92,9 +93,13 @@
            03  CNT-PAGE2                               PIC 9(06).
            03  CNT-PRINT                               PIC 9(06).
            03  CNT-RENBAN                              PIC 9(06).
+           03  CNT-HKNINFEDIT                          PIC 9(06).
       *
        01  IDX-AREA.
-           03  IDX0                                    PIC 9(05). 
+           03  IDX0                                    PIC 9(05).
+           03  IDX1                                    PIC 9(05).
+           03  IDX-HKN                                 PIC 9(05).
+           03  IDX-MESG                                PIC 9(05).
       *
        01  WRK-AREA.
            03  WRK-SYMD                                PIC X(08).
@@ -147,6 +152,12 @@
            03  WRK-HKNKBN                              PIC X(01).
            03  WRK-STDAYMES                            PIC X(04).
            03  WRK-EDDAYMES                            PIC X(04).
+           03  WRK-KOHINF-G.
+               05  WRK-KOHNUM                          PIC X(03).
+               05  WRK-PAYKBN                          PIC X(01).
+           03  WRK-MESG                                PIC X(1000).
+           03  WRK-MESG-ORG                            PIC X(1000).
+           03  WRK-FIL                                 PIC X(02).
       *
        01  KEY-AREA.
            03  KEY-NEW.
@@ -186,6 +197,8 @@
       *    サブプロ用領域
       *****************************************************************
       *
+           COPY    "CPORCSDTCHK05.INC".
+      *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
@@ -204,7 +217,6 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-           COPY    "ORCA-DBPATH".
            COPY    "MCPAREA".
       *
       ****************************************************************
@@ -323,7 +335,8 @@
            MOVE    "01"                TO  SYS-1101-STYUKYMD (7:2)
            MOVE    SYS-1101-STYUKYMD   TO  SYS-1101-EDYUKYMD
            MOVE    SYS-1101-REC        TO  MCPDATA-REC
-           MOVE    PATH-TBL-SYSKANRI-KEY   TO  MCP-PATH
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
                MOVE    MCPDATA-REC     TO  SYS-1101-REC
@@ -331,8 +344,9 @@
                INITIALIZE                  SYS-1101-REC
            END-IF
       *
-           MOVE    PATH-TBL-SYSKANRI-KEY   TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        1001-SYS1101-GET-EXT.
@@ -554,8 +568,149 @@
                MOVE    WRK-OUT-INPUT   TO  HCM402-NENREI
            END-IF
       *
+           IF    ( CNT-PAGE2           =   1 )
+               PERFORM 2101-PTHKN-HEN-SEC
+           END-IF
+      *
            .
        210-HEAD-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者保険情報編集処理
+      *****************************************************************
+       2101-PTHKN-HEN-SEC              SECTION.
+      *
+           MOVE    1               TO  IDX-MESG
+           MOVE    SPACE           TO  WRK-MESG
+           MOVE    ZERO            TO  FLG-FIL
+           MOVE    ZERO            TO  CNT-HKNINFEDIT
+      *
+           STRING  "保険（公費）："    DELIMITED   BY  SIZE
+           INTO    WRK-MESG
+           WITH    POINTER               IDX-MESG
+           END-STRING
+      *
+           MOVE    WRK-MESG        TO  WRK-MESG-ORG
+      *
+           INITIALIZE                  SDTCHK05AREA
+           MOVE    WRK-PARA-HOSPID TO  SDTCHK05-HOSPID
+           MOVE    DTCHK004-PTID   TO  SDTCHK05-PTID
+           MOVE    DTCHK004-HKNKBN TO  SDTCHK05-HKNKBN
+           CALL    "ORCSDTCHK05"   USING   SDTCHK05AREA
+                                           ORCBSD01PARA
+      *
+           PERFORM VARYING IDX-HKN FROM    1   BY  1
+                   UNTIL ( IDX-HKN >   SDTCHK05-OT-MAX )
+      *
+                   PERFORM 21011-BODY-HKNINF-HEN-SEC
+      *
+           END-PERFORM
+      *
+           IF    ( WRK-MESG        NOT =   WRK-MESG-ORG )
+               COMPUTE CNT-LINE    =   CNT-LINE    +   1
+               MOVE    WRK-MESG        TO  HCM402-MESG (CNT-LINE)
+           END-IF
+      *
+           .
+       2101-PTHKN-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者保険情報編集処理（明細行に編集）
+      *****************************************************************
+       21011-BODY-HKNINF-HEN-SEC       SECTION.
+      *
+           MOVE        ZERO            TO  FLG-FIL
+      *
+           MOVE        SPACE           TO  WRK-OUT-INPUT
+           PERFORM 210111-BODY-HKNINF-HEN-SEC
+      *
+           IF    ( SDTCHK05-HKNKOHKBN (IDX-HKN)    =   "0" )
+      *
+               STRING  "【"            DELIMITED   BY  SIZE
+               INTO    WRK-MESG
+               WITH    POINTER               IDX-MESG
+               END-STRING
+      *
+               MOVE    1               TO  FLG-FIL
+      *
+               MOVE    SDTCHK05-HKNNUMMEI (IDX-HKN)
+                                       TO  WRK-OUT-INPUT
+               PERFORM 210111-BODY-HKNINF-HEN-SEC
+      *
+               MOVE    2               TO  FLG-FIL
+      *
+               MOVE    SDTCHK05-HKNJANUM (IDX-HKN)
+                                       TO  WRK-MAE-INPUT
+               PERFORM 800-ZENKAKU-HEN-SEC
+               IF    ( WRK-OUT-INPUT   NOT =   SPACE )
+                   PERFORM 210111-BODY-HKNINF-HEN-SEC
+               END-IF
+      *
+               MOVE    SPACE           TO  WRK-OUT-INPUT
+               EVALUATE    SDTCHK05-HONKZKKBN (IDX-HKN)
+               WHEN    "1"
+                   MOVE    "本人"      TO  WRK-OUT-INPUT
+               WHEN    "2"
+                   MOVE    "家族"      TO  WRK-OUT-INPUT
+               END-EVALUATE
+               IF    ( WRK-OUT-INPUT   NOT =   SPACE )
+                   PERFORM 210111-BODY-HKNINF-HEN-SEC
+               END-IF
+      *
+               STRING  "】"                DELIMITED   BY  SIZE
+               INTO    WRK-MESG
+               WITH    POINTER             IDX-MESG
+               END-STRING
+      *
+           ELSE
+      *
+               STRING  "（"            DELIMITED   BY  SIZE
+               INTO    WRK-MESG
+               WITH    POINTER               IDX-MESG
+               END-STRING
+      *
+               MOVE    1               TO  FLG-FIL
+      *
+               MOVE    SDTCHK05-HKNNUMMEI (IDX-HKN)
+                                       TO  WRK-OUT-INPUT
+               PERFORM 210111-BODY-HKNINF-HEN-SEC
+      *
+               STRING  "）"                DELIMITED   BY  SIZE
+               INTO    WRK-MESG
+               WITH    POINTER             IDX-MESG
+               END-STRING
+           END-IF
+      *
+           .
+       21011-BODY-HKNINF-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者保険情報編集処理（明細行に編集）
+      *****************************************************************
+       210111-BODY-HKNINF-HEN-SEC      SECTION.
+      *
+           MOVE    SPACE           TO  WRK-FIL
+           EVALUATE    TRUE
+           WHEN    ( CNT-HKNINFEDIT    =   ZERO )
+               CONTINUE
+           WHEN    ( FLG-FIL           =   ZERO )
+               MOVE    "、"        TO  WRK-FIL
+           WHEN    ( FLG-FIL           =   1 )
+               CONTINUE
+           WHEN    OTHER
+               MOVE    "　"        TO  WRK-FIL
+           END-EVALUATE
+      *
+           STRING  WRK-FIL         DELIMITED   BY  SPACE
+                   WRK-OUT-INPUT   DELIMITED   BY  SPACE
+           INTO    WRK-MESG
+           WITH    POINTER               IDX-MESG
+           END-STRING
+      *
+           COMPUTE CNT-HKNINFEDIT  =   CNT-HKNINFEDIT  +   1
+      *
+           .
+       210111-BODY-HKNINF-HEN-EXT.
            EXIT.
       *****************************************************************
       *    帳票編集<明細>処理
@@ -840,7 +995,7 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            IF    ( MCP-RC          =   ZERO )
@@ -857,7 +1012,7 @@
        911-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -871,7 +1026,7 @@
        910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -882,25 +1037,26 @@
       *****************************************************************
       *    ＤＢクローズ処理
       *****************************************************************
-       910-DBCLOSE-SEC                 SECTION.
+       910-DBCLOSECURSOR-SEC                 SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
            .
       *
-       910-DBCLOSE-EXT.
+       910-DBCLOSECURSOR-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ　オープン処理
       *****************************************************************
        900-DBSTART-SEC                 SECTION.
       *
-           MOVE    LOW-VALUE           TO  MCP-PATH
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+           MOVE    LOW-VALUE           TO  MCP-PATHNAME
            MOVE    "DBSTART"           TO  MCP-FUNC.
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            .
@@ -912,11 +1068,12 @@
       *****************************************************************
        900-DBCOMMIT-SEC                SECTION.
       *
-           MOVE    LOW-VALUE           TO  MCP-PATH
-           MOVE    "DBCOMMIT"          TO  MCP-FUNC.
-           CALL    "MCPSUB"            USING
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+           MOVE    LOW-VALUE           TO  MCP-PATHNAME
+           MOVE    "DBCOMMIT"          TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       MCPDATA-REC.
+                                       MCPDATA-REC
            .
        900-DBCOMMIT-EXT.
            EXIT.

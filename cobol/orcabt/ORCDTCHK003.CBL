@@ -60,8 +60,8 @@
       *
        WORKING-STORAGE                 SECTION.
       *
-           COPY    "HCM401V02.INC"
-                                   REPLACING  //HCM401V02//
+           COPY    "HCM401V03.INC"
+                                   REPLACING  //HCM401V03//
                                    BY         //HCM401//.
       *
       *    エラーファイルファイル名称領域 
@@ -84,6 +84,7 @@
            03  FLG-ERR                                 PIC 9(01).
            03  FLG-DTCHK004                            PIC 9(01).
            03  FLG-HKNOTHERS                           PIC 9(01).
+           03  FLG-FIL                                 PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -92,9 +93,12 @@
            03  CNT-PAGE                                PIC 9(06).
            03  CNT-TTL-PAGE                            PIC 9(06).
            03  CNT-RENBAN                              PIC 9(06).
+           03  CNT-HKNINFEDIT                          PIC 9(06).
       *
        01  IDX-AREA.
            03  IDX0                                    PIC 9(05). 
+           03  IDX-HKN                                 PIC 9(05).
+           03  IDX-MESG                                PIC 9(05).
       *
        01  WRK-AREA.
            03  WRK-SYMD                                PIC X(08).
@@ -145,12 +149,18 @@
            03  WRK-HKNKBN                              PIC X(01).
            03  WRK-STDAYMES                            PIC X(04).
            03  WRK-EDDAYMES                            PIC X(04).
+           03  WRK-KOHINF-G.
+               05  WRK-KOHNUM                          PIC X(03).
+               05  WRK-PAYKBN                          PIC X(01).
+           03  WRK-MESG                                PIC X(1000).
+           03  WRK-FIL                                 PIC X(02).
       *
        01  KEY-AREA.
            03  KEY-NEW.
                05  KEY-N-HKNKBN                        PIC X(01).
            03  KEY-OLD.
                05  KEY-O-HKNKBN                        PIC X(01).
+           03  KEY-PTID                                PIC 9(10).
       *
       *    パラメタ領域
        01  WRK-PARA.
@@ -181,6 +191,8 @@
       *****************************************************************
       *    サブプロ用領域
       *****************************************************************
+      *
+           COPY    "CPORCSDTCHK05.INC".
       *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
@@ -241,6 +253,7 @@
                                        FLG-AREA
                                        WRK-AREA
                                        WRK-PARA
+                                       KEY-AREA
                                        ORCBSD01PARA
       *
            UNSTRING   COMMAND-PARAM    DELIMITED  BY  ","
@@ -446,6 +459,7 @@
                                =   CNT-TTL-PAGE    +   CNT-PAGE
                            MOVE    ZERO        TO  CNT-PAGE
                            MOVE    ZERO        TO  CNT-RENBAN
+                           MOVE    ZERO        TO  KEY-PTID
                        END-IF
                    ELSE
                            COMPUTE CNT-TTL-PAGE
@@ -530,6 +544,14 @@
            COMPUTE CNT-LINE    =   CNT-LINE    +   1
            COMPUTE CNT-RENBAN  =   CNT-RENBAN  +   1
       *
+           IF    ( DTCHK004-PTID   NOT =   ZERO )
+            AND  ( KEY-PTID        NOT =   DTCHK004-PTID )
+               PERFORM 2201-PTHKN-HEN-SEC
+               MOVE    WRK-MESG        TO  HCM401-HKNINF(CNT-LINE)
+           END-IF
+      *
+           MOVE    DTCHK004-PTID       TO  KEY-PTID
+      *
       *    番号
            MOVE    CNT-RENBAN          TO  WRK-ZZZZ9
            MOVE    WRK-ZZZZ9           TO  WRK-MAE-INPUT
@@ -554,11 +576,7 @@
            END-IF
       *
       *    患者氏名
-           IF    ( DTCHK004-NAME (31:) =   SPACE )
-               MOVE    DTCHK004-NAME   TO  HCM401-NAME  (CNT-LINE)
-           ELSE
-               MOVE    DTCHK004-NAME   TO  HCM401-NAME2 (CNT-LINE)
-           END-IF
+           MOVE    DTCHK004-NAME       TO  HCM401-NAME  (CNT-LINE)
       *
       *    年齢
            IF    ( DTCHK004-BIRTHDAY   NOT =   SPACE )
@@ -603,6 +621,131 @@
       *
            .
        220-BODY-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者保険情報編集処理
+      *****************************************************************
+       2201-PTHKN-HEN-SEC              SECTION.
+      *
+           MOVE    1               TO  IDX-MESG
+           MOVE    SPACE           TO  WRK-MESG
+           MOVE    ZERO            TO  FLG-FIL
+           MOVE    ZERO            TO  CNT-HKNINFEDIT
+      *
+           INITIALIZE                  SDTCHK05AREA
+           MOVE    WRK-PARA-HOSPID TO  SDTCHK05-HOSPID
+           MOVE    DTCHK004-PTID   TO  SDTCHK05-PTID
+           MOVE    DTCHK004-HKNKBN TO  SDTCHK05-HKNKBN
+           CALL    "ORCSDTCHK05"   USING   SDTCHK05AREA
+                                           ORCBSD01PARA
+      *
+           PERFORM VARYING IDX-HKN FROM    1   BY  1
+                   UNTIL ( IDX-HKN >   SDTCHK05-OT-MAX )
+      *
+               PERFORM 22011-BODY-HKNINF-HEN-SEC
+      *
+           END-PERFORM
+      *
+           .
+       2201-PTHKN-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者保険情報編集処理（明細行に編集）
+      *****************************************************************
+       22011-BODY-HKNINF-HEN-SEC       SECTION.
+      *
+           MOVE        ZERO            TO  FLG-FIL
+      *
+           MOVE        SPACE           TO  WRK-OUT-INPUT
+           PERFORM 220111-BODY-HKNINF-HEN-SEC
+      *
+           IF    ( SDTCHK05-HKNKOHKBN (IDX-HKN)    =   "0" )
+      *
+               STRING  "【"            DELIMITED   BY  SIZE
+               INTO    WRK-MESG
+               WITH    POINTER               IDX-MESG
+               END-STRING
+      *
+               MOVE    1               TO  FLG-FIL
+      *
+               MOVE    SDTCHK05-HKNNUMMEI (IDX-HKN)
+                                       TO  WRK-OUT-INPUT
+               PERFORM 220111-BODY-HKNINF-HEN-SEC
+      *
+               MOVE    2               TO  FLG-FIL
+      *
+               MOVE    SDTCHK05-HKNJANUM (IDX-HKN)
+                                       TO  WRK-MAE-INPUT
+               PERFORM 800-ZENKAKU-HEN-SEC
+               IF    ( WRK-OUT-INPUT   NOT =   SPACE )
+                   PERFORM 220111-BODY-HKNINF-HEN-SEC
+               END-IF
+      *
+               MOVE    SPACE           TO  WRK-OUT-INPUT
+               EVALUATE    SDTCHK05-HONKZKKBN (IDX-HKN)
+               WHEN    "1"
+                   MOVE    "本人"      TO  WRK-OUT-INPUT
+               WHEN    "2"
+                   MOVE    "家族"      TO  WRK-OUT-INPUT
+               END-EVALUATE
+               IF    ( WRK-OUT-INPUT   NOT =   SPACE )
+                   PERFORM 220111-BODY-HKNINF-HEN-SEC
+               END-IF
+      *
+               STRING  "】"                DELIMITED   BY  SIZE
+               INTO    WRK-MESG
+               WITH    POINTER             IDX-MESG
+               END-STRING
+      *
+           ELSE
+      *
+               STRING  "（"            DELIMITED   BY  SIZE
+               INTO    WRK-MESG
+               WITH    POINTER               IDX-MESG
+               END-STRING
+      *
+               MOVE    1               TO  FLG-FIL
+      *
+               MOVE    SDTCHK05-HKNNUMMEI (IDX-HKN)
+                                       TO  WRK-OUT-INPUT
+               PERFORM 220111-BODY-HKNINF-HEN-SEC
+      *
+               STRING  "）"                DELIMITED   BY  SIZE
+               INTO    WRK-MESG
+               WITH    POINTER             IDX-MESG
+               END-STRING
+           END-IF
+      *
+           .
+       22011-BODY-HKNINF-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者保険情報編集処理（明細行に編集）
+      *****************************************************************
+       220111-BODY-HKNINF-HEN-SEC      SECTION.
+      *
+           MOVE    SPACE           TO  WRK-FIL
+           EVALUATE    TRUE
+           WHEN    ( CNT-HKNINFEDIT    =   ZERO )
+               CONTINUE
+           WHEN    ( FLG-FIL           =   ZERO )
+               MOVE    "、"        TO  WRK-FIL
+           WHEN    ( FLG-FIL           =   1 )
+               CONTINUE
+           WHEN    OTHER
+               MOVE    "　"        TO  WRK-FIL
+           END-EVALUATE
+      *
+           STRING  WRK-FIL         DELIMITED   BY  SPACE
+                   WRK-OUT-INPUT   DELIMITED   BY  SPACE
+           INTO    WRK-MESG
+           WITH    POINTER               IDX-MESG
+           END-STRING
+      *
+           COMPUTE CNT-HKNINFEDIT  =   CNT-HKNINFEDIT  +   1
+      *
+           .
+       220111-BODY-HKNINF-HEN-EXT.
            EXIT.
       *****************************************************************
       *    年齢編集処理
@@ -683,7 +826,7 @@
            MOVE    WRK-SHORI-RENNUM    TO  SPRT-SHORI-RENNUM
            MOVE    LNK-PRTKANRI-PRIORITY
                                        TO  SPRT-PRIORITY
-           MOVE   "HCM401V02.red"      TO  SPRT-PRTID
+           MOVE   "HCM401V03.red"      TO  SPRT-PRTID
            IF    ( WRK-HKNMES      NOT =   SPACE )
                STRING  WRK-SPRT-TITLE      DELIMITED   BY  SPACE
                        "（"                DELIMITED   BY  SIZE

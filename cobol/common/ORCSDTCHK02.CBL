@@ -51,17 +51,23 @@
       *    添字領域
        01  IDX-AREA.
            03  IDX0                PIC 9(05).
+           03  IDX1                PIC 9(05).
            03  IDX-MAX             PIC 9(05).
            03  IDX-PNT             PIC 9(05).
+           03  IDX-KOH             PIC 9(05).
+           03  IDX-HKNNUM          PIC 9(05).
       *
       *    一時領域
        01  WRK-AREA.
       *
            03  WRK-HKNCOMBI            PIC X(100).
            03  WRK-HKNKBN-MEI          PIC X(02).
+           03  WRK-SYUHKNNUM           PIC X(03).
+           03  WRK-HKNNUM              PIC X(03).
       *
        01  CONST-AREA.
            03  CONST-HKNCOMBI-MAX      PIC 9(05)   VALUE   100.
+           03  CONST-HKNINF-MAX        PIC 9(05)   VALUE   50.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -110,6 +116,7 @@
            INITIALIZE                  IDX-AREA
            INITIALIZE                  WRK-AREA
            INITIALIZE                  SDTCHK02-OT
+                                       SDTCHK02-OT-HKNINF
                                        LNK-HKNCOMBI-AREA
       *
       *    保険組合せ編集処理
@@ -141,6 +148,7 @@
                    PERFORM 1101-HKNCOMBIMEI-HEN-SEC
                    MOVE    WRK-HKNCOMBI TO  SDTCHK02-O-HKNCOMBIMEI
                                                              (IDX-MAX)
+                   PERFORM 1101-HKNINF-HEN-SEC
                END-IF
       *
                PERFORM 900-HKNCOMBI-KEY2-FET-SEC
@@ -231,6 +239,82 @@
            END-IF
            .
        1101-HKNCOMBIMEI-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険情報編集処理
+      *****************************************************************
+       1101-HKNINF-HEN-SEC             SECTION.
+      *
+           IF    ( CONST-HKNINF-MAX    >   SDTCHK02-O-HKNINF-MAX )
+               MOVE    COMB-HKNNUM     TO  WRK-SYUHKNNUM
+                                           WRK-HKNNUM
+               PERFORM 11011-HKNINF-HEN-SEC
+           END-IF
+      *
+           PERFORM VARYING IDX-KOH     FROM    1   BY  1
+                   UNTIL ( IDX-KOH     >   4 )
+      *
+               IF    ( COMB-KOHHKNNUM (IDX-KOH)    NOT =   SPACE )
+                   IF    ( CONST-HKNINF-MAX
+                                       >   SDTCHK02-O-HKNINF-MAX)
+                       MOVE    COMB-HKNNUM TO  WRK-SYUHKNNUM
+                       MOVE    COMB-KOHHKNNUM (IDX-KOH)
+                                           TO  WRK-HKNNUM
+                       PERFORM 11011-HKNINF-HEN-SEC
+                   END-IF
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       1101-HKNINF-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険情報編集処理
+      *****************************************************************
+       11011-HKNINF-HEN-SEC            SECTION.
+      *
+           MOVE    ZERO            TO  IDX-HKNNUM
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1            >   SDTCHK02-O-HKNINF-MAX )
+                    OR   ( IDX-HKNNUM  NOT =   ZERO )
+      *
+               IF    ( WRK-HKNNUM  =   SDTCHK02-O-HKNNUM (IDX1))
+                   MOVE    IDX1    TO  IDX-HKNNUM
+               END-IF
+      *
+           END-PERFORM
+      *
+           IF    ( IDX-HKNNUM      =   ZERO )
+               COMPUTE SDTCHK02-O-HKNINF-MAX
+                   =   SDTCHK02-O-HKNINF-MAX   +   1
+               MOVE    SDTCHK02-O-HKNINF-MAX
+                                   TO  IDX-HKNNUM
+               MOVE    WRK-HKNNUM  TO  SDTCHK02-O-HKNNUM (IDX-HKNNUM)
+           END-IF
+      *
+           IF    ( IDX-HKNNUM      >   ZERO )
+               EVALUATE    WRK-SYUHKNNUM
+               WHEN      "060"
+               WHEN      "067"
+               WHEN      "068"
+               WHEN      "069"
+                   MOVE    1       TO  SDTCHK02-O-KOKUHO(IDX-HKNNUM)
+               WHEN      "971"
+                   MOVE    1       TO  SDTCHK02-O-ROSAI (IDX-HKNNUM)
+               WHEN      "973"
+                   MOVE    1       TO  SDTCHK02-O-JIBAI (IDX-HKNNUM)
+               WHEN      OTHER
+                   IF    ( WRK-SYUHKNNUM (1:2) =   "98" )
+                       MOVE    1   TO  SDTCHK02-O-JIHI  (IDX-HKNNUM)
+                   ELSE
+                       MOVE    1   TO  SDTCHK02-O-SYAHO (IDX-HKNNUM)
+                   END-IF
+               END-EVALUATE
+           END-IF
+      *
+           .
+       11011-HKNINF-HEN-EXT.
            EXIT.
       *****************************************************************
       *    保険組合せ取得処理(KEY2)
