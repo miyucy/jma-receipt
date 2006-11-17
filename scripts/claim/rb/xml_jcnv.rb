@@ -118,7 +118,7 @@ class XmlJCnv
           # ersub if !(@tp == 0 or @tp == 3)
           case @to
           when "tou8"
-            @buf = Kconv::toeuc(@buf)
+            @buf =  NKF.nkf('-e -S',@buf)
             print Uconv::euctou8(@buf)
           when "toeuc"
             print Kconv::toeuc(@buf)
