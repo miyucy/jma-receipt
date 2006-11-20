@@ -43,12 +43,6 @@
                                        ACCESS  MODE    IS  DYNAMIC
                                        RECORD  KEY     IS  TOKEI-KEY
                                        FILE    STATUS  IS  STS-TOKEI.
-      *    クリア用ファイル
-           SELECT  TOKEIX-FILE         ASSIGN    TOKEIPARA
-                                       ORGANIZATION    IS  INDEXED
-                                       ACCESS  MODE    IS  SEQUENTIAL
-                                       RECORD  KEY     IS  TOKEIX-KEY
-                                       FILE    STATUS  IS  STS-TOKEIX.
       *    エラーファイル
            SELECT  RECEERR-FILE        ASSIGN  RECEERR
                                        FILE    STATUS  IS  STS-RECEERR.
@@ -63,14 +57,6 @@
                05  TOKEI-PTNUM         PIC X(20).
            03  TOKEI-PTID              PIC 9(10).
            03  TOKEI-MISYU             PIC S9(10).
-      *
-      *    クリア用ファイル
-       FD  TOKEIX-FILE.
-       01  TOKEIX-REC. 
-           03  TOKEIX-KEY.
-               05  TOKEIX-PTNUM        PIC X(20).
-           03  TOKEIX-PTID             PIC 9(10).
-           03  TOKEIX-MISYU            PIC S9(10).
       *
       *    エラーファイル
        FD  RECEERR-FILE.
@@ -92,7 +78,6 @@
       *    スパ領域
        01  STS-AREA.
            03  STS-TOKEI               PIC X(02).
-           03  STS-TOKEIX              PIC X(02).
            03  STS-RECEERR             PIC X(02).
       *
       *    フラグ領域
@@ -604,8 +589,8 @@
        200-MAIN-SEC                SECTION.
       *
       *    データをクリアする
-           OPEN    OUTPUT              TOKEIX-FILE
-           CLOSE                       TOKEIX-FILE
+           OPEN    OUTPUT              TOKEI-FILE
+           CLOSE                       TOKEI-FILE
       *
            OPEN    OUTPUT              TOKEI-FILE
       *
@@ -632,8 +617,8 @@
            CLOSE                       TOKEI-FILE
       *
       *    データをクリアする
-           OPEN    OUTPUT              TOKEIX-FILE
-           CLOSE                       TOKEIX-FILE
+           OPEN    OUTPUT              TOKEI-FILE
+           CLOSE                       TOKEI-FILE
       *
            MOVE    1               TO  FLG-END
       *

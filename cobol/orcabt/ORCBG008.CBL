@@ -44,12 +44,6 @@
                                        ACCESS  MODE    IS  DYNAMIC
                                        RECORD  KEY     IS  TOKEI-KEY
                                        FILE    STATUS  IS  STS-TOKEI.
-      *    クリア用ファイル
-           SELECT  TOKEIX-FILE         ASSIGN    TOKEIPARA
-                                       ORGANIZATION    IS  INDEXED
-                                       ACCESS  MODE    IS  SEQUENTIAL
-                                       RECORD  KEY     IS  TOKEIX-KEY
-                                       FILE    STATUS  IS  STS-TOKEIX.
       *    エラーファイル
            SELECT  RECEERR-FILE        ASSIGN  RECEERR
                                        FILE    STATUS  IS  STS-RECEERR.
@@ -71,20 +65,6 @@
            03  TOKEI-NAME              PIC X(48).
            03  TOKEI-CNT-G.
                05  TOKEI-CNT           PIC 9(05)V9(03) OCCURS  31.
-      *    クリア用ファイル（レセプト種別）
-       FD  TOKEIX-FILE.
-       01  TOKEIX-REC. 
-           03  TOKEIX-KEY.
-      *----(01.02.03)--ADD-START---
-               05  TOKEIX-NYUGAIKBN    PIC X(01).
-      *----(01.02.03)--ADD-END-----
-               05  TOKEIX-PTID         PIC 9(10).
-               05  TOKEIX-SYUBETU      PIC 9(01).
-               05  TOKEIX-YKZKBN       PIC 9(01).
-               05  TOKEIX-SRYCD        PIC X(09).
-           03  TOKEIX-NAME             PIC X(48).
-           03  TOKEIX-CNT-G.
-               05  TOKEIX-CNT          PIC 9(05)V9(03) OCCURS  31.
       *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC                 PIC X(200).
@@ -105,7 +85,6 @@
       *    スパ領域
        01  STS-AREA.
            03  STS-TOKEI               PIC X(02).
-           03  STS-TOKEIX              PIC X(02).
            03  STS-RECEERR             PIC X(02).
       *
       *    フラグ領域
@@ -530,8 +509,8 @@
        200-MAIN-SEC                SECTION.
       *
       *    データをクリアする
-           OPEN    OUTPUT              TOKEIX-FILE
-           CLOSE                       TOKEIX-FILE
+           OPEN    OUTPUT              TOKEI-FILE
+           CLOSE                       TOKEI-FILE
       *
            OPEN    I-O                 TOKEI-FILE
       *
@@ -574,8 +553,8 @@
            CLOSE                       TOKEI-FILE
       *
       *    データをクリアする
-           OPEN    OUTPUT              TOKEIX-FILE
-           CLOSE                       TOKEIX-FILE
+           OPEN    OUTPUT              TOKEI-FILE
+           CLOSE                       TOKEI-FILE
       *
            MOVE    1                   TO  FLG-END
       *

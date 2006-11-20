@@ -46,12 +46,6 @@
                                        RECORD  KEY     IS  TOKEI-KEY
                                        FILE    STATUS  IS  STS-TOKEI.
       *
-           SELECT  TOKEIX-FILE         ASSIGN    TOKEIPARA
-                                       ORGANIZATION    IS  INDEXED
-                                       ACCESS  MODE    IS  SEQUENTIAL
-                                       RECORD  KEY     IS  TOKEIX-KEY
-                                       FILE    STATUS  IS  STS-TOKEIX.
-      *
       *    エラーファイル
            SELECT  RECEERR-FILE        ASSIGN  RECEERR
                                        FILE    STATUS  IS  STS-RECEERR.
@@ -77,23 +71,6 @@
       *----(02.01.01)--UPD-END-----
            03  TOKEI-SRYSURYO          PIC 9(05)V9(03).
       *
-       FD  TOKEIX-FILE.
-       01  TOKEIX-REC. 
-           03  TOKEIX-KEY.
-      *----(02.01.01)--ADD-START---
-               05  TOKEIX-INGAIKBN     PIC 9(01).
-      *----(02.01.01)--ADD-END-----
-               05  TOKEIX-YKZKBN       PIC 9(01).
-               05  TOKEIX-KANANAME     PIC X(200).
-               05  TOKEIX-SRYCD        PIC X(09).
-               05  TOKEIX-SRYKA        PIC X(02).
-      *----(02.01.01)--UPD-START---
-           03  TOKEIX-NAME             PIC X(40).
-           03  TOKEIX-TANI             PIC X(10).
-           03  TOKEIX-TEN              PIC 9(07)V9(02).
-      *----(02.01.01)--UPD-END-----
-           03  TOKEIX-SRYSURYO         PIC 9(05)V9(03).
-      *
       *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC                 PIC X(200).
@@ -113,7 +90,6 @@
       *    スパ領域
        01  STS-AREA.
            03  STS-TOKEI               PIC X(02).
-           03  STS-TOKEIX              PIC X(02).
            03  STS-RECEERR             PIC X(02).
       *
       *    フラグ領域
@@ -459,8 +435,8 @@
            PERFORM 210-MAIN-SRYKA-SEC
       *
       *    データをクリアする
-           OPEN    OUTPUT              TOKEIX-FILE
-           CLOSE                       TOKEIX-FILE
+           OPEN    OUTPUT              TOKEI-FILE
+           CLOSE                       TOKEI-FILE
       *
            OPEN    I-O                 TOKEI-FILE
       *----(02.01.04)--UPD-STRAT---
@@ -481,8 +457,8 @@
            CLOSE                       TOKEI-FILE
       *
       *    データをクリアする
-           OPEN    OUTPUT              TOKEIX-FILE
-           CLOSE                       TOKEIX-FILE
+           OPEN    OUTPUT              TOKEI-FILE
+           CLOSE                       TOKEI-FILE
       *
       *    ファイル削除
            MOVE    ZERO        TO  IF-RESULT
