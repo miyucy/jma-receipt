@@ -31,8 +31,8 @@
             02  HCN03V03A-KONSEIKYU PIC X(18).
             02  HCN03V03A-KONZEI    PIC X(18).
             02  HCN03V03A-KONNYUKIN PIC X(18).
-            02  HCN03V03A-IRYOADRS  PIC X(100).
-            02  HCN03V03A-IRYOMEI   PIC X(100).
+            02  HCN03V03A-IRYOADRS  PIC X(60).
+            02  HCN03V03A-IRYOMEI   PIC X(40).
             02  HCN03V03A-IRYOTEL   PIC X(15).
             02  HCN03V03A-LBL-G-MISYU   PIC X(20).
             02  HCN03V03A-LBL-G-MISYU-EN    PIC X(2).
@@ -44,5 +44,5 @@
             02  HCN03V03A-RSIMIDASI PIC X(16).
             02  HCN03V03A-RSIBUN    PIC X(18).
             02  HCN03V03A-RSIEN PIC X(2).
-            02  HCN03V03A-SKJRYO    PIC X(24).
+            02  HCN03V03A-SJKRYO    PIC X(24).
             02  HCN03V03A-LIFERYO   PIC X(24).
