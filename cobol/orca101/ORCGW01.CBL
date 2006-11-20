@@ -217,11 +217,11 @@
       *    管理コード一覧
        01  TBL-KANRICD-AREA.
            03  FILLER              PIC X(35)   VALUE
-               "1001 医療機関情報ー基本".
+               "1001 医療機関情報−基本".
            03  FILLER              PIC X(35)   VALUE
-               "1002 医療機関情報ー所在地、連絡先".
+               "1002 医療機関情報−所在地、連絡先".
            03  FILLER              PIC X(35)   VALUE
-               "1003 医療機関情報ー広告".
+               "1003 医療機関情報−広告".
            03  FILLER              PIC X(35)   VALUE
                "1005 診療科目情報".
            03  FILLER              PIC X(35)   VALUE
