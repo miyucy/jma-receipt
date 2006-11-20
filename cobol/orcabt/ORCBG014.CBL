@@ -33,6 +33,7 @@
       *  00.00.02    NACL-森脇     05/10/26  特別療養費追加
       *                                      MONFUNCに変更
       *  03.03.01    NACL-森脇     06/10/20  老人３割対応
+      *  03.04.01    NACL-森脇     06/11/20  請求チェック
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -139,6 +140,9 @@
            03  FLG-HKNNUM              PIC 9(01).
            03  FLG-HKNJAINF            PIC 9(01).
            03  FLG-SYSKANRI            PIC 9(01).
+      *----(03.04.01)--ADD-START---
+           03  FLG-OK                  PIC 9(01).
+      *----(03.04.01)--ADD-END-----
       *
       *    添字領域
        01  IDX-AREA.
@@ -2514,25 +2518,37 @@
        900-SEIKYU-SELECT-EXT.
            EXIT.
       *
-     *****************************************************************
+      *----(03.04.01)--UPD-START---
+      *****************************************************************
       *    請求マスター読込
       *****************************************************************
        900-SEIKYU-READ-SEC         SECTION.
       *
-      *----(00.00.02)--UPD-START---
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           MOVE    WRK-PATH-TABLE      TO  MCP-TABLE
-           MOVE    WRK-PATH-PATHNAME   TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
-           IF      MCP-RC          =   ZERO
-               MOVE    ZERO            TO  FLG-RECE10
-               MOVE    MCPDATA-REC     TO  RECE10-REC
-           ELSE
-               MOVE    1                   TO  FLG-RECE10
-               GO  TO  900-SEIKYU-READ-EXT
-           END-IF
+           MOVE    ZERO            TO  FLG-OK
+           PERFORM UNTIL   FLG-OK  =   1
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    WRK-PATH-TABLE      TO  MCP-TABLE
+               MOVE    WRK-PATH-PATHNAME   TO  MCP-PATHNAME
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC          =   ZERO
+                   MOVE    ZERO            TO  FLG-RECE10
+                   MOVE    MCPDATA-REC     TO  RECE10-REC
+                   PERFORM 900-SEIKYU-CHEK-SEC
+               ELSE
+                   MOVE    1               TO  FLG-RECE10
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+           .
+       900-SEIKYU-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    請求マスターチェック
+      *****************************************************************
+       900-SEIKYU-CHEK-SEC         SECTION.
       *
       *    提出先チェック
            EVALUATE    RECE10-HKNNUM-S
@@ -2541,7 +2557,7 @@
                WHEN    "067"
                    IF        ( WRK-PARA-TEISYUTU   =   "1" )
                        OR    ( WRK-PARA-TEISYUTU   =   "3" )
-                       GO  TO  900-SEIKYU-READ-SEC
+                       GO  TO  900-SEIKYU-CHEK-EXT
                    END-IF
                    MOVE    "2"             TO  WRK-TEISYUTU
       *        特別療養費
@@ -2549,13 +2565,13 @@
                WHEN    "069"
                    IF        ( WRK-PARA-TEISYUTU   =   "1" )
                        OR    ( WRK-PARA-TEISYUTU   =   "2" )
-                       GO  TO  900-SEIKYU-READ-SEC
+                       GO  TO  900-SEIKYU-CHEK-EXT
                    END-IF
                    MOVE    "3"             TO  WRK-TEISYUTU
                WHEN    OTHER
                    IF        ( WRK-PARA-TEISYUTU   =   "2" )
                        OR    ( WRK-PARA-TEISYUTU   =   "3" )
-                       GO  TO  900-SEIKYU-READ-SEC
+                       GO  TO  900-SEIKYU-CHEK-EXT
                    END-IF
                    MOVE    "1"             TO  WRK-TEISYUTU
            END-EVALUATE
@@ -2563,19 +2579,19 @@
       *    保険者チェック
            IF        ( WRK-PARA-HKNJANUM   NOT =   SPACE )
                AND   ( WRK-PARA-HKNJANUM   NOT =   RECE10-HKNJANUM-S )
-               GO  TO  900-SEIKYU-READ-SEC
+               GO  TO  900-SEIKYU-CHEK-EXT
            END-IF
       *
       *    入外区分チェック
            EVALUATE    RECE10-NYUGAIKBN
                WHEN    "1"
                    IF      WRK-PARA-NYUGAIKBN  =   "2"
-                       GO  TO  900-SEIKYU-READ-SEC
+                       GO  TO  900-SEIKYU-CHEK-EXT
                    END-IF
                    MOVE    "2"         TO  WRK-NYUGAIKBN
                WHEN    "2"
                    IF      WRK-PARA-NYUGAIKBN  =   "1"
-                       GO  TO  900-SEIKYU-READ-SEC
+                       GO  TO  900-SEIKYU-CHEK-EXT
                    END-IF
                    MOVE    "1"         TO  WRK-NYUGAIKBN
            END-EVALUATE
@@ -2600,12 +2616,12 @@
       *    在総診チェック
            IF          RECE10-ZAITAKU      =   "1"
                IF      WRK-PARA-ZAIKBN     =   "1"
-                   GO  TO  900-SEIKYU-READ-SEC
+                   GO  TO  900-SEIKYU-CHEK-EXT
                END-IF
                MOVE    "2"             TO  WRK-ZAIKBN
            ELSE
                IF      WRK-PARA-ZAIKBN     =   "2"
-                   GO  TO  900-SEIKYU-READ-SEC
+                   GO  TO  900-SEIKYU-CHEK-EXT
                END-IF
                MOVE    "1"             TO  WRK-ZAIKBN
            END-IF
@@ -2613,7 +2629,7 @@
            IF      WRK-PATH-PATHNAME   =   "key5"
       *        請求区分チェック（請求しない分）
                IF      RECE10-SKYKBN   NOT =   "0"
-                   GO  TO  900-SEIKYU-READ-SEC
+                   GO  TO  900-SEIKYU-CHEK-EXT
                END-IF
                MOVE    "2"             TO  WRK-SKYKBN
                MOVE    "00000000"      TO  WRK-HKNJANUM
@@ -2642,7 +2658,7 @@
                    OR    ( WRK-PARA-SYOKBN     =   "2" )
                    OR    ( WRK-PARA-SYOKBN     =   "3" )
                    IF      WRK-SYOKBN      NOT =   WRK-PARA-SYOKBN
-                       GO  TO  900-SEIKYU-READ-SEC
+                       GO  TO  900-SEIKYU-CHEK-EXT
                    END-IF
                END-IF
            END-IF
@@ -2656,14 +2672,14 @@
            PERFORM 900-PTINF-READ-SEC
            IF        ( FLG-PTINF           =   ZERO )
                AND   ( PTINF-TSTPTNUMKBN   =   "1"  )
-               GO  TO  900-SEIKYU-READ-SEC
+               GO  TO  900-SEIKYU-CHEK-EXT
            END-IF
-      *----(00.00.02)--UPD-END-----
       *
+           MOVE    1               TO  FLG-OK
            .
-       900-SEIKYU-READ-EXT.
+       900-SEIKYU-CHEK-EXT.
            EXIT.
-      *
+      *----(03.04.01)--UPD-END-----
       *****************************************************************
       *    請求管理マスタークローズ
       *****************************************************************
