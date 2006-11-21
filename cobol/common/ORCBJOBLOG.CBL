@@ -23,6 +23,7 @@
       *  コンポーネント名  : 終了情報書き込み
       *  管理者            : 
       *  作成日付    作業者        記述
+      *  06/11/21    NACL−竹田　  新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
@@ -50,6 +51,9 @@
            03  WRK-PARA-OBJECTYYM        PIC  X(06).
            03  WRK-PARA-ERRCD            PIC  X(04).
            03  WRK-PARA-MSG              PIC  X(200).
+       01  FLG-AREA.
+           03  FLG-END                                 PIC 9(01).
+           03  FLG-JOBLOG                              PIC 9(01).
       *    ジョブ管理マスタ
        01  JOBLOG-REC.
            COPY    "CPJOBLOG.INC".
@@ -70,24 +74,23 @@
       *    主処理
       *****************************************************************
        000-PROC-SEC                SECTION.
-           INITIALIZE                  WRK-AREA
+      *
+           INITIALIZE                  CNT-AREA
+                                       FLG-AREA 
+                                       WRK-AREA
       *
            PERFORM 100-INIT-SEC
       *
-           PERFORM 100-DBOPEN-SEC
-
            PERFORM 200-MAIN-SEC
-
-           PERFORM 900-DBDISCONNECT-SEC
-
+      *
+           PERFORM 300-END-SEC
+      *
            STOP    RUN
            .
       *****************************************************************
       *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
-      *
-           INITIALIZE                  CNT-AREA
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA-PROGNAME
@@ -98,7 +101,7 @@
                                                WRK-PARA-MSG
            PERFORM 500-SYSYMD-HENSYU-SEC
            ACCEPT  WRK-TIME      FROM TIME
-
+           PERFORM 100-DBOPEN-SEC
 	   .
        100-INIT-EXT.
            EXIT.
@@ -106,6 +109,7 @@
       *    主処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
+      *
            DISPLAY "ORCBJOBLOG:" WRK-PARA-PROGNAME "##"
            DISPLAY "ORCBJOBLOG:" WRK-PARA-KBNID "##"
            DISPLAY "ORCBJOBLOG:" WRK-PARA-RESULT "##"
@@ -114,8 +118,32 @@
            DISPLAY "ORCBJOBLOG:" WRK-PARA-MSG "##"
            DISPLAY "ORCBJOBLOG:" WRK-SYSYMD-8 "##"
            DISPLAY "ORCBJOBLOG:" WRK-TIME "##"
+      *
+           PERFORM 2001-JOBLOG-SET-SEC
+      *
+           PERFORM 2002-JOBLOG-READ-SEC
+      *
+           IF      FLG-JOBLOG          =  ZERO
+               PERFORM 2001-JOBLOG-SET-SEC
+               MOVE    "key"              TO  MCP-PATHNAME
+               MOVE    "DBUPDATE"         TO  MCP-FUNC
+               PERFORM 900-JOBLOG-ACC-SEC
+           ELSE
+               PERFORM 2001-JOBLOG-SET-SEC
+               MOVE    "key"              TO  MCP-PATHNAME
+               MOVE    "DBINSERT"         TO  MCP-FUNC
+               PERFORM 900-JOBLOG-ACC-SEC
+           END-IF
            .
        200-MAIN-EXT.
+           EXIT.             
+      *****************************************************************
+      *    終了処理
+      *****************************************************************
+       300-END-SEC                 SECTION.
+           PERFORM 900-DBDISCONNECT-SEC
+           .
+       300-END-EXT.
            EXIT.             
       *****************************************************************
       *    システム日付編集処理
@@ -129,6 +157,90 @@
        500-SYSYMD-HENSYU-EXT.
            EXIT.
       * 
+      *****************************************************************
+      *    JOBLOG明細セット
+      *****************************************************************
+       2001-JOBLOG-SET-SEC         SECTION.
+      *
+           MOVE    WRK-SYSYMD-8        TO  LOGYMD
+           MOVE    WRK-TIME            TO  LOGTIME
+           MOVE    WRK-PARA-PROGNAME   TO  PROGNAME
+           MOVE    WRK-PARA-KBNID      TO  KBNID
+           MOVE    WRK-PARA-RESULT     TO  RESULT
+           MOVE    WRK-PARA-OBJECTYYM  TO  OBJECTYYM
+           MOVE    WRK-PARA-ERRCD      TO  ERRCD
+           MOVE    WRK-PARA-MSG        TO  MSG
+      *
+           .
+       2001-JOBLOG-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    JOBLOG読込
+      *****************************************************************
+       2002-JOBLOG-READ-SEC        SECTION.
+      *
+           MOVE    JOBLOG-REC          TO  MCPDATA-REC
+           MOVE    "tbl_joblog"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_joblog"       TO  MCP-TABLE
+               MOVE    "key"              TO  MCP-PATHNAME
+               MOVE    "DBFETCH"          TO  MCP-FUNC
+               PERFORM 900-JOBLOG-ACC-SEC
+           ELSE
+               MOVE    1                   TO  FLG-JOBLOG
+               INITIALIZE                      JOBLOG-REC
+           END-IF
+      *
+           MOVE    "tbl_joblog"        TO  MCP-TABLE
+           MOVE    "key"              TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           .
+       2002-JOBLOG-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    パラメタ読込
+      *****************************************************************
+       900-JOBLOG-ACC-SEC             SECTION.
+      *
+           MOVE    JOBLOG-REC          TO  MCPDATA-REC
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  JOBLOG-REC
+               MOVE    ZERO                TO  FLG-JOBLOG
+           ELSE
+               DISPLAY "JOBLOG ACC NG "
+               MOVE    1                   TO  FLG-JOBLOG
+               INITIALIZE                      JOBLOG-REC
+           END-IF
+      *
+           .
+       900-JOBLOG-ACC-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    クローズ処理
+      *****************************************************************
+       900-CLOSE-SEC                  SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       900-CLOSE-EXT.
+           EXIT.
+      *      
       *****************************************************************
       *    ＤＢ　オープン処理
       *****************************************************************
