@@ -2266,6 +2266,15 @@
                    ELSE
                        MOVE    1               TO  SPA-GMN-CUR
                    END-IF
+      *        再診を初診料へ自動算定の確認
+               WHEN    "0117"
+                   MOVE    SPACE               TO  SPA-KIDCD
+                   IF      SPA-KID1-FLG        =   "OK"
+                       MOVE    SPACE               TO  SPA-KIDCD
+                       PERFORM                 300110-SAISINSET-SEC
+                   ELSE
+                       MOVE    1               TO  SPA-GMN-CUR
+                   END-IF
       *
       *        診療日が未来日の確認
                WHEN    "0111"
@@ -2715,6 +2724,68 @@
       *
            .
        300109-SYOSINSET-EXT.
+           EXIT.
+      *****************************************************************
+      *    初診料を再診へ変更処理
+      *****************************************************************
+       300110-SAISINSET-SEC                  SECTION.
+      *
+           MOVE    ZERO                TO  SPA-SYOSIN
+      *    初診算定日
+           IF     (SPA-SYOYMD      NOT =   SPACE )  AND
+                  (SPA-SYOSIN          =   ZERO  )
+               MOVE    SPA-SYOYMD      TO  WRK-SYMD
+               PERFORM 520-SEIWA-HEN-SEC
+               MOVE    WRK-HENYMDG     TO  SPA-GMN-SYOSINYMD
+      *        同時初診
+               IF     (SPA-DOUYMD      NOT =   SPACE )
+                 AND  (SPA-DOUYMD          >=  SPA-SYOYMD)
+                   MOVE    SPA-DOUYMD      TO  WRK-SYMD
+                   PERFORM 520-SEIWA-HEN-SEC
+                   MOVE    "("             TO  SPA-GMN-SYOSINYMD(12:1)
+                   MOVE    WRK-HENYMDG     TO  SPA-GMN-SYOSINYMD(13:9)
+                   MOVE    ")"             TO  SPA-GMN-SYOSINYMD(22:1)
+               END-IF
+           END-IF
+      *
+      *    画面用スパ編集処理
+      *    INITIALIZE                  SPA-SCR-REC
+      *    MOVE    ZERO                TO  LNK-WKSRYACT-MAX
+           MOVE    SPACE               TO  SPA-KIDCD
+      *****PERFORM                     310-SPA-GMNSET-SEC
+      *
+      *    診察料のみ変換する
+           MOVE    SPA-K01KYOUTU       TO  SPA-WORK
+           INITIALIZE                      ORCSC10SAREA
+           MOVE    "S"                 TO  LNK-SC10S-SYORI
+           CALL    "ORCSC10S"          USING
+                                       ORCSC10SAREA
+                                       SPA-AREA
+                                       SPA-SCR-REC
+                                       SPA-K02
+           MOVE    SPA-WORK            TO  SPA-K01KYOUTU
+      *    診察料のみ変換する
+           MOVE    SPA-K01KYOUTU       TO  SPA-WORK
+           INITIALIZE                      ORCSC10SAREA
+           MOVE    "A"                 TO  LNK-SC10S-SYORI
+           CALL    "ORCSC10S"          USING
+                                       ORCSC10SAREA
+                                       SPA-AREA
+                                       SPA-SCR-REC
+                                       SPA-K02
+           MOVE    SPA-WORK            TO  SPA-K01KYOUTU
+      *
+      *    診療行為、計計算処理、編集
+           MOVE    SPACE           TO  FLG-TOROKU
+           PERFORM 510-TBLHEN-SEC
+           MOVE    SPACE           TO  FLG-TOROKU
+      *
+           MOVE    1                   TO  SPA-GMN-CUR
+      *
+           MOVE    SPACE               TO  SPA-KID1-FLG
+      *
+           .
+       300110-SAISINSET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -5697,6 +5768,26 @@
                PERFORM 4101120-SAISIN-SYOSIN-SEC
                GO      TO                  41011-KOUI-HEN2-EXT
            END-IF
+      *!TEST
+      *    初診料を再診料へ変更する
+           IF    ((SPA-GMN-INPUTCD(SPA-GMN-IDX)(1:4)  =   ".120"  AND
+                   SPA-GMN-INPUTCD(SPA-GMN-IDX)(5:)   =   SPACE )   OR
+                  (SPA-GMN-INPUTCD(SPA-GMN-IDX)(1:3)  =   ".12"  AND
+                   SPA-GMN-INPUTCD(SPA-GMN-IDX)(4:)   =   SPACE )) AND
+                  (SPA-GMN-IDX                        >   1     )  AND
+                  (SPA-GMN-INPUTCD(SPA-GMN-IDX + 1)   =   SPACE )
+              AND (SPA-LSTYMD          NOT =   SPACE   )
+              AND (SPA-SYOSINFLG           =   1       )
+              AND (SPA-SYORIFLG            =   ZERO ) 
+      *            包括保険は対象外
+              AND (SPA-HKNCOMBINUM     NOT =   "9999"  )
+      *
+               MOVE    SPA-MAE-INPUTCD(SPA-GMN-IDX)
+                                       TO  SPA-GMN-INPUTCD(SPA-GMN-IDX)
+               PERFORM 4101122-SYOSIN-SAISIN-SEC
+               GO      TO                  41011-KOUI-HEN2-EXT
+           END-IF
+      *!TEST
       *
            IF     LNK-SC97-NYURYOKU    =   1
       *        セットが変更削除の時セット内容を削除する
@@ -6818,9 +6909,9 @@
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >=   SPA-GMN-IDX
                IF     (SPA-COM-SRYKBN (IDX) =   "12" )  OR
-                      (SPA-COM-INPUTCD(IDX) =   "113003610" OR
-                                                "113003810")
-                   MOVE    1               TO  FLG-OK
+                      (SPA-COM-INPUTCD(IDX) =   "113003510" OR
+                                                "113003710")
+                  MOVE    1               TO  FLG-OK
                END-IF
            END-PERFORM
            IF      FLG-OK             =   ZERO
@@ -6850,6 +6941,30 @@
       *
            .
        4101120-SAISIN-SYOSIN-EXT.
+           EXIT.
+      *****************************************************************
+      *    初診料を再診料へ変更処理
+      *****************************************************************
+       4101122-SYOSIN-SAISIN-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >=   SPA-GMN-IDX
+               IF    ((SPA-COM-SRYKBN (IDX) =   "11" )  AND
+                      (SPA-COM-INPUTCD(IDX)(1:1)   =   "1" )) OR
+                     ( SPA-COM-INPUTCD(IDX) =   "113003610" OR
+                                                "113003810")
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK             =   ZERO
+               GO      TO      4101122-SYOSIN-SAISIN-EXT
+           END-IF
+      *
+           MOVE    "0117"              TO  SPA-KIDCD
+      *
+           .
+       4101122-SYOSIN-SAISIN-EXT.
            EXIT.
       *****************************************************************
       *    初診料算定へ変更の病名をチェックする処理
@@ -9688,6 +9803,7 @@
       *    保存パラメタを作成
            PERFORM 4410-WSINPARA-SEC
       *
+      *
            MOVE    SPA-K01KYOUTU       TO  SPA-WORK
       *
            MOVE    SPACE               TO  LINKAREA
@@ -11759,8 +11875,8 @@
                    IF      SPA-GMN-INPUTCD(WRK-IDX)(1:1)   =   "$"
                         MOVE    ALL "="             TO  K02-SRYKBN(IDX)
                         MOVE    ALL "="             TO  K02-SURYO (IDX)
-      *!
                     END-IF
+      *!
                END-IF
       *
            END-PERFORM
@@ -12298,6 +12414,10 @@
                WHEN    "0110"
                MOVE
                    "初診料算定へ変更します。よろしいですか？"
+                                       TO  WRK-KIDMSG
+               WHEN    "0117"
+               MOVE
+                   "再診料算定へ変更します。よろしいですか？"
                                        TO  WRK-KIDMSG
                WHEN    "0111"
                    MOVE
