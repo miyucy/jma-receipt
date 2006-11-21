@@ -18,6 +18,18 @@ path	key		{
 		DECLARE tbl_joblog_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_joblog
+			WHERE   LOGYMD   = 	:LOGYMD
+			  AND   LOGTIME  = 	:LOGTIME
+			  AND   PROGNAME = 	:PROGNAME
+			  AND   KBNID =    	:KBNID
+		;
+	};
+};
+path	key2		{ 	
+	DBSELECT	{
+		DECLARE tbl_joblog_key2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_joblog
 			WHERE   PROGNAME = 	:PROGNAME
 			  AND   KBNID =    	:KBNID
 			ORDER   BY        LOGYMD, LOGTIME DESC 
