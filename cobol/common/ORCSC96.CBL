@@ -1234,6 +1234,11 @@
                WHEN    "1016"
                    MOVE    "初診料への自動変更はできません。"
                                        TO  SPA-ERRMSG
+               WHEN    "1046"
+                   STRING  "再診料への自動変更はできません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
                WHEN    "1101"
                    MOVE    "初診算定日＜診療日で入力して下さい。"
                                        TO  SPA-ERRMSG
