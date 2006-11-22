@@ -2266,12 +2266,12 @@
                    ELSE
                        MOVE    1               TO  SPA-GMN-CUR
                    END-IF
-      *        ºÆ¿Ç¤ò½é¿ÇÎÁ¤Ø¼«Æ°»»Äê¤Î³ÎÇ§
+      *        ½é¿ÇÎÁ¤òºÆ¿ÇÎÁ¤Ø¼«Æ°»»Äê¤Î³ÎÇ§
                WHEN    "0117"
                    MOVE    SPACE               TO  SPA-KIDCD
                    IF      SPA-KID1-FLG        =   "OK"
                        MOVE    SPACE               TO  SPA-KIDCD
-                       PERFORM                 300110-SAISINSET-SEC
+                       PERFORM 300110-SAISINSET-SEC
                    ELSE
                        MOVE    1               TO  SPA-GMN-CUR
                    END-IF
@@ -5776,9 +5776,6 @@
                    SPA-GMN-INPUTCD(SPA-GMN-IDX)(4:)   =   SPACE )) AND
                   (SPA-GMN-IDX                        >   1     )  AND
                   (SPA-GMN-INPUTCD(SPA-GMN-IDX + 1)   =   SPACE )
-              AND (SPA-LSTYMD          NOT =   SPACE   )
-              AND (SPA-SYOSINFLG           =   1       )
-              AND (SPA-SYORIFLG            =   ZERO ) 
       *            Êñ³çÊÝ¸±¤ÏÂÐ¾Ý³°
               AND (SPA-HKNCOMBINUM     NOT =   "9999"  )
       *
@@ -6909,8 +6906,8 @@
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >=   SPA-GMN-IDX
                IF     (SPA-COM-SRYKBN (IDX) =   "12" )  OR
-                      (SPA-COM-INPUTCD(IDX) =   "113003510" OR
-                                                "113003710")
+                      (SPA-COM-INPUTCD(IDX) =   "113003610" OR
+                                                "113003810")
                   MOVE    1               TO  FLG-OK
                END-IF
            END-PERFORM
@@ -6952,16 +6949,27 @@
                    UNTIL       IDX     >=   SPA-GMN-IDX
                IF    ((SPA-COM-SRYKBN (IDX) =   "11" )  AND
                       (SPA-COM-INPUTCD(IDX)(1:1)   =   "1" )) OR
-                     ( SPA-COM-INPUTCD(IDX) =   "113003610" OR
-                                                "113003810")
+                     ( SPA-COM-INPUTCD(IDX) =   "113003510" OR
+                                                "113003710")
                    MOVE    1               TO  FLG-OK
                END-IF
            END-PERFORM
-           IF      FLG-OK             =   ZERO
-               GO      TO      4101122-SYOSIN-SAISIN-EXT
-           END-IF
       *
-           MOVE    "0117"              TO  SPA-KIDCD
+           IF      FLG-OK             =   ZERO
+               CONTINUE
+           ELSE
+               IF      (SPA-SYORIFLG       =   ZERO )  AND
+                       (SPA-SYOSINFLG      =   1    )  AND
+                       (SPA-LSTYMD     NOT =   SPACE)
+                   MOVE    "0117"              TO  SPA-KIDCD
+               ELSE
+                   IF      SPA-SYOSINFLG       =   ZERO
+                       MOVE    "1017"              TO  SPA-ERRCD
+                   ELSE
+                       MOVE    "1046"              TO  SPA-ERRCD
+                   END-IF
+               END-IF
+           END-IF
       *
            .
        4101122-SYOSIN-SAISIN-EXT.
