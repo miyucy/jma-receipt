@@ -23,11 +23,11 @@
       * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
       *  01  TBL-JOBLOG.
-            02  LOGYMD  PIC X(8).
-            02  LOGTIME PIC X(6).
-            02  PROGNAME    PIC X(20).
-            02  KBNID   PIC X(1).
-            02  OBJECTYYM   PIC X(6).
-            02  RESULT  PIC X(1).
-            02  ERRCD   PIC X(4).
-            02  MSG PIC X(200).
+            02  JOBLOG-LOGYMD          PIC X(8).
+            02  JOBLOG-LOGTIME         PIC X(6).
+            02  JOBLOG-PROGNAME        PIC X(20).
+            02  JOBLOG-KBNID           PIC X(1).
+            02  JOBLOG-OBJECTYYM       PIC X(6).
+            02  JOBLOG-RESULT          PIC X(1).
+            02  JOBLOG-ERRCD           PIC X(4).
+            02  JOBLOG-MSG             PIC X(200).
