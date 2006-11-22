@@ -617,6 +617,9 @@
       *        »ØÆ³ÎÁÈ¯À¸¤Ê¤·
                WHEN    "D"
                    PERFORM 1015-FUKU-SYORI-SEC
+      *        ½é¿ÇÎÁ¤òºÆ¿ÇÎÁ¤ØÊÑ¹¹
+               WHEN    "E"
+                   PERFORM 1010-SINSATU-HEN-SEC
            END-EVALUATE
       *
            MOVE    SPA-K01KYOUTU       TO  SPA-WORK
@@ -2914,7 +2917,6 @@
        200511-SANTEI-CHK-EXT.
            EXIT.
       *
-      *
       *****************************************************************
       *    »ØÆ³ÎÁ¤Î¼«Æ°È¯À¸½èÍý
       *****************************************************************
@@ -2989,6 +2991,7 @@
                WHEN    "J"
       *        ¿Ç»¡ÎÁ»»Äê¸å¡¢¿Ç»¡ÎÁ¤Î¤ß¤ÎÊÑ¹¹½èÍý
                WHEN    "K"
+               WHEN    "E"
                    PERFORM 33012111-SIDOU-CHUTO-SEC
                WHEN    "A"
       *            Ê£¿ô²ÊÆþÎÏ
@@ -3070,6 +3073,18 @@
            END-IF
            INITIALIZE                      WRK-GMN-TBL (WRK-GMN-MAX)
            MOVE    WRK-SRYCD           TO  WRK-COM-INPUTCD(WRK-GMN-MAX)
+      *
+           IF      LNK-SC10S-SYORI     =   "E"
+      *        ½é¿ÇÎÁ¤«¤éºÆ¿Ç¤Ø¤ÎÊÑ¹¹»þ¡¢½é¿ÇÎÁ¤òºï½ü
+               PERFORM VARYING     IDX     FROM    1   BY  1
+                       UNTIL      (IDX     >   200  )
+                   IF     (WRK-COM-INPUTCD (IDX)(1:1)  =   "1" )
+                      AND (WRK-COM-SRYKBN (IDX)    =   "11"    )
+                       MOVE    SPACE           TO  WRK-COM-INPUTCD (IDX)
+                       MOVE    200             TO  IDX
+                   END-IF
+               END-PERFORM
+           END-IF
       *
            INITIALIZE                  ORCSC92AREA
            MOVE    "3"                 TO  LNK-SC92-KBN

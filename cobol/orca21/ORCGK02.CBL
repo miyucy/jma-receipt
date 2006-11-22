@@ -2749,25 +2749,11 @@
            END-IF
       *
       *    脰昍迕旦由彸螂質咥
-      *    INITIALIZE                  SPA-SCR-REC
-      *    MOVE    ZERO                TO  LNK-WKSRYACT-MAX
            MOVE    SPACE               TO  SPA-KIDCD
-      *****PERFORM                     310-SPA-GMNSET-SEC
-      *
       *    褲說恔及心庍晶允月
            MOVE    SPA-K01KYOUTU       TO  SPA-WORK
            INITIALIZE                      ORCSC10SAREA
-           MOVE    "S"                 TO  LNK-SC10S-SYORI
-           CALL    "ORCSC10S"          USING
-                                       ORCSC10SAREA
-                                       SPA-AREA
-                                       SPA-SCR-REC
-                                       SPA-K02
-           MOVE    SPA-WORK            TO  SPA-K01KYOUTU
-      *    褲說恔及心庍晶允月
-           MOVE    SPA-K01KYOUTU       TO  SPA-WORK
-           INITIALIZE                      ORCSC10SAREA
-           MOVE    "A"                 TO  LNK-SC10S-SYORI
+           MOVE    "E"                 TO  LNK-SC10S-SYORI
            CALL    "ORCSC10S"          USING
                                        ORCSC10SAREA
                                        SPA-AREA
@@ -6960,7 +6946,9 @@
            ELSE
                IF      (SPA-SYORIFLG       =   ZERO )  AND
                        (SPA-SYOSINFLG      =   1    )  AND
-                       (SPA-LSTYMD     NOT =   SPACE)
+                       (SPA-LSTYMD     NOT =   SPACE)  AND
+      *                ��ㄠㄧ‘ㄣ井日
+                       (SPA-SRYYMD         >=  "20060401" )
                    MOVE    "0117"              TO  SPA-KIDCD
                ELSE
                    IF      SPA-SYOSINFLG       =   ZERO
