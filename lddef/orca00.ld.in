@@ -14,6 +14,7 @@ bind	"M97"		"OpenCOBOL"	"ORCGM97";
 bind	"MERR"		"OpenCOBOL"	"ORCGMERR";
 bind	"MID1"		"OpenCOBOL"	"ORCGMID1";
 bind	"MVER"		"OpenCOBOL"	"ORCGMVER";
+bind	"M98"		"OpenCOBOL"	"ORCGM98";
 
 multiplex_group	orca00;
 
@@ -31,6 +32,7 @@ data	{
                 MERR;
                 MID1;
 		MVER;
+		M98;
 	};
 };
 
@@ -41,6 +43,7 @@ db	{
 	tbl_ldmap;
 	tbl_lock;
         tbl_pgkanri;
+	tbl_joblog;
 };
 
 /* #include "orcadb.inc" */

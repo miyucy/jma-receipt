@@ -36,6 +36,15 @@ path	key2		{
 		;
 	};
 };
+path	key3		{ 	
+	DBSELECT	{
+		DECLARE tbl_joblog_key3_csr CURSOR FOR
+		SELECT *
+		FROM tbl_joblog
+			ORDER   BY        LOGYMD DESC, LOGTIME DESC 
+		;
+	};
+};
 path	del1	{
 	DBDELETE	{
 		DELETE
