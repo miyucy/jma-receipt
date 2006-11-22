@@ -162,14 +162,14 @@
       *****************************************************************
        2001-JOBLOG-SET-SEC         SECTION.
       *
-           MOVE    WRK-SYSYMD-8        TO  LOGYMD
-           MOVE    WRK-TIME            TO  LOGTIME
-           MOVE    WRK-PARA-PROGNAME   TO  PROGNAME
-           MOVE    WRK-PARA-KBNID      TO  KBNID
-           MOVE    WRK-PARA-RESULT     TO  RESULT
-           MOVE    WRK-PARA-OBJECTYYM  TO  OBJECTYYM
-           MOVE    WRK-PARA-ERRCD      TO  ERRCD
-           MOVE    WRK-PARA-MSG        TO  MSG
+           MOVE    WRK-SYSYMD-8        TO  JOBLOG-LOGYMD
+           MOVE    WRK-TIME            TO  JOBLOG-LOGTIME
+           MOVE    WRK-PARA-PROGNAME   TO  JOBLOG-PROGNAME
+           MOVE    WRK-PARA-KBNID      TO  JOBLOG-KBNID
+           MOVE    WRK-PARA-RESULT     TO  JOBLOG-RESULT
+           MOVE    WRK-PARA-OBJECTYYM  TO  JOBLOG-OBJECTYYM
+           MOVE    WRK-PARA-ERRCD      TO  JOBLOG-ERRCD
+           MOVE    WRK-PARA-MSG        TO  JOBLOG-MSG
       *
            .
        2001-JOBLOG-SET-EXT.
