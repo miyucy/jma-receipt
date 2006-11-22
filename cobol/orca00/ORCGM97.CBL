@@ -160,6 +160,7 @@
            COPY    "MERR.INC".
            COPY    "MID1.INC".
            COPY    "MVER.INC".
+           COPY    "M98.INC".
       *
       *
        PROCEDURE                   DIVISION    USING
