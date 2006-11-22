@@ -26,6 +26,7 @@
       *                                     主保険単独の患者負担額追加
       *                                     公費を含む場合の患者負担額追加
       *  03.03.01    NACL-門脇    06/11/02  減額・免除・支払猶予対応
+      *  03.04.01    NACL-門脇    06/11/20  高額４回目以降対応
       ************************************************************
        01  ORCSKOREIFTNCHKAREA.
       *
@@ -54,6 +55,8 @@
            03  LNK-KOREIFTNCHK-GENGAKU-RITU PIC 9(03).
       *    減額（金額）
            03  LNK-KOREIFTNCHK-GENGAKU-KIN  PIC 9(07).
+      *    高額４回目以降
+           03  LNK-KOREIFTNCHK-KOHYONKAIME  PIC X(01).
       *
       *返却値
            03  LNK-KOREIFTNCHK-OUT-AREA.

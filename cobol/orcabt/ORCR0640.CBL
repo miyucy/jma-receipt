@@ -228,6 +228,7 @@
       *  03.03.09    NACL-ÌçÏÆ    06/11/02  ¸º³Û¡¦ÌÈ½ü¡¦»ÙÊ§Í±Í½ÂÐ±þ
       *  03.03.10    NACL-ÌçÏÆ    06/11/10  ±ý¿Ç¤Î¥³¥á¥ó¥È¼«Æ°µ­ºÜ¾ò·ï½¤Àµ
       *  03.03.11    NACL-ÌçÏÆ    06/11/15  Æþ±¡»þÀ¸³èÎÅÍÜÈñ¿©»öÉéÃ´ÆâÌõ
+      *  03.04.01    NACL-ÌçÏÆ    06/11/20  ¹â³Û£´²óÌÜ°Ê¹ßÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -382,6 +383,7 @@
            03  FLG-PTKOHINF                            PIC 9(01).
            03  FLG-TOKUSYU-SKJ                         PIC 9(01).
            03  FLG-SKJ200610FTN                        PIC 9(01).
+           03  FLG-KOHYONKAIME                         PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -8147,6 +8149,8 @@
       *
            MOVE    ZERO                 TO      WRK-CHIHOU-KIN
       *
+           MOVE    ZERO                 TO      FLG-KOHYONKAIME
+      *
       *    ¹âÎð¼Ô¤Î°ìÉôÉéÃ´¶â³Ûµ­ºÜ¤Ë´Ø¤¹¤ë¥Á¥§¥Ã¥¯
       *
            IF    RECE62-KOUREI  NOT =    SPACE
@@ -8334,6 +8338,11 @@
                 MOVE    WK-GENGAKU-RITU
                                        TO  LNK-KOREIFTNCHK-GENGAKU-RITU
                 MOVE    WK-GENGAKU-KIN TO  LNK-KOREIFTNCHK-GENGAKU-KIN
+                IF      FLG-KOHYONKAIME  =  1
+                   MOVE    "1"         TO  LNK-KOREIFTNCHK-KOHYONKAIME
+                ELSE
+                   MOVE    SPACE       TO  LNK-KOREIFTNCHK-KOHYONKAIME
+                END-IF
       *
                 CALL    "ORCSKOREIFTNCHK"   USING
                                             ORCSKOREIFTNCHKAREA
@@ -8625,6 +8634,7 @@
                    IF   (  RECE62-KYURATE         =  20 OR 30 )
                    AND  (  FLG-ZENKOH-ARI         =  ZERO     )
                    AND  (  RECE62-RJNGENMENKBN    =  SPACE    )
+                   AND  (  FLG-KOHYONKAIME        =  ZERO     )
                      IF    RECE62-SRYYM   >=  "200610"
                       COMPUTE   WRK-CHIHOU-KIN   =
                                 WRK-CHIHOU-KIN   +
@@ -9764,6 +9774,7 @@
                    ELSE
                       IF  (RECE62-KYURATE        =    20 OR 30)
                       AND (RECE62-RJNGENMENKBN   =    SPACE   )
+                      AND (FLG-KOHYONKAIME       =    ZERO    )
                        IF    RECE62-SRYYM  >=  "200610"
                          COMPUTE   WRK-CHIHOU-KIN       =
                                    RECE62-TOTALTEN(1)   *   10
@@ -9910,6 +9921,41 @@
                      AND (RECE62-SRYYM         <=   PTKOH-TEKEDYMD(1:6))
                      AND (PTKOH-SAKJOKBN        =   SPACE              )
                          MOVE    "1"         TO  RECE62-RJNGENMENKBN
+                         MOVE     1          TO  FLG-PTKOHINF
+                     ELSE
+                         MOVE    "PTKOHINF-KEY4"  TO  ORC-DBPATH
+                         PERFORM  900-PTKOHINF-READ-SEC
+                     END-IF
+                  END-PERFORM
+              END-IF
+      *
+              MOVE   "PTKOHINF-KEY4"      TO  WK-PATH
+              PERFORM   CSR-CLOSE-SEC
+      *
+           END-IF
+      *
+      *    ¹â³Û£´²óÌÜ°Ê¹ßÂÐ¾Ý¼Ô
+           IF   (RECE62-KYURATE       =  20 OR 30)
+           AND  (RECE62-RJNGENMENKBN  =  SPACE   )
+      *
+              INITIALIZE                      PTKOHINF-REC
+              MOVE    RECE62-HOSPID       TO  PTKOH-HOSPID
+              MOVE    RECE62-PTID         TO  PTKOH-PTID
+              MOVE    "965"               TO  PTKOH-KOHNUM
+              MOVE    PTKOHINF-REC        TO  MCPDATA-REC
+              MOVE    "DBSELECT"          TO  MCP-FUNC
+              MOVE    "PTKOHINF-KEY4"     TO  ORC-DBPATH
+              CALL    "ORCMCPSUB"         USING   MCPAREA
+                                                  ORCMCPAREA
+                                                  MCPDATA-REC
+              IF      MCP-RC               =       ZERO
+                  MOVE    "PTKOHINF-KEY4" TO  ORC-DBPATH
+                  PERFORM  900-PTKOHINF-READ-SEC
+                  PERFORM  UNTIL   FLG-PTKOHINF    =   1
+                     IF  (PTKOH-TEKSTYMD(1:6)  <=   RECE62-SRYYM       )
+                     AND (RECE62-SRYYM         <=   PTKOH-TEKEDYMD(1:6))
+                     AND (PTKOH-SAKJOKBN        =   SPACE              )
+                         MOVE     1          TO  FLG-KOHYONKAIME
                          MOVE     1          TO  FLG-PTKOHINF
                      ELSE
                          MOVE    "PTKOHINF-KEY4"  TO  ORC-DBPATH

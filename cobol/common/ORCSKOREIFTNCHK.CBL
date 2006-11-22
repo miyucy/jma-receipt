@@ -31,6 +31,7 @@
       *                                     ÉéÃ´¶âÊÔ½¸ÂÐ±þ
       *  03.03.02    NACL-ÌçÏÆ    06/10/10  Ï·ÎðÊ¡»ãÇ¯¶â¤Ë¤Ä¤¤¤Æ¤ÎÂÐ±þ
       *  03.03.03    NACL-ÌçÏÆ    06/11/02  ¸º³Û¡¦ÌÈ½ü¡¦»ÙÊ§Í±Í½ÂÐ±þ
+      *  03.04.01    NACL-ÌçÏÆ    06/11/20  ¹â³Û£´²óÌÜ°Ê¹ßÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -395,6 +396,8 @@
                           IF   (  WRK-KYURATE(IDX1)  =  20 OR 30   )
                           AND  (  FLG-ZENKOH-ARI         =  ZERO   )
                           AND  (  LNK-KOREIFTNCHK-KEIKASOCHI
+                                                         =  SPACE  )
+                          AND  (  LNK-KOREIFTNCHK-KOHYONKAIME
                                                          =  SPACE  )
                            IF  LNK-KOREIFTNCHK-SRYYM   >=  "200610"
                              COMPUTE   LNK-KOREIFTNCHK-CHIHOUGAKU   =
