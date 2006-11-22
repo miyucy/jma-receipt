@@ -81,10 +81,6 @@
       *
       *                     
                05  SPA-WRK-TBL-KEY                 PIC X(08).            
-      *
-      *   
-           COPY    "ENUM-VALUE".
-      *
       *   
            COPY    "CMJOBNAME.INC".
       *
