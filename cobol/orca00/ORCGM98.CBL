@@ -54,7 +54,6 @@
        01  SPA-XA01.
            03  SPA-M98-AREA.
                05  SPA-GMN-PAGE        PIC 9(02).
-               05  SPA-GMN-MAX         PIC 9(03).
                05  SPA-GMN-CUR         PIC 9(02).
       *
                05  SPA-GMN-AREA.
