@@ -1043,6 +1043,12 @@
       *            消炎鎮痛処置の時、エラーメッセージを換える
                    IF      WRK-CODE        =   "005"
                        MOVE    "1022"          TO  LNK-SC91-ERRCD
+      *                入院の時、日を表示する
+                       IF      (SPA-NYUGAIKBN      =   "1"   )  AND
+                               (WRK-CHK-NAME   NOT =   SPACE )  AND
+                               (WRK-CHK-SRYDD  NOT =   SPA-SRYYMD(7:2))
+                           MOVE    SPA-SRYYMD(7:2)     TO  WRK-CHK-SRYDD
+                       END-IF
                    END-IF
       *            上限回数エラー処理＝９の時、回数エラーは警告とする
                    IF       WRK-JGNCNTERR      =   9
