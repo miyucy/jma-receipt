@@ -1600,6 +1600,7 @@
                MOVE    CHK-CD (IDX-C)      TO  TNS-SRYCD
                PERFORM 911-TENSU-READ22-SEC
       *
+               MOVE    SPACE               TO  LNK-SC92-ERRMSG
                INITIALIZE                      STS-AREA-DAY
                INITIALIZE                      LNK-DAY2-AREA
                MOVE    "21"                TO  LNK-DAY2-IRAI
@@ -1710,6 +1711,7 @@
                        MOVE    CHK-CD (IDX-C)      TO  TNS-SRYCD
                        PERFORM 911-TENSU-READ22-SEC
       *
+                       MOVE    SPACE               TO  LNK-SC92-ERRMSG
                        STRING  "º£²ó¡¡"            DELIMITED  BY  SIZE
                                TNS-NAME            DELIMITED  BY  SPACE
                               INTO                 LNK-SC92-ERRMSG
