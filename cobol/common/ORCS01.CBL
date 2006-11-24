@@ -208,6 +208,7 @@
       *  03.03.07    NACL-ÌçÏÆ    06/11/09  ¹âÎð¼Ô¤ÇÄã½êÆÀ¤«¤ÄÁ´¹ñ¸øÈñ¤ò
       *                                     ¤â¤Ä¾ì¹ç¤Î¾å¸Â³ÛÊÔ½¸½¤Àµ
       *  03.04.01    NACL-ÌçÏÆ    06/11/20  ¹â³Û°ÑÇ¤Ê§¤¤À©ÅÙÂÐ±þ
+      *  03.04.02    NACL-ÌçÏÆ    06/11/24  µÜ¾ë¸©ÃÏÊý¸øÈñ£±£°·î²þÀµÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -12662,7 +12663,11 @@
                              WHEN    "8304102"
                                MOVE    1    TO  FLG-MIYAGI
                              WHEN    "8304125"
+                              IF  LNK-SYU-SRYYMD(1:6) >= "200610"
+                               CONTINUE
+                              ELSE
                                MOVE    2    TO  FLG-MIYAGI
+                              END-IF
                            END-EVALUATE
                            MOVE    1        TO  FLG-PTKOHINF
                         ELSE
