@@ -821,6 +821,9 @@
       *        情報画面
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 470-MVER-SEC
+      *        JOBLOG画面
+               WHEN    "CLICKED"       ALSO    "B11"
+                   PERFORM 480-M98-SEC
       *    各業務移動へ
                WHEN    "CLICKED"       ALSO    ANY
                    PERFORM 400-GYOMU-SEL-SEC
@@ -994,6 +997,28 @@
       *
            .
        470-MVER-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    JOBLOG表示画面へ
+      *****************************************************************
+       480-M98-SEC                     SECTION.
+      *
+      *     MOVE    SPACE                TO  MVER
+           MOVE    "B12"                TO  MCP-WIDGET
+      *
+           MOVE    "M00"                TO  SPA-MOTOPG
+           MOVE    "M98"                TO  SPA-SAKIPG
+      *
+           MOVE    "CHANGE"             TO  MCP-PUTTYPE
+           MOVE    "M98"                TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                    TO  FLG-END 
+      *
+           .
+       480-M98-EXT.
            EXIT.
       *
       *****************************************************************
