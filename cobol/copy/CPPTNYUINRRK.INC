@@ -94,6 +94,10 @@
            03  PTNYUINRRK-NYUINCHUKBN             PIC  X(01).
       *同日再入院区分
            03  PTNYUINRRK-DOUJITSUKBN             PIC  X(01).
+      *入院履歴最大枝番号
+           03  PTNYUINRRK-MAXEDANUM               PIC  9(03).
+      *入院食事区分
+           03  PTNYUINRRK-SKJKBN                  PIC  X(01).
       *端末ＩＤ
            03  PTNYUINRRK-TERMID                  PIC  X(16).
       *オペーレータＩＤ
