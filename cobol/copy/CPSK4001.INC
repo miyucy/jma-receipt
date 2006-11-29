@@ -62,8 +62,20 @@
                05  SYS-4001-KSNRATE1    PIC  9(03).
       *Ï«ºÒ¥ì¥»²ó¿ôµ­ºÜ
                05  SYS-4001-ROUKAISU    PIC  X(01).
+      *¼«ÇåÀÕ¶èÊ¬
+               05  SYS-4001-JIBAIKBN    PIC  X(01).
+      *µ»½ÑÅÀÃ±²Á
+               05  SYS-4001-SYUTENTANKA-G.
+                   07   SYS-4001-SYUTENTANKA-X PIC  X(02).
+                   07   SYS-4001-SYUTENTANKA   REDEFINES
+                        SYS-4001-SYUTENTANKA-X PIC  9(02).
+      *ÌôºÞÅùÅÀÃ±²Á
+               05  SYS-4001-YKZTENTANKA-G.
+                   07   SYS-4001-YKZTENTANKA-X PIC  X(02).
+                   07   SYS-4001-YKZTENTANKA   REDEFINES
+                        SYS-4001-YKZTENTANKA-X PIC  9(02).
       *Í½È÷
-           03                           PIC  X(407).
+           03                           PIC  X(402).
       *Ã¼Ëö£É£Ä
            03  SYS-4001-TERMID          PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä

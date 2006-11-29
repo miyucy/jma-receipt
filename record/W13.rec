@@ -66,6 +66,13 @@ W13	{
 			count	int;
 			item	varchar(20)[2];
 		};
+		JIBAIKBN_COMBO	{
+			JIBAIKBN	{
+				value	varchar(10);
+			};
+			count	int;
+			item	varchar(10)[2];
+		};
 		TAXKBN_COMBO	{
 			TAXKBN	{
 				value	varchar(10);
@@ -117,6 +124,12 @@ W13	{
 			};
 			count	int;
 			item	varchar(10)[02];
+		};
+		SYUTENTANKA	{
+			value	number(2);
+		};
+		YKZTENTANKA	{
+			value	number(2);
 		};
 	};
 };

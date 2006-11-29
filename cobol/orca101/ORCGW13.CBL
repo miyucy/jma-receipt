@@ -40,6 +40,8 @@
       *                                     を追加
       *  02.06.01    NACL-藤原    05/06/22  自賠責加算率（３桁）対応
       *  02.07.00    NACL-太田    05.12.05  労災レセ回数記載追加
+      *  03.04.00    NACL-太田    06.11.29  自賠責区分、技術点単価
+      *                                     薬剤等点単価追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -95,6 +97,11 @@
                            11  SPA-GMN-F1     PIC X(01).
                            11  SPA-GMN-TAXKBNMEI
                                               PIC X(08).
+                       09  SPA-GMN-JIBAIKBN-G.
+                           11  SPA-GMN-JIBAIKBN PIC X(01).
+                           11  SPA-GMN-F1     PIC X(01).
+                           11  SPA-GMN-JIBAIKBNMEI
+                                              PIC X(08).
                        09  SPA-GMN-SKJKBN-G.
                            11  SPA-GMN-SKJKBN PIC X(01).
                            11  SPA-GMN-F1     PIC X(01).
@@ -120,6 +127,8 @@
                                               PIC X(08).
                        09  SPA-GMN-LBLKIZAILST
                                               PIC X(60).
+                       09  SPA-GMN-SYUTENTANKA PIC 9(02).
+                       09  SPA-GMN-YKZTENTANKA PIC 9(02).
                    07  SPA-GMN-KOUMOKU1.
                        09  SPA-GMN-SONSHOUKBN.                 
                            11  SPA-GMN-SONSHOUKBN1
@@ -158,6 +167,12 @@
                        09  SPA-GMN-TAXKBNMEIL
                                               PIC X(08).
                    07  SPA-GMN-TAXKBN-MAX     PIC 9(02).
+                   07  SPA-GMN-JIBAIKBNLST      OCCURS  2.
+                       09  SPA-GMN-JIBAIKBNL    PIC X(01).
+                       09  SPA-GMN-F1L          PIC X(01).
+                       09  SPA-GMN-JIBAIKBNMEIL
+                                                PIC X(08).
+                   07  SPA-GMN-JIBAIKBN-MAX     PIC 9(02).
       *                                        
                    07  SPA-GMN-SKJKBNLST      OCCURS  2.
                        09  SPA-GMN-SKJKBNL    PIC X(01).
@@ -314,13 +329,15 @@
            03  SRT-KIZAI-TSRYCDNAME    PIC X(60).
       *
        01  SRT-SONSHO-AREA.
-           05  SRT-SONSHO-GMN-TSONSHOUKBN  PIC X(04).
-           05  SRT-SONSHO-NAI-TSONSHOUKBN  PIC X(03).
-           05  SRT-SONSHO-TSONSHOUNAME     PIC X(60).
+           03  SRT-SONSHO-GMN-TSONSHOUKBN  PIC X(04).
+           03  SRT-SONSHO-NAI-TSONSHOUKBN  PIC X(03).
+           03  SRT-SONSHO-TSONSHOUNAME     PIC X(60).
       *
-       01  WRK-CONS-LINE-MAX       PIC 9(02)   VALUE   40.
-       01  WRK-CONS-KIZAILST-MAX   PIC 9(02)   VALUE   50.
-       01  WRK-CONS-SYS-KIZAI-MAX  PIC 9(02)   VALUE   10.
+       01  CONST-AREA.
+           03  CONST-LINE-MAX          PIC 9(02)   VALUE   40.
+           03  CONST-KIZAILST-MAX      PIC 9(02)   VALUE   50.
+           03  CONST-SYS-KIZAI-MAX     PIC 9(02)   VALUE   10.
+           03  CONST-H180401           PIC X(08)   VALUE   "20060401".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -636,6 +653,10 @@
                MOVE    SPA-GMN-ROUKAISULST(1)  TO  SPA-GMN-ROUKAISU-G
            END-IF
       *
+           IF    ( SPA-GMN-JIBAIKBN-G        =   SPACE )
+               MOVE    SPA-GMN-JIBAIKBNLST(1) TO  SPA-GMN-JIBAIKBN-G
+           END-IF
+      *
            IF    ( SPA-GMN-TAXKBN-G        =   SPACE )
                MOVE    SPA-GMN-TAXKBNLST(1) TO  SPA-GMN-TAXKBN-G
            END-IF
@@ -657,6 +678,14 @@
            IF    ( SPA-GMN-RSIPRT-G   =   SPACE )
                MOVE    SPA-GMN-RSIPRTLST(1)
                                             TO  SPA-GMN-RSIPRT-G
+           END-IF
+      *
+           IF    ( SPA-GMN-SYUTENTANKA =    ZERO )
+               MOVE    10                   TO  SPA-GMN-SYUTENTANKA
+           END-IF
+      *
+           IF    ( SPA-GMN-YKZTENTANKA =    ZERO )
+               MOVE    10                   TO  SPA-GMN-YKZTENTANKA
            END-IF
       *
            MOVE    ZERO                TO  SPA-NAI-KIZAITBL-FLG
@@ -699,6 +728,10 @@
            END-IF
            MOVE    SYS-4001-KSNRATE1   TO  SPA-GMN-KSNRATE
       *         
+           MOVE    SYS-4001-JIBAIKBN     TO  WRK-CMB-CD
+           PERFORM 4200-JIBAIKBNLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-JIBAIKBN-G
+      *         
            MOVE    SYS-4001-TAXKBN     TO  WRK-CMB-CD
            PERFORM 4200-TAXKBNLST-CHK-SEC
            MOVE    WRK-CMB-ITM         TO  SPA-GMN-TAXKBN-G
@@ -718,6 +751,20 @@
            MOVE    SYS-4001-RSIPRTKBN  TO  WRK-CMB-CD
            PERFORM 4200-RSIPRTLST-CHK-SEC
            MOVE    WRK-CMB-ITM         TO  SPA-GMN-RSIPRT-G
+      *
+           IF      SYS-4001-SYUTENTANKA-X  IS  NUMERIC
+               MOVE    SYS-4001-SYUTENTANKA
+                                       TO  SPA-GMN-SYUTENTANKA
+           ELSE
+               MOVE    10              TO  SPA-GMN-SYUTENTANKA
+           END-IF
+      *
+           IF      SYS-4001-YKZTENTANKA-X  IS  NUMERIC
+               MOVE    SYS-4001-YKZTENTANKA
+                                       TO  SPA-GMN-YKZTENTANKA
+           ELSE
+               MOVE    10              TO  SPA-GMN-YKZTENTANKA
+           END-IF
       *
            .
        3001-RSIKHN-HEN-EXT.
@@ -750,7 +797,7 @@
       *
            MOVE    ZERO                TO  IDX
            PERFORM      UNTIL ( FLG-SYSKANRI   =   1 )
-                         OR   ( IDX           >=   WRK-CONS-LINE-MAX )
+                         OR   ( IDX           >=   CONST-LINE-MAX )
       *
                MOVE    MCPDATA-REC     TO  SYS-4002-REC
                ADD     1               TO  IDX
@@ -810,7 +857,7 @@
            END-IF
       *
            PERFORM VARYING IDX     FROM    1   BY  1
-                   UNTIL ( IDX         >   WRK-CONS-SYS-KIZAI-MAX )
+                   UNTIL ( IDX         >   CONST-SYS-KIZAI-MAX )
                     OR   ( SYS-4003-SRYCD (IDX)
                                        =   SPACE )
       *
@@ -826,7 +873,7 @@
                        +   1
       *
                    IF    ( SPA-NAI-KIZAITBL-MAX
-                                       <=  WRK-CONS-SYS-KIZAI-MAX )
+                                       <=  CONST-SYS-KIZAI-MAX )
                        MOVE    TNS-SRYCD
                            TO  SPA-NAI-TSRYCD (SPA-NAI-KIZAITBL-MAX)
                        MOVE    TNS-NAME
@@ -878,7 +925,7 @@
       *
            COMPUTE WRK-SKIPKNS
                = ( SPA-NAI-KIZAITBL-PAGE   -   1 )
-               *   WRK-CONS-KIZAILST-MAX
+               *   CONST-KIZAILST-MAX
       *
            INITIALIZE                  SPA-GMN-KIZAITBL
       *
@@ -911,7 +958,7 @@
       *
            MOVE    ZERO                TO  IDX3
            PERFORM UNTIL  ( FLG-TENSU  =   1 )
-                    OR    ( IDX3       >=  WRK-CONS-KIZAILST-MAX )
+                    OR    ( IDX3       >=  CONST-KIZAILST-MAX )
       *
                COMPUTE IDX3    =   IDX3    +   1
       *
@@ -985,6 +1032,12 @@
            MOVE    "2"                 TO  SPA-GMN-ROUKAISUL      (2)
            MOVE    "記載あり"          TO  SPA-GMN-ROUKAISUMEIL   (2)
            MOVE    2                   TO  SPA-GMN-ROUKAISU-MAX 
+      *     
+           MOVE    "1"                 TO  SPA-GMN-JIBAIKBNL      (1)
+           MOVE    "労災準拠"          TO  SPA-GMN-JIBAIKBNMEIL   (1)
+           MOVE    "2"                 TO  SPA-GMN-JIBAIKBNL      (2)
+           MOVE    "健保準拠"          TO  SPA-GMN-JIBAIKBNMEIL   (2)
+           MOVE    2                   TO  SPA-GMN-JIBAIKBN-MAX 
       *     
            MOVE    "1"                 TO  SPA-GMN-TAXKBNL      (1)
            MOVE    "無し"              TO  SPA-GMN-TAXKBNMEIL   (1)
@@ -1109,10 +1162,13 @@
            MOVE    W13-RSIIRYOCDN      TO  SPA-GMN-RSIIRYOCDN
            MOVE    W13-TENKBN          TO  SPA-GMN-TENKBN-G
            MOVE    W13-ROUKAISU        TO  SPA-GMN-ROUKAISU-G
+           MOVE    W13-JIBAIKBN        TO  SPA-GMN-JIBAIKBN-G
            MOVE    W13-TAXKBN          TO  SPA-GMN-TAXKBN-G
            MOVE    W13-SKJKBN          TO  SPA-GMN-SKJKBN-G
            MOVE    W13-KIZAITAXKBN     TO  SPA-GMN-KIZAITAXKBN-G
            MOVE    W13-KOTEIKBN        TO  SPA-GMN-KOTEIKBN-G
+           MOVE    W13-SYUTENTANKA     TO  SPA-GMN-SYUTENTANKA
+           MOVE    W13-YKZTENTANKA     TO  SPA-GMN-YKZTENTANKA
            MOVE    W13-RSIPRT          TO  SPA-GMN-RSIPRT-G
       *    損傷区分
            MOVE    W13-SONSHOUKBN1     TO  SPA-GMN-SONSHOUKBN1
@@ -1153,6 +1209,11 @@
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
       *
+           PERFORM 4101-JIBAIKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
            PERFORM 4101-TAXKBN-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
@@ -1169,6 +1230,16 @@
            END-IF
       *
            PERFORM 4101-KOTEIKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4101-SYUTENTANKA-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4101-YKZTENTANKA-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
@@ -1315,6 +1386,36 @@
            EXIT.
       *
       *****************************************************************
+      *    自賠責区分チェック
+      *****************************************************************
+       4101-JIBAIKBN-CHK-SEC       SECTION.
+      *
+           IF    ( SPA-GMN-JIBAIKBN      =   SPACE )
+               MOVE    SPA-GMN-JIBAIKBNLST (1)
+                                       TO  SPA-GMN-JIBAIKBN-G
+           ELSE
+               MOVE    SPA-GMN-JIBAIKBN  TO  WRK-CMB-CD
+               PERFORM 4200-JIBAIKBNLST-CHK-SEC
+               IF    ( WRK-CMB-ITM         =   SPACE )
+                   MOVE    SPA-GMN-JIBAIKBNLST (1)
+                                       TO  SPA-GMN-JIBAIKBN-G
+               ELSE
+                   MOVE    WRK-CMB-ITM TO  SPA-GMN-JIBAIKBN-G
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-JIBAIKBN    =   "2" )
+               IF    ( SPA-W01-STYUKYMD    >=  CONST-H180401 )
+                   CONTINUE
+               ELSE
+                   MOVE    "0015"      TO  SPA-ERRCD
+                   MOVE    16          TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+           .
+       4101-JIBAIKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    文書料（消費税）チェック
       *****************************************************************
        4101-TAXKBN-CHK-SEC       SECTION.
@@ -1402,6 +1503,32 @@
        4101-KOTEIKBN-CHK-EXT.
            EXIT.
       *     
+      *****************************************************************
+      *    技術点単価チェック
+      *****************************************************************
+       4101-SYUTENTANKA-CHK-SEC        SECTION.
+      *
+           IF    ( SPA-GMN-SYUTENTANKA     =   ZERO )
+               MOVE    "0013"      TO  SPA-ERRCD
+               MOVE    17          TO  SPA-GMN-CUR
+           END-IF
+      *
+           .
+       4101-SYUTENTANKA-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    薬剤等点単価
+      *****************************************************************
+       4101-YKZTENTANKA-CHK-SEC        SECTION.
+      *
+           IF    ( SPA-GMN-YKZTENTANKA     =   ZERO )
+               MOVE    "0014"      TO  SPA-ERRCD
+               MOVE    18          TO  SPA-GMN-CUR
+           END-IF
+      *
+           .
+       4101-YKZTENTANKA-CHK-EXT.
+           EXIT.
       *****************************************************************
       *    労災請求書印字チェック
       *****************************************************************
@@ -1521,7 +1648,7 @@
            END-PERFORM
       *
            IF    ( IDX                 =   ZERO )
-               IF    ( SPA-GMN-MAX    >=  WRK-CONS-LINE-MAX )
+               IF    ( SPA-GMN-MAX    >=  CONST-LINE-MAX )
                    MOVE    7                   TO  SPA-GMN-CUR
                    MOVE    "0010"              TO  SPA-ERRCD
                    GO  TO  4105-SONSHOUNAME-CHK-EXT
@@ -1673,6 +1800,27 @@
       *
            .
        4200-ROUKAISULST-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    自賠責区分コンボチェック
+      *****************************************************************
+       4200-JIBAIKBNLST-CHK-SEC          SECTION.
+      *
+           INITIALIZE                      WRK-CMB-ITM-G
+      *
+           PERFORM VARYING IDY FROM    1   BY  1
+                   UNTIL ( IDY >       SPA-GMN-JIBAIKBN-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( WRK-CMB-CD      =   SPA-GMN-JIBAIKBNL (IDY) )
+                   MOVE    SPA-GMN-JIBAIKBNLST (IDY)
+                                       TO  WRK-CMB-ITM
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       4200-JIBAIKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
       *    文書料（消費税）コンボチェック
@@ -1862,7 +2010,7 @@
       *****************************************************************
        410151-KIZAICD-SET-SEC              SECTION.
       *
-           IF    ( SPA-NAI-KIZAITBL-MAX   >=   WRK-CONS-SYS-KIZAI-MAX )
+           IF    ( SPA-NAI-KIZAITBL-MAX   >=   CONST-SYS-KIZAI-MAX )
                MOVE    "0011"          TO  SPA-ERRCD
                GO  TO  410151-KIZAICD-SET-EXT
            END-IF
@@ -2070,9 +2218,12 @@
            MOVE    SPA-GMN-RSIIRYOCDN      TO  SYS-4001-RSIIRYOCDN
            MOVE    SPA-GMN-KSNRATE         TO  SYS-4001-KSNRATE1
            MOVE    SPA-GMN-TAXKBN          TO  SYS-4001-TAXKBN
+           MOVE    SPA-GMN-JIBAIKBN        TO  SYS-4001-JIBAIKBN
            MOVE    SPA-GMN-SKJKBN          TO  SYS-4001-SKJKBN
            MOVE    SPA-GMN-KIZAITAXKBN     TO  SYS-4001-TAXKBN-KZI
            MOVE    SPA-GMN-KOTEIKBN        TO  SYS-4001-KOTEIKBN
+           MOVE    SPA-GMN-SYUTENTANKA     TO  SYS-4001-SYUTENTANKA
+           MOVE    SPA-GMN-YKZTENTANKA     TO  SYS-4001-YKZTENTANKA
            MOVE    SPA-GMN-RSIPRT          TO  SYS-4001-RSIPRTKBN
            MOVE    SYS-4001-REC            TO  SYSKANRI-REC
       *     
@@ -2379,9 +2530,12 @@
            MOVE    SPA-GMN-TENKBN-G         TO  W13-TENKBN
            MOVE    SPA-GMN-ROUKAISU-G       TO  W13-ROUKAISU
            MOVE    SPA-GMN-TAXKBN-G         TO  W13-TAXKBN
+           MOVE    SPA-GMN-JIBAIKBN-G       TO  W13-JIBAIKBN
            MOVE    SPA-GMN-SKJKBN-G         TO  W13-SKJKBN
            MOVE    SPA-GMN-KIZAITAXKBN-G    TO  W13-KIZAITAXKBN
            MOVE    SPA-GMN-KOTEIKBN-G       TO  W13-KOTEIKBN
+           MOVE    SPA-GMN-SYUTENTANKA      TO  W13-SYUTENTANKA
+           MOVE    SPA-GMN-YKZTENTANKA      TO  W13-YKZTENTANKA
            MOVE    SPA-GMN-RSIPRT-G         TO  W13-RSIPRT
       *     
            PERFORM VARYING IDY     FROM    1   BY  1
@@ -2407,6 +2561,13 @@
            MOVE    SPA-GMN-ROUKAISU-MAX  TO  W13-ROUKAISU-COUNT 
       *
            MOVE    SPA-GMN-RSIIRYOCDN  TO  W13-RSIIRYOCDN
+      *     
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       SPA-GMN-JIBAIKBN-MAX
+               MOVE    SPA-GMN-JIBAIKBNLST (IDY)
+                                       TO  W13-JIBAIKBNLST (IDY)
+           END-PERFORM
+           MOVE    SPA-GMN-JIBAIKBN-MAX  TO  W13-JIBAIKBN-COUNT 
       *     
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >       SPA-GMN-TAXKBN-MAX
@@ -2472,7 +2633,7 @@
       *
                COMPUTE WRK-NUM2
                  =   ( SPA-NAI-KIZAITBL-PAGE   -   1 )
-                 *   WRK-CONS-KIZAILST-MAX
+                 *   CONST-KIZAILST-MAX
                  +   IDX
       *
                MOVE    WRK-NUM2            TO  WRK-ZZ9
@@ -2572,6 +2733,18 @@
                                                          TO  SPA-ERRMSG
                WHEN    "0012"
                    MOVE    "労災レセ回数記載入力エラー"  TO  SPA-ERRMSG
+               WHEN    "0013"
+                   MOVE    "技術点単価を入力してください" TO  SPA-ERRMSG
+               WHEN    "0014"
+                   MOVE    "薬剤等単価を入力してください" TO  SPA-ERRMSG
+               WHEN    "0015"
+                   MOVE    SPACE               TO  SPA-ERRMSG
+                   STRING  "健保準拠にする場合は有効期間の開始を"
+                                               DELIMITED   BY  SIZE
+                           "平成１８年４月以降にしてください"
+                                               DELIMITED   BY  SIZE
+                   INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "0099"
                    MOVE    "未入力の項目があります"
                                                TO  SPA-ERRMSG
@@ -2667,6 +2840,8 @@
                     MOVE  "TENKBN"         TO   MCP-WIDGET
                 WHEN    4
                     MOVE  "TAXKBN"         TO   MCP-WIDGET
+                WHEN    4
+                    MOVE  "TAXKBN"         TO   MCP-WIDGET
                 WHEN    5
                     MOVE  "SONSHOUKBN1"    TO   MCP-WIDGET
                 WHEN    6
@@ -2685,6 +2860,12 @@
                     MOVE  "RSIPRT"         TO   MCP-WIDGET
                 WHEN    15
                     MOVE  "ROUKAISU"       TO   MCP-WIDGET
+                WHEN    16
+                    MOVE  "JIBAIKBN"       TO   MCP-WIDGET
+                WHEN    17
+                    MOVE  "SYUTENTANKA"    TO   MCP-WIDGET
+                WHEN    18
+                    MOVE  "YKZTENTANKA"    TO   MCP-WIDGET
                 WHEN    99
                     MOVE  "B12"            TO   MCP-WIDGET
             END-EVALUATE
@@ -2705,16 +2886,22 @@
                WHEN    "TENKBN"
                    MOVE    15              TO  SPA-GMN-CUR
                WHEN    "ROUKAISU"
-                   MOVE    8               TO  SPA-GMN-CUR
-               WHEN    "KSNRATE"
+                   MOVE    16              TO  SPA-GMN-CUR
+               WHEN    "JIBAIKBN"
                    MOVE    4               TO  SPA-GMN-CUR
-               WHEN    "TAXKBN"
+               WHEN    "KSNRATE"
                    MOVE    11              TO  SPA-GMN-CUR
-               WHEN    "SKJKBN"
+               WHEN    "TAXKBN"
                    MOVE    12              TO  SPA-GMN-CUR
+               WHEN    "SKJKBN"
+                   MOVE    17              TO  SPA-GMN-CUR
                WHEN    "KIZAITAXKBN"
                    MOVE    13              TO  SPA-GMN-CUR
                WHEN    "KOTEIKBN"
+                   MOVE    8               TO  SPA-GMN-CUR
+               WHEN    "SYUTENTANKA"
+                   MOVE    18              TO  SPA-GMN-CUR
+               WHEN    "YKZTENTANKA"
                    MOVE    14              TO  SPA-GMN-CUR
                WHEN    "RSIPRT"
                    MOVE    5               TO  SPA-GMN-CUR
