@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  00.00.01    NACL-森脇    06/01/20  編綴分対応
+      *  03.04.01    NACL-森脇    06/11/29  パラメタ変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -120,16 +121,19 @@
       *
        COPY    "COMMON-SPA".
        01  PARA-SYAPRTNM               PIC X(16).
-       01  PARA-FILEKBN                PIC X(40).
-       01  PARA-TBL1.
+      *----(03.04.01)--UPD-START---
+       COPY    "R02SCR-SPA".
+      * 01  PARA-FILEKBN                PIC X(40).
+      * 01  PARA-TBL1.
       *----(00.00.01)--UPD-START---
-           03  PARA-TBL-OCC            OCCURS   21.
+      *     03  PARA-TBL-OCC            OCCURS   21.
       *----(00.00.01)--UPD-END-----
-               05  PARA-TBL-G          OCCURS   36.
-                   07  PARA-TPAGE      PIC 9(04).
-                   07  PARA-TKENSU     PIC 9(04).
-                   07  PARA-TSYURUINAME
-                                       PIC X(40).
+      *         05  PARA-TBL-G          OCCURS   36.
+      *             07  PARA-TPAGE      PIC 9(04).
+      *             07  PARA-TKENSU     PIC 9(04).
+      *             07  PARA-TSYURUINAME
+      *                                 PIC X(40).
+      *----(03.04.01)--UPD-END-----
       *
       ******************************************************************
       *
@@ -137,8 +141,11 @@
                                        USING
                                        SPA-AREA
                                        PARA-SYAPRTNM
-                                       PARA-FILEKBN
-                                       PARA-TBL1.
+      *----(03.04.01)--UPD-START---
+                                       SPA-R02.
+      *                                 PARA-FILEKBN
+      *                                 PARA-TBL1.
+      *----(03.04.01)--UPD-END-----
       *
       *****************************************************************
       *    主　　処理
@@ -171,6 +178,7 @@
        100-INIT-EXT.
            EXIT.
       *
+      *----(03.04.01)--UPD-START---
       *****************************************************************
       *    主　　処理
       *****************************************************************
@@ -188,14 +196,14 @@
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >   24
                ADD     1                   TO  CNT-LINE
-               MOVE    PARA-TSYURUINAME(1 IDX)
+               MOVE    SPA-GMN-TSYURUINAME(1 IDX)
                                            TO  HCMC001-NAME(CNT-LINE)
-               MOVE    PARA-TKENSU(1 IDX)  TO  WRK-Z10
+               MOVE    SPA-GMN-TKENSU(1 IDX)   TO  WRK-Z10
                MOVE    WRK-Z10             TO  HCMC001-NAIYO(CNT-LINE 1)
-               MOVE    PARA-TPAGE(1 IDX)   TO  WRK-Z10
+               MOVE    SPA-GMN-TPAGE(1 IDX)    TO  WRK-Z10
                MOVE    WRK-Z10             TO  HCMC001-NAIYO(CNT-LINE 2)
-               ADD     PARA-TPAGE(1 IDX)   TO  CNT-TPAGE
-               ADD     PARA-TKENSU(1 IDX)  TO  CNT-TKENSU
+               ADD     SPA-GMN-TPAGE(1 IDX)    TO  CNT-TPAGE
+               ADD     SPA-GMN-TKENSU(1 IDX)   TO  CNT-TKENSU
            END-PERFORM
       *
            ADD     2                   TO  CNT-LINE
@@ -218,7 +226,7 @@
                    UNTIL   IDY     >   21
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >   36
-                   OR      PARA-TSYURUINAME(IDY IDX) =  SPACE
+                   OR      SPA-GMN-TSYURUINAME(IDY IDX) =  SPACE
                IF      CNT-LINE    >=  35
       *            印刷処理
                    PERFORM 400-PRINT-OUT-SEC
@@ -226,14 +234,14 @@
                    PERFORM 220-PRT-PAGE-SEC
                END-IF
                ADD     1                     TO  CNT-LINE
-               MOVE    PARA-TSYURUINAME(IDY IDX)
+               MOVE    SPA-GMN-TSYURUINAME(IDY IDX)
                                              TO  HCMC001-NAME(CNT-LINE)
-               MOVE    PARA-TKENSU(IDY IDX)  TO  WRK-Z10
+               MOVE    SPA-GMN-TKENSU(IDY IDX)   TO  WRK-Z10
                MOVE    WRK-Z10           TO  HCMC001-NAIYO(CNT-LINE 1)
-               MOVE    PARA-TPAGE(IDY IDX)   TO  WRK-Z10
+               MOVE    SPA-GMN-TPAGE(IDY IDX)    TO  WRK-Z10
                MOVE    WRK-Z10           TO  HCMC001-NAIYO(CNT-LINE 2)
-               ADD     PARA-TPAGE(IDY IDX)   TO  CNT-TPAGE
-               ADD     PARA-TKENSU(IDY IDX)  TO  CNT-TKENSU
+               ADD     SPA-GMN-TPAGE(IDY IDX)    TO  CNT-TPAGE
+               ADD     SPA-GMN-TKENSU(IDY IDX)   TO  CNT-TKENSU
            END-PERFORM
            END-PERFORM
       *
@@ -263,14 +271,14 @@
                PERFORM 220-PRT-PAGE-SEC
            END-IF
            ADD     1                   TO  CNT-LINE
-           MOVE    PARA-TSYURUINAME(1 34)
+           MOVE    SPA-GMN-TSYURUINAME(1 34)
                                        TO  HCMC001-NAME(CNT-LINE)
-           MOVE    PARA-TKENSU(1 34)   TO  WRK-Z10
+           MOVE    SPA-GMN-TKENSU(1 34)    TO  WRK-Z10
            MOVE    WRK-Z10             TO  HCMC001-NAIYO(CNT-LINE 1)
-           MOVE    PARA-TPAGE(1 34)    TO  WRK-Z10
+           MOVE    SPA-GMN-TPAGE(1 34)     TO  WRK-Z10
            MOVE    WRK-Z10             TO  HCMC001-NAIYO(CNT-LINE 2)
-           ADD     PARA-TPAGE(1 34)    TO  CNT-GPAGE
-           ADD     PARA-TKENSU(1 34)   TO  CNT-GKENSU
+           ADD     SPA-GMN-TPAGE(1 34)     TO  CNT-GPAGE
+           ADD     SPA-GMN-TKENSU(1 34)    TO  CNT-GKENSU
       *
       *    自費
            IF      CNT-LINE    >=  35
@@ -280,14 +288,14 @@
                PERFORM 220-PRT-PAGE-SEC
            END-IF
            ADD     1                   TO  CNT-LINE
-           MOVE    PARA-TSYURUINAME(1 35)
+           MOVE    SPA-GMN-TSYURUINAME(1 35)
                                        TO  HCMC001-NAME(CNT-LINE)
-           MOVE    PARA-TKENSU(1 35)   TO  WRK-Z10
+           MOVE    SPA-GMN-TKENSU(1 35)    TO  WRK-Z10
            MOVE    WRK-Z10             TO  HCMC001-NAIYO(CNT-LINE 1)
-           MOVE    PARA-TPAGE(1 35)    TO  WRK-Z10
+           MOVE    SPA-GMN-TPAGE(1 35)     TO  WRK-Z10
            MOVE    WRK-Z10             TO  HCMC001-NAIYO(CNT-LINE 2)
-           ADD     PARA-TPAGE(1 35)    TO  CNT-GPAGE
-           ADD     PARA-TKENSU(1 35)   TO  CNT-GKENSU
+           ADD     SPA-GMN-TPAGE(1 35)     TO  CNT-GPAGE
+           ADD     SPA-GMN-TKENSU(1 35)    TO  CNT-GKENSU
       *
            IF      CNT-LINE    >=  35
       *        印刷処理
@@ -297,14 +305,14 @@
            END-IF
       *    不明
            ADD     1                   TO  CNT-LINE
-           MOVE    PARA-TSYURUINAME(1 36)
+           MOVE    SPA-GMN-TSYURUINAME(1 36)
                                        TO  HCMC001-NAME(CNT-LINE)
-           MOVE    PARA-TKENSU(1 36)   TO  WRK-Z10
+           MOVE    SPA-GMN-TKENSU(1 36)    TO  WRK-Z10
            MOVE    WRK-Z10             TO  HCMC001-NAIYO(CNT-LINE 1)
-           MOVE    PARA-TPAGE(1 36)    TO  WRK-Z10
+           MOVE    SPA-GMN-TPAGE(1 36)     TO  WRK-Z10
            MOVE    WRK-Z10             TO  HCMC001-NAIYO(CNT-LINE 2)
-           ADD     PARA-TPAGE(1 36)    TO  CNT-GPAGE
-           ADD     PARA-TKENSU(1 36)   TO  CNT-GKENSU
+           ADD     SPA-GMN-TPAGE(1 36)     TO  CNT-GPAGE
+           ADD     SPA-GMN-TKENSU(1 36)    TO  CNT-GKENSU
       *
       *    合計
            ADD     1                   TO  CNT-LINE
@@ -329,6 +337,7 @@
        200-MAIN-EXT.
            EXIT.
       *
+      *----(03.04.01)--UPD-END-----
       *****************************************************************
       *    帳票<見出>編集処理
       *****************************************************************
@@ -340,7 +349,9 @@
            MOVE    ZERO                TO  CNT-LINE
       *
       *    タイトル
-           MOVE    PARA-FILEKBN        TO  HCMC001-DAI
+      *----(03.04.01)--UPD-START---
+           MOVE    SPA-GMN-FILEKBN     TO  HCMC001-DAI
+      *     MOVE    PARA-FILEKBN        TO  HCMC001-DAI
       *
       *    印刷日付
            MOVE    SPA-SYSYMD          TO  WRK-SYMD

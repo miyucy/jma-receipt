@@ -2989,18 +2989,22 @@
       *****************************************************************
        440-PRINT-KENSU-SEC                SECTION.
       *
+      *----(03.04.01)--UPD-START---
            EVALUATE   SPA-R01-RECE07-NYUGAIKBN
                WHEN   "1"
                    CALL    "ORCHCM35"  USING   SPA-AREA
                                                SPA-NAI-2005-SYAPRTNM-N
-                                               SPA-GMN-FILEKBN
-                                               SPA-GMN-TBL1
+                                               SPA-R02
+      *                                         SPA-GMN-FILEKBN
+      *                                         SPA-GMN-TBL1
                WHEN   "2"
                    CALL    "ORCHCM35"  USING   SPA-AREA
                                                SPA-NAI-2005-SYAPRTNM
-                                               SPA-GMN-FILEKBN
-                                               SPA-GMN-TBL1
+                                               SPA-R02
+      *                                         SPA-GMN-FILEKBN
+      *                                         SPA-GMN-TBL1
            END-EVALUATE
+      *----(03.04.01)--UPD-END-----
       *
            .
        440-PRINT-KENSU-EXT.
