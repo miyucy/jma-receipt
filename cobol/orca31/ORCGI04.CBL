@@ -3082,6 +3082,7 @@
                            IF    ( SPA-ERRCD  =   SPACE )
                                PERFORM 4801-SYUNOU-UPD-SEC
                            END-IF
+                       END-IF
       *
       *            ¼ýÇ¼ºîÀ®
                    WHEN    1
@@ -3248,8 +3249,14 @@
            IF    ( SPA-I0-SYUNOU-UPDFLG (IDX-SYU)  =   ZERO )
             AND  ( SPA-NAI-I04-SAIKEISANFLG        =   1 )
       *
+               COMPUTE WRK-SKYMONEY
+                   =   SPA-NAI-I04-SEIKYU (IDX-SYU)
+                   +   SPA-NAI-I04-SEIKYU-MOT (IDX-SYU)
+      *
                MOVE    SYU-DENPNUM TO  WRK-DENPNUM
            ELSE
+               COMPUTE WRK-SKYMONEY
+                   =   SPA-NAI-I04-SEIKYU (IDX-SYU)
                MOVE    ZERO        TO  SYU-NYUKIN-TOTAL
                                        SYU-NYUKIN-KAISU
       *
@@ -3297,9 +3304,7 @@
       *
            MOVE    SPA-NAI-I04-CHOSEI (IDX-SYU)
                                    TO  SYU-CHOSEI
-           COMPUTE SYU-SKYMONEY
-               =   SPA-NAI-I04-SEIKYU (IDX-SYU)
-               +   SPA-NAI-I04-SEIKYU-MOT (IDX-SYU)
+           MOVE    WRK-SKYMONEY    TO  SYU-SKYMONEY
       *
            COMPUTE SYU-NYUKIN-TOTAL
                =   SYU-NYUKIN-TOTAL
@@ -3772,6 +3777,14 @@
       *
                MOVE    SPA-I0-SYUNOU-DAT (IDX1)
                                        TO  WKSYUNOU-REC
+      *
+               IF    ( SPA-I0-SYUNOU-UPDFLG (IDX1)     =   ZERO )
+                AND  ( SPA-NAI-I04-SAIKEISANFLG        =   1 )
+                   MOVE    SPA-I0-UPD-TAX-SAI  (IDX1)
+                                   TO  WKSYU-SKYMONEY-TAX-SAI
+                   MOVE    SPA-NAI-I04-SEIKYU  (IDX1)
+                                   TO  WKSYU-SKYMONEY
+               END-IF
       *
                MOVE  1                 TO  FLG-SKYPRT
       *
