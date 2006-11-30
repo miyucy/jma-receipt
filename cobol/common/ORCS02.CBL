@@ -164,6 +164,8 @@
       *  03.04.01    NACL-ÌçÏÆ    06/11/20  ¹â³Û°ÑÇ¤Ê§¤¤À©ÅÙ¡¢¹â³Û£´²óÌÜ°Ê¹ß
       *                                     ÂÐ±þ
       *  03.04.02    NACL-ÌçÏÆ    06/11/24  µÜ¾ë¸©ÃÏÊý¸øÈñ£±£°·î²þÀµÂÐ±þ
+      *  03.04.03    NACL-ÌçÏÆ    06/11/29  Æþ±¡»þÀ¸³èÎÅÍÜÈñ¤Î¸øÈñÂÐ¾Ý³°ÂÐ±þ
+      *                                     ¡Ê¿·³ã¸©ÃÏÊý¸øÈñ¡Ë
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -12390,6 +12392,11 @@
                IF ((WK-1001-PREFNUM         =  10           ) AND
                    (COMB-KOHHKNNUM(KOH-IDX) = "146" OR "246"
                                            OR "143" OR "243"))
+               OR ((WK-1001-PREFNUM         =  15           ) AND
+                   (COMB-KOHHKNNUM(KOH-IDX) = "261" OR "361"
+                                                    OR "561"
+                                           OR "264" OR "364"
+                                                    OR "564"))
                    IF     FLG-SEIKATUS       =   1
                          MOVE  "5"    TO  WK-NYUSKJRYYKBN
                          MOVE  "1"    TO  WK-NYUSKJRYYKBN-TOKU(KOH-IDX)
