@@ -704,7 +704,7 @@
                    09  SPA-GMN-I04-HKNCOMBILST.
                        11  SPA-GMN-I04-HKNCOMBILST-CNT
                                                      PIC S9(9)   BINARY.
-                       11  SPA-GMN-I04-HKNCOMBILST-ITM  OCCURS   15.
+                       11  SPA-GMN-I04-HKNCOMBILST-ITM  OCCURS   23.
                            13  SPA-GMN-I04-TSELNUM   PIC 9(02).
                            13  SPA-GMN-I04-THKNCOMBI PIC X(50).
                        11  SPA-GMN-I04-HKNCOMBILST-SEL
@@ -717,6 +717,9 @@
                        11  SPA-NAI-I04-PTRRKNUM      PIC 9(03).
       *                入力データ入院履歴枝番号
                        11  SPA-NAI-I04-PTRRKEDANUM   PIC 9(03).
+      *                再計算フラグ
+                       11  SPA-NAI-I04-SAIKEISANFLG  PIC 9(01).
+      *
                    09  SPA-NAI-I04-INPUT-AREA.
       *                入院化
                        11  SPA-NAI-I04-NYUINKA       PIC X(02).
@@ -735,25 +738,29 @@
       *                    請求金額
                            13  SPA-NAI-I04-SEIKYU-TBL.
                                15  SPA-NAI-I04-SEIKYU-OCC
-                                                         OCCURS    15.
+                                                         OCCURS    23.
                                    17  SPA-NAI-I04-SEIKYU    PIC S9(07).
                                    17  SPA-NAI-I04-SEIKYU-KON
+                                                             PIC S9(07).
+                                   17  SPA-NAI-I04-SEIKYU-MOT
                                                              PIC S9(07).
       *                    調整金
                            13  SPA-NAI-I04-CHOSEI-TBL.
                                15  SPA-NAI-I04-CHOSEI-OCC
-                                                         OCCURS    15.
+                                                         OCCURS    23.
                                    17  SPA-NAI-I04-CHOSEI    PIC S9(07).
                                    17  SPA-NAI-I04-CHOSEI-X  PIC X(10).
+                                   17  SPA-NAI-I04-CHOSEI-MOT
+                                                             PIC S9(07).
       *                    入金額
                            13  SPA-NAI-I04-NYUKIN-TBL.
                                15  SPA-NAI-I04-NYUKIN-OCC
-                                                         OCCURS    15.
+                                                         OCCURS    23.
                                    17  SPA-NAI-I04-NYUKIN    PIC S9(07).
                                    17  SPA-NAI-I04-NYUKIN-X  PIC X(10).
       *
                    09  SPA-NAI-I04-HKNCOMBILST.
-                       11  SPA-NAI-I04-HKNCOMBILST-ITM  OCCURS   15.
+                       11  SPA-NAI-I04-HKNCOMBILST-ITM  OCCURS   23.
                            13  SPA-NAI-I04-TTTLDAT-FLG   PIC 9(01).
                            13  SPA-NAI-I04-TSYUNOUIDX    PIC 9(02).
                            13  SPA-NAI-I04-THKNCOMBI-DAT.
@@ -819,11 +826,17 @@
       *  収納データ
          03  SPA-I0-SYUNOU-TBL.
            05  SPA-I0-SYUNOU-CNT                     PIC 9(05).
-           05  SPA-I0-SYUNOU-OCC                     OCCURS  13.
+           05  SPA-I0-SYUNOU-OCC                     OCCURS  23.
       *      収納合計フラグ  0:収納データ
       *                      1:月別合計データ
       *                      2:合計データ
+      *                      3:収納データ（取消対象）
              07  SPA-I0-SYUNOU-TTLDAT-FLG            PIC 9(01).
+      *      収納更新フラグ(収納合計フラグ=0or3のものに設定）
+      *                      0:訂正更新
+      *                      1:追加更新
+      *                      2:請求取消更新
+             07  SPA-I0-SYUNOU-UPDFLG                PIC 9(01).
              07  SPA-I0-SYUNOU-YM-S                  PIC X(06).
              07  SPA-I0-SYUNOU-YM-W                  PIC X(06).
              07  SPA-I0-SYUNOU-HKNCOMBI              PIC X(50).
@@ -831,5 +844,7 @@
              07  SPA-I0-SYUNOU-HKNCOMBI-SU           PIC 9(02).
       *      対象月数（合計データのみ設定）
              07  SPA-I0-SYUNOU-TUKI-SU               PIC 9(02).
+             07  SPA-I0-UPD-SKYMONEY                 PIC S9(08).
+             07  SPA-I0-UPD-TAX-SAI                  PIC S9(08).
              07  SPA-I0-SYUNOU-DAT                   PIC X(3000).
              07  SPA-I0-SYUDAY-DAT                   PIC X(4000).

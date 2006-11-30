@@ -52,8 +52,6 @@
            05  SPA-I01-I03-PTID                PIC 9(10).
       *          入院履歴番号
            05  SPA-I01-I03-PTRRKNUM            PIC 9(03).
-      *          入院履歴枝番号
-           05  SPA-I01-I03-PTRRKEDANUM         PIC 9(03).
       *          前回退院日
            05  SPA-I01-I03-TAIINYMD            PIC X(08).
       *          処理区分

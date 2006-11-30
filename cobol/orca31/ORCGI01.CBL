@@ -214,6 +214,7 @@
            03  IDX-SKJ-TAIHI               PIC 9(02).
            03  IDX-RRKBYO                  PIC 9(05).
            03  IDX-BTUNUM                  PIC 9(05).
+           03  IDX-SYU                     PIC 9(05).
       *
       *    •´•¶•Û•»ŒŒ∞Ë
        01  CNT-AREA.
@@ -707,6 +708,7 @@
       *
       *    ∆˛±°≈–œø•µ•÷
            COPY    "CPI0SUB01.INC".
+           COPY    "CPI0SUB02.INC".
       *
       *    ∆¸…’ —¥π•µ•÷
            COPY    "CPORCSDAY.INC".
@@ -5594,6 +5596,7 @@
       *
       *    ¡∞≤Û¥µº‘§¨¿ﬂƒÍ§µ§Ï§∆§§§Î§–§¢§œ¡∞≤Û¥µº‘§Ú…Ωº®§π§Î
            IF    ( SPA-LAST-PTNUM  NOT =   SPACE )
+               MOVE    SPACE           TO  SPA-GMN-I01-ERRCD (1)
                MOVE    SPA-LAST-PTID   TO  SPA-NAI-I01-PTID
                MOVE    SPA-LAST-PTNUM  TO  SPA-GMN-I01-PTNUM
                PERFORM 4101-PTINF-SELECT-SEC 
@@ -5788,11 +5791,9 @@
       *
            IF    ( FLG-PTNYUINRRK  NOT =   ZERO )
                COMPUTE     SPA-I01-I03-PTRRKNUM    =   1
-               COMPUTE     SPA-I01-I03-PTRRKEDANUM =   1
            ELSE
                COMPUTE     SPA-I01-I03-PTRRKNUM    =   PTNYUINRRK-RRKNUM
                                                    +   1
-               COMPUTE     SPA-I01-I03-PTRRKEDANUM =   1
            END-IF
       *
            MOVE    SPA-GMN-I01-SYORIKBN-CD
@@ -5905,7 +5906,6 @@
                                    TO  SPA-I01-I03-PTID
            MOVE    SPA-NAI-I01-TRRKNUM (IDX1)
                                    TO  SPA-I01-I03-PTRRKNUM
-           MOVE    1               TO  SPA-I01-I03-PTRRKEDANUM
            MOVE    SPA-GMN-I01-SYORIKBN-CD
                                    TO  SPA-I01-I03-SYORIKBN-CD
            MOVE    ZERO            TO  SPA-I01-I03-TAIINYMD
@@ -6546,9 +6546,24 @@
                PERFORM 910-DBDELETE-SEC
            END-EVALUATE
       *
-           IF    ( MCP-RC      NOT =   ZERO )
-      *        ∆˛±°ŒÚ§Ú∫∆ ‘Ω∏
-               PERFORM 4101-NYUREKI-EDIT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               IF    ( SPA-GMN-I01-SYORIKBN-CD
+                                       =   "05"  OR  "06" )
+                   CONTINUE
+               ELSE
+                   PERFORM 800-MCNDATE-SEC
+                   MOVE    SMCNDATE-YMD    TO  PTNYUINRRK-UPYMD
+                   MOVE    SMCNDATE-HMS    TO  PTNYUINRRK-UPHMS
+                   MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
+                   MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+                   MOVE    "upd4"              TO  MCP-PATHNAME
+                   PERFORM 910-DBUPDATE-SEC
+                   IF    ( MCP-RC      NOT =   ZERO )
+                       MOVE    "4031"      TO  SPA-ERRCD
+                       GO  TO  4801-PTNYUINRRK-UPD-EXT
+                   END-IF
+               END-IF
+           ELSE
                MOVE    "4001"      TO  SPA-ERRCD
                GO  TO  4801-PTNYUINRRK-UPD-EXT
            END-IF
@@ -14229,648 +14244,75 @@
                GO  TO  490-FTNKIN-CALC-EXT
            END-IF
       *
-           MOVE    SPACE           TO  LNK-ORCS02-REC
-                                       LNK-SYUNOU-REC-T
-                                       LNK-SYUDAY-REC-T
+           MOVE    SPA-AREA            TO  WRK-SPA-AREA
+           MOVE    "1"                 TO  WRK-SPA-NYUGAIKBN
+           MOVE    SPA-NAI-I01-PTID    TO  WRK-SPA-PTID
+           MOVE    SPA-NAI-I01-BIRTHDAY
+                                       TO  WRK-SPA-BIRTHDAY
       *
-           INITIALIZE                  LNK-ORCS02-REC
-                                       LNK-SYUNOU-REC-T
-                                       LNK-SYUDAY-REC-T
-      *
-           MOVE    SPA-HOSPID      TO  LNK-S02-HOSPID
-           MOVE    "1"             TO  LNK-S02-NYUGAIKBN
-           MOVE    SPA-NAI-I01-PTID
-                                   TO  LNK-S02-PTID
-           MOVE    WRK-NISSU1      TO  LNK-S02-NYUIN-TSUSAN-NISSU
-      *
-      *    ¿¡µ·≥´ªœ∆¸° ∆˛±°∆¸° ∆±∆¸∫∆∆˛±°§ŒæÏπÁ§œ∆˛±°∆¸Õ‚∆¸°À§ﬁ§ø§œ
-      *    ¡∞≤ÛƒÍ¥¸¿¡µ·Ω™Œª∆¸§ŒÕ‚∆¸°À§Ú¿ﬂƒÍ
-           MOVE    WRK-NOW-SKYSTYMD
-                                       TO  LNK-S02-SKYSTYMD
-           MOVE    WRK-FTN-TAIINYMD
-                                   TO  LNK-S02-SKYEDYMD
-           MOVE    SPA-SYSYMD      TO  LNK-S02-SYSYMD
-           MOVE    "1"             TO  LNK-S02-SYORI-KBN
-           CALL    "ORCSNYUFTN"    USING
-                                   SPA-AREA
-                                   LNK-ORCS02-REC
-                                   LNK-SYUNOU-REC-T
-                                   LNK-SYUDAY-REC-T
-           IF    ( LNK-S02-RC      NOT = ZERO )
-               EVALUATE LNK-S02-RC
-               WHEN    13
-                   MOVE    "2012"      TO  SPA-ERRCD
-                   GO  TO  490-FTNKIN-CALC-EXT
-               WHEN    OTHER
-                   MOVE    "2008"      TO  SPA-ERRCD
-                   GO  TO  490-FTNKIN-CALC-EXT
-               END-EVALUATE
+           INITIALIZE                      I0SUB02-LNK
+           IF    ( SPA-GMN-I01-SYORIKBN-CD =   "02" )
+               MOVE    ZERO            TO  I0SUB02-SYORIFLG
+           ELSE
+               MOVE    1               TO  I0SUB02-SYORIFLG
            END-IF
       *
-           PERFORM VARYING IDX11   FROM    1   BY  1
-                   UNTIL ( IDX11   >   10 )
+           MOVE    SPA-NAI-I01-PTRRKNUM
+                                       TO  I0SUB02-RRKNUM
+           MOVE    WRK-NISSU1          TO  I0SUB02-NISSU
+           MOVE    WRK-NOW-SKYSTYMD    TO  I0SUB02-SKYSTYMD
+           MOVE    WRK-FTN-TAIINYMD    TO  I0SUB02-SKYEDYMD
       *
-               DISPLAY "LNK-SYU-SKYMONEY (" IDX11" ) = "
-                        LNK-SYU-SKYMONEY ( IDX11 )
+           CALL    "ORCGI0SUB02"       USING
+                                       SPA-AREA
+                                       I0SUB02-LNK
+           EVALUATE    TRUE
+           WHEN  ( I0SUB02-S02-RC  NOT =   ZERO )
+               IF    ( I0SUB02-S02-RC  =   13 )
+                   MOVE    "2012"  TO  SPA-ERRCD
+               ELSE
+                   MOVE    "2008"  TO  SPA-ERRCD
+               END-IF
+           WHEN  ( I0SUB02-RC     NOT =   ZERO )
+                   MOVE    "2008"  TO  SPA-ERRCD
+           WHEN    OTHER
       *
-           END-PERFORM
-      *    º˝«º•«°º•ø¬‡»ÚΩËÕ˝
-           PERFORM 490-SYUNOU-TAIHI-SEC
-           IF    ( SPA-ERRCD       NOT =   SPACE )
-               GO  TO  490-FTNKIN-CALC-EXT
-           END-IF
+               MOVE    I0SUB02-SYUNOU-CNT  TO  SPA-I0-SYUNOU-CNT
+               PERFORM VARYING IDX-SYU FROM    1   BY  1
+                       UNTIL ( IDX-SYU >   I0SUB02-SYUNOU-CNT )
+      *
+                   MOVE    I0SUB02-SYUNOU-TTLDAT-FLG(IDX-SYU)
+                                   TO  SPA-I0-SYUNOU-TTLDAT-FLG(IDX-SYU)
+                   MOVE    I0SUB02-SYUNOU-UPDFLG(IDX-SYU)
+                                   TO  SPA-I0-SYUNOU-UPDFLG(IDX-SYU)
+      *
+                   MOVE    I0SUB02-SYUNOU-YM-S (IDX-SYU)
+                                   TO  SPA-I0-SYUNOU-YM-S (IDX-SYU)
+                   MOVE    I0SUB02-SYUNOU-YM-W (IDX-SYU)
+                                   TO  SPA-I0-SYUNOU-YM-W (IDX-SYU)
+                   MOVE    I0SUB02-SYUNOU-HKNCOMBI (IDX-SYU)
+                                   TO  SPA-I0-SYUNOU-HKNCOMBI
+                                                          (IDX-SYU)
+                   MOVE    I0SUB02-SYUNOU-HKNCOMBI-SU (IDX-SYU)
+                                   TO  SPA-I0-SYUNOU-HKNCOMBI-SU
+                                                          (IDX-SYU)
+                   MOVE    I0SUB02-SYUNOU-TUKI-SU (IDX-SYU)
+                                   TO  SPA-I0-SYUNOU-TUKI-SU
+                                                          (IDX-SYU)
+                   MOVE    I0SUB02-SYUNOU-DAT  (IDX-SYU)
+                                   TO  SPA-I0-SYUNOU-DAT  (IDX-SYU)
+                   MOVE    I0SUB02-SYUDAY-DAT  (IDX-SYU)
+                                   TO  SPA-I0-SYUDAY-DAT (IDX-SYU)
+                   MOVE    I0SUB02-UPD-SKYMONEY (IDX-SYU)
+                                   TO  SPA-I0-UPD-SKYMONEY(IDX-SYU)
+                   MOVE    I0SUB02-UPD-TAX-SAI  (IDX-SYU)
+                                   TO  SPA-I0-UPD-TAX-SAI (IDX-SYU)
+                   DISPLAY IDX-SYU ":" SPA-I0-UPD-SKYMONEY(IDX-SYU)
+               END-PERFORM
+           END-EVALUATE
       *
            .
        490-FTNKIN-CALC-EXT.
-           EXIT.
-      *****************************************************************
-      *    º˝«º•«°º•ø¬‡»ÚΩËÕ˝
-      *****************************************************************
-       490-SYUNOU-TAIHI-SEC            SECTION.
-      *
-      *     ›∏±¡»πÁ§ªºË∆¿
-           PERFORM 490-HKNCOMBI-GET-SEC
-      *
-           INITIALIZE  SPA-I0-SYUNOU-TBL
-           MOVE    LOW-VALUE       TO  WRK-SKYSTYM
-           MOVE    SPACE           TO  SUMSYUNOU-REC
-                                       TTLSYUNOU-REC
-           INITIALIZE                  SUMSYUNOU-REC
-                                       TTLSYUNOU-REC
-                                       CNT-TUKISU
-      *
-           PERFORM VARYING IDX11   FROM    1   BY  1
-                   UNTIL ( IDX11           >   10 )
-                   OR    ( SUMSYUNOU-CNT    >=  13 )
-                   OR    ( LNK-SYU-SKYSTYMD (IDX11)    =   SPACE )
-      *
-               IF    ( LNK-SYU-SKYSTYMD (IDX11) (1 : 6)
-                                   NOT =   WRK-SKYSTYM )
-      *
-                   MOVE    LNK-SYU-SKYSTYMD (IDX11) (1 : 6)
-                                   TO      WRK-SKYSTYM
-                   COMPUTE SUMSYUNOU-CNT
-                                       =   SUMSYUNOU-CNT +   1
-                   MOVE    SUMSYUNOU-CNT
-                                   TO  WRK-SYU-SUM-IDX
-      *
-                   MOVE    1       TO    SPA-I0-SYUNOU-TTLDAT-FLG
-                                                 (WRK-SYU-SUM-IDX)
-      *
-                   MOVE    LNK-SYU-SKYSTYMD (IDX11)
-                                   TO   WRK-YMD
-                   PERFORM 5002-HIZUKE-CHK-SEC
-                   MOVE    WRK-HENYMDG (1 : 6)
-                           TO SPA-I0-SYUNOU-YM-W (WRK-SYU-SUM-IDX)
-                   MOVE    WRK-SYMD    (1 : 6)
-                           TO SPA-I0-SYUNOU-YM-S (WRK-SYU-SUM-IDX)
-      *
-                   MOVE    ZERO    TO    SPA-I0-SYUNOU-HKNCOMBI-SU
-                                                 (WRK-SYU-SUM-IDX)
-      *
-                   COMPUTE CNT-TUKISU  =   CNT-TUKISU  +   1
-      *
-               END-IF
-      *
-               IF    ( SUMSYUNOU-CNT <   13 )
-                   COMPUTE SUMSYUNOU-CNT    =   SUMSYUNOU-CNT +   1
-      *
-                   MOVE    0       TO    SPA-I0-SYUNOU-TTLDAT-FLG
-                                                 (SUMSYUNOU-CNT)
-      *
-                   MOVE    SPA-I0-SYUNOU-YM-W (WRK-SYU-SUM-IDX)
-                                       TO  SPA-I0-SYUNOU-YM-W
-                                                 (SUMSYUNOU-CNT)
-                   MOVE    SPA-I0-SYUNOU-YM-S (WRK-SYU-SUM-IDX)
-                                       TO  SPA-I0-SYUNOU-YM-S
-                                                 (SUMSYUNOU-CNT)
-      *
-      *             ›∏±¡»§ﬂπÁ§Ô§ªÃææŒºË∆¿
-                   MOVE    LNK-SYU-HKNCOMBINUM (IDX11)
-                                           TO   WRK-ORCSHKN-HKNCOMBINUM
-                   PERFORM 490-HKNCOMBI-EDIT-SEC
-                   MOVE    WRK-HKNCOMBI
-                                           TO  SPA-I0-SYUNOU-HKNCOMBI
-                                                        (SUMSYUNOU-CNT)
-      *
-                   COMPUTE SPA-I0-SYUNOU-HKNCOMBI-SU (WRK-SYU-SUM-IDX)
-                       =   SPA-I0-SYUNOU-HKNCOMBI-SU (WRK-SYU-SUM-IDX)
-                       +   1
-      *
-                   MOVE    LNK-SYUNOU-REC (IDX11)
-                                       TO  SUMSYUNOU-OCC (SUMSYUNOU-CNT)
-                   MOVE    LNK-SYUDAY-REC (IDX11)
-                                       TO  SUMSYUDAY-OCC (SUMSYUNOU-CNT)
-      *             ›∏±Œ¡
-                   PERFORM VARYING     IDX12   FROM    1   BY  1
-                           UNTIL       IDX12   >   16
-                     COMPUTE SUMSYU-HKNTEN   (WRK-SYU-SUM-IDX IDX12)
-                         =   SUMSYU-HKNTEN   (WRK-SYU-SUM-IDX IDX12)
-                         +   LNK-SYU-HKNTEN (IDX11 IDX12)
-                     COMPUTE TTLSYU-HKNTEN (IDX12)
-                         =   TTLSYU-HKNTEN (IDX12)
-                         +   LNK-SYU-HKNTEN (IDX11 IDX12)
-      *
-                     COMPUTE SUMSYU-TGMONEY   (WRK-SYU-SUM-IDX IDX12)
-                         =   SUMSYU-TGMONEY   (WRK-SYU-SUM-IDX IDX12)
-                         +   LNK-SYU-TGMONEY (IDX11 IDX12)
-                     COMPUTE TTLSYU-TGMONEY  (IDX12)
-                         =   TTLSYU-TGMONEY  (IDX12)
-                         +   LNK-SYU-TGMONEY (IDX11 IDX12)
-      *
-                     COMPUTE SUMSYU-TGMONEY-TAX (WRK-SYU-SUM-IDX IDX12)
-                         =   SUMSYU-TGMONEY-TAX (WRK-SYU-SUM-IDX IDX12)
-                         +   LNK-SYU-TGMONEY-TAX (IDX11 IDX12)
-                     COMPUTE TTLSYU-TGMONEY-TAX  (IDX12)
-                         =   TTLSYU-TGMONEY-TAX  (IDX12)
-                         +   LNK-SYU-TGMONEY-TAX (IDX11 IDX12)
-                   END-PERFORM
-      *
-      *             ›∏±≈¨Õ—∂‚≥€
-                   COMPUTE SUMSYU-HKNTEKMONEY   (WRK-SYU-SUM-IDX)
-                       =   SUMSYU-HKNTEKMONEY   (WRK-SYU-SUM-IDX)
-                       +   LNK-SYU-HKNTEKMONEY (IDX11)
-                   COMPUTE TTLSYU-HKNTEKMONEY
-                       =   TTLSYU-HKNTEKMONEY
-                       +   LNK-SYU-HKNTEKMONEY (IDX11)
-      *
-      *            œ∑øÕ∞Ï…Ù…È√¥∂‚
-                   COMPUTE SUMSYU-RJN-FTN    (WRK-SYU-SUM-IDX)
-                       =   SUMSYU-RJN-FTN    (WRK-SYU-SUM-IDX)
-                       +   LNK-SYU-RJN-FTN  (IDX11)
-                   COMPUTE TTLSYU-RJN-FTN
-                       =   TTLSYU-RJN-FTN
-                       +   LNK-SYU-RJN-FTN  (IDX11)
-      *
-      *            ∏¯»Ò∞Ï…Ù…È√¥∂‚
-                   COMPUTE SUMSYU-KOH-FTN    (WRK-SYU-SUM-IDX)
-                       =   SUMSYU-KOH-FTN    (WRK-SYU-SUM-IDX)
-                       +   LNK-SYU-KOH-FTN  (IDX11)
-                   COMPUTE TTLSYU-KOH-FTN
-                       =   TTLSYU-KOH-FTN
-                       +   LNK-SYU-KOH-FTN  (IDX11)
-      *
-      *            º´»Ò
-                   COMPUTE SUMSYU-JIHI-1   (WRK-SYU-SUM-IDX)
-                       =   SUMSYU-JIHI-1   (WRK-SYU-SUM-IDX)
-                       +   LNK-SYU-JIHI-1 (IDX11)
-                   COMPUTE TTLSYU-JIHI-1
-                       =   TTLSYU-JIHI-1
-                       +   LNK-SYU-JIHI-1 (IDX11)
-      *
-                   COMPUTE SUMSYU-JIHI-2   (WRK-SYU-SUM-IDX)
-                       =   SUMSYU-JIHI-2   (WRK-SYU-SUM-IDX)
-                       +   LNK-SYU-JIHI-2 (IDX11)
-                   COMPUTE TTLSYU-JIHI-2
-                       =   TTLSYU-JIHI-2
-                       +   LNK-SYU-JIHI-2 (IDX11)
-      *
-                   COMPUTE SUMSYU-JIHI-3   (WRK-SYU-SUM-IDX)
-                       =   SUMSYU-JIHI-3   (WRK-SYU-SUM-IDX)
-                       +   LNK-SYU-JIHI-3 (IDX11)
-                   COMPUTE TTLSYU-JIHI-3
-                       =   TTLSYU-JIHI-3
-                       +   LNK-SYU-JIHI-3 (IDX11)
-      *
-                   COMPUTE SUMSYU-JIHI-4   (WRK-SYU-SUM-IDX)
-                       =   SUMSYU-JIHI-4   (WRK-SYU-SUM-IDX)
-                       +   LNK-SYU-JIHI-4 (IDX11)
-                   COMPUTE TTLSYU-JIHI-4
-                       =   TTLSYU-JIHI-4
-                       +   LNK-SYU-JIHI-4 (IDX11)
-      *
-                   COMPUTE SUMSYU-JIHI-5   (WRK-SYU-SUM-IDX)
-                       =   SUMSYU-JIHI-5   (WRK-SYU-SUM-IDX)
-                       +   LNK-SYU-JIHI-5 (IDX11)
-                   COMPUTE TTLSYU-JIHI-5
-                       =   TTLSYU-JIHI-5
-                       +   LNK-SYU-JIHI-5 (IDX11)
-      *
-                   COMPUTE SUMSYU-JIHI-6   (WRK-SYU-SUM-IDX)
-                       =   SUMSYU-JIHI-6   (WRK-SYU-SUM-IDX)
-                       +   LNK-SYU-JIHI-6 (IDX11)
-                   COMPUTE TTLSYU-JIHI-6
-                       =   TTLSYU-JIHI-6
-                       +   LNK-SYU-JIHI-6 (IDX11)
-      *
-                   COMPUTE SUMSYU-JIHI-7   (WRK-SYU-SUM-IDX)
-                       =   SUMSYU-JIHI-7   (WRK-SYU-SUM-IDX)
-                       +   LNK-SYU-JIHI-7 (IDX11)
-                   COMPUTE TTLSYU-JIHI-7
-                       =   TTLSYU-JIHI-7
-                       +   LNK-SYU-JIHI-7 (IDX11)
-      *
-                   COMPUTE SUMSYU-JIHI-8   (WRK-SYU-SUM-IDX)
-                       =   SUMSYU-JIHI-8   (WRK-SYU-SUM-IDX)
-                       +   LNK-SYU-JIHI-8 (IDX11)
-                   COMPUTE TTLSYU-JIHI-8
-                       =   TTLSYU-JIHI-8
-                       +   LNK-SYU-JIHI-8 (IDX11)
-      *
-                   COMPUTE SUMSYU-JIHI-9   (WRK-SYU-SUM-IDX)
-                       =   SUMSYU-JIHI-9   (WRK-SYU-SUM-IDX)
-                       +   LNK-SYU-JIHI-9 (IDX11)
-                   COMPUTE TTLSYU-JIHI-9
-                       =   TTLSYU-JIHI-9
-                       +   LNK-SYU-JIHI-9 (IDX11)
-      *
-                   COMPUTE SUMSYU-JIHI-10  (WRK-SYU-SUM-IDX)
-                       =   SUMSYU-JIHI-10  (WRK-SYU-SUM-IDX)
-                       +   LNK-SYU-JIHI-10 (IDX11)
-                   COMPUTE TTLSYU-JIHI-10
-                       =   TTLSYU-JIHI-10
-                       +   LNK-SYU-JIHI-10 (IDX11)
-      *
-      *            º´»Ò∑◊
-                   COMPUTE SUMSYU-JIHI-TOTAL   (WRK-SYU-SUM-IDX)
-                       =   SUMSYU-JIHI-TOTAL   (WRK-SYU-SUM-IDX)
-                       +   LNK-SYU-JIHI-TOTAL (IDX11)
-                   COMPUTE TTLSYU-JIHI-TOTAL
-                       =   TTLSYU-JIHI-TOTAL
-                       +   LNK-SYU-JIHI-TOTAL (IDX11)
-      *
-      *            º´»Ò° æ√»Ò¿«§¢§Í°À
-                   COMPUTE SUMSYU-JIHI-1-TAX    (WRK-SYU-SUM-IDX)
-                       =   SUMSYU-JIHI-1-TAX    (WRK-SYU-SUM-IDX)
-                       +   LNK-SYU-JIHI-1-TAX  (IDX11)
-                   COMPUTE TTLSYU-JIHI-1-TAX
-                       =   TTLSYU-JIHI-1-TAX
-                       +   LNK-SYU-JIHI-1-TAX  (IDX11)
-      *
-                   COMPUTE SUMSYU-JIHI-2-TAX    (WRK-SYU-SUM-IDX)
-                       =   SUMSYU-JIHI-2-TAX    (WRK-SYU-SUM-IDX)
-                       +   LNK-SYU-JIHI-2-TAX  (IDX11)
-                   COMPUTE TTLSYU-JIHI-2-TAX
-                       =   TTLSYU-JIHI-2-TAX
-                       +   LNK-SYU-JIHI-2-TAX  (IDX11)
-      *
-                   COMPUTE SUMSYU-JIHI-3-TAX    (WRK-SYU-SUM-IDX)
-                       =   SUMSYU-JIHI-3-TAX    (WRK-SYU-SUM-IDX)
-                       +   LNK-SYU-JIHI-3-TAX  (IDX11)
-                   COMPUTE TTLSYU-JIHI-3-TAX
-                       =   TTLSYU-JIHI-3-TAX
-                       +   LNK-SYU-JIHI-3-TAX  (IDX11)
-      *
-                   COMPUTE SUMSYU-JIHI-4-TAX    (WRK-SYU-SUM-IDX)
-                       =   SUMSYU-JIHI-4-TAX    (WRK-SYU-SUM-IDX)
-                       +   LNK-SYU-JIHI-4-TAX  (IDX11)
-                   COMPUTE TTLSYU-JIHI-4-TAX
-                       =   TTLSYU-JIHI-4-TAX
-                       +   LNK-SYU-JIHI-4-TAX  (IDX11)
-      *
-                   COMPUTE SUMSYU-JIHI-5-TAX    (WRK-SYU-SUM-IDX)
-                       =   SUMSYU-JIHI-5-TAX    (WRK-SYU-SUM-IDX)
-                       +   LNK-SYU-JIHI-5-TAX  (IDX11)
-                   COMPUTE TTLSYU-JIHI-5-TAX
-                       =   TTLSYU-JIHI-5-TAX
-                       +   LNK-SYU-JIHI-5-TAX  (IDX11)
-      *
-                   COMPUTE SUMSYU-JIHI-6-TAX    (WRK-SYU-SUM-IDX)
-                       =   SUMSYU-JIHI-6-TAX    (WRK-SYU-SUM-IDX)
-                       +   LNK-SYU-JIHI-6-TAX  (IDX11)
-                   COMPUTE TTLSYU-JIHI-6-TAX
-                       =   TTLSYU-JIHI-6-TAX
-                       +   LNK-SYU-JIHI-6-TAX  (IDX11)
-      *
-                   COMPUTE SUMSYU-JIHI-7-TAX    (WRK-SYU-SUM-IDX)
-                       =   SUMSYU-JIHI-7-TAX    (WRK-SYU-SUM-IDX)
-                       +   LNK-SYU-JIHI-7-TAX  (IDX11)
-                   COMPUTE TTLSYU-JIHI-7-TAX
-                       =   TTLSYU-JIHI-7-TAX
-                       +   LNK-SYU-JIHI-7-TAX  (IDX11)
-      *
-                   COMPUTE SUMSYU-JIHI-8-TAX    (WRK-SYU-SUM-IDX)
-                       =   SUMSYU-JIHI-8-TAX    (WRK-SYU-SUM-IDX)
-                       +   LNK-SYU-JIHI-8-TAX  (IDX11)
-                   COMPUTE TTLSYU-JIHI-8-TAX
-                       =   TTLSYU-JIHI-8-TAX
-                       +   LNK-SYU-JIHI-8-TAX  (IDX11)
-      *
-                   COMPUTE SUMSYU-JIHI-9-TAX    (WRK-SYU-SUM-IDX)
-                       =   SUMSYU-JIHI-9-TAX    (WRK-SYU-SUM-IDX)
-                       +   LNK-SYU-JIHI-9-TAX  (IDX11)
-                   COMPUTE TTLSYU-JIHI-9-TAX
-                       =   TTLSYU-JIHI-9-TAX
-                       +   LNK-SYU-JIHI-9-TAX  (IDX11)
-      *
-                   COMPUTE SUMSYU-JIHI-10-TAX    (WRK-SYU-SUM-IDX)
-                       =   SUMSYU-JIHI-10-TAX    (WRK-SYU-SUM-IDX)
-                       +   LNK-SYU-JIHI-10-TAX  (IDX11)
-                   COMPUTE TTLSYU-JIHI-10-TAX
-                       =   TTLSYU-JIHI-10-TAX
-                       +   LNK-SYU-JIHI-10-TAX  (IDX11)
-      *
-      *            º´»Ò∑◊° æ√»Ò¿«§¢§Í°À
-                   COMPUTE SUMSYU-JIHI-TOTAL-TAX (WRK-SYU-SUM-IDX)
-                       =   SUMSYU-JIHI-TOTAL-TAX (WRK-SYU-SUM-IDX)
-                       +   LNK-SYU-JIHI-TOTAL-TAX (IDX11)
-                   COMPUTE TTLSYU-JIHI-TOTAL-TAX
-                       =   TTLSYU-JIHI-TOTAL-TAX
-                       +   LNK-SYU-JIHI-TOTAL-TAX (IDX11)
-      *
-      *            º´»Òæ√»Ò¿«
-                   COMPUTE SUMSYU-JIHI-TAX  (WRK-SYU-SUM-IDX)
-                       =   SUMSYU-JIHI-TAX  (WRK-SYU-SUM-IDX)
-                       +   LNK-SYU-JIHI-TAX  (IDX11)
-                   COMPUTE TTLSYU-JIHI-TAX
-                       =   TTLSYU-JIHI-TAX
-                       +   LNK-SYU-JIHI-TAX  (IDX11)
-      *
-      *            œ´∫“ΩÈø«
-                   COMPUTE SUMSYU-RSISHOSHIN-MONEY (WRK-SYU-SUM-IDX)
-                       =   SUMSYU-RSISHOSHIN-MONEY (WRK-SYU-SUM-IDX)
-                       +   LNK-SYU-RSISHOSHIN-MONEY (IDX11)
-                   COMPUTE TTLSYU-RSISHOSHIN-MONEY
-                       =   TTLSYU-RSISHOSHIN-MONEY
-                       +   LNK-SYU-RSISHOSHIN-MONEY (IDX11)
-      *
-      *            œ´∫“∫∆ø«
-                   COMPUTE SUMSYU-RSISAISHIN-MONEY (WRK-SYU-SUM-IDX)
-                       =   SUMSYU-RSISAISHIN-MONEY (WRK-SYU-SUM-IDX)
-                       +   LNK-SYU-RSISAISHIN-MONEY (IDX11)
-                   COMPUTE TTLSYU-RSISAISHIN-MONEY
-                       =   TTLSYU-RSISAISHIN-MONEY
-                       +   LNK-SYU-RSISAISHIN-MONEY (IDX11)
-      *
-      *            œ´∫“ªÿ∆≥
-                   COMPUTE SUMSYU-RSISDO-MONEY  (WRK-SYU-SUM-IDX)
-                       =   SUMSYU-RSISDO-MONEY  (WRK-SYU-SUM-IDX)
-                       +   LNK-SYU-RSISDO-MONEY (IDX11)
-                   COMPUTE TTLSYU-RSISDO-MONEY
-                       =   TTLSYU-RSISDO-MONEY
-                       +   LNK-SYU-RSISDO-MONEY (IDX11)
-      *
-      *            œ´∫“§Ω§Œ¬æ
-                   COMPUTE SUMSYU-RSIETC-MONEY (WRK-SYU-SUM-IDX)
-                       =   SUMSYU-RSIETC-MONEY (WRK-SYU-SUM-IDX)
-                       +   LNK-SYU-RSIETC-MONEY (IDX11)
-                   COMPUTE TTLSYU-RSIETC-MONEY
-                       =   TTLSYU-RSIETC-MONEY
-                       +   LNK-SYU-RSIETC-MONEY (IDX11)
-      *
-      *            ø©ªˆŒ≈Õ‹»Ò°  ›∏±°À
-                   COMPUTE SUMSYU-RYOYOHI-SKJ (WRK-SYU-SUM-IDX)
-                       =   SUMSYU-RYOYOHI-SKJ (WRK-SYU-SUM-IDX)
-                       +   LNK-SYU-RYOYOHI-SKJ (IDX11)
-                   COMPUTE TTLSYU-RYOYOHI-SKJ
-                       =   TTLSYU-RYOYOHI-SKJ
-                       +   LNK-SYU-RYOYOHI-SKJ (IDX11)
-      *
-      *            ø©ªˆ…È√¥≥€°  ›∏±°ßº´∏ …È√¥°À
-                   COMPUTE SUMSYU-SKYMONEY-SKJ (WRK-SYU-SUM-IDX)
-                       =   SUMSYU-SKYMONEY-SKJ (WRK-SYU-SUM-IDX)
-                       +   LNK-SYU-SKYMONEY-SKJ (IDX11)
-                   COMPUTE TTLSYU-SKYMONEY-SKJ
-                       =   TTLSYU-SKYMONEY-SKJ
-                       +   LNK-SYU-SKYMONEY-SKJ (IDX11)
-      *
-      *            ø©ªˆ…È√¥≥€°  ›∏±°ßº´∏ …È√¥æ√»Ò¿«°À
-                   COMPUTE SUMSYU-SKYMONEY-SKJ-TAX (WRK-SYU-SUM-IDX)
-                       =   SUMSYU-SKYMONEY-SKJ-TAX (WRK-SYU-SUM-IDX)
-                       +   LNK-SYU-SKYMONEY-SKJ-TAX (IDX11)
-                   COMPUTE TTLSYU-SKYMONEY-SKJ-TAX
-                       =   TTLSYU-SKYMONEY-SKJ-TAX
-                       +   LNK-SYU-SKYMONEY-SKJ-TAX (IDX11)
-      *
-      *            ø©ªˆ…È√¥≥€°  ›∏±°ßº´∏ …È√¥πÁ∑◊°À
-                   COMPUTE SUMSYU-SKYMONEY-SKJ-KEI (WRK-SYU-SUM-IDX)
-                       =   SUMSYU-SKYMONEY-SKJ-KEI (WRK-SYU-SUM-IDX)
-                       +   LNK-SYU-SKYMONEY-SKJ-KEI (IDX11)
-                   COMPUTE TTLSYU-SKYMONEY-SKJ-KEI
-                       =   TTLSYU-SKYMONEY-SKJ-KEI
-                       +   LNK-SYU-SKYMONEY-SKJ-KEI (IDX11)
-      *
-      *            ø©ªˆŒ≈Õ‹»Ò° º´»Ò°À
-                   COMPUTE SUMSYU-RYOYOHI-SKJ-JIHI (WRK-SYU-SUM-IDX)
-                       =   SUMSYU-RYOYOHI-SKJ-JIHI (WRK-SYU-SUM-IDX)
-                       +   LNK-SYU-RYOYOHI-SKJ-JIHI (IDX11)
-                   COMPUTE TTLSYU-RYOYOHI-SKJ-JIHI
-                       =   TTLSYU-RYOYOHI-SKJ-JIHI
-                       +   LNK-SYU-RYOYOHI-SKJ-JIHI (IDX11)
-      *
-      *            ø©ªˆ…È√¥≥€° º´»Ò°ßº´∏ …È√¥°À
-                   COMPUTE SUMSYU-SKYMONEY-SKJ-JIHI (WRK-SYU-SUM-IDX)
-                       =   SUMSYU-SKYMONEY-SKJ-JIHI (WRK-SYU-SUM-IDX)
-                       +   LNK-SYU-SKYMONEY-SKJ-JIHI (IDX11)
-                   COMPUTE TTLSYU-SKYMONEY-SKJ-JIHI
-                       =   TTLSYU-SKYMONEY-SKJ-JIHI
-                       +   LNK-SYU-SKYMONEY-SKJ-JIHI (IDX11)
-      *
-      *            ø©ªˆ…È√¥≥€° º´»Ò°ßº´∏ …È√¥æ√»Ò¿«°À
-                   COMPUTE SUMSYU-SKYMONEY-SKJ-JIHI-TAX
-                                                    (WRK-SYU-SUM-IDX)
-                       =   SUMSYU-SKYMONEY-SKJ-JIHI-TAX
-                                                    (WRK-SYU-SUM-IDX)
-                       +   LNK-SYU-SKYMONEY-SKJ-JIHI-TAX (IDX11)
-                   COMPUTE TTLSYU-SKYMONEY-SKJ-JIHI-TAX
-                       =   TTLSYU-SKYMONEY-SKJ-JIHI-TAX
-                       +   LNK-SYU-SKYMONEY-SKJ-JIHI-TAX (IDX11)
-      *
-      *            ø©ªˆ…È√¥≥€° º´»Ò°ßº´∏ …È√¥πÁ∑◊°À
-                   COMPUTE SUMSYU-SKYMONEY-SKJ-JIHI-KEI
-                                                    (WRK-SYU-SUM-IDX)
-                       =   SUMSYU-SKYMONEY-SKJ-JIHI-KEI
-                                                    (WRK-SYU-SUM-IDX)
-                       +   LNK-SYU-SKYMONEY-SKJ-JIHI-KEI (IDX11)
-                   COMPUTE TTLSYU-SKYMONEY-SKJ-JIHI-KEI
-                       =   TTLSYU-SKYMONEY-SKJ-JIHI-KEI
-                       +   LNK-SYU-SKYMONEY-SKJ-JIHI-KEI (IDX11)
-      *
-      *            ¿∏≥ËŒ≈Õ‹»Ò°  ›∏±°À
-                   COMPUTE SUMSYU-RYOYOHI-LIFE (WRK-SYU-SUM-IDX)
-                       =   SUMSYU-RYOYOHI-LIFE (WRK-SYU-SUM-IDX)
-                       +   LNK-SYU-RYOYOHI-LIFE (IDX11)
-                   COMPUTE TTLSYU-RYOYOHI-LIFE
-                       =   TTLSYU-RYOYOHI-LIFE
-                       +   LNK-SYU-RYOYOHI-LIFE (IDX11)
-      *
-      *            ¿∏≥Ë…È√¥≥€°  ›∏±°ßº´∏ …È√¥°À
-                   COMPUTE SUMSYU-SKYMONEY-LIFE (WRK-SYU-SUM-IDX)
-                       =   SUMSYU-SKYMONEY-LIFE (WRK-SYU-SUM-IDX)
-                       +   LNK-SYU-SKYMONEY-LIFE (IDX11)
-                   COMPUTE TTLSYU-SKYMONEY-LIFE
-                       =   TTLSYU-SKYMONEY-LIFE
-                       +   LNK-SYU-SKYMONEY-LIFE (IDX11)
-      *
-      *            ¿∏≥Ë…È√¥≥€°  ›∏±°ßº´∏ …È√¥æ√»Ò¿«°À
-                   COMPUTE SUMSYU-SKYMONEY-LIFE-TAX (WRK-SYU-SUM-IDX)
-                       =   SUMSYU-SKYMONEY-LIFE-TAX (WRK-SYU-SUM-IDX)
-                       +   LNK-SYU-SKYMONEY-LIFE-TAX (IDX11)
-                   COMPUTE TTLSYU-SKYMONEY-LIFE-TAX
-                       =   TTLSYU-SKYMONEY-LIFE-TAX
-                       +   LNK-SYU-SKYMONEY-LIFE-TAX (IDX11)
-      *
-      *            ¿∏≥Ë…È√¥≥€°  ›∏±°ßº´∏ …È√¥πÁ∑◊°À
-                   COMPUTE SUMSYU-SKYMONEY-LIFE-KEI (WRK-SYU-SUM-IDX)
-                       =   SUMSYU-SKYMONEY-LIFE-KEI (WRK-SYU-SUM-IDX)
-                       +   LNK-SYU-SKYMONEY-LIFE-KEI (IDX11)
-                   COMPUTE TTLSYU-SKYMONEY-LIFE-KEI
-                       =   TTLSYU-SKYMONEY-LIFE-KEI
-                       +   LNK-SYU-SKYMONEY-LIFE-KEI (IDX11)
-      *
-      *            ¿∏≥ËŒ≈Õ‹»Ò° º´»Ò°À
-                   COMPUTE SUMSYU-RYOYOHI-LIFE-JIHI (WRK-SYU-SUM-IDX)
-                       =   SUMSYU-RYOYOHI-LIFE-JIHI (WRK-SYU-SUM-IDX)
-                       +   LNK-SYU-RYOYOHI-LIFE-JIHI (IDX11)
-                   COMPUTE TTLSYU-RYOYOHI-LIFE-JIHI
-                       =   TTLSYU-RYOYOHI-LIFE-JIHI
-                       +   LNK-SYU-RYOYOHI-LIFE-JIHI (IDX11)
-      *
-      *            ¿∏≥Ë…È√¥≥€° º´»Ò°ßº´∏ …È√¥°À
-                   COMPUTE SUMSYU-SKYMONEY-LIFE-JIHI (WRK-SYU-SUM-IDX)
-                       =   SUMSYU-SKYMONEY-LIFE-JIHI (WRK-SYU-SUM-IDX)
-                       +   LNK-SYU-SKYMONEY-LIFE-JIHI (IDX11)
-                   COMPUTE TTLSYU-SKYMONEY-LIFE-JIHI
-                       =   TTLSYU-SKYMONEY-LIFE-JIHI
-                       +   LNK-SYU-SKYMONEY-LIFE-JIHI (IDX11)
-      *
-      *            ¿∏≥Ë…È√¥≥€° º´»Ò°ßº´∏ …È√¥æ√»Ò¿«°À
-                   COMPUTE SUMSYU-SKYMONEY-LIFE-JIHI-TAX
-                                                    (WRK-SYU-SUM-IDX)
-                       =   SUMSYU-SKYMONEY-LIFE-JIHI-TAX
-                                                    (WRK-SYU-SUM-IDX)
-                       +   LNK-SYU-SKYMONEY-LIFE-JIHI-TAX (IDX11)
-                   COMPUTE TTLSYU-SKYMONEY-LIFE-JIHI-TAX
-                       =   TTLSYU-SKYMONEY-LIFE-JIHI-TAX
-                       +   LNK-SYU-SKYMONEY-LIFE-JIHI-TAX (IDX11)
-      *
-      *            ¿∏≥Ë…È√¥≥€° º´»Ò°ßº´∏ …È√¥πÁ∑◊°À
-                   COMPUTE SUMSYU-SKYMONEY-LIFE-JIHI-KEI
-                                                    (WRK-SYU-SUM-IDX)
-                       =   SUMSYU-SKYMONEY-LIFE-JIHI-KEI
-                                                    (WRK-SYU-SUM-IDX)
-                       +   LNK-SYU-SKYMONEY-LIFE-JIHI-KEI (IDX11)
-                   COMPUTE TTLSYU-SKYMONEY-LIFE-JIHI-KEI
-                       =   TTLSYU-SKYMONEY-LIFE-JIHI-KEI
-                       +   LNK-SYU-SKYMONEY-LIFE-JIHI-KEI (IDX11)
-      *
-      *            ººŒ¡∫π≥€
-                   COMPUTE SUMSYU-RMSAGAKU (WRK-SYU-SUM-IDX)
-                       =   SUMSYU-RMSAGAKU (WRK-SYU-SUM-IDX)
-                       +   LNK-SYU-RMSAGAKU (IDX11)
-                   COMPUTE TTLSYU-RMSAGAKU
-                       =   TTLSYU-RMSAGAKU
-                       +   LNK-SYU-RMSAGAKU (IDX11)
-      *
-      *            ¿¡µ·∂‚≥€
-                   COMPUTE SUMSYU-SKYMONEY (WRK-SYU-SUM-IDX)
-                       =   SUMSYU-SKYMONEY (WRK-SYU-SUM-IDX)
-                       +   LNK-SYU-SKYMONEY (IDX11)
-                   COMPUTE TTLSYU-SKYMONEY
-                       =   TTLSYU-SKYMONEY
-                       +   LNK-SYU-SKYMONEY (IDX11)
-      *
-               END-IF
-      *
-           END-PERFORM
-      *
-      *    •º•Ì∑Ô§ŒæÏπÁ§œ•®•È°º§»§π§Î
-           IF    ( SUMSYUNOU-CNT    <=  ZERO )
-               MOVE    "2008"      TO  SPA-ERRCD
-               GO  TO  490-SYUNOU-TAIHI-EXT
-           END-IF
-      *
-           COMPUTE SUMSYUNOU-CNT    =   SUMSYUNOU-CNT +   1
-      *
-      *    •∆°º•÷•Î∫«¬Á∑ÔøÙ•™°º•–°ºª˛§œ•®•È°º§»§π§Î
-           IF    ( SUMSYUNOU-CNT    >   13 )
-               MOVE    "2008"      TO  SPA-ERRCD
-               GO  TO  490-SYUNOU-TAIHI-EXT
-           END-IF
-      *
-      *
-           MOVE    SUMSYUNOU-CNT    TO  SPA-I0-SYUNOU-CNT
-      *
-           MOVE    2               TO  SPA-I0-SYUNOU-TTLDAT-FLG
-                                                   (SUMSYUNOU-CNT)
-           MOVE    "999999"        TO  SPA-I0-SYUNOU-YM-S
-                                                   (SUMSYUNOU-CNT)
-           MOVE    "999999"        TO  SPA-I0-SYUNOU-YM-W
-                                                   (SUMSYUNOU-CNT)
-           MOVE    CNT-TUKISU      TO  SPA-I0-SYUNOU-TUKI-SU
-                                                   (SUMSYUNOU-CNT)
-           MOVE    TTLSYUNOU-REC   TO  SUMSYUNOU-OCC (SUMSYUNOU-CNT)
-      *
-           PERFORM VARYING IDX11   FROM    1   BY  1
-                   UNTIL ( IDX11   >   SPA-I0-SYUNOU-CNT )
-      *
-               MOVE    SUMSYUNOU-OCC (IDX11)
-                                   TO  SPA-I0-SYUNOU-DAT (IDX11)
-               MOVE    SUMSYUDAY-OCC (IDX11)
-                                   TO  SPA-I0-SYUDAY-DAT (IDX11)
-      *
-           END-PERFORM
-      *
-           .
-       490-SYUNOU-TAIHI-EXT.
-           EXIT.
-      *****************************************************************
-      *     ›∏±¡»πÁ§ªºË∆¿ΩËÕ˝
-      *****************************************************************
-       490-HKNCOMBI-GET-SEC            SECTION.
-      *
-           INITIALIZE                  SPA-KYOTUKEY
-                                       SPA-KYOTU-SET
-                                       ORCSHKNSETAREA
-      *
-           MOVE    SPA-SYSYMD          TO  SPA-SRYYMD
-           MOVE    "1"                 TO  SPA-NYUGAIKBN
-           MOVE    SPA-NAI-I01-PTID    TO  SPA-PTID
-           MOVE    SPA-NAI-I01-BIRTHDAY
-                                       TO  SPA-BIRTHDAY
-           MOVE    "2"                 TO  ORCSHKN-KBN
-      *
-           CALL    "ORCSHKNSET"        USING   SPA-AREA
-                                               ORCSHKNSETAREA
-           IF    ( ORCSHKN-ERRCD   NOT =   ZERO )
-               INITIALIZE              ORCSHKNSETAREA
-               GO  TO  490-HKNCOMBI-GET-EXT
-           END-IF
-      *
-           .
-       490-HKNCOMBI-GET-EXT.
-           EXIT.
-      *****************************************************************
-      *     ›∏±¡»πÁ§ª ‘Ω∏ΩËÕ˝
-      *****************************************************************
-       490-HKNCOMBI-EDIT-SEC           SECTION.
-      *
-           MOVE    SPACE                   TO  WRK-HKNCOMBI
-           PERFORM VARYING IDX15   FROM 1  BY  1
-                   UNTIL ( IDX15   >   ORCSHKN-HKN-MAX )
-                     OR  ( IDX15   >   100 )
-      *
-               IF    ( ORCSHKN-GMN-HKNCOMBINUM (IDX15)
-                                   =   WRK-ORCSHKN-HKNCOMBINUM )
-                  IF    ( ORCSHKN-NAI-HKNJANUM (IDX15) =   SPACE )
-                      MOVE    ORCSHKN-GMN-HKNCOMBIMEI (IDX15)
-                                          TO  WRK-HKNCOMBI
-                  ELSE
-                      MOVE    SPACE       TO  WRK-HKNCOMBI
-                      STRING  ORCSHKN-GMN-HKNCOMBIMEI (IDX15)
-                                                  DELIMITED BY  "  "
-                          " ("                    DELIMITED  BY  SIZE
-                          ORCSHKN-NAI-HKNJANUM (IDX15)
-                                                  DELIMITED  BY  SPACE
-                          ")"                     DELIMITED  BY  SIZE
-                      INTO    WRK-HKNCOMBI
-                      END-STRING
-                      INITIALIZE                  ORCSKANACHKAREA
-                      MOVE    "1"                 TO  KANACHK-SYORI
-                      MOVE    WRK-HKNCOMBI        TO  KANACHK-MAE-INPUT
-                      MOVE    50                  TO  KANACHK-MAX-CNT
-                      CALL    "ORCSKANACHK"       USING
-                                                  ORCSKANACHKAREA
-                      MOVE    KANACHK-MAE-INPUT
-                                          TO  WRK-HKNCOMBI
-                  END-IF
-                  MOVE    ORCSHKN-HKN-MAX TO  IDX15
-               END-IF
-      *
-           END-PERFORM
-      *
-           .
-       490-HKNCOMBI-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    ¿¡µ·≥Œ«ß≤ËÃÃ¡´∞‹ΩËÕ˝
@@ -16398,9 +15840,10 @@
            MOVE    "key10"         TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC      =   ZERO )
-               CONTINUE
+               MOVE    MCPDATA-REC TO  SYSKANRI-REC
            ELSE
-               MOVE    1          TO  FLG-SYSKANRI
+               MOVE    1           TO  FLG-SYSKANRI
+               INITIALIZE              SYSKANRI-REC
            END-IF
       *
            MOVE    "tbl_syskanri"  TO  MCP-TABLE

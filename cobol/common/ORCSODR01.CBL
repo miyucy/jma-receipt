@@ -1158,6 +1158,8 @@
            MOVE    ITEM-DOUJITSUKBN
                                    TO  PTNYUINRRK-DOUJITSUKBN
       *
+           MOVE    1               TO  PTNYUINRRK-MAXEDANUM
+      *
            MOVE    SODR-OPID       TO  PTNYUINRRK-OPID
            MOVE    SODR-UPYMD      TO  PTNYUINRRK-CREYMD
                                        PTNYUINRRK-UPYMD

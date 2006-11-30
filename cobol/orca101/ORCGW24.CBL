@@ -45,6 +45,7 @@
       *  03.02.01    NACL-æÆ∆¶¬Ù  06.08.09  …∏∑Á¬–±˛
       *  03.02.02    NACL-æÆ∆¶¬Ù  06.09.12  ƒÍøÙƒ∂≤·¬–±˛
       *  03.04.00    NACL-¬ø°π«º  06/10/26  ∏°∫˜≤ËÃÃœ¢ÕÌæ Ûƒ…≤√ 
+      *  03.04.00    NACL-¬¿≈ƒ    06/11/29  ¬‡±°∫∆∑◊ªª∂Ë ¨ƒ…≤√
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -569,6 +570,9 @@
       *    ∆˛±°ŒÚ…Ωº®•≥•Û•‹
            PERFORM 310-REKI-DISPKBNLST-SET-SEC
       *
+      *    ¬‡±°∫∆∑◊ªª∂Ë ¨•≥•Û•‹
+           PERFORM 310-SAIKEISANKBNLST-SET-SEC
+      *
       *    ¿¡µ·ΩÒ»Øπ‘∂Ë ¨•≥•Û•‹
            PERFORM 310-SKYPRTKBNLST-SET-SEC
       *
@@ -695,7 +699,7 @@
                                    TO  SPA-GMN-W24-SENTEI-FTNKBNMEIL (2)
       *
            MOVE    "3"             TO  SPA-GMN-W24-SENTEI-FTNKBNL    (3)
-           MOVE    "3 …¬≈Ô Ã§À¿ﬂƒÍ"
+           MOVE    "…¬≈Ô Ã§À¿ﬂƒÍ"
                                    TO  SPA-GMN-W24-SENTEI-FTNKBNMEIL (3)
       *
            .
@@ -734,6 +738,24 @@
       *
            .
        310-REKI-DISPKBNLST-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    ∆˛±°ŒÚ…Ωº®•≥•Û•‹
+      *****************************************************************
+       310-SAIKEISANKBNLST-SET-SEC     SECTION.
+      *
+           MOVE    2               TO  SPA-GMN-W24-SAIKEISANKBN-MAX
+      *
+           MOVE    "0"             TO  SPA-GMN-W24-SAIKEISANKBNL    (1)
+           MOVE    "º˝«º∫∆∫Ó¿Æ"
+                                   TO  SPA-GMN-W24-SAIKEISANKBNMEIL (1)
+      *
+           MOVE    "1"             TO  SPA-GMN-W24-SAIKEISANKBNL    (2)
+           MOVE    "º˝«ºƒ˚¿µ"
+                                   TO  SPA-GMN-W24-SAIKEISANKBNMEIL (2)
+      *
+           .
+       310-SAIKEISANKBNLST-SET-EXT.
            EXIT.
       *****************************************************************
       *    ¿¡µ·ΩÒ»Øπ‘∂Ë ¨•≥•Û•‹
@@ -1165,7 +1187,7 @@
                MOVE    ZERO            TO  SPA-GMN-W24-SENTEI-TANKA
                MOVE    ZERO            TO  SPA-GMN-W24-SENTEI-TANKAIP
                MOVE    ZERO            TO  SPA-GMN-W24-SENTEI-TANKARJ
-               MOVE    SPACE           TO  SPA-GMN-W24-SENTEI-TAX
+               MOVE    SPACE           TO  SPA-GMN-W24-SENTEI-TAX-G
            END-EVALUATE
       *
       *    ∆˛±°ŒÚ…Ωº®∂Ë ¨
@@ -1176,6 +1198,16 @@
            ELSE
                MOVE    SPA-GMN-W24-REKI-DISPKBNLST (1)
                                        TO  SPA-GMN-W24-REKI-DISPKBN-G
+           END-IF
+      *
+      *    ¬‡±°∫∆∑◊ªª∂Ë ¨
+           MOVE    SYS-5000-SAIKEISANKBN   TO  WRK-CMB-CD
+           PERFORM 4200-SAIKEISANKBNLST-CHK-SEC
+           IF    ( WRK-CMB-ITM     NOT =   SPACE )
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-W24-SAIKEISANKBN-G
+           ELSE
+               MOVE    SPA-GMN-W24-SAIKEISANKBNLST (1)
+                                       TO  SPA-GMN-W24-SAIKEISANKBN-G
            END-IF
       *
       *    ¿¡µ·ΩÒ»Øπ‘»Øπ‘∂Ë ¨
@@ -1511,6 +1543,9 @@
       *    ∆˛±°ŒÚ…Ωº®∂Ë ¨
            MOVE    W24-REKI-DISPKBN    TO  SPA-GMN-W24-REKI-DISPKBN-G
       *
+      *    ¬‡±°∫∆∑◊ªª∂Ë ¨
+           MOVE    W24-SAIKEISANKBN    TO  SPA-GMN-W24-SAIKEISANKBN-G
+      *
       *    ¿¡µ·ΩÒ»Øπ‘∂Ë ¨
            MOVE    W24-SKYPRTKBN       TO  SPA-GMN-W24-SKYPRTKBN-G
       *
@@ -1642,6 +1677,12 @@
       *
       *    ∆˛±°ŒÚ…Ωº®∂Ë ¨•¡•ß•√•ØΩËÕ˝
            PERFORM 4101-REKI-DISPKBN-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
+      *    ¬‡±°∫∆∑◊ªª∂Ë ¨•¡•ß•√•ØΩËÕ˝
+           PERFORM 4101-SAIKEISANKBN-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
@@ -2089,6 +2130,9 @@
       *    ∆˛±°ŒÚ…Ωº®∂Ë ¨
            MOVE    SPA-GMN-W24-REKI-DISPKBN
                                    TO  SYS-5000-REKI-DISPKBN
+      *    ¬‡±°∫∆∑◊ªª∂Ë ¨
+           MOVE    SPA-GMN-W24-SAIKEISANKBN
+                                   TO  SYS-5000-SAIKEISANKBN
       *
       *    ¿¡µ·ΩÒ»Øπ‘∂Ë ¨
            MOVE    SPA-GMN-W24-SKYPRTKBN
@@ -2640,7 +2684,7 @@
                MOVE    ZERO            TO  SPA-GMN-W24-SENTEI-TANKA
                MOVE    ZERO            TO  SPA-GMN-W24-SENTEI-TANKAIP
                MOVE    ZERO            TO  SPA-GMN-W24-SENTEI-TANKARJ
-               MOVE    SPACE           TO  SPA-GMN-W24-SENTEI-TAX
+               MOVE    SPACE           TO  SPA-GMN-W24-SENTEI-TAX-G
            END-EVALUATE
       *
            .
@@ -2722,6 +2766,25 @@
            .
       *
        4101-REKI-DISPKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¬‡±°∫∆∑◊ªª∂Ë ¨•¡•ß•√•ØΩËÕ˝
+      *****************************************************************
+       4101-SAIKEISANKBN-CHK-SEC       SECTION.
+      *
+           MOVE    SPA-GMN-W24-SAIKEISANKBN
+                                       TO  WRK-CMB-CD
+           PERFORM 4200-SAIKEISANKBNLST-CHK-SEC
+           IF    ( WRK-CMB-ITM         =   SPACE )
+               MOVE    SPA-GMN-W24-SAIKEISANKBNLST (1)
+                                       TO  SPA-GMN-W24-SAIKEISANKBN-G
+           ELSE
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-W24-SAIKEISANKBN-G
+           END-IF
+      *
+           .
+      *
+       4101-SAIKEISANKBN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    ¿¡µ·ΩÒ»Øπ‘∂Ë ¨•¡•ß•√•ØΩËÕ˝
@@ -2970,6 +3033,30 @@
            .
       *
        4200-REKI-DISPKBNLST-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¬‡±°∫∆∑◊ªª∂Ë ¨•≥•Û•‹•¡•ß•√•ØΩËÕ˝
+      *****************************************************************
+       4200-SAIKEISANKBNLST-CHK-SEC   SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM-G
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-W24-SAIKEISANKBN-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-W24-SAIKEISANKBNL (IDX-CMB)
+                                       =   WRK-CMB-CD )
+                   MOVE    SPA-GMN-W24-SAIKEISANKBNLST (IDX-CMB)
+                                       TO  WRK-CMB-ITM
+                   MOVE    IDX-CMB     TO  WRK-CMB-IDX
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+      *
+       4200-SAIKEISANKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
       *    ¿¡µ·ΩÒ»Øπ‘∂Ë ¨•≥•Û•‹•¡•ß•√•ØΩËÕ˝
@@ -3357,6 +3444,8 @@
       *
            MOVE    SPA-GMN-W24-REKI-DISPKBNLST (1)
                                    TO  SPA-GMN-W24-REKI-DISPKBN-G
+           MOVE    SPA-GMN-W24-SAIKEISANKBNLST (1)
+                                   TO  SPA-GMN-W24-SAIKEISANKBN-G
            MOVE    SPA-GMN-W24-SKYPRTKBNLST    (2)
                                    TO  SPA-GMN-W24-SKYPRTKBN-G
            MOVE    SPA-GMN-W24-MISYUPRTKBNLST  (1)
@@ -3823,6 +3912,19 @@
       *
            END-PERFORM
       *
+      *    ¬‡±°∫∆∑◊ªª∂Ë ¨
+           MOVE    SPA-GMN-W24-SAIKEISANKBN-G
+                                       TO  W24-SAIKEISANKBN
+           MOVE    SPA-GMN-W24-SAIKEISANKBN-MAX
+                                       TO  W24-SAIKEISANKBN-CNT
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   W24-SAIKEISANKBN-CNT )
+      *
+               MOVE    SPA-GMN-W24-SAIKEISANKBNLST (IDX0)
+                                       TO  W24-SAIKEISANKBN-ITM (IDX0)
+      *
+           END-PERFORM
+      *
       *    ¿¡µ·ΩÒ»Øπ‘∂Ë ¨
            MOVE    SPA-GMN-W24-SKYPRTKBN-G
                                        TO  W24-SKYPRTKBN
@@ -4096,6 +4198,8 @@
                MOVE    "SENTEI_TAX"    TO  MCP-WIDGET
            WHEN    042
                MOVE    "REKI_DISPKBN"  TO  MCP-WIDGET
+           WHEN    056
+               MOVE    "SAIKEISANKBN"  TO  MCP-WIDGET
            WHEN    043
                MOVE    "SKYPRTKBN"     TO  MCP-WIDGET
            WHEN    044
@@ -4224,6 +4328,8 @@
            WHEN    "SENTEI_TAX"
                MOVE    042         TO  SPA-GMN-W24-CUR
            WHEN    "REKI_DISPKBN"
+               MOVE    056             TO  SPA-GMN-W24-CUR
+           WHEN    "SAIKEISANKBN"
                MOVE    043             TO  SPA-GMN-W24-CUR
            WHEN    "SKYPRTKBN"
                MOVE    044             TO  SPA-GMN-W24-CUR

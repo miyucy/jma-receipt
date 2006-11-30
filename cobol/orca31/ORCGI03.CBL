@@ -659,7 +659,7 @@
                                    TO  PTNYUINRRK-PTID
            MOVE    SPA-I01-I03-PTRRKNUM
                                    TO  PTNYUINRRK-RRKNUM
-           MOVE    SPA-I01-I03-PTRRKEDANUM
+           MOVE    1
                                    TO  PTNYUINRRK-RRKEDANUM
            MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
            MOVE    "PTNYUINRRK-KEY"
@@ -1234,7 +1234,7 @@
                                    TO  PTNYUINRRK-PTID
            MOVE    SPA-I01-I03-PTRRKNUM
                                    TO  PTNYUINRRK-RRKNUM
-           MOVE    SPA-I01-I03-PTRRKEDANUM
+           MOVE    1
                                    TO  PTNYUINRRK-RRKEDANUM
            MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
            MOVE    "PTNYUINRRK-KEY"
@@ -1356,7 +1356,7 @@
            END-IF
       *
       *    Æþ±¡ÍúÎò»ÞÈÖ¹æ
-           MOVE    SPA-I01-I03-PTRRKEDANUM
+           MOVE    1
                                    TO  PTNYUINRRK-RRKEDANUM
       *
       *    ÉÂÅïÌ¾¾Î
@@ -1399,6 +1399,8 @@
            ELSE
                MOVE    "0"         TO  PTNYUINRRK-NYUINCHUKBN
            END-IF
+      *
+           MOVE    1               TO  PTNYUINRRK-MAXEDANUM
       *
            IF    ( WRK-UPDKBN      =   "UPD" )
       *

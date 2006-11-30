@@ -74,8 +74,8 @@
       *Âà±¡¾ÚÌÀ½ñµ­ºÜ¶èÊ¬
                05  SYS-5000-TAIKSIKBN
                                            PIC  X(01).
-      *Í½È÷¡Ê£³¡Ë
-               05                          PIC  X(01).
+      *ºÆ·×»»¶èÊ¬
+               05  SYS-5000-SAIKEISANKBN   PIC  X(01).
       *ÀÁµá½ñÌ¤¼ý³Û°õºþ¶èÊ¬
                05  SYS-5000-SKYMISYUPRTKBN
                                            PIC  X(01).

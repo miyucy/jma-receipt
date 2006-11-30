@@ -1,5 +1,8 @@
 I04	{
 	fixed3	{
+		B05	{
+			label	varchar(10);
+		};
 		LBLTAIINKEISAN	{
 			style   varchar(20);
 			value	varchar(20);

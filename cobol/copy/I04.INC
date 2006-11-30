@@ -24,6 +24,7 @@
       *
         02  I04.
       *     02  I04-FIXED3.
+              03  I04-B05-LABEL                    PIC X(10).
               03  I04-LBLTAIINKEISAN-G.
                 04  I04-LBLTAIINKEISAN-STYLE
                                          PIC X(20).

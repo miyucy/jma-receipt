@@ -579,6 +579,17 @@
                GO  TO  2101-PTNYUINRRK-INSERT-EXT
            END-IF
       *
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "upd4"              TO  MCP-PATHNAME
+           PERFORM 910-DBUPDATE-SEC
+           IF    ( MCP-RC      NOT =   ZERO )
+               DISPLAY "ORCSDR05 ERROR 009 :PTNYUINRRK UPDATE ERR"
+                       " PTID="        SODR-PTID
+                       " KARTE-KEY="   SODR-KARTE-KEY
+               MOVE    1               TO  FLG-END
+               GO  TO  2101-PTNYUINRRK-INSERT-EXT
+           END-IF
+      *
            MOVE    PTNYUINRRK-REC      TO  TRRK-REC
       *
            .
