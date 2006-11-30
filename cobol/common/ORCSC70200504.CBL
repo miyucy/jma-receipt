@@ -616,6 +616,8 @@
                            EVALUATE    WRK-COM-BUIKBN (IDX-Z)
       *                        ∆¨…Ù
                                WHEN    "1"
+      *                        ∂Ì¥¥
+                               WHEN    "2"
                                    MOVE    2       TO  FLG-BUIKBN
       *                        ∂ª…Ù°¶ ¢…Ù
                                WHEN    "5"
