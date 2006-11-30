@@ -65,6 +65,7 @@
       *  03.03.01    NACL-ÌçÏÆ    06/10/23  Ä¹´üÊ»ÍÑ¤ÎÊÝ¸±ÁÈ¤ß¹ç¤ï¤»½¤Àµ
       *  03.04.01    NACL-ÌçÏÆ    06/11/20  ¹â³Û°ÑÇ¤Ê§¤¤À©ÅÙ¡¢¹â³Û£´²óÌÜ°Ê¹ß
       *                                     ÂÐ±þ
+      *  03.04.02    NACL-ÌçÏÆ    06/11/29  ÊÝ¸±ÁÈ¤ß¹ç¤ï¤»ºîÀ®¾ò·ï½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -807,12 +808,12 @@
            PERFORM     VARYING   IDZ   FROM    1   BY  1
                        UNTIL   ( IDZ   >       100 )
                        OR      ( IDZ   >       WRK-LCOMB-MAX )
-             IF  ( WRK-LCOMB-GAI-KFTNRATE (IDZ)    =   ZERO ) AND
-                 ( WRK-LCOMB-GAI-KKOTGAK  (IDZ)    =   ZERO ) AND
-                 ( WRK-LCOMB-GAI-KJGNGAK  (IDZ)    =   ZERO ) AND
-                 ( WRK-LCOMB-GAI-FTNKBN   (IDZ)    =   "1"  )
-               CONTINUE
-             ELSE
+      ***    IF  ( WRK-LCOMB-GAI-KFTNRATE (IDZ)    =   ZERO ) AND
+      ***        ( WRK-LCOMB-GAI-KKOTGAK  (IDZ)    =   ZERO ) AND
+      ***        ( WRK-LCOMB-GAI-KJGNGAK  (IDZ)    =   ZERO ) AND
+      ***        ( WRK-LCOMB-GAI-FTNKBN   (IDZ)    =   "1"  )
+      ***      CONTINUE
+      ***    ELSE
               IF     (  FLG-SYOCYO   =  ZERO                    )
               OR     (( FLG-SYOCYO   =   1                     ) AND
                       ((WRK-LCOMB-KOH1HKNNUM(IDZ)(1:2) = "99" ) OR
@@ -921,7 +922,7 @@
                                               MCPDATA-REC
                END-IF
               END-IF
-             END-IF
+      ***    END-IF
            END-PERFORM
       *
            INITIALIZE                      WRK-LCOMB-AREA
