@@ -55,6 +55,16 @@
       *
       *    ибл╬епо©мя╡Хллёсёпёа
            COPY    "C02SCR-SPA".
+           02  SPA-C02-PTBYOMEI-REC.
+           COPY    "CPPTBYOMEI.INC"
+                                   REPLACING  //PTBYO-//
+                                   BY         //SPA-C02-PTBYO-//.
+           02  WRK-C02-HAISIYMD-OCC.
+               03  WRK-C02-HAISIYMD-O  PIC 9(08)   OCCURS  6.
+           02  WRK-C02-PTBYOMEI-REC    OCCURS  6.
+           COPY    "CPPTBYOMEI.INC"
+                                   REPLACING   //PTBYO-//
+                                   BY          //WRK-C02-PTBYO-//.
       *
       *    ╔у╔И╔╟нн╟Х
        01  FLG-AREA.

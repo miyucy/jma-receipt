@@ -49,6 +49,7 @@
       *                                     ÅÐÏ¿¤ò²ÄÇ½¤È¤¹¤ë
       *
       *  03.04.01    NACL-Æ£¸¶    06/11/01  ÉÂÌ¾°ì³çºï½üµ¡Ç½ÂÐ±þ
+      *  03.04.02    NACL-Æ£¸¶    06/11/27   £Ó£Ð£Á¥Ç¡¼¥¿¤Îºï½ü
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -56,46 +57,10 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    £Ó£Ð£Á¥Ç¡¼¥¿
-           SELECT  SPASCR-FILE     ASSIGN  FILE-NAME1
-                                   ORGANIZATION    IS  LINE
-                                                       SEQUENTIAL 
-                                   FILE    STATUS  IS  STS-SPASCR.
-      *
        DATA                    DIVISION.
        FILE                        SECTION.
       *
-      *    £Ó£Ð£Á¥Ñ¥é¥á¥¿¥Ç¡¼¥¿
-       FD  SPASCR-FILE.
-       01  SPA-DATA-REC            PIC X(30000).
-      *
-      *
        WORKING-STORAGE             SECTION.
-      *
-      * £Ó£Ð£Á¥Ñ¥é¥á¥¿¥Ç¡¼¥¿
-       01  FILE-NAME1.
-           03  FILLE               PIC X(18)   VALUE
-                                               "/var/tmp/C02SPASCR".
-           03  FILE-TERMID         PIC X(64)   VALUE   SPACE.
-           03  FILLER              PIC X(04)   VALUE   ".TXT".
-      *
-       01  WRK-DATA-REC.
-           03  WRK-DATA            PIC X(30000)
-                                   OCCURS  10.
-      * 
-       01  SPA-SCR-REC.
-           02  SPA-PTBYOMEI-REC.
-           COPY    "CPPTBYOMEI.INC"
-                                   REPLACING  //PTBYO-//
-                                   BY         //SPA-PTBYO-//.
-      *01  WRK-PTBYOMEI-AREA.
-           02  WRK-HAISIYMD-OCC.
-               03  WRK-HAISIYMD-O  PIC 9(08)   OCCURS  6.
-           02  WRK-PTBYOMEI-REC    OCCURS  6.
-           COPY    "CPPTBYOMEI.INC"
-                                   REPLACING   //PTBYO-//
-                                   BY          //WRK-PTBYO-//.
-           COPY    "CPC02SPASCR.INC".
       *   
            COPY    "ENUM-VALUE".
       *
@@ -107,10 +72,16 @@
       *
       *    ÉÂÌ¾ÅÐÏ¿ÍÑ²èÌÌ£Ó£Ð£Á
            COPY    "C02SCR-SPA".
-      *
-      *    ¥Õ¥é¥°ÎÎ°è
-       01  STS-AREA.
-           03  STS-SPASCR          PIC X(02).
+           02  SPA-C02-PTBYOMEI-REC.
+           COPY    "CPPTBYOMEI.INC"
+                                   REPLACING  //PTBYO-//
+                                   BY         //SPA-C02-PTBYO-//.
+           02  WRK-C02-HAISIYMD-OCC.
+               03  WRK-C02-HAISIYMD-O  PIC 9(08)   OCCURS  6.
+           02  WRK-C02-PTBYOMEI-REC    OCCURS  6.
+           COPY    "CPPTBYOMEI.INC"
+                                   REPLACING   //PTBYO-//
+                                   BY          //WRK-C02-PTBYO-//.
       *
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
@@ -285,9 +256,6 @@
            MOVE    SPA-WORK        TO  SPA-C01KYOUTU
            MOVE    SPA-FREE        TO  SPA-C02FREE
       *
-      *    ²èÌÌ£Ó£Ð£ÁÆÉ¤ß¹þ¤ß
-           PERFORM 1002-C02SPA-SET-SEC
-      *
            MOVE    SPACE           TO  SPA-ERRCD
            MOVE    ZERO            TO  FLG-END
       *
@@ -307,11 +275,6 @@
                PERFORM 500-SET-SCREEN
            END-IF
       *
-      *    ²èÌÌ£Ó£Ð£Á½ñ¹þ¤ß
-      *****IF      FLG-END             =   ZERO
-      *****    PERFORM 1003-C02SPA-OUT-SEC
-      *****END-IF
-      *
            MOVE    SPA-C01KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
            MOVE    SPA-C02FREE     TO  SPA-FREE
@@ -319,73 +282,6 @@
            .
            EXIT    PROGRAM
            .
-      *
-      *****************************************************************
-      *    £Ó£Ð£Á¥Ç¡¼¥¿¥»¥Ã¥È½èÍý
-      *****************************************************************
-      *
-       1002-C02SPA-SET-SEC             SECTION.
-      *
-           MOVE    SPA-TERMID          TO  FILE-TERMID
-      *
-           OPEN    INPUT               SPASCR-FILE
-           IF      STS-SPASCR     NOT =   ZERO
-               GO      TO         1002-C02SPA-SET-EXT
-           END-IF
-      *
-           INITIALIZE          SPA-SCR-REC
-           INITIALIZE          WRK-DATA-REC
-           MOVE    ZERO                TO  FLG-SPASCR
-           MOVE    ZERO                TO  IDX
-           PERFORM UNTIL       FLG-SPASCR  =   1
-               READ    SPASCR-FILE
-                   AT  END
-                       MOVE   1            TO  FLG-SPASCR
-                   NOT AT  END
-                       ADD    1            TO  IDX
-                       MOVE   SPA-DATA-REC     TO  WRK-DATA (IDX)
-               END-READ
-           END-PERFORM
-      *
-           MOVE    WRK-DATA-REC        TO  SPA-SCR-REC 
-      *
-           CLOSE                       SPASCR-FILE
-           .
-       1002-C02SPA-SET-EXT.
-           EXIT.
-      *****************************************************************
-      *    £Ó£Ð£Á¥Ç¡¼¥¿£×£Ò£É£Ô£Å½èÍý
-      *****************************************************************
-       1003-C02SPA-OUT-SEC             SECTION.
-      *
-           MOVE    SPA-TERMID          TO  FILE-TERMID
-      *
-           OPEN    OUTPUT              SPASCR-FILE
-           IF      STS-SPASCR     NOT =   ZERO
-               DISPLAY "C02SPASCR OUT OPEN ERR:"   STS-SPASCR
-      ***      STOP    " "
-               GO  TO  1003-C02SPA-SET-EXT
-           END-IF
-           MOVE    SPACE              TO         WRK-DATA-REC
-      *
-           MOVE    SPA-SCR-REC        TO  WRK-DATA-REC 
-           PERFORM VARYING     IDX     FROM   1   BY  1
-                   UNTIL      (IDX     >   10  )  OR
-                              (WRK-DATA (IDX)     =   SPACE)
-      *
-               MOVE    WRK-DATA (IDX)      TO  SPA-DATA-REC
-               WRITE                       SPA-DATA-REC
-               IF      STS-SPASCR     NOT =   ZERO
-                   DISPLAY "C02SPASCR OUT WRITE ERR:"   STS-SPASCR
-      ***          STOP    " "
-                   GO  TO  1003-C02SPA-SET-EXT
-                END-IF
-           END-PERFORM
-      *
-           CLOSE                       SPASCR-FILE
-           .
-       1003-C02SPA-SET-EXT.
-           EXIT.
       *
       *****************************************************************
       *    ½é´ü½èÍý

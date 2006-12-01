@@ -205,6 +205,9 @@
       *                                     遷移がエラーにならないようにする
       *
       *  03.04.01    NACL-藤原    06/11/01  病名一括削除機能対応
+      *  03.04.02    NACL-藤原    06/11/27  ＳＰＡデータの削除
+      *                                     入外区分、処理区分変更時の入力
+      *                                     項目のクリア
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -212,46 +215,10 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    ＳＰＡデータ
-           SELECT  SPASCR-FILE     ASSIGN  FILE-NAME1
-                                   ORGANIZATION    IS  LINE
-                                                       SEQUENTIAL 
-                                   FILE    STATUS  IS  STS-SPASCR.
-      *
        DATA                    DIVISION.
        FILE                        SECTION.
       *
-      *    ＳＰＡパラメタデータ
-       FD  SPASCR-FILE.
-       01  SPA-DATA-REC            PIC X(30000).
-      *
-      *
        WORKING-STORAGE             SECTION.
-      *
-      * ＳＰＡパラメタデータ
-       01  FILE-NAME1.
-           03  FILLE               PIC X(18)   VALUE
-                                               "/var/tmp/C02SPASCR".
-           03  FILE-TERMID         PIC X(64)   VALUE   SPACE.
-           03  FILLER              PIC X(04)   VALUE   ".TXT".
-      *
-       01  WRK-DATA-REC.
-           03  WRK-DATA            PIC X(30000)
-                                   OCCURS  10.
-      * 
-       01  SPA-SCR-REC.
-           02  SPA-PTBYOMEI-REC.
-           COPY    "CPPTBYOMEI.INC"
-                                   REPLACING  //PTBYO-//
-                                   BY         //SPA-PTBYO-//.
-      *01  WRK-PTBYOMEI-AREA.
-           02  WRK-HAISIYMD-OCC.
-               03  WRK-HAISIYMD-O  PIC 9(08)   OCCURS  6.
-           02  WRK-PTBYOMEI-REC    OCCURS  6.
-           COPY    "CPPTBYOMEI.INC"
-                                   REPLACING   //PTBYO-//
-                                   BY          //WRK-PTBYO-//.
-           COPY    "CPC02SPASCR.INC".
       *
       *    スパ領域
            COPY    "COMMON-SPA".
@@ -261,12 +228,18 @@
       *
       *    病名登録用画面ＳＰＡ
            COPY    "C02SCR-SPA".
+           02  SPA-PTBYOMEI-REC.
+           COPY    "CPPTBYOMEI.INC"
+                                   REPLACING  //PTBYO-//
+                                   BY         //SPA-PTBYO-//.
+           02  WRK-HAISIYMD-OCC.
+               03  WRK-HAISIYMD-O  PIC 9(08)   OCCURS  6.
+           02  WRK-PTBYOMEI-REC    OCCURS  6.
+           COPY    "CPPTBYOMEI.INC"
+                                   REPLACING   //PTBYO-//
+                                   BY          //WRK-PTBYO-//.
       *
            COPY    "ENUM-VALUE".
-      *
-      *    フラグ領域
-       01  STS-AREA.
-           03  STS-SPASCR          PIC X(02).
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -281,7 +254,6 @@
            03  FLG-SPASCR          PIC 9(01).
            03  FLG-PTRSIINF        PIC 9(01).
       *
-           03  FLG-END2            PIC 9(01).
            03  FLG-UPDKBN          PIC 9(01).
            03  FLG-ROW             PIC 9(01).
       *
@@ -616,15 +588,11 @@
        000-PROC-SEC                SECTION.
       *
            INITIALIZE                  FLG-AREA
-           INITIALIZE                  STS-AREA
            INITIALIZE                  WRK-AREA
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-FREE        TO  SPA-C02FREE
            MOVE    SPA-WORK        TO  SPA-C01KYOUTU
-      *
-      *    画面ＳＰＡ読み込み
-           PERFORM 1002-C02SPA-SET-SEC
       *
            MOVE    SPACE           TO  SPA-ERRCD
            MOVE    ZERO            TO  FLG-END
@@ -645,12 +613,6 @@
                PERFORM 500-SET-SCREEN
            END-IF
       *
-      *    画面ＳＰＡ書込み
-           IF      FLG-END2            =   ZERO
-               PERFORM 1003-C02SPA-OUT-SEC
-           END-IF
-      *
-      *
            MOVE    SPA-C01KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
            MOVE    SPA-C02FREE     TO  SPA-FREE
@@ -658,80 +620,12 @@
            .
            EXIT    PROGRAM
            .
-      *
-      *****************************************************************
-      *    ＳＰＡデータセット処理
-      *****************************************************************
-      *
-       1002-C02SPA-SET-SEC             SECTION.
-      *
-           MOVE    SPA-TERMID          TO  FILE-TERMID
-      *
-           OPEN    INPUT               SPASCR-FILE
-           IF      STS-SPASCR     NOT =   ZERO
-               GO      TO         1002-C02SPA-SET-EXT
-           END-IF
-      *
-           INITIALIZE          SPA-SCR-REC
-           INITIALIZE          WRK-DATA-REC
-           MOVE    ZERO                TO  FLG-SPASCR
-           MOVE    ZERO                TO  IDX
-           PERFORM UNTIL       FLG-SPASCR  =   1
-               READ    SPASCR-FILE
-                   AT  END
-                       MOVE   1            TO  FLG-SPASCR
-                   NOT AT  END
-                       ADD    1            TO  IDX
-                       MOVE   SPA-DATA-REC     TO  WRK-DATA (IDX)
-               END-READ
-           END-PERFORM
-      *
-           MOVE    WRK-DATA-REC        TO  SPA-SCR-REC 
-      *
-           CLOSE                       SPASCR-FILE
-           .
-       1002-C02SPA-SET-EXT.
-           EXIT.
-      *****************************************************************
-      *    ＳＰＡデータＷＲＩＴＥ処理
-      *****************************************************************
-       1003-C02SPA-OUT-SEC             SECTION.
-      *
-           MOVE    SPA-TERMID          TO  FILE-TERMID
-      *
-           OPEN    OUTPUT              SPASCR-FILE
-           IF      STS-SPASCR     NOT =   ZERO
-               DISPLAY "C02SPASCR OUT OPEN ERR:"   STS-SPASCR
-      ***      STOP    " "
-               GO  TO  1003-C02SPA-SET-EXT
-           END-IF
-           MOVE    SPACE              TO         WRK-DATA-REC
-      *
-           MOVE    SPA-SCR-REC        TO  WRK-DATA-REC 
-           PERFORM VARYING     IDX     FROM   1   BY  1
-                   UNTIL      (IDX     >   10  )  OR
-                              (WRK-DATA (IDX)     =   SPACE)
-      *
-               MOVE    WRK-DATA (IDX)      TO  SPA-DATA-REC
-               WRITE                       SPA-DATA-REC
-               IF      STS-SPASCR     NOT =   ZERO
-                   DISPLAY "C02SPASCR OUT WRITE ERR:"   STS-SPASCR
-      ***          STOP    " "
-                   GO  TO  1003-C02SPA-SET-EXT
-                END-IF
-           END-PERFORM
-      *
-           CLOSE                       SPASCR-FILE
-           .
-       1003-C02SPA-SET-EXT.
-           EXIT.
       *****************************************************************
       *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
            INITIALIZE                  FLG-AREA
-           INITIALIZE                  STS-AREA
            INITIALIZE                  WRK-AREA
       *
       *    エラー画面より
@@ -741,11 +635,9 @@
            ELSE
       *        初期画面セット
                PERFORM 300-SCREEN-SEC
-      *----(01.00.02) LINE ADD START ----------------------------------
                IF      FLG-END             =   1
                    GO      TO      100-INIT-EXT
                END-IF
-      *----(01.00.02) LINE ADD END   ----------------------------------
       *        画面編集
                PERFORM 500-GMNHEN-SEC
                IF      SPA-ERRCD       NOT =   SPACE
@@ -5684,10 +5576,11 @@
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI 
            MOVE    SPA-GMN-C02-BYOMEI  TO  KANACHK-MAE-INPUT
+           MOVE    80                  TO  KANACHK-MAX-CNT
            CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
+           MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-C02-BYOMEI
            IF      KANACHK-RC          =   ZERO
-           AND     KANACHK-SYUBETU     =   "2"
-               MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-C02-BYOMEI
+           AND     KANACHK-SYUBETU     =   2
       *        病名文字数
                IF      KANACHK-MAX     >   80
                    MOVE    "0007"              TO  SPA-ERRCD
@@ -5927,10 +5820,11 @@
            MOVE    "1"                 TO  KANACHK-SYORI 
            MOVE    SPA-GMN-C02-CHARTBYOMEI
                                        TO  KANACHK-MAE-INPUT
+           MOVE    80                  TO  KANACHK-MAX-CNT
            CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
+           MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-C02-BYOMEI
            IF      KANACHK-RC          =   ZERO
            AND     KANACHK-SYUBETU     =   "2"
-               MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-C02-CHARTBYOMEI
       *        病名文字数
                IF      KANACHK-MAX     >   80
                    MOVE    "0033"          TO  SPA-ERRCD
@@ -5988,6 +5882,18 @@
       *
            MOVE    32                  TO  SPA-GMN-C02-CUR
       *
+           INITIALIZE                  SPA-GMN-C02-KOUMOKU
+                                       SPA-NAI-C02-KOUMOKU
+                                       SPA-NAI-C02-SELNO
+                                       SPA-C02-UPDFLG
+                                       SPA-C02-IKOFLG
+      *                              
+                                       SPA-GMN-C02-TBL
+                                       SPA-NAI-C02-TBL
+                                       SPA-GMN-C02-MAX
+                                       SPA-PTBYOMEI-REC
+           MOVE    SPA-NAI-C02-SYSYMD  TO  SPA-NAI-C02-SRYYMD
+      *
            MOVE    C02-SYOKBN          TO  SPA-GMN-C02-SYOKBN-G
       *
       *****IF      SPA-GMN-C02-SRYKA  =   SPACE
@@ -6034,7 +5940,19 @@
       *   
            MOVE    33                   TO  SPA-GMN-C02-CUR
       *
-           MOVE    C02-HNYUGAIKBN       TO  SPA-GMN-C02-HNYUGAIKBN-G
+           INITIALIZE                  SPA-GMN-C02-KOUMOKU
+                                       SPA-NAI-C02-KOUMOKU
+                                       SPA-NAI-C02-SELNO
+                                       SPA-C02-UPDFLG
+                                       SPA-C02-IKOFLG
+      *                              
+                                       SPA-GMN-C02-TBL
+                                       SPA-NAI-C02-TBL
+                                       SPA-GMN-C02-MAX
+                                       SPA-PTBYOMEI-REC
+           MOVE    SPA-NAI-C02-SYSYMD  TO  SPA-NAI-C02-SRYYMD
+      *
+           MOVE    C02-HNYUGAIKBN      TO  SPA-GMN-C02-HNYUGAIKBN-G
       *
            MOVE    SPA-GMN-C02-HNYUGAIKBN
                                        TO  WRK-KBN
@@ -6162,14 +6080,6 @@
       *
       *    排他制御解除処理
            PERFORM 990-LOCK-OUT-SEC
-      *
-      *    ファイルクリア
-           MOVE    SPA-TERMID          TO  FILE-TERMID
-           MOVE    ZERO                TO  IF-RESULT
-           MOVE    FILE-NAME1          TO  IF-FILENAME
-           CALL    "orcfiledel"        USING
-                                       ORCSFDELAREA
-           MOVE    1                   TO  FLG-END2
       *
            MOVE    SPA-C02-MOTOPG     TO  SPA-SAKIPG
            IF      SPA-C02-MOTOPG NOT =   "K02"  AND  "U02"   AND
@@ -6352,7 +6262,7 @@
        440-SAKUJYO-GID-SEC             SECTION.
       *
            IF      SPA-NAI-C02-PTID    =   ZERO
-           OR      SPA-GMN-C02-SRYKA   =   SPACE
+           OR      SPA-GMN-C02-BSRYKA  =   SPACE
                MOVE    "0050"              TO  SPA-ERRCD
                GO  TO  440-SAKUJYO-GID-EXT
            END-IF
@@ -6436,7 +6346,7 @@
        450-TOUROKU-SEC                SECTION.
       *
            IF     (SPA-NAI-C02-PTID         =   ZERO  )
-             OR   (SPA-GMN-C02-SRYKA        =   SPACE )
+             OR   (SPA-GMN-C02-BSRYKA       =   SPACE )
                MOVE    "0050"             TO  SPA-ERRCD
                GO  TO  450-TOUROKU-EXT
            END-IF
@@ -7774,6 +7684,18 @@
       *****************************************************************
        430-SYOKBN-CHANGE-SEC          SECTION.
       *
+           INITIALIZE                  SPA-GMN-C02-KOUMOKU
+                                       SPA-NAI-C02-KOUMOKU
+                                       SPA-NAI-C02-SELNO
+                                       SPA-C02-UPDFLG
+                                       SPA-C02-IKOFLG
+      *                              
+                                       SPA-GMN-C02-TBL
+                                       SPA-NAI-C02-TBL
+                                       SPA-GMN-C02-MAX
+                                       SPA-PTBYOMEI-REC
+           MOVE    SPA-NAI-C02-SYSYMD  TO  SPA-NAI-C02-SRYYMD
+      *
            EVALUATE    SPA-GMN-C02-SYOKBN
                WHEN    ZERO
                    MOVE    "1"         TO  SPA-GMN-C02-SYOKBN
@@ -7819,6 +7741,18 @@
       *    入外区分表示切替処理
       *****************************************************************
        430-HNYUGAIKBN-CHANGE-SEC          SECTION.
+      *
+           INITIALIZE                  SPA-GMN-C02-KOUMOKU
+                                       SPA-NAI-C02-KOUMOKU
+                                       SPA-NAI-C02-SELNO
+                                       SPA-C02-UPDFLG
+                                       SPA-C02-IKOFLG
+      *                              
+                                       SPA-GMN-C02-TBL
+                                       SPA-NAI-C02-TBL
+                                       SPA-GMN-C02-MAX
+                                       SPA-PTBYOMEI-REC
+           MOVE    SPA-NAI-C02-SYSYMD  TO  SPA-NAI-C02-SRYYMD
       *
            EVALUATE    SPA-GMN-C02-HNYUGAIKBN
                WHEN    ZERO
