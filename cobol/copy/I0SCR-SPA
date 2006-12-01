@@ -563,6 +563,7 @@
                        11  SPA-GMN-I04-HKNRYO        PIC 9(07)
                                                      OCCURS  16.
                        11  SPA-GMN-I04-SEIKYU-AREA.
+                           13  SPA-GMN-I04-TTLDAT-FLG    PIC 9(01).
       *                    ÊÝ¸±Å¬ÍÑ³°¿ÇÎÅÎÁ
                            13  SPA-GMN-I04-TGMONEY       PIC 9(07)
                                                          OCCURS  16.
@@ -636,8 +637,6 @@
       *                    º£²óÆþ¶â³Û
                            13  SPA-GMN-I04-NYUKIN        PIC S9(07).
                            13  SPA-GMN-I04-NYUKIN-X      PIC X(10).
-                           13  SPA-GMN-I04-NYUKIN-STT    PIC S9(9)
-                                                         BINARY.
       *                    ¹ç·×ÀÁµá³Û
                            13  SPA-GMN-I04-SEIGOK        PIC S9(07).
       *
@@ -657,8 +656,6 @@
       *                    Ä´À°¶â
                            13  SPA-GMN-I04-CHOSEI        PIC S9(07).
                            13  SPA-GMN-I04-CHOSEI-X      PIC X(10).
-                           13  SPA-GMN-I04-CHOSEI-STT    PIC S9(9)
-                                                         BINARY.
       *                Á°²óÌ¤¼ý³Û¡Ê³°Íè¡Ë
                        11  SPA-GMN-I04-ZENMISYU-GAI  PIC S9(07).
       *                Á°²óÌ¤¼ý³Û¡ÊÆþ±¡¡Ë

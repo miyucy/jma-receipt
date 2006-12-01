@@ -1074,17 +1074,17 @@
                                        TO  SPA-NAI-I04-SEIKYU-MOT
                                                    (IDX1)
       *
-                   COMPUTE WKSYU-SKYMONEY
+                   COMPUTE WRK-SKYMONEY
                        =   SPA-I0-UPD-SKYMONEY (IDX1)
                ELSE
-                   COMPUTE WKSYU-SKYMONEY
+                   COMPUTE WRK-SKYMONEY
                        =   WKSYU-SKYMONEY
                        -   WKSYU-CHOSEI
       *
                    MOVE    ZERO        TO  WKSYU-CHOSEI
                END-IF
       *
-               MOVE    WKSYU-SKYMONEY  TO  SPA-NAI-I04-SEIKYU
+               MOVE    WRK-SKYMONEY    TO  SPA-NAI-I04-SEIKYU
                                                    (IDX1)
                                            SPA-NAI-I04-SEIKYU-KON
                                                    (IDX1)
@@ -1098,10 +1098,13 @@
       *        MOVE    WKSYU-SKYMONEY      TO  SPA-NAI-I04-NYUKIN
       *                                            (IDX1)
                IF    ( SPA-NAI-I04-NYKNJYOTAI  =   "1" )
-                   MOVE    WKSYU-SKYMONEY      TO  SPA-NAI-I04-NYUKIN
+                   IF    ( WRK-SKYMONEY    >=  ZERO )
+                       MOVE    WRK-SKYMONEY
+                                       TO  SPA-NAI-I04-NYUKIN
                                                    (IDX1)
+                   END-IF
                ELSE
-                   MOVE    ZERO                TO  SPA-NAI-I04-NYUKIN
+                   MOVE    ZERO        TO  SPA-NAI-I04-NYUKIN
                                                    (IDX1)
                END-IF
                MOVE    SPA-NAI-I04-NYUKIN (IDX1)
@@ -1122,15 +1125,9 @@
            MOVE    SPACE       TO  SPA-GMN-I04-SEIKYU-AREA
            INITIALIZE              SPA-GMN-I04-SEIKYU-AREA
       *
-           IF    ( SPA-I0-SYUNOU-TTLDAT-FLG  (WRK-LST-IDX) =   ZERO )
-               MOVE    WIDGET-NORMAL
-                               TO  SPA-GMN-I04-CHOSEI-STT
-                                   SPA-GMN-I04-NYUKIN-STT
-           ELSE
-               MOVE    WIDGET-INSENSITIVE
-                               TO  SPA-GMN-I04-CHOSEI-STT
-                                   SPA-GMN-I04-NYUKIN-STT
-           END-IF
+           MOVE    SPA-I0-SYUNOU-TTLDAT-FLG  (WRK-LST-IDX)
+                               TO  SPA-GMN-I04-TTLDAT-FLG
+      *
       *
            MOVE    SPA-I0-SYUNOU-DAT (WRK-LST-IDX)
                                        TO  WKSYUNOU-REC
@@ -1818,10 +1815,21 @@
       *****************************************************************
        500-GMNHEN-STATE-EDIT-SEC       SECTION.
       *
-           MOVE    SPA-GMN-I04-CHOSEI-STT
+           MOVE    WIDGET-NORMAL   TO  I04-CHOSEI-STT
+                                       I04-NYUKIN-STT
+      *
+           IF    ( SPA-GMN-I04-TTLDAT-FLG  =   ZERO )
+               CONTINUE
+           ELSE
+               MOVE    WIDGET-INSENSITIVE
                                    TO  I04-CHOSEI-STT
-           MOVE    SPA-GMN-I04-NYUKIN-STT
+                                       I04-NYUKIN-STT
+           END-IF
+      *
+           IF    ( SPA-GMN-I04-SEIKYU  <=  ZERO )
+               MOVE    WIDGET-INSENSITIVE
                                    TO  I04-NYUKIN-STT
+           END-IF
       *
            .
        500-GMNHEN-STATE-EDIT-EXT.
@@ -1839,7 +1847,7 @@
       *
            EVALUATE    SPA-GMN-I04-CUR
            WHEN    001
-               IF    ( SPA-GMN-I04-NYUKIN-STT
+               IF    ( I04-NYUKIN-STT
                                    =   WIDGET-NORMAL )
                    MOVE    "NYUKIN"        TO  MCP-WIDGET
                ELSE
@@ -1858,7 +1866,7 @@
            WHEN    101
                MOVE    "SELNUM"        TO  MCP-WIDGET
            WHEN    102
-               IF    ( SPA-GMN-I04-CHOSEI-STT
+               IF    ( I04-CHOSEI-STT
                                    =   WIDGET-NORMAL )
                    MOVE    "CHOSEI"    TO  MCP-WIDGET
                END-IF
