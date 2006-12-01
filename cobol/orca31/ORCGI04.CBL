@@ -3257,6 +3257,7 @@
                COMPUTE WRK-SKYMONEY
                    =   SPA-NAI-I04-SEIKYU (IDX-SYU)
                    +   SPA-NAI-I04-SEIKYU-MOT (IDX-SYU)
+                   -   SPA-I0-UPD-SKYMONEY(IDX-SYU)
       *
                MOVE    SYU-DENPNUM TO  WRK-DENPNUM
            ELSE
