@@ -56,6 +56,8 @@
                05  ORCHCN03-HAKKOFLG       PIC 9(01).
       *        ≈¡…º»÷πÊªﬁ»÷
                05  ORCHCN03-DENPEDANUM     PIC 9(02).
+      *        ∫£≤Û¿¡µ·Ã§º˝≥€
+               05  ORCHCN03-KONMISYU       PIC S9(07).
       *
            03  ORCHCN03-PRTKBN             PIC X(1).
            03  ORCHCN03-PRTAREA            PIC X(25000).

@@ -185,6 +185,11 @@
            03  WRK-SKY-CNT                 PIC 9(10).
            03  WRK-PRINT-PG                PIC X(20).
            03  WRK-ORG-PRINT-PG            PIC X(20).
+           03  WRK-SEIKYU-G.
+               05  WRK-SKY-SKYMONEY-TAX-SAI PIC  S9(07).
+               05  WRK-SKY-SKYMONEY        PIC  S9(07).
+               05  WRK-SKY-NYUKIN-TOTAL    PIC  S9(07).
+               03  WRK-SKY-KONMISYU        PIC  S9(07).
       *
        01  CONST-AREA.
            03  CONST-JOB-SHELLID           PIC X(08)   VALUE   "TEIKI1".
@@ -3762,6 +3767,8 @@
       *****************************************************************
        451-SKYPRT-OUT-SEC              SECTION.
       *
+           INITIALIZE                  WRK-SEIKYU-G
+      *
            MOVE    "ORCHCN03"      TO  WRK-ORG-PRINT-PG
            MOVE    "00000003"      TO  WRK-KBNCD
            PERFORM 4511-PRINT-PG-EDIT-SEC
@@ -3781,9 +3788,21 @@
                IF    ( SPA-I0-SYUNOU-UPDFLG (IDX1)     =   ZERO )
                 AND  ( SPA-NAI-I04-SAIKEISANFLG        =   1 )
                    MOVE    SPA-I0-UPD-TAX-SAI  (IDX1)
-                                   TO  WKSYU-SKYMONEY-TAX-SAI
+                                   TO  WRK-SKY-SKYMONEY-TAX-SAI
                    MOVE    SPA-NAI-I04-SEIKYU  (IDX1)
-                                   TO  WKSYU-SKYMONEY
+                                   TO  WRK-SKY-SKYMONEY
+                   MOVE    SPA-NAI-I04-NYUKIN  (IDX1)
+                                   TO  WRK-SKY-NYUKIN-TOTAL
+                   COMPUTE WRK-SKY-KONMISYU
+                       = ( WKSYU-SKYMONEY      -   WKSYU-NYUKIN-TOTAL)
+                       - ( WRK-SKY-SKYMONEY    -   WRK-SKY-NYUKIN-TOTAL)
+               ELSE
+                   MOVE    WKSYU-SKYMONEY-TAX-SAI
+                                   TO  WRK-SKY-SKYMONEY-TAX-SAI
+                   MOVE    WKSYU-SKYMONEY
+                                   TO  WRK-SKY-SKYMONEY
+                   MOVE    WKSYU-NYUKIN-TOTAL
+                                   TO  WRK-SKY-NYUKIN-TOTAL
                END-IF
       *
                MOVE  1                 TO  FLG-SKYPRT
@@ -3817,14 +3836,21 @@
                                        TO  ORCHCN03-KJNYMD  (IDX2)
                    MOVE    WKSYU-DENPNUM
                                        TO  ORCHCN03-DENPNUM (IDX2)
-                   MOVE    WKSYU-SKYMONEY-TAX-SAI
+                   MOVE    WRK-SKY-SKYMONEY-TAX-SAI
                                        TO  ORCHCN03-SEIKYU-TAX-SAI
                                                             (IDX2)
-                   MOVE    WKSYU-SKYMONEY
+                   MOVE    WRK-SKY-SKYMONEY
                                        TO  ORCHCN03-SEIKYU  (IDX2)
-                   MOVE    WKSYU-NYUKIN-TOTAL
+                   MOVE    WRK-SKY-NYUKIN-TOTAL
                                        TO  ORCHCN03-NYUKIN  (IDX2)
-                   MOVE    ZERO        TO  ORCHCN03-HAKKOFLG (IDX2)
+                   IF    ( SPA-I0-SYUNOU-UPDFLG (IDX1)     =   ZERO )
+                    AND  ( SPA-NAI-I04-SAIKEISANFLG        =   1 )
+                       MOVE    2       TO  ORCHCN03-HAKKOFLG (IDX2)
+                   ELSE
+                       MOVE    ZERO    TO  ORCHCN03-HAKKOFLG (IDX2)
+                   END-IF
+                   MOVE    WRK-SKY-KONMISYU
+                                       TO  ORCHCN03-KONMISYU (IDX2)
       *
                END-IF
            END-PERFORM

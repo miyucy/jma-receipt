@@ -632,6 +632,14 @@
                END-IF
            END-IF
       *
+           INITIALIZE              SYUMEI-REC
+           MOVE    PTTEIKIRRK-HOSPID       TO  SMEI-HOSPID
+           MOVE    "1"                     TO  SMEI-NYUGAIKBN
+           MOVE    PTTEIKIRRK-PTID         TO  SMEI-PTID
+           MOVE    PTTEIKIRRK-DENPNUM      TO  SMEI-DENPNUM
+           MOVE    PTTEIKIRRK-DENPEDANUM   TO  SMEI-DENPEDANUM
+           PERFORM 900-SYUMEI-KEY-SEL-SEC
+      *
            COMPUTE CNT-OUT1    =   CNT-OUT1    +   1
       *
       *    請求書サブ患者情報パラメタ設定
@@ -652,13 +660,6 @@
            IF    ( WRK-NYUKIN-KBN      =   "2" )
             AND  ( WRK-NYUKINPRT-KBN   =   "2" )
                IF    ( PTTEIKIRRK-SKYMONEY >   ZERO )
-                   INITIALIZE              SYUMEI-REC
-                   MOVE    PTTEIKIRRK-HOSPID       TO  SMEI-HOSPID
-                   MOVE    "1"                     TO  SMEI-NYUGAIKBN
-                   MOVE    PTTEIKIRRK-PTID         TO  SMEI-PTID
-                   MOVE    PTTEIKIRRK-DENPNUM      TO  SMEI-DENPNUM
-                   MOVE    PTTEIKIRRK-DENPEDANUM   TO  SMEI-DENPEDANUM
-                   PERFORM 900-SYUMEI-KEY-SEL-SEC
                    MOVE    SMEI-NYUHEN-MONEY
                                        TO  ORCHCN03-NYUKIN    (CNT-OUT1)
                END-IF
@@ -669,6 +670,10 @@
            ELSE
                MOVE    ZERO            TO  ORCHCN03-HAKKOFLG  (CNT-OUT1)
            END-IF
+      *
+           COMPUTE ORCHCN03-KONMISYU (CNT-OUT1)
+               = ( SYU-SKYMONEY        -   SYU-NYUKIN-TOTAL )
+               - ( PTTEIKIRRK-SKYMONEY -   SMEI-NYUHEN-MONEY )
       *
            .
        20011-HENSYU-EXT.
