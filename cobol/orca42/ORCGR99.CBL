@@ -50,6 +50,9 @@
       *  02.08.01    NACL-藤原    06/02/20  主科対応
       *
       *  03.02.01    NACL-藤原    06/08/01  国保主科対応
+      *
+      *  03.04.01    NACL-藤原    06/12/01  主科未設定分があるときは印刷
+      *                                     指示画面への自動遷移をしない
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -581,10 +584,16 @@
                        MOVE    WIDGET-NORMAL        TO  R99-B12-STATE
                        MOVE    "B12"                TO  MCP-WIDGET
                        IF      SPA-R01-AUTODSPKBN   =   "1"
-      *                    印刷画面への自動遷移
-                           PERFORM 4501-NEXT-GMN-SEC
-                           GO  TO  490-KAKUNIN-EXT
-                       END-IF
+                           IF    ( SPA-R01-RECE07-SRYKA    =   "XX" )
+                           OR    ( SPA-R01-RECE07-SRYKA-KOKUHO
+                                                           =   "XX" )
+                               CONTINUE
+                           ELSE
+      *                        印刷画面への自動遷移（主科未設定分がないとき）
+                               PERFORM 4501-NEXT-GMN-SEC
+                               GO  TO  490-KAKUNIN-EXT
+                           END-IF
+                       END-IF  
                      END-IF 
                    END-IF 
                ELSE
