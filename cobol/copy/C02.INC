@@ -105,9 +105,9 @@
                 04  C02-BYOMEIHENFLG-VALUE   PIC X(10).
               03  C02-TENKICOMBO.
                 04  C02-TENKIKBN.
-                  05  C02-VALUE   PIC X(8).
+                  05  C02-VALUE   PIC X(10).
                 04  C02-TENKIKBN-COUNT   PIC S9(9)   BINARY.
-                04  C02-TENKIKBN-ITEM    PIC X(8)    OCCURS  5 TIMES.
+                04  C02-TENKIKBN-ITEM    PIC X(10)    OCCURS  5 TIMES.
               03  C02-MANSEIFLGCOMBO.
                 04  C02-MANSEIFLG.
                   05  C02-VALUE   PIC X(46).
@@ -138,7 +138,7 @@
                     06  C02-TBYOMEI       PIC X(50).
                     06  C02-TSRYYMD       PIC X(10).
                     06  C02-TTENKIYMD     PIC X(10).
-                    06  C02-TTENKIKBN     PIC X(6).
+                    06  C02-TTENKIKBN     PIC X(8).
                     06  C02-TMANSEIFLG    PIC X(12).
                     06  C02-TSYUBYOFLG    PIC X(8).
                     06  C02-TUTAGAIFLG    PIC X(14).

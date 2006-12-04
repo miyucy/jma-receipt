@@ -12,7 +12,7 @@
                     06  C12-TBYOMEI       PIC X(50).
                     06  C12-TSRYYMD       PIC X(9).
                     06  C12-TTENKIYMD     PIC X(9).
-                    06  C12-TTENKIKBN     PIC X(4).
+                    06  C12-TTENKIKBN     PIC X(8).
                     06  C12-TDLTYMD       PIC X(9).
                     06  C12-TDLT-OPID     PIC X(16).
                   05  C12-BYO-SELECT      PIC X   OCCURS  200 TIMES.

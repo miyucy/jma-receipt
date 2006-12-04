@@ -138,10 +138,10 @@ C02	{
 		};
 		TENKICOMBO	{
 			TENKIKBN	{
-				value	varchar(8);
+				value	varchar(10);
 			};
 			count	int;
-			item	varchar(8)[5];
+			item	varchar(10)[5];
 		};
 		MANSEIFLGCOMBO	{
 			MANSEIFLG	{
@@ -180,7 +180,7 @@ C02	{
 					value2	varchar(50);
 					value3	varchar(10);
 					value4	varchar(10);
-					value5	varchar(6);
+					value5	varchar(8);
 					value6	varchar(12);
 					value7	varchar(8);
 					value8	varchar(14);

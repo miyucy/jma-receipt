@@ -2,10 +2,10 @@ C10	{
 	fixed6	{
 		TENKICOMBO	{
 			TENKIKBN	{
-				value	varchar(8);
+				value	varchar(10);
 			};
 			count	int;
-			item	varchar(8)[5];
+			item	varchar(10)[6];
 		};
 		TENKIYMD	{
 			value	varchar(10);

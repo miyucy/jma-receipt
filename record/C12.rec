@@ -13,7 +13,7 @@ C12	{
 					value2	varchar(50);
 					value3	varchar(9);
 					value4	varchar(9);
-					value5	varchar(4);
+					value5	varchar(8);
 					value6	varchar(9);
 					value7	varchar(16);
 				}	[200];
