@@ -9343,7 +9343,14 @@
            END-IF
       *    食事区分
            MOVE   "099999913"   TO  LNK-SCNYUACCT-SHOKUJI-SRYCD
-           MOVE   1             TO  LNK-SCNYUACCT-SHOKUJIKBN
+           EVALUATE   PTNYUINRRK-SKJKBN
+               WHEN   "0"
+                   MOVE   0     TO  LNK-SCNYUACCT-SHOKUJIKBN
+               WHEN   "1"
+                   MOVE   1     TO  LNK-SCNYUACCT-SHOKUJIKBN
+               WHEN   "2"
+                   MOVE   2     TO  LNK-SCNYUACCT-SHOKUJIKBN
+           END-EVALUATE
       *    食堂加算
            PERFORM     4801-BTUSEL-SEC
            IF   FLG-SYSKANRI           =    ZERO
@@ -9351,6 +9358,9 @@
                     MOVE     "197000570"    TO
                                 LNK-SCNYUACCT-SHOKUDO-SRYCD
                     MOVE    1   TO   LNK-SCNYUACCT-SHOKUDO-KBN
+                    IF   PTNYUINRRK-SKJKBN   =   SPACE
+                         MOVE   ZERO     TO  LNK-SCNYUACCT-SHOKUDO-KBN
+                    END-IF
                END-IF
            END-IF
       *    保険組合せ
