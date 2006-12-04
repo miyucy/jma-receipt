@@ -421,7 +421,7 @@
                        COMPUTE KONSYU-MAX  =   KONSYU-MAX  +   1
                        MOVE    MOTSYU-OCC (IDX-MOT)
                                        TO  KONSYU-OCC    (KONSYU-MAX)
-                       MOVE    LNK-SYU-SRYYMD (IDX-MOT)(1:6)
+                       MOVE    MOTSYU-SRYYMD (IDX-MOT)(1:6)
                                        TO  KONSYU-SRT-SRYYM (KONSYU-MAX)
                        MOVE    1       TO  KONSYU-SRT-DELFLG(KONSYU-MAX)
                        COMPUTE KONSYU-UPD-SKYMONEY (IDX-SYU)
