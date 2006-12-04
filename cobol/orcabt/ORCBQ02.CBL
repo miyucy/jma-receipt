@@ -395,12 +395,14 @@
                WHEN        "1"     ALSO "1"
                    MOVE    1           TO  QTORS-NRSI-FLG
                WHEN        "1"     ALSO "2"
+               WHEN        "1"     ALSO "4"
                    MOVE    1           TO  QTORS-NJBI-FLG
                WHEN        "2"     ALSO "0"
                    MOVE    1           TO  QTORS-GIHO-FLG
                WHEN        "2"     ALSO "1"
                    MOVE    1           TO  QTORS-GRSI-FLG
                WHEN        "2"     ALSO "2"
+               WHEN        "2"     ALSO "4"
                    MOVE    1           TO  QTORS-GJBI-FLG
                END-EVALUATE
       *
