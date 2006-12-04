@@ -1586,6 +1586,7 @@
                                                                   (IDX)
                END-IF
                IF      SPA-NAI-RRK-HKNKBN  (IDX)  =   "2"
+                                                  OR  "4"
                    MOVE    "¼«"              TO  SPA-GMN-RRKHKNCOMBI
                                                                   (IDX)
                END-IF
@@ -2121,7 +2122,8 @@
                    END-IF
       *            Ï«ºÒ¤Î»þ¡¢Æ±¤¸ÊÝ¸±¤Ç¤¢¤ë¤³¤È
                    IF     ((SPA-NAI-RRK-HKNKBN (IDX-J2)
-                                               =   "1"  OR "2")  AND
+                                               =   "1"  OR "2"
+                                                        OR "4")  AND
                            (SPA-NAI-RRK-HKNCOMBI (IDX-J2)
                                                =   SPA-NAI-RRK-HKNCOMBI
                                                              (IDX) ))
@@ -2537,6 +2539,10 @@
            MOVE    SPA-NYUGAIKBN       TO  AGECHK-NYUGAIKBN
            CALL    "ORCSAGECHK"        USING
                                        ORCSAGECHKAREA
+      *    ¼«ÇåÀÕ¤Î·òÊÝ½àµòÈ½Äê
+           IF      AGECHK-HKNKBN       =   4
+               MOVE    "5"             TO  SPA-RSI-HKNKBN
+           END-IF
       *****IF      AGECHK-FTNRATE  NOT =   ZERO
       *        ÉéÃ´Î¨
       *        MOVE    AGECHK-FTNRATEMEI   TO  SPA-GMN-FTNRATEMEI

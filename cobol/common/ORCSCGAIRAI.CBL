@@ -1806,7 +1806,7 @@
       *
       *    労災用に保険区分をセットする（すべて同じとする）
            MOVE    SPA-HKNKBN          TO  JYURRK-HKNKBN
-           IF      SPA-HKNKBN          =   "1"
+           IF      SPA-HKNKBN          =   1
                EVALUATE    SPA-RSI-HKNKBN
                    WHEN    "1"
                    WHEN    "2"
@@ -1816,6 +1816,9 @@
                    WHEN    "4"
       *                 自賠責
                        MOVE    "2"                 TO  JYURRK-HKNKBN
+                   WHEN    "5"
+      *                 自賠責（健保準拠）
+                       MOVE    "4"                 TO  JYURRK-HKNKBN
                END-EVALUATE
            END-IF
       *
@@ -2440,6 +2443,17 @@
            MOVE    SRY-SRYKA           TO  SSANTEI-SRYKA
            MOVE    ACCT-HKNCOMBI       TO  SSANTEI-HKNCOMBINUM
            MOVE    JYURRK-HKNKBN       TO  SSANTEI-HKNKBN
+      *    労災・自賠責区分
+           EVALUATE    JYURRK-HKNKBN
+               WHEN    "1"
+                   MOVE    "1"             TO  SSANTEI-RSI-HKNKBN
+               WHEN    "2"
+                   MOVE    "1"             TO  SSANTEI-HKNKBN
+                   MOVE    "4"             TO  SSANTEI-RSI-HKNKBN
+               WHEN    "4"
+                   MOVE    "1"             TO  SSANTEI-HKNKBN
+                   MOVE    "5"             TO  SSANTEI-RSI-HKNKBN
+           END-EVALUATE
            CALL    "ORCSSANTEI"        USING
                                        ORCSSANTEIAREA
                                        SPA-AREA
@@ -3454,6 +3468,7 @@
            MOVE    WRK-HKNCOMBI        TO  SSANTEI-HKNCOMBINUM
       *    保険区分は同じ
            MOVE    SPA-HKNKBN          TO  SSANTEI-HKNKBN
+           MOVE    SPA-RSI-HKNKBN      TO  SSANTEI-RSI-HKNKBN
            IF      FLG-SYOSIN-DUMMY    =   1
                CONTINUE
            ELSE
@@ -4688,7 +4703,7 @@
            MOVE    SPA-NYUGAIKBN       TO  LNK-UPD-NYUGAIKBN
            MOVE    SPA-SRYYMD(1:6)     TO  LNK-UPD-SRYYM
            MOVE    SPA-HKNKBN          TO  LNK-UPD-HKNKBN
-           IF      SPA-HKNKBN          =   "1"
+           IF      SPA-HKNKBN          =   1
                EVALUATE    SPA-RSI-HKNKBN
                    WHEN    "1"
                    WHEN    "2"
@@ -4698,6 +4713,9 @@
                    WHEN    "4"
       *                 自賠責
                        MOVE    "2"                 TO  LNK-UPD-HKNKBN
+                   WHEN    "5"
+      *                 自賠責（健保準拠）
+                       MOVE    "4"                 TO  LNK-UPD-HKNKBN
                END-EVALUATE
            END-IF
            CALL    "ORCSRECEUPD"       USING    ORCSRECEUPDAREA

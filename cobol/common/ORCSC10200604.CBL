@@ -982,6 +982,8 @@
       *
       *    労災の診察料の判定
            IF      SPA-HKNKBN          =   1
+      *      自賠責の健保準拠以外
+             AND  (SPA-RSI-HKNKBN  NOT =   "5" )
                PERFORM 10013-RSI-SINSATU-CHK-SEC
                IF      WRK-ERRCD       NOT =   SPACE
                    GO      TO      100114-SYUGISYORI-CHK-EXT
@@ -1225,7 +1227,9 @@
            END-IF
       *
       *    健保の時
-           IF      SPA-HKNKBN      NOT =   1
+           IF     (SPA-HKNKBN          =   ZERO)
+      *      自賠責の健保準拠以外
+             OR   (SPA-RSI-HKNKBN      =   "5" )
                GO      TO      100111-KEIZOKU-CHK-EXT
            END-IF
       **** 労災で継続管理の時
@@ -3580,6 +3584,7 @@
                    END-IF
       *            労災の時、労災コードで判定する
                    IF      SPA-HKNKBN      =   1
+                     AND  (SPA-RSI-HKNKBN  NOT =   "5" )
                        PERFORM 20012-RSISINSATU-CHK-SEC
                    END-IF
                ELSE
@@ -3591,6 +3596,7 @@
                    END-IF
       *            労災の時、労災コードで判定する
                    IF      SPA-HKNKBN      =   1
+                     AND  (SPA-RSI-HKNKBN  NOT =   "5" )
                        PERFORM 20012-RSISINSATU-CHK-SEC
                    END-IF
                END-IF
@@ -3938,7 +3944,8 @@
       *               同日再診有無
                       (LNK-ORCSC-RRK-LSTYMD    NOT =   SPACE )
       *            労災には同日再診はないのでチェックなし
-                   IF     (SPA-HKNKBN          =   1  )
+                   IF    ((SPA-HKNKBN          =   1  )
+                     AND  (SPA-RSI-HKNKBN  NOT =   "5" ) )
       *            当日に診察料が算定してないときはチェックなし
                        OR (SPA-DOUJITU         =   ZERO)
       *            当日に初診算定があり、同日初診の時
@@ -3974,7 +3981,8 @@
                 GO      TO      200-ALL-SYORI-EXT
            END-IF
       *
-           IF      SPA-HKNKBN          =   1
+           IF     (SPA-HKNKBN          =   1   )
+             AND  (SPA-RSI-HKNKBN  NOT =   "5" )
       *        労災の時、外来管理加算の読み替えチェック
                IF     (IDX-ZAI1            =   ZERO ) AND
                       (LNK-ORCSC-SINSATU-ARI   =   1)
@@ -4209,7 +4217,8 @@
            END-SEARCH
       *
       *    労災保険のチェック
-           IF      SPA-HKNKBN          =   1
+           IF     (SPA-HKNKBN          =   1   )
+             AND  (SPA-RSI-HKNKBN  NOT =   "5" )
       *        労災保険の時、電話再診以外はエラーとする
                IF     (WRK-KAISU       =   ZERO    )  AND
                       (WRK-KBN         =   SPACE   )  AND
@@ -4372,6 +4381,7 @@
        20011-GAIKASAN-SET-SEC                  SECTION.
       *    労災の外来管理加算
            IF      SPA-HKNKBN          =   1
+             AND  (SPA-RSI-HKNKBN  NOT =   "5" )
                PERFORM 200111-RSI-GAIKASAN-SEC
                GO      TO      20011-GAIKASAN-SET-EXT
            END-IF

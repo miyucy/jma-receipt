@@ -439,7 +439,8 @@
       *                消炎鎮痛処置の逓減チェック
                        PERFORM 100112-SYOEN-CHK-SEC
       *                労災の時、労災加算の算定
-                       IF      SPA-HKNKBN          =   1
+                       IF    ((SPA-HKNKBN          =   1   )
+                         AND  (SPA-RSI-HKNKBN  NOT =   "5" ))
       *                    手技がある場合
                          AND  (IDX-ZS              >   ZERO )
                          AND  (FLG-RSI             =   ZERO )
@@ -687,7 +688,8 @@
       *
       *    労災でマッサージ等、器具等の時、日に３部位とする
            IF     (LNK-ORCSC-PG       =   "K02" ) AND
-                  (SPA-HKNKBN          =   1   )  AND
+                 ((SPA-HKNKBN          =   1   )  AND
+                  (SPA-RSI-HKNKBN  NOT =   "5" ))  AND
                   (WRK-SYOCHI-KBN      =   "01" OR  "02"
       *        介達牽引
                                        OR  "04"
@@ -701,7 +703,8 @@
            END-IF
       *
       *    労災の時、同一部位毎に逓減するので、対象外とする
-           IF      SPA-HKNKBN          =   1
+           IF     (SPA-HKNKBN          =   1   )
+             AND  (SPA-RSI-HKNKBN  NOT =   "5" )
                GO      TO      100112-SYOEN-CHK-EXT
            END-IF
       *
@@ -1496,6 +1499,7 @@
                ELSE
       *            時間外加算のある時は１剤１手技とする
                    IF      SPA-HKNKBN          =   1
+                     AND  (SPA-RSI-HKNKBN  NOT =   "5" )
       *                労災の時、エラーとしない
                        CONTINUE
                    ELSE
@@ -1729,7 +1733,8 @@
       *    手技料の合計を編集する
            MOVE    LNK-SC90-TENSU      TO  WRK-COM-SYUTEN2 (IDX-SYU)
       *    労災の外来管理加算読み替え処理
-           IF      SPA-HKNKBN          =   1
+           IF     (SPA-HKNKBN          =   1   )
+             AND  (SPA-RSI-HKNKBN  NOT =   "5" )
                IF     (WRK-COM-RSIGIRI (IDX-SYU)
                                            =   1  )  AND
                       (WRK-COM-SYUTEN2 (IDX-SYU)
@@ -1741,7 +1746,8 @@
       *
       *    終了時の通則外加算集計
            IF      FLG-LAST            =   1
-               IF      SPA-HKNKBN          =   1
+               IF     (SPA-HKNKBN          =   1   )
+                 AND  (SPA-RSI-HKNKBN  NOT =   "5" )
       *            労災の時、合計に時間外加算計算
                    PERFORM 10062-RSI-JIKAN-SEC
                END-IF
@@ -1848,6 +1854,7 @@
                                        +   WRK-TENSUKEI-G
       *
            IF      SPA-HKNKBN          =   1
+             AND  (SPA-RSI-HKNKBN  NOT =   "5" )
       *        労災の加算
                PERFORM 10061-RSI-KSAN-SEC
            END-IF
@@ -1857,7 +1864,8 @@
                    (WRK-SUM-TENSUKEI       >=   150  )
                PERFORM 10063-JIKANGAI-AUTO-SEC
            END-IF
-           IF      SPA-HKNKBN      NOT =   1
+           IF     (SPA-HKNKBN          =   ZERO)  OR
+                  (SPA-RSI-HKNKBN      =   "5" )
       *        時間外加算
                PERFORM 10060-JIKANGAI-KASAN-SEC
            END-IF

@@ -2113,21 +2113,24 @@
       *     Ï«ºÒ¤Î¥³¡¼¥É
            IF     (LNK-SC92-SRYCD (1:1)    =   "1"  )  AND
                   (LNK-SC92-SRYCD (2:2)    =   "01" )
-               IF      SPA-HKNKBN          NOT =   1
+               IF     (SPA-HKNKBN          NOT =   1 )
+                  OR  (SPA-RSI-HKNKBN          =   "5" )
                    MOVE    "8000"              TO  SPA-ERRCD
                END-IF
            END-IF
       *    Ï«ºÒ¡Ê´ïºà¡Ë
            IF     (LNK-SC92-SRYCD (1:1)    =   "7"  )  AND
                   (LNK-SC92-SRYCD (2:5)    =   "88888")
-               IF      SPA-HKNKBN          NOT =   1
+               IF     (SPA-HKNKBN          NOT =   1 )
+                  OR  (SPA-RSI-HKNKBN          =   "5" )
                    MOVE    "8000"              TO  SPA-ERRCD
                END-IF
            END-IF
       *    Ï«ºÒ¡Ê¥³¥á¥ó¥È¡Ë
            IF     (LNK-SC92-SRYCD (1:1)    =   "8"  )  AND
                   (LNK-SC92-SRYCD (4:1)    =   "8"  )
-               IF      SPA-HKNKBN          NOT =   1
+               IF     (SPA-HKNKBN          NOT =   1 )
+                  OR  (SPA-RSI-HKNKBN          =   "5" )
                    MOVE    "8000"              TO  SPA-ERRCD
                END-IF
            END-IF

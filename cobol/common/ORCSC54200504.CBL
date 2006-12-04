@@ -1037,6 +1037,7 @@
            MOVE    WRK-SUM-TENSUKEI    TO  WRK-COM-SYUTEN2 (IDX-ZS)
       *    労災の外来管理加算読み替え処理
            IF      SPA-HKNKBN          =   1
+             AND  (SPA-RSI-HKNKBN  NOT =   "5" )
                IF     (WRK-COM-RSIGIRI (IDX-ZS)
                                            =   1  )  AND
                       (WRK-COM-SYUTEN2 (IDX-ZS)

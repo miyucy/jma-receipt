@@ -53,6 +53,7 @@
       * 02.00.06     NACL-多々納  05/11/21  開放型病院共同指導料チェック追加
       * 02.00.07     NACL-多々納  05/12/14  .213 自動変換対応
       * 03.03.00     NACL-多々納  06/10/20  矯正固定等追加
+      * 03.04.00     NACL-多々納  06/12/01  自賠責健保準拠追加
       *****************************************************************
       *
       *
@@ -746,7 +747,7 @@
       *
       *!!  労災の診察料逓減がなくなったら、当日分のみの算定とする
       *!!!
-      *    受診履歴より受診回数を求める
+      *    受診履歴より当日の受診回数を求める
       *    受診歴を検索する（診療月１日から診療日までの範囲）
            MOVE    SPACE               TO  JYURRK-REC
            INITIALIZE                  JYURRK-KEY
@@ -867,12 +868,16 @@
               WHEN     1
       *           自賠責
                   IF      SPA-RSI-HKNKBN       =   "4"
-                      IF      JYURRK-HKNKBN    NOT =   2
+                                               OR  "5"
+                      IF      JYURRK-HKNKBN        =   "2"
+                                                   OR  "4"
+                           CONTINUE
+                      ELSE
                            MOVE    1               TO  FLG-CHK
                       END-IF
                   ELSE
       *           労災
-                      IF      JYURRK-HKNKBN    NOT =   1
+                      IF      JYURRK-HKNKBN    NOT =   "1"
                            MOVE    1               TO  FLG-CHK
                       END-IF
                   END-IF
@@ -933,6 +938,8 @@
                                    (SRY-SRYCD (IDY)      =   SPACE )
       **************** IF      SPA-HKNKBN          =   ZERO
                        IF      JYURRK-HKNKBN       =   ZERO
+      *                    健保準拠分
+                                                   OR  "4"
       *                    一般
                            PERFORM 100011-IPN-DOUJI-CHK-SEC
                        ELSE
@@ -1811,6 +1818,10 @@
       *****************************************************************
        1000-SANTEI-RSI-SEC              SECTION.
       *
+           IF      SPA-RSI-HKNKBN      =   "5"
+               MOVE    SPA-RSI-SHOBYOYMD   TO  SPA-RSI-HASSYOYMD
+           ELSE
+      *
       *    発生日を求める
       *    救急医療管理加算のチェック
            MOVE    SPACE               TO  WRK-HASSYOYMD
@@ -1820,6 +1831,8 @@
                MOVE    SPA-RSI-SHOBYOYMD   TO  SPA-RSI-HASSYOYMD
            ELSE
                MOVE    WRK-HASSYOYMD       TO  SPA-RSI-HASSYOYMD
+           END-IF
+      *
            END-IF
       *
       *    発生日から３ヶ月の計算（現在使用なし）
@@ -1987,6 +2000,10 @@
                GO      TO      200-SYOSIN-SET-EXT
            END-IF
       *
+      *TEST
+           DISPLAY "SPA-HKNKBN:" SPA-HKNKBN
+              ",SPA-RSI-HKNKBN:" SPA-RSI-HKNKBN
+      *TEST
       *    入院日の時、初診料のみ算定する
            IF      SPA-K02N-NYUINYMD(1:6)  =   SPA-NAI-SRYYMD(1:6)
                IF      SPA-SYOSIN          =   1
@@ -1997,7 +2014,9 @@
            END-IF
       *
       *    労災の初診料算定
-           IF      SPA-HKNKBN          =   1
+           IF     (SPA-HKNKBN          =   1   )
+      *        自賠責の健保準拠以外
+             AND  (SPA-RSI-HKNKBN  NOT =   "5" )
       *      ２００床以上で再診の場合、外来診察料とする
       *      初診料算定
              IF     (SPA-SYOSIN      NOT =   1  )  AND
@@ -2016,6 +2035,12 @@
            END-IF
       *
       *    小児科外来診療科
+      *    自賠責の健保準拠以外
+           IF     (SPA-HKNKBN          =   1   )
+             AND  (SPA-RSI-HKNKBN      =   "5" )
+               CONTINUE
+           ELSE
+      *
            IF     (SPA-SYONIKA         =   1   )  AND
                   (SPA-NYUGAIKBN       =   "2" )  AND
                   (FLG-SYONIKA-ARI     =   1   )
@@ -2023,6 +2048,8 @@
                IF      FLG-SYONIKA         =   1
                    GO      TO      200-SYOSIN-SET-EXT
                END-IF
+           END-IF
+      *
            END-IF
       *
            MOVE    ZERO                TO  WRK-KAISU
@@ -3510,6 +3537,8 @@
            MOVE    ZERO                TO  SPA-FUKU-SRYKA
       *
            IF      SPA-HKNKBN          =   1
+      *        自賠責の健保準拠以外
+             AND  (SPA-RSI-HKNKBN  NOT =   "5" )
       *        労災の同日再診料算定
                MOVE    "D"                 TO  WRK-KBN
                PERFORM 2009-RSIHKN-SET-SEC
@@ -4729,6 +4758,8 @@
                END-IF
            ELSE
                IF      SPA-HKNKBN          =   1
+      *        自賠責の健保準拠以外
+             AND  (SPA-RSI-HKNKBN  NOT =   "5" )
       *            労災の初診料算定
                    MOVE    ZERO                TO  WRK-KAISU
                    MOVE    "F"                 TO  WRK-KBN
@@ -5633,6 +5664,8 @@
        10151121-DOJITU-HEN-SEC       SECTION.
       *
            IF      SPA-HKNKBN          =   ZERO
+      *        自賠責の健保準拠以外
+             AND  (SPA-RSI-HKNKBN      =   "5" )
                MOVE   "111011810"          TO  WRK-SRYCD
            ELSE
       *TE      労災
@@ -5651,6 +5684,8 @@
            END-IF
            IF      SPA-ERRCD           =   SPACE
                IF      SPA-HKNKBN          =   ZERO
+      *        自賠責の健保準拠以外
+                 AND  (SPA-RSI-HKNKBN      =   "5" )
                    MOVE   "111011810"          TO  WRK-SRYCD
                ELSE
       *TE          労災

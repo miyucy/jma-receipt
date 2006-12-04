@@ -888,6 +888,7 @@
                    END-IF
       *            労災の時、労災加算の算定
                    IF      SPA-HKNKBN          =   1
+                     AND  (SPA-RSI-HKNKBN  NOT =   "5" )
                        PERFORM 100113-RSIHKN-SYORI-SEC
                    ELSE
                        IF      WRK-COM-DATAKBN (IDX-Z) =   "1"
@@ -1794,6 +1795,7 @@
       *
       *    労災の外来管理加算読み替え処理
            IF      SPA-HKNKBN          =   1
+             AND  (SPA-RSI-HKNKBN  NOT =   "5" )
       *!       回数を掛けた点数で判定する
       *!         （２単位以上の時、読み替えはないはず）
       *!       COMPUTE WRK-SYOKEI      =   WRK-COM-SYUTEN2 (IDX-SYU)
@@ -1859,6 +1861,7 @@
       *
       *    労災の時、労災加算
            IF      SPA-HKNKBN          =   1
+             AND  (SPA-RSI-HKNKBN  NOT =   "5" )
                PERFORM 10061-RSIKASAN-SET-SEC
            END-IF
       *
@@ -1990,6 +1993,7 @@
                        END-STRING
                    END-IF
                    IF      SPA-HKNKBN      =   1
+                     AND  (SPA-RSI-HKNKBN  NOT =   "5" )
                        IF     (WRK-COM-KZMFLG (IDX-Z)   =   SPACE)  AND
                               (LNK-ORCSC-KEI-IDX        =   ZERO )
                            MOVE    IDX-Z       TO  LNK-ORCSC-KEI-IDX

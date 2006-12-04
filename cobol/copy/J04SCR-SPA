@@ -87,6 +87,7 @@
       *
                05  SPA-J04-HKNCOMBI    PIC X(04).
                05  SPA-J04-HKNKBN      PIC X(01).
+               05  SPA-J04-RSI-HKNKBN  PIC X(01).
       *
       *        保険組合せ一覧
                05  SPA-HKNCOMBI-AREA.

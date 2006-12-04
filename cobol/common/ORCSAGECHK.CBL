@@ -49,6 +49,7 @@
       * 03.00.01     NACL-多々納  06/08/25  平成１８年１０月改正対応
       *                                     （老人割合変更）
       * 03.03.00     NACL-多々納  06/10/24  精神入院単独追加
+      * 03.04.00     NACL-多々納  06/12/01  自賠責健保準拠追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -371,14 +372,14 @@
       *
       *    労災の時、割合の変更
            IF      COMB-HKNNUM         =   "971"
-               PERFORM 2001-RSI-FTNRATE-SEC
                MOVE    1               TO  AGECHK-HKNKBN
+               PERFORM 2001-RSI-FTNRATE-SEC
            END-IF
       *
       *    自賠責の時、割合の変更
            IF      COMB-HKNNUM         =   "973"
-               PERFORM 2002-JIBAI-FTNRATE-SEC
                MOVE    2               TO  AGECHK-HKNKBN
+               PERFORM 2002-JIBAI-FTNRATE-SEC
            END-IF
       *
            IF      AGECHK-NYUGAIKBN    =   "1"
@@ -983,6 +984,42 @@
                        MOVE    ZERO            TO  COMB-NYU-KFTNRATE
                END-EVALUATE
            END-IF
+      *
+      *    自賠責区分の判定
+      *    システム管理検索（労災情報）
+           MOVE    SPACE               TO  SYS-4001-REC
+           INITIALIZE                  SYS-4001-REC
+           MOVE    "4001"              TO  SYS-4001-KANRICD
+           MOVE    "*"                 TO  SYS-4001-KBNCD
+           MOVE    AGECHK-SRYYMD       TO  SYS-4001-STYUKYMD
+                                           SYS-4001-EDYUKYMD
+           MOVE    SYS-4001-REC        TO  MCPDATA-REC
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           CALL    "MONFUNC"            USING
+                                        MCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+           ELSE
+               MOVE    SPACE               TO  SYS-4001-REC
+               INITIALIZE                  SYS-4001-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-4001-REC
+      *        健保準拠
+               IF      SYS-4001-JIBAIKBN       =   "2"
+                   MOVE    4               TO  AGECHK-HKNKBN
+               END-IF
+           END-IF
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
            .
       *
        2002-JIBAI-FTNRATE-EXT.

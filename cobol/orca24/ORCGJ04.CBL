@@ -1241,6 +1241,7 @@
       *    ÊÝ¸±ÁÈ¹ç¤»
            MOVE    SPA-HKNCOMBINUM     TO  SPA-J04-HKNCOMBI
            MOVE    SPA-HKNKBN          TO  SPA-J04-HKNKBN
+           MOVE    SPA-RSI-HKNKBN      TO  SPA-J04-RSI-HKNKBN
            MOVE    SPA-HKNCOMBINUM     TO  SPA-GMN-HKNCOMBI
            IF     (SPA-NYUGAIKBN       =   1   )
                PERFORM 31031-HKNCOMBI-HEN-SEC
@@ -1369,7 +1370,6 @@
            .
        31031-HKNCOMBI-HEN-EXT.
            EXIT.
-      *
       *****************************************************************
       *    °ìÍ÷²èÌÌ¡Ê£Ë£¹£¸¡Ë£Ï£Ë½èÍý
       *****************************************************************
@@ -2093,6 +2093,13 @@
                                        TO  SPA-RSI-SISIKBN
            MOVE    SPA-NAI-TRSI-HKNKBN (IDX)
                                        TO  SPA-RSI-HKNKBN
+      *    ¼«ÇåÀÕ¶èÊ¬
+           EVALUATE    AGECHK-HKNKBN
+               WHEN    2
+                   MOVE    "4"             TO  SPA-RSI-HKNKBN
+               WHEN    4
+                   MOVE    "5"             TO  SPA-RSI-HKNKBN
+           END-EVALUATE
       *    Å¬ÍÑ´ü´ÖÈ½Äê
            MOVE    ZERO                TO  WRK-YMDS1
            MOVE    ZERO                TO  WRK-YMDS2
@@ -5562,6 +5569,7 @@
            MOVE    SPA-J04-HKNCOMBI    TO  SSANTEI-HKNCOMBINUM
       *    ÊÝ¸±¶èÊ¬
            MOVE    SPA-J04-HKNKBN      TO  SSANTEI-HKNKBN
+           MOVE    SPA-J04-RSI-HKNKBN  TO  SSANTEI-RSI-HKNKBN
       *
            CALL    "ORCSSANTEI"        USING
                                        ORCSSANTEIAREA
@@ -6243,6 +6251,21 @@
            MOVE    WRK-DD              TO  JYURRK-SRYYMD(7:2)
            MOVE    SPA-HKNCOMBINUM     TO  JYURRK-HKNCOMBINUM
            MOVE    SPA-HKNKBN          TO  JYURRK-HKNKBN
+           IF      SPA-HKNKBN          =   1
+               EVALUATE    SPA-RSI-HKNKBN
+                   WHEN    "1"
+                   WHEN    "2"
+                   WHEN    "3"
+      *                 Ï«ºÒ
+                       MOVE    "1"                 TO  JYURRK-HKNKBN
+                   WHEN    "4"
+      *                 ¼«ÇåÀÕ
+                       MOVE    "2"                 TO  JYURRK-HKNKBN
+                   WHEN    "5"
+      *                 ¼«ÇåÀÕ¡Ê·òÊÝ½àµò¡Ë
+                       MOVE    "4"                 TO  JYURRK-HKNKBN
+               END-EVALUATE
+           END-IF
            MOVE    ZERO                TO  JYURRK-DENPNUM
       *
            MOVE    1                   TO  JYURRK-RENNUM
@@ -6549,9 +6572,10 @@
                MOVE    1                TO  FLG-NAIBUN
            END-IF
       *    ÊÝ¸±ÁÈ¹ç¤»
-           MOVE    SPA-HKNCOMBINUM      TO  SSANTEI-HKNCOMBINUM
+           MOVE    SPA-HKNCOMBINUM     TO  SSANTEI-HKNCOMBINUM
       *    ÊÝ¸±¶èÊ¬
-           MOVE    SPA-HKNKBN           TO  SSANTEI-HKNKBN
+           MOVE    SPA-HKNKBN          TO  SSANTEI-HKNKBN
+           MOVE    SPA-RSI-HKNKBN      TO  SSANTEI-RSI-HKNKBN
       *
            CALL    "ORCSSANTEI"        USING
                                        ORCSSANTEIAREA
@@ -6638,6 +6662,9 @@
                    WHEN    "4"
       *                 ¼«ÇåÀÕ
                        MOVE    "2"                 TO  LNK-UPD-HKNKBN
+                   WHEN    "5"
+      *                 ¼«ÇåÀÕ¡Ê·òÊÝ½àµò¡Ë
+                       MOVE    "4"                 TO  LNK-UPD-HKNKBN
                END-EVALUATE
            END-IF
            CALL    "ORCSRECEUPD"       USING    ORCSRECEUPDAREA

@@ -374,6 +374,7 @@
                    END-IF
       *            Ï«ºÒ¤Î»þ¡¢Ï«ºÒ²Ã»»¤Î»»Äê
                    IF      SPA-HKNKBN          =   1
+                     AND  (SPA-RSI-HKNKBN  NOT =   "5" )
                        PERFORM 100113-RSIHKN-SYORI-SEC
                    END-IF
       *        ÌôºÞ
@@ -934,6 +935,7 @@
            END-IF
       *    Ï«ºÒ²Ã»»
            IF      (SPA-HKNKBN         =   1   )  AND
+                   (SPA-RSI-HKNKBN NOT =   "5" )  AND
                    (SPA-ERRCD          =   SPACE ) AND
                    (WRK-ERRCD          =   SPACE ) 
                PERFORM 10013-RISIKASAN-SET-SEC
@@ -1479,6 +1481,7 @@
       *
       *    Ï«ºÒ¤Î³°Íè´ÉÍý²Ã»»ÆÉ¤ßÂØ¤¨½èÍý
            IF      SPA-HKNKBN          =   1
+             AND  (SPA-RSI-HKNKBN  NOT =   "5" )
                IF     (WRK-COM-RSIGIRI (IDX-ZS)
                                            =   1  )  AND
                       (WRK-COM-SYUTEN2 (IDX-ZS)
@@ -1739,6 +1742,7 @@
       *
       *    Ï«ºÒ¤Î²Ã»»
            IF      SPA-HKNKBN          =   1
+             AND  (SPA-RSI-HKNKBN  NOT =   "5" )
                CONTINUE
            ELSE
                GO      TO      1007-KASAN-SET-ALL-EXT

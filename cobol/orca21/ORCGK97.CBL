@@ -255,7 +255,7 @@
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   SPA-HKN-MAX ) OR
                               (SPA-HKNCOMBINUM     =   "9999") OR
-                              (SPA-HKNKBN          =   "1"   )
+                              (SPA-HKNKBN          =   1     )
                IF     (SPA-GMN-THKNCOMBINUM(IDX)   =   "9999") OR
                       (SPA-NAI-RSI-HKNKBN(IDX) NOT =   SPACE )
                    CONTINUE

@@ -2531,6 +2531,11 @@
                MOVE    AGECHK-FTNRATE      TO  SPA-GMN-FTNRATE
                MOVE    AGECHK-FTNRATE      TO  SPA-FTNRATE
            END-IF
+      *    º´«Â¿’§Œ∑Ú ›Ω‡µÚ»ΩƒÍ
+           IF      AGECHK-HKNKBN       =   4
+               MOVE    "5"             TO  SPA-RSI-HKNKBN
+           END-IF
+      *
            MOVE    ZERO                TO  SPA-RJN-ERR
            MOVE    ZERO                TO  SPA-HKN-ERR
            MOVE    ZERO                TO  SPA-NAI-KOHFLG-ERR

@@ -902,6 +902,7 @@
                                                                   (IDX)
                END-IF
                IF      SPA-K09NAI-RRK-HKNKBN  (IDX)  =   "2"
+                                                     OR  "4"
                    MOVE    "¼«"              TO  SPA-K09GMN-RRKHKNCOMBI
                                                                   (IDX)
                END-IF

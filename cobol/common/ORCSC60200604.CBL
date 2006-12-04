@@ -2033,6 +2033,7 @@
                                        +   WRK-TENSUKEI-NNEN
       *
            IF      SPA-HKNKBN          =   1
+             AND  (SPA-RSI-HKNKBN  NOT =   "5" )
       *        労災の外来管理加算読み替え処理
                PERFORM 10061-RSI-SYORI-SEC
            END-IF

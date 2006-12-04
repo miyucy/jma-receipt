@@ -29,6 +29,7 @@
       *  01.00.03    NACL-多々納  05.03.05  内分泌負荷試験点数の追加
       *  01.00.04    NACL-多々納  05/11/18  MONFUNC 対応 他
       *  03.03.00    NACL-多々納  06/10/20  矯正固定等追加
+      *  03.04.00    NACL-多々納  06/12/01  自賠責健保準拠追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -199,10 +200,15 @@
            IF      SSANTEI-HKNKBN      =   SPACE
                MOVE    SPA-HKNKBN      TO  SSANTEI-HKNKBN
                MOVE    SPA-HKNCOMBINUM TO  SSANTEI-HKNCOMBINUM
+               MOVE    SPA-RSI-HKNKBN  TO  SSANTEI-RSI-HKNKBN
            END-IF
            IF     (SSANTEI-HKNKBN      =   "1" ) AND
                   (SSANTEI-HKNCOMBINUM =   SPACE )
                MOVE    SPA-HKNCOMBINUM TO  SSANTEI-HKNCOMBINUM
+           END-IF
+           IF     (SSANTEI-HKNKBN      =   "1" ) AND
+                  (SSANTEI-RSI-HKNKBN  =   SPACE )
+               MOVE    SPA-RSI-HKNKBN  TO  SSANTEI-RSI-HKNKBN
            END-IF
       *    回数変更
            IF      SSANTEI-KAISU       =   ZERO
@@ -767,6 +773,7 @@
                MOVE    SPA-HKNKBN      TO  SSANTEI-HKNKBN
            END-IF
            IF     (SSANTEI-HKNKBN  NOT =   ZERO   )  AND
+                  (SSANTEI-RSI-HKNKBN  NOT =   "5" )  AND
                   (SSANTEI-SRYCD       =   "099700101"  OR
                                            "099700102"  OR
                                            "099700103" )
@@ -1117,8 +1124,9 @@
       *         GO      TO      300-DELETE-SYORI-EXT
       ***** END-IF
       *
-      *    健保以外でＣＴ・ＭＲＩの作成なし
+      *    健保以外でＣＴ・ＭＲＩの作成なし（自賠責健保準拠以外）
            IF     (SSANTEI-HKNKBN  NOT =   ZERO   )  AND
+                  (SSANTEI-RSI-HKNKBN  NOT =   "5" )  AND
                   (SSANTEI-SRYCD       =   "099700101"  OR
                                            "099700102"  OR
                                            "099700103" )

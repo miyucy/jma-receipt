@@ -72,6 +72,7 @@
       *  03.00.24    NACL-多々納  05/11/10  前回処方印刷変更
       *  03.00.25    NACL-多々納  05/11/18  MONFUNC 対応 他
       *  03.02.01    NACL-多々納  06/08/29  平成１８年１０月改正対応
+      *  03.04.00    NACL-多々納  06/12/01  自賠責健保準拠追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -3411,7 +3412,10 @@
                MOVE    AGECHK-FTNRATE      TO  SPA-GMN-FTNRATE
                MOVE    AGECHK-FTNRATE      TO  SPA-FTNRATE
       *****END-IF
-      *
+      *    自賠責の健保準拠判定
+           IF      AGECHK-HKNKBN       =   4
+               MOVE    "5"             TO  SPA-RSI-HKNKBN
+           END-IF
       *
            MOVE    ZERO                TO  SPA-RJN-ERR
            MOVE    ZERO                TO  SPA-HKN-ERR

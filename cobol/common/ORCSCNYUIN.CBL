@@ -2005,6 +2005,9 @@
                    WHEN    "4"
       *                 º´«Â¿’
                        MOVE    "2"                 TO  JYURRK-HKNKBN
+                   WHEN    "5"
+      *                 º´«Â¿’° ∑Ú ›Ω‡µÚ°À
+                       MOVE    "4"                 TO  JYURRK-HKNKBN
                END-EVALUATE
            END-IF
       *    ø«Œ≈∂Ë ¨ŒŒ∞Ë§Œ ‘Ω∏
@@ -2116,10 +2119,10 @@
        4500112-TEISEI-SRYACCT-SEC          SECTION.
       *
       *     ›∏±¡»πÁ§ª§Ú ›¬∏§π§Î
-           MOVE    SPA-HKNCOMBINUM     TO  WRK-HZN-HKNCOMBINUM
-           MOVE    SPA-HKNKBN          TO  WRK-HZN-HKNKBN
-           MOVE    JYURRK-HKNCOMBINUM  TO  SPA-HKNCOMBINUM
-           MOVE    JYURRK-HKNKBN       TO  SPA-HKNKBN
+      *!   MOVE    SPA-HKNCOMBINUM     TO  WRK-HZN-HKNCOMBINUM
+      *!   MOVE    SPA-HKNKBN          TO  WRK-HZN-HKNKBN
+      *!   MOVE    JYURRK-HKNCOMBINUM  TO  SPA-HKNCOMBINUM
+      *!   MOVE    JYURRK-HKNKBN       TO  SPA-HKNKBN
       *
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -2212,9 +2215,9 @@
                PERFORM 990-DBCLOSE-SEC
            END-PERFORM
       *
-      *     ›∏±¡»πÁ§ª§ÚÃ·§π
-           MOVE    WRK-HZN-HKNCOMBINUM     TO  SPA-HKNCOMBINUM
-           MOVE    WRK-HZN-HKNKBN          TO  SPA-HKNKBN
+      *!    ›∏±¡»πÁ§ª§ÚÃ·§π
+      *!   MOVE    WRK-HZN-HKNCOMBINUM     TO  SPA-HKNCOMBINUM
+      *!   MOVE    WRK-HZN-HKNKBN          TO  SPA-HKNKBN
       *
            .
        4500112-TEISEI-SRYACCT-EXT.
@@ -2391,6 +2394,17 @@
       *****MOVE    SPA-HKNKBN          TO  SSANTEI-HKNKBN
            MOVE    ACCT-HKNCOMBI       TO  SSANTEI-HKNCOMBINUM
            MOVE    JYURRK-HKNKBN       TO  SSANTEI-HKNKBN
+      *    œ´∫“°¶º´«Â¿’∂Ë ¨
+           EVALUATE    JYURRK-HKNKBN
+               WHEN    "1"
+                   MOVE    "1"             TO  SSANTEI-RSI-HKNKBN
+               WHEN    "2"
+                   MOVE    "1"             TO  SSANTEI-HKNKBN
+                   MOVE    "4"             TO  SSANTEI-RSI-HKNKBN
+               WHEN    "4"
+                   MOVE    "1"             TO  SSANTEI-HKNKBN
+                   MOVE    "5"             TO  SSANTEI-RSI-HKNKBN
+           END-EVALUATE
            CALL    "ORCSSANTEI"        USING
                                        ORCSSANTEIAREA
                                        SPA-AREA

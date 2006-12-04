@@ -2023,6 +2023,10 @@
                                        TO  SPA-NAI-TTEKSTYMD  (IDH)
                MOVE    ORCSHKN-NAI-TEKEDYMD (IDX)
                                        TO  SPA-NAI-TTEKEDYMD  (IDH)
+      *        ¼«ÇåÀÕÊÝ¸±¤Î»þ¡¢·òÊÝ½àµò¤«¤ÎÈ½Äê
+               IF      ORCSHKN-NAI-RSI-HKNKBN (IDX)    =   "4"
+                   PERFORM 30081-JIBAISEKI-HEN-SEC
+               END-IF
       *
                MOVE    IDH             TO  SPA-HKN-MAX
            END-PERFORM
@@ -2032,6 +2036,33 @@
       *
            .
        3008-HKNCOMBI-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   ¼«ÇåÀÕ¤Î·òÊÝ½àµòÈ½Äê
+      *****************************************************************
+       30081-JIBAISEKI-HEN-SEC             SECTION.
+      *
+           INITIALIZE                  ORCSAGECHKAREA
+           MOVE    SPA-HOSPID          TO  AGECHK-HOSPID
+           MOVE    SPA-GMN-PTID        TO  AGECHK-PTID
+           MOVE    SPA-NAI-SRYYM       TO  AGECHK-SRYYMD(1:6)
+           MOVE    "01"                TO  AGECHK-SRYYMD(7:2)
+           MOVE    SPA-BIRTHDAY        TO  AGECHK-BIRTHDAY
+           MOVE    ORCSHKN-GMN-HKNCOMBINUM (IDX)
+                                       TO  AGECHK-HKNCOMBINUM
+           MOVE    SPA-GMN-NYUGAIKBN   TO  AGECHK-NYUGAIKBN
+           CALL    "ORCSAGECHK"        USING
+                                       ORCSAGECHKAREA
+      *    ¼«ÇåÀÕ¶èÊ¬
+           EVALUATE    AGECHK-HKNKBN
+               WHEN    2
+                   MOVE    "4"             TO  SPA-NAI-TRSI-HKNKBN(IDH)
+               WHEN    4
+                   MOVE    "5"             TO  SPA-NAI-TRSI-HKNKBN(IDH)
+           END-EVALUATE
+           .
+       30081-JIBAISEKI-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2335,6 +2366,7 @@
                MOVE    "Ï«"                TO  SPA-GMN-RRKHKNCOMBI (IDX)
            END-IF
            IF      JYURRK-HKNKBN       =   "2"
+                                       OR  "4"
                MOVE    "¼«"                TO  SPA-GMN-RRKHKNCOMBI (IDX)
            END-IF
       *
@@ -5192,12 +5224,6 @@
                            END-IF
                            MOVE    1               TO  FLG-OK
                        END-IF
-      *TEST
-              DISPLAY "SPA-RRK-RRKYMD:" SPA-RRK-RRKYMD (IDX)
-                     ",SRYKA:" SPA-RRK-SRYKA (IDX)
-                     ",RENNUM:" SPA-RRK-RENNUM (IDX) 
-                     ", SPA-NAI-KEIFLG2:"  SPA-NAI-KEIFLG2
-                    ",SRYKA:" WRK-SRYKA
       *
       *                PERFORM VARYING     IDT2    FROM    1   BY  1
       *                        UNTIL      (IDT2    >   10      )  OR
@@ -10399,6 +10425,8 @@
                                            =   SPA-HKNCOMBINUM
       *            Ï«ºÒÈ½Äê
                    MOVE    SPA-NAI-THKNKBN(IDH)    TO  SPA-HKNKBN
+                   MOVE    SPA-NAI-TRSI-HKNKBN (IDH)
+                                                   TO  SPA-RSI-HKNKBN
                END-IF
            END-PERFORM
       *
