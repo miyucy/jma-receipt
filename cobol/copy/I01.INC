@@ -53,6 +53,13 @@
                 05  I01-SAGAKU-ITM                 PIC X(23)
                                                    OCCURS  30.
                 05  I01-SAGAKU-ITM-STT             PIC S9(9)   BINARY.
+              04  I01-CMB-SKJKBN.
+                05  I01-SKJKBN                     PIC X(24).
+                05  I01-SKJKBN-STT                 PIC S9(9)   BINARY.
+                05  I01-SKJKBN-CNT                 PIC S9(9)   BINARY.
+                05  I01-SKJKBN-ITM                 PIC X(24)
+                                                   OCCURS  10.
+                05  I01-SKJKBN-ITM-STT             PIC S9(9)   BINARY.
               04  I01-NYUINYMD                     PIC X(10).
               04  I01-NYUINYMD-STT                 PIC S9(9)   BINARY.
               04  I01-CMB-NYUINKA.

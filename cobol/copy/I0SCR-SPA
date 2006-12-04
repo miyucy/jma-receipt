@@ -69,6 +69,11 @@
                    13  SPA-GMN-I01-SAGAKU-CD       PIC X(02).
                    13                              PIC X(01).
                    13  SPA-GMN-I01-SAGAKU-NM       PIC X(20).
+      *          食事区分
+                 11  SPA-GMN-I01-SKJKBN.
+                   13  SPA-GMN-I01-SKJKBN-CD       PIC X(01).
+                   13                              PIC X(01).
+                   13  SPA-GMN-I01-SKJKBN-NM       PIC X(22).
       *          入院日
                  11  SPA-GMN-I01-NYUINYMD          PIC X(10).
       *          入院科
@@ -270,6 +275,13 @@
                        15  SPA-GMN-I01-SAGAKUL     PIC X(02).
                        15                          PIC X(01).
                        15  SPA-GMN-I01-SAGAKUMEIL  PIC X(20).
+      *          食事区分コンボ
+                 11  SPA-GMN-I01-CMB-SKJKBN.
+                   13  SPA-GMN-I01-SKJKBN-CNT      PIC 9(5).
+                   13  SPA-GMN-I01-SKJKBN-ITM      OCCURS  10.
+                       15  SPA-GMN-I01-SKJKBNL     PIC X(01).
+                       15                          PIC X(01).
+                       15  SPA-GMN-I01-SKJKBNMEIL  PIC X(22).
       *          入院科コンボ
                  11  SPA-GMN-I01-CMB-NYUINKA.
                    13  SPA-GMN-I01-NYUINKA-CNT     PIC 9(5).
