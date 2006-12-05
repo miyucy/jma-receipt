@@ -1263,7 +1263,7 @@
       *
                COMPUTE WRK-SKYMONEY
                    =   WKSYU-SKYMONEY
-                   +   SPA-I0-UPD-SKYMONEY (WRK-LST-IDX)
+                   -   SPA-I0-UPD-SKYMONEY (WRK-LST-IDX)
                MOVE    WRK-SKYMONEY    TO  WRK-Z99
                MOVE    WRK-Z99         TO  WRK-STR
                PERFORM 800-LTRIM-SEC
@@ -3863,7 +3863,7 @@
                        MOVE    ZERO    TO  FLG-SKYPRT
                ELSE
                    IF    ( SPA-GMN-I04-SKYPRTOUT-CD    =   "2" )
-                     AND ( WKSYU-SKYMONEY             <=   ZERO )
+                     AND ( WRK-SKY-SKYMONEY           <=   ZERO )
                        MOVE    ZERO    TO  FLG-SKYPRT
                    END-IF
                END-IF
