@@ -209,6 +209,7 @@
       *                                     ¤â¤Ä¾ì¹ç¤Î¾å¸Â³ÛÊÔ½¸½¤Àµ
       *  03.04.01    NACL-ÌçÏÆ    06/11/20  ¹â³Û°ÑÇ¤Ê§¤¤À©ÅÙÂÐ±þ
       *  03.04.02    NACL-ÌçÏÆ    06/11/24  µÜ¾ë¸©ÃÏÊý¸øÈñ£±£°·î²þÀµÂÐ±þ
+      *  03.04.03    NACL-ÌçÏÆ    06/12/01  ¼«ÇåÀÕ·òÊÝ½àµòÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -325,6 +326,9 @@
            03  WK-4001-KSNRATE         PIC 9V99.
            03  WK-4001-TAXKBN          PIC X(01).
            03  WK-4001-TAXKBN-KZI      PIC X(01).
+           03  WK-4001-JIBAIKBN        PIC X(01).
+           03  WK-4001-SYUTENTANKA     PIC 9(02).
+           03  WK-4001-YKZTENTANKA     PIC 9(02).
       *
            03  WK-ERR                  PIC 9(01).
            03  WK-UERR                 PIC 9(01).
@@ -966,6 +970,8 @@
            MOVE    LNK-S01-IDX     TO  IDY.
            MOVE    SPACE           TO  KEISAN-AREA.
            INITIALIZE                  KEISAN-AREA.
+           MOVE    SPACE           TO  WRK-AREA.
+           INITIALIZE                  WRK-AREA.
            MOVE    ZERO            TO  LNK-SYU-RJN-FTN
                                        LNK-SYU-KOH-FTN
                                        LNK-SYU-KOH-FTN-ENTANI
@@ -1450,12 +1456,14 @@
            IF   (WK-HKNKBN               =    "1")   AND
                 (LNK-SYU-SYUHKNNUM       =    "973") AND
                 (LNK-SYU-PTFTNRATE       =     100 )
+              IF   WK-4001-JIBAIKBN  =  "1"
                  COMPUTE  LNK-SYU-RSISHOSHIN-MONEY  =
                          (LNK-SYU-RSISHOSHIN-MONEY  *  WK-4001-KSNRATE)
                                                     +  0.5      
                  COMPUTE  LNK-SYU-RSISAISHIN-MONEY  =
                          (LNK-SYU-RSISAISHIN-MONEY  *  WK-4001-KSNRATE)
                                                     +  0.5
+              END-IF
       *
       *          ¼«ÇåÀÕ¤½¤ÎÂ¾¥³¡¼¥É¾ðÊó¤ÎÊÔ½¸¡Ê£°£¹£µ£¹£±¡¥£¹£²¡¥£¹£³¡Ë
                  PERFORM   500-JIBAI-SONOTA-HENSYU-SEC
@@ -1480,12 +1488,14 @@
            IF   (WK-HKNKBN               =    "1")   AND
                 (LNK-SYU-SYUHKNNUM       =    "973") AND
                 (LNK-SYU-PTFTNRATE       =    ZERO )
+              IF   WK-4001-JIBAIKBN  =  "1"
                  COMPUTE  LNK-SYU-RSISHOSHIN-MONEY  =
                          (LNK-SYU-RSISHOSHIN-MONEY  *  WK-4001-KSNRATE)
                                                     +  0.5      
                  COMPUTE  LNK-SYU-RSISAISHIN-MONEY  =
                          (LNK-SYU-RSISAISHIN-MONEY  *  WK-4001-KSNRATE)
                                                     +  0.5
+              END-IF
       *
       *          ¼«ÇåÀÕ¤½¤ÎÂ¾¥³¡¼¥É¾ðÊó¤ÎÊÔ½¸¡Ê£°£¹£µ£¹£±¡¥£¹£²¡¥£¹£³¡Ë
                  PERFORM   500-JIBAI-SONOTA-HENSYU-SEC
@@ -12306,6 +12316,23 @@
                      END-IF
                      MOVE   SYS-4001-TAXKBN     TO   WK-4001-TAXKBN
                      MOVE   SYS-4001-TAXKBN-KZI TO   WK-4001-TAXKBN-KZI
+                     IF     SYS-4001-JIBAIKBN       =  SPACE
+                        MOVE   "1"                 TO   WK-4001-JIBAIKBN
+                     ELSE
+                        MOVE   SYS-4001-JIBAIKBN   TO   WK-4001-JIBAIKBN
+                     END-IF
+                     IF     SYS-4001-SYUTENTANKA-X  =  SPACE
+                        MOVE  ZERO   TO  WK-4001-SYUTENTANKA
+                     ELSE
+                        MOVE  SYS-4001-SYUTENTANKA
+                                     TO  WK-4001-SYUTENTANKA
+                     END-IF
+                     IF     SYS-4001-YKZTENTANKA-X  =  SPACE
+                        MOVE  ZERO   TO  WK-4001-YKZTENTANKA
+                     ELSE
+                        MOVE  SYS-4001-YKZTENTANKA
+                                     TO  WK-4001-YKZTENTANKA
+                     END-IF
                      IF     LNK-SYU-SYUHKNNUM       =  "971" OR "973"   
                        IF   LNK-SYU-PTFTNRATE       =   100             
                          MOVE     100      TO   HKN-HON-GAIKFTNRATE     
@@ -12329,7 +12356,8 @@
                                        (WK-ZENGAKU  / 10 * 12.0)
                        END-EVALUATE
                      ELSE
-                       EVALUATE  SYS-4001-TENKBN
+                       IF  WK-4001-JIBAIKBN  =  "1"
+                         EVALUATE  SYS-4001-TENKBN
                            WHEN  "1"
                               COMPUTE  WK-ZENGAKU  =  WK-ZENGAKU  /  10  
                               MOVE  LNK-S01-SYUTEN(IDY)
@@ -12360,7 +12388,23 @@
                                                       + 0.5             
                               COMPUTE  WK-ZENGAKU     = WK-ZENGAKU-SYU
                                                       + WK-ZENGAKU-YAK
-                       END-EVALUATE
+                         END-EVALUATE
+                       ELSE
+                         COMPUTE  WK-ZENGAKU  =  WK-ZENGAKU  /  10
+                         MOVE  LNK-S01-SYUTEN(IDY)
+                                           TO  WK-ZENGAKU-SYU
+                         COMPUTE  WK-ZENGAKU-YAK
+                                             = WK-ZENGAKU
+                                             - LNK-S01-SYUTEN(IDY)
+                         COMPUTE  WK-ZENGAKU-SYU =
+                                 (WK-ZENGAKU-SYU * WK-4001-SYUTENTANKA)
+                                                 + 0.5
+                         COMPUTE  WK-ZENGAKU-YAK =
+                                 (WK-ZENGAKU-YAK * WK-4001-YKZTENTANKA)
+                                                 + 0.5
+                         COMPUTE  WK-ZENGAKU     = WK-ZENGAKU-SYU
+                                                 + WK-ZENGAKU-YAK
+                       END-IF
                      END-IF 
                    END-IF
                END-IF

@@ -52,6 +52,7 @@
       *  03.01.01    NACL-ÌçÏÆ    06/06/30  ÎÅÍÜÉÂÅï¤ÎÂ¾°åÎÅµ¡´Ø¼õ¿ÇÂÐ±þ
       *  03.01.02    NACL-¾®Æ¦Âô  06.07.04  Æþ±¡ÎÁ¤Ë´Þ¤á¤ë²Ã»»¤¬¥³¥á¥ó¥È
       *                                     ¤ÈÆ±»þÆþÎÏ¤µ¤ì¤¿¾ì¹ç¤ÎÂÐ±þ
+      *  03.04.01    NACL-ÌçÏÆ    06/12/01  ¼«ÇåÀÕ·òÊÝ½àµòÂÐ±þ
       *****************************************************************
       *
       *
@@ -75,6 +76,7 @@
            03  FLG-TENSU           PIC 9(01).
            03  FLG-PTINF           PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
+           03  FLG-SYS4001         PIC 9(01).
            03  FLG-HKNCOMBI        PIC 9(01).
            03  FLG-RJN             PIC 9(01).
            03  FLG-ROUSAI          PIC 9(01).
@@ -159,6 +161,8 @@
            03  WRK-HYOKETU-TEN             PIC 9(09)V99.
            03  WRK-ZAITEN-HYOKETU          PIC 9(08).
       *
+           03  WRK-SYS4001-JIBAIKBN        PIC X(01).
+      *
       *    Ï«ºÒÆþ±¡²ñ·×¥ï¡¼¥¯
            03  WRK-ROUSAI-TABLE.
                05  WRK-ROUSAI-TBL          OCCURS  31.
@@ -237,6 +241,7 @@
            COPY    "CPSYSKANRI.INC".
       *
            COPY    "CPSK5000.INC".
+           COPY    "CPSK4001.INC".
       *
       *    Æþ±¡¿ÇÎÅ²ñ·×¥Þ¥¹¥¿¡Ý
        01  NYUINACCT-REC.
@@ -362,13 +367,11 @@
            PERFORM 910-NYUINACCT-SELECT-SEC
            IF      FLG-NYUINACCT           NOT =   ZERO
                MOVE    3               TO  LNK-SROUNYUIN-RC
-               GO  TO  100-PRM-CHK-EXT
            ELSE
                MOVE    "NYUINACCT-KEY17"   TO  ORC-DBPATH
                PERFORM 910-NYUINACCT-READ-SEC
                IF   FLG-NYUINACCT          NOT =   ZERO
                     MOVE    3               TO  LNK-SROUNYUIN-RC
-                    GO  TO  100-PRM-CHK-EXT
                ELSE
       *            Ï«ºÒÊÝ¸±¤ÎÈ½Äê
                    MOVE      ZERO              TO  FLG-ROUSAI
@@ -390,8 +393,93 @@
       *    Æþ±¡²ñ·×¥¯¥í¡¼¥º
            MOVE    "NYUINACCT-KEY17"           TO  ORC-DBPATH
            PERFORM   910-DB-CLOSE-SEC
+      *
+           IF   LNK-SROUNYUIN-RC    NOT =   ZERO
+                   GO  TO  100-PRM-CHK-EXT
+           END-IF
+      *
+           PERFORM   110-RJN-TAISYO-CHK-SEC
+      *
+           IF   LNK-SROUNYUIN-RC    NOT =   ZERO
+                   GO  TO  100-PRM-CHK-EXT
+           END-IF
+      *
            .
        100-PRM-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Ï·¿ÍÂÐ¾Ý´µ¼Ô¥Á¥§¥Ã¥¯Åù
+      *****************************************************************
+       110-RJN-TAISYO-CHK-SEC         SECTION.
+      *
+           MOVE    ZERO                 TO   FLG-RJN
+      *
+           MOVE    ZERO                 TO   FLG-HKNCOMBI
+           INITIALIZE                        HKNCOMBI-REC
+           MOVE    LNK-SROUNYUIN-HOSPID TO   COMB-HOSPID
+           MOVE    LNK-SROUNYUIN-PTID   TO   COMB-PTID
+           MOVE    LNK-SROUNYUIN-HKNCOMBI
+                                        TO   COMB-HKNCOMBINUM
+           MOVE    "HKNCOMBI-KEY"       TO   ORC-DBPATH
+           PERFORM 910-HKNCOMBI-SELECT-SEC
+           IF      FLG-HKNCOMBI         =    ZERO
+               MOVE     "HKNCOMBI-KEY"  TO   ORC-DBPATH
+               PERFORM   910-HKNCOMBI-READ-SEC
+           END-IF
+           MOVE    "HKNCOMBI-KEY"       TO   ORC-DBPATH
+           PERFORM   910-DB-CLOSE-SEC
+      *
+      *    Æþ±¡´µ¼Ô¤ÎÇ¯Îð·×»»
+           INITIALIZE                       ORCSAGECHKAREA
+           MOVE    LNK-SROUNYUIN-HOSPID TO  AGECHK-HOSPID
+           MOVE    LNK-SROUNYUIN-PTID   TO  AGECHK-PTID
+           MOVE    LNK-SROUNYUIN-SANTEIYM
+                                        TO  AGECHK-SRYYMD(1:6)
+           MOVE    "01"                 TO  AGECHK-SRYYMD(7:2)
+           MOVE    PTINF-BIRTHDAY       TO  AGECHK-BIRTHDAY
+           CALL    "ORCSAGECHK"         USING
+                                            ORCSAGECHKAREA
+           IF      AGECHK-RC            =   ZERO
+               CONTINUE
+           ELSE
+               INITIALIZE    ORCSAGECHKAREA
+           END-IF
+      *
+      *    Ï·¿ÍÂÐ¾Ý´µ¼ÔÈ½Äê
+           IF    ((FLG-HKNCOMBI        =   ZERO      ) AND
+                  (COMB-KOH1HKNNUM     =   "027"     ))
+           OR    ( AGECHK-NENREI      >=    75        )
+           OR    ((AGECHK-NENREI      >=    70       ) AND
+                  (PTINF-BIRTHDAY     <=   "19320930"))
+               MOVE    1               TO  FLG-RJN
+           END-IF
+      *
+      *    ¼«ÇåÀÕ½àµòÈ½Äê
+           MOVE      ZERO       TO    FLG-SYS4001
+           MOVE      SPACE      TO    WRK-SYS4001-JIBAIKBN
+           IF    ( FLG-HKNCOMBI        =   ZERO  )
+           AND   ( COMB-HKNNUM         =   "973" )
+               PERFORM  910-SYS4001-READ-SEC
+               IF   FLG-SYS4001  =  ZERO
+                 IF    SYS-4001-JIBAIKBN   =   SPACE
+                    MOVE  "1"                 TO  WRK-SYS4001-JIBAIKBN
+                 ELSE
+                    MOVE  SYS-4001-JIBAIKBN   TO  WRK-SYS4001-JIBAIKBN
+                 END-IF
+               END-IF
+           END-IF
+      *
+           IF      FLG-HKNCOMBI    NOT =   ZERO
+                  MOVE    4     TO    LNK-SROUNYUIN-RC
+           END-IF
+      *
+           IF      FLG-SYS4001     NOT =   ZERO
+                  MOVE    5     TO    LNK-SROUNYUIN-RC
+           END-IF
+      *
+           .
+       110-RJN-TAISYO-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -528,16 +616,18 @@
                    PERFORM 910-NYUINACCT-READ-SEC
                END-PERFORM
                IF   FLG-OK     =   ZERO
-                   MOVE     3      TO      LNK-SROUNYUIN-RC
-                   GO   TO    200-MAIN-EXT
+                   MOVE     6      TO      LNK-SROUNYUIN-RC
                END-IF
            ELSE
-               MOVE     3      TO      LNK-SROUNYUIN-RC
-               GO   TO    200-MAIN-EXT
+               MOVE     6      TO      LNK-SROUNYUIN-RC
            END-IF
       *    Æþ±¡²ñ·×¥¯¥í¡¼¥º
            MOVE    "NYUINACCT-KEY17"           TO  ORC-DBPATH
            PERFORM   910-DB-CLOSE-SEC
+      *
+           IF   LNK-SROUNYUIN-RC    NOT =   ZERO
+                   GO   TO    200-MAIN-EXT
+           END-IF
       *
       *Ï«ºÒÆþ±¡»þ¤Î³°Çñ¼èÆÀ
            INITIALIZE                          NYUINACCT-REC
@@ -566,9 +656,6 @@
       *    Æþ±¡²ñ·×¥¯¥í¡¼¥º
            MOVE    "NYUINACCT-KEY17"           TO  ORC-DBPATH
            PERFORM   910-DB-CLOSE-SEC
-      *
-      *Ï·¿ÍÂÐ¾Ý´µ¼Ô¥Á¥§¥Ã¥¯
-           PERFORM   210-RJN-TAISYO-CHK-SEC
       *
       *·îÆâ¤ËÊ£¿ô¤ÎÆþ±¡´ðËÜ¾ðÊó¡Ê£µ£°£°£°¡Ë¤¬¤Ê¤¤¤«¸¡º÷
            PERFORM   210-SYS-5000-CHK-SEC
@@ -1145,6 +1232,10 @@
                END-IF
       *        Ï«ºÒ¾è¿ô¡ÊÆÃÄêÆþ±¡ÎÁ¤Î¾ì¹ç¤ÏÏ«ºÒ¾è¿ô¤Ê¤·¡Ë
                IF       LNK-SROUNYUIN-SRYKBN(IDX1)    =    "90"
+                 IF   (COMB-HKNNUM           =  "973")
+                 AND  (WRK-SYS4001-JIBAIKBN  =  "2"  )
+                   CONTINUE
+                 ELSE
                    EVALUATE  LNK-SROUNYUIN-JOUSU-KBN(IDX1)
                        WHEN  "1"
                            ADD      1           TO  WRK-MEISAISU
@@ -1159,6 +1250,7 @@
                            MOVE    "4"      TO  LNK-SROUNYUIN-SRYCD-SK
                                                (IDX1 WRK-MEISAISU)
                    END-EVALUATE
+                 END-IF
                END-IF
       *        ½é´ü²Ã»»¡ÊÄ¹´ü¸º»»¡Ë
                IF      (WRK-GAIHAKU(IDX1)        =         SPACE)  AND
@@ -1366,61 +1458,6 @@
       *
            .
        2101-GAIHAKU-TAKIKAN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    Ï·¿ÍÂÐ¾Ý´µ¼Ô¥Á¥§¥Ã¥¯
-      *****************************************************************
-       210-RJN-TAISYO-CHK-SEC         SECTION.
-      *
-           MOVE    ZERO                TO  FLG-RJN
-      *
-      *    Æþ±¡´µ¼Ô¤ÎÏ·¿ÍÊÝ¸±È½Äê
-           MOVE    ZERO                TO   FLG-HKNCOMBI
-           INITIALIZE                       HKNCOMBI-REC
-           MOVE    LNK-SROUNYUIN-HOSPID TO  COMB-HOSPID
-           MOVE    LNK-SROUNYUIN-PTID  TO   COMB-PTID
-           MOVE    LNK-SROUNYUIN-HKNCOMBI
-                                       TO   COMB-HKNCOMBINUM
-           MOVE    "HKNCOMBI-KEY"      TO   ORC-DBPATH
-           PERFORM 910-HKNCOMBI-SELECT-SEC
-           IF      FLG-HKNCOMBI        =    ZERO
-               MOVE     "HKNCOMBI-KEY" TO   ORC-DBPATH
-               PERFORM   910-HKNCOMBI-READ-SEC
-           END-IF
-      *    ÊÝ¸±ÁÈ¹ç¤»¥¯¥í¡¼¥º
-           MOVE    "HKNCOMBI-KEY"      TO   ORC-DBPATH
-           PERFORM   910-DB-CLOSE-SEC
-      *
-      *    Æþ±¡´µ¼Ô¤ÎÇ¯Îð·×»»
-           INITIALIZE                      ORCSAGECHKAREA
-           MOVE    LNK-SROUNYUIN-HOSPID
-                                       TO  AGECHK-HOSPID
-           MOVE    LNK-SROUNYUIN-PTID
-                                       TO  AGECHK-PTID
-           MOVE    LNK-SROUNYUIN-SANTEIYM
-                                       TO  AGECHK-SRYYMD(1:6)
-           MOVE    "01"                TO  AGECHK-SRYYMD(7:2)
-           MOVE    PTINF-BIRTHDAY      TO  AGECHK-BIRTHDAY
-           CALL    "ORCSAGECHK"        USING
-                                           ORCSAGECHKAREA
-           IF    ( AGECHK-RC           =   ZERO )
-               CONTINUE
-           ELSE
-               INITIALIZE  ORCSAGECHKAREA
-           END-IF
-      *
-      *    Ï·¿ÍÂÐ¾Ý´µ¼ÔÈ½Äê
-           IF    ((FLG-HKNCOMBI        =   ZERO)    AND
-                  (COMB-KOH1HKNNUM     =   "027"))   OR
-                 ( AGECHK-NENREI      >=    75)      OR
-                 ((AGECHK-NENREI      >=    70)     AND
-                  (PTINF-BIRTHDAY     <=   "19320930"))
-               MOVE    1               TO  FLG-RJN
-           END-IF
-      *
-           .
-       210-RJN-TAISYO-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2094,6 +2131,49 @@
       *
            .
        910-SYSKANRI-READ-EXT.
+           EXIT.
+      *
+      ******************************************************************
+      *    ¥·¥¹¥Æ¥à´ÉÍý£´£°£°£±ÆÉ¹þ
+      ******************************************************************
+       910-SYS4001-READ-SEC           SECTION.
+      *
+           INITIALIZE                          SYS-4001-REC
+           MOVE    "4001"                  TO  SYS-4001-KANRICD
+           MOVE    "*"                     TO  SYS-4001-KBNCD
+           MOVE    LNK-SROUNYUIN-SANTEIYM  TO  ORC-DBYMD(1:6)
+           MOVE    "01"                    TO  ORC-DBYMD(7:2)
+           MOVE    SYS-4001-REC            TO  MCPDATA-REC
+           MOVE    "DBSELECT"              TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"          TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"             USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+           IF      MCP-RC               =      ZERO
+               MOVE     "DBFETCH"          TO  MCP-FUNC
+               MOVE     "SYSKANRI-KEY"     TO  ORC-DBPATH
+               CALL     "ORCMCPSUB"        USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC     TO  SYS-4001-REC
+                   MOVE    ZERO            TO  FLG-SYS4001
+               ELSE
+                   INITIALIZE                  SYS-4001-REC
+                   MOVE    1               TO  FLG-SYS4001
+               END-IF
+           ELSE
+                   INITIALIZE                  SYS-4001-REC
+                   MOVE    1               TO  FLG-SYS4001
+           END-IF
+      *
+           MOVE    "SYSKANRI-KEY"          TO  ORC-DBPATH
+           PERFORM   910-DB-CLOSE-SEC
+      *
+           .
+       910-SYS4001-READ-EXT.
            EXIT.
       *
       *****************************************************************

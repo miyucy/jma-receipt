@@ -38,6 +38,7 @@
       *  01.00.07    NACL-ÌçÏÆ    06/03/30  Ï«ºÒÆ±Æü½é¿ÇÂÐ±þ
       *  03.01.01    NACL-ÌçÏÆ    06/07/06  ÎÎ¼ý½ñÂÐ±þ
       *  03.02.01    NACL-ÌçÏÆ    06/09/05  ·ò¹¯ÊÝ¸±Ë¡£±£°·î²þÀµÂÐ±þ
+      *  03.04.01    NACL-ÌçÏÆ    06/12/01  ¼«ÇåÀÕ·òÊÝ½àµòÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -109,6 +110,7 @@
                  05  WRK-DOUJI-SRYKA       PIC X(02)
                                            OCCURS  10.
            03  WRK-4001-KOTEIKBN           PIC X(01).
+           03  WRK-4001-JIBAIKBN           PIC X(01).
       *
       *    ºÞÈÖ¹æÅùÂàÈòÍÑ¥Æ¡¼¥Ö¥ë
        01  ZAIBAN-TABLE.
@@ -320,9 +322,15 @@
                                                   LNK-S01-KAGRPFLG
       *
                MOVE     SPACE   TO   WRK-4001-KOTEIKBN
+               MOVE     SPACE   TO   WRK-4001-JIBAIKBN
                IF   SYU-SYUHKNNUM   =   "971" OR "973"
                  PERFORM  900-SYS4001-READ-SEC
                  MOVE     SYS-4001-KOTEIKBN   TO  WRK-4001-KOTEIKBN
+                 IF       SYS-4001-JIBAIKBN   =   SPACE
+                    MOVE  "1"                 TO  WRK-4001-JIBAIKBN
+                 ELSE
+                    MOVE  SYS-4001-JIBAIKBN   TO  WRK-4001-JIBAIKBN
+                 END-IF
                END-IF
       *
                IF   WRK-GRP-DENPNUM   =   ZERO
@@ -492,6 +500,22 @@
                  IF    SAI-IDX   =   ZERO
                    MOVE    "0063"         TO  SPA-ERRCD
                    GO       TO                MAIN-EXT
+                 END-IF
+                 IF    LNK-SYU-SYUHKNNUM(IDY)   =   "973"
+                   EVALUATE  WRK-4001-JIBAIKBN
+      *              Ï«ºÒ½àµò
+                     WHEN      "1"
+                       IF  JYURRK-HKNKBN  =  "4"
+                         MOVE    "0062"         TO  SPA-ERRCD
+                         GO       TO                MAIN-EXT
+                       END-IF
+      *              ·òÊÝ½àµò
+                     WHEN      "2"
+                       IF  JYURRK-HKNKBN  =  "2"
+                         MOVE    "0062"         TO  SPA-ERRCD
+                         GO       TO                MAIN-EXT
+                       END-IF
+                   END-EVALUATE
                  END-IF
       *
       *          Á¥°÷ÄÌ¶ÐºÒ³²¤ÎÈ½ÊÌ
