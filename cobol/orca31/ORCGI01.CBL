@@ -432,6 +432,7 @@
            03  WRK-FTN-NYUINYMD            PIC X(08).
            03  WRK-FTN-TAIINYMD            PIC X(08).
            03  WRK-FTN-DJKBN               PIC X(01).
+           03  WRK-FTN-PROCKBN             PIC X(01).
            03  WRK-FTN-RRKNUM              PIC 9(03).
            03  WRK-NYUREKILST-SEL          PIC 9(05).
       *    Å¾²Ê¡¿Å¾Åï¡¿Å¾¼¼»þ¤Ë¿©»ö²ñ·×¤òÂàÈò¤¹¤ë¹àÌÜ¡ÊºÇÂç£²¥«·îÊ¬¡Ë
@@ -14371,8 +14372,13 @@
                MOVE    1               TO  I0SUB02-SYORIFLG
            END-IF
       *
-           MOVE    SPA-NAI-I01-PTRRKNUM
+           IF    ( WRK-FTN-PROCKBN     =   "1" )
+               MOVE    SPA-NAI-I01-PTRRKNUM
                                        TO  I0SUB02-RRKNUM
+           ELSE
+               MOVE    SPA-NAI-I01-TRRKNUM (SPA-GMN-I01-NYUREKILST-SEL)
+                                       TO  I0SUB02-RRKNUM
+           END-IF
            MOVE    WRK-NISSU1          TO  I0SUB02-NISSU
            MOVE    WRK-NOW-SKYSTYMD    TO  I0SUB02-SKYSTYMD
            MOVE    WRK-FTN-TAIINYMD    TO  I0SUB02-SKYEDYMD
@@ -14445,6 +14451,7 @@
            MOVE    SPA-NAI-I01-NYUINYMD    TO  WRK-FTN-NYUINYMD
            MOVE    SPA-NAI-I01-TAIINYMD    TO  WRK-FTN-TAIINYMD
            MOVE    SPA-NAI-I01-DJKBN       TO  WRK-FTN-DJKBN
+           MOVE    "1"                     TO  WRK-FTN-PROCKBN
            PERFORM 490-FTNKIN-CALC-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  490-TAIIN-SYORI-EXT
@@ -14476,6 +14483,7 @@
                                            TO  WRK-FTN-NYUINYMD
            MOVE    SPA-NAI-I01-TTAIINYMD (IDX1)
                                            TO  WRK-FTN-TAIINYMD
+           MOVE    "2"                     TO  WRK-FTN-PROCKBN
            PERFORM 490-FTNKIN-CALC-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  490-TAIIN-SAIKEISAN-SYORI-EXT

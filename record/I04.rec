@@ -339,6 +339,9 @@ I04	{
 			count	int;
 			item	varchar(29)[50];
 		};
+		LBLSKYINF	{
+			value	varchar(50);
+		};
 		scrolledwindow1	{
 			HKNCOMBILST	{
 				count	int;

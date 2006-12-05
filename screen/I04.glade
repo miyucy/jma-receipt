@@ -1489,22 +1489,6 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label496</name>
-      <x>764</x>
-      <y>552</y>
-      <width>128</width>
-      <height>24</height>
-      <label>今回入院入金額</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>label183</name>
       <x>764</x>
       <y>504</y>
@@ -1720,22 +1704,6 @@
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>label485</name>
-      <x>239</x>
-      <y>615</y>
-      <width>170</width>
-      <height>24</height>
-      <label>前回までの未収額（外来）</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
       <class>GtkHSeparator</class>
       <name>hseparator15</name>
       <x>984</x>
@@ -1800,22 +1768,6 @@
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label502</name>
-      <x>688</x>
-      <y>580</y>
-      <width>67</width>
-      <height>24</height>
-      <label>入金方法</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
     </widget>
 
     <widget>
@@ -2184,7 +2136,7 @@
       <y>440</y>
       <width>80</width>
       <height>22</height>
-      <label>入院料等</label>
+      <label>0	</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -2245,7 +2197,7 @@
       <y>392</y>
       <width>80</width>
       <height>22</height>
-      <label>精神科専門</label>
+      <label>300</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -2403,31 +2355,6 @@
       <width>80</width>
       <height>22</height>
       <label>麻　　酔</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator2</name>
-      <x>8</x>
-      <y>508</y>
-      <width>300</width>
-      <height>15</height>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label465</name>
-      <x>4</x>
-      <y>520</y>
-      <width>100</width>
-      <height>24</height>
-      <label>負担金額（円）</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -3000,6 +2927,95 @@
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label485</name>
+      <x>239</x>
+      <y>615</y>
+      <width>170</width>
+      <height>24</height>
+      <label>前回までの未収額（外来）</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator2</name>
+      <x>8</x>
+      <y>512</y>
+      <width>300</width>
+      <height>15</height>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label465</name>
+      <x>4</x>
+      <y>520</y>
+      <width>100</width>
+      <height>24</height>
+      <label>負担金額（円）</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label502</name>
+      <x>688</x>
+      <y>580</y>
+      <width>67</width>
+      <height>24</height>
+      <label>入金方法</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label496</name>
+      <x>764</x>
+      <y>548</y>
+      <width>128</width>
+      <height>24</height>
+      <label>今回入院入金額</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLSKYINF</name>
+      <x>36</x>
+      <y>580</y>
+      <width>400</width>
+      <height>24</height>
+      <label>前回までの未収額（外来）</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>

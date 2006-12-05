@@ -668,6 +668,8 @@
       *                    調整金
                            13  SPA-GMN-I04-CHOSEI        PIC S9(07).
                            13  SPA-GMN-I04-CHOSEI-X      PIC X(10).
+      *                    今回請求額情報
+                           13  SPA-GMN-I04-LBLSKYINF     PIC X(50).
       *                前回未収額（外来）
                        11  SPA-GMN-I04-ZENMISYU-GAI  PIC S9(07).
       *                前回未収額（入院）

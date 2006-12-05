@@ -121,6 +121,7 @@
            03  IDX-LST             PIC 9(05).
            03  IDX-CMB             PIC 9(05).
            03  IDX-SUM             PIC 9(05).
+           03  IDX-STR             PIC 9(05).
       *
       *    ¥·¥¹¥Æ¥àÎÎ°è
        01  SYS-AREA.
@@ -142,6 +143,11 @@
            03  WRK-Z9                      PIC --,---,---.
            03  WRK-Z92                     PIC --,---,---.
            03  WRK-ZZ9                     PIC ZZ9.
+           03  WRK-TEISEIBF                PIC X(20).
+           03  WRK-TEISEIAF                PIC X(20).
+           03  WRK-STR                     PIC X(500).
+           03  WRK-STR-LEN                 PIC 9(5).
+           03  WRK-TMP                     PIC X(500).
       *
       *    ÆþÎÏ¹àÌÜÌ¾
            03  WRK-MCP-WIDGET              PIC X(64).
@@ -964,62 +970,69 @@
       *
            MOVE    ZERO                TO   SPA-GMN-I04-ZENMISYU-NYU
                                             SPA-GMN-I04-ZENMISYU-GAI
-      *    Æþ±¡Ê¬Ì¤¼ý½¸·×
-           INITIALIZE                       SYUNOU-REC
-           MOVE    SPA-HOSPID          TO   SYU-HOSPID
-           MOVE    "1"                 TO   SYU-NYUGAIKBN
-           MOVE    SPA-NAI-I04-PTID    TO   SYU-PTID
-           MOVE    SYUNOU-REC          TO   MCPDATA-REC
-           MOVE    "tbl_syunou"        TO   MCP-TABLE
-           MOVE    "key13"             TO   MCP-PATHNAME
-           PERFORM  910-DBSELECT-SEC
+                                            SPA-GMN-I04-LBLSKYINF
+           IF    ( SPA-I01-I04-PROCKBN         =   "2" )
+            AND  ( SPA-NAI-I04-SAIKEISANFLG    =   1 )
       *
-           PERFORM   UNTIL  MCP-RC  NOT =  ZERO
-      *
-               MOVE    MCPDATA-REC     TO  SYUNOU-REC
-               IF    ( SPA-I01-I04-SKYSTYMD   <= SYU-SKYSTYMD )
-                AND  ( SPA-I01-I04-SKYEDYMD   >= SYU-SKYEDYMD )
-                AND  ( SPA-I01-I04-RRKNUM
-                                        = SYU-NYUIN-RRKNUM )
-                   CONTINUE
-               ELSE
-                   IF  SYU-DENPPRTYMD  <=  SPA-NAI-I04-TAIINYMD
-                       IF SYU-SKYMONEY  >   SYU-NYUKIN-TOTAL
-                          COMPUTE   SPA-GMN-I04-ZENMISYU-NYU   =
-                                    SPA-GMN-I04-ZENMISYU-NYU   +
-                                   (SYU-SKYMONEY   -
-                                    SYU-NYUKIN-TOTAL)
-                       END-IF
-                   END-IF
-               END-IF
+               CONTINUE
+           ELSE
+      *        Æþ±¡Ê¬Ì¤¼ý½¸·×
+               INITIALIZE                       SYUNOU-REC
+               MOVE    SPA-HOSPID          TO   SYU-HOSPID
+               MOVE    "1"                 TO   SYU-NYUGAIKBN
+               MOVE    SPA-NAI-I04-PTID    TO   SYU-PTID
+               MOVE    SYUNOU-REC          TO   MCPDATA-REC
                MOVE    "tbl_syunou"        TO   MCP-TABLE
                MOVE    "key13"             TO   MCP-PATHNAME
-               PERFORM 910-DBFETCH-SEC
-           END-PERFORM
+               PERFORM  910-DBSELECT-SEC
       *
-           MOVE    "tbl_syunou"        TO   MCP-TABLE
-           MOVE    "key13"             TO   MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
+               PERFORM   UNTIL  MCP-RC  NOT =  ZERO
       *
-           IF    ( SPA-NAI-I04-SAIKEISANFLG    =   1 )
-               PERFORM VARYING IDX-SYU FROM    1   BY  1
-                       UNTIL ( IDX-SYU     >    SPA-I0-SYUNOU-CNT )
-      *
-                   IF    ( SPA-I0-SYUNOU-TTLDAT-FLG (IDX-SYU)
-                                       =    ZERO )
-                     AND ( SPA-I0-SYUNOU-UPDFLG     (IDX-SYU)
-                                       =    ZERO )
-      *
-                       MOVE    SPA-I0-SYUNOU-DAT (IDX-SYU)
-                                       TO  SYUNOU-REC
-      *
-                       COMPUTE SPA-GMN-I04-ZENMISYU-NYU
-                           =   SPA-GMN-I04-ZENMISYU-NYU
-                           + ( SYU-SKYMONEY
-                            -  SPA-I0-UPD-SKYMONEY (IDX-SYU)
-                            -  SYU-NYUKIN-TOTAL )
+                   MOVE    MCPDATA-REC     TO  SYUNOU-REC
+                   IF    ( SPA-I01-I04-SKYSTYMD   <= SYU-SKYSTYMD )
+                    AND  ( SPA-I01-I04-SKYEDYMD   >= SYU-SKYEDYMD )
+                    AND  ( SPA-I01-I04-RRKNUM
+                                            = SYU-NYUIN-RRKNUM )
+                       CONTINUE
+                   ELSE
+                       IF  SYU-DENPPRTYMD  <=  SPA-NAI-I04-TAIINYMD
+                           IF SYU-SKYMONEY  >   SYU-NYUKIN-TOTAL
+                              COMPUTE   SPA-GMN-I04-ZENMISYU-NYU   =
+                                        SPA-GMN-I04-ZENMISYU-NYU   +
+                                       (SYU-SKYMONEY   -
+                                        SYU-NYUKIN-TOTAL)
+                           END-IF
+                       END-IF
                    END-IF
+                   MOVE    "tbl_syunou"        TO   MCP-TABLE
+                   MOVE    "key13"             TO   MCP-PATHNAME
+                   PERFORM 910-DBFETCH-SEC
                END-PERFORM
+      *
+               MOVE    "tbl_syunou"        TO   MCP-TABLE
+               MOVE    "key13"             TO   MCP-PATHNAME
+               PERFORM 910-DBCLOSECURSOR-SEC
+      *
+               IF    ( SPA-NAI-I04-SAIKEISANFLG    =   1 )
+                   PERFORM VARYING IDX-SYU FROM    1   BY  1
+                           UNTIL ( IDX-SYU     >    SPA-I0-SYUNOU-CNT )
+      *
+                       IF    ( SPA-I0-SYUNOU-TTLDAT-FLG (IDX-SYU)
+                                           =    ZERO )
+                         AND ( SPA-I0-SYUNOU-UPDFLG     (IDX-SYU)
+                                           =    ZERO )
+      *
+                           MOVE    SPA-I0-SYUNOU-DAT (IDX-SYU)
+                                           TO  SYUNOU-REC
+      *
+                           COMPUTE SPA-GMN-I04-ZENMISYU-NYU
+                               =   SPA-GMN-I04-ZENMISYU-NYU
+                               + ( SYU-SKYMONEY
+                               -  SPA-I0-UPD-SKYMONEY (IDX-SYU)
+                               -  SYU-NYUKIN-TOTAL )
+                       END-IF
+                   END-PERFORM
+               END-IF
            END-IF
       *
       *    ³°ÍèÊ¬Ì¤¼ý½¸·×
@@ -1242,6 +1255,33 @@
                                        +   SPA-GMN-I04-ZENMISYU-NYU
       *    ¼«ÈñÌ¾¾ÎÊÔ½¸
            PERFORM 3100-JIHIMSG-HEN-SEC
+      *
+           IF    ( SPA-I01-I04-PROCKBN         =   "2" )
+            AND  ( SPA-NAI-I04-SAIKEISANFLG    =   1 )
+            AND  ( SPA-I0-UPD-SKYMONEY  (WRK-LST-IDX)
+                                           NOT =   ZERO )
+      *
+               COMPUTE WRK-SKYMONEY
+                   =   WKSYU-SKYMONEY
+                   +   SPA-I0-UPD-SKYMONEY (WRK-LST-IDX)
+               MOVE    WRK-SKYMONEY    TO  WRK-Z99
+               MOVE    WRK-Z99         TO  WRK-STR
+               PERFORM 800-LTRIM-SEC
+               MOVE    WRK-STR         TO  WRK-TEISEIBF
+      *
+               COMPUTE WRK-SKYMONEY
+                   =   WKSYU-SKYMONEY
+               MOVE    WRK-SKYMONEY    TO  WRK-Z99
+               MOVE    WRK-Z99         TO  WRK-STR
+               PERFORM 800-LTRIM-SEC
+               MOVE    WRK-STR         TO  WRK-TEISEIAF
+               STRING  "ÄûÀµÁ°ÀÁµá³Û¡§"    DELIMITED   BY  SIZE
+                       WRK-TEISEIBF        DELIMITED   BY  SPACE
+                       "¡¡º£²óÀÁµá³Û¡§"    DELIMITED   BY  SIZE
+                       WRK-TEISEIAF        DELIMITED   BY  SPACE
+               INTO    SPA-GMN-I04-LBLSKYINF
+               END-STRING
+           END-IF
       *
             .
        3100-SEIKYU-DAT-EDIT-EXT.
@@ -1800,6 +1840,8 @@
                    MOVE    "¼ýÇ¼ºÆºîÀ®"    TO  I04-B05-LABEL
                END-IF
            END-IF
+      *
+           MOVE    SPA-GMN-I04-LBLSKYINF   TO  I04-LBLSKYINF
       *
       *    ¹àÌÜ¾õÂÖÊÔ½¸
            PERFORM 500-GMNHEN-STATE-EDIT-SEC
@@ -4235,6 +4277,35 @@
            .
       *
        800-ORCSSYUKAMAIN-EXT.
+           EXIT.
+      *****************************************************************
+      *    º¸µÍ½èÍý
+      *****************************************************************
+       800-LTRIM-SEC                   SECTION.
+      *
+           MOVE    1               TO  WRK-STR-LEN
+           MOVE    SPACE           TO  WRK-TMP
+      *
+           STRING  WRK-STR         DELIMITED   BY  SIZE
+           INTO    WRK-TMP
+           WITH    POINTER         WRK-STR-LEN
+           END-STRING
+      *
+           COMPUTE WRK-STR-LEN =   WRK-STR-LEN -   1
+      *
+           MOVE    SPACE           TO  WRK-STR
+           PERFORM VARYING IDX-STR FROM    1   BY  1
+                   UNTIL ( IDX-STR >   WRK-STR-LEN )
+                    OR   ( WRK-STR NOT =   SPACE )
+               IF    ( WRK-TMP (IDX-STR : 1)   NOT =   SPACE )
+                   MOVE    WRK-TMP (IDX-STR : )
+                                   TO  WRK-STR
+               END-IF
+           END-PERFORM
+      *
+           .
+      *
+       800-LTRIM-EXT.
            EXIT.
       *****************************************************************
       *    ´µ¼Ô¾ðÊó¸¡º÷½èÍý
