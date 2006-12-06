@@ -88,9 +88,6 @@
        01  FLG-AREA.
            03  FLG-END                 PIC 9(01).
            03  FLG-ERR                 PIC 9(01).
-           03  FLG-JYURRK              PIC 9(01).
-           03  FLG-NYUINACCT           PIC 9(01).
-           03  FLG-HKNCOMBI            PIC 9(01).
            03  FLG-PTINF               PIC 9(01).
       *
       *    カウント領域
@@ -105,7 +102,6 @@
       *    一時領域
        01  WRK-AREA. 
            03  WRK-BQERRCD             PIC X(04).
-           03  WRK-COMB-HKNCOMBINUM    PIC 9(04).
            03  WRK-PARA.
                05  WRK-PARA-PAFNAME    PIC X(100).
                05  WRK-PARA-TERMID     PIC X(64).
@@ -117,16 +113,8 @@
                05  WRK-PARA-JOBID      PIC 9(07).
                05  WRK-PARA-SHELLID    PIC X(08).
       *
-       01  TCOMBI-AREA.
-           03  TCOMBI-MAX              PIC 9(05).
-           03  TCOMBI-OCC              OCCURS  31.
-               05  TCOMBI-HKNCOMBI     PIC 9(04).
-      *
        01  CONST-AREA.
            03  CONST-SCRIPTID          PIC X(20)   VALUE   "ORCBQ02.sh".
-           03  CONST-ROUSAI            PIC X(03)   VALUE   "971".
-           03  CONST-JIBAI             PIC X(03)   VALUE   "973".
-           03  CONST-TCOMBI-MAX        PIC 9(05)   VALUE   31.
            03  CONST-PTINF-MAX         PIC 9(05)   VALUE   500.
            03  CONST-JOBID             PIC 9(07)   VALUE   2.
            03  CONST-SHELLID           PIC X(08)
@@ -165,6 +153,9 @@
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
+      *
+      *    保険分類サブ
+           COPY    "CPORCSS001.INC".
       *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
@@ -317,9 +308,18 @@
            MOVE    QUERY-PTINF-PTID        TO  QTORS-PTID
            MOVE    QUERY-PTINF-TSTPTNUMKBN TO  QTORS-TSTPTNUMKBN
       *
-           PERFORM 20011-GAIHKN-EDIT-SEC
+           INITIALIZE                  SS001-AREA
+           MOVE    WRK-PARA-HOSPID     TO  SS001-HOSPID
+           MOVE    QUERY-PTINF-PTID    TO  SS001-PTID
+           MOVE    WKBQ01-SRYYM        TO  SS001-SRYYM
+           CALL    "ORCSS001"          USING   SS001-AREA
       *
-           PERFORM 20011-NYUHKN-EDIT-SEC
+           MOVE    SS001-GIHO-FLG  TO  QTORS-GIHO-FLG
+           MOVE    SS001-GRSI-FLG  TO  QTORS-GRSI-FLG
+           MOVE    SS001-GJBI-FLG  TO  QTORS-GJBI-FLG
+           MOVE    SS001-NIHO-FLG  TO  QTORS-NIHO-FLG
+           MOVE    SS001-NRSI-FLG  TO  QTORS-NRSI-FLG
+           MOVE    SS001-NJBI-FLG  TO  QTORS-NJBI-FLG
       *
            IF    ( QTORS-GIHO-FLG      =   1 )
                COMPUTE CNT-GIHO    =   CNT-GIHO    +   1
@@ -379,112 +379,6 @@
       *
            .
        200111-BTPARA-COMMON-EXT.
-           EXIT.
-      *****************************************************************
-      *    外来保険情報編集処理
-      *****************************************************************
-       20011-GAIHKN-EDIT-SEC           SECTION.
-      *
-           PERFORM 900-JYURRK-KEY37-SEL-SEC
-      *
-           PERFORM UNTIL ( FLG-JYURRK  NOT =   ZERO )
-      *
-               EVALUATE    JYURRK-NYUGAIKBN ALSO JYURRK-HKNKBN
-               WHEN        "1"     ALSO "0"
-                   MOVE    1           TO  QTORS-NIHO-FLG
-               WHEN        "1"     ALSO "1"
-                   MOVE    1           TO  QTORS-NRSI-FLG
-               WHEN        "1"     ALSO "2"
-               WHEN        "1"     ALSO "4"
-                   MOVE    1           TO  QTORS-NJBI-FLG
-               WHEN        "2"     ALSO "0"
-                   MOVE    1           TO  QTORS-GIHO-FLG
-               WHEN        "2"     ALSO "1"
-                   MOVE    1           TO  QTORS-GRSI-FLG
-               WHEN        "2"     ALSO "2"
-               WHEN        "2"     ALSO "4"
-                   MOVE    1           TO  QTORS-GJBI-FLG
-               END-EVALUATE
-      *
-               PERFORM 900-JYURRK-KEY37-FET-SEC
-      *
-           END-PERFORM
-      *
-           MOVE    "tbl_jyurrk"        TO  MCP-TABLE
-           MOVE    "key37"             TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *
-           .
-       20011-GAIHKN-EDIT-EXT.
-           EXIT.
-      *****************************************************************
-      *    入院保険情報編集処理
-      *****************************************************************
-       20011-NYUHKN-EDIT-SEC           SECTION.
-      *
-           PERFORM 900-NYUINACCT-KEY17-SEL-SEC
-           IF    ( FLG-NYUINACCT       =   ZERO )
-      *
-               PERFORM 200111-TCOMBI-EDIT-SEC
-      *
-               PERFORM VARYING IDX1    FROM    1   BY  1
-                       UNTIL ( IDX1    >   TCOMBI-MAX )
-      *
-                   MOVE    TCOMBI-HKNCOMBI (IDX1)
-                                   TO  WRK-COMB-HKNCOMBINUM
-                   PERFORM 900-HKNCOMBI-KEY-SEL-SEC
-                   IF    ( FLG-HKNCOMBI    =   ZERO )
-                       EVALUATE    COMB-HKNNUM
-                       WHEN    CONST-ROUSAI
-                           MOVE    1       TO  QTORS-NRSI-FLG
-                       WHEN    CONST-JIBAI
-                           MOVE    1       TO  QTORS-NJBI-FLG
-                       WHEN    OTHER
-                           MOVE    1       TO  QTORS-NIHO-FLG
-                       END-EVALUATE
-                   END-IF
-      *
-               END-PERFORM
-           END-IF
-      *
-           .
-       20011-NYUHKN-EDIT-EXT.
-           EXIT.
-      *****************************************************************
-      *    保険組合せ退避領域編集処理
-      *****************************************************************
-       200111-TCOMBI-EDIT-SEC          SECTION.
-      *
-           INITIALIZE                  TCOMBI-AREA
-      *
-           PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL ( IDX1    >   31 )
-      *
-               IF    ( NACCT-DAY (IDX1)    >   ZERO )
-      *
-                   PERFORM VARYING IDX2    FROM    1   BY  1
-                           UNTIL ( IDX2    >   TCOMBI-MAX )
-                           OR    ( NACCT-DAY (IDX1)
-                                           =   TCOMBI-HKNCOMBI (IDX2) )
-      *
-                       CONTINUE
-      *
-                   END-PERFORM
-      *
-                   IF    (     IDX2                >   TCOMBI-MAX )
-                       IF    ( CONST-TCOMBI-MAX    >   TCOMBI-MAX )
-                           COMPUTE TCOMBI-MAX  =   TCOMBI-MAX  +   1
-                           MOVE    NACCT-DAY (IDX1)
-                                           TO  TCOMBI-HKNCOMBI
-                                                       (TCOMBI-MAX)
-                       END-IF
-                   END-IF
-               END-IF
-      *
-           END-PERFORM
-      *
-           .
-       200111-TCOMBI-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    患者情報編集処理
@@ -675,114 +569,6 @@
       *
            .
        900-QUERY-PTINF-FET-EXT.
-           EXIT.
-      *****************************************************************
-      *    受診履歴検索処理
-      *****************************************************************
-       900-JYURRK-KEY37-SEL-SEC    SECTION.
-      *
-           MOVE    ZERO                TO  FLG-JYURRK
-      *
-           INITIALIZE                  JYURRK-REC
-           MOVE    WRK-PARA-HOSPID     TO  JYURRK-HOSPID
-           MOVE    QUERY-PTINF-PTID    TO  JYURRK-PTID
-           STRING  WKBQ01-SRYYM        DELIMITED   BY  SIZE
-                   "%"                 DELIMITED   BY  SIZE
-           INTO    JYURRK-SRYYMD
-           END-STRING
-           MOVE    JYURRK-REC          TO  MCPDATA-REC
-           MOVE    "tbl_jyurrk"        TO  MCP-TABLE
-           MOVE    "key37"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC              =   ZERO )
-               MOVE    MCPDATA-REC     TO  JYURRK-REC
-           ELSE
-               INITIALIZE                  JYURRK-REC
-               MOVE    1               TO  FLG-JYURRK
-           END-IF
-      *
-           .
-       900-JYURRK-KEY37-SEL-EXT.
-           EXIT.
-      *****************************************************************
-      *    受診履歴FETCH処理
-      *****************************************************************
-       900-JYURRK-KEY37-FET-SEC    SECTION.
-      *
-           MOVE    ZERO                TO  FLG-JYURRK
-      *
-           MOVE    "tbl_jyurrk"        TO  MCP-TABLE
-           MOVE    "key37"             TO  MCP-PATHNAME
-           PERFORM 910-DBFETCH-SEC
-           IF    ( MCP-RC              =   ZERO )
-               MOVE    MCPDATA-REC     TO  JYURRK-REC
-           ELSE
-               INITIALIZE                  JYURRK-REC
-               MOVE    1               TO  FLG-JYURRK
-           END-IF
-      *
-           .
-       900-JYURRK-KEY37-FET-EXT.
-           EXIT.
-      *****************************************************************
-      *    入院会計検索処理(KEY17)
-      *****************************************************************
-       900-NYUINACCT-KEY17-SEL-SEC     SECTION.
-      *
-           MOVE    ZERO                TO  FLG-NYUINACCT
-           INITIALIZE                  NYUINACCT-REC
-      *
-           MOVE    WRK-PARA-HOSPID     TO  NACCT-HOSPID
-           MOVE    QUERY-PTINF-PTID    TO  NACCT-PTID
-           MOVE    WKBQ01-SRYYM        TO  NACCT-SRYYM
-           MOVE    "1"                 TO  NACCT-NYUGAIKBN
-           MOVE    "5"                 TO  NACCT-ZAISKBKBN
-           MOVE    NYUINACCT-REC       TO  MCPDATA-REC
-           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-           MOVE    "key17"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC     TO  NYUINACCT-REC
-           ELSE
-               MOVE    1               TO  FLG-NYUINACCT
-               INITIALIZE                  NYUINACCT-REC
-           END-IF
-      *
-           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-           MOVE    "key17"             TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *
-           .
-       900-NYUINACCT-KEY17-SEL-EXT.
-           EXIT.
-      *****************************************************************
-      *    保険組合せ取得処理
-      *****************************************************************
-       900-HKNCOMBI-KEY-SEL-SEC        SECTION.
-      *
-           MOVE    ZERO                    TO  FLG-HKNCOMBI
-      *
-           INITIALIZE                          HKNCOMBI-REC
-           MOVE    WRK-PARA-HOSPID         TO  COMB-HOSPID
-           MOVE    QUERY-PTINF-PTID        TO  COMB-PTID
-           MOVE    WRK-COMB-HKNCOMBINUM    TO  COMB-HKNCOMBINUM
-           MOVE    HKNCOMBI-REC            TO  MCPDATA-REC
-           MOVE    "tbl_hkncombi"          TO  MCP-TABLE
-           MOVE    "key"                   TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC                  =   ZERO )
-               MOVE    MCPDATA-REC         TO  HKNCOMBI-REC
-           ELSE
-               MOVE    1                   TO  FLG-HKNCOMBI
-               INITIALIZE                      HKNCOMBI-REC
-           END-IF
-      *
-           MOVE    "tbl_hkncombi"          TO  MCP-TABLE
-           MOVE    "key"                   TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *
-           .
-       900-HKNCOMBI-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
       *    ステップ管理開始処理
