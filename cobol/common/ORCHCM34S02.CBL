@@ -1789,16 +1789,21 @@
                MOVE    CONST-SKJ-RYOYO1    TO  WRK-SKJ-SRYCD (IDX5)
                                                WRK-SRYCD-NUM
       *
-               COMPUTE IDX5    =   IDX5    +   1
-               MOVE    CONST-RSI-JOUSU     TO  WRK-SKJ-SRYCD (IDX5)
-      *
-               IF    ( HCM34S01-HKNNUM =   "973" )
-                AND  ( SYS-4001-SKJKBN =   "2" )
-      *
+               IF    ( HCM34S01-HKNNUM     =   "973" )
+                AND  ( SYS-4001-JIBAIKBN   =   "2" )
+                   CONTINUE
+               ELSE
                    COMPUTE IDX5    =   IDX5    +   1
-                   MOVE    CONST-JBISKJ-JOUSU
+                   MOVE    CONST-RSI-JOUSU     TO  WRK-SKJ-SRYCD (IDX5)
+      *
+                   IF    ( HCM34S01-HKNNUM =   "973" )
+                    AND  ( SYS-4001-SKJKBN =   "2" )
+      *
+                       COMPUTE IDX5    =   IDX5    +   1
+                       MOVE    CONST-JBISKJ-JOUSU
                                            TO  WRK-SKJ-SRYCD (IDX5)
       *
+                   END-IF
                END-IF
       *
                MOVE    WRK-SKJ-TEN-RYOYO1  TO  WRK-SKJ-TEN
@@ -1819,16 +1824,21 @@
                MOVE    CONST-SKJ-RYOYO2    TO  WRK-SKJ-SRYCD (IDX5)
                                                WRK-SRYCD-NUM
       *
-               COMPUTE IDX5    =   IDX5    +   1
-               MOVE    CONST-RSI-JOUSU     TO  WRK-SKJ-SRYCD (IDX5)
-      *
-               IF    ( HCM34S01-HKNNUM =   "973" )
-                AND  ( SYS-4001-SKJKBN =   "2" )
-      *
+               IF    ( HCM34S01-HKNNUM     =   "973" )
+                AND  ( SYS-4001-JIBAIKBN   =   "2" )
+                   CONTINUE
+               ELSE
                    COMPUTE IDX5    =   IDX5    +   1
-                   MOVE    CONST-JBISKJ-JOUSU
+                   MOVE    CONST-RSI-JOUSU     TO  WRK-SKJ-SRYCD (IDX5)
+      *
+                   IF    ( HCM34S01-HKNNUM =   "973" )
+                    AND  ( SYS-4001-SKJKBN =   "2" )
+      *
+                       COMPUTE IDX5    =   IDX5    +   1
+                       MOVE    CONST-JBISKJ-JOUSU
                                            TO  WRK-SKJ-SRYCD (IDX5)
       *
+                   END-IF
                END-IF
       *
                MOVE    WRK-SKJ-TEN-RYOYO2  TO  WRK-SKJ-TEN
@@ -1847,16 +1857,21 @@
                COMPUTE IDX5    =   IDX5    +   1
                MOVE    CONST-SKJ-TOKKANRI  TO  WRK-SKJ-SRYCD (IDX5)
       *
-               COMPUTE IDX5    =   IDX5    +   1
-               MOVE    CONST-RSI-JOUSU     TO  WRK-SKJ-SRYCD (IDX5)
-      *
-               IF    ( HCM34S01-HKNNUM =   "973" )
-                AND  ( SYS-4001-SKJKBN =   "2" )
-      *
+               IF    ( HCM34S01-HKNNUM     =   "973" )
+                AND  ( SYS-4001-JIBAIKBN   =   "2" )
+                   CONTINUE
+               ELSE
                    COMPUTE IDX5    =   IDX5    +   1
-                   MOVE    CONST-JBISKJ-JOUSU
+                   MOVE    CONST-RSI-JOUSU     TO  WRK-SKJ-SRYCD (IDX5)
+      *
+                   IF    ( HCM34S01-HKNNUM =   "973" )
+                    AND  ( SYS-4001-SKJKBN =   "2" )
+      *
+                       COMPUTE IDX5    =   IDX5    +   1
+                       MOVE    CONST-JBISKJ-JOUSU
                                            TO  WRK-SKJ-SRYCD (IDX5)
       *
+                   END-IF
                END-IF
       *
                MOVE    WRK-SKJ-TEN-TOKKANRI
@@ -1876,16 +1891,21 @@
                COMPUTE IDX5    =   IDX5    +   1
                MOVE    CONST-SKJ-TOKSYOKU  TO  WRK-SKJ-SRYCD (IDX5)
       *
-               COMPUTE IDX5    =   IDX5    +   1
-               MOVE    CONST-RSI-JOUSU     TO  WRK-SKJ-SRYCD (IDX5)
-      *
-               IF    ( HCM34S01-HKNNUM =   "973" )
-                AND  ( SYS-4001-SKJKBN =   "2" )
-      *
+               IF    ( HCM34S01-HKNNUM     =   "973" )
+                AND  ( SYS-4001-JIBAIKBN   =   "2" )
+                   CONTINUE
+               ELSE
                    COMPUTE IDX5    =   IDX5    +   1
-                   MOVE    CONST-JBISKJ-JOUSU
+                   MOVE    CONST-RSI-JOUSU     TO  WRK-SKJ-SRYCD (IDX5)
+      *
+                   IF    ( HCM34S01-HKNNUM =   "973" )
+                    AND  ( SYS-4001-SKJKBN =   "2" )
+      *
+                       COMPUTE IDX5    =   IDX5    +   1
+                       MOVE    CONST-JBISKJ-JOUSU
                                            TO  WRK-SKJ-SRYCD (IDX5)
       *
+                   END-IF
                END-IF
       *
                MOVE    WRK-SKJ-TEN-TOKSYOKU
@@ -1905,16 +1925,21 @@
                COMPUTE IDX5    =   IDX5    +   1
                MOVE    CONST-SKJ-SYOKUDO   TO  WRK-SKJ-SRYCD (IDX5)
       *
-               COMPUTE IDX5    =   IDX5    +   1
-               MOVE    CONST-RSI-JOUSU     TO  WRK-SKJ-SRYCD (IDX5)
-      *
-               IF    ( HCM34S01-HKNNUM =   "973" )
-                AND  ( SYS-4001-SKJKBN =   "2" )
-      *
+               IF    ( HCM34S01-HKNNUM     =   "973" )
+                AND  ( SYS-4001-JIBAIKBN   =   "2" )
+                   CONTINUE
+               ELSE
                    COMPUTE IDX5    =   IDX5    +   1
-                   MOVE    CONST-JBISKJ-JOUSU
+                   MOVE    CONST-RSI-JOUSU     TO  WRK-SKJ-SRYCD (IDX5)
+      *
+                   IF    ( HCM34S01-HKNNUM =   "973" )
+                    AND  ( SYS-4001-SKJKBN =   "2" )
+      *
+                       COMPUTE IDX5    =   IDX5    +   1
+                       MOVE    CONST-JBISKJ-JOUSU
                                            TO  WRK-SKJ-SRYCD (IDX5)
       *
+                   END-IF
                END-IF
       *
                MOVE    WRK-SKJ-TEN-SYOKUDO
@@ -1935,16 +1960,21 @@
                MOVE    CONST-SKJ-FKSKONDATE
                                            TO  WRK-SKJ-SRYCD (IDX5)
       *
-               COMPUTE IDX5    =   IDX5    +   1
-               MOVE    CONST-RSI-JOUSU     TO  WRK-SKJ-SRYCD (IDX5)
-      *
-               IF    ( HCM34S01-HKNNUM =   "973" )
-                AND  ( SYS-4001-SKJKBN =   "2" )
-      *
+               IF    ( HCM34S01-HKNNUM     =   "973" )
+                AND  ( SYS-4001-JIBAIKBN   =   "2" )
+                   CONTINUE
+               ELSE
                    COMPUTE IDX5    =   IDX5    +   1
-                   MOVE    CONST-JBISKJ-JOUSU
+                   MOVE    CONST-RSI-JOUSU     TO  WRK-SKJ-SRYCD (IDX5)
+      *
+                   IF    ( HCM34S01-HKNNUM =   "973" )
+                    AND  ( SYS-4001-SKJKBN =   "2" )
+      *
+                       COMPUTE IDX5    =   IDX5    +   1
+                       MOVE    CONST-JBISKJ-JOUSU
                                            TO  WRK-SKJ-SRYCD (IDX5)
       *
+                   END-IF
                END-IF
       *
                MOVE    WRK-SKJ-TEN-FKSKONDATE
@@ -1960,14 +1990,21 @@
       *****************************************************************
        200111-SKJ-JOUSU-HEN-SEC   SECTION.
       *
-           COMPUTE WRK-KEISAN  =   WRK-SKJ-TEN     * 1.2
-           COMPUTE WRK-KEISAN  =   WRK-KEISAN      +   5
-           COMPUTE WRK-KEISAN  =   WRK-KEISAN      /   10
-           COMPUTE WRK-KEISAN  =   WRK-KEISAN      *   10
+           MOVE    WRK-SKJ-TEN    TO   WRK-KEISAN
       *
-           IF    ( HCM34S01-HKNNUM =   "973" )
-            AND  ( SYS-4001-SKJKBN =   "2" )
-               COMPUTE WRK-KEISAN  =   WRK-KEISAN  * 1.2
+           IF  ( HCM34S01-HKNNUM     =   "973" )
+            AND( SYS-4001-JIBAIKBN   =   "2" )
+               CONTINUE
+           ELSE
+               COMPUTE WRK-KEISAN  =   WRK-KEISAN      * 1.2
+               COMPUTE WRK-KEISAN  =   WRK-KEISAN      +   5
+               COMPUTE WRK-KEISAN  =   WRK-KEISAN      /   10
+               COMPUTE WRK-KEISAN  =   WRK-KEISAN      *   10
+      *
+               IF    ( HCM34S01-HKNNUM =   "973" )
+                AND  ( SYS-4001-SKJKBN =   "2" )
+                   COMPUTE WRK-KEISAN  =   WRK-KEISAN  * 1.2
+               END-IF
            END-IF
       *
            COMPUTE WRK-SKJ-ZAITEN
