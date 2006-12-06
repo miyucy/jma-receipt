@@ -14981,6 +14981,8 @@
       *
                MOVE    WIDGET-INSENSITIVE
                                    TO  I01-B07-STT
+                                       I01-SKJKBN-STT
+                                       I01-SKJKBN-ITM-STT
                                        I01-NYUINYMD-STT
                                        I01-SHOKAI-STT
                                        I01-SHOKAI-ITM-STT
