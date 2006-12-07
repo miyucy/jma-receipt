@@ -587,7 +587,7 @@
            IF      FLG-TENSUPLUS       =   ZERO
                MOVE    TENSUPLUS-REC       TO  WRK-TENSUPLUS-REC
       *
-               MOVE    TNSP-KEY            TO  TNSPUP-KEY
+               MOVE    TNSP-KEY            TO  TNSP-UP-KEY
                MOVE    TNS-KEY             TO  TNSP-KEY
       *
                MOVE    TENSUPLUS-REC       TO  MCPDATA-REC

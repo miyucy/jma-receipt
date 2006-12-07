@@ -1453,12 +1453,14 @@
            MOVE    SPA-NAI-YUKOSTYMD   TO  ZS02-NAI-YUKOSTYMD
            MOVE    SPA-NAI-YUKOEDYMD   TO  ZS02-NAI-YUKOEDYMD
            MOVE    WRK-YUKOEDYMD       TO  ZS02-YUKOEDYMD
-           MOVE    SPA-GMN-INPCHKKBN   TO  ZS02-INPCHKKBN
+           INITIALIZE                  TENSUPLUS-REC
+           MOVE    SPA-GMN-INPCHKKBN   TO  TNSP-INPCHKKBN
       *    入力コード更新
            CALL    "ORCGZS02"          USING
                                        MCPAREA
                                        SPAAREA
                                        ORCGZS02AREA
+                                       TENSUPLUS-REC
       *
            .
        4129-TENSUPLUS-UPD-EXT.

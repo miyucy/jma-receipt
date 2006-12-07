@@ -45,6 +45,7 @@
       *  02.00.02    NACL-多々納  05/12/09  登録コードチェック追加
       *                                     MONFUNC対応 他
       *  02.00.03    NACL-多々納  06/03/23  Ｈ１８／４改正対応
+      *  03.04.00    NACL-多々納  06/12/05  ユーザ設定 上限回数追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -208,6 +209,10 @@
            03  FILLER          PIC X(32)  VALUE   "1 JGNCNTETCM".
            03  FILLER          PIC X(32)  VALUE   "1 JGNCNTETC".
            03  FILLER          PIC X(32)  VALUE   "1 JGNCNTERR".
+           03  FILLER          PIC X(32)  VALUE   "1 PLUS_SANTEIRRK".
+           03  FILLER          PIC X(32)  VALUE   "1 PLUS_JGNCNT".
+           03  FILLER          PIC X(32)  VALUE   "1 PLUS_JGNCNT1D".
+           03  FILLER          PIC X(32)  VALUE   "1 PLUS_JGNCNTERR".
            03  FILLER          PIC X(32)  VALUE   "1 KZMCOMPSIKIBETU".
            03  FILLER          PIC X(32)  VALUE   "1 KZMKGN".
            03  FILLER          PIC X(32)  VALUE   "1 KZMJGN".
@@ -289,13 +294,14 @@
       *
        01  TBL-GMN-JUN-R       REDEFINES   TBL-GMN-JUN.
       *****03  TBL-GMN-OCC                 OCCURS  107
-           03  TBL-GMN-OCC                 OCCURS  109
+      **** 03  TBL-GMN-OCC                 OCCURS  109
+           03  TBL-GMN-OCC                 OCCURS  113
                                            INDEXED  IDX-GMN.
                05  TBL-PAGE                PIC 9(01).
                05  TBL-YOBI1               PIC X(01).
                05  TBL-WIDGET              PIC X(30).
       *
-       01  TBL-GMN-MAX                     PIC 9(04)   VALUE   109.
+       01  TBL-GMN-MAX                     PIC 9(04)   VALUE   113.
       *
       *    単位の項目順テーブル
            COPY    "CMTANICD.INC".
@@ -498,42 +504,6 @@
       *
       *    ワーク点数マスタ
        01  WRK-TNS-TENSU-REC           PIC X(1290).
-      *
-      *    ワーク点数マスタ付加コード
-        01 TBL-TENSUPLUS-AREA.
-          02 TBL-TENSUPLUS-REC         OCCURS  30.
-           03  TBL-TNSP-KEY.
-               05  TBL-TNSP-SRYCD           PIC  X(09).
-               05  TBL-TNSP-YUKOSTYMD       PIC  X(08).
-               05  TBL-TNSP-YUKOEDYMD       PIC  X(08).
-      *    処方名称
-           03  TBL-TNSP-SHOYUKOKETA         PIC  9(02).
-           03  TBL-TNSP-SHONAME             PIC  X(200).
-      *    採血料区分
-           03  TBL-TNSP-SAIKETUKBN          PIC  9(01).
-      *    入力チェック区分
-           03  TBL-TNSP-INPCHKKBN           PIC  9(01).
-      *    添付資料用薬剤分類区分
-           03  TBL-TNSP-TENPUYAKKBN         PIC  X(02).
-      *    全数量記載区分
-           03  TBL-TNSP-ALLSURYOKBN         PIC  X(01).
-      *    数量換算単位コード
-           03  TBL-TNSP-KANZANTANICD        PIC  X(03).
-      *    数量換算単位名称
-           03  TBL-TNSP-KANZANTANINAME      PIC  X(24).
-      *    数量換算値
-           03  TBL-TNSP-KANZANCHI           PIC  9(05)V9(05).
-      *
-           03  TBL-TNSP-TERMID              PIC  X(16).
-           03  TBL-TNSP-OPID                PIC  X(16).
-           03  TBL-TNSP-CREYMD              PIC  X(08).
-           03  TBL-TNSP-UPYMD               PIC  X(08).
-           03  TBL-TNSP-UPHMS               PIC  X(06).
-      *　　主キー更新用項目
-           03  TBL-TNSPUP-KEY.
-               05  TBL-TNSPUP-SRYCD         PIC  X(09).
-               05  TBL-TNSPUP-YUKOSTYMD     PIC  X(08).
-               05  TBL-TNSPUP-YUKOEDYMD     PIC  X(08).
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -947,6 +917,31 @@
                    MOVE    SPA-SAIKETUKBN-MAX  TO  IDX
                END-IF
            END-PERFORM
+      *
+      *    上限回数
+           MOVE    "0 無効"            TO  SPA-GMN-PLUS-SANTEICOMB(1)
+           MOVE    "1 有効（算定履歴作成）"
+                                       TO  SPA-GMN-PLUS-SANTEICOMB(2)
+           MOVE    2                   TO  SPA-PLUS-SANTEI-MAX
+           MOVE    TNSP-SANTEIRRKKBN   TO  SPA-GMN-PLUS-SANTEIRRK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-PLUS-SANTEI-MAX
+               IF      SPA-GMN-PLUS-SANTEIRRK
+                                       =   SPA-GMN-PLUS-SANTEICOMB
+                                                            (IDX)(1:1)
+                   MOVE    SPA-GMN-PLUS-SANTEICOMB (IDX)
+                                           TO  SPA-GMN-PLUS-SANTEIRRK-G
+                   MOVE    SPA-PLUS-SANTEI-MAX  TO  IDX
+               END-IF
+           END-PERFORM
+      *    月上限回数
+           MOVE    TNSP-JGNCNT         TO  SPA-GMN-PLUS-JGNCNT
+      *    月上限回数
+           MOVE    TNSP-JGNCNT         TO  SPA-GMN-PLUS-JGNCNT
+      *    日上限回数
+           MOVE    TNSP-JGNCNT1D       TO  SPA-GMN-PLUS-JGNCNT1D
+      *    エラー処理
+           MOVE    TNSP-JGNCNTERR      TO  SPA-GMN-PLUS-JGNCNTERR
            .
       *
        3002-SPASET-TENSUPLUS-EXT.
@@ -1582,6 +1577,12 @@
            MOVE    Z03-JGNCNTETCM      TO  SPA-GMN-JGNCNTETCM
            MOVE    Z03-JGNCNTETC       TO  SPA-GMN-JGNCNTETC 
            MOVE    Z03-JGNCNTERR       TO  SPA-GMN-JGNCNTERR
+      *
+           MOVE    Z03-PLUS-SANTEIRRK  TO  SPA-GMN-PLUS-SANTEIRRK-G
+           MOVE    Z03-PLUS-JGNCNT     TO  SPA-GMN-PLUS-JGNCNT
+           MOVE    Z03-PLUS-JGNCNT1D   TO  SPA-GMN-PLUS-JGNCNT1D
+           MOVE    Z03-PLUS-JGNCNTERR  TO  SPA-GMN-PLUS-JGNCNTERR
+      *
            MOVE    Z03-KZMCOMPSIKIBETU TO  SPA-GMN-KZMCOMPSIKIBETU
            MOVE    Z03-KZMKGN          TO  SPA-GMN-KZMKGN
            MOVE    Z03-KZMJGN          TO  SPA-GMN-KZMJGN
@@ -1829,6 +1830,17 @@
                WHEN    "JGNCNTETC"
       *        上限エラー処理
                WHEN    "JGNCNTERR"
+                   CONTINUE
+      *        ユーザ設定算定履歴
+               WHEN    "PLUS_SANTEIRRK"
+                   PERFORM 5030-PLUS-SANTEIRRK-SEC
+      *        ユーザ設定 上限回数
+               WHEN    "PLUS_JGNCNT"
+               WHEN    "PLUS_JGNCNT1D"
+                   CONTINUE
+      *        ユーザ設定エラー処理
+               WHEN    "PLUS_JGNCNTERR"
+                   PERFORM 5030-JGNCNTERR-CHK-SEC
       *        きざみ値識別
                WHEN    "KZMCOMPSIKIBETU"
       *        きざみ値下限値
@@ -1982,11 +1994,11 @@
                WHEN    "KOKUJISKBKBN1"
                WHEN    "KOKUJISKBKBN2"
                    CONTINUE
-       END-EVALUATE.
+           END-EVALUATE.
       *
            .    
       *
-       500-ERRCHK-EXT.
+       41021-KIHON-ALL-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2613,6 +2625,61 @@
       *
        505-GAIKANRIKBN-CHK-EXT.
            EXIT.
+      *****************************************************************
+      *  ユーザ設定　算定履歴チェック
+      *****************************************************************
+       5030-PLUS-SANTEIRRK-SEC         SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-PLUS-SANTEI-MAX
+               IF      SPA-GMN-PLUS-SANTEIRRK
+                                       =   SPA-GMN-PLUS-SANTEICOMB
+                                                         (IDX)(1:1)
+                   MOVE    SPA-GMN-PLUS-SANTEICOMB (IDX)
+                                           TO  SPA-GMN-PLUS-SANTEIRRK-G
+                   MOVE    SPA-PLUS-SANTEI-MAX TO  IDX
+                   MOVE    1                   TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    "0006"              TO  SPA-ERRCD
+           ELSE
+      *        システム予約は指定附加
+               IF      SPA-GMN-PLUS-SANTEIRRK  =   1
+                   IF      SPA-Z01-SRYCD(1:1)  NOT =   "1"
+                       MOVE    "0019"              TO  SPA-ERRCD
+                   END-IF
+               END-IF
+           END-IF
+           .
+      *
+       5030-PLUS-SANTEIRRK-EXT.
+           EXIT.
+      *****************************************************************
+      *  ユーザ設定　エラー処理チェック
+      *****************************************************************
+       5030-JGNCNTERR-CHK-SEC         SECTION.
+      *
+           EVALUATE    SPA-GMN-PLUS-JGNCNTERR
+               WHEN    ZERO
+                   CONTINUE
+               WHEN    9
+                   IF       SPA-GMN-PLUS-SANTEIRRK =   ZERO
+                       MOVE    "0016"              TO  SPA-ERRCD
+                   ELSE
+                       IF   (SPA-GMN-PLUS-JGNCNT   =   ZERO )  AND
+                            (SPA-GMN-PLUS-JGNCNT1D =   ZERO )
+                           MOVE    "0017"              TO  SPA-ERRCD
+                       END-IF
+                   END-IF
+               WHEN    OTHER
+                   MOVE    "0015"              TO  SPA-ERRCD
+           END-EVALUATE
+           .
+      *
+       5030-JGNCNTERR-CHK-EXT.
+           EXIT.
       *
       *****************************************************************
       *  　通則年齢算チェック
@@ -3205,6 +3272,25 @@
                    MOVE    7                   TO  SPA-GMN-CUR
                END-IF
            END-IF
+      *
+      *    ユーザ設定の上限回数
+           IF       SPA-GMN-PLUS-SANTEIRRK NOT =   ZERO
+               IF     (SPA-GMN-JGNCNT   =   ZERO )  AND
+                      (SPA-GMN-JGNCNT1D =   ZERO )
+                   CONTINUE
+               ELSE
+                   IF    (SPA-GMN-JGNCNT   NOT =   ZERO )  AND
+                         (SPA-GMN-PLUS-JGNCNT  =   ZERO )
+                       MOVE    "0018"              TO  SPA-ERRCD
+                       MOVE    "PLUS_JGNCNT"       TO  WRK-MCP-WIDGET
+                   END-IF
+                   IF    (SPA-GMN-JGNCNT1D     NOT =   ZERO )  AND
+                         (SPA-GMN-PLUS-JGNCNT1D    =   ZERO )
+                       MOVE    "0018"              TO  SPA-ERRCD
+                       MOVE    "PLUS_JGNCNT1D"     TO  WRK-MCP-WIDGET
+                   END-IF
+               END-IF
+           END-IF
            .
       *
        4109-TOUROKU-CHK-EXT.
@@ -3680,13 +3766,24 @@
            MOVE    SPA-NAI-YUKOEDYMD   TO  ZS02-NAI-YUKOEDYMD
            MOVE    WRK-YUKOEDYMD       TO  ZS02-YUKOEDYMD
       *    採血料区分
-           MOVE    SPA-GMN-SAIKETUKBN  TO  ZS02-SAIKETUKBN
-           MOVE    SPA-GMN-INPCHKKBN   TO  ZS02-INPCHKKBN
+           INITIALIZE                  TENSUPLUS-REC
+           MOVE    SPA-GMN-SAIKETUKBN  TO  TNSP-SAIKETUKBN
+           MOVE    SPA-GMN-INPCHKKBN   TO  TNSP-INPCHKKBN
+           MOVE    SPA-GMN-PLUS-SANTEIRRK
+                                       TO  TNSP-SANTEIRRKKBN
+           MOVE    SPA-GMN-PLUS-JGNCNT
+                                       TO  TNSP-JGNCNT
+           MOVE    SPA-GMN-PLUS-JGNCNT1D
+                                       TO  TNSP-JGNCNT1D
+           MOVE    SPA-GMN-PLUS-JGNCNTERR
+                                       TO  TNSP-JGNCNTERR
+      *
       *    入力コード更新
            CALL    "ORCGZS02"          USING
                                        MCPAREA
                                        SPAAREA
                                        ORCGZS02AREA
+                                       TENSUPLUS-REC
       *
            .
        4129-TENSUPLUS-UPD-EXT.
@@ -3977,6 +4074,18 @@
            MOVE  SPA-GMN-JGNCNTETCM            TO  Z03-JGNCNTETCM     
            MOVE  SPA-GMN-JGNCNTETC             TO  Z03-JGNCNTETC      
            MOVE  SPA-GMN-JGNCNTERR             TO  Z03-JGNCNTERR      
+      *    ユーザ設定上限回数
+           MOVE  SPA-GMN-PLUS-SANTEIRRK-G      TO  Z03-PLUS-SANTEIRRK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-PLUS-SANTEI-MAX
+               MOVE    SPA-GMN-PLUS-SANTEICOMB (IDX)
+                                       TO  Z03-PLUS-SANTEI-ITEM (IDX)
+           END-PERFORM
+           MOVE  SPA-PLUS-SANTEI-MAX       TO  Z03-PLUS-SANTEI-COUNT
+           MOVE  SPA-GMN-PLUS-JGNCNT           TO  Z03-PLUS-JGNCNT
+           MOVE  SPA-GMN-PLUS-JGNCNT1D         TO  Z03-PLUS-JGNCNT1D
+           MOVE  SPA-GMN-PLUS-JGNCNTERR        TO  Z03-PLUS-JGNCNTERR 
+      *
            MOVE  SPA-GMN-KZMCOMPSIKIBETU       TO  Z03-KZMCOMPSIKIBETU
            MOVE  SPA-GMN-KZMKGN                TO  Z03-KZMKGN         
            MOVE  SPA-GMN-KZMJGN                TO  Z03-KZMJGN         
@@ -4089,13 +4198,16 @@
                            MOVE    ZERO            TO  SPA-GMN-CUR
                        WHEN    WRK-MCP-WIDGET  =   TBL-WIDGET (IDX-GMN)
                            MOVE    IDX-GMN         TO  SPA-GMN-CUR
-                   END-SEARCH 
-                   ADD     1                   TO  SPA-GMN-CUR
-      *            採血料区分は、検査の時のみカーソル移動とする
-                   IF     (SPA-GMN-CUR             <=  TBL-GMN-MAX )
-                     AND  (TBL-WIDGET(SPA-GMN-CUR) =   "SAIKETUKBN" )
-                     AND  (SPA-GMN-SRYKBN      NOT =   "60"  )
+                   END-SEARCH
+      *            エラー以外
+                   IF      SPA-ERRCD           =   SPACE
+                     ADD     1                   TO  SPA-GMN-CUR
+      *              採血料区分は、検査の時のみカーソル移動とする
+                     IF     (SPA-GMN-CUR             <=  TBL-GMN-MAX )
+                       AND  (TBL-WIDGET(SPA-GMN-CUR) =   "SAIKETUKBN" )
+                       AND  (SPA-GMN-SRYKBN      NOT =   "60"  )
                        ADD     1                   TO  SPA-GMN-CUR
+                     END-IF
                    END-IF
                END-IF
            END-IF
@@ -4162,6 +4274,32 @@
                WHEN    "0025"
                    MOVE    "通則年齢は０、１のみ入力して下さい"
                                                  TO  SPA-ERRMSG
+               WHEN    "0015"
+                   MOVE    "エラー処理は、０、９のみ入力して下さい"
+                                                 TO  SPA-ERRMSG
+               WHEN    "0016"
+                   STRING  "ユーザー設定が有効になっていません。"
+                           "有効にして下さい。"
+                                                 DELIMITED  BY  SIZE
+                                                 INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "0017"
+                   STRING  "ユーザー設定の上限回数が設定されていません"
+                           "。設定して下さい。"
+                                                 DELIMITED  BY  SIZE
+                                                 INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "0018"
+                   STRING  "上限回数がゼロではありません。"
+                           "ユーザ設定の上限回数はゼロにできません。"
+                                                 DELIMITED  BY  SIZE
+                                                 INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "0019"
+                   STRING  "システム予約コードはユーザ設定できません。"
+                                                 DELIMITED  BY  SIZE
+                                                 INTO  SPA-ERRMSG
+                   END-STRING
       *
       *        以下共通
                WHEN    "1010"

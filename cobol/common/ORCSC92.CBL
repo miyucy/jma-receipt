@@ -2931,27 +2931,27 @@
       *****************************************************************
        3006-TENSUPLUS-HEN-SEC          SECTION.
       *
-           MOVE    SPACE               TO  TENSUPLUS-REC
-           INITIALIZE                      TENSUPLUS-REC
-           MOVE    TNS-SRYCD           TO  TNSP-SRYCD
-           MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
-           MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD
+      *    MOVE    SPACE               TO  TENSUPLUS-REC
+      *    INITIALIZE                      TENSUPLUS-REC
+      *    MOVE    TNS-SRYCD           TO  TNSP-SRYCD
+      *    MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
+      *    MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD
       *
-           MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
-           MOVE    "tbl_tensuplus"     TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_tensuplus"     TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 980-TENSUPLUS-READ-SEC
-           ELSE
-               MOVE    1                   TO  FLG-TENSUPLUS
-               INITIALIZE                      TENSUPLUS-REC
-           END-IF
-           MOVE    "tbl_tensuplus"     TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
+      *    MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
+      *    MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+      *    MOVE    "key"               TO  MCP-PATHNAME
+      *    PERFORM 910-DBSELECT-SEC
+      *    IF      MCP-RC              =   ZERO
+      *        MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+      *        MOVE    "key"               TO  MCP-PATHNAME
+      *        PERFORM 980-TENSUPLUS-READ-SEC
+      *    ELSE
+      *        MOVE    1                   TO  FLG-TENSUPLUS
+      *        INITIALIZE                      TENSUPLUS-REC
+      *    END-IF
+      *    MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+      *    MOVE    "key"               TO  MCP-PATHNAME
+      **** PERFORM 990-DBCLOSE-SEC
       *
       *    採血料区分
            MOVE    TNSP-SAIKETUKBN     TO  SPA-COM-SAIKETUKBN (IDX-T)
@@ -3085,6 +3085,8 @@
                   (SPA-COM-SRYKBN (IDX-T)(1:1) NOT =  "9"  )  AND
                  ((SPA-COM-KAISU  (IDX-T)          >  1    )
              OR   (SPA-COM-SURYO  (IDX-T)          >  1    ))
+      *
+               IF      SPA-COM-SANTEIRRKKBN (IDX-T)   NOT =   ZERO
                MOVE    LNK-SC92-SRYCD      TO  TNS-SRYCD
                PERFORM 910-TENSU-READ-SEC
       *        算定回数チェック
@@ -3093,6 +3095,7 @@
                    CONTINUE
                ELSE
                    PERFORM 2001-SANTEI-CHK-SEC
+               END-IF
               END-IF
             END-IF
            END-IF
@@ -3216,10 +3219,52 @@
                    MOVE    TNS-FORMALNAME  TO  TNS-NAME
                END-IF
            END-IF
+      *!
+      *    附加情報の上限回数設定
+           IF      TNS-SRYCD(1:1)      =   "1"
+               PERFORM 9101-TENSUPLUS-SYORI-SEC
+           END-IF
            .
        910-TENSU-READ-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    点数マスタ付加情報より編集処理
+      *****************************************************************
+       9101-TENSUPLUS-SYORI-SEC          SECTION.
+      *
+           MOVE    SPACE               TO  TENSUPLUS-REC
+           INITIALIZE                      TENSUPLUS-REC
+           MOVE    TNS-SRYCD           TO  TNSP-SRYCD
+           MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
+           MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD
+      *
+           MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
+           MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 980-TENSUPLUS-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-TENSUPLUS
+               INITIALIZE                      TENSUPLUS-REC
+           END-IF
+           MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *    上限回数
+           IF      TNSP-SANTEIRRKKBN   =   1
+               MOVE    TNSP-SANTEIRRKKBN   TO  TNS-SANTEIRRKKBN
+               MOVE    TNSP-JGNCNT         TO  TNS-JGNCNT
+               MOVE    TNSP-JGNCNT1D       TO  TNS-JGNCNT1D
+               MOVE    TNSP-JGNCNTERR      TO  TNS-JGNCNTERR
+           END-IF
+      *
+           .
+       9101-TENSUPLUS-SYORI-EXT.
+           EXIT.
       *****************************************************************
       *    点数マスター読込（算定履歴検索用）
       *****************************************************************

@@ -30,22 +30,22 @@
       *    改正時処理
            03  ZS02-YUKOEDYMD          PIC X(08).
       *
-      *    処方名称
-           03  ZS02-SHOYUKOKETA        PIC  9(02).
-           03  ZS02-SHONAME            PIC  X(200).
+      **** 処方名称
+      *    03  ZS02-SHOYUKOKETA        PIC  9(02).
+      *    03  ZS02-SHONAME            PIC  X(200).
       *    採血料区分
-           03  ZS02-SAIKETUKBN         PIC  9(01).
+      *    03  ZS02-SAIKETUKBN         PIC  9(01).
       *    入力チェック区分
-           03  ZS02-INPCHKKBN          PIC  9(01).
+      *    03  ZS02-INPCHKKBN          PIC  9(01).
       *    分類区分
-           03  ZS02-TENPUYAKKBN        PIC  X(02).
+      *    03  ZS02-TENPUYAKKBN        PIC  X(02).
       *
       *    全数量記載区分
-           03  ZS02-ALLSURYOKBN        PIC  X(01).
+      *    03  ZS02-ALLSURYOKBN        PIC  X(01).
       *    数量換算単位コード
-           03  ZS02-KANZANTANICD       PIC  X(03).
+      *    03  ZS02-KANZANTANICD       PIC  X(03).
       *    数量換算単位名称
-           03  ZS02-KANZANTANINAME     PIC  X(24).
+      *    03  ZS02-KANZANTANINAME     PIC  X(24).
       *    数量換算値
-           03  ZS02-KANZANCHI          PIC  9(05)V9(05).
+      **** 03  ZS02-KANZANCHI          PIC  9(05)V9(05).
       *

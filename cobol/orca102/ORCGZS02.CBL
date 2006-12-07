@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-多々納  05/12/09  MONFUNC対応
+      *  03.04.00    NACL-多々納  06/12/05  上限回数追加、パラメタ変更他
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -78,38 +79,8 @@
       *    ワーク点数マスタ付加コード
         01 TBL-TENSUPLUS-AREA.
           02 TBL-TENSUPLUS-REC         OCCURS  30.
-           03  TBL-TNSP-KEY.
-               05  TBL-TNSP-SRYCD           PIC  X(09).
-               05  TBL-TNSP-YUKOSTYMD       PIC  X(08).
-               05  TBL-TNSP-YUKOEDYMD       PIC  X(08).
-      *    処方名称
-           03  TBL-TNSP-SHOYUKOKETA         PIC  9(02).
-           03  TBL-TNSP-SHONAME             PIC  X(200).
-      *    採血料区分
-           03  TBL-TNSP-SAIKETUKBN          PIC  9(01).
-      *    入力チェック区分
-           03  TBL-TNSP-INPCHKKBN           PIC  9(01).
-      *    添付資料用薬剤分類区分
-           03  TBL-TNSP-TENPUYAKKBN         PIC  X(02).
-      *    全数量記載区分
-           03  TBL-TNSP-ALLSURYOKBN         PIC  X(01).
-      *    数量換算単位コード
-           03  TBL-TNSP-KANZANTANICD        PIC  X(03).
-      *    数量換算単位名称
-           03  TBL-TNSP-KANZANTANINAME      PIC  X(24).
-      *    数量換算値
-           03  TBL-TNSP-KANZANCHI           PIC  9(05)V9(05).
-      *
-           03  TBL-TNSP-TERMID              PIC  X(16).
-           03  TBL-TNSP-OPID                PIC  X(16).
-           03  TBL-TNSP-CREYMD              PIC  X(08).
-           03  TBL-TNSP-UPYMD               PIC  X(08).
-           03  TBL-TNSP-UPHMS               PIC  X(06).
-      *　　主キー更新用項目
-           03  TBL-TNSPUP-KEY.
-               05  TBL-TNSPUP-SRYCD         PIC  X(09).
-               05  TBL-TNSPUP-YUKOSTYMD     PIC  X(08).
-               05  TBL-TNSPUP-YUKOEDYMD     PIC  X(08).
+           COPY    "CPTENSUPLUS.INC"   REPLACING
+                                       //TNSP-// BY //TBL-TNSP-//.
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -132,10 +103,15 @@
       *    点数附加情報更新内容
            COPY    "CPORCGZS02.INC".
       *
+        01 LNK-TENSUPLUS-REC.
+           COPY    "CPTENSUPLUS.INC"   REPLACING
+                                       //TNSP-// BY //LNK-TNSP-//.
+      *
        PROCEDURE                                 DIVISION    USING
                                                  MCPAREA
                                                  SPAAREA
                                                  ORCGZS02AREA
+                                                 LNK-TENSUPLUS-REC
            .
       *
       *****************************************************************
@@ -216,9 +192,9 @@
       *             附加のみ削除
                        MOVE    TBL-TENSUPLUS-REC (IDX1)
                                                    TO  TENSUPLUS-REC
-                       MOVE    TNSP-SRYCD          TO  TNSPUP-SRYCD
-                       MOVE    TNSP-YUKOSTYMD      TO  TNSPUP-YUKOSTYMD
-                       MOVE    TNSP-YUKOEDYMD      TO  TNSPUP-YUKOEDYMD
+                       MOVE    TNSP-SRYCD          TO  TNSP-UP-SRYCD
+                       MOVE    TNSP-YUKOSTYMD      TO  TNSP-UP-YUKOSTYMD
+                       MOVE    TNSP-YUKOEDYMD      TO  TNSP-UP-YUKOEDYMD
                        MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
                        MOVE    "DBDELETE"          TO  MCP-FUNC
                        MOVE    "tbl_tensuplus"     TO  MCP-TABLE
@@ -243,9 +219,9 @@
       *                終了日変更
                        MOVE    TBL-TENSUPLUS-REC (IDX1)
                                                    TO  TENSUPLUS-REC
-                       MOVE    TNSP-SRYCD          TO  TNSPUP-SRYCD
-                       MOVE    TNSP-YUKOSTYMD      TO  TNSPUP-YUKOSTYMD
-                       MOVE    TNSP-YUKOEDYMD      TO  TNSPUP-YUKOEDYMD
+                       MOVE    TNSP-SRYCD          TO  TNSP-UP-SRYCD
+                       MOVE    TNSP-YUKOSTYMD      TO  TNSP-UP-YUKOSTYMD
+                       MOVE    TNSP-YUKOEDYMD      TO  TNSP-UP-YUKOEDYMD
       *
                        MOVE    SPA-Z01-TYUKOEDYMD(IDX2)
                                                    TO  TNSP-YUKOEDYMD
@@ -270,9 +246,9 @@
       *                付加情報のみの場合、削除
                        MOVE    TBL-TENSUPLUS-REC (IDX1)
                                                    TO  TENSUPLUS-REC
-                       MOVE    TNSP-SRYCD          TO  TNSPUP-SRYCD
-                       MOVE    TNSP-YUKOSTYMD      TO  TNSPUP-YUKOSTYMD
-                       MOVE    TNSP-YUKOEDYMD      TO  TNSPUP-YUKOEDYMD
+                       MOVE    TNSP-SRYCD          TO  TNSP-UP-SRYCD
+                       MOVE    TNSP-YUKOSTYMD      TO  TNSP-UP-YUKOSTYMD
+                       MOVE    TNSP-YUKOEDYMD      TO  TNSP-UP-YUKOEDYMD
                        MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
                        MOVE    "DBDELETE"          TO  MCP-FUNC
                        MOVE    "tbl_tensuplus"     TO  MCP-TABLE
@@ -340,14 +316,19 @@
       *
       *    新規で付加情報が登録されていないときは作成しない
       *    チェック
-           IF    ( ZS02-SHONAME         =   SPACE  ) AND
-                 ( ZS02-SAIKETUKBN      =   ZERO  ) AND
-                 ( ZS02-INPCHKKBN       =   ZERO  ) AND
-                 ( ZS02-TENPUYAKKBN     =   SPACE ) AND
-                 ( ZS02-ALLSURYOKBN     =   SPACE ) AND
-                 ( ZS02-KANZANTANICD    =   SPACE ) AND
-                 ( ZS02-KANZANTANINAME  =   SPACE ) AND
-                 ( ZS02-KANZANCHI       =   ZERO  )
+           IF    ( LNK-TNSP-SHONAME         =   SPACE  ) AND
+                 ( LNK-TNSP-SAIKETUKBN      =   ZERO  ) AND
+                 ( LNK-TNSP-INPCHKKBN       =   ZERO  ) AND
+                 ( LNK-TNSP-TENPUYAKKBN     =   SPACE ) AND
+                 ( LNK-TNSP-ALLSURYOKBN     =   SPACE ) AND
+                 ( LNK-TNSP-KANZANTANICD    =   SPACE ) AND
+                 ( LNK-TNSP-KANZANTANINAME  =   SPACE ) AND
+                 ( LNK-TNSP-KANZANCHI       =   ZERO  )
+      *        上限回数
+             AND ( LNK-TNSP-SANTEIRRKKBN    =   ZERO  )
+             AND ( LNK-TNSP-JGNCNT          =   ZERO  )
+             AND ( LNK-TNSP-JGNCNT1D        =   ZERO  )
+             AND ( LNK-TNSP-JGNCNTERR       =   ZERO  )
                IF      FLG-TENSUPLUS    =  1
                    GO  TO  200-TENSUPLUS-UPD-EXT
                END-IF
@@ -360,11 +341,11 @@
       *                改正時処理
                        MOVE    ZS02-YUKOEDYMD      TO  TNSP-YUKOEDYMD
       *
-                       MOVE    SPA-Z01-SRYCD       TO  TNSPUP-SRYCD
+                       MOVE    SPA-Z01-SRYCD       TO  TNSP-UP-SRYCD
                        MOVE    SPA-Z01-TYUKOSTYMD(SPA-Z01-SELNUM)
-                                                   TO  TNSPUP-YUKOSTYMD
+                                                   TO  TNSP-UP-YUKOSTYMD
                        MOVE    SPA-Z01-TYUKOEDYMD(SPA-Z01-SELNUM)
-                                                   TO  TNSPUP-YUKOEDYMD
+                                                   TO  TNSP-UP-YUKOEDYMD
       *
                        MOVE    SMCNDATE-YMD        TO  TNSP-UPYMD
                        MOVE    SMCNDATE-HMS        TO  TNSP-UPHMS
@@ -390,11 +371,11 @@
                        MOVE    ZS02-NAI-YUKOEDYMD   TO  TNSP-YUKOEDYMD
                        PERFORM 2001-TENSUPLUS-HEN-SEC
       *
-                       MOVE    SPA-Z01-SRYCD       TO  TNSPUP-SRYCD
+                       MOVE    SPA-Z01-SRYCD       TO  TNSP-UP-SRYCD
                        MOVE    SPA-Z01-TYUKOSTYMD(SPA-Z01-SELNUM)
-                                                   TO  TNSPUP-YUKOSTYMD
+                                                   TO  TNSP-UP-YUKOSTYMD
                        MOVE    SPA-Z01-TYUKOEDYMD(SPA-Z01-SELNUM)
-                                                   TO  TNSPUP-YUKOEDYMD
+                                                   TO  TNSP-UP-YUKOEDYMD
       *
                        MOVE    SMCNDATE-YMD        TO  TNSP-UPYMD
                        MOVE    SMCNDATE-HMS        TO  TNSP-UPHMS
@@ -450,22 +431,30 @@
       *****************************************************************
        2001-TENSUPLUS-HEN-SEC          SECTION.
       *
-           MOVE    ZS02-INPCHKKBN      TO  TNSP-INPCHKKBN
+           MOVE    LNK-TNSP-INPCHKKBN      TO  TNSP-INPCHKKBN
       *    採血料区分
-           MOVE    ZS02-SAIKETUKBN     TO  TNSP-SAIKETUKBN
+           MOVE    LNK-TNSP-SAIKETUKBN     TO  TNSP-SAIKETUKBN
       *    処方名称
-           MOVE    ZS02-SHONAME        TO  TNSP-SHONAME
-           MOVE    ZS02-SHOYUKOKETA    TO  TNSP-SHOYUKOKETA
+           MOVE    LNK-TNSP-SHONAME        TO  TNSP-SHONAME
+           MOVE    LNK-TNSP-SHOYUKOKETA    TO  TNSP-SHOYUKOKETA
       *    分類区分
-           MOVE    ZS02-TENPUYAKKBN    TO  TNSP-TENPUYAKKBN
+           MOVE    LNK-TNSP-TENPUYAKKBN    TO  TNSP-TENPUYAKKBN
       *    全数量記載区分
-           MOVE    ZS02-ALLSURYOKBN    TO  TNSP-ALLSURYOKBN
+           MOVE    LNK-TNSP-ALLSURYOKBN    TO  TNSP-ALLSURYOKBN
       *    数量換算単位コード
-           MOVE    ZS02-KANZANTANICD   TO  TNSP-KANZANTANICD
+           MOVE    LNK-TNSP-KANZANTANICD   TO  TNSP-KANZANTANICD
       *    数量換算単位名称
-           MOVE    ZS02-KANZANTANINAME TO  TNSP-KANZANTANINAME
+           MOVE    LNK-TNSP-KANZANTANINAME TO  TNSP-KANZANTANINAME
       *    数量換算値
-           MOVE    ZS02-KANZANCHI      TO  TNSP-KANZANCHI
+           MOVE    LNK-TNSP-KANZANCHI      TO  TNSP-KANZANCHI
+      *    算定履歴区分
+           MOVE    LNK-TNSP-SANTEIRRKKBN   TO  TNSP-SANTEIRRKKBN
+      *    月上限回数
+           MOVE    LNK-TNSP-JGNCNT         TO  TNSP-JGNCNT
+      *    日上限回数
+           MOVE    LNK-TNSP-JGNCNT1D       TO  TNSP-JGNCNT1D
+      *    エラー処理
+           MOVE    LNK-TNSP-JGNCNTERR      TO  TNSP-JGNCNTERR
       *
            .
        2001-TENSUPLUS-HEN-EXT.

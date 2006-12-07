@@ -1816,22 +1816,24 @@
            MOVE    SPA-NAI-YUKOEDYMD   TO  ZS02-NAI-YUKOEDYMD
            MOVE    WRK-YUKOEDYMD       TO  ZS02-YUKOEDYMD
       *
-           MOVE    SPA-GMN-SHONAME     TO  ZS02-SHONAME
+           INITIALIZE                  TENSUPLUS-REC
+           MOVE    SPA-GMN-SHONAME     TO  TNSP-SHONAME
                                            WRK-STRINGTBL
            MOVE    100                 TO  CNT-STRING
            PERFORM 891-STRCOUNT-SEC
-           MOVE    CNT-STRING          TO  ZS02-SHOYUKOKETA
-           MOVE    SPA-GMN-INPCHKKBN   TO  ZS02-INPCHKKBN
-           MOVE    SPA-GMN-BUNRUIKBN   TO  ZS02-TENPUYAKKBN
-           MOVE    SPA-GMN-ALLSURYOKBN TO  ZS02-ALLSURYOKBN
-           MOVE    SPA-GMN-KANZANTANICD    TO  ZS02-KANZANTANICD
-           MOVE    SPA-GMN-KANZANTANICDMEI TO  ZS02-KANZANTANINAME
-           MOVE    SPA-GMN-KANZANCHI   TO  ZS02-KANZANCHI
+           MOVE    CNT-STRING          TO  TNSP-SHOYUKOKETA
+           MOVE    SPA-GMN-INPCHKKBN   TO  TNSP-INPCHKKBN
+           MOVE    SPA-GMN-BUNRUIKBN   TO  TNSP-TENPUYAKKBN
+           MOVE    SPA-GMN-ALLSURYOKBN TO  TNSP-ALLSURYOKBN
+           MOVE    SPA-GMN-KANZANTANICD    TO  TNSP-KANZANTANICD
+           MOVE    SPA-GMN-KANZANTANICDMEI TO  TNSP-KANZANTANINAME
+           MOVE    SPA-GMN-KANZANCHI   TO  TNSP-KANZANCHI
       *    入力コード更新
            CALL    "ORCGZS02"          USING
                                        MCPAREA
                                        SPAAREA
                                        ORCGZS02AREA
+                                       TENSUPLUS-REC
       *
            .
        4129-TENSUPLUS-UPD-EXT.

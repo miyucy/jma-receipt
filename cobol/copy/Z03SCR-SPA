@@ -249,6 +249,19 @@
                        09  SPA-GMN-AGEKSNKGN   PIC X(2).
                        09  SPA-GMN-AGEKSNJGN   PIC X(2).
                        09  SPA-GMN-AGEKSNSRYCD PIC X(09).
+      *            ユーザ設定上限回数
+                   07  SPA-GMN-PLUS-SANTEIRRK-G.
+                       09  SPA-GMN-PLUS-SANTEIRRK      PIC 9(01).
+                       09  SPA-GMN-DUMMY2              PIC X(01).
+                       09  SPA-GMN-PLUS-SANTEIRRKMEI   PIC X(28).
+                   07  SPA-GMN-PLUS-SANTEICOMB-G.
+                       09  SPA-GMN-PLUS-SANTEICOMB   PIC X(30)
+                                               OCCURS  2.
+                   07  SPA-PLUS-SANTEI-MAX          PIC 9(04).
+                   07  SPA-GMN-PLUS-JGNCNT          PIC 9(3).
+                   07  SPA-GMN-PLUS-JGNCNT1D        PIC 9(3).
+                   07  SPA-GMN-PLUS-JGNCNTERR       PIC 9(1).
+      *
                05  SPA-GMN-KENSA.
                    07  SPA-GMN-TUSOKUGAIKBN    PIC 9(1).
                    07  SPA-GMN-LASERKSN        PIC 9(1).

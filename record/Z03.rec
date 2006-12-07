@@ -251,6 +251,22 @@ Z03	{
 				KZM	{
 					value	number(8);
 				};
+				PLUS_JGNCNT	{
+					value	number(3);
+				};
+				PLUS_JGNCNT1D	{
+					value	number(3);
+				};
+				PLUS_JGNCNTERR	{
+					value	number(1);
+				};
+				PLUS_SANTEIRRKCOMB	{
+					PLUS_SANTEIRRK	{
+						value	varchar(30);
+					};
+					count	int;
+					item	varchar(30)[3];
+				};
 			};
 			fixed11	{
 				TUSOKUGAIKBN	{

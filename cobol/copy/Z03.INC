@@ -191,6 +191,18 @@
                     06  Z03-VALUE   PIC S9(8).
                   05  Z03-KZM.
                     06  Z03-VALUE   PIC S9(8).
+                  05  Z03-PLUS-JGNCNT.
+                    06  Z03-VALUE   PIC S9(3).
+                  05  Z03-PLUS-JGNCNT1D.
+                    06  Z03-VALUE   PIC S9(3).
+                  05  Z03-PLUS-JGNCNTERR.
+                    06  Z03-VALUE   PIC S9(1).
+                  05  Z03-PLUS-SANTEIRRKCOMB.
+                    06  Z03-PLUS-SANTEIRRK.
+                      07  Z03-VALUE   PIC X(30).
+                    06  Z03-PLUS-SANTEI-COUNT   PIC S9(9)   BINARY.
+                    06  Z03-PLUS-SANTEI-ITEM
+                            PIC X(30)   OCCURS  3 TIMES.
                 04  Z03-FIXED11.
                   05  Z03-TUSOKUGAIKBN.
                     06  Z03-VALUE   PIC S9(1).

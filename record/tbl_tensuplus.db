@@ -11,6 +11,10 @@ tbl_tensuplus {
 	KANZANTANICD			char(3);
 	KANZANTANINAME			char(24);
 	KANZANCHI			number(10,5);
+	SANTEIRRKKBN			number(1,0);
+	JGNCNT				number(3,0);
+	JGNCNT1D			number(3,0);
+	JGNCNTERR			number(1,0);
 	TERMID   			char(16);
 	OPID     			char(16);
 	CREYMD   			char(8);
@@ -53,6 +57,10 @@ path	upd1	{
 	KANZANTANICD	=	:KANZANTANICD,
 	KANZANTANINAME	=	:KANZANTANINAME,
 	KANZANCHI	=	:KANZANCHI,
+	SANTEIRRKKBN	=	:SANTEIRRKKBN,
+	JGNCNT		=	:JGNCNT,
+	JGNCNT1D	=	:JGNCNT1D,
+	JGNCNTERR	=	:JGNCNTERR,
 	TERMID 			=	:TERMID,
 	OPID 			=	:OPID,
 	CREYMD 			=	:CREYMD,

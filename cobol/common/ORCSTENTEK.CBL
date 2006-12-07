@@ -32,7 +32,8 @@
       *  01.00.03    NACL−多々納 03/05/21  廃棄数量修正
       *  01.00.04    NACL−多々納 03/10/16  輸血判定追加
       *  01.00.05    NACL−多々納 05/05/13  332点滴（手術以外）
-      *                                     352中心静脈（手術以外）を追加      *  01.00.06    NACL-多々納  05/11/25  MONFUNC 対応
+      *                                     352中心静脈（手術以外）を追加
+      *  01.00.06    NACL-多々納  05/11/25  MONFUNC 対応
       *****************************************************************
       *
       *
@@ -55,6 +56,7 @@
            03  FLG-SRYACT          PIC 9(01).
            03  FLG-SRYACCT         PIC 9(01).
            03  FLG-TENSU           PIC 9(01).
+           03  FLG-TENSUPLUS       PIC 9(01).
            03  FLG-JYURRK          PIC 9(01).
            03  FLG-HKNCOMBI        PIC 9(01).
       *
@@ -292,6 +294,9 @@
       *    点数マスタ−
       *01  TENSU-REC.
            COPY    "CPTENSU.INC".
+      *    点数マスタ付加コード
+        01 TENSUPLUS-REC.
+           COPY    "CPTENSUPLUS.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -2126,8 +2131,56 @@
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
+      *    附加情報の上限回数設定
+           IF     (FLG-TENSU           =   ZERO ) AND
+                  (TNS-SRYCD(1:1)      =   "1"  )
+               PERFORM 9101-TENSUPLUS-SYORI-SEC
+           END-IF
            .
        910-TENSU-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    点数マスタ付加情報より編集処理
+      *****************************************************************
+       9101-TENSUPLUS-SYORI-SEC          SECTION.
+      *
+           MOVE    SPACE               TO  TENSUPLUS-REC
+           INITIALIZE                      TENSUPLUS-REC
+           MOVE    TNS-SRYCD           TO  TNSP-SRYCD
+           MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
+           MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD
+      *
+           MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
+           MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  TENSUPLUS-REC
+                   MOVE    ZERO                TO  FLG-TENSUPLUS
+               ELSE
+                   MOVE    1                   TO  FLG-TENSUPLUS
+                   INITIALIZE                      TENSUPLUS-REC
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-TENSUPLUS
+               INITIALIZE                      TENSUPLUS-REC
+           END-IF
+           MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *    上限回数
+           IF      TNSP-SANTEIRRKKBN   =   1
+               MOVE    TNSP-SANTEIRRKKBN   TO  TNS-SANTEIRRKKBN
+               MOVE    TNSP-JGNCNT         TO  TNS-JGNCNT
+               MOVE    TNSP-JGNCNT1D       TO  TNS-JGNCNT1D
+               MOVE    TNSP-JGNCNTERR      TO  TNS-JGNCNTERR
+           END-IF
+           .
+       9101-TENSUPLUS-SYORI-EXT.
            EXIT.
       *
       *****************************************************************

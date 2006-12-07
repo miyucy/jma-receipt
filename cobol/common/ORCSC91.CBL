@@ -38,6 +38,7 @@
       *  01.00.08    NACL-多々納  05/11/22  MONFUNC 対応 他
       *  03.03.00    NACL-多々納  06/10/20  矯正固定等追加
       *  03.03.00    NACL-多々納  06/11/17  同時算定チェック方法修正
+      *  03.04.00    NACL-多々納  06/12/05  上限回数ユーザ指定追加
       *****************************************************************
       *
       *
@@ -57,11 +58,13 @@
            03  FLG-END             PIC 9(01).
            03  FLG-SANTEI          PIC 9(01).
            03  FLG-TENSU           PIC 9(01).
+           03  FLG-TENSUPLUS       PIC 9(01).
            03  FLG-NYU-CHK         PIC 9(01).
            03  FLG-ERR             PIC 9(01).
       *
            03  FLG-TAISYO          PIC 9(01).
            03  FLG-SANTEI-ARI      PIC 9(01).
+           03  FLG-TENSUPLUS-CHK   PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -236,6 +239,9 @@
            02  HZN-SANTEI-REC          OCCURS  30.
            COPY    "CPSANTEI.INC"      REPLACING
                                        //SANTEI-// BY //HZN-SANTEI-//.
+      *    点数マスタ付加コード
+        01 TENSUPLUS-REC.
+           COPY    "CPTENSUPLUS.INC".
       *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
@@ -244,6 +250,9 @@
       *
       *    診療行為用共通パラメタ
            COPY    "K01COMMON-SPA".
+      *
+      *    ワーク点数マスタ−
+           COPY    "CPTENSUWK.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -298,6 +307,7 @@
            IF      TNS-SANTEIRRKKBN    =   ZERO
                GO      TO      000-PROC-EXT
            END-IF
+      *
       *    リハビリチェック（H18.4)
            IF     (LNK-SC91-SRYCD(1:1) =   "1" )  AND
                   (TNS-SRYKBN          =   "80" )
@@ -909,6 +919,8 @@
       *****************************************************************
        200-DOUJI-CHK-SEC      SECTION.
       *
+           MOVE    TNS-TENSU-REC       TO  TNSWK-TENSU-REC
+      *
            PERFORM 2000-SANTEI-HZN-SEC
       *
            MOVE    SPACE               TO  WRK-CHK-SRYCD
@@ -940,8 +952,8 @@
                    MOVE    TBL-SRYCD (TBL-IDX)     TO  WRK-SRYCD
                    MOVE    WRK-SRYCD               TO  TNS-SRYCD
                    PERFORM 910-TENSU-READ-SEC
-                   IF     (FLG-TENSU           =   1    )  OR
-                          (TNS-SANTEIRRKKBN    =   ZERO )
+                   IF     (FLG-TENSU           =   1    )
+      *DD            OR   (TNS-SANTEIRRKKBN    =   ZERO )
                        CONTINUE
                    ELSE
                        IF      LNK-SC91-SYORIFLG   =   1
@@ -1088,8 +1100,7 @@
            END-IF
       *
       *    点数マスタの内容を入力分へ戻す
-           MOVE    LNK-SC91-SRYCD      TO  TNS-SRYCD
-           PERFORM 910-TENSU-READ-SEC
+           MOVE    TNSWK-TENSU-REC     TO  TNS-TENSU-REC
            .
        200-DOUJI-CHK-EXT.
            EXIT.
@@ -1491,8 +1502,56 @@
            MOVE    "key22"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
+      *    附加情報の上限回数設定
+           IF      FLG-TENSU           =   ZERO
+               PERFORM 9101-TENSUPLUS-SYORI-SEC
+           END-IF
            .
        910-TENSU-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    点数マスタ付加情報より編集処理
+      *****************************************************************
+       9101-TENSUPLUS-SYORI-SEC          SECTION.
+      *
+           MOVE    SPACE               TO  TENSUPLUS-REC
+           INITIALIZE                      TENSUPLUS-REC
+           MOVE    TNS-SRYCD           TO  TNSP-SRYCD
+           MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
+           MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD
+      *
+           MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
+           MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  TENSUPLUS-REC
+                   MOVE    ZERO                TO  FLG-TENSUPLUS
+               ELSE
+                   MOVE    1                   TO  FLG-TENSUPLUS
+                   INITIALIZE                      TENSUPLUS-REC
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-TENSUPLUS
+               INITIALIZE                      TENSUPLUS-REC
+           END-IF
+           MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *    上限回数
+           IF      TNSP-SANTEIRRKKBN   =   1
+               MOVE    TNSP-SANTEIRRKKBN   TO  TNS-SANTEIRRKKBN
+               MOVE    TNSP-JGNCNT         TO  TNS-JGNCNT
+               MOVE    TNSP-JGNCNT1D       TO  TNS-JGNCNT1D
+               MOVE    TNSP-JGNCNTERR      TO  TNS-JGNCNTERR
+           END-IF
+      *
+           .
+       9101-TENSUPLUS-SYORI-EXT.
            EXIT.
       *
       *****************************************************************

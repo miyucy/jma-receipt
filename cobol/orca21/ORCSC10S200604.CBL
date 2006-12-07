@@ -1913,42 +1913,46 @@
            MOVE    SPACE               TO  WRK-SANTEI-YMD
            MOVE    SPACE               TO  WRK-HASSYOYMD
       *
-           MOVE    WRK-SRYCD           TO  TNS-SRYCD
-           PERFORM 910-TENSU-READ-SEC
-           IF      FLG-TENSU           =   1
-               GO      TO      10001-RSI-JYURRK-CHK-EXT
-           END-IF
+      *    MOVE    WRK-SRYCD           TO  TNS-SRYCD
+      *    PERFORM 910-TENSU-READ-SEC
+      *    IF      FLG-TENSU           =   1
+      *        GO      TO      10001-RSI-JYURRK-CHK-EXT
+      *    END-IF
       *
       *    ÊÝ¸±Ëè¤Î¥³¡¼¥É¤ÎÈ½Äê
-           PERFORM 1000-SANTEI-CHK-SEC
+      *    PERFORM 1000-SANTEI-CHK-SEC
       *
+      *Ï«ºÒ¥³¡¼¥É¤Ê¤Î¤Ç¡¢ÊÝ¸±Ëè¤Î»»ÄêÍúÎò¤È¤¹¤ë
       *    »»ÄêÍúÎò¸¡º÷
            MOVE    SPACE               TO  SANTEI-REC
            INITIALIZE                  SANTEI-REC
            MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
            MOVE    SPA-PTID            TO  SANTEI-PTID
            MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
-           EVALUATE    TNS-SANTEIRRKKBN
-               WHEN    1
-                   MOVE    ZERO                TO  SANTEI-NYUGAIKBN
-                   MOVE    ZERO                TO  SANTEI-SRYKA
-               WHEN    2
-                   MOVE    SPA-NYUGAIKBN       TO  SANTEI-NYUGAIKBN
-                   MOVE    ZERO                TO  SANTEI-SRYKA
-               WHEN    3
-                   MOVE    ZERO                TO  SANTEI-NYUGAIKBN
-                   MOVE    SPA-SRYKA           TO  SANTEI-SRYKA
-               WHEN    4
-                   MOVE    SPA-NYUGAIKBN       TO  SANTEI-NYUGAIKBN
-                   MOVE    SPA-SRYKA           TO  SANTEI-SRYKA
-           END-EVALUATE
+           MOVE    ZERO                TO  SANTEI-NYUGAIKBN
+           MOVE    ZERO                TO  SANTEI-SRYKA
+           MOVE    SPA-HKNCOMBINUM     TO  SANTEI-HKNCOMBINUM
+      **** EVALUATE    TNS-SANTEIRRKKBN
+      *        WHEN    1
+      *            MOVE    ZERO                TO  SANTEI-NYUGAIKBN
+      *            MOVE    ZERO                TO  SANTEI-SRYKA
+      *        WHEN    2
+      *            MOVE    SPA-NYUGAIKBN       TO  SANTEI-NYUGAIKBN
+      *            MOVE    ZERO                TO  SANTEI-SRYKA
+      *        WHEN    3
+      *            MOVE    ZERO                TO  SANTEI-NYUGAIKBN
+      *            MOVE    SPA-SRYKA           TO  SANTEI-SRYKA
+      *        WHEN    4
+      *            MOVE    SPA-NYUGAIKBN       TO  SANTEI-NYUGAIKBN
+      *            MOVE    SPA-SRYKA           TO  SANTEI-SRYKA
+      *    END-EVALUATE
       *
-           IF     (FLG-HKNSAN          =   1   )  AND
-                  (SPA-HKNKBN      NOT =   ZERO)
-               MOVE    SPA-HKNCOMBINUM     TO  SANTEI-HKNCOMBINUM
-           ELSE
-               MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
-           END-IF
+      *    IF     (FLG-HKNSAN          =   1   )  AND
+      *           (SPA-HKNKBN      NOT =   ZERO)
+      *        MOVE    SPA-HKNCOMBINUM     TO  SANTEI-HKNCOMBINUM
+      *    ELSE
+      *        MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
+      *****END-IF
       *
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_santei"        TO  MCP-TABLE
@@ -2000,10 +2004,6 @@
                GO      TO      200-SYOSIN-SET-EXT
            END-IF
       *
-      *TEST
-           DISPLAY "SPA-HKNKBN:" SPA-HKNKBN
-              ",SPA-RSI-HKNKBN:" SPA-RSI-HKNKBN
-      *TEST
       *    Æþ±¡Æü¤Î»þ¡¢½é¿ÇÎÁ¤Î¤ß»»Äê¤¹¤ë
            IF      SPA-K02N-NYUINYMD(1:6)  =   SPA-NAI-SRYYMD(1:6)
                IF      SPA-SYOSIN          =   1

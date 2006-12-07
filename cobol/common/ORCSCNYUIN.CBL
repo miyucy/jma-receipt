@@ -85,6 +85,7 @@
            03  FLG-JYURRK          PIC 9(01).
            03  FLG-SRYKARRK        PIC 9(01).
            03  FLG-TENSU           PIC 9(01).
+           03  FLG-TENSUPLUS       PIC 9(01).
            03  FLG-HKNCOMBI        PIC 9(01).
            03  FLG-UKETUKE         PIC 9(01).
            03  FLG-PTNYUINRRK        PIC 9(01).
@@ -310,6 +311,9 @@
       *    点数マスタ−
       *01  TENSU-REC.
            COPY    "CPTENSU.INC".
+      *    点数マスタ付加コード
+        01 TENSUPLUS-REC.
+           COPY    "CPTENSUPLUS.INC".
       *
       *    患者入院履歴
        01  PTNYUINRRK-REC.
@@ -1475,15 +1479,13 @@
                                                    TO  WRK-SRYSURYO
       *
                        MOVE    WRK-SRYCD           TO  TNS-SRYCD
-                       PERFORM 910-TENSU-READ-SEC
       *                算定用の診療コードへ変更
                        PERFORM 45020-SANTEI-SRYCD-SEC
                        IF      LNK-WKSRY-SRYCD (IDX IDY)
                                                NOT =   WRK-SRYCD
                            MOVE    WRK-SRYCD           TO  TNS-SRYCD
-                           PERFORM 910-TENSU-READ-SEC
                        END-IF
-      *
+                       PERFORM 910-TENSU-READ-SEC
                        IF      TNS-SANTEIRRKKBN    NOT =   ZERO
       *                    特定薬剤治療管理の初回日があれば編集
                            MOVE    1               TO  FLG-TOKTEI
@@ -2340,14 +2342,12 @@
                    MOVE    SRY-SRYSURYO (IDY)  TO  WRK-SRYSURYO
       *
                    MOVE    WRK-SRYCD           TO  TNS-SRYCD
-                   PERFORM 910-TENSU-READ-SEC
       *            算定用の診療コードへ変更
                    PERFORM 45020-SANTEI-SRYCD-SEC
                    IF      SRY-SRYCD (IDY) NOT =   WRK-SRYCD
                        MOVE    WRK-SRYCD           TO  TNS-SRYCD
-                       PERFORM 910-TENSU-READ-SEC
                    END-IF
-      *
+                   PERFORM 910-TENSU-READ-SEC
                    IF      TNS-SANTEIRRKKBN    NOT =   ZERO
                        PERFORM 45001131-SANTEI-DEL-SEC
                    END-IF
@@ -3022,9 +3022,58 @@
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
+      *    附加情報の上限回数設定
+           IF     (FLG-TENSU           =   ZERO )  AND
+                  (TNS-SRYCD(1:1)      =   "1"  )
+               PERFORM 9101-TENSUPLUS-SYORI-SEC
+           END-IF
       *
            .
        910-TENSU-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    点数マスタ付加情報より編集処理
+      *****************************************************************
+       9101-TENSUPLUS-SYORI-SEC          SECTION.
+      *
+           MOVE    SPACE               TO  TENSUPLUS-REC
+           INITIALIZE                      TENSUPLUS-REC
+           MOVE    TNS-SRYCD           TO  TNSP-SRYCD
+           MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
+           MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD
+      *
+           MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
+           MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  TENSUPLUS-REC
+                   MOVE    ZERO                TO  FLG-TENSUPLUS
+               ELSE
+                   MOVE    1                   TO  FLG-TENSUPLUS
+                   INITIALIZE                      TENSUPLUS-REC
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-TENSUPLUS
+               INITIALIZE                      TENSUPLUS-REC
+           END-IF
+           MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *    上限回数
+           IF      TNSP-SANTEIRRKKBN   =   1
+               MOVE    TNSP-SANTEIRRKKBN   TO  TNS-SANTEIRRKKBN
+               MOVE    TNSP-JGNCNT         TO  TNS-JGNCNT
+               MOVE    TNSP-JGNCNT1D       TO  TNS-JGNCNT1D
+               MOVE    TNSP-JGNCNTERR      TO  TNS-JGNCNTERR
+           END-IF
+      *
+           .
+       9101-TENSUPLUS-SYORI-EXT.
            EXIT.
       *
       *****************************************************************

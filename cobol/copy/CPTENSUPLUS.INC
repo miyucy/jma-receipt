@@ -21,6 +21,7 @@
       ************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 03.04.00     NACL-多々納  06/12/05  上限回数追加
       ************************************************************
       *01  TENSUPLSU-REC.
            03  TNSP-KEY.
@@ -44,6 +45,15 @@
            03  TNSP-KANZANTANINAME      PIC  X(24).
       *    数量換算値
            03  TNSP-KANZANCHI           PIC  9(05)V9(05).
+      *    ユーザー設定上限回数
+      *    算定履歴区分（１のみ）
+           03  TNSP-SANTEIRRKKBN        PIC  9(01).
+      *    月上限回数
+           03  TNSP-JGNCNT              PIC  9(03).
+      *    日上限回数
+           03  TNSP-JGNCNT1D            PIC  9(03).
+      *    エラー処理
+           03  TNSP-JGNCNTERR           PIC  9(01).
       *
            03  TNSP-TERMID              PIC  X(16).
            03  TNSP-OPID                PIC  X(16).
@@ -51,7 +61,7 @@
            03  TNSP-UPYMD               PIC  X(08).
            03  TNSP-UPHMS               PIC  X(06).
       *　　主キー更新用項目
-           03  TNSPUP-KEY.
-               05  TNSPUP-SRYCD         PIC  X(09).
-               05  TNSPUP-YUKOSTYMD     PIC  X(08).
-               05  TNSPUP-YUKOEDYMD     PIC  X(08).
+           03  TNSP-UP-KEY.
+               05  TNSP-UP-SRYCD         PIC  X(09).
+               05  TNSP-UP-YUKOSTYMD     PIC  X(08).
+               05  TNSP-UP-YUKOEDYMD     PIC  X(08).

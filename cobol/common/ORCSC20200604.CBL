@@ -119,6 +119,9 @@
            03  FLG-SYOHOU-ERR           PIC 9(01).
            03  FLG-TOKUTEI              PIC 9(01).
       *
+           03  FLG-TENSUPLUS-CHK        PIC 9(01).
+           03  FLG-TENSUPLUS            PIC 9(01).
+      *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -286,6 +289,9 @@
       *    点数マスタ−
       *01  TENSU-REC.
            COPY    "CPTENSU.INC".
+      *    点数マスタ付加コード
+        01 TENSUPLUS-REC.
+           COPY    "CPTENSUPLUS.INC".
       *
       *    算定履歴
        01  SANTEI-REC.
@@ -1932,6 +1938,7 @@
        30019-CHOUKI-CHK-SEC            SECTION.
       *
            MOVE    "120001810"         TO  WRK-SRYCD
+           MOVE    ZERO                TO  FLG-TENSUPLUS-CHK
            PERFORM 3001-SANTEI-CHK-SEC
            IF      FLG-ERR             =   1
                IF      SPA-CHOZAI-CHK      =   ZERO
@@ -1940,6 +1947,7 @@
                END-IF
            ELSE
                MOVE    "120001710"         TO  WRK-SRYCD
+               MOVE    ZERO                TO  FLG-TENSUPLUS-CHK
                PERFORM 3001-SANTEI-CHK-SEC
                IF      FLG-ERR             =   1
                    IF      SPA-CHOZAI-CHK      =   ZERO
@@ -2913,6 +2921,7 @@
       *
            IF      SPA-CHOKI-ARI       =   SPACE
                MOVE    "120001810"         TO  WRK-SRYCD
+               MOVE    ZERO                TO  FLG-TENSUPLUS-CHK
                PERFORM 3001-SANTEI-CHK-SEC
                IF      FLG-ERR             =   1
                    IF      SPA-CHOZAI-CHK      =   ZERO
@@ -3123,6 +3132,7 @@
       *
       *
            MOVE    WRK-SRYCD           TO  TNS-SRYCD
+           MOVE    1                   TO  FLG-TENSUPLUS-CHK
            PERFORM 910-TENSU-READ-SEC
            IF      FLG-TENSU       NOT =   ZERO
       *!       MOVE    "0001"              TO  SPA-ERRCD
@@ -3140,7 +3150,6 @@
                                                    (02 IDXS)
                MOVE    TNS-TEN         TO  LNK-ORCSC-TENSU
                                                    (02 IDXS)
-      *
       *        年齢加算処理
                PERFORM 3002-NENREI-KASAN-SEC
            END-IF
@@ -3238,6 +3247,7 @@
            END-IF
       *
            MOVE    WRK-SRYCD           TO  TNS-SRYCD
+           MOVE    1                   TO  FLG-TENSUPLUS-CHK
            PERFORM 910-TENSU-READ-SEC
            IF      FLG-TENSU       NOT =   ZERO
       *!       MOVE    "0001"              TO  SPA-ERRCD
@@ -3434,17 +3444,17 @@
            END-IF
       *
            MOVE    WRK-SRYCD           TO  TNS-SRYCD
+           MOVE    1                   TO  FLG-TENSUPLUS-CHK
            PERFORM 910-TENSU-READ-SEC
            IF      FLG-TENSU       NOT =   ZERO
                MOVE    1                   TO  FLG-ERR
-     **********MOVE    1                   TO  FLG-YAKJYO
                GO      TO      3003-YAKJYO-CHK-EXT
            END-IF
-      *
       *        算定履歴チェック処理
            IF      TNS-SANTEIRRKKBN    NOT =   ZERO
                PERFORM 3001-SANTEI-CHK-SEC
            END-IF
+      *
            MOVE    ZERO            TO  FLG-ERR
            IF     (LNK-SC91-ERRCD      =   SPACE )  AND
                   (LNK-SC91-ERRCD2     =   SPACE )
@@ -3489,6 +3499,7 @@
                                                            ZERO )
                MOVE    TNS-AGEKSNSRYCD(IDX2)   TO  WRK-SRYCD
                MOVE    WRK-SRYCD           TO  TNS-SRYCD
+               MOVE    ZERO                TO  FLG-TENSUPLUS-CHK
                PERFORM 910-TENSU-READ-SEC
                IF      FLG-TENSU           =   ZERO
       *            年齢チェック
@@ -3573,6 +3584,9 @@
       *
            INITIALIZE                  ORCSC91AREA
            MOVE    "2"                 TO  LNK-SC91-KBN
+           IF      FLG-TENSUPLUS-CHK   =   1
+               MOVE    "1"                 TO  LNK-SC91-KBN
+           END-IF
            MOVE    LNK-ORCSC-SYORIFLG  TO  LNK-SC91-SYORIFLG
            MOVE    WRK-SRYCD           TO  LNK-SC91-SRYCD
            MOVE    LNK-ORCSC-TEISEI-AREA
@@ -3821,8 +3835,57 @@
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
+      *    附加情報の上限回数設定
+           IF     (FLG-TENSU           =   ZERO )  AND
+                  (FLG-TENSUPLUS-CHK   =   1    )
+               PERFORM 9101-TENSUPLUS-SYORI-SEC
+           END-IF
            .
        910-TENSU-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    点数マスタ付加情報より編集処理
+      *****************************************************************
+       9101-TENSUPLUS-SYORI-SEC          SECTION.
+      *
+           MOVE    SPACE               TO  TENSUPLUS-REC
+           INITIALIZE                      TENSUPLUS-REC
+           MOVE    TNS-SRYCD           TO  TNSP-SRYCD
+           MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
+           MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD
+      *
+           MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
+           MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  TENSUPLUS-REC
+                   MOVE    ZERO                TO  FLG-TENSUPLUS
+               ELSE
+                   MOVE    1                   TO  FLG-TENSUPLUS
+                   INITIALIZE                      TENSUPLUS-REC
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-TENSUPLUS
+               INITIALIZE                      TENSUPLUS-REC
+           END-IF
+           MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *    上限回数
+           IF      TNSP-SANTEIRRKKBN   =   1
+               MOVE    TNSP-SANTEIRRKKBN   TO  TNS-SANTEIRRKKBN
+               MOVE    TNSP-JGNCNT         TO  TNS-JGNCNT
+               MOVE    TNSP-JGNCNT1D       TO  TNS-JGNCNT1D
+               MOVE    TNSP-JGNCNTERR      TO  TNS-JGNCNTERR
+           END-IF
+      *
+           .
+       9101-TENSUPLUS-SYORI-EXT.
            EXIT.
       *
       *****************************************************************

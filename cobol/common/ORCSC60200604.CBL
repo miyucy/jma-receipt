@@ -234,6 +234,8 @@
            03  WRK-SANTEN          PIC 9(08).
            03  WRK-SANSOKIN-SUM    PIC 9(08)V99.
       *
+           03  WRK-TNS-JGNAGE      PIC 9(02).
+      *
       *    検査　判断グループ
        01  WRK-KENSA-AREA.
            03  WRK-KENSA-TBL                       OCCURS   20.
@@ -1235,6 +1237,8 @@
            MOVE    SPA-PTID            TO  SANTEI-PTID
            MOVE    SPA-SRYYMD (1:6)    TO  SANTEI-SRYYM
            MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
+           MOVE    ZERO                TO  SANTEI-NYUGAIKBN
+           MOVE    ZERO                TO  SANTEI-SRYKA
            EVALUATE    TNS-SANTEIRRKKBN
                WHEN    1
                    MOVE    ZERO                TO  SANTEI-NYUGAIKBN
@@ -3351,15 +3355,15 @@
                    MOVE    WRK-KEN-SRYCD (IDX) TO  WRK-SRYCD
                    PERFORM 3001-KYOUTU-CHEK-SEC
       *
-                   MOVE    WRK-KEN-SRYCD (IDX)     TO  TNS-SRYCD
-                   PERFORM 910-TENSU-READ-SEC
+      *D           MOVE    WRK-KEN-SRYCD (IDX)     TO  TNS-SRYCD
+      *D           PERFORM 910-TENSU-READ-SEC
       *            病理学的検査診断料チェック
                    IF    (FLG-ERR              =   ZERO  )  AND
                          (WRK-KEN-SRYCD (IDX)  =   "160062310" )
                        PERFORM 1007-KENSA-CHK-SEC
       *
-                       MOVE    WRK-KEN-SRYCD (IDX) TO  TNS-SRYCD
-                       PERFORM 910-TENSU-READ-SEC
+      *D               MOVE    WRK-KEN-SRYCD (IDX) TO  TNS-SRYCD
+      *D               PERFORM 910-TENSU-READ-SEC
       *
                        IF      LNK-SC91-ERRCD      =   SPACE
       *                    追加あり
@@ -3370,8 +3374,10 @@
                            MOVE    SPACE           TO  SPA-ERRCD
                        END-IF
                    END-IF
-      *
                    IF      FLG-ERR         =   ZERO
+                       MOVE    WRK-KEN-SRYCD (IDX) TO  TNS-SRYCD
+                       PERFORM 910-TENSU-READ-SEC
+      *
                        ADD     1               TO  IDXS
                        MOVE    WRK-KEN-SRYKA (IDX)
                                                TO  LNK-ORCSC-SRYKA
@@ -3768,6 +3774,26 @@
                MOVE    ZERO                TO  FLG-ERR
       *        加算追加
                MOVE    TNS-AGEKSNSRYCD (IDX2)  TO  WRK-SRYCD
+      *        上限年齢判定
+               IF      TNS-AGEKSNJGN (IDX2)     =   "AA"
+      *            新生児判定
+                   IF     (LNK-ORCSC-NENREI-YY    =   ZERO )  AND
+                          (LNK-ORCSC-NENREI-MM    =   ZERO )  AND
+                          (LNK-ORCSC-NENREI-DD    <   28   )
+                       CONTINUE
+                   ELSE
+                       MOVE    1                   TO  FLG-ERR
+                   END-IF
+               ELSE
+                   MOVE    TNS-AGEKSNJGN (IDX2)    TO  WRK-TNS-JGNAGE
+                   IF     (WRK-TNS-JGNAGE      NOT =   ZERO   )  AND
+                          (LNK-ORCSC-NENREI-YY     <   WRK-TNS-JGNAGE )
+                       CONTINUE
+                   ELSE
+                       MOVE    1                   TO  FLG-ERR
+                   END-IF
+               END-IF
+               IF      FLG-ERR             =   ZERO
       *        共通チェック処理
                PERFORM 3001-KYOUTU-CHEK-SEC
                IF      FLG-ERR             =   ZERO
@@ -3782,8 +3808,10 @@
                        MOVE    4               TO  IDX2
                    END-IF
                END-IF
-           END-PERFORM
       *
+               END-IF
+      *
+           END-PERFORM
       *
            .
        30051-NENREI-SET-EXT.
@@ -3951,6 +3979,7 @@
       *    入院動脈血採血料処理
       *****************************************************************
        3007-BA-DAY-SEC         SECTION.
+      *
       *    共通チェック処理
            PERFORM 3001-KYOUTU-CHEK-SEC
       *
