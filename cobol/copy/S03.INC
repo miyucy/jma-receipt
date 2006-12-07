@@ -118,11 +118,15 @@
                                 PIC S9(10).
               03  S03-RSISDO    PIC S9(10).
               03  S03-RSIETC    PIC S9(10).
-              03  S03-SYKMONEY  PIC S9(10).
+              03  S03-CHOSEI    PIC S9(10).
+              03  S03-SKYMONEY  PIC S9(10).
               03  S03-NYUKINGK1 PIC S9(10).
               03  S03-MISYUZAN  PIC S9(10).
               03  S03-ZENMISYU  PIC S9(10).
               03  S03-GOKMISYU  PIC S9(10).
+              03  S03-CHOSEIIN  PIC S9(10).
+              03  S03-CHOSEIIN-STATE
+                                PIC S9(9)   BINARY.
               03  S03-NYUKINGK2 PIC S9(10).
               03  S03-NYUKINGK2-STATE
                                 PIC S9(9)   BINARY.

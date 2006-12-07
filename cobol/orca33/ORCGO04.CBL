@@ -2601,9 +2601,12 @@
                END-IF
            END-IF
       *
-           IF    ( WRK-NYUKIN  <  ZERO )
-               MOVE    4           TO  SPA-GMN-O04-CUR
-               MOVE    "0008"      TO  SPA-ERRCD
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+               IF    ( WRK-NYUKIN  <  ZERO )
+                   MOVE    4       TO  SPA-GMN-O04-CUR
+                   MOVE    "0008"  TO  SPA-ERRCD
+               END-IF
            END-IF
       *
            IF    ( SPA-ERRCD       =   SPACE )
@@ -2626,12 +2629,29 @@
       *****************************************************************
        4102-NYUKIN-CHK-SEC             SECTION.
       *
-           IF    ( SPA-GMN-O04-NYUKIN  =   SPA-NAI-O04-NYUKIN-MOTO )
-            OR   ( SPA-GMN-O04-NYUKIN  =   ZERO )
-               CONTINUE
+           IF    ( SPA-GMN-O04-SYORIKBN    =   CONST-PROC-RRKSYU )
+      *
+               COMPUTE WRK-NYUKIN
+                   =   SPA-GMN-O04-NYUKIN-TTL
+                   -   SPA-NAI-O04-NYUKIN-MOTO
+                   +   SPA-GMN-O04-NYUKIN
            ELSE
-               MOVE    4           TO  SPA-GMN-O04-CUR
+      *
+               COMPUTE WRK-NYUKIN
+                   =   SPA-GMN-O04-NYUKIN-TTL
+                   +   SPA-GMN-O04-NYUKIN
+           END-IF
+      *
+           IF    ( SPA-GMN-O04-NYUKIN  >   ZERO )
+               MOVE    2           TO  SPA-GMN-O04-CUR
                MOVE    "0017"      TO  SPA-ERRCD
+           END-IF
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+               IF    ( WRK-NYUKIN  <  ZERO )
+                   MOVE    2           TO  SPA-GMN-O04-CUR
+                   MOVE    "0018"      TO  SPA-ERRCD
+               END-IF
            END-IF
       *
            .
@@ -3939,7 +3959,7 @@
                MOVE    "請求金額を入力してください"
                                        TO  SPA-ERRMSG
            WHEN    "0017"
-               MOVE    "入金額は０円への変更のみ可能です"
+               MOVE    "マイナスの金額を入力してください"
                                        TO  SPA-ERRMSG
            WHEN    "0018"
                MOVE    "入金額が０円を下回ります"

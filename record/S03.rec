@@ -279,7 +279,10 @@ S03	{
 		RSIETC	{
 			value	number(10);
 		};
-		SYKMONEY	{
+		CHOSEI	{
+			value	number(10);
+		};
+		SKYMONEY	{
 			value	number(10);
 		};
 		NYUKINGK1	{
@@ -293,6 +296,10 @@ S03	{
 		};
 		GOKMISYU	{
 			value	number(10);
+		};
+		CHOSEIIN	{
+			value	number(10);
+			state	int;
 		};
 		NYUKINGK2	{
 			value	number(10);
