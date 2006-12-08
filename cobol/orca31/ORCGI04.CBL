@@ -104,6 +104,7 @@
            03  FLG-NYUINKA         PIC 9(01).
            03  FLG-SKYPRT          PIC 9(01).
            03  FLG-SRYPRT          PIC 9(01).
+           03  FLG-TEISEIINF       PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -1256,10 +1257,24 @@
       *    自費名称編集
            PERFORM 3100-JIHIMSG-HEN-SEC
       *
+           MOVE    ZERO                TO  FLG-TEISEIINF
+      *
            IF    ( SPA-I01-I04-PROCKBN         =   "2" )
             AND  ( SPA-NAI-I04-SAIKEISANFLG    =   1 )
             AND  ( SPA-I0-UPD-SKYMONEY  (WRK-LST-IDX)
                                            NOT =   ZERO )
+               IF    ( SPA-I0-SYUNOU-TTLDAT-FLG  (WRK-LST-IDX)
+                                               =   ZERO )
+                    IF    ( SPA-I0-SYUNOU-UPDFLG (WRK-LST-IDX)
+                                               = ZERO )
+                        MOVE    1      TO  FLG-TEISEIINF
+                    END-IF
+      *        ELSE
+      *                 MOVE    1      TO  FLG-TEISEIINF
+               END-IF
+           END-IF
+      *
+           IF    ( FLG-TEISEIINF       =   1 )
       *
                COMPUTE WRK-SKYMONEY
                    =   WKSYU-SKYMONEY
@@ -1842,6 +1857,31 @@
            END-IF
       *
            MOVE    SPA-GMN-I04-LBLSKYINF   TO  I04-LBLSKYINF
+      *
+           MOVE    "black"                 TO  I04-LBLINFO-STYLE
+           IF    ( SPA-I01-I04-PROCKBN =   "2" )
+               IF    ( SPA-NAI-I04-SAIKEISANFLG    =   ZERO )
+                   MOVE    "red"           TO  I04-LBLINFO-STYLE
+                   MOVE    "※元の請求データは取り消されます"
+                                           TO  I04-LBLINFO
+               ELSE
+                   PERFORM VARYING  IDX-SYU    FROM    1   BY  1
+                           UNTIL  ( IDX-SYU    >   SPA-I0-SYUNOU-CNT )
+                            OR    ( SPA-I0IDCD NOT =   SPACE )
+                       IF    ( SPA-I0-SYUNOU-TTLDAT-FLG (IDX-SYU)
+                                                   =   3 )
+                           MOVE    "red"   TO  I04-LBLINFO-STYLE
+                           MOVE    SPACE   TO  I04-LBLINFO
+                           STRING  "※保険組合せを変更した請求データは"
+                                               DELIMITED   BY  SIZE
+                                   "取り消されます"
+                                               DELIMITED   BY  SIZE
+                           INTO    I04-LBLINFO
+                           END-STRING
+                       END-IF
+                   END-PERFORM
+               END-IF
+           END-IF
       *
       *    項目状態編集
            PERFORM 500-GMNHEN-STATE-EDIT-SEC
@@ -2835,10 +2875,10 @@
                    END-IF
                END-PERFORM
       *
-               IF    ( SPA-I0IDCD  =   SPACE )
-                   PERFORM 452-TOUROKU-SEC
-               END-IF
+           END-IF
       *
+           IF    ( SPA-I0IDCD  =   SPACE )
+               PERFORM 452-TOUROKU-SEC
            END-IF
       *
            .

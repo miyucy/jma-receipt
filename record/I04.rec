@@ -342,6 +342,10 @@ I04	{
 		LBLSKYINF	{
 			value	varchar(50);
 		};
+		LBLINFO	{
+			style   varchar(20);
+			value	varchar(70);
+		};
 		scrolledwindow1	{
 			HKNCOMBILST	{
 				count	int;
