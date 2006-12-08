@@ -195,7 +195,7 @@
                        09  SPA-NAI-DENPEDANUM      PIC X(02).
                        09  SPA-NAI-DENPJTIKBN      PIC X(01).
                        09  SPA-NAI-MINUS           PIC X(01).
-                       09  SPA-NAI-PROC-FLG        PIC X(01).
+                       09  SPA-NAI-PROC-FLG        PIC 9(01).
                    07  SPA-NAI-NYKN-HOHOLST-G.
                        09  SPA-NAI-NYKN-HOHOLST    OCCURS  50.
                            11  SPA-NAI-NYKN-HOHOMEIL
@@ -1612,6 +1612,11 @@
                                                S03-B12-STATE
            END-IF
       *
+           IF    ( SPA-S01-SYORINO     =   CONST-PROC-NYUKIN )
+               MOVE    WIDGET-INSENSITIVE
+                                       TO  S03-CHOSEIIN-STATE
+           END-IF
+      *
            IF    ( SPA-NAI-HEAD-DENPJTIKBN =   "3" )
                MOVE    WIDGET-INSENSITIVE  TO  S03-CHOSEIIN-STATE
                                                S03-NYUKINGK2-STATE
@@ -1644,11 +1649,6 @@
                WHEN    OTHER
                    MOVE    "照会"          TO  S03-B03-LABEL
                END-EVALUATE
-           END-IF
-      *
-           IF    ( SPA-S01-SYORINO     =   CONST-PROC-NYUKIN )
-               MOVE    WIDGET-INSENSITIVE
-                                       TO  S03-CHOSEIIN-STATE
            END-IF
       *
            EVALUATE    FLG-SMEILIST1-ROW
@@ -2241,7 +2241,7 @@
                +   SPA-GMN-CHOSEIIN
       *
            IF    ( WRK-SKYMONEY    <   ZERO )
-               MOVE    "0015"      TO  SPA-ERRCD
+               MOVE    "0016"      TO  SPA-ERRCD
                MOVE    8           TO  SPA-GMN-CUR
            END-IF
       *
@@ -3364,6 +3364,9 @@
                                        TO  SPA-ERRMSG
            WHEN    "0014"
                MOVE    "入金額が０円を下回ります"
+                                       TO  SPA-ERRMSG
+           WHEN    "0016"
+               MOVE    "請求金額を入力してください"
                                        TO  SPA-ERRMSG
            WHEN    "1001"
            WHEN    "1002"
