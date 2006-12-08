@@ -1278,3 +1278,37 @@ path	key57 	{
 		;
 	};
 };
+
+path	key58 	{
+	DBSELECT	{
+		DECLARE tbl_syunou_key58_csr CURSOR FOR
+		SELECT distinct a.*
+		FROM tbl_syunou a,tbl_syumei b
+		WHERE  a.HOSPID      = :HOSPID
+		AND    a.PTID        = :PTID
+		AND    a.CREATEKBN   <> '3'
+		AND    a.HOSPID      = b.HOSPID
+		AND    a.NYUGAIKBN   = b.NYUGAIKBN
+		AND    a.PTID        = b.PTID
+		AND    a.DENPNUM     = b.DENPNUM
+		AND    b.NYUHEN_YMD  LIKE :SRYYMD
+		AND    b.NYUHEN_MONEY <> 0
+		ORDER   BY            DENPPRTYMD,NYUGAIKBN,DENPNUM
+		;
+	};
+};
+
+path	key59 	{
+	DBSELECT	{
+		DECLARE tbl_syunou_key59_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syunou
+		WHERE   HOSPID      =   :HOSPID
+		AND     PTID        = :PTID
+		AND     SRYYMD      LIKE :SRYYMD
+		AND     CREATEKBN   <>  '3'
+		ORDER   BY	SRYYMD DESC,NYUGAIKBN,DENPNUM DESC
+		;
+	};
+};
+
