@@ -120,6 +120,9 @@
       *    一時領域
        01  WRK-AREA.
            03  WRK-YMD                     PIC X(10).
+           03  WRK-ZOGENPTN                PIC X(01).
+           03  WRK-ZOGEN                   PIC S9(05).
+           03  WRK-KEISANYMD               PIC X(08).
            03  WRK-SYMD                    PIC X(08).
            03  WRK-HENYMDG                 PIC X(10).
            03  WRK-SKIP-KNS                PIC 9(05).
@@ -127,6 +130,7 @@
            03  WRK-SEIKYU                  PIC ZZ,ZZZ,ZZZ.
            03  WRK-MISYU                   PIC --,---,---.
            03  WRK-MCP-WIDGET              PIC X(64).
+           03  WRK-SADDSIGN-STR            PIC X(1000).
       *
       *    保険組合せ名称
            03  WRK-KUMINO                  PIC X(04).
@@ -172,6 +176,9 @@
       *************************************************************
       *    サブプロ用　領域
       *************************************************************
+      *
+      *    検索文字列編集
+           COPY    "CPORCSADDSIGN.INC".
       *
       *   日付変換サブ
            COPY    "CPORCSDAY.INC".
@@ -344,18 +351,24 @@
            PERFORM 3101-HKNCOMBI-HEN-SEC
       *
            MOVE    SPACE                   TO  WRK-PATHNAME
-           IF    ( SPA-NAI-MODE            =   ZERO )
+           EVALUATE    SPA-NAI-MODE
+           WHEN    1
+               MOVE    "key58"             TO  WRK-PATHNAME
+           WHEN    2
+               MOVE    "key59"             TO  WRK-PATHNAME
+           WHEN    OTHER
                MOVE    "key24"             TO  WRK-PATHNAME
-           ELSE
-               MOVE    "key51"             TO  WRK-PATHNAME
-           END-IF
+           END-EVALUATE
       *
            MOVE    ZERO                    TO  FLG-SYUNOU
            INITIALIZE                          SYUNOU-REC
       *
            MOVE    SPA-HOSPID              TO  SYU-HOSPID
            MOVE    SPA-S01-PTID            TO  SYU-PTID
-           MOVE    SPA-NAI-NYUHENYMD       TO  SYU-SRYYMD
+      *
+           MOVE    SPA-NAI-NYUHENYMD       TO  WRK-SADDSIGN-STR
+           PERFORM 800-ORCSADDSIGN-SEC
+           MOVE    WRK-SADDSIGN-STR        TO  SYU-SRYYMD
            MOVE    SYUNOU-REC              TO  MCPDATA-REC
            MOVE    "tbl_syunou"            TO  MCP-TABLE
            MOVE    WRK-PATHNAME            TO  MCP-PATHNAME
@@ -701,6 +714,20 @@
            WHEN    "CLICKED"       ALSO    "B03"
                PERFORM 4100-NYUHENYMD-KENSAKU-SEC
       *
+      *    診療日検索
+           WHEN    "CLICKED"       ALSO    "B04"
+               PERFORM 4100-SRYYMD-KENSAKU-SEC
+      *
+      *    ＋
+           WHEN    "CLICKED"       ALSO    "BUP"
+               MOVE    1           TO      WRK-ZOGEN
+               PERFORM 4100-NYUHENYMD-CHG-SEC
+      *
+      *    −
+           WHEN    "CLICKED"       ALSO    "BDOWN"
+               MOVE    -1          TO      WRK-ZOGEN
+               PERFORM 4100-NYUHENYMD-CHG-SEC
+      *
       *    前頁
            WHEN    "CLICKED"       ALSO    "B06"
                PERFORM 220-PAGE-BACK-SEC
@@ -775,7 +802,9 @@
       *****************************************************************
        4102-KIHON-CHK-SEC              SECTION.
       *
-           IF    ( SPA-NAI-MODE    =   1 )
+           IF    ( SPA-NAI-MODE    =   ZERO )
+               CONTINUE
+           ELSE
                PERFORM 4101-NYUHENYMD-CHK-SEC
            END-IF
       *
@@ -791,7 +820,9 @@
            MOVE    SPACE               TO  SPA-NAI-NYUHENYMD
       *
            IF    ( SPA-GMN-NYUHENYMD   =   SPACE )
-               MOVE    SPA-SYSYMD      TO  SPA-GMN-NYUHENYMD
+               IF    ( SPA-NAI-MODE    =   1 )
+                   MOVE    SPA-SYSYMD  TO  SPA-GMN-NYUHENYMD
+               END-IF
            END-IF
       *
            MOVE    SPA-GMN-NYUHENYMD   TO  WRK-YMD
@@ -801,6 +832,7 @@
                MOVE    WRK-SYMD        TO  SPA-NAI-NYUHENYMD
            ELSE
                MOVE    "0002"          TO  SPA-ERRCD
+               MOVE    2               TO  SPA-GMN-CUR
            END-IF
       *
            IF    ( WRK-MCP-WIDGET      =   "NYUHENYMD" )
@@ -817,7 +849,7 @@
        4100-MISYU-KENSAKU-SEC          SECTION.
       *
            IF    ( SPA-NAI-MODE        =   ZERO )
-               CONTINUE
+               MOVE    2               TO  SPA-GMN-CUR
            ELSE
                MOVE    ZERO            TO  SPA-NAI-MODE
                MOVE    SPACE           TO  SPA-GMN-NYUHENYMD
@@ -835,7 +867,7 @@
        4100-NYUHENYMD-KENSAKU-SEC      SECTION.
       *
            IF    ( SPA-NAI-MODE        =   1 )
-               CONTINUE
+               MOVE    2               TO  SPA-GMN-CUR
            ELSE
                MOVE    1               TO  SPA-NAI-MODE
                MOVE    SPA-SYSYMDWH    TO  SPA-GMN-NYUHENYMD
@@ -846,6 +878,75 @@
       *
            .
        4100-NYUHENYMD-KENSAKU-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療日検索処理
+      *****************************************************************
+       4100-SRYYMD-KENSAKU-SEC         SECTION.
+      *
+           IF    ( SPA-NAI-MODE        =   2 )
+               MOVE    2               TO  SPA-GMN-CUR
+           ELSE
+               MOVE    2               TO  SPA-NAI-MODE
+               MOVE    SPACE           TO  SPA-GMN-NYUHENYMD
+                                           SPA-NAI-NYUHENYMD
+               MOVE    1               TO  SPA-GMN-SYULIST-PAGE
+               PERFORM 3101-SYULIST-HEN-SEC
+           END-IF
+      *
+           .
+       4100-SRYYMD-KENSAKU-EXT.
+           EXIT.
+      *****************************************************************
+      *    入返金日変更処理
+      *****************************************************************
+       4100-NYUHENYMD-CHG-SEC          SECTION.
+      *
+           IF    ( SPA-NAI-MODE        NOT =   ZERO )
+            AND  ( SPA-NAI-NYUHENYMD   NOT =   SPACE )
+      *
+               MOVE    SPA-NAI-NYUHENYMD   TO  WRK-YMD
+               EVALUATE    TRUE
+               WHEN  ( WRK-YMD (5:)  =   SPACE )
+                   MOVE    "3"         TO  WRK-ZOGENPTN
+                   MOVE    "0101"      TO  WRK-YMD  (5:)
+                   PERFORM 800-CALENDAR-SEC
+                   DISPLAY "WRK-KEISANYMD = " WRK-KEISANYMD
+                   MOVE    WRK-KEISANYMD (1:4)
+                                       TO  WRK-YMD
+                   PERFORM 800-SEIWA-HEN-SEC
+                   MOVE    WRK-HENYMDG TO  SPA-GMN-NYUHENYMD
+                   MOVE    WRK-SYMD    TO  SPA-NAI-NYUHENYMD
+               WHEN  ( WRK-YMD (7:)  =   SPACE )
+                   MOVE    "2"         TO  WRK-ZOGENPTN
+                   MOVE    "01"        TO  WRK-YMD (7:)
+                   PERFORM 800-CALENDAR-SEC
+                   DISPLAY "WRK-KEISANYMD = " WRK-KEISANYMD
+                   MOVE    WRK-KEISANYMD (1:6)
+                                       TO  WRK-YMD
+                   PERFORM 800-SEIWA-HEN-SEC
+                   MOVE    WRK-HENYMDG TO  SPA-GMN-NYUHENYMD
+                   MOVE    WRK-SYMD    TO  SPA-NAI-NYUHENYMD
+               WHEN    OTHER
+                   MOVE    "1"         TO  WRK-ZOGENPTN
+                   PERFORM 800-CALENDAR-SEC
+                   DISPLAY "WRK-KEISANYMD = " WRK-KEISANYMD
+                   MOVE    WRK-KEISANYMD
+                                       TO  WRK-YMD
+                   PERFORM 800-SEIWA-HEN-SEC
+                   MOVE    WRK-HENYMDG TO  SPA-GMN-NYUHENYMD
+                   MOVE    WRK-SYMD    TO  SPA-NAI-NYUHENYMD
+               END-EVALUATE
+                   DISPLAY "SPA-GMN-NYUHENYMD = " SPA-GMN-NYUHENYMD
+                   DISPLAY "SPA-NAI-NYUHENYMD = " SPA-NAI-NYUHENYMD
+      *
+               MOVE    1               TO  SPA-GMN-SYULIST-PAGE
+               PERFORM 3101-SYULIST-HEN-SEC
+      *
+           END-IF
+      *
+           .
+       4100-NYUHENYMD-CHG-EXT.
            EXIT.
       *****************************************************************
       *    収納情報リストチェック
@@ -1105,11 +1206,14 @@
       *
            MOVE    WIDGET-NORMAL           TO  S05-NYUHENYMD-STATE
       *
-           IF    ( SPA-NAI-MODE            =   ZERO )
+           EVALUATE    SPA-NAI-MODE
+           WHEN    ZERO
                MOVE    WIDGET-INSENSITIVE  TO  S05-NYUHENYMD-STATE
-           ELSE
+           WHEN    1
                MOVE    "入返金日"          TO  S05-LBLNYUHENYMD
-           END-IF
+           WHEN    2
+               MOVE    "診療日"            TO  S05-LBLNYUHENYMD
+           END-EVALUATE
       *
            PERFORM 5001-MAPCUR-SEC
            .
@@ -1128,8 +1232,13 @@
                MOVE    "選択番号入力エラー"
                                            TO  SPA-ERRMSG
            WHEN    "0002"
-               MOVE    "入返金日入力エラー"
+               IF    ( SPA-NAI-MODE    =   1 )
+                   MOVE    "入返金日入力エラー"
                                            TO  SPA-ERRMSG
+               ELSE
+                   MOVE    "診療日入力エラー"
+                                           TO  SPA-ERRMSG
+               END-IF
            END-EVALUATE
       *
            MOVE    SPACE                   TO  SERR
@@ -1211,20 +1320,57 @@
            MOVE    SPACE               TO  WRK-SYMD
                                            WRK-HENYMDG
       *
-      *    日付画面チェックサブ
-           INITIALIZE                      ORCSGDAYAREA
-           MOVE    WRK-YMD             TO  SGDAY-INDAY
-           CALL    "ORCSGDAY"          USING
-                                           ORCSGDAYAREA
-           IF  ( SGDAY-RC              =   ZERO )
-               MOVE    SGDAY-OTDAY     TO  WRK-HENYMDG
-               MOVE    SGDAY-SDAY      TO  WRK-SYMD
+           IF    ( WRK-YMD             =   SPACE )
+               CONTINUE
            ELSE
-               MOVE    1               TO  FLG-HIZUKE-ERR
+      *        日付画面チェックサブ
+               INITIALIZE                      ORCSGDAYAREA
+               MOVE    "2"                 TO  SGDAY-INTYPE
+               MOVE    WRK-YMD             TO  SGDAY-INDAY
+               CALL    "ORCSGDAY"          USING
+                                               ORCSGDAYAREA
+               IF  ( SGDAY-RC              =   ZERO )
+                   MOVE    SGDAY-OTDAY     TO  WRK-HENYMDG
+                   MOVE    SGDAY-SDAY      TO  WRK-SYMD
+               ELSE
+                   MOVE    1               TO  FLG-HIZUKE-ERR
+               END-IF
            END-IF
       *
            .
        800-SEIWA-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    検索文字列編集処理
+      *****************************************************************
+       800-ORCSADDSIGN-SEC             SECTION.
+      *
+           INITIALIZE                  ORCSADDSIGNAREA
+           MOVE    WRK-SADDSIGN-STR    TO  SADDSIGN-STR
+           CALL    "ORCSADDSIGN"       USING ORCSADDSIGNAREA
+           MOVE    SADDSIGN-STR        TO  WRK-SADDSIGN-STR
+      *
+           .
+       800-ORCSADDSIGN-EXT.
+           EXIT.
+      *****************************************************************
+      *    カレンダー処理
+      *****************************************************************
+       800-CALENDAR-SEC                    SECTION.
+      *
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY6-AREA
+           MOVE    "61"                TO  LNK-DAY6-IRAI
+           MOVE    WRK-YMD             TO  LNK-DAY6-KIJUN
+           MOVE    WRK-ZOGENPTN        TO  LNK-DAY6-ZOGENPTN
+           MOVE    WRK-ZOGEN           TO  LNK-DAY6-ZOGEN
+           CALL  "ORCSDAY"                 USING
+                                           STS-AREA-DAY
+                                           LNK-DAY6-AREA
+           MOVE    LNK-DAY6-KEISAN     TO  WRK-KEISANYMD
+      *
+           .
+       800-CALENDAR-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ検索処理

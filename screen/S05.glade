@@ -130,7 +130,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Mon, 25 Dec 2000 06:33:44 GMT</last_modification_time>
       </signal>
-      <label></label>
+      <label>診療日</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -717,19 +717,49 @@
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>LBLMSG</name>
-      <x>760</x>
+      <class>GtkButton</class>
+      <name>BUP</name>
+      <x>712</x>
       <y>8</y>
-      <width>232</width>
+      <width>28</width>
       <height>24</height>
-      <label>未収金（過入金）はありません</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
+      <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>GDK_SHIFT_MASK</modifiers>
+	<key>GDK_F6</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Fri, 08 Dec 2006 03:15:10 GMT</last_modification_time>
+      </signal>
+      <label>+</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>BDOWN</name>
+      <x>740</x>
+      <y>8</y>
+      <width>28</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>GDK_SHIFT_MASK</modifiers>
+	<key>GDK_F7</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Fri, 08 Dec 2006 03:15:05 GMT</last_modification_time>
+      </signal>
+      <label>-</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
     <widget>
@@ -743,6 +773,22 @@
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLMSG</name>
+      <x>776</x>
+      <y>8</y>
+      <width>232</width>
+      <height>24</height>
+      <label>未収金（過入金）はありません</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
