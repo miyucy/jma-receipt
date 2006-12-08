@@ -5697,7 +5697,7 @@
       *
       *    前回患者が設定されているばあは前回患者を表示する
            IF    ( SPA-LAST-PTNUM  NOT =   SPACE )
-               MOVE    SPACE           TO  SPA-GMN-I01-ERRCD (1)
+               MOVE    SPACE           TO  SPA-GMN-I01-ERRCD-TBL
                MOVE    SPA-LAST-PTID   TO  SPA-NAI-I01-PTID
                MOVE    SPA-LAST-PTNUM  TO  SPA-GMN-I01-PTNUM
                PERFORM 4101-PTINF-SELECT-SEC 
