@@ -2393,12 +2393,13 @@
                        MOVE    SRY-SRYSURYO (IDY)  TO  WRK-SRYSURYO
       *
                        MOVE    WRK-SRYCD           TO  TNS-SRYCD
+                       PERFORM 910-TENSU-READ-SEC
       *                算定用の診療コードへ変更
                        PERFORM 45020-SANTEI-SRYCD-SEC
                        IF      SRY-SRYCD (IDY) NOT =   WRK-SRYCD
                            MOVE    WRK-SRYCD           TO  TNS-SRYCD
+                           PERFORM 910-TENSU-READ-SEC
                        END-IF
-                       PERFORM 910-TENSU-READ-SEC
                        IF      TNS-SANTEIRRKKBN    NOT =   ZERO
                            PERFORM 45001131-SANTEI-DEL-SEC
                        END-IF
@@ -3382,13 +3383,14 @@
                                                    TO  WRK-SRYSURYO
       *
                        MOVE    WRK-SRYCD           TO  TNS-SRYCD
+                       PERFORM 910-TENSU-READ-SEC
       *                算定用の診療コードへ変更
                        PERFORM 45020-SANTEI-SRYCD-SEC
                        IF      LNK-WKSRY-SRYCD (IDX IDY)
                                                NOT =   WRK-SRYCD
                            MOVE    WRK-SRYCD           TO  TNS-SRYCD
+                           PERFORM 910-TENSU-READ-SEC
                        END-IF
-                       PERFORM 910-TENSU-READ-SEC
                        IF      TNS-SANTEIRRKKBN    NOT =   ZERO
       *                    特定薬剤治療管理の初回日があれば編集
                            MOVE    1               TO  FLG-TOKTEI
