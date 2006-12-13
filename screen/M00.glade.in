@@ -467,7 +467,7 @@
       <class>GtkLabel</class>
       <name>LBLMSG</name>
       <x>287</x>
-      <y>350</y>
+      <y>180</y>
       <width>500</width>
       <height>24</height>
       <label></label>
@@ -478,7 +478,22 @@
       <xpad>0</xpad>
       <ypad>0</ypad>
     </widget>
-    
+
+    <widget>
+      <class>GtkPandaHTML</class>
+      <name>HTML1</name>
+      <x>8</x>
+      <y>230</y>
+      <width>1008</width>
+      <height>320</height>
+      <signal>
+	<name>activate</name>
+	<handler>open_browser</handler>
+	<last_modification_time>Thu, 07 Feb 2002 04:07:26 GMT</last_modification_time>
+      </signal>
+      <uri></uri>
+    </widget>
+
     <widget>
       <class>GtkLabel</class>
       <name>label42</name>

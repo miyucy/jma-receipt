@@ -35,3 +35,5 @@
               04  M00-LBLMSG-G.
                 05  M00-LBLMSG-STYLE   PIC X(20).
                 05  M00-LBLMSG         PIC X(60).
+              04  M00-HTML1-G.
+                05  M00-HTML1          PIC X(200).

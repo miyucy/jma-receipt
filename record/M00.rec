@@ -16,5 +16,8 @@ M00	{
 			style   varchar(20);
 			value	varchar(60);
 		};
+		HTML1	{
+			value	varchar(200);
+		};
 	};
 };

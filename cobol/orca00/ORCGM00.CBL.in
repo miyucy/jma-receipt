@@ -61,6 +61,7 @@
       *  02.07.02    NACL-多々納  06/02/24  主科設定情報追加
       *  03.01.00    NACL-太田    06/07/14  ＤＢ不整合チェック追加
       *  03.03.00    NACL-多々納  06/10/24  排他制御初期設定修正
+      *  03.04.01    NACL-森脇    06/12/13  ユーザーＨＴＭＬ表示
       *****************************************************************
       *
       *
@@ -161,6 +162,10 @@
       *---- (01.02.08) LINE ADD END   --------------------------------
       *    主科設定情報
            COPY  "CPSK2009.INC".
+      *----(03.04.01)--ADD-START---------------------------------------
+      *    広告情報
+           COPY  "CPSK1003.INC".
+      *----(03.04.01)--ADD-END-----------------------------------------
       *
       *    ＤＢ管理
        01  DBKANRI-REC.
@@ -1123,6 +1128,39 @@
       *2001.8.7 強制プロテクト（ＰＧ未作成）
       ***     MOVE    WIDGET-INSENSITIVE      TO  M00-G03-STATE
       ***     MOVE    WIDGET-INSENSITIVE      TO  M00-G04-STATE
+      *
+      *----(03.04.01)--ADD-START---------------------------------------
+      *    広告情報編集
+           MOVE    SPACE               TO  SYS-1003-REC
+           INITIALIZE                  SYS-1003-REC
+           MOVE    "1003"              TO  SYS-1003-KANRICD
+           MOVE    "*"                 TO  SYS-1003-KBNCD
+           MOVE    SPA-SYSYMD          TO  SYS-1003-STYUKYMD
+           MOVE    SPA-SYSYMD          TO  SYS-1003-EDYUKYMD
+           MOVE    SYS-1003-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key10"         TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+               IF      FLG-SYSKANRI        =   ZERO
+                   MOVE    MCPDATA-REC     TO  SYS-1003-REC  
+               END-IF  
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI 
+           END-IF
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    SYS-1003-USERURL    TO  M00-HTML1     
+           ELSE
+               MOVE    SPACE               TO  M00-HTML1     
+           END-IF
+      *----(03.04.01)--ADD-END-----------------------------------------
           .
        51O-GSRAUTH-EXT.
            EXIT.
