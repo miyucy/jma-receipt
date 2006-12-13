@@ -154,6 +154,8 @@
                     06  W02-VALUE   PIC X(100).
                   05  W02-HPURL.
                     06  W02-VALUE   PIC X(100).
+                  05  W02-USERURL.
+                    06  W02-VALUE   PIC X(200).
                 04  W02-N03-STATE   PIC S9(9)   BINARY.
                 04  W02-FIXED26.
                   05  W02-TEIRITU-COMBO.

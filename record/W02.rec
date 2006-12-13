@@ -197,6 +197,9 @@ W02	{
 				HPURL	{
 					value	varchar(100);
 				};
+				USERURL	{
+					value	varchar(200);
+				};
 			};
 	            N03	{
 	            	state	int;

@@ -2059,6 +2059,50 @@
 	</widget>
 
 	<widget>
+	  <class>GtkPandaEntry</class>
+	  <name>USERURL</name>
+	  <x>208</x>
+	  <y>88</y>
+	  <width>400</width>
+	  <height>24</height>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>activate</name>
+	    <handler>send_event</handler>
+	    <data>ACTIVATE</data>
+	    <last_modification_time>Tue, 27 Feb 2001 06:05:22 GMT</last_modification_time>
+	  </signal>
+	  <signal>
+	    <name>changed</name>
+	    <handler>entry_changed</handler>
+	    <data>CHANGED</data>
+	    <last_modification_time>Tue, 27 Feb 2001 06:10:00 GMT</last_modification_time>
+	  </signal>
+	  <editable>True</editable>
+	  <text_visible>True</text_visible>
+	  <text_max_length>200</text_max_length>
+	  <text></text>
+	  <input_mode>XIM</input_mode>
+	  <xim_enabled>False</xim_enabled>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name></name>
+	  <x>56</x>
+	  <y>88</y>
+	  <width>155</width>
+	  <height>18</height>
+	  <label>¥æ¡¼¥¶£Õ£Ò£ÌÀßÄê      </label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>True</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
 	  <class>GtkLabel</class>
 	  <name></name>
 	  <x>56</x>

@@ -59,6 +59,7 @@
       *                                     チェック追加
       *  01.00.28    NACL-多々納  06/07/13  MONFUNC 対応
       *  03.03.00    NACL-太田    06/10/24  地方公費保険番号タブ区分追加
+      *  03.04.01    NACL-森脇    06/12/13  ユーザーＵＲＬ追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -325,6 +326,9 @@
                    07  SPA-GMN-1003-AREA.
                        09  SPA-GMN-EMAIL          PIC X(100).
                        09  SPA-GMN-HPURL          PIC X(100).
+      *----(03.04.01)--ADD-START---------------------------------------
+                       09  SPA-GMN-USERURL        PIC X(200).
+      *----(03.04.01)--ADD-END-----------------------------------------
                    07  SPA-GMN-1026-AREA.
                        09  SPA-GMN-DISCOUNT-KBNLST    OCCURS  99.
                            11  SPA-GMN-DISCOUNT-KBNL
@@ -1011,6 +1015,9 @@
                        MOVE    MCPDATA-REC         TO  SYS-1003-REC
                        MOVE    SYS-1003-EMAIL      TO  SPA-GMN-EMAIL 
                        MOVE    SYS-1003-HPURL      TO  SPA-GMN-HPURL
+      *----(03.04.01)--ADD-START---------------------------------------
+                       MOVE    SYS-1003-USERURL    TO  SPA-GMN-USERURL
+      *----(03.04.01)--ADD-END-----------------------------------------
       *    医療機関情報ー減免事由情報
                    WHEN    "1026"
                        MOVE    MCPDATA-REC         TO  SYS-1026-REC
@@ -1741,6 +1748,9 @@
            MOVE    W02-FAX             TO  SPA-GMN-FAX
            MOVE    W02-EMAIL           TO  SPA-GMN-EMAIL
            MOVE    W02-HPURL           TO  SPA-GMN-HPURL
+      *----(03.04.01)--ADD-START---------------------------------------
+           MOVE    W02-USERURL         TO  SPA-GMN-USERURL
+      *----(03.04.01)--ADD-END-----------------------------------------
            MOVE    W02-TEIRITU         TO  SPA-GMN-TEIRITU-G
       *
            MOVE    W02-DISCOUNTRATE    TO  SPA-GMN-DISCOUNT-RATE
@@ -3186,7 +3196,10 @@
                    MOVE    SPA-W01-STYUKYMD    TO  SYS-1003-STYUKYMD
                    MOVE    SPA-W01-EDYUKYMD    TO  SYS-1003-EDYUKYMD
                    MOVE    SPA-GMN-EMAIL       TO  SYS-1003-EMAIL 
-                   MOVE    SPA-GMN-HPURL       TO  SYS-1003-HPURL 
+                   MOVE    SPA-GMN-HPURL       TO  SYS-1003-HPURL
+      *----(03.04.01)--ADD-START---------------------------------------
+                   MOVE    SPA-GMN-USERURL     TO  SYS-1003-USERURL
+      *----(03.04.01)--ADD-END-----------------------------------------
                    MOVE    SYS-1003-REC        TO  SYSKANRI-REC
       * 
       *    医療機関情報ー請求書自費名称情報
@@ -3692,6 +3705,9 @@
       *    医療機関情報ー広告情報
            MOVE    SPA-GMN-EMAIL        TO  W02-EMAIL
            MOVE    SPA-GMN-HPURL        TO  W02-HPURL
+      *----(03.04.01)--ADD-START---------------------------------------
+           MOVE    SPA-GMN-USERURL      TO  W02-USERURL
+      *----(03.04.01)--ADD-END-----------------------------------------
       *
       *    医療機関情報ー減免事由情報
            PERFORM VARYING IDX FROM    1   BY  1
@@ -4051,6 +4067,10 @@
                     MOVE  "EMAIL"          TO   MCP-WIDGET
                 WHEN    31
                     MOVE  "HPURL"          TO   MCP-WIDGET
+      *----(03.04.01)--ADD-START---------------------------------------
+                WHEN    311
+                    MOVE  "USERURL"        TO   MCP-WIDGET
+      *----(03.04.01)--ADD-END-----------------------------------------
                 WHEN    32
                     MOVE  "SYOHOKBN"       TO   MCP-WIDGET
                 WHEN    33
@@ -4232,6 +4252,10 @@
               WHEN    "EMAIL"
                   MOVE    31               TO  SPA-GMN-CUR
               WHEN    "HPURL"
+      *----(03.04.01)--ADD-START---------------------------------------
+                  MOVE    311              TO  SPA-GMN-CUR
+              WHEN    "USERURL"
+      *----(03.04.01)--ADD-END-----------------------------------------
                   MOVE    30               TO  SPA-GMN-CUR
       *       割引率情報
               WHEN    "TEIRITU"
