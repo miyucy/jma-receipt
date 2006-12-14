@@ -92,6 +92,8 @@
       *  03.03.06    NACL-藤原    06/10/31  療養介護医療２４の追加
       *  03.03.07    NACL-藤原    06/11/02  福岡地方公費の障害のついて全て
       *                                     公費付加情報より記載判定を行う
+      *  03.03.08    NACL-藤原    06/12/14  不明分のとき生保単独の上限
+      *                                     チェックはしない
       *
       *  03.04.01    NACL-藤原    06/11/01  照会機能連携対応
       *****************************************************************
@@ -1156,7 +1158,12 @@
                ELSE
                    MOVE    1                      TO  IDX1
                    IF   COMB-KOHHKNNUM (IDX)  =  "972" OR "974" OR "012"
-      *                長期高額療養レセ記載判定
+                     IF    ( WRK-ERR-ERRKBN          >   ZERO  )
+                     AND   ( COMB-KOHHKNNUM (IDX)    =   "012" )
+                     AND   ( COMB-HKNNUM             =   SPACE )
+                         CONTINUE
+                     ELSE 
+      *                長期高額療養レセ記載判定（生保単独の不明分はしない）
                        MOVE    ZERO        TO  FLG-KOHRECEDSP
                        INITIALIZE          ORCSFTNJGNCHKAREA
                        MOVE    COMB-HOSPID TO  LNK-FTNJGNCHK-HOSPID
@@ -1176,6 +1183,7 @@
                        IF     LNK-FTNJGNCHK-RC   =   1
                            MOVE       1        TO    FLG-KOHRECEDSP
                        END-IF
+                     END-IF
                    END-IF
                END-IF       
       *
@@ -1244,11 +1252,15 @@
       *    入院会計一括編集処理
       *****************************************************************
        20012-IKKATU-HENSYU-SEC              SECTION.
-      *     
+      *
       *    テスト患者のときは読み飛ばす
            MOVE    SYS-1001-HOSPID         TO  PTINF-HOSPID
            MOVE    KEY-N-PTID              TO  PTINF-PTID
            PERFORM 900-PTINF-READ-SEC
+      *     
+           DISPLAY "NYUINACCT PTID=" KEY-N-PTID 
+                   " TSTPTNUMKBN=" PTINF-TSTPTNUMKBN
+      *     
            IF    ( FLG-PTINF           =   ZERO )
            AND   ( PTINF-TSTPTNUMKBN   =   "1"  )
                MOVE    KEY-NEW             TO  KEY-OLD
@@ -1535,7 +1547,12 @@
                ELSE
                    MOVE    1                      TO  IDX1
                    IF   COMB-KOHHKNNUM (IDX)  =  "972" OR "974" OR "012"
-      *                長期高額療養レセ記載判定
+                     IF    ( WRK-ERR-ERRKBN          >   ZERO  )
+                     AND   ( COMB-KOHHKNNUM (IDX)    =   "012" )
+                     AND   ( COMB-HKNNUM             =   SPACE )
+                         CONTINUE
+                     ELSE 
+      *                長期高額療養レセ記載判定（生保単独の不明分はしない）
                        MOVE    ZERO        TO  FLG-KOHRECEDSP
                        INITIALIZE          ORCSFTNJGNCHKAREA
                        MOVE    COMB-HOSPID TO  LNK-FTNJGNCHK-HOSPID
@@ -1555,6 +1572,7 @@
                        IF     LNK-FTNJGNCHK-RC   =   1
                            MOVE       1        TO    FLG-KOHRECEDSP
                        END-IF
+                     END-IF
                    END-IF
                END-IF       
       *
