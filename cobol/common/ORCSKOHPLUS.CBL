@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL−小豆沢 03/10/07  引数にレセプト請求区分の追加
+      *  01.00.02    NACL−小豆沢 06/12/15  MONFUNC対応
       *****************************************************************
       *
       *
@@ -96,7 +97,6 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
       *
            COPY    "MCPAREA".
       *
@@ -179,18 +179,21 @@
       *保険組合せ情報取得
            MOVE    ZERO                TO   FLG-HKNCOMBI
            INITIALIZE                       HKNCOMBI-REC
-           MOVE    LNK-SKOHPLUS-HOSPID TO  COMB-HOSPID
+           MOVE    LNK-SKOHPLUS-HOSPID TO   COMB-HOSPID
            MOVE    LNK-SKOHPLUS-PTID   TO   COMB-PTID
            MOVE    LNK-SKOHPLUS-HKNCOMBI
                                        TO   COMB-HKNCOMBINUM
-           MOVE    "HKNCOMBI-KEY"      TO   ORC-DBPATH
+           MOVE    "tbl_hkncombi"      TO   MCP-TABLE
+           MOVE    "key"               TO   MCP-PATHNAME
            PERFORM 910-HKNCOMBI-SELECT-SEC
            IF      FLG-HKNCOMBI        =    ZERO
-               MOVE     "HKNCOMBI-KEY" TO   ORC-DBPATH
+               MOVE    "tbl_hkncombi"  TO   MCP-TABLE
+               MOVE    "key"           TO   MCP-PATHNAME
                PERFORM   910-HKNCOMBI-READ-SEC
            END-IF
       *    保険組合せクローズ
-           MOVE    "HKNCOMBI-KEY"      TO   ORC-DBPATH
+           MOVE    "tbl_hkncombi"      TO   MCP-TABLE
+           MOVE    "key"               TO   MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
       *
       *老人保健該当者かを判定
@@ -217,14 +220,17 @@
            MOVE    LNK-SKOHPLUS-HOSPID    TO  PTKOH-HOSPID
            MOVE    LNK-SKOHPLUS-PTID      TO  PTKOH-PTID
            MOVE    COMB-KOHID(KOH-IDX)    TO  PTKOH-KOHID
-           MOVE    "PTKOHINF-KEY"         TO  ORC-DBPATH
+           MOVE    "tbl_ptkohinf"         TO  MCP-TABLE
+           MOVE    "key"                  TO  MCP-PATHNAME
            PERFORM 910-PTKOHINF-SELECT-SEC
            IF      FLG-PTKOHINF           =   ZERO
-               MOVE     "PTKOHINF-KEY"    TO  ORC-DBPATH
+               MOVE    "tbl_ptkohinf"     TO  MCP-TABLE
+               MOVE    "key"              TO  MCP-PATHNAME
                PERFORM   910-PTKOHINF-READ-SEC
            END-IF
       *    患者公費情報クローズ
-           MOVE    "PTKOHINF-KEY"         TO  ORC-DBPATH
+           MOVE    "tbl_ptkohinf"         TO  MCP-TABLE
+           MOVE    "key"                  TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
       *
       *公費付加情報テーブルより情報取得
@@ -236,10 +242,12 @@
            MOVE    "0"                    TO  KOHPLUS-PTKBN
            MOVE    LNK-SKOHPLUS-SRYYMD    TO  KOHPLUS-YUKOSTYMD
            MOVE    LNK-SKOHPLUS-SRYYMD    TO  KOHPLUS-YUKOEDYMD
-           MOVE    "KOHPLUS-KEY2"         TO  ORC-DBPATH
+           MOVE    "tbl_kohplus"          TO  MCP-TABLE
+           MOVE    "key2"                 TO  MCP-PATHNAME
            PERFORM 910-KOHPLUS-SELECT-SEC
            IF      FLG-KOHPLUS            =   ZERO
-               MOVE     "KOHPLUS-KEY2"    TO  ORC-DBPATH
+               MOVE    "tbl_kohplus"      TO  MCP-TABLE
+               MOVE    "key2"             TO  MCP-PATHNAME
                PERFORM   910-KOHPLUS-READ-SEC
                IF    FLG-KOHPLUS          =   ZERO
                    DISPLAY "KOHPLUS FETCH COMPLETE"
@@ -251,7 +259,8 @@
                                           TO  LNK-SKOHPLUS-RECESKYKBN
                ELSE
       *            公費付加情報クローズ
-                   MOVE    "KOHPLUS-KEY2"         TO  ORC-DBPATH
+                   MOVE    "tbl_kohplus"          TO  MCP-TABLE
+                   MOVE    "key2"                 TO  MCP-PATHNAME
                    PERFORM   910-DB-CLOSE-SEC
                    INITIALIZE                         KOHPLUS-REC
                    MOVE    LNK-SKOHPLUS-HOSPID    TO  KOHPLUS-HOSPID
@@ -265,10 +274,12 @@
                    END-IF
                    MOVE    LNK-SKOHPLUS-SRYYMD    TO  KOHPLUS-YUKOSTYMD
                    MOVE    LNK-SKOHPLUS-SRYYMD    TO  KOHPLUS-YUKOEDYMD
-                   MOVE    "KOHPLUS-KEY2"         TO  ORC-DBPATH
+                   MOVE    "tbl_kohplus"          TO  MCP-TABLE
+                   MOVE    "key2"                 TO  MCP-PATHNAME
                    PERFORM 910-KOHPLUS-SELECT-SEC
                    IF      FLG-KOHPLUS            =   ZERO
-                       MOVE     "KOHPLUS-KEY2"    TO  ORC-DBPATH
+                       MOVE    "tbl_kohplus"      TO  MCP-TABLE
+                       MOVE    "key2"             TO  MCP-PATHNAME
                        PERFORM   910-KOHPLUS-READ-SEC
                        IF    FLG-KOHPLUS          =   ZERO
                            DISPLAY "KOHPLUS FETCH COMPLETE"
@@ -292,7 +303,8 @@
                MOVE    3              TO  LNK-SKOHPLUS-RC
            END-IF
       *    公費付加情報クローズ
-           MOVE    "KOHPLUS-KEY2"         TO  ORC-DBPATH
+           MOVE    "tbl_kohplus"          TO  MCP-TABLE
+           MOVE    "key2"                 TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
       *
            .
@@ -306,31 +318,32 @@
       *
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "PTINF-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_ptinf"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "PTINF-KEY"         TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
+               MOVE    "tbl_ptinf"         TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               CALL    "MONFUNC"            USING
                                             MCPAREA
-                                            ORCMCPAREA
                                             MCPDATA-REC
                IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC        TO  PTINF-REC
-                   MOVE    ZERO               TO  FLG-PTINF
+                   MOVE    MCPDATA-REC     TO  PTINF-REC
+                   MOVE    ZERO            TO  FLG-PTINF
                ELSE
-                   INITIALIZE                     PTINF-REC
-                   MOVE    1                  TO  FLG-PTINF
+                   INITIALIZE                  PTINF-REC
+                   MOVE    1               TO  FLG-PTINF
                END-IF
            ELSE
                INITIALIZE                 PTINF-REC
                MOVE    1              TO  FLG-PTINF
            END-IF
       *
-           MOVE    "PTINF-KEY"        TO  ORC-DBPATH
+           MOVE     "tbl_ptinf"       TO  MCP-TABLE
+           MOVE     "key"             TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
       *
            .
@@ -344,14 +357,13 @@
       *
            MOVE    PTKOHINF-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    ZERO               TO  FLG-PTKOHINF
+               MOVE    ZERO            TO  FLG-PTKOHINF
            ELSE
-               MOVE    1                  TO  FLG-PTKOHINF
+               MOVE    1               TO  FLG-PTKOHINF
            END-IF
       *
            .
@@ -364,16 +376,15 @@
        910-PTKOHINF-READ-SEC        SECTION.
       *
            MOVE    "DBFETCH"            TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
+           CALL    "MONFUNC"            USING
                                         MCPAREA
-                                        ORCMCPAREA
                                         MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC        TO  PTKOHINF-REC
-               MOVE    ZERO               TO  FLG-PTKOHINF
+           IF      MCP-RC               =   ZERO
+               MOVE    MCPDATA-REC      TO  PTKOHINF-REC
+               MOVE    ZERO             TO  FLG-PTKOHINF
            ELSE
-               INITIALIZE                     PTKOHINF-REC
-               MOVE    1                  TO  FLG-PTKOHINF
+               INITIALIZE                   PTKOHINF-REC
+               MOVE    1                TO  FLG-PTKOHINF
            END-IF
       *
            .
@@ -387,14 +398,13 @@
       *
            MOVE    KOHPLUS-REC         TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    ZERO               TO  FLG-KOHPLUS
+               MOVE    ZERO            TO  FLG-KOHPLUS
            ELSE
-               MOVE    1                  TO  FLG-KOHPLUS
+               MOVE    1               TO  FLG-KOHPLUS
            END-IF
       *
            .
@@ -407,16 +417,15 @@
        910-KOHPLUS-READ-SEC        SECTION.
       *
            MOVE    "DBFETCH"            TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
+           CALL    "MONFUNC"            USING
                                         MCPAREA
-                                        ORCMCPAREA
                                         MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC        TO  KOHPLUS-REC
-               MOVE    ZERO               TO  FLG-KOHPLUS
+           IF      MCP-RC               =   ZERO
+               MOVE    MCPDATA-REC      TO  KOHPLUS-REC
+               MOVE    ZERO             TO  FLG-KOHPLUS
            ELSE
-               INITIALIZE                     KOHPLUS-REC
-               MOVE    1                  TO  FLG-KOHPLUS
+               INITIALIZE                   KOHPLUS-REC
+               MOVE    1                TO  FLG-KOHPLUS
            END-IF
       *
            .
@@ -430,14 +439,13 @@
       *
            MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    ZERO               TO  FLG-HKNCOMBI
+               MOVE    ZERO            TO  FLG-HKNCOMBI
            ELSE
-               MOVE    1                  TO  FLG-HKNCOMBI
+               MOVE    1               TO  FLG-HKNCOMBI
            END-IF
       *
            .
@@ -450,10 +458,9 @@
        910-HKNCOMBI-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  HKNCOMBI-REC
                MOVE    ZERO                TO  FLG-HKNCOMBI
@@ -472,9 +479,8 @@
        910-DB-CLOSE-SEC                 SECTION.
       *
            MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
+           CALL    "MONFUNC"            USING
                                         MCPAREA
-                                        ORCMCPAREA
                                         MCPDATA-REC
       *
            .
