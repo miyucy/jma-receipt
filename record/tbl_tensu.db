@@ -1054,6 +1054,7 @@ path	key22           {
                 	SRYKBN,
 	                SRYSYUKBN,
                         NAME,
+			FORMALNAME,
 	                TEN,
 			TANICD,
 	                JITUDAY,
