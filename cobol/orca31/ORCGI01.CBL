@@ -12549,6 +12549,67 @@
            MOVE    "key28"             TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
+      *    入院会計作成前に会計データの外泊区分を退避
+      *    （外泊異動月分）
+           INITIALIZE                      NYUINACCT-REC
+           MOVE    PTNYUINRRK-HOSPID   TO  NACCT-HOSPID
+           MOVE    PTNYUINRRK-PTID     TO  NACCT-PTID
+           MOVE    LNK-SCNYUACCT-EDSRYYMD(1:6)
+                                       TO  NACCT-SRYYM
+                                           WRK-TENROOM-SKJ-SRYYMX
+      *
+           MOVE    NYUINACCT-REC       TO  MCPDATA-REC
+           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+           MOVE    "key26"             TO  MCP-PATHNAME
+           PERFORM   910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE     MCPDATA-REC    TO  NYUINACCT-REC
+      *        外泊を退避
+               MOVE    NACCT-SRYYM     TO  WRK-TENROOM-SKJ-SRYYM(1)
+               MOVE    LNK-SCNYUACCT-EDSRYYMD(7:2)
+                                       TO  IDX-SHOKUJIX
+               MOVE    LNK-SCNYUACCT-EDSRYYMD(7:2)
+                                       TO  WRK-TENROOM-SKJ-DD(1)
+               PERFORM   VARYING   IDX-SKJ FROM  IDX-SHOKUJI9  BY  1
+                         UNTIL     IDX-SKJ   >   31
+                    MOVE   NACCT-DAY(IDX-SKJ)
+                                       TO WRK-TENROOM-GAIHAKU(1 IDX-SKJ)
+               END-PERFORM
+           END-IF
+           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+           MOVE    "key26"             TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *    （外泊異動翌月分）
+           INITIALIZE                      NYUINACCT-REC
+           MOVE    PTNYUINRRK-HOSPID   TO  NACCT-HOSPID
+           MOVE    PTNYUINRRK-PTID     TO  NACCT-PTID
+           IF      WRK-TENROOM-SKJ-SRYMM9  =  12
+               ADD   1     TO   WRK-TENROOM-SKJ-SRYYY9
+               MOVE  1     TO   WRK-TENROOM-SKJ-SRYMM9
+           ELSE
+               ADD   1     TO   WRK-TENROOM-SKJ-SRYMM9
+           END-IF
+           MOVE    WRK-TENROOM-SKJ-SRYYMX
+                                       TO  NACCT-SRYYM
+      *
+           MOVE    NYUINACCT-REC       TO  MCPDATA-REC
+           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+           MOVE    "key26"             TO  MCP-PATHNAME
+           PERFORM   910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE     MCPDATA-REC    TO  NYUINACCT-REC
+      *        外泊を退避
+               MOVE    NACCT-SRYYM     TO  WRK-TENROOM-SKJ-SRYYM(2)
+               PERFORM   VARYING   IDX-SKJ FROM  1  BY  1
+                         UNTIL     IDX-SKJ   >   31
+                    MOVE   NACCT-DAY(IDX-SKJ)
+                                       TO WRK-TENROOM-GAIHAKU(2 IDX-SKJ)
+               END-PERFORM
+           END-IF
+           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+           MOVE    "key26"             TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
       *    保険組合せ
            MOVE   PTNYUINRRK-HKNCOMBINUM
                                        TO  WRK-HKNCOMBINUM
@@ -13510,6 +13571,66 @@
                PERFORM 910-DBUPDATE-SEC
                MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
                MOVE    "key28"             TO  MCP-PATHNAME
+               PERFORM 910-DBCLOSECURSOR-SEC
+           END-IF
+      *
+      *    入院会計作成後に退避データの外泊区分を復元
+      *    （外泊異動月分）
+           INITIALIZE                      NYUINACCT-REC
+           MOVE    PTNYUINRRK-HOSPID   TO  NACCT-HOSPID
+           MOVE    PTNYUINRRK-PTID     TO  NACCT-PTID
+           MOVE    WRK-TENROOM-SKJ-SRYYM(1)
+                                       TO  NACCT-SRYYM
+      *
+           MOVE    NYUINACCT-REC       TO  MCPDATA-REC
+           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+           MOVE    "key26"             TO  MCP-PATHNAME
+           PERFORM   910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE     MCPDATA-REC    TO  NYUINACCT-REC
+      *        外泊を復元
+               MOVE    WRK-TENROOM-SKJ-DD(1)
+                                       TO  IDX-SHOKUJIX
+               PERFORM   VARYING   IDX-SKJ FROM  IDX-SHOKUJI9  BY  1
+                         UNTIL     IDX-SKJ   >   31
+                    MOVE   WRK-TENROOM-GAIHAKU(1 IDX-SKJ)
+                                       TO  NACCT-DAY(IDX-SKJ)
+               END-PERFORM
+           END-IF
+           MOVE     NYUINACCT-REC      TO  MCPDATA-REC
+           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBUPDATE-SEC
+           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+           MOVE    "key26"             TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *    （異動翌月分）
+           IF   WRK-TENROOM-SKJ-SRYYM(2)  NOT =   SPACE
+               INITIALIZE                      NYUINACCT-REC
+               MOVE    PTNYUINRRK-HOSPID   TO  NACCT-HOSPID
+               MOVE    PTNYUINRRK-PTID     TO  NACCT-PTID
+               MOVE    WRK-TENROOM-SKJ-SRYYM(2)
+                                           TO  NACCT-SRYYM
+      *
+               MOVE    NYUINACCT-REC       TO  MCPDATA-REC
+               MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+               MOVE    "key26"             TO  MCP-PATHNAME
+               PERFORM   910-DBSELECT-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE     MCPDATA-REC    TO  NYUINACCT-REC
+      *            外泊を復元
+                   PERFORM   VARYING   IDX-SKJ FROM  1  BY  1
+                             UNTIL     IDX-SKJ   >   31
+                        MOVE   WRK-TENROOM-GAIHAKU(2 IDX-SKJ)
+                                           TO  NACCT-DAY(IDX-SKJ)
+                   END-PERFORM
+               END-IF
+               MOVE     NYUINACCT-REC      TO  MCPDATA-REC
+               MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 910-DBUPDATE-SEC
+               MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+               MOVE    "key26"             TO  MCP-PATHNAME
                PERFORM 910-DBCLOSECURSOR-SEC
            END-IF
       *
