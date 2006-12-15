@@ -32,21 +32,6 @@
       *  03.03.01    NACL-藤原    06/10/10  主保険がない場合、精神入院は
       *                                     公費単独のレセプトとする
       *  03.03.02    NACL-藤原    06/12/15  入院の包括のデータ作成の修正
-      *
-      *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
-      *  03.05.02    NACL-藤原    07/08/01  クライアント保存対応
-      *
-      *  04.04.02    NACL-藤原    09/01/14  月途中に医保と生保の併用から
-      *                                     生保単独になったときのまとめ
-      *
-      *  04.05.01    NACL-藤原    10/02/12  拡張漢字対応
-      *  04.05.02    NACL-藤原    12/06/22  処理結果画面への件数表示
-      *  04.05.03    NACL-藤原    12/07/02  住所欄に番地方書を追加
-      *  04.05.04    NACL-藤原    12/11/15  剤点数等のマイナス表記対応
-      *
-      *  04.06.01    NACL-藤原    10/06/21  日本語化（見出し）対応
-      *
-      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -55,39 +40,39 @@
        FILE-CONTROL.
       *
       *    月次統計データ（基本情報）
-           SELECT  TOUKEI01-FILE   ASSIGN  TOUKEI01PARA
+           SELECT  TOUKEI01-FILE   ASSIGN  TOUKEI01
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  TOUKEI01-KEY
                                    FILE    STATUS  IS  STS-TOUKEI01.
       *
       *    月次統計データ（診療情報）
-           SELECT  TOUKEI02-FILE   ASSIGN  TOUKEI02PARA
+           SELECT  TOUKEI02-FILE   ASSIGN  TOUKEI02
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  TOUKEI02-KEY
                                    FILE    STATUS  IS  STS-TOUKEI02.
       *
       *    月次統計データ（病名情報）
-           SELECT  TOUKEI03-FILE   ASSIGN  TOUKEI03PARA
+           SELECT  TOUKEI03-FILE   ASSIGN  TOUKEI03
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  TOUKEI03-KEY
                                    FILE    STATUS  IS  STS-TOUKEI03.
       *
       *    ＣＳＶデータ（診療情報） 
-           SELECT  TOUKEI04-FILE   ASSIGN  TOUKEI04PARA
+           SELECT  TOUKEI04-FILE   ASSIGN  "/var/tmp/toukei01.dat"
                                    ORGANIZATION    IS  LINE
                                                        SEQUENTIAL
                                    FILE    STATUS  IS  STS-TOUKEI04.
       *
       *    ＣＳＶデータ（病名情報）
-           SELECT  TOUKEI05-FILE   ASSIGN  TOUKEI05PARA
+           SELECT  TOUKEI05-FILE   ASSIGN  "/var/tmp/toukei02.dat"
                                    ORGANIZATION    IS  LINE
                                                        SEQUENTIAL
                                    FILE    STATUS  IS  STS-TOUKEI05.
       *    エラーファイル
-           SELECT  TOUKEIERR-FILE  ASSIGN  TOUKEIERR
+           SELECT  TOUKEIERR-FILE  ASSIGN  WRK-PARA-ERRFILENM
                                    FILE    STATUS  IS  STS-TOUKEIERR.
       *
        DATA                        DIVISION.
@@ -97,9 +82,6 @@
        FD  TOUKEI01-FILE.
        01  TOUKEI01-REC. 
            COPY    "CPTCF001.INC".
-           03  TOUKEI01-SEIHO-OCC.
-               05  TOUKEI01-SEIHO-KEY
-                                   PIC X(50)   OCCURS  10.
       *
       *    月次統計データ（診療情報）
        FD  TOUKEI02-FILE.
@@ -128,38 +110,17 @@
       *    月次統計データ（基本情報）
            COPY    "CPCOMMONDAT5.INC"
                                    REPLACING  //TEIKI01PARA//
-                                   BY         //TOUKEI01PARA//.
+                                   BY         //TOUKEI01//.
       *
       *    月次統計データ（診療情報）
            COPY    "CPCOMMONDAT5.INC"
                                    REPLACING  //TEIKI01PARA//
-                                   BY         //TOUKEI02PARA//.
+                                   BY         //TOUKEI02//.
       *
       *    月次統計データ（病名情報）
            COPY    "CPCOMMONDAT5.INC"
                                    REPLACING  //TEIKI01PARA//
-                                   BY         //TOUKEI03PARA//.
-      *
-      *    ＣＳＶデータ（診療情報）
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
-                                   BY         //TOUKEI04PARA//.
-      *01  TOUKEI04PARA.
-      *****03  FILLER                  PIC  X(05) VALUE "/tmp/".
-       01  TOUKEI04PARA-BASENAME.
-           03  TOUKEI04PARA-HOSPNUM    PIC  9(02).
-           03  TOUKEI04PARA-FILE-ID    PIC  X(12) VALUE "toukei01.dat".
-      *
-      *    ＣＳＶデータ（病名情報）
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
-                                   BY         //TOUKEI05PARA//.
-      *01  TOUKEI05PARA.
-      *****03  FILLER                  PIC  X(05) VALUE "/tmp/".
-       01  TOUKEI05PARA-BASENAME.
-           03  TOUKEI05PARA-HOSPNUM    PIC  9(02).
-           03  TOUKEI05PARA-FILE-ID    PIC  X(12) VALUE "toukei02.dat".
-      *
-           COPY    "CPRECEERR.INC" REPLACING  //RECEERR//
-                                   BY         //TOUKEIERR//.
+                                   BY         //TOUKEI03//.
       *
       *    フラグ領域
        01  STS-AREA.
@@ -189,27 +150,19 @@
            03  IDX1                            PIC 9(03). 
            03  IDX2                            PIC 9(03). 
            03  IDX3                            PIC 9(03). 
-           03  IDXX                            PIC 9(03). 
       *
       *    一時領域
       *
        01  WRK-AREA.
            03  WRK-PARA.
-               05  WRK-PARA-HOSPID             PIC X(24).
                05  WRK-PARA-HOSPCD             PIC X(07).
                05  WRK-PARA-SRYYM              PIC X(06).
-               05  WRK-PARA-TERMID             PIC X(32).
+               05  WRK-PARA-TERMID             PIC X(16).
                05  WRK-PARA-DATAKBN            PIC X(01).
                05  WRK-PARA-KOJINKBN           PIC X(01).
                05  WRK-PARA-JOBID              PIC 9(07).
                05  WRK-PARA-SHELLID            PIC X(08).
-               05  WRK-PARA-HOSPNUM            PIC 9(02).
-               05  WRK-PARA-FILENM1            PIC X(150).
-               05  WRK-PARA-FILENM2            PIC X(150).
-               05  WRK-PARA-FILE1              PIC X(20).
-               05  WRK-PARA-FILE2              PIC X(20).
-               05  WRK-PARA-FILENM1-FOLDER     PIC X(150).
-               05  WRK-PARA-FILENM2-FOLDER     PIC X(150).
+               05  WRK-PARA-ERRFILENM          PIC X(100).
       *
            03  WRK-TOUKEIERR               PIC X(200). 
       * 
@@ -225,9 +178,8 @@
       *
            03  WRK-SYOKBN              PIC X(01).
            03  WRK-KOH-MAX             PIC 9(03).
-           03  WRK-RENNUM              PIC 9(03).
       *
-      *     右づめ編集用     
+      *     右ずめ編集用     
            03  WRK-HENKAN              PIC X(20).
            03  WRK-LENGTH              PIC 9(02).
            03  WRK-HENSYU              PIC X(20).
@@ -235,9 +187,8 @@
            03  WRK-REC                 PIC X(3000).
            03  WRK-REC-LENGTH          PIC 9(04).
            03  WRK-HENSYU-AREA.
-               05  WRK-DATA            PIC X(400).
-      *********05  WRK-NUM             PIC ZZZZZZZZZ9.99999. 
-               05  WRK-NUM             PIC ---------9.99999. 
+               05  WRK-DATA            PIC X(200).
+               05  WRK-NUM             PIC ZZZZZZZZZ9.999. 
                05  WRK-NAGASA          PIC 9(03).
                05  WRK-ST              PIC 9(02). 
                05  WRK-SYOSUU          PIC 9(01).
@@ -287,404 +238,6 @@
                07  WRK-KOHTEKSTYMD    PIC  X(08).
       *        適用終了年月日
                07  WRK-KOHTEKEDYMD    PIC  X(08).
-      *
-       01  WRK-SGETTEMP-TEMPDIR    PIC X(1024).
-      *
-      *    ヘッダー情報
-       01  CSV-HEAD-01.
-           03  FILLER              PIC X(12)   VALUE   "医療機関ＩＤ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "医療機関コード".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "診療年月".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "レコード識別".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(18)   VALUE
-               "レセプト種別コード".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "入外区分".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "患者番号".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "患者ＩＤ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "カナ氏名".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "漢字氏名".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "性別".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "生年月日".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "診療科コード".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(18)   VALUE
-               "レセ電診療科コード".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "剤番号".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "剤内番号".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "診療行為区分".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "診療種別区分".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "剤点数識別".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "剤点数".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "剤回数".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "手技点数１".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "手技点数２".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "薬剤点数".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "材料点数".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "保険組合せ番号".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "明細数".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(18)   VALUE
-               "明細診療行為コード".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "明細数量".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "明細回数".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "点数識別".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "点数金額".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(16)   VALUE
-               "明細名称入力番号".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "明細自費金額".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "明細単位コード".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "明細単位名称".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "明細名称".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "明細正式名称".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "薬価基準コード".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "入外中外来識別".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "医師コード".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "１日".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "２日".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "３日".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "４日".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "５日".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "６日".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "７日".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "８日".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "９日".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "１０日".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "１１日".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "１２日".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "１３日".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "１４日".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "１５日".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "１６日".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "１７日".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "１８日".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "１９日".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "２０日".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "２１日".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "２２日".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "２３日".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "２４日".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "２５日".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "２６日".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "２７日".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "２８日".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "２９日".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "３０日".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "３１日".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "保険番号".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "保険ＩＤ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "保険者番号".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "本人家族区分".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "補助区分".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "継続区分".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "記号".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "番号".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "資格取得年月日".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "適用開始年月日".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "適用終了年月日".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "被保険者名".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "公費番号１".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "公費ＩＤ１".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "支払区分１".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "負担者番号１".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "受給者番号１".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(16)   VALUE
-               "適用開始年月日１".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(16)   VALUE
-               "適用終了年月日１".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "公費番号２".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "公費ＩＤ２".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "支払区分２".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "負担者番号２".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "受給者番号２".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(16)   VALUE
-               "適用開始年月日２".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(16)   VALUE
-               "適用終了年月日２".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "公費番号３".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "公費ＩＤ３".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "支払区分３".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "負担者番号３".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "受給者番号３".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(16)   VALUE
-               "適用開始年月日３".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(16)   VALUE
-               "適用終了年月日３".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "公費番号４".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "公費ＩＤ４".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "支払区分４".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "負担者番号４".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "受給者番号４".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(16)   VALUE
-               "適用開始年月日４".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(16)   VALUE
-               "適用終了年月日４".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "労災保険区分".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(16)   VALUE
-               "労災患者交付番号".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "労災事業所名称".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "労災新継再別".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "労災転帰事由".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "労災傷病年月日".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(16)   VALUE
-               "労災四肢特例区分".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(18)   VALUE
-               "労災療養開始年月日".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(18)   VALUE
-               "労災療養終了年月日".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "労災損傷区分".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(16)   VALUE
-               "労災損傷区分枝番".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(26)   VALUE
-               "労災アフター療養開始年月日".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(26)   VALUE
-               "労災アフター療養終了年月日".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "労災災害区分".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(18)   VALUE
-               "労災自賠責請求区分".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "郵便番号".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(18)   VALUE
-               "地方公共団体コード".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "住所".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "電話番号".
-      *
-       01  CSV-HEAD-02.
-           03  FILLER              PIC X(12)   VALUE   "医療機関ＩＤ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "医療機関コード".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "診療年月".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "レコード識別".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(18)   VALUE
-               "レセプト種別コード".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "入外区分".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "患者番号".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "患者ＩＤ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "カナ氏名".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "漢字氏名".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "性別".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "生年月日".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "診療科コード".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(18)   VALUE
-               "レセ電診療科コード".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "診療開始日".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "連番".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "病名".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "病名文字数".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "疑いフラグ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "主病名フラグ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "慢性疾患区分".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "保険組合せ番号".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(18)   VALUE
-               "レセプト表示フラグ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "転帰区分".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "転帰日".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "病名編集フラグ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "保険病名フラグ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "病名コード数".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "病名コード１".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "病名コード２".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "病名コード３".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "病名コード４".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "病名コード５".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "病名コード６".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "病名コード７".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "病名コード８".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "病名コード９".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "病名コード１０".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "病名コード１１".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "病名コード１２".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "病名コード１３".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "病名コード１４".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "病名コード１５".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "病名コード１６".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "病名コード１７".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "病名コード１８".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "病名コード１９".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "病名コード２０".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "病名コード２１".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "郵便番号".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(18)   VALUE
-               "地方公共団体コード".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "住所".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "電話番号".
       *  
        01  WRK-CONS-AREA.
       *    コンマ
@@ -715,27 +268,21 @@
       *****************************************************************
       *    サブプロ用領域
       *****************************************************************
-      *
       *    数字変換領域
            COPY    "CPORCSNUM.INC".
-      *
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    クライアント保存ＤＢ制御サブ
-           COPY    "CPORCSFILESV.INC".
-      *
-           COPY    "CPORCSGETTEMP.INC".
-      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
+           COPY    "CPORCMCP.INC".
       *
            COPY    "COMMON-SPA".
       *
       ****************************************************************
        LINKAGE                 SECTION.
        01  COMMAND-PARAM.
-           02  FILLER      PIC X(400).
+           02  FILLER      PIC X(1000).
       ****************************************************************
        PROCEDURE           DIVISION
                USING
@@ -762,81 +309,41 @@
            INITIALIZE                  CNT-AREA
                                        WRK-AREA
                                        FLG-AREA
-                                       SPA-AREA
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
-                                       INTO    WRK-PARA-HOSPID
-                                               WRK-PARA-HOSPCD
+                                       INTO    WRK-PARA-HOSPCD
                                                WRK-PARA-SRYYM
                                                WRK-PARA-TERMID
                                                WRK-PARA-DATAKBN
                                                WRK-PARA-KOJINKBN
                                                WRK-PARA-JOBID
                                                WRK-PARA-SHELLID
-                                               WRK-PARA-HOSPNUM
-                                               TOUKEIERR
-                                               WRK-PARA-FILENM1
-                                               WRK-PARA-FILENM2
-                                               WRK-PARA-FILE1
-                                               WRK-PARA-FILE2
-                                               WRK-PARA-FILENM1-FOLDER
-                                               WRK-PARA-FILENM2-FOLDER
-           END-UNSTRING
-           MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
-      *
-           MOVE    SPA-HOSPNUM         TO  TOUKEI04PARA-HOSPNUM
-                                           TOUKEI05PARA-HOSPNUM
+                                               WRK-PARA-ERRFILENM
+           END-UNSTRING 
       *
            PERFORM 100-DBOPEN-SEC
       *
       *    ステップ管理開始処理
            MOVE    "STS"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
            MOVE    "ORCBT020"      TO  JOB-PGID
            MOVE    "ＣＳＶデータ作成"
                                    TO  JOB-SHELLMSG
-grpsys     PERFORM 900-CALL-ORCSJOB-SEC
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA  
+                                   JOBKANRI-REC
       *
-           MOVE    "TOKEI010"          TO  TOUKEI01PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  TOUKEI01PARA-TERMID
-grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI01PARA-HOSPNUM
+           MOVE    "TOKEI010"          TO  TOUKEI01-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  TOUKEI01-TERMID
       *
-           MOVE    "TOKEI020"          TO  TOUKEI02PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  TOUKEI02PARA-TERMID
-grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI02PARA-HOSPNUM
+           MOVE    "TOKEI020"          TO  TOUKEI02-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  TOUKEI02-TERMID
       *
-           MOVE    "TOKEI030"          TO  TOUKEI03PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  TOUKEI03PARA-TERMID
-grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
-      *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    TOUKEIERR           TO  SGETTEMP-BASENAMES  (1)
-           MOVE    TOUKEI01PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (2)
-           MOVE    TOUKEI02PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (3)
-           MOVE    TOUKEI03PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (4)
-           MOVE    TOUKEI04PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (5)
-           MOVE    TOUKEI05PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (6)
-           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
-           MOVE    SPACE               TO  TOUKEIERR
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  TOUKEIERR
-           MOVE    SGETTEMP-FULLNAMES (2)
-                                       TO  TOUKEI01PARA-FULLNAME
-           MOVE    SGETTEMP-FULLNAMES (3)
-                                       TO  TOUKEI02PARA-FULLNAME
-           MOVE    SGETTEMP-FULLNAMES (4)
-                                       TO  TOUKEI03PARA-FULLNAME
-           MOVE    SGETTEMP-FULLNAMES (5)
-                                       TO  TOUKEI04PARA
-           MOVE    SGETTEMP-FULLNAMES (6)
-                                       TO  TOUKEI05PARA
-      *
-           MOVE   SGETTEMP-TEMPDIR     TO  WRK-SGETTEMP-TEMPDIR
+           MOVE    "TOKEI030"          TO  TOUKEI03-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  TOUKEI03-TERMID
       *
            OPEN    I-O                 TOUKEI01-FILE
                                        TOUKEI02-FILE
@@ -874,32 +381,6 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
                    PERFORM 2001-FILE-HENSYU-SEC
                    PERFORM 900-TOUKEI02-READ-SEC
                END-PERFORM
-      *
-      *        生保まとめの生保単独分の診療情報
-      *
-               PERFORM VARYING IDXX    FROM    1   BY  1
-                       UNTIL   IDXX    >       10
-                       OR      TOUKEI01-SEIHO-KEY (IDXX)
-                                       =       SPACE
-                   INITIALIZE                      TOUKEI02-REC
-                   MOVE    TOUKEI01-SEIHO-KEY (IDXX)
-                                               TO  TOUKEI02-KEY1
-      *
-                   START   TOUKEI02-FILE
-                           KEY IS    >=   TOUKEI02-KEY
-                       INVALID
-                           MOVE    1           TO  FLG-TOUKEI02
-                       NOT INVALID
-                           PERFORM 900-TOUKEI02-READ-SEC
-                   END-START
-      *     
-                   PERFORM UNTIL   FLG-TOUKEI02        =   1
-                           OR      TOUKEI01-SEIHO-KEY (IDXX)
-                                                   NOT =   TOUKEI02-KEY1
-                       PERFORM 2001-FILE-HENSYU-SEC
-                       PERFORM 900-TOUKEI02-READ-SEC
-                   END-PERFORM
-               END-PERFORM
            END-IF       
       *    
       *    月次統計データ（病名情報）
@@ -907,12 +388,10 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
                MOVE    "2"                 TO  WRK-SYOKBN
       *
                INITIALIZE                      TOUKEI03-REC
-               MOVE    TOUKEI01-HOSPNUM    TO  TOUKEI03-HOSPNUM
+               MOVE    TOUKEI01-HOSPID     TO  TOUKEI03-HOSPID
                MOVE    TOUKEI01-SRYYM      TO  TOUKEI03-SRYYM
                MOVE    TOUKEI01-NYUGAIKBN  TO  TOUKEI03-NYUGAIKBN
                MOVE    TOUKEI01-PTID       TO  TOUKEI03-PTID
-               MOVE    TOUKEI01-RECEIPT-KBN
-                                           TO  TOUKEI03-RECEIPT-KBN
                MOVE    TOUKEI01-RECEKA     TO  TOUKEI03-RECEKA
       *
                START   TOUKEI03-FILE
@@ -924,8 +403,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
                END-START
       *     
                PERFORM UNTIL   FLG-TOUKEI03    =   1
-                       OR      TOUKEI01-KEY (1:31)
-                                           NOT =   TOUKEI03-KEY (1:31)
+                       OR      TOUKEI01-KEY (1:43)
+                                           NOT =   TOUKEI03-KEY (1:43)
                    PERFORM 2002-FILE-HENSYU-SEC
                    PERFORM 900-TOUKEI03-READ-SEC
                END-PERFORM
@@ -941,17 +420,12 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
       *****************************************************************
        2001-FILE-HENSYU-SEC         SECTION.
       *
-      *    ＣＳＶ（ＨＥＡＤレコード）編集処理
-           IF      CNT-TOUKEI04        =   ZERO
-               PERFORM 2003-CSV-HEAD-HENSYU-SEC
-           END-IF
-      * 
       *    基本情報取得
       *
            MOVE    SPACE               TO  WRK-REC
            MOVE    ZERO                TO  WRK-REC-LENGTH
       *    医療機関ＩＤ      
-           MOVE    WRK-PARA-HOSPID     TO  WRK-DATA
+           MOVE    TOUKEI01-HOSPID     TO  WRK-DATA
            MOVE    24                  TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC    
       *    医療機関コード
@@ -997,7 +471,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
       *    氏名
            IF      WRK-PARA-KOJINKBN   =   "1"
                MOVE    TOUKEI01-NAME       TO  WRK-DATA
-               MOVE    100                 TO  WRK-NAGASA
+               MOVE    50                  TO  WRK-NAGASA
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC    
       *    性別
@@ -1081,8 +555,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
            PERFORM 5004-MOJI-HENSYU-SEC    
       *    数量
            MOVE    TOUKEI02-SRYSURYO   TO  WRK-NUM
-           MOVE    10                  TO  WRK-NAGASA
-           MOVE    5                   TO  WRK-SYOSUU     
+           MOVE    8                   TO  WRK-NAGASA
+           MOVE    3                   TO  WRK-SYOSUU     
            PERFORM 5005-NUM-HENSYU-SEC    
       *    回数
            MOVE    TOUKEI02-SRYKAISU   TO  WRK-NUM
@@ -1218,7 +692,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
                    WHEN    OTHER
                        MOVE    WRK-HKN-HIHKNJANAME TO  WRK-DATA
                END-EVALUATE
-               MOVE    100                 TO  WRK-NAGASA
+               MOVE    50                  TO  WRK-NAGASA
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC
       *    
@@ -1347,7 +821,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
       *    住所
            IF      WRK-PARA-KOJINKBN   =   "1"
                MOVE    TOUKEI01-HOME-ADRS      TO  WRK-DATA
-               MOVE    400                     TO  WRK-NAGASA
+               MOVE    200                     TO  WRK-NAGASA
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC
       *    電話番号
@@ -1391,11 +865,11 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
                MOVE    20                  TO  WRK-NAGASA
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    適用開始日
+      *    摘要開始日
            MOVE    WRK-KOHTEKSTYMD     TO  WRK-NUM
            MOVE    8                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
-      *    適用終了日
+      *    摘要終了日
            MOVE    WRK-KOHTEKEDYMD     TO  WRK-NUM
            MOVE    8                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
@@ -1433,18 +907,13 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
                        GO  TO  2002-FILE-HENSYU-EXT
                    END-IF
            END-EVALUATE 
-      *
-      *    ＣＳＶ（ＨＥＡＤレコード）編集処理
-           IF      CNT-TOUKEI05        =   ZERO
-               PERFORM 2003-CSV-HEAD-HENSYU-SEC
-           END-IF
-      *            
+                   
       *基本情報
       *
            MOVE    SPACE               TO  WRK-REC
            MOVE    ZERO                TO  WRK-REC-LENGTH
       *    医療機関ＩＤ      
-           MOVE    WRK-PARA-HOSPID     TO  WRK-DATA
+           MOVE    TOUKEI01-HOSPID     TO  WRK-DATA
            MOVE    24                  TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC    
       *    医療機関コード
@@ -1490,7 +959,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
       *    氏名
            IF      WRK-PARA-KOJINKBN   =   "1"
                MOVE    TOUKEI01-NAME       TO  WRK-DATA
-               MOVE    100                 TO  WRK-NAGASA
+               MOVE    50                  TO  WRK-NAGASA
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC    
       *    性別
@@ -1606,34 +1075,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
            .
        2002-FILE-HENSYU-EXT.
            EXIT. 
-      *
-      *****************************************************************
-      *    ＣＳＶ（ＨＥＡＤレコード）編集処理
-      *****************************************************************
-       2003-CSV-HEAD-HENSYU-SEC                SECTION.
-      *
-           INITIALIZE                  WRK-REC
-                                       WRK-REC-LENGTH
-      *
-           EVALUATE    WRK-SYOKBN
-               WHEN    "1"
-                   STRING  CSV-HEAD-01         DELIMITED  BY  SIZE
-                           WRK-KAIGYO          DELIMITED  BY  SIZE
-                           INTO                WRK-REC
-                   END-STRING
-                   MOVE    WRK-REC             TO  TOUKEI04-REC  
-                   WRITE   TOUKEI04-REC 
-               WHEN    "2"
-                   STRING  CSV-HEAD-02         DELIMITED  BY  SIZE
-                           WRK-KAIGYO          DELIMITED  BY  SIZE
-                           INTO                WRK-REC
-                   END-STRING
-                   MOVE    WRK-REC             TO  TOUKEI05-REC  
-                   WRITE   TOUKEI05-REC 
-           END-EVALUATE
-           .
-       2003-CSV-HEAD-HENSYU-EXT.
-           EXIT.
+      *            
       *
       *****************************************************************
       *    ファイル出力処理
@@ -1794,9 +1236,14 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
       *        ジョブ管理開始処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
+               MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+               MOVE    WRK-PARA-SHELLID
+                                       TO  JOB-SHELLID
                MOVE    WRK-TOUKEIERR     TO  JOB-YOBI
                MOVE    "9999"          TO  JOB-ERRCD
-grpsys         PERFORM 900-CALL-ORCSJOB-SEC
+               CALL    "ORCSJOB"       USING
+                                       ORCSJOBKANRIAREA  
+                                       JOBKANRI-REC
            END-IF
       *                             
            MOVE    1                   TO  FLG-END
@@ -1811,25 +1258,23 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *
            CLOSE   TOUKEI01-FILE
                    TOUKEI02-FILE
-                   TOUKEI03-FILE
                    TOUKEI04-FILE
-                   TOUKEI05-FILE
       *
            IF      CNT-TOUKEI01           =   ZERO  
                MOVE    "処理対象のデータがありませんでした"
                                            TO  WRK-TOUKEIERR
                PERFORM 500-ERR-HENSYU-SEC
-           ELSE
-      *        ファイル保存情報更新
-               PERFORM 3001-FILE-INFO-INSERT-SEC
            END-IF
       *
       *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
-           COMPUTE JOB-UPDCNT  =   CNT-TOUKEI04    +
-                                   CNT-TOUKEI05
-grpsys     PERFORM 900-CALL-ORCSJOB-SEC
+           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA  
+                                   JOBKANRI-REC
       *
            PERFORM 900-DBDISCONNECT-SEC
       *     
@@ -1839,83 +1284,6 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            DISPLAY "*** ORCBT020 END ***"
            .
        300-TERM-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ファイル保存情報更新処理
-      *****************************************************************
-       3001-FILE-INFO-INSERT-SEC             SECTION.
-      *
-           MOVE    ZERO            TO  WRK-RENNUM
-      *
-           INITIALIZE                  ORCSFILESVAREA
-           MOVE    "I"             TO  SFILESV-MODE
-           MOVE    WRK-PARA-SHELLID
-                                   TO  SFILESV-TBL-KEY
-      *
-      *    月次統計データ（診療情報）
-           IF    ( WRK-PARA-DATAKBN    =   ZERO    OR  "1" )
-           AND   ( WRK-PARA-FILE1      =   "6"             )
-      *****AND   ( CNT-TOUKEI04        >   ZERO            )
-               ADD     1               TO  WRK-RENNUM
-      *
-               MOVE    "toukei1.sh"    TO  SFILESV-SHELLID  (WRK-RENNUM)
-               MOVE    1               TO  SFILESV-SHORI-RENNUM
-                                                            (WRK-RENNUM)
-               MOVE    WRK-RENNUM      TO  SFILESV-RENNUM   (WRK-RENNUM)
-               MOVE    WRK-PARA-SRYYM  TO  SFILESV-SRYYM    (WRK-RENNUM)
-      *********MOVE    "/tmp/"         TO  SFILESV-FOR-FOLDER
-               MOVE    WRK-SGETTEMP-TEMPDIR
-                                       TO  SFILESV-FOR-FOLDER
-                                                            (WRK-RENNUM)
-               MOVE    WRK-PARA-FILENM1
-                                       TO  SFILESV-FOR-DATA (WRK-RENNUM)
-      *********MOVE    WRK-PARA-FILENM1-FOLDER
-      *********                        TO  SFILESV-TO-FOLDER
-      *********                                             (WRK-RENNUM)
-               MOVE    WRK-PARA-FILENM1
-                                       TO  SFILESV-TO-DATA  (WRK-RENNUM)
-               MOVE    CNT-TOUKEI04    TO  SFILESV-CNT-ALL  (WRK-RENNUM)
-               MOVE    "月次統計データ（診療情報）"
-                                       TO  SFILESV-TITLE    (WRK-RENNUM)
-               MOVE    "1"             TO  SFILESV-DATA-TYPE(WRK-RENNUM) 
-           END-IF
-      *
-      *    月次統計データ（病名情報）
-           IF    ( WRK-PARA-DATAKBN    =   ZERO    OR  "2" )
-           AND   ( WRK-PARA-FILE2      =   "6"             )
-      *****AND   ( CNT-TOUKEI05        >   ZERO            )
-               ADD     1               TO  WRK-RENNUM
-      *
-               MOVE    "toukei1.sh"    TO  SFILESV-SHELLID  (WRK-RENNUM)
-               MOVE    1               TO  SFILESV-SHORI-RENNUM
-                                                            (WRK-RENNUM)
-               MOVE    WRK-RENNUM      TO  SFILESV-RENNUM   (WRK-RENNUM)
-               MOVE    WRK-PARA-SRYYM  TO  SFILESV-SRYYM    (WRK-RENNUM)
-      *********MOVE    "/tmp/"         TO  SFILESV-FOR-FOLDER
-               MOVE    WRK-SGETTEMP-TEMPDIR
-                                       TO  SFILESV-FOR-FOLDER
-                                                            (WRK-RENNUM)
-               MOVE    WRK-PARA-FILENM2
-                                       TO  SFILESV-FOR-DATA (WRK-RENNUM)
-      *********MOVE    WRK-PARA-FILENM2-FOLDER
-      *********                        TO  SFILESV-TO-FOLDER
-      *********                                             (WRK-RENNUM)
-               MOVE    WRK-PARA-FILENM2
-                                       TO  SFILESV-TO-DATA  (WRK-RENNUM)
-               MOVE    CNT-TOUKEI05    TO  SFILESV-CNT-ALL  (WRK-RENNUM)
-               MOVE    "月次統計データ（病名情報）"
-                                       TO  SFILESV-TITLE    (WRK-RENNUM)
-               MOVE    "1"             TO  SFILESV-DATA-TYPE(WRK-RENNUM) 
-           END-IF
-      *
-           IF      WRK-RENNUM          >   ZERO   
-               CALL    "ORCSFILESV"    USING
-                                           ORCSFILESVAREA
-                                           SPA-AREA
-           END-IF
-           .
-       3001-FILE-INFO-INSERT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1962,69 +1330,43 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            .
        900-TOUKEI03-READ-EXT.
            EXIT.
-      *
-      *****************************************************************
-      *    ジョブ管理ＤＢ制御処理
-      *****************************************************************
-       900-CALL-ORCSJOB-SEC            SECTION.
-      *
-           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-           MOVE    WRK-PARA-SHELLID
-                                   TO  JOB-SHELLID
-grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA 
-                                   JOBKANRI-REC
-                                   SPA-AREA
-           .
-       900-CALL-ORCSJOB-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    テーブルアクセス処理
-      *****************************************************************
-       900-ORCDBMAIN-SEC               SECTION.
-      *
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           .
-      *
-       900-ORCDBMAIN-EXT.
-           EXIT.
       *      
       *****************************************************************
-      *    ＤＢオープン処理
+      *    ＤＢ　オープン処理
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
-           MOVE    LOW-VALUE           TO  MCP-TABLE
-                                           MCP-PATHNAME
-           MOVE    "DBOPEN"            TO  MCP-FUNC
-grpsys     PERFORM 900-ORCDBMAIN-SEC
+           MOVE    "DBOPEN"            TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
       *
-           MOVE    LOW-VALUE           TO  MCP-TABLE
-                                           MCP-PATHNAME
-           MOVE    "DBSTART"           TO  MCP-FUNC
-grpsys     PERFORM 900-ORCDBMAIN-SEC
+           MOVE    "DBSTART"           TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
            .
        100-DBOPEN-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ＤＢクローズ処理
+      *    ＤＢ　クローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *
-           MOVE    LOW-VALUE           TO  MCP-TABLE
-                                           MCP-PATHNAME
-           MOVE    "DBCOMMIT"          TO  MCP-FUNC
-grpsys     PERFORM 900-ORCDBMAIN-SEC
+           MOVE    "DBCOMMIT"          TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
       *
-           MOVE    LOW-VALUE           TO  MCP-TABLE
-                                           MCP-PATHNAME
-           MOVE    "DBDISCONNECT"      TO  MCP-FUNC
-grpsys     PERFORM 900-ORCDBMAIN-SEC
+           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
            .
-       900-DBDISCONNECT-EXT.
+       900-DBCLOSE-EXT.
            EXIT.
