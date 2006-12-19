@@ -74,6 +74,11 @@
                    13  SPA-GMN-I01-SKJKBN-CD       PIC X(01).
                    13                              PIC X(01).
                    13  SPA-GMN-I01-SKJKBN-NM       PIC X(22).
+      *          選定入院区分
+                 11  SPA-GMN-I01-SENTEIKBN.
+                   13  SPA-GMN-I01-SENTEIKBN-CD    PIC X(01).
+                   13                              PIC X(01).
+                   13  SPA-GMN-I01-SENTEIKBN-NM    PIC X(22).
       *          入院日
                  11  SPA-GMN-I01-NYUINYMD          PIC X(10).
       *          入院科
@@ -282,6 +287,13 @@
                        15  SPA-GMN-I01-SKJKBNL     PIC X(01).
                        15                          PIC X(01).
                        15  SPA-GMN-I01-SKJKBNMEIL  PIC X(22).
+      *          選定入院区分コンボ
+                 11  SPA-GMN-I01-CMB-SENTEIKBN.
+                   13  SPA-GMN-I01-SENTEIKBN-CNT   PIC 9(5).
+                   13  SPA-GMN-I01-SENTEIKBN-ITM   OCCURS  10.
+                       15  SPA-GMN-I01-SENTEIKBNL  PIC X(01).
+                       15                          PIC X(01).
+                       15  SPA-GMN-I01-SENTEIKBNMEIL  PIC X(22).
       *          入院科コンボ
                  11  SPA-GMN-I01-CMB-NYUINKA.
                    13  SPA-GMN-I01-NYUINKA-CNT     PIC 9(5).

@@ -5309,7 +5309,9 @@
       *     DISPLAY  "LNK-SCNYUACCT-NYUKHNKSN-SRYCD(5) = "
       *                               LNK-SCNYUACCT-NYUKHNKSN-SRYCD(5)
       *     DISPLAY  "ORCSNYUACCT CALL "
-           PERFORM 4801-SENTEI-SET-SEC
+           IF     PTNYUINRRK-SENTEIKBN  =   "1"
+               PERFORM 4801-SENTEI-SET-SEC
+           END-IF
            CALL    "ORCSNYUACCT"       USING   SPA-AREA
                                                ORCSNYUACCT-AREA
            MOVE   WRK-TAIHI-SRYKA      TO  SPA-SRYKA
@@ -5455,7 +5457,9 @@
            MOVE    SPA-SRYKA       TO  WRK-TAIHI-SRYKA
            MOVE    "00"            TO  SPA-SRYKA
       **   
-           PERFORM 4801-SENTEI-SET-SEC
+           IF     PTNYUINRRK-SENTEIKBN  =   "1"
+               PERFORM 4801-SENTEI-SET-SEC
+           END-IF
            CALL   "ORCSNYUACCT"    USING   SPA-AREA
                                            ORCSNYUACCT-AREA
            MOVE   WRK-TAIHI-SRYKA  TO  SPA-SRYKA

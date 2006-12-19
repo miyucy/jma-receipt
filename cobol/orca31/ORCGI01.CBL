@@ -1088,6 +1088,9 @@
       *    食事区分コンボ
            PERFORM 310-CMB-SKJKBN-SET-SEC
       *
+      *    選定入院区分コンボ
+           PERFORM 310-CMB-SENTEIKBN-SET-SEC
+      *
       *    入院科コンボ
            PERFORM 310-CMB-NYUINKA-SET-SEC
       *
@@ -1349,6 +1352,23 @@
       *
            .
        310-CMB-SKJKBN-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    選定入院区分コンボ初期処理
+      *****************************************************************
+       310-CMB-SENTEIKBN-SET-SEC          SECTION.
+      *
+           INITIALIZE              SPA-GMN-I01-CMB-SENTEIKBN
+           MOVE    2               TO  SPA-GMN-I01-SENTEIKBN-CNT
+      *
+           MOVE    "1"             TO  SPA-GMN-I01-SENTEIKBNL (1)
+           MOVE    "選定対象"      TO  SPA-GMN-I01-SENTEIKBNMEIL (1)
+      *
+           MOVE    "2"             TO  SPA-GMN-I01-SENTEIKBNL (2)
+           MOVE    "選定対象外"    TO  SPA-GMN-I01-SENTEIKBNMEIL (2)
+      *
+           .
+       310-CMB-SENTEIKBN-SET-EXT.
            EXIT.
       *****************************************************************
       *    入院科コンボ初期処理
@@ -1981,6 +2001,8 @@
            MOVE    I01-SAGAKU          TO  SPA-GMN-I01-SAGAKU
       *    食事区分
            MOVE    I01-SKJKBN          TO  SPA-GMN-I01-SKJKBN
+      *    選定入院区分
+           MOVE    I01-SENTEIKBN       TO  SPA-GMN-I01-SENTEIKBN
       *    入院日
            MOVE    I01-NYUINYMD        TO  SPA-GMN-I01-NYUINYMD
       *    入院科
@@ -2105,6 +2127,12 @@
       *
       *    食事区分チェック処理
            PERFORM 4101-SKJKBN-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
+      *    選定入院区分チェック処理
+           PERFORM 4101-SENTEIKBN-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
@@ -2511,6 +2539,18 @@
                MOVE    "1"             TO  WRK-CMB-CD
                PERFORM 4103-CMB-SKJKBN-CHK-SEC
                MOVE    WRK-CMB-ITM TO  SPA-GMN-I01-SKJKBN
+           END-IF
+      *
+      *    選定入院区分
+           MOVE    PTNYUINRRK-SENTEIKBN
+                                   TO  WRK-CMB-CD
+           PERFORM 4103-CMB-SENTEIKBN-CHK-SEC
+           IF    ( WRK-CMB-ITM     NOT =   SPACE )
+               MOVE    WRK-CMB-ITM TO  SPA-GMN-I01-SENTEIKBN
+           ELSE
+               MOVE    "1"             TO  WRK-CMB-CD
+               PERFORM 4103-CMB-SENTEIKBN-CHK-SEC
+               MOVE    WRK-CMB-ITM TO  SPA-GMN-I01-SENTEIKBN
            END-IF
       *
        .
@@ -4910,6 +4950,26 @@
        4101-SKJKBN-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    選定入院区分チェック処理
+      *****************************************************************
+       4101-SENTEIKBN-CHK-SEC             SECTION.
+      *
+           MOVE    SPA-GMN-I01-SENTEIKBN-CD
+                                       TO  WRK-CMB-CD
+           PERFORM 4103-CMB-SENTEIKBN-CHK-SEC
+           IF    ( WRK-CMB-ITM     NOT =   SPACE )
+               MOVE    WRK-CMB-ITM TO  SPA-GMN-I01-SENTEIKBN
+           ELSE
+               MOVE    "1"             TO  WRK-CMB-CD
+               PERFORM 4103-CMB-SENTEIKBN-CHK-SEC
+               MOVE    WRK-CMB-ITM TO  SPA-GMN-I01-SENTEIKBN
+           END-IF
+      *
+           .
+      *
+       4101-SENTEIKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    入院科チェック処理
       *****************************************************************
        4101-NYUINKA-CHK-SEC            SECTION.
@@ -5433,6 +5493,29 @@
            .
       *
        4103-CMB-SKJKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    選定入院区分コンボチェック処理
+      *****************************************************************
+       4103-CMB-SENTEIKBN-CHK-SEC     SECTION.
+      *
+           INITIALIZE              WRK-CMB-G
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-I01-SENTEIKBN-CNT )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-I01-SENTEIKBNL (IDX-CMB)
+                                   =   WRK-CMB-CD )
+                   MOVE    IDX-CMB TO  WRK-CMB-IDX
+                   MOVE    SPA-GMN-I01-SENTEIKBN-ITM (IDX-CMB)
+                                   TO  WRK-CMB-ITM
+               END-IF
+           END-PERFORM
+      *
+           .
+      *
+       4103-CMB-SENTEIKBN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    入院科コンボチェック処理
@@ -7825,6 +7908,10 @@
            MOVE    SPA-GMN-I01-SKJKBN-CD
                                    TO  PTNYUINRRK-SKJKBN
       *
+      *    選定入院区分
+           MOVE    SPA-GMN-I01-SENTEIKBN-CD
+                                   TO  PTNYUINRRK-SENTEIKBN
+      *
            IF    ( WRK-UPDKBN      =   "UPD" )
       *
                PERFORM 800-MCNDATE-SEC
@@ -9374,7 +9461,9 @@
                                 TO  LNK-SCNYUACCT-HKNCOMBINUM
            MOVE   SPA-SRYKA     TO  WRK-TAIHI-SRYKA
            MOVE   "00"          TO  SPA-SRYKA
-           PERFORM 4801-SENTEI-SET-SEC
+           IF     PTNYUINRRK-SENTEIKBN  =   "1"
+               PERFORM 4801-SENTEI-SET-SEC
+           END-IF
            CALL   "ORCSNYUACCT"  USING   SPA-AREA
                                          ORCSNYUACCT-AREA
            MOVE   WRK-TAIHI-SRYKA TO     SPA-SRYKA
@@ -10876,7 +10965,9 @@
            END-IF
            MOVE   SPA-SRYKA     TO  WRK-TAIHI-SRYKA
            MOVE   "00"          TO  SPA-SRYKA
-           PERFORM 4801-SENTEI-SET-SEC
+           IF     PTNYUINRRK-SENTEIKBN  =   "1"
+               PERFORM 4801-SENTEI-SET-SEC
+           END-IF
            CALL   "ORCSNYUACCT"  USING   SPA-AREA
                                          ORCSNYUACCT-AREA
            MOVE   WRK-TAIHI-SRYKA TO     SPA-SRYKA
@@ -12079,7 +12170,9 @@
       **                          TO  LNK-SCNYUACCT-MOTO-NYUINKA
            MOVE   SPA-SRYKA     TO  WRK-TAIHI-SRYKA
            MOVE   "00"          TO  SPA-SRYKA
-           PERFORM 4801-SENTEI-SET-SEC
+           IF     PTNYUINRRK-SENTEIKBN  =   "1"
+               PERFORM 4801-SENTEI-SET-SEC
+           END-IF
            CALL   "ORCSNYUACCT"  USING   SPA-AREA
                                          ORCSNYUACCT-AREA
            MOVE   WRK-TAIHI-SRYKA TO     SPA-SRYKA
@@ -13496,7 +13589,9 @@
            END-IF
            MOVE   SPA-SRYKA     TO  WRK-TAIHI-SRYKA
            MOVE   "00"          TO  SPA-SRYKA
-           PERFORM 4801-SENTEI-SET-SEC
+           IF     PTNYUINRRK-SENTEIKBN  =   "1"
+               PERFORM 4801-SENTEI-SET-SEC
+           END-IF
            CALL   "ORCSNYUACCT"  USING   SPA-AREA
                                          ORCSNYUACCT-AREA
            MOVE   WRK-TAIHI-SRYKA TO     SPA-SRYKA
@@ -14992,6 +15087,16 @@
                                            TO  I01-SKJKBN-ITM (IDX1)
            END-PERFORM
       *
+      *    選定入院区分
+           MOVE    SPA-GMN-I01-SENTEIKBN   TO  I01-SENTEIKBN
+           MOVE    SPA-GMN-I01-SENTEIKBN-CNT
+                                           TO  I01-SENTEIKBN-CNT
+           PERFORM VARYING IDX1    FROM    1   BY  1
+               UNTIL     ( IDX1    >   SPA-GMN-I01-SENTEIKBN-CNT )
+               MOVE    SPA-GMN-I01-SENTEIKBN-ITM (IDX1)
+                                           TO  I01-SENTEIKBN-ITM (IDX1)
+           END-PERFORM
+      *
       *    入院日
            MOVE    SPA-GMN-I01-NYUINYMD    TO  I01-NYUINYMD
       *    入院科
@@ -15194,6 +15299,8 @@
                                        I01-SAGAKU-ITM-STT
                                        I01-SKJKBN-STT
                                        I01-SKJKBN-ITM-STT
+                                       I01-SENTEIKBN-STT
+                                       I01-SENTEIKBN-ITM-STT
                                        I01-NYUINYMD-STT
                                        I01-NYUINKA-STT
                                        I01-NYUINKA-ITM-STT
@@ -15229,6 +15336,8 @@
                                        I01-SAGAKU-ITM-STT
                                        I01-SKJKBN-STT
                                        I01-SKJKBN-ITM-STT
+                                       I01-SENTEIKBN-STT
+                                       I01-SENTEIKBN-ITM-STT
                                        I01-NYUINYMD-STT
                                        I01-NYUINKA-STT
                                        I01-NYUINKA-ITM-STT
@@ -15329,6 +15438,8 @@
                                            I01-SAGAKU-ITM-STT
                                            I01-SKJKBN-STT
                                            I01-SKJKBN-ITM-STT
+                                           I01-SENTEIKBN-STT
+                                           I01-SENTEIKBN-ITM-STT
                                            I01-NYUINYMD-STT
                                            I01-NYUINKA-STT
                                            I01-NYUINKA-ITM-STT
@@ -15384,6 +15495,8 @@
                MOVE    "SAGAKU"        TO  MCP-WIDGET
            WHEN    21
                MOVE    "SKJKBN"        TO  MCP-WIDGET
+           WHEN    22
+               MOVE    "SENTEIKBN"     TO  MCP-WIDGET
            WHEN    7
                MOVE    "NYUINYMD"      TO  MCP-WIDGET
            WHEN    8
@@ -15465,6 +15578,8 @@
            WHEN    "TAIINCD"
                MOVE    012             TO  SPA-GMN-I01-CUR
            WHEN    "SKJKBN"
+               MOVE    022             TO  SPA-GMN-I01-CUR
+           WHEN    "SENTEIKBN"
                MOVE    007             TO  SPA-GMN-I01-CUR
            WHEN    "SELNUM"
                IF    ( SPA-GMN-I01-SYORIKBN-CD =   "10" )
@@ -15510,6 +15625,12 @@
       *
            IF    ( SPA-GMN-I01-CUR =   21   )
                IF  ( I01-SKJKBN-STT    =   WIDGET-INSENSITIVE )
+                   COMPUTE SPA-GMN-I01-CUR =   22
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-I01-CUR =   22   )
+               IF  ( I01-SENTEIKBN-STT    =   WIDGET-INSENSITIVE )
                    COMPUTE SPA-GMN-I01-CUR =   7
                END-IF
            END-IF

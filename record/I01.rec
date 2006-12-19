@@ -79,6 +79,15 @@ I01	{
 			item	varchar(24)[10];
 			state	int;
 		};
+		CMB_SENTEIKBN	{
+			SENTEIKBN	{
+				value	varchar(24);
+				state	int;
+			};
+			count	int;
+			item	varchar(24)[10];
+			state	int;
+		};
 		NYUINYMD	{
 			value	varchar(10);
 			state	int;

@@ -2000,7 +2000,9 @@
            MOVE    "00"            TO  SPA-SRYKA
       *
       *     DISPLAY   "****4801SENTEI-SET-SEC MAE **** "
-           PERFORM 4801-SENTEI-SET-SEC
+           IF     PTNYUINRRK-SENTEIKBN  =   "1"
+               PERFORM 4801-SENTEI-SET-SEC
+           END-IF
       *     DISPLAY   "********ORCSNYUACCT MAE **********"
            MOVE    WRK-HOSPID      TO  SPA-HOSPID
            MOVE    WRK-PTID        TO  SPA-PTID
@@ -2150,7 +2152,9 @@
            MOVE    SPA-SRYKA       TO  WRK-TAIHI-SRYKA
            MOVE    "00"            TO  SPA-SRYKA
       **   
-           PERFORM 4801-SENTEI-SET-SEC
+           IF     PTNYUINRRK-SENTEIKBN  =   "1"
+               PERFORM 4801-SENTEI-SET-SEC
+           END-IF
            MOVE    WRK-HOSPID      TO  SPA-HOSPID
            MOVE    WRK-PTID        TO  SPA-PTID
            MOVE    "00"            TO  SPA-SRYKA
