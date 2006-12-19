@@ -1332,10 +1332,10 @@
            INITIALIZE              SPA-GMN-I01-CMB-SKJKBN
       *
            MOVE    "0"             TO  SPA-GMN-I01-SKJKBNL (1)
-           MOVE    "食事なし"      TO  SPA-GMN-I01-SKJKBNMEIL (1)
+           MOVE    "食なし"        TO  SPA-GMN-I01-SKJKBNMEIL (1)
       *
            MOVE    "1"             TO  SPA-GMN-I01-SKJKBNL (2)
-           MOVE    "食事あり"      TO  SPA-GMN-I01-SKJKBNMEIL (2)
+           MOVE    "食あり"        TO  SPA-GMN-I01-SKJKBNMEIL (2)
       *
            IF    ( SYS-5000-SHOKUJIRYOYOCD
                                    =   CONST-SKJRYOYO2 )
@@ -1344,8 +1344,7 @@
                MOVE    3           TO  SPA-GMN-I01-SKJKBN-CNT
       *
                MOVE    "2"         TO  SPA-GMN-I01-SKJKBNL (3)
-               MOVE    "食事あり（特食）"
-                                   TO  SPA-GMN-I01-SKJKBNMEIL (3)
+               MOVE    "特食"      TO  SPA-GMN-I01-SKJKBNMEIL (3)
            END-IF
       *
            .
