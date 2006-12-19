@@ -4,14 +4,17 @@
 --
 -- 入院履歴最大枝番号(MAXEDANUM)追加
 -- 入院食事区分(SKJKBN)追加
+-- 選定入院区分(SENTEIKBN)追加
 -- 
--- Create Date : 2005/02/17           --
+-- Create Date : 2006/12/19           --
 --
 --  項目追加                        --
 alter table TBL_PTNYUINRRK
    add column MAXEDANUM  numeric(03);
 alter table TBL_PTNYUINRRK
-   add column SKJKBN  character(1);
+   add column SKJKBN     character(1);
+alter table TBL_PTNYUINRRK
+   add column SENTEIKBN  character(1);
 
 
 --  ゼロ設定                       --
@@ -24,3 +27,6 @@ update tbl_ptnyuinrrk set maxedanum = (select max(b.rrkedanum) from tbl_ptnyuinr
 
 --  食事区分セット
 update tbl_ptnyuinrrk set skjkbn = '1' where (jtikbn <> '5') and (jtikbn <> '6');
+
+--  選定入院区分セット
+update tbl_ptnyuinrrk set senteikbn = '1' where (jtikbn <> '5') and (jtikbn <> '6');

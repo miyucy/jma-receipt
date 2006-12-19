@@ -11,11 +11,11 @@ tbl_ptnyuinrrk	{
 	NYUINYMD		char(8);
 	TAIINYMD		char(8);
 	TAIINCD			char(2);
-	TOKUTEI_KBN	char(1);
-	TOKUTEI_NYUIN	char(2);
+	TOKUTEI_KBN		char(1);
+	TOKUTEI_NYUIN		char(2);
 	RM_SAGAKU		char(2);
-	TEIKI_SEIKYUKBN	char(1);
-	KENSAKU_DISPKBN	char(1);
+	TEIKI_SEIKYUKBN		char(1);
+	KENSAKU_DISPKBN		char(1);
 	SHOKAIKBN		char(1);
 	SHONUM			number(3,0);
 	DRCD1			char(5);
@@ -33,11 +33,12 @@ tbl_ptnyuinrrk	{
 	DOUJITSUKBN		char(1);
 	MAXEDANUM		number(3,0);
 	SKJKBN			char(1);
-	TERMID		varchar(16);
-	OPID		varchar(16);
-	CREYMD		char(8);
-	UPYMD		char(8);
-	UPHMS		char(6);
+	SENTEIKBN		char(1);
+	TERMID			varchar(16);
+	OPID			varchar(16);
+	CREYMD			char(8);
+	UPYMD			char(8);
+	UPHMS			char(6);
 };
 
 primary	{

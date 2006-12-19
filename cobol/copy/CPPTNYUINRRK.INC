@@ -96,8 +96,10 @@
            03  PTNYUINRRK-DOUJITSUKBN             PIC  X(01).
       *入院履歴最大枝番号
            03  PTNYUINRRK-MAXEDANUM               PIC  9(03).
-      *入院食事区分
+      *入院食事区分（０：食なし／１：食あり／２：特食）
            03  PTNYUINRRK-SKJKBN                  PIC  X(01).
+      *選定入院区分（１：選定対象／２：選定対象外）
+           03  PTNYUINRRK-SENTEIKBN               PIC  X(01).
       *端末ＩＤ
            03  PTNYUINRRK-TERMID                  PIC  X(16).
       *オペーレータＩＤ
