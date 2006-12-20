@@ -14,3 +14,5 @@
                     06  S99-PAGE      PIC X(10).
                     06  S99-ERRMSG    PIC X(100).
                   05  S99-SELECT  PIC X       OCCURS  30 TIMES.
+              03  S99-B12-STATE   PIC S9(9)   BINARY.
+              03  S99-B12-LABEL   PIC X(14).

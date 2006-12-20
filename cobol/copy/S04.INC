@@ -16,30 +16,43 @@
       ********************************************************************
         02  S04.
             03  S04-FIXED2.
-              04  S04-PTNUM            PIC X(20).
-              04  S04-NAME             PIC X(50).
-              04  S04-NYUGAI           PIC X       OCCURS  3.
+              04  S04-B10-STATE            PIC S9(9)   BINARY.
+              04  S04-B12-STATE            PIC S9(9)   BINARY.
+              04  S04-LBLSYORIKBN          PIC X(22).
+              04  S04-SIHARAICOMBO.
+                  05  S04-SIHARAIKBN       PIC X(12).
+                  05  S04-SIHARAI-COUNT    PIC S9(9)   BINARY.
+                  05  S04-SIHARAI-LIST     PIC X(12)   OCCURS  3.
+              04  S04-NYUGAICOMBO.
+                  05  S04-NYUGAIKBN        PIC X(6).
+                  05  S04-NYUGAI-COUNT     PIC S9(9)   BINARY.
+                  05  S04-NYUGAI-LIST      PIC X(6)    OCCURS  3.
+              04  S04-SRYCOMBO.
+                  05  S04-SRYKBN           PIC X(8).
+                  05  S04-SRY-COUNT        PIC S9(9)   BINARY.
+                  05  S04-SRY-LIST         PIC X(8)    OCCURS  3.
+              04  S04-STRSRYYMD            PIC X(10).
+              04  S04-ENDSRYYMD            PIC X(10).
+              04  S04-ENDSRYYMD-STATE      PIC S9(9)   BINARY.
               04  S04-KIKANCOMBO.
-                  05  S04-KIKANKBN     PIC X(10).
-                  05  S04-KIKAN-COUNT  PIC S9(9)   BINARY.
-                  05  S04-KIKA-LIST    PIC X(10)   OCCURS  2.
-              04  S04-KKNKBN           PIC X       OCCURS  2.
-              04  S04-STRSRYYMD        PIC X(10).
-              04  S04-ENDSRYYMD        PIC X(10).
-              04  S04-ENDSRYYMD-STATE  PIC S9(9)   BINARY.
-              04  S04-LBLSYORIKBN      PIC X(30).
-              04  S04-SYORICOMBO.
-                  05  S04-SYORIKBN     PIC X(18).
-                  05  S04-SYORIKBN-STATE
-                                       PIC S9(9)   BINARY.
-                  05  S04-SYORI-COUNT  PIC S9(9)   BINARY.
-                  05  S04-SYORI-LIST   PIC X(18)   OCCURS  2.
-                  05  S04-SYORI-LIST-STATE
-                                       PIC S9(9)   BINARY.
+                  05  S04-KIKANKBN         PIC X(10).
+                  05  S04-KIKAN-COUNT      PIC S9(9)   BINARY.
+                  05  S04-KIKAN-LIST       PIC X(10)   OCCURS  2.
               04  S04-DSPCOMBO.
-                  05  S04-DSPKBN       PIC X(12).
-                  05  S04-DSPKBN-STATE PIC S9(9)   BINARY.
-                  05  S04-DSP-COUNT    PIC S9(9)   BINARY.
-                  05  S04-DSP-LIST     PIC X(12)   OCCURS  2.
-                  05  S04-DSP-LIST-STATE PIC S9(9) BINARY.
-              04  S04-PRTKBN           PIC X       OCCURS  2.
+                  05  S04-DSPKBN           PIC X(20).
+                  05  S04-DSPKBN-STATE     PIC S9(9)   BINARY.
+                  05  S04-DSP-COUNT        PIC S9(9)   BINARY.
+                  05  S04-DSP-LIST         PIC X(20)   OCCURS  3.
+                  05  S04-DSP-LIST-STATE   PIC S9(9)   BINARY.
+              04  S04-SYORICOMBO.
+                  05  S04-SYORIKBN         PIC X(18).
+                  05  S04-SYORIKBN-STATE   PIC S9(9)   BINARY.
+                  05  S04-SYORI-COUNT      PIC S9(9)   BINARY.
+                  05  S04-SYORI-LIST       PIC X(18)   OCCURS  2.
+                  05  S04-SYORI-LIST-STATE PIC S9(9)   BINARY.
+              04  S04-JIHICOMBO.
+                  05  S04-JIHIKBN          PIC X(12).
+                  05  S04-JIHIKBN-STATE    PIC S9(9)   BINARY.
+                  05  S04-JIHI-COUNT       PIC S9(9)   BINARY.
+                  05  S04-JIHI-LIST        PIC X(12)   OCCURS  3.
+                  05  S04-JIHI-LIST-STATE  PIC S9(9)   BINARY.

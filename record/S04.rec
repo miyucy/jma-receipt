@@ -1,32 +1,34 @@
 S04	{
 	fixed2	{
-		PTNUM	{
-			value	varchar(20);
+		B10             {
+			state	int;
 		};
-		NAME	{
-			value	varchar(50);
+		B12             {
+			state	int;
 		};
-		NYUGAI1	{
-			value	bool;
+		LBLSYORIKBN	{
+			value	varchar(22);
 		};
-		NYUGAI2	{
-			value	bool;
-		};
-		NYUGAI3	{
-			value	bool;
-		};
-		KIKANCOMBO	{
-			KIKANKBN	{
-				value	varchar(10);
+		SIHARAICOMBO	{
+			SIHARAIKBN	{
+				value	varchar(12);
 			};
 			count	int;
-			item	varchar(10)[2];
+			item	varchar(12)[3];
 		};
-		KKNKBN1	{
-			value	bool;
+		NYUGAICOMBO	{
+			NYUGAIKBN	{
+				value	varchar(6);
+			};
+			count	int;
+			item	varchar(6)[3];
 		};
-		KKNKBN2	{
-			value	bool;
+		SRYCOMBO	{
+			SRYKBN	{
+				value	varchar(8);
+			};
+			count	int;
+			item	varchar(8)[3];
 		};
 		STRSRYYMD	{
 			value	varchar(10);
@@ -35,8 +37,21 @@ S04	{
 			value	varchar(10);
 			state	int;
 		};
-		LBLSYORIKBN	{
-			value	varchar(30);
+		KIKANCOMBO	{
+			KIKANKBN	{
+				value	varchar(10);
+			};
+			count	int;
+			item	varchar(10)[2];
+		};
+		DSPCOMBO	{
+			DSPKBN	{
+				value	varchar(20);
+				state	int;
+			};
+			count	int;
+			item	varchar(20)[3];
+			state	int;
 		};
 		SYORICOMBO	{
 			SYORIKBN	{
@@ -47,20 +62,14 @@ S04	{
 			item	varchar(18)[2];
 			state	int;
 		};
-		DSPCOMBO	{
-			DSPKBN	{
+		JIHICOMBO	{
+			JIHIKBN	{
 				value	varchar(12);
 				state	int;
 			};
 			count	int;
-			item	varchar(12)[2];
+			item	varchar(12)[3];
 			state	int;
-		};
-		PRTKBN1	{
-			value	bool;
-		};
-		PRTKBN2	{
-			value	bool;
 		};
 	};
 };
