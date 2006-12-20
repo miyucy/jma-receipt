@@ -71,6 +71,7 @@
            03  WRK-PARA-PGTYPE                 PIC X(20).
            03  WRK-PARA-PGNAME                 PIC X(20).
            03  WRK-PARA-STAFFCD                PIC X(05).
+           03  WRK-PARA-SUMKBN                 PIC X(01).
       *
       *    システム領域
        01  SYS-AREA.
@@ -89,6 +90,7 @@
            03  WRK-JOBTITLE                    PIC X(100).
            03  WRK-PRTTITLE                    PIC X(100).
            03  WRK-ERRMSG                      PIC X(200).
+           03  WRK-UPDCNT                      PIC 9(06).
       *
            COPY    "MCPAREA".
       *
@@ -120,6 +122,9 @@
       *
       *    支払証明書
            COPY    "CPORCHCM31.INC".
+      *
+      *    自費内訳明細書
+           COPY    "CPORCHCM50.INC".
       *
       *    印刷ＤＢ制御
            COPY    "CPORCSPRT.INC".
@@ -191,6 +196,7 @@
                                        ORCHCM31-DSPKBN
                                        ORCHCM31-PTID
                                        ORCHCM31-NYUGAI
+                                       WRK-PARA-SUMKBN
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -219,6 +225,20 @@
       *
                MOVE    "支払証明書（月別）"
                                    TO  WRK-JOBTITLE
+      *
+           WHEN    "HC50"
+               STRING  "自費日別："        DELIMITED   BY  SIZE
+                       PTINF-NAME          DELIMITED   BY  SPACE
+               INTO    WRK-PRTTITLE
+               END-STRING
+      *
+               IF    ( WRK-PARA-SUMKBN     =   "1" )
+                   MOVE    "自費明細内訳書（月別）"
+                                   TO  WRK-JOBTITLE
+               ELSE
+                   MOVE    "自費明細内訳書（日別）"
+                                   TO  WRK-JOBTITLE
+               END-IF
       *
            WHEN    OTHER
                STRING  "支払証明："        DELIMITED   BY  SIZE
@@ -300,10 +320,24 @@
       *****************************************************************
        200-MAIN-SEC                    SECTION.
       *
-      *    処理プログラム呼出
-           CALL    WRK-PARA-PGNAME USING   SPA-AREA
-                                           ORCSPRTAREA
-                                           ORCHCM31AREA
+           IF    ( WRK-PARA-PGTYPE     =   "HC50" )
+      *
+               INITIALIZE                      ORCHCM50AREA
+               MOVE    ORCHCM31-STRSRYYMD  TO  ORCHCM50-STRSRYYMD
+               MOVE    ORCHCM31-ENDSRYYMD  TO  ORCHCM50-ENDSRYYMD
+               MOVE    WRK-PARA-SUMKBN     TO  ORCHCM50-SUMKBN
+               MOVE    ORCHCM31-PTID       TO  ORCHCM50-PTID
+               MOVE    ORCHCM31-NYUGAI     TO  ORCHCM50-NYUGAI
+               CALL    WRK-PARA-PGNAME USING   SPA-AREA
+                                               ORCSPRTAREA
+                                               ORCHCM50AREA
+               MOVE    ORCHCM50-OT-CNT     TO  WRK-UPDCNT
+           ELSE
+               CALL    WRK-PARA-PGNAME USING   SPA-AREA
+                                               ORCSPRTAREA
+                                               ORCHCM31AREA
+               MOVE    ORCHCM31-OT-CNT     TO  WRK-UPDCNT
+           END-IF
       *
            .
        200-MAIN-EXT.
@@ -347,7 +381,7 @@
       *****************************************************************
        300-END-SEC                     SECTION.
       *
-           IF    ( ORCHCM31-OT-CNT =   ZERO )
+           IF    ( WRK-UPDCNT      =   ZERO )
                MOVE    "処理対象のデータがありませんでした"
                                    TO  WRK-ERRMSG
                PERFORM 500-ERR-HENSYU-SEC
@@ -359,7 +393,7 @@
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
-           MOVE    ORCHCM31-OT-CNT TO  JOB-UPDCNT
+           MOVE    WRK-UPDCNT      TO  JOB-UPDCNT
            CALL    "ORCSJOB"           USING
                                        ORCSJOBKANRIAREA
                                        JOBKANRI-REC

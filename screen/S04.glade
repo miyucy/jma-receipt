@@ -14,7 +14,7 @@
   <class>GtkWindow</class>
   <name>S04</name>
   <width>510</width>
-  <height>320</height>
+  <height>350</height>
   <signal>
     <name>map_event</name>
     <handler>map_event</handler>
@@ -44,131 +44,10 @@
     <name>fixed2</name>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>label168</name>
-      <x>24</x>
-      <y>88</y>
-      <width>64</width>
-      <height>24</height>
-      <label>期間指定</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label167</name>
-      <x>24</x>
-      <y>56</y>
-      <width>72</width>
-      <height>24</height>
-      <label>入外区分</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label166</name>
-      <x>24</x>
-      <y>176</y>
-      <width>110</width>
-      <height>25</height>
-      <label>請求内容の印字</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label163</name>
-      <x>24</x>
-      <y>144</y>
-      <width>65</width>
-      <height>25</height>
-      <label>期間区分</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label164</name>
-      <x>24</x>
-      <y>24</y>
-      <width>88</width>
-      <height>24</height>
-      <label>支払明細書</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label162</name>
-      <x>352</x>
-      <y>88</y>
-      <width>24</width>
-      <height>24</height>
-      <label>〜</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator1</name>
-      <x>16</x>
-      <y>120</y>
-      <width>480</width>
-      <height>16</height>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label169</name>
-      <x>24</x>
-      <y>240</y>
-      <width>112</width>
-      <height>24</height>
-      <label>自費内訳明細書</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
       <class>GtkButton</class>
       <name>B01</name>
       <x>24</x>
-      <y>280</y>
+      <y>312</y>
       <width>88</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -190,14 +69,14 @@
     <widget>
       <class>GtkButton</class>
       <name>B10</name>
-      <x>200</x>
-      <y>280</y>
+      <x>196</x>
+      <y>312</y>
       <width>120</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <accelerator>
 	<modifiers>0</modifiers>
-	<key>GDK_F1</key>
+	<key>GDK_F10</key>
 	<signal>clicked</signal>
       </accelerator>
       <signal>
@@ -214,7 +93,7 @@
       <class>GtkButton</class>
       <name>B12</name>
       <x>400</x>
-      <y>280</y>
+      <y>312</y>
       <width>88</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -234,28 +113,68 @@
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>LBLSYORIKBN</name>
-      <x>24</x>
-      <y>208</y>
-      <width>165</width>
+      <class>GtkPandaEntry</class>
+      <name>STRSRYYMD</name>
+      <x>236</x>
+      <y>108</y>
+      <width>112</width>
       <height>25</height>
-      <label>期間終了日以後の支払い</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Thu, 19 Dec 2002 01:30:23 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Thu, 19 Dec 2002 01:32:27 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>10</text_max_length>
+      <text></text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>ENDSRYYMD</name>
+      <x>372</x>
+      <y>108</y>
+      <width>112</width>
+      <height>25</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Thu, 19 Dec 2002 01:30:45 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Thu, 19 Dec 2002 01:32:45 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>10</text_max_length>
+      <text></text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>False</xim_enabled>
     </widget>
 
     <widget>
       <class>GtkPandaCombo</class>
       <name>SIHARAICOMBO</name>
       <x>120</x>
-      <y>24</y>
+      <y>44</y>
       <width>112</width>
-      <height>24</height>
+      <height>25</height>
       <value_in_list>False</value_in_list>
       <ok_if_empty>True</ok_if_empty>
       <case_sensitive>False</case_sensitive>
@@ -293,9 +212,9 @@
       <class>GtkPandaCombo</class>
       <name>NYUGAICOMBO</name>
       <x>120</x>
-      <y>56</y>
+      <y>76</y>
       <width>112</width>
-      <height>24</height>
+      <height>25</height>
       <value_in_list>False</value_in_list>
       <ok_if_empty>True</ok_if_empty>
       <case_sensitive>False</case_sensitive>
@@ -333,9 +252,9 @@
       <class>GtkPandaCombo</class>
       <name>SRYCOMBO</name>
       <x>120</x>
-      <y>88</y>
+      <y>108</y>
       <width>112</width>
-      <height>24</height>
+      <height>25</height>
       <value_in_list>False</value_in_list>
       <ok_if_empty>True</ok_if_empty>
       <case_sensitive>False</case_sensitive>
@@ -370,66 +289,67 @@
     </widget>
 
     <widget>
-      <class>GtkPandaEntry</class>
-      <name>STRSRYYMD</name>
-      <x>240</x>
-      <y>88</y>
-      <width>112</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 19 Dec 2002 01:30:23 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Thu, 19 Dec 2002 01:32:27 GMT</last_modification_time>
-      </signal>
-      <editable>True</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>10</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
+      <class>GtkLabel</class>
+      <name>label164</name>
+      <x>24</x>
+      <y>44</y>
+      <width>88</width>
+      <height>25</height>
+      <label>支払証明書</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
     </widget>
 
     <widget>
-      <class>GtkPandaEntry</class>
-      <name>ENDSRYYMD</name>
-      <x>376</x>
-      <y>88</y>
-      <width>112</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 19 Dec 2002 01:30:45 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Thu, 19 Dec 2002 01:32:45 GMT</last_modification_time>
-      </signal>
-      <editable>True</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>10</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
+      <class>GtkLabel</class>
+      <name>label167</name>
+      <x>24</x>
+      <y>76</y>
+      <width>72</width>
+      <height>25</height>
+      <label>入外区分</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label168</name>
+      <x>24</x>
+      <y>108</y>
+      <width>64</width>
+      <height>25</height>
+      <label>期間指定</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator1</name>
+      <x>16</x>
+      <y>156</y>
+      <width>480</width>
+      <height>16</height>
     </widget>
 
     <widget>
       <class>GtkPandaCombo</class>
       <name>KIKANCOMBO</name>
-      <x>200</x>
-      <y>144</y>
+      <x>288</x>
+      <y>180</y>
       <width>112</width>
       <height>24</height>
       <value_in_list>False</value_in_list>
@@ -466,10 +386,74 @@
     </widget>
 
     <widget>
+      <class>GtkLabel</class>
+      <name>label163</name>
+      <x>88</x>
+      <y>180</y>
+      <width>65</width>
+      <height>25</height>
+      <label>期間区分</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label166</name>
+      <x>88</x>
+      <y>208</y>
+      <width>110</width>
+      <height>25</height>
+      <label>請求内容の印字</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLSYORIKBN</name>
+      <x>88</x>
+      <y>236</y>
+      <width>165</width>
+      <height>25</height>
+      <label>期間終了日以後の支払い</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label169</name>
+      <x>88</x>
+      <y>264</y>
+      <width>112</width>
+      <height>24</height>
+      <label>自費内訳明細書</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
       <class>GtkPandaCombo</class>
       <name>DSPCOMBO</name>
-      <x>200</x>
-      <y>176</y>
+      <x>288</x>
+      <y>208</y>
       <width>176</width>
       <height>24</height>
       <value_in_list>False</value_in_list>
@@ -508,9 +492,9 @@
     <widget>
       <class>GtkPandaCombo</class>
       <name>SYORICOMBO</name>
-      <x>200</x>
-      <y>208</y>
-      <width>152</width>
+      <x>288</x>
+      <y>236</y>
+      <width>148</width>
       <height>24</height>
       <value_in_list>False</value_in_list>
       <ok_if_empty>True</ok_if_empty>
@@ -548,8 +532,8 @@
     <widget>
       <class>GtkPandaCombo</class>
       <name>JIHICOMBO</name>
-      <x>200</x>
-      <y>240</y>
+      <x>288</x>
+      <y>264</y>
       <width>112</width>
       <height>24</height>
       <value_in_list>False</value_in_list>
@@ -583,6 +567,22 @@
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label162</name>
+      <x>348</x>
+      <y>108</y>
+      <width>24</width>
+      <height>25</height>
+      <label>〜</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
     </widget>
   </widget>
 </widget>

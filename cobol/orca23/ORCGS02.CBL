@@ -1548,21 +1548,7 @@
            MOVE       "HC32"           TO  WRK-PGTYPE (2)
       *
       *----(03.04.01)--ADD-START---
-      *    自費内訳明細書
-           INITIALIZE                      ORCSPRTNMAREA
-           MOVE    "1"                 TO  ORCSPRTNM-KBN
-           MOVE    "00000008"          TO  ORCSPRTNM-KBNCD
-           MOVE    SPA-SYSYMD          TO  ORCSPRTNM-SRYYMD
-           MOVE    "2"                 TO  ORCSPRTNM-NYUGAIKBN
-           CALL    "ORCSPRTNM"         USING
-                                           ORCSPRTNMAREA
-                                           WRK-SPA-AREA
-                                           SYS-1032-REC
-           IF    ( ORCSPRTNM-RC        =   ZERO )
-              MOVE    ORCSPRTNM-PRTPG  TO  WRK-PGNAME (3)
-           ELSE
-              MOVE    "ORCHCM50"       TO  WRK-PGNAME (3)
-           END-IF
+           MOVE    "ORCHCM50"          TO  WRK-PGNAME (3)
       *
            MOVE       "HC50"           TO  WRK-PGTYPE (3)
       *----(03.04.01)--ADD-START---

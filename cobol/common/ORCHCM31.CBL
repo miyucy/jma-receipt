@@ -46,8 +46,8 @@
        WORKING-STORAGE             SECTION.
       *
       *    帳票
-           COPY    "HCM31V02.INC"  REPLACING   //HCM31V02//
-                                   BY          //HCM31//.
+           COPY    "HCM31G.INC".
+           COPY    "HCM31N.INC".
       *
       *    フラグ領域
        01  STS-AREA.
@@ -60,6 +60,7 @@
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-PTINF           PIC 9(01).
            03  FLG-PTNUM           PIC 9(01).
+           03  FLG-HKNCOMBI        PIC 9(01).
            03  FLG-TAISYO          PIC 9(01).
       *
       *    添字領域
@@ -70,6 +71,8 @@
            03  IDX2                PIC 9(05).
            03  IDX3                PIC 9(05).
            03  IDX4                PIC 9(05).
+           03  IDX-SRH             PIC 9(05).
+           03  IDX-LINE            PIC 9(05).
       *
       *    システム領域
        01  SYS-AREA.
@@ -79,6 +82,7 @@
        01  CNT-AREA.
            03  CNT-PAGE            PIC 9(03).
            03  CNT-LINE            PIC 9(03).
+           03  CNT-OUT             PIC 9(03).
       *
       *    一時領域
        01  WRK-AREA.
@@ -98,28 +102,62 @@
            03  WRK-HENSYU-TBL.
                05  WRK-KEY-YMD     PIC X(08).
                05  WRK-HEN-MAX     PIC 9(04).
+               05  WRK-NYUIN       PIC 9(01).
       *        最大２０００件・・・２００１件目は並び替え用
                05  WRK-HENSYU-OCC  OCCURS  2001.
-                   07  WRK-HIDUKE  PIC X(08).
-                   07  WRK-TENSU   PIC S9(07).
-                   07  WRK-JIHI    PIC S9(11).
-                   07  WRK-GAKU    PIC S9(11).
+                   07  WRK-HENSYU-KEY.
+                       09  WRK-NYUGAIKBN  PIC X(01).
+                       09  WRK-HIDUKE PIC X(08).
+                   07  WRK-TENSU      PIC S9(07).
+                   07  WRK-HOKEN      PIC S9(11).
+                   07  WRK-SYOKUJI    PIC S9(11).
+                   07  WRK-JIHI       PIC S9(11).
+                   07  WRK-GAKU       PIC S9(11).
       *
            03  WRK-GHENSYU-TBL.
                05  WRK-GHKNTEN     PIC S9(07).
+               05  WRK-GFTNMONEY   PIC S9(11).
+               05  WRK-GSKJMONEY   PIC S9(11).
                05  WRK-GJIHIMONEY  PIC S9(11).
                05  WRK-GSKYMONEY   PIC S9(11).
       *
+           03  WRK-HKNTEN          PIC S9(11).
+           03  WRK-FTNMONEY        PIC S9(11).
+           03  WRK-SKJMONEY        PIC S9(11).
            03  WRK-JIHIMONEY       PIC S9(11).
+           03  WRK-HKNCOMBINUM-X.
+               05  WRK-HKNCOMBINUM PIC 9(04).
+           03  WRK-HKN-SKYMONEY    PIC S9(11).
       *
            03  WRK-Z3              PIC ZZZ.
            03  WRK-Z6              PIC ZZZ,ZZZ.
-           03  WRK-Z7              PIC ZZZZZZZ.
+           03  WRK-Z7              PIC Z,ZZZ,ZZZ.
            03  WRK-Z9              PIC ---,---,---.
+           03  WRK-KINGAKU         PIC S9(11).
+           03  WRK-ZZZZZZ9         PIC Z,ZZZ,ZZ9.
+           03  WRK-ZZZZZZZZ9       PIC ---,---,--9.
+           03  WRK-HOJOKBN         PIC X(01).
+      *
+       01  SRH-AREA.
+           03  SRH-CD                      PIC X(10).
+           03  SRH-DAT-G.
+               05  SRH-DAT                 PIC X(100).
+           03  SRH-COMB-DAT.
+               05  SRH-COMB-HKNCOMBINUM    PIC 9(04).
+               05  SRH-COMB-HOJOKBN        PIC X(01).
+               05  SRH-COMB-MAX            PIC 9(03).
+               05  SRH-COMB-OCC            OCCURS  100.
+                   07  SRH-COMB-HKNCOMBINUML
+                                           PIC X(04).
+                   07  SRH-COMB-HOJOKBNL   PIC X(01).
+      *
+       01  KEY-AREA.
+           03  KEY-NYUGAIKBN       PIC X(01).
       *
        01  CONST-AREA.
            03  CONST-HEN-MAX       PIC 9(05)   VALUE   2000.
            03  CONST-LINE-MAX      PIC 9(05)   VALUE   30.
+           03  CONST-SRH-COMB-MAX  PIC 9(03)   VALUE   100.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -147,6 +185,10 @@
       *    患者番号
        01  PTNUM-REC.
            COPY    "CPPTNUM.INC".
+      *
+      *    保険組み合わせ
+       01  HKNCOMBI-REC.
+           COPY    "CPHKNCOMBI.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -212,6 +254,8 @@
            INITIALIZE                  SYS-AREA
            INITIALIZE                  WRK-HENSYU-TBL
            INITIALIZE                  ORCHCM31-OT-AREA
+           INITIALIZE                  SRH-AREA
+           INITIALIZE                  KEY-AREA
       *
            ACCEPT  SYS-TIME            FROM    TIME
       *
@@ -227,10 +271,50 @@
       *    患者番号読み込み
            PERFORM 900-PTNUM-READ-SEC
       *
+      *    患者保険組合せ取得
+           PERFORM 1001-HKNCOMBI-HEN-SEC
+      *
            .
        100-INIT-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    患者保険組合せ取得処理
+      *****************************************************************
+       1001-HKNCOMBI-HEN-SEC       SECTION.
+      *
+           PERFORM 900-HKNCOMBI-KEY2-SEL-SEC
+      *
+           PERFORM UNTIL ( FLG-HKNCOMBI    NOT =   ZERO )
+                    OR   ( SRH-COMB-MAX       >=   CONST-SRH-COMB-MAX )
+      *
+               IF    ( COMB-TEKSTYMD   <=  ORCHCM31-ENDSRYYMD )
+                AND  ( COMB-TEKEDYMD   >=  ORCHCM31-STRSRYYMD )
+      *
+                   COMPUTE SRH-COMB-MAX
+                       =   SRH-COMB-MAX    +   1
+      *
+                   MOVE    COMB-HKNCOMBINUM
+                                       TO  WRK-HKNCOMBINUM
+                   MOVE    WRK-HKNCOMBINUM-X
+                                       TO  SRH-COMB-HKNCOMBINUML
+                                                          (SRH-COMB-MAX)
+                   MOVE    COMB-HOJOKBN TO SRH-COMB-HOJOKBNL
+                                                          (SRH-COMB-MAX)
+      *
+               END-IF
+      *
+               PERFORM 900-HKNCOMBI-KEY2-FET-SEC
+      *
+           END-PERFORM
+      *
+           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       1001-HKNCOMBI-HEN-EXT.
+           EXIT.
       *****************************************************************
       *    主処理
       *****************************************************************
@@ -243,10 +327,40 @@
            PERFORM 230-NARABIKAE-SEC
       *
            MOVE    ZERO            TO  CNT-LINE
-           MOVE    ZERO            TO  CNT-PAGE
       *
-           PERFORM VARYING IDX4    FROM    1   BY  1
-                   UNTIL ( IDX4    >   WRK-HEN-MAX )
+           MOVE    1               TO  IDX4
+           PERFORM UNTIL ( IDX4    >   WRK-HEN-MAX )
+      *
+               INITIALIZE              WRK-GHENSYU-TBL
+               MOVE    ZERO        TO  CNT-PAGE
+      *
+               MOVE    WRK-NYUGAIKBN (IDX4)
+                                   TO  KEY-NYUGAIKBN
+      *
+               PERFORM UNTIL ( IDX4    >   WRK-HEN-MAX )
+                        OR   ( WRK-NYUGAIKBN (IDX4)
+                                   NOT =   KEY-NYUGAIKBN )
+      *
+                   PERFORM 2001-EDIT-SEC
+      *
+               END-PERFORM
+      *
+           END-PERFORM
+      *
+           MOVE    1               TO  FLG-END
+      *
+           .
+       200-MAIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    編集処理
+      *****************************************************************
+       2001-EDIT-SEC               SECTION.
+      *
+           PERFORM UNTIL ( IDX4    >   WRK-HEN-MAX )
+                    OR   ( WRK-NYUGAIKBN(IDX4) NOT =   KEY-NYUGAIKBN )
+                    OR   ( CNT-LINE               >=  CONST-LINE-MAX )
       *
       *        対象データチェック処理
                PERFORM 230-TAISYO-CHK-SEC
@@ -256,28 +370,22 @@
       *
                END-IF
       *
-               IF    ( CNT-LINE    >=  CONST-LINE-MAX )
-      *
-                   IF    ( IDX4    >=  WRK-HEN-MAX )
-                       PERFORM 240-GOKEI-HEN-SEC
-                   END-IF
-      *
-                       PERFORM 250-PRINT-SEC
-               END-IF
+               COMPUTE IDX4    =   IDX4    +   1
       *
            END-PERFORM
       *
-           IF    ( CNT-LINE    >   ZERO )
-               PERFORM 240-GOKEI-HEN-SEC
+           IF    ( IDX4                    >   WRK-HEN-MAX )
+            OR   ( WRK-NYUGAIKBN(IDX4) NOT =   KEY-NYUGAIKBN )
+                       PERFORM 240-GOKEI-HEN-SEC
+           END-IF
+      *
+           IF    ( CNT-LINE                >   ZERO )
                PERFORM 250-PRINT-SEC
            END-IF
       *
-           MOVE    1               TO  FLG-END
-      *
            .
-       200-MAIN-EXT.
+       2001-EDIT-EXT.
            EXIT.
-      *
       *****************************************************************
       *    編集処理
       *****************************************************************
@@ -297,7 +405,9 @@
       *    収納マスターがなくなるまで繰り返す
            PERFORM UNTIL   FLG-SYUNOU      =   1
       *
-               IF    ( SYU-DENPJTIKBN  NOT =   "3" )
+               PERFORM 2101-TAISYO-CHK-SEC
+      *
+               IF    ( FLG-TAISYO      =   1 )
       *
                    IF    ( ORCHCM31-KIKANKBN   =   "1" )
                        PERFORM 2101-SRYKIKAN-HEN-SEC
@@ -315,27 +425,90 @@
       *
            MOVE    WRK-TABLE       TO  MCP-TABLE
            MOVE    WRK-PATH        TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSE-SEC
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        210-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
+      *    対象データチェック処理
+      *****************************************************************
+       2101-TAISYO-CHK-SEC             SECTION.
+      *
+           MOVE    1               TO  FLG-TAISYO
+      *
+           IF    ( SYU-DENPJTIKBN      =   "3" )
+                   MOVE    ZERO    TO  FLG-TAISYO
+           END-IF
+      *
+           .
+       2101-TAISYO-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    診療期間より編集処理
       *****************************************************************
        2101-SRYKIKAN-HEN-SEC           SECTION.
       *
            MOVE    ZERO            TO  IDX2
+           MOVE    ZERO            TO  WRK-HKNTEN
+                                       WRK-FTNMONEY
+                                       WRK-SKJMONEY
+                                       WRK-JIHIMONEY
       *
-      *    自費計算
-           COMPUTE WRK-JIHIMONEY   =   SYU-RMSAGAKU
-                                   +   SYU-SKYMONEY-SKJ-JIHI-KEI
-                                   +   SYU-TOTAL-TGMONEY
-                                   +   SYU-TOTAL-TGMONEY-TAX
-                                   +   SYU-JIHI-TOTAL
-                                   +   SYU-JIHI-TOTAL-TAX
-                                   +   SYU-JIHI-TAX
+           IF    ( SYU-SYUHKNNUM (1:2) =   "98" )
+      *
+      *        保険組合せ取得
+               MOVE    SYU-HKNCOMBINUM TO  SRH-CD
+               PERFORM 21011-HKNCOMBI-HEN-SEC
+               MOVE    SRH-DAT         TO  WRK-HOJOKBN
+      *
+               COMPUTE WRK-JIHIMONEY   =   SYU-HKNTEKMONEY
+                                       +   SYU-RJN-FTN
+                                       +   SYU-KOH-FTN
+                                       +   SYU-RSI-TOTAL
+      *
+                                       +   SYU-SKYMONEY-SKJ-KEI
+                                       +   SYU-SKYMONEY-LIFE-KEI
+      *
+                                       +   SYU-RMSAGAKU
+                                       +   SYU-SKYMONEY-SKJ-JIHI-KEI
+                                       +   SYU-SKYMONEY-LIFE-JIHI-KEI
+                                       +   SYU-TOTAL-TGMONEY
+                                       +   SYU-TOTAL-TGMONEY-TAX
+                                       +   SYU-JIHI-TOTAL
+                                       +   SYU-JIHI-TOTAL-TAX
+                                       +   SYU-JIHI-TAX
+                   IF    ( WRK-HOJOKBN     =   "1" )
+                       COMPUTE WRK-JIHIMONEY
+                           =   WRK-JIHIMONEY
+                           +   SYU-SKYMONEY-TAX-SAI
+                   END-IF
+      *
+           ELSE
+      *        保険点数
+               COMPUTE WRK-HKNTEN      =   SYU-TOTAL-HKNTEN
+      *
+      *        保険分負担額
+               COMPUTE WRK-FTNMONEY    =   SYU-HKNTEKMONEY
+                                       +   SYU-RJN-FTN
+                                       +   SYU-KOH-FTN
+                                       +   SYU-RSI-TOTAL
+      *
+      *        食事・生活負担額
+               COMPUTE WRK-SKJMONEY    =   SYU-SKYMONEY-SKJ-KEI
+                                       +   SYU-SKYMONEY-LIFE-KEI
+      *
+      *        自費分負担額
+               COMPUTE WRK-JIHIMONEY   =   SYU-RMSAGAKU
+                                       +   SYU-SKYMONEY-SKJ-JIHI-KEI
+                                       +   SYU-SKYMONEY-LIFE-JIHI-KEI
+                                       +   SYU-TOTAL-TGMONEY
+                                       +   SYU-TOTAL-TGMONEY-TAX
+                                       +   SYU-JIHI-TOTAL
+                                       +   SYU-JIHI-TOTAL-TAX
+                                       +   SYU-JIHI-TAX
+           END-IF
       *
       *    入金編集処理
            PERFORM 220-NUKIN-HENSYU-SEC
@@ -344,7 +517,9 @@
                    UNTIL ( IDX1        >   WRK-HEN-MAX )
                     OR   ( IDX2    NOT =   ZERO )
       *
-               IF    ( SYU-SRYYMD  =   WRK-HIDUKE (IDX1) )
+               IF    ( SYU-NYUGAIKBN
+                                   =   WRK-NYUGAIKBN(IDX1) )
+                AND  ( SYU-SRYYMD  =   WRK-HIDUKE (IDX1) )
                    MOVE    IDX1    TO  IDX2
                END-IF
       *
@@ -359,33 +534,69 @@
       *
                MOVE    WRK-HEN-MAX TO  IDX2
       *
-               MOVE    SYU-SRYYMD  TO  WRK-HIDUKE (IDX2)
+               MOVE    SYU-NYUGAIKBN   TO  WRK-NYUGAIKBN (IDX2)
+               MOVE    SYU-SRYYMD      TO  WRK-HIDUKE (IDX2)
       *
            END-IF
       *
            COMPUTE WRK-TENSU(IDX2)
-               =   WRK-TENSU(IDX2) +   SYU-TOTAL-HKNTEN
+               =   WRK-TENSU(IDX2)     +   WRK-HKNTEN
       *
-           COMPUTE WRK-JIHI(IDX2)
-               =   WRK-JIHI(IDX2)  +   WRK-JIHIMONEY
+           COMPUTE WRK-HOKEN(IDX2)
+               =   WRK-HOKEN(IDX2)     +   WRK-FTNMONEY
       *
-           COMPUTE WRK-GAKU (IDX2)
-               =   WRK-GAKU (IDX2) +   HCM31S01-KINGAKU (1)
+           COMPUTE WRK-SYOKUJI(IDX2)
+               =   WRK-SYOKUJI(IDX2)   +   WRK-SKJMONEY
       *
-      *    合計集計
-           COMPUTE WRK-GHKNTEN
-               =   WRK-GHKNTEN     +   SYU-TOTAL-HKNTEN
+           IF    ( ORCHCM31-DSPKBN =   "3" )
+               CONTINUE
+           ELSE
+               COMPUTE WRK-JIHI(IDX2)
+                   =   WRK-JIHI(IDX2)  +   WRK-JIHIMONEY
+           END-IF
       *
-      *    自費合計集計
-           COMPUTE WRK-GJIHIMONEY
-               =   WRK-GJIHIMONEY  +   WRK-JIHIMONEY
+           IF    ( ORCHCM31-DSPKBN =   "3" )
       *
-      *    支払額合計
-           COMPUTE WRK-GSKYMONEY
-               =   WRK-GSKYMONEY   +   HCM31S01-KINGAKU (1)
+               COMPUTE WRK-HKN-SKYMONEY
+                   =   WRK-FTNMONEY
+                   +   WRK-SKJMONEY
+      *
+               IF    ( WRK-HKN-SKYMONEY    >   HCM31S01-KINGAKU (1) )
+                   COMPUTE WRK-GAKU (IDX2)
+                       =   WRK-GAKU (IDX2) +   HCM31S01-KINGAKU (1)
+               ELSE
+                   COMPUTE WRK-GAKU (IDX2)
+                       =   WRK-GAKU (IDX2) +   WRK-HKN-SKYMONEY
+               END-IF
+           ELSE
+               COMPUTE WRK-GAKU (IDX2)
+                   =   WRK-GAKU (IDX2) +   HCM31S01-KINGAKU (1)
+           END-IF
       *
            .
        2101-SRYKIKAN-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険組合せ情報取得処理
+      *****************************************************************
+       21011-HKNCOMBI-HEN-SEC          SECTION.
+      *
+           INITIALIZE                  SRH-DAT-G
+      *
+           PERFORM VARYING IDX-SRH FROM    1   BY  1
+                   UNTIL ( IDX-SRH     >   SRH-COMB-MAX )
+                    OR   ( SRH-DAT NOT =   SPACE )
+      *
+               IF  ( SRH-COMB-HKNCOMBINUML (IDX-SRH)
+                                       =   SRH-CD )
+                   MOVE    SRH-COMB-HOJOKBNL (IDX-SRH)
+                                       TO  SRH-DAT
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       21011-HKNCOMBI-HEN-EXT.
            EXIT.
       *****************************************************************
       *    支払期間より編集処理
@@ -408,7 +619,9 @@
                            UNTIL ( IDX1    >   WRK-HEN-MAX )
                             OR   ( IDX2    NOT =   ZERO )
       *
-                       IF    ( HCM31S01-NYKNYMD(IDX3)
+                       IF    ( SYU-NYUGAIKBN
+                                           =   WRK-NYUGAIKBN(IDX1) )
+                        AND  ( HCM31S01-NYKNYMD(IDX3)
                                            =   WRK-HIDUKE (IDX1) )
                            MOVE    IDX1    TO  IDX2
                        END-IF
@@ -424,15 +637,14 @@
       *
                    IF    ( IDX2        NOT =   ZERO )
       *
+                       MOVE    SYU-NYUGAIKBN
+                                           TO  WRK-NYUGAIKBN (IDX2)
                        MOVE    HCM31S01-NYKNYMD(IDX3)
                                            TO  WRK-HIDUKE (IDX2)
       *
+      *
                        COMPUTE WRK-GAKU (IDX2)
                            =   WRK-GAKU (IDX2)
-                           +   HCM31S01-KINGAKU (IDX3)
-      *
-                       COMPUTE WRK-GSKYMONEY
-                           =   WRK-GSKYMONEY
                            +   HCM31S01-KINGAKU (IDX3)
                    END-IF
                END-IF
@@ -490,7 +702,8 @@
            PERFORM UNTIL   IDY =   ZERO
                PERFORM VARYING IDX FROM 1 BY 1
                        UNTIL   IDX >   IDY
-                   IF      WRK-HIDUKE(IDX)     >   WRK-HIDUKE(IDY)
+                   IF      WRK-HENSYU-KEY (IDX)
+                                   >   WRK-HENSYU-KEY (IDY)
                        MOVE    WRK-HENSYU-OCC(IDX)
                                        TO  WRK-HENSYU-OCC(2001)
                        MOVE    WRK-HENSYU-OCC(IDY)
@@ -511,18 +724,20 @@
       *****************************************************************
        230-TAISYO-CHK-SEC              SECTION.
       *
-           MOVE    ZERO            TO  FLG-TAISYO
+           MOVE    1               TO  FLG-TAISYO
+      *
+           IF    ( WRK-TENSU    (IDX4) =   ZERO )
+            AND  ( WRK-HOKEN    (IDX4) =   ZERO )
+            AND  ( WRK-SYOKUJI  (IDX4) =   ZERO )
+            AND  ( WRK-JIHI     (IDX4) =   ZERO )
+            AND  ( WRK-GAKU     (IDX4) =   ZERO )
+                   MOVE    ZERO    TO  FLG-TAISYO
+           END-IF
       *
            IF    ( ORCHCM31-KIKANKBN   =   "1"   )
-               IF    ( ORCHCM31-DSPKBN =   "2"   )
-                   IF    ( WRK-GAKU (IDX4) >   ZERO )
-                       MOVE    1       TO  FLG-TAISYO
-                   END-IF
-               ELSE
-                       MOVE    1       TO  FLG-TAISYO
-               END-IF
-           ELSE
-                       MOVE    1       TO  FLG-TAISYO
+            AND  ( ORCHCM31-DSPKBN     =   "2"   )
+            AND  ( WRK-GAKU (IDX4) =   ZERO )
+                   MOVE    ZERO    TO  FLG-TAISYO
            END-IF
       *
            .
@@ -533,59 +748,51 @@
       *****************************************************************
        240-HEAD-HEN-SEC            SECTION.
       *
-           INITIALIZE                  HCM31
+           INITIALIZE                  HCM31N
       *
       *    開始診療日
            MOVE    ORCHCM31-STRSRYYMD  TO  WRK-SYMD
            PERFORM 31012-SEIWA-HEN-SEC
-           MOVE    WRK-HENYMDG         TO  HCM31-STRSRYYMD
+           MOVE    WRK-HENYMDG         TO  HCM31N-STRSRYYMD
       *
       *    終了診療日
            MOVE    ORCHCM31-ENDSRYYMD  TO  WRK-SYMD
            PERFORM 31012-SEIWA-HEN-SEC
-           MOVE    WRK-HENYMDG         TO  HCM31-ENDSRYYMD
+           MOVE    WRK-HENYMDG         TO  HCM31N-ENDSRYYMD
       *
       *    患者番号
-           MOVE    PTNUM-PTNUM         TO  HCM31-PTNUM
+           MOVE    PTNUM-PTNUM         TO  HCM31N-PTNUM
       *
       *    患者名称
-           MOVE    PTINF-NAME          TO  HCM31-PTNAME
+           MOVE    PTINF-NAME          TO  HCM31N-PTNAME
       *
       *    発行日
            MOVE    SPA-SYSYMD          TO  WRK-SYMD
            PERFORM 31012-SEIWA-HEN-SEC
-           MOVE    WRK-HENYMDG         TO  HCM31-HAKKOYMD
-      *
-      *    入外
-           EVALUATE    ORCHCM31-NYUGAI
-               WHEN    "1"
-                   MOVE    "（入院）"      TO  HCM31-NYUGAI
-               WHEN    "2"
-                   MOVE    "（外来）"      TO  HCM31-NYUGAI
-           END-EVALUATE
+           MOVE    WRK-HENYMDG         TO  HCM31N-HAKKOYMD
       *
       *    頁
            COMPUTE CNT-PAGE            =   CNT-PAGE    +   1
            MOVE    CNT-PAGE            TO  WRK-Z3
-           MOVE    WRK-Z3              TO  HCM31-PAGE
+           MOVE    WRK-Z3              TO  HCM31N-PAGE
       *
       *    医療機関住所
            IF    ( SYS-1002-ADRS (61:) =   SPACE )
-               MOVE    SYS-1002-ADRS       TO  HCM31-HOSPADRS
+               MOVE    SYS-1002-ADRS       TO  HCM31N-HOSPADRS
            ELSE
-               MOVE    SYS-1002-ADRS       TO  HCM31-HOSPADRS2
+               MOVE    SYS-1002-ADRS       TO  HCM31N-HOSPADRS2
            END-IF
       *
       *    医療機関名
-           MOVE    SYS-1001-HOSPNAME   TO  HCM31-HOSPNAME
+           MOVE    SYS-1001-HOSPNAME   TO  HCM31N-HOSPNAME
       *
       *    医療機関ＴＥＬ
-           MOVE    SYS-1002-TEL        TO  HCM31-HOSPTEL
+           MOVE    SYS-1002-TEL        TO  HCM31N-HOSPTEL
       *
            IF    ( ORCHCM31-KIKANKBN   =   "2" )
-               MOVE    "支　払　日"    TO  HCM31-LABELYMD
+               MOVE    "支払日"        TO  HCM31N-LABELYMD
            ELSE
-               MOVE    "診　療　日"    TO  HCM31-LABELYMD
+               MOVE    "診療日"        TO  HCM31N-LABELYMD
            END-IF
       *
            .
@@ -605,32 +812,62 @@
       *    日付
            MOVE    WRK-HIDUKE(IDX4)    TO  WRK-SYMD
            PERFORM 31012-SEIWA-HEN-SEC
-           MOVE    WRK-HENYMDG(11:12)  TO  HCM31-SRYYMD(CNT-LINE)
+           MOVE    WRK-HENYMDG(11:12)  TO  HCM31N-SRYYMD(CNT-LINE)
       *
            IF    ( ORCHCM31-KIKANKBN   =   "1"   )
-            AND  ( ORCHCM31-DSPKBN     =   "1"   )
+            AND  ( ORCHCM31-DSPKBN     =   "1" OR "3" )
       *
       *        保険点数
                IF      WRK-TENSU(IDX4)     NOT =   ZERO
-                   MOVE    WRK-TENSU(IDX4) TO  WRK-Z7
-                   MOVE    WRK-Z7          TO  HCM31-HKNTEN   (CNT-LINE)
-                   MOVE    "点"            TO  HCM31-TEN      (CNT-LINE)
+                   MOVE    WRK-TENSU(IDX4) TO WRK-Z7
+                   MOVE    WRK-Z7          TO HCM31N-HKNTEN  (CNT-LINE)
+                   MOVE    "点"            TO HCM31N-TEN     (CNT-LINE)
                END-IF
       *
-      *        自費診療
+      *        保険分負担額
+               IF      WRK-HOKEN(IDX4)     NOT =   ZERO
+                   MOVE    WRK-HOKEN(IDX4) TO WRK-Z9
+                   MOVE    WRK-Z9          TO HCM31N-FTNMONEY(CNT-LINE)
+                   MOVE    "円"            TO HCM31N-HYEN    (CNT-LINE)
+               END-IF
+      *
+      *        食事・生活負担額
+               IF      WRK-SYOKUJI(IDX4)   NOT =   ZERO
+                   MOVE    WRK-SYOKUJI(IDX4) TO  WRK-Z9
+                   MOVE    WRK-Z9          TO HCM31N-SKJMONEY(CNT-LINE)
+                   MOVE    "円"            TO HCM31N-SYEN    (CNT-LINE)
+               END-IF
+      *
+      *        自費分負担額
                IF      WRK-JIHI(IDX4)      NOT =   ZERO
-                   MOVE    WRK-JIHI(IDX4)  TO  WRK-Z9
-                   MOVE    WRK-Z9          TO  HCM31-JIHIMONEY(CNT-LINE)
-                   MOVE    "円"            TO  HCM31-JYEN     (CNT-LINE)
+                   MOVE    WRK-JIHI(IDX4)  TO WRK-Z9
+                   MOVE    WRK-Z9          TO HCM31N-JIHIMONEY(CNT-LINE)
+                   MOVE    "円"            TO HCM31N-JYEN     (CNT-LINE)
                END-IF
            END-IF
+      *
       *
       *    入返金額
            IF    ( WRK-GAKU(IDX4)      NOT =   ZERO )
                MOVE    WRK-GAKU(IDX4)  TO  WRK-Z9
-               MOVE    WRK-Z9          TO  HCM31-SKYMONEY(CNT-LINE)
-               MOVE    "円"            TO  HCM31-YEN     (CNT-LINE)
+               MOVE    WRK-Z9          TO  HCM31N-SKYMONEY(CNT-LINE)
+               MOVE    "円"            TO  HCM31N-YEN     (CNT-LINE)
            END-IF
+      *
+           COMPUTE WRK-GHKNTEN
+               =   WRK-GHKNTEN     +   WRK-TENSU(IDX4)
+      *
+           COMPUTE WRK-GFTNMONEY
+               =   WRK-GFTNMONEY   +   WRK-HOKEN(IDX4)
+      *
+           COMPUTE WRK-GSKJMONEY
+               =   WRK-GSKJMONEY   +   WRK-SYOKUJI(IDX4)
+      *
+           COMPUTE WRK-GJIHIMONEY
+               =   WRK-GJIHIMONEY  +   WRK-JIHI(IDX4)
+      *
+           COMPUTE WRK-GSKYMONEY
+               =   WRK-GSKYMONEY   +   WRK-GAKU(IDX4)
       *
            .
        240-MEISAI-HEN-EXT.
@@ -642,19 +879,25 @@
        240-GOKEI-HEN-SEC               SECTION.
       *
            IF    ( ORCHCM31-KIKANKBN   =   "1"   )
-            AND  ( ORCHCM31-DSPKBN     =   "1"   )
+            AND  ( ORCHCM31-DSPKBN     =   "1" OR "3"  )
       *
-      *        合計保険点数
                MOVE    WRK-GHKNTEN     TO  WRK-Z7
-               MOVE    WRK-Z7          TO  HCM31-GHKNTEN
-      *        合計自費診療
+               MOVE    WRK-Z7          TO  HCM31N-GHKNTEN
+      *
+               MOVE    WRK-GFTNMONEY   TO  WRK-Z9
+               MOVE    WRK-Z9          TO  HCM31N-GFTNMONEY
+      *
+               MOVE    WRK-GSKJMONEY   TO  WRK-Z9
+               MOVE    WRK-Z9          TO  HCM31N-GSKJMONEY
+      *
                MOVE    WRK-GJIHIMONEY  TO  WRK-Z9
-               MOVE    WRK-Z9          TO  HCM31-GJIHIMONEY
+               MOVE    WRK-Z9          TO  HCM31N-GJIHIMONEY
            END-IF
+      *
       *
       *    合計入返金額
            MOVE    WRK-GSKYMONEY   TO  WRK-Z9
-           MOVE    WRK-Z9          TO  HCM31-GSKYMONEY
+           MOVE    WRK-Z9          TO  HCM31N-GSKYMONEY
       *
            .
        240-GOKEI-HEN-EXT.
@@ -664,13 +907,19 @@
       *****************************************************************
        250-PRINT-SEC                   SECTION.
       *
-           MOVE    "HCM31V02.red"      TO  SPRT-PRTID
-           MOVE    HCM31               TO  SPRT-PRTDATA
+           IF    ( KEY-NYUGAIKBN       =   "1" )
+               MOVE    "HCM31N.red"    TO  SPRT-PRTID
+               MOVE    HCM31N          TO  SPRT-PRTDATA
+           ELSE
+               PERFORM 2501-HCM31G-HEN-SEC
+               MOVE    "HCM31G.red"    TO  SPRT-PRTID
+               MOVE    HCM31G          TO  SPRT-PRTDATA
+           END-IF
            MOVE    "1"                 TO  SPRT-SITEKBN
            CALL    "ORCSPRT"           USING
                                        ORCSPRTAREA
            IF    ( SPRT-RETURN         =   ZERO )
-               CONTINUE
+               COMPUTE CNT-OUT =   CNT-OUT +   1
            ELSE
                DISPLAY "ORCSPRT ERR !!! PTID = " SPA-PTID
            END-IF
@@ -682,11 +931,63 @@
            EXIT.
       *
       *****************************************************************
+      *    外来支払証明書編集処理
+      *****************************************************************
+       2501-HCM31G-HEN-SEC             SECTION.
+      *
+           INITIALIZE                      HCM31G
+      *
+           MOVE    HCM31N-STRSRYYMD    TO  HCM31G-STRSRYYMD
+           MOVE    HCM31N-ENDSRYYMD    TO  HCM31G-ENDSRYYMD
+           MOVE    HCM31N-PTNUM        TO  HCM31G-PTNUM
+           MOVE    HCM31N-PTNAME       TO  HCM31G-PTNAME
+           MOVE    HCM31N-HAKKOYMD     TO  HCM31G-HAKKOYMD
+           MOVE    HCM31N-PAGE         TO  HCM31G-PAGE
+           MOVE    HCM31N-LABELYMD     TO  HCM31G-LABELYMD
+      *
+           PERFORM VARYING IDX-LINE    FROM    1   BY  1
+                   UNTIL ( IDX-LINE    >   CONST-LINE-MAX )
+      *
+                MOVE    HCM31N-SRYYMD   (IDX-LINE)
+                                       TO  HCM31G-SRYYMD   (IDX-LINE)
+                MOVE    HCM31N-HKNTEN   (IDX-LINE)
+                                       TO  HCM31G-HKNTEN   (IDX-LINE)
+                MOVE    HCM31N-TEN      (IDX-LINE)
+                                       TO  HCM31G-TEN      (IDX-LINE)
+                MOVE    HCM31N-FTNMONEY (IDX-LINE)
+                                       TO  HCM31G-FTNMONEY (IDX-LINE)
+                MOVE    HCM31N-HYEN     (IDX-LINE)
+                                       TO  HCM31G-HYEN     (IDX-LINE)
+                MOVE    HCM31N-JIHIMONEY(IDX-LINE)
+                                       TO  HCM31G-JIHIMONEY(IDX-LINE)
+                MOVE    HCM31N-JYEN     (IDX-LINE)
+                                       TO  HCM31G-JYEN     (IDX-LINE)
+                MOVE    HCM31N-SKYMONEY (IDX-LINE)
+                                       TO  HCM31G-SKYMONEY (IDX-LINE)
+                MOVE    HCM31N-YEN      (IDX-LINE)
+                                       TO  HCM31G-YEN      (IDX-LINE)
+      *
+            END-PERFORM
+      *
+            MOVE    HCM31N-GHKNTEN     TO  HCM31G-GHKNTEN
+            MOVE    HCM31N-GFTNMONEY   TO  HCM31G-GFTNMONEY
+            MOVE    HCM31N-GJIHIMONEY  TO  HCM31G-GJIHIMONEY
+            MOVE    HCM31N-GSKYMONEY   TO  HCM31G-GSKYMONEY
+            MOVE    HCM31N-HOSPADRS    TO  HCM31G-HOSPADRS
+            MOVE    HCM31N-HOSPADRS2   TO  HCM31G-HOSPADRS2
+            MOVE    HCM31N-HOSPNAME    TO  HCM31G-HOSPNAME
+            MOVE    HCM31N-HOSPTEL     TO  HCM31G-HOSPTEL
+            MOVE    HCM31N-NYUGAI      TO  HCM31G-NYUGAI
+      *
+           .
+       2501-HCM31G-HEN-EXT.
+           EXIT.
+      *****************************************************************
       *    終了　　処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *
-           MOVE    CNT-PAGE        TO  ORCHCM31-OT-CNT
+           MOVE    CNT-OUT         TO  ORCHCM31-OT-CNT
       *
            .
        300-END-EXT.
@@ -736,7 +1037,7 @@
       *
            MOVE    "tbl_syskanri"  TO  MCP-TABLE
            MOVE    "key10"         TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSE-SEC
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        900-SYS1001-READ-EXT.
@@ -769,7 +1070,7 @@
       *
            MOVE    "tbl_syskanri"  TO  MCP-TABLE
            MOVE    "key10"         TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSE-SEC
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        900-SYS1002-READ-EXT.
@@ -798,7 +1099,7 @@
       *
            MOVE    "tbl_ptnum"     TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSE-SEC
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        900-PTNUM-READ-EXT.
@@ -827,7 +1128,7 @@
       *
            MOVE    "tbl_ptinf"     TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSE-SEC
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        900-PTINF-READ-EXT.
@@ -893,6 +1194,48 @@
            EXIT.
       *
       *****************************************************************
+      *    保険組合せ取得処理(KEY2)
+      *****************************************************************
+       900-HKNCOMBI-KEY2-SEL-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-HKNCOMBI
+      *
+           INITIALIZE                  HKNCOMBI-REC
+           MOVE    SPA-HOSPID          TO  COMB-HOSPID
+           MOVE    ORCHCM31-PTID       TO  COMB-PTID
+           MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
+           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  HKNCOMBI-REC
+           ELSE
+               INITIALIZE                  HKNCOMBI-REC
+               MOVE    1               TO  FLG-HKNCOMBI
+           END-IF
+      *
+           .
+       900-HKNCOMBI-KEY2-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険組合せFETCH処理(KEY2)
+      *****************************************************************
+       900-HKNCOMBI-KEY2-FET-SEC       SECTION.
+      *
+           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBFETCH-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  HKNCOMBI-REC
+           ELSE
+               INITIALIZE                  HKNCOMBI-REC
+               MOVE    1               TO  FLG-HKNCOMBI
+           END-IF
+      *
+           .
+       900-HKNCOMBI-KEY2-FET-EXT.
+           EXIT.
+      *****************************************************************
       *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC          SECTION.
@@ -924,7 +1267,7 @@
       *****************************************************************
       *    テーブルクローズ処理
       *****************************************************************
-       910-DBCLOSE-SEC           SECTION.
+       910-DBCLOSECURSOR-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
            CALL    "MONFUNC"           USING
@@ -932,5 +1275,5 @@
                                        MCPDATA-REC
       *
            .
-       910-DBCLOSE-EXT.
+       910-DBCLOSECURSOR-EXT.
            EXIT.
