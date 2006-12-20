@@ -18,6 +18,7 @@
             03  S04-FIXED2.
               04  S04-B10-STATE            PIC S9(9)   BINARY.
               04  S04-B12-STATE            PIC S9(9)   BINARY.
+              04  S04-LBLKARA              PIC X(2).
               04  S04-LBLSYORIKBN          PIC X(22).
               04  S04-SIHARAICOMBO.
                   05  S04-SIHARAIKBN       PIC X(12).

@@ -6,6 +6,9 @@ S04	{
 		B12             {
 			state	int;
 		};
+		LBLKARA	{
+			value	varchar(2);
+		};
 		LBLSYORIKBN	{
 			value	varchar(22);
 		};

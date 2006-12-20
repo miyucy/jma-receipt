@@ -84,12 +84,12 @@
                05  SPA-GMN-DSPKBN-G.
                    07  SPA-GMN-DSPKBN      PIC X(01).
                    07  FILLER              PIC X(01).
-                   07  SPA-GMN-DSPMEI      PIC X(10).
+                   07  SPA-GMN-DSPMEI      PIC X(18).
       *
                05  SPA-GMN-SYORIKBN-G.
                    07  SPA-GMN-SYORIKBN    PIC X(01).
                    07  FILLER              PIC X(01).
-                   07  SPA-GMN-SYORIMEI    PIC X(18).
+                   07  SPA-GMN-SYORIMEI    PIC X(16).
       *
                05  SPA-GMN-JIHIKBN-G.
                    07  SPA-GMN-JIHIKBN     PIC X(01).
@@ -1327,12 +1327,15 @@
            END-PERFORM
       *
            IF    ( SPA-GMN-SRYKBN   =   "1" )
+               MOVE    "¡Á"                TO  S04-LBLKARA
                MOVE    WIDGET-NORMAL       TO  S04-ENDSRYYMD-STATE
            ELSE
+               MOVE    SPACE               TO  S04-LBLKARA
                MOVE    WIDGET-INSENSITIVE  TO  S04-ENDSRYYMD-STATE
            END-IF
       *
            IF    ( SPA-GMN-KIKANKBN =   "2" )
+               MOVE    SPACE               TO  S04-LBLSYORIKBN
                MOVE    WIDGET-INSENSITIVE  TO  S04-SYORIKBN-STATE
                                                S04-SYORI-LIST-STATE
                                                S04-DSPKBN-STATE
