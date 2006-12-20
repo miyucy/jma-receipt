@@ -59,6 +59,7 @@
       *                                     MONFUNC 対応
       * 02.00.16     NACL-多々納  06/05/02  帳票編集区分削除追加他
       * 03.03.01     NACL-森脇    06/10/23  画像フォルダデフォルト設定
+      * 03.04.00     NACL-太田    06/12/20  自費内訳明細書追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -674,6 +675,8 @@
                                        TO  SPA-GMN-TNAME (13)
            MOVE    "診療費明細書"
                                        TO  SPA-GMN-TNAME (14)
+           MOVE    "自費内訳明細書"
+                                       TO  SPA-GMN-TNAME (15)
       *
       *    カルテ１号紙
            MOVE    "ORCHC01"       TO  SPA-GMN-TORGPGNM (1)
