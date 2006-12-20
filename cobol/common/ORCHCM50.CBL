@@ -332,7 +332,7 @@
       *****************************************************************
        2001-BODY-SEC                   SECTION.
       *
-           IF   (  CNT-MEISAI      >   1 )
+           IF   (  CNT-LINE       >=   1 )
             AND (  KEY-SRYYMD  NOT =   HCM50SRY-SRYYMD )
                MOVE    HCM50SRY-SRYYMD TO  KEY-SRYYMD
                MOVE    ZERO            TO  CNT-MEISAI
