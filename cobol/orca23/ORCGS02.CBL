@@ -675,7 +675,7 @@
                    ELSE
                        MOVE    SPACE           TO  SPA-S01-SHR-ORDER
                    END-IF
-      *             MOVE    SPACE           TO  SPA-S99-FLG
+                   MOVE    SPACE           TO  SPA-S99-FLG
                    MOVE    SPACE           TO  SPA-SIDCD
       *----(03.04.01)--UPD-END-----
                    GO  TO  300-SCREEN-EXT
