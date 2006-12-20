@@ -39,6 +39,7 @@
       *                                     ¾É¾õ¾Üµ­¶èÊ¬½ç¤Ëµ­ºÜ¤¹¤ë
       *  03.01.01    NACL-ÌçÏÆ    06/07/13  ¹àÌÜ¥¯¥ê¥¢ÄÉ²Ã
       *  03.03.01    NACL-ÌçÏÆ    06/10/11  Æþ±¡»þÀ¸³èÎÅÍÜÈñÂÐ±þ
+      *  03.04.01    NACL-ÌçÏÆ    06/12/01  ¼«ÇåÀÕ·òÊÝ½àµòÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1097,18 +1098,26 @@
            MOVE    WRK-KINGAKUZ         TO  HC23-SEIKYUG
       *
       *    ÅÀ¿ôÃ±²Á
-           MOVE    RECE82-TANKA         TO  WRK-TANKA-SEI
-           COMPUTE WRK-TANKA-SYO   = ( RECE82-TANKA - WRK-TANKA-SEI )
-                                   *   10
-           MOVE    WRK-TANKA-SEI        TO  WRK-TANKA1
-           IF      WRK-TANKA-SYO   =   ZERO
-               MOVE     SPACE           TO  WRK-TANKA2
-               MOVE     ZERO            TO  WRK-TANKA3
-           ELSE
-               MOVE     "."             TO  WRK-TANKA2
-               MOVE     WRK-TANKA-SYO   TO  WRK-TANKA3
-           END-IF
-           MOVE    WRK-TANKA            TO  HC23-TANKA
+           EVALUATE    RECE82-JIBAIKBN
+             WHEN        "1"
+               MOVE    RECE82-TANKA         TO  WRK-TANKA-SEI
+               COMPUTE WRK-TANKA-SYO = ( RECE82-TANKA - WRK-TANKA-SEI )
+                                     *   10
+               MOVE    WRK-TANKA-SEI        TO  WRK-TANKA1
+               IF      WRK-TANKA-SYO   =   ZERO
+                   MOVE     SPACE           TO  WRK-TANKA2
+                   MOVE     ZERO            TO  WRK-TANKA3
+               ELSE
+                   MOVE     "."             TO  WRK-TANKA2
+                   MOVE     WRK-TANKA-SYO   TO  WRK-TANKA3
+               END-IF
+               MOVE    WRK-TANKA            TO  HC23-TANKA
+             WHEN        "2"
+               MOVE    RECE82-SYUTENTANKA   TO  WRK-TANKA1
+               MOVE    SPACE                TO  WRK-TANKA2
+               MOVE    ZERO                 TO  WRK-TANKA3
+               MOVE    WRK-TANKA            TO  HC23-TANKA
+           END-EVALUATE
       *
       *    ²Ã»»Î¨
       ***>     IF      RECE82-KSNRATE(1:1)  =  "1"

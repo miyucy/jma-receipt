@@ -91,6 +91,7 @@
       *  03.01.01    NACL-門脇    06/06/28  実日数減算コード対応
       *  03.01.02    NACL-門脇    06/07/10  在支援コメント自動記載対応
       *  03.01.03    NACL-門脇    06/07/14  診療区分置き換えフラグの編集
+      *  03.04.01    NACL-門脇    06/12/01  自賠責健保準拠対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -625,10 +626,40 @@
            03  FILLER          PIC X(09)   VALUE   "099800171".
       *    実日数減算
            03  FILLER          PIC X(09)   VALUE   "099409903".
-       01  TBL-NOSRYCD-R       REDEFINES   TBL-NOSRYCD-AREA.
-            03  TBL-NOSRYCD     PIC X(09)   OCCURS   36.
       *
-       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE   36.
+      *    初診
+           03  FILLER          PIC X(09)   VALUE   "111000110".
+      *    再診（診療所）
+           03  FILLER          PIC X(09)   VALUE   "112009210".
+      *    再診（病院）
+           03  FILLER          PIC X(09)   VALUE   "112007410".
+      *    同日再診（診療所）
+           03  FILLER          PIC X(09)   VALUE   "112010150".
+      *    電話等再診（診療所）
+           03  FILLER          PIC X(09)   VALUE   "112009750".
+      *    同日電話等再診（診療所）
+           03  FILLER          PIC X(09)   VALUE   "112010650".
+      *    同日再診（病院）
+           03  FILLER          PIC X(09)   VALUE   "112008350".
+      *    電話等再診（病院）
+           03  FILLER          PIC X(09)   VALUE   "112007950".
+      *    同日電話等再診（病院）
+           03  FILLER          PIC X(09)   VALUE   "112008850".
+      *    外来管理加算
+           03  FILLER          PIC X(09)   VALUE   "112011010".
+      *    老人外来管理加算（診療所）
+           03  FILLER          PIC X(09)   VALUE   "112705310".
+      *    老人外来管理加算（病院）
+           03  FILLER          PIC X(09)   VALUE   "112705110".
+      *    育児栄養指導加算（ＤＵＭＭＹ）
+           03  FILLER          PIC X(09)   VALUE   "099114001".
+      ***  再診（乳幼児）加算
+      ***  03  FILLER          PIC X(09)   VALUE   "112000970".
+      *
+       01  TBL-NOSRYCD-R       REDEFINES   TBL-NOSRYCD-AREA.
+            03  TBL-NOSRYCD     PIC X(09)   OCCURS   49.
+      *
+       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE   49.
       *
       *    固定値
        01  CONST-AREA.
@@ -1423,7 +1454,7 @@
                MOVE    1             TO  FLG-NOPRT
            END-IF
       *    紹介患者加算服用方法でないこと
-           IF  TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)  
+           IF    (TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)  
                                             =   CONS-SYOSIN-KASAN1  OR
                                                 CONS-SYOSIN-KASAN2  OR
                                                 CONS-SYOSIN-KASAN5  OR
@@ -1454,7 +1485,11 @@
                                                 CONS-COMMENT5       OR
                                                 CONS-COMMENT6       OR
                                                 CONS-COMMENT7       OR
-                                                CONS-COMMENT8        
+                                                CONS-COMMENT8         )
+           OR    (TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)(1:1)  = "8" AND
+                  TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)
+                                                     NOT = "830000020")
+           OR    (TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)(1:3)  = "008"  )
                CONTINUE
            ELSE
                MOVE    1             TO  FLG-NOPRT
@@ -1564,6 +1599,13 @@
                    END-IF                                            
                END-IF
            END-PERFORM
+      *
+           IF    RECE41-HKNKBN      =   "4"
+           AND   RECE41-JIBAIKBN    =   "2"
+             IF  TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2) = "112000970"
+                    MOVE     1     TO    FLG-NOPRT
+             END-IF
+           END-IF
       *
            IF  FLG-NOPRT             =   ZERO
       *        識別が点数の場合
@@ -3031,6 +3073,11 @@
                   (RECE44-SRYKBN      =   "11" OR "12" OR "99")         
                GO  TO  440-TNSKAI-SET-EXT                               
            END-IF                                                       
+           IF     (FLG-COMMENT3       =    1  )           AND           
+                  (RECE44-SRYKBN      =   "11" OR "12")   AND           
+                  (WRK-TENSUGOKEI     =   ZERO)                         
+               GO  TO  440-TNSKAI-SET-EXT                               
+           END-IF
            IF     (FLG-COMMENT3       =    1  )  AND
                   (RECE44-SRYKBN      =   "14")  AND
                   (RECE44-ZAITEN      =   ZERO)

@@ -41,6 +41,7 @@
       *  03.01.01    NACL-ÌçÏÆ    06/07/13  ¹àÌÜ¥¯¥ê¥¢ÄÉ²Ã
       *
       *  03.04.01    NACL-Æ£¸¶    06/11/01  ¾È²ñµ¡Ç½Ï¢·ÈÂÐ±þ
+      *  03.04.02    NACL-ÌçÏÆ    06/12/01  ¼«ÇåÀÕ·òÊÝ½àµòÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1097,18 +1098,27 @@
            MOVE    WRK-KINGAKUZ         TO  HC23-SEIKYUG
       *
       *    ÅÀ¿ôÃ±²Á
-           MOVE    RECE41-TANKA         TO  WRK-TANKA-SEI
-           COMPUTE WRK-TANKA-SYO   = ( RECE41-TANKA - WRK-TANKA-SEI )
-                                   *   10
-           MOVE    WRK-TANKA-SEI        TO  WRK-TANKA1
-           IF      WRK-TANKA-SYO   =   ZERO
-               MOVE     SPACE           TO  WRK-TANKA2
-               MOVE     ZERO            TO  WRK-TANKA3
-           ELSE
-               MOVE     "."             TO  WRK-TANKA2
-               MOVE     WRK-TANKA-SYO   TO  WRK-TANKA3
-           END-IF
-           MOVE    WRK-TANKA            TO  HC23-TANKA
+           EVALUATE    RECE41-JIBAIKBN
+             WHEN        "1"
+               MOVE    RECE41-TANKA    TO  WRK-TANKA-SEI
+               COMPUTE WRK-TANKA-SYO = ( RECE41-TANKA - WRK-TANKA-SEI )
+                                     *   10
+               MOVE    WRK-TANKA-SEI   TO  WRK-TANKA1
+               IF      WRK-TANKA-SYO   =   ZERO
+                 MOVE  SPACE           TO  WRK-TANKA2
+                 MOVE  ZERO            TO  WRK-TANKA3
+               ELSE
+                 MOVE  "."             TO  WRK-TANKA2
+                 MOVE  WRK-TANKA-SYO   TO  WRK-TANKA3
+               END-IF
+               MOVE    WRK-TANKA       TO  HC23-TANKA
+             WHEN        "2"
+               MOVE    RECE41-SYUTENTANKA
+                                       TO  WRK-TANKA1
+               MOVE    SPACE           TO  WRK-TANKA2
+               MOVE    ZERO            TO  WRK-TANKA3
+               MOVE    WRK-TANKA       TO  HC23-TANKA
+           END-EVALUATE
       *
       *    ²Ã»»Î¨
       ***>     IF      RECE41-KSNRATE(1:1)  =  "1"

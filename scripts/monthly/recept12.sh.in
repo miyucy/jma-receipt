@@ -34,7 +34,7 @@ fi
         
         rm  /var/tmp/RECE4*
 
-	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0405 -parameter $1$2$3$5$6    > /home/orca/recept12.log
+	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0400 -parameter $1$2$3$5$6    > /home/orca/recept12.log
 	
 	
         if  [ -e $4 ]; then

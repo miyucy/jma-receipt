@@ -76,6 +76,7 @@
       *  03.02.01    NACL-門脇    06/08/01  リハ発症日記載修正
       *  03.02.02    NACL-門脇    06/09/07  内服薬剤逓減編集修正
       *  03.03.01    NACL-門脇    06/11/10  往診のコメント自動記載条件修正
+      *  03.04.01    NACL-門脇    06/12/01  自賠責健保準拠対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -293,6 +294,7 @@
            03  CNT-JUSHIN          PIC 9(06).
            03  CNT-SANTEIKA        PIC 9(06).
            03  CNT-DOUJITU         PIC 9(06).
+           03  CNT-DENWA           PIC 9(06).
            03  CNT-IN-COMMIT       PIC 9(06).
            03  CNT-IN-CANCEL       PIC 9(06).
       *
@@ -322,6 +324,7 @@
            03  DAY-IDX3            PIC 9(01).
            03  IDX-RECE45          PIC 9(04).
            03  IDV                 PIC 9(04).
+           03  IDW                 PIC 9(04).
       *     
       *    一時領域
        01  WRK-AREA.
@@ -805,6 +808,7 @@
       *
            MOVE       ZERO             TO  CNT-SANTEIKA
                                            CNT-DOUJITU
+                                           CNT-DENWA
       *
            INITIALIZE                      TBL-HASSYO-INF
            INITIALIZE                      TBL-ZAISIEN-INF
@@ -855,6 +859,10 @@
       *               （再診料算定科：のカウント）
                          IF  RECE44-SAISANTEIKA-COMMENT  =  "1"
                             ADD    RECE44-ZAIKAISU   TO   CNT-SANTEIKA
+                         END-IF
+      *               （電話再診のカウント）
+                         IF  RECE44-DENWASAI-COMMENT     =  "1"
+                            ADD    RECE44-ZAIKAISU   TO   CNT-DENWA
                          END-IF
       *               （同日再診のカウント）
                          IF  RECE44-DOUJITUSAI-COMMENT   =  "1"
@@ -910,6 +918,10 @@
       *               （再診料算定科：のカウント）
                          IF  RECE44-SAISANTEIKA-COMMENT  =  "1"
                             ADD    RECE44-ZAIKAISU   TO   CNT-SANTEIKA
+                         END-IF
+      *               （電話再診のカウント）
+                         IF  RECE44-DENWASAI-COMMENT     =  "1"
+                            ADD    RECE44-ZAIKAISU   TO   CNT-DENWA
                          END-IF
       *               （同日再診のカウント）
                          IF  RECE44-DOUJITUSAI-COMMENT   =  "1"
@@ -1031,16 +1043,44 @@
       *
            END-IF
       *
-      *    同日複数再診
+      *    電話再診・同日複数再診
       *
-           IF     CNT-DOUJITU     >   ZERO
-                PERFORM    2001-DOUJITU-COMMENT-SEC
+           IF     CNT-DENWA       >   ZERO
+           AND    CNT-DOUJITU     >   ZERO
+                   PERFORM    2001-DENWA-DOUJITU-COMMENT-SEC
+           ELSE
+              IF   CNT-DENWA      >   ZERO
+              AND  CNT-DOUJITU    =   ZERO
+                   PERFORM    2001-DENWA-COMMENT-SEC
+              ELSE
+                IF   CNT-DENWA    =   ZERO
+                AND  CNT-DOUJITU  >   ZERO
+                   PERFORM    2001-DOUJITU-COMMENT-SEC
+                END-IF
+              END-IF
            END-IF
       *
-      *    自賠責従来様式：加算率 
+      *    自賠責従来様式
            IF   RECE41-HKNKBN     =   "4"
            AND  WRK-PARA-RECEKBN  =   "5"
-                PERFORM    2001-KASANRITU-COMMENT-SEC
+             EVALUATE  RECE41-JIBAIKBN
+      *        加算率
+               WHEN     "1"
+                  PERFORM    2001-KASANRITU-COMMENT-SEC
+               WHEN     "2"
+      *           薬剤等点単価
+                  IF    RECE41-SYUTENTANKA  =  RECE41-YKZTENTANKA
+                     CONTINUE
+                  ELSE
+                     PERFORM    2001-YKZTENTANKA-COMMENT-SEC
+                  END-IF
+      *           乳幼児・幼児のコメント
+                  IF    RECE41-NYUYOJIFLG   =  SPACE
+                     CONTINUE
+                  ELSE
+                     PERFORM    2001-NYUYOJI-COMMENT-SEC
+                  END-IF
+             END-EVALUATE
            END-IF
       *
       *    在支援コメント
@@ -1162,6 +1202,20 @@
                  END-EVALUATE
                ELSE                                                     
                  EVALUATE      RECE44-SRYKBN                            
+                   WHEN      "11"
+                      EVALUATE   RECE41-JIBAIKBN
+                        WHEN       "1"
+                          PERFORM      2099-RECE44-TENSOU-SEC
+                        WHEN       "2"
+                          MOVE   ZERO   TO  FLG-COMMENT
+      *                （初診（同日複数診療科）算定科のセット）
+                          IF   FLG-COMMENT  =  ZERO
+                            PERFORM    2001-SYODOU-HANTEI-SEC
+                          END-IF
+                          IF   FLG-COMMENT  =  ZERO
+                            PERFORM    2099-RECE44-TENSOU-SEC
+                          END-IF
+                      END-EVALUATE
                    WHEN      "13"                                       
                       MOVE   ZERO   TO  FLG-COMMENT
       *            （慢性疼痛疾患管理料算定日のセット）
@@ -1331,7 +1385,7 @@
                       END-IF      
                    END-IF
                   ELSE
-                   IF    JYURRK-HKNKBN    =       "2"
+                   IF    JYURRK-HKNKBN    =       "2"  OR  "4"
                       MOVE   JYURRK-HKNCOMBINUM
                                        TO  WRK-HKNCOMBINUMX
                       IF  WRK-HKNCOMBINUM9  =  RECE41-HKNCOMBI
@@ -1617,6 +1671,125 @@
       *
            .
        2001-JUSHIN-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    電話再診・同日複数再診のコメント編集
+      *****************************************************************
+       2001-DENWA-DOUJITU-COMMENT-SEC          SECTION.
+      *
+           INITIALIZE                      RECE449-REC
+           MOVE    RECE41-HOSPID       TO  RECE449-HOSPID
+           MOVE    RECE41-SRYYM        TO  RECE449-SRYYM
+           MOVE    RECE41-NYUGAIKBN    TO  RECE449-NYUGAIKBN
+           MOVE    RECE41-PTID         TO  RECE449-PTID
+           MOVE    RECE41-RECEKA       TO  RECE449-RECEKA
+           MOVE    RECE41-HKNID        TO  RECE449-HKNID
+           MOVE    RECE41-TEKSTYMD     TO  RECE449-TEKSTYMD
+           MOVE    99999991            TO  RECE449-ZAINUM
+           MOVE    "99"                TO  RECE449-SRYKBN
+           MOVE    2                   TO  RECE449-MEISAISU
+      *
+           WRITE   RECE449-REC
+           ADD     1                   TO  CNT-RECE449
+      *
+           INITIALIZE                      RECE459-REC
+           MOVE    RECE41-HOSPID       TO  RECE459-HOSPID
+           MOVE    RECE41-SRYYM        TO  RECE459-SRYYM
+           MOVE    RECE41-NYUGAIKBN    TO  RECE459-NYUGAIKBN
+           MOVE    RECE41-PTID         TO  RECE459-PTID
+           MOVE    RECE41-RECEKA       TO  RECE459-RECEKA
+           MOVE    RECE41-HKNID        TO  RECE459-HKNID
+           MOVE    RECE41-TEKSTYMD     TO  RECE459-TEKSTYMD
+           MOVE    99999991            TO  RECE459-ZAINUM
+           MOVE    "99"                TO  RECE459-SRYKBN
+      *    電話再診のコメントの挿入
+           MOVE    SPACE                TO  WRK-RECE45XX-REC
+           INITIALIZE                       WRK-RECE45XX-REC
+           MOVE    "810000001"          TO  WRK-RECE45XX-SRYCD(1 1)
+           MOVE    ZERO                 TO  WRK-RECE45XX-SRYSURYO(1 1)
+           MOVE    9                    TO  WRK-RECE45XX-YUKOKETA(1 1)
+           MOVE    "電話再診（　　回）" TO  WRK-RECE45XX-NAME(1 1)
+      *
+           MOVE    CNT-DENWA            TO  DAY-IDX2
+           PERFORM    20011-KAISU-HENSYU-SEC
+           MOVE    WRK-HENSYU-KAISU2    TO  WRK-RECE45XX-NAME(1 1)(11:4)
+      *
+           MOVE    "1"                  TO  WRK-RECE45XX-SIKFLG(1 1)
+           MOVE    WRK-RECE45XX-SRYACT-TBL(1 1)
+                                        TO  RECE459-SRYACT-TBL(1)
+      *
+           MOVE    "810000001"          TO  WRK-RECE45XX-SRYCD(2 1)
+           MOVE    ZERO                 TO  WRK-RECE45XX-SRYSURYO(2 1)
+           MOVE    11                   TO  WRK-RECE45XX-YUKOKETA(2 1)
+           MOVE    "同日複数再診（　　回）"
+                                        TO  WRK-RECE45XX-NAME(2 1)
+      *
+           MOVE    CNT-DOUJITU          TO  DAY-IDX2
+           PERFORM    20011-KAISU-HENSYU-SEC
+           MOVE    WRK-HENSYU-KAISU2    TO  WRK-RECE45XX-NAME(2 1)(15:4)
+      *
+           MOVE    "1"                  TO  WRK-RECE45XX-SIKFLG(2 1)
+           MOVE    WRK-RECE45XX-SRYACT-TBL(2 1)
+                                        TO  RECE459-SRYACT-TBL(2)
+      *
+           WRITE   RECE459-REC
+           ADD     1                    TO  CNT-RECE459
+      *
+           .
+       2001-DENWA-DOUJITU-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    電話再診のコメント編集
+      *****************************************************************
+       2001-DENWA-COMMENT-SEC          SECTION.
+      *
+           INITIALIZE                      RECE449-REC
+           MOVE    RECE41-HOSPID       TO  RECE449-HOSPID
+           MOVE    RECE41-SRYYM        TO  RECE449-SRYYM
+           MOVE    RECE41-NYUGAIKBN    TO  RECE449-NYUGAIKBN
+           MOVE    RECE41-PTID         TO  RECE449-PTID
+           MOVE    RECE41-RECEKA       TO  RECE449-RECEKA
+           MOVE    RECE41-HKNID        TO  RECE449-HKNID
+           MOVE    RECE41-TEKSTYMD     TO  RECE449-TEKSTYMD
+           MOVE    99999991            TO  RECE449-ZAINUM
+           MOVE    "99"                TO  RECE449-SRYKBN
+           MOVE    1                   TO  RECE449-MEISAISU
+      *
+           WRITE   RECE449-REC
+           ADD     1                   TO  CNT-RECE449
+      *
+           INITIALIZE                      RECE459-REC
+           MOVE    RECE41-HOSPID       TO  RECE459-HOSPID
+           MOVE    RECE41-SRYYM        TO  RECE459-SRYYM
+           MOVE    RECE41-NYUGAIKBN    TO  RECE459-NYUGAIKBN
+           MOVE    RECE41-PTID         TO  RECE459-PTID
+           MOVE    RECE41-RECEKA       TO  RECE459-RECEKA
+           MOVE    RECE41-HKNID        TO  RECE459-HKNID
+           MOVE    RECE41-TEKSTYMD     TO  RECE459-TEKSTYMD
+           MOVE    99999991            TO  RECE459-ZAINUM
+           MOVE    "99"                TO  RECE459-SRYKBN
+      *    電話再診のコメントの挿入
+           MOVE    SPACE                TO  WRK-RECE45XX-REC
+           INITIALIZE                       WRK-RECE45XX-REC
+           MOVE    "810000001"          TO  WRK-RECE45XX-SRYCD(1 1)
+           MOVE    ZERO                 TO  WRK-RECE45XX-SRYSURYO(1 1)
+           MOVE    9                    TO  WRK-RECE45XX-YUKOKETA(1 1)
+           MOVE    "電話再診（　　回）" TO  WRK-RECE45XX-NAME(1 1)
+      *
+           MOVE    CNT-DENWA            TO  DAY-IDX2
+           PERFORM    20011-KAISU-HENSYU-SEC
+           MOVE    WRK-HENSYU-KAISU2    TO  WRK-RECE45XX-NAME(1 1)(11:4)
+      *
+           MOVE    "1"                  TO  WRK-RECE45XX-SIKFLG(1 1)
+           MOVE    WRK-RECE45XX-SRYACT-TBL(1 1)
+                                        TO  RECE459-SRYACT-TBL(1)
+           WRITE   RECE459-REC
+           ADD     1                    TO  CNT-RECE459
+      *
+           .
+       2001-DENWA-COMMENT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2581,6 +2754,121 @@
            EXIT.
       *
       *****************************************************************
+      *    自賠責従来様式：薬剤等点単価 のコメント編集
+      *****************************************************************
+       2001-YKZTENTANKA-COMMENT-SEC          SECTION.
+      *
+           INITIALIZE                      RECE449-REC
+           MOVE    RECE41-HOSPID       TO  RECE449-HOSPID
+           MOVE    RECE41-SRYYM        TO  RECE449-SRYYM
+           MOVE    RECE41-NYUGAIKBN    TO  RECE449-NYUGAIKBN
+           MOVE    RECE41-PTID         TO  RECE449-PTID
+           MOVE    RECE41-RECEKA       TO  RECE449-RECEKA
+           MOVE    RECE41-HKNID        TO  RECE449-HKNID
+           MOVE    RECE41-TEKSTYMD     TO  RECE449-TEKSTYMD
+           MOVE    99999998            TO  RECE449-ZAINUM
+           MOVE    "99"                TO  RECE449-SRYKBN
+           MOVE    1                   TO  RECE449-MEISAISU
+      *
+           WRITE   RECE449-REC
+           ADD     1                   TO  CNT-RECE449
+      *
+           INITIALIZE                      RECE459-REC
+           MOVE    RECE41-HOSPID       TO  RECE459-HOSPID
+           MOVE    RECE41-SRYYM        TO  RECE459-SRYYM
+           MOVE    RECE41-NYUGAIKBN    TO  RECE459-NYUGAIKBN
+           MOVE    RECE41-PTID         TO  RECE459-PTID
+           MOVE    RECE41-RECEKA       TO  RECE459-RECEKA
+           MOVE    RECE41-HKNID        TO  RECE459-HKNID
+           MOVE    RECE41-TEKSTYMD     TO  RECE459-TEKSTYMD
+           MOVE    99999998            TO  RECE459-ZAINUM
+           MOVE    "99"                TO  RECE459-SRYKBN
+      *    薬剤等点単価のコメントの挿入
+           MOVE    SPACE                TO  WRK-RECE45XX-REC
+           INITIALIZE                       WRK-RECE45XX-REC
+           MOVE    "810000001"          TO  WRK-RECE45XX-SRYCD(1 1)
+           MOVE    ZERO                 TO  WRK-RECE45XX-SRYSURYO(1 1)
+           MOVE    13                   TO  WRK-RECE45XX-YUKOKETA(1 1)
+           MOVE    "薬剤等（１点単価　　　円）"
+                                        TO  WRK-RECE45XX-NAME(1 1)
+      *
+           MOVE    RECE41-YKZTENTANKA(1:1)  TO  DAY-IDX3
+           PERFORM    20011-KASANRITU-HENSYU-SEC
+           IF      WRK-HENSYU-KASANRITU2   =   "０"
+              MOVE   "　"   TO   WRK-HENSYU-KASANRITU2
+           END-IF
+           MOVE    WRK-HENSYU-KASANRITU2 TO WRK-RECE45XX-NAME(1 1)(19:2)
+           MOVE    RECE41-YKZTENTANKA(2:1)  TO  DAY-IDX3
+           PERFORM    20011-KASANRITU-HENSYU-SEC
+           MOVE    WRK-HENSYU-KASANRITU2 TO WRK-RECE45XX-NAME(1 1)(21:2)
+      *
+           MOVE    "1"                  TO  WRK-RECE45XX-SIKFLG(1 1)
+           MOVE    WRK-RECE45XX-SRYACT-TBL(1 1)
+                                        TO  RECE459-SRYACT-TBL(1)
+           WRITE   RECE459-REC
+           ADD     1                    TO  CNT-RECE459
+      *
+           .
+       2001-YKZTENTANKA-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    自賠責従来様式：乳幼児・幼児のコメント編集
+      *****************************************************************
+       2001-NYUYOJI-COMMENT-SEC          SECTION.
+      *
+           INITIALIZE                      RECE449-REC
+           MOVE    RECE41-HOSPID       TO  RECE449-HOSPID
+           MOVE    RECE41-SRYYM        TO  RECE449-SRYYM
+           MOVE    RECE41-NYUGAIKBN    TO  RECE449-NYUGAIKBN
+           MOVE    RECE41-PTID         TO  RECE449-PTID
+           MOVE    RECE41-RECEKA       TO  RECE449-RECEKA
+           MOVE    RECE41-HKNID        TO  RECE449-HKNID
+           MOVE    RECE41-TEKSTYMD     TO  RECE449-TEKSTYMD
+           MOVE    99999990            TO  RECE449-ZAINUM
+           MOVE    "99"                TO  RECE449-SRYKBN
+           MOVE    1                   TO  RECE449-MEISAISU
+      *
+           WRITE   RECE449-REC
+           ADD     1                   TO  CNT-RECE449
+      *
+           INITIALIZE                      RECE459-REC
+           MOVE    RECE41-HOSPID       TO  RECE459-HOSPID
+           MOVE    RECE41-SRYYM        TO  RECE459-SRYYM
+           MOVE    RECE41-NYUGAIKBN    TO  RECE459-NYUGAIKBN
+           MOVE    RECE41-PTID         TO  RECE459-PTID
+           MOVE    RECE41-RECEKA       TO  RECE459-RECEKA
+           MOVE    RECE41-HKNID        TO  RECE459-HKNID
+           MOVE    RECE41-TEKSTYMD     TO  RECE459-TEKSTYMD
+           MOVE    99999990            TO  RECE459-ZAINUM
+           MOVE    "99"                TO  RECE459-SRYKBN
+      *    乳幼児・幼児のコメントの挿入
+           MOVE    SPACE                TO  WRK-RECE45XX-REC
+           INITIALIZE                       WRK-RECE45XX-REC
+           MOVE    "810000001"          TO  WRK-RECE45XX-SRYCD(1 1)
+           MOVE    ZERO                 TO  WRK-RECE45XX-SRYSURYO(1 1)
+           MOVE    11                   TO  WRK-RECE45XX-YUKOKETA(1 1)
+           MOVE    "　　月　　日まで乳幼児"
+                                        TO  WRK-RECE45XX-NAME(1 1)
+      *
+           MOVE    RECE41-BIRTHDAY(5:2) TO  DAY-IDX2
+           MOVE    TBL-DAY(DAY-IDX2)    TO  WRK-RECE45XX-NAME(1 1)(1:4)
+           MOVE    RECE41-BIRTHDAY(7:2) TO  DAY-IDX2
+           COMPUTE    DAY-IDX2   =   DAY-IDX2  -   1
+           MOVE    TBL-DAY(DAY-IDX2)    TO  WRK-RECE45XX-NAME(1 1)(7:4)
+      *
+           MOVE    "1"                  TO  WRK-RECE45XX-SIKFLG(1 1)
+      *
+           MOVE    WRK-RECE45XX-SRYACT-TBL(1 1)
+                                        TO  RECE459-SRYACT-TBL(1)
+           WRITE   RECE459-REC
+           ADD     1                    TO  CNT-RECE459
+      *
+           .
+       2001-NYUYOJI-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    在支援のコメント編集
       *****************************************************************
        2001-ZAISIEN-COMMENT-SEC          SECTION.
@@ -2626,6 +2914,103 @@
       *
            .
        2001-ZAISIEN-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    初診（同日複数診療科）があるか判定
+      *****************************************************************
+       2001-SYODOU-HANTEI-SEC          SECTION.
+      *
+           IF      RECE44-FLG-SYODOU-COMMENT   =    "1"
+                MOVE       99       TO     FLG-COMMENT
+                PERFORM    20011-SYODOU-COMMENT-SEC
+           END-IF
+      *
+           .
+       2001-SYODOU-HANTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    初診（同日複数診療科）のコメント編集
+      *****************************************************************
+       20011-SYODOU-COMMENT-SEC          SECTION.
+      *
+           MOVE       ZERO       TO   IDZ
+           INITIALIZE            WRK-FREE-AREA2
+      *
+           PERFORM   VARYING   IDX    FROM   1   BY   1
+                      UNTIL   (IDX                       >   10  )
+                       OR     (RECE44-SYODOU-SRYKA(IDX)  =  SPACE)
+      *
+             ADD      1                  TO  IDZ
+             MOVE    "複初算定診療科："  TO  WK-FREE-NAME2(IDZ)(1:16)
+      *      診療科の取得
+             INITIALIZE                      SYS-1005-REC
+             MOVE    "1005"              TO  SYS-1005-KANRICD
+             MOVE    RECE44-SYODOU-SRYKA(IDX)
+                                         TO  SYS-1005-KBNCD
+             MOVE    RECE41-SRYYM        TO  ORC-DBYMD(1:6)
+             MOVE    "01"                TO  ORC-DBYMD(7:2)
+             MOVE    SYS-1005-REC        TO  MCPDATA-REC
+             MOVE    "DBSELECT"          TO  MCP-FUNC
+             MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+             CALL    "ORCMCPSUB"         USING   MCPAREA
+                                                 ORCMCPAREA
+                                                 MCPDATA-REC
+             IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY"    TO  ORC-DBPATH
+               PERFORM  900-SYSKANRI-READ-SEC
+               IF      FLG-SYSKANRI      =   ZERO
+                  MOVE  SYS-1005-SRYKANAME(1:40)
+                                         TO  WK-FREE-NAME2(IDZ)(17:40)
+               END-IF
+             END-IF
+      *
+             INITIALIZE                        MCPAREA
+             MOVE    "DBCLOSECURSOR"   TO      MCP-FUNC
+             MOVE    "SYSKANRI-KEY"    TO      ORC-DBPATH
+             CALL    "ORCMCPSUB"       USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+             PERFORM   VARYING   IDW   FROM   200   BY  -1
+                        UNTIL    IDW   <   1
+                IF   WK-FREE-NAME2(IDZ)(IDW:1)  NOT =  SPACE
+                     COMPUTE WK-FREE-YUKOKETA2(IDZ) =  IDW  /   2
+                     MOVE    1   TO    IDW
+                END-IF
+             END-PERFORM
+      *
+           END-PERFORM
+      *
+           PERFORM  200111-RECE45-TAIHI-SEC
+      *
+      *    ＲＥＣＥ０５ファイルの内容をテーブルに退避
+           MOVE    ZERO                TO  IDX-RECE45
+           MOVE    SPACE               TO  WRK-RECE45XX-REC
+           INITIALIZE                      WRK-RECE45XX-REC
+      *
+           MOVE    RECE44-MEISAISU     TO  MAX-MEISAISU
+      *
+           PERFORM   VARYING   IDX   FROM    1   BY  1
+                         UNTIL   ( IDX                >   50    )
+                         OR      ( WK-FREE-NAME2(IDX) =   SPACE )
+                COMPUTE  MAX-MEISAISU        =   MAX-MEISAISU  +  1
+                MOVE   "810000001"
+                             TO  WRK-RECE45XX-SRYCD(MAX-MEISAISU 1)
+                MOVE   ZERO  TO  WRK-RECE45XX-SRYSURYO(MAX-MEISAISU 1)
+                MOVE   WK-FREE-YUKOKETA2(IDX)
+                             TO  WRK-RECE45XX-YUKOKETA(MAX-MEISAISU 1)
+                MOVE   WK-FREE-NAME2(IDX)
+                             TO  WRK-RECE45XX-NAME(MAX-MEISAISU 1)
+                MOVE    "1"  TO  WRK-RECE45XX-SIKFLG(MAX-MEISAISU 1)
+           END-PERFORM
+      *
+           PERFORM    200111-SRYACTINF-HENSYU-SEC
+      *
+           .
+       20011-SYODOU-COMMENT-EXT.
            EXIT.
       *
       *****************************************************************

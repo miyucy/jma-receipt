@@ -36,6 +36,7 @@
       *
       *  02.09.01    NACL-藤原    06/04/14  ２００６年４月改正対応
       *                                     外来迅速検体検査加算フラグ追加
+      *  03.04.01    NACL-門脇    06/12/01  自賠責健保準拠対応
       ************************************************************
       *01  RECE41-REC.
            03  RECE41-KEY.
@@ -233,6 +234,8 @@
            03  RECE41-COMCNTFLG           PIC  X(01).
       *外来迅速検体検査加算フラグ
            03  RECE41-KENTAIKASANFLG      PIC  X(01).
+      *乳幼児・幼児のコメントフラグ
+           03  RECE41-NYUYOJIFLG          PIC  X(01).
       *
       *実日数テーブル情報
            03  RECE41-JNISSUTBLINF        OCCURS 31.
@@ -266,4 +269,10 @@
                05  RECE41-KOTEIKBN        PIC  X(01).
       *労災レセ回数記載
                05  RECE41-ROUKAISU        PIC  X(01).
+      *自賠責区分
+               05  RECE41-JIBAIKBN        PIC  X(01).
+      *技術点単価
+               05  RECE41-SYUTENTANKA     PIC  9(02).
+      *薬剤等点単価
+               05  RECE41-YKZTENTANKA     PIC  9(02).
       *

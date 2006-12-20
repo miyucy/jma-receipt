@@ -46,6 +46,7 @@
       *  01.01.07    NACL-ÌçÏÆ    06/01/26  ÂÐ¾Ý¥Ç¡¼¥¿ÊÔ½¸½¤Àµ
       *
       *  03.03.01    NACL-Æ£¸¶    06/09/19  ·îÅÓÃæ¤Ç¤Î»áÌ¾ÊÑ¹¹ÂÐ±þ
+      *  03.04.01    NACL-ÌçÏÆ    06/12/01  ¼«ÇåÀÕ·òÊÝ½àµòÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -176,6 +177,10 @@
       *
            03  WRK-KSNRATE             PIC 9(03).      
            03  WRK-DBKBN               PIC X(01).
+      *
+           03  WRK-JIBAIKBN            PIC X(01).
+           03  WRK-SYUTENTANKA         PIC 9(02).
+           03  WRK-YKZTENTANKA         PIC 9(02).
       *
            03  WRK-STYMD               PIC X(08).
            03  WRK-EDYMD               PIC X(08).
@@ -464,6 +469,23 @@
                     END-IF
                   ELSE
                     MOVE SYS-4001-KSNRATE1 TO    WRK-KSNRATE
+                  END-IF
+                  IF     SYS-4001-JIBAIKBN  =    SPACE
+                    MOVE "1"               TO    WRK-JIBAIKBN
+                  ELSE
+                    MOVE SYS-4001-JIBAIKBN TO    WRK-JIBAIKBN
+                  END-IF
+                  IF     SYS-4001-SYUTENTANKA-X  =  SPACE
+                    MOVE ZERO              TO    WRK-SYUTENTANKA
+                  ELSE
+                    MOVE SYS-4001-SYUTENTANKA
+                                           TO    WRK-SYUTENTANKA
+                  END-IF
+                  IF     SYS-4001-YKZTENTANKA-X  =  SPACE
+                    MOVE ZERO              TO    WRK-YKZTENTANKA
+                  ELSE
+                    MOVE SYS-4001-YKZTENTANKA
+                                           TO    WRK-YKZTENTANKA
                   END-IF
               ELSE
                   MOVE    "Ï«ºÒ¼«Çå°åÎÅµ¡´Ø¾ðÊó¤¬¼èÆÀ¤Ç¤­¤Þ¤»¤ó¤Ç¤·¤¿"     
@@ -1152,6 +1174,12 @@
            MOVE    SYS-4001-KOTEIKBN     TO   WRK-RECE82-KOTEIKBN
       *    Ï«ºÒ¥ì¥»²ó¿ôµ­ºÜ
            MOVE    SYS-4001-ROUKAISU     TO   WRK-RECE82-ROUKAISU
+      *    ¼«ÇåÀÕ¶èÊ¬
+           MOVE    WRK-JIBAIKBN          TO   WRK-RECE82-JIBAIKBN
+      *    µ»½ÑÅÀÃ±²Á
+           MOVE    WRK-SYUTENTANKA       TO   WRK-RECE82-SYUTENTANKA
+      *    ÌôºÞÅùÅÀÃ±²Á
+           MOVE    WRK-YKZTENTANKA       TO   WRK-RECE82-YKZTENTANKA
       *
            MOVE    WRK-RECE82-REC      TO  RECE82-REC
            WRITE   RECE82-REC
@@ -1303,6 +1331,23 @@
                       END-IF
                     ELSE
                       MOVE SYS-4001-KSNRATE1 TO    WRK-KSNRATE
+                    END-IF
+                    IF     SYS-4001-JIBAIKBN  =    SPACE
+                      MOVE "1"               TO    WRK-JIBAIKBN
+                    ELSE
+                      MOVE SYS-4001-JIBAIKBN TO    WRK-JIBAIKBN
+                    END-IF
+                    IF     SYS-4001-SYUTENTANKA-X  =  SPACE
+                      MOVE ZERO              TO    WRK-SYUTENTANKA
+                    ELSE
+                      MOVE SYS-4001-SYUTENTANKA
+                                             TO    WRK-SYUTENTANKA
+                    END-IF
+                    IF     SYS-4001-YKZTENTANKA-X  =  SPACE
+                      MOVE ZERO              TO    WRK-YKZTENTANKA
+                    ELSE
+                      MOVE SYS-4001-YKZTENTANKA
+                                             TO    WRK-YKZTENTANKA
                     END-IF
                 END-IF
       *

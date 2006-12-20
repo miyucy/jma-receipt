@@ -21,7 +21,7 @@
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : レセプト（労災・自賠責）
       *  コンポーネント名  : 月次業務　労災自賠責明細書ファイル作成
-      *                                対象患者抽出（労災）
+      *                                対象患者抽出（労災・自賠責）
       *  管理者            : 
       *  作成日付    作業者        記述
       *  00/12/01    MCC−藤原　   新規作成
@@ -46,6 +46,7 @@
       *  03.03.01    NACL-藤原    06/09/19  月途中での氏名変更対応
       *
       *  03.04.01    NACL-藤原    06/11/01  照会機能連携対応
+      *  03.04.02    NACL-門脇    06/12/01  自賠責もこのプログラムで抽出
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -163,8 +164,6 @@
       *
            03  WRK-HKNNUM              PIC 9(03).     
       *
-           03  WRK-PATH                PIC X(64).
-      *
            03  WRK-DBPATH.
                05  FILLER          PIC S9(09)  BINARY.
                05  FILLER          PIC S9(09)  BINARY.
@@ -186,9 +185,7 @@
                05  WRK-MM              PIC 9(02).
                05  WRK-DD              PIC 9(02).     
       *
-       01  WRK-CONS-AREA.
-      *    労災保険番号 
-           03  WRK-CONS-ROUSAI-HKNNUM  PIC X(03)   VALUE   "971".
+           03  WRK-CONS-HKNNUM         PIC X(03).
       * 
        01  WRK-RECE40-REC. 
            COPY    "CPRCF040.INC"  REPLACING  //RECE40//
@@ -292,6 +289,14 @@
            MOVE    WRK-PARA-SRYYM      TO  SYS-2001-SRYYM
            MOVE    WRK-PARA-SYOKBN     TO  SYS-2001-SYOKBN 
       *
+           EVALUATE  WRK-PARA-RECEKBN
+             WHEN      "3"
+                 MOVE    "971"         TO  WRK-CONS-HKNNUM
+             WHEN      "4"
+             WHEN      "5"
+                 MOVE    "973"         TO  WRK-CONS-HKNNUM
+           END-EVALUATE
+      *
            MOVE    "RECE400"           TO  RECE40PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE40PARA-TERMID
       *
@@ -307,7 +312,7 @@
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
            MOVE    "ORCR0400"      TO  JOB-PGID
-           MOVE    "対象患者抽出（労災）"                              
+           MOVE    "対象患者抽出（労災・自賠責）"
                                    TO  JOB-SHELLMSG
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA  
@@ -509,7 +514,7 @@
                                                    WRK-ROUSAIKBN
       *
                    IF      FLG-HKNCOMBI    =   ZERO
-                       IF      COMB-HKNNUM  =   WRK-CONS-ROUSAI-HKNNUM
+                       IF      COMB-HKNNUM  =   WRK-CONS-HKNNUM
                            IF      COMB-TEKSTYMD   <=  WRK-STYMD
                            AND     COMB-TEKEDYMD   >=  WRK-EDYMD
                                MOVE    SPACE           TO  WRK-UPDKBN
@@ -822,7 +827,13 @@
                        MOVE    BTPARA-INFO-PARA (9:8)
                                                    TO  PTINF-ED-SRYYMD
                        MOVE    "2"                 TO  PTINF-NYUGAIKBN
-                       MOVE    "1"                 TO  PTINF-HKNKBN
+                       EVALUATE  WRK-PARA-RECEKBN
+                         WHEN      "3"
+                              MOVE    "1"          TO  PTINF-HKNKBN
+                         WHEN      "4"
+                         WHEN      "5"
+                              MOVE    "2"          TO  PTINF-HKNKBN
+                       END-EVALUATE
                        MOVE    BTPARA-INFO-PARA(17:6) 
                                                    TO  PTINF-SRYYM
                        MOVE    BTPARA-INFO-PARA(17:6) 
@@ -879,7 +890,13 @@
                        MOVE    BTPARA-INFO-PARA (9:8)
                                                    TO  PTINF-ED-SRYYMD
                        MOVE    "2"                 TO  PTINF-NYUGAIKBN
-                       MOVE    "1"                 TO  PTINF-HKNKBN
+                       EVALUATE  WRK-PARA-RECEKBN
+                         WHEN      "3"
+                              MOVE    "1"          TO  PTINF-HKNKBN
+                         WHEN      "4"
+                         WHEN      "5"
+                              MOVE    "2"          TO  PTINF-HKNKBN
+                       END-EVALUATE
                        MOVE    PTINF-REC           TO  MCPDATA-REC
                        MOVE    PATH-TBL-PTINF-KEY12
                                                    TO  WRK-DBPATH
@@ -1083,7 +1100,7 @@
                                                WRK-ROUSAIKBN
       *
                IF      FLG-HKNCOMBI    =   ZERO
-                   IF      COMB-HKNNUM  =   WRK-CONS-ROUSAI-HKNNUM
+                   IF      COMB-HKNNUM  =   WRK-CONS-HKNNUM
                        IF      COMB-TEKSTYMD   <=  WRK-STYMD
                        AND     COMB-TEKEDYMD   >=  WRK-EDYMD
                            MOVE    SPACE           TO  WRK-UPDKBN
@@ -1236,7 +1253,6 @@
       *     
            DISPLAY "RECE40  CNT " CNT-OUT 
            DISPLAY "*** ORCR0400 END ***"
-      ***  ACCEPT  WRK-IN FROM CONSOLE 
            .
        300-TERM-EXT.
            EXIT.

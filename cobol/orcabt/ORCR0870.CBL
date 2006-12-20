@@ -57,6 +57,7 @@
       *  03.01.03    NACL-ÌçÏÆ    06/07/14  ¿ÇÎÅ¶èÊ¬ÃÖ¤­´¹¤¨¥Õ¥é¥°¤ÎÊÔ½¸
       *  03.02.01    NACL-ÌçÏÆ    06/08/01  ¥ê¥ÏÈ¯¾ÉÆüµ­ºÜ½¤Àµ
       *  03.03.01    NACL-ÌçÏÆ    06/10/19  ÎÅÍÜÉÂÅï¥ì¥»¥³¥á¥ó¥Èµ­ºÜÂÐ±þ
+      *  03.04.01    NACL-ÌçÏÆ    06/12/01  ¼«ÇåÀÕ·òÊÝ½àµòÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -260,6 +261,7 @@
            03  FLG-RYOCOM          PIC 9(01).
            03  FLG-RYOCOM2         PIC 9(01).
            03  FLG-ARI             PIC 9(01).
+           03  FLG-SYSKANRI        PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -294,6 +296,7 @@
            03  RYO-IDX             PIC 9(03).
            03  RYO-IDX2            PIC 9(03).
            03  RYO-IDX3            PIC 9(03).
+           03  IDW                 PIC 9(04).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -554,6 +557,9 @@
       *
       *    ÅÀ¿ô
            COPY    "CPTENSU.INC".
+      *
+      *    ¿ÇÎÅ²ÊÌÜ¾ðÊó
+           COPY    "CPSK1005.INC".
       *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑÎÎ°è
@@ -832,7 +838,18 @@
       *    ¼«ÇåÀÕ½¾ÍèÍÍ¼°¡§²Ã»»Î¨ 
            IF   RECE82-HKNKBN     =   "4"
            AND  WRK-PARA-RECEKBN  =   "5"
-                PERFORM    2001-KASANRITU-COMMENT-SEC
+             EVALUATE  RECE82-JIBAIKBN
+      *        ²Ã»»Î¨
+               WHEN     "1"
+                  PERFORM    2001-KASANRITU-COMMENT-SEC
+      *        ÌôºÞÅùÅÀÃ±²Á
+               WHEN     "2"
+                  IF    RECE82-SYUTENTANKA  =  RECE82-YKZTENTANKA
+                     CONTINUE
+                  ELSE
+                     PERFORM    2001-YKZTENTANKA-COMMENT-SEC
+                  END-IF
+             END-EVALUATE
            END-IF
       *
       *    ºß»Ù±ç¥³¥á¥ó¥È
@@ -971,6 +988,20 @@
                  END-EVALUATE
                ELSE                                                     
                  EVALUATE      RECE84-SRYKBN                            
+                   WHEN      "11"
+                      EVALUATE   RECE82-JIBAIKBN
+                        WHEN       "1"
+                          PERFORM      2099-RECE84-WRITE-SEC
+                        WHEN       "2"
+                          MOVE   ZERO   TO  FLG-COMMENT
+      *                ¡Ê½é¿Ç¡ÊÆ±ÆüÊ£¿ô¿ÇÎÅ²Ê¡Ë»»Äê²Ê¤Î¥»¥Ã¥È¡Ë
+                          IF   FLG-COMMENT  =  ZERO
+                            PERFORM    2001-SYODOU-HANTEI-SEC
+                          END-IF
+                          IF   FLG-COMMENT  =  ZERO
+                            PERFORM    2099-RECE84-WRITE-SEC
+                          END-IF
+                      END-EVALUATE
                    WHEN      "13"                                       
                       MOVE   ZERO   TO  FLG-COMMENT
       *            ¡ÊÌôºÞ´ÉÍý»ØÆ³ÎÁ»»ÄêÆü¤Î¥»¥Ã¥È¡Ë
@@ -2085,6 +2116,65 @@
            EXIT.
       *
       *****************************************************************
+      *    ¼«ÇåÀÕ½¾ÍèÍÍ¼°¡§ÌôºÞÅùÅÀÃ±²Á ¤Î¥³¥á¥ó¥ÈÊÔ½¸
+      *****************************************************************
+       2001-YKZTENTANKA-COMMENT-SEC          SECTION.
+      *
+           INITIALIZE                      RECE849-REC
+           MOVE    RECE82-HOSPID       TO  RECE849-HOSPID
+           MOVE    RECE82-SRYYM        TO  RECE849-SRYYM
+           MOVE    RECE82-NYUGAIKBN    TO  RECE849-NYUGAIKBN
+           MOVE    RECE82-PTID         TO  RECE849-PTID
+           MOVE    RECE82-RECEKA       TO  RECE849-RECEKA
+           MOVE    RECE82-HKNID        TO  RECE849-HKNID
+           MOVE    RECE82-TEKSTYMD     TO  RECE849-TEKSTYMD
+           MOVE    99999998            TO  RECE849-ZAINUM
+           MOVE    "99"                TO  RECE849-SRYKBN
+           MOVE    1                   TO  RECE849-MEISAISU
+      *
+           WRITE   RECE849-REC
+           ADD     1                   TO  CNT-RECE849
+      *
+           INITIALIZE                      RECE859-REC
+           MOVE    RECE82-HOSPID       TO  RECE859-HOSPID
+           MOVE    RECE82-SRYYM        TO  RECE859-SRYYM
+           MOVE    RECE82-NYUGAIKBN    TO  RECE859-NYUGAIKBN
+           MOVE    RECE82-PTID         TO  RECE859-PTID
+           MOVE    RECE82-RECEKA       TO  RECE859-RECEKA
+           MOVE    RECE82-HKNID        TO  RECE859-HKNID
+           MOVE    RECE82-TEKSTYMD     TO  RECE859-TEKSTYMD
+           MOVE    99999998            TO  RECE859-ZAINUM
+           MOVE    "99"                TO  RECE859-SRYKBN
+      *    ÌôºÞÅùÅÀÃ±²Á¤Î¥³¥á¥ó¥È¤ÎÁÞÆþ
+           MOVE    SPACE               TO  WRK-RECE85XX-REC
+           INITIALIZE                      WRK-RECE85XX-REC
+           MOVE   "810000001"          TO  WRK-RECE85XX-SRYCD(1 1)
+           MOVE    ZERO                TO  WRK-RECE85XX-SRYSURYO(1 1)
+           MOVE    13                  TO  WRK-RECE85XX-YUKOKETA(1 1)
+           MOVE    "ÌôºÞÅù¡Ê£±ÅÀÃ±²Á¡¡¡¡¡¡±ß¡Ë"
+                                       TO  WRK-RECE85XX-NAME(1 1)
+      *
+           MOVE    RECE82-YKZTENTANKA(1:1)  TO  DAY-IDX3
+           PERFORM    20011-KASANRITU-HENSYU-SEC
+           IF      WRK-HENSYU-KASANRITU2   =   "£°"
+              MOVE   "¡¡"   TO   WRK-HENSYU-KASANRITU2
+           END-IF
+           MOVE    WRK-HENSYU-KASANRITU2 TO WRK-RECE85XX-NAME(1 1)(19:2)
+           MOVE    RECE82-YKZTENTANKA(2:1)  TO  DAY-IDX3
+           PERFORM    20011-KASANRITU-HENSYU-SEC
+           MOVE    WRK-HENSYU-KASANRITU2 TO WRK-RECE85XX-NAME(1 1)(21:2)
+      *
+           MOVE     "1"                TO  WRK-RECE85XX-SIKFLG(1 1)
+           MOVE    WRK-RECE85XX-SRYACT-TBL(1 1)
+                                       TO  RECE859-SRYACT-TBL(1)
+           WRITE   RECE859-REC
+           ADD     1                   TO  CNT-RECE859
+      *
+           .
+       2001-YKZTENTANKA-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    ºß»Ù±ç¤Î¥³¥á¥ó¥ÈÊÔ½¸
       *****************************************************************
        2001-ZAISIEN-COMMENT-SEC          SECTION.
@@ -2131,6 +2221,103 @@
       *
            .
        2001-ZAISIEN-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ½é¿Ç¡ÊÆ±ÆüÊ£¿ô¿ÇÎÅ²Ê¡Ë¤¬¤¢¤ë¤«È½Äê
+      *****************************************************************
+       2001-SYODOU-HANTEI-SEC          SECTION.
+      *
+           IF      RECE84-FLG-SYODOU-COMMENT   =    "1"
+                MOVE       99       TO     FLG-COMMENT
+                PERFORM    20011-SYODOU-COMMENT-SEC
+           END-IF
+      *
+           .
+       2001-SYODOU-HANTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ½é¿Ç¡ÊÆ±ÆüÊ£¿ô¿ÇÎÅ²Ê¡Ë¤Î¥³¥á¥ó¥ÈÊÔ½¸
+      *****************************************************************
+       20011-SYODOU-COMMENT-SEC          SECTION.
+      *
+           MOVE       ZERO       TO   IDZ
+           INITIALIZE            WRK-FREE-AREA2
+      *
+           PERFORM   VARYING   IDX    FROM   1   BY   1
+                      UNTIL   (IDX                       >   10  )
+                       OR     (RECE84-SYODOU-SRYKA(IDX)  =  SPACE)
+      *
+             ADD      1                  TO  IDZ
+             MOVE    "Ê£½é»»Äê¿ÇÎÅ²Ê¡§"  TO  WK-FREE-NAME2(IDZ)(1:16)
+      *      ¿ÇÎÅ²Ê¤Î¼èÆÀ
+             INITIALIZE                      SYS-1005-REC
+             MOVE    "1005"              TO  SYS-1005-KANRICD
+             MOVE    RECE84-SYODOU-SRYKA(IDX)
+                                         TO  SYS-1005-KBNCD
+             MOVE    RECE82-SRYYM        TO  ORC-DBYMD(1:6)
+             MOVE    "01"                TO  ORC-DBYMD(7:2)
+             MOVE    SYS-1005-REC        TO  MCPDATA-REC
+             MOVE    "DBSELECT"          TO  MCP-FUNC
+             MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+             CALL    "ORCMCPSUB"         USING   MCPAREA
+                                                 ORCMCPAREA
+                                                 MCPDATA-REC
+             IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY"    TO  ORC-DBPATH
+               PERFORM  900-SYSKANRI-READ-SEC
+               IF      FLG-SYSKANRI      =   ZERO
+                  MOVE  SYS-1005-SRYKANAME(1:40)
+                                         TO  WK-FREE-NAME2(IDZ)(17:40)
+               END-IF
+             END-IF
+      *
+             INITIALIZE                        MCPAREA
+             MOVE    "DBCLOSECURSOR"   TO      MCP-FUNC
+             MOVE    "SYSKANRI-KEY"    TO      ORC-DBPATH
+             CALL    "ORCMCPSUB"       USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+             PERFORM   VARYING   IDW   FROM   200   BY  -1
+                        UNTIL    IDW   <   1
+                IF   WK-FREE-NAME2(IDZ)(IDW:1)  NOT =  SPACE
+                     COMPUTE WK-FREE-YUKOKETA2(IDZ) =  IDW  /   2
+                     MOVE    1   TO    IDW
+                END-IF
+             END-PERFORM
+      *
+           END-PERFORM
+      *
+           PERFORM   200111-RECE85-TAIHI-SEC
+      *
+      *    £Ò£Å£Ã£Å£°£µ¥Õ¥¡¥¤¥ë¤ÎÆâÍÆ¤ò¥Æ¡¼¥Ö¥ë¤ËÂàÈò
+           MOVE    ZERO                TO  IDX-RECE85
+           MOVE    SPACE               TO  WRK-RECE85XX-REC
+           INITIALIZE                      WRK-RECE85XX-REC
+      *
+           MOVE    RECE84-MEISAISU     TO  MAX-MEISAISU
+      *
+           PERFORM   VARYING   IDX   FROM    1   BY  1
+                         UNTIL   ( IDX                >   50    )
+                         OR      ( WK-FREE-NAME2(IDX) =   SPACE )
+                COMPUTE  MAX-MEISAISU        =   MAX-MEISAISU  +  1
+                MOVE   "810000001"
+                             TO  WRK-RECE85XX-SRYCD(MAX-MEISAISU 1)
+                MOVE   ZERO  TO  WRK-RECE85XX-SRYSURYO(MAX-MEISAISU 1)
+                MOVE   WK-FREE-YUKOKETA2(IDX)
+                             TO  WRK-RECE85XX-YUKOKETA(MAX-MEISAISU 1)
+                MOVE   WK-FREE-NAME2(IDX)
+                             TO  WRK-RECE85XX-NAME(MAX-MEISAISU 1)
+                MOVE    "1"  TO  WRK-RECE85XX-SIKFLG(MAX-MEISAISU 1)
+           END-PERFORM
+      *
+           PERFORM    200111-SRYACTINF-HENSYU-SEC
+      *
+           .
+       20011-SYODOU-COMMENT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4839,6 +5026,28 @@
       *
            .
        900-TENSU-TBL-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *****************************************************************
+       900-SYSKANRI-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  SYS-1005-REC
+               MOVE    ZERO            TO  FLG-SYSKANRI
+           ELSE
+               INITIALIZE                  SYS-1005-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           .
+       900-SYSKANRI-READ-EXT.
            EXIT.
       *      
       *****************************************************************

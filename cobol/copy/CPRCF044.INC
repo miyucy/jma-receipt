@@ -38,6 +38,7 @@
       *                                     在宅患者訪問診療料の追加
       *  03.01.01    NACL-門脇    06.07.11  在支援に関する診療の追加
       *  03.01.02    NACL-門脇    06.07.14  診療区分置き換えフラグの追加
+      *  03.04.01    NACL-門脇    06.12.01  自賠責健保準拠対応
       ************************************************************
       *01  RECE44-REC.
            03  RECE44-KEY.
@@ -104,6 +105,8 @@
            03  RECE44-SYOSANTEIKA-COMMENT PIC  X(01).
       *再診料算定科：
            03  RECE44-SAISANTEIKA-COMMENT PIC  X(01).
+      *電話再診
+           03  RECE44-DENWASAI-COMMENT    PIC  X(01).
       *同日再診
            03  RECE44-DOUJITUSAI-COMMENT  PIC  X(01).
       *リハビリ

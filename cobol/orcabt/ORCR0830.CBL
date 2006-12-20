@@ -44,6 +44,7 @@
       *  01.01.08    NACL-ÌçÏÆ    05.10.06  ¿Ç¶è£¹£µ£¹£¶ÂÐ±þ
       *  02.09.01    NACL-ÌçÏÆ    06/04/13  £²£°£°£¶Ç¯£´·î²þÀµÂÐ±þ
       *  03.01.01    NACL-ÌçÏÆ    06/06/28  ¼ÂÆü¿ô¸º»»¥³¡¼¥ÉÂÐ±þ
+      *  03.04.01    NACL-ÌçÏÆ    06/12/01  ¼«ÇåÀÕ·òÊÝ½àµòÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2081,8 +2082,13 @@
                 END-IF
            END-PERFORM
       *
-           IF       RECE82-JNISSU   =    ZERO  
-                     MOVE     999       TO    RECE82-JNISSU
+           IF    RECE82-HKNKBN     =   "4"
+           AND   RECE82-JIBAIKBN   =   "2"
+             CONTINUE
+           ELSE
+             IF  RECE82-JNISSU     =   ZERO
+                   MOVE    999    TO    RECE82-JNISSU
+             END-IF
            END-IF
       *
            IF     WRK-TAIHI-FLG       =   1

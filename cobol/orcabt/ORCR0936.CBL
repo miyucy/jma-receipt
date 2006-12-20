@@ -28,6 +28,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  03.04.01    NACL-門脇    06/12/01  点数・回数編集修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -379,7 +380,8 @@
       *
            INITIALIZE              WRK-TNSKAI-AREA
       *
-           IF    RECE86-ZAILAST   =   ZERO
+           IF   (RECE86-ZAILAST   =   ZERO)
+           OR   (WRK-KINGAKU      =   ZERO)
                GO  TO  2001-TENSUKAI-HEN-EXT
            END-IF
       *

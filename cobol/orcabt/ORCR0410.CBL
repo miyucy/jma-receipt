@@ -62,6 +62,7 @@
       *  03.01.01    NACL-門脇    06.06.28  実日数減算コード対応
       *
       *  03.03.01    NACL-藤原    06/09/19  月途中での氏名変更対応
+      *  03.04.01    NACL-門脇    06/12/01  自賠責健保準拠対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -198,6 +199,9 @@
            03  WRK-KSNRATE                             PIC  9(03).      
            03  WRK-TAXKBN                              PIC  X(01).      
            03  WRK-KOTEIKBN                            PIC  X(01).
+           03  WRK-JIBAIKBN                            PIC  X(01).
+           03  WRK-SYUTENTANKA                         PIC  9(02).
+           03  WRK-YKZTENTANKA                         PIC  9(02).
       *
            03  WRK-TAIHI-FLG                           PIC  9(01).
            03  WRK-TAIHI-SRYYMD.
@@ -558,6 +562,23 @@
                   END-IF
                   MOVE   SYS-4001-TAXKBN   TO    WRK-TAXKBN                
                   MOVE   SYS-4001-KOTEIKBN TO    WRK-KOTEIKBN
+                  IF     SYS-4001-JIBAIKBN  =    SPACE
+                    MOVE "1"               TO    WRK-JIBAIKBN
+                  ELSE
+                    MOVE SYS-4001-JIBAIKBN TO    WRK-JIBAIKBN
+                  END-IF
+                  IF     SYS-4001-SYUTENTANKA-X  =  SPACE
+                    MOVE ZERO              TO    WRK-SYUTENTANKA
+                  ELSE
+                    MOVE SYS-4001-SYUTENTANKA
+                                           TO    WRK-SYUTENTANKA
+                  END-IF
+                  IF     SYS-4001-YKZTENTANKA-X  =  SPACE
+                    MOVE ZERO              TO    WRK-YKZTENTANKA
+                  ELSE
+                    MOVE SYS-4001-YKZTENTANKA
+                                           TO    WRK-YKZTENTANKA
+                  END-IF
               ELSE
                   MOVE    "労災自賠医療機関情報が取得できませんでした"     
                                               TO  WRK-RECEERR
@@ -841,6 +862,12 @@
            MOVE    WRK-KOTEIKBN          TO   RECE41-KOTEIKBN
       *    労災レセ回数記載
            MOVE    SYS-4001-ROUKAISU     TO   RECE41-ROUKAISU
+      *    自賠責区分
+           MOVE    WRK-JIBAIKBN          TO   RECE41-JIBAIKBN
+      *    技術点単価
+           MOVE    WRK-SYUTENTANKA       TO   RECE41-SYUTENTANKA
+      *    薬剤等点単価
+           MOVE    WRK-YKZTENTANKA       TO   RECE41-YKZTENTANKA
       *
       *    労災レセプト回数取得
            IF    ( RECE41-HKNKBN     =   "1"  OR  "2" )
@@ -1802,8 +1829,13 @@
                     END-IF
            END-PERFORM
       *
-           IF       RECE41-JNISSU   =    ZERO  
+           IF    RECE41-HKNKBN   =   "4"
+           AND   WRK-JIBAIKBN    =   "2"
+             CONTINUE
+           ELSE
+             IF       RECE41-JNISSU   =    ZERO  
                MOVE     999       TO       RECE41-JNISSU
+             END-IF
            END-IF
       *
            IF     WRK-TAIHI-FLG       =   1
@@ -2570,6 +2602,23 @@
                    END-IF
                    MOVE   SYS-4001-TAXKBN   TO    WRK-TAXKBN
                    MOVE   SYS-4001-KOTEIKBN TO    WRK-KOTEIKBN
+                   IF     SYS-4001-JIBAIKBN  =    SPACE
+                     MOVE "1"               TO    WRK-JIBAIKBN
+                   ELSE
+                     MOVE SYS-4001-JIBAIKBN TO    WRK-JIBAIKBN
+                   END-IF
+                   IF     SYS-4001-SYUTENTANKA-X  =  SPACE
+                     MOVE ZERO              TO    WRK-SYUTENTANKA
+                   ELSE
+                     MOVE SYS-4001-SYUTENTANKA
+                                            TO    WRK-SYUTENTANKA
+                   END-IF
+                   IF     SYS-4001-YKZTENTANKA-X  =  SPACE
+                     MOVE ZERO              TO    WRK-YKZTENTANKA
+                   ELSE
+                     MOVE SYS-4001-YKZTENTANKA
+                                            TO    WRK-YKZTENTANKA
+                   END-IF
                 END-IF
       *
               END-PERFORM

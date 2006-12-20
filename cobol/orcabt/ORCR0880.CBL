@@ -34,6 +34,7 @@
       *  01.01.02    NACL-ÌçÏÆ    05/07/15  ¼«ÇåÀÕ½¾ÍèÍÍ¼°ÂÐ±þ
       *  02.09.01    NACL-ÌçÏÆ    06/04/13  £²£°£°£¶Ç¯£´·î²þÀµÂÐ±þ
       *  02.09.02    NACL-ÌçÏÆ    06/04/26  µßµÞ°åÎÅ´ÉÍý²Ã»»¥³¥á¥ó¥ÈÊÔ½¸½¤Àµ
+      *  03.04.01    NACL-ÌçÏÆ    06/12/01  ¼«ÇåÀÕ·òÊÝ½àµòÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -488,14 +489,22 @@
                ELSE
                  EVALUATE      RECE84-SRYKBN
                    WHEN      "11"
-                      IF    RECE84-FLG-SYODOU-COMMENT   =    "1"
-                          PERFORM    2001-SYODOU-COMMENT-SEC
-                      ELSE
+                      EVALUATE   RECE82-JIBAIKBN
+                        WHEN       "1"
+                          IF    RECE84-FLG-SYODOU-COMMENT   =    "1"
+                             PERFORM    2001-SYODOU-COMMENT-SEC
+                          ELSE
+                             MOVE       RECE84-REC    TO   RECE841-REC
+                             WRITE      RECE841-REC
+                             ADD     1          TO      CNT-RECE84
+                             PERFORM    2002-RECE85-TENSOU-SEC
+                          END-IF
+                        WHEN       "2"
                           MOVE       RECE84-REC    TO   RECE841-REC
                           WRITE      RECE841-REC
                           ADD     1          TO      CNT-RECE84
                           PERFORM    2002-RECE85-TENSOU-SEC
-                      END-IF
+                      END-EVALUATE
                    WHEN      "80"
                       IF  ( RECE82-KYUKYU-PRTKBN    =      1         )
                       AND ( RECE84-SRYCDTOTAL(6:9)  =   CONS-KYUKYU  )

@@ -67,6 +67,7 @@
       *  03.01.02    NACL-ÌçÏÆ    06/07/10  ºß»Ù±ç¥³¥á¥ó¥È¼«Æ°µ­ºÜÂÐ±þ
       *  03.01.03    NACL-ÌçÏÆ    06/07/14  ¿ÇÎÅ¶èÊ¬ÃÖ¤­´¹¤¨¥Õ¥é¥°¤ÎÊÔ½¸
       *  03.03.01    NACL-ÌçÏÆ    06/10/19  ÎÅÍÜÉÂÅï¥ì¥»¥³¥á¥ó¥Èµ­ºÜÂÐ±þ
+      *  03.04.01    NACL-ÌçÏÆ    06/12/01  ¼«ÇåÀÕ·òÊÝ½àµòÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -535,10 +536,15 @@
            03  FILLER          PIC X(09)   VALUE   "099800171".
       *    ¼ÂÆü¿ô¸º»»
            03  FILLER          PIC X(09)   VALUE   "099409903".
-       01  TBL-NOSRYCD-R       REDEFINES   TBL-NOSRYCD-AREA.
-            03  TBL-NOSRYCD     PIC X(09)   OCCURS  16.       
       *
-       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE  16.         
+      *    ½é¿Ç
+           03  FILLER          PIC X(09)   VALUE   "111000110".
+      *    °é»ù±ÉÍÜ»ØÆ³²Ã»»¡Ê£Ä£Õ£Í£Í£Ù¡Ë
+           03  FILLER          PIC X(09)   VALUE   "099114001".
+       01  TBL-NOSRYCD-R       REDEFINES   TBL-NOSRYCD-AREA.
+            03  TBL-NOSRYCD     PIC X(09)   OCCURS  18.       
+      *
+       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE  18.         
       *
       *    ¸ÇÄêÃÍ
        01  CONST-AREA.
@@ -1410,6 +1416,10 @@
                                             OR  CONS-COMMENT6         
                                             OR  CONS-COMMENT7         
                                             OR  CONS-COMMENT8         )
+           OR    (TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)(1:1)  = "8" AND
+                  TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)
+                                                     NOT = "830000020")
+           OR    (TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)(1:3)  = "008"  )
                    CONTINUE
            ELSE
                    MOVE    1                 TO  FLG-NOPRT
@@ -2810,6 +2820,11 @@
                   (RECE84-SRYKBN      =   "11" OR "99")
                GO  TO  440-TNSKAI-SET-EXT                              
            END-IF                                                      
+           IF     (FLG-COMMENT3       =    1  )   AND
+                  (RECE84-SRYKBN      =   "11")   AND
+                  (WRK-TENSUGOKEI     =   ZERO)
+               GO  TO  440-TNSKAI-SET-EXT
+           END-IF
            IF     (FLG-COMMENT3       =    1                  )   AND
                   (RECE84-SRYKBN      =   "14" OR "33" OR "90"
                                                        OR "92")   AND

@@ -35,7 +35,6 @@ bind	"ORCR0260"	"OpenCOBOL";
 bind	"ORCR0300"	"OpenCOBOL";
 bind	"ORCR0350"	"OpenCOBOL";
 bind	"ORCR0400"	"OpenCOBOL";
-bind    "ORCR0405"	"OpenCOBOL";
 bind	"ORCR0410"	"OpenCOBOL";
 bind	"ORCR0420"	"OpenCOBOL";
 bind	"ORCR0425"	"OpenCOBOL";
