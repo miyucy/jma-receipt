@@ -39,6 +39,8 @@
       *
       *  03.03.01    NACL-藤原    06/09/29  検査の判断料の記載方法の変更
       *                                     検査等実施判断の追加
+      *
+      *  03.04.01    NACL-藤原    06/12/21  入院料加算のコメントを記録する
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -403,8 +405,8 @@
       ****                                         <   "99"        )
                        OR  ( RECE64-SRYKBN         >=  "95"   AND 
                                                    <   "99"        )
-                       OR  ( ( RECE64-SRYKBN = "90" OR "92" )  AND 
-                             ( RECE64-ZAITEN  NOT =  ZERO   )      )
+      ****             OR  ( ( RECE64-SRYKBN = "90" OR "92" )  AND 
+      ****                   ( RECE64-ZAITEN  NOT =  ZERO   )      )
                                CONTINUE
                        ELSE
                            MOVE    1           TO  FLG-READ

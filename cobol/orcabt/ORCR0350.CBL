@@ -163,6 +163,10 @@
       *                                     ¤È¤¹¤ë
       *  03.03.12    NACL-Æ£¸¶    06/11/17  ¼ç²ÊÌ¤ÀßÄê¤Î¾ì¹ç¤Ç¤â²ÊÊÌ°õºþ
       *                                     ÀßÄê¤Î¤È¤­¤Ï¥ì¥»ÅÅ¤òµ­Ï¿¤¹¤ë
+      *  03.03.13    NACL-Æ£¸¶    06/12/19  ´ð½àÉÔÅ¬¹çÄã¸º¶èÊ¬¤Ë¤è¤ëµ­ºÜ
+      *                                     ½ç¤Î½¤Àµ
+      *
+      *  03.04.01    NACL-Æ£¸¶    06/12/21  Æþ±¡ÎÁ²Ã»»¤Î¥³¥á¥ó¥È¤òµ­Ï¿¤¹¤ë
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1218,6 +1222,18 @@
       *    Ä¶²»ÇÈÆâ»ë¶À²Ã»»
            03  WRK-CONS-CHOONPA-KASAN
                                       PIC X(09)   VALUE   "160148670".
+      *
+      *    »ÜÀß´ð½àÉÔÅ¬¹ç¡Ê¸¡ºº¡Ë¡Ê£±£°£°Ê¬¤Î£¸£°¡Ë
+           03  WRK-CONS-SISETUKIJYUN-KENSA
+                                      PIC X(09)   VALUE   "160174470".
+      *
+      *    »ÜÀß´ð½àÉÔÅ¬¹ç¡Ê²èÁü¡Ë¡Ê£±£°£°Ê¬¤Î£¸£°¡Ë
+           03  WRK-CONS-SISETUKIJYUN-GAZOU
+                                      PIC X(09)   VALUE   "170025170".
+      *
+      *    »ÜÀß´ð½àÉÔÅ¬¹ç¡ÊÊü¼ÍÀþ¡Ë¡Ê£±£°£°Ê¬¤Î£·£°¡Ë
+           03  WRK-CONS-SISETUKIJYUN-HOUSYASEN
+                                      PIC X(09)   VALUE   "180025270".
       *
       *    »ÀÁÇÊäÀµÎ¨£±¡¥£³¡Ê£±µ¤°µ¡Ë
            03  WRK-CONS-SANSO-HOSEI   PIC X(09)   VALUE   "770020070".
@@ -3386,6 +3402,13 @@
                          UNTIL   ( IDX               >   5     )
                          OR      ( RECE65-SRYCD(IDX) =   SPACE )
                          OR      ( FLG-END           =   1     )
+      *
+      *         Æþ±¡ÎÁ¤Ï¥³¥á¥ó¥È¤Î¤ßÂÐ¾Ý¤È¤¹¤ë
+                IF    ( RECE641-SRYKBN               >=  "90"      )
+                AND   ( RECE65-SRYCD (IDX) (1:1) NOT =   "8"   AND
+                        RECE65-SRYCD (IDX) (1:3) NOT =   "008"     )
+                 CONTINUE
+                ELSE
                  IF      RECE65-RECEDENFLG (IDX)     =   SPACE
                    MOVE    SPACE                TO  WRK-KIZAI-SRYCD
                    IF      RECE65-SRYCD (IDX) (1:3) = "059"
@@ -3441,6 +3464,7 @@
                            PERFORM 200711-KIZAI-TAIHI-SEC
                    END-EVALUATE
                  END-IF
+                END-IF
                END-PERFORM
       *
                PERFORM 990-RECE65-NEXT-SEC
@@ -4390,19 +4414,27 @@
                                                  WRK-CONS-CHOONPA-KASAN
                                      MOVE    4               TO  IDZ  
                                    ELSE
-                                     IF    ( WRK-KOUI-TAIHI-TENSIKIBETU 
+                                     IF      WRK-KOUI-TAIHI-SRYCD (IDX)
+                                                           =
+                                         WRK-CONS-SISETUKIJYUN-KENSA  OR
+                                         WRK-CONS-SISETUKIJYUN-GAZOU  OR
+                                         WRK-CONS-SISETUKIJYUN-HOUSYASEN
+                                       MOVE    2               TO  IDZ  
+                                     ELSE
+                                      IF    ( WRK-KOUI-TAIHI-TENSIKIBETU 
                                                                (IDX)
                                                          =   5   OR  6 )
-                                     AND   ( WRK-KOUI-TAIHI-CHUKSNCD
+                                      AND   ( WRK-KOUI-TAIHI-CHUKSNCD
                                                                  (IDX)
                                                          =   "0000"    )
-                                     AND   ( RECE641-SRYKBN
+                                      AND   ( RECE641-SRYKBN
                                                      NOT =   "54"      ) 
-                                       MOVE    3               TO  IDZ
-                                     ELSE
-                                       MOVE    2               TO  IDZ
+                                        MOVE    3               TO  IDZ
+                                      ELSE
+                                        MOVE    2               TO  IDZ
+                                      END-IF
                                      END-IF
-                                   END-IF   
+                                   END-IF    
                                WHEN    "9" 
                                    MOVE    4               TO  IDZ  
                            END-EVALUATE
