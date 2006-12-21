@@ -75,6 +75,8 @@
       *  03.01.02    NACL-門脇    06/07/10  在支援コメント自動記載対応
       *  03.02.01    NACL-門脇    06/08/01  リハ発症日記載修正
       *  03.03.01    NACL-門脇    06/10/19  療養病棟レセコメント記載対応
+      *  03.04.01    NACL-門脇    06/12/21  レセプト電算対象外フラグ編集
+      *                                     （診療区分９０、９２）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3800,6 +3802,7 @@
                  MOVE    TBL-DAY(DAY-IDX)
                              TO  WRK-RECE65XX-NAME(MAX-MEISAISU 1)(9:4)
                END-IF
+               MOVE   "1"    TO  WRK-RECE65XX-RECEDENFLG(MAX-MEISAISU 1)
            END-PERFORM
       *
            PERFORM    200111-SRYACTINF-HENSYU-SEC
@@ -4786,6 +4789,7 @@
                    MOVE   TBL-DAY(DAY-IDX2)
                            TO  WRK-RECE65XX2-NAME(MAX-MEISAISU 1)(21:4)
                  END-IF
+                 MOVE  "1" TO  WRK-RECE65XX2-RECEDENFLG(MAX-MEISAISU 1)
               END-PERFORM
       *
               PERFORM  VARYING  IDX  FROM   1   BY   1
@@ -4910,6 +4914,7 @@
                        MOVE "「３７」"
                               TO WRK-RECE65XX2-NAME(MAX-MEISAISU 1)
                    END-EVALUATE
+                   MOVE "1" TO WRK-RECE65XX2-RECEDENFLG(MAX-MEISAISU 1)
       *
               END-PERFORM
       *
@@ -4923,6 +4928,7 @@
                              TO WRK-RECE65XX2-NAME(MAX-MEISAISU 1)
                 MOVE   TBL-RYOCOM2-ADL-TEN-MOJI(RYO-IDX3)
                              TO WRK-RECE65XX2-NAME(MAX-MEISAISU 1)(9:4)
+                MOVE "1" TO WRK-RECE65XX2-RECEDENFLG(MAX-MEISAISU 1)
               END-IF
       *
            END-PERFORM
