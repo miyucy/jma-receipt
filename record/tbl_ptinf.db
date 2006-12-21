@@ -66,6 +66,7 @@ tbl_ptinf {
 	HKNKBN				char(1),virtual;
 	SRYYMD				char(8),virtual;
 	SRYYM				char(6),virtual;
+	HKNKBN2				char(1),virtual;
 };
 
 primary	{
@@ -304,7 +305,100 @@ path	key15	{
 		;
 	};
 };
-
+path	key16	{
+	DBSELECT	{
+		DECLARE tbl_ptinf_key16_csr CURSOR FOR
+		SELECT a.ptid from tbl_ptinf a, 
+		(SELECT distinct ptid from tbl_jyurrk 
+		WHERE hospid	=	:HOSPID 
+		AND (sryymd 	<=	:ED_SRYYMD 
+		AND sryymd 	>=	:ST_SRYYMD) 
+		AND nyugaikbn	=	:NYUGAIKBN 
+		AND (hknkbn	=	:HKNKBN  OR
+		     hknkbn	=	:HKNKBN2)
+		group by ptid) b 
+		WHERE a.hospid	=	:HOSPID 
+		AND a.ptid	=	b.ptid 
+		AND a.tstptnumkbn	<>	'1'
+		;
+	};
+};
+path	key17	{
+	DBSELECT	{
+		DECLARE tbl_ptinf_key17_csr CURSOR FOR
+		SELECT a.* from tbl_ptinf a, 
+		(SELECT distinct ptid from tbl_jyurrk 
+		WHERE hospid	=	:HOSPID 
+		AND (sryymd 	<=	:ED_SRYYMD 
+		AND sryymd 	>=	:ST_SRYYMD) 
+		AND nyugaikbn	=	:NYUGAIKBN 
+		AND (hknkbn	=	:HKNKBN  OR
+		     hknkbn	=	:HKNKBN2)
+		group by ptid) b 
+		WHERE a.hospid	=	:HOSPID 
+		AND a.ptid	=	b.ptid 
+		AND a.tstptnumkbn	<>	'1'
+		;
+	};
+};
+path	key18	{
+	DBSELECT	{
+		DECLARE tbl_ptinf_key18_csr CURSOR FOR
+		SELECT a.ptid from tbl_ptinf a, 
+		(SELECT distinct ptid from tbl_jyurrk 
+		WHERE hospid	=	:HOSPID 
+		AND sryymd	LIKE	:SRYYMD
+		AND (upymd 	<=	:ED_SRYYMD 
+		AND upymd 	>=	:ST_SRYYMD) 
+		AND nyugaikbn	=	:NYUGAIKBN 
+		AND (hknkbn	=	:HKNKBN  OR
+		     hknkbn	=	:HKNKBN2)
+		group by ptid 
+		UNION
+		SELECT distinct ptid from tbl_receupd
+		WHERE hospid	=	:HOSPID 
+		AND sryym 	=	:SRYYM 
+		AND nyugaikbn	=	:NYUGAIKBN 
+                AND (upymd      <=      :ED_SRYYMD
+                AND upymd       >=      :ST_SRYYMD)
+		AND (hknkbn	=	:HKNKBN  OR
+		     hknkbn	=	:HKNKBN2)
+		group by ptid) b
+		WHERE a.hospid	=	:HOSPID 
+		AND a.ptid	=	b.ptid 
+		AND a.tstptnumkbn	<>	'1'
+		;
+	};
+};
+path	key19	{
+	DBSELECT	{
+		DECLARE tbl_ptinf_key19_csr CURSOR FOR
+		SELECT a.* from tbl_ptinf a, 
+		(SELECT distinct ptid from tbl_jyurrk 
+		WHERE hospid	=	:HOSPID 
+		AND sryymd	LIKE	:SRYYMD
+		AND (upymd 	<=	:ED_SRYYMD 
+		AND upymd 	>=	:ST_SRYYMD) 
+		AND nyugaikbn	=	:NYUGAIKBN 
+		AND (hknkbn	=	:HKNKBN  OR
+		     hknkbn	=	:HKNKBN2)
+		group by ptid 
+		UNION
+		SELECT distinct ptid from tbl_receupd
+		WHERE hospid	=	:HOSPID 
+		AND sryym 	=	:SRYYM 
+		AND nyugaikbn	=	:NYUGAIKBN 
+                AND (upymd      <=      :ED_SRYYMD
+                AND upymd       >=      :ST_SRYYMD)
+		AND (hknkbn	=	:HKNKBN  OR
+		     hknkbn	=	:HKNKBN2)
+		group by ptid) b
+		WHERE a.hospid	=	:HOSPID 
+		AND a.ptid	=	b.ptid 
+		AND a.tstptnumkbn	<>	'1'
+		;
+	};
+};
 path	upd1	{
 	DBUPDATE	{
 		UPDATE	tbl_ptinf

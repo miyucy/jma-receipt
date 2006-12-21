@@ -66,6 +66,7 @@ tbl_ptinf_prv {
 	HKNKBN				char(1),virtual;
 	SRYYMD				char(8),virtual;
 	SRYYM				char(6),virtual;
+	HKNKBN2				char(1),virtual;
 };
 
 primary	{

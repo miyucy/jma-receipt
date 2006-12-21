@@ -47,6 +47,7 @@
       *
       *  03.04.01    NACL-藤原    06/11/01  照会機能連携対応
       *  03.04.02    NACL-門脇    06/12/01  自賠責もこのプログラムで抽出
+      *  03.04.03    NACL-門脇    06/12/20  自賠責健保準拠対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -831,8 +832,10 @@
                          WHEN      "3"
                               MOVE    "1"          TO  PTINF-HKNKBN
                          WHEN      "4"
+                              MOVE    "2"          TO  PTINF-HKNKBN
                          WHEN      "5"
                               MOVE    "2"          TO  PTINF-HKNKBN
+                              MOVE    "4"          TO  PTINF-HKNKBN2
                        END-EVALUATE
                        MOVE    BTPARA-INFO-PARA(17:6) 
                                                    TO  PTINF-SRYYM
@@ -841,8 +844,15 @@
                        MOVE    "__"                TO  PTINF-SRYYMD(7:2)
                        MOVE    PTINF-REC           TO  MCPDATA-REC
                        MOVE    "DBSELECT"          TO  MCP-FUNC
-                       MOVE    PATH-TBL-PTINF-KEY14
+                       EVALUATE  WRK-PARA-RECEKBN
+                         WHEN      "3"
+                         WHEN      "4"
+                           MOVE    PATH-TBL-PTINF-KEY14
                                                    TO  WRK-DBPATH
+                         WHEN      "5"
+                           MOVE    PATH-TBL-PTINF-KEY19
+                                                   TO  WRK-DBPATH
+                       END-EVALUATE
                        PERFORM 20022-JYUSINYMD-HENSYU-SEC
                    END-IF
                WHEN    "03"
@@ -894,12 +904,21 @@
                          WHEN      "3"
                               MOVE    "1"          TO  PTINF-HKNKBN
                          WHEN      "4"
+                              MOVE    "2"          TO  PTINF-HKNKBN
                          WHEN      "5"
                               MOVE    "2"          TO  PTINF-HKNKBN
+                              MOVE    "4"          TO  PTINF-HKNKBN2
                        END-EVALUATE
                        MOVE    PTINF-REC           TO  MCPDATA-REC
-                       MOVE    PATH-TBL-PTINF-KEY12
+                       EVALUATE  WRK-PARA-RECEKBN
+                         WHEN      "3"
+                         WHEN      "4"
+                            MOVE    PATH-TBL-PTINF-KEY12
                                                    TO  WRK-DBPATH
+                         WHEN      "5"
+                            MOVE    PATH-TBL-PTINF-KEY17
+                                                   TO  WRK-DBPATH
+                       END-EVALUATE
                        PERFORM 20022-JYUSINYMD-HENSYU-SEC
                    END-IF
            END-EVALUATE

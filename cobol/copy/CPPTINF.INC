@@ -153,3 +153,4 @@
            03  PTINF-HKNKBN                  PIC  X(01).
            03  PTINF-SRYYMD                  PIC  X(08).
            03  PTINF-SRYYM                   PIC  X(06).
+           03  PTINF-HKNKBN2                 PIC  X(01).
