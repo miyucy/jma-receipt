@@ -931,6 +931,29 @@
       <draw_indicator>True</draw_indicator>
       <group>DATAKBN</group>
     </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>B22</name>
+      <x>776</x>
+      <y>696</y>
+      <width>80</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>GDK_SHIFT_MASK</modifiers>
+	<key>GDK_F10</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Mon, 25 Dec 2000 08:27:40 GMT</last_modification_time>
+      </signal>
+      <label>Ã§¿¡µ·¿ﬂƒÍ</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
   </widget>
 </widget>
 

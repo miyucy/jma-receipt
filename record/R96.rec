@@ -1,0 +1,68 @@
+R96	{
+	fixed1	{
+		SRYYM	{
+			value	varchar(7);
+		};
+		NYUGAIKBNCOMBO	{
+			NYUGAIKBN	{
+				value	varchar(8);
+			};
+			count	int;
+			item	varchar(8)[2];
+		};
+		SELNUM	{
+			value	number(3);
+		};
+		PTNUM	{
+			value	varchar(20);
+		};
+		NAME	{
+			value	varchar(30);
+		};
+		scrolledwindow1	{
+			hpos	int;
+			vpos	int;
+			MISEIKYULST	{
+				count	int;
+				row	int;
+				rowattr int;
+				item	{
+					value0	varchar(3);
+					value1	varchar(20);
+					value2	varchar(30);
+				}	[500];
+				select	bool[500];
+			};
+		};
+		scrolledwindow2	{
+			hpos	int;
+			vpos	int;
+			PTNUMLST	{
+				count	int;
+				row	int;
+				item	{
+					value0	varchar(4);
+					value1	varchar(10);
+					value2	varchar(8);
+					value3	varchar(10);
+				}	[100];
+				select	bool[100];
+			};
+		};
+		scrolledwindow3	{
+			hpos	int;
+			vpos	int;
+			KAIJYOLST	{
+				count	int;
+				row	int;
+				rowattr int;
+				item	{
+					value0	varchar(3);
+					value1	varchar(6);
+					value2	varchar(20);
+				}	[500];
+				select	bool[500];
+			};
+		};
+	};
+};

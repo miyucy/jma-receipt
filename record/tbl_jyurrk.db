@@ -885,3 +885,18 @@ path	key39	{
 		;
 	};
 };
+
+path	key40	{
+	DBSELECT	{
+		DECLARE tbl_jyurrk_key40_csr CURSOR FOR
+		SELECT PTID
+		FROM tbl_jyurrk
+			WHERE   HOSPID    =   :HOSPID
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+			AND  SRYYMD       LIKE  :SRYYMD
+			AND   HKNCOMBINUM <>  '9999'
+			AND   PTID        =   :PTID
+			AND   EDANUM      =    1
+		;
+	};
+};

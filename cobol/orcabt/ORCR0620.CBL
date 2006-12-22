@@ -115,6 +115,7 @@
       *                                     たときの対応
       *
       *  03.04.01    NACL-門脇    06/11/29  病棟区分編集修正
+      *  03.04.02    NACL-藤原    06/12/05  未請求レセ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1378,6 +1379,10 @@
                END-IF   
              END-IF
            END-IF    
+      *未請求フラグ
+           IF    ( IDZ             =   1   )
+               MOVE    RECE61-MISEIKYU-FLG     TO  RECE62-MISEIKYU-FLG
+           END-IF
       *
            PERFORM     220-DATA-WRITE-SEC
       *

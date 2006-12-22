@@ -133,6 +133,7 @@
       *                                     チェックはしない
       *
       *  03.04.01    NACL-藤原    06/11/01  照会機能連携対応
+      *  03.04.02    NACL-藤原    06/12/05  未請求レセ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -232,6 +233,7 @@
            03  FLG-PTINF                               PIC 9(01).
            03  FLG-KYUSEIRRK                           PIC 9(01).
            03  FLG-BTPARA                              PIC 9(01).
+           03  FLG-SYUKA                               PIC 9(01).
       * 
            03  FLG-KOH                                 PIC 9(01).
            03  FLG-CONTKBN                             PIC 9(01).
@@ -286,8 +288,6 @@
       *
            03  WRK-RECEERR             PIC X(200). 
       *
-           03  WRK-HKNNUM              PIC 9(03). 
-      *
            03  WRK-MCP-TABLE           PIC X(64).
            03  WRK-MCP-PATHNAME        PIC X(64).
       *
@@ -319,11 +319,14 @@
            03  WRK-PREFKBN             PIC X(01).
            03  WRK-PREFNUM             PIC X(02).
            03  WRK-SYMD.
-               05  WRK-SYY         PIC 9(04).
-               05  WRK-SMM         PIC 9(02).
-               05  WRK-SDD         PIC 9(02).
+               05  WRK-SYY             PIC 9(04).
+               05  WRK-SMM             PIC 9(02).
+               05  WRK-SDD             PIC 9(02).
       * 
-           03  WRK-NENREI                PIC 9(03).
+           03  WRK-NENREI              PIC 9(03).
+      *
+           03  WRK-SYUKA-SRYYM         PIC X(06).
+           03  WRK-SYUKA-PTID          PIC 9(10).
       *
            03  WRK-1033-TABLE.
                05  WRK-1033-TBL    OCCURS  5.
@@ -513,6 +516,10 @@
       *    パラメタ
        01  BTPARA-REC.
            COPY    "CPBTPARA.INC".
+      *
+      *    主科
+       01  SYUKA-REC.
+           COPY    "CPSYUKA.INC".
       *
       *****************************************************************
       *    サブプロ用領域
@@ -861,16 +868,21 @@
       *****************************************************************
        20011-IKKATU-HENSYU-SEC              SECTION.
       *
-      *    テスト患者のときは読み飛ばす
+      *    テスト患者又は未請求設定時は読み飛ばす
            MOVE    SYS-1001-HOSPID         TO  PTINF-HOSPID
            MOVE    KEY-N-PTID              TO  PTINF-PTID
            PERFORM 900-PTINF-READ-SEC
       *
+           MOVE    SYS-2001-SRYYM          TO  WRK-SYUKA-SRYYM
+           MOVE    KEY-N-PTID              TO  WRK-SYUKA-PTID
+           PERFORM 800-MISEIKYU-CHECK-SEC
+      *
            DISPLAY "SRYACCT PTID=" KEY-N-PTID 
                    " TSTPTNUMKBN=" PTINF-TSTPTNUMKBN
+                   " MISEIKYU-FLG=" SYUKA-MISEIKYU-FLG
       *
-           IF      FLG-PTINF           =   ZERO
-           AND     PTINF-TSTPTNUMKBN   =   "1"
+           IF   ( PTINF-TSTPTNUMKBN   =   "1"  )
+           OR   ( SYUKA-MISEIKYU-FLG  =   "01" )
                MOVE    KEY-NEW             TO  KEY-OLD
                PERFORM         UNTIL   FLG-SRYACCT     =   1 
                                OR      FLG-END         =   1 
@@ -1700,9 +1712,10 @@
       *    県番号
            MOVE    SYS-1001-PREFNUM    TO  WRK-RECE01-PREFNUM
       *    印刷順（個別作成時の個別指定のみ）
-           IF    ( WRK-PARA-SYOKBN     =   "2"  )
-           AND   ( WRK-SYOKBN          =   "1"  )
-           AND   ( BTPARA-INFO-KBN     =   "01"    OR  "04" )
+           IF    ( WRK-PARA-SYOKBN     =   "2"              )
+           AND   ( WRK-SYOKBN          =   "1"              )
+           AND   ( BTPARA-INFO-KBN     =   "01"    OR  "04"
+                                                   OR  "05" )
                ADD     1                       TO  WRK-PRTSEQ
                MOVE    WRK-PRTSEQ              TO  WRK-RECE01-PRTSEQ
            END-IF
@@ -1723,6 +1736,11 @@
                                                                (IDX1)
                END-PERFORM
            END-IF    
+      *
+      *未請求フラグ
+           IF      WRK-SYOKBN          =   "1"
+               MOVE    SYUKA-MISEIKYU-FLG  TO  WRK-RECE01-MISEIKYU-FLG
+           END-IF
       *
            EVALUATE    WRK-SYOKBN
                WHEN    "1"
@@ -2011,6 +2029,7 @@
            EVALUATE    BTPARA-INFO-KBN
                WHEN    "01"
                WHEN    "04"
+               WHEN    "05"
       *            レセプト指示（個別指示）コード読み込み
                    INITIALIZE                      SYS-2002-REC
                    MOVE    "2002"              TO  SYS-2002-KANRICD
@@ -2257,90 +2276,103 @@
       *
            MOVE    MCPDATA-REC         TO  SYS-2002-REC
       *
-           DISPLAY "SYS PTID=" SYS-2002-PTID 
+           MOVE    SYS-2002-SRYYM      TO  WRK-SYUKA-SRYYM
+           MOVE    SYS-2002-PTID       TO  WRK-SYUKA-PTID
+           PERFORM 800-MISEIKYU-CHECK-SEC
       *
-      *    該当診療年月の医療機関情報取得
-           MOVE  ZERO           TO  FLG-SET
-           MOVE  SYS-2002-SRYYM TO  WRK-SYS-SRYYMD(1:6)
-           MOVE  "01"           TO  WRK-SYS-SRYYMD(7:2)
-           PERFORM  VARYING  SYSKAN-IDX  FROM  1  BY  1
-                    UNTIL  ( SYSKAN-IDX              >  10   )
-                     OR    ( TBL-SYS1001(SYSKAN-IDX) = SPACE )
-                     OR    ( FLG-SET                 =   1   )
-                MOVE  TBL-SYS1001(SYSKAN-IDX)  TO  SYS-1001-REC
-                IF   ( SYS-1001-STYUKYMD  <=  WRK-SYS-SRYYMD    )
-                AND  ( WRK-SYS-SRYYMD     <=  SYS-1001-EDYUKYMD )
-                    MOVE     1       TO    FLG-SET
-                END-IF
-           END-PERFORM
-           IF     FLG-SET              =   ZERO
-               STRING   "医療機関情報が取得できませんでした。診療年月＝"
+           DISPLAY "SYS PTID=" SYS-2002-PTID
+                   " SRYYM="   SYS-2002-SRYYM 
+                   " MISEIKYU-FLG=" SYUKA-MISEIKYU-FLG
+      *
+      *    未請求設定時は読み飛ばす
+           IF    SYUKA-MISEIKYU-FLG  =   "01"
+               CONTINUE
+           ELSE
+      *
+      *        該当診療年月の医療機関情報取得
+               MOVE  ZERO           TO  FLG-SET
+               MOVE  SYS-2002-SRYYM TO  WRK-SYS-SRYYMD(1:6)
+               MOVE  "01"           TO  WRK-SYS-SRYYMD(7:2)
+               PERFORM VARYING  SYSKAN-IDX  FROM  1  BY  1
+                       UNTIL  ( SYSKAN-IDX              >  10   )
+                       OR    ( TBL-SYS1001(SYSKAN-IDX) = SPACE )
+                       OR    ( FLG-SET                 =   1   )
+                   MOVE  TBL-SYS1001(SYSKAN-IDX)  TO  SYS-1001-REC
+                   IF   ( SYS-1001-STYUKYMD  <=  WRK-SYS-SRYYMD    )
+                   AND  ( WRK-SYS-SRYYMD     <=  SYS-1001-EDYUKYMD )
+                       MOVE     1       TO    FLG-SET
+                   END-IF
+               END-PERFORM
+               IF     FLG-SET              =   ZERO
+                   STRING
+                       "医療機関情報が取得できませんでした。診療年月＝"
                                            DELIMITED  BY  SIZE 
                         SYS-2002-SRYYM     DELIMITED  BY  SIZE
-                                       INTO    WRK-RECEERR
-               END-STRING
-               PERFORM 500-ERR-HENSYU-SEC
-               GO       TO      20021-KOBETU-HENSYU-EXT
-           END-IF
-      *
-      *    患者情報取得
-           MOVE    SYS-1001-HOSPID     TO  PTINF-HOSPID
-           MOVE    SYS-2002-PTID       TO  PTINF-PTID
-           PERFORM 900-PTINF-READ-SEC
-      *
-      *    診療年月編集
-           MOVE    SYS-2002-SRYYM      TO  WRK-STYMD (1:6)
-           MOVE    "01"                TO  WRK-STYMD (7:2)
-           INITIALIZE                      STS-AREA-DAY
-           INITIALIZE                      LNK-DAY7-AREA
-           MOVE    "71"                TO  LNK-DAY7-IRAI
-           MOVE    SYS-2002-SRYYM      TO  LNK-DAY7-YM
-           CALL    "ORCSDAY"           USING   STS-AREA-DAY
-                                               LNK-DAY7-AREA
-           MOVE    LNK-DAY7-KOYOMI     TO  WRK-EDYMD 
-      *
-      *    患者年齢計算
-           PERFORM 500-AGECHK-SEC
-      *
-      *    処理中止設定処理
-           PERFORM 500-CANCEL-HENSYU-SEC
-      *
-           IF      FLG-END             =   ZERO
-      *        診療会計読み込み
-               INITIALIZE                  SRYACCT-REC
-               MOVE    SYS-1001-HOSPID     TO  ACCT-HOSPID
-               MOVE    SYS-2002-PTID       TO  ACCT-PTID
-               MOVE    SYS-2002-SRYYM      TO  ACCT-SRYYM
-               MOVE    SYS-2002-NYUGAIKBN  TO  ACCT-NYUGAIKBN
-               MOVE    SRYACCT-REC         TO  MCPDATA-REC
-               MOVE    "DBSELECT"          TO  MCP-FUNC
-               MOVE    "tbl_sryacct"       TO  MCP-TABLE
-               MOVE    "key37"             TO  MCP-PATHNAME
-               CALL    "MONFUNC"           USING
-                                           MCPAREA
-                                           MCPDATA-REC
-               IF      MCP-RC              =   ZERO
-                   MOVE    "tbl_sryacct"       TO  MCP-TABLE
-                   MOVE    "key37"             TO  MCP-PATHNAME
-                   PERFORM 900-SRYACCT-READ-SEC
-               ELSE
-                   INITIALIZE                  SRYACCT-REC
-                   MOVE    1                   TO  FLG-SRYACCT
+                                           INTO    WRK-RECEERR
+                   END-STRING
+                   PERFORM 500-ERR-HENSYU-SEC
+                   GO       TO      20021-KOBETU-HENSYU-EXT
                END-IF
       *
-               PERFORM UNTIL       FLG-SRYACCT     =   1
-                       OR          FLG-END         =   1
-                   PERFORM 20011-HENSYU-SEC
-               END-PERFORM
-      *        カーソルクロース
-               MOVE    "tbl_sryacct"       TO  MCP-TABLE
-               MOVE    "key37"             TO  MCP-PATHNAME
-               PERFORM 900-CLOSE-SEC
+      *        患者情報取得
+               MOVE    SYS-1001-HOSPID     TO  PTINF-HOSPID
+               MOVE    SYS-2002-PTID       TO  PTINF-PTID
+               PERFORM 900-PTINF-READ-SEC
       *
-               MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
-               PERFORM 900-SYSKANRI-READ-SEC
+      *        診療年月編集
+               MOVE    SYS-2002-SRYYM      TO  WRK-STYMD (1:6)
+               MOVE    "01"                TO  WRK-STYMD (7:2)
+               INITIALIZE                      STS-AREA-DAY
+               INITIALIZE                      LNK-DAY7-AREA
+               MOVE    "71"                TO  LNK-DAY7-IRAI
+               MOVE    SYS-2002-SRYYM      TO  LNK-DAY7-YM
+               CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                                   LNK-DAY7-AREA
+               MOVE    LNK-DAY7-KOYOMI     TO  WRK-EDYMD 
+      *
+      *        患者年齢計算
+               PERFORM 500-AGECHK-SEC
+      *
+      *        処理中止設定処理
+               PERFORM 500-CANCEL-HENSYU-SEC
+      *
+               IF      FLG-END             =   ZERO
+      *            診療会計読み込み
+                   INITIALIZE                  SRYACCT-REC
+                   MOVE    SYS-1001-HOSPID     TO  ACCT-HOSPID
+                   MOVE    SYS-2002-PTID       TO  ACCT-PTID
+                   MOVE    SYS-2002-SRYYM      TO  ACCT-SRYYM
+                   MOVE    SYS-2002-NYUGAIKBN  TO  ACCT-NYUGAIKBN
+                   MOVE    SRYACCT-REC         TO  MCPDATA-REC
+                   MOVE    "DBSELECT"          TO  MCP-FUNC
+                   MOVE    "tbl_sryacct"       TO  MCP-TABLE
+                   MOVE    "key37"             TO  MCP-PATHNAME
+                   CALL    "MONFUNC"           USING
+                                               MCPAREA
+                                               MCPDATA-REC
+                   IF      MCP-RC              =   ZERO
+                       MOVE    "tbl_sryacct"       TO  MCP-TABLE
+                       MOVE    "key37"             TO  MCP-PATHNAME
+                       PERFORM 900-SRYACCT-READ-SEC
+                   ELSE
+                       INITIALIZE                  SRYACCT-REC
+                       MOVE    1                   TO  FLG-SRYACCT
+                   END-IF
+      *
+                   PERFORM UNTIL       FLG-SRYACCT     =   1
+                           OR          FLG-END         =   1
+                       PERFORM 20011-HENSYU-SEC
+                   END-PERFORM
+      *            カーソルクロース
+                   MOVE    "tbl_sryacct"       TO  MCP-TABLE
+                   MOVE    "key37"             TO  MCP-PATHNAME
+                   PERFORM 900-CLOSE-SEC
+               END-IF
            END-IF
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 900-SYSKANRI-READ-SEC
       *
            .
        20021-KOBETU-HENSYU-EXT.
@@ -2368,52 +2400,71 @@
            PERFORM     UNTIL       FLG-PTINF       =   1
                        OR          FLG-END         =   1
       *
-               DISPLAY "JYUSIN PTID=" PTINF-PTID 
-      *
-      *        患者年齢計算
-               PERFORM 500-AGECHK-SEC
-      *
-      *        処理中止設定処理
-               PERFORM 500-CANCEL-HENSYU-SEC
-      *
-               IF      FLG-END             =   ZERO
-      *            診療会計読み込み
-                   INITIALIZE                  SRYACCT-REC
-                   MOVE    SYS-1001-HOSPID     TO  ACCT-HOSPID
-                   MOVE    PTINF-PTID          TO  ACCT-PTID
-                   EVALUATE    BTPARA-INFO-KBN
-                       WHEN    "02"
-                           MOVE    BTPARA-INFO-PARA (17:6)
-                                                   TO  ACCT-SRYYM
-                       WHEN    "03"
-                           MOVE    BTPARA-INFO-PARA (1:6)
-                                                   TO  ACCT-SRYYM
+               EVALUATE    BTPARA-INFO-KBN
+                   WHEN    "02"
+                       MOVE    BTPARA-INFO-PARA (17:6)
+                                                   TO  WRK-SYUKA-SRYYM
+                   WHEN    "03"
+                       MOVE    BTPARA-INFO-PARA (1:6)
+                                                   TO  WRK-SYUKA-SRYYM
                    END-EVALUATE
-                   MOVE    "2"                 TO  ACCT-NYUGAIKBN
-                   MOVE    SRYACCT-REC         TO  MCPDATA-REC
-                   MOVE    "DBSELECT"          TO  MCP-FUNC
-                   MOVE    "tbl_sryacct"       TO  MCP-TABLE
-                   MOVE    "key37"             TO  MCP-PATHNAME
-                   CALL    "MONFUNC"           USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                   IF      MCP-RC              =   ZERO
+               MOVE    PTINF-PTID      TO  WRK-SYUKA-PTID
+               PERFORM 800-MISEIKYU-CHECK-SEC
+      *
+               DISPLAY "JYUSIN PTID=" PTINF-PTID 
+                       " SRYYM="   WRK-SYUKA-SRYYM
+                       " MISEIKYU-FLG=" SYUKA-MISEIKYU-FLG
+      *
+      *        未請求設定時は読み飛ばす
+               IF    SYUKA-MISEIKYU-FLG  =   "01"
+                   CONTINUE
+               ELSE
+      *
+      *            患者年齢計算
+                   PERFORM 500-AGECHK-SEC
+      *
+      *            処理中止設定処理
+                   PERFORM 500-CANCEL-HENSYU-SEC
+      *
+                   IF      FLG-END             =   ZERO
+      *                診療会計読み込み
+                       INITIALIZE                  SRYACCT-REC
+                       MOVE    SYS-1001-HOSPID     TO  ACCT-HOSPID
+                       MOVE    PTINF-PTID          TO  ACCT-PTID
+                       EVALUATE    BTPARA-INFO-KBN
+                           WHEN    "02"
+                               MOVE    BTPARA-INFO-PARA (17:6)
+                                                   TO  ACCT-SRYYM
+                           WHEN    "03"
+                               MOVE    BTPARA-INFO-PARA (1:6)
+                                                   TO  ACCT-SRYYM
+                       END-EVALUATE
+                       MOVE    "2"                 TO  ACCT-NYUGAIKBN
+                       MOVE    SRYACCT-REC         TO  MCPDATA-REC
+                       MOVE    "DBSELECT"          TO  MCP-FUNC
                        MOVE    "tbl_sryacct"       TO  MCP-TABLE
                        MOVE    "key37"             TO  MCP-PATHNAME
-                       PERFORM 900-SRYACCT-READ-SEC
-                   ELSE
-                       INITIALIZE                  SRYACCT-REC
-                       MOVE    1                   TO  FLG-SRYACCT
-                   END-IF
+                       CALL    "MONFUNC"           USING
+                                                   MCPAREA
+                                                   MCPDATA-REC
+                       IF      MCP-RC              =   ZERO
+                           MOVE    "tbl_sryacct"       TO  MCP-TABLE
+                           MOVE    "key37"             TO  MCP-PATHNAME
+                           PERFORM 900-SRYACCT-READ-SEC
+                       ELSE
+                           INITIALIZE                  SRYACCT-REC
+                           MOVE    1                   TO  FLG-SRYACCT
+                       END-IF
       *
-                   PERFORM UNTIL       FLG-SRYACCT     =   1
-                           OR          FLG-END         =   1
-                       PERFORM 20011-HENSYU-SEC
-                   END-PERFORM
-      *            カーソルクロース
-                   MOVE    "tbl_sryacct"       TO  MCP-TABLE
-                   MOVE    "key37"             TO  MCP-PATHNAME
-                   PERFORM 900-CLOSE-SEC
+                       PERFORM UNTIL       FLG-SRYACCT     =   1
+                               OR          FLG-END         =   1
+                           PERFORM 20011-HENSYU-SEC
+                       END-PERFORM
+      *                カーソルクロース
+                       MOVE    "tbl_sryacct"       TO  MCP-TABLE
+                       MOVE    "key37"             TO  MCP-PATHNAME
+                       PERFORM 900-CLOSE-SEC
+                   END-IF
       *
                    MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
                    MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
@@ -2645,6 +2696,25 @@
       *
            .
        500-AGECHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    未請求フラグチェック処理
+      *****************************************************************
+       800-MISEIKYU-CHECK-SEC          SECTION.
+      *
+           INITIALIZE                      SYUKA-REC
+           MOVE    SYS-1001-HOSPID     TO  SYUKA-HOSPID
+           MOVE    WRK-SYUKA-PTID      TO  SYUKA-PTID
+           MOVE    WRK-SYUKA-SRYYM     TO  SYUKA-SRYYM
+           MOVE    "2"                 TO  SYUKA-NYUGAIKBN
+           MOVE    "YYYY"              TO  SYUKA-RECESYUBETU
+           MOVE    SYUKA-REC           TO  MCPDATA-REC
+           MOVE    "tbl_syuka"         TO  WRK-MCP-TABLE
+           MOVE    "key15"             TO  WRK-MCP-PATHNAME
+           PERFORM 900-SYUKA-READ-SEC
+           .
+       800-MISEIKYU-CHECK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3006,6 +3076,43 @@
       *
            .
        900-BTPARA-READ-N-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    主科情報読込
+      *****************************************************************
+       900-SYUKA-READ-SEC         SECTION.
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               CALL    "MONFUNC"           USING
+                                               MCPAREA
+                                               MCPDATA-REC
+               IF      MCP-RC               =   ZERO
+                   MOVE    ZERO                 TO  FLG-SYUKA
+                   MOVE    MCPDATA-REC          TO  SYUKA-REC
+               ELSE
+                   MOVE    1                    TO  FLG-SYUKA
+                   INITIALIZE                       SYUKA-REC
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-SYUKA
+           END-IF
+      *
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           .
+       900-SYUKA-READ-EXT.
            EXIT.
       *
       *****************************************************************

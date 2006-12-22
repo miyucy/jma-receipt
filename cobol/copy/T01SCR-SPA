@@ -31,6 +31,8 @@
       *  02.08.01    NACL-藤原    06/02/20  主科対応
       *
       *  03.00.01    NACL-藤原    06/05/29  印刷時のプリンター指定対応
+      *
+      *  03.04.01    NACL-藤原    06/12/05  未請求レセ対応
       *****************************************************************
       *
        01  SPA-T01FREE.
@@ -76,6 +78,7 @@
                        09  SPA-GMN-PRTKBN3-VALUE   PIC X(04).
                    07  SPA-GMN-HKNJANUM            PIC X(08).
                    07  SPA-GMN-HKNJAMEI            PIC X(40). 
+                   07  SPA-GMN-TITLE               PIC X(40). 
       *
                05  SPA-NAIB-T01-AREA.
                    07  SPA-NAI-WIDGET              PIC X(08). 

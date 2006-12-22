@@ -29,14 +29,15 @@ data	{
 };
 
 db	{
-	tbl_syskanri;
-	tbl_ptnum;
-	tbl_ptinf;
-	tbl_hknjainf;
-	tbl_prtkanri;
-	tbl_prtdata;
-	tbl_jobkanri;
 	tbl_btpara;
+	tbl_hknjainf;
+	tbl_jobkanri;
+	tbl_prtdata;
+	tbl_prtkanri;
+	tbl_ptinf;
+	tbl_ptnum;
+	tbl_syskanri;
+	tbl_syuka;
 };
 
 /* #include "orcadb.inc" */

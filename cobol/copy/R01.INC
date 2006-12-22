@@ -5,6 +5,7 @@
               03  R01-B05-VALUE   PIC X(8).
               03  R01-B08-STATE   PIC S9(09) BINARY.
               03  R01-B09-STATE   PIC S9(09) BINARY.
+              03  R01-B22-STATE   PIC S9(09) BINARY.
               03  R01-SYORI-COMBO.
                 04  R01-SYORI-STATE   PIC S9(09) BINARY.
                 04  R01-SYORI.

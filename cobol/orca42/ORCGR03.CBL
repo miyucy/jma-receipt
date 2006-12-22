@@ -84,6 +84,8 @@
       *
       *  03.02.01    NACL-藤原    06/07/26  自賠責の枠印刷選択機能対応
       *  03.02.02    NACL-藤原    06/08/01  国保主科対応
+      *
+      *  03.04.01    NACL-藤原    06/12/05  未請求レセ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -348,6 +350,7 @@
            COPY    "R03.INC".
            COPY    "R04.INC".
            COPY    "R05.INC".
+           COPY    "R96.INC".
            COPY    "R97.INC".
            COPY    "R98.INC".
            COPY    "R99.INC".
@@ -383,7 +386,7 @@
       *    入力
                WHEN      OTHER
                    PERFORM 200-ENTRY
-           END-EVALUATE.
+           END-EVALUATE
       *
       *    画面遷移がない時、画面表示へ
            IF      FLG-END             =   ZERO
@@ -467,6 +470,7 @@
                WHEN    "R04"
                WHEN    "R02"
                WHEN    "R01"
+               WHEN    "R96"
                WHEN    "R97"
                WHEN    "R98"
                    PERFORM 350-R02SPASET-SEC
@@ -667,9 +671,10 @@
       *****************************************************************
        350-R02SPASET-SEC          SECTION.
       *
-           IF      SPA-R01KYOUTU       =   SPACE
+           IF      SPA-R01KYOUTU    =   SPACE
                GO  TO  350-R02SPASET-EXT
            END-IF
+           MOVE    SPACE           TO  SPA-R01-MOTOPG
       *
            INITIALIZE              SPA-R03-AREA
       *
@@ -809,6 +814,9 @@
                     PERFORM 470-SYOKBN-SEC
                WHEN    "CLICKED"       ALSO    "SYOKBN"
                    PERFORM 410-SYOKBN-CHK-SEC
+      *    未請求患者設定
+               WHEN    "CLICKED"       ALSO    "B22"
+                   PERFORM 490-MISEIKYU-ENTRY-SEC
       *    入外区分表示切替え処理
                WHEN    "CLICKED"       ALSO    "B23"
                    PERFORM 430-HNYUGAIKBN-CHANGE-SEC
@@ -1339,6 +1347,56 @@
       *
            .
        490-SYUKA-ENTRY-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    未請求設定処理
+      *****************************************************************
+       490-MISEIKYU-ENTRY-SEC       SECTION.
+      *
+      *    ジョブ管理チェック処理
+           MOVE    "CHK"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-CONS-JOB-JOBID
+                                   TO  JOB-JOBID
+           MOVE    WRK-CONS-JOB-SHELLID
+                                   TO  JOB-SHELLID
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA  
+                                   JOBKANRI-REC 
+           IF      SJOBKANRI-RETURN
+                                   =   ZERO
+               IF      JOB-ENDYMD      =   SPACE
+                   MOVE    "7777"          TO  SPA-ERRCD
+                   MOVE    SPACE             TO  WRK-RECEERR
+                   STRING  "処理中です【"
+                                             DELIMITED  BY  SIZE
+                           JOB-SHELLMSG      DELIMITED  BY  SPACE
+                           "】"              DELIMITED  BY  SIZE      
+                                             INTO  WRK-RECEERR
+                   END-STRING                          
+                   GO  TO  490-MISEIKYU-ENTRY-EXT
+               END-IF
+           END-IF    
+      * 
+           MOVE    "R03"               TO  SPA-MOTOPG
+           MOVE    "R96"               TO  SPA-SAKIPG
+      *
+      *    画面移行用のパラメタ変更
+           PERFORM 45011-PARA-HENSYU-SEC
+           MOVE    "R03"               TO  SPA-R01-MOTOPG
+      *
+           MOVE    SPA-R01KYOUTU       TO  SPA-WORK       
+      *
+           MOVE   "CHANGE"             TO  MCP-PUTTYPE
+           MOVE   SPA-SAKIPG           TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       490-MISEIKYU-ENTRY-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2359,10 +2417,10 @@
       *
            MOVE    SPACE               TO  LINKAREA
       *
-           MOVE    "CURRENT"           TO  MCP-PUTTYPE.
-           MOVE    "R03    "           TO  MCP-WINDOW.
+           MOVE    "CURRENT"           TO  MCP-PUTTYPE
+           MOVE    "R03    "           TO  MCP-WINDOW
       *
-           PERFORM 900-PUT-WINDOW.
+           PERFORM 900-PUT-WINDOW
            .
        500-SET-SCREEN-EXT.
            EXIT.
@@ -2695,7 +2753,7 @@
            EXIT.
       *
       *****************************************************************
-      *    主科公費情報読込
+      *    主科情報読込
       *****************************************************************
        900-SYUKA-READ-SEC         SECTION.
       *

@@ -145,6 +145,7 @@
       *  03.03.04    NACL-藤原    06/10/31  療養介護医療２４の追加
       *
       *  03.04.01    NACL-藤原    06/11/01  照会機能連携対応
+      *  03.04.02    NACL-藤原    06/12/05  未請求レセ対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -974,6 +975,10 @@
        01  BTPARA-REC.
            COPY    "CPBTPARA.INC".
       *
+      *    主科
+       01  SYUKA-REC.
+           COPY    "CPSYUKA.INC".
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -997,6 +1002,9 @@
       *
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
+      *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
       *
       ****************************************************************
        LINKAGE                 SECTION.
@@ -2155,6 +2163,7 @@
            .
        20022-KOHSKY-WRITE-EXT.
            EXIT.
+      *
       *****************************************************************
       *    県単用項目ファイル読込処理
       *****************************************************************
@@ -2180,6 +2189,7 @@
            .
        301-RECE11-HENSYU-EXT.
            EXIT.
+      *
       *****************************************************************
       *    帳票編集<ヘッダー部>処理
       *****************************************************************
@@ -6113,6 +6123,7 @@
                MOVE    WRK-RECENUM         TO  RECE08-RECENUM
            ELSE
                IF      BTPARA-INFO-KBN     =   "01"    OR  "04"
+                                                       OR  "05"
                    COMPUTE RECE08-RECENUM  =
                            RECE02-PRTSEQ   *   100 +   
                                                TBL-RECE-RENNUM (IDXY)
@@ -6477,6 +6488,8 @@
                            MOVE    "3"             TO  RECE07-SYORISBT
                            MOVE    BTPARA-INFO-PARA (1:6)
                                                    TO  RECE07-STYMD
+                       WHEN    "05"
+                           MOVE    "4"             TO  RECE07-SYORISBT
                    END-EVALUATE
                END-IF 
                MOVE    1                   TO  RECE07-PAGE
@@ -7103,6 +7116,13 @@
                                        RECE11-FILE
            CLOSE                       RECE12-FILE
       *
+      *    未請求解除データの更新
+           IF    ( WRK-PARA-SHELLID
+                                   NOT =   "RECEPTX" )
+           AND   ( FLG-END             =   ZERO      )
+               PERFORM 3001-MISEIKYU-FLG-KOUSIN-SEC
+           END-IF 
+      *
            DISPLAY "RECE02  CNT-IN  :"  CNT-RECE02
            DISPLAY "RECE02X CNT-IN  :"  CNT-RECE02X
            DISPLAY "        PAGE    :"  CNT-OUT
@@ -7125,6 +7145,85 @@
       *
            .
        300-END-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    未請求解除データの更新処理
+      *****************************************************************
+       3001-MISEIKYU-FLG-KOUSIN-SEC    SECTION.
+      *
+           OPEN    INPUT               RECE02-FILE
+      *
+           MOVE    ZERO                TO  FLG-RECE02
+           PERFORM 900-RECE02-READ-SEC
+      *
+           PERFORM             UNTIL   FLG-RECE02  =   1
+               IF      RECE02-MISEIKYU-FLG =   "02"
+                   PERFORM 30011-MISEIKYU-FLG-03-SEC
+               END-IF
+      *
+               MOVE    RECE02-HOSPID   TO  KEY-N-HOSPID
+               MOVE    RECE02-SRYYM    TO  KEY-N-SRYYM
+               MOVE    RECE02-NYUGAIKBN
+                                       TO  KEY-N-NYUGAIKBN
+               MOVE    RECE02-PTID     TO  KEY-N-PTID
+               PERFORM UNTIL   FLG-RECE02     =   1
+                       OR      RECE02-HOSPID  NOT =   KEY-N-HOSPID
+                       OR      RECE02-SRYYM   NOT =   KEY-N-SRYYM
+                       OR      RECE02-NYUGAIKBN
+                                              NOT =   KEY-N-NYUGAIKBN
+                       OR      RECE02-PTID    NOT =   KEY-N-PTID
+                   PERFORM 900-RECE02-READ-SEC
+               END-PERFORM 
+           END-PERFORM
+      *
+           CLOSE               RECE02-FILE
+           .
+       3001-MISEIKYU-FLG-KOUSIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    未請求設定解除処理
+      *****************************************************************
+       30011-MISEIKYU-FLG-03-SEC       SECTION.
+      *
+           DISPLAY "MISEIKYU PTNUM=" RECE02-PTNUM
+                   " SRYYM=" RECE02-SRYYM     
+      *
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+      *
+           INITIALIZE                  SYUKA-REC
+           MOVE    RECE02-HOSPID   TO  SYUKA-HOSPID
+           MOVE    RECE02-PTID     TO  SYUKA-PTID
+           MOVE    RECE02-SRYYM    TO  SYUKA-SRYYM
+           MOVE    RECE02-NYUGAIKBN
+                                   TO  SYUKA-NYUGAIKBN
+           MOVE    "YYYY"          TO  SYUKA-RECESYUBETU
+           MOVE    "03"            TO  SYUKA-MISEIKYU-FLG
+           MOVE    SMCNDATE-YMD    TO  SYUKA-UPYMD
+           MOVE    SMCNDATE-HMS    TO  SYUKA-UPHMS
+           MOVE    "recept9"       TO  SYUKA-TERMID
+           MOVE    SPACE           TO  SYUKA-OPID
+           MOVE    SYUKA-REC       TO  MCPDATA-REC
+           MOVE    "DBUPDATE"      TO  MCP-FUNC
+           MOVE    "tbl_syuka"     TO  MCP-TABLE
+           MOVE    "upd4"          TO  MCP-PATHNAME
+           CALL    "MONFUNC"       USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           IF      MCP-RC      NOT =   ZERO 
+               MOVE    "主科ＤＢに更新できませんでした"
+                                               TO  WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC
+               MOVE    1                  TO  FLG-ERR
+           END-IF
+           .
+      *
+       30011-MISEIKYU-FLG-03-EXT.
            EXIT.
       *
       *****************************************************************
@@ -7240,6 +7339,22 @@
       *
            .
        990-RECE02X-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセプト０２データ（未請求解除）順検索処理
+      *****************************************************************
+       900-RECE02-READ-SEC             SECTION.
+      *
+           READ    RECE02-FILE       NEXT
+               AT  END
+                   MOVE    1                   TO  FLG-RECE02
+               NOT AT  END
+                   MOVE    ZERO                TO  FLG-RECE02
+           END-READ
+      *
+           .
+       900-RECE02-READ-EXT.
            EXIT.
       *
       ****************************************************************
@@ -7795,17 +7910,19 @@
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
-           MOVE    "DBOPEN"            TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBOPEN"            TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
-           MOVE    "DBSTART"           TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBSTART"           TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            .
        100-DBOPEN-EXT.
            EXIT.
@@ -7815,17 +7932,19 @@
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *
-           MOVE    "DBCOMMIT"          TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBCOMMIT"          TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
-           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBDISCONNECT"      TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        900-DBDISCONNECT-EXT.
@@ -7836,10 +7955,12 @@
       *****************************************************************
        900-DBCOMMIT-SEC            SECTION.
       *
-           MOVE    "DBCOMMIT"          TO  MCP-FUNC.
-           CALL    "MCPSUB"          USING
-                                        MCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBCOMMIT"          TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        900-DBCOMMIT-EXT.
@@ -7850,11 +7971,12 @@
       *****************************************************************
        900-DBSTART-SEC                SECTION.
       *
-           MOVE    "DBSTART"           TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBSTART"           TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            .
        900-DBSTART-EXT.
            EXIT.

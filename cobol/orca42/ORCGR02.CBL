@@ -100,6 +100,7 @@
       *                                     前期高齢者の表示
       *
       *  03.04.01    NACL-藤原    06/11/01  照会機能連携対応
+      *  03.04.02    NACL-藤原    06/12/05  未請求レセ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -398,6 +399,7 @@
            COPY    "R03.INC".
            COPY    "R04.INC".
            COPY    "R05.INC".
+           COPY    "R96.INC".
            COPY    "R97.INC".
            COPY    "R98.INC".
            COPY    "R99.INC".
@@ -614,6 +616,11 @@
                                    "分"           DELIMITED  BY SIZE
                                    INTO    SPA-GMN-FILEKBN
                            END-STRING
+                       WHEN    "4"
+                           STRING  WRK-NYUGAIKBN  DELIMITED  BY SPACE 
+                                   "　未請求解除" DELIMITED  BY SIZE
+                                   INTO    SPA-GMN-FILEKBN
+                           END-STRING
                    END-EVALUATE
            END-EVALUATE
       *    ファイル作成日
@@ -644,7 +651,8 @@
            MOVE    "患者番号順"          TO  SPA-GMN-PRTJYUNMEIL (4)
            IF    ( SPA-R01-FILEKBN       =   "2"             )
            AND   ( SPA-R01-RECE07-SYORISBT
-                                         =   ZERO    OR  "3" )
+                                         =   ZERO    OR  "3"
+                                                     OR  "4" )
                MOVE    "05"                  TO  SPA-GMN-PRTJYUNL    (5)
                MOVE    "入力順"              TO  SPA-GMN-PRTJYUNMEIL (5)
            END-IF

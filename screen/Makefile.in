@@ -154,7 +154,8 @@ SCREEN_screen = \
 	R02.glade \
 	R03.glade \
 	R04.glade \
-        R97.glade \
+	R96.glade \
+	R97.glade \
 	R98.glade \
 	R99.glade \
 	RERR.glade \

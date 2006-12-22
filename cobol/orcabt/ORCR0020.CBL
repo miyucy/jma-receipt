@@ -156,6 +156,8 @@
       *  03.03.02    NACL-藤原    06/09/19  月途中での氏名変更対応
       *  03.03.03    NACL-藤原    06/12/13  公費分で種別が設定できなかっ
       *                                     たときの対応
+      *
+      *  03.04.01    NACL-藤原    06/12/05  未請求レセ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1454,6 +1456,10 @@
                                    =   "1" )               
                PERFORM 240-PTNYUINRRK-SYORI-SEC
            END-IF
+      *未請求フラグ
+           IF    ( IDZ             =   1   )
+               MOVE    RECE01-MISEIKYU-FLG     TO  RECE02-MISEIKYU-FLG
+           END-IF
       *
            PERFORM     220-DATA-WRITE-SEC
            .
@@ -2503,13 +2509,14 @@
            MOVE    RECE02-SRYYM        TO  NACCT-SRYYM
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "NYUINACCT-KEY14"   TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+           MOVE    "key14"             TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "NYUINACCT-KEY14"   TO  ORC-DBPATH
+               MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+               MOVE    "key14"             TO  MCP-PATHNAME
                PERFORM 900-NYUINACCT-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-NYUINACCT
@@ -2517,8 +2524,9 @@
       *
       *    入院会計がないとき記載なし 
            IF      FLG-NYUINACCT       =   1
-               MOVE    "NYUINACCT-KEY14"   TO  WK-PATH
-               PERFORM CSR-CLOSE-SEC
+               MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+               MOVE    "key14"             TO  MCP-PATHNAME
+               PERFORM 900-CLOSE-SEC
                GO  TO  240-PTNYUINRRK-SYORI-EXT
            END-IF
       *   
@@ -2537,12 +2545,14 @@
                                                    WRK-DAY (IDX IDX1)
                    END-IF
                END-PERFORM            
-               MOVE    "NYUINACCT-KEY14"       TO  ORC-DBPATH
+               MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+               MOVE    "key14"             TO  MCP-PATHNAME
                PERFORM 900-NYUINACCT-READ-SEC
            END-PERFORM
       *    カーソルクロース
-           MOVE    "NYUINACCT-KEY14"   TO  WK-PATH
-           PERFORM CSR-CLOSE-SEC
+           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+           MOVE    "key14"             TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
       *
       *    入院会計より保険組合せ読込     
            PERFORM VARYING IDX FROM    1   BY  1
@@ -3326,10 +3336,9 @@
        900-NYUINACCT-READ-SEC          SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO                TO  FLG-NYUINACCT
                MOVE    MCPDATA-REC         TO  NYUINACCT-REC

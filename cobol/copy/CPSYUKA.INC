@@ -62,7 +62,7 @@
            03  SYUKA-NISSU             PIC 9(03).
       *½ªÎ»Æü
            03  SYUKA-EDDAY             PIC 9(02).
-      *Ì¤ÀÁµá¥ì¥»¤Ç»È¤¦Í½Äê
+      *Ì¤ÀÁµá¥Õ¥é¥°
            03  SYUKA-MISEIKYU-FLG      PIC X(02).
       *ºï½ü¥Õ¥é¥°
            03  SYUKA-DLT-FLG           PIC X(01).

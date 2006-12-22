@@ -2024,3 +2024,16 @@ path	key58	{
 		;
 	};
 };
+
+path	key59		{ 	
+	DBSELECT	{
+		DECLARE tbl_seikyu_key59_csr CURSOR FOR
+		SELECT *
+		FROM tbl_seikyu
+                WHERE   HOSPID      =   :HOSPID
+                  AND   SRYYM       =   :SRYYM
+                  AND   NYUGAIKBN   =   :NYUGAIKBN
+                  AND   PTID        =   :PTID
+		;
+	};
+};

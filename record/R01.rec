@@ -16,6 +16,9 @@ R01	{
 		B09	{
 			state	int;
 		};
+		B22	{
+			state	int;
+		};
 		SYORI_COMBO	{
 			state	int;
 			SYORI	{

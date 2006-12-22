@@ -83,6 +83,8 @@
       *
       *  03.02.01    NACL-藤原    06/07/24  マル長の別総括対応
       *  03.02.02    NACL-藤原    06/07/31  国保主科対応
+      *
+      *  03.04.01    NACL-藤原    06/12/05  未請求レセ対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -132,6 +134,7 @@
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-HKNJAINF        PIC 9(01).
            03  FLG-BTPARA          PIC 9(01).
+           03  FLG-SYUKA           PIC 9(01).
       *
            03  FLG-3004-PARAKBN    PIC 9(01).
            03  FLG-TOUROKU         PIC 9(01).
@@ -324,6 +327,10 @@
       *    パラメタ
        01  BTPARA-REC.
            COPY    "CPBTPARA.INC".
+      *
+      *    主科
+       01  SYUKA-REC.
+           COPY    "CPSYUKA.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -923,11 +930,38 @@
            MOVE    "処理する"      TO  SPA-GMN-T02-SYORIFLGMEIL(2)
            MOVE    2               TO  SPA-GMN-T02-SYORIFLG-MAX
       *
+      *    未実施の未請求解除データのチェック処理
+           PERFORM 3101-SYUKA-CHECK-SEC
+      *
            MOVE    1               TO  SPA-GMN-PAGE
            MOVE    1               TO  SPA-GMN-CUR
       *
            .
        310-SPASET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    未実施の未請求解除データのチェック処理
+      *****************************************************************
+       3101-SYUKA-CHECK-SEC            SECTION.
+      *
+           INITIALIZE                  SYUKA-REC
+           MOVE    SPA-HOSPID      TO  SYUKA-HOSPID
+           MOVE    "%"             TO  SYUKA-NYUGAIKBN
+           MOVE    "YYYY"          TO  SYUKA-RECESYUBETU
+           MOVE    "02"            TO  SYUKA-MISEIKYU-FLG
+           MOVE    SPA-NAI-SKYYM   TO  SYUKA-SRYYM
+           MOVE    SYUKA-REC       TO  MCPDATA-REC
+           PERFORM 900-SYUKA-READ-SEC
+           IF      FLG-SYUKA       =   ZERO
+               MOVE    "未実施の未請求解除データがあります"
+                                       TO  SPA-GMN-TITLE    
+           ELSE
+               MOVE    SPACE           TO  SPA-GMN-TITLE
+           END-IF
+      *
+           .
+       3101-SYUKA-CHECK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1643,6 +1677,7 @@
        4101-SKYYM-CHK-SEC           SECTION.
       *
            MOVE    ZERO             TO  SPA-NAI-SKYYM
+           MOVE    SPACE            TO  SPA-GMN-TITLE  
       *
            IF      SPA-GMN-SKYYM    =   SPACE
                MOVE    "0001"          TO  SPA-ERRCD
@@ -1663,6 +1698,9 @@
       *
            IF      SPA-ERRCD       NOT =   SPACE
                MOVE    1               TO  SPA-GMN-CUR
+           ELSE
+      *        未実施の未請求解除データのチェック処理
+               PERFORM 3101-SYUKA-CHECK-SEC
            END-IF
       *
            .
@@ -3686,6 +3724,8 @@
            MOVE    SPA-GMN-SKYYMD      TO  T01-SKYYMD
            MOVE    SPA-GMN-HKNJANUM    TO  T01-HKNJANUM
            MOVE    SPA-GMN-HKNJAMEI    TO  T01-HKNJAMEI
+           MOVE    SPA-GMN-TITLE       TO  T01-TITLE-VALUE
+           MOVE   "red"                TO  T01-TITLE-STYLE
       *
            MOVE    SPA-B06-STATE       TO  T01-B06-STATE
            MOVE    SPA-B07-STATE       TO  T01-B07-STATE
@@ -4181,6 +4221,42 @@
       *
            .
        900-BTPARA-READ-N-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    主科情報読込
+      *****************************************************************
+       900-SYUKA-READ-SEC         SECTION.
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "tbl_syuka"         TO  MCP-TABLE
+           MOVE    "key16"             TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syuka"         TO  MCP-TABLE
+               MOVE    "key16"             TO  MCP-PATHNAME
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               CALL    "MONFUNC"           USING
+                                               MCPAREA
+                                               MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    ZERO                TO  FLG-SYUKA
+                   MOVE    MCPDATA-REC         TO  SYUKA-REC
+               ELSE
+                   MOVE    1                   TO  FLG-SYUKA
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-SYUKA
+           END-IF
+      *
+           MOVE    "tbl_syuka"         TO  MCP-TABLE
+           MOVE    "key16"             TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           .
+       900-SYUKA-READ-EXT.
            EXIT.
       *
       *****************************************************************

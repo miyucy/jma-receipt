@@ -204,6 +204,7 @@ path	key10		{
 			AND     NYUGAIKBN      =   :NYUGAIKBN
 			AND     TEISYUTUSAKI   LIKE :TEISYUTUSAKI
 			AND     RECESYUBETU    <>  '8888'
+			AND     RECESYUBETU    <>  'YYYY'
 			AND     a.HOSPID       =   b.HOSPID
 			AND     a.PTID         =   b.PTID
 			AND     PTNUM          >=  :XXPTNUM
@@ -223,6 +224,7 @@ path	key11		{
 			AND     NYUGAIKBN      =   :NYUGAIKBN
 			AND     TEISYUTUSAKI   LIKE :TEISYUTUSAKI
 			AND     RECESYUBETU    <>  '8888'
+			AND     RECESYUBETU    <>  'YYYY'
 			AND     a.HOSPID       =   b.HOSPID
 			AND     a.PTID         =   b.PTID
 			AND     DLT_FLG        <>   '1'
@@ -275,6 +277,7 @@ path	upd3	{
 			AND	    PTID           =   :PTID
 			AND	    SRYYM          =   :SRYYM
 			AND	    RECESYUBETU    <>  'XXXX'
+			AND	    RECESYUBETU    <>  'YYYY'
 		;
 	};
 };
@@ -332,6 +335,83 @@ path	key12		{
 			AND     NYUGAIKBN      =    :NYUGAIKBN
 			AND     TEISYUTUSAKI   LIKE :TEISYUTUSAKI
 			AND     DLT_FLG        <>   '1'
+		;
+	};
+};
+
+path	key13		{ 	
+	DBSELECT	{
+		DECLARE tbl_syuka_key13_csr CURSOR FOR
+		SELECT a.*
+		FROM tbl_syuka a,tbl_ptnum b
+			WHERE   a.HOSPID       =    :HOSPID
+			AND     SRYYM          =    :SRYYM
+			AND     NYUGAIKBN      like :NYUGAIKBN
+			AND     RECESYUBETU    =    :RECESYUBETU
+			AND     MISEIKYU_FLG   =    :MISEIKYU_FLG
+			AND     a.PTID         =    b.PTID
+			ORDER   BY PTNUM
+		;
+	};
+};
+
+path	key14		{ 	
+	DBSELECT	{
+		DECLARE tbl_syuka_key14_csr CURSOR FOR
+		SELECT a.*
+		FROM tbl_syuka a,tbl_ptnum b
+			WHERE   a.HOSPID       =    :HOSPID
+			AND     NYUGAIKBN      like :NYUGAIKBN
+			AND     RECESYUBETU    =    :RECESYUBETU
+			AND     MISEIKYU_FLG   =    :MISEIKYU_FLG
+			AND     a.PTID         =    b.PTID
+			ORDER   BY SRYYM,PTNUM,NYUGAIKBN
+		;
+	};
+};
+
+path	key15		{ 	
+	DBSELECT	{
+		DECLARE tbl_syuka_key15_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syuka
+			WHERE   HOSPID         =   :HOSPID
+			AND     PTID           =   :PTID
+			AND     SRYYM          =   :SRYYM
+			AND     RECESYUBETU    =   :RECESYUBETU
+			AND     NYUGAIKBN      like :NYUGAIKBN
+		;
+	};
+};
+
+path	key16		{ 	
+	DBSELECT	{
+		DECLARE tbl_syuka_key16_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syuka
+			WHERE   HOSPID         =   :HOSPID
+			AND     SRYYM          <=  :SRYYM
+			AND     RECESYUBETU    =   :RECESYUBETU
+			AND     NYUGAIKBN      like :NYUGAIKBN
+			AND     MISEIKYU_FLG   =    :MISEIKYU_FLG
+		;
+	};
+};
+
+path	upd4	{ 	
+	DBUPDATE	{
+		UPDATE	tbl_syuka 
+				SET
+					MISEIKYU_FLG   =   :MISEIKYU_FLG, 
+					TERMID         =   :TERMID,
+					OPID           =   :OPID,
+					UPYMD          =   :UPYMD,
+					UPHMS          =   :UPHMS
+			WHERE   HOSPID         =    :HOSPID
+			AND     NYUGAIKBN      like :NYUGAIKBN
+			AND	PTID           =    :PTID
+			AND	SRYYM          =    :SRYYM
+			AND     RECESYUBETU    =    :RECESYUBETU
 		;
 	};
 };
