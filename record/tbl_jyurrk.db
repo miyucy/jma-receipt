@@ -871,3 +871,17 @@ path	key38	{
 		;
 	};
 };
+path	key39	{
+	DBSELECT	{
+		DECLARE tbl_jyurrk_key39_csr CURSOR FOR
+		SELECT *
+		FROM tbl_jyurrk
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+			AND   SRYYMD    LIKE  :SRYYMD
+			AND   HKNCOMBINUM =   :HKNCOMBINUM
+			AND   HKNKBN      =   :HKNKBN
+		;
+	};
+};
