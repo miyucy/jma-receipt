@@ -982,9 +982,13 @@
       *
       *    Ï«ºÒ¤Î¿Ç»¡ÎÁ¤ÎÈ½Äê
            IF      SPA-HKNKBN          =   1
-      *      ¼«ÇåÀÕ¤Î·òÊÝ½àµò°Ê³°
-             AND  (SPA-RSI-HKNKBN  NOT =   "5" )
-               PERFORM 10013-RSI-SINSATU-CHK-SEC
+               IF      (SPA-RSI-HKNKBN      =   "5" )
+      *        ¼«ÇåÀÕ¤Î·òÊÝ½àµò
+                   PERFORM 10013-JBI-SINSATU-CHK-SEC
+               ELSE
+      *        ¼«ÇåÀÕ¤Î·òÊÝ½àµò°Ê³°
+                   PERFORM 10013-RSI-SINSATU-CHK-SEC
+               END-IF
                IF      WRK-ERRCD       NOT =   SPACE
                    GO      TO      100114-SYUGISYORI-CHK-EXT
                END-IF
@@ -1275,6 +1279,49 @@
       *
            .
        100111-KEIZOKU-CHK-EXT.
+           EXIT.
+      *        
+      *****************************************************************
+      *    ¼«ÇåÀÕ¤Î·òÊÝ½àµò¤Î¿Ç»¡ÎÁ¤ÎÈ½Äê¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       10013-JBI-SINSATU-CHK-SEC       SECTION.
+      *
+      *    ½é¿ÇÎÁ¤ÎÈ½Äê
+           IF      WRK-COM-INPUTCD(IDX-Z)  =   "111000110"
+                                           OR  "111011810"
+      *        ½é¿ÇÎÁ¤Î»þ¡¢²áµî¤Ë¼õ¿Ç¤¬¤Ê¤¤¤³¤È
+      *        ¼õ¿ÇÎò¤ò¸¡º÷¤¹¤ë  °åÎÅµ¡´Ø¡¢´µ¼Ô£É£Ä
+               INITIALIZE                  JYURRK-REC
+               MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
+               MOVE    SPA-PTID            TO  JYURRK-PTID
+               MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
+               MOVE    SPA-HKNCOMBINUM     TO  JYURRK-HKNCOMBINUM
+      *
+               MOVE    JYURRK-REC          TO  MCPDATA-REC
+               MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+               MOVE    "key15"             TO  MCP-PATHNAME
+               PERFORM 910-DBSELECT-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+                   MOVE    "key15"             TO  MCP-PATHNAME
+                   PERFORM 970-JYURRK-READ-SEC
+               ELSE
+                   INITIALIZE                  JYURRK-REC
+                   MOVE    1               TO  FLG-JYURRK
+               END-IF
+               MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+               MOVE    "key15"             TO  MCP-PATHNAME
+               PERFORM 990-DBCLOSE-SEC
+               IF      FLG-JYURRK          =   ZERO
+                   IF      JYURRK-SRYYMD       <   SPA-SRYYMD
+                       MOVE    "8002"          TO  WRK-ERRCD
+                       MOVE    "1"             TO  WRK-COM-CUR
+                                                         (IDX-Z)
+                   END-IF
+               END-IF
+           END-IF
+           .
+       10013-JBI-SINSATU-CHK-EXT.
            EXIT.
       *
       *****************************************************************
