@@ -152,6 +152,8 @@
            03  FLG-KENSA                               PIC  9(01).
            03  FLG-PTNYUINRRK                          PIC  9(01).
            03  FLG-SET                                 PIC  9(01).
+           03  FLG-JYURRKCHECK                         PIC  9(01).
+           03  FLG-JYURRK                              PIC  9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -232,6 +234,8 @@
       *
            03  WRK-STYMD                               PIC  X(08).
            03  WRK-EDYMD                               PIC  X(08).
+      *
+           03  WRK-HKNKBN                              PIC  X(01).
       *
       *    手技点・薬剤等点数用領域
        01  TBL-TENSUG-JI.
@@ -361,6 +365,10 @@
       *    入院履歴
        01  PTNYUINRRK-REC.
            COPY    "CPPTNYUINRRK.INC".
+      *
+      *    受診履歴
+       01  JYURRK-REC.
+           COPY    "CPJYURRK.INC".
       *
       *****************************************************************
       *    サブプロ用領域
@@ -791,11 +799,17 @@
            MOVE   "PTRSIINF-KEY"      TO  WK-PATH
            PERFORM   CSR-CLOSE-SEC
       *
-      *    レセプト種別
-           PERFORM 2101-RECESYUBETU-SET-SEC
-      *
       *    保険組合せ番号情報
            MOVE    RECE40-HKNCOMBI   TO  RECE41-HKNCOMBI
+      *
+      *    受診歴チェック
+           MOVE    ZERO   TO   FLG-JYURRKCHECK
+           IF      RECE41-HKNKBN    =   "4"
+              PERFORM 2109-JYURRK-CHECK-SEC
+           END-IF
+      *
+      *    レセプト種別
+           PERFORM 2101-RECESYUBETU-SET-SEC
       *
       *    入院履歴から入院日をセット
            PERFORM 2102-NYUINBI-SET-SEC
@@ -941,6 +955,7 @@
       *    保険変更後、訂正していないとき
       *    保険組合せがないとき
            IF      RECE40-TEISEIKBN     =   "1"
+           OR      FLG-JYURRKCHECK      =    1
                GO  TO  2101-RECESYUBETU-SET-EXT
            END-IF
       *
@@ -2102,6 +2117,52 @@
            EXIT.
       *
       *****************************************************************
+      *    受診歴チェック
+      *****************************************************************
+       2109-JYURRK-CHECK-SEC              SECTION.
+      *
+      *    労災準拠の場合、受診歴に４のデータがない事
+      *    健保準拠の場合、受診歴に２のデータがない事
+           EVALUATE  WRK-JIBAIKBN
+             WHEN    "1"
+                   MOVE   "4"   TO   WRK-HKNKBN
+             WHEN    "2"
+                   MOVE   "2"   TO   WRK-HKNKBN
+           END-EVALUATE
+      *    受診歴の検索
+           INITIALIZE                      JYURRK-REC
+           MOVE    RECE41-HOSPID       TO  JYURRK-HOSPID
+           MOVE    RECE41-PTID         TO  JYURRK-PTID
+           MOVE    RECE41-NYUGAIKBN    TO  JYURRK-NYUGAIKBN
+           MOVE    RECE41-SRYYM        TO  JYURRK-SRYYMD(1:6)
+           MOVE    "__"                TO  JYURRK-SRYYMD(7:2)
+           MOVE    RECE41-HKNCOMBI     TO  JYURRK-HKNCOMBINUM
+           MOVE    WRK-HKNKBN          TO  JYURRK-HKNKBN
+           MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+           MOVE    "key39"             TO  MCP-PATHNAME
+           MOVE    JYURRK-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "MONFUNC"               USING
+                                           MCPAREA
+                                           MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_jyurrk"    TO  MCP-TABLE
+               MOVE    "key39"         TO  MCP-PATHNAME
+               PERFORM   800-JYURRK-READ-SEC
+               IF        FLG-JYURRK    =   ZERO
+                   MOVE      1         TO   FLG-JYURRKCHECK
+               END-IF
+           END-IF
+      *
+           MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+           MOVE    "key39"             TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           .
+       2109-JYURRK-CHECK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    データ出力処理
       *****************************************************************
        220-DATA-WRITE-SEC                SECTION.
@@ -2493,6 +2554,27 @@
            END-IF
            .
        800-PTNYUINRRK-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    受診履歴読込
+      *****************************************************************
+       800-JYURRK-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "MONFUNC"            USING
+                                        MCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  JYURRK-REC
+               MOVE    ZERO            TO  FLG-JYURRK
+           ELSE
+               INITIALIZE                  JYURRK-REC
+               MOVE    1               TO  FLG-JYURRK
+           END-IF
+      *
+           .
+       800-JYURRK-READ-EXT.
            EXIT.
       *
       *****************************************************************

@@ -34,6 +34,7 @@
       *                                     場合の入院年月日の記載方法
       *  01.00.03    NACL-門脇    05.09.06  自賠責従来様式対応
       *  01.00.04    NACL-門脇    05.12.01  労災レセプト回数対応
+      *  03.04.01    NACL-門脇    06/12/01  自賠責健保準拠対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -110,6 +111,8 @@
            03  FLG-SYSKANRI            PIC 9(01).
            03  FLG-PTNYUINRRK23        PIC 9(01).
            03  FLG-PTNYUINRRK22        PIC 9(01).
+           03  FLG-JYURRKCHECK         PIC 9(01).
+           03  FLG-JYURRK              PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -150,6 +153,8 @@
       *
            03  WRK-STYMD               PIC X(08).
       *
+           03  WRK-HKNKBN              PIC X(01).
+      *
       *    病棟区分テーブル                                             
        01  WRK-BYOTOKBN-TABLE.                                          
            03  WRK-BYOTOKBN-T            OCCURS  4.                     
@@ -186,6 +191,10 @@
       *    入院履歴
        01  PTNYUINRRK-REC.
            COPY    "CPPTNYUINRRK.INC".
+      *
+      *    受診履歴
+       01  JYURRK-REC.
+           COPY    "CPJYURRK.INC".
       *
       *****************************************************************
       *    サブプロ用領域
@@ -296,9 +305,16 @@
       *****************************************************************
        210-HENSYU-SEC                  SECTION.
       *
+      *    受診歴チェック
+           MOVE    ZERO   TO   FLG-JYURRKCHECK
+           IF      RECE82-HKNKBN    =   "4"
+              PERFORM 2102-JYURRK-CHECK-SEC
+           END-IF
+      *
       *    保険変更後、訂正していないとき
       *    保険組合せがないとき
            IF      RECE82-ERR-ERRKBN   >   ZERO
+           OR      FLG-JYURRKCHECK     =    1
                CONTINUE
            ELSE
                EVALUATE    RECE82-HKNKBN   ALSO    RECE82-SAIGAIKBN
@@ -590,6 +606,52 @@
            EXIT.                                                       
       *
       *****************************************************************
+      *    受診歴チェック
+      *****************************************************************
+       2102-JYURRK-CHECK-SEC              SECTION.
+      *
+      *    労災準拠の場合、受診歴に４のデータがない事
+      *    健保準拠の場合、受診歴に２のデータがない事
+           EVALUATE  RECE82-JIBAIKBN
+             WHEN    "1"
+                   MOVE   "4"   TO   WRK-HKNKBN
+             WHEN    "2"
+                   MOVE   "2"   TO   WRK-HKNKBN
+           END-EVALUATE
+      *    受診歴の検索
+           INITIALIZE                      JYURRK-REC
+           MOVE    RECE82-HOSPID       TO  JYURRK-HOSPID
+           MOVE    RECE82-PTID         TO  JYURRK-PTID
+           MOVE    RECE82-NYUGAIKBN    TO  JYURRK-NYUGAIKBN
+           MOVE    RECE82-SRYYM        TO  JYURRK-SRYYMD(1:6)
+           MOVE    "__"                TO  JYURRK-SRYYMD(7:2)
+           MOVE    RECE82-HKNCOMBI     TO  JYURRK-HKNCOMBINUM
+           MOVE    WRK-HKNKBN          TO  JYURRK-HKNKBN
+           MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+           MOVE    "key39"             TO  MCP-PATHNAME
+           MOVE    JYURRK-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "MONFUNC"               USING
+                                           MCPAREA
+                                           MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_jyurrk"    TO  MCP-TABLE
+               MOVE    "key39"         TO  MCP-PATHNAME
+               PERFORM   900-JYURRK-READ-SEC
+               IF        FLG-JYURRK    =   ZERO
+                   MOVE      1         TO   FLG-JYURRKCHECK
+               END-IF
+           END-IF
+      *
+           MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+           MOVE    "key39"             TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           .
+       2102-JYURRK-CHECK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC                SECTION.
@@ -814,21 +876,45 @@
            EXIT.
       *
       *****************************************************************
+      *    受診履歴読込
+      *****************************************************************
+       900-JYURRK-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "MONFUNC"            USING
+                                        MCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  JYURRK-REC
+               MOVE    ZERO            TO  FLG-JYURRK
+           ELSE
+               INITIALIZE                  JYURRK-REC
+               MOVE    1               TO  FLG-JYURRK
+           END-IF
+      *
+           .
+       900-JYURRK-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    ＤＢ　オープン処理
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
-           MOVE    "DBOPEN"            TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBOPEN"            TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
-           MOVE    "DBSTART"           TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBSTART"           TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
            .
        100-DBOPEN-EXT.
            EXIT.
@@ -838,18 +924,35 @@
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *
-           MOVE    "DBCOMMIT"          TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBCOMMIT"          TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
-           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBDISCONNECT"      TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        900-DBDISCONNECT-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    クローズ処理
+      *****************************************************************
+       900-CLOSE-SEC                  SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       900-CLOSE-EXT.
+           EXIT.
+      *      
