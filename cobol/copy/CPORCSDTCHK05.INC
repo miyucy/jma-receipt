@@ -31,4 +31,5 @@
                    07  SDTCHK05-PAYKBN     PIC X(02).
                    07  SDTCHK05-HKNJANUM   PIC X(08).
                    07  SDTCHK05-HONKZKKBN  PIC X(01).
+                   07  SDTCHK05-RSIHKNKBN  PIC X(01).
 

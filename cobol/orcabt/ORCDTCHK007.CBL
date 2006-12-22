@@ -585,7 +585,7 @@
            MOVE    ZERO            TO  FLG-FIL
            MOVE    ZERO            TO  CNT-HKNINFEDIT
       *
-           STRING  "ÊÝ¸±¡Ê¸øÈñ¡Ë¡§"    DELIMITED   BY  SIZE
+           STRING  "ÊÝ¸±¡§"        DELIMITED   BY  SIZE
            INTO    WRK-MESG
            WITH    POINTER               IDX-MESG
            END-STRING

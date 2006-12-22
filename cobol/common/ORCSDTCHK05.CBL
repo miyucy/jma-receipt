@@ -43,6 +43,7 @@
            03  FLG-HKNNUM                  PIC 9(01).
            03  FLG-PTHKNINF                PIC 9(01).
            03  FLG-PTKOHINF                PIC 9(01).
+           03  FLG-PTRSIINF                PIC 9(01).
            03  FLG-TARGET                  PIC 9(01).
       *
       *    Åº»úÎÎ°è
@@ -61,6 +62,7 @@
                05  WRK-PAYKBN                      PIC X(02).
                05  WRK-HKNJANUM                    PIC X(08).
                05  WRK-HONKZKKBN                   PIC X(01).
+               05  WRK-RSIHKNKBN                   PIC X(01).
       *
        01  SRH-AREA.
            03  SRH-IDX                             PIC 9(05).
@@ -107,6 +109,10 @@
       *    ÊÝ¸±¥Þ¥¹¥¿
        01  PTHKNINF-REC.
            COPY    "CPPTHKNINF.INC".
+      *
+      *    ´µ¼ÔÏ«ºÒ¥Þ¥¹¥¿
+       01  PTRSIINF-REC.
+           COPY    "CPPTRSIINF.INC".
       *
       *    ¸øÈñ¥Þ¥¹¥¿
        01  PTKOHINF-REC.
@@ -358,6 +364,11 @@
                MOVE    PTHKN-HKNNUM    TO  WRK-HKNNUM
                MOVE    PTHKN-HKNJANUM  TO  WRK-HKNJANUM
                MOVE    PTHKN-HONKZKKBN TO  WRK-HONKZKKBN
+               IF    ( PTHKN-HKNNUM    =   "971"   OR  "973" )
+                   PERFORM 900-PTRSIINF-KEY-SEL-SEC
+                   MOVE    PTRSI-HKNKBN
+                                       TO  WRK-RSIHKNKBN
+               END-IF
                IF    ( CONST-SDTCHK05-OT-MAX   >   SDTCHK05-OT-MAX )
                    PERFORM 210111-HKNNUM-CHK-SEC
                END-IF
@@ -448,6 +459,8 @@
                                                =   WRK-HKNJANUM )
                     AND  ( SDTCHK05-HONKZKKBN (IDX1)
                                                =   WRK-HONKZKKBN )
+                    AND  ( SDTCHK05-RSIHKNKBN (IDX1)
+                                               =   WRK-RSIHKNKBN )
                        MOVE    IDX1    TO  IDX-HKNINF
                    END-IF
       *
@@ -467,10 +480,36 @@
                                                            (IDX-HKNINF)
       *
                    IF    ( WRK-HKNKOHKBN       =   ZERO )
-                       MOVE    WRK-HKNNUM      TO  SRH-HKNNUM
-                       PERFORM 2111-HKNNUM-GET-SEC
-                       MOVE    SRH-HKNNUMMEI   TO  SDTCHK05-HKNNUMMEI
+                       IF    ( WRK-HKNNUM      =   "971" OR  "973" )
+                           EVALUATE    WRK-HKNNUM  ALSO  WRK-RSIHKNKBN
+                           WHEN    "971"       ALSO    "1"
+                               MOVE    "Ï«ºÒÃ»´üµëÉÕ"
+                                               TO  SDTCHK05-HKNNUMMEI
                                                            (IDX-HKNINF)
+                           WHEN    "971"       ALSO    "2"
+                               MOVE    "Ï«ºÒ¾ã³²Ç¯¶â"
+                                               TO  SDTCHK05-HKNNUMMEI
+                                                           (IDX-HKNINF)
+                           WHEN    "971"       ALSO    "3"
+                               MOVE    "Ï«ºÒ¥¢¥Õ¥¿¡¼¥±¥¢"
+                                               TO  SDTCHK05-HKNNUMMEI
+                                                           (IDX-HKNINF)
+                           WHEN    "971"       ALSO    ANY
+                               MOVE    "Ï«ºÒÊÝ¸±"
+                                               TO  SDTCHK05-HKNNUMMEI
+                                                           (IDX-HKNINF)
+                           WHEN    "973"       ALSO    ANY
+                               MOVE    "¼«ÇåÀÕÊÝ¸±"
+                                               TO  SDTCHK05-HKNNUMMEI
+                                                           (IDX-HKNINF)
+                           END-EVALUATE
+                       ELSE
+                           MOVE    WRK-HKNNUM  TO  SRH-HKNNUM
+                           PERFORM 2111-HKNNUM-GET-SEC
+                           MOVE    SRH-HKNNUMMEI
+                                               TO  SDTCHK05-HKNNUMMEI
+                                                           (IDX-HKNINF)
+                       END-IF
                    ELSE
                        MOVE    WRK-HKNNUM      TO  SRH-KOHNUM
                        MOVE    WRK-PAYKBN      TO  SRH-PAYKBN
@@ -483,6 +522,8 @@
                    MOVE    WRK-HKNJANUM        TO  SDTCHK05-HKNJANUM
                                                            (IDX-HKNINF)
                    MOVE    WRK-HONKZKKBN       TO  SDTCHK05-HONKZKKBN
+                                                           (IDX-HKNINF)
+                   MOVE    WRK-RSIHKNKBN       TO  SDTCHK05-RSIHKNKBN
                                                            (IDX-HKNINF)
                END-IF
       *
@@ -730,6 +771,35 @@
       *
            .
        900-PTKOHINF-KEY2-FET-EXT.
+           EXIT.
+      *****************************************************************
+      *    ´µ¼ÔÏ«ºÒ¾ðÊó¸¡º÷½èÍý
+      *****************************************************************
+       900-PTRSIINF-KEY-SEL-SEC        SECTION.
+      *
+      *    ´µ¼Ô¸øÈñ¥Þ¥¹¥¿¸¡º÷
+           MOVE    ZERO                TO  FLG-PTRSIINF
+           INITIALIZE                      PTRSIINF-REC
+           MOVE    PTHKN-HOSPID        TO  PTRSI-HOSPID
+           MOVE    PTHKN-PTID          TO  PTRSI-PTID
+           MOVE    PTHKN-HKNID         TO  PTRSI-HKNID
+           MOVE    PTRSIINF-REC        TO  MCPDATA-REC
+           MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF ( MCP-RC             =   ZERO )
+               MOVE    MCPDATA-REC     TO  PTRSIINF-REC
+           ELSE
+               MOVE    1               TO  FLG-PTRSIINF
+               INITIALIZE                  PTRSIINF-REC
+           END-IF
+      *
+           MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       900-PTRSIINF-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
       *    £Ä£Â¸¡º÷½èÍý¡ÊFHETCH¤â¹Ô¤¦)
