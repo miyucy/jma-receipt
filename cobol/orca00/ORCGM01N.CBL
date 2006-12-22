@@ -713,9 +713,9 @@
                        MOVE    "I51"           TO  SPA-SAKIPG
                    END-IF
       * ÉÂ¾²´ÉÍý
-               WHEN    "35"
+      *         WHEN    "35"
       *             IF      SYS-1010-GSRAUTH(56:1)    =  "0"
-                       MOVE    "0002"          TO  SPA-ERRCD
+      *                 MOVE    "0002"          TO  SPA-ERRCD
       *             ELSE
       *                 MOVE    "O01"           TO  SPA-SAKIPG
       *             END-IF
