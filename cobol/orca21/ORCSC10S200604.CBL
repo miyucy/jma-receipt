@@ -4759,7 +4759,7 @@
            ELSE
                IF      SPA-HKNKBN          =   1
       *        ¼«ÇåÀÕ¤Î·òÊÝ½àµò°Ê³°
-             AND  (SPA-RSI-HKNKBN  NOT =   "5" )
+               AND    (SPA-RSI-HKNKBN  NOT =   "5" )
       *            Ï«ºÒ¤Î½é¿ÇÎÁ»»Äê
                    MOVE    ZERO                TO  WRK-KAISU
                    MOVE    "F"                 TO  WRK-KBN
@@ -5155,6 +5155,10 @@
       *    ·ÑÂ³´ÉÍý²Ã»»¼«Æ°È¯À¸Ê¬
            IF     WRK-SRYCD            =   "112007170"   OR
                                            "112702270"
+               MOVE    1               TO  FLG-ARI
+           END-IF
+      *    °é»ù±ÉÍÜ»ØÆ³ÎÁ
+           IF     WRK-SRYCD            =   "111000470"
                MOVE    1               TO  FLG-ARI
            END-IF
       *
@@ -5665,7 +5669,7 @@
       *
            IF      SPA-HKNKBN          =   ZERO
       *        ¼«ÇåÀÕ¤Î·òÊÝ½àµò°Ê³°
-             AND  (SPA-RSI-HKNKBN      =   "5" )
+             OR   (SPA-RSI-HKNKBN      =   "5" )
                MOVE   "111011810"          TO  WRK-SRYCD
            ELSE
       *TE      Ï«ºÒ
@@ -5685,7 +5689,7 @@
            IF      SPA-ERRCD           =   SPACE
                IF      SPA-HKNKBN          =   ZERO
       *        ¼«ÇåÀÕ¤Î·òÊÝ½àµò°Ê³°
-                 AND  (SPA-RSI-HKNKBN      =   "5" )
+                 OR   (SPA-RSI-HKNKBN      =   "5" )
                    MOVE   "111011810"          TO  WRK-SRYCD
                ELSE
       *TE          Ï«ºÒ
