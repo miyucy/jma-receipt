@@ -327,7 +327,7 @@
            03  FILLER              PIC X(35)   VALUE
                "5004 病室入院基本料加算情報".
            03  FILLER              PIC X(35)   VALUE
-               "5005 入院用管理マスタ設定".
+               "5005 室料差額設定".
            03  FILLER              PIC X(35)   VALUE
                "5006 病棟選定入院料情報".
            03  FILLER              PIC X(35)   VALUE

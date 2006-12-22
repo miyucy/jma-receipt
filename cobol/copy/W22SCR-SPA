@@ -34,17 +34,16 @@
                05  SPA-W22-ERRMSG                  PIC X(60).
                05  SPA-W22-MOTOPG                  PIC X(08).
                05  SPA-W22-GMN.
-                   07  SPA-W22-KANRICDCOMBO.
-                       09  SPA-W22-KANRICD.
-                           11  SPA-W22-KANRICD-C   PIC X(04).
-                           11  SPA-W22-KANRICD-K   PIC X(01).
-                           11  SPA-W22-KANRICD-N   PIC X(25).
-                       09  SPA-W22-KANRICD-L       OCCURS  20.
-                           11  SPA-W22-KANRICD-1   PIC X(04).
-                           11  SPA-W22-KANRICD-2   PIC X(01).
-                           11  SPA-W22-KANRICD-3   PIC X(25).
+                   07  SPA-W22-KANRICD.
+                       09  SPA-W22-KANRICD-C   PIC X(04).
+                       09  SPA-W22-KANRICD-K   PIC X(01).
+                       09  SPA-W22-KANRICD-N   PIC X(25).
+                   07  SPA-W22-KANRICD-L       OCCURS  20.
+                       09  SPA-W22-KANRICD-1   PIC X(04).
+                       09  SPA-W22-KANRICD-2   PIC X(01).
+                       09  SPA-W22-KANRICD-3   PIC X(25).
                    07  SPA-W22-KBNCD               PIC X(09).
-                   07  SPA-W22-MEISYOU             PIC X(51).
+                   07  SPA-W22-MEISYOU             PIC X(5).
                    07  SPA-W22-STYUKYMD-L.
                        09  SPA-W22-STYUKYMD        PIC X(10).
                        09  SPA-W22-STYUKYMD-S      PIC X(08).
@@ -56,7 +55,7 @@
                    07  SPA-W22-MEISYOU-TBL.
                        09  SPA-W22-MEISYOU-ITEM    OCCURS  30.
                            11  SPA-W22-ITEM1       PIC X(16).
-                           11  SPA-W22-ITEM2       PIC X(60).
+                           11  SPA-W22-ITEM2       PIC X(20).
                            11  SPA-W22-ITEM3       PIC X(19).
                            11  SPA-W22-ITEM4       PIC X(19).
                        09  SPA-W22-BTNO            PIC 9(03).

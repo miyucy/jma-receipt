@@ -17,15 +17,12 @@
       ********************************************************************
         02  W22.
             03  W22-FIXED6.
-              04  W22-KANRICDCOMBO.
-                05  W22-KANRICD.
-                  06  W22-VALUE              PIC X(31).
-                05  W22-KANRICD-COUNT        PIC S9(9)   BINARY.
-                05  W22-KANRICD-ITEM         PIC X(30) OCCURS  20 TIMES.
+              04  W22-KANRICD.
+                05  W22-VALUE                PIC X(31).
               04  W22-KBNCD.
                 05  W22-VALUE                PIC X(02).
               04  W22-MEISYOU.
-                05  W22-VALUE                PIC X(51).
+                05  W22-VALUE                PIC X(5).
               04  W22-STYUKYMD.
                 05  W22-VALUE                PIC X(10).
               04  W22-EDYUKYMD.

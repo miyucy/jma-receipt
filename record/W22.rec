@@ -1,17 +1,13 @@
 W22	{
 	fixed6	{
-		KANRICDCOMBO	{
-			KANRICD		{
-						value	varchar(31);
-				};
-				count	int;
-				item	varchar(30)[20];
+		KANRICD		{
+			value	varchar(31);
 		};
 		KBNCD	{
 			value	varchar(02);
 		};
 		MEISYOU	{
-			value	varchar(51);
+			value	varchar(5);
 		};
 		STYUKYMD	{
 			value	varchar(10);

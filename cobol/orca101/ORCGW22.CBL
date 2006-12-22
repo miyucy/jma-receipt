@@ -325,6 +325,7 @@
            END-IF.
       *
            PERFORM 310-SPASET-SEC.
+           PERFORM 420-TORIKOMI-SEC.
       *
        300-SCREEN-EXT.
            EXIT.
@@ -341,41 +342,13 @@
            MOVE    1                     TO  SPA-W22-PAGE.
            INITIALIZE                        SPA-W22-GMN.
       *
-           MOVE    SPACE                 TO  SPA-W22-KANRICDCOMBO.
-      *    MOVE    "5101"                TO  SPA-W22-KANRICD-1 (1).
-      *    MOVE    "5102"                TO  SPA-W22-KANRICD-1 (2).
-      *    MOVE    "5103"                TO  SPA-W22-KANRICD-1 (3).
-      *    MOVE    "5104"                TO  SPA-W22-KANRICD-1 (4).
-      *    MOVE    "5105"                TO  SPA-W22-KANRICD-1 (5).
-      *    MOVE    "5106"                TO  SPA-W22-KANRICD-1 (6).
-      *    MOVE    "5107"                TO  SPA-W22-KANRICD-1 (7).
-      *    MOVE    "5108"                TO  SPA-W22-KANRICD-1 (8).
-      *    MOVE    "5109"                TO  SPA-W22-KANRICD-1 (9).
-      *    MOVE    "5110"                TO  SPA-W22-KANRICD-1 (10).
-      *    MOVE    "5111"                TO  SPA-W22-KANRICD-1 (11).
-      *    MOVE    "5113"                TO  SPA-W22-KANRICD-1 (12).
-      *    MOVE    "5114"                TO  SPA-W22-KANRICD-1 (13).
-      *    MOVE    "5115"                TO  SPA-W22-KANRICD-1 (14).
-      *    MOVE    "ÉÂÅï¼ïÊÌ"            TO  SPA-W22-KANRICD-3 (1).
-      *    MOVE    "Ê¿¶ÑºßÆü¿ô"          TO  SPA-W22-KANRICD-3 (2).
-      *    MOVE    "´Ç¸îÇÛÃÖ"            TO  SPA-W22-KANRICD-3 (3).
-      *    MOVE    "´Ç¸îÈæÎ¨"            TO  SPA-W22-KANRICD-3 (4).
-      *    MOVE    "´Ç¸îÊä½õ²Ã»»"        TO  SPA-W22-KANRICD-3 (5).
-      *    MOVE    "Ìë´Ö¶ÐÌ³´Ç¸î²Ã»»"    TO  SPA-W22-KANRICD-3 (6).
-      *    MOVE    "´Ç¸î»Õ¿Í¿ô¶èÊ¬"      TO  SPA-W22-KANRICD-3 (7).
-      *    MOVE    "ÉÂ¼¼¼ïÊÌ"            TO  SPA-W22-KANRICD-3 (8).
-      *    MOVE    "À­ÊÌÆÃÄê"            TO  SPA-W22-KANRICD-3 (9).
-      *    MOVE    "ÆÃÄêÆþ±¡ÎÁ¡ÊÉÂÅï¡Ë"  TO  SPA-W22-KANRICD-3 (10).
-      *    MOVE    "ÆÃÄêÆþ±¡ÎÁ¡ÊÉÂ¼¼¡Ë"  TO  SPA-W22-KANRICD-3 (11).
-      *    MOVE    "¼¼ÎÁº¹³Û"            TO  SPA-W22-KANRICD-3 (12).
-      *    MOVE    "ÊÝ°é»Î¿Í¿ô¶èÊ¬"      TO  SPA-W22-KANRICD-3 (13).
-      *    MOVE    "´Ç¸îÊä½õÇÛÃÖ"        TO  SPA-W22-KANRICD-3 (14).
       *
       *    ¼¼ÎÁº¹³Û¤Î¤ß¥³¥ó¥Ü¤ËÊÔ½¸
            MOVE    "5113"                TO  SPA-W22-KANRICD-1 (01).
            MOVE    "¼¼ÎÁº¹³Û"            TO  SPA-W22-KANRICD-3 (01).
       *
-           MOVE    SPACE                 TO  SPA-W22-KANRICD.
+      *     MOVE    SPACE                 TO  SPA-W22-KANRICD.
+           MOVE    "5113 ¼¼ÎÁº¹³Û"       TO  SPA-W22-KANRICD.
            MOVE    SPACE                 TO  SPA-W22-KBNCD.
            MOVE    SPACE                 TO  SPA-W22-MEISYOU.
            MOVE    SPACE                 TO  SPA-W22-STYUKYMD-L.
@@ -1220,9 +1193,10 @@
            PERFORM VARYING IDX FROM   1   BY  1
                    UNTIL   IDX >      20
                IF  SPA-W22-KANRICD-L (IDX)   NOT =   SPACE
-                   MOVE    IDX                TO  W22-KANRICD-COUNT
-                   MOVE    SPA-W22-KANRICD-L (IDX)
-                                              TO  W22-KANRICD-ITEM (IDX)
+      *             MOVE    IDX                TO  W22-KANRICD-COUNT
+      *             MOVE    SPA-W22-KANRICD-L (IDX)
+      *                                        TO  W22-KANRICD-ITEM (IDX)
+                    CONTINUE
                END-IF
            END-PERFORM.
       *
