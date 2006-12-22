@@ -355,7 +355,7 @@
            MOVE    SPACE                 TO  SPA-W22-EDYUKYMD-L.
            INITIALIZE                        SPA-W22-MEISYOU-TBL.
       *
-           MOVE    1                     TO  SPA-W22-CUR.
+           MOVE    2                     TO  SPA-W22-CUR.
       *
        310-SPASET-EXT.
            EXIT.
