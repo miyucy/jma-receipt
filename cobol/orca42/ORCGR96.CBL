@@ -727,7 +727,7 @@
            ELSE
                IF      SPA-GMN-R96-NYUGAIKBN
                                            =   WRK-GMN-NYUGAIKBN-MAE
-                   CONTINUE
+                   MOVE    4               TO  SPA-GMN-R96-CUR
                ELSE
       *            Ì¤ÀÁµá²ò½ü´µ¼Ô°ìÍ÷ÊÔ½¸½èÍý
                    PERFORM 3100-KAIJYO-HENSYU-SEC
