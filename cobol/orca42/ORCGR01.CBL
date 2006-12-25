@@ -106,6 +106,7 @@
       *  03.04.01    NACL-藤原    06/11/01  照会機能連携対応
       *                                     最大行を５００に変更 
       *  03.04.02    NACL-藤原    06/12/05  未請求レセ対応
+      *  03.04.03    NACL-藤原    06/12/22  自賠責健保準拠対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -354,6 +355,8 @@
            COPY    "CPSK2003.INC".
       *
            COPY    "CPSK2005.INC".
+      *
+           COPY    "CPSK4001.INC".
       *
       *    保険組み合わせ
        01  HKNCOMBI-REC.
@@ -1781,6 +1784,28 @@
       *****    MOVE    SPA-R01-NYUGAIKBN    TO  SPA-GMN-R01-NYUGAIKBN
       *****END-IF
       *
+      *    自賠責（新様式）のとき健保準拠かチェック
+           IF    ( SPA-R01-RECEKBN     =   "4" )
+               INITIALIZE                  SYS-4001-REC
+               MOVE    "4001"              TO  SYS-4001-KANRICD
+               MOVE    "*"                 TO  SYS-4001-KBNCD
+               MOVE    SPA-NAI-R01-SRYYM   TO  SYS-4001-STYUKYMD(1:6)
+               MOVE    "01"                TO  SYS-4001-STYUKYMD(7:2)
+               MOVE    SYS-4001-STYUKYMD   TO  SYS-4001-EDYUKYMD
+               MOVE    SYS-4001-REC        TO  MCPDATA-REC
+               PERFORM 900-SYSKANRI-INV-SEC
+               IF      FLG-SYSKANRI        =   ZERO
+                   MOVE    MCPDATA-REC     TO  SYS-4001-REC
+               ELSE
+                  INITIALIZE                   SYS-4001-REC
+               END-IF
+               IF      SYS-4001-JIBAIKBN   =   "2"
+                   MOVE    "0036"              TO  SPA-ERRCD
+                   MOVE    5                   TO  SPA-GMN-R01-CUR
+                   GO  TO  4203-KOMOKUCHK-EXT
+               END-IF             
+            END-IF    
+      *
       *    診療会計チェック
            MOVE    ZERO                TO  FLG-CHK
                                            FLG-ERR
@@ -1788,9 +1813,10 @@
       *     
            INITIALIZE                  SRYACCT-REC
            MOVE    SPA-HOSPID          TO  ACCT-HOSPID
-           MOVE    SPA-NAI-R01-PTID        TO  ACCT-PTID
-           MOVE    SPA-NAI-R01-SRYYM       TO  ACCT-SRYYM
-           MOVE    SPA-GMN-R01-NYUGAIKBN   TO  ACCT-NYUGAIKBN
+           MOVE    SPA-NAI-R01-PTID    TO  ACCT-PTID
+           MOVE    SPA-NAI-R01-SRYYM   TO  ACCT-SRYYM
+           MOVE    SPA-GMN-R01-NYUGAIKBN
+                                       TO  ACCT-NYUGAIKBN
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_sryacct"   TO  MCP-TABLE
@@ -2795,8 +2821,10 @@
                        WHEN    "3"
                            MOVE    "1"            TO  PTINF-HKNKBN
                        WHEN    "4"
+                           MOVE    "2"            TO  PTINF-HKNKBN
                        WHEN    "5"
                            MOVE    "2"            TO  PTINF-HKNKBN
+                           MOVE    "4"            TO  PTINF-HKNKBN
                    END-EVALUATE
                    IF      SPA-GMN-R01-SYORI       =   "2"
                        MOVE    SPA-NAI-R01-TEISEIYM
@@ -2807,13 +2835,24 @@
                    END-IF 
                    MOVE    PTINF-REC           TO  MCPDATA-REC
                    MOVE    "DBSELECT"          TO  MCP-FUNC
-                   IF      SPA-GMN-R01-SYORI   =   "2"
-                       MOVE    "tbl_ptinf"         TO  WRK-MCP-TABLE
-                       MOVE    "key13"             TO  WRK-MCP-PATHNAME
-                   ELSE
-                       MOVE    "tbl_ptinf"         TO  WRK-MCP-TABLE
-                       MOVE    "key11"             TO  WRK-MCP-PATHNAME
-                   END-IF
+                   EVALUATE    SPA-R01-RECEKBN
+                       WHEN    "5"
+                           IF      SPA-GMN-R01-SYORI   =   "2"
+                               MOVE    "tbl_ptinf" TO  WRK-MCP-TABLE
+                               MOVE    "key18"     TO  WRK-MCP-PATHNAME
+                           ELSE
+                               MOVE    "tbl_ptinf" TO  WRK-MCP-TABLE
+                               MOVE    "key16"     TO  WRK-MCP-PATHNAME
+                           END-IF
+                       WHEN    OTHER
+                           IF      SPA-GMN-R01-SYORI   =   "2"
+                               MOVE    "tbl_ptinf" TO  WRK-MCP-TABLE
+                               MOVE    "key13"     TO  WRK-MCP-PATHNAME
+                           ELSE
+                               MOVE    "tbl_ptinf" TO  WRK-MCP-TABLE
+                               MOVE    "key11"     TO  WRK-MCP-PATHNAME
+                           END-IF
+                   END-EVALUATE
                    MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
                    MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                    CALL    "MONFUNC"       USING
@@ -4079,6 +4118,13 @@
                    MOVE    "前回と処理区分が違います"  TO  SPA-ERRMSG
                WHEN    "0035"
                    MOVE    "未請求設定のデータです"  TO  SPA-ERRMSG
+               WHEN    "0036"
+                   STRING  "該当診療年月は健保準拠の設定ですので"
+                                           DELIMITED   BY  SIZE  
+                           "自賠責（新様式）では処理できません"
+                                           DELIMITED   BY  SIZE  
+                                           INTO        SPA-ERRMSG
+                   END-STRING
                WHEN    "1001"
                    MOVE    "レセプト指示コード（個別）が削除できません"
                                                        TO  SPA-ERRMSG

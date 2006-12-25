@@ -86,6 +86,7 @@
       *  03.02.02    NACL-藤原    06/08/01  国保主科対応
       *
       *  03.04.01    NACL-藤原    06/12/05  未請求レセ対応
+      *  03.04.02    NACL-藤原    06/12/22  自賠責健保準拠対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -186,6 +187,8 @@
            03  FLG-RECE07          PIC 9(01).
            03  FLG-BTPARA          PIC 9(01).
            03  FLG-SYUKA           PIC 9(01).
+      *
+           03  FLG-4001-JIBAIKBN   PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -290,6 +293,8 @@
            COPY    "CPSK2003.INC".
       *
            COPY    "CPSK2005.INC".
+      *
+           COPY    "CPSK4001.INC".
       *
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
@@ -1488,6 +1493,72 @@
                GO  TO  450-TOUROKU-EXT
            END-IF
       *
+      *    自賠責（新様式）のとき健保準拠か労災準拠のチェック
+           IF    ( SPA-R01-RECEKBN     =   "4" )
+               EVALUATE    SPA-R01-FILEKBN
+                   WHEN    "1"
+                       INITIALIZE                  SYS-4001-REC
+                       MOVE    "4001"          TO  SYS-4001-KANRICD
+                       MOVE    "*"             TO  SYS-4001-KBNCD
+                       MOVE    SPA-NAI-SRYYM   TO 
+                                               SYS-4001-STYUKYMD(1:6)
+                       MOVE    "01"            TO 
+                                               SYS-4001-STYUKYMD(7:2)
+                       MOVE    SYS-4001-STYUKYMD
+                                               TO  SYS-4001-EDYUKYMD
+                       MOVE    SYS-4001-REC        TO  MCPDATA-REC
+                       PERFORM 900-SYSKANRI-INV-SEC
+                       IF      FLG-SYSKANRI        =   ZERO
+                           MOVE    MCPDATA-REC     TO  SYS-4001-REC
+                       ELSE
+                           INITIALIZE                  SYS-4001-REC
+                       END-IF
+                       IF      SYS-4001-JIBAIKBN   =   "2"
+                           MOVE    "0009"              TO  SPA-ERRCD
+                           GO  TO  450-TOUROKU-EXT
+                       END-IF
+                   WHEN    "2"
+                       MOVE    ZERO                TO  FLG-4001-JIBAIKBN
+      *
+                       INITIALIZE                      SYS-4001-REC
+                       MOVE    "4001"              TO  SYS-4001-KANRICD
+                       MOVE    "*"                 TO  SYS-4001-KBNCD
+                       MOVE    SYS-4001-REC        TO  MCPDATA-REC
+                       MOVE    "DBSELECT"          TO  MCP-FUNC
+                       MOVE    "tbl_syskanri"      TO  MCP-TABLE
+                       MOVE    "key8"              TO  MCP-PATHNAME
+                       CALL    "MONFUNC"           USING
+                                                       MCPAREA
+                                                       MCPDATA-REC
+                       IF      MCP-RC              =   ZERO
+                           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+                           MOVE    "key8"              TO  MCP-PATHNAME
+                           PERFORM  900-SYSKANRI-READ-SEC
+                           PERFORM  UNTIL   FLG-SYSKANRI   =    1
+                               MOVE    MCPDATA-REC     TO  SYS-4001-REC
+                               IF      SYS-4001-JIBAIKBN   =   "2"
+                                   CONTINUE
+                               ELSE
+                                   MOVE    1       TO  FLG-4001-JIBAIKBN
+                                   MOVE    1       TO  FLG-SYSKANRI
+                               END-IF
+      *
+                               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+                               MOVE    "key8"          TO  MCP-PATHNAME
+                               PERFORM 900-SYSKANRI-READ-SEC
+                           END-PERFORM
+                       END-IF
+                       MOVE    "tbl_syskanri"      TO  MCP-TABLE
+                       MOVE    "key8"              TO  MCP-PATHNAME
+                       PERFORM 900-CLOSE-SEC
+      *
+                       IF      FLG-4001-JIBAIKBN   =   ZERO
+                           MOVE    "0010"              TO  SPA-ERRCD
+                           GO  TO  450-TOUROKU-EXT
+                       END-IF
+               END-EVALUATE           
+           END-IF
+      *
       *****主科設定済かチェック
       *****IF    ( SPA-SYUKA-KBN               =   "1" )
       *****AND   ( SPA-GMN-IKKATU              =   "T" )
@@ -2524,6 +2595,20 @@
                WHEN    "0008"
                    MOVE    "入院のとき労災・自賠責は選択できません"
                                                        TO  SPA-ERRMSG
+               WHEN    "0009"
+                   STRING  "該当診療年月は健保準拠の設定ですので"
+                                           DELIMITED   BY  SIZE  
+                           "自賠責（新様式）は選択できません"
+                                           DELIMITED   BY  SIZE  
+                                           INTO        SPA-ERRMSG
+                   END-STRING
+               WHEN    "0010"
+                   STRING  "労災準拠の設定がありませんので"
+                                           DELIMITED   BY  SIZE  
+                           "自賠責（新様式）は選択できません"
+                                           DELIMITED   BY  SIZE  
+                                           INTO        SPA-ERRMSG
+                   END-STRING
                WHEN    "0100"
                    MOVE    "主科が設定されていません"  TO  SPA-ERRMSG
                WHEN    "1001"
@@ -2731,15 +2816,7 @@
            IF      MCP-RC          =   ZERO
                MOVE    "tbl_syskanri"  TO  MCP-TABLE
                MOVE    "key10"         TO  MCP-PATHNAME
-               MOVE    "DBFETCH"       TO  MCP-FUNC
-               CALL    "MONFUNC"       USING
-                                           MCPAREA
-                                           MCPDATA-REC
-               IF      MCP-RC              =   ZERO
-                   MOVE    ZERO            TO  FLG-SYSKANRI
-               ELSE
-                   MOVE    1               TO  FLG-SYSKANRI
-               END-IF
+               PERFORM 900-SYSKANRI-READ-SEC
            ELSE
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
@@ -2750,6 +2827,24 @@
       *
            .
        900-SYSKANRI-INV-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    システム管理マスタ　ＲＥＡＤ
+      *****************************************************************
+       900-SYSKANRI-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "MONFUNC"       USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO            TO  FLG-SYSKANRI
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           .
+       900-SYSKANRI-READ-EXT.
            EXIT.
       *
       *****************************************************************
