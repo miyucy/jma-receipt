@@ -49,5 +49,6 @@
                     06  R96-KAIJYO-TNUM    PIC X(3).
                     06  R96-KAIJYO-TSRYYM  PIC X(6).
                     06  R96-KAIJYO-TPTNUM  PIC X(20).
+                    06  R96-KAIJYO-TNAME   PIC X(30).
                   05  R96-KAIJYOLST-SELECT
                           PIC X       OCCURS  500 TIMES.

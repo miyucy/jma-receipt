@@ -430,6 +430,12 @@
                                    TO  SPA-NAI-R96-KAIJYO-TNYUGAIKBN
                                                                   (IDXX)
       *
+               MOVE    SPA-HOSPID  TO  PTINF-HOSPID
+               MOVE    SPA-NAI-R96-KAIJYO-TPTID   (IDXX)
+                                   TO  PTINF-PTID
+               PERFORM 900-PTINF-READ-SEC
+               MOVE    PTINF-NAME  TO  SPA-GMN-R96-KAIJYO-TNAME   (IDXX)
+      *
                MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
                MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                PERFORM 910-SYUKA-NEXT-SEC
@@ -534,6 +540,7 @@
            ELSE
                MOVE    3               TO  SPA-GMN-R96-CUR
            END-IF
+           MOVE    4               TO  SPA-GMN-R96-CUR
            .
        3101-MISEIKYU-HENSYU-EXT.
            EXIT.
@@ -899,7 +906,11 @@
       *
            MOVE    IDX1            TO  SPA-GMN-R96-PTNUM-TBL-MAX
       *
-           MOVE    99              TO  SPA-GMN-R96-CUR 
+           IF      SPA-NAI-R96-SELNUM  >   ZERO
+               MOVE    91              TO  SPA-GMN-R96-CUR
+           ELSE
+               MOVE    99              TO  SPA-GMN-R96-CUR
+           END-IF
            .
        410231-PTNUMLST-HENSYU-EXT.
            EXIT.
@@ -1195,7 +1206,7 @@
            MOVE    1               TO  FLG-MISEIKYU-ROW
                                        FLG-KAIJYO-ROW
       *
-           MOVE    3               TO  SPA-GMN-R96-CUR
+           MOVE    4               TO  SPA-GMN-R96-CUR
           .
       *
        420-CLEAR-EXT.
@@ -1206,10 +1217,10 @@
       *****************************************************************
        440-KAIJYO-MAE-SEC          SECTION.
       *
-           IF      SPA-NAI-R96-SELNUM  =   ZERO
-               MOVE    "0101"          TO  SPA-ERRCD
-               GO  TO  440-KAIJYO-MAE-EXT
-           END-IF
+      *****IF      SPA-NAI-R96-SELNUM  =   ZERO
+      *****    MOVE    "0101"          TO  SPA-ERRCD
+      *****    GO  TO  440-KAIJYO-MAE-EXT
+      *****END-IF
       *
            IF      SPA-NAI-R96-PTID    =   ZERO
                MOVE    "0100"              TO  SPA-ERRCD
@@ -1237,8 +1248,10 @@
            PERFORM 900-SYUKA-READ-SEC
            IF      FLG-SYUKA       =   1
                MOVE    "0101"          TO  SPA-ERRCD
+               MOVE    4               TO  SPA-GMN-R96-CUR
            ELSE
-               MOVE    "1002"          TO  SPA-RIDCD
+      *****    MOVE    "1002"          TO  SPA-RIDCD
+               PERFORM 440-KAIJYO-SEC
            END-IF
            .
        440-KAIJYO-MAE-EXT.
@@ -1256,49 +1269,23 @@
       *
            INITIALIZE                  SYUKA-REC
            MOVE    SPA-HOSPID      TO  SYUKA-HOSPID
-           MOVE    SPA-NAI-R96-PTID    TO  SYUKA-PTID
-           MOVE    SPA-NAI-R96-SRYYM   TO  SYUKA-SRYYM
+           MOVE    SPA-NAI-R96-PTID
+                                   TO  SYUKA-PTID
+           MOVE    SPA-NAI-R96-SRYYM
+                                   TO  SYUKA-SRYYM
            MOVE    SPA-GMN-R96-NYUGAIKBN
                                    TO  SYUKA-NYUGAIKBN
            MOVE    "YYYY"          TO  SYUKA-RECESYUBETU
-           MOVE    SYUKA-REC       TO  MCPDATA-REC
-           MOVE    "tbl_syuka"     TO  WRK-MCP-TABLE
-           MOVE    "key15"         TO  WRK-MCP-PATHNAME
-           PERFORM 900-SYUKA-READ-SEC
-           IF      FLG-SYUKA       =   1
-               INITIALIZE                  SYUKA-REC
-               MOVE    SPA-HOSPID      TO  SYUKA-HOSPID
-               MOVE    SPA-NAI-R96-PTID    TO  SYUKA-PTID
-               MOVE    SPA-NAI-R96-SRYYM   TO  SYUKA-SRYYM
-               MOVE    SPA-GMN-R96-NYUGAIKBN
-                                       TO  SYUKA-NYUGAIKBN
-               MOVE    "YYYY"          TO  SYUKA-RECESYUBETU
-           END-IF
-      *
            MOVE    "02"            TO  SYUKA-MISEIKYU-FLG
            MOVE    SPA-TERMID      TO  SYUKA-TERMID
            MOVE    SPA-OPID        TO  SYUKA-OPID
-      *
-           IF      FLG-SYUKA       =   1
-               MOVE    SMCNDATE-YMD        TO  SYUKA-CREYMD
-               MOVE    SMCNDATE-YMD        TO  SYUKA-UPYMD
-               MOVE    SMCNDATE-HMS        TO  SYUKA-UPHMS
-           ELSE
-               MOVE    SMCNDATE-YMD        TO  SYUKA-UPYMD
-               MOVE    SMCNDATE-HMS        TO  SYUKA-UPHMS
-           END-IF
+           MOVE    SMCNDATE-YMD        TO  SYUKA-UPYMD
+           MOVE    SMCNDATE-HMS        TO  SYUKA-UPHMS
            MOVE    SYUKA-REC       TO  MCPDATA-REC
       *
-           IF      FLG-SYUKA       =   ZERO
-               MOVE    "DBUPDATE"      TO  MCP-FUNC
-               MOVE    "tbl_syuka"     TO  MCP-TABLE
-               MOVE    "upd4"          TO  MCP-PATHNAME
-           ELSE
-               MOVE    "DBINSERT"      TO  MCP-FUNC
-               MOVE    "tbl_syuka"     TO  MCP-TABLE
-               MOVE    "key"           TO  MCP-PATHNAME
-           END-IF
-      *
+           MOVE    "DBUPDATE"      TO  MCP-FUNC
+           MOVE    "tbl_syuka"     TO  MCP-TABLE
+           MOVE    "upd4"          TO  MCP-PATHNAME
            CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
@@ -1636,6 +1623,8 @@
                                        TO  R96-KAIJYO-TSRYYM  (IDX)
                MOVE    SPA-GMN-R96-KAIJYO-TPTNUM  (IDX)
                                        TO  R96-KAIJYO-TPTNUM  (IDX)
+               MOVE    SPA-GMN-R96-KAIJYO-TNAME   (IDX)
+                                       TO  R96-KAIJYO-TNAME   (IDX)
       *
                IF      IDX         =   SPA-NAI-R96-KAIJYO-SELNUM
                    MOVE    "T"         TO  R96-KAIJYOLST-SELECT (IDX)
@@ -1781,7 +1770,7 @@
            EVALUATE    SPA-RIDCD
                WHEN    "1001"
                    MOVE
-                      "請求データがあるので削除します。よろしいですか。"
+                      "請求データを削除して設定します。よろしいですか。"
                                                TO  WRK-RIDMSG
                WHEN    "1002"
                    MOVE    "未請求設定を解除します。よろしいですか。"

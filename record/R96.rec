@@ -60,6 +60,7 @@ R96	{
 					value0	varchar(3);
 					value1	varchar(6);
 					value2	varchar(20);
+					value3	varchar(30);
 				}	[500];
 				select	bool[500];
 			};

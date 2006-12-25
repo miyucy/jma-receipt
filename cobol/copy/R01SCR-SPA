@@ -190,6 +190,8 @@
                                                    PIC X(06).
                            11  SPA-GMN-R96-KAIJYO-TPTNUM
                                                    PIC X(20).
+                           11  SPA-GMN-R96-KAIJYO-TNAME
+                                                   PIC X(30).
                        09  SPA-GMN-R96-KAIJYO-TBL-MAX
                                                    PIC 9(03).
       *                                             
