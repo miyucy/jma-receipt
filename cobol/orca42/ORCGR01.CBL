@@ -755,6 +755,12 @@
                    WHEN    "6666"
                        MOVE    "JOIN"          TO  MCP-PUTTYPE
                        PERFORM 210-BACK-SYORI-SEC
+                   WHEN    "1001"
+      *                未請求解除データで診療なしのデータの更新処理
+                       PERFORM 4502-KAIJYO-DATA-KOUSIN-SEC
+                       IF      SPA-ERRCD       =   SPACE
+                           PERFORM 41072-MISEIKYU-DATA-HENSYU-SEC
+                       END-IF
                    WHEN    "1002"
                    WHEN    "1006"
                    WHEN    "1007"
@@ -1318,10 +1324,15 @@
       *****************************************************************
        41072-MISEIKYU-DATA-HENSYU-SEC       SECTION.
       *
-           INITIALIZE                      SPA-NAI-R01-BTPARA-AREA
-                                           SPA-GMN-R01-BTPARA-AREA
-           MOVE    ZERO                TO  SPA-NAI-R01-BTPARA-MAX
-                                           SPA-NAI-R01-BTPARA-TAISYO-MAX
+           INITIALIZE                  SPA-NAI-R01-BTPARA-AREA
+                                       SPA-GMN-R01-BTPARA-AREA
+           MOVE    ZERO            TO  SPA-NAI-R01-BTPARA-MAX
+                                       SPA-NAI-R01-BTPARA-TAISYO-MAX
+      *
+           MOVE    ZERO            TO  SPA-GMN-R01-MAX
+           INITIALIZE                  SPA-GMN-R01-TBL
+                                       SPA-NAI-R01-TBL
+           MOVE    ZERO            TO  SPA-NAI-R01-SELNO
       *
            INITIALIZE                  SYUKA-REC
            MOVE    SPA-HOSPID      TO  SYUKA-HOSPID
@@ -1432,8 +1443,15 @@
                MOVE    8               TO  SPA-GMN-R01-CUR
            ELSE
       *        未請求解除データ表示処理
-               MOVE    1               TO  SPA-NAI-R01-BTPARA-HYOUJI-FLG
-               PERFORM 410721-MISEIKYU-DATA-JYOKEN-SEC
+               IF      SPA-NAI-R01-BTPARA-TAISYO-MAX   =   ZERO
+                   MOVE    ZERO        TO  SPA-NAI-R01-BTPARA-HYOUJI-FLG
+                   PERFORM 410721-MISEIKYU-DATA-JYOKEN-SEC
+                   MOVE    "0032"              TO  SPA-ERRCD
+                   MOVE    7                   TO  SPA-GMN-R01-CUR
+               ELSE
+                   MOVE    1           TO  SPA-NAI-R01-BTPARA-HYOUJI-FLG
+                   PERFORM 410721-MISEIKYU-DATA-JYOKEN-SEC
+               END-IF
            END-IF 
            .
        41072-MISEIKYU-DATA-HENSYU-EXT.
@@ -2777,12 +2795,12 @@
                        MOVE    8                   TO  SPA-GMN-R01-CUR
                        GO  TO  450-TOUROKU-EXT
                    END-IF
-                   IF      SPA-NAI-R01-BTPARA-TAISYO-MAX
-                                               =   ZERO
-                       MOVE    "0032"              TO  SPA-ERRCD
-                       MOVE    8                   TO  SPA-GMN-R01-CUR
-                       GO  TO  450-TOUROKU-EXT
-                   END-IF
+      *******      IF      SPA-NAI-R01-BTPARA-TAISYO-MAX
+      *******                                  =   ZERO
+      *******          MOVE    "0032"              TO  SPA-ERRCD
+      *******          MOVE    8                   TO  SPA-GMN-R01-CUR
+      *******          GO  TO  450-TOUROKU-EXT
+      *******      END-IF
            END-EVALUATE
       *
       *    入力チェック
@@ -2801,8 +2819,14 @@
            EVALUATE    SPA-GMN-R01-SYORI
                WHEN    "1" 
                WHEN    "4" 
-               WHEN    "5" 
                    MOVE    "1002"             TO  SPA-RIDCD
+               WHEN    "5" 
+                   IF      SPA-NAI-R01-BTPARA-TAISYO-MAX
+                                               =   ZERO
+                       MOVE    "1001"             TO  SPA-RIDCD
+                   ELSE
+                       MOVE    "1002"             TO  SPA-RIDCD
+                   END-IF
                WHEN    "2"
                WHEN    "3"
                    MOVE    ZERO               TO  WRK-KENSU
@@ -3148,40 +3172,10 @@
       *
       *    未請求解除データで診療なしのデータの更新処理
            IF      SPA-GMN-R01-SYORI     =   "5"
-               PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       SPA-NAI-R01-BTPARA-MAX
-                   IF      SPA-NAI-R01-BTPARA-TSINRYO (IDX)   =   1
-                       MOVE    SPA-NAI-R01-BTPARA-TQTORSUB-AREA (IDX)
-                                               TO  QTORSUB-AREA
-      *
-                       INITIALIZE                  SYUKA-REC
-                       MOVE    SPA-HOSPID      TO  SYUKA-HOSPID
-                       MOVE    QTORS-PTID      TO  SYUKA-PTID
-                       MOVE    SPA-NAI-R01-BTPARA-TSRYYM     (IDX)
-                                               TO  SYUKA-SRYYM
-                       MOVE    SPA-R01-NYUGAIKBN
-                                               TO  SYUKA-NYUGAIKBN
-                       MOVE    "YYYY"          TO  SYUKA-RECESYUBETU
-                       MOVE    "03"            TO  SYUKA-MISEIKYU-FLG
-                       MOVE    SMCNDATE-YMD    TO  SYUKA-UPYMD
-                       MOVE    SMCNDATE-HMS    TO  SYUKA-UPHMS
-                       MOVE    SPA-TERMID      TO  SYUKA-TERMID
-                       MOVE    SPA-OPID        TO  SYUKA-OPID
-                       MOVE    SYUKA-REC       TO  MCPDATA-REC
-                       MOVE    "DBUPDATE"      TO  MCP-FUNC
-                       MOVE    "tbl_syuka"     TO  MCP-TABLE
-                       MOVE    "upd4"          TO  MCP-PATHNAME
-                       CALL    "MONFUNC"       USING
-                                                   MCPAREA
-                                                   MCPDATA-REC
-      *
-                       IF      MCP-RC      NOT =   ZERO 
-                           MOVE    "1005"              TO  SPA-ERRCD
-                           DISPLAY "SYUKA SYUKA-KEY =>" SYUKA-KEY 
-                           GO  TO  450-KOUSHIN-EXT
-                       END-IF
-                   END-IF    
-               END-PERFORM
+               PERFORM 4502-KAIJYO-DATA-KOUSIN-SEC
+               IF      SPA-ERRCD       NOT =   ZERO 
+                   GO  TO  450-KOUSHIN-EXT
+               END-IF
            END-IF        
       *
       *    パラメタＤＢ更新
@@ -3488,6 +3482,50 @@
       *
            .
        4501-NEXT-GMN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    未請求解除データで診療なしのデータの更新処理
+      *****************************************************************
+       4502-KAIJYO-DATA-KOUSIN-SEC     SECTION.
+      *
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       SPA-NAI-R01-BTPARA-MAX
+               IF      SPA-NAI-R01-BTPARA-TSINRYO (IDX)   =   1
+                   MOVE    SPA-NAI-R01-BTPARA-TQTORSUB-AREA (IDX)
+                                           TO  QTORSUB-AREA
+      *
+                   INITIALIZE                  SYUKA-REC
+                   MOVE    SPA-HOSPID      TO  SYUKA-HOSPID
+                   MOVE    QTORS-PTID      TO  SYUKA-PTID
+                   MOVE    SPA-NAI-R01-BTPARA-TSRYYM     (IDX)
+                                           TO  SYUKA-SRYYM
+                   MOVE    SPA-R01-NYUGAIKBN
+                                           TO  SYUKA-NYUGAIKBN
+                   MOVE    "YYYY"          TO  SYUKA-RECESYUBETU
+                   MOVE    "03"            TO  SYUKA-MISEIKYU-FLG
+                   MOVE    SMCNDATE-YMD    TO  SYUKA-UPYMD
+                   MOVE    SMCNDATE-HMS    TO  SYUKA-UPHMS
+                   MOVE    SPA-TERMID      TO  SYUKA-TERMID
+                   MOVE    SPA-OPID        TO  SYUKA-OPID
+                   MOVE    SYUKA-REC       TO  MCPDATA-REC
+                   MOVE    "DBUPDATE"      TO  MCP-FUNC
+                   MOVE    "tbl_syuka"     TO  MCP-TABLE
+                   MOVE    "upd4"          TO  MCP-PATHNAME
+                   CALL    "MONFUNC"       USING
+                                               MCPAREA
+                                               MCPDATA-REC
+      *
+                   IF      MCP-RC      NOT =   ZERO 
+                       MOVE    "1005"              TO  SPA-ERRCD
+                       DISPLAY "SYUKA SYUKA-KEY =>" SYUKA-KEY 
+                       GO  TO  4502-KAIJYO-DATA-KOUSIN-EXT
+                   END-IF
+               END-IF    
+           END-PERFORM
+      *
+           .
+       4502-KAIJYO-DATA-KOUSIN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3912,7 +3950,9 @@
                        MOVE    WIDGET-NORMAL       TO  R01-B05-STATE
                    END-IF 
                WHEN    "5"
-                   IF      SPA-NAI-R01-BTPARA-MAX  >   ZERO
+                   IF    ( SPA-NAI-R01-BTPARA-MAX  >   ZERO )
+                   AND   ( SPA-NAI-R01-BTPARA-TAISYO-MAX
+                                                   >   ZERO )
                        MOVE    WIDGET-NORMAL       TO  R01-B05-STATE
                    END-IF
            END-EVALUATE
@@ -4172,6 +4212,8 @@
            MOVE    SPACE               TO  WRK-RIDMSG
       *
            EVALUATE    SPA-RIDCD
+               WHEN    "1001"
+                   MOVE    "未請求解除を行います"        TO  WRK-RIDMSG
                WHEN    "1002"
                    MOVE    "個別作成で作表します"        TO  WRK-RIDMSG
                WHEN    "1003"
