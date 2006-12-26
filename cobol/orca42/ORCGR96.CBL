@@ -555,6 +555,7 @@
            IF      WRK-SPA-PTNUM   NOT =   SPACE
                    MOVE    WRK-SPA-PTNUM   TO  R96-PTNUM
                PERFORM 41024-PTNUM-CHK-SEC
+               MOVE    SPACE               TO  SPA-ERRCD
       *****    MOVE    5                   TO  SPA-GMN-CUR
            END-IF
            .
