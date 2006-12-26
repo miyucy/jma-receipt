@@ -896,7 +896,7 @@
                "¡Ú¼ç²ÊÌ¤ÀßÄê¡Û".
       *
            03  WRK-ERR-MSG-6           PIC X(30)  VALUE
-               "¡ÚÊ¿À®£±£¸Ç¯£±£°·î²þÀµÌ¤ÂÐ±þ¡Û".
+               "¡ÚÌ¤ÀÁµáÀßÄê¤Î´µ¼Ô¤Ç¤¹¡Û".
       *
        01  WRK-CONS-AREA.    
       *    ¸ÇÄêÃ¼Ëö£É£Ä
@@ -2492,9 +2492,12 @@
                IF      RECE02-RECESYUBETU  =    ZERO
                    PERFORM 3101-FUMEI-HENSYU-SEC
                ELSE 
-                   IF      RECE02-SYUKA         =   "XX"
-                       MOVE    WRK-ERR-MSG-5   TO   HC06-HEAD4-G (5:)
+                   IF      RECE02-MISEIKYU-FLG     =   "01"
+                       MOVE    WRK-ERR-MSG-6   TO   HC06-HEAD4-G (5:)
                    ELSE 
+                    IF      RECE02-SYUKA         =   "XX"
+                        MOVE    WRK-ERR-MSG-5   TO   HC06-HEAD4-G (5:)
+                    ELSE 
                      IF      FLG-RECE11          =   ZERO
                        INSPECT RECE11-HC06-HEAD1-G  REPLACING   ALL "  "
                                                         BY  "¡¡" 
@@ -2509,6 +2512,7 @@
                        MOVE    RECE11-HC06-HEAD3-G TO  HC06-HEAD3-G
                        MOVE    RECE11-HEAD4-G      TO  HC06-HEAD4-G
                      END-IF
+                    END-IF
                    END-IF
                END-IF
            END-IF
@@ -2600,8 +2604,6 @@
                    END-IF
                WHEN    6
                    MOVE    WRK-ERR-MSG-4   TO   HC06-HEAD4-G (5:)
-      *********WHEN    7
-      *********    MOVE    WRK-ERR-MSG-6   TO   HC06-HEAD4-G (5:)
            END-EVALUATE        
            INSPECT HC06-HEAD4-G  REPLACING ALL "  "    BY  "¡¡"
       *

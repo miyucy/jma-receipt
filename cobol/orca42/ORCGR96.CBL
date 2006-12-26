@@ -816,6 +816,7 @@
            ELSE
                INITIALIZE                      PTNYUINRRK-REC
                MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID
+               MOVE    SPA-NAI-R96-PTID    TO  PTNYUINRRK-PTID
                MOVE    SPA-NAI-R96-SRYYM   TO  PTNYUINRRK-TENSTUYMD(1:6)
                MOVE    "01"                TO  PTNYUINRRK-TENSTUYMD(7:)
                MOVE    SPA-NAI-R96-SRYYM   TO  PTNYUINRRK-TENNYUYMD(1:6)

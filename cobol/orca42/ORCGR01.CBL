@@ -591,6 +591,7 @@
            IF      WRK-SPA-PTNUM   NOT =   SPACE
                    MOVE    WRK-SPA-PTNUM   TO  SPA-GMN-R01-PTNUM
                PERFORM 4103-PTNUM-CHK-SEC
+               MOVE    SPACE               TO  SPA-ERRCD
                MOVE    5                   TO  SPA-GMN-R01-CUR
            END-IF
            .
@@ -814,6 +815,7 @@
                WHEN    "R96"
                    IF      SPA-GMN-R01-SYORI   =   "5"
                        PERFORM 41072-MISEIKYU-DATA-HENSYU-SEC
+                       MOVE    SPACE               TO  SPA-ERRCD
                    END-IF    
            END-EVALUATE     
       *
@@ -4163,7 +4165,7 @@
                    MOVE    "対象の未設定解除データがありません"
                                                      TO  SPA-ERRMSG
                WHEN    "0033"
-                   MOVE    "未設定解除データがありません"
+                   MOVE    "未請求解除データがありません"
                                                      TO  SPA-ERRMSG
                WHEN    "0034"
                    MOVE    "前回と処理区分が違います"  TO  SPA-ERRMSG

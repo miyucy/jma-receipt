@@ -2517,7 +2517,14 @@
            MOVE    WRK-PARA-PTID    TO  SYS-2002-PTID
            MOVE    WRK-PARA-SRYYM-O TO  SYS-2002-SRYYM
            MOVE    "1"              TO  SYS-2002-NYUGAIKBN
+      *
+           MOVE    SYS-2002-SRYYM      TO  WRK-SYUKA-SRYYM
+           MOVE    SYS-2002-PTID       TO  WRK-SYUKA-PTID
+           PERFORM 800-MISEIKYU-CHECK-SEC
+      *
            DISPLAY "SYS PTID=" SYS-2002-PTID
+                   " SRYYM="   SYS-2002-SRYYM 
+                   " MISEIKYU-FLG=" SYUKA-MISEIKYU-FLG
       *
       *    該当診療年月の医療機関情報取得
            MOVE  ZERO           TO  FLG-SET
