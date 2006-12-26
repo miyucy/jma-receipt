@@ -570,8 +570,8 @@
            INITIALIZE                      SYSKANRI-REC.
            MOVE    SPA-W22-KANRICD-C   TO  SYS-KANRICD.
            MOVE    SPA-SYSYMD          TO  ORC-DBYMD.
-           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH.
-           MOVE    "SYSKANRI-KEY2"     TO  WRK-DBPATH.
+           MOVE    "SYSKANRI-KEY5"     TO  ORC-DBPATH.
+           MOVE    "SYSKANRI-KEY5"     TO  WRK-DBPATH.
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC.
       *
            PERFORM 910-DB-SELECT-SEC.
