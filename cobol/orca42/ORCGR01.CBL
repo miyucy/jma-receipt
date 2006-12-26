@@ -811,6 +811,11 @@
                WHEN    "R99"
                    IF      SPA-R99-FLG     =   "OK"
                        PERFORM 4501-NEXT-GMN-SEC
+                   ELSE
+                       IF      SPA-GMN-R01-SYORI   =   "5"
+                           PERFORM 41072-MISEIKYU-DATA-HENSYU-SEC
+                           MOVE    SPACE               TO  SPA-ERRCD
+                       END-IF    
                    END-IF    
                WHEN    "R96"
                    IF      SPA-GMN-R01-SYORI   =   "5"
