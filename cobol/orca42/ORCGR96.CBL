@@ -667,18 +667,21 @@
            CALL    "ORCSGDAY"          USING
                                        ORCSGDAYAREA
            IF      SGDAY-RC            =   ZERO
+               MOVE    SGDAY-OTDAY(1:6)    TO  SPA-GMN-R96-SRYYM
+               MOVE    SGDAY-SDAY (1:6)    TO  SPA-NAI-R96-SRYYM
                IF      SPA-NAI-R96-SRYYM   <   WRK-CONS-SRYYM-200610
                    MOVE    "0009"              TO  SPA-ERRCD
-               ELSE
-                   MOVE    SGDAY-OTDAY(1:6)    TO  SPA-GMN-R96-SRYYM
-                   MOVE    SGDAY-SDAY (1:6)    TO  SPA-NAI-R96-SRYYM
                END-IF
            ELSE
                MOVE    "0007"              TO  SPA-ERRCD
            END-IF
       *
            IF      SPA-ERRCD           =   SPACE
-               IF      SPA-NAI-R96-SRYYM   NOT =   WRK-NAI-SRYYM-MAE
+               IF      SPA-GMN-R96-NYUGAIKBNMEI
+                                           =   SPACE
+                   MOVE    "0008"              TO  SPA-ERRCD
+                   MOVE    2                   TO  SPA-GMN-R96-CUR
+               ELSE
       *            該当診療年月の情報編集処理
                    PERFORM 3101-MISEIKYU-HENSYU-SEC
                END-IF
@@ -725,10 +728,16 @@
                                            SPA-NAI-R96-MISEIKYU-TABLE
                MOVE    "0008"              TO  SPA-ERRCD
            ELSE
-               IF      SPA-GMN-R96-NYUGAIKBN
-                                           =   WRK-GMN-NYUGAIKBN-MAE
-                   MOVE    4               TO  SPA-GMN-R96-CUR
+               IF      SPA-NAI-R96-SRYYM   =   ZERO
+                   MOVE    "0007"              TO  SPA-ERRCD
+                   MOVE    1               TO  SPA-GMN-R96-CUR
                ELSE
+                   IF      SPA-NAI-R96-SRYYM   <   200609
+                       MOVE    "0009"              TO  SPA-ERRCD
+                       MOVE    1               TO  SPA-GMN-R96-CUR
+                   END-IF
+               END-IF
+               IF      SPA-ERRCD           =   SPACE
       *            未請求解除患者一覧編集処理
                    PERFORM 3100-KAIJYO-HENSYU-SEC
       *            該当診療年月の情報編集処理
@@ -933,12 +942,20 @@
       *
            IF      SPA-NAI-R96-SRYYM   =   ZERO
                MOVE    "0007"              TO  SPA-ERRCD
+               MOVE    1                   TO  SPA-GMN-R96-CUR
+               GO  TO  41024-PTNUM-CHK-EXT
+           END-IF
+      *
+           IF      SPA-NAI-R96-SRYYM   <   WRK-CONS-SRYYM-200610
+               MOVE    "0009"              TO  SPA-ERRCD
+               MOVE    1                   TO  SPA-GMN-R96-CUR
                GO  TO  41024-PTNUM-CHK-EXT
            END-IF
       *
            IF      SPA-GMN-R96-NYUGAIKBNMEI
                                        =   SPACE
                MOVE    "0008"              TO  SPA-ERRCD
+               MOVE    2                   TO  SPA-GMN-R96-CUR
                GO  TO  41024-PTNUM-CHK-EXT
            END-IF
       *
@@ -964,14 +981,17 @@
       *
       *            患者マスター存在チェック
                    MOVE    SPA-HOSPID          TO  PTINF-HOSPID
-                   MOVE    SPA-NAI-R96-PTID        TO  PTINF-PTID
+                   MOVE    SPA-NAI-R96-PTID    TO  PTINF-PTID
                    PERFORM 900-PTINF-READ-SEC
                    IF      FLG-PTINF       NOT =   ZERO
                        MOVE    "0001"          TO  SPA-ERRCD
                    ELSE
                        MOVE    PTINF-NAME      TO  SPA-GMN-R96-NAME
                        MOVE    PTINF-BIRTHDAY  TO  SPA-NAI-R96-BIRTHDAY
-                       IF      PTINF-TSTPTNUMKBN   =   "1"
+                       MOVE    PTINF-TSTPTNUMKBN
+                                               TO
+                                               SPA-NAI-R96-TSTPTNUMKBN
+                       IF      SPA-NAI-R96-TSTPTNUMKBN =   "1"
                            MOVE    "0006"              TO  SPA-ERRCD
                        END-IF 
                    END-IF
@@ -1013,8 +1033,6 @@
       *
       *        レセプト一覧編集処理
                PERFORM 410231-PTNUMLST-HENSYU-SEC
-           ELSE
-               MOVE    ZERO            TO  SPA-NAI-R96-PTID
            END-IF
            .
        41024-PTNUM-CHK-EXT.
@@ -1081,10 +1099,10 @@
       *
            IF      SPA-NAI-R96-SRYYM   =   ZERO
                MOVE    "0007"              TO  SPA-ERRCD
-           END-IF
-      *
-           IF      SPA-NAI-R96-SRYYM   =   WRK-CONS-SRYYM-200610
-               MOVE    "0009"              TO  SPA-ERRCD
+           ELSE
+               IF      SPA-NAI-R96-SRYYM   <=  WRK-CONS-SRYYM-200610
+                   MOVE    "0009"              TO  SPA-ERRCD
+               END-IF
            END-IF
       *
            IF      SPA-ERRCD           =   SPACE
@@ -1109,6 +1127,8 @@
       *     
       *        該当診療年月の情報編集処理
                PERFORM 3101-MISEIKYU-HENSYU-SEC
+           ELSE
+               MOVE    1                   TO  SPA-GMN-R96-CUR
            END-IF
            .
       *
@@ -1120,7 +1140,7 @@
       *****************************************************************
        480-NEXT-MONTH-SEC               SECTION.
       *
-           IF      SPA-NAI-R96-PTID        >   ZERO
+           IF      SPA-NAI-R96-PTID    >   ZERO
                MOVE    "0103"              TO  SPA-ERRCD
            END-IF
       *
@@ -1131,6 +1151,10 @@
       *
            IF      SPA-NAI-R96-SRYYM   =   ZERO
                MOVE    "0007"              TO  SPA-ERRCD
+           ELSE
+               IF      SPA-NAI-R96-SRYYM   <   200609
+                   MOVE    "0009"              TO  SPA-ERRCD
+               END-IF
            END-IF
       *
            IF      SPA-ERRCD           =   SPACE
@@ -1155,6 +1179,8 @@
       *     
       *        該当診療年月の情報編集処理
                PERFORM 3101-MISEIKYU-HENSYU-SEC
+           ELSE
+               MOVE    1                   TO  SPA-GMN-R96-CUR
            END-IF
            .
       *
@@ -1217,15 +1243,15 @@
       *****************************************************************
        440-KAIJYO-MAE-SEC          SECTION.
       *
-      *****IF      SPA-NAI-R96-SELNUM  =   ZERO
-      *****    MOVE    "0101"          TO  SPA-ERRCD
-      *****    GO  TO  440-KAIJYO-MAE-EXT
-      *****END-IF
-      *
            IF      SPA-NAI-R96-PTID    =   ZERO
                MOVE    "0100"              TO  SPA-ERRCD
                GO  TO  440-KAIJYO-MAE-EXT
            END-IF
+      *
+           IF      SPA-NAI-R96-TSTPTNUMKBN =   "1"
+               MOVE    "0006"              TO  SPA-ERRCD
+               GO  TO  440-KAIJYO-MAE-EXT
+           END-IF 
       *
            IF    ( SPA-NAI-R96-KAIJYO-SELNUM
                                    =   ZERO                     )
@@ -1314,6 +1340,11 @@
                MOVE    "0100"              TO  SPA-ERRCD
                GO  TO  490-SETTEI-MAE-EXT
            END-IF
+      *
+           IF      SPA-NAI-R96-TSTPTNUMKBN =   "1"
+               MOVE    "0006"              TO  SPA-ERRCD
+               GO  TO  490-SETTEI-MAE-EXT
+           END-IF 
       *
       *    請求管理テーブルの存在チェック
            INITIALIZE                  RECE10-REC
@@ -1712,7 +1743,8 @@
                WHEN    "0004"
                    MOVE    "他の患者番号を選択中です"  TO  SPA-ERRMSG
                WHEN    "0006"
-                   MOVE    "テスト患者です"            TO  SPA-ERRMSG
+                   MOVE    "テスト患者の設定はできません"
+                                                       TO  SPA-ERRMSG
                WHEN    "0007"
                    MOVE    "診療年月入力エラー"        TO  SPA-ERRMSG
                WHEN    "0008"

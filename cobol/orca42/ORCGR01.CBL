@@ -760,6 +760,7 @@
                        PERFORM 4502-KAIJYO-DATA-KOUSIN-SEC
                        IF      SPA-ERRCD       =   SPACE
                            PERFORM 41072-MISEIKYU-DATA-HENSYU-SEC
+                           MOVE    SPACE               TO  SPA-ERRCD
                        END-IF
                    WHEN    "1002"
                    WHEN    "1006"
@@ -3081,6 +3082,11 @@
            MOVE    SPA-R01-RECEKBN     TO  SYS-2001-RECEKBN
            MOVE    SPA-R01-NYUGAIKBN   TO  SYS-2001-NYUGAIKBN
            MOVE    SPA-GMN-R01-SYORI   TO  SYS-2001-SYOSBT 
+           MOVE    SPA-TERMID          TO  SYS-2001-TERMID
+           MOVE    SPA-OPID            TO  SYS-2001-OPID
+           MOVE    SMCNDATE-YMD        TO  SYS-2001-CREYMD
+           MOVE    SMCNDATE-YMD        TO  SYS-2001-UPYMD
+           MOVE    SMCNDATE-HMS        TO  SYS-2001-UPHMS
            MOVE    SYS-2001-REC        TO  MCPDATA-REC
            IF      FLG-SYSKANRI        =   1
                MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -3153,6 +3159,11 @@
                    MOVE    SPA-NAI-R01-TSRYYM(IDX) TO  SYS-2002-SRYYM
       *************MOVE    SPA-GMN-R01-TNYUGAIKBN(IDX)
                    MOVE    SPA-R01-NYUGAIKBN   TO  SYS-2002-NYUGAIKBN
+                   MOVE    SPA-TERMID          TO  SYS-2002-TERMID
+                   MOVE    SPA-OPID            TO  SYS-2002-OPID
+                   MOVE    SMCNDATE-YMD        TO  SYS-2002-CREYMD
+                   MOVE    SMCNDATE-YMD        TO  SYS-2002-UPYMD
+                   MOVE    SMCNDATE-HMS        TO  SYS-2002-UPHMS
                    MOVE    SYS-2002-REC        TO  MCPDATA-REC
                    MOVE    "DBINSERT"          TO  MCP-FUNC
                    MOVE    "tbl_syskanri"          TO  MCP-TABLE
@@ -3173,7 +3184,7 @@
       *    未請求解除データで診療なしのデータの更新処理
            IF      SPA-GMN-R01-SYORI     =   "5"
                PERFORM 4502-KAIJYO-DATA-KOUSIN-SEC
-               IF      SPA-ERRCD       NOT =   ZERO 
+               IF      SPA-ERRCD       NOT =   SPACE 
                    GO  TO  450-KOUSHIN-EXT
                END-IF
            END-IF        
