@@ -31,12 +31,13 @@
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
   <title>(N22)薬剤情報マスタ設定</title>
-  <type>GTK_WINDOW_TOPLEVEL</type>
-  <position>GTK_WIN_POS_CENTER</position>
+  <type>GTK_WINDOW_DIALOG</type>
+  <position>GTK_WIN_POS_NONE</position>
   <modal>True</modal>
   <allow_shrink>False</allow_shrink>
   <allow_grow>False</allow_grow>
   <auto_shrink>False</auto_shrink>
+  <wmclass_class>jma-receipt.dialog</wmclass_class>
 
   <widget>
     <class>GtkFixed</class>
@@ -433,8 +434,6 @@
       <y>360</y>
       <width>170</width>
       <height>90</height>
-      <scaled_width>170</scaled_width>
-      <scaled_height>90</scaled_height>
     </widget>
 
     <widget>
@@ -476,8 +475,6 @@
       <y>360</y>
       <width>170</width>
       <height>90</height>
-      <scaled_width>170</scaled_width>
-      <scaled_height>90</scaled_height>
     </widget>
 
     <widget>
@@ -503,8 +500,6 @@
       <y>360</y>
       <width>170</width>
       <height>90</height>
-      <scaled_width>170</scaled_width>
-      <scaled_height>90</scaled_height>
     </widget>
 
     <widget>
@@ -554,7 +549,6 @@
       </signal>
       <duration>5</duration>
     </widget>
-
   </widget>
 </widget>
 
