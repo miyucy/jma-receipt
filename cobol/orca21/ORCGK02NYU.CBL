@@ -43,6 +43,8 @@
       * 01.00.14     NACL-多々納  05/02/20  入院指示せん発行追加他
       * 01.00.15     NACL-多々納  05/11/25  MONFUNC 対応
       * 03.02.01     NACL-多々納  06/08/29  平成１８年１０月改正対応
+      * 03.04.00     NACL-多々納  06/12/01  自賠責健保準拠追加
+      * 03.04.01     NACL-多々納  06/12/14  薬剤附加チェック追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -183,6 +185,7 @@
       *    セット処理有無
            03  FLG-SETSYORI        PIC 9(01).
            03  FLG-SET             PIC 9(01).
+           03  FLG-SET-HEN         PIC 9(01).
            03  FLG-YAKUSOKU        PIC 9(01).
            03  FLG-MAE             PIC 9(01).
       *    剤チェック対象外
@@ -861,6 +864,9 @@
       *
       *    診療行為入力項目変換パラメタ
            COPY    "CPORCSC97.INC".
+      *
+      *    投与量等チェックパラメタ
+           COPY    "CPORCSC98.INC".
       *
       *    診察料自動発生パラメタ
            COPY    "CPORCSC10S.INC".
@@ -2694,6 +2700,8 @@
                END-IF
                MOVE    SPACE           TO  SPA-COM-KZMFLG (IDX)
                MOVE    SPACE           TO  SPA-COM-KZMFLG2(IDX)
+               MOVE    SPACE           TO  SPA-COM-KZMFLG4(IDX)
+               MOVE    SPACE           TO  SPA-COM-KZMFLG5(IDX)
                MOVE    SPACE           TO  SPA-COM-NYU-KZMFLG-G(IDX)
       *        訂正時の点数判定
                IF      SPA-SYORIFLG        =   1
@@ -4291,12 +4299,23 @@
            END-IF
       *
            IF     LNK-SC97-NYURYOKU    =   1
+      *///     セットコードに変更がない時
+               IF     (SPA-MAE-INPUTCD(SPA-GMN-IDX)(1:1) =   "S" ) AND
+                      (SPA-MAE-INPUTCD(SPA-GMN-IDX)
+                                           =   SPA-GMN-INPUTCD
+                                                         (SPA-GMN-IDX))
+                   MOVE    1                   TO  FLG-SET-HEN
+               ELSE
+                   MOVE    ZERO                TO  FLG-SET-HEN
+               END-IF
       *        セットが変更削除の時セット内容を削除する
                IF     (SPA-MAE-INPUTCD(SPA-GMN-IDX)(1:1)   =   "S") OR
                      ((SPA-GMN-IDX           <   WRK-GYO-MAX  ) AND
                       (SPA-COM-SET  (SPA-GMN-IDX + 1)      =   "1"))
                    PERFORM 41016-SETDEL-SEC
                END-IF
+               IF      FLG-SET-HEN         =   ZERO
+      *
                MOVE    SPA-COM-TIMEFLG(SPA-GMN-IDX)    TO  WRK-TIMEFLG
                MOVE    SPA-COM-IN     (SPA-GMN-IDX)    TO  WRK-FLG-IN
                MOVE    SPA-GMN-MEISYO-G(SPA-GMN-IDX)   TO  WRK-MEISYO-G
@@ -4305,6 +4324,8 @@
                MOVE    WRK-TIMEFLG     TO  SPA-COM-TIMEFLG(SPA-GMN-IDX)
                MOVE    WRK-FLG-IN      TO  SPA-COM-IN  (SPA-GMN-IDX)
                MOVE    "1"             TO  SPA-COM-IN2 (SPA-GMN-IDX)
+      *
+               END-IF
            ELSE
                MOVE    SPA-GMN-MEISYO-G(SPA-GMN-IDX)   TO  WRK-MEISYO-G
            END-IF
@@ -5188,12 +5209,21 @@
                                        TO  ORCSCSETHEN-SRYCD
       *    対象行
            MOVE    SPA-GMN-IDX         TO  ORCSCSETHEN-IDX
+      *    ORCSC92検索用
+           MOVE    SPA-SYORIFLG        TO  ORCSCSETHEN-SYORIFLG
+           MOVE    SPA-NENREI          TO  ORCSCSETHEN-NENREI
+           MOVE    SPA-15MIMAN-ARI     TO  ORCSCSETHEN-15MIMAN-ARI
+           MOVE    SPA-NAI-ROUJIN      TO  ORCSCSETHEN-ROUJIN
+           MOVE    SPA-LSTSRYKA        TO  ORCSCSETHEN-LSTSRYKA
+           MOVE    SPA-LSTSRYKAMEI     TO  ORCSCSETHEN-LSTSRYKAMEI
+           MOVE    SPA-K02-TEISEI-AREA TO  ORCSCSETHEN-TEISEI-AREA
+      *
            CALL    "ORCSCSETHEN"       USING
                                        ORCSCSETHENAREA
                                        SPA-AREA
-                                       SPA-K02
                                        SPA-SCR-REC
-      *
+      *    展開後の位置
+           MOVE    ORCSCSETHEN-IDX     TO  SPA-GMN-IDX
       *
            .
        4101191-INPUTSET-SYORI-EXT.
@@ -6187,8 +6217,26 @@
                                            SPA-AREA
                    ADD     1               TO  SPA-SRYKBN-CNT (10)
            END-EVALUATE
+      *@
+      *    投薬附加情報チェック
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-KIDCD           =   SPACE )  AND
+                  (WRK-ERR-ERRCD       =   SPACE )  AND
+                  (WRK-KEI-ERRCD       =   SPACE )  AND
+                  (WRK-KIDCD           =   SPACE )
+      *        在宅・投薬・注射のみ
+               IF     (WRK-COM-SRYKBN (01)     =   "14"
+                                               OR  "21"
+                                               OR  "22"
+                                               OR  "23"
+                                               OR  "31"
+                                               OR  "32"
+                                               OR  "33" )
+                   PERFORM 51022-TENSUPLUS2-CHK-SEC
+               END-IF
+           END-IF
+      *@
       *
-      *****MOVE    LNK-ORCSC-GMN-IDX   TO  SPA-GMN-IDX
            MOVE    LNK-ORCSC-KIDCD     TO  SPA-KIDCD
            MOVE    LNK-ORCSC-CHK-IDX   TO  SPA-CHK-IDX
            MOVE    LNK-ORCSC-ERRMSG    TO  SPA-ERRMSG2
@@ -6425,6 +6473,26 @@
            END-IF
            .
        51021-KAISU-SAIHEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    長期投薬期間、投与量チェック処理
+      *****************************************************************
+       51022-TENSUPLUS2-CHK-SEC                SECTION.
+      *
+           INITIALIZE                  ORCSC98AREA
+           MOVE    "K02"               TO  LNK-SC98-PG
+           MOVE    SPA-NENREI-YY       TO  LNK-SC98-NENREI-YY
+           MOVE    SPA-NENREI-MM       TO  LNK-SC98-NENREI-MM
+           MOVE    SPA-NENREI-DD       TO  LNK-SC98-NENREI-DD
+           CALL    "ORCSC98"           USING
+                                       SPA-AREA
+                                       ORCSC98AREA
+                                       WRK-SCR-REC
+           IF      LNK-SC98-ERRMSG     NOT =   SPACE
+               MOVE    LNK-SC98-ERRMSG     TO  LNK-ORCSC-ERRMSG
+           END-IF
+           .
+       51022-TENSUPLUS2-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -9993,7 +10061,17 @@
       *
       *************IF      SPA-ERRCD       =   SPACE
                    IF      SPA-COM-CUR (WRK-IDX)   =   "1"
-                       MOVE    SPACE       TO  SPA-MAE-INPUTCD(WRK-IDX)
+      *!!
+      *            セットで警告の時
+                       IF     (SPA-GMN-INPUTCD (WRK-IDX)(1:1) =  "S")
+                          AND (SPA-ERRCD(1:1)      =   "K"   )
+                          AND ((SPA-COM-KZMFLG4 (WRK-IDX)  =  "1" )
+                           OR  (SPA-COM-KZMFLG5 (WRK-IDX)  =  "1" ))
+                          CONTINUE
+                       ELSE
+                           MOVE    SPACE       TO  SPA-MAE-INPUTCD
+                                                            (WRK-IDX)
+                       END-IF
                    ELSE
                        IF      SPA-COM-CUR (WRK-IDX)   NOT =   "2"
                            MOVE    SPACE       TO  SPA-COM-CUR (WRK-IDX)

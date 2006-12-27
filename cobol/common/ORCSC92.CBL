@@ -56,6 +56,7 @@
       *  02.00.16    NACL-多々納  06/03/06  経過措置対応、入力値設定他
       *  03.03.00    NACL-多々納  06/10/20  矯正固定等追加
       *  03.04.00    NACL-多々納  06/11/13  検査正式名称表示追加
+      *  03.04.01    NACL-多々納  06/12/11  薬剤附加情報追加
       *****************************************************************
       *
       *
@@ -79,6 +80,7 @@
            03  FLG-INPUTCD         PIC 9(01).
            03  FLG-SRYCDCHG        PIC 9(01).
            03  FLG-TENSUPLUS       PIC 9(01).
+           03  FLG-TENSUPLUS2      PIC 9(01).
            03  FLG-CHKMST          PIC 9(01).
       *
            03  FLG-ERR             PIC 9(01).
@@ -127,6 +129,9 @@
            03  IDX-Y3              PIC 9(02).
       *
            03  IDM                 PIC 9(04).
+      *
+           03  IDX-T2              PIC 9(04).
+           03  IDX-T3              PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -243,6 +248,9 @@
       *    点数マスタ付加コード
         01 TENSUPLUS-REC.
            COPY    "CPTENSUPLUS.INC".
+      *    点数マスタ薬剤付加コード
+        01 TENSUPLUS2-REC.
+           COPY    "CPTENSUPLUS2.INC".
       *
       *    点数マスタ−（ワーク）
            COPY    "CPTENSU.INC"       REPLACING
@@ -982,6 +990,16 @@
       *
       *    数量
            MOVE    SPACE               TO  SPA-COM-AUTOFLG2(IDX-T)
+      *    数量変更の時、薬剤警告をクリア
+           IF     (LNK-SC97-SURYO  NOT =   SPA-COM-SURYO(IDX-T))
+               IF     (LNK-SC97-SURYO          =   ZERO   )  AND
+                      (SPA-COM-SURYO(IDX-T)    =   1      )
+                   CONTINUE
+               ELSE
+                   MOVE    SPACE           TO  SPA-COM-KZMFLG5 (IDX-T)
+               END-IF
+           END-IF
+      *
            IF      LNK-SC97-SURYOCNT   =   ZERO
                MOVE    1               TO  SPA-COM-SURYO(IDX-T)
                MOVE    SPACE           TO  SPA-COM-SURFLG(IDX-T)
@@ -2395,6 +2413,11 @@
       *    点数マスタ付加情報より編集
            PERFORM 3006-TENSUPLUS-HEN-SEC
       *
+      *    点数マスタ薬剤付加情報より編集
+           IF     (TNS-SRYCD(1:1)      =   "6" )
+               PERFORM 3007-TENSUPLUS2-HEN-SEC
+           END-IF
+      *
            .
        300-TENSU-HENSYU-EXT.
            EXIT.
@@ -2961,6 +2984,58 @@
            .
        3006-TENSUPLUS-HEN-EXT.
            EXIT.
+      *****************************************************************
+      *    点数マスタ薬剤付加情報より編集処理
+      *****************************************************************
+       3007-TENSUPLUS2-HEN-SEC          SECTION.
+      *
+           PERFORM 9102-TENSUPLUS2-READ-SEC
+      *
+           IF      FLG-TENSUPLUS2      =   ZERO
+      *        内服算定
+               MOVE    TNSP2-NAIFUKUKBN    TO  SPA-COM-NAIFUKUKBN
+                                                              (IDX-T)
+           END-IF
+      *    セット登録でのチェックなし
+           IF      (LNK-SC92-PG    NOT =   "K05" ) 
+             AND   (FLG-TENSUPLUS2     =   ZERO  )
+      *        長期投与日数
+               IF     (TNSP2-CHOKI-KIGEN   =   SPACE )  OR
+                      (TNSP2-CHOKI-KIGEN   >=  SPA-SRYYMD)
+                   MOVE    TNSP2-CHOKI-NISSU   TO  SPA-COM-CHOKINISSU
+                                                              (IDX-T)
+                   MOVE    TNSP2-CHOKIERR      TO  SPA-COM-CHOKIERR
+                                                              (IDX-T)
+               END-IF
+               MOVE    ZERO                TO  IDX-T2
+               MOVE    TNSP2-TOUYOERR      TO  SPA-COM-TOUYOERR (IDX-T)
+               PERFORM VARYING     IDX-T3  FROM    1   BY  1
+                       UNTIL       IDX-T3  >   10
+                   IF     (TNSP2-TOUYOKGNAGE (IDX-T3) =   ZERO )  AND
+                          (TNSP2-TOUYOJGNAGE (IDX-T3) =   ZERO )  AND
+                          (TNSP2-TOUYORYO1   (IDX-T3) =   ZERO )  AND
+                          (TNSP2-TOUYORYO2   (IDX-T3) =   ZERO )
+                       CONTINUE
+                   ELSE
+                       ADD     1               TO  IDX-T2
+                       MOVE    TNSP2-TOUYOKGNAGE (IDX-T3)
+                                           TO  SPA-COM-TOUYOKGNAGE
+                                                         (IDX-T IDX-T2)
+                       MOVE    TNSP2-TOUYOJGNAGE (IDX-T3)
+                                           TO  SPA-COM-TOUYOJGNAGE
+                                                         (IDX-T IDX-T2)
+                       MOVE    TNSP2-TOUYORYO1 (IDX-T3)
+                                           TO  SPA-COM-TOUYORYO1
+                                                         (IDX-T IDX-T2)
+                       MOVE    TNSP2-TOUYORYO2 (IDX-T3)
+                                           TO  SPA-COM-TOUYORYO2
+                                                         (IDX-T IDX-T2)
+                   END-IF
+               END-PERFORM
+           END-IF
+           .
+       3007-TENSUPLUS2-HEN-EXT.
+           EXIT.
       *
       *****************************************************************
       *    加算行追加編集処理
@@ -3060,7 +3135,6 @@
            .
        500-GMN-HEN-EXT.
            EXIT.
-      *
       *
       *****************************************************************
       *    数量・回数のみ変更の時の編集処理
@@ -3221,7 +3295,8 @@
            END-IF
       *!
       *    附加情報の上限回数設定
-           IF      TNS-SRYCD(1:1)      =   "1"
+           IF     (TNS-SRYCD(1:1)      =   "1" ) AND
+                  (FLG-TENSU           =   ZERO)
                PERFORM 9101-TENSUPLUS-SYORI-SEC
            END-IF
            .
@@ -3264,6 +3339,41 @@
       *
            .
        9101-TENSUPLUS-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    点数マスタ薬剤付加情報より編集処理
+      *****************************************************************
+       9102-TENSUPLUS2-READ-SEC          SECTION.
+      *
+           MOVE    SPACE               TO  TENSUPLUS2-REC
+           INITIALIZE                      TENSUPLUS2-REC
+           MOVE    TNS-SRYCD           TO  TNSP2-SRYCD
+      *
+           MOVE    TENSUPLUS2-REC      TO  MCPDATA-REC
+           MOVE    "tbl_tensuplus2"    TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_tensuplus2"    TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  TENSUPLUS2-REC
+                   MOVE    ZERO                TO  FLG-TENSUPLUS2
+               ELSE
+                   MOVE    1                   TO  FLG-TENSUPLUS2
+                   INITIALIZE                      TENSUPLUS2-REC
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-TENSUPLUS2
+               INITIALIZE                      TENSUPLUS2-REC
+           END-IF
+           MOVE    "tbl_tensuplus2"    TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           .
+       9102-TENSUPLUS2-READ-EXT.
            EXIT.
       *****************************************************************
       *    点数マスター読込（算定履歴検索用）

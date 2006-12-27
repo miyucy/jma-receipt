@@ -376,6 +376,7 @@
            COPY    "J98.INC".
            COPY    "J99.INC".
            COPY    "JERR.INC".
+           COPY    "JERR2.INC".
            COPY    "JID1.INC".
            COPY    "JID2.INC".
       *
@@ -631,7 +632,6 @@
                    WHEN    "720"
                    WHEN    "721"
                    WHEN    "723"
-                   WHEN    "724"
                    WHEN    "724"
       *            リハビリ
                    WHEN    "810"

@@ -122,6 +122,7 @@
            COPY    "J98.INC".
            COPY    "J99.INC".
            COPY    "JERR.INC".
+           COPY    "JERR2.INC".
            COPY    "JID1.INC".
            COPY    "JID2.INC".
       *

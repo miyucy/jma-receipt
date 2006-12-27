@@ -78,6 +78,8 @@
       *
            03  WRK-GMN-IDX         PIC 9(04).
            03  WRK-GMN-STR         PIC 9(04).
+      *    内部
+           03  SPA-GMN-IDX         PIC 9(04).
       *
            03  WRK-PATH            PIC X(64).
       *    エラーコード
@@ -144,7 +146,7 @@
                                        //SPA-// BY //WRK-HZN-//.
       *
       *    診療行為用共通パラメタ
-           COPY    "K01COMMON-SPA".
+      **** COPY    "K01COMMON-SPA".
       *
            COPY    "MCPAREA".
       *
@@ -164,13 +166,13 @@
            COPY    "COMMON-SPA".
       *
       *    画面スパ領域
-           COPY    "K02SCR-SPA".
+      *****COPY    "K02SCR-SPA".
       *
       *
        PROCEDURE                    DIVISION    USING
            ORCSCSETHENAREA
            SPA-AREA
-           SPA-K02
+      *****SPA-K02
            SPA-SCR-REC
            .
       *
@@ -179,19 +181,18 @@
       *****************************************************************
        000-PROC-SEC                 SECTION.
       *
-      *
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
            INITIALIZE                  WRK-AREA
       *
-           MOVE    SPA-WORK            TO  SPA-K01KYOUTU
+      ***  MOVE    SPA-WORK            TO  SPA-K01KYOUTU
       * 
       *    診療種別テーブルセット
            CALL    "ORCSSRYSYU"        USING
                                        MSYU-DATA-REC
       *
-      *
            MOVE    ORCSCSETHEN-SRYCD   TO  WRK-SRYCD
+           MOVE    ORCSCSETHEN-IDX     TO  SPA-GMN-IDX
       *
            EVALUATE    ORCSCSETHEN-SRYCD(1:1)
       *        セット展開処理
@@ -202,6 +203,7 @@
                    PERFORM 200-SSET-TENKAI-SEC
            END-EVALUATE
       * 
+           MOVE    SPA-GMN-IDX         TO  ORCSCSETHEN-IDX
            .
       *
            EXIT PROGRAM
@@ -500,17 +502,18 @@
       *    点数マスタ編集・基本チェック
            INITIALIZE                  ORCSC92AREA
            MOVE    ORCSCSETHEN-PG      TO  LNK-SC92-PG
-           MOVE    SPA-SYORIFLG        TO  LNK-SC92-SYORIFLG
+           MOVE    ORCSCSETHEN-SYORIFLG    TO  LNK-SC92-SYORIFLG
            MOVE    SPACE               TO  LNK-SC92-KBN
            MOVE    SPA-GMN-IDX         TO  LNK-SC92-GMN-IDX
            MOVE    SPA-COM-INPUTCD(SPA-GMN-IDX)
                                        TO  LNK-SC92-SRYCD
-           MOVE    SPA-NENREI          TO  LNK-SC92-NENREI
-           MOVE    SPA-15MIMAN-ARI     TO  LNK-SC92-15MIMAN-ARI
-           MOVE    SPA-NAI-ROUJIN      TO  LNK-SC92-ROUJIN
-           MOVE    SPA-LSTSRYKA        TO  LNK-SC92-LSTSRYKA
-           MOVE    SPA-LSTSRYKAMEI     TO  LNK-SC92-LSTSRYKAMEI
-           MOVE    SPA-K02-TEISEI-AREA TO  LNK-SC92-TEISEI-AREA
+           MOVE    ORCSCSETHEN-NENREI      TO  LNK-SC92-NENREI
+           MOVE    ORCSCSETHEN-15MIMAN-ARI TO  LNK-SC92-15MIMAN-ARI
+           MOVE    ORCSCSETHEN-ROUJIN      TO  LNK-SC92-ROUJIN
+           MOVE    ORCSCSETHEN-LSTSRYKA    TO  LNK-SC92-LSTSRYKA
+           MOVE    ORCSCSETHEN-LSTSRYKAMEI TO  LNK-SC92-LSTSRYKAMEI
+           MOVE    ORCSCSETHEN-TEISEI-AREA
+                                           TO  LNK-SC92-TEISEI-AREA
            CALL    "ORCSC92"           USING
                                        MCPAREA
                                        ORCSC92AREA
@@ -684,7 +687,7 @@
                                        TO  WRK-INPUTCD
            PERFORM 41011921-INPSET-MEI-SEC
            MOVE    SPACE               TO  SPA-COM-INPUTCD
-                                                      (SPA-GMN-IDX)
+                                                     (SPA-GMN-IDX)
            IF      SPA-ERRCD       NOT =   SPACE
                MOVE    "1"                 TO  SPA-COM-CUR(SPA-GMN-IDX)
                GO      TO      1003-YAKUSOKU-SYORI-EXT
@@ -903,8 +906,6 @@
                    MOVE    IDX                 TO  SPA-GMN-MAX
                END-IF
            END-PERFORM
-      *
-           MOVE    1                   TO  SPA-GMN-CUR
       *
            .
        41014-GYOINSN-EXT.

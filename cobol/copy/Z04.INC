@@ -104,9 +104,9 @@
                 04  Z04-KOUHATUKBN-ITEM   PIC X(34)   OCCURS  3 TIMES.
               03  Z04-TANICD-COMBO.
                 04  Z04-TANICD.
-                  05  Z04-VALUE   PIC X(14).
+                  05  Z04-VALUE   PIC X(28).
                 04  Z04-TANICD-COUNT   PIC S9(9)   BINARY.
-                04  Z04-TANICDLST   PIC X(14)   OCCURS  90 TIMES.
+                04  Z04-TANICDLST   PIC X(28)   OCCURS  90 TIMES.
               03  Z04-BUNRUIKBN-COMBO.
                 04  Z04-BUNRUIKBN.
                   05  Z04-VALUE   PIC X(43).
@@ -119,12 +119,61 @@
                 04  Z04-ALLSURYOKBNLST   PIC X(14)   OCCURS  2 TIMES.
               03  Z04-KANZANTANICD-COMBO.
                 04  Z04-KANZANTANICD.
-                  05  Z04-VALUE   PIC X(14).
+                  05  Z04-VALUE   PIC X(28).
                 04  Z04-KANZANTANICD-COUNT   PIC S9(9)   BINARY.
-                04  Z04-KANZANTANICDLST   PIC X(14)   OCCURS  90 TIMES.
+                04  Z04-KANZANTANICDLST   PIC X(28)   OCCURS  90 TIMES.
               03  Z04-KANZANCHI.
                 04  Z04-VALUE   PIC 9(5)V9(5).
               03  Z04-CHNGCD.
                 04  Z04-VALUE   PIC X(9).
               03  Z04-CHNGENAME.
                 04  Z04-VALUE   PIC X(100).
+              03  Z04-CHOKINISSU.
+                04  Z04-VALUE   PIC S9(3).
+              03  Z04-CHOKIKIGEN.
+                04  Z04-VALUE   PIC X(10).
+              03  Z04-CHOKIERR.
+                04  Z04-VALUE   PIC S9(1).
+              03  Z04-TOUYO-T   OCCURS   10.
+                  04  Z04-KGNAGE.
+                    05  Z04-VALUE   PIC X(2).
+                  04  Z04-JGNAGE.
+                    05  Z04-VALUE   PIC X(2).
+                  04  Z04-TOUYORYO1.
+                    05  Z04-VALUE   PIC S9(5)V9(3).
+                  04  Z04-TOUYORYO2.
+                    05  Z04-VALUE   PIC S9(5)V9(3).
+              03  Z04-TOUYOERR.
+                04  Z04-VALUE   PIC S9(1).
+              03  Z04-SOURYOKBN-COMB.
+                04  Z04-SOURYOKBN.
+                  05  Z04-VALUE   PIC X(14).
+                04  Z04-SOURYOKBN-COUNT   PIC S9(9)   BINARY.
+                04  Z04-SOURYOKBN-ITEM
+                        PIC X(14)   OCCURS  5 TIMES.
+              03  Z04-NAIFUKUKBN-COMB.
+                04  Z04-NAIFUKUKBN.
+                  05  Z04-VALUE   PIC X(30).
+                04  Z04-NAIFUKUKBN-COUNT   PIC S9(9)   BINARY.
+                04  Z04-NAIFUKUKBN-ITEM
+                        PIC X(30)   OCCURS  5 TIMES.
+              03  Z04-IPNKISAIKBN-COMB.
+                04  Z04-IPNKISAIKBN.
+                  05  Z04-VALUE   PIC X(43).
+                04  Z04-IPNKISAIKBN-COUNT   PIC S9(9)   BINARY.
+                04  Z04-IPNKISAIKBN-ITEM
+                        PIC X(43)   OCCURS  5 TIMES.
+              03  Z04-IPNTANICD-COMB.
+                04  Z04-IPNTANICD.
+                  05  Z04-VALUE   PIC X(28).
+                04  Z04-IPNTANICD-COUNT   PIC S9(9)   BINARY.
+                04  Z04-IPNTANICD-ITEM
+                        PIC X(28)   OCCURS  90 TIMES.
+              03  Z04-IPNKANZANCHI.
+                04  Z04-VALUE   PIC S9(5)V9(5).
+              03  Z04-GENERICHEN.
+                04  Z04-VALUE   PIC X(80).
+              03  Z04-GENERICNAME.
+                04  Z04-VALUE   PIC X(100).
+
+

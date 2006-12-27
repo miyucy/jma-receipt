@@ -1657,11 +1657,21 @@
                                        TO  ORCSCSETHEN-SRYCD
       *    対象行
            MOVE    SPA-GMN-IDX         TO  ORCSCSETHEN-IDX
+      *    ORCSC92検索用
+           MOVE    SPA-SYORIFLG        TO  ORCSCSETHEN-SYORIFLG
+           MOVE    SPA-NENREI          TO  ORCSCSETHEN-NENREI
+           MOVE    SPA-15MIMAN-ARI     TO  ORCSCSETHEN-15MIMAN-ARI
+           MOVE    SPA-NAI-ROUJIN      TO  ORCSCSETHEN-ROUJIN
+           MOVE    SPA-LSTSRYKA        TO  ORCSCSETHEN-LSTSRYKA
+           MOVE    SPA-LSTSRYKAMEI     TO  ORCSCSETHEN-LSTSRYKAMEI
+           MOVE    SPA-K02-TEISEI-AREA TO  ORCSCSETHEN-TEISEI-AREA
+      *
            CALL    "ORCSCSETHEN"       USING
                                        ORCSCSETHENAREA
                                        SPA-AREA
-                                       SPA-K02
                                        SPA-SCR-REC
+      *    展開後の位置
+           MOVE    ORCSCSETHEN-IDX     TO  SPA-GMN-IDX
       *
            .
        10028-INPUTSET-SYORI-EXT.

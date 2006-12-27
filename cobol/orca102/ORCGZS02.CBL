@@ -329,6 +329,11 @@
              AND ( LNK-TNSP-JGNCNT          =   ZERO  )
              AND ( LNK-TNSP-JGNCNT1D        =   ZERO  )
              AND ( LNK-TNSP-JGNCNTERR       =   ZERO  )
+      *        一般名記載
+             AND ( LNK-TNSP-SOURYOHENKBN    =   ZERO  )
+             AND ( LNK-TNSP-IPN-KISAIKBN    =   ZERO  )
+             AND ( LNK-TNSP-IPN-KANZANTANICD    =   SPACE )
+             AND ( LNK-TNSP-IPN-KANZANCHI   =   ZERO  )
                IF      FLG-TENSUPLUS    =  1
                    GO  TO  200-TENSUPLUS-UPD-EXT
                END-IF
@@ -455,6 +460,18 @@
            MOVE    LNK-TNSP-JGNCNT1D       TO  TNSP-JGNCNT1D
       *    エラー処理
            MOVE    LNK-TNSP-JGNCNTERR      TO  TNSP-JGNCNTERR
+      *    総量編集区分
+           MOVE    LNK-TNSP-SOURYOHENKBN   TO  TNSP-SOURYOHENKBN
+      *    一般名記載区分
+           MOVE    LNK-TNSP-IPN-KISAIKBN   TO  TNSP-IPN-KISAIKBN
+      *    一般名記載単位
+           MOVE    LNK-TNSP-IPN-KANZANTANICD
+                                           TO  TNSP-IPN-KANZANTANICD
+      *    一般名記載単位名
+           MOVE    LNK-TNSP-IPN-KANZANTANINAME
+                                           TO  TNSP-IPN-KANZANTANINAME
+      *    一般名記載換算値
+           MOVE    LNK-TNSP-IPN-KANZANCHI  TO  TNSP-IPN-KANZANCHI
       *
            .
        2001-TENSUPLUS-HEN-EXT.

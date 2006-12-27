@@ -775,6 +775,9 @@
                                        TO  SPA-ERRMSG
                    MOVE    "。この約束セットは使用できません。"
                                        TO  SPA-ERRMSG(43:)
+               WHEN    "A001"
+                   MOVE    "数量ゼロは入力できません。"
+                                       TO  SPA-ERRMSG
                WHEN    "A002"
                    MOVE    "数量ゼロは入力できません。"
                                        TO  SPA-ERRMSG
@@ -1145,6 +1148,28 @@
                    STRING  "救急医療管理加算は入院日から７日間のみ"
                                                DELIMITED  BY  SIZE
                            "算定可能です。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+      *投薬附加情報エラー
+               WHEN    "0200"
+                   STRING  "長期投与日数以上です。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "K200"
+                   STRING  "警告！長期投与日数以上です。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "0201"
+                   STRING  "投与量以上です。数量を変更して下さい。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "K201"
+                   STRING  "警告！"
+                           "投与量以上です。数量を変更して下さい。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING

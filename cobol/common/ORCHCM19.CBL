@@ -53,6 +53,8 @@
       * 01.00.18     NACL-多々納  06/03/XX  Ｈ１８年４月改正対応
       * 01.00.19     NACL-多々納  06/06/09  後発医薬品区分変更
       * 03.02.00     NACL-多々納  06/09/20  Ｈ１８年１０月改正対応
+      * 03.04.00     NACL-多々納  06/12/20  内用総量編集対応
+      *                                     一般名記載対応
       *****************************************************************
       *
       *
@@ -99,6 +101,11 @@
            03  FLG-PTCOM           PIC 9(01).
            03  FLG-WKSRYACT        PIC 9(01).
            03  FLG-PTRSIINF        PIC 9(01).
+      *---(03.04.00) LINE ADD START ------------------------------------
+           03  FLG-TENSUPLUS       PIC 9(01).
+           03  FLG-SOURYOHEN       PIC 9(01).
+           03  FLG-GENERICNAME     PIC 9(01).
+      *---(03.04.00) LINE ADD END   ------------------------------------
       *
            03  FLG-KAISU           PIC 9(01).
            03  FLG-SP              PIC 9(01).
@@ -210,11 +217,21 @@
                05  WRK-SURYO-S2    PIC 9(03).
       *
            03  WRK-SURYO-X.
-      *********05  WRK-SURYO-Z1    PIC ZZZZZ.
                05  WRK-SURYO-Z1    PIC ZZZZ9.
                05  WRK-SURYO-Z2    PIC X(01).
                05  WRK-SURYO-Z3    PIC ZZZ.
            03  WRK-SURYO-N         PIC X(18).
+      *---(03.04.00) LINE ADD START ------------------------------------
+           03  WRK-SURYO2           PIC 9(05)V9(05).
+           03  WRK-SURYO2-R         REDEFINES   WRK-SURYO2.
+               05  WRK-SURYO2-S1    PIC 9(05).
+               05  WRK-SURYO2-S2    PIC 9(05).
+           03  WRK-SURYO-X2.
+               05  WRK-SURYO2-Z1   PIC ZZ9.
+               05  WRK-SURYO2-Z2   PIC X(01).
+               05  WRK-SURYO2-Z3   PIC ZZZZZ.
+           03  WRK-KANZANCHI       PIC 9(05)V9(5).
+      *---(03.04.00) LINE ADD END   ------------------------------------
       *
            03  WRK-TANINAME        PIC X(04).
            03  WRK-ZZ              PIC ZZ.
@@ -359,6 +376,15 @@
       *    点数マスタ−
       *01  TENSU-REC.
            COPY    "CPTENSU.INC".
+      *
+      *---(03.04.00) LINE ADD START ------------------------------------
+      *    点数マスタ付加コード
+        01 TENSUPLUS-REC.
+           COPY    "CPTENSUPLUS.INC".
+      *    一般名テーブル
+       01  GENERICNAME-REC.
+           COPY    "CPGENERICNAME.INC".
+      *---(03.04.00) LINE ADD END   ------------------------------------
       *
       *    診療行為マスタ−
        01  SRYACT-REC.
@@ -1724,6 +1750,9 @@
            MOVE    ZERO                TO  FLG-ZAITAKU-ARI
            INITIALIZE                  WRK-MEISAI-AREA
            MOVE    ZERO                TO  FLG-HENSYU
+      *---(03.04.00) LINE ADD START ------------------------------------
+           MOVE    ZERO                TO  FLG-SOURYOHEN
+      *---(03.04.00) LINE ADD END   ------------------------------------
            PERFORM
                    UNTIL   FLG-SRYACT      =   1
       *
@@ -1960,6 +1989,13 @@
                ADD     1                   TO  IDX-S
            END-IF
       *
+      *---(03.04.00) LINE ADD START ------------------------------------
+      *    内服で総量表示の薬剤のみの場合、外用と同様の表示とする
+           IF     (WRK-SRYKBN          =   "21"  )  AND
+                  (FLG-SOURYOHEN       =   1     )
+               MOVE    "23"                TO  WRK-SRYKBN
+           END-IF
+      *---(03.04.00) LINE ADD END   ------------------------------------
       *    最後の行に回数を編集
            IF      ORCHC19-KBN         =   "1"
       *---(01.00.16) LINE ADD START -----------------------------------
@@ -2214,6 +2250,14 @@
            PERFORM 910-TENSU-READ-SEC
       *    内容
            IF      SRY-SRYCD (IDXA)(1:1)   =   "6"
+      *---(03.04.00) LINE ADD START ------------------------------------
+      *        一般名・処方名称記載
+               IF      TNSP-IPN-KISAIKBN   =   ZERO
+                   MOVE    1               TO  WRK-KANZANCHI
+               ELSE
+                   PERFORM 310321-GENERIC-HEN-SEC
+               END-IF
+      *---(03.04.00) LINE ADD END   ------------------------------------
       *        ＧＥ付き表示の時、表示
                MOVE    TNS-NAME        TO  WRK-TNS-NAME
                IF      SYS-1030-SYOHOGEPRTFLG  =   1
@@ -2271,6 +2315,16 @@
                IF      TNS-MADOKUKBN       =   1
                    MOVE   1                TO  FLG-MAYAKU
                END-IF
+      *---(03.04.00) LINE ADD START ------------------------------------
+      *        内用薬の総量編集の判定
+               IF      TNSP-SOURYOHENKBN   =   1
+                   IF      FLG-SOURYOHEN       =   ZERO
+                       MOVE    1                   TO  FLG-SOURYOHEN
+                   END-IF
+               ELSE
+                   MOVE    2                   TO  FLG-SOURYOHEN
+               END-IF
+      *---(03.04.00) LINE ADD END   ------------------------------------
            ELSE
       *        用法
                IF      SRY-SRYCD (IDXA)(1:3)   =   "001"
@@ -2321,6 +2375,48 @@
            .
        31032-TENSU-HENSYU-EXT.
            EXIT.
+      *
+      *---(03.04.00) LINE ADD START ------------------------------------
+      *****************************************************************
+      *     一般名・処方名称記載処理
+      *****************************************************************
+       310321-GENERIC-HEN-SEC           SECTION.
+      *
+           EVALUATE    TNSP-IPN-KISAIKBN
+      *        一般名記載
+               WHEN    1
+                   MOVE    GENERIC-GENERICNAME TO  TNS-NAME
+                   MOVE    GENERIC-YUKOKETA    TO  TNS-YUKOKETA
+      *            単位と換算値は附加情報を優先とする
+                   IF      TNSP-IPN-KANZANTANINAME =   SPACE
+                       IF      GENERIC-TANINAME    NOT =   SPACE
+                           MOVE    GENERIC-TANICD      TO  TNS-TANICD
+                           MOVE    GENERIC-TANINAME    TO  TNS-TANINAME
+                           MOVE    GENERIC-KANZANCHI   TO  WRK-KANZANCHI
+                       END-IF
+                   ELSE
+                       MOVE    TNSP-IPN-KANZANTANICD
+                                                   TO  TNS-TANICD
+                       MOVE    TNSP-IPN-KANZANTANINAME
+                                                   TO  TNS-TANINAME
+                       MOVE    TNSP-IPN-KANZANCHI  TO  WRK-KANZANCHI
+                   END-IF
+      *        処方名称記載
+               WHEN    2
+                   MOVE    TNSP-SHONAME        TO  TNS-NAME
+                   MOVE    TNSP-SHOYUKOKETA    TO  TNS-YUKOKETA
+                   IF      TNSP-IPN-KANZANTANINAME NOT =   SPACE
+                       MOVE    TNSP-IPN-KANZANTANICD
+                                                   TO  TNS-TANICD
+                       MOVE    TNSP-IPN-KANZANTANINAME
+                                                   TO  TNS-TANINAME
+                       MOVE    TNSP-IPN-KANZANCHI  TO  WRK-KANZANCHI
+                   END-IF
+           END-EVALUATE
+           .
+       310321-GENERIC-HEN-EXT.
+           EXIT.
+      *---(03.04.00) LINE ADD END   ------------------------------------
       *
       *****************************************************************
       *     名称編集処理
@@ -2458,17 +2554,68 @@
       *****************************************************************
        10011-SURYO-HEN-SEC                  SECTION.
       *
+      *---(03.04.00) LINE DEL START ------------------------------------
+      *    MOVE    SPACE               TO  WRK-SURYO-X
+      *    MOVE    WRK-SURYO-S1        TO  WRK-SURYO-Z1
+      *
+      *    MOVE    ZERO                TO  FLG-SP
+      *    PERFORM VARYING     IDXM   FROM    3  BY  -1
+      *            UNTIL       IDXM    <   1
+      *        IF      WRK-SURYO-S2(IDXM:1) NOT =   ZERO
+      *            MOVE    1               TO  FLG-SP
+      *        END-IF
+      *        IF      FLG-SP          =   1
+      *            MOVE    WRK-SURYO-S2(IDXM:1) TO  WRK-SURYO-Z3(IDXM:1)
+      *        END-IF
+      *    END-PERFORM
+      *
+      *    IF      WRK-SURYO-Z3        NOT =   SPACE
+      *        MOVE    "."                 TO  WRK-SURYO-Z2
+      *    END-IF
+      *
+      *    MOVE    WRK-SURYO-X         TO  WRK-MOJI
+      *    MOVE    9                   TO  WRK-MOJISU
+      *    PERFORM 2009-HENKAN-SEC
+      *    MOVE    WRK-ZENKAKU-G(1:18) TO  WRK-SURYO-N
+      *---(03.04.00) LINE DEL END   ------------------------------------
+      *---(03.04.00) LINE ADD START ------------------------------------
+      *    換算値により数量変更
+           IF      WRK-KANZANCHI       =   ZERO
+               MOVE    1               TO  WRK-KANZANCHI
+           END-IF
+           COMPUTE WRK-SURYO2          =   WRK-KANZANCHI
+                                       *   WRK-SURYO
            MOVE    SPACE               TO  WRK-SURYO-X
-           MOVE    WRK-SURYO-S1        TO  WRK-SURYO-Z1
+           IF      WRK-SURYO2-S2(4:2)  =   ZERO
+      *        小数点３桁まで
+               PERFORM 100111-SURYO-HEN03-SEC
+           ELSE
+      *        小数点５桁
+               PERFORM 100112-SURYO-HEN05-SEC
+           END-IF
+      *---(03.04.00) LINE ADD END   ------------------------------------
+      *
+           .
+       10011-SURYO-HEN-EXT.
+           EXIT.
+      *---(03.04.00) LINE ADD STRT  ------------------------------------
+      *****************************************************************
+      *    小数点３桁まで数量表示用編集処理
+      *****************************************************************
+       100111-SURYO-HEN03-SEC                  SECTION.
+      *
+           MOVE    SPACE               TO  WRK-SURYO-X
+           MOVE    WRK-SURYO2-S1       TO  WRK-SURYO-Z1
       *
            MOVE    ZERO                TO  FLG-SP
-           PERFORM VARYING     IDXM   FROM    3  BY  -1
+           PERFORM VARYING     IDXM    FROM    3  BY  -1
                    UNTIL       IDXM    <   1
-               IF      WRK-SURYO-S2(IDXM:1) NOT =   ZERO
+               IF      WRK-SURYO2-S2(IDXM:1) NOT =   ZERO
                    MOVE    1               TO  FLG-SP
                END-IF
                IF      FLG-SP          =   1
-                   MOVE    WRK-SURYO-S2(IDXM:1) TO  WRK-SURYO-Z3(IDXM:1)
+                   MOVE    WRK-SURYO2-S2(IDXM:1) TO  WRK-SURYO-Z3
+                                                             (IDXM:1)
                END-IF
            END-PERFORM
       *
@@ -2480,10 +2627,45 @@
            MOVE    9                   TO  WRK-MOJISU
            PERFORM 2009-HENKAN-SEC
            MOVE    WRK-ZENKAKU-G(1:18) TO  WRK-SURYO-N
-      *
            .
-       10011-SURYO-HEN-EXT.
+       100111-SURYO-HEN03-EXT.
            EXIT.
+      *****************************************************************
+      *    小数点３桁まで数量表示用編集処理
+      *****************************************************************
+       100112-SURYO-HEN05-SEC                  SECTION.
+      *
+           MOVE    SPACE               TO  WRK-SURYO-X2
+           MOVE    WRK-SURYO2-S1       TO  WRK-SURYO2-Z1
+      *
+           MOVE    ZERO                TO  FLG-SP
+           PERFORM VARYING     IDXM    FROM    5  BY  -1
+                   UNTIL       IDXM    <   1
+               IF      WRK-SURYO2-S2(IDXM:1) NOT =   ZERO
+                   MOVE    1               TO  FLG-SP
+               END-IF
+               IF      FLG-SP          =   1
+                   MOVE    WRK-SURYO2-S2(IDXM:1) TO  WRK-SURYO2-Z3
+                                                             (IDXM:1)
+               END-IF
+           END-PERFORM
+      *
+           IF      WRK-SURYO2-Z3       NOT =   SPACE
+               MOVE    "."                 TO  WRK-SURYO2-Z2
+           END-IF
+      *
+           MOVE    WRK-SURYO-X2        TO  WRK-MOJI
+           MOVE    9                   TO  WRK-MOJISU
+           PERFORM 2009-HENKAN-SEC
+           MOVE    WRK-ZENKAKU-G(1:18) TO  WRK-SURYO-N
+      *    整数が３桁以上の場合、表示なしとする
+           IF      WRK-SURYO2-S1(1:2)  NOT =   ZERO
+               MOVE    SPACE               TO  WRK-SURYO-N
+           END-IF
+           .
+       100112-SURYO-HEN05-EXT.
+           EXIT.
+      *---(03.04.00) LINE ADD END   ------------------------------------
       *****************************************************************
       *    患者コメントから編集する
       *****************************************************************
@@ -2688,6 +2870,9 @@
       *---(01.00.19) LINE ADD END   ------------------------------------
            INITIALIZE                  WRK-MEISAI-AREA
            MOVE    ZERO                TO  FLG-HENSYU
+      *---(03.04.00) LINE ADD START ------------------------------------
+           MOVE    ZERO                TO  FLG-SOURYOHEN
+      *---(03.04.00) LINE ADD END   ------------------------------------
       *
            .
        20031-WKSYOHOU-INIT-EXT.
@@ -2901,6 +3086,9 @@
            MOVE    ZERO                TO  FLG-ZAITAKU
            MOVE    ZERO                TO  WRK-YKZTEN
            MOVE    ZERO                TO  WRK-KIZAITEN
+      *---(03.04.00) LINE ADD START ------------------------------------
+           MOVE    ZERO                TO  FLG-SOURYOHEN
+      *---(03.04.00) LINE ADD END   ------------------------------------
       *
            .
        20032-PRINT-HENSYU-EXT.
@@ -2915,6 +3103,13 @@
                ADD     1                   TO  IDX-S
            END-IF
       *
+      *---(03.04.00) LINE ADD START ------------------------------------
+      *    内服で総量表示の薬剤のみの場合、外用と同様の表示とする
+           IF     (WRK-SRYKBN          =   "21"  )  AND
+                  (FLG-SOURYOHEN       =   1     )
+               MOVE    "23"                TO  WRK-SRYKBN
+           END-IF
+      *---(03.04.00) LINE ADD END   ------------------------------------
       *    最後の行に回数を編集
            EVALUATE    WRK-SRYKBN
                WHEN    "21"
@@ -3026,6 +3221,9 @@
       *---(01.00.19) LINE ADD END   ------------------------------------
            INITIALIZE                  WRK-MEISAI-AREA
            MOVE    ZERO                TO  FLG-HENSYU
+      *---(03.04.00) LINE ADD START ------------------------------------
+           MOVE    ZERO                TO  FLG-SOURYOHEN
+      *---(03.04.00) LINE ADD END   ------------------------------------
       *
            .
        200411-SYOHOU-SPAINIT-EXT.
@@ -3120,6 +3318,13 @@
            IF      WRK-SRYCD (1:1)     =   "6"
                ADD     1                   TO  IDX-S
            END-IF
+      *---(03.04.00) LINE ADD START ------------------------------------
+      *    内服で総量表示の薬剤のみの場合、外用と同様の表示とする
+           IF     (WRK-SRYKBN          =   "21"  )  AND
+                  (FLG-SOURYOHEN       =   1     )
+               MOVE    "23"                TO  WRK-SRYKBN
+           END-IF
+      *---(03.04.00) LINE ADD END   ------------------------------------
       *
            IF      ORCHC19-KBN         =   "A"
       *        最後の行に回数を編集
@@ -3159,6 +3364,9 @@
            MOVE    ZERO                TO  FLG-ZAITAKU
            MOVE    ZERO                TO  WRK-YKZTEN
            MOVE    ZERO                TO  WRK-KIZAITEN
+      *---(03.04.00) LINE ADD START ------------------------------------
+           MOVE    ZERO                TO  FLG-SOURYOHEN
+      *---(03.04.00) LINE ADD END   ------------------------------------
       *
            .
        20043-END-HENSYU-EXT.
@@ -3431,9 +3639,102 @@
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
+      *---(03.04.00) LINE ADD START ------------------------------------
+      *    点数附加情報検索
+           IF     (TNS-SRYCD(1:1)      =   "6" ) AND
+                  (FLG-TENSU           =   ZERO)
+               PERFORM 9101-TENSUPLUS-READ-SEC
+           ELSE
+               INITIALIZE                      TENSUPLUS-REC
+           END-IF
+      *    一般名記載あり
+           IF      TNSP-IPN-KISAIKBN   =   1
+               PERFORM 9102-GENERICNAME-READ-SEC
+           END-IF
+      *---(03.04.00) LINE ADD END   ------------------------------------
+      *
            .
        910-TENSU-READ-EXT.
            EXIT.
+      *---(03.04.00) LINE ADD START ------------------------------------
+      *****************************************************************
+      *    点数マスタ付加情報検索処理
+      *****************************************************************
+       9101-TENSUPLUS-READ-SEC          SECTION.
+      *
+           MOVE    SPACE               TO  TENSUPLUS-REC
+           INITIALIZE                      TENSUPLUS-REC
+           MOVE    TNS-SRYCD           TO  TNSP-SRYCD
+           MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
+           MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD
+      *
+           MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
+           MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  TENSUPLUS-REC
+                   MOVE    ZERO                TO  FLG-TENSUPLUS
+               ELSE
+                   INITIALIZE                  TENSUPLUS-REC
+                   MOVE    1                   TO  FLG-TENSUPLUS
+               END-IF
+           ELSE
+               INITIALIZE                      TENSUPLUS-REC
+               MOVE    1                   TO  FLG-TENSUPLUS
+           END-IF
+           MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           .
+       9101-TENSUPLUS-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    点数マスタ付加情報検索処理
+      *****************************************************************
+       9102-GENERICNAME-READ-SEC          SECTION.
+      *
+           MOVE    SPACE               TO  GENERICNAME-REC
+           INITIALIZE                      GENERICNAME-REC
+           MOVE    TNS-YAKKAKJNCD(1:9) TO  GENERIC-YAKKAKJNCD
+      *
+           MOVE    GENERICNAME-REC     TO  MCPDATA-REC
+           MOVE    "tbl_genericname"   TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_genericname"   TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  GENERICNAME-REC
+                   MOVE    ZERO                TO  FLG-GENERICNAME
+               ELSE
+                   INITIALIZE                  GENERICNAME-REC
+                   MOVE    1                   TO  FLG-GENERICNAME
+               END-IF
+           ELSE
+               INITIALIZE                      GENERICNAME-REC
+               MOVE    1                   TO  FLG-GENERICNAME
+           END-IF
+           MOVE    "tbl_genericname"   TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           .
+       9102-GENERICNAME-READ-EXT.
+           EXIT.
+      *---(03.04.00) LINE ADD END   ------------------------------------
+      *
       *****************************************************************
       *    診療行為マスター読込
       *****************************************************************

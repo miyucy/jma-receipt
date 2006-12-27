@@ -16,18 +16,17 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION              DIVISION.
-       PROGRAM-ID.                 ORCGJID1.
+       PROGRAM-ID.                 ORCGJERR2.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : 会計照会
-      *  コンポーネント名  : 確認画面１（ＪＩＤ１）
+      *  コンポーネント名  : エラーメッセージ（ＥＲＲ２）
       *  管理者            : 
       *  作成日付    作業者        記述
-      *  00/12/01    MCC−多々納   新規作成
+      *  06/12/14    NACL−多々納   新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      * 01.00.01     NACL-多々納  05/11/30  MONFUNC 対応
       *****************************************************************
       *
       *
@@ -45,9 +44,6 @@
       *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    診療行為用共通パラメタ
-           COPY    "J01COMMON-SPA".
-      *
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
@@ -58,7 +54,6 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-      **** COPY    "CPORCMCP.INC".
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -102,17 +97,15 @@
        000-PROC-SEC                SECTION.
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
-           MOVE    SPA-WORK        TO  SPA-J01KYOUTU
       * 
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
       *    画面遷移
-               WHEN     "PUTG"           ALSO   "CLICKED"
-                   PERFORM 200-GMNSENI
+               WHEN      OTHER
+                   PERFORM 210-BACK
            END-EVALUATE.
       *
-           MOVE    SPA-J01KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
       *
            .
@@ -126,35 +119,15 @@
            .
        100-INIT-EXT.
            EXIT.
-      *
-      *****************************************************************
-      *    画面遷移処理
-      *****************************************************************
-       200-GMNSENI                   SECTION.
-      *
-           EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *        戻る
-               WHEN    "CLICKED"       ALSO    "B01"
-                   MOVE    SPACE           TO  SPA-JID1-FLG
-                   PERFORM 210-BACK
-      *     登録
-               WHEN    "CLICKED"       ALSO    "B12"
-                   MOVE    "OK"            TO  SPA-JID1-FLG
-                   PERFORM 210-BACK
-           END-EVALUATE
-      *
-           .
-       200-GMNSENI-EXT.
-           EXIT.
       *****************************************************************
       *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
       *
            MOVE    SPA-MOTOPG          TO  SPA-SAKIPG
-           MOVE    "JID1"              TO  SPA-MOTOPG
+           MOVE    "JERR2"             TO  SPA-MOTOPG
       *
-      *****MOVE    "BACK"              TO  MCP-PUTTYPE
+      **** MOVE    "BACK"              TO  MCP-PUTTYPE
            MOVE    "JOIN"              TO  MCP-PUTTYPE.
            MOVE    SPA-SAKIPG          TO  MCP-WINDOW
       *

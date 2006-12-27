@@ -34,6 +34,7 @@
       * 01.00.10     NACL-多々納  05/06/01  検体検査コメント等追加
       * 01.00.10     NACL-多々納  05/06/10  前回区分等追加
       * 01.00.11     NACL-多々納  06/03/17  処置乳幼児加算追加
+      * 03.04.00     NACL-多々納  06/12/11  薬剤附加情報追加
       ************************************************************
       *
       *01  SPA-K02SCR-REC.
@@ -142,6 +143,12 @@
                            11  SPA-COM-KZMFLG        PIC X(01).
       *                    警告済フラグ２
                            11  SPA-COM-KZMFLG2       PIC X(01).
+      *                    警告済フラグ３（同日併用チェック）
+                           11  SPA-COM-KZMFLG3       PIC X(01).
+      *                    警告済フラグ４（長期日数チェック）
+                           11  SPA-COM-KZMFLG4       PIC X(01).
+      *                    警告済フラグ５（投与量チェック）
+                           11  SPA-COM-KZMFLG5       PIC X(01).
       *                    併用算定済フラグ
       *********************11  SPA-COM-SDOFLG        PIC X(01).
       *                    基本チェック済フラグ
@@ -183,6 +190,12 @@
                        09  SPA-COM-MAE-AUTOKBN   PIC X(01).
       *                同一検査判定コード
                        09  SPA-COM-KENGRP        PIC  X(09).
+      *                後発医薬品有無（１：後発あり）
+                       09  SPA-COM-KOUHATU-FLG   PIC  9(01).
+      *!????
+      *                包括剤
+                       09  SPA-COM-HOUKATU-FLG   PIC  9(01).
+      *!????
       *        診療会計附加項目
                        09  SPA-COM-PLUS-AREA.
       *                手技毎
@@ -319,9 +332,24 @@
                        09  SPA-COM-LASERKBN            PIC  9(01).
       *                極低出生体重児加算区分
                        09  SPA-COM-CHPMESUKSN          PIC  9(01).
+      *                商品名等関連コード
+                       09  SPA-COM-SYOMEIKANREN        PIC  X(09).
       *    点数マスタ付加情報より
       *                採血区分
                        09  SPA-COM-SAIKETUKBN          PIC 9(01).
       *                入力チェック区分
                        09  SPA-COM-INPCHKKBN           PIC 9(01).
+      *    点数マスタ薬剤附加情報より
+      *                内服算定
+                       09  SPA-COM-NAIFUKUKBN          PIC 9(01).
+      *                長期投薬日数
+                       09  SPA-COM-CHOKINISSU          PIC 9(03).
+                       09  SPA-COM-CHOKIERR            PIC 9(01).
+      *                投与量
+                       09  SPA-COM-TOUYOERR            PIC 9(01).
+                       09  SPA-COM-TOUYO-G             OCCURS   10.
+                           11  SPA-COM-TOUYOKGNAGE     PIC X(02).
+                           11  SPA-COM-TOUYOJGNAGE     PIC X(02).
+                           11  SPA-COM-TOUYORYO1       PIC 9(05)V9(05).
+                           11  SPA-COM-TOUYORYO2       PIC 9(05)V9(05).
       * 

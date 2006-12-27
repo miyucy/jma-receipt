@@ -31,4 +31,26 @@
            03  ORCSCSETHEN-SRYCD               PIC  X(09).
       *ÂÐ¾Ý¹Ô
            03  ORCSCSETHEN-IDX                 PIC  9(04).
+      *¶¦ÄÌÊÔ½¸ÍÑ
+           03  ORCSCSETHEN-SC92-AREA.
+      *        ½èÍý
+               05  ORCSCSETHEN-SYORIFLG          PIC 9(01).
+      *        Ç¯Îð 
+               05  ORCSCSETHEN-NENREI.
+                   07  ORCSCSETHEN-NENREI-YY     PIC 9(03).
+                   07  ORCSCSETHEN-NENREI-MM     PIC 9(02).
+                   07  ORCSCSETHEN-NENREI-DD     PIC 9(02).
+      *        £±£µºÐÌ¤ËþºÆ¿Ç²Ê»»ÄêÍ­¤ê¡Ê½é¿Ç¡¦ºÆ¿Ç¤Î¤ß»ÈÍÑ¡Ë
+               05  ORCSCSETHEN-15MIMAN-ARI       PIC  9(01).
+      *        Ï·¿Í¶èÊ¬
+               05  ORCSCSETHEN-ROUJIN            PIC 9(01).
+      *        ºÇ½ª¼õ¿Ç²Ê
+               05  ORCSCSETHEN-LSTSRYKA          PIC  X(02).
+      *        ºÇ½ª¼õ¿Ç²Ê
+               05  ORCSCSETHEN-LSTSRYKAMEI       PIC  X(20).
+      *        ÄûÀµ»þ¤Î¿ÇÎÅ¥³¡¼¥É
+               05  ORCSCSETHEN-TEISEI-AREA.
+                   07  ORCSCSETHEN-TEISEI-OCC      OCCURS   100.
+                       09  ORCSCSETHEN-TEI-SRYCD   PIC X(09).
+                       09  ORCSCSETHEN-TEI-KAISU   PIC 9(03).
       *

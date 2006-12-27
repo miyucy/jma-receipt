@@ -773,6 +773,7 @@
            COPY    "J98.INC".
            COPY    "J99.INC".
            COPY    "JERR.INC".
+           COPY    "JERR2.INC".
            COPY    "JID1.INC".
            COPY    "JID2.INC".
       *
@@ -4019,6 +4020,7 @@
            END-IF
       *    受診履歴が無い時、メッセージ表示
            IF      SPA-RRK-MAX         =   ZERO
+              AND  SPA-GMN-MAX         =   ZERO
                IF      SPA-SRYKA-MAX       =   1
                    MOVE    07              TO  SPA-GMN-CUR
                ELSE
@@ -4178,6 +4180,7 @@
            END-IF
       *    受診履歴が無い時、メッセージ表示
            IF      SPA-RRK-MAX         =   ZERO
+              AND  SPA-GMN-MAX         =   ZERO
                IF      SPA-SRYKA-MAX       =   1
                    MOVE    07              TO  SPA-GMN-CUR
                ELSE
@@ -5714,6 +5717,7 @@
            END-IF
       *
            IF      SPA-RRK-MAX         =   ZERO
+              AND  SPA-GMN-MAX         =   ZERO
                IF      SPA-SRYKA-MAX       =   1
                    MOVE    07              TO  SPA-GMN-CUR
                ELSE
@@ -6318,6 +6322,7 @@
            END-IF
       *
            IF      SPA-RRK-MAX         =   ZERO
+              AND  SPA-GMN-MAX         =   ZERO
                IF      SPA-SRYKA-MAX       =   1
                    MOVE    07              TO  SPA-GMN-CUR
                ELSE
@@ -6721,6 +6726,7 @@
            END-IF
       *    受診履歴が無い時、メッセージ表示
            IF      SPA-RRK-MAX         =   ZERO
+              AND  SPA-GMN-MAX         =   ZERO
                IF      SPA-SRYKA-MAX       =   1
                    MOVE    07              TO  SPA-GMN-CUR
                ELSE
@@ -7898,6 +7904,7 @@
            PERFORM 410181-SRYACCT-HEN-SEC
       *
            IF      SPA-RRK-MAX         =   ZERO
+              AND  SPA-GMN-MAX         =   ZERO
                IF      SPA-SRYKA-MAX       =   1
                    MOVE    07              TO  SPA-GMN-CUR
                ELSE
@@ -8145,6 +8152,7 @@
            PERFORM 410181-SRYACCT-HEN-SEC
       *
            IF      SPA-RRK-MAX         =   ZERO
+              AND  SPA-GMN-MAX         =   ZERO
                IF      SPA-SRYKA-MAX       =   1
                    MOVE    07              TO  SPA-GMN-CUR
                ELSE
@@ -8208,6 +8216,7 @@
            PERFORM 410181-SRYACCT-HEN-SEC
       *
            IF      SPA-RRK-MAX         =   ZERO
+              AND  SPA-GMN-MAX         =   ZERO
                IF      SPA-SRYKA-MAX       =   1
                    MOVE    07              TO  SPA-GMN-CUR
                ELSE
@@ -8264,6 +8273,7 @@
            PERFORM 410181-SRYACCT-HEN-SEC
       *
            IF      SPA-RRK-MAX         =   ZERO
+              AND  SPA-GMN-MAX         =   ZERO
                IF      SPA-SRYKA-MAX       =   1
                    MOVE    07              TO  SPA-GMN-CUR
                ELSE
