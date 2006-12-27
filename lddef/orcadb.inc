@@ -110,4 +110,6 @@ db	{
         tbl_odritem;
         tbl_ryocom;
         tbl_joblog;
+        tbl_tensuplus2;
+        tbl_genericname;
 };

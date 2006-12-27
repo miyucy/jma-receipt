@@ -44,6 +44,8 @@ db	{
 	tbl_byomei;
 	tbl_ptbyomei;
 	tbl_tsyrrk;
+        tbl_tensuplus2;
+        tbl_genericname;
 };
 
 /* #include "orcadb.inc" */
