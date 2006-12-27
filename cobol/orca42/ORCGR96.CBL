@@ -1752,7 +1752,7 @@
                WHEN    "0008"
                    MOVE    "入外区分入力エラー"        TO  SPA-ERRMSG
                WHEN    "0009"
-                   MOVE    "Ｈ１８年１０月以降のみ設定可能です"
+                   MOVE    "平成１８年１０月以降のみ設定可能です"
                                                        TO  SPA-ERRMSG
       *
                WHEN    "0100"
@@ -1764,8 +1764,11 @@
                WHEN    "0103"
                    MOVE    "患者番号入力中です"        TO  SPA-ERRMSG
                WHEN    "0104"
-                   MOVE    "未請求解除データで処理を行って下さい"
-                                                       TO  SPA-ERRMSG
+                   STRING  "登録の上限に達しました。一度解除した"
+                                           DELIMITED   BY  SIZE 
+                           "患者で個別処理を行って下さい"
+                                           DELIMITED   BY  SIZE 
+                                                       INTO   SPA-ERRMSG
       *
                WHEN    "1001"
                    MOVE    "未請求設定ができませんでした"

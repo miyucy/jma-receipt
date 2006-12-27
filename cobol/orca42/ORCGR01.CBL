@@ -1409,8 +1409,9 @@
                MOVE    SS001-NJBI-FLG  TO  QTORS-NJBI-FLG
                IF    ( QTORS-NIHO-FLG  =   ZERO )
                AND   ( QTORS-GIHO-FLG  =   ZERO )
-                   MOVE    1               TO
-                                       SPA-NAI-R01-BTPARA-TSINRYO (IDX)
+      *************MOVE    1               TO
+      *************                    SPA-NAI-R01-BTPARA-TSINRYO (IDX)
+                   CONTINUE
                ELSE
                    EVALUATE    SPA-R01-NYUGAIKBN
                                        ALSO    SPA-R01-RECEKBN
@@ -3509,7 +3510,7 @@
       *
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       SPA-NAI-R01-BTPARA-MAX
-               IF      SPA-NAI-R01-BTPARA-TSINRYO (IDX)   =   1
+               IF      SPA-NAI-R01-BTPARA-TTAISYO (IDX)   =   ZERO
                    MOVE    SPA-NAI-R01-BTPARA-TQTORSUB-AREA (IDX)
                                            TO  QTORSUB-AREA
       *
@@ -4175,7 +4176,7 @@
                WHEN    "0034"
                    MOVE    "前回と処理区分が違います"  TO  SPA-ERRMSG
                WHEN    "0035"
-                   MOVE    "未請求設定のデータです"  TO  SPA-ERRMSG
+                   MOVE    "未請求設定の患者です"    TO  SPA-ERRMSG
                WHEN    "0036"
                    STRING  "該当診療年月は健保準拠の設定ですので"
                                            DELIMITED   BY  SIZE  
