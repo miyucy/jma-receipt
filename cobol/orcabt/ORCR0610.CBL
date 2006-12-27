@@ -2151,7 +2151,8 @@
       *    °õºþ½ç
            IF    ( WRK-PARA-SYOKBN     =   "2" )
            AND   ( WRK-SYOKBN          =   "1" )
-           AND   ( BTPARA-INFO-KBN     =   "01"    OR  "04" )
+           AND   ( BTPARA-INFO-KBN     =   "01"    OR  "04"
+                                                   OR  "05" )
                ADD     1                       TO  WRK-PRTSEQ
                MOVE    WRK-PRTSEQ              TO  WRK-RECE61-PRTSEQ
            END-IF 

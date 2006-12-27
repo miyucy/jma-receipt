@@ -7207,7 +7207,7 @@
            MOVE    "03"            TO  SYUKA-MISEIKYU-FLG
            MOVE    SMCNDATE-YMD    TO  SYUKA-UPYMD
            MOVE    SMCNDATE-HMS    TO  SYUKA-UPHMS
-           MOVE    "recept9"       TO  SYUKA-TERMID
+           MOVE    "recept1"       TO  SYUKA-TERMID
            MOVE    SPACE           TO  SYUKA-OPID
            MOVE    SYUKA-REC       TO  MCPDATA-REC
            MOVE    "DBUPDATE"      TO  MCP-FUNC
