@@ -570,6 +570,9 @@
            INITIALIZE                      SYSKANRI-REC.
            MOVE    SPA-W22-KANRICD-C   TO  SYS-KANRICD.
            MOVE    SPA-SYSYMD          TO  ORC-DBYMD.
+      *    システム管理で有効なデータのみ表示はＫＥＹ２を使用
+      *    MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH.
+      *    MOVE    "SYSKANRI-KEY2"     TO  WRK-DBPATH.
            MOVE    "SYSKANRI-KEY5"     TO  ORC-DBPATH.
            MOVE    "SYSKANRI-KEY5"     TO  WRK-DBPATH.
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC.
