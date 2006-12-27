@@ -972,68 +972,70 @@
            MOVE    ZERO                TO   SPA-GMN-I04-ZENMISYU-NYU
                                             SPA-GMN-I04-ZENMISYU-GAI
                                             SPA-GMN-I04-LBLSKYINF
-           IF    ( SPA-I01-I04-PROCKBN         =   "2" )
-            AND  ( SPA-NAI-I04-SAIKEISANFLG    =   1 )
       *
-               CONTINUE
-           ELSE
-      *        Æþ±¡Ê¬Ì¤¼ý½¸·×
-               INITIALIZE                       SYUNOU-REC
-               MOVE    SPA-HOSPID          TO   SYU-HOSPID
-               MOVE    "1"                 TO   SYU-NYUGAIKBN
-               MOVE    SPA-NAI-I04-PTID    TO   SYU-PTID
-               MOVE    SYUNOU-REC          TO   MCPDATA-REC
-               MOVE    "tbl_syunou"        TO   MCP-TABLE
-               MOVE    "key13"             TO   MCP-PATHNAME
-               PERFORM  910-DBSELECT-SEC
+      *    Æþ±¡Ê¬Ì¤¼ý½¸·×
+           INITIALIZE                       SYUNOU-REC
+           MOVE    SPA-HOSPID          TO   SYU-HOSPID
+           MOVE    "1"                 TO   SYU-NYUGAIKBN
+           MOVE    SPA-NAI-I04-PTID    TO   SYU-PTID
+           MOVE    SYUNOU-REC          TO   MCPDATA-REC
+           MOVE    "tbl_syunou"        TO   MCP-TABLE
+           MOVE    "key13"             TO   MCP-PATHNAME
+           PERFORM  910-DBSELECT-SEC
       *
-               PERFORM   UNTIL  MCP-RC  NOT =  ZERO
+           PERFORM   UNTIL  MCP-RC  NOT =  ZERO
       *
-                   MOVE    MCPDATA-REC     TO  SYUNOU-REC
-                   IF    ( SPA-I01-I04-SKYSTYMD   <= SYU-SKYSTYMD )
-                    AND  ( SPA-I01-I04-SKYEDYMD   >= SYU-SKYEDYMD )
-                    AND  ( SPA-I01-I04-RRKNUM
-                                            = SYU-NYUIN-RRKNUM )
-                       CONTINUE
-                   ELSE
-                       IF  SYU-DENPPRTYMD  <=  SPA-NAI-I04-TAIINYMD
-                           IF SYU-SKYMONEY  >   SYU-NYUKIN-TOTAL
-                              COMPUTE   SPA-GMN-I04-ZENMISYU-NYU   =
-                                        SPA-GMN-I04-ZENMISYU-NYU   +
-                                       (SYU-SKYMONEY   -
-                                        SYU-NYUKIN-TOTAL)
-                           END-IF
+               MOVE    MCPDATA-REC     TO  SYUNOU-REC
+               IF    ( SPA-I01-I04-SKYSTYMD   <= SYU-SKYSTYMD )
+                AND  ( SPA-I01-I04-SKYEDYMD   >= SYU-SKYEDYMD )
+                AND  ( SPA-I01-I04-RRKNUM
+                                        = SYU-NYUIN-RRKNUM )
+                   CONTINUE
+               ELSE
+                   IF  SYU-DENPPRTYMD  <=  SPA-NAI-I04-TAIINYMD
+                       IF SYU-SKYMONEY  >   SYU-NYUKIN-TOTAL
+                          COMPUTE   SPA-GMN-I04-ZENMISYU-NYU   =
+                                    SPA-GMN-I04-ZENMISYU-NYU   +
+                                   (SYU-SKYMONEY   -
+                                    SYU-NYUKIN-TOTAL)
                        END-IF
                    END-IF
-                   MOVE    "tbl_syunou"        TO   MCP-TABLE
-                   MOVE    "key13"             TO   MCP-PATHNAME
-                   PERFORM 910-DBFETCH-SEC
-               END-PERFORM
-      *
+               END-IF
                MOVE    "tbl_syunou"        TO   MCP-TABLE
                MOVE    "key13"             TO   MCP-PATHNAME
-               PERFORM 910-DBCLOSECURSOR-SEC
+               PERFORM 910-DBFETCH-SEC
+           END-PERFORM
       *
-               IF    ( SPA-NAI-I04-SAIKEISANFLG    =   1 )
-                   PERFORM VARYING IDX-SYU FROM    1   BY  1
-                           UNTIL ( IDX-SYU     >    SPA-I0-SYUNOU-CNT )
+           MOVE    "tbl_syunou"        TO   MCP-TABLE
+           MOVE    "key13"             TO   MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
-                       IF    ( SPA-I0-SYUNOU-TTLDAT-FLG (IDX-SYU)
+           DISPLAY "1:SPA-GMN-I04-ZENMISYU-NYU =" 
+                     SPA-GMN-I04-ZENMISYU-NYU
+      *
+           IF    ( SPA-NAI-I04-SAIKEISANFLG    =   1 )
+               PERFORM VARYING IDX-SYU FROM    1   BY  1
+                       UNTIL ( IDX-SYU     >    SPA-I0-SYUNOU-CNT )
+      *
+                   IF    ( SPA-I0-SYUNOU-TTLDAT-FLG (IDX-SYU)
                                            =    ZERO )
-                         AND ( SPA-I0-SYUNOU-UPDFLG     (IDX-SYU)
+                     AND ( SPA-I0-SYUNOU-UPDFLG     (IDX-SYU)
                                            =    ZERO )
       *
-                           MOVE    SPA-I0-SYUNOU-DAT (IDX-SYU)
-                                           TO  SYUNOU-REC
+                       MOVE    SPA-I0-SYUNOU-DAT (IDX-SYU)
+                                       TO  SYUNOU-REC
+               DISPLAY "SYU-SKYMONEY =" SYU-SKYMONEY
+               DISPLAY "SPA-I0-UPD-SKYMONEY (IDX-SYU) ="
+                        SPA-I0-UPD-SKYMONEY (IDX-SYU)
+               DISPLAY "SYU-NYUKIN-TOTAL = " SYU-NYUKIN-TOTAL
       *
-                           COMPUTE SPA-GMN-I04-ZENMISYU-NYU
-                               =   SPA-GMN-I04-ZENMISYU-NYU
-                               + ( SYU-SKYMONEY
-                               -  SPA-I0-UPD-SKYMONEY (IDX-SYU)
-                               -  SYU-NYUKIN-TOTAL )
-                       END-IF
-                   END-PERFORM
-               END-IF
+                       COMPUTE SPA-GMN-I04-ZENMISYU-NYU
+                           =   SPA-GMN-I04-ZENMISYU-NYU
+                           + ( SYU-SKYMONEY
+                           -  SPA-I0-UPD-SKYMONEY (IDX-SYU)
+                           -  SYU-NYUKIN-TOTAL )
+                   END-IF
+               END-PERFORM
            END-IF
       *
       *    ³°ÍèÊ¬Ì¤¼ý½¸·×
