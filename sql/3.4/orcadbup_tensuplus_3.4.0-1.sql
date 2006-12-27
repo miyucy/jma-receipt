@@ -1,125 +1,56 @@
 --                                    --
--- 点数マスタプラス                   --
+-- 点数附加情報テーブルの変更         --
 --                                    --
--- ユーザー設定上限回数の追加         --
---                                    --
+-- 項目の追加                         --
 --   算定履歴区分(SANTEIRRKKBN)       --
 --   月上限回数(JGNCNT)               --
 --   日上限回数(JGNCNT1D)             --
 --   エラー処理(JGNCNTERR)            --
+--   総量編集区分(SOURYOHENKBN)            --
+--   一般名記載区分(IPNKISAIKBN)      --
+--   一般名記載単位(IPNKANZANTANICD)  --
+--   一般名記載単位名(IPNKANZANTANINAME) --
+--   一般名記載換算値(IPNKANZANCHI)   --
 --                                    --
--- Create Date : 2006/03/13           --
+-- Create Date : 2006/12/18           --
 --                                    --
+\set ON_ERROR_STOP
 
--- TBL_TENSUPLUSWK  作成              --
+--    項目追加                        --
+alter table tbl_tensuplus
+   add column SANTEIRRKKBN  numeric(1);
+alter table tbl_tensuplus
+   add column JGNCNT	  numeric(3);
+alter table tbl_tensuplus
+   add column JGNCNT1D	  numeric(3);
+alter table tbl_tensuplus
+   add column JGNCNTERR	  numeric(1);
+alter table tbl_tensuplus
+   add column SOURYOHENKBN	  numeric(1);
+alter table tbl_tensuplus
+   add column IPNKISAIKBN	  numeric(1);
+alter table tbl_tensuplus
+   add column IPNKANZANTANICD	  char(3);
+alter table tbl_tensuplus
+   add column IPNKANZANTANINAME   varchar(24);
+alter table tbl_tensuplus
+   add column IPNKANZANCHI   numeric(10,5);
 
-create table TBL_TENSUPLUSWK (
-SRYCD				char(9)		not null,
-YUKOSTYMD			char(8)		not null,
-YUKOEDYMD			char(8)		not null,
-SHOYUKOKETA			numeric(2),
-SHONAME				varchar(200),
-SAIKETUKBN			numeric(1),
-INPCHKKBN			numeric(1),
-TENPUYAKKBN			char(2),
-ALLSURYOKBN			char(1),
-KANZANTANICD	        	char(3),
-KANZANTANINAME		        varchar(24),
-KANZANCHI			numeric(10,5),
-TERMID   			varchar(16),
-OPID     			varchar(16),
-CREYMD   			char(8),
-UPYMD    			char(8),
-UPHMS				char(6),
-constraint TBL_TENSUPLUSWK_primary_key primary key (SRYCD,YUKOSTYMD,YUKOEDYMD));
+--    ゼロ設定                       --
+alter table tbl_tensuplus
+   alter SANTEIRRKKBN set default 0;
+alter table tbl_tensuplus
+   alter JGNCNT set default 0;
+alter table tbl_tensuplus
+   alter JGNCNT1D set default 0;
+alter table tbl_tensuplus
+   alter JGNCNTERR set default 0;
+alter table tbl_tensuplus
+   alter SOURYOHENKBN set default 0;
+alter table tbl_tensuplus
+   alter IPNKISAIKBN set default 0;
+alter table tbl_tensuplus
+   alter IPNKANZANCHI set default 0;
 
--- TBL_TENSUPLUS → TBL_TENSUPLUSWK   --
-
-insert into TBL_TENSUPLUSWK
-select * from TBL_TENSUPLUS;
-
--- TBL_TENSUPLUS 削除               --
-
-drop table TBL_TENSUPLUS;
-
--- TBL_TENSUPLUS 作成               --
-
-create table TBL_TENSUPLUS (
-SRYCD				char(9)		not null,
-YUKOSTYMD			char(8)		not null,
-YUKOEDYMD			char(8)		not null,
-SHOYUKOKETA			numeric(2),
-SHONAME				varchar(200),
-SAIKETUKBN			numeric(1),
-INPCHKKBN			numeric(1),
-TENPUYAKKBN			char(2),
-ALLSURYOKBN			char(1),
-KANZANTANICD       		char(3),
-KANZANTANINAME  		varchar(24),
-KANZANCHI			numeric(10,5),
-SANTEIRRKKBN			numeric(1),
-JGNCNT				numeric(3),
-JGNCNT1D			numeric(3),
-JGNCNTERR			numeric(1),
-TERMID   			varchar(16),
-OPID     			varchar(16),
-CREYMD   			char(8),
-UPYMD    			char(8),
-UPHMS				char(6),
-constraint TBL_TENSUPLUS_primary_key primary key (SRYCD,YUKOSTYMD,YUKOEDYMD));
-
--- TBL_TENSUPLUSWK → TBL_TENSUPLUS   --
-
-insert into TBL_TENSUPLUS
-(SRYCD,
-YUKOSTYMD,
-YUKOEDYMD,
-SHOYUKOKETA,
-SHONAME,
-SAIKETUKBN,
-INPCHKKBN,
-TENPUYAKKBN,
-ALLSURYOKBN,
-KANZANTANICD,
-KANZANTANINAME,
-KANZANCHI,
-SANTEIRRKKBN,
-JGNCNT,
-JGNCNT1D,
-JGNCNTERR,
-TERMID,
-OPID,
-CREYMD,
-UPYMD,
-UPHMS
-)
-select
-SRYCD,
-YUKOSTYMD,
-YUKOEDYMD,
-SHOYUKOKETA,
-SHONAME,
-SAIKETUKBN,
-INPCHKKBN,
-TENPUYAKKBN,
-ALLSURYOKBN,
-KANZANTANICD,
-KANZANTANINAME,
-KANZANCHI,
-0,
-0,
-0,
-0,
-TERMID,
-OPID,
-CREYMD,   
-UPYMD,
-UPHMS
-from TBL_TENSUPLUSWK;
-
--- TBL_TENSUPLUSWK 削除             --
-
-drop table TBL_TENSUPLUSWK;
-
-vacuum tbl_tensuplus;
+update tbl_tensuplus set SANTEIRRKKBN='0',JGNCNT='000', JGNCNT1D='000' , JGNCNTERR='0', SOURYOHENKBN='0' , IPNKISAIKBN='0' , IPNKANZANCHI='0';
 
