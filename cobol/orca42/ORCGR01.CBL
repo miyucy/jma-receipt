@@ -4168,7 +4168,7 @@
                WHEN    "0031"
                    MOVE    "連携データがありません"  TO  SPA-ERRMSG
                WHEN    "0032"
-                   MOVE    "対象の未設定解除データがありません"
+                   MOVE    "明細書対象の未設定解除データがありません"
                                                      TO  SPA-ERRMSG
                WHEN    "0033"
                    MOVE    "未請求解除データがありません"
