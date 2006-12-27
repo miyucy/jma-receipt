@@ -610,6 +610,9 @@
       *        未請求設定
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 490-SETTEI-MAE-SEC
+      *        入外区分表示切替え処理
+               WHEN    "CLICKED"       ALSO    "B23"
+                   PERFORM 490-NYUGAIKBN-CHANGE-SEC
            END-EVALUATE
       *
            .
@@ -1500,6 +1503,23 @@
            .
       *
        490-SETTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入外区分表示切替処理
+      *****************************************************************
+       490-NYUGAIKBN-CHANGE-SEC          SECTION.
+      *
+           EVALUATE    SPA-GMN-R96-NYUGAIKBN
+               WHEN    "1"
+                   MOVE    "2"         TO  R96-NYUGAIKBN
+               WHEN    "2"
+                   MOVE    "1"         TO  R96-NYUGAIKBN
+           END-EVALUATE
+      *
+           PERFORM 41022-NYUGAIKBN-CHK-SEC
+           .
+       490-HNYUGAIKBN-CHANGE-EXT.
            EXIT.
       *
       *****************************************************************
