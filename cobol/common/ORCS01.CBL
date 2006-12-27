@@ -210,6 +210,7 @@
       *  03.04.01    NACL-ÌçÏÆ    06/11/20  ¹â³Û°ÑÇ¤Ê§¤¤À©ÅÙÂÐ±þ
       *  03.04.02    NACL-ÌçÏÆ    06/11/24  µÜ¾ë¸©ÃÏÊý¸øÈñ£±£°·î²þÀµÂÐ±þ
       *  03.04.03    NACL-ÌçÏÆ    06/12/01  ¼«ÇåÀÕ·òÊÝ½àµòÂÐ±þ
+      *  03.04.04    NACL-ÌçÏÆ    06/12/26  ÅìµþÍýÍÆÅù¡ÜÀº¿À¡¢·ë³ËÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -4014,7 +4015,16 @@
                MOVE   "PTHKNINF-KEY" TO    ORC-DBPATH
                PERFORM  PTHKNINF-READ-SEC
                IF      FLG-PTHKNINF   =     ZERO
-                  IF   PTHKN-HKNJANUM(1:6) = "133033" OR "133280"
+                  IF   PTHKN-HKNJANUM(1:6) = "133033" OR "133280" OR
+                                             "133041" OR "133066" OR
+                                             "133074" OR "133090" OR
+                                             "133116" OR "133132" OR
+                                             "133140" OR "133157" OR
+                                             "133165" OR "133173" OR
+                                             "133181" OR "133199" OR
+                                             "133207" OR "133223" OR
+                                             "133249" OR "133256" OR
+                                             "133272"
                       MOVE    1      TO    FLG-SEISINJYO
                   END-IF
                   IF   PTHKN-HKNJANUM      = "67330753"

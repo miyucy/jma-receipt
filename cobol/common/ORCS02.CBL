@@ -167,6 +167,7 @@
       *  03.04.03    NACL-門脇    06/11/29  入院時生活療養費の公費対象外対応
       *                                     （新潟県地方公費）
       *  03.04.04    NACL-門脇    06/12/01  自賠責健保準拠対応
+      *  03.04.05    NACL-門脇    06/12/26  東京理容等＋結核対応
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -3835,7 +3836,16 @@
                MOVE   "PTHKNINF-KEY" TO    ORC-DBPATH
                PERFORM  PTHKNINF-READ-SEC
                IF      FLG-PTHKNINF   =     ZERO
-                  IF   PTHKN-HKNJANUM(1:6) = "133033" OR "133280"
+                  IF   PTHKN-HKNJANUM(1:6) = "133033" OR "133280" OR
+                                             "133041" OR "133066" OR
+                                             "133074" OR "133090" OR
+                                             "133116" OR "133132" OR
+                                             "133140" OR "133157" OR
+                                             "133165" OR "133173" OR
+                                             "133181" OR "133199" OR
+                                             "133207" OR "133223" OR
+                                             "133249" OR "133256" OR
+                                             "133272"
                       MOVE    1      TO    FLG-SEISINJYO
                   END-IF
                   IF   PTHKN-HKNJANUM      = "67330753"
