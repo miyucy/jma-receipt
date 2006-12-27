@@ -125,10 +125,10 @@ Z04	{
 		};
 		TANICD_COMBO	{
 			TANICD	{
-				value	varchar(14);
+				value	varchar(28);
 			};
 			count	int;
-			item	varchar(14)[90];
+			item	varchar(28)[90];
 		};
 		BUNRUIKBN_COMBO	{
 			BUNRUIKBN{
@@ -146,10 +146,10 @@ Z04	{
 		};
 		KANZANTANICD_COMBO	{
 			KANZANTANICD	{
-				value	varchar(14);
+				value	varchar(28);
 			};
 			count	int;
-			item	varchar(14)[90];
+			item	varchar(28)[90];
 		};
 		KANZANCHI	{
 			value	number(10,5);
@@ -158,6 +158,175 @@ Z04	{
 			value	varchar(9);
 		};
 		CHNGENAME	{
+			value	varchar(100);
+		};
+		CHOKINISSU	{
+			value	number(3);
+		};
+		CHOKIKIGEN	{
+			value	varchar(10);
+		};
+		CHOKIERR	{
+			value	number(1);
+		};
+		KGNAGE01	{
+			value	varchar(2);
+		};
+		JGNAGE01	{
+			value	varchar(2);
+		};
+		TOUYORYO101	{
+			value	number(8,3);
+		};
+		TOUYORYO201	{
+			value	number(8,3);
+		};
+		KGNAGE02	{
+			value	varchar(2);
+		};
+		JGNAGE02	{
+			value	varchar(2);
+		};
+		TOUYORYO102	{
+			value	number(8,3);
+		};
+		TOUYORYO202	{
+			value	number(8,3);
+		};
+		KGNAGE03	{
+			value	varchar(2);
+		};
+		JGNAGE03	{
+			value	varchar(2);
+		};
+		TOUYORYO103	{
+			value	number(8,3);
+		};
+		TOUYORYO203	{
+			value	number(8,3);
+		};
+		KGNAGE04	{
+			value	varchar(2);
+		};
+		JGNAGE04	{
+			value	varchar(2);
+		};
+		TOUYORYO104	{
+			value	number(8,3);
+		};
+		TOUYORYO204	{
+			value	number(8,3);
+		};
+		KGNAGE05	{
+			value	varchar(2);
+		};
+		JGNAGE05	{
+			value	varchar(2);
+		};
+		TOUYORYO105	{
+			value	number(8,3);
+		};
+		TOUYORYO205	{
+			value	number(8,3);
+		};
+		KGNAGE06	{
+			value	varchar(2);
+		};
+		JGNAGE06	{
+			value	varchar(2);
+		};
+		TOUYORYO106	{
+			value	number(8,3);
+		};
+		TOUYORYO206	{
+			value	number(8,3);
+		};
+		KGNAGE07	{
+			value	varchar(2);
+		};
+		JGNAGE07	{
+			value	varchar(2);
+		};
+		TOUYORYO107	{
+			value	number(8,3);
+		};
+		TOUYORYO207	{
+			value	number(8,3);
+		};
+		KGNAGE08	{
+			value	varchar(2);
+		};
+		JGNAGE08	{
+			value	varchar(2);
+		};
+		TOUYORYO108	{
+			value	number(8,3);
+		};
+		TOUYORYO208	{
+			value	number(8,3);
+		};
+		KGNAGE09	{
+			value	varchar(2);
+		};
+		JGNAGE09	{
+			value	varchar(2);
+		};
+		TOUYORYO109	{
+			value	number(8,3);
+		};
+		TOUYORYO209	{
+			value	number(8,3);
+		};
+		KGNAGE10	{
+			value	varchar(2);
+		};
+		JGNAGE10	{
+			value	varchar(2);
+		};
+		TOUYORYO110	{
+			value	number(8,3);
+		};
+		TOUYORYO210	{
+			value	number(8,3);
+		};
+		TOUYOERR	{
+			value	number(1);
+		};
+		SOURYOKBN_COMB	{
+			SOURYOKBN	{
+				value	varchar(14);
+			};
+			count	int;
+			item	varchar(14)[5];
+		};
+		NAIFUKUKBN_COMB	{
+			NAIFUKUKBN	{
+				value	varchar(30);
+			};
+			count	int;
+			item	varchar(30)[5];
+		};
+		IPNKISAIKBN_COMB	{
+			IPNKISAIKBN	{
+				value	varchar(43);
+			};
+			count	int;
+			item	varchar(43)[5];
+		};
+		IPNTANICD_COMB	{
+			IPNTANICD	{
+				value	varchar(28);
+			};
+			count	int;
+			item	varchar(28)[90];
+		};
+		IPNKANZANCHI	{
+			value	number(10,5);
+		};
+		GENERICHEN	{
+			value	varchar(80);
+		};
+		GENERICNAME	{
 			value	varchar(100);
 		};
 	};

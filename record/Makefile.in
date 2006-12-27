@@ -328,6 +328,7 @@ RECORD_files = \
 	W31.rec \
 	Q03.rec \
 	M98.rec \
+	JERR2.rec \
 
 DEF_files = \
 	HC01.def \
@@ -502,6 +503,8 @@ DB_files = \
 	tbl_odritem.db \
 	tbl_ryocom.db \
 	tbl_joblog.db \
+	tbl_tensuplus2.db \
+	tbl_genericname.db \
 
 all:   
 
