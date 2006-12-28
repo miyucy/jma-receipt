@@ -618,7 +618,8 @@
                            END-STRING
                        WHEN    "4"
                            STRING  WRK-NYUGAIKBN  DELIMITED  BY SPACE 
-                                   "¡¡Ì¤ÀÁµá²ò½ü" DELIMITED  BY SIZE
+                                   "¡¡Ì¤ÀÁµá²ò½üÊ¬"
+                                                  DELIMITED  BY SIZE
                                    INTO    SPA-GMN-FILEKBN
                            END-STRING
                    END-EVALUATE
