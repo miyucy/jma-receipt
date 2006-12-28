@@ -684,6 +684,9 @@
            EVALUATE    SPA-R01-NYUGAIKBN
                WHEN    "1"
                    EVALUATE    BTPARA-INFO-KBN
+                       WHEN    "05"
+                           MOVE    SPA-GMN-R01-SYORILST (3)
+                                               TO  SPA-GMN-R01-SYORI-G
                        WHEN    "04"
                            MOVE    SPA-GMN-R01-SYORILST (2)
                                                TO  SPA-GMN-R01-SYORI-G
