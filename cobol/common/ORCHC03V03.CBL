@@ -147,13 +147,12 @@
                05  WRK-FIL             PIC X(09).
                05  WRK-Z7              PIC Z,ZZZ,ZZZ.
            03  WRK-Z72-G.
-      *****    05  WRK-FIL2            PIC X(09).
-      ****     05  WRK-Z72             PIC -,---,---.
                05  WRK-FIL2            PIC X(18).
            03  WRK-Z72                 PIC S9(07).
            03  WRK-Z72-H               PIC Z,ZZZ,ZZZ.
            03  WRK-Z72-HS              REDEFINES   WRK-Z72-H
                                        PIC -,---,---.
+           03  WRK-Z72-H9              PIC Z,ZZZ,ZZ9.
       *    ¼«Èñ½¸·×
            03  WRK-JIHI-REC.
                05  WRK-JIHI            PIC S9(07)   OCCURS 10.
@@ -1056,17 +1055,17 @@
            MOVE    WRK-Z72-G           TO  HC03-CHOSEI
       *    º£²óÀÁµá³Û
            MOVE    WRK-SKYMONEY        TO  WRK-Z72
-           PERFORM 800-HENKAN-SEC
+           PERFORM 810-HENKAN-SEC
            MOVE    WRK-Z72-G           TO  HC03-KONSEIKYU
       *
       *    º£²óÀÁµá³Û¾ÃÈñÀÇ¡ÊºÆ·Ç¡Ë
            MOVE    WRK-SKYMONEY-TAX-SAI    TO  WRK-Z72
-           PERFORM 800-HENKAN-SEC
+           PERFORM 810-HENKAN-SEC
            MOVE    WRK-Z72-G           TO  HC03-SEIKYUZEI
       *
       *    º£²óÆþ¶â³Û
            MOVE    WRK-NYUKIN          TO  WRK-Z72
-           PERFORM 800-HENKAN-SEC
+           PERFORM 810-HENKAN-SEC
            MOVE    WRK-Z72-G           TO  HC03-KONNYUKIN
       *    Á°²óÌ¤¼ý³Û·×»»
       *!!! PERFORM 3101-MISYU-HEN-SEC
@@ -1353,6 +1352,29 @@
            END-IF
            .
        800-HENKAN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    È¾³ÑÁ´³ÑÊÑ´¹½èÍý¡Ê¥¼¥íÉ½¼¨ÍÑ¡Ë
+      *****************************************************************
+       810-HENKAN-SEC             SECTION.
+     *
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "2"                 TO  KANACHK-SYORI
+           IF      WRK-Z72             <   ZERO
+               MOVE    WRK-Z72             TO  WRK-Z72-HS
+               MOVE    WRK-Z72-HS          TO  KANACHK-MAE-INPUT
+           ELSE
+               MOVE    WRK-Z72             TO  WRK-Z72-H9
+               MOVE    WRK-Z72-H9          TO  KANACHK-MAE-INPUT
+           END-IF
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           IF      KANACHK-RC          =   ZERO
+               MOVE    KANACHK-OUT-INPUT(1:18)    TO  WRK-Z72-G
+           END-IF
+           .
+       810-HENKAN-EXT.
            EXIT.
       *
       *****************************************************************
