@@ -125,6 +125,7 @@
            03  WRK-NO              PIC Z(7).
       *
            03  WRK-KINGAKU-Z           PIC ----,---,---.
+           03  WRK-KINGAKU-9           PIC ----,---,--9.
       *
            03  WRK-ZHENSYU-G.
                05  WRK-ZHENSYU12       PIC X(12).
@@ -808,20 +809,20 @@
            MOVE    WRK-ZHENSYU24       TO  HCN03-CHOSEI
       *    ∫£≤Û¿¡µ·≥€
            MOVE    ORCHCN03-SEIKYU (IDX-M)
-                                       TO  WRK-KINGAKU-Z
-           MOVE    WRK-KINGAKU-Z       TO  WRK-ZHENSYU12
+                                       TO  WRK-KINGAKU-9
+           MOVE    WRK-KINGAKU-9       TO  WRK-ZHENSYU12
            PERFORM 800-HENKAN-SEC
            MOVE    WRK-ZHENSYU24       TO  HCN03-KONSEIKYU
       *    ∫£≤Û¿¡µ·≥€æ√»Ò¿«° ∫∆∑«°À
            MOVE    ORCHCN03-SEIKYU-TAX-SAI (IDX-M)
-                                       TO WRK-KINGAKU-Z
-           MOVE    WRK-KINGAKU-Z       TO  WRK-ZHENSYU12
+                                       TO WRK-KINGAKU-9
+           MOVE    WRK-KINGAKU-9       TO  WRK-ZHENSYU12
            PERFORM 800-HENKAN-SEC
            MOVE    WRK-ZHENSYU24       TO  HCN03-KONZEI
       *    ∫£≤Û∆˛∂‚≥€
            MOVE    ORCHCN03-NYUKIN (IDX-M)
-                                       TO  WRK-KINGAKU-Z
-           MOVE    WRK-KINGAKU-Z       TO  WRK-ZHENSYU12
+                                       TO  WRK-KINGAKU-9
+           MOVE    WRK-KINGAKU-9       TO  WRK-ZHENSYU12
            PERFORM 800-HENKAN-SEC
            MOVE    WRK-ZHENSYU24       TO  HCN03-KONNYUKIN
       *
