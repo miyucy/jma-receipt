@@ -71,10 +71,11 @@ path	key2		{
 		FROM tbl_syuka
 			WHERE   HOSPID         =   :HOSPID
 			AND   ( NYUGAIKBN      =   :NYUGAIKBN   OR
-                    NYUGAIKBN      =   '0'        )
+				NYUGAIKBN      =   '0'        )
 			AND     PTID           =   :PTID
 			AND     SRYYM          =   :SRYYM
 			AND     DLT_FLG        <>  '1'
+			AND     RECESYUBETU    <>  'YYYY'
 			ORDER   BY  TEN_KBN,TEISYUTUSAKI,HKNJANUM,HOJOKBN,RECESYUBETU,SRYKA
 		;
 	};
@@ -173,6 +174,8 @@ path	key8		{
 			AND     TEISYUTUSAKI   LIKE :TEISYUTUSAKI
 			AND     PTID           =    :PTID
 			AND     DLT_FLG        <>   '1'
+			AND     RECESYUBETU    <>   '8888'
+			AND     RECESYUBETU    <>   'YYYY'
 			ORDER BY TEN_KBN,TEISYUTUSAKI,HKNJANUM,HOJOKBN,RECESYUBETU,SRYKA
 		;
 	};

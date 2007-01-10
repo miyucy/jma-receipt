@@ -30,6 +30,9 @@
       * Maj/Min/Rev  修正者       日付      内容
       *
       *  03.02.01    NACL-藤原    06/02/20  国保主科対応
+      *
+      *  03.04.01    NACL-藤原    06/12/27  主科設定情報（入院）が２以外
+      *                                     で科が設定できない場合の対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1564,8 +1567,11 @@
                GO      TO      410221-KANREN-CHK-EXT
            END-IF
       *
-           IF      SPA-GMN-PTNUM-TBL-MAX
+      *    システム科がないときは一覧のチェックはしない
+           IF    ( SPA-GMN-PTNUM-TBL-MAX         )
                                        =   ZERO
+           AND   ( SPA-GMN-SRYKA-AUTO
+                                   NOT =   SPACE )
                MOVE    "0101"              TO  SPA-ERRCD
                MOVE    1                   TO  SPA-GMN-CUR
                GO      TO      410221-KANREN-CHK-EXT

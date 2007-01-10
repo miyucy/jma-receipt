@@ -26,6 +26,8 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  03.04.01    NACL-藤原    06/12/27  主科設定情報（入院）が２以外
+      *                                     で科が設定できない場合の対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -591,11 +593,78 @@
                                        TO  SYUKA-HOJOKBN
                MOVE    LNK-SYUACC-IO-RECESYUBETU (IDX)
                                        TO  SYUKA-RECESYUBETU
-               PERFORM VARYING IDY     FROM    1   BY  1
-                       UNTIL   IDY     >       50
-                       OR      LNK-SYUACC-IO-SRYKA (IDX IDY)
-                                       =   SPACE
-                       OR      FLG-END =   1
+      *
+               IF    ( LNK-SYUACC-IO-SRYKA (IDX 1)
+                                               =   SPACE )
+               AND   ( SPA-SYUKA-NYUIN     NOT =   "2"   )
+               AND   ( LNK-SYUACC-I-KBN    NOT =   "03"  )
+                   MOVE    "1"             TO  SYUKA-TEN-KBN
+                   MOVE    SPACE           TO  SYUKA-SRYKA
+                   MOVE    SYUKA-REC       TO  MCPDATA-REC
+                   MOVE    "tbl_syuka"     TO  WRK-MCP-TABLE
+                   MOVE    "key"           TO  WRK-MCP-PATHNAME
+                   PERFORM 900-SYUKA-READ-SEC
+                   IF      FLG-SYUKA       =   1
+                       INITIALIZE                  SYUKA-REC
+                       MOVE    SPA-HOSPID      TO  SYUKA-HOSPID
+                       MOVE    LNK-SYUACC-IO-NYUGAIKBN   (IDX)
+                                               TO  SYUKA-NYUGAIKBN
+                       MOVE    SPA-PTID        TO  SYUKA-PTID
+      *****************EVALUATE    LNK-SYUACC-I-KBN
+      *****************    WHEN    "03"
+      *****************        MOVE    "1"         TO  SYUKA-TEN-KBN
+      *****************    WHEN    "04"
+      *****************        MOVE    "2"         TO  SYUKA-TEN-KBN
+      *****************END-EVALUATE
+                       MOVE    "1"         TO  SYUKA-TEN-KBN
+                       MOVE    LNK-SYUACC-I-SRYYM
+                                               TO  SYUKA-SRYYM
+                       MOVE    LNK-SYUACC-IO-TEISYUTUSAKI(IDX)
+                                               TO  SYUKA-TEISYUTUSAKI
+                       MOVE    LNK-SYUACC-IO-RECESYUBETU (IDX)
+                                               TO  SYUKA-RECESYUBETU
+                       MOVE    LNK-SYUACC-IO-HKNJANUM    (IDX)
+                                               TO  SYUKA-HKNJANUM
+                       MOVE    LNK-SYUACC-IO-HOJOKBN     (IDX)
+                                               TO  SYUKA-HOJOKBN
+                       MOVE    SPACE           TO  SYUKA-SRYKA
+                       MOVE    99999999        TO  SYUKA-TENSU
+                       MOVE    999             TO  SYUKA-KAISU
+                       MOVE    999             TO  SYUKA-NISSU
+                       MOVE    99              TO  SYUKA-EDDAY
+                   END-IF    
+                   MOVE    LNK-SYUACC-IO-HKNNUM   (IDX)
+                                           TO  SYUKA-HKNNUM
+                   MOVE    SPACE           TO  SYUKA-DLT-FLG
+      *
+                   IF      FLG-SYUKA       =   1
+                       MOVE    SMCNDATE-YMD    TO  SYUKA-CREYMD
+                       MOVE    SMCNDATE-YMD    TO  SYUKA-UPYMD
+                       MOVE    SMCNDATE-HMS    TO  SYUKA-UPHMS
+                       MOVE    "DBINSERT"      TO  MCP-FUNC
+                   ELSE
+                       MOVE    SMCNDATE-YMD    TO  SYUKA-UPYMD
+                       MOVE    SMCNDATE-HMS    TO  SYUKA-UPHMS
+                       MOVE    "DBUPDATE"      TO  MCP-FUNC
+                   END-IF 
+                   MOVE    "tbl_syuka"     TO  MCP-TABLE
+                   MOVE    "key"           TO  MCP-PATHNAME
+                   MOVE    SYUKA-REC       TO  MCPDATA-REC  
+                   CALL    "MONFUNC"           USING
+                                               MCPAREA
+                                               MCPDATA-REC
+                   IF      MCP-RC      NOT =   ZERO
+                       MOVE    1               TO  FLG-END
+                       MOVE    9               TO  LNK-SYUACC-RC
+                       DISPLAY "ORCSSYUACC SYUKA KEY=" 
+                                           MCP-FUNC " " SYUKA-KEY
+                   END-IF
+               ELSE
+                 PERFORM VARYING IDY     FROM    1   BY  1
+                         UNTIL   IDY     >       50
+                         OR      LNK-SYUACC-IO-SRYKA (IDX IDY)
+                                         =   SPACE
+                         OR      FLG-END =   1
                    MOVE    LNK-SYUACC-IO-SRYKA (IDX IDY)
                                            TO  SYUKA-SRYKA
                    MOVE    SYUKA-REC       TO  MCPDATA-REC
@@ -668,7 +737,8 @@
                        DISPLAY "ORCSSYUACC SYUKA KEY=" 
                                                MCP-FUNC " " SYUKA-KEY
                    END-IF        
-               END-PERFORM
+                 END-PERFORM
+               END-IF
            END-PERFORM        
       *
       *    取得情報にないテーブルの削除フラグの設定
@@ -718,6 +788,10 @@
                                    =   LNK-SYUACC-IO-HKNJANUM    (IDX) )
                        AND   ( SYUKA-HOJOKBN
                                    =   LNK-SYUACC-IO-HOJOKBN     (IDX) )
+                         IF      SYUKA-SRYKA       =   SPACE  
+                           MOVE    1           TO  FLG-DELETE
+                           MOVE    100         TO  IDX
+                         ELSE  
                            PERFORM VARYING IDY     FROM    1   BY  1
                                    UNTIL   IDY     >       50
                                    OR      LNK-SYUACC-IO-SRYKA (IDX IDY)
@@ -729,6 +803,7 @@
                                    MOVE    100         TO  IDX
                                END-IF
                            END-PERFORM
+                         END-IF
                        END-IF
                    END-PERFORM
       *
