@@ -123,6 +123,8 @@
                "該当データを削除します。よろしいですか？".
            03  T-MESSAGE-055       PIC X(60)   VALUE
                "区分コードは０１から９９の範囲で入力してください".
+           03  T-MESSAGE-056       PIC X(34)   VALUE
+               "室料差額の登録は最大３０件迄です。".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -463,6 +465,12 @@
        420-TUIKA-SEC               SECTION.
       *
            PERFORM 4900-KANRENCHK-SEC
+           IF  SPA-W22-ERRMSG   =   SPACE
+               IF   SPA-W22-ITEM1(30)   NOT =   SPACE
+                    MOVE    T-MESSAGE-056   TO  SPA-W22-ERRMSG
+                    MOVE    2               TO  SPA-W22-CUR
+               END-IF
+           END-IF
            IF  SPA-W22-ERRMSG   =   SPACE
                IF  FLG-ARI   =   1
                    MOVE    T-MESSAGE-014   TO  SPA-W22-ERRMSG
