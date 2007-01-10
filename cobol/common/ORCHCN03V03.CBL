@@ -828,16 +828,16 @@
                MOVE    "³°¡¡Íè¡¡Ì¤¡¡¼ý¡¡³Û"
                                        TO  HCN03-LBL-G-MISYU
                MOVE    "±ß"            TO  HCN03-LBL-G-MISYU-EN
-               MOVE    WRK-GAI-MISYU   TO  WRK-KINGAKU-Z
-               MOVE    WRK-KINGAKU-Z   TO  WRK-ZHENSYU12
+               MOVE    WRK-GAI-MISYU   TO  WRK-KINGAKU-9
+               MOVE    WRK-KINGAKU-9   TO  WRK-ZHENSYU12
                PERFORM 800-HENKAN-SEC
                MOVE    WRK-ZHENSYU24   TO  HCN03-GAI-MISYUKIN
       *
                MOVE    "Æþ¡¡±¡¡¡Ì¤¡¡¼ý¡¡³Û"
                                        TO  HCN03-LBL-N-MISYU
                MOVE    "±ß"            TO  HCN03-LBL-N-MISYU-EN
-               MOVE    WRK-NYU-MISYU   TO  WRK-KINGAKU-Z
-               MOVE    WRK-KINGAKU-Z   TO  WRK-ZHENSYU12
+               MOVE    WRK-NYU-MISYU   TO  WRK-KINGAKU-9
+               MOVE    WRK-KINGAKU-9   TO  WRK-ZHENSYU12
                PERFORM 800-HENKAN-SEC
                MOVE    WRK-ZHENSYU24   TO  HCN03-NYU-MISYUKIN
            END-IF

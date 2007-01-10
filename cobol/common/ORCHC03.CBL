@@ -1064,13 +1064,13 @@
       *!!! PERFORM 3101-MISYU-HEN-SEC
       *****MOVE    ORCHC03-ZENMISYU    TO  WRK-MISYUMONEY
            MOVE    WRK-MISYUMONEY      TO  WRK-Z72
-           PERFORM 800-HENKAN-SEC
+           PERFORM 810-HENKAN-SEC
            MOVE    WRK-Z72-G           TO  HC03-ZENMISYU
       *    ¹ç·×ÀÁµá³Û
            COMPUTE WRK-GOKTEN          =   WRK-SKYMONEY
                                        +   WRK-MISYUMONEY
            MOVE    WRK-GOKTEN          TO  WRK-Z72
-           PERFORM 800-HENKAN-SEC
+           PERFORM 810-HENKAN-SEC
            MOVE    WRK-Z72-G           TO  HC03-GOUKEIGAK
       *
       *    È¯¹Ô¶èÊ¬
