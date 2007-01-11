@@ -1357,7 +1357,8 @@
            MOVE    SPA-NAI-R96-SRYYM   TO  RECE10-SRYYM
            MOVE    SPA-GMN-R96-NYUGAIKBN
                                    TO  RECE10-NYUGAIKBN
-           MOVE    SPA-NAI-R96-PTID    TO  RECE10-PTID
+           MOVE    SPA-NAI-R96-PTID
+                                   TO  RECE10-PTID
            PERFORM 900-SEIKYU-READ-SEC
            IF      FLG-SEIKYU      =   ZERO
                MOVE    "1001"          TO  SPA-RIDCD
@@ -1838,7 +1839,12 @@
            MOVE    SPA-RIDCD            TO  RID1-ID1CODE
            MOVE    WRK-RIDMSG           TO  RID1-ID1MSG
            MOVE    "£Î£Ï"               TO  RID1-B01-LABEL
-           MOVE    "B12"                TO  MCP-WIDGET
+           EVALUATE    SPA-RIDCD
+               WHEN    "1001"
+                   MOVE    "B01"                TO  MCP-WIDGET
+               WHEN    OTHER
+                   MOVE    "B12"                TO  MCP-WIDGET
+           END-EVALUATE
       *
            MOVE    "R96"                TO  SPA-MOTOPG
            MOVE    "RID1"               TO  SPA-SAKIPG
