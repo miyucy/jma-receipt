@@ -752,15 +752,31 @@
                                        SPA-GMN-ENDSRYYMD
                                        SPA-NAI-ENDSRYYMD
       *
-           IF      SPA-GMN-SRYKBN      =   "1"
-               MOVE    SPA-SYSYMDWH    TO  SPA-GMN-STRSRYYMD
-                                           SPA-GMN-ENDSRYYMD
-               MOVE    SPA-SYSYMD      TO  SPA-NAI-STRSRYYMD
-                                           SPA-NAI-ENDSRYYMD
-           ELSE
-               MOVE    SPA-SYSYMDWH(1:3)   TO  SPA-GMN-STRSRYYMD
-               MOVE    SPA-SYSYMD(1:4)     TO  SPA-NAI-STRSRYYMD
-           END-IF
+           EVALUATE    SPA-GMN-SRYKBN
+               WHEN    "1"
+                   MOVE    SPA-SYSYMDWH    TO  SPA-GMN-STRSRYYMD
+                                               SPA-GMN-ENDSRYYMD
+                   MOVE    SPA-SYSYMD      TO  SPA-NAI-STRSRYYMD
+                                               SPA-NAI-ENDSRYYMD
+               WHEN    "2"
+                   MOVE    SPA-SYSYMDWH(1:3)   TO  SPA-GMN-STRSRYYMD
+                   MOVE    SPA-SYSYMD(1:4)     TO  SPA-NAI-STRSRYYMD
+               WHEN    "3"
+                   IF      SPA-SYSYMD(5:4)     <   "0401"
+                       MOVE    SPA-SYSYMD      TO  WRK-SYMD
+                       COMPUTE WRK-SYY     =   WRK-SYY -   1
+      *                MOVE    "0401"      TO  WRK-SYMD
+                       MOVE    WRK-SYMD    TO  WRK-LNKYMD
+                       PERFORM 800-ORCSGDAY-SEC
+                       IF    ( SPA-ERRCD           =   SPACE )
+                           MOVE    WRK-LNKYMD(1:3) TO  SPA-GMN-STRSRYYMD
+                           MOVE    WRK-SYMD(1:4)   TO  SPA-NAI-STRSRYYMD
+                       END-IF
+                   ELSE
+                       MOVE    SPA-SYSYMDWH(1:3)   TO  SPA-GMN-STRSRYYMD
+                       MOVE    SPA-SYSYMD(1:4)     TO  SPA-NAI-STRSRYYMD
+                   END-IF
+           END-EVALUATE
       *
            .
        4002-SRYKBN-SET-EXT.
