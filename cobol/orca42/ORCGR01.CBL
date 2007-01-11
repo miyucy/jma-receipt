@@ -760,7 +760,7 @@
                        MOVE    "JOIN"          TO  MCP-PUTTYPE
                        PERFORM 210-BACK-SYORI-SEC
                    WHEN    "1001"
-      *                未請求解除データで診療なしのデータの更新処理
+      *                未請求解除データが診療なしのみの場合の更新処理
                        PERFORM 4502-KAIJYO-DATA-KOUSIN-SEC
                        IF      SPA-ERRCD       =   SPACE
                            PERFORM 41072-MISEIKYU-DATA-HENSYU-SEC
@@ -4235,7 +4235,7 @@
       *
            EVALUATE    SPA-RIDCD
                WHEN    "1001"
-                   MOVE    "未請求解除を行います"        TO  WRK-RIDMSG
+                   MOVE    "解除データの更新を行います"  TO  WRK-RIDMSG
                WHEN    "1002"
                    MOVE    "個別作成で作表します"        TO  WRK-RIDMSG
                WHEN    "1003"
