@@ -439,6 +439,14 @@
            END-IF
       *
       *
+           IF    ( ORCHCM31-DSPKBN     =   "3" )
+               IF    ( SYU-SYUHKNNUM (1:2) =   "98" )
+                OR   ( SYU-SYUHKNNUM       =   "971" )
+                OR   ( SYU-SYUHKNNUM       =   "973" )
+                   MOVE    ZERO    TO  FLG-TAISYO
+               END-IF
+           END-IF
+      *
            .
        2101-TAISYO-CHK-EXT.
            EXIT.
