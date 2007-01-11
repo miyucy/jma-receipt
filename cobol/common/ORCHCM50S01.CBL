@@ -280,7 +280,9 @@
       *
                        IF    ( HCM34S01-SRYCD (IDX-NACCT IDX-NSRY)
                                        =   CONST-SRYCD-BRMSAGAKU )
-                           MOVE    SYU-SRYYMD  TO  WRK-SRYYMD
+      *
+                           MOVE    SYU-SRYYMD      TO  WRK-SRYYMD
+                           MOVE    SYU-SKYSTYMD    TO  WRK-STSRYYMD
                            MOVE    "1"         TO  WRK-NYUGAIKBN
                            MOVE    HCM34S01-SRYCD (IDX-NACCT IDX-NSRY)
                                                TO  WRK-SRYCD
