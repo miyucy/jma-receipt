@@ -38,6 +38,7 @@
       * 01.00.08     NACL-多々納  05/01/27  酸素追加
       * 01.00.09     NACL-多々納  05/11/22  MONFUNC 対応 他
       * 01.00.11     NACL-多々納  06/06/12  診療科毎の同日初診判定
+      * 03.04.00     NACL-多々納  07/01/11  リハビリ終了日追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -101,6 +102,7 @@
            03  FLG-KYUSEI-CHK        PIC 9(01).
       *
            03  FLG-NENREI            PIC 9(01).
+           03  FLG-TOUJITU            PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -116,6 +118,7 @@
       *
            03  IDXS                PIC 9(04).
            03  IDX-Z               PIC 9(04).
+           03  IDX-Z1              PIC 9(04).
            03  IDX-S               PIC 9(04).
            03  IDX-C               PIC 9(04).
            03  IDX-K               PIC 9(04).
@@ -226,6 +229,7 @@
                 05   WRK-DD             PIC 9(02).
            03   WRK-EDMM           PIC X(02).
            03   WRK-EDDD           PIC X(02).
+           03   WRK-KYUSEI-MSG     PIC X(80).
       *
            03   WRK-RIHA-KBN       PIC X(01).
            03   WRK-RIHA-KBN2      PIC X(01).
@@ -260,11 +264,23 @@
            03  WRK-RIHA-CNT-G.
                05  WRK-RIHA-CNT            PIC 9(03)
                                            OCCURS   31.
-      *    急性発生日
+      *    今回リハビリ発生日
+           03  WRK-KYUSEI-INP-G.
+               05  WRK-KYUSEI-IN-G         OCCURS   7.
+                   07  WRK-KYUSEI-ST       PIC X(01).
+                   07  WRK-KYUSEI-ED       PIC X(01).
+      *    リハビリ発生日
            03  WRK-KYUSEI1-YMD             PIC X(08).
            03  WRK-KYUSEI2-YMD             PIC X(08).
            03  WRK-KYUSEI3-YMD             PIC X(08).
            03  WRK-KYUSEI4-YMD             PIC X(08).
+      *    リハビリ終了日チェック用
+           03  WRK-KYUSEI5-YMD             PIC X(08).
+           03  WRK-KYUSEI5-CHK             PIC X(01).
+           03  WRK-KYUSEI6-YMD             PIC X(08).
+           03  WRK-KYUSEI6-CHK             PIC X(01).
+           03  WRK-KYUSEI7-YMD             PIC X(08).
+           03  WRK-KYUSEI7-CHK             PIC X(01).
       *    通院精神用同日初診
            03  WRK-DOUSYOSIN-AREA.
                05  WRK-DOUSYOSIN-OCC       OCCURS   10.
@@ -389,6 +405,7 @@
                IF      WRK-RIGAKU-INT2     =   SPACE
       *            今回算定回数クリア
                    INITIALIZE  WRK-RIHA-CNT-G
+                   INITIALIZE  WRK-KYUSEI-INP-G
                    MOVE    "1"             TO  WRK-RIGAKU-INT2
                END-IF
            ELSE
@@ -486,18 +503,55 @@
            MOVE    "099800111"         TO  WRK-SRYCD
            PERFORM 10001-KYUSEI-YMD-SEC
            MOVE    WRK-YMD             TO  WRK-KYUSEI1-YMD
+      *    終了日判定
+           IF      WRK-KYUSEI1-YMD NOT =   SPACE
+               MOVE    "099800112"         TO  WRK-SRYCD
+               PERFORM 10001-KYUSEI-YMD-SEC
+               IF      WRK-YMD         NOT =   SPACE
+                   IF      WRK-KYUSEI1-YMD     <   WRK-YMD
+                       MOVE    SPACE           TO  WRK-KYUSEI1-YMD
+                   END-IF
+               END-IF
+           END-IF
       *
            MOVE    "099800121"         TO  WRK-SRYCD
            PERFORM 10001-KYUSEI-YMD-SEC
            MOVE    WRK-YMD             TO  WRK-KYUSEI2-YMD
+           IF      WRK-KYUSEI2-YMD NOT =   SPACE
+               MOVE    "099800122"         TO  WRK-SRYCD
+               PERFORM 10001-KYUSEI-YMD-SEC
+               IF      WRK-YMD         NOT =   SPACE
+                   IF      WRK-KYUSEI2-YMD     <   WRK-YMD
+                       MOVE    SPACE           TO  WRK-KYUSEI2-YMD
+                   END-IF
+               END-IF
+           END-IF
       *
            MOVE    "099800131"         TO  WRK-SRYCD
            PERFORM 10001-KYUSEI-YMD-SEC
            MOVE    WRK-YMD             TO  WRK-KYUSEI3-YMD
+           IF      WRK-KYUSEI3-YMD NOT =   SPACE
+               MOVE    "099800132"         TO  WRK-SRYCD
+               PERFORM 10001-KYUSEI-YMD-SEC
+               IF      WRK-YMD         NOT =   SPACE
+                   IF      WRK-KYUSEI3-YMD     <   WRK-YMD
+                       MOVE    SPACE           TO  WRK-KYUSEI3-YMD
+                   END-IF
+               END-IF
+           END-IF
       *
            MOVE    "099800141"         TO  WRK-SRYCD
            PERFORM 10001-KYUSEI-YMD-SEC
            MOVE    WRK-YMD             TO  WRK-KYUSEI4-YMD
+           IF      WRK-KYUSEI4-YMD NOT =   SPACE
+               MOVE    "099800142"         TO  WRK-SRYCD
+               PERFORM 10001-KYUSEI-YMD-SEC
+               IF      WRK-YMD         NOT =   SPACE
+                   IF      WRK-KYUSEI4-YMD     <   WRK-YMD
+                       MOVE    SPACE           TO  WRK-KYUSEI4-YMD
+                   END-IF
+               END-IF
+           END-IF
       *
       *    外来の時、精神通院
            IF      SPA-NYUGAIKBN       =   "2"
@@ -515,6 +569,19 @@
        10001-KYUSEI-YMD-SEC                SECTION.
       *
            MOVE    WRK-SRYCD           TO  TNS-SRYCD
+      *    訂正時
+           MOVE    ZERO                TO  FLG-TOUJITU
+           IF      LNK-ORCSC-SYORIFLG      =   1
+               PERFORM VARYING     IDZ     FROM    1   BY  1
+                       UNTIL      (IDZ     >   100 )  OR
+                                  (LNK-ORCSC-TEI-SRYCD(IDZ)
+                                           =   SPACE )
+                   IF      LNK-ORCSC-TEI-SRYCD(IDZ)
+                                           =   WRK-SRYCD
+                       MOVE    1           TO  FLG-TOUJITU
+                   END-IF
+               END-PERFORM
+           END-IF
       *    算定履歴検索
            MOVE    SPACE               TO  SANTEI-REC
            INITIALIZE                  SANTEI-REC
@@ -551,6 +618,10 @@
       *            最後の発生日、当日以降は対象外
                    IF      SANTEI-SRYYM        =   SPA-SRYYMD(1:6)
                        MOVE    SPA-SRYYMD(7:2)     TO  IDD2
+      *                訂正分は対象外
+                       IF      FLG-TOUJITU         =   1
+                           COMPUTE IDD2            =   IDD2   -  1
+                       END-IF
                    ELSE
                        MOVE    31                  TO  IDD2
                    END-IF
@@ -577,10 +648,10 @@
            MOVE    "tbl_santei"        TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
-      *
            IF      WRK-YMD(1:6)        =   SPACE
                MOVE    SPACE           TO  WRK-YMD
            END-IF
+      *
            .
        10001-KYUSEI-YMD-EXT.
            EXIT.
@@ -1044,6 +1115,135 @@
                    END-IF
                END-IF
            END-IF
+      *    リハビリ終了日
+           EVALUATE    WRK-COM-INPUTCD(IDX-Z)
+      *        心大血管疾患リハビリテーション
+               WHEN    "099800111"
+                   MOVE    "1"             TO  WRK-KYUSEI-ST (1)
+               WHEN    "099800112"
+                   MOVE    "1"             TO  WRK-KYUSEI-ED (1)
+                   IF     (WRK-KYUSEI1-YMD     =   SPACE  )  AND
+                          (WRK-KYUSEI-ST (1)   =   SPACE  )
+                       MOVE    "8029"          TO  WRK-ERRCD
+                       MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
+                   ELSE
+                       IF     (WRK-KYUSEI1-YMD     =   SPA-SRYYMD) OR
+                              (WRK-KYUSEI-ST (1)   =   "1"    )
+                           MOVE    "8030"      TO  WRK-ERRCD
+                           MOVE    "1"         TO  WRK-COM-CUR(IDX-Z)
+                       END-IF
+                   END-IF
+      *        脳血管疾患リハビリテーション
+               WHEN    "099800121"
+                   MOVE    "1"             TO  WRK-KYUSEI-ST (2)
+               WHEN    "099800122"
+                   IF     (WRK-KYUSEI2-YMD     =   SPACE  )  AND
+                          (WRK-KYUSEI-ST (2)   =   SPACE  )
+                       MOVE    "8031"          TO  WRK-ERRCD
+                       MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
+                   ELSE
+                       IF     (WRK-KYUSEI2-YMD     =   SPA-SRYYMD) OR
+                              (WRK-KYUSEI-ST (2)   =   "1"    )
+                           MOVE    "8032"      TO  WRK-ERRCD
+                           MOVE    "1"         TO  WRK-COM-CUR(IDX-Z)
+                       END-IF
+                   END-IF
+      *        運動器リハビリテーション
+               WHEN    "099800131"
+                   MOVE    "1"             TO  WRK-KYUSEI-ST (3)
+               WHEN    "099800132"
+                   IF     (WRK-KYUSEI3-YMD     =   SPACE  )  AND
+                          (WRK-KYUSEI-ST (3)   =   SPACE  )
+                       MOVE    "8033"          TO  WRK-ERRCD
+                       MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
+                   ELSE
+                       IF     (WRK-KYUSEI3-YMD     =   SPA-SRYYMD) OR
+                              (WRK-KYUSEI-ST (3)   =   "1"    )
+                           MOVE    "8034"      TO  WRK-ERRCD
+                           MOVE    "1"         TO  WRK-COM-CUR(IDX-Z)
+                       END-IF
+                   END-IF
+      *        呼吸器リハビリテーション
+               WHEN    "099800141"
+                   MOVE    "1"             TO  WRK-KYUSEI-ST (4)
+               WHEN    "099800142"
+                   IF     (WRK-KYUSEI4-YMD     =   SPACE  )  AND
+                          (WRK-KYUSEI-ST (4)   =   SPACE  )
+                       MOVE    "8035"          TO  WRK-ERRCD
+                       MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
+                   ELSE
+                       IF     (WRK-KYUSEI4-YMD     =   SPA-SRYYMD) OR
+                              (WRK-KYUSEI-ST (4)   =   "1"    )
+                           MOVE    "8036"      TO  WRK-ERRCD
+                           MOVE    "1"         TO  WRK-COM-CUR(IDX-Z)
+                       END-IF
+                   END-IF
+      *        摂食機能療法終了日
+               WHEN    "099800151"
+                   MOVE    "1"             TO  WRK-KYUSEI-ST (5)
+               WHEN    "099800152"
+                   IF      WRK-KYUSEI5-CHK     =   SPACE
+                       MOVE    "099800151"         TO  WRK-SRYCD
+                       PERFORM 10001-KYUSEI-YMD-SEC
+                       MOVE    WRK-YMD             TO  WRK-KYUSEI5-YMD
+                       MOVE    "1"                 TO  WRK-KYUSEI5-CHK
+                   END-IF
+                   IF     (WRK-KYUSEI5-YMD     =   SPACE  )  AND
+                          (WRK-KYUSEI-ST (5)   =   SPACE  )
+                       MOVE    "8037"          TO  WRK-ERRCD
+                       MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
+                   ELSE
+                       IF     (WRK-KYUSEI5-YMD     =   SPA-SRYYMD) OR
+                              (WRK-KYUSEI-ST (5)   =   "1"    )
+                           MOVE    "8038"      TO  WRK-ERRCD
+                           MOVE    "1"         TO  WRK-COM-CUR(IDX-Z)
+                       END-IF
+                   END-IF
+      *        難病患者リハビリ
+               WHEN    "099800161"
+                   MOVE    "1"             TO  WRK-KYUSEI-ST (6)
+               WHEN    "099800162"
+                   MOVE    "1"             TO  WRK-KYUSEI-ED (6)
+                   IF      WRK-KYUSEI6-CHK     =   SPACE
+                       MOVE    "099800161"         TO  WRK-SRYCD
+                       PERFORM 10001-KYUSEI-YMD-SEC
+                       MOVE    WRK-YMD             TO  WRK-KYUSEI6-YMD
+                       MOVE    "1"                 TO  WRK-KYUSEI6-CHK
+                   END-IF
+                   IF     (WRK-KYUSEI6-YMD     =   SPACE  )  AND
+                          (WRK-KYUSEI-ST (6)   =   SPACE  )
+                       MOVE    "8039"          TO  WRK-ERRCD
+                       MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
+                   ELSE
+                       IF     (WRK-KYUSEI6-YMD     =   SPA-SRYYMD) OR
+                              (WRK-KYUSEI-ST (6)   =   "1"    )
+                           MOVE    "8040"      TO  WRK-ERRCD
+                           MOVE    "1"         TO  WRK-COM-CUR(IDX-Z)
+                       END-IF
+                   END-IF
+      *        障害者リハビリ
+               WHEN    "099800171"
+                   MOVE    "1"             TO  WRK-KYUSEI-ST (7)
+               WHEN    "099800172"
+                   MOVE    "1"             TO  WRK-KYUSEI-ED (7)
+                   IF      WRK-KYUSEI7-CHK     =   SPACE
+                       MOVE    "099800171"         TO  WRK-SRYCD
+                       PERFORM 10001-KYUSEI-YMD-SEC
+                       MOVE    WRK-YMD             TO  WRK-KYUSEI7-YMD
+                       MOVE    "1"                 TO  WRK-KYUSEI7-CHK
+                   END-IF
+                   IF     (WRK-KYUSEI7-YMD     =   SPACE  )  AND
+                          (WRK-KYUSEI-ST (7)   =   SPACE  )
+                       MOVE    "8041"          TO  WRK-ERRCD
+                       MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
+                   ELSE
+                       IF     (WRK-KYUSEI7-YMD     =   SPA-SRYYMD) OR
+                              (WRK-KYUSEI-ST (7)   =   "1"    )
+                           MOVE    "8042"      TO  WRK-ERRCD
+                           MOVE    "1"         TO  WRK-COM-CUR(IDX-Z)
+                       END-IF
+                   END-IF
+           END-EVALUATE
       *
            .
        100121-KYSEI-CHK-EXT.
@@ -1229,6 +1429,7 @@
       *
            MOVE    SPACE           TO  WRK-KYUSEI
            MOVE    SPACE           TO  WRK-KYUSEI-YMD
+           MOVE    SPACE           TO  WRK-KYUSEI-MSG
       *    急性発生日計算処理
            EVALUATE    WRK-RIHA-KBN
                WHEN    "1"
@@ -1256,6 +1457,17 @@
                CALL    "ORCSDAY"           USING   STS-AREA-DAY
                                                    LNK-DAY6-AREA
                MOVE    LNK-DAY6-KOYOMI     TO  WRK-KYUSEI-YMD
+      *        発生日
+               INITIALIZE                      STS-AREA-DAY
+               INITIALIZE                      LNK-DAY2-AREA
+               MOVE    "21"                TO  LNK-DAY2-IRAI
+               MOVE    WRK-KYUSEI-YMD      TO  LNK-DAY2-YMD
+               CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                                   LNK-DAY2-AREA
+               STRING  "算定終了日："      DELIMITED  BY  SIZE
+                       LNK-DAY2-EDTYMD3    DELIMITED  BY  SIZE
+                      INTO                 WRK-KYUSEI-MSG
+               END-STRING
            END-IF
       *
            .
@@ -1970,13 +2182,14 @@
                        WHEN    "4"
                            MOVE    "K834"          TO  SPA-ERRCD
                    END-EVALUATE
-                   IF      SPA-NYUGAIKBN   =   "1"
-                       MOVE    SPACE           TO  LNK-ORCSC-ERRMSG
-                       STRING  IDD             DELIMITED  BY  SIZE
-                               "日"            DELIMITED  BY  SIZE
-                                           INTO    LNK-ORCSC-ERRMSG
-                       END-STRING
-                   END-IF
+      ***********  IF      SPA-NYUGAIKBN   =   "1"
+      *                MOVE    SPACE           TO  LNK-ORCSC-ERRMSG
+      *                STRING  IDD             DELIMITED  BY  SIZE
+      *                        "日"            DELIMITED  BY  SIZE
+      *                                    INTO    LNK-ORCSC-ERRMSG
+      *                END-STRING
+      ************ END-IF
+                   MOVE    WRK-KYUSEI-MSG  TO  LNK-ORCSC-ERRMSG
                    MOVE    "1"             TO  WRK-COM-CUR  (IDX-Z)
                END-IF
            END-IF
@@ -2136,8 +2349,54 @@
       *****************************************************************
        200-ALL-SYORI-SEC                SECTION.
       *
+           PERFORM VARYING     IDX-Z   FROM    1   BY  1
+                   UNTIL      (IDX-Z       >   200     )   OR
+                              (SPA-ERRCD           NOT =   SPACE )  OR
+                              (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
+      *        リハビリ発生日と終了日の判定
+               IF      WRK-COM-INPUTCD(IDX-Z)(1:7) =   "0998001"
+                   PERFORM 2001-RIHACHK-SEC
+               END-IF
+           END-PERFORM
            .
        200-ALL-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    リハビリ発生日と終了日の判定処理
+      *****************************************************************
+       2001-RIHACHK-SEC              SECTION.
+      *
+           COMPUTE IDX-Z1              =   IDX-Z    +   1
+           PERFORM VARYING     IDX-Z2  FROM    IDX-Z1  BY  1
+                   UNTIL      (IDX-Z2      >   200     )   OR
+                              (SPA-ERRCD   NOT =   SPACE )  OR
+                              (WRK-GMN-INPUTCD (IDX-Z2)
+                                               =   SPACE )
+      *        リハビリ発生日と終了日の判定
+               IF      WRK-COM-INPUTCD(IDX-Z)(1:8)
+                                       =   WRK-COM-INPUTCD(IDX-Z2)(1:8)
+                   EVALUATE    WRK-COM-INPUTCD(IDX-Z)(8:1)
+                   WHEN    "1"
+                       MOVE    "8030"          TO  SPA-ERRCD
+                   WHEN    "2"
+                       MOVE    "8032"          TO  SPA-ERRCD
+                   WHEN    "3"
+                       MOVE    "8034"          TO  SPA-ERRCD
+                   WHEN    "4"
+                       MOVE    "8036"          TO  SPA-ERRCD
+                   WHEN    "5"
+                       MOVE    "8038"          TO  SPA-ERRCD
+                   WHEN    "6"
+                       MOVE    "8040"          TO  SPA-ERRCD
+                   WHEN    "7"
+                       MOVE    "8042"          TO  SPA-ERRCD
+                   END-EVALUATE
+                   MOVE    "1"             TO  WRK-COM-CUR (IDX-Z2)
+               END-IF
+           END-PERFORM
+           .
+       2001-RIHACHK-EXT.
            EXIT.
       *
       *****************************************************************

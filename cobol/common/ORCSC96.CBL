@@ -1151,6 +1151,104 @@
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
+               WHEN    "8029"
+                   STRING  "心大血管疾患リハビリテーション開始日が"
+                                               DELIMITED  BY  SIZE
+                       "算定されていません。終了日の入力はできません"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "8030"
+                   STRING  "心大血管疾患リハビリテーション終了日は"
+                                               DELIMITED  BY  SIZE
+                       "開始日と同日に入力できません。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "8031"
+                   STRING  "脳血管疾患リハビリテーション開始日が"
+                                               DELIMITED  BY  SIZE
+                       "算定されていません。終了日の入力はできません"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "8032"
+                   STRING  "脳血管疾患リハビリテーション終了日は"
+                                               DELIMITED  BY  SIZE
+                       "開始日と同日に入力できません。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "8033"
+                   STRING  "運動器リハビリテーション開始日が"
+                                               DELIMITED  BY  SIZE
+                       "算定されていません。終了日の入力はできません"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "8034"
+                   STRING  "運動器リハビリテーション終了日は"
+                                               DELIMITED  BY  SIZE
+                       "開始日と同日に入力できません。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "8035"
+                   STRING  "呼吸器リハビリテーション開始日が"
+                                               DELIMITED  BY  SIZE
+                       "算定されていません。終了日の入力はできません"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "8036"
+                   STRING  "呼吸器リハビリテーション終了日は"
+                                               DELIMITED  BY  SIZE
+                       "開始日と同日に入力できません。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "8037"
+                   STRING  "摂食機能療法開始日が"
+                                               DELIMITED  BY  SIZE
+                       "算定されていません。終了日の入力はできません"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "8038"
+                   STRING  "摂食機能療法終了日は開始日と"
+                                               DELIMITED  BY  SIZE
+                           "同日に入力できません。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "8039"
+                   STRING  "難病患者リハビリテーション開始日が"
+                                               DELIMITED  BY  SIZE
+                       "算定されていません。終了日の入力はできません"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "8040"
+                   STRING  "難病患者リハビリテーション開始日と"
+                                               DELIMITED  BY  SIZE
+                       "終了日は同日に入力できません。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "8041"
+                   STRING  "障害児リハビリテーション開始日が"
+                                               DELIMITED  BY  SIZE
+                       "算定されていません。終了日の入力はできません"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "8042"
+                   STRING  "障害児リハビリテーション終了日は"
+                                               DELIMITED  BY  SIZE
+                       "開始日と同日に入力できません。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
       *投薬附加情報エラー
                WHEN    "0200"
                    STRING  "長期投与日数以上です。"
