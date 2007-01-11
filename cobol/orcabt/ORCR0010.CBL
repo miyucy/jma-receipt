@@ -2413,7 +2413,7 @@
                    WHEN    "03"
                        MOVE    BTPARA-INFO-PARA (1:6)
                                                    TO  WRK-SYUKA-SRYYM
-                   END-EVALUATE
+               END-EVALUATE
                MOVE    PTINF-PTID      TO  WRK-SYUKA-PTID
                PERFORM 800-MISEIKYU-CHECK-SEC
       *
@@ -2471,11 +2471,11 @@
                        MOVE    "key37"             TO  MCP-PATHNAME
                        PERFORM 900-CLOSE-SEC
                    END-IF
-      *
-                   MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
-                   MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
-                   PERFORM 900-PTINF-READ-N-SEC
                END-IF
+      *
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+               PERFORM 900-PTINF-READ-N-SEC
            END-PERFORM
       *
            MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
@@ -2716,8 +2716,6 @@
            MOVE    "2"                 TO  SYUKA-NYUGAIKBN
            MOVE    "YYYY"              TO  SYUKA-RECESYUBETU
            MOVE    SYUKA-REC           TO  MCPDATA-REC
-           MOVE    "tbl_syuka"         TO  WRK-MCP-TABLE
-           MOVE    "key15"             TO  WRK-MCP-PATHNAME
            PERFORM 900-SYUKA-READ-SEC
            .
        800-MISEIKYU-CHECK-EXT.
@@ -3090,14 +3088,14 @@
        900-SYUKA-READ-SEC         SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
-           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           MOVE    "tbl_syuka"         TO  MCP-TABLE
+           MOVE    "key15"             TO  MCP-PATHNAME
            CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
-               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+               MOVE    "tbl_syuka"         TO  MCP-TABLE
+               MOVE    "key15"             TO  MCP-PATHNAME
                MOVE    "DBFETCH"           TO  MCP-FUNC
                CALL    "MONFUNC"           USING
                                                MCPAREA
@@ -3113,8 +3111,8 @@
                MOVE    1                   TO  FLG-SYUKA
            END-IF
       *
-           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
-           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           MOVE    "tbl_syuka"         TO  MCP-TABLE
+           MOVE    "key15"             TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *
            .
