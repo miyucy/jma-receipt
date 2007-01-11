@@ -227,15 +227,19 @@
                                    TO  WRK-JOBTITLE
       *
            WHEN    "HC50"
-               STRING  "自費日別："        DELIMITED   BY  SIZE
-                       PTINF-NAME          DELIMITED   BY  SPACE
-               INTO    WRK-PRTTITLE
-               END-STRING
       *
                IF    ( WRK-PARA-SUMKBN     =   "1" )
+                   STRING  "自費月別："        DELIMITED   BY  SIZE
+                           PTINF-NAME          DELIMITED   BY  SPACE
+                   INTO    WRK-PRTTITLE
+                   END-STRING
                    MOVE    "自費明細内訳書（月別）"
                                    TO  WRK-JOBTITLE
                ELSE
+                   STRING  "自費日別："        DELIMITED   BY  SIZE
+                           PTINF-NAME          DELIMITED   BY  SPACE
+                   INTO    WRK-PRTTITLE
+                   END-STRING
                    MOVE    "自費明細内訳書（日別）"
                                    TO  WRK-JOBTITLE
                END-IF
