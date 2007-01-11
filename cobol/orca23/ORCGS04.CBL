@@ -612,7 +612,7 @@
       *
            MOVE    "1 印字する"            TO  SPA-GMN-DSPLIST(1)
            MOVE    "2 印字しない"          TO  SPA-GMN-DSPLIST(2)
-           MOVE    "3 保険分のみ印字する"  TO  SPA-GMN-DSPLIST(3)
+           MOVE    "3 医保分のみ印字する"  TO  SPA-GMN-DSPLIST(3)
       *
            MOVE    3               TO  SPA-GMN-DSPLIST-MAX
       *
