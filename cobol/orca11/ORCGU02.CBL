@@ -947,6 +947,8 @@
                        MOVE    SPTID-PTNUM     TO  SPA-GMN-TPTNUM(IDX)
       *                最終受診日セット
                        PERFORM 31019-JYURRK-HEN-SEC
+      *                年齢計算
+                       PERFORM 31020-NENREI-KEI-SEC
                    END-IF
                END-IF 
       *
@@ -1114,6 +1116,32 @@
       *
            .
        31020-SRYKARRK-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    受付一覧年齢計算処理
+      *****************************************************************
+       31020-NENREI-KEI-SEC            SECTION.
+      *
+           INITIALIZE                  ORCSAGECHKAREA
+           MOVE    SPA-HOSPID          TO  AGECHK-HOSPID
+           MOVE    SPA-GMN-TPTID (IDX) TO  AGECHK-PTID
+           MOVE    SPA-SYSYMD          TO  AGECHK-SRYYMD
+           MOVE    SPACE               TO  AGECHK-BIRTHDAY
+           MOVE    "2"                 TO  AGECHK-NYUGAIKBN
+           CALL    "ORCSAGECHK"        USING
+                                       ORCSAGECHKAREA
+      *    画面表示用
+           MOVE    SPACE               TO  WRK-NENREI-G
+           IF      AGECHK-NENREI2-YY   =   ZERO
+               MOVE    AGECHK-NENREI2-MM   TO  WRK-NENREI-ZN
+               MOVE    "ヶ月"              TO  WRK-NENREI-MEIN
+           ELSE
+               MOVE    AGECHK-NENREI2-YY   TO  WRK-NENREI-Z
+               MOVE    "才"                TO  WRK-NENREI-MEI
+           END-IF
+           MOVE    WRK-NENREI-G        TO  SPA-GMN-TNENREI (IDX)
+           .
+       31020-NENREI-KEI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4796,6 +4824,7 @@
                END-IF
                MOVE    SPA-GMN-TPTNUM     (IDX) TO  U02-ULPTNUM   (IDX)
                MOVE    SPA-GMN-TNAME      (IDX) TO  U02-ULNAME    (IDX)
+               MOVE    SPA-GMN-TNENREI    (IDX) TO  U02-ULNENREI  (IDX)
                MOVE    SPA-GMN-TSRYKA-G   (IDX) TO  U02-ULSRYKA   (IDX)
                MOVE    SPA-GMN-TDRCD-G    (IDX) TO  U02-ULDRNAME  (IDX)
                MOVE    SPA-GMN-TSRYNAIYOCD-G(IDX)

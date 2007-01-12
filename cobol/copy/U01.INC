@@ -33,6 +33,7 @@
                     07  U01-SI-NO     PIC X(4).
                     07  U01-SI-PTNUM  PIC X(20).
                     07  U01-SI-NAME   PIC X(50).
+                    07  U01-SI-NENREI PIC X(06).
                     07  U01-SI-NICKNAME  PIC X(50).
                     07  U01-SI-CONDITION  PIC X(6).
                     07  U01-SI-SRYKAMEI  PIC X(6).
@@ -52,6 +53,7 @@
                     07  U01-SZ-NO     PIC X(4).
                     07  U01-SZ-PTNUM  PIC X(20).
                     07  U01-SZ-NAME   PIC X(50).
+                    07  U01-SZ-NENREI PIC X(06).
                     07  U01-SZ-NICKNAME  PIC X(50).
                     07  U01-SZ-CONDITION  PIC X(6).
                     07  U01-SZ-SRYKAMEI  PIC X(6).

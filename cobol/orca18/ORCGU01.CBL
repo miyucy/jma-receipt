@@ -35,6 +35,7 @@
       *  01.01.05    NACL-多々納  03/06/27  状態編集追加
       *  01.01.06    NACL-多々納  05/12/07  送受信フラグ追加
       *                                     MONFUNC対応
+      *  03.04.00    NACL−多々納 07/01/12  受付一覧年齢追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -66,6 +67,7 @@
                            13  SPA-GMN-PTNUM       PIC X(20).
                            13  SPA-GMN-PTID        PIC 9(10).
                            13  SPA-GMN-NAME        PIC X(50).
+                           13  SPA-GMN-NENREI      PIC X(06).
                            13  SPA-GMN-NICKNAME    PIC X(50).
                            13  SPA-GMN-CONDITION   PIC X(06).
                            13  SPA-GMN-SRYKAMEI    PIC X(06).
@@ -161,6 +163,14 @@
            03  WRK-UKETIME         PIC X(10).
       *    確認メッセージ
            03  WRK-U1IDMSG         PIC X(80).
+      *   年齢表示
+       01  WRK-NENREI-G.
+           03  WRK-NENREI-Z        PIC ZZ9.
+           03  WRK-NENREI-MEI      PIC X(02).
+           03  WRK-NENREI-B        PIC X(01).
+       01  WRK-NENREI-GR           REDEFINES   WRK-NENREI-G.
+           03  WRK-NENREI-ZN       PIC Z9.
+           03  WRK-NENREI-MEIN     PIC X(04).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMD.
@@ -274,6 +284,9 @@
       *
       *    患者番号変換
            COPY  "CPORCSPTID.INC".
+      *
+      *    保険年齢・負担割合算定サブ
+           COPY    "CPORCSAGECHK.INC".
       *
            COPY    "MCPDATA.INC".
       **** COPY    "CPORCMCP.INC".
@@ -1049,6 +1062,7 @@
       *
                MOVE    SPA-GMN-PTNUM (IDX IDY)  TO  U01-SI-PTNUM(IDY)
                MOVE    SPA-GMN-NAME  (IDX IDY)  TO  U01-SI-NAME (IDY)
+               MOVE    SPA-GMN-NENREI(IDX IDY)  TO  U01-SI-NENREI(IDY)
                MOVE    SPA-GMN-NICKNAME (IDX IDY)
                                            TO  U01-SI-NICKNAME(IDY)
                MOVE    SPA-GMN-CONDITION (IDX IDY)
@@ -1089,6 +1103,7 @@
       *
                MOVE    SPA-GMN-PTNUM (IDX IDY)  TO  U01-SZ-PTNUM(IDY)
                MOVE    SPA-GMN-NAME  (IDX IDY)  TO  U01-SZ-NAME (IDY)
+               MOVE    SPA-GMN-NENREI(IDX IDY)  TO  U01-SZ-NENREI(IDY)
                MOVE    SPA-GMN-NICKNAME (IDX IDY)
                                            TO  U01-SZ-NICKNAME(IDY)
       *
@@ -1362,6 +1377,8 @@
                                                              (IDX IDX2)
                    MOVE    PTINF-NICKNAME      TO  SPA-GMN-NICKNAME
                                                              (IDX IDX2)
+      *            年齢
+                   PERFORM 50032-SPA-NENREI-SEC
       *            状態１
                    PERFORM 50030-SPA-CONDITION-SEC
                END-IF
@@ -1590,6 +1607,33 @@
       *
            .
        500311-HKNCOMBIMEI-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    年齢計算処理
+      *****************************************************************
+       50032-SPA-NENREI-SEC             SECTION.
+      *
+           INITIALIZE                  ORCSAGECHKAREA
+           MOVE    SPA-HOSPID          TO  AGECHK-HOSPID
+           MOVE    PTINF-PTID          TO  AGECHK-PTID
+           MOVE    SPA-SYSYMD          TO  AGECHK-SRYYMD
+           MOVE    PTINF-BIRTHDAY      TO  AGECHK-BIRTHDAY
+           MOVE    "2"                 TO  AGECHK-NYUGAIKBN
+           CALL    "ORCSAGECHK"        USING
+                                       ORCSAGECHKAREA
+      *    画面表示用
+           MOVE    SPACE               TO  WRK-NENREI-G
+           IF      AGECHK-NENREI2-YY   =   ZERO
+               MOVE    AGECHK-NENREI2-MM   TO  WRK-NENREI-ZN
+               MOVE    "ヶ月"              TO  WRK-NENREI-MEIN
+           ELSE
+               MOVE    AGECHK-NENREI2-YY   TO  WRK-NENREI-Z
+               MOVE    "才"                TO  WRK-NENREI-MEI
+           END-IF
+           MOVE    WRK-NENREI-G        TO  SPA-GMN-NENREI(IDX IDX2)
+      *
+           .
+       50032-SPA-NENREI-EXT.
            EXIT.
       *
       *****************************************************************

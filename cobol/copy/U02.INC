@@ -95,6 +95,7 @@
                     07  U02-ULUKETUKETIME PIC X(6).
                     07  U02-ULPTNUM       PIC X(20).
                     07  U02-ULNAME        PIC X(50).
+                    07  U02-ULNENREI      PIC X(06).
                     07  U02-ULSRYKA       PIC X(10).
                     07  U02-ULDRNAME      PIC X(29).
                     07  U02-ULSRYNAIYO    PIC X(20).
