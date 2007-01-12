@@ -252,16 +252,36 @@
       *    受診履歴
        01  JYURRK-REC.
            COPY    "CPJYURRK.INC".
-      *    受診履歴
+      *
       *    保険組合せ
        01  HZN-HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC"  REPLACING
                                      //COMB-// BY //HZN-COMB-//.
+      *    保険マスタ
+       01  HZN-PTHKNINF-REC.
+           COPY    "CPPTHKNINF.INC"  REPLACING
+                                     //PTHKN-// BY //HZN-PTHKN-//.
+      *    公費マスタ
+       01  HZN-PTKOHINF-REC.
+           COPY    "CPPTKOHINF.INC"  REPLACING
+                                     //PTKOH-// BY //HZN-PTKOH-//.
+      *    低所得
+       01  HZN-TSYRRK-REC.
+           COPY    "CPTSYRRK.INC"    REPLACING
+                                     //TSYRRK-// BY //HZN-TSYRRK-//.
+      *
+      *    年金
+       01  HZN-TNKRRK-REC.
+           COPY    "CPTNKRRK.INC"     REPLACING
+                                     //TNKRRK-// BY //HZN-TNKRRK-//.
+      *    患者労災保険情報
+       01  HZN-PTRSIINF-REC.
+           COPY    "CPPTRSIINF.INC"  REPLACING
+                                     //PTRSI-// BY //HZN-PTRSI-//.
       *
       *    患者病名
        01  PTBYOMEI-REC.
            COPY    "CPPTBYOMEI.INC".
-      *
       *
       *
       *****************************************************************
@@ -636,6 +656,8 @@
                END-IF
            ELSE
       *        更新情報
+               MOVE    MCPDATA-REC         TO  HZN-PTHKNINF-REC
+               MOVE    HZN-PTHKN-CREYMD    TO  PTHKN-CREYMD
                MOVE    SMCNDATE-YMD        TO  PTHKN-UPYMD
                MOVE    SMCNDATE-HMS        TO  PTHKN-UPHMS
       *
@@ -688,6 +710,8 @@
                END-IF
            ELSE
       *        更新情報
+               MOVE    MCPDATA-REC         TO  HZN-PTKOHINF-REC
+               MOVE    HZN-PTKOH-CREYMD    TO  PTKOH-CREYMD
                MOVE    SMCNDATE-YMD        TO  PTKOH-UPYMD
                MOVE    SMCNDATE-HMS        TO  PTKOH-UPHMS
       *
@@ -1043,6 +1067,7 @@
                END-IF
            ELSE
       *
+               MOVE    HZN-COMB-CREYMD     TO  COMB-CREYMD
                MOVE    SMCNDATE-YMD        TO  COMB-UPYMD
                MOVE    SMCNDATE-HMS        TO  COMB-UPHMS
       *
@@ -1396,6 +1421,8 @@
       *    変更
            WHEN    ( TSYRRK-NINSTYMD-O     NOT =   SPACE )
       *
+               MOVE    MCPDATA-REC         TO  HZN-TSYRRK-REC
+               MOVE    HZN-TSYRRK-CREYMD   TO  TSYRRK-CREYMD
                MOVE    SMCNDATE-YMD        TO  TSYRRK-UPYMD
                MOVE    SMCNDATE-HMS        TO  TSYRRK-UPHMS
       *
@@ -1461,6 +1488,8 @@
       *    変更
            WHEN    ( TNKRRK-STYMD-O    NOT =   SPACE )
       *
+               MOVE    MCPDATA-REC         TO  HZN-TNKRRK-REC
+               MOVE    HZN-TNKRRK-CREYMD   TO  TNKRRK-CREYMD
                MOVE    SMCNDATE-YMD        TO  TNKRRK-UPYMD
                MOVE    SMCNDATE-HMS        TO  TNKRRK-UPHMS
       *
@@ -1532,6 +1561,8 @@
                END-IF
            ELSE
       *
+               MOVE    MCPDATA-REC         TO  HZN-PTRSIINF-REC
+               MOVE    HZN-PTRSI-CREYMD    TO  PTRSI-CREYMD
                MOVE    SMCNDATE-YMD        TO  PTRSI-UPYMD
                MOVE    SMCNDATE-HMS        TO  PTRSI-UPHMS
       *
