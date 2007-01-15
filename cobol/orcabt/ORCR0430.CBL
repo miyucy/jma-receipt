@@ -78,6 +78,7 @@
       *  03.03.01    NACL-門脇    06/11/10  往診のコメント自動記載条件修正
       *  03.04.01    NACL-門脇    06/12/01  自賠責健保準拠対応
       *  03.04.02    NACL-門脇    07/01/12  リハビリ発症終了日対応
+      *  03.04.03    NACL-門脇    07/01/15  リハビリ手術日・急性憎悪日記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -283,6 +284,8 @@
            03  FLG-RIHA            PIC 9(01).
            03  FLG-TENSU           PIC 9(01).
            03  FLG-OSIN-HENSYU     PIC 9(01).
+           03  FLG-COMOKIKAE       PIC 9(01).
+           03  FLG-COMOKIKAE2      PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -1000,6 +1003,7 @@
            IF   RECE41-SRYYM      >=    "200604"
                PERFORM   2001-HASSYO-HANTEI-SEC
            ELSE
+               MOVE      ZERO            TO   FLG-COMOKIKAE
                MOVE      CONS-KYUSEI     TO   WRK-SRYCD
                PERFORM   2001-KYUSEIHASSYO-HANTEI-SEC
            END-IF
@@ -1902,47 +1906,55 @@
        2001-HASSYO-HANTEI-SEC          SECTION.
       *
            IF   TBL-HASSYO-KAITATU-COMMENT   =  1
+                MOVE      ZERO             TO   FLG-COMOKIKAE
                 MOVE      CONS-KYUSEI      TO   WRK-SRYCD
                 PERFORM   2001-KYUSEIHASSYO-HANTEI-SEC
            END-IF
       ***
            IF   TBL-HASSYO-SINDAI-COMMENT    =  1
+                MOVE      ZERO             TO   FLG-COMOKIKAE
                 MOVE      CONS-SINDAI      TO   WRK-SRYCD
                 MOVE      CONS-SINDAI-E    TO   WRK-SRYCD2
                 PERFORM   20011-RIHABIRIHASSYO-HANTEI-SEC
            END-IF
       ***
            IF   TBL-HASSYO-KOKYUKI-COMMENT   =  1
+                MOVE      ZERO             TO   FLG-COMOKIKAE
                 MOVE      CONS-KOKYUKI     TO   WRK-SRYCD
                 MOVE      CONS-KOKYUKI-E   TO   WRK-SRYCD2
                 PERFORM   20011-RIHABIRIHASSYO-HANTEI-SEC
            END-IF
       ***
            IF   TBL-HASSYO-NOUKE-COMMENT     =  1
+                MOVE      1                TO   FLG-COMOKIKAE
                 MOVE      CONS-NOUKE       TO   WRK-SRYCD
                 MOVE      CONS-NOUKE-E     TO   WRK-SRYCD2
                 PERFORM   20011-RIHABIRIHASSYO-HANTEI-SEC
            END-IF
       ***
            IF   TBL-HASSYO-UNDOKI-COMMENT    =  1
+                MOVE      1                TO   FLG-COMOKIKAE
                 MOVE      CONS-UNDOKI      TO   WRK-SRYCD
                 MOVE      CONS-UNDOKI-E    TO   WRK-SRYCD2
                 PERFORM   20011-RIHABIRIHASSYO-HANTEI-SEC
            END-IF
       ***
            IF   TBL-HASSYO-NANBYO-COMMENT    =  1
+                MOVE      1                TO   FLG-COMOKIKAE
                 MOVE      CONS-NANBYO      TO   WRK-SRYCD
                 MOVE      CONS-NANBYO-E    TO   WRK-SRYCD2
                 PERFORM   20011-RIHABIRIHASSYO-HANTEI-SEC
            END-IF
       ***
            IF   TBL-HASSYO-SYOGAI-COMMENT    =  1
+                MOVE      ZERO             TO   FLG-COMOKIKAE
                 MOVE      CONS-SYOGAI      TO   WRK-SRYCD
                 MOVE      CONS-SYOGAI-E    TO   WRK-SRYCD2
                 PERFORM   20011-RIHABIRIHASSYO-HANTEI-SEC
            END-IF
       ***
            IF   TBL-HASSYO-SESSYOKU-COMMENT  =  1
+                MOVE      ZERO             TO   FLG-COMOKIKAE
                 MOVE      CONS-SESSYOKU    TO   WRK-SRYCD
                 MOVE      CONS-SESSYOKU-E  TO   WRK-SRYCD2
                 PERFORM   20011-RIHABIRIHASSYO-HANTEI-SEC
@@ -2051,6 +2063,7 @@
            MOVE    SPACE                 TO  WRK-KYUSEI-NYUGAIKBN
            MOVE    SPACE                 TO  WRK-KYUSEI-SRYKA
            MOVE    ZERO                  TO  WRK-KYUSEI-ZAINUM
+           MOVE    ZERO                  TO  FLG-COMOKIKAE2
       *
            MOVE    ZERO                  TO  IDZ
            INITIALIZE                        WRK-FREE-AREA
@@ -2195,6 +2208,24 @@
                              MOVE     1     TO      IDX13
                            END-IF
                          END-PERFORM
+                       END-IF
+                       IF   FLG-COMOKIKAE  =   1
+                          EVALUATE  SRY-SRYCD(IDX12)
+                            WHEN     "840000042"
+                              IF   FLG-COMOKIKAE2 = ZERO
+                                 MOVE    1    TO  FLG-COMOKIKAE2
+                                 MOVE  SPACE  TO  WK-FREE-NAME(IDZ)
+                                 MOVE  ZERO   TO  WK-FREE-YUKOKETA(IDZ)
+                                 COMPUTE  IDZ  =  IDZ - 1
+                              END-IF
+                            WHEN     "840000101"
+                              IF   FLG-COMOKIKAE2 = ZERO
+                                 MOVE    2    TO  FLG-COMOKIKAE2
+                                 MOVE  SPACE  TO  WK-FREE-NAME(IDZ)
+                                 MOVE  ZERO   TO  WK-FREE-YUKOKETA(IDZ)
+                                 COMPUTE  IDZ  =  IDZ - 1
+                              END-IF
+                          END-EVALUATE
                        END-IF
                       END-IF
                    END-PERFORM
@@ -2364,15 +2395,38 @@
                     MOVE    "1"  TO  WRK-OKIKAEFLG
                END-IF
              WHEN       CONS-NOUKE
-               MOVE    18   TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
-               MOVE    "脳血管疾患等リハ：発症　　　月　　日"
-                            TO  WRK-RECE45XX-NAME(IDX-RECE45 1)
-               MOVE    WRK-KYUSEIYMD(5:2)   TO  DAY-IDX2
-               MOVE    TBL-DAY(DAY-IDX2)
-                            TO  WRK-RECE45XX-NAME(IDX-RECE45 1)(25:4)
-               MOVE    WRK-KYUSEIYMD(7:2)   TO  DAY-IDX2
-               MOVE    TBL-DAY(DAY-IDX2)
-                            TO  WRK-RECE45XX-NAME(IDX-RECE45 1)(31:4)
+               EVALUATE   FLG-COMOKIKAE2
+                 WHEN       0
+                   MOVE    18  TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
+                   MOVE    "脳血管疾患等リハ：発症　　　月　　日"
+                               TO  WRK-RECE45XX-NAME(IDX-RECE45 1)
+                   MOVE    WRK-KYUSEIYMD(5:2)   TO  DAY-IDX2
+                   MOVE    TBL-DAY(DAY-IDX2)
+                               TO  WRK-RECE45XX-NAME(IDX-RECE45 1)(25:4)
+                   MOVE    WRK-KYUSEIYMD(7:2)   TO  DAY-IDX2
+                   MOVE    TBL-DAY(DAY-IDX2)
+                               TO  WRK-RECE45XX-NAME(IDX-RECE45 1)(31:4)
+                 WHEN       1
+                   MOVE    18  TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
+                   MOVE    "脳血管疾患等リハ：手術　　　月　　日"
+                               TO  WRK-RECE45XX-NAME(IDX-RECE45 1)
+                   MOVE    WRK-KYUSEIYMD(5:2)   TO  DAY-IDX2
+                   MOVE    TBL-DAY(DAY-IDX2)
+                               TO  WRK-RECE45XX-NAME(IDX-RECE45 1)(25:4)
+                   MOVE    WRK-KYUSEIYMD(7:2)   TO  DAY-IDX2
+                   MOVE    TBL-DAY(DAY-IDX2)
+                               TO  WRK-RECE45XX-NAME(IDX-RECE45 1)(31:4)
+                 WHEN       2
+                   MOVE    20  TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
+                   MOVE    "脳血管疾患等リハ：急性憎悪　　　月　　日"
+                               TO  WRK-RECE45XX-NAME(IDX-RECE45 1)
+                   MOVE    WRK-KYUSEIYMD(5:2)   TO  DAY-IDX2
+                   MOVE    TBL-DAY(DAY-IDX2)
+                               TO  WRK-RECE45XX-NAME(IDX-RECE45 1)(29:4)
+                   MOVE    WRK-KYUSEIYMD(7:2)   TO  DAY-IDX2
+                   MOVE    TBL-DAY(DAY-IDX2)
+                               TO  WRK-RECE45XX-NAME(IDX-RECE45 1)(35:4)
+               END-EVALUATE
                IF      FLG-RIHA      =  1
                  MOVE    99998401      TO   WRK-ZAINUM
                ELSE
@@ -2386,15 +2440,38 @@
                     MOVE    "1"  TO  WRK-OKIKAEFLG
                END-IF
              WHEN       CONS-UNDOKI
-               MOVE    15   TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
-               MOVE    "運動器リハ：発症　　　月　　日"
-                            TO  WRK-RECE45XX-NAME(IDX-RECE45 1)
-               MOVE    WRK-KYUSEIYMD(5:2)   TO  DAY-IDX2
-               MOVE    TBL-DAY(DAY-IDX2)
-                            TO  WRK-RECE45XX-NAME(IDX-RECE45 1)(19:4)
-               MOVE    WRK-KYUSEIYMD(7:2)   TO  DAY-IDX2
-               MOVE    TBL-DAY(DAY-IDX2)
-                            TO  WRK-RECE45XX-NAME(IDX-RECE45 1)(25:4)
+               EVALUATE   FLG-COMOKIKAE2
+                 WHEN       0
+                   MOVE    15  TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
+                   MOVE    "運動器リハ：発症　　　月　　日"
+                               TO  WRK-RECE45XX-NAME(IDX-RECE45 1)
+                   MOVE    WRK-KYUSEIYMD(5:2)   TO  DAY-IDX2
+                   MOVE    TBL-DAY(DAY-IDX2)
+                               TO  WRK-RECE45XX-NAME(IDX-RECE45 1)(19:4)
+                   MOVE    WRK-KYUSEIYMD(7:2)   TO  DAY-IDX2
+                   MOVE    TBL-DAY(DAY-IDX2)
+                               TO  WRK-RECE45XX-NAME(IDX-RECE45 1)(25:4)
+                 WHEN       1
+                   MOVE    15  TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
+                   MOVE    "運動器リハ：手術　　　月　　日"
+                               TO  WRK-RECE45XX-NAME(IDX-RECE45 1)
+                   MOVE    WRK-KYUSEIYMD(5:2)   TO  DAY-IDX2
+                   MOVE    TBL-DAY(DAY-IDX2)
+                               TO  WRK-RECE45XX-NAME(IDX-RECE45 1)(19:4)
+                   MOVE    WRK-KYUSEIYMD(7:2)   TO  DAY-IDX2
+                   MOVE    TBL-DAY(DAY-IDX2)
+                               TO  WRK-RECE45XX-NAME(IDX-RECE45 1)(25:4)
+                 WHEN       2
+                   MOVE    17  TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
+                   MOVE    "運動器リハ：急性憎悪　　　月　　日"
+                               TO  WRK-RECE45XX-NAME(IDX-RECE45 1)
+                   MOVE    WRK-KYUSEIYMD(5:2)   TO  DAY-IDX2
+                   MOVE    TBL-DAY(DAY-IDX2)
+                               TO  WRK-RECE45XX-NAME(IDX-RECE45 1)(23:4)
+                   MOVE    WRK-KYUSEIYMD(7:2)   TO  DAY-IDX2
+                   MOVE    TBL-DAY(DAY-IDX2)
+                               TO  WRK-RECE45XX-NAME(IDX-RECE45 1)(29:4)
+               END-EVALUATE
                IF      FLG-RIHA      =  1
                  MOVE    99998601      TO   WRK-ZAINUM
                ELSE
@@ -2452,15 +2529,38 @@
                     MOVE    "1"  TO  WRK-OKIKAEFLG
                END-IF
              WHEN       CONS-NANBYO
-               MOVE    16   TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
-               MOVE    "難病患者リハ：発症　　　月　　日"
-                            TO  WRK-RECE45XX-NAME(IDX-RECE45 1)
-               MOVE    WRK-KYUSEIYMD(5:2)   TO  DAY-IDX2
-               MOVE    TBL-DAY(DAY-IDX2)
-                            TO  WRK-RECE45XX-NAME(IDX-RECE45 1)(21:4)
-               MOVE    WRK-KYUSEIYMD(7:2)   TO  DAY-IDX2
-               MOVE    TBL-DAY(DAY-IDX2)
-                            TO  WRK-RECE45XX-NAME(IDX-RECE45 1)(27:4)
+               EVALUATE   FLG-COMOKIKAE2
+                 WHEN       0
+                   MOVE    16  TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
+                   MOVE    "難病患者リハ：発症　　　月　　日"
+                               TO  WRK-RECE45XX-NAME(IDX-RECE45 1)
+                   MOVE    WRK-KYUSEIYMD(5:2)   TO  DAY-IDX2
+                   MOVE    TBL-DAY(DAY-IDX2)
+                               TO  WRK-RECE45XX-NAME(IDX-RECE45 1)(21:4)
+                   MOVE    WRK-KYUSEIYMD(7:2)   TO  DAY-IDX2
+                   MOVE    TBL-DAY(DAY-IDX2)
+                               TO  WRK-RECE45XX-NAME(IDX-RECE45 1)(27:4)
+                 WHEN       1
+                   MOVE    16  TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
+                   MOVE    "難病患者リハ：手術　　　月　　日"
+                               TO  WRK-RECE45XX-NAME(IDX-RECE45 1)
+                   MOVE    WRK-KYUSEIYMD(5:2)   TO  DAY-IDX2
+                   MOVE    TBL-DAY(DAY-IDX2)
+                               TO  WRK-RECE45XX-NAME(IDX-RECE45 1)(21:4)
+                   MOVE    WRK-KYUSEIYMD(7:2)   TO  DAY-IDX2
+                   MOVE    TBL-DAY(DAY-IDX2)
+                               TO  WRK-RECE45XX-NAME(IDX-RECE45 1)(27:4)
+                 WHEN       2
+                   MOVE    18  TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
+                   MOVE    "難病患者リハ：急性憎悪　　　月　　日"
+                               TO  WRK-RECE45XX-NAME(IDX-RECE45 1)
+                   MOVE    WRK-KYUSEIYMD(5:2)   TO  DAY-IDX2
+                   MOVE    TBL-DAY(DAY-IDX2)
+                               TO  WRK-RECE45XX-NAME(IDX-RECE45 1)(25:4)
+                   MOVE    WRK-KYUSEIYMD(7:2)   TO  DAY-IDX2
+                   MOVE    TBL-DAY(DAY-IDX2)
+                               TO  WRK-RECE45XX-NAME(IDX-RECE45 1)(31:4)
+               END-EVALUATE
                IF      FLG-RIHA      =  1
                  MOVE    99999201      TO   WRK-ZAINUM
                ELSE
