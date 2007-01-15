@@ -559,8 +559,6 @@
                MOVE    "01"                TO  SYS-1009-NENTUKI
            END-IF
            IF     (SYS-1009-PTNUMKSIKBN    =   "2" )  AND
-                  (SYS-1009-HJNKSIRENNUMKBN
-                                           =   "1" )  AND
                   (SYS-1009-HJNKSIKBN      =   "1"
                                            OR  "2" )  AND
                   (SYS-1009-NEN        NOT =   SPA-SYSYMD (1:4)) AND
