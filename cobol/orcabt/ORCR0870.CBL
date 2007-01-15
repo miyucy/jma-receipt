@@ -58,6 +58,7 @@
       *  03.02.01    NACL-ÌçÏÆ    06/08/01  ¥ê¥ÏÈ¯¾ÉÆüµ­ºÜ½¤Àµ
       *  03.03.01    NACL-ÌçÏÆ    06/10/19  ÎÅÍÜÉÂÅï¥ì¥»¥³¥á¥ó¥Èµ­ºÜÂÐ±þ
       *  03.04.01    NACL-ÌçÏÆ    06/12/01  ¼«ÇåÀÕ·òÊÝ½àµòÂÐ±þ
+      *  03.04.02    NACL-ÌçÏÆ    07/01/12  ¥ê¥Ï¥Ó¥êÈ¯¾É½ªÎ»ÆüÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -328,6 +329,7 @@
       *
            03  WRK-SRYKBN          PIC X(02).
            03  WRK-SRYCD           PIC X(09).
+           03  WRK-SRYCD2          PIC X(09).
            03  WRK-ZAINUM          PIC 9(08).
       *
            03  WRK-HENSYU-KAISU    PIC X(02).
@@ -350,6 +352,12 @@
            03  WRK-RIHASANTEI-YMD.
                05  WRK-RIHASANTEI-YM PIC 9(06).
                05  WRK-RIHASANTEI-DD PIC 9(02).
+      *
+      *    Ä¾¶áÊ¬ÂàÈòÍÑ
+           03  WRK-RIHASANTEI-YMD2   PIC X(08).
+      *
+      *    Á°·î°ÊÁ°¤ÎÄ¾¶á½ªÎ»Æü
+           03  WRK-RIHASANTEI-END    PIC X(08).
       *
       *    £²£°£°£¶Ç¯£´·î£±Æü¤Ë»»ÄêÆü¤¬¤¢¤ë¤«
            03  WRK-RIHASANTEI41-FLG  PIC 9(01).
@@ -472,6 +480,21 @@
            03  CONS-SYOGAI          PIC X(09) VALUE "099800171".
       *    ÀÝ¿©ÎÅË¡³«»ÏÆü
            03  CONS-SESSYOKU        PIC X(09) VALUE "099800151".
+      *
+      *    ¿´Âç¥ê¥Ï½ªÎ»Æü
+           03  CONS-SINDAI-E        PIC X(09) VALUE "099800112".
+      *    ¸ÆµÛ´ï¥ê¥Ï½ªÎ»Æü
+           03  CONS-KOKYUKI-E       PIC X(09) VALUE "099800142".
+      *    Ç¾·ì´É¼À´µÅù¥ê¥Ï½ªÎ»Æü
+           03  CONS-NOUKE-E         PIC X(09) VALUE "099800122".
+      *    ±¿Æ°´ï¥ê¥Ï½ªÎ»Æü
+           03  CONS-UNDOKI-E        PIC X(09) VALUE "099800132".
+      *    ÆñÉÂ´µ¼Ô¥ê¥Ï½ªÎ»Æü
+           03  CONS-NANBYO-E        PIC X(09) VALUE "099800162".
+      *    ¾ã³²»ù¡Ê¼Ô¡Ë¥ê¥Ï½ªÎ»Æü
+           03  CONS-SYOGAI-E        PIC X(09) VALUE "099800172".
+      *    ÀÝ¿©ÎÅË¡½ªÎ»Æü
+           03  CONS-SESSYOKU-E      PIC X(09) VALUE "099800152".
       *
        01  TBL-HASSYO-INF.
            03  TBL-HASSYO-KAITATU-COMMENT   PIC 9(01).
@@ -1247,36 +1270,43 @@
       ***
            IF   TBL-HASSYO-SINDAI-COMMENT    =  1
                 MOVE      CONS-SINDAI      TO   WRK-SRYCD
+                MOVE      CONS-SINDAI-E    TO   WRK-SRYCD2
                 PERFORM   20011-RIHABIRIHASSYO-HANTEI-SEC
            END-IF
       ***
            IF   TBL-HASSYO-KOKYUKI-COMMENT   =  1
                 MOVE      CONS-KOKYUKI     TO   WRK-SRYCD
+                MOVE      CONS-KOKYUKI-E   TO   WRK-SRYCD2
                 PERFORM   20011-RIHABIRIHASSYO-HANTEI-SEC
            END-IF
       ***
            IF   TBL-HASSYO-NOUKE-COMMENT     =  1
                 MOVE      CONS-NOUKE       TO   WRK-SRYCD
+                MOVE      CONS-NOUKE-E     TO   WRK-SRYCD2
                 PERFORM   20011-RIHABIRIHASSYO-HANTEI-SEC
            END-IF
       ***
            IF   TBL-HASSYO-UNDOKI-COMMENT    =  1
                 MOVE      CONS-UNDOKI      TO   WRK-SRYCD
+                MOVE      CONS-UNDOKI-E    TO   WRK-SRYCD2
                 PERFORM   20011-RIHABIRIHASSYO-HANTEI-SEC
            END-IF
       ***
            IF   TBL-HASSYO-NANBYO-COMMENT    =  1
                 MOVE      CONS-NANBYO      TO   WRK-SRYCD
+                MOVE      CONS-NANBYO-E    TO   WRK-SRYCD2
                 PERFORM   20011-RIHABIRIHASSYO-HANTEI-SEC
            END-IF
       ***
            IF   TBL-HASSYO-SYOGAI-COMMENT    =  1
                 MOVE      CONS-SYOGAI      TO   WRK-SRYCD
+                MOVE      CONS-SYOGAI-E    TO   WRK-SRYCD2
                 PERFORM   20011-RIHABIRIHASSYO-HANTEI-SEC
            END-IF
       ***
            IF   TBL-HASSYO-SESSYOKU-COMMENT  =  1
                 MOVE      CONS-SESSYOKU    TO   WRK-SRYCD
+                MOVE      CONS-SESSYOKU-E  TO   WRK-SRYCD2
                 PERFORM   20011-RIHABIRIHASSYO-HANTEI-SEC
            END-IF
       *
@@ -1909,11 +1939,73 @@
       *****************************************************************
        20011-RIHABIRIHASSYO-HANTEI-SEC          SECTION.
       *
+           MOVE     ZERO     TO     FLG-KYUSEI-COMMENT2
+           MOVE     SPACE    TO     WRK-RIHASANTEI-END
+      *
+      *    ¥ê¥Ï½ªÎ»Æü
+      *
+      *    »»ÄêÍúÎò¸¡º÷
+           INITIALIZE                  SANTEI-REC
+           MOVE    RECE82-HOSPID       TO  SANTEI-HOSPID
+           MOVE    RECE82-PTID         TO  SANTEI-PTID
+           MOVE    WRK-SRYCD2          TO  SANTEI-SRYCD
+           MOVE    ZERO                TO  SANTEI-NYUGAIKBN
+           MOVE    ZERO                TO  SANTEI-SRYKA
+           MOVE    RECE82-HKNCOMBI     TO  SANTEI-HKNCOMBINUM
+           MOVE    SANTEI-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+      *
+                MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
+                PERFORM        900-SANTEI-READ-SEC
+      *
+                PERFORM   UNTIL  ( FLG-SANTEI          =  1 ) OR
+                                 ( FLG-KYUSEI-COMMENT2 =  1 )
+      *
+                 IF    SANTEI-SRYYM  <  RECE82-SRYYM
+                   PERFORM   VARYING   IDX3   FROM  31  BY  -1
+                              UNTIL  ( IDX3                <   1 )
+                                OR   ( FLG-KYUSEI-COMMENT2 =   1 )
+      *
+                     IF   SANTEI-DAY(IDX3)  NOT =  ZERO
+      *
+                        MOVE  SANTEI-SRYYM  TO  WRK-RIHASANTEI-END(1:6)
+                        MOVE  IDX3          TO  WRK-RIHASANTEI-END(7:2)
+      *
+                        MOVE  1             TO  FLG-KYUSEI-COMMENT2
+      *
+                     END-IF
+      *
+                   END-PERFORM
+                 END-IF
+      *
+                 MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
+                 PERFORM        900-SANTEI-READ-SEC
+      *
+                END-PERFORM
+      *
+           END-IF
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+      ********
+      *
            MOVE     ZERO     TO     FLG-KYUSEI-COMMENT
            MOVE     ZERO     TO     FLG-KYUSEI-COMMENT2
            MOVE     ZERO     TO     WRK-KYUSEIYMD
            INITIALIZE               TBL-RIHASANTEI-DAY
            MOVE     SPACE    TO     WRK-RIHASANTEI-YMD
+           MOVE     SPACE    TO     WRK-RIHASANTEI-YMD2
            MOVE     ZERO     TO     WRK-RIHASANTEI41-FLG
       *
       *    »»ÄêÍúÎò¸¡º÷
@@ -1973,12 +2065,26 @@
       *
       ****               MOVE   SANTEI-SRYYM   TO  WRK-KYUSEIYMD(1:6)
       ****               MOVE   IDX3           TO  WRK-KYUSEIYMD(7:2)
+      *
+                       MOVE   SANTEI-SRYYM
+                                        TO  WRK-RIHASANTEI-YMD2(1:6)
+                       MOVE   IDX3      TO  WRK-RIHASANTEI-YMD2(7:2)
+      *
+                       IF  (WRK-RIHASANTEI-END  = SPACE              )
+                       OR  (WRK-RIHASANTEI-END <= WRK-RIHASANTEI-YMD2)
+      *
                          MOVE   SANTEI-SRYYM
                                           TO  WRK-RIHASANTEI-YMD(1:6)
                          MOVE   IDX3      TO  WRK-RIHASANTEI-YMD(7:2)
       *
                          MOVE   1         TO  FLG-KYUSEI-COMMENT
-                         MOVE   1         TO  FLG-KYUSEI-COMMENT2
+      *
+                       END-IF
+      *
+                       MOVE     1         TO  FLG-KYUSEI-COMMENT2
+      *
+                       IF  (WRK-RIHASANTEI-END  = SPACE              )
+                       OR  (WRK-RIHASANTEI-END <= WRK-RIHASANTEI-YMD2)
       *
                          IF    (SANTEI-SRYYM = "200604")
                          AND   (IDX3         =  1      )
@@ -1987,6 +2093,8 @@
                          IF     WRK-RIHASANTEI41-FLG  =  1
                             MOVE   ZERO  TO   TB-RIHASANTEI-DAY(1)
                          END-IF
+      *
+                       END-IF
       *
                      END-IF
       *

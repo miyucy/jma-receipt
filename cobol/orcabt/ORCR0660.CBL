@@ -77,6 +77,7 @@
       *  03.03.01    NACL-門脇    06/10/19  療養病棟レセコメント記載対応
       *  03.04.01    NACL-門脇    06/12/21  レセプト電算対象外フラグ編集
       *                                     （診療区分９０、９２）
+      *  03.04.02    NACL-門脇    07/01/12  リハビリ発症終了日対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -355,6 +356,7 @@
       *
            03  WRK-SRYKBN          PIC X(02).
            03  WRK-SRYCD           PIC X(09).
+           03  WRK-SRYCD2          PIC X(09).
            03  WRK-ZAINUM          PIC 9(08).
       *
            03  WRK-HENSYU-KAISU    PIC X(02).
@@ -371,6 +373,12 @@
            03  WRK-RIHASANTEI-YMD.
                05  WRK-RIHASANTEI-YM PIC 9(06).
                05  WRK-RIHASANTEI-DD PIC 9(02).
+      *
+      *    直近分退避用
+           03  WRK-RIHASANTEI-YMD2   PIC X(08).
+      *
+      *    前月以前の直近終了日
+           03  WRK-RIHASANTEI-END    PIC X(08).
       *
       *    ２００６年４月１日に算定日があるか
            03  WRK-RIHASANTEI41-FLG  PIC 9(01).
@@ -496,6 +504,21 @@
            03  CONS-SYOGAI          PIC X(09) VALUE "099800171".
       *    摂食療法開始日
            03  CONS-SESSYOKU        PIC X(09) VALUE "099800151".
+      *
+      *    心大リハ終了日
+           03  CONS-SINDAI-E        PIC X(09) VALUE "099800112".
+      *    呼吸器リハ終了日
+           03  CONS-KOKYUKI-E       PIC X(09) VALUE "099800142".
+      *    脳血管疾患等リハ終了日
+           03  CONS-NOUKE-E         PIC X(09) VALUE "099800122".
+      *    運動器リハ終了日
+           03  CONS-UNDOKI-E        PIC X(09) VALUE "099800132".
+      *    難病患者リハ終了日
+           03  CONS-NANBYO-E        PIC X(09) VALUE "099800162".
+      *    障害児（者）リハ終了日
+           03  CONS-SYOGAI-E        PIC X(09) VALUE "099800172".
+      *    摂食療法終了日
+           03  CONS-SESSYOKU-E      PIC X(09) VALUE "099800152".
       *
        01  TBL-HASSYO-INF.
            03  TBL-HASSYO-KAITATU-FLG           PIC 9(01).
@@ -1423,6 +1446,7 @@
       ***
            IF   TBL-HASSYO-SINDAI-FLG   =   1
              MOVE      CONS-SINDAI     TO   WRK-SRYCD
+             MOVE      CONS-SINDAI-E   TO   WRK-SRYCD2
              PERFORM   20011-RIHABIRIHASSYO-HANTEI-SEC
              IF        FLG-KYUSEI-COMMENT    =      1
                  PERFORM   VARYING   IDX14    FROM   1   BY   1
@@ -1453,6 +1477,7 @@
       ***
            IF   TBL-HASSYO-KOKYUKI-FLG   =   1
              MOVE      CONS-KOKYUKI    TO   WRK-SRYCD
+             MOVE      CONS-KOKYUKI-E  TO   WRK-SRYCD2
              PERFORM   20011-RIHABIRIHASSYO-HANTEI-SEC
              IF        FLG-KYUSEI-COMMENT    =      1
                  PERFORM   VARYING   IDX14    FROM   1   BY   1
@@ -1483,6 +1508,7 @@
       ***
            IF   TBL-HASSYO-NOUKE-FLG   =   1
              MOVE      CONS-NOUKE      TO   WRK-SRYCD
+             MOVE      CONS-NOUKE-E    TO   WRK-SRYCD2
              PERFORM   20011-RIHABIRIHASSYO-HANTEI-SEC
              IF        FLG-KYUSEI-COMMENT    =      1
                  PERFORM   VARYING   IDX14    FROM   1   BY   1
@@ -1513,6 +1539,7 @@
       ***
            IF   TBL-HASSYO-UNDOKI-FLG   =   1
              MOVE      CONS-UNDOKI      TO   WRK-SRYCD
+             MOVE      CONS-UNDOKI-E    TO   WRK-SRYCD2
              PERFORM   20011-RIHABIRIHASSYO-HANTEI-SEC
              IF        FLG-KYUSEI-COMMENT    =      1
                  PERFORM   VARYING   IDX14    FROM   1   BY   1
@@ -1543,6 +1570,7 @@
       ***
            IF   TBL-HASSYO-NANBYO-FLG   =   1
              MOVE      CONS-NANBYO      TO   WRK-SRYCD
+             MOVE      CONS-NANBYO-E    TO   WRK-SRYCD2
              PERFORM   20011-RIHABIRIHASSYO-HANTEI-SEC
              IF        FLG-KYUSEI-COMMENT    =      1
                  PERFORM   VARYING   IDX14    FROM   1   BY   1
@@ -1573,6 +1601,7 @@
       ***
            IF   TBL-HASSYO-SYOGAI-FLG   =   1
              MOVE      CONS-SYOGAI      TO   WRK-SRYCD
+             MOVE      CONS-SYOGAI-E    TO   WRK-SRYCD2
              PERFORM   20011-RIHABIRIHASSYO-HANTEI-SEC
              IF        FLG-KYUSEI-COMMENT    =      1
                  PERFORM   VARYING   IDX14    FROM   1   BY   1
@@ -1603,6 +1632,7 @@
       ***
            IF   TBL-HASSYO-SESSYOKU-FLG   =   1
              MOVE      CONS-SESSYOKU      TO   WRK-SRYCD
+             MOVE      CONS-SESSYOKU-E    TO   WRK-SRYCD2
              PERFORM   20011-RIHABIRIHASSYO-HANTEI-SEC
              IF        FLG-KYUSEI-COMMENT    =      1
                  PERFORM   VARYING   IDX14    FROM   1   BY   1
@@ -2338,11 +2368,73 @@
       *****************************************************************
        20011-RIHABIRIHASSYO-HANTEI-SEC          SECTION.
       *
+           MOVE     ZERO     TO     FLG-KYUSEI-COMMENT2
+           MOVE     SPACE    TO     WRK-RIHASANTEI-END
+      *
+      *    リハ終了日
+      *
+      *    算定履歴検索
+           INITIALIZE                  SANTEI-REC
+           MOVE    RECE62-HOSPID       TO  SANTEI-HOSPID
+           MOVE    RECE62-PTID         TO  SANTEI-PTID
+           MOVE    WRK-SRYCD2          TO  SANTEI-SRYCD
+           MOVE    ZERO                TO  SANTEI-NYUGAIKBN
+           MOVE    ZERO                TO  SANTEI-SRYKA
+           MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
+           MOVE    SANTEI-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+      *
+                MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
+                PERFORM        900-SANTEI-READ-SEC
+      *
+                PERFORM   UNTIL  ( FLG-SANTEI          =  1 ) OR
+                                 ( FLG-KYUSEI-COMMENT2 =  1 )
+      *
+                 IF    SANTEI-SRYYM  <  RECE62-SRYYM
+                   PERFORM   VARYING   IDX3   FROM  31  BY  -1
+                              UNTIL  ( IDX3                <   1 )
+                                OR   ( FLG-KYUSEI-COMMENT2 =   1 )
+      *
+                     IF   SANTEI-DAY(IDX3)  NOT =  ZERO
+      *
+                        MOVE  SANTEI-SRYYM  TO  WRK-RIHASANTEI-END(1:6)
+                        MOVE  IDX3          TO  WRK-RIHASANTEI-END(7:2)
+      *
+                        MOVE  1             TO  FLG-KYUSEI-COMMENT2
+      *
+                     END-IF
+      *
+                   END-PERFORM
+                 END-IF
+      *
+                 MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
+                 PERFORM        900-SANTEI-READ-SEC
+      *
+                END-PERFORM
+      *
+           END-IF
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+      ********
+      *
            MOVE     ZERO     TO     FLG-KYUSEI-COMMENT
            MOVE     ZERO     TO     FLG-KYUSEI-COMMENT2
            MOVE     ZERO     TO     WRK-KYUSEIYMD
            INITIALIZE               TBL-RIHASANTEI-DAY
            MOVE     SPACE    TO     WRK-RIHASANTEI-YMD
+           MOVE     SPACE    TO     WRK-RIHASANTEI-YMD2
            MOVE     ZERO     TO     WRK-RIHASANTEI41-FLG
       *
       *    リハ開始日
@@ -2404,12 +2496,26 @@
       *
       ****               MOVE   SANTEI-SRYYM   TO  WRK-KYUSEIYMD(1:6)
       ****               MOVE   IDX3           TO  WRK-KYUSEIYMD(7:2)
+      *
+                       MOVE   SANTEI-SRYYM
+                                        TO  WRK-RIHASANTEI-YMD2(1:6)
+                       MOVE   IDX3      TO  WRK-RIHASANTEI-YMD2(7:2)
+      *
+                       IF  (WRK-RIHASANTEI-END  = SPACE              )
+                       OR  (WRK-RIHASANTEI-END <= WRK-RIHASANTEI-YMD2)
+      *
                          MOVE   SANTEI-SRYYM
                                           TO  WRK-RIHASANTEI-YMD(1:6)
                          MOVE   IDX3      TO  WRK-RIHASANTEI-YMD(7:2)
       *
                          MOVE   1         TO  FLG-KYUSEI-COMMENT
-                         MOVE   1         TO  FLG-KYUSEI-COMMENT2
+      *
+                       END-IF
+      *
+                       MOVE     1         TO  FLG-KYUSEI-COMMENT2
+      *
+                       IF  (WRK-RIHASANTEI-END  = SPACE              )
+                       OR  (WRK-RIHASANTEI-END <= WRK-RIHASANTEI-YMD2)
       *
                          IF    (SANTEI-SRYYM = "200604")
                          AND   (IDX3         =  1      )
@@ -2418,6 +2524,8 @@
                          IF     WRK-RIHASANTEI41-FLG  =  1
                             MOVE   ZERO  TO   TB-RIHASANTEI-DAY(1)
                          END-IF
+      *
+                       END-IF
       *
                      END-IF
       *
