@@ -30,6 +30,8 @@
                 05  W04-VALUE   PIC X(9).
               04  W04-PTNUMKSIKBN.
                 05  W04-VALUE   PIC X(1).
+              03  W04-NENTUKI.
+                04  W04-VALUE   PIC X(2).
               04  W04-NOTEBOOK1.
                 05  W04-PAGENO  PIC S9(9)   BINARY.
                 05  W04-FIXED5.

@@ -16,6 +16,10 @@ M00	{
 			style   varchar(20);
 			value	varchar(60);
 		};
+		LBLMSG2	{
+			style   varchar(20);
+			value	varchar(100);
+		};
 		HTML1	{
 			value	varchar(200);
 		};

@@ -62,6 +62,7 @@
       *  03.01.00    NACL-太田    06/07/14  ＤＢ不整合チェック追加
       *  03.03.00    NACL-多々納  06/10/24  排他制御初期設定修正
       *  03.04.01    NACL-森脇    06/12/13  ユーザーＨＴＭＬ表示
+      *  03.04.02    NACL-多々納  07/01/16  患者番号構成年切替え月追加
       *****************************************************************
       *
       *
@@ -552,6 +553,26 @@
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
+      *
+      *    患者番号構成の年切替えチェック
+           IF      SYS-1009-NENTUKI        =   SPACE
+               MOVE    "01"                TO  SYS-1009-NENTUKI
+           END-IF
+           IF     (SYS-1009-PTNUMKSIKBN    =   "2" )  AND
+                  (SYS-1009-HJNKSIRENNUMKBN
+                                           =   "1" )  AND
+                  (SYS-1009-HJNKSIKBN      =   "1"
+                                           OR  "2" )  AND
+                  (SYS-1009-NEN        NOT =   SPA-SYSYMD (1:4)) AND
+                  (SYS-1009-NENTUKI        <=  SPA-SYSYMD (5:2))
+               STRING  "【患者番号構成の年切替え月になりました。"
+                       "システム管理情報を更新して下さい。】"
+                                           DELIMITED  BY  SIZE
+                                           INTO    SPA-GMN-LBLMSG2
+               END-STRING
+           ELSE
+               MOVE    SPACE               TO  SPA-GMN-LBLMSG2
+           END-IF
            DISPLAY "310-SPASET-SEC SPA-1009-PTNUMKSIKBN = "
                                        SPA-1009-PTNUMKSIKBN
       *---- (01.00.02) LINE ADD END   --------------------------------

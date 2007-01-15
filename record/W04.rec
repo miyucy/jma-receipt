@@ -19,6 +19,9 @@ W04	{
 		PTNUMKSIKBN	{
 			value	varchar(1);
 		};
+		NENTUKI	{
+			value	varchar(2);
+		};
 		not1	{
 			pageno	int;
 			fixed5	{

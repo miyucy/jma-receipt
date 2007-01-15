@@ -32,6 +32,7 @@
                05  SPA-GMN-AREA.
                    07  SPA-GMN-GSEL    PIC 9(02).
                    07  SPA-GMN-LBLMSG  PIC X(60).
+                   07  SPA-GMN-LBLMSG2 PIC X(100).
                    07  SPA-GMN-ERRCD   PIC X(04).
       *
       ***      05  SPA-M95GMN-AREA.

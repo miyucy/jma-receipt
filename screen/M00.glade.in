@@ -365,10 +365,10 @@
       <height>28</height>
       <can_focus>True</can_focus>
       <signal>
-        <name>clicked</name>
-        <handler>send_event</handler>
-        <data>CLICKED</data>
-        <last_modification_time>Thu, 05 Feb 2004 13:55:59 GMT</last_modification_time>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Thu, 05 Feb 2004 13:55:59 GMT</last_modification_time>
       </signal>
       <label>　03　プログラム更新　　　　　</label>
       <relief>GTK_RELIEF_NORMAL</relief>
@@ -466,7 +466,7 @@
     <widget>
       <class>GtkLabel</class>
       <name>LBLMSG</name>
-      <x>287</x>
+      <x>288</x>
       <y>180</y>
       <width>500</width>
       <height>24</height>
@@ -505,6 +505,22 @@
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLMSG2</name>
+      <x>288</x>
+      <y>68</y>
+      <width>600</width>
+      <height>24</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>True</wrap>
+      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>

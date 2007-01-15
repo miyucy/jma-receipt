@@ -32,6 +32,7 @@
       *  02.00.01    NACL-多々納  02/11/12  一括入力 
       *  02.00.02    NACL-多々納  03/03/17  連番号変更可能へ修正
       *  02.00.03    NACL-多々納  06/04/24  MONFUNC 対応
+      *  03.04.00    NACL-多々納  07/01/15  年切替え月追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -61,6 +62,7 @@
                    07  SPA-GMN-STYUKYMD       PIC X(09).
                    07  SPA-GMN-EDYUKYMD       PIC X(09).
                    07  SPA-GMN-NEN            PIC X(04).
+                   07  SPA-GMN-NENTUKI        PIC X(02).
                    07  SPA-GMN-RENNUM         PIC 9(10).
                    07  SPA-GMN-PTID           PIC 9(10).
                    07  SPA-GMN-PAGENO         PIC 9(01).
@@ -113,7 +115,7 @@
       *
        01  WRK-AREA.
            03  WRK-TOTAL           PIC 9(03).
-           03  WRK-WIDMSG          PIC X(70). 
+           03  WRK-WIDMSG          PIC X(80). 
            03  WRK-YMD             PIC X(09). 
            03  WRK-SYMD.
                05  WRK-SYY         PIC 9(04).
@@ -154,6 +156,9 @@
            COPY  "CPORCSDAY.INC".
       *
            COPY  "CPORCSLNK.INC".
+      *
+      *    数字変換領域
+           COPY    "CPORCSNUM.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -371,11 +376,18 @@
                MOVE    SYS-1009-RENNUM     TO  SPA-GMN-RENNUM  
                MOVE    SYS-1009-PTID       TO  SPA-GMN-PTID
       *
+               MOVE    SYS-1009-NENTUKI    TO  SPA-GMN-NENTUKI
+      *
                MOVE    SYS-1009-RENNUM     TO  SPA-MAE-RENNUM  
            ELSE
                MOVE    SPA-SYSYMD (1:4)    TO  SPA-GMN-NEN
+               MOVE    "01"                TO  SPA-GMN-NENTUKI
                MOVE    ZERO                TO  SPA-MAE-RENNUM  
-           END-IF     
+           END-IF
+      *    年切替え月
+           IF      SPA-GMN-NENTUKI     =   SPACE
+               MOVE    "01"            TO  SPA-GMN-NENTUKI
+           END-IF
       *
             MOVE    1                   TO  SPA-GMN-CUR
             EVALUATE    SPA-GMN-PTNUMKSIKBN
@@ -507,6 +519,8 @@
            MOVE    W04-KKCKSIRENNUMKETA    TO  SPA-GMN-KKCKSIRENNUMKETA
            MOVE    W04-KKCKSIATOKETA       TO  SPA-GMN-KKCKSIATOKETA
       *
+           MOVE    W04-NENTUKI             TO  SPA-GMN-NENTUKI
+      *
            .
        4101-GMN-SPA-SET-EXT.
            EXIT.
@@ -516,16 +530,24 @@
       *****************************************************************
        4102-KIHON-CHK-SEC       SECTION.
       *
+      *   年切替え月
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4113-NENTUKI-CHK-SEC
+           END-IF
            EVALUATE    SPA-GMN-PTNUMKSIKBN
                WHEN    "1"
       *            自由構成
-                   PERFORM 4120-JIYKSIKBN-CHK-SEC
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4120-JIYKSIKBN-CHK-SEC
+                   END-IF
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4100-JIYKSIKETA-CHK-SEC
                    END-IF
                WHEN    "2"
       *            標準構成
-                   PERFORM 4112-HJNKSIKBN-CHK-SEC
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4112-HJNKSIKBN-CHK-SEC
+                   END-IF
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4113-HJNKSINENKBN-CHK-SEC
                    END-IF
@@ -537,7 +559,9 @@
                    END-IF
                WHEN    "3"
       *            拡張構成
-                   PERFORM 4116-KKCKSIKBN-CHK-SEC  
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4116-KKCKSIKBN-CHK-SEC  
+                   END-IF
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4117-KKCKSIMAEKETA-CHK-SEC
                    END-IF
@@ -551,6 +575,35 @@
       *
            .
        4102-KIHON-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    年切替え月チェック処理
+      *****************************************************************
+       4113-NENTUKI-CHK-SEC        SECTION.
+      *
+           IF      SPA-GMN-NENTUKI     =   SPACE
+               MOVE    "01"                TO  SPA-GMN-NENTUKI
+           END-IF
+           INITIALIZE                      ORCSNUMAREA
+           MOVE    SPA-GMN-NENTUKI     TO  SNUM-INX
+           CALL    "ORCSNUM"           USING
+                                       ORCSNUMAREA
+           IF     (SNUM-RC         NOT =   ZERO  )   OR
+                  (SNUM-MINKBN     NOT =   SPACE )   OR
+                  (SNUM-SYOKBN     NOT =   SPACE )
+               MOVE    "0006"              TO  SPA-ERRCD
+               MOVE    21                  TO  SPA-GMN-CUR
+           ELSE
+               MOVE    SNUM-OUTEDT(14:2)   TO  SPA-GMN-NENTUKI
+               IF      SPA-GMN-NENTUKI     >=  "01"  AND   <=  "12"
+                   CONTINUE
+               ELSE
+                   MOVE    "0006"              TO  SPA-ERRCD
+                   MOVE    21                  TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+           . 
+       4113-NENTUKI-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -623,7 +676,6 @@
            . 
        4113-HJNKSINENKBN-CHK-EXT.
            EXIT.
-      *
       *****************************************************************
       *    標準構成連番初期化区分チェック処理
       *****************************************************************
@@ -768,10 +820,13 @@
       *    患者番号変更
            MOVE    W04-RENNUM          TO  SPA-GMN-RENNUM
       *    年度毎に連番のクリアをする時
-           IF    SPA-GMN-NEN            NOT =   SPA-SYSYMD (1:4)
+           IF   (SPA-GMN-NEN            NOT =   SPA-SYSYMD (1:4))
+            AND (SPA-GMN-NENTUKI            <=  SPA-SYSYMD (5:2))
                MOVE    SPA-SYSYMD(1:4)          TO  SYS-1009-NEN
                IF     (SPA-GMN-PTNUMKSIKBN      =   "2")   AND
                       (SPA-GMN-HJNKSIRENNUMKBN  =   "1")
+                 AND  (SPA-GMN-HJNKSIKBN        =   "1"
+                                                OR  "2" )
                    IF      SPA-GMN-RENNUM   NOT =   ZERO
                         MOVE    "9000"          TO  SPA-ERRCD
                         MOVE    20              TO  SPA-GMN-CUR
@@ -787,7 +842,6 @@
            IF      SPA-GMN-RENNUM      <   SPA-MAE-RENNUM
                MOVE    "9001"          TO  SPA-ERRCD
                MOVE    20              TO  SPA-GMN-CUR
-               GO      TO      4109-RENNUM-CHK-EXT
            ELSE
                MOVE    99              TO  SPA-GMN-CUR
            END-IF
@@ -823,21 +877,24 @@
        490-TOUROKU-SEC              SECTION.
       *
            PERFORM 4900-KANRENCHK-SEC
-           IF      SPA-ERRCD        =   SPACE
+           IF      SPA-ERRCD           =   SPACE
               MOVE    "1001"           TO  SPA-WIDCD
-              IF    SPA-GMN-NEN            NOT =   SPA-SYSYMD (1:4)
+              IF   (SPA-GMN-NEN            NOT =   SPA-SYSYMD (1:4))
+               AND (SPA-GMN-NENTUKI            <=  SPA-SYSYMD (5:2))
                   IF     (SPA-GMN-PTNUMKSIKBN      =   "2")   AND
                          (SPA-GMN-HJNKSIRENNUMKBN  =   "1")
+                    AND  (SPA-GMN-HJNKSIKBN        =   "1"
+                                                   OR  "2" )
                       MOVE    "1011"           TO  SPA-WIDCD
                   ELSE
                       MOVE    "1010"           TO  SPA-WIDCD
                   END-IF
                END-IF  
-           END-IF
-      *    連番号の修正
-           IF      SPA-PTNUM-HEN       =   1
-               MOVE    1               TO  FLG-KOUSIN
-               PERFORM 4109-RENNUM-CHK-SEC
+      *        連番号の修正
+               IF      SPA-PTNUM-HEN       =   1
+                   MOVE    1               TO  FLG-KOUSIN
+                   PERFORM 4109-RENNUM-CHK-SEC
+               END-IF
            END-IF
            .
        490-TOUROKU-EXT.
@@ -871,13 +928,18 @@
                MOVE    SPA-GMN-RENNUM      TO  SYS-1009-RENNUM
            END-IF
       *
-           IF    SPA-GMN-NEN            NOT =   SPA-SYSYMD (1:4)
+           IF   (SPA-GMN-NEN            NOT =   SPA-SYSYMD (1:4))
+            AND (SPA-GMN-NENTUKI            <=  SPA-SYSYMD (5:2))
                MOVE    SPA-SYSYMD(1:4)          TO  SYS-1009-NEN
                IF     (SPA-GMN-PTNUMKSIKBN      =   "2")   AND
                       (SPA-GMN-HJNKSIRENNUMKBN  =   "1")
+                 AND  (SPA-GMN-HJNKSIKBN        =   "1"
+                                                OR  "2" )
                    MOVE    ZERO                 TO  SYS-1009-RENNUM
                END-IF
            END-IF
+           MOVE    SPA-GMN-NENTUKI          TO  SYS-1009-NENTUKI
+      *
            MOVE    SPA-GMN-PTNUMKSIKBN      TO  SYS-1009-PTNUMKSIKBN 
            MOVE    SPA-GMN-JIYKSIKBN        TO  SYS-1009-JIYKSIKBN 
            MOVE    SPA-GMN-JIYKSIKETA       TO  SYS-1009-JIYKSIKETA 
@@ -927,8 +989,6 @@
                GO      TO      4900-KANRENCHK-EXT
            END-IF
       *
-           MOVE    SPACE                TO  SPA-ERRCD
-      *
            EVALUATE    W04-PAGENO
                WHEN    0
                    PERFORM 4901-TAG1-CHK-SEC
@@ -938,7 +998,7 @@
                    PERFORM 4901-TAG3-CHK-SEC
            END-EVALUATE
       *
-           IF      SPA-ERRCD             =   SPACE     
+           IF      SPA-ERRCD             =   SPACE
                IF      WRK-TOTAL             >   20
                    MOVE    "0003"                TO  SPA-ERRCD
                END-IF
@@ -1132,6 +1192,7 @@
            MOVE    SPA-GMN-NEN              TO  W04-NEN
            MOVE    SPA-GMN-PTID             TO  W04-PTID
            MOVE    SPA-GMN-RENNUM           TO  W04-RENNUM
+           MOVE    SPA-GMN-NENTUKI          TO  W04-NENTUKI
       * 
            MOVE    SPA-GMN-PTNUMKSIKBN      TO  W04-PTNUMKSIKBN
            MOVE    SPA-GMN-JIYKSIKETA       TO  W04-JIYKSIKETA
@@ -1176,6 +1237,11 @@
                WHEN    "0003"
                    MOVE    "合計桁数が長すぎます"
                                                TO  SPA-ERRMSG
+               WHEN    "0006"
+                   STRING  "年切替え月は、０１から１２で"
+                           "入力して下さい。"  DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
                WHEN    "0005"
                    MOVE
                        "患者番号構成区分を変更して画面を移動して下さい"
@@ -1226,11 +1292,21 @@
                    MOVE    "患者番号構成管理情報を登録します"
                                        TO  WRK-WIDMSG
                WHEN    "1010"
-                   MOVE    "年が変わったので変更して登録します"
-                                       TO  WRK-WIDMSG
+      *D           MOVE    "年が変わったので変更して登録します"
+      *D                               TO  WRK-WIDMSG
+                   STRING  "年切替え月になりました。"
+                           "年を変更して登録します。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    WRK-WIDMSG
+                   END-STRING
                WHEN    "1011"
-                   MOVE    "連番号を初期化して登録します"
-                                       TO  WRK-WIDMSG
+      *D           MOVE    "連番号を初期化して登録します"
+      *D                               TO  WRK-WIDMSG
+                   STRING  "年切替え月になりました。"
+                           "年変更と連番号の初期化をして登録します。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    WRK-WIDMSG
+                   END-STRING
            END-EVALUATE
       *
            MOVE    SPACE                TO  WID1
@@ -1286,6 +1362,8 @@
                     MOVE  "JIYKSIKBN"        TO   MCP-WIDGET
                 WHEN    20
                     MOVE  "RENNUM"           TO   MCP-WIDGET
+                WHEN    21
+                    MOVE  "NENTUKI"          TO   MCP-WIDGET
                 WHEN    99
                     MOVE  "B12"              TO   MCP-WIDGET
             END-EVALUATE
@@ -1303,6 +1381,8 @@
                WHEN    "JIYKSIKBN"
                    MOVE    2               TO  SPA-GMN-CUR
                WHEN    "JIYKSIKETA"
+                   MOVE    99              TO  SPA-GMN-CUR
+               WHEN    "NENTUKI"
                    MOVE    99              TO  SPA-GMN-CUR
       *        標準構成
                WHEN    "HJNKSIKBN"
