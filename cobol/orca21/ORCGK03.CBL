@@ -919,10 +919,6 @@
            INITIALIZE                  SPA-GMN-SRYKA-LSTG
            INITIALIZE                  SPA-GMN-HKNCOMBI-LSTG
            IF      SPA-TBL-HKNCOMBI (2)    =   SPACE
-      *@
-             OR  ((SPA-HKN-MAX             =   2  )  AND
-                  (SPA-TBL-HKNCOMBI (2)    =   "9999" ))
-      *@
                MOVE    1                       TO  SPA-HKN-MAX
                MOVE    SPA-TBL-HKNCOMBI(1)     TO  SPA-GMN-THKNCOMBINUM
                                                        (SPA-HKN-MAX)
@@ -939,9 +935,6 @@
                PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   15  )  OR
                               (SPA-TBL-HKNCOMBI (IDX)  =   SPACE )
-      *@
-                 IF      (SPA-TBL-HKNCOMBI (IDX)  NOT =   "9999" )
-      *@
                    ADD     1               TO  SPA-HKN-MAX
                    MOVE    SPA-TBL-HKNCOMBI(IDX)
                                            TO  SPA-GMN-THKNCOMBINUM
@@ -953,9 +946,6 @@
                                            TO  SPA-NAI-TFTNRATEMEI
                                                        (SPA-HKN-MAX)
                    PERFORM 3003-SRYKA-HEN-SEC
-      *@
-                 END-IF
-      *@
                END-PERFORM
            END-IF
            MOVE    SPA-GMN-HKN-LIST(1)     TO  SPA-GMN-HKNCOMBI-G
@@ -1276,8 +1266,6 @@
       *
                IF     (SYU-DENPNUM     =   ZERO  )  OR
                       (SYU-SRYKA       =   ZERO  )
-      *@
-                  OR  (SYU-HKNCOMBINUM =   "9999" )
                    CONTINUE
                ELSE
                    PERFORM 31092-SYUNOU-MAE-SEC
@@ -1314,8 +1302,6 @@
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-SYUNOU-MAX
                MOVE    SPA-SYUNOU-REC (IDX)    TO  SYUNOU-REC
-      *@
-             IF     (SYU-HKNCOMBINUM NOT =   "9999" )
       *
                IF     (SYU-DENPNUM NOT =   ZERO  )  AND
                       (SYU-SRYKA       =   ZERO  )
@@ -1348,9 +1334,6 @@
                        MOVE    ZERO        TO  SPA-TMAE-CHOSEI (IDX)
                    END-IF
                END-IF
-      *@
-             END-IF
-      *@
            END-PERFORM
       *
            .
@@ -5292,6 +5275,11 @@
                    MOVE    ZERO                TO  WRK-NYUKIN
                ELSE
                    MOVE    WRK-SEIKYU          TO  WRK-NYUKIN
+      *!!
+                   IF      WRK-SEIKYU          >=  SPA-GOK-NYUKIN
+                       MOVE    SPA-GOK-NYUKIN      TO  WRK-NYUKIN
+                   END-IF
+      *!!
                END-IF
            ELSE
                MOVE    LNK-SCNYUKIN-FURIWAKEZAN    TO  WRK-NYUKIN
