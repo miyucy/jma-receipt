@@ -282,6 +282,7 @@
       *  03.04.02    NACL-ÌçÏÆ    06/11/24  µÜ¾ë¸©ÃÏÊý¸øÈñ£±£°·î²þÀµÂÐ±þ
       *  03.04.03    NACL-ÌçÏÆ    06/12/06  °ñ¾ë¸©ÃÏÊý¸øÈñ°ìÉôÉéÃ´¶âµ­ºÜÂÐ±þ
       *  03.04.04    NACL-ÌçÏÆ    06/12/26  ÅìµþÍýÍÆÅù¡ÜÀº¿À¡¢·ë³ËÂÐ±þ
+      *  03.04.05    NACL-ÌçÏÆ    07/01/16  ¡Ê¡¡¡ËºÆ·Çµ­ºÜ¤Î½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -5991,9 +5992,9 @@
                   IF  FLG-KOH     =   ZERO
                      COMPUTE   RECE02-ZAITAKU-SAIKEI  =  
                                FTN-KOH-XXX
-                     IF   FTN-KOH-XXX   =   WRK-KOH-FTN 
-                           MOVE  ZERO   TO   RECE02-ZAITAKU-SAIKEI
-                     END-IF
+      ****           IF   FTN-KOH-XXX   =   WRK-KOH-FTN 
+      ****                 MOVE  ZERO   TO   RECE02-ZAITAKU-SAIKEI
+      ****           END-IF
                      IF   FTN-KOH-XXX   =   RECE02-FTNMONEY(1)
                            MOVE  ZERO   TO   RECE02-ZAITAKU-SAIKEI
                      END-IF
@@ -6008,9 +6009,9 @@
                         COMPUTE   RECE02-ZAITAKU-SAIKEI  =  
                                   FTN-KOH-XXX
                      END-IF
-                     IF   FTN-KOH-XXX   =   WRK-KOH-FTN 
-                           MOVE  ZERO   TO   RECE02-ZAITAKU-SAIKEI
-                     END-IF
+      ****           IF   FTN-KOH-XXX   =   WRK-KOH-FTN 
+      ****                 MOVE  ZERO   TO   RECE02-ZAITAKU-SAIKEI
+      ****           END-IF
                      IF   FTN-KOH-XXX   =   RECE02-FTNMONEY(1)
                            MOVE  ZERO   TO   RECE02-ZAITAKU-SAIKEI
                      END-IF
