@@ -50,6 +50,7 @@
            03  FLG-TOUYO-CHK           PIC 9(01).
            03  FLG-TOUYO-CHK1          PIC 9(01).
            03  FLG-TOUYO-CHK2          PIC 9(01).
+           03  FLG-NENREI-CD           PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -78,6 +79,15 @@
                05  WRK-SURYO-Z2    PIC X(01).
                05  WRK-SURYO-Z3    PIC ZZZZZ.
            03  WRK-SURYO-H         PIC X(11).
+      *    年令チェック
+           03  WRK-NENCD               PIC X(02).
+           03  WRK-NENREI.
+               05  WRK-NEN-YY          PIC 9(03).
+               05  WRK-NEN-MM          PIC 9(02).
+               05  WRK-NEN-DD          PIC 9(02).
+      *
+      *    年令単位テーブル
+           COPY    "CMNENREICD.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -151,7 +161,15 @@
       *        投与量
                IF    (SPA-COM-INPUTCD(IDX-Z)(1:1)  =   "6" ) AND
                      (SPA-ERRCD                    =   SPACE)
-                   PERFORM 1001-TOUYO-CHK-SEC
+                   IF     (SPA-COM-SURFLG (IDX-Z)  =   "1" )  OR
+                          (SPA-COM-SURCHK (IDX-Z)  NOT =   SPACE)
+                       PERFORM 1001-TOUYO-CHK-SEC
+                       MOVE    "1"             TO  SPA-COM-SURCHK
+                                                              (IDX-Z)
+                   ELSE
+                       MOVE    "2"             TO  SPA-COM-SURCHK
+                                                              (IDX-Z)
+                   END-IF
                END-IF
            END-PERFORM
       *
@@ -288,24 +306,19 @@
        10011-KGNAGE-CHK-SEC            SECTION.
       *
            MOVE    ZERO                TO  FLG-TOUYO-CHK1
-           IF     (SPA-COM-TOUYOKGNAGE (IDX-Z IDX) =   "AA")
-      *        新生児（２８日まで）
-               IF      (LNK-SC98-NENREI-YY     =   ZERO )  AND
-                       (LNK-SC98-NENREI-MM     =   ZERO )  AND
-                       (LNK-SC98-NENREI-DD     <   28   )
-                   CONTINUE
-               ELSE
-                   MOVE    1               TO  FLG-TOUYO-CHK1
-               END-IF
+           MOVE    SPA-COM-TOUYOKGNAGE (IDX-Z IDX)
+                                       TO  WRK-NENCD
+           PERFORM 10013-NENREICD-CHK-SEC
+           IF      FLG-NENREI-CD       =   1
+               CONTINUE
            ELSE
-                MOVE    ZERO               TO  WRK-NEN
-                MOVE    SPA-COM-TOUYOKGNAGE (IDX-Z IDX)
-                                           TO  WRK-NEN(2:2)
-                IF      LNK-SC98-NENREI-YY     <   WRK-NEN
-                    CONTINUE
-                ELSE
-                    MOVE    1              TO  FLG-TOUYO-CHK1
-               END-IF
+               MOVE    SPA-COM-TOUYOKGNAGE (IDX-Z IDX)
+                                           TO  WRK-NEN-YY(2:2)
+           END-IF
+           IF      LNK-SC98-NENREI     <   WRK-NENREI
+               CONTINUE
+           ELSE
+               MOVE    1               TO  FLG-TOUYO-CHK1
            END-IF
            .
        10011-KGNAGE-CHK-EXT.
@@ -316,23 +329,43 @@
        10012-JGNAGE-CHK-SEC            SECTION.
       *
            MOVE    ZERO                TO  FLG-TOUYO-CHK2
-           IF     (SPA-COM-TOUYOJGNAGE (IDX-Z IDX) =   "AA")
-      *        新生児（２８日まで）
-               IF      (LNK-SC98-NENREI-YY     =   ZERO )  AND
-                       (LNK-SC98-NENREI-MM     =   ZERO )  AND
-                       (LNK-SC98-NENREI-DD     <   28   )
-                   MOVE    1               TO  FLG-TOUYO-CHK2
-               END-IF
+           MOVE    SPA-COM-TOUYOJGNAGE (IDX-Z IDX)
+                                       TO  WRK-NENCD
+           PERFORM 10013-NENREICD-CHK-SEC
+           IF      FLG-NENREI-CD       =   1
+               CONTINUE
            ELSE
-                MOVE    ZERO               TO  WRK-NEN
-                MOVE    SPA-COM-TOUYOJGNAGE (IDX-Z IDX)
-                                           TO  WRK-NEN(2:2)
-                IF      LNK-SC98-NENREI-YY     <   WRK-NEN
-                    MOVE    1              TO  FLG-TOUYO-CHK2
-               END-IF
+               MOVE    SPA-COM-TOUYOJGNAGE (IDX-Z IDX)
+                                           TO  WRK-NEN-YY(2:2)
+           END-IF
+           IF      LNK-SC98-NENREI     <   WRK-NENREI
+               MOVE    1               TO  FLG-TOUYO-CHK2
            END-IF
            .
        10012-JGNAGE-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    年齢コードチェック処理
+      *****************************************************************
+       10013-NENREICD-CHK-SEC             SECTION.
+      *
+           MOVE    ZERO                TO  FLG-NENREI-CD
+           MOVE    ZERO                TO  WRK-NENREI
+      *
+           SET     NENREI-IDX          TO  1
+           SEARCH      NENREI-TBL-OCC VARYING   NENREI-IDX
+               AT  END
+                   MOVE    ZERO            TO  FLG-NENREI-CD
+               WHEN    NENREI-NENCD(NENREI-IDX) 
+                                           =   WRK-NENCD
+                   MOVE    1               TO  FLG-NENREI-CD
+                   MOVE    NENREI-DD (NENREI-IDX) 
+                                           TO  WRK-NEN-DD
+                   MOVE    NENREI-MM (NENREI-IDX) 
+                                           TO  WRK-NEN-MM
+           END-SEARCH
+           .
+       10013-NENREICD-CHK-EXT.
            EXIT.
       *
       *****************************************************************

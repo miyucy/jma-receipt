@@ -288,6 +288,7 @@
            03  FLG-CHNGE                         PIC 9(01).
            03  FLG-GENERICNAME                   PIC 9(01).
            03  FLG-TENSUPLUS2-CHK                PIC 9(01).
+           03  FLG-NENREI-CD                     PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -338,6 +339,19 @@
       *
            03  WRK-TANINAME        PIC X(24).
            03  WRK-KANZANCHI       PIC ZZZZ9.9(5).
+      *    年令チェック
+           03  WRK-NENCD               PIC X(02).
+           03  WRK-NENREI.
+               05  WRK-NEN-MM          PIC 9(02).
+               05  WRK-NEN-DD          PIC 9(02).
+           03  WRK-KGN-NENREI.
+               05  WRK-KGN-YY          PIC 9(02).
+               05  WRK-KGN-MM          PIC 9(02).
+               05  WRK-KGN-DD          PIC 9(02).
+           03  WRK-JGN-NENREI.
+               05  WRK-JGN-YY          PIC 9(02).
+               05  WRK-JGN-MM          PIC 9(02).
+               05  WRK-JGN-DD          PIC 9(02).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -351,6 +365,9 @@
       *
       *    単位の項目順テーブル
            COPY    "CMTANICD.INC".
+      *
+      *    年令単位テーブル
+           COPY    "CMNENREICD.INC".
       *
       *    ワーク点数マスタ
        01  WRK-TNS-TENSU-REC           PIC X(1290).
@@ -3293,6 +3310,30 @@
            EXIT.
       * 
       *****************************************************************
+      *    年齢コードチェック処理
+      *****************************************************************
+       5300-NENREICD-CHK-SEC             SECTION.
+      *
+           MOVE    ZERO                TO  FLG-NENREI-CD
+           MOVE    ZERO                TO  WRK-NENREI
+      *
+           SET     NENREI-IDX          TO  1
+           SEARCH      NENREI-TBL-OCC VARYING   NENREI-IDX
+               AT  END
+                   MOVE    ZERO            TO  FLG-NENREI-CD
+               WHEN    NENREI-NENCD(NENREI-IDX) 
+                                           =   WRK-NENCD
+                   MOVE    1               TO  FLG-NENREI-CD
+                   MOVE    NENREI-DD (NENREI-IDX) 
+                                           TO  WRK-NEN-DD
+                   MOVE    NENREI-MM (NENREI-IDX) 
+                                           TO  WRK-NEN-MM
+           END-SEARCH
+           .
+       5300-NENREICD-CHK-EXT.
+           EXIT.
+      * 
+      *****************************************************************
       *    下限年齢チェック処理
       *****************************************************************
        5241-KGNAGE-CHK-SEC             SECTION.
@@ -3300,8 +3341,12 @@
            IF     (SPA-GMN-TOUYOKGNAGE (IDX1)  =   SPACE )
                MOVE    ZERO            TO  SPA-GMN-TOUYOKGNAGE (IDX1)
            END-IF
-           IF     (SPA-GMN-TOUYOKGNAGE (IDX1)  =   "AA"  )
-               CONTINUE
+           MOVE    ZERO                TO  WRK-KGN-NENREI
+           MOVE    SPA-GMN-TOUYOKGNAGE (IDX1)  TO  WRK-NENCD
+           PERFORM 5300-NENREICD-CHK-SEC
+           IF      FLG-NENREI-CD       =   1
+               MOVE    WRK-NEN-DD          TO  WRK-KGN-DD
+               MOVE    WRK-NEN-MM          TO  WRK-KGN-MM
            ELSE
                INITIALIZE                      ORCSNUMAREA
                MOVE    SPA-GMN-TOUYOKGNAGE (IDX1)  TO  SNUM-INX
@@ -3314,6 +3359,8 @@
                ELSE
                    MOVE    SNUM-OUTEDT(14:2)   TO  SPA-GMN-TOUYOKGNAGE
                                                                  (IDX1)
+                   MOVE    SPA-GMN-TOUYOKGNAGE (IDX1)
+                                               TO  WRK-KGN-YY
                END-IF
            END-IF
            IF      SPA-ERRCD       NOT =   SPACE
@@ -3334,8 +3381,12 @@
            IF     (SPA-GMN-TOUYOJGNAGE (IDX1)  =   SPACE )
                MOVE    ZERO            TO  SPA-GMN-TOUYOJGNAGE (IDX1)
            END-IF
-           IF     (SPA-GMN-TOUYOJGNAGE (IDX1)  =   "AA"  )
-               CONTINUE
+           MOVE    ZERO                TO  WRK-JGN-NENREI
+           MOVE    SPA-GMN-TOUYOJGNAGE (IDX1)  TO  WRK-NENCD
+           PERFORM 5300-NENREICD-CHK-SEC
+           IF      FLG-NENREI-CD       =   1
+               MOVE    WRK-NEN-DD          TO  WRK-JGN-DD
+               MOVE    WRK-NEN-MM          TO  WRK-JGN-MM
            ELSE
                INITIALIZE                      ORCSNUMAREA
                MOVE    SPA-GMN-TOUYOJGNAGE (IDX1)  TO  SNUM-INX
@@ -3348,6 +3399,8 @@
                ELSE
                    MOVE    SNUM-OUTEDT(14:2)   TO  SPA-GMN-TOUYOJGNAGE
                                                                  (IDX1)
+                   MOVE    SPA-GMN-TOUYOJGNAGE (IDX1)
+                                               TO  WRK-JGN-YY
                END-IF
            END-IF
            IF     (SPA-GMN-TOUYOJGNAGE (IDX1)  =   ZERO )  OR
@@ -3359,17 +3412,8 @@
                    MOVE    "0024"              TO  SPA-ERRCD
                ELSE
       *            下限＞上限年齢はエラー
-                   IF     (SPA-GMN-TOUYOJGNAGE (IDX1)  =   "AA" )
-                       IF   (SPA-GMN-TOUYOKGNAGE (IDX1)  >   ZERO )
-                           MOVE    "0024"              TO  SPA-ERRCD
-                       END-IF
-                   ELSE
-                       IF    (SPA-GMN-TOUYOKGNAGE (IDX1)
-                                                   NOT =   "AA" ) AND
-                             (SPA-GMN-TOUYOKGNAGE (IDX1)
-                                       >   SPA-GMN-TOUYOJGNAGE (IDX1))
-                          MOVE    "0024"              TO  SPA-ERRCD
-                       END-IF
+                   IF     WRK-KGN-NENREI   >   WRK-JGN-NENREI
+                       MOVE    "0024"              TO  SPA-ERRCD
                    END-IF
                END-IF
            END-IF
@@ -4060,8 +4104,9 @@
                                                  INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "0022"
-                   STRING  "下限・上限年齢は、数字 または AA（新生児）"
-                           "で入力して下さい。"    DELIMITED  BY  SIZE
+                   STRING  "下限・上限年齢は、数字・AA（28日）・"
+                           "M1（1ヵ月）〜MC（12ヵ月）"
+                           "で入力して下さい"      DELIMITED  BY  SIZE
                                                    INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "0023"

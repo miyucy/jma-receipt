@@ -149,6 +149,8 @@
                            11  SPA-COM-KZMFLG4       PIC X(01).
       *                    警告済フラグ５（投与量チェック）
                            11  SPA-COM-KZMFLG5       PIC X(01).
+      *                    数量チェック済（投与量チェック）
+                           11  SPA-COM-SURCHK        PIC X(01).
       *                    併用算定済フラグ
       *********************11  SPA-COM-SDOFLG        PIC X(01).
       *                    基本チェック済フラグ

@@ -3976,6 +3976,10 @@
                        MOVE    ZERO                TO  FLG-INPUT-NASI
                    END-IF
                END-IF
+      *        数量チェック
+               IF      SPA-COM-SURCHK (IDX)    =   "2"
+                   MOVE    ZERO                TO  FLG-INPUT-NASI
+               END-IF
                MOVE    SPACE               TO  SPA-COM-CUR (IDX)
                MOVE    SPACE               TO  SPA-COM-IN  (IDX)
                MOVE    SPACE               TO  SPA-COM-IN2 (IDX)

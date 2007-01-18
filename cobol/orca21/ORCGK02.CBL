@@ -3994,7 +3994,6 @@
       *
              END-IF
       *
-      *
                MOVE    "key7"              TO  MCP-PATHNAME
                PERFORM 940-SRYACCT-READ-SEC
            END-PERFORM
@@ -5378,6 +5377,10 @@
                    IF      SPA-GMN-INPUTCD (IDX)   NOT =   SPACE
                        MOVE    ZERO                TO  FLG-INPUT-NASI
                    END-IF
+               END-IF
+      *        数量チェック
+               IF      SPA-COM-SURCHK (IDX)    =   "2"
+                   MOVE    ZERO                TO  FLG-INPUT-NASI
                END-IF
                MOVE    SPACE               TO  SPA-COM-CUR (IDX)
                MOVE    SPACE               TO  SPA-COM-IN  (IDX)
