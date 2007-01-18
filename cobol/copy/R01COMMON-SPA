@@ -40,6 +40,7 @@
       *  03.02.01    NACL-藤原    06/08/01  国保主科対応
       *
       *  03.04.01    NACL-藤原    06/12/05  未請求レセ対応
+      *  03.04.02    NACL-藤原    07/01/16  プリンタ一括設定対応
       *****************************************************************
        01  SPA-R01KYOUTU.
       *
@@ -119,6 +120,16 @@
       *中止ボタン状態フラグ
            05  SPA-R01-STOPFLG             PIC  9(01).
       *
+      *出力先設定用プリンタ
+           05  SPA-R01-PRTNM-G.
+               09  SPA-R01-PRTNM           PIC X(02).
+               09  FILLER                  PIC X(01).
+               09  SPA-R01-PRTNMMEI        PIC X(16).
+           05  SPA-R01-PRTNM-N-G.
+               09  SPA-R01-PRTNM-N         PIC X(02).
+               09  FILLER                  PIC X(01).
+               09  SPA-R01-PRTNM-NMEI      PIC X(16).
+     *
       *警告メッセージ
            05  SPA-RIDCD                   PIC  X(04).
            05  SPA-RIDCD2                  PIC  X(04).

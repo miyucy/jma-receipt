@@ -77,6 +77,9 @@
       *  03.02.02    NACL-藤原    06/07/24  マル長の別総括対応
       *  03.02.03    NACL-藤原    06/07/26  自賠責の枠印刷選択機能対応
       *  03.02.04    NACL-藤原    06/08/01  国保主科対応
+      *
+      *  03.04.01    NACL-藤原    07/01/16  レセプト一括作成出力順区分
+      *                                     （全体）の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -235,6 +238,12 @@
                                               PIC X(02).
                            11  SPA-GMN-F1     PIC X(01).
                            11  SPA-GMN-PRTJYUN3MEI
+                                              PIC X(22).
+                       09  SPA-GMN-PRTJYUN4-G.
+                           11  SPA-GMN-PRTJYUN4
+                                              PIC X(02).
+                           11  SPA-GMN-F1     PIC X(01).
+                           11  SPA-GMN-PRTJYUN4MEI
                                               PIC X(22).
                        09  SPA-GMN-AUTODSPKBN-G.
                            11  SPA-GMN-AUTODSPKBN
@@ -540,26 +549,33 @@
                    07  SPA-GMN-SRYKAHENKBN-MAX
                                               PIC 9(02).   
       * 
-                   07  SPA-GMN-PRTJYUN1LST    OCCURS  5.
+                   07  SPA-GMN-PRTJYUN1LST    OCCURS  10.
                        09  SPA-GMN-PRTJYUN1L  PIC X(02).
                        09  SPA-GMN-F1L        PIC X(01).
                        09  SPA-GMN-PRTJYUN1MEIL
                                               PIC X(22).
                    07  SPA-GMN-PRTJYUN1-MAX   PIC 9(02).   
       * 
-                   07  SPA-GMN-PRTJYUN2LST    OCCURS  5.
+                   07  SPA-GMN-PRTJYUN2LST    OCCURS  10.
                        09  SPA-GMN-PRTJYUN2L  PIC X(02).
                        09  SPA-GMN-F1L        PIC X(01).
                        09  SPA-GMN-PRTJYUN2MEIL
                                               PIC X(22).
                    07  SPA-GMN-PRTJYUN2-MAX   PIC 9(02).   
       * 
-                   07  SPA-GMN-PRTJYUN3LST    OCCURS  5.
+                   07  SPA-GMN-PRTJYUN3LST    OCCURS  10.
                        09  SPA-GMN-PRTJYUN3L  PIC X(02).
                        09  SPA-GMN-F1L        PIC X(01).
                        09  SPA-GMN-PRTJYUN3MEIL
                                               PIC X(22).
                    07  SPA-GMN-PRTJYUN3-MAX   PIC 9(02).   
+      * 
+                   07  SPA-GMN-PRTJYUN4LST    OCCURS  10.
+                       09  SPA-GMN-PRTJYUN4L  PIC X(02).
+                       09  SPA-GMN-F1L        PIC X(01).
+                       09  SPA-GMN-PRTJYUN4MEIL
+                                              PIC X(22).
+                   07  SPA-GMN-PRTJYUN4-MAX   PIC 9(02).   
       * 
                    07  SPA-GMN-AUTODSPKBNLST  OCCURS  2.
                        09  SPA-GMN-AUTODSPKBNL
@@ -1222,7 +1238,31 @@
            MOVE    "患者番号順"        TO  SPA-GMN-PRTJYUN2MEIL (4)
            MOVE    "05"                TO  SPA-GMN-PRTJYUN2L    (5)
            MOVE    "入力順"            TO  SPA-GMN-PRTJYUN2MEIL (5)
-           MOVE    5                   TO  SPA-GMN-PRTJYUN2-MAX 
+           MOVE    "07"                TO  SPA-GMN-PRTJYUN2L    (6)
+           MOVE    "カナ氏名順（全体）"
+                                       TO  SPA-GMN-PRTJYUN2MEIL (6)
+           MOVE    "08"                TO  SPA-GMN-PRTJYUN2L    (7)
+           MOVE    "患者番号順（全体）"
+                                       TO  SPA-GMN-PRTJYUN2MEIL (7)
+           MOVE    7                   TO  SPA-GMN-PRTJYUN2-MAX 
+      *
+           MOVE    "01"                TO  SPA-GMN-PRTJYUN4L    (1)
+           MOVE    "保険者番号・カナ氏名順"
+                                       TO  SPA-GMN-PRTJYUN4MEIL (1)
+           MOVE    "02"                TO  SPA-GMN-PRTJYUN4L    (2)
+           MOVE    "保険者番号・患者番号順"
+                                       TO  SPA-GMN-PRTJYUN4MEIL (2)
+           MOVE    "03"                TO  SPA-GMN-PRTJYUN4L    (3)
+           MOVE    "カナ氏名順"        TO  SPA-GMN-PRTJYUN4MEIL (3)
+           MOVE    "04"                TO  SPA-GMN-PRTJYUN4L    (4)
+           MOVE    "患者番号順"        TO  SPA-GMN-PRTJYUN4MEIL (4)
+           MOVE    "07"                TO  SPA-GMN-PRTJYUN4L    (5)
+           MOVE    "カナ氏名順（全体）"
+                                       TO  SPA-GMN-PRTJYUN4MEIL (5)
+           MOVE    "08"                TO  SPA-GMN-PRTJYUN4L    (6)
+           MOVE    "患者番号順（全体）"
+                                       TO  SPA-GMN-PRTJYUN4MEIL (6)
+           MOVE    6                   TO  SPA-GMN-PRTJYUN4-MAX 
       *
            MOVE    "0"                 TO  SPA-GMN-AUTODSPKBNL    (1)
            MOVE    "自動遷移しない"    TO  SPA-GMN-AUTODSPKBNMEIL (1)
@@ -1772,6 +1812,18 @@
                    END-IF
                END-PERFORM
       *
+               MOVE    SYS-2005-PRTJYUNKBN4    TO  SPA-GMN-PRTJYUN4
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       SPA-GMN-PRTJYUN4-MAX
+                   IF      SPA-GMN-PRTJYUN4
+                                   =   SPA-GMN-PRTJYUN4L (IDY)
+                       MOVE    SPA-GMN-PRTJYUN4LST (IDY)
+                                           TO  SPA-GMN-PRTJYUN4-G
+                       MOVE    SPA-GMN-PRTJYUN4-MAX
+                                           TO  IDY
+                   END-IF
+               END-PERFORM
+      *
                MOVE    SYS-2005-MOJI-KISAIKBN  TO  SPA-GMN-MOJI-KISAIKBN
                PERFORM VARYING IDY FROM    1   BY  1
                        UNTIL   IDY >       SPA-GMN-MOJI-KISAIKBN-MAX
@@ -2159,6 +2211,10 @@
                MOVE    SPA-GMN-PRTJYUN3LST (1)
                                            TO  SPA-GMN-PRTJYUN3-G
            END-IF                                              
+      *****IF     SPA-GMN-PRTJYUN4     =   SPACE
+      *****    MOVE    SPA-GMN-PRTJYUN4LST (1)
+      *****                                TO  SPA-GMN-PRTJYUN4-G
+      *****END-IF                                              
            IF     SPA-GMN-MOJI-KISAIKBN    =   SPACE
                MOVE    SPA-GMN-MOJI-KISAIKBNLST (1)
                                            TO  SPA-GMN-MOJI-KISAIKBN-G
@@ -2295,6 +2351,7 @@
            MOVE    W12-PRTJYUNKBN1     TO  SPA-GMN-PRTJYUN1-G
            MOVE    W12-PRTJYUNKBN2     TO  SPA-GMN-PRTJYUN2-G
            MOVE    W12-PRTJYUNKBN3     TO  SPA-GMN-PRTJYUN3-G
+           MOVE    W12-PRTJYUNKBN4     TO  SPA-GMN-PRTJYUN4-G
       *
            MOVE    W12-FRAME-JIBAI     TO  SPA-GMN-FRAME-JIBAIPRTKBN-G
            MOVE    W12-FRAME-JIBAI-N   TO  SPA-GMN-FRAME-JIBAIPRTKBN-N-G
@@ -2443,6 +2500,11 @@
            END-IF
       *
            PERFORM 4122-AUTODSPKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4150-PRTJYUN4-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
@@ -3189,6 +3251,34 @@
            END-IF    
            .
        4122-AUTODSPKBN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    一括作成出力順（全体）チェック
+      *****************************************************************
+       4150-PRTJYUN4-CHK-SEC       SECTION.
+      *
+           IF      SPA-GMN-PRTJYUN4   =   SPACE
+               CONTINUE
+           ELSE
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       SPA-GMN-PRTJYUN4-MAX
+                   IF      SPA-GMN-PRTJYUN4
+                                   =   SPA-GMN-PRTJYUN4L (IDY)
+                       MOVE    SPA-GMN-PRTJYUN4LST (IDY)
+                                           TO  SPA-GMN-PRTJYUN4-G
+                       MOVE    SPA-GMN-PRTJYUN4-MAX
+                                           TO  IDY
+                   END-IF                                     
+               END-PERFORM
+      *     
+               IF      SPA-GMN-PRTJYUN4MEI =   SPACE
+                   MOVE    40                  TO  SPA-GMN-CUR
+                   MOVE    "0041"              TO  SPA-ERRCD
+               END-IF
+           END-IF    
+           .
+       4150-PRTJYUN4-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4126,6 +4216,7 @@
            MOVE    SPA-GMN-PRTJYUN1        TO  SYS-2005-PRTJYUNKBN1
            MOVE    SPA-GMN-PRTJYUN2        TO  SYS-2005-PRTJYUNKBN2
            MOVE    SPA-GMN-PRTJYUN3        TO  SYS-2005-PRTJYUNKBN3
+           MOVE    SPA-GMN-PRTJYUN4        TO  SYS-2005-PRTJYUNKBN4
            MOVE    SPA-GMN-MOJI-KISAIKBN   TO  SYS-2005-MOJI-KISAIKBN
            MOVE    SPA-GMN-KYURATE-KISAIKBN
                                            TO  SYS-2005-KYURATE-KISAIKBN
@@ -4512,6 +4603,7 @@
            MOVE    SPA-GMN-PRTJYUN1-G       TO  W12-PRTJYUNKBN1
            MOVE    SPA-GMN-PRTJYUN2-G       TO  W12-PRTJYUNKBN2
            MOVE    SPA-GMN-PRTJYUN3-G       TO  W12-PRTJYUNKBN3
+           MOVE    SPA-GMN-PRTJYUN4-G       TO  W12-PRTJYUNKBN4
            MOVE    SPA-GMN-MOJI-KISAIKBN-G  TO  W12-MOJI-KISAIKBN
            MOVE    SPA-GMN-KYURATE-KISAIKBN-G
                                             TO  W12-KYURATE-KISAIKBN
@@ -4768,6 +4860,14 @@
            END-PERFORM
            MOVE    SPA-GMN-PRTJYUN2-MAX
                                        TO  W12-PRTJYUNKBN2-COUNT 
+      *     
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       SPA-GMN-PRTJYUN4-MAX
+               MOVE    SPA-GMN-PRTJYUN4LST (IDY)
+                                       TO  W12-PRTJYUNKBN4LST (IDY)
+           END-PERFORM
+           MOVE    SPA-GMN-PRTJYUN4-MAX
+                                       TO  W12-PRTJYUNKBN4-COUNT 
       *     
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >       SPA-GMN-MOJI-KISAIKBN-MAX
@@ -5051,6 +5151,9 @@
                    MOVE    "主科社保設定入力エラー"      TO  SPA-ERRMSG
                WHEN    "0040"
                    MOVE    "主科国保設定入力エラー"      TO  SPA-ERRMSG
+               WHEN    "0041"
+                   MOVE    "一括作成出力順（全体）入力エラー"
+                                                         TO  SPA-ERRMSG
       *
                WHEN    "0096"
                    STRING  "一括作成出力順（国保）の指定が編綴順です。"
@@ -5201,6 +5304,8 @@
                     MOVE  "KKHPRTNM_NEXT_N"  TO   MCP-WIDGET
                 WHEN    28
                     MOVE  "AUTODSPKBN"       TO   MCP-WIDGET
+                WHEN    40
+                    MOVE  "PRTJYUNKBN4"      TO   MCP-WIDGET
                 WHEN    29
                     MOVE  "PRTJYUNKBN1"      TO   MCP-WIDGET
                 WHEN    31
@@ -5295,7 +5400,7 @@
       *
             EVALUATE    SPA-GMN-CUR
                 WHEN    1   THRU    10
-                WHEN    12  THRU    39
+                WHEN    12  THRU    40
                     MOVE    0                TO  W12-PAGENO
                 WHEN    200 THRU    209
                     MOVE    1                TO  W12-PAGENO
@@ -5384,7 +5489,13 @@
                WHEN    "NEXTPRTKBN"
                    MOVE    28          TO  SPA-GMN-CUR
                WHEN    "AUTODSPKBN"
-                   MOVE    29          TO  SPA-GMN-CUR
+                   MOVE    40          TO  SPA-GMN-CUR
+               WHEN    "PRTJYUNKBN4"
+                   IF      SPA-GMN-PRTJYUN4 =   SPACE
+                       MOVE    29          TO  SPA-GMN-CUR
+                   ELSE
+                       MOVE    30          TO  SPA-GMN-CUR
+                   END-IF
                WHEN    "PRTJYUNKBN1"
                    MOVE    31          TO  SPA-GMN-CUR
                WHEN    "PRTJYUNKBN3"

@@ -500,6 +500,8 @@ COPYS = \
 	R02SCR-SPA \
 	R03.INC \
 	R04.INC \
+	R05.INC \
+	R06.INC \
 	R96.INC \
 	R97.INC \
 	R98.INC \
@@ -1105,7 +1107,6 @@ COPYS = \
         CPORCSMEIHEN.INC \
         CPORCSTEIKI01.INC \
         CPTEIKI1BTPARA.INC \
-        R05.INC \
         N22.INC \
         N21SCR-SPA \
         CPYAKUJYOTEMP.INC \

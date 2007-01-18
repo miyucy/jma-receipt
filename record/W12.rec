@@ -138,26 +138,33 @@ W12	{
 					count	int;
 					item	varchar(20)[2];
 				};
+				PRTJYUNKBN4_COMBO	{
+					PRTJYUNKBN4	{
+						value	varchar(26);
+					};
+					count	int;
+					item	varchar(26)[10];
+				};
 				PRTJYUNKBN1_COMBO	{
 					PRTJYUNKBN1	{
 						value	varchar(26);
 					};
 					count	int;
-					item	varchar(26)[5];
+					item	varchar(26)[10];
 				};
 				PRTJYUNKBN3_COMBO	{
 					PRTJYUNKBN3	{
 						value	varchar(26);
 					};
 					count	int;
-					item	varchar(26)[5];
+					item	varchar(26)[10];
 				};
 				PRTJYUNKBN2_COMBO	{
 					PRTJYUNKBN2	{
 						value	varchar(26);
 					};
 					count	int;
-					item	varchar(26)[5];
+					item	varchar(26)[10];
 				};
 			};
 			fi29	{

@@ -101,6 +101,7 @@
       *
       *  03.04.01    NACL-藤原    06/11/01  照会機能連携対応
       *  03.04.02    NACL-藤原    06/12/05  未請求レセ対応
+      *  03.04.03    NACL-藤原    07/01/16  プリンタ一括設定対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -399,6 +400,7 @@
            COPY    "R03.INC".
            COPY    "R04.INC".
            COPY    "R05.INC".
+           COPY    "R06.INC".
            COPY    "R96.INC".
            COPY    "R97.INC".
            COPY    "R98.INC".
@@ -515,6 +517,9 @@
                WHEN    "R99"
                    PERFORM 340-R99-SET-SEC
                    GO      TO      300-SCREEN-EXT
+               WHEN    "R06"
+                   PERFORM 340-R06-SET-SEC
+                   GO      TO      300-SCREEN-EXT
                WHEN    "R05"
                    GO      TO      300-SCREEN-EXT
            END-EVALUATE
@@ -533,6 +538,7 @@
        310-SPASET-SEC              SECTION.
       *
            INITIALIZE              SPA-R02-AREA
+                                   SPA-GMN-PRTNM-AREA
       *
       *    処理区分
            MOVE    "T"             TO  SPA-GMN-SYOKBN
@@ -649,13 +655,26 @@
            MOVE    "カナ氏名順"          TO  SPA-GMN-PRTJYUNMEIL (3)
            MOVE    "04"                  TO  SPA-GMN-PRTJYUNL    (4)
            MOVE    "患者番号順"          TO  SPA-GMN-PRTJYUNMEIL (4)
+           MOVE    4                     TO  SPA-GMN-PRTJYUN-MAX
            IF    ( SPA-R01-FILEKBN       =   "2"             )
            AND   ( SPA-R01-RECE07-SYORISBT
                                          =   ZERO    OR  "3"
                                                      OR  "4" )
                MOVE    "05"                  TO  SPA-GMN-PRTJYUNL    (5)
                MOVE    "入力順"              TO  SPA-GMN-PRTJYUNMEIL (5)
+               ADD     1                     TO  SPA-GMN-PRTJYUN-MAX
            END-IF
+           ADD     1                     TO  SPA-GMN-PRTJYUN-MAX
+           MOVE    "07"                  TO  SPA-GMN-PRTJYUNL
+                                                 (SPA-GMN-PRTJYUN-MAX)
+           MOVE    "カナ氏名順（全体）"
+                                         TO  SPA-GMN-PRTJYUNMEIL
+                                                 (SPA-GMN-PRTJYUN-MAX)
+           ADD     1                     TO  SPA-GMN-PRTJYUN-MAX
+           MOVE    "08"                  TO  SPA-GMN-PRTJYUNL
+                                                 (SPA-GMN-PRTJYUN-MAX)
+           MOVE    "患者番号順（全体）"  TO  SPA-GMN-PRTJYUNMEIL
+                                                 (SPA-GMN-PRTJYUN-MAX)
       *
            MOVE    SPA-GMN-PRTJYUNLST(01)
                                          TO  SPA-GMN-PRTJYUN-G
@@ -672,6 +691,7 @@
                MOVE    "カナ氏名順"      TO  SPA-GMN-PRTJYUN1MEIL (3)
                MOVE    "04"              TO  SPA-GMN-PRTJYUN1L    (4)
                MOVE    "患者番号順"      TO  SPA-GMN-PRTJYUN1MEIL (4)
+               MOVE    4                 TO  SPA-GMN-PRTJYUN1-MAX
                IF    ( SPA-R01-RECEKBN   =   ZERO    OR  "2" )
                AND   ( SPA-R01-RECE07-HSEQNUM
                                      NOT =   ZERO            )
@@ -679,6 +699,7 @@
                                      NOT =   "99999999"      )
                    MOVE    "06"              TO  SPA-GMN-PRTJYUN1L   (5)
                    MOVE    "編綴順"          TO  SPA-GMN-PRTJYUN1MEIL(5)
+                   MOVE    5                 TO  SPA-GMN-PRTJYUN1-MAX
                END-IF
       *
                MOVE    SPA-GMN-PRTJYUN1LST(01)
@@ -862,15 +883,21 @@
                    MOVE   SYS-2005-KKHPRTNM-NEXT
                                         TO  SYS-2005-KKHPRTNM-NEXT-N
            END-IF
-           IF      SYS-2005-PRTJYUNKBN1 =   SPACE
-                   MOVE   "01"          TO  SYS-2005-PRTJYUNKBN1
+      *
+           IF      SYS-2005-PRTJYUNKBN4 =   SPACE
+               IF      SYS-2005-PRTJYUNKBN1 =   SPACE
+                       MOVE   "01"          TO  SYS-2005-PRTJYUNKBN1
+               END-IF
+               IF      SYS-2005-PRTJYUNKBN3 =   SPACE
+                       MOVE    SYS-2005-PRTJYUNKBN1
+                                            TO  SYS-2005-PRTJYUNKBN3
+               END-IF
+           ELSE
+               MOVE   SYS-2005-PRTJYUNKBN4  TO  SYS-2005-PRTJYUNKBN1
+                                                SYS-2005-PRTJYUNKBN3 
            END-IF
            IF      SYS-2005-PRTJYUNKBN2 =   SPACE
                    MOVE   "01"          TO  SYS-2005-PRTJYUNKBN2
-           END-IF
-           IF      SYS-2005-PRTJYUNKBN3 =   SPACE
-                   MOVE    SYS-2005-PRTJYUNKBN1
-                                        TO  SYS-2005-PRTJYUNKBN3
            END-IF
            MOVE    SYS-2005-SYAPRTNM-N  TO  SPA-NAI-2005-SYAPRTNM-N
            MOVE    SYS-2005-KKHPRTNM-N  TO  SPA-NAI-2005-KKHPRTNM-N
@@ -882,25 +909,27 @@
       *    出力順（一括作成）
            IF      SPA-R01-FILEKBN       =   "1" 
                PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       5
+                       UNTIL   IDX >       SPA-GMN-PRTJYUN-MAX
                        OR      SPA-GMN-PRTJYUNL (IDX)
                                    =   SPACE
                    IF      SYS-2005-PRTJYUNKBN1
                                            =   SPA-GMN-PRTJYUNL (IDX)
                        MOVE    SPA-GMN-PRTJYUNLST(IDX)
                                                TO  SPA-GMN-PRTJYUN-G
-                       MOVE    5               TO  IDX
+                       MOVE    SPA-GMN-PRTJYUN-MAX
+                                               TO  IDX
                    END-IF
                END-PERFORM
                PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       5
+                       UNTIL   IDX >       SPA-GMN-PRTJYUN1-MAX
                        OR      SPA-GMN-PRTJYUN1L (IDX)
                                    =   SPACE
                    IF      SYS-2005-PRTJYUNKBN3
                                            =   SPA-GMN-PRTJYUN1L (IDX)
                        MOVE    SPA-GMN-PRTJYUN1LST(IDX)
                                                TO  SPA-GMN-PRTJYUN1-G
-                       MOVE    5               TO  IDX
+                       MOVE    SPA-GMN-PRTJYUN1-MAX
+                                               TO  IDX
                    END-IF
                END-PERFORM
            ELSE
@@ -910,7 +939,7 @@
                                            TO  SYS-2005-PRTJYUNKBN2
                END-IF
                PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       5
+                       UNTIL   IDX >       SPA-GMN-PRTJYUN-MAX
                        OR      SPA-GMN-PRTJYUNL (IDX)
                                    =   SPACE
                    IF      SYS-2005-PRTJYUNKBN2
@@ -918,7 +947,8 @@
                        MOVE    SPA-GMN-PRTJYUNLST(IDX)
                                                TO  SPA-GMN-PRTJYUN-G
                                                    SPA-GMN-PRTJYUN1-G
-                       MOVE    5               TO  IDX
+                       MOVE    SPA-GMN-PRTJYUN-MAX
+                                               TO  IDX
                    END-IF
                END-PERFORM
            END-IF    
@@ -1179,7 +1209,7 @@
                                            SPA-NAI-PRTJYUNI    (IDW IDX)
                    MOVE    SYS-2003-TEISYUTUSAKI   TO
                                            SPA-NAI-TEISYUTUSAKI(IDW IDX)
-                   MOVE    SYS-2003-SYUBETU-G      TO
+                   MOVE    SYS-2003-SYUBETU (1)     TO
                                            SPA-NAI-SYUBETU-G   (IDW IDX)
                    MOVE    SYS-2003-SYURUINAME     TO
                                            SPA-GMN-TSYURUINAME (IDW IDX)
@@ -1202,7 +1232,7 @@
                MOVE    ZERO                TO  SPA-GMN-TKENSU (IDW IDX)
       *
                PERFORM VARYING IDY FROM    1   BY  1
-                       UNTIL   IDY >       10
+                       UNTIL   IDY >       1
                        OR      SPA-NAI-SYUBETU (IDW IDX IDY)   =   SPACE 
                    INITIALIZE                  RECE07-REC
                    MOVE    SPA-R01-RECE07-KEY  TO  RECE07-KEY
@@ -1908,6 +1938,52 @@
            EXIT.
       *
       *****************************************************************
+      *    プリンタ設定画面戻り処理
+      *****************************************************************
+       340-R06-SET-SEC             SECTION.
+      *
+           EVALUATE    SPA-RID1-FLG
+               WHEN    SPACE
+                   CONTINUE
+               WHEN    "AL" 
+                   PERFORM VARYING IDW FROM    1   BY  1
+                           UNTIL   IDW >       SPA-GMN-PAGE-MAX
+                       PERFORM VARYING IDX FROM    1   BY  1
+                               UNTIL   IDX >       WRK-CONS-LINE-MAX
+                           IF      SPA-NAI-PRTJYUNI(IDW IDX)   =   SPACE
+                               CONTINUE
+                           ELSE
+                               MOVE    SPA-R01-PRTNM-G     TO
+                                           SPA-GMN-TPRTNM-G   (IDW IDX)
+                               MOVE    SPA-R01-PRTNM-N-G   TO
+                                           SPA-GMN-TPRTNM-N-G (IDW IDX)
+                           END-IF 
+                       END-PERFORM
+                   END-PERFORM
+               WHEN    "PG" 
+                   MOVE    SPA-GMN-PAGE    TO  IDW
+                   PERFORM VARYING IDX FROM    1   BY  1
+                           UNTIL   IDX >       WRK-CONS-LINE-MAX
+                       IF      SPA-NAI-PRTJYUNI(IDW IDX)   =   SPACE
+                           CONTINUE
+                       ELSE
+                           MOVE    SPA-R01-PRTNM-G     TO
+                                           SPA-GMN-TPRTNM-G   (IDW IDX)
+                           MOVE    SPA-R01-PRTNM-N-G   TO
+                                           SPA-GMN-TPRTNM-N-G (IDW IDX)
+                       END-IF 
+                   END-PERFORM
+           END-EVALUATE     
+      *
+           MOVE    SPACE           TO  SPA-RID1-FLG
+           MOVE    SPACE           TO  SPA-R01-PRTNM-G
+                                       SPA-R01-PRTNM-N-G
+           MOVE    SPACE           TO  SPA-R01-MOTOPG
+           .
+       340-R06-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    プレビュー処理
       *****************************************************************
        4501-NEXT-GMN-SEC            SECTION.       
@@ -1973,6 +2049,9 @@
       *    編綴情報表示
                WHEN    "CLICKED"       ALSO    "B13"
                    PERFORM 490-HENTETU-SEC
+      *    プリンタ一括設定
+               WHEN    "CLICKED"       ALSO    "B14"
+                   PERFORM 490-PRINTER-SETTEI-SEC
       *    処理確認
                WHEN    "CLICKED"       ALSO    "B24"
                    PERFORM 490-KAKUNIN-SEC
@@ -2399,11 +2478,11 @@
            ELSE    
                MOVE    ZERO                 TO  WRK-HENFLG
                PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       5
+                       UNTIL   IDX >       SPA-GMN-PRTJYUN-MAX
                        OR      SPA-GMN-PRTJYUNLST  (IDX)   =   SPACE
                    IF      SPA-GMN-PRTJYUN =   SPA-GMN-PRTJYUNL (IDX)
                        MOVE    1                   TO  WRK-HENFLG
-                       MOVE    5                   TO  IDX
+                       MOVE    SPA-GMN-PRTJYUN-MAX TO  IDX
                    END-IF
                END-PERFORM
                IF      WRK-HENFLG          =   ZERO     
@@ -2412,12 +2491,21 @@
            END-IF
       *
            IF      SPA-R01-FILEKBN     =   "1"
-               CONTINUE
+               IF      SPA-GMN-PRTJYUN     =   "07"    OR  "08"
+                   MOVE    SPA-GMN-PRTJYUN-G   TO  SPA-GMN-PRTJYUN1-G
+               ELSE
+                   IF      SPA-GMN-PRTJYUN-OLD  =  "07"    OR  "08"
+                       MOVE    SPA-GMN-PRTJYUN-G
+                                                TO  SPA-GMN-PRTJYUN1-G
+                   END-IF
+               END-IF
            ELSE
                MOVE    SPA-GMN-PRTJYUN-G   TO  SPA-GMN-PRTJYUN1-G
            END-IF
       *
            IF      SPA-ERRCD           =   SPACE
+               MOVE    SPA-GMN-PRTJYUN     TO  SPA-GMN-PRTJYUN-OLD
+
       *        主科設定時は全科に戻す
                IF    ( SPA-GMN-SYUKA-MAX   >   ZERO )
                AND   ( SPA-GMN-SYUKA   NOT =   "00" )
@@ -2520,11 +2608,12 @@
            ELSE    
                MOVE    ZERO                 TO  WRK-HENFLG
                PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       5
+                       UNTIL   IDX >       SPA-GMN-PRTJYUN1-MAX
                        OR      SPA-GMN-PRTJYUN1LST  (IDX)   =   SPACE
                    IF      SPA-GMN-PRTJYUN1 =   SPA-GMN-PRTJYUN1L (IDX)
                        MOVE    1                   TO  WRK-HENFLG
-                       MOVE    5                   TO  IDX
+                       MOVE    SPA-GMN-PRTJYUN1-MAX
+                                                   TO  IDX
                    END-IF
                END-PERFORM
                IF      WRK-HENFLG          =   ZERO     
@@ -3465,7 +3554,7 @@
                        CONTINUE
                    ELSE    
                        PERFORM VARYING IDY FROM    1   BY  1
-                               UNTIL   IDY >       10
+                               UNTIL   IDY >       1
                                OR      SPA-NAI-SYUBETU (IDW IDX IDY)
                                                            =   SPACE
                                OR      SPA-ERRCD       NOT =   SPACE
@@ -3984,6 +4073,48 @@
        490-HENTETU-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    プリンタ一括設定処理
+      *****************************************************************
+       490-PRINTER-SETTEI-SEC            SECTION.
+      *
+           MOVE    SPACE               TO  SPA-MOTOPG
+           MOVE    SPA-GMN-TPRTNM-G   (SPA-GMN-PAGE 1)
+                                       TO  SPA-R01-PRTNM-G 
+           MOVE    SPA-GMN-TPRTNM-N-G (SPA-GMN-PAGE 1)
+                                       TO  SPA-R01-PRTNM-N-G
+           MOVE    "R02"               TO  SPA-R01-MOTOPG
+      *
+           MOVE    SPA-R01KYOUTU       TO  SPA-WORK
+           MOVE    SPA-AREA            TO  SPA-COMMON
+           MOVE    SPA-R02             TO  SPA-FREE
+      *
+           MOVE    "LINK"              TO  MCP-STATUS
+           MOVE    SPACE               TO  MCP-EVENT
+      *
+           CALL    "ORCGR06"           USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA
+      *
+           MOVE    SPA-COMMON      TO  SPA-AREA
+           MOVE    SPA-WORK        TO  SPA-R01KYOUTU
+           MOVE    SPA-FREE        TO  SPA-R02
+      *
+           MOVE    "R02"                TO  SPA-MOTOPG
+           MOVE    "R06"                TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"                TO  MCP-PUTTYPE
+           MOVE    "R06"                TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                    TO  FLG-END
+      *                                      
+           .
+       490-PRINTER-SETTEI-EXT.
+           EXIT.
       *
       *****************************************************************
       *    処理確認処理
@@ -4208,7 +4339,7 @@
       *
            MOVE    SPA-GMN-PRTJYUN-G   TO  R02-PRTJYUN
            PERFORM VARYING IDX FROM    1       BY  1
-                   UNTIL       IDX             >   5
+                   UNTIL       IDX             >   SPA-GMN-PRTJYUN-MAX
                    OR          SPA-GMN-PRTJYUNL    (IDX)   =   SPACE 
                MOVE    SPA-GMN-PRTJYUNLST(IDX) TO  R02-PRTJYUNLST (IDX)
                MOVE    IDX                     TO  R02-PRTJYUN-COUNT
@@ -4216,7 +4347,7 @@
       *
            MOVE    SPA-GMN-PRTJYUN1-G   TO  R02-PRTJYUN1
            PERFORM VARYING IDX FROM    1       BY  1
-                   UNTIL       IDX             >   5
+                   UNTIL       IDX             >   SPA-GMN-PRTJYUN1-MAX
                    OR          SPA-GMN-PRTJYUN1L (IDX) =   SPACE 
                MOVE    SPA-GMN-PRTJYUN1LST(IDX)
                                            TO  R02-PRTJYUN1LST (IDX)
@@ -4236,6 +4367,9 @@
                MOVE    "  社保"            TO  R02-LABEL1
                MOVE    "  国保"            TO  R02-LABEL2
                MOVE    "出力順"            TO  R02-LABEL3
+               IF      SPA-GMN-PRTJYUN     =   "07"    OR  "08"
+                   MOVE    WIDGET-INSENSITIVE  TO  R02-PRTJYUN1-STATE
+               END-IF
            ELSE 
                MOVE    WIDGET-INSENSITIVE  TO  R02-PRTJYUN1-STATE
                MOVE    "出力順"            TO  R02-LABEL1

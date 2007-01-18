@@ -9,6 +9,7 @@ bind	"R02"		"OpenCOBOL"	"ORCGR02";
 bind	"R03"		"OpenCOBOL"	"ORCGR03";
 bind	"R04"		"OpenCOBOL"	"ORCGR04";
 bind	"R05"		"OpenCOBOL"	"ORCGR05";
+bind	"R06"		"OpenCOBOL"	"ORCGR06";
 bind    "R96"		"OpenCOBOL"	"ORCGR96";
 bind    "R97"		"OpenCOBOL"	"ORCGR97";
 bind    "R98"		"OpenCOBOL"	"ORCGR98";
@@ -29,6 +30,7 @@ data	{
 		R03;
 		R04;
 		R05;
+		R06;
 		R96;
 		R97;
 		R98;

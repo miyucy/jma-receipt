@@ -22,9 +22,20 @@
       *****************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  03.04.01    NACL-藤原    07/01/16  プリンタ一括設定機能
       *****************************************************************
-      *    画面用ＳＰＡ
+      *
        01  SPA-R02.
+      *
+      *    プリンタ情報
+           03  SPA-GMN-PRTNM-AREA.
+               05  SPA-GMN-PRTNMLST                OCCURS  100.
+                   07  SPA-GMN-PRTNML              PIC X(02).
+                   07  SPA-GMN-F1L                 PIC X(01).
+                   07  SPA-GMN-PRTNMMEIL           PIC X(16).
+                   07  SPA-GMN-PRTNM-MAX           PIC 9(03).
+      *
+      *    医保分印刷指示画面
            03  SPA-R02-AREA.
                05  SPA-GMN-PAGE                    PIC 9(02).
                05  SPA-GMN-PAGE-MAX                PIC 9(02).
@@ -44,22 +55,25 @@
                        09  SPA-GMN-F1L             PIC X(01).
                        09  SPA-GMN-SYUKAMEIL       PIC X(18).
                    07  SPA-GMN-SYUKA-MAX           PIC 9(02).
+                   07  SPA-GMN-PRTJYUN-OLD         PIC X(02).
                    07  SPA-GMN-PRTJYUN-G.
                        09  SPA-GMN-PRTJYUN         PIC X(02).
                        09  SPA-GMN-F1              PIC X(01).
                        09  SPA-GMN-PRTJYUNMEI      PIC X(22).
-                   07  SPA-GMN-PRTJYUNLST          OCCURS  5.
+                   07  SPA-GMN-PRTJYUNLST          OCCURS  10.
                        09  SPA-GMN-PRTJYUNL        PIC X(02).
                        09  SPA-GMN-F1L             PIC X(01).
                        09  SPA-GMN-PRTJYUNMEIL     PIC X(22).
+                   07  SPA-GMN-PRTJYUN-MAX         PIC 9(02).
                    07  SPA-GMN-PRTJYUN1-G.
                        09  SPA-GMN-PRTJYUN1        PIC X(02).
                        09  SPA-GMN-F1              PIC X(01).
                        09  SPA-GMN-PRTJYUN1MEI     PIC X(22).
-                   07  SPA-GMN-PRTJYUN1LST         OCCURS  5.
+                   07  SPA-GMN-PRTJYUN1LST         OCCURS  10.
                        09  SPA-GMN-PRTJYUN1L       PIC X(02).
                        09  SPA-GMN-F1L             PIC X(01).
                        09  SPA-GMN-PRTJYUN1MEIL    PIC X(22).
+                   07  SPA-GMN-PRTJYUN1-MAX        PIC 9(02).
                    07  SPA-GMN-PREFKBN-G.
                        09  SPA-GMN-PREFKBN         PIC X(01).
                        09  SPA-GMN-F1              PIC X(01).
@@ -76,11 +90,6 @@
                        09  SPA-GMN-PRTKBNL         PIC X(01).
                        09  SPA-GMN-F1L             PIC X(01).
                        09  SPA-GMN-PRTKBNMEIL      PIC X(12).
-                   07  SPA-GMN-PRTNMLST            OCCURS  100.
-                       09  SPA-GMN-PRTNML          PIC X(02).
-                       09  SPA-GMN-F1L             PIC X(01).
-                       09  SPA-GMN-PRTNMMEIL       PIC X(16).
-                   07  SPA-GMN-PRTNM-MAX           PIC 9(03).
                    07  SPA-GMN-TBL.
                        09  SPA-GMN-TBL-OCC         OCCURS   21.
                            11  SPA-GMN-TBL-G       OCCURS   36.
@@ -174,7 +183,7 @@
                                13  SPA-NAI-SYUBETU-G.
                                    15  SPA-NAI-SYUBETU
                                                    PIC X(04)
-                                                   OCCURS 10.
+                                                   OCCURS 1.
       *    プレビュー用情報
            03  SPA-LNK-XC01-KEY.
                05  SPA-LNK-XC01-TBL-KEY    PIC X(8).
@@ -182,3 +191,85 @@
                05  SPA-LNK-XC01-TBL-GROUP  PIC X(14).
                05  SPA-LNK-XC01-SHORI-RENNUM
                                           PIC 9(4).
+      *
+      *    労災・自賠責印刷指示画面
+            03  SPA-R04-AREA.
+               05  SPA-GMN-R04-PAGE                PIC 9(02).
+               05  SPA-GMN-R04-CUR                 PIC 9(02).
+               05  SPA-GMN-R04-AREA.
+                   07  SPA-GMN-R04-FILEKBN         PIC X(50).
+                   07  SPA-GMN-R04-CREYMD          PIC X(22).
+                   07  SPA-GMN-R04-PAGEH           PIC 9(04).
+                   07  SPA-GMN-R04-KENSUH          PIC 9(04).
+                   07  SPA-GMN-R04-PRTJYUN-G.
+                       09  SPA-GMN-R04-PRTJYUN     PIC X(02).
+                       09  SPA-GMN-R04-F1          PIC X(01).
+                       09  SPA-GMN-R04-PRTJYUNMEI  PIC X(22).
+                   07  SPA-GMN-R04-PRTJYUNLST      OCCURS  2.
+                       09  SPA-GMN-R04-PRTJYUNL    PIC X(02).
+                       09  SPA-GMN-R04-F1L         PIC X(01).
+                       09  SPA-GMN-R04-PRTJYUNMEIL PIC X(22).
+                   07  SPA-GMN-R04-PREFKBN-G.
+                       09  SPA-GMN-R04-PREFKBN     PIC X(01).
+                       09  SPA-GMN-R04-F1          PIC X(01).
+                       09  SPA-GMN-R04-PREFKBNMEI  PIC X(04).
+                   07  SPA-GMN-R04-PREFKBNLST      OCCURS  1.
+                       09  SPA-GMN-R04-PREFKBNL    PIC X(01).
+                       09  SPA-GMN-R04-F1L         PIC X(01).
+                       09  SPA-GMN-R04-PREFKBNMEIL PIC X(04).
+                   07  SPA-GMN-R04-TBL.
+                       09  SPA-GMN-R04-TBL-G       OCCURS   25.
+                           11  SPA-GMN-R04-TSTDATA PIC X(100).
+                           11  SPA-GMN-R04-TEDDATA PIC X(100).
+                           11  SPA-GMN-R04-TCHK.
+                               13  SPA-GMN-R04-TCHK-VALUE
+                                                   PIC X(01).
+                               13  SPA-GMN-R04-TCHK-STYLE
+                                                   PIC X(20).
+                   07  SPA-GMN-R04-TBL1.
+                       09  SPA-GMN-R04-TPAGE       PIC 9(04)
+                                                   OCCURS   25.
+                       09  SPA-GMN-R04-TKENSU      PIC 9(04)
+                                                   OCCURS   25.
+                       09  SPA-GMN-R04-TSYURUINAME PIC X(40)
+                                                   OCCURS   25.
+      *
+               05  SPA-NAI-R04-AREA.
+                   07  SPA-NAI-R04-WIDGET          PIC X(08). 
+                   07  SPA-NAI-R04-2005-ROUPRTNM   PIC X(16).
+                   07  SPA-NAI-R04-2005-JBAIPRTNM  PIC X(16).
+                   07  SPA-NAI-R04-2005-ROUPRTNM-NEXT
+                                                   PIC X(16).
+                   07  SPA-NAI-R04-2005-JBAIPRTNM-NEXT
+                                                   PIC X(16).
+                   07  SPA-NAI-R04-2005-ROUPRTNM-N PIC X(16).
+                   07  SPA-NAI-R04-2005-JBAIPRTNM-N
+                                                   PIC X(16).
+                   07  SPA-NAI-R04-2005-ROUPRTNM-NEXT-N
+                                                   PIC X(16).
+                   07  SPA-NAI-R04-2005-JBAIPRTNM-NEXT-N
+                                                   PIC X(16).
+                   07  SPA-NAI-R04-TBL.
+                       09  SPA-NAI-R04-TBL-G       OCCURS  25.
+                           11  SPA-NAI-R04-PRTJYUNI
+                                                   PIC X(02).
+                           11  SPA-NAI-R04-TEISYUTUSAKI
+                                                   PIC X(01).
+                           11  SPA-NAI-R04-SYUBETU-G.
+                               13  SPA-NAI-R04-SYUBETU PIC X(04)
+                                                   OCCURS 1.
+      *
+      *    プリンタ一括設定画面
+           03  SPA-R06-AREA.
+               05  SPA-GMN-R06-CUR                 PIC 9(03).
+               05  SPA-GMN-R06-AREA.
+                   07  SPA-GMN-R06-SETTEI1         PIC X(01).
+                   07  SPA-GMN-R06-SETTEI2         PIC X(01).
+                   07  SPA-GMN-R06-PRTNM-G.
+                       09  SPA-GMN-R06-PRTNM       PIC X(02).
+                       09  SPA-GMN-R06-F1          PIC X(01).
+                       09  SPA-GMN-R06-PRTNMMEI    PIC X(16).
+                   07  SPA-GMN-R06-PRTNM-N-G.
+                       09  SPA-GMN-R06-PRTNM-N     PIC X(02).
+                       09  SPA-GMN-R06-F1          PIC X(01).
+                       09  SPA-GMN-R06-PRTNM-NMEI  PIC X(16).

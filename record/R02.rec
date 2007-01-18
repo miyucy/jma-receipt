@@ -1536,7 +1536,7 @@ R02	{
 				value	varchar(27);
 			};
 			count	int;
-			item	varchar(27)[5];
+			item	varchar(27)[10];
 		};
 		PRTJYUN1_COMBO	{
 			state	int;
@@ -1544,7 +1544,7 @@ R02	{
 				value	varchar(27);
 			};
 			count	int;
-			item	varchar(27)[5];
+			item	varchar(27)[10];
 		};
 		PREFKBN_COMBO	{
 			state	int;
