@@ -4105,7 +4105,7 @@
                    END-STRING
                WHEN    "0022"
                    STRING  "下限・上限年齢は、数字・AA（28日）・"
-                           "M1（1ヵ月）〜MC（12ヵ月）"
+                           "M1（1ヵ月）〜MB（11ヵ月）"
                            "で入力して下さい"      DELIMITED  BY  SIZE
                                                    INTO  SPA-ERRMSG
                    END-STRING

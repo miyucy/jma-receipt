@@ -60,17 +60,13 @@
            03  FILLER          PIC X(02)  VALUE   "MB".
            03  FILLER          PIC X(05)  VALUE   "00 11".
       *
-           03  FILLER          PIC X(02)  VALUE   "MC".
-           03  FILLER          PIC X(05)  VALUE   "00 12".
-      *
-      *
        01  NENREI-DATA-REC-R       REDEFINES   NENREI-DATA-REC.
-           03  NENREI-TBL-OCC      OCCURS  13
+           03  NENREI-TBL-OCC      OCCURS  12
                                        INDEXED NENREI-IDX.
                05  NENREI-NENCD        PIC X(02).
                05  NENREI-DD           PIC 9(02).
                05  NENREI-YOBI1        PIC X(01).
                05  NENREI-MM           PIC 9(02).
       *
-       01  NENREI-MAX                  PIC 9(04)   VALUE   13.
+       01  NENREI-MAX                  PIC 9(04)   VALUE   12.
       *
