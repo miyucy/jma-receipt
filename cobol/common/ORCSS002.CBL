@@ -20,10 +20,10 @@
       *****************************************************************
       *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
       *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : ¶¦ÄÌ
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : ¼ýÇ¼¹¹¿·º¹³Û¼èÆÀ
+      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : ¼ýÇ¼ÍúÎò¥Æ¡¼¥Ö¥ë¹¹¿·
       *  ´ÉÍý¼Ô            : 
       *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  06/07/14    NACL¡ÝÂÀÅÄ    ¿·µ¬ºîÀ®
+      *  07/01/19    NACL¡ÝÂÀÅÄ    ¿·µ¬ºîÀ®
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
@@ -43,7 +43,7 @@
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-SYUNOU          PIC 9(01).
-           03  FLG-HKNCOMBI        PIC 9(01).
+           03  FLG-SYURRK          PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -53,21 +53,21 @@
            03  IDX-BF              PIC 9(05).
            03  IDX-AF              PIC 9(05).
       *
-      *    ¼ýÇ¼½¸·×ÎÎ°è
+       01  WRK-AREA.
+           03  WRK-SYURRKNUM       PIC S9(09)  BINARY.
+           03  WRK-SYUEDANUM       PIC S9(09)  BINARY.
+           03  WRK-SYURRKUPDKBN    PIC X(01).
+      *
+      *    ¼ýÇ¼ÍúÎò½¸·×ÎÎ°è
        01  SUMSYU-AREA.
-           03  SUMSYU-OCC                  OCCURS  2.
-               05  SUMSYU-SKYMONEY         PIC S9(08).
-               05  SUMSYU-HKNTEN           PIC S9(08).
-               05  SUMSYU-HKNMONEY         PIC S9(08).
-               05  SUMSYU-SKJMONEY         PIC S9(08).
-               05  SUMSYU-LIFEMONEY        PIC S9(08).
-               05  SUMSYU-JIHIMONEY        PIC S9(08).
-               05  SUMSYU-CHOSEI           PIC S9(08).
-               05  SUMSYU-DISCOUNTMONEY    PIC S9(08).
-               05  SUMSYU-JIHI-G.
-                   07  SUMSYU-JIHI         PIC S9(08)
-                                           OCCURS  10.
-               05  SUMSYU-RMSAGAKU         PIC S9(08).
+         02  SUMSYU-OCC            OCCURS  2.
+           COPY    "CPSYURRK.INC"  REPLACING
+                                   //SYURRK-// BY //SUMSYU-//.
+      *
+      *    ¼ýÇ¼ºî¶ÈÎÎ°è
+       01  WKSYUNOU-REC.
+           COPY    "CPSYUNOU.INC"  REPLACING
+                                   //SYU-// BY //WKSYU-//.
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -77,14 +77,17 @@
        01  SYUNOU-REC.
            COPY    "CPSYUNOU.INC".
       *
-      *    ÊÝ¸±ÁÈ¤ß¹ç¤ï¤»
-       01  HKNCOMBI-REC.
-           COPY    "CPHKNCOMBI.INC".
+      *    ¼ýÇ¼ÍúÎò
+       01  SYURRK-REC.
+           COPY    "CPSYURRK.INC".
       *
       *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
       *****************************************************************
+      *
+      *    ¥Þ¥·¥óÆüÉÕ¼èÆÀ¥µ¥Ö
+           COPY    "CPORCSMCNDATE.INC".
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPAREA".
@@ -112,8 +115,7 @@
       *
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
-           INITIALIZE                  SUMSYU-AREA
-      *    INITIALIZE                  WRK-AREA
+           INITIALIZE                  WRK-AREA
            INITIALIZE                  SS002-OT
       *
            PERFORM 100-INIT-SEC
@@ -135,6 +137,13 @@
            MOVE    1               TO  IDX-BF
            MOVE    2               TO  IDX-AF
       *
+           PERFORM 800-MCNDATE-SEC
+      *
+           PERFORM 900-SYURRK-KEY2-SEL-SEC
+           COMPUTE WRK-SYURRKNUM
+               =   SYURRK-SYURRKNUM   +   1
+           MOVE    ZERO            TO  WRK-SYUEDANUM
+      *
            .
        100-INIT-EXT.
            EXIT.
@@ -143,15 +152,50 @@
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-           MOVE    LNKSYU-REC      TO  SYUNOU-REC
-           MOVE    IDX-AF          TO  IDX-SYU
-           PERFORM 2001-SUMSYU-SEC
+           IF    ( LNKSYU-DENPJTIKBN   =   "3" )
+               INITIALIZE              SUMSYU-AREA
+               MOVE    IDX-BF      TO  IDX-SYU
+               MOVE    LNKSYU-REC  TO  WKSYUNOU-REC
+               PERFORM 2001-SUMSYU-SEC
+               PERFORM 2001-EDIT-SYURRK-SEC
+           ELSE
+               PERFORM 900-SYUNOU-KEY-SEL-SEC
+               IF    ( FLG-SYUNOU  =   ZERO )
+                   IF    ( LNKSYU-SRYKA        =   SYU-SRYKA )
+                    AND  ( LNKSYU-HKNCOMBINUM  =   SYU-HKNCOMBINUM )
+                       INITIALIZE              SUMSYU-AREA
+                       MOVE    IDX-BF      TO  IDX-SYU
+                       MOVE    SYUNOU-REC  TO  WKSYUNOU-REC
+                       PERFORM 2001-SUMSYU-SEC
       *
-           PERFORM 900-SYUNOU-KEY-SEL-SEC
-           MOVE    IDX-BF          TO  IDX-SYU
-           PERFORM 2001-SUMSYU-SEC
+                       MOVE    IDX-AF      TO  IDX-SYU
+                       MOVE    LNKSYU-REC  TO  WKSYUNOU-REC
+                       PERFORM 2001-SUMSYU-SEC
+                       PERFORM 2001-EDIT-SYURRK-SEC
+                   ELSE
       *
-           PERFORM 2001-EDIT-SS002-OT-SEC
+                       MOVE    "1"         TO  WRK-SYURRKUPDKBN
+      *
+                       INITIALIZE              SUMSYU-AREA
+                       MOVE    IDX-BF      TO  IDX-SYU
+                       MOVE    SYUNOU-REC  TO  WKSYUNOU-REC
+                       PERFORM 2001-SUMSYU-SEC
+                       PERFORM 2001-EDIT-SYURRK-SEC
+      *
+                       INITIALIZE              SUMSYU-AREA
+                       MOVE    IDX-AF      TO  IDX-SYU
+                       MOVE    LNKSYU-REC  TO  WKSYUNOU-REC
+                       PERFORM 2001-SUMSYU-SEC
+                       PERFORM 2001-EDIT-SYURRK-SEC
+                   END-IF
+               ELSE
+                   INITIALIZE              SUMSYU-AREA
+                   MOVE    IDX-AF      TO  IDX-SYU
+                   MOVE    LNKSYU-REC  TO  WKSYUNOU-REC
+                   PERFORM 2001-SUMSYU-SEC
+                   PERFORM 2001-EDIT-SYURRK-SEC
+               END-IF
+           END-IF
       *
            .
        200-MAIN-EXT.
@@ -161,191 +205,199 @@
       *****************************************************************
        2001-SUMSYU-SEC             SECTION.
       *
-           IF    ( SYU-DENPJTIKBN      =   "3" )
-               CONTINUE
-           ELSE
-               PERFORM 20011-SUMSYU-SEC
-           END-IF
+           MOVE    WKSYU-TOTAL-HKNTEN
+                                   TO  SUMSYU-TOTAL-HKNTEN (IDX-SYU)
+           MOVE    WKSYU-HKNTEKMONEY
+                                   TO  SUMSYU-HKNTEKMONEY  (IDX-SYU)
+           MOVE    WKSYU-RJN-FTN
+                                   TO  SUMSYU-RJN-FTN      (IDX-SYU)
+           MOVE    WKSYU-KOH-FTN
+                                   TO  SUMSYU-KOH-FTN      (IDX-SYU)
+           MOVE    WKSYU-RSI-TOTAL
+                                   TO  SUMSYU-RSI-TOTAL    (IDX-SYU)
+           MOVE    WKSYU-JIHI-TOTAL
+                                   TO  SUMSYU-JIHI-TOTAL   (IDX-SYU)
+           MOVE    WKSYU-JIHI-TOTAL-TAX
+                                   TO  SUMSYU-JIHI-TOTAL-TAX
+                                                           (IDX-SYU)
+           MOVE    WKSYU-JIHI-TAX
+                                   TO  SUMSYU-JIHI-TAX     (IDX-SYU)
+           MOVE    WKSYU-TOTAL-TGMONEY
+                                   TO  SUMSYU-TOTAL-TGMONEY(IDX-SYU)
+           MOVE    WKSYU-TOTAL-TGMONEY-TAX
+                                   TO  SUMSYU-TOTAL-TGMONEY-TAX
+                                                           (IDX-SYU)
+           MOVE    WKSYU-SKYMONEY-SKJ-JIHI-KEI
+                                   TO  SUMSYU-SKYMONEY-SKJ-JIHI-KEI
+                                                           (IDX-SYU)
+           MOVE    WKSYU-SKYMONEY-LIFE-JIHI-KEI
+                                   TO  SUMSYU-SKYMONEY-LIFE-JIHI-KEI
+                                                           (IDX-SYU)
+           MOVE    WKSYU-RMSAGAKU  TO  SUMSYU-RMSAGAKU     (IDX-SYU)
+           MOVE    WKSYU-SKYMONEY-SKJ-KEI
+                                   TO  SUMSYU-SKYMONEY-SKJ-KEI
+                                                           (IDX-SYU)
+           MOVE    WKSYU-SKYMONEY-LIFE-KEI
+                                   TO  SUMSYU-SKYMONEY-LIFE-KEI
+                                                           (IDX-SYU)
+           MOVE    WKSYU-SKYMONEY  TO  SUMSYU-SKYMONEY     (IDX-SYU)
+           MOVE    WKSYU-CHOSEI    TO  SUMSYU-CHOSEI       (IDX-SYU)
+           MOVE    WKSYU-DISCOUNT-MONEY
+                                   TO  SUMSYU-DISCOUNT-MONEY
+                                                           (IDX-SYU)
+      *
+           PERFORM VARYING IDX-JIHI    FROM   1    BY  1
+                   UNTIL ( IDX-JIHI    >   10 )
+               MOVE    WKSYU-JIHI-TAXNASI (IDX-JIHI)
+                                   TO  SUMSYU-JIHI-TAXNASI
+                                                  (IDX-SYU IDX-JIHI)
+               MOVE    WKSYU-JIHI-TAXARI  (IDX-JIHI)
+                                   TO  SUMSYU-JIHI-TAXARI
+                                                  (IDX-SYU IDX-JIHI)
+           END-PERFORM
       *
            .
        2001-SUMSYU-EXT.
            EXIT.
       *****************************************************************
-      *    ¼ýÇ¼½¸·×½èÍý
+      *    ¼ýÇ¼ÍúÎò¹¹¿·½èÍý
       *****************************************************************
-       20011-SUMSYU-SEC            SECTION.
+       2001-EDIT-SYURRK-SEC        SECTION.
       *
+           COMPUTE WRK-SYUEDANUM   =   WRK-SYUEDANUM       +   1
       *
-           IF    ( SYU-SYUHKNNUM (1:2) =   "98" )
+           INITIALIZE                      SYURRK-REC
+           MOVE    WKSYU-HOSPID        TO  SYURRK-HOSPID
+           MOVE    WKSYU-PTID          TO  SYURRK-PTID
+           MOVE    WKSYU-NYUGAIKBN     TO  SYURRK-NYUGAIKBN
+           MOVE    WKSYU-DENPNUM       TO  SYURRK-DENPNUM
       *
-      *        ÊÝ¸±ÁÈ¹ç¤»¼èÆÀ
-               PERFORM 900-HKNCOMBI-KEY-SEL-SEC
+           MOVE    WRK-SYURRKNUM       TO  SYURRK-SYURRKNUM
+           MOVE    WRK-SYUEDANUM       TO  SYURRK-SYUEDANUM
       *
-               COMPUTE SUMSYU-JIHIMONEY (IDX-SYU)
-                   =   SYU-HKNTEKMONEY
-                   +   SYU-RJN-FTN
-                   +   SYU-KOH-FTN
-                   +   SYU-RSI-TOTAL
+           MOVE    WKSYU-SRYKA         TO  SYURRK-SRYKA
+           MOVE    WKSYU-HKNCOMBINUM   TO  SYURRK-HKNCOMBINUM
       *
-                   +   SYU-SKYMONEY-SKJ-KEI
-                   +   SYU-SKYMONEY-LIFE-KEI
+           COMPUTE SYURRK-TOTAL-HKNTEN
+               =   SUMSYU-TOTAL-HKNTEN (IDX-AF)
+               -   SUMSYU-TOTAL-HKNTEN (IDX-BF)
       *
-                   +   SYU-RMSAGAKU
-                   +   SYU-SKYMONEY-SKJ-JIHI-KEI
-                   +   SYU-SKYMONEY-LIFE-JIHI-KEI
-                   +   SYU-TOTAL-TGMONEY
-                   +   SYU-TOTAL-TGMONEY-TAX
-                   +   SYU-JIHI-TOTAL
-                   +   SYU-JIHI-TOTAL-TAX
-                   +   SYU-JIHI-TAX
-                   IF    ( COMB-HOJOKBN     =   "1" )
-                       COMPUTE SUMSYU-JIHIMONEY (IDX-SYU)
-                           =   SUMSYU-JIHIMONEY (IDX-SYU)
-                           +   SYU-SKYMONEY-TAX-SAI
-                   END-IF
+           COMPUTE SYURRK-HKNTEKMONEY
+               =   SUMSYU-HKNTEKMONEY  (IDX-AF)
+               -   SUMSYU-HKNTEKMONEY  (IDX-BF)
       *
-           ELSE
-      *        ÊÝ¸±ÅÀ¿ô
-               COMPUTE SUMSYU-HKNTEN (IDX-SYU)
-                   =   SYU-TOTAL-HKNTEN
+           COMPUTE SYURRK-RJN-FTN
+               =   SUMSYU-RJN-FTN (IDX-AF)
+               -   SUMSYU-RJN-FTN (IDX-BF)
       *
-      *        ÊÝ¸±Ê¬ÉéÃ´³Û
-               COMPUTE SUMSYU-HKNMONEY(IDX-SYU)
-                   =   SYU-HKNTEKMONEY
-                   +   SYU-RJN-FTN
-                   +   SYU-KOH-FTN
-                   +   SYU-RSI-TOTAL
+           COMPUTE SYURRK-KOH-FTN
+               =   SUMSYU-KOH-FTN (IDX-AF)
+               -   SUMSYU-KOH-FTN (IDX-BF)
       *
-      *        ¿©»öÉéÃ´³Û
-               COMPUTE SUMSYU-SKJMONEY  (IDX-SYU)
-                   =   SYU-SKYMONEY-SKJ-KEI
+           COMPUTE SYURRK-RSI-TOTAL
+               =   SUMSYU-RSI-TOTAL (IDX-AF)
+               -   SUMSYU-RSI-TOTAL (IDX-BF)
       *
-      *        À¸³èÉéÃ´³Û
-               COMPUTE SUMSYU-LIFEMONEY (IDX-SYU)
-                   =   SYU-SKYMONEY-LIFE-KEI
+           COMPUTE SYURRK-JIHI-TOTAL
+               =   SUMSYU-JIHI-TOTAL (IDX-AF)
+               -   SUMSYU-JIHI-TOTAL (IDX-BF)
       *
-      *        ¼«ÈñÊ¬ÉéÃ´³Û
-               COMPUTE SUMSYU-JIHIMONEY (IDX-SYU)
-                   =   SYU-RMSAGAKU
-                   +   SYU-SKYMONEY-SKJ-JIHI-KEI
-                   +   SYU-SKYMONEY-LIFE-JIHI-KEI
-                   +   SYU-TOTAL-TGMONEY
-                   +   SYU-TOTAL-TGMONEY-TAX
-                   +   SYU-JIHI-TOTAL
-                   +   SYU-JIHI-TOTAL-TAX
-                   +   SYU-JIHI-TAX
-           END-IF
+           COMPUTE SYURRK-JIHI-TOTAL-TAX
+               =   SUMSYU-JIHI-TOTAL-TAX (IDX-AF)
+               -   SUMSYU-JIHI-TOTAL-TAX (IDX-BF)
       *
-           COMPUTE SUMSYU-SKYMONEY (IDX-SYU)
-               =   SYU-SKYMONEY
+           COMPUTE SYURRK-JIHI-TAX
+               =   SUMSYU-JIHI-TAX  (IDX-AF)
+               -   SUMSYU-JIHI-TAX  (IDX-BF)
       *
-           COMPUTE SUMSYU-CHOSEI (IDX-SYU)
-               =   SYU-CHOSEI
+           COMPUTE SYURRK-TOTAL-TGMONEY
+               =   SUMSYU-TOTAL-TGMONEY  (IDX-AF)
+               -   SUMSYU-TOTAL-TGMONEY  (IDX-BF)
       *
-           COMPUTE SUMSYU-DISCOUNTMONEY (IDX-SYU)
-               =   SYU-DISCOUNT-MONEY
+           COMPUTE SYURRK-TOTAL-TGMONEY-TAX
+               =   SUMSYU-TOTAL-TGMONEY-TAX  (IDX-AF)
+               -   SUMSYU-TOTAL-TGMONEY-TAX  (IDX-BF)
       *
-           PERFORM VARYING IDX-JIHI    FROM    1   BY  1
-                   UNTIL  (IDX-JIHI    >   10 )
-               COMPUTE SUMSYU-JIHI  (IDX-SYU IDX-JIHI)
-                   =   SYU-JIHI-TAXNASI (IDX-JIHI)
-                   +   SYU-JIHI-TAXARI  (IDX-JIHI)
-           END-PERFORM
+           COMPUTE SYURRK-SKYMONEY-SKJ-JIHI-KEI
+               =   SUMSYU-SKYMONEY-SKJ-JIHI-KEI  (IDX-AF)
+               -   SUMSYU-SKYMONEY-SKJ-JIHI-KEI  (IDX-BF)
       *
-           COMPUTE SUMSYU-RMSAGAKU (IDX-SYU)
-               =   SYU-RMSAGAKU
+           COMPUTE SYURRK-SKYMONEY-LIFE-JIHI-KEI
+               =   SUMSYU-SKYMONEY-LIFE-JIHI-KEI (IDX-AF)
+               -   SUMSYU-SKYMONEY-LIFE-JIHI-KEI (IDX-BF)
       *
-           .
-       20011-SUMSYU-EXT.
-           EXIT.
-      *****************************************************************
-      *    ÊÖµÑÃÍÊÔ½¸½èÍý
-      *****************************************************************
-       2001-EDIT-SS002-OT-SEC      SECTION.
-      *
-           COMPUTE SS002-SKYMONEY
-               =   SUMSYU-SKYMONEY (IDX-AF)
-               -   SUMSYU-SKYMONEY (IDX-BF)
-      *
-           COMPUTE SS002-HKNTEN
-               =   SUMSYU-HKNTEN (IDX-AF)
-               -   SUMSYU-HKNTEN (IDX-BF)
-      *
-           COMPUTE SS002-HKNMONEY
-               =   SUMSYU-HKNMONEY (IDX-AF)
-               -   SUMSYU-HKNMONEY (IDX-BF)
-      *
-           COMPUTE SS002-SKJMONEY
-               =   SUMSYU-SKJMONEY (IDX-AF)
-               -   SUMSYU-SKJMONEY (IDX-BF)
-      *
-           COMPUTE SS002-LIFEMONEY
-               =   SUMSYU-LIFEMONEY (IDX-AF)
-               -   SUMSYU-LIFEMONEY (IDX-BF)
-      *
-           COMPUTE SS002-JIHIMONEY
-               =   SUMSYU-JIHIMONEY (IDX-AF)
-               -   SUMSYU-JIHIMONEY (IDX-BF)
-      *
-           COMPUTE SS002-CHOSEI
-               =   SUMSYU-CHOSEI (IDX-AF)
-               -   SUMSYU-CHOSEI (IDX-BF)
-      *
-           COMPUTE SS002-DISCOUNTMONEY
-               =   SUMSYU-DISCOUNTMONEY (IDX-AF)
-               -   SUMSYU-DISCOUNTMONEY (IDX-BF)
-      *
-           PERFORM VARYING IDX-JIHI    FROM    1   BY  1
-                   UNTIL  (IDX-JIHI    >   10 )
-               COMPUTE SS002-JIHI  (IDX-JIHI)
-                   =   SUMSYU-JIHI (IDX-AF IDX-JIHI)
-                   -   SUMSYU-JIHI (IDX-BF IDX-JIHI)
-           END-PERFORM
-      *
-           COMPUTE SS002-RMSAGAKU
+           COMPUTE SYURRK-RMSAGAKU
                =   SUMSYU-RMSAGAKU (IDX-AF)
                -   SUMSYU-RMSAGAKU (IDX-BF)
       *
+           COMPUTE SYURRK-SKYMONEY-SKJ-KEI
+               =   SUMSYU-SKYMONEY-SKJ-KEI (IDX-AF)
+               -   SUMSYU-SKYMONEY-SKJ-KEI (IDX-BF)
+      *
+           COMPUTE SYURRK-SKYMONEY-LIFE-KEI
+               =   SUMSYU-SKYMONEY-LIFE-KEI (IDX-AF)
+               -   SUMSYU-SKYMONEY-LIFE-KEI (IDX-BF)
+      *
+           COMPUTE SYURRK-SKYMONEY
+               =   SUMSYU-SKYMONEY (IDX-AF)
+               -   SUMSYU-SKYMONEY (IDX-BF)
+      *
+           COMPUTE SYURRK-CHOSEI
+               =   SUMSYU-CHOSEI (IDX-AF)
+               -   SUMSYU-CHOSEI (IDX-BF)
+      *
+           COMPUTE SYURRK-DISCOUNT-MONEY
+               =   SUMSYU-DISCOUNT-MONEY (IDX-AF)
+               -   SUMSYU-DISCOUNT-MONEY (IDX-BF)
+      *
+           PERFORM VARYING IDX-JIHI    FROM   1    BY  1
+                   UNTIL ( IDX-JIHI    >   10 )
+               COMPUTE SYURRK-JIHI-TAXNASI (IDX-JIHI)
+                   =   SUMSYU-JIHI-TAXNASI (IDX-AF IDX-JIHI)
+                   -   SUMSYU-JIHI-TAXNASI (IDX-BF IDX-JIHI)
+      *
+               COMPUTE SYURRK-JIHI-TAXARI (IDX-JIHI)
+                   =   SUMSYU-JIHI-TAXARI (IDX-AF IDX-JIHI)
+                   -   SUMSYU-JIHI-TAXARI (IDX-BF IDX-JIHI)
+           END-PERFORM
+      *
+           MOVE    SMCNDATE-YMD        TO  SYURRK-CREYMD
+                                           SYURRK-UPYMD
+           MOVE    SMCNDATE-HMS        TO  SYURRK-UPHMS
+           MOVE    SYURRK-REC          TO  MCPDATA-REC
+           MOVE    "tbl_syurrk"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBINSERT-SEC
+           IF    ( MCP-RC      NOT =   ZERO )
+               MOVE    1               TO  SS002-RC
+           END-IF
+      *
+      *
            .
-       2001-EDIT-SS002-OT-EXT.
+       2001-EDIT-SYURRK-EXT.
            EXIT.
       *****************************************************************
       *    ½ªÎ»½èÍý
       *****************************************************************
        300-END-SEC                SECTION.
       *
+           MOVE    WRK-SYURRKNUM   TO  SS002-SYURRKNUM
+           MOVE    WRK-SYUEDANUM   TO  SS002-SYUEDANUM
+           MOVE    WRK-SYURRKUPDKBN TO SS002-SYURRKUPDKBN
       *
            .
        300-END-EXT.
            EXIT.
       *****************************************************************
-      *    ÊÝ¸±ÁÈ¹ç¤»¸¡º÷½èÍý
+      *    ¥Þ¥·¥óÆüÉÕ¼èÆÀ¥µ¥Ö
       *****************************************************************
-       900-HKNCOMBI-KEY-SEL-SEC    SECTION.
+       800-MCNDATE-SEC         SECTION.
       *
-           MOVE    ZERO            TO  FLG-HKNCOMBI
-      *
-           INITIALIZE                  HKNCOMBI-REC
-           MOVE    SYU-HOSPID      TO  COMB-HOSPID
-           MOVE    SYU-PTID        TO  COMB-PTID
-           MOVE    SYU-HKNCOMBINUM TO  COMB-HKNCOMBINUM
-           MOVE    HKNCOMBI-REC    TO  MCPDATA-REC
-           MOVE    "tbl_hkncombi"  TO  MCP-TABLE
-           MOVE    "key"           TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC TO  HKNCOMBI-REC
-           ELSE
-               INITIALIZE              HKNCOMBI-REC
-               MOVE    1           TO  FLG-HKNCOMBI
-           END-IF
-      *
-           MOVE    "tbl_hkncombi"  TO  MCP-TABLE
-           MOVE    "key"           TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
+           CALL    "ORCSMCNDATE"   USING   ORCSMCNDATEAREA
       *
            .
-       900-HKNCOMBI-KEY-SEL-EXT.
+      *
+       800-MCNDATE-EXT.
            EXIT.
       *****************************************************************
       *    ¼ýÇ¼¸¡º÷½èÍý
@@ -371,6 +423,37 @@
       *
            .
        900-SYUNOU-KEY-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¼ýÇ¼ÍúÎò¸¡º÷½èÍý
+      *****************************************************************
+       900-SYURRK-KEY2-SEL-SEC     SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SYURRK
+      *
+           INITIALIZE                      SYURRK-REC
+           MOVE    LNKSYU-HOSPID       TO  SYURRK-HOSPID
+           MOVE    LNKSYU-PTID         TO  SYURRK-PTID
+           MOVE    LNKSYU-NYUGAIKBN    TO  SYURRK-NYUGAIKBN
+           MOVE    LNKSYU-DENPNUM      TO  SYURRK-DENPNUM
+      *
+           MOVE    SYURRK-REC          TO  MCPDATA-REC
+           MOVE    "tbl_syurrk"        TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYURRK-REC
+           ELSE
+               INITIALIZE                  SYURRK-REC
+               MOVE    1               TO  FLG-SYURRK
+           END-IF
+      *
+           MOVE    "tbl_syurrk"        TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       900-SYURRK-KEY2-SEL-EXT.
            EXIT.
       *****************************************************************
       *    £Ä£Â¸¡º÷½èÍý¡ÊFHETCH¤â¹Ô¤¦)
@@ -430,4 +513,18 @@
            .
       *
        910-DBCLOSECURSOR-EXT.
+           EXIT.
+      *****************************************************************
+      *    £Ä£ÂÄÉ²Ã½èÍý
+      *****************************************************************
+       910-DBINSERT-SEC                SECTION.
+      *
+           MOVE    "DBINSERT"      TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       910-DBINSERT-EXT.
            EXIT.

@@ -112,4 +112,5 @@ db	{
         tbl_joblog;
         tbl_tensuplus2;
         tbl_genericname;
+        tbl_syurrk;
 };

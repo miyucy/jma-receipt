@@ -506,6 +506,7 @@ DB_files = \
 	tbl_joblog.db \
 	tbl_tensuplus2.db \
 	tbl_genericname.db \
+	tbl_syurrk.db \
 
 all:   
 

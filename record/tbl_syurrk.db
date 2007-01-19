@@ -1,0 +1,85 @@
+tbl_syurrk {
+	HOSPID				char(24);
+	PTID				number(10,0);
+	NYUGAIKBN			char(1);
+	DENPNUM          		integer;
+	SYURRKNUM          		integer;
+	SYUEDANUM          		integer;
+	SRYKA				char(2);
+	HKNCOMBINUM			char(4);
+	TOTAL_HKNTEN			integer;
+	HKNTEKMONEY			integer;
+	RJN_FTN 			integer;
+	KOH_FTN				integer;
+	RSI_TOTAL			integer;
+	JIHI_TOTAL  			integer;
+	JIHI_TOTAL_TAX 			integer;
+	JIHI_TAX  			integer;
+	TOTAL_TGMONEY			integer;
+	TOTAL_TGMONEY_TAX		integer;
+        SKYMONEY_SKJ_JIHI_KEI           integer;
+        SKYMONEY_LIFE_JIHI_KEI          integer;
+	RMSAGAKU  			integer;
+        SKYMONEY_SKJ_KEI                integer;
+        SKYMONEY_LIFE_KEI               integer;
+        SKYMONEY			integer;
+        CHOSEI				integer;
+	DISCOUNT_MONEY			integer;
+	JIHI_1  			integer;
+	JIHI_1_TAX 			integer;
+	JIHI_2  			integer;
+	JIHI_2_TAX 			integer;
+	JIHI_3  			integer;
+	JIHI_3_TAX 			integer;
+	JIHI_4  			integer;
+	JIHI_4_TAX 			integer;
+	JIHI_5  			integer;
+	JIHI_5_TAX 			integer;
+	JIHI_6  			integer;
+	JIHI_6_TAX 			integer;
+	JIHI_7  			integer;
+	JIHI_7_TAX 			integer;
+	JIHI_8  			integer;
+	JIHI_8_TAX 			integer;
+	JIHI_9  			integer;
+	JIHI_9_TAX 			integer;
+	JIHI_10  			integer;
+	JIHI_10_TAX 			integer;
+	TERMID  			varchar(16);
+	OPID    			varchar(16);
+	CREYMD  			char(8);
+	UPYMD    			char(8);
+	UPHMS				char(6);
+};
+primary	{
+	HOSPID,PTID,NYUGAIKBN,DENPNUM,SYURRKNUM,SYUEDANUM;
+};
+
+path	key 	{
+	DBSELECT	{
+		DECLARE tbl_syurrk_key_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syurrk
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+			AND   DENPNUM     =   :DENPNUM
+			AND   SYURRKNUM   =   :SYURRKNUM
+			AND   SYUEDANUM   =   :SYUEDANUM
+		;
+	};
+};
+
+path	key2 	{
+	DBSELECT	{
+		DECLARE tbl_syurrk_key2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syurrk
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+			AND   DENPNUM     =   :DENPNUM
+			ORDER BY SYURRKNUM DESC
+		;
+	};
+};

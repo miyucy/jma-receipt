@@ -16,17 +16,11 @@
       * 113-8621, Japan.
       ********************************************************************
        01  SS002-AREA.
-           03  SS002-IDX               PIC 9(03).
+           03  SS002-IN.
+               05  SS002-UPDKBN        PIC X(01).
+               05  SS002-EDANUM        PIC 9(02).
            03  SS002-OT.
-               05  SS002-SKYMONEY      PIC S9(08).
-               05  SS002-HKNTEN        PIC S9(08).
-               05  SS002-HKNMONEY      PIC S9(08).
-               05  SS002-JIHIMONEY     PIC S9(08).
-               05  SS002-SKJMONEY      PIC S9(08).
-               05  SS002-LIFEMONEY     PIC S9(08).
-               05  SS002-CHOSEI        PIC S9(08).
-               05  SS002-DISCOUNTMONEY PIC S9(08).
-               05  SS002-JIHI-G.
-                   07  SS002-JIHI      PIC S9(08)
-                                       OCCURS  10.
-               05  SS002-RMSAGAKU      PIC S9(08).
+               05  SS002-SYURRKNUM     PIC S9(09)  BINARY.
+               05  SS002-SYUEDANUM     PIC S9(09)  BINARY.
+               05  SS002-SYURRKUPDKBN  PIC X(01).
+               05  SS002-RC            PIC S9(09)  BINARY.

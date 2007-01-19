@@ -62,26 +62,12 @@
            03  SMEI-JOUTAIKBN           PIC  X(01).
       *ÆüÊó¥­¡¼
            03  SMEI-DAILYKEY            PIC  X(12).
-      *ÊÝ¸±ÅÀ¿ô
-           03  SMEI-HKNTEN              PIC S9(08).
-      *ÊÝ¸±ÀÁµá³Û
-           03  SMEI-HKNMONEY            PIC S9(08).
-      *¼«ÈñÀÁµá³Û
-           03  SMEI-JIHIMONEY           PIC S9(08).
-      *¿©»öÀÁµá³Û
-           03  SMEI-SKJMONEY            PIC S9(08).
-      *À¸³èÀÁµá³Û
-           03  SMEI-LIFEMONEY           PIC S9(08).
-      *Ä´À°¶â
-           03  SMEI-CHOSEI              PIC S9(08).
-      *¸ºÌÈ¶â³Û
-           03  SMEI-DISCOUNTMONEY       PIC S9(08).
-      *¼«Èñ£±¡Á£±£°
-           03  SMEI-JIHI-G.
-               05   SMEI-JIHI           PIC S9(08)
-                                        OCCURS     10.
-      *¼¼ÎÁº¹³Û
-           03  SMEI-RMSAGAKU            PIC S9(08).
+      *¼ýÇ¼ÍúÎòÈÖ¹æ
+           03  SMEI-SYURRKNUM           PIC S9(9)   BINARY.
+      *¼ýÇ¼ÍúÎò»ÞÈÖ¹æ
+           03  SMEI-SYUEDANUM           PIC S9(9)   BINARY.
+      *¼ýÇ¼ÍúÎò¹¹¿·¶èÊ¬
+           03  SMEI-SYURRKUPDKBN        PIC X(01).
       *Ã¼Ëö£É£Ä
            03  SMEI-TERMID              PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
