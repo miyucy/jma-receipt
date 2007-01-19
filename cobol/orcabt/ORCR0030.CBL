@@ -283,6 +283,8 @@
       *  03.04.03    NACL-ÌçÏÆ    06/12/06  °ñ¾ë¸©ÃÏÊý¸øÈñ°ìÉôÉéÃ´¶âµ­ºÜÂÐ±þ
       *  03.04.04    NACL-ÌçÏÆ    06/12/26  ÅìµþÍýÍÆÅù¡ÜÀº¿À¡¢·ë³ËÂÐ±þ
       *  03.04.05    NACL-ÌçÏÆ    07/01/16  ¡Ê¡¡¡ËºÆ·Çµ­ºÜ¤Î½¤Àµ
+      *  03.04.06    NACL-ÌçÏÆ    07/01/19  ²¬»³¸©ÃÏÊý¸øÈñÂÐ±þ
+      *                                     ¡Ê£°£¹£±¤ò»ý¤Ä¾ì¹ç¤ÎÀÁµáÅÀµ­ºÜ¡Ë
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -6462,9 +6464,9 @@
       *
            END-IF
       *
-      *    Åçº¬¸©ÆýÍÄ»ù¡¦Ê¡»ã
-      *
            EVALUATE   SYS-1001-PREFNUM
+      *
+      *      Åçº¬¸©ÆýÍÄ»ù¡¦Ê¡»ã
       *
              WHEN    "32"
       *
@@ -6478,6 +6480,23 @@
                                           RECE02-TOTALTEN(2))
                       COMPUTE  RECE02-TOTALTEN(3) =
                                RECE02-TOTALTEN(1) -
+                               RECE02-TOTALTEN(2)
+                   END-IF
+      *
+               END-IF
+      *
+      *      ²¬»³¸©
+      *
+             WHEN    "33"
+      *
+               IF   RECE02-SRYYM    >=   "200610"
+      *
+                   IF  ( RECE02-HKNNUM       NOT = SPACE    )
+                   AND ( RECE02-KOHNUM(1)        = "091"    )
+                   AND ( RECE02-KOHNUM(2)(1:1)
+                                           >= "1" AND <= "8")
+                      COMPUTE  RECE02-TOTALTEN(3) =
+                               RECE02-TOTALTEN(3) +
                                RECE02-TOTALTEN(2)
                    END-IF
       *

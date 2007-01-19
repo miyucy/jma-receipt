@@ -236,6 +236,8 @@
       *  03.04.05    NACL-ÌçÏÆ    06/12/06  °ñ¾ë¸©ÃÏÊý¸øÈñ°ìÉôÉéÃ´¶âµ­ºÜÂÐ±þ
       *  03.04.06    NACL-ÌçÏÆ    06/12/26  ÅìµþÍýÍÆÅù¡Ü·ë³ËÂÐ±þ
       *  03.04.07    NACL-ÌçÏÆ    07/01/16  ¡Ê¡¡¡ËºÆ·Çµ­ºÜ¤Î½¤Àµ
+      *  03.04.08    NACL-ÌçÏÆ    07/01/19  ²¬»³¸©ÃÏÊý¸øÈñÂÐ±þ
+      *                                     ¡Ê£°£¹£±¤ò»ý¤Ä¾ì¹ç¤ÎÀÁµáÅÀµ­ºÜ¡Ë
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -9591,9 +9593,9 @@
                        MOVE    "4"   TO   RECE62-SHOKUJIFTNKBN
            END-EVALUATE
       *
-      *    Åçº¬¸©ÆýÍÄ»ù¡¦Ê¡»ã
-      *
            EVALUATE   WRK-PREFNUM
+      *
+      *      Åçº¬¸©ÆýÍÄ»ù¡¦Ê¡»ã
       *
              WHEN    "32"
       *
@@ -9607,6 +9609,23 @@
                                           RECE62-TOTALTEN(2))
                       COMPUTE  RECE62-TOTALTEN(3) =
                                RECE62-TOTALTEN(1) -
+                               RECE62-TOTALTEN(2)
+                   END-IF
+      *
+               END-IF
+      *
+      *      ²¬»³¸©
+      *
+             WHEN    "33"
+      *
+               IF   RECE62-SRYYM    >=   "200610"
+      *
+                   IF  ( RECE62-HKNNUM       NOT = SPACE    )
+                   AND ( RECE62-KOHNUM(1)        = "091"    )
+                   AND ( RECE62-KOHNUM(2)(1:1)
+                                           >= "1" AND <= "8")
+                      COMPUTE  RECE62-TOTALTEN(3) =
+                               RECE62-TOTALTEN(3) +
                                RECE62-TOTALTEN(2)
                    END-IF
       *
