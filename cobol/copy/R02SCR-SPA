@@ -33,7 +33,7 @@
                    07  SPA-GMN-PRTNML              PIC X(02).
                    07  SPA-GMN-F1L                 PIC X(01).
                    07  SPA-GMN-PRTNMMEIL           PIC X(16).
-                   07  SPA-GMN-PRTNM-MAX           PIC 9(03).
+               05  SPA-GMN-PRTNM-MAX               PIC 9(03).
       *
       *    医保分印刷指示画面
            03  SPA-R02-AREA.
