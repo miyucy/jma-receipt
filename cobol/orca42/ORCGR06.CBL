@@ -467,13 +467,14 @@
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
-         EVALUATE    SPA-GMN-R06-CUR
-             WHEN    1
-                    MOVE  "PRTNM"      TO  MCP-WIDGET
-             WHEN    2
-                    MOVE  "PRTNM_N"    TO  MCP-WIDGET
-             WHEN    199
-                    MOVE  "B12"        TO  MCP-WIDGET
+           EVALUATE    SPA-GMN-R06-CUR
+               WHEN    1
+                   MOVE    "PRTNM"     TO  MCP-WIDGET
+               WHEN    2
+                   MOVE    "PRTNM_N"   TO  MCP-WIDGET
+               WHEN    199
+                   MOVE    "B12"       TO  MCP-WIDGET
+           END-EVALUATE  
       *
            .
        5001-MAPCUR-EXT.
