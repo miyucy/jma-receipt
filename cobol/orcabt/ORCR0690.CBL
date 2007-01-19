@@ -105,6 +105,7 @@
       *  03.03.01    NACL-藤原    06/12/11  レセプト特記事項編集情報によ
       *                                     るレセプト請求しない公費の編集
       *                                     について神奈川障害のときの対応
+      *  03.04.01    NACL-門脇    07/01/19  点滴（種別３４０）の記載編集修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1335,7 +1336,7 @@
                    END-IF
       *                     
                    IF      RECE64-SRYKBN     <   "31"
-                   OR      RECE64-SRYKBN     =   "33"                   
+      **>          OR      RECE64-SRYKBN     =   "33"                   
                        MOVE    1             TO  IDY
                    ELSE                          
       *              療養病棟レセコメントがある剤
@@ -1721,8 +1722,8 @@
            END-IF
       *
            IF  WRK-TBLMAX           >   ZERO
-      ******** IF      RECE64-SRYKBN      >=  "33"                      
-               IF      RECE64-SRYKBN      >   "33"                      
+               IF      RECE64-SRYKBN      >=  "33"                      
+      **>      IF      RECE64-SRYKBN      >   "33"                      
                    CONTINUE
                ELSE        
                    MOVE    WRK-TBLMAX       TO  IDY
@@ -2111,8 +2112,8 @@
       *        点数・回数セット処理（診療行為）
                IF      IDX1              =   3
                AND     WRK-ZAIWMAX(IDX1) >   ZERO
-      ***********  IF      RECE64-SRYKBN     >=  "33"                   
-                   IF      RECE64-SRYKBN     >   "33"                   
+                   IF      RECE64-SRYKBN     >=  "33"                   
+      **>          IF      RECE64-SRYKBN     >   "33"                   
                        MOVE    RECE64-SYUTEN1    TO  WRK-ZAITENX
                        MOVE    RECE64-ZAIKAISU   TO  WRK-ZAIKAISUX
                        PERFORM 810-TENSUKAI-HEN-SEC
@@ -2125,8 +2126,8 @@
                IF      IDX1              =   4
                AND     WRK-ZAIWMAX(IDX1) >   ZERO
                AND     RECE64-KIZAITEN   >   ZERO
-      ***********  IF      RECE64-SRYKBN     >=  "33"                   
-                   IF      RECE64-SRYKBN     >   "33"                   
+                   IF      RECE64-SRYKBN     >=  "33"                   
+      **>          IF      RECE64-SRYKBN     >   "33"                   
                        MOVE    RECE64-KIZAITEN   TO  WRK-ZAITENX
                        MOVE    RECE64-ZAIKAISU   TO  WRK-ZAIKAISUX
                        PERFORM 810-TENSUKAI-HEN-SEC
@@ -2148,8 +2149,8 @@
       **                               TBL-ZAI (WRK-TBLMAX)(1:2)
       *****************END-IF     
       *                点数・回数セット
-      ***********      IF      RECE64-SRYKBN     >=  "33"               
-                       IF      RECE64-SRYKBN     >   "33"               
+                       IF      RECE64-SRYKBN     >=  "33"               
+      **>              IF      RECE64-SRYKBN     >   "33"               
                            MOVE    RECE64-YKZTEN     TO  WRK-ZAITENX
                            MOVE    RECE64-ZAIKAISU   TO  WRK-ZAIKAISUX
                            PERFORM 810-TENSUKAI-HEN-SEC
