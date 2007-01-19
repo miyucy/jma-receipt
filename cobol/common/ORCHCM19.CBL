@@ -2382,6 +2382,7 @@
       *****************************************************************
        310321-GENERIC-HEN-SEC           SECTION.
       *
+           MOVE    ZERO                TO  WRK-KANZANCHI
            EVALUATE    TNSP-IPN-KISAIKBN
       *        ∞Ï»ÃÃæµ≠∫‹
                WHEN    1
