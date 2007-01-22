@@ -39,6 +39,7 @@
       *  03.01.01    NACL-門脇    06/07/06  領収書対応
       *  03.02.01    NACL-門脇    06/09/05  健康保険法１０月改正対応
       *  03.04.01    NACL-門脇    06/12/01  自賠責健保準拠対応
+      *  03.04.02    NACL-門脇    07/01/22  収納明細編集修正
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -111,6 +112,10 @@
                                            OCCURS  10.
            03  WRK-4001-KOTEIKBN           PIC X(01).
            03  WRK-4001-JIBAIKBN           PIC X(01).
+      *
+           03  WRK-SYURRKNUM               PIC S9(09)  BINARY.
+           03  WRK-SYUEDANUM               PIC S9(09)  BINARY.
+           03  WRK-SYURRKUPDKBN            PIC X(01).
       *
       *    剤番号等退避用テーブル
        01  ZAIBAN-TABLE.
@@ -239,6 +244,9 @@
       *
       *    負担金額計算用パラメタ
            COPY    "CPORCS01.INC".
+      *
+      *    収納更新差額取得
+           COPY    "CPORCSS002.INC".
       *
       *    ワーク負担金額計算用パラメタ（合計用）
       ***  COPY    "CPORCS01.INC" REPLACING  //LNK-// BY //WRK-//.
@@ -762,6 +770,14 @@
       *          収納マスタの更新
       *
                  MOVE    LNK-SYUNOU-REC(IDY) TO  SYUNOU-REC
+      ****
+                 INITIALIZE                   SS002-AREA
+                 CALL    "ORCSS002"   USING   SS002-AREA
+                                              SYUNOU-REC
+                 MOVE    SS002-SYURRKNUM     TO  WRK-SYURRKNUM
+                 MOVE    SS002-SYUEDANUM     TO  WRK-SYUEDANUM
+                 MOVE    SS002-SYURRKUPDKBN  TO  WRK-SYURRKUPDKBN
+      ****
                  MOVE    SYUNOU-REC          TO  MCPDATA-REC
                  MOVE    "DBUPDATE"          TO  MCP-FUNC
                  MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
@@ -2479,6 +2495,10 @@
            MOVE    "00"                 TO  SMEI-NYUKIN-HOHO
       *状態区分
            MOVE    "3"                  TO  SMEI-JOUTAIKBN
+      *
+           MOVE    WRK-SYURRKNUM        TO  SMEI-SYURRKNUM
+           MOVE    WRK-SYUEDANUM        TO  SMEI-SYUEDANUM
+           MOVE    WRK-SYURRKUPDKBN     TO  SMEI-SYURRKUPDKBN
       *
            PERFORM 800-MCNDATE-SEC
            MOVE    SMCNDATE-YMD        TO  SMEI-CREYMD
