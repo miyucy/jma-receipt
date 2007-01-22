@@ -231,6 +231,8 @@
       *
       *    ¿ÇÎÅ²ñ·×ºÞ¥Á¥§¥Ã¥¯¥Ñ¥é¥á¥¿
            COPY    "CPORCSCZAICHK.INC".
+      *    ¼ýÇ¼¹¹¿·º¹³Û¼èÆÀ¥Ñ¥é¥á¥¿
+           COPY    "CPORCSS002.INC".
       *
       *    £Ä£Â¸¡º÷
       *01  MCPDATA-REC                 PIC X(5000).
@@ -2608,6 +2610,8 @@
            MOVE    COMB-KOH2HKNNUM     TO  SYU-KOH2HKNNUM
            MOVE    COMB-KOH3HKNNUM     TO  SYU-KOH3HKNNUM
            MOVE    COMB-KOH4HKNNUM     TO  SYU-KOH4HKNNUM
+      *    ¼ýÇ¼ÍúÎò½èÍý
+           PERFORM 3003131-SRYURRK-HEN-SEC
       *
            MOVE    SMCNDATE-YMD        TO  SYU-UPYMD
            MOVE    SMCNDATE-HMS        TO  SYU-UPHMS
@@ -2628,6 +2632,21 @@
            .
        3003131-SYUNOU-UPDATE-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    ¼ýÇ¼ÍúÎò½èÍý
+      *****************************************************************
+       3003131-SRYURRK-HEN-SEC           SECTION.
+      *
+           INITIALIZE                  SS002-AREA
+           MOVE    "1"                 TO  SS002-UPDKBN
+           CALL    "ORCSS002"          USING    SS002-AREA
+                                                SYUNOU-REC
+      *
+           .
+       3003131-SRYURRK-HEN-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    ÆâÉþÄþ¸º¤ÎºÞ½èÍý
       *****************************************************************
