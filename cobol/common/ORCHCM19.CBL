@@ -55,6 +55,7 @@
       * 03.02.00     NACL-多々納  06/09/20  Ｈ１８年１０月改正対応
       * 03.04.00     NACL-多々納  06/12/20  内用総量編集対応
       *                                     一般名記載対応
+      * 03.04.01     NACL-森脇    07/01/17  医療機関名称、住所セット変更
       *****************************************************************
       *
       *
@@ -353,6 +354,15 @@
       *    出力先プリンタ名割り当て情報
            COPY  "CPSK1031.INC".
       *
+      *----(03.04.01)--ADD-START---
+      *    医療機関編集情報
+           COPY    "CPSK1900.INC".
+      *    医療機関名称編集情報
+           COPY    "CPSK1901.INC".
+      *    医療機関住所編集情報
+           COPY    "CPSK1902.INC".
+      *----(03.04.01)--ADD-END-----
+      *
       *    患者マスタ
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
@@ -645,6 +655,15 @@
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
+      *
+      *----(03.04.01)--ADD-START---
+      *    医療機関編集情報
+           PERFORM 900-1900-READ-SEC
+      *    医療機関名称編集情報
+           PERFORM 900-1901-READ-SEC
+      *    医療機関住所編集情報
+           PERFORM 900-1902-READ-SEC
+      *----(03.04.01)--ADD-END-----
       *
            .
        100-SYORI-EXT.
@@ -1479,12 +1498,30 @@
            PERFORM 31012-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  HCM19-BIRTH
       *
+      *----(03.04.01)--UPD-START---
       *    医療機関住所
-           MOVE    SYS-1002-ADRS       TO  HCM19-HOSPADRS
+           IF      SYS-1902-ADRS1      NOT =   SPACE
+               MOVE    SYS-1902-ADRS1      TO  HCM19-HOSPADRS(1:40)
+               MOVE    SYS-1902-ADRS2      TO  HCM19-HOSPADRS(41:40)
+           ELSE
+               MOVE    SYS-1002-ADRS       TO  HCM19-HOSPADRS
+           END-IF
+      *
       *    医療機関名
-           MOVE    SYS-1001-HOSPNAME   TO  HCM19-HOSPNAME
+           IF      SYS-1901-HOSPNAME1  NOT =   SPACE
+               MOVE    SYS-1901-HOSPNAME1  TO  HCM19-HOSPNAME(1:40)
+               MOVE    SYS-1901-HOSPNAME2  TO  HCM19-HOSPNAME(41:40)
+           ELSE
+               MOVE    SYS-1001-HOSPNAME   TO  HCM19-HOSPNAME
+           END-IF
+      *
       *    医療機関ＴＥＬ
-           MOVE    SYS-1002-TEL        TO  HCM19-HOSPTEL
+           IF      SYS-1902-TEL        NOT =   SPACE
+               MOVE    SYS-1902-TEL        TO  HCM19-HOSPTEL
+           ELSE
+               MOVE    SYS-1002-TEL        TO  HCM19-HOSPTEL
+           END-IF
+      *----(03.04.01)--UPD-END-----
       *
       *    ドクター
            MOVE    SYS-1010-NAME       TO  HCM19-DRNAME
@@ -3420,6 +3457,114 @@
        2005-ZENKAI-SYORI-EXT.
            EXIT.
       *---(01.00.16) LINE ADD END   ------------------------------------
+      *----(03.04.01)--ADD-START---
+      *****************************************************************
+      *    医療機関編集情報読み込み
+      *****************************************************************
+       900-1900-READ-SEC           SECTION.
+      *
+      *    医療機関編集情報読み込み
+           MOVE    SPACE           TO  SYS-1900-REC
+           INITIALIZE                  SYS-1900-REC
+           MOVE    "1900"          TO  SYS-1900-KANRICD
+           MOVE    "*"             TO  SYS-1900-KBNCD
+           MOVE    SPA-SRYYMD      TO  SYS-1900-STYUKYMD
+           MOVE    SPA-SRYYMD      TO  SYS-1900-EDYUKYMD
+           MOVE    SYS-1900-REC    TO  MCPDATA-REC
+           PERFORM 900-SYSKANRI-KEY10-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC     TO  SYS-1900-REC
+           ELSE
+               INITIALIZE                  SYS-1900-REC
+           END-IF
+           .
+      *
+       900-1900-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    医療機関名称編集情報読み込み
+      *****************************************************************
+       900-1901-READ-SEC           SECTION.
+      *
+           IF      SYS-1900-PRTKBN(9)  =   SPACE
+               MOVE    SPACE           TO  SYS-1901-REC
+               GO  TO  900-1901-READ-EXT
+           END-IF
+      *
+      *    医療機関名称編集情報読み込み
+           MOVE    SPACE           TO  SYS-1901-REC
+           INITIALIZE                  SYS-1901-REC
+           MOVE    "1901"          TO  SYS-1901-KANRICD
+           MOVE    SYS-1900-PRTKBN(9)
+                                   TO  SYS-1901-KBNCD
+           MOVE    SPA-SRYYMD      TO  SYS-1901-STYUKYMD
+           MOVE    SPA-SRYYMD      TO  SYS-1901-EDYUKYMD
+           MOVE    SYS-1901-REC    TO  MCPDATA-REC
+           PERFORM 900-SYSKANRI-KEY10-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC     TO  SYS-1901-REC
+           ELSE
+               INITIALIZE                  SYS-1901-REC
+           END-IF
+           .
+      *
+       900-1901-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    医療機関住所編集情報読み込み
+      *****************************************************************
+       900-1902-READ-SEC           SECTION.
+      *
+           IF      SYS-1900-PRTKBN(9)  =   SPACE
+               MOVE    SPACE           TO  SYS-1902-REC
+               GO  TO  900-1902-READ-EXT
+           END-IF
+      *
+      *    医療機関住所編集情報読み込み
+           MOVE    SPACE           TO  SYS-1902-REC
+           INITIALIZE                  SYS-1902-REC
+           MOVE    "1902"          TO  SYS-1902-KANRICD
+           MOVE    SYS-1900-PRTKBN(9)
+                                   TO  SYS-1902-KBNCD
+           MOVE    SPA-SRYYMD      TO  SYS-1902-STYUKYMD
+           MOVE    SPA-SRYYMD      TO  SYS-1902-EDYUKYMD
+           MOVE    SYS-1902-REC    TO  MCPDATA-REC
+           PERFORM 900-SYSKANRI-KEY10-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC     TO  SYS-1902-REC
+           ELSE
+               INITIALIZE                  SYS-1902-REC
+           END-IF
+           .
+      *
+       900-1902-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    システム管理マスタ主キー読み込み処理
+      *****************************************************************
+       900-SYSKANRI-KEY10-SEC         SECTION.
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
+               PERFORM 900-KANRIMST-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       900-SYSKANRI-KEY10-EXT.
+           EXIT.
+      *----(03.04.01)--ADD-END-----
       *****************************************************************
       *    システム管理マスタ読み込み処理
       *****************************************************************

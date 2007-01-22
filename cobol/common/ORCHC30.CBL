@@ -46,6 +46,7 @@
       *  02.01.04    NACL-多々納  05/11/09  MONFUNC対応
       *  02.01.05    NACL-森脇    06/03/01  用量割合方法コード
       *  02.01.06    NACL-森脇    06/03/14  薬剤全数対応
+      *  03.04.01    NACL-森脇    07/01/17  医療機関名称、住所セット変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -225,6 +226,15 @@
       *    出力先プリンタ名割り当て情報
            COPY    "CPSK1031.INC".
       *
+      *----(03.04.01)--ADD-START---
+      *    医療機関編集情報
+           COPY    "CPSK1900.INC".
+      *    医療機関名称編集情報
+           COPY    "CPSK1901.INC".
+      *    医療機関住所編集情報
+           COPY    "CPSK1902.INC".
+      *----(03.04.01)--ADD-END-----
+      *
       *    点数マスタ
            COPY    "CPTENSU.INC".
       *
@@ -313,6 +323,15 @@
       *
       *    医療機関情報−所在地、連絡先セット
            PERFORM 900-1002-READ-SEC
+      *
+      *----(03.04.01)--ADD-START---
+      *    医療機関編集情報
+           PERFORM 900-1900-READ-SEC
+      *    医療機関名称編集情報
+           PERFORM 900-1901-READ-SEC
+      *    医療機関住所編集情報
+           PERFORM 900-1902-READ-SEC
+      *----(03.04.01)--ADD-END-----
       *
       *    職員情報
            PERFORM 900-1010-READ-SEC
@@ -1175,14 +1194,30 @@
       *     MOVE    SPA-NAME            TO  WRK-YKJ-NAME
            PERFORM 265-NAMEHEN-SET-SEC
       *
+      *----(03.04.01)--UPD-START---
       *    所在地
-           MOVE    SYS-1002-ADRS       TO  WRK-YKJ-JYUSYO
+           IF      SYS-1902-ADRS1      NOT =   SPACE
+               MOVE    SYS-1902-ADRS1      TO  WRK-YKJ-JYUSYO(1:50)
+               MOVE    SYS-1902-ADRS2      TO  WRK-YKJ-JYUSYO(51:50)
+           ELSE
+               MOVE    SYS-1002-ADRS       TO  WRK-YKJ-JYUSYO
+           END-IF
       *
       *    医療機関名称
-           MOVE    SYS-1001-HOSPNAME   TO  WRK-YKJ-HSPNAME
+           IF      SYS-1901-HOSPNAME1  NOT =   SPACE
+               MOVE    SYS-1901-HOSPNAME1  TO  WRK-YKJ-HSPNAME(1:50)
+               MOVE    SYS-1901-HOSPNAME2  TO  WRK-YKJ-HSPNAME(51:50)
+           ELSE
+               MOVE    SYS-1001-HOSPNAME   TO  WRK-YKJ-HSPNAME
+           END-IF
       *
       *    電話番号
-           MOVE    SYS-1002-TEL        TO  WRK-YKJ-TEL
+           IF      SYS-1902-TEL        NOT =   SPACE
+               MOVE    SYS-1902-TEL        TO  WRK-YKJ-TEL
+           ELSE
+               MOVE    SYS-1002-TEL        TO  WRK-YKJ-TEL
+           END-IF
+      *----(03.04.01)--UPD-START---
       *
       *    職員氏名
            MOVE    SYS-1010-NAME       TO  WRK-YKJ-DRNAME
@@ -2004,6 +2039,92 @@
        900-1031-READ-EXT.
            EXIT.
       *
+      *----(03.04.01)--ADD-START---
+      *****************************************************************
+      *    医療機関編集情報読み込み
+      *****************************************************************
+       900-1900-READ-SEC           SECTION.
+      *
+      *    医療機関編集情報読み込み
+           MOVE    SPACE           TO  SYS-1900-REC
+           INITIALIZE                  SYS-1900-REC
+           MOVE    "1900"          TO  SYS-1900-KANRICD
+           MOVE    "*"             TO  SYS-1900-KBNCD
+           MOVE    SPA-SRYYMD      TO  SYS-1900-STYUKYMD
+           MOVE    SPA-SRYYMD      TO  SYS-1900-EDYUKYMD
+           MOVE    SYS-1900-REC    TO  MCPDATA-REC
+           PERFORM 800-SYSKANRI-READ-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC     TO  SYS-1900-REC
+           ELSE
+               INITIALIZE                  SYS-1900-REC
+           END-IF
+           .
+      *
+       900-1900-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    医療機関名称編集情報読み込み
+      *****************************************************************
+       900-1901-READ-SEC           SECTION.
+      *
+           IF      SYS-1900-PRTKBN(13) =   SPACE
+               MOVE    SPACE           TO  SYS-1901-REC
+               GO  TO  900-1901-READ-EXT
+           END-IF
+      *
+      *    医療機関名称編集情報読み込み
+           MOVE    SPACE           TO  SYS-1901-REC
+           INITIALIZE                  SYS-1901-REC
+           MOVE    "1901"          TO  SYS-1901-KANRICD
+           MOVE    SYS-1900-PRTKBN(13)
+                                   TO  SYS-1901-KBNCD
+           MOVE    SPA-SRYYMD      TO  SYS-1901-STYUKYMD
+           MOVE    SPA-SRYYMD      TO  SYS-1901-EDYUKYMD
+           MOVE    SYS-1901-REC    TO  MCPDATA-REC
+           PERFORM 800-SYSKANRI-READ-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC     TO  SYS-1901-REC
+           ELSE
+               INITIALIZE                  SYS-1901-REC
+           END-IF
+           .
+      *
+       900-1901-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    医療機関住所編集情報読み込み
+      *****************************************************************
+       900-1902-READ-SEC           SECTION.
+      *
+           IF      SYS-1900-PRTKBN(13) =   SPACE
+               MOVE    SPACE           TO  SYS-1902-REC
+               GO  TO  900-1902-READ-EXT
+           END-IF
+      *
+      *    医療機関住所編集情報読み込み
+           MOVE    SPACE           TO  SYS-1902-REC
+           INITIALIZE                  SYS-1902-REC
+           MOVE    "1902"          TO  SYS-1902-KANRICD
+           MOVE    SYS-1900-PRTKBN(13)
+                                   TO  SYS-1902-KBNCD
+           MOVE    SPA-SRYYMD      TO  SYS-1902-STYUKYMD
+           MOVE    SPA-SRYYMD      TO  SYS-1902-EDYUKYMD
+           MOVE    SYS-1902-REC    TO  MCPDATA-REC
+           PERFORM 800-SYSKANRI-READ-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC     TO  SYS-1902-REC
+           ELSE
+               INITIALIZE                  SYS-1902-REC
+           END-IF
+           .
+      *
+       900-1902-READ-EXT.
+           EXIT.
+      *
+      *----(03.04.01)--ADD-END-----
       *****************************************************************
       *    システム管理マスタ読み込み
       *****************************************************************
