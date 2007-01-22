@@ -924,18 +924,23 @@
                                                TO  IDX
                    END-IF
                END-PERFORM
-               PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       SPA-GMN-PRTJYUN1-MAX
-                       OR      SPA-GMN-PRTJYUN1L (IDX)
-                                   =   SPACE
-                   IF      SYS-2005-PRTJYUNKBN3
+               IF      SYS-2005-PRTJYUNKBN1
+                                           =   "07"    OR  "08"
+                   MOVE    SPA-GMN-PRTJYUN-G   TO  SPA-GMN-PRTJYUN1-G
+               ELSE
+                   PERFORM VARYING IDX FROM    1   BY  1
+                           UNTIL   IDX >       SPA-GMN-PRTJYUN1-MAX
+                           OR      SPA-GMN-PRTJYUN1L (IDX)
+                                       =   SPACE
+                       IF      SYS-2005-PRTJYUNKBN3
                                            =   SPA-GMN-PRTJYUN1L (IDX)
-                       MOVE    SPA-GMN-PRTJYUN1LST(IDX)
+                           MOVE    SPA-GMN-PRTJYUN1LST(IDX)
                                                TO  SPA-GMN-PRTJYUN1-G
-                       MOVE    SPA-GMN-PRTJYUN1-MAX
+                           MOVE    SPA-GMN-PRTJYUN1-MAX
                                                TO  IDX
-                   END-IF
-               END-PERFORM
+                       END-IF
+                   END-PERFORM
+               END-IF
            ELSE
                IF    ( SPA-R01-RECE07-SYORISBT =   "1" OR  "2" )
                AND   ( SYS-2005-PRTJYUNKBN2    =   "05"        )
