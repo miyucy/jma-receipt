@@ -90,12 +90,12 @@
     </element>
     <element name="IRYOADRS" occurs="1">
       <appinfo>
-        <embed object="string" length="60"/>
+        <embed object="string" length="100"/>
       </appinfo>
     </element>
     <element name="IRYOMEI" occurs="1">
       <appinfo>
-        <embed object="string" length="40"/>
+        <embed object="string" length="100"/>
       </appinfo>
     </element>
     <element name="IRYOTEL" occurs="1">
@@ -1762,7 +1762,7 @@
         <point val="3,28.7"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="3,28.4264;3.707,28.7764"/>
+        <rectangle val="3,28.4655;3.606,28.7655"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -1773,7 +1773,7 @@
             <font name="Courier"/>
           </attribute>
           <attribute name="height">
-            <real val="0.35"/>
+            <real val="0.3"/>
           </attribute>
           <attribute name="pos">
             <point val="3,28.7"/>
@@ -1785,10 +1785,10 @@
             <enum val="0"/>
           </attribute>
           <attribute name="single">
-            <real val="0.2121"/>
+            <real val="0.1818"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.17675"/>
+            <real val="0.1515"/>
           </attribute>
         </composite>
       </attribute>
@@ -5464,13 +5464,16 @@
     </object>
     <object type="Embed - Text" version="0" id="O148">
       <attribute name="obj_pos">
-        <point val="3,27.7"/>
+        <point val="3,27.3"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="3,27.4264;13.605,27.7764"/>
+        <rectangle val="3,27.0655;10.575,27.6655"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#IRYOADRS#</string>
+      </attribute>
+      <attribute name="embed_text_column">
+        <int val="50"/>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="0"/>
@@ -5478,16 +5481,17 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;#</string>
+            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;&#164;&#175;&#164;&#177;&#164;&#179;&#164;&#181;&#164;&#183;&#164;&#185;&#164;&#187;&#164;&#189;&#164;&#191;&#164;&#193;&#164;&#196;&#164;&#198;&#164;&#200;&#164;&#202;&#164;&#203;&#164;&#204;&#164;&#205;&#164;&#206;
+&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;&#164;&#175;&#164;&#177;&#164;&#179;&#164;&#181;&#164;&#183;&#164;&#185;&#164;&#187;&#164;&#189;&#164;&#191;&#164;&#193;&#164;&#196;&#164;&#198;&#164;&#200;&#164;&#202;&#164;&#203;&#164;&#204;&#164;&#205;&#164;&#206;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
           </attribute>
           <attribute name="height">
-            <real val="0.35"/>
+            <real val="0.3"/>
           </attribute>
           <attribute name="pos">
-            <point val="3,27.7"/>
+            <point val="3,27.3"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -5496,10 +5500,10 @@
             <enum val="0"/>
           </attribute>
           <attribute name="single">
-            <real val="0.2121"/>
+            <real val="0.1818"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.17675"/>
+            <real val="0.1515"/>
           </attribute>
         </composite>
       </attribute>
@@ -5548,10 +5552,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O150">
       <attribute name="obj_pos">
-        <point val="4,28.7"/>
+        <point val="3.9,28.7"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="4,28.3873;7.636,28.7873"/>
+        <rectangle val="3.9,28.4264;7.0815,28.7764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#IRYOTEL#</string>
@@ -5568,52 +5572,10 @@
             <font name="Courier"/>
           </attribute>
           <attribute name="height">
-            <real val="0.4"/>
-          </attribute>
-          <attribute name="pos">
-            <point val="4,28.7"/>
-          </attribute>
-          <attribute name="color">
-            <color val="#000000"/>
-          </attribute>
-          <attribute name="alignment">
-            <enum val="0"/>
-          </attribute>
-          <attribute name="single">
-            <real val="0.2424"/>
-          </attribute>
-          <attribute name="multi">
-            <real val="0.202"/>
-          </attribute>
-        </composite>
-      </attribute>
-    </object>
-    <object type="Embed - Text" version="0" id="O151">
-      <attribute name="obj_pos">
-        <point val="3,28.2"/>
-      </attribute>
-      <attribute name="obj_bb">
-        <rectangle val="3,27.9264;10.07,28.2764"/>
-      </attribute>
-      <attribute name="dnode_path">
-        <string>#IRYOMEI#</string>
-      </attribute>
-      <attribute name="embed_text_string">
-        <enum val="0"/>
-      </attribute>
-      <attribute name="text">
-        <composite type="text">
-          <attribute name="string">
-            <string>#&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;#</string>
-          </attribute>
-          <attribute name="font">
-            <font name="Courier"/>
-          </attribute>
-          <attribute name="height">
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="3,28.2"/>
+            <point val="3.9,28.7"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -5626,6 +5588,52 @@
           </attribute>
           <attribute name="multi">
             <real val="0.17675"/>
+          </attribute>
+        </composite>
+      </attribute>
+    </object>
+    <object type="Embed - Text" version="0" id="O151">
+      <attribute name="obj_pos">
+        <point val="3,28"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="3,27.7655;10.575,28.3655"/>
+      </attribute>
+      <attribute name="dnode_path">
+        <string>#IRYOMEI#</string>
+      </attribute>
+      <attribute name="embed_text_column">
+        <int val="50"/>
+      </attribute>
+      <attribute name="embed_text_string">
+        <enum val="0"/>
+      </attribute>
+      <attribute name="text">
+        <composite type="text">
+          <attribute name="string">
+            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;&#164;&#175;&#164;&#177;&#164;&#179;&#164;&#181;&#164;&#183;&#164;&#185;&#164;&#187;&#164;&#189;&#164;&#191;&#164;&#193;&#164;&#196;&#164;&#198;&#164;&#200;&#164;&#202;&#164;&#203;&#164;&#204;&#164;&#205;&#164;&#206;
+&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;&#164;&#175;&#164;&#177;&#164;&#179;&#164;&#181;&#164;&#183;&#164;&#185;&#164;&#187;&#164;&#189;&#164;&#191;&#164;&#193;&#164;&#196;&#164;&#198;&#164;&#200;&#164;&#202;&#164;&#203;&#164;&#204;&#164;&#205;&#164;&#206;#</string>
+          </attribute>
+          <attribute name="font">
+            <font name="Courier"/>
+          </attribute>
+          <attribute name="height">
+            <real val="0.3"/>
+          </attribute>
+          <attribute name="pos">
+            <point val="3,28"/>
+          </attribute>
+          <attribute name="color">
+            <color val="#000000"/>
+          </attribute>
+          <attribute name="alignment">
+            <enum val="0"/>
+          </attribute>
+          <attribute name="single">
+            <real val="0.1818"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.1515"/>
           </attribute>
         </composite>
       </attribute>

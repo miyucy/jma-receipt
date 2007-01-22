@@ -52,8 +52,8 @@
             02  HCM03V03-ZENMISYU   PIC X(18).
             02  HCM03V03-GOUKEIGAK  PIC X(18).
             02  HCM03V03-KONNYUKIN  PIC X(18).
-            02  HCM03V03-IRYOADRS   PIC X(60).
-            02  HCM03V03-IRYOMEI    PIC X(40).
+            02  HCM03V03-IRYOADRS   PIC X(100).
+            02  HCM03V03-IRYOMEI    PIC X(100).
             02  HCM03V03-IRYOTEL    PIC X(15).
             02  HCM03V03-MIDASHI    PIC X(10).
             02  HCM03V03-RSIMIDASI  PIC X(16).

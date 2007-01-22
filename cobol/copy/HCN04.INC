@@ -17,6 +17,6 @@
               03  HCN04-SURYO PIC X(8).
               03  HCN04-KAISU PIC X(3).
               03  HCN04-KINGAKU   PIC X(11).
-            02  HCN04-IRYOADRS  PIC X(60).
-            02  HCN04-IRYOMEI   PIC X(40).
+            02  HCN04-IRYOADRS  PIC X(100).
+            02  HCN04-IRYOMEI   PIC X(100).
             02  HCN04-IRYOTEL   PIC X(15).

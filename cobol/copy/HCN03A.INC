@@ -26,8 +26,8 @@
             02  HCN03A-CHOSEI   PIC X(24).
             02  HCN03A-KONSEIKYU    PIC X(24).
             02  HCN03A-KONNYUKIN    PIC X(24).
-            02  HCN03A-IRYOADRS PIC X(60).
-            02  HCN03A-IRYOMEI  PIC X(40).
+            02  HCN03A-IRYOADRS PIC X(100).
+            02  HCN03A-IRYOMEI  PIC X(100).
             02  HCN03A-IRYOTEL  PIC X(15).
             02  HCN03A-LBL-G-MISYU  PIC X(20).
             02  HCN03A-LBL-G-MISYU-EN   PIC X(2).

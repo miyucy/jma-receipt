@@ -93,12 +93,12 @@
     </element>
     <element name="HOSPADRS" occurs="1">
       <appinfo>
-        <embed object="string" length="60"/>
+        <embed object="string" length="80"/>
       </appinfo>
     </element>
     <element name="HOSPNAME" occurs="1">
       <appinfo>
-        <embed object="string" length="60"/>
+        <embed object="string" length="80"/>
       </appinfo>
     </element>
     <element name="HOSPTEL" occurs="1">
@@ -7782,13 +7782,13 @@
         <point val="9.15,4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.15,3.76545;13.695,4.36545"/>
+        <rectangle val="9.15,3.80455;14.2,4.30455"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#HOSPADRS#</string>
       </attribute>
       <attribute name="embed_text_column">
-        <int val="30"/>
+        <int val="40"/>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="0"/>
@@ -7796,14 +7796,14 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;
-&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;#</string>
+            <string>#&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;
+&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
           </attribute>
           <attribute name="height">
-            <real val="0.3"/>
+            <real val="0.25"/>
           </attribute>
           <attribute name="pos">
             <point val="9.15,4"/>
@@ -7815,10 +7815,10 @@
             <enum val="0"/>
           </attribute>
           <attribute name="single">
-            <real val="0.1818"/>
+            <real val="0.1515"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.1515"/>
+            <real val="0.12625"/>
           </attribute>
         </composite>
       </attribute>
@@ -7828,13 +7828,13 @@
         <point val="9.15,4.65"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.15,4.41545;13.695,5.01545"/>
+        <rectangle val="9.15,4.45455;14.2,4.95455"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#HOSPNAME#</string>
       </attribute>
       <attribute name="embed_text_column">
-        <int val="30"/>
+        <int val="40"/>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="0"/>
@@ -7842,14 +7842,14 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;
-&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;#</string>
+            <string>#&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;
+&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
           </attribute>
           <attribute name="height">
-            <real val="0.3"/>
+            <real val="0.25"/>
           </attribute>
           <attribute name="pos">
             <point val="9.15,4.65"/>
@@ -7861,10 +7861,10 @@
             <enum val="0"/>
           </attribute>
           <attribute name="single">
-            <real val="0.1818"/>
+            <real val="0.1515"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.1515"/>
+            <real val="0.12625"/>
           </attribute>
         </composite>
       </attribute>

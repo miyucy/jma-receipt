@@ -6,8 +6,8 @@
             02  HCM305-KANANAME PIC X(44).
             02  HCM305-NAME PIC X(34).
             02  HCM305-NAME2    PIC X(88).
-            02  HCM305-JYUSYO   PIC X(56).
-            02  HCM305-HSPNAME  PIC X(56).
+            02  HCM305-JYUSYO   PIC X(100).
+            02  HCM305-HSPNAME  PIC X(100).
             02  HCM305-TEL  PIC X(15).
             02  HCM305-DRNAME   PIC X(26).
             02  HCM305-COMMENT

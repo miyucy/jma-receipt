@@ -138,12 +138,12 @@
     </element>
     <element name="IRYOADRS" occurs="1">
       <appinfo>
-        <embed object="string" length="60"/>
+        <embed object="string" length="100"/>
       </appinfo>
     </element>
     <element name="IRYOMEI" occurs="1">
       <appinfo>
-        <embed object="string" length="40"/>
+        <embed object="string" length="100"/>
       </appinfo>
     </element>
     <element name="IRYOTEL" occurs="1">
@@ -2132,10 +2132,10 @@
     </object>
     <object type="Standard - Text" version="0" id="O81">
       <attribute name="obj_pos">
-        <point val="7.8,24.2"/>
+        <point val="5.5,24.2"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="7.8,23.9264;8.507,24.2764"/>
+        <rectangle val="5.5,23.9264;6.207,24.2764"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -2149,7 +2149,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="7.8,24.2"/>
+            <point val="5.5,24.2"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -5492,13 +5492,16 @@
     </object>
     <object type="Embed - Text" version="0" id="O173">
       <attribute name="obj_pos">
-        <point val="5.5,22.9"/>
+        <point val="5.5,22.6"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.5,22.6264;16.105,22.9764"/>
+        <rectangle val="5.5,22.3264;14.3375,23.0264"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#IRYOADRS#</string>
+      </attribute>
+      <attribute name="embed_text_column">
+        <int val="50"/>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="0"/>
@@ -5506,7 +5509,8 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;#</string>
+            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;&#164;&#175;&#164;&#177;&#164;&#179;&#164;&#181;&#164;&#183;&#164;&#185;&#164;&#187;&#164;&#189;&#164;&#191;&#164;&#193;&#164;&#196;&#164;&#198;&#164;&#200;&#164;&#202;&#164;&#203;&#164;&#204;&#164;&#205;&#164;&#206;
+&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;&#164;&#175;&#164;&#177;&#164;&#179;&#164;&#181;&#164;&#183;&#164;&#185;&#164;&#187;&#164;&#189;&#164;&#191;&#164;&#193;&#164;&#196;&#164;&#198;&#164;&#200;&#164;&#202;&#164;&#203;&#164;&#204;&#164;&#205;&#164;&#206;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -5515,7 +5519,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="5.5,22.9"/>
+            <point val="5.5,22.6"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -5576,10 +5580,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O175">
       <attribute name="obj_pos">
-        <point val="8.9,24.2"/>
+        <point val="6.5,24.2"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="8.9,23.8873;12.536,24.2873"/>
+        <rectangle val="6.5,23.8873;10.136,24.2873"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#IRYOTEL#</string>
@@ -5599,7 +5603,7 @@
             <real val="0.4"/>
           </attribute>
           <attribute name="pos">
-            <point val="8.9,24.2"/>
+            <point val="6.5,24.2"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -5618,13 +5622,16 @@
     </object>
     <object type="Embed - Text" version="0" id="O176">
       <attribute name="obj_pos">
-        <point val="6.5,23.6"/>
+        <point val="5.5,23.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="6.5,23.3264;13.57,23.6764"/>
+        <rectangle val="5.5,23.1264;14.3375,23.8264"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#IRYOMEI#</string>
+      </attribute>
+      <attribute name="embed_text_column">
+        <int val="50"/>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="0"/>
@@ -5632,7 +5639,8 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;&#164;&#162;#</string>
+            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;&#164;&#175;&#164;&#177;&#164;&#179;&#164;&#181;&#164;&#183;&#164;&#185;&#164;&#187;&#164;&#189;&#164;&#191;&#164;&#193;&#164;&#196;&#164;&#198;&#164;&#200;&#164;&#202;&#164;&#203;&#164;&#204;&#164;&#205;&#164;&#206;
+&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;&#164;&#175;&#164;&#177;&#164;&#179;&#164;&#181;&#164;&#183;&#164;&#185;&#164;&#187;&#164;&#189;&#164;&#191;&#164;&#193;&#164;&#196;&#164;&#198;&#164;&#200;&#164;&#202;&#164;&#203;&#164;&#204;&#164;&#205;&#164;&#206;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -5641,7 +5649,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="6.5,23.6"/>
+            <point val="5.5,23.4"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>

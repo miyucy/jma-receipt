@@ -17,8 +17,8 @@
             02  HCM19-KIKYY PIC X(4).
             02  HCM19-KIKMM PIC X(4).
             02  HCM19-KIKDD PIC X(4).
-            02  HCM19-HOSPADRS  PIC X(60).
-            02  HCM19-HOSPNAME  PIC X(60).
+            02  HCM19-HOSPADRS  PIC X(80).
+            02  HCM19-HOSPNAME  PIC X(80).
             02  HCM19-HOSPTEL   PIC X(15).
             02  HCM19-DRNAME    PIC X(26).
             02  HCM19-FTNJA2    PIC X(16).

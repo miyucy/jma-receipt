@@ -18,7 +18,7 @@
     </element>
     <element name="ADRS" occurs="1">
       <appinfo>
-        <embed object="string" length="50"/>
+        <embed object="string" length="100"/>
       </appinfo>
     </element>
     <element name="HOSPNAME" occurs="1">
@@ -169,14 +169,14 @@
     </object>
     <object type="Standard - Line" version="0" id="O1">
       <attribute name="obj_pos">
-        <point val="16.8,3"/>
+        <point val="16.8,2.5"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="16.795,2.995;22.605,3.005"/>
+        <rectangle val="16.795,2.495;22.605,2.505"/>
       </attribute>
       <attribute name="conn_endpoints">
-        <point val="16.8,3"/>
-        <point val="22.6,3"/>
+        <point val="16.8,2.5"/>
+        <point val="22.6,2.5"/>
       </attribute>
       <attribute name="numcp">
         <int val="1"/>
@@ -1329,10 +1329,10 @@
     </object>
     <object type="Standard - Text" version="0" id="O60">
       <attribute name="obj_pos">
-        <point val="16.8,2.9"/>
+        <point val="16.8,2.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="16.8,2.68109;18.7796,2.96109"/>
+        <rectangle val="16.8,2.18109;18.7796,2.46109"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -1346,7 +1346,7 @@
             <real val="0.28"/>
           </attribute>
           <attribute name="pos">
-            <point val="16.8,2.9"/>
+            <point val="16.8,2.4"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -1365,10 +1365,10 @@
     </object>
     <object type="Standard - Text" version="0" id="O61">
       <attribute name="obj_pos">
-        <point val="16.8,3.4"/>
+        <point val="16.8,3.1"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="16.8,3.18109;18.7796,3.46109"/>
+        <rectangle val="16.8,2.88109;18.7796,3.16109"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -1382,7 +1382,7 @@
             <real val="0.28"/>
           </attribute>
           <attribute name="pos">
-            <point val="16.8,3.4"/>
+            <point val="16.8,3.1"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -3171,10 +3171,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O111">
       <attribute name="obj_pos">
-        <point val="18.9,2.9"/>
+        <point val="18.9,2.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.9,2.66545;22.536,2.96545"/>
+        <rectangle val="18.9,2.16545;22.536,2.46545"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#HOSPCD#</string>
@@ -3194,7 +3194,7 @@
             <real val="0.3"/>
           </attribute>
           <attribute name="pos">
-            <point val="18.9,2.9"/>
+            <point val="18.9,2.4"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -3213,13 +3213,16 @@
     </object>
     <object type="Embed - Text" version="0" id="O112">
       <attribute name="obj_pos">
-        <point val="18.9,3.4"/>
+        <point val="18.9,3.1"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.9,3.18109;25.97,3.46109"/>
+        <rectangle val="18.9,2.88109;25.97,3.44109"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#ADRS#</string>
+      </attribute>
+      <attribute name="embed_text_column">
+        <int val="50"/>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="0"/>
@@ -3227,7 +3230,8 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;&#164;&#175;&#164;&#177;&#164;&#179;&#164;&#181;&#164;&#183;&#164;&#185;&#164;&#187;&#164;&#189;&#164;&#191;&#164;&#193;&#164;&#196;&#164;&#198;&#164;&#200;&#164;&#202;&#164;&#203;&#164;&#204;&#164;&#205;&#164;&#206;#</string>
+            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;&#164;&#175;&#164;&#177;&#164;&#179;&#164;&#181;&#164;&#183;&#164;&#185;&#164;&#187;&#164;&#189;&#164;&#191;&#164;&#193;&#164;&#196;&#164;&#198;&#164;&#200;&#164;&#202;&#164;&#203;&#164;&#204;&#164;&#205;&#164;&#206;
+&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;&#164;&#175;&#164;&#177;&#164;&#179;&#164;&#181;&#164;&#183;&#164;&#185;&#164;&#187;&#164;&#189;&#164;&#191;&#164;&#193;&#164;&#196;&#164;&#198;&#164;&#200;&#164;&#202;&#164;&#203;&#164;&#204;&#164;&#205;&#164;&#206;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -3236,7 +3240,7 @@
             <real val="0.28"/>
           </attribute>
           <attribute name="pos">
-            <point val="18.9,3.4"/>
+            <point val="18.9,3.1"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
