@@ -732,6 +732,9 @@
       *    ¼ç¾ðÊó¥¢¥¯¥»¥¹ÍÑ¥Ñ¥é¥á¥¿
            01  ORCSSYUACCAREA.
                COPY    "CPORCSSYUACC.INC".
+      *    ¼ýÇ¼¹¹¿·º¹³Û¼èÆÀ¥Ñ¥é¥á¥¿
+           COPY    "CPORCSS002.INC".
+      *
       *    £Ó£Ð£Á¥Ñ¥é¥á¥¿¡ÊORCSC97.CBL ÍÑ¤ÎDAMMY)
        01  LNK-K02SCR-REC.
            COPY    "CPK02SPASCR.INC"    REPLACING
@@ -10149,6 +10152,8 @@
            ELSE
                MOVE    "1"                 TO  SMEI-JOUTAIKBN
            END-IF
+      *    ¼ýÇ¼ÍúÎòÊÔ½¸½èÍý
+           PERFORM 49012111-SRYURRK-HEN-SEC
       *
            MOVE    SMCNDATE-YMD        TO  SMEI-CREYMD
            MOVE    SMCNDATE-YMD        TO  SMEI-UPYMD
@@ -10176,6 +10181,31 @@
       *
            .
        4901211-SYUMEI-OUT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¼ýÇ¼ÍúÎòÊÔ½¸½èÍý
+      *****************************************************************
+       49012111-SRYURRK-HEN-SEC           SECTION.
+      *
+           INITIALIZE                  SS002-AREA
+           CALL    "ORCSS002"          USING    SS002-AREA
+                                                SYUNOU-REC
+      *
+           IF      SMEI-JOUTAIKBN       =   "1"
+                                        OR  "3"
+                                        OR  "7"
+                                        OR  "8"
+      *        ¼ýÇ¼ÍúÎòÈÖ¹æ
+               MOVE    SS002-SYURRKNUM     TO  SMEI-SYURRKNUM
+      *        ¼ýÇ¼ÍúÎò»ÞÈÖ¹æ
+               MOVE    SS002-SYUEDANUM     TO  SMEI-SYUEDANUM
+      *        ¼ýÇ¼ÍúÎò¹¹¿·¶èÊ¬
+               MOVE    SS002-SYURRKUPDKBN  TO  SMEI-SYURRKUPDKBN
+           END-IF
+      *
+           .
+       49012111-SRYURRK-HEN-EXT.
            EXIT.
       *
       *****************************************************************

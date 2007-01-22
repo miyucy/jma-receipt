@@ -32,6 +32,7 @@
       *                                     セットする
       *  01.00.03    NACL-多々納  05/11/28  MONFUNC 対応
       *  01.00.04    NACL-多々納  06/03/06  主科設定追加
+      *  03.04.00    NACL-多々納  07/01/22  収納差額処理追加
       *****************************************************************
       *
       *
@@ -447,6 +448,8 @@
       *    主情報アクセス用パラメタ
            01  ORCSSYUACCAREA.
                COPY    "CPORCSSYUACC.INC".
+      *    収納更新差額取得パラメタ
+           COPY    "CPORCSS002.INC".
       *
            COPY    "MCPAREA".
            COPY    "ORCA-SPA".
@@ -1001,6 +1004,8 @@
            END-IF
       *
            IF      SPA-SYORIFLG        =   ZERO
+      *        収納更新差額取得
+               PERFORM 100218-ORCSS002-CALL-SEC
       *        新規作成
                MOVE    SMCNDATE-YMD        TO  SYU-CREYMD
                MOVE    SMCNDATE-YMD        TO  SYU-UPYMD
@@ -1093,6 +1098,8 @@
                        MOVE    SPACE               TO  SYU-DENPJTIKBN
                    END-IF
                END-IF
+      *        収納更新差額取得
+               PERFORM 100218-ORCSS002-CALL-SEC
                IF      FLG-SYUNOU          =   ZERO
       *            会計変更区分
                    MOVE    SPACE               TO  SYU-ACCT-UPDKBN
@@ -1143,6 +1150,19 @@
       *
            .
        10021-SYUNOU-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   収納更新差額取得処理
+      *****************************************************************
+       100218-ORCSS002-CALL-SEC            SECTION.
+      *
+           INITIALIZE                  SS002-AREA
+           CALL    "ORCSS002"          USING    SS002-AREA
+                                                SYUNOU-REC
+      *
+           .
+       100218-ORCSS002-CALL-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1453,6 +1473,8 @@
       *入金連番
            ADD     1                   TO  WRK-NYUKINRENNUM
            MOVE    WRK-NYUKINRENNUM    TO  SMEI-NYUKINRENNUM
+      *    収納履歴編集処理
+           PERFORM 4500131-SRYURRK-HEN-SEC
       *
            MOVE    SMCNDATE-YMD        TO  SMEI-CREYMD
            MOVE    SMCNDATE-YMD        TO  SMEI-UPYMD
@@ -1626,6 +1648,8 @@
       *
       *状態区分
            MOVE    "8"                 TO  SMEI-JOUTAIKBN
+      *    収納履歴編集処理
+           PERFORM 4500131-SRYURRK-HEN-SEC
       *
            MOVE    SMCNDATE-YMD        TO  SMEI-CREYMD
            MOVE    SMCNDATE-YMD        TO  SMEI-UPYMD
@@ -1653,6 +1677,26 @@
       *
            .
        45001-SINMEI-SYORI2-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   収納履歴編集処理処理
+      *****************************************************************
+       4500131-SRYURRK-HEN-SEC            SECTION.
+      *
+           IF      SMEI-JOUTAIKBN       =   "1"
+                                        OR  "3"
+                                        OR  "7"
+                                        OR  "8"
+      *        収納履歴番号
+               MOVE    SS002-SYURRKNUM     TO  SMEI-SYURRKNUM
+      *        収納履歴枝番号
+               MOVE    SS002-SYUEDANUM     TO  SMEI-SYUEDANUM
+      *        収納履歴更新区分
+               MOVE    SS002-SYURRKUPDKBN  TO  SMEI-SYURRKUPDKBN
+           END-IF
+           .
+       4500131-SRYURRK-HEN-EXT.
            EXIT.
       *
       *****************************************************************
