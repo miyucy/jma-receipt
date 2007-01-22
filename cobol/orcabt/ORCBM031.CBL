@@ -87,7 +87,8 @@
            03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *****COPY    "HCM2Q.INC".
-           COPY    "HCM2QV01.INC"  REPLACING  //HCM2QV01//
+      *****COPY    "HCM2QV01.INC"  REPLACING  //HCM2QV01//
+           COPY    "HCM2QV02.INC"  REPLACING  //HCM2QV02//
                                    BY         //HCM2Q//.
       *****COPY    "HCM2R.INC".
            COPY    "HCM2RV01.INC"  REPLACING  //HCM2RV01//
@@ -1027,7 +1028,8 @@
                EVALUATE    FLG-PRTKBN
                WHEN    1
       *************MOVE    "HCM2Q.red"     TO  SPRT-PRTID
-                   MOVE    "HCM2QV01.red"  TO  SPRT-PRTID
+      *************MOVE    "HCM2QV01.red"  TO  SPRT-PRTID
+                   MOVE    "HCM2QV02.red"  TO  SPRT-PRTID
                    MOVE    HCM2Q           TO  SPRT-PRTDATA
                WHEN    2
       *************MOVE    "HCM2R.red"     TO  SPRT-PRTID
