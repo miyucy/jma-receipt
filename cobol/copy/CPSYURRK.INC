@@ -32,6 +32,8 @@
                05  SYURRK-NYUGAIKBN       PIC  X(01).
       *伝票番号
                05  SYURRK-DENPNUM         PIC S9(9)   BINARY.
+      *状態区分
+               05  SYURRK-JOUTAIKBN       PIC  X(01).
       *収納履歴番号
                05  SYURRK-SYURRKNUM       PIC S9(9)   BINARY.
       *収納履歴枝番号

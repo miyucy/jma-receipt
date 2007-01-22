@@ -9,6 +9,7 @@ CREATE TABLE "tbl_syurrk" (
 	"ptid"			numeric(10,0) DEFAULT 0 NOT NULL,
 	"nyugaikbn"		character(1) NOT NULL,
 	"denpnum"		integer  NOT NULL,
+	"jotaikbn"		character(1) NOT NULL,
 	"syurrknum"		integer  NOT NULL,
 	"syuedanum"		integer  NOT NULL,
 	"sryka"			character(2),

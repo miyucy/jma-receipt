@@ -3,6 +3,7 @@ tbl_syurrk {
 	PTID				number(10,0);
 	NYUGAIKBN			char(1);
 	DENPNUM          		integer;
+	JOUTAIKBN          		char(1);
 	SYURRKNUM          		integer;
 	SYUEDANUM          		integer;
 	SRYKA				char(2);
@@ -80,6 +81,18 @@ path	key2 	{
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   DENPNUM     =   :DENPNUM
 			ORDER BY SYURRKNUM DESC
+		;
+	};
+};
+
+path	del1 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_syurrk
+			WHERE   HOSPID        =  :HOSPID
+			AND   NYUGAIKBN       =  :NYUGAIKBN
+			AND   PTID            =  :PTID
+			AND   DENPNUM         =  :DENPNUM
 		;
 	};
 };
