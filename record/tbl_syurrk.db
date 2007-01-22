@@ -3,9 +3,9 @@ tbl_syurrk {
 	PTID				number(10,0);
 	NYUGAIKBN			char(1);
 	DENPNUM          		integer;
-	JOUTAIKBN          		char(1);
 	SYURRKNUM          		integer;
 	SYUEDANUM          		integer;
+	JOUTAIKBN          		char(1);
 	SRYKA				char(2);
 	HKNCOMBINUM			char(4);
 	TOTAL_HKNTEN			integer;
@@ -80,7 +80,7 @@ path	key2 	{
 			AND   PTID        =   :PTID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   DENPNUM     =   :DENPNUM
-			ORDER BY SYURRKNUM DESC
+			ORDER BY SYURRKNUM DESC,SYUEDANUM DESC
 		;
 	};
 };
