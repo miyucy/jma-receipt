@@ -28,6 +28,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  03.04.01    NACL-森脇    07/01/16  医療機名称、住所編集
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -142,6 +143,12 @@
            COPY    "CPSK1002.INC".
       *    
            COPY    "CPSK1005.INC".
+      *
+      *----(03.04.01)--ADD-START---
+           COPY    "CPSK1900.INC".
+           COPY    "CPSK1901.INC".
+           COPY    "CPSK1902.INC".
+      *----(03.04.01)--ADD-END-----
       *
        01  PRTKANRI-REC.
            COPY    "CPPRTKANRI.INC".
@@ -369,6 +376,15 @@
                PERFORM 500-ERR-HENSYU-SEC
                MOVE    1                   TO  FLG-END
            END-IF 
+      *
+      *----(03.04.01)--ADD-START---
+      *    医療機関編集情報
+           PERFORM 900-1900-READ-SEC
+      *    医療機関名称編集情報
+           PERFORM 900-1901-READ-SEC
+      *    医療機関住所編集情報
+           PERFORM 900-1902-READ-SEC
+      *----(03.04.01)--ADD-END-----
            .
        120-HOSPINF-GET-EXT.
            EXIT.
@@ -452,10 +468,24 @@
       *
            MOVE    WRK-SRYYMWH         TO  HCM2S-PRTYM
       *
+      *----(03.04.01)--UPD-START---
       *    医療機関住所
-           MOVE    SYS-1002-ADRS       TO  HCM2S-ADRS
+           IF      SYS-1902-ADRS1      NOT =   SPACE
+               MOVE    SYS-1902-ADRS1      TO  HCM2S-ADRS(1:50)
+               MOVE    SYS-1902-ADRS2      TO  HCM2S-ADRS(51:50)
+           ELSE
+               MOVE    SYS-1002-ADRS       TO  HCM2S-ADRS
+           END-IF
+      *
       *    医療機関名
-           MOVE    SYS-1001-HOSPNAME   TO  HCM2S-HOSPNAME
+           IF      SYS-1901-HOSPNAME1  NOT =   SPACE
+               MOVE    SYS-1901-HOSPNAME1  TO  HCM2S-HOSPNAME(1:50)
+               MOVE    SYS-1901-HOSPNAME2  TO  HCM2S-HOSPNAME(51:50)
+           ELSE
+               MOVE    SYS-1001-HOSPNAME   TO  HCM2S-HOSPNAME
+           END-IF
+      *----(03.04.01)--UPD-END-----
+      *
       *    開設者名
            MOVE    SYS-1001-KAISETUNAME
                                        TO  HCM2S-KAISETUNAME
@@ -1241,6 +1271,101 @@
        300-END-EXT.
            EXIT.
       *
+      *----(03.04.01)--ADD-START---
+      *****************************************************************
+      *    医療機関編集情報読み込み
+      *****************************************************************
+       900-1900-READ-SEC           SECTION.
+      *
+      *    医療機関編集情報読み込み
+           MOVE    SPACE           TO  SYS-1900-REC
+           INITIALIZE                  SYS-1900-REC
+           MOVE    "1900"          TO  SYS-1900-KANRICD
+           MOVE    "*"             TO  SYS-1900-KBNCD
+           MOVE    LNK-PRTKANRI-SRYYM
+                                   TO  SYS-1900-STYUKYMD (1:6)
+           MOVE    "01"            TO  SYS-1900-STYUKYMD (7:2)
+           MOVE    SYS-1900-STYUKYMD
+                                   TO  SYS-1900-EDYUKYMD
+           MOVE    SYS-1900-REC    TO  MCPDATA-REC
+           PERFORM 800-SYSKANRI-READ-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC     TO  SYS-1900-REC
+           ELSE
+               INITIALIZE                  SYS-1900-REC
+           END-IF
+           .
+      *
+       900-1900-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    医療機関名称編集情報読み込み
+      *****************************************************************
+       900-1901-READ-SEC           SECTION.
+      *
+           IF      SYS-1900-PRTKBN(7)  =   SPACE
+               MOVE    SPACE           TO  SYS-1901-REC
+               GO  TO  900-1901-READ-EXT
+           END-IF
+      *
+      *    医療機関名称編集情報読み込み
+           MOVE    SPACE           TO  SYS-1901-REC
+           INITIALIZE                  SYS-1901-REC
+           MOVE    "1901"          TO  SYS-1901-KANRICD
+           MOVE    SYS-1900-PRTKBN(7)
+                                   TO  SYS-1901-KBNCD
+           MOVE    LNK-PRTKANRI-SRYYM
+                                   TO  SYS-1901-STYUKYMD (1:6)
+           MOVE    "01"            TO  SYS-1901-STYUKYMD (7:2)
+           MOVE    SYS-1901-STYUKYMD
+                                   TO  SYS-1901-EDYUKYMD
+           MOVE    SYS-1901-REC    TO  MCPDATA-REC
+           PERFORM 800-SYSKANRI-READ-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC     TO  SYS-1901-REC
+           ELSE
+               INITIALIZE                  SYS-1901-REC
+           END-IF
+           .
+      *
+       900-1901-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    医療機関住所編集情報読み込み
+      *****************************************************************
+       900-1902-READ-SEC           SECTION.
+      *
+           IF      SYS-1900-PRTKBN(7)  =   SPACE
+               MOVE    SPACE           TO  SYS-1902-REC
+               GO  TO  900-1902-READ-EXT
+           END-IF
+      *
+      *    医療機関住所編集情報読み込み
+           MOVE    SPACE           TO  SYS-1902-REC
+           INITIALIZE                  SYS-1902-REC
+           MOVE    "1902"          TO  SYS-1902-KANRICD
+           MOVE    SYS-1900-PRTKBN(7)
+                                   TO  SYS-1902-KBNCD
+           MOVE    LNK-PRTKANRI-SRYYM
+                                   TO  SYS-1902-STYUKYMD (1:6)
+           MOVE    "01"            TO  SYS-1902-STYUKYMD (7:2)
+           MOVE    SYS-1902-STYUKYMD
+                                   TO  SYS-1902-EDYUKYMD
+           MOVE    SYS-1902-REC    TO  MCPDATA-REC
+           PERFORM 800-SYSKANRI-READ-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC     TO  SYS-1902-REC
+           ELSE
+               INITIALIZE                  SYS-1902-REC
+           END-IF
+           .
+      *
+       900-1902-READ-EXT.
+           EXIT.
+      *
+      *----(03.04.01)--ADD-END-----
       *****************************************************************
       *    管理マスタ読み込み
       *****************************************************************
