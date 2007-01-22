@@ -2,7 +2,7 @@
             02  HCM2QV01-PRTYM  PIC X(16).
             02  HCM2QV01-SEIYMD PIC X(22).
             02  HCM2QV01-HOSPCD PIC X(20).
-            02  HCM2QV01-ADRS   PIC X(100).
+            02  HCM2QV01-ADRS   PIC X(50).
             02  HCM2QV01-HOSPNAME   PIC X(100).
             02  HCM2QV01-KAISETUNAME    PIC X(60).
             02  HCM2QV01-PAGE   PIC X(4).
