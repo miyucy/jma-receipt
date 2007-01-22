@@ -333,7 +333,11 @@ FORM_files = \
               HCM32G.red \
               HCM32N.red \
               HCM50.red \
-
+              HCM2KV06.red \
+              HCM2SV03.red \
+              HCM2WV02.red \
+              HCM2UV02.red \
+              HCM2QV02.red \
 
 all:   
 
