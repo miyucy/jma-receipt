@@ -29,6 +29,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  02.06.01    NACL-藤原    05/08/22  区分コードの更新前チェック追加
+      *  03.04.01    NACL-森脇    07/01/16  住所６→１３
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -56,7 +57,7 @@
       *
                05  SPA-GMN-AREA.
                    07  SPA-GMN-STYUKYMD       PIC X(09).
-                   07  SPA-GMN-EDYUKYMD       PIC X(09).              
+                   07  SPA-GMN-EDYUKYMD       PIC X(09).
                    07  SPA-GMN-HHOSPNAME      PIC X(60).
                    07  SPA-GMN-HPOST          PIC X(07).
                    07  SPA-GMN-HADRS          PIC X(100).
@@ -79,13 +80,15 @@
                        09  SPA-GMN-TEL        PIC X(15).              
                        09  SPA-GMN-FAX        PIC X(15).              
       *
+      *----(03.04.01)--UPD-START---
                    07  SPA-GMN-KOUMOKU2.
-                       09  SPA-GMN-PRTKBN-G   OCCURS  6.
+                       09  SPA-GMN-PRTKBN-G   OCCURS  13.
                            11  SPA-GMN-PRTKBN
                                               PIC X(02).
                            11  SPA-GMN-F1     PIC X(01).
                            11  SPA-GMN-PRTKBNMEI
                                               PIC X(18).
+      *----(03.04.01)--UPD-END-----
       *                                        
                    07  SPA-GMN-KBNCDLST-G.
                        09  SPA-GMN-KBNCDLST   OCCURS  99.
@@ -418,7 +421,9 @@
       *
            INITIALIZE   SPA-W18-AREA
       *
-           MOVE    6                   TO  SPA-GMN-PRTKBN-MAX
+      *----(03.04.01)--UPD-START---
+           MOVE    13                  TO  SPA-GMN-PRTKBN-MAX
+      *----(03.04.01)--UPD-END-----
       *
            MOVE    SPA-W01-STYUKYMDH   TO  SPA-GMN-STYUKYMD
            MOVE    SPA-W01-EDYUKYMDH   TO  SPA-GMN-EDYUKYMD
@@ -640,7 +645,7 @@
       *    基本チェック処理
            PERFORM 4102-KIHON-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      410-INPUT-CHK-EXT
+               GO  TO  410-INPUT-CHK-EXT
            END-IF
       *
       *    更新前チェック処理
@@ -709,6 +714,13 @@
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
+      *
+      *----(03.04.02)--ADD-START---
+           PERFORM 41028-PRTKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *----(03.04.02)--ADD-END-----
       *
            .
        4102-KIHON-CHK-EXT.
@@ -1830,6 +1842,22 @@
                     MOVE  "PRTKBN5"          TO   MCP-WIDGET
                 WHEN    106
                     MOVE  "PRTKBN6"          TO   MCP-WIDGET
+      *----(03.04.01)--ADD-START---
+                WHEN    107
+                    MOVE  "PRTKBN7"          TO   MCP-WIDGET
+                WHEN    108
+                    MOVE  "PRTKBN8"          TO   MCP-WIDGET
+                WHEN    109
+                    MOVE  "PRTKBN9"          TO   MCP-WIDGET
+                WHEN    110
+                    MOVE  "PRTKBN10"          TO   MCP-WIDGET
+                WHEN    111
+                    MOVE  "PRTKBN11"          TO   MCP-WIDGET
+                WHEN    112
+                    MOVE  "PRTKBN12"          TO   MCP-WIDGET
+                WHEN    113
+                    MOVE  "PRTKBN13"          TO   MCP-WIDGET
+      *----(03.04.01)--ADD-END-----
                 WHEN    200
                     MOVE  "B12"              TO   MCP-WIDGET
             END-EVALUATE
@@ -1881,6 +1909,22 @@
                WHEN    "PRTKBN5"
                    MOVE    106         TO  SPA-GMN-CUR
                WHEN    "PRTKBN6"
+      *----(03.04.01)--ADD-START---
+                   MOVE    107         TO  SPA-GMN-CUR
+               WHEN    "PRTKBN7"
+                   MOVE    108         TO  SPA-GMN-CUR
+               WHEN    "PRTKBN8"
+                   MOVE    109         TO  SPA-GMN-CUR
+               WHEN    "PRTKBN9"
+                   MOVE    110         TO  SPA-GMN-CUR
+               WHEN    "PRTKBN10"
+                   MOVE    111         TO  SPA-GMN-CUR
+               WHEN    "PRTKBN11"
+                   MOVE    112         TO  SPA-GMN-CUR
+               WHEN    "PRTKBN12"
+                   MOVE    113         TO  SPA-GMN-CUR
+               WHEN    "PRTKBN13"
+      *----(03.04.01)--ADD-END-----
                    MOVE    200         TO  SPA-GMN-CUR
            END-EVALUATE
       *

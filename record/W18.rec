@@ -49,42 +49,91 @@ W18	{
 			};
 			fi24	{
 				PRTKBN1_COMBO	{
-					PRTKBN1	{
+					PRTKBN1		{
 						value	varchar(21);
 					};
 					count	int;
 					item	varchar(21)[99];
 				};
 				PRTKBN2_COMBO	{
-					PRTKBN2	{
+					PRTKBN2		{
 						value	varchar(21);
 					};
 					count	int;
 					item	varchar(21)[99];
 				};
 				PRTKBN3_COMBO	{
-					PRTKBN3	{
+					PRTKBN3		{
 						value	varchar(21);
 					};
 					count	int;
 					item	varchar(21)[99];
 				};
 				PRTKBN4_COMBO	{
-					PRTKBN4	{
+					PRTKBN4		{
 						value	varchar(21);
 					};
 					count	int;
 					item	varchar(21)[99];
 				};
 				PRTKBN5_COMBO	{
-					PRTKBN5	{
+					PRTKBN5		{
 						value	varchar(21);
 					};
 					count	int;
 					item	varchar(21)[99];
 				};
 				PRTKBN6_COMBO	{
-					PRTKBN6	{
+					PRTKBN6		{
+						value	varchar(21);
+					};
+					count	int;
+					item	varchar(21)[99];
+				};
+				PRTKBN7_COMBO	{
+					PRTKBN7		{
+						value	varchar(21);
+					};
+					count	int;
+					item	varchar(21)[99];
+				};
+				PRTKBN8_COMBO	{
+					PRTKBN8		{
+						value	varchar(21);
+					};
+					count	int;
+					item	varchar(21)[99];
+				};
+				PRTKBN9_COMBO	{
+					PRTKBN9		{
+						value	varchar(21);
+					};
+					count	int;
+					item	varchar(21)[99];
+				};
+				PRTKBN10_COMBO	{
+					PRTKBN10	{
+						value	varchar(21);
+					};
+					count	int;
+					item	varchar(21)[99];
+				};
+				PRTKBN11_COMBO	{
+					PRTKBN11	{
+						value	varchar(21);
+					};
+					count	int;
+					item	varchar(21)[99];
+				};
+				PRTKBN12_COMBO	{
+					PRTKBN12	{
+						value	varchar(21);
+					};
+					count	int;
+					item	varchar(21)[99];
+				};
+				PRTKBN13_COMBO	{
+					PRTKBN13	{
 						value	varchar(21);
 					};
 					count	int;
