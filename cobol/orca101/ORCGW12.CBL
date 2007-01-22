@@ -1246,23 +1246,13 @@
                                        TO  SPA-GMN-PRTJYUN2MEIL (7)
            MOVE    7                   TO  SPA-GMN-PRTJYUN2-MAX 
       *
-           MOVE    "01"                TO  SPA-GMN-PRTJYUN4L    (1)
-           MOVE    "保険者番号・カナ氏名順"
-                                       TO  SPA-GMN-PRTJYUN4MEIL (1)
-           MOVE    "02"                TO  SPA-GMN-PRTJYUN4L    (2)
-           MOVE    "保険者番号・患者番号順"
-                                       TO  SPA-GMN-PRTJYUN4MEIL (2)
-           MOVE    "03"                TO  SPA-GMN-PRTJYUN4L    (3)
-           MOVE    "カナ氏名順"        TO  SPA-GMN-PRTJYUN4MEIL (3)
-           MOVE    "04"                TO  SPA-GMN-PRTJYUN4L    (4)
-           MOVE    "患者番号順"        TO  SPA-GMN-PRTJYUN4MEIL (4)
-           MOVE    "07"                TO  SPA-GMN-PRTJYUN4L    (5)
+           MOVE    "07"                TO  SPA-GMN-PRTJYUN4L    (1)
            MOVE    "カナ氏名順（全体）"
-                                       TO  SPA-GMN-PRTJYUN4MEIL (5)
-           MOVE    "08"                TO  SPA-GMN-PRTJYUN4L    (6)
+                                       TO  SPA-GMN-PRTJYUN4MEIL (1)
+           MOVE    "08"                TO  SPA-GMN-PRTJYUN4L    (2)
            MOVE    "患者番号順（全体）"
-                                       TO  SPA-GMN-PRTJYUN4MEIL (6)
-           MOVE    6                   TO  SPA-GMN-PRTJYUN4-MAX 
+                                       TO  SPA-GMN-PRTJYUN4MEIL (2)
+           MOVE    2                   TO  SPA-GMN-PRTJYUN4-MAX 
       *
            MOVE    "0"                 TO  SPA-GMN-AUTODSPKBNL    (1)
            MOVE    "自動遷移しない"    TO  SPA-GMN-AUTODSPKBNMEIL (1)

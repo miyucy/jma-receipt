@@ -68,6 +68,9 @@
       *
       *  03.02.01    NACL-藤原    06/08/01  国保主科対応
       *                                     主科用出力順識別番号追加
+      *
+      *  03.04.01    NACL-藤原    07/01/19  全体での出力順の指定
+      *                                     「０７」「０８」の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -530,6 +533,7 @@
                IF      WRK-PARA-PREFKBN           =   "4"
                    IF      WRK-PARA-RECE09-RECESYUBETU  =   "9999"  
                        IF      WRK-PARA-RECE09-PRTJYUN      =   "03"
+                                                            OR  "07"
                            MOVE    PATH-TBL-RECEPRT-KEY35   TO  WRK-PATH
                        ELSE
                            MOVE    PATH-TBL-RECEPRT-KEY36   TO  WRK-PATH
@@ -538,14 +542,22 @@
                        IF      WRK-PARA-RECE09-RECESYUBETU  =   ZERO
                                                             OR  "8888"
                                                             OR  "6666"
-                           IF      WRK-PARA-RECE09-PRTJYUN  =   "01"  OR
-                                                                "03" 
-                               MOVE    PATH-TBL-RECEPRT-KEY33
+                           EVALUATE    WRK-PARA-RECE09-PRTJYUN
+                               WHEN    "01"
+                                   MOVE    PATH-TBL-RECEPRT-KEY33
                                                            TO  WRK-PATH
-                           ELSE
-                               MOVE    PATH-TBL-RECEPRT-KEY34
+                               WHEN    "02"
+                                   MOVE    PATH-TBL-RECEPRT-KEY34
                                                            TO  WRK-PATH
-                           END-IF
+                               WHEN    "03"
+                               WHEN    "07"
+                                   MOVE    PATH-TBL-RECEPRT-KEY38
+                                                           TO  WRK-PATH
+                               WHEN    "04"
+                               WHEN    "08"
+                                   MOVE    PATH-TBL-RECEPRT-KEY39
+                                                           TO  WRK-PATH
+                           END-EVALUATE
                        ELSE 
                            IF      WRK-PARA-RECE09-PRTJYUN =   "01"
                                MOVE    PATH-TBL-RECEPRT-KEY31

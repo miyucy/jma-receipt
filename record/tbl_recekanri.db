@@ -74,7 +74,7 @@ path	key3		{
                     AND     SYOKBN       =   :SYOKBN
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
-                    AND     TEISYUTUSAKI =   :TEISYUTUSAKI
+                    AND     TEISYUTUSAKI like :TEISYUTUSAKI
                     AND     NYUGAIKBN    =   :NYUGAIKBN
                     AND     SRYKA        like :SRYKA
                     AND     RECESYUBETU  <>  '0000'

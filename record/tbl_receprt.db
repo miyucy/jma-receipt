@@ -791,7 +791,7 @@ path	key35		{
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
-                    AND     TEISYUTUSAKI =   :TEISYUTUSAKI
+                    AND     TEISYUTUSAKI LIKE :TEISYUTUSAKI
                     AND     PREFKBN      LIKE :PREFKBN
                     AND     KANANAME     >=  :STKANANAME
                     AND     KANANAME     <=  :EDKANANAME 
@@ -816,7 +816,7 @@ path	key36	{
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
-                    AND     TEISYUTUSAKI =   :TEISYUTUSAKI
+                    AND     TEISYUTUSAKI LIKE :TEISYUTUSAKI
                     AND     PREFKBN      LIKE :PREFKBN
                     AND     PTNUM        >=  :STKANANAME
                     AND     PTNUM        <=  :EDKANANAME 
@@ -857,6 +857,52 @@ path	key37	{
                     AND     PRTJYUN_SYUKA =   0
                     AND     PRTRENNUM    =    0 
                    ORDER BY CHOUKI,ZAITAKU,RECESYUBETU_SRT,PTNUM,SRYYM,RENNUM
+		;
+	};
+};
+
+path	key38		{ 	
+	DBSELECT	{
+		DECLARE tbl_receprt_key38_csr CURSOR FOR
+		SELECT *
+		FROM tbl_receprt
+                    WHERE   PRTID        =   :PRTID
+                    AND     RECEYM       =   :RECEYM
+                    AND     CREYMD       =   :CREYMD
+                    AND     CREHMS       =   :CREHMS
+                    AND     TEISYUTUSAKI LIKE :TEISYUTUSAKI
+                    AND     PREFKBN      LIKE :PREFKBN
+                    AND     KANANAME     >=  :STKANANAME
+                    AND     KANANAME     <=  :EDKANANAME 
+                    AND     NYUGAIKBN    =   :NYUGAIKBN 
+                    AND     RECESYUBETU  =   :RECESYUBETU
+                    AND     SRYKA        LIKE :SRYKA
+                    AND     RENNUM       >=  :STRENNUM
+                    AND     RENNUM       <=  :EDRENNUM
+                   ORDER BY  KANANAME,PTNUM,SRYYM,RENNUM
+		;
+	};
+};
+
+path	key39	{
+	DBSELECT	{
+		DECLARE tbl_receprt_key39_csr CURSOR FOR
+		SELECT *
+		FROM tbl_receprt
+                    WHERE   PRTID        =   :PRTID
+                    AND     RECEYM       =   :RECEYM
+                    AND     CREYMD       =   :CREYMD
+                    AND     CREHMS       =   :CREHMS
+                    AND     TEISYUTUSAKI LIKE :TEISYUTUSAKI
+                    AND     PREFKBN      LIKE :PREFKBN
+                    AND     PTNUM        >=  :STKANANAME
+                    AND     PTNUM        <=  :EDKANANAME 
+                    AND     NYUGAIKBN    =   :NYUGAIKBN 
+                    AND     RECESYUBETU  =   :RECESYUBETU
+                    AND     SRYKA        LIKE :SRYKA
+                    AND     RENNUM       >=  :STRENNUM
+                    AND     RENNUM       <=  :EDRENNUM
+                   ORDER BY  PTNUM,SRYYM,RENNUM
 		;
 	};
 };
