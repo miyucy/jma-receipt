@@ -29,6 +29,8 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  03.03.00    NACL-多々納  06/10/24  初期設定修正
+      *  03.04.00    NACL-多々納  07/01/23  排他削除修正
+      *                                     MONFUNC対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -46,67 +48,66 @@
       *    システム管理情報設定用共通パラメタ
            COPY    "W01COMMON-SPA".
       *
-　
       *    画面用ＳＰＡ
-       01  SPA-W98.
-           03  SPA-W98-AREA.
-               05  SPA-GMN-PAGE        PIC 9(02).
-               05  SPA-GMN-LINE        PIC 9(02).
-               05  SPA-GMN-MAX         PIC 9(03).
-               05  SPA-GMN-CUR         PIC 9(02).
+           COPY    "W98SCR-SPA".
+      *01  SPA-W98.
+      *    03  SPA-W98-AREA.
+      *        05  SPA-GMN-PAGE        PIC 9(02).
+      *        05  SPA-GMN-LINE        PIC 9(02).
+      *        05  SPA-GMN-MAX         PIC 9(03).
+      *        05  SPA-GMN-CUR         PIC 9(02).
       *
-               05  SPA-GMN-AREA.
+      *        05  SPA-GMN-AREA.
       *                                        
-                   07  SPA-GMN-HAITA-G.   
-                       09  SPA-GMN-HAITA
-                                              PIC X(01).
-                       09  SPA-GMN-F1         PIC X(01).
-                       09  SPA-GMN-HAITAMEI
-                                              PIC X(18).
+      *            07  SPA-GMN-HAITA-G.   
+      *                09  SPA-GMN-HAITA
+      *                                       PIC X(01).
+      *                09  SPA-GMN-F1         PIC X(01).
+      *                09  SPA-GMN-HAITAMEI
+      *                                       PIC X(18).
       *                                        
-                   07  SPA-GMN-HAITALST      OCCURS  2.
-                       09  SPA-GMN-HAITAL
-                                              PIC X(01).
-                       09  SPA-GMN-F1L        PIC X(01).
-                       09  SPA-GMN-HAITAMEIL
-                                              PIC X(18).
-                   07  SPA-GMN-HAITA-MAX
-                                              PIC 9(02).    
+      *            07  SPA-GMN-HAITALST      OCCURS  2.
+      *                09  SPA-GMN-HAITAL
+      *                                       PIC X(01).
+      *                09  SPA-GMN-F1L        PIC X(01).
+      *                09  SPA-GMN-HAITAMEIL
+      *                                       PIC X(18).
+      *            07  SPA-GMN-HAITA-MAX
+      *                                       PIC 9(02).    
       *                                        
-                   07  SPA-GMN-FLG-TABLE.
-                     08  SPA-GMN-FLG-TABLE1    OCCURS  26.
-                       09  SPA-GMN-FLG-TABLE2  OCCURS  26.
-                         10  SPA-GMN-FLG-VALUE PIC X(2).
-                   07  SPA-GMN-CHK-TABLE.
-                     08  SPA-GMN-CHK-TABLE1    OCCURS  26.
-                       09  SPA-GMN-CHK-TABLE2  OCCURS  26.
-                         10  SPA-GMN-CHK-VALUE PIC X(1).
-                   07  SPA-GMN-CHK-ON-TABLE.
-                     08  SPA-GMN-CHK-ON-TABLE1    OCCURS  26.
-                       09  SPA-GMN-CHK-ON-VALUE   PIC X.
+      *            07  SPA-GMN-FLG-TABLE.
+      *              08  SPA-GMN-FLG-TABLE1    OCCURS  26.
+      *                09  SPA-GMN-FLG-TABLE2  OCCURS  26.
+      *                  10  SPA-GMN-FLG-VALUE PIC X(2).
+      *            07  SPA-GMN-CHK-TABLE.
+      *              08  SPA-GMN-CHK-TABLE1    OCCURS  26.
+      *                09  SPA-GMN-CHK-TABLE2  OCCURS  26.
+      *                  10  SPA-GMN-CHK-VALUE PIC X(1).
+      *            07  SPA-GMN-CHK-ON-TABLE.
+      *              08  SPA-GMN-CHK-ON-TABLE1    OCCURS  26.
+      *                09  SPA-GMN-CHK-ON-VALUE   PIC X.
       *             
-                   07  SPA-GMN-YOKO-TABLE.
-                     08  SPA-GMN-YOKO-TABLE1    OCCURS  26.
-                       09  SPA-GMN-YOKO-VALUE   PIC X(3).
-                   07  SPA-GMN-TATE-TABLE.
-                     08  SPA-GMN-TATE-TABLE1    OCCURS  26.
-                       09  SPA-GMN-TATE-VALUE   PIC X(15).
-
+      *            07  SPA-GMN-YOKO-TABLE.
+      *              08  SPA-GMN-YOKO-TABLE1    OCCURS  26.
+      *                09  SPA-GMN-YOKO-VALUE   PIC X(3).
+      *            07  SPA-GMN-TATE-TABLE.
+      *              08  SPA-GMN-TATE-TABLE1    OCCURS  26.
+      *                09  SPA-GMN-TATE-VALUE   PIC X(15).
       *             
-               05  SPA-NAIB-AREA.
-                   07  SPA-LDNAME-TABLE.
-                     08  SPA-NAIB-LDNAME-TABLE1    OCCURS  26.
-                       09  SPA-NAIB-LDNAME-TABLE2  OCCURS  26.
-                         10  SPA-NAIB-LDNAME-VALUE PIC X(20).
+      *        05  SPA-NAIB-AREA.
+      *            07  SPA-LDNAME-TABLE.
+      *              08  SPA-NAIB-LDNAME-TABLE1    OCCURS  26.
+      *                09  SPA-NAIB-LDNAME-TABLE2  OCCURS  26.
+      *                  10  SPA-NAIB-LDNAME-VALUE PIC X(20).
       *             
-                   07  SPA-NAIB-TATELD-TABLE.
-                     08  SPA-NAIB-TATELD-TABLE1    OCCURS  26.
-                       09  SPA-NAIB-TATELD-VALUE   PIC X(20).
+      *            07  SPA-NAIB-TATELD-TABLE.
+      *              08  SPA-NAIB-TATELD-TABLE1    OCCURS  26.
+      *                09  SPA-NAIB-TATELD-VALUE   PIC X(20).
       *             
-               05  SPA-NAI-KAIJYO-CNT              PIC 9(02).
-               05  SPA-NAI-KAIJYO-FLG              PIC 9(01).
-               05  SPA-NAI-TATE-MAX                PIC 9(03).
-               05  SPA-NAI-YOKO-MAX                PIC 9(03).
+      *        05  SPA-NAI-KAIJYO-CNT              PIC 9(02).
+      *        05  SPA-NAI-KAIJYO-FLG              PIC 9(01).
+      *        05  SPA-NAI-TATE-MAX                PIC 9(03).
+      ******   05  SPA-NAI-YOKO-MAX                PIC 9(03).
       *
            COPY    "ENUM-VALUE".
       *
@@ -219,8 +220,8 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
-           COPY    "ORCA-DBPATH".
+      *D   COPY    "CPORCMCP.INC".
+      *D   COPY    "ORCA-DBPATH".
       *
       *****************************************************************
       *    連絡　領域
@@ -270,6 +271,7 @@
            COPY    "W62.INC".
            COPY    "W63.INC".
            COPY    "W98.INC".
+           COPY    "W981.INC".
            COPY    "W97.INC".
            COPY    "W99.INC".
            COPY    "WERR.INC".
@@ -339,23 +341,26 @@
            ELSE
       *        初期画面セット
                PERFORM 300-SCREEN-SEC
-               IF      FLG-END             =   1
-                   GO  TO  100-INIT-EXT
-               END-IF
       *        画面編集
-               PERFORM 500-GMNHEN-SEC
-               IF      SPA-ERRCD       NOT =   SPACE
-                   PERFORM 510-ERRSET-SEC
-                   GO  TO  100-INIT-EXT
+               IF      FLG-END             =   ZERO
+                   PERFORM 500-GMNHEN-SEC
+                   IF      SPA-ERRCD       NOT =   SPACE
+                       PERFORM 510-ERRSET-SEC
+                   END-IF
                END-IF
            END-IF
       *
-           MOVE    SPACE               TO  LINKAREA
+           IF     (FLG-END             =   1 )  OR
+                  (SPA-ERRCD       NOT =   SPACE)
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  LINKAREA
       * 
-           MOVE    SPACE                TO  MCP-PUTTYPE
-           MOVE    "W98"                TO  MCP-WINDOW
-           PERFORM 900-PUT-WINDOW
-           MOVE    1                    TO  FLG-END
+               MOVE    SPACE                TO  MCP-PUTTYPE
+               MOVE    "W98"                TO  MCP-WINDOW
+               PERFORM 900-PUT-WINDOW
+               MOVE    1                    TO  FLG-END
+           END-IF
            .
        100-INIT-EXT.
            EXIT.
@@ -373,10 +378,9 @@
            EVALUATE    SPA-MOTOPG
                WHEN    "WID1"
                    PERFORM 330-WID1-SET-SEC
-                   GO      TO      300-SCREEN-EXT
+               WHEN    OTHER
+                   PERFORM 310-SPASET-SEC
            END-EVALUATE
-      *
-           PERFORM 310-SPASET-SEC
       *
            .
        300-SCREEN-EXT.
@@ -419,7 +423,8 @@
            INITIALIZE                      SYS-9800-REC
            MOVE    "9800"              TO  SYS-9800-KANRICD
            MOVE    "*"                 TO  SYS-9800-KBNCD
-           MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
+           MOVE    SPA-W01-STYUKYMD    TO  SYS-9800-STYUKYMD
+           MOVE    SPA-W01-STYUKYMD    TO  SYS-9800-EDYUKYMD
            MOVE    SYS-9800-REC        TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY"      TO  WRK-PATH
            PERFORM 900-SYSKANRI-INV-SEC
@@ -439,13 +444,12 @@
            MOVE    SPACE               TO  TBL-LDMAP
            INITIALIZE                      TBL-LDMAP
            MOVE    TBL-LDMAP           TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    PATH-TBL-LDMAP-KEY3 TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_ldmap"         TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    PATH-TBL-LDMAP-KEY3 TO  MCP-PATH
+               MOVE    "tbl_ldmap"         TO  MCP-TABLE
+               MOVE    "key3"              TO  MCP-PATHNAME
                PERFORM 900-TBL-LDMAP-READ-SEC
                MOVE    MCPDATA-REC     TO  TBL-LDMAP
            ELSE
@@ -461,18 +465,18 @@
                ADD     1              TO  IDX
                PERFORM 3101-WRK-HAITA-MAKE-SEC
       *
-               MOVE    PATH-TBL-LDMAP-KEY3 TO  MCP-PATH
+               MOVE    "tbl_ldmap"         TO  MCP-TABLE
+               MOVE    "key3"              TO  MCP-PATHNAME
                PERFORM 900-TBL-LDMAP-READ-SEC
+      *
                DISPLAY "take LDMAP READ"
            END-PERFORM
       *
            PERFORM 3102-SPA-HAITA-MAKE-SEC
       *    カーソルクロース
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    PATH-TBL-LDMAP-KEY3 TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_ldmap"         TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *                                  
            MOVE    IDX                 TO  SPA-GMN-MAX
       *
@@ -504,7 +508,8 @@
       *    情報削除
                WHEN    "CLICKED"       ALSO    "B11"
                    MOVE   ZERO         TO  SPA-NAI-KAIJYO-CNT
-                   MOVE  "3002"        TO  SPA-WIDCD
+      *!!!!!       MOVE  "3002"        TO  SPA-WIDCD
+                   PERFORM 480-W981-SYORI-SEC
       *    登録
                WHEN    "CLICKED"       ALSO    "B12"
                    MOVE   ZERO         TO  SPA-NAI-KAIJYO-CNT
@@ -755,6 +760,51 @@
            EXIT.
       *
       *****************************************************************
+      *    状況一覧画面へ
+      *****************************************************************
+       480-W981-SYORI-SEC           SECTION.
+      *
+      *    初期画面セット
+           MOVE    SPACE               TO  LINKAREA
+           MOVE    SPACE               TO  SPA-MOTOPG
+           MOVE    SPA-W98             TO  SPA-FREE
+           MOVE    SPA-W01KYOUTU       TO  SPA-WORK
+           MOVE    SPA-AREA            TO  SPA-COMMON
+      *
+           MOVE    "LINK"              TO  MCP-STATUS
+           MOVE    SPACE               TO  MCP-EVENT
+      *
+           CALL    "ORCGW981"          USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA
+      *
+           MOVE    SPA-COMMON          TO  SPA-AREA
+           MOVE    SPA-FREE            TO  SPA-W98
+           MOVE    SPA-WORK            TO  SPA-W01KYOUTU
+      *
+           MOVE    "W981"              TO  SPA-SAKIPG
+           MOVE    "W98"               TO  SPA-MOTOPG
+      *
+           MOVE    SPACE               TO  LINKAREA
+      *
+           IF      SPA-W981-LIST-MAX   =   ZERO
+               MOVE    "B01"               TO  MCP-WIDGET
+           ELSE
+               MOVE    "SELNUM"            TO  MCP-WIDGET
+           END-IF
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "W981"              TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+           .
+       480-W981-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *       登録処理
       *****************************************************************
        490-KOUSHIN-SEC           SECTION.
@@ -764,7 +814,8 @@
            INITIALIZE                      SYS-9800-REC
            MOVE    "9800"                  TO  SYS-9800-KANRICD
            MOVE    "*"                     TO  SYS-9800-KBNCD
-           MOVE    SPA-W01-STYUKYMD        TO  ORC-DBYMD
+           MOVE    SPA-W01-STYUKYMD        TO  SYS-9800-STYUKYMD
+           MOVE    SPA-W01-STYUKYMD        TO  SYS-9800-EDYUKYMD
            MOVE    SYS-9800-REC            TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY"          TO  WRK-PATH
            PERFORM 900-SYSKANRI-INV-SEC
@@ -781,39 +832,34 @@
            MOVE    SPA-W01-STYUKYMD        TO  SYS-9800-STYUKYMD
            MOVE    SPA-W01-EDYUKYMD        TO  SYS-9800-EDYUKYMD
            MOVE    SYS-9800-REC            TO  SYSKANRI-REC
-      *     
+      *
            IF      FLG-SYSKANRI            =   ZERO
                MOVE    SYS-KANRICD             TO  SYSUP-KANRICD
                MOVE    SYS-KBNCD               TO  SYSUP-KBNCD
                MOVE    SPA-W01-STYUKYMD        TO  SYSUP-STYUKYMD
                MOVE    SPA-W01-EDYUKYMD        TO  SYSUP-EDYUKYMD
-               MOVE    "SYSKANRI-KEY"          TO  WRK-PATH
+               MOVE    "tbl_syskanri"          TO  MCP-TABLE
+               MOVE    "key"                   TO  MCP-PATHNAME
                MOVE    "DBUPDATE"              TO  MCP-FUNC
            ELSE
-               MOVE    "SYSKANRI-KEY"          TO  ORC-DBPATH
+               MOVE    "tbl_syskanri"          TO  MCP-TABLE
+               MOVE    "key"                   TO  MCP-PATHNAME
                MOVE    "DBINSERT"              TO  MCP-FUNC
            END-IF
-           MOVE    SYSKANRI-REC            TO  MCPDATA-REC
-           CALL    "ORCMCPSUB"              USING
-                                                MCPAREA
-                                                ORCMCPAREA
-                                                MCPDATA-REC
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              NOT =   ZERO 
                MOVE    "1003"                  TO  SPA-ERRCD
                GO  TO  490-KOUSHIN-EXT
            END-IF      
       *
            PERFORM 4901-LDMAP-KOUSHIN-SEC
-      *    IF      MCP-RC              NOT =   ZERO 
-      *        MOVE    "1003"                  TO  SPA-ERRCD
-      *        GO  TO  490-KOUSHIN-EXT
-      *    END-IF      
       *    カーソルクロース
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    PATH-TBL-LDMAP-KEY3 TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_ldmap"         TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
            MOVE   "JOIN"               TO  MCP-PUTTYPE
            PERFORM 210-BACK 
@@ -831,13 +877,12 @@
            MOVE    SPACE               TO  TBL-LDMAP
            INITIALIZE                      TBL-LDMAP
            MOVE    TBL-LDMAP           TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    PATH-TBL-LDMAP-KEY3 TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_ldmap"         TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    PATH-TBL-LDMAP-KEY3 TO  MCP-PATH
+               MOVE    "tbl_ldmap"         TO  MCP-TABLE
+               MOVE    "key3"              TO  MCP-PATHNAME
                PERFORM 900-TBL-LDMAP-READ-SEC
                MOVE    MCPDATA-REC     TO  TBL-LDMAP
            ELSE
@@ -853,7 +898,8 @@
                ADD     1              TO  IDX
                PERFORM 49011-LDMAP-MAKE-SEC
       *
-               MOVE    PATH-TBL-LDMAP-KEY3 TO  MCP-PATH
+               MOVE    "tbl_ldmap"         TO  MCP-TABLE
+               MOVE    "key3"              TO  MCP-PATHNAME
                PERFORM 900-TBL-LDMAP-READ-SEC
            END-PERFORM
       *                                  
@@ -884,8 +930,9 @@
       *                                  
            MOVE    TBL-LDMAP           TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
-           MOVE    PATH-TBL-LDMAP-KEY  TO  MCP-PATH
-           CALL    "MCPSUB"            USING
+           MOVE    "tbl_ldmap"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
@@ -924,10 +971,13 @@
 0     * 10        20        30        40        50        60        70
 +---+-*--+----+----+----+----+----+----+----+----+----+----+----+----+
       *                                  
+           MOVE    SPACE               TO  TBL-LOCK
+           INITIALIZE                      TBL-LOCK
            MOVE    TBL-LOCK            TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    PATH-TBL-LOCK-DEL1  TO  MCP-PATH
-           CALL    "MCPSUB"            USING
+           MOVE    "tbl_lock"          TO  MCP-TABLE
+           MOVE    "del1"              TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
@@ -1061,15 +1111,21 @@
                    MOVE    "排他制御情報を登録します"
                                                 TO  WRK-WIDMSG
                WHEN    "3002"
-                   MOVE
-               "全ての排他管理情報を削除します、よろしいですか"
-                                                TO  WRK-WIDMSG
+                   STRING    "処理中の排他情報も全て削除します。"
+                             "処理中の端末がないことを確認して下さい。"
+                                                DELIMITED  BY  SIZE
+                                                INTO   WRK-WIDMSG
+                   END-STRING
            END-EVALUATE
       *
            MOVE    SPACE                TO  WID1
            MOVE    SPA-WIDCD            TO  WID1-ID1CODE
            MOVE    WRK-WIDMSG           TO  WID1-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET
+           EVALUATE    SPA-WIDCD
+               WHEN    "3002"
+                   MOVE    "B01"                TO  MCP-WIDGET
+           END-EVALUATE
       *
            MOVE    "W98"                TO  SPA-MOTOPG
            MOVE    "WID1"               TO  SPA-SAKIPG
@@ -1166,19 +1222,13 @@
       *****************************************************************
        900-SYSKANRI-INV-SEC         SECTION.
       *
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    WRK-PATH            TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    WRK-PATH            TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO                TO  FLG-SYSKANRI
                ELSE
@@ -1188,12 +1238,9 @@
                MOVE    1                   TO  FLG-SYSKANRI
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    WRK-PATH            TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        900-SYSKANRI-INV-EXT.
@@ -1204,11 +1251,7 @@
       *****************************************************************
        900-SYSKANRI-READ-SEC         SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-SYSKANRI
            ELSE
@@ -1223,17 +1266,13 @@
       *****************************************************************
        900-TBL-LDMAP-INV-SEC        SECTION.
       *
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    PATH-TBL-LDMAP-KEY3 TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_ldmap"         TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    PATH-TBL-LDMAP-KEY3 TO  MCP-PATH
-               CALL    "MCPSUB"        USING
-                                       MCPAREA
-                                       MCPDATA-REC  
+               MOVE    "tbl_ldmap"         TO  MCP-TABLE
+               MOVE    "key3"              TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO                TO  FLG-LDMAP
                ELSE
@@ -1243,11 +1282,9 @@
                MOVE    1                   TO  FLG-LDMAP
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    PATH-TBL-LDMAP-KEY3 TO  MCP-PATH
-           CALL    "MCPSUB"          USING
-                                     MCPAREA
-                                     MCPDATA-REC
+           MOVE    "tbl_ldmap"         TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        900-TBL-LDMAP-INV-EXT.
@@ -1262,11 +1299,9 @@
       *
            PERFORM UNTIL     ( FLG-READ-SKIP   =   ZERO )
                    OR        ( FLG-LDMAP   NOT =   ZERO )
-               MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    PATH-TBL-LDMAP-KEY3 TO  MCP-PATH
-               CALL    "MCPSUB"            USING
-                                           MCPAREA
-                                           MCPDATA-REC
+               MOVE    "tbl_ldmap"         TO  MCP-TABLE
+               MOVE    "key3"              TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
                IF    ( MCP-RC              =   ZERO )
                      MOVE    ZERO          TO  FLG-LDMAP
                      MOVE    MCPDATA-REC   TO  TBL-LDMAP
@@ -1286,6 +1321,47 @@
            .
        900-TBL-LDMAP-READ-EXT.
            EXIT.
+      *****************************************************************
+      *    テーブル検索処理
+      *****************************************************************
+       910-DBSELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       910-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ読み込み処理
+      *****************************************************************
+       920-DBFETCH-SEC                 SECTION.
+      *
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       920-DBFETCH-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢクローズ処理
+      *****************************************************************
+       990-DBCLOSE-SEC         SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       990-DBCLOSE-EXT.
+           EXIT.
       *
       *****************************************************************
       *    ＰＵＴ　処理
@@ -1293,10 +1369,9 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL   "ORCMCPSUB"   USING
-                                MCPAREA
-                                ORCMCPAREA
-                                MCPDATA-REC.
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        900-PUT-WINDOW-EXT.

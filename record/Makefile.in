@@ -330,6 +330,7 @@ RECORD_files = \
 	M98.rec \
 	JERR2.rec \
 	R06.rec \
+	W981.rec \
 
 DEF_files = \
 	HC01.def \
