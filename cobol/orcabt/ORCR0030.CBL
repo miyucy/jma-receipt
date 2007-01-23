@@ -6000,7 +6000,8 @@
       ****           IF   FTN-KOH-XXX   =   WRK-KOH-FTN 
       ****                 MOVE  ZERO   TO   RECE02-ZAITAKU-SAIKEI
       ****           END-IF
-                     IF   FTN-KOH-XXX   =   RECE02-FTNMONEY(1)
+                     IF  (FTN-KOH-XXX        = RECE02-FTNMONEY(1))
+                     AND (RECE02-TOTALTEN(1) = RECE02-TOTALTEN(2))
                            MOVE  ZERO   TO   RECE02-ZAITAKU-SAIKEI
                      END-IF
                   ELSE
@@ -6017,7 +6018,8 @@
       ****           IF   FTN-KOH-XXX   =   WRK-KOH-FTN 
       ****                 MOVE  ZERO   TO   RECE02-ZAITAKU-SAIKEI
       ****           END-IF
-                     IF   FTN-KOH-XXX   =   RECE02-FTNMONEY(1)
+                     IF  (FTN-KOH-XXX        = RECE02-FTNMONEY(1))
+                     AND (RECE02-TOTALTEN(1) = RECE02-TOTALTEN(2))
                            MOVE  ZERO   TO   RECE02-ZAITAKU-SAIKEI
                      END-IF
                   END-IF

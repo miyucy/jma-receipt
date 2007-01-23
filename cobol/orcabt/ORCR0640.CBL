@@ -9741,7 +9741,8 @@
       ****           IF   FTN-KOH-XXX   <=   WRK-KOH-FTN 
       ****                 MOVE  ZERO   TO   RECE62-KOUREI-SAIKEI
       ****           END-IF
-                     IF   FTN-KOH-XXX    =   RECE62-FTNMONEY(1)
+                     IF  (FTN-KOH-XXX        = RECE62-FTNMONEY(1))
+                     AND (RECE62-TOTALTEN(1) = RECE62-TOTALTEN(2))
                            MOVE  ZERO   TO   RECE62-KOUREI-SAIKEI
                      END-IF
                   ELSE
@@ -9758,7 +9759,8 @@
       ****           IF   FTN-KOH-XXX   <=   WRK-KOH-FTN 
       ****                 MOVE  ZERO   TO   RECE62-KOUREI-SAIKEI
       ****           END-IF
-                     IF   FTN-KOH-XXX    =   RECE62-FTNMONEY(1)
+                     IF  (FTN-KOH-XXX        = RECE62-FTNMONEY(1))
+                     AND (RECE62-TOTALTEN(1) = RECE62-TOTALTEN(2))
                            MOVE  ZERO   TO   RECE62-KOUREI-SAIKEI
                      END-IF
                   END-IF
