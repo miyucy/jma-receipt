@@ -193,8 +193,8 @@
            03  WRK-YKJ-PTNUM           PIC  X(20).
            03  WRK-YKJ-KANANAME        PIC  X(44).
            03  WRK-YKJ-NAME            PIC  X(88).
-           03  WRK-YKJ-JYUSYO          PIC  X(56).
-           03  WRK-YKJ-HSPNAME         PIC  X(56).
+           03  WRK-YKJ-JYUSYO          PIC  X(100).
+           03  WRK-YKJ-HSPNAME         PIC  X(100).
            03  WRK-YKJ-TEL             PIC  X(15).
            03  WRK-YKJ-DRNAME          PIC  X(26).
            03  WRK-YKJ-COMMENT         PIC  X(108)  OCCURS  7.
