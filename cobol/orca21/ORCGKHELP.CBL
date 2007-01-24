@@ -323,6 +323,7 @@
                MOVE    SPA-KHELP-MENUNUM1  TO  HELP-MENUNUM1
            END-IF
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HELP-REC            TO  MCPDATA-REC
            MOVE    "tbl_help"          TO  MCP-TABLE
            IF      SPA-KHELP-MENUNUM1  =   ZERO
@@ -663,6 +664,7 @@
            MOVE    SPA-KHELP-MENUNUM1  TO  HELP-MENUNUM1
            MOVE    SPA-KHELP-MENUNUM2  TO  HELP-MENUNUM2
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HELP-REC            TO  MCPDATA-REC
            MOVE    "tbl_help"          TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
@@ -801,6 +803,7 @@
            MOVE    WRK-INPUT-MENU
                                        TO  HELP-MENU
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HELP-REC            TO  MCPDATA-REC
            MOVE    "tbl_help"          TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
@@ -903,6 +906,7 @@
            MOVE    HELP-REC            TO  WRK-HELP-REC
            MOVE    ZERO                TO  FLG-CHK
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HELP-REC            TO  MCPDATA-REC
            MOVE    "tbl_help"          TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -1157,9 +1161,9 @@
            MOVE    "tbl_help"          TO  MCP-TABLE
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  HELP-REC
                MOVE    ZERO            TO  FLG-HELP
@@ -1179,9 +1183,9 @@
            MOVE    ZERO            TO  MCP-RC
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        910-DBSELECT-EXT.
@@ -1193,9 +1197,9 @@
        990-DBCLOSE-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        990-DBCLOSE-EXT.
@@ -1207,9 +1211,9 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        900-PUT-WINDOW-EXT.
