@@ -1618,6 +1618,7 @@
       *
            INITIALIZE                      TNS-TENSU-REC
            MOVE    SPA-GMN-SRYCD       TO  TNS-SRYCD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
       *
            MOVE    "tbl_tensu"         TO  MCP-TABLE
@@ -1663,6 +1664,7 @@
            MOVE    WRK-TNS-SRYCD       TO  TNS-SRYCD
            MOVE    WRK-TNS-YUKOSTYMD   TO  TNS-YUKOSTYMD
                                            TNS-YUKOEDYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -1692,6 +1694,7 @@
            INITIALIZE                  CHK-REC
            MOVE    SPA-GMN-CHKKBN      TO  CHK-CHKKBN
            MOVE    SPA-GMN-SRYCD       TO  CHK-SRYCD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    CHK-REC             TO  MCPDATA-REC
            MOVE    "tbl_chk"           TO  MCP-TABLE
            MOVE    "key12"             TO  MCP-PATHNAME
@@ -1736,6 +1739,7 @@
            INITIALIZE                  CHKSND-REC
            MOVE    SPA-GMN-CHKKBN      TO  CHKSND-CHKKBN
            MOVE    SPA-GMN-SRYCD       TO  CHKSND-SRYCD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    CHKSND-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_chksnd"        TO  MCP-TABLE
@@ -1781,6 +1785,7 @@
            INITIALIZE                  CHKTRD-REC
            MOVE    SPA-GMN-CHKKBN      TO  CHKTRD-CHKKBN
            MOVE    SPA-GMN-SRYCD       TO  CHKTRD-SRYCD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    CHKTRD-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_chktrd"        TO  MCP-TABLE
@@ -1823,9 +1828,9 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF    ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
@@ -1840,9 +1845,9 @@
        911-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
       *
@@ -1854,9 +1859,9 @@
        910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
       *
@@ -1868,9 +1873,9 @@
        910-DBCLOSECURSOR-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
       *
@@ -1882,9 +1887,9 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL   "MONFUNC"     USING
-                                MCPAREA
-                                MCPDATA-REC.
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        900-PUT-WINDOW-EXT.
