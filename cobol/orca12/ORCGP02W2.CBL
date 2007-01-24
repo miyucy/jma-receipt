@@ -462,6 +462,7 @@
            MOVE    SPA-TERMID          TO  PARA-TERMID
            MOVE    "PTHKNINF"          TO  PARA-FILEMEI
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PARA-REC            TO  MCPDATA-REC
            MOVE    "tbl_para"          TO  MCP-TABLE
            MOVE    "key5"              TO  MCP-PATHNAME
@@ -502,6 +503,7 @@
            MOVE    SPA-TERMID          TO  PARA-TERMID
            MOVE    "PTKOHINF"          TO  PARA-FILEMEI
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PARA-REC            TO  MCPDATA-REC
            MOVE    "tbl_para"          TO  MCP-TABLE
            MOVE    "key5"              TO  MCP-PATHNAME
@@ -765,13 +767,14 @@
            MOVE    SPA-TERMID          TO  PARA-TERMID
            MOVE    "NC01PARA"          TO  PARA-FILEMEI
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PARA-REC            TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_para"          TO  MCP-TABLE
            MOVE    "del3"              TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
       *   主保険中心　組合せ作成処理
            PERFORM     57011-SYUHKN-HEN-SEC
@@ -841,13 +844,14 @@
                                            TO  PARA-NC01-REC
                MOVE    NC01PARA-REC        TO  PARA-DATA-REC
       *
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    PARA-REC            TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "tbl_para"          TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "MONFUNC"           USING
-                                           MCPAREA
-                                           MCPDATA-REC
+grpsys         CALL "ORCDBMAIN" USING MCPAREA
+                                      MCPDATA-REC
+grpsys*                               COMMON-SPA
               ELSE
                IF   (WRK-LCOMB-TEKSTYMD(IDZ)  < WRK-SYOCYO-TEKSTYMD)
                AND  (WRK-SYOCYO-TEKSTYMD  NOT = 99999999           )
@@ -877,13 +881,14 @@
                   MOVE    WRK-TCOMB-REC       TO  PARA-NC01-REC
                   MOVE    NC01PARA-REC        TO  PARA-DATA-REC
       *
+grpsys*           MOVE SPA-HOSPNUM TO -HOSPNUM
                   MOVE    PARA-REC            TO  MCPDATA-REC
                   MOVE    "DBINSERT"          TO  MCP-FUNC
                   MOVE    "tbl_para"          TO  MCP-TABLE
                   MOVE    "key"               TO  MCP-PATHNAME
-                  CALL    "MONFUNC"           USING
-                                              MCPAREA
-                                              MCPDATA-REC
+grpsys            CALL "ORCDBMAIN" USING MCPAREA
+                                         MCPDATA-REC
+grpsys*                                  COMMON-SPA
                END-IF
                IF   (WRK-LCOMB-TEKEDYMD(IDZ)  > WRK-SYOCYO-TEKEDYMD)
                AND  (WRK-SYOCYO-TEKEDYMD  NOT = ZERO               )
@@ -913,13 +918,14 @@
                   MOVE    WRK-TCOMB-REC       TO  PARA-NC01-REC
                   MOVE    NC01PARA-REC        TO  PARA-DATA-REC
       *
+grpsys*           MOVE SPA-HOSPNUM TO -HOSPNUM
                   MOVE    PARA-REC            TO  MCPDATA-REC
                   MOVE    "DBINSERT"          TO  MCP-FUNC
                   MOVE    "tbl_para"          TO  MCP-TABLE
                   MOVE    "key"               TO  MCP-PATHNAME
-                  CALL    "MONFUNC"           USING
-                                              MCPAREA
-                                              MCPDATA-REC
+grpsys            CALL "ORCDBMAIN" USING MCPAREA
+                                         MCPDATA-REC
+grpsys*                                  COMMON-SPA
                END-IF
               END-IF
       ***    END-IF
@@ -4917,6 +4923,7 @@
            MOVE    SPACE              TO  HKNNUM-REC
            MOVE    SPA-HOSPID         TO  HKN-HOSPID
            MOVE    WRK-KEN-HKNNUM     TO  HKN-HKNNUM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HKNNUM-REC         TO  MCPDATA-REC
            MOVE    "tbl_hknnum"       TO  MCP-TABLE
            MOVE    "key2"             TO  MCP-PATHNAME
@@ -5070,9 +5077,9 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        910-DBSELECT-EXT.
@@ -5083,9 +5090,9 @@
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
       *
@@ -5098,9 +5105,9 @@
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        990-DBCLOSE-EXT.
