@@ -657,6 +657,7 @@
       *
            MOVE    ZERO                TO  FLG-SYSKANRI
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -684,6 +685,7 @@
       *
            MOVE    CONST-SHELLID       TO  BTPARA-SHELLID
            MOVE    WRK-JOBID           TO  BTPARA-JOBID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    BTPARA-REC          TO  MCPDATA-REC
            MOVE    "tbl_btpara"        TO  MCP-TABLE
            MOVE    "key5"              TO  MCP-PATHNAME
@@ -710,6 +712,7 @@
            MOVE    ZERO                TO  FLG-TEIKIPRT
       *
            INITIALIZE                      TEIKIPRT-REC
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TEIKIPRT-REC        TO  MCPDATA-REC
            MOVE    "tbl_teikiprt"      TO  MCP-TABLE
            MOVE    "all"               TO  MCP-PATHNAME
@@ -734,9 +737,9 @@
        910-DBSELECT-SEC          SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF        ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
@@ -750,9 +753,9 @@
        910-DBFETCH-SEC            SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        910-DBFETCH-EXT.
@@ -763,9 +766,9 @@
        910-DBCLOSECURSOR-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        910-DBCLOSECURSOR-EXT.
@@ -778,9 +781,9 @@
            MOVE   LOW-VALUE        TO  MCP-TABLE
                                        MCP-PATHNAME
            MOVE   "PUTWINDOW"      TO  MCP-FUNC.
-           CALL   "MONFUNC"            USING
-                                       MCPAREA
-                                       MCPDATA-REC.
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        900-PUT-WINDOW-EXT.

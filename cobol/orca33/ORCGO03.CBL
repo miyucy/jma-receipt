@@ -1358,13 +1358,14 @@
                MOVE    "0"             TO  SHELLTBL-ARG25
            END-IF
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "shell"             TO  MCP-TABLE
            MOVE    "shell"             TO  MCP-PATHNAME
            MOVE    "SHELL"             TO  MCP-FUNC
-           CALL    "MONFUNC"       USING
-                                   MCPAREA
-                                   MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            MOVE    LNK-PRTKANRI-TBL-GROUP
                                        TO  SPA-O01-TBL-GROUP
@@ -1382,6 +1383,7 @@
       *
            INITIALIZE                      BTPARA-REC
            MOVE    CONST-SHELLID       TO  BTPARA-SHELLID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    BTPARA-REC          TO  MCPDATA-REC
            MOVE    "tbl_btpara"        TO  MCP-TABLE
            MOVE    "del1"              TO  MCP-PATHNAME
@@ -1424,6 +1426,7 @@
                                                TO  TEIKI2BT-BRMNUM
                        MOVE    TEIKI2BTPARA    TO  BTPARA-INFO-PARA
       *
+grpsys*                MOVE SPA-HOSPNUM TO -HOSPNUM
                        MOVE    BTPARA-REC      TO  MCPDATA-REC
                        MOVE    "tbl_btpara"    TO  MCP-TABLE
                        MOVE    "key"           TO  MCP-PATHNAME
@@ -2062,6 +2065,7 @@
       *
            MOVE    ZERO            TO  FLG-SYSKANRI
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
            MOVE    "tbl_syskanri"  TO  MCP-TABLE
            MOVE    "key10"         TO  MCP-PATHNAME
@@ -2088,6 +2092,7 @@
            MOVE    ZERO                TO  FLG-TEIKIKANRI
       *
            INITIALIZE                      TEIKIKANRI-REC
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TEIKIKANRI-REC      TO  MCPDATA-REC
            MOVE    "tbl_teikikanri"    TO  MCP-TABLE
            MOVE    "all"               TO  MCP-PATHNAME
@@ -2147,6 +2152,7 @@
                    MOVE    "%"         TO  QTEIKI-SELTAIINYMD(1)
                                            QTEIKI-SELTAIINYMD(2)
            END-IF
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    QTEIKI-REC      TO  MCPDATA-REC
            PERFORM 9001-EDIT-QTEIKI-KEY-SEC
            MOVE    "query_teiki"   TO  MCP-TABLE
@@ -2229,9 +2235,9 @@
            MOVE   LOW-VALUE         TO  MCP-TABLE
                                         MCP-PATHNAME
            MOVE   "PUTWINDOW"       TO  MCP-FUNC
-           CALL   "MONFUNC"         USING
-                                    MCPAREA
-                                    MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        900-PUT-WINDOW-EXT.
@@ -2244,9 +2250,9 @@
        910-DBSELECT-SEC          SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF        ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
@@ -2260,9 +2266,9 @@
        910-DBFETCH-SEC            SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        910-DBFETCH-EXT.
@@ -2273,9 +2279,9 @@
        910-DBCLOSECURSOR-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        910-DBCLOSECURSOR-EXT.
@@ -2286,9 +2292,9 @@
        910-DBINSERT-SEC                SECTION.
       *
            MOVE    "DBINSERT"      TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        910-DBINSERT-EXT.
@@ -2299,9 +2305,9 @@
        910-DBUPDATE-SEC                SECTION.
       *
            MOVE    "DBUPDATE"      TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        910-DBUPDATE-EXT.
@@ -2312,9 +2318,9 @@
        910-DBDELETE-SEC                SECTION.
       *
            MOVE    "DBDELETE"      TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        910-DBDELETE-EXT.

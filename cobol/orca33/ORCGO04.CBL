@@ -513,9 +513,11 @@
            MOVE    SPA-NAI-O04-SRYYMD
                                    TO  SYS-1041-STYUKYMD
                                        SYS-1041-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1041-REC    TO  MCPDATA-REC
            MOVE    PATH-TBL-SYSKANRI-KEY2
                                    TO  MCP-PATH
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1041-REC    TO  MCPDATA-REC
            PERFORM 910-DBSELECT-SEC
            IF  ( MCP-RC            =   ZERO )
@@ -798,6 +800,7 @@
                                        TO  PTTEIKIRRK-SRYYM
            MOVE    SPA-NAI-O04-RRKNUM
                                        TO  PTTEIKIRRK-RRKNUM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTTEIKIRRK-REC      TO  MCPDATA-REC
            MOVE    PATH-TBL-PTTEIKIRRK-KEY9
                                        TO  MCP-PATH
@@ -948,6 +951,7 @@
                                        TO  SMEI-NYUGAIKBN
            MOVE    SPA-NAI-O04-PTID    TO  SMEI-PTID
            MOVE    SPA-NAI-O04-DENPNUM TO  SMEI-DENPNUM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUMEI-REC          TO  MCPDATA-REC
            MOVE    PATH-TBL-SYUMEI-KEY6
                                        TO  MCP-PATH
@@ -1055,6 +1059,7 @@
            MOVE    "1013"              TO  SYS-1013-KANRICD
            MOVE    SPA-NAI-O04-SRYYMD  TO  SYS-1013-STYUKYMD
                                            SYS-1013-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1013-REC        TO  MCPDATA-REC
            MOVE    PATH-TBL-SYSKANRI-KEY2
                                        TO  MCP-PATH
@@ -1126,6 +1131,7 @@
            MOVE    SPA-HOSPID          TO  SYU-HOSPID
            MOVE    WRK-NYUGAIKBN       TO  SYU-NYUGAIKBN
            MOVE    SPA-NAI-O04-PTID    TO  SYU-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    PATH-TBL-SYUNOU-KEY2
                                        TO  MCP-PATH
@@ -2085,6 +2091,7 @@
            INITIALIZE  PTINF-REC
            MOVE    SPA-HOSPID          TO  PTINF-HOSPID
            MOVE    SPA-NAI-O04-PTID    TO  PTINF-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
       *
            MOVE    PATH-TBL-PTINF-KEY  TO  MCP-PATH
@@ -2844,6 +2851,7 @@
                                        TO  SMEI-NYUGAIKBN
            MOVE    SPA-NAI-O04-PTID    TO  SMEI-PTID
            MOVE    SPA-NAI-O04-DENPNUM TO  SMEI-DENPNUM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUMEI-REC          TO  MCPDATA-REC
            MOVE    PATH-TBL-SYUMEI-KEY6
                                        TO  MCP-PATH
@@ -3411,6 +3419,7 @@
                MOVE    SMCNDATE-YMD        TO  SYU-UPYMD
                MOVE    SMCNDATE-HMS        TO  SYU-UPHMS
       *
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SYUNOU-REC          TO  MCPDATA-REC
                MOVE    PATH-TBL-SYUNOU-KEY TO  MCP-PATH
                PERFORM 910-DBUPDATE-SEC
@@ -3434,6 +3443,7 @@
                                        TO  SMEI-NYUGAIKBN
            MOVE    SPA-NAI-O04-PTID    TO  SMEI-PTID
            MOVE    SPA-NAI-O04-DENPNUM TO  SMEI-DENPNUM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUMEI-REC          TO  MCPDATA-REC
            MOVE    PATH-TBL-SYUMEI-KEY7
                                        TO  MCP-PATH
@@ -3550,6 +3560,7 @@
                PERFORM 800-DAILYKEY-SEC
                MOVE    SDAILYKEY-DAILYKEY  TO  SMEI-DAILYKEY
       *
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SYUMEI-REC          TO  MCPDATA-REC
                MOVE    PATH-TBL-SYUMEI-KEY TO  MCP-PATH
                PERFORM 910-DBINSERT-SEC
@@ -3574,6 +3585,7 @@
            MOVE    SPA-NAI-O04-PTID    TO  SMEI-PTID
            MOVE    SPA-NAI-O04-DENPNUM TO  SMEI-DENPNUM
            MOVE    SPA-NAI-O04-DENPEDANUM  TO  SMEI-DENPEDANUM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUMEI-REC          TO  MCPDATA-REC
            MOVE    PATH-TBL-SYUMEI-KEY TO  MCP-PATH
            PERFORM 910-DBSELECT-SEC
@@ -3655,6 +3667,7 @@
                    MOVE    SDAILYKEY-DAILYKEY  TO  SMEI-DAILYKEY
                END-IF
       *
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SYUMEI-REC          TO  MCPDATA-REC
                MOVE    PATH-TBL-SYUMEI-KEY TO  MCP-PATH
                PERFORM 910-DBUPDATE-SEC
@@ -3680,6 +3693,7 @@
                PERFORM 800-MCNDATE-SEC
                MOVE    SMCNDATE-YMD        TO  PTTEIKIRRK-UPYMD
                MOVE    SMCNDATE-HMS        TO  PTTEIKIRRK-UPHMS
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    PTTEIKIRRK-REC      TO  MCPDATA-REC
                MOVE    PATH-TBL-PTTEIKIRRK-KEY
                                            TO  MCP-PATH
@@ -4090,6 +4104,7 @@
            MOVE    SPA-NAI-O04-DENPNUM TO  PTTEIKIRRK-DENPNUM
            MOVE    PATH-TBL-PTTEIKIRRK-KEY6
                                        TO  MCP-PATH
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTTEIKIRRK-REC      TO  MCPDATA-REC
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
@@ -4117,6 +4132,7 @@
            MOVE    SPA-NAI-O04-PTID    TO  PTTEIKIRRK-PTID
            MOVE    PATH-TBL-PTTEIKIRRK-KEY8
                                        TO  MCP-PATH
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTTEIKIRRK-REC      TO  MCPDATA-REC
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
@@ -4135,6 +4151,7 @@
        900-SYSKANRI-KEY10-SEL-SEC      SECTION.
       *
            MOVE    ZERO                TO  FLG-SYSKANRI
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    PATH-TBL-SYSKANRI-KEY10
                                        TO  MCP-PATH
@@ -4218,6 +4235,7 @@
            MOVE    WRK-SYU-PTID        TO  SYU-PTID
            MOVE    WRK-SYU-DENPNUM     TO  SYU-DENPNUM
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    PATH-TBL-SYUNOU-KEY TO  MCP-PATH
            PERFORM 910-DBSELECT-SEC

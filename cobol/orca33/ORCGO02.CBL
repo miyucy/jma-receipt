@@ -1920,6 +1920,7 @@
                                                TO  SHELLTBL-ARG11
                    MOVE    WRK-JOBYMD          TO  SHELLTBL-ARG12
                    MOVE    WRK-JOBHMS          TO  SHELLTBL-ARG13
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    SHELLTBL            TO  MCPDATA-REC
                    MOVE    "SHELL"             TO  MCP-FUNC
                    MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
@@ -1962,6 +1963,7 @@
            MOVE    CONST-SHELLID       TO  SYS-3003-TBL-KEY
            MOVE    WRK-JOBID           TO  SYS-3003-JOBID
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-3003-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -1970,9 +1972,9 @@
            ELSE
                MOVE    "DBINSERT"      TO  MCP-FUNC
            END-IF
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF    ( MCP-RC          NOT =   ZERO )
                MOVE    "4001"          TO  SPA-ERRCD
            END-IF
@@ -1993,6 +1995,7 @@
            MOVE    SYS-5011-REC        TO  SYSKANRI-REC
            PERFORM 900-SYSKANRI-KEY10-SEL-SEC
            IF    ( FLG-SYSKANRI        =   ZERO )
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SYSKANRI-REC    TO  MCPDATA-REC
                MOVE    PATH-TBL-SYSKANRI-KEY   TO  MCP-PATH
                PERFORM 910-DBDELETE-SEC
@@ -2008,6 +2011,7 @@
            MOVE    SMCNDATE-YMD        TO  SYS-5011-CREYMD
                                            SYS-5011-UPYMD
            MOVE    SMCNDATE-HMS        TO  SYS-5011-UPHMS
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-5011-REC        TO  MCPDATA-REC
            MOVE    PATH-TBL-SYSKANRI-KEY   TO  MCP-PATH
            PERFORM 910-DBINSERT-SEC
@@ -2032,6 +2036,7 @@
            MOVE    "001"               TO  SYS-5012-KBNCD
            MOVE    SPA-SYSYMD          TO  SYS-5012-STYUKYMD
                                            SYS-5012-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-5012-REC        TO  MCPDATA-REC
            MOVE    PATH-TBL-SYSKANRI-DEL11
                                        TO  MCP-PATH
@@ -2089,6 +2094,7 @@
                                                    SYS-5012-UPYMD
                MOVE    SMCNDATE-HMS            TO  SYS-5012-UPHMS
       *
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SYS-5012-REC            TO  MCPDATA-REC
                MOVE    PATH-TBL-SYSKANRI-KEY   TO  MCP-PATH
                PERFORM 910-DBINSERT-SEC
@@ -2125,6 +2131,7 @@
            MOVE    SYS-3003-REC        TO  SYSKANRI-REC
            PERFORM 900-SYSKANRI-KEY10-SEL-SEC
            IF  (   FLG-SYSKANRI        =   ZERO )
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SYSKANRI-REC    TO  MCPDATA-REC
                MOVE    PATH-TBL-SYSKANRI-KEY   TO  MCP-PATH
                PERFORM 910-DBDELETE-SEC
@@ -2140,6 +2147,7 @@
       *
            INITIALIZE                      BTPARA-REC
            MOVE    CONST-SHELLID       TO  BTPARA-SHELLID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    BTPARA-REC          TO  MCPDATA-REC
            MOVE    PATH-TBL-BTPARA-DEL1    TO  MCP-PATH
            PERFORM 910-DBDELETE-SEC
@@ -2167,6 +2175,7 @@
            MOVE    SMCNDATE-YMD    TO  BTPARA-CREYMD
            MOVE    SMCNDATE-YMD    TO  BTPARA-UPYMD
            MOVE    SMCNDATE-HMS    TO  BTPARA-UPHMS
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    BTPARA-REC      TO  MCPDATA-REC
            MOVE    PATH-TBL-BTPARA-KEY
                                    TO  MCP-PATH
@@ -2791,6 +2800,7 @@
       *
            MOVE    ZERO                TO  FLG-SYSKANRI
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    PATH-TBL-SYSKANRI-KEY10 TO  MCP-PATH
            PERFORM 910-DBSELECT-SEC
@@ -2814,6 +2824,7 @@
       *
            MOVE    ZERO                TO  FLG-SYSKANRI
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    PATH-TBL-SYSKANRI-KEY2  TO  MCP-PATH
            PERFORM 910-DBSELECT-SEC
@@ -2855,6 +2866,7 @@
            MOVE    SPA-NAI-SRYYM       TO  PTTEIKIRRK-SRYYM
            MOVE    SPA-HOSPID          TO  PTTEIKIRRK-HOSPID
            MOVE    SPA-NAI-PTID        TO  PTTEIKIRRK-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTTEIKIRRK-REC      TO  MCPDATA-REC
            MOVE    PATH-TBL-PTTEIKIRRK-KEY2    TO  MCP-PATH
            PERFORM 910-DBSELECT-SEC
@@ -2893,6 +2905,7 @@
            MOVE    SPA-NAI-PTID        TO  SYU-PTID
            MOVE    SPA-NAI-SRYYM       TO  SYU-SRYYMD (1 : 6)
            MOVE    "__"                TO  SYU-SRYYMD (7 : 2)
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    PATH-TBL-SYUNOU-KEY6    TO  MCP-PATH
            PERFORM 910-DBSELECT-SEC
@@ -2927,6 +2940,7 @@
       *
            MOVE    ZERO            TO  FLG-PTINF
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    PATH-TBL-PTINF-KEY  TO  MCP-PATH
            PERFORM 910-DBSELECT-SEC
@@ -2951,6 +2965,7 @@
       *
            MOVE    ZERO                TO  FLG-PTNYUINRRK
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    PATH-TBL-PTNYUINRRK-KEY10   TO  MCP-PATH
            PERFORM 910-DBSELECT-SEC
