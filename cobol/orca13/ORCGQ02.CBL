@@ -566,13 +566,14 @@
            MOVE    CONST-JOB-SHELLID
                                    TO  SHELLTBL-ARG10
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE
            MOVE    "shell"         TO  MCP-PATHNAME
-           CALL    "MONFUNC"       USING
-                                   MCPAREA
-                                   MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            PERFORM 490-KAKUNIN-SEC
       *
@@ -643,13 +644,14 @@
            MOVE    CONST-JOB-SHELLID
                                    TO  SHELLTBL-ARG9
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE
            MOVE    "shell"         TO  MCP-PATHNAME
-           CALL    "MONFUNC"       USING
-                                   MCPAREA
-                                   MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            PERFORM 490-KAKUNIN-SEC
       *
@@ -1049,6 +1051,7 @@
                MOVE    "key2"              TO  MCP-PATHNAME
                MOVE    SPACE               TO  QUERY-PTINF-CNT-REC
                MOVE    WRK-SQL-COUNT       TO  QUERY-PTINF-CNT-SQL
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    QUERY-PTINF-CNT-REC TO  MCPDATA-REC
                PERFORM 911-DBSELECT-SEC
                IF  (   MCP-RC          NOT =   ZERO    )
@@ -2203,6 +2206,7 @@
            MOVE    "key2"              TO  MCP-PATHNAME
            MOVE    SPACE               TO  QUERY-PTINF-REC
            MOVE    WRK-SQL             TO  QUERY-PTINF-SQL
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    QUERY-PTINF-REC     TO  MCPDATA-REC
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
@@ -2257,8 +2261,9 @@
        910-DBSELECT-SEC               SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "MONFUNC"   USING   MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF    ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
@@ -2273,8 +2278,9 @@
        911-DBSELECT-SEC               SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "MONFUNC"   USING   MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
       *
@@ -2286,8 +2292,9 @@
        910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "MONFUNC"   USING   MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
       *
@@ -2299,8 +2306,9 @@
        910-DBCLOSECURSOR-SEC                SECTION.
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           CALL    "MONFUNC"   USING   MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
       *
@@ -2400,8 +2408,9 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE    "PUTWINDOW"     TO  MCP-FUNC.
-           CALL    "MONFUNC"   USING   MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        900-PUT-WINDOW-EXT.
