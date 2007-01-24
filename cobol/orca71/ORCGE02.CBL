@@ -365,13 +365,14 @@
                    MOVE    SHELL-ARG2          TO  SHELLTBL-ARG2
                    MOVE    SHELL-ARG3          TO  SHELLTBL-ARG3
                    MOVE    SHELL-ARG4          TO  SHELLTBL-ARG4
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    SHELLTBL            TO  MCPDATA-REC
                    MOVE    "SHELL"             TO  MCP-FUNC
                    MOVE    "shell"             TO  MCP-TABLE
                    MOVE    "shell"             TO  MCP-PATHNAME
-                   CALL    "MONFUNC"           USING
-                                               MCPAREA
-                                               MCPDATA-REC
+grpsys             CALL "ORCDBMAIN" USING MCPAREA
+                                          MCPDATA-REC
+grpsys*                                   COMMON-SPA
                    MOVE    1                   TO  FLG-END
                    MOVE    SPACE               TO  SPA-MOTOPG
                    MOVE    SPACE               TO  SPA-GMN-KBN
@@ -814,9 +815,9 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"                   TO  MCP-FUNC.
-           CALL   "MONFUNC"                      USING
-                                                 MCPAREA
-                                                 MCPDATA-REC.
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
        900-PUT-WINDOW-EXT.
            EXIT.
