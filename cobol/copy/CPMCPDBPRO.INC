@@ -417,8 +417,9 @@
              WHEN     'DBCLOSE'
                  CONTINUE
              WHEN      OTHER
-                 CALL    "MONFUNC"   USING   MCPAREA
-                                             MCPDATA-REC    
+grpsys           CALL "ORCDBMAIN" USING MCPAREA
+                                        MCPDATA-REC
+grpsys*                                 COMMON-SPA
            END-EVALUATE.
       *
            EXIT    PROGRAM.
@@ -3623,6 +3624,7 @@
              MOVE    "%"             TO  SYS-KANRITBL(IDX:1)
            END-IF
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            .
        2001-SEL-SYSKANRI-EXT.
@@ -3659,6 +3661,7 @@
            END-IF 
       *
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            .
        2002-SEL-SYSKANRI-EXT.
@@ -3681,6 +3684,7 @@
            MOVE    ORC-DBYMD             TO  PTHKN-TEKSTYMD
                                            PTHKN-TEKEDYMD 
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTHKNINF-REC        TO  MCPDATA-REC
            .
        2001-SEL-PTHKNINF-EXT.
@@ -3703,6 +3707,7 @@
            MOVE    ORC-DBYMD             TO  PTKOH-TEKSTYMD
                                            PTKOH-TEKEDYMD 
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTKOHINF-REC        TO  MCPDATA-REC
            .
        2001-SEL-PTKOHINF-EXT.
@@ -3751,6 +3756,7 @@
                MOVE    "%"                 TO  BYO-BYOMEIKANA(IDX:1)
            END-IF
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    BYOMEI-REC          TO  MCPDATA-REC
       *
            .
@@ -3832,6 +3838,7 @@
       *
            MOVE    ORC-DBYMD             TO  CHK-YUKOSTYMD
                                            CHK-YUKOEDYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    CHK-REC             TO  MCPDATA-REC
            .
        2001-SEL-CHK-EXT.
@@ -3853,6 +3860,7 @@
       *
            MOVE    ORC-DBYMD           TO  NYUKSNCHK-YUKOSTYMD
                                            NYUKSNCHK-YUKOEDYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    NYUKSNCHK-REC       TO  MCPDATA-REC
            .
        2001-SEL-NYUKSNCHK-EXT.
@@ -3875,6 +3883,7 @@
       *
            MOVE    ORC-DBYMD           TO  NYURYAKUSHO-YUKOSTYMD
                                            NYURYAKUSHO-YUKOEDYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    NYURYAKUSHO-REC     TO  MCPDATA-REC
            .
        2001-SEL-NYUINRYAKUSHO-EXT.
@@ -3926,6 +3935,7 @@
              END-IF
             END-IF
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    INPUTCD-REC         TO  MCPDATA-REC
            .
        2001-SEL-INPUTCD-EXT.
@@ -3956,6 +3966,7 @@
                MOVE    "%"             TO  PTNUM-PTNUM(IDX:1)
            END-IF
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNUM-REC           TO  MCPDATA-REC
            .
        2001-SEL-PTNUM-EXT.
@@ -4013,6 +4024,7 @@
                MOVE    WRK-NAME            TO  PTINF-KANANAME
            END-IF
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
       *
            .
@@ -4079,6 +4091,7 @@
                 END-IF
            END-IF
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ADRS-REC        TO  MCPDATA-REC
            .
        2001-SEL-ADRS-EXT.
@@ -4110,6 +4123,7 @@
            IF      TNS-NAME            NOT =   SPACE
                    PERFORM 20011-NAME-SET-SEC
            END-IF
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
       *
            .
@@ -4206,6 +4220,7 @@
            COMPUTE IDX                 =   WRK-MOJISU  +  1
            MOVE    "%"                 TO  PARA-FILEMEI(IDX:1)
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PARA-REC            TO  MCPDATA-REC
       *
            .
@@ -4243,6 +4258,7 @@
            MOVE    SPACE               TO  USBYO-BYOMEI
            MOVE    WRK-BYOMEI          TO  USBYO-BYOMEI
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    USERBYOMEI-REC          TO  MCPDATA-REC
       *
            .
@@ -4265,6 +4281,7 @@
                MOVE    ALL "9"             TO  RECE10-XXEDHKNJANUM
            END-IF
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    RECE10-REC          TO  MCPDATA-REC
       *
            .
