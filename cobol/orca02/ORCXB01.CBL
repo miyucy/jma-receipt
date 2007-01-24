@@ -313,6 +313,7 @@
                    INITIALIZE                      JOBKANRI-REC
                    MOVE    SPA-GMN-JOBID (IDX) TO  JOB-JOBID
                    MOVE    SPA-KBN-SHELLID     TO  JOB-SHELLID
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    JOBKANRI-REC        TO  MCPDATA-REC
                    MOVE    "DBSELECT"          TO  MCP-FUNC
                    MOVE    PATH-TBL-JOBKANRI-KEY
@@ -428,6 +429,7 @@
       *
            INITIALIZE                  JOBKANRI-REC.
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    JOBKANRI-REC        TO  MCPDATA-REC.
            MOVE    "DBSELECT"          TO  MCP-FUNC.
            MOVE    PATH-TBL-JOBKANRI-ALL02
@@ -591,6 +593,7 @@
                    INITIALIZE                      JOBKANRI-REC
                    MOVE    SPA-GMN-JOBID (IDX) TO  JOB-JOBID
                    MOVE    SPA-KBN-SHELLID     TO  JOB-SHELLID
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    JOBKANRI-REC        TO  MCPDATA-REC
                    MOVE    "DBSELECT"          TO  MCP-FUNC
                    MOVE    PATH-TBL-JOBKANRI-KEY2
@@ -672,6 +675,7 @@
            IF  SPA-ERRCD   NOT =   "0004"
                INITIALIZE                      JOBKANRI-REC
                MOVE    SPA-KBN-SHELLID     TO  JOB-SHELLID
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    JOBKANRI-REC        TO  MCPDATA-REC
                MOVE    "DBDELETE"          TO  MCP-FUNC
                MOVE    PATH-TBL-JOBKANRI-DEL12
