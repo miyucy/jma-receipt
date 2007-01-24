@@ -199,6 +199,7 @@
            MOVE    "3003"              TO  SYS-3003-KANRICD
            MOVE    WRK-CONS-3003-KBNCD TO  SYS-3003-KBNCD
            MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-3003-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO

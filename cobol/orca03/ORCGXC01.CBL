@@ -695,11 +695,13 @@
            MOVE    SPA-NAI-SHORI-RENNUM (IDX)
                                        TO  PRVKANRI-SHORI-RENNUM
            MOVE    SPA-NAI-PAGE(IDX)   TO  PRVKANRI-PAGE
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PRVKANRI-REC        TO  MCPDATA-REC
            PERFORM 900-PRVKANRI-INV-SEC
            MOVE    MCPDATA-REC         TO  PRVKANRI-REC
            MOVE    SPA-NAI-UPDFLG(IDX) TO  PRVKANRI-MOD-FLG
            MOVE    SPA-NAI-MEMO(IDX)   TO  PRVKANRI-MEMO
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PRVKANRI-REC        TO  MCPDATA-REC
            PERFORM 4401-PRVKANRI-UPD-SEC
       *
@@ -856,10 +858,12 @@
                                        TO  PRVKANRI-SHORI-RENNUM
            MOVE    SPA-NAI-PAGE(IDX)   TO  PRVKANRI-PAGE
            MOVE    SPA-NAI-MEMO(IDX)   TO  PRVKANRI-MEMO
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PRVKANRI-REC        TO  MCPDATA-REC
            PERFORM 900-PRVKANRI-INV-SEC
            MOVE    MCPDATA-REC         TO  PRVKANRI-REC
            MOVE    SPA-NAI-UPDFLG(IDX) TO  PRVKANRI-MOD-FLG
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PRVKANRI-REC        TO  MCPDATA-REC
            PERFORM 4401-PRVKANRI-UPD-SEC
            .
@@ -908,6 +912,7 @@
            MOVE    "3003"              TO  SYS-3003-KANRICD
            MOVE    WRK-CONS-3003-KBNCD TO  SYS-3003-KBNCD
            MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-3003-REC        TO  MCPDATA-REC
       *    PERFORM 900-SYSKANRI-INV-SEC
            MOVE    1                   TO  FLG-SYSKANRI
@@ -993,6 +998,7 @@
            MOVE    "HC06"              TO  RECE08-PRTID
            MOVE    "999999"            TO  RECE08-RECEYM
            MOVE    WRK-PTNUM           TO  RECE08-PTNUM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    RECE08-REC          TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    PATH-TBL-RECEPRT-DEL3
@@ -1007,6 +1013,7 @@
            MOVE    "RECEPTX"           TO  PRTDATA-TBL-KEY
            MOVE    SPA-NAI-TBL-GROUP (1)
                                        TO  PRTDATA-TBL-GROUP
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PRTDATA-REC         TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    PATH-TBL-PRTDATA-DEL11 
@@ -1021,6 +1028,7 @@
            MOVE    "RECEPTX"           TO  PRTKANRI-TBL-KEY
            MOVE    SPA-NAI-TBL-GROUP (1)
                                        TO  PRTKANRI-TBL-GROUP
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PRTKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    PATH-TBL-PRTKANRI-DEL11 
@@ -1035,6 +1043,7 @@
            MOVE    "RECEPTX"           TO  PRVKANRI-TBL-KEY
            MOVE    SPA-NAI-TBL-GROUP (1)
                                        TO  PRVKANRI-TBL-GROUP
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PRVKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    PATH-TBL-PRVKANRI-DEL13 
@@ -1215,6 +1224,7 @@
            MOVE    "3003"              TO  SYS-3003-KANRICD
            MOVE    WRK-CONS-3003-KBNCD TO  SYS-3003-KBNCD
            MOVE    SPA-SYSYMD          TO  ORC-DBYMD 
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-3003-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -1326,10 +1336,12 @@
            MOVE    "3003"              TO  SYS-3003-KANRICD
            MOVE    WRK-CONS-3003-KBNCD TO  SYS-3003-KBNCD
            MOVE    SPA-SYSYMD          TO  ORC-DBYMD 
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-3003-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-3003-REC
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SYS-3003-REC        TO  MCPDATA-REC
                MOVE    "DBDELETE"          TO  MCP-FUNC
                MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
@@ -1459,6 +1471,7 @@
            ELSE
                    MOVE    "1"         TO  SHELLTBL-ARG17                                   
            END-IF
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC
            MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
@@ -1569,6 +1582,7 @@
            MOVE    SPA-XC01-LN-RENNUM  TO  PRVKANRI-RENNUM
            MOVE    SPA-XC01-LN-ST-PAGE TO  PRVKANRIXX-STPAGE
            MOVE    SPA-XC01-LN-ED-PAGE TO  PRVKANRIXX-EDPAGE
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PRVKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            IF      SPA-XC01-LN-SHORI-RENNUM
@@ -1869,6 +1883,7 @@
                                            TO  PREVIEW-SHORI-RENNUM
                            MOVE    SPA-NAI-PAGE (IDX)
                                            TO  PREVIEW-PAGE
+grpsys*                    MOVE SPA-HOSPNUM TO -HOSPNUM
                            MOVE    PREVIEW-REC
                                            TO  MCPDATA-REC
                            MOVE    "DBINSERT"
@@ -1943,6 +1958,7 @@
       *     MOVE    PRVKANRI-TBL-GROUP       TO  PREVIEW-TBL-GROUP
       *     MOVE    PRVKANRI-SHORI-RENNUM    TO  PREVIEW-SHORI-RENNUM
       *     MOVE    PRVKANRI-PAGE            TO  PREVIEW-PAGE
+grpsys*     MOVE SPA-HOSPNUM TO -HOSPNUM
             MOVE    PREVIEW-REC              TO  MCPDATA-REC
             MOVE    "DBSELECT"               TO  MCP-FUNC
       *     ラージオブジェクト対応までコメント★
@@ -2006,6 +2022,7 @@
             MOVE    SPA-NAI-SHORI-RENNUM (IDX)
                                              TO  PREVIEW-SHORI-RENNUM
             MOVE    SPA-NAI-PAGE (IDX)       TO  PREVIEW-PAGE
+grpsys*     MOVE SPA-HOSPNUM TO -HOSPNUM
             MOVE    PREVIEW-REC              TO  MCPDATA-REC
             MOVE    "DBSELECT"               TO  MCP-FUNC
       *     ラージオブジェクト対応までコメント★
@@ -2122,6 +2139,7 @@
            MOVE    "3003"              TO  SYS-3003-KANRICD
            MOVE    WRK-CONS-3003-KBNCD TO  SYS-3003-KBNCD
            MOVE    SPA-SYSYMD          TO  ORC-DBYMD 
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-3003-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
       *       
@@ -2137,6 +2155,7 @@
                                        TO  SYS-3003-TBL-GROUP
            MOVE    WRK-CONS-JOB-JOBID  TO  SYS-3003-JOBID                                      
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-3003-REC        TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
            IF      FLG-SYSKANRI        =   ZERO     
@@ -2171,6 +2190,7 @@
            MOVE    "3003"              TO  SYS-3003-KANRICD
            MOVE    WRK-CONS-3003-KBNCD TO  SYS-3003-KBNCD
            MOVE    SPA-SYSYMD          TO  ORC-DBYMD 
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-3003-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
