@@ -79,7 +79,7 @@
                        09  SPA-GMN-MSG        PIC X(122).
       *
       *----(03.04.01)--ADD-START---
-                   07  SPA-GMN-DURATION       PIC 9(01).
+                   07  SPA-GMN-DURATION       PIC 9(02).
       *----(03.04.01)--ADD-END-----
       *
                05  SPA-GMN-OFFNAIYO-AREA.
@@ -538,7 +538,7 @@
                                                 TO  SPA-GMN-MSG
                            MOVE    "blue"       TO  SPA-GMN-MSG-STYLE
       *----(03.04.01)--ADD-START---
-                           MOVE    2            TO  SPA-GMN-DURATION
+                           MOVE    10           TO  SPA-GMN-DURATION
       *----(03.04.01)--ADD-END-----
                        END-IF
                    END-IF
