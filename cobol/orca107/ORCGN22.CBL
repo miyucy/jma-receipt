@@ -327,13 +327,14 @@
            CALL    "ORCSMKPASS"        USING
                                        ORCSMKPASSAREA
            MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE
            MOVE    "shell"         TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *----(01.01.02)--ADD-START---
            MOVE    1                TO  SPA-N22-JYOKYOFLG
       *----(01.01.02)--ADD-END-----
@@ -476,13 +477,14 @@
            CALL    "ORCSMKPASS"        USING
                                        ORCSMKPASSAREA
            MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE
            MOVE    "shell"         TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        400-GAZOCOPY-SEC-EXT.
@@ -762,315 +764,16 @@
                MOVE    "blob"          TO  MCP-TABLE
                MOVE    "primary"       TO  MCP-PATHNAME
                MOVE    WRK-GAZOFILE    TO  ORCA-BLOB-FILE
-               CALL    "MONFUNC"           USING
-                                           MCPAREA
-                                           ORCA-BLOB
-      *         MOVE    "BLOBIMPORT"    TO  MCP-FUNC
-      *         MOVE    PATH-BLOB-PRIMARY
-      *                                 TO  MCP-PATH
-      *         MOVE    WRK-GAZOFILE    TO  ORCA-BLOB-FILE
-      *         CALL    "MCPSUB"            USING
-      *                                     MCPAREA
-      *                                     ORCA-BLOB
-               MOVE    ORCA-BLOB-OBJECT
-                                       TO  WRK-OBJECT
-           END-IF
-           .
-      *
-       4115-GAZOSET-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    戻る　処理
-      *****************************************************************
-       450-BACK                    SECTION.
-      *
-           MOVE    "N21"           TO  SPA-SAKIPG
-           MOVE    "N22"           TO  SPA-MOTOPG
-      *
-           MOVE   "JOIN"           TO  MCP-PUTTYPE
-           MOVE    SPA-SAKIPG      TO  MCP-WINDOW
-      *
-      *    ＰＵＴ処理
-           PERFORM 900-PUT-WINDOW
-      *
-           MOVE    1               TO  FLG-END
-      *
-           .
-      *
-       450-BACK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *       登録前処理
-      *****************************************************************
-       480-TOUROKU-SEC             SECTION.
-      *
-           IF      SPA-N22-MAX     =   ZERO
-               MOVE    "該当するデータがありません"
-                                   TO  SPA-N22-MESSAGE
-               MOVE    "red"       TO  SPA-N22-MESSAGE-STYLE
-               GO  TO  480-TOUROKU-EXT
-           END-IF
-           PERFORM 4111-SELNUM-CHK-SEC
-           IF      SPA-N22-MESSAGE NOT =   SPACE
-               GO  TO  480-TOUROKU-EXT
-           END-IF
-           PERFORM 4112-GAZOKBN-CHK-SEC
-           IF      SPA-N22-MESSAGE NOT =   SPACE
-               GO  TO  480-TOUROKU-EXT
-           END-IF
-      *
-           PERFORM 400-GAZOCOPY-SEC
-      *
-           MOVE    "OK"            TO  SPA-N22-FLG
-      *
-           EVALUATE    SPA-N22-COPYKBN
-               WHEN    "1"
-                   IF      SPA-GMN-EFFECT =  SPACE
-                       MOVE    SPA-N22-EFFECT(SPA-N22-SELNUM)
-                                   TO  SPA-GMN-EFFECT
-                   END-IF
-                   IF      SPA-GMN-COLOR  = SPACE
-                       MOVE    SPA-N22-COLOR(SPA-N22-SELNUM)
-                                   TO  SPA-GMN-COLOR
-                   END-IF
-                   IF      SPA-GMN-SHAPE  = SPACE
-                       MOVE    SPA-N22-SHAPE(SPA-N22-SELNUM)
-                                   TO  SPA-GMN-SHAPE
-                   END-IF
-                   IF      SPA-GMN-MARK   = SPACE
-                       MOVE    SPA-N22-MARK(SPA-N22-SELNUM)
-                                   TO  SPA-GMN-MARK
-                   END-IF
-                   IF      SPA-GMN-CAUTION  = SPACE
-                       MOVE    SPA-N22-CAUTION(SPA-N22-SELNUM)
-                                   TO  SPA-GMN-CAUTION
-                   END-IF
-               WHEN     "2"
-                   MOVE    SPA-N22-EFFECT(SPA-N22-SELNUM)
-                                   TO  SPA-GMN-EFFECT
-                   MOVE    SPA-N22-COLOR(SPA-N22-SELNUM)
-                                   TO  SPA-GMN-COLOR
-                   MOVE    SPA-N22-SHAPE(SPA-N22-SELNUM)
-                                   TO  SPA-GMN-SHAPE
-                   MOVE    SPA-N22-MARK(SPA-N22-SELNUM)
-                                   TO  SPA-GMN-MARK
-                   MOVE    SPA-N22-CAUTION(SPA-N22-SELNUM)
-                                   TO  SPA-GMN-CAUTION
-           END-EVALUATE
-           MOVE    SPA-N22-COPYKBN     TO  SPA-N22-COPY
-      *
-           PERFORM 450-BACK
-           .
-      *
-       480-TOUROKU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    自画面編集処理
-      *****************************************************************
-       500-SET-SCREEN              SECTION.
-      *
-      *    画面編集処理
-           PERFORM 500-GMNHEN-SEC
-      *
-           MOVE    SPACE           TO  LINKAREA
-      *
-           MOVE    "CURRENT"       TO  MCP-PUTTYPE.
-           MOVE    "N22    "       TO  MCP-WINDOW.
-      *
-      *    ＰＵＴ処理
-           PERFORM 900-PUT-WINDOW.
-           .
-       500-SET-SCREEN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    画面編集処理
-      *****************************************************************
-       500-GMNHEN-SEC              SECTION.
-      *
-           INITIALIZE                  N22
-           MOVE    SPA-N22-KENCD   TO  N22-KENCD
-           MOVE    SPA-N22-KENNAME TO  N22-KENNAME
-           MOVE    SPA-N22-SELNUM  TO  N22-SELNUM
-           MOVE    SPA-N22-MESSAGE TO  N22-MESSAGE
-           MOVE    SPA-N22-MESSAGE-STYLE
-                                   TO  N22-MESSAGE-STYLE
-           PERFORM VARYING IDX     FROM    1   BY  1
-                   UNTIL   IDX     >       3
-               MOVE    SPA-N22-OBJECT(IDX) TO  N22-GAZO(IDX)
-               MOVE    SPA-N22-LABEL(IDX)  TO  N22-GAZOLABEL(IDX)
-           END-PERFORM
-      *
-           PERFORM VARYING IDX     FROM    1   BY  1
-                   UNTIL   IDX     >       SPA-N22-MAX
-               MOVE    SPA-N22-TNO(IDX)    TO  N22-TNO(IDX)
-               MOVE    SPA-N22-TYJCD(IDX)  TO  N22-TYJCD(IDX)
-               MOVE    SPA-N22-TGAZO(IDX)  TO  N22-TGAZO(IDX)
-               MOVE    SPA-N22-TMAKER(IDX) TO  N22-TMAKER(IDX)
-               MOVE    SPA-N22-TSELLER(IDX)
-                                           TO  N22-TSELLER(IDX)
-               IF      IDX             =   SPA-N22-SELNUM
-                   MOVE    "T"         TO  N22-SELECT(IDX)
-               ELSE
-                   MOVE    "F"         TO  N22-SELECT(IDX)
-               END-IF
-           END-PERFORM
-      *
-           MOVE    SPA-N22-MAX     TO  N22-COUNT
-      *
-           MOVE    SPA-N22-GAZOKBN-G   TO  N22-GAZOKBN
-           PERFORM VARYING IDX     FROM    1       BY  1
-                   UNTIL   IDX     >       SPA-N22-GAZOKBN-MAX
-               MOVE    SPA-N22-GAZOKBNLST(IDX)
-                                       TO  N22-GAZOKBNLST(IDX)
-           END-PERFORM
-           MOVE    SPA-N22-GAZOKBN-MAX TO  N22-GAZOKBN-COUNT
-      *
-           MOVE    SPA-N22-COPYKBN-G   TO  N22-COPYKBN
-           PERFORM VARYING IDX     FROM    1       BY  1
-                   UNTIL   IDX     >       SPA-N22-COPYKBN-MAX
-               MOVE    SPA-N22-COPYKBNLST(IDX)
-                                       TO  N22-COPYKBNLST(IDX)
-           END-PERFORM
-           MOVE    SPA-N22-COPYKBN-MAX TO  N22-COPYKBN-COUNT
-      *
-           PERFORM 530-MAPCUR-SEC
-      *
-           .
-       500-GMNHEN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    画面カーソルセット処理
-      *****************************************************************
-       530-MAPCUR-SEC              SECTION.
-      *
-           EVALUATE    SPA-N22-CUR
-               WHEN    1
-                   MOVE  "SELNUM"      TO  MCP-WIDGET
-               WHEN    2
-                   MOVE  "GAZOKBN"     TO  MCP-WIDGET
-               WHEN    3
-                   MOVE  "COPYKBN"     TO  MCP-WIDGET
-               WHEN    96
-                   MOVE  "B10"         TO  MCP-WIDGET
-               WHEN    97
-                   MOVE  "B11"         TO  MCP-WIDGET
-               WHEN    98
-                   MOVE  "B12"         TO  MCP-WIDGET
-               WHEN    99
-                   MOVE  "B01"         TO  MCP-WIDGET
-           END-EVALUATE
-           .
-      *
-       530-MAPCUR-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ジョブ管理読込
-      *****************************************************************
-       820-JOBKANRI-READ-SEC       SECTION.
-      *
-           MOVE    "CHK"           TO  SJOBKANRI-MODE
-           INITIALIZE                  JOBKANRI-REC
-           MOVE    WRK-CONS-JOB-JOBID
-                                   TO  JOB-JOBID
-           MOVE    WRK-CONS-JOB-SHELLID
-                                   TO  JOB-SHELLID
-           CALL    "ORCSJOB"           USING
-                                       ORCSJOBKANRIAREA
-                                       JOBKANRI-REC
-      *
-           IF      SJOBKANRI-RETURN    =   ZERO
-               IF      JOB-ERRCD(1:2)      =   "99"
-                   MOVE    SPACE           TO  SKBN-RUN
-               ELSE
-                   IF      JOB-ERRCD(1:2)      =   "01"
-                       MOVE    SPACE           TO  SKBN-RUN
-                   ELSE
-                       IF     (JOB-ENDTIME     NOT =   SPACE)  AND
-                              (JOB-ENDYMD      NOT =   SPACE)
-                           MOVE    SPACE           TO  SKBN-RUN
-                       ELSE
-                           MOVE    "RUN"           TO  SKBN-RUN
-                       END-IF
-                   END-IF
-               END-IF
-           ELSE
-               MOVE    SPACE            TO  SKBN-RUN
-           END-IF
-           .
-      *
-       820-JOBKANRI-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ジョブ管理削除
-      *****************************************************************
-       820-JOBKANRI-DEL-SEC        SECTION.
-      *
-      *    ジョブ管理削除
-           MOVE    "DEL"           TO  SJOBKANRI-MODE
-           INITIALIZE                  JOBKANRI-REC
-           MOVE    WRK-CONS-JOB-JOBID
-                                   TO  JOB-JOBID
-           MOVE    WRK-CONS-JOB-SHELLID
-                                   TO  JOB-SHELLID
-           CALL    "ORCSJOB"           USING
-                                       ORCSJOBKANRIAREA
-                                       JOBKANRI-REC
-           .
-      *
-       820-JOBKANRI-DEL-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ジョブ管理作成
-      *****************************************************************
-       820-JOBKANRI-JBS-SEC        SECTION.
-      *
-           MOVE    "JBS"           TO  SJOBKANRI-MODE
-           INITIALIZE                  JOBKANRI-REC
-           MOVE    WRK-CONS-JOB-JOBID
-                                   TO  JOB-JOBID
-           MOVE    WRK-CONS-JOB-SHELLID
-                                   TO  JOB-SHELLID
-           EVALUATE    WRK-CONS-JOB-JOBID
-               WHEN    3
-                   MOVE    "薬剤情報問合せ"
-                                   TO  JOB-SHELLMSG
-               WHEN    4
-                   MOVE    "薬剤情報取込み"
-                                   TO  JOB-SHELLMSG
-           END-EVALUATE
-      *
-           CALL    "ORCSJOB"           USING
-                                       ORCSJOBKANRIAREA
-                                       JOBKANRI-REC
-           .
-      *
-       820-JOBKANRI-JBS-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    薬剤情報マスタ読み込み（キー）
-      *****************************************************************
-       900-TEMP-SELECT-SEC         SECTION.
-      *
-           INITIALIZE                  TEMP-REC
-           MOVE    SPA-TERMID      TO  TEMP-TERMID
-           MOVE    SPA-N22-KENCD   TO  TEMP-SRYCD
-           MOVE    TEMP-REC        TO  MCPDATA-REC
+grpsys         CALL "ORCDBMAIN" USING MCPAREA
+                                      MCPDATA-REC
+grpsys*                               COMMON-SPA
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_yakujyo_temp"  TO  MCP-TABLE
            MOVE    "srycd"             TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF      MCP-RC          =   ZERO
                MOVE    ZERO            TO  FLG-TEMP
                PERFORM 900-TEMP-FETCH-SEC
@@ -1090,9 +793,9 @@
            MOVE    "DBFETCH"       TO  MCP-FUNC
            MOVE    "tbl_yakujyo_temp"  TO  MCP-TABLE
            MOVE    "srycd"             TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            IF      MCP-RC          =   ZERO
                MOVE    ZERO            TO  FLG-TEMP
@@ -1113,9 +816,9 @@
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
            MOVE    "tbl_yakujyo_temp"  TO  MCP-TABLE
            MOVE    "srycd"             TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            .
       *
        900-TEMP-CLOSE-EXT.
@@ -1127,9 +830,9 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE    "PUTWINDOW"     TO  MCP-FUNC.
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC.
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            .
       *
        900-PUT-WINDOW-EXT.
