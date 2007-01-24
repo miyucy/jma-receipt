@@ -389,6 +389,7 @@
            MOVE    ALL "0"             TO  TNS-YUKOSTYMD
            MOVE    SPA-NAI-YUKOYMD     TO  TNS-YUKOEDYMD
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key20"             TO  MCP-PATHNAME
@@ -483,6 +484,7 @@
                MOVE    SPA-HOSPID          TO  ICD-HOSPID
                MOVE    SPA-GMN-TSRYCD(IDX) TO  ICD-SRYCD
       *
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    INPUTCD-REC         TO  MCPDATA-REC
                MOVE    "tbl_inputcd"       TO  MCP-TABLE
                MOVE    "key4"               TO  MCP-PATHNAME
@@ -649,6 +651,7 @@
            MOVE    SPA-HOSPID          TO  ICD-HOSPID
            MOVE    SPA-GMN-OLD-SRYCD   TO  ICD-SRYCD
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    INPUTCD-REC         TO  MCPDATA-REC
            MOVE    "tbl_inputcd"       TO  MCP-TABLE
            MOVE    "key4"               TO  MCP-PATHNAME
@@ -692,6 +695,7 @@
            INITIALIZE                  SRYCDCHG-REC 
            MOVE    SPA-GMN-OLD-SRYCD   TO  CHG-IPNSRYCD
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYCDCHG-REC        TO  MCPDATA-REC
            MOVE    "tbl_srycdchg"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -807,6 +811,7 @@
            MOVE    SPA-GMN-SRYCD       TO  TNS-SRYCD
            MOVE    SPA-SYSYMD          TO  TNS-YUKOSTYMD
            MOVE    SPA-SYSYMD          TO  TNS-YUKOEDYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
       *
            MOVE    "tbl_tensu"         TO  MCP-TABLE
@@ -836,6 +841,7 @@
            MOVE    SPA-HOSPID          TO  ICD-HOSPID
            MOVE    SPA-GMN-SRYCD       TO  ICD-SRYCD
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    INPUTCD-REC         TO  MCPDATA-REC
            MOVE    "tbl_inputcd"       TO  MCP-TABLE
            MOVE    "key4"               TO  MCP-PATHNAME
@@ -1095,6 +1101,7 @@
       *
            MOVE    ICD-CDSYU           TO  SPA-GMN-CDSYU (IDX)
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    INPUTCD-REC         TO  MCPDATA-REC
            MOVE    "tbl_inputcd"       TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -1390,6 +1397,7 @@
                MOVE    SPA-GMN-CDSYU   (IDX)
                                            TO  ICD-CDSYU
       *
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    INPUTCD-REC         TO  MCPDATA-REC
                MOVE    "DBSELECT"          TO  MCP-FUNC
                MOVE    "tbl_inputcd"       TO  MCP-TABLE
@@ -1415,13 +1423,14 @@
                    MOVE    SMCNDATE-YMD        TO  ICD-UPYMD
                    MOVE    SMCNDATE-HMS        TO  ICD-UPHMS
       *
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    INPUTCD-REC         TO  MCPDATA-REC
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
                    MOVE    "tbl_inputcd"       TO  MCP-TABLE
                    MOVE    "key"               TO  MCP-PATHNAME
-                   CALL    "MONFUNC"           USING
-                                               MCPAREA
-                                               MCPDATA-REC
+grpsys             CALL "ORCDBMAIN" USING MCPAREA
+                                          MCPDATA-REC
+grpsys*                                   COMMON-SPA
                    IF      MCP-RC          NOT =   ZERO
                        MOVE    "0100"          TO  SPA-ERRCD
                        DISPLAY "Z07 INPUTCD UPD ERR:" MCP-RC
@@ -1447,13 +1456,14 @@
                    MOVE    SMCNDATE-YMD        TO  ICD-UPYMD
                    MOVE    SMCNDATE-HMS        TO  ICD-UPHMS
       *
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    INPUTCD-REC         TO  MCPDATA-REC
                    MOVE    "DBINSERT"          TO  MCP-FUNC
                    MOVE    "tbl_inputcd"       TO  MCP-TABLE
                    MOVE    "key"               TO  MCP-PATHNAME
-                   CALL    "MONFUNC"           USING
-                                               MCPAREA
-                                               MCPDATA-REC
+grpsys             CALL "ORCDBMAIN" USING MCPAREA
+                                          MCPDATA-REC
+grpsys*                                   COMMON-SPA
                    IF      MCP-RC          NOT =   ZERO
                        MOVE    "0100"          TO  SPA-ERRCD
                        DISPLAY "Z07 INPUTCD INS ERR:" MCP-RC
@@ -1480,6 +1490,7 @@
            MOVE    SPA-HOSPID          TO  ICD-HOSPID
            MOVE    SPA-GMN-OLD-SRYCD   TO  ICD-SRYCD
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    INPUTCD-REC         TO  MCPDATA-REC
            MOVE    "tbl_inputcd"       TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
@@ -1500,13 +1511,14 @@
                MOVE    SMCNDATE-YMD        TO  ICD-UPYMD
                MOVE    SMCNDATE-HMS        TO  ICD-UPHMS
       *
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    INPUTCD-REC         TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "tbl_inputcd"       TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "MONFUNC"           USING
-                                           MCPAREA
-                                           MCPDATA-REC
+grpsys         CALL "ORCDBMAIN" USING MCPAREA
+                                      MCPDATA-REC
+grpsys*                               COMMON-SPA
                IF      MCP-RC          NOT =   ZERO
                    MOVE    "0100"          TO  SPA-ERRCD
                    DISPLAY "Z07 INPUTCD UPD ERR:" MCP-RC
@@ -1826,9 +1838,9 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        910-DBSELECT-EXT.
@@ -1839,9 +1851,9 @@
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
       *
@@ -1853,9 +1865,9 @@
        990-DBCLOSE-SEC                 SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            .
        990-DBLOSEC-EXT.
            EXIT.
@@ -1866,9 +1878,9 @@
        900-PUT-WINDOW                            SECTION.
       *
            MOVE   "PUTWINDOW"                    TO  MCP-FUNC.
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            .
       *
        900-PUT-WINDOW-EXT.
