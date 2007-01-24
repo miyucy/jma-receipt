@@ -230,6 +230,7 @@
                MOVE    "key3"          TO  WRK-PATH
            END-IF
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    YYK-REC             TO  MCPDATA-REC
            MOVE    "tbl_yyk"           TO  MCP-TABLE
            MOVE    WRK-PATH            TO  MCP-PATHNAME
@@ -419,6 +420,7 @@
            MOVE    SPA-Y03-YYKYMDS     TO  SYS-1010-STYUKYMD
            MOVE    SPA-Y03-YYKYMDS     TO  SYS-1010-EDYUKYMD
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1010-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -432,6 +434,7 @@
            MOVE    YYK-SRYKA           TO  SYS-1005-KBNCD
            MOVE    SPA-Y03-YYKYMDS     TO  SYS-1005-STYUKYMD
            MOVE    SPA-Y03-YYKYMDS     TO  SYS-1005-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1005-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -445,6 +448,7 @@
            MOVE    YYK-SRYNAIYO        TO  SYS-1012-KBNCD
            MOVE    SPA-Y03-YYKYMDS     TO  SYS-1012-STYUKYMD
            MOVE    SPA-Y03-YYKYMDS     TO  SYS-1012-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1012-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -458,6 +462,7 @@
            MOVE    YYK-KAKREN          TO  SYS-0051-KBNCD
            MOVE    SPA-Y03-YYKYMDS     TO  SYS-0051-STYUKYMD
            MOVE    SPA-Y03-YYKYMDS     TO  SYS-0051-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-0051-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -581,9 +586,9 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        910-DBSELECT-EXT.
@@ -594,9 +599,9 @@
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        920-DBFETCH-EXT.
@@ -608,9 +613,9 @@
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        990-DBCLOSE-EXT.

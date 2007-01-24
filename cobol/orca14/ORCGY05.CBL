@@ -327,6 +327,7 @@
            MOVE    SPA-HOSPID          TO  YYK-HOSPID
            MOVE    SPA-NAI-PTID        TO  YYK-PTID
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    YYK-REC             TO  MCPDATA-REC
            MOVE    "tbl_yyk"           TO  MCP-TABLE
            MOVE    "key8"              TO  MCP-PATHNAME
@@ -446,6 +447,7 @@
            MOVE    YYK-YYKYMD          TO  SYS-1005-STYUKYMD
            MOVE    YYK-YYKYMD          TO  SYS-1005-EDYUKYMD
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1005-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -472,6 +474,7 @@
            MOVE    YYK-YYKYMD          TO  SYS-0051-STYUKYMD
            MOVE    YYK-YYKYMD          TO  SYS-0051-EDYUKYMD
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-0051-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -505,6 +508,7 @@
            MOVE    YYK-YYKYMD          TO  SYS-1010-STYUKYMD
            MOVE    YYK-YYKYMD          TO  SYS-1010-EDYUKYMD
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1010-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -537,6 +541,7 @@
            MOVE    YYK-YYKYMD          TO  SYS-1012-STYUKYMD
            MOVE    YYK-YYKYMD          TO  SYS-1012-EDYUKYMD
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1012-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -920,6 +925,7 @@
       *****************************************************************
        920-PTINF-READ-SEC         SECTION.
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -970,9 +976,9 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        910-DBSELECT-EXT.
@@ -983,9 +989,9 @@
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
       *
@@ -998,9 +1004,9 @@
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        990-DBCLOSE-EXT.
@@ -1012,9 +1018,9 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE    "PUTWINDOW"       TO  MCP-FUNC.
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        900-PUT-WINDOW-EXT.
