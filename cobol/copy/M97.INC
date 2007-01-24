@@ -39,3 +39,4 @@
               04  M97-MESSEGE.
                 05  M97-MSG-STYLE       PIC X(20).
                 05  M97-MSG-NAIYO       PIC X(122).
+              04 M97-DURATION   PIC S9(09) BINARY.

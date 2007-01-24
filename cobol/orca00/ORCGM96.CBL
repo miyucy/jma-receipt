@@ -35,6 +35,7 @@
       *  01.00.04    NACL-多々納  05/04/04  マスタ更新管理情報の分割
       *  01.00.05    NACL-伊藤    06/02/22  MONFUNC 対応
       *  01.00.06    NACL-伊藤    06/07/12  ライセンスマスタ対応
+      *  03.04.01    NACL-森脇    07/01/24  タイマーイベント追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -335,6 +336,10 @@
            MOVE    "all"               TO  MCP-PATHNAME 
            PERFORM 990-DBCLOSE-SEC
       *
+      *----(03.04.01)--ADD-START---
+           MOVE    0                   TO  SPA-GMN-DURATION
+      *----(03.04.01)--ADD-END-----
+      *
       *    ＪＯＢ管理検索
            PERFORM 820-JOBKANRI-READ-SEC
       *
@@ -369,6 +374,9 @@
                            MOVE    "マスタ更新中です。"
                                                 TO  SPA-GMN-MSG1(ID1:18)
                            MOVE    "blue"       TO  SPA-GMN-MSG1-STYLE
+      *----(03.04.01)--ADD-START---
+                           MOVE    2            TO  SPA-GMN-DURATION
+      *----(03.04.01)--ADD-END-----
                        END-IF
                    END-IF
                END-IF
@@ -401,6 +409,9 @@
                            MOVE    "マスタ更新中です。"
                                                 TO  SPA-GMN-MSG2(ID1:18)
                            MOVE    "blue"       TO  SPA-GMN-MSG2-STYLE
+      *----(03.04.01)--ADD-START---
+                           MOVE    2            TO  SPA-GMN-DURATION
+      *----(03.04.01)--ADD-END-----
                        END-IF
                    END-IF
                  END-IF
@@ -566,6 +577,9 @@
       *        情報削除
                WHEN    "CLICKED"       ALSO    "B02"
                    PERFORM 201-DELETE-SEC
+      *----(03.04.01)---ADD-START---
+               WHEN    "CLICKED"   ALSO    "pandatimer1"
+      *----(03.04.01)---ADD-END-----
       *        情報
                WHEN    "CLICKED"       ALSO    "B11"
                    PERFORM 211-JYOUKYOU-SEC
@@ -897,6 +911,10 @@
            MOVE    SPA-GMN-MSG2            TO  M96-MSG2-VALUE
            MOVE    SPA-GMN-MSG2-STYLE      TO  M96-MSG2-STYLE
       *
+      *----(03.04.01)--ADD-START---
+           MOVE    SPA-GMN-DURATION        TO  M96-DURATION
+      *----(03.04.01)--ADD-END-----
+      *
            PERFORM 5001-MAPCUR-SEC
            .
       *
@@ -941,6 +959,10 @@
                 WHEN    OTHER
                     MOVE    SPACE               TO  SPA-ERRMSG
             END-EVALUATE.
+      *
+      *----(03.04.01)--ADD-START---
+           MOVE    ZERO            TO  M96-DURATION
+      *----(03.04.01)--ADD-END-----
       *
            MOVE    SPACE                TO  MERR
            MOVE    SPA-ERRCD            TO  MERR-ERRCODE

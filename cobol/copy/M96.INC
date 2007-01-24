@@ -41,3 +41,4 @@
             03  M96-MSG2.
               04  M96-MSG2-STYLE PIC X(20).
               04  M96-MSG2-VALUE     PIC X(62).
+           03 M96-DURATION   PIC S9(09) BINARY.
