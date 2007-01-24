@@ -556,6 +556,7 @@
       *
            INITIALIZE                  JINMEI-REC
            MOVE    SPA-GMN-JYOKEN  TO  JINMEI-KANA
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    JINMEI-REC      TO  MCPDATA-REC
            MOVE    "tbl_jinmei"    TO  WRK-PATH-TABLE
            MOVE    "key2"          TO  WRK-PATH-PATHNAME
@@ -588,6 +589,7 @@
       *
            INITIALIZE                  JINMEI-REC
            MOVE    SPA-GMN-JYOKEN  TO  JINMEI-KANJI
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    JINMEI-REC      TO  MCPDATA-REC
            MOVE    "tbl_jinmei"    TO  WRK-PATH-TABLE
            MOVE    "key3"          TO  WRK-PATH-PATHNAME
@@ -695,13 +697,14 @@
                    MOVE    SPA-GMN-JYOKEN          TO  JINMEI-KANA
            END-EVALUATE
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    JINMEI-REC      TO  MCPDATA-REC
            MOVE    "DBDELETE"      TO  MCP-FUNC
            MOVE    "tbl_jinmei"    TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            IF      MCP-RC              NOT =   ZERO
                MOVE    "1012"                  TO  SPA-ERRCD
@@ -774,6 +777,7 @@
                        MOVE    SPA-GMN-JYOKEN          TO  JINMEI-KANA
                END-EVALUATE
       *
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    JINMEI-REC      TO  MCPDATA-REC
                MOVE    "tbl_jinmei"    TO  WRK-PATH-TABLE
                MOVE    "key"           TO  WRK-PATH-PATHNAME
@@ -816,13 +820,14 @@
            MOVE    SYS-TIME        TO  JINMEI-UPHMS
            MOVE    SPA-SYSYMD      TO  JINMEI-UPYMD
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    JINMEI-REC      TO  MCPDATA-REC
            MOVE    "DBINSERT"      TO  MCP-FUNC
            MOVE    "tbl_jinmei"    TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            IF      MCP-RC              NOT =   ZERO 
                MOVE    "1011"          TO  SPA-ERRCD
@@ -1040,9 +1045,9 @@
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    WRK-PATH-TABLE      TO  MCP-TABLE
            MOVE    WRK-PATH-PATHNAME   TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-JINMEI
                PERFORM  900-JINMEI-FETCH-SEC
@@ -1062,9 +1067,9 @@
            MOVE    "DBFETCH"           TO  MCP-FUNC
            MOVE    WRK-PATH-TABLE      TO  MCP-TABLE
            MOVE    WRK-PATH-PATHNAME   TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-JINMEI
@@ -1085,9 +1090,9 @@
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    WRK-PATH-TABLE      TO  MCP-TABLE
            MOVE    WRK-PATH-PATHNAME   TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            .
       *
        900-JINMEI-CLOSE-EXT.
@@ -1099,9 +1104,9 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"      TO  MCP-FUNC.
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC.
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            .
       *
        900-PUT-WINDOW-EXT.
