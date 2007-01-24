@@ -358,6 +358,7 @@
            MOVE    "3003"              TO  SYS-3003-KANRICD
            MOVE    "044"               TO  SYS-3003-KBNCD
            MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-3003-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -392,6 +393,7 @@
            INITIALIZE                      SYS-3004-REC
            MOVE    SPA-W01-KANRICD     TO  SYS-3004-KANRICD
            MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-3004-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
@@ -987,6 +989,7 @@
            MOVE    "3003"              TO  SYS-3003-KANRICD
            MOVE    "044"               TO  SYS-3003-KBNCD
            MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-3003-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -1015,6 +1018,7 @@
                MOVE    "1"                 TO  SYS-3003-PRTKBN3
            END-IF        
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-3003-REC        TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
            IF      FLG-SYSKANRI        =   ZERO
@@ -1036,6 +1040,7 @@
            INITIALIZE                      SYS-3004-REC
            MOVE    SPA-W01-KANRICD     TO  SYS-3004-KANRICD
            MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-3004-REC        TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
@@ -1064,6 +1069,7 @@
                    MOVE    SPA-GMN-PRTNM    (IDX)  TO  SYS-3004-PRTNM
                    MOVE    SPA-GMN-PARAKBN  (IDX)  TO  SYS-3004-PARAKBN
       *
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    SYS-3004-REC            TO  MCPDATA-REC
                    MOVE    "SYSKANRI-KEY"          TO  ORC-DBPATH
                    MOVE    "DBINSERT"              TO  MCP-FUNC

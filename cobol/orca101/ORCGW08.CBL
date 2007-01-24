@@ -333,6 +333,7 @@
            MOVE    "2004"                  TO  SYS-2004-KANRICD
            MOVE    SPA-W01-KBNCD           TO  SYS-2004-KBNCD
            MOVE    SPA-W01-STYUKYMD        TO  ORC-DBYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-2004-REC            TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY"          TO  WRK-PATH
            PERFORM 900-SYSKANRI-INV-SEC
@@ -444,6 +445,7 @@
            MOVE    SPA-W01-KBNCD           TO  SYS-2004-KBNCD
            MOVE    SPA-W01-STYUKYMD        TO  SYS-2004-STYUKYMD
            MOVE    SPA-W01-EDYUKYMD        TO  SYS-2004-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-2004-REC            TO  MCPDATA-REC
            MOVE    "DBDELETE"              TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"          TO  ORC-DBPATH
@@ -487,6 +489,7 @@
            MOVE    "2004"                  TO  SYS-2004-KANRICD
            MOVE    SPA-W01-KBNCD           TO  SYS-2004-KBNCD
            MOVE    SPA-W01-STYUKYMD        TO  ORC-DBYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-2004-REC            TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY"          TO  WRK-PATH
            PERFORM 900-SYSKANRI-INV-SEC
@@ -516,6 +519,7 @@
                MOVE    "SYSKANRI-KEY"          TO  ORC-DBPATH
                MOVE    "DBINSERT"              TO  MCP-FUNC
            END-IF
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYSKANRI-REC            TO  MCPDATA-REC
            CALL    "ORCMCPSUB"              USING
                                                 MCPAREA

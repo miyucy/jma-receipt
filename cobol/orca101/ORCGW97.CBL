@@ -393,6 +393,7 @@
            MOVE    "1%"                TO  SYS-9700-KBNCD
            MOVE    SPA-SYSYMD          TO  SYS-9700-STYUKYMD
            MOVE    SPA-SYSYMD          TO  SYS-9700-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-9700-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -568,6 +569,7 @@
            MOVE    SPA-SYSYMD          TO  SYS-9701-STYUKYMD
            MOVE    SPA-SYSYMD          TO  SYS-9701-EDYUKYMD
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-9701-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -915,6 +917,7 @@
            MOVE    "1%"                TO  SYS-9700-KBNCD
            MOVE    "00000000"          TO  SYS-9700-STYUKYMD
            MOVE    "99999999"          TO  SYS-9700-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-9700-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -957,14 +960,15 @@
       *
            IF      FLG-SYSKANRI        =   ZERO
       *        ¹¹¿·
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SYS-9700-REC        TO  MCPDATA-REC
       *
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
                MOVE    "DBUPDATE"          TO  MCP-FUNC
-               CALL    "MONFUNC"           USING
-                                           MCPAREA
-                                           MCPDATA-REC
+grpsys         CALL "ORCDBMAIN" USING MCPAREA
+                                      MCPDATA-REC
+grpsys*                               COMMON-SPA
                IF      MCP-RC          NOT =   ZERO 
                    MOVE    "1002"              TO  SPA-ERRCD
                    DISPLAY "W97 DB UPD ERR KEY:" SYS-9700-KEY 
@@ -972,6 +976,7 @@
            ELSE
       *    ¿·µ¬
                MOVE    SMCNDATE-YMD            TO  SYS-9700-CREYMD
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SYS-9700-REC            TO  MCPDATA-REC
       *
                PERFORM 4901-INSERT-SYORI-SEC
@@ -992,13 +997,14 @@
            MOVE    "00000000"          TO  SYS-9701-STYUKYMD
            MOVE    "99999999"          TO  SYS-9701-EDYUKYMD
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-9701-REC        TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "del11"             TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            IF      MCP-RC              NOT =   ZERO 
                MOVE    "1003"              TO  SPA-ERRCD
@@ -1039,6 +1045,7 @@
            MOVE    SMCNDATE-YMD            TO  SYS-9701-UPYMD
            MOVE    SMCNDATE-HMS            TO  SYS-9701-UPHMS
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-9701-REC            TO  MCPDATA-REC
       *    ¿·µ¬
            PERFORM 4901-INSERT-SYORI-SEC
@@ -1055,9 +1062,9 @@
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF      MCP-RC          NOT =   ZERO 
                MOVE    "1001"              TO  SPA-ERRCD
                DISPLAY "W97 DB INS ERR KEY:" SYS-9701-KEY 
@@ -1074,9 +1081,9 @@
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF      MCP-RC          NOT =   ZERO 
                MOVE    "1002"              TO  SPA-ERRCD
                DISPLAY "W97 DB UPD ERR KEY:" SYS-9700-KEY 
@@ -1378,9 +1385,9 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        910-DBSELECT-EXT.
@@ -1391,9 +1398,9 @@
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
       *
@@ -1406,9 +1413,9 @@
        990-DBCLOSE-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        990-DBCLOSE-EXT.
@@ -1420,9 +1427,9 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        900-PUT-WINDOW-EXT.

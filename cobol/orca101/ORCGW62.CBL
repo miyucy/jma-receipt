@@ -326,21 +326,9 @@
                MOVE    "blob"          TO  MCP-TABLE
                MOVE    "primary"       TO  MCP-PATHNAME
                MOVE    MKPASS-OT-01    TO  ORCA-BLOB-FILE
-               CALL    "MONFUNC"           USING
-                                           MCPAREA
-                                           ORCA-BLOB
-               MOVE    ORCA-BLOB-OBJECT    TO  SPA-W62-OBJECT
-           END-IF
-      *
-           MOVE    ZERO            TO  SPA-W62-PRTNUM-MAX
-      *
-      *    外来プリンタセット
-           MOVE    SPACE               TO  SYSKANRI-REC
-           INITIALIZE                      SYSKANRI-REC
-           MOVE    "1031"              TO  SYS-KANRICD
-           MOVE    SPA-W01-STYUKYMD    TO  SYS-STYUKYMD
-                                           SYS-EDYUKYMD
-           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+grpsys         CALL "ORCDBMAIN" USING MCPAREA
+                                      MCPDATA-REC
+grpsys*                               COMMON-SPA
            PERFORM 900-SYSKANRI-SELECT-SEC
            PERFORM UNTIL   FLG-SYSKANRI    NOT =   ZERO
                MOVE    MCPDATA-REC     TO  SYS-1031-REC
@@ -377,6 +365,7 @@
            MOVE    "2005"              TO  SYS-KANRICD
            MOVE    SPA-W01-STYUKYMD    TO  SYS-STYUKYMD
                                            SYS-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-SELECT-SEC
            PERFORM UNTIL   FLG-SYSKANRI    NOT =   ZERO
@@ -438,6 +427,7 @@
            MOVE    "1034"              TO  SYS-KANRICD
            MOVE    SPA-W01-STYUKYMD    TO  SYS-STYUKYMD
                                            SYS-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-SELECT-SEC
            PERFORM UNTIL FLG-SYSKANRI  NOT =   ZERO
@@ -670,17 +660,19 @@
                                    TO  SYS-3003-KBNCD
            MOVE    SPA-SYSYMD      TO  SYS-3003-STYUKYMD
                                        SYS-3003-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-3003-REC    TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI    =   ZERO
                MOVE    MCPDATA-REC     TO  SYS-3003-REC
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SYS-3003-REC    TO  MCPDATA-REC
                MOVE    "DBDELETE"      TO  MCP-FUNC
                MOVE    "tbl_syskanri"  TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
-               CALL    "MONFUNC"           USING
-                                           MCPAREA
-                                           MCPDATA-REC
+grpsys         CALL "ORCDBMAIN" USING MCPAREA
+                                      MCPDATA-REC
+grpsys*                               COMMON-SPA
                IF      MCP-RC          =   ZERO
                    CONTINUE
                ELSE
@@ -782,13 +774,14 @@
       *
       *     MOVE    "1"             TO  SHELLTBL-ARG17
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE
            MOVE    "shell"         TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
       *    ＪＯＢＩＤ更新処理
            PERFORM 45012-JOBID-UPD-SEC
@@ -879,6 +872,7 @@
                                    TO  SYS-3003-KBNCD
            MOVE    SPA-SYSYMD      TO  SYS-3003-STYUKYMD
                                        SYS-3003-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-3003-REC    TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
       *
@@ -896,6 +890,7 @@
            MOVE    WRK-CONS-JOB-JOBID
                                    TO  SYS-3003-JOBID
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-3003-REC    TO  MCPDATA-REC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    "DBUPDATE"      TO  MCP-FUNC
@@ -904,9 +899,9 @@
            END-IF
            MOVE    "tbl_syskanri"  TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "SYSKANRI 3003  ERR KEY = ["
                                   MCP-RC  " " SYS-3003-KEY  "]"
@@ -924,9 +919,9 @@
            MOVE    "DBSELECT"      TO  MCP-FUNC
            MOVE    "tbl_syskanri"  TO  MCP-TABLE
            MOVE    "key2"          TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            IF      MCP-RC          =   ZERO
                PERFORM 900-SYSKANRI-READ-SEC
@@ -946,9 +941,9 @@
            MOVE    "DBFETCH"       TO  MCP-FUNC
            MOVE    "tbl_syskanri"  TO  MCP-TABLE
            MOVE    "key2"          TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF      MCP-RC          =   ZERO
                MOVE    ZERO            TO  FLG-SYSKANRI
            ELSE
@@ -967,9 +962,9 @@
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
            MOVE    "tbl_syskanri"  TO  MCP-TABLE
            MOVE    "key2"          TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        900-SYSKANRI-CLOSE-EXT.
@@ -983,16 +978,16 @@
            MOVE    "DBSELECT"      TO  MCP-FUNC
            MOVE    "tbl_syskanri"  TO  MCP-TABLE
            MOVE    "key10"         TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF      MCP-RC          =   ZERO
                MOVE    "DBFETCH"       TO  MCP-FUNC
                MOVE    "tbl_syskanri"  TO  MCP-TABLE
                MOVE    "key10"         TO  MCP-PATHNAME
-               CALL    "MONFUNC"           USING
-                                           MCPAREA
-                                           MCPDATA-REC
+grpsys         CALL "ORCDBMAIN" USING MCPAREA
+                                      MCPDATA-REC
+grpsys*                               COMMON-SPA
                IF      MCP-RC          =   ZERO
                    MOVE    ZERO            TO  FLG-SYSKANRI
                ELSE
@@ -1005,9 +1000,9 @@
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
            MOVE    "tbl_syskanri"  TO  MCP-TABLE
            MOVE    "key10"         TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        900-SYSKANRI-INV-EXT.
@@ -1019,9 +1014,9 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"      TO  MCP-FUNC.
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        900-PUT-WINDOW-EXT.

@@ -572,6 +572,7 @@
            MOVE    "4001"              TO  SYS-4001-KANRICD
            MOVE    "*"                 TO  SYS-4001-KBNCD
            MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-4001-REC        TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY"      TO  WRK-PATH
       *
@@ -596,6 +597,7 @@
                INITIALIZE                      SYS-4001-REC
                MOVE    "4001"              TO  SYS-4001-KANRICD
                MOVE    "*"                 TO  SYS-4001-KBNCD
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SYS-4001-REC        TO  MCPDATA-REC
                MOVE    "DBSELECT"          TO  MCP-FUNC
                MOVE    "SYSKANRI-KEY8"     TO  ORC-DBPATH
@@ -781,6 +783,7 @@
            INITIALIZE                      SYS-4002-REC
            MOVE    "4002"              TO  SYS-4002-KANRICD
            MOVE    SYS-4001-STYUKYMD   TO  ORC-DBYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-4002-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
@@ -847,6 +850,7 @@
            MOVE    "4003"              TO  SYS-4003-KANRICD
            MOVE    "*"                 TO  SYS-4003-KBNCD
            MOVE    SYS-4001-STYUKYMD   TO  ORC-DBYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-4003-REC        TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY"      TO  WRK-PATH
       *
@@ -937,6 +941,7 @@
            MOVE    "095939999"         TO  TNSUP-SRYCD
            MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
            MOVE    "TENSU-KEY12S"      TO  ORC-DBPATH
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            CALL    "ORCMCPSUB"         USING
@@ -2156,6 +2161,7 @@
            MOVE    WRK-KANRICD             TO  SYS-KANRICD
            MOVE    SPA-W01-STYUKYMD        TO  SYS-STYUKYMD
            MOVE    SPA-W01-EDYUKYMD        TO  SYS-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYSKANRI-REC            TO  MCPDATA-REC
            MOVE    "DBDELETE"              TO  MCP-FUNC
            MOVE    PATH-TBL-SYSKANRI-DEL11
@@ -2199,6 +2205,7 @@
            MOVE    "4001"                  TO  SYS-4001-KANRICD
            MOVE    "*"                     TO  SYS-4001-KBNCD
            MOVE    SPA-W01-STYUKYMD        TO  ORC-DBYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-4001-REC            TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY"          TO  WRK-PATH
            PERFORM 900-SYSKANRI-INV-SEC
@@ -2239,6 +2246,7 @@
                MOVE    "SYSKANRI-KEY"          TO  ORC-DBPATH
                MOVE    "DBINSERT"              TO  MCP-FUNC
            END-IF
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYSKANRI-REC            TO  MCPDATA-REC
            CALL    "ORCMCPSUB"              USING
                                                 MCPAREA
@@ -2254,6 +2262,7 @@
            MOVE    "4002"              TO  SYS-4002-KANRICD
       *    MOVE    SPA-SYSYMD          TO  ORC-DBYMD
            MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-4002-REC        TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY2"     TO  WRK-PATH 
            PERFORM 900-SYSKANRI-INV-SEC
@@ -2262,6 +2271,7 @@
                MOVE    "4002"                  TO  SYS-4002-KANRICD
                MOVE    SPA-W01-STYUKYMD        TO  SYS-4002-STYUKYMD
                MOVE    SPA-W01-STYUKYMD        TO  SYS-4002-EDYUKYMD
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SYS-4002-REC            TO  MCPDATA-REC
                MOVE    "DBDELETE"              TO  MCP-FUNC
                MOVE    PATH-TBL-SYSKANRI-DEL11
@@ -2290,6 +2300,7 @@
                    MOVE    SPA-W01-EDYUKYMD    TO  SYS-4002-EDYUKYMD
                    MOVE    SPA-GMN-TSONSHOUNAME(IDX)
                                            TO  SYS-4002-SONSHOUNAME
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    SYS-4002-REC        TO  MCPDATA-REC
                    MOVE    "DBINSERT"          TO  MCP-FUNC
                    MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
@@ -2325,6 +2336,7 @@
            MOVE    "4003"              TO  SYS-4003-KANRICD
            MOVE    SPA-W01-STYUKYMD    TO  SYS-4003-STYUKYMD
            MOVE    SPA-W01-STYUKYMD    TO  SYS-4003-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-4003-REC        TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    PATH-TBL-SYSKANRI-DEL11
@@ -2353,6 +2365,7 @@
                                        TO  SYS-4003-SRYCD (IDX)
            END-PERFORM
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-4003-REC        TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    PATH-TBL-SYSKANRI-KEY
@@ -2990,6 +3003,7 @@
            MOVE    WRK-TNS-SRYCD   TO  TNS-SRYCD
            MOVE    WRK-TNS-YMD     TO  ORC-DBYMD
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TNS-TENSU-REC   TO  MCPDATA-REC
            MOVE    "TENSU-KEY"     TO  ORC-DBPATH
            MOVE    "DBSELECT"      TO  MCP-FUNC

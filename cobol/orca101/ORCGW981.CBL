@@ -307,6 +307,7 @@
            INITIALIZE                  SPA-W981-LIST-G
            MOVE    SPACE               TO  TBL-LOCK
            INITIALIZE                      TBL-LOCK
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TBL-LOCK            TO  MCPDATA-REC
            MOVE    "tbl_lock"          TO  MCP-TABLE
            MOVE    "all"               TO  MCP-PATHNAME
@@ -657,13 +658,14 @@
            PERFORM 990-DBCLOSE-SEC
       *
            IF      FLG-LOCK            =   ZERO
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    TBL-LOCK            TO  MCPDATA-REC
                MOVE    "DBDELETE"          TO  MCP-FUNC
                MOVE    "tbl_lock"         TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "MONFUNC"           USING
-                                           MCPAREA
-                                           MCPDATA-REC
+grpsys         CALL "ORCDBMAIN" USING MCPAREA
+                                      MCPDATA-REC
+grpsys*                               COMMON-SPA
                IF      MCP-RC              NOT =   ZERO 
                    MOVE    "9001"              TO  SPA-ERRCD
                    DISPLAY "W981 DEL LOCK-KEY =>" LOCK-TERMID
@@ -698,13 +700,14 @@
       *
            MOVE    SPACE               TO  TBL-LOCK
            INITIALIZE                      TBL-LOCK
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TBL-LOCK            TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_lock"          TO  MCP-TABLE
            MOVE    "del1"              TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF      MCP-RC              NOT =   ZERO 
                MOVE    "9001"              TO  SPA-ERRCD
                DISPLAY "W981 DEL LOCK-KEY =>" LOCK-TERMID
@@ -859,9 +862,9 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        910-DBSELECT-EXT.
@@ -872,9 +875,9 @@
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
       *
@@ -887,9 +890,9 @@
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        990-DBCLOSE-EXT.
@@ -901,9 +904,9 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        900-PUT-WINDOW-EXT.

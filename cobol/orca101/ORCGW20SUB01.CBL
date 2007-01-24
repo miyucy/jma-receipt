@@ -41,6 +41,8 @@
        FILE                        SECTION.
       *
        WORKING-STORAGE             SECTION.
+grpsys*
+grpsys COPY    "COMMON-SPA".
       *
       *
       *    フラグエリア
@@ -434,6 +436,7 @@
       *
            MOVE    ZERO                TO  FLG-NYUKHN
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    NYUINKHN-REC        TO  MCPDATA-REC
       *
       *    入院料算定マスタ検索
@@ -473,6 +476,7 @@
                                    TO  TNS-SRYCD
            MOVE    W20SUB01-I-KJNYMD
                                    TO  ORC-DBYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TNS-TENSU-REC   TO  MCPDATA-REC
       *
       *    点数マスタ検索

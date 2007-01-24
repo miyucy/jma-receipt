@@ -371,6 +371,7 @@
            MOVE    SPA-W10-SEL-STYUKYMD
                                        TO  SYS-TOUKEI-STYUKYMD
                                            SYS-TOUKEI-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-TOUKEI-REC      TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
       *
@@ -515,6 +516,7 @@
            MOVE    SPA-W10-SEL-STYUKYMD
                                        TO  SYS-3001-STYUKYMD
                                            SYS-3001-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-3001-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
       *     
@@ -663,6 +665,7 @@
                MOVE    SYS-KBNCD           TO  TKIMEMO-KBNCD
                MOVE    SYS-STYUKYMD        TO  TKIMEMO-STYUKYMD
                MOVE    SYS-EDYUKYMD        TO  TKIMEMO-EDYUKYMD
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    TOUKEIMEMO-REC          TO  MCPDATA-REC
                PERFORM 900-TOUKEIMEMO-KEY-SEL-SEC
                IF    ( FLG-TOUKEIMEMO  NOT =   ZERO )
@@ -672,6 +675,7 @@
                    MOVE    "000"           TO  TKIMEMO-KBNCD
                    MOVE    "00000000"      TO  TKIMEMO-STYUKYMD
                    MOVE    "99999999"      TO  TKIMEMO-EDYUKYMD
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    TOUKEIMEMO-REC  TO  MCPDATA-REC
                    PERFORM 900-TOUKEIMEMO-KEY-SEL-SEC
                END-IF
@@ -682,6 +686,7 @@
                    MOVE    "000"           TO  TKIMEMO-KBNCD
                    MOVE    "00000000"      TO  TKIMEMO-STYUKYMD
                    MOVE    "99999999"      TO  TKIMEMO-EDYUKYMD
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    TOUKEIMEMO-REC  TO  MCPDATA-REC
                    PERFORM 900-TOUKEIMEMO-KEY-SEL-SEC
            END-IF
@@ -1353,13 +1358,14 @@
            MOVE    SPA-W10-KBNCD           TO  SYS-3001-KBNCD
            MOVE    SPA-W10-SEL-STYUKYMD    TO  SYS-3001-STYUKYMD
            MOVE    SPA-W10-SEL-EDYUKYMD    TO  SYS-3001-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-3001-REC            TO  MCPDATA-REC
            MOVE    "DBDELETE"              TO  MCP-FUNC
            MOVE    "tbl_syskanri"          TO  MCP-TABLE
            MOVE    "key"                   TO  MCP-PATHNAME
-           CALL    "MONFUNC"               USING
-                                           MCPAREA
-                                           MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            IF    ( MCP-RC              NOT =   ZERO  )
                MOVE    "1002"              TO  SPA-ERRCD
@@ -1393,13 +1399,14 @@
            MOVE    SPA-W10-KBNCD           TO  TKIMEMO-KBNCD
            MOVE    SPA-W10-SEL-STYUKYMD    TO  TKIMEMO-STYUKYMD
            MOVE    SPA-W10-SEL-EDYUKYMD    TO  TKIMEMO-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TOUKEIMEMO-REC          TO  MCPDATA-REC
            MOVE    "DBDELETE"              TO  MCP-FUNC
            MOVE    "tbl_toukeimemo"        TO  MCP-TABLE
            MOVE    "del1"                  TO  MCP-PATHNAME
-           CALL    "MONFUNC"               USING
-                                           MCPAREA
-                                           MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            IF    ( MCP-RC              NOT =   ZERO )
                MOVE    "1004"              TO  SPA-ERRCD
@@ -1421,13 +1428,14 @@
            MOVE    "000"                   TO  TKIMEMO-KBNCD
            MOVE    SPA-W10-SEL-STYUKYMD    TO  TKIMEMO-STYUKYMD
            MOVE    SPA-W10-SEL-EDYUKYMD    TO  TKIMEMO-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TOUKEIMEMO-REC          TO  MCPDATA-REC
            MOVE    "DBDELETE"              TO  MCP-FUNC
            MOVE    "tbl_toukeimemo"        TO  MCP-TABLE
            MOVE    "key"                   TO  MCP-PATHNAME
-           CALL    "MONFUNC"               USING
-                                           MCPAREA
-                                           MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            IF    ( MCP-RC              NOT =   ZERO )
                MOVE    "1004"              TO  SPA-ERRCD
@@ -1470,6 +1478,7 @@
            MOVE    SPA-W10-KBNCD           TO  SYS-3001-KBNCD
            MOVE    SPA-W10-SEL-STYUKYMD    TO  SYS-3001-STYUKYMD
                                                SYS-3001-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-3001-REC            TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
       *
@@ -1570,10 +1579,11 @@
                MOVE    "key"                   TO  MCP-PATHNAME
                MOVE    "DBINSERT"              TO  MCP-FUNC
            END-IF
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYSKANRI-REC            TO  MCPDATA-REC
-           CALL    "MONFUNC"                USING
-                                            MCPAREA
-                                            MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF      MCP-RC              NOT =   ZERO 
                MOVE    "1001"                  TO  SPA-ERRCD
                GO  TO  490-KOUSHIN-EXT
@@ -1654,14 +1664,15 @@
                                            TKIMEMO-UPYMD
            MOVE    SMCNDATE-HMS        TO  TKIMEMO-UPHMS
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TOUKEIMEMO-REC      TO  MCPDATA-REC
       *
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "tbl_toukeimemo"    TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "MONFUNC"               USING
-                                           MCPAREA
-                                           MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            IF    ( MCP-RC              NOT =   ZERO )
                MOVE    "1003"          TO  SPA-ERRCD
@@ -2348,16 +2359,16 @@
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"       TO  MCP-FUNC
                MOVE    "tbl_syskanri"  TO  MCP-TABLE
                MOVE    "key10"         TO  MCP-PATHNAME
-               CALL    "MONFUNC"           USING
-                                           MCPAREA
-                                           MCPDATA-REC
+grpsys         CALL "ORCDBMAIN" USING MCPAREA
+                                      MCPDATA-REC
+grpsys*                               COMMON-SPA
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO                TO  FLG-SYSKANRI
                ELSE
@@ -2370,9 +2381,9 @@
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
-           CALL    "MONFUNC"               USING
-                                           MCPAREA
-                                           MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        900-SYSKANRI-INV-EXT.
@@ -2388,16 +2399,16 @@
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_toukeimemo"    TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF    ( MCP-RC              =   ZERO )
                MOVE    "DBFETCH"       TO  MCP-FUNC
                MOVE    "tbl_toukeimemo" TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
-               CALL    "MONFUNC"       USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys         CALL "ORCDBMAIN" USING MCPAREA
+                                      MCPDATA-REC
+grpsys*                               COMMON-SPA
                IF    ( MCP-RC          =   ZERO )
                    MOVE    ZERO        TO  FLG-TOUKEIMEMO
                    MOVE    MCPDATA-REC TO  TOUKEIMEMO-REC
@@ -2413,9 +2424,9 @@
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "tbl_toukeimemo"    TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        900-TOUKEIMEMO-KEY-SEL-EXT.
@@ -2426,9 +2437,9 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        900-PUT-WINDOW-EXT.

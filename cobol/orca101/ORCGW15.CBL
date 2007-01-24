@@ -307,6 +307,7 @@
            MOVE    SPA-W01-KANRICD     TO  SYS-1033-KANRICD
            MOVE    "*"                 TO  SYS-1033-KBNCD
            MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1033-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI            =   ZERO
@@ -323,6 +324,7 @@
                    MOVE    SPA-HOSPID          TO  HKNJA-HOSPID
                    MOVE    SPA-GMN-HKNJANUM (IDX)
                                                TO  HKNJA-HKNJANUM
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    HKNJAINF-REC        TO  MCPDATA-REC
                    PERFORM 900-HKNJAINF-INV-SEC
                    IF      FLG-HKNJAINF        =   ZERO
@@ -463,6 +465,7 @@
                    MOVE    SPA-HOSPID          TO  HKNJA-HOSPID
                    MOVE    SPA-GMN-HKNJANUM (IDX)
                                                TO  HKNJA-HKNJANUM
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    HKNJAINF-REC        TO  MCPDATA-REC
                    PERFORM 900-HKNJAINF-INV-SEC
                    IF      FLG-HKNJAINF        =   ZERO
@@ -502,6 +505,7 @@
            MOVE    SPA-W01-KANRICD     TO  SYS-1033-KANRICD
                    MOVE    "*"         TO  SYS-1033-KBNCD
            MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1033-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
       *
@@ -541,6 +545,7 @@
                MOVE    "SYSKANRI-KEY"          TO  ORC-DBPATH
                MOVE    "DBINSERT"              TO  MCP-FUNC
            END-IF
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYSKANRI-REC            TO  MCPDATA-REC
            CALL    "ORCMCPSUB"              USING
                                             MCPAREA

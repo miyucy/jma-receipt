@@ -476,6 +476,7 @@
       *
            INITIALIZE  SYSKANRI-REC
            MOVE    "5001"          TO  SYS-KANRICD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY5" TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
@@ -609,6 +610,7 @@
                                        TO  TNS-SRYCD
                MOVE    SPA-NAI-W28-KJNYMD
                                        TO  ORC-DBYMD
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    TNS-TENSU-REC   TO  MCPDATA-REC
       *
                MOVE    "TENSU-KEY" TO  WRK-DBPATH
@@ -629,6 +631,7 @@
                                        TO  SYS-KBNCD
                MOVE    SPA-NAI-W28-KJNYMD
                                        TO  ORC-DBYMD
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SYSKANRI-REC    TO  MCPDATA-REC
                MOVE    "SYSKANRI-KEY"  TO  WRK-DBPATH
                PERFORM 900-TBL-SELECT-SEC
@@ -935,6 +938,7 @@
                    MOVE    SPA-NAI-W28-TSTYUKYMD (IDX1)
                                            TO  ORC-DBYMD
                    MOVE    "SYSKANRI-KEY"  TO  WRK-DBPATH
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    SYSKANRI-REC    TO  MCPDATA-REC
       *            更新対象のデータが存在するかチェック
                    PERFORM 900-TBL-SELECT-SEC
@@ -951,6 +955,7 @@
                    MOVE    SMCNDATE-YMD    TO  SYS-5001-UPYMD
                    MOVE    SMCNDATE-HMS    TO  SYS-5001-UPHMS
       *
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    SYS-5001-REC    TO  MCPDATA-REC
                    MOVE    "SYSKANRI-KEY"  TO  WRK-DBPATH
                    PERFORM 900-TBL-UPDATE-SEC

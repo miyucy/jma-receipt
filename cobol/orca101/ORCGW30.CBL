@@ -375,6 +375,7 @@
            MOVE    SPACE               TO  SYS-5007-REC
            INITIALIZE                      SYS-5007-REC
            MOVE    "5007"              TO  SYS-5007-KANRICD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-5007-REC        TO  MCPDATA-REC
            MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
            MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
@@ -901,6 +902,7 @@
            MOVE    SPACE               TO  SYS-5007-REC
            INITIALIZE                      SYS-5007-REC
            MOVE    "5007"              TO  SYS-5007-KANRICD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-5007-REC        TO  MCPDATA-REC
            MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
            MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
@@ -921,6 +923,7 @@
                    UNTIL       FLG-SYSKANRI    =   1
                MOVE    MCPDATA-REC         TO  SYS-5007-REC
       *
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SYS-5007-REC        TO  MCPDATA-REC
                MOVE    "DBDELETE"          TO  MCP-FUNC
                MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
@@ -994,6 +997,7 @@
                    WHEN    5
                        MOVE    "05"        TO  SYS-5007-KBNCD
                END-EVALUATE
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SYS-5007-REC        TO  MCPDATA-REC
                MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
                MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
@@ -1033,6 +1037,7 @@
                    MOVE    SPA-W01-SEL-EDYUKYMD    TO  SYSUP-EDYUKYMD
                    MOVE    "SYSKANRI-UPD1"         TO  ORC-DBPATH
                    MOVE    "DBUPDATE"              TO  MCP-FUNC
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    SYSKANRI-REC            TO  MCPDATA-REC
                    CALL    "ORCMCPSUB"             USING
                                                    MCPAREA
@@ -1050,6 +1055,7 @@
       *
                    MOVE    "SYSKANRI-KEY"          TO  ORC-DBPATH
                    MOVE    "DBINSERT"              TO  MCP-FUNC
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    SYSKANRI-REC            TO  MCPDATA-REC
                    CALL    "ORCMCPSUB"             USING
                                                    MCPAREA

@@ -457,6 +457,7 @@
            MOVE    "9000"              TO  SYS-9000-KANRICD
            MOVE    "*"                 TO  SYS-9000-KBNCD
            MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-9000-REC        TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY"      TO  WRK-PATH
            PERFORM 900-SYSKANRI-INV-SEC
@@ -591,6 +592,7 @@
            INITIALIZE                      SYS-9001-REC
            MOVE    "9001"              TO  SYS-9001-KANRICD
            MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-9001-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY5"     TO  ORC-DBPATH
@@ -1321,6 +1323,7 @@
            MOVE    "9000"                  TO  SYS-9000-KANRICD
            MOVE    "*"                     TO  SYS-9000-KBNCD
            MOVE    SPA-W01-STYUKYMD        TO  ORC-DBYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-9000-REC            TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY"          TO  WRK-PATH
            PERFORM 900-SYSKANRI-INV-SEC
@@ -1407,6 +1410,7 @@
                MOVE    "SYSKANRI-KEY"          TO  ORC-DBPATH
                MOVE    "DBINSERT"              TO  MCP-FUNC
            END-IF
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYSKANRI-REC            TO  MCPDATA-REC
            CALL    "ORCMCPSUB"              USING
                                                 MCPAREA
@@ -1421,12 +1425,14 @@
            INITIALIZE                  SYS-9001-REC
            MOVE    "9001"              TO  SYS-9001-KANRICD
            MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-9001-REC        TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY2"     TO  WRK-PATH 
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
                INITIALIZE                      SYS-9001-REC
                MOVE    "9001"                  TO  SYS-9001-KANRICD
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SYS-9001-REC            TO  MCPDATA-REC
                MOVE    SPA-SYSYMD              TO  ORC-DBYMD
                MOVE    "DBDELETE"              TO  MCP-FUNC
@@ -1468,6 +1474,7 @@
                                                    SYS-9001-UPYMD
                    MOVE    SMCNDATE-HMS        TO  SYS-9001-UPHMS
       *     
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    SYS-9001-REC        TO  MCPDATA-REC
                    MOVE    "DBINSERT"          TO  MCP-FUNC
                    MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH

@@ -436,6 +436,7 @@
            MOVE    "1001"              TO  SYS-1001-KANRICD
            MOVE    "*"                 TO  SYS-1001-KBNCD
            MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1001-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -450,6 +451,7 @@
            MOVE    "1002"              TO  SYS-1002-KANRICD
            MOVE    "*"                 TO  SYS-1002-KBNCD
            MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1002-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -470,6 +472,7 @@
            MOVE    "1900"              TO  SYS-1900-KANRICD
            MOVE    "*"                 TO  SYS-1900-KBNCD
            MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1900-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -581,6 +584,7 @@
                    MOVE    "1901"              TO  SYS-1901-KANRICD
                    MOVE    SPA-GMN-KBNCD       TO  SYS-1901-KBNCD
                    MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    SYS-1901-REC        TO  MCPDATA-REC
                    PERFORM 900-SYSKANRI-INV-SEC
                    IF      FLG-SYSKANRI        =   ZERO
@@ -594,6 +598,7 @@
                    MOVE    "1902"              TO  SYS-1902-KANRICD
                    MOVE    SPA-GMN-KBNCD       TO  SYS-1902-KBNCD
                    MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    SYS-1902-REC        TO  MCPDATA-REC
                    PERFORM 900-SYSKANRI-INV-SEC
                    IF      FLG-SYSKANRI        =   ZERO
@@ -1147,6 +1152,7 @@
                        MOVE    "1901"              TO  SYS-1901-KANRICD
                        MOVE    SPA-GMN-KBNCD       TO  SYS-1901-KBNCD
                        MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
+grpsys*                MOVE SPA-HOSPNUM TO -HOSPNUM
                        MOVE    SYS-1901-REC        TO  MCPDATA-REC
                        PERFORM 900-SYSKANRI-INV-SEC
                        IF      FLG-SYSKANRI        =   ZERO
@@ -1188,6 +1194,7 @@
                            MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
                            MOVE    "DBINSERT"      TO  MCP-FUNC
                        END-IF
+grpsys*                MOVE SPA-HOSPNUM TO -HOSPNUM
                        MOVE    SYSKANRI-REC        TO  MCPDATA-REC
                        CALL    "ORCMCPSUB"         USING
                                                    MCPAREA
@@ -1204,6 +1211,7 @@
                        MOVE    "1902"              TO  SYS-1902-KANRICD
                        MOVE    SPA-GMN-KBNCD       TO  SYS-1902-KBNCD
                        MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
+grpsys*                MOVE SPA-HOSPNUM TO -HOSPNUM
                        MOVE    SYS-1902-REC        TO  MCPDATA-REC
                        PERFORM 900-SYSKANRI-INV-SEC
                        IF      FLG-SYSKANRI        =   ZERO
@@ -1228,6 +1236,7 @@
                        IF      FLG-CHK             =   ZERO
                            IF      FLG-SYSKANRI        =   ZERO
                                MOVE    "DBDELETE"      TO  MCP-FUNC
+grpsys*                        MOVE SPA-HOSPNUM TO -HOSPNUM
                                MOVE    SYS-1902-REC    TO  MCPDATA-REC
                                CALL    "ORCMCPSUB"         USING
                                                            MCPAREA
@@ -1271,6 +1280,7 @@
                                MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
                                MOVE    "DBINSERT"      TO  MCP-FUNC
                            END-IF
+grpsys*                    MOVE SPA-HOSPNUM TO -HOSPNUM
                            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
                            CALL    "ORCMCPSUB"         USING
                                                        MCPAREA
@@ -1297,6 +1307,7 @@
                    MOVE    "1900"              TO  SYS-1900-KANRICD
                    MOVE    "*"                 TO  SYS-1900-KBNCD
                    MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    SYS-1900-REC        TO  MCPDATA-REC
                    PERFORM 900-SYSKANRI-INV-SEC
                    IF      FLG-SYSKANRI        =   ZERO
@@ -1321,6 +1332,7 @@
                        IF      FLG-SYSKANRI        =   ZERO
                            MOVE    SYS-1900-REC        TO  SYSKANRI-REC
                            MOVE    "DBDELETE"          TO  MCP-FUNC
+grpsys*                    MOVE SPA-HOSPNUM TO -HOSPNUM
                            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
                            CALL    "ORCMCPSUB"         USING
                                                        MCPAREA
@@ -1359,6 +1371,7 @@
                            MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
                            MOVE    "DBINSERT"      TO  MCP-FUNC
                        END-IF
+grpsys*                MOVE SPA-HOSPNUM TO -HOSPNUM
                        MOVE    SYSKANRI-REC        TO  MCPDATA-REC
                        CALL    "ORCMCPSUB"         USING
                                                    MCPAREA
@@ -1388,6 +1401,7 @@
                                                TO  SYSUP-STYUKYMD
                    MOVE    SPA-W01-SEL-EDYUKYMD
                                                TO  SYSUP-EDYUKYMD
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    SYSKANRI-REC        TO  MCPDATA-REC
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
                    MOVE    PATH-TBL-SYSKANRI-UPD2
@@ -1411,6 +1425,7 @@
                                                TO  SYSUP-STYUKYMD
                    MOVE    SPA-W01-SEL-EDYUKYMD
                                                TO  SYSUP-EDYUKYMD
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    SYSKANRI-REC        TO  MCPDATA-REC
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
                    MOVE    PATH-TBL-SYSKANRI-UPD2
@@ -1434,6 +1449,7 @@
                                                TO  SYSUP-STYUKYMD
                    MOVE    SPA-W01-SEL-EDYUKYMD
                                                TO  SYSUP-EDYUKYMD
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    SYSKANRI-REC        TO  MCPDATA-REC
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
                    MOVE    PATH-TBL-SYSKANRI-UPD2
@@ -1460,6 +1476,7 @@
            INITIALIZE                      SYS-1901-REC
            MOVE    "1901"              TO  SYS-1901-KANRICD
            MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1901-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
@@ -1481,6 +1498,7 @@
                MOVE    "1902"              TO  SYS-1902-KANRICD
                MOVE    SYS-1901-KBNCD      TO  SYS-1902-KBNCD
                MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SYS-1902-REC        TO  MCPDATA-REC
                PERFORM 900-SYSKANRI-INV-SEC
                IF      FLG-SYSKANRI        =   ZERO

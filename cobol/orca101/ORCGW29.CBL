@@ -298,6 +298,7 @@
            MOVE    SPA-W01-STYUKYMD
                                    TO  SYS-5013-STYUKYMD
                                        SYS-5013-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-5013-REC    TO  MCPDATA-REC
            MOVE    PATH-TBL-SYSKANRI-KEY
                                    TO  MCP-PATH
@@ -533,6 +534,7 @@
                                        TO  SYS-5013-STYUKYMD
            MOVE    SPA-W01-SEL-EDYUKYMD
                                        TO  SYS-5013-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-5013-REC        TO  MCPDATA-REC
            MOVE    PATH-TBL-SYSKANRI-KEY
                                        TO  MCP-PATH
@@ -596,6 +598,7 @@
                MOVE    SYS-5013-KBNCD      TO  SYSUP-KBNCD
                MOVE    SYS-5013-STYUKYMD   TO  SYSUP-STYUKYMD
                MOVE    SYS-5013-EDYUKYMD   TO  SYSUP-EDYUKYMD
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SYSKANRI-REC        TO  MCPDATA-REC
                MOVE    PATH-TBL-SYSKANRI-UPD1
                                            TO  MCP-PATH
@@ -608,6 +611,7 @@
                MOVE    SMCNDATE-YMD        TO  SYS-CREYMD
                                                SYS-UPYMD
                MOVE    SMCNDATE-HMS        TO  SYS-UPHMS
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SYSKANRI-REC        TO  MCPDATA-REC
                MOVE    PATH-TBL-SYSKANRI-KEY
                                            TO  MCP-PATH

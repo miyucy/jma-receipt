@@ -365,6 +365,7 @@
                                            TO  WRK-MCP-PATH
            END-IF
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    WRK-MCP-PATH        TO  MCP-PATH
            PERFORM 910-DBSELECT-SEC
@@ -461,6 +462,7 @@
            MOVE    SPA-W01-SEL-STYUKYMD
                                        TO  SYS-STYUKYMD
                                            SYS-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
       *
            MOVE    PATH-TBL-SYSKANRI-KEY2

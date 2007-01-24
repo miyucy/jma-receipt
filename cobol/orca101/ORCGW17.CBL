@@ -428,6 +428,7 @@
            MOVE    SPA-HOSPID      TO  HKN-HOSPID
            MOVE    SPA-NAI-YUKOSTYMD   TO  HKN-TEKSTYMD
            MOVE    SPA-NAI-YUKOSTYMD   TO  HKN-TEKEDYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HKNNUM-REC      TO  MCPDATA-REC
            MOVE    "HKNNUM-KEY3"   TO  WRK-DBPATH-KOH
       *
@@ -475,6 +476,7 @@
                                    TO  HKN-TEKSTYMD
            MOVE    SYS-1040-STYUKYMD
                                    TO  HKN-TEKEDYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HKNNUM-REC      TO  MCPDATA-REC
            MOVE    "HKNNUM-KEY5"   TO  WRK-DBPATH-KOH
            PERFORM 31011-HKNNUM-SELECT-SEC
@@ -512,6 +514,7 @@
       *
            MOVE    "1040"          TO  SYS-1040-KANRICD
            MOVE    "SYSKANRI-KEY5" TO  WRK-DBPATH-SYS
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1040-REC    TO  MCPDATA-REC
       *
       *    システム管理検索処理
@@ -1061,6 +1064,7 @@
            PERFORM 4701-KOUMOKU-SET-SEC
       *
       *    チェック排除情報マスタ追加
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1040-REC    TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
            MOVE    "DBINSERT"      TO  MCP-FUNC
@@ -1165,6 +1169,7 @@
            MOVE    SPA-MOT-EDYMD   TO  SYSUP-EDYUKYMD
       *
       *    チェック排除情報マスタ更新
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
            MOVE    "SYSKANRI-UPD1" TO  ORC-DBPATH
            MOVE    "DBUPDATE"      TO  MCP-FUNC
@@ -1221,6 +1226,7 @@
            MOVE    SPA-MOT-STYMD   TO  SYS-1040-STYUKYMD
            MOVE    SPA-MOT-EDYMD   TO  SYS-1040-EDYUKYMD
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1040-REC    TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
            MOVE    "DBDELETE"      TO  MCP-FUNC
@@ -1303,6 +1309,7 @@
            MOVE    "1040"              TO  SYS-1040-KANRICD
            MOVE    SPA-GMN-KOHCD       TO  SYS-1040-KBNCD
            MOVE    "SYSKANRI-KEY8"     TO  WRK-DBPATH-SYS
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1040-REC        TO  MCPDATA-REC
       *
       *    システム管理検索処理
