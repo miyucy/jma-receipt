@@ -415,6 +415,7 @@
            MOVE    SPA-I01-I02-PTRRKNUM
                                    TO  PTNYUINRRK-RRKNUM
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
            MOVE    "PTNYUINRRK-KEY4"
                                    TO  WRK-DBPATH
@@ -533,6 +534,7 @@
                                    TO  SYS-KBNCD
            MOVE    PTNYUINRRK-TENNYUYMD
                                    TO  ORC-DBYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
       *
       *    システム管理マスタ検索処理
@@ -586,6 +588,7 @@
            MOVE    "1005"          TO  SYS-KANRICD
            MOVE    WRK-KBNCD       TO  SYS-KBNCD
            MOVE    SPA-SYSYMD      TO  ORC-DBYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY10"
                                    TO  WRK-DBPATH
@@ -620,6 +623,7 @@
                MOVE    PTNYUINRRK-TAIINYMD
                                    TO  ORC-DBYMD
            END-IF
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
       *
       *    システム管理マスタ検索処理
@@ -651,6 +655,7 @@
            MOVE    WRK-KBNCD       TO  SYS-KBNCD
            MOVE    PTNYUINRRK-TAIINYMD
                                    TO  ORC-DBYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY10"
                                    TO  WRK-DBPATH
@@ -681,6 +686,7 @@
                                    TO  PTTAINFUKA-PTID
            MOVE    SPA-I01-I02-PTRRKNUM
                                    TO  PTTAINFUKA-RRKNUM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTTAINFUKA-REC  TO  MCPDATA-REC
            MOVE    "PTTAINFUKA-KEY"
                                    TO  WRK-DBPATH
@@ -715,6 +721,7 @@
            MOVE    SPA-I01-I02-PTRRKNUM
                                    TO  PTNYUINRRK-RRKNUM
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
            MOVE    "PTNYUINRRK-KEY5"
                                    TO  WRK-DBPATH
@@ -1078,6 +1085,7 @@
            MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
            MOVE    SPA-I01-I02-PTID
                                        TO  PTBYO-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
            MOVE    "PTBYOMEI-KEY6"     TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC

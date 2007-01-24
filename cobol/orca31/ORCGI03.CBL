@@ -661,6 +661,7 @@
                                    TO  PTNYUINRRK-RRKNUM
            MOVE    1
                                    TO  PTNYUINRRK-RRKEDANUM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
            MOVE    "PTNYUINRRK-KEY"
                                    TO  WRK-DBPATH
@@ -742,6 +743,7 @@
                                    TO  PTTAINFUKA-PTID
            MOVE    SPA-I01-I03-PTRRKNUM
                                    TO  PTTAINFUKA-RRKNUM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTTAINFUKA-REC  TO  MCPDATA-REC
            MOVE    "PTTAINFUKA-KEY"
                                    TO  WRK-DBPATH
@@ -1236,6 +1238,7 @@
                                    TO  PTNYUINRRK-RRKNUM
            MOVE    1
                                    TO  PTNYUINRRK-RRKEDANUM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
            MOVE    "PTNYUINRRK-KEY"
                                    TO  WRK-DBPATH
@@ -1305,18 +1308,21 @@
       *        Æþ±¡ÍúÎò¥Þ¥¹¥¿ÄÉ²Ã
                MOVE    "PTNYUINRRK-KEY"
                                        TO  WRK-DBPATH
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
                PERFORM 900-TBL-INSERT-SEC
            WHEN    "UPD"
       *        Æþ±¡ÍúÎò¥Þ¥¹¥¿¹¹¿·
                MOVE    "PTNYUINRRK-KEY"
                                        TO  WRK-DBPATH
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
                PERFORM 900-TBL-UPDATE-SEC
            WHEN    "DEL"
       *        Æþ±¡ÍúÎò¥Þ¥¹¥¿ºï½ü
                MOVE    "PTNYUINRRK-DEL1"
                                        TO  WRK-DBPATH
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
                PERFORM 900-TBL-DELETE-SEC
            END-EVALUATE
@@ -1436,6 +1442,7 @@
                MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID
                MOVE    SPA-I01-I03-PTID
                                            TO  PTNYUINRRK-PTID
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
                MOVE    "PTNYUINRRK-KEY6"   TO  WRK-DBPATH
                PERFORM 900-TBL-SELECT-SEC
@@ -1473,6 +1480,7 @@
                                    TO  PTTAINFUKA-PTID
            MOVE    SPA-I01-I03-PTRRKNUM
                                    TO  PTTAINFUKA-RRKNUM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTTAINFUKA-REC
                                    TO  MCPDATA-REC
            MOVE    "PTTAINFUKA-KEY"
@@ -1497,6 +1505,7 @@
       *
            MOVE    "PTTAINFUKA-KEY"
                                    TO  WRK-DBPATH
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTTAINFUKA-REC  TO  MCPDATA-REC
       *
            IF   ( WRK-UPDKBN   =   "UPD" )
@@ -1720,6 +1729,7 @@
                                        TO  PTNYUINRRK-NYUINYMD
            MOVE    SPA-NAI-I03-TAIINYMD
                                        TO  PTNYUINRRK-TAIINYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "PTNYUINRRK-KEY7"   TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
@@ -1755,6 +1765,7 @@
            MOVE    SPA-NAI-I03-NYUINYMD
                                        TO  PTNYUINRRK-NYUINYMD
            MOVE    SPA-GMN-I03-SHONUM  TO  PTNYUINRRK-SHONUM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "PTNYUINRRK-KEY16"  TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
@@ -1795,6 +1806,7 @@
            MOVE    SPA-NAI-I03-TAIINYMD
                                        TO  PTNYUINRRK-NYUINYMD
            MOVE    SPA-GMN-I03-SHONUM  TO  PTNYUINRRK-SHONUM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "PTNYUINRRK-KEY20"  TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC

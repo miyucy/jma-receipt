@@ -268,6 +268,7 @@
            MOVE    SPA-I02-I05-TAIINYMD
                                    TO  SYS-5013-STYUKYMD
                                        SYS-5013-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-5013-REC    TO  MCPDATA-REC
            MOVE    PATH-TBL-SYSKANRI-KEY2
                                    TO  MCP-PATH
@@ -490,6 +491,7 @@
            MOVE    SMCNDATE-YMD        TO  PTNYUINRRK-UPYMD
            MOVE    SMCNDATE-HMS        TO  PTNYUINRRK-UPHMS
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    PATH-TBL-PTNYUINRRK-UPD1
                                        TO  MCP-PATH
@@ -679,6 +681,7 @@
            INITIALIZE                      PTINF-REC
            MOVE    SPA-HOSPID          TO  PTINF-HOSPID
            MOVE    SPA-I02-I05-PTID    TO  PTINF-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    PATH-TBL-PTINF-KEY  TO  MCP-PATH
            PERFORM 910-DBSELECT-SEC
