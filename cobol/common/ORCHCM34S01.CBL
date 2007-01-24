@@ -568,6 +568,7 @@
            INITIALIZE                          PTINF-REC
            MOVE    HCM34S01-HOSPID         TO  PTINF-HOSPID
            MOVE    HCM34S01-PTID           TO  PTINF-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC               TO  MCPDATA-REC
            MOVE    "PTINF-KEY"             TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
@@ -654,6 +655,7 @@
            MOVE    HCM34S01-PTID           TO  NACCT-PTID
            MOVE    HCM34S01-SANTEIYM       TO  NACCT-SRYYM
            MOVE    WRK-NACCT-ZAISKBKBN     TO  NACCT-ZAISKBKBN
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    NYUINACCT-REC           TO  MCPDATA-REC
            MOVE    "NYUINACCT-KEY17"       TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
@@ -728,6 +730,7 @@
            MOVE    "*"                 TO  SYS-1001-KBNCD
            MOVE    HCM34S01-SANTEIYM   TO  ORC-DBYMD
            MOVE    "01"                TO  ORC-DBYMD (7:2)
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1001-REC        TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
@@ -756,6 +759,7 @@
            INITIALIZE                      SYS-5000-REC
            MOVE    "5000"              TO  SYS-5000-KANRICD
            MOVE    "*"                 TO  SYS-5000-KBNCD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-5000-REC        TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY4"     TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
@@ -1683,6 +1687,7 @@
            MOVE    NACCT-PTID          TO  NSRY-PTID
            MOVE    NACCT-SRYYM         TO  NSRY-SRYYM
            MOVE    NACCT-ZAINUM        TO  NSRY-ZAINUM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    NYUINACT-REC        TO  MCPDATA-REC
            MOVE    "NYUINACT-KEY9"     TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
@@ -1766,6 +1771,7 @@
            INITIALIZE  SENTEICDCHG-REC
            MOVE    NSRY-SRYCD (IDX-KHN)
                                        TO  SENCHG-IPNSRYCD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SENTEICDCHG-REC     TO  MCPDATA-REC
            MOVE    "SENTEICDCHG-KEY2"  TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
@@ -2090,6 +2096,7 @@
            MOVE    ZERO                TO  FLG-SYSKANRI
            INITIALIZE                      SYS-5113-REC
            MOVE    "5113"              TO  SYS-5113-KANRICD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-5113-REC        TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY5"     TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
@@ -3953,6 +3960,7 @@
            INITIALIZE                      TNS-TENSU-REC
            MOVE    WRK-TNS-SRYCD       TO  TNS-SRYCD
            MOVE    WRK-DBYMD           TO  ORC-DBYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "TENSU-KEY"         TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC

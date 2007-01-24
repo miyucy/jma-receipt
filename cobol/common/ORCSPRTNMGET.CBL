@@ -39,6 +39,8 @@
        FILE                        SECTION.
       *
        WORKING-STORAGE             SECTION.
+grpsys*
+grpsys COPY    "COMMON-SPA".
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -98,6 +100,7 @@
            MOVE    "1031"              TO  SYS-1031-KANRICD
            MOVE    PRTNMGET-YMD        TO  SYS-1031-STYUKYMD
                                            SYS-1031-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1031-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  WRK-MCP-TABLE
            MOVE    "key2"              TO  WRK-MCP-PATHNAME
@@ -123,6 +126,7 @@
            MOVE    "1034"              TO  SYS-1034-KANRICD
            MOVE    PRTNMGET-YMD        TO  SYS-1034-STYUKYMD
                                            SYS-1034-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1034-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  WRK-MCP-TABLE
            MOVE    "key2"              TO  WRK-MCP-PATHNAME
@@ -149,6 +153,7 @@
            MOVE    "*"                 TO  SYS-2005-KBNCD
            MOVE    PRTNMGET-YMD        TO  SYS-2005-STYUKYMD
                                            SYS-2005-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-2005-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  WRK-MCP-TABLE
            MOVE    "key10"             TO  WRK-MCP-PATHNAME
@@ -213,6 +218,7 @@
            MOVE    "*"                 TO  SYS-3004-KBNCD
            MOVE    PRTNMGET-YMD        TO  SYS-3004-STYUKYMD
                                            SYS-3004-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-3004-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  WRK-MCP-TABLE
            MOVE    "key2"              TO  WRK-MCP-PATHNAME
@@ -288,9 +294,9 @@
            MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
            MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            IF      MCP-RC              =   ZERO
                PERFORM 900-SYSKANRI-READ-SEC
@@ -310,9 +316,9 @@
            MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
            MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF      MCP-RC          =   ZERO
                MOVE    ZERO            TO  FLG-SYSKANRI
            ELSE
@@ -329,9 +335,9 @@
        900-CLOSE-SEC      SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        900-CLOSE-EXT.

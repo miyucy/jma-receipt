@@ -45,6 +45,8 @@
       *
       *
        WORKING-STORAGE             SECTION.
+grpsys*
+grpsys COPY    "COMMON-SPA".
       *
       *    ¥Õ¥é¥°ÎÎ°è
        01  FLG-AREA.
@@ -170,13 +172,14 @@
            PERFORM 800-ORCSADDSIGN-SEC
            MOVE    WRK-SADDSIGN-STR    TO  PTNUM-PTNUM
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNUM-REC           TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_ptnum"         TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF      MCP-RC              =   ZERO
                MOVE    ZERO                TO  FLG-PTNUM
            ELSE
@@ -189,9 +192,9 @@
                MOVE    "DBFETCH"           TO  MCP-FUNC
                MOVE    "tbl_ptnum"         TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
-               CALL    "MONFUNC"           USING
-                                           MCPAREA
-                                           MCPDATA-REC
+grpsys         CALL "ORCDBMAIN" USING MCPAREA
+                                      MCPDATA-REC
+grpsys*                               COMMON-SPA
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC         TO  PTNUM-REC
                    MOVE    ZERO                TO  FLG-PTNUM
@@ -208,9 +211,9 @@
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "tbl_ptnum"         TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            IF      FLG-OK              =   1
                MOVE    PTNUM-PTID      TO  SPTID-PTID
@@ -233,20 +236,21 @@
            MOVE    SPTID-HOSPID         TO  PTNUM-HOSPID
            MOVE    SPTID-PTID           TO  PTNUM-PTID
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNUM-REC           TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_ptnum"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
                MOVE    "tbl_ptnum"         TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "MONFUNC"       USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys         CALL "ORCDBMAIN" USING MCPAREA
+                                      MCPDATA-REC
+grpsys*                               COMMON-SPA
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC         TO  PTNUM-REC
                    MOVE    ZERO                TO  FLG-PTNUM
@@ -262,9 +266,9 @@
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "tbl_ptnum"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            IF      FLG-PTNUM           =   ZERO
                MOVE    PTNUM-PTNUM     TO  SPTID-PTNUM

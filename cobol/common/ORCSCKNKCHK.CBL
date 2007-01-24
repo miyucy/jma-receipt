@@ -270,6 +270,7 @@
                                        TO  INTERACT-DRUGCD
       *
                    MOVE    ZERO                TO  FLG-INTERACT
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    INTERACT-REC        TO  MCPDATA-REC
                    MOVE    "tbl_interact"      TO  MCP-TABLE
                    MOVE    "key2"              TO  MCP-PATHNAME
@@ -338,6 +339,7 @@
            MOVE    WRK-SRYYM           TO  ACCT-STSRYYM
            MOVE    SPA-SRYYMD(1:6)     TO  ACCT-EDSRYYM
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "tbl_sryacct"       TO  MCP-TABLE
            MOVE    "key46"             TO  MCP-PATHNAME
@@ -393,6 +395,7 @@
            MOVE    ACCT-SRYYM          TO  SRY-SRYYM
            MOVE    ACCT-ZAINUM         TO  SRY-ZAINUM
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACT-REC          TO  MCPDATA-REC
            MOVE    "tbl_sryact"        TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -491,6 +494,7 @@
                                        TO  INTERACT-DRUGCD
       *
            MOVE    ZERO                TO  FLG-INTERACT
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    INTERACT-REC        TO  MCPDATA-REC
            MOVE    "tbl_interact"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -561,6 +565,7 @@
            INITIALIZE                  INTERACT-REC
            MOVE    SPA-COM-INPUTCD (IDX-Z)
                                        TO  INTERACT-DRUGCD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    INTERACT-REC        TO  MCPDATA-REC
            MOVE    "tbl_interact"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -914,6 +919,7 @@
            MOVE    SPA-SRYYMD          TO  TNS-YUKOSTYMD
            MOVE    SPA-SRYYMD          TO  TNS-YUKOEDYMD
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -949,6 +955,7 @@
            MOVE    SPA-SRYYMD          TO  TNS-YUKOSTYMD
            MOVE    SPA-SRYYMD          TO  TNS-YUKOEDYMD
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
@@ -1012,9 +1019,9 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        910-DBSELECT-EXT.
@@ -1025,9 +1032,9 @@
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
       *
@@ -1040,9 +1047,9 @@
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        990-DBCLOSE-EXT.

@@ -357,6 +357,7 @@
            MOVE    WRK-SRYYM           TO  ACCT-SRYYM
            MOVE    "21"                TO  ACCT-SRYKBN
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "tbl_sryacct_prv"   TO  MCP-TABLE
            MOVE    "key14"             TO  MCP-PATHNAME
@@ -511,6 +512,7 @@
            MOVE    WRK-SRYYM           TO  ACCT-SRYYM
            MOVE    WRK-SRYKBN          TO  ACCT-SRYKBN
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "tbl_sryacct_prv"   TO  MCP-TABLE
            MOVE    "key14"             TO  MCP-PATHNAME
@@ -588,6 +590,7 @@
            MOVE    ACCT-SRYYM          TO  SRY-SRYYM
            MOVE    ACCT-ZAINUM         TO  SRY-ZAINUM
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACT-REC          TO  MCPDATA-REC
            MOVE    "tbl_sryact_prv"    TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -652,6 +655,7 @@
            MOVE    ORCSCHO-SRYYM       TO  NACCT-SRYYM
            MOVE    "2"                 TO  NACCT-ZAISKBKBN
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
            MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
            MOVE    "key17"             TO  MCP-PATHNAME
@@ -690,6 +694,7 @@
            MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID
            MOVE    ORCSCHO-PTID        TO  PTNYUINRRK-PTID
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
            MOVE    "key33"             TO  MCP-PATHNAME
@@ -809,6 +814,7 @@
            MOVE    ORCSCHO-SRYYM       TO  ACCT-SRYYM
            MOVE    "24"                TO  ACCT-SRYKBN
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "tbl_sryacct_prv"   TO  MCP-TABLE
            MOVE    "key14"             TO  MCP-PATHNAME
@@ -858,6 +864,7 @@
            MOVE    ORCSCHO-SRYYM       TO  ACCT-SRYYM
            MOVE    "26"                TO  ACCT-SRYKBN
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "tbl_sryacct_prv"   TO  MCP-TABLE
            MOVE    "key14"             TO  MCP-PATHNAME
@@ -1149,6 +1156,7 @@
                MOVE    "24"                TO  ACCT-SRYKBN
                MOVE    TBL-CHO-ZAINUM(IDX) TO  ACCT-ZAINUM
       *
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SRYACCT-REC         TO  MCPDATA-REC
                MOVE    "tbl_sryacct_prv"   TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
@@ -1183,13 +1191,14 @@
                        MOVE    SMCNDATE-YMD        TO  ACCT-UPYMD
                        MOVE    SMCNDATE-HMS        TO  ACCT-UPHMS
       *
+grpsys*                MOVE SPA-HOSPNUM TO -HOSPNUM
                        MOVE    SRYACCT-REC         TO  MCPDATA-REC
                        MOVE    "DBUPDATE"          TO  MCP-FUNC
                        MOVE    "tbl_sryacct_prv"   TO  MCP-TABLE
                        MOVE    "key"               TO  MCP-PATHNAME
-                       CALL    "MONFUNC"           USING
-                                                   MCPAREA
-                                                   MCPDATA-REC
+grpsys                 CALL "ORCDBMAIN" USING MCPAREA
+                                              MCPDATA-REC
+grpsys*                                       COMMON-SPA
                        IF      MCP-RC          NOT =   ZERO
                             DISPLAY "ORCSCHOZAI SRYACCT UPD ERR:" MCP-RC
                                 ",KEY:" ACCT-KEY
@@ -1232,6 +1241,7 @@
            MOVE    ORCSCHO-SRYYM       TO  ACCT-SRYYM
            MOVE    HZN-ACCT-HKNCOMBI   TO  ACCT-HKNCOMBI
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "tbl_sryacct_prv"   TO  MCP-TABLE
            MOVE    "key11"             TO  MCP-PATHNAME
@@ -1284,26 +1294,28 @@
            MOVE    ACCT-SRYYM          TO  SRY-SRYYM
            MOVE    ACCT-ZAINUM         TO  SRY-ZAINUM
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACT-REC          TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_sryact_prv"    TO  MCP-TABLE
            MOVE    "del11"             TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "ORCSCHOZAI SRYACT DEL ERR:" MCP-RC
                        ",KEY:" SRY-KEY
                MOVE    1               TO  ORCSCHO-ERRCD
            END-IF
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_sryacct_prv"   TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "ORCSCHOZAI SRYACCT DEL ERR:" MCP-RC
                                 ",KEY:" ACCT-KEY
@@ -1330,6 +1342,7 @@
                MOVE    ACCT-ZAINUM         TO  JYURRK-ZAINUM (IDX3)
            END-PERFORM
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "tbl_jyurrk_prv"    TO  MCP-TABLE
            MOVE    "key20"             TO  MCP-PATHNAME
@@ -1366,13 +1379,14 @@
                MOVE    SMCNDATE-YMD        TO  JYURRK-UPYMD
                MOVE    SMCNDATE-HMS        TO  JYURRK-UPHMS
       *
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    JYURRK-REC          TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "tbl_jyurrk_prv"    TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "MONFUNC"           USING
-                                           MCPAREA
-                                           MCPDATA-REC
+grpsys         CALL "ORCDBMAIN" USING MCPAREA
+                                      MCPDATA-REC
+grpsys*                               COMMON-SPA
                IF      MCP-RC          NOT =   ZERO
                     DISPLAY "ORCSCHOZAI JYURRK UPD ERR:" MCP-RC
                             ",KEY:" JYURRK-KEY
@@ -1428,6 +1442,7 @@
                MOVE    "26"                TO  ACCT-SRYKBN
                MOVE    TBL-MAD-ZAINUM(IDX) TO  ACCT-ZAINUM
       *
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SRYACCT-REC         TO  MCPDATA-REC
                MOVE    "tbl_sryacct_prv"   TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
@@ -1463,13 +1478,14 @@
                    MOVE    SMCNDATE-YMD        TO  ACCT-UPYMD
                    MOVE    SMCNDATE-HMS        TO  ACCT-UPHMS
       *
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    SRYACCT-REC         TO  MCPDATA-REC
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
                    MOVE    "tbl_sryacct_prv"   TO  MCP-TABLE
                    MOVE    "key"               TO  MCP-PATHNAME
-                   CALL    "MONFUNC"           USING
-                                               MCPAREA
-                                               MCPDATA-REC
+grpsys             CALL "ORCDBMAIN" USING MCPAREA
+                                          MCPDATA-REC
+grpsys*                                   COMMON-SPA
                    IF      MCP-RC          NOT =   ZERO
                         DISPLAY "ORCSCHOZAI SRYACCT UPD ERR:" MCP-RC
                                 ",KEY:" ACCT-KEY
@@ -1606,13 +1622,14 @@
            MOVE    SMCNDATE-YMD        TO  ACCT-UPYMD
            MOVE    SMCNDATE-HMS        TO  ACCT-UPHMS
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "tbl_sryacct_prv"   TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "SYRACCT INS ERR:" MCP-RC
                        ",KEY:" ACCT-KEY
@@ -1649,13 +1666,14 @@
            MOVE    SMCNDATE-YMD        TO  PTINF-UPYMD
            MOVE    SMCNDATE-HMS        TO  PTINF-UPHMS
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    "tbl_ptinf_prv"     TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "PTINF UPDTE ERR:"   MCP-RC ",KEY:" PTINF-KEY
                MOVE    3                   TO  ORCSCHO-ERRCD 
@@ -1696,13 +1714,14 @@
            MOVE    SMCNDATE-YMD        TO  SRY-UPYMD
            MOVE    SMCNDATE-HMS        TO  SRY-UPHMS
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACT-REC          TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "tbl_sryact_prv"    TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "CHOZAI SRYACT INS ERR:" SRY-KEY  "."
@@ -1743,6 +1762,7 @@
            MOVE    ORCSCHO-SRYYM       TO  ACCT-SRYYM
            MOVE    WRK-SRYKBN          TO  ACCT-SRYKBN
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "tbl_sryacct_prv"   TO  MCP-TABLE
            MOVE    "key14"             TO  MCP-PATHNAME
@@ -1768,13 +1788,14 @@
                    MOVE    SMCNDATE-YMD        TO  ACCT-UPYMD
                    MOVE    SMCNDATE-HMS        TO  ACCT-UPHMS
       *
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    SRYACCT-REC         TO  MCPDATA-REC
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
                    MOVE    "tbl_sryacct_prv"   TO  MCP-TABLE
                    MOVE    "key"               TO  MCP-PATHNAME
-                   CALL    "MONFUNC"           USING
-                                               MCPAREA
-                                               MCPDATA-REC
+grpsys             CALL "ORCDBMAIN" USING MCPAREA
+                                          MCPDATA-REC
+grpsys*                                   COMMON-SPA
                    IF      MCP-RC          NOT =   ZERO
                         DISPLAY "ORCSCHOZAI SRYACCT UPD ERR:" MCP-RC
                                 ",KEY:" ACCT-KEY
@@ -1823,6 +1844,7 @@
            MOVE    WRK-DD              TO  TNS-YUKOSTYMD(7:2)
            MOVE    TNS-YUKOSTYMD       TO  TNS-YUKOEDYMD
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -1909,6 +1931,7 @@
       *****************************************************************
        940-PTINF-READ-SEC         SECTION.
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "tbl_ptinf_prv"     TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -1975,9 +1998,9 @@
            MOVE    ZERO            TO  MCP-RC
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        910-DBSELECT-EXT.
@@ -1988,9 +2011,9 @@
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
       *
@@ -2002,9 +2025,9 @@
        990-DBCLOSE-SEC               SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        990-DBCLOSE-EXT.

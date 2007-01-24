@@ -33,6 +33,8 @@
        CONFIGURATION           SECTION.
        DATA                    DIVISION.
        WORKING-STORAGE             SECTION.
+grpsys*
+grpsys COPY    "COMMON-SPA".
        01  CNT-AREA.
            03  CNT-IN                                  PIC 9(06).
       *
@@ -180,13 +182,14 @@
       *****************************************************************
        2002-JOBLOG-READ-SEC        SECTION.
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    JOBLOG-REC          TO  MCPDATA-REC
            MOVE    "tbl_joblog"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                           MCPAREA
-                                           MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_joblog"       TO  MCP-TABLE
                MOVE    "key"              TO  MCP-PATHNAME
@@ -210,10 +213,11 @@
       *****************************************************************
        900-JOBLOG-ACC-SEC             SECTION.
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    JOBLOG-REC          TO  MCPDATA-REC
-           CALL    "MONFUNC"           USING
-                                           MCPAREA
-                                           MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  JOBLOG-REC
                MOVE    ZERO                TO  FLG-JOBLOG
@@ -233,9 +237,9 @@
        900-CLOSE-SEC                  SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        900-CLOSE-EXT.
@@ -247,14 +251,14 @@
        100-DBOPEN-SEC                SECTION.
       *
            MOVE    "DBOPEN"            TO  MCP-FUNC.
-           CALL    "MONFUNC"            USING
-                                       MCPAREA
-                                       MCPDATA-REC.
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            MOVE    "DBSTART"           TO  MCP-FUNC.
            MOVE    LOW-VALUE           TO  MCP-PATH.
-           CALL    "MONFUNC"            USING
-                                        MCPAREA
-                                        MCPDATA-REC.
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            .
        100-DBOPEN-EXT.
            EXIT.
@@ -265,13 +269,13 @@
       *
            MOVE    "DBCOMMIT"          TO  MCP-FUNC.
            MOVE    LOW-VALUE           TO  MCP-PATH.
-           CALL    "MONFUNC"             USING
-                                        MCPAREA
-                                        MCPDATA-REC.
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
-           CALL    "MONFUNC"            USING
-                                       MCPAREA
-                                       MCPDATA-REC.
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
        900-DBDISCONNECT-EXT.
            EXIT.

@@ -41,6 +41,8 @@
        FILE                        SECTION.
       *
        WORKING-STORAGE SECTION.
+grpsys*
+grpsys COPY    "COMMON-SPA".
       *
       *    Åº¤¨»úÎÎ°è
        01  IDX-AREA.
@@ -169,6 +171,7 @@
              MOVE    "*"                  TO    SYS-1001-KBNCD
              MOVE    LNK-ORCSJGNGET-SRYYM TO    ORC-DBYMD(1:6)
              MOVE    "01"                 TO    ORC-DBYMD(7:2)
+grpsys*      MOVE SPA-HOSPNUM TO -HOSPNUM
              MOVE    SYS-1001-REC         TO    MCPDATA-REC
              MOVE    "DBSELECT"           TO    MCP-FUNC
              MOVE    "SYSKANRI-KEY"       TO    ORC-DBPATH
@@ -266,6 +269,7 @@
            MOVE    LNK-ORCSJGNGET-HOSPID   TO      PTKOHFTN-HOSPID
            MOVE    LNK-ORCSJGNGET-PTID     TO      PTKOHFTN-PTID
            MOVE    LNK-ORCSJGNGET-KOHID    TO      PTKOHFTN-KOHID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTKOHFTN-REC            TO      MCPDATA-REC
            MOVE    "DBSELECT"              TO      MCP-FUNC
            MOVE    "PTKOHFTN-KEY5"         TO      ORC-DBPATH
@@ -367,6 +371,7 @@
            MOVE    LNK-ORCSJGNGET-KOHID    TO  COMB-KOHID(2)
            MOVE    LNK-ORCSJGNGET-KOHID    TO  COMB-KOHID(3)
            MOVE    LNK-ORCSJGNGET-KOHID    TO  COMB-KOHID(4)
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HKNCOMBI-REC            TO  MCPDATA-REC
            MOVE    "DBSELECT"              TO  MCP-FUNC
            MOVE    "HKNCOMBI-KEY4"         TO  ORC-DBPATH
@@ -413,6 +418,7 @@
            MOVE    "1"                      TO   ACCT-NYUGAIKBN
            MOVE    LNK-ORCSJGNGET-PTID      TO   ACCT-PTID
            MOVE    LNK-ORCSJGNGET-SRYYM     TO   ACCT-SRYYM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACCT-REC              TO   MCPDATA-REC
            MOVE    "DBSELECT"               TO   MCP-FUNC
            MOVE    "SRYACCT-KEY33"          TO   ORC-DBPATH
@@ -444,6 +450,7 @@
            MOVE    LNK-ORCSJGNGET-PTID      TO   NACCT-PTID
            MOVE    LNK-ORCSJGNGET-SRYYM     TO   NACCT-SRYYM
            MOVE    "5"                      TO   NACCT-ZAISKBKBN
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    NYUINACCT-REC            TO   MCPDATA-REC
            MOVE    "DBSELECT"               TO   MCP-FUNC
            MOVE    "NYUINACCT-KEY17"        TO   ORC-DBPATH
@@ -610,6 +617,7 @@
            MOVE    LNK-ORCSJGNGET-HOSPID   TO      PTKOHFTN-HOSPID
            MOVE    LNK-ORCSJGNGET-PTID     TO      PTKOHFTN-PTID
            MOVE    LNK-ORCSJGNGET-KOHID    TO      PTKOHFTN-KOHID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTKOHFTN-REC            TO      MCPDATA-REC
            MOVE    "DBSELECT"              TO      MCP-FUNC
            MOVE    "PTKOHFTN-KEY5"         TO      ORC-DBPATH

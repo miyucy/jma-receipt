@@ -41,6 +41,8 @@
       *
       *
        WORKING-STORAGE             SECTION.
+grpsys*
+grpsys COPY    "COMMON-SPA".
       *
       *    ¥Õ¥é¥°ÎÎ°è
        01  FLG-AREA.
@@ -326,6 +328,7 @@
            INITIALIZE                  HKNCOMBI-REC
            MOVE    SDTCHK02-HOSPID     TO  COMB-HOSPID
            MOVE    SDTCHK02-PTID       TO  COMB-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
            MOVE    PATH-TBL-HKNCOMBI-KEY2  TO  MCP-PATH
            PERFORM 910-DBSELECT-SEC
@@ -367,6 +370,7 @@
            MOVE    SDTCHK02-HOSPID     TO  PTRSI-HOSPID
            MOVE    SDTCHK02-PTID       TO  PTRSI-PTID
            MOVE    COMB-HKNID          TO  PTRSI-HKNID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTRSIINF-REC        TO  MCPDATA-REC
            MOVE    PATH-TBL-PTRSIINF-KEY   TO  MCP-PATH
            PERFORM 910-DBSELECT-SEC

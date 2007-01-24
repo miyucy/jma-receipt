@@ -38,6 +38,8 @@
        FILE                        SECTION.
       *
        WORKING-STORAGE SECTION.
+grpsys*
+grpsys COPY    "COMMON-SPA".
       *
       *    Åº¤¨»úÎÎ°è
        01  IDX-AREA.
@@ -206,6 +208,7 @@
            MOVE    "1001"               TO    SYS-1001-KANRICD
            MOVE    "*"                  TO    SYS-1001-KBNCD
            MOVE    WRK-RYOSTYMD         TO    ORC-DBYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1001-REC         TO    MCPDATA-REC
            MOVE    "DBSELECT"           TO    MCP-FUNC
            MOVE    "SYSKANRI-KEY"       TO    ORC-DBPATH
@@ -427,6 +430,7 @@
            MOVE    LNK-ORCSROUKAISU-PTID    TO   NACCT-PTID
            MOVE    WRK-RYOSTYM              TO   NACCT-SRYYM
            MOVE    "5"                      TO   NACCT-ZAISKBKBN
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    NYUINACCT-REC            TO   MCPDATA-REC
            MOVE    "DBSELECT"               TO   MCP-FUNC
            MOVE    "NYUINACCT-KEY17"        TO   ORC-DBPATH
@@ -475,6 +479,7 @@
            MOVE    LNK-ORCSROUKAISU-PTID      TO   ACCT-PTID
            MOVE    WRK-RYOSTYM                TO   ACCT-SRYYM
            MOVE    LNK-ORCSROUKAISU-HKNCOMBI  TO   ACCT-HKNCOMBI
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACCT-REC                TO   MCPDATA-REC
            MOVE    "DBSELECT"                 TO   MCP-FUNC
            MOVE    "SRYACCT-KEY22"            TO   ORC-DBPATH
@@ -525,6 +530,7 @@
            MOVE    LNK-ORCSROUKAISU-PTID      TO   ACCT-PTID
            MOVE    WRK-RYOSTYM                TO   ACCT-SRYYM
            MOVE    LNK-ORCSROUKAISU-HKNCOMBI  TO   ACCT-HKNCOMBI
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACCT-REC                TO   MCPDATA-REC
            MOVE    "DBSELECT"                 TO   MCP-FUNC
            MOVE    "SRYACCT-KEY22"            TO   ORC-DBPATH
@@ -679,6 +685,7 @@
            MOVE    LNK-ORCSROUKAISU-PTID    TO   NACCT-PTID
            MOVE    WRK-RYOSTYM              TO   NACCT-SRYYM
            MOVE    "5"                      TO   NACCT-ZAISKBKBN
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    NYUINACCT-REC            TO   MCPDATA-REC
            MOVE    "DBSELECT"               TO   MCP-FUNC
            MOVE    "NYUINACCT-KEY17"        TO   ORC-DBPATH
@@ -724,6 +731,7 @@
            MOVE    LNK-ORCSROUKAISU-PTID    TO   NACCT-PTID
            MOVE    WRK-RYOSTYM              TO   NACCT-SRYYM
            MOVE    "5"                      TO   NACCT-ZAISKBKBN
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    NYUINACCT-REC            TO   MCPDATA-REC
            MOVE    "DBSELECT"               TO   MCP-FUNC
            MOVE    "NYUINACCT-KEY17"        TO   ORC-DBPATH
@@ -782,6 +790,7 @@
            MOVE    WRK-SRYKA(IDX)         TO    SYS-1005-KBNCD
            MOVE    LNK-ORCSROUKAISU-SRYYM TO    ORC-DBYMD(1:6)
            MOVE    "01"                   TO    ORC-DBYMD(7:2)
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1005-REC           TO    MCPDATA-REC
            MOVE    "DBSELECT"             TO    MCP-FUNC
            MOVE    "SYSKANRI-KEY"         TO    ORC-DBPATH

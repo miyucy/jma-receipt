@@ -38,6 +38,8 @@
        FILE                            SECTION.
       *
        WORKING-STORAGE                 SECTION.
+grpsys*
+grpsys COPY    "COMMON-SPA".
       *
       *    ¥Õ¥é¥°ÎÎ°è
        01  FLG-AREA.
@@ -140,6 +142,7 @@
            MOVE    SODR-HOSPID         TO  ORDER-HOSPID
            MOVE    SODR-KARTE-KEY      TO  ORDER-KARTE-KEY
            MOVE    SODR-ORDERNUM       TO  ORDER-ORDERNUM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ORDER-REC           TO  MCPDATA-REC
            MOVE    "tbl_order"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -190,6 +193,7 @@
            MOVE    SODR-HOSPID         TO  ODRITEM-HOSPID
            MOVE    SODR-KARTE-KEY      TO  ODRITEM-KARTE-KEY
            MOVE    SODR-ORDERNUM       TO  ODRITEM-ORDERNUM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ODRITEM-REC         TO  MCPDATA-REC
            MOVE    "tbl_odritem"       TO  MCP-TABLE
            MOVE    "del1"              TO  MCP-PATHNAME
@@ -221,6 +225,7 @@
       *
            MOVE    ZERO                TO  FLG-ODRITEM
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ODRITEM-REC         TO  MCPDATA-REC
            MOVE    "tbl_odritem"       TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
@@ -242,6 +247,7 @@
       *
            MOVE    ZERO                TO  FLG-ODRITEM
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ODRITEM-REC         TO  MCPDATA-REC
            MOVE    "tbl_odritem"       TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
@@ -262,9 +268,9 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF    ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
@@ -279,9 +285,9 @@
        911-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
       *
@@ -293,9 +299,9 @@
        910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
       *
@@ -307,9 +313,9 @@
        910-DBCLOSECURSOR-SEC                 SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
       *
@@ -321,9 +327,9 @@
        910-DBINSERT-SEC                SECTION.
       *
            MOVE    "DBINSERT"          TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
       *
@@ -335,9 +341,9 @@
        910-DBUPDATE-SEC                SECTION.
       *
            MOVE    "DBUPDATE"          TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
       *
@@ -349,9 +355,9 @@
        910-DBDELETE-SEC                SECTION.
       *
            MOVE    "DBDELETE"          TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
       *

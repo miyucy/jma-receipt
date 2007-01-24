@@ -222,6 +222,8 @@
        FILE                        SECTION.
       *
        WORKING-STORAGE SECTION.
+grpsys*
+grpsys COPY    "COMMON-SPA".
       *
        01  STS-AREA.
            03  STS-SYUNOU              PIC X(02).
@@ -1044,6 +1046,7 @@
            MOVE    LNK-SYU-HOSPID       TO      COMB-HOSPID.
            MOVE    LNK-SYU-PTID         TO      COMB-PTID.
            MOVE    LNK-SYU-HKNCOMBINUM  TO      COMB-HKNCOMBINUM.
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HKNCOMBI-REC         TO      MCPDATA-REC.
            MOVE    "DBSELECT"           TO      MCP-FUNC.
            MOVE    "HKNCOMBI-KEY"       TO      ORC-DBPATH.
@@ -1379,6 +1382,7 @@
                    INITIALIZE                           PTINF-REC
                    MOVE    LNK-SYU-HOSPID       TO      PTINF-HOSPID
                    MOVE    LNK-SYU-PTID         TO      PTINF-PTID
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    PTINF-REC            TO      MCPDATA-REC
                    MOVE    "DBSELECT"           TO      MCP-FUNC
                    MOVE    "PTINF-KEY"          TO      ORC-DBPATH
@@ -1526,6 +1530,7 @@
            MOVE    "1037"               TO    SYS-1037-KANRICD
            MOVE    "*"                  TO    SYS-1037-KBNCD
            MOVE    LNK-SYU-SRYYMD       TO    ORC-DBYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1037-REC         TO    MCPDATA-REC
            MOVE    "DBSELECT"           TO    MCP-FUNC
            MOVE    "SYSKANRI-KEY"       TO    ORC-DBPATH
@@ -1581,6 +1586,7 @@
                MOVE    "1026"               TO    SYS-1026-KANRICD
                MOVE    PTINF-DISCOUNT-KBN   TO    SYS-1026-KBNCD
                MOVE    LNK-SYU-SRYYMD       TO    ORC-DBYMD
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SYS-1026-REC         TO    MCPDATA-REC
                MOVE    "DBSELECT"           TO    MCP-FUNC
                MOVE    "SYSKANRI-KEY"       TO    ORC-DBPATH
@@ -1608,6 +1614,7 @@
                MOVE    "1027"               TO    SYS-1027-KANRICD
                MOVE    PTINF-DISCOUNT       TO    SYS-1027-KBNCD
                MOVE    LNK-SYU-SRYYMD       TO    ORC-DBYMD
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SYS-1027-REC         TO    MCPDATA-REC
                MOVE    "DBSELECT"           TO    MCP-FUNC
                MOVE    "SYSKANRI-KEY"       TO    ORC-DBPATH
@@ -1765,6 +1772,7 @@
               MOVE    "4003"               TO    SYS-4003-KANRICD
               MOVE    "*"                  TO    SYS-4003-KBNCD
               MOVE    LNK-SYU-SRYYMD       TO    ORC-DBYMD
+grpsys*       MOVE SPA-HOSPNUM TO -HOSPNUM
               MOVE    SYS-4003-REC         TO    MCPDATA-REC
               MOVE    "DBSELECT"           TO    MCP-FUNC
               MOVE    "SYSKANRI-KEY"       TO    ORC-DBPATH
@@ -1976,6 +1984,7 @@
            INITIALIZE                           TNKRRK-REC.
            MOVE    LNK-SYU-HOSPID       TO      TNKRRK-HOSPID.
            MOVE    LNK-SYU-PTID         TO      TNKRRK-PTID.
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TNKRRK-REC           TO      MCPDATA-REC.
            MOVE    "DBSELECT"           TO      MCP-FUNC.
            MOVE    "TNKRRK-KEY2"        TO      ORC-DBPATH.
@@ -2005,6 +2014,7 @@
            INITIALIZE                           TSYRRK-REC.
            MOVE    LNK-SYU-HOSPID       TO      TSYRRK-HOSPID.
            MOVE    LNK-SYU-PTID         TO      TSYRRK-PTID.
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TSYRRK-REC           TO      MCPDATA-REC.
            MOVE    "DBSELECT"           TO      MCP-FUNC.
            MOVE    "TSYRRK-KEY2"        TO      ORC-DBPATH.
@@ -2108,6 +2118,7 @@
              MOVE   COMB-HOSPID        TO    HKN-HOSPID
              MOVE   COMB-HKNNUM        TO    HKN-HKNNUM
              MOVE   "00"               TO    WK-PAYKBN
+grpsys*      MOVE SPA-HOSPNUM TO -HOSPNUM
              MOVE   HKNNUM-REC         TO    MCPDATA-REC
              MOVE   "DBSELECT"         TO    MCP-FUNC
              MOVE   "HKNNUM-KEY2"      TO    ORC-DBPATH
@@ -2212,6 +2223,7 @@
                ELSE
                        MOVE     "00"         TO    WK-PAYKBN
                END-IF
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE   HKNNUM-REC         TO    MCPDATA-REC
                MOVE   "DBSELECT"         TO    MCP-FUNC
                MOVE   "HKNNUM-KEY2"      TO    ORC-DBPATH
@@ -2250,6 +2262,7 @@
                MOVE   COMB-HOSPID        TO    HKN-HOSPID
                MOVE   COMB-KOH2HKNNUM    TO    HKN-HKNNUM
                MOVE     "00"             TO    WK-PAYKBN
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE   HKNNUM-REC         TO    MCPDATA-REC
                MOVE   "DBSELECT"         TO    MCP-FUNC
                MOVE   "HKNNUM-KEY2"      TO    ORC-DBPATH
@@ -2288,6 +2301,7 @@
                MOVE   COMB-HOSPID        TO    HKN-HOSPID
                MOVE   COMB-KOH3HKNNUM    TO    HKN-HKNNUM
                MOVE     "00"             TO    WK-PAYKBN
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE   HKNNUM-REC         TO    MCPDATA-REC
                MOVE   "DBSELECT"         TO    MCP-FUNC
                MOVE   "HKNNUM-KEY2"      TO    ORC-DBPATH
@@ -2326,6 +2340,7 @@
                MOVE   COMB-HOSPID        TO    HKN-HOSPID
                MOVE   COMB-KOH4HKNNUM    TO    HKN-HKNNUM
                MOVE     "00"             TO    WK-PAYKBN
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE   HKNNUM-REC         TO    MCPDATA-REC
                MOVE   "DBSELECT"         TO    MCP-FUNC
                MOVE   "HKNNUM-KEY2"      TO    ORC-DBPATH
@@ -2583,6 +2598,7 @@
                 MOVE    LNK-SYU-HOSPID       TO  PTKOH-HOSPID
                 MOVE    LNK-SYU-PTID         TO  PTKOH-PTID
                 MOVE    "027"                TO  PTKOH-KOHNUM
+grpsys*         MOVE SPA-HOSPNUM TO -HOSPNUM
                 MOVE    PTKOHINF-REC         TO  MCPDATA-REC
                 MOVE    "DBSELECT"           TO  MCP-FUNC
                 MOVE    "PTKOHINF-KEY4"      TO  ORC-DBPATH
@@ -2622,6 +2638,7 @@
                INITIALIZE                           PTINF-REC
                MOVE    LNK-SYU-HOSPID       TO      PTINF-HOSPID
                MOVE    LNK-SYU-PTID         TO      PTINF-PTID
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    PTINF-REC            TO      MCPDATA-REC
                MOVE    "DBSELECT"           TO      MCP-FUNC
                MOVE    "PTINF-KEY"          TO      ORC-DBPATH
@@ -2686,6 +2703,7 @@
                INITIALIZE                           PTINF-REC
                MOVE    LNK-SYU-HOSPID       TO      PTINF-HOSPID
                MOVE    LNK-SYU-PTID         TO      PTINF-PTID
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    PTINF-REC            TO      MCPDATA-REC
                MOVE    "DBSELECT"           TO      MCP-FUNC
                MOVE    "PTINF-KEY"          TO      ORC-DBPATH
@@ -2745,6 +2763,7 @@
                 MOVE    LNK-SYU-HOSPID       TO  PTKOH-HOSPID
                 MOVE    LNK-SYU-PTID         TO  PTKOH-PTID
                 MOVE    "978"                TO  PTKOH-KOHNUM
+grpsys*         MOVE SPA-HOSPNUM TO -HOSPNUM
                 MOVE    PTKOHINF-REC         TO  MCPDATA-REC
                 MOVE    "DBSELECT"           TO  MCP-FUNC
                 MOVE    "PTKOHINF-KEY4"      TO  ORC-DBPATH
@@ -2794,6 +2813,7 @@
                 MOVE    LNK-SYU-HOSPID       TO  PTKOH-HOSPID
                 MOVE    LNK-SYU-PTID         TO  PTKOH-PTID
                 MOVE    TBL-GENGAKU(GEN-IDX) TO  PTKOH-KOHNUM
+grpsys*         MOVE SPA-HOSPNUM TO -HOSPNUM
                 MOVE    PTKOHINF-REC         TO  MCPDATA-REC
                 MOVE    "DBSELECT"           TO  MCP-FUNC
                 MOVE    "PTKOHINF-KEY4"      TO  ORC-DBPATH
@@ -2865,6 +2885,7 @@
                 MOVE    LNK-SYU-HOSPID       TO  PTKOH-HOSPID
                 MOVE    LNK-SYU-PTID         TO  PTKOH-PTID
                 MOVE    "964"                TO  PTKOH-KOHNUM
+grpsys*         MOVE SPA-HOSPNUM TO -HOSPNUM
                 MOVE    PTKOHINF-REC         TO  MCPDATA-REC
                 MOVE    "DBSELECT"           TO  MCP-FUNC
                 MOVE    "PTKOHINF-KEY4"      TO  ORC-DBPATH
@@ -2909,6 +2930,7 @@
                INITIALIZE                           PTINF-REC
                MOVE    LNK-SYU-HOSPID       TO      PTINF-HOSPID
                MOVE    LNK-SYU-PTID         TO      PTINF-PTID
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    PTINF-REC            TO      MCPDATA-REC
                MOVE    "DBSELECT"           TO      MCP-FUNC
                MOVE    "PTINF-KEY"          TO      ORC-DBPATH
@@ -2980,6 +3002,7 @@
                MOVE    TBL-ZAITAKU(IDX10)   TO      SRY-SRYCD(3)
                MOVE    TBL-ZAITAKU(IDX10)   TO      SRY-SRYCD(4)
                MOVE    TBL-ZAITAKU(IDX10)   TO      SRY-SRYCD(5)
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SRYACT-REC           TO      MCPDATA-REC
                MOVE    "DBSELECT"           TO      MCP-FUNC
                MOVE    "SRYACT-KEY7"        TO      ORC-DBPATH
@@ -2997,6 +3020,7 @@
                        MOVE    SRY-PTID         TO   ACCT-PTID
                        MOVE    SRY-SRYYM        TO   ACCT-SRYYM
                        MOVE    SRY-ZAINUM       TO   ACCT-ZAINUM
+grpsys*                MOVE SPA-HOSPNUM TO -HOSPNUM
                        MOVE    SRYACCT-REC      TO   MCPDATA-REC
                        MOVE    "DBSELECT"       TO   MCP-FUNC
                        MOVE    "SRYACCT-KEY31"  TO   ORC-DBPATH
@@ -3055,6 +3079,7 @@
                MOVE    TBL-ZAITAKU2(IDX10)  TO      SRY-SRYCD(3)
                MOVE    TBL-ZAITAKU2(IDX10)  TO      SRY-SRYCD(4)
                MOVE    TBL-ZAITAKU2(IDX10)  TO      SRY-SRYCD(5)
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SRYACT-REC           TO      MCPDATA-REC
                MOVE    "DBSELECT"           TO      MCP-FUNC
                MOVE    "SRYACT-KEY7"        TO      ORC-DBPATH
@@ -3072,6 +3097,7 @@
                        MOVE    SRY-PTID         TO   ACCT-PTID
                        MOVE    SRY-SRYYM        TO   ACCT-SRYYM
                        MOVE    SRY-ZAINUM       TO   ACCT-ZAINUM
+grpsys*                MOVE SPA-HOSPNUM TO -HOSPNUM
                        MOVE    SRYACCT-REC      TO   MCPDATA-REC
                        MOVE    "DBSELECT"       TO   MCP-FUNC
                        MOVE    "SRYACCT-KEY31"  TO   ORC-DBPATH
@@ -3149,6 +3175,7 @@
                ELSE
                        MOVE     "00"         TO    WK-PAYKBN
                END-IF
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE   HKNNUM-REC         TO    MCPDATA-REC
                MOVE   "DBSELECT"         TO    MCP-FUNC
                MOVE   "HKNNUM-KEY2"      TO    ORC-DBPATH
@@ -3285,6 +3312,7 @@
                MOVE   COMB-HOSPID        TO    HKN-HOSPID
                MOVE   COMB-KOH2HKNNUM    TO    HKN-HKNNUM
                MOVE     "00"             TO    WK-PAYKBN
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE   HKNNUM-REC         TO    MCPDATA-REC
                MOVE   "DBSELECT"         TO    MCP-FUNC
                MOVE   "HKNNUM-KEY2"      TO    ORC-DBPATH
@@ -3421,6 +3449,7 @@
                MOVE   COMB-HOSPID        TO    HKN-HOSPID
                MOVE   COMB-KOH3HKNNUM    TO    HKN-HKNNUM
                MOVE     "00"             TO    WK-PAYKBN
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE   HKNNUM-REC         TO    MCPDATA-REC
                MOVE   "DBSELECT"         TO    MCP-FUNC
                MOVE   "HKNNUM-KEY2"      TO    ORC-DBPATH
@@ -3557,6 +3586,7 @@
                MOVE   COMB-HOSPID        TO    HKN-HOSPID
                MOVE   COMB-KOH4HKNNUM    TO    HKN-HKNNUM
                MOVE     "00"             TO    WK-PAYKBN
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE   HKNNUM-REC         TO    MCPDATA-REC
                MOVE   "DBSELECT"         TO    MCP-FUNC
                MOVE   "HKNNUM-KEY2"      TO    ORC-DBPATH
@@ -4005,6 +4035,7 @@
            MOVE   COMB-HOSPID        TO    PTHKN-HOSPID
            MOVE   COMB-PTID          TO    PTHKN-PTID
            MOVE   COMB-HKNID         TO    PTHKN-HKNID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE   PTHKNINF-REC       TO    MCPDATA-REC
            MOVE   "DBSELECT"         TO    MCP-FUNC
            MOVE   "PTHKNINF-KEY"     TO    ORC-DBPATH
@@ -4059,6 +4090,7 @@
              MOVE    LNK-SYU-PTID         TO     SYU-PTID
              MOVE    LNK-SYU-SRYYMD(1:6)  TO     SYU-SRYYMD(1:6)
              MOVE    "__"                 TO     SYU-SRYYMD(7:2)
+grpsys*      MOVE SPA-HOSPNUM TO -HOSPNUM
              MOVE    SYU-SYUNOU-REC       TO     MCPDATA-REC 
              MOVE    "DBSELECT"           TO     MCP-FUNC
              MOVE    "SYUNOU-KEY14"       TO     ORC-DBPATH
@@ -6107,6 +6139,7 @@
                  MOVE    LNK-SYU-PTID         TO    SYU-PTID
                  MOVE    LNK-SYU-SRYYMD(1:6)  TO    SYU-SRYYMD(1:6)
                  MOVE    "__"                 TO    SYU-SRYYMD(7:2)
+grpsys*          MOVE SPA-HOSPNUM TO -HOSPNUM
                  MOVE    SYU-SYUNOU-REC       TO    MCPDATA-REC
                  MOVE    "DBSELECT"           TO    MCP-FUNC
                  MOVE    "SYUNOU-KEY30"       TO    ORC-DBPATH
@@ -6149,6 +6182,7 @@
                  MOVE    LNK-SYU-PTID         TO    SYU-PTID
                  MOVE    LNK-SYU-SRYYMD(1:6)  TO    SYU-SRYYMD(1:6)
                  MOVE    "__"                 TO    SYU-SRYYMD(7:2)
+grpsys*          MOVE SPA-HOSPNUM TO -HOSPNUM
                  MOVE    SYU-SYUNOU-REC       TO    MCPDATA-REC
                  MOVE    "DBSELECT"           TO    MCP-FUNC
                  MOVE    "SYUNOU-KEY26"       TO    ORC-DBPATH
@@ -6254,6 +6288,7 @@
            MOVE    SYU-HOSPID         TO      WRK-COMB-HOSPID.
            MOVE    SYU-PTID           TO      WRK-COMB-PTID.
            MOVE    SYU-HKNCOMBINUM    TO      WRK-COMB-HKNCOMBINUM.
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    WRK-HKNCOMBI-REC   TO      MCPDATA-REC.
            MOVE    "DBSELECT"         TO      MCP-FUNC.
            MOVE    "HKNCOMBI-KEY"     TO      ORC-DBPATH.
@@ -11828,6 +11863,7 @@
            MOVE   COMB-HOSPID        TO    HKN-HOSPID.
            MOVE   COMB-HKNNUM        TO    HKN-HKNNUM.
            MOVE   "00"               TO    WK-PAYKBN.
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE   HKNNUM-REC         TO    MCPDATA-REC.
            MOVE   "DBSELECT"         TO    MCP-FUNC.
            MOVE   "HKNNUM-KEY2"      TO    ORC-DBPATH.
@@ -11918,6 +11954,7 @@
                INITIALIZE                           PTINF-REC
                MOVE    LNK-SYU-HOSPID       TO      PTINF-HOSPID
                MOVE    LNK-SYU-PTID         TO      PTINF-PTID
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    PTINF-REC            TO      MCPDATA-REC
                MOVE    "DBSELECT"           TO      MCP-FUNC
                MOVE    "PTINF-KEY"          TO      ORC-DBPATH
@@ -12297,6 +12334,7 @@
                MOVE    "4001"               TO    SYS-4001-KANRICD
                MOVE    "*"                  TO    SYS-4001-KBNCD
                MOVE    LNK-SYU-SRYYMD       TO    ORC-DBYMD
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SYS-4001-REC         TO    MCPDATA-REC
                MOVE    "DBSELECT"           TO    MCP-FUNC
                MOVE    "SYSKANRI-KEY"       TO    ORC-DBPATH
@@ -12478,6 +12516,7 @@
                    MOVE     "00"         TO    WK-PAYKBN
            END-IF.
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE   HKNNUM-REC         TO    MCPDATA-REC.
            MOVE   "DBSELECT"         TO    MCP-FUNC.
            MOVE   "HKNNUM-KEY2"      TO    ORC-DBPATH.
@@ -12702,6 +12741,7 @@
                                              TO  PTKOH-KOHNUM
                 MOVE    LNK-SYU-SRYYMD       TO  PTKOH-TEKSTYMD
                 MOVE    LNK-SYU-SRYYMD       TO  PTKOH-TEKEDYMD
+grpsys*         MOVE SPA-HOSPNUM TO -HOSPNUM
                 MOVE    PTKOHINF-REC         TO  MCPDATA-REC
                 MOVE    "DBSELECT"           TO  MCP-FUNC
                 MOVE    "PTKOHINF-KEY6"      TO  ORC-DBPATH
@@ -16386,6 +16426,7 @@
            INITIALIZE                           PTINF-REC.
            MOVE    LNK-SYU-HOSPID       TO      PTINF-HOSPID.
            MOVE    LNK-SYU-PTID         TO      PTINF-PTID.
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC            TO      MCPDATA-REC.
            MOVE    "DBSELECT"           TO      MCP-FUNC.
            MOVE    "PTINF-KEY"          TO      ORC-DBPATH.
@@ -16985,6 +17026,7 @@
            MOVE    LNK-SYU-NYUGAIKBN    TO     SYU-NYUGAIKBN.
            MOVE    LNK-SYU-PTID         TO     SYU-PTID.
            MOVE    LNK-SYU-DOUJI-DENPNUM TO    SYU-DOUJI-DENPNUM.
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYU-SYUNOU-REC       TO     MCPDATA-REC.
            MOVE    "DBSELECT"           TO     MCP-FUNC.
            MOVE    "SYUNOU-KEY3"        TO     ORC-DBPATH.
@@ -17053,6 +17095,7 @@
                MOVE   COMB-HOSPID        TO    HKN-HOSPID
                MOVE   COMB-HKNNUM        TO    HKN-HKNNUM
                MOVE   "00"               TO    WK-PAYKBN
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE   HKNNUM-REC         TO    MCPDATA-REC
                MOVE   "DBSELECT"         TO    MCP-FUNC
                MOVE   "HKNNUM-KEY2"      TO    ORC-DBPATH
@@ -17342,6 +17385,7 @@
            MOVE    "1001"               TO    SYS-1001-KANRICD.
            MOVE    "*"                  TO    SYS-1001-KBNCD.
            MOVE    LNK-SYU-SRYYMD       TO    ORC-DBYMD.
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1001-REC         TO    MCPDATA-REC.
            MOVE    "DBSELECT"           TO    MCP-FUNC.
            MOVE    "SYSKANRI-KEY"       TO    ORC-DBPATH.
@@ -17496,6 +17540,7 @@
       *****************************************************************
        TENSU-READ-SEC         SECTION.
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "TENSU-KEY"         TO  ORC-DBPATH

@@ -210,6 +210,7 @@
            MOVE    WRK-CONS-PRTKANRI-TBL-KEY
                                        TO  PRVKANRI-TBL-KEY
            MOVE    LINK-PTID           TO  PRVKANRI-TBL-GROUP
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PRVKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    PATH-TBL-PRVKANRI-KEY8
@@ -255,6 +256,7 @@
                                            SYS-1009-EDYUKYMD (7:2)
            MOVE    PATH-TBL-SYSKANRI-KEY
                                        TO  MCP-PATH
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1009-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -299,6 +301,7 @@
            MOVE    "HC06"              TO  RECE08-PRTID
            MOVE    "999999"            TO  RECE08-RECEYM
            MOVE    WRK-PTNUM           TO  RECE08-PTNUM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    RECE08-REC          TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    PATH-TBL-RECEPRT-DEL3
@@ -312,6 +315,7 @@
            MOVE    WRK-CONS-PRTKANRI-TBL-KEY
                                        TO  PRTDATA-TBL-KEY
            MOVE    LINK-PTID           TO  PRTDATA-TBL-GROUP
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PRTDATA-REC         TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    PATH-TBL-PRTDATA-DEL11
@@ -327,6 +331,7 @@
            MOVE    WRK-CONS-PRTKANRI-TBL-KEY
                                        TO  PRTKANRI-TBL-KEY
            MOVE    LINK-PTID           TO  PRTKANRI-TBL-GROUP
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PRTKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    PATH-TBL-PRTKANRI-DEL11
@@ -342,6 +347,7 @@
            MOVE    WRK-CONS-PRTKANRI-TBL-KEY
                                        TO  PRVKANRI-TBL-KEY
            MOVE    LINK-PTID           TO  PRVKANRI-TBL-GROUP
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PRVKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    PATH-TBL-PRVKANRI-DEL13

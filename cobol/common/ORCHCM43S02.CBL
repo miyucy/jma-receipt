@@ -489,6 +489,7 @@
            INTO    SYU-SRYYMD
            END-STRING
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUNOU-REC      TO  MCPDATA-REC
            MOVE    PATH-TBL-SYUNOU-KEY37
                                    TO  MCP-PATH

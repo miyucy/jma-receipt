@@ -49,6 +49,8 @@
        01  IN-REC          PIC X(01).
       *
        WORKING-STORAGE         SECTION.
+grpsys*
+grpsys COPY    "COMMON-SPA".
       *
       *    ファイル指定領域
        01  ASS-AREA.

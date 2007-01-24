@@ -42,6 +42,8 @@
       *
       *
        WORKING-STORAGE                     SECTION.
+grpsys*
+grpsys COPY    "COMMON-SPA".
       *
       *    ¥Õ¥é¥°ÎÎ°è
        01  FLG-AREA.
@@ -260,6 +262,7 @@
            MOVE    RSITUSAN-PTID           TO  NACCT-PTID
            MOVE    WRK-SRYYM               TO  NACCT-SRYYM
            MOVE    "1"                     TO  NACCT-ZAISKBKBN
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    NYUINACCT-REC           TO  MCPDATA-REC
            MOVE    PATH-TBL-NYUINACCT-KEY17
                                            TO  MCP-PATH
@@ -320,6 +323,7 @@
            MOVE    RSITUSAN-PTID           TO  NACCT-PTID
            MOVE    WRK-SRYYM               TO  NACCT-SRYYM
            MOVE    "5"                     TO  NACCT-ZAISKBKBN
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    NYUINACCT-REC           TO  MCPDATA-REC
            MOVE    PATH-TBL-NYUINACCT-KEY17
                                            TO  MCP-PATH
@@ -378,6 +382,7 @@
            MOVE    RSITUSAN-PTID   TO  PTNYUINRRK-PTID
            MOVE    WRK-TUKIEDYMD   TO  PTNYUINRRK-NYUINYMD
            MOVE    WRK-TUKISTYMD   TO  PTNYUINRRK-TAIINYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
            MOVE    PATH-TBL-PTNYUINRRK-KEY23
                                    TO  MCP-PATH
@@ -469,6 +474,7 @@
            MOVE    WRK-GETUMATUYMD TO  PTNYUINRRK-NYUINYMD
            MOVE    WRK-SHONUM      TO  PTNYUINRRK-SHONUM
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
            MOVE    PATH-TBL-PTNYUINRRK-KEY13
                                    TO  MCP-PATH

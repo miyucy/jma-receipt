@@ -45,6 +45,8 @@
       *FILE                        SECTION.
       *
        WORKING-STORAGE             SECTION.
+grpsys*
+grpsys COPY    "COMMON-SPA".
       *
       *    ¥Õ¥é¥°ÎÎ°è
        01  FLG-AREA.
@@ -430,6 +432,7 @@
            MOVE    SYOKIKSN-IN-SANTEISTYMD
                                        TO  NYUKHN-YUKOSTYMD
                                            NYUKHN-YUKOEDYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    NYUINKHN-REC        TO  MCPDATA-REC
            MOVE    "NYUINKHN-KEY"      TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC

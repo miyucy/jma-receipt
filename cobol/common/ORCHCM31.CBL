@@ -1031,6 +1031,7 @@
            MOVE    "*"             TO  SYS-1001-KBNCD
            MOVE    SPA-SYSYMD      TO  SYS-1001-STYUKYMD
                                        SYS-1001-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1001-REC    TO  MCPDATA-REC
       *
            MOVE    "tbl_syskanri"  TO  MCP-TABLE
@@ -1064,6 +1065,7 @@
            MOVE    "*"             TO  SYS-1002-KBNCD
            MOVE    SPA-SYSYMD      TO  SYS-1002-STYUKYMD
                                        SYS-1002-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1002-REC    TO  MCPDATA-REC
       *
            MOVE    "tbl_syskanri"  TO  MCP-TABLE
@@ -1094,6 +1096,7 @@
            INITIALIZE                  PTNUM-REC
            MOVE    SPA-HOSPID      TO  PTNUM-HOSPID
            MOVE    SPA-PTID        TO  PTNUM-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNUM-REC       TO  MCPDATA-REC
            MOVE    "tbl_ptnum"     TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
@@ -1123,6 +1126,7 @@
            INITIALIZE                  PTINF-REC
            MOVE    SPA-HOSPID      TO  PTINF-HOSPID
            MOVE    SPA-PTID        TO  PTINF-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC       TO  MCPDATA-REC
            MOVE    "tbl_ptinf"     TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
@@ -1166,6 +1170,7 @@
                    MOVE    "2"         TO  SYU-NYUGAIKBN
            END-EVALUATE
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUNOU-REC      TO  MCPDATA-REC
            MOVE    WRK-TABLE       TO  MCP-TABLE
            MOVE    WRK-PATH        TO  MCP-PATHNAME
@@ -1211,6 +1216,7 @@
            INITIALIZE                  HKNCOMBI-REC
            MOVE    SPA-HOSPID          TO  COMB-HOSPID
            MOVE    ORCHCM31-PTID       TO  COMB-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
            MOVE    "tbl_hkncombi"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -1249,9 +1255,9 @@
        910-DBSELECT-SEC          SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF        ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
@@ -1265,9 +1271,9 @@
        910-DBFETCH-SEC            SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        910-DBFETCH-EXT.
@@ -1278,9 +1284,9 @@
        910-DBCLOSECURSOR-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        910-DBCLOSECURSOR-EXT.

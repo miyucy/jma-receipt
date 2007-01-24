@@ -46,6 +46,8 @@
       *
       *
        WORKING-STORAGE             SECTION.
+grpsys*
+grpsys COPY    "COMMON-SPA".
       *
       *    ¥Õ¥é¥°ÎÎ°è
        01  FLG-AREA.
@@ -191,6 +193,7 @@
            MOVE    "*"                 TO  SYS-1001-KBNCD
            MOVE    LNK-FTNJGNCHK-SRYYM TO  ORC-DBYMD(1:6)
            MOVE    "01"                TO  ORC-DBYMD(7:2)
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1001-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
@@ -338,6 +341,7 @@
            INITIALIZE                        TNKRRK-REC
            MOVE    LNK-FTNJGNCHK-HOSPID  TO  TNKRRK-HOSPID
            MOVE    LNK-FTNJGNCHK-PTID    TO  TNKRRK-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TNKRRK-REC            TO  MCPDATA-REC
            MOVE    "DBSELECT"            TO  MCP-FUNC
            MOVE    "TNKRRK-KEY3"         TO  ORC-DBPATH
@@ -365,6 +369,7 @@
            INITIALIZE                        TSYRRK-REC
            MOVE    LNK-FTNJGNCHK-HOSPID  TO  TSYRRK-HOSPID
            MOVE    LNK-FTNJGNCHK-PTID    TO  TSYRRK-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TSYRRK-REC            TO  MCPDATA-REC
            MOVE    "DBSELECT"            TO  MCP-FUNC
            MOVE    "TSYRRK-KEY3"         TO  ORC-DBPATH
@@ -692,6 +697,7 @@
       *****************************************************************
        900-PTINF-READ-SEC         SECTION.
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC            TO  MCPDATA-REC
            MOVE    "DBSELECT"           TO  MCP-FUNC
            MOVE    "PTINF-KEY"          TO  ORC-DBPATH
@@ -774,6 +780,7 @@
       *****************************************************************
        910-HKNCOMBI-SELECT-SEC        SECTION.
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            CALL    "ORCMCPSUB"          USING
@@ -817,6 +824,7 @@
       *****************************************************************
        910-SYUNOU-SELECT-SEC        SECTION.
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            CALL    "ORCMCPSUB"          USING
@@ -860,6 +868,7 @@
       *****************************************************************
        910-HKNNUM-SELECT-SEC        SECTION.
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HKNNUM-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            CALL    "ORCMCPSUB"         USING

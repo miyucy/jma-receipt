@@ -221,6 +221,7 @@
            MOVE    "*"                 TO  SYS-1001-KBNCD
            MOVE    WRK-SRYYMD          TO  SYS-1001-STYUKYMD
                                            SYS-1001-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1001-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-KEY10-SEL-SEC
            MOVE    SYSKANRI-REC        TO  SYS-1001-REC
@@ -231,6 +232,7 @@
            MOVE    "*"                 TO  SYS-1002-KBNCD
            MOVE    WRK-SRYYMD          TO  SYS-1002-STYUKYMD
                                            SYS-1002-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1002-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-KEY10-SEL-SEC
            MOVE    SYSKANRI-REC        TO  SYS-1002-REC
@@ -241,6 +243,7 @@
            MOVE    "*"                 TO  SYS-4001-KBNCD
            MOVE    WRK-SRYYMD          TO  SYS-4001-STYUKYMD
                                            SYS-4001-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-4001-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-KEY10-SEL-SEC
            MOVE    SYSKANRI-REC        TO  SYS-4001-REC
@@ -263,6 +266,7 @@
            MOVE    "1013"              TO  SYS-1013-KANRICD
            MOVE    WRK-SRYYMD          TO  SYS-1013-STYUKYMD
                                            SYS-1013-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1013-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-KEY2-SEL-SEC
       *
@@ -435,6 +439,7 @@
            MOVE    WRK-SRYKA           TO  SYS-1005-KBNCD
            MOVE    WRK-SRYYMD          TO  SYS-1005-STYUKYMD
                                            SYS-1005-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1005-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-KEY10-SEL-SEC
       *
@@ -1026,6 +1031,7 @@
       *
            MOVE    ZERO                TO  FLG-HKNCOMBI
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
            MOVE    PATH-TBL-HKNCOMBI-KEY
                                        TO  MCP-PATH
@@ -1052,6 +1058,7 @@
       *
            MOVE    ZERO                TO  FLG-PTRSIINF
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTRSIINF-REC        TO  MCPDATA-REC
            MOVE    PATH-TBL-PTRSIINF-KEY
                                        TO  MCP-PATH
@@ -1078,6 +1085,7 @@
            INITIALIZE                  PTINF-REC
            MOVE    SPA-HOSPID      TO  PTINF-HOSPID
            MOVE    SPA-PTID        TO  PTINF-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC       TO  MCPDATA-REC
            MOVE    PATH-TBL-PTINF-KEY  TO  MCP-PATH
            PERFORM 910-DBSELECT-SEC
@@ -1108,6 +1116,7 @@
            INTO    WKSYU-SRYYMD
            END-STRING
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    WKSYUNOU-REC    TO  MCPDATA-REC
            MOVE    PATH-TBL-SYUNOU-KEY38
                                    TO  MCP-PATH

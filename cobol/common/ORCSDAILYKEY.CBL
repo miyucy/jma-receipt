@@ -39,6 +39,8 @@
       *FILE                        SECTION.
       *
        WORKING-STORAGE             SECTION.
+grpsys*
+grpsys COPY    "COMMON-SPA".
       *
       *    ¥Õ¥é¥°ÎÎ°è
        01  FLG-AREA.
@@ -159,6 +161,7 @@
       *
            MOVE    ZERO                TO  FLG-SYSKANRI
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    PATH-TBL-SYSKANRI-KEY10 TO  MCP-PATH
            PERFORM 910-DBSELECT-SEC

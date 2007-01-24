@@ -38,6 +38,8 @@
        FILE                        SECTION.
       *
        WORKING-STORAGE             SECTION.
+grpsys*
+grpsys COPY    "COMMON-SPA".
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -198,13 +200,14 @@
       *    °õºþ°ÌÃÖ
            MOVE    MKPRT-PRTNM         TO  SHELLTBL-ARG5
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC
            MOVE    "shell"             TO  MCP-TABLE
            MOVE    "shell"             TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        100-DIA-PRINT-EXT.
@@ -259,13 +262,14 @@
            MOVE    SYS-1044-OFFSET-X   TO  SHELLTBL-ARG6
            MOVE    SYS-1044-OFFSET-Y   TO  SHELLTBL-ARG7
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC
            MOVE    "shell"             TO  MCP-TABLE
            MOVE    "shell"             TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        200-MON-PRINT-EXT.
@@ -285,20 +289,21 @@
            END-STRING
            MOVE    "99999999"          TO  SYS-1044-STYUKYMD
            MOVE    "99999999"          TO  SYS-1044-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1044-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_syskanri"  TO  MCP-TABLE
                MOVE    "key3"          TO  MCP-PATHNAME
                MOVE    "DBFETCH"       TO  MCP-FUNC
-               CALL    "MONFUNC"       USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys         CALL "ORCDBMAIN" USING MCPAREA
+                                      MCPDATA-REC
+grpsys*                               COMMON-SPA
                IF      MCP-RC          =   ZERO
                    MOVE  MCPDATA-REC   TO  SYS-1044-REC
                    IF   (SYS-1044-FORMID  =   MKPRT-DIA  )  AND
@@ -316,9 +321,9 @@
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        201-OFFSET-GET-EXT.

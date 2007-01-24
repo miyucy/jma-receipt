@@ -43,6 +43,8 @@
        FILE                        SECTION.
       *
        WORKING-STORAGE SECTION.
+grpsys*
+grpsys COPY    "COMMON-SPA".
       *
       *    Åº¤¨»úÎÎ°è
        01  IDX-AREA.

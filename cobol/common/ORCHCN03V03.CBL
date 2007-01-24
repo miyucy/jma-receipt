@@ -328,6 +328,7 @@
            MOVE    ZERO                TO  SYS-1001-STYUKYMD
            MOVE    ALL "9"             TO  SYS-1001-EDYUKYMD
       *    システム管理検索
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1001-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
@@ -360,6 +361,7 @@
            MOVE    ZERO                TO  SYS-1002-STYUKYMD
            MOVE    ALL "9"             TO  SYS-1002-EDYUKYMD
       *    システム管理検索
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1002-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
@@ -411,6 +413,7 @@
            INITIALIZE                  SYS-4001-REC
            MOVE    "4001"              TO  SYS-4001-KANRICD
            MOVE    "*"                 TO  SYS-4001-KBNCD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-4001-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
@@ -441,6 +444,7 @@
            INITIALIZE                  SYS-5000-REC
            MOVE    "5000"              TO  SYS-5000-KANRICD
            MOVE    "*"                 TO  SYS-5000-KBNCD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-5000-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
@@ -532,6 +536,7 @@
            MOVE    ORCHCN03-DENPNUM (IDX-M)
                                        TO  SYU-DENPNUM
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
@@ -979,6 +984,7 @@
            MOVE    ZERO                TO  SYS-1005-STYUKYMD
            MOVE    ALL "9"             TO  SYS-1005-EDYUKYMD
       *    システム管理検索
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1005-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
@@ -1062,6 +1068,7 @@
            MOVE    "5001"              TO  SYS-5001-KANRICD
            MOVE    WRK-BTUNUM          TO  SYS-5001-KBNCD
       *    システム管理検索
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-5001-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
@@ -1219,6 +1226,7 @@
            MOVE    ZERO                TO  SYS-1013-STYUKYMD
            MOVE    ALL "9"             TO  SYS-1013-EDYUKYMD
       *    システム管理検索
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1013-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
@@ -1352,6 +1360,7 @@
            MOVE    SYU-HOSPID      TO  MISYU-HOSPID
            MOVE    SYU-PTID        TO  MISYU-PTID
            MOVE    "%"             TO  MISYU-SRYYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    MISYU-REC       TO  MCPDATA-REC
            MOVE    "SYUNOU-KEY6"   TO  ORC-DBPATH
            MOVE    "DBSELECT"      TO  MCP-FUNC
@@ -1446,6 +1455,7 @@
            MOVE    "*"             TO  SYS-1900-KBNCD
            MOVE    ORCHCN03-SYSYMD TO  SYS-1900-STYUKYMD
            MOVE    ORCHCN03-SYSYMD TO  SYS-1900-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1900-REC    TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-KEY10-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -1476,6 +1486,7 @@
                                    TO  SYS-1901-KBNCD
            MOVE    ORCHCN03-SYSYMD TO  SYS-1901-STYUKYMD
            MOVE    ORCHCN03-SYSYMD TO  SYS-1901-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1901-REC    TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-KEY10-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -1506,6 +1517,7 @@
                                    TO  SYS-1902-KBNCD
            MOVE    ORCHCN03-SYSYMD TO  SYS-1902-STYUKYMD
            MOVE    ORCHCN03-SYSYMD TO  SYS-1902-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1902-REC    TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-KEY10-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -1564,6 +1576,7 @@
       *****************************************************************
        900-PTINF-READ-SEC         SECTION.
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "PTINF-KEY"         TO  ORC-DBPATH
@@ -1624,6 +1637,7 @@
       *****************************************************************
        910-HKNCOMBI-READ-SEC         SECTION.
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
@@ -1664,6 +1678,7 @@
       *****************************************************************
        910-PTRSIINF-READ-SEC         SECTION.
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTRSIINF-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "PTRSIINF-KEY"      TO  ORC-DBPATH
@@ -1709,6 +1724,7 @@
            MOVE    SYU-HOSPID      TO  PTNYUINRRK-HOSPID
            MOVE    SYU-PTID        TO  PTNYUINRRK-PTID
            MOVE    SYU-DENPPRTYMD  TO  PTNYUINRRK-TENNYUYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
            MOVE    "tbl_ptnyuinrrk" TO MCP-TABLE
            MOVE    "key45"         TO  MCP-PATHNAME
@@ -1734,9 +1750,9 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF    ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
@@ -1751,9 +1767,9 @@
        910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
       *
@@ -1765,9 +1781,9 @@
        910-DBCLOSECURSOR-SEC                 SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
       *

@@ -37,6 +37,8 @@
        DATA                    DIVISION.
       *
        WORKING-STORAGE             SECTION.
+grpsys*
+grpsys COPY    "COMMON-SPA".
       *
       *    •´•¶•Û•»ŒŒ∞Ë
        01  FLG-AREA.
@@ -179,6 +181,7 @@
       *
            MOVE    PARAM-HOSPID        TO      JYURRK-HOSPID
            MOVE    PARAM-PTID          TO      JYURRK-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    JYURRK-REC          TO      MCPDATA-REC
            MOVE    "DBSELECT"          TO      MCP-FUNC
            MOVE    PATH-TBL-JYURRK-PRV-KEY31
@@ -215,6 +218,7 @@
            MOVE    PARAM-HOSPID        TO      SYU-HOSPID
            MOVE    PARAM-NYUGAIKBN     TO      SYU-NYUGAIKBN
            MOVE    PARAM-PTID          TO      SYU-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUNOU-REC          TO      MCPDATA-REC
            DISPLAY "take tmp db delete syunou st = " SYU-PTID "," 
                                            SYU-HOSPID ","
@@ -228,6 +232,7 @@
            MOVE    PARAM-HOSPID        TO      SMEI-HOSPID
            MOVE    PARAM-NYUGAIKBN     TO      SMEI-NYUGAIKBN
            MOVE    PARAM-PTID          TO      SMEI-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUMEI-REC          TO      MCPDATA-REC
            MOVE    "DBDELETE"          TO      MCP-FUNC
            MOVE    PATH-TBL-SYUMEI-PRV-DELPRV
@@ -238,6 +243,7 @@
            MOVE    PARAM-HOSPID        TO      SYUTTL-HOSPID
            MOVE    PARAM-NYUGAIKBN     TO      SYUTTL-NYUGAIKBN
            MOVE    PARAM-PTID          TO      SYUTTL-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUTTL-REC          TO      MCPDATA-REC
            MOVE    "DBDELETE"          TO      MCP-FUNC
            MOVE    PATH-TBL-SYUTOTAL-PRV-DELPRV
@@ -248,6 +254,7 @@
            MOVE    PARAM-HOSPID        TO      ACCT-HOSPID
            MOVE    PARAM-NYUGAIKBN     TO      ACCT-NYUGAIKBN
            MOVE    PARAM-PTID          TO      ACCT-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACCT-REC         TO      MCPDATA-REC
            MOVE    "DBDELETE"          TO      MCP-FUNC
            MOVE    PATH-TBL-SRYACCT-PRV-DELPRV
@@ -258,6 +265,7 @@
            MOVE    PARAM-HOSPID        TO      SRY-HOSPID
            MOVE    PARAM-NYUGAIKBN     TO      SRY-NYUGAIKBN
            MOVE    PARAM-PTID          TO      SRY-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACT-REC          TO      MCPDATA-REC
            MOVE    "DBDELETE"          TO      MCP-FUNC
            MOVE    PATH-TBL-SRYACT-PRV-DELPRV
@@ -268,6 +276,7 @@
            MOVE    PARAM-HOSPID        TO      SANTEI-HOSPID
            MOVE    ZERO                TO      SANTEI-NYUGAIKBN
            MOVE    PARAM-PTID          TO      SANTEI-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SANTEI-REC          TO      MCPDATA-REC
            MOVE    "DBDELETE"          TO      MCP-FUNC
            MOVE    PATH-TBL-SANTEI-PRV-DELPRV
@@ -278,6 +287,7 @@
            MOVE    PARAM-HOSPID        TO      JYURRK-HOSPID
            MOVE    PARAM-NYUGAIKBN     TO      JYURRK-NYUGAIKBN
            MOVE    PARAM-PTID          TO      JYURRK-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    JYURRK-REC          TO      MCPDATA-REC
            MOVE    "DBDELETE"          TO      MCP-FUNC
            MOVE    PATH-TBL-JYURRK-PRV-DELPRV
@@ -287,6 +297,7 @@
       *ø«Œ≈≤ Õ˙ŒÚ•ﬁ•π•ø
            MOVE    PARAM-HOSPID        TO      KARRK-HOSPID
            MOVE    PARAM-PTID          TO      KARRK-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYKARRK-REC        TO      MCPDATA-REC
            MOVE    "DBDELETE"          TO      MCP-FUNC
            MOVE    PATH-TBL-SRYKARRK-PRV-DELPRV
@@ -296,6 +307,7 @@
       *¥µº‘•≥•·•Û•»•ﬁ•π•ø
            MOVE    PARAM-HOSPID        TO      PTCOM-HOSPID
            MOVE    PARAM-PTID          TO      PTCOM-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTCOM-REC           TO      MCPDATA-REC
            MOVE    "DBDELETE"          TO      MCP-FUNC
            MOVE    PATH-TBL-PTCOM-PRV-DELPRV
@@ -305,6 +317,7 @@
       *¥µº‘•ﬁ•π•ø
            MOVE    PARAM-HOSPID        TO      PTINF-HOSPID
            MOVE    PARAM-PTID          TO      PTINF-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC           TO      MCPDATA-REC
            MOVE    "DBDELETE"          TO      MCP-FUNC
            MOVE    PATH-TBL-PTINF-PRV-DELPRV
@@ -314,6 +327,7 @@
            MOVE    PARAM-HOSPID        TO      ACCTP-HOSPID
            MOVE    PARAM-NYUGAIKBN     TO      ACCTP-NYUGAIKBN
            MOVE    PARAM-PTID          TO      ACCTP-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACCTPLUS-REC     TO      MCPDATA-REC
            MOVE    "DBDELETE"          TO      MCP-FUNC
            MOVE    PATH-TBL-SRYACCTPLUS-PRV-DEL1

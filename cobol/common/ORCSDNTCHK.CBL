@@ -38,6 +38,8 @@
        FILE                            SECTION.
       *
        WORKING-STORAGE                 SECTION.
+grpsys*
+grpsys COPY    "COMMON-SPA".
       *
       *    ¥Õ¥é¥°ÎÎ°è
        01  FLG-AREA.

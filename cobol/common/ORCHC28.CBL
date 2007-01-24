@@ -385,6 +385,7 @@
            MOVE  SHELL-ARG3            TO  SHELLTBL-ARG3
            MOVE  SHELL-ARG4            TO  SHELLTBL-ARG4
            MOVE  SHELL-ARG5            TO  SHELLTBL-ARG5
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE  SHELLTBL              TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC
            MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
@@ -456,6 +457,7 @@
            INITIALIZE                     PTINF-REC
            MOVE    SPA-HOSPID             TO  PTINF-HOSPID
            MOVE    ORCHC28-PTID(CNT-DAT)  TO  PTINF-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC              TO  MCPDATA-REC
            MOVE    "DBSELECT"             TO  MCP-FUNC
            MOVE    "PTINF-KEY"            TO  ORC-DBPATH

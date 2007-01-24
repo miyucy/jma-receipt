@@ -38,6 +38,8 @@
       *
        DATA                    DIVISION.
        WORKING-STORAGE             SECTION.
+grpsys*
+grpsys COPY    "COMMON-SPA".
       *
       *
       *    ¥Õ¥é¥°ÎÎ°è

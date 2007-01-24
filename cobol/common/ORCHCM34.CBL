@@ -919,6 +919,7 @@
            MOVE    ORCHCM34-SRYYM      TO  SYS-1001-STYUKYMD(1:6)
            MOVE    "01"                TO  SYS-1001-STYUKYMD(7:2)
            MOVE    SYS-1001-STYUKYMD   TO  SYS-1001-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1001-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -953,6 +954,7 @@
            MOVE    ORCHCM34-SRYYM      TO  SYS-5000-STYUKYMD(1:6)
            MOVE    "01"                TO  SYS-5000-STYUKYMD(7:2)
            MOVE    SYS-5000-STYUKYMD   TO  SYS-5000-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-5000-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -987,6 +989,7 @@
            MOVE    ORCHCM34-SRYYM      TO  SYS-4001-STYUKYMD(1:6)
            MOVE    "01"                TO  SYS-4001-STYUKYMD(7:2)
            MOVE    SYS-4001-STYUKYMD   TO  SYS-4001-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-4001-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -1021,6 +1024,7 @@
            MOVE    ORCHCM34-SRYYM      TO  SYS-4003-STYUKYMD(1:6)
            MOVE    "01"                TO  SYS-4003-STYUKYMD(7:2)
            MOVE    SYS-4003-STYUKYMD   TO  SYS-4003-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-4003-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -1064,6 +1068,7 @@
            INITIALIZE                      PTNUM-REC
            MOVE    SPA-HOSPID          TO  PTNUM-HOSPID
            MOVE    SPA-PTID            TO  PTNUM-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNUM-REC           TO  MCPDATA-REC
            MOVE    "tbl_ptnum"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -1087,6 +1092,7 @@
            INITIALIZE  PTINF-REC
            MOVE    SPA-HOSPID          TO  PTINF-HOSPID
            MOVE    SPA-PTID            TO  PTINF-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -1175,6 +1181,7 @@
            MOVE    WRK-SYMD            TO  PTNYUINRRK-NYUINYMD
            MOVE    ORCHCM34-SRYYM      TO  PTNYUINRRK-TAIINYMD
            MOVE    "01"                TO  PTNYUINRRK-TAIINYMD (7:2)
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
            MOVE    "key11"             TO  MCP-PATHNAME
@@ -1233,6 +1240,7 @@
            MOVE    PTNYUINRRK-TENNYUYMD
                                        TO  SYS-5001-STYUKYMD
            MOVE    SYS-5001-STYUKYMD   TO  SYS-5001-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-5001-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -1272,6 +1280,7 @@
            MOVE    SPA-PTID            TO  ACCT-PTID
            MOVE    ORCHCM34-SRYYM      TO  ACCT-SRYYM
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "tbl_sryacct"       TO  MCP-TABLE
            MOVE    "key23"             TO  MCP-PATHNAME
@@ -1386,6 +1395,7 @@
            MOVE    SPA-HOSPID          TO  HKN-HOSPID
            MOVE    SPA-SYSYMD          TO  HKN-TEKSTYMD
            MOVE    SPA-SYSYMD          TO  HKN-TEKEDYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HKNNUM-REC          TO  MCPDATA-REC
            MOVE    "tbl_hknnum"        TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
@@ -1523,6 +1533,7 @@
            MOVE    ORCHCM34-SRYYM      TO  SYS-STYUKYMD(1:6)
            MOVE    "01"                TO  SYS-STYUKYMD(7:2)
            MOVE    SYS-STYUKYMD        TO  SYS-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -1721,6 +1732,7 @@
            MOVE    ORCHCM34-NYUGAIKBN  TO  ACCT-NYUGAIKBN
            MOVE    ORCHCM34-SRYYM      TO  ACCT-SRYYM
            MOVE    9999                TO  ACCT-HKNCOMBI
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "tbl_sryacct"       TO  MCP-TABLE
            MOVE    "key22"             TO  MCP-PATHNAME
@@ -1810,6 +1822,7 @@
            MOVE    PTINF-HOSPID        TO  PTHKN-HOSPID
            MOVE    PTINF-PTID          TO  PTHKN-PTID
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTHKNINF-REC        TO  MCPDATA-REC
            MOVE    "tbl_pthkninf"      TO  MCP-TABLE
            MOVE    "key6"              TO  MCP-PATHNAME
@@ -2127,6 +2140,7 @@
            MOVE    PTINF-HOSPID        TO  PTKOH-HOSPID
            MOVE    PTINF-PTID          TO  PTKOH-PTID
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTKOHINF-REC        TO  MCPDATA-REC
            MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -2263,6 +2277,7 @@
            MOVE    WRK-SYMD            TO  PTBYO-SRYYMD
            MOVE    SPACE               TO  PTBYO-TENKIKBN
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
            MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
            MOVE    "key30"             TO  MCP-PATHNAME
@@ -2782,6 +2797,7 @@
            MOVE    SPA-PTID            TO  PTCOM-PTID
            MOVE    COMMENT-ZAINUM (COMMENT-IDX)
                                        TO  PTCOM-ZAINUM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTCOM-REC           TO  MCPDATA-REC
            MOVE    "tbl_ptcom"         TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -3695,6 +3711,7 @@
                    MOVE    ACCT-ZAINUM             TO  PTCOM-ZAINUM
                    MOVE    RSIJBI-SRYCD   (IDX19)  TO  PTCOM-SRYCD
                    MOVE    RSIJBI-INPUTNUM(IDX19)  TO  PTCOM-RENNUM
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    PTCOM-REC               TO  MCPDATA-REC
                    MOVE    "tbl_ptcom"             TO  MCP-TABLE
                    MOVE    "key"                   TO  MCP-PATHNAME
@@ -4167,6 +4184,7 @@
            MOVE    SRY-ZAINUM          TO  PTCOM-ZAINUM
            MOVE    SRY-SRYCD   (IDX9)  TO  PTCOM-SRYCD
            MOVE    SRY-INPUTNUM(IDX9)  TO  PTCOM-RENNUM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTCOM-REC           TO  MCPDATA-REC
            MOVE    "tbl_ptcom"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -4665,6 +4683,7 @@
            MOVE    WRK-SYMD            TO  PTNYUINRRK-NYUINYMD
            MOVE    ORCHCM34-SRYYM      TO  PTNYUINRRK-TAIINYMD
            MOVE    "01"                TO  PTNYUINRRK-TAIINYMD (7:2)
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
            MOVE    "key24"             TO  MCP-PATHNAME
@@ -6211,6 +6230,7 @@
                MOVE    TTNS-CHK-SRYCD      TO  TNS-SRYCD
                MOVE    TTNS-CHK-YMD        TO  TNS-YUKOSTYMD
                                                TNS-YUKOEDYMD
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
                MOVE    "tbl_tensu"         TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
@@ -6292,6 +6312,7 @@
            MOVE    ORCHCM34-NYUGAIKBN  TO  SRY-NYUGAIKBN
            MOVE    SPA-PTID            TO  SRY-PTID
            MOVE    ORCHCM34-SRYYM      TO  SRY-SRYYM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACT-REC          TO  MCPDATA-REC
            MOVE    "tbl_sryact"        TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
@@ -6352,6 +6373,7 @@
            MOVE    SPA-PTID            TO  ACCT-PTID
            MOVE    ORCHCM34-SRYYM      TO  ACCT-SRYYM
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "tbl_sryacct"       TO  MCP-TABLE
            MOVE    "key20"             TO  MCP-PATHNAME
@@ -6409,6 +6431,7 @@
            MOVE    ORCHCM34-SRYYM      TO  NACCT-SRYYM
            MOVE    "1"                 TO  NACCT-NYUGAIKBN
            MOVE    "5"                 TO  NACCT-ZAISKBKBN
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
            MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
            MOVE    "key17"             TO  MCP-PATHNAME
@@ -6515,6 +6538,7 @@
            MOVE    "31"                TO  PTNYUINRRK-TENNYUYMD
            MOVE    NACCT-SRYYM         TO  PTNYUINRRK-TENSTUYMD
            MOVE    "01"                TO  PTNYUINRRK-TENSTUYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
            MOVE    "key41"             TO  MCP-PATHNAME
@@ -6558,6 +6582,7 @@
            MOVE    SPA-HOSPID              TO  COMB-HOSPID
            MOVE    SPA-PTID                TO  COMB-PTID
            MOVE    WRK-HKNCOMBINUM         TO  COMB-HKNCOMBINUM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HKNCOMBI-REC            TO  MCPDATA-REC
            MOVE    "tbl_hkncombi"          TO  MCP-TABLE
            MOVE    "key"                   TO  MCP-PATHNAME
@@ -6582,9 +6607,9 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF    ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
@@ -6598,9 +6623,9 @@
        911-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        911-DBSELECT-EXT.
@@ -6611,9 +6636,9 @@
        910-DBFETCH-SEC                SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        910-DBFETCH-EXT.
@@ -6624,9 +6649,9 @@
        910-DBCLOSECURSOR-SEC               SECTION.
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        910-DBCLOSECURSOR-EXT.

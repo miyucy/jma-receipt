@@ -41,6 +41,8 @@
        FILE-CONTROL.
        DATA                    DIVISION.
        WORKING-STORAGE         SECTION.
+grpsys*
+grpsys COPY    "COMMON-SPA".
       *
       *    ¥Õ¥é¥°ÎÎ°è
       *
@@ -153,6 +155,7 @@
            MOVE    SPRT-RENNUM         TO  PRTKANRI-RENNUM
            MOVE    SPRT-TBL-GROUP      TO  PRTKANRI-TBL-GROUP
            MOVE    SPRT-SHORI-RENNUM   TO  PRTKANRI-SHORI-RENNUM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PRTKANRI-REC        TO  MCPDATA-REC
            PERFORM 910-PRTKANRI-INV-SEC
            IF      FLG-PRTKANRI        =  ZERO
@@ -206,6 +209,7 @@
                MOVE    SPRT-PRTNM          TO  PRTKANRI-PRTNM
            END-IF
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PRTKANRI-REC        TO  MCPDATA-REC
            MOVE    PATH-TBL-PRTKANRI-KEY
                                        TO  MCP-PATH
@@ -298,6 +302,7 @@
            MOVE    SPRT-PRTNM          TO  PRTDATA-PRTNM
            MOVE    SPRT-PRTDATA        TO  PRTDATA-PRTDATA
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PRTDATA-REC         TO  MCPDATA-REC
            MOVE    PATH-TBL-PRTDATA-KEY
                                        TO  MCP-PATH

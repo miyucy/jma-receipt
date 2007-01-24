@@ -211,6 +211,7 @@
            MOVE    "01"            TO  SYS-1001-STYUKYMD (7:2)
            MOVE    SYS-1001-STYUKYMD
                                    TO  SYS-1001-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1001-REC    TO  MCPDATA-REC
            MOVE    PATH-TBL-SYSKANRI-KEY10
                                    TO  WRK-DBPATH
@@ -227,6 +228,7 @@
            MOVE    "*"             TO  SYS-2005-KBNCD
            MOVE    SPA-SYSYMD      TO  SYS-2005-STYUKYMD
                                        SYS-2005-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-2005-REC    TO  MCPDATA-REC
            MOVE    PATH-TBL-SYSKANRI-KEY10
                                    TO  WRK-DBPATH
@@ -252,6 +254,7 @@
            MOVE    "*"             TO  SYS-1031-KBNCD
            MOVE    SPA-SYSYMD      TO  SYS-1031-STYUKYMD
                                        SYS-1031-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1031-REC    TO  MCPDATA-REC
            MOVE    PATH-TBL-SYSKANRI-KEY10
                                    TO  WRK-DBPATH
@@ -481,6 +484,7 @@
            MOVE    LINK-HKNKBN     TO  SHELLTBL-ARG32
            MOVE    LINK-SHORI-KBN  TO  SHELLTBL-ARG33
            MOVE    SPA-HOSPID      TO  SHELLTBL-ARG34
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    PATH-SHELL-SHELL

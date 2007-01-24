@@ -371,6 +371,7 @@
            MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID
            MOVE    SPA-PTID            TO  PTNYUINRRK-PTID
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
            MOVE    "key36"             TO  MCP-PATHNAME
@@ -478,6 +479,7 @@
            MOVE    ORCHC501-SRYYMD     TO  SYS-5007-STYUKYMD
            MOVE    ORCHC501-SRYYMD     TO  SYS-5007-EDYUKYMD
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-5007-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -663,6 +665,7 @@
       *    Ä¢É¼¶èÊ¬
            MOVE    WRK-PRTKBN          TO  ORDERPRT-PRTKBN
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ORDERPRT-REC        TO  MCPDATA-REC
            MOVE    "tbl_orderprt"      TO  MCP-TABLE
            MOVE    "key1"              TO  MCP-PATHNAME
@@ -1073,6 +1076,7 @@
       *    ¿ÇÎÅ¶èÊ¬
            MOVE    "98"                TO  ORDERPRT-SRYKBN
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ORDERPRT-REC        TO  MCPDATA-REC
            MOVE    "tbl_orderprt"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -1441,13 +1445,14 @@
       *    Ä¢É¼¶èÊ¬
            MOVE    WRK-PRTKBN          TO  ORDERPRT-PRTKBN
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ORDERPRT-REC        TO  MCPDATA-REC
            MOVE    "tbl_orderprt"      TO  MCP-TABLE
            MOVE    "del1"              TO  MCP-PATHNAME
            MOVE    "DBDELETE"          TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "ORCHC501 ORDERPRT DEL ERR:"  MCP-RC
                        ",KEY:" ORDERPRT-KEY
@@ -1514,6 +1519,7 @@
            MOVE    ORCHC501-SRYYMD     TO  SYS-STYUKYMD
            MOVE    ORCHC501-SRYYMD     TO  SYS-EDYUKYMD
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -1542,6 +1548,7 @@
       *****************************************************************
        900-PTINF-READ-SEC         SECTION.
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -1574,6 +1581,7 @@
            MOVE    WRK-SRYYMD          TO  TNS-YUKOSTYMD
                                            TNS-YUKOEDYMD
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -1634,9 +1642,9 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        910-DBSELECT-EXT.
@@ -1647,9 +1655,9 @@
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
       *
@@ -1662,9 +1670,9 @@
        990-DBCLOSE-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        990-DBCLOSE-EXT.

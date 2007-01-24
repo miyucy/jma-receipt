@@ -40,6 +40,8 @@
       *FILE                            SECTION.
       *
        WORKING-STORAGE                 SECTION.
+grpsys*
+grpsys COPY    "COMMON-SPA".
       *
       *    ¥Õ¥é¥°ÎÎ°è
        01  FLG-AREA.
@@ -157,6 +159,7 @@
            INITIALIZE                      PTNYUINRRK-REC
            MOVE    SNTYMD-HOSPID       TO  PTNYUINRRK-HOSPID
            MOVE    SNTYMD-PTID         TO  PTNYUINRRK-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "PTNYUINRRK-KEY2"   TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC

@@ -43,6 +43,8 @@
       *
       *
        WORKING-STORAGE                     SECTION.
+grpsys*
+grpsys COPY    "COMMON-SPA".
       *
       *    ¥Õ¥é¥°ÎÎ°è
        01  FLG-AREA.
@@ -498,6 +500,7 @@
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE     SYSKANRI-REC       TO  MCPDATA-REC
            PERFORM  910-DBSELECT-SEC
            IF    ( MCP-RC           =  ZERO )
@@ -540,6 +543,7 @@
            MOVE    SBTUSENTEI-PTID     TO  PTNYUINRRK-PTID
            MOVE    WRK-MMEDYMD         TO  PTNYUINRRK-TENNYUYMD
            MOVE    WRK-MMSTYMD         TO  PTNYUINRRK-TENSTUYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
            MOVE    "key41"             TO  MCP-PATHNAME
@@ -580,9 +584,9 @@
        910-DBSELECT-SEC                     SECTION.
       *
            MOVE    "DBSELECT"           TO  MCP-FUNC
-           CALL    "MONFUNC"                USING
-                                            MCPAREA
-                                            MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF    ( MCP-RC          =    ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
@@ -597,9 +601,9 @@
        910-DBFETCH-SEC                     SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MONFUNC"                USING
-                                            MCPAREA
-                                            MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
       *
@@ -611,9 +615,9 @@
        910-DBCLOSECURSOR-SEC               SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MONFUNC"                USING
-                                            MCPAREA
-                                            MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
       *

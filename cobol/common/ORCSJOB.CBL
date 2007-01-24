@@ -44,6 +44,8 @@
        FILE-CONTROL.
        DATA                    DIVISION.
        WORKING-STORAGE         SECTION.
+grpsys*
+grpsys COPY    "COMMON-SPA".
       *
       *    フラグ領域
       *
@@ -173,13 +175,14 @@
            MOVE    WRK-SYSYMD-8        TO  JOB-STARTYMD
            ACCEPT  JOB-STARTTIME       FROM TIME
            MOVE    "DBINSERT"          TO  MCP-FUNC
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    JOBKANRI-REC        TO  MCPDATA-REC
            MOVE    "tbl_jobkanri"      TO  MCP-TABLE
            MOVE    "key"
                                        TO  MCP-PATHNAME
-           CALL    "MONFUNC"            USING
-                                       MCPAREA
-                                       MCPDATA-REC      
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            IF      MCP-RC     =   ZERO
                CONTINUE
@@ -204,6 +207,7 @@
                MOVE    JOB-SHELLID         TO  WRK-SHELLID
                MOVE    SPACE               TO  JOB-SHELLID(7:)
            END-IF
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    JOBKANRI-REC        TO  MCPDATA-REC
            IF      JOB-SHELLID(1:6)    =   "MSTMNT"
                                        OR  "PRGMNT"
@@ -231,14 +235,15 @@
                MOVE    JOB-YOBI            TO  WRK-JOB-YOBI
            END-IF
            MOVE    JOB-ERRCD           TO  WRK-JOB-ERRCD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    WRK-JOBKANRI-REC    TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    "tbl_jobkanri"      TO  MCP-TABLE
            MOVE    "upd1"
                                        TO  MCP-PATHNAME
-           CALL    "MONFUNC"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            IF      MCP-RC     =   ZERO
                MOVE  MCP-RC            TO  SJOBKANRI-RETURN
@@ -258,6 +263,7 @@
        130-STS-SEC                 SECTION.
       *
       *    レコード存在チェック
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    JOBKANRI-REC        TO  MCPDATA-REC
            PERFORM 910-JOBKANRI-INV2-SEC
            IF       FLG-JOBKANRI       NOT  =  ZERO
@@ -271,14 +277,15 @@
                                        FROM TIME
            MOVE    JOB-PGID            TO  WRK-JOB-PGID
            MOVE    JOB-SHELLMSG        TO  WRK-JOB-SHELLMSG
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    WRK-JOBKANRI-REC    TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    "tbl_jobkanri"      TO  MCP-TABLE
            MOVE    "upd1"
                                        TO  MCP-PATHNAME
-           CALL    "MONFUNC"            USING
-                                       MCPAREA
-                                       MCPDATA-REC      
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            IF      MCP-RC     =   ZERO
                MOVE  MCP-RC            TO  SJOBKANRI-RETURN
@@ -298,6 +305,7 @@
        160-STE-SEC                 SECTION.
       *
       *    レコード存在チェック
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    JOBKANRI-REC        TO  MCPDATA-REC
            PERFORM 910-JOBKANRI-INV2-SEC
            IF       FLG-JOBKANRI       NOT  =  ZERO
@@ -315,14 +323,15 @@
                                            JOB-UPDCNT                            
            COMPUTE WRK-JOB-STEPCNT     =   WRK-JOB-STEPCNT +
                                            1                            
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    WRK-JOBKANRI-REC    TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    "tbl_jobkanri"      TO  MCP-TABLE
            MOVE    "upd1"
                                        TO  MCP-PATHNAME
-           CALL    "MONFUNC"            USING
-                                       MCPAREA
-                                       MCPDATA-REC      
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            IF      MCP-RC     =   ZERO
                MOVE  MCP-RC            TO  SJOBKANRI-RETURN
@@ -341,6 +350,7 @@
        140-DEL-SEC                 SECTION.
       *
       *    レコード存在チェック
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    JOBKANRI-REC        TO  MCPDATA-REC
            PERFORM 910-JOBKANRI-INV2-SEC
            IF       FLG-JOBKANRI       NOT  =  ZERO
@@ -349,14 +359,15 @@
            END-IF
       *
       *    レコード更新
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    JOBKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_jobkanri"      TO  MCP-TABLE
            MOVE    "del11"
                                        TO  MCP-PATHNAME
-           CALL    "MONFUNC"            USING
-                                       MCPAREA
-                                       MCPDATA-REC      
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            IF      MCP-RC     =   ZERO
                MOVE  MCP-RC            TO  SJOBKANRI-RETURN
@@ -375,6 +386,7 @@
        170-DELALL-SEC                 SECTION.
       *
       *    レコード存在チェック
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    JOBKANRI-REC        TO  MCPDATA-REC
            PERFORM 910-JOBKANRI-INV-SEC
            IF       FLG-JOBKANRI       NOT  =  ZERO
@@ -383,14 +395,15 @@
            END-IF
       *
       *    レコード更新
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    JOBKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_jobkanri"      TO  MCP-TABLE
            MOVE    "del12"
                                        TO  MCP-PATHNAME
-           CALL    "MONFUNC"            USING
-                                       MCPAREA
-                                       MCPDATA-REC      
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            IF      MCP-RC     =   ZERO
                MOVE  MCP-RC            TO  SJOBKANRI-RETURN
@@ -409,6 +422,7 @@
        150-CHK-SEC                 SECTION.
       *
       *    レコード存在チェック
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    JOBKANRI-REC        TO  MCPDATA-REC
            PERFORM 910-JOBKANRI-INV2-SEC
            IF       FLG-JOBKANRI       NOT  =  ZERO
@@ -429,6 +443,7 @@
        180-STM-SEC                 SECTION.
       *
       *    レコード存在チェック
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    JOBKANRI-REC        TO  MCPDATA-REC
            PERFORM 910-JOBKANRI-INV2-SEC
            IF       FLG-JOBKANRI       NOT  =  ZERO
@@ -446,14 +461,15 @@
            IF    ( JOB-SHELLMSG    NOT =   SPACE )
                MOVE    JOB-SHELLMSG    TO  WRK-JOB-SHELLMSG
            END-IF
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    WRK-JOBKANRI-REC    TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    "tbl_jobkanri"      TO  MCP-TABLE
            MOVE    "upd1"
                                        TO  MCP-PATHNAME
-           CALL    "MONFUNC"            USING
-                                       MCPAREA
-                                       MCPDATA-REC      
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            IF      MCP-RC     =   ZERO
                MOVE  MCP-RC            TO  SJOBKANRI-RETURN
@@ -471,6 +487,7 @@
       *****************************************************************
        190-STP-SEC                 SECTION.
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    JOBKANRI-REC        TO  MCPDATA-REC
            PERFORM 910-JOBKANRI-INV2-SEC
            IF      FLG-JOBKANRI   NOT  =  ZERO
@@ -483,14 +500,15 @@
                CONTINUE
            ELSE
                MOVE    JOB-STOPFLG         TO  WRK-JOB-STOPFLG
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    WRK-JOBKANRI-REC    TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "tbl_jobkanri"      TO  MCP-TABLE
                MOVE    "upd1"
                                            TO  MCP-PATHNAME
-               CALL    "MONFUNC"            USING
-                                           MCPAREA
-                                           MCPDATA-REC
+grpsys         CALL "ORCDBMAIN" USING MCPAREA
+                                      MCPDATA-REC
+grpsys*                               COMMON-SPA
       *
                IF      MCP-RC     =   ZERO
                    MOVE  MCP-RC            TO  SJOBKANRI-RETURN
@@ -511,6 +529,7 @@
        200-CANCEL-SEC                 SECTION.
       *
       *    レコード存在チェック
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    JOBKANRI-REC        TO  MCPDATA-REC
            PERFORM 910-JOBKANRI-INV2-SEC
            IF      FLG-JOBKANRI   NOT  =  ZERO
@@ -525,14 +544,15 @@
            MOVE    JOB-YOBI            TO  WRK-JOB-YOBI
            MOVE    JOB-ERRCD           TO  WRK-JOB-ERRCD
            MOVE    JOB-STOPFLG         TO  WRK-JOB-STOPFLG
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    WRK-JOBKANRI-REC    TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    "tbl_jobkanri"      TO  MCP-TABLE
            MOVE    "upd1"
                                        TO  MCP-PATHNAME
-           CALL    "MONFUNC"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            IF      MCP-RC     =   ZERO
                MOVE  MCP-RC            TO  SJOBKANRI-RETURN
@@ -551,6 +571,7 @@
        210-CANCEL2-SEC                 SECTION.
       *
       *    レコード存在チェック
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    JOBKANRI-REC        TO  MCPDATA-REC
            PERFORM 910-JOBKANRI-INV2-SEC
            IF      FLG-JOBKANRI   NOT  =  ZERO
@@ -562,14 +583,15 @@
            MOVE    JOB-YOBI            TO  WRK-JOB-YOBI
            MOVE    JOB-ERRCD           TO  WRK-JOB-ERRCD
            MOVE    JOB-STOPFLG         TO  WRK-JOB-STOPFLG
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    WRK-JOBKANRI-REC    TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    "tbl_jobkanri"      TO  MCP-TABLE
            MOVE    "upd1"
                                        TO  MCP-PATHNAME
-           CALL    "MONFUNC"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            IF      MCP-RC     =   ZERO
                MOVE  MCP-RC            TO  SJOBKANRI-RETURN
@@ -603,17 +625,17 @@
            MOVE    "tbl_jobkanri"      TO  MCP-TABLE
            MOVE    "key"
                                        TO  MCP-PATHNAME
-           CALL    "MONFUNC"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"       TO  MCP-FUNC
                MOVE    "tbl_jobkanri"      TO  MCP-TABLE
                MOVE    "key"
                                        TO  MCP-PATHNAME
-               CALL    "MONFUNC"        USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys         CALL "ORCDBMAIN" USING MCPAREA
+                                      MCPDATA-REC
+grpsys*                               COMMON-SPA
       *????
                DISPLAY "FETCH=" MCP-RC    
       *???? 
@@ -631,9 +653,9 @@
            MOVE    "key"
                                        TO  MCP-PATHNAME
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           CALL    "MONFUNC"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        910-JOBKANRI-INV-EXT.
@@ -648,17 +670,17 @@
            MOVE    "tbl_jobkanri"      TO  MCP-TABLE
            MOVE    "key2"
                                        TO  MCP-PATHNAME
-           CALL    "MONFUNC"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"       TO  MCP-FUNC
                MOVE    "tbl_jobkanri"  TO  MCP-TABLE
                MOVE    "key2"
                                        TO  MCP-PATHNAME
-               CALL    "MONFUNC"        USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys         CALL "ORCDBMAIN" USING MCPAREA
+                                      MCPDATA-REC
+grpsys*                               COMMON-SPA
       *????
                DISPLAY "FETCH=" MCP-RC    
       *???? 
@@ -676,9 +698,9 @@
            MOVE    "key2"
                                        TO  MCP-PATHNAME
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           CALL    "MONFUNC"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        910-JOBKANRI-INV2-EXT.
@@ -692,9 +714,9 @@
            MOVE    "DBCOMMIT"          TO  MCP-FUNC.
            MOVE    LOW-VALUE           TO  MCP-TABLE.
            MOVE    LOW-VALUE           TO  MCP-PATHNAME.
-           CALL    "MONFUNC"          USING
-                                        MCPAREA
-                                        MCPDATA-REC.
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        900-DBCOMMIT-EXT.
@@ -708,9 +730,9 @@
            MOVE    "DBSTART"           TO  MCP-FUNC.
            MOVE    LOW-VALUE           TO  MCP-TABLE.
            MOVE    LOW-VALUE           TO  MCP-PATHNAME.
-           CALL    "MONFUNC"             USING
-                                         MCPAREA
-                                         MCPDATA-REC.
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            .
        900-DBSTART-EXT.
            EXIT.

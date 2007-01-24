@@ -36,6 +36,8 @@
       *
       *
        WORKING-STORAGE             SECTION.
+grpsys*
+grpsys COPY    "COMMON-SPA".
       *
       *    ¥Õ¥é¥°ÎÎ°è
        01  FLG-AREA.
@@ -680,6 +682,7 @@
                                            QDTCHK-SELYUKOEDYMD
            MOVE    SDTCHK01-CDKBN      TO  QDTCHK-SELCDKBN
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    QDTCHK-REC          TO  MCPDATA-REC
            MOVE    WRK-MCP-PATH        TO  MCP-PATH
            PERFORM 911-DBSELECT-SEC
