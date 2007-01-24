@@ -17,10 +17,6 @@ alter table TBL_PTNYUINRRK
    add column SENTEIKBN  character(1);
 
 
---  ゼロ設定                       --
-alter table TBL_SYUNOU
-   alter GRP_HAKHOUFLG set default 0;
-
 
 --  最大枝番号セット
 update tbl_ptnyuinrrk set maxedanum = (select max(b.rrkedanum) from tbl_ptnyuinrrk b where tbl_ptnyuinrrk.hospid = b.hospid and tbl_ptnyuinrrk.ptid = b.ptid and tbl_ptnyuinrrk.rrknum = b.rrknum group by b.hospid,b.ptid,b.rrknum);
