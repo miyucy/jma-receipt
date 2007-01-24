@@ -336,10 +336,6 @@
            MOVE    "all"               TO  MCP-PATHNAME 
            PERFORM 990-DBCLOSE-SEC
       *
-      *----(03.04.01)--ADD-START---
-           MOVE    0                   TO  SPA-GMN-DURATION
-      *----(03.04.01)--ADD-END-----
-      *
       *    ＪＯＢ管理検索
            PERFORM 820-JOBKANRI-READ-SEC
       *
@@ -374,9 +370,6 @@
                            MOVE    "マスタ更新中です。"
                                                 TO  SPA-GMN-MSG1(ID1:18)
                            MOVE    "blue"       TO  SPA-GMN-MSG1-STYLE
-      *----(03.04.01)--ADD-START---
-                           MOVE    5            TO  SPA-GMN-DURATION
-      *----(03.04.01)--ADD-END-----
                        END-IF
                    END-IF
                END-IF
@@ -409,9 +402,6 @@
                            MOVE    "マスタ更新中です。"
                                                 TO  SPA-GMN-MSG2(ID1:18)
                            MOVE    "blue"       TO  SPA-GMN-MSG2-STYLE
-      *----(03.04.01)--ADD-START---
-                           MOVE    5            TO  SPA-GMN-DURATION
-      *----(03.04.01)--ADD-END-----
                        END-IF
                    END-IF
                  END-IF
@@ -419,6 +409,30 @@
            ELSE
                MOVE    SPACE           TO  SPA-GMN-MSG2
            END-IF
+      *
+      *----(03.04.01)--ADD-START---
+           MOVE    0           TO  SPA-GMN-DURATION
+      *
+           IF    ( FLG-SJOBKANRI       =   ZERO )  AND
+                 ( JOB-ERRCD(1:2)  NOT =   "99" )  AND
+                 ( JOB-ERRCD(1:2)  NOT =   "01" )
+               IF    ( JOB-ENDTIME     =   SPACE)  OR
+                     ( JOB-ENDYMD      =   SPACE)
+                   MOVE    5           TO  SPA-GMN-DURATION
+               END-IF
+           END-IF
+      *
+           IF    (  FLG-SJOBKANRI1     =   ZERO )  AND
+                 ( JOB1-ERRCD(1:2) NOT =   "99" )  AND
+                 ( JOB1-ERRCD(1:2) NOT =   "98" )  AND
+                 ( JOB1-ERRCD(1:2) NOT =   "01" )
+               IF    ( JOB1-ENDTIME    =   SPACE)  OR
+                     ( JOB1-ENDYMD     =   SPACE)
+                   MOVE    5           TO  SPA-GMN-DURATION
+               END-IF
+           END-IF
+      *----(03.04.01)--ADD-END-----
+      *
            .
        310-DBHENSYU-EXT.
            EXIT.
