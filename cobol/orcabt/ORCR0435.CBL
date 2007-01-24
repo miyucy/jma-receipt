@@ -619,6 +619,7 @@
                                          TO  SYS-1005-KBNCD
              MOVE    RECE41-SRYYM        TO  ORC-DBYMD(1:6)
              MOVE    "01"                TO  ORC-DBYMD(7:2)
+grpsys*      MOVE SPA-HOSPNUM TO -HOSPNUM
              MOVE    SYS-1005-REC        TO  MCPDATA-REC
              MOVE    "DBSELECT"          TO  MCP-FUNC
              MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH

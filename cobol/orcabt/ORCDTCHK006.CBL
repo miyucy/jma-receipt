@@ -834,6 +834,7 @@
            MOVE    "31"                TO  PTNYUINRRK-TENNYUYMD
            MOVE    ORCBSD01-SRYYM      TO  PTNYUINRRK-TENSTUYMD
            MOVE    "01"                TO  PTNYUINRRK-TENSTUYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    PATH-TBL-PTNYUINRRK-KEY41    TO  MCP-PATH
            PERFORM 910-DBSELECT-SEC
@@ -876,6 +877,7 @@
            MOVE    ORCBSD01-SRYYM      TO  NACCT-SRYYM
            MOVE    "1"                 TO  NACCT-NYUGAIKBN
            MOVE    "5"                 TO  NACCT-ZAISKBKBN
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
            MOVE    PATH-TBL-NYUINACCT-KEY27    TO  MCP-PATH
            PERFORM 910-DBSELECT-SEC
@@ -917,6 +919,7 @@
            MOVE    WRK-PARA-HOSPID         TO  COMB-HOSPID
            MOVE    NACCT-PTID              TO  COMB-PTID
            MOVE    WRK-COMB-HKNCOMBINUM    TO  COMB-HKNCOMBINUM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HKNCOMBI-REC            TO  MCPDATA-REC
            MOVE    PATH-TBL-HKNCOMBI-KEY   TO  MCP-PATH
            PERFORM 910-DBSELECT-SEC

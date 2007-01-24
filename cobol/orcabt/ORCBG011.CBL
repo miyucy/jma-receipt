@@ -577,6 +577,7 @@
            INITIALIZE                  SYS-1009-REC
            MOVE    "1009"              TO  SYS-1009-KANRICD
            MOVE    "*"                 TO  SYS-1009-KBNCD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1009-REC        TO  MCPDATA-REC
            MOVE    SPA-SYSYMD          TO  ORC-DBYMD
            MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
@@ -626,6 +627,7 @@
            MOVE    ZERO                TO  FLG-SYSKANRI
       *
            MOVE    "1005"              TO  SYS-1005-KANRICD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1005-REC        TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY5"     TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
@@ -864,6 +866,7 @@
                MOVE    BD003-EDSRYYMD      TO  BD003-NYUHEN-YMD
            END-IF
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    BD003-REC               TO  MCPDATA-REC
       *
            MOVE    "BD003-KEY2"            TO  WRK-DBPATH
@@ -985,6 +988,7 @@
       *
            MOVE    KEY-HOSPID          TO  PTINF-HOSPID
            MOVE    KEY-PTID            TO  PTINF-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "PTINF-KEY"         TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
@@ -1151,6 +1155,7 @@
            MOVE    BG01101-NYUGAIKBN   TO  SYU-NYUGAIKBN
            MOVE    BG01101-PTID        TO  SYU-PTID
            MOVE    BG01101-DENPNUM     TO  SYU-DENPNUM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "SYUNOU-KEY"        TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC

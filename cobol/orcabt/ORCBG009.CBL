@@ -397,6 +397,7 @@
            INITIALIZE                  SYS-1001-REC
            MOVE    "1001"              TO  SYS-1001-KANRICD
            MOVE    "*"                 TO  SYS-1001-KBNCD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1001-REC        TO  MCPDATA-REC
            PERFORM 800-SYSKANRI-READ-SEC
            IF          FLG-SYSKANRI    =   ZERO
@@ -413,6 +414,7 @@
            INITIALIZE                  SYS-1002-REC
            MOVE    "1002"              TO  SYS-1002-KANRICD
            MOVE    "*"                 TO  SYS-1002-KBNCD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1002-REC        TO  MCPDATA-REC
            PERFORM 800-SYSKANRI-READ-SEC
            IF          FLG-SYSKANRI    =   ZERO
@@ -467,6 +469,7 @@
                INITIALIZE                  SYS-1009-REC
                MOVE    "1009"              TO  SYS-1009-KANRICD
                MOVE    "*"                 TO  SYS-1009-KBNCD
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SYS-1009-REC        TO  MCPDATA-REC
                PERFORM 800-SYSKANRI-READ-SEC
                IF      FLG-SYSKANRI        =   ZERO
@@ -643,6 +646,7 @@
        220-MAIN-ACCT-SEC           SECTION.
       *
       *    ÂÐ¾Ý¿ÇÎÅÇ¯·î¤Ç¸¡º÷
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SRYACCT-KEY7"      TO  ORC-DBPATH
@@ -693,6 +697,7 @@
            MOVE    ACCT-SRYYM          TO  SRY-SRYYM
            MOVE    ACCT-ZAINUM         TO  SRY-ZAINUM
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACT-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
@@ -1282,6 +1287,7 @@
            INITIALIZE                  PTINF-REC
            MOVE    PARA-HOSPID         TO  PTINF-HOSPID
            MOVE    TOKEI-PTID          TO  PTINF-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "PTINF-KEY"         TO  ORC-DBPATH
@@ -1323,6 +1329,7 @@
       *****************************************************************
        900-TNS-READ-SEC          SECTION.
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "TENSU-KEY"         TO  ORC-DBPATH
@@ -1367,6 +1374,7 @@
       *****************************************************************
        900-TENSUPLUS-READ-SEC      SECTION.
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "TENSUPLUS-KEY"     TO  ORC-DBPATH
@@ -1412,6 +1420,7 @@
       *
            INITIALIZE                  RECE10-REC
            MOVE    PARA-DENPPRTYM      TO  RECE10-SRYYM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SEIKYU-ALL2"       TO  ORC-DBPATH

@@ -292,6 +292,7 @@
            INITIALIZE                  SYS-1009-REC
            MOVE    "1009"              TO  SYS-1009-KANRICD
            MOVE    "*"                 TO  SYS-1009-KBNCD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1009-REC        TO  MCPDATA-REC
            PERFORM 800-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -389,6 +390,7 @@
            MOVE    WRK-PARA-SRYYM-END  TO  PTINF-CREYMD(1:6)
            MOVE    "31"                TO  PTINF-CREYMD(7:2)
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    PATH-TBL-PTINF-KEY10    TO  MCP-PATH
            PERFORM 910-DBSELECT-SEC
@@ -447,6 +449,7 @@
            MOVE    WRK-PARA-SRYYM-END  TO  PTINF-CREYMD(1:6)
            MOVE    "31"                TO  PTINF-CREYMD(7:2)
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    PATH-TBL-PTINF-KEY15
                                        TO  MCP-PATH

@@ -46,6 +46,8 @@
        01  RECEERR-REC             PIC X(200).
       *
        WORKING-STORAGE             SECTION.
+grpsys*
+grpsys COPY    "COMMON-SPA".
       *
       *    確認リスト
            COPY    "HCMSL80.INC".
@@ -358,6 +360,7 @@
                *   CONST-CHK-MAX
                +   CNT-CD
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    CHK-REC             TO  MCPDATA-REC
            MOVE    PATH-TBL-CHK-UPD2   TO  MCP-PATH
            PERFORM 910-DBUPDATE-SEC
@@ -384,6 +387,7 @@
                                        CHK-UPYMD
            MOVE    SMCNDATE-HMS    TO  CHK-UPHMS
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    CHK-REC         TO  MCPDATA-REC
            MOVE    PATH-TBL-CHK-KEY    TO  MCP-PATH
            PERFORM 910-DBINSERT-SEC
@@ -602,6 +606,7 @@
       *
            MOVE    ZERO            TO  FLG-CHKSND-KEY2
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    CHKSND-REC          TO  MCPDATA-REC
            MOVE    PATH-TBL-CHKSND-KEY2    TO  MCP-PATH
            PERFORM 910-DBSELECT-SEC
@@ -638,6 +643,7 @@
            MOVE    ZERO                TO  FLG-CHKSND
       *
            INITIALIZE                  CHKSND-REC
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    CHKSND-REC          TO  MCPDATA-REC
            MOVE    PATH-TBL-CHKSND-KEY14  TO  MCP-PATH
            PERFORM 910-DBSELECT-SEC
@@ -690,6 +696,7 @@
            MOVE    CHKSND-YUKOSTYMD    TO  CHK-YUKOEDYMD
            MOVE    CHKSND-CDKBN        TO  CHK-CDKBN
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    CHK-REC             TO  MCPDATA-REC
            MOVE    PATH-TBL-CHK-KEY3   TO  MCP-PATH
            PERFORM 910-DBSELECT-SEC
@@ -717,6 +724,7 @@
            MOVE    WRK-TNS-SRYCD   TO  TNS-SRYCD
            MOVE    WRK-TNS-YMD     TO  TNS-YUKOSTYMD
                                        TNS-YUKOEDYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TNS-TENSU-REC   TO  MCPDATA-REC
            MOVE    PATH-TBL-TENSU-KEY  TO  MCP-PATH
            PERFORM 910-DBSELECT-SEC

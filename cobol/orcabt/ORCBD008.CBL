@@ -363,6 +363,7 @@
            INITIALIZE                  SYS-1001-REC
            MOVE    "1001"          TO  SYS-1001-KANRICD
            MOVE    "*"             TO  SYS-1001-KBNCD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1001-REC    TO  MCPDATA-REC
            PERFORM 800-SYSKANRI-READ-SEC
       *
@@ -865,6 +866,7 @@
                MOVE    "%"                     TO  SYU-NYUGAIKBN
            END-EVALUATE
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYU-REC         TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
            MOVE    WRK-PATH        TO  MCP-PATH
@@ -978,6 +980,7 @@
       *****************************************************************
        900-PTINF-READ-SEC          SECTION.
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
            MOVE    "PTINF-KEY"     TO  ORC-DBPATH
@@ -1019,6 +1022,7 @@
       *****************************************************************
        900-PTNUM-READ-SEC          SECTION.
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNUM-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
            MOVE    "PTNUM-KEY"     TO  ORC-DBPATH
@@ -1062,6 +1066,7 @@
       *****************************************************************
        900-PTHKNINF-READ-SEC       SECTION.
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTHKNINF-REC    TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
            MOVE    "PTHKNINF-KEY"  TO  ORC-DBPATH
@@ -1104,6 +1109,7 @@
       *****************************************************************
        900-HKNCOMBI-READ-SEC       SECTION.
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HKNCOMBI-REC    TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
            MOVE    "HKNCOMBI-KEY"  TO  ORC-DBPATH

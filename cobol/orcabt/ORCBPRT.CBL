@@ -71,6 +71,8 @@
        01  RECEERR-REC             PIC X(200). 
       *
        WORKING-STORAGE             SECTION.
+grpsys*
+grpsys COPY    "COMMON-SPA".
       *
       *    °õºþÍÑ¥Ç¡¼¥¿ Ì¾¾ÎÎÎ°è 
            COPY    "CPCOMMONPRT.INC".
@@ -256,6 +258,7 @@
            INITIALIZE                  SYS-1031-REC
            MOVE    "1031"              TO  SYS-1031-KANRICD
            MOVE    "*"                 TO  SYS-1031-KBNCD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1031-REC        TO  MCPDATA-REC
            PERFORM 800-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -318,6 +321,7 @@
                MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
       *         
                MOVE    HC01PARA        TO  SHELLTBL-ARG1
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SHELLTBL        TO  MCPDATA-REC
                MOVE    "SHELL"         TO  MCP-FUNC
                MOVE    PATH-SHELL-SHELL
@@ -377,6 +381,7 @@
       *    °õºþ¥Õ¥é¥°¥»¥Ã¥È
            MOVE    "1"                 TO  PRTDATA-PRTFLG
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PRTDATA-REC         TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    PATH-TBL-PRTDATA-KEY
@@ -402,6 +407,7 @@
        2003-PRTKANRI-UPD-SEC          SECTION.
       *
            MOVE    "1"                 TO  PRTKANRI-PRTFLG
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PRTKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    PATH-TBL-PRTKANRI-KEY
@@ -498,6 +504,7 @@
                                        TO  PRTKANRI-TBL-KEY
            MOVE    LNK-PRTKANRI-TBL-GROUP
                                        TO  PRTKANRI-TBL-GROUP
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PRTKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    PATH-TBL-PRTKANRI-KEY2
@@ -570,6 +577,7 @@
            MOVE    WRK-PARA-STPAGE     TO  PRTDATAXX-STPAGE
            MOVE    WRK-PARA-EDPAGE     TO  PRTDATAXX-EDPAGE
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PRTDATA-REC         TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    PATH-TBL-PRTDATA-KEY2

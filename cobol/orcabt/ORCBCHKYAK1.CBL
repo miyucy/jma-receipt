@@ -71,6 +71,8 @@
        01  RECEERR-REC             PIC X(200).
       *
        WORKING-STORAGE             SECTION.
+grpsys*
+grpsys COPY    "COMMON-SPA".
       *
       *    診療行為コードワーク
            COPY    "CPCOMMONDAT2.INC"
@@ -498,6 +500,7 @@
                                            CHKSND-UPYMD
                MOVE    SMCNDATE-HMS    TO  CHKSND-UPHMS
       *
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    CHKSND-REC      TO  MCPDATA-REC
                MOVE    "tbl_chksnd"    TO   MCP-TABLE
                MOVE    "key"           TO   MCP-PATHNAME
@@ -925,6 +928,7 @@
            INITIALIZE                  ICD-REC
            MOVE    ZERO                TO  FLG-INPUTCD
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ICD-REC             TO  MCPDATA-REC
            MOVE    "tbl_inputcd"       TO   MCP-TABLE
            MOVE    "all"               TO   MCP-PATHNAME
@@ -963,6 +967,7 @@
            MOVE    "600000000"         TO  SRY-SRYCD (1)
            MOVE    "699999999"         TO  SRY-SRYCD (2)
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACT-REC          TO  MCPDATA-REC
            MOVE    "tbl_sryact"        TO   MCP-TABLE
            MOVE    "key13"             TO   MCP-PATHNAME
@@ -1001,6 +1006,7 @@
            INITIALIZE                  CHKSND-REC
            MOVE    "1"                 TO  CHKSND-CHKKBN
            MOVE    WRK-SRYCD           TO  CHKSND-SRYCD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    CHKSND-REC          TO  MCPDATA-REC
            MOVE    "tbl_chksnd"        TO   MCP-TABLE
            MOVE    "key6"              TO   MCP-PATHNAME
@@ -1029,6 +1035,7 @@
            INITIALIZE                  TEKIOUBYOMEI-REC
            MOVE    "1"                 TO  TEKBYO-CHKKBN
            MOVE    WRK-SRYCD           TO  TEKBYO-SRYCD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TEKIOUBYOMEI-REC    TO  MCPDATA-REC
            MOVE    "tbl_tekioubyomei"  TO   MCP-TABLE
            MOVE    "key2"              TO   MCP-PATHNAME
@@ -1071,6 +1078,7 @@
            MOVE    WRK-TNS-SRYCD       TO  TNS-SRYCD
            MOVE    WRK-TNS-YMD         TO  TNS-YUKOSTYMD
                                            TNS-YUKOEDYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensu"         TO   MCP-TABLE
            MOVE    "key"               TO   MCP-PATHNAME
@@ -1094,9 +1102,9 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF        ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
@@ -1109,9 +1117,9 @@
        910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            .
        910-DBFETCH-EXT.
            EXIT.
@@ -1121,9 +1129,9 @@
        910-DBCLOSECURSOR-SEC                 SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        910-DBCLOSECURSOR-EXT.
@@ -1134,9 +1142,9 @@
        910-DBINSERT-SEC                SECTION.
       *
            MOVE    "DBINSERT"          TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            .
        910-DBINSERT-EXT.
            EXIT.
@@ -1148,16 +1156,16 @@
            MOVE    LOW-VALUE           TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBOPEN"            TO  MCP-FUNC.
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            MOVE    LOW-VALUE           TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBSTART"           TO  MCP-FUNC.
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            .
        100-DBOPEN-EXT.
            EXIT.
@@ -1169,16 +1177,16 @@
            MOVE    LOW-VALUE           TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBCOMMIT"          TO  MCP-FUNC.
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            MOVE    LOW-VALUE           TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            .
        900-DBDISCONNECT-EXT.
            EXIT.

@@ -38,6 +38,8 @@
        FILE                            SECTION.
       *
        WORKING-STORAGE                 SECTION.
+grpsys*
+grpsys COPY    "COMMON-SPA".
       *
        01  DTCHK-RC                    PIC S9(09).
       *

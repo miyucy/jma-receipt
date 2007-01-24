@@ -294,6 +294,7 @@
            MOVE    "*"                 TO  SYS-1001-KBNCD
            MOVE    WRK-PARA-SRYYM      TO  ORC-DBYMD (1:6)
            MOVE    "01"                TO  ORC-DBYMD (7:2)
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1001-REC        TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
@@ -356,6 +357,7 @@
            CALL    "ORCSDAY"       USING   STS-AREA-DAY
                                            LNK-DAY7-AREA
            MOVE    LNK-DAY7-KOYOMI     TO  PTNYUINRRK-NYUINYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "PTNYUINRRK-KEY27"  TO  ORC-DBPATH
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -449,6 +451,7 @@
            MOVE    "1"                 TO  NACCT-NYUGAIKBN
            MOVE    PTNYUINRRK-PTID     TO  NACCT-PTID
            MOVE    WRK-PARA-SRYYM      TO  NACCT-SRYYM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
            MOVE    "NYUINACCT-KEY7"    TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
@@ -575,6 +578,7 @@
            INITIALIZE                      PTNUM-REC
            MOVE    WRK-PARA-HOSPID     TO  PTNUM-HOSPID
            MOVE    PTNYUINRRK-PTID     TO  PTNUM-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNUM-REC           TO  MCPDATA-REC
            MOVE    "PTNUM-KEY"         TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
@@ -598,6 +602,7 @@
            INITIALIZE                      PTINF-REC
            MOVE    WRK-PARA-HOSPID     TO  PTINF-HOSPID
            MOVE    PTNYUINRRK-PTID     TO  PTINF-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "PTINF-KEY"         TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
@@ -624,6 +629,7 @@
            MOVE    PTNYUINRRK-BTUNUM         TO  SYS-5001-KBNCD
            MOVE    WRK-PARA-SRYYM      TO  ORC-DBYMD
            MOVE    "01"                TO  ORC-DBYMD (7 :)
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-5001-REC        TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
@@ -710,6 +716,7 @@
            MOVE    PTNYUINRRK-NYUINKA  TO  SYS-1005-KBNCD
            MOVE    WRK-PARA-SRYYM      TO  ORC-DBYMD
            MOVE    "01"                TO  ORC-DBYMD (7 :)
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1005-REC        TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC

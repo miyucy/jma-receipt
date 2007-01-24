@@ -347,6 +347,7 @@
            INITIALIZE                  SYS-1001-REC
            MOVE    "1001"          TO  SYS-1001-KANRICD
            MOVE    "*"             TO  SYS-1001-KBNCD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1001-REC    TO  MCPDATA-REC
            PERFORM 800-SYSKANRI-READ-SEC
            IF          FLG-SYSKANRI    =   ZERO
@@ -1042,6 +1043,7 @@
            INITIALIZE                  SYS-1005-REC
            MOVE    "1005"          TO  SYS-1005-KANRICD
            MOVE    WRK-SRYKA       TO  SYS-1005-KBNCD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1005-REC    TO  MCPDATA-REC
       *
       *    システム管理読み込み
@@ -1279,6 +1281,7 @@
            INITIALIZE                  PTNUM-REC
            MOVE    PARA-HOSPID     TO  PTNUM-HOSPID
            MOVE    TOKEI-PTID      TO  PTNUM-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNUM-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
            MOVE    "PTNUM-KEY"     TO  ORC-DBPATH
@@ -1323,6 +1326,7 @@
            INITIALIZE                  PTINF-REC
            MOVE    PARA-HOSPID     TO  PTINF-HOSPID
            MOVE    TOKEI-PTID      TO  PTINF-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
            MOVE    "PTINF-KEY"     TO  ORC-DBPATH
@@ -1372,6 +1376,7 @@
            MOVE    TOKEI-PTID      TO  JYURRK-PTID
            MOVE    "2"             TO  JYURRK-NYUGAIKBN
            MOVE    WRK-YUKOENDYMD  TO  JYURRK-SRYYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    JYURRK-REC      TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
            MOVE    "JYURRK-KEY25"  TO  ORC-DBPATH
@@ -1419,6 +1424,7 @@
       *     MOVE    PTINF-RRKNUM    TO  PTNYUINRRK-RRKNUM
       *     MOVE    PTINF-RRKEDANUM TO  PTNYUINRRK-RRKEDANUM
            MOVE    WRK-SYSYMD      TO  PTNYUINRRK-NYUINYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
       *     MOVE    "PTNYUINRRK-KEY"
@@ -1478,6 +1484,7 @@
            END-IF
            MOVE    WRK-YUKOSTRYMD  TO  BD003-STSRYYMD
            MOVE    WRK-YUKOENDYMD  TO  BD003-EDSRYYMD 
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    BD003-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
            MOVE    "BD003-KEY"     TO  ORC-DBPATH
@@ -1549,6 +1556,7 @@
            END-IF
            MOVE    WRK-YUKOSTRYMD  TO  BD003-STSRYYMD
            MOVE    WRK-YUKOENDYMD  TO  BD003-EDSRYYMD 
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    BD003-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
            MOVE    "BD003-KEY3"    TO  ORC-DBPATH

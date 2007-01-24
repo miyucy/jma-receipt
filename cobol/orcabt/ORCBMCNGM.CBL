@@ -443,6 +443,7 @@
            MOVE    ZERO                TO  FLG-SYSKANRI
            MOVE    SPACE               TO  SYS-1001-REC
            MOVE    "1001"              TO  SYS-1001-KANRICD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1001-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
@@ -520,6 +521,7 @@
            MOVE    "99999999"          TO  JYURRK-UPSRYYMD
       *
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "JYURRK-KEY21"      TO  ORC-DBPATH
@@ -569,6 +571,7 @@
            MOVE    JYURRK-SRYYMD       TO  PTNYUINRRK-TENNYUYMD
            MOVE    JYURRK-SRYYMD       TO  PTNYUINRRK-TENSTUYMD
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "PTNYUINRRK-KEY3"   TO  ORC-DBPATH
@@ -619,6 +622,7 @@
            MOVE    JYURRK-REC          TO  HZN-JYURRK-REC
            MOVE    "2"                 TO  JYURRK-NYUGAIKBN
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "JYURRK-KEY22"      TO  ORC-DBPATH
@@ -667,6 +671,7 @@
            MOVE    JYURRK-NYUGAIKBN    TO  SYU-NYUGAIKBN
            MOVE    JYURRK-DENPNUM      TO  SYU-DENPNUM
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
@@ -685,6 +690,7 @@
       *
                PERFORM 2009-SYUNOUMEI-SEC
       *
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SYUNOU-REC          TO  MCPDATA-REC
                MOVE    "DBDELETE"          TO  MCP-FUNC
                MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
@@ -699,6 +705,7 @@
       *
                MOVE    HZN-SYUNOU-REC      TO  SYUNOU-REC
                MOVE    "2"                 TO  SYU-NYUGAIKBN
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SYUNOU-REC          TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
@@ -712,6 +719,7 @@
                END-IF
            END-IF
       *    ¼õ¿ÇÍúÎò
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "JYURRK-KEY"        TO  ORC-DBPATH
@@ -726,6 +734,7 @@
       *
            MOVE    "2"                 TO  JYURRK-NYUGAIKBN
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "JYURRK-KEY"        TO  ORC-DBPATH
@@ -756,6 +765,7 @@
            MOVE    SYU-PTID            TO  SMEI-PTID
            MOVE    SYU-DENPNUM         TO  SMEI-DENPNUM
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUMEI-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SYUMEI-KEY2"       TO  ORC-DBPATH
@@ -772,6 +782,7 @@
            PERFORM
                UNTIL    FLG-SYUMEI     =   1
       *
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SYUMEI-REC          TO  MCPDATA-REC
                MOVE    "DBDELETE"          TO  MCP-FUNC
                MOVE    "SYUMEI-KEY"        TO  ORC-DBPATH
@@ -786,6 +797,7 @@
       *
                MOVE    "2"                 TO  SMEI-NYUGAIKBN
       *
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SYUMEI-REC          TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "SYUMEI-KEY"        TO  ORC-DBPATH
@@ -819,6 +831,7 @@
            MOVE    JYURRK-SRYYMD(1:6)  TO  ACCT-SRYYM
            MOVE    JYURRK-ZAINUM (IDX) TO  ACCT-ZAINUM
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SRYACCT-KEY5"      TO  ORC-DBPATH
@@ -844,6 +857,7 @@
                MOVE    ACCT-SRYYM          TO  SRY-SRYYM
                MOVE    ACCT-ZAINUM         TO  SRY-ZAINUM
       *
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SRYACT-REC          TO  MCPDATA-REC
                MOVE    "DBSELECT"          TO  MCP-FUNC
                MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
@@ -861,6 +875,7 @@
       *
                    MOVE    SRYACT-REC         TO  HZN-SRYACT-REC
       *
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    SRYACT-REC          TO  MCPDATA-REC
                    MOVE    "DBDELETE"          TO  MCP-FUNC
                    MOVE    "SRYACT-KEY"        TO  ORC-DBPATH
@@ -875,6 +890,7 @@
       *
                    MOVE    HZN-SRYACT-REC      TO  SRYACT-REC
                    MOVE    "2"                 TO  SRY-NYUGAIKBN
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    SRYACT-REC          TO  MCPDATA-REC
                    MOVE    "DBINSERT"          TO  MCP-FUNC
                    MOVE    "SRYACT-KEY"        TO  ORC-DBPATH
@@ -893,6 +909,7 @@
       *
                MOVE    SRYACCT-REC         TO  HZN-SRYACCT-REC
       *
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SRYACCT-REC         TO  MCPDATA-REC
                MOVE    "DBDELETE"          TO  MCP-FUNC
                MOVE    "SRYACCT-KEY"       TO  ORC-DBPATH
@@ -907,6 +924,7 @@
       *
                MOVE    HZN-SRYACCT-REC     TO  SRYACCT-REC
                MOVE    "2"                 TO  ACCT-NYUGAIKBN
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SRYACCT-REC         TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "SRYACCT-KEY"       TO  ORC-DBPATH
@@ -942,6 +960,7 @@
            MOVE    JYURRK-NYUGAIKBN    TO  SYU-NYUGAIKBN
            MOVE    JYURRK-DENPNUM      TO  SYU-DENPNUM
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
@@ -969,6 +988,7 @@
            MOVE    JYURRK-NYUGAIKBN    TO  SYU-NYUGAIKBN
            MOVE    JYURRK-DENPNUM      TO  SYU-DENPNUM
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
@@ -987,6 +1007,7 @@
            MOVE    SYU-NYUGAIKBN       TO  SMEI-NYUGAIKBN
            MOVE    SYU-PTID            TO  SMEI-PTID
            MOVE    SYU-DENPNUM         TO  SMEI-DENPNUM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUMEI-REC          TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "SYUMEI-DEL2"       TO  ORC-DBPATH
@@ -1000,6 +1021,7 @@
            END-IF
       *
       *    ¼õ¿ÇÍúÎòºï½ü
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "JYURRK-KEY"        TO  ORC-DBPATH
@@ -1031,6 +1053,7 @@
                MOVE    JYURRK-SRYYMD(1:6)  TO  ACCT-SRYYM
                MOVE    JYURRK-ZAINUM (IDX) TO  ACCT-ZAINUM
       *
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SRYACCT-REC         TO  MCPDATA-REC
                MOVE    "DBSELECT"          TO  MCP-FUNC
                MOVE    "SRYACCT-KEY5"      TO  ORC-DBPATH
@@ -1089,6 +1112,7 @@
                        MOVE    ACCT-SRYKA          TO  SRY-SRYKA
                        MOVE    ACCT-SRYYM          TO  SRY-SRYYM
                        MOVE    ACCT-ZAINUM         TO  SRY-ZAINUM
+grpsys*                MOVE SPA-HOSPNUM TO -HOSPNUM
                        MOVE    SRYACT-REC          TO  MCPDATA-REC
                        MOVE    "DBDELETE"          TO  MCP-FUNC
                        MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
@@ -1101,6 +1125,7 @@
                             ",KEY:" SRY-KEY
                        END-IF
       *
+grpsys*                MOVE SPA-HOSPNUM TO -HOSPNUM
                        MOVE    SRYACCT-REC         TO  MCPDATA-REC
                        MOVE    "DBDELETE"          TO  MCP-FUNC
                        MOVE    "SRYACCT-KEY"       TO  ORC-DBPATH
@@ -1113,6 +1138,7 @@
                        END-IF
                    ELSE
       *
+grpsys*                MOVE SPA-HOSPNUM TO -HOSPNUM
                        MOVE    SRYACCT-REC         TO  MCPDATA-REC
                        MOVE    "DBUPDATE"          TO  MCP-FUNC
                        MOVE    "SRYACCT-KEY"       TO  ORC-DBPATH
@@ -1157,6 +1183,7 @@
                MOVE    JYURRK-SRYYMD(1:6)  TO  SRY-SRYYM
                MOVE    JYURRK-ZAINUM (IDX) TO  SRY-ZAINUM
       *
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SRYACT-REC          TO  MCPDATA-REC
                MOVE    "DBSELECT"          TO  MCP-FUNC
                MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
@@ -1271,6 +1298,7 @@
            MOVE    "1"                 TO  SYU-NYUGAIKBN
            MOVE    "________"          TO  SYU-SRYYMD
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SYUNOU-KEY15"      TO  ORC-DBPATH
@@ -1288,6 +1316,7 @@
                UNTIL   FLG-SYUNOU          =   1
                IF      SYU-SKYEDYMD        =   "99999999"
       *
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SYUNOU-REC          TO  MCPDATA-REC
                MOVE    "DBDELETE"          TO  MCP-FUNC
                MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
@@ -1306,6 +1335,7 @@
            MOVE    SYU-NYUGAIKBN       TO  SMEI-NYUGAIKBN
            MOVE    SYU-PTID            TO  SMEI-PTID
            MOVE    SYU-DENPNUM         TO  SMEI-DENPNUM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUMEI-REC          TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "SYUMEI-DEL2"       TO  ORC-DBPATH
@@ -1402,6 +1432,7 @@
            MOVE    JYURRK-HOSPID       TO  PTNUM-HOSPID
            MOVE    JYURRK-PTID         TO  PTNUM-PTID
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNUM-REC           TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "PTNUM-KEY"         TO  ORC-DBPATH
@@ -1574,6 +1605,7 @@
       *****************************************************************
        900-PTINF-READ-SEC         SECTION.
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "PTINF-KEY"         TO  ORC-DBPATH
@@ -1662,6 +1694,7 @@
            MOVE    ZERO                TO  TNS-YUKOSTYMD
            MOVE    ALL "9"             TO  TNS-YUKOEDYMD
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "TENSU-KEY"         TO  ORC-DBPATH

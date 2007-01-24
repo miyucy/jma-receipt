@@ -794,6 +794,7 @@
            MOVE    "RECEPTX"           TO  PRVKANRI-TBL-KEY
            MOVE    WRK-PARA-PTID       TO  WRK-PTID-X
            MOVE    WRK-PTID            TO  PRVKANRI-TBL-GROUP
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PRVKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    PATH-TBL-PRVKANRI-KEY8
@@ -1014,6 +1015,7 @@
            MOVE    WRK-PARA-A8          TO      WRK-SRYYM
            MOVE    "% "                 TO      WRK-SRYDD
            MOVE    WRK-SRYYMD           TO      JYURRK-SRYYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    JYURRK-REC           TO      MCPDATA-REC
            MOVE    "DBDELETE"           TO      MCP-FUNC
            MOVE    PATH-TBL-JYURRK-DEL2
@@ -1035,6 +1037,7 @@
            MOVE    WRK-PARA-PTID        TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      ACCT-PTID
            MOVE    WRK-PARA-A8          TO      ACCT-SRYYM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACCT-REC          TO      MCPDATA-REC
            MOVE    "DBDELETE"           TO      MCP-FUNC
            MOVE    PATH-TBL-SRYACCT-DEL3
@@ -1057,13 +1060,14 @@
            MOVE    WRK-PARA-PTID        TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      SANTEI-PTID
            MOVE    WRK-PARA-A8          TO      SANTEI-SRYYM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SANTEI-REC           TO      MCPDATA-REC
            MOVE    "tbl_santei"         TO  MCP-TABLE
            MOVE    "del2"               TO  MCP-PATHNAME
            MOVE    "DBDELETE"           TO      MCP-FUNC
-           CALL    "MONFUNC"            USING
-                                        MCPAREA
-                                        MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            .
        20011-REAL-DB-DELETE-EXT.
            EXIT.
@@ -1078,6 +1082,7 @@
            MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      SRY-PTID
            MOVE    WRK-PARA-A8          TO      SRY-SRYYM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACT-REC           TO      MCPDATA-REC
            MOVE    "DBDELETE"           TO      MCP-FUNC
            MOVE    PATH-TBL-SRYACT-DEL12
@@ -1100,6 +1105,7 @@
            MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      SRY-PTID
            MOVE    WRK-PARA-A8          TO      SRY-SRYYM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACT-REC           TO      MCPDATA-REC
            MOVE    "DBSELECT"           TO      MCP-FUNC
            MOVE    PATH-TBL-SRYACT-KEY4
@@ -1117,6 +1123,7 @@
                PERFORM  UNTIL
                         (FLG-SRYACT         =    1)
            DISPLAY "take act delete loop   "
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    SRYACT-REC  TO      MCPDATA-REC
                    MOVE    "DBDELETE"   TO      MCP-FUNC
                    MOVE    PATH-TBL-SRYACT-KEY
@@ -1252,6 +1259,7 @@
            MOVE    WRK-PARA-NYUGAIKBN   TO      ACCT-NYUGAIKBN
            MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      ACCT-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACCT-REC          TO      MCPDATA-REC
            MOVE    "DBSELECT"           TO      MCP-FUNC
            MOVE    PATH-TBL-SRYACCT-PRV-KEY40
@@ -1268,6 +1276,7 @@
                PERFORM  UNTIL
                         (FLG-SRYACCT         =    1)
            DISPLAY "take acct insert   "
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    SRYACCT-REC  TO      MCPDATA-REC
                    PERFORM 20011-SRYACCT-DB-MAKE-SEC
                    MOVE    PATH-TBL-SRYACCT-PRV-KEY40
@@ -1292,6 +1301,7 @@
            MOVE    WRK-PARA-NYUGAIKBN   TO      SRY-NYUGAIKBN
            MOVE    WRK-PARA-PTID        TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      SRY-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACT-REC           TO      MCPDATA-REC
            MOVE    "DBSELECT"           TO      MCP-FUNC
            MOVE    PATH-TBL-SRYACT-PRV-KEY12
@@ -1308,6 +1318,7 @@
                PERFORM  UNTIL
                         (FLG-SRYACT         =    1)
            DISPLAY "take act insert   "
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    SRYACT-REC  TO      MCPDATA-REC
                    MOVE    "DBINSERT"   TO      MCP-FUNC
                    MOVE    PATH-TBL-SRYACT-KEY
@@ -1336,6 +1347,7 @@
            MOVE    ZERO                 TO      SANTEI-NYUGAIKBN
            MOVE    WRK-PARA-PTID        TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      SANTEI-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SANTEI-REC           TO      MCPDATA-REC
            MOVE    "DBSELECT"           TO      MCP-FUNC
            MOVE    PATH-TBL-SANTEI-PRV-KEY2
@@ -1351,6 +1363,7 @@
                PERFORM  900-SANTEIPRV-READ-SEC
                PERFORM  UNTIL
                         (FLG-SANTEI         =    1)
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    SANTEI-REC   TO      MCPDATA-REC
                 IF SANTEI-SRYYM         <       WRK-PARA-A8
                    CONTINUE
@@ -1383,6 +1396,7 @@
            MOVE    WRK-PARA-NYUGAIKBN   TO      JYURRK-NYUGAIKBN
            MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      JYURRK-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    JYURRK-REC           TO      MCPDATA-REC
            MOVE    "DBSELECT"           TO      MCP-FUNC
            MOVE    PATH-TBL-JYURRK-PRV-KEY30
@@ -1399,6 +1413,7 @@
                PERFORM  UNTIL
                         (FLG-JYURRK         =    1)
            DISPLAY "take jyurrk insert   "
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    JYURRK-REC   TO      MCPDATA-REC
                    PERFORM  20011-JYURRK-DB-MAKE-SEC
                    MOVE    PATH-TBL-JYURRK-PRV-KEY30
@@ -1422,6 +1437,7 @@
            MOVE    WRK-PARA-HOSPID      TO      KARRK-HOSPID
            MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      KARRK-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYKARRK-REC         TO      MCPDATA-REC
            MOVE    "DBSELECT"           TO      MCP-FUNC
            MOVE    PATH-TBL-SRYKARRK-PRV-KEY2
@@ -1437,6 +1453,7 @@
                PERFORM  900-SRYKARRKPRV-READ-SEC
                PERFORM  UNTIL
                         (FLG-SRYKARRK      =    1)
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    SRYKARRK-REC TO      MCPDATA-REC
                IF  KARRK-CREYMD         =       "99999999"
                    MOVE    "DBDELETE"   TO      MCP-FUNC
@@ -1471,6 +1488,7 @@
            MOVE    WRK-PARA-HOSPID      TO      PTCOM-HOSPID
            MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      PTCOM-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTCOM-REC            TO      MCPDATA-REC
            MOVE    "DBSELECT"           TO      MCP-FUNC
            MOVE    PATH-TBL-PTCOM-PRV-KEY3
@@ -1493,6 +1511,7 @@
                    DISPLAY "take ptcom org del start = "
                                                 PTCOM-ZAINUM
                    MOVE    PTCOM-ZAINUM TO      WRK-ZAINUM
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    PTCOM-REC    TO      MCPDATA-REC
                    MOVE    "DBDELETE"   TO      MCP-FUNC
                    MOVE    PATH-TBL-PTCOM-DEL11
@@ -1502,6 +1521,7 @@
                        DISPLAY "take ptcom del er " PTCOM-REC(1:100)
                    END-IF
                END-IF
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    PTCOM-REC    TO      MCPDATA-REC
                IF  PTCOM-CREYMD         =       "99999999"
                    MOVE    "DBDELETE"   TO      MCP-FUNC
@@ -1759,6 +1779,7 @@
            MOVE    WRK-PARA-NYUGAIKBN   TO      SYU-NYUGAIKBN
            MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      SYU-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUNOU-REC           TO      MCPDATA-REC
            DISPLAY "take tmp db delete syunou st = " SYU-PTID "," 
                                            SYU-HOSPID ","
@@ -1773,6 +1794,7 @@
            MOVE    WRK-PARA-NYUGAIKBN   TO      SMEI-NYUGAIKBN
            MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      SMEI-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUMEI-REC           TO      MCPDATA-REC
            MOVE    "DBDELETE"           TO      MCP-FUNC
            MOVE    PATH-TBL-SYUMEI-PRV-DELPRV
@@ -1785,6 +1807,7 @@
            MOVE    WRK-PARA-NYUGAIKBN   TO      SYUTTL-NYUGAIKBN
            MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      SYUTTL-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUTTL-REC           TO      MCPDATA-REC
            MOVE    "DBDELETE"           TO      MCP-FUNC
            DISPLAY "take tmp db delete syutotal st = " SYU-PTID "," 
@@ -1797,6 +1820,7 @@
            MOVE    WRK-PARA-NYUGAIKBN   TO      ACCT-NYUGAIKBN
            MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      ACCT-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACCT-REC          TO      MCPDATA-REC
            MOVE    "DBDELETE"           TO      MCP-FUNC
            MOVE    PATH-TBL-SRYACCT-PRV-DELPRV
@@ -1809,6 +1833,7 @@
            MOVE    WRK-PARA-NYUGAIKBN   TO      SRY-NYUGAIKBN
            MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      SRY-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACT-REC           TO      MCPDATA-REC
            MOVE    "DBDELETE"           TO      MCP-FUNC
            MOVE    PATH-TBL-SRYACT-PRV-DELPRV
@@ -1822,6 +1847,7 @@
            MOVE    ZERO                 TO      SANTEI-NYUGAIKBN
            MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      SANTEI-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SANTEI-REC           TO      MCPDATA-REC
            MOVE    "DBDELETE"           TO      MCP-FUNC
            MOVE    PATH-TBL-SANTEI-PRV-DELPRV
@@ -1834,6 +1860,7 @@
            MOVE    WRK-PARA-NYUGAIKBN   TO      JYURRK-NYUGAIKBN
            MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      JYURRK-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    JYURRK-REC           TO      MCPDATA-REC
            MOVE    "DBDELETE"           TO      MCP-FUNC
            MOVE    PATH-TBL-JYURRK-PRV-DELPRV
@@ -1845,6 +1872,7 @@
            MOVE    WRK-PARA-HOSPID      TO      KARRK-HOSPID
            MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      KARRK-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYKARRK-REC         TO      MCPDATA-REC
            MOVE    "DBDELETE"           TO      MCP-FUNC
            MOVE    PATH-TBL-SRYKARRK-PRV-DELPRV
@@ -1856,6 +1884,7 @@
            MOVE    WRK-PARA-HOSPID      TO      PTCOM-HOSPID
            MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      PTCOM-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTCOM-REC            TO      MCPDATA-REC
            MOVE    "DBDELETE"           TO      MCP-FUNC
            MOVE    PATH-TBL-PTCOM-PRV-DELPRV
@@ -1867,6 +1896,7 @@
            MOVE    WRK-PARA-HOSPID      TO      PTINF-HOSPID
            MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      PTINF-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC            TO      MCPDATA-REC
            MOVE    "DBDELETE"           TO      MCP-FUNC
            MOVE    PATH-TBL-PTINF-PRV-DELPRV
@@ -1878,6 +1908,7 @@
            MOVE    WRK-PARA-NYUGAIKBN   TO      ACCTP-NYUGAIKBN
            MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      ACCTP-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACCTPLUS-REC      TO      MCPDATA-REC
            MOVE    "DBDELETE"           TO      MCP-FUNC
            MOVE    PATH-TBL-SRYACCTPLUS-PRV-DEL1

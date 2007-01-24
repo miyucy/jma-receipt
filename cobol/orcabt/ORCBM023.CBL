@@ -57,6 +57,8 @@
        01  RECEERR-REC             PIC X(200). 
       *
        WORKING-STORAGE             SECTION.
+grpsys*
+grpsys COPY    "COMMON-SPA".
       *
       *    エラーファイル 名称領域 
            COPY    "CPCOMMONDAT2.INC"
@@ -346,6 +348,7 @@
            INITIALIZE                  SYS-1001-REC
            MOVE    "1001"              TO  SYS-1001-KANRICD
            MOVE    "*"                 TO  SYS-1001-KBNCD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1001-REC        TO  MCPDATA-REC
            PERFORM 800-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -367,6 +370,7 @@
            INITIALIZE                  SYS-1002-REC
            MOVE    "1002"              TO  SYS-1002-KANRICD
            MOVE    "*"                 TO  SYS-1002-KBNCD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1002-REC        TO  MCPDATA-REC
            PERFORM 800-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -730,6 +734,7 @@
            MOVE   SYS-1001-HOSPID      TO    HKN-HOSPID
            MOVE   SUM-KOH-KOHNUM (IDX1 IDX IDX2)
                                        TO    HKN-HKNNUM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE   HKNNUM-REC           TO    MCPDATA-REC
            MOVE   "DBSELECT"           TO    MCP-FUNC
            MOVE   "HKNNUM-KEY2"        TO    ORC-DBPATH

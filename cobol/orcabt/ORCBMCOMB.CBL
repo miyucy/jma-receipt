@@ -234,6 +234,7 @@
            MOVE    SPA-HOSPID          TO  PTNUM-HOSPID
            MOVE    SPA-PTID            TO  PTNUM-PTID
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNUM-REC           TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "PTNUM-KEY"         TO  ORC-DBPATH
@@ -300,6 +301,7 @@
            MOVE    "P02"               TO  PARA-GYOUMUID
            MOVE    SPA-TERMID          TO  PARA-TERMID
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PARA-REC            TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "PARA-DEL2"         TO  ORC-DBPATH
@@ -322,6 +324,7 @@
            INITIALIZE                      PTHKNINF-REC
            MOVE    SPA-HOSPID          TO  PTHKN-HOSPID
            MOVE    SPA-PTID            TO  PTHKN-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTHKNINF-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "PTHKNINF-KEY2"     TO  ORC-DBPATH
@@ -384,6 +387,7 @@
            INITIALIZE                      PTKOHINF-REC
            MOVE    SPA-HOSPID          TO  PTKOH-HOSPID
            MOVE    SPA-PTID            TO  PTKOH-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTKOHINF-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "PTKOHINF-KEY2"     TO  ORC-DBPATH
@@ -457,6 +461,7 @@
                MOVE    WRK-KEN-PAYKBN      TO  HKN-PAYKBN
            END-IF
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HKNNUM-REC         TO  MCPDATA-REC
            MOVE    "DBSELECT"         TO  MCP-FUNC
       *****MOVE    "HKNNUM-KEY2"      TO  ORC-DBPATH
@@ -506,6 +511,7 @@
                MOVE    SPACE              TO  HKNNUM-REC
                MOVE    SPA-HOSPID         TO  HKN-HOSPID
                MOVE    WRK-KEN-HKNNUM     TO  HKN-HKNNUM
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    HKNNUM-REC         TO  MCPDATA-REC
                MOVE    "DBSELECT"         TO  MCP-FUNC
                MOVE    "HKNNUM-KEY2"      TO  ORC-DBPATH
@@ -577,6 +583,7 @@
            MOVE    SPA-TERMID          TO  PARA-TERMID
            MOVE    PARA-REC            TO  WRK-PARA-REC
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PARA-REC            TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "PARA-KEY"          TO  ORC-DBPATH
@@ -598,6 +605,7 @@
                                         MCPDATA-REC
            MOVE    WRK-PARA-REC        TO  PARA-REC
            IF      FLG-PARA            =   1
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    PARA-REC            TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "PARA-KEY"          TO  ORC-DBPATH
@@ -612,6 +620,7 @@
                    MOVE    "9999"              TO  SPA-ERRCD
                END-IF
            ELSE
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    PARA-REC            TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "PARA-KEY"          TO  ORC-DBPATH
@@ -683,6 +692,7 @@
            MOVE    SPA-HOSPID          TO  PTNUM-HOSPID
            MOVE    SPA-PTID            TO  PTNUM-PTID
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNUM-REC           TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "PTNUM-KEY"         TO  ORC-DBPATH
@@ -711,6 +721,7 @@
                MOVE    SPA-PTNUM-AUTOCOMBINUM  TO  PTNUM-AUTOCOMBINUM
                MOVE    SPA-PTNUM-MANUCOMBINUM  TO  PTNUM-MANUCOMBINUM
       *
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    PTNUM-REC           TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "PTNUM-KEY"         TO  ORC-DBPATH
@@ -741,6 +752,7 @@
            MOVE    SPA-TERMID          TO  PARA-TERMID
            MOVE    "HKNCOMBI"          TO  PARA-FILEMEI
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PARA-REC            TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "PARA-KEY2"         TO  ORC-DBPATH
@@ -780,6 +792,7 @@
            MOVE    SPA-HOSPID          TO  COMB-HOSPID
            MOVE    SPA-PTID            TO  COMB-PTID
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "HKNCOMBI-DEL1"     TO  ORC-DBPATH
@@ -800,9 +813,11 @@
            MOVE    SPACE               TO  HKNCOMBI-REC
            MOVE    PARA-DATA-REC       TO  HKNCOMBI-REC
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
            PERFORM 940-HKNCOMBI-READ-SEC
            IF      FLG-HKNCOMBI        =   1
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
@@ -815,6 +830,7 @@
                    MOVE    "9999"              TO  SPA-ERRCD
               END-IF
            ELSE
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH

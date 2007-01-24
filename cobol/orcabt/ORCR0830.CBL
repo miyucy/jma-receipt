@@ -399,6 +399,7 @@
              MOVE    "*"                 TO  SYS-KBNCD
              MOVE    WRK-PARA-SRYYM      TO  ORC-DBYMD (1:6)
              MOVE    "01"                TO  ORC-DBYMD (7:2)
+grpsys*      MOVE SPA-HOSPNUM TO -HOSPNUM
              MOVE    SYSKANRI-REC        TO  MCPDATA-REC
              MOVE    "DBSELECT"          TO  MCP-FUNC
              MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
@@ -445,6 +446,7 @@
              INITIALIZE                      SYSKANRI-REC
              MOVE    "5000"              TO  SYS-KANRICD
              MOVE    "*"                 TO  SYS-KBNCD
+grpsys*      MOVE SPA-HOSPNUM TO -HOSPNUM
              MOVE    SYSKANRI-REC        TO  MCPDATA-REC
              MOVE    "DBSELECT"          TO  MCP-FUNC
              MOVE    "SYSKANRI-KEY8"     TO  ORC-DBPATH
@@ -488,6 +490,7 @@
               MOVE    "*"                 TO  SYS-1001-KBNCD
               MOVE    WRK-PARA-SRYYM      TO  ORC-DBYMD (1:6)
               MOVE    "01"                TO  ORC-DBYMD (7:2)
+grpsys*       MOVE SPA-HOSPNUM TO -HOSPNUM
               MOVE    SYS-1001-REC        TO  MCPDATA-REC
               MOVE    "DBSELECT"          TO  MCP-FUNC
               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
@@ -528,6 +531,7 @@
               INITIALIZE                      SYS-1001-REC
               MOVE    "1001"              TO  SYS-1001-KANRICD
               MOVE    "*"                 TO  SYS-1001-KBNCD
+grpsys*       MOVE SPA-HOSPNUM TO -HOSPNUM
               MOVE    SYS-1001-REC        TO  MCPDATA-REC
               MOVE    "DBSELECT"          TO  MCP-FUNC
               MOVE    "SYSKANRI-KEY8"     TO  ORC-DBPATH
@@ -610,6 +614,7 @@
            MOVE    "*"                 TO  SYS-KBNCD
            MOVE    WRK-SRYYM-5000      TO  ORC-DBYMD(1:6)
            MOVE    "__"                TO  ORC-DBYMD(7:2)
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY11"    TO  ORC-DBPATH
@@ -649,6 +654,7 @@
            MOVE    "*"                 TO  SYS-KBNCD
            MOVE    WRK-SRYYM-5000      TO  ORC-DBYMD(1:6)
            MOVE    "__"                TO  ORC-DBYMD(7:2)
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY11"    TO  ORC-DBPATH
@@ -768,6 +774,7 @@
            MOVE    RECE82-NYUGAIKBN      TO      NACCT-NYUGAIKBN
            MOVE    RECE82-PTID           TO      NACCT-PTID
            MOVE    RECE82-SRYYM          TO      NACCT-SRYYM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    NYUINACCT-REC         TO      MCPDATA-REC
            MOVE    "DBSELECT"            TO      MCP-FUNC
            MOVE    "NYUINACCT-KEY7"      TO      ORC-DBPATH
@@ -820,6 +827,7 @@
            MOVE    RECE82-PTID          TO      ACCT-PTID
            MOVE    RECE82-SRYYM         TO      ACCT-SRYYM
            MOVE    RECE82-HKNCOMBI      TO      ACCT-HKNCOMBI
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACCT-REC          TO      MCPDATA-REC
            MOVE    "DBSELECT"           TO      MCP-FUNC
            MOVE    "SRYACCT-KEY22"      TO      ORC-DBPATH
@@ -945,6 +953,7 @@
            MOVE    ACCT-PTID            TO      SRY-PTID
            MOVE    ACCT-SRYYM           TO      SRY-SRYYM
            MOVE    ACCT-ZAINUM          TO      SRY-ZAINUM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACT-REC           TO      MCPDATA-REC
            MOVE    "DBSELECT"           TO      MCP-FUNC
            MOVE    "SRYACT-KEY9"        TO      ORC-DBPATH
@@ -1017,6 +1026,7 @@
            MOVE    ACCT-PTID            TO      SRY-PTID
            MOVE    ACCT-SRYYM           TO      SRY-SRYYM
            MOVE    ACCT-ZAINUM          TO      SRY-ZAINUM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACT-REC           TO      MCPDATA-REC
            MOVE    "DBSELECT"           TO      MCP-FUNC
            MOVE    "SRYACT-KEY9"        TO      ORC-DBPATH
@@ -1372,6 +1382,7 @@
            MOVE    RECE82-PTID          TO      ACCT-PTID
            MOVE    RECE82-SRYYM         TO      ACCT-SRYYM
            MOVE    RECE82-HKNCOMBI      TO      ACCT-HKNCOMBI
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACCT-REC          TO      MCPDATA-REC
            MOVE    "DBSELECT"           TO      MCP-FUNC
            MOVE    "SRYACCT-KEY22"      TO      ORC-DBPATH
@@ -1527,6 +1538,7 @@
            MOVE    ACCT-PTID            TO      SRY-PTID
            MOVE    ACCT-SRYYM           TO      SRY-SRYYM
            MOVE    ACCT-ZAINUM          TO      SRY-ZAINUM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACT-REC           TO      MCPDATA-REC
            MOVE    "DBSELECT"           TO      MCP-FUNC
            MOVE    "SRYACT-KEY9"        TO      ORC-DBPATH
@@ -1662,6 +1674,7 @@
            MOVE    ACCT-PTID            TO      SRY-PTID
            MOVE    ACCT-SRYYM           TO      SRY-SRYYM
            MOVE    ACCT-ZAINUM          TO      SRY-ZAINUM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACT-REC           TO      MCPDATA-REC
            MOVE    "DBSELECT"           TO      MCP-FUNC
            MOVE    "SRYACT-KEY9"        TO      ORC-DBPATH
@@ -1780,6 +1793,7 @@
            MOVE    ACCT-PTID            TO      SRY-PTID
            MOVE    ACCT-SRYYM           TO      SRY-SRYYM
            MOVE    ACCT-ZAINUM          TO      SRY-ZAINUM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACT-REC           TO      MCPDATA-REC
            MOVE    "DBSELECT"           TO      MCP-FUNC
            MOVE    "SRYACT-KEY9"        TO      ORC-DBPATH
@@ -2022,6 +2036,7 @@
            MOVE    ACCT-PTID          TO   SRY-PTID
            MOVE    ACCT-SRYYM         TO   SRY-SRYYM
            MOVE    ACCT-ZAINUM        TO   SRY-ZAINUM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACT-REC         TO   MCPDATA-REC
            MOVE    "DBSELECT"         TO   MCP-FUNC
            MOVE    "SRYACT-KEY9"      TO   ORC-DBPATH
@@ -2517,6 +2532,7 @@
       *****************************************************************
        900-TENSU-READ-SEC         SECTION.
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "TENSU-KEY"         TO  ORC-DBPATH
@@ -2552,6 +2568,7 @@
       *****************************************************************
        900-NYURYAKUSHO-READ-SEC        SECTION.
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    NYURYAKUSHO-REC     TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "NYUINRYAKUSHO-KEY" TO  ORC-DBPATH

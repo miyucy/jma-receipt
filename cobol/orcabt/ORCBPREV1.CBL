@@ -62,6 +62,8 @@
            03  PREVIEW-ENV      PIC X(200).
       *
        WORKING-STORAGE             SECTION.
+grpsys*
+grpsys COPY    "COMMON-SPA".
       *    印刷用データ
        01  PRT-REC.
            03  PRT-PRTID           PIC X(30).
@@ -314,6 +316,7 @@
            MOVE    LNK-PRTKANRI-PRIORITY
                                        TO  PRVKANRI-RECE-FLG
            MOVE    WRK-PARA-SYOKBN     TO  PRVKANRI-SHORI-KBN
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PRVKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    PATH-TBL-PRVKANRI-KEY4
@@ -379,6 +382,7 @@
                MOVE    LNK-PRTKANRI-TBL-GROUP
                                        TO  PRVKANRI-TBL-GROUP
                MOVE    WRK-PARA-SYOKBN TO  PRVKANRI-SHORI-KBN
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    PRVKANRI-REC    TO  MCPDATA-REC
                MOVE    "DBDELETE"      TO  MCP-FUNC
                MOVE    PATH-TBL-PRVKANRI-DEL12
@@ -397,6 +401,7 @@
                MOVE    LNK-PRTKANRI-TBL-GROUP
                                        TO  PREVIEW-TBL-GROUP
                MOVE    WRK-PARA-SYOKBN TO  PRVKANRI-SHORI-KBN
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    PREVIEW-REC     TO  MCPDATA-REC
                MOVE    "DBDELETE"      TO  MCP-FUNC
       *     ラージオブジェクト対応までコメント★
@@ -535,6 +540,7 @@
       *    印刷フラグセット
            MOVE    "1"                 TO  PRTDATA-PRTFLG
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PRTDATA-REC         TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    PATH-TBL-PRTDATA-KEY
@@ -560,6 +566,7 @@
        2003-PRTKANRI-UPD-SEC          SECTION.
       *
            MOVE    "1"                 TO  PRTKANRI-PRTFLG
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PRTKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    PATH-TBL-PRTKANRI-KEY
@@ -589,6 +596,7 @@
            MOVE    LNK-PRTKANRI-TBL-KEY
                                        TO  PRVKANRI-TBL-KEY
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PRVKANRI-REC         TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    PATH-TBL-PRVKANRI-DEL11
@@ -662,6 +670,7 @@
            IF      FLG-PREVIEW         =   ZERO  
                GO  TO                  2004-PRVKANRI-INS-EXT
            END-IF
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PRVKANRI-REC        TO  MCPDATA-REC
            DISPLAY "take priority i = [" PRVKANRI-RECE-FLG "]"
            MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -820,6 +829,7 @@
                                        TO  PRTKANRI-TBL-KEY
            MOVE    LNK-PRTKANRI-TBL-GROUP
                                        TO  PRTKANRI-TBL-GROUP
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PRTKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    PATH-TBL-PRTKANRI-KEY2
@@ -843,6 +853,7 @@
       *****************************************************************
        900-PRVKANRI-INV-SEC            SECTION.
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PRVKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    PATH-TBL-PRVKANRI-KEY
@@ -933,6 +944,7 @@
            MOVE    WRK-PARA-STPAGE     TO  PRTDATAXX-STPAGE
            MOVE    WRK-PARA-EDPAGE     TO  PRTDATAXX-EDPAGE
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PRTDATA-REC         TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    PATH-TBL-PRTDATA-KEY2

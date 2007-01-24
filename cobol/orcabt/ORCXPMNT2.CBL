@@ -50,6 +50,8 @@
            03  OUT-NAIYO               PIC X(256).
       *
        WORKING-STORAGE             SECTION.
+grpsys*
+grpsys COPY    "COMMON-SPA".
       *
       *    ファイル指定領域
        01  ASS-AREA.
@@ -146,6 +148,7 @@
       *
       *    ＰＧ管理マスタ検索
            INITIALIZE                  PGKANRI-REC
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PGKANRI-REC     TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
            MOVE    "PGKANRI-KEY2"  TO  ORC-DBPATH

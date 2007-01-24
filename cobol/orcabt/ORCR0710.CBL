@@ -248,6 +248,8 @@
        01  RECEERR-REC             PIC X(200). 
       *
        WORKING-STORAGE             SECTION.
+grpsys*
+grpsys COPY    "COMMON-SPA".
       *    ¥·¥§¥ëÍÑÎÎ°è
            COPY    "CPCOMMONSHELL.INC".
       *
@@ -1257,13 +1259,14 @@
               INITIALIZE                      SYSKANRI-REC
               MOVE    "1001"              TO  SYS-KANRICD
               MOVE    "*"                 TO  SYS-KBNCD
+grpsys*       MOVE SPA-HOSPNUM TO -HOSPNUM
               MOVE    SYSKANRI-REC        TO  MCPDATA-REC
               MOVE    "DBSELECT"          TO  MCP-FUNC
               MOVE    "tbl_syskanri"      TO  MCP-TABLE
               MOVE    "key8"              TO  MCP-PATHNAME
-              CALL    "MONFUNC"       USING
-                                          MCPAREA
-                                          MCPDATA-REC
+grpsys        CALL "ORCDBMAIN" USING MCPAREA
+                                     MCPDATA-REC
+grpsys*                              COMMON-SPA
               IF      MCP-RC              =   ZERO
                   MOVE    "tbl_syskanri"      TO  MCP-TABLE
                   MOVE    "key8"              TO  MCP-PATHNAME
@@ -1322,13 +1325,14 @@
               INITIALIZE                      SYSKANRI-REC
               MOVE    "1002"              TO  SYS-KANRICD
               MOVE    "*"                 TO  SYS-KBNCD
+grpsys*       MOVE SPA-HOSPNUM TO -HOSPNUM
               MOVE    SYSKANRI-REC        TO  MCPDATA-REC
               MOVE    "DBSELECT"          TO  MCP-FUNC
               MOVE    "tbl_syskanri"      TO  MCP-TABLE
               MOVE    "key8"              TO  MCP-PATHNAME
-              CALL    "MONFUNC"       USING
-                                          MCPAREA
-                                          MCPDATA-REC
+grpsys        CALL "ORCDBMAIN" USING MCPAREA
+                                     MCPDATA-REC
+grpsys*                              COMMON-SPA
               IF      MCP-RC              =   ZERO
                   MOVE    "tbl_syskanri"      TO  MCP-TABLE
                   MOVE    "key8"              TO  MCP-PATHNAME
@@ -1413,13 +1417,14 @@
               INITIALIZE                      SYSKANRI-REC
               MOVE    "1900"              TO  SYS-KANRICD
               MOVE    "*"                 TO  SYS-KBNCD
+grpsys*       MOVE SPA-HOSPNUM TO -HOSPNUM
               MOVE    SYSKANRI-REC        TO  MCPDATA-REC
               MOVE    "DBSELECT"          TO  MCP-FUNC
               MOVE    "tbl_syskanri"      TO  MCP-TABLE
               MOVE    "key8"              TO  MCP-PATHNAME
-              CALL    "MONFUNC"       USING
-                                          MCPAREA
-                                          MCPDATA-REC
+grpsys        CALL "ORCDBMAIN" USING MCPAREA
+                                     MCPDATA-REC
+grpsys*                              COMMON-SPA
               IF      MCP-RC              =   ZERO
                   MOVE    "tbl_syskanri"      TO  MCP-TABLE
                   MOVE    "key8"              TO  MCP-PATHNAME
@@ -1559,13 +1564,14 @@
            INITIALIZE                   SYSKANRI-REC
            MOVE    "1033"           TO  SYS-KANRICD
            MOVE    "*"              TO  SYS-KBNCD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYSKANRI-REC     TO  MCPDATA-REC
            MOVE    "DBSELECT"       TO  MCP-FUNC
            MOVE    "tbl_syskanri"   TO  MCP-TABLE
            MOVE    "key5"           TO  MCP-PATHNAME
-           CALL    "MONFUNC"        USING
-                                        MCPAREA
-                                        MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF      MCP-RC               =   ZERO
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key5"              TO  MCP-PATHNAME
@@ -2147,6 +2153,7 @@
            MOVE    RECE62X-SHOKUJIFTNKBN
                                        TO  KOHSKY-SHOKUJIFTNKBN
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    KOHSKY-REC          TO  MCPDATA-REC
            MOVE    "KOHSKY-KEY"        TO  ORC-DBPATH
            IF      FLG-KOHSKY          =   1    
@@ -5632,6 +5639,7 @@
            MOVE    WRK-SRYYMD         TO  HKN-TEKSTYMD
                                           HKN-TEKEDYMD
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HKNNUM-REC         TO  MCPDATA-REC
            MOVE    "DBSELECT"         TO  MCP-FUNC
            MOVE    "HKNNUM-KEY5"      TO  ORC-DBPATH
@@ -5720,13 +5728,14 @@
            MOVE    RECE62-PTID         TO  RECECOM-PTID
            MOVE    RECE62-NYUGAIKBN    TO  RECECOM-NYUGAIKBN
       * 
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    RECECOM-REC         TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
            MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF      MCP-RC              =   ZERO
                MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
                MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
@@ -6711,6 +6720,7 @@
                    END-PERFORM
                END-IF
            END-IF
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    RECE08-REC          TO  MCPDATA-REC
            PERFORM 900-RECE08-READ-SEC
            IF      FLG-RECE08          =   ZERO
@@ -6790,6 +6800,7 @@
       *
                MOVE    "RECEPRT-KEY"       TO  ORC-DBPATH
                MOVE    "DBINSERT"          TO  MCP-FUNC
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    RECE08-REC          TO  MCPDATA-REC
                CALL    "ORCMCPSUB"              USING
                                                 MCPAREA
@@ -6839,6 +6850,7 @@
            MOVE    RECE08-HKNJANUM-SRT TO  RECE07-HKNJANUM-SRT
            MOVE    RECE08-RECESYUBETU-SRT
                                        TO  RECE07-RECESYUBETU-SRT
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    RECE07-REC          TO  MCPDATA-REC 
            MOVE    "RECEKANRI-KEY4"    TO  WRK-PATH
            PERFORM 900-RECE07-READ-SEC
@@ -6897,6 +6909,7 @@
                END-IF
            END-IF
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    RECE07-REC          TO  MCPDATA-REC
            MOVE    "RECEKANRI-KEY"     TO  ORC-DBPATH
            IF      FLG-RECE07          =   1    
@@ -7190,6 +7203,7 @@
            MOVE    RECE62-SHOKUJIFTNKBN
                                        TO  RECE10-SHOKUJIFTNKBN
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    "SEIKYU-KEY"        TO  ORC-DBPATH
            IF      FLG-SEIKYU          =   1    
@@ -7357,6 +7371,7 @@
                MOVE    SYS-1001-HOSPID     TO  RECE10-HOSPID
                MOVE    WRK-PARA-SRYYM      TO  RECE10-SRYYM
                MOVE    "1"                 TO  RECE10-NYUGAIKBN
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    RECE10-REC          TO  MCPDATA-REC
                MOVE    "SEIKYU-DEL5"       TO  ORC-DBPATH
                MOVE    "DBDELETE"          TO  MCP-FUNC
@@ -7380,6 +7395,7 @@
                    MOVE    WRK-PARA-SRYYM      TO  RECE10-SRYYM
                    MOVE    "1"                 TO  RECE10-NYUGAIKBN
                    MOVE    1                   TO  RECE10-TEISYUTUSAKI
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    RECE10-REC          TO  MCPDATA-REC
                    MOVE    "SEIKYU-DEL6"       TO  ORC-DBPATH
                    MOVE    "DBDELETE"          TO  MCP-FUNC
@@ -7404,6 +7420,7 @@
                    MOVE    WRK-PARA-SRYYM      TO  RECE10-SRYYM
                    MOVE    "1"                 TO  RECE10-NYUGAIKBN
                    MOVE    2                   TO  RECE10-TEISYUTUSAKI
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    RECE10-REC          TO  MCPDATA-REC
                    MOVE    "SEIKYU-DEL6"       TO  ORC-DBPATH
                    MOVE    "DBDELETE"          TO  MCP-FUNC
@@ -7428,6 +7445,7 @@
                    MOVE    WRK-PARA-SRYYM      TO  KOHSKY-SRYYM
                    MOVE    1                   TO  KOHSKY-TEISYUTUSAKI
                    MOVE    "1"                 TO  KOHSKY-NYUGAIKBN
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    KOHSKY-REC          TO  MCPDATA-REC
                    MOVE    "KOHSKY-DEL1"       TO  ORC-DBPATH
                    MOVE    "DBDELETE"          TO  MCP-FUNC
@@ -7452,6 +7470,7 @@
                    MOVE    WRK-PARA-SRYYM      TO  KOHSKY-SRYYM
                    MOVE    2                   TO  KOHSKY-TEISYUTUSAKI
                    MOVE    "1"                 TO  KOHSKY-NYUGAIKBN
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    KOHSKY-REC          TO  MCPDATA-REC
                    MOVE    "KOHSKY-DEL1"        TO  ORC-DBPATH
                    MOVE    "DBDELETE"          TO  MCP-FUNC
@@ -7476,6 +7495,7 @@
                    MOVE    WRK-PARA-SRYYM      TO  RECEDEN-SRYYM
                    MOVE    1                   TO  RECEDEN-TEISYUTUSAKI
                    MOVE    "1"                 TO  RECEDEN-NYUGAIKBN
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    RECEDEN-REC         TO  MCPDATA-REC
                    MOVE    "RECEDEN-DEL1"      TO  ORC-DBPATH
                    MOVE    "DBDELETE"          TO  MCP-FUNC
@@ -7500,6 +7520,7 @@
                    MOVE    WRK-PARA-SRYYM      TO  RECEDEN-SRYYM 
                    MOVE    2                   TO  RECEDEN-TEISYUTUSAKI
                    MOVE    "1"                 TO  RECEDEN-NYUGAIKBN
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    RECEDEN-REC         TO  MCPDATA-REC
                    MOVE    "RECEDEN-DEL1"      TO  ORC-DBPATH
                    MOVE    "DBDELETE"          TO  MCP-FUNC
@@ -7524,11 +7545,13 @@
                MOVE    "1"                 TO  RECE07-SYOKBN
                MOVE    "1"                 TO  RECE07-NYUGAIKBN
                MOVE    WRK-PARA-RECEKBN    TO  RECE07-RECEKBN
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    RECE07-REC          TO  MCPDATA-REC
                MOVE    "RECEKANRI-KEY7"    TO  WRK-PATH
                PERFORM 900-RECE07-READ-SEC
                IF      FLG-RECE07          =   ZERO
                    MOVE    RECE07-REC          TO  WRK-RECE07-REC
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    RECE07-REC          TO  MCPDATA-REC 
                    MOVE    "RECEKANRI-DEL1"    TO  ORC-DBPATH
                    MOVE    "DBDELETE"          TO  MCP-FUNC
@@ -7553,6 +7576,7 @@
                    MOVE    WRK-RECE07-CREHMS   TO  RECE08-CREHMS
                    MOVE    WRK-RECE07-NYUGAIKBN
                                                TO  RECE08-NYUGAIKBN
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    RECE08-REC          TO  MCPDATA-REC
                    MOVE    "RECEPRT-DEL1"      TO  ORC-DBPATH
                    MOVE    "DBDELETE"          TO  MCP-FUNC
@@ -7573,6 +7597,7 @@
                INITIALIZE                  RECE07-REC
                MOVE    "HC06"              TO  RECE07-PRTID
                MOVE    "1"                 TO  RECE07-NYUGAIKBN
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    RECE07-REC          TO  MCPDATA-REC
                MOVE    "RECEKANRI-DEL2"    TO  ORC-DBPATH
                MOVE    "DBDELETE"          TO  MCP-FUNC
@@ -7593,6 +7618,7 @@
                INITIALIZE                  RECE08-REC
                MOVE    "HC06"              TO  RECE08-PRTID
                MOVE    "1"                 TO  RECE08-NYUGAIKBN
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    RECE08-REC          TO  MCPDATA-REC
                MOVE    "RECEPRT-DEL2"      TO  ORC-DBPATH
                MOVE    "DBDELETE"          TO  MCP-FUNC
@@ -7614,13 +7640,14 @@
                MOVE    "2002"              TO  SYS-2002-KANRICD
                MOVE    ZERO                TO  SYS-2002-STYUKYMD
                                                SYS-2002-EDYUKYMD
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SYS-2002-REC        TO  MCPDATA-REC
                MOVE    "DBSELECT"          TO  MCP-FUNC
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
-               CALL    "MONFUNC"       USING
-                                           MCPAREA
-                                           MCPDATA-REC
+grpsys         CALL "ORCDBMAIN" USING MCPAREA
+                                      MCPDATA-REC
+grpsys*                               COMMON-SPA
                IF      MCP-RC              =   ZERO
                   MOVE    "tbl_syskanri"      TO  MCP-TABLE
                   MOVE    "key2"              TO  MCP-PATHNAME
@@ -7638,6 +7665,7 @@
                    MOVE    SYS-2002-PTID       TO  RECE10-PTID
                    MOVE    SYS-2002-SRYYM      TO  RECE10-SRYYM
                    MOVE    SYS-2002-NYUGAIKBN  TO  RECE10-NYUGAIKBN
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    RECE10-REC          TO  MCPDATA-REC
                    MOVE    "SEIKYU-DEL4"       TO  ORC-DBPATH
                    MOVE    "DBDELETE"          TO  MCP-FUNC
@@ -7660,6 +7688,7 @@
                    MOVE    SYS-2002-PTID       TO  KOHSKY-PTID
                    MOVE    SYS-2002-SRYYM      TO  KOHSKY-SRYYM
                    MOVE    SYS-2002-NYUGAIKBN  TO  KOHSKY-NYUGAIKBN
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    KOHSKY-REC          TO  MCPDATA-REC
                    MOVE    "KOHSKY-DEL2"       TO  ORC-DBPATH
                    MOVE    "DBDELETE"          TO  MCP-FUNC
@@ -7682,6 +7711,7 @@
                    MOVE    SYS-2002-PTID       TO  RECEDEN-PTID
                    MOVE    SYS-2002-SRYYM      TO  RECEDEN-SRYYM
                    MOVE    SYS-2002-NYUGAIKBN  TO  RECEDEN-NYUGAIKBN
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    RECEDEN-REC         TO  MCPDATA-REC
                    MOVE    "RECEDEN-DEL2"      TO  ORC-DBPATH
                    MOVE    "DBDELETE"          TO  MCP-FUNC
@@ -8153,13 +8183,14 @@
       *****************************************************************
        960-KANRIMST-READ-SEC         SECTION.
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
            MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                           MCPAREA
-                                           MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF      MCP-RC              =   ZERO
                MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
                MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
@@ -8181,9 +8212,9 @@
        900-KANRIMST-NEXT-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MONFUNC"       USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-KANRIMST
            ELSE
@@ -8219,13 +8250,14 @@
       *****************************************************************
        900-SEIKYU-INV-SEC         SECTION.
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
            MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
-           CALL    "MONFUNC"       USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF      MCP-RC              =   ZERO
                MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
                MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
@@ -8247,9 +8279,9 @@
        900-SEIKYU-READ-SEC           SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MONFUNC"       USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-SEIKYU
            ELSE
@@ -8265,6 +8297,7 @@
       *****************************************************************
        900-KOHSKY-INV-SEC         SECTION.
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    KOHSKY-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "KOHSKY-KEY"        TO  ORC-DBPATH
@@ -8305,9 +8338,9 @@
        900-RECECOM-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-RECECOM
                MOVE    MCPDATA-REC     TO  RECECOM-REC
@@ -8323,6 +8356,7 @@
       *****************************************************************
        900-OPECOM-READ-SEC           SECTION.
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    OPECOM-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    WRK-OPECOM-PATH          TO  ORC-DBPATH
@@ -8369,13 +8403,14 @@
       *****************************************************************
        900-BTPARA-READ-SEC         SECTION.
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    BTPARA-REC          TO  MCPDATA-REC
            MOVE    "tbl_btpara"        TO  MCP-TABLE
            MOVE    "key5"              TO  MCP-PATHNAME
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_btpara"        TO  MCP-TABLE
                MOVE    "key5"              TO  MCP-PATHNAME
@@ -8399,9 +8434,9 @@
        900-BTPARA-READ-N-SEC          SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  BTPARA-REC
                MOVE    ZERO                TO  FLG-BTPARA
@@ -8420,9 +8455,9 @@
        900-CLOSE-SEC               SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                           MCPAREA
-                                           MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        900-CLOSE-EXT.

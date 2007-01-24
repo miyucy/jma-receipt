@@ -72,6 +72,8 @@
       *
       *
        WORKING-STORAGE             SECTION.
+grpsys*
+grpsys COPY    "COMMON-SPA".
       *
        01  PS-PRTDATA              PIC X(100000).
        01  PRT-FILE-ID             PIC X(200).
@@ -332,6 +334,7 @@
                END-PERFORM
              END-IF
       *
+grpsys*      MOVE SPA-HOSPNUM TO -HOSPNUM
              MOVE    PRVKANRI-REC        TO  MCPDATA-REC
              MOVE    PATH-TBL-PRVKANRI-KEY
                                          TO  MCP-PATH
@@ -390,6 +393,7 @@
                MOVE    PRTDATA-PAGE        TO  PREVIEW-PAGE
                MOVE    PRTDATA-PRTNM       TO  PREVIEW-PRTNM
                MOVE    PS-PRTDATA          TO  PREVIEW-PRTDATA
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    PREVIEW-REC         TO  MCPDATA-REC
       *     ラージオブジェクト対応までコメント★
       *        MOVE    PATH-TBL-PREVIEW-KEY
@@ -462,6 +466,7 @@
            MOVE    WRK-PRT-TBL-KEY     TO  PRVKANRI-TBL-KEY
            MOVE    WRK-PRT-TBL-GROUP
                                        TO  PRVKANRI-TBL-GROUP
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PRVKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    PATH-TBL-PRVKANRI-DEL12
@@ -531,6 +536,7 @@
       *
                MOVE    WRK-FILENAME    TO  SHELLTBL-ARG1
                MOVE    WRK-FILENAME1   TO  SHELLTBL-ARG2
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SHELLTBL        TO  MCPDATA-REC
                MOVE    "SHELL"         TO  MCP-FUNC
                MOVE    PATH-SHELL-SHELL
@@ -590,6 +596,7 @@
            MOVE    PRT-TBL-KEY         TO  PRVKANRI-TBL-KEY
                                            WRK-PRT-TBL-KEY
       *    TBLキーセット
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PRVKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    PATH-TBL-PRVKANRI-KEY4
@@ -661,6 +668,7 @@
       *****************************************************************
        900-PRTDATA-INV-SEC            SECTION.
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PRTDATA-REC         TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    PATH-TBL-PRTDATA-KEY
@@ -703,6 +711,7 @@
       *****************************************************************
        900-PRVKANRI-INV-SEC            SECTION.
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PRVKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    PATH-TBL-PRVKANRI-KEY
@@ -744,6 +753,7 @@
       *****************************************************************
        900-PRTKANRI-INV-SEC            SECTION.
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PRTKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    PATH-TBL-PRTKANRI-KEY
@@ -784,6 +794,7 @@
       *****************************************************************
        900-PREVDATA-INV-SEC            SECTION.
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PREVIEW-REC         TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
       *     ラージオブジェクト対応までコメント★

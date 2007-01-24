@@ -371,6 +371,7 @@
            MOVE    "1009"              TO  SYS-1009-KANRICD
            MOVE    "*"                 TO  SYS-1009-KBNCD
            MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1009-REC        TO  MCPDATA-REC
            PERFORM 800-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -427,6 +428,7 @@
                INITIALIZE                          PTINF-REC
                MOVE    SPA-HOSPID          TO      PTINF-HOSPID
                MOVE    PRVKANRI-PTID       TO      PTINF-PTID
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    PTINF-REC           TO      MCPDATA-REC
                PERFORM 900-PTINF-READ-SEC
                IF      FLG-PTINF           =   ZERO
@@ -593,6 +595,7 @@
       *****************************************************************
        900-PRVKANRI-INV-SEC            SECTION.
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PRVKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    PATH-TBL-PRVKANRI-KEY5

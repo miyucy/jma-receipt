@@ -582,6 +582,7 @@
       *
            INITIALIZE  SYS-1005-REC
            MOVE    "1005"              TO  SYS-1005-KANRICD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1005-REC        TO  MCPDATA-REC
            MOVE    PATH-TBL-SYSKANRI-KEY5  TO  MCP-PATH
            PERFORM 910-DBSELECT-SEC
@@ -1228,6 +1229,7 @@
       *
            END-IF
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUNOU-REC              TO  MCPDATA-REC
            MOVE    PATH-TBL-SYUNOU-KEY34   TO  MCP-PATH
            PERFORM 910-DBSELECT-SEC
@@ -1268,6 +1270,7 @@
            INITIALIZE                  PTNUM-REC
            MOVE    WRK-PARA-HOSPID TO  PTNUM-HOSPID
            MOVE    WRK-PTID        TO  PTNUM-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNUM-REC       TO  MCPDATA-REC
            MOVE    PATH-TBL-PTNUM-KEY  TO  MCP-PATH
            PERFORM 910-DBSELECT-SEC
@@ -1294,6 +1297,7 @@
            INITIALIZE                  PTINF-REC
            MOVE    WRK-PARA-HOSPID TO  PTINF-HOSPID
            MOVE    WRK-PTID        TO  PTINF-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC       TO  MCPDATA-REC
            MOVE    PATH-TBL-PTINF-KEY  TO  MCP-PATH
            PERFORM 910-DBSELECT-SEC

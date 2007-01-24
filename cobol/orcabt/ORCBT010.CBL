@@ -576,6 +576,7 @@
            MOVE    "1001"              TO  SYS-1001-KANRICD
            MOVE    "*"                 TO  SYS-1001-KBNCD
            MOVE    WRK-SYMD            TO  ORC-DBYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1001-REC        TO  MCPDATA-REC
            PERFORM 910-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -591,6 +592,7 @@
            MOVE    "1009"              TO  SYS-1009-KANRICD
            MOVE    "*"                 TO  SYS-1009-KBNCD
            MOVE    WRK-SYMD            TO  ORC-DBYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1009-REC        TO  MCPDATA-REC
            PERFORM 910-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -617,6 +619,7 @@
            MOVE    "*"                 TO  SYS-2005-KBNCD
            MOVE    WRK-PARA-SRYYM      TO  ORC-DBYMD (1:6)
            MOVE    "01"                TO  ORC-DBYMD (7:2)
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-2005-REC        TO  MCPDATA-REC
            PERFORM 910-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -634,6 +637,7 @@
            MOVE    "*"                 TO  SYS-1017-KBNCD
            MOVE    WRK-PARA-SRYYM      TO  ORC-DBYMD (1:6)              
            MOVE    "01"                TO  ORC-DBYMD (7:2)   
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1017-REC        TO  MCPDATA-REC
            PERFORM 910-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -653,6 +657,7 @@
            INITIALIZE                  SYS-1033-REC
            MOVE    "1033"          TO  SYS-1033-KANRICD
            MOVE    "*"             TO  SYS-1033-KBNCD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1033-REC    TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY5" TO  ORC-DBPATH
@@ -717,6 +722,7 @@
                    MOVE    WRK-PARA-HOSPID     TO  NACCT-HOSPID
                    MOVE    WRK-PARA-SRYYM      TO  NACCT-SRYYM
                    MOVE    WRK-PARA-NYUGAIKBN  TO  NACCT-NYUGAIKBN
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    NYUINACCT-REC       TO  MCPDATA-REC
                    MOVE    "DBSELECT"          TO  MCP-FUNC
                    MOVE    "NYUINACCT-KEY13"    TO  ORC-DBPATH
@@ -743,6 +749,7 @@
                    MOVE    WRK-PARA-HOSPID     TO  ACCT-HOSPID
                    MOVE    WRK-PARA-SRYYM      TO  ACCT-SRYYM
                    MOVE    WRK-PARA-NYUGAIKBN  TO  ACCT-NYUGAIKBN
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    SRYACCT-REC         TO  MCPDATA-REC
                    MOVE    "DBSELECT"          TO  MCP-FUNC
                    MOVE    "SRYACCT-KEY8"      TO  ORC-DBPATH
@@ -865,6 +872,7 @@
                    MOVE    PTINF-PTID      TO  COMB-PTID
                    MOVE    WRK-DAY (2 IDX) TO
                                            COMB-HKNCOMBINUM 
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    HKNCOMBI-REC    TO  MCPDATA-REC
                    PERFORM 910-HKNCOMBI-INV-SEC
                    IF      FLG-HKNCOMBI    =   ZERO
@@ -914,6 +922,7 @@
            MOVE    WRK-PARA-SRYYM      TO  ACCT-SRYYM
            MOVE    WRK-PARA-NYUGAIKBN  TO  ACCT-NYUGAIKBN
            MOVE    PTINF-PTID          TO  ACCT-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SRYACCT-KEY9"     TO  ORC-DBPATH
@@ -946,6 +955,7 @@
                    MOVE    WRK-PARA-HOSPID     TO  COMB-HOSPID
                    MOVE    PTINF-PTID          TO  COMB-PTID
                    MOVE    KEY-N-HKNCOMBI      TO  COMB-HKNCOMBINUM 
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
                    PERFORM 910-HKNCOMBI-INV-SEC
       *
@@ -1049,6 +1059,7 @@
                INITIALIZE                      TNS-TENSU-REC
                MOVE    HCM34S01-SRYCD   (IDX4 IDX5)
                                                TO  TNS-SRYCD
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    TNS-TENSU-REC           TO  MCPDATA-REC
                PERFORM 900-TENSU-READ-SEC
                MOVE    TNS-TANICD              TO  TOUKEI02-TANICD
@@ -1116,6 +1127,7 @@
                        MOVE    WRK-PARA-HOSPID     TO  COMB-HOSPID
                        MOVE    KEY-N-PTID          TO  COMB-PTID
                        MOVE    KEY-N-HKNCOMBI      TO  COMB-HKNCOMBINUM 
+grpsys*                MOVE SPA-HOSPNUM TO -HOSPNUM
                        MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
                        PERFORM 910-HKNCOMBI-INV-SEC
       *
@@ -1221,6 +1233,7 @@
                        MOVE    COMB-HOSPID         TO  PTRSI-HOSPID
                        MOVE    COMB-HKNID          TO  PTRSI-HKNID
                        MOVE    COMB-PTID           TO  PTRSI-PTID
+grpsys*                MOVE SPA-HOSPNUM TO -HOSPNUM
                        MOVE    PTRSIINF-REC        TO  MCPDATA-REC
                        PERFORM 900-PTRSIINF-INV-SEC
                    WHEN    OTHER
@@ -1228,6 +1241,7 @@
                        MOVE    WRK-PARA-HOSPID     TO  PTHKN-HOSPID
                        MOVE    COMB-PTID           TO  PTHKN-PTID
                        MOVE    COMB-HKNID          TO  PTHKN-HKNID
+grpsys*                MOVE SPA-HOSPNUM TO -HOSPNUM
                        MOVE    PTHKNINF-REC        TO  MCPDATA-REC
                        MOVE    COMB-TEKSTYMD       TO  ORC-DBYMD
                        PERFORM 910-PTHKNINF-INV-SEC
@@ -1513,6 +1527,7 @@
                    MOVE    ZERO                TO  HKN-PAYKBN   
                    MOVE    WRK-SYMD            TO  HKN-TEKSTYMD
                                                    HKN-TEKEDYMD
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    HKNNUM-REC          TO  MCPDATA-REC
                    PERFORM 900-HKNNUM-CHK-SEC
                    IF      FLG-HKNNUM          =   ZERO
@@ -1530,6 +1545,7 @@
                MOVE    WRK-PARA-HOSPID TO  PTKOH-HOSPID
                MOVE    PTINF-PTID      TO  PTKOH-PTID
                MOVE    TOUKEI01-KOHID  TO  PTKOH-KOHID
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    PTKOHINF-REC    TO  MCPDATA-REC
                PERFORM 900-PTKOHINF-READ-SEC
                IF       FLG-PTKOHINF       =   ZERO
@@ -1545,6 +1561,7 @@
                    MOVE    PTKOH-PAYKBN    TO  HKN-PAYKBN   
                    MOVE    WRK-SYMD        TO  HKN-TEKSTYMD
                                                HKN-TEKEDYMD
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    HKNNUM-REC      TO  MCPDATA-REC
                    PERFORM 900-HKNNUM-CHK-SEC
                    IF      FLG-HKNNUM      =   ZERO
@@ -1571,6 +1588,7 @@
            MOVE    PTINF-HOME-TEL1 TO  TOUKEI01-HOME-TEL1
            INITIALIZE                  ADRS-REC
            MOVE    PTINF-HOME-POST TO  ADRS-POST
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ADRS-REC        TO  MCPDATA-REC
            PERFORM 900-ADRS-INV-SEC
            MOVE    ADRS-LPUBCD     TO  TOUKEI01-LPUBCD
@@ -1586,6 +1604,7 @@
            CALL    "ORCSDAY"       USING   STS-AREA-DAY
                                            LNK-DAY7-AREA
            MOVE    LNK-DAY7-KOYOMI TO  KYUSEI-CHGYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    KYUSEIRRK-REC   TO  MCPDATA-REC
            PERFORM 900-KYUSEIRRK-READ-SEC
            IF       FLG-KYUSEIRRK  =   ZERO
@@ -1765,6 +1784,7 @@
            MOVE    WRK-PARA-HOSPID     TO  PTKOH-HOSPID
            MOVE    TOUKEI01-PTID       TO  PTKOH-PTID
            MOVE    COMB-KOHID (IDX)    TO  PTKOH-KOHID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTKOHINF-REC        TO  MCPDATA-REC
            PERFORM 900-PTKOHINF-READ-SEC
            IF       FLG-PTKOHINF       =   ZERO
@@ -1783,6 +1803,7 @@
                    MOVE    WRK-PARA-SRYYM  TO  MONTHLYNUM-SRYYM
                    MOVE    WRK-PARA-NYUGAIKBN
                                            TO  MONTHLYNUM-NYUGAIKBN
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    MONTHLYNUM-REC  TO  MCPDATA-REC
                    PERFORM 910-MONTHLYNUM-READ-SEC
                    IF      FLG-MONTHLYNUM  =   ZERO
@@ -1798,6 +1819,7 @@
                MOVE    PTKOH-PAYKBN    TO HKN-PAYKBN   
                MOVE    WRK-SYMD        TO  HKN-TEKSTYMD
                                            HKN-TEKEDYMD
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    HKNNUM-REC      TO  MCPDATA-REC
                PERFORM 900-HKNNUM-CHK-SEC
                IF      FLG-HKNNUM      =   ZERO
@@ -2291,6 +2313,7 @@
            INITIALIZE                  PTBYOMEI-REC
            MOVE    WRK-PARA-HOSPID     TO  PTBYO-HOSPID
            MOVE    PTINF-PTID          TO  PTBYO-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "PTBYOMEI-KEY3"     TO  ORC-DBPATH
@@ -2423,6 +2446,7 @@
                MOVE     PTBYO-SRYKA        TO  SYS-1005-KBNCD
                MOVE    WRK-PARA-SRYYM      TO  ORC-DBYMD(1:6)
                MOVE    "01"                TO  ORC-DBYMD(7:2)
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SYS-1005-REC        TO  MCPDATA-REC
                PERFORM 910-SYSKANRI-INV-SEC
                IF      FLG-SYSKANRI        =   ZERO
@@ -2457,6 +2481,7 @@
            MOVE    ACCT-SRYKA          TO  SYS-1005-KBNCD
            MOVE    WRK-PARA-SRYYM      TO  ORC-DBYMD(1:6)
            MOVE    "01"                TO  ORC-DBYMD(7:2)
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1005-REC        TO  MCPDATA-REC
            PERFORM 910-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -2473,6 +2498,7 @@
            MOVE    ACCT-SRYKA          TO  SRY-SRYKA
            MOVE    ACCT-SRYYM          TO  SRY-SRYYM
            MOVE    ACCT-ZAINUM         TO  SRY-ZAINUM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACT-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
@@ -2552,6 +2578,7 @@
       *
                INITIALIZE                      TNS-TENSU-REC
                MOVE    SRY-SRYCD(IDX2)     TO  TNS-SRYCD
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
                PERFORM 900-TENSU-READ-SEC
                MOVE    TNS-TANICD          TO  TOUKEI02-TANICD
@@ -2861,6 +2888,7 @@
       *****************************************************************
        900-PTKOHINF-READ-SEC         SECTION.
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTKOHINF-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "PTKOHINF-KEY"      TO  ORC-DBPATH
@@ -2932,6 +2960,7 @@
                MOVE    WRK-CHK-PAYKBN      TO  HKN-PAYKBN
                MOVE    WRK-CHK-TEKSTYMD    TO  HKN-TEKSTYMD
                MOVE    WRK-CHK-TEKEDYMD    TO  HKN-TEKEDYMD
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    HKNNUM-REC          TO  MCPDATA-REC
                MOVE    "DBSELECT"          TO  MCP-FUNC
                MOVE    "HKNNUM-KEY"        TO  ORC-DBPATH
@@ -2971,6 +3000,7 @@
       *****************************************************************
        900-HKNNUM-INV-SEC         SECTION.
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HKNNUM-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "HKNNUM-KEY"        TO  ORC-DBPATH
@@ -3019,6 +3049,7 @@
       *****************************************************************
        900-PTINF-READ-SEC         SECTION.
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "PTINF-KEY"         TO  ORC-DBPATH
@@ -3127,6 +3158,7 @@
       *****************************************************************
        950-PTCOM-READ-SEC           SECTION.
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTCOM-REC           TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "PTCOM-KEY"         TO  ORC-DBPATH
@@ -3181,6 +3213,7 @@
                INITIALIZE                      TNS-TENSU-REC
                MOVE    TTNS-CHK-SRYCD      TO  TNS-SRYCD
                MOVE    TTNS-CHK-YMD        TO  ORC-DBYMD
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
                MOVE    "DBSELECT"          TO  MCP-FUNC
                MOVE    "TENSU-KEY"         TO  ORC-DBPATH

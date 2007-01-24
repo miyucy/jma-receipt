@@ -59,6 +59,8 @@
        01  DTCHKERR-REC                PIC X(200). 
       *
        WORKING-STORAGE                 SECTION.
+grpsys*
+grpsys COPY    "COMMON-SPA".
       *
            COPY    "HCM401V03.INC"
                                    REPLACING  //HCM401V03//
@@ -330,6 +332,7 @@
            MOVE    ORCBSD01-SRYYM      TO  SYS-1101-STYUKYMD
            MOVE    "01"                TO  SYS-1101-STYUKYMD (7:2)
            MOVE    SYS-1101-STYUKYMD   TO  SYS-1101-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1101-REC        TO  MCPDATA-REC
            MOVE    PATH-TBL-SYSKANRI-KEY   TO  MCP-PATH
            PERFORM 910-DBSELECT-SEC

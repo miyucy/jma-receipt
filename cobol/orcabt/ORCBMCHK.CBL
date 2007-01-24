@@ -374,6 +374,7 @@
            MOVE    ZERO                TO  FLG-SYSKANRI
            MOVE    SPACE               TO  SYS-1001-REC
            MOVE    "1001"              TO  SYS-1001-KANRICD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1001-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
@@ -449,6 +450,7 @@
            MOVE    ALL "9"             TO  JYURRK-UPSRYYMD
       *
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "JYURRK-KEY21"      TO  ORC-DBPATH
@@ -493,6 +495,7 @@
            MOVE    JYURRK-SRYYMD       TO  PTNYUINRRK-TENNYUYMD
            MOVE    JYURRK-SRYYMD       TO  PTNYUINRRK-TENSTUYMD
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "PTNYUINRRK-KEY19"   TO  ORC-DBPATH
@@ -540,6 +543,7 @@
            END-IF
            MOVE    ALL "9"             TO  JYURRK-UPSRYYMD
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "JYURRK-KEY21"      TO  ORC-DBPATH
@@ -638,6 +642,7 @@
            MOVE    JYURRK-HOSPID       TO  PTNUM-HOSPID
            MOVE    JYURRK-PTID         TO  PTNUM-PTID
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNUM-REC           TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "PTNUM-KEY"         TO  ORC-DBPATH
@@ -809,6 +814,7 @@
       *****************************************************************
        900-PTINF-READ-SEC         SECTION.
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "PTINF-KEY"         TO  ORC-DBPATH

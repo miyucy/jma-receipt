@@ -69,6 +69,8 @@
        01  RECEERR-REC             PIC X(200). 
       *
        WORKING-STORAGE             SECTION.
+grpsys*
+grpsys COPY    "COMMON-SPA".
       *
       *    ÀÁµá£Ä£Â¹¹¿·ÍÑ¥Õ¥¡¥¤¥ë Ì¾¾ÎÎÎ°è 
            COPY    "CPCOMMONDAT2.INC"
@@ -384,6 +386,7 @@
            INITIALIZE              SYS-1001-REC
            MOVE    "1001"          TO  SYS-1001-KANRICD
            MOVE    "*"             TO  SYS-1001-KBNCD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1001-REC    TO  MCPDATA-REC
            PERFORM 910-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI    =   ZERO
@@ -405,6 +408,7 @@
            INITIALIZE              SYS-1002-REC
            MOVE    "1002"          TO  SYS-1002-KANRICD
            MOVE    "*"             TO  SYS-1002-KBNCD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1002-REC    TO  MCPDATA-REC
            PERFORM 910-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI    =   ZERO
@@ -764,6 +768,7 @@
            INITIALIZE                      HKNJAINF-REC
            MOVE    SYS-1001-HOSPID     TO  HKNJA-HOSPID
            MOVE    KEY-O-HKNJANUM      TO  HKNJA-HKNJANUM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HKNJAINF-REC        TO  MCPDATA-REC
            PERFORM 900-HKNJAINF-INV-SEC
            IF      FLG-HKNJAINF        =   ZERO
@@ -1009,6 +1014,7 @@
                INITIALIZE                      HKNNUM-REC
                MOVE   SYS-1001-HOSPID      TO    HKN-HOSPID
                MOVE   SUM-KOH-KOHNUM (IDX2)    TO    HKN-HKNNUM
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE   HKNNUM-REC           TO    MCPDATA-REC
                MOVE   "DBSELECT"           TO    MCP-FUNC
                MOVE   "HKNNUM-KEY2"        TO    ORC-DBPATH
@@ -1203,12 +1209,14 @@
            PERFORM 900-UPD-FILE-READ-SEC
            PERFORM             UNTIL   FLG-UPDFILE    =   1
                MOVE    RECE10X-KEY         TO  RECE10-KEY
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    RECE10-REC          TO  MCPDATA-REC
                PERFORM 910-SEIKYU-INV-SEC
                IF      FLG-SEIKYU          =   ZERO
                    MOVE    "2"             TO  RECE10-SKYKBN
                    MOVE    LNK-PRTKANRI-SRYYM  TO  RECE10-SKYYM
                    MOVE    LNK-PRTKANRI-SKYYMD TO  RECE10-UPDYMD  
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    RECE10-REC      TO  MCPDATA-REC
                    MOVE    "DBUPDATE"      TO  MCP-FUNC
                    MOVE    "SEIKYU-KEY"    TO  ORC-DBPATH
@@ -1280,6 +1288,7 @@
                MOVE    WRK-PARA-HKNJANUM   TO  RECE10-XXSTHKNJANUM
                                                RECE10-XXEDHKNJANUM
            END-IF 
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    WRK-PATH            TO  ORC-DBPATH
@@ -1318,6 +1327,7 @@
                INITIALIZE                      PTINF-REC
                MOVE    RECE10-HOSPID       TO  PTINF-HOSPID
                MOVE    RECE10-PTID         TO  PTINF-PTID
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    PTINF-REC           TO  MCPDATA-REC
                PERFORM 800-PTINF-READ-SEC
                IF      FLG-PTINF           =   ZERO

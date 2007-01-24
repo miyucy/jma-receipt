@@ -72,6 +72,8 @@
        01  PLF-REC                 PIC X(1000).
       *
        WORKING-STORAGE             SECTION.
+grpsys*
+grpsys COPY    "COMMON-SPA".
       *
       *    ファイル指定領域
        01  ASS-AREA.
@@ -297,13 +299,14 @@
            MOVE    IN-LPUBCD       TO  ADRS-LPUBCD
            MOVE    IN-POST         TO  ADRS-POST
            MOVE    IN-EDANUM       TO  ADRS-EDANUM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ADRS-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
            MOVE    "tbl_adrs"      TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_adrs"      TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
@@ -352,13 +355,14 @@
            MOVE    IN-TOWNDIVFLG   TO  ADRS-TOWNDIVFLG
            MOVE    IN-MANYTOWNFLG  TO  ADRS-MANYTOWNFLG
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ADRS-REC        TO  MCPDATA-REC
            MOVE    "DBINSERT"      TO  MCP-FUNC
            MOVE    "tbl_adrs"      TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF      MCP-RC          NOT =   ZERO
                MOVE    2               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
@@ -376,13 +380,14 @@
            MOVE    IN-LPUBCD       TO  ADRS-LPUBCD
            MOVE    IN-POST         TO  ADRS-POST
            MOVE    IN-EDANUM       TO  ADRS-EDANUM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ADRS-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
            MOVE    "tbl_adrs"      TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_adrs"      TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
@@ -431,13 +436,14 @@
            MOVE    IN-TOWNDIVFLG   TO  ADRS-TOWNDIVFLG
            MOVE    IN-MANYTOWNFLG  TO  ADRS-MANYTOWNFLG
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ADRS-REC        TO  MCPDATA-REC
            MOVE    "DBUPDATE"      TO  MCP-FUNC
            MOVE    "tbl_adrs"      TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF      MCP-RC          NOT =   ZERO
                MOVE    5               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
@@ -455,13 +461,14 @@
            MOVE    IN-LPUBCD       TO  ADRS-LPUBCD
            MOVE    IN-POST         TO  ADRS-POST
            MOVE    IN-EDANUM       TO  ADRS-EDANUM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ADRS-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
            MOVE    "tbl_adrs"      TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_adrs"      TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
@@ -492,13 +499,14 @@
       *****************************************************************
        20101-ADRS-DEL-SEC          SECTION.
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ADRS-REC        TO  MCPDATA-REC
            MOVE    "DBDELETE"      TO  MCP-FUNC
            MOVE    "tbl_adrs"      TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF      MCP-RC          NOT =   ZERO
                MOVE    6               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
@@ -518,13 +526,14 @@
            INITIALIZE                  ADRS-REC
            MOVE    "00000"         TO  ADRS-LPUBCD
            MOVE    IN-POST         TO  ADRS-POST
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ADRS-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
            MOVE    "tbl_adrs"      TO  MCP-TABLE
            MOVE    "key7"          TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_adrs"      TO  MCP-TABLE
                MOVE    "key7"          TO  MCP-PATHNAME
@@ -679,9 +688,9 @@
        910-ADRS-READ-SEC           SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  ADRS-REC
                MOVE    ZERO            TO  FLG-ADRS
@@ -700,9 +709,9 @@
        990-DBCLOSE-SEC               SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MONFUNC"               USING
-                                           MCPAREA
-                                           MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            .
       *
        990-DBCLOSE-EXT.
@@ -718,16 +727,16 @@
            MOVE    LOW-VALUE       TO  MCP-TABLE
                                        MCP-PATHNAME
            MOVE    "DBOPEN"        TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            MOVE    LOW-VALUE       TO  MCP-TABLE
                                        MCP-PATHNAME
            MOVE    "DBSTART"       TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            .
        100-DBOPEN-EXT.
            EXIT.
@@ -740,16 +749,16 @@
            MOVE    LOW-VALUE       TO  MCP-TABLE
                                        MCP-PATHNAME
            MOVE    "DBCOMMIT"      TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            MOVE    LOW-VALUE       TO  MCP-TABLE
                                        MCP-PATHNAME
            MOVE    "DBDISCONNECT"  TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            .
        900-DBDISCONNECT-EXT.
            EXIT.

@@ -72,6 +72,8 @@
        01  PLF-REC                 PIC X(1000).
       *
        WORKING-STORAGE             SECTION.
+grpsys*
+grpsys COPY    "COMMON-SPA".
       *
       *    ファイル指定領域
        01  ASS-AREA.
@@ -312,13 +314,14 @@
            INITIALIZE                  INTERACT-REC
            MOVE    IN-DRUGCD           TO  INTERACT-DRUGCD
            MOVE    IN-DRUGCD2          TO  INTERACT-DRUGCD2
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    INTERACT-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_interact"      TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            IF      MCP-RC              =   ZERO
       *        相互作用マスタ読み込み
@@ -354,13 +357,14 @@
       *
            INITIALIZE                  INTERACT-REC
            MOVE    IN-REC(2:)          TO  INTERACT-REC
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    INTERACT-REC        TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "tbl_interact"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF      MCP-RC          NOT =   ZERO
                MOVE    2               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
@@ -378,13 +382,14 @@
            INITIALIZE                  INTERACT-REC
            MOVE    IN-DRUGCD           TO  INTERACT-DRUGCD
            MOVE    IN-DRUGCD2          TO  INTERACT-DRUGCD2
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    INTERACT-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_interact"      TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            IF      MCP-RC              =   ZERO
       *        相互作用マスタ読み込み
@@ -420,13 +425,14 @@
       *
            INITIALIZE                  INTERACT-REC
            MOVE    IN-REC(2:)          TO  INTERACT-REC
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    INTERACT-REC        TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    "tbl_interact"      TO  MCP-TABLE
            MOVE    "upd1"              TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF      MCP-RC          NOT =   ZERO
                MOVE    5               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
@@ -444,13 +450,14 @@
            INITIALIZE                  INTERACT-REC
            MOVE    IN-DRUGCD           TO  INTERACT-DRUGCD
            MOVE    IN-DRUGCD2          TO  INTERACT-DRUGCD2
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    INTERACT-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_interact"      TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF      MCP-RC              =   ZERO
       *        相互作用マスタ読み込み
                PERFORM 910-INTERACT-READ-SEC
@@ -486,13 +493,14 @@
       *
            INITIALIZE                  INTERACT-REC
            MOVE    IN-REC(2:)          TO  INTERACT-REC
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    INTERACT-REC        TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_interact"      TO  MCP-TABLE
            MOVE    "del1"              TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF      MCP-RC          NOT =   ZERO
                MOVE    6               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
@@ -640,9 +648,9 @@
            MOVE    "DBFETCH"           TO  MCP-FUNC
            MOVE    "tbl_interact"      TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
-           CALL    "MONFUNC"            USING
-                                        MCPAREA
-                                        MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  INTERACT-REC
                MOVE    ZERO                TO  FLG-INTERACT
@@ -661,9 +669,9 @@
        990-DBCLOSE-SEC               SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MONFUNC"               USING
-                                           MCPAREA
-                                           MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            .
       *
        990-DBCLOSE-EXT.
@@ -677,16 +685,16 @@
            MOVE    LOW-VALUE       TO  MCP-TABLE
                                        MCP-PATHNAME
            MOVE    "DBOPEN"        TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            MOVE    LOW-VALUE       TO  MCP-TABLE
                                        MCP-PATHNAME
            MOVE    "DBSTART"       TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            .
        100-DBOPEN-EXT.
            EXIT.
@@ -699,16 +707,16 @@
            MOVE    LOW-VALUE       TO  MCP-TABLE
                                        MCP-PATHNAME
            MOVE    "DBCOMMIT"      TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            MOVE    LOW-VALUE       TO  MCP-TABLE
                                        MCP-PATHNAME
            MOVE    "DBDISCONNECT"  TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            .
        900-DBDISCONNECT-EXT.
            EXIT.

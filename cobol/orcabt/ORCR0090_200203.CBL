@@ -1203,6 +1203,7 @@
                
            PERFORM UNTIL   IDX     >       WRK-KENSA-MAX
                MOVE    TBL-SRYCD(IDX)       TO      TNS-SRYCD
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    TNS-TENSU-REC        TO      MCPDATA-REC
                MOVE    RECE05-SRYYM         TO      ORC-DBYMD(1:6)
                MOVE    "01"                 TO      ORC-DBYMD(7:2)
@@ -1848,6 +1849,7 @@
                      MOVE    999999999  TO  TNS-KOUHYOJYUNNUM
                  ELSE  
                    MOVE    TBL-ZAIW-SRYCD1      TO      TNS-SRYCD
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    TNS-TENSU-REC        TO      MCPDATA-REC
                    MOVE    RECE05-SRYYM         TO      ORC-DBYMD(1:6)
                    MOVE    "01"                 TO      ORC-DBYMD(7:2)

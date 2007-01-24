@@ -94,6 +94,8 @@
        01  RECEERR-REC             PIC X(200). 
       *
        WORKING-STORAGE             SECTION.
+grpsys*
+grpsys COPY    "COMMON-SPA".
       *
            COPY    "CPCOMMONDAT2.INC"
                                    REPLACING  //RECE01//
@@ -690,12 +692,14 @@
                MOVE    SPACE           TO  RECE10-REC   
                INITIALIZE                  RECE10-REC
                MOVE    RECE10X-KEY         TO  RECE10-KEY
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    RECE10-REC          TO  MCPDATA-REC
                PERFORM 910-SEIKYU-INV-SEC
                IF      FLG-SEIKYU          =   ZERO
                    MOVE    "2"             TO  RECE10-SKYKBN
                    MOVE    WRK-PARA-SKYYM  TO  RECE10-SKYYM
                    MOVE    WRK-PARA-SYSYMD TO  RECE10-UPDYMD  
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    RECE10-REC      TO  MCPDATA-REC
                    MOVE    "DBUPDATE"      TO  MCP-FUNC
                    MOVE    "SEIKYU-KEY"    TO  ORC-DBPATH
@@ -742,6 +746,7 @@
            MOVE    WRK-PARA-HOSPID     TO  RECE10-HOSPID
            MOVE    WRK-PARA-SKYYM      TO  RECE10-SKYYM
            MOVE    WRK-CONS-SRYYM      TO  RECE10-SRYYM 
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
       *****MOVE    "SEIKYU-KEY3"       TO  ORC-DBPATH
@@ -782,6 +787,7 @@
                INITIALIZE                      PTINF-REC
                MOVE    RECE10-HOSPID       TO  PTINF-HOSPID
                MOVE    RECE10-PTID         TO  PTINF-PTID
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    PTINF-REC           TO  MCPDATA-REC
                PERFORM 800-PTINF-READ-SEC
                IF      FLG-PTINF           =   ZERO

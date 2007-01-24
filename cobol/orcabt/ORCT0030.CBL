@@ -386,6 +386,7 @@
            MOVE    TEIKI03-HOSPID      TO  SYU-HOSPID
            MOVE     "1"                TO  SYU-NYUGAIKBN
            MOVE    TEIKI03-PTID        TO  SYU-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "SYUNOU-KEY2"       TO  ORC-DBPATH
            PERFORM 910-DBSELECT-SEC
@@ -642,6 +643,7 @@
            MOVE    SYU-NYUGAIKBN       TO  SDAY-NYUGAIKBN
            MOVE    SYU-PTID            TO  SDAY-PTID
            MOVE    SYU-DENPNUM         TO  SDAY-DENPNUM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUDAY-REC          TO  MCPDATA-REC
            MOVE    "SYUDAY-KEY"        TO  ORC-DBPATH
            PERFORM 910-DBSELECT-SEC
@@ -670,6 +672,7 @@
            MOVE    SYU-PTID            TO  PTTEIKIRRK-PTID
            MOVE    SYU-DENPNUM         TO  PTTEIKIRRK-DENPNUM
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTTEIKIRRK-REC      TO  MCPDATA-REC
            MOVE    "PTTEIKIRRK-KEY6"   TO  ORC-DBPATH
            PERFORM 910-DBSELECT-SEC
@@ -709,6 +712,7 @@
            INITIALIZE                  PTNUM-REC
            MOVE    TEIKI1P-HOSPID      TO  PTNUM-HOSPID
            MOVE    WRK-PTID            TO  PTNUM-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNUM-REC           TO  MCPDATA-REC
            MOVE    "PTNUM-KEY"         TO  ORC-DBPATH
            PERFORM 910-DBSELECT-SEC

@@ -90,6 +90,8 @@
        01  RECEERR-REC             PIC X(200). 
       *
        WORKING-STORAGE             SECTION.
+grpsys*
+grpsys COPY    "COMMON-SPA".
       *
       *    エラーファイル 名称領域 
            COPY    "CPCOMMONDAT2.INC"
@@ -369,6 +371,7 @@
                DISPLAY "PTNUM=" RECE08-PTNUM "#" RECE08-PRTJYUN-SYUKA
                                 "#" RECE08-PRTRENNUM
       *
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    RECE08-REC           TO  MCPDATA-REC
                MOVE    "RECEPRT-KEY"        TO  ORC-DBPATH
                MOVE    "DBUPDATE"           TO  MCP-FUNC
@@ -601,6 +604,7 @@
              END-IF
            END-IF            
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    RECE08-REC          TO  MCPDATA-REC
       *
            MOVE    WRK-PATH            TO  MCP-PATH

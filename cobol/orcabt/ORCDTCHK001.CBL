@@ -69,6 +69,8 @@
        01  DTCHKERR-REC                PIC X(200). 
       *
        WORKING-STORAGE                 SECTION.
+grpsys*
+grpsys COPY    "COMMON-SPA".
       *
       *    エラーファイルファイル名称領域 
            COPY    "CPCOMMONDAT6.INC"
@@ -310,6 +312,7 @@
            MOVE    ORCBSD01-SRYYM      TO  SYS-1101-STYUKYMD
            MOVE    "01"                TO  SYS-1101-STYUKYMD (7:2)
            MOVE    SYS-1101-STYUKYMD   TO  SYS-1101-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1101-REC        TO  MCPDATA-REC
            MOVE    PATH-TBL-SYSKANRI-KEY   TO  MCP-PATH
            PERFORM 910-DBSELECT-SEC

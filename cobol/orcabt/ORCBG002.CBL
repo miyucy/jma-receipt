@@ -367,6 +367,7 @@
            MOVE    "*"                 TO  SYS-1001-KBNCD
            MOVE    WRK-PARA-SRYYM      TO  ORC-DBYMD (1:6)
            MOVE    "01"                TO  ORC-DBYMD (7:2)
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1001-REC        TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
@@ -388,6 +389,7 @@
            MOVE    "*"                 TO  SYS-1009-KBNCD
            MOVE    WRK-PARA-SRYYM      TO  ORC-DBYMD (1:6)
            MOVE    "01"                TO  ORC-DBYMD (7:2)
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1009-REC        TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
@@ -505,6 +507,7 @@
                MOVE    WRK-PARA-SYORIKBN
                                        TO  PTTEIKIRRK-SAKKBN
            END-IF
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTTEIKIRRK-REC      TO  MCPDATA-REC
            MOVE    "PTTEIKIRRK-KEY5"   TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
@@ -552,6 +555,7 @@
            MOVE    PTTEIKIRRK-PTID TO  SYU-PTID
            MOVE    PTTEIKIRRK-DENPNUM
                                    TO  SYU-DENPNUM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUNOU-REC      TO  MCPDATA-REC
            MOVE    "SYUNOU-KEY"    TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
@@ -836,6 +840,7 @@
            MOVE    ISAM-KEY-BTUNUM     TO  SYS-5001-KBNCD
       *----(02.00.01)--UPD-END-----
            MOVE    SYU-SKYSTYMD        TO  ORC-DBYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-5001-REC        TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
@@ -925,6 +930,7 @@
            MOVE    ISAM-KEY-SRYKA      TO  SYS-1005-KBNCD
       *----(02.00.01)--UPD-END-----
            MOVE    SYU-SKYSTYMD        TO  ORC-DBYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1005-REC        TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
@@ -952,6 +958,7 @@
            INITIALIZE                      PTINF-REC
            MOVE    SYU-HOSPID          TO  PTINF-HOSPID
            MOVE    SYU-PTID            TO  PTINF-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "PTINF-KEY"         TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC

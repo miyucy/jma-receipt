@@ -74,6 +74,8 @@
        01  RECEERR-REC             PIC X(200). 
       *
        WORKING-STORAGE             SECTION.
+grpsys*
+grpsys COPY    "COMMON-SPA".
       *
       *    °õºþÍÑ¥Ç¡¼¥¿ Ì¾¾ÎÎÎ°è 
            COPY    "CPCOMMONPRT.INC".
@@ -302,6 +304,7 @@
            INITIALIZE                  SYS-1001-REC
            MOVE    "1001"              TO  SYS-1001-KANRICD
            MOVE    "*"                 TO  SYS-1001-KBNCD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1001-REC        TO  MCPDATA-REC
            PERFORM 800-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -317,6 +320,7 @@
            INITIALIZE                      SYS-1002-REC
            MOVE    "1002"              TO  SYS-1002-KANRICD
            MOVE    "*"                 TO  SYS-1002-KBNCD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1002-REC        TO  MCPDATA-REC
            PERFORM 800-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -333,6 +337,7 @@
            INITIALIZE                  SYS-1031-REC
            MOVE    "1031"              TO  SYS-1031-KANRICD
            MOVE    "*"                 TO  SYS-1031-KBNCD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1031-REC        TO  MCPDATA-REC
            PERFORM 800-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -384,6 +389,7 @@
            INITIALIZE                      HKNJAINF-REC
            MOVE    SYS-1001-HOSPID     TO  HKNJA-HOSPID
            MOVE    KEY-N-FTNJANUM(3:5) TO  HKNJA-HKNJANUM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HKNJAINF-REC        TO  MCPDATA-REC
            PERFORM 900-HKNJAINF-INV-SEC
            IF      FLG-HKNJAINF        =   ZERO
@@ -463,6 +469,7 @@
                    INITIALIZE                  SYS-1005-REC
                    MOVE    "1005"          TO  SYS-1005-KANRICD
                    MOVE    MF02-SRYKA      TO  SYS-1005-KBNCD
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    SYS-1005-REC    TO  MCPDATA-REC
                    PERFORM 800-SYSKANRI-READ-SEC
                    IF      FLG-SYSKANRI    =   ZERO
@@ -564,6 +571,7 @@
            MOVE    SHELL-ARG4      TO  SHELLTBL-ARG4
            MOVE    SHELL-ARG5      TO  SHELLTBL-ARG5
       *          
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    PATH-SHELL-SHELL

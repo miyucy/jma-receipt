@@ -522,6 +522,7 @@
            INITIALIZE                  HKNNUM-REC
            MOVE    WRK-PARA-HOSPID     TO  HKN-HOSPID
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HKNNUM-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "HKNNUM-KEY6"       TO  ORC-DBPATH
@@ -588,6 +589,7 @@
            MOVE    SPA-SYSYMD          TO  PTHKN-TEKSTYMD
            MOVE    SPA-SYSYMD          TO  PTHKN-TEKEDYMD
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTHKNINF-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "PTHKNINF-KEY5"     TO  ORC-DBPATH
@@ -728,6 +730,7 @@
            MOVE    PTHKN-HOSPID        TO  KARRK-HOSPID
            MOVE    PTHKN-PTID          TO  KARRK-PTID
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYKARRK-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SRYKARRK-KEY2"     TO  ORC-DBPATH
@@ -834,6 +837,7 @@
       *
            MOVE    "20030331"          TO  PTHKN-TEKEDYMD
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTHKNINF-REC        TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    "PTHKNINF-KEY"      TO  ORC-DBPATH
@@ -891,6 +895,7 @@
                END-IF
            END-IF
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTHKNINF-REC        TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "PTHKNINF-KEY"      TO  ORC-DBPATH
@@ -931,6 +936,7 @@
            MOVE    PTHKN-HOSPID        TO  PTNUM-HOSPID
            MOVE    PTHKN-PTID          TO  PTNUM-PTID
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNUM-REC           TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "PTNUM-KEY"         TO  ORC-DBPATH
@@ -987,6 +993,7 @@
            END-IF
            ADD     1                   TO  PTNUM-HKNID
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNUM-REC           TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    "PTNUM-KEY"         TO  ORC-DBPATH
@@ -1061,6 +1068,7 @@
            MOVE    ZERO                TO  FLG-SYSKANRI
            MOVE    SPACE               TO  SYS-1001-REC
            MOVE    "1001"              TO  SYS-1001-KANRICD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1001-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
@@ -1499,6 +1507,7 @@
       *****************************************************************
        900-PTINF-READ-SEC         SECTION.
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "PTINF-KEY"         TO  ORC-DBPATH

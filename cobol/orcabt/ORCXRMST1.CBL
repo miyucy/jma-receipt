@@ -72,6 +72,8 @@
            03  OUT-UPFILE              PIC X(100).
       *
        WORKING-STORAGE             SECTION.
+grpsys*
+grpsys COPY    "COMMON-SPA".
       *
       *    ¥Õ¥¡¥¤¥ë»ØÄêÎÎ°è
        01  ASS-AREA.
@@ -239,6 +241,7 @@
       *
       *    £Ä£Â´ÉÍý¥Þ¥¹¥¿¸¡º÷
            INITIALIZE                  DBKANRI-REC
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    DBKANRI-REC         TO  MCPDATA-REC
            MOVE    "tbl_dbkanri"       TO  MCP-TABLE
            MOVE    "all"               TO  MCP-PATHNAME
@@ -339,6 +342,7 @@
                MOVE    "ORCADB"        TO  DBKANRI-KANRICD
                MOVE    WRK-TBL-MASTER-KBN(IDX)
                                        TO  DBKANRI-KANRICD(7:2)
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    DBKANRI-REC     TO  MCPDATA-REC
                MOVE    "tbl_dbkanri"   TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
@@ -353,14 +357,15 @@
                IF      FLG-DBKANRI      =  ZERO
                    MOVE    WRK-TBL-DBRVERSION1(IDX)
                                        TO  DBKANRI-DBRVERSION2
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    DBKANRI-REC TO  MCPDATA-REC
                    MOVE    "DBUPDATE"  TO  MCP-FUNC
                    MOVE    "tbl_dbkanri"
                                        TO  MCP-TABLE
                    MOVE    "key"       TO  MCP-PATHNAME
-                   CALL    "MONFUNC"   USING
-                                           MCPAREA
-                                           MCPDATA-REC
+grpsys             CALL "ORCDBMAIN" USING MCPAREA
+                                          MCPDATA-REC
+grpsys*                                   COMMON-SPA
                    IF      MCP-RC      NOT =  ZERO
                      DISPLAY "ORCXRMST1 DBKANRI UPD ERR:" MCP-RC
                    END-IF
@@ -435,9 +440,9 @@
        910-DBKANRI-READ-SEC            SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                           MCPAREA
-                                           MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  DBKANRI-REC
                MOVE    ZERO            TO  FLG-DBKANRI
@@ -458,9 +463,9 @@
            MOVE    ZERO                TO  MCP-RC
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                           MCPAREA
-                                           MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        910-DBSELECT-EXT.
@@ -472,9 +477,9 @@
        910-CLOSE-SEC                   SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                           MCPAREA
-                                           MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            .
       *
        910-CLOSE-EXT.
@@ -488,16 +493,16 @@
            MOVE    LOW-VALUE           TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBOPEN"            TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                           MCPAREA
-                                           MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            MOVE    LOW-VALUE           TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBSTART"           TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                           MCPAREA
-                                           MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            .
        100-DBOPEN-EXT.
            EXIT.
@@ -510,16 +515,16 @@
            MOVE    LOW-VALUE           TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBCOMMIT"          TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                           MCPAREA
-                                           MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            MOVE    LOW-VALUE           TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBDISCONNECT"      TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                           MCPAREA
-                                           MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            .
        900-DBCLOSE-EXT.
            EXIT.

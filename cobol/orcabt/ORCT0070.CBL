@@ -49,6 +49,8 @@
            03  TEIKIERR-ERRMSG         PIC X(195).
       *
        WORKING-STORAGE             SECTION.
+grpsys*
+grpsys COPY    "COMMON-SPA".
       *
       *    エラーファイル 名称領域 
            COPY    "CPCOMMONDAT5.INC"      REPLACING  //TEIKI01PARA//
@@ -306,6 +308,7 @@
            INITIALIZE                      TEIKIRRK-REC
            MOVE    TEIKI3P-SRYYM       TO  TEIKIRRK-SRYYM
            MOVE    TEIKI3P-KBT         TO  TEIKIRRK-KBT
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TEIKIRRK-REC        TO  MCPDATA-REC
            MOVE    "tbl_teikirrk"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -328,6 +331,7 @@
            MOVE    "1"                 TO  SDAY-NYUGAIKBN
            MOVE    PTTEIKIRRK-PTID     TO  SDAY-PTID
            MOVE    PTTEIKIRRK-DENPNUM  TO  SDAY-DENPNUM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUDAY-REC          TO  MCPDATA-REC
            MOVE    "tbl_syuday"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -351,6 +355,7 @@
            MOVE    "1"                 TO  SMEI-NYUGAIKBN
            MOVE    PTTEIKIRRK-PTID     TO  SMEI-PTID
            MOVE    PTTEIKIRRK-DENPNUM  TO  SMEI-DENPNUM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUMEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_syumei"        TO  MCP-TABLE
            MOVE    "del2"               TO  MCP-PATHNAME
@@ -374,6 +379,7 @@
            MOVE    "1"                 TO  SYU-NYUGAIKBN
            MOVE    PTTEIKIRRK-PTID     TO  SYU-PTID
            MOVE    PTTEIKIRRK-DENPNUM  TO  SYU-DENPNUM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "tbl_syunou"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -395,6 +401,7 @@
            INITIALIZE                      TEIKIPRT-REC
            MOVE    PTTEIKIRRK-DENPNUM  TO  TEIKIPRT-DENPNUM
            MOVE    PTTEIKIRRK-PTID     TO  TEIKIPRT-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TEIKIPRT-REC        TO  MCPDATA-REC
            MOVE    "tbl_teikiprt"      TO  MCP-TABLE
            MOVE    "del2"              TO  MCP-PATHNAME
@@ -413,6 +420,7 @@
       *****************************************************************
        2001-PTTEIKIRRK-DEL-SEC         SECTION.
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTTEIKIRRK-REC      TO  MCPDATA-REC
            MOVE    "tbl_ptteikirrk"    TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -602,6 +610,7 @@
            MOVE    TEIKI3P-HOSPID      TO  PTTEIKIRRK-HOSPID
            MOVE    TEIKI3P-SRYYM       TO  PTTEIKIRRK-SRYYM
            MOVE    TEIKI3P-KBT         TO  PTTEIKIRRK-KBT
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTTEIKIRRK-REC      TO  MCPDATA-REC
            MOVE    "tbl_ptteikirrk"    TO  MCP-TABLE
            MOVE    "key11"             TO  MCP-PATHNAME
@@ -644,6 +653,7 @@
            INITIALIZE                  PTNUM-REC
            MOVE    TEIKI3P-HOSPID      TO  PTNUM-HOSPID
            MOVE    WRK-PTID            TO  PTNUM-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNUM-REC           TO  MCPDATA-REC
            MOVE    "tbl_ptnum"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -668,9 +678,9 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF    ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
@@ -685,9 +695,9 @@
        910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
       *
@@ -699,9 +709,9 @@
        910-DBCLOSECURSOR-SEC                 SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
       *
@@ -713,9 +723,9 @@
        910-DBDELETE-SEC                SECTION.
       *
            MOVE    "DBDELETE"      TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
       *
@@ -729,16 +739,16 @@
            MOVE    LOW-VALUE           TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBOPEN"            TO  MCP-FUNC.
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            MOVE    LOW-VALUE           TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBSTART"           TO  MCP-FUNC.
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            .
        100-DBOPEN-EXT.
            EXIT.
@@ -752,17 +762,17 @@
                MOVE    LOW-VALUE           TO  MCP-TABLE
                                                MCP-PATHNAME
                MOVE    "DBCOMMIT"          TO  MCP-FUNC
-               CALL    "MONFUNC"           USING
-                                           MCPAREA
-                                           MCPDATA-REC
+grpsys         CALL "ORCDBMAIN" USING MCPAREA
+                                      MCPDATA-REC
+grpsys*                               COMMON-SPA
            END-IF
       *
            MOVE    LOW-VALUE           TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            .
        900-DBDISCONNECT-EXT.
            EXIT.

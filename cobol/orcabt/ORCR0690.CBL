@@ -1011,6 +1011,7 @@
                MOVE    "2006"               TO  SYS-2006-KANRICD
                MOVE    WRK-PARA-SRYYM       TO  ORC-DBYMD (1:6)
                MOVE    "01"                 TO  ORC-DBYMD (7:2) 
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SYS-2006-REC         TO  MCPDATA-REC
                MOVE    "DBSELECT"           TO  MCP-FUNC
                MOVE    "SYSKANRI-KEY7"      TO  ORC-DBPATH
@@ -1085,6 +1086,7 @@
       *
                INITIALIZE                      SYS-2006-REC
                MOVE    "2006"              TO  SYS-2006-KANRICD
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SYS-2006-REC        TO  MCPDATA-REC
                MOVE    "DBSELECT"          TO  MCP-FUNC
                MOVE    "SYSKANRI-KEY5"     TO  ORC-DBPATH

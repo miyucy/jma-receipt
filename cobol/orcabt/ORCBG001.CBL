@@ -529,6 +529,7 @@
            INITIALIZE                  SRYACCT-REC
            MOVE    WRK-PARA-HOSPID     TO  SRY-HOSPID
            MOVE    WRK-PARA-DENPPRTYM  TO  SRY-SRYYM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACT-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SRYACT-KEY11"      TO  ORC-DBPATH
@@ -581,6 +582,7 @@
                MOVE    SRY-SRYYM           TO  ACCT-SRYYM
                MOVE    SRY-SRYKBN          TO  ACCT-SRYKBN
                MOVE    SRY-ZAINUM          TO  ACCT-ZAINUM
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SRYACCT-REC         TO  MCPDATA-REC
                MOVE    "DBSELECT"          TO  MCP-FUNC
                MOVE    "SRYACCT-KEY"       TO  ORC-DBPATH
@@ -1464,6 +1466,7 @@
                INITIALIZE                      TNS-TENSU-REC
                MOVE    TTNS-CHK-SRYCD      TO  TNS-SRYCD
                MOVE    TTNS-CHK-YMD        TO  ORC-DBYMD
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
                MOVE    "DBSELECT"          TO  MCP-FUNC
                MOVE    "TENSU-KEY"         TO  ORC-DBPATH
@@ -1562,6 +1565,7 @@
            MOVE    "1005"          TO  SYS-1005-KANRICD
            MOVE    ZERO            TO  SYS-1005-STYUKYMD
            MOVE    ALL "9"         TO  SYS-1005-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1005-REC    TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY2" TO  ORC-DBPATH

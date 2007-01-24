@@ -65,6 +65,8 @@
        01  TOUKEIERR-REC           PIC X(200). 
       *
        WORKING-STORAGE             SECTION.
+grpsys*
+grpsys COPY    "COMMON-SPA".
       *
       *    日次統計データ（基本情報）
       *

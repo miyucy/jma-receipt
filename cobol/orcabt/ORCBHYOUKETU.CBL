@@ -258,6 +258,7 @@
            MOVE    "*"                 TO  SYS-1001-KBNCD
            MOVE    WRK-PARA-SRYYM      TO  SYS-1001-STYUKYMD(1:6)
            MOVE    "01"                TO  SYS-1001-STYUKYMD(7:2)
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1001-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -416,13 +417,14 @@
                        PERFORM   210-ZAITEN-SET-SEC
                    END-PERFORM
       *            Æþ±¡¿ÇÎÅ¹Ô°Ù¹¹¿·
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE   NYUINACT-REC    TO   MCPDATA-REC
                    MOVE  "tbl_nyuinact"   TO   MCP-TABLE
                    MOVE  "key"            TO   MCP-PATHNAME
                    MOVE  "DBUPDATE"       TO   MCP-FUNC
-                   CALL  "MONFUNC"        USING
-                                          MCPAREA
+grpsys             CALL "ORCDBMAIN" USING MCPAREA
                                           MCPDATA-REC
+grpsys*                                   COMMON-SPA
                    IF   MCP-RC   NOT =  ZERO
                         DISPLAY  "NYUINACT UPDATE MCP-RC = " MCP-RC
                    END-IF
@@ -493,13 +495,14 @@
                        PERFORM   210-ZAITEN-SET-SEC
                    END-PERFORM
       *            Æþ±¡¿ÇÎÅ¹Ô°Ù¹¹¿·
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE   NYUINACT-REC    TO   MCPDATA-REC
                    MOVE  "tbl_nyuinact"   TO   MCP-TABLE
                    MOVE  "key"            TO   MCP-PATHNAME
                    MOVE  "DBUPDATE"       TO   MCP-FUNC
-                   CALL  "MONFUNC"        USING
-                                          MCPAREA
+grpsys             CALL "ORCDBMAIN" USING MCPAREA
                                           MCPDATA-REC
+grpsys*                                   COMMON-SPA
                    IF   MCP-RC   NOT =  ZERO
                         DISPLAY  "NYUINACT UPDATE MCP-RC = " MCP-RC
                    END-IF
@@ -570,13 +573,14 @@
                        PERFORM   210-ZAITEN-SET-SEC
                    END-PERFORM
       *            Æþ±¡¿ÇÎÅ¹Ô°Ù¹¹¿·
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE   NYUINACT-REC    TO   MCPDATA-REC
                    MOVE  "tbl_nyuinact"   TO   MCP-TABLE
                    MOVE  "key"            TO   MCP-PATHNAME
                    MOVE  "DBUPDATE"       TO   MCP-FUNC
-                   CALL  "MONFUNC"        USING
-                                          MCPAREA
+grpsys             CALL "ORCDBMAIN" USING MCPAREA
                                           MCPDATA-REC
+grpsys*                                   COMMON-SPA
                    IF   MCP-RC   NOT =  ZERO
                         DISPLAY  "NYUINACT UPDATE MCP-RC = " MCP-RC
                    END-IF
@@ -647,13 +651,14 @@
                        PERFORM   210-ZAITEN-SET-SEC
                    END-PERFORM
       *            Æþ±¡¿ÇÎÅ¹Ô°Ù¹¹¿·
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE   NYUINACT-REC    TO   MCPDATA-REC
                    MOVE  "tbl_nyuinact"   TO   MCP-TABLE
                    MOVE  "key"            TO   MCP-PATHNAME
                    MOVE  "DBUPDATE"       TO   MCP-FUNC
-                   CALL  "MONFUNC"        USING
-                                          MCPAREA
+grpsys             CALL "ORCDBMAIN" USING MCPAREA
                                           MCPDATA-REC
+grpsys*                                   COMMON-SPA
                    IF   MCP-RC   NOT =  ZERO
                         DISPLAY  "NYUINACT UPDATE MCP-RC = " MCP-RC
                    END-IF
@@ -715,13 +720,14 @@
                        PERFORM   210-ZAITEN-SET-SEC
                    END-PERFORM
       *            Æþ±¡¿ÇÎÅ¹Ô°Ù¹¹¿·
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE   NYUINACT-REC    TO   MCPDATA-REC
                    MOVE  "tbl_nyuinact"   TO   MCP-TABLE
                    MOVE  "key"            TO   MCP-PATHNAME
                    MOVE  "DBUPDATE"       TO   MCP-FUNC
-                   CALL  "MONFUNC"        USING
-                                          MCPAREA
+grpsys             CALL "ORCDBMAIN" USING MCPAREA
                                           MCPDATA-REC
+grpsys*                                   COMMON-SPA
                    IF   MCP-RC   NOT =  ZERO
                        DISPLAY  "NYUINACT UPDATE MCP-RC = " MCP-RC
                    END-IF
@@ -772,13 +778,14 @@
            MOVE    WRK-MEISAISU    TO   NACCT-MEISAISU
            MOVE    WRK-SURYOTOTAL  TO   NACCT-SURYOUTOTAL
       *    Æþ±¡²ñ·×¹¹¿·
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    NYUINACCT-REC   TO   MCPDATA-REC
            MOVE   "tbl_nyuinacct"  TO   MCP-TABLE
            MOVE   "key"            TO   MCP-PATHNAME
            MOVE   "DBUPDATE"       TO   MCP-FUNC
-           CALL   "MONFUNC"        USING
-                                   MCPAREA
-                                   MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF   MCP-RC   NOT =  ZERO
                DISPLAY  "NYUINACCT UPDATE MCP-RC = " MCP-RC
            END-IF
@@ -887,9 +894,9 @@
        900-TBL-CLOSE-SEC               SECTION.
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        900-TBL-CLOSE-EXT.
@@ -901,9 +908,9 @@
        910-TBL-CLOSE-SEC               SECTION.
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        910-TBL-CLOSE-EXT.
@@ -916,16 +923,16 @@
            MOVE    LOW-VALUE       TO  MCP-TABLE
                                        MCP-PATHNAME
            MOVE    "DBOPEN"        TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            MOVE    LOW-VALUE       TO  MCP-TABLE
                                        MCP-PATHNAME
            MOVE    "DBSTART"       TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            .
        100-DBOPEN-EXT.
            EXIT.
@@ -938,16 +945,16 @@
            MOVE    LOW-VALUE       TO  MCP-TABLE
                                        MCP-PATHNAME
            MOVE    "DBCOMMIT"      TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            MOVE    LOW-VALUE       TO  MCP-TABLE
                                        MCP-PATHNAME
            MOVE    "DBDISCONNECT"  TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            .
        900-DBDISCONNECT-EXT.
            EXIT.
@@ -958,9 +965,9 @@
        910-SYSKANRI-SELECT-SEC        SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-SYSKANRI
            ELSE
@@ -977,9 +984,9 @@
        910-SYSKANRI-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1001-REC
                MOVE    ZERO                TO  FLG-SYSKANRI
@@ -997,11 +1004,12 @@
       *****************************************************************
        910-NYUINACCT-SELECT-SEC        SECTION.
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MONFUNC"            USING
-                                        MCPAREA
-                                        MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF      MCP-RC              =   ZERO
                MOVE    ZERO               TO  FLG-NYUINACCT
            ELSE
@@ -1018,9 +1026,9 @@
        910-NYUINACCT-READ-SEC        SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC        TO  NYUINACCT-REC
                MOVE    ZERO               TO  FLG-NYUINACCT
@@ -1039,11 +1047,12 @@
       *****************************************************************
        910-NYUINACT-SELECT-SEC        SECTION.
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    NYUINACT-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MONFUNC"            USING
-                                        MCPAREA
-                                        MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF      MCP-RC              =   ZERO
                MOVE    ZERO               TO  FLG-NYUINACT
            ELSE
@@ -1060,9 +1069,9 @@
        910-NYUINACT-READ-SEC        SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MONFUNC"            USING
-                                        MCPAREA
-                                        MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC        TO  NYUINACT-REC
                MOVE    ZERO               TO  FLG-NYUINACT
@@ -1080,20 +1089,21 @@
       *****************************************************************
        910-TENSU-READ-SEC         SECTION.
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
                MOVE    "tbl_tensu"         TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "MONFUNC"           USING
-                                           MCPAREA
-                                           MCPDATA-REC
+grpsys         CALL "ORCDBMAIN" USING MCPAREA
+                                      MCPDATA-REC
+grpsys*                               COMMON-SPA
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
                    MOVE    ZERO                TO  FLG-TENSU

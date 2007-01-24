@@ -61,6 +61,8 @@
        01  RECEERR-REC             PIC X(200). 
       *
        WORKING-STORAGE             SECTION.
+grpsys*
+grpsys COPY    "COMMON-SPA".
       *
       *    °õºþÍÑ¥Ç¡¼¥¿ Ì¾¾ÎÎÎ°è 
            COPY    "CPCOMMONPRT.INC".
@@ -270,6 +272,7 @@
            INITIALIZE                  SYS-1001-REC
            MOVE    "1001"              TO  SYS-1001-KANRICD
            MOVE    "*"                 TO  SYS-1001-KBNCD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1001-REC        TO  MCPDATA-REC
            PERFORM 800-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -285,6 +288,7 @@
            INITIALIZE                  SYS-1031-REC
            MOVE    "1031"              TO  SYS-1031-KANRICD
            MOVE    "*"                 TO  SYS-1031-KBNCD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1031-REC        TO  MCPDATA-REC
            PERFORM 800-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -556,6 +560,7 @@
            INITIALIZE                      HKNJAINF-REC
            MOVE   SYS-1001-HOSPID      TO  HKNJA-HOSPID
            MOVE   KEY-O-HKNJANUM       TO  HKNJA-HKNJANUM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE   HKNJAINF-REC         TO  MCPDATA-REC
            PERFORM 900-HKNJAINF-READ-SEC
            IF      FLG-HKNJAINF        =   ZERO
@@ -632,6 +637,7 @@
                                        TO  HKN-HKNNUM
            MOVE    WRK-SRYYMD          TO  HKN-TEKSTYMD
                                            HKN-TEKEDYMD                               
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE   HKNNUM-REC           TO  MCPDATA-REC
            MOVE   "DBSELECT"           TO  MCP-FUNC
            MOVE   "HKNNUM-KEY5"        TO  ORC-DBPATH
@@ -783,6 +789,7 @@
            MOVE    SYS-1001-HOSPID     TO  RECE10-HOSPID
            MOVE    WRK-PARA-SKYYM      TO  RECE10-SKYYM
            MOVE    SYS-1001-PREFNUM    TO  RECE10-XXPREFNUM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    WRK-PATH            TO  ORC-DBPATH
@@ -820,6 +827,7 @@
                INITIALIZE                      PTINF-REC
                MOVE    RECE10-HOSPID       TO  PTINF-HOSPID
                MOVE    RECE10-PTID         TO  PTINF-PTID
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    PTINF-REC           TO  MCPDATA-REC
                PERFORM 800-PTINF-READ-SEC
                IF      FLG-PTINF           =   ZERO

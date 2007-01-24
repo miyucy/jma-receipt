@@ -38,6 +38,8 @@
        FILE                                SECTION.
       *
        WORKING-STORAGE                     SECTION.
+grpsys*
+grpsys COPY    "COMMON-SPA".
       *
       *    ステータス領域
        01  STS-AREA.

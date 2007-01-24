@@ -54,6 +54,8 @@
        01  RECEERR-REC             PIC X(200). 
       *
        WORKING-STORAGE             SECTION.
+grpsys*
+grpsys COPY    "COMMON-SPA".
       *    ¥·¥§¥ëÍÑÎÎ°è
       *     COPY    "CPCOMMONSHELL.INC".
       *
@@ -287,6 +289,7 @@
            INITIALIZE                  SYS-1001-REC
            MOVE    "1001"              TO  SYS-1001-KANRICD
            MOVE    "*"                 TO  SYS-1001-KBNCD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1001-REC        TO  MCPDATA-REC
            PERFORM 800-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -317,6 +320,7 @@
                INITIALIZE                      SYS-1005-REC
                MOVE    "1005"              TO  SYS-1005-KANRICD
                MOVE    KEY-N-SRYKA         TO  SYS-1005-KBNCD
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SYS-1005-REC        TO  MCPDATA-REC
                PERFORM 800-SYSKANRI-READ-SEC
                IF      FLG-SYSKANRI        =   ZERO
@@ -595,6 +599,7 @@
            INITIALIZE                  BD001-REC
            MOVE    WRK-PARA-HOSPID     TO  BD001-HOSPID  
            MOVE    WRK-PARA-DENPPRTYMD TO  BD001-DENPPRTYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    BD001-REC           TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "BD001-KEY"         TO  ORC-DBPATH

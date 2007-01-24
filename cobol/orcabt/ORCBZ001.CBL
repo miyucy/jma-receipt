@@ -249,6 +249,7 @@
            INITIALIZE                  SYS-1009-REC
            MOVE    "1009"          TO  SYS-1009-KANRICD
            MOVE    "*"             TO  SYS-1009-KBNCD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1009-REC    TO  MCPDATA-REC
            PERFORM 800-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO

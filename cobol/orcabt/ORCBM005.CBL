@@ -63,6 +63,8 @@
        01  RECEERR-REC             PIC X(200). 
       *
        WORKING-STORAGE             SECTION.
+grpsys*
+grpsys COPY    "COMMON-SPA".
       *
       *    エラーファイル 名称領域 
            COPY    "CPCOMMONDAT2.INC"
@@ -731,6 +733,7 @@
            MOVE    SPACE                TO  RECE10-REC  
            MOVE    WRK-PARA-HOSPID      TO  RECE10-HOSPID
            MOVE    LNK-PRTKANRI-SRYYM   TO  RECE10-SKYYM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    RECE10-REC           TO  MCPDATA-REC
            MOVE    "DBSELECT"           TO  MCP-FUNC
            MOVE    "SEIKYU-KEY5"        TO  ORC-DBPATH
@@ -781,6 +784,7 @@
                INITIALIZE                      PTINF-REC
                MOVE    RECE10-HOSPID       TO  PTINF-HOSPID
                MOVE    RECE10-PTID         TO  PTINF-PTID
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    PTINF-REC           TO  MCPDATA-REC
                PERFORM 800-PTINF-READ-SEC
                IF      FLG-PTINF           =   ZERO

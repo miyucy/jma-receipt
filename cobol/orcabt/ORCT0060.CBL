@@ -386,6 +386,7 @@
            MOVE    "5010"              TO  SYS-5010-KANRICD
            MOVE    "*"                 TO  SYS-5010-KBNCD
            MOVE    TEIKI1P-SYSYMD      TO  ORC-DBYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-5010-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-KEY-SEL-SEC
            IF    ( FLG-SYSKANRI        =   ZERO )
@@ -935,6 +936,7 @@
            INITIALIZE                  PTNUM-REC
            MOVE    TEIKI1P-HOSPID      TO  PTNUM-HOSPID
            MOVE    WRK-PTID            TO  PTNUM-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNUM-REC           TO  MCPDATA-REC
            MOVE    "PTNUM-KEY"         TO  ORC-DBPATH
            PERFORM 910-DBSELECT-SEC

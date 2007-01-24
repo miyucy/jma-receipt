@@ -222,6 +222,7 @@
            MOVE    WRK-PARA-HOSPID TO  ACCT-HOSPID
            MOVE    "70"            TO  ACCT-SRYKBN
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACCT-REC     TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
            MOVE    "SRYACCT-KEY17" TO  ORC-DBPATH
@@ -280,6 +281,7 @@
            MOVE    ACCT-SRYYM          TO  SRY-SRYYM
            MOVE    ACCT-ZAINUM         TO  SRY-ZAINUM
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACT-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
@@ -344,6 +346,7 @@
                                        +   WRK-FIRUMU
       *
       *    ¹¹¿·
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYACCT-REC     TO  MCPDATA-REC
            MOVE    "DBUPDATE"      TO  MCP-FUNC
            MOVE    "SRYACCT-KEY"   TO  ORC-DBPATH
@@ -463,6 +466,7 @@
            MOVE    ZERO            TO  TNS-YUKOSTYMD
            MOVE    ALL "9"         TO  TNS-YUKOEDYMD
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TNS-TENSU-REC   TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
            MOVE    "TENSU-KEY"     TO  ORC-DBPATH

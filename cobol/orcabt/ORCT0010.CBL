@@ -419,6 +419,7 @@
            MOVE    "5010"          TO  SYS-5010-KANRICD
            MOVE    "*"             TO  SYS-5010-KBNCD
            MOVE    TEIKI1P-SYSYMD  TO  ORC-DBYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-5010-REC    TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-KEY-SEL-SEC
            IF    ( FLG-SYSKANRI        =   ZERO )
@@ -477,6 +478,7 @@
            INITIALIZE                  SYS-1041-REC
            MOVE    "1041"          TO  SYS-1041-KANRICD
            MOVE    TEIKI1P-SYSYMD  TO  ORC-DBYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1041-REC    TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-KEY2-SEL-SEC
            IF    ( FLG-SYSKANRI        =   ZERO )
@@ -585,6 +587,7 @@
            MOVE    TEIKI1P-HOSPID  TO  PTNYUINRRK-HOSPID
            MOVE    WRK-TEIKIEDYMD  TO  PTNYUINRRK-NYUINYMD
            MOVE    WRK-TEIKIEDYMD  TO  PTNYUINRRK-TAIINYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
            MOVE    "PTNYUINRRK-KEY14"  TO  ORC-DBPATH
            PERFORM 910-DBSELECT-SEC
@@ -999,6 +1002,7 @@
       *
       *    Æþ±¡ÍúÎò¥Þ¥¹¥¿¸¡º÷
            MOVE    ZERO                TO  FLG-PTNYUINRRK2
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "PTNYUINRRK-KEY4"   TO  ORC-DBPATH
            PERFORM 910-DBSELECT-SEC
@@ -1061,6 +1065,7 @@
            INITIALIZE                      SYS-5012-REC
            MOVE    "5012"              TO  SYS-5012-KANRICD
            MOVE    ZERO                TO  ORC-DBYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-5012-REC        TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY7"     TO  ORC-DBPATH
            PERFORM 910-DBSELECT-SEC
@@ -1114,6 +1119,7 @@
                    MOVE    WRK-TEIKIEDYMD  TO  PTNYUINRRK-NYUINYMD
                    MOVE    WRK-TEIKIEDYMD  TO  PTNYUINRRK-TAIINYMD
                    MOVE    "PTNYUINRRK-KEY10"  TO  ORC-DBPATH
+grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
                    PERFORM 910-DBSELECT-SEC
                    IF    ( MCP-RC          =   ZERO )
@@ -1163,6 +1169,7 @@
            MOVE    SYS-5012-SRYYM      TO  ORC-DBYMD (1 : 6)
            MOVE    "01"                TO  ORC-DBYMD (7 : 2)
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-5010-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-KEY-SEL-SEC
            IF    ( FLG-SYSKANRI        =   ZERO )
@@ -1559,6 +1566,7 @@
            MOVE    PTNYUINRRK-HOSPID   TO  PTTEIKIRRK-HOSPID
            MOVE    PTNYUINRRK-PTID     TO  PTTEIKIRRK-PTID
            MOVE    TEIKI1P-SRYYM       TO  PTTEIKIRRK-SRYYM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTTEIKIRRK-REC      TO  MCPDATA-REC
            MOVE    "PTTEIKIRRK-KEY2"   TO  ORC-DBPATH
            PERFORM 910-DBSELECT-SEC
@@ -1584,6 +1592,7 @@
            MOVE    ZERO                TO  FLG-PTNYUINRRK2
       *
            MOVE    "PTNYUINRRK-KEY4"   TO  ORC-DBPATH
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
@@ -1607,6 +1616,7 @@
       *
            MOVE    ZERO                TO  FLG-PTINF
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "PTINF-KEY"         TO  ORC-DBPATH
            PERFORM 910-DBSELECT-SEC
@@ -1633,6 +1643,7 @@
            INITIALIZE                  PTNUM-REC
            MOVE    TEIKI1P-HOSPID      TO  PTNUM-HOSPID
            MOVE    WRK-PTID            TO  PTNUM-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNUM-REC           TO  MCPDATA-REC
            MOVE    "PTNUM-KEY"         TO  ORC-DBPATH
            PERFORM 910-DBSELECT-SEC

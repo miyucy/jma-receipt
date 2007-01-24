@@ -407,6 +407,7 @@
            MOVE    "5000"              TO  SYS-5000-KANRICD
            MOVE    "*"                 TO  SYS-5000-KBNCD
            MOVE    CONST-REVYMD        TO  ORC-DBYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-5000-REC        TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
            PERFORM 910-DBSELECT-SEC
@@ -444,6 +445,7 @@
            MOVE    WRK-PARA-HOSPID     TO  NACCT-HOSPID
            MOVE    "1"                 TO  NACCT-NYUGAIKBN
            MOVE    CONST-REVYM         TO  NACCT-SRYYM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
            MOVE    "NYUINACCT-KEY21"   TO  ORC-DBPATH
            PERFORM 910-DBSELECT-SEC
@@ -671,6 +673,7 @@
            MOVE    NACCT-PTID          TO  NSRY-PTID
            MOVE    NACCT-SRYYM         TO  NSRY-SRYYM
            MOVE    NACCT-ZAINUM        TO  NSRY-ZAINUM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    NYUINACT-REC        TO  MCPDATA-REC
            MOVE    "NYUINACT-KEY9"     TO  ORC-DBPATH
            PERFORM 910-DBSELECT-SEC
@@ -735,6 +738,7 @@
                                            NSRY-SRYCD (3)
                                            NSRY-SRYCD (4)
                                            NSRY-SRYCD (5)
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    NYUINACT-REC        TO  MCPDATA-REC
            MOVE    "NYUINACT-KEY7"     TO  ORC-DBPATH
            PERFORM 910-DBSELECT-SEC
@@ -814,6 +818,7 @@
            MOVE    WKNACCT-SRYKA       TO  NSRY-SRYKA
            MOVE    WKNACCT-SRYYM       TO  NSRY-SRYYM
            MOVE    WKNACCT-ZAINUM      TO  NSRY-ZAINUM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    NYUINACT-REC        TO  MCPDATA-REC
            MOVE    "NYUINACT-DEL11"    TO  ORC-DBPATH
            PERFORM 910-DBDELETE-SEC
@@ -838,6 +843,7 @@
            MOVE    WKNACCT-KEY         TO  NACCT-KEY
            MOVE    WRK-SRYKBN          TO  NACCT-SRYKBN
            MOVE    WRK-ZAINUM          TO  NACCT-ZAINUM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
            MOVE    "NYUINACCT-KEY"     TO  ORC-DBPATH
            PERFORM 910-DBDELETE-SEC
@@ -920,6 +926,7 @@
                MOVE    WRK-KSN-NYUKHNKSNKBN
                                        TO  NYUKSNCHK-KSNKBN
                MOVE    CONST-REVYMD    TO  ORC-DBYMD
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    NYUKSNCHK-REC   TO  MCPDATA-REC
                MOVE    "NYUKSNCHK-KEY" TO  ORC-DBPATH
                PERFORM 910-DBSELECT-SEC
@@ -985,6 +992,7 @@
            MOVE    SMCNDATE-YMD        TO  PTINF-UPYMD
            MOVE    SMCNDATE-HMS        TO  PTINF-UPHMS
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "PTINF-KEY"         TO  ORC-DBPATH
            PERFORM 910-DBUPDATE-SEC
@@ -1148,6 +1156,7 @@
                MOVE    SMCNDATE-YMD        TO  NSRY-UPYMD
                MOVE    SMCNDATE-HMS        TO  NSRY-UPHMS
       *
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    NYUINACT-REC        TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "NYUINACT-KEY"      TO  ORC-DBPATH
@@ -1217,6 +1226,7 @@
            MOVE    SMCNDATE-YMD        TO  NACCT-UPYMD
            MOVE    SMCNDATE-HMS        TO  NACCT-UPHMS
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
            MOVE    "NYUINACCT-KEY"     TO  ORC-DBPATH
            PERFORM 910-DBINSERT-SEC
@@ -1258,6 +1268,7 @@
            MOVE    SMCNDATE-HMS        TO  NACCT-UPHMS
       *
       *    入院会計更新
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
            MOVE    "NYUINACCT-KEY"     TO  ORC-DBPATH
            PERFORM 910-DBUPDATE-SEC
@@ -1530,6 +1541,7 @@
            MOVE    WKNACCT-PTID        TO  NACCT-PTID
            MOVE    WKNACCT-SRYYM       TO  NACCT-SRYYM
            MOVE    WRK-NACCT-ZAISKBKBN TO  NACCT-ZAISKBKBN
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
            MOVE    "NYUINACCT-KEY17"   TO  ORC-DBPATH
            PERFORM 910-DBSELECT-SEC
@@ -1569,6 +1581,7 @@
            INITIALIZE                      PTNUM-REC
            MOVE    WRK-PARA-HOSPID     TO  PTNUM-HOSPID
            MOVE    WRK-PTID            TO  PTNUM-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNUM-REC           TO  MCPDATA-REC
            MOVE    "PTNUM-KEY"         TO  ORC-DBPATH
            PERFORM 910-DBSELECT-SEC
@@ -1595,6 +1608,7 @@
            INITIALIZE                      PTINF-REC
            MOVE    WRK-PARA-HOSPID     TO  PTINF-HOSPID
            MOVE    WRK-PTID            TO  PTINF-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "PTINF-KEY"         TO  ORC-DBPATH
            PERFORM 910-DBSELECT-SEC
@@ -1622,6 +1636,7 @@
            INITIALIZE                      TNS-TENSU-REC
            MOVE    WRK-SRYCD           TO  TNS-SRYCD
            MOVE    WRK-TNS-YMD         TO  ORC-DBYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "TENSU-KEY"         TO  ORC-DBPATH
            PERFORM 910-DBSELECT-SEC

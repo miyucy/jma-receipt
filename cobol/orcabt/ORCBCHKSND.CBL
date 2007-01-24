@@ -65,6 +65,8 @@
        01  RECEERR-REC             PIC X(200).
       *
        WORKING-STORAGE             SECTION.
+grpsys*
+grpsys COPY    "COMMON-SPA".
       *
       *    チェックマスタファイル
            COPY    "CPCOMMONDAT2.INC"
@@ -541,6 +543,7 @@
       *****************************************************************
        20011-CHKMST-DEL-SEC        SECTION.
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    CHK-REC              TO  MCPDATA-REC
            MOVE    PATH-TBL-CHK-DEL11   TO  MCP-PATH
            PERFORM 910-DBDELETE-SEC
@@ -647,6 +650,7 @@
                                                    CHKSND-UPYMD
                        MOVE    SMCNDATE-HMS    TO  CHKSND-UPHMS
       *
+grpsys*                MOVE SPA-HOSPNUM TO -HOSPNUM
                        MOVE    CHKSND-REC      TO  MCPDATA-REC
                        MOVE    PATH-TBL-CHKSND-KEY TO  MCP-PATH
                        PERFORM 910-DBINSERT-SEC
@@ -991,6 +995,7 @@
       *
            MOVE    ZERO                TO  FLG-CHK-KEY2
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    CHK-REC             TO  MCPDATA-REC
            MOVE    PATH-TBL-CHK-KEY2   TO  MCP-PATH
            PERFORM 910-DBSELECT-SEC
@@ -1027,6 +1032,7 @@
            MOVE    ZERO                TO  FLG-CHKMST
       *
            INITIALIZE                  CHK-REC
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    CHK-REC             TO  MCPDATA-REC
            MOVE    PATH-TBL-CHK-KEY13  TO  MCP-PATH
            PERFORM 910-DBSELECT-SEC
@@ -1071,6 +1077,7 @@
            MOVE    CHK-YUKOSTYMD   TO  CHKSND-YUKOEDYMD
            MOVE    CHK-CDKBN       TO  CHKSND-CDKBN
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    CHKSND-REC      TO  MCPDATA-REC
            MOVE    PATH-TBL-CHKSND-KEY3
                                    TO  MCP-PATH
@@ -1100,6 +1107,7 @@
            MOVE    WRK-TNS-SRYCD   TO  TNS-SRYCD
            MOVE    WRK-TNS-YMD     TO  TNS-YUKOSTYMD
                                        TNS-YUKOEDYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TNS-TENSU-REC   TO  MCPDATA-REC
            MOVE    PATH-TBL-TENSU-KEY  TO  MCP-PATH
            PERFORM 910-DBSELECT-SEC
@@ -1125,6 +1133,7 @@
       *
            INITIALIZE                  BYOMEI-REC
            MOVE    WRK-BYOMEICD    TO  BYO-BYOMEICD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    BYOMEI-REC      TO  MCPDATA-REC
            MOVE    PATH-TBL-BYOMEI-KEY     TO  MCP-PATH
            PERFORM 910-DBSELECT-SEC

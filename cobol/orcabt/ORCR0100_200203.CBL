@@ -152,6 +152,8 @@
        01  RECEERR-REC             PIC X(200). 
       *
        WORKING-STORAGE             SECTION.
+grpsys*
+grpsys COPY    "COMMON-SPA".
       *    ¥·¥§¥ëÍÑÎÎ°è
            COPY    "CPCOMMONSHELL.INC".
       *
@@ -2412,6 +2414,7 @@
            MOVE    WRK-SRYYMD         TO  HKN-TEKSTYMD
                                           HKN-TEKEDYMD
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HKNNUM-REC         TO  MCPDATA-REC
            MOVE    "DBSELECT"         TO  MCP-FUNC
            MOVE    "HKNNUM-KEY5"      TO  ORC-DBPATH
@@ -2473,6 +2476,7 @@
            MOVE    RECE02-SRYYM        TO  RECECOM-SRYYM
            MOVE    RECE02-PTID         TO  RECECOM-PTID
       * 
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    RECECOM-REC         TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "RECECOM-KEY1"      TO  ORC-DBPATH
@@ -2693,6 +2697,7 @@
            MOVE    HC06                TO  RECE08-PRTDATA
            MOVE    "RECEPRT-KEY"       TO  ORC-DBPATH
            MOVE    "DBINSERT"          TO  MCP-FUNC
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    RECE08-REC          TO  MCPDATA-REC
            CALL    "ORCMCPSUB"              USING
                                             MCPAREA
@@ -2724,6 +2729,7 @@
            MOVE    RECE08-CREHMS       TO  RECE07-CREHMS
            MOVE    RECE08-TEISYUTUSAKI TO  RECE07-TEISYUTUSAKI
            MOVE    RECE08-RECESYUBETU  TO  RECE07-RECESYUBETU
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    RECE07-REC          TO  MCPDATA-REC 
            PERFORM 900-RECE07-READ-SEC
            IF      FLG-RECE07          =   1
@@ -2746,6 +2752,7 @@
                END-IF
            END-IF
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    RECE07-REC          TO  MCPDATA-REC
            MOVE    "RECEKANRI-KEY"     TO  ORC-DBPATH
            IF      FLG-RECE07          =   1    
@@ -2887,6 +2894,7 @@
                MOVE    ZERO            TO  RECE10-SHOKUJINISSU (1)
            END-IF             
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    "SEIKYU-KEY"        TO  ORC-DBPATH
            IF      FLG-SEIKYU          =   1    
@@ -3225,6 +3233,7 @@
       *****************************************************************
        960-KANRIMST-READ-SEC         SECTION.
       * 
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
@@ -3285,6 +3294,7 @@
       *****************************************************************
        900-SEIKYU-INV-SEC         SECTION.
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SEIKYU-KEY"        TO  ORC-DBPATH
@@ -3354,6 +3364,7 @@
       *****************************************************************
        900-PTINF-READ-SEC         SECTION.
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "PTINF-KEY"         TO  ORC-DBPATH

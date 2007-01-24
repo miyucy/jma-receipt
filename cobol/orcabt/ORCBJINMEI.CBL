@@ -301,6 +301,7 @@
                            INITIALIZE   JINMEI-REC
                            MOVE   WRK-KANA-SEI   TO  JINMEI-KANA
                            MOVE   WRK-KANJI-SEI  TO  JINMEI-KANJI
+grpsys*                    MOVE SPA-HOSPNUM TO -HOSPNUM
                            MOVE   JINMEI-REC     TO  MCPDATA-REC
                            MOVE   "DBINSERT"     TO  MCP-FUNC
                            MOVE   "JINMEI-KEY"   TO  ORC-DBPATH
@@ -327,6 +328,7 @@
                            INITIALIZE   JINMEI-REC
                            MOVE   WRK-KANA-MEI   TO  JINMEI-KANA
                            MOVE   WRK-KANJI-MEI  TO  JINMEI-KANJI
+grpsys*                    MOVE SPA-HOSPNUM TO -HOSPNUM
                            MOVE   JINMEI-REC     TO  MCPDATA-REC
                            MOVE   "DBINSERT"     TO  MCP-FUNC
                            MOVE   "JINMEI-KEY"   TO  ORC-DBPATH
@@ -470,6 +472,7 @@
       *****************************************************************
        910-PTINF-SELECT-SEC        SECTION.
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            CALL    "ORCMCPSUB"          USING
@@ -514,6 +517,7 @@
       *****************************************************************
        910-JINMEI-SELECT-SEC        SECTION.
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    JINMEI-REC           TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            CALL    "ORCMCPSUB"          USING

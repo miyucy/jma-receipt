@@ -107,6 +107,8 @@
        01  RECEERR-REC             PIC X(200). 
       *
        WORKING-STORAGE             SECTION.
+grpsys*
+grpsys COPY    "COMMON-SPA".
       *
            COPY    "CPCOMMONDAT2.INC"
                                    REPLACING  //RECE01//
