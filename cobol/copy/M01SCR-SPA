@@ -67,7 +67,7 @@
                    07  SPA-GMN-MSG2-STYLE     PIC X(20).
                    07  SPA-GMN-MSG2           PIC X(62).
       *----(03.04.01)--ADD-START---
-                   07  SPA-GMN-DURATION       PIC 9(02).
+                   07  SPA-GMN-DURATION       PIC 9(01).
       *----(03.04.01)--ADD-END-----
       *
                05  SPA-NAI-AREA.

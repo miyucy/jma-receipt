@@ -375,7 +375,7 @@
                                                 TO  SPA-GMN-MSG1(ID1:18)
                            MOVE    "blue"       TO  SPA-GMN-MSG1-STYLE
       *----(03.04.01)--ADD-START---
-                           MOVE    10           TO  SPA-GMN-DURATION
+                           MOVE    5            TO  SPA-GMN-DURATION
       *----(03.04.01)--ADD-END-----
                        END-IF
                    END-IF
@@ -410,7 +410,7 @@
                                                 TO  SPA-GMN-MSG2(ID1:18)
                            MOVE    "blue"       TO  SPA-GMN-MSG2-STYLE
       *----(03.04.01)--ADD-START---
-                           MOVE    10           TO  SPA-GMN-DURATION
+                           MOVE    5            TO  SPA-GMN-DURATION
       *----(03.04.01)--ADD-END-----
                        END-IF
                    END-IF
