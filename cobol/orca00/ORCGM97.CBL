@@ -507,10 +507,6 @@
       *        GO  TO  400-JYOKYO-SET-EXT
       *    END-IF
       *
-      *----(03.04.01)--ADD-START---
-           MOVE    0                 TO  SPA-GMN-DURATION
-      *----(03.04.01)--ADD-END-----
-      *
       *    メッセージ編集
            PERFORM 820-JOBKANRI-READ1-SEC
       *
@@ -537,9 +533,6 @@
                            MOVE    "プログラム更新中です。"
                                                 TO  SPA-GMN-MSG
                            MOVE    "blue"       TO  SPA-GMN-MSG-STYLE
-      *----(03.04.01)--ADD-START---
-                           MOVE    5            TO  SPA-GMN-DURATION
-      *----(03.04.01)--ADD-END-----
                        END-IF
                    END-IF
                END-IF
@@ -547,6 +540,19 @@
                MOVE    SPACE           TO  SPA-GMN-MSG
                MOVE    SPACE           TO  SPA-GMN-MSG-STYLE
            END-IF
+      *
+      *----(03.04.01)--ADD-START---
+           MOVE    0           TO  SPA-GMN-DURATION
+      *
+           IF    ( SJOBKANRI-RETURN    =   ZERO )  AND
+                 ( JOB-ERRCD(1:2)  NOT =   "99" )  AND
+                 ( JOB-ERRCD(1:2)  NOT =   "01" )
+               IF    ( JOB-ENDTIME     =   SPACE)  OR
+                     ( JOB-ENDYMD      =   SPACE)
+                   MOVE    5           TO  SPA-GMN-DURATION
+               END-IF
+           END-IF
+      *----(03.04.01)--ADD-END-----
            .
        400-JYOKYO-SET-EXT.
            EXIT.
