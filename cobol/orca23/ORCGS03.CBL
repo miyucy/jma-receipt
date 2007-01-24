@@ -632,6 +632,7 @@
            MOVE    "1041"              TO  SYS-1041-KANRICD
            MOVE    SPA-S01-SRYYMD      TO  SYS-1041-STYUKYMD
                                            SYS-1041-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1041-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -719,6 +720,7 @@
                MOVE    "*"                 TO  SYS-KBNCD
                MOVE    SPA-S01-SRYYMD      TO  SYS-STYUKYMD
                                                SYS-EDYUKYMD
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SYSKANRI-REC        TO  MCPDATA-REC
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key10"             TO  MCP-PATHNAME
@@ -751,6 +753,7 @@
                MOVE    "*"                 TO  SYS-KBNCD
                MOVE    SPA-S01-SRYYMD      TO  SYS-STYUKYMD
                                                SYS-EDYUKYMD
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SYSKANRI-REC        TO  MCPDATA-REC
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key10"             TO  MCP-PATHNAME
@@ -800,6 +803,7 @@
                MOVE    "*"                 TO  SYS-KBNCD
                MOVE    SPA-S01-SRYYMD      TO  SYS-STYUKYMD
                                                SYS-EDYUKYMD
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SYSKANRI-REC        TO  MCPDATA-REC
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key10"             TO  MCP-PATHNAME
@@ -1029,6 +1033,7 @@
            MOVE    SPA-S01-NYUGAIKBN   TO  SMEI-NYUGAIKBN
            MOVE    SPA-S01-PTID        TO  SMEI-PTID
            MOVE    SPA-S01-DENPNUM     TO  SMEI-DENPNUM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUMEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_syumei"        TO  MCP-TABLE
            MOVE    "key6"              TO  MCP-PATHNAME
@@ -1140,6 +1145,7 @@
            MOVE    "1013"              TO  SYS-1013-KANRICD
            MOVE    SPA-S01-SRYYMD      TO  SYS-1013-STYUKYMD
                                            SYS-1013-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1013-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -1218,6 +1224,7 @@
            MOVE    SPA-HOSPID          TO  SYU-HOSPID
            MOVE    WRK-NYUGAIKBN       TO  SYU-NYUGAIKBN
            MOVE    SPA-S01-PTID        TO  SYU-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "tbl_syunou"        TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -1272,6 +1279,7 @@
            MOVE    SPA-HOSPID          TO  SYU-HOSPID
            MOVE    WRK-NYUGAIKBN       TO  SYU-NYUGAIKBN
            MOVE    SPA-S01-PTID        TO  SYU-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "tbl_syunou"        TO  MCP-TABLE
            MOVE    "key53"             TO  MCP-PATHNAME
@@ -1293,6 +1301,7 @@
            MOVE    SPA-HOSPID          TO  SYU-HOSPID
            MOVE    WRK-NYUGAIKBN       TO  SYU-NYUGAIKBN
            MOVE    SPA-S01-PTID        TO  SYU-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "tbl_syunou"        TO  MCP-TABLE
            MOVE    "key54"             TO  MCP-PATHNAME
@@ -2466,6 +2475,7 @@
            MOVE    SPA-S01-NYUGAIKBN   TO  SMEI-NYUGAIKBN
            MOVE    SPA-S01-PTID        TO  SMEI-PTID
            MOVE    SPA-S01-DENPNUM     TO  SMEI-DENPNUM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUMEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_syumei"        TO  MCP-TABLE
            MOVE    "key6"              TO  MCP-PATHNAME
@@ -2920,6 +2930,7 @@
                MOVE    SMCNDATE-YMD        TO  SYU-UPYMD
                MOVE    SMCNDATE-HMS        TO  SYU-UPHMS
       *
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SYUNOU-REC          TO  MCPDATA-REC
                MOVE    "tbl_syunou"        TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
@@ -2943,6 +2954,7 @@
            MOVE    SPA-S01-NYUGAIKBN   TO  SMEI-NYUGAIKBN
            MOVE    SPA-S01-PTID        TO  SMEI-PTID
            MOVE    SPA-S01-DENPNUM     TO  SMEI-DENPNUM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUMEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_syumei"        TO  MCP-TABLE
            MOVE    "key7"              TO  MCP-PATHNAME
@@ -3032,6 +3044,7 @@
                PERFORM 800-DAILYKEY-SEC
                MOVE    SDAILYKEY-DAILYKEY  TO  SMEI-DAILYKEY
       *
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SYUMEI-REC          TO  MCPDATA-REC
                MOVE    "tbl_syumei"        TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
@@ -3056,6 +3069,7 @@
            MOVE    SPA-S01-PTID        TO  SMEI-PTID
            MOVE    SPA-S01-DENPNUM     TO  SMEI-DENPNUM
            MOVE    SPA-NAI-DENPEDANUM  TO  SMEI-DENPEDANUM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUMEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_syumei"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -3135,6 +3149,7 @@
                    MOVE    SDAILYKEY-DAILYKEY  TO  SMEI-DAILYKEY
                END-IF
       *
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SYUMEI-REC          TO  MCPDATA-REC
                MOVE    "tbl_syumei"        TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
@@ -3484,6 +3499,7 @@
            INITIALIZE                  PTINF-REC
            MOVE    SPA-HOSPID      TO  PTINF-HOSPID
            MOVE    SPA-S01-PTID    TO  PTINF-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC       TO  MCPDATA-REC
            MOVE    "tbl_ptinf"     TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
@@ -3546,6 +3562,7 @@
            MOVE    SPA-S01-NYUGAIKBN   TO  SYU-NYUGAIKBN
            MOVE    SPA-S01-PTID        TO  SYU-PTID
            MOVE    SPA-S01-DENPNUM     TO  SYU-DENPNUM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "tbl_syunou"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -3570,9 +3587,9 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF    ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
@@ -3587,9 +3604,9 @@
        911-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
       *
@@ -3601,9 +3618,9 @@
        910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
       *
@@ -3615,9 +3632,9 @@
        910-DBCLOSECURSOR-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
       *
@@ -3629,9 +3646,9 @@
        910-DBUPDATE-SEC                SECTION.
       *
            MOVE    "DBUPDATE"          TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
       *
@@ -3643,9 +3660,9 @@
        910-DBINSERT-SEC                SECTION.
       *
            MOVE    "DBINSERT"          TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
       *
@@ -3657,9 +3674,9 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        900-PUT-WINDOW-EXT.
