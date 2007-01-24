@@ -151,14 +151,15 @@
            MOVE    LNK-PTID            TO  UKE-PTID
            MOVE    WRK-SYSYMD          TO  UKE-UKEYMD
            MOVE    LNK-TIME            TO  UKE-UKETIME
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    UKETUKE-REC         TO  MCPDATA-REC
       *
            MOVE    "tbl_uketuke"       TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF      MCP-RC              =   ZERO
                MOVE    "key4"              TO  MCP-PATHNAME
                PERFORM 910-UKETUKE-READ-SEC
@@ -180,14 +181,15 @@
       *                Á÷¿®´°Î»
                        MOVE    1                   TO  FLG-OK
                        MOVE    LNK-RC              TO  UKE-SRFLG
+grpsys*                MOVE SPA-HOSPNUM TO -HOSPNUM
                        MOVE    UKETUKE-REC         TO  MCPDATA-REC
       *
                        MOVE    "DBUPDATE"          TO  MCP-FUNC
                        MOVE    "tbl_uketuke"       TO  MCP-TABLE
                        MOVE    "key"               TO  MCP-PATHNAME
-                       CALL    "MONFUNC"           USING
-                                                   MCPAREA
-                                                   MCPDATA-REC
+grpsys                 CALL "ORCDBMAIN" USING MCPAREA
+                                              MCPDATA-REC
+grpsys*                                       COMMON-SPA
                       IF      MCP-RC          NOT =   ZERO 
                            DISPLAY "ORCL0012 UKETUKE UPD ERR:"  MCP-RC
                                    ",KEY:" UKE-KEY
@@ -201,9 +203,9 @@
            MOVE    "tbl_uketuke"       TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            .
        200-MAIN-EXT.
            EXIT.
@@ -223,9 +225,9 @@
            MOVE    "tbl_uketuke"       TO  MCP-TABLE
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF      MCP-RC              =   ZERO
                MOVE    ZERO                TO  FLG-UKETUKE
                MOVE    MCPDATA-REC         TO  UKETUKE-REC

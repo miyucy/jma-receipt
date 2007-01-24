@@ -603,6 +603,7 @@
            MOVE    LNK-SYSYMD          TO  SYS-1006-STYUKYMD
            MOVE    LNK-SYSYMD          TO  SYS-1006-EDYUKYMD
       *    システム管理検索（施設基準）
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1006-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -634,6 +635,7 @@
            MOVE    "*"                 TO  SYS-9000-KBNCD
            MOVE    LNK-SYSYMD          TO  SYS-9000-STYUKYMD
            MOVE    LNK-SYSYMD          TO  SYS-9000-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-9000-REC        TO  MCPDATA-REC
       *
            PERFORM 900-SYSKANRI-INV-SEC
@@ -682,6 +684,7 @@
            MOVE    LNK-SRYKA           TO  SYS-1005-KBNCD
            MOVE    LNK-SYSYMD          TO  SYS-1005-STYUKYMD
            MOVE    LNK-SYSYMD          TO  SYS-1005-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1005-REC        TO  MCPDATA-REC
       *
            PERFORM 900-SYSKANRI-INV-SEC
@@ -865,6 +868,7 @@
            MOVE    WRK-SRYKA           TO  SYS-1005-KBNCD
            MOVE    LNK-SYSYMD          TO  SYS-1005-STYUKYMD
            MOVE    LNK-SYSYMD          TO  SYS-1005-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1005-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -883,6 +887,7 @@
            INITIALIZE                  HKNCOMBI-REC
            MOVE    LNK-HOSPID      TO  COMB-HOSPID
            MOVE    LNK-PTID        TO  COMB-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HKNCOMBI-REC    TO  MCPDATA-REC
            MOVE    "tbl_hkncombi"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -957,6 +962,7 @@
                        MOVE    COMB-HKNID          TO  PTHKN-HKNID
                        MOVE    LNK-SYSYMD          TO  PTHKN-TEKSTYMD
                        MOVE    LNK-SYSYMD          TO  PTHKN-TEKEDYMD
+grpsys*                MOVE SPA-HOSPNUM TO -HOSPNUM
                        MOVE    PTHKNINF-REC        TO  MCPDATA-REC
                        PERFORM 910-PTHKNINF-INV-SEC
                        MOVE    PTHKN-HKNJANUM  
@@ -1055,6 +1061,7 @@
                            MOVE    WRK-KOHID(IDY1) TO  PTKOH-KOHID
                            MOVE    LNK-SYSYMD      TO  PTKOH-TEKSTYMD
                            MOVE    LNK-SYSYMD      TO  PTKOH-TEKEDYMD
+grpsys*                    MOVE SPA-HOSPNUM TO -HOSPNUM
                            MOVE    PTKOHINF-REC    TO  MCPDATA-REC
                            PERFORM 910-PTKOHINF-INV-SEC
                            MOVE    IDY1            TO
@@ -1119,6 +1126,7 @@
            MOVE    LNK-HOSPID          TO  KARRK-HOSPID
            MOVE    LNK-PTID            TO  KARRK-PTID
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SRYKARRK-REC        TO  MCPDATA-REC
            MOVE    "tbl_srykarrk"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -1183,6 +1191,7 @@
            MOVE    "*"                 TO  SYS-1002-KBNCD
            MOVE    LNK-SYSYMD          TO  SYS-1002-STYUKYMD
            MOVE    LNK-SYSYMD          TO  SYS-1002-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1002-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -1197,6 +1206,7 @@
            MOVE    "*"                 TO  SYS-1001-KBNCD
            MOVE    LNK-SYSYMD          TO  SYS-1001-STYUKYMD
            MOVE    LNK-SYSYMD          TO  SYS-1001-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1001-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -1342,6 +1352,7 @@
            MOVE    LNK-DRCD            TO  SYS-1010-KBNCD
            MOVE    LNK-SYSYMD          TO  SYS-1010-STYUKYMD
            MOVE    LNK-SYSYMD          TO  SYS-1010-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1010-REC        TO  MCPDATA-REC
       *
            PERFORM 900-SYSKANRI-INV-SEC
@@ -1367,6 +1378,7 @@
            MOVE    "1005"              TO  SYS-1005-KANRICD
            MOVE    LNK-SYSYMD          TO  SYS-1005-STYUKYMD
            MOVE    LNK-SYSYMD          TO  SYS-1005-EDYUKYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1005-REC        TO  MCPDATA-REC
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -1555,6 +1567,7 @@
            MOVE    LNK-SYSYMD          TO  HKN-TEKSTYMD
            MOVE    LNK-SYSYMD          TO  HKN-TEKEDYMD
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HKNNUM-REC          TO  MCPDATA-REC
            MOVE    "tbl_hknnum"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -1695,6 +1708,7 @@
            MOVE    LNK-SYSYMD          TO  JYURRK-UPSRYYMD
            MOVE    "2"                 TO  JYURRK-NYUGAIKBN
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
            MOVE    "key14"             TO  MCP-PATHNAME
@@ -1777,6 +1791,7 @@
                MOVE    JYURRK-ZAINUM (IDX)
                                            TO  SRY-ZAINUM
       *
+grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SRYACT-REC          TO  MCPDATA-REC
                MOVE    "tbl_sryact"        TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
@@ -2077,6 +2092,7 @@
       *****************************************************************
        900-PTINF-READ-SEC         SECTION.
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -2254,6 +2270,7 @@
            MOVE    LNK-SYSYMD          TO  TNS-YUKOSTYMD
            MOVE    LNK-SYSYMD          TO  TNS-YUKOEDYMD
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -2351,9 +2368,9 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            .
        910-DBSELECT-EXT.
            EXIT.
@@ -2363,9 +2380,9 @@
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            .
        920-DBFETCH-EXT.
            EXIT.
@@ -2376,9 +2393,9 @@
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            .
        990-DBCLOSE-EXT.
            EXIT.
