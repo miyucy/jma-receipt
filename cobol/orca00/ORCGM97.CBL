@@ -261,7 +261,7 @@
       ***         WHEN    "CLICKED"   ALSO    "B09"
       ***             PERFORM 400-JYOUHOU-SEC
       *----(03.04.01)---ADD-START---
-      *         WHEN    "CLICKED"   ALSO    "pandatimer1"
+               WHEN    "CLICKED"   ALSO    "pandatimer1"
       *----(03.04.01)---ADD-END-----
       *        ¾õ¶·
                WHEN    "CLICKED"   ALSO    "B11"
