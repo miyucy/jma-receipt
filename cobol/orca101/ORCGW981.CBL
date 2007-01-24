@@ -27,7 +27,6 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  03.05.00    NACL-多々納  07/05/02  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -135,7 +134,49 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA101SCRAREA.INC".
+           COPY    "W01.INC".
+           COPY    "W02.INC".
+           COPY    "W03.INC".
+           COPY    "W04.INC".
+           COPY    "W05.INC".
+           COPY    "W06.INC".
+           COPY    "W07.INC".
+           COPY    "W08.INC".
+           COPY    "W09.INC".
+           COPY    "W10.INC".
+           COPY    "W11.INC".
+           COPY    "W111.INC".
+           COPY    "W12.INC".
+           COPY    "W13.INC".
+           COPY    "W14.INC".
+           COPY    "W15.INC".
+           COPY    "W16.INC".
+           COPY    "W17.INC".
+           COPY    "W18.INC".
+           COPY    "W19.INC".
+           COPY    "W20.INC".
+           COPY    "W21.INC".
+           COPY    "W22.INC".
+           COPY    "W23.INC".
+           COPY    "W24.INC".
+           COPY    "W25.INC".
+           COPY    "W26.INC".
+           COPY    "W27.INC".
+           COPY    "W28.INC".
+           COPY    "W29.INC".
+           COPY    "W30.INC".
+           COPY    "W31.INC".
+           COPY    "W60.INC".
+           COPY    "W61.INC".
+           COPY    "W62.INC".
+           COPY    "W63.INC".
+           COPY    "W98.INC".
+           COPY    "W981.INC".
+           COPY    "W97.INC".
+           COPY    "W99.INC".
+           COPY    "WERR.INC".
+           COPY    "WID1.INC".
+           COPY    "WID2.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -292,7 +333,6 @@
            INITIALIZE                  SPA-W981-LIST-G
            MOVE    SPACE               TO  TBL-LOCK
            INITIALIZE                      TBL-LOCK
-           MOVE    SPA-HOSPNUM         TO  LOCK-HOSPNUM
            MOVE    TBL-LOCK            TO  MCPDATA-REC
            MOVE    "tbl_lock"          TO  MCP-TABLE
            MOVE    "all"               TO  MCP-PATHNAME
@@ -338,10 +378,10 @@
            MOVE    LOCK-OPID           TO  SPA-W981-OPID (IDX)
       *
            INITIALIZE                      ORCSPTIDAREA
-           MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
+           MOVE    SPA-HOSPID          TO  SPTID-HOSPID
            MOVE    LOCK-PTID (1)       TO  SPTID-PTID
            CALL    "ORCSPTID"          USING   ORCSPTIDAREA
-                                               SPA-AREA
+                                               SPA-1009-TBL
            IF      SPTID-RC        NOT =   ZERO
                MOVE    SPACE           TO  SPA-W981-PTNUM  (IDX)
            ELSE
@@ -378,7 +418,6 @@
            END-IF
       *
            MOVE    SPACE               TO  W981
-           INITIALIZE                      W981
       *    コラムリストの位置指定
            MOVE    ZERO                TO  W981-MEILIST-ROW
            IF      WRK-W981-ROW    NOT =   ZERO
@@ -629,8 +668,6 @@
            INITIALIZE                      TBL-LOCK
            MOVE    SPA-W981-TERMID (SPA-W981-SELNUM)
                                        TO  LOCK-TERMID
-           MOVE    SPA-HOSPNUM         TO  LOCK-HOSPNUM
-           MOVE    TBL-LOCK            TO  MCPDATA-REC
            MOVE    "tbl_lock"          TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
@@ -655,14 +692,13 @@
            END-IF
       *
            IF      FLG-LOCK            =   ZERO
-               MOVE    SPA-HOSPNUM         TO  LOCK-HOSPNUM
                MOVE    TBL-LOCK            TO  MCPDATA-REC
                MOVE    "DBDELETE"          TO  MCP-FUNC
                MOVE    "tbl_lock"         TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
                IF      MCP-RC              NOT =   ZERO 
                    MOVE    "9001"              TO  SPA-ERRCD
                    DISPLAY "W981 DEL LOCK-KEY =>" LOCK-TERMID
@@ -721,7 +757,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPACE               TO  TBL-LOCK
            INITIALIZE                      TBL-LOCK
-           MOVE    SPA-HOSPNUM         TO  LOCK-HOSPNUM
            MOVE    TBL-LOCK            TO  MCPDATA-REC
            MOVE    "tbl_lock"          TO  MCP-TABLE
            MOVE    "all"               TO  MCP-PATHNAME
@@ -760,14 +795,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPACE               TO  TBL-LOCK
            INITIALIZE                      TBL-LOCK
-           MOVE    SPA-HOSPNUM         TO  LOCK-HOSPNUM
            MOVE    TBL-LOCK            TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_lock"          TO  MCP-TABLE
            MOVE    "del1"              TO  MCP-PATHNAME
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              NOT =   ZERO 
                MOVE    "9001"              TO  SPA-ERRCD
                DISPLAY "W981 DEL LOCK-KEY =>" LOCK-TERMID
@@ -894,7 +928,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
           END-EVALUATE
       *
            MOVE    SPACE               TO  WID1
-           INITIALIZE                      WID1
            MOVE    SPA-WIDCD           TO  WID1-ID1CODE
            MOVE    WRK-WIDMSG          TO  WID1-ID1MSG
            MOVE    "B01"               TO  MCP-WIDGET
@@ -935,9 +968,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        910-DBSELECT-EXT.
@@ -948,9 +981,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
       *
@@ -963,9 +996,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        990-DBCLOSE-EXT.
@@ -977,9 +1010,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        900-PUT-WINDOW-EXT.
