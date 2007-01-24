@@ -57,6 +57,7 @@
       *
            03  FLG-CHK             PIC 9(01).
            03  FLG-SELNUM          PIC 9(01).
+           03  FLG-ERR             PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -66,7 +67,12 @@
       *    一時領域
        01  WRK-AREA.
            03  WRK-WIDGET              PIC X(64).
-           03  WRK-WIDMSG              PIC X(70).
+           03  WRK-WIDMSG              PIC X(80).
+           03  WRK-SDATE               PIC X(06).
+           03  WRK-STIME.
+               05  WRK-SHH              PIC 9(02).
+               05  WRK-SMM              PIC 9(02).
+               05  WRK-SSS              PIC 9(02).
       *
            03  WRK-SELNUM              PIC 9(03).
            03  WRK-ZZ9                 PIC ZZ9.
@@ -231,6 +237,9 @@
       *
       *        初期画面編集
                PERFORM 300-SCREEN-SEC
+               IF      SPA-WIDCD       NOT =   SPACE
+                   PERFORM 520-WIDSET-SEC
+               END-IF
       *
       *        画面編集
                PERFORM 500-GMNHEN-SEC
@@ -276,21 +285,38 @@
            EVALUATE    SPA-WIDCD
                WHEN    "1001"
       *            一括削除
+                   MOVE    SPACE           TO  SPA-WIDCD
                    IF      SPA-WID1-FLG    =   "OK"
                        PERFORM 2401-ALL-DELETE-SYORI-SEC
                    ELSE
                        MOVE    1           TO  SPA-W981-CUR
                    END-IF
+               WHEN    "1002"
+      *            一括削除確認後
+                   IF      SPA-WID1-FLG    =   "OK"
+                       PERFORM 2402-ALL-DELETE-SEC
+                   ELSE
+                       MOVE    1           TO  SPA-W981-CUR
+                   END-IF
+                   MOVE    SPACE           TO  SPA-WIDCD
                WHEN    "1003"
+      *            削除
+                   MOVE    SPACE           TO  SPA-WIDCD
+                   IF      SPA-WID1-FLG    =   "OK"
+                       PERFORM 2301-DELETE-SYORI-SEC
+                   ELSE
+                       MOVE    1           TO  SPA-W981-CUR
+                   END-IF
+               WHEN    "1004"
       *            削除
                    IF      SPA-WID1-FLG    =   "OK"
                        PERFORM 2301-DELETE-SYORI-SEC
                    ELSE
                        MOVE    1           TO  SPA-W981-CUR
                    END-IF
+                   MOVE    SPACE           TO  SPA-WIDCD
            END-EVALUATE
            MOVE    SPACE           TO  SPA-WID1-FLG
-           MOVE    SPACE           TO  SPA-WIDCD
       *
            .
        330-WID1-SET-EXT.
@@ -656,6 +682,15 @@
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
+           MOVE    SPACE               TO  SPA-WIDCD
+           IF      FLG-LOCK            =   ZERO
+               PERFORM 2311-TIME-CHK-SEC
+               IF      FLG-ERR             =   1
+                   MOVE    "1004"          TO  SPA-WIDCD
+                   GO      TO       2301-DELETE-SYORI-EXT
+               END-IF
+           END-IF
+      *
            IF      FLG-LOCK            =   ZERO
                MOVE    TBL-LOCK            TO  MCPDATA-REC
                MOVE    "DBDELETE"          TO  MCP-FUNC
@@ -679,6 +714,30 @@
            EXIT.
       *
       *****************************************************************
+      *    削除対象チェック処理
+      *****************************************************************
+       2311-TIME-CHK-SEC                   SECTION.
+      *
+           MOVE    ZERO                TO  FLG-ERR
+           ACCEPT  WRK-SDATE           FROM  DATE
+           ACCEPT  WRK-STIME           FROM  TIME
+      *    現在の時間から１分前とする
+           IF      WRK-SMM             >=  1
+               COMPUTE WRK-SMM             =   WRK-SMM    -  1
+           ELSE
+               MOVE    59                  TO  WRK-SMM
+               COMPUTE WRK-SHH             =   WRK-SHH    -  1
+           END-IF
+           IF      WRK-SDATE           =   LOCK-STARTDATE(01)
+               IF      WRK-STIME       <   LOCK-STARTTIME(01)
+                   MOVE    1               TO  FLG-ERR
+               END-IF
+           END-IF
+           .
+       2311-TIME-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    一括削除　処理
       *****************************************************************
        240-DELETE-ALL-SEC                   SECTION.
@@ -699,6 +758,44 @@
            MOVE    SPACE               TO  TBL-LOCK
            INITIALIZE                      TBL-LOCK
            MOVE    TBL-LOCK            TO  MCPDATA-REC
+           MOVE    "tbl_lock"          TO  MCP-TABLE
+           MOVE    "all"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC               =   ZERO
+               MOVE    "tbl_lock"          TO  MCP-TABLE
+               MOVE    "all"               TO  MCP-PATHNAME
+               PERFORM 910-LOCK-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-LOCK
+           END-IF
+           PERFORM UNTIL  (FLG-LOCK        =   1 )  OR
+                          (FLG-ERR         =   1 )
+               PERFORM 2311-TIME-CHK-SEC
+      *
+               MOVE    "tbl_lock"          TO  MCP-TABLE
+               MOVE    "all"               TO  MCP-PATHNAME
+               PERFORM 910-LOCK-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_lock"          TO  MCP-TABLE
+           MOVE    "all"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      FLG-ERR             =   1
+               MOVE    "1002"          TO  SPA-WIDCD
+           ELSE
+               PERFORM 2402-ALL-DELETE-SEC
+           END-IF
+           .
+       2401-ALL-DELETE-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    一括削除処理
+      *****************************************************************
+       2402-ALL-DELETE-SEC          SECTION.
+      *
+           MOVE    SPACE               TO  TBL-LOCK
+           INITIALIZE                      TBL-LOCK
+           MOVE    TBL-LOCK            TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_lock"          TO  MCP-TABLE
            MOVE    "del1"              TO  MCP-PATHNAME
@@ -715,7 +812,7 @@
                PERFORM 310-SPASET-SEC
            END-IF
            .
-       2401-ALL-DELETE-SYORI-EXT.
+       2402-ALL-DELETE-EXT.
            EXIT.
       *
       *****************************************************************
@@ -806,14 +903,26 @@
            EVALUATE    SPA-WIDCD
                WHEN    "1001"
                    STRING  "排他情報をすべて削除します。"
+                           "端末が展開中でないことを確認して下さい。"
                                                    DELIMITED  BY  SIZE
-                           "よろしいですか？"      DELIMITED  BY  SIZE
+                                                   INTO    WRK-WIDMSG
+                   END-STRING
+               WHEN    "1002"
+                   STRING  "端末展開中と思われる排他時間があります。"
+                           "端末が展開中でないことを確認して下さい"
+                                                   DELIMITED  BY  SIZE
                                                    INTO    WRK-WIDMSG
                    END-STRING
                WHEN    "1003"
                    STRING  "選択された排他情報を削除します。"
+                           "端末が展開中でないことを確認して下さい。"
                                                    DELIMITED  BY  SIZE
-                           "よろしいですか？"      DELIMITED  BY  SIZE
+                                                   INTO    WRK-WIDMSG
+                   END-STRING
+               WHEN    "1004"
+                   STRING  "端末展開中と思われる排他時間です。"
+                           "端末が展開中でないことを確認して下さい"
+                                                   DELIMITED  BY  SIZE
                                                    INTO    WRK-WIDMSG
                    END-STRING
           END-EVALUATE
