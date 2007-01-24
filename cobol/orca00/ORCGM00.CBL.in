@@ -1105,11 +1105,17 @@
       *
            MOVE    SPA-GMN-GSEL        TO  M00-SELNUM
            MOVE    SPA-GMN-LBLMSG      TO  M00-LBLMSG
+           MOVE    SPA-GMN-LBLMSG2     TO  M00-LBLMSG2
       *
            IF    ( M00-LBLMSG          =   SPACE )
                MOVE    SPACE           TO  M00-LBLMSG-STYLE
            ELSE
                MOVE    "red"           TO  M00-LBLMSG-STYLE
+           END-IF
+           IF    ( M00-LBLMSG2         =   SPACE )
+               MOVE    SPACE           TO  M00-LBLMSG2-STYLE
+           ELSE
+               MOVE    "red"           TO  M00-LBLMSG2-STYLE
            END-IF
       *
            PERFORM 5001-MAPCUR-SEC
