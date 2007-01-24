@@ -622,6 +622,7 @@
       *
            MOVE    ZERO            TO  FLG-KOHPLUS
            INITIALIZE                  KOHPLUS-REC
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    KOHPLUS-REC     TO  MCPDATA-REC
            MOVE    "tbl_kohplus"   TO  WRK-PATH-TABLE
            MOVE    "all"           TO  WRK-PATH-PATHNAME
@@ -924,6 +925,7 @@
                                            TO  KOHPLUS-PTKBN
            MOVE    SPA-NAI-TYUKOSTYMD  (IDX-LST)
                                            TO  KOHPLUS-YUKOSTYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    KOHPLUS-REC             TO  MCPDATA-REC
            MOVE    "tbl_kohplus"   TO  WRK-PATH-TABLE
            MOVE    "key"           TO  WRK-PATH-PATHNAME
@@ -1118,6 +1120,7 @@
            MOVE    "00"                TO  HKN-PAYKBN
            MOVE    SPA-NAI-YUKOSTYMD   TO  HKN-TEKSTYMD
                                            HKN-TEKEDYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    HKNNUM-REC          TO  MCPDATA-REC
            MOVE    "tbl_hknnum"    TO  WRK-PATH-TABLE
            MOVE    "key"           TO  WRK-PATH-PATHNAME
@@ -1527,6 +1530,7 @@
       *    更新直前チェック
            MOVE    KOHPLUS-REC             TO  WKKOHPLUS-REC
            MOVE    ZERO                    TO  FLG-KOHPLUS
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    KOHPLUS-REC             TO  MCPDATA-REC
            MOVE    "tbl_kohplus"   TO  WRK-PATH-TABLE
            MOVE    "key"           TO  WRK-PATH-PATHNAME
@@ -1544,6 +1548,7 @@
       *
       *    公費付加情報マスタ更新
            MOVE    WKKOHPLUS-REC           TO  KOHPLUS-REC
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    KOHPLUS-REC             TO  MCPDATA-REC
            MOVE    "tbl_kohplus"   TO  WRK-PATH-TABLE
            MOVE    "key"           TO  WRK-PATH-PATHNAME
@@ -1658,6 +1663,7 @@
            MOVE    SPA-NAI-KOHNUM-MOT      TO  KOHPLUS-KOHNUM
            MOVE    SPA-NAI-PTKBN-MOT       TO  KOHPLUS-PTKBN
            MOVE    SPA-NAI-YUKOSTYMD-MOT   TO  KOHPLUS-YUKOSTYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    KOHPLUS-REC             TO  MCPDATA-REC
            MOVE    "tbl_kohplus"   TO  WRK-PATH-TABLE
            MOVE    "key"           TO  WRK-PATH-PATHNAME
@@ -1678,6 +1684,7 @@
       *    公費付加情報マスタ更新
            MOVE    KOHPLUS-CREYMD          TO  WKKOHPLUS-CREYMD
            MOVE    WKKOHPLUS-REC           TO  KOHPLUS-REC
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    KOHPLUS-REC             TO  MCPDATA-REC
            MOVE    "tbl_kohplus"   TO  WRK-PATH-TABLE
            MOVE    "upd1"          TO  WRK-PATH-PATHNAME
@@ -1726,6 +1733,7 @@
            MOVE    SPA-NAI-KOHNUM-MOT      TO  KOHPLUS-KOHNUM
            MOVE    SPA-NAI-PTKBN-MOT       TO  KOHPLUS-PTKBN
            MOVE    SPA-NAI-YUKOSTYMD-MOT   TO  KOHPLUS-YUKOSTYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    KOHPLUS-REC             TO  MCPDATA-REC
            MOVE    "tbl_kohplus"   TO  WRK-PATH-TABLE
            MOVE    "key"           TO  WRK-PATH-PATHNAME
@@ -1863,6 +1871,7 @@
            MOVE    SPA-GMN-CITYNUM     TO  KOHPLUS-CITYNUM
            MOVE    SPA-GMN-KOHNUM      TO  KOHPLUS-KOHNUM
            MOVE    SPA-GMN-PTKBN   TO  KOHPLUS-PTKBN
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    KOHPLUS-REC         TO  MCPDATA-REC
            MOVE    "tbl_kohplus"   TO  WRK-PATH-TABLE
            MOVE    "key3"          TO  WRK-PATH-PATHNAME
@@ -2397,9 +2406,9 @@
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    WRK-PATH-TABLE      TO  MCP-TABLE
            MOVE    WRK-PATH-PATHNAME   TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF    ( MCP-RC          =   ZERO )
                PERFORM 900-TBL-READ-SEC
            ELSE
@@ -2418,9 +2427,9 @@
            MOVE    "DBFETCH"           TO  MCP-FUNC
            MOVE    WRK-PATH-TABLE      TO  MCP-TABLE
            MOVE    WRK-PATH-PATHNAME   TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF    ( MCP-RC          =   ZERO )
                CONTINUE
            ELSE
@@ -2438,9 +2447,9 @@
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    WRK-PATH-TABLE      TO  MCP-TABLE
            MOVE    WRK-PATH-PATHNAME   TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        900-TBL-CLOSE-EXT.
@@ -2454,9 +2463,9 @@
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    WRK-PATH-TABLE      TO  MCP-TABLE
            MOVE    WRK-PATH-PATHNAME   TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF    ( MCP-RC          =   ZERO )
                CONTINUE
            ELSE
@@ -2475,9 +2484,9 @@
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    WRK-PATH-TABLE      TO  MCP-TABLE
            MOVE    WRK-PATH-PATHNAME   TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF    ( MCP-RC          =   ZERO )
                CONTINUE
            ELSE
@@ -2496,9 +2505,9 @@
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    WRK-PATH-TABLE      TO  MCP-TABLE
            MOVE    WRK-PATH-PATHNAME   TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
            IF    ( MCP-RC          =   ZERO )
                CONTINUE
            ELSE
@@ -2514,9 +2523,9 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"      TO  MCP-FUNC.
-           CALL    "MONFUNC"       USING
-                                   MCPAREA
-                                   MCPDATA-REC.
+grpsys     CALL "ORCDBMAIN" USING MCPAREA
+                                  MCPDATA-REC
+grpsys*                           COMMON-SPA
       *
            .
        900-PUT-WINDOW-EXT.
