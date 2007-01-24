@@ -511,6 +511,7 @@
            INITIALIZE  PTINF-REC
            MOVE    SPA-HOSPID          TO  PTINF-HOSPID
            MOVE    SPA-NAI-I51-PTID    TO  PTINF-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
       *
            MOVE    "PTINF-KEY"         TO  WRK-DBPATH
@@ -1133,6 +1134,7 @@
            MOVE    SPA-HOSPID      TO  PTINF-HOSPID
            MOVE    SPA-NAI-I51-PTID
                                    TO  PTINF-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC       TO  MCPDATA-REC
       *
            MOVE    "PTINF-KEY"     TO  WRK-DBPATH
@@ -1197,6 +1199,7 @@
            MOVE    SPA-NAI-I51-PTID
                                    TO  PTNYUINRRK-PTID
       *
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
            MOVE    "PTNYUINRRK-KEY29"
                                    TO  WRK-DBPATH
@@ -1378,6 +1381,7 @@
            MOVE    SPA-HOSPID          TO  PTTEIKIRRK-HOSPID
            MOVE    PTNYUINRRK-PTID     TO  PTTEIKIRRK-PTID
            MOVE    PTNYUINRRK-RRKNUM   TO  PTTEIKIRRK-RRKNUM
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTTEIKIRRK-REC      TO  MCPDATA-REC
            MOVE    "PTTEIKIRRK-KEY7"   TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
@@ -1405,6 +1409,7 @@
            MOVE    WRK-KANRICD     TO  SYS-KANRICD
            MOVE    WRK-KBNCD       TO  SYS-KBNCD
            MOVE    WRK-KJNYMD      TO  ORC-DBYMD
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY10"
                                    TO  WRK-DBPATH
@@ -1642,6 +1647,7 @@
            INITIALIZE  PTINF-REC
            MOVE    SPA-HOSPID          TO  PTINF-HOSPID
            MOVE    SPA-NAI-I51-PTID    TO  PTINF-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
       *
            MOVE    "PTINF-KEY"         TO  WRK-DBPATH
@@ -2303,6 +2309,7 @@
            MOVE    SPA-HOSPID          TO   SYU-HOSPID
            MOVE    "1"                 TO   SYU-NYUGAIKBN
            MOVE    SPA-NAI-I51-PTID    TO   SYU-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUNOU-REC          TO   MCPDATA-REC
            MOVE    "SYUNOU-KEY2"       TO   ORC-DBPATH
            PERFORM  910-DB-SELECT-SEC
@@ -2332,6 +2339,7 @@
            MOVE    SPA-HOSPID          TO   SYU-HOSPID
            MOVE    "2"                 TO   SYU-NYUGAIKBN
            MOVE    SPA-NAI-I51-PTID    TO   SYU-PTID
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUNOU-REC          TO   MCPDATA-REC
            MOVE    "SYUNOU-KEY2"       TO   ORC-DBPATH
            PERFORM  910-DB-SELECT-SEC
@@ -2472,6 +2480,7 @@
            MOVE    SPA-SYSYMD
                                        TO  ORC-DBYMD
       *    システム管理検索
+grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1013-REC        TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY2"     TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
