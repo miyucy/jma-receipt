@@ -486,7 +486,7 @@
                    MOVE  TNS-NYUTENTTLKBN    TO  SPA-GMN-NYUTENTTLKBN
                    MOVE  TNS-BUIKBN          TO  SPA-GMN-BUIKBN  
       *            自費コードの時、点数識別とする
-                   IF      SPA-JIHIKBN         =   1
+                   IF      SPA-JIHIKBN       NOT =   ZERO
                        MOVE    TNS-TENSIKIBETU     TO  SPA-GMN-BUIKBN
                    END-IF
                    PERFORM VARYING IDXX    FROM    1   BY  1
