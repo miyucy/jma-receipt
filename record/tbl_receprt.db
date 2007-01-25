@@ -1,5 +1,4 @@
 tbl_receprt	{
-	HOSPNUM				number(2,0);
         PRTID               char(4);
         RECEYM              char(6);
         CREYMD              char(8);
@@ -23,29 +22,16 @@ tbl_receprt	{
         PRTJYUN             number(2);
         PRTRENNUM           number(6);
         NYUGAIKBN           char(1);
-        KOUGAKU             char(1);
         ZAITAKU             char(1);
         CHOUKI              char(1);
         HKNJANUM_S          char(8);
-        SYUBETU_SRT1        integer;
-        GRP_NO1             number(3);
-        HONKZKKBN           char(1); 
-        KOUHI_NO            number(3);
-        SYUBETU_UNDER_1     varchar(80);
-        GRP_NO2             char(3);
-        SYUBETU_UNDER_2     varchar(40);
-        SYUBETU_SRT2        integer;
-        DRCD                char(5);
-        DRCD_SRYKA          char(2);
-        SORT_1              varchar(10);
-        SORT_2              varchar(50);
         FORMID              char(20);
         PRTDATA             varchar(10000);
         PRTNM               char(16);
         TERMID              char(64);
         OPID                char(16);
         PRTJYUN_SYUKA       number(4);
-#-----> æ¤œç´¢ç”¨é …ç›®
+#-----> ¸¡º÷ÍÑ¹àÌÜ
 	STKANANAME			char(100),virtual;
 	EDKANANAME			char(100),virtual;
 	STRENNUM			number(2),virtual;
@@ -53,7 +39,7 @@ tbl_receprt	{
 };
 
 primary	{
-	HOSPNUM,PRTID,RECEYM,
+	PRTID,RECEYM,
 CREYMD,CREHMS,TEISYUTUSAKI,SRYKA,PREFKBN_SRT,HKNJANUM_SRT,HKNJANUM,RECESYUBETU,TEKSTYMD,ZAITAKU,CHOUKI,PTNUM,SRYYM,RENNUM,RECENUM;
 };
 
@@ -62,8 +48,7 @@ path	key		{
 		DECLARE tbl_receprt_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
+                    WHERE   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -82,8 +67,7 @@ path	key2	{
 		DECLARE tbl_receprt_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
+                    WHERE   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -102,8 +86,7 @@ path	key3	{
 		DECLARE tbl_receprt_key3_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
+                    WHERE   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -118,8 +101,7 @@ path	key4	{
 		DECLARE tbl_receprt_key4_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
+                    WHERE   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -134,8 +116,7 @@ path	key5		{
 		DECLARE tbl_receprt_key5_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
+                    WHERE   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -152,8 +133,7 @@ path	key6	{
 		DECLARE tbl_receprt_key6_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
+                    WHERE   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -170,8 +150,7 @@ path	key7		{
 		DECLARE tbl_receprt_key7_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
+                    WHERE   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -189,8 +168,7 @@ path	key8	{
 		DECLARE tbl_receprt_key8_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
+                    WHERE   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -208,8 +186,7 @@ path	key9		{
 		DECLARE tbl_receprt_key9_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
+                    WHERE   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -232,8 +209,7 @@ path	key10		{
 		DECLARE tbl_receprt_key10_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
+                    WHERE   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -244,10 +220,9 @@ path	key10		{
                     AND     KANANAME     <=  :EDKANANAME 
                     AND     NYUGAIKBN    =   :NYUGAIKBN
                     AND     SRYKA        LIKE :SRYKA
-                    AND     HKNJANUM_S   LIKE :HKNJANUM_S
                     AND     RENNUM       >=  :STRENNUM
                     AND     RENNUM       <=  :EDRENNUM
-                   ORDER BY  PREFKBN,PREFNUM,HKNKBN,HKNJANUM,KANANAME,PTNUM,SRYYM,RECENUM,RENNUM
+                   ORDER BY  PREFKBN,PREFNUM,HKNKBN,HKNJANUM,KANANAME,PTNUM,SRYYM,RENNUM
 		;
 	};
 };
@@ -257,8 +232,7 @@ path	key11	{
 		DECLARE tbl_receprt_key11_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
+                    WHERE   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -269,10 +243,9 @@ path	key11	{
                     AND     PTNUM        <=  :EDKANANAME 
                     AND     NYUGAIKBN    =   :NYUGAIKBN
                     AND     SRYKA        LIKE :SRYKA
-                    AND     HKNJANUM_S   LIKE :HKNJANUM_S
                     AND     RENNUM       >=  :STRENNUM
                     AND     RENNUM       <=  :EDRENNUM
-                   ORDER BY  PREFKBN,PREFNUM,HKNKBN,HKNJANUM,PTNUM,SRYYM,RECENUM,RENNUM
+                   ORDER BY  PREFKBN,PREFNUM,HKNKBN,HKNJANUM,PTNUM,SRYYM,RENNUM
 		;
 	};
 };
@@ -282,8 +255,7 @@ path	key12	{
 		DECLARE tbl_receprt_key12_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
+                    WHERE   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -299,8 +271,7 @@ path	key13	{
 		DECLARE tbl_receprt_key13_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
+                    WHERE   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -316,8 +287,7 @@ path	key14		{
 		DECLARE tbl_receprt_key14_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
+                    WHERE   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -328,10 +298,9 @@ path	key14		{
                     AND     KANANAME     <=  :EDKANANAME 
                     AND     NYUGAIKBN    =   :NYUGAIKBN
                     AND     SRYKA        LIKE :SRYKA
-                    AND     HKNJANUM_S   LIKE :HKNJANUM_S
                     AND     RENNUM       >=  :STRENNUM
                     AND     RENNUM       <=  :EDRENNUM
-                   ORDER BY PREFKBN,PREFNUM,KANANAME,PTNUM,SRYYM,RECENUM,RENNUM
+                   ORDER BY PREFKBN,PREFNUM,KANANAME,PTNUM,SRYYM,RENNUM
 		;
 	};
 };
@@ -341,8 +310,7 @@ path	key15	{
 		DECLARE tbl_receprt_key15_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
+                    WHERE   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -353,10 +321,9 @@ path	key15	{
                     AND     PTNUM        <=  :EDKANANAME 
                     AND     NYUGAIKBN    =   :NYUGAIKBN
                     AND     SRYKA        LIKE :SRYKA
-                    AND     HKNJANUM_S   LIKE :HKNJANUM_S
                     AND     RENNUM       >=  :STRENNUM
                     AND     RENNUM       <=  :EDRENNUM
-                   ORDER BY PREFKBN,PREFNUM,PTNUM,SRYYM,RECENUM,RENNUM
+                   ORDER BY PREFKBN,PREFNUM,PTNUM,SRYYM,RENNUM
 		;
 	};
 };
@@ -366,8 +333,7 @@ path	key16		{
 		DECLARE tbl_receprt_key16_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
+                    WHERE   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -382,7 +348,7 @@ path	key16		{
                     AND     SRYKA        LIKE :SRYKA
                     AND     RENNUM       >=  :STRENNUM
                     AND     RENNUM       <=  :EDRENNUM
-                   ORDER BY  KANANAME,PTNUM,SRYYM,RECENUM,RENNUM
+                   ORDER BY  KANANAME,PTNUM,SRYYM,RENNUM
 		;
 	};
 };
@@ -392,8 +358,7 @@ path	key17	{
 		DECLARE tbl_receprt_key17_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
+                    WHERE   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -408,7 +373,7 @@ path	key17	{
                     AND     SRYKA        LIKE :SRYKA
                     AND     RENNUM       >=  :STRENNUM
                     AND     RENNUM       <=  :EDRENNUM
-                   ORDER BY  PTNUM,SRYYM,RECENUM,RENNUM
+                   ORDER BY  PTNUM,SRYYM,RENNUM
 		;
 	};
 };
@@ -418,8 +383,7 @@ path	key18		{
 		DECLARE tbl_receprt_key18_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
+                    WHERE   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -440,8 +404,7 @@ path	key19	{
 		DECLARE tbl_receprt_key19_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
+                    WHERE   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -462,8 +425,7 @@ path	key20		{
 		DECLARE tbl_receprt_key20_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
+                    WHERE   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -482,8 +444,7 @@ path	key21	{
 		DECLARE tbl_receprt_key21_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
+                    WHERE   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -502,8 +463,7 @@ path	key22		{
 		DECLARE tbl_receprt_key22_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
+                    WHERE   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -525,8 +485,7 @@ path	key23	{
 		DECLARE tbl_receprt_key23_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
+                    WHERE   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -548,8 +507,7 @@ path	key24		{
 		DECLARE tbl_receprt_key24_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
+                    WHERE   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -570,8 +528,7 @@ path	key25	{
 		DECLARE tbl_receprt_key25_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
+                    WHERE   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -592,8 +549,7 @@ path	key26		{
 		DECLARE tbl_receprt_key26_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
+                    WHERE   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -612,8 +568,7 @@ path	key27	{
 		DECLARE tbl_receprt_key27_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
+                    WHERE   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -632,8 +587,7 @@ path	key28		{
 		DECLARE tbl_receprt_key28_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
+                    WHERE   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -655,8 +609,7 @@ path	key29	{
 		DECLARE tbl_receprt_key29_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
+                    WHERE   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -677,8 +630,7 @@ path	del1 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_receprt
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
+                    WHERE   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -691,8 +643,7 @@ path	del2 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_receprt
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
+                    WHERE   PRTID        =   :PRTID
                     AND     NYUGAIKBN    =   :NYUGAIKBN 
                     AND     RECEYM       =   '000000'
 		;
@@ -705,7 +656,6 @@ path	all	{
 		DECLARE tbl_receprt_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-		WHERE 	HOSPNUM	= :HOSPNUM
  		;
 	};
 };
@@ -715,13 +665,12 @@ path	key30	{
 		DECLARE tbl_receprt_key30_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
+                    WHERE   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
                     AND     NYUGAIKBN    =   :NYUGAIKBN 
-                   ORDER BY RECENUM,RENNUM
+                   ORDER BY RECENUM
 		;
 	};
 };
@@ -729,14 +678,13 @@ path	key30	{
 path	upd1	{
 	DBUPDATE	{
 		UPDATE  tbl_receprt
-                    SET     PRTJYUN_SYUKA      =   0,
+                    SET     PRTJYUN      =   0,
                             PRTRENNUM    =   0 
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
+                    WHERE   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
-                    AND     PRTJYUN_SYUKA >   0
+                    AND     PRTJYUN      >   0
                     AND     PRTRENNUM    >   0 
                     AND     NYUGAIKBN    =   :NYUGAIKBN 
 		;
@@ -746,8 +694,7 @@ path    del3    {
         DBDELETE        {
                 DELETE
                 FROM tbl_receprt
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
+                    WHERE   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     PTNUM        =   :PTNUM
                 ;
@@ -759,8 +706,7 @@ path	key31		{
 		DECLARE tbl_receprt_key31_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
+                    WHERE   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -771,10 +717,9 @@ path	key31		{
                     AND     KANANAME     <=  :EDKANANAME 
                     AND     NYUGAIKBN    =   :NYUGAIKBN
                     AND     SRYKA        LIKE :SRYKA
-                    AND     HKNJANUM_S   LIKE :HKNJANUM_S
                     AND     RENNUM       >=  :STRENNUM
                     AND     RENNUM       <=  :EDRENNUM
-                   ORDER BY  HKNKBN,HKNJANUM,KANANAME,PTNUM,SRYYM,RECENUM,RENNUM
+                   ORDER BY  HKNKBN,HKNJANUM,KANANAME,PTNUM,SRYYM,RENNUM
 		;
 	};
 };
@@ -784,8 +729,7 @@ path	key32	{
 		DECLARE tbl_receprt_key32_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
+                    WHERE   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -796,10 +740,9 @@ path	key32	{
                     AND     PTNUM        <=  :EDKANANAME 
                     AND     NYUGAIKBN    =   :NYUGAIKBN
                     AND     SRYKA        LIKE :SRYKA
-                    AND     HKNJANUM_S   LIKE :HKNJANUM_S
                     AND     RENNUM       >=  :STRENNUM
                     AND     RENNUM       <=  :EDRENNUM
-                   ORDER BY  HKNKBN,HKNJANUM,PTNUM,SRYYM,RECENUM,RENNUM
+                   ORDER BY  HKNKBN,HKNJANUM,PTNUM,SRYYM,RENNUM
 		;
 	};
 };
@@ -809,8 +752,7 @@ path	key33		{
 		DECLARE tbl_receprt_key33_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
+                    WHERE   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -821,10 +763,9 @@ path	key33		{
                     AND     KANANAME     <=  :EDKANANAME 
                     AND     NYUGAIKBN    =   :NYUGAIKBN
                     AND     SRYKA        LIKE :SRYKA
-                    AND     HKNJANUM_S   LIKE :HKNJANUM_S
                     AND     RENNUM       >=  :STRENNUM
                     AND     RENNUM       <=  :EDRENNUM
-                   ORDER BY KANANAME,PTNUM,SRYYM,RECENUM,RENNUM
+                   ORDER BY KANANAME,PTNUM,SRYYM,RENNUM
 		;
 	};
 };
@@ -834,8 +775,7 @@ path	key34	{
 		DECLARE tbl_receprt_key34_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
+                    WHERE   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -846,10 +786,9 @@ path	key34	{
                     AND     PTNUM        <=  :EDKANANAME 
                     AND     NYUGAIKBN    =   :NYUGAIKBN
                     AND     SRYKA        LIKE :SRYKA
-                    AND     HKNJANUM_S   LIKE :HKNJANUM_S
                     AND     RENNUM       >=  :STRENNUM
                     AND     RENNUM       <=  :EDRENNUM
-                   ORDER BY PTNUM,SRYYM,RECENUM,RENNUM
+                   ORDER BY PTNUM,SRYYM,RENNUM
 		;
 	};
 };
@@ -859,8 +798,7 @@ path	key35		{
 		DECLARE tbl_receprt_key35_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
+                    WHERE   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -875,7 +813,7 @@ path	key35		{
                     AND     SRYKA        LIKE :SRYKA
                     AND     RENNUM       >=  :STRENNUM
                     AND     RENNUM       <=  :EDRENNUM
-                   ORDER BY  KANANAME,PTNUM,SRYYM,RECENUM,RENNUM
+                   ORDER BY  KANANAME,PTNUM,SRYYM,RENNUM
 		;
 	};
 };
@@ -885,8 +823,7 @@ path	key36	{
 		DECLARE tbl_receprt_key36_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
+                    WHERE   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -901,7 +838,7 @@ path	key36	{
                     AND     SRYKA        LIKE :SRYKA
                     AND     RENNUM       >=  :STRENNUM
                     AND     RENNUM       <=  :EDRENNUM
-                   ORDER BY  PTNUM,SRYYM,RECENUM,RENNUM
+                   ORDER BY  PTNUM,SRYYM,RENNUM
 		;
 	};
 };
@@ -911,8 +848,7 @@ path	key37	{
 		DECLARE tbl_receprt_key37_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
+                    WHERE   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -931,7 +867,7 @@ path	key37	{
                     AND     SRYKA        LIKE :SRYKA
                     AND     PRTJYUN_SYUKA =   0
                     AND     PRTRENNUM    =    0 
-                   ORDER BY CHOUKI,ZAITAKU,RECESYUBETU_SRT,PTNUM,SRYYM,RECENUM,RENNUM
+                   ORDER BY CHOUKI,ZAITAKU,RECESYUBETU_SRT,PTNUM,SRYYM,RENNUM
 		;
 	};
 };
@@ -941,8 +877,7 @@ path	key38		{
 		DECLARE tbl_receprt_key38_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
+                    WHERE   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -953,10 +888,9 @@ path	key38		{
                     AND     NYUGAIKBN    =   :NYUGAIKBN 
                     AND     RECESYUBETU  =   :RECESYUBETU
                     AND     SRYKA        LIKE :SRYKA
-                    AND     HKNJANUM_S   LIKE :HKNJANUM_S
                     AND     RENNUM       >=  :STRENNUM
                     AND     RENNUM       <=  :EDRENNUM
-                    ORDER BY  KANANAME,PTNUM,SRYYM,RECENUM,RENNUM
+                    ORDER BY  KANANAME,PTNUM,SRYYM,RENNUM
 		;
 	};
 };
@@ -966,8 +900,7 @@ path	key39	{
 		DECLARE tbl_receprt_key39_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
+                    WHERE   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -978,382 +911,10 @@ path	key39	{
                     AND     NYUGAIKBN    =   :NYUGAIKBN 
                     AND     RECESYUBETU  =   :RECESYUBETU
                     AND     SRYKA        LIKE :SRYKA
-                    AND     HKNJANUM_S   LIKE :HKNJANUM_S
                     AND     RENNUM       >=  :STRENNUM
                     AND     RENNUM       <=  :EDRENNUM
-                    ORDER BY  PTNUM,SRYYM,RECENUM,RENNUM
+                    ORDER BY  PTNUM,SRYYM,RENNUM
 		;
 	};
 };
 
-path	key40	{
-	DBSELECT	{
-		DECLARE tbl_receprt_key40_csr CURSOR FOR
-		SELECT *
-		FROM tbl_receprt
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
-                    AND     RECEYM       =   :RECEYM
-                    AND     CREYMD       =   :CREYMD
-                    AND     CREHMS       =   :CREHMS
-                    AND     TEISYUTUSAKI =   :TEISYUTUSAKI
-                    AND     KANANAME     >=  :STKANANAME
-                    AND     KANANAME     <=  :EDKANANAME 
-                    AND     NYUGAIKBN    =   :NYUGAIKBN 
-                    AND     RECESYUBETU  <>  '0000'
-                    AND     RECESYUBETU  <>  '8888' 
-                    AND     RECESYUBETU  <>  '6666' 
-                    AND     RENNUM       >=  :STRENNUM
-                    AND     RENNUM       <=  :EDRENNUM
-                    AND     HKNJANUM_S   =   :HKNJANUM_S
-                    AND     KOUGAKU      LIKE :KOUGAKU
-                    AND     CHOUKI       LIKE :CHOUKI
-                    AND     ZAITAKU      LIKE :ZAITAKU
-                    AND     SRYKA        LIKE :SRYKA
-                    AND     PRTJYUN_SYUKA =   0
-                    AND     PRTRENNUM    =    0 
-                   ORDER BY KOUGAKU,CHOUKI,ZAITAKU,RECESYUBETU_SRT,SYUBETU_SRT1,GRP_NO1,HONKZKKBN,KOUHI_NO,SYUBETU_UNDER_1,SYUBETU_UNDER_2,SYUBETU_SRT2,KANANAME,SRYYM,RECENUM,RENNUM
-		;
-	};
-};
-
-path	key41	{
-	DBSELECT	{
-		DECLARE tbl_receprt_key41_csr CURSOR FOR
-		SELECT *
-		FROM tbl_receprt
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
-                    AND     RECEYM       =   :RECEYM
-                    AND     CREYMD       =   :CREYMD
-                    AND     CREHMS       =   :CREHMS
-                    AND     TEISYUTUSAKI =   :TEISYUTUSAKI
-                    AND     PTNUM        >=  :STKANANAME
-                    AND     PTNUM        <=  :EDKANANAME 
-                    AND     NYUGAIKBN    =   :NYUGAIKBN 
-                    AND     RECESYUBETU  <>  '0000'
-                    AND     RECESYUBETU  <>  '8888' 
-                    AND     RECESYUBETU  <>  '6666' 
-                    AND     RENNUM       >=  :STRENNUM
-                    AND     RENNUM       <=  :EDRENNUM
-                    AND     HKNJANUM_S   =   :HKNJANUM_S
-                    AND     KOUGAKU      LIKE :KOUGAKU
-                    AND     CHOUKI       LIKE :CHOUKI
-                    AND     ZAITAKU      LIKE :ZAITAKU
-                    AND     SRYKA        LIKE :SRYKA
-                    AND     PRTJYUN_SYUKA =   0
-                    AND     PRTRENNUM    =    0 
-                   ORDER BY KOUGAKU,CHOUKI,ZAITAKU,RECESYUBETU_SRT,SYUBETU_SRT1,GRP_NO1,HONKZKKBN,KOUHI_NO,SYUBETU_UNDER_1,SYUBETU_UNDER_2,SYUBETU_SRT2,PTNUM,SRYYM,RECENUM,RENNUM
-		;
-	};
-};
-
-path	key42		{ 	
-	DBSELECT	{
-		DECLARE tbl_receprt_key42_csr CURSOR FOR
-		SELECT *
-		FROM tbl_receprt
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
-                    AND     RECEYM       =   :RECEYM
-                    AND     CREYMD       =   :CREYMD
-                    AND     CREHMS       =   :CREHMS
-                    AND     TEISYUTUSAKI =   :TEISYUTUSAKI
-                    AND     SRYKA        =   :SRYKA
-                    AND     PREFKBN_SRT  =   :PREFKBN_SRT
-                    AND     HKNJANUM_SRT =   :HKNJANUM_SRT 
-                    AND     HKNJANUM     =   :HKNJANUM
-                    AND     TEKSTYMD     =   :TEKSTYMD
-                    AND     RECESYUBETU_SRT  =   :RECESYUBETU_SRT
-                    AND     RECESYUBETU  =   :RECESYUBETU
-                    AND     PREFKBN      =   :PREFKBN
-                    AND     PREFNUM      =   :PREFNUM
-                    AND     PTNUM        =   :PTNUM
-                    AND     SRYYM        =   :SRYYM 
-                    AND     RENNUM       =   :RENNUM 
-                    AND     RECENUM      =   :RECENUM 
-		;
-	};
-};
-
-path    del4    {
-        DBDELETE        {
-                DELETE
-                FROM tbl_receprt
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
-                    AND     RECEYM       =   :RECEYM
-                    AND     CREYMD       =   :CREYMD
-                    AND     CREHMS       =   :CREHMS
-                    AND     TEISYUTUSAKI =   :TEISYUTUSAKI
-                    AND     SRYKA        =   :SRYKA
-                    AND     PREFKBN_SRT  =   :PREFKBN_SRT
-                    AND     HKNJANUM_SRT =   :HKNJANUM_SRT 
-                    AND     HKNJANUM     =   :HKNJANUM
-                    AND     TEKSTYMD     =   :TEKSTYMD
-                    AND     RECESYUBETU_SRT  =   :RECESYUBETU_SRT
-                    AND     RECESYUBETU  =   :RECESYUBETU
-                    AND     PREFKBN      =   :PREFKBN
-                    AND     PREFNUM      =   :PREFNUM
-                    AND     PTNUM        =   :PTNUM
-                    AND     SRYYM        =   :SRYYM 
-                    AND     RENNUM       =   :RENNUM 
-                    AND     RECENUM      =   :RECENUM 
-                ;
-        };
-};
-
-path	upd2	{
-	DBUPDATE	{
-		UPDATE  tbl_receprt
-                    SET     PRTJYUN_SYUKA      =   0,
-                            PRTRENNUM    =   0 
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
-                    AND     RECEYM       =   :RECEYM
-                    AND     CREYMD       =   :CREYMD
-                    AND     CREHMS       =   :CREHMS
-                    AND     NYUGAIKBN    =   :NYUGAIKBN 
-		;
-	};
-};
-
-path    key43   {
-        DBSELECT        {
-		DECLARE tbl_receprt_key43_csr CURSOR FOR
-		SELECT *
-                FROM tbl_receprt
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
-                    AND     RECEYM       =   :RECEYM
-                    AND     PTNUM        =   :PTNUM
-                ;
-        };
-};
-
-path    key44   {
-        DBSELECT        {
-		DECLARE tbl_receprt_key44_csr CURSOR FOR
-		SELECT *
-		FROM tbl_receprt
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND     PRTID        =   :PRTID
-                    AND     RECEYM       =   :RECEYM
-                    AND     CREYMD       =   :CREYMD
-                    AND     CREHMS       =   :CREHMS
-                    AND     NYUGAIKBN    =   :NYUGAIKBN 
-                    AND     RECESYUBETU  <>  '0000'
-                    AND     RECESYUBETU  <>  '8888' 
-                    AND     RECESYUBETU  <>  '6666' 
-                    ORDER   BY  DRCD_SRYKA DESC
-                ;
-        };
-};
-
-path    key45   {
-        DBSELECT        {
-		DECLARE tbl_receprt_key45_csr CURSOR FOR
-		SELECT *
-		FROM tbl_receprt
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND     PRTID        =   :PRTID
-                    AND     RECEYM       =   :RECEYM
-                    AND     CREYMD       =   :CREYMD
-                    AND     CREHMS       =   :CREHMS
-                    AND     NYUGAIKBN    =   :NYUGAIKBN 
-                    AND     DRCD_SRYKA   LIKE   :DRCD_SRYKA
-                    AND     DRCD         =   :DRCD
-                    AND     KANANAME     >=  :STKANANAME
-                    AND     KANANAME     <=  :EDKANANAME 
-                    AND     RENNUM       >=  :STRENNUM
-                    AND     RENNUM       <=  :EDRENNUM
-                    AND     RECESYUBETU  <>  '0000'
-                    AND     RECESYUBETU  <>  '8888' 
-                    AND     RECESYUBETU  <>  '6666' 
-                    ORDER BY  KANANAME,PTNUM,SRYYM,RECENUM,RENNUM
-               ;
-        };
-};
-
-path    key46   {
-        DBSELECT        {
-		DECLARE tbl_receprt_key46_csr CURSOR FOR
-		SELECT *
-		FROM tbl_receprt
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND     PRTID        =   :PRTID
-                    AND     RECEYM       =   :RECEYM
-                    AND     CREYMD       =   :CREYMD
-                    AND     CREHMS       =   :CREHMS
-                    AND     NYUGAIKBN    =   :NYUGAIKBN 
-                    AND     DRCD_SRYKA   LIKE   :DRCD_SRYKA
-                    AND     DRCD         =   :DRCD
-                    AND     PTNUM        >=  :STKANANAME
-                    AND     PTNUM        <=  :EDKANANAME 
-                    AND     RENNUM       >=  :STRENNUM
-                    AND     RENNUM       <=  :EDRENNUM
-                    AND     RECESYUBETU  <>  '0000'
-                    AND     RECESYUBETU  <>  '8888' 
-                    AND     RECESYUBETU  <>  '6666' 
-                    ORDER BY  PTNUM,SRYYM,RECENUM,RENNUM
-               ;
-        };
-};
-
-path    key47   {
-        DBSELECT        {
-		DECLARE tbl_receprt_key47_csr CURSOR FOR
-		SELECT *
-		FROM tbl_receprt
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND     PRTID        =   :PRTID
-                    AND     RECEYM       =   :RECEYM
-                    AND     CREYMD       =   :CREYMD
-                    AND     CREHMS       =   :CREHMS
-                    AND     NYUGAIKBN    =   :NYUGAIKBN 
-                    AND     DRCD_SRYKA   LIKE   :DRCD_SRYKA
-                    AND     DRCD         =   :DRCD
-                    AND     KANANAME     >=  :STKANANAME
-                    AND     KANANAME     <=  :EDKANANAME 
-                    AND     RENNUM       >=  :STRENNUM
-                    AND     RENNUM       <=  :EDRENNUM
-                    AND     RECESYUBETU  <>  '0000'
-                    AND     RECESYUBETU  <>  '8888' 
-                    AND     RECESYUBETU  <>  '6666' 
-                    ORDER   BY  TEISYUTUSAKI,KANANAME,PTNUM,SRYYM,RECENUM,RENNUM
-               ;
-        };
-};
-
-path    key48   {
-        DBSELECT        {
-		DECLARE tbl_receprt_key48_csr CURSOR FOR
-		SELECT *
-		FROM tbl_receprt
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND     PRTID        =   :PRTID
-                    AND     RECEYM       =   :RECEYM
-                    AND     CREYMD       =   :CREYMD
-                    AND     CREHMS       =   :CREHMS
-                    AND     NYUGAIKBN    =   :NYUGAIKBN 
-                    AND     DRCD_SRYKA   LIKE   :DRCD_SRYKA
-                    AND     DRCD         =   :DRCD
-                    AND     PTNUM        >=  :STKANANAME
-                    AND     PTNUM        <=  :EDKANANAME 
-                    AND     RENNUM       >=  :STRENNUM
-                    AND     RENNUM       <=  :EDRENNUM
-                    AND     RECESYUBETU  <>  '0000'
-                    AND     RECESYUBETU  <>  '8888' 
-                    AND     RECESYUBETU  <>  '6666' 
-                    ORDER   BY  TEISYUTUSAKI,PTNUM,SRYYM,RECENUM,RENNUM
-               ;
-        };
-};
-
-path    key49   {
-        DBSELECT        {
-		DECLARE tbl_receprt_key49_csr CURSOR FOR
-		SELECT *
-		FROM tbl_receprt
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND     PRTID        =   :PRTID
-                    AND     RECEYM       =   :RECEYM
-                    AND     CREYMD       =   :CREYMD
-                    AND     CREHMS       =   :CREHMS
-                    AND     NYUGAIKBN    =   :NYUGAIKBN 
-                    AND     SRYKA        LIKE   :SRYKA
-                    AND     SORT_1       =   :SORT_1
-                    AND     KANANAME     >=  :STKANANAME
-                    AND     KANANAME     <=  :EDKANANAME 
-                    AND     RENNUM       >=  :STRENNUM
-                    AND     RENNUM       <=  :EDRENNUM
-                    AND     RECESYUBETU  <>  '0000'
-                    AND     RECESYUBETU  <>  '8888' 
-                    AND     RECESYUBETU  <>  '6666' 
-                    ORDER   BY  KANANAME,PTNUM,SRYYM,RECENUM,RENNUM
-               ;
-        };
-};
-
-path    key50   {
-        DBSELECT        {
-		DECLARE tbl_receprt_key50_csr CURSOR FOR
-		SELECT *
-		FROM tbl_receprt
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND     PRTID        =   :PRTID
-                    AND     RECEYM       =   :RECEYM
-                    AND     CREYMD       =   :CREYMD
-                    AND     CREHMS       =   :CREHMS
-                    AND     NYUGAIKBN    =   :NYUGAIKBN 
-                    AND     SRYKA        LIKE   :SRYKA
-                    AND     SORT_1       =   :SORT_1
-                    AND     PTNUM        >=  :STKANANAME
-                    AND     PTNUM        <=  :EDKANANAME 
-                    AND     RENNUM       >=  :STRENNUM
-                    AND     RENNUM       <=  :EDRENNUM
-                    AND     RECESYUBETU  <>  '0000'
-                    AND     RECESYUBETU  <>  '8888' 
-                    AND     RECESYUBETU  <>  '6666' 
-                    ORDER   BY  PTNUM,SRYYM,RECENUM,RENNUM
-               ;
-        };
-};
-
-path	key51	{
-	DBSELECT	{
-		DECLARE tbl_receprt_key51_csr CURSOR FOR
-		SELECT *
-		FROM tbl_receprt
-		WHERE       HOSPNUM      =   :HOSPNUM
-                    AND     PRTID        =   :PRTID
-                    AND     RECEYM       =   :RECEYM
-                    AND     CREYMD       =   :CREYMD
-                    AND     CREHMS       =   :CREHMS
-                    AND     TEISYUTUSAKI =   :TEISYUTUSAKI
-                    AND     PTNUM        >=  :STKANANAME
-                    AND     PTNUM        <=  :EDKANANAME 
-                    AND     NYUGAIKBN    =   :NYUGAIKBN 
-                    AND     RECESYUBETU  <>  '0000'
-                    AND     RECESYUBETU  <>  '8888' 
-                    AND     RECESYUBETU  <>  '6666' 
-                    AND     RENNUM       >=  :STRENNUM
-                    AND     RENNUM       <=  :EDRENNUM
-                    AND     CHOUKI       LIKE :CHOUKI
-                    AND     ZAITAKU      LIKE :ZAITAKU
-                    AND     SRYKA        LIKE :SRYKA
-                    AND     HKNJANUM_S   LIKE :HKNJANUM_S
-                   ORDER BY RECESYUBETU_SRT,SYUBETU_SRT1,GRP_NO1,CHOUKI,GRP_NO2,KOUHI_NO,HKNJANUM,PTNUM,RECENUM,RENNUM
-		;
-	};
-};
-
-path	key52	{
-	DBSELECT	{
-		DECLARE tbl_receprt_key52_csr CURSOR FOR
-		SELECT *
-		FROM tbl_receprt
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
-                    AND     RECEYM       =   :RECEYM
-                    AND     CREYMD       =   :CREYMD
-                    AND     CREHMS       =   :CREHMS
-                    AND     NYUGAIKBN    =   :NYUGAIKBN 
-                   ORDER BY SORT_2,PTNUM,RECENUM,RENNUM
-		;
-	};
-};
-
-path    key53   {
-        DBSELECT        {
-		DECLARE tbl_receprt_key53_csr CURSOR FOR
-		SELECT *
-                FROM tbl_receprt
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
-                    AND     RECEYM       =   :RECEYM
-                    AND     PTNUM        =   :PTNUM
-                   ORDER BY CREYMD DESC,CREHMS DESC,RECENUM,RENNUM
-                ;
-        };
-};

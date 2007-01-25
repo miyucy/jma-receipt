@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <GTK-Interface>
 
 <project>
@@ -32,18 +32,18 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(R06)уГмуВ╗уГЧуГИхН░хИ╖чФ╗щЭвтИТуГЧуГкуГ│уВ┐ф╕АцЛмшинхоЪ</title>
+  <title>(R06)еье╗е╫е╚░ї║■▓ш╠╠б▌е╫еъеєе┐░ь│ч└▀─ъ</title>
   <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_NONE</position>
   <modal>True</modal>
   <allow_shrink>False</allow_shrink>
   <allow_grow>False</allow_grow>
   <auto_shrink>False</auto_shrink>
-  <wmclass_class>jma-receipt.dialog</wmclass_class>
 
   <widget>
     <class>GtkFixed</class>
     <name>fi1</name>
+    <width>905</width>
 
     <widget>
       <class>GtkButton</class>
@@ -64,7 +64,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
       </signal>
-      <label>цИ╗уВЛ</label>
+      <label>╠сды</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -169,7 +169,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
       </signal>
-      <label>шинхоЪ</label>
+      <label>└▀─ъ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -192,7 +192,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Fri, 11 Jan 2002 02:35:17 GMT</last_modification_time>
       </signal>
-      <label>хЕищаБуБлшинхоЪ</label>
+      <label>┴┤╩╟д╦└▀─ъ</label>
       <active>False</active>
       <draw_indicator>True</draw_indicator>
       <group>SETTEI</group>
@@ -217,7 +217,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Fri, 11 Jan 2002 02:35:17 GMT</last_modification_time>
       </signal>
-      <label>шбичд║щаБуБоуБ┐уБлшинхоЪ</label>
+      <label>╔╜╝и╩╟д╬д▀д╦└▀─ъ</label>
       <active>False</active>
       <draw_indicator>True</draw_indicator>
       <group>SETTEI</group>
@@ -230,7 +230,7 @@
       <y>84</y>
       <width>120</width>
       <height>24</height>
-      <label>хЗ║хКЫуГЧуГкуГ│уВ┐хРН</label>
+      <label>╜╨╬╧е╫еъеєе┐╠╛</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -246,7 +246,7 @@
       <y>136</y>
       <width>40</width>
       <height>24</height>
-      <label>ч╢Ъч┤Щ</label>
+      <label>┬│╗ц</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
