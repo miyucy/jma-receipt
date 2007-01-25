@@ -395,6 +395,9 @@
       *    ドクター編集変換サブ
            COPY    "CPORCSDRSET.INC".
       *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *****COPY    "CPORCMCP.INC".
@@ -556,6 +559,8 @@
                IF      SYS-1001-YAKUJYOPRTFLG  =   SPACE
                    MOVE    ZERO                TO  SPA-YAKJYOPRTFLG
                END-IF
+      *        消費税端数設定
+               MOVE    SYS-1001-TAX-HASU-KBN   TO  SPA-TAX-HASU-KBN
            END-IF
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -1107,6 +1112,8 @@
                IF      SYS-1001-YAKUJYOPRTFLG  =   SPACE
                    MOVE    ZERO                TO  SPA-YAKJYOPRTFLG
                END-IF
+      *        消費税端数設定
+               MOVE    SYS-1001-TAX-HASU-KBN   TO  SPA-TAX-HASU-KBN
            END-IF
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -2733,7 +2740,6 @@
            ELSE
                MOVE    PTINF-SKYPRTFLG     TO  SPA-SKYPRTFLG
            END-IF
-      *
            .
        1101-PTINF-HENSYU-EXT.
            EXIT.
@@ -3593,6 +3599,15 @@
                    END-STRING
                    MOVE    WRK-BYOMEI-HEN  TO  WRK-BYOMEI (IDX-B)
                END-IF
+      *        主病名フラグ
+               IF      PTBYO-SYUBYOFLG     =   "1"
+                   MOVE    SPACE           TO  WRK-BYOMEI-HEN
+                   STRING  "□"                DELIMITED   BY  SIZE
+                           WRK-BYOMEI (IDX-B)  DELIMITED   BY  SPACE
+                                   INTO    WRK-BYOMEI-HEN
+                   END-STRING
+                   MOVE    WRK-BYOMEI-HEN  TO  WRK-BYOMEI (IDX-B)
+               END-IF
       *
       *        特定疾患の有無
                IF     (PTBYO-SRYYMD        <=   SPA-SRYYMD )
@@ -3820,6 +3835,10 @@
                        MOVE    SYS-1001-BEDSUIPN   TO  SPA-BEDSUIPN
                    END-IF
                END-IF
+      *        消費税端数設定
+               MOVE    SYS-1001-TAX-HASU-KBN   TO  SPA-TAX-HASU-KBN
+           ELSE
+               MOVE    SPACE                   TO  SPA-TAX-HASU-KBN
            END-IF
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
