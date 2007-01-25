@@ -1005,7 +1005,7 @@
            MOVE    WRK-GOKTEN          TO  WRK-Z72
            PERFORM 800-HENKAN-SEC
            MOVE    WRK-Z72-G           TO  HC03-HOKENGAI
-      *    ¼«Èñ£±¤«¤é£µ
+      *    ¼«Èñ£±¤«¤é£±£°
            MOVE    ZERO                TO  WRK-JIHI-REC
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   10
@@ -1024,8 +1024,12 @@
            PERFORM 800-HENKAN-SEC
            MOVE    WRK-Z72-G           TO  HC03-JIHI(12)
       *    ¼«Èñ¹ç·×
-           COMPUTE WRK-GOKTEN          =   WRK-JIHI-TOTAL
+           IF      SYU-SRYYMD          <=  "20070331"
+             COMPUTE WRK-GOKTEN        =   WRK-JIHI-TOTAL
                                        +   SYU-JIHI-TAX
+           ELSE
+             MOVE    WRK-JIHI-TOTAL    TO  WRK-GOKTEN
+           END-IF
            MOVE    WRK-GOKTEN          TO  WRK-Z72
            PERFORM 800-HENKAN-SEC
            MOVE    WRK-Z72-G           TO  HC03-JIHI(11)
