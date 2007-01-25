@@ -878,15 +878,6 @@
                    MOVE    "0009"              TO  SPA-ERRCD
                END-IF
                MOVE    18                  TO  SPA-GMN-CUR
-           ELSE
-      *        金額種別が４ 税込みの時、金額に入金があること
-               IF      SPA-JIHIKBN         =   2
-                   IF     (SPA-GMN-BUIKBN      =   "4" )  AND
-                          (SPA-GMN-TEN         =   ZERO)
-                       MOVE    "0010"              TO  SPA-ERRCD
-                       MOVE    14                  TO  SPA-GMN-CUR
-                   END-IF
-               END-IF
            END-IF
            .
       *
