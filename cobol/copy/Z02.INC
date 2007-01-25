@@ -67,49 +67,8 @@
                 04  Z02-BUIKBNLST    PIC X(8)    OCCURS  9 TIMES.
               03  Z02-FORMALNAME.
                 04  Z02-VALUE   PIC X(200).
+              03  Z02-INPCHKKBN.
+                04  Z02-VALUE   PIC S9(1).
               03  Z02-LABEL1.
                 04  Z02-VALUE   PIC X(20).
-              03  Z02-GAIJIBAIKBN-COMB.
-                04  Z02-GAIJIBAIKBN.
-                  05  Z02-VALUE   PIC X(40).
-                04  Z02-GAIJIBAIKBN-COUNT   PIC S9(9)   BINARY.
-                04  Z02-GAIJIBAIKBN-ITEM
-                        PIC X(40)   OCCURS  10 TIMES.
-              03  Z02-NYUJIBAIKBN-COMB.
-                04  Z02-NYUJIBAIKBN.
-                  05  Z02-VALUE   PIC X(40).
-                04  Z02-NYUJIBAIKBN-COUNT   PIC S9(9)   BINARY.
-                04  Z02-NYUJIBAIKBN-ITEM
-                        PIC X(40)   OCCURS  10 TIMES.
-              03  Z02-COPYCD-G.
-                04  Z02-COPYCD-STATE   PIC S9(9)   BINARY.
-                04  Z02-COPYCD         PIC X(9).
-              03  Z02-JIHINAME1.
-                04  Z02-VALUE   PIC X(30).
-              03  Z02-JIHINAME2.
-                04  Z02-VALUE   PIC X(30).
-              03  Z02-B06.
-                04  Z02-B06-STATE   PIC S9(9)   BINARY.
-                04  Z02-B06-LABEL   PIC X(10).
-              03  Z02-B09.
-                04  Z02-B09-STATE   PIC S9(9)   BINARY.
-                04  Z02-B09-LABEL   PIC X(10).
-              03  Z02-MIDASHI.
-                04  Z02-MIDASHI-STYLE   PIC X(20).
-                04  Z02-MIDASHI-DATA    PIC X(80).
-              03  Z02-B03.
-                04  Z02-B03-STATE   PIC S9(9)   BINARY.
-              03  Z02-TANICD-COMBO.
-                04  Z02-TANICD-COUNT   PIC S9(9)   BINARY.
-                04  Z02-TANICD-ITEM
-                        PIC X(28)   OCCURS  200 TIMES.
-                04  Z02-TANICD.
-                  05  Z02-TEXTDATA    PIC X(28).
-              03  Z02-YKZKBN-COMBO.
-                04  Z02-YKZKBN-COUNT   PIC S9(9)   BINARY.
-                04  Z02-YKZKBN-ITEM
-                        PIC X(12)   OCCURS  5 TIMES.
-                04  Z02-YKZKBN.
-                  05  Z02-TEXTDATA    PIC X(12).
-
 
