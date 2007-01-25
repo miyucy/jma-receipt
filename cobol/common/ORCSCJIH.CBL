@@ -422,8 +422,7 @@
                    ELSE
                        MOVE    WRK-KISOTEN     TO  WRK-TANKA
                    END-IF
-                   COMPUTE WRK-KINGAK      =   WRK-TANKA
-                                           *   WRK-COM-SURYO(IDX-Z)
+                   MOVE    WRK-TANKA       TO  WRK-KINGAK
            END-EVALUATE
       *
            .
