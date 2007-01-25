@@ -140,31 +140,31 @@ W12	{
 				};
 				PRTJYUNKBN4_COMBO	{
 					PRTJYUNKBN4	{
-						value	varchar(26);
+						value	varchar(31);
 					};
 					count	int;
-					item	varchar(26)[10];
+					item	varchar(31)[10];
 				};
 				PRTJYUNKBN1_COMBO	{
 					PRTJYUNKBN1	{
-						value	varchar(26);
+						value	varchar(31);
 					};
 					count	int;
-					item	varchar(26)[10];
+					item	varchar(31)[10];
 				};
 				PRTJYUNKBN3_COMBO	{
 					PRTJYUNKBN3	{
-						value	varchar(26);
+						value	varchar(31);
 					};
 					count	int;
-					item	varchar(26)[10];
+					item	varchar(31)[10];
 				};
 				PRTJYUNKBN2_COMBO	{
 					PRTJYUNKBN2	{
-						value	varchar(26);
+						value	varchar(31);
 					};
 					count	int;
-					item	varchar(26)[10];
+					item	varchar(31)[10];
 				};
 			};
 			fi29	{

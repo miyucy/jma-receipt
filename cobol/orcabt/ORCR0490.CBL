@@ -199,8 +199,6 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  CNT-AREA
       *
-           ACCEPT  SYS-TIME            FROM    TIME     
-      *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO  WRK-PARA-JOBID
                                              WRK-PARA-SHELLID
@@ -244,11 +242,11 @@
            MOVE    WRK-PARA-RECE09-SRYYM        TO  RECE08-RECEYM
            MOVE    WRK-PARA-RECE09-CREYMD       TO  RECE08-CREYMD
            MOVE    WRK-PARA-RECE09-CREHMS       TO  RECE08-CREHMS
-           MOVE    WRK-PARA-RECE09-PREFKBN      TO  RECE08-PREFKBN
-           MOVE    WRK-PARA-RECE09-TEISYUTUSAKI TO  RECE08-TEISYUTUSAKI
+           MOVE    "%"                          TO  RECE08-PREFKBN
+           MOVE    "%"                          TO  RECE08-TEISYUTUSAKI
            MOVE    WRK-PARA-RECE09-RECESYUBETU  TO  RECE08-RECESYUBETU
            MOVE    WRK-PARA-RECE09-NYUGAIKBN    TO  RECE08-NYUGAIKBN
-      **** MOVE    "%%"                         TO  RECE08-SRYKA
+           MOVE    "%%"                         TO  RECE08-SRYKA
       *
            MOVE    WRK-PARA-RECE09-STDATA       TO  RECE08-STKANANAME
            MOVE    WRK-PARA-RECE09-EDDATA       TO  RECE08-EDKANANAME
@@ -478,7 +476,6 @@
            END-IF
             .
        900-RECEPRT-FET-EXT.
-           EXIT.
            EXIT.
       *
       *****************************************************************

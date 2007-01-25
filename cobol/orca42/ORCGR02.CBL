@@ -104,6 +104,9 @@
       *  03.04.03    NACL-藤原    07/01/16  プリンタ一括設定対応
       *  03.04.04    NACL-藤原    07/01/19  全体での出力順の指定
       *                                     「０７」「０８」の追加
+      *  03.04.05    NACL-藤原    07/01/24  種別・カナ氏名順、種別・患者
+      *                                     番号順の指定
+      *                                     「０９」「１０」の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -170,7 +173,7 @@
            03  FLG-HKNJAINF        PIC 9(01).
       *
            03  FLG-PRTNM-SET       PIC 9(01).
-      *
+           03  FLG-2008-HYOUJI     PIC 9(01).
       *
            03  STS-RECEERR         PIC X(02).
       *
@@ -631,6 +634,7 @@
                            END-STRING
                    END-EVALUATE
            END-EVALUATE
+      *
       *    ファイル作成日
            IF      SPA-R01-RECE07-CREYMD   NOT =   SPACE
                MOVE    SPA-R01-RECE07-CREYMD
@@ -646,12 +650,64 @@
                MOVE    SPA-R01-RECE07-CREHMS(5:2)
                                            TO  SPA-GMN-CREYMD (19:2)
            END-IF
+      *         
+      *    レセプト編綴順情報
+           MOVE    ZERO                  TO  FLG-2008-HYOUJI
+           IF    ( SPA-R01-FILEKBN       =   "1"             )
+           AND   ( SPA-R01-RECEKBN       =   ZERO    OR  "2" )
+           AND   ( SPA-R01-RECE07-HKNJANUM
+                                     NOT =   "99999999"      )
+           AND   ( SPA-R01-RECE07-HSEQNUM
+                                         >   ZERO            )
+               MOVE    SPACE               TO  SYS-2008-REC
+               INITIALIZE                      SYS-2008-REC
+               MOVE    "2008"              TO  SYS-2008-KANRICD
+               MOVE    SPA-R01-RECE07-HSEQNUM
+                                           TO  WRK-KBNCD-9
+               MOVE    WRK-KBNCD           TO  SYS-2008-KBNCD
+               MOVE    SPA-SYSYMD          TO  SYS-2008-STYUKYMD
+                                               SYS-2008-EDYUKYMD
+               MOVE    SYS-2008-REC        TO  MCPDATA-REC
+               MOVE    "tbl_syskanri"      TO  WRK-MCP-TABLE
+               MOVE    "key10"             TO  WRK-MCP-PATHNAME
+               PERFORM 900-SYSKANRI-INV-SEC
+               IF      FLG-SYSKANRI     =   ZERO
+                   MOVE    MCPDATA-REC          TO  SYS-2008-REC
+                   MOVE    SYS-2008-ZAITAKU     TO  SPA-NAI-2008-ZAITAKU
+                   MOVE    SYS-2008-CHOUKI      TO  SPA-NAI-2008-CHOUKI
+                   MOVE    SYS-2008-PREFKBN-PRTJYUN
+                                                TO
+                                        SPA-NAI-2008-PREFKBN-PRTJYUN
+                   MOVE    SYS-2008-HKNJANUM-PRTJYUN
+                                                TO
+                                       SPA-NAI-2008-HKNJANUM-PRTJYUN
+                   MOVE    SYS-2008-RECESYUBETU-PRTJYUN
+                                                TO
+                                       SPA-NAI-2008-RECESYUBETU-PRTJYUN
+                   MOVE    SYS-2008-HKNJANUM-PRTKBN
+                                                TO
+                                       SPA-NAI-2008-HKNJANUM-PRTKBN
+                   MOVE    SYS-2008-HKNJANUM    TO
+                                       SPA-NAI-2008-HKNJANUM
+                   MOVE    SPACE                TO  HKNJAINF-REC
+                   INITIALIZE                       HKNJAINF-REC
+                   MOVE    SPA-HOSPID           TO  HKNJA-HOSPID
+                   MOVE    SPA-NAI-2008-HKNJANUM
+                                                TO  HKNJA-HKNJANUM
+                   MOVE    HKNJAINF-REC         TO  MCPDATA-REC
+                   PERFORM 900-HKNJAINF-READ-SEC
+                   MOVE    HKNJA-HKNJANAME      TO
+                                                SPA-NAI-2008-HKNJANAME
+                   MOVE    1                    TO  FLG-2008-HYOUJI
+               END-IF  
+           END-IF
+      *
       *    印刷順（社保）
            MOVE    "01"                  TO  SPA-GMN-PRTJYUNL    (1)
-           MOVE    "保険者番号・カナ氏名順"
+           MOVE    "種別・保険者番号・カナ氏名順"
                                          TO  SPA-GMN-PRTJYUNMEIL (1)
            MOVE    "02"                  TO  SPA-GMN-PRTJYUNL    (2)
-           MOVE    "保険者番号・患者番号順"
+           MOVE    "種別・保険者番号・患者番号順"
                                          TO  SPA-GMN-PRTJYUNMEIL (2)
            MOVE    "03"                  TO  SPA-GMN-PRTJYUNL    (3)
            MOVE    "カナ氏名順"          TO  SPA-GMN-PRTJYUNMEIL (3)
@@ -677,17 +733,27 @@
                                                  (SPA-GMN-PRTJYUN-MAX)
            MOVE    "患者番号順（全体）"  TO  SPA-GMN-PRTJYUNMEIL
                                                  (SPA-GMN-PRTJYUN-MAX)
+           ADD     1                     TO  SPA-GMN-PRTJYUN-MAX
+           MOVE    "09"                  TO  SPA-GMN-PRTJYUNL
+                                                 (SPA-GMN-PRTJYUN-MAX)
+           MOVE    "種別・カナ氏名順"    TO  SPA-GMN-PRTJYUNMEIL
+                                                 (SPA-GMN-PRTJYUN-MAX)
+           ADD     1                     TO  SPA-GMN-PRTJYUN-MAX
+           MOVE    "10"                  TO  SPA-GMN-PRTJYUNL
+                                                 (SPA-GMN-PRTJYUN-MAX)
+           MOVE    "種別・患者番号順"    TO  SPA-GMN-PRTJYUNMEIL
+                                                 (SPA-GMN-PRTJYUN-MAX)
       *
            MOVE    SPA-GMN-PRTJYUNLST(01)
                                          TO  SPA-GMN-PRTJYUN-G
       *
-      *        印刷順（国保）一括作成時のみ
+      *    印刷順（国保）一括作成時のみ
            IF      SPA-R01-FILEKBN       =   "1"
                MOVE    "01"              TO  SPA-GMN-PRTJYUN1L    (1)
-               MOVE    "保険者番号・カナ氏名順"
+               MOVE    "種別・保険者番号・カナ氏名順"
                                          TO  SPA-GMN-PRTJYUN1MEIL (1)
                MOVE    "02"              TO  SPA-GMN-PRTJYUN1L    (2)
-               MOVE    "保険者番号・患者番号順"
+               MOVE    "種別・保険者番号・患者番号順"
                                          TO  SPA-GMN-PRTJYUN1MEIL (2)
                MOVE    "03"              TO  SPA-GMN-PRTJYUN1L    (3)
                MOVE    "カナ氏名順"      TO  SPA-GMN-PRTJYUN1MEIL (3)
@@ -699,10 +765,23 @@
                                      NOT =   ZERO            )
                AND   ( SPA-R01-RECE07-HKNJANUM
                                      NOT =   "99999999"      )
-                   MOVE    "06"              TO  SPA-GMN-PRTJYUN1L   (5)
-                   MOVE    "編綴順"          TO  SPA-GMN-PRTJYUN1MEIL(5)
-                   MOVE    5                 TO  SPA-GMN-PRTJYUN1-MAX
+               AND   ( FLG-2008-HYOUJI   =   1               )
+                   ADD     1                 TO  SPA-GMN-PRTJYUN1-MAX
+                   MOVE    "06"              TO  SPA-GMN-PRTJYUN1L
+                                                 (SPA-GMN-PRTJYUN1-MAX)
+                   MOVE    "編綴順"          TO  SPA-GMN-PRTJYUN1MEIL
+                                                 (SPA-GMN-PRTJYUN1-MAX)
                END-IF
+               ADD     1                     TO  SPA-GMN-PRTJYUN1-MAX
+               MOVE    "09"                  TO  SPA-GMN-PRTJYUN1L
+                                                 (SPA-GMN-PRTJYUN1-MAX)
+               MOVE    "種別・カナ氏名順"    TO  SPA-GMN-PRTJYUN1MEIL
+                                                 (SPA-GMN-PRTJYUN1-MAX)
+               ADD     1                     TO  SPA-GMN-PRTJYUN1-MAX
+               MOVE    "10"                  TO  SPA-GMN-PRTJYUN1L
+                                                 (SPA-GMN-PRTJYUN1-MAX)
+               MOVE    "種別・患者番号順"    TO  SPA-GMN-PRTJYUN1MEIL
+                                                 (SPA-GMN-PRTJYUN1-MAX)
       *
                MOVE    SPA-GMN-PRTJYUN1LST(01)
                                          TO  SPA-GMN-PRTJYUN1-G
@@ -792,60 +871,6 @@
                                            TO  SPA-GMN-SYUKA-G
              END-IF
            END-IF                                                             
-      *         
-      *    レセプト編綴順情報
-           IF    ( SPA-R01-FILEKBN       =   "1"             )
-           AND   ( SPA-R01-RECEKBN       =   ZERO    OR  "2" )
-           AND   ( SPA-R01-RECE07-HKNJANUM
-                                     NOT =   "99999999"      )
-           AND   ( SPA-R01-RECE07-HSEQNUM
-                                         >   ZERO            )
-               MOVE    SPACE               TO  SYS-2008-REC
-               INITIALIZE                      SYS-2008-REC
-               MOVE    "2008"              TO  SYS-2008-KANRICD
-               MOVE    SPA-R01-RECE07-HSEQNUM
-                                           TO  WRK-KBNCD-9
-               MOVE    WRK-KBNCD           TO  SYS-2008-KBNCD
-               MOVE    SPA-SYSYMD          TO  SYS-2008-STYUKYMD
-                                               SYS-2008-EDYUKYMD
-               MOVE    SYS-2008-REC        TO  MCPDATA-REC
-               MOVE    "tbl_syskanri"      TO  WRK-MCP-TABLE
-               MOVE    "key10"             TO  WRK-MCP-PATHNAME
-               PERFORM 900-SYSKANRI-INV-SEC
-               IF      FLG-SYSKANRI     =   ZERO
-                   MOVE    MCPDATA-REC          TO  SYS-2008-REC
-                   MOVE    SYS-2008-ZAITAKU     TO  SPA-NAI-2008-ZAITAKU
-                   MOVE    SYS-2008-CHOUKI      TO  SPA-NAI-2008-CHOUKI
-                   MOVE    SYS-2008-PREFKBN-PRTJYUN
-                                                TO
-                                        SPA-NAI-2008-PREFKBN-PRTJYUN
-                   MOVE    SYS-2008-HKNJANUM-PRTJYUN
-                                                TO
-                                       SPA-NAI-2008-HKNJANUM-PRTJYUN
-                   MOVE    SYS-2008-RECESYUBETU-PRTJYUN
-                                                TO
-                                       SPA-NAI-2008-RECESYUBETU-PRTJYUN
-                   MOVE    SYS-2008-HKNJANUM-PRTKBN
-                                                TO
-                                       SPA-NAI-2008-HKNJANUM-PRTKBN
-                   MOVE    SYS-2008-HKNJANUM    TO
-                                       SPA-NAI-2008-HKNJANUM
-                   MOVE    SPACE                TO  HKNJAINF-REC
-                   INITIALIZE                       HKNJAINF-REC
-                   MOVE    SPA-HOSPID           TO  HKNJA-HOSPID
-                   MOVE    SPA-NAI-2008-HKNJANUM
-                                                TO  HKNJA-HKNJANUM
-                   MOVE    HKNJAINF-REC         TO  MCPDATA-REC
-                   PERFORM 900-HKNJAINF-READ-SEC
-                   MOVE    HKNJA-HKNJANAME      TO
-                                                SPA-NAI-2008-HKNJANAME
-               ELSE    
-                   IF      SPA-GMN-PRTJYUN1L   (5)  =   "06"
-                       MOVE    SPACE        TO  SPA-GMN-PRTJYUN1LST(5)
-                       MOVE    4            TO  SPA-GMN-PRTJYUN1-MAX
-                   END-IF
-               END-IF  
-           END-IF
       *     
       *    レセプト編集区分情報
            MOVE    SPACE            TO  SYS-2005-REC
@@ -1133,11 +1158,14 @@
                WHEN    "01"
                WHEN    "02"
                WHEN    "05"
+               WHEN    "09"
+               WHEN    "10"
                    PERFORM 3101-PAGE-HENSYU-01-SEC     
                WHEN    "03"
                WHEN    "04"
                    PERFORM 3101-PAGE-HENSYU-02-SEC     
-               WHEN    OTHER
+               WHEN    "07"
+               WHEN    "08"
                    PERFORM 3101-PAGE-HENSYU-04-SEC     
            END-EVALUATE
       *    
@@ -1147,6 +1175,8 @@
                WHEN    "01"
                WHEN    "02"
                WHEN    "05"
+               WHEN    "09"
+               WHEN    "10"
                    PERFORM 3101-PAGE-HENSYU-01-SEC     
                WHEN    "06"
                    PERFORM 3101-PAGE-HENSYU-03-SEC     
@@ -1161,11 +1191,17 @@
                WHEN    "01"            ALSO    ANY
                WHEN    "02"            ALSO    ANY
                WHEN    "05"            ALSO    ANY
+               WHEN    "09"            ALSO    ANY
+               WHEN    "10"            ALSO    ANY
                    MOVE    2                   TO  SPA-GMN-PAGE-MAX
                WHEN    "03"            ALSO    "01"
                WHEN    "03"            ALSO    "02"
+               WHEN    "03"            ALSO    "09"
+               WHEN    "03"            ALSO    "10"
                WHEN    "04"            ALSO    "01"
                WHEN    "04"            ALSO    "02"
+               WHEN    "04"            ALSO    "09"
+               WHEN    "04"            ALSO    "10"
                    MOVE    2                   TO  SPA-GMN-PAGE-MAX
                WHEN    "03"            ALSO    ANY
                WHEN    "04"            ALSO    ANY
@@ -1345,6 +1381,8 @@
                WHEN    "2"                 ALSO    "01"
                WHEN    "2"                 ALSO    "02"
                WHEN    "2"                 ALSO    "05"
+               WHEN    "2"                 ALSO    "09"
+               WHEN    "2"                 ALSO    "10"
                    MOVE    2               TO  IDW
                    MOVE    1               TO  IDX 
                WHEN    "2"                 ALSO    "03"
@@ -2417,6 +2455,7 @@
                    WHEN    "01"
                    WHEN    "03"
                    WHEN    "07"
+                   WHEN    "09"
       *
       *                半角チェック
                        INITIALIZE                  ORCSKANACHKAREA
@@ -2443,6 +2482,7 @@
                    WHEN    "04"
                    WHEN    "06"
                    WHEN    "08"
+                   WHEN    "10"
       *
       *                半角チェック
                        INITIALIZE                  ORCSKANACHKAREA
@@ -2512,6 +2552,7 @@
                    WHEN    "01"
                    WHEN    "03"
                    WHEN    "07"
+                   WHEN    "09"
       *
       *                半角チェック
                        INITIALIZE                  ORCSKANACHKAREA
@@ -2538,6 +2579,7 @@
                    WHEN    "04"
                    WHEN    "06"
                    WHEN    "08"
+                   WHEN    "10"
       *
       *                半角チェック
                        INITIALIZE                  ORCSKANACHKAREA
@@ -3338,7 +3380,7 @@
                                    JOBKANRI-REC
       *
       *    帳票ファイル作成処理
-           MOVE    ZERO             TO  WRK-RECE08-PRTJYUN  
+           MOVE    ZERO            TO  WRK-RECE08-PRTJYUN  
       *
       *    入力順指定
            IF      SPA-GMN-PRTJYUN =   "05"
@@ -3626,8 +3668,10 @@
                PERFORM 4503-RECEPRT-INPUT-HENSYU-SEC
            ELSE
       *        国保対象頁設定
-               IF    ( SPA-GMN-PRTJYUN1    =   "01"   OR  "02" )
-               OR    ( SPA-GMN-PRTJYUN     =   "01"   OR  "02" )
+               IF    ( SPA-GMN-PRTJYUN1    =   "01"   OR  "02"   OR
+                                               "09"   OR  "10"      )
+               OR    ( SPA-GMN-PRTJYUN     =   "01"   OR  "02"   OR
+                                               "09"   OR  "10"      )
                    MOVE    2               TO  IDW
                ELSE
                    MOVE    1               TO  IDW
@@ -3742,7 +3786,7 @@
                                        TO  WRK-RECE09-EDDATA 
            IF      WRK-RECE09-STDATA   =   SPACE
                IF      WRK-RECE09-PRTJYUN  =   "01"  OR  "03"  OR
-                                               "07"
+                                               "07"  OR  "09"
                    MOVE    SPACE       TO  WRK-RECE09-STDATA
                ELSE
                    MOVE    "0"         TO
@@ -3750,7 +3794,7 @@
                END-IF
            ELSE     
                IF      WRK-RECE09-PRTJYUN  =   "02"  OR  "04"  OR
-                                               "08"
+                                               "08"  OR  "10"
                    PERFORM VARYING IDZ FROM    20  BY  -1
                            UNTIL   IDZ <       1
                        IF      WRK-RECE09-STDATA(IDZ:1)
@@ -3764,7 +3808,7 @@
            END-IF
            IF      WRK-RECE09-EDDATA   =   SPACE
                IF      WRK-RECE09-PRTJYUN  =   "01"  OR  "03"  OR
-                                               "07"
+                                               "07"  OR  "09"
                    MOVE    "ヵ"    TO  WRK-RECE09-EDDATA (1:2)
                ELSE
                    MOVE    "zzzzzzzzzzzzzzzzzzzz"
@@ -3772,7 +3816,7 @@
                END-IF
            ELSE     
                IF      WRK-RECE09-PRTJYUN  =   "02"  OR  "04"  OR
-                                               "08"
+                                               "08"  OR  "10"
                    PERFORM VARYING IDZ FROM    20  BY  -1
                            UNTIL   IDZ <       1
                        IF      WRK-RECE09-EDDATA(IDZ:1)
@@ -4515,7 +4559,6 @@
                MOVE    WIDGET-NORMAL       TO  R02-PRTJYUN1-STATE
                MOVE    "  社保"            TO  R02-LABEL1
                MOVE    "  国保"            TO  R02-LABEL2
-               MOVE    "出力順"            TO  R02-LABEL3
                IF      SPA-GMN-PRTJYUN     =   "07"    OR  "08"
                    MOVE    WIDGET-INSENSITIVE  TO  R02-PRTJYUN1-STATE
                END-IF
@@ -4523,7 +4566,6 @@
                MOVE    WIDGET-INSENSITIVE  TO  R02-PRTJYUN1-STATE
                MOVE    "出力順"            TO  R02-LABEL1
                MOVE    SPACE               TO  R02-LABEL2
-                                               R02-LABEL3
            END-IF
       *
            MOVE    SPA-GMN-PREFKBN-G   TO  R02-PREFKBN

@@ -71,6 +71,10 @@
       *
       *  03.04.01    NACL-藤原    07/01/19  全体での出力順の指定
       *                                     「０７」「０８」の追加
+      *  03.04.02    NACL-藤原    07/01/24  種別・カナ氏名順、種別・患者
+      *                                     番号順の指定
+      *                                     「０９」「１０」の追加
+      *                                     MONFUNC対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -164,14 +168,10 @@
       *
            03  WRK-RECEERR             PIC X(200). 
       *
-           03  WRK-PATH. 
-               05  FILLER          PIC S9(9)   BINARY.
-               05  FILLER          PIC S9(9)   BINARY.
-               05  FILLER          PIC S9(9)   BINARY.
+           03  WRK-MCP-TABLE           PIC X(64).
+           03  WRK-MCP-PATHNAME        PIC X(64).
       *
            COPY    "CPSHELLTBL.INC".
-      *     
-           COPY    "ORCA-DBPATH".         
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -180,9 +180,6 @@
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
-      *
-      *    出力先プリンタ名割り当て情報
-           COPY    "CPSK1031.INC".
       *
            COPY    "CPRCF008.INC".
       *
@@ -201,7 +198,6 @@
            COPY    "MCPAREA".
       *
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
       *
       ****************************************************************
        LINKAGE                 SECTION.
@@ -239,8 +235,6 @@
            INITIALIZE                  STS-AREA
            INITIALIZE                  WRK-AREA
            INITIALIZE                  CNT-AREA
-      *
-           ACCEPT  SYS-TIME            FROM    TIME     
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO  WRK-PARA-PRTKBN
@@ -370,12 +364,12 @@
                                 "#" RECE08-PRTRENNUM
       *
                MOVE    RECE08-REC           TO  MCPDATA-REC
-               MOVE    "RECEPRT-KEY"        TO  ORC-DBPATH
+               MOVE    "tbl_receprt"        TO  MCP-TABLE
+               MOVE    "key"                TO  MCP-PATHNAME
                MOVE    "DBUPDATE"           TO  MCP-FUNC
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+               CALL    "MONFUNC"           USING
+                                               MCPAREA
+                                               MCPDATA-REC
       *
       *        エラーチェック
                IF      MCP-RC             =   ZERO
@@ -394,7 +388,9 @@
                END-IF
            END-PERFORM    
       *
-           PERFORM 900-RECEPRT-CLS-SEC 
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
       *
            .
        200-MAIN-EXT.
@@ -522,92 +518,77 @@
       *****************************************************************
        900-RECEPRT-SELECT-SEC          SECTION.
       *
-      *    編綴順印刷
-           IF      WRK-PARA-RECE09-PRTJYUN      =   "06"
-               PERFORM 9001-RECEPRT-KEY-HENSYU-SEC
-           ELSE
-      *     入力順印刷（個別作成時）
-            IF      WRK-PARA-RECE09-PRTJYUN      =   "05"
-                MOVE    PATH-TBL-RECEPRT-KEY30       TO  WRK-PATH
-            ELSE
-               IF      WRK-PARA-PREFKBN           =   "4"
+           MOVE    "tbl_receprt"       TO  WRK-MCP-TABLE
+      *
+           EVALUATE    WRK-PARA-RECE09-PRTJYUN ALSO    WRK-PARA-PREFKBN
+               WHEN    "06"                    ALSO    ANY
+      *            編綴順印刷
+                   PERFORM 9001-RECEPRT-KEY-HENSYU-SEC
+               WHEN    "05"                    ALSO    ANY
+      *            入力順印刷（個別作成時）
+                   MOVE    "key30"             TO  WRK-MCP-PATHNAME
+               WHEN    ANY                     ALSO    "4"
                    IF      WRK-PARA-RECE09-RECESYUBETU  =   "9999"  
-                       IF      WRK-PARA-RECE09-PRTJYUN      =   "03"
-                                                            OR  "07"
-                           MOVE    PATH-TBL-RECEPRT-KEY35   TO  WRK-PATH
-                       ELSE
-                           MOVE    PATH-TBL-RECEPRT-KEY36   TO  WRK-PATH
-                       END-IF
+                       EVALUATE    WRK-PARA-RECE09-PRTJYUN
+                           WHEN    "03"
+                           WHEN    "07"
+                               MOVE    "key35"      TO  WRK-MCP-PATHNAME
+                           WHEN    "04"
+                           WHEN    "08"
+                               MOVE    "key36"      TO  WRK-MCP-PATHNAME
+                       END-EVALUATE
                    ELSE 
-                       IF      WRK-PARA-RECE09-RECESYUBETU  =   ZERO
-                                                            OR  "8888"
-                                                            OR  "6666"
-                           EVALUATE    WRK-PARA-RECE09-PRTJYUN
-                               WHEN    "01"
-                                   MOVE    PATH-TBL-RECEPRT-KEY33
-                                                           TO  WRK-PATH
-                               WHEN    "02"
-                                   MOVE    PATH-TBL-RECEPRT-KEY34
-                                                           TO  WRK-PATH
-                               WHEN    "03"
-                               WHEN    "07"
-                                   MOVE    PATH-TBL-RECEPRT-KEY38
-                                                           TO  WRK-PATH
-                               WHEN    "04"
-                               WHEN    "08"
-                                   MOVE    PATH-TBL-RECEPRT-KEY39
-                                                           TO  WRK-PATH
-                           END-EVALUATE
-                       ELSE 
-                           IF      WRK-PARA-RECE09-PRTJYUN =   "01"
-                               MOVE    PATH-TBL-RECEPRT-KEY31
-                                                           TO  WRK-PATH
-                           ELSE
-                               MOVE    PATH-TBL-RECEPRT-KEY32
-                                                           TO  WRK-PATH
-                           END-IF
-                       END-IF
+                       EVALUATE    WRK-PARA-RECE09-PRTJYUN
+                           WHEN    "01"
+                               MOVE    "key31"      TO  WRK-MCP-PATHNAME
+                           WHEN    "02"
+                               MOVE    "key32"      TO  WRK-MCP-PATHNAME
+                           WHEN    "03"
+                           WHEN    "07"
+                               MOVE    "key38"      TO  WRK-MCP-PATHNAME
+                           WHEN    "04"
+                           WHEN    "08"
+                               MOVE    "key39"      TO  WRK-MCP-PATHNAME
+                           WHEN    "09"
+                               MOVE    "key33"      TO  WRK-MCP-PATHNAME
+                           WHEN    "10"
+                               MOVE    "key34"      TO  WRK-MCP-PATHNAME
+                       END-EVALUATE
                    END-IF
-               ELSE
+               WHEN    ANY                     ALSO    "1"
+               WHEN    ANY                     ALSO    "2"
+               WHEN    ANY                     ALSO    "3"
                    IF      WRK-PARA-RECE09-RECESYUBETU  =   "9999"  
-                       IF      WRK-PARA-RECE09-PRTJYUN      =   "03"
-                           MOVE    PATH-TBL-RECEPRT-KEY16   TO  WRK-PATH
-                       ELSE
-                           MOVE    PATH-TBL-RECEPRT-KEY17   TO  WRK-PATH
-                       END-IF
+                       EVALUATE    WRK-PARA-RECE09-PRTJYUN
+                           WHEN    "03"
+                               MOVE    "key16"      TO  WRK-MCP-PATHNAME
+                           WHEN    "04"
+                               MOVE    "key17"      TO  WRK-MCP-PATHNAME
+                       END-EVALUATE
                    ELSE 
-                       IF      WRK-PARA-RECE09-RECESYUBETU  =   ZERO
-                                                            OR  "8888"
-                                                            OR  "6666"
-                           IF      WRK-PARA-RECE09-PRTJYUN  =   "01"  OR
-                                                                "03" 
-                               MOVE    PATH-TBL-RECEPRT-KEY14
-                                                            TO  WRK-PATH
-                           ELSE
-                               MOVE    PATH-TBL-RECEPRT-KEY15
-                                                            TO  WRK-PATH
-                           END-IF
-                       ELSE 
-                           IF      WRK-PARA-RECE09-PRTJYUN =   "01"
-                               MOVE    PATH-TBL-RECEPRT-KEY10
-                                                           TO  WRK-PATH
-                           ELSE
-                               MOVE    PATH-TBL-RECEPRT-KEY11
-                                                           TO  WRK-PATH
-                           END-IF
-                       END-IF
+                       EVALUATE    WRK-PARA-RECE09-PRTJYUN
+                           WHEN    "01"
+                           WHEN    "03"
+                               MOVE    "key10"      TO  WRK-MCP-PATHNAME
+                           WHEN    "02"
+                           WHEN    "04"
+                               MOVE    "key11"      TO  WRK-MCP-PATHNAME
+                           WHEN    "09"
+                               MOVE    "key14"      TO  WRK-MCP-PATHNAME
+                           WHEN    "10"
+                               MOVE    "key15"      TO  WRK-MCP-PATHNAME
+                       END-EVALUATE
                    END-IF
-               END-IF
-             END-IF
-           END-IF            
+           END-EVALUATE
       *
            MOVE    RECE08-REC          TO  MCPDATA-REC
       *
-           MOVE    WRK-PATH            TO  MCP-PATH
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
       *
       *
       *    エラーチェック
@@ -628,7 +609,7 @@
            MOVE    WRK-PARA-RECE09-CHOUKI  TO  RECE08-CHOUKI
            MOVE    WRK-PARA-RECE09-ZAITAKU TO  RECE08-ZAITAKU
       *
-           MOVE    PATH-TBL-RECEPRT-KEY37  TO  WRK-PATH
+               MOVE    "key37"             TO  WRK-MCP-PATHNAME
       *
            .
        9001-RECEPRT-KEY-HENSYU-EXT.
@@ -639,11 +620,13 @@
       *****************************************************************
        900-RECEPRT-FET-SEC            SECTION.
       *
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+      *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           MOVE    WRK-PATH            TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
       *                                  
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  RECE08-REC
@@ -659,18 +642,18 @@
        900-RECEPRT-FET-EXT.
            EXIT.
       *
-      *******************************************************
-      *     入力コードマスター クロース１処理
       *****************************************************************
-       900-RECEPRT-CLS-SEC            SECTION.
+      *    クローズ処理
+      *****************************************************************
+       900-CLOSE-SEC                  SECTION.
       *
-           MOVE    WRK-PATH            TO  MCP-PATH
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
+      *
            .
-       900-RECEPRT-CLS-EXT.
+       900-CLOSE-EXT.
            EXIT.
       *      
       *****************************************************************
@@ -678,13 +661,17 @@
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
            MOVE    "DBOPEN"            TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
            MOVE    "DBSTART"           TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            .
@@ -696,13 +683,17 @@
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
            MOVE    "DBCOMMIT"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
            MOVE    "DBDISCONNECT"      TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *

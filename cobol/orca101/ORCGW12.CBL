@@ -80,6 +80,9 @@
       *
       *  03.04.01    NACL-藤原    07/01/16  レセプト一括作成出力順区分
       *                                     （全体）の追加
+      *  03.04.05    NACL-藤原    07/01/24  レセプト作成出力順区分
+      *                                     種別・カナ氏名順、種別・患者
+      *                                     番号順の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -226,25 +229,25 @@
                                               PIC X(02).
                            11  SPA-GMN-F1     PIC X(01).
                            11  SPA-GMN-PRTJYUN1MEI
-                                              PIC X(22).
+                                              PIC X(28).
                        09  SPA-GMN-PRTJYUN2-G.
                            11  SPA-GMN-PRTJYUN2
                                               PIC X(02).
                            11  SPA-GMN-F1     PIC X(01).
                            11  SPA-GMN-PRTJYUN2MEI
-                                              PIC X(22).
+                                              PIC X(28).
                        09  SPA-GMN-PRTJYUN3-G.
                            11  SPA-GMN-PRTJYUN3
                                               PIC X(02).
                            11  SPA-GMN-F1     PIC X(01).
                            11  SPA-GMN-PRTJYUN3MEI
-                                              PIC X(22).
+                                              PIC X(28).
                        09  SPA-GMN-PRTJYUN4-G.
                            11  SPA-GMN-PRTJYUN4
                                               PIC X(02).
                            11  SPA-GMN-F1     PIC X(01).
                            11  SPA-GMN-PRTJYUN4MEI
-                                              PIC X(22).
+                                              PIC X(28).
                        09  SPA-GMN-AUTODSPKBN-G.
                            11  SPA-GMN-AUTODSPKBN
                                               PIC X(01).
@@ -553,28 +556,28 @@
                        09  SPA-GMN-PRTJYUN1L  PIC X(02).
                        09  SPA-GMN-F1L        PIC X(01).
                        09  SPA-GMN-PRTJYUN1MEIL
-                                              PIC X(22).
+                                              PIC X(28).
                    07  SPA-GMN-PRTJYUN1-MAX   PIC 9(02).   
       * 
                    07  SPA-GMN-PRTJYUN2LST    OCCURS  10.
                        09  SPA-GMN-PRTJYUN2L  PIC X(02).
                        09  SPA-GMN-F1L        PIC X(01).
                        09  SPA-GMN-PRTJYUN2MEIL
-                                              PIC X(22).
+                                              PIC X(28).
                    07  SPA-GMN-PRTJYUN2-MAX   PIC 9(02).   
       * 
                    07  SPA-GMN-PRTJYUN3LST    OCCURS  10.
                        09  SPA-GMN-PRTJYUN3L  PIC X(02).
                        09  SPA-GMN-F1L        PIC X(01).
                        09  SPA-GMN-PRTJYUN3MEIL
-                                              PIC X(22).
+                                              PIC X(28).
                    07  SPA-GMN-PRTJYUN3-MAX   PIC 9(02).   
       * 
                    07  SPA-GMN-PRTJYUN4LST    OCCURS  10.
                        09  SPA-GMN-PRTJYUN4L  PIC X(02).
                        09  SPA-GMN-F1L        PIC X(01).
                        09  SPA-GMN-PRTJYUN4MEIL
-                                              PIC X(22).
+                                              PIC X(28).
                    07  SPA-GMN-PRTJYUN4-MAX   PIC 9(02).   
       * 
                    07  SPA-GMN-AUTODSPKBNLST  OCCURS  2.
@@ -1202,22 +1205,26 @@
            MOVE    2                   TO  SPA-GMN-JIHITEKKSIKBN-MAX 
       *
            MOVE    "01"                TO  SPA-GMN-PRTJYUN1L    (1)
-           MOVE    "保険者番号・カナ氏名順"
+           MOVE    "種別・保険者番号・カナ氏名順"
                                        TO  SPA-GMN-PRTJYUN1MEIL (1)
            MOVE    "02"                TO  SPA-GMN-PRTJYUN1L    (2)
-           MOVE    "保険者番号・患者番号順"
+           MOVE    "種別・保険者番号・患者番号順"
                                        TO  SPA-GMN-PRTJYUN1MEIL (2)
            MOVE    "03"                TO  SPA-GMN-PRTJYUN1L    (3)
            MOVE    "カナ氏名順"        TO  SPA-GMN-PRTJYUN1MEIL (3)
            MOVE    "04"                TO  SPA-GMN-PRTJYUN1L    (4)
            MOVE    "患者番号順"        TO  SPA-GMN-PRTJYUN1MEIL (4)
-           MOVE    4                   TO  SPA-GMN-PRTJYUN1-MAX 
+           MOVE    "09"                TO  SPA-GMN-PRTJYUN1L    (5)
+           MOVE    "種別・カナ氏名順"  TO  SPA-GMN-PRTJYUN1MEIL (5)
+           MOVE    "10"                TO  SPA-GMN-PRTJYUN1L    (6)
+           MOVE    "種別・患者番号順"  TO  SPA-GMN-PRTJYUN1MEIL (6)
+           MOVE    6                   TO  SPA-GMN-PRTJYUN1-MAX 
       *
            MOVE    "01"                TO  SPA-GMN-PRTJYUN3L    (1)
-           MOVE    "保険者番号・カナ氏名順"
+           MOVE    "種別・保険者番号・カナ氏名順"
                                        TO  SPA-GMN-PRTJYUN3MEIL (1)
            MOVE    "02"                TO  SPA-GMN-PRTJYUN3L    (2)
-           MOVE    "保険者番号・患者番号順"
+           MOVE    "種別・保険者番号・患者番号順"
                                        TO  SPA-GMN-PRTJYUN3MEIL (2)
            MOVE    "03"                TO  SPA-GMN-PRTJYUN3L    (3)
            MOVE    "カナ氏名順"        TO  SPA-GMN-PRTJYUN3MEIL (3)
@@ -1225,13 +1232,17 @@
            MOVE    "患者番号順"        TO  SPA-GMN-PRTJYUN3MEIL (4)
            MOVE    "06"                TO  SPA-GMN-PRTJYUN3L    (5)
            MOVE    "編綴順"            TO  SPA-GMN-PRTJYUN3MEIL (5)
-           MOVE    5                   TO  SPA-GMN-PRTJYUN3-MAX 
+           MOVE    "09"                TO  SPA-GMN-PRTJYUN3L    (6)
+           MOVE    "種別・カナ氏名順"  TO  SPA-GMN-PRTJYUN3MEIL (6)
+           MOVE    "10"                TO  SPA-GMN-PRTJYUN3L    (7)
+           MOVE    "種別・患者番号順"  TO  SPA-GMN-PRTJYUN3MEIL (7)
+           MOVE    7                   TO  SPA-GMN-PRTJYUN3-MAX 
       *
            MOVE    "01"                TO  SPA-GMN-PRTJYUN2L    (1)
-           MOVE    "保険者番号・カナ氏名順"
+           MOVE    "種別・保険者番号・カナ氏名順"
                                        TO  SPA-GMN-PRTJYUN2MEIL (1)
            MOVE    "02"                TO  SPA-GMN-PRTJYUN2L    (2)
-           MOVE    "保険者番号・患者番号順"
+           MOVE    "種別・保険者番号・患者番号順"
                                        TO  SPA-GMN-PRTJYUN2MEIL (2)
            MOVE    "03"                TO  SPA-GMN-PRTJYUN2L    (3)
            MOVE    "カナ氏名順"        TO  SPA-GMN-PRTJYUN2MEIL (3)
@@ -1245,7 +1256,11 @@
            MOVE    "08"                TO  SPA-GMN-PRTJYUN2L    (7)
            MOVE    "患者番号順（全体）"
                                        TO  SPA-GMN-PRTJYUN2MEIL (7)
-           MOVE    7                   TO  SPA-GMN-PRTJYUN2-MAX 
+           MOVE    "09"                TO  SPA-GMN-PRTJYUN2L    (8)
+           MOVE    "種別・カナ氏名順"  TO  SPA-GMN-PRTJYUN2MEIL (8)
+           MOVE    "10"                TO  SPA-GMN-PRTJYUN2L    (9)
+           MOVE    "種別・患者番号順"  TO  SPA-GMN-PRTJYUN2MEIL (9)
+           MOVE    9                   TO  SPA-GMN-PRTJYUN2-MAX 
       *
            MOVE    "07"                TO  SPA-GMN-PRTJYUN4L    (1)
            MOVE    "カナ氏名順（全体）"

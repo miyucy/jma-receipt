@@ -112,28 +112,28 @@
                             PIC X(20)   OCCURS  2 TIMES.
                   05  W12-PRTJYUNKBN4-COMBO.
                     06  W12-PRTJYUNKBN4.
-                      07  W12-VALUE   PIC X(26).
+                      07  W12-VALUE   PIC X(31).
                     06  W12-PRTJYUNKBN4-COUNT   PIC S9(9)   BINARY.
                     06  W12-PRTJYUNKBN4LST
-                            PIC X(26)   OCCURS  10 TIMES.
+                            PIC X(31)   OCCURS  10 TIMES.
                   05  W12-PRTJYUNKBN1-COMBO.
                     06  W12-PRTJYUNKBN1.
-                      07  W12-VALUE   PIC X(26).
+                      07  W12-VALUE   PIC X(31).
                     06  W12-PRTJYUNKBN1-COUNT   PIC S9(9)   BINARY.
                     06  W12-PRTJYUNKBN1LST
-                            PIC X(26)   OCCURS  10 TIMES.
+                            PIC X(31)   OCCURS  10 TIMES.
                   05  W12-PRTJYUNKBN3-COMBO.
                     06  W12-PRTJYUNKBN3.
-                      07  W12-VALUE   PIC X(26).
+                      07  W12-VALUE   PIC X(31).
                     06  W12-PRTJYUNKBN3-COUNT   PIC S9(9)   BINARY.
                     06  W12-PRTJYUNKBN3LST
-                            PIC X(26)   OCCURS  10 TIMES.
+                            PIC X(31)   OCCURS  10 TIMES.
                   05  W12-PRTJYUNKBN2-COMBO.
                     06  W12-PRTJYUNKBN2.
-                      07  W12-VALUE   PIC X(26).
+                      07  W12-VALUE   PIC X(31).
                     06  W12-PRTJYUNKBN2-COUNT   PIC S9(9)   BINARY.
                     06  W12-PRTJYUNKBN2LST
-                            PIC X(26)   OCCURS  10 TIMES.
+                            PIC X(31)   OCCURS  10 TIMES.
                 04  W12-FI29.
                   05  W12-FRAME-JIBAI-COMBO.
                     06  W12-FRAME-JIBAI.
