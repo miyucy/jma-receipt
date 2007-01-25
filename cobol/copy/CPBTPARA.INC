@@ -24,6 +24,7 @@
       *
       *01  BTPARA-REC.
            03  BTPARA-KEY.
+               05  BTPARA-HOSPNUM      PIC S9(9) BINARY.
       *¥·¥§¥ë£É£Ä
                05  BTPARA-SHELLID       PIC X(08).
       *¥ª¥Ú¥ì¡¼¥¿£É£Ä

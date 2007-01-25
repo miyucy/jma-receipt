@@ -1,5 +1,5 @@
 tbl_ptkohinf {
-	HOSPID				char(24);
+	HOSPNUM				integer;
 	PTID 				number(10);
 	KOHID				number(10);
 	KOHNUM				char(3);
@@ -18,7 +18,7 @@ tbl_ptkohinf {
 };
 
 primary	{
-	HOSPID,PTID,KOHID;
+	HOSPNUM,PTID,KOHID;
 };
 
 path	key 	{
@@ -26,7 +26,7 @@ path	key 	{
 		DECLARE tbl_ptkohinf_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptkohinf
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   KOHID       =   :KOHID
 		;
@@ -38,7 +38,7 @@ path	key2 	{
 		DECLARE tbl_ptkohinf_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptkohinf
-			WHERE   HOSPID      =   :HOSPID
+			WHERE   HOSPNUM      =   :HOSPNUM
 			AND   PTID        =   :PTID
 			ORDER   BY  TEKEDYMD DESC,
 			            TEKSTYMD DESC,
@@ -52,7 +52,7 @@ path	key3 	{
 		DECLARE tbl_ptkohinf_key3_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptkohinf
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   KOHID       =   :KOHID
 			AND   TEKSTYMD    <=  :TEKSTYMD
@@ -66,7 +66,7 @@ path	key4 	{
 		DECLARE tbl_ptkohinf_key4_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptkohinf
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   KOHNUM      =   :KOHNUM
 			ORDER   BY      KOHID
@@ -79,7 +79,7 @@ path	key5 	{
 		DECLARE tbl_ptkohinf_key5_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptkohinf
-			WHERE HOSPID      =   :HOSPID
+			WHERE HOSPNUM      =   :HOSPNUM
 			AND   KOHNUM      =   :KOHNUM
 			AND   TEKSTYMD    <   :TEKSTYMD
 			AND   TEKEDYMD    >=  :TEKEDYMD
@@ -94,6 +94,7 @@ path	all 	{
 		DECLARE tbl_ptkohinf_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptkohinf
+			WHERE   HOSPNUM    =   :HOSPNUM
  		;
 	};
 };
@@ -102,7 +103,7 @@ path	del1 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_ptkohinf
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 		;
 	};
@@ -114,7 +115,7 @@ path	key6 	{
 		DECLARE tbl_ptkohinf_key6_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptkohinf
-			WHERE HOSPID      =   :HOSPID
+			WHERE HOSPNUM      =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   KOHNUM      =   :KOHNUM
 			AND   TEKSTYMD    <=  :TEKSTYMD
@@ -130,7 +131,7 @@ path	key7 	{
 		DECLARE tbl_ptkohinf_key7_csr CURSOR FOR
 		SELECT a.*
 		FROM tbl_ptkohinf a,tbl_ptnum b
-			WHERE a.HOSPID      =   :HOSPID
+			WHERE a.HOSPNUM      =   :HOSPNUM
 			AND   a.KOHNUM      =   :KOHNUM
 			AND   a.TEKSTYMD    <   :TEKSTYMD
 			AND   a.TEKEDYMD    >=  :TEKEDYMD
@@ -146,7 +147,7 @@ path	key8 	{
 		DECLARE tbl_ptkohinf_key8_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptkohinf
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   KOHID       =   :KOHID
 			AND   SAKJOKBN    <>   '1'

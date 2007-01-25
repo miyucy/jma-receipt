@@ -54,3 +54,12 @@ alter table tbl_tensuplus
 
 update tbl_tensuplus set SANTEIRRKKBN='0',JGNCNT='000', JGNCNT1D='000' , JGNCNTERR='0', SOURYOHENKBN='0' , IPNKISAIKBN='0' , IPNKANZANCHI='0';
 
+
+
+alter table tbl_tensuplus add  column hospnum  integer;
+update tbl_tensuplus set hospnum = 1 ;
+alter table tbl_tensuplus drop constraint  tbl_tensuplus_primary_key ;
+alter table tbl_tensuplus add constraint tbl_tensuplus_primary_key primary key (hospnum,srycd,yukostymd,yukoedymd);
+
+
+

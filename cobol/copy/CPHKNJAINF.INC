@@ -24,7 +24,7 @@
       ************************************************************
       *01  HKNJAINF-REC.
       *∞ÂŒ≈µ°¥ÿ£…£ƒ
-           03  HKNJA-HOSPID                  PIC  X(24).
+           03  HKNJA-HOSPNUM                  PIC  S9(9) BINARY.
       * ›∏±º‘»÷πÊ
            03  HKNJA-HKNJANUM                PIC  X(08).
       * ›∏±º‘Ãæ

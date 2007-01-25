@@ -17,6 +17,10 @@ alter table TBL_PTNYUINRRK
    add column SENTEIKBN  character(1);
 
 
+--  ゼロ設定                       --
+alter table TBL_SYUNOU
+   alter GRP_HAKHOUFLG set default 0;
+
 
 --  最大枝番号セット
 update tbl_ptnyuinrrk set maxedanum = (select max(b.rrkedanum) from tbl_ptnyuinrrk b where tbl_ptnyuinrrk.hospid = b.hospid and tbl_ptnyuinrrk.ptid = b.ptid and tbl_ptnyuinrrk.rrknum = b.rrknum group by b.hospid,b.ptid,b.rrknum);
@@ -26,3 +30,8 @@ update tbl_ptnyuinrrk set skjkbn = '1' where (jtikbn <> '5') and (jtikbn <> '6')
 
 --  選定入院区分セット
 update tbl_ptnyuinrrk set senteikbn = '1' where (jtikbn <> '5') and (jtikbn <> '6');
+
+alter table TBL_PTNYUINRRK add  column hospnum  integer;
+alter table TBL_PTNYUINRRK drop column hospid;
+update TBL_PTNYUINRRK set hospnum = 1 ;
+alter table TBL_PTNYUINRRK add constraint tbl_ptnyuinrrk_primary_key primary key (hospnum,ptid,rrknum,rrkedanum);

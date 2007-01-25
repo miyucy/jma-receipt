@@ -1,4 +1,5 @@
 tbl_hours {
+	HOSPNUM				integer;
 	SRYYMD				char(8);
 	TIME				char(4);
 	ID					char(12);
@@ -13,7 +14,7 @@ tbl_hours {
 };
 
 primary	{
-	SRYYMD,TIME;
+	HOSPNUM,SRYYMD,TIME;
 };
 
 path	key 	{
@@ -21,7 +22,8 @@ path	key 	{
 		DECLARE tbl_hours_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_hours
-			WHERE SRYYMD      =   :SRYYMD
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND SRYYMD      =   :SRYYMD
 			AND   TIME        =   :TIME
 		;
 	};
@@ -32,7 +34,8 @@ path	key2 	{
 		DECLARE tbl_hours_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_hours
-			WHERE SRYYMD      >=   :SRYYMD
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND SRYYMD      >=   :SRYYMD
 			ORDER BY   ID     DESC
 		;
 	};
@@ -43,7 +46,8 @@ path	key3 	{
 		DECLARE tbl_hours_key3_csr CURSOR FOR
 		SELECT *
 		FROM tbl_hours
-			WHERE SRYYMD      >=   :STSRYYMD
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND SRYYMD      >=   :STSRYYMD
 			 AND  SRYYMD      <=   :EDSRYYMD
 			 AND  ID          <     ID
 			ORDER BY   ID     DESC
@@ -56,7 +60,8 @@ path	key4 	{
 		DECLARE tbl_hours_key4_csr CURSOR FOR
 		SELECT *
 		FROM tbl_hours
-			WHERE SRYYMD      >=   :SRYYMD
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND SRYYMD      >=   :SRYYMD
 			 AND  HOURSKBN     =   '1'
 			ORDER BY   ID      DESC
 		;
@@ -68,6 +73,7 @@ path	all 	{
 		DECLARE tbl_hours_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_hours
+		WHERE 	HOSPNUM	= :HOSPNUM
 		;
 	};
 };

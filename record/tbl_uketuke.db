@@ -1,5 +1,5 @@
 tbl_uketuke {
-	HOSPID				char(24);
+	HOSPNUM				integer;
 	UKEYMD  			char(8);
 	UKEID    			number(5,0);
 	UKETIME 			char(6);
@@ -23,7 +23,7 @@ tbl_uketuke {
 	UPHMS				char(6);
 };
 primary	{
-	HOSPID,UKEYMD,UKEID;
+	HOSPNUM,UKEYMD,UKEID;
 };
 
 path	key 	{
@@ -31,7 +31,7 @@ path	key 	{
 		DECLARE tbl_uketuke_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_uketuke
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   UKEYMD      =   :UKEYMD
 			AND   UKEID       =   :UKEID
 		;
@@ -43,7 +43,7 @@ path	key2 	{
 		DECLARE tbl_uketuke_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_uketuke
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   UKEYMD      =   :UKEYMD
 			AND   PTID        =   :PTID
 		;
@@ -55,7 +55,7 @@ path	key3 	{
 		DECLARE tbl_uketuke_key3_csr CURSOR FOR
 		SELECT *
 		FROM tbl_uketuke
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   UKEYMD      =   :UKEYMD
 			ORDER   BY  UKEID
 		;
@@ -67,7 +67,7 @@ path	key4 	{
 		DECLARE tbl_uketuke_key4_csr CURSOR FOR
 		SELECT *
 		FROM tbl_uketuke
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   UKEYMD      =   :UKEYMD
 			AND   PTID        =   :PTID
 			AND   UKETIME     =   :UKETIME
@@ -78,7 +78,7 @@ path	del11 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_uketuke
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   UKEYMD      =   :UKEYMD
 			AND   PTID        =   :PTID
 			AND   UKETIME     =   :UKETIME
@@ -90,6 +90,7 @@ path	all 	{
 		DECLARE tbl_uketuke_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_uketuke
+			WHERE   HOSPNUM    =   :HOSPNUM
  		;
 	};
 };
@@ -97,7 +98,7 @@ path	del12 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_uketuke
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
                         AND   UKEID      <>   0
 		;
@@ -108,7 +109,7 @@ path	key5 	{
 		DECLARE tbl_uketuke_key5_csr CURSOR FOR
 		SELECT *
 		FROM tbl_uketuke
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   UKEYMD      =   :UKEYMD
 			AND   PTID        =   :PTID
 			AND   SRYKA       =   :SRYKA
@@ -122,7 +123,7 @@ path	key6 	{
 		DECLARE tbl_uketuke_key6_csr CURSOR FOR
 		SELECT *
 		FROM tbl_uketuke
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   UKEYMD      =   :UKEYMD
 			AND   PTID        =   :PTID
 			AND   SRYKA       =   :SRYKA

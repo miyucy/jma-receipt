@@ -26,7 +26,7 @@
       *¥­¡¼
            03 KOHPLUS-KEY.
       *°åÎÅµ¡´Ø£É£Ä
-               05 KOHPLUS-HOSPID        PIC  X(24).
+               05 KOHPLUS-HOSPNUM        PIC  S9(9) BINARY.
       *¸©ÈÖ¹æ
                05 KOHPLUS-PREFNUM       PIC  X(02).
       *»ÔÄ®Â¼ÈÖ¹æ
@@ -60,7 +60,7 @@
       *¹¹¿·ÍÑ¥­¡¼
            03 KOHPLUSUP-KEY.
       *°åÎÅµ¡´Ø£É£Ä
-               05 KOHPLUSUP-HOSPID      PIC  X(24).
+               05 KOHPLUSUP-HOSPNUM      PIC  S9(9) BINARY.
       *¸©ÈÖ¹æ
                05 KOHPLUSUP-PREFNUM     PIC  X(02).
       *»ÔÄ®Â¼ÈÖ¹æ

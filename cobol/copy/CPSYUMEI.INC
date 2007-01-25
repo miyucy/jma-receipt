@@ -25,7 +25,7 @@
       *01  SYUMEI-REC.
            03  SMEI-KEY.
       *°åÎÅµ¡´Ø£É£Ä
-               05  SMEI-HOSPID          PIC  X(24).
+               05  SMEI-HOSPNUM          PIC  S9(9) BINARY.
       *Æþ³°¶èÊ¬
                05  SMEI-NYUGAIKBN       PIC  X(01).
       *´µ¼Ô£É£Ä

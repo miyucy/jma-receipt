@@ -21,7 +21,7 @@
       *01  NYUIN-SRYACT-REC.
            03  NSRY-KEY.
       *°åÎÅµ¡´Ø£É£Ä
-               05  NSRY-HOSPID          PIC  X(24).
+               05  NSRY-HOSPNUM          PIC  S9(9) BINARY.
       *Æþ³°¶èÊ¬
                05  NSRY-NYUGAIKBN       PIC  X(01).
       *´µ¼Ô£É£Ä

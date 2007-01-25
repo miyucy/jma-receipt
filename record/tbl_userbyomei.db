@@ -1,5 +1,5 @@
 tbl_userbyomei {
-	HOSPID				char(24);
+	HOSPNUM				integer;
 	CDSYU				char(1);
 	BYOMEIINPUTCD		varchar(20);
 	BUNRUICD            char(3);
@@ -46,7 +46,7 @@ tbl_userbyomei {
 	UPHMS				char(6);
 };
 primary	{
-	HOSPID,CDSYU,BYOMEIINPUTCD;
+	HOSPNUM,CDSYU,BYOMEIINPUTCD;
 };
 
 path	key	{ 	
@@ -54,7 +54,7 @@ path	key	{
 		DECLARE tbl_userbyomei_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_userbyomei
-			WHERE HOSPID          =   :HOSPID
+			WHERE HOSPNUM          =   :HOSPNUM
 			AND   CDSYU           =   :CDSYU 
 			AND   BYOMEIINPUTCD   =   :BYOMEIINPUTCD 
 		;
@@ -67,7 +67,8 @@ path	key2	{
 		DECLARE tbl_userbyomei_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_userbyomei
-			WHERE   BYOMEI       LIKE :BYOMEI
+			WHERE HOSPNUM          =   :HOSPNUM
+			AND   BYOMEI       LIKE :BYOMEI
 		;
 	};
 };
@@ -77,7 +78,7 @@ path	key3	{
 		DECLARE tbl_userbyomei_key3_csr CURSOR FOR
 		SELECT *
 		FROM tbl_userbyomei
-			WHERE HOSPID          =   :HOSPID
+			WHERE HOSPNUM          =   :HOSPNUM
                     AND (      CDSYU      =  'A'                   
                           OR   CDSYU      =  'J'        )
                     ORDER  BY  DSPSEQ,BYOMEIINPUTCD       
@@ -90,7 +91,7 @@ path	key4	{
 		DECLARE tbl_userbyomei_key4_csr CURSOR FOR
 		SELECT *
 		FROM tbl_userbyomei
-			WHERE HOSPID          =   :HOSPID
+			WHERE HOSPNUM          =   :HOSPNUM
                     AND   CDSYU           =  'C'                   
                     ORDER  BY  BYOMEIINPUTCD       
 		;
@@ -102,7 +103,7 @@ path	key5	{
 		DECLARE tbl_userbyomei_key5_csr CURSOR FOR
 		SELECT *
 		FROM tbl_userbyomei
-			WHERE HOSPID          =   :HOSPID
+			WHERE HOSPNUM          =   :HOSPNUM
                     AND   BUNRUICD        =   :BUNRUICD                   
                     ORDER  BY  BYOMEIINPUTCD       
 		;
@@ -114,7 +115,7 @@ path	key6	{
 		DECLARE tbl_userbyomei_key6_csr CURSOR FOR
 		SELECT *
 		FROM tbl_userbyomei
-			WHERE HOSPID          =   :HOSPID
+			WHERE HOSPNUM          =   :HOSPNUM
 			AND   CDSYU           <>  'C'
 			AND   BYOMEIINPUTCD   =   :BYOMEIINPUTCD 
 		;
@@ -126,7 +127,7 @@ path	key7	{
 		DECLARE tbl_userbyomei_key7_csr CURSOR FOR
 		SELECT *
 		FROM tbl_userbyomei
-			WHERE HOSPID          =   :HOSPID
+			WHERE HOSPNUM          =   :HOSPNUM
 			AND   BUNRUICD        =   :BUNRUICD                   
 			AND   CDSYU           <>  'C'
 			ORDER  BY  DSPSEQ,BYOMEIINPUTCD       
@@ -139,7 +140,7 @@ path	key8	{
 		DECLARE tbl_userbyomei_key8_csr CURSOR FOR
 		SELECT *
 		FROM tbl_userbyomei
-			WHERE HOSPID          =   :HOSPID
+			WHERE HOSPNUM          =   :HOSPNUM
 			AND   BYOMEI       LIKE   :BYOMEI
 			AND   CDSYU           <>  'C'
                     ORDER  BY  BYOMEIINPUTCD       
@@ -151,7 +152,7 @@ path	key9	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_ptbyomei
-			WHERE HOSPID          =   :HOSPID
+			WHERE HOSPNUM          =   :HOSPNUM
                     AND   CDSYU           =  'C'                   
                     ORDER  BY  BYOMEI
 		;
@@ -162,7 +163,7 @@ path	del1	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_userbyomei
-			WHERE HOSPID          =   :HOSPID
+			WHERE HOSPNUM          =   :HOSPNUM
 			AND   BYOMEIINPUTCD   =   :BYOMEIINPUTCD
 			AND   CDSYU           =  'C'
 		;
@@ -173,7 +174,7 @@ path	del2	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_userbyomei
-			WHERE HOSPID          =   :HOSPID
+			WHERE HOSPNUM          =   :HOSPNUM
 			AND   BUNRUICD        =   :BUNRUICD                   
 		;
 	}; 
@@ -184,6 +185,7 @@ path	all	{
 		DECLARE tbl_userbyomei_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_userbyomei
+			WHERE HOSPNUM          =   :HOSPNUM
 		;
 	};
 };
@@ -193,7 +195,7 @@ path	key10	{
 		DECLARE tbl_userbyomei_key10_csr CURSOR FOR
 		SELECT *
 		FROM tbl_userbyomei
-			WHERE HOSPID          =   :HOSPID
+			WHERE HOSPNUM          =   :HOSPNUM
 			AND   BYOMEI       LIKE   :BYOMEI
 			AND   CDSYU           <>  'C'
 			AND   BUNRUICD     LIKE   :BUNRUICD
@@ -207,7 +209,7 @@ path	key11	{
 		DECLARE tbl_userbyomei_key11_csr CURSOR FOR
 		SELECT *
 		FROM tbl_userbyomei
-			WHERE HOSPID          =   :HOSPID
+			WHERE HOSPNUM          =   :HOSPNUM
 			AND   CDSYU           <>  'C'
 			AND   BYOMEIINPUTCD   LIKE :BYOMEIINPUTCD 
 			ORDER  BY  DSPSEQ,BYOMEIINPUTCD

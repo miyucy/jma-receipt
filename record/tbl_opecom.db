@@ -1,5 +1,5 @@
 tbl_opecom {
-	HOSPID  			char(24);
+	HOSPNUM  			integer;
 	PTID    			number(10);
 	SRYYMD  			char(8);
 	SRYCD   			char(9);
@@ -21,7 +21,7 @@ tbl_opecom {
 	UPHMS				char(6);
 };
 primary	{
-	HOSPID,PTID,SRYYMD,SRYCD,RENNUM;
+	HOSPNUM,PTID,SRYYMD,SRYCD,RENNUM;
 };
 
 path	key		{ 	
@@ -29,7 +29,7 @@ path	key		{
 		DECLARE tbl_opecom_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_opecom
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND     PTID      =   :PTID
 			AND     SRYYMD    =   :SRYYMD
 			AND     SRYCD     =   :SRYCD
@@ -43,7 +43,7 @@ path	key2		{
 		DECLARE tbl_opecom_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_opecom
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND     PTID      =   :PTID
 			ORDER   BY     SRYYMD DESC,SRYCD DESC,RENNUM DESC
 		;
@@ -55,7 +55,7 @@ path	key3		{
 		DECLARE tbl_opecom_key3_csr CURSOR FOR
 		SELECT *
 		FROM tbl_opecom
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND     PTID      =   :PTID
 			AND     SRYYMD    =   :SRYYMD
 			AND     SRYCD     =   :SRYCD
@@ -70,6 +70,7 @@ path	all	{
 		DECLARE tbl_opecom_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_opecom
+			WHERE   HOSPNUM    =   :HOSPNUM
  		;
 	};
 };
@@ -78,7 +79,7 @@ path	del1	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_opecom
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   SRYYMD      =   :SRYYMD
 			AND   SRYCD       =   :SRYCD
@@ -92,7 +93,7 @@ path	key4		{
 		DECLARE tbl_opecom_key4_csr CURSOR FOR
 		SELECT *
 		FROM tbl_opecom
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND     PTID      =   :PTID
 			AND     TEKSTYM   <=  :TEKSTYM
 			AND     TEKEDYM   >=  :TEKEDYM
@@ -108,7 +109,7 @@ path	key5		{
 		DECLARE tbl_opecom_key5_csr CURSOR FOR
 		SELECT *
 		FROM tbl_opecom
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND     PTID      =   :PTID
 			AND     TEKSTYM   <=  :TEKSTYM
 			AND     TEKEDYM   >=  :TEKEDYM
@@ -123,7 +124,7 @@ path	del2	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_opecom
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 		;
 	};

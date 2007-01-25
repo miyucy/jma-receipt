@@ -1,5 +1,5 @@
 tbl_ptcom {
-	HOSPID				char(24);
+	HOSPNUM				integer;
 	PTID				number(10);
 	ZAINUM  			number(8);
 	SRYCD  				char(9) ;
@@ -18,7 +18,7 @@ tbl_ptcom {
 
 
 primary	{
-	HOSPID,PTID,ZAINUM,SRYCD,RENNUM;
+	HOSPNUM,PTID,ZAINUM,SRYCD,RENNUM;
 };
 
 path	key 	{
@@ -26,7 +26,7 @@ path	key 	{
 		DECLARE tbl_ptcom_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptcom
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   ZAINUM      =   :ZAINUM
 			AND   SRYCD       =   :SRYCD
@@ -40,7 +40,7 @@ path	key2 	{
 		DECLARE tbl_ptcom_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptcom
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   ZAINUM      =   :ZAINUM
 			ORDER BY INPUTCOMENT
@@ -52,7 +52,7 @@ path	del11 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_ptcom
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   ZAINUM      =   :ZAINUM
 		;
@@ -63,6 +63,7 @@ path	all 	{
 		DECLARE tbl_ptcom_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptcom
+			WHERE   HOSPNUM    =   :HOSPNUM
  		;
 	};
 };
@@ -70,7 +71,7 @@ path	del12 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_ptcom
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 		;
 	};
@@ -81,7 +82,7 @@ path	key3	{
 		DECLARE tbl_ptcom_key3_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptcom
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   ZAINUM      =   :ZAINUM
 			AND   RENNUM      =   :RENNUM

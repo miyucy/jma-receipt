@@ -39,6 +39,7 @@
       *01  RECE07-REC.
       *£Ë£Å£Ù
            03  RECE07-KEY.
+               05  RECE07-HOSPNUM           PIC S9(9) BINARY.
       *Ä¢É¼£É£Ä
                05  RECE07-PRTID            PIC  X(04).
       *½èÍý¶èÊ¬¡Ê£±¡§°ì³ç¡¢£²¡§¸ÄÊÌ¡Ë

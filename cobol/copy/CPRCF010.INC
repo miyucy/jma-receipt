@@ -43,7 +43,7 @@
       *£Ë£Å£Ù
            03  RECE10-KEY.
       *°åÎÅµ¡´Ø£É£Ä
-               05  RECE10-HOSPID           PIC  X(24).
+               05  RECE10-HOSPNUM           PIC  S9(9) BINARY.
       *¿ÇÎÅÇ¯·î
                05  RECE10-SRYYM            PIC  9(06).
       *Æþ³°¶èÊ¬

@@ -1,4 +1,5 @@
 tbl_chk	{
+	HOSPNUM			integer;
 	CHKKBN			char(1);
 	SRYCD   		char(9);
 	YUKOSTYMD  		char(8);
@@ -33,7 +34,7 @@ tbl_chk	{
 };
 
 primary	{
-	CHKKBN,SRYCD,YUKOSTYMD,YUKOEDYMD,CDKBN,RENNUM;
+	HOSPNUM,CHKKBN,SRYCD,YUKOSTYMD,YUKOEDYMD,CDKBN,RENNUM;
 };
 
 path	key		{ 	
@@ -41,7 +42,8 @@ path	key		{
 		DECLARE tbl_chk_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_chk
-			WHERE CHKKBN      =   :CHKKBN
+			WHERE 	HOSPNUM	= :HOSPNUM
+			AND CHKKBN      =   :CHKKBN
 			AND   SRYCD       =   :SRYCD
 			AND   YUKOSTYMD  <=   :YUKOSTYMD
 			AND   YUKOEDYMD  >=   :YUKOEDYMD
@@ -56,7 +58,8 @@ path	key2	{
 		DECLARE tbl_chk_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_chk
-			WHERE   CHKKBN    =   :CHKKBN
+			WHERE 	HOSPNUM	= :HOSPNUM
+			AND   CHKKBN    =   :CHKKBN
 			AND   SRYCD       =   :SRYCD
 			AND   YUKOSTYMD  <=   :YUKOSTYMD
 			AND   YUKOEDYMD  >=   :YUKOEDYMD
@@ -71,7 +74,8 @@ path	key3	{
 		DECLARE tbl_chk_key3_csr CURSOR FOR
 		SELECT *
 		FROM tbl_chk
-			WHERE   CHKKBN    =   :CHKKBN
+			WHERE 	HOSPNUM	= :HOSPNUM
+			AND   CHKKBN    =   :CHKKBN
 			AND   SRYCD       =   :SRYCD
 			AND   YUKOSTYMD  <=   :YUKOSTYMD
 			AND   YUKOEDYMD  >=   :YUKOEDYMD
@@ -87,7 +91,8 @@ path	key4	{
 		DECLARE tbl_chk_key4_csr CURSOR FOR
 		SELECT *
 		FROM tbl_chk
-			WHERE   CHKKBN    =   :CHKKBN
+			WHERE 	HOSPNUM	= :HOSPNUM
+			AND   CHKKBN    =   :CHKKBN
 			AND   SRYCD       =   :SRYCD
 			AND   YUKOSTYMD  <=   :YUKOSTYMD
 			AND   YUKOEDYMD  >=   :YUKOEDYMD
@@ -102,7 +107,8 @@ path	key5	{
 		DECLARE tbl_chk_key5_csr CURSOR FOR
 		SELECT *
 		FROM tbl_chk
-			WHERE   CHKKBN    =   :CHKKBN
+			WHERE 	HOSPNUM	= :HOSPNUM
+			AND   CHKKBN    =   :CHKKBN
 			AND   CDKBN       =   :CDKBN
 			AND   YUKOSTYMD  <=   :YUKOSTYMD
 			AND   YUKOEDYMD  >=   :YUKOEDYMD
@@ -116,6 +122,7 @@ path	upd1	{
 	DBUPDATE		{
 		UPDATE	tbl_chk
 				SET
+	HOSPNUM		=	:HOSPNUM,
 	CHKKBN		=	:CHKKBN,
 	SRYCD		=	:SRYCD,
 	YUKOSTYMD	=	:YUKOSTYMD,
@@ -138,7 +145,8 @@ path	upd1	{
 	CREYMD		=	:CREYMD,
 	UPYMD		=	:UPYMD,
 	UPHMS		=	:UPHMS
-			WHERE	CHKKBN		=	:UPCHKKBN
+			WHERE 	HOSPNUM	= :HOSPNUM
+			AND	CHKKBN		=	:UPCHKKBN
 			AND		SRYCD		=	:UPSRYCD
 			AND		YUKOSTYMD	=	:UPYUKOSTYMD
 			AND		YUKOEDYMD	=	:UPYUKOEDYMD
@@ -152,7 +160,8 @@ path	del11	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_chk
-			WHERE   CHKKBN    =   :CHKKBN
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   CHKKBN    =   :CHKKBN
 			AND   SRYCD       =   :SRYCD
 			AND   YUKOSTYMD   =   :YUKOSTYMD
 			AND   YUKOEDYMD   =   :YUKOEDYMD
@@ -165,6 +174,7 @@ path	all	{
 		DECLARE tbl_chk_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_chk
+		WHERE 	HOSPNUM	= :HOSPNUM
  		;
 	};
 };
@@ -174,7 +184,8 @@ path	key6	{
 		DECLARE tbl_chk_key6_csr CURSOR FOR
 		SELECT *
 		FROM tbl_chk
-			WHERE   CHKKBN    =   :CHKKBN
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   CHKKBN    =   :CHKKBN
 			AND   SRYCD       =   :SRYCD
 			ORDER  BY  YUKOSTYMD,
                                    RENNUM
@@ -187,7 +198,8 @@ path	key7	{
 		DECLARE tbl_chk_key7_csr CURSOR FOR
 		SELECT *
 		FROM tbl_chk
-			WHERE   CHKKBN    =   :CHKKBN
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   CHKKBN    =   :CHKKBN
 			AND   SRYCD       >=  :SRYCD
 			AND   SRYCD       <=  :UPSRYCD
 			AND   CDKBN       =   :CDKBN
@@ -204,10 +216,12 @@ path	key8	{
 	DBSELECT	{
 		DECLARE tbl_chk_key8_csr CURSOR FOR
 		SELECT A.* from tbl_chk A left join tbl_tensu B
-		ON    A.SRYCD     =   B.SRYCD
+		ON    A.HOSPNUM   =   B.HOSPNUM
+		AND   A.SRYCD     =   B.SRYCD
 		AND   B.YUKOSTYMD  <=   :YUKOSTYMD
 		AND   B.YUKOEDYMD  >=   :YUKOEDYMD
-		WHERE A.CHKKBN    =   :CHKKBN
+		WHERE 	A.HOSPNUM	= :HOSPNUM
+		AND A.CHKKBN    =   :CHKKBN
 		AND   A.SRYCD     >=  :SRYCD
 		AND   A.SRYCD     <=  :UPSRYCD
 		AND   A.CDKBN     =   :CDKBN
@@ -222,10 +236,12 @@ path	key9	{
 	DBSELECT	{
 		DECLARE tbl_chk_key9_csr CURSOR FOR
 		SELECT A.* from tbl_chk A left join tbl_tensu B
-		ON    A.SRYCD     =   B.SRYCD
+		ON    A.HOSPNUM   =   B.HOSPNUM
+		AND   A.SRYCD     =   B.SRYCD
 		AND   B.YUKOSTYMD  <=   :YUKOSTYMD
 		AND   B.YUKOEDYMD  >=   :YUKOEDYMD
-		WHERE A.CHKKBN    =   :CHKKBN
+		WHERE 	A.HOSPNUM	= :HOSPNUM
+		AND A.CHKKBN    =   :CHKKBN
 		AND   A.SRYCD     >=  :SRYCD
 		AND   A.SRYCD     <=  :UPSRYCD
 		AND   A.CDKBN     =   :CDKBN
@@ -241,10 +257,12 @@ path	key10	{
 	DBSELECT	{
 		DECLARE tbl_chk_key10_csr CURSOR FOR
 		SELECT A.* from tbl_chk A left join tbl_tensu B
-		ON    A.SRYCD     =   B.SRYCD
+		ON    A.HOSPNUM   =   B.HOSPNUM
+		AND   A.SRYCD     =   B.SRYCD
 		AND   B.YUKOSTYMD  <=   :YUKOSTYMD
 		AND   B.YUKOEDYMD  >=   :YUKOEDYMD
-		WHERE A.CHKKBN    =   :CHKKBN
+		WHERE 	A.HOSPNUM	= :HOSPNUM
+		AND A.CHKKBN    =   :CHKKBN
 		AND   A.SRYCD     >=  :SRYCD
 		AND   A.SRYCD     <=  :UPSRYCD
 		AND   A.CDKBN     =   :CDKBN
@@ -259,10 +277,12 @@ path	key11	{
 	DBSELECT	{
 		DECLARE tbl_chk_key11_csr CURSOR FOR
 		SELECT A.* FROM TBL_CHK A,TBL_TENSU B
-		WHERE  A.CHKKBN     = :CHKKBN
+		WHERE 	A.HOSPNUM = :HOSPNUM
+		AND  A.CHKKBN     = :CHKKBN
 		AND A.YUKOSTYMD    <= :YUKOSTYMD
 		AND A.YUKOEDYMD    >= :YUKOEDYMD
 		AND A.RENNUM        = 1 
+		AND B.HOSPNUM       = A.HOSPNUM
 		AND B.SRYCD         = A.SRYCD
 		AND B.YUKOSTYMD    <= :YUKOSTYMD
 		AND B.YUKOEDYMD    >= :YUKOEDYMD
@@ -279,7 +299,8 @@ path	key12	{
 		DECLARE tbl_chk_key12_csr CURSOR FOR
 		SELECT *
 		FROM tbl_chk
-			WHERE   CHKKBN    =   :CHKKBN
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   CHKKBN    =   :CHKKBN
 			AND   SRYCD       =   :SRYCD
 			AND   RENNUM      =   1
 			ORDER  BY  YUKOSTYMD,
@@ -293,7 +314,8 @@ path	key13	{
 		DECLARE tbl_chk_key13_csr CURSOR FOR
 		SELECT *
 		FROM tbl_chk
-			WHERE CHKKBN    in ( '1','2')
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND CHKKBN    in ( '1','2')
 			ORDER  BY  CHKKBN,SRYCD,YUKOSTYMD,RENNUM
 		;
 	};
@@ -303,7 +325,8 @@ path	upd2	{
 	DBUPDATE		{
 		UPDATE	tbl_chk
 		SET	TEKCDNUM	=	:TEKCDNUM
-			WHERE	CHKKBN		=	:UPCHKKBN
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND	CHKKBN		=	:UPCHKKBN
 			AND		SRYCD		=	:UPSRYCD
 			AND		YUKOSTYMD	=	:UPYUKOSTYMD
 			AND		YUKOEDYMD	=	:UPYUKOEDYMD

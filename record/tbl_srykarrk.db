@@ -1,5 +1,5 @@
 tbl_srykarrk {
-	HOSPID				char(24);
+	HOSPNUM				integer;
 	PTID 				number(10);
 	SRYKA				char(2);
 	SYOSINYMD1			char(8);
@@ -13,7 +13,7 @@ tbl_srykarrk {
 };
 
 primary	{
-	HOSPID,PTID,SRYKA;
+	HOSPNUM,PTID,SRYKA;
 };
 
 path	key 	{
@@ -21,7 +21,7 @@ path	key 	{
 		DECLARE tbl_srykarrk_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_srykarrk
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   SRYKA       =   :SRYKA
 		;
@@ -33,7 +33,7 @@ path	key2 	{
 		DECLARE tbl_srykarrk_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_srykarrk
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			ORDER   BY        SRYKA
 		;
@@ -45,6 +45,7 @@ path	all 	{
 		DECLARE tbl_srykarrk_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_srykarrk
+			WHERE   HOSPNUM    =   :HOSPNUM
  		;
 	};
 };
@@ -53,7 +54,7 @@ path	del1 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_srykarrk
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 		;
 	};
@@ -65,7 +66,7 @@ path	key3 	{
 		DECLARE tbl_srykarrk_key3_csr CURSOR FOR
 		SELECT *
 		FROM tbl_srykarrk
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   LASTYMD     <>  :LASTYMD
 			ORDER   BY        LASTYMD DESC

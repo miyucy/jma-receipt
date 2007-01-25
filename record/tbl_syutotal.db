@@ -1,5 +1,5 @@
 tbl_syutotal {
-	HOSPID				char(24);
+	HOSPNUM				integer;
 	NYUGAIKBN			char(1);
 	PTID				number(10,0);
 	DENPNUM          		number(7,0);
@@ -185,7 +185,7 @@ tbl_syutotal {
 	UPHMS				char(6);
 };
 primary	{
-	HOSPID,NYUGAIKBN,PTID,DENPNUM;
+	HOSPNUM,NYUGAIKBN,PTID,DENPNUM;
 };
 
 path	key 	{
@@ -193,7 +193,7 @@ path	key 	{
 		DECLARE tbl_syutotal_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syutotal
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   DENPNUM     =   :DENPNUM
@@ -206,6 +206,7 @@ path	all 	{
 		DECLARE tbl_syutotal_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syutotal
+			WHERE   HOSPNUM    =   :HOSPNUM
  		;
 	};
 };
@@ -214,7 +215,7 @@ path	del1 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_syutotal
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 		;
 	};

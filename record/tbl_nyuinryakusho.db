@@ -1,4 +1,5 @@
 tbl_nyuinryakusho	{
+	HOSPNUM				integer;
 	SRYCD			char(9);
 	YUKOSTYMD		char(8);
 	YUKOEDYMD		char(8);
@@ -11,7 +12,7 @@ tbl_nyuinryakusho	{
 	UPHMS		char(6);
 };
 
-primary	{SRYCD,YUKOSTYMD,YUKOEDYMD;
+primary	{HOSPNUM,SRYCD,YUKOSTYMD,YUKOEDYMD;
 };
 
 path	key		{ 	
@@ -19,7 +20,8 @@ path	key		{
 		DECLARE tbl_nyuinryakusho_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_nyuinryakusho
-			WHERE
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND
 					SRYCD      =  :SRYCD
 			AND		YUKOSTYMD     <=  :YUKOSTYMD
 			AND		YUKOEDYMD     >=  :YUKOEDYMD
@@ -32,6 +34,7 @@ path	all	{
 		DECLARE tbl_nyuinryakusho_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_nyuinryakusho
+		WHERE 	HOSPNUM	= :HOSPNUM
       		;
 	};
 };

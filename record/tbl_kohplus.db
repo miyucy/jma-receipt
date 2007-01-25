@@ -1,5 +1,5 @@
 tbl_kohplus	{
-HOSPID		char(24);
+HOSPNUM		integer;
 PREFNUM		char(2);
 CITYNUM		char(3);
 KOHNUM		char(3);
@@ -16,21 +16,21 @@ CREYMD		char(8);
 UPYMD		char(8);
 UPHMS		char(6);
 #----以下更新用項目
-UPHOSPID	char(24),virtual;
+UPHOSPNUM	integer,virtual;
 UPPREFNUM	char(2),virtual;
 UPCITYNUM	char(3),virtual;
 UPKOHNUM	char(3),virtual;
 UPPTKBN		char(1),virtual;
 UPYUKOSTYMD	char(8),virtual;
 };
-primary{HOSPID,PREFNUM,CITYNUM,KOHNUM,PTKBN,YUKOSTYMD;};
+primary{HOSPNUM,PREFNUM,CITYNUM,KOHNUM,PTKBN,YUKOSTYMD;};
 
 path	key		{ 	
 	DBSELECT	{
 		DECLARE tbl_kohplus_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_kohplus
-                WHERE   HOSPID       =   :HOSPID
+                WHERE   HOSPNUM       =   :HOSPNUM
                   AND   PREFNUM      =   :PREFNUM
                   AND   CITYNUM      =   :CITYNUM
                   AND   KOHNUM       =   :KOHNUM
@@ -45,7 +45,7 @@ path	key2		{
 		DECLARE tbl_kohplus_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_kohplus
-                WHERE   HOSPID       =   :HOSPID
+                WHERE   HOSPNUM       =   :HOSPNUM
                   AND   PREFNUM      =   :PREFNUM
                   AND   CITYNUM      =   :CITYNUM
                   AND   KOHNUM       =   :KOHNUM
@@ -61,7 +61,7 @@ path	key3		{
 		DECLARE tbl_kohplus_key3_csr CURSOR FOR
 		SELECT *
 		FROM tbl_kohplus
-                WHERE   HOSPID       =   :HOSPID
+                WHERE   HOSPNUM       =   :HOSPNUM
                   AND   PREFNUM      =   :PREFNUM
                   AND   CITYNUM      =   :CITYNUM
                   AND   KOHNUM       =   :KOHNUM
@@ -75,7 +75,7 @@ path	del1 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_kohplus
-                WHERE   HOSPID       =   :HOSPID
+                WHERE   HOSPNUM       =   :HOSPNUM
                   AND   PREFNUM      =   :PREFNUM
                   AND   CITYNUM      =   :CITYNUM
                   AND   KOHNUM       =   :KOHNUM
@@ -89,7 +89,7 @@ path	del1 	{
 path    upd1	{
 	DBUPDATE	{
 		UPDATE  tbl_kohplus 
-		SET HOSPID		= :HOSPID,
+		SET HOSPNUM		= :HOSPNUM,
 			PREFNUM 	= :PREFNUM,
 			CITYNUM 	= :CITYNUM,
 			KOHNUM 		= :KOHNUM,
@@ -105,7 +105,7 @@ path    upd1	{
 			CREYMD		= :CREYMD,
 			UPYMD		= :UPYMD,
 			UPHMS		= :UPHMS
-		WHERE	    HOSPID	= :UPHOSPID
+		WHERE	    HOSPNUM	= :UPHOSPNUM
 			AND PREFNUM	= :UPPREFNUM
 			AND CITYNUM	= :UPCITYNUM
 			AND KOHNUM	= :UPKOHNUM
@@ -120,7 +120,8 @@ path	all	{
 		DECLARE tbl_kohplus_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_kohplus
-		ORDER BY HOSPID,PREFNUM,CITYNUM,KOHNUM,
+                WHERE   HOSPNUM       =   :HOSPNUM
+		ORDER BY HOSPNUM,PREFNUM,CITYNUM,KOHNUM,
 		         PTKBN ,YUKOSTYMD
       		;
 	};

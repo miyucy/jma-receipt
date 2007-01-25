@@ -31,7 +31,7 @@
       *¼õ¿ÇÍúÎò
            03  JYURRK-KEY.
       *  °åÎÅµ¡´Ø£É£Ä
-               05  JYURRK-HOSPID           PIC  X(24).
+               05  JYURRK-HOSPNUM           PIC  S9(9) BINARY.
       *  ´µ¼Ô£É£Ä
                05  JYURRK-PTID             PIC  9(10).
       *  Æþ³°¶èÊ¬
@@ -140,7 +140,7 @@
            03  JYURRK-UPHMS                PIC  X(06).
       *¡¡¡¡¼ç¥­¡¼¹¹¿·ÍÑ¹àÌÜ
            03  JYURRK-UPKEY.
-               05  JYURRK-UPHOSPID           PIC  X(24).
+               05  JYURRK-UPHOSPNUM           PIC  S9(9) BINARY.
                05  JYURRK-UPPTID             PIC  9(10).
                05  JYURRK-UNYUGAIKBN         PIC  X(01).
                05  JYURRK-UPSRYKA            PIC  X(02).

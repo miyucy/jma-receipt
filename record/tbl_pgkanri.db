@@ -1,4 +1,5 @@
 tbl_pgkanri {
+	HOSPNUM				integer;
 	DEBIANVERSION                   varchar(24);
 	SYSTEMVERSION                   varchar(10);
 	PGNO                            char(3);
@@ -16,7 +17,7 @@ tbl_pgkanri {
 };
 
 primary	{
-	DEBIANVERSION,SYSTEMVERSION,PGNO;
+	HOSPNUM,DEBIANVERSION,SYSTEMVERSION,PGNO;
 };
 
 path	key		{ 	
@@ -24,7 +25,8 @@ path	key		{
 		DECLARE tbl_pgkanri_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_pgkanri
-			WHERE   DEBIANVERSION  =  :DEBIANVERSION
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   DEBIANVERSION  =  :DEBIANVERSION
 			AND     SYSTEMVERSION  =  :SYSTEMVERSION
 			AND     PGNO           =  :PGNO
 			ORDER	BY  PGNO
@@ -37,7 +39,8 @@ path	key2		{
 		DECLARE tbl_pgkanri_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_pgkanri
-			WHERE   UPDATEFLG  =  'F'
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   UPDATEFLG  =  'F'
 			ORDER	BY  PGNO
                 ;
 	};
@@ -48,6 +51,7 @@ path	all		{
 		DECLARE tbl_pgkanri_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_pgkanri
+		WHERE 	HOSPNUM	= :HOSPNUM
 			ORDER	BY  PGNO
 		;
 	};

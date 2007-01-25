@@ -1,5 +1,5 @@
 tbl_ptinf_prv {
-	HOSPID				char(24);
+	HOSPNUM				integer;
 	PTID				number(10,0);
 	KANANAME			varchar(100);
 	NAME 				varchar(100);
@@ -70,7 +70,7 @@ tbl_ptinf_prv {
 };
 
 primary	{
-	HOSPID,PTID;
+	HOSPNUM,PTID;
 };
 
 path	key		{ 	
@@ -78,7 +78,7 @@ path	key		{
 		DECLARE tbl_ptinf_prv_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptinf_prv
-			WHERE   HOSPID      =   :HOSPID  AND
+			WHERE   HOSPNUM      =   :HOSPNUM  AND
 					PTID  		=   :PTID
 		;
 	};
@@ -89,7 +89,7 @@ path	key2	{
 		DECLARE tbl_ptinf_prv_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptinf_prv
-			WHERE  (HOSPID    = :HOSPID) AND
+			WHERE  (HOSPNUM    = :HOSPNUM) AND
 					NAME   LIKE :NAME
 			ORDER BY NAME
 		;
@@ -100,7 +100,7 @@ path	key3	{
 		DECLARE tbl_ptinf_prv_key3_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptinf_prv
-			WHERE  (HOSPID    = :HOSPID) AND
+			WHERE  (HOSPNUM    = :HOSPNUM) AND
 			(KANANAME  LIKE :KANANAME)
 			ORDER BY   KANANAME
 		;
@@ -111,7 +111,7 @@ path	key4	{
 		DECLARE tbl_ptinf_prv_key4_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptinf_prv
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 		;
 	};
 };
@@ -120,7 +120,7 @@ path	key5	{
 		DECLARE tbl_ptinf_prv_key5_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptinf_prv
-			WHERE ( HOSPID    =   :HOSPID )  AND
+			WHERE ( HOSPNUM    =   :HOSPNUM )  AND
 			((NAME   LIKE :NAME  ) OR
 			(KANANAME  LIKE :KANANAME))
 			ORDER BY   KANANAME
@@ -132,6 +132,7 @@ path	all	{
 		DECLARE tbl_ptinf_prv_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptinf_prv
+			WHERE   HOSPNUM    =   :HOSPNUM
  		;
 	};
 };
@@ -140,7 +141,7 @@ path	key6	{
 		DECLARE tbl_ptinf_prv_key6_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptinf_prv
-			WHERE ( HOSPID    =   :HOSPID )  AND
+			WHERE ( HOSPNUM    =   :HOSPNUM )  AND
                               ( SEX       =   :SEX    )  AND
                               ( BIRTHDAY  LIKE  :BIRTHDAY )  AND
 			((NAME   LIKE :NAME  ) OR
@@ -155,7 +156,7 @@ path	key7	{
 		DECLARE tbl_ptinf_prv_key7_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptinf_prv
-			WHERE ( HOSPID    =   :HOSPID )  AND
+			WHERE ( HOSPNUM    =   :HOSPNUM )  AND
                               ( SEX       =   :SEX    )  AND
                               ( BIRTHDAY  LIKE  :BIRTHDAY )
 			ORDER BY   BIRTHDAY,
@@ -168,7 +169,7 @@ path	key8	{
 		DECLARE tbl_ptinf_prv_key8_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptinf_prv
-			WHERE ( HOSPID    =   :HOSPID )  AND
+			WHERE ( HOSPNUM    =   :HOSPNUM )  AND
                               ( SEX       =   :SEX    )
 			ORDER BY  KANANAME
 		;
@@ -179,7 +180,7 @@ path	key9	{
 		DECLARE tbl_ptinf_prv_key9_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptinf_prv
-			WHERE ( HOSPID    =   :HOSPID )  AND
+			WHERE ( HOSPNUM    =   :HOSPNUM )  AND
                               ( BIRTHDAY  LIKE  :BIRTHDAY )
 			ORDER BY   BIRTHDAY,
                                    KANANAME
@@ -191,12 +192,12 @@ path	key10	{
 		DECLARE tbl_ptinf_prv_key10_csr CURSOR FOR
 		SELECT distinct a.*,b.ptnum
 		FROM tbl_jyurrk c,tbl_ptinf_prv a,tbl_ptnum b
-			WHERE     c.HOSPID     =   :HOSPID
+			WHERE     c.HOSPNUM     =   :HOSPNUM
                AND    c.SRYYMD    >=  :UPYMD
                AND    c.SRYYMD    <=  :CREYMD
-               AND    a.HOSPID    =   :HOSPID
+               AND    a.HOSPNUM    =   :HOSPNUM
                AND    a.PTID      =   c.PTID
-               AND    b.HOSPID    =   :HOSPID
+               AND    b.HOSPNUM    =   :HOSPNUM
                AND    b.PTID      =   c.PTID
 			ORDER BY  b.PTNUM
 		;
@@ -207,13 +208,13 @@ path	key11	{
 		DECLARE tbl_ptinf_prv_key11_csr CURSOR FOR
 		SELECT a.ptid from tbl_ptinf_prv a, 
 		(SELECT distinct ptid from tbl_jyurrk 
-		WHERE hospid	=	:HOSPID 
+		WHERE HOSPNUM	=	:HOSPNUM 
 		AND (sryymd 	<=	:ED_SRYYMD 
 		AND sryymd 	>=	:ST_SRYYMD) 
 		AND nyugaikbn	=	:NYUGAIKBN 
 		AND hknkbn	=	:HKNKBN 
 		group by ptid) b 
-		WHERE a.hospid	=	:HOSPID 
+		WHERE a.HOSPNUM	=	:HOSPNUM 
 		AND a.ptid	=	b.ptid 
 		AND a.tstptnumkbn	<>	'1'
 		;
@@ -224,13 +225,13 @@ path	key12	{
 		DECLARE tbl_ptinf_prv_key12_csr CURSOR FOR
 		SELECT a.* from tbl_ptinf_prv a, 
 		(SELECT distinct ptid from tbl_jyurrk 
-		WHERE hospid	=	:HOSPID 
+		WHERE HOSPNUM	=	:HOSPNUM 
 		AND (sryymd 	<=	:ED_SRYYMD 
 		AND sryymd 	>=	:ST_SRYYMD) 
 		AND nyugaikbn	=	:NYUGAIKBN 
 		AND hknkbn	=	:HKNKBN 
 		group by ptid) b 
-		WHERE a.hospid	=	:HOSPID 
+		WHERE a.HOSPNUM	=	:HOSPNUM 
 		AND a.ptid	=	b.ptid 
 		AND a.tstptnumkbn	<>	'1'
 		;
@@ -241,7 +242,7 @@ path	key13	{
 		DECLARE tbl_ptinf_prv_key13_csr CURSOR FOR
 		SELECT a.ptid from tbl_ptinf_prv a, 
 		(SELECT distinct ptid from tbl_jyurrk 
-		WHERE hospid	=	:HOSPID 
+		WHERE HOSPNUM	=	:HOSPNUM 
 		AND sryymd	LIKE	:SRYYMD
 		AND (upymd 	<=	:ED_SRYYMD 
 		AND upymd 	>=	:ST_SRYYMD) 
@@ -250,14 +251,14 @@ path	key13	{
 		group by ptid 
 		UNION
 		SELECT distinct ptid from tbl_receupd
-		WHERE hospid	=	:HOSPID 
+		WHERE HOSPNUM	=	:HOSPNUM 
 		AND sryym 	=	:SRYYM 
 		AND nyugaikbn	=	:NYUGAIKBN 
                 AND (upymd      <=      :ED_SRYYMD
                 AND upymd       >=      :ST_SRYYMD)
 		AND hknkbn	=	:HKNKBN 
 		group by ptid) b
-		WHERE a.hospid	=	:HOSPID 
+		WHERE a.HOSPNUM	=	:HOSPNUM 
 		AND a.ptid	=	b.ptid 
 		AND a.tstptnumkbn	<>	'1'
 		;
@@ -268,7 +269,7 @@ path	key14	{
 		DECLARE tbl_ptinf_prv_key14_csr CURSOR FOR
 		SELECT a.* from tbl_ptinf_prv a, 
 		(SELECT distinct ptid from tbl_jyurrk 
-		WHERE hospid	=	:HOSPID 
+		WHERE HOSPNUM	=	:HOSPNUM 
 		AND sryymd	LIKE	:SRYYMD
 		AND (upymd 	<=	:ED_SRYYMD 
 		AND upymd 	>=	:ST_SRYYMD) 
@@ -277,14 +278,14 @@ path	key14	{
 		group by ptid 
 		UNION
 		SELECT distinct ptid from tbl_receupd
-		WHERE hospid	=	:HOSPID 
+		WHERE HOSPNUM	=	:HOSPNUM 
 		AND sryym 	=	:SRYYM 
 		AND nyugaikbn	=	:NYUGAIKBN 
                 AND (upymd      <=      :ED_SRYYMD
                 AND upymd       >=      :ST_SRYYMD)
 		AND hknkbn	=	:HKNKBN 
 		group by ptid) b
-		WHERE a.hospid	=	:HOSPID 
+		WHERE a.HOSPNUM	=	:HOSPNUM 
 		AND a.ptid	=	b.ptid 
 		AND a.tstptnumkbn	<>	'1'
 		;
@@ -294,7 +295,7 @@ path	delprv 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_ptinf_prv
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 		;
 	};

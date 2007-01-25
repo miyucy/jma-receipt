@@ -24,6 +24,7 @@
       ************************************************************
       *01  TENSUPLUS2-REC.
            03  TNSP2-KEY.
+               05  TNSP2-HOSPNUM            PIC S9(9) BINARY.
                05  TNSP2-SRYCD             PIC  X(09).
       *    長期投与日数
            03  TNSP2-CHOKI-NISSU           PIC  9(03).

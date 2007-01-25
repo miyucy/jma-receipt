@@ -25,6 +25,7 @@
       ************************************************************
       *01  TENSUPLSU-REC.
            03  TNSP-KEY.
+               05  TNSP-HOSPNUM          PIC S9(9) BINARY.
                05  TNSP-SRYCD           PIC  X(09).
                05  TNSP-YUKOSTYMD       PIC  X(08).
                05  TNSP-YUKOEDYMD       PIC  X(08).

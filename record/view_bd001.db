@@ -1,5 +1,5 @@
 view_bd001 {
-	HOSPID			char(24);
+	HOSPNUM			integer;
 	PTID			number(10,0);
 	PTNUM		    char(20);
 	NAME 			varchar(100);
@@ -12,7 +12,7 @@ view_bd001 {
 };
 
 primary	{
-	HOSPID,PTID;
+	HOSPNUM,PTID;
 };
 
 path	key 	{
@@ -20,7 +20,7 @@ path	key 	{
 		DECLARE view_bd001_key_csr CURSOR FOR
 		SELECT *
 		FROM view_bd001
-			WHERE   HOSPID      =   :HOSPID
+			WHERE   HOSPNUM      =   :HOSPNUM
                     AND     DENPPRTYMD  =   :DENPPRTYMD
                     ORDER BY  SRYKA,PTNUM
 		;
@@ -32,6 +32,7 @@ path	all 	{
 		DECLARE view_bd001_all_csr CURSOR FOR
 		SELECT *
 		FROM view_bd001
+			WHERE   HOSPNUM      =   :HOSPNUM
  		;
 	};
 };

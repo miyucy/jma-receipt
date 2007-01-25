@@ -1,4 +1,5 @@
 tbl_toukeimemo {
+	HOSPNUM				integer;
 	PGID		            char(20);
 	KANRICD		            char(4);
 	KBNCD                   char(8);
@@ -21,7 +22,7 @@ tbl_toukeimemo {
 };
 
 primary	{
-	PGID,KANRICD,KBNCD,STYUKYMD,EDYUKYMD ;
+	HOSPNUM,PGID,KANRICD,KBNCD,STYUKYMD,EDYUKYMD ;
 };
 
 path	key		{ 	
@@ -29,7 +30,8 @@ path	key		{
 		DECLARE tbl_toukeimemo_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_toukeimemo
-			WHERE   PGID      =  :PGID
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   PGID      =  :PGID
 			AND     KANRICD   =  :KANRICD
 			AND     KBNCD     =  :KBNCD
 			AND     STYUKYMD  =  :STYUKYMD
@@ -43,7 +45,8 @@ path	key2		{
 		DECLARE tbl_toukeimemo_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_toukeimemo
-			WHERE   PGID      =  :PGID
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   PGID      =  :PGID
 			AND     KANRICD   =  :KANRICD
 			AND     KBNCD     =  :KBNCD
 			AND     STYUKYMD <=  :STYUKYMD
@@ -55,7 +58,8 @@ path	key2		{
 path	del1		{ 	
 	DBDELETE	{
 		DELETE	FROM tbl_toukeimemo
-			WHERE   KANRICD   =  :KANRICD
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   KANRICD   =  :KANRICD
 			AND     KBNCD     =  :KBNCD
 			AND     STYUKYMD  =  :STYUKYMD
 			AND     EDYUKYMD  =  :EDYUKYMD
@@ -68,6 +72,7 @@ path	all		{
 		DECLARE tbl_toukeimemo_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_toukeimemo
+		WHERE 	HOSPNUM	= :HOSPNUM
 		;
 	};
 };

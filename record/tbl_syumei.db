@@ -1,5 +1,5 @@
 tbl_syumei {
-	HOSPID				char(24);
+	HOSPNUM				integer;
 	NYUGAIKBN			char(1);
 	PTID				number(10,0);
 	DENPNUM          		number(7,0);
@@ -35,7 +35,7 @@ tbl_syumei {
 	EDCREYMD			char(8),virtual;
 };
 primary	{
-	HOSPID,NYUGAIKBN,PTID,DENPNUM,DENPEDANUM;
+	HOSPNUM,NYUGAIKBN,PTID,DENPNUM,DENPEDANUM;
 };
 
 path	key 	{
@@ -43,7 +43,7 @@ path	key 	{
 		DECLARE tbl_syumei_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syumei
-			WHERE   HOSPID        =  :HOSPID
+			WHERE   HOSPNUM        =  :HOSPNUM
 			AND   NYUGAIKBN       =  :NYUGAIKBN
 			AND   PTID            =  :PTID
 			AND   DENPNUM         =  :DENPNUM
@@ -57,7 +57,7 @@ path	key2 	{
 		DECLARE tbl_syumei_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syumei
-			WHERE   HOSPID        =  :HOSPID
+			WHERE   HOSPNUM        =  :HOSPNUM
 			AND   NYUGAIKBN       =  :NYUGAIKBN
 			AND   PTID            =  :PTID
 			AND   DENPNUM         =  :DENPNUM
@@ -70,7 +70,7 @@ path	key3 	{
 		DECLARE tbl_syumei_key3_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syumei
-			WHERE   HOSPID        =  :HOSPID
+			WHERE   HOSPNUM        =  :HOSPNUM
 			AND   NYUGAIKBN       =  :NYUGAIKBN
 			AND   PTID            =  :PTID
 		;
@@ -82,6 +82,7 @@ path	all 	{
 		DECLARE tbl_syumei_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syumei
+			WHERE   HOSPNUM    =   :HOSPNUM
 		;
 	};
 };
@@ -90,7 +91,7 @@ path	del1 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_syumei
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 		;
 	};
@@ -100,7 +101,7 @@ path	del2 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_syumei
-			WHERE   HOSPID        =  :HOSPID
+			WHERE   HOSPNUM        =  :HOSPNUM
 			AND   NYUGAIKBN       =  :NYUGAIKBN
 			AND   PTID            =  :PTID
 			AND   DENPNUM         =  :DENPNUM
@@ -113,12 +114,12 @@ path	key4 	{
 		DECLARE tbl_syumei_key4_csr CURSOR FOR
 		SELECT a.*
 		FROM tbl_syumei a,tbl_ptnum b,tbl_ptinf c
-			WHERE   a.HOSPID        =  :HOSPID
+			WHERE   a.HOSPNUM        =  :HOSPNUM
 			AND     a.NYUGAIKBN     =  :NYUGAIKBN
 			AND     a.NYUHEN_YMD    =  :NYUHEN_YMD
-			AND     a.HOSPID        =  b.HOSPID
+			AND     a.HOSPNUM        =  b.HOSPNUM
 			AND     a.PTID          =  b.PTID
-			AND     a.HOSPID        =  c.HOSPID
+			AND     a.HOSPNUM        =  c.HOSPNUM
 			AND     a.PTID          =  c.PTID
 			AND     c.TSTPTNUMKBN  <> '1'
 			ORDER   BY a.SRYKA,b.PTNUM,a.DENPNUM,a.DENPEDANUM
@@ -131,7 +132,7 @@ path	key5	{
 		DECLARE tbl_syumei_key5_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syumei
-			WHERE   HOSPID        =  :HOSPID
+			WHERE   HOSPNUM        =  :HOSPNUM
                         AND     NYUGAIKBN     =  :NYUGAIKBN
 			AND   DENPNUM         =  :DENPNUM
 			AND   DENPEDANUM      <  :DENPEDANUM
@@ -145,7 +146,7 @@ path	key6 	{
 		DECLARE tbl_syumei_key6_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syumei
-			WHERE   HOSPID        =  :HOSPID
+			WHERE   HOSPNUM        =  :HOSPNUM
 			AND   NYUGAIKBN       =  :NYUGAIKBN
 			AND   PTID            =  :PTID
 			AND   DENPNUM         =  :DENPNUM
@@ -160,7 +161,7 @@ path	st_key1 	{
 		DECLARE tbl_syumei_st_key1_csr CURSOR FOR
         SELECT *
 		FROM tbl_syumei
-        		WHERE   HOSPID        =  :HOSPID
+        		WHERE   HOSPNUM        =  :HOSPNUM
                 AND     NYUHEN_YMD    =  :NYUHEN_YMD
         ORDER BY	NYUGAIKBN,SRYKA,DENPNUM,DENPEDANUM
 		;
@@ -173,7 +174,7 @@ path	st_key2 	{
 		DECLARE tbl_syumei_st_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syumei
-			WHERE   HOSPID        =  :HOSPID
+			WHERE   HOSPNUM        =  :HOSPNUM
             AND     NYUHEN_YMD    =  :NYUHEN_YMD
             ORDER BY	NYUGAIKBN,SRYKA,PTID,DENPNUM,DENPEDANUM
 		;
@@ -186,7 +187,7 @@ path	key7 	{
 		DECLARE tbl_syumei_key7_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syumei
-			WHERE   HOSPID        =  :HOSPID
+			WHERE   HOSPNUM        =  :HOSPNUM
 			AND   NYUGAIKBN       =  :NYUGAIKBN
 			AND   PTID            =  :PTID
 			AND   DENPNUM         =  :DENPNUM
@@ -201,10 +202,10 @@ path	st_key3 	{
 	DBSELECT	{
 		DECLARE tbl_syumei_st_key3_csr CURSOR FOR
 		SELECT a.* FROM tbl_syumei a,tbl_ptinf b
-		WHERE    a.HOSPID  =   :HOSPID 
+		WHERE    a.HOSPNUM  =   :HOSPNUM 
 		AND   (a.NYUHEN_YMD    >= :NYUHEN_YMD
 		AND    a.NYUHEN_YMD    <= :UPNYUHEN_YMD)
-		AND   a.HOSPID  =  b.HOSPID
+		AND   a.HOSPNUM  =  b.HOSPNUM
 		AND   a.PTID    =  b.PTID
 		AND   b.TSTPTNUMKBN <> '1'
 		;
@@ -216,7 +217,7 @@ path	key8 	{
 		DECLARE tbl_syumei_key8_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syumei
-			WHERE   HOSPID        =  :HOSPID
+			WHERE   HOSPNUM        =  :HOSPNUM
 			AND   NYUGAIKBN       =  :NYUGAIKBN
 			AND   DAILYKEY        >= :STDAILYKEY
 			AND   DAILYKEY        <= :EDDAILYKEY
@@ -230,7 +231,7 @@ path	key9 	{
 		DECLARE tbl_syumei_key9_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syumei
-			WHERE   HOSPID        =  :HOSPID
+			WHERE   HOSPNUM        =  :HOSPNUM
 			AND   NYUGAIKBN       =  :NYUGAIKBN
 			AND   CREYMD         >=  :STCREYMD
 			AND   CREYMD         <=  :EDCREYMD
@@ -244,13 +245,13 @@ path	key10 	{
 		DECLARE tbl_syumei_key10_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syumei a,tbl_ptnum b,tbl_ptinf c
-			WHERE   a.HOSPID        =  :HOSPID
+			WHERE   a.HOSPNUM        =  :HOSPNUM
 			AND     a.NYUGAIKBN     =  :NYUGAIKBN
 			AND     a.DAILYKEY     >= :STDAILYKEY
 			AND     a.DAILYKEY     <= :EDDAILYKEY
-			AND     a.HOSPID        =  b.HOSPID
+			AND     a.HOSPNUM        =  b.HOSPNUM
 			AND     a.PTID          =  b.PTID
-			AND     a.HOSPID        =  c.HOSPID
+			AND     a.HOSPNUM        =  c.HOSPNUM
 			AND     a.PTID          =  c.PTID
 			AND     c.TSTPTNUMKBN  <> '1'
 			ORDER   BY a.SRYKA,b.PTNUM,a.DENPNUM,a.DENPEDANUM
@@ -264,7 +265,7 @@ path	key11	{
 		DECLARE tbl_syumei_key11_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syumei
-			WHERE   HOSPID        =  :HOSPID
+			WHERE   HOSPNUM        =  :HOSPNUM
 			AND     NYUGAIKBN     =  :NYUGAIKBN
 			AND     PTID          =  :PTID
 			AND   DENPNUM         =  :DENPNUM
@@ -278,10 +279,10 @@ path	st_key4 	{
 	DBSELECT	{
 		DECLARE tbl_syumei_st_key4_csr CURSOR FOR
 		SELECT a.* FROM tbl_syumei a,tbl_ptinf b
-		WHERE    a.HOSPID  =   :HOSPID 
+		WHERE    a.HOSPNUM  =   :HOSPNUM 
 		AND   (a.NYUHEN_YMD    >= :NYUHEN_YMD
 		AND    a.NYUHEN_YMD    <= :UPNYUHEN_YMD)
-		AND   a.HOSPID  =  b.HOSPID
+		AND   a.HOSPNUM  =  b.HOSPNUM
 		AND   a.PTID    =  b.PTID
 		AND   b.TSTPTNUMKBN <> '1'
 		ORDER BY	a.PTID,a.DENPNUM,a.DENPEDANUM
@@ -295,13 +296,13 @@ path	key13 	{
 		DECLARE tbl_syumei_key13_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syumei a,tbl_ptnum b,tbl_ptinf c
-			WHERE   a.HOSPID        =  :HOSPID
+			WHERE   a.HOSPNUM        =  :HOSPNUM
 			AND     a.NYUGAIKBN     =  :NYUGAIKBN
 			AND     a.DAILYKEY     >= :STDAILYKEY
 			AND     a.DAILYKEY     <= :EDDAILYKEY
-			AND     a.HOSPID        =  b.HOSPID
+			AND     a.HOSPNUM        =  b.HOSPNUM
 			AND     a.PTID          =  b.PTID
-			AND     a.HOSPID        =  c.HOSPID
+			AND     a.HOSPNUM        =  c.HOSPNUM
 			AND     a.PTID          =  c.PTID
 			AND     c.TSTPTNUMKBN  <> '1'
 			ORDER   BY a.DENPNUM,a.DENPEDANUM
@@ -315,7 +316,7 @@ path	key14 	{
 		SELECT  MAX(DENPEDANUM) AS DENPEDANUM,
 		        MAX(NYUKINRENNUM) AS NYUKINRENNUM
 		FROM tbl_syumei
-			WHERE   HOSPID        =  :HOSPID
+			WHERE   HOSPNUM        =  :HOSPNUM
 			AND   NYUGAIKBN       =  :NYUGAIKBN
 			AND   PTID            =  :PTID
 			AND   DENPNUM         =  :DENPNUM

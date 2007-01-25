@@ -1,5 +1,5 @@
 tbl_pttainfuka	{
-	HOSPID			char(24);
+	HOSPNUM			integer;
 	PTID			number(10,0);
 	RRKNUM			number(3,0);
 	BYOMEI1			varchar(80);
@@ -16,7 +16,7 @@ tbl_pttainfuka	{
 };
 
 primary	{
-	HOSPID,PTID,RRKNUM;
+	HOSPNUM,PTID,RRKNUM;
 };
 
 path	key		{ 	
@@ -24,7 +24,7 @@ path	key		{
 		DECLARE tbl_pttainfuka_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_pttainfuka
-			WHERE   HOSPID      =   :HOSPID
+			WHERE   HOSPNUM      =   :HOSPNUM
 			AND		  PTID        =   :PTID
 			AND		  RRKNUM      =   :RRKNUM
 		;
@@ -36,6 +36,7 @@ path	all	{
 		DECLARE tbl_pttainfuka_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_pttainfuka
+			WHERE   HOSPNUM      =   :HOSPNUM
       		;
 	};
 };
@@ -44,7 +45,7 @@ path	del1	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_pttainfuka
-			WHERE   HOSPID        =   :HOSPID 
+			WHERE   HOSPNUM        =   :HOSPNUM 
 			AND		PTID          =   :PTID
 			AND		RRKNUM        =   :RRKNUM
 		;
@@ -55,7 +56,7 @@ path	del2	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_pttainfuka
-			WHERE   HOSPID        =   :HOSPID 
+			WHERE   HOSPNUM        =   :HOSPNUM 
 			AND		PTID          =   :PTID
 		;
 	};

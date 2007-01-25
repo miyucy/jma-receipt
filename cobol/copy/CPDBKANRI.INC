@@ -25,6 +25,7 @@
       *01  DBKANRI-REC.
       *キー
            03  DBKANRI-KEY.
+               05  DBKANRI-HOSPNUM        PIC S9(9) BINARY.
       *管理コード
                05  DBKANRI-KANRICD         PIC  X(08).
       *バージョン

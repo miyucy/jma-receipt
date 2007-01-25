@@ -25,7 +25,7 @@
        01  YAKUJYO-REC.
            03  YAKUJYO-KEY.
       *医療機関ＩＤ
-               05  YAKUJYO-HOSPID          PIC X(24).
+               05  YAKUJYO-HOSPNUM          PIC S9(9) BINARY.
       *医薬品コード
                05  YAKUJYO-SRYCD           PIC X(09).
       *適用番号

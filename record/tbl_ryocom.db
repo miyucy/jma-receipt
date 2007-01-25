@@ -1,5 +1,5 @@
 tbl_ryocom {
-	HOSPID				char(24);
+	HOSPNUM				integer;
 	NYUGAIKBN			char(1);
 	PTID				number(10,0);
 	SRYYM				char(6);
@@ -46,7 +46,7 @@ tbl_ryocom {
 };
 
 primary	{
-	HOSPID,NYUGAIKBN,PTID,SRYYM,ZAINUM;
+	HOSPNUM,NYUGAIKBN,PTID,SRYYM,ZAINUM;
 };
 
 path	key 	{
@@ -54,7 +54,7 @@ path	key 	{
 		DECLARE tbl_ryocom_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ryocom
-			WHERE HOSPID      =   :HOSPID
+			WHERE HOSPNUM      =   :HOSPNUM
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   SRYYM       =   :SRYYM
@@ -68,7 +68,7 @@ path	key2 	{
 		DECLARE tbl_ryocom_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ryocom
-			WHERE HOSPID      =   :HOSPID
+			WHERE HOSPNUM      =   :HOSPNUM
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   SRYYM       =   :SRYYM
@@ -81,7 +81,7 @@ path	del1 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_ryocom
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 		;
 	};
@@ -91,7 +91,7 @@ path	del2 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_ryocom
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   SRYYM       =   :SRYYM
 		;
@@ -102,7 +102,7 @@ path	upd1 	{
 	DBUPDATE	{
 		UPDATE tbl_ryocom
 		SET
-	HOSPID				=	:HOSPID,
+	HOSPNUM				=	:HOSPNUM,
 	NYUGAIKBN			=	:NYUGAIKBN,
 	PTID				=	:PTID,
 	SRYYM				=	:SRYYM,
@@ -146,7 +146,7 @@ path	upd1 	{
 	CREYMD   			=	:CREYMD,
 	UPYMD    			=	:UPYMD,
 	UPHMS				=	:UPHMS
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   SRYYM       =   :SRYYM
@@ -159,7 +159,7 @@ path	del3 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_ryocom
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   SRYYM       =   :SRYYM

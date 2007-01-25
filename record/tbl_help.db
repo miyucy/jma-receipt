@@ -1,4 +1,5 @@
 tbl_help {
+	HOSPNUM				integer;
 	HELPKBN				char(1);
 	KEY_OPID			varchar(16);
 	LDNAME				varchar(20);
@@ -16,7 +17,7 @@ tbl_help {
 };
 
 primary	{
-	HELPKBN,KEY_OPID,LDNAME,MENUNUM1,MENUNUM2,EDANUM;
+	HOSPNUM,HELPKBN,KEY_OPID,LDNAME,MENUNUM1,MENUNUM2,EDANUM;
 };
 
 path	key 	{
@@ -24,7 +25,8 @@ path	key 	{
 		DECLARE tbl_help_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_help
-			WHERE   HELPKBN    =   :HELPKBN
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   HELPKBN    =   :HELPKBN
 			AND   KEY_OPID     =   :KEY_OPID
 			AND   LDNAME       =   :LDNAME
 			AND   MENUNUM1     =   :MENUNUM1
@@ -39,7 +41,8 @@ path	key1 	{
 		DECLARE tbl_help_key1_csr CURSOR FOR
 		SELECT *
 		FROM tbl_help
-			WHERE   HELPKBN    =   :HELPKBN
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   HELPKBN    =   :HELPKBN
 			AND   KEY_OPID     =   :KEY_OPID
 			AND   LDNAME       =   :LDNAME
 			AND   MENUNUM2     =   0
@@ -57,7 +60,8 @@ path	key2 	{
 		DECLARE tbl_help_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_help
-			WHERE   HELPKBN    =   :HELPKBN
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   HELPKBN    =   :HELPKBN
 			AND   KEY_OPID     =   :KEY_OPID
 			AND   LDNAME       =   :LDNAME
 			AND   MENUNUM1     =   :MENUNUM1
@@ -73,7 +77,8 @@ path	key3 	{
 		DECLARE tbl_help_key3_csr CURSOR FOR
 		SELECT *
 		FROM tbl_help
-			WHERE   HELPKBN    =   :HELPKBN
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   HELPKBN    =   :HELPKBN
 			AND   KEY_OPID     =   :KEY_OPID
 			AND   LDNAME       =   :LDNAME
 			AND   MENUNUM1     =   :MENUNUM1
@@ -88,7 +93,8 @@ path	key4 	{
 		DECLARE tbl_help_key4_csr CURSOR FOR
 		SELECT *
 		FROM tbl_help
-			WHERE   HELPKBN    =   :HELPKBN
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   HELPKBN    =   :HELPKBN
 			AND     LDNAME     =   :LDNAME
 			AND   KEY_OPID     =   :KEY_OPID
 			AND   MENU       LIKE  :MENU
@@ -107,7 +113,8 @@ path	key5 	{
 		DECLARE tbl_help_key5_csr CURSOR FOR
 		SELECT *
 		FROM tbl_help
-			WHERE   HELPKBN    =   :HELPKBN
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   HELPKBN    =   :HELPKBN
 			AND   KEY_OPID     =   :KEY_OPID
 			AND   LDNAME       =   :LDNAME
 			AND   MENU       LIKE  :MENU
@@ -126,7 +133,8 @@ path	key6 	{
 		DECLARE tbl_help_key6_csr CURSOR FOR
 		SELECT *
 		FROM tbl_help
-			WHERE HELPKBN      =   :HELPKBN
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND HELPKBN      =   :HELPKBN
 			AND   LDNAME       =   :LDNAME
 			AND   KEY_OPID     =   :KEY_OPID
 			AND   MENU       LIKE  :MENU
@@ -145,7 +153,8 @@ path	key7 	{
 		DECLARE tbl_help_key7_csr CURSOR FOR
 		SELECT *
 		FROM tbl_help
-			WHERE   HELPKBN    =   :HELPKBN
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   HELPKBN    =   :HELPKBN
 			AND   KEY_OPID     =   :KEY_OPID
 			AND   LDNAME       =   :LDNAME
 			AND   MENUNUM1     =   :MENUNUM1
@@ -161,7 +170,8 @@ path	del1  	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_help
-			WHERE   HELPKBN    =   :HELPKBN
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   HELPKBN    =   :HELPKBN
 			AND   KEY_OPID     =   :KEY_OPID
 			AND   LDNAME       =   :LDNAME
 			AND   MENUNUM1     =   :MENUNUM1
@@ -173,7 +183,8 @@ path	del2  	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_help
-			WHERE   HELPKBN    =   :HELPKBN
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   HELPKBN    =   :HELPKBN
 			AND   KEY_OPID     =   :KEY_OPID
 			AND   LDNAME       =   :LDNAME
 			AND   MENUNUM1     =   :MENUNUM1
@@ -185,6 +196,7 @@ path	all 	{
 		DECLARE tbl_help_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_help
+		WHERE 	HOSPNUM	= :HOSPNUM
 			ORDER   BY         HELPKBN,
                                            KEY_OPID,
                                            LDNAME,

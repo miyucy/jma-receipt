@@ -1,5 +1,5 @@
 tbl_example {
-	HOSPID				char(24);
+	HOSPNUM				integer;
 	KUBUN				char(1);
 	RENNUM       		number(3);
 	COMMENT        		varchar(800);
@@ -10,7 +10,7 @@ tbl_example {
 	UPHMS				char(6);
 };
 primary	{
-	HOSPID,KUBUN,RENNUM;
+	HOSPNUM,KUBUN,RENNUM;
 };
 
 path	key		{ 	
@@ -18,7 +18,7 @@ path	key		{
 		DECLARE tbl_example_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_example
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   KUBUN       =   :KUBUN
 			AND   RENNUM      =   :RENNUM
 		;
@@ -31,7 +31,7 @@ path	key1		{
 		DECLARE tbl_example_key1_csr CURSOR FOR
 		SELECT *
 		FROM tbl_example
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   KUBUN       =   :KUBUN
 			ORDER   BY        RENNUM
 		;
@@ -43,6 +43,7 @@ path	all	{
 		DECLARE tbl_example_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_example
+			WHERE   HOSPNUM    =   :HOSPNUM
  		;
 	};
 };
@@ -51,7 +52,7 @@ path	key2		{
 		DECLARE tbl_example_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_example
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   KUBUN       =   :KUBUN
 			ORDER   BY        RENNUM  DESC
 		;

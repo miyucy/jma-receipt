@@ -24,7 +24,7 @@
       ************************************************************
       *01  PTTEIKIRRK-REC.
       *°åÎÅµ¡´Ø£É£Ä
-           03  PTTEIKIRRK-HOSPID           PIC  X(24).
+           03  PTTEIKIRRK-HOSPNUM           PIC  S9(9) BINARY.
       *´µ¼Ô£É£Ä
            03  PTTEIKIRRK-PTID             PIC  9(10).
       *¿ÇÎÅÇ¯·î

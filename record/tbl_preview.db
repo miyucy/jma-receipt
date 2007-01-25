@@ -1,4 +1,5 @@
 tbl_preview	{
+	HOSPNUM				integer;
 	TBL_KEY			char(8);
 	RENNUM			number(4);
 	TBL_GROUP		char(14);
@@ -22,7 +23,7 @@ tbl_preview	{
 };
 
 primary	{
-	TBL_KEY,RENNUM,TBL_GROUP,SHORI_RENNUM,PAGE;
+	HOSPNUM,TBL_KEY,RENNUM,TBL_GROUP,SHORI_RENNUM,PAGE;
 };
 
 path	key		{ 	
@@ -30,7 +31,8 @@ path	key		{
 		DECLARE tbl_preview_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_preview
-                    WHERE   TBL_KEY	=	:TBL_KEY
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   TBL_KEY	=	:TBL_KEY
                     AND     RENNUM       =   :RENNUM
                     AND     TBL_GROUP    =   :TBL_GROUP
                     AND     SHORI_RENNUM =   :SHORI_RENNUM 
@@ -44,7 +46,8 @@ path	key2		{
 		DECLARE tbl_preview_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_preview
-                    WHERE   TBL_KEY      =   :TBL_KEY
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   TBL_KEY      =   :TBL_KEY
                     ORDER BY  RENNUM
 		;
 	};
@@ -55,7 +58,8 @@ path	key3		{
 		DECLARE tbl_preview_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_prtdata
-                    WHERE   TBL_KEY      =   :TBL_KEY
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   TBL_KEY      =   :TBL_KEY
                     AND     RENNUM       =   :RENNUM
                     AND     TBL_GROUP    =   :TBL_GROUP
                     AND     SHORI_RENNUM =   :SHORI_RENNUM 
@@ -70,7 +74,8 @@ path	del11	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_preview
-                    WHERE   TBL_KEY      =   :TBL_KEY
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   TBL_KEY      =   :TBL_KEY
 		;
 	};
 };
@@ -79,7 +84,8 @@ path	del12	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_preview
-                    WHERE   TBL_KEY      =   :TBL_KEY
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   TBL_KEY      =   :TBL_KEY
                     AND     TBL_GROUP    <>  :TBL_GROUP
 		;
 	};
@@ -89,6 +95,7 @@ path	all	{
 		DECLARE tbl_preview_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_preview
+		WHERE 	HOSPNUM	= :HOSPNUM
  		;
 	};
 };

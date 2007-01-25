@@ -24,6 +24,7 @@
       ************************************************************
        01  TEMP-REC.
            03  TEMP-KEY.
+               05  TEMP-HOSPNUM         PIC S9(9) BINARY.
       *端末ＩＤ
                05  TEMP-TERMID          PIC X(64).
       *医薬品コード

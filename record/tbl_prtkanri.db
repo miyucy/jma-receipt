@@ -1,4 +1,5 @@
 tbl_prtkanri	{
+	HOSPNUM				integer;
 	TBL_KEY			char(8);
 	RENNUM  		number(4);
 	TBL_GROUP		char(14);
@@ -16,7 +17,7 @@ tbl_prtkanri	{
 };
 
 primary	{
-	TBL_KEY,RENNUM,TBL_GROUP,SHORI_RENNUM;
+	HOSPNUM,TBL_KEY,RENNUM,TBL_GROUP,SHORI_RENNUM;
 };
 
 path	key		{ 	
@@ -24,7 +25,8 @@ path	key		{
 		DECLARE tbl_prtkanri_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_prtkanri
-                    WHERE   TBL_KEY      =   :TBL_KEY
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   TBL_KEY      =   :TBL_KEY
                     AND     RENNUM       =   :RENNUM
                     AND     TBL_GROUP    =   :TBL_GROUP
                     AND     SHORI_RENNUM =   :SHORI_RENNUM 
@@ -37,7 +39,8 @@ path	key2		{
 		DECLARE tbl_prtkanri_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_prtkanri
-                    WHERE   TBL_KEY      =   :TBL_KEY
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   TBL_KEY      =   :TBL_KEY
                     AND     TBL_GROUP    =   :TBL_GROUP
                     ORDER BY  RENNUM,SHORI_RENNUM
 		;
@@ -49,7 +52,8 @@ path	key3		{
 		DECLARE tbl_prtkanri_key3_csr CURSOR FOR
 		SELECT *
 		FROM tbl_prtkanri
-                    WHERE    TBL_KEY    =   :TBL_KEY
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND    TBL_KEY    =   :TBL_KEY
                     ORDER BY  TBL_GROUP desc,RENNUM,SHORI_RENNUM
 		;
 	};
@@ -60,7 +64,8 @@ path	key4		{
 		DECLARE tbl_prtkanri_key4_csr CURSOR FOR
 		SELECT distinct tbl_key,tbl_group,priority,sryym
 		FROM tbl_prtkanri
-                    WHERE   TBL_KEY      =   'RECEPT2'
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   TBL_KEY      =   'RECEPT2'
                     AND     SRYYM        <>  '000000'
                     AND     TBL_GROUP    <>  :TBL_GROUP
                     AND     PRIORITY     =   :PRIORITY
@@ -73,7 +78,8 @@ path	key5		{
 		DECLARE tbl_prtkanri_key5_csr CURSOR FOR
 		SELECT distinct tbl_key,tbl_group,priority,sryym
 		FROM tbl_prtkanri
-                    WHERE   TBL_KEY      =   'RECEPT2'
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   TBL_KEY      =   'RECEPT2'
                     AND     SRYYM        =  '000000'
                     AND     TBL_GROUP    <>  :TBL_GROUP
                     AND     PRIORITY     =   :PRIORITY
@@ -85,7 +91,8 @@ path	del11	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_prtkanri
-                    WHERE   TBL_KEY      =   :TBL_KEY
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   TBL_KEY      =   :TBL_KEY
                     AND     TBL_GROUP    =   :TBL_GROUP
 		;
 	};
@@ -95,7 +102,8 @@ path	del12	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_prtkanri
-                    WHERE   TBL_KEY      =   'RECEPT2'
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   TBL_KEY      =   'RECEPT2'
                     AND     SRYYM        <>  '000000'
                     AND     TBL_GROUP    <>  :TBL_GROUP
                     AND     PRIORITY     =   :PRIORITY
@@ -107,7 +115,8 @@ path	del13	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_prtkanri
-                    WHERE   TBL_KEY      =   'RECEPT2'
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   TBL_KEY      =   'RECEPT2'
                     AND     SRYYM        =   '000000'
                     AND     TBL_GROUP    <>  :TBL_GROUP
                     AND     PRIORITY     =   :PRIORITY
@@ -120,6 +129,7 @@ path	all	{
 		DECLARE tbl_prtkanri_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_prtkanri
+		WHERE 	HOSPNUM	= :HOSPNUM
  		;
 	};
 };

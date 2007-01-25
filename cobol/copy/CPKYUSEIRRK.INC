@@ -27,7 +27,7 @@
       *µìÀ«ÍúÎò
            03  KYUSEI-KEY.
       *°åÎÅµ¡´Ø£É£Ä
-               05  KYUSEI-HOSPID           PIC  X(24).
+               05  KYUSEI-HOSPNUM           PIC  S9(9) BINARY.
       *´µ¼Ô£É£Ä
                05  KYUSEI-PTID             PIC  9(10).
       *ÊÑ¹¹Ç¯·îÆü
@@ -50,6 +50,6 @@
            03  KYUSEI-UPHMS                PIC  X(06).
       *¡¡¡¡¼ç¥­¡¼¹¹¿·ÍÑ¹àÌÜ
            03  KYUSEIUP-KEY.
-               05  KYUSEIUP-HOSPID         PIC X(24).
+               05  KYUSEIUP-HOSPNUM         PIC S9(9) BINARY.
                05  KYUSEIUP-PTID           PIC 9(10).
                05  KYUSEIUP-CHGYMD         PIC X(08).

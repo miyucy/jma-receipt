@@ -1,5 +1,5 @@
 view_bd002 {
-	HOSPID				char(24);
+	HOSPNUM				integer;
 	NYUGAIKBN			char(1);
 	PTID				number(10,0);
 	DENPNUM          		number(7,0);
@@ -305,7 +305,7 @@ view_bd002 {
 };
 
 primary	{
-	HOSPID,PTID;
+	HOSPNUM,PTID;
 };
 
 path	key 	{
@@ -313,7 +313,7 @@ path	key 	{
 		DECLARE view_bd002_key_csr CURSOR FOR
 		SELECT *
 		FROM view_bd002
-			WHERE   HOSPID      =   :HOSPID
+			WHERE   HOSPNUM      =   :HOSPNUM
                     AND     DENPPRTYMD  =   :DENPPRTYMD
                     ORDER BY  PTNUM
 		;
@@ -325,7 +325,7 @@ path	key2 	{
 		DECLARE view_bd002_key2_csr CURSOR FOR
 		SELECT *
 		FROM view_bd002
-			WHERE   HOSPID      =   :HOSPID
+			WHERE   HOSPNUM      =   :HOSPNUM
                     AND     SRYYMD      =   :SRYYMD
                     ORDER BY  PTNUM
 		;
@@ -337,7 +337,7 @@ path	key3 	{
 		DECLARE view_bd002_key3_csr CURSOR FOR
 		SELECT *
 		FROM view_bd002
-			WHERE   HOSPID      =   :HOSPID
+			WHERE   HOSPNUM      =   :HOSPNUM
                     AND     NYUGAIKBN   =   :NYUGAIKBN 
                     AND     DENPPRTYMD  >=  :DENPPRTYMD 
                     ORDER BY  DENPNUM
@@ -351,6 +351,7 @@ path	all 	{
 		DECLARE view_bd002_all_csr CURSOR FOR
 		SELECT *
 		FROM view_bd002
+			WHERE   HOSPNUM      =   :HOSPNUM
  		;
 	};
 };
@@ -360,7 +361,8 @@ path	all2	{
 		DECLARE view_bd002_all2_csr CURSOR FOR
 		SELECT *
 		FROM view_bd002
-			WHERE   SRYYMD   LIKE   :SRYYMD
+			WHERE   HOSPNUM      =   :HOSPNUM
+			AND   SRYYMD   LIKE   :SRYYMD
 		;
 	};
 };

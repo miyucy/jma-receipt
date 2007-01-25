@@ -23,6 +23,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
       *01  JINMEI-REC.
+           03  JINMEI-HOSPNUM           PIC S9(9) BINARY.
       *    漢字
            03  JINMEI-KANJI            PIC X(50).
       *    カナ

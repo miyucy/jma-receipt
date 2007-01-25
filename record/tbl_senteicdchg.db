@@ -1,4 +1,5 @@
 tbl_senteicdchg {
+	HOSPNUM				integer;
 	IPNSRYCD   		char(9);
 	SENTEISRYCD  	char(9);
 	TERMID  		varchar(16);
@@ -8,7 +9,7 @@ tbl_senteicdchg {
 	UPHMS			char(6);
 };
 primary	{
-	IPNSRYCD,SENTEISRYCD;
+	HOSPNUM,IPNSRYCD,SENTEISRYCD;
 };
 
 path	key 	{
@@ -16,7 +17,8 @@ path	key 	{
 		DECLARE tbl_senteicdchg_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_senteicdchg
-			WHERE   IPNSRYCD  =   :IPNSRYCD
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   IPNSRYCD  =   :IPNSRYCD
 			AND   SENTEISRYCD    =   :SENTEISRYCD
 		;
 	};
@@ -27,7 +29,8 @@ path	key2 	{
 		DECLARE tbl_senteicdchg_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_senteicdchg
-			WHERE   IPNSRYCD  =   :IPNSRYCD
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   IPNSRYCD  =   :IPNSRYCD
 		;
 	};
 };
@@ -37,7 +40,8 @@ path	key3 	{
 		DECLARE tbl_senteicdchg_key3_csr CURSOR FOR
 		SELECT *
 		FROM tbl_senteicdchg
-			WHERE   SENTEISRYCD    =   :SENTEISRYCD
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   SENTEISRYCD    =   :SENTEISRYCD
 		;
 	};
 };
@@ -47,6 +51,7 @@ path	all	{
 		DECLARE tbl_senteicdchg_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_senteicdchg
+		WHERE 	HOSPNUM	= :HOSPNUM
  		;
 	};
 };

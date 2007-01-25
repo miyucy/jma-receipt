@@ -25,7 +25,7 @@
       *01 INPUTSET-REC.
            03 ISET-KEY.
       *医療機関ＩＤ
-               05 ISET-HOSPID          PIC  X(24).
+               05 ISET-HOSPNUM          PIC  S9(9) BINARY.
       *セットコード
                05 ISET-SETCD           PIC  X(06).
       *有効開始年月日

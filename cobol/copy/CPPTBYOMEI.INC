@@ -35,7 +35,7 @@
       *01  PTBYOMEI-REC.
            03  PTBYO-KEY.
       *°åÎÅµ¡´Ø£É£Ä
-               05  PTBYO-HOSPID        PIC X(24).
+               05  PTBYO-HOSPNUM        PIC S9(9) BINARY.
       *´µ¼Ô£É£Ä
                05  PTBYO-PTID          PIC 9(10).
       *¿ÇÎÅ²Ê

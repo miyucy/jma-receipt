@@ -1,4 +1,5 @@
 tbl_yakujyo_temp	{
+	HOSPNUM				integer;
 	termid  		char(64);
 	srycd			char(9);
 	yjcd			char(12);
@@ -17,7 +18,7 @@ tbl_yakujyo_temp	{
 };
 
 primary	{
-	termid,srycd,yjcd,rennum;
+	HOSPNUM,termid,srycd,yjcd,rennum;
 };
 
 path	srycd	{
@@ -26,7 +27,8 @@ path	srycd	{
 		SELECT	*
 			FROM
 				tbl_yakujyo_temp
-			WHERE
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND
 				srycd = :srycd
 			ORDER  BY  yjcd,rennum
 		;
@@ -34,6 +36,7 @@ path	srycd	{
 	operation	DBFETCH	{
 		FETCH FROM tbl_yakujyo_temp_srycd_csr
 			INTO
+				:HOSPNUM,
 				:termid,
 				:srycd,
 				:yjcd,
@@ -56,7 +59,7 @@ path	srycd	{
 	};
 	operation	DBINSERT	{
 		INSERT INTO 	tbl_yakujyo_temp
-			VALUES(
+			VALUES( :HOSPNUM,
 				:termid,
 				:srycd,
 				:yjcd,
@@ -80,7 +83,8 @@ path	termid	{
 	operation	DBDELETE	{
 		DELETE	FROM
 				tbl_yakujyo_temp
-			WHERE
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND
 				termid = :termid
 		;
 	};

@@ -24,7 +24,7 @@
       *****************************************************************
       *01  ORDER-REC.
            03  ORDER-KEY.
-               05  ORDER-HOSPID        PIC X(24).
+               05  ORDER-HOSPNUM        PIC S9(9) BINARY.
                05  ORDER-KARTE-KEY     PIC X(36).
                05  ORDER-ORDERNUM      PIC 9(02).
            03  ORDER-NYUGAIKBN         PIC X(01).

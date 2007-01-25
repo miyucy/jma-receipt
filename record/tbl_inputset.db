@@ -1,5 +1,5 @@
 tbl_inputset {
-	HOSPID				char(24);
+	HOSPNUM				integer;
 	SETCD   			char(6);
 	YUKOSTYMD  			char(8);
 	YUKOEDYMD	  		char(8);
@@ -20,7 +20,7 @@ tbl_inputset {
 	UPHMS				char(6);
 };
 primary	{
-	HOSPID,SETCD,YUKOSTYMD,YUKOEDYMD,SETSEQ;
+	HOSPNUM,SETCD,YUKOSTYMD,YUKOEDYMD,SETSEQ;
 };
 
 path	key 	{
@@ -28,7 +28,7 @@ path	key 	{
 		DECLARE tbl_inputset_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_inputset
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   SETCD       =   :SETCD
 			AND   YUKOSTYMD  <=   :YUKOSTYMD
 			AND   YUKOEDYMD  >=   :YUKOEDYMD
@@ -42,7 +42,7 @@ path	key2	{
 		DECLARE tbl_inputset_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_inputset
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   SETCD       =   :SETCD
 			AND   YUKOSTYMD  <=   :YUKOSTYMD
 			AND   YUKOEDYMD  >=   :YUKOEDYMD
@@ -54,7 +54,7 @@ path	del11	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_inputset
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   SETCD       =   :SETCD
 			AND   YUKOSTYMD   =   :YUKOSTYMD
 			AND   YUKOEDYMD   =   :YUKOEDYMD
@@ -66,6 +66,7 @@ path	all 	{
 		DECLARE tbl_inputset_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_inputset
+			WHERE   HOSPNUM    =   :HOSPNUM
 			ORDER   BY        SETCD,
                                           YUKOSTYMD,
                                           YUKOEDYMD,
@@ -79,7 +80,7 @@ path	key3	{
 		DECLARE tbl_inputset_key3_csr CURSOR FOR
 		SELECT *
 		FROM tbl_inputset
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			ORDER   BY        SETCD,
                                           YUKOSTYMD,
 			                  SETSEQ
@@ -91,7 +92,7 @@ path	key4	{
 		DECLARE tbl_inputset_key4_csr CURSOR FOR
 		SELECT *
 		FROM tbl_inputset
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
                         AND     SETCD     >=  :SETCD
                         AND     SETCD     <=  :UPHMS
 			ORDER   BY        SETCD,
@@ -105,7 +106,7 @@ path	key5	{
 		DECLARE tbl_inputset_key5_csr CURSOR FOR
 		SELECT *
 		FROM tbl_inputset
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   SETCD       =   :SETCD
 			AND   SETSEQ      =   1
 			ORDER   BY        YUKOSTYMD,

@@ -1,4 +1,5 @@
 tbl_teikikanri	{
+	HOSPNUM				integer;
         BTUNUM              char(2);
         SYOKBN              char(1);
         CREYMD              char(8);
@@ -10,7 +11,7 @@ tbl_teikikanri	{
 };
 
 primary	{
-	BTUNUM;
+	HOSPNUM,BTUNUM;
 };
 
 path	key		{ 	
@@ -18,7 +19,8 @@ path	key		{
 		DECLARE tbl_teikikanri_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_teikikanri
-        WHERE   BTUNUM     =   :BTUNUM
+		WHERE 	HOSPNUM	= :HOSPNUM
+        AND   BTUNUM     =   :BTUNUM
 		;
 	};
 };
@@ -28,6 +30,7 @@ path	all	{
 		DECLARE tbl_teikikanri_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_teikikanri
+		WHERE 	HOSPNUM	= :HOSPNUM
  		;
 	};
 };
@@ -36,6 +39,7 @@ path	del1 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_teikikanri
+		WHERE 	HOSPNUM	= :HOSPNUM
 		;
 	};
 };
@@ -45,7 +49,8 @@ path	key2		{
 		DECLARE tbl_teikikanri_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_teikikanri
-        WHERE   CREYMD     = :CREYMD
+		WHERE 	HOSPNUM	= :HOSPNUM
+        AND   CREYMD     = :CREYMD
 	AND	CREHMS     = :CREHMS
 		;
 	};

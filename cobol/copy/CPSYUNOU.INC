@@ -32,7 +32,7 @@
       *01  SYUNOU-REC.
            03  SYU-KEY.
       *°åÎÅµ¡´Ø£É£Ä
-               05  SYU-HOSPID          PIC  X(24).
+               05  SYU-HOSPNUM          PIC  S9(9) BINARY.
       *Æþ³°¶èÊ¬
                05  SYU-NYUGAIKBN       PIC  X(01).
       *´µ¼Ô£É£Ä

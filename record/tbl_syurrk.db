@@ -1,5 +1,5 @@
 tbl_syurrk {
-	HOSPID				char(24);
+	HOSPNUM				integer;
 	PTID				number(10,0);
 	NYUGAIKBN			char(1);
 	DENPNUM          		integer;
@@ -53,7 +53,7 @@ tbl_syurrk {
 	UPHMS				char(6);
 };
 primary	{
-	HOSPID,PTID,NYUGAIKBN,DENPNUM,SYURRKNUM,SYUEDANUM;
+	HOSPNUM,PTID,NYUGAIKBN,DENPNUM,SYURRKNUM,SYUEDANUM;
 };
 
 path	key 	{
@@ -61,7 +61,7 @@ path	key 	{
 		DECLARE tbl_syurrk_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syurrk
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   DENPNUM     =   :DENPNUM
@@ -76,7 +76,7 @@ path	key2 	{
 		DECLARE tbl_syurrk_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syurrk
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   DENPNUM     =   :DENPNUM
@@ -89,7 +89,7 @@ path	del1 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_syurrk
-			WHERE   HOSPID        =  :HOSPID
+			WHERE   HOSPNUM        =  :HOSPNUM
 			AND   NYUGAIKBN       =  :NYUGAIKBN
 			AND   PTID            =  :PTID
 			AND   DENPNUM         =  :DENPNUM

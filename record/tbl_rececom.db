@@ -1,5 +1,5 @@
 tbl_rececom {
-	HOSPID				char(24);
+	HOSPNUM				integer;
 	PTID				number(10);
 	NYUGAIKBN			char(1);
 	SRYKA				char(2);
@@ -15,7 +15,7 @@ tbl_rececom {
 	UPHMS				char(6);
 };
 primary	{
-	HOSPID,PTID,NYUGAIKBN,SRYKA,SRYYM,HKNCOMBI,SRYDD,SJKBN;
+	HOSPNUM,PTID,NYUGAIKBN,SRYKA,SRYYM,HKNCOMBI,SRYDD,SJKBN;
 };
 
 path	key		{ 	
@@ -23,7 +23,7 @@ path	key		{
 		DECLARE tbl_rececom_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_rececom
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND     PTID      =   :PTID
 			AND     NYUGAIKBN =   :NYUGAIKBN
 			AND     SRYKA     =   :SRYKA
@@ -40,7 +40,7 @@ path	key1		{
 		DECLARE tbl_rececom_key1_csr CURSOR FOR
 		SELECT *
 		FROM tbl_rececom
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND     PTID      =   :PTID
 			AND     SRYYM     =   :SRYYM
 			AND     NYUGAIKBN =   :NYUGAIKBN
@@ -54,6 +54,7 @@ path	all	{
 		DECLARE tbl_rececom_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_rececom
+			WHERE   HOSPNUM    =   :HOSPNUM
  		;
 	};
 };
@@ -62,7 +63,7 @@ path	key2		{
 		DECLARE tbl_rececom_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_rececom
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND     PTID      =   :PTID
 			AND     NYUGAIKBN =   :NYUGAIKBN
 			ORDER   BY        SRYYM  DESC
@@ -75,7 +76,7 @@ path	key3		{
 		DECLARE tbl_rececom_key3_csr CURSOR FOR
 		SELECT *
 		FROM tbl_rececom
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND     PTID      =   :PTID
 			AND     SRYYM     =   :SRYYM
 			AND     NYUGAIKBN =   :NYUGAIKBN
@@ -88,7 +89,7 @@ path	del1 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_rececom
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 		;
 	};
@@ -99,7 +100,7 @@ path	key4		{
 		DECLARE tbl_rececom_key4_csr CURSOR FOR
 		SELECT *
 		FROM tbl_rececom
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND     PTID      =   :PTID
 			AND     NYUGAIKBN =   :NYUGAIKBN
 			AND     SRYYM     =   :SRYYM
@@ -113,7 +114,7 @@ path	key5		{
 		DECLARE tbl_rececom_key5_csr CURSOR FOR
 		SELECT *
 		FROM tbl_rececom
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND     PTID      =   :PTID
 			ORDER   BY        SRYYM  DESC,
                                           NYUGAIKBN,
@@ -130,7 +131,7 @@ path	key6		{
 		DECLARE tbl_rececom_key6_csr CURSOR FOR
 		SELECT *
 		FROM tbl_rececom
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND     PTID      =   :PTID
 			AND     NYUGAIKBN =   :NYUGAIKBN
 			AND     SRYKA     =   :SRYKA
@@ -147,7 +148,7 @@ path	key7		{
 		DECLARE tbl_rececom_key7_csr CURSOR FOR
 		SELECT *
 		FROM tbl_rececom
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND     PTID      =   :PTID
 			AND     SRYYM     =   :SRYYM
 			AND     NYUGAIKBN =   :NYUGAIKBN
@@ -162,7 +163,7 @@ path	key8		{
 		DECLARE tbl_rececom_key8_csr CURSOR FOR
 		SELECT *
 		FROM tbl_rececom
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND     PTID      =   :PTID
 			AND     SRYYM     =   :SRYYM
 			AND     NYUGAIKBN =   :NYUGAIKBN
@@ -177,7 +178,7 @@ path	key9		{
 		DECLARE tbl_rececom_key9_csr CURSOR FOR
 		SELECT *
 		FROM tbl_rececom
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND     PTID      =   :PTID
 			AND     SRYYM     =   :SRYYM
 			AND     NYUGAIKBN =   :NYUGAIKBN
@@ -194,7 +195,7 @@ path	key10		{
 		DECLARE tbl_rececom_key10_csr CURSOR FOR
 		SELECT *
 		FROM tbl_rececom
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND     PTID      =   :PTID
 			AND     SRYYM     =   :SRYYM
 			AND     NYUGAIKBN =   :NYUGAIKBN
@@ -209,7 +210,7 @@ path	key11		{
 		DECLARE tbl_rececom_key11_csr CURSOR FOR
 		SELECT *
 		FROM tbl_rececom
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND     PTID      =   :PTID
 			AND     SRYYM     =   :SRYYM
 			AND     NYUGAIKBN =   :NYUGAIKBN
@@ -223,7 +224,7 @@ path	del2 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_rececom
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND     PTID      =   :PTID
 			AND     NYUGAIKBN =   :NYUGAIKBN
 			AND     SRYKA     =   :SRYKA

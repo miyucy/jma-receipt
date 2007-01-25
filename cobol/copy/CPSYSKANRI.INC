@@ -25,6 +25,7 @@
        01  SYSKANRI-REC.
       *キー
            03  SYS-KEY.
+               05  SYS-HOSPNUM         PIC S9(9) BINARY.
       *管理コード
                05  SYS-KANRICD          PIC  X(04).
       *区分コード

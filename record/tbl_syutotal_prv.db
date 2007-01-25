@@ -1,5 +1,5 @@
 tbl_syutotal_prv {
-	HOSPID				char(24);
+	HOSPNUM				integer;
 	NYUGAIKBN			char(1);
 	PTID				number(10,0);
 	DENPNUM          		number(7,0);
@@ -185,7 +185,7 @@ tbl_syutotal_prv {
 	UPHMS				char(6);
 };
 primary	{
-	HOSPID,NYUGAIKBN,PTID,DENPNUM,CREYMD;
+	HOSPNUM,NYUGAIKBN,PTID,DENPNUM,CREYMD;
 };
 
 path	key 	{
@@ -193,7 +193,7 @@ path	key 	{
 		DECLARE tbl_syutotal_prv_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syutotal_prv
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   DENPNUM     =   :DENPNUM
@@ -207,7 +207,7 @@ path	key2	{
 		DECLARE tbl_syutotal_prv_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syutotal_prv
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			ORDER BY CREYMD DESC
@@ -219,6 +219,7 @@ path	all 	{
 		DECLARE tbl_syutotal_prv_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syutotal_prv
+			WHERE   HOSPNUM    =   :HOSPNUM
  		;
 	};
 };
@@ -227,7 +228,7 @@ path	del1 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_syutotal_prv
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 		;
 	};
@@ -236,7 +237,7 @@ path	delprv 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_syutotal_prv
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =  :NYUGAIKBN
 			AND   PTID        =   :PTID
 		;

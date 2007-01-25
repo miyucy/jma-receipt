@@ -1,4 +1,5 @@
 tbl_srycdchg {
+	HOSPNUM				integer;
 	IPNSRYCD   		char(9);
 	RJNSRYCD  		char(9);
 	TERMID  		varchar(16);
@@ -8,7 +9,7 @@ tbl_srycdchg {
 	UPHMS			char(6);
 };
 primary	{
-	IPNSRYCD,RJNSRYCD;
+	HOSPNUM,IPNSRYCD,RJNSRYCD;
 };
 
 path	key 	{
@@ -16,7 +17,8 @@ path	key 	{
 		DECLARE tbl_srycdchg_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_srycdchg
-			WHERE   IPNSRYCD  =   :IPNSRYCD
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   IPNSRYCD  =   :IPNSRYCD
 			AND   RJNSRYCD    =   :RJNSRYCD
 		;
 	};
@@ -27,7 +29,8 @@ path	key2 	{
 		DECLARE tbl_srycdchg_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_srycdchg
-			WHERE   IPNSRYCD  =   :IPNSRYCD
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   IPNSRYCD  =   :IPNSRYCD
 		;
 	};
 };
@@ -37,7 +40,8 @@ path	key3 	{
 		DECLARE tbl_srycdchg_key3_csr CURSOR FOR
 		SELECT *
 		FROM tbl_srycdchg
-			WHERE   RJNSRYCD  =   :RJNSRYCD
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   RJNSRYCD  =   :RJNSRYCD
 		;
 	};
 };
@@ -47,6 +51,7 @@ path	all	{
 		DECLARE tbl_srycdchg_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_srycdchg
+		WHERE 	HOSPNUM	= :HOSPNUM
  		;
 	};
 };

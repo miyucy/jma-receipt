@@ -1,5 +1,5 @@
 tbl_receden	{
-HOSPID				char(24);
+HOSPNUM				integer;
 SRYYM				number(6);
 NYUGAIKBN			char(1);
 PTID				number(10);
@@ -18,7 +18,7 @@ RECEDATA			char(2500);
 };
 
 primary	{
-	HOSPID,SRYYM,NYUGAIKBN,PTID,RECEKA,TEISYUTUSAKI,RECESYUBETU,HKNJANUM,HOJOKBN_KEY,TEKSTYMD,RECKBN,RENNUM;
+	HOSPNUM,SRYYM,NYUGAIKBN,PTID,RECEKA,TEISYUTUSAKI,RECESYUBETU,HKNJANUM,HOJOKBN_KEY,TEKSTYMD,RECKBN,RENNUM;
 };
 
 path	key		{ 	
@@ -26,7 +26,7 @@ path	key		{
 		DECLARE tbl_receden_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receden
-		WHERE	HOSPID		=	:HOSPID
+		WHERE	HOSPNUM		=	:HOSPNUM
 		  AND	SRYYM		=	:SRYYM
 		  AND	NYUGAIKBN	=	:NYUGAIKBN
 		  AND	PTID		=	:PTID
@@ -47,7 +47,7 @@ path	key2	{
 		DECLARE tbl_receden_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receden
-		WHERE	HOSPID		=	:HOSPID
+		WHERE	HOSPNUM		=	:HOSPNUM
 		  AND	SRYYM		=	:SRYYM
 		  AND	NYUGAIKBN	=	:NYUGAIKBN
 		  AND	PTID		=	:PTID
@@ -68,7 +68,7 @@ path	del1 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_receden
-                WHERE   HOSPID       =   :HOSPID
+                WHERE   HOSPNUM       =   :HOSPNUM
                   AND   SRYYM        =   :SRYYM
                   AND   NYUGAIKBN    =   :NYUGAIKBN
                   AND   TEISYUTUSAKI =   :TEISYUTUSAKI
@@ -81,7 +81,7 @@ path	del2 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_receden
-                WHERE   HOSPID      =   :HOSPID
+                WHERE   HOSPNUM      =   :HOSPNUM
                   AND   SRYYM       =   :SRYYM
                   AND   NYUGAIKBN   =   :NYUGAIKBN
                   AND   PTID        =   :PTID
@@ -94,6 +94,7 @@ path	all	{
 		DECLARE tbl_receden_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receden
+                WHERE   HOSPNUM      =   :HOSPNUM
 		;
 	};
 };
@@ -103,7 +104,8 @@ path	all2	{
 		DECLARE tbl_receden_all2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receden
-                WHERE   SRYYM       =   :SRYYM
+                WHERE   HOSPNUM      =   :HOSPNUM
+                AND   SRYYM       =   :SRYYM
 		;
 	};
 };
@@ -111,7 +113,7 @@ path	del3 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_receden
-                WHERE   HOSPID      =   :HOSPID
+                WHERE   HOSPNUM      =   :HOSPNUM
                   AND   PTID        =   :PTID
 		;
 	};
@@ -122,7 +124,7 @@ path	key3	{
 		DECLARE tbl_receden_key3_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receden
-		WHERE	HOSPID		=	:HOSPID
+		WHERE	HOSPNUM		=	:HOSPNUM
 		  AND	SRYYM		=	:SRYYM
 		  AND	NYUGAIKBN	=	:NYUGAIKBN
 		  AND	PTID		=	:PTID

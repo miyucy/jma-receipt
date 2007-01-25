@@ -24,6 +24,7 @@
       ************************************************************
       *01  GENERICNAME-REC.
            03  GENERIC-KEY.
+               05  GENERIC-HOSPNUM     PIC S9(9) BINARY.
       *    薬価基準コード
                05  GENERIC-YAKKAKJNCD      PIC  X(09).
       *    一般名有効桁

@@ -24,6 +24,7 @@
       ************************************************************
       *01  NYUINKHN-REC.
            03  NYUKHN-KEY.
+               05  NYUKHN-HOSPNUM    PIC S9(9) BINARY.
       *基本点数診療コード
                05  NYUKHN-KHNSRYCD     PIC  X(09).
       *有効開始年月日

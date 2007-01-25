@@ -27,7 +27,7 @@
       *¥­¡¼
            03  PTCOM-KEY.
       *°åÎÅµ¡´Ø£É£Ä
-               05  PTCOM-HOSPID         PIC  X(24).
+               05  PTCOM-HOSPNUM         PIC  S9(9) BINARY.
       *´µ¼Ô£É£Ä
                05  PTCOM-PTID           PIC  9(10).
       *ºÞÈÖ¹æ

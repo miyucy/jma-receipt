@@ -1,4 +1,5 @@
 tbl_adrs {
+	HOSPNUM				integer;
 	LPUBCD				char(5);
 	POST				char(7);
 	RENNUM				number(2);
@@ -15,7 +16,7 @@ tbl_adrs {
 };
 
 primary	{
-	LPUBCD,POST,RENNUM;
+	HOSPNUM,LPUBCD,POST,RENNUM;
 };
 
 path	key		{ 	
@@ -23,7 +24,8 @@ path	key		{
 		DECLARE tbl_adrs_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_adrs
-			WHERE   LPUBCD    =   :LPUBCD
+			WHERE   HOSPNUM      =   :HOSPNUM
+			AND   LPUBCD    =   :LPUBCD
 			AND   POST        =   :POST
 			AND   RENNUM      =   :RENNUM
 ;
@@ -35,7 +37,8 @@ path	key2		{
 		DECLARE tbl_adrs_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_adrs
-			WHERE   POST      =   :POST
+			WHERE   HOSPNUM      =   :HOSPNUM
+			AND   POST      =   :POST
 			ORDER  BY  LPUBCD,
                                    RENNUM
 ;
@@ -47,6 +50,7 @@ path	all		{
 		DECLARE tbl_adrs_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_adrs
+			WHERE   HOSPNUM      =   :HOSPNUM
 ;
 	};
 };
@@ -56,7 +60,8 @@ path	key3		{
 		DECLARE tbl_adrs_key3_csr CURSOR FOR
 		SELECT *
 		FROM tbl_adrs
-			WHERE   (LPUBCD   LIKE :LPUBCD)
+			WHERE (HOSPNUM      =   :HOSPNUM)
+			AND   (LPUBCD   LIKE :LPUBCD)
 			ORDER  BY  LPUBCD,
                                    POST,
                                    RENNUM
@@ -69,7 +74,8 @@ path	key4		{
 		DECLARE tbl_adrs_key4_csr CURSOR FOR
 		SELECT *
 		FROM tbl_adrs
-			WHERE   (POST   LIKE :POST)
+			WHERE (HOSPNUM      =   :HOSPNUM)
+			AND   (POST   LIKE :POST)
 			ORDER  BY  LPUBCD,
                                    POST,
                                    RENNUM
@@ -82,7 +88,8 @@ path	key5		{
 		DECLARE tbl_adrs_key5_csr CURSOR FOR
 		SELECT *
 		FROM tbl_adrs
-			WHERE   (LPUBCD LIKE :LPUBCD)  AND
+			WHERE (HOSPNUM      =   :HOSPNUM)
+			AND   (LPUBCD LIKE :LPUBCD)  AND
 			        (POST   LIKE :POST)
 			ORDER  BY  LPUBCD,
                                    POST,
@@ -96,7 +103,8 @@ path	key6		{
 		DECLARE tbl_adrs_key6_csr CURSOR FOR
 		SELECT *
 		FROM tbl_adrs
-			WHERE   (POST   LIKE :POST)
+			WHERE (HOSPNUM      =   :HOSPNUM)
+			AND   (POST   LIKE :POST)
 			ORDER  BY  POST,
                        LPUBCD,
                        RENNUM;
@@ -108,7 +116,8 @@ path	key7		{
 		DECLARE tbl_adrs_key7_csr CURSOR FOR
 		SELECT *
 		FROM tbl_adrs
-			WHERE ( POST        =   :POST   )   AND
+			WHERE (HOSPNUM      =   :HOSPNUM)
+			AND ( POST        =   :POST   )   AND
                   ( LPUBCD      =   :LPUBCD )
 			ORDER   BY  RENNUM  DESC;
 	};

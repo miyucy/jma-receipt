@@ -1,4 +1,5 @@
 tbl_syskanri	{
+	HOSPNUM				integer;
 	KANRICD		char(4);
 	KBNCD		char(8);
 	STYUKYMD	char(8);
@@ -17,7 +18,7 @@ tbl_syskanri	{
 };
 
 primary	{
-	KANRICD,KBNCD,STYUKYMD,EDYUKYMD;
+	HOSPNUM,KANRICD,KBNCD,STYUKYMD,EDYUKYMD;
 };
 
 path	key		{ 	
@@ -25,7 +26,8 @@ path	key		{
 		DECLARE tbl_syskanri_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syskanri
-			WHERE   KANRICD      =   :KANRICD 
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   KANRICD      =   :KANRICD 
 			AND		KBNCD        LIKE   :KBNCD
 			AND		STYUKYMD     <=  :STYUKYMD
 			AND		EDYUKYMD     >=  :EDYUKYMD
@@ -38,7 +40,8 @@ path	key2	{
 		DECLARE tbl_syskanri_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syskanri
-			WHERE   KANRICD      =   :KANRICD
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   KANRICD      =   :KANRICD
 			AND     STYUKYMD     <=  :STYUKYMD
 			AND     EDYUKYMD     >=  :EDYUKYMD
 			ORDER BY KBNCD
@@ -50,7 +53,8 @@ path	key3	{
 		DECLARE tbl_syskanri_key3_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syskanri
-			WHERE   KANRICD      =   :KANRICD
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   KANRICD      =   :KANRICD
 			AND		STYUKYMD     <=  :STYUKYMD
 			AND     EDYUKYMD     >=  :EDYUKYMD
 			AND     KANRITBL     LIKE  :KANRITBL
@@ -62,7 +66,8 @@ path	key4	{
 		DECLARE tbl_syskanri_key4_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syskanri
-			WHERE   KANRICD      =   :KANRICD
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   KANRICD      =   :KANRICD
 			AND   KBNCD          LIKE   :KBNCD
 			ORDER	BY	KBNCD,STYUKYMD
 		;
@@ -73,7 +78,8 @@ path	key5	{
 		DECLARE tbl_syskanri_key5_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syskanri
-			WHERE   KANRICD      =   :KANRICD
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   KANRICD      =   :KANRICD
 			ORDER	BY	KBNCD,STYUKYMD
 		;
 	};
@@ -83,7 +89,8 @@ path	key6	{
 		DECLARE tbl_syskanri_key6_csr CURSOR FOR
 		SELECT DISTINCT ON (KBNCD) *
 		FROM tbl_syskanri 
-			WHERE   KANRICD      =   :KANRICD
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   KANRICD      =   :KANRICD
 			ORDER	BY	KBNCD
 		;
 	};
@@ -94,7 +101,8 @@ path	key7	{
 		DECLARE tbl_syskanri_key7_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syskanri
-			WHERE   KANRICD      =   :KANRICD
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   KANRICD      =   :KANRICD
 			AND     STYUKYMD     <=  :STYUKYMD
 			AND     EDYUKYMD     >=  :EDYUKYMD
 			ORDER	BY	KBNCD
@@ -107,7 +115,8 @@ path	key8	{
 		DECLARE tbl_syskanri_key8_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syskanri
-			WHERE   KANRICD      =   :KANRICD
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   KANRICD      =   :KANRICD
 			AND   KBNCD          =   :KBNCD
 			ORDER	BY	STYUKYMD DESC
 		;
@@ -119,7 +128,8 @@ path	key9		{
 		DECLARE tbl_syskanri_key9_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syskanri
-			WHERE   KANRICD      =   :KANRICD 
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   KANRICD      =   :KANRICD 
 			AND	KBNCD        LIKE   :KBNCD
 			AND	STYUKYMD     <=  :STYUKYMD
 			AND	EDYUKYMD     >=  :EDYUKYMD
@@ -133,7 +143,8 @@ path	key10		{
 		DECLARE tbl_syskanri_key10_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syskanri
-			WHERE   KANRICD      =   :KANRICD 
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   KANRICD      =   :KANRICD 
 			AND	KBNCD        =   :KBNCD
 			AND	STYUKYMD     <=  :STYUKYMD
 			AND	EDYUKYMD     >=  :EDYUKYMD
@@ -146,6 +157,7 @@ path	upd1	{
 		UPDATE	tbl_syskanri 
 				SET	
 #					:*
+					HOSPNUM   	= :HOSPNUM,
 					KANRICD      =   :KANRICD,
 					KBNCD     	 =   :KBNCD,
 					STYUKYMD     =   :STYUKYMD,
@@ -156,7 +168,8 @@ path	upd1	{
 					CREYMD       =   :CREYMD,
 					UPYMD        =   :UPYMD,
 					UPHMS        =   :UPHMS
-			WHERE   KANRICD      =   :UPKANRICD
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   KANRICD      =   :UPKANRICD
 			AND		KBNCD        =   :UPKBNCD
 			AND		STYUKYMD     =   :UPSTYUKYMD
 			AND		EDYUKYMD     =   :UPEDYUKYMD
@@ -167,7 +180,8 @@ path	del11	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_syskanri
-			WHERE   KANRICD      =   :KANRICD
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   KANRICD      =   :KANRICD
 			AND     STYUKYMD     <=  :STYUKYMD
 			AND     EDYUKYMD     >=  :EDYUKYMD
 		;
@@ -179,6 +193,7 @@ path	all	{
 		DECLARE tbl_syskanri_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syskanri
+		WHERE 	HOSPNUM	= :HOSPNUM
       		;
 	};
 };
@@ -188,7 +203,8 @@ path	key11		{
 		DECLARE tbl_syskanri_key11_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syskanri
-			WHERE   KANRICD      =   :KANRICD 
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   KANRICD      =   :KANRICD 
 			AND		STYUKYMD   LIKE  :STYUKYMD
 			ORDER	BY	STYUKYMD
 		;
@@ -200,7 +216,8 @@ path	key12		{
 		DECLARE tbl_syskanri_key12_csr CURSOR FOR
 		SELECT KANRICD,STYUKYMD,EDYUKYMD
 		FROM tbl_syskanri
-			WHERE   KANRICD      =   :KANRICD 
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   KANRICD      =   :KANRICD 
 			GROUP BY KANRICD,STYUKYMD,EDYUKYMD
 		;
 	};
@@ -214,7 +231,8 @@ path	upd2	{
 					EDYUKYMD     =   :EDYUKYMD,
 					UPYMD        =   :UPYMD,
 					UPHMS        =   :UPHMS
-			WHERE   KANRICD      =   :UPKANRICD
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   KANRICD      =   :UPKANRICD
 			AND		STYUKYMD     =   :UPSTYUKYMD
 			AND		EDYUKYMD     =   :UPEDYUKYMD
 		;
@@ -226,7 +244,8 @@ path	key13	{
 		DECLARE tbl_syskanri_key13_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syskanri
-			WHERE   KANRICD      =   :KANRICD
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   KANRICD      =   :KANRICD
 			ORDER	BY	KBNCD DESC
 		;
 	};
@@ -236,7 +255,8 @@ path	key14	{
 		DECLARE tbl_syskanri_key14_csr CURSOR FOR
 		SELECT DISTINCT ON (KBNCD) *
 		FROM tbl_syskanri 
-			WHERE   KANRICD      =   :KANRICD
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   KANRICD      =   :KANRICD
 			AND	KBNCD        LIKE   :KBNCD
 			ORDER	BY	KBNCD
 		;
@@ -248,7 +268,8 @@ path	key15	{
 		DECLARE tbl_syskanri_key15_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syskanri
-			WHERE   KANRICD      =   :KANRICD
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   KANRICD      =   :KANRICD
 			AND     STYUKYMD     <=  :STYUKYMD
 			AND     EDYUKYMD     >=  :EDYUKYMD
 			ORDER BY KANRITBL,
@@ -262,7 +283,8 @@ path	key16	{
 		DECLARE tbl_syskanri_key16_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syskanri
-			WHERE   KANRICD      =   :KANRICD
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   KANRICD      =   :KANRICD
 			AND     KBNCD        =   :KBNCD
 			AND     STYUKYMD     <   :STYUKYMD
 			ORDER	BY	STYUKYMD DESC

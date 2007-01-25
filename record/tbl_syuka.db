@@ -1,5 +1,5 @@
 tbl_syuka {
-    HOSPID              char(24);
+    HOSPNUM              integer;
     NYUGAIKBN           char(1);
     PTID                number(10,0);
 # ---> 入院基本料と診療分をわける
@@ -41,7 +41,7 @@ tbl_syuka {
     XXPTNUM             char(20),virtual;
 };
 primary {
-    HOSPID,NYUGAIKBN,PTID,TEN_KBN,SRYYM,TEISYUTUSAKI,HKNJANUM,HOJOKBN,RECESYUBETU,SRYKA;
+    HOSPNUM,NYUGAIKBN,PTID,TEN_KBN,SRYYM,TEISYUTUSAKI,HKNJANUM,HOJOKBN,RECESYUBETU,SRYKA;
 };
 
 
@@ -50,7 +50,7 @@ path	key		{
 		DECLARE tbl_syuka_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syuka
-			WHERE   HOSPID         =   :HOSPID
+			WHERE   HOSPNUM         =   :HOSPNUM
 			AND     NYUGAIKBN      =   :NYUGAIKBN
 			AND     PTID           =   :PTID
 			AND     TEN_KBN        =   :TEN_KBN
@@ -69,7 +69,7 @@ path	key2		{
 		DECLARE tbl_syuka_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syuka
-			WHERE   HOSPID         =   :HOSPID
+			WHERE   HOSPNUM         =   :HOSPNUM
 			AND   ( NYUGAIKBN      =   :NYUGAIKBN   OR
 				NYUGAIKBN      =   '0'        )
 			AND     PTID           =   :PTID
@@ -86,7 +86,7 @@ path	key3		{
 		DECLARE tbl_syuka_key3_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syuka
-			WHERE   HOSPID         =   :HOSPID
+			WHERE   HOSPNUM         =   :HOSPNUM
 			AND     NYUGAIKBN      =   :NYUGAIKBN
 			AND     PTID           =   :PTID
 			AND     SRYYM          =   :SRYYM
@@ -101,7 +101,7 @@ path	key4		{
 		DECLARE tbl_syuka_key4_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syuka
-			WHERE   HOSPID         =   :HOSPID
+			WHERE   HOSPNUM         =   :HOSPNUM
 			AND     PTID           =   :PTID
 			AND     SRYYM          =   :SRYYM
 			AND     RECESYUBETU    =   'XXXX'
@@ -114,12 +114,12 @@ path	key5		{
 		DECLARE tbl_syuka_key5_csr CURSOR FOR
 		SELECT a.ptid
 		FROM tbl_syuka a,tbl_ptnum b
-			WHERE   a.HOSPID       =   :HOSPID
+			WHERE   a.HOSPNUM       =   :HOSPNUM
 			AND     SRYYM          =   :SRYYM
 			AND     NYUGAIKBN      =   :NYUGAIKBN
 			AND     TEISYUTUSAKI   =   '1'
 			AND     a.PTID         =   b.PTID
-            AND     a.HOSPID       =   b.HOSPID
+            AND     a.HOSPNUM       =   b.HOSPNUM
 			GROUP BY a.PTID,PTNUM
 			ORDER BY PTNUM
 		;
@@ -131,12 +131,12 @@ path	key6		{
 		DECLARE tbl_syuka_key6_csr CURSOR FOR
 		SELECT a.ptid
 		FROM tbl_syuka a,tbl_ptnum b
-			WHERE   HOSPID         =   :HOSPID
+			WHERE   HOSPNUM         =   :HOSPNUM
 			AND     SRYYM          =   :SRYYM
 			AND     NYUGAIKBN      =   :NYUGAIKBN
 			AND     TEISYUTUSAKI   =   '1'
 			AND     a.PTID         =   b.PTID
-            AND     a.HOSPID       =   b.HOSPID
+            AND     a.HOSPNUM       =   b.HOSPNUM
 			AND     SRYKA_INPUT    =   ''
 			GROUP BY a.PTID
 			ORDER BY b.PTNUM
@@ -149,7 +149,7 @@ path	key7		{
 		DECLARE tbl_syuka_key7_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syuka
-			WHERE   HOSPID         =    :HOSPID
+			WHERE   HOSPNUM         =    :HOSPNUM
 			AND     SRYYM          =    :SRYYM
 			AND     NYUGAIKBN      =    :NYUGAIKBN
 			AND     TEISYUTUSAKI   LIKE :TEISYUTUSAKI
@@ -168,7 +168,7 @@ path	key8		{
 		DECLARE tbl_syuka_key8_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syuka
-			WHERE   HOSPID         =    :HOSPID
+			WHERE   HOSPNUM         =    :HOSPNUM
 			AND     SRYYM          =    :SRYYM
 			AND     NYUGAIKBN      =    :NYUGAIKBN
 			AND     TEISYUTUSAKI   LIKE :TEISYUTUSAKI
@@ -186,7 +186,7 @@ path	key9		{
 		DECLARE tbl_syuka_key9_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syuka
-			WHERE   HOSPID         =    :HOSPID
+			WHERE   HOSPNUM         =    :HOSPNUM
 			AND     SRYYM          =    :SRYYM
 			AND     NYUGAIKBN      =    :NYUGAIKBN
 			AND     TEISYUTUSAKI   LIKE :TEISYUTUSAKI
@@ -202,13 +202,13 @@ path	key10		{
 		DECLARE tbl_syuka_key10_csr CURSOR FOR
 		SELECT a.*
 		FROM tbl_syuka a,tbl_ptnum b
-			WHERE   a.HOSPID       =   :HOSPID
+			WHERE   a.HOSPNUM       =   :HOSPNUM
 			AND     SRYYM          =   :SRYYM
 			AND     NYUGAIKBN      =   :NYUGAIKBN
 			AND     TEISYUTUSAKI   LIKE :TEISYUTUSAKI
 			AND     RECESYUBETU    <>  '8888'
 			AND     RECESYUBETU    <>  'YYYY'
-			AND     a.HOSPID       =   b.HOSPID
+			AND     a.HOSPNUM       =   b.HOSPNUM
 			AND     a.PTID         =   b.PTID
 			AND     PTNUM          >=  :XXPTNUM
 			AND     DLT_FLG        <>   '1'
@@ -222,13 +222,13 @@ path	key11		{
 		DECLARE tbl_syuka_key11_csr CURSOR FOR
 		SELECT a.*
 		FROM tbl_syuka a,tbl_ptnum b
-			WHERE   a.HOSPID       =   :HOSPID
+			WHERE   a.HOSPNUM       =   :HOSPNUM
 			AND     SRYYM          =   :SRYYM
 			AND     NYUGAIKBN      =   :NYUGAIKBN
 			AND     TEISYUTUSAKI   LIKE :TEISYUTUSAKI
 			AND     RECESYUBETU    <>  '8888'
 			AND     RECESYUBETU    <>  'YYYY'
-			AND     a.HOSPID       =   b.HOSPID
+			AND     a.HOSPNUM       =   b.HOSPNUM
 			AND     a.PTID         =   b.PTID
 			AND     DLT_FLG        <>   '1'
 			AND     SRYKA_INPUT    =   ''
@@ -242,7 +242,7 @@ path	upd1	{
 		UPDATE	tbl_syuka 
 				SET	
 					SRYKA_INPUT  =   :SRYKA_INPUT
-			WHERE   HOSPID         =   :HOSPID
+			WHERE   HOSPNUM         =   :HOSPNUM
 			AND     PTID           =   :PTID
 			AND     SRYYM          =   :SRYYM
 		;
@@ -256,7 +256,7 @@ path	upd2	{
 					SRYKA_INPUT    =   :SRYKA_INPUT, 
 					UPYMD          =   :UPYMD,
 					UPHMS          =   :UPHMS
-			WHERE   HOSPID         =   :HOSPID
+			WHERE   HOSPNUM         =   :HOSPNUM
 			AND     NYUGAIKBN      =   :NYUGAIKBN
 			AND     PTID           =   :PTID
 			AND     SRYYM          =   :SRYYM
@@ -275,7 +275,7 @@ path	upd3	{
 					DLT_FLG        =   :DLT_FLG, 
 					UPYMD          =   :UPYMD,
 					UPHMS          =   :UPHMS
-			WHERE   HOSPID         =   :HOSPID
+			WHERE   HOSPNUM         =   :HOSPNUM
 			AND	    NYUGAIKBN      =   :NYUGAIKBN
 			AND	    PTID           =   :PTID
 			AND	    SRYYM          =   :SRYYM
@@ -289,7 +289,7 @@ path	del1 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_syuka
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 		;
 	};
@@ -299,7 +299,7 @@ path	del2 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_syuka
-			WHERE   HOSPID         =   :HOSPID
+			WHERE   HOSPNUM         =   :HOSPNUM
 			AND     NYUGAIKBN      =   :NYUGAIKBN
 			AND     PTID           =   :PTID
 			AND     SRYYM          >   :SRYYM
@@ -311,7 +311,7 @@ path	del3 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_syuka
-			WHERE   HOSPID         =   :HOSPID
+			WHERE   HOSPNUM         =   :HOSPNUM
 			AND     NYUGAIKBN      =   :NYUGAIKBN
 			AND     PTID           =   :PTID
 			AND     TEN_KBN        =   :TEN_KBN
@@ -324,6 +324,7 @@ path	all	{
 		DECLARE tbl_syuka_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syuka
+			WHERE   HOSPNUM         =   :HOSPNUM
 		;
 	};
 };
@@ -333,7 +334,7 @@ path	key12		{
 		DECLARE tbl_syuka_key12_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syuka
-			WHERE   HOSPID         =    :HOSPID
+			WHERE   HOSPNUM         =    :HOSPNUM
 			AND     SRYYM          =    :SRYYM
 			AND     NYUGAIKBN      =    :NYUGAIKBN
 			AND     TEISYUTUSAKI   LIKE :TEISYUTUSAKI
@@ -347,7 +348,7 @@ path	key13		{
 		DECLARE tbl_syuka_key13_csr CURSOR FOR
 		SELECT a.*
 		FROM tbl_syuka a,tbl_ptnum b
-			WHERE   a.HOSPID       =    :HOSPID
+			WHERE   a.HOSPNUM       =    :HOSPNUM
 			AND     SRYYM          =    :SRYYM
 			AND     NYUGAIKBN      like :NYUGAIKBN
 			AND     RECESYUBETU    =    :RECESYUBETU
@@ -363,7 +364,7 @@ path	key14		{
 		DECLARE tbl_syuka_key14_csr CURSOR FOR
 		SELECT a.*
 		FROM tbl_syuka a,tbl_ptnum b
-			WHERE   a.HOSPID       =    :HOSPID
+			WHERE   a.HOSPNUM       =    :HOSPNUM
 			AND     NYUGAIKBN      like :NYUGAIKBN
 			AND     RECESYUBETU    =    :RECESYUBETU
 			AND     MISEIKYU_FLG   =    :MISEIKYU_FLG
@@ -378,7 +379,7 @@ path	key15		{
 		DECLARE tbl_syuka_key15_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syuka
-			WHERE   HOSPID         =   :HOSPID
+			WHERE   HOSPNUM         =   :HOSPNUM
 			AND     PTID           =   :PTID
 			AND     SRYYM          =   :SRYYM
 			AND     RECESYUBETU    =   :RECESYUBETU
@@ -392,7 +393,7 @@ path	key16		{
 		DECLARE tbl_syuka_key16_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syuka
-			WHERE   HOSPID         =   :HOSPID
+			WHERE   HOSPNUM         =   :HOSPNUM
 			AND     SRYYM          <=  :SRYYM
 			AND     RECESYUBETU    =   :RECESYUBETU
 			AND     NYUGAIKBN      like :NYUGAIKBN
@@ -410,7 +411,7 @@ path	upd4	{
 					OPID           =   :OPID,
 					UPYMD          =   :UPYMD,
 					UPHMS          =   :UPHMS
-			WHERE   HOSPID         =    :HOSPID
+			WHERE   HOSPNUM         =    :HOSPNUM
 			AND     NYUGAIKBN      like :NYUGAIKBN
 			AND	PTID           =    :PTID
 			AND	SRYYM          =    :SRYYM

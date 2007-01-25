@@ -1,4 +1,5 @@
         01  TBL-LDMAP.
+            02  LDMAP-HOSPNUM           PIC S9(9) BINARY.
             02  LDMAP-LDNAME            PIC X(20).
             02  LDMAP-GROUPNUM          PIC 9(02).
             02  LDMAP-EDANUM            PIC 9(02).

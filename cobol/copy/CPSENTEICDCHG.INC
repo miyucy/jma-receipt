@@ -21,6 +21,7 @@
       *-------------------------------------------------*
       *01  SENTEICDCHG-REC.
            03  SENCHG-KEY.
+               05  SENCHG-HOSPNUM    PIC S9(9) BINARY.
       *办忍壳闻コ〖ド
                05  SENCHG-IPNSRYCD     PIC  X(09).
       *联年闻蛙锐壳闻コ〖ド

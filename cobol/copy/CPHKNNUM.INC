@@ -26,7 +26,7 @@
       *キー
            03 HKN-KEY.
       *医療機関ＩＤ
-               05 HKN-HOSPID            PIC  X(24).
+               05 HKN-HOSPNUM            PIC  S9(9) BINARY.
       *保険番号
                05 HKN-HKNNUM            PIC  X(03).
       *適用開始年月日

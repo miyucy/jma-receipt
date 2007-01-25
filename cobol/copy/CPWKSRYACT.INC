@@ -22,7 +22,7 @@
       *01  WKSRYACT-REC.
            03  WKSRY-KEY.
       *°åÎÅµ¡´Ø£É£Ä
-               05  WKSRY-HOSPID         PIC  X(24).
+               05  WKSRY-HOSPNUM         PIC  S9(9) BINARY.
       *Æþ³°¶èÊ¬
                05  WKSRY-NYUGAIKBN      PIC  X(01).
       *´µ¼Ô£É£Ä

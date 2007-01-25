@@ -1,5 +1,5 @@
 view_Q002 {
-	HOSPID				char(24);
+	HOSPNUM				integer;
 	PTID				number(10,0);
 	NYUGAIKBN			char(1);
 	SRYKA				char(2);
@@ -16,6 +16,7 @@ path	all 	{
 		DECLARE view_Q002_all_csr CURSOR FOR
 		SELECT *
 		FROM view_Q002
+	    WHERE	HOSPNUM    =    :HOSPNUM
  		;
 	};
 };

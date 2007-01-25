@@ -1,5 +1,5 @@
 view_I001 {
-	HOSPID				char(24);
+	HOSPNUM				integer;
 	PTID				number(10,0);
 	RRKNUM			number(3,0);
 	RRKEDANUM		number(3,0);
@@ -39,7 +39,7 @@ path	key2		{
 	DBSELECT	{
 		DECLARE view_I001_key2_csr CURSOR FOR
 		SELECT * FROM  view_I001
-	    WHERE	HOSPID    =    :HOSPID
+	    WHERE	HOSPNUM    =    :HOSPNUM
 		AND     NYUINYMD  <=   :NYUINYMD
 		AND     TAIINYMD  =   '99999999'
 		ORDER BY BRMNUM,PTNUM
@@ -51,7 +51,7 @@ path	key3		{
 	DBSELECT	{
 		DECLARE view_I001_key3_csr CURSOR FOR
 		SELECT * FROM  view_I001
-	    WHERE	HOSPID    =    :HOSPID
+	    WHERE	HOSPNUM    =    :HOSPNUM
 		AND     NYUINYMD  <=   :NYUINYMD
 		AND     TAIINYMD  =   '99999999'
 		ORDER BY BRMNUM,NYUINKA,PTNUM
@@ -64,6 +64,7 @@ path	all 	{
 		DECLARE view_I001_all_csr CURSOR FOR
 		SELECT *
 		FROM view_I001
+	    WHERE	HOSPNUM    =    :HOSPNUM
  		;
 	};
 };

@@ -1,5 +1,5 @@
 query_ptinf {
-	HOSPID				char(24);
+	HOSPNUM				integer;
 	PTID						number(10,0);
 	KANANAME			varchar(100);
 	NAME 						varchar(100);
@@ -15,7 +15,7 @@ query_ptinf {
 };
 
 primary	{
-	HOSPID,PTID;
+	HOSPNUM,PTID;
 };
 
 path	key		{ 	

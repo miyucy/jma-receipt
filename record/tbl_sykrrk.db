@@ -1,5 +1,5 @@
 tbl_sykrrk {
-	HOSPID				char(24);
+	HOSPNUM				integer;
 	PTID     			number(10,0);
 	SYKKBN   			char(1);
 	SYKYMD  			char(8);
@@ -14,7 +14,7 @@ tbl_sykrrk {
 	UPHMS				char(6);
 };
 primary	{
-	HOSPID;
+	HOSPNUM;
 	PTID;
 	SYKKBN;
 	SYKYMD;
@@ -25,7 +25,7 @@ path	key 	{
 		DECLARE tbl_sykrrk_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_sykrrk
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   SYKKBN      =   :SYKKBN
 			AND   SYKYMD      =   :SYKYMD
@@ -38,7 +38,7 @@ path	key2 	{
 		DECLARE tbl_sykrrk_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_sykrrk
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   SYKKBN      =   :SYKKBN
 		;
@@ -50,6 +50,7 @@ path	all 	{
 		DECLARE tbl_sykrrk_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_sykrrk
+			WHERE   HOSPNUM    =   :HOSPNUM
  		;
 	};
 };
@@ -57,7 +58,7 @@ path	del1 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_sykrrk
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 		;
 	};

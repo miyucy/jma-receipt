@@ -1,5 +1,5 @@
 tbl_sryacctplus {
-	HOSPID				char(24);
+	HOSPNUM				integer;
 	NYUGAIKBN			char(1);
 	PTID				number(10,0);
 	SRYKA				char(2);
@@ -58,7 +58,7 @@ tbl_sryacctplus {
 };
 
 primary	{
-	HOSPID,NYUGAIKBN,PTID,SRYKA,SRYYM,ZAINUM,RENNUM;
+	HOSPNUM,NYUGAIKBN,PTID,SRYKA,SRYYM,ZAINUM,RENNUM;
 };
 
 path	key 	{
@@ -66,7 +66,7 @@ path	key 	{
 		DECLARE tbl_sryacctplus_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_sryacctplus
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   SRYKA       =   :SRYKA
@@ -82,7 +82,7 @@ path	key2 	{
 		DECLARE tbl_sryacctplus_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_sryacctplus
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   SRYKA       =   :SRYKA
@@ -98,7 +98,8 @@ path	all 	{
 		DECLARE tbl_sryacctplus_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_sryacctplus
-			ORDER   BY      HOSPID,
+			WHERE   HOSPNUM    =   :HOSPNUM
+			ORDER   BY      HOSPNUM,
                                         NYUGAIKBN,
                                         PTID,
                                         SRYKA,
@@ -113,7 +114,7 @@ path	del1 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_sryacctplus
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 		;
@@ -124,7 +125,7 @@ path	del2 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_sryacctplus
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   SRYKA       =   :SRYKA
@@ -139,7 +140,7 @@ path	key3 	{
 		DECLARE tbl_sryacctplus_key3_csr CURSOR FOR
 		SELECT *
 		FROM tbl_sryacctplus
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   SRYYM       =   :SRYYM
@@ -151,7 +152,7 @@ path	del3 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_sryacctplus
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   SRYYM       =   :SRYYM

@@ -1,4 +1,5 @@
 tbl_tensuplus {
+	HOSPNUM				integer;
 	SRYCD				char(9);
 	YUKOSTYMD			char(8);
 	YUKOEDYMD			char(8);
@@ -31,7 +32,7 @@ tbl_tensuplus {
 	UPYUKOEDYMD			char(8),virtual;
 };
 primary	{
-	SRYCD,YUKOSTYMD,YUKOEDYMD;
+	HOSPNUM,SRYCD,YUKOSTYMD,YUKOEDYMD;
 };
 
 path	key 	{
@@ -39,7 +40,8 @@ path	key 	{
 		DECLARE tbl_tensuplus_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_tensuplus
-			WHERE   SRYCD    =   :SRYCD
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   SRYCD    =   :SRYCD
  			AND   YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
 		;
@@ -50,6 +52,7 @@ path	upd1	{
 	DBUPDATE	{
 		UPDATE	tbl_tensuplus 
 				SET	
+	HOSPNUM	=	:HOSPNUM,
 	SRYCD	=	:SRYCD,
 	YUKOSTYMD	=	:YUKOSTYMD,
 	YUKOEDYMD	=	:YUKOEDYMD,
@@ -76,7 +79,8 @@ path	upd1	{
 	CREYMD 			=	:CREYMD,
 	UPYMD 			=	:UPYMD,
 	UPHMS			=	:UPHMS
-			WHERE   SRYCD      =   :UPSRYCD
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   SRYCD      =   :UPSRYCD
 			AND		YUKOSTYMD     =  :UPYUKOSTYMD
 			AND		YUKOEDYMD     =  :UPYUKOEDYMD
 		;
@@ -88,6 +92,7 @@ path	all	{
 		DECLARE tbl_tensuplus_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_tensuplus
+		WHERE 	HOSPNUM	= :HOSPNUM
  		;
 	};
 };
@@ -97,7 +102,8 @@ path	key2 	{
 		DECLARE tbl_tensuplus_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_tensuplus
-			WHERE   SRYCD    =   :SRYCD
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   SRYCD    =   :SRYCD
 			ORDER   BY  YUKOSTYMD
 		;
 	};

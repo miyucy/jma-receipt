@@ -1,3 +1,5 @@
+\set ON_ERROR_STOP
+
 --                                    --
 -- 点数マスタ投薬付加テーブルの作成   --
 --                                    --
@@ -8,6 +10,7 @@
 -- TBL_TENSUPLUS2  作成               --
 
 create	table	tbl_tensuplus2	(
+	HOSPNUM 	integer not null ,
 	SRYCD		char(9) not null,
 	CHOKINISSU 	numeric(3,0),
 	CHOKIKIGEN	char(8),
@@ -60,6 +63,6 @@ create	table	tbl_tensuplus2	(
 	UPYMD	        char(8),
 	UPHMS	        char(6),
 	constraint tbl_tensuplus2_primary_key primary key(
-		SRYCD
+		HOSPNUM,SRYCD
 	)
 );

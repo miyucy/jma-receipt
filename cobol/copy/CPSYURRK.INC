@@ -25,7 +25,7 @@
       *01  SYURRK-REC.
            03  SYURRK-KEY.
       *°åÎÅµ¡´Ø£É£Ä
-               05  SYURRK-HOSPID          PIC  X(24).
+               05  SYURRK-HOSPNUM          PIC  S9(9) BINARY.
       *´µ¼Ô£É£Ä
                05  SYURRK-PTID            PIC  9(10).
       *Æþ³°¶èÊ¬

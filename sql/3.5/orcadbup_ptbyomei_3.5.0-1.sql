@@ -87,7 +87,7 @@ drop table tbl_ptbyomei;
 -- TBL_PTBYOMEI ºîÀ®     --
 
 CREATE TABLE "tbl_ptbyomei" (
-	"hospid" character(24) NOT NULL,
+	"hospnum" integer NULL,
 	"ptid" numeric(10,0) NOT NULL,
 	"sryka" character(2) NOT NULL,
 	"sryymd" character(8) NOT NULL,
@@ -148,13 +148,13 @@ CREATE TABLE "tbl_ptbyomei" (
 	"creymd" character(8),
 	"upymd" character(8),
 	"uphms" character(6),
-	Constraint "tbl_ptbyomei_primary_key" Primary Key ("hospid", "ptid", "sryka", "sryymd", "rennum")
+	Constraint "tbl_ptbyomei_primary_key" Primary Key ("hospnum", "ptid", "sryka", "sryymd", "rennum")
 );
 
 -- TBL_PTBYOMEIWK ¢ª TBL_PTBYOMEI   --
 
 insert into tbl_ptbyomei
-(hospid,
+(hospnum,
 ptid,
 sryka,
 sryymd,
@@ -216,7 +216,7 @@ creymd,
 upymd,
 uphms
 )
-select hospid,
+select 1,
 ptid,
 sryka,
 sryymd,

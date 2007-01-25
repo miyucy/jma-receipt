@@ -27,7 +27,7 @@
       *¥­¡¼
            03  PTKOH-KEY.
       *°åÎÅµ¡´Ø£É£Ä
-               05  PTKOH-HOSPID            PIC  X(24).
+               05  PTKOH-HOSPNUM            PIC  S9(9) BINARY.
       *´µ¼Ô£É£Ä
                05  PTKOH-PTID              PIC  9(10).
       *¸øÈñ£É£Ä

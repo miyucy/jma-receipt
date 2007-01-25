@@ -23,6 +23,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
         01  PRVKANRI-REC.
+            02  PRVKANRI-HOSPNUM   PIC S9(9) BINARY.
             02  PRVKANRI-TBL-KEY    PIC X(8).
             02  PRVKANRI-RENNUM PIC S9(4).
             02  PRVKANRI-TBL-GROUP  PIC X(14).

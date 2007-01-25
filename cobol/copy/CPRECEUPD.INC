@@ -23,7 +23,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
       *    01  RECEUPD-REC.
-            02  RECEUPD-HOSPID  PIC X(24).
+            02  RECEUPD-HOSPNUM  PIC S9(9) BINARY.
             02  RECEUPD-PTID    PIC S9(10).
             02  RECEUPD-NYUGAIKBN   PIC X(1).
             02  RECEUPD-SRYKA   PIC X(2).

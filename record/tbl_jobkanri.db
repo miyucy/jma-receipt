@@ -1,4 +1,5 @@
 tbl_jobkanri	{
+	HOSPNUM				integer;
 #--> ¥¸¥ç¥Ö£É£Ä
 	JOBID			number(7,0);
 #--> ¥·¥§¥ë£É£Ä
@@ -35,7 +36,7 @@ tbl_jobkanri	{
 };
 
 primary	{
-	JOBID,SHELLID;
+	HOSPNUM,JOBID,SHELLID;
 };
 
 path	key		{ 	
@@ -43,7 +44,8 @@ path	key		{
 		DECLARE tbl_jobkanri_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_jobkanri
-			WHERE   SHELLID		=   :SHELLID 
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   SHELLID		=   :SHELLID 
 			ORDER   BY        JOBID	DESC 
 		;
 	};
@@ -54,7 +56,8 @@ path	key2	{
 		DECLARE tbl_jobkanri_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_jobkanri
-			WHERE   SHELLID		=   :SHELLID 
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   SHELLID		=   :SHELLID 
 			AND		JOBID		=  :JOBID
 		;
 	};
@@ -65,7 +68,8 @@ path	key3	{
 		DECLARE tbl_jobkanri_key3_csr CURSOR FOR
 		SELECT *
 		FROM tbl_jobkanri
-			WHERE   SHELLID		=  :SHELLID 
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   SHELLID		=  :SHELLID 
 			AND		JOBID		=  :JOBID
 			AND		TERMID		=  :TERMID
 		;
@@ -75,6 +79,7 @@ path	upd1	{
 	DBUPDATE	{
 		UPDATE	tbl_jobkanri 
 				SET
+					HOSPNUM		= :HOSPNUM,
 					SHELLMSG	=	:SHELLMSG,
 					TERMID		=	:TERMID,
 					OPID		=	:OPID,
@@ -97,7 +102,8 @@ path	upd1	{
 					PID3		=	:PID3,
 					PID4		=	:PID4,
 					YOBI		=	:YOBI
-			WHERE   SHELLID		=   :SHELLID 
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   SHELLID		=   :SHELLID 
 			AND		JOBID			=  :JOBID
 		;
 	};
@@ -106,7 +112,8 @@ path	del11	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_jobkanri
-			WHERE   SHELLID		=   :SHELLID 
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   SHELLID		=   :SHELLID 
 			AND		JOBID			=  :JOBID
 		;
 	};
@@ -115,7 +122,8 @@ path	del12	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_jobkanri
-			WHERE   SHELLID		=   :SHELLID 
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   SHELLID		=   :SHELLID 
 		;
 	};
 };
@@ -124,6 +132,7 @@ path	all	{
 		DECLARE tbl_jobkanri_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_jobkanri
+		WHERE 	HOSPNUM	= :HOSPNUM
  		;
 	};
 };
@@ -132,6 +141,7 @@ path	all02	{
 		DECLARE tbl_jobkanri_all02_csr CURSOR FOR
 		SELECT *
 		FROM tbl_jobkanri
+		WHERE 	HOSPNUM	= :HOSPNUM
 			ORDER   BY        STARTYMD DESC,
 			                  ENDYMD,
 			                  SHELLID,

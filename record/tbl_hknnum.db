@@ -1,5 +1,5 @@
 tbl_hknnum {
-	HOSPID				char(24);
+	HOSPNUM				integer;
 	HKNNUM				char(3);
 	TEKSTYMD			char(8);
 	PAYKBN 				char(2);
@@ -109,7 +109,7 @@ tbl_hknnum {
 };
 
 primary	{
-	HOSPID,HKNNUM,TEKSTYMD,PAYKBN;
+	HOSPNUM,HKNNUM,TEKSTYMD,PAYKBN;
 };
 
 path	key		{ 	
@@ -117,7 +117,7 @@ path	key		{
 		DECLARE tbl_hknnum_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_hknnum
-			WHERE   HOSPID      =   :HOSPID
+			WHERE   HOSPNUM      =   :HOSPNUM
 			AND   HKNNUM        =   :HKNNUM
 			AND   PAYKBN        =   :PAYKBN
 			AND   TEKSTYMD      <=  :TEKSTYMD
@@ -131,7 +131,7 @@ path	key2	{
 		DECLARE tbl_hknnum_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_hknnum
-			WHERE   HOSPID      =   :HOSPID
+			WHERE   HOSPNUM      =   :HOSPNUM
 			AND   HKNNUM        =   :HKNNUM
 			ORDER  BY  TEKSTYMD,
                                    PAYKBN
@@ -144,7 +144,7 @@ path	key3		{
 		DECLARE tbl_hknnum_key3_csr CURSOR FOR
 		SELECT *
 		FROM tbl_hknnum
-			WHERE   HOSPID      =   :HOSPID
+			WHERE   HOSPNUM      =   :HOSPNUM
 			AND   TEKSTYMD      <=  :TEKSTYMD
 			AND   TEKEDYMD      >=  :TEKEDYMD
 			ORDER  BY  HKNNUM,
@@ -159,7 +159,7 @@ path	key4		{
 		DECLARE tbl_hknnum_key4_csr CURSOR FOR
 		SELECT *
 		FROM tbl_hknnum
-			WHERE   HOSPID      =   :HOSPID
+			WHERE   HOSPNUM      =   :HOSPNUM
 			AND   HBTNUM        =   :HBTNUM
 			AND   TEKSTYMD      <=  :TEKSTYMD
 			AND   TEKEDYMD      >=  :TEKEDYMD
@@ -175,7 +175,7 @@ path	key5	{
 		DECLARE tbl_hknnum_key5_csr CURSOR FOR
 		SELECT *
 		FROM tbl_hknnum
-			WHERE   HOSPID      =   :HOSPID
+			WHERE   HOSPNUM      =   :HOSPNUM
 			AND   HKNNUM        =   :HKNNUM
 			AND   TEKSTYMD      <=  :TEKSTYMD
 			AND   TEKEDYMD      >=  :TEKEDYMD
@@ -190,6 +190,7 @@ path	all		{
 		DECLARE tbl_hknnum_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_hknnum
+			WHERE   HOSPNUM      =   :HOSPNUM
  		;
 	};
 };
@@ -199,7 +200,7 @@ path	key6		{
 		DECLARE tbl_hknnum_key6_csr CURSOR FOR
 		SELECT *
 		FROM tbl_hknnum
-			WHERE   HOSPID      =   :HOSPID
+			WHERE   HOSPNUM      =   :HOSPNUM
 			ORDER  BY  HKNNUM,
                                    TEKSTYMD,
                                    PAYKBN
@@ -212,7 +213,7 @@ path	key7		{
 		DECLARE tbl_hknnum_key7_csr CURSOR FOR
 		SELECT *
 		FROM tbl_hknnum
-			WHERE   HOSPID      =   :HOSPID
+			WHERE   HOSPNUM      =   :HOSPNUM
 			AND   HKNNUM        =   :HKNNUM
 			AND   PAYKBN        =   :PAYKBN
 			ORDER  BY  TEKSTYMD

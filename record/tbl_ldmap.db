@@ -1,4 +1,5 @@
 tbl_ldmap	{
+	HOSPNUM				integer;
 #--> Ã¼Ëö£É£Ä
 	MAP_LDNAME		varchar(20);
 	MAP_GROUPNUM		number(2,0);
@@ -63,7 +64,7 @@ tbl_ldmap	{
 };
 
 primary	{
-	MAP_LDNAME;
+	HOSPNUM,MAP_LDNAME;
 };
 
 path	key		{ 	
@@ -71,7 +72,8 @@ path	key		{
 		DECLARE tbl_ldmap_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ldmap
-			WHERE   MAP_LDNAME		=   :MAP_LDNAME 
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   MAP_LDNAME		=   :MAP_LDNAME 
 			ORDER   BY        MAP_LDNAME 
 		;
 	};
@@ -82,7 +84,8 @@ path	key2	{
 		DECLARE tbl_ldmap_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ldmap
-			WHERE   MAP_LDNAME		=   :MAP_LDNAME 
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   MAP_LDNAME		=   :MAP_LDNAME 
             AND    (LDMAP_CHK_LDNAME1 = :LDMAP.CHK_LDNAME1  OR
                     LDMAP_CHK_LDNAME2 = :LDMAP.CHK_LDNAME1  OR
                     LDMAP_CHK_LDNAME3 = :LDMAP.CHK_LDNAME1  OR
@@ -142,6 +145,7 @@ path	key3	{
 		DECLARE tbl_ldmap_key3_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ldmap
+		WHERE 	HOSPNUM	= :HOSPNUM
 			ORDER   BY        MAP_GROUPNUM,MAP_EDANUM
 		;
 	};
@@ -152,6 +156,7 @@ path	all	{
 		DECLARE tbl_ldmap_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ldmap
+		WHERE 	HOSPNUM	= :HOSPNUM
 		;
 	};
 };

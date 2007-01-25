@@ -26,7 +26,7 @@
       *¼õ¿ÇÍúÎò
            03  KARRK-KEY.
       *  °åÎÅµ¡´Ø£É£Ä
-               05  KARRK-HOSPID            PIC  X(24).
+               05  KARRK-HOSPNUM            PIC  S9(9) BINARY.
       *  ´µ¼Ô£É£Ä
                05  KARRK-PTID              PIC  9(10).
       *  ¿ÇÎÅ²Ê

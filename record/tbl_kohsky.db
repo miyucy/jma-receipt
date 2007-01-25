@@ -1,5 +1,5 @@
 tbl_kohsky	{
-HOSPID		char(24);
+HOSPNUM		integer;
 SRYYM		number(6);
 NYUGAIKBN	char(1);
 PTID		number(10);
@@ -534,7 +534,7 @@ XXKOHNUM3 			char(3),virtual;
 XXKOHNUM4 			char(3),virtual;
 };
 primary{
-	HOSPID,SRYYM,NYUGAIKBN,PTID,RECEKA,TEISYUTUSAKI,RECESYUBETU,HKNJANUM_KEY,HOJOKBN_KEY,TEKSTYMD;
+	HOSPNUM,SRYYM,NYUGAIKBN,PTID,RECEKA,TEISYUTUSAKI,RECESYUBETU,HKNJANUM_KEY,HOJOKBN_KEY,TEKSTYMD;
 };
 
 path	key		{ 	
@@ -542,7 +542,7 @@ path	key		{
 		DECLARE tbl_kohsky_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_kohsky
-                WHERE   HOSPID       =   :HOSPID
+                WHERE   HOSPNUM       =   :HOSPNUM
                   AND   SRYYM        =   :SRYYM
                   AND   NYUGAIKBN    =   :NYUGAIKBN
                   AND   PTID         =   :PTID
@@ -561,7 +561,7 @@ path	key2	{
 		DECLARE tbl_kohsky_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_kohsky
-                WHERE (      HOSPID      =   :HOSPID     )
+                WHERE (      HOSPNUM      =   :HOSPNUM     )
                   AND (   (( SRYYM       =   :SKYYM   )
                        AND ( SKYKBN      <>  '0'      )
                        AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
@@ -576,7 +576,7 @@ path	key3	{
 		DECLARE tbl_kohsky_key3_csr CURSOR FOR
 		SELECT *
 		FROM tbl_kohsky
-                WHERE (      HOSPID      =   :HOSPID       )
+                WHERE (      HOSPNUM      =   :HOSPNUM       )
                   AND (   (( SRYYM       =   :SKYYM     )
                        AND ( SKYKBN      <>  '0'        )
                        AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
@@ -595,7 +595,7 @@ path	key4	{
 		DECLARE tbl_kohsky_key4_csr CURSOR FOR
 		SELECT *
 		FROM tbl_kohsky
-                WHERE (      HOSPID      =   :HOSPID     )
+                WHERE (      HOSPNUM      =   :HOSPNUM     )
                   AND (   (( SRYYM       =   :SKYYM   )
                        AND ( SKYKBN      <>  '0'      )
                        AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
@@ -618,7 +618,7 @@ path	key5	{
 		DECLARE tbl_kohsky_key5_csr CURSOR FOR
 		SELECT *
 		FROM tbl_kohsky
-                WHERE (      HOSPID      =   :HOSPID     )
+                WHERE (      HOSPNUM      =   :HOSPNUM     )
                   AND (   (( SRYYM       =   :SKYYM   )
                        AND ( SKYKBN      <>  '0'      )
                        AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
@@ -644,7 +644,7 @@ path	key6	{
 		DECLARE tbl_kohsky_key6_csr CURSOR FOR
 		SELECT *
 		FROM tbl_kohsky
-                WHERE (      HOSPID      =   :HOSPID     )
+                WHERE (      HOSPNUM      =   :HOSPNUM     )
                   AND (   (( SRYYM       =   :SKYYM   )
                        AND ( SKYKBN      <>  '0'      )
                        AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
@@ -674,7 +674,7 @@ path	del1 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_kohsky
-                WHERE   HOSPID       =   :HOSPID
+                WHERE   HOSPNUM       =   :HOSPNUM
                   AND   SRYYM        =   :SRYYM
                   AND   NYUGAIKBN    =   :NYUGAIKBN
                   AND   TEISYUTUSAKI =   :TEISYUTUSAKI
@@ -687,7 +687,7 @@ path	del2 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_kohsky
-                WHERE   HOSPID      =   :HOSPID
+                WHERE   HOSPNUM      =   :HOSPNUM
                   AND   SRYYM       =   :SRYYM
                   AND   NYUGAIKBN   =   :NYUGAIKBN
                   AND   PTID        =   :PTID
@@ -701,7 +701,7 @@ path	del3 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_kohsky
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 		;
 	};
@@ -712,6 +712,7 @@ path	all	{
 		DECLARE tbl_kohsky_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_kohsky
+			WHERE   HOSPNUM    =   :HOSPNUM
       		;
 	};
 };
@@ -722,7 +723,7 @@ path	key7	{
 		DECLARE tbl_kohsky_key7_csr CURSOR FOR
 		SELECT *
 		FROM tbl_kohsky
-                WHERE (      HOSPID      =   :HOSPID     )
+                WHERE (      HOSPNUM      =   :HOSPNUM     )
                   AND (   (( SRYYM       =   :SKYYM   )
                        AND ( SKYKBN      <>  '0'      )
                        AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
@@ -737,7 +738,7 @@ path	st_key1	{
 	DBSELECT	{
 		DECLARE tbl_kohsky_st_key1_csr CURSOR FOR
 		SELECT a.* FROM tbl_kohsky a,tbl_ptinf b
-		WHERE (    a.HOSPID      =   :HOSPID     )
+		WHERE (    a.HOSPNUM      =   :HOSPNUM     )
 		AND (   (( a.SRYYM       =   :SKYYM   )
 		AND ( a.SKYKBN      <>  '0'      )
 		AND (( a.SKYYM       =  '000000' )
@@ -745,7 +746,7 @@ path	st_key1	{
 			OR (( a.SKYYM       =   :SKYYM   )
 		AND ( a.SKYKBN      <>  '0'      )))
 		AND (      a.NYUGAIKBN  LIKE  :NYUGAIKBN    )
-		AND (    a.HOSPID  =  b.HOSPID )
+		AND (    a.HOSPNUM  =  b.HOSPNUM )
 		AND (    a.PTID    =  b.PTID   )
 		AND (  b.TSTPTNUMKBN <> '1'    )
 	};

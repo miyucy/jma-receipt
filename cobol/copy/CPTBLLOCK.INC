@@ -1,4 +1,5 @@
         01  TBL-LOCK.
+            02  LOCK-HOSPNUM PIC S9(9) BINARY.
             02  LOCK-TERMID  PIC X(64).
             02  LOCK-OPID    PIC X(16).
             02  LOCKTABLE.

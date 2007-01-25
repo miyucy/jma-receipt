@@ -26,7 +26,7 @@
       *キー
            03  TNKRRK-KEY.
       *医療機関ＩＤ
-               05  TNKRRK-HOSPID           PIC  X(24).
+               05  TNKRRK-HOSPNUM           PIC  S9(9) BINARY.
       *患者ＩＤ
                05  TNKRRK-PTID             PIC  9(10).
       *開始年月日
@@ -47,6 +47,6 @@
            03  TNKRRK-UPHMS                PIC  X(06).
       *　　主キー更新用項目
            03  TNKRRK-KEY-O.
-               05  TNKRRK-HOSPID-O           PIC  X(24).
+               05  TNKRRK-HOSPNUM-O           PIC  S9(9) BINARY.
                05  TNKRRK-PTID-O             PIC  9(10).
                05  TNKRRK-STYMD-O            PIC  X(08).

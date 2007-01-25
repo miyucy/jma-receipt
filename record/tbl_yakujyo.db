@@ -1,5 +1,5 @@
 tbl_yakujyo {
-        HOSPID  			char(24);
+        HOSPNUM  			integer;
         SRYCD				char(9);
         TEKNUM	         		number(2);
         NAME                            varchar(170);
@@ -16,7 +16,7 @@ tbl_yakujyo {
         UPHMS				char(6);
 };
 primary	{
-	HOSPID,SRYCD,TEKNUM;
+	HOSPNUM,SRYCD,TEKNUM;
 };
 
 path	key 	{
@@ -24,7 +24,7 @@ path	key 	{
 		DECLARE tbl_yakujyo_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_yakujyo
-			WHERE   HOSPID	=	:HOSPID
+			WHERE   HOSPNUM	=	:HOSPNUM
 			AND	SRYCD	=	:SRYCD
 			AND	TEKNUM	=	:TEKNUM
 		;
@@ -36,6 +36,7 @@ path	all 	{
 		DECLARE tbl_yakujyo_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_yakujyo
+			WHERE   HOSPNUM	=	:HOSPNUM
  		;
 	};
 };
@@ -45,10 +46,11 @@ path	key2s 	{
 		DECLARE tbl_yakujyo_key2s_csr CURSOR FOR
 		SELECT a.*
 		FROM tbl_yakujyo a,tbl_tensu b
-			WHERE   a.SRYCD      =     b.SRYCD
+			WHERE a.HOSPNUM	=	b.HOSPNUM
+			AND   a.SRYCD      =     b.SRYCD
 			AND     b.YUKOSTYMD  <=     :CREYMD
 			AND     b.YUKOEDYMD  >=     :CREYMD
-			AND     a.HOSPID     =      :HOSPID
+			AND     a.HOSPNUM     =      :HOSPNUM
 			AND    (a.NAME       LIKE   :NAME
 			OR      b.NAME       LIKE   :NAME
 			OR      b.KANANAME   LIKE   :NAME)
@@ -67,10 +69,11 @@ path	key2k 	{
 		DECLARE tbl_yakujyo_key2k_csr CURSOR FOR
 		SELECT a.*
 		FROM tbl_yakujyo a,tbl_tensu b
-			WHERE   a.SRYCD      =     b.SRYCD
+			WHERE a.HOSPNUM	=	b.HOSPNUM
+			AND   a.SRYCD      =     b.SRYCD
 			AND     b.YUKOSTYMD  <=     :CREYMD
 			AND     b.YUKOEDYMD  >=     :CREYMD
-			AND     a.HOSPID     =      :HOSPID
+			AND     a.HOSPNUM     =      :HOSPNUM
 			AND    (a.NAME       LIKE   :NAME
 			OR      b.NAME       LIKE   :NAME
 			OR      b.KANANAME   LIKE   :NAME)
@@ -89,10 +92,11 @@ path	key3s 	{
 		DECLARE tbl_yakujyo_key3s_csr CURSOR FOR
 		SELECT a.*
 		FROM tbl_yakujyo a,tbl_tensu b
-			WHERE   a.SRYCD      =     b.SRYCD
+			WHERE a.HOSPNUM	=	b.HOSPNUM
+			AND   a.SRYCD      =     b.SRYCD
 			AND     b.YUKOSTYMD  <=     :CREYMD
 			AND     b.YUKOEDYMD  >=     :CREYMD
-			AND     a.HOSPID     =      :HOSPID
+			AND     a.HOSPNUM     =      :HOSPNUM
 			AND    (a.SRYCD      =      :SRYCD
 			OR      a.SRYCD      LIKE   :SRYCD)
 			AND     a.SRYCD      LIKE   '6%'
@@ -110,10 +114,11 @@ path	key3k 	{
 		DECLARE tbl_yakujyo_key3k_csr CURSOR FOR
 		SELECT a.*
 		FROM tbl_yakujyo a,tbl_tensu b
-			WHERE   a.SRYCD      =     b.SRYCD
+			WHERE a.HOSPNUM	=	b.HOSPNUM
+			AND   a.SRYCD      =     b.SRYCD
 			AND     b.YUKOSTYMD  <=     :CREYMD
 			AND     b.YUKOEDYMD  >=     :CREYMD
-			AND     a.HOSPID     =      :HOSPID
+			AND     a.HOSPNUM     =      :HOSPNUM
 			AND    (a.SRYCD      =      :SRYCD
 			OR      a.SRYCD      LIKE   :SRYCD)
 			AND     a.SRYCD      LIKE   '6%'
@@ -131,12 +136,13 @@ path	key4s 	{
 		DECLARE tbl_yakujyo_key4s_csr CURSOR FOR
 		SELECT a.*
 		FROM tbl_yakujyo a,tbl_tensu b,tbl_inputcd c
-			WHERE   a.SRYCD      =     b.SRYCD
+			WHERE a.HOSPNUM	=	b.HOSPNUM
+			AND   a.SRYCD      =     b.SRYCD
 			AND     a.SRYCD      =     c.SRYCD
-			AND     a.HOSPID     =     c.HOSPID
+			AND     a.HOSPNUM     =     c.HOSPNUM
 			AND     b.YUKOSTYMD  <=     :CREYMD
 			AND     b.YUKOEDYMD  >=     :CREYMD
-			AND     a.HOSPID     =      :HOSPID
+			AND     a.HOSPNUM     =      :HOSPNUM
 			AND    (c.INPUTCD    =      :SRYCD
 			OR      c.INPUTCD    LIKE   :SRYCD)
 			AND     a.SRYCD      LIKE   '6%'
@@ -154,12 +160,13 @@ path	key4k 	{
 		DECLARE tbl_yakujyo_key4k_csr CURSOR FOR
 		SELECT a.*
 		FROM tbl_yakujyo a,tbl_tensu b,tbl_inputcd c
-			WHERE   a.SRYCD      =     b.SRYCD
+			WHERE a.HOSPNUM	=	b.HOSPNUM
+			AND   a.SRYCD      =     b.SRYCD
 			AND     a.SRYCD      =     c.SRYCD
-			AND     a.HOSPID     =     c.HOSPID
+			AND     a.HOSPNUM     =     c.HOSPNUM
 			AND     b.YUKOSTYMD  <=     :CREYMD
 			AND     b.YUKOEDYMD  >=     :CREYMD
-			AND     a.HOSPID     =      :HOSPID
+			AND     a.HOSPNUM     =      :HOSPNUM
 			AND    (c.INPUTCD    =      :SRYCD
 			OR      c.INPUTCD    LIKE   :SRYCD)
 			AND     a.SRYCD      LIKE   '6%'
@@ -177,10 +184,11 @@ path	key5s 	{
 		DECLARE tbl_yakujyo_key5s_csr CURSOR FOR
 		SELECT a.*
 		FROM tbl_yakujyo a,tbl_tensu b
-			WHERE   a.SRYCD      =     b.SRYCD
+			WHERE a.HOSPNUM	=	b.HOSPNUM
+			AND   a.SRYCD      =     b.SRYCD
 			AND     b.YUKOSTYMD  <=     :CREYMD
 			AND     b.YUKOEDYMD  >=     :CREYMD
-			AND     a.HOSPID     =      :HOSPID
+			AND     a.HOSPNUM     =      :HOSPNUM
 			AND     a.SRYCD      LIKE   '6%'
 			AND     a.TEKNUM     =      '1'
 			AND    (b.YKZKBN     =      '1'
@@ -196,10 +204,11 @@ path	key5k 	{
 		DECLARE tbl_yakujyo_key5k_csr CURSOR FOR
 		SELECT a.*
 		FROM tbl_yakujyo a,tbl_tensu b
-			WHERE   a.SRYCD      =     b.SRYCD
+			WHERE a.HOSPNUM	=	b.HOSPNUM
+			AND   a.SRYCD      =     b.SRYCD
 			AND     b.YUKOSTYMD  <=     :CREYMD
 			AND     b.YUKOEDYMD  >=     :CREYMD
-			AND     a.HOSPID     =      :HOSPID
+			AND     a.HOSPNUM     =      :HOSPNUM
 			AND     a.SRYCD      LIKE   '6%'
 			AND     a.TEKNUM     =      '1'
 			AND    (b.YKZKBN     =      '1'

@@ -1,5 +1,5 @@
 tbl_hkncombi {
-	HOSPID				char(24);
+	HOSPNUM				integer;
 	PTID				number(10);
 	HKNCOMBINUM			number(4,0);
 	HKNID				number(10);
@@ -110,7 +110,7 @@ tbl_hkncombi {
 };
 
 primary	{
-	HOSPID,PTID,HKNCOMBINUM;
+	HOSPNUM,PTID,HKNCOMBINUM;
 };
 
 path	key		{ 	
@@ -118,7 +118,7 @@ path	key		{
 		DECLARE tbl_hkncombi_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_hkncombi
-			WHERE   HOSPID      =   :HOSPID
+			WHERE   HOSPNUM      =   :HOSPNUM
 			AND   PTID          =   :PTID
 			AND   HKNCOMBINUM   =   :HKNCOMBINUM
 		;
@@ -130,7 +130,7 @@ path	key2	{
 		DECLARE tbl_hkncombi_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_hkncombi
-			WHERE   HOSPID      =   :HOSPID
+			WHERE   HOSPNUM      =   :HOSPNUM
 			AND   PTID          =   :PTID
 			ORDER   BY  HKNCOMBINUM
 		;
@@ -142,7 +142,7 @@ path	key3	{
 		DECLARE tbl_hkncombi_key3_csr CURSOR FOR
 		SELECT *
 		FROM tbl_hkncombi
-			WHERE   HOSPID      =   :HOSPID
+			WHERE   HOSPNUM      =   :HOSPNUM
 			AND   PTID          =   :PTID
 			AND   DELKBN        =   :DELKBN
 			ORDER   BY  HKNID,
@@ -169,6 +169,7 @@ path	all		{
 		DECLARE tbl_hkncombi_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_hkncombi
+			WHERE   HOSPNUM      =   :HOSPNUM
  		;
 	};
 };
@@ -177,7 +178,7 @@ path	del1 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_hkncombi
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 		;
 	};
@@ -188,7 +189,7 @@ path	key4	{
 		DECLARE tbl_hkncombi_key4_csr CURSOR FOR
 		SELECT *
 		FROM tbl_hkncombi
-			WHERE   HOSPID      =   :HOSPID
+			WHERE   HOSPNUM      =   :HOSPNUM
 			AND   PTID          =   :PTID
                         AND  ((KOH1ID       =   :KOH1ID)
                          OR   (KOH2ID       =   :KOH2ID)
@@ -204,7 +205,7 @@ path	key5	{
 		DECLARE tbl_hkncombi_key5_csr CURSOR FOR
 		SELECT *
 		FROM tbl_hkncombi
-			WHERE   HOSPID      =   :HOSPID
+			WHERE   HOSPNUM      =   :HOSPNUM
 			AND     PTID        =   :PTID
                         AND     HKNID       =   :HKNID
 			ORDER   BY  HKNCOMBINUM

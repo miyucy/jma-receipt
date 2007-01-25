@@ -25,6 +25,7 @@
       *01  PGKANRI-REC.
       *キー
            03  PGKANRI-KEY.
+               05  PGKANRI-HOSPNUM  PIC S9(9) BINARY.
       *デビアンバージョン
                05  PGKANRI-DEBIANVERSION   PIC  X(24).
       *システムバージョン

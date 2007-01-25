@@ -30,6 +30,7 @@ insert into tbl_btparawk  select * from tbl_btpara;
 drop table tbl_btpara ;
 
 create table TBL_BTPARA (
+HOSPNUM 		integer not null ,
 SHELLID 		char(8) NOT NULL,
 RUN_OPID		char(16) NOT NULL,
 DSP_RENNUM		numeric(3,0) DEFAULT 0 NOT NULL,
@@ -43,10 +44,10 @@ OPID			varchar(16),
 CREYMD			char(8),
 UPYMD			char(8),
 UPHMS			char(6),
-constraint TBL_BTPARA_primary_key primary key (SHELLID,RUN_OPID,
+constraint TBL_BTPARA_primary_key primary key (HOSPNUM,SHELLID,RUN_OPID,
 DSP_RENNUM,RENNUM));
 
-insert into tbl_btpara  select * from tbl_btparawk;
+insert into tbl_btpara  select 1,* from tbl_btparawk;
 
 drop table tbl_btparawk ;
 

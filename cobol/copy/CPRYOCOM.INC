@@ -25,7 +25,7 @@
       *01  RYOUYOCOM-REC.
            03  RYOCOM-KEY.
       *°åÎÅµ¡´Ø£É£Ä
-               05  RYOCOM-HOSPID         PIC  X(24).
+               05  RYOCOM-HOSPNUM         PIC  S9(9) BINARY.
       *Æþ³°¶èÊ¬
                05  RYOCOM-NYUGAIKBN      PIC  X(01).
       *´µ¼Ô£É£Ä

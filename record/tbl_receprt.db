@@ -1,4 +1,5 @@
 tbl_receprt	{
+	HOSPNUM				integer;
         PRTID               char(4);
         RECEYM              char(6);
         CREYMD              char(8);
@@ -39,7 +40,7 @@ tbl_receprt	{
 };
 
 primary	{
-	PRTID,RECEYM,
+	HOSPNUM,PRTID,RECEYM,
 CREYMD,CREHMS,TEISYUTUSAKI,SRYKA,PREFKBN_SRT,HKNJANUM_SRT,HKNJANUM,RECESYUBETU,TEKSTYMD,ZAITAKU,CHOUKI,PTNUM,SRYYM,RENNUM,RECENUM;
 };
 
@@ -48,7 +49,8 @@ path	key		{
 		DECLARE tbl_receprt_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-                    WHERE   PRTID        =   :PRTID
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -67,7 +69,8 @@ path	key2	{
 		DECLARE tbl_receprt_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-                    WHERE   PRTID        =   :PRTID
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -86,7 +89,8 @@ path	key3	{
 		DECLARE tbl_receprt_key3_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-                    WHERE   PRTID        =   :PRTID
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -101,7 +105,8 @@ path	key4	{
 		DECLARE tbl_receprt_key4_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-                    WHERE   PRTID        =   :PRTID
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -116,7 +121,8 @@ path	key5		{
 		DECLARE tbl_receprt_key5_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-                    WHERE   PRTID        =   :PRTID
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -133,7 +139,8 @@ path	key6	{
 		DECLARE tbl_receprt_key6_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-                    WHERE   PRTID        =   :PRTID
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -150,7 +157,8 @@ path	key7		{
 		DECLARE tbl_receprt_key7_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-                    WHERE   PRTID        =   :PRTID
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -168,7 +176,8 @@ path	key8	{
 		DECLARE tbl_receprt_key8_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-                    WHERE   PRTID        =   :PRTID
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -186,7 +195,8 @@ path	key9		{
 		DECLARE tbl_receprt_key9_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-                    WHERE   PRTID        =   :PRTID
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -209,7 +219,8 @@ path	key10		{
 		DECLARE tbl_receprt_key10_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-                    WHERE   PRTID        =   :PRTID
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -232,7 +243,8 @@ path	key11	{
 		DECLARE tbl_receprt_key11_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-                    WHERE   PRTID        =   :PRTID
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -255,7 +267,8 @@ path	key12	{
 		DECLARE tbl_receprt_key12_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-                    WHERE   PRTID        =   :PRTID
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -271,7 +284,8 @@ path	key13	{
 		DECLARE tbl_receprt_key13_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-                    WHERE   PRTID        =   :PRTID
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -287,7 +301,8 @@ path	key14		{
 		DECLARE tbl_receprt_key14_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-                    WHERE   PRTID        =   :PRTID
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -307,7 +322,8 @@ path	key15	{
 		DECLARE tbl_receprt_key15_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-                    WHERE   PRTID        =   :PRTID
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -327,7 +343,8 @@ path	key16		{
 		DECLARE tbl_receprt_key16_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-                    WHERE   PRTID        =   :PRTID
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -352,7 +369,8 @@ path	key17	{
 		DECLARE tbl_receprt_key17_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-                    WHERE   PRTID        =   :PRTID
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -377,7 +395,8 @@ path	key18		{
 		DECLARE tbl_receprt_key18_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-                    WHERE   PRTID        =   :PRTID
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -398,7 +417,8 @@ path	key19	{
 		DECLARE tbl_receprt_key19_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-                    WHERE   PRTID        =   :PRTID
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -419,7 +439,8 @@ path	key20		{
 		DECLARE tbl_receprt_key20_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-                    WHERE   PRTID        =   :PRTID
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -438,7 +459,8 @@ path	key21	{
 		DECLARE tbl_receprt_key21_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-                    WHERE   PRTID        =   :PRTID
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -457,7 +479,8 @@ path	key22		{
 		DECLARE tbl_receprt_key22_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-                    WHERE   PRTID        =   :PRTID
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -479,7 +502,8 @@ path	key23	{
 		DECLARE tbl_receprt_key23_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-                    WHERE   PRTID        =   :PRTID
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -501,7 +525,8 @@ path	key24		{
 		DECLARE tbl_receprt_key24_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-                    WHERE   PRTID        =   :PRTID
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -522,7 +547,8 @@ path	key25	{
 		DECLARE tbl_receprt_key25_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-                    WHERE   PRTID        =   :PRTID
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -543,7 +569,8 @@ path	key26		{
 		DECLARE tbl_receprt_key26_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-                    WHERE   PRTID        =   :PRTID
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -562,7 +589,8 @@ path	key27	{
 		DECLARE tbl_receprt_key27_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-                    WHERE   PRTID        =   :PRTID
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -581,7 +609,8 @@ path	key28		{
 		DECLARE tbl_receprt_key28_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-                    WHERE   PRTID        =   :PRTID
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -603,7 +632,8 @@ path	key29	{
 		DECLARE tbl_receprt_key29_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-                    WHERE   PRTID        =   :PRTID
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -624,7 +654,8 @@ path	del1 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_receprt
-                    WHERE   PRTID        =   :PRTID
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -637,7 +668,8 @@ path	del2 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_receprt
-                    WHERE   PRTID        =   :PRTID
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   PRTID        =   :PRTID
                     AND     NYUGAIKBN    =   :NYUGAIKBN 
                     AND     RECEYM       =   '000000'
 		;
@@ -650,6 +682,7 @@ path	all	{
 		DECLARE tbl_receprt_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
+		WHERE 	HOSPNUM	= :HOSPNUM
  		;
 	};
 };
@@ -659,7 +692,8 @@ path	key30	{
 		DECLARE tbl_receprt_key30_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-                    WHERE   PRTID        =   :PRTID
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -674,7 +708,8 @@ path	upd1	{
 		UPDATE  tbl_receprt
                     SET     PRTJYUN      =   0,
                             PRTRENNUM    =   0 
-                    WHERE   PRTID        =   :PRTID
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -688,7 +723,8 @@ path    del3    {
         DBDELETE        {
                 DELETE
                 FROM tbl_receprt
-                    WHERE   PRTID        =   :PRTID
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     PTNUM        =   :PTNUM
                 ;
@@ -701,7 +737,8 @@ path	key31		{
 		DECLARE tbl_receprt_key31_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-                    WHERE   PRTID        =   :PRTID
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -724,7 +761,8 @@ path	key32	{
 		DECLARE tbl_receprt_key32_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-                    WHERE   PRTID        =   :PRTID
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -747,7 +785,8 @@ path	key33		{
 		DECLARE tbl_receprt_key33_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-                    WHERE   PRTID        =   :PRTID
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -767,7 +806,8 @@ path	key34	{
 		DECLARE tbl_receprt_key34_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-                    WHERE   PRTID        =   :PRTID
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -787,7 +827,8 @@ path	key35		{
 		DECLARE tbl_receprt_key35_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-                    WHERE   PRTID        =   :PRTID
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -812,7 +853,8 @@ path	key36	{
 		DECLARE tbl_receprt_key36_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-                    WHERE   PRTID        =   :PRTID
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -837,7 +879,8 @@ path	key37	{
 		DECLARE tbl_receprt_key37_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-                    WHERE   PRTID        =   :PRTID
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -866,7 +909,8 @@ path	key38		{
 		DECLARE tbl_receprt_key38_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-                    WHERE   PRTID        =   :PRTID
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
@@ -889,7 +933,8 @@ path	key39	{
 		DECLARE tbl_receprt_key39_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receprt
-                    WHERE   PRTID        =   :PRTID
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND   PRTID        =   :PRTID
                     AND     RECEYM       =   :RECEYM
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS

@@ -25,7 +25,7 @@
       *01  OPECOM-REC.
            03  OPECOM-KEY.
       *°åÎÅµ¡´Ø£É£Ä
-               05  OPECOM-HOSPID        PIC X(24).
+               05  OPECOM-HOSPNUM        PIC S9(9) BINARY.
       *´µ¼Ô£É£Ä
                05  OPECOM-PTID          PIC 9(10).
       *¼ê½ÑÇ¯·îÆü

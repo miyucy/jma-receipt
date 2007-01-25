@@ -1,4 +1,5 @@
 tbl_dbkanri {
+	HOSPNUM				integer;
 	KANRICD				char(8);
 	VERSION				varchar(64);
 	DBSVERSION1     		varchar(64);
@@ -13,7 +14,7 @@ tbl_dbkanri {
 };
 
 primary	{
-	KANRICD;
+	HOSPNUM,KANRICD;
 };
 
 path	key		{ 	
@@ -21,7 +22,8 @@ path	key		{
 		DECLARE tbl_dbkanri_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_dbkanri
-			WHERE   KANRICD   =   :KANRICD
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   KANRICD   =   :KANRICD
                 ;
 	};
 };
@@ -31,6 +33,7 @@ path	all		{
 		DECLARE tbl_dbkanri_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_dbkanri
+		WHERE 	HOSPNUM	= :HOSPNUM
                    ORDER BY  KANRICD
 ;
 	};

@@ -5,7 +5,7 @@
 -- Create Date : 2006/01/19         --
 --
 CREATE TABLE "tbl_syurrk" (
-	"hospid"		character(24) NOT NULL,
+	"hospnum"		integer  NOT NULL,
 	"ptid"			numeric(10,0) DEFAULT 0 NOT NULL,
 	"nyugaikbn"		character(1) NOT NULL,
 	"denpnum"		integer  NOT NULL,
@@ -57,7 +57,7 @@ CREATE TABLE "tbl_syurrk" (
 	"creymd" character(8),
 	"upymd" character(8),
 	"uphms" character(6),
-	Constraint "tbl_syurrk_primary_key" Primary Key ("hospid", "ptid", "nyugaikbn", "denpnum","syurrknum","syuedanum")
+	Constraint "tbl_syurrk_primary_key" Primary Key ("hospnum", "ptid", "nyugaikbn", "denpnum","syurrknum","syuedanum")
 );
 
 COMMENT ON TABLE "tbl_syurrk" IS '¼ýÇ¼ÍúÎò';

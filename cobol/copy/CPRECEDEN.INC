@@ -32,7 +32,7 @@
       *£Ë£Å£Ù
            03  RECEDEN-KEY.
       *°åÎÅµ¡´Ø£É£Ä
-               05  RECEDEN-HOSPID           PIC  X(24).
+               05  RECEDEN-HOSPNUM           PIC  S9(9) BINARY.
       *¿ÇÎÅÇ¯·î
                05  RECEDEN-SRYYM            PIC  9(06).
       *Æþ³°¶èÊ¬

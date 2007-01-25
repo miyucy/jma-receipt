@@ -1,5 +1,5 @@
 tbl_yyk {
-	HOSPID				char(24);
+	HOSPNUM				integer;
 	SRYNAIYO			char(2);
 	DRCD    			char(5);
 	YYKYMD  			char(8);
@@ -21,7 +21,7 @@ tbl_yyk {
 	UPHMS				char(6);
 };
 primary	{
-	HOSPID,SRYNAIYO,DRCD,YYKYMD,KEYYYKTIME,YYKID;
+	HOSPNUM,SRYNAIYO,DRCD,YYKYMD,KEYYYKTIME,YYKID;
 };
 
 path	key 	{
@@ -29,7 +29,7 @@ path	key 	{
 		DECLARE tbl_yyk_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_yyk
-			WHERE   HOSPID        =   :HOSPID
+			WHERE   HOSPNUM        =   :HOSPNUM
 			AND		SRYNAIYO      =   :SRYNAIYO
 			AND		DRCD          =   :DRCD
 			AND		YYKYMD        =   :YYKYMD
@@ -44,7 +44,7 @@ path	key2 	{
 		DECLARE tbl_yyk_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_yyk
-			WHERE   HOSPID        =   :HOSPID
+			WHERE   HOSPNUM        =   :HOSPNUM
 			AND		SRYNAIYO      =   :SRYNAIYO
 			AND		DRCD          =   :DRCD
 			AND 	YYKYMD        =   :YYKYMD
@@ -59,7 +59,7 @@ path	key3 	{
 		DECLARE tbl_yyk_key3_csr CURSOR FOR
 		SELECT *
 		FROM tbl_yyk
-			WHERE   HOSPID        =   :HOSPID
+			WHERE   HOSPNUM        =   :HOSPNUM
 			AND		SRYNAIYO      =   :SRYNAIYO
 			AND		DRCD          =   :DRCD
 			AND		YYKYMD        =   :YYKYMD
@@ -73,7 +73,7 @@ path	key4 	{
 		DECLARE tbl_yyk_key4_csr CURSOR FOR
 		SELECT *
 		FROM tbl_yyk
-			WHERE   HOSPID        =   :HOSPID
+			WHERE   HOSPNUM        =   :HOSPNUM
 			AND		YYKYMD        =   :YYKYMD
 			AND		PTID          =   :PTID
 			ORDER   BY        KEYYYKTIME,YYKID
@@ -86,7 +86,7 @@ path	key5 	{
 		DECLARE tbl_yyk_key5_csr CURSOR FOR
 		SELECT *
 		FROM tbl_yyk
-			WHERE   HOSPID        =   :HOSPID
+			WHERE   HOSPNUM        =   :HOSPNUM
 			AND		YYKYMD        =   :YYKYMD
 			ORDER   BY        KEYYYKTIME,YYKTIME,YYKID
 		;
@@ -98,6 +98,7 @@ path	all 	{
 		DECLARE tbl_yyk_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_yyk
+			WHERE   HOSPNUM      =   :HOSPNUM
  		;
 	};
 };
@@ -107,7 +108,7 @@ path	key6 	{
 		DECLARE tbl_yyk_key6_csr CURSOR FOR
 		SELECT *
 		FROM tbl_yyk
-			WHERE   HOSPID      =   :HOSPID
+			WHERE   HOSPNUM      =   :HOSPNUM
 			AND     PTID        =   :PTID
 			ORDER   BY        YYKYMD,KEYYYKTIME,YYKID
 		;
@@ -119,7 +120,7 @@ path	key7 	{
 		DECLARE tbl_yyk_key7_csr CURSOR FOR
 		SELECT *
 		FROM tbl_yyk
-			WHERE   HOSPID        =   :HOSPID
+			WHERE   HOSPNUM        =   :HOSPNUM
 			AND		SRYNAIYO      =   :SRYNAIYO
 			AND		DRCD          =   :DRCD
 			AND 	YYKYMD        =   :YYKYMD
@@ -134,7 +135,7 @@ path	key8 	{
 		DECLARE tbl_yyk_key8_csr CURSOR FOR
 		SELECT *
 		FROM tbl_yyk
-			WHERE   HOSPID      =   :HOSPID
+			WHERE   HOSPNUM      =   :HOSPNUM
 			AND     PTID        =   :PTID
 			ORDER   BY        YYKYMD  DESC,
                                           KEYYYKTIME DESC,

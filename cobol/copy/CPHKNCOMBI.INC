@@ -27,7 +27,7 @@
       *¥­¡¼
            03 COMB-KEY.
       *°åÎÅµ¡´Ø£É£Ä
-               05 COMB-HOSPID          PIC  X(24).
+               05 COMB-HOSPNUM          PIC  S9(9) BINARY.
       *´µ¼Ô£É£Ä
                05 COMB-PTID            PIC  9(10).
       *ÁÈ¹ç¤»ÈÖ¹æ

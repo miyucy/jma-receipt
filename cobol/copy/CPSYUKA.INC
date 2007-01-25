@@ -26,7 +26,7 @@
       *01  SYUKA-REC.
            03  SYUKA-KEY.
       *°åÎÅµ¡´Ø£É£Ä
-               05  SYUKA-HOSPID        PIC X(24).
+               05  SYUKA-HOSPNUM        PIC S9(9) BINARY.
       *Æþ³°¶èÊ¬
                05  SYUKA-NYUGAIKBN     PIC X(01).
       *´µ¼Ô£É£Ä

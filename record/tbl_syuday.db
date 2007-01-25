@@ -1,5 +1,5 @@
 tbl_syuday {
-	HOSPID				char(24);
+	HOSPNUM				integer;
 	NYUGAIKBN			char(1);
 	PTID				number(10,0);
 	DENPNUM          		number(7,0);
@@ -664,7 +664,7 @@ tbl_syuday {
 	UPHMS				char(6);
 };
 primary	{
-	HOSPID,NYUGAIKBN,PTID,DENPNUM;
+	HOSPNUM,NYUGAIKBN,PTID,DENPNUM;
 };
 
 path	key 	{
@@ -672,7 +672,7 @@ path	key 	{
 		DECLARE tbl_syuday_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syuday
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   DENPNUM     =   :DENPNUM
@@ -684,7 +684,7 @@ path	del1 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_syuday
-			WHERE   HOSPID       =   :HOSPID
+			WHERE   HOSPNUM       =   :HOSPNUM
 			AND     NYUGAIKBN    =   :NYUGAIKBN
 			AND     CREATEKBN    =   :CREATEKBN
 		;
@@ -695,7 +695,7 @@ path	del2 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_syuday
-			WHERE   HOSPID       =   :HOSPID
+			WHERE   HOSPNUM       =   :HOSPNUM
 			AND     NYUGAIKBN    =   :NYUGAIKBN
 			AND      PTID        =   :PTID
 		;
@@ -706,7 +706,7 @@ path	del3 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_syuday
-			WHERE   HOSPID       =   :HOSPID
+			WHERE   HOSPNUM       =   :HOSPNUM
 			AND     NYUGAIKBN    =   :NYUGAIKBN
 			AND     PTID         =   :PTID
 			AND     SKYYM        =   :SKYYM
@@ -719,7 +719,8 @@ path	del4 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_syuday
-			WHERE   NYUGAIKBN    =   '1'
+			WHERE   HOSPNUM       =   :HOSPNUM
+			AND     NYUGAIKBN    =   '1'
 			AND     DENPNUM      >=   9000000
 			AND     DENPNUM      <    9100000
 			AND     CREATEKBN    =   '3'
@@ -731,7 +732,7 @@ path	del5 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_syuday
-			WHERE   HOSPID       =   :HOSPID
+			WHERE   HOSPNUM       =   :HOSPNUM
 			AND     NYUGAIKBN    =   :NYUGAIKBN
 			AND     PTID         =   :PTID
 			AND     DENPNUM      =   :DENPNUM
@@ -744,6 +745,7 @@ path	all 	{
 		DECLARE tbl_syuday_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syuday
+			WHERE   HOSPNUM    =   :HOSPNUM
 		;
 	};
 };

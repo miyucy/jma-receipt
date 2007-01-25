@@ -24,6 +24,7 @@
       *****************************************************************
       *01  CHKTRD-REC.
            03  CHKTRD-KEY.
+               05  CHKTRD-HOSPNUM        PIC S9(9) BINARY.
       *チェック区分
                05  CHKTRD-CHKKBN         PIC  X(01).
       *診療コード

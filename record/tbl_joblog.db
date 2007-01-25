@@ -1,4 +1,5 @@
 tbl_joblog	{
+	HOSPNUM				integer;
 	LOGYMD			char(8);
 	LOGTIME			char(6);
 	PROGNAME		varchar(20);
@@ -10,7 +11,7 @@ tbl_joblog	{
 };
 
 primary	{
-	LOGYMD, LOGTIME, PROGNAME, KBNID;
+	HOSPNUM,LOGYMD, LOGTIME, PROGNAME, KBNID;
 };
 
 path	key		{ 	
@@ -18,7 +19,8 @@ path	key		{
 		DECLARE tbl_joblog_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_joblog
-			WHERE   LOGYMD   = 	:LOGYMD
+	WHERE 	HOSPNUM	= :HOSPNUM
+			AND   LOGYMD   = 	:LOGYMD
 			  AND   LOGTIME  = 	:LOGTIME
 			  AND   PROGNAME = 	:PROGNAME
 			  AND   KBNID =    	:KBNID
@@ -30,7 +32,8 @@ path	key2		{
 		DECLARE tbl_joblog_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_joblog
-			WHERE   PROGNAME = 	:PROGNAME
+	WHERE 	HOSPNUM	= :HOSPNUM
+			AND   PROGNAME = 	:PROGNAME
 			  AND   KBNID =    	:KBNID
 			ORDER   BY        LOGYMD, LOGTIME DESC 
 		;
@@ -41,6 +44,7 @@ path	key3		{
 		DECLARE tbl_joblog_key3_csr CURSOR FOR
 		SELECT *
 		FROM tbl_joblog
+	WHERE 	HOSPNUM	= :HOSPNUM
 			ORDER   BY        LOGYMD DESC, LOGTIME DESC 
 		;
 	};
@@ -49,7 +53,8 @@ path	del1	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_joblog
-			WHERE   PROGNAME = 	:PROGNAME
+	WHERE 	HOSPNUM	= :HOSPNUM
+			AND   PROGNAME = 	:PROGNAME
 			  AND   KBNID =    	:KBNID
 			  AND   LOGYMD = 	:LOGYMD
 			  AND	LOGTIME = 	:LOGTIME

@@ -1,5 +1,5 @@
 tbl_kyuseirrk {
-	HOSPID				char(24);
+	HOSPNUM				integer;
 	PTID 				number(10,0);
 	CHGYMD				char(8)	;
 	KANANAME			varchar(100);
@@ -11,12 +11,12 @@ tbl_kyuseirrk {
 	UPYMD    			char(8);
 	UPHMS				char(6);
 #-----> 主キー更新用項目
-	UPHOSPID			char(24),virtual;
+	UPHOSPNUM			integer,virtual;
 	UPPTID 				number(10,0),virtual;
 	UPCHGYMD			char(8),virtual;
 };
 primary	{
-	HOSPID,PTID,CHGYMD;
+	HOSPNUM,PTID,CHGYMD;
 };
 
 path	key 	{
@@ -24,7 +24,7 @@ path	key 	{
 		DECLARE tbl_kyuseirrk_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_kyuseirrk
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   CHGYMD      =   :CHGYMD
 		;
@@ -37,7 +37,7 @@ path	key2 	{
 		DECLARE tbl_kyuseirrk_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_kyuseirrk
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			ORDER BY  CHGYMD
 		;
@@ -49,7 +49,7 @@ path	key3 	{
 		DECLARE tbl_kyuseirrk_key3_csr CURSOR FOR
 		SELECT *
 		FROM tbl_kyuseirrk
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   CHGYMD      >   :CHGYMD
 			ORDER BY  CHGYMD
@@ -62,7 +62,7 @@ path	upd1	{
 		UPDATE	tbl_kyuseirrk 
 				SET	
 #					:*
-                   HOSPID              = :HOSPID,
+                   HOSPNUM              = :HOSPNUM,
                    PTID                = :PTID,
                    CHGYMD              = :CHGYMD,
                    KANANAME            = :KANANAME,
@@ -73,7 +73,7 @@ path	upd1	{
                    CREYMD              = :CREYMD,
                    UPYMD               = :UPYMD,
                    UPHMS               = :UPHMS
-               WHERE   HOSPID          = :UPHOSPID
+               WHERE   HOSPNUM          = :UPHOSPNUM
                  AND   PTID            = :UPPTID
                  AND   CHGYMD          = :UPCHGYMD
 		;
@@ -85,6 +85,7 @@ path	all 	{
 		DECLARE tbl_kyuseirrk_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_kyuseirrk
+			WHERE   HOSPNUM    =   :HOSPNUM
  		;
 	};
 };
@@ -93,7 +94,7 @@ path	del1 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_kyuseirrk
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 		;
 	};

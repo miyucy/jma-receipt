@@ -26,6 +26,7 @@
       *
       *キー
            03  HOURS-KEY.
+               05  HOURS-HOSPNUM       PIC S9(9) BINARY.
       *診療日
                05  HOURS-SRYYMD        PIC  X(08).
       *締め時間

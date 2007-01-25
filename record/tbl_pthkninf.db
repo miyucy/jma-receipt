@@ -1,5 +1,5 @@
 tbl_pthkninf {
-	HOSPID				char(24);
+	HOSPNUM				integer;
 	PTID				number(10);
 	HKNID				number(10);
 	HKNNUM				char(3);
@@ -23,7 +23,7 @@ tbl_pthkninf {
 };
 
 primary	{
-	HOSPID,PTID,HKNID;
+	HOSPNUM,PTID,HKNID;
 };
 
 path	key 	{
@@ -31,7 +31,7 @@ path	key 	{
 		DECLARE tbl_pthkninf_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_pthkninf
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   HKNID       =   :HKNID
 		;
@@ -43,7 +43,7 @@ path	key2 	{
 		DECLARE tbl_pthkninf_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_pthkninf
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			ORDER   BY      TEKEDYMD DESC,
 		                	TEKSTYMD DESC,
@@ -57,7 +57,7 @@ path	key3 	{
 		DECLARE tbl_pthkninf_key3_csr CURSOR FOR
 		SELECT *
 		FROM tbl_pthkninf
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   HKNID       =   :HKNID
 			AND   TEKSTYMD    <=  :TEKSTYMD
@@ -72,7 +72,7 @@ path	key4 	{
 		DECLARE tbl_pthkninf_key4_csr CURSOR FOR
 		SELECT *
 		FROM tbl_pthkninf
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   HKNNUM      =   :HKNNUM
 			AND   TEKSTYMD    =   :TEKSTYMD
@@ -87,7 +87,7 @@ path	key5 	{
 		DECLARE tbl_pthkninf_key5_csr CURSOR FOR
 		SELECT *
 		FROM tbl_pthkninf
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   TEKSTYMD    <=  :TEKSTYMD
 			AND   TEKEDYMD    >=  :TEKEDYMD
 			ORDER   BY      PTID,
@@ -101,7 +101,7 @@ path	key6 	{
 		DECLARE tbl_pthkninf_key6_csr CURSOR FOR
 		SELECT *
 		FROM tbl_pthkninf
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			ORDER   BY    HKNID
 		;
@@ -113,6 +113,7 @@ path	all 	{
 		DECLARE tbl_pthkninf_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_pthkninf
+			WHERE   HOSPNUM    =   :HOSPNUM
  		;
 	};
 };
@@ -121,7 +122,7 @@ path	del1 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_pthkninf
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 		;
 	};

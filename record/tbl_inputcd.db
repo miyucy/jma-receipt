@@ -1,5 +1,5 @@
 tbl_inputcd {
-	HOSPID				char(24);
+	HOSPNUM				integer;
 	CDSYU   			char(1);
 	INPUTCD 			char(20);
 	SRYKBN				char(2);
@@ -14,7 +14,7 @@ tbl_inputcd {
 };
 
 primary	{
-	HOSPID,CDSYU,INPUTCD;
+	HOSPNUM,CDSYU,INPUTCD;
 };
 
 path	key		{ 	
@@ -22,7 +22,7 @@ path	key		{
 		DECLARE tbl_inputcd_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_inputcd
-			WHERE   HOSPID     =   :HOSPID
+			WHERE   HOSPNUM     =   :HOSPNUM
 			AND   CDSYU        =   :CDSYU
 			AND   INPUTCD      LIKE   :INPUTCD
 			ORDER   BY         INPUTCD
@@ -35,7 +35,7 @@ path	key2		{
 		DECLARE tbl_inputcd_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_inputcd
-			WHERE   HOSPID     =   :HOSPID
+			WHERE   HOSPNUM     =   :HOSPNUM
 			AND   CDSYU        =   :CDSYU
 			AND   INPUTCD      =   :INPUTCD
 		;
@@ -47,7 +47,7 @@ path	key3	{
 		DECLARE tbl_inputcd_key3_csr CURSOR FOR
 		SELECT *
 		FROM tbl_inputcd
-			WHERE   HOSPID     =   :HOSPID
+			WHERE   HOSPNUM     =   :HOSPNUM
 			AND  SRYCD         LIKE :SRYCD
 			ORDER   BY         DSPSEQ,
                                            INPUTCD
@@ -61,7 +61,7 @@ path	key4	{
 		SELECT *
 		FROM tbl_inputcd
 			WHERE   SRYCD      =   :SRYCD
-			AND   HOSPID       =   :HOSPID
+			AND   HOSPNUM       =   :HOSPNUM
 			ORDER   BY         DSPSEQ,
                                            INPUTCD
 		;
@@ -72,7 +72,7 @@ path	del11	{
 	DBDELETE	{
                DELETE
 		FROM tbl_inputcd
-			WHERE   HOSPID     =   :HOSPID
+			WHERE   HOSPNUM     =   :HOSPNUM
 			AND   CDSYU        =   :CDSYU
 			AND   INPUTCD      LIKE   :INPUTCD
 		;
@@ -83,7 +83,7 @@ path	del12	{
 	DBDELETE	{
                DELETE
 		FROM tbl_inputcd
-			WHERE   HOSPID     =   :HOSPID
+			WHERE   HOSPNUM     =   :HOSPNUM
 			AND   CDSYU        =   :CDSYU
 			AND   INPUTCD      =   :INPUTCD
 		;
@@ -94,7 +94,7 @@ path	del21	{
 	DBDELETE	{
                DELETE
 		FROM tbl_inputcd
-			WHERE   HOSPID     =   :HOSPID
+			WHERE   HOSPNUM     =   :HOSPNUM
 			AND  SRYCD         LIKE :SRYCD
 		;
 	};
@@ -104,7 +104,7 @@ path	del22	{
 	DBDELETE	{
                DELETE
 		FROM tbl_inputcd
-			WHERE   HOSPID     =   :HOSPID
+			WHERE   HOSPNUM     =   :HOSPNUM
 			AND  SRYCD         =   :SRYCD
 		;
 	};
@@ -115,6 +115,7 @@ path	all	{
 		DECLARE tbl_inputcd_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_inputcd
+			WHERE   HOSPNUM     =   :HOSPNUM
 			ORDER   BY         INPUTCD
                        
  		;

@@ -1,4 +1,5 @@
 tbl_nyuinkhn	{
+	HOSPNUM				integer;
 	KHN_SRYCD		char(9);
 	YUKOSTYMD		char(8);
 	YUKOEDYMD		char(8);
@@ -39,7 +40,7 @@ tbl_nyuinkhn	{
 };
 
 primary	{
-	KHN_SRYCD,YUKOSTYMD,YUKOEDYMD;
+	HOSPNUM,KHN_SRYCD,YUKOSTYMD,YUKOEDYMD;
 };
 
 path	key		{ 	
@@ -47,7 +48,8 @@ path	key		{
 		DECLARE tbl_nyuinkhn_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_nyuinkhn
-			WHERE
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND
 						KHN_SRYCD      =  :KHN_SRYCD
 			AND		YUKOSTYMD     <=  :YUKOSTYMD
 			AND		YUKOEDYMD     >=  :YUKOEDYMD
@@ -60,7 +62,8 @@ path	key2		{
 		DECLARE tbl_nyuinkhn_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_nyuinkhn
-			WHERE
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND
 					IPROUKBN      =   :IPROUKBN
 			AND		BTUSBTKBN     =   :BTUSBTKBN 
 			AND		HEIKINZAIKBN  =   :HEIKINZAIKBN
@@ -79,6 +82,7 @@ path	all	{
 		DECLARE tbl_nyuinkhn_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_nyuinkhn
+		WHERE 	HOSPNUM	= :HOSPNUM
       		;
 	};
 };

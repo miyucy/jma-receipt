@@ -1,5 +1,5 @@
 tbl_ptnyuinrrk	{
-	HOSPID			char(24);
+	HOSPNUM			integer;
 	PTID			number(10,0);
 	RRKNUM			number(3,0);
 	RRKEDANUM		number(3,0);
@@ -42,7 +42,7 @@ tbl_ptnyuinrrk	{
 };
 
 primary	{
-	HOSPID,PTID,RRKNUM,RRKEDANUM;
+	HOSPNUM,PTID,RRKNUM,RRKEDANUM;
 };
 
 path	key		{ 	
@@ -50,7 +50,7 @@ path	key		{
 		DECLARE tbl_ptnyuinrrk_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptnyuinrrk
-			WHERE   HOSPID        =   :HOSPID 
+			WHERE   HOSPNUM        =   :HOSPNUM 
 			AND		PTID          =   :PTID
 			AND		RRKNUM        =   :RRKNUM
 			AND		RRKEDANUM     =   :RRKEDANUM
@@ -63,7 +63,7 @@ path	key2		{
 		DECLARE tbl_ptnyuinrrk_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptnyuinrrk
-			WHERE   HOSPID      =   :HOSPID 
+			WHERE   HOSPNUM      =   :HOSPNUM 
 			AND		PTID          =   :PTID
 			AND		RRKEDANUM     =   1
 			ORDER BY NYUINYMD DESC,TAIINYMD DESC,RRKNUM DESC
@@ -76,7 +76,7 @@ path	key3		{
 		DECLARE tbl_ptnyuinrrk_key3_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptnyuinrrk
-			WHERE	HOSPID      =   :HOSPID 
+			WHERE	HOSPNUM      =   :HOSPNUM 
 			AND		PTID        =   :PTID
 			ORDER BY NYUINYMD DESC,TAIINYMD DESC,RRKNUM DESC,RRKEDANUM DESC
 		;
@@ -88,7 +88,7 @@ path	key4		{
 		DECLARE tbl_ptnyuinrrk_key4_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptnyuinrrk
-			WHERE	HOSPID      =   :HOSPID 
+			WHERE	HOSPNUM      =   :HOSPNUM 
 			AND		PTID        =   :PTID
 			AND		RRKNUM        =   :RRKNUM
 			ORDER BY RRKEDANUM DESC
@@ -101,7 +101,7 @@ path	key5		{
 		DECLARE tbl_ptnyuinrrk_key5_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptnyuinrrk
-			WHERE	HOSPID      =   :HOSPID 
+			WHERE	HOSPNUM      =   :HOSPNUM 
 			AND		PTID        =   :PTID
 			AND		RRKNUM      =   :RRKNUM
 			ORDER BY RRKEDANUM ASC
@@ -113,7 +113,7 @@ path	key6		{
 		DECLARE tbl_ptnyuinrrk_key6_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptnyuinrrk
-			WHERE	HOSPID      =   :HOSPID 
+			WHERE	HOSPNUM      =   :HOSPNUM 
 			AND		PTID        =   :PTID
 			AND		SHOKAIKBN   =   '1'
 			ORDER BY SHONUM DESC
@@ -126,7 +126,7 @@ path	key7		{
 		DECLARE tbl_ptnyuinrrk_key7_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptnyuinrrk
-			WHERE	HOSPID      =   :HOSPID 
+			WHERE	HOSPNUM      =   :HOSPNUM 
 			AND		PTID        =   :PTID
 			AND		RRKNUM      <>  :RRKNUM
 			AND		NYUINYMD   <=   :TAIINYMD
@@ -141,7 +141,7 @@ path	key8		{
 		DECLARE tbl_ptnyuinrrk_key8_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptnyuinrrk
-			WHERE	HOSPID      =   :HOSPID 
+			WHERE	HOSPNUM      =   :HOSPNUM 
 			AND	PTID        =   :PTID
 			ORDER BY RRKNUM,
                                  RRKEDANUM
@@ -154,7 +154,7 @@ path	key9		{
 		DECLARE tbl_ptnyuinrrk_key9_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptnyuinrrk
-			WHERE	HOSPID      =   :HOSPID 
+			WHERE	HOSPNUM      =   :HOSPNUM 
 			AND		PTID        =   :PTID
 			ORDER BY RRKNUM DESC,RRKEDANUM DESC
 		;
@@ -166,7 +166,7 @@ path	key10		{
 		DECLARE tbl_ptnyuinrrk_key10_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptnyuinrrk
-			WHERE	HOSPID      =   :HOSPID 
+			WHERE	HOSPNUM      =   :HOSPNUM 
 			AND		PTID        =   :PTID
 			AND		NYUINYMD	<=	:NYUINYMD
 			AND		TAIINYMD	>	:TAIINYMD
@@ -182,7 +182,7 @@ path	key11		{
 		DECLARE tbl_ptnyuinrrk_key11_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptnyuinrrk
-			WHERE	HOSPID      =   :HOSPID 
+			WHERE	HOSPNUM      =   :HOSPNUM 
 			AND		PTID        =   :PTID
 			AND		NYUINYMD	<=	:NYUINYMD
 			AND		TAIINYMD	>=	:TAIINYMD
@@ -198,7 +198,7 @@ path	key12		{
 		DECLARE tbl_ptnyuinrrk_key12_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptnyuinrrk
-			WHERE	HOSPID      =   :HOSPID 
+			WHERE	HOSPNUM      =   :HOSPNUM 
 			AND		PTID        =   :PTID
 			AND		NYUINYMD	<=	:NYUINYMD
 			AND		JTIKBN		<>	'5'
@@ -212,7 +212,7 @@ path	key13		{
 		DECLARE tbl_ptnyuinrrk_key13_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptnyuinrrk
-			WHERE	HOSPID      =   :HOSPID 
+			WHERE	HOSPNUM      =   :HOSPNUM 
 			AND		PTID        =   :PTID
 			AND		NYUINYMD	<=	:NYUINYMD
 			AND		SHONUM  	=	:SHONUM
@@ -227,7 +227,7 @@ path	key14		{
 		DECLARE tbl_ptnyuinrrk_key14_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptnyuinrrk
-			WHERE	HOSPID      =   :HOSPID
+			WHERE	HOSPNUM      =   :HOSPNUM
 			AND		RRKEDANUM	=	1
 			AND		NYUINYMD	<=	:NYUINYMD
 			AND		TAIINYMD	>	:TAIINYMD
@@ -244,7 +244,7 @@ path	key15		{
 		DECLARE tbl_ptnyuinrrk_key15_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptnyuinrrk
-			WHERE	HOSPID      =   :HOSPID
+			WHERE	HOSPNUM      =   :HOSPNUM
 			AND		BRMNUM      =   :BRMNUM
 			AND		NYUINYMD	<=	:NYUINYMD
 			AND		TAIINYMD	>=	:TAIINYMD
@@ -259,7 +259,7 @@ path	key16		{
 		DECLARE tbl_ptnyuinrrk_key16_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptnyuinrrk
-			WHERE	HOSPID      =   :HOSPID
+			WHERE	HOSPNUM      =   :HOSPNUM
 			AND		PTID        =   :PTID
 			AND		RRKEDANUM	=	1
 			AND		NYUINYMD	<	:NYUINYMD
@@ -274,7 +274,7 @@ path	key17		{
 		DECLARE tbl_ptnyuinrrk_key17_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptnyuinrrk
-			WHERE	HOSPID      =   :HOSPID
+			WHERE	HOSPNUM      =   :HOSPNUM
 			AND		PTID        =   :PTID
 			AND		RRKEDANUM	=	1
 			AND		NYUINYMD	<=	:NYUINYMD
@@ -288,7 +288,7 @@ path	key18		{
 		DECLARE tbl_ptnyuinrrk_key18_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptnyuinrrk
-			WHERE	HOSPID      =   :HOSPID
+			WHERE	HOSPNUM      =   :HOSPNUM
 			AND		PTID        =   :PTID
 			AND		NYUINKA	        =	:NYUINKA
 			AND		TENNYUYMD	<=	:TENNYUYMD
@@ -303,7 +303,7 @@ path	key19		{
 		DECLARE tbl_ptnyuinrrk_key19_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptnyuinrrk
-			WHERE	HOSPID      =   :HOSPID
+			WHERE	HOSPNUM      =   :HOSPNUM
 			AND		PTID        =   :PTID
 			AND		TENNYUYMD	<=	:TENNYUYMD
 			AND		TENSTUYMD	>=	:TENSTUYMD
@@ -317,7 +317,7 @@ path	key20		{
 		DECLARE tbl_ptnyuinrrk_key20_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptnyuinrrk
-			WHERE	HOSPID      =   :HOSPID
+			WHERE	HOSPNUM      =   :HOSPNUM
 			AND		PTID        =   :PTID
 			AND		RRKEDANUM	=	1
 			AND		NYUINYMD	>	:NYUINYMD
@@ -332,7 +332,7 @@ path	key21		{
 		DECLARE tbl_ptnyuinrrk_key21_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptnyuinrrk
-			WHERE	HOSPID      =   :HOSPID 
+			WHERE	HOSPNUM      =   :HOSPNUM 
 			AND	PTID        =   :PTID
 			AND	NYUINYMD   <=	:NYUINYMD
                         AND     JTIKBN	   <>	'5'
@@ -350,7 +350,7 @@ path	key22		{
 		DECLARE tbl_ptnyuinrrk_key22_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptnyuinrrk
-			WHERE	    HOSPID      =   :HOSPID 
+			WHERE	    HOSPNUM      =   :HOSPNUM 
 			AND	    PTID        =   :PTID
 			AND	    NYUINYMD   <=   :NYUINYMD
 			AND	    SHONUM      =   :SHONUM
@@ -365,7 +365,7 @@ path	key23		{
 		DECLARE tbl_ptnyuinrrk_key23_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptnyuinrrk
-			WHERE	        HOSPID      =   :HOSPID 
+			WHERE	        HOSPNUM      =   :HOSPNUM 
 			AND		PTID        =   :PTID
 			AND		NYUINYMD   <=	:NYUINYMD
                         AND             JTIKBN	   <>	'5'
@@ -382,7 +382,7 @@ path	key24		{
 		DECLARE tbl_ptnyuinrrk_key24_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptnyuinrrk
-			WHERE	HOSPID      =   :HOSPID
+			WHERE	HOSPNUM      =   :HOSPNUM
 			AND	PTID        =   :PTID
 			AND	RRKEDANUM	=	1
 			AND	NYUINYMD	<=	:NYUINYMD
@@ -399,7 +399,7 @@ path	key25		{
 		DECLARE tbl_ptnyuinrrk_key25_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptnyuinrrk
-			WHERE   HOSPID      =   :HOSPID 
+			WHERE   HOSPNUM      =   :HOSPNUM 
 			AND	PTID          =   :PTID
 			AND	RRKEDANUM     =   1
 			AND	NYUINYMD	<=	:NYUINYMD
@@ -414,7 +414,7 @@ path	key26		{
 		DECLARE tbl_ptnyuinrrk_key26_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptnyuinrrk
-			WHERE	HOSPID      =   :HOSPID
+			WHERE	HOSPNUM      =   :HOSPNUM
 			AND	RRKEDANUM	=	1
 			AND	NYUINYMD	<=	:NYUINYMD
 			AND	TAIINYMD	>=	:TAIINYMD
@@ -430,6 +430,7 @@ path	all	{
 		DECLARE tbl_ptnyuinrrk_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptnyuinrrk
+			WHERE	HOSPNUM      =   :HOSPNUM
       		;
 	};
 };
@@ -438,7 +439,7 @@ path	del1	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_ptnyuinrrk
-			WHERE   HOSPID        =   :HOSPID 
+			WHERE   HOSPNUM        =   :HOSPNUM 
 			AND		PTID          =   :PTID
 			AND		RRKNUM        =   :RRKNUM
 		;
@@ -449,7 +450,7 @@ path	del2	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_ptnyuinrrk
-			WHERE   HOSPID        =   :HOSPID 
+			WHERE   HOSPNUM        =   :HOSPNUM 
 			AND		PTID          =   :PTID
 		;
 	};
@@ -460,9 +461,9 @@ path	key27	{
 		DECLARE tbl_ptnyuinrrk_key27_csr CURSOR FOR
 		SELECT A.* 
 		FROM TBL_PTNYUINRRK A 
-		JOIN TBL_PTINF B USING (HOSPID,PTID)
-		JOIN TBL_PTNUM C USING (HOSPID,PTID) 
-			WHERE A.HOSPID    = :HOSPID
+		JOIN TBL_PTINF B USING (HOSPNUM,PTID)
+		JOIN TBL_PTNUM C USING (HOSPNUM,PTID) 
+			WHERE A.HOSPNUM    = :HOSPNUM
 			AND   A.RRKNUM    = B.RRKNUM
 			AND   A.RRKEDANUM = B.RRKEDANUM
 			AND   A.NYUINYMD <= :NYUINYMD
@@ -479,9 +480,9 @@ path	key28	{
 		DECLARE tbl_ptnyuinrrk_key28_csr CURSOR FOR
 		SELECT A.* 
 		FROM TBL_PTNYUINRRK A 
-		JOIN TBL_PTINF B USING (HOSPID,PTID)
-		JOIN TBL_PTNUM C USING (HOSPID,PTID) 
-			WHERE A.HOSPID    = :HOSPID
+		JOIN TBL_PTINF B USING (HOSPNUM,PTID)
+		JOIN TBL_PTNUM C USING (HOSPNUM,PTID) 
+			WHERE A.HOSPNUM    = :HOSPNUM
 			AND   A.RRKNUM    = B.RRKNUM
 			AND   A.RRKEDANUM = B.RRKEDANUM
 			AND   A.NYUINYMD <= :NYUINYMD
@@ -498,7 +499,7 @@ path	key29		{
 		DECLARE tbl_ptnyuinrrk_key29_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptnyuinrrk
-			WHERE	HOSPID      =   :HOSPID 
+			WHERE	HOSPNUM      =   :HOSPNUM 
 			AND		PTID        =   :PTID
 			AND		JTIKBN		<>	'5'
 			AND		JTIKBN		<>	'6'
@@ -512,7 +513,7 @@ path	key30		{
 		DECLARE tbl_ptnyuinrrk_key30_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptnyuinrrk
-			WHERE	HOSPID      =   :HOSPID 
+			WHERE	HOSPNUM      =   :HOSPNUM 
 			AND		PTID        =   :PTID
 			AND		RRKEDANUM   =   1
 			AND		SHOKAIKBN   =   '1'
@@ -526,12 +527,12 @@ path	key31		{
 		DECLARE tbl_ptnyuinrrk_key31_csr CURSOR FOR
 		SELECT * FROM TBL_PTNYUINRRK a,
 		( SELECT SHONUM FROM TBL_PTNYUINRRK 
-			WHERE HOSPID    = :HOSPID
+			WHERE HOSPNUM    = :HOSPNUM
 			AND   PTID      = :PTID
 			AND   RRKEDANUM = 1
 			AND   NYUINYMD  < :NYUINYMD
 			AND   SHOKAIKBN = '1'  ) b
-		WHERE a.HOSPID    = :HOSPID
+		WHERE a.HOSPNUM    = :HOSPNUM
 		AND   a.PTID      = :PTID
 		AND   a.RRKEDANUM = 1
 		AND   a.NYUINYMD  < :NYUINYMD
@@ -547,20 +548,20 @@ path	key32	{
 		DECLARE tbl_ptnyuinrrk_key32_csr CURSOR FOR
 		SELECT A.* 
 		FROM TBL_PTNYUINRRK A,
-			( SELECT HOSPID ,PTID,RRKNUM,MAX(RRKEDANUM) AS RRKEDANUM 
+			( SELECT HOSPNUM ,PTID,RRKNUM,MAX(RRKEDANUM) AS RRKEDANUM 
 			  FROM TBL_PTNYUINRRK 
-			  WHERE HOSPID    = :HOSPID
+			  WHERE HOSPNUM    = :HOSPNUM
 			  AND   NYUINYMD <= :NYUINYMD
 			  AND   TAIINYMD >= :TAIINYMD
 			  AND   JTIKBN    <> '5'
 			  AND   JTIKBN    <> '6' 
-			  GROUP BY HOSPID ,PTID,RRKNUM ) B,
+			  GROUP BY HOSPNUM ,PTID,RRKNUM ) B,
 			 TBL_PTNUM C
-		WHERE A.HOSPID    = B.HOSPID
+		WHERE A.HOSPNUM    = B.HOSPNUM
 		AND   A.PTID      = B.PTID
 		AND   A.RRKNUM    = B.RRKNUM
 		AND   A.RRKEDANUM = B.RRKEDANUM
-		AND   A.HOSPID    = C.HOSPID
+		AND   A.HOSPNUM    = C.HOSPNUM
 		AND   A.PTID      = C.PTID
 		ORDER 	BY A.BRMNUM,A.NYUINKA,C.PTNUM
 		;
@@ -572,7 +573,7 @@ path	key33		{
 		DECLARE tbl_ptnyuinrrk_key33_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptnyuinrrk
-			WHERE   HOSPID      =   :HOSPID 
+			WHERE   HOSPNUM      =   :HOSPNUM 
 			AND		PTID          =   :PTID
 			AND		RRKEDANUM     =   1
                         AND             JTIKBN        <>  '5'
@@ -587,7 +588,7 @@ path	key34		{
 		DECLARE tbl_ptnyuinrrk_key34_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptnyuinrrk
-			WHERE	HOSPID      =   :HOSPID 
+			WHERE	HOSPNUM      =   :HOSPNUM 
 			AND	PTID        =   :PTID
                         AND     JTIKBN        <>  '5'
 			ORDER BY RRKNUM,
@@ -601,7 +602,7 @@ path	key35		{
 		DECLARE tbl_ptnyuinrrk_key35_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptnyuinrrk
-			WHERE	HOSPID      =   :HOSPID
+			WHERE	HOSPNUM      =   :HOSPNUM
 			AND		PTID        =   :PTID
 			AND		RRKEDANUM	=	1
 			AND		NYUINYMD	<=	:NYUINYMD
@@ -617,7 +618,7 @@ path	upd1		{
 			SET    	TAIINCD    =   :TAIINCD,
 				UPYMD	   =   :UPYMD,
 				UPHMS	   =   :UPHMS
-			WHERE   HOSPID	   =   :HOSPID
+			WHERE   HOSPNUM	   =   :HOSPNUM
 			AND	PTID	   =   :PTID
 			AND	RRKNUM	   =   :RRKNUM
 		;
@@ -629,7 +630,7 @@ path	key36		{
 		DECLARE tbl_ptnyuinrrk_key36_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptnyuinrrk
-			WHERE	HOSPID      =   :HOSPID 
+			WHERE	HOSPNUM      =   :HOSPNUM 
 			AND		PTID        =   :PTID
 			AND		JTIKBN    <> '5'
 			AND		JTIKBN    <> '6' 
@@ -645,7 +646,7 @@ path	upd2		{
 				TAIINCD    =   :TAIINCD,
 				UPYMD	   =   :UPYMD,
 				UPHMS	   =   :UPHMS
-			WHERE   HOSPID	   =   :HOSPID
+			WHERE   HOSPNUM	   =   :HOSPNUM
 			AND	PTID	   =   :PTID
 			AND	RRKNUM	   =   :RRKNUM
 		;
@@ -660,7 +661,7 @@ path	upd3		{
 				TENSTUYMD  =   :TENSTUYMD,
 				UPYMD	   =   :UPYMD,
 				UPHMS	   =   :UPHMS
-			WHERE   HOSPID	   =   :HOSPID
+			WHERE   HOSPNUM	   =   :HOSPNUM
 			AND	PTID	   =   :PTID
 			AND	RRKNUM	   =   :RRKNUM
 			AND	RRKEDANUM  =   :RRKEDANUM
@@ -674,7 +675,7 @@ path	key37		{
 		DECLARE tbl_ptnyuinrrk_key37_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptnyuinrrk
-			WHERE	HOSPID      =   :HOSPID
+			WHERE	HOSPNUM      =   :HOSPNUM
 			AND		PTID        =   :PTID
 			AND		RRKNUM      <   :RRKNUM
 			AND		RRKEDANUM   =   1
@@ -688,7 +689,7 @@ path	key38		{
 		DECLARE tbl_ptnyuinrrk_key38_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptnyuinrrk
-			WHERE	HOSPID      =   :HOSPID
+			WHERE	HOSPNUM      =   :HOSPNUM
 			AND		PTID        =   :PTID
 			AND		RRKNUM		<	:RRKNUM
 			AND		RRKEDANUM	=	1
@@ -704,7 +705,7 @@ path	key39		{
 		DECLARE tbl_ptnyuinrrk_key39_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptnyuinrrk
-			WHERE	HOSPID      =   :HOSPID
+			WHERE	HOSPNUM      =   :HOSPNUM
 			AND		PTID        =   :PTID
 			AND		NYUINYMD	=	:NYUINYMD
 			ORDER BY TAIINYMD DESC,RRKNUM DESC,RRKEDANUM DESC
@@ -717,7 +718,7 @@ path	key40		{
 		DECLARE tbl_ptnyuinrrk_key40_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptnyuinrrk
-			WHERE	HOSPID      =   :HOSPID
+			WHERE	HOSPNUM      =   :HOSPNUM
 			AND		TENNYUYMD	<=	:TENNYUYMD
 			AND		TENSTUYMD	>=	:TENSTUYMD
 			AND		JTIKBN		<>	'5'
@@ -733,7 +734,7 @@ path	key41		{
 		DECLARE tbl_ptnyuinrrk_key41_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptnyuinrrk
-			WHERE	HOSPID      =   :HOSPID
+			WHERE	HOSPNUM      =   :HOSPNUM
 			AND     PTID        =   :PTID
 			AND	TENNYUYMD	<=	:TENNYUYMD
 			AND	TENSTUYMD	>=	:TENSTUYMD
@@ -749,7 +750,7 @@ path	key42		{
 		DECLARE tbl_ptnyuinrrk_key42_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptnyuinrrk
-			WHERE	HOSPID      =   :HOSPID
+			WHERE	HOSPNUM      =   :HOSPNUM
 			AND     PTID        =   :PTID
 			AND	TENNYUYMD	<=	:TENNYUYMD
 			AND	TENSTUYMD	>=	:TENSTUYMD
@@ -766,7 +767,7 @@ path	key43		{
 		DECLARE tbl_ptnyuinrrk_key43_csr CURSOR FOR
 		SELECT PTID
 		FROM tbl_ptnyuinrrk
-			WHERE	HOSPID      =   :HOSPID
+			WHERE	HOSPNUM      =   :HOSPNUM
 			AND	TENNYUYMD	<=	:TENNYUYMD
 			AND	TENSTUYMD	>=	:TENSTUYMD
 			AND	JTIKBN		<>	'5'
@@ -781,7 +782,7 @@ path	key44		{
 		DECLARE tbl_ptnyuinrrk_key44_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptnyuinrrk
-			WHERE	HOSPID   =   :HOSPID
+			WHERE	HOSPNUM   =   :HOSPNUM
 			AND PTID         =  :PTID
 			AND	TENNYUYMD	<=	:TENNYUYMD
 			AND	TENSTUYMD	>=	:TENSTUYMD
@@ -797,7 +798,7 @@ path	key45		{
 		DECLARE tbl_ptnyuinrrk_key45_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptnyuinrrk
-			WHERE	HOSPID   =   :HOSPID
+			WHERE	HOSPNUM   =   :HOSPNUM
 			AND PTID         =  :PTID
 			AND NYUINYMD	<=	:TENNYUYMD
 			AND	TENNYUYMD	<=	:TENNYUYMD
@@ -814,14 +815,14 @@ path	upd4		{
 			SET MAXEDANUM  = A.RRKEDANUM,
 				UPYMD	   = :UPYMD,
 				UPHMS	   = :UPHMS
-			FROM (SELECT HOSPID ,PTID,RRKNUM,MAX(RRKEDANUM) AS RRKEDANUM
+			FROM (SELECT HOSPNUM ,PTID,RRKNUM,MAX(RRKEDANUM) AS RRKEDANUM
 			     FROM tbl_ptnyuinrrk 
-					WHERE   HOSPID		=  :HOSPID
+					WHERE   HOSPNUM		=  :HOSPNUM
 					AND	PTID	   		=  :PTID
 					AND	RRKNUM			=  :RRKNUM
-					GROUP BY HOSPID,PTID,RRKNUM
+					GROUP BY HOSPNUM,PTID,RRKNUM
 			     ) A
-			WHERE   tbl_ptnyuinrrk.HOSPID   =   A.HOSPID
+			WHERE   tbl_ptnyuinrrk.HOSPNUM   =   A.HOSPNUM
 			AND	tbl_ptnyuinrrk.PTID	   		=   A.PTID
 			AND	tbl_ptnyuinrrk.RRKNUM	    =   A.RRKNUM
 		;
@@ -834,7 +835,7 @@ path	key46		{
 		DECLARE tbl_ptnyuinrrk_key46_csr CURSOR FOR
 		SELECT PTID
 		FROM tbl_ptnyuinrrk
-			WHERE	HOSPID      =   :HOSPID
+			WHERE	HOSPNUM      =   :HOSPNUM
 			AND	TENNYUYMD	<=	:TENNYUYMD
 			AND	TENSTUYMD	>=	:TENSTUYMD
 			AND	JTIKBN		<>	'5'

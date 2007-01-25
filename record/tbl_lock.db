@@ -1,4 +1,5 @@
 tbl_lock	{
+	HOSPNUM				integer;
 #--> Ã¼Ëö£É£Ä
 	LOCK_TERMID		char(64);
 	LOCK_OPID		varchar(16);
@@ -409,7 +410,7 @@ tbl_lock	{
 };
 
 primary	{
-	LOCK_TERMID;
+	HOSPNUM,LOCK_TERMID;
 };
 
 path	key		{ 	
@@ -417,7 +418,8 @@ path	key		{
 		DECLARE tbl_lock_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_lock
-			WHERE   LOCK_TERMID		=   :LOCK_TERMID 
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   LOCK_TERMID		=   :LOCK_TERMID 
 			ORDER   BY        LOCK_TERMID 
 		;
 	};
@@ -428,7 +430,8 @@ path	key2	{
 		DECLARE tbl_lock_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_lock
-			WHERE  (LOCK_TERMID 		<>   :LOCK_TERMID)
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND  (LOCK_TERMID 		<>   :LOCK_TERMID)
             AND    (LOCKTABLE_FLG1 = '1'  OR
                     LOCKTABLE_FLG2 = '1'  OR
                     LOCKTABLE_FLG3 = '1'  OR
@@ -487,6 +490,7 @@ path	del1 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_lock
+		WHERE 	HOSPNUM	= :HOSPNUM
 		;
 	};
 };
@@ -495,6 +499,7 @@ path	del1 	{
 #		DECLARE tbl_lock_key3_csr CURSOR FOR
 #		SELECT *
 #		FROM tbl_lock
+#		WHERE 	HOSPNUM	= :HOSPNUM
 #			AND		JOBID		=  :JOBID
 #			AND		LOCK_TERMID		=  :LOCK_TERMID
 #		;
@@ -506,6 +511,7 @@ path	all	{
 		DECLARE tbl_lock_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_lock
+		WHERE 	HOSPNUM	= :HOSPNUM
 		;
 	};
 };

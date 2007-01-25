@@ -1,5 +1,5 @@
 tbl_ptnum {
-	HOSPID		    char(24);
+	HOSPNUM		    integer;
 	PTID		    number(10);
 	PTNUM		    char(20);
 	HKNID		    number(10);
@@ -15,7 +15,7 @@ tbl_ptnum {
 };
 
 primary	{
-	HOSPID,PTID;
+	HOSPNUM,PTID;
 };
 
 path	key 	{
@@ -23,7 +23,7 @@ path	key 	{
 		DECLARE tbl_ptnum_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptnum
-			WHERE   HOSPID        =   :HOSPID  AND
+			WHERE   HOSPNUM        =   :HOSPNUM  AND
 					PTID          =   :PTID
 		;
 	};
@@ -34,7 +34,7 @@ path	key2 	{
 		DECLARE tbl_ptnum_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptnum
-			WHERE  (HOSPID       =   :HOSPID)  AND
+			WHERE  (HOSPNUM       =   :HOSPNUM)  AND
 			(PTNUM      LIKE  :PTNUM)
 		;
 	};
@@ -46,7 +46,7 @@ path	key3 	{
 		DECLARE tbl_ptnum_key3_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptnum
-			WHERE   (HOSPID       =   :HOSPID)  AND
+			WHERE   (HOSPNUM       =   :HOSPNUM)  AND
 		        	(PTNUM       >= :PTNUM)
 			ORDER  BY  PTNUM
 		;
@@ -58,6 +58,7 @@ path	all 	{
 		DECLARE tbl_ptnum_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptnum
+			WHERE   HOSPNUM    =   :HOSPNUM
 		;
 	};
 };
@@ -65,7 +66,7 @@ path	del1 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_ptnum
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 		;
 	};
@@ -76,7 +77,7 @@ path	key4 	{
 		DECLARE tbl_ptnum_key4_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptnum
-			WHERE  HOSPID       =   :HOSPID
+			WHERE  HOSPNUM       =   :HOSPNUM
 			AND    PTNUM        =   :PTNUM
 		;
 	};
@@ -87,7 +88,7 @@ path	key5 	{
 		DECLARE tbl_ptnum_key5_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptnum
-			WHERE  HOSPID       =   :HOSPID
+			WHERE  HOSPNUM       =   :HOSPNUM
 			AND    CREYMD LIKE :CREYMD
 		;
 	};

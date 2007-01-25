@@ -29,7 +29,7 @@
       *01  SYUTTL-REC.
            03  SYUTTL-KEY.
       *°åÎÅµ¡´Ø£É£Ä
-               05  SYUTTL-HOSPID          PIC  X(24).
+               05  SYUTTL-HOSPNUM          PIC  S9(9) BINARY.
       *Æþ³°¶èÊ¬
                05  SYUTTL-NYUGAIKBN       PIC  X(01).
       *´µ¼Ô£É£Ä

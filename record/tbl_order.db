@@ -1,5 +1,5 @@
 tbl_order {
-	HOSPID			 	char(24);
+	HOSPNUM			 	integer;
 	KARTE_KEY			varchar(36);
 	ORDERNUM			number(2,0);
 	NYUGAIKBN			char(1);
@@ -28,7 +28,7 @@ tbl_order {
 	SELEDUKEYMD 	    char(8),virtual;
 };
 primary	{
-	HOSPID,KARTE_KEY,ORDERNUM ;
+	HOSPNUM,KARTE_KEY,ORDERNUM ;
 };
 
 path	key 	{
@@ -36,7 +36,7 @@ path	key 	{
 		DECLARE tbl_order_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_order
-			WHERE HOSPID      =   :HOSPID
+			WHERE HOSPNUM      =   :HOSPNUM
 			AND   KARTE_KEY   =   :KARTE_KEY
 			AND   ORDERNUM    =   :ORDERNUM
 		;
@@ -48,7 +48,7 @@ path	key2 	{
 		DECLARE tbl_order_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_order
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND     KARTE_KEY =   :KARTE_KEY
 		;
 	};
@@ -59,7 +59,7 @@ path	key3 	{
 		DECLARE tbl_order_key3_csr CURSOR FOR
 		SELECT *
 		FROM tbl_order
-		WHERE  HOSPID        = :HOSPID
+		WHERE  HOSPNUM        = :HOSPNUM
 		AND    UKEYMD        = :UKEYMD
 		AND    STATUS        <> 3
 		ORDER  BY  SRYYMD  ,UKEHMS ,KARTE_KEY ,ORDERNUM
@@ -72,7 +72,7 @@ path	key4 	{
 		DECLARE tbl_order_key4_csr CURSOR FOR
 		SELECT *
 		FROM tbl_order
-		WHERE  HOSPID        = :HOSPID
+		WHERE  HOSPNUM        = :HOSPNUM
 		AND    PTNUM         = :PTNUM
 		AND    STATUS		 <> 3
 		ORDER  BY  UKEYMD DESC,UKEHMS DESC,KARTE_KEY DESC,ORDERNUM DESC
@@ -85,7 +85,7 @@ path	key5 	{
 		DECLARE tbl_order_key5_csr CURSOR FOR
 		SELECT *
 		FROM tbl_order
-		WHERE  HOSPID        = :HOSPID
+		WHERE  HOSPNUM        = :HOSPNUM
 		AND    PTID          = :PTID
 		AND    STATUS		 <>    3
 		ORDER  BY  SRYYMD DESC,UKEYMD DESC,UKEHMS DESC,KARTE_KEY DESC,ORDERNUM DESC
@@ -97,7 +97,8 @@ path	upd1 	{
 	DBUPDATE	{
 		UPDATE  tbl_order
 		SET     STATUS    =   3
-		WHERE   KARTE_KEY =   :KARTE_KEY
+		WHERE   HOSPNUM   =   :HOSPNUM
+		AND     KARTE_KEY =   :KARTE_KEY
 		AND     ORDERNUM  =   :ORDERNUM
 		;
 	};
@@ -108,7 +109,7 @@ path	key6 	{
 		DECLARE tbl_order_key6_csr CURSOR FOR
 		SELECT *
 		FROM tbl_order
-		WHERE  HOSPID        = :HOSPID
+		WHERE  HOSPNUM        = :HOSPNUM
 		AND    UKEYMD       >= :SELSTUKEYMD
 		AND    UKEYMD       <= :SELEDUKEYMD
 		;
@@ -120,7 +121,7 @@ path	key7 	{
 		DECLARE tbl_order_key7_csr CURSOR FOR
 		SELECT *
 		FROM tbl_order
-		WHERE  HOSPID        = :HOSPID
+		WHERE  HOSPNUM        = :HOSPNUM
 		;
 	};
 };

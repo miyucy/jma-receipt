@@ -1,5 +1,5 @@
 tbl_syunou_prv {
-	HOSPID				char(24);
+	HOSPNUM				integer;
 	NYUGAIKBN			char(1);
 	PTID				number(10,0);
 	DENPNUM          		number(7,0);
@@ -305,7 +305,7 @@ tbl_syunou_prv {
 	UPSRYYMD				char(8),virtual;
 };
 primary	{
-	HOSPID,NYUGAIKBN,PTID,DENPNUM,CREYMD;
+	HOSPNUM,NYUGAIKBN,PTID,DENPNUM,CREYMD;
 };
 
 path	key 	{
@@ -313,7 +313,7 @@ path	key 	{
 		DECLARE tbl_syunou_prv_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syunou_prv
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   DENPNUM     =   :DENPNUM
@@ -326,7 +326,7 @@ path	key2 	{
 		DECLARE tbl_syunou_prv_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syunou_prv
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			ORDER   BY          CREYMD DESC
@@ -338,7 +338,7 @@ path	key3 	{
 		DECLARE tbl_syunou_prv_key3_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syunou_prv
-			WHERE   HOSPID      =   :HOSPID
+			WHERE   HOSPNUM      =   :HOSPNUM
 			AND   NYUGAIKBN     =   :NYUGAIKBN
 			AND   PTID          =   :PTID
 			AND   DOUJI_DENPNUM =   :DOUJI_DENPNUM
@@ -352,7 +352,7 @@ path	key4 	{
 		DECLARE tbl_syunou_prv_key4_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syunou_prv
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   SRYKA       =   :SRYKA
@@ -367,7 +367,7 @@ path	key5 	{
 		DECLARE tbl_syunou_prv_key5_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syunou_prv
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   SKYSTYMD    >=  :SKYSTYMD
@@ -382,7 +382,7 @@ path	key6 	{
 		DECLARE tbl_syunou_prv_key6_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syunou_prv
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   SRYYMD      LIKE :SRYYMD
 			AND   CREATEKBN   <>  '3'
@@ -396,7 +396,7 @@ path	key7 	{
 		DECLARE tbl_syunou_prv_key7_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syunou_prv
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND     NYUGAIKBN    =   :NYUGAIKBN
 			AND     DENPJTIKBN   =   :DENPJTIKBN
 			AND     SKYSTYMD     >=  :SKYSTYMD
@@ -411,7 +411,7 @@ path	key8 	{
 		DECLARE tbl_syunou_prv_key8_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syunou_prv
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND     NYUGAIKBN    =   :NYUGAIKBN
 			AND     PTID         =   :PTID
 			AND     DENPJTIKBN   =   :DENPJTIKBN
@@ -428,7 +428,7 @@ path	key9 	{
 		DECLARE tbl_syunou_prv_key9_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syunou_prv
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   SKYSTYMD    >=  :SKYSTYMD
 			AND   SKYEDYMD    <=  :SKYEDYMD
@@ -443,7 +443,7 @@ path	key10 	{
 		DECLARE tbl_syunou_prv_key10_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syunou_prv
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   CREATEKBN   =   '3'
@@ -457,7 +457,7 @@ path	key11 	{
 		DECLARE tbl_syunou_prv_key11_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syunou_prv
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   SRYYMD      =   :SRYYMD
@@ -471,7 +471,7 @@ path	key12 	{
 		DECLARE tbl_syunou_prv_key12_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syunou_prv
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   FUKU_DENPNUM    =   :FUKU_DENPNUM
@@ -485,7 +485,7 @@ path	key13 	{
 		DECLARE tbl_syunou_prv_key13_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syunou_prv
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   CREATEKBN   <>  '3'
@@ -501,7 +501,7 @@ path	key14 	{
 		DECLARE tbl_syunou_prv_key14_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syunou_prv
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   SRYYMD      LIKE :SRYYMD
@@ -516,7 +516,7 @@ path	key15 	{
 		DECLARE tbl_syunou_prv_key15_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syunou_prv
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   SRYYMD      LIKE :SRYYMD
 			AND   CREATEKBN   <>  '3'
@@ -529,7 +529,7 @@ path	key16 	{
 		DECLARE tbl_syunou_prv_key16_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syunou_prv
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   SRYKA       =   :SRYKA
@@ -545,7 +545,7 @@ path	key17 	{
 		DECLARE tbl_syunou_prv_key17_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syunou_prv
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   SRYYMD      LIKE :SRYYMD
@@ -560,7 +560,7 @@ path	key18 	{
 		DECLARE tbl_syunou_prv_key18_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syunou_prv
-			WHERE   HOSPID    =    :HOSPID
+			WHERE   HOSPNUM    =    :HOSPNUM
 			AND   NYUGAIKBN   =    :NYUGAIKBN
 			AND   PTID        =    :PTID
 			AND   SRYYMD      LIKE :SRYYMD
@@ -577,7 +577,7 @@ path	key19 	{
 		DECLARE tbl_syunou_prv_key19_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syunou_prv
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   SRYYMD      LIKE :SRYYMD
@@ -593,6 +593,7 @@ path	all 	{
 		DECLARE tbl_syunou_prv_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syunou_prv
+			WHERE   HOSPNUM      =   :HOSPNUM
  		;
 	};
 };
@@ -601,7 +602,7 @@ path	del1 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_syunou_prv
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 		;
 	};
@@ -611,7 +612,7 @@ path	del2 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_syunou_prv
-			WHERE   HOSPID       =   :HOSPID
+			WHERE   HOSPNUM       =   :HOSPNUM
 			AND     NYUGAIKBN    =   :NYUGAIKBN
 			AND     CREATEKBN    =   :CREATEKBN
 		;
@@ -622,7 +623,7 @@ path	del3 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_syunou_prv
-			WHERE   HOSPID       =   :HOSPID
+			WHERE   HOSPNUM       =   :HOSPNUM
 			AND     NYUGAIKBN    =   :NYUGAIKBN
 			AND     PTID         =   :PTID
 			AND     CREATEKBN    =   :CREATEKBN
@@ -635,7 +636,7 @@ path	key20 	{
 		DECLARE tbl_syunou_prv_key20_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syunou_prv
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   CREATEKBN   <>  '3'
             AND   SKYMONEY    <>  NYUKIN_TOTAL
@@ -650,7 +651,7 @@ path	key21 	{
 		DECLARE tbl_syunou_prv_key21_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syunou_prv
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   SRYKA       =   :SRYKA
@@ -667,7 +668,7 @@ path	key22 	{
 		DECLARE tbl_syunou_prv_key22_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syunou_prv
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
                         AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   CREATEKBN   <>  '3'
@@ -682,7 +683,7 @@ path	key23 	{
 		DECLARE tbl_syunou_prv_key23_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syunou_prv
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
                         AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   CREATEKBN   <>  '3'
@@ -698,7 +699,7 @@ path	key24 	{
 		DECLARE tbl_syunou_prv_key24_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syunou_prv
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   CREATEKBN   <>  '3'
             AND   SKYMONEY    <>  NYUKIN_TOTAL
@@ -712,7 +713,7 @@ path	key25 	{
 		DECLARE tbl_syunou_prv_key25_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syunou_prv
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   SRYYMD      LIKE :SRYYMD
@@ -730,7 +731,7 @@ path	key26 	{
 		DECLARE tbl_syunou_prv_key26_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syunou_prv
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   SRYYMD      LIKE :SRYYMD
@@ -749,7 +750,7 @@ path	key27 	{
 		DECLARE tbl_syunou_prv_key27_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syunou_prv
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   GRP_DENPNUM =   :GRP_DENPNUM
@@ -763,7 +764,7 @@ path	key28 	{
 		DECLARE tbl_syunou_prv_key28_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syunou_prv
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   SRYYMD      LIKE :SRYYMD
@@ -777,7 +778,7 @@ path	key29 	{
 		DECLARE tbl_syunou_prv_key29_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syunou_prv
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   SRYYMD      LIKE :SRYYMD
 			AND   CREATEKBN   <>  '3'
@@ -791,7 +792,7 @@ path	key30 	{
 		DECLARE tbl_syunou_prv_key30_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syunou_prv
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   SRYYMD      LIKE :SRYYMD
 			AND   CREATEKBN   <>  '3'
@@ -810,7 +811,7 @@ path	key31 	{
 		DECLARE tbl_syunou_prv_key31_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syunou_prv
-		WHERE  HOSPID      = :HOSPID
+		WHERE  HOSPNUM      = :HOSPNUM
 		AND    PTID        = :PTID
 		AND    CREATEKBN   <> '3'
 		AND    SRYYMD      >= :SKYSTYMD
@@ -826,10 +827,10 @@ path	key32 	{
 		DECLARE tbl_syunou_prv_key32_csr CURSOR FOR
 		SELECT distinct a.*
 		FROM tbl_syunou_prv a,tbl_syumei b
-		WHERE  a.HOSPID      = :HOSPID
+		WHERE  a.HOSPNUM      = :HOSPNUM
 		AND    a.PTID        = :PTID
 		AND    a.CREATEKBN   <> '3'
-		AND    a.HOSPID      = b.HOSPID
+		AND    a.HOSPNUM      = b.HOSPNUM
 		AND    a.NYUGAIKBN   = b.NYUGAIKBN
 		AND    a.PTID        = b.PTID
 		AND    a.DENPNUM     = b.DENPNUM
@@ -845,7 +846,7 @@ path	key33 	{
 		DECLARE tbl_syunou_prv_key33_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syunou_prv
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   SRYYMD      LIKE :SRYYMD
@@ -863,14 +864,14 @@ path	key34 	{
 		DECLARE tbl_syunou_prv_key34_csr CURSOR FOR
 		SELECT a.*
 		FROM tbl_syunou_prv a,tbl_ptinf b
-			WHERE a.HOSPID      =   :HOSPID
+			WHERE a.HOSPNUM      =   :HOSPNUM
 			AND   a.NYUGAIKBN   =   :NYUGAIKBN
 			AND   a.SRYYMD      >=  :SKYSTYMD
 			AND   a.SRYYMD      <=  :SKYEDYMD
 			AND   a.DENPJTIKBN  <>  '3'
 			AND   a.CREATEKBN   <>  '3'
 			AND   a.CHOSEI      <>  0
-			AND   a.HOSPID    =   b.HOSPID
+			AND   a.HOSPNUM    =   b.HOSPNUM
 			AND   a.PTID      =   b.PTID
 			AND   b.TSTPTNUMKBN   <> '1'
 		;
@@ -882,7 +883,7 @@ path	key35 	{
 		DECLARE tbl_syunou_prv_key35_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syunou_prv
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   SRYYMD      LIKE :SRYYMD
@@ -897,13 +898,13 @@ path	st_key1 	{
 	DBSELECT	{
 		DECLARE tbl_syunou_prv_st_key1_csr CURSOR FOR
 		SELECT a.* FROM tbl_syunou_prv a,tbl_ptinf b
-		WHERE    a.HOSPID  =   :HOSPID 
+		WHERE    a.HOSPNUM  =   :HOSPNUM 
 		AND   a.CREATEKBN  <> '3' 
 		AND   a.DENPJTIKBN <> '3'
 		AND   a.NYUGAIKBN  LIKE  :NYUGAIKBN
 		AND   (a.SRYYMD    >= :SRYYMD
 		AND    a.SRYYMD    <= :UPSRYYMD)
-		AND   a.HOSPID  =  b.HOSPID
+		AND   a.HOSPNUM  =  b.HOSPNUM
 		AND   a.PTID    =  b.PTID
 		AND   b.TSTPTNUMKBN <> '1'
 	};
@@ -914,8 +915,8 @@ path	key36 	{
 	DBSELECT	{
 		DECLARE tbl_syunou_prv_key36_csr CURSOR FOR
 		SELECT PTID
-		FROM tbl_syunou_prv a join tbl_ptinf b using (hospid,ptid)
-			WHERE   A.HOSPID    =   :HOSPID
+		FROM tbl_syunou_prv a join tbl_ptinf b using (HOSPNUM,ptid)
+			WHERE   A.HOSPNUM    =   :HOSPNUM
 			AND   a.NYUGAIKBN   =   :NYUGAIKBN
 			AND   a.SRYYMD      LIKE :SRYYMD
 			AND   a.CREATEKBN   <>  '3'
@@ -931,7 +932,7 @@ path	key37 	{
 		DECLARE tbl_syunou_prv_key37_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syunou_prv
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   SRYYMD      LIKE :SRYYMD
@@ -948,7 +949,7 @@ path	key38 	{
 		SELECT SUM(SKYMONEY) AS SKYMONEY,
 		       SUM(NYUKIN_TOTAL) AS NYUKIN_TOTAL
 		FROM tbl_syunou_prv
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   SRYYMD      <   :SRYYMD
@@ -964,7 +965,7 @@ path	key39 	{
 		DECLARE tbl_syunou_prv_key39_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syunou_prv
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   CREATEKBN   =   '3'
@@ -977,7 +978,7 @@ path	del4 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_syunou_prv
-			WHERE   HOSPID       =   :HOSPID
+			WHERE   HOSPNUM       =   :HOSPNUM
 			AND     NYUGAIKBN    =   :NYUGAIKBN
 			AND     PTID         =   :PTID
 			AND     SRYYMD      LIKE :SRYYMD
@@ -990,7 +991,8 @@ path	del5 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_syunou_prv
-			WHERE   NYUGAIKBN    =   '1'
+			WHERE   HOSPNUM       =   :HOSPNUM
+			AND     NYUGAIKBN    =   '1'
 			AND     DENPNUM      >=   9000000
 			AND     DENPNUM      <    9100000
 			AND     CREATEKBN    =   '3'
@@ -1003,7 +1005,7 @@ path	key40 	{
 		DECLARE tbl_syunou_prv_key40_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syunou_prv
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   SRYYMD     LIKE :SRYYMD
 			AND   CREATEKBN   =   '3'
@@ -1017,7 +1019,7 @@ path	key41 	{
 		DECLARE tbl_syunou_prv_key41_csr CURSOR FOR
 		SELECT *
 		FROM tbl_syunou_prv
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   SRYYMD     LIKE :SRYYMD
@@ -1031,7 +1033,7 @@ path	delprv 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_syunou_prv
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =  :NYUGAIKBN
 			AND   PTID        =   :PTID
 		;

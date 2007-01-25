@@ -21,6 +21,7 @@
       *-------------------------------------------------*
       *01  SRYCDCHG-REC.
            03  CHG-KEY.
+               05  CHG-HOSPNUM       PIC S9(9) BINARY.
       *办忍壳闻コ〖ド
                05  CHG-IPNSRYCD        PIC  X(09).
       *戏客壳闻コ〖ド

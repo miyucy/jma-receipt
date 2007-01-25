@@ -1,5 +1,5 @@
 tbl_receupd {
-	HOSPID				char(24);
+	HOSPNUM				integer;
 	PTID 				number(10);
 	 NYUGAIKBN			char(1);
 	SRYKA				char(2);
@@ -26,7 +26,7 @@ tbl_receupd {
 };
 
 primary	{
-	HOSPID,PTID,NYUGAIKBN,SRYKA,SRYYM,HKNKBN,
+	HOSPNUM,PTID,NYUGAIKBN,SRYKA,SRYYM,HKNKBN,
 	HKNKBN2;
 };
 
@@ -35,7 +35,7 @@ path	key 	{
 		DECLARE tbl_receupd_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receupd
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   SRYKA       =   :SRYKA
@@ -51,6 +51,7 @@ path	all 	{
 		DECLARE tbl_receupd_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_receupd
+			WHERE   HOSPNUM    =   :HOSPNUM
  		;
 	};
 };

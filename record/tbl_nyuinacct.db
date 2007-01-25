@@ -1,5 +1,5 @@
 tbl_nyuinacct {
-	HOSPID				char(24);
+	HOSPNUM				integer;
 	NYUGAIKBN			char(1);
 	PTID				number(10,0);
 	SRYKA				char(2);
@@ -57,7 +57,7 @@ tbl_nyuinacct {
 };
 
 primary	{
-	HOSPID,NYUGAIKBN,PTID,SRYKA,SRYYM,SRYKBN,ZAINUM;
+	HOSPNUM,NYUGAIKBN,PTID,SRYKA,SRYYM,SRYKBN,ZAINUM;
 };
 
 path	key 	{
@@ -65,7 +65,7 @@ path	key 	{
 		DECLARE tbl_nyuinacct_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_nyuinacct
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   SRYKA       =   :SRYKA
@@ -81,7 +81,7 @@ path	key2 	{
 		DECLARE tbl_nyuinacct_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_nyuinacct
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   SRYKA       =   :SRYKA
@@ -97,7 +97,7 @@ path	key3 	{
 		DECLARE tbl_nyuinacct_key3_csr CURSOR FOR
 		SELECT *
 		FROM tbl_nyuinacct
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   SRYKA       =   :SRYKA
@@ -113,7 +113,7 @@ path	key4 	{
 		DECLARE tbl_nyuinacct_key4_csr CURSOR FOR
 		SELECT *
 		FROM tbl_nyuinacct
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   SRYKA       =   :SRYKA
@@ -129,7 +129,7 @@ path	key5 	{
 		DECLARE tbl_nyuinacct_key5_csr CURSOR FOR
 		SELECT *
 		FROM tbl_nyuinacct
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   SRYKA       =   :SRYKA
@@ -145,7 +145,7 @@ path	key6 	{
 		DECLARE tbl_nyuinacct_key6_csr CURSOR FOR
 		SELECT *
 		FROM tbl_nyuinacct
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   SRYYM       =   :SRYYM
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			ORDER  BY  PTID,HKNCOMBI,SRYKA,SRYKBN
@@ -158,7 +158,7 @@ path	key7 	{
 		DECLARE tbl_nyuinacct_key7_csr CURSOR FOR
 		SELECT *
 		FROM tbl_nyuinacct
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   SRYYM       =   :SRYYM
@@ -174,7 +174,7 @@ path	key8 	{
 		DECLARE tbl_nyuinacct_key8_csr CURSOR FOR
 		SELECT *
 		FROM tbl_nyuinacct
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   SRYYM       =   :SRYYM
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   ZAIKAISU    >   0 
@@ -189,7 +189,7 @@ path	key9 	{
 		DECLARE tbl_nyuinacct_key9_csr CURSOR FOR
 		SELECT *
 		FROM tbl_nyuinacct
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   SRYYM       =   :SRYYM
@@ -205,6 +205,7 @@ path	all 	{
 		DECLARE tbl_nyuinacct_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_nyuinacct
+			WHERE   HOSPNUM    =   :HOSPNUM
 		;
 	};
 };
@@ -213,7 +214,7 @@ path	del1 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_nyuinacct
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 		;
 	};
@@ -224,7 +225,7 @@ path	key10 	{
 		DECLARE tbl_nyuinacct_key10_csr CURSOR FOR
 		SELECT *
 		FROM tbl_nyuinacct
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   SRYYM       =   :SRYYM
@@ -243,7 +244,7 @@ path	key11 	{
 		DECLARE tbl_nyuinacct_key11_csr CURSOR FOR
 		SELECT *
 		FROM tbl_nyuinacct
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   '1'
 			AND   PTID        =   :PTID
 			AND   SRYKA       =   :SRYKA
@@ -260,7 +261,7 @@ path	key12 	{
 		DECLARE tbl_nyuinacct_key12_csr CURSOR FOR
 		SELECT *
 		FROM tbl_nyuinacct
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   '1'
 			AND   PTID        =   :PTID
 			AND   SRYYM       =   :SRYYM
@@ -276,7 +277,7 @@ path	key13 	{
 		DECLARE tbl_nyuinacct_key13_csr CURSOR FOR
 		SELECT *
 		FROM tbl_nyuinacct
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND     SRYYM     =   :SRYYM
 			AND   ( ZAISKBKBN =   '1'   OR
 			        ZAISKBKBN =   '5'       )   
@@ -290,7 +291,7 @@ path	key14 	{
 		DECLARE tbl_nyuinacct_key14_csr CURSOR FOR
 		SELECT *
 		FROM tbl_nyuinacct
-			WHERE   HOSPID      =   :HOSPID
+			WHERE   HOSPNUM      =   :HOSPNUM
 			AND     NYUGAIKBN   =   '1'
 			AND     PTID        =   :PTID
 			AND     SRYYM       =   :SRYYM
@@ -306,7 +307,7 @@ path	key15 	{
 		DECLARE tbl_nyuinacct_key15_csr CURSOR FOR
 		SELECT *
 		FROM tbl_nyuinacct
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   '1'
 			AND   PTID        =   :PTID
 			AND   SRYKA       =   :SRYKA
@@ -322,7 +323,7 @@ path	key16 	{
 		DECLARE tbl_nyuinacct_key16_csr CURSOR FOR
 		SELECT *
 		FROM tbl_nyuinacct
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   '1'
 			AND   PTID        =   :PTID
 			AND   SRYYM       =   :SRYYM
@@ -337,7 +338,7 @@ path	key17 	{
 		DECLARE tbl_nyuinacct_key17_csr CURSOR FOR
 		SELECT *
 		FROM tbl_nyuinacct
-			WHERE   HOSPID      =   :HOSPID
+			WHERE   HOSPNUM      =   :HOSPNUM
 			AND     NYUGAIKBN   =   '1'
 			AND     PTID        =   :PTID
 			AND     SRYYM       =   :SRYYM
@@ -352,7 +353,7 @@ path	key18 	{
 		DECLARE tbl_nyuinacct_key18_csr CURSOR FOR
 		SELECT *
 		FROM tbl_nyuinacct
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   SRYYM       =   :SRYYM
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			ORDER  BY  PTID,
@@ -369,7 +370,7 @@ path	key19 	{
 		DECLARE tbl_nyuinacct_key19_csr CURSOR FOR
 		SELECT *
 		FROM tbl_nyuinacct
-			WHERE   HOSPID      =   :HOSPID
+			WHERE   HOSPNUM      =   :HOSPNUM
 			AND     NYUGAIKBN   =   :NYUGAIKBN
 			AND     PTID        =   :PTID
 			AND     SRYYM      <=   :SRYYM
@@ -384,7 +385,7 @@ path	upd1 	{
 	DBUPDATE	{
 		UPDATE tbl_nyuinacct
 		SET
-	HOSPID				=	:HOSPID,
+	HOSPNUM				=	:HOSPNUM,
 	NYUGAIKBN			=	:NYUGAIKBN,
 	PTID				=	:PTID,
 	SRYKA				=	:SRYKA,
@@ -439,7 +440,7 @@ path	upd1 	{
 	CREYMD   			=	:CREYMD,
 	UPYMD    			=	:UPYMD,
 	UPHMS				=	:UPHMS
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   SRYKA       =   :SRYKA
@@ -455,21 +456,22 @@ path	all2	{
 		DECLARE tbl_nyuinacct_all2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_nyuinacct
-			WHERE   SRYYM    =   :SRYYM
+			WHERE   HOSPNUM    =   :HOSPNUM
+			AND   SRYYM    =   :SRYYM
 		;
 	};
 };
 
-#HOSPID,PTIDのみ取得
+#HOSPNUM,PTIDのみ取得
 path	key20 	{
 	DBSELECT	{
 		DECLARE tbl_nyuinacct_key20_csr CURSOR FOR
-		SELECT HOSPID,PTID
+		SELECT HOSPNUM,PTID
 		FROM tbl_nyuinacct
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   SRYYM       =   :SRYYM
 			AND   NYUGAIKBN   =   :NYUGAIKBN
-			GROUP  BY  HOSPID,PTID
+			GROUP  BY  HOSPNUM,PTID
 		;
 	};
 };
@@ -478,8 +480,8 @@ path	key21 	{
 	DBSELECT	{
 		DECLARE tbl_nyuinacct_key21_csr CURSOR FOR
 		SELECT a.*
-		FROM tbl_nyuinacct a join tbl_ptnum b using (hospid,ptid) 
-			WHERE a.HOSPID    =   :HOSPID
+		FROM tbl_nyuinacct a join tbl_ptnum b using (HOSPNUM,ptid) 
+			WHERE a.HOSPNUM    =   :HOSPNUM
 			AND   a.NYUGAIKBN   =   :NYUGAIKBN
 			AND   a.SRYYM       >=  :SRYYM
 			ORDER BY b.PTNUM,A.SRYYM
@@ -492,7 +494,7 @@ path	key22	{
 		DECLARE tbl_nyuinacct_key22_csr CURSOR FOR
 		SELECT *
 		FROM tbl_nyuinacct
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   '1'
 			AND   PTID        =   :PTID
 			AND   SRYYM       =   :SRYYM
@@ -510,7 +512,7 @@ path	key23	{
 		DECLARE tbl_nyuinacct_key23_csr CURSOR FOR
 		SELECT *
 		FROM tbl_nyuinacct
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   '1'
 			AND   PTID        =   :PTID
 			AND   SRYYM       =   :SRYYM
@@ -528,7 +530,7 @@ path	key24	{
 		DECLARE tbl_nyuinacct_key24_csr CURSOR FOR
 		SELECT *
 		FROM tbl_nyuinacct
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   '1'
 			AND   PTID        =   :PTID
 			AND   SRYYM       >   :SRYYM
@@ -543,7 +545,7 @@ path	key25	{
 		DECLARE tbl_nyuinacct_key25_csr CURSOR FOR
 		SELECT *
 		FROM tbl_nyuinacct
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   '1'
 			AND   PTID        =   :PTID
 			AND   SRYYM       <   :SRYYM
@@ -557,7 +559,7 @@ path	key26	{
 		DECLARE tbl_nyuinacct_key26_csr CURSOR FOR
 		SELECT *
 		FROM tbl_nyuinacct
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   '1'
 			AND   PTID        =   :PTID
 			AND   SRYYM       =   :SRYYM
@@ -573,7 +575,7 @@ path	key27 	{
 		DECLARE tbl_nyuinacct_key27_csr CURSOR FOR
 		SELECT *
 		FROM tbl_nyuinacct
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   SRYYM       =   :SRYYM
 			AND   NYUGAIKBN   =   :NYUGAIKBN
                         AND   ZAISKBKBN   =   :ZAISKBKBN
@@ -586,7 +588,7 @@ path	key28	{
 		DECLARE tbl_nyuinacct_key28_csr CURSOR FOR
 		SELECT *
 		FROM tbl_nyuinacct
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   '1'
 			AND   PTID        =   :PTID
 			AND   SRYYM       =   :SRYYM
@@ -602,7 +604,7 @@ path	del2 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_nyuinacct
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   '1'
 			AND   PTID        =   :PTID
 			AND   SRYYM       >=  :SRYYM
@@ -615,7 +617,7 @@ path	key29	{
 		DECLARE tbl_nyuinacct_key29_csr CURSOR FOR
 		SELECT *
 		FROM tbl_nyuinacct
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   '1'
 			AND   PTID        =   :PTID
 			AND   SRYYM       =   :SRYYM
@@ -635,7 +637,7 @@ path	key30	{
 		DECLARE tbl_nyuinacct_key30_csr CURSOR FOR
 		SELECT *
 		FROM tbl_nyuinacct
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   '1'
 			AND   PTID        =   :PTID
 			AND   SRYYM       =   :SRYYM
@@ -652,7 +654,7 @@ path	key31	{
 		DECLARE tbl_nyuinacct_key31_csr CURSOR FOR
 		SELECT *
 		FROM tbl_nyuinacct
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   '1'
 			AND   PTID        =   :PTID
 			AND   SRYYM       =   :SRYYM
@@ -669,7 +671,7 @@ path	key32	{
 		DECLARE tbl_nyuinacct_key32_csr CURSOR FOR
 		SELECT *
 		FROM tbl_nyuinacct
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   '1'
 			AND   PTID        =   :PTID
 			AND   SRYYM       =   :SRYYM
@@ -686,7 +688,7 @@ path	key33	{
 		DECLARE tbl_nyuinacct_key33_csr CURSOR FOR
 		SELECT *
 		FROM tbl_nyuinacct
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   '1'
 			AND   PTID        =   :PTID
 			AND   SRYYM       =   :SRYYM
@@ -704,7 +706,7 @@ path	key34	{
 		DECLARE tbl_nyuinacct_key34_csr CURSOR FOR
 		SELECT *
 		FROM tbl_nyuinacct
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   '1'
 			AND   PTID        =   :PTID
 			AND   SRYYM       >=  :SRYYM
@@ -722,7 +724,7 @@ path	key35	{
 		DECLARE tbl_nyuinacct_key35_csr CURSOR FOR
 		SELECT *
 		FROM tbl_nyuinacct
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   NYUGAIKBN   =   '1'
 			AND   PTID        =   :PTID
 			AND   SRYYM       =   :SRYYM

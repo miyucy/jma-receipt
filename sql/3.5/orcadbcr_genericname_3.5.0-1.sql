@@ -1,3 +1,5 @@
+\set ON_ERROR_STOP
+
 --                                    --
 -- 一般名マスタテーブルの作成         --
 --                                    --
@@ -8,6 +10,7 @@
 -- TBL_GENERICNAME 作成               --
 
 create	table	tbl_genericname	(
+	HOSPNUM 	integer not null ,
 	YAKKAKJNCD    	char(9) not null,
 	YUKOKETA	numeric(2,0),
 	GENERICNAME     varchar(200),
@@ -20,6 +23,6 @@ create	table	tbl_genericname	(
 	UPYMD	        char(8),
 	UPHMS	        char(6),
 	constraint tbl_genericname_primary_key primary key(
-		YAKKAKJNCD
+		HOSPNUM,YAKKAKJNCD
 	)
 );

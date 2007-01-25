@@ -25,6 +25,7 @@
        01  CHK004-REC.
       *キー
            03  CHK004-KEY.
+               05  CHK004-HOSPNUM         PIC S9(9) BINARY.
       *管理コード
                05  CHK004-KANRICD          PIC  X(04).
       *区分コード

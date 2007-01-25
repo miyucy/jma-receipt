@@ -1,5 +1,5 @@
 tbl_ptbyomei {
-	HOSPID				char(24);
+	HOSPNUM				integer;
 	PTID				number(10);
 	SRYKA				char(2);
 	SRYYMD				char(8);
@@ -64,7 +64,7 @@ tbl_ptbyomei {
 	XXBYOMEI    		varchar(160),virtual;
 };
 primary	{
-	HOSPID,PTID,SRYKA,SRYYMD,RENNUM;
+	HOSPNUM,PTID,SRYKA,SRYYMD,RENNUM;
 };
 
 
@@ -73,7 +73,7 @@ path	key		{
 		DECLARE tbl_ptbyomei_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptbyomei
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   SRYKA       =   :SRYKA 
 			AND   SRYYMD      =   :SRYYMD
@@ -88,7 +88,7 @@ path	key2	{
 		DECLARE tbl_ptbyomei_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptbyomei
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   SRYKA       =   :SRYKA
 			AND   DLTFLG      =   ' '
@@ -102,7 +102,7 @@ path	key3	{
 		DECLARE tbl_ptbyomei_key3_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptbyomei
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   DLTFLG      =   ' '
 			ORDER  BY  PTID,SRYYMD,SRYKA
@@ -115,7 +115,7 @@ path	key4	{
 		DECLARE tbl_ptbyomei_key4_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptbyomei
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   DLTFLG      =   ' '
 			ORDER  BY  PTID,SRYYMD,SRYKA
 		;
@@ -127,7 +127,7 @@ path	key5	{
 		DECLARE tbl_ptbyomei_key5_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptbyomei
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   SRYKA       =   :SRYKA
 			AND ((BYOMEICD_1  =   :BYOMEICD_1)
@@ -161,7 +161,7 @@ path	key6	{
 		DECLARE tbl_ptbyomei_key6_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptbyomei
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   DLTFLG      =   ' '
 			ORDER  BY  SRYYMD DESC,SRYKA,RENNUM
@@ -174,7 +174,7 @@ path	key7		{
 		DECLARE tbl_ptbyomei_key7_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptbyomei
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   SRYKA       =   :SRYKA 
 			AND   SRYYMD      =   :SRYYMD
@@ -188,7 +188,7 @@ path	key8		{
 		DECLARE tbl_ptbyomei_key8_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptbyomei
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   HKNCOMBI    =   :HKNCOMBI
 			AND   DLTFLG      =   ' '
@@ -203,21 +203,21 @@ path	key9		{
 		DECLARE tbl_ptbyomei_key9_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptbyomei
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   SRYYMD      <   :SRYYMD
 			AND  ((TENKIKBN    =   :TENKIKBN )
                           OR (TENKIYMD    =
                            (SELECT MAX(TENKIYMD)
                                    FROM tbl_ptbyomei 
-                               	WHERE   HOSPID    =   :HOSPID
+                               	WHERE   HOSPNUM    =   :HOSPNUM
 		        	AND   PTID        =   :PTID
                                 AND   SRYYMD      <   :SRYYMD
                                 AND   TENKIKBN    =   '1'))
                           OR (TENKIYMD    =
                            (SELECT MAX(TENKIYMD)
                                    FROM tbl_ptbyomei 
-                               	WHERE   HOSPID    =   :HOSPID
+                               	WHERE   HOSPNUM    =   :HOSPNUM
 		        	AND   PTID        =   :PTID
                                 AND   SRYYMD      <   :SRYYMD
                                 AND   TENKIKBN    =   '3'))) 
@@ -233,7 +233,7 @@ path	key10	{
 		DECLARE tbl_ptbyomei_key10_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptbyomei
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   SRYKA       =   :SRYKA
 			AND   SRYYMD      <=  :SRYYMD
@@ -251,7 +251,7 @@ path	key11	{
 		DECLARE tbl_ptbyomei_key11_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptbyomei
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   SRYYMD      <   :SRYYMD
 			AND   NYUGAIKBN   IN (' ',:NYUGAIKBN)
@@ -268,7 +268,7 @@ path	key12	{
 		DECLARE tbl_ptbyomei_key12_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptbyomei
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND     PTID      =   :PTID
             AND     SRYYMD    <=  :SRYYMD
 			AND     HKNCOMBI  =   :HKNCOMBI
@@ -283,7 +283,7 @@ path	del11	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_ptbyomei
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   SRYKA       =   :SRYKA 
 		;
@@ -293,7 +293,7 @@ path	del21	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_ptbyomei
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 		;
 	};
@@ -303,6 +303,7 @@ path	all	{
 		DECLARE tbl_ptbyomei_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptbyomei
+			WHERE   HOSPNUM    =   :HOSPNUM
  		;
 	};
 };
@@ -311,7 +312,8 @@ path	all2	{
 		DECLARE tbl_ptbyomei_all2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptbyomei
-			WHERE   SRYYMD    LIKE   :SRYYMD
+			WHERE   HOSPNUM    =   :HOSPNUM
+			AND   SRYYMD    LIKE   :SRYYMD
 		;
 	};
 };
@@ -321,7 +323,7 @@ path	key13	{
 		DECLARE tbl_ptbyomei_key13_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptbyomei
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND     PTID      =   :PTID
 			AND     SRYKA     =   :SRYKA
 			AND     BYOMEI    =   :BYOMEI
@@ -334,7 +336,7 @@ path	key14	{
 		DECLARE tbl_ptbyomei_key14_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptbyomei
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND     SRYKA     =   :SRYKA
 			AND     SYUBYOFLG =   '1'
@@ -348,7 +350,7 @@ path	key15	{
 		DECLARE tbl_ptbyomei_key15_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptbyomei
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND     SYUBYOFLG =   '1'
 			AND   DLTFLG      =   ' '
@@ -361,7 +363,7 @@ path	key16	{
 		DECLARE tbl_ptbyomei_key16_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptbyomei
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   SRYKA       =   :SRYKA
 			AND   SRYYMD      <=  :SRYYMD
@@ -376,7 +378,7 @@ path	key17	{
 		DECLARE tbl_ptbyomei_key17_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptbyomei
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   SRYYMD      <=  :SRYYMD
 			AND   DLTFLG      =   ' '
@@ -390,7 +392,7 @@ path	key18	{
 		DECLARE tbl_ptbyomei_key18_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptbyomei
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   SRYKA       =   :SRYKA
 			AND   DLTFLG      =   ' '
@@ -404,7 +406,7 @@ path	key19	{
 		DECLARE tbl_ptbyomei_key19_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptbyomei
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   SRYKA       =   :SRYKA
 			AND   :BYOMEICD_1  in (BYOMEICD_1,
@@ -439,7 +441,7 @@ path	key20	{
 		DECLARE tbl_ptbyomei_key20_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptbyomei
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND     PTID      =   :PTID
 			AND     SRYYMD    =   :SRYYMD
 			AND     BYOMEI    =  :BYOMEI
@@ -454,7 +456,7 @@ path	key21	{
 		DECLARE tbl_ptbyomei_key21_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptbyomei
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND     PTID      =   :PTID
 			AND     SRYKA     =   :SRYKA
 			AND   NYUGAIKBN   IN (' ',:NYUGAIKBN)
@@ -469,7 +471,7 @@ path	key22	{
 		DECLARE tbl_ptbyomei_key22_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptbyomei
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   SRYKA       =   :SRYKA
 			AND   SRYYMD      <=  :SRYYMD
@@ -485,7 +487,7 @@ path	key23	{
 		DECLARE tbl_ptbyomei_key23_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptbyomei
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   SRYYMD      <=  :SRYYMD
 			AND   NYUGAIKBN   IN (' ',:NYUGAIKBN)
@@ -500,7 +502,7 @@ path	key24	{
 		DECLARE tbl_ptbyomei_key24_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptbyomei
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   SRYYMD      <=  :SRYYMD
                         AND   MANSEIKBN  <>   :MANSEIKBN
@@ -518,7 +520,7 @@ path	key25	{
 		DECLARE tbl_ptbyomei_key25_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptbyomei
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   SRYYMD      <=  :SRYYMD
 			AND  (TENKIKBN    =   :TENKIKBN  OR
@@ -534,7 +536,8 @@ path	key26	{
 		DECLARE tbl_ptbyomei_key26_csr CURSOR FOR
 		SELECT BYOMEI
 		FROM tbl_ptbyomei
-		WHERE  SRYKA     LIKE :SRYKA
+		WHERE   HOSPNUM    =   :HOSPNUM
+		AND    SRYKA     LIKE :SRYKA
 		AND    SRYYMD       >= :SRYYMD
 		AND    SRYYMD       <= :UPYMD
 		AND	   BYOMEI    LIKE :BYOMEI
@@ -551,7 +554,7 @@ path	key27	{
 		DECLARE tbl_ptbyomei_key27_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptbyomei
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND     PTID      =   :PTID
 			AND     SRYKA     <>  :SRYKA
 			AND     BYOMEI    =   :BYOMEI
@@ -566,7 +569,7 @@ path	key28	{
 		DECLARE tbl_ptbyomei_key28_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptbyomei
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND     PTID      =   :PTID
 			AND     SRYKA     <>  :SRYKA
 			AND   NYUGAIKBN   IN (' ',:NYUGAIKBN)
@@ -583,7 +586,7 @@ path	key29	{
 		DECLARE tbl_ptbyomei_key29_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptbyomei
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND     PTID      =   :PTID
 			AND     SRYYMD    =   :SRYYMD
 			AND   ( BYOMEI    =  :BYOMEI  OR
@@ -599,7 +602,7 @@ path	key30	{
 		DECLARE tbl_ptbyomei_key30_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptbyomei
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   SRYKA      LIKE :SRYKA
 			AND   SRYYMD      <   :SRYYMD
@@ -617,7 +620,7 @@ path	key31	{
 		DECLARE tbl_ptbyomei_key31_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptbyomei
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   DLTFLG      =   '1'
 			ORDER BY UPYMD,UPHMS,SRYYMD,SRYKA,RENNUM
@@ -629,7 +632,7 @@ path	del31	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_ptbyomei
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   DLTFLG      =   '1'
 		;

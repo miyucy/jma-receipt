@@ -27,7 +27,7 @@
       *¥­¡¼
            03  PTHKN-KEY.
       *°åÎÅµ¡´Ø£É£Ä
-               05  PTHKN-HOSPID            PIC  X(24).
+               05  PTHKN-HOSPNUM            PIC  S9(9) BINARY.
       *´µ¼Ô£É£Ä
                05  PTHKN-PTID              PIC  9(10).
       *ÊÝ¸±£É£Ä

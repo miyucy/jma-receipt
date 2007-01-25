@@ -1,5 +1,5 @@
 tbl_ptkohftn {
-	HOSPID			char(24);
+	HOSPNUM			integer;
 	PTID			number(10);
 	KOHID			number(10);
 	RENNUM			number(3);
@@ -15,14 +15,14 @@ tbl_ptkohftn {
 	UPYMD			char(8);
 	UPHMS			char(6);
 #-----> 主キー更新用項目
-	UPHOSPID			char(24),virtual;
+	UPHOSPNUM			integer,virtual;
 	UPPTID 				number(10,0),virtual;
 	UPKOHID				number(10,0),virtual;
 	UPTEKSTYMD			char(8),virtual;
 };
 
 primary	{
-	HOSPID,PTID,KOHID,RENNUM;
+	HOSPNUM,PTID,KOHID,RENNUM;
 };
 
 path	key 	{
@@ -30,7 +30,7 @@ path	key 	{
 		DECLARE tbl_ptkohftn_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptkohftn
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   KOHID       =   :KOHID
 			AND   RENNUM      =   :RENNUM 
@@ -43,7 +43,7 @@ path	key2 	{
 		DECLARE tbl_ptkohftn_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptkohftn
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			ORDER   BY        KOHNUM,
 		                          TEKSTYMD DESC
@@ -56,7 +56,7 @@ path	key3 	{
 		DECLARE tbl_ptkohftn_key3_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptkohftn
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			ORDER   BY        KOHNUM,RENNUM DESC
 		;
@@ -68,7 +68,7 @@ path	key4 	{
 		DECLARE tbl_ptkohftn_key4_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptkohftn
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   KOHID       =   :KOHID
 			ORDER   BY        RENNUM DESC
@@ -81,7 +81,7 @@ path	key5 	{
 		DECLARE tbl_ptkohftn_key5_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptkohftn
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   KOHID       =   :KOHID
 			ORDER   BY        TEKSTYMD DESC
@@ -93,7 +93,7 @@ path	del1 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_ptkohftn
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 		;
 	};
@@ -104,6 +104,7 @@ path	all 	{
 		DECLARE tbl_ptkohftn_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptkohftn
+			WHERE   HOSPNUM    =   :HOSPNUM
 		;
 	};
 };

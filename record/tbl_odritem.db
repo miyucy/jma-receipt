@@ -1,5 +1,5 @@
 tbl_odritem {
-	HOSPID			 	char(24);
+	HOSPNUM			 	integer;
 	KARTE_KEY			varchar(36);
 	ORDERNUM			number(2,0);
 	ITEMNUM				number(2,0);
@@ -15,7 +15,7 @@ tbl_odritem {
 	UPHMS				char(6);
 };
 primary	{
-	HOSPID,KARTE_KEY,ORDERNUM,ITEMNUM;
+	HOSPNUM,KARTE_KEY,ORDERNUM,ITEMNUM;
 };
 
 path	key 	{
@@ -23,7 +23,7 @@ path	key 	{
 		DECLARE tbl_odritem_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_odritem
-			WHERE HOSPID      =   :HOSPID
+			WHERE HOSPNUM      =   :HOSPNUM
 			AND   KARTE_KEY   =   :KARTE_KEY
 			AND   ORDERNUM    =   :ORDERNUM
 			AND   ITEMNUM     =   :ITEMNUM
@@ -36,7 +36,7 @@ path	key2 	{
 		DECLARE tbl_odritem_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_odritem
-			WHERE HOSPID      =   :HOSPID
+			WHERE HOSPNUM      =   :HOSPNUM
 			AND   KARTE_KEY   =   :KARTE_KEY
 			AND   ORDERNUM    =   :ORDERNUM
 		;
@@ -48,7 +48,7 @@ path	key3 	{
 		DECLARE tbl_odritem_key3_csr CURSOR FOR
 		SELECT *
 		FROM tbl_odritem
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND     KARTE_KEY =   :KARTE_KEY
 			AND     ORDERNUM  =   :ORDERNUM
 			AND     STATUS    =   :STATUS
@@ -61,7 +61,7 @@ path	del1 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_odritem
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND     KARTE_KEY =   :KARTE_KEY
 			AND     ORDERNUM  =   :ORDERNUM
 		;
@@ -73,7 +73,7 @@ path	key4 	{
 		DECLARE tbl_odritem_key4_csr CURSOR FOR
 		SELECT *
 		FROM tbl_odritem
-		WHERE  HOSPID        = :HOSPID
+		WHERE  HOSPNUM        = :HOSPNUM
 		AND    KARTE_KEY     = :KARTE_KEY
 		AND    ORDERNUM      = :ORDERNUM
 		ORDER  BY  ITEMID,ITEMNUM

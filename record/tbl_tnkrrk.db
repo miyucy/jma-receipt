@@ -1,5 +1,5 @@
 tbl_tnkrrk {
-	HOSPID				char(24);
+	HOSPNUM				integer;
 	PTID				number(10,0);
 	STYMD	    			char(8);
 	EDYMD				char(8);
@@ -10,12 +10,12 @@ tbl_tnkrrk {
 	UPYMD    			char(8);
 	UPHMS				char(6);
 #-----> 主キー更新用項目
-	UPHOSPID			char(24),virtual;
+	UPHOSPNUM			integer,virtual;
 	UPPTID 				number(10,0),virtual;
 	UPSTYMD			    char(8),virtual;
 };
 primary	{
-	HOSPID,PTID,STYMD;
+	HOSPNUM,PTID,STYMD;
 };
 
 path	key 	{
@@ -23,7 +23,7 @@ path	key 	{
 		DECLARE tbl_tnkrrk_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_tnkrrk
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   STYMD       =   :STYMD
 		;
@@ -35,7 +35,7 @@ path	key2 	{
 		DECLARE tbl_tnkrrk_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_tnkrrk
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 		;
 	};
@@ -46,7 +46,7 @@ path	key3 	{
 		DECLARE tbl_tnkrrk_key3_csr CURSOR FOR
 		SELECT *
 		FROM tbl_tnkrrk
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 			ORDER   BY        STYMD  DESC
 		;
@@ -56,7 +56,7 @@ path	del11 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_tnkrrk
-			WHERE   HOSPID    =   :HOSPID
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
 		;
 	};
@@ -67,7 +67,7 @@ path	upd1	{
 		UPDATE	tbl_tnkrrk 
 				SET	
 #					:*
-                   HOSPID              = :HOSPID,
+                   HOSPNUM              = :HOSPNUM,
                    PTID                = :PTID,
                    STYMD               = :STYMD,
                    EDYMD               = :EDYMD,
@@ -77,7 +77,7 @@ path	upd1	{
                    CREYMD              = :CREYMD,
                    UPYMD               = :UPYMD,
                    UPHMS               = :UPHMS
-               WHERE   HOSPID      =   :UPHOSPID
+               WHERE   HOSPNUM      =   :UPHOSPNUM
                  AND   PTID        =   :UPPTID
                  AND   STYMD       =   :UPSTYMD
 		;
@@ -89,6 +89,7 @@ path	all 	{
 		DECLARE tbl_tnkrrk_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_tnkrrk
+			WHERE   HOSPNUM    =   :HOSPNUM
  		;
 	};
 };

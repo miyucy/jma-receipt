@@ -1,14 +1,14 @@
 tbl_teikiprt	{
+        HOSPNUM              integer;
         BTUNUM              char(2);
         DENPNUM             number(7);
-        HOSPID              char(24);
         PTID                number(10);
         PTNUM               char(20);
         NAME                char(100);
 };
 
 primary	{
-	BTUNUM,DENPNUM;
+	HOSPNUM,BTUNUM,DENPNUM;
 };
 
 path	key		{ 	
@@ -16,7 +16,8 @@ path	key		{
 		DECLARE tbl_teikiprt_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_teikiprt
-        WHERE   BTUNUM      =   :BTUNUM
+        WHERE   HOSPNUM     =   :HOSPNUM
+        AND	BTUNUM      =   :BTUNUM
 		AND	DENPNUM     =   :DENPNUM
 		;
 	};
@@ -27,6 +28,7 @@ path	key2	{
 		DECLARE tbl_teikiprt_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_teikiprt
+        	WHERE   HOSPNUM     =   :HOSPNUM
 		ORDER   BY BTUNUM,NAME
 		;
 	};
@@ -37,6 +39,7 @@ path	key3		{
 		DECLARE tbl_teikiprt_key3_csr CURSOR FOR
 		SELECT *
 		FROM tbl_teikiprt
+        	WHERE   HOSPNUM     =   :HOSPNUM
 		ORDER   BY BTUNUM,PTNUM
 		;
 	};
@@ -47,6 +50,7 @@ path	key4		{
 		DECLARE tbl_teikiprt_key4_csr CURSOR FOR
 		SELECT *
 		FROM tbl_teikiprt
+        	WHERE   HOSPNUM     =   :HOSPNUM
 		ORDER   BY NAME
 		;
 	};
@@ -57,6 +61,7 @@ path	key5		{
 		DECLARE tbl_teikiprt_key5_csr CURSOR FOR
 		SELECT *
 		FROM tbl_teikiprt
+        	WHERE   HOSPNUM     =   :HOSPNUM
 		ORDER   BY PTNUM
 		;
 	};
@@ -67,6 +72,7 @@ path	all	{
 		DECLARE tbl_teikiprt_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_teikiprt
+        	WHERE   HOSPNUM     =   :HOSPNUM
  		;
 	};
 };
@@ -75,6 +81,7 @@ path	del1 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_teikiprt
+        	WHERE   HOSPNUM     =   :HOSPNUM
 		;
 	};
 };
@@ -84,7 +91,8 @@ path	del2 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_teikiprt
-        WHERE   DENPNUM     =   :DENPNUM
+        	WHERE   HOSPNUM     =   :HOSPNUM
+        AND   DENPNUM     =   :DENPNUM
 		AND		PTID        =   :PTID
 		;
 	};

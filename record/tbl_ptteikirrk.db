@@ -1,5 +1,5 @@
 tbl_ptteikirrk {
-       HOSPID          char(24);
+       HOSPNUM          integer;
        PTID            number(10);
        SRYYM           char(6);
        SAKKBN          char(1);
@@ -25,7 +25,7 @@ tbl_ptteikirrk {
 };
 
 primary	{
-	HOSPID,PTID,SRYYM,SAKKBN,HKNCOMBINUM,DENPNUM;
+	HOSPNUM,PTID,SRYYM,SAKKBN,HKNCOMBINUM,DENPNUM;
 };
 
 path	key		{ 	
@@ -34,7 +34,7 @@ path	key		{
 		SELECT *
 		FROM tbl_ptteikirrk
         WHERE  
-               HOSPID  =   :HOSPID
+               HOSPNUM  =   :HOSPNUM
         AND    PTID    =   :PTID
         AND    SRYYM   =   :SRYYM
         AND    SAKKBN  =   :SAKKBN
@@ -49,7 +49,7 @@ path	key2		{
 		DECLARE tbl_ptteikirrk_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptteikirrk
-        WHERE  HOSPID  =   :HOSPID
+        WHERE  HOSPNUM  =   :HOSPNUM
         AND    PTID    =   :PTID
         AND    SRYYM   =   :SRYYM
         AND    DELFLG  =   0
@@ -62,7 +62,7 @@ path	key3		{
 		DECLARE tbl_ptteikirrk_key3_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptteikirrk
-        WHERE  HOSPID  =   :HOSPID
+        WHERE  HOSPNUM  =   :HOSPNUM
         AND    PTID    =   :PTID
         AND    DELFLG  =   0
 		ORDER  BY  SKYEDYMD DESC
@@ -75,7 +75,7 @@ path	key4		{
 		DECLARE tbl_ptteikirrk_key4_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptteikirrk
-        WHERE  HOSPID  =   :HOSPID
+        WHERE  HOSPNUM  =   :HOSPNUM
         AND    PTID    =   :PTID
 		AND    SKYSTYMD   >= :SKYSTYMD
 		AND    SKYEDYMD   <= :SKYEDYMD
@@ -89,7 +89,7 @@ path	key5		{
 		DECLARE tbl_ptteikirrk_key5_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptteikirrk
-        WHERE  HOSPID  =   :HOSPID
+        WHERE  HOSPNUM  =   :HOSPNUM
         AND    SRYYM   =   :SRYYM
         AND    SAKKBN  LIKE :SAKKBN
         AND    DELFLG  =   0
@@ -102,6 +102,7 @@ path	all		{
 		DECLARE tbl_ptteikirrk_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptteikirrk
+        WHERE  HOSPNUM  =   :HOSPNUM
 		;
 	};
 };
@@ -110,7 +111,7 @@ path	del1		{
 	DBDELETE	{
 		DELETE
 		FROM tbl_ptteikirrk
-        WHERE  HOSPID  =   :HOSPID
+        WHERE  HOSPNUM  =   :HOSPNUM
         AND    PTID    =   :PTID
 		;
 	};
@@ -122,7 +123,7 @@ path	upd1		{
 		SET    DELFLG  =   1,
 		       UPYMD   =   :UPYMD,
 		       UPHMS   =   :UPHMS
-        WHERE  HOSPID  =   :HOSPID
+        WHERE  HOSPNUM  =   :HOSPNUM
         AND    PTID    =   :PTID
 		AND    SKYSTYMD   >= :SKYSTYMD
 		AND    SKYEDYMD   <= :SKYEDYMD
@@ -135,7 +136,8 @@ path	all2		{
 		DECLARE tbl_ptteikirrk_all2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptteikirrk
-        WHERE  SRYYM  =   :SRYYM
+        WHERE  HOSPNUM  =   :HOSPNUM
+        AND  SRYYM  =   :SRYYM
 		;
 	};
 };
@@ -146,7 +148,7 @@ path	key6		{
 		SELECT *
 		FROM tbl_ptteikirrk
         WHERE  
-               HOSPID  =   :HOSPID
+               HOSPNUM  =   :HOSPNUM
         AND    PTID    =   :PTID
         AND    DENPNUM =   :DENPNUM
         AND    DELFLG  =   0
@@ -161,7 +163,7 @@ path	key7		{
 		SELECT *
 		FROM tbl_ptteikirrk
         WHERE  
-               HOSPID  =   :HOSPID
+               HOSPNUM  =   :HOSPNUM
         AND    PTID    =   :PTID
         AND    RRKNUM  =   :RRKNUM
         AND    DELFLG  =   0
@@ -175,7 +177,7 @@ path	key8		{
 		DECLARE tbl_ptteikirrk_key8_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptteikirrk
-        WHERE  HOSPID  =   :HOSPID
+        WHERE  HOSPNUM  =   :HOSPNUM
         AND    PTID    =   :PTID
         AND    DELFLG  =   0
 		ORDER  BY  SKYEDYMD DESC ,
@@ -189,7 +191,7 @@ path	key9		{
 		DECLARE tbl_ptteikirrk_key9_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptteikirrk
-        WHERE  HOSPID  =   :HOSPID
+        WHERE  HOSPNUM  =   :HOSPNUM
         AND    PTID    =   :PTID
         AND    SRYYM   =   :SRYYM
         AND    RRKNUM  =   :RRKNUM
@@ -204,7 +206,7 @@ path	upd2		{
 		SET    DELFLG  =   1,
 		       UPYMD   =   :UPYMD,
 		       UPHMS   =   :UPHMS
-        WHERE  HOSPID  =   :HOSPID
+        WHERE  HOSPNUM  =   :HOSPNUM
         AND    PTID    =   :PTID
 		AND    SKYSTYMD   >= :SKYSTYMD
 		AND    SKYEDYMD   <= :SKYEDYMD
@@ -219,7 +221,7 @@ path	upd3		{
 		SET    DELFLG  =   1,
 		       UPYMD   =   :UPYMD,
 		       UPHMS   =   :UPHMS
-        WHERE  HOSPID  =   :HOSPID
+        WHERE  HOSPNUM  =   :HOSPNUM
         AND    PTID    =   :PTID
         AND    RRKNUM  =   :RRKNUM
 		;
@@ -231,7 +233,7 @@ path	key10		{
 		DECLARE tbl_ptteikirrk_key10_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptteikirrk
-        WHERE  HOSPID  =   :HOSPID
+        WHERE  HOSPNUM  =   :HOSPNUM
         AND    SRYYM   =   :SRYYM
         AND    KBT     =   :KBT
         AND    DELFLG  =   0
@@ -245,7 +247,7 @@ path	upd4		{
 		SET    DELFLG  =   1,
 		       UPYMD   =   :UPYMD,
 		       UPHMS   =   :UPHMS
-        WHERE  HOSPID  =   :HOSPID
+        WHERE  HOSPNUM  =   :HOSPNUM
         AND    PTID    =   :PTID
         AND    DENPNUM     = :DENPNUM
 		;
@@ -257,7 +259,7 @@ path	key11		{
 		DECLARE tbl_ptteikirrk_key11_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptteikirrk
-        WHERE  HOSPID  =   :HOSPID
+        WHERE  HOSPNUM  =   :HOSPNUM
         AND    SRYYM   =   :SRYYM
         AND    KBT     =   :KBT
 		;

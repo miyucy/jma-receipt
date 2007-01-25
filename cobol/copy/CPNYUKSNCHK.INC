@@ -24,6 +24,7 @@
       *****************************************************************
       *01  NYUKSNCHK-REC.
            03  NYUKSNCHK-KEY.
+               05  NYUKSNCHK-HOSPNUM PIC S9(9) BINARY.
       *∆˛±°Œ¡∂Ë ¨
                05  NYUKSNCHK-NYUINKBN  PIC  X(03).
       *≤√ªª∂Ë ¨

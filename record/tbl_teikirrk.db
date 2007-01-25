@@ -1,4 +1,5 @@
 tbl_teikirrk {
+	HOSPNUM				integer;
        SRYYM           char(6);
        KBT             char(1);
        TERMID          varchar(16);
@@ -8,7 +9,7 @@ tbl_teikirrk {
        UPHMS           varchar(6);
 };
 primary	{
-	SRYYM,KBT;
+	HOSPNUM,SRYYM,KBT;
 };
 
 path	key		{ 	
@@ -16,7 +17,8 @@ path	key		{
 		DECLARE tbl_teikirrk_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_teikirrk
-        WHERE  SRYYM   =   :SRYYM
+		WHERE 	HOSPNUM	= :HOSPNUM
+        AND  SRYYM   =   :SRYYM
         AND    KBT     =   :KBT
 		;
 	};
@@ -27,6 +29,7 @@ path	key2		{
 		DECLARE tbl_teikirrk_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_teikirrk
+		WHERE 	HOSPNUM	= :HOSPNUM
 		ORDER BY SRYYM DESC,KBT DESC
 		;
 	};
@@ -37,6 +40,7 @@ path	all		{
 		DECLARE tbl_teikirrk_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_teikirrk
+		WHERE 	HOSPNUM	= :HOSPNUM
 		;
 	};
 };

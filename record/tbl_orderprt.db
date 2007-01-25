@@ -1,5 +1,5 @@
 tbl_orderprt {
-	HOSPID				char(24);
+	HOSPNUM				integer;
 	PTID 				number(10,0);
 	PTNUM 				char(20);
         NYUGAIKBN                       char(1);
@@ -59,7 +59,7 @@ tbl_orderprt {
 };
 
 primary	{
-        HOSPID,PTID,PTNUM,NYUGAIKBN,SRYKA,HKNCOMBI,SYSYMD,
+        HOSPNUM,PTID,PTNUM,NYUGAIKBN,SRYKA,HKNCOMBI,SYSYMD,
         PRINTYMD,PRINTHMS,PRTKBN,ORDERNUM,RENNUM;
 };
 
@@ -68,7 +68,7 @@ path	key 	{
 		DECLARE tbl_orderprt_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_orderprt
-			WHERE HOSPID       =   :HOSPID
+			WHERE HOSPNUM       =   :HOSPNUM
 			AND   PTID         =   :PTID
 			AND   PTNUM        =   :PTNUM
 			AND   NYUGAIKBN    =   :NYUGAIKBN
@@ -89,7 +89,7 @@ path	key1 	{
 		DECLARE tbl_orderprt_key1_csr CURSOR FOR
 		SELECT *
 		FROM tbl_orderprt
-			WHERE HOSPID       =   :HOSPID
+			WHERE HOSPNUM       =   :HOSPNUM
 			AND   PTID         =   :PTID
 			AND   PTNUM        =   :PTNUM
 			AND   NYUGAIKBN    =   :NYUGAIKBN
@@ -110,7 +110,7 @@ path	key2 	{
 		DECLARE tbl_orderprt_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_orderprt
-			WHERE HOSPID       =   :HOSPID
+			WHERE HOSPNUM       =   :HOSPNUM
 			AND   PTID         =   :PTID
 			AND   PTNUM        =   :PTNUM
 			AND   NYUGAIKBN    =   :NYUGAIKBN
@@ -130,7 +130,7 @@ path	del1  	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_orderprt
-			WHERE HOSPID       =   :HOSPID
+			WHERE HOSPNUM       =   :HOSPNUM
 			AND   PTID         =   :PTID
 			AND   PTNUM        =   :PTNUM
 			AND   NYUGAIKBN    =   :NYUGAIKBN
@@ -147,7 +147,7 @@ path	del2  	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_orderprt
-			WHERE HOSPID       =   :HOSPID
+			WHERE HOSPNUM       =   :HOSPNUM
 			AND   PTID         =   :PTID
 		;
 	};
@@ -157,6 +157,7 @@ path	all 	{
 		DECLARE tbl_orderprt_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_orderprt
+			WHERE HOSPNUM       =   :HOSPNUM
 			ORDER   BY         PTNUM,
                                            SRYKA,
                                            PRINTYMD,

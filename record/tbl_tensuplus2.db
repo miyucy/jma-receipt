@@ -1,4 +1,5 @@
 tbl_tensuplus2 {
+	HOSPNUM				integer;
 	SRYCD				char(9);
 	CHOKINISSU 			number(3,0);
 	CHOKIKIGEN			char(8);
@@ -52,7 +53,7 @@ tbl_tensuplus2 {
 	UPHMS				char(6);
 };
 primary	{
-	SRYCD;
+	HOSPNUM,SRYCD;
 };
 
 path	key 	{
@@ -60,7 +61,8 @@ path	key 	{
 		DECLARE tbl_tensuplus2_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_tensuplus2
-			WHERE   SRYCD    =   :SRYCD
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   SRYCD    =   :SRYCD
 		;
 	};
 };
@@ -70,6 +72,7 @@ path	all	{
 		DECLARE tbl_tensuplus2_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_tensuplus2
+		WHERE 	HOSPNUM	= :HOSPNUM
  		;
 	};
 };
