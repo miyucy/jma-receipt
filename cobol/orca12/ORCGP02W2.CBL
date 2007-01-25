@@ -66,6 +66,8 @@
       *  03.04.01    NACL-ÌçÏÆ    06/11/20  ¹â³Û°ÑÇ¤Ê§¤¤À©ÅÙ¡¢¹â³Û£´²óÌÜ°Ê¹ß
       *                                     ÂÐ±þ
       *  03.04.02    NACL-ÌçÏÆ    06/11/29  ÊÝ¸±ÁÈ¤ß¹ç¤ï¤»ºîÀ®¾ò·ï½¤Àµ
+      *  03.04.03    NACL-ÌçÏÆ    07/01/25  ¡ã²¬»³¡ä£°£¹£±¡Ü½Å¿´¤Î
+      *                                     ÊÝ¸±ÁÈ¹ç¤»ºîÀ®
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3546,6 +3548,17 @@
                                 PERFORM 5701413-SYUKOH-HJO-SEC
                              END-IF
                             END-IF
+                          WHEN     33
+                            IF  WRK-SRT-HJO-KOHNO  =  "091"
+                             IF WRK-KOH-HKNNUM(WRK-COMB-HJOIDX)(2:2)
+                                                          = "80"
+                                PERFORM 5701413-SYUKOH-HJO-SEC
+                             END-IF
+                            ELSE
+                             IF  WRK-SRT-HJO-KOHNO  NOT  =  "020"
+                                PERFORM 5701413-SYUKOH-HJO-SEC
+                             END-IF
+                            END-IF
                           WHEN     OTHER
                              IF  WRK-SRT-HJO-KOHNO  NOT  =  "020"
                                PERFORM 5701413-SYUKOH-HJO-SEC
@@ -4401,6 +4414,13 @@
                 END-IF
              END-IF
              IF   SPA-PREFNUM  =  01
+               IF  ((WRK-KCOMB-KOH1-HKNKOHSBTKBN (IDX2)  =  "3" ) AND
+                    (WRK-KCOMB-KOH2HKNNUM (IDX2)         = "091"))
+               OR  ( WRK-KCOMB-KOH1HKNNUM (IDX2)         = "091" )
+                   MOVE    "3"            TO  WRK-FTN-FLG
+               END-IF
+             END-IF
+             IF   SPA-PREFNUM  =  33
                IF  ((WRK-KCOMB-KOH1-HKNKOHSBTKBN (IDX2)  =  "3" ) AND
                     (WRK-KCOMB-KOH2HKNNUM (IDX2)         = "091"))
                OR  ( WRK-KCOMB-KOH1HKNNUM (IDX2)         = "091" )
