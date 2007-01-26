@@ -2771,15 +2771,7 @@
            MOVE    WRK-PARA-HOSPID     TO  SYUKA-HOSPID
            MOVE    WRK-PARA-DENPPRTYM  TO  SYUKA-SRYYM
            MOVE    "YYYY"              TO  SYUKA-RECESYUBETU
-           IF      WRK-PARA-NYUGAIKBN  =   "2"
-               MOVE    "1%"            TO  SYUKA-NYUGAIKBN
-           ELSE
-               IF      WRK-PARA-NYUGAIKBN  =   "1"
-                   MOVE    "2%"            TO  SYUKA-NYUGAIKBN
-               ELSE
-                   MOVE    "%"             TO  SYUKA-NYUGAIKBN
-               END-IF
-           END-IF
+           MOVE    "%"             TO  SYUKA-NYUGAIKBN
            MOVE    "01"                TO  SYUKA-MISEIKYU-FLG
            MOVE    SYUKA-REC           TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -2831,6 +2823,17 @@
       *    在総診チェック
            IF      WRK-PARA-ZAIKBN     =   "2"
                GO  TO  900-SYUKA-CHEK-EXT
+           END-IF
+      *
+           IF      WRK-PARA-NYUGAIKBN  =   "2"
+               IF      SYUKA-NYUGAIKBN =   "1"
+                   GO  TO  900-SYUKA-CHEK-EXT
+               END-IF
+           END-IF
+           IF      WRK-PARA-NYUGAIKBN  =   "1"
+               IF      SYUKA-NYUGAIKBN =   "2"
+                   GO  TO  900-SYUKA-CHEK-EXT
+               END-IF
            END-IF
       *
            MOVE    "3"             TO  WRK-SKYKBN
