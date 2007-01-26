@@ -2368,7 +2368,7 @@
            MOVE    WRK-PRT-KENSU   TO  WRK-Z5
            MOVE    WRK-Z5          TO  WRK-PRT3-KENSU
       *----(03.04.02)--UPD-START---
-           IF      TOKEI-SKYKBN    =   "3"
+           IF      WRK-SKYKBN      =   "3"
                MOVE    "    -"         TO  WRK-PRT3-NISSU
                MOVE    "       -"      TO  WRK-PRT3-TENSU
            ELSE
