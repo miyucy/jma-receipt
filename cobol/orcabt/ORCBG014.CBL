@@ -2365,7 +2365,7 @@
            MOVE    "点"            TO  WRK-PRT3-FILLER4
            MOVE    "　　　　未請求患者合計"
                                    TO  WRK-PRT3-GOKEI
-           MOVE    WRK-PRT-KENSU   TO  WRK-Z5
+           MOVE    SUM-GOK-KENSU(1)    TO  WRK-Z5
            MOVE    WRK-Z5          TO  WRK-PRT3-KENSU
            MOVE    "    -"         TO  WRK-PRT3-NISSU
            MOVE    "       -"      TO  WRK-PRT3-TENSU
@@ -2373,6 +2373,8 @@
       *
       *    合計行セット
            PERFORM 320-BODY-SET-SEC
+      *
+           MOVE    ZERO                TO  SUM-GOK-TBL(1)
       *
            .
        3203-BODY-END-SET2-EXT.
