@@ -814,9 +814,10 @@
                    END-IF
       *            初回コンタクトレンズ検査チェック
                    IF     (SPA-ERRCD           =   SPACE ) AND
+                          (LNK-ORCSC-PG        =   "K02" ) AND
                           (WRK-COM-INPUTCD (IDX-Z) =   "160179210"
                                                    OR  "160179410") AND
-                          (WRK-COM-KZMFLG (IDX-Z)  =   SPACE    )
+                          (WRK-COM-KZMFLG (IDX-Z)  =   SPACE    ) 
                        PERFORM 100115-CONTAKUCHEK-SEC
                    END-IF
       *        器材
