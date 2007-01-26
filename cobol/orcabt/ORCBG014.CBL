@@ -64,7 +64,7 @@
       *        SKYKBN      請求区分    1:請求済、未請求、2:請求しない、3:未請求患者分
       *        TEISYUTU    提出先区分  1:社保、2:国保、3:特別療養費
       *        HKNJANUM    保険者番号  国保の時だけ使用、社保＆請求しない場合はオールゼロ
-      *        SYOKBN      処理区分    1:通常分、2:返戻分、3:月遅れ分、4:未請求患者分
+      *        SYOKBN      処理区分    1:通常分、2:返戻分、3:月遅れ分
       *        NYUGAIKBN   入外区分    1:外来分、2:入院分
       *        ZAIKBN      在総診区分  1:その他のレセ、2:在総診または在医総を算定したレセ
       *        SRYYMFLG    診療月フラグ
@@ -1572,8 +1572,14 @@
       *****************************************************************
        320-BODY-HEN3-SEC           SECTION.
       *
+      *    グループ見出しセット
+           PERFORM 3201-BODY-HEN-STR3-SEC
+      *
       *    患者情報
            PERFORM 3202-BODY-SUB-HEN3-SEC
+      *
+      *    グループ合計セット
+           PERFORM 3203-BODY-HEN-END3-SEC
       *
            .
        320-BODY-HEN3-EXT.
@@ -1681,6 +1687,22 @@
        3201-BODY-HEN-STR2-EXT.
            EXIT.
       *
+      *----(03.04.02)--ADD-START---
+      *****************************************************************
+      *    帳票編集<明細行>見出し処理３
+      *****************************************************************
+       3201-BODY-HEN-STR3-SEC      SECTION.
+      *
+      *    診療月見出し
+           IF        ( TOKEI-SRYYMFLG  NOT =   WRK-SRYYMFLG )
+               PERFORM 3201-SRYYM-BODY-HEN-SEC
+           END-IF
+      *
+           .
+       3201-BODY-HEN-STR3-EXT.
+           EXIT.
+      *
+      *----(03.04.02)--ADD-END-----
       *****************************************************************
       *    帳票編集<明細行>処理
       *****************************************************************
@@ -2166,6 +2188,7 @@
       *
            PERFORM UNTIL ( FLG-TOKEI       =   1 )
                    OR    ( WRK-SKYKBN      NOT =   TOKEI-SKYKBN )
+                   OR    ( WRK-SRYYMFLG    NOT =   TOKEI-SRYYMFLG )
       *        患者編集
                PERFORM 3202-BODY-SUB-SET-SEC
       *        患者別集計ファイル読み込み
@@ -2176,14 +2199,6 @@
            IF      IDX                 >   ZERO
                MOVE    WRK-PRT4-AREA   TO  WRK-PRT-LINE
                PERFORM 320-BODY-SET-SEC
-           END-IF
-      *
-          PERFORM 3203-BODY-END-SET2-SEC
-           IF        ( TOKEI-SKYKBN    NOT =   WRK-SKYKBN )
-               OR    ( FLG-TOKEI       =   1 )
-               OR    ( CNT-LINE        >=  55 )
-               PERFORM 390-PRINT-OUT-SEC
-               PERFORM 310-HEAD-SET-SEC
            END-IF
       *
            .
@@ -2338,10 +2353,15 @@
            MOVE    WRK-PRT-GOKEI   TO  WRK-PRT3-GOKEI
            MOVE    WRK-PRT-KENSU   TO  WRK-Z5
            MOVE    WRK-Z5          TO  WRK-PRT3-KENSU
-           MOVE    WRK-PRT-NISSU   TO  WRK-Z5
-           MOVE    WRK-Z5          TO  WRK-PRT3-NISSU
-           MOVE    WRK-PRT-TENSU   TO  WRK-Z8
-           MOVE    WRK-Z8          TO  WRK-PRT3-TENSU
+           IF      TOKEI-SKYKBN    =   "3"
+               MOVE    "    -"         TO  WRK-PRT3-NISSU
+               MOVE    "       -"      TO  WRK-PRT3-TENSU
+           ELSE
+               MOVE    WRK-PRT-NISSU   TO  WRK-Z5
+               MOVE    WRK-Z5          TO  WRK-PRT3-NISSU
+               MOVE    WRK-PRT-TENSU   TO  WRK-Z8
+               MOVE    WRK-Z8          TO  WRK-PRT3-TENSU
+           END-IF
            MOVE    WRK-PRT3-AREA   TO  WRK-PRT-LINE
       *
       *    合計行セット
@@ -2351,35 +2371,6 @@
        3203-BODY-END-SET-EXT.
            EXIT.
       *
-      *----(03.04.02)--ADD-START---
-      *****************************************************************
-      *    帳票編集<明細行>処理    合計行セット2
-      *****************************************************************
-       3203-BODY-END-SET2-SEC      SECTION.
-      *
-           MOVE    SPACE           TO  WRK-PRT3-AREA
-      *
-           MOVE    "　"            TO  WRK-PRT3-FILLER1
-           MOVE    "件"            TO  WRK-PRT3-FILLER2
-           MOVE    "日"            TO  WRK-PRT3-FILLER3
-           MOVE    "点"            TO  WRK-PRT3-FILLER4
-           MOVE    "　　　　未請求患者合計"
-                                   TO  WRK-PRT3-GOKEI
-           MOVE    SUM-GOK-KENSU(1)    TO  WRK-Z5
-           MOVE    WRK-Z5          TO  WRK-PRT3-KENSU
-           MOVE    "    -"         TO  WRK-PRT3-NISSU
-           MOVE    "       -"      TO  WRK-PRT3-TENSU
-           MOVE    WRK-PRT3-AREA   TO  WRK-PRT-LINE
-      *
-      *    合計行セット
-           PERFORM 320-BODY-SET-SEC
-      *
-           MOVE    ZERO                TO  SUM-GOK-TBL(1)
-      *
-           .
-       3203-BODY-END-SET2-EXT.
-           EXIT.
-      *----(03.04.02)--ADD-END-----
       *****************************************************************
       *    帳票編集<明細行>処理
       *****************************************************************
@@ -2478,6 +2469,30 @@
        3203-BODY-HEN-END2-EXT.
            EXIT.
       *
+      *----(03.04.02)--ADD-START---
+      *****************************************************************
+      *    帳票編集<明細行>処理３
+      *****************************************************************
+       3203-BODY-HEN-END3-SEC      SECTION.
+      *
+      *    レセプト合計
+           IF        ( TOKEI-SKYKBN    NOT =   WRK-SKYKBN )
+               OR    ( TOKEI-SRYYMFLG  NOT =   WRK-SRYYMFLG )
+               OR    ( FLG-TOKEI       =   1 )
+               PERFORM 3203-ZAIKBN-BODY-END-SEC
+               IF        ( TOKEI-SKYKBN    NOT =   WRK-SKYKBN )
+                   OR    ( FLG-TOKEI       =   1 )
+                   OR    ( CNT-LINE        >=  55 )
+                   PERFORM 390-PRINT-OUT-SEC
+                   PERFORM 310-HEAD-SET-SEC
+               END-IF
+           END-IF
+      *
+           .
+       3203-BODY-HEN-END3-EXT.
+           EXIT.
+      *
+      *----(03.04.02)--ADD-END-----
       *****************************************************************
       *    帳票編集<明細行>処理    保険区分合計行セット
       *****************************************************************
@@ -2776,13 +2791,10 @@
            MOVE    WRK-PARA-DENPPRTYM  TO  SYUKA-SRYYM
            MOVE    "YYYY"              TO  SYUKA-RECESYUBETU
            IF      WRK-PARA-NYUGAIKBN  =   "1"
-               MOVE    "2"             TO  SYUKA-NYUGAIKBN
+               OR  WRK-PARA-NYUGAIKBN  =   "2"
+               MOVE    WRK-PARA-NYUGAIKBN  TO  SYUKA-NYUGAIKBN
            ELSE
-               IF      WRK-PARA-NYUGAIKBN  =   "2"
-                   MOVE    "1"             TO  SYUKA-NYUGAIKBN
-               ELSE
-                   MOVE    "%"             TO  SYUKA-NYUGAIKBN
-               END-IF
+               MOVE    "%"                 TO  SYUKA-NYUGAIKBN
            END-IF
            MOVE    "01"                TO  SYUKA-MISEIKYU-FLG
            MOVE    SYUKA-REC           TO  MCPDATA-REC
@@ -2846,19 +2858,46 @@
       *
       *    患者番号読み込み
            PERFORM 900-PTNUM-READ-SEC
+           IF        ( FLG-PTNUM   NOT =   ZERO )
+               GO  TO  900-SYUKA-CHEK-EXT
+           END-IF
+      *
+      *    入外区分
+           IF      SYUKA-NYUGAIKBN =   "1"
+               MOVE    "2"         TO  WRK-NYUGAIKBN
+           ELSE
+               IF      SYUKA-NYUGAIKBN =   "2"
+                   MOVE    "1"         TO  WRK-NYUGAIKBN
+               END-IF
+           END-IF
+      *
+      *    診療年月
+           MOVE    SYUKA-SRYYM     TO  WRK-SRYYM
+      *
+           MOVE    ZERO            TO  WRK-HENSRYYM-G
+                                       WRK-SRYYMFLG
+           MOVE    SYUKA-SRYYM     TO  WRK-HENSRYYM
+           MOVE    WRK-PARA-DENPPRTYM
+                                   TO  WRK-HENDENPYM
+           COMPUTE WRK-HENSYY      =   WRK-HENDENP-YY
+                                   -   WRK-HENSRY-YY
+           COMPUTE WRK-HENSMM      =   WRK-HENDENP-MM
+                                   -   WRK-HENSRY-MM
+           IF      WRK-HENSYY      <=  0
+               MOVE    WRK-HENSMM  TO  WRK-SRYYMFLG
+           ELSE
+               COMPUTE WRK-SRYYMFLG    =   WRK-HENSYY * 12
+                                       +   WRK-HENSMM
+           END-IF
       *
            MOVE    "3"             TO  WRK-SKYKBN
            MOVE    "0"             TO  WRK-TEISYUTU
            MOVE    "00000000"      TO  WRK-HKNJANUM
-           MOVE    "4"             TO  WRK-SYOKBN
-           MOVE    SYUKA-NYUGAIKBN TO  WRK-NYUGAIKBN
+           MOVE    "3"             TO  WRK-SYOKBN
            MOVE    "1"             TO  WRK-ZAIKBN
-           MOVE    0               TO  WRK-SRYYMFLG
            MOVE    SPACE           TO  WRK-HKNKBN
            MOVE    SPACE           TO  WRK-SYUBETUKBN
            MOVE    SPACE           TO  WRK-KBN
-      *
-           MOVE    SYUKA-SRYYM     TO  WRK-SRYYM
       *
            MOVE    1               TO  FLG-OK
            .
