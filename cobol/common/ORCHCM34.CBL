@@ -533,6 +533,7 @@
                05  RSIJBI-NAME                     PIC X(200).
       *
        01  CONST-AREA.
+           03  CONST-H190401           PIC X(08)   VALUE "20070401".
            03  CONST-H141001           PIC X(08)   VALUE "20021001".
            03  CONST-H181001           PIC X(08)   VALUE "20061001".
       *    Ï«ºÒ¼«ÇåÊÔ½¸ÎÎ°èºÇÂç¹Ô
@@ -4079,12 +4080,23 @@
                    MOVE    "¡¡¡¡¡¡¡¡¡¡¼«Èñ¾ÃÈñÀÇ³Û"
                                            TO  WRK-KINGAKKU-LBL
                    IF   ( SYS-1001-TAX-HASU-KBN =   "1" )
-                       COMPUTE  WRK-KINGAKKU
-                            = ( WRK-TTL-JIHI-TAX   /  5  *  105 )
-                            +  0.5
+                       IF    ( ORCHCM34-SRYYM  >=   CONST-H190401 (1:6))
+                           COMPUTE  WRK-KINGAKKU
+                                = ( WRK-TTL-JIHI-TAX   *  5 / 105)
+                                +  0.5
+                       ELSE
+                           COMPUTE  WRK-KINGAKKU
+                                = ( WRK-TTL-JIHI-TAX   *  0.05 )
+                                +  0.5
+                       END-IF
                    ELSE
-                       COMPUTE  WRK-KINGAKKU
-                            = ( WRK-TTL-JIHI-TAX   *  5  *  105 )
+                       IF    ( ORCHCM34-SRYYM  >=   CONST-H190401 (1:6))
+                           COMPUTE  WRK-KINGAKKU
+                                = ( WRK-TTL-JIHI-TAX   *  5 / 105)
+                       ELSE
+                           COMPUTE  WRK-KINGAKKU
+                                = ( WRK-TTL-JIHI-TAX   *  0.05 )
+                       END-IF
                    END-IF
                    PERFORM 2001111-KINGAKU-HEN-SEC
                END-IF
