@@ -296,6 +296,7 @@
                05  WRK-PRT-TENSU       PIC 9(10).
       *    帳票タイトル
            03  WRK-PRT1-AREA.
+      *----(03.04.02)--UPD-START---
                05  WRK-PRT1-HOSPNAME   PIC X(50).
                05  WRK-PRT1-FILLER1    PIC X(10).
                05  WRK-PRT1-DENPPRTYM  PIC X(16).
@@ -308,6 +309,7 @@
                05  WRK-PRT1-FILLER4    PIC X(04).
                05  WRK-PRT1-PAGE       PIC X(04).
                05  WRK-PRT1-FILLER5    PIC X(02).
+      *----(03.04.02)--UPD-END-----
       *    保険者タイトル
            03  WRK-PRT2-AREA.
                05  WRK-PRT2-HKNJANUM   PIC X(08).
@@ -403,8 +405,10 @@
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
+      *----(03.04.02)--ADD-START---
       *    画面日付変換サブ
            COPY    "CPORCSGDAY.INC".
+      *----(03.04.02)--ADD-END-----
       *
       *    ＤＢ検索
            COPY    "MCPAREA".
@@ -624,6 +628,7 @@
        200-MAIN-EXT.
            EXIT.
       *
+      *----(03.04.02)--ADD-START---
       *****************************************************************
       *    主科集計処理
       *****************************************************************
@@ -709,6 +714,7 @@
        240-PTINF-SYUKA-EXT.
            EXIT.
       *
+      *----(03.04.02)--ADD-END-----
       *****************************************************************
       *    集計処理
       *****************************************************************
@@ -1453,6 +1459,7 @@
            MOVE    TOKEI-SYOKBN        TO  WRK-SYOKBN
            MOVE    ZERO                TO  SUM-AREA
       *
+      *----(03.04.02)--ADD-START---
       *    帳票タイトル初期セット
            MOVE    SPACE               TO  WRK-PRT1-AREA
            MOVE    "　　　　　　　　　　　　　　　　　　　　　　　　　"
@@ -1469,6 +1476,7 @@
            MOVE    "作成"              TO  WRK-PRT1-FILLER4
            MOVE    SPACE               TO  WRK-PRT1-PAGE
            MOVE    "頁"                TO  WRK-PRT1-FILLER5
+      *----(03.04.02)--ADD-END-----
       *
       *    保険者名クリア
            MOVE    SPACE               TO  WRK-PRT2-AREA
@@ -1692,6 +1700,11 @@
       *    帳票編集<明細行>見出し処理３
       *****************************************************************
        3201-BODY-HEN-STR3-SEC      SECTION.
+      *
+      *    入外区分見出し
+           IF        ( TOKEI-NYUGAIKBN NOT =   WRK-NYUGAIKBN )
+               PERFORM 3201-NYUGAIKBN-BODY-HEN-SEC
+           END-IF
       *
       *    診療月見出し
            IF        ( TOKEI-SRYYMFLG  NOT =   WRK-SRYYMFLG )
@@ -2188,6 +2201,7 @@
       *
            PERFORM UNTIL ( FLG-TOKEI       =   1 )
                    OR    ( WRK-SKYKBN      NOT =   TOKEI-SKYKBN )
+                   OR    ( WRK-NYUGAIKBN   NOT =   TOKEI-NYUGAIKBN )
                    OR    ( WRK-SRYYMFLG    NOT =   TOKEI-SRYYMFLG )
       *        患者編集
                PERFORM 3202-BODY-SUB-SET-SEC
@@ -2353,6 +2367,7 @@
            MOVE    WRK-PRT-GOKEI   TO  WRK-PRT3-GOKEI
            MOVE    WRK-PRT-KENSU   TO  WRK-Z5
            MOVE    WRK-Z5          TO  WRK-PRT3-KENSU
+      *----(03.04.02)--UPD-START---
            IF      TOKEI-SKYKBN    =   "3"
                MOVE    "    -"         TO  WRK-PRT3-NISSU
                MOVE    "       -"      TO  WRK-PRT3-TENSU
@@ -2362,6 +2377,7 @@
                MOVE    WRK-PRT-TENSU   TO  WRK-Z8
                MOVE    WRK-Z8          TO  WRK-PRT3-TENSU
            END-IF
+      *----(03.04.02)--UPD-END-----
            MOVE    WRK-PRT3-AREA   TO  WRK-PRT-LINE
       *
       *    合計行セット
@@ -2477,6 +2493,7 @@
       *
       *    レセプト合計
            IF        ( TOKEI-SKYKBN    NOT =   WRK-SKYKBN )
+               OR    ( TOKEI-NYUGAIKBN NOT =   WRK-NYUGAIKBN )
                OR    ( TOKEI-SRYYMFLG  NOT =   WRK-SRYYMFLG )
                OR    ( FLG-TOKEI       =   1 )
                PERFORM 3203-ZAIKBN-BODY-END-SEC
