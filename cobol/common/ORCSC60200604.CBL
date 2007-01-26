@@ -1443,7 +1443,27 @@
        100115-CONTAKUCHEK-SEC                  SECTION.
       *
            MOVE    WRK-COM-INPUTCD (IDX-Z)
-                                      TO  WRK-SRYCD
+                                       TO  WRK-SRYCD
+           PERFORM 1001151-CONT-SANTEICHK-SEC
+           IF      SPA-ERRCD           =   SPACE
+               IF      WRK-COM-INPUTCD (IDX-Z) =   "160179210"
+      *            コンタクトレンズ検査１（既装用者）
+                   MOVE    "160179310"         TO  WRK-SRYCD
+               ELSE
+      *            コンタクトレンズ検査２（既装用者）
+                   MOVE    "160179510"         TO  WRK-SRYCD
+               END-IF
+               PERFORM 1001151-CONT-SANTEICHK-SEC
+           END-IF
+           .
+       100115-CONTAKUCHEK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    初回コンタクトレンズ検査チェックク処理
+      *****************************************************************
+       1001151-CONT-SANTEICHK-SEC                  SECTION.
+      *
            MOVE    ZERO               TO  WRK-TEI-CNT
            IF      LNK-ORCSC-SYORIFLG  =   1
                PERFORM VARYING     IDT     FROM    1   BY  1
@@ -1526,7 +1546,7 @@
                END-IF
            END-IF
            .
-       100115-CONTAKUCHEK-EXT.
+       1001151-CONT-SANTEICHK-EXT.
            EXIT.
       *
       *****************************************************************
