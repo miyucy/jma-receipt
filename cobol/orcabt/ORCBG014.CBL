@@ -589,7 +589,9 @@
                MOVE    "key5"              TO  WRK-PATH-PATHNAME
                PERFORM 210-SYUKEI-READ-SEC
       *----(03.04.02)--ADD-START---
-               PERFORM 210-SYUKA-READ-SEC
+               IF      WRK-PARA-ZAIKBN     NOT =   "2"
+                   PERFORM 210-SYUKA-READ-SEC
+               END-IF
       *----(03.04.02)--ADD-END-----
            END-IF
       *----(00.00.02)--UPD-END-----
@@ -632,7 +634,7 @@
       *
            PERFORM UNTIL FLG-SYUKA = 1
       *        集計
-               PERFORM 240-PTINF-SYUKEI-SEC
+               PERFORM 240-PTINF-SYUKA-SEC
       *        主科読み込み
                PERFORM 900-SYUKA-READ-SEC
            END-PERFORM
@@ -2771,7 +2773,15 @@
            MOVE    WRK-PARA-HOSPID     TO  SYUKA-HOSPID
            MOVE    WRK-PARA-DENPPRTYM  TO  SYUKA-SRYYM
            MOVE    "YYYY"              TO  SYUKA-RECESYUBETU
-           MOVE    "%"             TO  SYUKA-NYUGAIKBN
+           IF      WRK-PARA-NYUGAIKBN  =   "1"
+               MOVE    "2"             TO  SYUKA-NYUGAIKBN
+           ELSE
+               IF      WRK-PARA-NYUGAIKBN  =   "2"
+                   MOVE    "1"             TO  SYUKA-NYUGAIKBN
+               ELSE
+                   MOVE    "%"             TO  SYUKA-NYUGAIKBN
+               END-IF
+           END-IF
            MOVE    "01"                TO  SYUKA-MISEIKYU-FLG
            MOVE    SYUKA-REC           TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -2820,35 +2830,6 @@
       *****************************************************************
        900-SYUKA-CHEK-SEC          SECTION.
       *
-      *    在総診チェック
-           IF      WRK-PARA-ZAIKBN     =   "2"
-               GO  TO  900-SYUKA-CHEK-EXT
-           END-IF
-      *
-           IF      WRK-PARA-NYUGAIKBN  =   "2"
-               IF      SYUKA-NYUGAIKBN =   "1"
-                   GO  TO  900-SYUKA-CHEK-EXT
-               END-IF
-           END-IF
-           IF      WRK-PARA-NYUGAIKBN  =   "1"
-               IF      SYUKA-NYUGAIKBN =   "2"
-                   GO  TO  900-SYUKA-CHEK-EXT
-               END-IF
-           END-IF
-      *
-           MOVE    "3"             TO  WRK-SKYKBN
-           MOVE    "0"             TO  WRK-TEISYUTU
-           MOVE    "00000000"      TO  WRK-HKNJANUM
-           MOVE    "4"             TO  WRK-SYOKBN
-           MOVE    SYUKA-NYUGAIKBN TO  WRK-NYUGAIKBN
-           MOVE    "1"             TO  WRK-ZAIKBN
-           MOVE    0               TO  WRK-SRYYMFLG
-           MOVE    SPACE           TO  WRK-HKNKBN
-           MOVE    SPACE           TO  WRK-SYUBETUKBN
-           MOVE    SPACE           TO  WRK-KBN
-      *
-           MOVE    SYUKA-SRYYM     TO  WRK-SRYYM
-      *
       *    テスト患者のときは読み飛ばす
            MOVE    SPACE               TO  PTINF-REC
            INITIALIZE                      PTINF-REC
@@ -2863,6 +2844,19 @@
       *
       *    患者番号読み込み
            PERFORM 900-PTNUM-READ-SEC
+      *
+           MOVE    "3"             TO  WRK-SKYKBN
+           MOVE    "0"             TO  WRK-TEISYUTU
+           MOVE    "00000000"      TO  WRK-HKNJANUM
+           MOVE    "4"             TO  WRK-SYOKBN
+           MOVE    SYUKA-NYUGAIKBN TO  WRK-NYUGAIKBN
+           MOVE    "1"             TO  WRK-ZAIKBN
+           MOVE    0               TO  WRK-SRYYMFLG
+           MOVE    SPACE           TO  WRK-HKNKBN
+           MOVE    SPACE           TO  WRK-SYUBETUKBN
+           MOVE    SPACE           TO  WRK-KBN
+      *
+           MOVE    SYUKA-SRYYM     TO  WRK-SRYYM
       *
            MOVE    1               TO  FLG-OK
            .
@@ -3002,6 +2996,18 @@
       *****************************************************************
        900-SEIKYU-CHEK-SEC         SECTION.
       *
+      *    テスト患者のときは読み飛ばす
+           MOVE    SPACE               TO  PTINF-REC
+           INITIALIZE                      PTINF-REC
+           MOVE    RECE10-HOSPID       TO  PTINF-HOSPID
+           MOVE    RECE10-PTID         TO  PTINF-PTID
+           MOVE    PTINF-REC           TO  MCPDATA-REC
+           PERFORM 900-PTINF-READ-SEC
+           IF        ( FLG-PTINF           =   ZERO )
+               AND   ( PTINF-TSTPTNUMKBN   =   "1"  )
+               GO  TO  900-SEIKYU-CHEK-EXT
+           END-IF
+      *
       *    提出先チェック
            EVALUATE    RECE10-HKNNUM-S
       *        国保
@@ -3113,18 +3119,6 @@
                        GO  TO  900-SEIKYU-CHEK-EXT
                    END-IF
                END-IF
-           END-IF
-      *
-      *    テスト患者のときは読み飛ばす
-           MOVE    SPACE               TO  PTINF-REC
-           INITIALIZE                      PTINF-REC
-           MOVE    RECE10-HOSPID       TO  PTINF-HOSPID
-           MOVE    RECE10-PTID         TO  PTINF-PTID
-           MOVE    PTINF-REC           TO  MCPDATA-REC
-           PERFORM 900-PTINF-READ-SEC
-           IF        ( FLG-PTINF           =   ZERO )
-               AND   ( PTINF-TSTPTNUMKBN   =   "1"  )
-               GO  TO  900-SEIKYU-CHEK-EXT
            END-IF
       *
            MOVE    1               TO  FLG-OK
