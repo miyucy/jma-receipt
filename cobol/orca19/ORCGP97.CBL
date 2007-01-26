@@ -1712,7 +1712,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "DBFETCH"           TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys*                           COMMON-SPA
+grpsys                            SPA-COMMON
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  PTINF-REC
                MOVE    ZERO            TO  FLG-PTINF
@@ -1735,7 +1735,7 @@ grpsys*                           COMMON-SPA
            MOVE    "DBFETCH"           TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys*                           COMMON-SPA
+grpsys                            SPA-COMMON
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  JYURRK-REC
                MOVE    ZERO            TO  FLG-JYURRK
@@ -1758,7 +1758,7 @@ grpsys*                           COMMON-SPA
            MOVE    "DBFETCH"           TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys*                           COMMON-SPA
+grpsys                            SPA-COMMON
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  SRYKARRK-REC
                MOVE    ZERO                TO  FLG-SRYKARRK
@@ -1781,7 +1781,7 @@ grpsys*                           COMMON-SPA
            MOVE    "DBFETCH"           TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys*                           COMMON-SPA
+grpsys                            SPA-COMMON
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
                MOVE    ZERO            TO  FLG-PTNYUINRRK
@@ -1804,7 +1804,7 @@ grpsys*                           COMMON-SPA
            MOVE    "DBFETCH"           TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys*                           COMMON-SPA
+grpsys                            SPA-COMMON
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-SYSKANRI
            ELSE
@@ -1824,7 +1824,7 @@ grpsys*                           COMMON-SPA
            MOVE    "DBFETCH"           TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys*                           COMMON-SPA
+grpsys                            SPA-COMMON
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  HKNCOMBI-REC
                MOVE    ZERO            TO  FLG-HKNCOMBI
@@ -1844,7 +1844,7 @@ grpsys*                           COMMON-SPA
            MOVE    "DBFETCH"           TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys*                           COMMON-SPA
+grpsys                            SPA-COMMON
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  JYURRK-REC
                MOVE    ZERO            TO  FLG-JYURRK
@@ -1864,7 +1864,7 @@ grpsys*                           COMMON-SPA
            MOVE    "DBSELECT"      TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys*                           COMMON-SPA
+grpsys                            SPA-COMMON
       *
            .
        910-DBSELECT-EXT.
@@ -1878,7 +1878,7 @@ grpsys*                           COMMON-SPA
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys*                           COMMON-SPA
+grpsys                            SPA-COMMON
       *
            .
        990-DBCLOSE-EXT.
@@ -1892,7 +1892,7 @@ grpsys*                           COMMON-SPA
            MOVE   "PUTWINDOW"                   TO  MCP-FUNC.
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys*                           COMMON-SPA
+grpsys                            SPA-COMMON
            .
        900-PUT-WINDOW-EXT.
            EXIT.

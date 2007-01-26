@@ -1052,7 +1052,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys*                           COMMON-SPA
+grpsys                            SPA-COMMON
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "Z02 TENSU DEL ERR!!"   MCP-RC
                        ",KEY:"   TNS-KEY
@@ -1072,7 +1072,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys*                           COMMON-SPA
+grpsys                            SPA-COMMON
       *
       *    入力コード削除
            IF     (SPA-Z01-SELNUM      =   1    )  AND
@@ -1086,7 +1086,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    "del22"             TO  MCP-PATHNAME
 grpsys         CALL "ORCDBMAIN" USING MCPAREA
                                       MCPDATA-REC
-grpsys*                               COMMON-SPA
+grpsys                                SPA-COMMON
            END-IF
       *
            IF      SPA-ERRCD          =   SPACE
@@ -1297,7 +1297,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    "upd1"              TO  MCP-PATHNAME
 grpsys         CALL "ORCDBMAIN" USING MCPAREA
                                       MCPDATA-REC
-grpsys*                               COMMON-SPA
+grpsys                                SPA-COMMON
                IF      MCP-RC              NOT =   ZERO
                    DISPLAY "Z02 TENSU UPD ERR:" MCP-RC
                            ",KEY:" TNS-KEY
@@ -1363,7 +1363,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    "upd1"              TO  MCP-PATHNAME
 grpsys         CALL "ORCDBMAIN" USING MCPAREA
                                       MCPDATA-REC
-grpsys*                               COMMON-SPA
+grpsys                                SPA-COMMON
                IF      MCP-RC              NOT =   ZERO
                    DISPLAY "Z02 TENSU UPD ERR:" MCP-RC
                            ",KEY:" TNS-KEY
@@ -1400,7 +1400,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys*                           COMMON-SPA
+grpsys                            SPA-COMMON
            IF      MCP-RC          NOT =   ZERO
                MOVE    1                   TO  SPA-GMN-CUR
                MOVE    "9003"              TO  SPA-ERRCD
@@ -1900,7 +1900,7 @@ grpsys*                           COMMON-SPA
            MOVE    "DBSELECT"      TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys*                           COMMON-SPA
+grpsys                            SPA-COMMON
       *
            .
        910-DBSELECT-EXT.
@@ -1913,7 +1913,7 @@ grpsys*                           COMMON-SPA
            MOVE    "DBFETCH"       TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys*                           COMMON-SPA
+grpsys                            SPA-COMMON
       *
            .
       *
@@ -1927,7 +1927,7 @@ grpsys*                           COMMON-SPA
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys*                           COMMON-SPA
+grpsys                            SPA-COMMON
            .
        990-DBLOSEC-EXT.
            EXIT.
@@ -2023,7 +2023,7 @@ grpsys*                           COMMON-SPA
            MOVE   "PUTWINDOW"                    TO  MCP-FUNC.
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys*                           COMMON-SPA
+grpsys                            SPA-COMMON
            .
        900-PUT-WINDOW-EXT.
            EXIT.

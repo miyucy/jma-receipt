@@ -180,7 +180,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    JYURRK-REC          TO  MCPDATA-REC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys*                           COMMON-SPA
+grpsys                            SPA-COMMON
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_jyurrk"        TO  MCP-TABLE
                MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
@@ -237,7 +237,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    "key"               TO  MCP-PATHNAME
 grpsys         CALL "ORCDBMAIN" USING MCPAREA
                                       MCPDATA-REC
-grpsys*                               COMMON-SPA
+grpsys                                SPA-COMMON
                IF      MCP-RC          NOT =   ZERO
                    MOVE    "2"                 TO  LNK-UPD-RC
                ELSE
@@ -252,7 +252,7 @@ grpsys*                               COMMON-SPA
            MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys*                           COMMON-SPA
+grpsys                            SPA-COMMON
            .
        200-HENSYU-EXT.
            EXIT.
@@ -269,14 +269,14 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys*                           COMMON-SPA
+grpsys                            SPA-COMMON
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_receupd"       TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
                MOVE    "DBFETCH"           TO  MCP-FUNC
 grpsys         CALL "ORCDBMAIN" USING MCPAREA
                                       MCPDATA-REC
-grpsys*                               COMMON-SPA
+grpsys                                SPA-COMMON
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO                TO  FLG-RECEUPD
                    MOVE    MCPDATA-REC         TO  RECEUPD-REC
@@ -292,7 +292,7 @@ grpsys*                               COMMON-SPA
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys*                           COMMON-SPA
+grpsys                            SPA-COMMON
       *
            .
        900-RECEUPD-READ-EXT.
@@ -306,7 +306,7 @@ grpsys*                           COMMON-SPA
            MOVE    "DBFETCH"           TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys*                           COMMON-SPA
+grpsys                            SPA-COMMON
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-JYURRK
                MOVE    MCPDATA-REC     TO  JYURRK-REC

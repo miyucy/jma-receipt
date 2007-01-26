@@ -320,7 +320,7 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                                                TO  MCP-PATHNAME
 grpsys             CALL "ORCDBMAIN" USING MCPAREA
                                           MCPDATA-REC
-grpsys*                                   COMMON-SPA
+grpsys                                    SPA-COMMON
                    IF  MCP-RC   =   ZERO
                        MOVE    "DBFETCH"       TO  MCP-FUNC
                        MOVE    "tbl_jobkanri"  TO  MCP-TABLE
@@ -328,7 +328,7 @@ grpsys*                                   COMMON-SPA
                                                TO  MCP-PATHNAME
 grpsys                 CALL "ORCDBMAIN" USING MCPAREA
                                               MCPDATA-REC
-grpsys*                                       COMMON-SPA
+grpsys                                        SPA-COMMON
                        MOVE    MCPDATA-REC     TO  JOBKANRI-REC
                        IF  (MCP-RC         =   ZERO)   AND
                            ((JOB-ENDYMD    =   SPACE)  OR
@@ -442,7 +442,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                        TO  MCP-PATHNAME
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys*                           COMMON-SPA
+grpsys                            SPA-COMMON
            IF  MCP-RC   =   ZERO
               MOVE    "tbl_jobkanri"   TO  MCP-TABLE
                MOVE    "all02"
@@ -614,7 +614,7 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                                                TO  MCP-PATHNAME
 grpsys             CALL "ORCDBMAIN" USING MCPAREA
                                           MCPDATA-REC
-grpsys*                                   COMMON-SPA
+grpsys                                    SPA-COMMON
                    IF  MCP-RC   =   ZERO
                        MOVE    "DBFETCH"       TO  MCP-FUNC
                        MOVE    "tbl_jobkanri"  TO  MCP-TABLE
@@ -622,7 +622,7 @@ grpsys*                                   COMMON-SPA
                                                TO  MCP-PATHNAME
 grpsys                 CALL "ORCDBMAIN" USING MCPAREA
                                               MCPDATA-REC
-grpsys*                                       COMMON-SPA
+grpsys                                        SPA-COMMON
                        MOVE    MCPDATA-REC     TO  JOBKANRI-REC
                        IF  MCP-RC   =   ZERO
                            IF  (JOB-ENDYMD    NOT =   SPACE)  AND
@@ -701,7 +701,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                                            TO  MCP-PATHNAME
 grpsys         CALL "ORCDBMAIN" USING MCPAREA
                                       MCPDATA-REC
-grpsys*                               COMMON-SPA
+grpsys                                SPA-COMMON
       *
            END-IF.
       *
@@ -911,7 +911,7 @@ grpsys*                               COMMON-SPA
            MOVE    "DBFETCH"           TO  MCP-FUNC.
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys*                           COMMON-SPA
+grpsys                            SPA-COMMON
 
       *
            IF  MCP-RC   =   ZERO
@@ -933,7 +933,7 @@ grpsys*                           COMMON-SPA
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys*                           COMMON-SPA
+grpsys                            SPA-COMMON
       *
            .
       *
@@ -947,7 +947,7 @@ grpsys*                           COMMON-SPA
            MOVE   "PUTWINDOW"                   TO  MCP-FUNC.
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys*                           COMMON-SPA
+grpsys                            SPA-COMMON
       *
        900-PUT-WINDOW-EXT.
            EXIT.

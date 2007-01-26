@@ -177,7 +177,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "key2"          TO  MCP-PATHNAME
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys*                           COMMON-SPA
+grpsys                            SPA-COMMON
            IF      MCP-RC          =   ZERO
                MOVE    "tbl_syuka"     TO  MCP-TABLE
                MOVE    "key2"          TO  MCP-PATHNAME
@@ -488,7 +488,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "key"           TO  MCP-PATHNAME
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys*                           COMMON-SPA
+grpsys                            SPA-COMMON
            IF      MCP-RC      NOT =   ZERO
                MOVE    1               TO  FLG-END
                MOVE    9               TO  LNK-SYUACC-RC
@@ -519,7 +519,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    "upd1"          TO  MCP-PATHNAME
 grpsys         CALL "ORCDBMAIN" USING MCPAREA
                                       MCPDATA-REC
-grpsys*                               COMMON-SPA
+grpsys                                SPA-COMMON
                IF      MCP-RC      NOT =   ZERO
                    MOVE    1               TO  FLG-END
                    MOVE    9               TO  LNK-SYUACC-RC
@@ -561,7 +561,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SYUKA-REC           TO  MCPDATA-REC  
 grpsys         CALL "ORCDBMAIN" USING MCPAREA
                                       MCPDATA-REC
-grpsys*                               COMMON-SPA
+grpsys                                SPA-COMMON
                IF      MCP-RC          NOT =   ZERO
                    MOVE    1                   TO  FLG-END
                    MOVE    9                   TO  LNK-SYUACC-RC
@@ -659,7 +659,7 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    SYUKA-REC       TO  MCPDATA-REC  
 grpsys             CALL "ORCDBMAIN" USING MCPAREA
                                           MCPDATA-REC
-grpsys*                                   COMMON-SPA
+grpsys                                    SPA-COMMON
                    IF      MCP-RC      NOT =   ZERO
                        MOVE    1               TO  FLG-END
                        MOVE    9               TO  LNK-SYUACC-RC
@@ -739,7 +739,7 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    SYUKA-REC       TO  MCPDATA-REC  
 grpsys             CALL "ORCDBMAIN" USING MCPAREA
                                           MCPDATA-REC
-grpsys*                                   COMMON-SPA
+grpsys                                    SPA-COMMON
                    IF      MCP-RC      NOT =   ZERO
                        MOVE    1               TO  FLG-END
                        MOVE    9               TO  LNK-SYUACC-RC
@@ -771,7 +771,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    "key3"          TO  MCP-PATHNAME
 grpsys         CALL "ORCDBMAIN" USING MCPAREA
                                       MCPDATA-REC
-grpsys*                               COMMON-SPA
+grpsys                                SPA-COMMON
                IF      MCP-RC          =   ZERO
                    MOVE    "tbl_syuka"         TO  MCP-TABLE
                    MOVE    "key3"              TO  MCP-PATHNAME
@@ -830,7 +830,7 @@ grpsys*                MOVE SPA-HOSPNUM TO -HOSPNUM
                        MOVE    SYUKA-REC           TO  MCPDATA-REC  
 grpsys                 CALL "ORCDBMAIN" USING MCPAREA
                                               MCPDATA-REC
-grpsys*                                       COMMON-SPA
+grpsys                                        SPA-COMMON
                        IF      MCP-RC          NOT =   ZERO
                            MOVE    1                   TO  FLG-END
                            MOVE    9                   TO  LNK-SYUACC-RC
@@ -895,7 +895,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "key7"          TO  MCP-PATHNAME
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys*                           COMMON-SPA
+grpsys                            SPA-COMMON
            IF      MCP-RC          =   ZERO
                MOVE    "tbl_syuka"         TO  MCP-TABLE
                MOVE    "key7"              TO  MCP-PATHNAME
@@ -1103,7 +1103,7 @@ grpsys*                           COMMON-SPA
                                    TO  MCP-PATHNAME
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys*                           COMMON-SPA
+grpsys                            SPA-COMMON
            IF      MCP-RC          =   ZERO
                MOVE    WRK-MCP-TABLE   TO  MCP-TABLE
                MOVE    WRK-MCP-PATHNAME
@@ -1129,7 +1129,7 @@ grpsys*                           COMMON-SPA
            MOVE    "DBFETCH"           TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys*                           COMMON-SPA
+grpsys                            SPA-COMMON
            IF      MCP-RC              =   ZERO
                MOVE    ZERO                TO  FLG-SYUKA
                MOVE    MCPDATA-REC         TO  SYUKA-REC
@@ -1148,7 +1148,7 @@ grpsys*                           COMMON-SPA
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys*                           COMMON-SPA
+grpsys                            SPA-COMMON
       *
            .
        900-CLOSE-EXT.

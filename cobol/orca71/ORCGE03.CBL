@@ -225,14 +225,14 @@ grpsys COPY    "COMMON-SPA".
            MOVE    "DBOPEN"            TO  MCP-FUNC.
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys*                           COMMON-SPA
+grpsys                            SPA-COMMON
       *
            MOVE    LOW-VALUE           TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBSTART"           TO  MCP-FUNC.
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys*                           COMMON-SPA
+grpsys                            SPA-COMMON
       *
        000-DBOPEN-EXT.
            EXIT.
@@ -247,14 +247,14 @@ grpsys*                           COMMON-SPA
            MOVE    "DBCOMMIT"          TO  MCP-FUNC.
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys*                           COMMON-SPA
+grpsys                            SPA-COMMON
       *
            MOVE    LOW-VALUE           TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys*                           COMMON-SPA
+grpsys                            SPA-COMMON
       *
        000-DBCLOSE-EXT.
            EXIT.
@@ -321,14 +321,14 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "key2"              TO  MCP-PATHNAME
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys*                           COMMON-SPA
+grpsys                            SPA-COMMON
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
 grpsys         CALL "ORCDBMAIN" USING MCPAREA
                                       MCPDATA-REC
-grpsys*                               COMMON-SPA
+grpsys                                SPA-COMMON
                MOVE    MCPDATA-REC         TO  SYS-1009-REC
            ELSE
                INITIALIZE                  SYS-1009-REC
@@ -340,7 +340,7 @@ grpsys*                               COMMON-SPA
            MOVE    "key2"          TO  MCP-PATHNAME
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys*                           COMMON-SPA
+grpsys                            SPA-COMMON
       *½¤Àµ/*½ªÎ»*03.06.05*********************************************
       *
        T-000-CHEKCHEK-EXT.
@@ -438,7 +438,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    WK-PATHNAME     TO  MCP-PATHNAME
 grpsys         CALL "ORCDBMAIN" USING MCPAREA
                                       MCPDATA-REC
-grpsys*                               COMMON-SPA
+grpsys                                SPA-COMMON
       *
                IF  MCP-RC   =   ZERO
                    PERFORM T-001-TBLFETCH-01-SEC
@@ -459,7 +459,7 @@ grpsys*                               COMMON-SPA
                MOVE    WK-PATHNAME     TO  MCP-PATHNAME
 grpsys         CALL "ORCDBMAIN" USING MCPAREA
                                       MCPDATA-REC
-grpsys*                               COMMON-SPA
+grpsys                                SPA-COMMON
       *
                CLOSE                       EIECS-FILE
            END-IF.
@@ -540,7 +540,7 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    WK-PATHNAME         TO  MCP-PATHNAME
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys*                           COMMON-SPA
+grpsys                            SPA-COMMON
            .
       *
        T-001-TBLFETCH-01-EXT.
@@ -688,7 +688,7 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    "key"               TO  MCP-PATHNAME
 grpsys             CALL "ORCDBMAIN" USING MCPAREA
                                           MCPDATA-REC
-grpsys*                                   COMMON-SPA
+grpsys                                    SPA-COMMON
       *
                    IF  MCP-RC    =   ZERO
                        MOVE    "DBFETCH"           TO  MCP-FUNC
@@ -696,7 +696,7 @@ grpsys*                                   COMMON-SPA
                        MOVE    "key"               TO  MCP-PATHNAME
 grpsys                 CALL "ORCDBMAIN" USING MCPAREA
                                               MCPDATA-REC
-grpsys*                                       COMMON-SPA
+grpsys                                        SPA-COMMON
                        IF  MCP-RC    =   ZERO
                            MOVE    MCPDATA-REC         TO  PTNUM-REC
                        END-IF
@@ -708,7 +708,7 @@ grpsys*                                       COMMON-SPA
                    MOVE    "key"               TO  MCP-PATHNAME
 grpsys             CALL "ORCDBMAIN" USING MCPAREA
                                           MCPDATA-REC
-grpsys*                                   COMMON-SPA
+grpsys                                    SPA-COMMON
                END-IF
       *
                MOVE    WK-TBL-CHKPTMUM         TO  WK-KTPNT
