@@ -24,4 +24,4 @@ alter table TBL_SYUMEI
 alter table TBL_SYUMEI add  column hospnum  integer;
 alter table TBL_SYUMEI drop column hospid;
 update TBL_SYUMEI set hospnum = 1 ;
-alter table TBL_SYUMEI add constraint tbl_syumei_primary_key primary key (hospnum,ptid,denpnum,denpedanum);
+alter table TBL_SYUMEI add constraint tbl_syumei_primary_key primary key (hospnum,nyugaikbn,ptid,denpnum,denpedanum);
