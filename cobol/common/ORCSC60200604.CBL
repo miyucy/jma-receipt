@@ -45,6 +45,7 @@
       *  01.00.13    NACL-多々納  04/12/09  重複チェック修正
       *  01.00.14    NACL-多々納  05/12/08  MONFUNC 対応 他
       *  01.00.15    NACL-多々納  06/03/XX  Ｈ１８．４改正対応
+      *  03.04.00    NACL-多々納  07/01/26  コンタクトレンズ検査チェック追加
       *****************************************************************
       *
       *
@@ -811,6 +812,13 @@
                    IF      WRK-COM-INPUTCD (IDX-Z) =   "160161510"
                        PERFORM 100113-NYUINSYOKAI-SEC
                    END-IF
+      *            初回コンタクトレンズ検査チェック
+                   IF     (SPA-ERRCD           =   SPACE ) AND
+                          (WRK-COM-INPUTCD (IDX-Z) =   "160179210"
+                                                   OR  "160179410") AND
+                          (WRK-COM-KZMFLG (IDX-Z)  =   SPACE    )
+                       PERFORM 100115-CONTAKUCHEK-SEC
+                   END-IF
       *        器材
                WHEN    "7"
       *            酸素区分判定
@@ -1426,6 +1434,98 @@
            END-IF
            .
        100113-NYUINSYOKAI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    初回コンタクトレンズ検査チェックク処理
+      *****************************************************************
+       100115-CONTAKUCHEK-SEC                  SECTION.
+      *
+           MOVE    WRK-COM-INPUTCD (IDX-Z)
+                                      TO  WRK-SRYCD
+           MOVE    ZERO               TO  WRK-TEI-CNT
+           IF      LNK-ORCSC-SYORIFLG  =   1
+               PERFORM VARYING     IDT     FROM    1   BY  1
+                       UNTIL      (IDT     >   200 )  OR
+                                  (LNK-ORCSC-TEI-SRYCD(IDT)
+                                           =   SPACE )
+                   IF      WRK-SRYCD       =   LNK-ORCSC-TEI-SRYCD(IDT)
+                       ADD     LNK-ORCSC-TEI-KAISU(IDT)
+                                           TO  WRK-TEI-CNT
+                   END-IF
+               END-PERFORM
+           END-IF
+      *
+      *    算定履歴検索（算定履歴区分は１とする）
+           INITIALIZE                  SANTEI-REC
+           MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
+           MOVE    SPA-PTID            TO  SANTEI-PTID
+           MOVE    SPA-SRYYMD (1:6)    TO  SANTEI-SRYYM
+           MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
+           MOVE    ZERO                TO  SANTEI-NYUGAIKBN
+           MOVE    ZERO                TO  SANTEI-SRYKA
+           MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
+      *
+           MOVE    SANTEI-REC          TO  MCPDATA-REC
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    "key8"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_santei"        TO  MCP-TABLE
+               MOVE    "key8"              TO  MCP-PATHNAME
+               PERFORM 920-SANTEI-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SANTEI
+           END-IF
+           MOVE    ZERO                TO  FLG-SYOKAI-OK
+           PERFORM UNTIL   (FLG-SANTEI     =   1   )  OR
+                           (FLG-SYOKAI-OK  =   1   )
+               MOVE    SANTEI-SRYYM        TO  WRK-YM
+               MOVE    ZERO                TO  WRK-DD
+               PERFORM VARYING    IDX2     FROM    1   BY  1
+                       UNTIL     (IDX2     >   31  )  OR
+                                 (FLG-SYOKAI-OK    =   1   )
+                   IF      SANTEI-DAY (IDX2)   NOT =   ZERO
+                       MOVE    1               TO  FLG-SYOKAI-OK
+                       MOVE    IDX2            TO  WRK-DD
+      *                訂正の時当日分は算定なしとする
+                       IF     (LNK-ORCSC-SYORIFLG  =   1  )  AND
+                              (WRK-YMD             =   SPA-SRYYMD) AND
+                              (WRK-TEI-CNT         >   ZERO )
+                           MOVE    ZERO        TO  FLG-SYOKAI-OK
+                       END-IF
+                   END-IF
+               END-PERFORM
+               MOVE    "tbl_santei"        TO  MCP-TABLE
+               MOVE    "key8"              TO  MCP-PATHNAME
+               PERFORM 920-SANTEI-READ-SEC
+           END-PERFORM
+      *
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    "key8"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      FLG-SYOKAI-OK       =   1
+               IF      LNK-ORCSC-KEI-IDX   =   ZERO
+                   MOVE    IDX-Z           TO  LNK-ORCSC-KEI-IDX
+                   MOVE    "1"             TO  WRK-COM-KZMFLG (IDX-Z)
+                   MOVE    "K600"          TO  WRK-ERRCD
+                   MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
+      *            発生日
+                   INITIALIZE                      STS-AREA-DAY
+                   INITIALIZE                      LNK-DAY2-AREA
+                   MOVE    "21"            TO  LNK-DAY2-IRAI
+                   MOVE    WRK-YMD         TO  LNK-DAY2-YMD
+                   CALL    "ORCSDAY"       USING   STS-AREA-DAY
+                                                   LNK-DAY2-AREA
+                   STRING  "算定日："          DELIMITED  BY  SIZE
+                           LNK-DAY2-EDTYMD3    DELIMITED  BY  SIZE
+                          INTO                 LNK-ORCSC-ERRMSG
+                   END-STRING
+               END-IF
+           END-IF
+           .
+       100115-CONTAKUCHEK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2251,6 +2351,17 @@
       *            ２つ以上のチェック
                    PERFORM 20012-JYUFUKU-CHK2-SEC
                END-IF
+      *!
+      *        コンタクトレンズ検査料の算定不可
+               IF     (SPA-ERRCD           =   SPACE )  AND
+                      (WRK-COM-CDKBN-KBN   (IDX-Z)
+                                           =   "D"   )  AND
+                      (WRK-COM-CDKBN-KBNNUM (IDX-Z)
+                                           =   "282" )  AND
+                      (WRK-COM-CDKBN-KBNNUM-EDA(IDX-Z)
+                                           =   "03"   )
+                   PERFORM 2003-CCONTAKU-CHK2-SEC
+               END-IF
              END-IF
            END-PERFORM
       *
@@ -2697,6 +2808,40 @@
            .
       *
        20011-JYUFUKU-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     コンタクトレンズ検査料の算定不可
+      *****************************************************************
+       2003-CCONTAKU-CHK2-SEC           SECTION.
+      *
+           PERFORM VARYING     IDX2    FROM    1   BY  1
+                   UNTIL      (IDX2    >   200  )  OR
+                              (WRK-COM-INPUTCD (IDX2)  =   SPACE  AND
+                               WRK-GMN-INPUTCD (IDX2)  =   SPACE )  OR
+                              (SPA-ERRCD   NOT =   SPACE  )
+               IF     (IDX-Z           NOT =   IDX2   )  AND
+                      (WRK-COM-CDKBN-KBN(IDX2)
+                                           =   "D"   )
+                   EVALUATE    WRK-COM-CDKBN-KBNNUM (IDX2)
+                       WHEN    "255"  THRU   "281"
+                           MOVE    "0600"          TO  SPA-ERRCD
+                           MOVE    "1"             TO  WRK-COM-CUR
+                                                                  (IDX2)
+                       WHEN    "282"
+                           IF      WRK-COM-CDKBN-KBNNUM-EDA(IDX2)
+                                                   =   "00"
+                                                   OR  "02"
+                                                   OR  "03"
+                               MOVE    "0600"          TO  SPA-ERRCD
+                               MOVE    "1"             TO  WRK-COM-CUR
+                                                                  (IDX2)
+                           END-IF
+                   END-EVALUATE
+               END-IF
+           END-PERFORM
+           .
+       2003-CCONTAKU-CHK2-EXT.
            EXIT.
       *
       *****************************************************************
