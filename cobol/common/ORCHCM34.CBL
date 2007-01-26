@@ -4080,11 +4080,11 @@
                                            TO  WRK-KINGAKKU-LBL
                    IF   ( SYS-1001-TAX-HASU-KBN =   "1" )
                        COMPUTE  WRK-KINGAKKU
-                            = ( WRK-TTL-JIHI-TAX   *  0.05 )
+                            = ( WRK-TTL-JIHI-TAX   /  5  *  105 )
                             +  0.5
                    ELSE
                        COMPUTE  WRK-KINGAKKU
-                            = ( WRK-TTL-JIHI-TAX   *  0.05 )
+                            = ( WRK-TTL-JIHI-TAX   *  5  *  105 )
                    END-IF
                    PERFORM 2001111-KINGAKU-HEN-SEC
                END-IF
