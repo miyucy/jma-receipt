@@ -967,6 +967,19 @@
                                        DELIMITED  BY  SPACE
                                        INTO    SPA-ERRMSG
                    END-STRING
+      *        コンタクトレンズ検査
+               WHEN    "K600"
+                   STRING  "警告！コンタクトレンズ検査料（初回装着者）"
+                           "は既に算定されています。"
+                                       DELIMITED   BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "0600"
+                   STRING  "コンタクトレンズ検査料算定時に算定できない"
+                           "検査です。"
+                                       DELIMITED   BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
       *
                WHEN    "9300"
                    MOVE    "患者登録の業務権限はありません。"
