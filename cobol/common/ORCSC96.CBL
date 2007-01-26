@@ -969,8 +969,9 @@
                    END-STRING
       *        コンタクトレンズ検査
                WHEN    "K600"
-                   STRING  "警告！コンタクトレンズ検査料（初回装着者）"
+                   STRING  "警告！コンタクトレンズ検査料"
                            "は既に算定されています。"
+                           "初回装用者は算定できません。"
                                        DELIMITED   BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
