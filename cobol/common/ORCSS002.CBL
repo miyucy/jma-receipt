@@ -54,8 +54,7 @@
            03  IDX-AF              PIC 9(05).
       *
        01  WRK-AREA.
-           03  WRK-SYURRKNUM       PIC S9(09)  BINARY.
-           03  WRK-SYUEDANUM       PIC S9(09)  BINARY.
+           03  WRK-JOUTAIKBN       PIC X(01).
            03  WRK-SYURRKUPDKBN    PIC X(01).
       *
       *    ¼ýÇ¼ÍúÎò½¸·×ÎÎ°è
@@ -67,7 +66,12 @@
       *    ¼ýÇ¼ºî¶ÈÎÎ°è
        01  WKSYUNOU-REC.
            COPY    "CPSYUNOU.INC"  REPLACING
-                                   //SYU-// BY //WKSYU-//.
+                                   //SYU-//    BY //WKSYU-//.
+      *
+      *    ¼ýÇ¼ÍúÎòºî¶ÈÎÎ°è
+       01  WKSYURRK-REC.
+           COPY    "CPSYURRK.INC"  REPLACING
+                                   //SYURRK-// BY //WKSYURRK-//.
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -140,9 +144,18 @@
            PERFORM 800-MCNDATE-SEC
       *
            PERFORM 900-SYURRK-KEY2-SEL-SEC
-           COMPUTE WRK-SYURRKNUM
-               =   SYURRK-SYURRKNUM   +   1
-           MOVE    ZERO            TO  WRK-SYUEDANUM
+           IF    ( SYURRK-JOUTAIKBN    =   "1" )
+               COMPUTE WKSYURRK-SYURRKNUM
+                   =   SYURRK-SYURRKNUM
+               MOVE    SYURRK-SYUEDANUM
+                                           TO  WKSYURRK-SYUEDANUM
+           ELSE
+               COMPUTE WKSYURRK-SYURRKNUM
+                   =   SYURRK-SYURRKNUM    +   1
+               MOVE    ZERO                TO  WKSYURRK-SYUEDANUM
+           END-IF
+      *
+           MOVE    SYURRK-JOUTAIKBN        TO  WRK-JOUTAIKBN
       *
            .
        100-INIT-EXT.
@@ -152,53 +165,103 @@
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-           IF    ( LNKSYU-DENPJTIKBN   =   "3" )
-               INITIALIZE              SUMSYU-AREA
-               MOVE    IDX-BF      TO  IDX-SYU
-               MOVE    LNKSYU-REC  TO  WKSYUNOU-REC
-               PERFORM 2001-SUMSYU-SEC
-               PERFORM 2001-EDIT-SYURRK-SEC
-           ELSE
-               PERFORM 900-SYUNOU-KEY-SEL-SEC
-               IF    ( FLG-SYUNOU  =   ZERO )
-                   IF    ( LNKSYU-SRYKA        =   SYU-SRYKA )
-                    AND  ( LNKSYU-HKNCOMBINUM  =   SYU-HKNCOMBINUM )
-                       INITIALIZE              SUMSYU-AREA
-                       MOVE    IDX-BF      TO  IDX-SYU
-                       MOVE    SYUNOU-REC  TO  WKSYUNOU-REC
-                       PERFORM 2001-SUMSYU-SEC
+           EVALUATE    TRUE
+           WHEN  ( LNKSYU-DENPJTIKBN   =   "3" )
       *
-                       MOVE    IDX-AF      TO  IDX-SYU
-                       MOVE    LNKSYU-REC  TO  WKSYUNOU-REC
-                       PERFORM 2001-SUMSYU-SEC
-                       PERFORM 2001-EDIT-SYURRK-SEC
-                   ELSE
+               PERFORM 2001-TORIKESI-SEC
+           WHEN  ( WRK-JOUTAIKBN       =   "1" )
       *
-                       MOVE    "1"         TO  WRK-SYURRKUPDKBN
+               PERFORM 2001-HKNIKKATUHENKOU-SEC
+           WHEN    OTHER
       *
-                       INITIALIZE              SUMSYU-AREA
-                       MOVE    IDX-BF      TO  IDX-SYU
-                       MOVE    SYUNOU-REC  TO  WKSYUNOU-REC
-                       PERFORM 2001-SUMSYU-SEC
-                       PERFORM 2001-EDIT-SYURRK-SEC
+               PERFORM 2001-CHK-SYURRK-SEC
+           END-EVALUATE
       *
-                       INITIALIZE              SUMSYU-AREA
-                       MOVE    IDX-AF      TO  IDX-SYU
-                       MOVE    LNKSYU-REC  TO  WKSYUNOU-REC
-                       PERFORM 2001-SUMSYU-SEC
-                       PERFORM 2001-EDIT-SYURRK-SEC
-                   END-IF
+           .
+       200-MAIN-EXT.
+           EXIT.
+      *****************************************************************
+      *    ÀÁµá¼è¾Ã»þ¤Î½èÍý
+      *****************************************************************
+       2001-TORIKESI-SEC           SECTION.
+      *
+           INITIALIZE              SUMSYU-AREA
+           MOVE    IDX-BF      TO  IDX-SYU
+           MOVE    LNKSYU-REC  TO  WKSYUNOU-REC
+           PERFORM 2001-SUMSYU-SEC
+           MOVE    SPACE       TO  WKSYURRK-JOUTAIKBN
+           PERFORM 2001-INSERT-SYURRK-SEC
+      *
+           .
+       2001-TORIKESI-EXT.
+           EXIT.
+      *****************************************************************
+      *    ÊÝ¸±°ì³çÊÑ¹¹¸å¤Î¹¹¿·½èÍý
+      *****************************************************************
+       2001-HKNIKKATUHENKOU-SEC    SECTION.
+      *
+           MOVE    "1"         TO  WRK-SYURRKUPDKBN
+      *
+           INITIALIZE              SUMSYU-AREA
+           MOVE    IDX-AF      TO  IDX-SYU
+           MOVE    LNKSYU-REC  TO  WKSYUNOU-REC
+           PERFORM 2001-SUMSYU-SEC
+           MOVE    "2"         TO  WKSYURRK-JOUTAIKBN
+           PERFORM 2001-UPDATE-SYURRK-SEC
+      *
+           .
+       2001-HKNIKKATUHENKOU-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¼ýÇ¼ÍúÎò¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       2001-CHK-SYURRK-SEC       SECTION.
+      *
+           PERFORM 900-SYUNOU-KEY-SEL-SEC
+           IF    ( FLG-SYUNOU  =   ZERO )
+               IF    ( LNKSYU-SRYKA        =   SYU-SRYKA )
+                AND  ( LNKSYU-HKNCOMBINUM  =   SYU-HKNCOMBINUM )
+                   INITIALIZE              SUMSYU-AREA
+                   MOVE    IDX-BF      TO  IDX-SYU
+                   MOVE    SYUNOU-REC  TO  WKSYUNOU-REC
+                   PERFORM 2001-SUMSYU-SEC
+      *
+                   MOVE    IDX-AF      TO  IDX-SYU
+                   MOVE    LNKSYU-REC  TO  WKSYUNOU-REC
+                   PERFORM 2001-SUMSYU-SEC
+                   MOVE    SPACE       TO  WKSYURRK-JOUTAIKBN
+                   PERFORM 2001-INSERT-SYURRK-SEC
                ELSE
+      *
+                   MOVE    "1"         TO  WRK-SYURRKUPDKBN
+      *
+                   INITIALIZE              SUMSYU-AREA
+                   MOVE    IDX-BF      TO  IDX-SYU
+                   MOVE    SYUNOU-REC  TO  WKSYUNOU-REC
+                   PERFORM 2001-SUMSYU-SEC
+                   MOVE    SPACE       TO  WKSYURRK-JOUTAIKBN
+                   PERFORM 2001-INSERT-SYURRK-SEC
+      *
                    INITIALIZE              SUMSYU-AREA
                    MOVE    IDX-AF      TO  IDX-SYU
                    MOVE    LNKSYU-REC  TO  WKSYUNOU-REC
                    PERFORM 2001-SUMSYU-SEC
-                   PERFORM 2001-EDIT-SYURRK-SEC
+                   IF    ( SS002-UPDKBN    =   "1" )
+                       MOVE    "1"     TO  WKSYURRK-JOUTAIKBN
+                   END-IF
+                   PERFORM 2001-INSERT-SYURRK-SEC
                END-IF
+           ELSE
+               INITIALIZE              SUMSYU-AREA
+               MOVE    IDX-AF      TO  IDX-SYU
+               MOVE    LNKSYU-REC  TO  WKSYUNOU-REC
+               PERFORM 2001-SUMSYU-SEC
+               MOVE    SPACE       TO  WKSYURRK-JOUTAIKBN
+               PERFORM 2001-INSERT-SYURRK-SEC
            END-IF
       *
            .
-       200-MAIN-EXT.
+       2001-CHK-SYURRK-EXT.
            EXIT.
       *****************************************************************
       *    ¼ýÇ¼½¸·×½èÍý
@@ -260,20 +323,62 @@
        2001-SUMSYU-EXT.
            EXIT.
       *****************************************************************
+      *    ¼ýÇ¼ÍúÎòÄÉ²Ã½èÍý
+      *****************************************************************
+       2001-INSERT-SYURRK-SEC        SECTION.
+      *
+           COMPUTE WKSYURRK-SYUEDANUM  =   WKSYURRK-SYUEDANUM  +   1
+      *
+           PERFORM 20011-EDIT-SYURRK-SEC
+      *
+           MOVE    SMCNDATE-YMD        TO  SYURRK-CREYMD
+                                           SYURRK-UPYMD
+           MOVE    SMCNDATE-HMS        TO  SYURRK-UPHMS
+           MOVE    SYURRK-REC          TO  MCPDATA-REC
+           MOVE    "tbl_syurrk"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBINSERT-SEC
+           IF    ( MCP-RC      NOT =   ZERO )
+               MOVE    1               TO  SS002-RC
+           END-IF
+      *
+           .
+       2001-INSERT-SYURRK-EXT.
+           EXIT.
+      *****************************************************************
       *    ¼ýÇ¼ÍúÎò¹¹¿·½èÍý
       *****************************************************************
-       2001-EDIT-SYURRK-SEC        SECTION.
+       2001-UPDATE-SYURRK-SEC          SECTION.
       *
-           COMPUTE WRK-SYUEDANUM   =   WRK-SYUEDANUM       +   1
+           PERFORM 20011-EDIT-SYURRK-SEC
+      *
+           MOVE    SMCNDATE-YMD        TO  SYURRK-UPYMD
+           MOVE    SMCNDATE-HMS        TO  SYURRK-UPHMS
+           MOVE    SYURRK-REC          TO  MCPDATA-REC
+           MOVE    "tbl_syurrk"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBUPDATE-SEC
+           IF    ( MCP-RC      NOT =   ZERO )
+               MOVE    1               TO  SS002-RC
+           END-IF
+      *
+           .
+       2001-UPDATE-SYURRK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¼ýÇ¼ÍúÎòÊÔ½¸½èÍý
+      *****************************************************************
+       20011-EDIT-SYURRK-SEC       SECTION.
       *
            INITIALIZE                      SYURRK-REC
            MOVE    WKSYU-HOSPID        TO  SYURRK-HOSPID
            MOVE    WKSYU-PTID          TO  SYURRK-PTID
            MOVE    WKSYU-NYUGAIKBN     TO  SYURRK-NYUGAIKBN
            MOVE    WKSYU-DENPNUM       TO  SYURRK-DENPNUM
-      *
-           MOVE    WRK-SYURRKNUM       TO  SYURRK-SYURRKNUM
-           MOVE    WRK-SYUEDANUM       TO  SYURRK-SYUEDANUM
+           MOVE    WKSYURRK-SYURRKNUM  TO  SYURRK-SYURRKNUM
+           MOVE    WKSYURRK-SYUEDANUM  TO  SYURRK-SYUEDANUM
+           MOVE    WKSYURRK-JOUTAIKBN  TO  SYURRK-JOUTAIKBN
       *
            MOVE    WKSYU-SRYKA         TO  SYURRK-SRYKA
            MOVE    WKSYU-HKNCOMBINUM   TO  SYURRK-HKNCOMBINUM
@@ -361,29 +466,18 @@
                    -   SUMSYU-JIHI-TAXARI (IDX-BF IDX-JIHI)
            END-PERFORM
       *
-           MOVE    SMCNDATE-YMD        TO  SYURRK-CREYMD
-                                           SYURRK-UPYMD
-           MOVE    SMCNDATE-HMS        TO  SYURRK-UPHMS
-           MOVE    SYURRK-REC          TO  MCPDATA-REC
-           MOVE    "tbl_syurrk"        TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBINSERT-SEC
-           IF    ( MCP-RC      NOT =   ZERO )
-               MOVE    1               TO  SS002-RC
-           END-IF
-      *
       *
            .
-       2001-EDIT-SYURRK-EXT.
+       20011-EDIT-SYURRK-EXT.
            EXIT.
       *****************************************************************
       *    ½ªÎ»½èÍý
       *****************************************************************
        300-END-SEC                SECTION.
       *
-           MOVE    WRK-SYURRKNUM   TO  SS002-SYURRKNUM
-           MOVE    WRK-SYUEDANUM   TO  SS002-SYUEDANUM
-           MOVE    WRK-SYURRKUPDKBN TO SS002-SYURRKUPDKBN
+           MOVE    WKSYURRK-SYURRKNUM  TO  SS002-SYURRKNUM
+           MOVE    WKSYURRK-SYUEDANUM  TO  SS002-SYUEDANUM
+           MOVE    WRK-SYURRKUPDKBN    TO  SS002-SYURRKUPDKBN
       *
            .
        300-END-EXT.
@@ -527,4 +621,18 @@
            .
       *
        910-DBINSERT-EXT.
+           EXIT.
+      *****************************************************************
+      *    £Ä£Â¹¹¿·½èÍý
+      *****************************************************************
+       910-DBUPDATE-SEC                SECTION.
+      *
+           MOVE    "DBUPDATE"      TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       910-DBUPDATE-EXT.
            EXIT.
