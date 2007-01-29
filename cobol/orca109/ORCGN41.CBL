@@ -1703,7 +1703,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "DBDELETE"          TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
            IF      MCP-RC          NOT =   ZERO
                MOVE    "1001"          TO  SPA-ERRCD
                DISPLAY "N41 HELP DEL ERR:" MCP-RC
@@ -2116,7 +2116,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "del1"              TO  MCP-PATHNAME
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
       *
       *    追加処理
            MOVE    ZERO                TO  WRK-EDANUM
@@ -2207,7 +2207,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
            IF      MCP-RC          NOT =   ZERO
                MOVE    "1000"          TO  SPA-ERRCD
                DISPLAY "N41 HELP INS ERR:" MCP-RC
@@ -2233,7 +2233,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
            IF      MCP-RC          NOT =   ZERO
                MOVE    "1000"          TO  SPA-ERRCD
                DISPLAY "N41 HELP UPD ERR:" MCP-RC
@@ -2903,7 +2903,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "DBSELECT"      TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -2916,7 +2916,7 @@ grpsys                            SPA-COMMON
            MOVE    "DBFETCH"       TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
       *
            .
       *
@@ -2931,7 +2931,7 @@ grpsys                            SPA-COMMON
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
       *
            .
        990-DBCLOSE-EXT.
@@ -2945,7 +2945,7 @@ grpsys                            SPA-COMMON
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.

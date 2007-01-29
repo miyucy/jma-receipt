@@ -774,7 +774,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "del3"              TO  MCP-PATHNAME
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
       *
       *   主保険中心　組合せ作成処理
            PERFORM     57011-SYUHKN-HEN-SEC
@@ -851,7 +851,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    "key"               TO  MCP-PATHNAME
 grpsys         CALL "ORCDBMAIN" USING MCPAREA
                                       MCPDATA-REC
-grpsys                                SPA-COMMON
+grpsys                                SPA-AREA
               ELSE
                IF   (WRK-LCOMB-TEKSTYMD(IDZ)  < WRK-SYOCYO-TEKSTYMD)
                AND  (WRK-SYOCYO-TEKSTYMD  NOT = 99999999           )
@@ -888,7 +888,7 @@ grpsys*           MOVE SPA-HOSPNUM TO -HOSPNUM
                   MOVE    "key"               TO  MCP-PATHNAME
 grpsys            CALL "ORCDBMAIN" USING MCPAREA
                                          MCPDATA-REC
-grpsys                                   SPA-COMMON
+grpsys                                   SPA-AREA
                END-IF
                IF   (WRK-LCOMB-TEKEDYMD(IDZ)  > WRK-SYOCYO-TEKEDYMD)
                AND  (WRK-SYOCYO-TEKEDYMD  NOT = ZERO               )
@@ -925,7 +925,7 @@ grpsys*           MOVE SPA-HOSPNUM TO -HOSPNUM
                   MOVE    "key"               TO  MCP-PATHNAME
 grpsys            CALL "ORCDBMAIN" USING MCPAREA
                                          MCPDATA-REC
-grpsys                                   SPA-COMMON
+grpsys                                   SPA-AREA
                END-IF
               END-IF
       ***    END-IF
@@ -5079,7 +5079,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "DBSELECT"      TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -5092,7 +5092,7 @@ grpsys                            SPA-COMMON
            MOVE    "DBFETCH"       TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
       *
            .
       *
@@ -5107,7 +5107,7 @@ grpsys                            SPA-COMMON
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
       *
            .
        990-DBCLOSE-EXT.

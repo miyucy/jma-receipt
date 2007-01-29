@@ -301,7 +301,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
            IF      MCP-RC         NOT  =   ZERO
                MOVE    "1011"          TO  SPA-ERRCD
                DISPLAY "P012 SYSKANRI UPDATE:" MCP-RC "."
@@ -675,7 +675,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
            IF      MCP-RC         NOT  =   ZERO
                MOVE    "1011"          TO  SPA-ERRCD
                DISPLAY "P012 SYSKANRI UPDATE:" MCP-RC "."
@@ -783,7 +783,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "DBFETCH"           TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1009-REC
                MOVE    ZERO                TO  FLG-KANRIMST
@@ -802,7 +802,7 @@ grpsys                            SPA-COMMON
            MOVE    "DBSELECT"      TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -815,7 +815,7 @@ grpsys                            SPA-COMMON
            MOVE    "DBFETCH"       TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
       *
            .
       *
@@ -830,7 +830,7 @@ grpsys                            SPA-COMMON
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
       *
            .
        990-DBCLOSE-EXT.

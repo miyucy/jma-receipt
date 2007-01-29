@@ -632,7 +632,7 @@
            MOVE   "PUTWINDOW"                   TO  MCP-FUNC.
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
       *
        900-PUT-WINDOW-EXT.
            EXIT.
@@ -717,7 +717,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    "shell"           TO  MCP-PATHNAME
 grpsys         CALL "ORCDBMAIN" USING MCPAREA
                                       MCPDATA-REC
-grpsys                                SPA-COMMON
+grpsys                                SPA-AREA
            ELSE
                MOVE    SPACE             TO  SHELL-KBEN
                PERFORM VARYING IDX1  FROM  1  BY 1
@@ -751,7 +751,7 @@ grpsys*                MOVE SPA-HOSPNUM TO -HOSPNUM
                        MOVE    "shell"           TO  MCP-PATHNAME
 grpsys                 CALL "ORCDBMAIN" USING MCPAREA
                                               MCPDATA-REC
-grpsys                                        SPA-COMMON
+grpsys                                        SPA-AREA
                    END-IF
                END-PERFORM
                INITIALIZE                ORCSMKPASSAREA
@@ -778,7 +778,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    "shell"           TO  MCP-PATHNAME
 grpsys         CALL "ORCDBMAIN" USING MCPAREA
                                       MCPDATA-REC
-grpsys                                SPA-COMMON
+grpsys                                SPA-AREA
            END-IF.
       *
        T-000-WRITABLE-EXT.

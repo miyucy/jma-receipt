@@ -1974,7 +1974,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            END-IF
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
            IF    ( MCP-RC          NOT =   ZERO )
                MOVE    "4001"          TO  SPA-ERRCD
            END-IF

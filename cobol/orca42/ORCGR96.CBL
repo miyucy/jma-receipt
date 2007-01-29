@@ -399,7 +399,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "DBSELECT"          TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
                MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
@@ -487,7 +487,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "DBSELECT"          TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
                MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
@@ -1326,7 +1326,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "upd4"          TO  MCP-PATHNAME
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
            IF      MCP-RC      NOT =   ZERO
                DISPLAY "SYUKA KEY=" 
                                    MCP-FUNC " " SYUKA-KEY
@@ -1403,7 +1403,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    "DBDELETE"      TO  MCP-FUNC
 grpsys         CALL "ORCDBMAIN" USING MCPAREA
                                       MCPDATA-REC
-grpsys                                SPA-COMMON
+grpsys                                SPA-AREA
                IF      MCP-RC      NOT =   ZERO
                    DISPLAY "SEIKYU KEY=" RECE10-KEY
                    MOVE    "1002"          TO  SPA-ERRCD
@@ -1424,7 +1424,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    "DBDELETE"      TO  MCP-FUNC
 grpsys         CALL "ORCDBMAIN" USING MCPAREA
                                       MCPDATA-REC
-grpsys                                SPA-COMMON
+grpsys                                SPA-AREA
                IF      MCP-RC      NOT =   ZERO
                    DISPLAY "KOHKSY KEY=" KOHSKY-KEY
                    MOVE    "1003"          TO  SPA-ERRCD
@@ -1445,7 +1445,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    "DBDELETE"      TO  MCP-FUNC
 grpsys         CALL "ORCDBMAIN" USING MCPAREA
                                       MCPDATA-REC
-grpsys                                SPA-COMMON
+grpsys                                SPA-AREA
                IF      MCP-RC      NOT =   ZERO
                    DISPLAY "RECEDEN KEY=" RECEDEN-KEY
                    MOVE    "1004"          TO  SPA-ERRCD
@@ -1501,7 +1501,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            END-IF
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
            IF      MCP-RC      NOT =   ZERO
                DISPLAY "SYUKA KEY=" 
                                    MCP-FUNC " " SYUKA-KEY
@@ -1884,14 +1884,14 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
                MOVE    "tbl_ptinf"         TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
 grpsys         CALL "ORCDBMAIN" USING MCPAREA
                                       MCPDATA-REC
-grpsys                                SPA-COMMON
+grpsys                                SPA-AREA
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC         TO  PTINF-REC
                    MOVE    ZERO                TO  FLG-PTINF
@@ -1922,7 +1922,7 @@ grpsys                                SPA-COMMON
            MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
                MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
@@ -1947,7 +1947,7 @@ grpsys                            SPA-COMMON
            MOVE    "DBFETCH"           TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
            IF      MCP-RC               =   ZERO
                MOVE    ZERO                 TO  FLG-SYUKA
                MOVE    MCPDATA-REC          TO  SYUKA-REC
@@ -1972,7 +1972,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "key59"             TO  MCP-PATHNAME
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_seikyu"        TO  MCP-TABLE
                MOVE    "key59"             TO  MCP-PATHNAME
@@ -1997,7 +1997,7 @@ grpsys                            SPA-COMMON
            MOVE    "DBFETCH"       TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
            IF      MCP-RC          =   ZERO
                MOVE    ZERO            TO  FLG-SEIKYU
            ELSE
@@ -2016,7 +2016,7 @@ grpsys                            SPA-COMMON
            MOVE    "DBSELECT"          TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
            .
        900-DBSELECT-EXT.
            EXIT.
@@ -2029,7 +2029,7 @@ grpsys                            SPA-COMMON
            MOVE    "DBFETCH"           TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    ZERO                TO  FLG-READ
            ELSE
@@ -2048,7 +2048,7 @@ grpsys                            SPA-COMMON
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
       *
            .
        900-CLOSE-EXT.
@@ -2062,7 +2062,7 @@ grpsys                            SPA-COMMON
            MOVE   "PUTWINDOW"       TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
            .
        900-PUT-WINDOW-EXT.
            EXIT.

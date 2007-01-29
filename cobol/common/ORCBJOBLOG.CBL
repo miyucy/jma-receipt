@@ -189,7 +189,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "DBSELECT"          TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_joblog"       TO  MCP-TABLE
                MOVE    "key"              TO  MCP-PATHNAME
@@ -217,7 +217,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    JOBLOG-REC          TO  MCPDATA-REC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  JOBLOG-REC
                MOVE    ZERO                TO  FLG-JOBLOG
@@ -239,7 +239,7 @@ grpsys                            SPA-COMMON
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
       *
            .
        900-CLOSE-EXT.
@@ -253,12 +253,12 @@ grpsys                            SPA-COMMON
            MOVE    "DBOPEN"            TO  MCP-FUNC.
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
            MOVE    "DBSTART"           TO  MCP-FUNC.
            MOVE    LOW-VALUE           TO  MCP-PATH.
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
            .
        100-DBOPEN-EXT.
            EXIT.
@@ -271,11 +271,11 @@ grpsys                            SPA-COMMON
            MOVE    LOW-VALUE           TO  MCP-PATH.
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
       *
            MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
        900-DBDISCONNECT-EXT.
            EXIT.

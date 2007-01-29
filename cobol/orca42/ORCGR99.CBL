@@ -337,7 +337,7 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    "shell"         TO  MCP-PATHNAME
 grpsys             CALL "ORCDBMAIN" USING MCPAREA
                                           MCPDATA-REC
-grpsys                                    SPA-COMMON
+grpsys                                    SPA-AREA
                END-IF
              END-IF
            END-IF
@@ -736,14 +736,14 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
                MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
                MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
 grpsys         CALL "ORCDBMAIN" USING MCPAREA
                                       MCPDATA-REC
-grpsys                                SPA-COMMON
+grpsys                                SPA-AREA
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO                TO  FLG-RECE07
                    MOVE    MCPDATA-REC         TO  RECE07-REC
@@ -770,7 +770,7 @@ grpsys                                SPA-COMMON
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
       *
            .
        900-CLOSE-EXT.
@@ -784,7 +784,7 @@ grpsys                            SPA-COMMON
            MOVE   "PUTWINDOW"       TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
            .
        900-PUT-WINDOW-EXT.
            EXIT.

@@ -1578,7 +1578,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    "key"               TO  MCP-PATHNAME
 grpsys         CALL "ORCDBMAIN" USING MCPAREA
                                       MCPDATA-REC
-grpsys                                SPA-COMMON
+grpsys                                SPA-AREA
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "NYUINACCT INS ERR KEY:" NACCT-KEY
                                        ",MCP-RC:"   MCP-RC
@@ -1601,7 +1601,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    "key"               TO  MCP-PATHNAME
 grpsys         CALL "ORCDBMAIN" USING MCPAREA
                                       MCPDATA-REC
-grpsys                                SPA-COMMON
+grpsys                                SPA-AREA
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "NYUINACCT UPDTE ERR KEY:" NACCT-KEY
                                          ",MCP-RC:"   MCP-RC
@@ -1723,7 +1723,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "ORCSNYUACCT PTINF UPDTE ERR:"   MCP-RC
                MOVE    "0005"              TO  SPA-ERRCD
@@ -1867,7 +1867,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
       *
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "ORCSNYUACCT NYUINACT INS ERR:" NSRY-KEY 
@@ -1967,7 +1967,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "del3"              TO  MCP-PATHNAME
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
       *    退院翌月以降の主科テーブル削除（入院会計）
            INITIALIZE                      SYUKA-REC
            MOVE    SPA-HOSPID          TO  SYUKA-HOSPID
@@ -1983,7 +1983,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "del3"              TO  MCP-PATHNAME
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
       *
            .
        200-TAIIN-SYORI-EXT.
@@ -2158,7 +2158,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "ORCSNYUACCT NYUINACCT UP  ERR:" NACCT-KEY 
                                        ",MCP-RC:" MCP-RC ":" 
@@ -2205,7 +2205,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    "del11"             TO  MCP-PATHNAME
 grpsys         CALL "ORCDBMAIN" USING MCPAREA
                                       MCPDATA-REC
-grpsys                                SPA-COMMON
+grpsys                                SPA-AREA
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "ORCSNYUACCT NYUINACT DEL ERR:" NSRY-KEY 
                           ",MCP-RC:" MCP-RC ":" 
@@ -2220,7 +2220,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "ORCSNYUACCT NYUINACCT DEL ERR:" NACCT-KEY 
                        ",MCP-RC:" MCP-RC ":" 
@@ -2296,7 +2296,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    "del3"              TO  MCP-PATHNAME
 grpsys         CALL "ORCDBMAIN" USING MCPAREA
                                       MCPDATA-REC
-grpsys                                SPA-COMMON
+grpsys                                SPA-AREA
            ELSE
       *        入院取消月処理
                INITIALIZE                 ORCSSYUACCAREA
@@ -2318,7 +2318,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    "del3"              TO  MCP-PATHNAME
 grpsys         CALL "ORCDBMAIN" USING MCPAREA
                                       MCPDATA-REC
-grpsys                                SPA-COMMON
+grpsys                                SPA-AREA
       *        退院翌月以降の主科テーブル削除（入院会計）
                INITIALIZE                      SYUKA-REC
                MOVE    SPA-HOSPID          TO  SYUKA-HOSPID
@@ -2334,7 +2334,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    "del3"              TO  MCP-PATHNAME
 grpsys         CALL "ORCDBMAIN" USING MCPAREA
                                       MCPDATA-REC
-grpsys                                SPA-COMMON
+grpsys                                SPA-AREA
       *
            END-IF
       *
@@ -2414,7 +2414,7 @@ grpsys*                MOVE SPA-HOSPNUM TO -HOSPNUM
                        MOVE    "key"               TO  MCP-PATHNAME
 grpsys                 CALL "ORCDBMAIN" USING MCPAREA
                                               MCPDATA-REC
-grpsys                                        SPA-COMMON
+grpsys                                        SPA-AREA
                        IF      MCP-RC          NOT =   ZERO
                            DISPLAY "ORCSNYUACCT NYUINACCT UP  ERR:"
                                    NACCT-KEY 
@@ -2938,7 +2938,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "DBSELECT"      TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -2951,7 +2951,7 @@ grpsys                            SPA-COMMON
            MOVE    "DBFETCH"       TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
       *
            .
        920-DBFETCH-EXT.
@@ -2965,7 +2965,7 @@ grpsys                            SPA-COMMON
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
       *
            .
        990-DBCLOSE-EXT.

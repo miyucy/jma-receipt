@@ -439,7 +439,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "shell"         TO  MCP-PATHNAME
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
       *
            .
        400-JYOUHOU-SEC-EXT.
@@ -660,7 +660,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "shell"         TO  MCP-PATHNAME
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
            DISPLAY "420-KOUSHIN-END"
            .
       *
@@ -1004,7 +1004,7 @@ grpsys                            SPA-COMMON
            MOVE    "all"           TO  MCP-PATHNAME
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
            IF      MCP-RC          =   ZERO
                MOVE    ZERO        TO  FLG-PGKANRI
                PERFORM 900-PGKANRI-FETCH-SEC
@@ -1026,7 +1026,7 @@ grpsys                            SPA-COMMON
            MOVE    "all"           TO  MCP-PATHNAME
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
       *
            IF      MCP-RC          =   ZERO
                MOVE    ZERO            TO  FLG-PGKANRI
@@ -1049,7 +1049,7 @@ grpsys                            SPA-COMMON
            MOVE    "all"           TO  MCP-PATHNAME
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
            .
       *
        900-PGKANRI-CLOSE-EXT.
@@ -1063,7 +1063,7 @@ grpsys                            SPA-COMMON
            MOVE   "PUTWINDOW"      TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
            .
       *
        900-PUT-WINDOW-EXT.

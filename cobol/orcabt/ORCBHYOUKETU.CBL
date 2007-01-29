@@ -424,7 +424,7 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE  "DBUPDATE"       TO   MCP-FUNC
 grpsys             CALL "ORCDBMAIN" USING MCPAREA
                                           MCPDATA-REC
-grpsys                                    SPA-COMMON
+grpsys                                    SPA-AREA
                    IF   MCP-RC   NOT =  ZERO
                         DISPLAY  "NYUINACT UPDATE MCP-RC = " MCP-RC
                    END-IF
@@ -502,7 +502,7 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE  "DBUPDATE"       TO   MCP-FUNC
 grpsys             CALL "ORCDBMAIN" USING MCPAREA
                                           MCPDATA-REC
-grpsys                                    SPA-COMMON
+grpsys                                    SPA-AREA
                    IF   MCP-RC   NOT =  ZERO
                         DISPLAY  "NYUINACT UPDATE MCP-RC = " MCP-RC
                    END-IF
@@ -580,7 +580,7 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE  "DBUPDATE"       TO   MCP-FUNC
 grpsys             CALL "ORCDBMAIN" USING MCPAREA
                                           MCPDATA-REC
-grpsys                                    SPA-COMMON
+grpsys                                    SPA-AREA
                    IF   MCP-RC   NOT =  ZERO
                         DISPLAY  "NYUINACT UPDATE MCP-RC = " MCP-RC
                    END-IF
@@ -658,7 +658,7 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE  "DBUPDATE"       TO   MCP-FUNC
 grpsys             CALL "ORCDBMAIN" USING MCPAREA
                                           MCPDATA-REC
-grpsys                                    SPA-COMMON
+grpsys                                    SPA-AREA
                    IF   MCP-RC   NOT =  ZERO
                         DISPLAY  "NYUINACT UPDATE MCP-RC = " MCP-RC
                    END-IF
@@ -727,7 +727,7 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE  "DBUPDATE"       TO   MCP-FUNC
 grpsys             CALL "ORCDBMAIN" USING MCPAREA
                                           MCPDATA-REC
-grpsys                                    SPA-COMMON
+grpsys                                    SPA-AREA
                    IF   MCP-RC   NOT =  ZERO
                        DISPLAY  "NYUINACT UPDATE MCP-RC = " MCP-RC
                    END-IF
@@ -785,7 +785,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE   "DBUPDATE"       TO   MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
            IF   MCP-RC   NOT =  ZERO
                DISPLAY  "NYUINACCT UPDATE MCP-RC = " MCP-RC
            END-IF
@@ -896,7 +896,7 @@ grpsys                            SPA-COMMON
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
       *
            .
        900-TBL-CLOSE-EXT.
@@ -910,7 +910,7 @@ grpsys                            SPA-COMMON
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
       *
            .
        910-TBL-CLOSE-EXT.
@@ -925,14 +925,14 @@ grpsys                            SPA-COMMON
            MOVE    "DBOPEN"        TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
       *
            MOVE    LOW-VALUE       TO  MCP-TABLE
                                        MCP-PATHNAME
            MOVE    "DBSTART"       TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
            .
        100-DBOPEN-EXT.
            EXIT.
@@ -947,14 +947,14 @@ grpsys                            SPA-COMMON
            MOVE    "DBCOMMIT"      TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
       *
            MOVE    LOW-VALUE       TO  MCP-TABLE
                                        MCP-PATHNAME
            MOVE    "DBDISCONNECT"  TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
            .
        900-DBDISCONNECT-EXT.
            EXIT.
@@ -967,7 +967,7 @@ grpsys                            SPA-COMMON
            MOVE    "DBSELECT"          TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-SYSKANRI
            ELSE
@@ -986,7 +986,7 @@ grpsys                            SPA-COMMON
            MOVE    "DBFETCH"           TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1001-REC
                MOVE    ZERO                TO  FLG-SYSKANRI
@@ -1009,7 +1009,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "DBSELECT"          TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    ZERO               TO  FLG-NYUINACCT
            ELSE
@@ -1028,7 +1028,7 @@ grpsys                            SPA-COMMON
            MOVE    "DBFETCH"           TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC        TO  NYUINACCT-REC
                MOVE    ZERO               TO  FLG-NYUINACCT
@@ -1052,7 +1052,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "DBSELECT"          TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    ZERO               TO  FLG-NYUINACT
            ELSE
@@ -1071,7 +1071,7 @@ grpsys                            SPA-COMMON
            MOVE    "DBFETCH"           TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC        TO  NYUINACT-REC
                MOVE    ZERO               TO  FLG-NYUINACT
@@ -1096,14 +1096,14 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
                MOVE    "tbl_tensu"         TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
 grpsys         CALL "ORCDBMAIN" USING MCPAREA
                                       MCPDATA-REC
-grpsys                                SPA-COMMON
+grpsys                                SPA-AREA
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
                    MOVE    ZERO                TO  FLG-TENSU

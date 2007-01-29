@@ -704,7 +704,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "key"           TO  MCP-PATHNAME
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
       *
            IF      MCP-RC              NOT =   ZERO
                MOVE    "1012"                  TO  SPA-ERRCD
@@ -827,7 +827,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "key"           TO  MCP-PATHNAME
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
       *
            IF      MCP-RC              NOT =   ZERO 
                MOVE    "1011"          TO  SPA-ERRCD
@@ -1047,7 +1047,7 @@ grpsys                            SPA-COMMON
            MOVE    WRK-PATH-PATHNAME   TO  MCP-PATHNAME
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-JINMEI
                PERFORM  900-JINMEI-FETCH-SEC
@@ -1069,7 +1069,7 @@ grpsys                            SPA-COMMON
            MOVE    WRK-PATH-PATHNAME   TO  MCP-PATHNAME
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
       *
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-JINMEI
@@ -1092,7 +1092,7 @@ grpsys                            SPA-COMMON
            MOVE    WRK-PATH-PATHNAME   TO  MCP-PATHNAME
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
            .
       *
        900-JINMEI-CLOSE-EXT.
@@ -1106,7 +1106,7 @@ grpsys                            SPA-COMMON
            MOVE   "PUTWINDOW"      TO  MCP-FUNC.
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
            .
       *
        900-PUT-WINDOW-EXT.

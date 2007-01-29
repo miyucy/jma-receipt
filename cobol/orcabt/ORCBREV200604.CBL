@@ -1363,14 +1363,14 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "key32"             TO  MCP-PATHNAME
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"       TO  MCP-FUNC
                MOVE    "tbl_nyuinacct" TO  MCP-TABLE
                MOVE    "key32"         TO  MCP-PATHNAME
 grpsys         CALL "ORCDBMAIN" USING MCPAREA
                                       MCPDATA-REC
-grpsys                                SPA-COMMON
+grpsys                                SPA-AREA
                IF      MCP-RC          =   ZERO 
                        MOVE    "2001"          TO  WRK-ERRCD
                        GO  TO  410191-NYUACCT-SAKUSEI-EXT
@@ -1389,7 +1389,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "del2"              TO  MCP-PATHNAME
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
            INITIALIZE                      NYUINACT-REC
            MOVE    WRK-HOSPID          TO  NSRY-HOSPID
            MOVE    WRK-PTID            TO  NSRY-PTID
@@ -1401,7 +1401,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "del13"             TO  MCP-PATHNAME
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
       *
            MOVE   SPACE                TO  IPN-NYUKAIKEI-SAKUSEI-FLG
            INITIALIZE      ORCSSYOKIKSNAREA

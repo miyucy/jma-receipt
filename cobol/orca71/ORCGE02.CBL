@@ -372,7 +372,7 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    "shell"             TO  MCP-PATHNAME
 grpsys             CALL "ORCDBMAIN" USING MCPAREA
                                           MCPDATA-REC
-grpsys                                    SPA-COMMON
+grpsys                                    SPA-AREA
                    MOVE    1                   TO  FLG-END
                    MOVE    SPACE               TO  SPA-MOTOPG
                    MOVE    SPACE               TO  SPA-GMN-KBN
@@ -817,7 +817,7 @@ grpsys                                    SPA-COMMON
            MOVE   "PUTWINDOW"                   TO  MCP-FUNC.
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
       *
        900-PUT-WINDOW-EXT.
            EXIT.

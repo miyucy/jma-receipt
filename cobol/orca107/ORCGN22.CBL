@@ -334,7 +334,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "shell"         TO  MCP-PATHNAME
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
       *----(01.01.02)--ADD-START---
            MOVE    1                TO  SPA-N22-JYOKYOFLG
       *----(01.01.02)--ADD-END-----
@@ -484,7 +484,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "shell"         TO  MCP-PATHNAME
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
       *
            .
        400-GAZOCOPY-SEC-EXT.
@@ -766,14 +766,14 @@ grpsys                            SPA-COMMON
                MOVE    WRK-GAZOFILE    TO  ORCA-BLOB-FILE
 grpsys         CALL "ORCDBMAIN" USING MCPAREA
                                       MCPDATA-REC
-grpsys                                SPA-COMMON
+grpsys                                SPA-AREA
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_yakujyo_temp"  TO  MCP-TABLE
            MOVE    "srycd"             TO  MCP-PATHNAME
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
            IF      MCP-RC          =   ZERO
                MOVE    ZERO            TO  FLG-TEMP
                PERFORM 900-TEMP-FETCH-SEC
@@ -795,7 +795,7 @@ grpsys                            SPA-COMMON
            MOVE    "srycd"             TO  MCP-PATHNAME
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
       *
            IF      MCP-RC          =   ZERO
                MOVE    ZERO            TO  FLG-TEMP
@@ -818,7 +818,7 @@ grpsys                            SPA-COMMON
            MOVE    "srycd"             TO  MCP-PATHNAME
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
            .
       *
        900-TEMP-CLOSE-EXT.
@@ -832,7 +832,7 @@ grpsys                            SPA-COMMON
            MOVE    "PUTWINDOW"     TO  MCP-FUNC.
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
            .
       *
        900-PUT-WINDOW-EXT.

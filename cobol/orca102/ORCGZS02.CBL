@@ -203,7 +203,7 @@ grpsys*                MOVE SPA-HOSPNUM TO -HOSPNUM
                        MOVE    "key"               TO  MCP-PATHNAME
 grpsys                 CALL "ORCDBMAIN" USING MCPAREA
                                               MCPDATA-REC
-grpsys                                        SPA-COMMON
+grpsys                                        SPA-AREA
                     ADD     1               TO  IDX1
                ELSE
       *
@@ -234,7 +234,7 @@ grpsys*                MOVE SPA-HOSPNUM TO -HOSPNUM
                        MOVE    "upd1"              TO  MCP-PATHNAME
 grpsys                 CALL "ORCDBMAIN" USING MCPAREA
                                               MCPDATA-REC
-grpsys                                        SPA-COMMON
+grpsys                                        SPA-AREA
                        IF      MCP-RC           NOT =   ZERO
                            MOVE    "9004"          TO  SPA-ERRCD
                            DISPLAY "Z03 TENSUPLUS UPD ERR:" MCP-RC
@@ -259,7 +259,7 @@ grpsys*                MOVE SPA-HOSPNUM TO -HOSPNUM
                        MOVE    "key"               TO  MCP-PATHNAME
 grpsys                 CALL "ORCDBMAIN" USING MCPAREA
                                               MCPDATA-REC
-grpsys                                        SPA-COMMON
+grpsys                                        SPA-AREA
                        ADD     1               TO  IDX1
                    WHEN    (SPA-Z01-TYUKOSTYMD(IDX2)
                                    NOT =   SPACE     )  AND
@@ -367,7 +367,7 @@ grpsys*                MOVE SPA-HOSPNUM TO -HOSPNUM
                        MOVE    "upd1"              TO  MCP-PATHNAME
 grpsys                 CALL "ORCDBMAIN" USING MCPAREA
                                               MCPDATA-REC
-grpsys                                        SPA-COMMON
+grpsys                                        SPA-AREA
                        IF      MCP-RC           NOT =   ZERO
                            MOVE    "9004"          TO  SPA-ERRCD
                            DISPLAY "Z02 TENSUPLUS UPD ERR:" MCP-RC
@@ -398,7 +398,7 @@ grpsys*                MOVE SPA-HOSPNUM TO -HOSPNUM
                        MOVE    "upd1"              TO  MCP-PATHNAME
 grpsys                 CALL "ORCDBMAIN" USING MCPAREA
                                               MCPDATA-REC
-grpsys                                        SPA-COMMON
+grpsys                                        SPA-AREA
                        IF      MCP-RC          NOT =   ZERO
                            MOVE    "9004"          TO  SPA-ERRCD
                            DISPLAY "Z02 TENSUPLUS UPD ERR:" MCP-RC
@@ -428,7 +428,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    "key"               TO  MCP-PATHNAME
 grpsys         CALL "ORCDBMAIN" USING MCPAREA
                                       MCPDATA-REC
-grpsys                                SPA-COMMON
+grpsys                                SPA-AREA
                IF      MCP-RC              NOT =   ZERO
                    MOVE    "9004"          TO  SPA-ERRCD
                    DISPLAY "Z02 TENSUPLUS INS ERR:" MCP-RC
@@ -493,7 +493,7 @@ grpsys                                SPA-COMMON
            MOVE    "DBFETCH"           TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  TENSUPLUS-REC
                MOVE    ZERO            TO  FLG-TENSUPLUS
@@ -514,7 +514,7 @@ grpsys                            SPA-COMMON
            MOVE    "DBSELECT"      TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -527,7 +527,7 @@ grpsys                            SPA-COMMON
            MOVE    "DBFETCH"       TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
       *
            .
       *
@@ -541,7 +541,7 @@ grpsys                            SPA-COMMON
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
-grpsys                            SPA-COMMON
+grpsys                            SPA-AREA
            .
        990-DBLOSEC-EXT.
            EXIT.
