@@ -113,4 +113,6 @@ db	{
         tbl_tensuplus2;
         tbl_genericname;
         tbl_syurrk;
+        tbl_sysbase;
+        tbl_mstkanri;
 };

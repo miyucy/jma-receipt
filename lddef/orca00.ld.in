@@ -44,6 +44,8 @@ db	{
 	tbl_lock;
         tbl_pgkanri;
 	tbl_joblog;
+	tbl_sysbase;
+	tbl_mstkanri;
 };
 
 /* #include "orcadb.inc" */
