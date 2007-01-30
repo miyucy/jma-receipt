@@ -6005,6 +6005,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
       *****************************************************************
        910-TENSU-READ-SEC              SECTION.
       *
+           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
       *    算定履歴に関する項目のみ
            MOVE    SPA-SRYYMD          TO  TNS-YUKOSTYMD
            MOVE    SPA-SRYYMD          TO  TNS-YUKOEDYMD
@@ -6042,6 +6043,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        9101-TENSU-READ2-SEC              SECTION.
       *
+           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    SPA-SRYYMD          TO  TNS-YUKOSTYMD
            MOVE    SPA-SRYYMD          TO  TNS-YUKOEDYMD
       *

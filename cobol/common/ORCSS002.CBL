@@ -269,7 +269,7 @@ grpsys COPY    "COMMON-SPA".
            COMPUTE WRK-SYUEDANUM   =   WRK-SYUEDANUM       +   1
       *
            INITIALIZE                      SYURRK-REC
-           MOVE    WKSYU-HOSPID        TO  SYURRK-HOSPID
+           MOVE    WKSYU-HOSPNUM       TO  SYURRK-HOSPNUM
            MOVE    WKSYU-PTID          TO  SYURRK-PTID
            MOVE    WKSYU-NYUGAIKBN     TO  SYURRK-NYUGAIKBN
            MOVE    WKSYU-DENPNUM       TO  SYURRK-DENPNUM
@@ -436,7 +436,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ZERO                TO  FLG-SYURRK
       *
            INITIALIZE                      SYURRK-REC
-           MOVE    LNKSYU-HOSPID       TO  SYURRK-HOSPID
+           MOVE    LNKSYU-HOSPNUM      TO  SYURRK-HOSPNUM
            MOVE    LNKSYU-PTID         TO  SYURRK-PTID
            MOVE    LNKSYU-NYUGAIKBN    TO  SYURRK-NYUGAIKBN
            MOVE    LNKSYU-DENPNUM      TO  SYURRK-DENPNUM

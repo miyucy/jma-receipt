@@ -433,6 +433,9 @@
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
+      *ito
+           DISPLAY "ORCSC95 000-PROC-SEC"
+           DISPLAY "ORCSC95 LNK-SC95-KBN = " LNK-SC95-KBN
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
            INITIALIZE                  WRK-AREA
@@ -483,6 +486,8 @@
                WHEN    "A"
                    PERFORM 300-WKSRYACT-INSERT-SEC
            END-EVALUATE
+      *ito
+           DISPLAY "ORCSC95 000-PROC-EXT"
       *
            .
        000-PROC-EXT.
@@ -5650,6 +5655,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        910-TENSU-READ-SEC         SECTION.
       *
+           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    SPA-SRYYMD          TO  TNS-YUKOSTYMD
            MOVE    SPA-SRYYMD          TO  TNS-YUKOEDYMD
       *
@@ -5693,6 +5699,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    SPACE               TO  TENSUPLUS-REC
            INITIALIZE                      TENSUPLUS-REC
+           MOVE    TNS-HOSPNUM         TO  TNSP-HOSPNUM
            MOVE    TNS-SRYCD           TO  TNSP-SRYCD
            MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
            MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD

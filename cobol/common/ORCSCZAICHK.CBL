@@ -188,7 +188,7 @@
            MOVE    ZERO                TO  FLG-OK
       *    診療会計マスターを特定する
            INITIALIZE                      SRYACCT-REC
-           MOVE    SPA-HOSPID          TO  ACCT-HOSPID
+           MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  ACCT-NYUGAIKBN
            MOVE    SPA-PTID            TO  ACCT-PTID
            MOVE    ORCSCZAICHK-SRYKA   TO  ACCT-SRYKA
@@ -260,7 +260,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            INITIALIZE                      TBL-MAE-AREA 
       *    診療会計マスターから診療行為マスターを検索する
            INITIALIZE                      SRYACT-REC
-           MOVE    ACCT-HOSPID         TO  SRY-HOSPID
+           MOVE    ACCT-HOSPNUM        TO  SRY-HOSPNUM
            MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
            MOVE    ACCT-PTID           TO  SRY-PTID
            MOVE    ACCT-SRYKA          TO  SRY-SRYKA
@@ -314,7 +314,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                                              (IDX-SIN)
                        IF     (SRY-SRYCD (IDX2)(1:1)   =   "8" ) OR
                               (SRY-SRYCD (IDX2)(1:3)   =   "008")
-                           MOVE    SRY-HOSPID          TO  PTCOM-HOSPID
+                           MOVE    SRY-HOSPNUM        TO  PTCOM-HOSPNUM
                            MOVE    SRY-PTID            TO  PTCOM-PTID
                            MOVE    SRY-ZAINUM          TO  PTCOM-ZAINUM
                            MOVE    SRY-SRYCD (IDX2)    TO  PTCOM-SRYCD

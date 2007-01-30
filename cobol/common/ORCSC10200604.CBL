@@ -5231,6 +5231,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-TENSU-READ-SEC         SECTION.
       *
       *
+           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    SPA-SRYYMD          TO  TNS-YUKOSTYMD
            MOVE    SPA-SRYYMD          TO  TNS-YUKOEDYMD
       *

@@ -2397,7 +2397,7 @@
       *
            MOVE    SPACE               TO  SRYACT-REC
            INITIALIZE                      SRYACT-REC
-           MOVE    SPA-HOSPID          TO  SRY-HOSPID
+           MOVE    SPA-HOSPNUM         TO  SRY-HOSPNUM
            MOVE    "2"                 TO  SRY-NYUGAIKBN
            MOVE    SPA-PTID            TO  SRY-PTID
            MOVE    SPA-SRYYMD(1:6)     TO  SRY-SRYYM
@@ -2424,7 +2424,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *        診療会計マスタ読み込み
                MOVE    SPACE               TO  SRYACCT-REC
                INITIALIZE                      SRYACCT-REC
-               MOVE    SRY-HOSPID          TO  ACCT-HOSPID
+               MOVE    SRY-HOSPNUM         TO  ACCT-HOSPNUM
                MOVE    SRY-NYUGAIKBN       TO  ACCT-NYUGAIKBN
                MOVE    SRY-PTID            TO  ACCT-PTID
                MOVE    SRY-SRYKA           TO  ACCT-SRYKA
@@ -2945,7 +2945,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    SPACE               TO  SRYACCT-REC
            INITIALIZE                      SRYACCT-REC
-           MOVE    SPA-HOSPID          TO  ACCT-HOSPID
+           MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  ACCT-NYUGAIKBN
            MOVE    SPA-PTID            TO  ACCT-PTID
            MOVE    SPA-SRYYMD(1:6)     TO  ACCT-SRYYM
@@ -3621,7 +3621,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    継続分の時、算定
            MOVE    SPACE               TO  JYURRK-REC
            INITIALIZE                  JYURRK-REC
-           MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
+           MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
            MOVE    SPA-PTID            TO  JYURRK-PTID
            MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
            MOVE    SPA-SRYKA           TO  JYURRK-SRYKA
@@ -3684,7 +3684,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *            診療会計マスタ読み込み
                    MOVE    SPACE               TO  SRYACCT-REC
                    INITIALIZE                      SRYACCT-REC
-                   MOVE    SPA-HOSPID          TO  ACCT-HOSPID
+                   MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
                    MOVE    SPA-NYUGAIKBN       TO  ACCT-NYUGAIKBN
                    MOVE    SPA-PTID            TO  ACCT-PTID
                    MOVE    SPA-SRYKA           TO  ACCT-SRYKA
@@ -3748,7 +3748,7 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
       *    診療会計マスターから診療行為マスターを検索する
            MOVE    SPACE               TO  SRYACT-REC
            INITIALIZE                      SRYACT-REC
-           MOVE    ACCT-HOSPID         TO  SRY-HOSPID
+           MOVE    ACCT-HOSPNUM        TO  SRY-HOSPNUM
            MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
            MOVE    ACCT-PTID           TO  SRY-PTID
            MOVE    ACCT-SRYKA          TO  SRY-SRYKA
@@ -3814,6 +3814,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        910-TENSU-READ-SEC         SECTION.
       *
+           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    SPA-SRYYMD          TO  TNS-YUKOSTYMD
            MOVE    SPA-SRYYMD          TO  TNS-YUKOEDYMD
       *
@@ -3857,6 +3858,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    SPACE               TO  TENSUPLUS-REC
            INITIALIZE                      TENSUPLUS-REC
+           MOVE    TNS-HOSPNUM         TO  TNSP-HOSPNUM
            MOVE    TNS-SRYCD           TO  TNSP-SRYCD
            MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
            MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD
