@@ -2403,9 +2403,11 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            INITIALIZE                  ORCSHKNSETAREA
            MOVE    "1"                 TO  ORCSHKN-KBN
            MOVE    "1"                 TO  ORCSHKN-KBN2
+	   DISPLAY "koko st"
            CALL    "ORCSHKNSET"        USING
                                        SPA-AREA
                                        ORCSHKNSETAREA
+	   DISPLAY "koko ed"
            MOVE    ORCSHKN-HKN-MAX     TO  SPA-HKN-MAX
       *
            PERFORM VARYING     IDX     FROM   1   BY  1
@@ -3813,7 +3815,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "*"                 TO  SYS-1001-KBNCD
            MOVE    SPA-SRYYMD          TO  SYS-1001-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-1001-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE SPA-HOSPNUM            TO  SYS-1001-HOSPNUM
            MOVE    SYS-1001-REC        TO  MCPDATA-REC
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -5109,7 +5111,7 @@ grpsys                                    SPA-AREA
                MOVE    SPA-SRYYMD          TO  SYS-1010-STYUKYMD
                MOVE    SPA-SRYYMD          TO  SYS-1010-EDYUKYMD
       *        システム管理検索
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys         MOVE SPA-HOSPNUM            TO  SYS-1010-HOSPNUM
                MOVE    SYS-1010-REC        TO  MCPDATA-REC
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key10"             TO  MCP-PATHNAME
