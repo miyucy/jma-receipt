@@ -33,7 +33,7 @@
        01  ORCSKOHPLUS-AREA.
       *
       *°åÎÅµ¡´Ø£É£Ä
-           03  LNK-SKOHPLUS-HOSPID                  PIC  X(24).
+           03  LNK-SKOHPLUS-HOSPNUM                 PIC  S9(9) BINARY.
       *¸©ÈÖ¹æ
            03  LNK-SKOHPLUS-PREFNUM                 PIC  X(02).
       *´µ¼Ô£É£Ä

@@ -336,7 +336,7 @@ grpsys COPY    "COMMON-SPA".
            03  WK-ERR                  PIC 9(01).
            03  WK-UERR                 PIC 9(01).
            03  WK-PAYKBN               PIC X(02).
-           03  WK-1001-HOSPID          PIC X(24).
+           03  WK-1001-HOSPNUM          PIC X(24).
            03  WK-1001-HOSPSBT         PIC 9(01).
            03  WK-1001-ROUPAYKBN       PIC X(01).
            03  WK-1001-JIHIPOSITION    PIC X(01).
@@ -1032,7 +1032,7 @@ grpsys COPY    "COMMON-SPA".
            MOVE   SYS-1001-DISCOUNT-HASU-KBN2 TO   WK-HASU1001-KBN2.
            MOVE   SYS-1001-TAX-HASU-KBN       TO   WK-TAX1001-KBN.
            MOVE   SYS-1001-PREFNUM            TO   WK-1001-PREFNUM.
-           MOVE   SYS-1001-HOSPID             TO   WK-1001-HOSPID.
+           MOVE   SYS-1001-HOSPNUM             TO   WK-1001-HOSPNUM.
            MOVE   SYS-1001-HOSPSBT            TO   WK-1001-HOSPSBT.
            MOVE   SYS-1001-ROUPAYKBN          TO   WK-1001-ROUPAYKBN.
            MOVE   SYS-1001-JIHIPOSITION       TO   WK-1001-JIHIPOSITION.
@@ -1043,7 +1043,7 @@ grpsys COPY    "COMMON-SPA".
       *
       *    ÊÝ¸±ÁÈ¹ç¤»¥Þ¥¹¥¿¤Î¸¡º÷
            INITIALIZE                           HKNCOMBI-REC.
-           MOVE    LNK-SYU-HOSPID       TO      COMB-HOSPID.
+           MOVE    LNK-SYU-HOSPNUM       TO      COMB-HOSPNUM.
            MOVE    LNK-SYU-PTID         TO      COMB-PTID.
            MOVE    LNK-SYU-HKNCOMBINUM  TO      COMB-HKNCOMBINUM.
 grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
@@ -1380,7 +1380,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *            ¸ºÌÈ·×»»
                    INITIALIZE                           PTINF-REC
-                   MOVE    LNK-SYU-HOSPID       TO      PTINF-HOSPID
+                   MOVE    LNK-SYU-HOSPNUM       TO      PTINF-HOSPNUM
                    MOVE    LNK-SYU-PTID         TO      PTINF-PTID
 grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    PTINF-REC            TO      MCPDATA-REC
@@ -1541,7 +1541,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE     "SYSKANRI-KEY"  TO    ORC-DBPATH
                PERFORM   SYSKANRI-READ-SEC
                IF    MCP-RC             =     ZERO
-                   IF   WK-1001-HOSPID  =    SYS-1037-HOSPID
+                   IF   WK-1001-HOSPNUM  =    SYS-1037-HOSPNUM
                        IF  SYS-1037-PGID NOT = SPACE
                           CALL   SYS-1037-PGID   USING   MCPAREA
                                                  LNK-SYU-SYUNOU-REC
@@ -1982,7 +1982,7 @@ grpsys*       MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    01                   TO      WK-TEISYOTOKU-DD.
       *
            INITIALIZE                           TNKRRK-REC.
-           MOVE    LNK-SYU-HOSPID       TO      TNKRRK-HOSPID.
+           MOVE    LNK-SYU-HOSPNUM       TO      TNKRRK-HOSPNUM.
            MOVE    LNK-SYU-PTID         TO      TNKRRK-PTID.
 grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TNKRRK-REC           TO      MCPDATA-REC.
@@ -2012,7 +2012,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                          MCPDATA-REC.
       *
            INITIALIZE                           TSYRRK-REC.
-           MOVE    LNK-SYU-HOSPID       TO      TSYRRK-HOSPID.
+           MOVE    LNK-SYU-HOSPNUM       TO      TSYRRK-HOSPNUM.
            MOVE    LNK-SYU-PTID         TO      TSYRRK-PTID.
 grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TSYRRK-REC           TO      MCPDATA-REC.
@@ -2115,7 +2115,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *      ³ºÅöÊÝ¸±ÈÖ¹æ¥Æ¡¼¥Ö¥ë¤Î¸¡º÷
              INITIALIZE                      HKNNUM-REC
-             MOVE   COMB-HOSPID        TO    HKN-HOSPID
+             MOVE   COMB-HOSPNUM        TO    HKN-HOSPNUM
              MOVE   COMB-HKNNUM        TO    HKN-HKNNUM
              MOVE   "00"               TO    WK-PAYKBN
 grpsys*      MOVE SPA-HOSPNUM TO -HOSPNUM
@@ -2211,7 +2211,7 @@ grpsys*      MOVE SPA-HOSPNUM TO -HOSPNUM
            IF  COMB-KOH1HKNNUM           NOT =  SPACE
       *
                INITIALIZE                      HKNNUM-REC
-               MOVE   COMB-HOSPID        TO    HKN-HOSPID
+               MOVE   COMB-HOSPNUM        TO    HKN-HOSPNUM
                MOVE   COMB-KOH1HKNNUM    TO    HKN-HKNNUM
                IF     COMB-KOH1HKNNUM    =     "027"
                    IF    LNK-SYU-SRYYMD  >=    "20021001"
@@ -2259,7 +2259,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            IF  COMB-KOH2HKNNUM           NOT = SPACE
       *
                INITIALIZE                      HKNNUM-REC
-               MOVE   COMB-HOSPID        TO    HKN-HOSPID
+               MOVE   COMB-HOSPNUM        TO    HKN-HOSPNUM
                MOVE   COMB-KOH2HKNNUM    TO    HKN-HKNNUM
                MOVE     "00"             TO    WK-PAYKBN
 grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
@@ -2298,7 +2298,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            IF  COMB-KOH3HKNNUM           NOT = SPACE
       *
                INITIALIZE                      HKNNUM-REC
-               MOVE   COMB-HOSPID        TO    HKN-HOSPID
+               MOVE   COMB-HOSPNUM        TO    HKN-HOSPNUM
                MOVE   COMB-KOH3HKNNUM    TO    HKN-HKNNUM
                MOVE     "00"             TO    WK-PAYKBN
 grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
@@ -2337,7 +2337,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            IF  COMB-KOH4HKNNUM           NOT = SPACE
       *
                INITIALIZE                      HKNNUM-REC
-               MOVE   COMB-HOSPID        TO    HKN-HOSPID
+               MOVE   COMB-HOSPNUM        TO    HKN-HOSPNUM
                MOVE   COMB-KOH4HKNNUM    TO    HKN-HKNNUM
                MOVE     "00"             TO    WK-PAYKBN
 grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
@@ -2595,7 +2595,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            AND     COMB-KOH3HKNNUM      =   SPACE
            AND     COMB-KOH4HKNNUM      =   SPACE
                 INITIALIZE                       PTKOHINF-REC
-                MOVE    LNK-SYU-HOSPID       TO  PTKOH-HOSPID
+                MOVE    LNK-SYU-HOSPNUM       TO  PTKOH-HOSPNUM
                 MOVE    LNK-SYU-PTID         TO  PTKOH-PTID
                 MOVE    "027"                TO  PTKOH-KOHNUM
 grpsys*         MOVE SPA-HOSPNUM TO -HOSPNUM
@@ -2636,7 +2636,7 @@ grpsys*         MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *        ´µ¼ÔÇ¯Îð·×»»
                INITIALIZE                           PTINF-REC
-               MOVE    LNK-SYU-HOSPID       TO      PTINF-HOSPID
+               MOVE    LNK-SYU-HOSPNUM       TO      PTINF-HOSPNUM
                MOVE    LNK-SYU-PTID         TO      PTINF-PTID
 grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    PTINF-REC            TO      MCPDATA-REC
@@ -2660,7 +2660,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                                             MCPDATA-REC
       *
                INITIALIZE                  ORCSAGECHKAREA
-               MOVE    LNK-SYU-HOSPID  TO  AGECHK-HOSPID
+               MOVE    LNK-SYU-HOSPNUM  TO  AGECHK-HOSPNUM
                MOVE    LNK-SYU-PTID    TO  AGECHK-PTID
                MOVE    LNK-SYU-SRYYMD  TO  AGECHK-SRYYMD
                MOVE    PTINF-BIRTHDAY  TO  AGECHK-BIRTHDAY
@@ -2701,7 +2701,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            IF    LNK-SYU-SRYYMD(1:6)          >=  "200210"
       *        ´µ¼ÔÇ¯Îð·×»»
                INITIALIZE                           PTINF-REC
-               MOVE    LNK-SYU-HOSPID       TO      PTINF-HOSPID
+               MOVE    LNK-SYU-HOSPNUM       TO      PTINF-HOSPNUM
                MOVE    LNK-SYU-PTID         TO      PTINF-PTID
 grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    PTINF-REC            TO      MCPDATA-REC
@@ -2725,7 +2725,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                                             MCPDATA-REC
       *
                INITIALIZE                  ORCSAGECHKAREA
-               MOVE    LNK-SYU-HOSPID  TO  AGECHK-HOSPID
+               MOVE    LNK-SYU-HOSPNUM  TO  AGECHK-HOSPNUM
                MOVE    LNK-SYU-PTID    TO  AGECHK-PTID
                MOVE    LNK-SYU-SRYYMD  TO  AGECHK-SRYYMD
                MOVE    PTINF-BIRTHDAY  TO  AGECHK-BIRTHDAY
@@ -2760,7 +2760,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            AND (LNK-SYU-SRYYMD(1:6)          >=  "200608")
            AND (LNK-SYU-SRYYMD(1:6)          <=  "200808")
                 INITIALIZE                       PTKOHINF-REC
-                MOVE    LNK-SYU-HOSPID       TO  PTKOH-HOSPID
+                MOVE    LNK-SYU-HOSPNUM       TO  PTKOH-HOSPNUM
                 MOVE    LNK-SYU-PTID         TO  PTKOH-PTID
                 MOVE    "978"                TO  PTKOH-KOHNUM
 grpsys*         MOVE SPA-HOSPNUM TO -HOSPNUM
@@ -2810,7 +2810,7 @@ grpsys*         MOVE SPA-HOSPNUM TO -HOSPNUM
                          UNTIL   (GEN-IDX    >    TBL-GENGAKU-MAX)
                            OR    (WK-GENGAKUKBN   NOT = ZERO     )
                 INITIALIZE                       PTKOHINF-REC
-                MOVE    LNK-SYU-HOSPID       TO  PTKOH-HOSPID
+                MOVE    LNK-SYU-HOSPNUM       TO  PTKOH-HOSPNUM
                 MOVE    LNK-SYU-PTID         TO  PTKOH-PTID
                 MOVE    TBL-GENGAKU(GEN-IDX) TO  PTKOH-KOHNUM
 grpsys*         MOVE SPA-HOSPNUM TO -HOSPNUM
@@ -2882,7 +2882,7 @@ grpsys*         MOVE SPA-HOSPNUM TO -HOSPNUM
                 CONTINUE
               ELSE
                 INITIALIZE                       PTKOHINF-REC
-                MOVE    LNK-SYU-HOSPID       TO  PTKOH-HOSPID
+                MOVE    LNK-SYU-HOSPNUM       TO  PTKOH-HOSPNUM
                 MOVE    LNK-SYU-PTID         TO  PTKOH-PTID
                 MOVE    "964"                TO  PTKOH-KOHNUM
 grpsys*         MOVE SPA-HOSPNUM TO -HOSPNUM
@@ -2928,7 +2928,7 @@ grpsys*         MOVE SPA-HOSPNUM TO -HOSPNUM
            IF   LNK-S01-SAIKEISAN-KBN  =   "1"
       *
                INITIALIZE                           PTINF-REC
-               MOVE    LNK-SYU-HOSPID       TO      PTINF-HOSPID
+               MOVE    LNK-SYU-HOSPNUM       TO      PTINF-HOSPNUM
                MOVE    LNK-SYU-PTID         TO      PTINF-PTID
 grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    PTINF-REC            TO      MCPDATA-REC
@@ -2952,7 +2952,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                                             MCPDATA-REC
       *
                INITIALIZE                  ORCSAGECHKAREA
-               MOVE    LNK-SYU-HOSPID  TO  AGECHK-HOSPID
+               MOVE    LNK-SYU-HOSPNUM  TO  AGECHK-HOSPNUM
                MOVE    LNK-SYU-PTID    TO  AGECHK-PTID
                MOVE    LNK-SYU-SRYYMD  TO  AGECHK-SRYYMD
                MOVE    PTINF-BIRTHDAY  TO  AGECHK-BIRTHDAY
@@ -2993,7 +2993,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                        OR    ( LNK-S01-KOUREI-ZAITAKU-KBN  = "1" )
       *
                INITIALIZE                           SRYACT-REC
-               MOVE    LNK-SYU-HOSPID       TO      SRY-HOSPID
+               MOVE    LNK-SYU-HOSPNUM       TO      SRY-HOSPNUM
                MOVE    LNK-SYU-NYUGAIKBN    TO      SRY-NYUGAIKBN
                MOVE    LNK-SYU-PTID         TO      SRY-PTID
                MOVE    LNK-SYU-SRYYMD(1:6)  TO      SRY-SRYYM
@@ -3014,7 +3014,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                    PERFORM   SRYACT-READ-SEC
                    IF      FLG-SRYACT       =       ZERO
                        INITIALIZE                   SRYACCT-REC
-                       MOVE    SRY-HOSPID       TO   ACCT-HOSPID
+                       MOVE    SRY-HOSPNUM       TO   ACCT-HOSPNUM
                        MOVE    SRY-NYUGAIKBN    TO   ACCT-NYUGAIKBN
                        MOVE    SRY-SRYKA        TO   ACCT-SRYKA
                        MOVE    SRY-PTID         TO   ACCT-PTID
@@ -3070,7 +3070,7 @@ grpsys*                MOVE SPA-HOSPNUM TO -HOSPNUM
                        OR    ( LNK-S01-KOUREI-ZAITAKU-KBN  = "1" )
       *
                INITIALIZE                           SRYACT-REC
-               MOVE    LNK-SYU-HOSPID       TO      SRY-HOSPID
+               MOVE    LNK-SYU-HOSPNUM       TO      SRY-HOSPNUM
                MOVE    LNK-SYU-NYUGAIKBN    TO      SRY-NYUGAIKBN
                MOVE    LNK-SYU-PTID         TO      SRY-PTID
                MOVE    LNK-SYU-SRYYMD(1:6)  TO      SRY-SRYYM
@@ -3091,7 +3091,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                    PERFORM   SRYACT-READ-SEC
                    IF      FLG-SRYACT       =       ZERO
                        INITIALIZE                   SRYACCT-REC
-                       MOVE    SRY-HOSPID       TO   ACCT-HOSPID
+                       MOVE    SRY-HOSPNUM       TO   ACCT-HOSPNUM
                        MOVE    SRY-NYUGAIKBN    TO   ACCT-NYUGAIKBN
                        MOVE    SRY-SRYKA        TO   ACCT-SRYKA
                        MOVE    SRY-PTID         TO   ACCT-PTID
@@ -3163,7 +3163,7 @@ grpsys*                MOVE SPA-HOSPNUM TO -HOSPNUM
            IF (COMB-KOH1HKNNUM           NOT =  SPACE)    AND
               (COMB-KOH1-GAIJGNKBN       =     "1")
                INITIALIZE                      HKNNUM-REC
-               MOVE   COMB-HOSPID        TO    HKN-HOSPID
+               MOVE   COMB-HOSPNUM        TO    HKN-HOSPNUM
                MOVE   COMB-KOH1HKNNUM    TO    HKN-HKNNUM
                IF     COMB-KOH1HKNNUM    =     "027"
                    IF    LNK-SYU-SRYYMD  >=    "20021001"
@@ -3309,7 +3309,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            IF (COMB-KOH2HKNNUM           NOT = SPACE)    AND
               (COMB-KOH2-GAIJGNKBN       =     "1")
                INITIALIZE                      HKNNUM-REC
-               MOVE   COMB-HOSPID        TO    HKN-HOSPID
+               MOVE   COMB-HOSPNUM        TO    HKN-HOSPNUM
                MOVE   COMB-KOH2HKNNUM    TO    HKN-HKNNUM
                MOVE     "00"             TO    WK-PAYKBN
 grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
@@ -3446,7 +3446,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            IF (COMB-KOH3HKNNUM           NOT = SPACE)    AND
               (COMB-KOH3-GAIJGNKBN       =     "1")
                INITIALIZE                      HKNNUM-REC
-               MOVE   COMB-HOSPID        TO    HKN-HOSPID
+               MOVE   COMB-HOSPNUM        TO    HKN-HOSPNUM
                MOVE   COMB-KOH3HKNNUM    TO    HKN-HKNNUM
                MOVE     "00"             TO    WK-PAYKBN
 grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
@@ -3583,7 +3583,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            IF (COMB-KOH4HKNNUM           NOT = SPACE)    AND
               (COMB-KOH4-GAIJGNKBN       =     "1")
                INITIALIZE                      HKNNUM-REC
-               MOVE   COMB-HOSPID        TO    HKN-HOSPID
+               MOVE   COMB-HOSPNUM        TO    HKN-HOSPNUM
                MOVE   COMB-KOH4HKNNUM    TO    HKN-HKNNUM
                MOVE     "00"             TO    WK-PAYKBN
 grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
@@ -4032,7 +4032,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                                            FLG-TOKUREI-HKNJYA
       *
            INITIALIZE                      PTHKNINF-REC
-           MOVE   COMB-HOSPID        TO    PTHKN-HOSPID
+           MOVE   COMB-HOSPNUM        TO    PTHKN-HOSPNUM
            MOVE   COMB-PTID          TO    PTHKN-PTID
            MOVE   COMB-HKNID         TO    PTHKN-HKNID
 grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
@@ -4085,7 +4085,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE       "1"             TO     FLG-INGAI
            ELSE
              INITIALIZE                          SYU-SYUNOU-REC
-             MOVE    LNK-SYU-HOSPID       TO     SYU-HOSPID
+             MOVE    LNK-SYU-HOSPNUM       TO     SYU-HOSPNUM
              MOVE    LNK-SYU-NYUGAIKBN    TO     SYU-NYUGAIKBN
              MOVE    LNK-SYU-PTID         TO     SYU-PTID
              MOVE    LNK-SYU-SRYYMD(1:6)  TO     SYU-SRYYMD(1:6)
@@ -5361,7 +5361,7 @@ grpsys*      MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *         ¸øÈñ·î¾å¸Â³Û¼èÆÀ
                 INITIALIZE                    LNK-ORCSJGNGET-REC
-                MOVE  LNK-SYU-HOSPID      TO  LNK-ORCSJGNGET-HOSPID
+                MOVE  LNK-SYU-HOSPNUM      TO  LNK-ORCSJGNGET-HOSPNUM
                 MOVE  LNK-SYU-NYUGAIKBN   TO  LNK-ORCSJGNGET-NYUGAIKBN
                 MOVE  LNK-SYU-PTID        TO  LNK-ORCSJGNGET-PTID
                 MOVE  COMB-KOHHKNNUM(KOH-IDX)
@@ -5878,7 +5878,7 @@ grpsys*      MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *         ¸øÈñ·î¾å¸Â³Û¼èÆÀ
                 INITIALIZE                    LNK-ORCSJGNGET-REC
-                MOVE  LNK-SYU-HOSPID      TO  LNK-ORCSJGNGET-HOSPID
+                MOVE  LNK-SYU-HOSPNUM      TO  LNK-ORCSJGNGET-HOSPNUM
                 MOVE  LNK-SYU-NYUGAIKBN   TO  LNK-ORCSJGNGET-NYUGAIKBN
                 MOVE  LNK-SYU-PTID        TO  LNK-ORCSJGNGET-PTID
                 EVALUATE   WK-GENGAKUKBN
@@ -5994,7 +5994,7 @@ grpsys*      MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    ¸øÈñ·î¾å¸Â³Û¼èÆÀ
            INITIALIZE                    LNK-ORCSJGNGET-REC
-           MOVE  LNK-SYU-HOSPID      TO  LNK-ORCSJGNGET-HOSPID
+           MOVE  LNK-SYU-HOSPNUM      TO  LNK-ORCSJGNGET-HOSPNUM
            MOVE  LNK-SYU-NYUGAIKBN   TO  LNK-ORCSJGNGET-NYUGAIKBN
            MOVE  LNK-SYU-PTID        TO  LNK-ORCSJGNGET-PTID
            MOVE    "964"             TO  LNK-ORCSJGNGET-KOHHKNNUM
@@ -6135,7 +6135,7 @@ grpsys*      MOVE SPA-HOSPNUM TO -HOSPNUM
       *
                IF    FLG-NYUGAI    NOT =   ZERO
                  INITIALIZE                         SYU-SYUNOU-REC
-                 MOVE    LNK-SYU-HOSPID       TO    SYU-HOSPID
+                 MOVE    LNK-SYU-HOSPNUM       TO    SYU-HOSPNUM
                  MOVE    LNK-SYU-PTID         TO    SYU-PTID
                  MOVE    LNK-SYU-SRYYMD(1:6)  TO    SYU-SRYYMD(1:6)
                  MOVE    "__"                 TO    SYU-SRYYMD(7:2)
@@ -6177,7 +6177,7 @@ grpsys*          MOVE SPA-HOSPNUM TO -HOSPNUM
                                                   MCPDATA-REC
                ELSE
                  INITIALIZE                         SYU-SYUNOU-REC
-                 MOVE    LNK-SYU-HOSPID       TO    SYU-HOSPID
+                 MOVE    LNK-SYU-HOSPNUM       TO    SYU-HOSPNUM
                  MOVE    LNK-SYU-NYUGAIKBN    TO    SYU-NYUGAIKBN
                  MOVE    LNK-SYU-PTID         TO    SYU-PTID
                  MOVE    LNK-SYU-SRYYMD(1:6)  TO    SYU-SRYYMD(1:6)
@@ -6285,7 +6285,7 @@ grpsys*          MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    ÊÝ¸±ÁÈ¹ç¤»¥Þ¥¹¥¿¤Î¸¡º÷
            INITIALIZE                         WRK-HKNCOMBI-REC.
-           MOVE    SYU-HOSPID         TO      WRK-COMB-HOSPID.
+           MOVE    SYU-HOSPNUM         TO      WRK-COMB-HOSPNUM.
            MOVE    SYU-PTID           TO      WRK-COMB-PTID.
            MOVE    SYU-HKNCOMBINUM    TO      WRK-COMB-HKNCOMBINUM.
 grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
@@ -11860,7 +11860,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    ³ºÅöÊÝ¸±ÈÖ¹æ¥Æ¡¼¥Ö¥ë¤Î¸¡º÷
            INITIALIZE                      HKNNUM-REC.
-           MOVE   COMB-HOSPID        TO    HKN-HOSPID.
+           MOVE   COMB-HOSPNUM        TO    HKN-HOSPNUM.
            MOVE   COMB-HKNNUM        TO    HKN-HKNNUM.
            MOVE   "00"               TO    WK-PAYKBN.
 grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
@@ -11952,7 +11952,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    Ç¯Îð£³ºÐÌ¤Ëþ
            IF      LNK-SYU-SRYYMD       >=      "20021001"
                INITIALIZE                           PTINF-REC
-               MOVE    LNK-SYU-HOSPID       TO      PTINF-HOSPID
+               MOVE    LNK-SYU-HOSPNUM       TO      PTINF-HOSPNUM
                MOVE    LNK-SYU-PTID         TO      PTINF-PTID
 grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    PTINF-REC            TO      MCPDATA-REC
@@ -12501,7 +12501,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    ³ºÅöÊÝ¸±ÈÖ¹æ¥Æ¡¼¥Ö¥ë¤Î¸¡º÷
            INITIALIZE                      HKNNUM-REC.
-           MOVE   COMB-HOSPID        TO    HKN-HOSPID.
+           MOVE   COMB-HOSPNUM        TO    HKN-HOSPNUM.
            MOVE   COMB-KOHHKNNUM(KOH-IDX)
                                      TO    HKN-HKNNUM.
       *
@@ -12735,7 +12735,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                   (LNK-SYU-SRYYMD(1:6)    >= "200510"      )
       *
                 INITIALIZE                       PTKOHINF-REC
-                MOVE    LNK-SYU-HOSPID       TO  PTKOH-HOSPID
+                MOVE    LNK-SYU-HOSPNUM       TO  PTKOH-HOSPNUM
                 MOVE    LNK-SYU-PTID         TO  PTKOH-PTID
                 MOVE    COMB-KOHHKNNUM(KOH-IDX)
                                              TO  PTKOH-KOHNUM
@@ -12799,7 +12799,7 @@ grpsys*         MOVE SPA-HOSPNUM TO -HOSPNUM
        23041-KOHPLUS-FUKUOKA-SEC           SECTION.
       *
            INITIALIZE                  ORCSKOHPLUS-AREA
-           MOVE    LNK-SYU-HOSPID  TO  LNK-SKOHPLUS-HOSPID
+           MOVE    LNK-SYU-HOSPNUM  TO  LNK-SKOHPLUS-HOSPNUM
            MOVE    WK-1001-PREFNUM TO  LNK-SKOHPLUS-PREFNUM
            MOVE    LNK-SYU-PTID    TO  LNK-SKOHPLUS-PTID
            MOVE    LNK-SYU-HKNCOMBINUM
@@ -16424,7 +16424,7 @@ grpsys*         MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    Ç¯Îð£¶ºÍÌ¤Ëþ
            INITIALIZE                           PTINF-REC.
-           MOVE    LNK-SYU-HOSPID       TO      PTINF-HOSPID.
+           MOVE    LNK-SYU-HOSPNUM       TO      PTINF-HOSPNUM.
            MOVE    LNK-SYU-PTID         TO      PTINF-PTID.
 grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-REC            TO      MCPDATA-REC.
@@ -17022,7 +17022,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       ******************************************************************
        YAKFTN-CONT-SEC                SECTION.
       *
-           MOVE    LNK-SYU-HOSPID       TO     SYU-HOSPID.
+           MOVE    LNK-SYU-HOSPNUM       TO     SYU-HOSPNUM.
            MOVE    LNK-SYU-NYUGAIKBN    TO     SYU-NYUGAIKBN.
            MOVE    LNK-SYU-PTID         TO     SYU-PTID.
            MOVE    LNK-SYU-DOUJI-DENPNUM TO    SYU-DOUJI-DENPNUM.
@@ -17092,7 +17092,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                CONTINUE
            ELSE
                INITIALIZE                      HKNNUM-REC
-               MOVE   COMB-HOSPID        TO    HKN-HOSPID
+               MOVE   COMB-HOSPNUM        TO    HKN-HOSPNUM
                MOVE   COMB-HKNNUM        TO    HKN-HKNNUM
                MOVE   "00"               TO    WK-PAYKBN
 grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
