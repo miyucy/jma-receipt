@@ -222,9 +222,6 @@
        FILE                        SECTION.
       *
        WORKING-STORAGE SECTION.
-grpsys*
-grpsys COPY    "COMMON-SPA".
-      *
        01  STS-AREA.
            03  STS-SYUNOU              PIC X(02).
            03  STS-TSYRRK              PIC X(02).
@@ -956,6 +953,8 @@ grpsys COPY    "COMMON-SPA".
         02 LNK-WRK-SYUNOU-REC      OCCURS 15.
            COPY  "CPSYUNOU.INC" 
                                REPLACING  //SYU-// BY //LNK-WRK-SYU-//.
+grpsys*
+      *
       /
        PROCEDURE           DIVISION  USING
                                      MCPAREA
@@ -1032,7 +1031,7 @@ grpsys COPY    "COMMON-SPA".
            MOVE   SYS-1001-DISCOUNT-HASU-KBN2 TO   WK-HASU1001-KBN2.
            MOVE   SYS-1001-TAX-HASU-KBN       TO   WK-TAX1001-KBN.
            MOVE   SYS-1001-PREFNUM            TO   WK-1001-PREFNUM.
-           MOVE   SYS-1001-HOSPNUM             TO   WK-1001-HOSPNUM.
+           MOVE   SYS-1001-HOSPNUM            TO   WK-1001-HOSPNUM.
            MOVE   SYS-1001-HOSPSBT            TO   WK-1001-HOSPSBT.
            MOVE   SYS-1001-ROUPAYKBN          TO   WK-1001-ROUPAYKBN.
            MOVE   SYS-1001-JIHIPOSITION       TO   WK-1001-JIHIPOSITION.
@@ -1530,7 +1529,7 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "1037"               TO    SYS-1037-KANRICD
            MOVE    "*"                  TO    SYS-1037-KBNCD
            MOVE    LNK-SYU-SRYYMD       TO    ORC-DBYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE    LNK-SYU-HOSPNUM      TO    SYS-1037-HOSPNUM
            MOVE    SYS-1037-REC         TO    MCPDATA-REC
            MOVE    "DBSELECT"           TO    MCP-FUNC
            MOVE    "SYSKANRI-KEY"       TO    ORC-DBPATH
@@ -1586,7 +1585,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    "1026"               TO    SYS-1026-KANRICD
                MOVE    PTINF-DISCOUNT-KBN   TO    SYS-1026-KBNCD
                MOVE    LNK-SYU-SRYYMD       TO    ORC-DBYMD
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys         MOVE    LNK-SYU-HOSPNUM      TO    SYS-1026-HOSPNUM
                MOVE    SYS-1026-REC         TO    MCPDATA-REC
                MOVE    "DBSELECT"           TO    MCP-FUNC
                MOVE    "SYSKANRI-KEY"       TO    ORC-DBPATH
@@ -1614,7 +1613,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    "1027"               TO    SYS-1027-KANRICD
                MOVE    PTINF-DISCOUNT       TO    SYS-1027-KBNCD
                MOVE    LNK-SYU-SRYYMD       TO    ORC-DBYMD
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys         MOVE    LNK-SYU-HOSPNUM      TO    SYS-1027-HOSPNUM
                MOVE    SYS-1027-REC         TO    MCPDATA-REC
                MOVE    "DBSELECT"           TO    MCP-FUNC
                MOVE    "SYSKANRI-KEY"       TO    ORC-DBPATH
@@ -1772,7 +1771,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
               MOVE    "4003"               TO    SYS-4003-KANRICD
               MOVE    "*"                  TO    SYS-4003-KBNCD
               MOVE    LNK-SYU-SRYYMD       TO    ORC-DBYMD
-grpsys*       MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys        MOVE    LNK-SYU-HOSPNUM      TO    SYS-4003-HOSPNUM
               MOVE    SYS-4003-REC         TO    MCPDATA-REC
               MOVE    "DBSELECT"           TO    MCP-FUNC
               MOVE    "SYSKANRI-KEY"       TO    ORC-DBPATH
@@ -12334,7 +12333,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    "4001"               TO    SYS-4001-KANRICD
                MOVE    "*"                  TO    SYS-4001-KBNCD
                MOVE    LNK-SYU-SRYYMD       TO    ORC-DBYMD
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys         MOVE    LNK-SYU-HOSPNUM      TO    SYS-4001-HOSPNUM
                MOVE    SYS-4001-REC         TO    MCPDATA-REC
                MOVE    "DBSELECT"           TO    MCP-FUNC
                MOVE    "SYSKANRI-KEY"       TO    ORC-DBPATH
@@ -17385,7 +17384,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "1001"               TO    SYS-1001-KANRICD.
            MOVE    "*"                  TO    SYS-1001-KBNCD.
            MOVE    LNK-SYU-SRYYMD       TO    ORC-DBYMD.
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE    LNK-SYU-HOSPNUM      TO    SYS-1001-HOSPNUM
            MOVE    SYS-1001-REC         TO    MCPDATA-REC.
            MOVE    "DBSELECT"           TO    MCP-FUNC.
            MOVE    "SYSKANRI-KEY"       TO    ORC-DBPATH.
