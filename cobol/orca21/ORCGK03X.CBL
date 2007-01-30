@@ -222,7 +222,7 @@
            MOVE    SPA-SRYYMD          TO  SYS-9001-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-9001-EDYUKYMD
       *    システム管理検索
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM         TO  SYS-9001-HOSPNUM
            MOVE    SYS-9001-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME

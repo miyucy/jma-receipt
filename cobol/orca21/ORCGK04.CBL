@@ -506,7 +506,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                            TO  SYS-1005-STYUKYMD
                END-IF
                MOVE    SYS-1005-STYUKYMD   TO  SYS-1005-EDYUKYMD
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
                MOVE    SYS-1005-REC        TO  MCPDATA-REC
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key10"             TO  MCP-PATHNAME

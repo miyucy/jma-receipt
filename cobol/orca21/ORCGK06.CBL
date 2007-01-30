@@ -523,7 +523,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    "01"             TO  SYS-1005-STYUKYMD (7:2)
                MOVE    SYS-1005-STYUKYMD
                                         TO  SYS-1005-EDYUKYMD
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys         MOVE    SPA-HOSPNUM      TO  SYS-1005-HOSPNUM
                MOVE    SYS-1005-REC     TO  MCPDATA-REC
                PERFORM 900-SYSKANRI-INV-SEC
                IF      FLG-SYSKANRI         =   ZERO
@@ -1048,7 +1048,8 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                                                               (7:2)
                        MOVE    SYS-1005-STYUKYMD
                                                 TO  SYS-1005-EDYUKYMD
-grpsys*                MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys                 MOVE    SPA-HOSPNUM      TO 
+                                                    SYS-1005-HOSPNUM
                        MOVE    SYS-1005-REC     TO  MCPDATA-REC
                        PERFORM 900-SYSKANRI-INV-SEC
                        IF      FLG-SYSKANRI     NOT =   ZERO

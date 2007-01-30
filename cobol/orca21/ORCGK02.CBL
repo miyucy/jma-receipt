@@ -1529,7 +1529,7 @@
            END-STRING
            MOVE    SPA-SYSYMD          TO  SYS-1010-STYUKYMD
            MOVE    SPA-SYSYMD          TO  SYS-1010-EDYUKYMD
-           MOVE    1                   TO  SYS-1010-HOSPNUM 
+           MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM 
       *    システム管理検索
 grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1010-REC        TO  MCPDATA-REC
@@ -4429,6 +4429,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-GMN-PTNUM       TO  SPTNUM-PTNUM
            CALL    "ORCSPTNUM"         USING   ORCSPTNUMAREA
                                                SPA-AREA
+           DISPLAY "ptnum = "        SPTNUM-PTNUM
            IF      SPTNUM-RC           =   10  OR  99
                MOVE    SPTNUM-PTNUM        TO  SPA-GMN-PTNUM
                MOVE    "1003"              TO  SPA-ERRCD
@@ -10889,6 +10890,7 @@ grpsys                                SPA-AREA
            END-IF
            MOVE    SPA-HOSPNUM          TO  PTINF-HOSPNUM
            MOVE    SPA-PTID            TO  PTINF-PTID
+           DISPLAY "spa-ptid ="    SPA-PTID 
            PERFORM 900-PTINF-READ-SEC
            IF     (FLG-PTINF           =   1     )  OR
                   (SPA-PTNUM           =   SPACE )
