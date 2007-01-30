@@ -277,7 +277,7 @@
            MOVE    WRK-SRYYMD          TO  SYS-1032-STYUKYMD
                                            SYS-1032-EDYUKYMD
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1032-HOSPNUM
            MOVE    SYS-1032-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -328,7 +328,7 @@ grpsys                            SPA-AREA
            MOVE    WRK-SRYYMD          TO  SYS-1035-STYUKYMD
                                            SYS-1035-EDYUKYMD
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1035-HOSPNUM
            MOVE    SYS-1035-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -423,7 +423,7 @@ grpsys                            SPA-AREA
            MOVE    WRK-SRYYMD          TO  SYS-1031-STYUKYMD
                                            SYS-1031-EDYUKYMD
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1031-HOSPNUM
            MOVE    SYS-1031-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -468,7 +468,7 @@ grpsys                            SPA-AREA
            MOVE    WRK-SRYYMD          TO  SYS-1034-STYUKYMD
                                            SYS-1034-EDYUKYMD
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1034-HOSPNUM
            MOVE    SYS-1034-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE

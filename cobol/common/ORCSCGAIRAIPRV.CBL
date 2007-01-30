@@ -1311,7 +1311,7 @@ grpsys                                SPA-AREA
            MOVE    SPA-SRYYMD          TO  SYS-0041-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-0041-EDYUKYMD
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM         TO  SYS-0041-HOSPNUM
            MOVE    SYS-0041-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -1341,7 +1341,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SMCNDATE-YMD        TO  SYS-0041-UPYMD
                MOVE    SMCNDATE-HMS        TO  SYS-0041-UPHMS
       *
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys         MOVE    SPA-HOSPNUM         TO  SYS-0041-HOSPNUM
                MOVE    SYS-0041-REC        TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "tbl_syskanri"      TO  MCP-TABLE

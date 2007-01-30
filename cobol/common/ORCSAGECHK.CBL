@@ -912,7 +912,7 @@ grpsys                            SPA-AREA
            MOVE    "*"                 TO  SYS-4001-KBNCD
            MOVE    AGECHK-SRYYMD       TO  SYS-4001-STYUKYMD
                                            SYS-4001-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM         TO  SYS-4001-HOSPNUM
            MOVE    SYS-4001-REC        TO  MCPDATA-REC
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -1000,7 +1000,7 @@ grpsys                            SPA-AREA
            MOVE    "*"                 TO  SYS-4001-KBNCD
            MOVE    AGECHK-SRYYMD       TO  SYS-4001-STYUKYMD
                                            SYS-4001-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM         TO  SYS-4001-HOSPNUM
            MOVE    SYS-4001-REC        TO  MCPDATA-REC
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -1288,7 +1288,7 @@ grpsys                            SPA-AREA
            MOVE    "*"                 TO  SYS-1001-KBNCD
            MOVE    AGECHK-SRYYMD       TO  SYS-1001-STYUKYMD
                                            SYS-1001-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
            MOVE    SYS-1001-REC        TO  MCPDATA-REC
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC

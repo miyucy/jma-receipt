@@ -276,7 +276,7 @@ grpsys                            SPA-AREA
            END-STRING
            MOVE    "99999999"          TO  SYS-1044-STYUKYMD
            MOVE    "99999999"          TO  SYS-1044-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1044-HOSPNUM
            MOVE    SYS-1044-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME

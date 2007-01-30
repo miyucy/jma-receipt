@@ -215,7 +215,6 @@
        1001-NENREI-SEC            SECTION.
       *
            MOVE    SPA-BIRTHDAY        TO  WRK-BYMD
-           DISPLAY "barthday = "    SPA-BIRTHDAY 
       *
       *    １日以外の誕生日の時は、翌月１日を基準とする
            IF      WRK-BDD             >   01

@@ -1292,7 +1292,7 @@
       *        ½é¿ÇÎÁ¤Î»þ¡¢²áµî¤Ë¼õ¿Ç¤¬¤Ê¤¤¤³¤È
       *        ¼õ¿ÇÎò¤ò¸¡º÷¤¹¤ë  °åÎÅµ¡´Ø¡¢´µ¼Ô£É£Ä
                INITIALIZE                  JYURRK-REC
-               MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
+               MOVE    SPA-HOSPNUM          TO  JYURRK-HOSPNUM
                MOVE    SPA-PTID            TO  JYURRK-PTID
                MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
                MOVE    SPA-HKNCOMBINUM     TO  JYURRK-HKNCOMBINUM
@@ -1337,7 +1337,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
       *        ½é¿ÇÎÁ¤Î»þ¡¢²áµî¤Ë¼õ¿Ç¤¬¤Ê¤¤¤³¤È
       *        ¼õ¿ÇÎò¤ò¸¡º÷¤¹¤ë  °åÎÅµ¡´Ø¡¢´µ¼Ô£É£Ä
                INITIALIZE                  JYURRK-REC
-               MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
+               MOVE    SPA-HOSPNUM          TO  JYURRK-HOSPNUM
                MOVE    SPA-PTID            TO  JYURRK-PTID
                MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
                MOVE    SPA-HKNCOMBINUM     TO  JYURRK-HKNCOMBINUM
@@ -2355,7 +2355,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                SET     TBL-TOK             TO  IDX
                MOVE    TBL-TOKSRYCD  (TBL-TOK) TO  WRK-SRYCD
                INITIALIZE                  SANTEI-REC
-               MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
+               MOVE    SPA-HOSPNUM          TO  SANTEI-HOSPNUM
                MOVE    SPA-PTID            TO  SANTEI-PTID
                MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
                MOVE    ZERO                TO  SANTEI-NYUGAIKBN
@@ -2752,7 +2752,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                SET     TBL-TOK             TO  IDX
       *        »»ÄêÍúÎò¸¡º÷
                INITIALIZE                  SANTEI-REC
-               MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
+               MOVE    SPA-HOSPNUM          TO  SANTEI-HOSPNUM
                MOVE    SPA-PTID            TO  SANTEI-PTID
                MOVE    TBL-TOKSRYCD (TBL-TOK)
                                            TO  SANTEI-SRYCD
@@ -2826,7 +2826,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    »»ÄêÍúÎò¸¡º÷
            INITIALIZE                  SANTEI-REC
-           MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
+           MOVE    SPA-HOSPNUM          TO  SANTEI-HOSPNUM
            MOVE    SPA-PTID            TO  SANTEI-PTID
            MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
            IF      WRK-DBPATH          =   "key"
@@ -2968,7 +2968,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        10141-SANTEI-KEN02-SEC                  SECTION.
       *
            INITIALIZE                  SANTEI-REC
-           MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
+           MOVE    SPA-HOSPNUM          TO  SANTEI-HOSPNUM
            MOVE    SPA-PTID            TO  SANTEI-PTID
            MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
       *    »»ÄêÍúÎò¶èÊ¬¤Ï¡Ç£±¡Ç¤Ç¤¢¤ë¤³¤È¤È¤¹¤ë
@@ -3057,7 +3057,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            END-IF
       *
            INITIALIZE                  SANTEI-REC
-           MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
+           MOVE    SPA-HOSPNUM          TO  SANTEI-HOSPNUM
            MOVE    SPA-PTID            TO  SANTEI-PTID
            MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
       *    »»ÄêÍúÎò¶èÊ¬¤Ï¡Ç£±¡Ç¤Ç¤¢¤ë¤³¤È¤È¤¹¤ë

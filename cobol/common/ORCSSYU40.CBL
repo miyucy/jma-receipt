@@ -316,7 +316,7 @@
            MOVE    WRK-SRYYMD          TO  SYS-1006-STYUKYMD
            MOVE    WRK-SRYYMD          TO  SYS-1006-EDYUKYMD
       *    システム管理検索（施設基準）
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1006-HOSPNUM
            MOVE    SYS-1006-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
