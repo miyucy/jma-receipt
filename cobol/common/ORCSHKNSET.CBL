@@ -215,6 +215,7 @@
        1001-NENREI-SEC            SECTION.
       *
            MOVE    SPA-BIRTHDAY        TO  WRK-BYMD
+           DISPLAY "barthday = "    SPA-BIRTHDAY 
       *
       *    １日以外の誕生日の時は、翌月１日を基準とする
            IF      WRK-BDD             >   01
@@ -262,7 +263,7 @@
       *    保険組合マスター編集
            MOVE    SPACE               TO  HKNCOMBI-REC
            INITIALIZE                  HKNCOMBI-REC
-           MOVE    SPA-HOSPID          TO  COMB-HOSPID
+           MOVE    SPA-HOSPNUM          TO  COMB-HOSPNUM
            MOVE    SPA-PTID            TO  COMB-PTID
       *
 grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
@@ -347,7 +348,7 @@ grpsys                            SPA-AREA
        1100-PTRSIINF-CHK-SEC             SECTION.
       *
            INITIALIZE                      PTRSIINF-REC
-           MOVE    SPA-HOSPID          TO  PTRSI-HOSPID
+           MOVE    SPA-HOSPNUM          TO  PTRSI-HOSPNUM
            MOVE    SPA-PTID            TO  PTRSI-PTID
            MOVE    COMB-HKNID          TO  PTRSI-HKNID
 grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
@@ -606,7 +607,7 @@ grpsys                            SPA-AREA
        1102-HKNJANUM-SET-SEC             SECTION.
       *    保険者編集
            INITIALIZE                  PTHKNINF-REC
-           MOVE    COMB-HOSPID         TO  PTHKN-HOSPID
+           MOVE    COMB-HOSPNUM         TO  PTHKN-HOSPNUM
            MOVE    COMB-PTID           TO  PTHKN-PTID
            MOVE    COMB-HKNID          TO  PTHKN-HKNID
       *
@@ -643,7 +644,7 @@ grpsys                            SPA-AREA
        1103-JKYSNUM-SET-SEC             SECTION.
       *    患者公費情報
            INITIALIZE                  PTKOHINF-REC
-           MOVE    COMB-HOSPID         TO  PTKOH-KOHID
+           MOVE    COMB-HOSPNUM         TO  PTKOH-KOHID
            MOVE    COMB-PTID           TO  PTKOH-PTID
            MOVE    COMB-KOHID (IDK)    TO  PTKOH-KOHID
       *
@@ -776,7 +777,7 @@ grpsys                            SPA-AREA
       *    受診履歴より前回の保険組合せを指定する
            MOVE    SPACE               TO  JYURRK-REC
            INITIALIZE                  JYURRK-KEY
-           MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
+           MOVE    SPA-HOSPNUM          TO  JYURRK-HOSPNUM
            MOVE    SPA-PTID            TO  JYURRK-PTID
            MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
            MOVE    SPA-SRYKA           TO  JYURRK-SRYKA
@@ -825,7 +826,7 @@ grpsys                            SPA-AREA
        3001-HKNNUM-CHK-SEC         SECTION.
       *
            INITIALIZE                  HKNNUM-REC
-           MOVE    SPA-HOSPID          TO  HKN-HOSPID
+           MOVE    SPA-HOSPNUM          TO  HKN-HOSPNUM
            MOVE    SPA-SRYYMD          TO  HKN-TEKSTYMD
            MOVE    SPA-SRYYMD          TO  HKN-TEKEDYMD
            MOVE    COMB-HKNNUM         TO  HKN-HKNNUM
@@ -867,7 +868,7 @@ grpsys                            SPA-AREA
            MOVE    "*"                 TO  SYS-4001-KBNCD
            MOVE    SPA-SRYYMD          TO  SYS-4001-STYUKYMD
                                            SYS-4001-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE SPA-HOSPNUM            TO  SYS-4001-HOSPNUM 
            MOVE    SYS-4001-REC        TO  MCPDATA-REC
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -911,7 +912,7 @@ grpsys                            SPA-AREA
            MOVE    "*"                 TO  SYS-1008-KBNCD
            MOVE    SPA-SRYYMD          TO  SYS-1008-STYUKYMD
                                            SYS-1008-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE SPA-HOSPNUM            TO  SYS-1008-HOSPNUM 
            MOVE    SYS-1008-REC        TO  MCPDATA-REC
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC

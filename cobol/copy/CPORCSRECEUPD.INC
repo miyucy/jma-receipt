@@ -33,7 +33,7 @@
       *    復帰コード  １：処理区分エラー
            03  LNK-UPD-RC              PIC X(01).
       *    医療機関ＩＤ
-           03  LNK-UPD-HOSPID          PIC X(24).
+           03  LNK-UPD-HOSPNUM         PIC S9(9) BINARY.
       *    患者ＩＤ
            03  LNK-UPD-PTID            PIC 9(10).
       *    入外区分

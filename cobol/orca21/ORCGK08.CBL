@@ -2467,7 +2467,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        310120-YAKUSOKU-SET-SEC        SECTION.
       *
            MOVE    SPACE               TO  INPUTCD-REC
-           MOVE    SPA-HOSPID          TO  ICD-HOSPID
+           MOVE    SPA-HOSPNUM          TO  ICD-HOSPNUM
       *    セットの桁数は６とする
            MOVE    "6"                 TO  ICD-CDSYU
            MOVE    LNK-WKSRY-SRYCD (IDX IDZ)(1:6)
@@ -3689,7 +3689,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            ELSE
       *        保険算定年齢が７０歳以上か、老人保険の時
                INITIALIZE                  ORCSAGECHKAREA
-               MOVE    SPA-HOSPID          TO  AGECHK-HOSPID
+               MOVE    SPA-HOSPNUM          TO  AGECHK-HOSPNUM
                MOVE    SPA-PTID            TO  AGECHK-PTID
                MOVE    SPA-SRYYMD          TO  AGECHK-SRYYMD
                MOVE    SPA-BIRTHDAY        TO  AGECHK-BIRTHDAY
@@ -4294,7 +4294,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    保険組合マスター編集
            MOVE    SPACE               TO  HKNCOMBI-REC
            INITIALIZE                  HKNCOMBI-REC
-           MOVE    SPA-HOSPID         TO  COMB-HOSPID
+           MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
            MOVE    SPA-PTID           TO  COMB-PTID
            MOVE    SPA-HKNCOMBINUM    TO  COMB-HKNCOMBINUM
       *
@@ -4427,7 +4427,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    SPACE               TO  JYURRK-REC
            INITIALIZE                  JYURRK-REC
-           MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
+           MOVE    SPA-HOSPNUM          TO  JYURRK-HOSPNUM
            MOVE    SPA-PTID            TO  JYURRK-PTID
            MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
            MOVE    SPA-SRYKA           TO  JYURRK-SRYKA
@@ -4469,7 +4469,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *            診療会計マスタ読み込み
                    MOVE    SPACE               TO  SRYACCT-REC
                    INITIALIZE                      SRYACCT-REC
-                   MOVE    SPA-HOSPID          TO  ACCT-HOSPID
+                   MOVE    SPA-HOSPNUM          TO  ACCT-HOSPNUM
                    MOVE    SPA-NYUGAIKBN       TO  ACCT-NYUGAIKBN
                    MOVE    SPA-PTID            TO  ACCT-PTID
                    MOVE    SPA-SRYKA           TO  ACCT-SRYKA
@@ -4546,7 +4546,7 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
       *    診療会計マスターから診療行為マスターを検索する
            MOVE    SPACE               TO  SRYACT-REC
            INITIALIZE                      SRYACT-REC
-           MOVE    ACCT-HOSPID         TO  SRY-HOSPID
+           MOVE    ACCT-HOSPNUM         TO  SRY-HOSPNUM
            MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
            MOVE    ACCT-PTID           TO  SRY-PTID
            MOVE    ACCT-SRYKA          TO  SRY-SRYKA
@@ -4954,7 +4954,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        4900-WKSRYACT-CLEAR-SEC             SECTION.
       *
            INITIALIZE                  WKSRYACT-REC
-           MOVE    SPA-HOSPID          TO  WKSRY-HOSPID
+           MOVE    SPA-HOSPNUM          TO  WKSRY-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  WKSRY-NYUGAIKBN
            MOVE    SPA-PTID            TO  WKSRY-PTID
       *

@@ -476,7 +476,7 @@
       *  
       *    »»ÄêÍúÎò¸¡º÷
            INITIALIZE                  SANTEI-REC
-           MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
+           MOVE    SPA-HOSPNUM          TO  SANTEI-HOSPNUM
            MOVE    SPA-PTID            TO  SANTEI-PTID
            MOVE    SPA-NAI-SRYYM       TO  SANTEI-SRYYM
 grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
@@ -585,7 +585,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPACE               TO  WRK-HKNCOMBIMEI
       *
            INITIALIZE                  HKNCOMBI-REC
-           MOVE    SPA-HOSPID          TO  COMB-HOSPID
+           MOVE    SPA-HOSPNUM          TO  COMB-HOSPNUM
            MOVE    SPA-PTID            TO  COMB-PTID
            MOVE    WRK-HKNCOMBI        TO  COMB-HKNCOMBINUM
       *
@@ -638,7 +638,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            IF      COMB-HKNNUM         =   "971"  OR  "973"
       *        ´µ¼ÔÊÝ¸±¾ðÊó¸¡º÷
                INITIALIZE                      PTRSIINF-REC
-               MOVE    SPA-HOSPID          TO  PTRSI-HOSPID
+               MOVE    SPA-HOSPNUM          TO  PTRSI-HOSPNUM
                MOVE    SPA-PTID            TO  PTRSI-PTID
                MOVE    COMB-HKNID          TO  PTRSI-HKNID
 grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
@@ -1658,7 +1658,7 @@ grpsys*                MOVE SPA-HOSPNUM TO -HOSPNUM
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       SPA-DEL-MAX
                INITIALIZE                      SANTEI-KEY
-               MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
+               MOVE    SPA-HOSPNUM          TO  SANTEI-HOSPNUM
                MOVE    SPA-PTID            TO  SANTEI-PTID
                MOVE    SPA-NAI-SRYYM       TO  SANTEI-SRYYM
                MOVE    SPA-DEL-TSRYCD(IDX) TO  SANTEI-SRYCD
@@ -1694,7 +1694,7 @@ grpsys                                SPA-AREA
       *                »»ÄêÄÉ²Ã
                        PERFORM 45011-SANTEI-INS-SEC
       ***************  INITIALIZE                      SANTEI-REC
-      *                MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
+      *                MOVE    SPA-HOSPNUM          TO  SANTEI-HOSPNUM
       *                MOVE    SPA-PTID            TO  SANTEI-PTID
       *                MOVE    SPA-NAI-SRYYM       TO  SANTEI-SRYYM
       *                MOVE    SPA-GMN-TSRYCD(IDX) TO  SANTEI-SRYCD
@@ -1715,7 +1715,7 @@ grpsys                                SPA-AREA
       *****************END-IF
                    WHEN    2
                        INITIALIZE                      SANTEI-KEY
-                       MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
+                       MOVE    SPA-HOSPNUM          TO  SANTEI-HOSPNUM
                        MOVE    SPA-PTID            TO  SANTEI-PTID
                        MOVE    SPA-NAI-SRYYM       TO  SANTEI-SRYYM
                        MOVE    SPA-GMN-TSRYCD(IDX) TO  SANTEI-SRYCD
@@ -1768,7 +1768,7 @@ grpsys                                        SPA-AREA
        45011-SANTEI-INS-SEC                SECTION.
       *
            INITIALIZE                      SANTEI-REC
-           MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
+           MOVE    SPA-HOSPNUM          TO  SANTEI-HOSPNUM
            MOVE    SPA-PTID            TO  SANTEI-PTID
            MOVE    SPA-NAI-SRYYM       TO  SANTEI-SRYYM
            MOVE    SPA-GMN-TSRYCD(IDX) TO  SANTEI-SRYCD

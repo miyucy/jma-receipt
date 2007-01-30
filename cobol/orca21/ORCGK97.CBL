@@ -740,7 +740,7 @@
       *
       *    受診内容ファイルを特定する
            INITIALIZE                      UKETUKE-REC
-           MOVE    SPA-HOSPID          TO  UKE-HOSPID
+           MOVE    SPA-HOSPNUM          TO  UKE-HOSPNUM
            MOVE    SPA-SYSYMD          TO  UKE-UKEYMD
            MOVE    SPA-PTID            TO  UKE-PTID
       *

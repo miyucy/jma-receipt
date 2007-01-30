@@ -189,7 +189,7 @@
       *    ¿ÇÎÅ²ÊÍúÎòÆÉ¹þ
            MOVE    SPACE               TO  SRYKARRK-REC
            INITIALIZE                      SRYKARRK-REC
-           MOVE    SPA-HOSPID          TO  KARRK-HOSPID
+           MOVE    SPA-HOSPNUM          TO  KARRK-HOSPNUM
            MOVE    SPA-PTID            TO  KARRK-PTID
            MOVE    SKARRK-SRYKA        TO  KARRK-SRYKA
       *
@@ -212,7 +212,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            IF      FLG-SRYKARRK           =   1
                MOVE    SPACE               TO  SRYKARRK-REC
                INITIALIZE                      SRYKARRK-REC
-               MOVE    SPA-HOSPID          TO  KARRK-HOSPID
+               MOVE    SPA-HOSPNUM          TO  KARRK-HOSPNUM
                MOVE    SPA-PTID            TO  KARRK-PTID
                MOVE    SKARRK-SRYKA        TO  KARRK-SRYKA
       *        ¿ÇÎÅ²Ê¤Î»ØÄê¤¬¤Ê¤¤¾ì¹ç¡¢¿·µ¬ÅÐÏ¿¤Ï¤·¤Ê¤¤
@@ -286,7 +286,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    »»ÄêÍúÎò¸¡º÷
            INITIALIZE                  SANTEI-REC
-           MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
+           MOVE    SPA-HOSPNUM          TO  SANTEI-HOSPNUM
            MOVE    SPA-PTID            TO  SANTEI-PTID
       *****MOVE    SKARRK-SRYYM        TO  SANTEI-SRYYM
            MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
@@ -370,7 +370,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    SPACE               TO  JYURRK-REC
            INITIALIZE                      JYURRK-REC
-           MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
+           MOVE    SPA-HOSPNUM          TO  JYURRK-HOSPNUM
            MOVE    SPA-PTID            TO  JYURRK-PTID
       *****MOVE    SKARRK-SRYKA        TO  JYURRK-SRYKA
       *
@@ -584,7 +584,7 @@ grpsys                                    SPA-AREA
       *
            IF      FLG-SRYKARRK           =   ZERO
       *        ¹¹¿·
-               MOVE    SPA-HOSPID          TO  KARRK-HOSPID
+               MOVE    SPA-HOSPNUM          TO  KARRK-HOSPNUM
                MOVE    SPA-PTID            TO  KARRK-PTID
                MOVE    SKARRK-SRYKA        TO  KARRK-SRYKA
       *
@@ -605,7 +605,7 @@ grpsys                                SPA-AREA
                END-IF
            ELSE
       *        ¿·µ¬
-               MOVE    SPA-HOSPID          TO  KARRK-HOSPID
+               MOVE    SPA-HOSPNUM          TO  KARRK-HOSPNUM
                MOVE    SPA-PTID            TO  KARRK-PTID
                MOVE    SKARRK-SRYKA        TO  KARRK-SRYKA
       *
@@ -657,7 +657,7 @@ grpsys                                SPA-AREA
       *    ¿ÇÎÅÇ¯·î¤Î¿ÇÎÅ²ñ·×¥Þ¥¹¥¿ÆÉ¤ß¹þ¤ß
            MOVE    SPACE               TO  SRYACCT-REC
            INITIALIZE                      SRYACCT-REC
-           MOVE    JYURRK-HOSPID       TO  ACCT-HOSPID
+           MOVE    JYURRK-HOSPNUM       TO  ACCT-HOSPNUM
            MOVE    JYURRK-NYUGAIKBN    TO  ACCT-NYUGAIKBN
            MOVE    JYURRK-PTID         TO  ACCT-PTID
            MOVE    JYURRK-SRYKA        TO  ACCT-SRYKA
@@ -726,7 +726,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    ¿ÇÎÅ²ñ·×¥Þ¥¹¥¿¡¼¤«¤é¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿¡¼¤ò¸¡º÷¤¹¤ë
            MOVE    SPACE               TO  SRYACT-REC
            INITIALIZE                      SRYACT-REC
-           MOVE    ACCT-HOSPID         TO  SRY-HOSPID
+           MOVE    ACCT-HOSPNUM         TO  SRY-HOSPNUM
            MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
            MOVE    ACCT-PTID           TO  SRY-PTID
            MOVE    ACCT-SRYKA          TO  SRY-SRYKA
@@ -785,7 +785,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    ¿ÇÎÅ²ÊÍúÎòÆÉ¹þ
            MOVE    SPACE               TO  SRYKARRK-REC
            INITIALIZE                      SRYKARRK-REC
-           MOVE    SPA-HOSPID          TO  KARRK-HOSPID
+           MOVE    SPA-HOSPNUM          TO  KARRK-HOSPNUM
            MOVE    SPA-PTID            TO  KARRK-PTID
       *
 grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
@@ -858,7 +858,7 @@ grpsys                                SPA-AREA
       *
       *    ¿ÇÎÅ²ÊÍúÎò
            INITIALIZE                      SRYKARRK-REC
-           MOVE    SPA-HOSPID          TO  KARRK-HOSPID
+           MOVE    SPA-HOSPNUM          TO  KARRK-HOSPNUM
            MOVE    SPA-PTID            TO  KARRK-PTID
       *
 grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM

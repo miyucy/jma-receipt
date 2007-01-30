@@ -372,7 +372,7 @@
            MOVE    ZERO                TO  IDX
       *
            INITIALIZE                  WKSRYACT-REC
-           MOVE    SPA-HOSPID          TO  WKSRY-HOSPID
+           MOVE    SPA-HOSPNUM          TO  WKSRY-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  WKSRY-NYUGAIKBN
            MOVE    SPA-GMN-PTID        TO  WKSRY-PTID
            IF      SPA-GMN-PTID        =   ZERO
@@ -440,13 +440,13 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    WKSRY-HKNCOMBI      TO  SPA-K10-HKNCOMBI(IDX)
       *
       *    患者マスター読み込み
-           MOVE    SPA-HOSPID          TO  PTINF-HOSPID
+           MOVE    SPA-HOSPNUM          TO  PTINF-HOSPNUM
            MOVE    WKSRY-PTID          TO  PTINF-PTID
            PERFORM 900-PTINF-READ-SEC
            MOVE    PTINF-NAME          TO  SPA-K10-GMN-NAME  (IDX)
       *    患者番号
            INITIALIZE                      ORCSPTIDAREA
-           MOVE    SPA-HOSPID          TO  SPTID-HOSPID
+           MOVE    SPA-HOSPNUM          TO  SPTID-HOSPNUM
            MOVE    WKSRY-PTID          TO  SPTID-PTID
            CALL    "ORCSPTID"          USING   ORCSPTIDAREA
                                                SPA-1009-TBL
@@ -492,7 +492,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    保険組合せ
            MOVE    SPACE               TO  HKNCOMBI-REC
            INITIALIZE                  HKNCOMBI-REC
-           MOVE    SPA-HOSPID          TO  COMB-HOSPID
+           MOVE    SPA-HOSPNUM          TO  COMB-HOSPNUM
            MOVE    WKSRY-PTID          TO  COMB-PTID
            MOVE    WKSRY-HKNCOMBI      TO  COMB-HKNCOMBINUM
       *
@@ -837,7 +837,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                        TO  SPA-PTNUM
       *
       **** INITIALIZE                      ORCSPTIDAREA
-      *    MOVE    SPA-HOSPID          TO  SPTID-HOSPID
+      *    MOVE    SPA-HOSPNUM          TO  SPTID-HOSPNUM
       *    MOVE    SPA-PTID            TO  SPTID-PTID
       *    CALL    "ORCSPTID"          USING   ORCSPTIDAREA
       *                                        SPA-1009-TBL
@@ -909,7 +909,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            IF     (SPA-NAI-ROUJIN2     =   1 )  AND
                   (SPA-ERRCD           =   SPACE )
                INITIALIZE                  ORCSAGECHKAREA
-               MOVE    SPA-HOSPID          TO  AGECHK-HOSPID
+               MOVE    SPA-HOSPNUM          TO  AGECHK-HOSPNUM
                MOVE    SPA-PTID            TO  AGECHK-PTID
                MOVE    SPA-SRYYMD          TO  AGECHK-SRYYMD
                MOVE    SPA-BIRTHDAY        TO  AGECHK-BIRTHDAY
@@ -965,7 +965,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    ワーク診療行為マスタ検索
            MOVE    SPACE               TO  WKSRYACT-REC
            INITIALIZE                  WKSRYACT-REC
-           MOVE    SPA-HOSPID          TO  WKSRY-HOSPID
+           MOVE    SPA-HOSPNUM          TO  WKSRY-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  WKSRY-NYUGAIKBN
            MOVE    SPA-K10-PTID (IDX)  TO  WKSRY-PTID
            MOVE    SPA-K10-SRYKA(IDX)  TO  WKSRY-SRYKA

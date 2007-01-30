@@ -468,7 +468,7 @@
       *
       *    入力セット検索
            INITIALIZE                      INPUTSET-REC
-           MOVE    SPA-HOSPID          TO  ISET-HOSPID
+           MOVE    SPA-HOSPNUM          TO  ISET-HOSPNUM
            MOVE    HCSET-STR-SETCD     TO  ISET-SETCD
            MOVE    HCSET-END-SETCD     TO  ISET-UPHMS
       *
@@ -580,7 +580,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ISET-SETCD          TO  H02-SETCD
       *
            INITIALIZE                      INPUTCD-REC
-           MOVE    SPA-HOSPID          TO  ICD-HOSPID
+           MOVE    SPA-HOSPNUM          TO  ICD-HOSPNUM
            MOVE    ISET-SETCD          TO  ICD-SRYCD
       *
 grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
@@ -802,7 +802,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *
            INITIALIZE                      INPUTCD-REC
-           MOVE    SPA-HOSPID          TO  ICD-HOSPID
+           MOVE    SPA-HOSPNUM          TO  ICD-HOSPNUM
            MOVE    "6"                 TO  ICD-CDSYU
            MOVE    ISET-SETCD          TO  ICD-INPUTCD
       *

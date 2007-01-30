@@ -1704,7 +1704,7 @@
       *    現在の内容をクリア
            MOVE    SPACE               TO  WKSRYACT-REC
            INITIALIZE                      WKSRYACT-REC
-           MOVE    SPA-HOSPID          TO  WKSRY-HOSPID
+           MOVE    SPA-HOSPNUM          TO  WKSRY-HOSPNUM
            MOVE    SPA-PTID            TO  WKSRY-PTID
            MOVE    SPA-NYUGAIKBN       TO  WKSRY-NYUGAIKBN
            MOVE    SPA-SRYKA           TO  WKSRY-SRYKA
@@ -1722,7 +1722,7 @@ grpsys                            SPA-AREA
       *
       *    中途追加分の削除
            INITIALIZE                  WKSRYACT-REC
-           MOVE    SPA-HOSPID          TO  WKSRY-HOSPID
+           MOVE    SPA-HOSPNUM          TO  WKSRY-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  WKSRY-NYUGAIKBN
            MOVE    SPA-PTID            TO  WKSRY-PTID
            MOVE    SPA-NYUGAIKBN       TO  WKSRY-NYUGAIKBN
@@ -1958,7 +1958,7 @@ grpsys                                    SPA-AREA
            MOVE    SPA-COM-HKNCOMBI(IDX)   TO  WRK-HKNCOMBI
       *
            ADD     1                   TO  WRK-RENNUM
-           MOVE    SPA-HOSPID          TO  WKSRY-HOSPID
+           MOVE    SPA-HOSPNUM          TO  WKSRY-HOSPNUM
            MOVE    SPA-PTID            TO  WKSRY-PTID
            MOVE    SPA-NYUGAIKBN       TO  WKSRY-NYUGAIKBN
            MOVE    SPA-SRYKA           TO  WKSRY-SRYKA
@@ -2210,7 +2210,7 @@ grpsys                            SPA-AREA
        300211-WKSRYPARA-WRITE-SEC          SECTION.
       *
            ADD     1                   TO  WRK-RENNUM
-           MOVE    SPA-HOSPID          TO  WKSRY-HOSPID 
+           MOVE    SPA-HOSPNUM          TO  WKSRY-HOSPNUM 
            MOVE    SPA-PTID            TO  WKSRY-PTID 
            MOVE    SPA-NYUGAIKBN       TO  WKSRY-NYUGAIKBN 
            MOVE    WRK-SRYKA           TO  WKSRY-SRYKA 
@@ -2650,7 +2650,7 @@ grpsys                            SPA-AREA
            END-IF
            IF      WRK-SYU-DENPNUM NOT =   ZERO
                INITIALIZE                  SYUNOU-REC
-               MOVE    SPA-HOSPID          TO  SYU-HOSPID
+               MOVE    SPA-HOSPNUM          TO  SYU-HOSPNUM
                MOVE    SPA-PTID            TO  SYU-PTID
                MOVE    SPA-NYUGAIKBN       TO  SYU-NYUGAIKBN
                MOVE    WRK-SYU-DENPNUM     TO  SYU-DENPNUM
@@ -2676,7 +2676,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            END-IF
       *
            IF      SYU-PTID                =   ZERO
-               MOVE    SPA-HOSPID          TO  SYU-HOSPID
+               MOVE    SPA-HOSPNUM          TO  SYU-HOSPNUM
                MOVE    SPA-PTID            TO  SYU-PTID
                MOVE    SPA-NYUGAIKBN       TO  SYU-NYUGAIKBN
                MOVE    ZERO                TO  SYU-DENPNUM

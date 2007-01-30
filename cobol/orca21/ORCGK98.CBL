@@ -977,7 +977,7 @@
            END-PERFORM
       *
            MOVE    SPACE               TO  INPUTCD-REC
-           MOVE    SPA-HOSPID          TO  ICD-HOSPID
+           MOVE    SPA-HOSPNUM          TO  ICD-HOSPNUM
            MOVE    SPA-K98-CDSYUBETU   TO  ICD-CDSYU
            MOVE    SPA-K98-GMN-INPUT   TO  ICD-INPUTCD
            IF      WRK-KETA            =   20
@@ -1106,7 +1106,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    入力セットマスタ検索
            MOVE    SPACE               TO  INPUTSET-REC
            INITIALIZE                      INPUTSET-REC
-           MOVE    SPA-HOSPID          TO  ISET-HOSPID
+           MOVE    SPA-HOSPNUM          TO  ISET-HOSPNUM
            MOVE    ICD-SRYCD           TO  ISET-SETCD
            MOVE    SPA-SRYYMD          TO  ISET-YUKOSTYMD
            MOVE    SPA-SRYYMD          TO  ISET-YUKOEDYMD

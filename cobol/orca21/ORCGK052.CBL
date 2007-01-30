@@ -472,7 +472,7 @@
            END-IF
       *
            INITIALIZE                      INPUTSET-REC
-           MOVE    SPA-HOSPID          TO  ISET-HOSPID
+           MOVE    SPA-HOSPNUM          TO  ISET-HOSPNUM
            MOVE    WRK-STR-SETCD       TO  ISET-SETCD
            MOVE    WRK-END-SETCD       TO  ISET-UPHMS
       *

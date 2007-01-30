@@ -135,8 +135,8 @@ grpsys COPY    "COMMON-SPA".
        000-PROC-SEC                 SECTION.
       *
            MOVE    ZERO                TO  SPTID-RC
-           IF      SPTID-HOSPID         =   ZERO
-               MOVE    "1"              TO  SPTID-HOSPID
+           IF      SPTID-HOSPNUM        =   ZERO
+               MOVE    1               TO  SPTID-HOSPNUM
            END-IF
       *
            IF     (SPTID-PTNUM      NOT =   SPACE )  AND
@@ -166,7 +166,7 @@ grpsys COPY    "COMMON-SPA".
       *----(01.00.01) LINE ADD END   --------------------------------
       *
            MOVE    ZERO                TO  FLG-OK
-           MOVE    SPTID-HOSPID        TO  PTNUM-HOSPID
+           MOVE    SPTID-HOSPNUM        TO  PTNUM-HOSPNUM
       *
            MOVE    SPTID-PTNUM         TO  WRK-SADDSIGN-STR
            PERFORM 800-ORCSADDSIGN-SEC
@@ -233,7 +233,7 @@ grpsys                            SPA-AREA
       *****************************************************************
        110-PTNUM-SET-SEC                SECTION.
       *
-           MOVE    SPTID-HOSPID         TO  PTNUM-HOSPID
+           MOVE    SPTID-HOSPNUM         TO  PTNUM-HOSPNUM
            MOVE    SPTID-PTID           TO  PTNUM-PTID
       *
 grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM

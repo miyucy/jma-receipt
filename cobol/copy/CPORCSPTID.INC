@@ -28,7 +28,7 @@
       ************************************************************
        01  ORCSPTIDAREA.
       *∆˛Œœ√Õ
-           03  SPTID-HOSPID             PIC X(24).
+           03  SPTID-HOSPNUM            PIC S9(9) BINARY.
       *
            03  SPTID-PTNUM              PIC X(20).
            03  SPTID-PTID               PIC 9(10).

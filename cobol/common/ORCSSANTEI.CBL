@@ -477,7 +477,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    »»ÄêÍúÎò¸¡º÷
            INITIALIZE                  SANTEI-REC
-           MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
+           MOVE    SPA-HOSPNUM          TO  SANTEI-HOSPNUM
            MOVE    SSANTEI-PTID        TO  SANTEI-PTID
            MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
            MOVE    WRK-SRYYMD(1:6)     TO  SANTEI-SRYYM
@@ -673,7 +673,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPACE               TO  WRK-YMD
       *    »»ÄêÍúÎò¸¡º÷
            INITIALIZE                  SANTEI-REC
-           MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
+           MOVE    SPA-HOSPNUM          TO  SANTEI-HOSPNUM
            MOVE    SPA-PTID            TO  SANTEI-PTID
            MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
            MOVE    WRK-SRYYM           TO  SANTEI-SRYYM
@@ -807,7 +807,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *        ¿·µ¬ÄÉ²ÃÊÔ½¸
                INITIALIZE                  SANTEI-REC
-               MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
+               MOVE    SPA-HOSPNUM          TO  SANTEI-HOSPNUM
                MOVE    SSANTEI-PTID        TO  SANTEI-PTID
                MOVE    WRK-SRYYMD(1:6)     TO  SANTEI-SRYYM
                MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
@@ -1489,7 +1489,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            ELSE
       *    ¿·µ¬
                INITIALIZE                  SANTEI-REC
-               MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
+               MOVE    SPA-HOSPNUM          TO  SANTEI-HOSPNUM
                MOVE    KEN-SANTEI-PTID     TO  SANTEI-PTID
                MOVE    KEN-SANTEI-SRYYM    TO  SANTEI-SRYYM
                MOVE    WRK-SRYCD           TO  SANTEI-SRYCD

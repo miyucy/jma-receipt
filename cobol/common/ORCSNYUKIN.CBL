@@ -161,7 +161,7 @@
       *
       *    患者マスター検索
            INITIALIZE                      PTINF-REC
-           MOVE    LNK-SCNYUKIN-HOSPID TO  PTINF-HOSPID
+           MOVE    LNK-SCNYUKIN-HOSPNUM TO  PTINF-HOSPNUM
            MOVE    LNK-SCNYUKIN-PTID   TO  PTINF-PTID
            PERFORM 900-PTINF-KEY-SEL-SEC
            IF    ( FLG-PTINF           NOT =   ZERO )
@@ -197,7 +197,7 @@
       *
       *    収納マスターから未収金情報の取得
            INITIALIZE                      SYUNOU-REC
-           MOVE    LNK-SCNYUKIN-HOSPID TO  SYU-HOSPID
+           MOVE    LNK-SCNYUKIN-HOSPNUM TO  SYU-HOSPNUM
            MOVE    LNK-SCNYUKIN-PTID   TO  SYU-PTID
            MOVE    LNK-SCNYUKIN-NYUGAIKBN
                                        TO  SYU-NYUGAIKBN
@@ -321,7 +321,7 @@
        210-SYUNOU-HENKIN-SEC           SECTION.
       *
            INITIALIZE                      SYUNOU-REC
-           MOVE    LNK-SCNYUKIN-HOSPID TO  SYU-HOSPID
+           MOVE    LNK-SCNYUKIN-HOSPNUM TO  SYU-HOSPNUM
            MOVE    LNK-SCNYUKIN-PTID   TO  SYU-PTID
            MOVE    LNK-SCNYUKIN-NYUGAIKBN
                                        TO  SYU-NYUGAIKBN
@@ -361,7 +361,7 @@
            PERFORM 800-GET-DENPEDANUM-SEC
       *
            INITIALIZE                      SYUMEI-REC
-           MOVE    SYU-HOSPID          TO  SMEI-HOSPID
+           MOVE    SYU-HOSPNUM          TO  SMEI-HOSPNUM
            MOVE    SYU-NYUGAIKBN       TO  SMEI-NYUGAIKBN
            MOVE    SYU-PTID            TO  SMEI-PTID
            MOVE    SYU-DENPNUM         TO  SMEI-DENPNUM
@@ -493,7 +493,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *収納明細作成処理
            MOVE    SPACE               TO  SYUMEI-REC
            INITIALIZE                      SYUMEI-REC
-           MOVE    SYU-HOSPID          TO  SMEI-HOSPID
+           MOVE    SYU-HOSPNUM          TO  SMEI-HOSPNUM
            MOVE    SYU-NYUGAIKBN       TO  SMEI-NYUGAIKBN
            MOVE    SYU-PTID            TO  SMEI-PTID
       *伝票番号
@@ -663,7 +663,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ZERO                TO  FLG-SYUMEI
       *
            INITIALIZE                      SYUMEI-REC
-           MOVE    SYU-HOSPID          TO  SMEI-HOSPID
+           MOVE    SYU-HOSPNUM          TO  SMEI-HOSPNUM
            MOVE    SYU-NYUGAIKBN       TO  SMEI-NYUGAIKBN
            MOVE    SYU-PTID            TO  SMEI-PTID
            MOVE    SYU-DENPNUM         TO  SMEI-DENPNUM

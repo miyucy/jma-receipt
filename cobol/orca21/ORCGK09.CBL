@@ -790,7 +790,7 @@
            INITIALIZE                  SPA-K09NAI-RRKTBL
       *    ¼õ¿ÇÎò¤ò¸¡º÷¤¹¤ë  °åÎÅµ¡´Ø¡¢´µ¼Ô£É£Ä
            INITIALIZE                  JYURRK-REC
-           MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
+           MOVE    SPA-HOSPNUM          TO  JYURRK-HOSPNUM
            MOVE    SPA-PTID            TO  JYURRK-PTID
            MOVE    SPA-GMN-NYUGAIKBN   TO  JYURRK-NYUGAIKBN
       *
@@ -1597,7 +1597,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    ¼õ¿ÇÎò¤ò¸¡º÷¤¹¤ë
            INITIALIZE                  JYURRK-KEY
-           MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
+           MOVE    SPA-HOSPNUM          TO  JYURRK-HOSPNUM
            MOVE    SPA-PTID            TO  JYURRK-PTID
            MOVE    SPA-GMN-NYUGAIKBN   TO  JYURRK-NYUGAIKBN
       *****MOVE    SPA-SRYKA           TO  JYURRK-SRYKA
@@ -1732,7 +1732,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    JYURRK-RENNUM       TO  SPA-SEL-RENNUM
       *
            INITIALIZE                  SRYACT-REC
-           MOVE    SPA-HOSPID          TO  SRY-HOSPID
+           MOVE    SPA-HOSPNUM          TO  SRY-HOSPNUM
            MOVE    JYURRK-NYUGAIKBN    TO  SRY-NYUGAIKBN
            MOVE    SPA-PTID            TO  SRY-PTID
            MOVE    JYURRK-SRYKA        TO  SRY-SRYKA
@@ -1873,7 +1873,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ZERO                TO  WRK-ZAIKAISU
       *    ºÞ²ó¿ô¼èÆÀ
            INITIALIZE                      SRYACCT-REC
-           MOVE    SRY-HOSPID          TO  ACCT-HOSPID
+           MOVE    SRY-HOSPNUM          TO  ACCT-HOSPNUM
            MOVE    SRY-NYUGAIKBN       TO  ACCT-NYUGAIKBN
            MOVE    SRY-PTID            TO  ACCT-PTID
            MOVE    SRY-SRYKA           TO  ACCT-SRYKA
@@ -1907,7 +1907,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       **** END-IF
       *
            INITIALIZE                  WKSRYACT-REC
-           MOVE    SRY-HOSPID          TO  WKSRY-HOSPID
+           MOVE    SRY-HOSPNUM          TO  WKSRY-HOSPNUM
            MOVE    SRY-NYUGAIKBN       TO  WKSRY-NYUGAIKBN
            MOVE    SRY-PTID            TO  WKSRY-PTID
            MOVE    SRY-SRYKA           TO  WKSRY-SRYKA
@@ -1984,7 +1984,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        490111-PTCOM-SET-SEC              SECTION.
       *
-           MOVE    SRY-HOSPID          TO  PTCOM-HOSPID
+           MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
            MOVE    SRY-PTID            TO  PTCOM-PTID
            MOVE    SRY-ZAINUM          TO  PTCOM-ZAINUM
            MOVE    SRY-SRYCD (IDX)     TO  PTCOM-SRYCD
@@ -2448,7 +2448,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        310120-YAKUSOKU-SET-SEC        SECTION.
       *
            MOVE    SPACE               TO  INPUTCD-REC
-           MOVE    SPA-HOSPID          TO  ICD-HOSPID
+           MOVE    SPA-HOSPNUM          TO  ICD-HOSPNUM
       *    ¥»¥Ã¥È¤Î·å¿ô¤Ï£¶¤È¤¹¤ë
            MOVE    "6"                 TO  ICD-CDSYU
            MOVE    LNK-WKSRY-SRYCD (IDX IDZ)(1:6)
@@ -2752,7 +2752,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-SEL-IDX         TO  IDX-STR
       *
            INITIALIZE                  SRYACT-REC
-           MOVE    SPA-HOSPID          TO  SRY-HOSPID
+           MOVE    SPA-HOSPNUM          TO  SRY-HOSPNUM
            MOVE    SPA-GMN-NYUGAIKBN   TO  SRY-NYUGAIKBN
            MOVE    SPA-PTID            TO  SRY-PTID
       *****MOVE    SPA-SRYKA           TO  SRY-SRYKA

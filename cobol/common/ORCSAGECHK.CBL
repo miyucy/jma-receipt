@@ -188,7 +188,7 @@ grpsys COPY    "COMMON-SPA".
            INITIALIZE                  AGECHK-OUT-AREA
            INITIALIZE                  AGECHK-RC
       *
-           IF     (AGECHK-HOSPID       =   SPACE   ) OR
+           IF     (AGECHK-HOSPNUM      =   ZERO    ) OR
                   (AGECHK-PTID         NOT NUMERIC )
                MOVE    99              TO  AGECHK-RC
                GO      TO      000-PROC-EXT
@@ -220,7 +220,7 @@ grpsys COPY    "COMMON-SPA".
            IF      AGECHK-BIRTHDAY     =   SPACE
       *        ¥µº‘æ Û∏°∫˜
                INITIALIZE                      PTINF-REC
-               MOVE    AGECHK-HOSPID       TO  PTINF-HOSPID
+               MOVE    AGECHK-HOSPNUM       TO  PTINF-HOSPNUM
                MOVE    AGECHK-PTID         TO  PTINF-PTID
                PERFORM 900-PTINF-READ-SEC
                IF      FLG-PTINF           =   1
@@ -343,7 +343,7 @@ grpsys COPY    "COMMON-SPA".
       *     ›∏±¡»πÁ•ﬁ•π•ø°º ‘Ω∏
            MOVE    SPACE               TO  HKNCOMBI-REC
            INITIALIZE                  HKNCOMBI-REC
-           MOVE    AGECHK-HOSPID       TO  COMB-HOSPID
+           MOVE    AGECHK-HOSPNUM       TO  COMB-HOSPNUM
            MOVE    AGECHK-PTID         TO  COMB-PTID
            MOVE    AGECHK-HKNCOMBINUM  TO  COMB-HKNCOMBINUM
       *
@@ -733,7 +733,7 @@ grpsys                            SPA-AREA
       *
       *     ›∏±º‘ ‘Ω∏
            INITIALIZE                  PTHKNINF-REC
-           MOVE    AGECHK-HOSPID       TO  PTHKN-HOSPID
+           MOVE    AGECHK-HOSPNUM       TO  PTHKN-HOSPNUM
            MOVE    AGECHK-PTID         TO  PTHKN-PTID
            MOVE    COMB-HKNID          TO  PTHKN-HKNID
       *
@@ -803,7 +803,7 @@ grpsys                            SPA-AREA
       *
       *     ›∏±º‘ ‘Ω∏
            INITIALIZE                  PTHKNINF-REC
-           MOVE    AGECHK-HOSPID       TO  PTHKN-HOSPID
+           MOVE    AGECHK-HOSPNUM       TO  PTHKN-HOSPNUM
            MOVE    AGECHK-PTID         TO  PTHKN-PTID
            MOVE    COMB-HKNID          TO  PTHKN-HKNID
       *
@@ -956,7 +956,7 @@ grpsys                            SPA-AREA
       *
       *    ¥µº‘ ›∏±æ Û∏°∫˜
            INITIALIZE                      PTRSIINF-REC
-           MOVE    COMB-HOSPID         TO  PTRSI-HOSPID
+           MOVE    COMB-HOSPNUM         TO  PTRSI-HOSPNUM
            MOVE    COMB-PTID           TO  PTRSI-PTID
            MOVE    COMB-HKNID          TO  PTRSI-HKNID
       *
@@ -1107,7 +1107,7 @@ grpsys                            SPA-AREA
       *
       *    ∏¯»Ò ‘Ω∏
            INITIALIZE                  PTKOHINF-REC
-           MOVE    AGECHK-HOSPID       TO  PTKOH-HOSPID
+           MOVE    AGECHK-HOSPNUM       TO  PTKOH-HOSPNUM
            MOVE    AGECHK-PTID         TO  PTKOH-PTID
            MOVE    "027"               TO  PTKOH-KOHNUM
            MOVE    AGECHK-SRYYMD       TO  PTKOH-TEKSTYMD
@@ -1149,7 +1149,7 @@ grpsys                            SPA-AREA
       *
       *    ∏¯»Ò ‘Ω∏
            INITIALIZE                  PTKOHINF-REC
-           MOVE    AGECHK-HOSPID       TO  PTKOH-HOSPID
+           MOVE    AGECHK-HOSPNUM       TO  PTKOH-HOSPNUM
            MOVE    AGECHK-PTID         TO  PTKOH-PTID
            MOVE    "027"               TO  PTKOH-KOHNUM
            MOVE    AGECHK-SRYYMD       TO  PTKOH-TEKSTYMD
@@ -1326,7 +1326,7 @@ grpsys                            SPA-AREA
        3001-HKNNUM-CHK-SEC         SECTION.
       *
            INITIALIZE                  HKNNUM-REC
-           MOVE    AGECHK-HOSPID       TO  HKN-HOSPID
+           MOVE    AGECHK-HOSPNUM       TO  HKN-HOSPNUM
            MOVE    AGECHK-SRYYMD       TO  HKN-TEKSTYMD
            MOVE    AGECHK-SRYYMD       TO  HKN-TEKEDYMD
            MOVE    WRK-HKNNUM          TO  HKN-HKNNUM
@@ -1434,7 +1434,7 @@ grpsys                            SPA-AREA
        4101-KIKANCHK-CHK-SEC         SECTION.
       *
            INITIALIZE                  HKNNUM-REC
-           MOVE    AGECHK-HOSPID       TO  HKN-HOSPID
+           MOVE    AGECHK-HOSPNUM       TO  HKN-HOSPNUM
            MOVE    WRK-HKNNUM          TO  HKN-HKNNUM
            MOVE    WRK-PAYKBN          TO  HKN-PAYKBN
            MOVE    AGECHK-SRYYMD       TO  HKN-TEKSTYMD

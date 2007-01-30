@@ -296,7 +296,7 @@
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-K09GMN-MAX1
                INITIALIZE                  JYURRK-REC
-               MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
+               MOVE    SPA-HOSPNUM          TO  JYURRK-HOSPNUM
                MOVE    SPA-PTID            TO  JYURRK-PTID
                MOVE    SPA-K07-NYUGAIKBN   TO  JYURRK-NYUGAIKBN
       *        Æþ±¡

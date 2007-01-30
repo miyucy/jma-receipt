@@ -450,7 +450,7 @@
            INITIALIZE                      INPUTCD-REC
       *
            MOVE    SPACE               TO  INPUTCD-REC
-           MOVE    SPA-HOSPID          TO  ICD-HOSPID
+           MOVE    SPA-HOSPNUM          TO  ICD-HOSPNUM
            MOVE    SPA-K023-SRYCD  (SPA-K023-MAX)
                                        TO  ICD-SRYCD
       *
@@ -940,7 +940,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            INITIALIZE                      INPUTCD-REC
       *
            MOVE    SPACE               TO  INPUTCD-REC
-           MOVE    SPA-HOSPID          TO  ICD-HOSPID
+           MOVE    SPA-HOSPNUM          TO  ICD-HOSPNUM
       *    漢字入力
            IF      FLG-KANJI           =   1
                MOVE    "J"                 TO  ICD-CDSYU
@@ -1304,7 +1304,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    入力コードチェック
            MOVE    SPACE               TO  INPUTCD-REC
            INITIALIZE                      INPUTCD-REC
-           MOVE    SPA-HOSPID          TO  ICD-HOSPID
+           MOVE    SPA-HOSPNUM          TO  ICD-HOSPNUM
            MOVE    SPA-K023-SRYCD (IDX)
                                        TO  ICD-SRYCD
       *
@@ -1348,7 +1348,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            IF     IDX-T            NOT =   ZERO
                MOVE    SPACE               TO  INPUTCD-REC
                INITIALIZE                      INPUTCD-REC
-               MOVE    SPA-HOSPID          TO  ICD-HOSPID
+               MOVE    SPA-HOSPNUM          TO  ICD-HOSPNUM
                MOVE    SPA-K023-SRYCD (IDX)    TO  ICD-SRYCD
 grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    INPUTCD-REC         TO  MCPDATA-REC
@@ -1369,7 +1369,7 @@ grpsys                                SPA-AREA
        410021-INPUTCD-INS-SEC          SECTION.
       *
            INITIALIZE                      INPUTCD-REC
-           MOVE    SPA-HOSPID          TO  ICD-HOSPID
+           MOVE    SPA-HOSPNUM          TO  ICD-HOSPNUM
            MOVE    WRK-CDSYU           TO  ICD-CDSYU
            MOVE    WRK-INPUTCD         TO  ICD-INPUTCD
            MOVE    SPA-K023-SRYCD (IDX)    TO  ICD-SRYCD

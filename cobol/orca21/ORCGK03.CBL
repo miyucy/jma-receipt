@@ -1382,7 +1382,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    複数科まとめ集計
            INITIALIZE                  SYUTTL-REC
-           MOVE    SYU-HOSPID          TO  SYUTTL-HOSPID 
+           MOVE    SYU-HOSPNUM          TO  SYUTTL-HOSPNUM 
            MOVE    SYU-NYUGAIKBN       TO  SYUTTL-NYUGAIKBN 
            MOVE    SYU-PTID            TO  SYUTTL-PTID 
            MOVE    SYU-DENPNUM         TO  SYUTTL-DENPNUM 
@@ -2038,7 +2038,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ZERO                TO  SPA-GMN-CHOKAKIN
       *
            INITIALIZE                      SYUNOU-REC
-           MOVE    SPA-HOSPID          TO  SYU-HOSPID
+           MOVE    SPA-HOSPNUM          TO  SYU-HOSPNUM
            MOVE    "2"                 TO  SYU-NYUGAIKBN
            MOVE    SPA-PTID            TO  SYU-PTID
 grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
@@ -2084,7 +2084,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ZERO                TO  WRK-NYUIN-MISYU
       *    入院分未収集計
            INITIALIZE                      SYUNOU-REC
-           MOVE    SPA-HOSPID          TO  SYU-HOSPID
+           MOVE    SPA-HOSPNUM          TO  SYU-HOSPNUM
            MOVE    "1"                 TO  SYU-NYUGAIKBN
            MOVE    SPA-PTID            TO  SYU-PTID
 grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
@@ -3747,7 +3747,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    まとめ入金編集
            INITIALIZE                  ORCSNYUKINAREA
-           MOVE    SPA-HOSPID          TO  LNK-SCNYUKIN-HOSPID
+           MOVE    SPA-HOSPNUM          TO  LNK-SCNYUKIN-HOSPNUM
            MOVE    SPA-PTID            TO  LNK-SCNYUKIN-PTID
            MOVE    SPA-NYUGAIKBN       TO  LNK-SCNYUKIN-NYUGAIKBN
       *    処理区分
@@ -5234,7 +5234,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    まとめ入金編集
            INITIALIZE                  ORCSNYUKINAREA
-           MOVE    SPA-HOSPID          TO  LNK-SCNYUKIN-HOSPID
+           MOVE    SPA-HOSPNUM          TO  LNK-SCNYUKIN-HOSPNUM
            MOVE    SPA-PTID            TO  LNK-SCNYUKIN-PTID
            MOVE    SPA-NYUGAIKBN       TO  LNK-SCNYUKIN-NYUGAIKBN
       *    処理区分
@@ -5748,7 +5748,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    SYU-SRYKA           TO  SHELLTBL-ARG3
                    MOVE    SPA-SRYYMD          TO  SHELLTBL-ARG4
                    MOVE    SYU-HKNCOMBINUM     TO  SHELLTBL-ARG5
-                   MOVE    SPA-HOSPID          TO  SHELLTBL-ARG6
+                   MOVE    SPA-HOSPNUM          TO  SHELLTBL-ARG6
                    MOVE    SYS-9001-ADDRESS    TO  SHELLTBL-ARG7
                    MOVE    SYS-9001-PORT2      TO  SHELLTBL-ARG8
       *            ドクター

@@ -1529,6 +1529,7 @@
            END-STRING
            MOVE    SPA-SYSYMD          TO  SYS-1010-STYUKYMD
            MOVE    SPA-SYSYMD          TO  SYS-1010-EDYUKYMD
+           MOVE    1                   TO  SYS-1010-HOSPNUM 
       *    システム管理検索
 grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1010-REC        TO  MCPDATA-REC
@@ -2652,7 +2653,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    患者病名病名を治癒へ
       *    MOVE    SPACE               TO  PTBYOMEI-REC
       *    INITIALIZE                  PTBYOMEI-REC
-      *    MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
+      *    MOVE    SPA-HOSPNUM          TO  PTBYO-HOSPNUM
       *    MOVE    SPA-PTID            TO  PTBYO-PTID
       *
       *    MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
@@ -2948,7 +2949,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                ELSE
       *
                    MOVE    SPACE               TO  INPUTCD-REC
-                   MOVE    SPA-HOSPID          TO  ICD-HOSPID
+                   MOVE    SPA-HOSPNUM          TO  ICD-HOSPNUM
                    MOVE    SPA-COM-INPUTCD(IDX) 
                                                TO  ICD-SRYCD
       *
@@ -3275,7 +3276,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    年齢計算
            INITIALIZE                  ORCSAGECHKAREA
-           MOVE    SPA-HOSPID          TO  AGECHK-HOSPID
+           MOVE    SPA-HOSPNUM          TO  AGECHK-HOSPNUM
            MOVE    SPA-PTID            TO  AGECHK-PTID
            MOVE    SPA-SRYYMD          TO  AGECHK-SRYYMD
            MOVE    SPA-BIRTHDAY        TO  AGECHK-BIRTHDAY
@@ -3406,7 +3407,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    保険算定年齢チェック等
            INITIALIZE                  ORCSAGECHKAREA
-           MOVE    SPA-HOSPID          TO  AGECHK-HOSPID
+           MOVE    SPA-HOSPNUM          TO  AGECHK-HOSPNUM
            MOVE    SPA-PTID            TO  AGECHK-PTID
            MOVE    SPA-SRYYMD          TO  AGECHK-SRYYMD
            MOVE    SPA-BIRTHDAY        TO  AGECHK-BIRTHDAY
@@ -3784,7 +3785,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    入院履歴判定
            MOVE    SPACE               TO  PTNYUINRRK-REC
            INITIALIZE                  PTNYUINRRK-REC
-           MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID
+           MOVE    SPA-HOSPNUM          TO  PTNYUINRRK-HOSPNUM
            MOVE    SPA-PTID            TO  PTNYUINRRK-PTID
       *
 grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
@@ -3942,7 +3943,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    診療年月の診療会計マスタ読み込み
            MOVE    SPACE               TO  SRYACCT-REC
            INITIALIZE                      SRYACCT-REC
-           MOVE    SPA-HOSPID          TO  ACCT-HOSPID
+           MOVE    SPA-HOSPNUM          TO  ACCT-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  ACCT-NYUGAIKBN
            MOVE    SPA-PTID            TO  ACCT-PTID
       *****MOVE    SPA-SRYKA           TO  ACCT-SRYKA
@@ -4016,7 +4017,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    診療会計マスターから診療行為マスターを検索する
            MOVE    SPACE               TO  SRYACT-REC
            INITIALIZE                      SRYACT-REC
-           MOVE    ACCT-HOSPID         TO  SRY-HOSPID
+           MOVE    ACCT-HOSPNUM         TO  SRY-HOSPNUM
            MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
            MOVE    ACCT-PTID           TO  SRY-PTID
            MOVE    ACCT-SRYKA          TO  SRY-SRYKA
@@ -4460,7 +4461,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-PTNUM           TO  SPA-GMN-PTNUM
       *
       *?   患者マスター存在チェック
-      *    MOVE    SPA-HOSPID          TO  PTINF-HOSPID
+      *    MOVE    SPA-HOSPNUM          TO  PTINF-HOSPNUM
       *    MOVE    SPA-GMN-PTID        TO  PTINF-PTID
       *    PERFORM 900-PTINF-READ-SEC
       *    IF      FLG-PTINF       NOT =   ZERO
@@ -5989,7 +5990,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    ６５歳以上で老人公費のある場合、
            IF      SPA-NAI-ROUJIN2     =   1
                INITIALIZE                  ORCSAGECHKAREA
-               MOVE    SPA-HOSPID          TO  AGECHK-HOSPID
+               MOVE    SPA-HOSPNUM          TO  AGECHK-HOSPNUM
                MOVE    SPA-PTID            TO  AGECHK-PTID
                MOVE    SPA-SRYYMD          TO  AGECHK-SRYYMD
                MOVE    SPA-BIRTHDAY        TO  AGECHK-BIRTHDAY
@@ -6872,7 +6873,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    算定履歴検索
            INITIALIZE                  SANTEI-REC
-           MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
+           MOVE    SPA-HOSPNUM          TO  SANTEI-HOSPNUM
            MOVE    SPA-PTID            TO  SANTEI-PTID
            MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
            MOVE    ZERO                TO  SANTEI-NYUGAIKBN
@@ -6992,7 +6993,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    患者病名チェック
            MOVE    SPACE               TO  PTBYOMEI-REC
            INITIALIZE                  PTBYOMEI-REC
-           MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
+           MOVE    SPA-HOSPNUM          TO  PTBYO-HOSPNUM
            MOVE    SPA-PTID            TO  PTBYO-PTID
            MOVE    SPA-SRYYMD          TO  PTBYO-SRYYMD
            MOVE    SPA-SRYYMD          TO  PTBYO-TENKIYMD
@@ -9559,7 +9560,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        2201-WKSRYACT-CHK-SEC            SECTION.
       *
            INITIALIZE                  WKSRYACT-REC
-           MOVE    SPA-HOSPID          TO  WKSRY-HOSPID
+           MOVE    SPA-HOSPNUM          TO  WKSRY-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  WKSRY-NYUGAIKBN
            MOVE    SPA-PTID            TO  WKSRY-PTID
            MOVE    SPA-NYUGAIKBN       TO  WKSRY-NYUGAIKBN
@@ -9603,7 +9604,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    展開中の削除
            INITIALIZE                  WKSRYACT-REC
-           MOVE    SPA-HOSPID          TO  WKSRY-HOSPID
+           MOVE    SPA-HOSPNUM          TO  WKSRY-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  WKSRY-NYUGAIKBN
            MOVE    SPA-PTID            TO  WKSRY-PTID
            MOVE    SPA-SRYYMD          TO  WKSRY-SRYYMD
@@ -9650,7 +9651,7 @@ grpsys                                    SPA-AREA
        4900-WKSRYACT-CLEAR-SEC             SECTION.
       *
            INITIALIZE                  WKSRYACT-REC
-           MOVE    SPA-HOSPID          TO  WKSRY-HOSPID
+           MOVE    SPA-HOSPNUM          TO  WKSRY-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  WKSRY-NYUGAIKBN
            MOVE    SPA-PTID            TO  WKSRY-PTID
       *
@@ -10886,7 +10887,7 @@ grpsys                                SPA-AREA
                MOVE    00                  TO  SPA-GMN-CUR
                GO      TO      41001-KIHON-CHK-EXT
            END-IF
-           MOVE    SPA-HOSPID          TO  PTINF-HOSPID
+           MOVE    SPA-HOSPNUM          TO  PTINF-HOSPNUM
            MOVE    SPA-PTID            TO  PTINF-PTID
            PERFORM 900-PTINF-READ-SEC
            IF     (FLG-PTINF           =   1     )  OR

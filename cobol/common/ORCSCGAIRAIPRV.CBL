@@ -1222,7 +1222,7 @@ grpsys                                SPA-AREA
        45012-SYUMEI-UPD-SEC                SECTION.
       *
            INITIALIZE                      SYUMEI-REC
-           MOVE    SYU-HOSPID          TO  SMEI-HOSPID
+           MOVE    SYU-HOSPNUM          TO  SMEI-HOSPNUM
            MOVE    SYU-NYUGAIKBN       TO  SMEI-NYUGAIKBN
            MOVE    SYU-PTID            TO  SMEI-PTID
            MOVE    SYU-DENPNUM         TO  SMEI-DENPNUM
@@ -1371,7 +1371,7 @@ grpsys                                SPA-AREA
       *
            MOVE    SPACE               TO  SYUMEI-REC
            INITIALIZE                      SYUMEI-REC
-           MOVE    SYU-HOSPID          TO  SMEI-HOSPID
+           MOVE    SYU-HOSPNUM          TO  SMEI-HOSPNUM
            MOVE    SYU-NYUGAIKBN       TO  SMEI-NYUGAIKBN
            MOVE    SYU-PTID            TO  SMEI-PTID
       *伝票番号
@@ -1457,7 +1457,7 @@ grpsys                            SPA-AREA
        45001-SINMEI-SYORI2-SEC          SECTION.
       *
            INITIALIZE                      SYUMEI-REC
-           MOVE    SYU-HOSPID          TO  SMEI-HOSPID
+           MOVE    SYU-HOSPNUM          TO  SMEI-HOSPNUM
            MOVE    SYU-NYUGAIKBN       TO  SMEI-NYUGAIKBN
            MOVE    SYU-PTID            TO  SMEI-PTID
            MOVE    SYU-DENPNUM         TO  SMEI-DENPNUM
@@ -1519,7 +1519,7 @@ grpsys                                    SPA-AREA
       *
            MOVE    SPACE               TO  SYUMEI-REC
            INITIALIZE                      SYUMEI-REC
-           MOVE    SYU-HOSPID          TO  SMEI-HOSPID
+           MOVE    SYU-HOSPNUM          TO  SMEI-HOSPNUM
            MOVE    SYU-NYUGAIKBN       TO  SMEI-NYUGAIKBN
            MOVE    SYU-PTID            TO  SMEI-PTID
       *伝票番号
@@ -1624,7 +1624,7 @@ grpsys                            SPA-AREA
       *
            MOVE    SPACE               TO  JYURRK-REC
            INITIALIZE                      JYURRK-REC
-           MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
+           MOVE    SPA-HOSPNUM          TO  JYURRK-HOSPNUM
            MOVE    SPA-PTID            TO  JYURRK-PTID
            MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
       **** MOVE    SPA-SRYKA           TO  JYURRK-SRYKA
@@ -1727,7 +1727,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *受診履歴レコードの作成
            MOVE    SPACE               TO  JYURRK-REC
            INITIALIZE                      JYURRK-REC
-           MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
+           MOVE    SPA-HOSPNUM          TO  JYURRK-HOSPNUM
            MOVE    SPA-PTID            TO  JYURRK-PTID
            MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
            MOVE    WRK-SRYKA           TO  JYURRK-SRYKA
@@ -1858,7 +1858,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    SPACE               TO  JYURRK-REC
            INITIALIZE                      JYURRK-REC
-           MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
+           MOVE    SPA-HOSPNUM          TO  JYURRK-HOSPNUM
            MOVE    SPA-PTID            TO  JYURRK-PTID
            MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
            MOVE    WRK-DENPNUM         TO  JYURRK-DENPNUM
@@ -1961,7 +1961,7 @@ grpsys                                    SPA-AREA
       *
            MOVE    SPACE               TO  JYURRK-REC
            INITIALIZE                      JYURRK-REC
-           MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
+           MOVE    SPA-HOSPNUM          TO  JYURRK-HOSPNUM
            MOVE    SPA-PTID            TO  JYURRK-PTID
            MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
       **** MOVE    SPA-OLD-SRYKA       TO  JYURRK-SRYKA
@@ -2050,7 +2050,7 @@ grpsys                                SPA-AREA
                            OR (SPA-ERRCD       NOT =   SPACE )
       *
                INITIALIZE                      SRYACCT-REC
-               MOVE    JYURRK-HOSPID       TO  ACCT-HOSPID
+               MOVE    JYURRK-HOSPNUM       TO  ACCT-HOSPNUM
                MOVE    JYURRK-NYUGAIKBN    TO  ACCT-NYUGAIKBN
                MOVE    JYURRK-PTID         TO  ACCT-PTID
                MOVE    JYURRK-SRYKA        TO  ACCT-SRYKA
@@ -2148,7 +2148,7 @@ grpsys                                    SPA-AREA
                            OR (SPA-ERRCD       NOT =   SPACE )
       *
                INITIALIZE                      SRYACCT-REC
-               MOVE    JYURRK-HOSPID       TO  ACCT-HOSPID
+               MOVE    JYURRK-HOSPNUM       TO  ACCT-HOSPNUM
                MOVE    SPA-NYUGAIKBN       TO  ACCT-NYUGAIKBN
                MOVE    JYURRK-PTID         TO  ACCT-PTID
                MOVE    JYURRK-SRYKA        TO  ACCT-SRYKA
@@ -2244,7 +2244,7 @@ grpsys                                        SPA-AREA
        45001121-ZAINUM-DELETE-SEC          SECTION.
       *
            INITIALIZE                  SRYACT-REC
-           MOVE    ACCT-HOSPID         TO  SRY-HOSPID
+           MOVE    ACCT-HOSPNUM         TO  SRY-HOSPNUM
            MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
            MOVE    ACCT-PTID           TO  SRY-PTID
            MOVE    ACCT-SRYKA          TO  SRY-SRYKA
@@ -2266,7 +2266,7 @@ grpsys                            SPA-AREA
            END-IF
       *    コメント
            INITIALIZE                  PTCOM-REC
-           MOVE    ACCT-HOSPID         TO  PTCOM-HOSPID
+           MOVE    ACCT-HOSPNUM         TO  PTCOM-HOSPNUM
            MOVE    ACCT-PTID           TO  PTCOM-PTID
            MOVE    ACCT-ZAINUM         TO  PTCOM-ZAINUM
       *
@@ -2301,7 +2301,7 @@ grpsys                            SPA-AREA
       *
       *    附加情報削除
            INITIALIZE                  SRYACCTPLUS-REC
-           MOVE    ACCT-HOSPID         TO  ACCTP-HOSPID
+           MOVE    ACCT-HOSPNUM         TO  ACCTP-HOSPNUM
            MOVE    ACCT-NYUGAIKBN      TO  ACCTP-NYUGAIKBN
            MOVE    ACCT-PTID           TO  ACCTP-PTID
            MOVE    ACCT-SRYKA          TO  ACCTP-SRYKA
@@ -2336,7 +2336,7 @@ grpsys                            SPA-AREA
       *                       (JYURRK-ZAINUM (IDX) =   ZERO )
       *
                INITIALIZE                      SRYACT-REC
-               MOVE    JYURRK-HOSPID       TO  SRY-HOSPID
+               MOVE    JYURRK-HOSPNUM       TO  SRY-HOSPNUM
                MOVE    SPA-NYUGAIKBN       TO  SRY-NYUGAIKBN
                MOVE    JYURRK-PTID         TO  SRY-PTID
                MOVE    JYURRK-SRYKA        TO  SRY-SRYKA
@@ -2452,7 +2452,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    合計収納削除
            INITIALIZE                  SYUTTL-REC
-           MOVE    SPA-HOSPID          TO  SYUTTL-HOSPID
+           MOVE    SPA-HOSPNUM          TO  SYUTTL-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  SYUTTL-NYUGAIKBN
            MOVE    SPA-PTID            TO  SYUTTL-PTID
            MOVE    WRK-DENPNUM         TO  SYUTTL-DENPNUM
@@ -2648,7 +2648,7 @@ grpsys                            SPA-AREA
       *
            MOVE    SPACE               TO  SRYKARRK-REC
            INITIALIZE                      SRYKARRK-REC
-           MOVE    SPA-HOSPID          TO  KARRK-HOSPID
+           MOVE    SPA-HOSPNUM          TO  KARRK-HOSPNUM
            MOVE    SPA-PTID            TO  KARRK-PTID
            MOVE    WRK-SRYKA           TO  KARRK-SRYKA
       *
@@ -2686,7 +2686,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *        診療科新規作成
                MOVE    SPACE               TO  SRYKARRK-REC
                INITIALIZE                      SRYKARRK-REC
-               MOVE    SPA-HOSPID          TO  KARRK-HOSPID
+               MOVE    SPA-HOSPNUM          TO  KARRK-HOSPNUM
                MOVE    SPA-PTID            TO  KARRK-PTID
                MOVE    WRK-SRYKA           TO  KARRK-SRYKA
                MOVE    SPA-SRYYMD          TO  KARRK-SYOSINYMD1
@@ -2958,7 +2958,7 @@ grpsys                                SPA-AREA
       *!!
       *    診療会計マスター更新用読み込み
            INITIALIZE                          SRYACCT-REC
-           MOVE    LNK-WKSRY-HOSPID (01)   TO  ACCT-HOSPID
+           MOVE    LNK-WKSRY-HOSPNUM (01)   TO  ACCT-HOSPNUM
            MOVE    LNK-WKSRY-NYUGAIKBN(01) TO  ACCT-NYUGAIKBN
            MOVE    LNK-WKSRY-PTID   (01)   TO  ACCT-PTID
            MOVE    LNK-WKSRY-SRYKA  (01)   TO  ACCT-SRYKA
@@ -3049,7 +3049,7 @@ grpsys                                SPA-AREA
       *
            MOVE    SPACE               TO  SRYACCTPLUS-REC
            INITIALIZE                  SRYACCTPLUS-REC
-           MOVE    LNK-WKSRY-HOSPID (01)   TO  ACCTP-HOSPID
+           MOVE    LNK-WKSRY-HOSPNUM (01)   TO  ACCTP-HOSPNUM
            MOVE    LNK-WKSRY-NYUGAIKBN(01) TO  ACCTP-NYUGAIKBN
            MOVE    LNK-WKSRY-PTID   (01)   TO  ACCTP-PTID
            MOVE    LNK-WKSRY-SRYKA  (01)   TO  ACCTP-SRYKA
@@ -3133,7 +3133,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    患者マスターより、最終剤番号を再番し、患者マスターを更新する
            INITIALIZE                      PTINF-REC
-           MOVE    SPA-HOSPID          TO  PTINF-HOSPID
+           MOVE    SPA-HOSPNUM          TO  PTINF-HOSPNUM
            MOVE    SPA-PTID            TO  PTINF-PTID
       *----->take mod st
       *    PERFORM 940-PTINF-READ-SEC
@@ -3184,7 +3184,7 @@ grpsys                            SPA-AREA
       *
            MOVE    SPACE               TO  SRYACCT-REC
            INITIALIZE                      SRYACCT-REC
-           MOVE    LNK-WKSRY-HOSPID (01)   TO  ACCT-HOSPID
+           MOVE    LNK-WKSRY-HOSPNUM (01)   TO  ACCT-HOSPNUM
            MOVE    LNK-WKSRY-NYUGAIKBN(01) TO  ACCT-NYUGAIKBN
            MOVE    LNK-WKSRY-PTID   (01)   TO  ACCT-PTID
            MOVE    LNK-WKSRY-SRYKA  (01)   TO  ACCT-SRYKA
@@ -3256,7 +3256,7 @@ grpsys                            SPA-AREA
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   IDX-KOUI
                INITIALIZE                          SRYACT-REC
-               MOVE    LNK-WKSRY-HOSPID  (IDX) TO  SRY-HOSPID
+               MOVE    LNK-WKSRY-HOSPNUM  (IDX) TO  SRY-HOSPNUM
                MOVE    LNK-WKSRY-NYUGAIKBN (IDX)   TO  SRY-NYUGAIKBN
                MOVE    LNK-WKSRY-PTID   (IDX)  TO  SRY-PTID
                MOVE    LNK-WKSRY-SRYKA  (IDX)  TO  SRY-SRYKA
@@ -3336,7 +3336,7 @@ grpsys                                SPA-AREA
            ADD     1                   TO  WRK-MEIBAN
            INITIALIZE                  PTCOM-REC
       *医療機関ＩＤ
-           MOVE    SRY-HOSPID          TO  PTCOM-HOSPID
+           MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
       *患者ＩＤ
            MOVE    SRY-PTID            TO  PTCOM-PTID
       *剤番号
@@ -3523,7 +3523,7 @@ grpsys                            SPA-AREA
       *
            MOVE    SPACE               TO  SRYACCTPLUS-REC
            INITIALIZE                  SRYACCTPLUS-REC
-           MOVE    ACCT-HOSPID         TO  ACCTP-HOSPID
+           MOVE    ACCT-HOSPNUM         TO  ACCTP-HOSPNUM
            MOVE    ACCT-NYUGAIKBN      TO  ACCTP-NYUGAIKBN
            MOVE    ACCT-PTID           TO  ACCTP-PTID
            MOVE    ACCT-SRYKA          TO  ACCTP-SRYKA
@@ -3560,7 +3560,7 @@ grpsys                            SPA-AREA
            IF      LNK-WKSRYP-TEI-NKBN (1) =   2
                PERFORM VARYING     IDW     FROM    1   BY  1
                        UNTIL       IDW     >   10
-                   IF      TBL-ACCTP-HOSPID (IDW)  =   SPACE
+                   IF      TBL-ACCTP-HOSPNUM (IDW)  =   SPACE
                        MOVE    SRYACCTPLUS-REC
                                            TO  TBL-SRYACCTPLUS-REC(IDW)
                        MOVE    ACCT-HKNCOMBI
@@ -3582,7 +3582,7 @@ grpsys                            SPA-AREA
       *
            PERFORM VARYING     IDW     FROM    1   BY  1
                    UNTIL      (IDW     >   10   )   OR
-                              (TBL-ACCTP-HOSPID (IDW)  =   SPACE)
+                              (TBL-ACCTP-HOSPNUM (IDW)  =   SPACE)
                MOVE    TBL-SRYACCTPLUS-REC(IDW)    TO  SRYACCTPLUS-REC
                INITIALIZE                  ACCTP-GRP-ZAINUM-G
                MOVE    ZERO                TO  IDW2
@@ -3699,7 +3699,7 @@ grpsys                            SPA-AREA
       *    収納テーブル読み込み
            MOVE    SPACE               TO  SYUNOU-REC
            INITIALIZE                  SYUNOU-REC
-           MOVE    SPA-HOSPID          TO  SYU-HOSPID
+           MOVE    SPA-HOSPNUM          TO  SYU-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  SYU-NYUGAIKBN
            MOVE    SPA-PTID            TO  SYU-PTID
            MOVE    WRK-DENPNUM         TO  SYU-DENPNUM
@@ -3736,7 +3736,7 @@ grpsys                                SPA-AREA
       *        収納明細削除
                MOVE    SPACE               TO  SYUMEI-REC
                INITIALIZE                      SYUMEI-REC
-               MOVE    SYU-HOSPID          TO  SMEI-HOSPID
+               MOVE    SYU-HOSPNUM          TO  SMEI-HOSPNUM
                MOVE    SYU-NYUGAIKBN       TO  SMEI-NYUGAIKBN
                MOVE    SYU-PTID            TO  SMEI-PTID
                MOVE    SYU-DENPNUM         TO  SMEI-DENPNUM
@@ -3763,7 +3763,7 @@ grpsys                                SPA-AREA
       *
       *    作成済みのワーク診療行為マスタ−を削除する
       *    MOVE    SPACE               TO  WKSRYACT-REC
-      *    MOVE    SPA-HOSPID          TO  WKSRY-HOSPID
+      *    MOVE    SPA-HOSPNUM          TO  WKSRY-HOSPNUM
       *    MOVE    SPA-PTID            TO  WKSRY-PTID
       *    MOVE    SPA-NYUGAIKBN       TO  WKSRY-NYUGAIKBN
       *    MOVE    SPA-SRYKA           TO  WKSRY-SRYKA
@@ -3786,7 +3786,7 @@ grpsys                                SPA-AREA
       *
       *    展開中の削除
            INITIALIZE                  WKSRYACT-REC
-           MOVE    SPA-HOSPID          TO  WKSRY-HOSPID
+           MOVE    SPA-HOSPNUM          TO  WKSRY-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  WKSRY-NYUGAIKBN
            MOVE    SPA-PTID            TO  WKSRY-PTID
            MOVE    SPA-NYUGAIKBN       TO  WKSRY-NYUGAIKBN
@@ -3841,7 +3841,7 @@ grpsys                                    SPA-AREA
            MOVE    WRK-TIME1(1:4)       TO  WRK-TIME2(1:4)
       *    受診内容ファイルを特定する
            INITIALIZE                      UKETUKE-REC
-           MOVE    SPA-HOSPID          TO  UKE-HOSPID
+           MOVE    SPA-HOSPNUM          TO  UKE-HOSPNUM
            MOVE    SPA-SYSYMD          TO  UKE-UKEYMD
            MOVE    SPA-PTID            TO  UKE-PTID
            MOVE    SPA-SRYKA           TO  UKE-SRYKA
@@ -3948,7 +3948,7 @@ grpsys                                        SPA-AREA
        10041-SYUTTL-INS-SEC        SECTION.
       *
            INITIALIZE                  SYUTTL-REC
-           MOVE    SYU-HOSPID          TO  SYUTTL-HOSPID
+           MOVE    SYU-HOSPNUM          TO  SYUTTL-HOSPNUM
            MOVE    SYU-NYUGAIKBN       TO  SYUTTL-NYUGAIKBN
            MOVE    SYU-PTID            TO  SYUTTL-PTID
            MOVE    WRK-KA-DENPNUM      TO  SYUTTL-DENPNUM
@@ -3971,7 +3971,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    SPACE               TO  SYUTTL-REC
            INITIALIZE                  SYUTTL-REC
-           MOVE    SYU-HOSPID          TO  SYUTTL-HOSPID
+           MOVE    SYU-HOSPNUM          TO  SYUTTL-HOSPNUM
            MOVE    SYU-NYUGAIKBN       TO  SYUTTL-NYUGAIKBN
            MOVE    SYU-PTID            TO  SYUTTL-PTID
            MOVE    WRK-KA-DENPNUM      TO  SYUTTL-DENPNUM
@@ -4190,7 +4190,7 @@ grpsys                                SPA-AREA
       *    受診履歴の連番をすべて削除する
            MOVE    SPACE               TO  JYURRK-REC
            INITIALIZE                      JYURRK-REC
-           MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
+           MOVE    SPA-HOSPNUM          TO  JYURRK-HOSPNUM
            MOVE    SPA-PTID            TO  JYURRK-PTID
            MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
            MOVE    SPA-OLD-SRYKA       TO  JYURRK-SRYKA
@@ -4256,7 +4256,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    SPACE               TO  JYURRK-REC
            INITIALIZE                      JYURRK-REC
-           MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
+           MOVE    SPA-HOSPNUM          TO  JYURRK-HOSPNUM
            MOVE    SPA-PTID            TO  JYURRK-PTID
            MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
            MOVE    WRK-JYURRK-SRYKA    TO  JYURRK-SRYKA
@@ -4371,7 +4371,7 @@ grpsys                                    SPA-AREA
                               (SPA-TEI-DENPNUM(IDXF)   =   ZERO)
                MOVE    SPACE               TO  JYURRK-REC
                INITIALIZE                      JYURRK-REC
-               MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
+               MOVE    SPA-HOSPNUM          TO  JYURRK-HOSPNUM
                MOVE    SPA-PTID            TO  JYURRK-PTID
                MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
                MOVE    SPA-TEI-SRYKA(IDXF) TO  JYURRK-SRYKA
@@ -4461,7 +4461,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                        UNTIL       FLG-JYURRK  NOT =   ZERO
                    MOVE    SPACE               TO  JYURRK-REC
                    INITIALIZE                      JYURRK-REC
-                   MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
+                   MOVE    SPA-HOSPNUM          TO  JYURRK-HOSPNUM
                    MOVE    SPA-PTID            TO  JYURRK-PTID
                    MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
                    MOVE    WRK-JYURRK-SRYKA    TO  JYURRK-SRYKA
@@ -4521,7 +4521,7 @@ grpsys                                        SPA-AREA
        45001141-SYUNOU-DELETE-SEC         SECTION.
       *
            INITIALIZE                      SYUNOU-REC
-           MOVE    SPA-HOSPID          TO  SYU-HOSPID
+           MOVE    SPA-HOSPNUM          TO  SYU-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  SYU-NYUGAIKBN
            MOVE    SPA-PTID            TO  SYU-PTID
            MOVE    JYURRK-DENPNUM      TO  SYU-DENPNUM
@@ -4557,7 +4557,7 @@ grpsys                                SPA-AREA
       *        収納明細削除
                MOVE    SPACE               TO  SYUMEI-REC
                INITIALIZE                      SYUMEI-REC
-               MOVE    SYU-HOSPID          TO  SMEI-HOSPID
+               MOVE    SYU-HOSPNUM          TO  SMEI-HOSPNUM
                MOVE    SYU-NYUGAIKBN       TO  SMEI-NYUGAIKBN
                MOVE    SYU-PTID            TO  SMEI-PTID
                MOVE    SYU-DENPNUM         TO  SMEI-DENPNUM
@@ -4579,7 +4579,7 @@ grpsys                                SPA-AREA
            IF     (FLG-SYUNOU          =   ZERO )   AND
                   (SYU-FUKU-DENPNUM    NOT =   ZERO)
                INITIALIZE                  SYUTTL-REC
-               MOVE    SYU-HOSPID          TO  SYUTTL-HOSPID
+               MOVE    SYU-HOSPNUM          TO  SYUTTL-HOSPNUM
                MOVE    SYU-NYUGAIKBN       TO  SYUTTL-NYUGAIKBN
                MOVE    SYU-PTID            TO  SYUTTL-PTID
                MOVE    SYU-FUKU-DENPNUM    TO  SYUTTL-DENPNUM
@@ -4626,7 +4626,7 @@ grpsys                                    SPA-AREA
                            OR (SPA-ERRCD       NOT =   SPACE )
       *
                INITIALIZE                      SRYACCT-REC
-               MOVE    JYURRK-HOSPID       TO  ACCT-HOSPID
+               MOVE    JYURRK-HOSPNUM       TO  ACCT-HOSPNUM
                MOVE    SPA-NYUGAIKBN       TO  ACCT-NYUGAIKBN
                MOVE    JYURRK-PTID         TO  ACCT-PTID
                MOVE    JYURRK-SRYKA        TO  ACCT-SRYKA
@@ -4743,7 +4743,7 @@ grpsys                                        SPA-AREA
       *
            MOVE    SPACE               TO  SRYKARRK-REC
            INITIALIZE                      SRYKARRK-REC
-           MOVE    SPA-HOSPID          TO  KARRK-HOSPID
+           MOVE    SPA-HOSPNUM          TO  KARRK-HOSPNUM
            MOVE    SPA-PTID            TO  KARRK-PTID
            MOVE    WRK-SRYKA           TO  KARRK-SRYKA
       *
@@ -4767,7 +4767,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            IF      FLG-SRYKARRK           =   1
                MOVE    SPACE               TO  SRYKARRK-REC
                INITIALIZE                      SRYKARRK-REC
-               MOVE    SPA-HOSPID          TO  KARRK-HOSPID
+               MOVE    SPA-HOSPNUM          TO  KARRK-HOSPNUM
                MOVE    SPA-PTID            TO  KARRK-PTID
                MOVE    WRK-SRYKA           TO  KARRK-SRYKA
                MOVE    SPA-SYOSIN-YMD      TO  KARRK-SYOSINYMD1
@@ -4788,7 +4788,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            INITIALIZE                      ORCSRECEUPDAREA
            MOVE    "2"                 TO  LNK-UPD-SYORI
-           MOVE    SPA-HOSPID          TO  LNK-UPD-HOSPID
+           MOVE    SPA-HOSPNUM          TO  LNK-UPD-HOSPNUM
            MOVE    SPA-PTID            TO  LNK-UPD-PTID
            MOVE    SPA-TERMID          TO  LNK-UPD-TERMID
            MOVE    SPA-OPID            TO  LNK-UPD-OPID

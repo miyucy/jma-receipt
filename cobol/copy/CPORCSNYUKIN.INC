@@ -26,7 +26,7 @@
        01  ORCSNYUKINAREA.
       *入力値
       *    医療機関ＩＤ（必須）
-           03  LNK-SCNYUKIN-HOSPID           PIC X(24).
+           03  LNK-SCNYUKIN-HOSPNUM          PIC S9(9) BINARY.
       *    患者ＩＤ（必須）
            03  LNK-SCNYUKIN-PTID             PIC 9(10).
       *    入外区分

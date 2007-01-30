@@ -2179,7 +2179,7 @@
            INITIALIZE                      INPUTCD-REC
       *
            MOVE    SPACE               TO  INPUTCD-REC
-           MOVE    SPA-HOSPID          TO  ICD-HOSPID
+           MOVE    SPA-HOSPNUM          TO  ICD-HOSPNUM
            MOVE    "6"                 TO  ICD-CDSYU
            MOVE    SPA-GMN-SETCODE     TO  ICD-INPUTCD
       *
@@ -2236,7 +2236,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            INITIALIZE                      INPUTCD-REC
       *
            MOVE    SPACE               TO  INPUTCD-REC
-           MOVE    SPA-HOSPID          TO  ICD-HOSPID
+           MOVE    SPA-HOSPNUM          TO  ICD-HOSPNUM
            MOVE    "6"                 TO  ICD-CDSYU
            MOVE    SPA-GMN-SETCODE     TO  ICD-INPUTCD
       *
@@ -2286,7 +2286,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    1                   TO  FLG-SYOKI
       *    期間決定
            INITIALIZE                      INPUTSET-REC
-           MOVE    SPA-HOSPID          TO  ISET-HOSPID
+           MOVE    SPA-HOSPNUM          TO  ISET-HOSPNUM
            MOVE    WRK-SETCD           TO  ISET-SETCD
       *
 grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
@@ -2392,7 +2392,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ZERO                TO  IDX
       *
            INITIALIZE                      INPUTCD-REC
-           MOVE    SPA-HOSPID          TO  ICD-HOSPID
+           MOVE    SPA-HOSPNUM          TO  ICD-HOSPNUM
            MOVE    SPA-GMN-SETCODE     TO  ICD-SRYCD
       *
 grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
@@ -3798,7 +3798,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ZERO                TO  IDX-IP
       *    入力セットマスタ検索
            INITIALIZE                      INPUTSET-REC
-           MOVE    SPA-HOSPID          TO  ISET-HOSPID
+           MOVE    SPA-HOSPNUM          TO  ISET-HOSPNUM
            MOVE    WRK-SETCD           TO  ISET-SETCD
            MOVE    WRK-YUKOSTYMD       TO  ISET-YUKOSTYMD
            MOVE    WRK-YUKOEDYMD       TO  ISET-YUKOEDYMD
@@ -4106,7 +4106,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                        TO  WRK-SETCD
       *    入力セットマスタ検索
            INITIALIZE                      INPUTSET-REC
-           MOVE    SPA-HOSPID          TO  ISET-HOSPID
+           MOVE    SPA-HOSPNUM          TO  ISET-HOSPNUM
            MOVE    WRK-SETCD           TO  ISET-SETCD
            MOVE    WRK-YUKOSTYMD       TO  ISET-YUKOSTYMD
            MOVE    WRK-YUKOEDYMD       TO  ISET-YUKOEDYMD
@@ -4394,7 +4394,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    約束名称編集
            MOVE    SPACE               TO  INPUTCD-REC
-           MOVE    SPA-HOSPID          TO  ICD-HOSPID
+           MOVE    SPA-HOSPNUM          TO  ICD-HOSPNUM
       *
            MOVE    LNK-SC97-CDSYU      TO  ICD-CDSYU
            MOVE    WRK-INPUTCD         TO  ICD-INPUTCD
@@ -5936,7 +5936,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        410021-INPUTCD-SYORI-SEC          SECTION.
       *
            INITIALIZE                      INPUTCD-REC
-           MOVE    SPA-HOSPID          TO  ICD-HOSPID
+           MOVE    SPA-HOSPNUM          TO  ICD-HOSPNUM
            MOVE    "6"                 TO  ICD-CDSYU
            MOVE    SPA-GMN-SETCODE     TO  ICD-INPUTCD
       *
@@ -6025,7 +6025,7 @@ grpsys                                        SPA-AREA
        410022-INPUTCD-INS-SEC             SECTION.
       *
            INITIALIZE                      INPUTCD-REC
-           MOVE    SPA-HOSPID          TO  ICD-HOSPID
+           MOVE    SPA-HOSPNUM          TO  ICD-HOSPNUM
            IF      WRK-CDSYU           =   SPACE
                EVALUATE    TRUE
                    WHEN    WRK-ICD-INPUTCD(5:)      =   SPACE
@@ -6092,7 +6092,7 @@ grpsys                            SPA-AREA
       *                       (SPA-K051-INPUTCD (IDX)  =   SPACE )
       *
       *        INITIALIZE                      INPUTCD-REC
-      *        MOVE    SPA-HOSPID          TO  ICD-HOSPID
+      *        MOVE    SPA-HOSPNUM          TO  ICD-HOSPNUM
       ******** EVALUATE    TRUE
       *            WHEN    SPA-K051-INPUTCD (IDX)(5:)  =   SPACE
       *                MOVE    "4"                 TO  ICD-CDSYU
@@ -6153,7 +6153,7 @@ grpsys                            SPA-AREA
       *    削除処理
       *
       *    INITIALIZE                      INPUTCD-REC
-      *    MOVE    SPA-HOSPID          TO  ICD-HOSPID
+      *    MOVE    SPA-HOSPNUM          TO  ICD-HOSPNUM
       *    MOVE    SPA-GMN-SETCODE     TO  ICD-SRYCD
       *
       *    MOVE    INPUTCD-REC         TO  MCPDATA-REC
@@ -6215,7 +6215,7 @@ grpsys                            SPA-AREA
       *
       *    入力コード削除
            INITIALIZE                      INPUTCD-REC
-           MOVE    SPA-HOSPID          TO  ICD-HOSPID
+           MOVE    SPA-HOSPNUM          TO  ICD-HOSPNUM
            MOVE    SPA-GMN-SETCODE     TO  ICD-SRYCD
       *
 grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
@@ -6276,7 +6276,7 @@ grpsys                            SPA-AREA
       *
                ADD     1                   TO  IDX-SET
                INITIALIZE                      INPUTSET-REC
-               MOVE    SPA-HOSPID          TO  ISET-HOSPID
+               MOVE    SPA-HOSPNUM          TO  ISET-HOSPNUM
                MOVE    SPA-GMN-SETCODE     TO  ISET-SETCD
                MOVE    IDX-SET             TO  ISET-SETSEQ
                MOVE    SPA-K05-NAI-YUKOSTYMD
@@ -6404,7 +6404,7 @@ grpsys                                SPA-AREA
            END-IF
       *    入力セットマスタ検索
            INITIALIZE                      INPUTSET-REC
-           MOVE    SPA-HOSPID          TO  ISET-HOSPID
+           MOVE    SPA-HOSPNUM          TO  ISET-HOSPNUM
            MOVE    SPA-GMN-SETCODE     TO  ISET-SETCD
            MOVE    WRK-YUKOSTYMD       TO  ISET-YUKOSTYMD
            MOVE    WRK-YUKOEDYMD       TO  ISET-YUKOEDYMD

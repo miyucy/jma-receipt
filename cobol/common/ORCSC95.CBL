@@ -1481,7 +1481,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            INITIALIZE                  SPA-NAI-RRKTBL
       *    受診歴を検索する  医療機関、患者ＩＤ
            INITIALIZE                  JYURRK-REC
-           MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
+           MOVE    SPA-HOSPNUM          TO  JYURRK-HOSPNUM
            MOVE    SPA-PTID            TO  JYURRK-PTID
            MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
       *
@@ -1682,7 +1682,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    収納テーブル読み込み
            MOVE    SPACE               TO  SYUNOU-REC
            INITIALIZE                  SYUNOU-REC
-           MOVE    SPA-HOSPID          TO  SYU-HOSPID
+           MOVE    SPA-HOSPNUM          TO  SYU-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  SYU-NYUGAIKBN
            MOVE    SPA-PTID            TO  SYU-PTID
       *****MOVE    JYURRK-DENPNUM      TO  SYU-DENPNUM
@@ -1760,7 +1760,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    受付マスタ検索
            MOVE    SPACE               TO  UKETUKE-REC
            INITIALIZE                  UKETUKE-REC
-           MOVE    SPA-HOSPID          TO  UKE-HOSPID
+           MOVE    SPA-HOSPNUM          TO  UKE-HOSPNUM
            MOVE    SPA-SYSYMD          TO  UKE-UKEYMD
            MOVE    SPA-PTID            TO  UKE-PTID
       *
@@ -1852,7 +1852,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    MOVE    SPACE               TO  JYURRK-REC
       *    INITIALIZE                  JYURRK-REC
-      *    MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
+      *    MOVE    SPA-HOSPNUM          TO  JYURRK-HOSPNUM
       *    MOVE    SPA-PTID            TO  JYURRK-PTID
       *    MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
       *    MOVE    SPA-SRYYMD          TO  JYURRK-SRYYMD
@@ -2200,7 +2200,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    収納テーブル読み込み
            MOVE    SPACE               TO  SYUNOU-REC
            INITIALIZE                  SYUNOU-REC
-           MOVE    SPA-HOSPID          TO  SYU-HOSPID
+           MOVE    SPA-HOSPNUM          TO  SYU-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  SYU-NYUGAIKBN
            MOVE    SPA-PTID            TO  SYU-PTID
       **** MOVE    JYURRK-DENPNUM      TO  SYU-DENPNUM
@@ -2550,7 +2550,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    保険算定年齢チェック等
            INITIALIZE                  ORCSAGECHKAREA
-           MOVE    SPA-HOSPID          TO  AGECHK-HOSPID
+           MOVE    SPA-HOSPNUM          TO  AGECHK-HOSPNUM
            MOVE    SPA-PTID            TO  AGECHK-PTID
            MOVE    SPA-SRYYMD          TO  AGECHK-SRYYMD
            MOVE    SPA-BIRTHDAY        TO  AGECHK-BIRTHDAY
@@ -2709,7 +2709,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        1101-PTINF-HENSYU-SEC         SECTION.
       *
       *    患者マスター読み込み
-           MOVE    SPA-HOSPID          TO  PTINF-HOSPID
+           MOVE    SPA-HOSPNUM          TO  PTINF-HOSPNUM
            MOVE    SPA-PTID            TO  PTINF-PTID
            PERFORM 900-PTINF-READ-SEC
            IF      FLG-PTINF           =   1
@@ -3049,7 +3049,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    診療科歴を検索
            MOVE    SPACE               TO  SRYKARRK-REC
            INITIALIZE                  SRYKARRK-REC
-           MOVE    SPA-HOSPID          TO  KARRK-HOSPID
+           MOVE    SPA-HOSPNUM          TO  KARRK-HOSPNUM
            MOVE    SPA-PTID            TO  KARRK-PTID
       *D   MOVE    SPA-SRYKA           TO  KARRK-SRYKA
       *
@@ -3127,7 +3127,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    患者病名検索
            MOVE    SPACE               TO  PTBYOMEI-REC
            INITIALIZE                  PTBYOMEI-REC
-           MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
+           MOVE    SPA-HOSPNUM          TO  PTBYO-HOSPNUM
            MOVE    SPA-PTID            TO  PTBYO-PTID
            MOVE    SPA-SRYYMD          TO  PTBYO-SRYYMD
            MOVE    SPA-SRYYMD          TO  PTBYO-TENKIYMD
@@ -3277,7 +3277,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    患者病名検索
            MOVE    SPACE               TO  PTBYOMEI-REC
            INITIALIZE                  PTBYOMEI-REC
-           MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
+           MOVE    SPA-HOSPNUM          TO  PTBYO-HOSPNUM
            MOVE    SPA-PTID            TO  PTBYO-PTID
            MOVE    SPA-K02N-NYUINYMD   TO  PTBYO-SRYYMD
            MOVE    SPA-K02N-NYUINYMD   TO  PTBYO-TENKIYMD
@@ -3393,7 +3393,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    該当の保険のみ受診歴を検索する
       *    MOVE    SPACE               TO  JYURRK-REC
       *    INITIALIZE                  JYURRK-KEY
-      *    MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
+      *    MOVE    SPA-HOSPNUM          TO  JYURRK-HOSPNUM
       *    MOVE    SPA-PTID            TO  JYURRK-PTID
       *    MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
       *    MOVE    SPA-GMN-HKNCOMBINUM TO  JYURRK-HKNCOMBINUM
@@ -3460,7 +3460,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    収納テーブル読み込み
            MOVE    SPACE               TO  SYUNOU-REC
            INITIALIZE                  SYUNOU-REC
-           MOVE    SPA-HOSPID          TO  SYU-HOSPID
+           MOVE    SPA-HOSPNUM          TO  SYU-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  SYU-NYUGAIKBN
            MOVE    SPA-PTID            TO  SYU-PTID
       *
@@ -3572,7 +3572,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    特定疾患の有無検索
            MOVE    SPACE               TO  PTBYOMEI-REC
            INITIALIZE                  PTBYOMEI-REC
-           MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
+           MOVE    SPA-HOSPNUM          TO  PTBYO-HOSPNUM
            MOVE    SPA-PTID            TO  PTBYO-PTID
            MOVE    SPA-SRYKA           TO  PTBYO-SRYKA
            MOVE    SPA-SRYYMD          TO  PTBYO-SRYYMD
@@ -3881,7 +3881,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    収納テーブル読み込み
            MOVE    SPACE               TO  SYUNOU-REC
            INITIALIZE                  SYUNOU-REC
-           MOVE    SPA-HOSPID          TO  SYU-HOSPID
+           MOVE    SPA-HOSPNUM          TO  SYU-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  SYU-NYUGAIKBN
            MOVE    SPA-PTID            TO  SYU-PTID
            MOVE    SPA-DENPNUM         TO  SYU-DENPNUM
@@ -4049,7 +4049,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    算定履歴検索
            INITIALIZE                  SANTEI-REC
-           MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
+           MOVE    SPA-HOSPNUM          TO  SANTEI-HOSPNUM
            MOVE    SPA-PTID            TO  SANTEI-PTID
            MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
            MOVE    SPA-SRYYMD(1:6)     TO  SANTEI-SRYYM
@@ -4193,7 +4193,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    SPACE               TO  SRYACT-REC
            INITIALIZE                  SRYACT-REC
-           MOVE    SPA-HOSPID          TO  SRY-HOSPID
+           MOVE    SPA-HOSPNUM          TO  SRY-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  SRY-NYUGAIKBN
            MOVE    SPA-PTID            TO  SRY-PTID
            MOVE    WRK-SRYYYMM         TO  SRY-SRYYM
@@ -4221,7 +4221,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *        剤回数取得
                MOVE    SPACE               TO  SRYACCT-REC
                INITIALIZE                      SRYACCT-REC
-               MOVE    SRY-HOSPID          TO  ACCT-HOSPID
+               MOVE    SRY-HOSPNUM          TO  ACCT-HOSPNUM
                MOVE    SRY-NYUGAIKBN       TO  ACCT-NYUGAIKBN
                MOVE    SRY-PTID            TO  ACCT-PTID
                MOVE    SRY-SRYKA           TO  ACCT-SRYKA
@@ -4316,7 +4316,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    受診歴を検索する
            MOVE    SPACE               TO  JYURRK-REC
            INITIALIZE                  JYURRK-KEY
-           MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
+           MOVE    SPA-HOSPNUM          TO  JYURRK-HOSPNUM
            MOVE    SPA-PTID            TO  JYURRK-PTID
            MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
            MOVE    SPA-SRYKA           TO  JYURRK-SRYKA
@@ -4387,7 +4387,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    受診歴を検索する
            MOVE    SPACE               TO  JYURRK-REC
            INITIALIZE                  JYURRK-KEY
-           MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
+           MOVE    SPA-HOSPNUM          TO  JYURRK-HOSPNUM
            MOVE    SPA-PTID            TO  JYURRK-PTID
            MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
            MOVE    SPA-SRYKA           TO  JYURRK-SRYKA
@@ -4506,7 +4506,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *        科・保険の行
                MOVE    SPACE               TO  WKSRYACT-REC
                INITIALIZE                  WKSRYACT-REC
-               MOVE    SPA-HOSPID          TO  WKSRY-HOSPID
+               MOVE    SPA-HOSPNUM          TO  WKSRY-HOSPNUM
                MOVE    SPA-NYUGAIKBN       TO  WKSRY-NYUGAIKBN
                MOVE    SPA-PTID            TO  WKSRY-PTID
                MOVE    SPA-SRYKA           TO  WKSRY-SRYKA
@@ -4601,7 +4601,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    SPACE               TO  SRYACT-REC
            INITIALIZE                  SRYACT-REC
-           MOVE    SPA-HOSPID          TO  SRY-HOSPID
+           MOVE    SPA-HOSPNUM          TO  SRY-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  SRY-NYUGAIKBN
            MOVE    SPA-PTID            TO  SRY-PTID
            MOVE    WRK-KEY-SRYKA       TO  SRY-SRYKA
@@ -4673,7 +4673,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    剤回数取得
            MOVE    SPACE               TO  SRYACCT-REC
            INITIALIZE                      SRYACCT-REC
-           MOVE    SRY-HOSPID          TO  ACCT-HOSPID
+           MOVE    SRY-HOSPNUM          TO  ACCT-HOSPNUM
            MOVE    SRY-NYUGAIKBN       TO  ACCT-NYUGAIKBN
            MOVE    SRY-PTID            TO  ACCT-PTID
            MOVE    SRY-SRYKA           TO  ACCT-SRYKA
@@ -4725,7 +4725,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    SPACE               TO  WKSRYACT-REC
            INITIALIZE                  WKSRYACT-REC
-           MOVE    SRY-HOSPID          TO  WKSRY-HOSPID
+           MOVE    SRY-HOSPNUM          TO  WKSRY-HOSPNUM
            MOVE    SRY-NYUGAIKBN       TO  WKSRY-NYUGAIKBN
            MOVE    SRY-PTID            TO  WKSRY-PTID
       *!   MOVE    SRY-SRYKA           TO  WKSRY-SRYKA
@@ -4913,7 +4913,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        490111-PTCOM-SET-SEC              SECTION.
       *
-           MOVE    SRY-HOSPID          TO  PTCOM-HOSPID
+           MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
            MOVE    SRY-PTID            TO  PTCOM-PTID
            MOVE    SRY-ZAINUM          TO  PTCOM-ZAINUM
            MOVE    SRY-SRYCD (IDX)     TO  PTCOM-SRYCD
@@ -5010,7 +5010,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPACE               TO  WRK-SRYYYMM
            MOVE    SPACE               TO  WKSRYACT-REC
            INITIALIZE                  WKSRYACT-REC
-           MOVE    SPA-HOSPID          TO  WKSRY-HOSPID
+           MOVE    SPA-HOSPNUM          TO  WKSRY-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  WKSRY-NYUGAIKBN
            MOVE    SPA-PTID            TO  WKSRY-PTID
            MOVE    SPA-SRYKA           TO  WKSRY-SRYKA
@@ -5149,7 +5149,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
       *    対象の保険組合せの保存
            MOVE    SPACE               TO  WKSRYACT-REC
            INITIALIZE                  WKSRYACT-REC
-           MOVE    SPA-HOSPID          TO  WKSRY-HOSPID
+           MOVE    SPA-HOSPNUM          TO  WKSRY-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  WKSRY-NYUGAIKBN
            MOVE    SPA-PTID            TO  WKSRY-PTID
            MOVE    LNK-SC95-SRYKA      TO  WKSRY-SRYKA
@@ -5320,7 +5320,7 @@ grpsys                                SPA-AREA
        4900-WKSRYACT-CLEAR-SEC             SECTION.
       *
            INITIALIZE                  WKSRYACT-REC
-           MOVE    SPA-HOSPID          TO  WKSRY-HOSPID
+           MOVE    SPA-HOSPNUM          TO  WKSRY-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  WKSRY-NYUGAIKBN
            MOVE    SPA-PTID            TO  WKSRY-PTID
       *

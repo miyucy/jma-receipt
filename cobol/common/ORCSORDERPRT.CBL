@@ -240,7 +240,7 @@
       *
            MOVE    SPACE               TO  WKSRYACT-REC
            INITIALIZE                  WKSRYACT-REC
-           MOVE    SPA-HOSPID          TO  WKSRY-HOSPID
+           MOVE    SPA-HOSPNUM          TO  WKSRY-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  WKSRY-NYUGAIKBN
            MOVE    SPA-PTID            TO  WKSRY-PTID
            MOVE    SPA-SRYKA           TO  WKSRY-SRYKA
@@ -652,7 +652,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            ADD     1                   TO  WRK-RENNUM
       *
            INITIALIZE                  ORDERPRT-REC
-           MOVE    SPA-HOSPID          TO  ORDERPRT-HOSPID
+           MOVE    SPA-HOSPNUM          TO  ORDERPRT-HOSPNUM
            MOVE    SPA-PTID            TO  ORDERPRT-PTID
            MOVE    SPA-PTNUM           TO  ORDERPRT-PTNUM
            MOVE    SPA-NYUGAIKBN       TO  ORDERPRT-NYUGAIKBN
@@ -975,7 +975,7 @@ grpsys                            SPA-AREA
        300-COMMENT-DELETE-SEC         SECTION.
       *    Æþ±¡Ä¢É¼¥ª¡¼¥À¡¼¸¡º÷
            INITIALIZE                  ORDERPRT-REC
-           MOVE    SPA-HOSPID          TO  ORDERPRT-HOSPID
+           MOVE    SPA-HOSPNUM          TO  ORDERPRT-HOSPNUM
            MOVE    SPA-PTID            TO  ORDERPRT-PTID
            MOVE    SPA-PTNUM           TO  ORDERPRT-PTNUM
            MOVE    SPA-NYUGAIKBN       TO  ORDERPRT-NYUGAIKBN

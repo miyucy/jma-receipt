@@ -576,7 +576,7 @@
       *
       *    »»ÄêÍúÎò¸¡º÷
            INITIALIZE                  SANTEI-REC
-           MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
+           MOVE    SPA-HOSPNUM          TO  SANTEI-HOSPNUM
            MOVE    SPA-PTID            TO  SANTEI-PTID
            MOVE    SPA-SRYYMD (1:6)    TO  SANTEI-SRYYM
            MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
@@ -738,7 +738,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                PERFORM 1000-SANTEI-CHK-SEC
       *        »»ÄêÍúÎò¸¡º÷
                INITIALIZE                  SANTEI-REC
-               MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
+               MOVE    SPA-HOSPNUM          TO  SANTEI-HOSPNUM
                MOVE    SPA-PTID            TO  SANTEI-PTID
                MOVE    WRK-STRYM           TO  SANTEI-SRYYM
     **         MOVE    LNK-SC91-SRYCD      TO  SANTEI-SRYCD
@@ -1130,7 +1130,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    »»ÄêÍúÎò¸¡º÷
       *    INITIALIZE                  SANTEI-REC
-      *    MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
+      *    MOVE    SPA-HOSPNUM          TO  SANTEI-HOSPNUM
       *    MOVE    SPA-PTID            TO  SANTEI-PTID
       *    MOVE    SPA-SRYYMD (1:6)    TO  SANTEI-SRYYM
       *    MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
@@ -1260,7 +1260,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                PERFORM 1000-SANTEI-CHK-SEC
       *        »»ÄêÍúÎò¸¡º÷
                INITIALIZE                  SANTEI-REC
-               MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
+               MOVE    SPA-HOSPNUM          TO  SANTEI-HOSPNUM
                MOVE    SPA-PTID            TO  SANTEI-PTID
                MOVE    WRK-STRYM           TO  SANTEI-SRYYM
     **         MOVE    LNK-SC91-SRYCD      TO  SANTEI-SRYCD
@@ -1415,7 +1415,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    SPACE               TO  SANTEI-REC
            INITIALIZE                  SANTEI-REC
-           MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
+           MOVE    SPA-HOSPNUM          TO  SANTEI-HOSPNUM
            MOVE    SPA-PTID            TO  SANTEI-PTID
            MOVE    SPA-SRYYMD (1:6)    TO  SANTEI-SRYYM
       *

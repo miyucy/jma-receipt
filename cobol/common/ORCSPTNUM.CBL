@@ -183,7 +183,7 @@
            END-IF
       *
            INITIALIZE                      ORCSPTIDAREA
-           MOVE    SPA-HOSPID          TO  SPTID-HOSPID
+           MOVE    SPA-HOSPNUM          TO  SPTID-HOSPNUM
            MOVE    SPTNUM-PTNUM        TO  SPTID-PTNUM
            CALL    "ORCSPTID"          USING   ORCSPTIDAREA
                                                SPA-1009-TBL
@@ -215,7 +215,7 @@
       *
       *    ´Á»ú¸¡º÷
            INITIALIZE                  PTINF-REC
-           MOVE    SPA-HOSPID          TO  PTINF-HOSPID
+           MOVE    SPA-HOSPNUM          TO  PTINF-HOSPNUM
            MOVE    SPACE               TO  PTINF-NAME
            MOVE    WRK-NAME
                                        TO  PTINF-NAME
@@ -260,7 +260,7 @@ grpsys                            SPA-AREA
       *    ´µ¼Ô·èÄê
            IF      IDX                 =   1
                INITIALIZE                      ORCSPTIDAREA
-               MOVE    SPA-HOSPID          TO  SPTID-HOSPID
+               MOVE    SPA-HOSPNUM          TO  SPTID-HOSPNUM
                MOVE    WRK-PTID            TO  SPTID-PTID
                CALL    "ORCSPTID"          USING   ORCSPTIDAREA
                                                    SPA-1009-TBL

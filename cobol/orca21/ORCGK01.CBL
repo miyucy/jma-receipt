@@ -1248,7 +1248,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    K01-PTNUM           TO  SPA-GMN-PTNUM
       *
            INITIALIZE                      ORCSPTIDAREA
-           MOVE    SPA-HOSPID          TO  SPTID-HOSPID
+           MOVE    SPA-HOSPNUM          TO  SPTID-HOSPNUM
            MOVE    SPA-GMN-PTNUM       TO  SPTID-PTNUM
            CALL    "ORCSPTID"          USING   ORCSPTIDAREA
       *---(01.00.02) LINE ADD START  ----------------------------------
@@ -1264,7 +1264,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *---(01.00.02) LINE ADD END    ----------------------------------
       *
       *    患者マスター存在チェック
-           MOVE    SPA-HOSPID          TO  PTINF-HOSPID
+           MOVE    SPA-HOSPNUM          TO  PTINF-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  PTINF-PTID
            PERFORM 900-PTINF-READ-SEC
            IF      FLG-PTINF       NOT =   ZERO
@@ -1437,7 +1437,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    入院履歴判定
            MOVE    SPACE               TO  PTNYUINRRK-REC
            INITIALIZE                  PTNYUINRRK-REC
-           MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID
+           MOVE    SPA-HOSPNUM          TO  PTNYUINRRK-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  PTNYUINRRK-PTID
       *
 grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
@@ -1511,7 +1511,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    受付マスタよりドクターコード設定
            MOVE    SPACE               TO  UKETUKE-REC
            INITIALIZE                  UKETUKE-REC
-           MOVE    SPA-HOSPID          TO  UKE-HOSPID
+           MOVE    SPA-HOSPNUM          TO  UKE-HOSPNUM
            MOVE    SPA-SYSYMD          TO  UKE-UKEYMD
            MOVE    SPA-GMN-PTID        TO  UKE-PTID
       *
@@ -1675,7 +1675,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    SPACE               TO  JYURRK-REC
            INITIALIZE                  JYURRK-REC
-           MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
+           MOVE    SPA-HOSPNUM          TO  JYURRK-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  JYURRK-PTID
            MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
            MOVE    SPA-GMN-SRYKA       TO  JYURRK-SRYKA
@@ -1765,7 +1765,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    収納テーブル読み込み
       *    MOVE    SPACE               TO  SYUNOU-REC
       *    INITIALIZE                  SYUNOU-REC
-      *    MOVE    SPA-HOSPID          TO  SYU-HOSPID
+      *    MOVE    SPA-HOSPNUM          TO  SYU-HOSPNUM
       *    MOVE    SPA-NYUGAIKBN       TO  SYU-NYUGAIKBN
       *    MOVE    SPA-GMN-PTID        TO  SYU-PTID
       *    MOVE    JYURRK-DENPNUM      TO  SYU-DENPNUM
@@ -2473,7 +2473,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****MOVE    "2"                 TO  SPA-NYUGAIKBN
       *
       *    患者マスター読み込み
-           MOVE    SPA-HOSPID          TO  PTINF-HOSPID
+           MOVE    SPA-HOSPNUM          TO  PTINF-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  PTINF-PTID
            PERFORM 900-PTINF-READ-SEC
            MOVE    PTINF-KANANAME      TO  SPA-KANANAME
@@ -2555,7 +2555,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPACE               TO  WRK-SRYYYMM
            MOVE    SPACE               TO  WKSRYACT-REC
            INITIALIZE                  WKSRYACT-REC
-           MOVE    SPA-HOSPID          TO  WKSRY-HOSPID
+           MOVE    SPA-HOSPNUM          TO  WKSRY-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  WKSRY-NYUGAIKBN
            MOVE    SPA-GMN-PTID        TO  WKSRY-PTID
            MOVE    SPA-GMN-SRYKA       TO  WKSRY-SRYKA

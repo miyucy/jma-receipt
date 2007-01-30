@@ -1092,7 +1092,7 @@
            IF     WRK-ICD-CDSYU    NOT =   SPACE
       *
                MOVE    SPACE               TO  INPUTCD-REC
-               MOVE    SPA-HOSPID          TO  ICD-HOSPID
+               MOVE    SPA-HOSPNUM          TO  ICD-HOSPNUM
                MOVE    WRK-ICD-CDSYU       TO  ICD-CDSYU
                MOVE    WRK-CD              TO  ICD-INPUTCD
       *

@@ -561,7 +561,7 @@
            INITIALIZE                      INPUTCD-REC
       *
            MOVE    SPACE               TO  INPUTCD-REC
-           MOVE    SPA-HOSPID          TO  ICD-HOSPID
+           MOVE    SPA-HOSPNUM          TO  ICD-HOSPNUM
       *    ´Á»úÆþÎÏ
            IF      FLG-KANJI           =   1
                MOVE    "J"                 TO  ICD-CDSYU

@@ -227,7 +227,7 @@
       *    入力セットマスタ検索
            MOVE    SPACE               TO  INPUTSET-REC
            INITIALIZE                      INPUTSET-REC
-           MOVE    SPA-HOSPID          TO  ISET-HOSPID
+           MOVE    SPA-HOSPNUM          TO  ISET-HOSPNUM
            MOVE    WRK-SETCD           TO  ISET-SETCD
            MOVE    SPA-SRYYMD          TO  ISET-YUKOSTYMD
            MOVE    SPA-SRYYMD          TO  ISET-YUKOEDYMD
@@ -737,7 +737,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    入力セットマスタ検索
            MOVE    SPACE               TO  INPUTSET-REC
            INITIALIZE                      INPUTSET-REC
-           MOVE    SPA-HOSPID          TO  ISET-HOSPID
+           MOVE    SPA-HOSPNUM          TO  ISET-HOSPNUM
            MOVE    WRK-SETCD           TO  ISET-SETCD
            MOVE    SPA-SRYYMD          TO  ISET-YUKOSTYMD
            MOVE    SPA-SRYYMD          TO  ISET-YUKOEDYMD
@@ -855,7 +855,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        41011921-INPSET-MEI-SEC           SECTION.
       *
            MOVE    SPACE               TO  INPUTCD-REC
-           MOVE    SPA-HOSPID          TO  ICD-HOSPID
+           MOVE    SPA-HOSPNUM          TO  ICD-HOSPNUM
            MOVE    "6"                 TO  ICD-CDSYU
       *
            STRING    WRK-INPUTCD       DELIMITED   BY  SPACE
