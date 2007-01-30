@@ -88,7 +88,7 @@
                05  ORC-LOCKCONST-WINDOW-T12   PIC  X(10)
                    VALUE   "S" .
                05  ORC-LOCKCONST-LD-T12  PIC  X(20)
-                   VALUE   "ORCA24" .
+                   VALUE   "ORCA23" .
                05  ORC-LOCKCONST-NAME-T12   PIC  X(40)  
                    VALUE   "¼ýÇ¼" .
              03  ORC-LOCKCONST-T13.

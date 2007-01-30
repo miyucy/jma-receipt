@@ -1374,6 +1374,10 @@
            IF      SLOCK-RETURN        NOT =   ZERO
                MOVE    "9999"          TO  SPA-ERRCD
            END-IF
+      *    排他中で更新のみの時
+           IF      SPA-LOCK            =   1
+               MOVE    SPACE           TO  SPA-ERRCD
+           END-IF
       *        ＯＫの時、ＳＰＡ確定後、元の画面へ
            IF      SPA-ERRCD           =   SPACE
                PERFORM 2021-SPA-OKSET-SEC
@@ -1418,6 +1422,10 @@
            END-IF
            IF      SLOCK-RETURN      NOT =   ZERO
                MOVE    "9999"          TO  SPA-ERRCD
+           END-IF
+      *    排他中で更新のみの時
+           IF      SPA-LOCK            =   1
+               MOVE    SPACE           TO  SPA-ERRCD
            END-IF
       *    ＯＫの時、ＳＰＡ確定後、元の画面へ
            IF      SPA-ERRCD           =   SPACE

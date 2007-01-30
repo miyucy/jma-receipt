@@ -45,6 +45,7 @@
       * 03.02.01     NACL-多々納  06/08/29  平成１８年１０月改正対応
       * 03.04.00     NACL-多々納  06/12/01  自賠責健保準拠追加
       * 03.04.01     NACL-多々納  06/12/14  薬剤附加チェック追加
+      * 03.04.02     NACL-多々納  07/01/30  排他中処理追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -9981,6 +9982,12 @@
                END-IF
            END-IF
       *
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-LOCK        =   2
+                   MOVE    "9998"              TO  SPA-ERRCD
+                   MOVE    1                   TO  SPA-LOCK
+               END-IF
+           END-IF
       *
            IF      SPA-ERRCD       NOT =   SPACE
                PERFORM 510-ERRSET-SEC
@@ -10223,6 +10230,14 @@
            MOVE    SPA-GMN-PTNUM       TO  K02N-PTNUM
            MOVE    SPA-GMN-KANANAME    TO  K02N-KANANAME
            MOVE    SPA-GMN-NAME        TO  K02N-NAME
+      *    排他中
+           IF      SPA-LOCK                =   ZERO
+               MOVE    "black"             TO  K02N-KANANAME-STYLE
+               MOVE    "black"             TO  K02N-NAME-STYLE
+           ELSE
+               MOVE    "red"               TO  K02N-KANANAME-STYLE
+               MOVE    "red"               TO  K02N-NAME-STYLE
+           END-IF
            MOVE    SPA-GMN-SEX         TO  K02N-SEX
            MOVE    SPA-GMN-HKNCOMBI-G
                                        TO  K02N-HKNCOMBI
@@ -10407,6 +10422,24 @@
            ELSE
                MOVE    WIDGET-INSENSITIVE  TO  K02N-B09S-STATE
            END-IF
+      *    排他中
+           IF      SPA-LOCK            =   ZERO
+               MOVE    WIDGET-NORMAL       TO  K02N-B12-STATE
+               MOVE    WIDGET-NORMAL       TO  K02N-B12S-STATE
+               MOVE    WIDGET-NORMAL       TO  K02N-B06S-STATE
+               MOVE    WIDGET-NORMAL       TO  K02N-B11S-STATE
+           ELSE
+               MOVE    WIDGET-INSENSITIVE  TO  K02N-B04S-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  K02N-B05S-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  K02N-B07S-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  K02N-B08S-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  K02N-B09S-STATE
+      *
+               MOVE    WIDGET-INSENSITIVE  TO  K02N-B12-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  K02N-B12S-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  K02N-B06S-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  K02N-B11S-STATE
+           END-IF
       *
            .
        51O-GSRAUTH-EXT.
@@ -10552,6 +10585,12 @@
                    MOVE    "他端末で使用中です。"
                                                TO  SPA-ERRMSG
                    MOVE    SLOCK-MSG           TO  SPA-ERRMSG(21:)
+               WHEN    "9998"
+                   STRING  "他端末で使用中です。"
+                           "更新はできません。"
+                           SLOCK-MSG           DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
            END-EVALUATE
       *
       *
@@ -11160,6 +11199,11 @@
            IF      SLOCK-RETURN    NOT =   ZERO
                MOVE    "9999"              TO  SPA-ERRCD
            END-IF
+      *    排他中
+           IF      SPA-LOCK            =   1
+               MOVE    SPACE               TO  SPA-ERRCD
+               MOVE    2                   TO  SPA-LOCK
+           END-IF
            .
        990-LOCK-IN-EXT.
            EXIT.
@@ -11178,6 +11222,11 @@
                                        ORCSLOCKAREA
            IF      SLOCK-RETURN    NOT =   ZERO
                MOVE    "9999"              TO  SPA-ERRCD
+           END-IF
+      *    排他中
+           IF      SPA-LOCK            =   1
+               MOVE    SPACE               TO  SPA-ERRCD
+               MOVE    2                   TO  SPA-LOCK
            END-IF
            .
        990-LOCK-IN2-EXT.

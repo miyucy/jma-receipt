@@ -4,9 +4,11 @@ K02	{
 			value	varchar(20);
 		};
 		KANANAME	{
+			style	varchar(20);
 			value	varchar(50);
 		};
 		NAME	{
+			style	varchar(20);
 			value	varchar(50);
 		};
 		BIRTHDAY	{
@@ -395,6 +397,12 @@ K02	{
 		};
 		LASTMID	{
 			value	varchar(20);
+		};
+		B12	{
+	           	state	int;
+		};
+		B12S	{
+	           	state	int;
 		};
 	};
 };

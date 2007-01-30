@@ -4,9 +4,11 @@ K02N	{
 			value	varchar(20);
 		};
 		KANANAME	{
+			style	varchar(20);
 			value	varchar(50);
 		};
 		NAME	{
+			style	varchar(20);
 			value	varchar(50);
 		};
 		SEX	{
@@ -420,6 +422,18 @@ K02N	{
 		KENSA	{
 			value	bool;
 			label	varchar(10);
+		};
+		B12	{
+	           	state	int;
+		};
+		B06S	{
+	           	state	int;
+		};
+		B11S	{
+	           	state	int;
+		};
+		B12S	{
+	           	state	int;
 		};
 	};
 };

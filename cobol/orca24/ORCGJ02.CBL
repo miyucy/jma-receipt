@@ -357,6 +357,7 @@
            03  WRK-IDG             PIC 9(04).
       * 
            03  WRK-ERRCD            PIC X(04).
+           03  WRK-HZN-ERRCD            PIC X(04).
            03  WRK-ERRCD02          PIC X(04).
       *    保険組合せ名称
            03  WRK-HKNCOMBI         PIC X(04).
@@ -3131,6 +3132,14 @@
            MOVE    SPA-GMN-PTNUM       TO  J02-PTNUM
            MOVE    SPA-GMN-KANANAME    TO  J02-KANANAME
            MOVE    SPA-GMN-NAME        TO  J02-NAME
+      *    排他中
+           IF      SPA-LOCK                =   ZERO
+               MOVE    "black"             TO  J02-NAME-STYLE
+               MOVE    "black"             TO  J02-KANANAME-STYLE
+           ELSE
+               MOVE    "red"               TO  J02-NAME-STYLE
+               MOVE    "red"               TO  J02-KANANAME-STYLE
+           END-IF
            MOVE    SPA-GMN-SEX         TO  J02-SEX
            MOVE    SPA-GMN-SRYYM       TO  J02-SRYYM
            MOVE    SPA-GMN-BIRTHDAYW   TO  J02-BIRTHDAY
@@ -3345,6 +3354,28 @@
       *    IF      SPA-J02-SYORI       =   2
       *        MOVE    WIDGET-NORMAL       TO  J02-HENSRYYMD-STATE
       *    END-IF
+      *    排他中
+           IF      SPA-LOCK            =   ZERO
+               MOVE    WIDGET-NORMAL       TO  J02-B04-STATE
+               MOVE    WIDGET-NORMAL       TO  J02-B05-STATE
+               MOVE    WIDGET-NORMAL       TO  J02-B08-STATE
+               MOVE    WIDGET-NORMAL       TO  J02-B12-STATE
+               MOVE    WIDGET-NORMAL       TO  J02-B02S-STATE
+               MOVE    WIDGET-NORMAL       TO  J02-B04S-STATE
+               MOVE    WIDGET-NORMAL       TO  J02-B09S-STATE
+               MOVE    WIDGET-NORMAL       TO  J02-B10S-STATE
+               MOVE    WIDGET-NORMAL       TO  J02-B11S-STATE
+           ELSE
+               MOVE    WIDGET-INSENSITIVE  TO  J02-B04-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  J02-B05-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  J02-B08-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  J02-B12-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  J02-B02S-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  J02-B04S-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  J02-B09S-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  J02-B10S-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  J02-B11S-STATE
+           END-IF
            .
        51O-GSRAUTH-EXT.
            EXIT.
@@ -3727,6 +3758,7 @@
                    MOVE    06              TO  SPA-GMN-CUR
                END-IF
            END-IF
+           MOVE    WRK-HZN-ERRCD       TO  SPA-ERRCD
       *
            .
        41010-PTNUM-SYORI-EXT.
@@ -11643,6 +11675,13 @@
                END-IF
            END-IF
       *
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-LOCK        =   2
+                   MOVE    "9998"              TO  SPA-ERRCD
+                   MOVE    1                   TO  SPA-LOCK
+               END-IF
+           END-IF
+      *
            IF      SPA-ERRCD       NOT =   SPACE
                PERFORM 510-ERRSET-SEC
                GO      TO      500-SET-SCREEN-EXT
@@ -11955,6 +11994,12 @@
                    MOVE    "他端末で使用中です。"
                                                TO  WRK-ERRMSG
                    MOVE    SLOCK-MSG           TO  WRK-ERRMSG(21:)
+               WHEN    "9998"
+                   STRING  "他端末で使用中です。" 
+                           "更新はできません。"    DELIMITED  BY  SIZE
+                           SLOCK-MSG               DELIMITED  BY  SIZE
+                                               INTO    WRK-ERRMSG
+                   END-STRING
       *
                WHEN    OTHER
                    MOVE    SPA-ERRCD
@@ -12649,6 +12694,11 @@
                                        ORCSLOCKAREA
            IF      SLOCK-RETURN    NOT =   ZERO
                MOVE    "9999"              TO  SPA-ERRCD
+           END-IF
+      *
+           IF      SPA-LOCK            =   1
+               MOVE    SPACE               TO  SPA-ERRCD
+               MOVE    2                   TO  SPA-LOCK
            END-IF
            .
        990-LOCK-IN-EXT.

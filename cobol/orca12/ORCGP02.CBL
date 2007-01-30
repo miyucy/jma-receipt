@@ -1391,6 +1391,7 @@
            END-IF
       *
            IF      SPA-ERRCD           =   SPACE
+               MOVE    SPA-ERRCD           TO  WRK-ERRCD
                MOVE    2                   TO  SPA-P02-SYORI
                MOVE    1                   TO  SPA-GMN-CUR
                PERFORM 310-SPA-SET-SEC
@@ -1399,6 +1400,7 @@
       *        前回患者
                MOVE    SPA-GMN-PTNUM       TO  SPA-LAST-PTNUM
                MOVE    SPA-GMN-PTID        TO  SPA-LAST-PTID
+               MOVE    WRK-ERRCD           TO  SPA-ERRCD
            END-IF
       *
            .
@@ -1808,7 +1810,8 @@
        210-BACK                    SECTION.
       *
       *----(01.00.03) LINE ADD START ----------------------------------
-           IF      SPA-UPDFLG          =   "1"
+           IF     (SPA-UPDFLG          =   "1" )
+              AND (SPA-LOCK            =   ZERO)
                MOVE    "0101"          TO  SPA-PIDCD
                GO      TO              210-BACK-EXT
            END-IF
@@ -3380,6 +3383,13 @@
        500-SET-SCREEN                  SECTION.
       *
            PERFORM 500-GMNHEN-SEC
+      *    排他中
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-LOCK        =   2
+                   MOVE    "9998"              TO  SPA-ERRCD
+                   MOVE    1                   TO  SPA-LOCK
+               END-IF
+           END-IF
       *
            IF      SPA-ERRCD       NOT =   SPACE
                PERFORM 510-ERRSET-SEC
@@ -4188,6 +4198,12 @@
                    MOVE    "他端末で使用中です。"
                                                TO  SPA-ERRMSG
                    MOVE    SLOCK-MSG           TO  SPA-ERRMSG(21:)
+               WHEN    "9998"
+                   STRING  "他端末で使用中です。" 
+                           "更新はできません。"    DELIMITED  BY  SIZE
+                           SLOCK-MSG               DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
            END-EVALUATE
            MOVE    MCP-WIDGET          TO  SPA-WIDGET
       *
@@ -4530,6 +4546,11 @@
                                        ORCSLOCKAREA
            IF      SLOCK-RETURN    NOT =   ZERO
                MOVE    "9999"              TO  SPA-ERRCD
+           END-IF
+      *
+           IF      SPA-LOCK            =   1
+               MOVE    SPACE               TO  SPA-ERRCD
+               MOVE    2                   TO  SPA-LOCK
            END-IF
            .
        990-LOCK-IN-EXT.

@@ -15,18 +15,19 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-000200 IDENTIFICATION          DIVISION.
-000300 PROGRAM-ID.             ORCSLOCK.
-000400*****************************************************************
-000500*  システム名        : ＯＲＣＡ
-000600*  サブシステム名    : 排他管理
-000700*  コンポーネント名  : 排他制御ＤＢ制御
-000800*  管理者            : 
-000900*  作成日付    作業者        記述
+       IDENTIFICATION          DIVISION.
+       PROGRAM-ID.             ORCSLOCK.
+      *****************************************************************
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 排他管理
+      *  コンポーネント名  : 排他制御ＤＢ制御
+      *  管理者            : 
+      *  作成日付    作業者        記述
       *  02/08/08    MCC−藤原　   新規作成
-001100*****************************************************************
+      *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  03.04.00    NACL-多々納  07/01/23  患者登録、診療行為、会計照会の排他修正
       *****************************************************************
 001200*
 001300 ENVIRONMENT             DIVISION.
@@ -36,17 +37,18 @@
 007000 DATA                    DIVISION.
 010200 WORKING-STORAGE         SECTION.
       *
-018000*    フラグ領域
+      *    フラグ領域
       *
-018100 01  FLG-AREA.
+       01  FLG-AREA.
            03  FLG-END                                 PIC 9(01).
            03  FLG-ARI                                 PIC 9(01).
-018900     03  FLG-LOCK                                PIC 9(01).
-018900     03  FLG-MAP                                 PIC 9(01).
+           03  FLG-LOCK                                PIC 9(01).
+           03  FLG-MAP                                 PIC 9(01).
            03  WRK-LOCK-MATCH-FLG                      PIC S9(09).
-020800*    カウント領域
-020900 01  CNT-AREA.
-021000     03  CNT-IN                                  PIC 9(06).
+           03  FLG-ALLCHK                              PIC 9(01).
+      *    カウント領域
+       01  CNT-AREA.
+           03  CNT-IN                                  PIC 9(06).
       *
        01  INDEX-AREA.
            03  IDX                                     PIC S9(03). 
@@ -55,7 +57,7 @@
            03  IDZZ                                    PIC S9(03). 
       *
       *
-024200 01  WRK-AREA.
+       01  WRK-AREA.
            03  WRK-SRYYMD.
                05  WRK-SRYYM           PIC 9(06).
                05  WRK-SRYDD           PIC 9(02).  
@@ -211,12 +213,22 @@
                                        WRK-AREA
                                        INDEX-AREA
            MOVE        ZERO            TO  SLOCK-RETURN  
+      *
+           MOVE    ZERO            TO  SPA-LOCK
+      *
       *    処理モードのチェック
            EVALUATE    SLOCK-MODE
       *    チェック＆ＬＯＣＫ
                WHEN    1
-                   IF  SPA-HAITAFLG    =      ZERO
-                       MOVE     ZERO   TO     SLOCK-RETURN
+      *            画面ＩＤより業務ＬＤを検索する
+                   PERFORM 1101-LD-GET-SEC
+      *            業務により排他フラグを無効にする
+                   IF      FLG-ALLCHK      =   ZERO
+                       IF  SPA-HAITAFLG    =      ZERO
+                           MOVE     ZERO   TO     SLOCK-RETURN
+                       ELSE
+                           PERFORM 110-CHK-SEC
+                       END-IF
                    ELSE
                        PERFORM 110-CHK-SEC
                    END-IF
@@ -248,7 +260,7 @@
       *
       *    画面ＩＤより業務ＬＤを検索する
       *    (当面、氏名検索以外は、画面ＩＤの上１桁で取得）
-           PERFORM 1101-LD-GET-SEC
+      *!!  PERFORM 1101-LD-GET-SEC
            IF      WRK-LD          =   SPACE
                    MOVE  99        TO  SLOCK-RETURN
                    GO    TO        110-CHK-EXT
@@ -287,6 +299,10 @@
                                              WRK-MSG-O1
                MOVE     10            TO     SLOCK-RETURN
                MOVE     WRK-MSG-AREA  TO     SLOCK-MSG
+      *        表示のみの設定
+               IF       FLG-ALLCHK    =   1
+                   MOVE    1              TO  SPA-LOCK
+               END-IF
            ELSE
       * チェックＯＫならば排他テーブル作成
                PERFORM  1101-LOCK-MAKE-SEC
@@ -374,6 +390,15 @@
                    MOVE    ORC-LOCKCONST-NAME (TBLLOCK-IDX)
                                               TO  WRK-LDNAME
            END-SEARCH
+      *
+      *    業務が患者登録・診療行為・会計照会はすべて排他処理を行う
+           IF      WRK-LD              =   "ORCA12"
+                                       OR  "ORCA21"
+                                       OR  "ORCA24"
+               MOVE    1               TO  FLG-ALLCHK
+           ELSE
+               MOVE    ZERO            TO  FLG-ALLCHK
+           END-IF
       *
            .
        1101-LD-GET-EXT.

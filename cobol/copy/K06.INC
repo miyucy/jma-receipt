@@ -4,8 +4,9 @@
                 04  K06-VALUE   PIC X(20).
               03  K06-SRYYM.
                 04  K06-VALUE   PIC X(7).
-              03  K06-KANANAME.
-                04  K06-VALUE   PIC X(30).
+              03  K06-KANANAME-G.
+                04  K06-KANANAME-STYLE   PIC X(20).
+                04  K06-KANANAME   PIC X(30).
               03  K06-MEISYO.
                 04  K06-VALUE   PIC X(70).
               03  K06-SEX.
@@ -19,8 +20,9 @@
                 04  K06-VALUE   PIC S9(1).
               03  K06-FSANTEIYMD.
                 04  K06-VALUE   PIC X(10).
-              03  K06-NAME.
-                04  K06-VALUE   PIC X(30).
+              03  K06-NAME-G.
+                04  K06-NAME-STYLE   PIC X(20).
+                04  K06-NAME   PIC X(30).
               03  K06-BIRTHDAY.
                 04  K06-VALUE   PIC X(9).
               03  K06-SELNUM.
@@ -57,3 +59,11 @@
                     06  K06-TMSANTEITEN PIC X(10).
                   05  K06-SELECT
                           PIC X       OCCURS  100 TIMES.
+              03  K06-B02.
+                04  K06-B02-STATE   PIC S9(9)   BINARY.
+              03  K06-B03.
+                04  K06-B03-STATE   PIC S9(9)   BINARY.
+              03  K06-B04.
+                04  K06-B04-STATE   PIC S9(9)   BINARY.
+              03  K06-B12.
+                04  K06-B12-STATE   PIC S9(9)   BINARY.

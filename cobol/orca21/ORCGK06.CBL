@@ -30,6 +30,7 @@
       *  01.00.01    MCC−多々納  01.04.18 戻る時、確認画面を表示する等
       *  01.00.02    MCC−多々納  02.05.20 保険組合せ追加
       *  01.00.03    NACL-多々納  05/11/17  MONFUNC 対応
+      *  03.04.00    NACL-多々納  07/01/30  排他中処理追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -121,6 +122,9 @@
                07  SPA-KEIFLG1             PIC 9(01).
                07  SPA-KEIFLG2             PIC 9(01).
       *----(01.00.01) LINE ADD END   ----------------------------------
+      *
+      *    画面色等
+           COPY    "ENUM-VALUE".
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -1986,6 +1990,14 @@
            MOVE    SPA-GMN-BIRTHDAY    TO  K06-BIRTHDAY
       *
            MOVE    SPA-NENREI-HEN      TO  K06-NENREI
+      *    排他中
+           IF      SPA-LOCK                =   ZERO
+               MOVE    "black"             TO  K06-KANANAME-STYLE
+               MOVE    "black"             TO  K06-NAME-STYLE
+           ELSE
+               MOVE    "red"               TO  K06-KANANAME-STYLE
+               MOVE    "red"               TO  K06-NAME-STYLE
+           END-IF
       *
            MOVE    ZERO                TO  K06-COUNT
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -2028,6 +2040,19 @@
            END-PERFORM
       *
            MOVE    SPA-GMN-SRYKAH         TO  K06-SRYKAMEI
+      *
+      *    排他中
+           IF      SPA-LOCK            =   ZERO
+               MOVE    WIDGET-NORMAL       TO  K06-B02-STATE
+               MOVE    WIDGET-NORMAL       TO  K06-B03-STATE
+               MOVE    WIDGET-NORMAL       TO  K06-B04-STATE
+               MOVE    WIDGET-NORMAL       TO  K06-B12-STATE
+           ELSE
+               MOVE    WIDGET-INSENSITIVE  TO  K06-B02-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  K06-B03-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  K06-B04-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  K06-B12-STATE
+           END-IF
       *
            PERFORM 5001-MAPCUR-SEC
       *

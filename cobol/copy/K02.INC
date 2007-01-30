@@ -19,10 +19,12 @@
       ****  02  K02-FIXED2.
               03  K02-PTNUM.
                 04  K02-VALUE   PIC X(20).
-              03  K02-KANANAME.
-                04  K02-VALUE   PIC X(50).
-              03  K02-NAME.
-                04  K02-VALUE   PIC X(50).
+              03  K02-KANANAME-G.
+                04  K02-KANANAME-STYLE   PIC X(20).
+                04  K02-KANANAME   PIC X(50).
+              03  K02-NAME-G.
+                04  K02-NAME-STYLE   PIC X(20).
+                04  K02-NAME   PIC X(50).
               03  K02-BIRTHDAY.
                 04  K02-VALUE   PIC X(9).
               03  K02-SEX.
@@ -123,4 +125,8 @@
                           PIC X       OCCURS  100 TIMES.
               03  K02-LASTMID.
                 04  K02-VALUE   PIC X(20).
+              03  K02-B12.
+                04  K02-B12-STATE   PIC S9(9)   BINARY.
+              03  K02-B12S.
+                04  K02-B12S-STATE   PIC S9(9)   BINARY.
 

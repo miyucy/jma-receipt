@@ -25,8 +25,9 @@
      *******02  P02-F6.
               03  P02-PTNUM.
                 04  P02-VALUE   PIC X(20).
-              03  P02-NAMEH.
-                04  P02-VALUE   PIC X(50).
+              03  P02-NAMEH-G.
+                04  P02-NAMEH-STYLE   PIC X(20).
+                04  P02-NAMEH         PIC X(50).
               03  P02-SEXH.
                 04  P02-VALUE   PIC X(2).
               03  P02-BIRTHDAYH.
@@ -43,6 +44,10 @@
                 04  P02-B04-STATE   PIC S9(9)   BINARY.
               03  P02-B10S.
                 04  P02-B10S-STATE   PIC S9(9)   BINARY.
+              03  P02-B12.
+                04  P02-B12-STATE   PIC S9(9)   BINARY.
+              03  P02-B05S.
+                04  P02-B05S-STATE   PIC S9(9)   BINARY.
               03  P02-NB2.
                 04  P02-PAGENO  PIC S9(9)   BINARY.
                 04  P02-FIXPAGE1.

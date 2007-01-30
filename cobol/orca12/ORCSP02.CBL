@@ -42,6 +42,7 @@
       * 02.00.10     NACL-多々納  06/05/18  請求書発行区分追加
       * 03.00.01     NACL-多々納  06/08/25  平成１８年１０月改正対応
       *                                     （老人割合変更）
+      * 03.04.00     NACL-多々納  07/01/29  排他制御修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2524,6 +2525,12 @@
       *    見出し状態
            MOVE    SPA-GMN-PTNUM           TO  P02-PTNUM
            MOVE    SPA-GMN-NAMEH           TO  P02-NAMEH
+           IF      SPA-LOCK                =   ZERO
+               MOVE    "black"             TO  P02-NAMEH-STYLE
+           ELSE
+               MOVE    "red"               TO  P02-NAMEH-STYLE
+           END-IF
+      *
            MOVE    SPA-GMN-SEXH            TO  P02-SEXH
            MOVE    SPA-GMN-BIRTHDAYH       TO  P02-BIRTHDAYH
            MOVE    SPA-GMN-KYUSEIH         TO  P02-KYUSEIH
@@ -2557,6 +2564,16 @@
                MOVE    WIDGET-INSENSITIVE  TO  P02-B04-STATE
            ELSE
                MOVE    WIDGET-NORMAL       TO  P02-B04-STATE
+           END-IF
+      *    排他中更新不可
+           IF      SPA-LOCK            =   ZERO
+               MOVE    WIDGET-NORMAL       TO  P02-B12-STATE
+               MOVE    WIDGET-NORMAL       TO  P02-B05S-STATE
+               MOVE    WIDGET-NORMAL       TO  P02-B04-STATE
+           ELSE
+               MOVE    WIDGET-INSENSITIVE  TO  P02-B12-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  P02-B05S-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  P02-B04-STATE
            END-IF
            .
        200-P02-SET-EXT.

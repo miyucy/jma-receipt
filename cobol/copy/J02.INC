@@ -4,10 +4,12 @@
                 04  J02-VALUE   PIC X(20).
               03  J02-SRYYM.
                 04  J02-VALUE   PIC X(6).
-              03  J02-KANANAME.
-                04  J02-VALUE   PIC X(50).
-              03  J02-NAME.
-                04  J02-VALUE   PIC X(50).
+              03  J02-KANANAME-G.
+                04  J02-KANANAME-STYLE   PIC X(20).
+                04  J02-KANANAME   PIC X(50).
+              03  J02-NAME-G.
+                04  J02-NAME-STYLE   PIC X(20).
+                04  J02-NAME   PIC X(50).
               03  J02-BIRTHDAY.
                 04  J02-VALUE   PIC X(9).
               03  J02-MEISYO.
@@ -89,3 +91,22 @@
               03  J02-NYUINMSG2.
                 04  J02-NYUINMSG2-STYLE   PIC X(20).
                 04  J02-NYUINMSG2-VALUE   PIC X(50).
+              03  J02-B04.
+                04  J02-B04-STATE   PIC S9(9)   BINARY.
+              03  J02-B05.
+                04  J02-B05-STATE   PIC S9(9)   BINARY.
+              03  J02-B08.
+                04  J02-B08-STATE   PIC S9(9)   BINARY.
+              03  J02-B12.
+                04  J02-B12-STATE   PIC S9(9)   BINARY.
+              03  J02-B02S.
+                04  J02-B02S-STATE   PIC S9(9)   BINARY.
+              03  J02-B04S.
+                04  J02-B04S-STATE   PIC S9(9)   BINARY.
+              03  J02-B09S.
+                04  J02-B09S-STATE   PIC S9(9)   BINARY.
+              03  J02-B10S.
+                04  J02-B10S-STATE   PIC S9(9)   BINARY.
+              03  J02-B11S.
+                04  J02-B11S-STATE   PIC S9(9)   BINARY.
+

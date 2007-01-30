@@ -7,6 +7,7 @@ K06	{
 			value	varchar(7);
 		};
 		KANANAME	{
+			style	varchar(20);
 			value	varchar(30);
 		};
 		MEISYO	{
@@ -118,6 +119,7 @@ K06	{
 			value	varchar(10);
 		};
 		NAME	{
+			style	varchar(20);
 			value	varchar(30);
 		};
 		BIRTHDAY	{
@@ -166,6 +168,18 @@ K06	{
 				}	[100];
 				select	bool[100];
 			};
+		};
+		B02	{
+	           	state	int;
+		};
+		B03	{
+	           	state	int;
+		};
+		B04	{
+	           	state	int;
+		};
+		B12	{
+	           	state	int;
 		};
 	};
 };
