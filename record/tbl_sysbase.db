@@ -28,7 +28,7 @@ path	all 	{
 		DECLARE tbl_sysbase_all_csr CURSOR FOR
 		SELECT	*
 		FROM	tbl_sysbase
-		ORDER	BY	:HOSPNUM
+		ORDER	BY	HOSPNUM
 		;
 	};
 };
