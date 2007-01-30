@@ -248,6 +248,9 @@
            03  WRK-PATH-TABLE          PIC X(64).
            03  WRK-PATH-PATHNAME       PIC X(64).
       *----(00.00.02)--ADD-END-----
+      *----(03.04.02)--ADD-START---
+           03  WRK-MISYUFLG            PIC X(02).
+      *----(03.04.02)--ADD-END-----
       *
       *    ∆¸…’ ‘Ω∏Õ—
            03  WRK-SYSYMD              PIC X(08).
@@ -594,6 +597,11 @@
                PERFORM 210-SYUKEI-READ-SEC
       *----(03.04.02)--ADD-START---
                IF      WRK-PARA-ZAIKBN     NOT =   "2"
+      *            Ã§¿¡µ·¿ﬂƒÍ ¨
+                   MOVE    "01"            TO  WRK-MISYUFLG
+                   PERFORM 210-SYUKA-READ-SEC
+      *            Ã§¿¡µ·≤ÚΩ¸ ¨
+                   MOVE    "02"            TO  WRK-MISYUFLG
                    PERFORM 210-SYUKA-READ-SEC
                END-IF
       *----(03.04.02)--ADD-END-----
@@ -2813,7 +2821,7 @@
            ELSE
                MOVE    "%"                 TO  SYUKA-NYUGAIKBN
            END-IF
-           MOVE    "01"                TO  SYUKA-MISEIKYU-FLG
+           MOVE    WRK-MISYUFLG        TO  SYUKA-MISEIKYU-FLG
            MOVE    SYUKA-REC           TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_syuka"         TO  MCP-TABLE
