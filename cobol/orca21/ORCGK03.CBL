@@ -5883,11 +5883,17 @@
                    MOVE    "調整金は整数７桁で入力して下さい。"
                                        TO  SPA-ERRMSG
                WHEN    "0002"
-                   MOVE    "患者マスタがありません。処理順エラー"
-                                       TO  SPA-ERRMSG
+                   STRING  "【患者情報が検索できませんでした。"
+                           "患者情報テーブルを確認して下さい。】"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "0003"
-                   MOVE    "伝票番号取得エラー"
-                                       TO  SPA-ERRMSG
+                   STRING  "【伝票番号が取得できませんでした。"
+                           "システム管理テーブルを確認して下さい。】"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "0004"
                    MOVE
                    "今回請求額がゼロ以下になります。"
@@ -5896,8 +5902,11 @@
                    "調整金を再入力して下さい"
                                        TO  SPA-ERRMSG(33:)
                WHEN    "0005"
-                   MOVE    "更新エラー"
-                                       TO  SPA-ERRMSG
+                   STRING  "【ＤＢ更新がエラーになりました。"
+                           "ＳＥに連絡して下さい。】"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
                WHEN    "0006"
                    MOVE    "請求書兼領収書選択エラー"
                                        TO  SPA-ERRMSG
@@ -6035,7 +6044,7 @@
                    END-STRING
       *
                WHEN    "9000"
-                   MOVE    "算定履歴の更新エラーです。"
+                   MOVE    "【算定履歴の更新ができませんでした】"
                                        TO  SPA-ERRMSG
                WHEN    "K001"
                    MOVE    SPA-ERRMSG2     TO  SPA-ERRMSG
@@ -6070,12 +6079,11 @@
       *
            EVALUATE    SPA-KIDCD
                WHEN    "0101"
-                   MOVE
-                   "継続分も含め受診履歴を削除します。"
-                                       TO  WRK-KIDMSG(1:34)
-                   MOVE
-                   "よろしいですか？"
-                                       TO  WRK-KIDMSG(35:)
+                   STRING  "継続分も含め受診履歴を削除します。"
+                           "よろしいですか？"
+                                            DELIMITED  BY  SIZE
+                                       INTO    WRK-KIDMSG
+                   END-STRING
            END-EVALUATE
       *
            MOVE    SPACE               TO  KID1
