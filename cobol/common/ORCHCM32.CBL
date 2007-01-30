@@ -32,6 +32,7 @@
       *  02.01.01    NACL-森脇    03/12/10  出力条件修正
       *  02.01.02    NACL-森脇    04/10/25  CLOSE追加
       *  02.01.03    NACL-森脇    04/11/09  パラメタ変更,バッチ処理に変更
+      *  03.04.01    NACL-森脇    07/01/30  自費消費税H19年4月対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -154,6 +155,9 @@
            03  CONST-HEN-MAX       PIC 9(05)   VALUE   12.
            03  CONST-LINE-MAX      PIC 9(05)   VALUE   12.
            03  CONST-SRH-COMB-MAX  PIC 9(03)   VALUE   100.
+      *----(03.04.01)--ADD-START---
+           03  CONST-H190401       PIC X(08)   VALUE   "20070401".
+      *----(03.04.01)--ADD-END-----
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -483,13 +487,16 @@
                                        +   SYU-TOTAL-TGMONEY-TAX
                                        +   SYU-JIHI-TOTAL
                                        +   SYU-JIHI-TOTAL-TAX
-                                       +   SYU-JIHI-TAX
+      *----(03.04.01)--UPD-START---
+               IF      SYU-SRYYMD  <   CONST-H190401
+                   COMPUTE WRK-JIHIMONEY   =   WRK-JIHIMONEY
+                                           +   SYU-JIHI-TAX
                    IF    ( WRK-HOJOKBN     =   "1" )
-                       COMPUTE WRK-JIHIMONEY
-                           =   WRK-JIHIMONEY
-                           +   SYU-SKYMONEY-TAX-SAI
+                       COMPUTE WRK-JIHIMONEY   =   WRK-JIHIMONEY
+                                               +   SYU-SKYMONEY-TAX-SAI
                    END-IF
-      *
+               END-IF
+      *----(03.04.01)--UPD-END-----
            ELSE
       *        保険点数
                COMPUTE WRK-HKNTEN      =   SYU-TOTAL-HKNTEN
@@ -512,7 +519,11 @@
                                        +   SYU-TOTAL-TGMONEY-TAX
                                        +   SYU-JIHI-TOTAL
                                        +   SYU-JIHI-TOTAL-TAX
-                                       +   SYU-JIHI-TAX
+      *----(03.04.01)--UPD-START---
+               IF      SYU-SRYYMD  <   CONST-H190401
+                   COMPUTE WRK-JIHIMONEY   =   WRK-JIHIMONEY
+                                           +   SYU-JIHI-TAX
+               END-IF
            END-IF
       *
       *    入金編集処理
