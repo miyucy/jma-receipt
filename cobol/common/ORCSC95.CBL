@@ -508,7 +508,7 @@
            MOVE    "*"                 TO  SYS-1001-KBNCD
            MOVE    SPA-SRYYMD          TO  SYS-1001-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-1001-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE SPA-HOSPNUM            TO  SYS-1001-HOSPNUM
            MOVE    SYS-1001-REC        TO  MCPDATA-REC
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -571,7 +571,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "*"                 TO  SYS-1008-KBNCD
            MOVE    SPA-SRYYMD          TO  SYS-1008-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-1008-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1008-HOSPNUM
            MOVE    SYS-1008-REC        TO  MCPDATA-REC
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -762,7 +762,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-SRYYMD          TO  SYS-1005-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-1005-EDYUKYMD
       *    システム管理検索
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
            MOVE    SYS-1005-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -808,7 +808,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "*"                 TO  SYS-1007-KBNCD
            MOVE    SPA-SRYYMD          TO  SYS-1007-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-1007-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1007-HOSPNUM
            MOVE    SYS-1007-REC        TO  MCPDATA-REC
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -859,7 +859,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "*"                 TO  SYS-1038-KBNCD
            MOVE    SPA-SRYYMD          TO  SYS-1038-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-1038-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1038-HOSPNUM
            MOVE    SYS-1038-REC        TO  MCPDATA-REC
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -903,7 +903,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "*"                 TO  SYS-1030-KBNCD
            MOVE    SPA-SRYYMD          TO  SYS-1030-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-1030-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1030-HOSPNUM
            MOVE    SYS-1030-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -944,7 +944,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-SRYYMD          TO  SYS-1006-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-1006-EDYUKYMD
       *    システム管理検索（施設基準）
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1006-HOSPNUM
            MOVE    SYS-1006-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -1008,7 +1008,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-SYSYMD          TO  SYS-1010-STYUKYMD
            MOVE    SPA-SYSYMD          TO  SYS-1010-EDYUKYMD
       *    システム管理検索
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
            MOVE    SYS-1010-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
@@ -1073,7 +1073,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "*"                 TO  SYS-1001-KBNCD
            MOVE    SPA-SRYYMD          TO  SYS-1001-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-1001-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
            MOVE    SYS-1001-REC        TO  MCPDATA-REC
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -1129,7 +1129,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "*"                 TO  SYS-1008-KBNCD
            MOVE    SPA-SRYYMD          TO  SYS-1008-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-1008-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1008-HOSPNUM
            MOVE    SYS-1008-REC        TO  MCPDATA-REC
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -1284,7 +1284,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-SRYYMD          TO  SYS-1005-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-1005-EDYUKYMD
       *    システム管理検索
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
            MOVE    SYS-1005-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -1330,7 +1330,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "*"                 TO  SYS-1007-KBNCD
            MOVE    SPA-SRYYMD          TO  SYS-1007-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-1007-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1007-HOSPNUM
            MOVE    SYS-1007-REC        TO  MCPDATA-REC
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -1368,7 +1368,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "*"                 TO  SYS-1038-KBNCD
            MOVE    SPA-SRYYMD          TO  SYS-1038-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-1038-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1038-HOSPNUM
            MOVE    SYS-1038-REC        TO  MCPDATA-REC
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -2337,7 +2337,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-SRYYMD          TO  SYS-1010-EDYUKYMD
            MOVE    SPA-DRCD            TO  SYS-1010-KBNCD
       *    システム管理検索
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
            MOVE    SYS-1010-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -2403,11 +2403,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            INITIALIZE                  ORCSHKNSETAREA
            MOVE    "1"                 TO  ORCSHKN-KBN
            MOVE    "1"                 TO  ORCSHKN-KBN2
-	   DISPLAY "koko st"
            CALL    "ORCSHKNSET"        USING
                                        SPA-AREA
                                        ORCSHKNSETAREA
-	   DISPLAY "koko ed"
            MOVE    ORCSHKN-HKN-MAX     TO  SPA-HKN-MAX
       *
            PERFORM VARYING     IDX     FROM   1   BY  1
@@ -5012,7 +5010,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPACE               TO  WRK-SRYYYMM
            MOVE    SPACE               TO  WKSRYACT-REC
            INITIALIZE                  WKSRYACT-REC
-           MOVE    SPA-HOSPNUM          TO  WKSRY-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  WKSRY-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  WKSRY-NYUGAIKBN
            MOVE    SPA-PTID            TO  WKSRY-PTID
            MOVE    SPA-SRYKA           TO  WKSRY-SRYKA
