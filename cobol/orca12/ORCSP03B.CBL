@@ -410,7 +410,8 @@
                MOVE    20                  TO  SPA-GMN-CUR
            END-IF
       *    Ï·¿Í¸øÈñ¤Ï£¸·å¤Ç¤¢¤ë¤³¤È
-           IF     (SPA-GMN-KOHNUM (IDX-K)  =   "027" ) AND
+           IF     (SPA-GMN-FTNJANUM (IDX-K)  NOT =   SPACE ) AND
+                  (SPA-GMN-KOHNUM   (IDX-K)  =   "027" ) AND
                   (KANACHK-MAX         NOT =   8     )
                IF      SPA-ERRCD           =   SPACE
                    MOVE    "0071"              TO  SPA-ERRCD
