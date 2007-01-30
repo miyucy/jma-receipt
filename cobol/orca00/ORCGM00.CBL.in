@@ -92,6 +92,7 @@
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-OK              PIC 9(01).
            03  FLG-DBKANRI         PIC 9(01).
+           03  FLG-MSTKANRI        PIC 9(01).
       *
       *    システム領域
        01  SYS-AREA.
@@ -171,6 +172,9 @@
       *    ＤＢ管理
        01  DBKANRI-REC.
            COPY    "CPDBKANRI.INC".
+      *    マスタ管理
+       01  MSTKANRI-REC.
+           COPY    "CPMSTKANRI.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -352,6 +356,10 @@
       *---- (01.00.04) LINE ADD END   --------------------------------
       *
            INITIALIZE              SPA-AREA
+      *    医療機関識別番号セット SPA-HOSPNUM
+           CALL    "ORCSHOSPNUM"   USING
+                                       MCPAREA
+                                       SPA-AREA
       *    システム日付セット
            ACCEPT  SYS-YMD         FROM    DATE
            COMPUTE WRK-SYSYY       =   SYS-YY      +   2000
@@ -402,7 +410,7 @@
            MOVE    "*"                 TO  SYS-1001-KBNCD
            MOVE    SPA-SYSYMD          TO  SYS-1001-STYUKYMD
            MOVE    SPA-SYSYMD          TO  SYS-1001-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
            MOVE    SYS-1001-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -504,7 +512,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "*"                 TO  SYS-1009-KBNCD
            MOVE    SPA-SYSYMD          TO  SYS-1009-STYUKYMD
            MOVE    SPA-SYSYMD          TO  SYS-1009-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1009-HOSPNUM
            MOVE    SYS-1009-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -584,7 +592,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "*"                 TO  SYS-9800-KBNCD
            MOVE    SPA-SYSYMD          TO  SYS-9800-STYUKYMD
            MOVE    SPA-SYSYMD          TO  SYS-9800-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-9800-HOSPNUM
            MOVE    SYS-9800-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -634,7 +642,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            END-STRING
            MOVE    SPA-SYSYMD          TO  SYS-1010-STYUKYMD
            MOVE    SPA-SYSYMD          TO  SYS-1010-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
            MOVE    SYS-1010-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
@@ -693,7 +701,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "*"                 TO  SYS-2009-KBNCD
            MOVE    SPA-SYSYMD          TO  SYS-2009-STYUKYMD
            MOVE    SPA-SYSYMD          TO  SYS-2009-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-2009-HOSPNUM
            MOVE    SYS-2009-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -723,7 +731,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            PERFORM 990-DBCLOSE-SEC
       *
       *    点数マスタ更新判定(2006/7/27分更新）
-           PERFORM 3101-DBKANRI-SET-SEC
+           PERFORM 3101-MSTKANRI-SET-SEC
       *
       *     リダイレクタ不整チェック追加
            IF  MCP-DBSTATUS                =   "DISC"
@@ -741,8 +749,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    ZERO                TO  FLG-DBKANRI
            INITIALIZE                      DBKANRI-REC
-           MOVE    "ORCADB00"          TO  DBKANRI-KANRICD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+      **** MOVE    "ORCADB00"          TO  DBKANRI-KANRICD
            MOVE    DBKANRI-REC         TO  MCPDATA-REC
            MOVE    "tbl_dbkanri"       TO  MCP-TABLE 
            MOVE    "key"               TO  MCP-PATHNAME 
@@ -799,42 +806,42 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
       *    点数マスタ更新判定処理
       *****************************************************************
-       3101-DBKANRI-SET-SEC                SECTION.
+       3101-MSTKANRI-SET-SEC               SECTION.
       *
-           INITIALIZE                  DBKANRI-REC
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
-           MOVE    DBKANRI-REC         TO  MCPDATA-REC
-           MOVE    "tbl_dbkanri"       TO  MCP-TABLE 
+           INITIALIZE                      MSTKANRI-REC
+           MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
+           MOVE    MSTKANRI-REC        TO  MCPDATA-REC
+           MOVE    "tbl_mstkanri"      TO  MCP-TABLE 
            MOVE    "all"               TO  MCP-PATHNAME 
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_dbkanri"   TO  MCP-TABLE 
+               MOVE    "tbl_mstkanri"  TO  MCP-TABLE 
                MOVE    "all"           TO  MCP-PATHNAME 
-               PERFORM 900-DBKANRI-READ-SEC
+               PERFORM 900-MSTKANRI-READ-SEC
            ELSE
-               INITIALIZE                      DBKANRI-REC
-               MOVE    1                   TO  FLG-DBKANRI
+               INITIALIZE                  MSTKANRI-REC
+               MOVE    1               TO  FLG-MSTKANRI
            END-IF
            MOVE    ZERO                TO  SPA-DBUPDKBN
-           PERFORM UNTIL   FLG-DBKANRI     =   1
-               IF      DBKANRI-KANRICD     =   "ORCADB00"
-                   IF      DBKANRI-DBRVERSION1 >=
+           PERFORM UNTIL   FLG-MSTKANRI    =   1
+               IF      MSTKANRI-KANRICD    =   "ORCADB00"
+                   IF      MSTKANRI-DBRVERSION1 >=
                                            "R-020800-2-20060727-1"
                        MOVE    1               TO  SPA-DBUPDKBN
                    END-IF
-                   MOVE    1                   TO  FLG-DBKANRI
+                   MOVE    1                   TO  FLG-MSTKANRI
                END-IF
-               IF      FLG-DBKANRI         =   ZERO
-                   MOVE    "tbl_dbkanri"   TO  MCP-TABLE 
+               IF      FLG-MSTKANRI        =   ZERO
+                   MOVE    "tbl_mstkanri"  TO  MCP-TABLE 
                    MOVE    "all"           TO  MCP-PATHNAME 
-                   PERFORM 900-DBKANRI-READ-SEC
+                   PERFORM 900-MSTKANRI-READ-SEC
                END-IF
            END-PERFORM
-           MOVE    "tbl_dbkanri"       TO  MCP-TABLE 
+           MOVE    "tbl_mstkanri"      TO  MCP-TABLE 
            MOVE    "all"               TO  MCP-PATHNAME 
            PERFORM 990-DBCLOSE-SEC
            .
-       3101-DBKANRI-SET-EXT.
+       3101-MSTKANRI-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1169,7 +1176,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "*"                 TO  SYS-1003-KBNCD
            MOVE    SPA-SYSYMD          TO  SYS-1003-STYUKYMD
            MOVE    SPA-SYSYMD          TO  SYS-1003-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1003-HOSPNUM
            MOVE    SYS-1003-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -1321,9 +1328,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        900-SYSKANRI-READ-SEC           SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys*                           COMMON-SPA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-SYSKANRI
            ELSE
@@ -1338,10 +1346,11 @@ grpsys*                           COMMON-SPA
       *****************************************************************
        900-DBKANRI-READ-SEC         SECTION.
       *
-           MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys*                           COMMON-SPA
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  DBKANRI-REC
                MOVE    ZERO            TO  FLG-DBKANRI
@@ -1354,14 +1363,35 @@ grpsys*                           COMMON-SPA
        900-DBKANRI-READ-EXT.
            EXIT.
       *****************************************************************
+      *    マスタ管理読込み処理
+      *****************************************************************
+       900-MSTKANRI-READ-SEC        SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  MSTKANRI-REC
+               MOVE    ZERO            TO  FLG-MSTKANRI
+           ELSE
+               INITIALIZE                  MSTKANRI-REC
+               MOVE    1               TO  FLG-MSTKANRI
+           END-IF
+           .
+       900-MSTKANRI-READ-EXT.
+           EXIT.
+      *****************************************************************
       *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys*                           COMMON-SPA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -1373,9 +1403,10 @@ grpsys*                           COMMON-SPA
        910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys*                           COMMON-SPA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
            .
        910-DBFETCH-EXT.
@@ -1386,9 +1417,10 @@ grpsys*                           COMMON-SPA
        990-DBCLOSE-SEC                 SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys*                           COMMON-SPA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
            .
        990-DBCLOSE-EXT.
@@ -1399,10 +1431,11 @@ grpsys*                           COMMON-SPA
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *
-           MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys*                           COMMON-SPA
+           MOVE    "PUTWINDOW"         TO  MCP-FUNC.
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.
