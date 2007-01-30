@@ -59,13 +59,11 @@
                     06  K06-TMSANTEITEN PIC X(10).
                   05  K06-SELECT
                           PIC X       OCCURS  100 TIMES.
+              03  K06-B02.
+                04  K06-B02-STATE   PIC S9(9)   BINARY.
               03  K06-B03.
                 04  K06-B03-STATE   PIC S9(9)   BINARY.
+              03  K06-B04.
+                04  K06-B04-STATE   PIC S9(9)   BINARY.
               03  K06-B12.
                 04  K06-B12-STATE   PIC S9(9)   BINARY.
-              03  K06-B08.
-                04  K06-B08-STATE   PIC S9(9)   BINARY.
-              03  K06-B09.
-                04  K06-B09-STATE   PIC S9(9)   BINARY.
-              03  K06-B10.
-                04  K06-B10-STATE   PIC S9(9)   BINARY.

@@ -40,9 +40,6 @@
       *   01.00.09    NACL-多々納  04/07/22  保険の追加
       *   01.00.10    NACL-多々納  05/11/10  MONFUNCの修正
       *   03.03.00    NACL-多々納  06/10/06  名前検索の追加
-      *   03.05.00    NACL-多々納  07/06/05  前回来院日の共通化
-      *   04.01.00    NACL-多々納  08/01/30  次頁の画面表示追加
-      *   04.05.00    NACL-多々納  09/10/27  拡張漢字対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -147,9 +144,6 @@
            03  IDX4                PIC 9(04).
            03  IDK                 PIC 9(04).
       *
-           03  IDX-S1              PIC 9(04).
-           03  IDX-S2              PIC 9(04).
-      *
       *    一時領域
        01  WRK-AREA.
            03  WRK-SYMD.
@@ -162,7 +156,7 @@
                05  WRK-WMM         PIC 9(02).
                05  WRK-WDD         PIC 9(02).
            03  WRK-MOJISU          PIC 9(04).
-           03  WRK-NAME            PIC X(30).
+           03  WRK-NAME            PIC X(15).
            03  WRK-YY              PIC 9(02).
            03  WRK-SAKIPG          PIC X(08).
            03  WRK-NAME1           PIC X(30).
@@ -171,7 +165,6 @@
            03  WRK-STR             PIC 9(04).
       *
            03  WRK-LSTYMD              PIC X(08).
-           03  WRK-LSTYMDW             PIC X(09).
            03  WRK-SRYKA               PIC X(02).
            03  WRK-BRMNUM.
                05  WRK-BRMNUM1             PIC X(02).
@@ -202,11 +195,6 @@
            03  WRK-HKNCOMBI-MEI    PIC X(10).
            03  WRK-HKNNUM          PIC X(03).
            03  WRK-HONKZKKBN-MEI   PIC X(02).
-      *
-           03  WRK-E-NAME          PIC X(30).
-           03  WRK-H-NAME          PIC X(30).
-           03  WRK-H-NAME-G.
-               05  WRK-H-NAME1         PIC X(02).
       *
       *   年齢表示
        01  WRK-NENREI-G.
@@ -249,14 +237,6 @@
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
-      *    全角チェックパラメタ（拡張）
-           COPY    "CPORCSKANACHK2.INC".
-      *
-      *    拡張文字対応
-           COPY    "CPORCSSTRING.INC".
-      *
-      *    前回来院日設定パラメタ
-           COPY    "CPORCSLASTYMD.INC".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -573,33 +553,18 @@
        209-NAMEKEN-SEC                 SECTION.
       *
       *    全角変換処理
-           IF      SPA-ENCODING        =   2
-      *        拡張漢字対応
-               INITIALIZE                  ORCSKANACHK2AREA
-               MOVE    "2"                 TO  KANACHK2-SYORI
-               MOVE    SPA-GMN-NAMEKEN     TO  KANACHK2-MAE-INPUT
-               CALL    "ORCSKANACHK2"      USING
-                                           ORCSKANACHK2AREA
-               MOVE    KANACHK2-MAE-INPUT  TO  SPA-GMN-NAMEKEN
-               IF      ( KANACHK2-RC       =   ZERO )
-                   MOVE    KANACHK2-OUT-INPUT
-                                           TO  SPA-GMN-NAMEKEN
-               END-IF
-           ELSE
-      *        拡張漢字不可
-               INITIALIZE                  ORCSKANACHKAREA
-               MOVE    "2"                 TO  KANACHK-SYORI
-               MOVE    SPA-GMN-NAMEKEN     TO  KANACHK-MAE-INPUT
-               CALL    "ORCSKANACHK"       USING
-                                           ORCSKANACHKAREA
-               MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-NAMEKEN
-               IF      ( KANACHK-RC        =   ZERO )
-                   MOVE    KANACHK-OUT-INPUT
-                                           TO  SPA-GMN-NAMEKEN
-               END-IF
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "2"             TO  KANACHK-SYORI
+           MOVE    SPA-GMN-NAMEKEN TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"   USING
+                                       ORCSKANACHKAREA
+           MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-NAMEKEN
+           IF      ( KANACHK-RC    =   ZERO )
+               MOVE    KANACHK-OUT-INPUT
+                                   TO  SPA-GMN-NAMEKEN
            END-IF
            IF      SPA-GMN-NAMEKEN     =   SPACE
-               MOVE    SPACE               TO  SPA-NAI-NAMEKEN
+               MOVE    SPACE           TO  SPA-NAI-NAMEKEN
            ELSE
                MOVE    SPACE               TO  SPA-NAI-NAMEKEN
       *        氏名検索用編集
@@ -615,81 +580,28 @@
       *****************************************************************
        2091-NAME-HEN-SEC                 SECTION.
       *
-           MOVE    SPA-GMN-NAMEKEN     TO  WRK-NAME
            MOVE    SPACE               TO  WRK-NAME1
            MOVE    SPACE               TO  WRK-NAME2
-      *    ＊の次の　削除
-           INITIALIZE                  ORCSSTRINGAREA
-           MOVE    "sub"               TO  ORCSSTR-COMMAND
-           MOVE    WRK-NAME            TO  ORCSSTR-STRING1
-           MOVE    "＊　"              TO  ORCSSTR-STRING2
-           MOVE    "＊"                TO  ORCSSTR-STRING3
-           CALL    "orcsstring"        USING
-                                       ORCSSTRINGAREA
-           MOVE    ORCSSTR-STRING1     TO  WRK-NAME
-      *    ＊は名前とする
-           INITIALIZE                  ORCSSTRINGAREA
-           MOVE    "search"            TO  ORCSSTR-COMMAND
-           MOVE    WRK-NAME            TO  ORCSSTR-STRING1
-           MOVE    "＊"                TO  ORCSSTR-STRING2
-           CALL    "orcsstring"        USING
-                                       ORCSSTRINGAREA
-           IF      ORCSSTR-NUM1        =   ZERO
-               MOVE    WRK-NAME            TO  WRK-NAME1
-           ELSE
-               MOVE    ORCSSTR-NUM1        TO  IDX-S1
-               MOVE    ORCSSTR-NUM2        TO  IDX-S2
-               IF      ORCSSTR-NUM1        =   1
-                   MOVE    SPACE               TO  WRK-NAME1
+           MOVE    1                   TO  IDX2
+           PERFORM VARYING     IDX     FROM    1   BY  2
+                   UNTIL       IDX     >   KANACHK-MAX
+               IF      SPA-GMN-NAMEKEN(IDX:2)  =   "＊"
+                   COMPUTE IDX3            =   IDX     +  2
+                   IF      SPA-GMN-NAMEKEN (IDX3:2)    =   "　"
+                       COMPUTE IDX3            =   IDX3     +  2
+                   END-IF
+                   IF      SPA-GMN-NAMEKEN (IDX3:) =   SPACE
+                       MOVE    SPACE               TO  WRK-NAME2
+                   ELSE
+                       MOVE    SPA-GMN-NAMEKEN (IDX3:) TO  WRK-NAME2
+                   END-IF
+                   MOVE    KANACHK-MAX             TO  IDX
                ELSE
-                   INITIALIZE                  ORCSSTRINGAREA
-                   MOVE    "substr"            TO  ORCSSTR-COMMAND
-                   MOVE    WRK-NAME            TO  ORCSSTR-STRING1
-                   MOVE    1                   TO  ORCSSTR-NUM1
-                   COMPUTE ORCSSTR-NUM2        =   IDX-S1
-                                               -   1
-                   CALL    "orcsstring"        USING
-                                               ORCSSTRINGAREA
-                   MOVE    ORCSSTR-STRING2     TO  WRK-NAME1
+                   MOVE    SPA-GMN-NAMEKEN (IDX:2) TO  WRK-NAME1
+                                                               (IDX2:2)
+                   ADD     2                   TO  IDX2
                END-IF
-      *
-               INITIALIZE                  ORCSSTRINGAREA
-               MOVE    "substr"            TO  ORCSSTR-COMMAND
-               MOVE    WRK-NAME            TO  ORCSSTR-STRING1
-               COMPUTE ORCSSTR-NUM1        =   IDX-S1
-                                           +   1
-               MOVE    0                   TO  ORCSSTR-NUM2
-               CALL    "orcsstring"        USING
-                                           ORCSSTRINGAREA
-               MOVE    ORCSSTR-STRING2     TO  WRK-NAME2
-           END-IF
-      *TEST
-      *    DISPLAY "SPA-GMN-NAMEKEN:" SPA-GMN-NAMEKEN
-      *    DISPLAY "WRK-NAME1:" WRK-NAME1
-      *    DISPLAY "WRK-NAME2:" WRK-NAME2
-      *     
-      *    MOVE    SPACE               TO  WRK-NAME1
-      *    MOVE    SPACE               TO  WRK-NAME2
-      *    MOVE    1                   TO  IDX2
-      *    PERFORM VARYING     IDX     FROM    1   BY  2
-      *            UNTIL       IDX     >   KANACHK-MAX
-      *        IF      SPA-GMN-NAMEKEN(IDX:2)  =   "＊"
-      *            COMPUTE IDX3            =   IDX     +  2
-      *            IF      SPA-GMN-NAMEKEN (IDX3:2)    =   "　"
-      *                COMPUTE IDX3            =   IDX3     +  2
-      *            END-IF
-      *            IF      SPA-GMN-NAMEKEN (IDX3:) =   SPACE
-      *                MOVE    SPACE               TO  WRK-NAME2
-      *            ELSE
-      *                MOVE    SPA-GMN-NAMEKEN (IDX3:) TO  WRK-NAME2
-      *            END-IF
-      *            MOVE    KANACHK-MAX             TO  IDX
-      *        ELSE
-      *            MOVE    SPA-GMN-NAMEKEN (IDX:2) TO  WRK-NAME1
-      *                                                        (IDX2:2)
-      *            ADD     2                   TO  IDX2
-      *        END-IF
-      **** END-PERFORM
+           END-PERFORM
       *
            MOVE    SPACE           TO  SPA-NAI-NAMEKEN
            IF     (WRK-NAME1       NOT =   SPACE ) AND
@@ -871,7 +783,7 @@
       *
       *    検索
            INITIALIZE                  PTINF-REC
-      *****MOVE    SPA-HOSPID          TO  PTINF-HOSPID
+           MOVE    SPA-HOSPID          TO  PTINF-HOSPID
            MOVE    SPACE               TO  PTINF-NAME
            MOVE    SPA-NAI-NAMEKEN     TO  PTINF-NAME
            MOVE    SPA-NAI-NAMEKEN     TO  PTINF-KANANAME
@@ -902,7 +814,6 @@
                MOVE    "key9"              TO  WRK-ORC-DBPATH
            END-IF
       *    患者マスターを漢字氏名で検索
-           MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
            MOVE    WRK-ORC-DBPATH      TO  MCP-PATHNAME
@@ -963,10 +874,10 @@
            MOVE    WRK-ORC-DBPATH      TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-      ***  IF     (SPA-GMN-NEXT    =   1    )  AND
-      *           (FLG-KNJHEN      =   ZERO )
-      *        MOVE    "0003"          TO  SPA-ERRCD
-      **** END-IF
+           IF     (SPA-GMN-NEXT    =   1    )  AND
+                  (FLG-KNJHEN      =   ZERO )
+               MOVE    "0003"          TO  SPA-ERRCD
+           END-IF
       *
            .
        2011-KNJKEN-HEN-EXT.
@@ -989,10 +900,12 @@
                MOVE    PTINF-PTID          TO  SPA-NAI-PTID  (IDX)
       *
                INITIALIZE                      ORCSPTIDAREA
-               MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
+               MOVE    SPA-HOSPID          TO  SPTID-HOSPID
                MOVE    PTINF-PTID          TO  SPTID-PTID
                CALL    "ORCSPTID"      USING   ORCSPTIDAREA
-                                               SPA-AREA
+      *----(01.00.02) LINE ADD START -------------------------------
+                                               SPA-1009-TBL
+      *----(01.00.02) LINE ADD END   -------------------------------
                IF      SPTID-RC        NOT =   ZERO
                    MOVE    SPACE           TO  SPA-GMN-PTNUM  (IDX)
                ELSE
@@ -1011,11 +924,10 @@
                MOVE    PTINF-BIRTHDAY      TO  WRK-SYMD
                PERFORM 700-SEIWA-HEN-SEC
                MOVE    WRK-HENYMDG         TO  SPA-GMN-BIRTH  (IDX)
-      *****    最終受診日セット
-      *        IF      FLG-NYUIN           =   ZERO
-      *            PERFORM 20121-JYURRK-HEN-SEC
-      *****    END-IF
-               MOVE    WRK-LSTYMDW        TO  SPA-GMN-RRKYMD (IDX)
+      *        最終受診日セット
+               IF      FLG-NYUIN           =   ZERO
+                   PERFORM 20121-JYURRK-HEN-SEC
+               END-IF
       *        診療科編集
                SET     SRYKA-IDX           TO  1
                SEARCH      TBL-SRYKA-OCC   VARYING   SRYKA-IDX
@@ -1030,7 +942,7 @@
       *        年齢計算
                PERFORM 20122-NENREI-KEI-SEC
       *        保険表示
-      ******   PERFORM 20123-HKNCOMBI-MEI-SEC
+               PERFORM 20123-HKNCOMBI-MEI-SEC
                MOVE    WRK-HKNCOMBI-MEI    TO  SPA-GMN-HKNCOMBI (IDX)
                MOVE    WRK-HONKZKKBN-MEI   TO  SPA-GMN-HONKZKKBN (IDX)
       *
@@ -1051,12 +963,11 @@
       *
            MOVE    SPACE               TO  JYURRK-REC
            INITIALIZE                  JYURRK-KEY
-      *****MOVE    PTINF-HOSPID        TO  JYURRK-HOSPID
+           MOVE    PTINF-HOSPID        TO  JYURRK-HOSPID
            MOVE    "2"                 TO  JYURRK-NYUGAIKBN
            MOVE    PTINF-PTID          TO  JYURRK-PTID
            MOVE    SPA-SYSYMD          TO  JYURRK-SRYYMD
       *
-           MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -1101,10 +1012,9 @@
       *    診療科歴を検索
            MOVE    SPACE               TO  SRYKARRK-REC
            INITIALIZE                  SRYKARRK-REC
-      *****MOVE    PTINF-HOSPID        TO  KARRK-HOSPID
+           MOVE    PTINF-HOSPID        TO  KARRK-HOSPID
            MOVE    PTINF-PTID          TO  KARRK-PTID
       *
-           MOVE    SPA-HOSPNUM         TO  KARRK-HOSPNUM
            MOVE    SRYKARRK-REC        TO  MCPDATA-REC
            MOVE    "tbl_srykarrk"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -1144,49 +1054,17 @@
       *    病室編集処理
       *****************************************************************
        20111-NYUINCHK-SEC               SECTION.
-      *
-      *    前回来院日編集
-           INITIALIZE                  ORCSLASTYMDAREA
-           MOVE    PTINF-PTID          TO  ORCSLASTYMD-PTID
-           CALL    "ORCSLASTYMD"       USING
-                                       ORCSLASTYMDAREA
-                                       SPA-AREA
-           IF      ORCSLASTYMD-BRMNUM  =   SPACE
-               MOVE    ZERO                TO  FLG-NYUIN
-           ELSE
-               MOVE    1                   TO  FLG-NYUIN
-           END-IF
-           MOVE    ORCSLASTYMD-BRMNUM      TO  WRK-BRMNUM
-           MOVE    ORCSLASTYMD-SRYKA       TO  WRK-SRYKA
-           MOVE    ORCSLASTYMD-LASTYMDW    TO  WRK-LSTYMDW
-           MOVE    ORCSLASTYMD-HKNCOMBI-MEI    TO  WRK-HKNCOMBI-MEI
-           MOVE    ORCSLASTYMD-HONKZKKBN   TO  WRK-HONKZKKBN-MEI
-      *
-           EVALUATE    SPA-GMN-KNYUGAIKBN
-               WHEN    "1"
-                   IF      FLG-NYUIN       =   ZERO
-                       MOVE    ZERO            TO  FLG-OK
-                   END-IF
-               WHEN    "2"
-                   IF      FLG-NYUIN       =   1
-                       MOVE    ZERO            TO  FLG-OK
-                   END-IF
-           END-EVALUATE
-      *TEST
-      *    以下削除
-           GO      TO  20111-NYUINCHK-EXT.
       *    病室編集
            MOVE    ZERO                TO  FLG-NYUIN
       *
       *    入院履歴判定
            MOVE    SPACE               TO  PTNYUINRRK-REC
            INITIALIZE                  PTNYUINRRK-REC
-      *****MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID
+           MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID
            MOVE    PTINF-PTID          TO  PTNYUINRRK-PTID
            MOVE    SPA-SYSYMD          TO  PTNYUINRRK-NYUINYMD
            MOVE    SPA-SYSYMD          TO  PTNYUINRRK-TAIINYMD
       *
-           MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
            MOVE    "key11"             TO  MCP-PATHNAME
@@ -1298,7 +1176,6 @@
            MOVE    SPA-SYSYMD          TO  SYS-1005-STYUKYMD
            MOVE    SPA-SYSYMD          TO  SYS-1005-EDYUKYMD
       *    システム管理検索
-           MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
            MOVE    SYS-1005-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -1358,11 +1235,10 @@
       *
            MOVE    SPACE               TO  HKNCOMBI-REC
            INITIALIZE                  HKNCOMBI-REC
-      *****MOVE    PTINF-HOSPID        TO  COMB-HOSPID
+           MOVE    PTINF-HOSPID        TO  COMB-HOSPID
            MOVE    PTINF-PTID          TO  COMB-PTID
            MOVE    WRK-HKNCOMBI        TO  COMB-HKNCOMBINUM
       *
-           MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
            MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
            MOVE    "tbl_hkncombi"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -1398,10 +1274,9 @@
       *
            MOVE    SPACE               TO  HKNCOMBI-REC
            INITIALIZE                  HKNCOMBI-REC
-      *****MOVE    PTINF-HOSPID        TO  COMB-HOSPID
+           MOVE    PTINF-HOSPID        TO  COMB-HOSPID
            MOVE    PTINF-PTID          TO  COMB-PTID
       *
-           MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
            MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
            MOVE    "tbl_hkncombi"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -1480,14 +1355,6 @@
                MOVE    4               TO  SPA-GMN-CUR
                MOVE    "0002"          TO  SPA-ERRCD
            END-IF
-      *H25.6
-      *    予約日検索のみ、排他チェックなし
-           IF     (SPA-MOTOPG          =   "Y05" )
-             OR   (SPA-NAI-MOTOPG      =   "Y05" )
-               PERFORM 2021-SPA-OKSET-SEC
-               PERFORM 210-BACK
-               GO      TO      202-SELNO-EXT
-           END-IF
       *
       *    排他制御チェック
            MOVE    1                   TO  SLOCK-MODE
@@ -1538,15 +1405,6 @@
                MOVE    "0002"          TO  SPA-ERRCD
            END-IF
       *
-      *H25.6
-      *    予約日検索のみ、排他チェックなし
-           IF     (SPA-MOTOPG          =   "Y05" )
-             OR   (SPA-NAI-MOTOPG      =   "Y05" )
-               PERFORM 2021-SPA-OKSET-SEC
-               PERFORM 210-BACK
-               GO      TO      203-SELNO-EXT
-           END-IF
-      *
       *    排他制御チェック
            MOVE    1                   TO  SLOCK-MODE
            MOVE    SPA-GMN-SELNO       TO  IDX
@@ -1569,7 +1427,6 @@
            IF      SPA-LOCK            =   1
                MOVE    SPACE           TO  SPA-ERRCD
            END-IF
-      *
       *    ＯＫの時、ＳＰＡ確定後、元の画面へ
            IF      SPA-ERRCD           =   SPACE
                PERFORM 2021-SPA-OKSET-SEC
@@ -1731,7 +1588,6 @@
        500-GMNHEN-SEC              SECTION.
       *
            MOVE    SPACE               TO  P97
-           INITIALIZE                      P97
       *
            MOVE    SPA-GMN-NAMEKEN     TO  P97-NAMEKEN
            MOVE    SPA-GMN-KBIRTHDAY   TO  P97-KBIRTHDAY
@@ -1770,15 +1626,6 @@
                MOVE    SPA-GMN-BRMNUM(IDX)     TO  P97-BRMNUM (IDX)
            END-PERFORM
            MOVE    SPA-GMN-MAX         TO  P97-COUNT
-      *
-      *    次頁あり
-           IF      SPA-GMN-NEXT        =   1
-               MOVE    "［次頁有り］"      TO  P97-NEXT-VALUE
-               MOVE    "red"               TO  P97-NEXT-STYLE
-           ELSE
-               MOVE    SPACE               TO  P97-NEXT-VALUE
-               MOVE    "black"             TO  P97-NEXT-STYLE
-           END-IF
       *
            PERFORM 5011-MAPCUR-SEC
       *
@@ -1863,7 +1710,10 @@
       *
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
       *
-           PERFORM 920-DBFETCH-SEC
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  PTINF-REC
                MOVE    ZERO            TO  FLG-PTINF
@@ -1883,7 +1733,10 @@
       *
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
       *
-           PERFORM 920-DBFETCH-SEC
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  JYURRK-REC
                MOVE    ZERO            TO  FLG-JYURRK
@@ -1902,7 +1755,11 @@
        975-SRYKARRK-READ-SEC           SECTION.
       *
            MOVE    "tbl_srykarrk"      TO  MCP-TABLE
-           PERFORM 920-DBFETCH-SEC
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  SRYKARRK-REC
                MOVE    ZERO                TO  FLG-SRYKARRK
@@ -1922,7 +1779,10 @@
       *
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
       *
-           PERFORM 920-DBFETCH-SEC
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
                MOVE    ZERO            TO  FLG-PTNYUINRRK
@@ -1942,7 +1802,10 @@
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
       *
-           PERFORM 920-DBFETCH-SEC
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-SYSKANRI
            ELSE
@@ -1957,7 +1820,12 @@
       *****************************************************************
        910-HKNCOMBI-READ-SEC         SECTION.
       *
-           PERFORM 920-DBFETCH-SEC
+           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  HKNCOMBI-REC
                MOVE    ZERO            TO  FLG-HKNCOMBI
@@ -1974,7 +1842,10 @@
       *****************************************************************
        970-JYURRK-READ-SEC         SECTION.
       *
-           PERFORM 920-DBFETCH-SEC
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  JYURRK-REC
                MOVE    ZERO            TO  FLG-JYURRK
@@ -1992,27 +1863,12 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
-                                       SPA-AREA
       *
            .
        910-DBSELECT-EXT.
-           EXIT.
-      *****************************************************************
-      *    ＤＢ読み込み処理
-      *****************************************************************
-       920-DBFETCH-SEC                 SECTION.
-      *
-           MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-           .
-      *
-       920-DBFETCH-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2021,10 +1877,9 @@
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        990-DBCLOSE-EXT.
@@ -2036,10 +1891,9 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"                   TO  MCP-FUNC.
-           CALL   "ORCDBMAIN"                   USING
-                                                    MCPAREA
-                                                    MCPDATA-REC
-                                                    SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            .
        900-PUT-WINDOW-EXT.
            EXIT.

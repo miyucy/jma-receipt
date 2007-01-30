@@ -68,7 +68,7 @@
                   05  J02-VALUE   PIC X(16).
                 04  J02-SRYKA-COUNT   PIC S9(9)   BINARY.
                 04  J02-SRYKA-ITEM
-                        PIC X(16)   OCCURS  100 TIMES.
+                        PIC X(16)   OCCURS  41 TIMES.
               03  J02-SRYKBNCOMB.
                 04  J02-SRYKBN.
                   05  J02-VALUE   PIC X(19).
@@ -76,30 +76,21 @@
                 04  J02-SRYKBN-ITEM
                         PIC X(19)    OCCURS  30 TIMES.
               03  J02-NYUINKIKAN.
-                04  J02-VALUE   PIC X(36).
+                04  J02-VALUE   PIC X(30).
               03  J02-HHKNCOMBICOMB.
                 04  J02-HHKNCOMBI.
                   05  J02-VALUE   PIC X(65).
                 04  J02-HHKNCOMBI-COUNT   PIC S9(9)   BINARY.
                 04  J02-HHKNCOMBI-ITEM
-                        PIC X(65)   OCCURS  40 TIMES.
+                        PIC X(65)   OCCURS  20 TIMES.
               03  J02-IKKATU.
-                04  J02-VALUE   PIC X(99).
+                04  J02-VALUE   PIC X(20).
               03  J02-NYUINMSG1.
                 04  J02-NYUINMSG1-STYLE   PIC X(20).
                 04  J02-NYUINMSG1-VALUE   PIC X(50).
               03  J02-NYUINMSG2.
                 04  J02-NYUINMSG2-STYLE   PIC X(20).
                 04  J02-NYUINMSG2-VALUE   PIC X(50).
-              03  J02-HKNCOMBMSG.
-                04  J02-HKNCOMBMSG-STYLE   PIC X(20).
-                04  J02-HKNCOMBMSG-VALUE   PIC X(36).
-              03  J02-HKTMSG.
-                04  J02-HKTMSG-STYLE   PIC X(20).
-                04  J02-HKTMSG-VALUE   PIC X(100).
-              03  J02-SYUMSG.
-                04  J02-SYUMSG-STYLE   PIC X(20).
-                04  J02-SYUMSG-VALUE   PIC X(20).
               03  J02-B04.
                 04  J02-B04-STATE   PIC S9(9)   BINARY.
               03  J02-B05.
@@ -118,6 +109,4 @@
                 04  J02-B10S-STATE   PIC S9(9)   BINARY.
               03  J02-B11S.
                 04  J02-B11S-STATE   PIC S9(9)   BINARY.
-              03  J02-B01S.
-                04  J02-B01S-STATE   PIC S9(9)   BINARY.
 

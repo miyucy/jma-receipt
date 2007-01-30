@@ -28,11 +28,6 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  03.04.00    NACL-多々納  07/01/23  患者登録、診療行為、会計照会の排他修正
-      *  03.04.00    NACL-太田    07/02/23  データチェックの排他を追加
-      *  03.05.00    NACL-太田    07/05/09  グループ診療対応
-      *
-      *  04.05.01    NACL-竹田    10/02/27  監視ログ出力対応
-      *  04.08.00    NACL-多々納  17/04/XX  受付の排他追加
       *****************************************************************
 001200*
 001300 ENVIRONMENT             DIVISION.
@@ -74,9 +69,6 @@
            03  WRK-OPID                PIC X(16).
            03  WRK-IPV4-TABLE.
              05 WRK-IPV4-TBL           PIC 9(03)  OCCURS 4.
-      *H27.2  API用
-      *    MCP-TERMID
-           03  WRK-MCP-TERM            PIC X(64).
       *
            COPY    "CPLOCKCONST.INC".
       *
@@ -191,9 +183,6 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-       01  JOBKANRI-REC.
-           COPY    "CPJOBKANRI.INC".
-      *
       ***  COPY    "ORCA-DBPATH".
       **** COPY    "CPORCMCP.INC".
       *     
@@ -223,14 +212,9 @@
                                        FLG-AREA
                                        WRK-AREA
                                        INDEX-AREA
-      *
-           MOVE        SPACE           TO  SLOCK-INSERT
-      *
            MOVE        ZERO            TO  SLOCK-RETURN  
       *
            MOVE    ZERO            TO  SPA-LOCK
-      *H27.2  API対応
-           MOVE    MCP-TERM        TO  WRK-MCP-TERM
       *
       *    処理モードのチェック
            EVALUATE    SLOCK-MODE
@@ -283,9 +267,7 @@
            END-IF
       *    他端末レコード存在チェック
       *    MOVE    MCP-TERM(5:)            TO  LOCK-TERMID
-      ***  MOVE    MCP-TERM                TO  LOCK-TERMID
-           MOVE    WRK-MCP-TERM            TO  LOCK-TERMID
-grpsys     MOVE    SPA-HOSPNUM             TO  LOCK-HOSPNUM
+           MOVE    MCP-TERM                TO  LOCK-TERMID
            MOVE    TBL-LOCK            TO  MCPDATA-REC
            PERFORM 910-LOCK-INV2-SEC
            IF       FLG-LOCK       NOT  =  ZERO
@@ -306,9 +288,9 @@ grpsys     MOVE    SPA-HOSPNUM             TO  LOCK-HOSPNUM
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "tbl_lock"          TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "MONFUNC"            USING
+                                        MCPAREA
+                                        MCPDATA-REC
       * 排他
            IF  FLG-MAP          =     1
       *        PERFORM  1102-TERMID-BUNKAI-SEC
@@ -324,14 +306,6 @@ grpsys                            SPA-AREA
            ELSE
       * チェックＯＫならば排他テーブル作成
                PERFORM  1101-LOCK-MAKE-SEC
-      *    監視ログ出力
-               CALL    "ORCSAUDIT"     USING
-                                      "1"
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
-                                       ORCSLOCKAREA
-                                       JOBKANRI-REC
            END-IF
       *
            .
@@ -418,15 +392,9 @@ grpsys                            SPA-AREA
            END-SEARCH
       *
       *    業務が患者登録・診療行為・会計照会はすべて排他処理を行う
-      *    データチェック業務もすべて排他処理を行う
            IF      WRK-LD              =   "ORCA12"
                                        OR  "ORCA21"
                                        OR  "ORCA24"
-                                       OR  "ORCA31"
-                                       OR  "ORCA32"
-                                       OR  "ORCA41"
-      *H29.4     受付も対象とする
-                                       OR  "ORCA11"
                MOVE    1               TO  FLG-ALLCHK
            ELSE
                MOVE    ZERO            TO  FLG-ALLCHK
@@ -447,7 +415,6 @@ grpsys                            SPA-AREA
                    MOVE     WRK-LD        TO     LDMAP-LDNAME
                    MOVE     LOCK-LDNAME (IDY)
                                           TO     LDMAP-CHK-LDNAME (1)
-grpsys             MOVE     SPA-HOSPNUM   TO  LDMAP-HOSPNUM
                    MOVE     TBL-LDMAP     TO  MCPDATA-REC
                    PERFORM  910-MAP-INV1-SEC
                IF  FLG-MAP          =     1
@@ -469,35 +436,23 @@ grpsys             MOVE     SPA-HOSPNUM   TO  LDMAP-HOSPNUM
        1101-LOCK-MAKE-SEC            SECTION.
       *    自端末レコード存在チェック
       *    MOVE    MCP-TERM(5:)            TO  LOCK-TERMID
-      **   MOVE    MCP-TERM                TO  LOCK-TERMID
-           MOVE    WRK-MCP-TERM            TO  LOCK-TERMID
+           MOVE    MCP-TERM                TO  LOCK-TERMID
       *    DISPLAY "MAKE --> MCP-TERM = [" LOCK-TERMID "]"
-grpsys     MOVE    SPA-HOSPNUM         TO  LOCK-HOSPNUM
            MOVE    TBL-LOCK            TO  MCPDATA-REC
            PERFORM 910-LOCK-INV-SEC
            IF      FLG-LOCK       NOT  =  ZERO
       *    レコード追加処理
               INITIALIZE   TBL-LOCK
       *        MOVE  MCP-TERM(5:)          TO  LOCK-TERMID
-      *        MOVE  MCP-TERM              TO  LOCK-TERMID
-               MOVE  WRK-MCP-TERM          TO  LOCK-TERMID
-             IF  SPA-OPID              NOT =   SPACE
-               MOVE  SPA-OPID          TO  LOCK-OPID
-             ELSE
+               MOVE  MCP-TERM              TO  LOCK-TERMID
                MOVE  MCP-USER          TO  LOCK-OPID
-             END-IF
                MOVE  WRK-LD            TO  LOCK-LDNAME(01)
                MOVE  SLOCK-PTID        TO  LOCK-PTID(01)
                MOVE  "1"               TO  LOCK-FLG(01)
                ACCEPT LOCK-STARTDATE(01)   FROM  DATE
                ACCEPT LOCK-STARTTIME(01)   FROM  TIME
-grpsys         MOVE  SPA-HOSPNUM       TO  LOCK-HOSPNUM
-               MOVE  SLOCK-KARTE-UID   TO  LOCK-KARTE-UID
                MOVE  TBL-LOCK          TO  MCPDATA-REC
                PERFORM 910-LOCK-INS-SEC
-      *
-               MOVE  "1"               TO  SLOCK-INSERT
-      *
            ELSE
       *    レコード更新処理
       *    (更新位置の取得)
@@ -517,17 +472,11 @@ grpsys         MOVE  SPA-HOSPNUM       TO  LOCK-HOSPNUM
                END-PERFORM
                MOVE  1                      TO    WRK-LOCK-MATCH-FLG
                MOVE  WRK-LD                 TO    LOCK-LDNAME(IDZ)
-             IF  SPA-OPID              NOT =   SPACE
-               MOVE  SPA-OPID          TO  LOCK-OPID
-             ELSE
-               MOVE  MCP-USER          TO  LOCK-OPID
-             END-IF
+               MOVE  MCP-USER               TO  LOCK-OPID
                MOVE  SLOCK-PTID             TO    LOCK-PTID(IDZ)
                ACCEPT LOCK-STARTDATE(IDZ)   FROM  DATE
                ACCEPT LOCK-STARTTIME(IDZ)   FROM  TIME
                MOVE  "1"                    TO    LOCK-FLG(IDZ)
-grpsys         MOVE  SPA-HOSPNUM            TO  LOCK-HOSPNUM
-               MOVE  SLOCK-KARTE-UID        TO  LOCK-KARTE-UID
                MOVE  TBL-LOCK               TO    MCPDATA-REC
                PERFORM 910-LOCK-UPD-SEC
            END-IF
@@ -570,13 +519,12 @@ grpsys         MOVE  SPA-HOSPNUM            TO  LOCK-HOSPNUM
        910-LOCK-INS-SEC              SECTION.
       *
            MOVE    "DBINSERT"          TO  MCP-FUNC
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TBL-LOCK            TO  MCPDATA-REC
            MOVE    "tbl_lock"          TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            IF      MCP-RC     =   ZERO
                CONTINUE
@@ -597,9 +545,9 @@ grpsys                            SPA-AREA
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    "tbl_lock"          TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            IF      MCP-RC     =   ZERO
                MOVE  MCP-RC            TO  SLOCK-RETURN
@@ -620,9 +568,9 @@ grpsys                            SPA-AREA
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_lock"          TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            IF      MCP-RC     =   ZERO
                MOVE  MCP-RC            TO  SLOCK-RETURN
@@ -645,9 +593,7 @@ grpsys                            SPA-AREA
       *    自端末レコード存在チェック
       *    MOVE    MCP-TERM(5:)            TO  LOCK-TERMID
       *    DISPLAY  "RESET MCP-TERM   = " MCP-TERM                 
-      **** MOVE    MCP-TERM                TO  LOCK-TERMID
-           MOVE    WRK-MCP-TERM            TO  LOCK-TERMID
-grpsys     MOVE    SPA-HOSPNUM         TO  LOCK-HOSPNUM
+           MOVE    MCP-TERM                TO  LOCK-TERMID
            MOVE    TBL-LOCK            TO  MCPDATA-REC
            PERFORM 910-LOCK-INV-SEC
            IF      FLG-LOCK       NOT  =  ZERO
@@ -682,8 +628,6 @@ grpsys     MOVE    SPA-HOSPNUM         TO  LOCK-HOSPNUM
                MOVE  SPACE                  TO  LOCK-FLG(IDZ)
       *    項目（日付、時間）
       *        DISPLAY  "RESET IDZ =  [" IDZ "]"
-grpsys         MOVE  SPA-HOSPNUM       TO  LOCK-HOSPNUM
-               MOVE  SLOCK-KARTE-UID   TO  LOCK-KARTE-UID
                MOVE  TBL-LOCK          TO  MCPDATA-REC
                PERFORM 910-LOCK-UPD-SEC
                IF      MCP-RC     =   ZERO
@@ -694,15 +638,6 @@ grpsys         MOVE  SPA-HOSPNUM       TO  LOCK-HOSPNUM
                    MOVE  MCP-RC            TO  SLOCK-RETURN
                END-IF
            END-IF
-      *
-      *    監視ログ出力
-               CALL    "ORCSAUDIT"     USING
-                                      "1"
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
-                                       ORCSLOCKAREA
-                                       JOBKANRI-REC
       *
            .
        120-RESET-EXT.
@@ -715,9 +650,7 @@ grpsys         MOVE  SPA-HOSPNUM       TO  LOCK-HOSPNUM
       *
       *    自端末レコード存在チェック
       *    MOVE    MCP-TERM(5:)            TO  LOCK-TERMID
-      **   MOVE    MCP-TERM                TO  LOCK-TERMID
-           MOVE    WRK-MCP-TERM            TO  LOCK-TERMID
-grpsys     MOVE    SPA-HOSPNUM             TO  LOCK-HOSPNUM
+           MOVE    MCP-TERM                TO  LOCK-TERMID
            MOVE    TBL-LOCK            TO  MCPDATA-REC
            PERFORM 910-LOCK-INV-SEC
            IF      FLG-LOCK       NOT  =  ZERO
@@ -744,7 +677,6 @@ grpsys     MOVE    SPA-HOSPNUM             TO  LOCK-HOSPNUM
                      MOVE  SPACE             TO  LOCK-FLG(IDX)
                  END-IF
                END-PERFORM
-grpsys         MOVE  SPA-HOSPNUM       TO  LOCK-HOSPNUM
                MOVE  TBL-LOCK          TO  MCPDATA-REC
                PERFORM 920-LOCK-DEL-SEC
                IF      MCP-RC     =   ZERO
@@ -766,7 +698,6 @@ grpsys         MOVE  SPA-HOSPNUM       TO  LOCK-HOSPNUM
        160-STE-SEC                 SECTION.
       *
       *    レコード存在チェック
-grpsys     MOVE    SPA-HOSPNUM     TO  LOCK-HOSPNUM
            MOVE    TBL-LOCK        TO  MCPDATA-REC
            PERFORM 910-LOCK-INV2-SEC
            IF       FLG-LOCK       NOT  =  ZERO
@@ -775,14 +706,13 @@ grpsys     MOVE    SPA-HOSPNUM     TO  LOCK-HOSPNUM
            END-IF
       *
       *    レコード更新
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TBL-LOCK            TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    "tbl_lock"          TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            IF      MCP-RC     =   ZERO
                MOVE  MCP-RC            TO  SLOCK-RETURN
@@ -801,7 +731,6 @@ grpsys                            SPA-AREA
        140-DEL-SEC                 SECTION.
       *
       *    レコード存在チェック
-grpsys     MOVE    SPA-HOSPNUM     TO  LOCK-HOSPNUM
            MOVE    TBL-LOCK        TO  MCPDATA-REC
            PERFORM 910-LOCK-INV2-SEC
            IF       FLG-LOCK       NOT  =  ZERO
@@ -810,14 +739,13 @@ grpsys     MOVE    SPA-HOSPNUM     TO  LOCK-HOSPNUM
            END-IF
       *
       *    レコード更新
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TBL-LOCK            TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_lock"          TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            IF      MCP-RC     =   ZERO
                MOVE  MCP-RC            TO  SLOCK-RETURN
@@ -836,7 +764,6 @@ grpsys                            SPA-AREA
        170-DELALL-SEC                 SECTION.
       *
       *    レコード存在チェック
-grpsys     MOVE SPA-HOSPNUM        TO  LOCK-HOSPNUM
            MOVE    TBL-LOCK        TO  MCPDATA-REC
            PERFORM 910-LOCK-INV-SEC
            IF       FLG-LOCK       NOT  =  ZERO
@@ -845,14 +772,13 @@ grpsys     MOVE SPA-HOSPNUM        TO  LOCK-HOSPNUM
            END-IF
       *
       *    レコード更新
-grpsys     MOVE    SPA-HOSPNUM     TO  LOCK-HOSPNUM
            MOVE    TBL-LOCK        TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_lock"          TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            IF      MCP-RC     =   ZERO
                MOVE  MCP-RC            TO  SLOCK-RETURN
@@ -873,16 +799,16 @@ grpsys                            SPA-AREA
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_lock"          TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"       TO  MCP-FUNC
                MOVE    "tbl_lock"          TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-grpsys         CALL "ORCDBMAIN" USING MCPAREA
-                                      MCPDATA-REC
-grpsys                                SPA-AREA
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
       *????
       *        DISPLAY "FETCH=" MCP-RC    
       *???? 
@@ -899,9 +825,9 @@ grpsys                                SPA-AREA
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "tbl_lock"          TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "MONFUNC"            USING
+                                        MCPAREA
+                                        MCPDATA-REC
       *
            .
        910-LOCK-INV-EXT.
@@ -915,16 +841,16 @@ grpsys                            SPA-AREA
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_lock"          TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"       TO  MCP-FUNC
                MOVE    "tbl_lock"          TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
-grpsys         CALL "ORCDBMAIN" USING MCPAREA
-                                      MCPDATA-REC
-grpsys                                SPA-AREA
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
       *????
       *        DISPLAY "FETCH=" MCP-RC    
       *???? 
@@ -951,16 +877,16 @@ grpsys                                SPA-AREA
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_ldmap"         TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"       TO  MCP-FUNC
                MOVE    "tbl_ldmap"         TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
-grpsys         CALL "ORCDBMAIN" USING MCPAREA
-                                      MCPDATA-REC
-grpsys                                SPA-AREA
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
       *????
       *        DISPLAY "LDMAP FETCH=" MCP-RC    
       *???? 
@@ -977,9 +903,9 @@ grpsys                                SPA-AREA
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "tbl_ldmap"         TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "MONFUNC"            USING
+                                        MCPAREA
+                                        MCPDATA-REC
       *
            .
        910-MAP-INV1-EXT.
@@ -993,9 +919,9 @@ grpsys                            SPA-AREA
            MOVE    "DBFETCH"       TO  MCP-FUNC
            MOVE    "tbl_lock"          TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *????
       *        DISPLAY "FETCH=" MCP-RC    
       *???? 
@@ -1016,9 +942,9 @@ grpsys                            SPA-AREA
        900-DBCOMMIT-SEC            SECTION.
       *
            MOVE    "DBCOMMIT"          TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "MONFUNC"           USING
+                                        MCPAREA
+                                        MCPDATA-REC.
       *
            .
        900-DBCOMMIT-EXT.
@@ -1030,9 +956,9 @@ grpsys                            SPA-AREA
        900-DBSTART-SEC                SECTION.
       *
            MOVE    "DBSTART"           TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "MONFUNC"           USING
+                                        MCPAREA
+                                        MCPDATA-REC.
            .
        900-DBSTART-EXT.
            EXIT.
