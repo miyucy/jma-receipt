@@ -16,26 +16,29 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ＤＢ管理情報　    　 COPY  (CPDBKANRI.INC)  *
+      *    マスタ管理情報　    　 COPY  (CPMSTKANRI.INC)  *
       ************************************************************
       ************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
-      *01  DBKANRI-REC.
-      *バージョン
-           03  DBKANRI-VERSION             PIC  X(64).
-      *ＤＢ構造バージョン１
-           03  DBKANRI-DBSVERSION1         PIC  X(64).
-      *ＤＢ構造バージョン２
-           03  DBKANRI-DBSVERSION2         PIC  X(64).
+      *01  MSTKANRI-REC.
+      *キー
+           03  MSTKANRI-KEY.
+               05  MSTKANRI-HOSPNUM        PIC  S9(9)  BINARY.
+      *管理コード
+               05  MSTKANRI-KANRICD        PIC  X(08).
+      *ＤＢレコードバージョン１
+           03  MSTKANRI-DBRVERSION1        PIC  X(64).
+      *ＤＢレコードバージョン２
+           03  MSTKANRI-DBRVERSION2        PIC  X(64).
       *端末ＩＤ
-           03  DBKANRI-TERMID              PIC  X(32).
+           03  MSTKANRI-TERMID             PIC  X(32).
       *オペーレータＩＤ
-           03  DBKANRI-OPID                PIC  X(16).
+           03  MSTKANRI-OPID               PIC  X(16).
       *作成年月日
-           03  DBKANRI-CREYMD              PIC  X(08).
+           03  MSTKANRI-CREYMD             PIC  X(08).
       *更新年月日
-           03  DBKANRI-UPYMD               PIC  X(08).
+           03  MSTKANRI-UPYMD              PIC  X(08).
       *更新時間
-           03  DBKANRI-UPHMS               PIC  X(06).
+           03  MSTKANRI-UPHMS              PIC  X(06).

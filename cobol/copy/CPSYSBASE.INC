@@ -16,26 +16,27 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ＤＢ管理情報　    　 COPY  (CPDBKANRI.INC)  *
+      *         システム基本  COPY (CPSYSBASE.INC)               *
       ************************************************************
       ************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
-      *01  DBKANRI-REC.
-      *バージョン
-           03  DBKANRI-VERSION             PIC  X(64).
-      *ＤＢ構造バージョン１
-           03  DBKANRI-DBSVERSION1         PIC  X(64).
-      *ＤＢ構造バージョン２
-           03  DBKANRI-DBSVERSION2         PIC  X(64).
-      *端末ＩＤ
-           03  DBKANRI-TERMID              PIC  X(32).
-      *オペーレータＩＤ
-           03  DBKANRI-OPID                PIC  X(16).
-      *作成年月日
-           03  DBKANRI-CREYMD              PIC  X(08).
-      *更新年月日
-           03  DBKANRI-UPYMD               PIC  X(08).
-      *更新時間
-           03  DBKANRI-UPHMS               PIC  X(06).
+      *01  SYSBASE-REC.
+           03  SYSBASE-KEY.
+      *    グループ番号
+               05  SYSBASE-GRPNUM      PIC  S9(09)  BINARY.
+      *    医療機関識別番号
+           03  SYSBASE-HOSPNUM         PIC  S9(09)  BINARY.
+      *    医療機関名称
+           03  SYSBASE-HOSPNAME        PIC  X(120).
+      *    運用期限
+           03  SYSBASE-KIGEN           PIC  X(08).
+      *    本院分院グループ
+           03  SYSBASE-HONBUNGRP       PIC  S9(09)  BINARY.
+      *    本院分院区分
+           03  SYSBASE-HONBUNKBN       PIC  S9(09)  BINARY.
+      *
+           03  SYSBASE-CREYMD          PIC  X(08).
+           03  SYSBASE-UPYMD           PIC  X(08).
+           03  SYSBASE-UPHMS           PIC  X(06).

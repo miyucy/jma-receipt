@@ -1,4 +1,5 @@
 tbl_tensu {
+	HOSPNUM				integer;
 	SRYCD				char(9);
 	YUKOSTYMD			char(8);
 	YUKOEDYMD			char(8);
@@ -143,6 +144,7 @@ tbl_tensu {
 	UPYMD    			char(8);
 	UPHMS				char(6);
 #-----> 主キー更新用項目
+	UPHOSPNUM			integer,virtual;
 	UPSRYCD				char(9),virtual;
 	UPSTYUKYMD			char(8),virtual;
 	UPEDYUKYMD			char(8),virtual;
@@ -164,7 +166,8 @@ path	key 	{
 		DECLARE tbl_tensu_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_tensu
-			WHERE   SRYCD    =   :SRYCD
+			WHERE HOSPNUM    =   :HOSPNUM
+			AND   SRYCD      =   :SRYCD
  			AND   YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
 		;
@@ -176,7 +179,8 @@ path	key2 	{
 		DECLARE tbl_tensu_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_tensu
-			WHERE   (NAME     LIKE :NAME
+			WHERE HOSPNUM    =   :HOSPNUM
+			AND   (NAME       LIKE :NAME
 			OR     KANANAME   LIKE :KANANAME)
 			AND   YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
@@ -188,7 +192,8 @@ path	key3 	{
 		DECLARE tbl_tensu_key3_csr CURSOR FOR
 		SELECT *
 		FROM tbl_tensu
-			WHERE   (KANANAME   LIKE :KANANAME)
+			WHERE HOSPNUM    =   :HOSPNUM
+			AND   (KANANAME  LIKE :KANANAME)
 			AND   YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
 		;
@@ -199,7 +204,8 @@ path	key4 	{
 		DECLARE tbl_tensu_key4_csr CURSOR FOR
 		SELECT *
 		FROM tbl_tensu
-			WHERE   SRYCD      =   :SRYCD
+			WHERE HOSPNUM    =   :HOSPNUM
+			AND   SRYCD      =   :SRYCD
 			ORDER   BY  YUKOSTYMD
 		;
 	};
@@ -210,8 +216,9 @@ path	key5 	{
 		DECLARE tbl_tensu_key5_csr CURSOR FOR
 		SELECT *
 		FROM tbl_tensu
-			WHERE   (NAME     LIKE :NAME
-			OR     KANANAME   LIKE :KANANAME)
+			WHERE HOSPNUM    =   :HOSPNUM
+			AND   (NAME      LIKE :NAME
+			OR     KANANAME  LIKE :KANANAME)
 			AND   YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
 			AND   SRYCD  LIKE '6%'
@@ -224,7 +231,8 @@ path	key6 	{
 		DECLARE tbl_tensu_key6_csr CURSOR FOR
 		SELECT *
 		FROM tbl_tensu
-			WHERE   (NAME       LIKE :NAME
+			WHERE HOSPNUM    =   :HOSPNUM
+			AND   (NAME       LIKE :NAME
 			OR     KANANAME   LIKE :KANANAME)
 			AND   YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
@@ -238,7 +246,8 @@ path	key7 	{
 		DECLARE tbl_tensu_key7_csr CURSOR FOR
 		SELECT *
 		FROM tbl_tensu
-			WHERE   (NAME       LIKE :NAME
+			WHERE HOSPNUM    =   :HOSPNUM
+			AND   (NAME       LIKE :NAME
 			OR     KANANAME   LIKE :KANANAME)
 			AND   YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
@@ -256,7 +265,8 @@ path	key51 	{
 		DECLARE tbl_tensu_key51_csr CURSOR FOR
 		SELECT *
 		FROM tbl_tensu
-			WHERE   (NAME       LIKE :NAME
+			WHERE HOSPNUM    =   :HOSPNUM
+			AND   (NAME       LIKE :NAME
 			OR     KANANAME   LIKE :KANANAME)
 			AND   YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
@@ -275,7 +285,8 @@ path	key52 	{
 		DECLARE tbl_tensu_key52_csr CURSOR FOR
 		SELECT *
 		FROM tbl_tensu
-			WHERE   (NAME       LIKE :NAME
+			WHERE HOSPNUM    =   :HOSPNUM
+			AND   (NAME       LIKE :NAME
 			OR    KANANAME    LIKE :KANANAME)
 			AND   YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
@@ -293,7 +304,8 @@ path	key53 	{
 		DECLARE tbl_tensu_key53_csr CURSOR FOR
 		SELECT *
 		FROM tbl_tensu
-			WHERE   (NAME       LIKE :NAME
+			WHERE HOSPNUM    =   :HOSPNUM
+			AND   (NAME       LIKE :NAME
 			OR     KANANAME   LIKE :KANANAME)
 			AND   YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
@@ -309,7 +321,8 @@ path	key41 	{
 		DECLARE tbl_tensu_key41_csr CURSOR FOR
 		SELECT *
 		FROM tbl_tensu
-			WHERE   (NAME       LIKE :NAME
+			WHERE HOSPNUM    =   :HOSPNUM
+			AND   (NAME       LIKE :NAME
 			OR     KANANAME   LIKE :KANANAME)
 			AND   YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
@@ -327,7 +340,8 @@ path	key42 	{
 		DECLARE tbl_tensu_key42_csr CURSOR FOR
 		SELECT *
 		FROM tbl_tensu
-			WHERE   YUKOSTYMD  <=  :YUKOSTYMD
+			WHERE HOSPNUM    =   :HOSPNUM
+			AND   YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
 			AND  (SRYKBN     >=   '60'  
 			AND   SRYKBN     <=   '69'  )
@@ -342,7 +356,8 @@ path	key51j 	{
 		DECLARE tbl_tensu_key51j_csr CURSOR FOR
 		SELECT distinct a.*
 		FROM tbl_tensu a, tbl_inputcd b
-			WHERE   (NAME       LIKE :NAME
+			WHERE a.HOSPNUM  =   :HOSPNUM
+			AND   (NAME       LIKE :NAME
 			OR     KANANAME   LIKE :KANANAME)
 			AND   YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
@@ -350,7 +365,8 @@ path	key51j 	{
 			AND   YKZKBN     <>   '6'
 			AND   YKZKBN     <>   '8'
 			AND   YKZKBN     <>   '9'
-			AND   a.SRYCD = b.SRYCD 
+			AND   a.SRYCD    = b.SRYCD 
+			AND   a.HOSPNUM  = b.HOSPNUM 
                         AND   b.SRYCD LIKE '6%'
 			ORDER   BY       KANANAME
 
@@ -362,14 +378,16 @@ path	key52j 	{
 		DECLARE tbl_tensu_key52j_csr CURSOR FOR
 		SELECT distinct a.*
 		FROM tbl_tensu a, tbl_inputcd b
-			WHERE   (NAME       LIKE :NAME
+			WHERE a.HOSPNUM  =   :HOSPNUM
+			AND   (NAME       LIKE :NAME
 			OR     KANANAME   LIKE :KANANAME)
 			AND   YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
 			AND  (YKZKBN     =   '6'
 			 OR   YKZKBN     =   '8'
 			 OR   YKZKBN     =   '9'   )
-			AND   a.SRYCD = b.SRYCD 
+			AND   a.SRYCD    = b.SRYCD 
+			AND   a.HOSPNUM  = b.HOSPNUM 
                         AND   b.SRYCD LIKE '6%'
 			ORDER   BY       KANANAME
 		;
@@ -380,12 +398,14 @@ path	key53j 	{
 		DECLARE tbl_tensu_key53j_csr CURSOR FOR
 		SELECT distinct a.*
 		FROM tbl_tensu a, tbl_inputcd b
-			WHERE   (NAME       LIKE :NAME
+			WHERE a.HOSPNUM  =   :HOSPNUM
+			AND   (NAME       LIKE :NAME
 			OR     KANANAME   LIKE :KANANAME)
 			AND   YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
 			AND   YKZKBN     =   '4'
-			AND   a.SRYCD = b.SRYCD 
+			AND   a.SRYCD    = b.SRYCD 
+			AND   a.HOSPNUM  = b.HOSPNUM 
                         AND   b.SRYCD LIKE '6%'
 			ORDER   BY       KANANAME
 		;
@@ -396,12 +416,14 @@ path	key42j 	{
 		DECLARE tbl_tensu_key42j_csr CURSOR FOR
 		SELECT distinct a.*
 		FROM tbl_tensu a,tbl_inputcd b
-			WHERE YUKOSTYMD  <=  :YUKOSTYMD
+			WHERE a.HOSPNUM  =   :HOSPNUM
+			AND   YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
 			AND  (a.SRYKBN     >=   '60'  
 			AND   a.SRYKBN     <=   '69'  )
 			AND   KNSJISGRPKBN   = :KNSJISGRPKBN
-			AND    a.SRYCD    =   b.SRYCD
+			AND   a.HOSPNUM  = b.HOSPNUM 
+			AND   a.SRYCD    = b.SRYCD 
 			ORDER   BY           TEN 
 		;
 	};
@@ -411,11 +433,13 @@ path	key6j 	{
 		DECLARE tbl_tensu_key6j_csr CURSOR FOR
 		SELECT distinct a.*
 		FROM tbl_tensu a,tbl_inputcd b
-			WHERE   (NAME       LIKE :NAME
+			WHERE a.HOSPNUM  =   :HOSPNUM
+			AND   (NAME       LIKE :NAME
 			OR     KANANAME   LIKE :KANANAME)
 			AND   YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
-			AND   a.SRYCD    =   b.SRYCD
+			AND   a.HOSPNUM  = b.HOSPNUM 
+			AND   a.SRYCD    = b.SRYCD 
                         AND   b.SRYCD    LIKE '7%'
 			ORDER   BY       KANANAME
 		;
@@ -426,11 +450,13 @@ path	key7j 	{
 		DECLARE tbl_tensu_key7j_csr CURSOR FOR
 		SELECT distinct a.*
 		FROM tbl_tensu a,tbl_inputcd b
-			WHERE   (NAME       LIKE :NAME
+			WHERE a.HOSPNUM  =   :HOSPNUM
+			AND   (NAME       LIKE :NAME
 			OR     KANANAME   LIKE :KANANAME)
 			AND   YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
-			AND   a.SRYCD    =   b.SRYCD
+			AND   a.HOSPNUM  = b.HOSPNUM 
+			AND   a.SRYCD    = b.SRYCD 
                         AND  (b.SRYCD    LIKE '1%'
                           OR  b.SRYCD    LIKE '8%'
                           OR  b.SRYCD    LIKE '9%'
@@ -443,7 +469,8 @@ path	upd1	{
 	DBUPDATE	{
 		UPDATE	tbl_tensu 
 				SET	
-	SRYCD	=	:SRYCD,
+	HOSPNUM		=	:HOSPNUM,
+	SRYCD		=	:SRYCD,
 	YUKOSTYMD	=	:YUKOSTYMD,
 	YUKOEDYMD	=	:YUKOEDYMD,
 	SRYKBN		=	:SRYKBN,
@@ -586,9 +613,10 @@ path	upd1	{
 	CREYMD 			=	:CREYMD,
 	UPYMD 			=	:UPYMD,
 	UPHMS			=	:UPHMS
-			WHERE   SRYCD      =   :UPSRYCD
-			AND		YUKOSTYMD     =  :UPSTYUKYMD
-			AND		YUKOEDYMD     =  :UPEDYUKYMD
+			WHERE	HOSPNUM	      =  :UPHOSPNUM
+			AND	SRYCD	      =  :UPSRYCD
+			AND	YUKOSTYMD     =  :UPSTYUKYMD
+			AND	YUKOEDYMD     =  :UPEDYUKYMD
 		;
 	};
 };
@@ -598,6 +626,7 @@ path	all 	{
 		DECLARE tbl_tensu_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_tensu
+		WHERE	HOSPNUM	      =  :HOSPNUM
  		;
 	};
 };
@@ -607,7 +636,8 @@ path	key10s 	{
 		DECLARE tbl_tensu_key10s_csr CURSOR FOR
 		SELECT *
 		FROM tbl_tensu
-			WHERE YUKOSTYMD  <=  :YUKOSTYMD
+			WHERE HOSPNUM	 =   :HOSPNUM
+			AND   YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
 			AND   SRYCD      >=  :SRYCD
 			AND   SRYCD      <=  :UPSRYCD
@@ -622,7 +652,8 @@ path	key10m 	{
 		DECLARE tbl_tensu_key10m_csr CURSOR FOR
 		SELECT *
 		FROM tbl_tensu
-			WHERE YUKOSTYMD  <=  :YUKOSTYMD
+			WHERE HOSPNUM	 =   :HOSPNUM
+			AND   YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
 			AND   SRYCD      >=  :SRYCD
 			AND   SRYCD      <=  :UPSRYCD
@@ -637,7 +668,8 @@ path	key10k 	{
 		DECLARE tbl_tensu_key10k_csr CURSOR FOR
 		SELECT *
 		FROM tbl_tensu
-			WHERE YUKOSTYMD  <=  :YUKOSTYMD
+			WHERE HOSPNUM	 =   :HOSPNUM
+			AND   YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
 			AND   SRYCD      >=  :SRYCD
 			AND   SRYCD      <=  :UPSRYCD
@@ -653,7 +685,9 @@ path	key10s1 	{
 		DECLARE tbl_tensu_key10s1_csr CURSOR FOR
 		SELECT distinct a.*
 		FROM tbl_tensu a,tbl_inputcd b
-			WHERE a.SRYCD    =   b.SRYCD
+			WHERE a.HOSPNUM	 =   :HOSPNUM
+			AND   a.HOSPNUM	 =   b.HOSPNUM
+			AND   a.SRYCD    =   b.SRYCD
 			AND   YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
 			AND   a.SRYKBN     >=  :STSRYKBN
@@ -670,10 +704,12 @@ path	key10m1 	{
 		DECLARE tbl_tensu_key10m1_csr CURSOR FOR
 		SELECT distinct a.*
 		FROM tbl_tensu a,tbl_inputcd b
-			WHERE YUKOSTYMD  <=  :YUKOSTYMD
+			WHERE a.HOSPNUM	 =   :HOSPNUM
+			AND   YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
 			AND   a.SRYKBN     >=  :STSRYKBN
 			AND   a.SRYKBN     <=  :EDSRYKBN
+			AND   a.HOSPNUM	  =   b.HOSPNUM
                         AND   a.SRYCD     =   b.SRYCD
 			AND   b.SRYCD    >=  :SRYCD
                         AND   b.SRYCD    <=  :UPSRYCD
@@ -686,7 +722,9 @@ path	key10k1 	{
 		DECLARE tbl_tensu_key10k1_csr CURSOR FOR
 		SELECT distinct a.*
 		FROM tbl_tensu a,tbl_inputcd b
-			WHERE a.SRYCD    =   b.SRYCD
+			WHERE a.HOSPNUM	 =   :HOSPNUM
+			AND   a.HOSPNUM	 =   b.HOSPNUM
+			AND   a.SRYCD    =   b.SRYCD
 			AND   YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
 			AND   a.SRYKBN     >=  :STSRYKBN
@@ -703,7 +741,9 @@ path	key10i1 	{
 		DECLARE tbl_tensu_key10i1_csr CURSOR FOR
 		SELECT a.*
 		FROM tbl_tensu a,tbl_inputcd b
-			WHERE a.SRYCD    =   b.SRYCD
+			WHERE a.HOSPNUM	 =   :HOSPNUM
+			AND   a.HOSPNUM	 =   b.HOSPNUM
+			AND   a.SRYCD    =   b.SRYCD
 			AND   YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
 			AND   a.SRYKBN     >=  :STSRYKBN
@@ -721,7 +761,8 @@ path	key11s 	{
 		DECLARE tbl_tensu_key11s_csr CURSOR FOR
 		SELECT *
 		FROM tbl_tensu
-			WHERE YUKOSTYMD  <=  :YUKOSTYMD
+			WHERE HOSPNUM	 =   :HOSPNUM
+			AND   YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
 			AND   SRYCD      >=  :SRYCD
 			AND   SRYCD      <=  :UPSRYCD
@@ -736,7 +777,8 @@ path	key11m 	{
 		DECLARE tbl_tensu_key11m_csr CURSOR FOR
 		SELECT *
 		FROM tbl_tensu
-			WHERE YUKOSTYMD  <=  :YUKOSTYMD
+			WHERE HOSPNUM	 =   :HOSPNUM
+			AND   YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
 			AND   SRYCD      >=  :SRYCD
 			AND   SRYCD      <=  :UPSRYCD
@@ -751,7 +793,8 @@ path	key11k 	{
 		DECLARE tbl_tensu_key11k_csr CURSOR FOR
 		SELECT *
 		FROM tbl_tensu
-			WHERE YUKOSTYMD  <=  :YUKOSTYMD
+			WHERE HOSPNUM	 =   :HOSPNUM
+			AND   YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
 			AND   SRYCD      >=  :SRYCD
 			AND   SRYCD      <=  :UPSRYCD
@@ -766,7 +809,9 @@ path	key11s1 	{
 		DECLARE tbl_tensu_key11s1_csr CURSOR FOR
 		SELECT distinct a.*
 		FROM tbl_tensu a,tbl_inputcd b
-			WHERE a.SRYCD    =   b.SRYCD
+			WHERE a.HOSPNUM	 =   :HOSPNUM
+			AND   a.HOSPNUM	 =   b.HOSPNUM
+			AND   a.SRYCD    =   b.SRYCD
 			AND   YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
 			AND   YKZKBN      =   :YKZKBN
@@ -782,9 +827,11 @@ path	key11m1 	{
 		DECLARE tbl_tensu_key11m1_csr CURSOR FOR
 		SELECT distinct a.*
 		FROM tbl_tensu a,tbl_inputcd b
-			WHERE YUKOSTYMD  <=  :YUKOSTYMD
+			WHERE a.HOSPNUM	 =   :HOSPNUM
+			AND   YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
 			AND   YKZKBN     =   :YKZKBN
+			AND   a.HOSPNUM	 =   b.HOSPNUM
                         AND   a.SRYCD    =   b.SRYCD
 			AND   b.SRYCD    >=  :SRYCD
                         AND   b.SRYCD    <=  :UPSRYCD
@@ -798,7 +845,9 @@ path	key11k1 	{
 		DECLARE tbl_tensu_key11k1_csr CURSOR FOR
 		SELECT distinct a.*
 		FROM tbl_tensu a,tbl_inputcd b
-			WHERE a.SRYCD    =   b.SRYCD
+			WHERE a.HOSPNUM	 =   :HOSPNUM
+			AND   a.HOSPNUM	 =   b.HOSPNUM
+			AND   a.SRYCD    =   b.SRYCD
 			AND   YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
 			AND   YKZKBN      =   :YKZKBN
@@ -814,7 +863,9 @@ path	key11i1 	{
 		DECLARE tbl_tensu_key11i1_csr CURSOR FOR
 		SELECT a.*
 		FROM tbl_tensu a,tbl_inputcd b
-			WHERE a.SRYCD    =   b.SRYCD
+			WHERE a.HOSPNUM	 =   :HOSPNUM
+			AND   a.HOSPNUM	 =   b.HOSPNUM
+			AND   a.SRYCD    =   b.SRYCD
 			AND   YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
 			AND   YKZKBN      =   :YKZKBN
@@ -831,7 +882,8 @@ path	key12s 	{
 		DECLARE tbl_tensu_key12s_csr CURSOR FOR
 		SELECT *
 		FROM tbl_tensu
-			WHERE YUKOSTYMD  <=  :YUKOSTYMD
+			WHERE HOSPNUM	 =   :HOSPNUM
+			AND   YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
 			AND   SRYCD      >=  :SRYCD
 			AND   SRYCD      <=  :UPSRYCD
@@ -845,7 +897,8 @@ path	key12m 	{
 		DECLARE tbl_tensu_key12m_csr CURSOR FOR
 		SELECT *
 		FROM tbl_tensu
-			WHERE YUKOSTYMD  <=  :YUKOSTYMD
+			WHERE HOSPNUM	 =   :HOSPNUM
+			AND   YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
 			AND   SRYCD      >=  :SRYCD
 			AND   SRYCD      <=  :UPSRYCD
@@ -859,7 +912,8 @@ path	key12k 	{
 		DECLARE tbl_tensu_key12k_csr CURSOR FOR
 		SELECT *
 		FROM tbl_tensu
-			WHERE YUKOSTYMD  <=  :YUKOSTYMD
+			WHERE HOSPNUM	 =   :HOSPNUM
+			AND   YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
 			AND   SRYCD      >=  :SRYCD
 			AND   SRYCD      <=  :UPSRYCD
@@ -873,7 +927,9 @@ path	key12s1 	{
 		DECLARE tbl_tensu_key12s1_csr CURSOR FOR
 		SELECT distinct a.*
 		FROM tbl_tensu a,tbl_inputcd b
-			WHERE a.SRYCD    =   b.SRYCD
+			WHERE a.HOSPNUM	 =   :HOSPNUM
+			AND   a.HOSPNUM	 =   b.HOSPNUM
+			AND   a.SRYCD    =   b.SRYCD
 			AND   YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
 			AND   b.SRYCD    >=  :SRYCD
@@ -888,8 +944,10 @@ path	key12m1 	{
 		DECLARE tbl_tensu_key12m1_csr CURSOR FOR
 		SELECT distinct a.*
 		FROM tbl_tensu a,tbl_inputcd b
-			WHERE YUKOSTYMD  <=  :YUKOSTYMD
+			WHERE a.HOSPNUM	 =   :HOSPNUM
+			AND   YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
+			AND   a.HOSPNUM	 =   b.HOSPNUM
                         AND   a.SRYCD    =   b.SRYCD
 			AND   b.SRYCD    >=  :SRYCD
                         AND   b.SRYCD    <=  :UPSRYCD
@@ -903,7 +961,9 @@ path	key12k1 	{
 		DECLARE tbl_tensu_key12k1_csr CURSOR FOR
 		SELECT distinct a.*
 		FROM tbl_tensu a,tbl_inputcd b
-			WHERE a.SRYCD    =   b.SRYCD
+			WHERE a.HOSPNUM	 =   :HOSPNUM
+			AND   a.HOSPNUM	 =   b.HOSPNUM
+			AND   a.SRYCD    =   b.SRYCD
 			AND   YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
 			AND   b.SRYCD    >=  :SRYCD
@@ -918,8 +978,10 @@ path	key12i1 	{
 		DECLARE tbl_tensu_key12i1_csr CURSOR FOR
 		SELECT a.*
 		FROM tbl_tensu a,tbl_inputcd b
-			WHERE YUKOSTYMD  <=  :YUKOSTYMD
+			WHERE a.HOSPNUM	 =   :HOSPNUM
+			AND   YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
+			AND   a.HOSPNUM	 =   b.HOSPNUM
                         AND   a.SRYCD    =   b.SRYCD
 			AND   b.SRYCD    >=  :SRYCD
                         AND   b.SRYCD    <=  :UPSRYCD
@@ -934,7 +996,8 @@ path	key42k	{
 		DECLARE tbl_tensu_key42k_csr CURSOR FOR
 		SELECT a.*
 		FROM tbl_tensu a,tbl_kensasort b
-			WHERE a.SRYCD    =   b.SRYCD
+			WHERE a.HOSPNUM	 =   :HOSPNUM
+			AND   a.SRYCD    =   b.SRYCD
 			AND   YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
 			AND  (SRYKBN     >=   '60'  
@@ -950,11 +1013,13 @@ path	key42jk	{
 		DECLARE tbl_tensu_key42jk_csr CURSOR FOR
 		SELECT distinct a.*,c.DSPSEQ
 		FROM tbl_tensu a,tbl_inputcd b,tbl_kensasort c
-			WHERE YUKOSTYMD  <=  :YUKOSTYMD
+			WHERE a.HOSPNUM	 =   :HOSPNUM
+			AND   YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
 			AND  (a.SRYKBN     >=   '60'  
 			AND   a.SRYKBN     <=   '69'  )
 			AND   c.KNSBUNRUI  = :KNSJISGRPKBN
+			AND    a.HOSPNUM   =   b.HOSPNUM
 			AND    a.SRYCD     =   b.SRYCD
 			AND    a.SRYCD     =   c.SRYCD
 			ORDER   BY          c.DSPSEQ
@@ -967,7 +1032,8 @@ path	key13	{
 		DECLARE tbl_tensu_key13_csr CURSOR FOR
 		SELECT *
 		FROM tbl_tensu
-			WHERE SRYCD        LIKE '19%'
+			WHERE HOSPNUM	 =   :HOSPNUM
+			AND   SRYCD        LIKE '19%'
 			AND   YUKOSTYMD    <=  :YUKOSTYMD
 			AND   YUKOEDYMD    >=  :YUKOEDYMD
 			AND   CDKBN_KBN     =  :CDKBN_KBN
@@ -985,7 +1051,8 @@ path	key14	{
 		DECLARE tbl_tensu_key14_csr CURSOR FOR
 		SELECT *
 		FROM tbl_tensu
-			WHERE SRYCD        LIKE '19%'
+			WHERE HOSPNUM	 =   :HOSPNUM
+			AND   SRYCD        LIKE '19%'
 			AND   YUKOSTYMD    <=  :YUKOSTYMD
 			AND   YUKOEDYMD    >=  :YUKOEDYMD
 			AND   CDKBN_KBN     =  :CDKBN_KBN
@@ -1004,7 +1071,8 @@ path	key15	{
 		DECLARE tbl_tensu_key15_csr CURSOR FOR
 		SELECT *
 		FROM tbl_tensu
-			WHERE SRYCD        LIKE '19%'
+			WHERE HOSPNUM	 =   :HOSPNUM
+			AND   SRYCD        LIKE '19%'
 			AND   YUKOSTYMD    <=  :YUKOSTYMD
 			AND   YUKOEDYMD    >=  :YUKOEDYMD
 			AND   CDKBN_KBN     =  :CDKBN_KBN
@@ -1024,11 +1092,14 @@ path	key20   	{
 		DECLARE tbl_tensu_key20_csr CURSOR FOR
 		SELECT distinct a.*
 		FROM tbl_tensu a,tbl_inputcd b
-			WHERE a.SRYCD    =   b.SRYCD
+			WHERE a.HOSPNUM  =   :HOSPNUM
+			AND   a.HOSPNUM  =   b.HOSPNUM
+			AND   a.SRYCD    =   b.SRYCD
 			AND   a.YUKOEDYMD  =
                            (SELECT MAX(YUKOEDYMD)
                                    FROM tbl_tensu
-				WHERE	a.SRYCD   =  SRYCD)
+				WHERE	a.HOSPNUM =  :HOSPNUM
+				AND	a.SRYCD   =  :SRYCD)
 			AND   a.YUKOEDYMD  =  :YUKOEDYMD
 			ORDER  BY  a.SRYCD
 		;
@@ -1040,7 +1111,8 @@ path	key21   	{
 		DECLARE tbl_tensu_key21_csr CURSOR FOR
 		SELECT *
                 FROM tbl_tensu
-			WHERE SRYCD      =   :SRYCD
+			WHERE HOSPNUM    =   :HOSPNUM
+			AND   SRYCD      =   :SRYCD
 			AND   YUKOSTYMD  >   :YUKOSTYMD
 			ORDER  BY  YUKOSTYMD
 		;
@@ -1050,7 +1122,8 @@ path	key21   	{
 path	key22           {
 	DBSELECT	{
 		DECLARE tbl_tensu_key22_csr CURSOR FOR
-		SELECT	SRYCD,
+		SELECT	HOSPNUM,
+			SRYCD,
                 	SRYKBN,
 	                SRYSYUKBN,
                         NAME,
@@ -1067,7 +1140,8 @@ path	key22           {
 	                JGNCNTERR,
 	                SANTEIRRKKBN
 		FROM tbl_tensu
-			WHERE   SRYCD    =   :SRYCD
+			WHERE HOSPNUM    =   :HOSPNUM
+			AND   SRYCD	 =   :SRYCD
  			AND   YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
 		;
@@ -1079,7 +1153,9 @@ path	key23s 	{
 		DECLARE tbl_tensu_key23s_csr CURSOR FOR
 		SELECT a.*
 		FROM tbl_tensu a,tbl_tensuplus b
-			WHERE a.SRYCD    =   b.SRYCD
+			WHERE a.HOSPNUM    =   :HOSPNUM
+			AND   a.HOSPNUM    =   b.HOSPNUM
+			AND   a.SRYCD	   =   b.SRYCD
 			AND   a.YUKOSTYMD  <=  :YUKOSTYMD
 			AND   a.YUKOEDYMD  >=  :YUKOEDYMD
 			AND   b.YUKOSTYMD  <=  :YUKOSTYMD
@@ -1097,7 +1173,9 @@ path	key23m	{
 		DECLARE tbl_tensu_key23m_csr CURSOR FOR
 		SELECT a.*
 		FROM tbl_tensu a,tbl_tensuplus b
-			WHERE a.SRYCD    =   b.SRYCD
+			WHERE a.HOSPNUM    =   :HOSPNUM
+			AND   a.HOSPNUM    =   b.HOSPNUM
+			AND   a.SRYCD	   =   b.SRYCD
 			AND   a.YUKOSTYMD  <=  :YUKOSTYMD
 			AND   a.YUKOEDYMD  >=  :YUKOEDYMD
 			AND   b.YUKOSTYMD  <=  :YUKOSTYMD
@@ -1115,7 +1193,9 @@ path	key23k 	{
 		DECLARE tbl_tensu_key23k_csr CURSOR FOR
 		SELECT a.*
 		FROM tbl_tensu a,tbl_tensuplus b
-			WHERE a.SRYCD    =   b.SRYCD
+			WHERE a.HOSPNUM    =   :HOSPNUM
+			AND   a.HOSPNUM    =   b.HOSPNUM
+			AND   a.SRYCD	   =   b.SRYCD
 			AND   a.YUKOSTYMD  <=  :YUKOSTYMD
 			AND   a.YUKOEDYMD  >=  :YUKOEDYMD
 			AND   b.YUKOSTYMD  <=  :YUKOSTYMD
@@ -1134,7 +1214,8 @@ path	key90	{
 		DECLARE tbl_tensu_key90_csr CURSOR FOR
 		SELECT *
 		FROM tbl_tensu
-			WHERE YUKOSTYMD    <=  :YUKOSTYMD
+			WHERE HOSPNUM	   =   :HOSPNUM
+			AND   YUKOSTYMD    <=  :YUKOSTYMD
 			AND   YUKOEDYMD    >=  :YUKOEDYMD
 			AND   CDKBN_KBN     =  :CDKBN_KBN
 			ORDER   BY          CDKBN_KBNNUM,
@@ -1149,7 +1230,8 @@ path	key91	{
 		DECLARE tbl_tensu_key91_csr CURSOR FOR
 		SELECT *
 		FROM tbl_tensu
-			WHERE YUKOSTYMD    <=  :YUKOSTYMD
+			WHERE HOSPNUM	   =   :HOSPNUM
+			AND   YUKOSTYMD    <=  :YUKOSTYMD
 			AND   YUKOEDYMD    >=  :YUKOEDYMD
 			AND   CDKBN_KBN     =  :CDKBN_KBN
 			AND   CDKBN_KBNNUM  =  :CDKBN_KBNNUM
@@ -1165,7 +1247,8 @@ path	key92	{
 		DECLARE tbl_tensu_key92_csr CURSOR FOR
 		SELECT *
 		FROM tbl_tensu
-			WHERE YUKOSTYMD    <=  :YUKOSTYMD
+			WHERE HOSPNUM	   =   :HOSPNUM
+			AND   YUKOSTYMD    <=  :YUKOSTYMD
 			AND   YUKOEDYMD    >=  :YUKOEDYMD
 			AND   CDKBN_KBN     =  '-'
 			AND   SRYCD         LIKE '1%'
@@ -1180,7 +1263,8 @@ path	key24 	{
 		DECLARE tbl_tensu_key24_csr CURSOR FOR
 		SELECT *
 		FROM tbl_tensu
-			WHERE   SRYCD      =   :SRYCD
+			WHERE HOSPNUM	 =   :HOSPNUM
+			AND   SRYCD      =   :SRYCD
 			ORDER   BY  YUKOSTYMD DESC
 		;
 	};
@@ -1191,7 +1275,8 @@ path	key93	{
 		DECLARE tbl_tensu_key93_csr CURSOR FOR
 		SELECT *
 		FROM tbl_tensu
-			WHERE YUKOSTYMD    <=  :YUKOSTYMD
+			WHERE HOSPNUM	   =   :HOSPNUM
+			AND   YUKOSTYMD    <=  :YUKOSTYMD
 			AND   YUKOEDYMD    >=  :YUKOEDYMD
 			AND  (TEN          >=  :TK_TEN
 			AND   TEN          <=  :TK_EDTEN )
@@ -1212,7 +1297,8 @@ path	key25	{
 		DECLARE tbl_tensu_key25_csr CURSOR FOR
 		SELECT *
 		FROM tbl_tensu
-			WHERE SRYCD        LIKE '19%'
+			WHERE HOSPNUM	   =   :HOSPNUM
+			AND   SRYCD        LIKE '19%'
 			AND   YUKOSTYMD    <=  :YUKOSTYMD
 			AND   YUKOEDYMD    >=  :YUKOEDYMD
 			AND   CDKBN_KBN     =  :CDKBN_KBN
@@ -1232,7 +1318,8 @@ path	key13s 	{
 		DECLARE tbl_tensu_key13s_csr CURSOR FOR
 		SELECT *
 		FROM tbl_tensu
-			WHERE YUKOSTYMD  <=  :YUKOSTYMD
+			WHERE HOSPNUM	 =   :HOSPNUM
+			AND   YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
 			AND   SRYCD      >=  :SRYCD
 			AND   SRYCD      <=  :UPSRYCD
@@ -1247,7 +1334,9 @@ path	key13m1 	{
 		DECLARE tbl_tensu_key13m1_csr CURSOR FOR
 		SELECT distinct a.*
 		FROM tbl_tensu a,tbl_inputcd b
-			WHERE a.SRYCD    =   b.SRYCD
+			WHERE a.HOSPNUM	 =   :HOSPNUM
+			AND   a.HOSPNUM	 =   b.HOSPNUM
+			AND   a.SRYCD    =   b.SRYCD
 			AND   YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
 			AND   b.SRYCD    >=  :SRYCD
@@ -1261,12 +1350,14 @@ path	key7j1 	{
 		DECLARE tbl_tensu_key7j1_csr CURSOR FOR
 		SELECT distinct a.*
 		FROM tbl_tensu a,tbl_inputcd b
-			WHERE   (NAME       LIKE :NAME
+			WHERE a.HOSPNUM	 =   :HOSPNUM
+			AND   (NAME         LIKE :NAME
 			OR     KANANAME     LIKE :KANANAME 
 			OR    (FORMALNAME   <> ' '   AND
 			       FORMALNAME   LIKE :NAME   ))
 			AND   YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
+			AND   a.HOSPNUM	 =   b.HOSPNUM
 			AND   a.SRYCD    =   b.SRYCD
                         AND  (b.SRYCD    LIKE '1%'
                           OR  b.SRYCD    LIKE '8%'
@@ -1281,7 +1372,8 @@ path	key71 	{
 		DECLARE tbl_tensu_key71_csr CURSOR FOR
 		SELECT *
 		FROM tbl_tensu
-			WHERE   (NAME       LIKE :NAME
+			WHERE HOSPNUM	 =   :HOSPNUM
+			AND   (NAME       LIKE :NAME
 			OR     KANANAME   LIKE :KANANAME
 			OR    (FORMALNAME   <> ' '   AND
 			       FORMALNAME   LIKE :NAME   ))
@@ -1301,7 +1393,8 @@ path	key72 	{
 		DECLARE tbl_tensu_key72_csr CURSOR FOR
 		SELECT *
 		FROM tbl_tensu
-			WHERE
+			WHERE HOSPNUM	 =   :HOSPNUM
+			AND
 			   ((NAME       LIKE :NAME)
 			OR (KANANAME   LIKE :KANANAME)
 			OR ( FORMALNAME   <> ' '   

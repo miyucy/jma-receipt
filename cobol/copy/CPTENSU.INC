@@ -31,6 +31,7 @@
        01  TNS-TENSU-REC.
       *(1)
            03  TNS-KEY.
+               05  TNS-HOSPNUM         PIC  S9(09)  BINARY.
                05  TNS-SRYCD           PIC  X(09).
                05  TNS-YUKOSTYMD       PIC  X(08).
                05  TNS-YUKOEDYMD       PIC  X(08).
@@ -169,6 +170,7 @@
            03  TNS-UPHMS               PIC  X(06).
       *　　主キー更新用項目
            03  TNSUP-KEY.
+               05  TNSUP-HOSPNUM       PIC  S9(09)  BINARY.
                05  TNSUP-SRYCD         PIC  X(09).
                05  TNSUP-YUKOSTYMD     PIC  X(08).
                05  TNSUP-YUKOEDYMD     PIC  X(08).

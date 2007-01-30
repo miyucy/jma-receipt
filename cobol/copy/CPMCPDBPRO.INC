@@ -417,9 +417,10 @@
              WHEN     'DBCLOSE'
                  CONTINUE
              WHEN      OTHER
-grpsys           CALL "ORCDBMAIN" USING MCPAREA
-                                        MCPDATA-REC
-grpsys*                                 COMMON-SPA
+                 CALL  "ORCDBMAIN"     USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
            END-EVALUATE.
       *
            EXIT    PROGRAM.
@@ -3624,7 +3625,7 @@ grpsys*                                 COMMON-SPA
              MOVE    "%"             TO  SYS-KANRITBL(IDX:1)
            END-IF
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            .
        2001-SEL-SYSKANRI-EXT.
@@ -3661,7 +3662,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            END-IF 
       *
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            .
        2002-SEL-SYSKANRI-EXT.
@@ -3681,10 +3682,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    DISPLAY "2001-SEL-SYSKANRI-SEC ST ORC-DBPATH = " 
       *            "[" ORC-DBPATH "]"
            MOVE    MCPDATA-REC         TO  PTHKNINF-REC
-           MOVE    ORC-DBYMD             TO  PTHKN-TEKSTYMD
+           MOVE    ORC-DBYMD           TO  PTHKN-TEKSTYMD
                                            PTHKN-TEKEDYMD 
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PTHKN-HOSPNUM
            MOVE    PTHKNINF-REC        TO  MCPDATA-REC
            .
        2001-SEL-PTHKNINF-EXT.
@@ -3704,10 +3705,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    DISPLAY "2001-SEL-SYSKANRI-SEC ST ORC-DBPATH = " 
       *            "[" ORC-DBPATH "]"
            MOVE    MCPDATA-REC         TO  PTKOHINF-REC
-           MOVE    ORC-DBYMD             TO  PTKOH-TEKSTYMD
+           MOVE    ORC-DBYMD           TO  PTKOH-TEKSTYMD
                                            PTKOH-TEKEDYMD 
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PTKOH-HOSPNUM
            MOVE    PTKOHINF-REC        TO  MCPDATA-REC
            .
        2001-SEL-PTKOHINF-EXT.
@@ -3836,9 +3837,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    MCPDATA-REC         TO  CHK-REC
       *
-           MOVE    ORC-DBYMD             TO  CHK-YUKOSTYMD
+           MOVE    ORC-DBYMD           TO  CHK-YUKOSTYMD
                                            CHK-YUKOEDYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  CHK-HOSPNUM
            MOVE    CHK-REC             TO  MCPDATA-REC
            .
        2001-SEL-CHK-EXT.
@@ -3860,7 +3861,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    ORC-DBYMD           TO  NYUKSNCHK-YUKOSTYMD
                                            NYUKSNCHK-YUKOEDYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  NYUKSNCHK-HOSPNUM
            MOVE    NYUKSNCHK-REC       TO  MCPDATA-REC
            .
        2001-SEL-NYUKSNCHK-EXT.
@@ -3883,7 +3884,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    ORC-DBYMD           TO  NYURYAKUSHO-YUKOSTYMD
                                            NYURYAKUSHO-YUKOEDYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  NYURYAKUSHO-HOSPNUM
            MOVE    NYURYAKUSHO-REC     TO  MCPDATA-REC
            .
        2001-SEL-NYUINRYAKUSHO-EXT.
@@ -3933,9 +3934,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                  COMPUTE IDX                 =   WRK-MOJISU  +  1
                  MOVE    "%"                 TO  ICD-SRYCD(IDX:1)
              END-IF
-            END-IF
+           END-IF
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
            MOVE    INPUTCD-REC         TO  MCPDATA-REC
            .
        2001-SEL-INPUTCD-EXT.
@@ -3966,7 +3967,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    "%"             TO  PTNUM-PTNUM(IDX:1)
            END-IF
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PTNUM-HOSPNUM
            MOVE    PTNUM-REC           TO  MCPDATA-REC
            .
        2001-SEL-PTNUM-EXT.
@@ -4024,7 +4025,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    WRK-NAME            TO  PTINF-KANANAME
            END-IF
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
       *
            .
@@ -4091,7 +4092,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                 END-IF
            END-IF
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM     TO  ADRS-HOSPNUM
            MOVE    ADRS-REC        TO  MCPDATA-REC
            .
        2001-SEL-ADRS-EXT.
@@ -4258,8 +4259,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPACE               TO  USBYO-BYOMEI
            MOVE    WRK-BYOMEI          TO  USBYO-BYOMEI
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
-           MOVE    USERBYOMEI-REC          TO  MCPDATA-REC
+           MOVE    SPA-HOSPNUM         TO  USBYO-HOSPNUM
+           MOVE    USERBYOMEI-REC      TO  MCPDATA-REC
       *
            .
        2001-SEL-USERBYOMEI-EXT.
@@ -4278,10 +4279,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    MCPDATA-REC         TO  RECE10-REC
            IF      RECE10-XXEDHKNJANUM =   SPACE
-               MOVE    ALL "9"             TO  RECE10-XXEDHKNJANUM
+               MOVE    ALL "9"         TO  RECE10-XXEDHKNJANUM
            END-IF
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  RECE10-HOSPNUM
            MOVE    RECE10-REC          TO  MCPDATA-REC
       *
            .

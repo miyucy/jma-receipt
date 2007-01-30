@@ -508,6 +508,8 @@ DB_files = \
 	tbl_tensuplus2.db \
 	tbl_genericname.db \
 	tbl_syurrk.db \
+	tbl_sysbase.db \
+	tbl_mstkanri.db
 
 all:   
 

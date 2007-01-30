@@ -1,11 +1,7 @@
 tbl_dbkanri {
-	HOSPNUM				integer;
-	KANRICD				char(8);
 	VERSION				varchar(64);
 	DBSVERSION1     		varchar(64);
 	DBSVERSION2     		varchar(64);
-	DBRVERSION1     		varchar(64);
-	DBRVERSION2     		varchar(64);
 	TERMID  	        	varchar(32);
 	OPID             		varchar(16);
 	CREYMD  	        	char(8);
@@ -13,17 +9,11 @@ tbl_dbkanri {
 	UPHMS		        	char(6);
 };
 
-primary	{
-	HOSPNUM,KANRICD;
-};
-
 path	key		{ 	
 	DBSELECT	{
 		DECLARE tbl_dbkanri_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_dbkanri
-		WHERE 	HOSPNUM	= :HOSPNUM
-			AND   KANRICD   =   :KANRICD
                 ;
 	};
 };
@@ -33,8 +23,6 @@ path	all		{
 		DECLARE tbl_dbkanri_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_dbkanri
-		WHERE 	HOSPNUM	= :HOSPNUM
-                   ORDER BY  KANRICD
 ;
 	};
 };
