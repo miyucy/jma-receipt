@@ -1259,8 +1259,7 @@
                GO  TO  440-KAIJYO-MAE-EXT
            END-IF 
       *
-           IF    ( SPA-NAI-R96-KAIJYO-SELNUM
-                                   =   ZERO                     )
+           IF      SPA-NAI-R96-SELNUM  =   ZERO
                MOVE    "0101"              TO  SPA-ERRCD
                GO  TO  440-KAIJYO-MAE-EXT
            END-IF
