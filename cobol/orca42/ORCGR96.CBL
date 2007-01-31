@@ -1261,6 +1261,12 @@
       *
            IF    ( SPA-NAI-R96-KAIJYO-SELNUM
                                    =   ZERO                     )
+               MOVE    "0101"              TO  SPA-ERRCD
+               GO  TO  440-KAIJYO-MAE-EXT
+           END-IF
+      *
+           IF    ( SPA-NAI-R96-KAIJYO-SELNUM
+                                   =   ZERO                     )
            AND   ( SPA-GMN-R96-KAIJYO-TBL-MAX
                                    =   WRK-CONS-LINE-KAIJYO-MAX )
                MOVE    "0104"              TO  SPA-ERRCD
@@ -1282,8 +1288,12 @@
                MOVE    "0101"          TO  SPA-ERRCD
                MOVE    4               TO  SPA-GMN-R96-CUR
            ELSE
-      *****    MOVE    "1002"          TO  SPA-RIDCD
-               PERFORM 440-KAIJYO-SEC
+               IF      SYUKA-MISEIKYU-FLG  =   "01"
+      *****        MOVE    "1002"          TO  SPA-RIDCD
+                   PERFORM 440-KAIJYO-SEC
+               ELSE
+                   MOVE    "0101"          TO  SPA-ERRCD
+               END-IF
            END-IF
            .
        440-KAIJYO-MAE-EXT.
