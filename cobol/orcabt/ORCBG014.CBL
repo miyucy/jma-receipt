@@ -62,7 +62,7 @@
       *
       *KEYの説明-------------------------------------------------------------------------
       *        SKYKBN      請求区分    1:請求済、未請求、2:請求しない、3:未請求患者分
-      *        TEISYUTU    提出先区分  1:社保、2:国保、3:特別療養費
+      *        TEISYUTU    提出先区分  1:社保、2:国保、3:特別療養費、4:未請求設定、5:未請求解除
       *        HKNJANUM    保険者番号  国保の時だけ使用、社保＆請求しない場合はオールゼロ
       *        SYOKBN      処理区分    1:通常分、2:返戻分、3:月遅れ分
       *        NYUGAIKBN   入外区分    1:外来分、2:入院分
@@ -1440,6 +1440,8 @@
       *    分類セット
            MOVE    "（未請求患者分）"  TO  WRK-PRT1-BUNRUI
       *
+           MOVE    SPACE               TO  WRK-TEISYUTU
+           MOVE    WRK-TEISYUTU        TO  CSV-TEISYUTU
            MOVE    "5"                 TO  CSV-SYOKBN
       *
       *    医療機関名セット
@@ -1709,10 +1711,16 @@
       *****************************************************************
        3201-BODY-HEN-STR3-SEC      SECTION.
       *
-      *    入外区分見出し
-           IF        ( TOKEI-NYUGAIKBN NOT =   WRK-NYUGAIKBN )
-               PERFORM 3201-NYUGAIKBN-BODY-HEN-SEC
+      *    未請求設定入外区分見出し
+           IF        ( TOKEI-TEISYUTU  NOT =   WRK-TEISYUTU )
+               OR    ( TOKEI-NYUGAIKBN NOT =   WRK-NYUGAIKBN )
+               PERFORM 3201-MISETTEI-BODY-HEN-SEC
            END-IF
+      *
+      *    入外区分見出し
+      *     IF        ( TOKEI-NYUGAIKBN NOT =   WRK-NYUGAIKBN )
+      *         PERFORM 3201-NYUGAIKBN-BODY-HEN-SEC
+      *     END-IF
       *
       *    診療月見出し
            IF        ( TOKEI-SRYYMFLG  NOT =   WRK-SRYYMFLG )
@@ -1721,6 +1729,46 @@
       *
            .
        3201-BODY-HEN-STR3-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    帳票編集<明細行>処理
+      *****************************************************************
+       3201-MISETTEI-BODY-HEN-SEC  SECTION.
+      *
+           MOVE    SPACE           TO  WRK-PRT-LINE
+      *
+           EVALUATE    TOKEI-TEISYUTU  ALSO    TOKEI-NYUGAIKBN
+               WHEN    "4"     ALSO    "1"
+                   MOVE    "＜未請求設定　外来＞"  TO  WRK-PRT-LINE
+               WHEN    "4"     ALSO    "2"
+                   MOVE    "＜未請求設定　入院＞"  TO  WRK-PRT-LINE
+               WHEN    "5"     ALSO    "1"
+                   MOVE    "＜未請求解除　外来＞"  TO  WRK-PRT-LINE
+               WHEN    "5"     ALSO    "2"
+                   MOVE    "＜未請求解除　入院＞"  TO  WRK-PRT-LINE
+           END-EVALUATE
+      *
+      *    見出し行セット
+           PERFORM 320-BODY-SET-SEC
+      *
+           MOVE    TOKEI-TEISYUTU  TO  WRK-TEISYUTU
+           MOVE    TOKEI-NYUGAIKBN TO  WRK-NYUGAIKBN
+           MOVE    TOKEI-ZAIKBN    TO  WRK-ZAIKBN
+           MOVE    0               TO  WRK-SRYYMFLG
+           MOVE    SPACE           TO  WRK-HKNKBN
+           MOVE    SPACE           TO  WRK-SYUBETUKBN
+           MOVE    SPACE           TO  WRK-KBN
+           MOVE    SPACE           TO  CSV-TEISYUTU
+           EVALUATE    WRK-NYUGAIKBN
+               WHEN    "1"
+                   MOVE    "2"     TO  CSV-NYUGAIKBN
+               WHEN    "2"
+                   MOVE    "1"     TO  CSV-NYUGAIKBN
+           END-EVALUATE
+      *
+           .
+       3201-MISETTEI-BODY-HEN-EXT.
            EXIT.
       *
       *----(03.04.02)--ADD-END-----
@@ -2209,6 +2257,7 @@
       *
            PERFORM UNTIL ( FLG-TOKEI       =   1 )
                    OR    ( WRK-SKYKBN      NOT =   TOKEI-SKYKBN )
+                   OR    ( WRK-TEISYUTU    NOT =   TOKEI-TEISYUTU )
                    OR    ( WRK-NYUGAIKBN   NOT =   TOKEI-NYUGAIKBN )
                    OR    ( WRK-SRYYMFLG    NOT =   TOKEI-SRYYMFLG )
       *        患者編集
@@ -2501,6 +2550,7 @@
       *
       *    レセプト合計
            IF        ( TOKEI-SKYKBN    NOT =   WRK-SKYKBN )
+               OR    ( TOKEI-TEISYUTU  NOT =   WRK-TEISYUTU )
                OR    ( TOKEI-NYUGAIKBN NOT =   WRK-NYUGAIKBN )
                OR    ( TOKEI-SRYYMFLG  NOT =   WRK-SRYYMFLG )
                OR    ( FLG-TOKEI       =   1 )
@@ -2888,13 +2938,12 @@
            END-IF
       *
       *    入外区分
-           IF      SYUKA-NYUGAIKBN =   "1"
-               MOVE    "2"         TO  WRK-NYUGAIKBN
-           ELSE
-               IF      SYUKA-NYUGAIKBN =   "2"
+           EVALUATE     SYUKA-NYUGAIKBN
+               WHEN    "1"
+                   MOVE    "2"         TO  WRK-NYUGAIKBN
+               WHEN    "2"
                    MOVE    "1"         TO  WRK-NYUGAIKBN
-               END-IF
-           END-IF
+           END-EVALUATE
       *
       *    診療年月
            MOVE    SYUKA-SRYYM     TO  WRK-SRYYM
@@ -2915,8 +2964,14 @@
                                        +   WRK-HENSMM
            END-IF
       *
+           EVALUATE    SYUKA-MISEIKYU-FLG
+               WHEN    "01"
+                   MOVE    "4"         TO  WRK-TEISYUTU
+               WHEN    "02"
+                   MOVE    "5"         TO  WRK-TEISYUTU
+           END-EVALUATE
+      *
            MOVE    "3"             TO  WRK-SKYKBN
-           MOVE    "0"             TO  WRK-TEISYUTU
            MOVE    "00000000"      TO  WRK-HKNJANUM
            MOVE    "3"             TO  WRK-SYOKBN
            MOVE    "1"             TO  WRK-ZAIKBN
