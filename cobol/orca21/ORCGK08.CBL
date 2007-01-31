@@ -3487,6 +3487,11 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-5007-HOSPNUM
                    ADD     1                   TO  IDX2
                    MOVE    "WKSRYACT"          TO  PARA-FILEMEI
                    MOVE    IDX2                TO  PARA-EDANUM
+      *----> take For fiel destroy st
+                   MOVE   "00"                 TO  LNK-SORT-SRYKBN
+                                                         (IDX)
+      *----> take For fiel destroy ed
+
                    MOVE    LNK-WKSRYACT-REC (IDX)
                                                TO  PARA-DATA-REC
                    WRITE                   PARA-REC
@@ -5387,6 +5392,10 @@ grpsys                                SPA-AREA
                    ADD     1                   TO  IDX2
                    MOVE    "WKSRYACT"          TO  PARA-FILEMEIPRV
                    MOVE    IDX2                TO  PARA-EDANUMPRV
+      *----> take For fiel destroy st
+                   MOVE   "00"                 TO  LNK-SORT-SRYKBN
+                                                         (IDX)
+      *----> take For fiel destroy ed
                    MOVE    LNK-WKSRYACT-REC (IDX)
                                                TO  PARA-DATA-RECPRV
                    WRITE                       PARA-RECPRV

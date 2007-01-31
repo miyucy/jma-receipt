@@ -261,6 +261,8 @@
            COPY    "CPWKSRYACTPLUS.INC"  REPLACING
                                      //WKSRYP-// BY //PARA-WKSRYP-//.
       *
+           03  PARA-SORT-SRYKBN        PIC X(02).
+      *
       *    診療行為用共通パラメタ
            COPY    "K01COMMON-SPA".
       *
@@ -2249,6 +2251,9 @@ grpsys                            SPA-AREA
       *
            MOVE    WKSRYACT-REC        TO  PARA-WKSRYACT-REC
            MOVE    WKSRYACTPLUS-REC    TO  PARA-WKSRYACTPLUS-REC
+      *---> take For Debug st
+      *    MOVE    "99"                TO  PARA-SORT-SRYKBN
+      *---> take For Debug ed
            MOVE    PARA-WKSRYACT-REC   TO  PARA-DATA-REC
       *
            WRITE   PARA-REC
@@ -2747,6 +2752,9 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "SYUNOU"            TO  PARA-FILEMEI
            ADD     1                   TO  WRK-PARAEDABAN
            MOVE    WRK-PARAEDABAN      TO  PARA-EDANUM
+      *---> take For Debug st
+           MOVE    "99999999"          TO  SYU-UPSRYYMD
+      *---> take For Debug ed
            MOVE    SYUNOU-REC          TO  PARA-DATA-REC
            WRITE   PARA-REC
       *
