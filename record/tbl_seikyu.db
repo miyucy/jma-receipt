@@ -2037,3 +2037,16 @@ path	key59		{
 		;
 	};
 };
+
+
+path	del7 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_seikyu
+                WHERE   HOSPID      =   :HOSPID
+                  AND   SRYYM       =   :SRYYM
+                  AND   NYUGAIKBN   =   :NYUGAIKBN
+                  AND   PTID        =   :PTID
+		;
+	};
+};

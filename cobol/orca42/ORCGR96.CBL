@@ -1386,13 +1386,15 @@
       *        ÀÁµá´ÉÍýºï½ü
                INITIALIZE                  RECE10-REC
                MOVE    SPA-HOSPID      TO  RECE10-HOSPID
-               MOVE    SPA-NAI-R96-SRYYM   TO  RECE10-SRYYM
+               MOVE    SPA-NAI-R96-SRYYM
+                                       TO  RECE10-SRYYM
                MOVE    SPA-GMN-R96-NYUGAIKBN
                                        TO  RECE10-NYUGAIKBN
-               MOVE    SPA-NAI-R96-PTID    TO  RECE10-PTID
+               MOVE    SPA-NAI-R96-PTID
+                                       TO  RECE10-PTID
                MOVE    RECE10-REC      TO  MCPDATA-REC
                MOVE    "tbl_seikyu"    TO  MCP-TABLE
-               MOVE    "del4"          TO  MCP-PATHNAME
+               MOVE    "del7"          TO  MCP-PATHNAME
                MOVE    "DBDELETE"      TO  MCP-FUNC
                CALL    "MONFUNC"       USING
                                            MCPAREA
@@ -1406,13 +1408,15 @@
       *        ¸øÈñÀÁµá½ñºï½ü
                INITIALIZE                  KOHSKY-REC
                MOVE    SPA-HOSPID      TO  KOHSKY-HOSPID
-               MOVE    SPA-NAI-R96-SRYYM   TO  KOHSKY-SRYYM
+               MOVE    SPA-NAI-R96-SRYYM
+                                       TO  KOHSKY-SRYYM
                MOVE    SPA-GMN-R96-NYUGAIKBN
                                        TO  KOHSKY-NYUGAIKBN
-               MOVE    SPA-NAI-R96-PTID    TO  KOHSKY-PTID
+               MOVE    SPA-NAI-R96-PTID
+                                       TO  KOHSKY-PTID
                MOVE    KOHSKY-REC      TO  MCPDATA-REC
                MOVE    "tbl_kohsky"    TO  MCP-TABLE
-               MOVE    "del2"          TO  MCP-PATHNAME
+               MOVE    "del4"          TO  MCP-PATHNAME
                MOVE    "DBDELETE"      TO  MCP-FUNC
                CALL    "MONFUNC"       USING
                                            MCPAREA
@@ -1426,10 +1430,12 @@
       *        ¥ì¥»ÅÅºï½ü
                INITIALIZE                  RECEDEN-REC
                MOVE    SPA-HOSPID      TO  RECEDEN-HOSPID
-               MOVE    SPA-NAI-R96-SRYYM   TO  RECEDEN-SRYYM
+               MOVE    SPA-NAI-R96-SRYYM
+                                       TO  RECEDEN-SRYYM
                MOVE    SPA-GMN-R96-NYUGAIKBN
                                        TO  RECEDEN-NYUGAIKBN
-               MOVE    SPA-NAI-R96-PTID    TO  RECEDEN-PTID
+               MOVE    SPA-NAI-R96-PTID
+                                       TO  RECEDEN-PTID
                MOVE    RECEDEN-REC     TO  MCPDATA-REC
                MOVE    "tbl_receden"   TO  MCP-TABLE
                MOVE    "del2"          TO  MCP-PATHNAME
