@@ -250,6 +250,7 @@ grpsys COPY    "COMMON-SPA".
        01  LNK-SYUNOU-REC-T.
          02 LNK-SYUNOU-REC     OCCURS 15.
            COPY  "CPSYUNOU.INC"    REPLACING  //SYU-// BY //LNK-SYU-//.
+
       /
        PROCEDURE           DIVISION  USING
                                      MCPAREA

@@ -1639,6 +1639,7 @@ grpsys                            SPA-AREA
       *
            MOVE    SSANTEI-SRYYMD      TO  TNS-YUKOSTYMD
            MOVE    SSANTEI-SRYYMD      TO  TNS-YUKOEDYMD
+grpsys     MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
       *
 grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
@@ -1679,6 +1680,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    SPACE               TO  TENSUPLUS-REC
            INITIALIZE                      TENSUPLUS-REC
+grpsys     MOVE    TNS-HOSPNUM         TO  TNSP-HOSPNUM
            MOVE    TNS-SRYCD           TO  TNSP-SRYCD
            MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
            MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD

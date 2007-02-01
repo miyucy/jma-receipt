@@ -883,6 +883,7 @@ grpsys                            SPA-AREA
            MOVE    SKARRK-SRYYM        TO  TNS-YUKOSTYMD(1:6)
            MOVE    "01"                TO  TNS-YUKOSTYMD(7:2)
            MOVE    TNS-YUKOSTYMD       TO  TNS-YUKOEDYMD
+grpsys     MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
       *
 grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC

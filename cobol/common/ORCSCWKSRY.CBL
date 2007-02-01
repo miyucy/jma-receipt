@@ -3532,6 +3532,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    SPA-SRYYMD          TO  TNS-YUKOSTYMD
                                            TNS-YUKOEDYMD
+grpsys     MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
       *
 grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC

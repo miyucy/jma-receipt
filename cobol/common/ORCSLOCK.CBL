@@ -256,7 +256,7 @@
       *    他端末レコード存在チェック
       *    MOVE    MCP-TERM(5:)            TO  LOCK-TERMID
            MOVE    MCP-TERM                TO  LOCK-TERMID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM             TO  LOCK-HOSPNUM
            MOVE    TBL-LOCK            TO  MCPDATA-REC
            PERFORM 910-LOCK-INV2-SEC
            IF       FLG-LOCK       NOT  =  ZERO
@@ -391,7 +391,7 @@ grpsys                            SPA-AREA
                    MOVE     WRK-LD        TO     LDMAP-LDNAME
                    MOVE     LOCK-LDNAME (IDY)
                                           TO     LDMAP-CHK-LDNAME (1)
-grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys             MOVE     SPA-HOSPNUM   TO  LDMAP-HOSPNUM
                    MOVE     TBL-LDMAP     TO  MCPDATA-REC
                    PERFORM  910-MAP-INV1-SEC
                IF  FLG-MAP          =     1
@@ -415,7 +415,7 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
       *    MOVE    MCP-TERM(5:)            TO  LOCK-TERMID
            MOVE    MCP-TERM                TO  LOCK-TERMID
       *    DISPLAY "MAKE --> MCP-TERM = [" LOCK-TERMID "]"
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM         TO  LOCK-HOSPNUM
            MOVE    TBL-LOCK            TO  MCPDATA-REC
            PERFORM 910-LOCK-INV-SEC
            IF      FLG-LOCK       NOT  =  ZERO
@@ -429,7 +429,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE  "1"               TO  LOCK-FLG(01)
                ACCEPT LOCK-STARTDATE(01)   FROM  DATE
                ACCEPT LOCK-STARTTIME(01)   FROM  TIME
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys         MOVE  SPA-HOSPNUM       TO  LOCK-HOSPNUM
                MOVE  TBL-LOCK          TO  MCPDATA-REC
                PERFORM 910-LOCK-INS-SEC
            ELSE
@@ -456,7 +456,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                ACCEPT LOCK-STARTDATE(IDZ)   FROM  DATE
                ACCEPT LOCK-STARTTIME(IDZ)   FROM  TIME
                MOVE  "1"                    TO    LOCK-FLG(IDZ)
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys         MOVE  SPA-HOSPNUM            TO  LOCK-HOSPNUM
                MOVE  TBL-LOCK               TO    MCPDATA-REC
                PERFORM 910-LOCK-UPD-SEC
            END-IF
@@ -575,7 +575,7 @@ grpsys                            SPA-AREA
       *    MOVE    MCP-TERM(5:)            TO  LOCK-TERMID
       *    DISPLAY  "RESET MCP-TERM   = " MCP-TERM                 
            MOVE    MCP-TERM                TO  LOCK-TERMID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys     MOVE    SPA-HOSPNUM         TO  LOCK-HOSPNUM
            MOVE    TBL-LOCK            TO  MCPDATA-REC
            PERFORM 910-LOCK-INV-SEC
            IF      FLG-LOCK       NOT  =  ZERO
@@ -610,7 +610,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE  SPACE                  TO  LOCK-FLG(IDZ)
       *    項目（日付、時間）
       *        DISPLAY  "RESET IDZ =  [" IDZ "]"
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys         MOVE  SPA-HOSPNUM       TO  LOCK-HOSPNUM
                MOVE  TBL-LOCK          TO  MCPDATA-REC
                PERFORM 910-LOCK-UPD-SEC
                IF      MCP-RC     =   ZERO
@@ -661,7 +661,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                      MOVE  SPACE             TO  LOCK-FLG(IDX)
                  END-IF
                END-PERFORM
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
+grpsys         MOVE  SPA-HOSPNUM       TO  LOCK-HOSPNUM
                MOVE  TBL-LOCK          TO  MCPDATA-REC
                PERFORM 920-LOCK-DEL-SEC
                IF      MCP-RC     =   ZERO

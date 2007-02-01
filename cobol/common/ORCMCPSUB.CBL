@@ -102,6 +102,7 @@
       *
       *
            COPY    'ORCA-DBCOMM'.
+           COPY    'COMMON-SPA'.
       *    COPY    'ORCA-DBPATH'.
       *
        LINKAGE                     SECTION.
