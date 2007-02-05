@@ -170,6 +170,7 @@
       *  03.04.05    NACL-門脇    06/12/26  東京理容等＋結核対応
       *  03.04.06    NACL-門脇    07/01/23  ５１＋低所得対応
       *  03.04.07    NACL-門脇    07/01/25  消費税総額表示対応
+      *  03.04.08    NACL-門脇    07/02/05  北海道旭川市対応
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -12970,6 +12971,26 @@
                            WK-ZENGAKU   *  WK-FUTANWARI
                  COMPUTE   LNK-SYU-KOH-COMPFTN-ENTANI(KOH-IDX)  =
                            WK-ZENGAKU   *  WK-FUTANWARI
+                 IF  (WK-1001-PREFNUM             =  01           )
+                 AND (LNK-SYU-KOH-HKNNUM(KOH-IDX) = "642" OR "643"
+                                                          OR "644")
+                 AND (LNK-S02-SYOSINFLG       NOT =  SPACE        )
+                     IF   LNK-SYU-KOH-COMPFTN(KOH-IDX)         <   580
+                        MOVE  ZERO  TO  LNK-SYU-KOH-COMPFTN(KOH-IDX)
+                     ELSE
+                        COMPUTE  LNK-SYU-KOH-COMPFTN(KOH-IDX) =
+                                 LNK-SYU-KOH-COMPFTN(KOH-IDX) -
+                                 580
+                     END-IF
+                     IF   LNK-SYU-KOH-COMPFTN-ENTANI(KOH-IDX)  <   580
+                        MOVE  ZERO  TO
+                                 LNK-SYU-KOH-COMPFTN-ENTANI(KOH-IDX)
+                     ELSE
+                        COMPUTE  LNK-SYU-KOH-COMPFTN-ENTANI(KOH-IDX) =
+                                 LNK-SYU-KOH-COMPFTN-ENTANI(KOH-IDX) -
+                                 580
+                     END-IF
+                 END-IF
                END-IF
       *
                IF   LNK-SYU-KOH-HKNNUM(KOH-IDX)  =      "027"           
