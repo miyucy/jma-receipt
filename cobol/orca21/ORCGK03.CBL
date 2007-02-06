@@ -58,6 +58,7 @@
       *  02.00.23    NACL-多々納  06/04/10  診療費明細書発行追加
       *  02.00.24    NACL-多々納  06/07/06  収納変更対応
       *  03.02.00    NACL-多々納  06/09/XX  返金処理対応
+      *  03.04.00    NACL-多々納  07/02/06  処方せん等の訂正時印刷無し追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -850,6 +851,14 @@
                                        TO  SPA-GMN-HAKFLGLST (03)
            MOVE    3                   TO  SPA-HAKFLG-MAX
            MOVE    SPA-SKYPRTFLG       TO  SPA-GMN-HAKFLG
+      *@
+           IF      SPA-SKYPRTFLG       =   "3"
+               IF      SPA-SYORIFLG        =   ZERO
+                   MOVE    "1"             TO  SPA-GMN-HAKFLG
+               ELSE
+                   MOVE    "0"             TO  SPA-GMN-HAKFLG
+               END-IF
+           END-IF
       *
       *    診療費明細フラグ
            MOVE    "0 発行なし"        TO  SPA-GMN-MEIPRTFLGLST(01)
@@ -873,6 +882,22 @@
            MOVE    "0 発行なし"        TO  SPA-GMN-SYOHOPRTLST (01)
            MOVE    "1 発行あり"        TO  SPA-GMN-SYOHOPRTLST (02)
            MOVE    "2 院内処方発行"    TO  SPA-GMN-SYOHOPRTLST (03)
+      *@
+           IF      SPA-SYOHOPRTFLG     =   "3"
+               IF      SPA-SYORIFLG        =   ZERO
+                   MOVE    "1"             TO  SPA-GMN-SYOHOPRTFLG
+               ELSE
+                   MOVE    "0"             TO  SPA-GMN-SYOHOPRTFLG
+               END-IF
+           END-IF
+           IF      SPA-SYOHOPRTFLG     =   "4"
+               IF      SPA-SYORIFLG        =   ZERO
+                   MOVE    "2"             TO  SPA-GMN-SYOHOPRTFLG
+               ELSE
+                   MOVE    "0"             TO  SPA-GMN-SYOHOPRTFLG
+               END-IF
+           END-IF
+      *@
            MOVE    3                   TO  SPA-SYOHOPRTFLG-MAX
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-SYOHOPRTFLG-MAX
@@ -888,6 +913,15 @@
            MOVE    "0 発行なし"        TO  SPA-GMN-YAKJYOLST (01)
            MOVE    "1 発行あり"        TO  SPA-GMN-YAKJYOLST (02)
            MOVE    "2 院外分発行"      TO  SPA-GMN-YAKJYOLST (03)
+      *@
+           IF      SPA-YAKJYOPRTFLG    =   "2"
+               IF      SPA-SYORIFLG        =   ZERO
+                   MOVE    "1"             TO  SPA-GMN-YAKJYOFLG
+               ELSE
+                   MOVE    "0"             TO  SPA-GMN-YAKJYOFLG
+               END-IF
+           END-IF
+      *@
            MOVE    3                   TO  SPA-YAKJYOFLG-MAX
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-YAKJYOFLG-MAX

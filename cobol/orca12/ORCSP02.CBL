@@ -1249,7 +1249,9 @@
            MOVE    "1 請求書必要"      TO  SPA-GMN-SKYPRTFLG-LST (2)
            MOVE    "2 請求書必要（請求あり）"
                                        TO  SPA-GMN-SKYPRTFLG-LST (3)
-           MOVE    3                   TO  SPA-SKYPRTFLG-MAX
+           MOVE    "3 請求書必要（訂正時なし）"
+                                       TO  SPA-GMN-SKYPRTFLG-LST (4)
+           MOVE    4                   TO  SPA-SKYPRTFLG-MAX
            MOVE    SPACE               TO  SPA-GMN-SKYPRTFLG-G
       *
       *    所得者２（高齢者福祉年金受給者証）

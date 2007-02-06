@@ -161,17 +161,17 @@
                    07  SPA-ORCA21FLG-MAX       PIC 9(04).  
       *            請求書初期表示
                    07  SPA-GMN-SKYPRTFLG-LSTG.
-                       09  SPA-GMN-SKYPRTFLG-LST   PIC X(26)
+                       09  SPA-GMN-SKYPRTFLG-LST   PIC X(30)
                                                    OCCURS  5. 
                    07  SPA-SKYPRTFLG-MAX       PIC 9(04).  
       *            院外処方せん
                    07  SPA-GMN-SYOHOPRTFLG-LSTG.
-                       09  SPA-GMN-SYOHOPRTFLG-LST   PIC X(26)
+                       09  SPA-GMN-SYOHOPRTFLG-LST   PIC X(30)
                                                    OCCURS  5. 
                    07  SPA-SYOHOPRTFLG-MAX      PIC 9(04).  
       *            薬剤情報発行
                    07  SPA-GMN-YAKUJYOFLG-LSTG.
-                       09  SPA-GMN-YAKUJYOFLG-LST   PIC X(26)
+                       09  SPA-GMN-YAKUJYOFLG-LST   PIC X(30)
                                                    OCCURS  5. 
                    07  SPA-YAKUJYOFLG-MAX      PIC 9(04).  
       *            診療費明細書
@@ -196,17 +196,17 @@
                    07  SPA-GMN-SKYPRTFLG-G. 
                        09  SPA-GMN-SKYPRTFLG       PIC X(01).
                        09  SPA-GMN-SKYPRTFLG-F1    PIC X(01).
-                       09  SPA-GMN-SKYPRTFLG-MEI   PIC X(24).
+                       09  SPA-GMN-SKYPRTFLG-MEI   PIC X(28).
       *            院外処方せん
                    07  SPA-GMN-SYOHOPRTFLG-G. 
                        09  SPA-GMN-SYOHOPRTFLG       PIC X(01).
                        09  SPA-GMN-SYOHOPRTFLG-F1    PIC X(01).
-                       09  SPA-GMN-SYOHOPRTFLG-MEI   PIC X(24).
+                       09  SPA-GMN-SYOHOPRTFLG-MEI   PIC X(28).
       *            薬剤情報発行
                    07  SPA-GMN-YAKUJYOFLG-G. 
                        09  SPA-GMN-YAKUJYOFLG       PIC X(01).
                        09  SPA-GMN-YAKUJYOFLG-F1    PIC X(01).
-                       09  SPA-GMN-YAKUJYOFLG-MEI   PIC X(24).
+                       09  SPA-GMN-YAKUJYOFLG-MEI   PIC X(28).
       *            診療費明細書
                    07  SPA-GMN-MEIPRTFLG-G. 
                        09  SPA-GMN-MEIPRTFLG        PIC X(01).
@@ -548,16 +548,24 @@
            MOVE    "1 発行する"        TO  SPA-GMN-SKYPRTFLG-LST (2)
            MOVE    "2 発行する（請求額あり）"
                                        TO  SPA-GMN-SKYPRTFLG-LST (3)
-           MOVE    3                   TO  SPA-SKYPRTFLG-MAX
+           MOVE    "3 発行する（訂正時なし）"
+                                       TO  SPA-GMN-SKYPRTFLG-LST (4)
+           MOVE    4                   TO  SPA-SKYPRTFLG-MAX
       *    院外処方せん発行フラグ
            MOVE    "0 発行しない"      TO  SPA-GMN-SYOHOPRTFLG-LST (1)
            MOVE    "1 発行する"        TO  SPA-GMN-SYOHOPRTFLG-LST (2)
            MOVE    "2 院内処方発行"    TO  SPA-GMN-SYOHOPRTFLG-LST (3)
-           MOVE    3                   TO  SPA-SYOHOPRTFLG-MAX
+           MOVE    "3 発行する（訂正時なし）"
+                                       TO  SPA-GMN-SYOHOPRTFLG-LST (4)
+           MOVE    "4 院内処方発行（訂正時なし）" 
+                                       TO  SPA-GMN-SYOHOPRTFLG-LST (5)
+           MOVE    5                   TO  SPA-SYOHOPRTFLG-MAX
       *    薬剤情報発行フラグ
            MOVE    "0 発行しない"      TO  SPA-GMN-YAKUJYOFLG-LST (1)
            MOVE    "1 発行する"        TO  SPA-GMN-YAKUJYOFLG-LST (2)
-           MOVE    2                   TO  SPA-YAKUJYOFLG-MAX
+           MOVE    "2 発行する（訂正時なし）" 
+                                       TO  SPA-GMN-YAKUJYOFLG-LST (3)
+           MOVE    3                   TO  SPA-YAKUJYOFLG-MAX
       *    診療費明細書フラグ
            MOVE    "0 発行しない"      TO  SPA-GMN-MEIPRTFLG-LST (1)
            MOVE    "1 発行する"        TO  SPA-GMN-MEIPRTFLG-LST (2)

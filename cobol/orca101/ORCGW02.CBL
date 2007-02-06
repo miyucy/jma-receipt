@@ -114,26 +114,29 @@
                            11  SPA-GMN-SYOHOKBNL      PIC X(01).
                            11  SPA-GMN-F6L            PIC X(01).
                            11  SPA-GMN-SYOHOKBNMEIL   PIC X(06).
-                       09  SPA-GMN-SKYPRTFLGLST       OCCURS  3.
+                       09  SPA-GMN-SKYPRTFLGLST       OCCURS  5.
                            11  SPA-GMN-SKYPRTFLGL     PIC X(01).
                            11  SPA-GMN-F7L            PIC X(01).
-                           11  SPA-GMN-SKYPRTFLGMEIL  PIC X(20).
-                       09  SPA-GMN-SYOHOPRTFLGLST     OCCURS  3.
+                           11  SPA-GMN-SKYPRTFLGMEIL  PIC X(28).
+                       09  SPA-SYKPRTFLG-MAX          PIC 9(02).
+                       09  SPA-GMN-SYOHOPRTFLGLST     OCCURS  5.
                            11  SPA-GMN-SYOHOPRTFLGL   PIC X(01).
                            11  SPA-GMN-F8L            PIC X(01).
                            11  SPA-GMN-SYOHOPRTFLGMEIL
-                                                      PIC X(12).
+                                                      PIC X(28).
+                       09  SPA-SYOHOPRTFLG-MAX        PIC 9(02).
                        09  SPA-GMN-ZENSYOHOFLGLST     OCCURS  2.
                            11  SPA-GMN-ZENSYOHOFLGL   PIC X(01).
                            11  SPA-GMN-F9L            PIC X(01).
                            11  SPA-GMN-ZENSYOHOFLGMEIL
                                                       PIC X(12).
       *----(01.00.09) LINE ADD START ----------------------------------
-                       09  SPA-GMN-YAKUJYOFLGLST      OCCURS  2.
+                       09  SPA-GMN-YAKUJYOFLGLST      OCCURS  3.
                            11  SPA-GMN-YAKUJYOFLGL    PIC X(01).
                            11  SPA-GMN-F10L           PIC X(01).
                            11  SPA-GMN-YAKUJYOFLGMEIL
-                                                      PIC X(12).
+                                                      PIC X(28).
+                       09  SPA-YAKUJYOFLG-MAX         PIC 9(02).
       *----(01.00.09) LINE ADD END   ----------------------------------
                        09  SPA-GMN-MEIPRTFLGLST      OCCURS  2.
                            11  SPA-GMN-MEIPRTFLGL    PIC X(01).
@@ -225,7 +228,7 @@
                                13  SPA-GMN-SKYPRTFLG  PIC X(01).
                                13  SPA-GMN-F7         PIC X(01).
                                13  SPA-GMN-SKYPRTFLGMEI
-                                                      PIC X(20).
+                                                      PIC X(28).
       *----(01.00.02) LINE ADD START ----------------------------------
       *院外処方せん発行フラグ
                            11  SPA-GMN-SYOHOPRTFLG-G.
@@ -233,7 +236,7 @@
                                                       PIC X(01).
                                13  SPA-GMN-F8         PIC X(01).
                                13  SPA-GMN-SYOHOPRTFLGMEI
-                                                      PIC X(12).
+                                                      PIC X(28).
       *前回処方表示フラグ
                            11  SPA-GMN-ZENSYOHOFLG-G.
                                13  SPA-GMN-ZENSYOHOFLG
@@ -249,7 +252,7 @@
                                                       PIC X(01).
                                13  SPA-GMN-F10        PIC X(01).
                                13  SPA-GMN-YAKUJYOFLGMEI
-                                                      PIC X(12).
+                                                      PIC X(28).
       *診療費明細書発行区分フラグ
                            11  SPA-GMN-MEIPRTFLG-G.
                                13  SPA-GMN-MEIPRTFLG
@@ -854,6 +857,10 @@
            MOVE    "2"                TO  SPA-GMN-SKYPRTFLGL   (3)
            MOVE    "発行する（請求あり）"
                                       TO  SPA-GMN-SKYPRTFLGMEIL(3)
+           MOVE    "3"                TO  SPA-GMN-SKYPRTFLGL   (4)
+           MOVE    "発行する（訂正時なし）"
+                                      TO  SPA-GMN-SKYPRTFLGMEIL(4)
+           MOVE    4                  TO  SPA-SYKPRTFLG-MAX
       *
            MOVE    "0"                TO  SPA-GMN-SYOHOPRTFLGL    (1) 
            MOVE    "発行しない"       TO  SPA-GMN-SYOHOPRTFLGMEIL (1)
@@ -861,6 +868,13 @@
            MOVE    "発行する"         TO  SPA-GMN-SYOHOPRTFLGMEIL (2)
            MOVE    "2"                TO  SPA-GMN-SYOHOPRTFLGL    (3)
            MOVE    "院内処方発行"     TO  SPA-GMN-SYOHOPRTFLGMEIL (3)
+           MOVE    "3"                TO  SPA-GMN-SYOHOPRTFLGL    (4)
+           MOVE    "発行する（訂正時なし）"
+                                      TO  SPA-GMN-SYOHOPRTFLGMEIL (4)
+           MOVE    "4"                TO  SPA-GMN-SYOHOPRTFLGL    (5)
+           MOVE    "院内処方発行（訂正時なし）" 
+                                      TO  SPA-GMN-SYOHOPRTFLGMEIL (5)
+           MOVE    5                  TO  SPA-SYOHOPRTFLG-MAX
       *
            MOVE    "0"                TO  SPA-GMN-ZENSYOHOFLGL    (1) 
            MOVE    "表示する"         TO  SPA-GMN-ZENSYOHOFLGMEIL (1)
@@ -872,6 +886,10 @@
            MOVE    "発行しない"       TO  SPA-GMN-YAKUJYOFLGMEIL (1)
            MOVE    "1"                TO  SPA-GMN-YAKUJYOFLGL    (2)
            MOVE    "発行する"         TO  SPA-GMN-YAKUJYOFLGMEIL (2)
+           MOVE    "2"                TO  SPA-GMN-YAKUJYOFLGL    (3)
+           MOVE    "発行する（訂正時なし）"
+                                      TO  SPA-GMN-YAKUJYOFLGMEIL (3)
+           MOVE    3                  TO  SPA-YAKUJYOFLG-MAX
       *----(01.00.09) LINE ADD END   ----------------------------------
            MOVE    "0"                TO  SPA-GMN-MEIPRTFLGL    (1)
            MOVE    "発行しない"       TO  SPA-GMN-MEIPRTFLGMEIL (1)
@@ -1362,21 +1380,21 @@
            END-PERFORM
            MOVE    SYS-1001-SKYPRTFLG  TO  SPA-GMN-SKYPRTFLG
            PERFORM VARYING IDY FROM    1   BY  1
-                   UNTIL   IDY >       3
+                   UNTIL   IDY >       SPA-SYKPRTFLG-MAX
                IF      SYS-1001-SKYPRTFLG  =   SPA-GMN-SKYPRTFLGL (IDY)
                    MOVE    SPA-GMN-SKYPRTFLGLST (IDY)
                                            TO  SPA-GMN-SKYPRTFLG-G
-                   MOVE    3               TO  IDY
+                   MOVE    SPA-SYKPRTFLG-MAX   TO  IDY
                END-IF
            END-PERFORM
            MOVE    SYS-1001-SYOHOPRTFLG    TO  SPA-GMN-SYOHOPRTFLG 
            PERFORM VARYING IDY     FROM    1   BY  1
-                   UNTIL   IDY     >       3
+                   UNTIL   IDY     >       SPA-SYOHOPRTFLG-MAX
                IF      SYS-1001-SYOHOPRTFLG
                                        =   SPA-GMN-SYOHOPRTFLGL (IDY)
                    MOVE    SPA-GMN-SYOHOPRTFLGLST (IDY)
                                            TO  SPA-GMN-SYOHOPRTFLG-G
-                   MOVE    3               TO  IDY
+                   MOVE    SPA-SYOHOPRTFLG-MAX TO  IDY
                END-IF
            END-PERFORM
       *
@@ -1397,12 +1415,12 @@
            END-IF
            MOVE    SYS-1001-YAKUJYOPRTFLG  TO  SPA-GMN-YAKUJYOFLG
            PERFORM VARYING IDY     FROM    1   BY  1
-                   UNTIL   IDY     >       2
+                   UNTIL   IDY     >       SPA-YAKUJYOFLG-MAX
                IF      SYS-1001-YAKUJYOPRTFLG
                                        =   SPA-GMN-YAKUJYOFLGL (IDY)
                    MOVE    SPA-GMN-YAKUJYOFLGLST (IDY)
                                            TO  SPA-GMN-YAKUJYOFLG-G
-                   MOVE    2               TO  IDY
+                   MOVE    SPA-YAKUJYOFLG-MAX  TO  IDY
                END-IF
            END-PERFORM
       *    診療費明細書発行区分空白の時、ゼロとする
@@ -2373,7 +2391,7 @@
       *
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING IDY     FROM    1   BY  1
-                   UNTIL   IDY     >       3
+                   UNTIL   IDY     >       SPA-SYKPRTFLG-MAX
                IF      SPA-GMN-SKYPRTFLG    =   SPA-GMN-SKYPRTFLGL (IDY)
                    MOVE    SPA-GMN-SKYPRTFLGLST (IDY)
                                            TO  SPA-GMN-SKYPRTFLG-G
@@ -2396,7 +2414,7 @@
       *
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING IDY     FROM    1   BY  1
-                   UNTIL   IDY     >       3
+                   UNTIL   IDY     >       SPA-SYOHOPRTFLG-MAX
                IF      SPA-GMN-SYOHOPRTFLG =   SPA-GMN-SYOHOPRTFLGL
                                                               (IDY)
                    MOVE    SPA-GMN-SYOHOPRTFLGLST (IDY)
@@ -2445,7 +2463,7 @@
       *
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING IDY     FROM    1   BY  1
-                   UNTIL   IDY     >       2
+                   UNTIL   IDY     >       SPA-YAKUJYOFLG-MAX
                IF      SPA-GMN-YAKUJYOFLG =   SPA-GMN-YAKUJYOFLGL
                                                               (IDY)
                    MOVE    SPA-GMN-YAKUJYOFLGLST (IDY)
@@ -3603,17 +3621,17 @@
            END-PERFORM    
            MOVE    2                   TO  W02-SYOHOKBN-COUNT     
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       3
+                   UNTIL   IDX >       SPA-SYKPRTFLG-MAX
                MOVE    SPA-GMN-SKYPRTFLGLST(IDX)
                                        TO  W02-SKYPRTFLGLST  (IDX)
            END-PERFORM    
-           MOVE    3                   TO  W02-SKYPRTFLG-COUNT     
+           MOVE    SPA-SYKPRTFLG-MAX   TO  W02-SKYPRTFLG-COUNT     
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       3
+                   UNTIL   IDX >       SPA-SYOHOPRTFLG-MAX
                MOVE    SPA-GMN-SYOHOPRTFLGLST(IDX)
                                        TO  W02-SYOHOPRTFLGLST  (IDX)
            END-PERFORM    
-           MOVE    3                   TO  W02-SYOHOPRTFLG-COUNT     
+           MOVE    SPA-SYOHOPRTFLG-MAX TO  W02-SYOHOPRTFLG-COUNT     
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       2
                MOVE    SPA-GMN-ZENSYOHOFLGLST(IDX)
@@ -3622,11 +3640,11 @@
            MOVE    2                   TO  W02-ZENSYOHOFLG-COUNT     
       *----(01.00.09) LINE ADD START ----------------------------------
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       2
+                   UNTIL   IDX >       SPA-YAKUJYOFLG-MAX
                MOVE    SPA-GMN-YAKUJYOFLGLST(IDX)
                                        TO  W02-YAKUJYOFLGLST  (IDX)
            END-PERFORM    
-           MOVE    2                   TO  W02-YAKUJYOFLG-COUNT
+           MOVE    SPA-YAKUJYOFLG-MAX  TO  W02-YAKUJYOFLG-COUNT
       *    診療費明細書発行区分
            MOVE    SPA-GMN-MEIPRTFLG-G
                                        TO  W02-MEIPRTFLG
