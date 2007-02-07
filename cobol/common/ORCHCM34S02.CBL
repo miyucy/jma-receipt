@@ -1464,7 +1464,7 @@
                    MOVE    WRK-SYS-5113-BRMSAGAKU(IDX3)
                                        TO  WRK-BRMSAGAKU
                    IF    ( HCM34S01-SANTEIYM   >=  CONST-H1904 )
-                       IF    ( SYS-5000-BRMSGK-TAXKBN  =   "2" )
+                       IF    ( SYS-5000-BRMSGK-TAXKBN  =   "1" )
                            COMPUTE WRK-BRMSAGAKU
                                =   WRK-BRMSAGAKU   *   1.05
                        END-IF
