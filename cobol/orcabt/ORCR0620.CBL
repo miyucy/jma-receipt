@@ -116,6 +116,7 @@
       *
       *  03.04.01    NACL-ÌçÏÆ    06/11/29  ÉÂÅï¶èÊ¬ÊÔ½¸½¤Àµ
       *  03.04.02    NACL-Æ£¸¶    06/12/05  Ì¤ÀÁµá¥ì¥»ÂÐ±þ
+      *  03.04.03    NACL-Æ£¸¶    07/02/06  ·îÅÓÃæ¤Î¼õµë¼ÔÈÖ¹æÊÑ¹¹¤ËÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -339,6 +340,9 @@
            03  WK-PTNYUINRRK-TENSTUYMD                 PIC  X(08).
            03  WK-PTNYUINRRK-TENSTUYMD2                PIC  X(08).
            03  WK-PTNYUINRRK-TENNYUYMD                 PIC  X(08).
+      *
+           03  WRK-MCP-TABLE       PIC X(64).
+           03  WRK-MCP-PATHNAME    PIC X(64).
       *
       *    ´µ¼ÔÇ¯Îð»»½ÐÍÑ¥¨¥ê¥¢
        01  WRK-NENREI-AREA.
@@ -1441,20 +1445,39 @@
                    IF      PTKOH-KOHNUM    =   WRK-CONS-SEIHO-HKNNUM
                        MOVE    RECE62-HOSPID   TO  MONTHLYNUM-HOSPID
                        MOVE    RECE62-PTID     TO  MONTHLYNUM-PTID
-                       MOVE    WRK-CONS-SEIHO-HKNNUM
-                                               TO  MONTHLYNUM-KOHNUM
+                       MOVE    PTKOH-KOHID     TO  MONTHLYNUM-KOHID
                        MOVE    RECE62-SRYYM    TO  MONTHLYNUM-SRYYM
                        MOVE    RECE62-NYUGAIKBN
                                                TO  MONTHLYNUM-NYUGAIKBN
                        MOVE    MONTHLYNUM-REC  TO  MCPDATA-REC
+                       MOVE    "tbl_monthlynum"
+                                               TO  WRK-MCP-TABLE
+                       MOVE    "key4"          TO  WRK-MCP-PATHNAME
                        PERFORM 910-MONTHLYNUM-READ-SEC
                        IF    ( FLG-MONTHLYNUM          =   ZERO  )
-      *****************AND   ( MONTHLYNUM-JKYSNUM  NOT =   SPACE )
                            MOVE    MONTHLYNUM-JKYSNUM 
                                            TO  RECE62-KOHJKYSNUM (IDX2)
                        ELSE                       
-                           MOVE   PTKOH-JKYSNUM
+                           MOVE    RECE62-HOSPID   TO  MONTHLYNUM-HOSPID
+                           MOVE    RECE62-PTID     TO  MONTHLYNUM-PTID
+                           MOVE    WRK-CONS-SEIHO-HKNNUM
+                                                   TO  MONTHLYNUM-KOHNUM
+                           MOVE    RECE62-SRYYM    TO  MONTHLYNUM-SRYYM
+                           MOVE    RECE62-NYUGAIKBN
+                                                   TO
+                                                   MONTHLYNUM-NYUGAIKBN
+                           MOVE    MONTHLYNUM-REC  TO  MCPDATA-REC
+                           MOVE    "tbl_monthlynum"
+                                                   TO  WRK-MCP-TABLE
+                           MOVE    "key"           TO  WRK-MCP-PATHNAME
+                           PERFORM 910-MONTHLYNUM-READ-SEC
+                           IF    ( FLG-MONTHLYNUM          =   ZERO  )
+                               MOVE    MONTHLYNUM-JKYSNUM 
                                            TO  RECE62-KOHJKYSNUM (IDX2)
+                           ELSE                       
+                               MOVE   PTKOH-JKYSNUM
+                                           TO  RECE62-KOHJKYSNUM (IDX2)
+                           END-IF
                        END-IF
                    ELSE                       
                        MOVE   PTKOH-JKYSNUM
@@ -2847,19 +2870,19 @@
       *****************************************************************
        910-MONTHLYNUM-READ-SEC         SECTION.
       *
-           MOVE    "DBSELECT"           TO  MCP-FUNC
-           MOVE    "MONTHLYNUM-KEY"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
            IF      MCP-RC               =   ZERO
                MOVE    "DBFETCH"            TO  MCP-FUNC
-               MOVE    "MONTHLYNUM-KEY"       TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+               CALL    "MONFUNC"           USING
+                                               MCPAREA
+                                               MCPDATA-REC
                IF      MCP-RC               =   ZERO
                    MOVE    ZERO                 TO  FLG-MONTHLYNUM
                    MOVE    MCPDATA-REC          TO  MONTHLYNUM-REC
@@ -2870,12 +2893,9 @@
                MOVE    1                   TO  FLG-MONTHLYNUM
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "MONTHLYNUM-KEY"    TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
       *
            .
        910-MONTHLYNUM-READ-EXT.

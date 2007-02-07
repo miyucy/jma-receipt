@@ -22,6 +22,8 @@
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01   NACL-藤原     03.01.20  入外区分の追加
+      *
+      *  03.04.01   NACL-藤原     07.02.06  公費ＩＤの追加
       ************************************************************
       *01  MONTHLYNUM-REC.
       *キー
@@ -32,6 +34,8 @@
                05  MONTHLYNUM-PTID             PIC  9(10).
       *保険番号（公費）
                05  MONTHLYNUM-KOHNUM           PIC  X(03).
+      *公費ＩＤ
+               05  MONTHLYNUM-KOHID            PIC  9(10).
       *診療年月
                05  MONTHLYNUM-SRYYM            PIC  X(06).
       *入外区分

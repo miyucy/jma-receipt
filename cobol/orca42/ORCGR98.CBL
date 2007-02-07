@@ -56,6 +56,7 @@
       *  02.07.01    NACL-藤原    05/10/31  MONFUNC対応
       *
       *  03.04.01    NACL-藤原    06/10/31  受給者番号警告チェックを追加
+      *  03.04.02    NACL-藤原    07/02/06  月途中の受給者番号変更に対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -104,6 +105,7 @@
                        09  SPA-NAI-TBL             OCCURS  40.
                            11  SPA-NAI-TBL-G       OCCURS  25.
                                13  SPA-NAI-TPTID   PIC 9(10).
+                               13  SPA-NAI-TKOHID  PIC 9(10).
                                13  SPA-NAI-TSRYYM  PIC 9(06).
                                13  SPA-NAI-JKYSNUM-CHK
                                                    PIC 9(01).
@@ -269,6 +271,9 @@
       *     
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
+      *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -692,13 +697,32 @@
            INITIALIZE                  MONTHLYNUM-REC
            MOVE    SPA-HOSPID      TO  MONTHLYNUM-HOSPID
            MOVE    PTKOH-PTID      TO  MONTHLYNUM-PTID
-           MOVE    WRK-CONS-SEIHO-HKNNUM
-                                   TO  MONTHLYNUM-KOHNUM
+           MOVE    PTKOH-KOHID     TO  MONTHLYNUM-KOHID
            MOVE    SPA-NAI-SRYYM   TO  MONTHLYNUM-SRYYM
            MOVE    SPA-R01-NYUGAIKBN
                                    TO  MONTHLYNUM-NYUGAIKBN
            MOVE    MONTHLYNUM-REC  TO  MCPDATA-REC
+           MOVE    "tbl_monthlynum"
+                                   TO  WRK-MCP-TABLE
+           MOVE    "key4"          TO  WRK-MCP-PATHNAME
            PERFORM 910-MONTHLYNUM-READ-SEC
+           IF      FLG-MONTHLYNUM  =   ZERO
+               CONTINUE
+           ELSE
+              INITIALIZE                  MONTHLYNUM-REC
+               MOVE    SPA-HOSPID      TO  MONTHLYNUM-HOSPID
+               MOVE    PTKOH-PTID      TO  MONTHLYNUM-PTID
+               MOVE    WRK-CONS-SEIHO-HKNNUM
+                                       TO  MONTHLYNUM-KOHNUM
+               MOVE    SPA-NAI-SRYYM   TO  MONTHLYNUM-SRYYM
+               MOVE    SPA-R01-NYUGAIKBN
+                                       TO  MONTHLYNUM-NYUGAIKBN
+               MOVE    MONTHLYNUM-REC  TO  MCPDATA-REC
+               MOVE    "tbl_monthlynum"
+                                       TO  WRK-MCP-TABLE
+               MOVE    "key"           TO  WRK-MCP-PATHNAME
+               PERFORM 910-MONTHLYNUM-READ-SEC
+           END-IF
       *
            MOVE    ZERO            TO  FLG-CHK
            IF      SPA-NAI-HYOUJIFLG   =   2
@@ -743,6 +767,7 @@
       *****    MOVE    SPA-NAI-SRYYM   TO  SPA-NAI-TSRYYM(IDX1 IDX2)
                MOVE    PTKOH-FTNJANUM  TO  SPA-GMN-TFTNJANUM (IDX1 IDX2)
                MOVE    PTKOH-JKYSNUM   TO  SPA-GMN-TJKYSNUM  (IDX1 IDX2)
+               MOVE    PTKOH-KOHID     TO  SPA-NAI-TKOHID    (IDX1 IDX2)
                IF      FLG-MONTHLYNUM  =   ZERO
                    MOVE    MONTHLYNUM-JKYSNUM  
                                        TO  SPA-GMN-TJKYSNUM (IDX1 IDX2)
@@ -1407,6 +1432,11 @@
       *****************************************************************
        450-TOUROKU-SEC                SECTION.
       *
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+      *
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL   IDX1    >       SPA-GMN-MAX-PAGE
                PERFORM VARYING IDX FROM    1   BY  1
@@ -1415,18 +1445,46 @@
                    IF      SPA-NAI-TPTID (IDX1 IDX)    =   ZERO
                        CONTINUE
                    ELSE
+      *
+      *                ＫＯＨＩＤがゼロのデータがあれば削除
                        INITIALIZE                  MONTHLYNUM-REC 
                        MOVE    SPA-HOSPID      TO  MONTHLYNUM-HOSPID
                        MOVE    SPA-NAI-TPTID (IDX1 IDX)
                                                TO  MONTHLYNUM-PTID
-                       MOVE    WRK-CONS-SEIHO-HKNNUM
-                                               TO  MONTHLYNUM-KOHNUM
+                       MOVE    ZERO            TO  MONTHLYNUM-KOHID
                        MOVE    SPA-NAI-SRYYM   TO  MONTHLYNUM-SRYYM
                        MOVE    SPA-R01-NYUGAIKBN
                                                TO  MONTHLYNUM-NYUGAIKBN
                        MOVE    MONTHLYNUM-REC  TO  MCPDATA-REC
+                       MOVE    "tbl_monthlynum"
+                                               TO  WRK-MCP-TABLE
+                       MOVE    "key4"          TO  WRK-MCP-PATHNAME
                        PERFORM 910-MONTHLYNUM-READ-SEC
+                       IF      FLG-MONTHLYNUM   =   ZERO
+                           MOVE    MONTHLYNUM-REC  TO  MCPDATA-REC
+                           MOVE    "DBDELETE"      TO  MCP-FUNC   
+                           MOVE    "tbl_monthlynum"
+                                                   TO  MCP-TABLE
+                           MOVE    "key"           TO  MCP-PATHNAME
+                           CALL    "MONFUNC"           USING
+                                                       MCPAREA
+                                                       MCPDATA-REC
+                       END-IF 
       *
+                       INITIALIZE                  MONTHLYNUM-REC
+                       MOVE    SPA-HOSPID      TO  MONTHLYNUM-HOSPID
+                       MOVE    SPA-NAI-TPTID  (IDX1 IDX)
+                                               TO  MONTHLYNUM-PTID
+                       MOVE    SPA-NAI-TKOHID (IDX1 IDX)
+                                               TO  MONTHLYNUM-KOHID
+                       MOVE    SPA-NAI-SRYYM   TO  MONTHLYNUM-SRYYM
+                       MOVE    SPA-R01-NYUGAIKBN
+                                               TO  MONTHLYNUM-NYUGAIKBN
+                       MOVE    MONTHLYNUM-REC  TO  MCPDATA-REC
+                       MOVE    "tbl_monthlynum"
+                                               TO  WRK-MCP-TABLE
+                       MOVE    "key4"          TO  WRK-MCP-PATHNAME
+                       PERFORM 910-MONTHLYNUM-READ-SEC
       *                受給者番号未入力のとき月代わり受給者番号マスタに
       *                存在しないときは更新しない                 
                        IF    ( SPA-GMN-TJKYSNUM (IDX1 IDX) 
@@ -1446,10 +1504,22 @@
                                                TO  MONTHLYNUM-NYUGAIKBN
                            MOVE    SPA-GMN-TJKYSNUM (IDX1 IDX)
                                                TO  MONTHLYNUM-JKYSNUM
+                           MOVE    SPA-NAI-TKOHID (IDX1 IDX)
+                                               TO  MONTHLYNUM-KOHID
                            IF      FLG-MONTHLYNUM  =   ZERO
-                               MOVE    "DBUPDATE"          TO  MCP-FUNC
+                               MOVE    SMCNDATE-YMD
+                                                   TO  MONTHLYNUM-UPYMD
+                               MOVE    SMCNDATE-HMS
+                                                   TO  MONTHLYNUM-UPHMS
+                               MOVE    "DBUPDATE"  TO  MCP-FUNC
                            ELSE
-                               MOVE    "DBINSERT"          TO  MCP-FUNC   
+                               MOVE    SMCNDATE-YMD
+                                                   TO  MONTHLYNUM-CREYMD
+                               MOVE    SMCNDATE-YMD
+                                                   TO  MONTHLYNUM-UPYMD
+                               MOVE    SMCNDATE-HMS
+                                                   TO  MONTHLYNUM-UPHMS
+                               MOVE    "DBINSERT"  TO  MCP-FUNC   
                            END-IF
                            MOVE    MONTHLYNUM-REC  TO  MCPDATA-REC
                            MOVE    "tbl_monthlynum"
@@ -1995,15 +2065,15 @@
        910-MONTHLYNUM-READ-SEC         SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_monthlynum"    TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
            CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            IF      MCP-RC               =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "tbl_monthlynum"    TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                CALL    "MONFUNC"           USING
                                            MCPAREA
                                            MCPDATA-REC
@@ -2019,8 +2089,8 @@
                INITIALIZE                  MONTHLYNUM-REC
            END-IF
       *
-           MOVE    "tbl_monthlynum"    TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *
            .

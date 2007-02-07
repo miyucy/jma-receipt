@@ -65,6 +65,8 @@
       *  03.03.05    NACL-藤原    06/10/27  レセプトで生活保護の請求がな
       *                                     い場合記載の対象としない
       *  03.03.06    NACL-藤原    06/12/15  入院の包括のデータ作成の修正
+      *
+      *  03.04.01    NACL-藤原    07/02/06  月途中の受給者番号変更に対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -243,6 +245,8 @@
       *
            03  WRK-PATH                    PIC X(64).
       *
+           03  WRK-MCP-TABLE               PIC X(64).
+           03  WRK-MCP-PATHNAME            PIC X(64).
       *
            03  WRK-STYMD                   PIC X(08).
            03  WRK-EDYMD                   PIC X(08).
@@ -1771,24 +1775,42 @@
                MOVE   PTKOH-FTNJANUM   TO  TOUKEI01-TKOHFTNJANUM (IDY)
                MOVE   PTKOH-TEKSTYMD   TO  TOUKEI01-TKOHTEKSTYMD (IDY)
                MOVE   PTKOH-TEKEDYMD   TO  TOUKEI01-TKOHTEKEDYMD (IDY)
-               MOVE   PTKOH-JKYSNUM
-                                       TO  TOUKEI01-TKOHJKYSNUM  (IDY)
+               MOVE   PTKOH-JKYSNUM    TO  TOUKEI01-TKOHJKYSNUM  (IDY)
       *             
       *        生保のとき月代わり受給者番号マスタより受給者番号をセット 
                IF    ( PTKOH-KOHNUM    =   WRK-CONS-SEIHO-HKNNUM )
                    MOVE    WRK-PARA-HOSPID TO  MONTHLYNUM-HOSPID
                    MOVE    TOUKEI01-PTID   TO  MONTHLYNUM-PTID
-                   MOVE    WRK-CONS-SEIHO-HKNNUM
-                                           TO  MONTHLYNUM-KOHNUM
+                   MOVE    PTKOH-KOHID     TO  MONTHLYNUM-KOHID
                    MOVE    WRK-PARA-SRYYM  TO  MONTHLYNUM-SRYYM
                    MOVE    WRK-PARA-NYUGAIKBN
                                            TO  MONTHLYNUM-NYUGAIKBN
                    MOVE    MONTHLYNUM-REC  TO  MCPDATA-REC
+                   MOVE    "tbl_monthlynum"
+                                           TO  WRK-MCP-TABLE
+                   MOVE    "key4"          TO  WRK-MCP-PATHNAME
                    PERFORM 910-MONTHLYNUM-READ-SEC
                    IF      FLG-MONTHLYNUM  =   ZERO
                        MOVE    MONTHLYNUM-JKYSNUM 
+                                           TO  TOUKEI01-TKOHJKYSNUM(IDY)
+                   ELSE
+                       MOVE    WRK-PARA-HOSPID TO  MONTHLYNUM-HOSPID
+                       MOVE    TOUKEI01-PTID   TO  MONTHLYNUM-PTID
+                       MOVE    WRK-CONS-SEIHO-HKNNUM
+                                               TO  MONTHLYNUM-KOHNUM
+                       MOVE    WRK-PARA-SRYYM  TO  MONTHLYNUM-SRYYM
+                       MOVE    WRK-PARA-NYUGAIKBN
+                                               TO  MONTHLYNUM-NYUGAIKBN
+                       MOVE    MONTHLYNUM-REC  TO  MCPDATA-REC
+                       MOVE    "tbl_monthlynum"
+                                               TO  WRK-MCP-TABLE
+                       MOVE    "key"           TO  WRK-MCP-PATHNAME
+                       PERFORM 910-MONTHLYNUM-READ-SEC
+                       IF      FLG-MONTHLYNUM  =   ZERO
+                           MOVE    MONTHLYNUM-JKYSNUM 
                                        TO  TOUKEI01-TKOHJKYSNUM  (IDY)
-                   END-IF
+                       END-IF
+                   END-IF 
                END-IF
       *    
       *        法別番号のセット
@@ -3092,19 +3114,19 @@
       *****************************************************************
        910-MONTHLYNUM-READ-SEC         SECTION.
       *
-           MOVE    "DBSELECT"           TO  MCP-FUNC
-           MOVE    "MONTHLYNUM-KEY"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
            IF      MCP-RC               =   ZERO
                MOVE    "DBFETCH"            TO  MCP-FUNC
-               MOVE    "MONTHLYNUM-KEY"       TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+               CALL    "MONFUNC"           USING
+                                               MCPAREA
+                                               MCPDATA-REC
                IF      MCP-RC               =   ZERO
                    MOVE    ZERO                 TO  FLG-MONTHLYNUM
                    MOVE    MCPDATA-REC          TO  MONTHLYNUM-REC
@@ -3115,8 +3137,9 @@
                MOVE    1                   TO  FLG-MONTHLYNUM
            END-IF
       *
-           MOVE    "MONTHLYNUM-KEY"    TO      ORC-DBPATH
-           PERFORM 900-DBCLOSE-SEC
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
       *
            .
        910-MONTHLYNUM-READ-EXT.
@@ -3412,44 +3435,61 @@
            .
        900-DBCLOSE-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    テーブルクローズ処理
+      *****************************************************************
+       900-CLOSE-SEC               SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
+      *
+           .
+       900-CLOSE-EXT.
+           EXIT.
       *      
       *****************************************************************
-      *    ＤＢ　オープン処理
+      *    ＤＢオープン処理
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
-           MOVE    "DBOPEN"            TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBOPEN"            TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
-           MOVE    "DBSTART"           TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBSTART"           TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            .
        100-DBOPEN-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ＤＢ　クローズ処理
+      *    ＤＢクローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *
-           MOVE    "DBCOMMIT"          TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBCOMMIT"          TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
-           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBDISCONNECT"      TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            .
-       900-DBCLOSE-EXT.
+       900-DBDISCONNECT-EXT.
            EXIT.
-

@@ -2,18 +2,19 @@ tbl_monthlynum {
 	HOSPID				char(24);
 	PTID 				number(10);
 	KOHNUM				char(3);
+	KOHID				number(10);
 	SRYYM  				char(6);
 	NYUGAIKBN			char(1);
 	JKYSNUM 			char(20);
 	TERMID   			varchar(32);
-	OPID     			varchar(16);
+	OPID				varchar(16);
 	CREYMD   			char(8);
-	UPYMD    			char(8);
+	UPYMD				char(8);
 	UPHMS				char(6);
 };
 
 primary	{
-	HOSPID,PTID,KOHNUM,SRYYM,NYUGAIKBN;
+	HOSPID,PTID,KOHNUM,KOHID,SRYYM,NYUGAIKBN;
 };
 
 path	key 	{
@@ -75,3 +76,19 @@ path	del1 	{
 		;
 	};
 };
+
+path	key4 	{
+	DBSELECT	{
+		DECLARE tbl_monthlynum_key4_csr CURSOR FOR
+		SELECT *
+		FROM tbl_monthlynum
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   KOHID       =   :KOHID
+			AND   SRYYM       =   :SRYYM
+			AND  NYUGAIKBN    =   :NYUGAIKBN
+                        
+		;
+	};
+};
+
