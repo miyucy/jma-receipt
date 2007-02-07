@@ -3141,14 +3141,11 @@
                                        SYUPARA02-AREA
       *
            MOVE    "2"                 TO  SYUPARA01-NYUGAIKBN
-           IF    ( SYS-1039-S02SKYMISYUPRTKBN  =   "0" )
-               CONTINUE
-           ELSE
-               MOVE    WRK-NYU-MISYU   TO  SYUPARA01-NYU-MISYU
-               MOVE    WRK-GAI-MISYU   TO  SYUPARA01-GAI-MISYU
-               MOVE    WRK-GAI-MISYU-P TO  SYUPARA01-GAI-MISYU-P
-               MOVE    WRK-GAI-MISYU-M TO  SYUPARA01-GAI-MISYU-M
-           END-IF
+      *
+           MOVE    WRK-NYU-MISYU       TO  SYUPARA01-NYU-MISYU
+           MOVE    WRK-GAI-MISYU       TO  SYUPARA01-GAI-MISYU
+           MOVE    WRK-GAI-MISYU-P     TO  SYUPARA01-GAI-MISYU-P
+           MOVE    WRK-GAI-MISYU-M     TO  SYUPARA01-GAI-MISYU-M
       *
            MOVE    ZERO                TO  SYUPARA01-NYU-NYUKIN
            MOVE    ZERO                TO  SYUPARA01-GAI-NYUKIN
@@ -3223,6 +3220,13 @@
                IF    ( SPA-ERRCD       NOT =   SPACE )
                    GO  TO  4201-GAI-SAIHAKKOU-EXT
                END-IF
+           END-IF
+      *
+           IF    ( SYS-1039-S02SKYMISYUPRTKBN  =   "0" )
+               MOVE    ZERO            TO  SYUPARA01-NYU-MISYU
+                                           SYUPARA01-GAI-MISYU
+                                           SYUPARA01-GAI-MISYU-P
+                                           SYUPARA01-GAI-MISYU-M
            END-IF
       *
            INITIALIZE                      PARA-REC
