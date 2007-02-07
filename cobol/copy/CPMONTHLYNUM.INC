@@ -29,7 +29,7 @@
       *キ〖
            03  MONTHLYNUM-KEY.
       *板闻怠簇ＩＤ
-               05  MONTHLYNUM-HOSPNUM         PIC 9(2).
+               05  MONTHLYNUM-HOSPID           PIC  X(24).
       *吹荚ＩＤ
                05  MONTHLYNUM-PTID             PIC  9(10).
       *瘦副戎规∈给锐∷

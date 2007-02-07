@@ -1,5 +1,5 @@
 tbl_monthlynum {
-	HOSPNUM				number(2,0);
+	HOSPID				char(24);
 	PTID 				number(10);
 	KOHNUM				char(3);
 	KOHID				number(10);
@@ -14,7 +14,7 @@ tbl_monthlynum {
 };
 
 primary	{
-	HOSPNUM,PTID,KOHNUM,KOHID,SRYYM,NYUGAIKBN;
+	HOSPID,PTID,KOHNUM,KOHID,SRYYM,NYUGAIKBN;
 };
 
 path	key 	{
@@ -22,7 +22,7 @@ path	key 	{
 		DECLARE tbl_monthlynum_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_monthlynum
-			WHERE   HOSPNUM    =   :HOSPNUM
+			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 			AND   KOHNUM      =   :KOHNUM
 			AND   SRYYM       =   :SRYYM
@@ -37,7 +37,7 @@ path	key2 	{
 		DECLARE tbl_monthlynum_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_monthlynum
-			WHERE   HOSPNUM      =   :HOSPNUM
+			WHERE   HOSPID      =   :HOSPID
 			AND     PTID        =   :PTID
 			AND     KOHNUM      =   :KOHNUM
 			ORDER   BY  SRYYM
@@ -50,7 +50,7 @@ path	key3 	{
 		DECLARE tbl_monthlynum_key3_csr CURSOR FOR
 		SELECT *
 		FROM tbl_monthlynum
-			WHERE   HOSPNUM    =   :HOSPNUM
+			WHERE   HOSPID    =   :HOSPID
 			AND     KOHNUM    =   :KOHNUM
 			AND     SRYYM     =   :SRYYM
 			ORDER   BY  PTID
@@ -63,7 +63,6 @@ path	all 	{
 		DECLARE tbl_monthlynum_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_monthlynum
-			WHERE   HOSPNUM    =   :HOSPNUM
  		;
 	};
 };
@@ -72,7 +71,7 @@ path	del1 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_monthlynum
-			WHERE   HOSPNUM    =   :HOSPNUM
+			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 		;
 	};
@@ -83,7 +82,7 @@ path	key4 	{
 		DECLARE tbl_monthlynum_key4_csr CURSOR FOR
 		SELECT *
 		FROM tbl_monthlynum
-			WHERE   HOSPNUM    =   :HOSPNUM
+			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 			AND   KOHID       =   :KOHID
 			AND   SRYYM       =   :SRYYM
