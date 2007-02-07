@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <GTK-Interface>
 
 <project>
@@ -30,7 +30,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(XE01)QR„Ç≥„Éº„Éâ„ÉÜ„Çπ„ÉàÁîªÈù¢</title>
+  <title>(XE01)QR•≥°º•…•∆•π•»≤ËÃÃ</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>True</modal>
@@ -42,6 +42,8 @@
   <widget>
     <class>GtkFixed</class>
     <name>fixed10</name>
+    <width>620</width>
+    <height>400</height>
 
     <widget>
       <class>GtkButton</class>
@@ -61,7 +63,7 @@
 	<handler>window_destroy</handler>
 	<last_modification_time>Mon, 29 Jan 2007 03:44:17 GMT</last_modification_time>
       </signal>
-      <label>F1 Êàª„Çã</label>
+      <label>F1 Ã·§Î</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -84,7 +86,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 26 Dec 2000 01:10:35 GMT</last_modification_time>
       </signal>
-      <label>F12 ÁôªÈå≤</label>
+      <label>F12 ≈–œø</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -117,6 +119,18 @@
     </widget>
 
     <widget>
+      <class>GtkNumberEntry</class>
+      <name>HKNNUM</name>
+      <x>120</x>
+      <y>35</y>
+      <width>85</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <editable>True</editable>
+      <format>999999999</format>
+    </widget>
+
+    <widget>
       <class>GtkPandaEntry</class>
       <name>KIGONUM</name>
       <x>120</x>
@@ -124,22 +138,10 @@
       <width>150</width>
       <height>25</height>
       <can_focus>True</can_focus>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 08 Feb 2007 07:22:50 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Thu, 08 Feb 2007 07:23:05 GMT</last_modification_time>
-      </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
       <text_max_length>20</text_max_length>
-      <text>„ÅÇ„ÅÇ„ÅÇ„ÅÇ„ÅÇ„ÅÇ„ÅÇ„ÅÇ„ÅÇ„ÅÇ</text>
+      <text>§¢§¢§¢§¢§¢§¢§¢§¢§¢§¢</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
@@ -151,7 +153,7 @@
       <y>35</y>
       <width>76</width>
       <height>24</height>
-      <label>‰øùÈô∫ËÄÖÁï™Âè∑</label>
+      <label> ›∏±º‘»÷πÊ</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -167,7 +169,7 @@
       <y>10</y>
       <width>76</width>
       <height>24</height>
-      <label>Âà∂Â∫¶Âå∫ÂàÜ</label>
+      <label>¿©≈Ÿ∂Ë ¨</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -183,7 +185,7 @@
       <y>60</y>
       <width>76</width>
       <height>24</height>
-      <label>Ë®òÂè∑,Áï™Âè∑</label>
+      <label>µ≠πÊ,»÷πÊ</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -194,24 +196,12 @@
 
     <widget>
       <class>GtkPandaEntry</class>
-      <name>HONKZKKBN</name>
+      <name>HONKBN</name>
       <x>120</x>
       <y>85</y>
       <width>17</width>
       <height>24</height>
       <can_focus>True</can_focus>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 08 Feb 2007 07:23:25 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Thu, 08 Feb 2007 07:23:38 GMT</last_modification_time>
-      </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
       <text_max_length>1</text_max_length>
@@ -228,22 +218,10 @@
       <width>200</width>
       <height>24</height>
       <can_focus>True</can_focus>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 08 Feb 2007 07:23:50 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Thu, 08 Feb 2007 07:24:06 GMT</last_modification_time>
-      </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
       <text_max_length>28</text_max_length>
-      <text>„Å™„Åå„ÅÑ„ÄÄ„Å™„Åæ„Åà„ÅÆ„Å¶„Åô„Å®„Å†„Çà„ÄÇ</text>
+      <text>§ §¨§§°°§ §ﬁ§®§Œ§∆§π§»§¿§Ë°£</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
@@ -255,7 +233,7 @@
       <y>110</y>
       <width>76</width>
       <height>24</height>
-      <label>„Ç´„ÉäÊ∞èÂêç</label>
+      <label>•´• ª·Ãæ</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -271,7 +249,7 @@
       <y>85</y>
       <width>76</width>
       <height>24</height>
-      <label>Êú¨‰∫∫ÂÆ∂Êóè</label>
+      <label>À‹øÕ≤»¬≤</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -288,18 +266,6 @@
       <width>17</width>
       <height>24</height>
       <can_focus>True</can_focus>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 08 Feb 2007 07:24:26 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Thu, 08 Feb 2007 07:24:39 GMT</last_modification_time>
-      </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
       <text_max_length>1</text_max_length>
@@ -315,7 +281,7 @@
       <y>135</y>
       <width>76</width>
       <height>24</height>
-      <label>ÊÄßÂà•</label>
+      <label>¿≠ Ã</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -332,18 +298,6 @@
       <width>75</width>
       <height>24</height>
       <can_focus>True</can_focus>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 08 Feb 2007 07:24:52 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Thu, 08 Feb 2007 07:25:10 GMT</last_modification_time>
-      </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
       <text_max_length>7</text_max_length>
@@ -360,18 +314,6 @@
       <width>500</width>
       <height>24</height>
       <can_focus>True</can_focus>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 08 Feb 2007 07:25:25 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Thu, 08 Feb 2007 07:25:44 GMT</last_modification_time>
-      </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
       <text_max_length>100</text_max_length>
@@ -387,7 +329,7 @@
       <y>160</y>
       <width>76</width>
       <height>24</height>
-      <label>ÁîüÂπ¥ÊúàÊó•</label>
+      <label>¿∏«Ø∑Ó∆¸</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -403,7 +345,7 @@
       <y>250</y>
       <width>500</width>
       <height>24</height>
-      <label>ÁÆ°ÁêÜÁï™Âè∑,Êº¢Â≠óÊ∞èÂêç,Áµ¶‰ªòÂâ≤Âêà,ÂÜçÁô∫Ë°å„Ç≥„Éº„Éâ</label>
+      <label>¥…Õ˝»÷πÊ,¥¡ª˙ª·Ãæ,µÎ…’≥‰πÁ,∫∆»Øπ‘•≥°º•…</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -419,34 +361,6 @@
       <y>288</y>
       <width>508</width>
       <height>16</height>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>HKNNUM</name>
-      <x>120</x>
-      <y>36</y>
-      <width>150</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 08 Feb 2007 07:21:54 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Thu, 08 Feb 2007 07:22:15 GMT</last_modification_time>
-      </signal>
-      <editable>True</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>8</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
     </widget>
   </widget>
 </widget>
