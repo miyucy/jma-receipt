@@ -3794,6 +3794,7 @@
            MOVE    SPA-GMN-NYUKINHOU   TO  LNK-SCNYUKIN-NYUKIN-HOHO
       *    返金のみ
            IF     (SPA-GMN-NYUKINKBN   =   "2"  OR  "3" )  AND
+                  (SPA-GOK-HENKIN  NOT =   ZERO   )  AND
                   (WRK-HENKIN-GAKU     =   ZERO         )
                MOVE    "1"                 TO  LNK-SCNYUKIN-HENKINKBN
            END-IF
