@@ -5224,8 +5224,15 @@
       *
       *        æ√»Ò¿«…Ωº® ‘Ω∏»ΩƒÍ
                IF    ( SYS-5000-BRMSGK-TAXKBN  =   "1" )
-                   COMPUTE    WRK-TTL-BRMSAGAKU-TAX
-                       =    ( WRK-TTL-BRMSAGAKU    *   0.05 )
+      *
+                   IF    ( ORCHCM34-SRYYM  >=   CONST-H190401 (1:6))
+                       COMPUTE  WRK-TTL-BRMSAGAKU-TAX
+                            = ( WRK-TTL-BRMSAGAKU  *  5 / 105)
+                   ELSE
+                       COMPUTE  WRK-TTL-BRMSAGAKU-TAX
+                            = ( WRK-TTL-BRMSAGAKU  *  0.05 )
+                   END-IF
+      *
                    IF    ( WRK-TTL-BRMSAGAKU-TAX   >   ZERO )
                        MOVE    "°°°°°°°°°°ººŒ¡∫π≥€æ√»Ò¿«≥€"
                                            TO  WRK-KINGAKKU-LBL
