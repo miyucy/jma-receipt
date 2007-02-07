@@ -331,6 +331,7 @@ RECORD_files = \
 	JERR2.rec \
 	R06.rec \
 	W981.rec \
+	XE01.rec \
 
 DEF_files = \
 	HC01.def \
@@ -508,6 +509,7 @@ DB_files = \
 	tbl_tensuplus2.db \
 	tbl_genericname.db \
 	tbl_syurrk.db \
+	tbl_qrcdhkn.db \
 
 all:   
 
