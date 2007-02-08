@@ -4008,9 +4008,7 @@
               AND (SPA-GMN-SRYKA   NOT =   ZERO )
                IF     (SPA-GOK-SRYKA       =   SPA-GMN-SRYKA )  AND
                       (SPA-GOK-HKNCOMBI    =   SPA-GMN-HKNCOMBI )
-                   IF      SPA-ERRCD           =   SPACE
-                       MOVE    SPA-GOK-NYUKIN      TO  SPA-GMN-NYUKIN
-                   END-IF
+                   CONTINUE
                ELSE
                    MOVE    SPA-SYUNOU-REC (SPA-SYUNOU-IDX)
                                            TO  SYUNOU-REC
