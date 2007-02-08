@@ -3384,6 +3384,8 @@
                    MOVE    SPA-GMN-NYUKIN      TO  SPA-MAE-NYUKIN
                    MOVE    SPA-GMN-HENKIN      TO  SPA-MAE-HENKIN
                    MOVE    SPA-GMN-CHOSEI      TO  SPA-MAE-CHOSEI
+               ELSE
+                   MOVE    "E"                 TO  SPA-MAE-NYUKINKBN
                END-IF
            END-IF
       *
@@ -4006,7 +4008,9 @@
               AND (SPA-GMN-SRYKA   NOT =   ZERO )
                IF     (SPA-GOK-SRYKA       =   SPA-GMN-SRYKA )  AND
                       (SPA-GOK-HKNCOMBI    =   SPA-GMN-HKNCOMBI )
-                   CONTINUE
+                   IF      SPA-ERRCD           =   SPACE
+                       MOVE    SPA-GOK-NYUKIN      TO  SPA-GMN-NYUKIN
+                   END-IF
                ELSE
                    MOVE    SPA-SYUNOU-REC (SPA-SYUNOU-IDX)
                                            TO  SYUNOU-REC
@@ -4019,10 +4023,20 @@
        310515-HENKIN-SYORI-EXT.
            EXIT.
       *****************************************************************
-      *    訂正返金額充当計算処理
+      *    訂正入金額チェック処理
       *****************************************************************
        310516-HENKIN-TEISEI-SEC          SECTION.
       *
+           IF    ((SPA-GMN-HKNCOMBI    NOT =   ZERO )  AND
+                  (SPA-GMN-SRYKA       NOT =   ZERO ))  OR
+                  (SPA-NAI-NYUKINFLG       =   1    )
+      *        今回請求額が入金額以内であること
+               IF     (SPA-GMN-NYUKIN          >   ZERO   )  AND
+                      (SPA-GMN-NYUKIN          >   SPA-GMN-SEIKYU )
+                   MOVE    "0008"              TO  SPA-ERRCD
+                   MOVE    1                   TO  SPA-GMN-CUR
+               END-IF
+           END-IF
            .
        310516-HENKIN-TEISEI-EXT.
            EXIT.
