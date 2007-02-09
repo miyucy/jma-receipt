@@ -169,7 +169,7 @@
            03  WRK-KANACHK-INPUT           PIC X(100).
            03  WRK-KANACHK-MAX             PIC 9(05).
            03  WRK-PRT-SAKYMD              PIC X(22).
-           03  WRK-PRT-SRYYMD              PIC X(50).
+           03  WRK-PRT-SRYYMD              PIC X(64).
            03  WRK-PRT-STYMD               PIC X(22).
            03  WRK-PRT-STTIME.
                05  WRK-PRT-STTIME-HH       PIC X(04).
@@ -562,7 +562,7 @@
                                 "¡§"               DELIMITED   BY  SIZE
                                 WRK-PRT-STTIME-MM  DELIMITED   BY  SIZE
                                 "¡Á"               DELIMITED   BY  SIZE
-                                WRK-PRT-EDYMD      DELIMITED   BY  SIZE
+                                WRK-PRT-EDYMD      DELIMITED   BY  SPACE
                                 WRK-PRT-EDTIME-HH  DELIMITED   BY  SIZE
                                 "¡§"               DELIMITED   BY  SIZE
                                 WRK-PRT-EDTIME-MM  DELIMITED   BY  SIZE
