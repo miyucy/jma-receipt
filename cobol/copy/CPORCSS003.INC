@@ -25,18 +25,9 @@
         01  SS003-AREA.
             03  SS003-IN.
                 05  SS003-SYORIKBN         PIC X(01).
-                05  SS003-HOSPNUM          PIC 9(02).
+                05  SS003-HOSPID           PIC X(24).
                 05  SS003-PTID             PIC 9(10).
                 05  SS003-NYUGAIKBN        PIC X(01).
                 05  SS003-DENPNUM          PIC 9(07).
-                05  SS003-SRYCD            PIC X(09)
-                                           OCCURS   100.
             03  SS003-OT.
                 05  SS003-SYOSAISIN-KBN    PIC X(01).
-                05  SS003-JNISSUGEN-KBN    PIC X(01).
-                05  SS003-JIKANGAI-KBN     PIC X(01).
-                05  SS003-SRYCD-KAISU      PIC 9(05)
-                                           OCCURS   100.
-                05  SS003-JNISSU-OCC       OCCURS   31.
-                    07  SS003-JNISSU-YMD   PIC X(08).
-                    07  SS003-JNISSU-GEN   PIC 9(01).

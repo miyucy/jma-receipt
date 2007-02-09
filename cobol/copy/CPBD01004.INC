@@ -27,27 +27,17 @@
                05  BD01004-SRT-NYUGAIKBN   PIC X(01).
                05  BD01004-SRT-SRYKA       PIC X(02).
                05  BD01004-DENPNUM         PIC 9(07).
-               05  BD01004-DENPEDANUM      PIC 9(02).
-               05  BD01004-SYURRKNUM       PIC 9(02).
-               05  BD01004-SYUEDANUM       PIC 9(02).
-               05  BD01004-RENNUM          PIC 9(09).
-               05  BD01004-RENNUM2         PIC 9(03).
-               05  BD01004-PTID            PIC 9(10).
+               05  BD01004-RENNUM          PIC 9(9).
            03  BD01004-SKYNYUKBN           PIC X(01).
            03  BD01004-HOKENTEN            PIC S9(10).
            03  BD01004-SKYMONEY            PIC S9(10).
            03  BD01004-FTNMONEY            PIC S9(10).
            03  BD01004-JIHIMONEY           PIC S9(10).
            03  BD01004-CHOSEI              PIC S9(10).
-           03  BD01004-CHOSEI1             PIC S9(10).
-           03  BD01004-CHOSEI2             PIC S9(10).
            03  BD01004-GENMEN              PIC S9(10).
-           03  BD01004-ZENMISYU            PIC S9(10).
            03  BD01004-ETCJIHI             PIC S9(10)
                                            OCCURS 10.
-           03  BD01004-DSPMISYUKBN         PIC X(01).
            03  BD01004-MISYU               PIC S9(10).
-           03  BD01004-TTLMISYU            PIC S9(10).
            03  BD01004-PTNUM               PIC X(20).
            03  BD01004-NAME                PIC X(100).
            03  BD01004-SRYYMD              PIC X(08).
@@ -57,4 +47,3 @@
            03  BD01004-SYOSAIKBN           PIC X(01).
            03  BD01004-HOHO                PIC X(02).
            03  BD01004-NYUKIN              PIC S9(9).
-           03  BD01004-KONNYUKIN           PIC S9(9).

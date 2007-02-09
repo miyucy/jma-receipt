@@ -31,7 +31,6 @@
       *                                     氏名をカナ氏名に修正
       * 01.00.02     NACL-太田    03.11.12  更新日付編集対応
       * 01.00.03     NACL-太田    04.03.30  訂正更新処理追加
-      *  03.05.00    NACL-太田    07/05/31  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -105,24 +104,25 @@
       *
       *
       *    定期請求収納ファイル名称領域 
-           COPY    "CPCOMMONDAT3.INC"  REPLACING  //TMPFLPARA//
-                                       BY         //TEIKI06PARA//.
+           COPY    "CPCOMMONDAT5.INC"  REPLACING  //TEIKI01//
+                                       BY         //TEIKI06//.
       *
       *    請求取消対象収納ファイル名称領域 
-           COPY    "CPCOMMONDAT3.INC"  REPLACING  //TMPFLPARA//
-                                       BY         //TEIKI07PARA//.
+           COPY    "CPCOMMONDAT5.INC"  REPLACING  //TEIKI01//
+                                       BY         //TEIKI07//.
       *
       *    単独更新用日別収納ファイル(IN)
-           COPY    "CPCOMMONDAT3.INC"  REPLACING  //TMPFLPARA//
-                                       BY         //TEIKI08PARA//.
+           COPY    "CPCOMMONDAT5.INC"  REPLACING  //TEIKI01//
+                                       BY         //TEIKI08//.
       *
       *    定期請求収納ファイル(OT) <-- 訂正更新用
-           COPY    "CPCOMMONDAT3.INC"  REPLACING  //TMPFLPARA//
-                                       BY         //TEIKI09PARA//.
+           COPY    "CPCOMMONDAT5.INC"  REPLACING  //TEIKI01//
+                                       BY         //TEIKI09//.
       *
       *    エラーファイル 名称領域 
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
-                                   BY         //TEIKIERR//.
+           COPY    "CPCOMMONDAT5.INC"  REPLACING  //TEIKI01PARA//
+                                       BY         //TEIKIERR//.
+           03  FILLER                  PIC X(04)  VALUE   ".dat".
       *
       *    フラグ領域
        01  STS-AREA.
@@ -154,7 +154,6 @@
            03  FLG-HIT                 PIC 9(01).
            03  FLG-DENPNUM-ERR         PIC 9(01).
            03  FLG-PTNUM               PIC 9(01).
-           03  FLG-BUNBEN              PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -202,7 +201,6 @@
                05  WRK-KBTMSG              PIC X(06).
                05  WRK-MONMSG              PIC X(06).
                05  WRK-SHELLMSG            PIC X(100).
-           03  WRK-BASE-MONEY              PIC S9(08).
       *
        01  SRH-AREA.
            03  SRH-IDX                     PIC 9(05).
@@ -212,9 +210,6 @@
                    07  SRH-1041-KBNCDL     PIC X(02).
                    07  SRH-1041-BUNRUIL    PIC X(02).
                    07  SRH-1041-JYOTAIL    PIC X(01).
-      *
-       01  CONST-AREA.
-           03  CONST-H270101               PIC X(08)   VALUE "20150101".
       *
        01  ERR-EDIT-AREA.
            03  ERR-WARNING             PIC 9(01).
@@ -311,10 +306,6 @@
                "収納情報の更新に失敗しました".
            03  ERR-MSG43                   PIC X(100)    VALUE
                "収納情報の更新に失敗しました".
-           03  ERR-MSG44                   PIC X(100)    VALUE
-               "分娩管理情報の更新に失敗しました".
-           03  ERR-MSG45                   PIC X(100)    VALUE
-               "分娩管理情報の更新に失敗しました".
            03  ERR-MSG88                   PIC X(100)    VALUE
                "キャンセルしました".
       *
@@ -385,14 +376,9 @@
        01  PTTEIKIRRK-REC.
            COPY    "CPPTTEIKIRRK.INC".
       *
-      *    分娩管理
-       01  BUNBEN-REC.
-           COPY    "CPBUNBEN.INC".
-      *
       *
       *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
-           COPY    "CPSK1001.INC".
       *    伝票番号
            COPY    "CPSK0042.INC".
       *    入金方法
@@ -405,11 +391,6 @@
       *****************************************************************
       *    サブプロ用領域
       *****************************************************************
-      *
-      *    分娩負担金サブ
-       01  LNKBUNBEN-REC.
-           COPY  "CPBUNBEN.INC"    REPLACING  //BUNBEN-//
-                                           BY //LNKBUNBEN-//.
       *
       *    日付変換サブ
            COPY    "CPORCSDAY.INC".
@@ -432,9 +413,6 @@
       *
       *    収納更新差額取得
            COPY  "CPORCSS002.INC".
-      *
-      *    一時ファイル名編集
-           COPY    "CPORCSGETTEMP.INC".
       *
       ****************************************************************
        LINKAGE                 SECTION.
@@ -474,7 +452,6 @@
                                        WRK-AREA
                                        SPA-AREA
                                        SUMTEIKIKANRI-REC
-                                       TEIKI1PARA-AREA
                                        ERR-EDIT-AREA
       *
            UNSTRING   COMMAND-PARAM    DELIMITED  BY  ","
@@ -486,14 +463,11 @@
                                                TEIKI1P-DENPPRTYMD
                                                TEIKI1P-JOBID
                                                TEIKI1P-SHELLID
-                                               TEIKI1P-HOSPNUM
+                                               TEIKI1P-HOSPID
                                                TEIKI1P-ERRFILE
                                                TEIKI1P-KBT
                                                TEIKI1P-JOBYMD
                                                TEIKI1P-JOBHMS
-           END-UNSTRING
-      *
-           MOVE    TEIKI1P-HOSPNUM     TO  SPA-HOSPNUM
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -502,7 +476,6 @@
       *    ステップ管理開始処理
            MOVE    "STS"               TO  SJOBKANRI-MODE
            INITIALIZE                      JOBKANRI-REC
-           MOVE    TEIKI1P-HOSPNUM         TO  JOB-HOSPNUM
            MOVE    TEIKI1P-JOBID       TO  JOB-JOBID
            MOVE    TEIKI1P-SHELLID     TO  JOB-SHELLID
            MOVE    "ORCT0040"          TO  JOB-PGID
@@ -510,50 +483,32 @@
            CALL    "ORCSJOB"           USING
                                        ORCSJOBKANRIAREA
                                        JOBKANRI-REC
-                                       SPA-AREA
       *
-           MOVE    ZERO                TO  FLG-END
-                                           FLG-ERR
-      *
-           MOVE    TEIKI1P-HOSPNUM     TO  TEIKI06PARA-HOSPNUM
-           MOVE    "TEIKI006"          TO  TEIKI06PARA-FILE-ID
-           MOVE    TEIKI1P-TERMID      TO  TEIKI06PARA-TERMID
-      *
-           MOVE    TEIKI1P-HOSPNUM     TO  TEIKI07PARA-HOSPNUM
-           MOVE    "TEIKI007"          TO  TEIKI07PARA-FILE-ID
-           MOVE    TEIKI1P-TERMID      TO  TEIKI07PARA-TERMID
-      *
-           MOVE    TEIKI1P-HOSPNUM     TO  TEIKI08PARA-HOSPNUM
-           MOVE    "TEIKI008"          TO  TEIKI08PARA-FILE-ID
-           MOVE    TEIKI1P-TERMID      TO  TEIKI08PARA-TERMID
-      *
-           MOVE    TEIKI1P-HOSPNUM     TO  TEIKI09PARA-HOSPNUM
-           MOVE    "TEIKI009"          TO  TEIKI09PARA-FILE-ID
-           MOVE    TEIKI1P-TERMID      TO  TEIKI09PARA-TERMID
-      *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    TEIKI06PARA-BASENAME    TO  SGETTEMP-BASENAMES (1)
-           MOVE    TEIKI07PARA-BASENAME    TO  SGETTEMP-BASENAMES (2)
-           MOVE    TEIKI08PARA-BASENAME    TO  SGETTEMP-BASENAMES (3)
-           MOVE    TEIKI09PARA-BASENAME    TO  SGETTEMP-BASENAMES (4)
-           MOVE    TEIKI1P-ERRFILE         TO  SGETTEMP-BASENAMES (5)
-           CALL    "ORCSGETTEMP"       USING
-                                       SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAMES (1)  TO  TEIKI06PARA-FULLNAME
-           MOVE    SGETTEMP-FULLNAMES (2)  TO  TEIKI07PARA-FULLNAME
-           MOVE    SGETTEMP-FULLNAMES (3)  TO  TEIKI08PARA-FULLNAME
-           MOVE    SGETTEMP-FULLNAMES (4)  TO  TEIKI09PARA-FULLNAME
-           MOVE    SGETTEMP-FULLNAMES (5)  TO  TEIKIERR-FULLNAME
+           MOVE    TEIKI1P-ERRFILE TO  TEIKIERR
       *
            INITIALIZE                  ORCSTEIKI01AREA
            MOVE    TEIKI1P-JOBID   TO  STEIKI01-JOBID
            MOVE    TEIKI1P-SHELLID TO  STEIKI01-SHELLID
            CALL    "ORCSTEIKI01"   USING   ORCSTEIKI01AREA
-                                           SPA-AREA
            IF    ( STEIKI01-STOP   =   1 )
                MOVE    "8888"      TO  ERR-ERRCD
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
+      *
+           MOVE    ZERO                TO  FLG-END
+                                           FLG-ERR
+      *
+           MOVE    "TEIKI006"          TO  TEIKI06PARA-FILE-ID
+           MOVE    TEIKI1P-TERMID      TO  TEIKI06PARA-TERMID
+      *
+           MOVE    "TEIKI007"          TO  TEIKI07PARA-FILE-ID
+           MOVE    TEIKI1P-TERMID      TO  TEIKI07PARA-TERMID
+      *
+           MOVE    "TEIKI008"          TO  TEIKI08PARA-FILE-ID
+           MOVE    TEIKI1P-TERMID      TO  TEIKI08PARA-TERMID
+      *
+           MOVE    "TEIKI009"          TO  TEIKI09PARA-FILE-ID
+           MOVE    TEIKI1P-TERMID      TO  TEIKI09PARA-TERMID
       *
            OPEN    INPUT               TEIKI06-FILE
            OPEN    INPUT               TEIKI07-FILE
@@ -566,10 +521,10 @@
            MOVE    "*"                 TO  SYS-5010-KBNCD
            MOVE    TEIKI1P-SYSYMD      TO  SYS-5010-STYUKYMD
                                            SYS-5010-EDYUKYMD
-           MOVE    SYS-5010-REC        TO  SYSKANRI-REC
+           MOVE    SYS-5010-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-KEY10-SEL-SEC
            IF    ( FLG-SYSKANRI        =   ZERO )
-               MOVE    SYSKANRI-REC    TO  SYS-5010-REC
+               MOVE    MCPDATA-REC     TO  SYS-5010-REC
            ELSE
                MOVE    "0001"          TO  ERR-ERRCD
                PERFORM 500-ERR-HENSYU-SEC
@@ -625,10 +580,10 @@
            MOVE    "1041"          TO  SYS-1041-KANRICD
            MOVE    TEIKI1P-SYSYMD  TO  SYS-1041-STYUKYMD
                                        SYS-1041-EDYUKYMD
-           MOVE    SYS-1041-REC    TO  SYSKANRI-REC
+           MOVE    SYS-1041-REC    TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-KEY2-SEL-SEC
            IF    ( FLG-SYSKANRI        =   ZERO )
-               MOVE    SYSKANRI-REC TO  SYS-1041-REC
+               MOVE    MCPDATA-REC TO  SYS-1041-REC
            END-IF
       *
            PERFORM UNTIL ( FLG-SYSKANRI    NOT =   ZERO )
@@ -651,7 +606,7 @@
       *
                PERFORM 900-SYSKANRI-KEY2-FET-SEC
                IF    ( FLG-SYSKANRI        =   ZERO )
-                   MOVE    SYSKANRI-REC TO  SYS-1041-REC
+                   MOVE    MCPDATA-REC TO  SYS-1041-REC
                END-IF
       *
            END-PERFORM
@@ -788,7 +743,7 @@
       *
            MOVE    SPACE               TO  SYUMEI-REC
            INITIALIZE                      SYUMEI-REC
-           MOVE    SYU-HOSPNUM          TO  SMEI-HOSPNUM
+           MOVE    SYU-HOSPID          TO  SMEI-HOSPID
            MOVE    SYU-NYUGAIKBN       TO  SMEI-NYUGAIKBN
            MOVE    SYU-PTID            TO  SMEI-PTID
       *    伝票番号
@@ -864,7 +819,7 @@
        20021-PTTEIKIRRK-KOUSIN-SEC     SECTION.
       *
            INITIALIZE                      PTTEIKIRRK-REC
-           MOVE    TEIKI07-HOSPNUM      TO  PTTEIKIRRK-HOSPNUM
+           MOVE    TEIKI07-HOSPID      TO  PTTEIKIRRK-HOSPID
            MOVE    TEIKI07-PTID        TO  PTTEIKIRRK-PTID
            MOVE    TEIKI07-DENPNUM     TO  PTTEIKIRRK-DENPNUM
       *
@@ -903,22 +858,9 @@
       *
                MOVE    TEIKI06-SYU-DAT TO  SYUNOU-REC
       *
-               INITIALIZE                  SYSKANRI-REC
-               MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
-               MOVE    "1001"          TO  SYS-KANRICD
-               MOVE    "*"             TO  SYS-KBNCD
-               MOVE    SYU-SKYSTYMD    TO  SYS-STYUKYMD
-                                           SYS-EDYUKYMD
-               PERFORM 900-SYSKANRI-KEY10-SEL-SEC
-               MOVE    SYSKANRI-REC    TO  SYS-1001-REC
-               IF    ( SYS-1001-SANKANUM   IS  NOT NUMERIC )
-                OR   ( SYS-1001-SANKANUM   =   ZERO    )
-                   MOVE    ZERO            TO  SYS-1001-SANKANUM
-               END-IF
-      *
       *        患者情報読み込み
                INITIALIZE              PTINF-REC
-               MOVE    SYU-HOSPNUM      TO  PTINF-HOSPNUM
+               MOVE    SYU-HOSPID      TO  PTINF-HOSPID
                MOVE    SYU-PTID        TO  PTINF-PTID
                PERFORM 900-PTINF-KEY-SEL-SEC
                IF    ( FLG-PTINF       NOT =   ZERO )
@@ -971,9 +913,6 @@
       *        最新病棟番号別集計処理
                PERFORM 20031-NOW-BTUNUM-SUM-SEC
       *
-      *        分娩情報更新処理
-               PERFORM 20081-BUNBEN-KOUSIN-SEC
-      *
       *        定期請求印刷情報作成処理
                PERFORM 20031-TEIKIPRT-SAKUSEI-SEC
       *
@@ -999,10 +938,10 @@
            MOVE    "*"                 TO  SYS-0042-KBNCD
            MOVE    TEIKI1P-SYSYMD      TO  SYS-0042-STYUKYMD
                                            SYS-0042-EDYUKYMD
-           MOVE    SYS-0042-REC        TO  SYSKANRI-REC
+           MOVE    SYS-0042-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-KEY10-SEL-SEC
            IF    ( FLG-SYSKANRI        =   ZERO )
-               MOVE    SYSKANRI-REC    TO  SYS-0042-REC
+               MOVE    MCPDATA-REC     TO  SYS-0042-REC
                MOVE    SYS-0042-DENPNUMMAX-NYU
                                        TO  WRK-DENPNUM-X
                IF    ( WRK-DENPNUM-X   =   SPACE )
@@ -1046,7 +985,7 @@
        20031-PTTEIKIRRK-KOUSIN-SEC     SECTION.
       *
            INITIALIZE                      PTTEIKIRRK-REC
-           MOVE    SYU-HOSPNUM          TO  PTTEIKIRRK-HOSPNUM
+           MOVE    SYU-HOSPID          TO  PTTEIKIRRK-HOSPID
            MOVE    SYU-PTID            TO  PTTEIKIRRK-PTID
            MOVE    SYU-SRYYMD (1:6)    TO  PTTEIKIRRK-SRYYM
            MOVE    TEIKI06-SAKKBN      TO  PTTEIKIRRK-SAKKBN
@@ -1114,7 +1053,7 @@
       *
            INITIALIZE                  WKSYUDAY-REC
       *
-           MOVE    SYU-HOSPNUM      TO  WKSDAY-HOSPNUM
+           MOVE    SYU-HOSPID      TO  WKSDAY-HOSPID
            MOVE    SYU-NYUGAIKBN   TO  WKSDAY-NYUGAIKBN
            MOVE    SYU-PTID        TO  WKSDAY-PTID
            MOVE    SYU-DENPNUM     TO  WKSDAY-DENPNUM
@@ -1132,7 +1071,7 @@
       *
            MOVE    SPACE               TO  SYUMEI-REC
            INITIALIZE                      SYUMEI-REC
-           MOVE    SYU-HOSPNUM          TO  SMEI-HOSPNUM
+           MOVE    SYU-HOSPID          TO  SMEI-HOSPID
            MOVE    SYU-NYUGAIKBN       TO  SMEI-NYUGAIKBN
            MOVE    SYU-PTID            TO  SMEI-PTID
       *
@@ -1276,7 +1215,7 @@
       *
       *    最新の入院履歴情報より病棟番号を取得
            INITIALIZE  PTNYUINRRK-REC
-           MOVE    PTINF-HOSPNUM        TO  PTNYUINRRK-HOSPNUM
+           MOVE    PTINF-HOSPID        TO  PTNYUINRRK-HOSPID
            MOVE    PTINF-PTID          TO  PTNYUINRRK-PTID
            MOVE    PTINF-RRKNUM        TO  PTNYUINRRK-RRKNUM
            MOVE    PTINF-RRKEDANUM     TO  PTNYUINRRK-RRKEDANUM
@@ -1314,7 +1253,7 @@
       *
            INITIALIZE  TEIKIPRT-REC
            MOVE    PTNYUINRRK-BTUNUM   TO  TEIKIPRT-BTUNUM
-           MOVE    PTINF-HOSPNUM       TO  TEIKIPRT-HOSPNUM
+           MOVE    PTINF-HOSPID        TO  TEIKIPRT-HOSPID
            MOVE    PTINF-PTID          TO  TEIKIPRT-PTID
       *
       *    患者番号を取得
@@ -1366,22 +1305,9 @@
       *
                MOVE    TEIKI09-SYU-DAT TO  SYUNOU-REC
       *
-               INITIALIZE                  SYSKANRI-REC
-               MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
-               MOVE    "1001"          TO  SYS-KANRICD
-               MOVE    "*"             TO  SYS-KBNCD
-               MOVE    SYU-SKYSTYMD    TO  SYS-STYUKYMD
-                                           SYS-EDYUKYMD
-               PERFORM 900-SYSKANRI-KEY10-SEL-SEC
-               MOVE    SYSKANRI-REC    TO  SYS-1001-REC
-               IF    ( SYS-1001-SANKANUM   IS  NOT NUMERIC )
-                OR   ( SYS-1001-SANKANUM   =   ZERO    )
-                   MOVE    ZERO            TO  SYS-1001-SANKANUM
-               END-IF
-      *
       *        患者情報読み込み
                INITIALIZE              PTINF-REC
-               MOVE    SYU-HOSPNUM      TO  PTINF-HOSPNUM
+               MOVE    SYU-HOSPID      TO  PTINF-HOSPID
                MOVE    SYU-PTID        TO  PTINF-PTID
                PERFORM 900-PTINF-KEY-SEL-SEC
                IF    ( FLG-PTINF       NOT =   ZERO )
@@ -1432,9 +1358,6 @@
       *
       *        最新病棟番号別集計処理
                PERFORM 20031-NOW-BTUNUM-SUM-SEC
-      *
-      *        分娩情報更新処理
-               PERFORM 20081-BUNBEN-KOUSIN-SEC
       *
       *        定期請求印刷情報作成処理
                PERFORM 20031-TEIKIPRT-SAKUSEI-SEC
@@ -1501,7 +1424,7 @@
       *
            INITIALIZE                  WKSYUDAY-REC
       *
-           MOVE    SYU-HOSPNUM      TO  WKSDAY-HOSPNUM
+           MOVE    SYU-HOSPID      TO  WKSDAY-HOSPID
            MOVE    SYU-NYUGAIKBN   TO  WKSDAY-NYUGAIKBN
            MOVE    SYU-PTID        TO  WKSDAY-PTID
            MOVE    SYU-DENPNUM     TO  WKSDAY-DENPNUM
@@ -1518,7 +1441,7 @@
        20071-PTTEIKIRRK-KOUSIN-SEC     SECTION.
       *
            INITIALIZE                      PTTEIKIRRK-REC
-           MOVE    SYU-HOSPNUM          TO  PTTEIKIRRK-HOSPNUM
+           MOVE    SYU-HOSPID          TO  PTTEIKIRRK-HOSPID
            MOVE    SYU-PTID            TO  PTTEIKIRRK-PTID
            MOVE    SYU-DENPNUM         TO  PTTEIKIRRK-DENPNUM
       *
@@ -1545,7 +1468,7 @@
            MOVE    PTTEIKIRRK-CREYMD    TO  WRK-CREYMD
       *
            INITIALIZE                      PTTEIKIRRK-REC
-           MOVE    SYU-HOSPNUM          TO  PTTEIKIRRK-HOSPNUM
+           MOVE    SYU-HOSPID          TO  PTTEIKIRRK-HOSPID
            MOVE    SYU-PTID            TO  PTTEIKIRRK-PTID
            MOVE    SYU-SRYYMD (1:6)    TO  PTTEIKIRRK-SRYYM
            MOVE    TEIKI09-SAKKBN      TO  PTTEIKIRRK-SAKKBN
@@ -1639,7 +1562,7 @@
       *
            INITIALIZE                      SYUMEI-REC
       *
-           MOVE    SYU-HOSPNUM          TO  SMEI-HOSPNUM
+           MOVE    SYU-HOSPID          TO  SMEI-HOSPID
            MOVE    SYU-NYUGAIKBN       TO  SMEI-NYUGAIKBN
            MOVE    SYU-PTID            TO  SMEI-PTID
            MOVE    SYU-DENPNUM         TO  SMEI-DENPNUM
@@ -1721,117 +1644,6 @@
        20071-SYUMEI-SAKUSEI-EXT.
            EXIT. 
       *****************************************************************
-      *    分娩管理更新処理
-      *****************************************************************
-       20081-BUNBEN-KOUSIN-SEC         SECTION.
-      *
-           PERFORM 900-BUNBEN-KEY3-SEL-SEC
-           IF    ( FLG-BUNBEN          =   ZERO )
-               IF    ( BUNBEN-UPDKBN       =   "1" OR "2" )
-                   PERFORM 200811-BUNBEN-KOUSIN-SEC
-               END-IF
-           END-IF
-      *
-           .
-       20081-BUNBEN-KOUSIN-EXT.
-           EXIT. 
-      *****************************************************************
-      *    分娩管理更新処理
-      *****************************************************************
-       200811-BUNBEN-KOUSIN-SEC        SECTION.
-      *
-           PERFORM 800-ORCSBUNBENFTN-SEC
-      *
-           MOVE    BUNBEN-RIYOUKBN     TO  LNKBUNBEN-RIYOUKBN
-           MOVE    BUNBEN-SKYYM        TO  LNKBUNBEN-SKYYM
-           MOVE    BUNBEN-SKYKBN       TO  LNKBUNBEN-SKYKBN
-           MOVE    BUNBEN-BUNBENKBN    TO  LNKBUNBEN-BUNBENKBN
-           MOVE    BUNBEN-TEISYUTUSAKI TO  LNKBUNBEN-TEISYUTUSAKI
-           MOVE    BUNBEN-KANYUKBN     TO  LNKBUNBEN-KANYUKBN
-           MOVE    BUNBEN-HONKZKKBN    TO  LNKBUNBEN-HONKZKKBN
-           MOVE    BUNBEN-HKNJANUM     TO  LNKBUNBEN-HKNJANUM
-           MOVE    BUNBEN-HKNJANUM-S   TO  LNKBUNBEN-HKNJANUM-S
-           MOVE    BUNBEN-KIGO         TO  LNKBUNBEN-KIGO
-           MOVE    BUNBEN-NUM          TO  LNKBUNBEN-NUM
-           MOVE    BUNBEN-BIRTHDAY     TO  LNKBUNBEN-BIRTHDAY
-           MOVE    BUNBEN-ZAIWEEK      TO  LNKBUNBEN-ZAIWEEK
-           MOVE    BUNBEN-SIZANKBN     TO  LNKBUNBEN-SIZANKBN
-           MOVE    BUNBEN-BIRTHCNT     TO  LNKBUNBEN-BIRTHCNT
-           MOVE    BUNBEN-NYUIN-DAY    TO  LNKBUNBEN-NYUIN-DAY
-           MOVE    BUNBEN-SANKAKBN     TO  LNKBUNBEN-SANKAKBN
-           MOVE    BUNBEN-BIKOU        TO  LNKBUNBEN-BIKOU
-           MOVE    "2"                 TO  LNKBUNBEN-UPDKBN
-           MOVE    BUNBEN-CREYMD       TO  LNKBUNBEN-CREYMD
-           MOVE    BUNBEN-TEISYUTUBIKBN TO LNKBUNBEN-TEISYUTUBIKBN
-      *
-           MOVE    LNKBUNBEN-REC       TO  BUNBEN-REC
-      *
-           MOVE    ZERO                TO  BUNBEN-DAIRI-MONEY
-           MOVE    ZERO                TO  WRK-BASE-MONEY
-           IF    ( BUNBEN-RIYOUKBN     =   "1" )
-      *
-               EVALUATE    TRUE
-               WHEN  ( SYS-1001-SANKANUM    =   ZERO )
-               WHEN  ( BUNBEN-ZAIWEEK     <   22 )
-               WHEN  ( BUNBEN-SANKAKBN    =   "2" OR "3" )
-                   IF    ( BUNBEN-BIRTHDAY   NOT =   SPACE )
-                       EVALUATE   TRUE
-                       WHEN    ( BUNBEN-BIRTHDAY
-                                          >= CONST-H270101 )
-                           MOVE    404000  TO  WRK-BASE-MONEY
-                       WHEN    OTHER
-                           MOVE    390000  TO  WRK-BASE-MONEY
-                       END-EVALUATE
-                   END-IF
-               WHEN    OTHER
-                   MOVE    420000      TO  WRK-BASE-MONEY
-               END-EVALUATE
-      *
-               IF    ( BUNBEN-SANKAKBN    =   "3" )
-                   COMPUTE BUNBEN-DAIRI-MONEY
-                       =   WRK-BASE-MONEY  *   BUNBEN-BIRTHCNT
-                       +   BUNBEN-SNK-MONEY
-               ELSE
-                   COMPUTE BUNBEN-DAIRI-MONEY
-                       =   WRK-BASE-MONEY  *   BUNBEN-BIRTHCNT
-               END-IF
-      *
-           END-IF
-      *
-           PERFORM 800-MCNDATE-SEC
-           MOVE    TEIKI1P-JOBYMD      TO  BUNBEN-UPYMD
-           MOVE    TEIKI1P-JOBHMS      TO  BUNBEN-UPHMS
-      *
-           MOVE    BUNBEN-REC      TO  MCPDATA-REC
-           MOVE    "tbl_bunben"    TO  MCP-TABLE
-           MOVE    "del3"          TO  MCP-PATHNAME
-           PERFORM 910-DBDELETE-SEC
-           IF    ( MCP-RC          =   ZERO )
-               CONTINUE
-           ELSE
-               MOVE    BUNBEN-PTID TO  ERR-PTID
-               MOVE    "0044"      TO  ERR-ERRCD
-               PERFORM 500-ERR-HENSYU-SEC
-           END-IF
-      *
-           IF    ( SPA-ERRCD       =   SPACE )
-               MOVE    BUNBEN-REC      TO  MCPDATA-REC
-               MOVE    "tbl_bunben"    TO  MCP-TABLE
-               MOVE    "key"           TO  MCP-PATHNAME
-               PERFORM 910-DBINSERT-SEC
-               IF    ( MCP-RC          =   ZERO )
-                   CONTINUE
-               ELSE
-                   MOVE    BUNBEN-PTID TO  ERR-PTID
-                   MOVE    "0045"      TO  ERR-ERRCD
-                   PERFORM 500-ERR-HENSYU-SEC
-               END-IF
-           END-IF
-      *
-           .
-       200811-BUNBEN-KOUSIN-EXT.
-           EXIT. 
-      *****************************************************************
       *    定期請求管理情報更新処理
       *****************************************************************
        2005-TEIKIKANRI-KOUSIN-SEC      SECTION.
@@ -1841,8 +1653,6 @@
       *
                INITIALIZE  TEIKIKANRI-REC
       *
-               MOVE    TEIKI1P-HOSPNUM
-                                   TO  TEIKIKANRI-HOSPNUM
                MOVE    SUMTEIKIKANRI-BTUNUM (IDX1)
                                    TO  TEIKIKANRI-BTUNUM
       *
@@ -1857,7 +1667,6 @@
                        =   TEIKIKANRI-KENSU
                        +   SUMTEIKIKANRI-KENSU (IDX1)
       *
-                   MOVE    TEIKI1P-HOSPNUM     TO  TEIKIKANRI-HOSPNUM
       *
       *            定期請求管理データ作成
                    MOVE    TEIKIKANRI-REC      TO  MCPDATA-REC
@@ -1892,7 +1701,6 @@
                                                TEIKIKANRI-KENSU
                    MOVE    TEIKI1P-TERMID  TO  TEIKIKANRI-TERMID
       *
-                   MOVE    TEIKI1P-HOSPNUM TO  TEIKIKANRI-HOSPNUM
       *
       *            定期請求管理データ作成
                    MOVE    TEIKIKANRI-REC      TO  MCPDATA-REC
@@ -1923,7 +1731,6 @@
                 AND  ( TEIKI1P-KBT =      IDX4 )
       *
                    INITIALIZE                  TEIKIRRK-REC
-                   MOVE    TEIKI1P-HOSPNUM TO  TEIKIRRK-HOSPNUM
                    MOVE    TEIKI1P-SRYYM   TO  TEIKIRRK-SRYYM
                    MOVE    IDX4            TO  WRK-KBT-9
                    MOVE    WRK-KBT         TO  TEIKIRRK-KBT
@@ -1931,7 +1738,6 @@
                    IF    ( FLG-TEIKIRRK    =   ZERO )
                        MOVE    TEIKI1P-JOBYMD  TO  TEIKIRRK-UPYMD
                        MOVE    TEIKI1P-JOBHMS  TO  TEIKIRRK-UPHMS
-                       MOVE    TEIKIRRK-REC    TO  MCPDATA-REC
                        MOVE    "tbl_teikirrk"  TO  MCP-TABLE
                        MOVE    "key"           TO  MCP-PATHNAME
                        PERFORM 910-DBUPDATE-SEC
@@ -1941,14 +1747,12 @@
                        END-IF
                    ELSE
                        INITIALIZE                  TEIKIRRK-REC
-                       MOVE    TEIKI1P-HOSPNUM TO  TEIKIRRK-HOSPNUM
                        MOVE    TEIKI1P-SRYYM   TO  TEIKIRRK-SRYYM
                        MOVE    IDX4            TO  WRK-KBT-9
                        MOVE    WRK-KBT         TO  TEIKIRRK-KBT
                        MOVE    TEIKI1P-JOBYMD  TO  TEIKIRRK-CREYMD
                                                    TEIKIRRK-UPYMD
                        MOVE    TEIKI1P-JOBHMS  TO  TEIKIRRK-UPHMS
-                       MOVE    TEIKIRRK-REC    TO  MCPDATA-REC
                        MOVE    "tbl_teikirrk"  TO  MCP-TABLE
                        MOVE    "key"           TO  MCP-PATHNAME
                        PERFORM 910-DBINSERT-SEC
@@ -1984,7 +1788,7 @@
                    PERFORM 900-SYUDAY-UPD-SEC
       *
                    INITIALIZE  SYUNOU-REC
-                   MOVE    WKSDAY-HOSPNUM       TO  SYU-HOSPNUM
+                   MOVE    WKSDAY-HOSPID       TO  SYU-HOSPID
                    MOVE    WKSDAY-NYUGAIKBN    TO  SYU-NYUGAIKBN
                    MOVE    WKSDAY-PTID         TO  SYU-PTID
                    MOVE    WKSDAY-DENPNUM      TO  SYU-DENPNUM
@@ -2011,7 +1815,7 @@
                    PERFORM 900-SYUDAY-DEL-SEC
       *
                    INITIALIZE  SYUNOU-REC
-                   MOVE    WKSDAY-HOSPNUM       TO  SYU-HOSPNUM
+                   MOVE    WKSDAY-HOSPID       TO  SYU-HOSPID
                    MOVE    WKSDAY-NYUGAIKBN    TO  SYU-NYUGAIKBN
                    MOVE    WKSDAY-PTID         TO  SYU-PTID
                    MOVE    WKSDAY-DENPNUM      TO  SYU-DENPNUM
@@ -2090,18 +1894,14 @@
            END-IF
       *
            MOVE    "STM"           TO  SJOBKANRI-MODE
-           MOVE    TEIKI1P-HOSPNUM     TO  JOB-HOSPNUM
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA  
                                    JOBKANRI-REC
-                                   SPA-AREA
       *
            MOVE    "STE"           TO  SJOBKANRI-MODE
-           MOVE    TEIKI1P-HOSPNUM     TO  JOB-HOSPNUM
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA  
                                    JOBKANRI-REC
-                                   SPA-AREA
       *
            PERFORM 900-DBDISCONNECT-SEC
       *
@@ -2236,7 +2036,6 @@
       *
            MOVE    ZERO                TO  FLG-TEIKIPRT
       *
-           MOVE    TEIKI1P-HOSPNUM     TO  TEIKIPRT-HOSPNUM
            MOVE    TEIKIPRT-REC        TO  MCPDATA-REC
            MOVE    "tbl_teikiprt"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -2259,7 +2058,6 @@
       *
            MOVE    ZERO                TO  FLG-TEIKIKANRI
       *
-           MOVE    TEIKI1P-HOSPNUM     TO  TEIKIKANRI-HOSPNUM
            MOVE    TEIKIKANRI-REC      TO  MCPDATA-REC
            MOVE    "tbl_teikikanri"    TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -2299,25 +2097,6 @@
       *
            .
        800-TEIKIERR-WRITE-EXT.
-           EXIT.
-      *****************************************************************
-      *    分娩負担金サブ
-      *****************************************************************
-       800-ORCSBUNBENFTN-SEC           SECTION.
-      *
-           INITIALIZE                  LNKBUNBEN-REC
-           MOVE    SYU-HOSPNUM     TO  LNKBUNBEN-HOSPNUM
-           MOVE    SYU-PTID        TO  LNKBUNBEN-PTID
-           MOVE    SYU-NYUGAIKBN   TO  LNKBUNBEN-NYUGAIKBN
-           MOVE    SYU-NYUIN-RRKNUM
-                                   TO  LNKBUNBEN-RRKNUM
-           CALL    "ORCSBUNBENFTN"     USING
-                                       LNKBUNBEN-REC
-                                       SPA-AREA
-      *
-           .
-      *
-       800-ORCSBUNBENFTN-EXT.
            EXIT.
       *****************************************************************
       *    エラーメッセージ取得処理
@@ -2419,10 +2198,6 @@
                MOVE    ERR-MSG42       TO  ERR-ERRMSG
            WHEN    "0043"
                MOVE    ERR-MSG43       TO  ERR-ERRMSG
-           WHEN    "0044"
-               MOVE    ERR-MSG44       TO  ERR-ERRMSG
-           WHEN    "0045"
-               MOVE    ERR-MSG45       TO  ERR-ERRMSG
            WHEN    "8888"
                MOVE    ERR-MSG88       TO  ERR-ERRMSG
            END-EVALUATE
@@ -2493,7 +2268,6 @@
        800-DAILYKEY-SEC         SECTION.
       *
            CALL    "ORCSDAILYKEY"   USING   SDAILYKEYAREA
-                                            SPA-AREA
       *
            .
       *
@@ -2518,7 +2292,6 @@
            INITIALIZE                      SS002-AREA
            CALL    "ORCSS002"      USING   SS002-AREA
                                            SYUNOU-REC
-                                           SPA-AREA
       *
            .
       *
@@ -2544,14 +2317,10 @@
       *
            MOVE    ZERO                TO  FLG-SYSKANRI
       *
-           MOVE    TEIKI1P-HOSPNUM         TO  SYS-HOSPNUM
-           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC              =   ZERO )
-               MOVE    MCPDATA-REC     TO  SYSKANRI-REC
-           ELSE
+           IF    ( MCP-RC          NOT =   ZERO )
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
       *
@@ -2569,14 +2338,10 @@
       *
            MOVE    ZERO                TO  FLG-SYSKANRI
       *
-           MOVE    TEIKI1P-HOSPNUM     TO  SYS-HOSPNUM
-           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC              =   ZERO )
-               MOVE    MCPDATA-REC     TO  SYSKANRI-REC
-           ELSE
+           IF    ( MCP-RC          NOT =   ZERO )
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
       *
@@ -2593,9 +2358,7 @@
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 910-DBFETCH-SEC
-           IF    ( MCP-RC              =   ZERO )
-               MOVE    MCPDATA-REC     TO  SYSKANRI-REC
-           ELSE
+           IF    ( MCP-RC          NOT =   ZERO )
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
       *
@@ -2672,8 +2435,7 @@
       *****************************************************************
        900-TEIKIKANRI-DEL-SEC          SECTION.
       *
-           MOVE    TEIKI1P-HOSPNUM     TO  TEIKIKANRI-HOSPNUM
-           MOVE    TEIKIKANRI-REC      TO  MCPDATA-REC
+           MOVE    SPACE               TO  MCPDATA-REC
            MOVE    "tbl_teikikanri"    TO  MCP-TABLE
            MOVE    "del1"              TO  MCP-PATHNAME
            PERFORM 910-DBDELETE-SEC
@@ -2690,8 +2452,7 @@
       *****************************************************************
        900-TEIKIPRT-DEL-SEC            SECTION.
       *
-           MOVE    TEIKI1P-HOSPNUM     TO  TEIKIPRT-HOSPNUM
-           MOVE    TEIKIPRT-REC        TO  MCPDATA-REC
+           MOVE    SPACE               TO  MCPDATA-REC
            MOVE    "tbl_teikiprt"      TO  MCP-TABLE
            MOVE    "del1"              TO  MCP-PATHNAME
            PERFORM 910-DBDELETE-SEC
@@ -2760,7 +2521,6 @@
       *
            MOVE    ZERO                TO  FLG-TEIKIRRK
       *
-           MOVE    TEIKI1P-HOSPNUM     TO  TEIKIRRK-HOSPNUM
            MOVE    TEIKIRRK-REC        TO  MCPDATA-REC
            MOVE    "tbl_teikirrk"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -2813,7 +2573,7 @@
       *
       *    伝票番号枝番を求める
            INITIALIZE                      SYUMEI-REC
-           MOVE    SYU-HOSPNUM          TO  SMEI-HOSPNUM
+           MOVE    SYU-HOSPID          TO  SMEI-HOSPID
            MOVE    SYU-NYUGAIKBN       TO  SMEI-NYUGAIKBN
            MOVE    SYU-PTID            TO  SMEI-PTID
            MOVE    SYU-DENPNUM         TO  SMEI-DENPNUM
@@ -2843,7 +2603,7 @@
            MOVE    ZERO                TO  FLG-SYUMEI
       *
            INITIALIZE                      SYUMEI-REC
-           MOVE    SYU-HOSPNUM          TO  SMEI-HOSPNUM
+           MOVE    SYU-HOSPID          TO  SMEI-HOSPID
            MOVE    SYU-NYUGAIKBN       TO  SMEI-NYUGAIKBN
            MOVE    SYU-PTID            TO  SMEI-PTID
            MOVE    SYU-DENPNUM         TO  SMEI-DENPNUM
@@ -2950,7 +2710,7 @@
            MOVE    ZERO                TO  FLG-PTNUM
       *
            INITIALIZE                  PTNUM-REC
-           MOVE    TEIKI1P-HOSPNUM     TO  PTNUM-HOSPNUM
+           MOVE    TEIKI1P-HOSPID      TO  PTNUM-HOSPID
            MOVE    WRK-PTID            TO  PTNUM-PTID
            MOVE    PTNUM-REC           TO  MCPDATA-REC
            MOVE    "tbl_ptnum"         TO  MCP-TABLE
@@ -2978,7 +2738,6 @@
            MOVE    ZERO                TO  FLG-TEIKIKANRI
       *
            INITIALIZE                      TEIKIKANRI-REC
-           MOVE    TEIKI1P-HOSPNUM     TO  TEIKIKANRI-HOSPNUM
            MOVE    TEIKI1P-JOBYMD      TO  TEIKIKANRI-CREYMD
            MOVE    TEIKI1P-JOBHMS      TO  TEIKIKANRI-CREHMS
            MOVE    TEIKIKANRI-REC      TO  MCPDATA-REC
@@ -3025,48 +2784,14 @@
        900-SYUNOU-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    分娩管理検索処理
-      *****************************************************************
-       900-BUNBEN-KEY3-SEL-SEC         SECTION.
-      *
-           MOVE    ZERO            TO  FLG-BUNBEN
-           INITIALIZE                  BUNBEN-REC
-      *
-           MOVE    SYU-HOSPNUM     TO  BUNBEN-HOSPNUM
-           MOVE    SYU-PTID        TO  BUNBEN-PTID
-           MOVE    SYU-NYUGAIKBN   TO  BUNBEN-NYUGAIKBN
-           MOVE    SYU-NYUIN-RRKNUM
-                                   TO  BUNBEN-RRKNUM
-           MOVE    BUNBEN-REC      TO  MCPDATA-REC
-      *
-           MOVE    "tbl_bunben"    TO  MCP-TABLE
-           MOVE    "key3"          TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC TO  BUNBEN-REC
-           ELSE
-               INITIALIZE              BUNBEN-REC
-               MOVE    1           TO  FLG-BUNBEN
-           END-IF
-      *
-           MOVE    "tbl_bunben"    TO  MCP-TABLE
-           MOVE    "key3"          TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *
-           .
-      *
-       900-BUNBEN-KEY3-SEL-EXT.
-           EXIT.
-      *****************************************************************
       *    ＤＢ検索処理（FHETCHも行う)
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+           CALL    "MONFUNC"               USING
+                                           MCPAREA
+                                           MCPDATA-REC
            IF    ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
@@ -3081,10 +2806,9 @@
        911-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+           CALL    "MONFUNC"               USING
+                                           MCPAREA
+                                           MCPDATA-REC
       *
            .
       *
@@ -3096,10 +2820,9 @@
        910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+           CALL    "MONFUNC"               USING
+                                           MCPAREA
+                                           MCPDATA-REC
       *
            .
       *
@@ -3111,10 +2834,9 @@
        910-DBCLOSECURSOR-SEC                 SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+           CALL    "MONFUNC"               USING
+                                           MCPAREA
+                                           MCPDATA-REC
       *
            .
       *
@@ -3126,10 +2848,9 @@
        910-DBUPDATE-SEC                SECTION.
       *
            MOVE    "DBUPDATE"          TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+           CALL    "MONFUNC"               USING
+                                           MCPAREA
+                                           MCPDATA-REC
       *
            .
       *
@@ -3141,10 +2862,9 @@
        910-DBINSERT-SEC                SECTION.
       *
            MOVE    "DBINSERT"          TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+           CALL    "MONFUNC"               USING
+                                           MCPAREA
+                                           MCPDATA-REC
       *
            .
       *
@@ -3156,10 +2876,9 @@
        910-DBDELETE-SEC                SECTION.
       *
            MOVE    "DBDELETE"          TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+           CALL    "MONFUNC"               USING
+                                           MCPAREA
+                                           MCPDATA-REC
       *
            .
       *
@@ -3173,18 +2892,16 @@
            MOVE   LOW-VALUE            TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBOPEN"            TO  MCP-FUNC.
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+           CALL    "MONFUNC"               USING
+                                           MCPAREA
+                                           MCPDATA-REC.
       *
            MOVE   LOW-VALUE            TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBSTART"           TO  MCP-FUNC.
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+           CALL    "MONFUNC"               USING
+                                           MCPAREA
+                                           MCPDATA-REC.
            .
        100-DBOPEN-EXT.
            EXIT.
@@ -3199,19 +2916,17 @@
                MOVE   LOW-VALUE        TO  MCP-TABLE
                                            MCP-PATHNAME
                MOVE    "DBCOMMIT"      TO  MCP-FUNC
-               CALL    "ORCDBMAIN"         USING
+               CALL    "MONFUNC"           USING
                                            MCPAREA
                                            MCPDATA-REC
-                                           SPA-AREA
            END-IF
       *
            MOVE   LOW-VALUE            TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+           CALL    "MONFUNC"               USING
+                                           MCPAREA
+                                           MCPDATA-REC.
       *
            .
        900-DBDISCONNECT-EXT.

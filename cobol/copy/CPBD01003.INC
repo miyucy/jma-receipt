@@ -27,12 +27,25 @@
                05  BD01003-SRT-NYUGAIKBN           PIC X(01).
                05  BD01003-SRT-SRYKA               PIC X(02).
            03  BD01003-SEIKYU-AREA.
-               05  BD01003-SEIKYU-TOTAL            PIC S9(10)
-                                                   OCCURS  11.
+               05  BD01003-SEIKYU-TOTAL            PIC S9(9)
+                                                   OCCURS  4.
                05  BD01003-SEIKYU-VAL.
-                   07  BD01003-SEIKYU-OCC          OCCURS  11.
+                   07  BD01003-SEIKYU-VAL-OCC      OCCURS  4.
+                       09  BD01003-SEIKYU-SYAHON   PIC S9(10).
+                       09  BD01003-SEIKYU-SYAKZK   PIC S9(10).
+                       09  BD01003-SEIKYU-SYARJN   PIC S9(10).
+                       09  BD01003-SEIKYU-KOKIPN   PIC S9(10).
+                       09  BD01003-SEIKYU-KOKRJN   PIC S9(10).
+                       09  BD01003-SEIKYU-KOHTAN   PIC S9(10).
+                       09  BD01003-SEIKYU-JIHHKN   PIC S9(10).
+                       09  BD01003-SEIKYU-ROUSAI   PIC S9(10).
+                       09  BD01003-SEIKYU-JIBAI    PIC S9(10).
+                       09  BD01003-SEIKYU-CHOSEI   PIC S9(10).
+                       09  BD01003-SEIKYU-GENMEN   PIC S9(10).
+               05  BD01003-SEIKYU-R      REDEFINES   BD01003-SEIKYU-VAL.
+                   07  BD01003-SEIKYU-OCC          OCCURS  4.
                        09  BD01003-SEIKYU          PIC S9(10)
-                                                   OCCURS  15.
+                                                   OCCURS  11.
            03  BD01003-JIHI-AREA.
                05  BD01003-JIHI-TOTAL              PIC S9(10).
                05  BD01003-JIHI                    PIC S9(10)
@@ -41,7 +54,3 @@
                05  BD01003-NYUKIN-TOTAL            PIC S9(10).
                05  BD01003-NYUKIN                  PIC S9(10)
                                                    OCCURS  13.
-           03  BD01003-TENSU-AREA.
-               05  BD01003-TENSU-TOTAL             PIC S9(10).
-               05  BD01003-TENSU                   PIC S9(10)
-                                                   OCCURS  15.
