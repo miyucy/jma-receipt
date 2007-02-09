@@ -1984,7 +1984,7 @@
                        PERFORM 41001-INPUT-AREA-HEN-SEC
                    END-IF
       *
-                   MOVE    8       TO  SPA-GMN-CUR
+                   MOVE    2       TO  SPA-GMN-CUR
       *
                    MOVE    SPA-GMN-SMEILIST-MAX
                                    TO  IDX2
@@ -2087,7 +2087,7 @@
            END-IF
       *
            IF    ( SPA-ERRCD       =   SPACE )
-               MOVE    8           TO  SPA-GMN-CUR
+               MOVE    2           TO  SPA-GMN-CUR
            END-IF
       *
            .
