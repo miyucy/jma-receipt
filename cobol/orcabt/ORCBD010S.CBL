@@ -199,6 +199,7 @@
            03  WRK-9-X.
                05  WRK-9                   PIC 9(01).
            03  WRK-MIN-DENPEDANUM          PIC 9(02).
+           03  WRK-SAGAKU                  PIC S9(9).
       *
        01  SUMSKY-AREA.
         02 SUMSKY-IDX                  PIC 9(05).
@@ -1008,6 +1009,35 @@
                    =   SUMSKY-GENMEN (SUMSKY-IDX)
                    +   SYURRK-DISCOUNT-MONEY
       *
+               COMPUTE WRK-SAGAKU
+                   =   SYURRK-SKYMONEY
+                   - ( WRK-FTNMONEY
+                   +   WRK-SKJMONEY
+                   +   WRK-JIHIMONEY
+                   +   SYURRK-CHOSEI
+                   +   SYURRK-DISCOUNT-MONEY )
+      *
+               IF    ( WRK-SAGAKU      NOT =   ZERO )
+                   EVALUATE    TRUE
+                   WHEN    ( SYURRK-DISCOUNT-MONEY     NOT =   ZERO )
+                       COMPUTE SUMSKY-GENMEN (SUMSKY-IDX)
+                           =   SUMSKY-GENMEN (SUMSKY-IDX)
+                           +   WRK-SAGAKU
+                   WHEN    ( SYURRK-CHOSEI             NOT =   ZERO )
+                       COMPUTE SUMSKY-CHOSEI (SUMSKY-IDX)
+                           =   SUMSKY-CHOSEI (SUMSKY-IDX)
+                           +   WRK-SAGAKU
+                   WHEN    ( WRK-JIHIMONEY             NOT =   ZERO )
+                       COMPUTE SUMSKY-JIHIMONEY (SUMSKY-IDX)
+                           =   SUMSKY-JIHIMONEY (SUMSKY-IDX)
+                           +   WRK-SAGAKU
+                   WHEN    OTHER
+                       COMPUTE SUMSKY-FTNMONEY  (SUMSKY-IDX)
+                           =   SUMSKY-FTNMONEY  (SUMSKY-IDX)
+                           +   WRK-SAGAKU
+                   END-EVALUATE
+               END-IF
+      *
                PERFORM VARYING IDX-JIHI    FROM    1   BY  1
                        UNTIL ( IDX-JIHI    >   CONST-ETCJIHI-MAX )
       *
@@ -1567,7 +1597,11 @@
       *
            COMPUTE BD01003-SEIKYU (1 BD01001-HOKEN)
                =   BD01003-SEIKYU (1 BD01001-HOKEN)
-               +   BD01001-SKYMONEY
+               +   BD01001-FTNMONEY
+      *
+           COMPUTE BD01003-SEIKYU (1 CONST-JIHHKN)
+               =   BD01003-SEIKYU (1 CONST-JIHHKN)
+               +   BD01001-JIHIMONEY
       *
            COMPUTE BD01003-SEIKYU (1 CONST-CHOSEI)
                =   BD01003-SEIKYU (1 CONST-CHOSEI)
