@@ -411,6 +411,9 @@
        01  ORCSSYUACCAREA.
            COPY    "CPORCSSYUACC.INC".
       *
+      *    ¼ýÇ¼¹¹¿·º¹³Û¼èÆÀ
+           COPY  "CPORCSS002.INC".
+      *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
       *
@@ -2989,13 +2992,15 @@
       *****************************************************************
        47011-SYUNOU-UPD-SEC             SECTION.
       *
+           COMPUTE WRK-SKYMONEY    =   SYU-SKYMONEY        *   -1
+      *
+      *    ÀÁµá¼è¾Ã¤È¤·¤Æ¼ýÇ¼¥Ç¡¼¥¿¤ò¹¹¿·
+           MOVE    ZERO        TO  SYU-SKYMONEY
+           MOVE    "3"         TO  SYU-DENPJTIKBN
+      *
       *    ¼ýÇ¼ÌÀºîÀ®½èÍý
            PERFORM 4701-SYUMEI-SAKUSEI-SEC
            IF    ( SPA-ERRCD       =   SPACE )
-      *
-      *        ÀÁµá¼è¾Ã¤È¤·¤Æ¼ýÇ¼¥Ç¡¼¥¿¤ò¹¹¿·
-               MOVE    ZERO        TO  SYU-SKYMONEY
-               MOVE    "3"         TO  SYU-DENPJTIKBN
       *
                PERFORM 800-MCNDATE-SEC
                MOVE    SMCNDATE-YMD    TO  SYU-UPYMD
@@ -3019,7 +3024,7 @@
       *****************************************************************
        4701-SYUMEI-SAKUSEI-SEC         SECTION.
       *
-           COMPUTE WRK-SKYMONEY    =   SYU-SKYMONEY        *   -1
+           PERFORM 800-SS002-SEC
       *
       *    ÅÁÉ¼ÈÖ¹æ»ÞÈÖ¤òµá¤á¤ë
            PERFORM 900-SYUMEI-KEY14-SEL-SEC
@@ -3074,6 +3079,8 @@
            MOVE    SMEI-NYUHEN-YMD     TO  SDAILYKEY-BASEYMD
            PERFORM 800-DAILYKEY-SEC
            MOVE    SDAILYKEY-DAILYKEY  TO  SMEI-DAILYKEY
+      *
+           PERFORM 800-SET-SS002-SMEI-SEC
       *
       *    ¼ýÇ¼ÌÀºÙÄÉ²Ã
            MOVE    "tbl_syumei"        TO  MCP-TABLE
@@ -3438,6 +3445,8 @@
            MOVE    SMCNDATE-YMD    TO  SYU-UPYMD
            MOVE    SMCNDATE-HMS    TO  SYU-UPHMS
       *
+           PERFORM 800-SS002-SEC
+      *
            IF    ( SPA-I0-SYUNOU-UPDFLG (IDX-SYU)  =   ZERO )
             AND  ( SPA-NAI-I04-SAIKEISANFLG        =   1 )
                MOVE    SYUNOU-REC      TO  MCPDATA-REC
@@ -3611,6 +3620,8 @@
            MOVE    SMEI-NYUHEN-YMD     TO  SDAILYKEY-BASEYMD
            PERFORM 800-DAILYKEY-SEC
            MOVE    SDAILYKEY-DAILYKEY  TO  SMEI-DAILYKEY
+      *
+           PERFORM 800-SET-SS002-SMEI-SEC
       *
            MOVE    SYUMEI-REC      TO  MCPDATA-REC
            MOVE    "tbl_syumei"    TO  MCP-TABLE
@@ -4319,6 +4330,32 @@
            .
       *
        800-ORCSSYUKAMAIN-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¼ýÇ¼¹¹¿·º¹³Û¼èÆÀ¥µ¥Ö
+      *****************************************************************
+       800-SS002-SEC           SECTION.
+      *
+           INITIALIZE                      SS002-AREA
+           CALL    "ORCSS002"      USING   SS002-AREA
+                                           SYUNOU-REC
+      *
+           .
+      *
+       800-SS002-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¼ýÇ¼ÌÀºÙ¹¹¿·º¹³ÛÀßÄê½èÍý
+      *****************************************************************
+       800-SET-SS002-SMEI-SEC      SECTION.
+      *
+           MOVE    SS002-SYURRKNUM     TO  SMEI-SYURRKNUM
+           MOVE    SS002-SYUEDANUM     TO  SMEI-SYUEDANUM
+           MOVE    SS002-SYURRKUPDKBN  TO  SMEI-SYURRKUPDKBN
+      *
+           .
+      *
+       800-SET-SS002-SMEI-EXT.
            EXIT.
       *****************************************************************
       *    º¸µÍ½èÍý

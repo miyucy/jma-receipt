@@ -377,7 +377,6 @@
            03  WRK-MAE-SKYEDYMD            PIC X(08).
            03  WRK-SKYSTYMD                PIC X(08).
            03  WRK-SKYEDYMD                PIC X(08).
-           03  WRK-SKYMONEY                PIC  S9(07).
       *    医療機関設定の入院料加算チェック用
            03  WRK-NYUKHNKSN-SRYCD         PIC X(09)  OCCURS 20.
            03  WRK-NYUKSNKBN               PIC X(03).
@@ -460,6 +459,7 @@
            03  WRK-CHK-YMD                 PIC X(08).
            03  WRK-CMB-TOKNYUIN-AREA           PIC X(3000).
            03  WRK-ERRMSG                  PIC X(10).
+           03  WRK-SKYMONEY                PIC S9(08).
       *
        01  BAK-AREA.
            03  BAK-AGE-G.
@@ -778,6 +778,9 @@
       *    主科情報アクセス用パラメタ
        01  ORCSSYUACCAREA.
            COPY    "CPORCSSYUACC.INC".
+      *
+      *    収納更新差額取得
+           COPY  "CPORCSS002.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -8263,15 +8266,18 @@
                IF    ( SYU-NYUIN-RRKNUM    =   SPA-NAI-I01-PTRRKNUM )
                 AND  ( SYU-DENPJTIKBN  NOT =   "3" )
       *
+                   COMPUTE WRK-SKYMONEY
+                       =   SYU-SKYMONEY    *   -1
+      *
+      *            請求取消として収納データを更新
+                   MOVE    ZERO            TO  SYU-SKYMONEY
+                   MOVE    "3"             TO  SYU-DENPJTIKBN
+      *
       *            収納明作成処理
                    PERFORM 4801-SYUMEI-SAKUSEI-SEC
                    IF    ( SPA-ERRCD   NOT =   SPACE )
                        GO  TO  4801-SYUNOU-UPD-EXT
                    END-IF
-      *
-      *            請求取消として収納データを更新
-                   MOVE    ZERO            TO  SYU-SKYMONEY
-                   MOVE    "3"             TO  SYU-DENPJTIKBN
       *
                    PERFORM 800-MCNDATE-SEC
                    MOVE    SMCNDATE-YMD    TO  SYU-UPYMD
@@ -8339,7 +8345,9 @@
       *****************************************************************
        4801-SYUMEI-SAKUSEI-SEC         SECTION.
       *
-           COMPUTE WRK-SKYMONEY    =   SYU-SKYMONEY        *   -1
+           INITIALIZE                  SS002-AREA
+           CALL    "ORCSS002"      USING   SS002-AREA
+                                           SYUNOU-REC
       *
       *    伝票番号枝番を求める
            MOVE    ZERO                TO  FLG-SYUMEI
@@ -8435,6 +8443,10 @@
            MOVE    SMEI-NYUHEN-YMD     TO  SDAILYKEY-BASEYMD
            PERFORM 800-DAILYKEY-SEC
            MOVE    SDAILYKEY-DAILYKEY  TO  SMEI-DAILYKEY
+      *
+           MOVE    SS002-SYURRKNUM     TO  SMEI-SYURRKNUM
+           MOVE    SS002-SYUEDANUM     TO  SMEI-SYUEDANUM
+           MOVE    SS002-SYURRKUPDKBN  TO  SMEI-SYURRKUPDKBN
       *
       *    収納明細追加
            MOVE    "tbl_syumei"        TO  MCP-TABLE

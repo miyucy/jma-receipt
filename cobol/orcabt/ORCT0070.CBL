@@ -112,6 +112,8 @@
                "´µ¼ÔÄê´üÀÁµáÍúÎò¾ðÊó¤Îºï½ü¤Ë¼ºÇÔ¤·¤Þ¤·¤¿".
            03  ERR-MSG07                   PIC X(100)    VALUE
                "Äê´üÀÁµáÍúÎò¾ðÊó¤Îºï½ü¤Ë¼ºÇÔ¤·¤Þ¤·¤¿".
+           03  ERR-MSG08                   PIC X(100)    VALUE
+               "¼ýÇ¼ÍúÎò¾ðÊó¤Îºï½ü¤Ë¼ºÇÔ¤·¤Þ¤·¤¿".
       *
            COPY    "MCPAREA".
       *
@@ -141,6 +143,10 @@
       *    ¼ýÇ¼ÌÀºÙ
        01  SYUMEI-REC.
            COPY    "CPSYUMEI.INC".
+      *
+      *    ¼ýÇ¼ÍúÎò
+       01  SYURRK-REC.
+           COPY    "CPSYURRK.INC".
       *
       *    Äê´üÀÁµá´ÉÍý
        01  TEIKIKANRI-REC.
@@ -280,6 +286,8 @@
       *
                PERFORM 2001-SYUNOU-DEL-SEC
       *
+               PERFORM 2001-SYURRK-DEL-SEC
+      *
                PERFORM 2001-TEIKIPRT-DEL-SEC
       *
                PERFORM 2001-PTTEIKIRRK-DEL-SEC
@@ -381,6 +389,29 @@
            IF  (   MCP-RC          NOT =   ZERO )
                MOVE    PTTEIKIRRK-PTID TO  ERR-PTID
                MOVE    "0005"          TO  ERR-ERRCD
+               PERFORM 500-ERR-HENSYU-SEC
+           END-IF
+      *
+           .
+       2001-SYUNOU-DEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¼ýÇ¼ÍúÎò½èÍý
+      *****************************************************************
+       2001-SYURRK-DEL-SEC             SECTION.
+      *
+           INITIALIZE                      SYURRK-REC
+           MOVE    PTTEIKIRRK-HOSPID   TO  SYURRK-HOSPID
+           MOVE    "1"                 TO  SYURRK-NYUGAIKBN
+           MOVE    PTTEIKIRRK-PTID     TO  SYURRK-PTID
+           MOVE    PTTEIKIRRK-DENPNUM  TO  SYURRK-DENPNUM
+           MOVE    SYURRK-REC          TO  MCPDATA-REC
+           MOVE    "tbl_syurrk"        TO  MCP-TABLE
+           MOVE    "del1"              TO  MCP-PATHNAME
+           PERFORM 910-DBDELETE-SEC
+           IF  (   MCP-RC          NOT =   ZERO )
+               MOVE    PTTEIKIRRK-PTID TO  ERR-PTID
+               MOVE    "0008"          TO  ERR-ERRCD
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
       *
@@ -508,6 +539,8 @@
                MOVE    ERR-MSG06       TO  ERR-ERRMSG
            WHEN    "0007"
                MOVE    ERR-MSG07       TO  ERR-ERRMSG
+           WHEN    "0008"
+               MOVE    ERR-MSG08       TO  ERR-ERRMSG
            END-EVALUATE
       *
            .

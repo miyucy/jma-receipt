@@ -20,7 +20,7 @@
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : 日次帳票
-      *  コンポーネント名  : 収納一覧表（ＨＣＭ０８）入院 期間指定対応
+      *  コンポーネント名  : 収納一覧表（ＨＣＭ０８）入院 期間指定
       *  管理者            : 
       *  作成日付    作業者        記述
       *  03/03/06    NACL-森脇     新規作成
@@ -388,7 +388,7 @@
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
            MOVE    "ORCBD005V02"   TO  JOB-PGID
-           MOVE    "収納一覧表（入院）（期間指定対応版）"
+           MOVE    "収納一覧表（入院）（期間指定）"
                                    TO  JOB-SHELLMSG
            CALL    "ORCSJOB"           USING
                                        ORCSJOBKANRIAREA
@@ -1312,7 +1312,7 @@
            MOVE    LNK-PRTKANRI-PRIORITY
                                    TO  SPRT-PRIORITY
            MOVE   "HCM08V02.red"   TO  SPRT-PRTID
-           MOVE    "収納一覧表（入院）（期間指定対応版）"
+           MOVE    "収納一覧表（入院）（期間指定）"
                                    TO  SPRT-TITLE
            MOVE    HCM08           TO  SPRT-PRTDATA
            MOVE    LNK-PRTKANRI-TERMID

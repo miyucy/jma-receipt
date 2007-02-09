@@ -192,7 +192,9 @@
                        09  SPA-NAI-SKYMONEY-MOTO   PIC S9(10).
                        09  SPA-NAI-NYUKINYMD       PIC X(08).
                        09  SPA-NAI-NYUKIN-MOTO     PIC S9(10).
-                       09  SPA-NAI-DENPEDANUM      PIC X(02).
+                       09  SPA-NAI-DENPEDANUM      PIC 9(02).
+                       09  SPA-NAI-SYURRKNUM       PIC 9(09).
+                       09  SPA-NAI-SYURRKUPDKBN    PIC X(1).
                        09  SPA-NAI-DENPJTIKBN      PIC X(01).
                        09  SPA-NAI-MINUS           PIC X(01).
                        09  SPA-NAI-PROC-FLG        PIC 9(01).
@@ -208,6 +210,8 @@
                        09  SPA-NAI-TMEIJOUTAIKBN   PIC X(1).
                        09  SPA-NAI-TSYORIYMD       PIC X(08).
                        09  SPA-NAI-TMAINUS         PIC X(1).
+                       09  SPA-NAI-TSYURRKNUM      PIC 9(9).
+                       09  SPA-NAI-TSYURRKUPDKBN   PIC X(1).
       *
       *    ¥Õ¥é¥°ÎÎ°è
        01  FLG-AREA.
@@ -317,6 +321,10 @@
        01  SYUMEI-REC.
            COPY    "CPSYUMEI.INC".
       *
+      *    ¼ýÇ¼ÍúÎò
+       01  SYURRK-REC.
+           COPY    "CPSYURRK.INC".
+      *
       *
       *
       *************************************************************
@@ -344,6 +352,9 @@
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
+      *
+      *    ¼ýÇ¼ÍúÎòÊÔ½¸¥µ¥Ö
+           COPY    "CPORCSS002.INC".
       *
       *
        01  LNK-SYUNOU-REC.
@@ -1048,6 +1059,8 @@
       *
       *
                MOVE    SMEI-DENPEDANUM     TO  SPA-GMN-TDENPEDANUM(IDX1)
+               MOVE    SMEI-SYURRKNUM      TO  SPA-NAI-TSYURRKNUM(IDX1)
+               MOVE    SMEI-SYURRKUPDKBN TO  SPA-NAI-TSYURRKUPDKBN(IDX1)
                MOVE    SMEI-SKYMONEY       TO  SPA-GMN-TSKYMONEY (IDX1)
                MOVE    SMEI-NYUHEN-MONEY   TO  SPA-GMN-TNYUKIN (IDX1)
                MOVE    SMEI-JOUTAIKBN      TO  SPA-NAI-TJOUTAIKBN (IDX1)
@@ -2020,7 +2033,7 @@
                        PERFORM 41001-INPUT-AREA-HEN-SEC
                    END-IF
       *
-                   MOVE    8       TO  SPA-GMN-CUR
+                   MOVE    2       TO  SPA-GMN-CUR
       *
                    MOVE    SPA-GMN-SMEILIST-MAX
                                    TO  IDX2
@@ -2106,7 +2119,7 @@
            END-IF
       *
            IF    ( SPA-ERRCD       =   SPACE )
-               MOVE    8           TO  SPA-GMN-CUR
+               MOVE    2           TO  SPA-GMN-CUR
            END-IF
       *
            .
@@ -2166,6 +2179,10 @@
                                        TO  SPA-NAI-NYUKINYMD
            MOVE    SPA-GMN-TDENPEDANUM(SPA-GMN-SELNUM)
                                        TO  SPA-NAI-DENPEDANUM
+           MOVE    SPA-NAI-TSYURRKNUM (SPA-GMN-SELNUM)
+                                       TO  SPA-NAI-SYURRKNUM
+           MOVE    SPA-NAI-TSYURRKUPDKBN (SPA-GMN-SELNUM)
+                                       TO  SPA-NAI-SYURRKUPDKBN
            MOVE    SPA-NAI-TJOUTAIKBN(SPA-GMN-SELNUM)
                                        TO  SPA-NAI-DENPJTIKBN
            MOVE    SPA-NAI-TMAINUS    (SPA-GMN-SELNUM)
@@ -2919,6 +2936,16 @@
                PERFORM 800-MCNDATE-SEC
                MOVE    SMCNDATE-YMD        TO  SYU-UPYMD
                MOVE    SMCNDATE-HMS        TO  SYU-UPHMS
+      *
+               INITIALIZE                  SS002-AREA
+               MOVE    "2"                 TO  SS002-UPDKBN
+               MOVE    SPA-NAI-SYURRKNUM   TO  SS002-IN-SYURRKNUM
+               MOVE    SPA-NAI-SYURRKUPDKBN TO SS002-IN-SYURRKUPDKBN
+               CALL    "ORCSS002"  USING   SS002-AREA
+                                           SYUNOU-REC
+               IF    ( SS002-RC    NOT =   ZERO )
+                   GO  TO  49021-SYUNOU-UPD-EXT
+               END-IF
       *
                MOVE    SYUNOU-REC          TO  MCPDATA-REC
                MOVE    "tbl_syunou"        TO  MCP-TABLE

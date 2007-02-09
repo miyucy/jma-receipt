@@ -186,6 +186,9 @@
            COPY    "CPPTNYUINRRK.INC"  REPLACING  //PTNYUINRRK-//
                                        BY         //LNK-PTNYUINRRK-//.
       *
+      *    収納更新差額取得
+           COPY  "CPORCSS002.INC".
+      *
            COPY    "MCPDATA.INC".
            COPY    "MCPAREA".
       *
@@ -503,15 +506,17 @@
       *
            PERFORM UNTIL ( FLG-SYUNOU  NOT =   ZERO )
       *
+               COMPUTE WRK-SKYMONEY    =   SYU-SKYMONEY        *   -1
+      *
+      *        請求取消として収納データを更新
+               MOVE    ZERO            TO  SYU-SKYMONEY
+               MOVE    "3"             TO  SYU-DENPJTIKBN
+      *
       *        収納明作成処理
                PERFORM 2001-SYUMEI-INSERT-SEC
                IF    ( FLG-END NOT =   SPACE )
                    GO  TO  2001-SYUNOU-UPDATE-EXT
                END-IF
-      *
-      *        請求取消として収納データを更新
-               MOVE    ZERO            TO  SYU-SKYMONEY
-               MOVE    "3"             TO  SYU-DENPJTIKBN
       *
                PERFORM 800-MCNDATE-SEC
                MOVE    SMCNDATE-YMD    TO  SYU-UPYMD
@@ -546,7 +551,7 @@
       *****************************************************************
        2001-SYUMEI-INSERT-SEC          SECTION.
       *
-           COMPUTE WRK-SKYMONEY    =   SYU-SKYMONEY        *   -1
+           PERFORM 800-SS002-SEC
       *
       *    伝票番号枝番を求める
            PERFORM 900-SYUMEI-KEY7-SEL-SEC
@@ -601,6 +606,8 @@
            MOVE    SMEI-NYUHEN-YMD     TO  SDAILYKEY-BASEYMD
            PERFORM 800-DAILYKEY-SEC
            MOVE    SDAILYKEY-DAILYKEY  TO  SMEI-DAILYKEY
+      *
+           PERFORM 800-SET-SS002-SMEI-SEC
       *
       *    収納明細追加
            MOVE    "tbl_syumei"        TO  MCP-TABLE
@@ -1058,6 +1065,32 @@
            .
       *
        800-MCNDATE-EXT.
+           EXIT.
+      *****************************************************************
+      *    収納更新差額取得サブ
+      *****************************************************************
+       800-SS002-SEC           SECTION.
+      *
+           INITIALIZE                      SS002-AREA
+           CALL    "ORCSS002"      USING   SS002-AREA
+                                           SYUNOU-REC
+      *
+           .
+      *
+       800-SS002-EXT.
+           EXIT.
+      *****************************************************************
+      *    収納明細更新差額設定処理
+      *****************************************************************
+       800-SET-SS002-SMEI-SEC      SECTION.
+      *
+           MOVE    SS002-SYURRKNUM     TO  SMEI-SYURRKNUM
+           MOVE    SS002-SYUEDANUM     TO  SMEI-SYUEDANUM
+           MOVE    SS002-SYURRKUPDKBN  TO  SMEI-SYURRKUPDKBN
+      *
+           .
+      *
+       800-SET-SS002-SMEI-EXT.
            EXIT.
       *****************************************************************
       *    入院履歴検索処理(KEY39)

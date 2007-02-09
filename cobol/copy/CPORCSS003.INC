@@ -15,14 +15,19 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-       01  SS002-AREA.
-           03  SS002-IN.
-      *        空白:請求・訂正/1:保険変更/2:調整金
-               05  SS002-UPDKBN            PIC X(01).
-               05  SS002-IN-SYURRKNUM      PIC S9(09).
-               05  SS002-IN-SYURRKUPDKBN   PIC X(01).
-           03  SS002-OT.
-               05  SS002-SYURRKNUM         PIC S9(09).
-               05  SS002-SYUEDANUM         PIC S9(09).
-               05  SS002-SYURRKUPDKBN      PIC X(01).
-               05  SS002-RC                PIC S9(09)  BINARY.
+      ************************************************************
+      *    初診／再診判定サブ　　COPY (CPORCSS003.INC)
+      ************************************************************
+      ************************************************************
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      ************************************************************
+        01  SS003-AREA.
+            03  SS003-IN.
+                05  SS003-SYORIKBN         PIC X(01).
+                05  SS003-HOSPID           PIC X(24).
+                05  SS003-PTID             PIC 9(10).
+                05  SS003-NYUGAIKBN        PIC X(01).
+                05  SS003-DENPNUM          PIC 9(07).
+            03  SS003-OT.
+                05  SS003-SYOSAISIN-KBN    PIC X(01).

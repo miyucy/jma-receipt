@@ -411,6 +411,9 @@
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
+      *    収納更新差額取得
+           COPY  "CPORCSS002.INC".
+      *
       ****************************************************************
        LINKAGE                 SECTION.
       *
@@ -701,13 +704,15 @@
       *
            MOVE    TEIKI07-REC         TO  SYUNOU-REC
       *
-      *    収納明細作成処理
-           PERFORM 20021-SYUMEI-SAKUSEI-SEC
+           COMPUTE WRK-SKYMONEY    =   SYU-SKYMONEY    *   -1
       *
       *    請求取消として収納マスターを更新
            MOVE    ZERO                TO  SYU-SKYMONEY
       *                                    SYU-NYUKIN-TOTAL
            MOVE    "3"                 TO  SYU-DENPJTIKBN
+      *
+      *    収納明細作成処理
+           PERFORM 20021-SYUMEI-SAKUSEI-SEC
       *
            MOVE    TEIKI1P-JOBYMD      TO  SYU-UPYMD
            MOVE    TEIKI1P-JOBHMS      TO  SYU-UPHMS
@@ -730,7 +735,7 @@
       *****************************************************************
        20021-SYUMEI-SAKUSEI-SEC        SECTION.
       *
-           COMPUTE WRK-SKYMONEY    =   SYU-SKYMONEY    *   -1
+           PERFORM 800-SS002-SEC
       *
            PERFORM 900-SYUMEI-KEY7-SEL-SEC
       *
@@ -792,6 +797,8 @@
            MOVE    SMEI-NYUHEN-YMD     TO  SDAILYKEY-BASEYMD
            PERFORM 800-DAILYKEY-SEC
            MOVE    SDAILYKEY-DAILYKEY  TO  SMEI-DAILYKEY
+      *
+           PERFORM 800-SET-SS002-SMEI-SEC
       *
            MOVE    SYUMEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_syumei"        TO  MCP-TABLE
@@ -877,6 +884,8 @@
                MOVE    TEIKI1P-JOBYMD  TO  SYU-CREYMD
                                            SYU-UPYMD
                MOVE    TEIKI1P-JOBHMS  TO  SYU-UPHMS
+      *
+               PERFORM 800-SS002-SEC
       *
                MOVE    SYUNOU-REC      TO  MCPDATA-REC
                MOVE    "tbl_syunou"    TO  MCP-TABLE
@@ -1139,6 +1148,8 @@
            PERFORM 800-DAILYKEY-SEC
            MOVE    SDAILYKEY-DAILYKEY  TO  SMEI-DAILYKEY
       *
+           PERFORM 800-SET-SS002-SMEI-SEC
+      *
            MOVE    SYUMEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_syumei"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -1319,6 +1330,8 @@
       *
                MOVE    TEIKI1P-JOBYMD      TO  SYU-UPYMD
                MOVE    TEIKI1P-JOBHMS      TO  SYU-UPHMS
+      *
+               PERFORM 800-SS002-SEC
       *
                MOVE    SYUNOU-REC          TO  MCPDATA-REC
                MOVE    "tbl_syunou"        TO  MCP-TABLE
@@ -1614,6 +1627,8 @@
            MOVE    SMEI-NYUHEN-YMD     TO  SDAILYKEY-BASEYMD
            PERFORM 800-DAILYKEY-SEC
            MOVE    SDAILYKEY-DAILYKEY  TO  SMEI-DAILYKEY
+      *
+           PERFORM 800-SET-SS002-SMEI-SEC
       *
            MOVE    SYUMEI-REC      TO  MCPDATA-REC
            MOVE    "tbl_syumei"    TO  MCP-TABLE
@@ -2268,6 +2283,32 @@
            .
       *
        800-MCNDATE-EXT.
+           EXIT.
+      *****************************************************************
+      *    収納更新差額取得サブ
+      *****************************************************************
+       800-SS002-SEC           SECTION.
+      *
+           INITIALIZE                      SS002-AREA
+           CALL    "ORCSS002"      USING   SS002-AREA
+                                           SYUNOU-REC
+      *
+           .
+      *
+       800-SS002-EXT.
+           EXIT.
+      *****************************************************************
+      *    収納明細更新差額設定処理
+      *****************************************************************
+       800-SET-SS002-SMEI-SEC      SECTION.
+      *
+           MOVE    SS002-SYURRKNUM     TO  SMEI-SYURRKNUM
+           MOVE    SS002-SYUEDANUM     TO  SMEI-SYUEDANUM
+           MOVE    SS002-SYURRKUPDKBN  TO  SMEI-SYURRKUPDKBN
+      *
+           .
+      *
+       800-SET-SS002-SMEI-EXT.
            EXIT.
       *****************************************************************
       *    システム管理マスタ読込
