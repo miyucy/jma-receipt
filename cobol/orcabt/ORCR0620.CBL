@@ -1460,8 +1460,7 @@
                        ELSE                       
                            MOVE    RECE62-HOSPID   TO  MONTHLYNUM-HOSPID
                            MOVE    RECE62-PTID     TO  MONTHLYNUM-PTID
-                           MOVE    WRK-CONS-SEIHO-HKNNUM
-                                                   TO  MONTHLYNUM-KOHNUM
+                           MOVE    ZERO            TO  MONTHLYNUM-KOHID
                            MOVE    RECE62-SRYYM    TO  MONTHLYNUM-SRYYM
                            MOVE    RECE62-NYUGAIKBN
                                                    TO
@@ -1469,7 +1468,7 @@
                            MOVE    MONTHLYNUM-REC  TO  MCPDATA-REC
                            MOVE    "tbl_monthlynum"
                                                    TO  WRK-MCP-TABLE
-                           MOVE    "key"           TO  WRK-MCP-PATHNAME
+                           MOVE    "key4"          TO  WRK-MCP-PATHNAME
                            PERFORM 910-MONTHLYNUM-READ-SEC
                            IF    ( FLG-MONTHLYNUM          =   ZERO  )
                                MOVE    MONTHLYNUM-JKYSNUM 

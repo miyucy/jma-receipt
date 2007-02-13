@@ -1796,15 +1796,14 @@
                    ELSE
                        MOVE    WRK-PARA-HOSPID TO  MONTHLYNUM-HOSPID
                        MOVE    TOUKEI01-PTID   TO  MONTHLYNUM-PTID
-                       MOVE    WRK-CONS-SEIHO-HKNNUM
-                                               TO  MONTHLYNUM-KOHNUM
+                       MOVE    ZERO            TO  MONTHLYNUM-KOHID
                        MOVE    WRK-PARA-SRYYM  TO  MONTHLYNUM-SRYYM
                        MOVE    WRK-PARA-NYUGAIKBN
                                                TO  MONTHLYNUM-NYUGAIKBN
                        MOVE    MONTHLYNUM-REC  TO  MCPDATA-REC
                        MOVE    "tbl_monthlynum"
                                                TO  WRK-MCP-TABLE
-                       MOVE    "key"           TO  WRK-MCP-PATHNAME
+                       MOVE    "key4"          TO  WRK-MCP-PATHNAME
                        PERFORM 910-MONTHLYNUM-READ-SEC
                        IF      FLG-MONTHLYNUM  =   ZERO
                            MOVE    MONTHLYNUM-JKYSNUM 
