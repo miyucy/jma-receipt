@@ -712,15 +712,14 @@
               INITIALIZE                  MONTHLYNUM-REC
                MOVE    SPA-HOSPID      TO  MONTHLYNUM-HOSPID
                MOVE    PTKOH-PTID      TO  MONTHLYNUM-PTID
-               MOVE    WRK-CONS-SEIHO-HKNNUM
-                                       TO  MONTHLYNUM-KOHNUM
+               MOVE    ZERO            TO  MONTHLYNUM-KOHID
                MOVE    SPA-NAI-SRYYM   TO  MONTHLYNUM-SRYYM
                MOVE    SPA-R01-NYUGAIKBN
                                        TO  MONTHLYNUM-NYUGAIKBN
                MOVE    MONTHLYNUM-REC  TO  MCPDATA-REC
                MOVE    "tbl_monthlynum"
                                        TO  WRK-MCP-TABLE
-               MOVE    "key"           TO  WRK-MCP-PATHNAME
+               MOVE    "key4"          TO  WRK-MCP-PATHNAME
                PERFORM 910-MONTHLYNUM-READ-SEC
            END-IF
       *
