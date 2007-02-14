@@ -1688,6 +1688,7 @@
                                         OR  "3"
                                         OR  "7"
                                         OR  "8"
+                                        OR  SPACE
       *        º˝«ºÕ˙ŒÚ»÷πÊ
                MOVE    SS002-SYURRKNUM     TO  SMEI-SYURRKNUM
       *        º˝«ºÕ˙ŒÚªﬁ»÷πÊ
