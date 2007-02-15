@@ -237,6 +237,7 @@
       *  03.04.06    NACL-ÃÁœ∆    06/12/26  ≈Ïµ˛Õ˝Õ∆≈˘°‹∑Î≥À¬–±˛
       *  03.04.07    NACL-ÃÁœ∆    07/01/16  ° °°°À∫∆∑«µ≠∫‹§ŒΩ§¿µ
       *  03.04.08    NACL-ÃÁœ∆    07/01/23  £µ£±°‹ƒ„ΩÍ∆¿¬–±˛
+      *  03.04.09    NACL-ÃÁœ∆    07/02/14   °≈Á∏©»”¥€¬º¬–±˛
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -8397,10 +8398,6 @@
                                        RECE62-SHOKUJIRYOYOHI(1)
                    ADD   SYU-SYUSKJ-FTN-RECE  TO
                                        RECE62-SHOKUJIFTN(1)
-                   IF    SYU-SKYMONEY-SKJ-TAX  NOT = ZERO
-                      ADD   SYU-SKYMONEY-SKJ-TAX   TO
-                                       RECE62-SHOKUJIFTN(1)
-                   END-IF 
            END-IF
            IF      RECE62-RJNHKNNUM    NOT =  SPACE
              IF      SYU-SKJ-RYOYOHI(1)  NOT =  ZERO
@@ -9354,6 +9351,9 @@
                   (RECE62-SRYYM             >=  "200310"      ))
              OR  ((RECE62-KOHNUM(KOHFTN-IDX) =  "052"         )   AND
                   (RECE62-SRYYM             >=  "200504"      ))
+             OR  ((WRK-PREFNUM               =  "07"          )   AND
+                  (RECE62-KOHNUM(KOHFTN-IDX) =  "281"         )   AND
+                  (RECE62-SRYYM             >=  "200702"      ))
       *
                IF ((RECE62-KOHNUM(KOHFTN-IDX) =  "015" OR "016")  AND
                    (RECE62-SRYYM             >=  "200604"      ))
@@ -9435,11 +9435,10 @@
       *    ∏¯»Ò∞Ï…Ù…È√¥∂‚•Ï•ªµ≠∫‹•’•È•∞§Œ ‘Ω∏
       *    ∏¯»Ò∞Ï…Ù…È√¥∂‚£∞±ﬂµ≠∫‹•’•È•∞§Œ ‘Ω∏
       *
-           IF    RECE62-SRYYM        >=  "200404"
+           PERFORM    VARYING   KOHFTN-IDX   FROM   1   BY   1
+                       UNTIL    KOHFTN-IDX     >    4
       *
-             PERFORM    VARYING   KOHFTN-IDX   FROM   1   BY   1
-                         UNTIL    KOHFTN-IDX     >    4
-      *
+             IF    RECE62-SRYYM        >=  "200404"
                IF ( RECE62-KOHNUM(KOHFTN-IDX) =  "012" OR "015"
                                               OR "016" OR "051" )
                OR ((WRK-PREFNUM      =   13           ) AND
@@ -9449,7 +9448,6 @@
                      MOVE  "1"   TO
                              RECE62-KISAIFLG(KOHFTN-IDX + 1)
                END-IF
-      *
                IF ( RECE62-KOHNUM(KOHFTN-IDX) =  "015" OR "016"
                                                        OR "051" )
                OR ((WRK-PREFNUM      =   13           ) AND
@@ -9474,7 +9472,6 @@
                      (RECE62-KOHNUM(KOHFTN-IDX) =  "186" ))
                    CONTINUE
                  ELSE
-      *
                      IF    ( RECE62-HON-NYUDJGNGAK (KOHFTN-IDX)
                                            NOT = ZERO )
                      OR    ( RECE62-HON-NYUDGJNCNT (KOHFTN-IDX)
@@ -9493,36 +9490,20 @@
                                 RECE62-KISAIFLG(KOHFTN-IDX + 1)
                          END-IF
                      END-IF
-      *
                  END-IF
                END-IF
+             END-IF
       *
-             END-PERFORM
-      *
-           END-IF
-      *
-           IF    RECE62-SRYYM        >=  "200504"
-      *
-             PERFORM    VARYING   KOHFTN-IDX   FROM   1   BY   1
-                         UNTIL    KOHFTN-IDX     >    4
-      *
+             IF    RECE62-SRYYM        >=  "200504"
                IF   RECE62-KOHNUM(KOHFTN-IDX) =  "052"
                      MOVE  "1"   TO
                                  RECE62-KISAIFLG(KOHFTN-IDX + 1)
                      MOVE  "1"   TO
                              RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
-      *
                END-IF
+             END-IF
       *
-             END-PERFORM
-      *
-           END-IF
-      *
-           IF    RECE62-SRYYM        >=  "200604"
-      *
-             PERFORM    VARYING   KOHFTN-IDX   FROM   1   BY   1
-                         UNTIL    KOHFTN-IDX     >    4
-      *
+             IF    RECE62-SRYYM        >=  "200604"
                IF   RECE62-KOHNUM(KOHFTN-IDX) =  "021"
                      MOVE  "1"   TO
                                  RECE62-KISAIFLG(KOHFTN-IDX + 1)
@@ -9541,34 +9522,15 @@
                              RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
                      END-IF
                END-IF
+             END-IF
       *
-             END-PERFORM
-      *
-           END-IF
-      *
-           IF    RECE62-SRYYM        >=  "200610"
-      *
-             PERFORM    VARYING   KOHFTN-IDX   FROM   1   BY   1
-                         UNTIL    KOHFTN-IDX     >    4
-      *
+             IF    RECE62-SRYYM        >=  "200610"
                IF   RECE62-KOHNUM(KOHFTN-IDX) =  "024" OR "079"
                      MOVE  "1"   TO
                                  RECE62-KISAIFLG(KOHFTN-IDX + 1)
                      MOVE  "1"   TO
                              RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
-      *
                END-IF
-      *
-             END-PERFORM
-      *
-           END-IF
-      *
-      *    ≤¨ª≥∏©√œ ˝∏¯»Ò
-           IF    RECE62-SRYYM        >=  "200610"
-      *
-             PERFORM    VARYING   KOHFTN-IDX   FROM   1   BY   1
-                         UNTIL    KOHFTN-IDX     >    4
-      *
                IF  (WRK-PREFNUM      =   33           ) AND
                    (RECE62-KOHNUM(KOHFTN-IDX)(1:1)
                                    >=  "1" AND <=  "8")
@@ -9577,10 +9539,19 @@
                      MOVE  "1"  TO
                              RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
                END-IF
+             END-IF
       *
-             END-PERFORM
+             IF    RECE62-SRYYM        >=  "200702"
+               IF  (WRK-PREFNUM      =   07           ) AND
+                   (RECE62-KOHNUM(KOHFTN-IDX) =  "281")
+                     MOVE  "1"  TO
+                                 RECE62-KISAIFLG(KOHFTN-IDX + 1)
+                     MOVE  "1"  TO
+                             RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
+               END-IF
+             END-IF
       *
-           END-IF
+           END-PERFORM
       *
       *    ∞Ï…Ù…È√¥∂‚°¶ø©ªˆŒ≈Õ‹»Ò…∏Ω‡…È√¥≥€∂Ë ¨§Œ ‘Ω∏
       *
