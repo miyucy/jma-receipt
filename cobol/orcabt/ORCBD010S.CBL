@@ -275,6 +275,7 @@
            03  CONST-HOHO-TORIKESI             PIC X(02) VALUE "@2".
            03  CONST-HOHO-TORIKESIMSG          PIC X(10)
                                                VALUE "入金取消".
+           03  CONST-TEISEI                    PIC X(01) VALUE "8".
            03  CONST-HENKIN                    PIC X(01) VALUE "4".
            03  CONST-TORIKESI                  PIC X(02) VALUE "6".
            03  CONST-SEIKYU-VAL.
@@ -1139,6 +1140,14 @@
       *
            MOVE    SPACE               TO  WRK-HOHO
            EVALUATE    SMEI-JOUTAIKBN
+           WHEN    CONST-TEISEI
+               IF    ( SMEI-NYUHEN-MONEY   <   ZERO )
+                   MOVE    CONST-HOHO-HENKIN
+                                       TO  WRK-HOHO
+               ELSE
+                   MOVE    SMEI-NYUKIN-HOHO
+                                       TO  WRK-HOHO
+               END-IF
            WHEN    CONST-HENKIN
                MOVE    CONST-HOHO-HENKIN
                                        TO  WRK-HOHO
