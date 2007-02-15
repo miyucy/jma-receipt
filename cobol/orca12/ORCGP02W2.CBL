@@ -68,6 +68,8 @@
       *  03.04.02    NACL-ÃÁœ∆    06/11/29   ›∏±¡»§ﬂπÁ§Ô§ª∫Ó¿ÆæÚ∑ÔΩ§¿µ
       *  03.04.03    NACL-ÃÁœ∆    07/01/25  °„≤¨ª≥°‰£∞£π£±°‹Ω≈ø¥§Œ
       *                                      ›∏±¡»πÁ§ª∫Ó¿Æ
+      *  03.04.04    NACL-ÃÁœ∆    07/02/15  °„µ‹∫Í°‰£∞£π£±°‹æ„≥≤§Œ
+      *                                      ›∏±¡»πÁ§ª∫Ó¿Æ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3559,6 +3561,17 @@
                                 PERFORM 5701413-SYUKOH-HJO-SEC
                              END-IF
                             END-IF
+                          WHEN     45
+                            IF  WRK-SRT-HJO-KOHNO  =  "091"
+                             IF WRK-KOH-HKNNUM(WRK-COMB-HJOIDX)(2:2)
+                                                          = "95"
+                                PERFORM 5701413-SYUKOH-HJO-SEC
+                             END-IF
+                            ELSE
+                             IF  WRK-SRT-HJO-KOHNO  NOT  =  "020"
+                                PERFORM 5701413-SYUKOH-HJO-SEC
+                             END-IF
+                            END-IF
                           WHEN     OTHER
                              IF  WRK-SRT-HJO-KOHNO  NOT  =  "020"
                                PERFORM 5701413-SYUKOH-HJO-SEC
@@ -4413,14 +4426,7 @@
                    MOVE    "3"            TO  WRK-FTN-FLG
                 END-IF
              END-IF
-             IF   SPA-PREFNUM  =  01
-               IF  ((WRK-KCOMB-KOH1-HKNKOHSBTKBN (IDX2)  =  "3" ) AND
-                    (WRK-KCOMB-KOH2HKNNUM (IDX2)         = "091"))
-               OR  ( WRK-KCOMB-KOH1HKNNUM (IDX2)         = "091" )
-                   MOVE    "3"            TO  WRK-FTN-FLG
-               END-IF
-             END-IF
-             IF   SPA-PREFNUM  =  33
+             IF   SPA-PREFNUM  =  01 OR 33 OR 45
                IF  ((WRK-KCOMB-KOH1-HKNKOHSBTKBN (IDX2)  =  "3" ) AND
                     (WRK-KCOMB-KOH2HKNNUM (IDX2)         = "091"))
                OR  ( WRK-KCOMB-KOH1HKNNUM (IDX2)         = "091" )
