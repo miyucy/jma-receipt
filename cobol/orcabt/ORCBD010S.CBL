@@ -1043,7 +1043,8 @@
                        UNTIL ( IDX-JIHI    >   CONST-ETCJIHI-MAX )
       *
                    COMPUTE SUMSKY-ETCJIHI (SUMSKY-IDX IDX-JIHI)
-                       =   SYURRK-JIHI-TAXNASI (IDX-JIHI)
+                       =   SUMSKY-ETCJIHI (SUMSKY-IDX IDX-JIHI)
+                       +   SYURRK-JIHI-TAXNASI (IDX-JIHI)
                        +   SYURRK-JIHI-TAXARI  (IDX-JIHI)
       *
                END-PERFORM
@@ -2495,19 +2496,19 @@
       *
       *    ファイル削除
            MOVE    ZERO            TO  IF-RESULT
-           MOVE    BD01001PARA     TO  IF-FILENAME
+           MOVE    BD01002PARA     TO  IF-FILENAME
            CALL    "orcfiledel"    USING
                                        ORCSFDELAREA
       *
       *    ファイル削除
            MOVE    ZERO            TO  IF-RESULT
-           MOVE    BD01001PARA     TO  IF-FILENAME
+           MOVE    BD01003PARA     TO  IF-FILENAME
            CALL    "orcfiledel"    USING
                                        ORCSFDELAREA
       *
       *    ファイル削除
            MOVE    ZERO            TO  IF-RESULT
-           MOVE    BD01001PARA     TO  IF-FILENAME
+           MOVE    BD01004PARA     TO  IF-FILENAME
            CALL    "orcfiledel"    USING
                                        ORCSFDELAREA
       *
