@@ -1177,6 +1177,8 @@
                ELSE
                    COMPUTE SUMNYUKIN-MAX   =   SUMNYUKIN-MAX  +   1
                    MOVE    SUMNYUKIN-MAX   TO  SUMNYUKIN-IDX
+                   MOVE    SMEI-NYUGAIKBN  TO  SUMNYUKIN-NYUGAIKBN
+                                                     (SUMNYUKIN-IDX)
                    MOVE    SMEI-DENPNUM    TO  SUMNYUKIN-DENPNUM
                                                      (SUMNYUKIN-IDX)
                    MOVE    SMEI-DENPEDANUM TO  SUMNYUKIN-DENPEDANUM
@@ -2971,6 +2973,8 @@
            MOVE    ZERO            TO  FLG-BD01002
       *
            INITIALIZE                  BD01002-KEY
+           MOVE    BD01001-SRT-NYUGAIKBN
+                                   TO  BD01002-NYUGAIKBN
            MOVE    BD01001-DENPNUM TO  BD01002-DENPNUM
       *
            START   BD01002-FILE
@@ -2995,7 +2999,9 @@
            AT  END
                    MOVE    1       TO  FLG-BD01002
            NOT AT END
-               IF    ( BD01001-DENPNUM NOT =   BD01002-DENPNUM )
+               IF    ( BD01001-SRT-NYUGAIKBN
+                                       NOT =   BD01002-NYUGAIKBN )
+                OR   ( BD01001-DENPNUM NOT =   BD01002-DENPNUM )
                    MOVE    1       TO  FLG-BD01002
                END-IF
            END-READ
