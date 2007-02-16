@@ -247,6 +247,24 @@ path	upd2 	{
 	};
 };
 
+path	upd3 	{
+	DBUPDATE	{
+		UPDATE tbl_syurrk
+		SET  CHOSEI   = CHOSEI   + :CHOSEI,
+				 SKYMONEY = SKYMONEY + :SKYMONEY,
+				 CREYMD   = :CREYMD,
+				 UPYMD    = :UPYMD,
+				 UPHMS    = :UPHMS
+		WHERE HOSPID      =   :HOSPID
+		AND   PTID        =   :PTID
+		AND   NYUGAIKBN   =   :NYUGAIKBN
+		AND   DENPNUM     =   :DENPNUM
+		AND		SYURRKNUM   =   :SYURRKNUM
+		AND   SYUEDANUM   =   :SYUEDANUM
+		;
+	};
+};
+
 path	del2 	{
 	DBDELETE	{
 		DELETE

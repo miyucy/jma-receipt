@@ -20,6 +20,7 @@
       *        空白:請求・訂正/1:保険変更/2:調整金
                05  SS002-UPDKBN            PIC X(01).
                05  SS002-IN-SYURRKNUM      PIC S9(09).
+               05  SS002-IN-SYUEDANUM      PIC S9(09).
                05  SS002-IN-SYURRKUPDKBN   PIC X(01).
            03  SS002-OT.
                05  SS002-SYURRKNUM         PIC S9(09).

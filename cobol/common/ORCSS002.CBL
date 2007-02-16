@@ -685,8 +685,8 @@
                END-IF
       *
                IF    ( SS002-RC        =   ZERO )
-                   MOVE    SS002-IN-SYURRKNUM
-                                           TO   SYURRK-SYURRKNUM
+                   COMPUTE SYURRK-SYURRKNUM
+                       =   SS002-IN-SYURRKNUM  +   1
                    MOVE    SYURRK-REC      TO  MCPDATA-REC
                    MOVE    "tbl_syurrk"    TO  MCP-TABLE
                    MOVE    "upd2"          TO  MCP-PATHNAME
@@ -696,8 +696,22 @@
                    END-IF
                END-IF
       *
+               IF    ( SS002-RC        =   ZERO )
+                   COMPUTE SYURRK-SYURRKNUM
+                       =   SS002-IN-SYURRKNUM
+                   COMPUTE SYURRK-SYUEDANUM
+                       =   SS002-IN-SYUEDANUM
+                   MOVE    SYURRK-REC      TO  MCPDATA-REC
+                   MOVE    "tbl_syurrk"    TO  MCP-TABLE
+                   MOVE    "upd3"          TO  MCP-PATHNAME
+                   PERFORM 910-DBUPDATE-SEC
+                   IF    ( MCP-RC      NOT =   ZERO )
+                       MOVE    5           TO  SS002-RC
+                   END-IF
+               END-IF
+      *
            ELSE
-                   MOVE    5               TO  SS002-RC
+                   MOVE    6               TO  SS002-RC
            END-IF
       *
            .
