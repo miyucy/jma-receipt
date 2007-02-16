@@ -1257,7 +1257,9 @@ COPYS = \
 	CPORCSS003.INC \
 	HCM51.INC \
 	HCM52.INC \
-        
+        HCM10V02.INC \
+        HCN08V01.INC \
+
 DBPATH = \
 	ORCA-DBPATH
 
