@@ -115,6 +115,7 @@
       *                                     主科用出力順識別番号追加
       *
       *  03.03.01    NACL-藤原    06/09/27  ２００６年１０月改正対応
+      *  03.04.01    NACL-門脇    07/02/16  帳票レイアウト変更による修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -276,8 +277,10 @@
            COPY    "HCRCP401V01.INC".
            COPY    "HCM10.INC".
            COPY    "HCM10V01.INC".
+           COPY    "HCM10V02.INC".
            COPY    "HCN07.INC".
            COPY    "HCN08.INC".
+           COPY    "HCN08V01.INC".
            COPY    "HCRCP402.INC".
            COPY    "HCRCP403.INC".
       *
@@ -833,6 +836,10 @@
                        MOVE    RECE08-PRTDATA      TO  HCM10V01
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM10V01-RENNUM
                        MOVE    HCM10V01            TO  RECE08-PRTDATA
+                   WHEN    "HCM10V02.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCM10V02
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM10V02-RENNUM
+                       MOVE    HCM10V02            TO  RECE08-PRTDATA
                    WHEN    "HCN07.red"                  
                        MOVE    RECE08-PRTDATA      TO  HCN07
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCN07-RENNUM
@@ -841,6 +848,10 @@
                        MOVE    RECE08-PRTDATA      TO  HCN08
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCN08-RENNUM
                        MOVE    HCN08               TO  RECE08-PRTDATA
+                   WHEN    "HCN08V01.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCN08V01
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCN08V01-RENNUM
+                       MOVE    HCN08V01            TO  RECE08-PRTDATA
                    WHEN    "HCRCP402.red"                  
                        MOVE    RECE08-PRTDATA      TO  HCRCP402
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCRCP402-RENNUM
@@ -978,6 +989,7 @@
                                        ALSO    ANY                
                WHEN    "HCM10.red"     ALSO    ANY               
                WHEN    "HCM10V01.red"  ALSO    ANY               
+               WHEN    "HCM10V02.red"  ALSO    ANY               
                WHEN    "HCRCP402.red"  ALSO    ANY                
                WHEN    "HCN061.red"    ALSO    "2"              
                WHEN    "HCN061V01.red" ALSO    "2"              
@@ -1013,6 +1025,7 @@
                                        ALSO    ANY                
                WHEN    "HCN07.red"     ALSO    ANY               
                WHEN    "HCN08.red"     ALSO    ANY               
+               WHEN    "HCN08V01.red"  ALSO    ANY               
                WHEN    "HCRCP403.red"  ALSO    ANY                
                    MOVE    "医科レセプト（入院）"      TO  SPRT-TITLE
                END-EVALUATE

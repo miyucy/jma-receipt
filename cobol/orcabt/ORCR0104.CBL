@@ -148,6 +148,7 @@
       *  03.04.02    NACL-藤原    06/12/05  未請求レセ対応
       *  03.04.03    NACL-門脇    07/02/15  自立支援医療（更生・育成）
       *                                     と生活保護の併用の点数欄記載
+      *  03.04.04    NACL-門脇    07/02/16  帳票レイアウト変更による修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -291,7 +292,8 @@
       ***  COPY    "HCM09V03.INC"  REPLACING  //HCM09V03//
       ***  COPY    "HCM09V04.INC"  REPLACING  //HCM09V04//
       ***  COPY    "HCM10.INC"     REPLACING  //HCM10//
-           COPY    "HCM10V01.INC"  REPLACING  //HCM10V01//
+      ***  COPY    "HCM10V01.INC"  REPLACING  //HCM10V01//
+           COPY    "HCM10V02.INC"  REPLACING  //HCM10V02//
                                    BY         //HC06//.
       ***  COPY    "HCN061.INC"    REPLACING  //HCN061//
       ***  COPY    "HCN061V01.INC" REPLACING  //HCN061V01//
@@ -5977,7 +5979,8 @@
       *********MOVE    "HCM09V03.red"      TO
       *********MOVE    "HCM09V04.red"      TO
       *********MOVE    "HCM10.red"         TO
-               MOVE    "HCM10V01.red"      TO
+      *********MOVE    "HCM10V01.red"      TO
+               MOVE    "HCM10V02.red"      TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
                MOVE    HC06                TO
                                        TBL-RECE-PRTDATA (TBL-RECE-MAX)
@@ -5987,7 +5990,8 @@
       *********        MOVE    "HCM09V03.red"  TO
       *********        MOVE    "HCM09V04.red"  TO
       *********        MOVE    "HCM10.red"     TO
-                       MOVE    "HCM10V01.red"      TO
+      *********        MOVE    "HCM10V01.red"      TO
+                       MOVE    "HCM10V02.red"      TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
                        MOVE    HC06            TO
                                        TBL-RECE-PRTDATA (TBL-RECE-MAX)
@@ -6372,7 +6376,8 @@
       *********        WHEN    "HCM09V03.red"                  
       *********        WHEN    "HCM09V04.red"                  
       *********        WHEN    "HCM10.red"                  
-                       WHEN    "HCM10V01.red"                  
+      *********        WHEN    "HCM10V01.red"                  
+                       WHEN    "HCM10V02.red"
                            MOVE    RECE08-PRTDATA  TO HC06
                            MOVE    WRK-HEN-PAGE-AREA
                                                    TO HC06-PAGE
