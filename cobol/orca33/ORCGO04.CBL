@@ -978,6 +978,8 @@
                                    TO  SPA-NAI-O04-TSYURRKUPDKBN(IDX1)
                MOVE    SMEI-SYURRKNUM
                                    TO  SPA-NAI-O04-TSYURRKNUM   (IDX1)
+               MOVE    SMEI-SYUEDANUM
+                                   TO  SPA-NAI-O04-TSYUEDANUM   (IDX1)
       *
                EVALUATE    SMEI-JOUTAIKBN
                WHEN    SPACE
@@ -2476,6 +2478,8 @@
                                        TO  SPA-NAI-O04-SYURRKUPDKBN
            MOVE    SPA-NAI-O04-TSYURRKNUM(SPA-GMN-O04-SELNUM)
                                        TO  SPA-NAI-O04-SYURRKNUM
+           MOVE    SPA-NAI-O04-TSYUEDANUM(SPA-GMN-O04-SELNUM)
+                                       TO  SPA-NAI-O04-SYUEDANUM
       *
            MOVE    ZERO                TO  SPA-NAI-O04-PROC-FLG
       *
@@ -3426,6 +3430,8 @@
                MOVE    "2"                 TO  SS002-UPDKBN
                MOVE    SPA-NAI-O04-SYURRKNUM
                                            TO  SS002-IN-SYURRKNUM
+               MOVE    SPA-NAI-O04-SYUEDANUM
+                                           TO  SS002-IN-SYUEDANUM
                MOVE    SPA-NAI-O04-SYURRKUPDKBN
                                            TO  SS002-IN-SYURRKUPDKBN
                CALL    "ORCSS002"  USING   SS002-AREA
