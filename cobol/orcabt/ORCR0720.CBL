@@ -34,6 +34,7 @@
       *  03.04.02    NACL-Æ£¸¶    06/12/05  Ì¤ÀÁµá¥ì¥»ÂÐ±þ
       *  03.04.03    NACL-ÌçÏÆ    07/02/15  ¼«Î©»Ù±ç°åÎÅ¤ÈÀ¸³èÊÝ¸î¤ÎÊ»ÍÑ
       *                                     ¤ÎÅÀ¿ôÍóµ­ºÜ
+      *  03.04.04    NACL-ÌçÏÆ    07/02/16  Ä¢É¼¥ì¥¤¥¢¥¦¥ÈÊÑ¹¹¤Ë¤è¤ë½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -166,7 +167,8 @@
                                    BY         //RECE67//.
       *
       *       
-           COPY    "HCN08.INC"     REPLACING  //HCN08//
+      ***  COPY    "HCN08.INC"     REPLACING  //HCN08//
+           COPY    "HCN08V01.INC"  REPLACING  //HCN08V01//
                                    BY         //HC06//.
            COPY    "HCN061V03.INC" REPLACING  //HCN061V03//
                                    BY         //HC061//.
@@ -6403,7 +6405,8 @@
       * 
            MOVE    CNT-PAGE            TO  TBL-RECE-RENNUM(TBL-RECE-MAX)
            IF      CNT-PAGE            =   1
-               MOVE    "HCN08.red"         TO
+      *********MOVE    "HCN08.red"         TO
+               MOVE    "HCN08V01.red"      TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
                MOVE    HC06                TO
                                        TBL-RECE-PRTDATA (TBL-RECE-MAX)
@@ -6773,7 +6776,8 @@
                    MOVE    "/"                 TO  WRK-PAGE-HEN
                    MOVE    TBL-RECE-MAX        TO  WRK-PAGE2
                    EVALUATE    RECE08-FORMID
-                       WHEN    "HCN08.red"                  
+      *********        WHEN    "HCN08.red"                  
+                       WHEN    "HCN08V01.red"
                            MOVE    RECE08-PRTDATA  TO HC06
                            MOVE    WRK-HEN-PAGE-AREA
                                                    TO HC06-PAGE
