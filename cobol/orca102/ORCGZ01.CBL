@@ -1198,7 +1198,7 @@
            INITIALIZE                  SPA-Z99-AREA
       *
            INITIALIZE                      INPUTCD-REC
-           MOVE    SPA-HOSPID          TO  ICD-HOSPID
+      *****MOVE    SPA-HOSPID          TO  ICD-HOSPID
            MOVE    SPA-Z01GMN-SRYCD    TO  ICD-SRYCD
       *
            MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
