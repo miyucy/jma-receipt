@@ -26,7 +26,6 @@
            03  QDTCHK-CD                   PIC X(170).
            03  QDTCHK-BYOMEI               PIC X(160).
            03  QDTCHK-COMPKBN              PIC X(1).
-           03  QDTCHK-UTAGAIKBN            PIC X(1).
            03  QDTCHK-SRYKA                PIC X(2).
            03  QDTCHK-SRYYMD               PIC X(08).
            03  QDTCHK-PTBYOMEI             PIC X(160).
@@ -41,13 +40,8 @@
            03  QDTCHK-REZEFLG              PIC X(01).
            03  QDTCHK-REZEMM               PIC 9(02).
            03  QDTCHK-ID                   PIC S9(9)   BINARY.
-           03  QDTCHK-GRPID                PIC X(01).
-           03  QDTCHK-PTHOSOKU             PIC X(40).
-           03  QDTCHK-HOSOKU               PIC X(40).
-           03  QDTCHK-HOSOKU-COMPKBN       PIC X(01).
-           03  QDTCHK-KOHID                PIC 9(10).
       *
-           03  QDTCHK-SELHOSPNUM           PIC 9(02).
+           03  QDTCHK-SELHOSPID            PIC X(24).
            03  QDTCHK-SELPTID              PIC 9(10).
            03  QDTCHK-SELSRYKA             PIC X(02).
            03  QDTCHK-SELCHKKBN            PIC X(01).

@@ -78,12 +78,11 @@
            COPY    "X03.INC".
            COPY    "X04.INC".
            COPY    "X05.INC".
-           COPY    "X06.INC".
-           COPY    "X07.INC".
-           COPY    "X08.INC".
            COPY    "X91.INC".
            COPY    "X97.INC".
-           COPY    "X98.INC". 
+           COPY    "X98.INC".
+           COPY    "X99.INC".
+           COPY    "X100.INC".
            COPY    "XERR.INC".
            COPY    "XID1.INC".
            COPY    "XID2.INC".
@@ -177,11 +176,9 @@
        900-PUT-WINDOW                            SECTION.
       *
            MOVE   "PUTWINDOW"                    TO  MCP-FUNC.
-           CALL   "ORCDBMAIN"                    USING
-                                                     MCPAREA
-                                                     MCPDATA-REC
-                                                     SPA-AREA
-           .
+           CALL   "MONFUNC"                       USING
+                                                  MCPAREA
+                                                  MCPDATA-REC.
       *
        900-PUT-WINDOW-EXT.
            EXIT.

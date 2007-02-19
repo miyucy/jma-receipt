@@ -38,8 +38,6 @@
       *  01.01.03    NACL-ÂÀÅÄ    04/12/24  ÅÀ¿ô¸¡ºº¸¡º÷ÄÉ²ÃÂ¾
       *  02.08.00    NACL-ÂÀÅÄ    06/03/24  Z98¤«¤éÎ®ÍÑ
       *  03.04.00    NACL-Â¿¡¹Ç¼  06/11/14  ¸¡ººÀµ¼°Ì¾¾ÎÉ½¼¨ÄÉ²Ã
-      *  03.05.00    NACL-Â¿¡¹Ç¼  07/05/08  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
-      *  04.07.00    NACL-Â¿¡¹Ç¼  12/07/09  Ï«ºÒÅùÌ¾¾ÎÊÔ½¸ÄÉ²Ã
       *****************************************************************
       *
       *
@@ -222,10 +220,8 @@
            03  FILLER              PIC X(20)   VALUE
                      "ÈùÀ¸Êª³ØÅª¸¡ºº".
            03  FILLER              PIC X(02)   VALUE   "07".
-      **** 03  FILLER              PIC X(40)   VALUE   "ÉÂÍý³ØÅª¸¡ºº".
-      ***  03  FILLER              PIC X(20)   VALUE   "ÉÂÍý³ØÅª¸¡ºº".
-           03  FILLER              PIC X(40)   VALUE   "ÉÂÍý¿ÇÃÇ".
-           03  FILLER              PIC X(20)   VALUE   "ÉÂÍý¿ÇÃÇ".
+           03  FILLER              PIC X(40)   VALUE   "ÉÂÍý³ØÅª¸¡ºº".
+           03  FILLER              PIC X(20)   VALUE   "ÉÂÍý³ØÅª¸¡ºº".
            03  FILLER              PIC X(02)   VALUE   "08".
            03  FILLER              PIC X(40)   VALUE
                      "´ðËÜÅª¸¡ÂÎ¸¡ºº¼Â»ÜÎÁ".
@@ -363,9 +359,6 @@
            COPY    "X03.INC".
            COPY    "X04.INC".
            COPY    "X05.INC".
-           COPY    "X06.INC".
-           COPY    "X07.INC".
-           COPY    "X08.INC".
            COPY    "X91.INC".
            COPY    "X97.INC".
            COPY    "X98.INC".
@@ -546,8 +539,7 @@
                ELSE
                    MOVE    1                   TO  SPA-X98-GMN-CUR
                    IF      FLG-MAX         NOT =   ZERO
-      *                MOVE    "0005"              TO  SPA-ERRCD
-                       CONTINUE
+                       MOVE    "0005"              TO  SPA-ERRCD
                    ELSE
                        MOVE    ZERO                TO  SPA-X98-NEXT
                    END-IF
@@ -833,7 +825,7 @@
            END-PERFORM
       *
            MOVE    SPACE               TO  INPUTCD-REC
-           MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
+           MOVE    SPA-HOSPID          TO  ICD-HOSPID
            MOVE    SPA-X98-CDSYUBETU   TO  ICD-CDSYU
            MOVE    SPA-X98-GMN-INPUT   TO  ICD-INPUTCD
            IF      WRK-KETA            =   20
@@ -899,8 +891,7 @@
       *
            MOVE    WRK-CNT-ENT         TO  SPA-X98-GMN-MAX
            IF      FLG-MAX         NOT =   ZERO
-      *        MOVE    "0005"              TO  SPA-ERRCD
-               CONTINUE
+               MOVE    "0005"              TO  SPA-ERRCD
            ELSE
                MOVE    ZERO                TO  SPA-X98-NEXT
            END-IF
@@ -982,37 +973,8 @@
            END-IF
       *!!
       *    ¸¡ººÀµ¼°Ì¾¾Î
-      *    IF     (TNS-SRYCD(1:1)      =   "1") AND
-      *           (TNS-SRYKBN          =   "60"
-      *                                OR  "64"   )  AND
-      *           (TNS-FORMALNAME  NOT =   SPACE )  AND
-      *           (TNS-FORMALNAME  NOT =   TNS-NAME )
-      *         MOVE    SPACE              TO  SPA-X98-GMN-NAME (IDX)
-      *         STRING  TNS-NAME           DELIMITED   BY  SPACE
-      *                 "¡¡¡Ú"             DELIMITED   BY  SIZE
-      *                 TNS-FORMALNAME     DELIMITED   BY  SPACE
-      *                 "¡Û"               DELIMITED   BY  SIZE
-      *                        INTO        SPA-X98-GMN-NAME(IDX)
-      *         END-STRING
-      *         PERFORM 310211-KENSA-NAME-SEC
-      *    END-IF
-      *H24.7
-      *    ¶¦ÄÌÊÔ½¸½èÍý
-           PERFORM 310211-TENSU-KYOHEN-SEC
-      *
-           .
-       31012-INPUTCD-HEN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ÅÀ¿ô¥Þ¥¹¥¿¶¦ÄÌÊÔ½¸½èÍý
-      *****************************************************************
-       310211-TENSU-KYOHEN-SEC             SECTION.
-      *
-      *    ¸¡ººÀµ¼°Ì¾¾Î
            IF     (TNS-SRYCD(1:1)      =   "1") AND
-                  (TNS-SRYKBN          =   "60"
-                                       OR  "64"   )  AND
+                  (TNS-SRYKBN          =   "60")  AND
                   (TNS-FORMALNAME  NOT =   SPACE )  AND
                   (TNS-FORMALNAME  NOT =   TNS-NAME )
                 MOVE    SPACE              TO  SPA-X98-GMN-NAME (IDX)
@@ -1025,45 +987,9 @@
                 PERFORM 310211-KENSA-NAME-SEC
            END-IF
       *
-      *    °åÎÅ´Ñ»¡¥³¡¼¥ÉÌ¾¾ÎÊÔ½¸
-           IF      (TNS-SRYCD(1:1)     =   "1"  )  AND
-                   (TNS-IRYOKANSATUKBN =   4    )
-      *        °åÎÅ´Ñ»¡¶èÊ¬
-               MOVE    SPACE               TO  SPA-X98-GMN-NAME (IDX)
-               STRING  "¡Ú°å´Ñ¡Û"          DELIMITED   BY  SIZE
-                      TNS-NAME             DELIMITED   BY  SPACE
-                      INTO                 SPA-X98-GMN-NAME(IDX)
-               END-STRING
-           END-IF
-      *
-      *    Ï«ºÒ¥³¡¼¥ÉÌ¾¾ÎÊÔ½¸
-           IF      (TNS-SRYCD(1:3)     =   "101")
-      *    Ï«ºÒ¡Ê´ïºà¡Ë
-           OR     ((TNS-SRYCD(1:1)     =   "7"    )  AND
-                   (TNS-SRYCD(2:5)     =   "88888"))
-      *    Ï«ºÒ¡Ê¥³¥á¥ó¥È¡Ë
-           OR     ((TNS-SRYCD(1:1)     =   "8"  )  AND
-                   (TNS-SRYCD(4:1)     =   "8"  ))
-               MOVE    SPACE               TO  SPA-X98-GMN-NAME (IDX)
-               STRING  "¡ÚÏ«¡Û"            DELIMITED   BY  SIZE
-                      TNS-NAME             DELIMITED   BY  SPACE
-                      INTO                 SPA-X98-GMN-NAME(IDX)
-               END-STRING
-           END-IF
-      *
-      *    ¸ø³²¤Î¥³¡¼¥É
-           IF      (TNS-SRYCD (1:3)    =   "102")
-               MOVE    SPACE               TO  SPA-X98-GMN-NAME (IDX)
-               STRING  "¡Ú¸ø³²¡Û"          DELIMITED   BY  SIZE
-                      TNS-NAME             DELIMITED   BY  SPACE
-                      INTO                 SPA-X98-GMN-NAME(IDX)
-               END-STRING
-           END-IF
-      *
            .
-       310211-TENSU-KYOHEN-EXT.
+       31012-INPUTCD-HEN-EXT.
            EXIT.
-      *
       *
       *****************************************************************
       *    Æ±°ì¥³¡¼¥É¥Á¥§¥Ã¥¯½èÍý
@@ -1527,23 +1453,19 @@
            END-IF
       *!!
       *    ¸¡ººÀµ¼°Ì¾¾Î
-      *    IF     (TNS-SRYCD(1:1)      =   "1") AND
-      *           (TNS-SRYKBN          =   "60"
-      *                                OR  "64"   )  AND
-      *           (TNS-FORMALNAME  NOT =   SPACE )  AND
-      *           (TNS-FORMALNAME  NOT =   TNS-NAME )
-      *         MOVE    SPACE              TO  SPA-X98-GMN-NAME (IDX)
-      *         STRING  TNS-NAME           DELIMITED   BY  SPACE
-      *                 "¡¡¡Ú"             DELIMITED   BY  SIZE
-      *                 TNS-FORMALNAME     DELIMITED   BY  SPACE
-      *                 "¡Û"               DELIMITED   BY  SIZE
-      *                        INTO        SPA-X98-GMN-NAME(IDX)
-      *         END-STRING
-      *         PERFORM 310211-KENSA-NAME-SEC
-      *    END-IF
-      *H24.7
-      *    ¶¦ÄÌÊÔ½¸½èÍý
-           PERFORM 310211-TENSU-KYOHEN-SEC
+           IF     (TNS-SRYCD(1:1)      =   "1") AND
+                  (TNS-SRYKBN          =   "60")  AND
+                  (TNS-FORMALNAME  NOT =   SPACE )  AND
+                  (TNS-FORMALNAME  NOT =   TNS-NAME )
+                MOVE    SPACE              TO  SPA-X98-GMN-NAME (IDX)
+                STRING  TNS-NAME           DELIMITED   BY  SPACE
+                        "¡¡¡Ú"             DELIMITED   BY  SIZE
+                        TNS-FORMALNAME     DELIMITED   BY  SPACE
+                        "¡Û"               DELIMITED   BY  SIZE
+                               INTO        SPA-X98-GMN-NAME(IDX)
+                END-STRING
+                PERFORM 310211-KENSA-NAME-SEC
+           END-IF
       *
       *    ¸¡ºº¤Î»þ¡¢Êñ³ç¤ÎÊÔ½¸
            IF      SPA-X98-GMN-SYORI   =   "9"
@@ -1921,24 +1843,6 @@
                MOVE    SPACE               TO  SPA-X98-USER-G
            END-IF
       *
-      *    ¼¡ÊÇ¤¢¤ê
-           IF      SPA-X98-NEXT        =   1
-               IF      SPA-X98-PAGE        =   1
-                   MOVE    "¼¡ÊÇÍ­¤ê"          TO  X98-NEXT-VALUE
-               ELSE
-                   MOVE    "Á°ÊÇ¡¦¼¡ÊÇÍ­¤ê"    TO  X98-NEXT-VALUE
-               END-IF
-               MOVE    "red"               TO  X98-NEXT-STYLE
-           ELSE
-               IF      SPA-X98-PAGE        >   1
-                   MOVE    "Á°ÊÇÍ­¤ê"          TO  X98-NEXT-VALUE
-                   MOVE    "red"               TO  X98-NEXT-STYLE
-               ELSE
-                   MOVE    SPACE               TO  X98-NEXT-VALUE
-                   MOVE    "black"             TO  X98-NEXT-STYLE
-               END-IF
-           END-IF
-      *
            MOVE    WIDGET-NORMAL       TO  X98-B09-STATE
       *
            PERFORM 5001-MAPCUR-SEC
@@ -2007,12 +1911,10 @@
                STRING      WRK-GRP-MEI     DELIMITED  BY  SPACE
                            "¡Ê¼«±¡¡Ë"      DELIMITED  BY  SIZE
                            INTO            WRK-GRP-MEI-X
-               END-STRING
            ELSE
                STRING      WRK-GRP-MEI     DELIMITED  BY  SPACE
                            "¡ÊÁ´ÂÎ¡Ë"      DELIMITED  BY  SIZE
                            INTO            WRK-GRP-MEI-X
-               END-STRING
            END-IF
       *
            .
@@ -2116,8 +2018,7 @@
                WHEN    "ACTIVATE"      ALSO    "SELNUM3"
                WHEN    "ACTIVATE"      ALSO    "SELNUM4"
                WHEN    "ACTIVATE"      ALSO    "SELNUM5"
-                   IF    ( SPA-X98-MOTOPG  =   "X02" OR "X05" OR "X06"
-                                           OR  "X08"  )
+                   IF    ( SPA-X98-MOTOPG  =   "X02" OR "X05" )
                        MOVE    MCP-WIDGET(7:1)     TO  IDX-N
                        MOVE    ZERO                TO  FLG-TOUROKU
                        PERFORM 41011-SELNUM-ALLCHK-SEC
@@ -2391,8 +2292,7 @@
                IF      SPA-X98-GMN-SYORI2  =   SPACE
                    PERFORM 41013-KENSA-GRP-SEC
                ELSE
-                   IF    ( SPA-X98-MOTOPG  =   "X02" OR "X05" OR "X06"
-                                           OR  "X08" )
+                   IF    ( SPA-X98-MOTOPG  =   "X02" OR "X05" )
                        PERFORM 41014-KENSA-SEL-SEC
                    ELSE
                        PERFORM 41012-SRYCD-SEL-SEC
@@ -2400,8 +2300,7 @@
                END-IF
            ELSE
       *********PERFORM 41014-KENSA-SEL-SEC
-               IF    ( SPA-X98-MOTOPG  =   "X02" OR "X05" OR "X06")
-                OR   ( SPA-X98-MOTOPG  =   "X08" )
+               IF    ( SPA-X98-MOTOPG  =   "X02" OR "X05" )
                    PERFORM 41014-KENSA-SEL-SEC
                ELSE
                    PERFORM 41012-SRYCD-SEL-SEC
@@ -2634,16 +2533,14 @@
                IF      SPA-X98-GMN-SYORI2  =   SPACE
                    PERFORM 41013-KENSA-GRP-SEC
                ELSE
-                   IF    ( SPA-X98-MOTOPG  =   "X02" OR "X05" OR "X06")
-                    OR   ( SPA-X98-MOTOPG  =   "X08" )
+                   IF    ( SPA-X98-MOTOPG  =   "X02" OR "X05" )
                        PERFORM 41014-KENSA-SEL-SEC
                    ELSE
                        PERFORM 41012-SRYCD-SEL-SEC
                    END-IF
                END-IF
            ELSE
-               IF    ( SPA-X98-MOTOPG  =   "X02" OR "X05" OR "X06")
-                OR   ( SPA-X98-MOTOPG  =   "X08" )
+               IF    ( SPA-X98-MOTOPG  =   "X02" OR "X05" )
                    PERFORM 41014-KENSA-SEL-SEC
                ELSE
                    PERFORM 41012-SRYCD-SEL-SEC
@@ -3320,7 +3217,6 @@
                MOVE    SPA-X01-KJNYMD  TO  TNS-YUKOSTYMD
                                            TNS-YUKOEDYMD
            END-IF
-           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
       *
            MOVE    "tbl_tensu"         TO  MCP-TABLE
@@ -3365,7 +3261,6 @@
                                            TNS-YUKOEDYMD
            END-IF
       *
-           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -3412,9 +3307,9 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        910-DBSELECT-EXT.
@@ -3425,9 +3320,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
       *
@@ -3440,9 +3335,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        990-DBCLOSE-EXT.
@@ -3454,9 +3349,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        900-PUT-WINDOW-EXT.

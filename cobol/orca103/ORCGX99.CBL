@@ -27,7 +27,6 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  03.05.00    NACL-多々納  07/05/08  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -96,8 +95,6 @@
                05  WRK-SEL-STBYOMEICD      PIC X(07).
                05  WRK-SEL-EDBYOMEICD      PIC X(07).
            03  WRK-NO                      PIC 9(05).
-           03  WRK-TABLE                   PIC X(64).
-           03  WRK-PATHNAME                PIC X(64).
       *
        01  WRK-ROW-AREA.
            03  WRK-SRCBYOLST-ROW           PIC S9(9)   BINARY.
@@ -170,9 +167,6 @@
            COPY    "X03.INC".
            COPY    "X04.INC".
            COPY    "X05.INC".
-           COPY    "X06.INC".
-           COPY    "X07.INC".
-           COPY    "X08.INC".
            COPY    "X91.INC".
            COPY    "X97.INC".
            COPY    "X98.INC".
@@ -289,35 +283,25 @@
       *    コンボボックス初期処理
            PERFORM 3101-COMBO-SYOKI-SEC
       *
-           IF    ( SPA-X01-INDEX       =   ZERO )
-      *
-               MOVE    SPA-GMN-X99-SRCBYOKBNLST (1)
+           MOVE    SPA-GMN-X99-SRCBYOKBNLST (1)
                                        TO  SPA-GMN-X99-SRCBYOKBN-G
-               PERFORM 3101-SRTKBNLST-PTBYO-SET-SEC
-               MOVE    SPA-GMN-X99-SRTKBNLST (1)
+           PERFORM 3101-SRTKBNLST-PTBYO-SET-SEC
+           MOVE    SPA-GMN-X99-SRTKBNLST (1)
                                        TO  SPA-GMN-X99-SRTKBN-G
-               PERFORM 4101-SRCBYOLST-SEC
-               IF    ( SPA-GMN-X99-SRCBYOLST-MAX   =   ZERO )
-                   MOVE    SPA-GMN-X99-SRCBYOKBNLST (3)
-                                       TO  SPA-GMN-X99-SRCBYOKBN-G
-                   PERFORM 3101-SRTKBNLST-UBYO-SET-SEC
-                   MOVE    SPA-GMN-X99-SRTKBNLST (1)
-                                       TO  SPA-GMN-X99-SRTKBN-G
-                   PERFORM 4101-SRCBYOLST-SEC
-               END-IF
-      *
-               IF    ( SPA-GMN-X99-SRCBYOLST-MAX   =   ZERO )
-                   MOVE    SPA-GMN-X99-SRCBYOKBNLST (2)
-                                       TO  SPA-GMN-X99-SRCBYOKBN-G
-                   PERFORM 3101-SRTKBNLST-BYO-SET-SEC
-                   MOVE    SPA-GMN-X99-SRTKBNLST (1)
-                                       TO  SPA-GMN-X99-SRTKBN-G
-                   PERFORM 4101-SRCBYOLST-SEC
-               END-IF
-           ELSE
+           PERFORM 4101-SRCBYOLST-SEC
+           IF    ( SPA-GMN-X99-SRCBYOLST-MAX   =   ZERO )
                MOVE    SPA-GMN-X99-SRCBYOKBNLST (3)
                                        TO  SPA-GMN-X99-SRCBYOKBN-G
                PERFORM 3101-SRTKBNLST-UBYO-SET-SEC
+               MOVE    SPA-GMN-X99-SRTKBNLST (1)
+                                       TO  SPA-GMN-X99-SRTKBN-G
+               PERFORM 4101-SRCBYOLST-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-X99-SRCBYOLST-MAX   =   ZERO )
+               MOVE    SPA-GMN-X99-SRCBYOKBNLST (2)
+                                       TO  SPA-GMN-X99-SRCBYOKBN-G
+               PERFORM 3101-SRTKBNLST-BYO-SET-SEC
                MOVE    SPA-GMN-X99-SRTKBNLST (1)
                                        TO  SPA-GMN-X99-SRTKBN-G
                PERFORM 4101-SRCBYOLST-SEC
@@ -482,20 +466,6 @@
       *****************************************************************
        3101-SRTKBNLST-SET-SEC          SECTION.
       *
-           IF    ( SPA-X01-INDEX   =   ZERO )
-               PERFORM 31011-SRTKBNLST-SET-SEC
-           ELSE
-               PERFORM 31012-SRTKBNLST-SET-SEC
-           END-IF
-      *
-           .
-       3101-SRTKBNLST-SET-EXT.
-           EXIT.
-      *****************************************************************
-      *    ソース病名検索キー編集
-      *****************************************************************
-       31011-SRTKBNLST-SET-SEC         SECTION.
-      *
            INITIALIZE              WRK-SEL-BYOMEI-G
            MOVE    SPA-GMN-X99-SEL-BYOMEI
                                TO  WRK-SEL-BYOMEI
@@ -542,21 +512,7 @@
            END-EVALUATE
       *
            .
-       31011-SRTKBNLST-SET-EXT.
-           EXIT.
-      *****************************************************************
-      *    ソース病名検索キー編集
-      *****************************************************************
-       31012-SRTKBNLST-SET-SEC         SECTION.
-      *
-           INITIALIZE              WRK-SEL-BYOMEI-G
-           MOVE    SPA-GMN-X99-SEL-BYOMEI
-                               TO  WRK-SEL-BYOMEI
-      *
-           PERFORM 41013-SRCBYOLST-UBYO-SEC
-      *
-           .
-       31012-SRTKBNLST-SET-EXT.
+       3101-SRTKBNLST-SET-EXT.
            EXIT.
       *****************************************************************
       *    画面遷移処理
@@ -637,7 +593,6 @@
        4101-GMN-SPA-SET-SEC            SECTION.
       *
            MOVE   X99-SRCBYOKBN    TO  SPA-GMN-X99-SRCBYOKBN-G
-           MOVE   X99-SRTKBN       TO  SPA-GMN-X99-SRTKBN-G
       *
            .
       *
@@ -654,11 +609,9 @@
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
       *
-           IF    ( SPA-X01-INDEX   =   ZERO )
-               PERFORM 4101-SEL-BYOMEI-CHK-SEC
-               IF    ( SPA-ERRCD   NOT =   SPACE )
-                   GO  TO  4102-KIHON-CHK-EXT
-               END-IF
+           PERFORM 4101-SEL-BYOMEI-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
            END-IF
       *
            PERFORM 4101-SRCBYOKBN-CHK-SEC
@@ -770,6 +723,7 @@
       *
                IF    ( SPA-ERRCD       =   SPACE )
                    MOVE    SNUM-OUTNUM TO  SPA-NAI-X99-SELNUM
+                   DISPLAY "SNUM-OUTEDT =" SNUM-OUTEDT
                    MOVE    SNUM-OUTEDT TO  SPA-GMN-X99-SELNUM
                END-IF
            END-IF
@@ -879,7 +833,6 @@
                                    TO  LNK-BYO-TBYOMEICD (1)
       *
                    CALL    "ORCSBYOMEI"    USING   ORCSBYOMEIAREA
-                                                   SPA-AREA
                    MOVE    LNK-BYO-BYOMEIHENFLG
                                    TO  SPA-X99-BYOSTATUS
                ELSE
@@ -895,7 +848,6 @@
                MOVE    SPA-X99-BYOMEI      TO  LNK-BYO-BYOMEI
       *
                CALL    "ORCSBYOMEI"    USING   ORCSBYOMEIAREA
-                                               SPA-AREA
       *
                PERFORM VARYING IDX0    FROM    1   BY  1
                            UNTIL ( IDX0    >       LNK-BYO-BYOMEI-MAX )
@@ -1049,34 +1001,7 @@
            INITIALIZE              SPA-GMN-X99-SRCBYOLST-AREA
                                    SPA-NAI-X99-SRCBYOLST-AREA
       *
-           IF    ( SPA-X01-INDEX   =   ZERO )
-      *
-               INITIALIZE              USERBYOMEI-REC
-               MOVE    SPA-HOSPNUM     TO  USBYO-HOSPNUM
-      *
-               MOVE    WRK-SEL-BUNRUICD
-                                       TO  USBYO-BUNRUICD
-      *
-               STRING  WRK-SEL-BYOMEI  DELIMITED   BY  SPACE
-                       "%"             DELIMITED   BY  SIZE
-               INTO    USBYO-BYOMEI
-               END-STRING
-               MOVE    "tbl_userbyomei"    TO  WRK-TABLE
-               MOVE    "key10"             TO  WRK-PATHNAME
-           ELSE
-      *
-               INITIALIZE              USERBYOMEI-REC
-               MOVE    SPA-HOSPNUM     TO  USBYO-HOSPNUM
-      *
-               STRING  WRK-SEL-BYOMEI  DELIMITED   BY  SPACE
-                       "%"             DELIMITED   BY  SIZE
-               INTO    USBYO-BYOMEIINPUTCD
-               END-STRING
-               MOVE    "tbl_userbyomei"    TO  WRK-TABLE
-               MOVE    "key11"             TO  WRK-PATHNAME
-           END-IF
-      *
-           PERFORM 900-USERBYOMEI-SEL-SEC
+           PERFORM 900-USERBYOMEI-KEY10-SEL-SEC
       *
            PERFORM 41013-UBYO-SKIP-SEC
       *
@@ -1103,12 +1028,12 @@
       *
                END-PERFORM
       *
-               PERFORM 900-USERBYOMEI-FET-SEC
+               PERFORM 900-USERBYOMEI-KEY10-FET-SEC
       *
            END-PERFORM
       *
-           MOVE    WRK-TABLE       TO  MCP-TABLE
-           MOVE    WRK-PATHNAME    TO  MCP-PATHNAME
+           MOVE    "tbl_userbyomei"    TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            MOVE    IDX1            TO  SPA-GMN-X99-SRCBYOLST-MAX
@@ -1136,7 +1061,7 @@
       *
                COMPUTE CNT-SRCBYOLST   =   CNT-SRCBYOLST   +   1
       *
-               PERFORM 900-USERBYOMEI-FET-SEC
+               PERFORM 900-USERBYOMEI-KEY10-FET-SEC
       *
            END-PERFORM
       *
@@ -1400,11 +1325,6 @@
       *
            MOVE    WIDGET-NORMAL       TO  X99-B07-STATE
                                            X99-B07S-STATE
-                                           X99-SEL-BYOMEI-STATE
-                                           X99-SRCBYOKBN-STATE
-                                           X99-SRCBYOKBN-ITEM-STATE
-                                           X99-SRTKBN-STATE
-                                           X99-SRTKBN-ITEM-STATE
       *
            IF    ( SPA-GMN-X99-SRCBYOLST-PAGE  <=  1 )
                MOVE    WIDGET-INSENSITIVE  TO  X99-B07-STATE
@@ -1412,15 +1332,6 @@
       *
            IF    ( SPA-GMN-X99-SRCBYOLST-NEXT   =  ZERO )
                MOVE    WIDGET-INSENSITIVE  TO  X99-B07S-STATE
-           END-IF
-      *
-           IF    ( SPA-X01-INDEX   NOT =   ZERO )
-               MOVE    WIDGET-INSENSITIVE
-                                       TO  X99-SEL-BYOMEI-STATE
-                                           X99-SRCBYOKBN-STATE
-                                           X99-SRCBYOKBN-ITEM-STATE
-                                           X99-SRTKBN-STATE
-                                           X99-SRTKBN-ITEM-STATE
            END-IF
       *
            PERFORM 5001-MAPCUR-SEC
@@ -1439,12 +1350,6 @@
                PERFORM 5011-INPUT-CUR-SEC
            END-IF
       *
-           IF    ( SPA-GMN-X99-CUR     =   1 )
-               IF    ( SPA-GMN-X99-SRCBYOLST-MAX   =   ZERO )
-                   MOVE    201         TO  SPA-GMN-X99-CUR
-               END-IF
-           END-IF
-      *
            EVALUATE    SPA-GMN-X99-CUR
            WHEN    001
                MOVE    "SEL_BYOMEI"    TO  MCP-WIDGET
@@ -1454,8 +1359,6 @@
                MOVE    "SRCBYOKBN"     TO  MCP-WIDGET
            WHEN    004
                MOVE    "SRTKBN"        TO  MCP-WIDGET
-           WHEN    201
-               MOVE    "B01"           TO  MCP-WIDGET
            END-EVALUATE
       *
            .
@@ -1578,7 +1481,6 @@
       *
            MOVE    ZERO            TO  FLG-SYSKANRI
       *
-           MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
            MOVE    "tbl_syskanri"  TO  MCP-TABLE
            MOVE    "key2"          TO  MCP-PATHNAME
@@ -1637,7 +1539,6 @@
            INTO    PTBYO-BYOMEI
            END-STRING
       *
-           MOVE    SPA-HOSPNUM     TO  PTBYO-HOSPNUM
            MOVE    PTBYOMEI-REC    TO  MCPDATA-REC
            MOVE    "tbl_ptbyomei"  TO  MCP-TABLE
            MOVE    "key26"         TO  MCP-PATHNAME
@@ -1690,7 +1591,6 @@
            MOVE    WRK-SEL-EDBYOMEICD  TO  BYO-IKOSAKICD
       *
            MOVE    BYO-BYOMEI      TO  BYO-BYOMEIKANA
-grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    BYOMEI-REC      TO  MCPDATA-REC
            MOVE    "tbl_byomei"    TO  MCP-TABLE
            MOVE    "key7"          TO  MCP-PATHNAME
@@ -1742,7 +1642,7 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    ZERO            TO  FLG-USERBYOMEI
       *
            INITIALIZE              USERBYOMEI-REC
-           MOVE    SPA-HOSPNUM     TO  USBYO-HOSPNUM
+           MOVE    SPA-HOSPID      TO  USBYO-HOSPID
       *
            MOVE    USERBYOMEI-REC  TO  MCPDATA-REC
            MOVE    "tbl_userbyomei"
@@ -1783,14 +1683,25 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *****************************************************************
       *    自院病名検索処理(KEY10)
       *****************************************************************
-       900-USERBYOMEI-SEL-SEC    SECTION.
+       900-USERBYOMEI-KEY10-SEL-SEC    SECTION.
       *
            MOVE    ZERO            TO  FLG-USERBYOMEI
       *
-           MOVE    USERBYOMEI-REC  TO  MCPDATA-REC
+           INITIALIZE              USERBYOMEI-REC
+           MOVE    SPA-HOSPID      TO  USBYO-HOSPID
       *
-           MOVE    WRK-TABLE       TO  MCP-TABLE
-           MOVE    WRK-PATHNAME    TO  MCP-PATHNAME
+           MOVE    WRK-SEL-BUNRUICD
+                                   TO  USBYO-BUNRUICD
+      *
+           STRING  WRK-SEL-BYOMEI  DELIMITED   BY  SPACE
+                   "%"             DELIMITED   BY  SIZE
+           INTO    USBYO-BYOMEI
+           END-STRING
+      *
+           MOVE    USERBYOMEI-REC  TO  MCPDATA-REC
+           MOVE    "tbl_userbyomei"
+                                   TO  MCP-TABLE
+           MOVE    "key10"         TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC    =     ZERO )
                MOVE    MCPDATA-REC TO  USERBYOMEI-REC
@@ -1801,15 +1712,16 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *
            .
       *
-       900-USERBYOMEI-SEL-EXT.
+       900-USERBYOMEI-KEY10-SEL-EXT.
            EXIT.
       *****************************************************************
       *    自院病名FETCH処理(KEY10)
       *****************************************************************
-       900-USERBYOMEI-FET-SEC    SECTION.
+       900-USERBYOMEI-KEY10-FET-SEC    SECTION.
       *
-           MOVE    WRK-TABLE       TO  MCP-TABLE
-           MOVE    WRK-PATHNAME    TO  MCP-PATHNAME
+           MOVE    "tbl_userbyomei"
+                                   TO  MCP-TABLE
+           MOVE    "key10"         TO  MCP-PATHNAME
            PERFORM 910-DBFETCH-SEC
            IF    ( MCP-RC    =     ZERO )
                MOVE    MCPDATA-REC TO  USERBYOMEI-REC
@@ -1820,7 +1732,7 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *
            .
       *
-       900-USERBYOMEI-FET-EXT.
+       900-USERBYOMEI-KEY10-FET-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ検索処理（FHETCHも行う)
@@ -1828,9 +1740,9 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF    ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
@@ -1845,9 +1757,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        911-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
       *
@@ -1859,9 +1771,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
       *
@@ -1873,9 +1785,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBCLOSECURSOR-SEC                 SECTION.
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
       *
@@ -1887,9 +1799,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBDELETE-SEC                 SECTION.
       *
            MOVE    "DBDELETE"          TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
       *
@@ -1901,9 +1813,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBINSERT-SEC                SECTION.
       *
            MOVE    "DBINSERT"          TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
       *
@@ -1915,9 +1827,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"          TO  MCP-FUNC.
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           .
+           CALL   "MONFUNC"            USING
+                                       MCPAREA
+                                       MCPDATA-REC.
+      *
        900-PUT-WINDOW-EXT.
            EXIT.

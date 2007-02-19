@@ -114,4 +114,5 @@ db	{
         tbl_genericname;
         tbl_syurrk;
 	tbl_qrcdhkn;
+	tbl_chk005;
 };

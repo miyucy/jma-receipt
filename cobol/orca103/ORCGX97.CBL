@@ -28,7 +28,6 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.02    NACL-森脇    06/03/20  プレビュー追加
-      *  03.05.00    NACL-多々納  07/05/08  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -122,9 +121,6 @@
            COPY    "X03.INC".
            COPY    "X04.INC".
            COPY    "X05.INC".
-           COPY    "X06.INC".
-           COPY    "X07.INC".
-           COPY    "X08.INC".
            COPY    "X91.INC".
            COPY    "X97.INC".
            COPY    "X98.INC".
@@ -250,7 +246,6 @@
        490-KAKUNIN-SEC            SECTION.
       *
            MOVE    SPACE               TO  X97
-           INITIALIZE                      X97
            MOVE    ZERO                TO  X97-COUNT
       *----(01.00.02)--ADD-START---
            MOVE    WIDGET-INSENSITIVE  TO  X97-B12-STATE
@@ -265,7 +260,6 @@
                MOVE    WRK-CONS-3003-KBNCD TO  SYS-3003-KBNCD
                MOVE    SPA-SYSYMD          TO  SYS-3003-STYUKYMD
                                                SYS-3003-EDYUKYMD
-               MOVE    SPA-HOSPNUM         TO  SYS-3003-HOSPNUM
                MOVE    SYS-3003-REC        TO  MCPDATA-REC
                PERFORM 900-SYSKANRI-INV-SEC
                IF      FLG-SYSKANRI        =   ZERO
@@ -275,14 +269,12 @@
       *                ジョブ管理チェック処理
                        MOVE    "CHK"           TO  SJOBKANRI-MODE
                        INITIALIZE                  JOBKANRI-REC
-                       MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
                        MOVE    IDX             TO  JOB-JOBID
                        MOVE    WRK-CONS-JOB-SHELLID
                                                TO  JOB-SHELLID
                        CALL    "ORCSJOB"       USING
                                                ORCSJOBKANRIAREA  
-                                               JOBKANRI-REC
-                                               SPA-AREA
+                                               JOBKANRI-REC 
                        IF      SJOBKANRI-RETURN    =   ZERO
                            PERFORM 4901-KAKUNIN-HYOUJI-SEC
                        END-IF
@@ -292,7 +284,6 @@
       *        ジョブ管理チェック処理
                MOVE    "CHK"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
-               MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
                MOVE    WRK-CONS-JOB-JOBID
                                        TO  JOB-JOBID
                MOVE    WRK-CONS-JOB-SHELLID
@@ -300,7 +291,6 @@
                CALL    "ORCSJOB"       USING
                                        ORCSJOBKANRIAREA
                                        JOBKANRI-REC
-                                       SPA-AREA
                MOVE    1               TO  IDX 
                IF      SJOBKANRI-RETURN    =   ZERO
                    PERFORM 4901-KAKUNIN-HYOUJI-SEC
@@ -308,7 +298,6 @@
            END-IF
       *
            MOVE    "B01"                TO  MCP-WIDGET
-      *
            IF    ( X97-MSG              =   SPACE )
                IF    ( X97-COUNT        >   ZERO  )
                    MOVE    "処理は正常に終了しました"
@@ -322,20 +311,13 @@
            MOVE    SPACE               TO  LINKAREA
       *
       *----(01.00.02)--ADD-START---
-           EVALUATE    SPA-XID1-FLG
-           WHEN    "PV"
+           IF    ( SPA-XID1-FLG    =   "PV" )
                MOVE    "F12:プレビュー"    TO  X97-B12-LABEL
                IF    ( WRK-PRT-PAGE    >   ZERO )
                        MOVE    WIDGET-NORMAL    TO  X97-B12-STATE
                        MOVE    "B12"            TO  MCP-WIDGET
                END-IF
-           WHEN    "OK"
-               MOVE    "F12:印刷"               TO  X97-B12-LABEL
-               IF    ( WRK-PRT-PAGE    >   ZERO )
-                       MOVE    WIDGET-NORMAL    TO  X97-B12-STATE
-                       MOVE    "B12"            TO  MCP-WIDGET
-               END-IF
-           END-EVALUATE
+           END-IF
       *----(01.00.02)--UPD-END-----
       *
            MOVE    "CURRENT"           TO  MCP-PUTTYPE
@@ -437,16 +419,16 @@
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
            MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF    ( MCP-RC              =   ZERO )
                MOVE    "tbl_syskanri"  TO  MCP-TABLE
                MOVE    "key10"         TO  MCP-PATHNAME
                MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
                IF    ( MCP-RC              =   ZERO )
                    MOVE    ZERO        TO  FLG-SYSKANRI
                ELSE
@@ -459,9 +441,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        900-SYSKANRI-INV-EXT.
@@ -473,9 +455,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        900-PUT-WINDOW              SECTION.
       *
            MOVE    "PUTWINDOW"     TO  MCP-FUNC.
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        900-PUT-WINDOW-EXT.

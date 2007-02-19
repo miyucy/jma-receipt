@@ -20,7 +20,7 @@
                05  SDTCHK06-CHKPTN-OCC         OCCURS  5.
                    07  SDTCHK06-CHKPTN         PIC X(01).
            03  SDTCHK06-IN.
-               05  SDTCHK06-HOSPNUM            PIC 9(02).
+               05  SDTCHK06-HOSPID             PIC X(24).
                05  SDTCHK06-PTID               PIC 9(10).
                05  SDTCHK06-SRYKA              PIC X(02).
                05  SDTCHK06-CHKKBN             PIC X(01).
@@ -36,5 +36,3 @@
                    07  SDTCHK06-O-SRYKA        PIC X(02).
                    07  SDTCHK06-O-SRYYMD       PIC X(08).
                    07  SDTCHK06-O-PTBYOMEI     PIC X(160).
-                   07  SDTCHK06-O-BYODAY-G.
-                       09  SDTCHK06-O-BYODAY   PIC 9(01)   OCCURS  31.

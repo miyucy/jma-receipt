@@ -45,6 +45,6 @@
                 04  X01-CHKKBN.
                   05  X01-VALUE   PIC X(32).
                 04  X01-CHKKBNCOUNT   PIC S9(9)   BINARY.
-                04  X01-CHKKBNLIST    PIC X(32)   OCCURS  11 TIMES.
+                04  X01-CHKKBNLIST    PIC X(32)   OCCURS  9 TIMES.
               03  X01-LBLBYOSTATUS-STYLE   PIC X(20).
               03  X01-LBLBYOSTATUS         PIC X(20).

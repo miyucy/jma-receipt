@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <GTK-Interface>
 
 <project>
@@ -30,7 +30,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(X99)ÁóÖÂêç‰∏ÄË¶ßÈÅ∏Êäû</title>
+  <title>(X99)…¬Ãæ∞ÏÕ˜¡™¬Ú</title>
   <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>True</modal>
@@ -62,7 +62,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 10 Jan 2001 07:56:38 GMT</last_modification_time>
       </signal>
-      <label> Êàª„Çã</label>
+      <label> Ã·§Î</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -85,7 +85,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 10 Jan 2001 07:56:38 GMT</last_modification_time>
       </signal>
-      <label>F7 Ê¨°È†Å</label>
+      <label>F7 º° «</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -108,7 +108,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 10 Jan 2001 07:56:38 GMT</last_modification_time>
       </signal>
-      <label>Shift+F7 ÂâçÈ†Å</label>
+      <label>Shift+F7 ¡∞ «</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -159,7 +159,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 10 Jan 2001 07:56:38 GMT</last_modification_time>
       </signal>
-      <label>F12 Á¢∫ÂÆö</label>
+      <label>F12 ≥ŒƒÍ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -198,7 +198,7 @@
       <y>464</y>
       <width>64</width>
       <height>24</height>
-      <label>ÈÅ∏ÊäûÁï™Âè∑</label>
+      <label>¡™¬Ú»÷πÊ</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -214,7 +214,7 @@
       <y>40</y>
       <width>600</width>
       <height>384</height>
-      <hscrollbar_policy>GTK_POLICY_AUTOMATIC</hscrollbar_policy>
+      <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
       <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
       <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
       <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
@@ -252,7 +252,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label201</name>
-	  <label>Áï™Âè∑</label>
+	  <label>»÷πÊ</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -265,7 +265,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label203</name>
-	  <label>ÁóÖÂêç</label>
+	  <label>…¬Ãæ</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
