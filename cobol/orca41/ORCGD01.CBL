@@ -196,7 +196,7 @@
        01  CONST-AREA.
            03  CONST-LINE                  PIC X(40)   VALUE
                "¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²".
-           03  CONST-CHKKBN-MAX            PIC 9(03)   VALUE   16.
+           03  CONST-CHKKBN-MAX            PIC 9(03)   VALUE   18.
            03  CONST-CHKMSG-VAL.
                05                          PIC X(40)   VALUE
                "ÊÝ¸±¼ÔÈÖ¹æ".
@@ -230,8 +230,12 @@
                "ÅêÍ¿¶Ø´÷ÌôºÞ¤ÈÉÂÌ¾".
                05                          PIC X(40)   VALUE
                "¿ÇÎÅ¹Ô°Ù¤É¤¦¤·¤Î»»ÄêÏ³¤ì".
+               05                          PIC X(40)   VALUE
+               "ÉÂÌ¾¤ÈÌôºÞ".
+               05                          PIC X(40)   VALUE
+               "ÉÂÌ¾¤È¿ÇÎÅ¹Ô°Ù".
            03  CONST-CHKMSG-R              REDEFINES   CONST-CHKMSG-VAL.
-               05  CONST-CHKMSG            PIC X(40)   OCCURS  16.
+               05  CONST-CHKMSG            PIC X(40)   OCCURS  18.
            03  CONST-INGAIPROCMSG          PIC X(40)   VALUE
                "±¡³°½èÊý¤Î½èÍý".
       *
@@ -2299,7 +2303,9 @@
            WHEN    "CHKKBN15"
                MOVE    18              TO  SPA-GMN-D01-CUR
            WHEN    "CHKKBN16"
+               MOVE    19              TO  SPA-GMN-D01-CUR
            WHEN    "CHKKBN17"
+               MOVE    20              TO  SPA-GMN-D01-CUR
            WHEN    "CHKKBN18"
            WHEN    "CHKKBN19"
                MOVE    51              TO  SPA-GMN-D01-CUR

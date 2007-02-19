@@ -332,6 +332,8 @@ RECORD_files = \
 	R06.rec \
 	W981.rec \
 	XE01.rec \
+	X99.rec \
+	X100.rec \
 
 DEF_files = \
 	HC01.def \
@@ -510,6 +512,7 @@ DB_files = \
 	tbl_genericname.db \
 	tbl_syurrk.db \
 	tbl_qrcdhkn.db \
+	tbl_chk005.db \
 
 all:   
 

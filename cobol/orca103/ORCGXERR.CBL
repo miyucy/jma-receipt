@@ -82,6 +82,8 @@
            COPY    "X91.INC".
            COPY    "X97.INC".
            COPY    "X98.INC".
+           COPY    "X99.INC".
+           COPY    "X100.INC".
            COPY    "XERR.INC".
            COPY    "XID1.INC".
            COPY    "XID2.INC".

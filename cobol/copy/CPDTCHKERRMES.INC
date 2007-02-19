@@ -391,6 +391,20 @@
            05 PIC  X(30)   VALUE   "該当の診療行為に対して同月の算".
            05 PIC  X(30)   VALUE   "定漏れがあります              ".
            05 PIC  X(30)   VALUE   "                              ".
+      *
+      *    ** 170xxx 病名と薬剤
+      *                            +---------+---------+---------+.
+           05 PIC  X(06)   VALUE   "170001".
+           05 PIC  X(30)   VALUE   "薬剤が未入力です              ".
+           05 PIC  X(30)   VALUE   "                              ".
+           05 PIC  X(30)   VALUE   "                              ".
+      *
+      *    ** 180xxx 病名と診療行為
+      *                            +---------+---------+---------+.
+           05 PIC  X(06)   VALUE   "180001".
+           05 PIC  X(30)   VALUE   "診療行為が未入力です          ".
+           05 PIC  X(30)   VALUE   "                              ".
+           05 PIC  X(30)   VALUE   "                              ".
       *    ** 990xxx その他必須チェック
       *                            +---------+---------+---------+.
            05 PIC  X(06)   VALUE   "990001".
@@ -419,7 +433,7 @@
            05 PIC  X(30)   VALUE   "                              ".
       *
          03  ERRMES-RED    REDEFINES   ERRMES-VAL.
-           05 ERRMES-OCC   OCCURS  71.
+           05 ERRMES-OCC   OCCURS  73.
               07  ERRMES-CD            PIC X(06).
               07  ERRMES-MESSAGE       PIC X(90).
-         03  ERRMES-MAX                PIC 9(05)   VALUE   71.
+         03  ERRMES-MAX                PIC 9(05)   VALUE   73.

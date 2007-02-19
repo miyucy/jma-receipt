@@ -97,6 +97,7 @@
                    07  SPA-X03-NAI-SELCHKLST-KBN       PIC X(01).
                    07  SPA-X03-NAI-SELCHKLST-OCC       OCCURS  100.
                        09  SPA-X03-NAI-TSEL-SRYCD      PIC X(09).
+                       09  SPA-X03-NAI-TSEL-ID         PIC 9(09).
                        09  SPA-X03-NAI-TSEL-YUKOSTYMD  PIC X(08).
                        09  SPA-X03-NAI-TSEL-YUKOEDYMD  PIC X(08).
                05  SPA-X03-NAI-KJNYMD                  PIC X(08).
@@ -150,5 +151,56 @@
                    07  SPA-X98-USERMEI            PIC X(18).
                05  SPA-X98-USER-COB               OCCURS  10.
                    07  SPA-X98-USERLST            PIC X(20).
+      *
+      *    Ｘ９９画面用
+           03  SPA-X99-MOTOPG                      PIC X(08).
+           03  SPA-GMN-X99-AREA.
+               05  SPA-GMN-X99-MAX                 PIC 9(03).
+               05  SPA-GMN-X99-SRCBYOLST-PAGE      PIC 9(05).
+               05  SPA-GMN-X99-SRCBYOLST-PTN       PIC X(01).
+               05  SPA-GMN-X99-SRCBYOLST-SRT       PIC X(03).
+               05  SPA-GMN-X99-CUR                 PIC 9(03).
+               05  SPA-GMN-X99-INPUT-AREA.
+                   07  SPA-GMN-X99-SELNUM          PIC X(03).
+                   07  SPA-GMN-X99-SEL-BYOMEI      PIC X(100).
+                   07  SPA-GMN-X99-SRCBYOKBN-G.
+                       09  SPA-GMN-X99-SRCBYOKBN   PIC X(01).
+                       09  SPA-GMN-X99-SRCBYOKBNFL PIC X(01).
+                       09  SPA-GMN-X99-SRCBYOKBNMEI
+                                                   PIC X(20).
+                   07  SPA-GMN-X99-SRTKBN-G.
+                       09  SPA-GMN-X99-SRTKBN      PIC X(03).
+                       09  SPA-GMN-X99-SRTKBNMEI   PIC X(20).
+               05  SPA-GMN-X99-COMBO-AREA.
+                   07  SPA-GMN-X99-SRTKBNLST-G.
+                       09  SPA-GMN-X99-SRTKBN-MAX      PIC 9(03).
+                       09  SPA-GMN-X99-SRTKBNLST       OCCURS    50.
+                           11  SPA-GMN-X99-SRTKBNL     PIC X(03).
+                           11  SPA-GMN-X99-SRTKBNMEIL  PIC X(20).
+                   07  SPA-GMN-X99-SRCBYOKBNLST-G.
+                       09  SPA-GMN-X99-SRCBYOKBN-MAX   PIC 9(03).
+                       09  SPA-GMN-X99-SRCBYOKBNLST    OCCURS    5.
+                           11  SPA-GMN-X99-SRCBYOKBNL  PIC X(01).
+                           11  SPA-GMN-X99-SRCBYOKBNFLL PIC X(01).
+                           11  SPA-GMN-X99-SRCBYOKBNMEIL
+                                                   PIC X(20).
+               05  SPA-GMN-X99-SRCBYOLST-AREA.
+                   07  SPA-GMN-X99-SRCBYOLST-NEXT      PIC 9(01).
+                   07  SPA-GMN-X99-SRCBYOLST-MAX       PIC 9(05).
+                   07  SPA-GMN-X99-SRCBYOLST-OCC       OCCURS  100.
+                       09  SPA-GMN-X99-TSRCBYOMEI      PIC X(100).
+                       09  SPA-GMN-X99-TSRCCD          PIC X(12).
+                   07  SPA-GMN-X99-SRCBYOLST-SELECT-G.
+                       09  SPA-GMN-X99-SRCBYOLST-SELECT
+                                                       PIC X(01)
+                                                       OCCURS  100.
+               05  SPA-NAI-X99-INPUT-AREA.
+                   07  SPA-NAI-X99-SELNUM          PIC 9(03).
+               05  SPA-NAI-X99-SRCBYOLST-AREA.
+                   07  SPA-NAI-X99-SRCBYOLST-OCC       OCCURS  100.
+                       09  SPA-NAI-X99-TSRCBYOSTATUS   PIC X(01).
+                       09  SPA-NAI-X99-TSRCBYOCD-G.
+                           11  SPA-NAI-X99-TSRCBYOCD   PIC X(07)
+                                                       OCCURS  21.
       *    他の画面
-           03  SPA-X01SONOTA                  PIC X(700000). 
+           03  SPA-X01SONOTA                  PIC X(300000). 

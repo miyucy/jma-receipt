@@ -39,6 +39,7 @@
            03  QDTCHK-HKNCOMBI             PIC 9(04).
            03  QDTCHK-REZEFLG              PIC X(01).
            03  QDTCHK-REZEMM               PIC 9(02).
+           03  QDTCHK-ID                   PIC S9(9)   BINARY.
       *
            03  QDTCHK-SELHOSPID            PIC X(24).
            03  QDTCHK-SELPTID              PIC 9(10).

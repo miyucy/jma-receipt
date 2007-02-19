@@ -40,7 +40,9 @@
       *
       *診療コード
            05  SPA-X01-SRYCD               PIC X(09).
+           05  SPA-X01-ID                  PIC 9(09).
            05  SPA-X01-NAME                PIC X(100).
+           05  SPA-X01-SRYBYO              PIC 9(01).
       *チェック区分 
            05  SPA-X01-CHKKBN-G.
                07  SPA-X01-CHKKBN              PIC X(01).
@@ -48,6 +50,12 @@
                07  SPA-X01-CHKKBNNAME          PIC X(48).
       *選択番号         
            05  SPA-X01-SELNUM              PIC 9(03).
+           05  SPA-X01-BYOSTATUS           PIC X(1).
+           05  SPA-X01-JYKNKBN             PIC X(1).
+           05  SPA-X01-BYOCD-G.
+               07  SPA-X01-BYOCD-OCC       OCCURS  21.
+                   09  SPA-X01-BYOCD       PIC X(07).
+                   09  SPA-X01-BYOCDSEP    PIC X(01).
       *
       *----(01.00.02)--ADD-START---
            05  SPA-X91-TBL-GROUP           PIC  X(14).
@@ -78,5 +86,13 @@
                                            OCCURS  5.
       *
                07  SPA-X98-RC              PIC 9(04).
+      *
+      *Ｘ９９画面より
+           05  SPA-X99-AREA.
+               07  SPA-X99-BYOMEI          PIC X(100).
+               07  SPA-X99-BYOSTATUS       PIC X(1).
+               07  SPA-X99-BYOCD-G.
+                   09  SPA-X99-BYOCD       PIC X(07)
+                                           OCCURS  21.
       *
       *
