@@ -122,17 +122,18 @@
            MOVE    SPACE               TO  SPA-ERRCD
       *    
       *    入力コード削除
-           MOVE  SPA-HOSPID            TO  ICD-HOSPID
+      *****MOVE  SPA-HOSPID            TO  ICD-HOSPID
            MOVE  SPA-Z01-SRYCD         TO  ICD-SRYCD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE  SPA-HOSPNUM           TO  ICD-HOSPNUM
            MOVE  INPUTCD-REC           TO  MCPDATA-REC
       *
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_inputcd"       TO  MCP-TABLE
            MOVE    "del22"             TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
@@ -178,7 +179,7 @@ grpsys                            SPA-AREA
        410022-INPUTCD-INS-SEC          SECTION.
       *
            INITIALIZE                      INPUTCD-REC
-           MOVE    SPA-HOSPID          TO  ICD-HOSPID
+      *****MOVE    SPA-HOSPID          TO  ICD-HOSPID
            MOVE    WRK-CDSYU           TO  ICD-CDSYU
            MOVE    SPA-Z99-INPUTCD(IDX)  TO  ICD-INPUTCD
            MOVE    SPA-Z99-DSPNAME(IDX)  TO  ICD-DSPNAME
@@ -190,14 +191,15 @@ grpsys                            SPA-AREA
            MOVE    SMCNDATE-YMD        TO  ICD-UPYMD
            MOVE    SMCNDATE-HMS        TO  ICD-UPHMS
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
            MOVE    INPUTCD-REC         TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "tbl_inputcd"       TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
            IF      MCP-RC          NOT =   ZERO
                MOVE    "1001"          TO  SPA-ERRCD
            END-IF

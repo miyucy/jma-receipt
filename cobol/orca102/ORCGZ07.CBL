@@ -389,7 +389,7 @@
            MOVE    ALL "0"             TO  TNS-YUKOSTYMD
            MOVE    SPA-NAI-YUKOYMD     TO  TNS-YUKOEDYMD
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key20"             TO  MCP-PATHNAME
@@ -481,10 +481,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                    UNTIL       IDX     >   SPA-TENSU-MAX
       *        入力コード検索
                MOVE    SPACE               TO  INPUTCD-REC
-               MOVE    SPA-HOSPID          TO  ICD-HOSPID
+      *********MOVE    SPA-HOSPID          TO  ICD-HOSPID
                MOVE    SPA-GMN-TSRYCD(IDX) TO  ICD-SRYCD
       *
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
+               MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
                MOVE    INPUTCD-REC         TO  MCPDATA-REC
                MOVE    "tbl_inputcd"       TO  MCP-TABLE
                MOVE    "key4"               TO  MCP-PATHNAME
@@ -648,10 +648,10 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    SPACE               TO  INPUTCD-REC
            INITIALIZE                      INPUTCD-REC
-           MOVE    SPA-HOSPID          TO  ICD-HOSPID
+      *****MOVE    SPA-HOSPID          TO  ICD-HOSPID
            MOVE    SPA-GMN-OLD-SRYCD   TO  ICD-SRYCD
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
            MOVE    INPUTCD-REC         TO  MCPDATA-REC
            MOVE    "tbl_inputcd"       TO  MCP-TABLE
            MOVE    "key4"               TO  MCP-PATHNAME
@@ -695,7 +695,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            INITIALIZE                  SRYCDCHG-REC 
            MOVE    SPA-GMN-OLD-SRYCD   TO  CHG-IPNSRYCD
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  CHG-HOSPNUM
            MOVE    SRYCDCHG-REC        TO  MCPDATA-REC
            MOVE    "tbl_srycdchg"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -811,7 +811,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-GMN-SRYCD       TO  TNS-SRYCD
            MOVE    SPA-SYSYMD          TO  TNS-YUKOSTYMD
            MOVE    SPA-SYSYMD          TO  TNS-YUKOEDYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
       *
            MOVE    "tbl_tensu"         TO  MCP-TABLE
@@ -838,10 +838,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    入力コードチェック
            MOVE    SPACE               TO  INPUTCD-REC
-           MOVE    SPA-HOSPID          TO  ICD-HOSPID
+      *****MOVE    SPA-HOSPID          TO  ICD-HOSPID
            MOVE    SPA-GMN-SRYCD       TO  ICD-SRYCD
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
            MOVE    INPUTCD-REC         TO  MCPDATA-REC
            MOVE    "tbl_inputcd"       TO  MCP-TABLE
            MOVE    "key4"               TO  MCP-PATHNAME
@@ -1075,7 +1075,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    入力コード使用チェック
            INITIALIZE                  INPUTCD-REC
-           MOVE    SPA-HOSPID          TO  ICD-HOSPID
+      *****MOVE    SPA-HOSPID          TO  ICD-HOSPID
            MOVE    SPA-GMN-INPUTCD(IDX)
                                        TO  ICD-INPUTCD
            IF      FLG-KANJI           =   1
@@ -1101,7 +1101,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    ICD-CDSYU           TO  SPA-GMN-CDSYU (IDX)
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
            MOVE    INPUTCD-REC         TO  MCPDATA-REC
            MOVE    "tbl_inputcd"       TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -1391,13 +1391,13 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                               (SPA-GMN-INPUTCD (IDX)   =   SPACE)
       *        入力コード検索
                MOVE    SPACE               TO  INPUTCD-REC
-               MOVE    SPA-HOSPID          TO  ICD-HOSPID
+      *********MOVE    SPA-HOSPID          TO  ICD-HOSPID
                MOVE    SPA-GMN-INPUTCD (IDX)
                                            TO  ICD-INPUTCD
                MOVE    SPA-GMN-CDSYU   (IDX)
                                            TO  ICD-CDSYU
       *
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
+               MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
                MOVE    INPUTCD-REC         TO  MCPDATA-REC
                MOVE    "DBSELECT"          TO  MCP-FUNC
                MOVE    "tbl_inputcd"       TO  MCP-TABLE
@@ -1423,14 +1423,15 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    SMCNDATE-YMD        TO  ICD-UPYMD
                    MOVE    SMCNDATE-HMS        TO  ICD-UPHMS
       *
-grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
+                   MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
                    MOVE    INPUTCD-REC         TO  MCPDATA-REC
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
                    MOVE    "tbl_inputcd"       TO  MCP-TABLE
                    MOVE    "key"               TO  MCP-PATHNAME
-grpsys             CALL "ORCDBMAIN" USING MCPAREA
-                                          MCPDATA-REC
-grpsys                                    SPA-AREA
+                   CALL    "ORCDBMAIN"         USING
+                                                   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                    IF      MCP-RC          NOT =   ZERO
                        MOVE    "0100"          TO  SPA-ERRCD
                        DISPLAY "Z07 INPUTCD UPD ERR:" MCP-RC
@@ -1444,7 +1445,7 @@ grpsys                                    SPA-AREA
       *        入力コード追加
                IF       FLG-INPUTCD        =   1
                    MOVE    SPACE               TO  INPUTCD-REC
-                   MOVE    SPA-HOSPID          TO  ICD-HOSPID
+      *************MOVE    SPA-HOSPID          TO  ICD-HOSPID
                    MOVE    SPA-GMN-INPUTCD (IDX)
                                                TO  ICD-INPUTCD
                    MOVE    SPA-GMN-CDSYU   (IDX)
@@ -1456,14 +1457,15 @@ grpsys                                    SPA-AREA
                    MOVE    SMCNDATE-YMD        TO  ICD-UPYMD
                    MOVE    SMCNDATE-HMS        TO  ICD-UPHMS
       *
-grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
+                   MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
                    MOVE    INPUTCD-REC         TO  MCPDATA-REC
                    MOVE    "DBINSERT"          TO  MCP-FUNC
                    MOVE    "tbl_inputcd"       TO  MCP-TABLE
                    MOVE    "key"               TO  MCP-PATHNAME
-grpsys             CALL "ORCDBMAIN" USING MCPAREA
-                                          MCPDATA-REC
-grpsys                                    SPA-AREA
+                   CALL    "ORCDBMAIN"         USING
+                                                   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                    IF      MCP-RC          NOT =   ZERO
                        MOVE    "0100"          TO  SPA-ERRCD
                        DISPLAY "Z07 INPUTCD INS ERR:" MCP-RC
@@ -1487,10 +1489,10 @@ grpsys                                    SPA-AREA
       *
            MOVE    SPACE               TO  INPUTCD-REC
            INITIALIZE                      INPUTCD-REC
-           MOVE    SPA-HOSPID          TO  ICD-HOSPID
+      *****MOVE    SPA-HOSPID          TO  ICD-HOSPID
            MOVE    SPA-GMN-OLD-SRYCD   TO  ICD-SRYCD
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
            MOVE    INPUTCD-REC         TO  MCPDATA-REC
            MOVE    "tbl_inputcd"       TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
@@ -1511,14 +1513,15 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    SMCNDATE-YMD        TO  ICD-UPYMD
                MOVE    SMCNDATE-HMS        TO  ICD-UPHMS
       *
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
+               MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
                MOVE    INPUTCD-REC         TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "tbl_inputcd"       TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-grpsys         CALL "ORCDBMAIN" USING MCPAREA
-                                      MCPDATA-REC
-grpsys                                SPA-AREA
+               CALL    "ORCDBMAIN"         USING
+                                               MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
                IF      MCP-RC          NOT =   ZERO
                    MOVE    "0100"          TO  SPA-ERRCD
                    DISPLAY "Z07 INPUTCD UPD ERR:" MCP-RC
@@ -1838,9 +1841,10 @@ grpsys                                SPA-AREA
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"     USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -1851,9 +1855,10 @@ grpsys                            SPA-AREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"     USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -1865,9 +1870,10 @@ grpsys                            SPA-AREA
        990-DBCLOSE-SEC                 SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
            .
        990-DBLOSEC-EXT.
            EXIT.
@@ -1878,9 +1884,10 @@ grpsys                            SPA-AREA
        900-PUT-WINDOW                            SECTION.
       *
            MOVE   "PUTWINDOW"                    TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL   "ORCDBMAIN"                    USING
+                                                     MCPAREA
+                                                     MCPDATA-REC
+                                                     SPA-AREA
            .
       *
        900-PUT-WINDOW-EXT.

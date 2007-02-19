@@ -155,7 +155,7 @@
            INITIALIZE                      TENSUPLUS-REC
            MOVE    SPA-Z01-SRYCD       TO  TNSP-SRYCD
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
            MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensuplus"     TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -196,14 +196,15 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                        MOVE    TNSP-SRYCD          TO  TNSP-UP-SRYCD
                        MOVE    TNSP-YUKOSTYMD      TO  TNSP-UP-YUKOSTYMD
                        MOVE    TNSP-YUKOEDYMD      TO  TNSP-UP-YUKOEDYMD
-grpsys*                MOVE SPA-HOSPNUM TO -HOSPNUM
+                       MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
                        MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
                        MOVE    "DBDELETE"          TO  MCP-FUNC
                        MOVE    "tbl_tensuplus"     TO  MCP-TABLE
                        MOVE    "key"               TO  MCP-PATHNAME
-grpsys                 CALL "ORCDBMAIN" USING MCPAREA
-                                              MCPDATA-REC
-grpsys                                        SPA-AREA
+                       CALL    "ORCDBMAIN"         USING
+                                                       MCPAREA
+                                                       MCPDATA-REC
+                                                       SPA-AREA
                     ADD     1               TO  IDX1
                ELSE
       *
@@ -227,14 +228,15 @@ grpsys                                        SPA-AREA
       *
                        MOVE    SPA-Z01-TYUKOEDYMD(IDX2)
                                                    TO  TNSP-YUKOEDYMD
-grpsys*                MOVE SPA-HOSPNUM TO -HOSPNUM
+                       MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
                        MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
                        MOVE    "DBUPDATE"          TO  MCP-FUNC
                        MOVE    "tbl_tensuplus"     TO  MCP-TABLE
                        MOVE    "upd1"              TO  MCP-PATHNAME
-grpsys                 CALL "ORCDBMAIN" USING MCPAREA
-                                              MCPDATA-REC
-grpsys                                        SPA-AREA
+                       CALL    "ORCDBMAIN"         USING
+                                                       MCPAREA
+                                                       MCPDATA-REC
+                                                       SPA-AREA
                        IF      MCP-RC           NOT =   ZERO
                            MOVE    "9004"          TO  SPA-ERRCD
                            DISPLAY "Z03 TENSUPLUS UPD ERR:" MCP-RC
@@ -252,14 +254,15 @@ grpsys                                        SPA-AREA
                        MOVE    TNSP-SRYCD          TO  TNSP-UP-SRYCD
                        MOVE    TNSP-YUKOSTYMD      TO  TNSP-UP-YUKOSTYMD
                        MOVE    TNSP-YUKOEDYMD      TO  TNSP-UP-YUKOEDYMD
-grpsys*                MOVE SPA-HOSPNUM TO -HOSPNUM
+                       MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
                        MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
                        MOVE    "DBDELETE"          TO  MCP-FUNC
                        MOVE    "tbl_tensuplus"     TO  MCP-TABLE
                        MOVE    "key"               TO  MCP-PATHNAME
-grpsys                 CALL "ORCDBMAIN" USING MCPAREA
-                                              MCPDATA-REC
-grpsys                                        SPA-AREA
+                       CALL    "ORCDBMAIN"         USING
+                                                       MCPAREA
+                                                       MCPDATA-REC
+                                                       SPA-AREA
                        ADD     1               TO  IDX1
                    WHEN    (SPA-Z01-TYUKOSTYMD(IDX2)
                                    NOT =   SPACE     )  AND
@@ -299,7 +302,7 @@ grpsys                                        SPA-AREA
                MOVE    SPA-Z01-TYUKOEDYMD(SPA-Z01-SELNUM)
                                            TO  TNSP-YUKOEDYMD
       *
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
+               MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
                MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
                MOVE    "tbl_tensuplus"     TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
@@ -360,14 +363,15 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                        MOVE    SMCNDATE-YMD        TO  TNSP-UPYMD
                        MOVE    SMCNDATE-HMS        TO  TNSP-UPHMS
       *
-grpsys*                MOVE SPA-HOSPNUM TO -HOSPNUM
+                       MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
                        MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
                        MOVE    "DBUPDATE"          TO  MCP-FUNC
                        MOVE    "tbl_tensuplus"     TO  MCP-TABLE
                        MOVE    "upd1"              TO  MCP-PATHNAME
-grpsys                 CALL "ORCDBMAIN" USING MCPAREA
-                                              MCPDATA-REC
-grpsys                                        SPA-AREA
+                       CALL    "ORCDBMAIN"         USING
+                                                       MCPAREA
+                                                       MCPDATA-REC
+                                                       SPA-AREA
                        IF      MCP-RC           NOT =   ZERO
                            MOVE    "9004"          TO  SPA-ERRCD
                            DISPLAY "Z02 TENSUPLUS UPD ERR:" MCP-RC
@@ -391,14 +395,15 @@ grpsys                                        SPA-AREA
                        MOVE    SMCNDATE-YMD        TO  TNSP-UPYMD
                        MOVE    SMCNDATE-HMS        TO  TNSP-UPHMS
       *
-grpsys*                MOVE SPA-HOSPNUM TO -HOSPNUM
+                       MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
                        MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
                        MOVE    "DBUPDATE"          TO  MCP-FUNC
                        MOVE    "tbl_tensuplus"     TO  MCP-TABLE
                        MOVE    "upd1"              TO  MCP-PATHNAME
-grpsys                 CALL "ORCDBMAIN" USING MCPAREA
-                                              MCPDATA-REC
-grpsys                                        SPA-AREA
+                       CALL    "ORCDBMAIN"         USING
+                                                       MCPAREA
+                                                       MCPDATA-REC
+                                                       SPA-AREA
                        IF      MCP-RC          NOT =   ZERO
                            MOVE    "9004"          TO  SPA-ERRCD
                            DISPLAY "Z02 TENSUPLUS UPD ERR:" MCP-RC
@@ -421,14 +426,15 @@ grpsys                                        SPA-AREA
                MOVE    SMCNDATE-YMD        TO  TNSP-UPYMD
                MOVE    SMCNDATE-HMS        TO  TNSP-UPHMS
       *
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
+               MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
                MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "tbl_tensuplus"     TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-grpsys         CALL "ORCDBMAIN" USING MCPAREA
-                                      MCPDATA-REC
-grpsys                                SPA-AREA
+               CALL    "ORCDBMAIN"         USING
+                                               MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
                IF      MCP-RC              NOT =   ZERO
                    MOVE    "9004"          TO  SPA-ERRCD
                    DISPLAY "Z02 TENSUPLUS INS ERR:" MCP-RC
@@ -491,9 +497,10 @@ grpsys                                SPA-AREA
        990-TENSUPLUS-READ-SEC          SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  TENSUPLUS-REC
                MOVE    ZERO            TO  FLG-TENSUPLUS
@@ -512,9 +519,10 @@ grpsys                            SPA-AREA
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"     USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -525,9 +533,10 @@ grpsys                            SPA-AREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"     USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -539,9 +548,10 @@ grpsys                            SPA-AREA
        990-DBLOSEC-SEC                 SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
            .
        990-DBLOSEC-EXT.
            EXIT.
