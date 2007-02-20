@@ -674,6 +674,7 @@
                WHEN    "0102"
       *            ¿·µ¬´µ¼Ô
                    IF      SPA-PID1-FLG        =   "OK"
+                       MOVE    SPA-P02Q-SELNUM     TO  IDX
                        INITIALIZE              SPA-QRDATA-AREA
                        MOVE    "1"             TO  SPA-QR-SYORI
                        PERFORM 490-KAKUTEI-SYORI-SEC
