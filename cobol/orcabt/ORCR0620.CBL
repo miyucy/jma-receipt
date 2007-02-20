@@ -117,6 +117,8 @@
       *  03.04.01    NACL-ÃÁœ∆    06/11/29  …¬≈Ô∂Ë ¨ ‘Ω∏Ω§¿µ
       *  03.04.02    NACL-∆£∏∂    06/12/05  Ã§¿¡µ·•Ï•ª¬–±˛
       *  03.04.03    NACL-∆£∏∂    07/02/06  ∑Ó≈”√Ê§ŒºıµÎº‘»÷πÊ —ππ§À¬–±˛
+      *  03.04.04    NACL-ÃÁœ∆    07/02/19  ∏¯»Ò°›À‹øÕ°›∆˛±°°›≤Û°›…È√¥≥‰πÁ
+      *                                     §Œ•ª•√•»
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1426,10 +1428,10 @@
                    IF       FLG-HKNNUM     =   ZERO
                        MOVE   HKN-HBTNUM           TO
                                            RECE62-KOHHBTNUM      (IDX2)
+                       MOVE   HKN-HON-NYUKFTNRATE  TO
+                                           RECE62-HON-NYUKFTNRATE(IDX2)
                        MOVE   HKN-HON-NYUDJGNGAK   TO
                                            RECE62-HON-NYUDJGNGAK (IDX2)
-                       MOVE   HKN-HON-NYUDGJNCNT   TO
-                                           RECE62-HON-NYUDGJNCNT (IDX2)
                        MOVE   HKN-HON-NYUMJGNGAK   TO
                                            RECE62-HON-NYUMJGNGAK (IDX2)
                        MOVE   HKN-HON-NYUMJGNCNT   TO
@@ -1824,10 +1826,10 @@
                              MOVE   20         TO  RECE62-KYURATE
                            ELSE
                              IF      RECE62-HONKZKKBN      =    "1"
-                               MOVE   WRK-HKN-HON-GAIKFTNRATE
+                               MOVE   WRK-HKN-HON-NYUKFTNRATE
                                                    TO   RECE62-KYURATE
                              ELSE
-                               MOVE   WRK-HKN-KZK-GAIKFTNRATE
+                               MOVE   WRK-HKN-KZK-NYUKFTNRATE
                                                    TO   RECE62-KYURATE
                              END-IF
                            END-IF
@@ -1841,10 +1843,10 @@
                    ELSE
                        IF  RECE62-HOJOKBN      =     SPACE
                            IF      RECE62-HONKZKKBN    =     "1"
-                               MOVE    WRK-HKN-HON-GAIKFTNRATE
+                               MOVE    WRK-HKN-HON-NYUKFTNRATE
                                                   TO  RECE62-KYURATE
                            ELSE
-                               MOVE    WRK-HKN-KZK-GAIKFTNRATE
+                               MOVE    WRK-HKN-KZK-NYUKFTNRATE
                                                   TO  RECE62-KYURATE
                            END-IF
                        ELSE
@@ -1927,10 +1929,10 @@
                              MOVE   20         TO  RECE62-KYURATE
                            ELSE
                              IF      RECE62-HONKZKKBN      =    "1"
-                               MOVE   WRK-HKN-HON-GAIKFTNRATE
+                               MOVE   WRK-HKN-HON-NYUKFTNRATE
                                                    TO   RECE62-KYURATE
                              ELSE
-                               MOVE   WRK-HKN-KZK-GAIKFTNRATE
+                               MOVE   WRK-HKN-KZK-NYUKFTNRATE
                                                    TO   RECE62-KYURATE
                              END-IF
                            END-IF
@@ -1944,10 +1946,10 @@
                    ELSE
                        IF  RECE62-HOJOKBN      =     SPACE
                            IF      RECE62-HONKZKKBN    =     "1"
-                               MOVE    WRK-HKN-HON-GAIKFTNRATE
+                               MOVE    WRK-HKN-HON-NYUKFTNRATE
                                                   TO  RECE62-KYURATE
                            ELSE
-                               MOVE    WRK-HKN-KZK-GAIKFTNRATE
+                               MOVE    WRK-HKN-KZK-NYUKFTNRATE
                                                   TO  RECE62-KYURATE
                            END-IF
                        ELSE

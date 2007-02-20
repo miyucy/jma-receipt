@@ -285,6 +285,7 @@
       *  03.04.05    NACL-ÌçÏÆ    07/01/16  ¡Ê¡¡¡ËºÆ·Çµ­ºÜ¤Î½¤Àµ
       *  03.04.06    NACL-ÌçÏÆ    07/01/23  Ãí¼Í²Ã»»¤ÎÌ¾¾ÎÊÔ½¸½¤Àµ
       *  03.04.07    NACL-ÌçÏÆ    07/02/14  Ê¡Åç¸©ÈÓ´ÛÂ¼ÂÐ±þ
+      *  03.04.08    NACL-ÌçÏÆ    07/02/19  ËÌ³¤Æ»£µ£±¡Ü£´£±ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -687,8 +688,6 @@
            03  WRK-RENNUM                              PIC 9(02).
       *
            03  WRK-SRYCD                               PIC 9(09).
-      *
-           03  WRK-JYOGEN41                            PIC 9(09).
       *
            03  WRK-SISETU613                           PIC 9(01).
       *
@@ -6221,8 +6220,25 @@
       *
       *    Ê¡²¬£´£±Ï·¿Í
       *    ¹âÃÎ£·£²ÆýÍÄ»ù
+      *    ËÌ³¤Æ»£´£±Ï·¿Í
       *
            EVALUATE   SYS-1001-PREFNUM
+      *
+             WHEN    "01"
+      *
+                IF     (RECE02-KOHNUM(1)    =  "051" OR "091")
+                AND    (RECE02-KOHHBTNUM(2) =  "41"          )
+      *
+                   COMPUTE  WRK-FTNKEI =  RECE02-TOTALTEN(3)
+                                       *  10
+                                       *  RECE02-HON-GAIKFTNRATE(2)
+                                       /  100
+                   MOVE RECE02-FTNMONEY(3) TO RECE02-KOH-SAIKEI
+                   MOVE 1                  TO RECE02-KOH-SAIKEIFLG
+                   MOVE WRK-FTNKEI         TO RECE02-FTNMONEY(3)
+                                              RECE02-FTNMONEY-KOJ(3)
+      *
+                END-IF
       *
              WHEN    "39"
       *
@@ -6245,8 +6261,6 @@
       *
                    IF   RECE02-KOHHBTNUM(KOHFTN-IDX) =  "41"
       *
-                          MOVE    ZERO    TO   WRK-JYOGEN41
-      *
                           COMPUTE  WRK-FTNKEI
                                 =  RECE02-TOTALTEN(KOHFTN-IDX + 1)
                                 *  10
@@ -6256,35 +6270,9 @@
                           COMPUTE  WRK-FTNKEI = WRK-FTNKEI / 10
                           COMPUTE  WRK-FTNKEI = WRK-FTNKEI * 10
       *
-                          IF      RECE02-HON-GAIMNAIJGNGAK (KOHFTN-IDX)
-                                               NOT = ZERO
-                              MOVE
-                                  RECE02-HON-GAIMNAIJGNGAK (KOHFTN-IDX)
-                                               TO   WRK-JYOGEN41
-                          ELSE
-                              IF  RECE02-HON-GAIMGAIJGNGAK (KOHFTN-IDX)
-                                               NOT = ZERO
-                                  MOVE
-                                      RECE02-HON-GAIMGAIJGNGAK
-                                                           (KOHFTN-IDX)
-                                               TO   WRK-JYOGEN41
-                              END-IF
-                          END-IF
-                          IF   WRK-JYOGEN41  =  ZERO
-                              MOVE   WRK-FTNKEI   TO
+                          MOVE     WRK-FTNKEI   TO
                                    RECE02-FTNMONEY(KOHFTN-IDX + 1)
                                    RECE02-FTNMONEY-KOJ(KOHFTN-IDX + 1)
-                          ELSE
-                            IF   WRK-JYOGEN41  <  WRK-FTNKEI
-                              MOVE   WRK-JYOGEN41 TO
-                                   RECE02-FTNMONEY(KOHFTN-IDX + 1) 
-                                   RECE02-FTNMONEY-KOJ(KOHFTN-IDX + 1)
-                            ELSE
-                              MOVE   WRK-FTNKEI   TO
-                                   RECE02-FTNMONEY(KOHFTN-IDX + 1) 
-                                   RECE02-FTNMONEY-KOJ(KOHFTN-IDX + 1)
-                            END-IF
-                          END-IF
       *
                    END-IF
       *
@@ -6341,6 +6329,8 @@
                      OR   RECE02-HON-GAIMGAIJGNGAK(KOHFTN-IDX)
                                            NOT = ZERO
                      OR   RECE02-HON-GAIMJGNCNT   (KOHFTN-IDX)
+                                           NOT = ZERO
+                     OR   RECE02-HON-GAIKJGNGAK   (KOHFTN-IDX)
                                            NOT = ZERO
                         MOVE  "1"  TO
                                 RECE02-ZEROKISAIFLG(KOHFTN-IDX + 1)
