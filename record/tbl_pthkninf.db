@@ -1,5 +1,5 @@
 tbl_pthkninf {
-	HOSPNUM				number(2,0);
+	HOSPID				char(24);
 	PTID				number(10);
 	HKNID				number(10);
 	HKNNUM				char(3);
@@ -23,7 +23,7 @@ tbl_pthkninf {
 };
 
 primary	{
-	HOSPNUM,PTID,HKNID;
+	HOSPID,PTID,HKNID;
 };
 
 path	key 	{
@@ -31,7 +31,7 @@ path	key 	{
 		DECLARE tbl_pthkninf_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_pthkninf
-			WHERE   HOSPNUM    =   :HOSPNUM
+			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 			AND   HKNID       =   :HKNID
 		;
@@ -43,7 +43,7 @@ path	key2 	{
 		DECLARE tbl_pthkninf_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_pthkninf
-			WHERE   HOSPNUM    =   :HOSPNUM
+			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 			ORDER   BY      TEKEDYMD DESC,
 		                	TEKSTYMD DESC,
@@ -57,7 +57,7 @@ path	key3 	{
 		DECLARE tbl_pthkninf_key3_csr CURSOR FOR
 		SELECT *
 		FROM tbl_pthkninf
-			WHERE   HOSPNUM    =   :HOSPNUM
+			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 			AND   HKNID       =   :HKNID
 			AND   TEKSTYMD    <=  :TEKSTYMD
@@ -72,7 +72,7 @@ path	key4 	{
 		DECLARE tbl_pthkninf_key4_csr CURSOR FOR
 		SELECT *
 		FROM tbl_pthkninf
-			WHERE   HOSPNUM    =   :HOSPNUM
+			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 			AND   HKNNUM      =   :HKNNUM
 			AND   TEKSTYMD    =   :TEKSTYMD
@@ -87,7 +87,7 @@ path	key5 	{
 		DECLARE tbl_pthkninf_key5_csr CURSOR FOR
 		SELECT *
 		FROM tbl_pthkninf
-			WHERE   HOSPNUM    =   :HOSPNUM
+			WHERE   HOSPID    =   :HOSPID
 			AND   TEKSTYMD    <=  :TEKSTYMD
 			AND   TEKEDYMD    >=  :TEKEDYMD
 			ORDER   BY      PTID,
@@ -101,7 +101,7 @@ path	key6 	{
 		DECLARE tbl_pthkninf_key6_csr CURSOR FOR
 		SELECT *
 		FROM tbl_pthkninf
-			WHERE   HOSPNUM    =   :HOSPNUM
+			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 			ORDER   BY    HKNID
 		;
@@ -113,7 +113,6 @@ path	all 	{
 		DECLARE tbl_pthkninf_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_pthkninf
-			WHERE   HOSPNUM    =   :HOSPNUM
  		;
 	};
 };
@@ -122,7 +121,7 @@ path	del1 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_pthkninf
-			WHERE   HOSPNUM    =   :HOSPNUM
+			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 		;
 	};
@@ -133,7 +132,7 @@ path	key7 	{
 		DECLARE tbl_pthkninf_key7_csr CURSOR FOR
 		SELECT *
 		FROM tbl_pthkninf
-			WHERE HOSPNUM     =   :HOSPNUM
+			WHERE HOSPID      =   :HOSPID
 			AND   PTID        =   :PTID
 			AND   HKNJANUM    =  :HKNJANUM
 			AND   SAKJOKBN    <> '1'
@@ -141,64 +140,3 @@ path	key7 	{
 		;
 	};
 };
-
-path	key8 	{
-	DBSELECT	{
-		DECLARE tbl_pthkninf_key8_csr CURSOR FOR
-		SELECT *
-		FROM tbl_pthkninf
-			WHERE   HOSPNUM    =   :HOSPNUM
-			AND   PTID        =   :PTID
-			AND   TEKSTYMD    <=  :TEKSTYMD
-			AND   TEKEDYMD    >=  :TEKEDYMD
-			ORDER   BY      HKNNUM,
-                                        TEKSTYMD
-		;
-	};
-};
-
-path	key9 	{
-	DBSELECT	{
-		DECLARE tbl_pthkninf_key9_csr CURSOR FOR
-		SELECT *
-		FROM tbl_pthkninf
-			WHERE HOSPNUM     =   :HOSPNUM
-			AND   PTID        =   :PTID
-			AND   HKNNUM      =   :HKNNUM
-			AND   TEKSTYMD    <=  :TEKSTYMD
-			AND   TEKEDYMD    >=  :TEKEDYMD
-			AND   SAKJOKBN    <> '1'
-			ORDER   BY      HKNID
-		;
-	};
-};
-
-path	key10 	{
-	DBSELECT	{
-		DECLARE tbl_pthkninf_key10_csr CURSOR FOR
-		SELECT *
-		FROM tbl_pthkninf
-			WHERE HOSPNUM     =   :HOSPNUM
-			AND   PTID        =   :PTID
-			AND   HKNNUM      =   :HKNNUM
-			ORDER   BY      HKNID
-		;
-	};
-};
-
-path	key11	{
-	DBSELECT	{
-		DECLARE tbl_pthkninf_key11_csr CURSOR FOR
-		SELECT *
-		FROM tbl_pthkninf
-			WHERE HOSPNUM     =   :HOSPNUM
-			AND   PTID        =   :PTID
-			AND   HKNNUM      in  ('039','040')
-			AND   TEKSTYMD    <=  :TEKSTYMD
-			AND   TEKEDYMD    >=  :TEKEDYMD
-			AND   SAKJOKBN    <> '1'
-			ORDER   BY      HKNID
-		;
-	};
-};
-

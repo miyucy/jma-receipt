@@ -1293,7 +1293,21 @@
                MOVE    SPA-NAME        TO  SPA-GMN-NAMEH
                MOVE    SPA-NAME        TO  SPA-GMN-NAME
             END-IF
+      *     ＱＲデータより
+            IF     (SPA-QR-FLG         =   2 )  AND
+                   (SPA-GMN-PTNUM      =   SPACE )
+               MOVE    P02-P02-KANANAME    TO  SPA-GMN-KANANAME
+               MOVE    P02-P02-NAME        TO  SPA-GMN-NAME
+               MOVE    P02-P02-NAME        TO  SPA-GMN-NAMEH
+               MOVE    P02-P02-SEX         TO  SPA-GMN-SEX
+               MOVE    P02-P02-BIRTHDAY    TO  SPA-GMN-BIRTHDAYW
+               MOVE    P02-P02-HKNJANUM    TO  SPA-GMN-HKNJANUM
+               MOVE    P02-P02-KIGO        TO  SPA-GMN-KIGO
+               MOVE    P02-P02-NUM         TO  SPA-GMN-NUM
+               MOVE    P02-P02-HONKZKBN    TO  SPA-GMN-HONKZKKBN
+               MOVE    SPA-SYSYMDWH        TO  SPA-GMN-HKAKUNINYMD
       *
+           END-IF
            .
        1004-SINKI-PARA-EXT.
            EXIT.
@@ -1457,17 +1471,6 @@
            IF      FLG-PTINF           =   1
                GO      TO      10021-PTINF-SET-EXT
            END-IF
-      *
-      **** 患者マスタ　パラメータ追加
-      *    MOVE    SPACE               TO  PARA-REC
-      *    MOVE    "PTINF"             TO  PARA-FILEMEI
-      *    MOVE    01                  TO  PARA-EDANUM
-      *    MOVE    PTINF-REC           TO  PARA-DATA-REC
-      *    WRITE   PARA-REC
-      *
-      *    MOVE    02                  TO  PARA-EDANUM
-      *    MOVE    PTINF-REC (3001:)   TO  PARA-DATA-REC
-      **** WRITE   PARA-REC
       *
       *    画面編集
            MOVE    PTINF-NAME          TO  SPA-GMN-NAMEH
@@ -3659,7 +3662,7 @@
            END-IF
       *
            .
-       900-SYSTEM-READ--EXT.
+       900-SYSTEM-READ-EXT.
            EXIT.
       *
       *****************************************************************

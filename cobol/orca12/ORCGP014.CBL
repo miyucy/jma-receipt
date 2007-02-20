@@ -28,7 +28,6 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-多々納  05/11/11  MONFUNC 対応 他
-      *  03.05.00    NACL-多々納  07/05/XX  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -170,34 +169,27 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA12SCRAREA.INC".
-      *    COPY    "P02.INC".
-      *    COPY    "P02A.INC".
-      *    COPY    "P02D.INC".
-      *    COPY    "P02E.INC".
-      *    COPY    "P02F.INC".
-      *    COPY    "P014.INC".
-      *    COPY    "P015.INC".
-      *    COPY    "P98.INC".
-      *    COPY    "P981.INC".
-      *    COPY    "P0201.INC".
-      *    COPY    "P982.INC".
-      *    COPY    "P100.INC".
-      *    COPY    "P02X.INC".
-      *    COPY    "P02S.INC".
-      *    COPY    "P02Q.INC".
-      *    COPY    "P02Q1.INC".
-      *    COPY    "P02Y.INC".
-      *    COPY    "P02Y1.INC".
-      *    COPY    "P02G.INC".
-      *    COPY    "P02G2.INC".
-      *    COPY    "P02K.INC".
-      *    COPY    "P02H.INC".
-      *    COPY    "P02T.INC".
-      *    COPY    "PERR.INC".
-      *    COPY    "PID1.INC".
-      *    COPY    "PDMY01.INC".
-      *    COPY    "CPAPIMOD.INC".
+           COPY    "P02.INC".
+           COPY    "P02A.INC".
+      *****COPY    "P02B.INC".
+      *****COPY    "P02C.INC".
+           COPY    "P02D.INC".
+           COPY    "P02E.INC".
+           COPY    "P02F.INC".
+           COPY    "P014.INC".
+           COPY    "P015.INC".
+           COPY    "P98.INC".
+           COPY    "P981.INC".
+      *****COPY    "P99.INC".
+           COPY    "P0201.INC".
+           COPY    "P982.INC".
+           COPY    "P100.INC".
+           COPY    "P02X.INC".
+           COPY    "P02S.INC".
+           COPY    "P02Q.INC".
+           COPY    "P02Q1.INC".
+           COPY    "PERR.INC".
+           COPY    "PID1.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -428,13 +420,7 @@
       *    拡張構成前桁数チェック
            IF      WRK-END         NOT =   SPA-1009-KKCKSIMAEKETA
                MOVE    "0001"          TO  SPA-ERRCD
-           END-IF
-           IF      SPA-ERRCD           =   SPACE
-               IF     SPA-GMN014-PTNUM1(1:1)   =   "*"
-                   MOVE    "0004"              TO  SPA-ERRCD
-               END-IF
-           END-IF
-           IF      SPA-ERRCD           =   SPACE
+           ELSE
                EVALUATE    SPA-1009-KKCKSIKBN
       *        拡張構成 <フリー + 連番号 + フリー>
                    WHEN    "1"
@@ -586,10 +572,10 @@
       *
       *    患者番号変換(管理）を検索
            INITIALIZE                      ORCSPTIDAREA
-           MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
+           MOVE    SPA-HOSPID          TO  SPTID-HOSPID
            MOVE    SPA-GMN014-PTNUM    TO  SPTID-PTNUM
            CALL    "ORCSPTID"      USING   ORCSPTIDAREA
-                                           SPA-AREA
+                                           SPA-1009-TBL
            IF      SPTID-RC            =   ZERO
       *        既に患者番号が登録されている場合
                MOVE    "0003"              TO  SPA-ERRCD
@@ -635,9 +621,6 @@
                    MOVE    "桁数と違います"        TO  SPA-ERRMSG
                WHEN    "0002"
                    MOVE    "検証番号が取得できませんでした。"
-                                           TO  SPA-ERRMSG
-               WHEN    "0004"
-                   MOVE    "１桁目に ＊ は設定できません。"
                                            TO  SPA-ERRMSG
                WHEN    "0003"
                    MOVE    "既に登録済の患者番号です"  TO  SPA-ERRMSG
@@ -689,9 +672,9 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        900-PUT-WINDOW-EXT.

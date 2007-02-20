@@ -28,7 +28,6 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-多々納  05/11/11  MONFUNC 対応 他
-      *  03.05.00    NACL-多々納  07/05/XX  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -41,9 +40,6 @@
       *
       *
        WORKING-STORAGE             SECTION.
-      *
-      *    画面非表示
-           COPY    "ENUM-VALUE".
       *
       *    スパ領域
            COPY    "COMMON-SPA".
@@ -58,8 +54,6 @@
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-PTINF           PIC 9(01).
-           03  FLG-PTSAME          PIC 9(01).
-           03  FLG-OK              PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -120,9 +114,6 @@
        01  PTNUM-REC.
            COPY    "CPPTNUM.INC".
       *
-      *    同一患者識別テーブル
-       01  PTSAME-REC.
-           COPY    "CPPTSAME.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -151,34 +142,27 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA12SCRAREA.INC".
-      *    COPY    "P02.INC".
-      *    COPY    "P02A.INC".
-      *    COPY    "P02D.INC".
-      *    COPY    "P02E.INC".
-      *    COPY    "P02F.INC".
-      *    COPY    "P014.INC".
-      *    COPY    "P015.INC".
-      *    COPY    "P98.INC".
-      *    COPY    "P981.INC".
-      *    COPY    "P0201.INC".
-      *    COPY    "P982.INC".
-      *    COPY    "P100.INC".
-      *    COPY    "P02X.INC".
-      *    COPY    "P02S.INC".
-      *    COPY    "P02Q.INC".
-      *    COPY    "P02Q1.INC".
-      *    COPY    "P02Y.INC".
-      *    COPY    "P02Y1.INC".
-      *    COPY    "P02G.INC".
-      *    COPY    "P02G2.INC".
-      *    COPY    "P02K.INC".
-      *    COPY    "P02H.INC".
-      *    COPY    "P02T.INC".
-      *    COPY    "PERR.INC".
-      *    COPY    "PID1.INC".
-      *    COPY    "PDMY01.INC".
-      *    COPY    "CPAPIMOD.INC".
+           COPY    "P02.INC".
+           COPY    "P02A.INC".
+      *****COPY    "P02B.INC".
+      *****COPY    "P02C.INC".
+           COPY    "P02D.INC".
+           COPY    "P02E.INC".
+           COPY    "P02F.INC".
+           COPY    "P014.INC".
+           COPY    "P015.INC".
+           COPY    "P98.INC".
+           COPY    "P981.INC".
+      *****COPY    "P99.INC".
+           COPY    "P0201.INC".
+           COPY    "P982.INC".
+           COPY    "P100.INC".
+           COPY    "P02X.INC".
+           COPY    "P02S.INC".
+           COPY    "P02Q.INC".
+           COPY    "P02Q1.INC".
+           COPY    "PERR.INC".
+           COPY    "PID1.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -263,12 +247,6 @@
       *****************************************************************
        300-SCREEN-SEC             SECTION.
       *
-           IF      SPA-GMN2E-SYORI     =   ZERO
-               MOVE    "＜患者複写＞"          TO  SPA-GMN2F-MIDASI
-           ELSE
-               MOVE    "＜患者紐付け複写＞"    TO  SPA-GMN2F-MIDASI
-           END-IF
-      *
            MOVE    ZERO                TO  SPA-GMN2F-SELNUM
            MOVE    ZERO                TO  SPA-GMN2F-MAX
            IF      SPA-GMN2F-KNJKEY    =   SPACE
@@ -319,11 +297,7 @@
       *
       *    漢字検索
            INITIALIZE                  PTINF-REC
-           IF      SPA-GMN2E-GRPHOSPNUM    =   SPACE
-               MOVE    SPA-HOSPNUM             TO  PTINF-HOSPNUM
-           ELSE
-               MOVE    SPA-GMN2E-GRPHOSPNUM    TO  PTINF-HOSPNUM
-           END-IF
+           MOVE    SPA-HOSPID          TO  PTINF-HOSPID
            MOVE    SPACE               TO  PTINF-NAME
            MOVE    SPA-GMN2F-KNJKEY(1:WRK-MOJISU)
                                        TO  PTINF-NAME(1:WRK-MOJISU)
@@ -350,20 +324,7 @@
            MOVE    ZERO                TO  IDX
            PERFORM UNTIL      (IDX             >=  100       ) OR
                               (FLG-PTINF       =   1          )
-               MOVE    ZERO            TO  FLG-OK
-      *        患者紐付け判定
-               IF      SPA-GMN2E-GRPHOSPNUM    =   SPACE
-                   MOVE    1                   TO  FLG-OK
-               ELSE
-                   PERFORM 410111-PTSAME-CHK-SEC
-               END-IF
-      *
-               IF      FLG-OK              =   1
-                   ADD     1                   TO  IDX
-                   IF      IDX                 <=  100
-                       PERFORM 2012-PTINF-HENSYU-SEC
-                   END-IF
-               END-IF
+               PERFORM 2012-PTINF-HENSYU-SEC
       *
                MOVE    "tbl_ptinf"         TO  MCP-TABLE
                MOVE    "key5"              TO  MCP-PATHNAME
@@ -388,22 +349,21 @@
       *****************************************************************
        2012-PTINF-HENSYU-SEC          SECTION.
       *
+           ADD     1                   TO  IDX
+      *
+           IF      IDX                 >   100
+               GO      TO    2012-PTINF-HENSYU-EXT
+           END-IF
            MOVE    IDX                 TO  SPA-GMN2F-SEQNUM (IDX)
       *
       *    患者番号変換より、患者IDより患者NOを取得する
            MOVE    PTINF-PTID          TO  SPA-GMN2F-PTID  (IDX)
       *
            INITIALIZE                      ORCSPTIDAREA
-           IF      SPA-GMN2E-GRPHOSPNUM    =   SPACE
-               MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
-           ELSE
-               MOVE    SPA-GMN2E-GRPHOSPNUM
-                                           TO  SPTID-HOSPNUM
-               MOVE    1                   TO  SPTID-SYS1009-KBN
-           END-IF
+           MOVE    SPA-HOSPID          TO  SPTID-HOSPID
            MOVE    PTINF-PTID          TO  SPTID-PTID
            CALL    "ORCSPTID"          USING   ORCSPTIDAREA
-                                               SPA-AREA
+                                               SPA-1009-TBL
            IF      SPTID-RC        NOT =   ZERO
                MOVE    SPACE           TO  SPA-GMN2F-PTNUM  (IDX)
            ELSE
@@ -420,62 +380,6 @@
        2012-PTINF-HENSYU-EXT.
            EXIT.
            .
-      *
-      *****************************************************************
-      *    患者紐付け判定処理
-      *****************************************************************
-       410111-PTSAME-CHK-SEC           SECTION.
-      *
-           INITIALIZE                      PTSAME-REC
-           MOVE    PTINF-HOSPNUM       TO  PTSAME-HOSPNUM
-           MOVE    PTINF-PTID          TO  PTSAME-PTID
-           MOVE    PTSAME-REC          TO  MCPDATA-REC
-           MOVE    "tbl_ptsame"        TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 900-PTSAME-READ-SEC
-           ELSE
-               MOVE    1               TO  FLG-PTSAME
-           END-IF
-           MOVE    "tbl_ptsame"        TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           IF      FLG-PTSAME          =   1
-               MOVE    1                   TO  FLG-OK
-           ELSE
-      *        同一医療機関で登録済み
-               MOVE    PTSAME-REC          TO  MCPDATA-REC
-               MOVE    "tbl_ptsame"        TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
-               PERFORM 910-DBSELECT-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    "tbl_ptsame"        TO  MCP-TABLE
-                   MOVE    "key2"              TO  MCP-PATHNAME
-                   PERFORM 900-PTSAME-READ-SEC
-               ELSE
-                   MOVE    1               TO  FLG-PTSAME
-               END-IF
-               MOVE    1                   TO  FLG-OK
-               PERFORM UNTIL   (FLG-PTSAME     =   1 )
-                   IF     (PTSAME-HOSPNUM      =   SPA-HOSPNUM   )
-                       MOVE    ZERO                TO  FLG-OK
-                   END-IF
-      *
-                   MOVE    "tbl_ptsame"        TO  MCP-TABLE
-                   MOVE    "key2"              TO  MCP-PATHNAME
-                   PERFORM 900-PTSAME-READ-SEC
-               END-PERFORM
-               MOVE    "tbl_ptsame"        TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
-               PERFORM 990-DBCLOSE-SEC
-           END-IF
-           .
-       410111-PTSAME-CHK-EXT.
-           EXIT.
-      *
       *
       *****************************************************************
       *    画面遷移処理
@@ -661,13 +565,6 @@
       *
            MOVE    SPA-GMN2F-SELNUM    TO  P02F-SELNUM
       *
-           MOVE    SPA-GMN2F-MIDASI    TO  P02F-MIDASI-VALUE
-           IF      SPA-GMN2E-SYORI     =   ZERO
-               MOVE    "black"             TO  P02F-MIDASI-STYLE
-           ELSE
-               MOVE    "red"               TO  P02F-MIDASI-STYLE
-           END-IF
-      *
            PERFORM 5001-MAPCUR-SEC
       *
            .
@@ -758,7 +655,10 @@
       *****************************************************************
        810-PTINF-READ-SEC         SECTION.
       *
-           PERFORM 920-DBFETCH-SEC
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  PTINF-REC
                MOVE    ZERO            TO  FLG-PTINF
@@ -770,22 +670,6 @@
            .
        810-PTINF-READ-EXT.
            EXIT.
-      *****************************************************************
-      *    同一患者識別マスター読込処理
-      *****************************************************************
-       900-PTSAME-READ-SEC         SECTION.
-      *
-           PERFORM 920-DBFETCH-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    ZERO                TO  FLG-PTSAME
-               MOVE    MCPDATA-REC         TO  PTSAME-REC
-           ELSE
-               MOVE    1                   TO  FLG-PTSAME
-           END-IF
-      *
-           .
-       900-PTSAME-READ-EXT.
-           EXIT.
       *
       *****************************************************************
       *    テーブル検索処理
@@ -793,9 +677,9 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        910-DBSELECT-EXT.
@@ -806,9 +690,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
       *
@@ -821,9 +705,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        990-DBCLOSE-EXT.
@@ -835,9 +719,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        900-PUT-WINDOW-EXT.

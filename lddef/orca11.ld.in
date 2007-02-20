@@ -1,0 +1,52 @@
+name	orca11;
+
+arraysize	20;
+textsize	400;
+
+bind	""		"OpenCOBOL"	"ORCGU02";
+bind	"U02"		"OpenCOBOL"	"ORCGU02";
+bind	"U02Q"		"OpenCOBOL"	"ORCGU02Q";
+bind	"U02X"		"OpenCOBOL"	"ORCGU02X";
+bind	"U2ERR"		"OpenCOBOL"	"ORCGU2ERR";
+
+multiplex_group	orca11;
+
+
+data	{
+	spa	orcaspa;
+	window	{
+		U02;
+		U02Q;
+		U02X;
+		U2ERR;
+	};
+};
+
+/*
+db	{
+	tbl_syskanri;
+	tbl_hkncombi;
+	tbl_hknnum;
+	tbl_jyurrk;
+	tbl_srykarrk;
+	tbl_ptbyomei;
+	tbl_ptcom;
+	tbl_ptnum;
+	tbl_pthkninf;
+	tbl_ptkohinf;
+	tbl_ptinf;
+	tbl_sryacct;
+	tbl_sryact;
+	tbl_tensu;
+	tbl_uketuke;
+	tbl_yyk;
+	tbl_wksryact;
+	tbl_hknjainf;
+	tbl_ptrsiinf;
+	tbl_ldmap;
+	tbl_lock;
+};
+*/
+
+#include "orcadb.inc"
+#include "orcadbh.inc"

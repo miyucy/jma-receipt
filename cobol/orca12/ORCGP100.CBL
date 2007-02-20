@@ -29,7 +29,6 @@
       * Maj/Min/Rev  修正者       日付      内容
       * 01.00.01     NACL-多々納  02/11/20  GO TO 修正
       * 01.00.02     NACL-多々納  05/11/14  MONFUNC 対応 他
-      *  03.05.00    NACL-多々納  07/05/XX  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -142,8 +141,6 @@
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
-      *    全角チェックパラメタ（拡張）
-           COPY    "CPORCSKANACHK2.INC".
       *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
@@ -163,34 +160,27 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA12SCRAREA.INC".
-      *    COPY    "P02.INC".
-      *    COPY    "P02A.INC".
-      *    COPY    "P02D.INC".
-      *    COPY    "P02E.INC".
-      *    COPY    "P02F.INC".
-      *    COPY    "P014.INC".
-      *    COPY    "P015.INC".
-      *    COPY    "P98.INC".
-      *    COPY    "P981.INC".
-      *    COPY    "P0201.INC".
-      *    COPY    "P982.INC".
-      *    COPY    "P100.INC".
-      *    COPY    "P02X.INC".
-      *    COPY    "P02S.INC".
-      *    COPY    "P02Q.INC".
-      *    COPY    "P02Q1.INC".
-      *    COPY    "P02Y.INC".
-      *    COPY    "P02Y1.INC".
-      *    COPY    "P02G.INC".
-      *    COPY    "P02G2.INC".
-      *    COPY    "P02K.INC".
-      *    COPY    "P02H.INC".
-      *    COPY    "P02T.INC".
-      *    COPY    "PERR.INC".
-      *    COPY    "PID1.INC".
-      *    COPY    "PDMY01.INC".
-      *    COPY    "CPAPIMOD.INC".
+           COPY    "P02.INC".
+           COPY    "P02A.INC".
+      *****COPY    "P02B.INC".
+      *****COPY    "P02C.INC".
+           COPY    "P02D.INC".
+           COPY    "P02E.INC".
+           COPY    "P02F.INC".
+           COPY    "P014.INC".
+           COPY    "P015.INC".
+           COPY    "P98.INC".
+           COPY    "P981.INC".
+      *****COPY    "P99.INC".
+           COPY    "P0201.INC".
+           COPY    "P982.INC".
+           COPY    "P100.INC".
+           COPY    "P02X.INC".
+           COPY    "P02S.INC".
+           COPY    "P02Q.INC".
+           COPY    "P02Q1.INC".
+           COPY    "PERR.INC".
+           COPY    "PID1.INC".
       *
        PROCEDURE                                 DIVISION    USING
                                                  MCPAREA
@@ -389,75 +379,35 @@
       *****************************************************************
        4100-KANJINAME-CHK-SEC          SECTION.
       *
-      *    一括入力
-           MOVE    ZERO                TO  SPA-GMN-P100-CUR
-           MOVE    P100-KANJINAME (01)
-                                       TO  SPA-GMN-P100-KANJINAME (01)
-           MOVE    P100-KANJINAME (02)
-                                       TO  SPA-GMN-P100-KANJINAME (02)
-           PERFORM VARYING     IDX1    FROM    1   BY  1
-                   UNTIL      (IDX1    >    2   )  OR
-                              (SPA-ERRCD    NOT =   SPACE )
-      *        未入力時はチェックを行わない 
-               IF    ( SPA-GMN-P100-KANJINAME (IDX1)
-                                       NOT =   SPACE )
-      *            半角混入チェック
-                   INITIALIZE  WRK-HENKAN-AREA
-                   MOVE    SPA-GMN-P100-KANJINAME (IDX1)
-                                               TO  WRK-MAE-INPUT
-                   MOVE    50                  TO  WRK-MAX
-                   PERFORM 890-HALF-ZEN2-SEC
-                   MOVE    WRK-ATO-INPUT   TO  SPA-GMN-P100-KANJINAME
-                                                               (IDX1)
-                   IF      SPA-ERRCD           =   SPACE
-                       MOVE    WRK-ATO-INPUT
-                                           TO  SPA-GMN-P100-KANJINAME
-                                                                (IDX1)
-                   ELSE
-                       IF      IDX1        =   1
-                           MOVE    2           TO  SPA-GMN-P100-CUR
-                       ELSE
-                           MOVE    4           TO  SPA-GMN-P100-CUR
-                       END-IF
-                   END-IF
-               END-IF
-           END-PERFORM
-           IF      SPA-ERRCD           =   SPACE
-	       IF    ( WRK-WIDGET8     NOT =   ZERO )
-                   MOVE    WRK-WIDGET8         TO  IDX1
-                   PERFORM 4100-KANJINAME-CUR-SET-SEC
-	       END-IF
-           END-IF
+           COMPUTE SPA-GMN-P100-CUR    =   ( WRK-WIDGET8 - 1 ) * 2 + 2
       *
-      **** COMPUTE SPA-GMN-P100-CUR    =   ( WRK-WIDGET8 - 1 ) * 2 + 2
+           MOVE    WRK-WIDGET8         TO  IDX1
       *
-      *    MOVE    WRK-WIDGET8         TO  IDX1
-      *
-      *    MOVE    P100-KANJINAME (IDX1)
-      *                                TO  SPA-GMN-P100-KANJINAME (IDX1)
+           MOVE    P100-KANJINAME (IDX1)
+                                       TO  SPA-GMN-P100-KANJINAME (IDX1)
       *
       *    未入力時はチェックを行わない
-      *    IF  ( SPA-GMN-P100-KANJINAME (IDX1)
-      *                                =   SPACE )
-      *        PERFORM 4100-KANJINAME-CUR-SET-SEC
-      *        GO  TO  4100-KANJINAME-CHK-EXT
+           IF  ( SPA-GMN-P100-KANJINAME (IDX1)
+                                       =   SPACE )
+               PERFORM 4100-KANJINAME-CUR-SET-SEC
+               GO  TO  4100-KANJINAME-CHK-EXT
       *
-      *    END-IF
+           END-IF
       *
       *    半角混入チェック
-      *    INITIALIZE  WRK-HENKAN-AREA
-      *    MOVE    SPA-GMN-P100-KANJINAME (IDX1)
-      *                                TO  WRK-MAE-INPUT
-      *    MOVE    50                  TO  WRK-MAX
-      *    PERFORM 890-HALF-ZEN-SEC
-      *    MOVE    WRK-ATO-INPUT       TO  SPA-GMN-P100-KANJINAME (IDX1)
-      *    IF      SPA-ERRCD           =   SPACE
-      *        MOVE    WRK-ATO-INPUT   TO  SPA-GMN-P100-KANJINAME (IDX1)
-      *    ELSE
-      *        GO  TO  4100-KANJINAME-CHK-EXT
-      *    END-IF
+           INITIALIZE  WRK-HENKAN-AREA
+           MOVE    SPA-GMN-P100-KANJINAME (IDX1)
+                                       TO  WRK-MAE-INPUT
+           MOVE    50                  TO  WRK-MAX
+           PERFORM 890-HALF-ZEN-SEC
+           MOVE    WRK-ATO-INPUT       TO  SPA-GMN-P100-KANJINAME (IDX1)
+           IF      SPA-ERRCD           =   SPACE
+               MOVE    WRK-ATO-INPUT   TO  SPA-GMN-P100-KANJINAME (IDX1)
+           ELSE
+               GO  TO  4100-KANJINAME-CHK-EXT
+           END-IF
       *
-      ***  PERFORM 4100-KANJINAME-CUR-SET-SEC
+           PERFORM 4100-KANJINAME-CUR-SET-SEC
       *
            .
        4100-KANJINAME-CHK-EXT.
@@ -505,8 +455,6 @@
                    MOVE    50      TO  IDX2
                END-IF
            END-PERFORM
-      *    カーソル設定
-           PERFORM 4100-SELNUM-CUR-SET-SEC
       *
            .
        4101-KANJILSTSEL-CHK-EXT.
@@ -598,26 +546,20 @@
       *****************************************************************
        490-KANJINAME-SET-SEC        SECTION.
       *
-      ***  PERFORM VARYING IDX1    FROM    1   BY  1
-      *        UNTIL     ( IDX1    >   2 )
+           PERFORM VARYING IDX1    FROM    1   BY  1
+               UNTIL     ( IDX1    >   2 )
       *        半角混入チェック
-      *        INITIALIZE  WRK-HENKAN-AREA
-      *        MOVE    SPA-GMN-P100-KANJINAME (IDX1)
-      *                        TO  WRK-MAE-INPUT
-      *        MOVE    50                  TO  WRK-MAX
-      *        PERFORM 890-HALF-ZEN-SEC
-      *        MOVE    WRK-ATO-INPUT
-      *                            TO  SPA-GMN-P100-KANJINAME (IDX1)
-      *        IF  ( SPA-ERRCD     NOT =   SPACE )
-      *            GO  TO  490-KANJINAME-SET-EXT
-      *        END-IF
-      *****END-PERFORM
-      *    氏名チェック
-           MOVE    ZERO            TO  WRK-WIDGET
-           PERFORM 4100-KANJINAME-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-                GO  TO  490-KANJINAME-SET-EXT
-           END-IF
+               INITIALIZE  WRK-HENKAN-AREA
+               MOVE    SPA-GMN-P100-KANJINAME (IDX1)
+                               TO  WRK-MAE-INPUT
+               MOVE    50                  TO  WRK-MAX
+               PERFORM 890-HALF-ZEN-SEC
+               MOVE    WRK-ATO-INPUT
+                                   TO  SPA-GMN-P100-KANJINAME (IDX1)
+               IF  ( SPA-ERRCD     NOT =   SPACE )
+                   GO  TO  490-KANJINAME-SET-EXT
+               END-IF
+           END-PERFORM
       *
       *    漢字氏名を設定し、Ｐ０２に戻る
            MOVE    1               TO  CNT-KANJINAME
@@ -691,26 +633,24 @@
       *
                    IF  (   FLG-JINMEI      =   ZERO )
       *                タイムスタンプを更新する
-                       MOVE    SPA-HOSPNUM         TO  JINMEI-HOSPNUM
                        MOVE    JINMEI-REC          TO  MCPDATA-REC
                        MOVE    "DBUPDATE"          TO  MCP-FUNC
                        MOVE    "tbl_jinmei"        TO  MCP-TABLE
                        MOVE    "upd1"              TO  MCP-PATHNAME
-grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                           MCPDATA-REC
-                                                           SPA-AREA
+                       CALL    "MONFUNC"           USING
+                                                   MCPAREA
+                                                   MCPDATA-REC
                    ELSE
       *
                        DISPLAY "DBINSERT " JINMEI-REC
       *                人名テーブル追加処理
-                       MOVE    SPA-HOSPNUM         TO  JINMEI-HOSPNUM
                        MOVE    JINMEI-REC          TO  MCPDATA-REC
                        MOVE    "DBINSERT"          TO  MCP-FUNC
                        MOVE    "tbl_jinmei"        TO  MCP-TABLE
                        MOVE    "key"               TO  MCP-PATHNAME
-grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                           MCPDATA-REC
-                                                           SPA-AREA
+                       CALL    "MONFUNC"           USING
+                                                   MCPAREA
+                                                   MCPDATA-REC
                    END-IF
       *
                END-IF
@@ -857,6 +797,11 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        890-HALF-ZEN-SEC         SECTION.
       *
+      *    IF  ( WRK-MAE-INPUT  =      SPACE )
+      *        MOVE    SPACE    TO     WRK-ATO-INPUT
+      *        GO  TO  890-HALF-ZEN-EXT
+      *    END-IF
+      *
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI
            MOVE    WRK-MAE-INPUT       TO  KANACHK-MAE-INPUT
@@ -876,45 +821,6 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    半角空白を全角空白へ変換処理
-      *****************************************************************
-       890-HALF-ZEN2-SEC         SECTION.
-      *
-           IF     SPA-ENCODING         =   2
-      *        拡張漢字対応
-               PERFORM 8910-HALF-ZENC2-SEC
-           ELSE
-      *        拡張漢字不可
-               PERFORM 890-HALF-ZEN-SEC
-           END-IF
-      *
-           .
-       891-HALF-ZEN2-EXT.
-           EXIT.
-      *****************************************************************
-      *    半角空白を全角空白へ変換処理（外字あり）
-      *****************************************************************
-       8910-HALF-ZENC2-SEC         SECTION.
-      *
-           INITIALIZE                  ORCSKANACHK2AREA
-           MOVE    "1"                 TO  KANACHK2-SYORI
-           MOVE    WRK-MAE-INPUT       TO  KANACHK2-MAE-INPUT
-           CALL    "ORCSKANACHK2"      USING
-                                       ORCSKANACHK2AREA
-           MOVE    WRK-MAX             TO  KANACHK2-MAX-CNT
-           IF     (KANACHK2-RC      NOT =   ZERO  )  OR
-                  (KANACHK2-SYUBETU     =   1     )
-               MOVE    "0002"               TO  SPA-ERRCD
-               MOVE    KANACHK2-MAE-INPUT   TO  WRK-ATO-INPUT
-           ELSE
-               MOVE    KANACHK2-OUT-INPUT   TO  WRK-ATO-INPUT
-           END-IF
-      *
-           .
-       8910-HALF-ZENC2-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    ＤＢ検索処理
       *****************************************************************
        900-JINMEI-READ-SEC             SECTION.
@@ -922,7 +828,6 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    ZERO                TO  FLG-JINMEI
       *
       *    人名テーブル検索
-           MOVE    SPA-HOSPNUM         TO  JINMEI-HOSPNUM
            MOVE    JINMEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_jinmei"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -955,9 +860,9 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DB-SELECT-SEC               SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
       *
@@ -969,9 +874,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DB-READ-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
       *
@@ -983,9 +888,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DB-CLOSE-SEC                SECTION.
       *
            MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
       *
@@ -997,9 +902,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        900-PUT-WINDOW              SECTION.
       *
            MOVE    "PUTWINDOW"     TO  MCP-FUNC.
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        900-PUT-WINDOW-EXT.

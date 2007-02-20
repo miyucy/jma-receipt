@@ -56,6 +56,7 @@
       *  02.00.11    NACL-多々納  06/02/24  主科対応対応
       *  03.00.01    NACL-多々納  06/08/25  平成１８年１０月改正対応
       *                                     （老人割合変更）
+      *  03.04.00    NACL-多々納  07/02/16  ＱＲ受付対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -101,6 +102,7 @@
            03  FLG-RECECOM         PIC 9(01).
            03  FLG-PTRSIINF        PIC 9(01).
            03  FLG-MONTHLYNUM      PIC 9(01).
+           03  FLG-QRCDHKN         PIC 9(01).
       *
            03  FLG-PTNYUINRRK      PIC 9(01).
            03  FLG-PTTAINFUKA      PIC 9(01).
@@ -387,6 +389,10 @@
        01  RYOCOM-REC.
            COPY    "CPRYOCOM.INC".
       *
+      *    QRコード(被保険者証)
+       01  QRCDHKN-REC.
+           COPY    "CPQRCDHKN.INC".
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -457,6 +463,8 @@
            COPY    "P100.INC".
            COPY    "P02X.INC".
            COPY    "P02S.INC".
+           COPY    "P02Q.INC".
+           COPY    "P02Q1.INC".
            COPY    "PERR.INC".
            COPY    "PID1.INC".
       *
@@ -645,10 +653,12 @@
                        MOVE    SPA-GMN014-PTNUM    TO  SPA-GMN-PTNUM
                        MOVE    1                   TO  SPA-P02-SYORI
                        IF      SPA-GMN014-SYORI    =   ZERO
+                          AND  SPA-QR-FLG          =   ZERO
                            PERFORM 310-SPA-SET-SEC
                        ELSE
                            MOVE    1                   TO  P02-PAGENO
                        END-IF
+                       MOVE    ZERO                TO  SPA-QR-FLG
                        MOVE    1                   TO  SPA-GMN-CUR
                        MOVE    SPACE               TO  SPA-P02-WIDGET
                    END-IF
@@ -695,6 +705,19 @@
                        MOVE    1                   TO  SPA-GMN-CUR
                    ELSE
                        PERFORM 3009-CLAIM-SYORI-SEC
+                   END-IF
+      *!
+      *        ＱＲより
+               WHEN    "P02Q"
+                   MOVE    "P02"               TO  SPA-P02-GAMEN
+                   IF      SPA-QR-SYORI        =   SPACE
+                       IF      SPA-GMN-PTNUM       =   SPACE
+                           MOVE    0                   TO  SPA-GMN-CUR
+                       ELSE
+                           MOVE    1                   TO  SPA-GMN-CUR
+                       END-IF
+                   ELSE
+                       PERFORM 3010-QRDATA-SYORI-SEC
                    END-IF
       *        各画面より
                WHEN    OTHER
@@ -938,7 +961,186 @@
           .
        3009-CLAIM-SYORI-EXT.
            EXIT.
+      *****************************************************************
+      *    ＱＲ受付データより処理
+      *****************************************************************
+       3010-QRDATA-SYORI-SEC              SECTION.
       *
+           INITIALIZE                      QRCDHKN-REC
+           MOVE    SPA-HOSPID          TO  QRCDHKN-HOSPID
+           MOVE    SPA-QR-REGISTYMD    TO  QRCDHKN-REGISTYMD
+           MOVE    SPA-QR-REGISTID     TO  QRCDHKN-REGISTID
+           MOVE    QRCDHKN-REC         TO  MCPDATA-REC
+           MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 900-QRCDHKN-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-QRCDHKN
+               INITIALIZE                      QRCDHKN-REC
+           END-IF
+           MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           EVALUATE    SPA-QR-SYORI
+               WHEN    "1"
+      *            患者新規
+                   PERFORM 30101-QRDATA-INS-SEC
+               WHEN    "2"
+               WHEN    "4"
+      *            保険更新
+                   MOVE    SPA-QR-PTNUM        TO  P02-PTNUM
+                   MOVE    1                   TO  SPA-QR-FLG
+      *            患者番号入力処理
+                   PERFORM 4100-PTNUM-SYORI-SEC
+      *            保険更新
+                   PERFORM 30102-HKNUPD-SYORI-SEC
+                   MOVE    ZERO                TO  SPA-QR-FLG
+      *
+               WHEN    "3"
+      *            保険追加
+                   MOVE    SPA-QR-PTNUM        TO  P02-PTNUM
+                   MOVE    1                   TO  SPA-QR-FLG
+      *            患者番号入力処理
+                   PERFORM 4100-PTNUM-SYORI-SEC
+                   MOVE    ZERO                TO  SPA-QR-FLG
+      *            保険追加
+                   PERFORM 30103-HKNINS-SYORI-SEC
+           END-EVALUATE
+      *
+          .
+       3010-QRDATA-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者新規処理
+      *****************************************************************
+       30101-QRDATA-INS-SEC          SECTION.
+      *
+           IF      SPA-GMN-PTNUM   NOT =   SPACE
+               MOVE    ZERO                TO  SPA-GMN-PTID
+               MOVE    SPACE               TO  SPA-GMN-PTNUM
+      *        各画面を初期編集する
+               MOVE    1                   TO  SPA-P02-SYORI
+               PERFORM 310-SPA-SET-SEC
+           END-IF
+      *    各画面を初期編集する
+           MOVE    ZERO                TO  SPA-GMN-PTID
+           MOVE    SPACE               TO  SPA-GMN-PTNUM
+           MOVE    2                   TO  SPA-QR-FLG
+           MOVE    1                   TO  SPA-P02-SYORI
+           MOVE    "P02 "              TO  SPA-P02-GAMEN
+           MOVE    SPACE               TO  MCP-EVENT
+           MOVE    SPACE               TO  MCP-WIDGET
+           MOVE    SPACE               TO  MCP-STATUS
+      *    ＱＲ情報
+           MOVE    QRCDHKN-KANANAME    TO  P02-P02-KANANAME
+           MOVE    QRCDHKN-NAME        TO  P02-P02-NAME
+           IF      QRCDHKN-SEX         =   "1"
+               MOVE    SPA-GMN-SEX-LST (1) TO  P02-P02-SEX
+           ELSE
+               MOVE    SPA-GMN-SEX-LST (2) TO  P02-P02-SEX
+           END-IF
+           MOVE    QRCDHKN-BIRTHDAY    TO  P02-P02-BIRTHDAY
+           MOVE    QRCDHKN-HKNNUM      TO  P02-P02-HKNJANUM
+           MOVE    QRCDHKN-KIGO        TO  P02-P02-KIGO
+           MOVE    QRCDHKN-NUM         TO  P02-P02-NUM
+           MOVE    QRCDHKN-HONKZKKBN   TO  P02-P02-HONKZKBN
+           MOVE    SPA-SYSYMDWH        TO  P02-P02-HKAKUNINYMD
+      *
+           MOVE    "P02 "              TO  SPA-P02-GAMEN
+           PERFORM 3002-GMNSET-SEC
+           MOVE    ZERO                TO  SPA-GMN-CUR
+      *
+           .
+       30101-QRDATA-INS-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＱＲ保険更新処理
+      *****************************************************************
+       30102-HKNUPD-SYORI-SEC          SECTION.
+      *
+      *    保険更新
+           IF     (SPA-QR-HKNID         =   SPA-NAI-HKNID )  AND
+                  (SPA-GMN-HKNJANUM     =   QRCDHKN-HKNNUM)   AND
+                  (SPA-GMN-HONKZKKBN    =   QRCDHKN-HONKZKKBN) AND
+                  (SPA-GMN-KIGO         =   QRCDHKN-KIGO )     AND
+                  (SPA-GMN-NUM          =   QRCDHKN-NUM  )
+      *        確認日付変更
+               MOVE    SPA-SYSYMDWH        TO  SPA-GMN-HKAKUNINYMD
+      *        当日有効な場合、確認日付のみ変更
+               IF     (SPA-NAI-HTEKSTYMD   <=  SPA-SYSYMD )
+                  AND (SPA-NAI-HTEKEDYMD   >=  SPA-SYSYMD )
+                   MOVE    19                  TO  SPA-GMN-CUR
+                   MOVE    "P02_HKAKUNINYMD"   TO  MCP-WIDGET
+               ELSE
+      *            有効終了日
+                   MOVE    SPACE               TO  SPA-GMN-HTEKEDYMD
+                   MOVE    17                  TO  SPA-GMN-CUR
+                   MOVE    "P02_HTEKEDYMD"     TO  MCP-WIDGET
+               END-IF
+      *        保険情報チェックサブ
+               CALL    "ORCSP03A"      USING   SPA-AREA
+                                               SPA-P02SCRAREA
+                                               SPA-P02KYOUTU
+               MOVE    MCP-WIDGET          TO  SPA-P02-WIDGET
+           ELSE
+      *        保険追加
+               PERFORM 30103-HKNINS-SYORI-SEC
+           END-IF
+      *
+           MOVE    "1"                 TO  SPA-UPDFLG
+      *
+           .
+       30102-HKNUPD-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＱＲ保険追加処理
+      *****************************************************************
+       30103-HKNINS-SYORI-SEC          SECTION.
+      *
+           PERFORM 500-GMNHEN-SEC
+      *    追加の判定
+           INITIALIZE                  SPA-GMN-HKN-AREA
+           MOVE    ZERO                TO  SPA-NAI-HKNSTR
+           MOVE    8                   TO  SPA-GMN-CUR
+      *
+      *    保険情報のクリア
+           MOVE    SPACE               TO  P02-P02-HKNNUM
+           MOVE    SPACE               TO  P02-P02-HOJOKBN
+           MOVE    SPACE               TO  P02-P02-CONTKBN
+           MOVE    SPACE               TO  P02-P02-HTEKSTYMD
+           MOVE    SPACE               TO  P02-P02-HTEKEDYMD
+           MOVE    SPACE               TO  P02-P02-SKKGETYMD
+           MOVE    SPACE               TO  P02-P02-HIHKNJANAME
+      *    ＱＲ情報
+           MOVE    QRCDHKN-HKNNUM      TO  P02-P02-HKNJANUM
+           MOVE    QRCDHKN-KIGO        TO  P02-P02-KIGO
+           MOVE    QRCDHKN-NUM         TO  P02-P02-NUM
+           MOVE    QRCDHKN-HONKZKKBN   TO  P02-P02-HONKZKBN
+           MOVE    SPA-SYSYMDWH        TO  P02-P02-HKAKUNINYMD
+      *
+           MOVE    "P02 "              TO  SPA-P02-GAMEN
+           MOVE    SPACE               TO  MCP-EVENT
+           MOVE    "P02_HKNJANUM"      TO  MCP-WIDGET
+           MOVE    SPACE               TO  MCP-WIDGET
+           MOVE    SPACE               TO  MCP-STATUS
+           PERFORM 3002-GMNSET-SEC
+      *    資格取得日へ
+           MOVE    15                  TO  SPA-GMN-CUR
+           MOVE    "P02_SKKGETYMD"     TO  MCP-WIDGET
+           MOVE    MCP-WIDGET          TO  SPA-P02-WIDGET
+      *
+           MOVE    "1"                 TO  SPA-UPDFLG
+      *
+          .
+       30103-HKNINS-SYORI-EXT.
+           EXIT.
       *****************************************************************
       *    画面ＳＰＡ編集処理
       *****************************************************************
@@ -1048,6 +1250,9 @@
       *    登録
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 490-TOUROKU-SEC
+      *    ＱＲ一覧へ
+               WHEN    "CLICKED"       ALSO    "B12S"
+                   PERFORM 4902-QRSYORI-SEC
       *    タグ切り替え
                WHEN    "CLICKED"       ALSO    "N01"
                WHEN    "CLICKED"       ALSO    "N02"
@@ -1293,6 +1498,11 @@
                PERFORM 990-LOCK-OUT-SEC
            END-IF
       *
+           IF     (SPA-QR-FLG          =   ZERO  )
+      *        ＱＲ解除
+               PERFORM 9901-QRCDHKN-OUT-SEC
+           END-IF
+      *
            MOVE    ZERO                TO  SPA-GMN-CUR
            MOVE    ZERO                TO  SPA-P02-SYORI
            MOVE    P02-PTNUM           TO  SPA-GMN-PTNUM
@@ -1331,9 +1541,16 @@
                           (SPA-NAME            NOT =   SPACE  )
                        MOVE    "1010"              TO  SPA-ERRCD
                    ELSE
-                       PERFORM 41001-PTNUM-HENSYU-SEC
+                       IF      SPA-QR-FLG          =   2
+                           MOVE    "1010"              TO  SPA-ERRCD
+                       ELSE
+                           PERFORM 41001-PTNUM-HENSYU-SEC
+                       END-IF
                    END-IF
                WHEN    20
+                   IF      SPA-QR-FLG          =   2
+                       MOVE    "1010"              TO  SPA-ERRCD
+                   ELSE
                    MOVE    SPTNUM-PTNUM        TO  SPA-GMN-PTNUM
       *            患者検索へ
                    MOVE    SPACE               TO  LINKAREA
@@ -1350,6 +1567,8 @@
                    MOVE    "P97"               TO  MCP-WINDOW
                    PERFORM 900-PUT-WINDOW
                    MOVE    1                   TO  FLG-END
+      *
+                   END-IF
                WHEN    10
       *            新規患者検索へ
                    IF      SPTNUM-SYUBETU       =   1
@@ -1464,17 +1683,29 @@
            IF      SPA-ERRCD           =   SPACE
                MOVE    SPA-HZN-PTNUM       TO  WRK-HZN-PTNUM
                MOVE    SPA-HZN-MOTOPG      TO  WRK-HZN-MOTOPG
-               INITIALIZE                  SPA-P02SCRAREA
-               INITIALIZE                  SPA-P02KYOUTU
-               MOVE    WRK-HZN-PTNUM       TO  SPA-HZN-PTNUM
-               MOVE    WRK-HZN-MOTOPG      TO  SPA-HZN-MOTOPG
-               MOVE    ORCSP01-PTNUM       TO  SPA-GMN-PTNUM
-               MOVE    ORCSP01-PTID        TO  SPA-GMN-PTID
-               MOVE    1                   TO  SPA-P02-SYORI
-               MOVE    "P02 "              TO  SPA-P02-GAMEN
-               PERFORM 310-SPA-SET-SEC
-               MOVE    1                   TO  SPA-GMN-CUR
-               MOVE    SPACE               TO  SPA-P02-WIDGET
+               IF      SPA-QR-FLG          =   2
+                   MOVE    WRK-HZN-PTNUM       TO  SPA-HZN-PTNUM
+                   MOVE    WRK-HZN-MOTOPG      TO  SPA-HZN-MOTOPG
+                   MOVE    ORCSP01-PTNUM       TO  SPA-GMN-PTNUM
+                   MOVE    ORCSP01-PTID        TO  SPA-GMN-PTID
+                   MOVE    1                   TO  SPA-P02-SYORI
+                   MOVE    "P02 "              TO  SPA-P02-GAMEN
+                   MOVE    1                   TO  SPA-GMN-CUR
+                   MOVE    SPACE               TO  SPA-P02-WIDGET
+                   MOVE    ZERO                TO  SPA-QR-FLG
+               ELSE
+                   INITIALIZE                  SPA-P02KYOUTU
+                   INITIALIZE                  SPA-P02SCRAREA
+                   MOVE    WRK-HZN-PTNUM       TO  SPA-HZN-PTNUM
+                   MOVE    WRK-HZN-MOTOPG      TO  SPA-HZN-MOTOPG
+                   MOVE    ORCSP01-PTNUM       TO  SPA-GMN-PTNUM
+                   MOVE    ORCSP01-PTID        TO  SPA-GMN-PTID
+                   MOVE    1                   TO  SPA-P02-SYORI
+                   MOVE    "P02 "              TO  SPA-P02-GAMEN
+                   PERFORM 310-SPA-SET-SEC
+                   MOVE    1                   TO  SPA-GMN-CUR
+                   MOVE    SPACE               TO  SPA-P02-WIDGET
+               END-IF
            END-IF
       *
            .
@@ -1528,6 +1759,7 @@
                MOVE    1                   TO  SPA-P02-SYORI
                MOVE    "P02 "              TO  SPA-P02-GAMEN
                IF      FLG-HAKKOU          =   ZERO
+                  AND  SPA-QR-FLG          =   ZERO
                    PERFORM 310-SPA-SET-SEC
                ELSE
                    MOVE    1                   TO  P02-PAGENO
@@ -1536,6 +1768,9 @@
                MOVE    SPACE               TO  SPA-P02-WIDGET
                IF      SPA-ERRCD           =   SPACE
                    MOVE    WRK-ERRCD           TO  SPA-ERRCD
+               END-IF
+               IF      SPA-QR-FLG          =   2
+                   MOVE    ZERO            TO  SPA-QR-FLG
                END-IF
            END-IF
       *
@@ -1623,6 +1858,9 @@
       *****************************************************************
        410-CLREA-SEC           SECTION.
       *
+      *    ＱＲ解除
+           PERFORM 9901-QRCDHKN-OUT-SEC
+      *
            MOVE    SPA-HZN-PTNUM       TO  WRK-HZN-PTNUM
            MOVE    SPA-HZN-MOTOPG      TO  WRK-HZN-MOTOPG
            INITIALIZE                  SPA-P02SCRAREA
@@ -1652,6 +1890,9 @@
       *    前回患者処理
       *****************************************************************
        420-ZENPTNUM-SEC           SECTION.
+      *
+      *    ＱＲ解除
+           PERFORM 9901-QRCDHKN-OUT-SEC
       *
            IF      SPA-LAST-PTNUM      NOT =   SPACE
                MOVE    SPA-LAST-PTNUM      TO  P02-PTNUM
@@ -1714,6 +1955,62 @@
       *
            .
        4981-P02S-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＱＲ一覧へ処理
+      *****************************************************************
+       4902-QRSYORI-SEC            SECTION.
+      *
+           IF     (SPA-QR-REGISTYMD   NOT =   SPACE )  AND
+                  (SPA-QR-REGISTID    NOT =   ZERO  )
+      *        ＱＲ展開中
+               MOVE    "1024"             TO  SPA-ERRCD
+           ELSE
+               PERFORM 49021-P02Q-SYORI-SEC
+           END-IF
+      *
+           .
+       4902-QRSYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＱＲ一覧へ処理
+      *****************************************************************
+       49021-P02Q-SYORI-SEC            SECTION.
+      *
+           INITIALIZE                  SPA-P02Q-AREA
+      *
+           MOVE    SPA-P02KYOUTU       TO  SPA-WORK
+           MOVE    SPA-AREA            TO  SPA-COMMON
+           MOVE    SPA-P02SCRAREA      TO  SPA-FREE
+      *
+           MOVE    "LINK"              TO  MCP-STATUS
+           MOVE    SPACE               TO  MCP-EVENT
+      *
+           CALL    "ORCGP02Q"          USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA.
+      *
+           MOVE    SPA-COMMON          TO  SPA-AREA
+           MOVE    SPA-FREE            TO  SPA-P02SCRAREA
+           MOVE    SPA-WORK            TO  SPA-P02KYOUTU
+      *
+           IF      SPA-P02Q-MAX        =   ZERO
+               MOVE    "1023"              TO  SPA-ERRCD
+           ELSE
+      *
+               MOVE    "P02"               TO  SPA-MOTOPG
+               MOVE    "P02Q"              TO  SPA-SAKIPG
+      *
+               MOVE    "NEW"               TO  MCP-PUTTYPE
+               MOVE    "P02Q"              TO  MCP-WINDOW
+               MOVE    "SELNUM"            TO  MCP-WIDGET
+               PERFORM 900-PUT-WINDOW
+               MOVE    1                   TO  FLG-END
+           END-IF
+           .
+       49021-P02Q-SYORI-EXT.
            EXIT.
       *****************************************************************
       *    再発行処理
@@ -1817,6 +2114,9 @@
            END-IF
       *----(01.00.03) LINE ADD END   ----------------------------------
       *
+      *    ＱＲ解除
+           PERFORM 9901-QRCDHKN-OUT-SEC
+      *
       *    排他制御解除処理
            PERFORM 990-LOCK-OUT-SEC
       *
@@ -1862,6 +2162,8 @@
       *****************************************************************
        210-BACK-SYORI-SEC               SECTION.
       *
+      *    ＱＲ解除
+           PERFORM 9901-QRCDHKN-OUT-SEC
       *    排他制御解除処理
            PERFORM 990-LOCK-OUT-SEC
       *
@@ -4027,6 +4329,15 @@
                WHEN    "1021"
                    MOVE    "患者番号を入力して下さい。"
                                                TO  SPA-ERRMSG
+               WHEN    "1023"
+                   MOVE    "ＱＲデータはありません。"
+                                               TO  SPA-ERRMSG
+               WHEN    "1024"
+                   STRING   "ＱＲデータが展開中です。"
+                            "患者番号をクリアして下さい。"
+                                               DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
                WHEN    "1022"
                    MOVE    "複写は新規患者の時のみできます。"
                                                TO  SPA-ERRMSG
@@ -4421,6 +4732,22 @@
        520-JIDSET-EXT.
            EXIT.
       *----(01.00.03) LINE ADD END   ----------------------------------
+      *****************************************************************
+      *    QRコード(被保険者証)読込
+      *****************************************************************
+       900-QRCDHKN-READ-SEC         SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  QRCDHKN-REC
+               MOVE    ZERO            TO  FLG-QRCDHKN
+           ELSE
+               INITIALIZE                  QRCDHKN-REC
+               MOVE    1               TO  FLG-QRCDHKN
+           END-IF
+           .
+       900-QRCDHKN-READ-EXT.
+           EXIT.
       *
       *****************************************************************
       *    予約マスター読込処理
@@ -4591,6 +4918,63 @@
       *
            .
        992-PARA-DEL-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＱＲ解除処理
+      *****************************************************************
+       9901-QRCDHKN-OUT-SEC         SECTION.
+      *
+           IF     (SPA-QR-REGISTYMD    NOT =   SPACE )  AND
+                  (SPA-QR-REGISTID     NOT =   ZERO  )
+      *
+           INITIALIZE                      QRCDHKN-REC
+           MOVE    SPA-HOSPID          TO  QRCDHKN-HOSPID
+           MOVE    SPA-QR-REGISTYMD    TO  QRCDHKN-REGISTYMD
+           MOVE    SPA-QR-REGISTID     TO  QRCDHKN-REGISTID
+           MOVE    QRCDHKN-REC         TO  MCPDATA-REC
+           MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 900-QRCDHKN-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-QRCDHKN
+               INITIALIZE                      QRCDHKN-REC
+           END-IF
+           MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+           IF      FLG-QRCDHKN         =   ZERO
+               MOVE    ZERO                TO  QRCDHKN-MOD-FLG
+               MOVE    SMCNDATE-YMD        TO  QRCDHKN-UPYMD
+               MOVE    SMCNDATE-HMS        TO  QRCDHKN-UPHMS
+      *
+               MOVE    QRCDHKN-REC         TO  MCPDATA-REC
+               MOVE    "DBUPDATE"          TO  MCP-FUNC
+               MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC          NOT =   ZERO 
+                   MOVE    "9000"              TO  SPA-ERRCD
+                   DISPLAY "P029 QRCDHKN KEY UPD ERR:"  MCP-RC
+                       ",KEY:" QRCDHKN-KEY
+               END-IF
+           END-IF
+      *
+           END-IF
+           INITIALIZE                  SPA-QRDATA-AREA
+      *
+           .
+       9901-QRCDHKN-OUT-EXT.
            EXIT.
       *
       *****************************************************************

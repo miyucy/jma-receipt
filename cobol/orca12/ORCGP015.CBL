@@ -28,8 +28,6 @@
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       *  01.00.01    NACL-Â¿¡¹Ç¼  05/11/11  MONFUNC ÂÐ±þ Â¾
-      *  03.05.00    NACL-Â¿¡¹Ç¼  07/05/XX  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
-      *  04.07.00    NACL-Â¿¡¹Ç¼  11/09/XX  ¸øÈñÀÁµá¥Æ¡¼¥Ö¥ëÅùÂÐ±þÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -112,24 +110,6 @@
        01  PTNUM-REC.
            COPY  "CPPTNUM.INC".
       *
-      *    ÃÏÊý¸øÈñÀÁµá½ñ
-           COPY    "CPKOHSKY.INC".
-      *
-      *    ÀÁµá´ÉÍý
-           COPY    "CPRCF010.INC".
-      *
-      *    Æþ±¡¥ª¡¼¥À
-       01  ORDER-REC.
-           COPY    "CPORDER.INC".
-      *
-      *    Äê´üÀÁµá°õºþ
-       01  TEIKIPRT-REC.
-           COPY    "CPTEIKIPRT.INC".
-      *
-      *    Ê¬ÊÚ´ÉÍý¥Æ¡¼¥Ö¥ë
-       01  BUNBEN-REC.
-           COPY    "CPBUNBEN.INC".
-      *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
       *****************************************************************
@@ -164,35 +144,25 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA12SCRAREA.INC".
-      *    COPY    "P02.INC".
-      *    COPY    "P02A.INC".
-      *    COPY    "P02D.INC".
-      *    COPY    "P02E.INC".
-      *    COPY    "P02F.INC".
-      *    COPY    "P014.INC".
-      *    COPY    "P015.INC".
-      *    COPY    "P98.INC".
-      *    COPY    "P981.INC".
-      *    COPY    "P0201.INC".
-      *    COPY    "P982.INC".
-      *    COPY    "P100.INC".
-      *    COPY    "P02X.INC".
-      *    COPY    "P02S.INC".
-      *    COPY    "P02Q.INC".
-      *    COPY    "P02Q1.INC".
-      *    COPY    "P02Y.INC".
-      *    COPY    "P02Y1.INC".
-      *    COPY    "P02G.INC".
-      *    COPY    "P02G2.INC".
-      *    COPY    "P02K.INC".
-      *    COPY    "P02H.INC".
-      *    COPY    "P02T.INC".
-      *    COPY    "PERR.INC".
-      *    COPY    "PID1.INC".
-      *    COPY    "PDMY01.INC".
-      *    COPY    "CPAPIMOD.INC".
-      *
+           COPY    "P02.INC".
+           COPY    "P02A.INC".
+           COPY    "P02D.INC".
+           COPY    "P02E.INC".
+           COPY    "P02F.INC".
+           COPY    "P014.INC".
+           COPY    "P015.INC".
+           COPY    "P98.INC".
+           COPY    "P981.INC".
+      *****COPY    "P99.INC".
+           COPY    "P0201.INC".
+           COPY    "P982.INC".
+           COPY    "P100.INC".
+           COPY    "P02X.INC".
+           COPY    "P02S.INC".
+           COPY    "P02Q.INC".
+           COPY    "P02Q1.INC".
+           COPY    "PERR.INC".
+           COPY    "PID1.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -456,7 +426,7 @@
        4901-KOUSIN-SYORI-SEC           SECTION.
       *
            INITIALIZE                      PTNUM-REC
-           MOVE    SPA-HOSPNUM         TO  PTNUM-HOSPNUM
+           MOVE    SPA-HOSPID          TO  PTNUM-HOSPID
            MOVE    SPA-GMN015-PTNUM    TO  PTNUM-PTNUM
            IF      SPA-GMN015-PTNUM(20:1) =   SPACE
                STRING  SPA-GMN015-PTNUM    DELIMITED   BY  SPACE
@@ -501,7 +471,7 @@
        49011-PTNUM-UPDATE-SEC           SECTION.
       *
            INITIALIZE                      PTNUM-REC
-           MOVE    SPA-HOSPNUM         TO  PTNUM-HOSPNUM
+           MOVE    SPA-HOSPID          TO  PTNUM-HOSPID
            MOVE    SPA-GMN-PTID        TO  PTNUM-PTID
       *
            MOVE    PTNUM-REC           TO  MCPDATA-REC
@@ -529,103 +499,14 @@
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "tbl_ptnum"         TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P015 PTNUM UPDATE:" MCP-RC
                            ",KEY:" PTNUM-KEY
                    MOVE    "0009"              TO  SPA-ERRCD
                END-IF
-           END-IF
-      *
-      *    ¸øÈñÀÁµá¥Æ¡¼¥Ö¥ë
-           INITIALIZE                      KOHSKY-REC
-           MOVE    SPA-HOSPNUM         TO  KOHSKY-HOSPNUM
-           MOVE    SPA-GMN-PTID        TO  KOHSKY-PTID
-           MOVE    SPA-GMN015-PTNUM    TO  KOHSKY-PTNUM
-           MOVE    KOHSKY-REC          TO  MCPDATA-REC
-           MOVE    "DBUPDATE"          TO  MCP-FUNC
-           MOVE    "tbl_kohsky"        TO  MCP-TABLE
-           MOVE    "upd1"              TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           IF      MCP-RC          NOT =   ZERO
-               DISPLAY "P015 KOHSKY UPDATE:" MCP-RC
-                           ",KEY:" KOHSKY-KEY
-               MOVE    "0009"              TO  SPA-ERRCD
-           END-IF
-      *
-      *    ÀÁµá´ÉÍý
-           INITIALIZE                      RECE10-REC
-           MOVE    SPA-HOSPNUM         TO  RECE10-HOSPNUM
-           MOVE    SPA-GMN-PTID        TO  RECE10-PTID
-           MOVE    SPA-GMN015-PTNUM    TO  RECE10-PTNUM
-           MOVE    RECE10-REC          TO  MCPDATA-REC
-           MOVE    "DBUPDATE"          TO  MCP-FUNC
-           MOVE    "tbl_seikyu"        TO  MCP-TABLE
-           MOVE    "upd1"              TO  MCP-PATHNAME
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           IF      MCP-RC          NOT =   ZERO
-               DISPLAY "P015 RECE10 UPDATE:" MCP-RC
-                           ",KEY:" RECE10-KEY
-               MOVE    "0009"              TO  SPA-ERRCD
-           END-IF
-      *    ´µ¼ÔÄê´üÀÁµáÍúÎò
-           INITIALIZE                      TEIKIPRT-REC
-           MOVE    SPA-HOSPNUM         TO  TEIKIPRT-HOSPNUM
-           MOVE    SPA-GMN-PTID        TO  TEIKIPRT-PTID
-           MOVE    SPA-GMN015-PTNUM    TO  TEIKIPRT-PTNUM
-           MOVE    TEIKIPRT-REC        TO  MCPDATA-REC
-           MOVE    "DBUPDATE"          TO  MCP-FUNC
-           MOVE    "tbl_teikiprt"      TO  MCP-TABLE
-           MOVE    "upd1"              TO  MCP-PATHNAME
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           IF      MCP-RC          NOT =   ZERO
-               DISPLAY "P015 TEIKIPRT UPDATE:" MCP-RC
-                           ",KEY:" TEIKIPRT-KEY
-               MOVE    "0009"              TO  SPA-ERRCD
-           END-IF
-      *
-      *    Ê¬ÊÚ´ÉÍý¥Æ¡¼¥Ö¥ë
-           INITIALIZE                      BUNBEN-REC
-           MOVE    SPA-HOSPNUM         TO  BUNBEN-HOSPNUM
-           MOVE    SPA-GMN-PTID        TO  BUNBEN-PTID
-           MOVE    SPA-GMN015-PTNUM    TO  BUNBEN-PTNUM
-           MOVE    BUNBEN-REC          TO  MCPDATA-REC
-           MOVE    "DBUPDATE"          TO  MCP-FUNC
-           MOVE    "tbl_bunben"        TO  MCP-TABLE
-           MOVE    "upd1"              TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           IF      MCP-RC          NOT =   ZERO
-               DISPLAY "P015 BUNBEN UPDATE:" MCP-RC
-                           ",KEY:" BUNBEN-KEY
-               MOVE    "0009"              TO  SPA-ERRCD
-           END-IF
-      *
-      *    Æþ±¡¥ª¡¼¥À¥Æ¡¼¥Ö¥ë¹¹¿·
-           INITIALIZE                      ORDER-REC
-           MOVE    SPA-HOSPNUM         TO  ORDER-HOSPNUM
-           MOVE    SPA-GMN-PTID        TO  ORDER-PTID
-           MOVE    SPA-GMN015-PTNUM    TO  ORDER-PTNUM
-           MOVE    ORDER-REC           TO  MCPDATA-REC
-           MOVE    "DBUPDATE"          TO  MCP-FUNC
-           MOVE    "tbl_order"         TO  MCP-TABLE
-           MOVE    "upd2"              TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           IF      MCP-RC          NOT =   ZERO
-               DISPLAY "P015 ORDER UPDATE:" MCP-RC
-                           ",KEY:" ORDER-KEY
-               MOVE    "0009"              TO  SPA-ERRCD
            END-IF
       *
            IF      SPA-ERRCD           =   SPACE
@@ -765,11 +646,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE               TO  SPA-PID1-FLG
       *
            MOVE    SPACE               TO  PID1
-           INITIALIZE                      PID1
            MOVE    SPA-PIDCD           TO  PID1-ID1CODE
            MOVE    WRK-PIDMSG          TO  PID1-ID1MSG
-           MOVE    "Ìá¤ë"              TO  PID1-B01
-           MOVE    "£Ï£Ë"              TO  PID1-B12
       *
            MOVE    "B12"               TO  MCP-WIDGET
       *
@@ -832,9 +710,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        910-DBSELECT-EXT.
@@ -845,9 +723,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
       *
@@ -860,9 +738,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        990-DBCLOSE-EXT.
@@ -874,9 +752,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        900-PUT-WINDOW-EXT.

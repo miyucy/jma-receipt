@@ -31,11 +31,6 @@
       *  01.00.02    MCC-多々納   02/05/02  全角チェックサブ追加
       *  02.00.00    MCC-多々納   02/07/04  インタフェース変更
       *  02.00.01    NACL-多々納  05/11/11  MONFUNC 対応 他
-      *  03.05.00    NACL-多々納  07/05/XX  グループ診療対応
-      *  04.04.00    NACL-多々納  08/12/03  住所から郵便番号設定追加
-      *  04.05.00    NACL-多々納  09/11/20  郵便番号自動記載区分追加
-      *  04.07.00    NACL-多々納  11/09/06  半角全角変換へ
-      *  04.07.00    NACL-多々納  12/01/19  半角全角チェック追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -43,11 +38,31 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
+      *    パラメタデータ
+      *    SELECT  PARA-FILE       ASSIGN  FILE-NAME1
+      *                            ORGANIZATION    IS  INDEXED
+      *                            ACCESS  MODE    IS  DYNAMIC
+      *                            RECORD  KEY     IS  PAR-KEY
+      *                            FILE    STATUS  IS  STS-PARA.
       *
        DATA                    DIVISION.
       *FILE                        SECTION.
       *
+      *    パラメタデータ
+      *FD  PARA-FILE.
+      *01  PARA-REC.
+      *    03  PAR-KEY.
+      *********05  PAR-TERMID          PIC X(64).
+      *        05  PAR-FILEMEI         PIC X(08).
+      *        05  PAR-EDANUM          PIC 9(04).
+      **** 03  PAR-DATA-REC            PIC X(3000).
+      *
        WORKING-STORAGE             SECTION.
+      *    パラメタファイル名
+       01  FILE-NAME1.
+           03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
+           03  FILLER              PIC X(07)   VALUE   "P01PARA".
+           03  FILE-TERMID1        PIC X(64)   VALUE   SPACE.
       *
       *    スパ領域
            COPY    "COMMON-SPA".
@@ -87,6 +102,8 @@
            03  WRK-MAX             PIC 9(04).
       *
            03  WRK-MAE-POST        PIC X(07).
+      **** 03  WRK-POST            PIC X(07).
+      **** 03  WRK-ADRS            PIC X(100).
       *    入力項目名
            03  WRK-MCP-WIDGET          PIC X(64).
       *
@@ -124,6 +141,7 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
+      *****COPY    "CPORCMCP.INC".
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
@@ -139,34 +157,27 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA12SCRAREA.INC".
-      *    COPY    "P02.INC".
-      *    COPY    "P02A.INC".
-      *    COPY    "P02D.INC".
-      *    COPY    "P02E.INC".
-      *    COPY    "P02F.INC".
-      *    COPY    "P014.INC".
-      *    COPY    "P015.INC".
-      *    COPY    "P98.INC".
-      *    COPY    "P981.INC".
-      *    COPY    "P0201.INC".
-      *    COPY    "P982.INC".
-      *    COPY    "P100.INC".
-      *    COPY    "P02X.INC".
-      *    COPY    "P02S.INC".
-      *    COPY    "P02Q.INC".
-      *    COPY    "P02Q1.INC".
-      *    COPY    "P02Y.INC".
-      *    COPY    "P02Y1.INC".
-      *    COPY    "P02G.INC".
-      *    COPY    "P02G2.INC".
-      *    COPY    "P02K.INC".
-      *    COPY    "P02H.INC".
-      *    COPY    "P02T.INC".
-      *    COPY    "PERR.INC".
-      *    COPY    "PID1.INC".
-      *    COPY    "PDMY01.INC".
-      *    COPY    "CPAPIMOD.INC".
+           COPY    "P02.INC".
+           COPY    "P02A.INC".
+      *****COPY    "P02B.INC".
+      *****COPY    "P02C.INC".
+           COPY    "P02D.INC".
+           COPY    "P02E.INC".
+           COPY    "P02F.INC".
+           COPY    "P014.INC".
+           COPY    "P015.INC".
+           COPY    "P98.INC".
+           COPY    "P981.INC".
+      *****COPY    "P99.INC".
+           COPY    "P0201.INC".
+           COPY    "P982.INC".
+           COPY    "P100.INC".
+           COPY    "P02X.INC".
+           COPY    "P02S.INC".
+           COPY    "P02Q.INC".
+           COPY    "P02Q1.INC".
+           COPY    "PERR.INC".
+           COPY    "PID1.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -271,8 +282,6 @@
                    ELSE
                        MOVE    JPAR-EDITADRS-NAME
                                            TO  SPA-GMN21-RENRAKU-ADRS
-                       MOVE    SPA-GMN21-RENRAKU-ADRS
-                                           TO  SPA-MAE-RENRAKU-ADRS
                        MOVE    9           TO  SPA-GMN21-CUR
                    END-IF
       *        勤務先　住所編集
@@ -283,8 +292,6 @@
                    ELSE
                        MOVE    JPAR-EDITADRS-NAME
                                            TO  SPA-GMN21-OFFICE-ADRS
-                       MOVE    SPA-GMN21-OFFICE-ADRS
-                                           TO  SPA-MAE-OFFICE-ADRS
                        MOVE    15          TO  SPA-GMN21-CUR
                    END-IF
       *        帰省先　住所編集
@@ -295,11 +302,11 @@
                    ELSE
                        MOVE    JPAR-EDITADRS-NAME
                                            TO  SPA-GMN21-KISEI-ADRS
-                       MOVE    SPA-GMN21-KISEI-ADRS
-                                           TO  SPA-MAE-KISEI-ADRS
                        MOVE    20          TO  SPA-GMN21-CUR
                    END-IF
            END-EVALUATE
+      *****MOVE    SPACE               TO  JPARA-REC
+      *
            .
        330-ADRS-SET-EXT.
            EXIT.
@@ -312,70 +319,37 @@
            EVALUATE    SPA-GMN21-INKBN
       *        連絡先
                WHEN    1
-                   IF     (SPA-GMN982-POST         =   SPACE )
-                   AND    (SPA-GMN982-TOWNNAME     =   SPACE )
-                       IF      SPA-GMN982-KBN      =   2
-                           MOVE    8           TO  SPA-GMN21-CUR
-                       ELSE
-                           MOVE    7           TO  SPA-GMN21-CUR
-                       END-IF
+                   IF      SPA-GMN982-TOWNNAME     =   SPACE
+                       MOVE    7           TO  SPA-GMN21-CUR
                    ELSE
-                       IF      SPA-GMN982-POST     NOT =   SPACE
-                           MOVE    SPA-GMN982-POST
+                       MOVE    SPA-GMN982-POST
                                            TO  SPA-GMN21-RENRAKU-POST
-                       END-IF
-                       IF      SPA-GMN982-TOWNNAME NOT =   SPACE
-                           MOVE    SPA-GMN982-TOWNNAME
+                       MOVE    SPA-GMN982-TOWNNAME
                                            TO  SPA-GMN21-RENRAKU-ADRS
-                       END-IF
                        MOVE    9           TO  SPA-GMN21-CUR
                    END-IF
-                   MOVE    SPA-GMN21-RENRAKU-ADRS
-                                           TO  SPA-MAE-RENRAKU-ADRS
       *        勤務先　住所編集
                WHEN    "2"
-                   IF     (SPA-GMN982-POST         =   SPACE )
-                   AND    (SPA-GMN982-TOWNNAME     =   SPACE )
-                       IF      SPA-GMN982-KBN      =   2
-                           MOVE    14          TO  SPA-GMN21-CUR
-                       ELSE
-                           MOVE    13          TO  SPA-GMN21-CUR
-                       END-IF
+                   IF      SPA-GMN982-TOWNNAME     =   SPACE
+                       MOVE    13          TO  SPA-GMN21-CUR
                    ELSE
-                       IF      SPA-GMN982-POST     NOT =   SPACE
-                           MOVE    SPA-GMN982-POST
+                       MOVE    SPA-GMN982-POST
                                            TO  SPA-GMN21-OFFICE-POST
-                       END-IF
-                       IF      SPA-GMN982-TOWNNAME NOT =   SPACE
-                           MOVE    SPA-GMN982-TOWNNAME
+                       MOVE    SPA-GMN982-TOWNNAME
                                            TO  SPA-GMN21-OFFICE-ADRS
-                       END-IF
                        MOVE    15          TO  SPA-GMN21-CUR
                    END-IF
-                   MOVE    SPA-GMN21-OFFICE-ADRS
-                                           TO  SPA-MAE-OFFICE-ADRS
       *        帰省先　住所編集
                WHEN    "3"
-                   IF     (SPA-GMN982-POST         =   SPACE )
-                   AND    (SPA-GMN982-TOWNNAME     =   SPACE )
-                       IF      SPA-GMN982-KBN      =   2
-                           MOVE    19          TO  SPA-GMN21-CUR
-                       ELSE
-                           MOVE    18          TO  SPA-GMN21-CUR
-                       END-IF
+                   IF      SPA-GMN982-TOWNNAME     =   SPACE
+                       MOVE    18          TO  SPA-GMN21-CUR
                    ELSE
-                       IF      SPA-GMN982-POST     NOT =   SPACE
-                           MOVE    SPA-GMN982-POST
+                       MOVE    SPA-GMN982-POST
                                            TO  SPA-GMN21-KISEI-POST
-                       END-IF
-                       IF      SPA-GMN982-TOWNNAME NOT =   SPACE
-                           MOVE    SPA-GMN982-TOWNNAME
+                       MOVE    SPA-GMN982-TOWNNAME
                                            TO  SPA-GMN21-KISEI-ADRS
-                       END-IF
                        MOVE    20          TO  SPA-GMN21-CUR
                    END-IF
-                   MOVE    SPA-GMN21-KISEI-ADRS
-                                           TO  SPA-MAE-KISEI-ADRS
            END-EVALUATE
       *
            .
@@ -524,6 +498,8 @@
       *****************************************************************
        200-GMNSENI                   SECTION.
       *
+      *****INITIALIZE                  JPARA-REC
+      *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
       *    登録
                WHEN    "CLICKED"       ALSO    "B12"
@@ -577,7 +553,13 @@
            PERFORM 4101-GMN-SPA-SET-SEC
       *    基本チェックと別画面処理
            PERFORM 4102-KIHON-CHK-SEC
+           IF     (SPA-ERRCD       NOT =   SPACE )  OR
+                  (SPA-FLG-END     NOT =   ZERO  )
+               GO      TO      410-INPUT-CHK-EXT
+           END-IF
+      *
            .
+      *
        410-INPUT-CHK-EXT.
            EXIT.
       *
@@ -639,151 +621,91 @@
       *****************************************************************
        4102-KIHON-CHK-SEC          SECTION.
       *
-      *    FAX
-           IF     (SPA-ERRCD           =   SPACE )  AND
-                  (SPA-FLG-END         =   ZERO  )
-               PERFORM 4101-FAX-CHK-SEC
-           END-IF
-      *    携帯番号
-           IF     (SPA-ERRCD           =   SPACE )  AND
-                  (SPA-FLG-END         =   ZERO  )
-               PERFORM 4101-KEITAI-TEL-CHK-SEC
-           END-IF
       *    仕事
-           IF     (SPA-ERRCD           =   SPACE )  AND
-                  (SPA-FLG-END         =   ZERO  )
-               PERFORM 4101-JOB-CHK-SEC
+           PERFORM 4101-JOB-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
            END-IF
       *
       *    連絡先−名前
-           IF     (SPA-ERRCD           =   SPACE )  AND
-                  (SPA-FLG-END         =   ZERO  )
-               PERFORM 4101-RENRAKUNAME-CHK-SEC
+           PERFORM 4101-RENRAKUNAME-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
            END-IF
       *    連絡先−続柄
-           IF     (SPA-ERRCD           =   SPACE )  AND
-                  (SPA-FLG-END         =   ZERO  )
-               PERFORM 4101-RENZOKUGARA-CHK-SEC
+           PERFORM 4101-RENZOKUGARA-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
            END-IF
       *
       *    郵便番号
-           IF     (SPA-ERRCD           =   SPACE )  AND
-                  (SPA-FLG-END         =   ZERO  )
-               PERFORM 4101-RENPOST-CHK-SEC
+           PERFORM 4101-RENPOST-CHK-SEC
+           IF     (SPA-ERRCD       NOT =   SPACE )  OR
+                  (SPA-FLG-END     NOT =   ZERO  )
+               GO      TO      4102-KIHON-CHK-EXT
            END-IF
       *
       *    連絡先−住所
-           IF     (SPA-ERRCD           =   SPACE )  AND
-                  (SPA-FLG-END         =   ZERO  )
-               PERFORM 4101-RENRAKUADRS-CHK-SEC
+           PERFORM 4101-RENRAKUADRS-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
            END-IF
       *    連絡先−番地
-           IF     (SPA-ERRCD           =   SPACE )  AND
-                  (SPA-FLG-END         =   ZERO  )
-               PERFORM 4101-RENBANTI-CHK-SEC
-           END-IF
-      *    連絡先−電話
-           IF     (SPA-ERRCD           =   SPACE )  AND
-                  (SPA-FLG-END         =   ZERO  )
-               PERFORM 4101-RENTEL-CHK-SEC
+           PERFORM 4101-RENBANTI-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
            END-IF
       *
       *    勤務先−名前
-           IF     (SPA-ERRCD           =   SPACE )  AND
-                  (SPA-FLG-END         =   ZERO  )
-               PERFORM 4101-OFFNAME-CHK-SEC
+           PERFORM 4101-OFFNAME-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
            END-IF
       *
       *    郵便番号
-           IF     (SPA-ERRCD           =   SPACE )  AND
-                  (SPA-FLG-END         =   ZERO  )
-               PERFORM 4101-OFFPOST-CHK-SEC
+           PERFORM 4101-OFFPOST-CHK-SEC
+           IF     (SPA-ERRCD       NOT =   SPACE )  OR
+                  (SPA-FLG-END     NOT =   ZERO  )
+               GO      TO      4102-KIHON-CHK-EXT
            END-IF
       *
       *    勤務先−住所
-           IF     (SPA-ERRCD           =   SPACE )  AND
-                  (SPA-FLG-END         =   ZERO  )
-               PERFORM 4101-OFFADRS-CHK-SEC
+           PERFORM 4101-OFFADRS-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
            END-IF
       *    勤務先−番地
-           IF     (SPA-ERRCD           =   SPACE )  AND
-                  (SPA-FLG-END         =   ZERO  )
-               PERFORM 4101-OFFBANTI-CHK-SEC
-           END-IF
-      *    勤務先−電話
-           IF     (SPA-ERRCD           =   SPACE )  AND
-                  (SPA-FLG-END         =   ZERO  )
-               PERFORM 4101-OFFTEL-CHK-SEC
+           PERFORM 4101-OFFBANTI-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
            END-IF
       *
       *    帰省先−名前
-           IF     (SPA-ERRCD           =   SPACE )  AND
-                  (SPA-FLG-END         =   ZERO  )
-               PERFORM 4101-KISNAME-CHK-SEC
+           PERFORM 4101-KISNAME-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
            END-IF
       *
       *    郵便番号
-           IF     (SPA-ERRCD           =   SPACE )  AND
-                  (SPA-FLG-END         =   ZERO  )
-               PERFORM 4101-KISPOST-CHK-SEC
+           PERFORM 4101-KISPOST-CHK-SEC
+           IF     (SPA-ERRCD       NOT =   SPACE )  OR
+                  (SPA-FLG-END     NOT =   ZERO  )
+               GO      TO      4102-KIHON-CHK-EXT
            END-IF
       *
       *    帰省先−住所
-           IF     (SPA-ERRCD           =   SPACE )  AND
-                  (SPA-FLG-END         =   ZERO  )
-               PERFORM 4101-KISADRS-CHK-SEC
+           PERFORM 4101-KISADRS-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
            END-IF
       *    帰省先−番地
-           IF     (SPA-ERRCD           =   SPACE )  AND
-                  (SPA-FLG-END         =   ZERO  )
-               PERFORM 4101-KISBANTI-CHK-SEC
-           END-IF
-      *    帰省先−電話
-           IF     (SPA-ERRCD           =   SPACE )  AND
-                  (SPA-FLG-END         =   ZERO  )
-               PERFORM 4101-KISTEL-CHK-SEC
+           PERFORM 4101-KISBANTI-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
            END-IF
            .
       *
        4102-KIHON-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ＦＡＸチェック処理
-      *****************************************************************
-       4101-FAX-CHK-SEC          SECTION.
-      *
-           IF      SPA-GMN21-FAX   NOT =   SPACE
-               MOVE    SPA-GMN21-FAX       TO  WRK-MAE-INPUT
-               MOVE    15                  TO  WRK-MAX
-               PERFORM 891-HALF-CHK-SEC
-               MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-FAX
-               IF      FLG-ERR         NOT =   ZERO
-                   MOVE    "2117"              TO  SPA-ERRCD
-                   MOVE    1                   TO  SPA-GMN21-CUR
-               END-IF
-           END-IF
-           .
-       4101-FAX-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    携帯番号チェック処理
-      *****************************************************************
-       4101-KEITAI-TEL-CHK-SEC          SECTION.
-      *
-           IF      SPA-GMN21-KEITAI-TEL    NOT =   SPACE
-               MOVE    SPA-GMN21-KEITAI-TEL    TO  WRK-MAE-INPUT
-               MOVE    15                  TO  WRK-MAX
-               PERFORM 891-HALF-CHK-SEC
-               MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-KEITAI-TEL
-               IF      FLG-ERR         NOT =   ZERO
-                   MOVE    "2118"              TO  SPA-ERRCD
-                   MOVE    2                   TO  SPA-GMN21-CUR
-               END-IF
-           END-IF
-           .
-      *
-       4101-KEITAI-TEL-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -815,7 +737,7 @@
       *    半角空白を全角空白へ
            MOVE    SPA-GMN21-JOB       TO  WRK-MAE-INPUT
            MOVE    20                  TO  WRK-MAX
-           PERFORM 890-HALF-ZENS-SEC
+           PERFORM 890-HALF-ZEN-SEC
            MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-JOB
            .
       *
@@ -863,16 +785,10 @@
                MOVE    7               TO  SPA-GMN21-CUR
                GO      TO      4101-RENPOST-CHK-EXT
            END-IF
-           IF      FLG-ERR             =   2
-               MOVE    "2111"          TO  SPA-ERRCD
-               MOVE    7               TO  SPA-GMN21-CUR
-               GO      TO      4101-RENPOST-CHK-EXT
-           END-IF
       *    対象あり
            IF      FLG-POST            =   1
                MOVE    WRK-POST        TO  SPA-GMN21-RENRAKU-POST
                MOVE    WRK-ADRS        TO  SPA-GMN21-RENRAKU-ADRS
-               MOVE    WRK-ADRS        TO  SPA-MAE-RENRAKU-ADRS
            END-IF
            .
       *
@@ -883,36 +799,19 @@
       *****************************************************************
        4101-RENRAKUADRS-CHK-SEC          SECTION.
       *
-           IF      SPA-GMN21-RENRAKU-ADRS   =   SPACE
-               MOVE    SPA-GMN21-RENRAKU-ADRS   TO  SPA-MAE-RENRAKU-ADRS
-           ELSE
-      *        半角空白を全角空白へ
-               MOVE    SPA-GMN21-RENRAKU-ADRS   TO  WRK-MAE-INPUT
-               MOVE    100                 TO  WRK-MAX
-               PERFORM 890-HALF-ZEN-SEC
+      *    半角空白を全角空白へ
+           MOVE    SPA-GMN21-RENRAKU-ADRS   TO  WRK-MAE-INPUT
+           MOVE    100                 TO  WRK-MAX
+           PERFORM 890-HALF-ZEN-SEC
+           MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-RENRAKU-ADRS
+           IF      FLG-ERR             =   ZERO
                MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-RENRAKU-ADRS
-               IF      FLG-ERR             =   ZERO
-                   MOVE    WRK-ATO-INPUT   TO  SPA-GMN21-RENRAKU-ADRS
-      *            郵便番号自動設定
-                   IF     (SPA-GMN21-RENRAKU-ADRS
-                                           NOT =   SPA-MAE-RENRAKU-ADRS)
-                      AND (WRK-MCP-WIDGET      =   "P021_RENADRS"  )
-                       MOVE    1                   TO  SPA-GMN21-INKBN
-                       MOVE    SPA-GMN21-RENRAKU-ADRS
-                                                   TO  WRK-ADRS
-                       MOVE    SPA-GMN21-RENRAKU-POST
-                                                   TO  WRK-POST
-                       PERFORM 41012-ADRS-POST-SEC
-                   ELSE
-                       MOVE    SPA-GMN21-RENRAKU-ADRS
-                                               TO  SPA-MAE-RENRAKU-ADRS
-                   END-IF
-               ELSE
-                   MOVE    "2104"              TO  SPA-ERRCD
-                   MOVE    8                   TO  SPA-GMN21-CUR
-               END-IF
+           ELSE
+               MOVE    "2104"              TO  SPA-ERRCD
+               MOVE    8                    TO  SPA-GMN21-CUR
            END-IF
            .
+      *
        4101-RENRAKUADRS-CHK-EXT.
            EXIT.
       *****************************************************************
@@ -934,36 +833,6 @@
            .
       *
        4101-RENBANTI-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    連絡先−電話チェック処理
-      *****************************************************************
-       4101-RENTEL-CHK-SEC          SECTION.
-      *
-           IF      SPA-GMN21-RENRAKU-TEL1  NOT =   SPACE
-               MOVE    SPA-GMN21-RENRAKU-TEL1  TO  WRK-MAE-INPUT
-               MOVE    15                  TO  WRK-MAX
-               PERFORM 891-HALF-CHK-SEC
-               MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-RENRAKU-TEL1
-               IF      FLG-ERR         NOT =   ZERO
-                   MOVE    "2114"              TO  SPA-ERRCD
-                   MOVE    10                  TO  SPA-GMN21-CUR
-               END-IF
-           END-IF
-      *
-           IF     (SPA-GMN21-RENRAKU-TEL2  NOT =   SPACE )
-           AND    (SPA-ERRCD                   =   SPACE )
-               MOVE    SPA-GMN21-RENRAKU-TEL2  TO  WRK-MAE-INPUT
-               MOVE    15                  TO  WRK-MAX
-               PERFORM 891-HALF-CHK-SEC
-               MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-RENRAKU-TEL2
-               IF      FLG-ERR         NOT =   ZERO
-                   MOVE    "2114"              TO  SPA-ERRCD
-                   MOVE    11                  TO  SPA-GMN21-CUR
-               END-IF
-           END-IF
-           .
-       4101-RENTEL-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1007,16 +876,10 @@
                MOVE    13              TO  SPA-GMN21-CUR
                GO      TO      4101-OFFPOST-CHK-EXT
            END-IF
-           IF      FLG-ERR             =   2
-               MOVE    "2112"          TO  SPA-ERRCD
-               MOVE    13              TO  SPA-GMN21-CUR
-               GO      TO      4101-OFFPOST-CHK-EXT
-           END-IF
       *    対象あり
            IF      FLG-POST            =   1
                MOVE    WRK-POST        TO  SPA-GMN21-OFFICE-POST
                MOVE    WRK-ADRS        TO  SPA-GMN21-OFFICE-ADRS
-               MOVE    WRK-ADRS        TO  SPA-MAE-OFFICE-ADRS
            END-IF
            .
       *
@@ -1027,34 +890,16 @@
       *****************************************************************
        4101-OFFADRS-CHK-SEC          SECTION.
       *
-           IF      SPA-GMN21-OFFICE-ADRS   =   SPACE
-               MOVE    SPA-GMN21-OFFICE-ADRS   TO  SPA-MAE-OFFICE-ADRS
-           ELSE
-      *        半角空白を全角空白へ
-               MOVE    SPA-GMN21-OFFICE-ADRS   TO  WRK-MAE-INPUT
-               MOVE    100                     TO  WRK-MAX
-               PERFORM 890-HALF-ZEN-SEC
+      *    半角空白を全角空白へ
+           MOVE    SPA-GMN21-OFFICE-ADRS   TO  WRK-MAE-INPUT
+           MOVE    100                 TO  WRK-MAX
+           PERFORM 890-HALF-ZEN-SEC
+           MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-OFFICE-ADRS
+           IF      FLG-ERR             =   ZERO
                MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-OFFICE-ADRS
-               IF      FLG-ERR             =   ZERO
-                   MOVE    WRK-ATO-INPUT   TO  SPA-GMN21-OFFICE-ADRS
-      *            郵便番号自動設定
-                   IF     (SPA-GMN21-OFFICE-ADRS
-                                           NOT =   SPA-MAE-OFFICE-ADRS)
-                      AND (WRK-MCP-WIDGET      =   "P021_OFFADRS"  )
-                       MOVE    2                   TO  SPA-GMN21-INKBN
-                       MOVE    SPA-GMN21-OFFICE-ADRS
-                                                   TO  WRK-ADRS
-                       MOVE    SPA-GMN21-OFFICE-POST
-                                                   TO  WRK-POST
-                       PERFORM 41012-ADRS-POST-SEC
-                   ELSE
-                       MOVE    SPA-GMN21-OFFICE-ADRS
-                                               TO  SPA-MAE-OFFICE-ADRS
-                   END-IF
-               ELSE
-                   MOVE    "2107"              TO  SPA-ERRCD
-                   MOVE    14                  TO  SPA-GMN21-CUR
-               END-IF
+           ELSE
+               MOVE    "2107"              TO  SPA-ERRCD
+               MOVE    14                  TO  SPA-GMN21-CUR
            END-IF
            .
       *
@@ -1079,25 +924,6 @@
            .
       *
        4101-OFFBANTI-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    勤務先−電話チェック処理
-      *****************************************************************
-       4101-OFFTEL-CHK-SEC          SECTION.
-      *
-           IF      SPA-GMN21-OFFICE-TEL    NOT =   SPACE
-               MOVE    SPA-GMN21-OFFICE-TEL    TO  WRK-MAE-INPUT
-               MOVE    15                  TO  WRK-MAX
-               PERFORM 891-HALF-CHK-SEC
-               MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-OFFICE-TEL
-               IF      FLG-ERR         NOT =   ZERO
-                   MOVE    "2115"              TO  SPA-ERRCD
-                   MOVE    16                  TO  SPA-GMN21-CUR
-               END-IF
-           END-IF
-      *
-           .
-       4101-OFFTEL-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1141,16 +967,10 @@
                MOVE    18              TO  SPA-GMN21-CUR
                GO      TO      4101-KISPOST-CHK-EXT
            END-IF
-           IF      FLG-ERR             =   2
-               MOVE    "2113"          TO  SPA-ERRCD
-               MOVE    18              TO  SPA-GMN21-CUR
-               GO      TO      4101-KISPOST-CHK-EXT
-           END-IF
       *    対象あり
            IF      FLG-POST            =   1
                MOVE    WRK-POST        TO  SPA-GMN21-KISEI-POST
                MOVE    WRK-ADRS        TO  SPA-GMN21-KISEI-ADRS
-               MOVE    WRK-ADRS        TO  SPA-MAE-KISEI-ADRS
            END-IF
            .
       *
@@ -1161,34 +981,16 @@
       *****************************************************************
        4101-KISADRS-CHK-SEC          SECTION.
       *
-           IF      SPA-GMN21-KISEI-ADRS    =   SPACE
-               MOVE    SPA-GMN21-KISEI-ADRS    TO  SPA-MAE-KISEI-ADRS
-           ELSE
-      *        半角空白を全角空白へ
-               MOVE    SPA-GMN21-KISEI-ADRS    TO  WRK-MAE-INPUT
-               MOVE    100                     TO  WRK-MAX
-               PERFORM 890-HALF-ZEN-SEC
+      *    半角空白を全角空白へ
+           MOVE    SPA-GMN21-KISEI-ADRS    TO  WRK-MAE-INPUT
+           MOVE    100                 TO  WRK-MAX
+           PERFORM 890-HALF-ZEN-SEC
+           MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-KISEI-ADRS
+           IF      FLG-ERR             =   ZERO
                MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-KISEI-ADRS
-               IF      FLG-ERR             =   ZERO
-                   MOVE    WRK-ATO-INPUT   TO  SPA-GMN21-KISEI-ADRS
-      *            郵便番号自動設定
-                   IF     (SPA-GMN21-KISEI-ADRS
-                                           NOT =   SPA-MAE-KISEI-ADRS)
-                      AND (WRK-MCP-WIDGET      =   "P021_KISADRS"  )
-                       MOVE    3                   TO  SPA-GMN21-INKBN
-                       MOVE    SPA-GMN21-KISEI-ADRS
-                                                   TO  WRK-ADRS
-                       MOVE    SPA-GMN21-KISEI-POST
-                                                   TO  WRK-POST
-                       PERFORM 41012-ADRS-POST-SEC
-                   ELSE
-                       MOVE    SPA-GMN21-KISEI-ADRS
-                                               TO  SPA-MAE-KISEI-ADRS
-                   END-IF
-               ELSE
-                   MOVE    "2110"              TO  SPA-ERRCD
-                   MOVE    19                  TO  SPA-GMN21-CUR
-               END-IF
+           ELSE
+               MOVE    "2110"              TO  SPA-ERRCD
+               MOVE    19                  TO  SPA-GMN21-CUR
            END-IF
            .
       *
@@ -1214,46 +1016,11 @@
       *
        4101-KISBANTI-CHK-EXT.
            EXIT.
-      *****************************************************************
-      *    帰省先−電話チェック処理
-      *****************************************************************
-       4101-KISTEL-CHK-SEC          SECTION.
-      *
-           IF      SPA-GMN21-KISEI-TEL NOT =   SPACE
-               MOVE    SPA-GMN21-KISEI-TEL TO  WRK-MAE-INPUT
-               MOVE    15                  TO  WRK-MAX
-               PERFORM 891-HALF-CHK-SEC
-               MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-KISEI-TEL
-               IF      FLG-ERR         NOT =   ZERO
-                   MOVE    "2116"              TO  SPA-ERRCD
-                   MOVE    21                  TO  SPA-GMN21-CUR
-               END-IF
-           END-IF
-      *
-           .
-       4101-KISTEL-CHK-EXT.
-           EXIT.
       *
       *****************************************************************
       *    郵便番号チェック処理
       *****************************************************************
        430-POST-SYORI-SEC          SECTION.
-      *
-      *    半角であること
-           INITIALIZE                  ORCSKANACHKAREA
-           MOVE    "1"                 TO  KANACHK-SYORI
-           MOVE    WRK-MAE-POST        TO  KANACHK-MAE-INPUT
-           MOVE    7                   TO  KANACHK-MAX-CNT
-           CALL    "ORCSKANACHK"       USING
-                                       ORCSKANACHKAREA
-           MOVE    KANACHK-MAE-INPUT   TO  WRK-MAE-POST
-           IF     (KANACHK-RC          =   ZERO  )  AND
-                  (KANACHK-SYUBETU     =   1     )
-               CONTINUE
-           ELSE
-               MOVE    2                   TO  FLG-ERR
-               GO      TO      430-POST-SYORI-EXT
-           END-IF
       *
            IF      WRK-MAE-POST(1:1)   =   "/"
                IF      WRK-MAE-POST(2:3)   NUMERIC
@@ -1333,7 +1100,6 @@
            MOVE    SPA-SYSYMD          TO  SYS-1015-STYUKYMD
            MOVE    SPA-SYSYMD          TO  SYS-1015-EDYUKYMD
       *    システム管理検索
-           MOVE    SPA-HOSPNUM         TO  SYS-1015-HOSPNUM
            MOVE    SYS-1015-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -1359,17 +1125,16 @@
            MOVE    ZERO                TO  FLG-OK
       *    住所データ読み出し
            INITIALIZE                      ADRS-REC
-      **** MOVE    SYS-1015-LPUBCD     TO  ADRS-LPUBCD
+           MOVE    SYS-1015-LPUBCD     TO  ADRS-LPUBCD
            MOVE    SYS-1015-POST       TO  ADRS-POST
            MOVE    SYS-1015-RENNUM     TO  ADRS-EDANUM
-           MOVE    SPA-HOSPNUM         TO  ADRS-HOSPNUM
            MOVE    ADRS-REC            TO  MCPDATA-REC
            MOVE    "tbl_adrs"          TO  MCP-TABLE
-           MOVE    "key9"              TO  MCP-PATHNAME
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_adrs"          TO  MCP-TABLE
-               MOVE    "key9"              TO  MCP-PATHNAME
+               MOVE    "key"               TO  MCP-PATHNAME
                PERFORM 920-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC         TO  ADRS-REC
@@ -1379,7 +1144,7 @@
                END-IF
            END-IF
            MOVE    "tbl_adrs"          TO  MCP-TABLE
-           MOVE    "key9"              TO  MCP-PATHNAME
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
            IF      FLG-OK              =   ZERO
@@ -1391,121 +1156,12 @@
            EXIT.
       *
       *****************************************************************
-      *    住所から郵便番号編集処理
-      *****************************************************************
-       41012-ADRS-POST-SEC         SECTION.
-      *
-           EVALUATE    SPA-NAI-POSTKBN-FLG
-               WHEN     "0"
-                   MOVE    SPA-GMN21-RENRAKU-ADRS
-                                               TO  SPA-MAE-RENRAKU-ADRS
-                   MOVE    SPA-GMN21-OFFICE-ADRS
-                                               TO  SPA-MAE-OFFICE-ADRS
-                   MOVE    SPA-GMN21-KISEI-ADRS
-                                               TO  SPA-MAE-KISEI-ADRS
-               WHEN     "1"
-                   PERFORM 410121-ADRS-POSTHEN-SEC
-               WHEN     "2"
-      *            郵便番号空白時のみ
-                   IF      WRK-POST            =   SPACE
-                       PERFORM 410121-ADRS-POSTHEN-SEC
-                   ELSE
-                       MOVE    SPA-GMN21-RENRAKU-ADRS
-                                               TO  SPA-MAE-RENRAKU-ADRS
-                       MOVE    SPA-GMN21-OFFICE-ADRS
-                                               TO  SPA-MAE-OFFICE-ADRS
-                       MOVE    SPA-GMN21-KISEI-ADRS
-                                               TO  SPA-MAE-KISEI-ADRS
-                   END-IF
-           END-EVALUATE
-      *
-           .
-       41012-ADRS-POST-EXT.
-           EXIT.
-      *****************************************************************
-      *    住所から郵便番号編集処理
-      *****************************************************************
-       410121-ADRS-POSTHEN-SEC         SECTION.
-      *
-      *    郵便番号より、住所一覧を表示する
-           INITIALIZE                  SPA-P982-AREA
-           MOVE    2                   TO  SPA-GMN982-KBN
-           MOVE    WRK-ADRS            TO  SPA-GMN982-TOWNNAME
-           MOVE    "P02"               TO  SPA-GMN982-MOTOPG
-      *
-           MOVE    SPA-P02KYOUTU       TO  SPA-WORK
-           MOVE    SPA-AREA            TO  SPA-COMMON
-           MOVE    SPA-P02SCRAREA      TO  SPA-FREE
-      *
-           MOVE    "LINK"              TO  MCP-STATUS
-           MOVE    SPACE               TO  MCP-EVENT
-      *
-           CALL    "ORCGP982"          USING
-                                       MCPAREA
-                                       SPAAREA
-                                       LINKAREA
-                                       SCRAREA
-      *
-           MOVE    SPA-COMMON      TO  SPA-AREA
-           MOVE    SPA-FREE        TO  SPA-P02SCRAREA
-           MOVE    SPA-WORK        TO  SPA-P02KYOUTU
-      *
-      *    １件の時、対象
-           IF      SPA-GMN982-MAX      =   1
-               IF      SPA-GMN982-POST     NOT =   WRK-POST
-                   PERFORM 330-ADRS-POST2-SEC
-               ELSE
-                   IF      SPA-GMN982-TOWNNAME =   WRK-ADRS
-                       CONTINUE
-                   ELSE
-                       MOVE    "1098"          TO  SPA-PIDCD
-                   END-IF
-               END-IF
-               MOVE    SPA-GMN21-RENRAKU-ADRS
-                                           TO  SPA-MAE-RENRAKU-ADRS
-               MOVE    SPA-GMN21-OFFICE-ADRS
-                                           TO  SPA-MAE-OFFICE-ADRS
-               MOVE    SPA-GMN21-KISEI-ADRS
-                                           TO  SPA-MAE-KISEI-ADRS
-           ELSE
-               IF      SPA-GMN982-MAX      >  1
-                   PERFORM 41012-P982-SYORI-SEC
-               END-IF
-           END-IF
-      *
-           .
-       410121-ADRS-POSTHEN-EXT.
-           EXIT.
-      *****************************************************************
-      *    住所一覧遷移処理
-      *****************************************************************
-       41012-P982-SYORI-SEC         SECTION.
-      *
-      *    住所一覧画面へ
-           MOVE    "SELNUM"            TO  MCP-WIDGET
-      *
-           MOVE    SPA-P02KYOUTU       TO  SPA-WORK
-      *
-      *    一覧へ
-           MOVE    "P982"              TO  SPA-SAKIPG
-           MOVE    "P02"               TO  SPA-MOTOPG
-      *
-           MOVE    "NEW"               TO  MCP-PUTTYPE
-           MOVE    "P982"              TO  MCP-WINDOW
-           PERFORM 900-PUT-WINDOW
-           MOVE    1                   TO  SPA-FLG-END
-      *
-           .
-       41012-P982-SYORI-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    半角を全角へ変換処理
+      *    半角空白を全角空白へ変換処理
       *****************************************************************
        890-HALF-ZEN-SEC         SECTION.
       *
            INITIALIZE                  ORCSKANACHKAREA
-           MOVE    "2"                 TO  KANACHK-SYORI
+           MOVE    "1"                 TO  KANACHK-SYORI
            MOVE    WRK-MAE-INPUT       TO  KANACHK-MAE-INPUT
            MOVE    WRK-MAX             TO  KANACHK-MAX-CNT
            CALL    "ORCSKANACHK"       USING
@@ -1522,58 +1178,37 @@
            .
        890-HALF-ZEN-EXT.
            EXIT.
-      *****************************************************************
-      *    半角空白を全角空白へ変換処理
-      *****************************************************************
-       890-HALF-ZENS-SEC         SECTION.
-      *
-           INITIALIZE                  ORCSKANACHKAREA
-           MOVE    "1"                 TO  KANACHK-SYORI
-           MOVE    WRK-MAE-INPUT       TO  KANACHK-MAE-INPUT
-           MOVE    WRK-MAX             TO  KANACHK-MAX-CNT
-           CALL    "ORCSKANACHK"       USING
-                                       ORCSKANACHKAREA
-           IF     (KANACHK-RC      NOT =   ZERO  )  OR
-                  (KANACHK-SYUBETU     =   1     )
-               MOVE    1                   TO  FLG-ERR
-               MOVE    KANACHK-MAE-INPUT   TO  WRK-ATO-INPUT
-           ELSE
-               MOVE    ZERO                TO  FLG-ERR
-               MOVE    KANACHK-OUT-INPUT   TO  WRK-ATO-INPUT
-           END-IF
-      *
-           .
-       890-HALF-ZENS-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    全角チェック処理
-      *****************************************************************
-       891-HALF-CHK-SEC         SECTION.
-      *
-           INITIALIZE                  ORCSKANACHKAREA
-           MOVE    "1"                 TO  KANACHK-SYORI
-           MOVE    WRK-MAE-INPUT       TO  KANACHK-MAE-INPUT
-           MOVE    WRK-MAX             TO  KANACHK-MAX-CNT
-           CALL    "ORCSKANACHK"       USING
-                                       ORCSKANACHKAREA
-           MOVE    KANACHK-MAE-INPUT   TO  WRK-ATO-INPUT
-           IF     (KANACHK-RC          =   ZERO  )  AND
-                  (KANACHK-SYUBETU     =   1     )
-      *        半角
-               MOVE    ZERO                TO  FLG-ERR
-           ELSE
-               MOVE    1                   TO  FLG-ERR
-           END-IF
-      *
-           .
-       891-HALF-CHK-EXT.
-           EXIT.
       *
       *****************************************************************
       *    住所検索へ
       *****************************************************************
        440-JYUSYO-SEC             SECTION.
+      *
+      **** INITIALIZE                  P98
+      *    INITIALIZE                  P99
+      *    INITIALIZE                  JPARA-REC
+      *    CALL  "ORCSADR"             USING
+      *                                SPA-P02KYOUTU
+      *                                SPA-P02SCRAREA
+      *                                P98
+      *                                P99
+      *                                SPA-SYSYMD
+      *
+      *    MOVE    "P02"               TO  SPA-GMN98-MOTOPG
+      *    MOVE    SPA-P02KYOUTU       TO  SPA-WORK
+      *    MOVE    SPA-P02SCRAREA      TO  SPA-FREE
+      *    MOVE    SPA-AREA            TO  SPA-COMMON
+      *
+      *    MOVE    "SELNUM"            TO  MCP-WIDGET
+      *    MOVE    "P98"               TO  SPA-SAKIPG
+      *    MOVE    "P02"               TO  SPA-MOTOPG
+      *
+      *    MOVE    "NEW"               TO  MCP-PUTTYPE
+      *    MOVE    "P98"               TO  MCP-WINDOW
+      *
+      *    PERFORM 900-PUT-WINDOW
+      *
+      **** MOVE    1                   TO  SPA-FLG-END
       *
            MOVE    SPACE               TO  SPA-MOTOPG
       *
@@ -1637,9 +1272,9 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        910-DBSELECT-EXT.
@@ -1650,9 +1285,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
       *
@@ -1665,9 +1300,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        990-DBCLOSE-EXT.
@@ -1679,9 +1314,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        900-PUT-WINDOW-EXT.

@@ -71,11 +71,9 @@
       *
        01  SCRAREA.
            COPY    "U02.INC".
+           COPY    "U02Q.INC".
            COPY    "U02X.INC".
            COPY    "U2ERR.INC".
-           COPY    "U2ID1.INC".
-           COPY    "CPAPIMOD.INC".
-           COPY    "CPAPIMODV2.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -137,10 +135,9 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL   "ORCDBMAIN"       USING
-                                        MCPAREA
-                                        MCPDATA-REC
-                                        SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        900-PUT-WINDOW-EXT.
