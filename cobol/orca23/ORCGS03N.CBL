@@ -1589,8 +1589,6 @@
                                            S03N-SRYPRT-STATE
                                            S03N-SRYPRTLST-STATE
                                            S03N-B12-STATE
-                                           S03N-NAIYO-STATE
-                                           S03N-NAIYOLST-STATE
       *
                MOVE    SPACE               TO  S03N-B03-LABEL
       *
