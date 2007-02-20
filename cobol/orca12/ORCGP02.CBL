@@ -57,6 +57,7 @@
       *  03.00.01    NACL-多々納  06/08/25  平成１８年１０月改正対応
       *                                     （老人割合変更）
       *  03.04.00    NACL-多々納  07/02/16  ＱＲ受付対応
+      *  03.04.01    NACL-多々納  07/02/20  収納履歴マスタ削除追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -388,6 +389,10 @@
       *    療養レセプトコメントマスタ
        01  RYOCOM-REC.
            COPY    "CPRYOCOM.INC".
+      *
+      *    収納履歴マスタ
+       01  SYURRK-REC.
+           COPY    "CPSYURRK.INC".
       *
       *    QRコード(被保険者証)
        01  QRCDHKN-REC.
@@ -2927,6 +2932,18 @@
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_ryocom"        TO  MCP-TABLE
            MOVE    "del1"              TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *    収納履歴マスタ
+           INITIALIZE                  SYURRK-REC
+           MOVE    SPA-HOSPID          TO  SYURRK-HOSPID
+           MOVE    SPA-GMN-PTID        TO  SYURRK-PTID
+      *
+           MOVE    SYURRK-REC          TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_syurrk"        TO  MCP-TABLE
+           MOVE    "del2"              TO  MCP-PATHNAME
            CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
