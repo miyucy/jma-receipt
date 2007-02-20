@@ -79,6 +79,7 @@
                05  WRK-TMM-H           PIC Z9.
                05  WRK-K2              PIC X(01).
                05  WRK-TSS-H           PIC Z9.
+           03  WRK-THKNID              PIC 9(10).
       *
            03  WRK-PIDMSG              PIC X(80).
       *
@@ -610,7 +611,9 @@
            END-IF
            MOVE    ZERO                TO  FLG-OK
            MOVE    ZERO                TO  FLG-OK2
-           PERFORM UNTIL  (FLG-PTHKNINF    =   1   ) 
+           MOVE    ZERO                TO  WRK-THKNID
+           PERFORM UNTIL  (FLG-PTHKNINF    =   1   )
+                      OR  (FLG-OK          =   1   )
                IF     (PTHKN-SAKJOKBN      NOT =   SPACE )  OR
                       (PTHKN-HKNNUM(1:1)       =   "9"   )
                    CONTINUE
@@ -619,11 +622,13 @@
                       AND (PTHKN-KIGO          =   QRCDHKN-KIGO )
                       AND (PTHKN-NUM           =   QRCDHKN-NUM )
                       AND (PTHKN-HONKZKKBN     =   QRCDHKN-HONKZKKBN )
-                       MOVE    PTHKN-HKNID         TO  SPA-P02Q-THKNID
-                                                                 (IDX)
                        IF     (PTHKN-TEKSTYMD  <=  SPA-SYSYMD )  AND
                               (PTHKN-TEKEDYMD  >=  SPA-SYSYMD )
-                           MOVE    1                   TO  FLG-OK
+                           MOVE    PTHKN-HKNID     TO  SPA-P02Q-THKNID
+                                                                 (IDX)
+                           MOVE    1               TO  FLG-OK
+                       ELSE
+                           MOVE    PTHKN-HKNID     TO  WRK-THKNID
                        END-IF
                    ELSE
                        IF     (PTHKN-TEKSTYMD  <=  SPA-SYSYMD )  AND
@@ -644,6 +649,12 @@
            IF     (FLG-OK              =   ZERO )  AND
                   (FLG-OK2             =   1    )
                MOVE    ZERO            TO  SPA-P02Q-THKNID (IDX)
+           END-IF
+      *    当日有効な保険がなく、保険情報が一致する
+           IF     (FLG-OK              =   ZERO )  AND
+                  (FLG-OK2             =   ZERO )  AND
+                  (WRK-THKNID      NOT =   ZERO )
+               MOVE    WRK-THKNID      TO  SPA-P02Q-THKNID (IDX)
            END-IF
            .
        300112-HKNID-HEN-EXT.
