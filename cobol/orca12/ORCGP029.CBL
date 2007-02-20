@@ -40,7 +40,8 @@
       *  02.00.04    NACL-多々納  03/06/27  カスタマイズ帳票名取得サブ追加
       *  02.00.05    NACL-多々納  05/11/11  MONFUNC 対応 他
       *  02.00.06    NACL-多々納  06/02/27  主科対応
-      *  02.00.07    NACL-藤原    07/02/06  月途中の受給者番号変更に対応
+      *  03.04.00    NACL-藤原    07/02/06  月途中の受給者番号変更に対応
+      *  03.04.01    NACL-多々納  07/02/16  ＱＲデータ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -113,6 +114,7 @@
            03  FLG-PTKOHFTN        PIC 9(01).
            03  FLG-JYURRK          PIC 9(01).
            03  FLG-PTBYOMEI        PIC 9(01).
+           03  FLG-QRCDHKN         PIC 9(01).
       *
            03  FLG-SYORI           PIC X(01).
            03  FLG-SYORI2          PIC X(01).
@@ -248,6 +250,10 @@
       *    患者公費負担
        01  PTKOHFTN-REC.
            COPY    "CPPTKOHFTN.INC".
+      *
+      *    QRコード(被保険者証)
+       01  QRCDHKN-REC.
+           COPY    "CPQRCDHKN.INC".
       *
       *    パラメタテーブル
        01  PARA-REC.
@@ -463,6 +469,12 @@
                   (SPA-P02-SYORI       =   1     )  AND
                   (SPA-NAI-SYUKAYM NOT =   SPACE )
                PERFORM 2110-SYUKA-INSERT-SEC
+           END-IF
+      *
+      *    ＱＲ情報更新
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-QR-SYORI    NOT =   SPACE )
+               PERFORM 2120-QRCDHKN-UPD-SEC
            END-IF
       *
       *    カルテ／処方箋発行処理
@@ -1734,6 +1746,55 @@
            EXIT.
       *
       *****************************************************************
+      *    ＱＲ情報更新処理
+      *****************************************************************
+       2120-QRCDHKN-UPD-SEC         SECTION.
+      *
+           INITIALIZE                      QRCDHKN-REC
+           MOVE    SPA-HOSPID          TO  QRCDHKN-HOSPID
+           MOVE    SPA-QR-REGISTYMD    TO  QRCDHKN-REGISTYMD
+           MOVE    SPA-QR-REGISTID     TO  QRCDHKN-REGISTID
+           MOVE    QRCDHKN-REC         TO  MCPDATA-REC
+           MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 900-QRCDHKN-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-QRCDHKN
+               INITIALIZE                      QRCDHKN-REC
+           END-IF
+           MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      FLG-QRCDHKN         =   ZERO
+               MOVE    SPA-GMN-PTID        TO  QRCDHKN-PTID
+               MOVE    1                   TO  QRCDHKN-MOD-FLG
+               MOVE    SMCNDATE-YMD        TO  QRCDHKN-UPYMD
+               MOVE    SMCNDATE-HMS        TO  QRCDHKN-UPHMS
+      *
+               MOVE    QRCDHKN-REC         TO  MCPDATA-REC
+               MOVE    "DBUPDATE"          TO  MCP-FUNC
+               MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC          NOT =   ZERO 
+                   MOVE    "9000"              TO  SPA-ERRCD
+                   DISPLAY "P029 QRCDHKN KEY UPD ERR:"  MCP-RC
+                       ",KEY:" QRCDHKN-KEY
+               END-IF
+           END-IF
+      *
+           .
+       2120-QRCDHKN-UPD-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    カルテ　出力へ
       *****************************************************************
        2100-HC01-SYORI-SEC         SECTION.
@@ -2260,6 +2321,22 @@
            .
       *
        960-SYSKANRI-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    QRコード(被保険者証)読込
+      *****************************************************************
+       900-QRCDHKN-READ-SEC         SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  QRCDHKN-REC
+               MOVE    ZERO            TO  FLG-QRCDHKN
+           ELSE
+               INITIALIZE                  QRCDHKN-REC
+               MOVE    1               TO  FLG-QRCDHKN
+           END-IF
+           .
+       900-QRCDHKN-READ-EXT.
            EXIT.
       *****************************************************************
       *    テーブル検索処理

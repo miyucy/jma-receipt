@@ -3,13 +3,10 @@ XE01	{
 		SEIDO_KBN	{
 			value	varchar(3);
 		};
-		HKNNUM	{
-			value	number(9);
-		};
 		KIGONUM	{
 			value	varchar(20);
 		};
-		HONKBN	{
+		HONKZKKBN	{
 			value	varchar(1);
 		};
 		KANANAME	{
@@ -23,6 +20,9 @@ XE01	{
 		};
 		NIN	{
 			value	varchar(100);
+		};
+		HKNNUM	{
+			value	varchar(8);
 		};
 	};
 };

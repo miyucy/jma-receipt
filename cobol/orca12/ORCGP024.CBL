@@ -243,6 +243,8 @@
            COPY    "P100.INC".
            COPY    "P02X.INC".
            COPY    "P02S.INC".
+           COPY    "P02Q.INC".
+           COPY    "P02Q1.INC".
            COPY    "PERR.INC".
            COPY    "PID1.INC".
       *
@@ -517,6 +519,7 @@
                  IF     (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
                                            =   "021"
                                            OR  "015"
+                                           OR  "281"
                                            OR  "016"     )  AND
                       (SPA-NAI24-TKOHSTYMD (SPA-NAI24-FTNSELNUM)
                                            >=   "20060401"  )
@@ -1507,6 +1510,7 @@
                IF     (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
                                            =   "021"
                                            OR  "015"
+                                           OR  "281"
                                            OR  "016"     )  AND
                       (SPA-NAI24-TKOHSTYMD (SPA-NAI24-FTNSELNUM)
                                            >=   "20060401"  )

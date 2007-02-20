@@ -718,6 +718,8 @@
            COPY    "P100.INC".
            COPY    "P02X.INC".
            COPY    "P02S.INC".
+           COPY    "P02Q.INC".
+           COPY    "P02Q1.INC".
            COPY    "PERR.INC".
            COPY    "PID1.INC".
       *
@@ -1169,9 +1171,17 @@
                    UNTIL      (IDX         >   SPA-PTHKN-MAX )  OR
                               (FLG-CHK NOT =   ZERO )
                    IF      SPA-PTHKN-SAKJOKBN (IDX)    =   SPACE
-                       MOVE    IDX             TO  SPA-NAI-HKNSTR
-                       PERFORM 3101-HOKEN-HEN-SEC
-                       MOVE    1               TO  FLG-CHK
+      *                £Ñ£Ò¥Ç¡¼¥¿¤ÎÉ½¼¨
+                       IF     (SPA-QR-FLG          =   1   )  AND
+                              (SPA-QR-HKNID    NOT =   ZERO )  AND
+                              (SPA-QR-HKNID    NOT =   SPA-PTHKN-HKNID
+                                                               (IDX))
+                           CONTINUE
+                       ELSE
+                           MOVE    IDX             TO  SPA-NAI-HKNSTR
+                           PERFORM 3101-HOKEN-HEN-SEC
+                           MOVE    1               TO  FLG-CHK
+                       END-IF
                    END-IF
                END-PERFORM
            END-IF
@@ -2942,7 +2952,12 @@
                                            TO  SPA-GMN-OLD-KANANAME
                    MOVE    SPA-GMN-NAME    TO  SPA-GMN-OLD-NAME
                ELSE
-                   PERFORM 4101-KANJI-NAME-EDIT-SEC
+      *            £Ñ£Ò¤«¤é¤Î½é´üÉ½¼¨
+                   IF      SPA-QR-FLG          =   2
+                       MOVE    SPACE               TO  SPA-MAE-KANANAME
+                   ELSE
+                       PERFORM 4101-KANJI-NAME-EDIT-SEC
+                   END-IF
                END-IF
            END-IF
       *
@@ -4634,10 +4649,10 @@
            MOVE    SPA-GMN-NAME
                                    TO  SPA-GMN-OLD-NAME
       *
-      *    ¿ÍÌ¾¼­½ñÉÔ»ÈÍÑ¤Î¾ì¹ç
-           IF      SPA-NAI-JINMEI-USE  =   "1"
-               GO      TO      4101-KANJI-NAME-EDIT-EXT
-           END-IF
+      **** ¿ÍÌ¾¼­½ñÉÔ»ÈÍÑ¤Î¾ì¹ç
+      *    IF      SPA-NAI-JINMEI-USE  =   "1"
+      *        GO      TO      4101-KANJI-NAME-EDIT-EXT
+      **** END-IF
       *
            MOVE    SPACE           TO  WRK-NAME-AREA
       *
@@ -5403,6 +5418,10 @@
       *           ¹â³Û°ÑÇ¤Ê§¤¤¡Ê£¹£¶£´¡Ë
                  OR   (SPA-PTKOH-KOHNUM(IDX)   =   "964"  )
       *
+      *            Ê¡Åç¤ÎÃÏÊý¸øÈñ¡Ê£È£±£¹¡¥£²°Ê¹ß¡Ë
+                 OR  ((SPA-PTKOH-KOHNUM(IDX)   =   "281" )  AND
+                      (SPA-PREFNUM             =   07    )  AND
+                      (SPA-PTKOH-TEKSTYMD(IDX) >=  "20070201"))
                    MOVE    ZERO                TO  IDY
                    PERFORM VARYING     IDX2    FROM    1   BY  1
                            UNTIL       IDX2    >   SPA-FTN1-MAX

@@ -334,6 +334,9 @@ RECORD_files = \
 	XE01.rec \
 	X99.rec \
 	X100.rec \
+	P02Q.rec \
+	P02Q1.rec \
+	U02Q.rec \
 
 DEF_files = \
 	HC01.def \

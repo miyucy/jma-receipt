@@ -159,45 +159,20 @@
            03  SPA-ROSAI-FLG                PIC 9(01).
            03  SPA-JIBAI-FLG                PIC 9(01).
       *
-      *    患者パラメタデータ
-      *   03  KPARA-REC                 REDEFINES   JPARA-REC.
-      *     05  KPARA-HOSPID            PIC X(10).
-      *     05  KPARA-KANANAME          PIC X(50).
-      *     05  KPARA-SEX               PIC X(01).
-      *     05  KPARA-BIRTHDAY          PIC X(08).
-      *     05  KPARA-PTID              PIC X(10).
-      *     05  KPARA-NAME              PIC X(50).
-      *     05  KPARA-ADRS              PIC X(50).
-      *
-      *    保険パラメタデータ
-      *    03  HPARA-REC                  REDEFINES   JPARA-REC.
-      *        05  HPAR-REC                PIC X(400).
-      *        05  HPAR-SBT                PIC X(01).
-      *        05  HPAR-SEIDO              PIC X(10).
-      *        05  HPAR-FLG                PIC X(02).
-      *
-      *    公費パラメタデータ
-      *    03  HKPARA-REC                 REDEFINES   JPARA-REC.
-      *        05  KPAR-REC                PIC X(200).
-      *        05  KPAR-SBT                PIC X(01).
-      *        05  KPAR-SEIDO              PIC X(10).
-      *        05  KPAR-HKNKOHKBN          PIC X(01).
-      *        05  KPAR-GENHKNNUM1         PIC X(03).
-      *        05  KPAR-GENHKNNUM2         PIC X(03).
-      *        05  KPAR-GENHKNNUM3         PIC X(03).
-      *        05  KPAR-HOSPSBT            PIC X(01).
-      *        05  KPAR-ROUPAYKBN          PIC X(01).
-      *        05  KPAR-FLG                PIC X(02).
-      *
       *    未登録受付パラメタデータ
-      *****03  UKEPARA-REC               REDEFINES   JPARA-REC.
            03  UKEPARA-REC.
                05  UKEPAR-REC              PIC X(200).
       *
       *    労災保険パラメタデータ
-      *****03  RSPARA-REC.
-      ******** 05  RSPAR-REC                PIC X(500).
-      *        05  RSPAR-SBT                PIC X(01).
-      ******** 05  RSPAR-SEIDO              PIC X(10).
            03  SPA-RSPAR-FLG                PIC X(01).
+      *
+      *   ＱＲ選択情報
+           03  SPA-QR-FLG                   PIC 9(01).
+           03  SPA-QRDATA-AREA.
+               05  SPA-QR-SYORI                PIC X(01).
+               05  SPA-QR-REGISTID             PIC 9(05).
+               05  SPA-QR-REGISTYMD            PIC X(08).
+               05  SPA-QR-PTID                 PIC 9(10).
+               05  SPA-QR-PTNUM                PIC X(20).
+               05  SPA-QR-HKNID                PIC 9(10).
       *

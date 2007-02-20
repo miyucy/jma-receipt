@@ -67,6 +67,7 @@
       *  02.00.16    NACL-多々納  05/12/07  年齢追加、警告追加
       *  02.00.17    NACL−多々納 06/08/16  当日担当医設定追加
       *  03.02.00    NACL−多々納 06/08/30  老人警告追加
+      *  03.04.00    NACL-多々納  07/02/19  ＱＲ受付対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -111,6 +112,7 @@
            03  FLG-HKNNUM              PIC 9(01).
            03  FLG-PTRSIINF            PIC 9(01).
            03  FLG-SRYKARRK            PIC 9(01).
+           03  FLG-QRCDHKN         PIC 9(01).
       *
            03  FLG-HENFLG              PIC 9(01).
            03  FLG-TOUROKU             PIC 9(01).
@@ -245,6 +247,12 @@
       *
            03  WORK-SORT                               PIC X(100).
       *
+           03  WRK-U02Q-DATA-G.
+               05  WRK-U02Q-REGISTID           PIC 9(05).
+               05  WRK-U02Q-PTNUM              PIC X(20).
+               05  WRK-U02Q-PTID               PIC 9(05).
+               05  WRK-U02Q-HKNID              PIC 9(10).
+      *
        01  WRK-HENSYU-AREA.
            03  WRK-HENYMDG                  PIC X(09).
            03  WRK-HENYMD.
@@ -336,6 +344,10 @@
        01  SRYKARRK-REC.
            COPY    "CPSRYKARRK.INC".
       *
+      *    QRコード(被保険者証)
+       01  QRCDHKN-REC.
+           COPY    "CPQRCDHKN.INC".
+      *
       *
       *****************************************************************
       *    サブプロ用領域
@@ -400,6 +412,7 @@
       *
        01  SCRAREA.
            COPY    "U02.INC".
+           COPY    "U02Q.INC".
            COPY    "U02X.INC".
            COPY    "U2ERR.INC".
       *
@@ -526,12 +539,16 @@
                        PERFORM 3009-CLAIM-SYORI-SEC
                    END-IF
                    GO      TO                  300-SCREEN-EXT
-           END-EVALUATE
-      *
-           PERFORM 310-SPASET-SEC
-      *
-           EVALUATE    SPA-MOTOPG
+               WHEN    "U02Q"
+      *        ＱＲ一覧画面より
+                   IF      SPA-U02Q-REGISTID   NOT =   ZERO
+                       PERFORM 30010-QRHKN-UKETUKE-SEC
+                   ELSE
+                       MOVE    1                   TO  SPA-GMN-CUR
+                   END-IF
                WHEN    "P02"
+      *            患者登録画面より
+                   PERFORM 310-SPASET-SEC
                    IF     (SPA-ERRMSG(1:2)    =   "NO"  )  AND
                           (SPA-PTNUM(1:1)     =   "*"   )
                        MOVE    SPACE              TO  SPA-PTNUM
@@ -551,10 +568,16 @@
                            MOVE    4                   TO  SPA-GMN-CUR
                        END-IF
                    END-IF
+                   IF      SPA-MOTOPG(1:3)     =   "K02"
+                       MOVE    SPA-MOTOPG          TO  SPA-HZN-MOTOPG
+                   END-IF
+      *
+               WHEN    OTHER
+                   PERFORM 310-SPASET-SEC
+                   IF      SPA-MOTOPG(1:3)     =   "K02"
+                       MOVE    SPA-MOTOPG          TO  SPA-HZN-MOTOPG
+                   END-IF
            END-EVALUATE
-           IF      SPA-MOTOPG(1:3)     =   "K02"
-               MOVE    SPA-MOTOPG          TO  SPA-HZN-MOTOPG
-           END-IF
       *
            .
        300-SCREEN-EXT.
@@ -607,6 +630,66 @@
            END-IF
            .
        3101-U01SPASET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＱＲより受付処理
+      *****************************************************************
+       30010-QRHKN-UKETUKE-SEC              SECTION.
+      *
+           MOVE    SPA-U02Q-DATA-G     TO  WRK-U02Q-DATA-G
+      *
+           MOVE    SPA-U02Q-PTNUM      TO  SPA-GMN-PTNUM
+           MOVE    SPA-U02Q-PTNUM      TO  U02-PTNUM
+           MOVE    1                   TO  FLG-IN-PTNUM
+           PERFORM 4101-PTNUM-CHK-SEC
+           MOVE    WRK-U02Q-DATA-G     TO  SPA-U02Q-DATA-G
+      *
+      *    選択の保険を含む保険組合せを選択とする
+           MOVE    ZERO                TO  WRK-IDXH
+           MOVE    ZERO                TO  WRK-CNT-HKN
+           MOVE    ZERO                TO  WRK-CNT-HKN2
+           PERFORM VARYING     IDX-C   FROM    1   BY  1
+                   UNTIL       IDX-C   >   SPA-COMBI-MAX
+               IF      SPA-NAI-COB-HKNID (IDX-C)   =   WRK-U02Q-HKNID
+                   MOVE    SPA-GMN-HKNCOMBINUM (IDX-C)
+                                               TO  SPA-GMN-COMBINUM
+                   IF      WRK-IDXH            =   ZERO
+                       MOVE    IDX-C               TO  WRK-IDXH
+                   END-IF
+                   MOVE    ZERO                TO  WRK-CNT-HKN2
+                   IF      SPA-GMN-KOH1-TANSEIDONAME(IDX-C)
+                                               NOT =   SPACE
+                       ADD     1               TO  WRK-CNT-HKN2
+                   END-IF
+                   IF      SPA-GMN-KOH2-TANSEIDONAME(IDX-C)
+                                               NOT =   SPACE
+                       ADD     1               TO  WRK-CNT-HKN2
+                   END-IF
+                   IF      SPA-GMN-KOH3-TANSEIDONAME(IDX-C)
+                                               NOT =   SPACE
+                       ADD     1               TO  WRK-CNT-HKN2
+                   END-IF
+                   IF      SPA-GMN-KOH4-TANSEIDONAME(IDX-C)
+                                               NOT =   SPACE
+                       ADD     1               TO  WRK-CNT-HKN2
+                   END-IF
+                   IF      WRK-CNT-HKN         <=  WRK-CNT-HKN2
+                       MOVE    IDX-C               TO  WRK-IDXH
+                       MOVE    WRK-CNT-HKN2        TO  WRK-CNT-HKN
+                   END-IF
+             END-IF
+           END-PERFORM
+      *
+           IF      WRK-IDXH            =   ZERO
+               MOVE    1               TO  IDX-C
+           ELSE
+               MOVE    WRK-IDXH        TO  IDX-C
+           END-IF
+           MOVE    SPA-GMN-HKNCOMBINUM (IDX-C)
+                                       TO  SPA-GMN-COMBINUM
+           .
+       30010-QRHKN-UKETUKE-EXT.
            EXIT.
       *
       *****************************************************************
@@ -897,7 +980,6 @@
            MOVE    "tbl_uketuke"       TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
-      *
       *
            PERFORM  31012-SORT-SEC
       *
@@ -1353,6 +1435,9 @@
       *    次（↓）
                WHEN    "CLICKED"       ALSO    "B07S"
                    PERFORM 475-DOWN-SYORI-SEC
+      *    ＱＲ一覧へ
+               WHEN    "CLICKED"       ALSO    "B10S"
+                   PERFORM 4105-U02Q-SYORI-SEC
       *    保険チェック
                WHEN    "CLICKED"       ALSO    "BHK1"
                WHEN    "CLICKED"       ALSO    "BHK2"
@@ -2362,6 +2447,7 @@
                                     TO  SPA-GMN-KOH4-TANSEIDONAME(IDX)
       *
                    MOVE    COMB-HKNNUM     TO  SPA-NAI-HKNNUM  (IDX)
+                   MOVE    COMB-HKNID      TO  SPA-NAI-COB-HKNID (IDX)
       *            労災の時、部位を公費１の項目へ
                    IF      COMB-HKNNUM         =   "971"  OR  "973"
                        PERFORM 4101152-RSI-HENSYU-SEC
@@ -2874,6 +2960,10 @@
       *****************************************************************
        210-BACK                        SECTION.
       *
+      *    ＱＲデータ解除処理
+           IF      SPA-U02Q-REGISTID   NOT =   ZERO
+               PERFORM 4906-QRHKCD-KAIJO-SEC
+           END-IF
       *    排他制御解除処理
            PERFORM 990-LOCK-OUT-SEC
       *
@@ -2937,6 +3027,10 @@
       *****************************************************************
        493-CLEAR-SEC                   SECTION.
       *
+      *    ＱＲデータ解除処理
+           IF      SPA-U02Q-REGISTID   NOT =   ZERO
+               PERFORM 4906-QRHKCD-KAIJO-SEC
+           END-IF
       *    クリア
            PERFORM 1009-HEAD-CLEAR-SEC
       *
@@ -3080,6 +3174,44 @@
            EXIT.
       *---- (01.00.05) LINE ADD END -----------------------------------
       *
+      *****************************************************************
+      *    ＱＲ一覧へ
+      *****************************************************************
+       4105-U02Q-SYORI-SEC             SECTION.
+      *
+           MOVE    SPA-AREA            TO  SPA-COMMON
+           MOVE    SPA-U02             TO  SPA-FREE
+      *
+           MOVE    "LINK"              TO  MCP-STATUS
+           MOVE    SPACE               TO  MCP-EVENT
+      *
+           CALL    "ORCGU02Q"          USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA.
+      *
+           MOVE    SPA-COMMON          TO  SPA-AREA
+           MOVE    SPA-FREE            TO  SPA-U02
+     *
+           IF      SPA-U02Q-MAX        =   ZERO
+               MOVE    "0200"              TO  SPA-ERRCD
+               MOVE    1                   TO  SPA-GMN-CUR
+           ELSE
+     *
+               MOVE    "U02"               TO  SPA-MOTOPG
+               MOVE    "U02Q"              TO  SPA-SAKIPG
+               MOVE    "SELNUM"            TO  MCP-WIDGET
+      *
+               MOVE    "NEW"               TO  MCP-PUTTYPE
+               MOVE    "U02Q"              TO  MCP-WINDOW
+               PERFORM 900-PUT-WINDOW
+               MOVE    1                   TO  FLG-END
+           END-IF
+      *
+           .
+       4105-U02Q-SYORI-EXT.
+           EXIT.
       *****************************************************************
       *    予約画面へ
       *****************************************************************
@@ -3378,6 +3510,12 @@
            IF      SPA-ERRCD           =   SPACE
       *        保険・公費情報更新
                PERFORM 4904-HKN-KOUSIN-SEC
+           END-IF
+           IF      SPA-ERRCD           =   SPACE
+      *        ＱＲデータ更新
+               IF      SPA-U02Q-REGISTID   NOT =   ZERO
+                   PERFORM 4905-QRHKCD-KOUSIN-SEC
+               END-IF
            END-IF
       *
            IF      SPA-ERRCD       NOT =   SPACE
@@ -4223,6 +4361,96 @@
        4904-HKN-KOUSIN-EXT.
            EXIT.
       *****************************************************************
+      *    ＱＲデータ更新処理
+      *****************************************************************
+       4905-QRHKCD-KOUSIN-SEC              SECTION.
+      *
+           INITIALIZE                      QRCDHKN-REC
+           MOVE    SPA-HOSPID          TO  QRCDHKN-HOSPID
+           MOVE    SPA-SYSYMD          TO  QRCDHKN-REGISTYMD
+           MOVE    SPA-U02Q-REGISTID   TO  QRCDHKN-REGISTID
+           MOVE    QRCDHKN-REC         TO  MCPDATA-REC
+           MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 900-QRCDHKN-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-QRCDHKN
+               INITIALIZE                      QRCDHKN-REC
+           END-IF
+           MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      FLG-QRCDHKN         =   ZERO
+               MOVE    1                   TO  QRCDHKN-MOD-FLG2
+      *
+               MOVE    QRCDHKN-REC         TO  MCPDATA-REC
+               MOVE    "DBUPDATE"          TO  MCP-FUNC
+               MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC          NOT =   ZERO 
+                   MOVE    "1001"              TO  SPA-ERRCD
+                   DISPLAY "U02Q QRCDHKN KEY UPD ERR:"  MCP-RC
+                           ",KEY:" QRCDHKN-KEY
+               END-IF
+           END-IF
+           INITIALIZE                  SPA-U02Q-DATA-G
+           .
+       4905-QRHKCD-KOUSIN-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＱＲデータ解除処理
+      *****************************************************************
+       4906-QRHKCD-KAIJO-SEC              SECTION.
+      *
+           INITIALIZE                      QRCDHKN-REC
+           MOVE    SPA-HOSPID          TO  QRCDHKN-HOSPID
+           MOVE    SPA-SYSYMD          TO  QRCDHKN-REGISTYMD
+           MOVE    SPA-U02Q-REGISTID   TO  QRCDHKN-REGISTID
+           MOVE    QRCDHKN-REC         TO  MCPDATA-REC
+           MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 900-QRCDHKN-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-QRCDHKN
+               INITIALIZE                      QRCDHKN-REC
+           END-IF
+           MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      FLG-QRCDHKN         =   ZERO
+               MOVE    ZERO                TO  QRCDHKN-MOD-FLG2
+      *
+               MOVE    QRCDHKN-REC         TO  MCPDATA-REC
+               MOVE    "DBUPDATE"          TO  MCP-FUNC
+               MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC          NOT =   ZERO 
+                   MOVE    "1001"              TO  SPA-ERRCD
+                   DISPLAY "U02 QRCDHKN KEY UPD ERR:"  MCP-RC
+                           ",KEY:" QRCDHKN-KEY
+               END-IF
+           END-IF
+           INITIALIZE                  SPA-U02Q-DATA-G
+           .
+       4906-QRHKCD-KAIJO-EXT.
+           EXIT.
+      *****************************************************************
       *    受付取消処理
       *****************************************************************
        491-SAKUJO-SEC              SECTION.
@@ -4410,6 +4638,10 @@
       *********END-IF
            END-IF    
       *---- (01.00.04) LINE MOD END -----------------------------------
+      *    ＱＲデータ解除処理
+           IF      SPA-U02Q-REGISTID   NOT =   ZERO
+               PERFORM 4906-QRHKCD-KAIJO-SEC
+           END-IF
       *
       *    共通ＳＰＡセット
            PERFORM 4921-SPA-SET-SEC
@@ -4497,6 +4729,10 @@
                    GO       TO      493-ORCGK02-EXT
                END-IF
            END-IF
+      *    ＱＲデータ解除処理
+           IF      SPA-U02Q-REGISTID   NOT =   ZERO
+               PERFORM 4906-QRHKCD-KAIJO-SEC
+           END-IF
       *
            PERFORM 4921-SPA-SET-SEC
            IF      SPA-GMN-SELNUM      >   ZERO
@@ -4537,6 +4773,11 @@
                MOVE    "0022"              TO  SPA-ERRCD
                GO       TO      494-ORCGC02-EXT
            END-IF
+      *    ＱＲデータ解除処理
+           IF      SPA-U02Q-REGISTID   NOT =   ZERO
+               PERFORM 4906-QRHKCD-KAIJO-SEC
+           END-IF
+      *
            PERFORM 4921-SPA-SET-SEC
       *
       *    排他制御解除処理
@@ -4571,6 +4812,11 @@
                MOVE    "0022"              TO  SPA-ERRCD
                GO       TO      495-ORCGS02-EXT
            END-IF
+      *    ＱＲデータ解除処理
+           IF      SPA-U02Q-REGISTID   NOT =   ZERO
+               PERFORM 4906-QRHKCD-KAIJO-SEC
+           END-IF
+      *
            PERFORM 4921-SPA-SET-SEC
       *
       *    排他制御解除処理
@@ -4604,6 +4850,10 @@
                   (SPA-GMN-PTID        =   ZERO  )
                MOVE    "0022"              TO  SPA-ERRCD
                GO       TO      496-ORCGJ02-EXT
+           END-IF
+      *    ＱＲデータ解除処理
+           IF      SPA-U02Q-REGISTID   NOT =   ZERO
+               PERFORM 4906-QRHKCD-KAIJO-SEC
            END-IF
       *
            PERFORM 4921-SPA-SET-SEC
@@ -5126,6 +5376,9 @@
                                                 TO  SPA-ERRMSG
                    MOVE    "これ以上受付はできません。"
                                                 TO  SPA-ERRMSG(33:)
+               WHEN    "0200"
+                   MOVE    "ＱＲデータはありません。"
+                                                TO  SPA-ERRMSG
       *
                WHEN    "K002"
                    STRING  "警告！！老人保険の割合が設定されていません"
@@ -5563,6 +5816,23 @@
            .
        975-SRYKARRK-READ-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    QRコード(被保険者証)読込
+      *****************************************************************
+       900-QRCDHKN-READ-SEC         SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  QRCDHKN-REC
+               MOVE    ZERO            TO  FLG-QRCDHKN
+           ELSE
+               INITIALIZE                  QRCDHKN-REC
+               MOVE    1               TO  FLG-QRCDHKN
+           END-IF
+           .
+       900-QRCDHKN-READ-EXT.
+           EXIT.
       *****************************************************************
       *    テーブル検索処理
       *****************************************************************
@@ -5575,6 +5845,18 @@
       *
            .
        910-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ読み込み処理
+      *****************************************************************
+       920-DBFETCH-SEC                 SECTION.
+      *
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           .
+       920-DBFETCH-EXT.
            EXIT.
       *
       *****************************************************************

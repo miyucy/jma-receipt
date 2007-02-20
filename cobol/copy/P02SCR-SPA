@@ -35,6 +35,7 @@
       *  02.00.08    NACL-Â¿¡¹Ç¼  05/10/07  £Õ¡¦£ÐÄÉ²Ã
       *  02.00.09    NACL-Â¿¡¹Ç¼  05/12/07  Ï«ºÒ¥ì¥»²ó¿ôµ­ºÜÄÉ²Ã
       *  02.00.10    NACL-Â¿¡¹Ç¼  06/02/27  ¼ç²ÊÂÐ±þÄÉ²Ã
+      *  03.04.00    NACL-Â¿¡¹Ç¼  07/02/16  £Ñ£Ò¼õÉÕÂÐ±þ
       *****************************************************************
        01  SPA-P02SCRAREA.
       *
@@ -1261,4 +1262,86 @@
                    07  SPA-GMN-F1              PIC X(01).
                    07  SPA-GMN-SCODEMEI        PIC X(18).
       *
+      *@@
+      *    £Ñ£Ò²èÌÌ¡Ê£Ð£°£²£Ñ¡Ë
+           03  SPA-P02Q-AREA.
+               05  SPA-P02Q-CUR                    PIC 9(02).
+               05  SPA-P02Q-SYSYMD                 PIC X(08).
+               05  SPA-P02Q-HSYSYMD                PIC X(30).
+      *
+               05  SPA-P02Q-SELNUM                 PIC 9(03).
+               05  SPA-P02Q-QRLIST.
+                   07  SPA-P02Q-QRLIST-T           OCCURS  50.
+                       09  SPA-P02Q-TNUM           PIC 9(03).
+                       09  SPA-P02Q-TTIME          PIC X(05).
+                       09  SPA-P02Q-THKNJANUM      PIC X(08).
+                       09  SPA-P02Q-TKIGONUM       PIC X(80).
+                       09  SPA-P02Q-THONKZKKBN     PIC X(04).
+                       09  SPA-P02Q-TKANANAME      PIC X(50).
+                       09  SPA-P02Q-TSEX           PIC X(02).
+                       09  SPA-P02Q-TBIRTHDAY-H    PIC X(10).
+                       09  SPA-P02Q-TNAME          PIC X(10).
+                       09  SPA-P02Q-TPTNUM         PIC X(20).
+                       09  SPA-P02Q-TJYOTAI        PIC X(10).
+      *
+                       09  SPA-P02Q-TREGISTID      PIC 9(05).
+                       09  SPA-P02Q-TPTID          PIC 9(10).
+                       09  SPA-P02Q-TBIRTHDAY      PIC X(08).
+                       09  SPA-P02Q-TJYOTAIFLG     PIC 9(01).
+                       09  SPA-P02Q-THKNID         PIC 9(10).
+                   07  SPA-P02Q-MAX                PIC 9(04).
+      *
+               05  SPA-P02Q-REGISTID              PIC 9(05).
+      *
+      *    £Ñ£Ò´µ¼Ô³ÎÇ§²èÌÌ¡Ê£Ð£°£²£Ñ£±¡Ë
+           03  SPA-P02Q1-AREA.
+               05  SPA-P02Q1-CUR                    PIC 9(02).
+               05  SPA-P02Q1-SELNUM                 PIC 9(03).
+      *
+               05  SPA-P02Q1-QRAREA.
+                   07  SPA-P02Q1-QRHKNJANUM          PIC X(08).
+                   07  SPA-P02Q1-QRHKNJANAME         PIC X(50).
+                   07  SPA-P02Q1-QRHKNNUM            PIC X(03).
+                   07  SPA-P02Q1-QRHKNNUMMEI         PIC X(16).
+                   07  SPA-P02Q1-QRKIGONUM           PIC X(80).
+                   07  SPA-P02Q1-QRHONKZKKBN         PIC X(04).
+                   07  SPA-P02Q1-QRBIRTHDAY          PIC X(10).
+                   07  SPA-P02Q1-QRSEX               PIC X(02).
+                   07  SPA-P02Q1-QRKANANAME          PIC X(50).
+                   07  SPA-P02Q1-QRNAME              PIC X(50).
+      *
+               05  SPA-P02Q1-LIST-G.
+                   07  SPA-P02Q1-LIST-T            OCCURS  50.
+                       09  SPA-P02Q1-TNUM          PIC 9(03).
+                       09  SPA-P02Q1-TPTNUM        PIC X(20).
+                       09  SPA-P02Q1-TNAME         PIC X(50).
+                       09  SPA-P02Q1-TBIRTHDAY     PIC X(10).
+                       09  SPA-P02Q1-TSEX          PIC X(02).
+                       09  SPA-P02Q1-TADRS         PIC X(100).
+                       09  SPA-P02Q1-TTEL          PIC X(15).
+      *
+                       09  SPA-P02Q1-TPTID         PIC 9(10).
+                   07  SPA-P02Q1-MAX               PIC 9(04).
+      *        ´µ¼Ô¾ðÊó
+               05  SPA-P02Q1-PTINFAREA.
+                   07  SPA-P02Q1-PTID              PIC 9(10).
+                   07  SPA-P02Q1-PTNUM             PIC X(20).
+                   07  SPA-P02Q1-NAME              PIC X(50).
+                   07  SPA-P02Q1-BIRTHDAY          PIC X(10).
+                   07  SPA-P02Q1-SEX               PIC X(02).
+                   07  SPA-P02Q1-KANANAME          PIC X(50).
+                   07  SPA-P02Q1-ADRS              PIC X(100).
+                   07  SPA-P02Q1-TEL               PIC X(15).
+                   07  SPA-P02Q1-HKNJANUM          PIC X(08).
+                   07  SPA-P02Q1-HKNJANAME         PIC X(50).
+                   07  SPA-P02Q1-HKNNUMMEI         PIC X(16).
+                   07  SPA-P02Q1-KIGONUM           PIC X(80).
+                   07  SPA-P02Q1-HONKZKKBN         PIC X(04).
+                   07  SPA-P02Q1-YUKOKIKAN         PIC X(20).
+                   07  SPA-P02Q1-HKNNUM            PIC X(03).
+      *
+                   07  SPA-P02Q1-KIKAN-OK          PIC 9(01).
+                   07  SPA-P02Q1-HKNID             PIC 9(10).
+      *
+               05  SPA-P02Q1-QRPTID                PIC 9(10).
       *
