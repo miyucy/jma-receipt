@@ -76,6 +76,7 @@
       *                                     （老人割合変更）
       *  03.03.00    NACL-多々納  06/10/17  減免割合・金額追加
       *  03.04.00    NACL-多々納  06/11/14  高額委任払い追加
+      *  03.04.01    NACL-多々納  07/02/16  ＱＲ受付対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3082,10 +3083,15 @@
            MOVE    SPA-GMN-BIRTHDAYW   TO  SPA-GMN-BIRTHDAYH
       *
       *    二重登録疑いチェック
-           IF      SPA-P02A-FLG2       =   ZERO
+      *    ＱＲからの初期表示
+           IF      SPA-QR-FLG          =   2
+               CONTINUE
+           ELSE
+             IF      SPA-P02A-FLG2       =   ZERO
                MOVE    2               TO  FLG-P02A-SYORI
                MOVE    1               TO  SPA-P02A-FLG2
                PERFORM 41012-NIJYU-TRKGMN-SEC
+             END-IF
            END-IF
            .
        4101-BIRTHDAY-CHK-EXT.
