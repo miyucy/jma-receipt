@@ -593,6 +593,7 @@
        4101-GMN-SPA-SET-SEC            SECTION.
       *
            MOVE   X99-SRCBYOKBN    TO  SPA-GMN-X99-SRCBYOKBN-G
+           MOVE   X99-SRTKBN       TO  SPA-GMN-X99-SRTKBN-G
       *
            .
       *
