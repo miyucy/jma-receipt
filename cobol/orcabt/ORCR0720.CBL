@@ -35,6 +35,7 @@
       *  03.04.03    NACL-ÌçÏÆ    07/02/15  ¼«Î©»Ù±ç°åÎÅ¤ÈÀ¸³èÊÝ¸î¤ÎÊ»ÍÑ
       *                                     ¤ÎÅÀ¿ôÍóµ­ºÜ
       *  03.04.04    NACL-ÌçÏÆ    07/02/16  Ä¢É¼¥ì¥¤¥¢¥¦¥ÈÊÑ¹¹¤Ë¤è¤ë½¤Àµ
+      *  03.04.05    NACL-ÌçÏÆ    07/02/19  ËÌ³¤Æ»£µ£±¡Ü£´£±ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -494,6 +495,7 @@
            03  WRK-KGKZ                        PIC ZZZ,ZZZ,ZZZ.
            03  WRK-KGK9                        PIC ZZZ,ZZZ,ZZ9.
            03  WRK-KGK7                        PIC ZZZZ,ZZ9.
+           03  WRK-KGK8                        PIC ZZZZZ,ZZ9.
            03  WRK-KGK6                        PIC ZZZ,ZZ9.
            03  WRK-KGK4                        PIC ZZZ9.
            03  WRK-KGK2                        PIC Z9.
@@ -5095,35 +5097,43 @@
            END-IF
       *     
       *    ¸øÈñ£²
-           IF    (RECE62-TOTALTEN (IDX3) >   ZERO                      )
-           AND   ((RECE62-TOTALTEN (IDX3)
+           IF       RECE62-KOH-SAIKEIFLG   =   1
+             MOVE    "("                    TO  HC06-FTNMONEY1(3)(1:1)
+             MOVE   RECE62-KOH-SAIKEI       TO  WRK-KGK6
+             MOVE   WRK-KGK6                TO  HC06-FTNMONEY1(3)(2:7)
+             MOVE    ")"                    TO  HC06-FTNMONEY1(3)(9:1)
+      *
+             MOVE   RECE62-FTNMONEY (IDX3)  TO  WRK-KGK8
+             MOVE   WRK-KGK8                TO  HC06-FTNMONEY1(4)
+           ELSE
+             IF  ( RECE62-TOTALTEN (IDX3) >   ZERO                     )
+             AND ((RECE62-TOTALTEN (IDX3)
                                       NOT =   RECE62-TOTALTEN (IDX1)) OR
                   (RECE62-FTNMONEY (IDX3)
                                       NOT =   RECE62-FTNMONEY (IDX1))  )
-      *
-               IF      RECE62-FTNMONEY (IDX3)
-                                          NOT =   RECE62-FTNMONEY (IDX2)
-      *
-                   IF      RECE62-FTNMONEY (IDX3)   >   ZERO
+                 IF    RECE62-FTNMONEY (IDX3)
+                                      NOT =   RECE62-FTNMONEY (IDX2)
+                   IF  RECE62-FTNMONEY (IDX3)   >   ZERO
                        MOVE    RECE62-FTNMONEY (IDX3)
                                            TO  WRK-KGK7
                        MOVE    WRK-KGK7    TO  HC06-FTNMONEY(3)
                    END-IF
-               END-IF
-           END-IF
-           IF    ( RECE62-TOTALTEN (IDX3) >   ZERO                  )
-           AND   ( RECE62-FTNMONEY (IDX3) =   RECE62-FTNMONEY (IDX2))
-           AND   ( RECE62-KISAIFLG (IDX3) =   "1"                   )
-               IF    RECE62-FTNMONEY (IDX3)   >   ZERO
+                 END-IF
+             END-IF
+             IF    ( RECE62-TOTALTEN (IDX3) >   ZERO                  )
+             AND   ( RECE62-FTNMONEY (IDX3) =   RECE62-FTNMONEY (IDX2))
+             AND   ( RECE62-KISAIFLG (IDX3) =   "1"                   )
+                 IF    RECE62-FTNMONEY (IDX3)   >   ZERO
                    MOVE    RECE62-FTNMONEY (IDX3) TO  WRK-KGK7
                    MOVE    WRK-KGK7               TO  HC06-FTNMONEY(3)
-               END-IF
-           END-IF
-           IF    ( RECE62-TOTALTEN (IDX3)     >   ZERO )
-           AND   ( RECE62-FTNMONEY (IDX3)     =   ZERO )
-           AND   ( RECE62-ZEROKISAIFLG (IDX3) =   "1"  )
+                 END-IF
+             END-IF
+             IF    ( RECE62-TOTALTEN (IDX3)     >   ZERO )
+             AND   ( RECE62-FTNMONEY (IDX3)     =   ZERO )
+             AND   ( RECE62-ZEROKISAIFLG (IDX3) =   "1"  )
                    MOVE    RECE62-FTNMONEY (IDX3) TO  WRK-KGK7
                    MOVE    WRK-KGK7               TO  HC06-FTNMONEY(3)
+             END-IF
            END-IF
            IF      RECE62-TOTALTEN (IDX3) >   ZERO                      
            AND     RECE62-TOTALTEN (IDX3)

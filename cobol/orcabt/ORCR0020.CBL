@@ -159,6 +159,7 @@
       *
       *  03.04.01    NACL-藤原    06/12/05  未請求レセ対応
       *  03.04.02    NACL-藤原    07/02/06  月途中の受給者番号変更に対応
+      *  03.04.03    NACL-門脇    07/02/19  本人−外来−回−上限額のセット
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1504,6 +1505,8 @@
                                        RECE02-KOHHBTNUM        (IDX2)
                        MOVE   HKN-HON-GAIKFTNRATE TO
                                        RECE02-HON-GAIKFTNRATE  (IDX2)
+                       MOVE   HKN-HON-GAIKJGNGAK  TO
+                                       RECE02-HON-GAIKJGNGAK   (IDX2)
                        MOVE   HKN-HON-GAIDJGNGAK  TO
                                        RECE02-HON-GAIDJGNGAK   (IDX2)
                        MOVE   HKN-HON-GAIDJGNCNT  TO

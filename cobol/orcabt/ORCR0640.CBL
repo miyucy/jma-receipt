@@ -238,6 +238,7 @@
       *  03.04.07    NACL-ÌçÏÆ    07/01/16  ¡Ê¡¡¡ËºÆ·Çµ­ºÜ¤Î½¤Àµ
       *  03.04.08    NACL-ÌçÏÆ    07/01/23  £µ£±¡ÜÄã½êÆÀÂÐ±þ
       *  03.04.09    NACL-ÌçÏÆ    07/02/14  Ê¡Åç¸©ÈÓ´ÛÂ¼ÂÐ±þ
+      *  03.04.10    NACL-ÌçÏÆ    07/02/19  ËÌ³¤Æ»£µ£±¡Ü£´£±ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -710,6 +711,8 @@
            03  WRK-CHK-KEIKASOCHI2                     PIC S9(07).
       *
            03  WRK-KEISAN                              PIC 9(07).
+      *
+           03  WRK-JYOGEN41                            PIC 9(09).
       *
            03  WRK-ZENKAKU                             PIC X(80).
            03  WRK-NUM.
@@ -9413,8 +9416,75 @@
            END-PERFORM
       *
       *    ¹âÃÎ£·£²ÆýÍÄ»ù
+      *    ËÌ³¤Æ»£´£±Ï·¿Í
       *
            EVALUATE   WRK-PREFNUM
+      *
+             WHEN    "01"
+      *
+               IF     (RECE62-KOHNUM(1)    =  "051" OR "091")
+               AND    (RECE62-KOHHBTNUM(2) =  "41"          )
+      *
+                   MOVE     ZERO     TO   WRK-JYOGEN41
+      *
+                   COMPUTE  WRK-FTNKEI =  RECE62-TOTALTEN(3)
+                                       *  10
+                                       *  RECE62-HON-NYUKFTNRATE(2)
+                                       /  100
+                   IF  RECE62-HON-NYUKFTNRATE(2) = 10
+                     EVALUATE    RECE62-TEISYOTOKU
+                       WHEN    SPACE
+                        IF  RECE62-SRYYM  >=  "200610"
+                            MOVE   44400  TO  WRK-JYOGEN41
+                        ELSE
+                            MOVE   40200  TO  WRK-JYOGEN41
+                        END-IF
+                       WHEN    "1"
+                       WHEN    "4"
+                            MOVE   15000  TO  WRK-JYOGEN41
+                       WHEN    "2"
+                       WHEN    "3"
+                            MOVE   24600  TO  WRK-JYOGEN41
+                     END-EVALUATE
+                   ELSE
+                     IF    RECE62-SRYYM  >=  "200610"
+                       COMPUTE   WRK-FTNKEI2  =
+                                 RECE62-TOTALTEN(3)   *   10
+                       IF   WRK-FTNKEI2  >  267000
+                          COMPUTE  WRK-FTNKEI3 =
+                         (( WRK-FTNKEI2 -  267000 ) * 0.01 )
+                                                    + 0.5
+                          COMPUTE  WRK-JYOGEN41  =   80100
+                                                 +   WRK-FTNKEI3
+                       ELSE
+                          MOVE   80100   TO   WRK-JYOGEN41
+                       END-IF
+                     ELSE
+                       COMPUTE   WRK-FTNKEI2  =
+                                 RECE62-TOTALTEN(3)   *   10
+                       IF   WRK-FTNKEI2  >  361500
+                          COMPUTE  WRK-FTNKEI3 =
+                         (( WRK-FTNKEI2 -  361500 ) * 0.01 )
+                                                    + 0.5
+                          COMPUTE  WRK-JYOGEN41  =   72300
+                                                 +   WRK-FTNKEI3
+                       ELSE
+                          MOVE   72300   TO   WRK-JYOGEN41
+                       END-IF
+                     END-IF
+                   END-IF
+                   IF  ( WRK-JYOGEN41  NOT =  ZERO  )
+                   AND ( WRK-JYOGEN41  >  WRK-FTNKEI)
+                       MOVE   WRK-FTNKEI   TO  WRK-FTNKEI4
+                   ELSE
+                       MOVE   WRK-JYOGEN41 TO  WRK-FTNKEI4
+                   END-IF
+                   MOVE RECE62-FTNMONEY(3) TO RECE62-KOH-SAIKEI
+                   MOVE 1                  TO RECE62-KOH-SAIKEIFLG
+                   MOVE WRK-FTNKEI4        TO RECE62-FTNMONEY(3)
+                                              RECE62-FTNMONEY-KOJ(3)
+      *
+               END-IF
       *
              WHEN    "39"
       *
@@ -9473,8 +9543,6 @@
                    CONTINUE
                  ELSE
                      IF    ( RECE62-HON-NYUDJGNGAK (KOHFTN-IDX)
-                                           NOT = ZERO )
-                     OR    ( RECE62-HON-NYUDGJNCNT (KOHFTN-IDX)
                                            NOT = ZERO )
                      OR    ( RECE62-HON-NYUMJGNGAK (KOHFTN-IDX)
                                            NOT = ZERO )

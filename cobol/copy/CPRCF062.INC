@@ -71,6 +71,9 @@
       *  03.03.01    NACL-門脇    06/10/10  入院時生活療養費食事対応
       *
       *  03.04.01    NACL-藤原    06/12/05  未請求レセ対応
+      *  03.04.02    NACL-門脇    07/02/19  公費の一部負担金再掲追加
+      *                                     公費の一部負担金再掲フラグ追加
+      *                                     公費−本人−入院−回−負担割合追加
       ************************************************************
       *01  RECE62-REC.
            03  RECE62-KEY.
@@ -187,12 +190,12 @@
                    07  RECE62-KOHKENSU    PIC  9(03).
       *公費−レセプト請求区分
                    07  RECE62-RECESKYKBN  PIC  X(01).
+      *公費−本人−入院−回−負担割合
+                   07  RECE62-HON-NYUKFTNRATE
+                                          PIC  9(03).
       *公費−本人−入院−日−上限額
                    07  RECE62-HON-NYUDJGNGAK
                                           PIC  9(06).
-      *公費−本人−入院−日−上限回数
-                   07  RECE62-HON-NYUDGJNCNT
-                                          PIC  9(02).
       *公費−本人−入院−月−上限額
                    07  RECE62-HON-NYUMJGNGAK
                                           PIC  9(06).
@@ -427,6 +430,10 @@
            03  RECE62-KOUREI              PIC  X(01).
       *高齢者一部負担金再掲
            03  RECE62-KOUREI-SAIKEI       PIC  9(09).
+      *公費の一部負担金再掲
+           03  RECE62-KOH-SAIKEI          PIC  9(09).
+      *公費の一部負担金再掲フラグ
+           03  RECE62-KOH-SAIKEIFLG       PIC  9(01).
       *船員保険（被保険者）＋通勤災害フラグ
            03  RECE62-SENIN-TUUSAI        PIC  X(01).
       *初診時間区分

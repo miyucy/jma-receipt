@@ -169,6 +169,7 @@
       *  03.03.01    NACL-藤原    06/12/11  レセプト特記事項編集情報によ
       *                                     るレセプト請求しない公費の編集
       *                                     について神奈川障害のときの対応
+      *  03.04.01    NACL-門脇    07/02/19  北海道５１＋４１対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1518,6 +1519,8 @@
                          OR      ( RECE05-SRYCD(IDX) =   SPACE )
                          OR      ( SPA-STS           =   2     ) 
       *
+                 IF        RECE05-RECEPTFLG(IDX)     =   SPACE
+      *
                    IF      RECE05-SRYCD (IDX) (1:1)  =   "1"
                        CONTINUE
                    ELSE
@@ -1608,15 +1611,15 @@
                                              WRK-KENTAICOMMENT-SRYCD
                    ELSE
       *
-                   ADD     1                 TO  WRK-ZAIWMAX (IDY)
-                                                 WRK-ZAIWMAX (6)
-                   IF      WRK-ZAIWMAX (IDY) >   TBL-ZAI-MAX 
+                     ADD     1                 TO  WRK-ZAIWMAX (IDY)
+                                                   WRK-ZAIWMAX (6)
+                     IF      WRK-ZAIWMAX (IDY) >   TBL-ZAI-MAX 
                        MOVE    "テーブルがオーバーしました"
                                                  TO  WRK-RECEERR
                        PERFORM 500-ERR-HENSYU-SEC
                        MOVE    2                 TO  SPA-STS
                        GO  TO  2002-TBLZAIW-TAIHI-EXT
-                   ELSE
+                     ELSE
       *                先頭の診療行為コード編集              
                        IF      WRK-RECE05        =   ZERO
                          IF  ( RECE05-SRYCD(IDX)(1:1)  =  "8"       )
@@ -1754,9 +1757,12 @@
                                MOVE    1         TO  FLG-HIKAKIN
                            END-IF
                        END-IF
-                   END-IF
+                     END-IF
       *
                    END-IF
+      *
+                 END-IF
+      *
                END-PERFORM
                ADD     1                 TO  CNT-RECE05
       *

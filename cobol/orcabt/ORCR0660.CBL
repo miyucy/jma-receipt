@@ -79,6 +79,7 @@
       *                                     ¡Ê¿ÇÎÅ¶èÊ¬£¹£°¡¢£¹£²¡Ë
       *  03.04.02    NACL-ÌçÏÆ    07/01/12  ¥ê¥Ï¥Ó¥êÈ¯¾É½ªÎ»ÆüÂÐ±þ
       *  03.04.03    NACL-ÌçÏÆ    07/01/15  ¥ê¥Ï¥Ó¥ê¼ê½ÑÆü¡¦µÞÀ­Áþ°­Æüµ­ºÜÂÐ±þ
+      *  03.04.04    NACL-ÌçÏÆ    07/02/19  ËÌ³¤Æ»£µ£±¡Ü£´£±ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -290,6 +291,7 @@
            03  FLG-ARI             PIC 9(01).
            03  FLG-COMOKIKAE       PIC 9(01).
            03  FLG-COMOKIKAE2      PIC 9(01).
+           03  FLG-HENSYUKIN       PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -326,6 +328,8 @@
            03  RYO-IDX             PIC 9(03).
            03  RYO-IDX2            PIC 9(03).
            03  RYO-IDX3            PIC 9(03).
+           03  IDA                 PIC 9(04).
+           03  IDB                 PIC 9(04).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -408,6 +412,10 @@
       *
            03  WRK-HENYMD            PIC X(08).
            03  WRK-TAIHI-XX          PIC X(02).
+      *
+           03  WRK-HENSYU-KINGAKU    PIC X(09).
+           03  WRK-HENSYU-KINGAKU2   PIC X(18).
+           03  WRK-HENSYU-KINGAKU3   PIC X(18).
       *
        01  WRK-RECE64-REC. 
            COPY    "CPRCF064.INC"  REPLACING   //RECE64//
@@ -1098,6 +1106,12 @@
               PERFORM   2001-KOHJYUSIN-COMMENT-SEC
            END-IF
       *
+      *    Îà»öÏ·¿ÍÁë¸ýÄ§¼ý³Û¤Î¥³¥á¥ó¥È
+      *
+           IF   RECE62-KOH-SAIKEIFLG    =   1
+              PERFORM   2001-KOHSAIKEI-COMMENT-SEC
+           END-IF
+      *
       *    È¯¾ÉÆü¤Î¥³¥á¥ó¥È
            IF   RECE62-SRYYM      >=    "200604"
                PERFORM   2001-HASSYO-HANTEI-SEC
@@ -1436,6 +1450,112 @@
       *
            .
        2001-KOHJYUSIN-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Îà»öÏ·¿ÍÁë¸ýÄ§¼ý³Û¤Î¥³¥á¥ó¥ÈÊÔ½¸
+      *****************************************************************
+       2001-KOHSAIKEI-COMMENT-SEC          SECTION.
+      *
+           INITIALIZE                      RECE649-REC
+           MOVE    RECE62-HOSPID       TO  RECE649-HOSPID
+           MOVE    RECE62-SRYYM        TO  RECE649-SRYYM
+           MOVE    RECE62-NYUGAIKBN    TO  RECE649-NYUGAIKBN
+           MOVE    RECE62-PTID         TO  RECE649-PTID
+           MOVE    RECE62-RECEKA       TO  RECE649-RECEKA
+           MOVE    RECE62-TEISYUTUSAKI TO  RECE649-TEISYUTUSAKI
+           MOVE    RECE62-RECESYUBETU  TO  RECE649-RECESYUBETU
+           MOVE    RECE62-HKNJANUM-KEY TO  RECE649-HKNJANUM
+           MOVE    RECE62-HOJOKBN-KEY  TO  RECE649-HOJOKBN
+           MOVE    RECE62-TEKSTYMD     TO  RECE649-TEKSTYMD
+           MOVE    99999997            TO  RECE649-ZAINUM
+           MOVE    WRK-KOHBUNRI-JIDO   TO  RECE649-KOHBUNRI
+           MOVE    "99"                TO  RECE649-SRYKBN
+           MOVE    WRK-HKNCOMBI-JIDO   TO  RECE649-HKNCOMBI
+      *
+           MOVE    1                   TO  RECE649-MEISAISU
+      *
+           WRITE   RECE649-REC
+           ADD     1                   TO  CNT-RECE649
+      *
+           INITIALIZE                      RECE659-REC
+           MOVE    RECE62-HOSPID       TO  RECE659-HOSPID
+           MOVE    RECE62-SRYYM        TO  RECE659-SRYYM
+           MOVE    RECE62-NYUGAIKBN    TO  RECE659-NYUGAIKBN
+           MOVE    RECE62-PTID         TO  RECE659-PTID
+           MOVE    RECE62-RECEKA       TO  RECE659-RECEKA
+           MOVE    RECE62-TEISYUTUSAKI TO  RECE659-TEISYUTUSAKI
+           MOVE    RECE62-RECESYUBETU  TO  RECE659-RECESYUBETU
+           MOVE    RECE62-HKNJANUM-KEY TO  RECE659-HKNJANUM
+           MOVE    RECE62-HOJOKBN-KEY  TO  RECE659-HOJOKBN
+           MOVE    RECE62-TEKSTYMD     TO  RECE659-TEKSTYMD
+           MOVE    99999997            TO  RECE659-ZAINUM
+           MOVE    WRK-KOHBUNRI-JIDO   TO  RECE659-KOHBUNRI
+           MOVE    "99"                TO  RECE659-SRYKBN
+      *    ¥³¥á¥ó¥È¤ÎÁÞÆþ
+           MOVE    SPACE               TO  WRK-RECE65XX-REC
+           INITIALIZE                      WRK-RECE65XX-REC
+           MOVE    "810000001"         TO  WRK-RECE65XX-SRYCD(1 1)
+           MOVE     ZERO               TO  WRK-RECE65XX-SRYSURYO(1 1)
+           MOVE     10                 TO  WRK-RECE65XX-YUKOKETA(1 1)
+           MOVE    "Îà»öÏ·¿ÍÁë¸ýÄ§¼ý³Û¡¡"
+                                       TO  WRK-RECE65XX-NAME(1 1)
+      *
+           MOVE     ZERO               TO  IDA
+           MOVE     ZERO               TO  IDB
+           MOVE     ZERO               TO  FLG-HENSYUKIN
+           MOVE     RECE62-KOH-SAIKEI  TO  WRK-HENSYU-KINGAKU
+           MOVE     SPACE              TO  WRK-HENSYU-KINGAKU2
+           MOVE     SPACE              TO  WRK-HENSYU-KINGAKU3
+      *
+           INITIALIZE                      ORCSKANACHKAREA
+           MOVE    "2"                 TO  KANACHK-SYORI
+           MOVE    WRK-HENSYU-KINGAKU  TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+           IF      KANACHK-RC      =   ZERO
+              MOVE  KANACHK-OUT-INPUT(1:18)
+                                       TO  WRK-HENSYU-KINGAKU2
+           END-IF
+           PERFORM   VARYING   IDA   FROM   1   BY   2
+                      UNTIL    IDA    >    18
+              IF   WRK-HENSYU-KINGAKU2(IDA:2)  =  "£°"
+                    IF  (FLG-HENSYUKIN = ZERO)
+                    AND (IDA       NOT =  17 )
+                       CONTINUE
+                    ELSE
+                       MOVE  1   TO  FLG-HENSYUKIN
+                       ADD   1   TO  IDB
+                       MOVE  WRK-HENSYU-KINGAKU2(IDA:2)  TO
+                                 WRK-HENSYU-KINGAKU3(IDB:2)
+                       ADD   1   TO  IDB
+                    END-IF
+              ELSE
+                    MOVE  1   TO  FLG-HENSYUKIN
+                    ADD   1   TO  IDB
+                    MOVE  WRK-HENSYU-KINGAKU2(IDA:2)  TO
+                              WRK-HENSYU-KINGAKU3(IDB:2)
+                    ADD   1   TO  IDB
+              END-IF
+           END-PERFORM
+      *
+           COMPUTE  IDA  =  ( IDB  /  2 )  +  1
+           COMPUTE  WRK-RECE65XX-YUKOKETA(1 1)  =
+                    WRK-RECE65XX-YUKOKETA(1 1)  +  IDA
+      *
+           MOVE     WRK-HENSYU-KINGAKU3(1:IDB)
+                                   TO  WRK-RECE65XX-NAME(1 1)(21:IDB)
+           COMPUTE  IDA  =  21  +  IDB
+           MOVE    "±ß"            TO  WRK-RECE65XX-NAME(1 1)(IDA:2)
+      *
+           MOVE    "1"             TO  WRK-RECE65XX-RECEPTFLG(1 1)
+      *
+           MOVE    WRK-RECE65XX-SRYACT-TBL(1 1)
+                                   TO  RECE659-SRYACT-TBL(1)
+           WRITE   RECE659-REC
+           ADD     1               TO  CNT-RECE659
+      *
+           .
+       2001-KOHSAIKEI-COMMENT-EXT.
            EXIT.
       *
       *****************************************************************

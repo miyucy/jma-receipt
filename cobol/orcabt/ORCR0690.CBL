@@ -106,6 +106,7 @@
       *                                     §Î•Ï•ª•◊•»¿¡µ·§∑§ §§∏¯»Ò§Œ ‘Ω∏
       *                                     §À§ƒ§§§∆ø¿∆‡¿Óæ„≥≤§Œ§»§≠§Œ¬–±˛
       *  03.04.01    NACL-ÃÁœ∆    07/01/19  ≈¿≈©° ºÔ Ã£≥£¥£∞°À§Œµ≠∫‹ ‘Ω∏Ω§¿µ
+      *  03.04.02    NACL-ÃÁœ∆    07/02/19  ÀÃ≥§∆ª£µ£±°‹£¥£±¬–±˛
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1327,6 +1328,8 @@
                          OR      ( RECE65-SRYCD(IDX) =   SPACE )
                          OR      ( SPA-STS           =   2     ) 
       *
+                 IF        RECE65-RECEPTFLG(IDX)     =   SPACE
+      *
                    IF      RECE65-SRYCD (IDX) (1:1)  =   "1"
                        IF      TBL-DATAKBN (IDX)         =   "2"
                            MOVE    1                     TO  FLG-SRYCD1
@@ -1421,15 +1424,15 @@
                                              WRK-KENTAICOMMENT-SRYCD
                    ELSE
       *
-                   ADD     1                 TO  WRK-ZAIWMAX (IDY)
-                                                 WRK-ZAIWMAX (6)
-                   IF      WRK-ZAIWMAX (IDY) >   TBL-ZAI-MAX 
+                     ADD     1                 TO  WRK-ZAIWMAX (IDY)
+                                                   WRK-ZAIWMAX (6)
+                     IF      WRK-ZAIWMAX (IDY) >   TBL-ZAI-MAX 
                        MOVE    "•∆°º•÷•Î§¨•™°º•–°º§∑§ﬁ§∑§ø"
                                                  TO  WRK-RECEERR
                        PERFORM 500-ERR-HENSYU-SEC
                        MOVE    2                 TO  SPA-STS
                        GO  TO  2002-TBLZAIW-TAIHI-EXT
-                   ELSE
+                     ELSE
       *                ¿Ë∆¨§Œø«Œ≈π‘∞Ÿ•≥°º•… ‘Ω∏              
                        IF      WRK-RECE65        =   ZERO
                          IF  ( RECE65-SRYCD(IDX)(1:1)  =  "8"       )
@@ -1571,9 +1574,12 @@
                        AND   ( RECE65-SRYCD(IDX) =   CONS-HIKAKIN )
                            MOVE    1             TO  FLG-HIKAKIN
                        END-IF
-                   END-IF
+                     END-IF
       *
                    END-IF
+      *
+                 END-IF
+      *
                END-PERFORM
                ADD     1                 TO  CNT-RECE65
       *
