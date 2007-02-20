@@ -68,6 +68,8 @@
       *  03.04.02    NACL-ÃÁœ∆    06/11/29   ›∏±¡»§ﬂπÁ§Ô§ª∫Ó¿ÆæÚ∑ÔΩ§¿µ
       *  03.04.03    NACL-ÃÁœ∆    07/01/25  °„≤¨ª≥°‰£∞£π£±°‹Ω≈ø¥§Œ
       *                                      ›∏±¡»πÁ§ª∫Ó¿Æ
+      *  03.03.04    NACL-ÃÁœ∆    07/02/15  °„µ‹∫Í°‰£∞£π£±°‹æ„≥≤§Œ
+      *                                      ›∏±¡»πÁ§ª∫Ó¿Æ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3552,6 +3554,17 @@
                             IF  WRK-SRT-HJO-KOHNO  =  "091"
                              IF WRK-KOH-HKNNUM(WRK-COMB-HJOIDX)(2:2)
                                                           = "80"
+                                PERFORM 5701413-SYUKOH-HJO-SEC
+                             END-IF
+                            ELSE
+                             IF  WRK-SRT-HJO-KOHNO  NOT  =  "020"
+                                PERFORM 5701413-SYUKOH-HJO-SEC
+                             END-IF
+                            END-IF
+                          WHEN     45
+                            IF  WRK-SRT-HJO-KOHNO  =  "091"
+                             IF WRK-KOH-HKNNUM(WRK-COMB-HJOIDX)(2:2)
+                                                          = "95"
                                 PERFORM 5701413-SYUKOH-HJO-SEC
                              END-IF
                             ELSE
