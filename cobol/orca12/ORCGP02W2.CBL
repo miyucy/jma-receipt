@@ -4426,14 +4426,7 @@
                    MOVE    "3"            TO  WRK-FTN-FLG
                 END-IF
              END-IF
-             IF   SPA-PREFNUM  =  01
-               IF  ((WRK-KCOMB-KOH1-HKNKOHSBTKBN (IDX2)  =  "3" ) AND
-                    (WRK-KCOMB-KOH2HKNNUM (IDX2)         = "091"))
-               OR  ( WRK-KCOMB-KOH1HKNNUM (IDX2)         = "091" )
-                   MOVE    "3"            TO  WRK-FTN-FLG
-               END-IF
-             END-IF
-             IF   SPA-PREFNUM  =  33
+             IF   SPA-PREFNUM  =  01 OR 33 OR 45
                IF  ((WRK-KCOMB-KOH1-HKNKOHSBTKBN (IDX2)  =  "3" ) AND
                     (WRK-KCOMB-KOH2HKNNUM (IDX2)         = "091"))
                OR  ( WRK-KCOMB-KOH1HKNNUM (IDX2)         = "091" )
