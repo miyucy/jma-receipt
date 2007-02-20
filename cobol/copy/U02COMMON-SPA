@@ -220,7 +220,7 @@
                    07  SPA-U02Q-QRLIST-T           OCCURS  50.
                        09  SPA-U02Q-TNUM           PIC 9(03).
                        09  SPA-U02Q-TPTNUM         PIC X(20).
-                       09  SPA-U02Q-TNAME          PIC X(10).
+                       09  SPA-U02Q-TNAME          PIC X(50).
                        09  SPA-U02Q-TBIRTHDAY      PIC X(10).
                        09  SPA-U02Q-TSEX           PIC X(02).
                        09  SPA-U02Q-THKNNUMMEI     PIC X(20).
@@ -235,6 +235,6 @@
                05  SPA-U02Q-DATA-G.
                    07  SPA-U02Q-REGISTID           PIC 9(05).
                    07  SPA-U02Q-PTNUM              PIC X(20).
-                   07  SPA-U02Q-PTID               PIC 9(05).
+                   07  SPA-U02Q-PTID               PIC 9(10).
                    07  SPA-U02Q-HKNID              PIC 9(10).
       *
