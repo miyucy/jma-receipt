@@ -4077,8 +4077,13 @@
       *
       *        æ√»Ò¿« ¨§¨§¢§ÎæÏπÁ§œæ√»Ò¿«≥€§Ú ‘Ω∏
                IF    ( WRK-TTL-JIHI-TAX    >   ZERO )
-                   MOVE    "°°°°°°°°°°º´»Òæ√»Ò¿«≥€"
+                   IF    ( ORCHCM34-SRYYM  >=   CONST-H190401 (1:6))
+                       MOVE    "°°°°°°°°°°º´»Òæ√»Ò¿«≥€° ∫∆∑«°À"
                                            TO  WRK-KINGAKKU-LBL
+                   ELSE
+                       MOVE    "°°°°°°°°°°º´»Òæ√»Ò¿«≥€"
+                                           TO  WRK-KINGAKKU-LBL
+                   END-IF
                    IF   ( SYS-1001-TAX-HASU-KBN =   "1" )
                        IF    ( ORCHCM34-SRYYM  >=   CONST-H190401 (1:6))
                            COMPUTE  WRK-KINGAKKU
@@ -5234,8 +5239,13 @@
                    END-IF
       *
                    IF    ( WRK-TTL-BRMSAGAKU-TAX   >   ZERO )
-                       MOVE    "°°°°°°°°°°ººŒ¡∫π≥€æ√»Ò¿«≥€"
+                       IF    ( ORCHCM34-SRYYM  >=   CONST-H190401 (1:6))
+                           MOVE    "°°°°°°°°°°ººŒ¡∫π≥€æ√»Ò¿«≥€° ∫∆∑«°À"
                                            TO  WRK-KINGAKKU-LBL
+                       ELSE
+                           MOVE    "°°°°°°°°°°ººŒ¡∫π≥€æ√»Ò¿«≥€"
+                                           TO  WRK-KINGAKKU-LBL
+                       END-IF
                        MOVE    WRK-TTL-BRMSAGAKU-TAX
                                            TO  WRK-KINGAKKU
                        PERFORM 2001111-KINGAKU-HEN-SEC
