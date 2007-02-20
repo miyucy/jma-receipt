@@ -33,6 +33,7 @@
       *  01.00.03    NACL-Â¿¡¹Ç¼  05/11/28  MONFUNC ÂÐ±þ
       *  01.00.04    NACL-Â¿¡¹Ç¼  06/03/06  ¼ç²ÊÀßÄêÄÉ²Ã
       *  03.04.00    NACL-Â¿¡¹Ç¼  07/01/22  ¼ýÇ¼º¹³Û½èÍýÄÉ²Ã
+      *  03.04.01    NACL-Â¿¡¹Ç¼  07/02/20  ¼ýÇ¼ÍúÎò¥Þ¥¹¥¿ºï½üÄÉ²Ã
       *****************************************************************
       *
       *
@@ -331,6 +332,10 @@
       *    ¼ýÇ¼¹ç·×¥Þ¥¹¥¿¡Ý
        01  SYUTTL-REC.
            COPY    "CPSYUTOTAL.INC".
+      *
+      *    ¼ýÇ¼ÍúÎò¥Þ¥¹¥¿
+       01  SYURRK-REC.
+           COPY    "CPSYURRK.INC".
       *
       *    ¿ÇÎÅ²ñ·×¥Þ¥¹¥¿¡Ý
        01  SRYACCT-REC.
@@ -3760,6 +3765,20 @@
                CALL    "MONFUNC"           USING
                                            MCPAREA
                                            MCPDATA-REC
+      *        ¼ýÇ¼ÍúÎò¥Þ¥¹¥¿
+               INITIALIZE                  SYURRK-REC
+               MOVE    SYU-HOSPID          TO  SYURRK-HOSPID
+               MOVE    SYU-NYUGAIKBN       TO  SYURRK-NYUGAIKBN
+               MOVE    SYU-PTID            TO  SYURRK-PTID
+               MOVE    SYU-DENPNUM         TO  SYURRK-DENPNUM
+      *
+               MOVE    SYURRK-REC          TO  MCPDATA-REC
+               MOVE    "DBDELETE"          TO  MCP-FUNC
+               MOVE    "tbl_syurrk"        TO  MCP-TABLE
+               MOVE    "del1"              TO  MCP-PATHNAME
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
            END-IF
            .
        450041-TEI-SYUNOU-DEL-EXT.
@@ -4536,6 +4555,20 @@
                MOVE    "DBDELETE"          TO  MCP-FUNC
                MOVE    "tbl_syumei"        TO  MCP-TABLE
                MOVE    "del2"              TO  MCP-PATHNAME
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
+      *        ¼ýÇ¼ÍúÎò¥Þ¥¹¥¿
+               INITIALIZE                  SYURRK-REC
+               MOVE    SYU-HOSPID          TO  SYURRK-HOSPID
+               MOVE    SYU-NYUGAIKBN       TO  SYURRK-NYUGAIKBN
+               MOVE    SYU-PTID            TO  SYURRK-PTID
+               MOVE    SYU-DENPNUM         TO  SYURRK-DENPNUM
+      *
+               MOVE    SYURRK-REC          TO  MCPDATA-REC
+               MOVE    "DBDELETE"          TO  MCP-FUNC
+               MOVE    "tbl_syurrk"        TO  MCP-TABLE
+               MOVE    "del1"              TO  MCP-PATHNAME
                CALL    "MONFUNC"           USING
                                            MCPAREA
                                            MCPDATA-REC
