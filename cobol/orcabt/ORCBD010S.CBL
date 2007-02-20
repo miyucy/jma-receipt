@@ -2071,9 +2071,9 @@
       *
            MOVE    "ÊÝ¸±ÅÀ¿ô·×"    TO  HCM51-TTL-HKNTENMSG
            MOVE    "ÀÁµá³Û·×"      TO  HCM51-TTL-SKYMONEYMSG
-           MOVE    "¡ÊÊÝ¸±ÀÁµá·×"  TO  HCM51-TTL-SKYHOKENMSG
+           MOVE    "ÊÝ¸±ÀÁµá·×"    TO  HCM51-TTL-SKYHOKENMSG
            MOVE    "¼«ÈñÀÁµá·×"    TO  HCM51-TTL-SKYJIHIMSG
-           MOVE    "Ä´À°¶â·×¡Ë"    TO  HCM51-TTL-CHOSEIMSG
+           MOVE    "Ä´À°¶â·×"      TO  HCM51-TTL-CHOSEIMSG
            MOVE    "Æþ¶â³Û·×"      TO  HCM51-TTL-NYUKINMSG
            MOVE    "Ì¤¼ý¶â³Û·×"    TO  HCM51-TTL-MISYUMSG
       *
