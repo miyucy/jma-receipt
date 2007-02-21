@@ -1529,7 +1529,7 @@
            PERFORM 41011-BYOMEICD-SEC
       *
            IF    ( LNK-BYO-BYOMEICD-MAX-ERR    =   1 )
-               MOVE    "0006"          TO  SPA-ERRCD
+               MOVE    "0016"          TO  SPA-ERRCD
            END-IF
       *
            .
