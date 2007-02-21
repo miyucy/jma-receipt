@@ -73,12 +73,6 @@
                05  WRK-THH             PIC 9(02).
                05  WRK-TMM             PIC 9(02).
                05  WRK-TSS             PIC 9(02).
-           03  WRK-TIME-H.
-               05  WRK-THH-H           PIC Z9.
-               05  WRK-K1              PIC X(01).
-               05  WRK-TMM-H           PIC Z9.
-               05  WRK-K2              PIC X(01).
-               05  WRK-TSS-H           PIC Z9.
            03  WRK-THKNID              PIC 9(10).
       *
            03  WRK-PIDMSG              PIC X(80).
@@ -105,9 +99,9 @@
                05  WRK-HDD         PIC Z9.
       *
            03  WRK-HENTIME.
-               05  WRK-THH         PIC 99.
+               05  WRK-THH-H       PIC Z9.
                05  FILLER          PIC X(01)   VALUE  ":".
-               05  WRK-TMM         PIC 99.
+               05  WRK-TMM-H       PIC Z9.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -403,10 +397,7 @@
            MOVE    QRCDHKN-REGISTTIME  TO  WRK-TIME
            MOVE    WRK-THH             TO  WRK-THH-H
            MOVE    WRK-TMM             TO  WRK-TMM-H
-           MOVE    WRK-TSS             TO  WRK-TSS-H
-           MOVE    ":"                 TO  WRK-K1
-           MOVE    ":"                 TO  WRK-K2
-           MOVE    WRK-TIME-H          TO  SPA-P02Q-TTIME (IDX)
+           MOVE    WRK-HENTIME         TO  SPA-P02Q-TTIME (IDX)
       *    保険者番号
            MOVE    QRCDHKN-HKNNUM      TO  SPA-P02Q-THKNJANUM (IDX)
       *    記号番号
