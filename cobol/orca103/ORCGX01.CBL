@@ -446,10 +446,15 @@
            IF    ( SPA-X99-BYOCD (1)       =   SPACE  )
                MOVE    2           TO  SPA-GMN-CUR
            ELSE
-               INITIALIZE                  SPA-GMN-BYOSTATUS
-                                           SPA-GMN-SRYCD
-                                           SPA-NAI-BYOCD-G
-                                           SPA-GMN-NAME
+      *
+           INITIALIZE                  SPA-GMN-BYOSTATUS
+                                       SPA-GMN-SRYCD
+                                       SPA-NAI-BYOCD-G
+                                       SPA-GMN-NAME
+                                       SPA-GMN-KOUMOKU1
+                                       SPA-NAI-KOUMOKU1
+                                       SPA-GMN-MAX
+      *
                MOVE    SPA-X99-BYOSTATUS   TO  SPA-GMN-BYOSTATUS
                MOVE    SPA-X99-BYOMEI      TO  SPA-GMN-NAME
                PERFORM VARYING IDX0    FROM    1   BY  1
@@ -1303,6 +1308,9 @@
                                        SPA-GMN-SRYCD
                                        SPA-NAI-BYOCD-G
                                        SPA-GMN-NAME
+                                       SPA-GMN-KOUMOKU1
+                                       SPA-NAI-KOUMOKU1
+                                       SPA-GMN-MAX
       *
            MOVE    X01-SRYCD       TO  SPA-GMN-SRYCD
       *
@@ -1318,6 +1326,7 @@
            IF    ( SPA-ERRCD       =   SPACE )
             OR   ( SPA-ERRCD       =   "0016" )
                MOVE    ZERO        TO  SPA-GMN-BYOMEICD-CHK-FLG
+      *
                PERFORM 41011-BYOMEI-CHK005-SEC
            END-IF
       *
@@ -1464,6 +1473,9 @@
                                        SPA-GMN-SRYCD
                                        SPA-NAI-BYOCD-G
                                        SPA-GMN-NAME
+                                       SPA-GMN-KOUMOKU1
+                                       SPA-NAI-KOUMOKU1
+                                       SPA-GMN-MAX
       *
            MOVE    ZERO            TO  SPA-GMN-BYOMEICD-CHK-FLG
            MOVE    1               TO  SPA-GMN-BYOMEI-CHK-FLG
@@ -2160,9 +2172,12 @@
            END-IF
       *
            MOVE    "black"                 TO  X01-LBLBYOSTATUS-STYLE
-           IF    ( SPA-GMN-BYOSTATUS   =   "1" )
-               MOVE    "blue"              TO  X01-LBLBYOSTATUS-STYLE
-               MOVE    "¡öÉÂÌ¾ÊÔ½¸¡ö"      TO  X01-LBLBYOSTATUS
+           IF    ( SPA-GMN-CHKKBN      =   "8" OR  "9" )
+               IF    ( SPA-GMN-BYOSTATUS   =   "1" )
+                   MOVE    "¡öÉÂÌ¾ÊÔ½¸¡ö"      TO  X01-LBLBYOSTATUS
+               ELSE
+                   MOVE    "ÉÂÌ¾"              TO  X01-LBLBYOSTATUS
+               END-IF
            END-IF
       *
            PERFORM 5001-MAPCUR-SEC
