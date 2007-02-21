@@ -28,6 +28,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-森脇    04/07/29  直前ジョブ管理チェック追加
       *  02.00.06    NACL-森脇    06/03/20  プレビュー表示
+      *  03.04.01    NACL-森脇    07/02/21  チェック区分追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -76,6 +77,7 @@
                05  SPA-GMN-CUR             PIC 9(03).
       *
                05  SPA-GMN-AREA.
+      *----(03.04.01)--UPD-START---
                    07  SPA-GMN-CHK-VAL.
                        09  SPA-GMN-CHKYKZBYO       PIC X(01).
                        09  SPA-GMN-CHKSRYBYO       PIC X(01).
@@ -83,8 +85,11 @@
                        09  SPA-GMN-CHKSRYHEI       PIC X(01).
                        09  SPA-GMN-CHKYKZKNKBYO    PIC X(01).
                        09  SPA-GMN-CHKSRYSNT       PIC X(01).
+                       09  SPA-GMN-CHKBYOYKZ       PIC X(01).
+                       09  SPA-GMN-CHKBYOSRY       PIC X(01).
                    07  SPA-GMN-CHK-R   REDEFINES   SPA-GMN-CHK-VAL.
-                       09  SPA-GMN-CHKKBN      PIC X(01)   OCCURS  6.
+                       09  SPA-GMN-CHKKBN      PIC X(01)   OCCURS  8.
+      *----(03.04.01)--UPD-END-----
                    07  SPA-GMN-CHKSRYRANGE     PIC X(01).
                    07  SPA-GMN-STSRYCD         PIC X(09).
                    07  SPA-GMN-STSRYNAME       PIC X(100).
@@ -175,7 +180,8 @@
            COPY    "CPSHELLTBL.INC".
       *
        01  WRK-CONS-AREA.
-           03  WRK-CONS-CHKKBN-MAX     PIC 9(02)   VALUE   6.
+      *----(03.04.01)--UPD-START---
+           03  WRK-CONS-CHKKBN-MAX     PIC 9(02)   VALUE   8.
            03  WRK-CONS-CHKKBN-VAL.
                05                      PIC X(01)   VALUE   "1".
                05                      PIC X(01)   VALUE   "2".
@@ -183,8 +189,11 @@
                05                      PIC X(01)   VALUE   "5".
                05                      PIC X(01)   VALUE   "6".
                05                      PIC X(01)   VALUE   "7".
+               05                      PIC X(01)   VALUE   "8".
+               05                      PIC X(01)   VALUE   "9".
            03  WRK-CONS-CHKKBN-R       REDEFINES   WRK-CONS-CHKKBN-VAL.
-               05  WRK-CONS-CHKKBN     PIC X(01)   OCCURS  6.
+               05  WRK-CONS-CHKKBN     PIC X(01)   OCCURS  8.
+      *----(03.04.01)--UPD-END-----
       *    システム管理ＤＢ（３００３）のキー値  
            03  WRK-CONS-3003-KBNCD     PIC X(08)   VALUE   "103".
       *    印刷管理ＤＢのキー値  
@@ -232,6 +241,12 @@
       *    チェック
        01  CHKTRD-REC.
            COPY    "CPCHKTRD.INC".
+      *
+      *----(03.04.01)--ADD-START---
+      *    チェック
+       01  CHK005-REC.
+           COPY    "CPCHK005.INC".
+      *----(03.04.01)--ADD-END-----
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -432,6 +447,10 @@
            MOVE    "F"             TO  SPA-GMN-CHKSRYHEI
            MOVE    "F"             TO  SPA-GMN-CHKYKZKNKBYO
            MOVE    "F"             TO  SPA-GMN-CHKSRYSNT
+      *----(03.04.01)--ADD-START---
+           MOVE    "F"             TO  SPA-GMN-CHKBYOYKZ
+           MOVE    "F"             TO  SPA-GMN-CHKBYOSRY
+      *----(03.04.01)--ADD-END-----
       *
            MOVE    "F"             TO  SPA-GMN-CHKSRYRANGE
       *
@@ -638,10 +657,23 @@
                MOVE    X91-CHKYKZKNKBYO    TO  SPA-GMN-CHKYKZKNKBYO
                PERFORM 4101-GMN-SPA-SET-SEC
                PERFORM 41011-CHKMST-CHK-SEC
+      *    診療行為どおし
            WHEN    "CLICKED"       ALSO    "CHKSRYSNT"
                MOVE    X91-CHKSRYSNT       TO  SPA-GMN-CHKSRYSNT
                PERFORM 4101-GMN-SPA-SET-SEC
                PERFORM 41011-CHKMST-CHK-SEC
+      *----(03.04.01)--ADD-START---
+      *    病名と薬剤
+           WHEN    "CLICKED"       ALSO    "CHKBYOYKZ"
+               MOVE    X91-CHKBYOYKZ      TO  SPA-GMN-CHKBYOYKZ
+               PERFORM 4101-GMN-SPA-SET-SEC
+               PERFORM 41011-CHKMST-CHK-SEC
+      *    病名と診療行為
+           WHEN    "CLICKED"       ALSO    "CHKBYOSRY"
+               MOVE    X91-CHKBYOSRY      TO  SPA-GMN-CHKBYOSRY
+               PERFORM 4101-GMN-SPA-SET-SEC
+               PERFORM 41011-CHKMST-CHK-SEC
+      *----(03.04.01)--ADD-END-----
       *
       *    診療行為範囲指定チェックボタン
            WHEN    "CLICKED"       ALSO    "CHKSRYRANGE"
@@ -655,7 +687,9 @@
                MOVE    X91-SYU1        TO  SPA-GMN-SYU1
                MOVE    X91-SYU2        TO  SPA-GMN-SYU2
                MOVE    X91-SYU3        TO  SPA-GMN-SYU3
-               MOVE    212             TO  SPA-GMN-CUR
+      *----(03.04.01)--UPD-START---
+               MOVE    13              TO  SPA-GMN-CUR
+      *----(03.04.01)--UPD-END-----
            END-EVALUATE
       *
            .
@@ -952,6 +986,10 @@
             AND  ( SPA-GMN-CHKSRYHEI   =   "F")
             AND  ( SPA-GMN-CHKYKZKNKBYO    =   "F")
             AND  ( SPA-GMN-CHKSRYSNT   =   "F")
+      *----(03.04.01)--ADD-START---
+            AND  ( SPA-GMN-CHKBYOYKZ   =   "F")
+            AND  ( SPA-GMN-CHKBYOSRY   =   "F")
+      *----(03.04.01)--ADD-END-----
                MOVE    "0100"          TO  SPA-ERRCD
                MOVE    1               TO  SPA-GMN-CUR
                GO  TO  4101-KANREN-CHK-EXT
@@ -1826,6 +1864,10 @@
            MOVE    SPA-GMN-CHKSRYHEI   TO  X91-CHKSRYHEI
            MOVE    SPA-GMN-CHKYKZKNKBYO    TO  X91-CHKYKZKNKBYO
            MOVE    SPA-GMN-CHKSRYSNT   TO  X91-CHKSRYSNT
+      *----(03.04.01)--ADD-START---
+           MOVE    SPA-GMN-CHKBYOYKZ   TO  X91-CHKBYOYKZ
+           MOVE    SPA-GMN-CHKBYOSRY   TO  X91-CHKBYOSRY
+      *----(03.04.01)--ADD-END-----
            MOVE    SPA-GMN-CHKSRYRANGE TO  X91-CHKSRYRANGE
            MOVE    SPA-GMN-STSRYCD     TO  X91-STSRYCD
            MOVE    SPA-GMN-STSRYNAME   TO  X91-STSRYNAME
@@ -1892,6 +1934,14 @@
                MOVE    "SYU3"          TO  MCP-WIDGET
            WHEN    11
                MOVE    "CHKYKZKNKBYO"  TO  MCP-WIDGET
+      *----(03.04.01)--ADD-START---
+           WHEN    12
+               MOVE    "CHKSRYSNT"     TO  MCP-WIDGET
+           WHEN    13
+               MOVE    "CHKBYOYKZ"     TO  MCP-WIDGET
+           WHEN    14
+               MOVE    "CHKBYOSRY"     TO  MCP-WIDGET
+      *----(03.04.01)--ADD-END-----
            WHEN    212
                MOVE    "B12"           TO  MCP-WIDGET
            END-EVALUATE
@@ -1912,22 +1962,30 @@
                MOVE    03              TO  SPA-GMN-CUR
            WHEN    "CHKYKZHEI"
                MOVE    04              TO  SPA-GMN-CUR
+      *----(03.04.01)--UPD-START---
            WHEN    "CHKSRYHEI"
-               MOVE    05              TO  SPA-GMN-CUR
-           WHEN    "CHKSRYRANGE"
                MOVE    11              TO  SPA-GMN-CUR
            WHEN    "CHKYKZKNKBYO"
+               MOVE    12              TO  SPA-GMN-CUR
+           WHEN    "CHKSRYSNT"
+               MOVE    05              TO  SPA-GMN-CUR
+           WHEN    "CHKSRYRANGE"
                MOVE    06              TO  SPA-GMN-CUR
            WHEN    "STSRYCD"
                MOVE    07              TO  SPA-GMN-CUR
            WHEN    "EDSRYCD"
                MOVE    08              TO  SPA-GMN-CUR
            WHEN    "SYU1"
-               MOVE    212             TO  SPA-GMN-CUR
+               MOVE    13              TO  SPA-GMN-CUR
            WHEN    "SYU2"
-               MOVE    212             TO  SPA-GMN-CUR
+               MOVE    13              TO  SPA-GMN-CUR
            WHEN    "SYU3"
+               MOVE    13              TO  SPA-GMN-CUR
+           WHEN    "CHKBYOYKZ"
+               MOVE    14              TO  SPA-GMN-CUR
+           WHEN    "CHKBYOSRY"
                MOVE    212             TO  SPA-GMN-CUR
+      *----(03.04.01)--UPD-END-----
            END-EVALUATE
       *
            .
@@ -1939,9 +1997,9 @@
       *****************************************************************
        50012-CUR-SKIP-SEC              SECTION.
       *
-           IF    ( SPA-GMN-CUR         =   6 )
+           IF    ( SPA-GMN-CUR         =   06 )
                IF   ( X91-STSRYCD-STATE    =   WIDGET-INSENSITIVE )
-                   MOVE    8           TO  SPA-GMN-CUR
+                   MOVE    08           TO  SPA-GMN-CUR
                END-IF
            END-IF
       *
