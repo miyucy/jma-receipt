@@ -463,6 +463,9 @@
                MOVE    ZERO        TO  SPA-GMN-BYOMEICD-CHK-FLG
                MOVE    ZERO        TO  SPA-GMN-BYOMEI-CHK-FLG
                PERFORM 41011-BYOMEI-CHK005-SEC
+               IF    ( SPA-NAI-SELNO   =   ZERO )
+                   PERFORM 41011-BYOMEICD-SEC
+               END-IF
            END-IF
       *
            .
