@@ -52,3 +52,7 @@
                 04  X91-VALUE   PIC X.
               03  X91-SYU3.
                 04  X91-VALUE   PIC X.
+              03  X91-CHKBYOYKZ.
+                04  X91-VALUE   PIC X.
+              03  X91-CHKBYOSRY.
+                04  X91-VALUE   PIC X.
