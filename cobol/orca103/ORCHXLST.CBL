@@ -75,9 +75,10 @@
            03  FLG-CHKMST              PIC 9(01).
            03  FLG-CHKSND              PIC 9(01).
            03  FLG-CHKTRD              PIC 9(01).
+           03  FLG-CHK005              PIC 9(01).
            03  FLG-BYOMEI              PIC 9(01).
            03  FLG-OK                  PIC 9(01).
-           03  FLG-R3                  PIC 9(01).
+           03  FLG-MEISAI              PIC 9(01).
            03  FLG-LINE-FEED           PIC 9(01).
            03  FLG-TOTUGO-G.
                05  FLG-KANZEN          PIC 9(01).
@@ -125,8 +126,15 @@
            03  WRK-CMB-CD              PIC X(10).
            03  WRK-CMB-ITM-G.
                05  WRK-CMB-ITM         PIC X(200).
+           03  WRK-TEKCD-G.
+               05  WRK-TEKCD-MAX       PIC 9(05).
+               05  WRK-TEKCD-OCC       OCCURS  200.
+                   07  WRK-DMKBN       PIC X(01).
+                   07  WRK-TEKCD       PIC X(170).
       *
-       01  KEY-TEKCD                   PIC X(200).
+       01  KEY-AREA.
+           03  KEY-TEKCD               PIC X(200).
+           03  KEY-ID                  PIC 9(09).
       *
       *    印刷内容
        01  HEAD-01.
@@ -182,12 +190,35 @@
                05  B02-SRYCD2          PIC X(09).
                05  FILLER              PIC X(01).
                05  B02-NAME2           PIC X(78).
+       01  BODY-03.
+           03  B03-NYUGAIKBN           PIC X(02).
+           03  B03-NYUGAIBNDKBN        PIC X(02).
+           03  B03-COMPKBN             PIC X(02).
+           03  FILLER                  PIC X(02).
+           03  B03-LEFT                PIC X(60).
+           03  B03-LEFT-R1             REDEFINES   B03-LEFT.
+               05  B03-BYOMEICD        PIC X(07).
+               05  FILLER              PIC X(01).
+               05  B03-BYOMEI          PIC X(52).
+           03  B03-LEFT-R2             REDEFINES   B03-LEFT.
+               05  FILLER              PIC X(08).
+               05  B03-MEISAI          PIC X(52).
+           03  FILLER                  PIC X(02).
+           03  B03-DMKBN               PIC X(02).
+           03  FILLER                  PIC X(02).
+           03  B03-RIGHT               PIC X(84).
+           03  B03-RIGHT-R1            REDEFINES   B03-RIGHT.
+               05  B03-SRYCD           PIC X(09).
+               05  FILLER              PIC X(01).
+               05  B03-NAME            PIC X(74).
       *
        01  CONST-AREA.
            03  CONST-HCM44-MAX         PIC 9(05)   VALUE   55.
            03  CONST-MEISAI-ST         PIC 9(05)   VALUE   4.
            03  CONST-TEKIYO-MAX        PIC 9(05)   VALUE   90.
            03  CONST-TEKIYO-R3-MAX     PIC 9(05)   VALUE   82.
+           03  CONST-LEFT-MAX          PIC 9(05)   VALUE   60.
+           03  CONST-LEFT-R2-MAX       PIC 9(05)   VALUE   52.
            03  CONST-MKCD-MAX          PIC 9(05)   VALUE   21.
            03  CONST-CHK-MAX           PIC 9(05)   VALUE   10.
            03  CONST-TOTUGO-MES-MAX    PIC 9(05)   VALUE   3.
@@ -197,9 +228,15 @@
                05  CONST-TOTUGO-KOHO   PIC X(12)   VALUE "後：後方一致".
            03  CONST-TOTUGO-MES-R      REDEFINES   CONST-TOTUGO-MES-VAL.
                05  CONST-TOTUGO-MES    PIC X(12)   OCCURS  3.
+           03  CONST-TEKCD-MAX         PIC 9(05)   VALUE   200.
       *
       *    病名システム予約コードテーブル
            COPY    "CMBYOMEICD.INC".
+      *
+      *    チェックマスタ−５退避領域
+       01  WKCHK005-REC.
+           COPY    "CPCHK005.INC"      REPLACING   //CHK005-//
+                                       BY          //WKCHK005-//.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -227,6 +264,10 @@
        01  CHKTRD-REC.
            COPY    "CPCHKTRD.INC".
       *
+      *    チェックマスタ−５
+       01  CHK005-REC.
+           COPY    "CPCHK005.INC".
+      *
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -241,7 +282,7 @@
       *    印刷ＤＢ更新サブ
            COPY    "CPORCSPRT.INC".
       *
-      *   日付変換サブ
+      *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
@@ -281,6 +322,7 @@
            INITIALIZE                  CNT-AREA
            INITIALIZE                  HXLST-RCD
            INITIALIZE                  HCM44
+           INITIALIZE                  KEY-AREA
       *
            PERFORM 800-MCNDATE-SEC
       *
@@ -289,9 +331,6 @@
            IF    ( HXLST-RCD       NOT =   ZERO )
                GO  TO  000-PROC-EXT
            END-IF
-      *
-           MOVE    SPACE           TO  KEY-TEKCD
-                                       WRK-SRYNAME
            MOVE    ZERO            TO  CNT-TEKCD
            MOVE    ZERO            TO  WRK-PAGE
            MOVE    CONST-MEISAI-ST TO  IDX-LINE
@@ -311,6 +350,15 @@
            WHEN    "7"
                PERFORM UNTIL ( FLG-CHKTRD  =   1 )
                    PERFORM 200-MEISAI-CHKTRD-SYORI-SEC
+               END-PERFORM
+      *
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+               PERFORM 910-DBCLOSECURSOR-SEC
+           WHEN    "8"
+           WHEN    "9"
+               PERFORM UNTIL ( FLG-CHK005  =   1 )
+                   PERFORM 200-MEISAI-CHK005-SYORI-SEC
                END-PERFORM
       *
                MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
@@ -375,6 +423,9 @@
                PERFORM 1001-CHKMST-SYOKI-SEC
            WHEN    "7"
                PERFORM 1001-CHKTRD-SYOKI-SEC
+           WHEN    "8"
+           WHEN    "9"
+               PERFORM 1001-CHK005-SYOKI-SEC
            WHEN    OTHER
                MOVE    -1          TO  HXLST-RCD
            END-EVALUATE
@@ -610,6 +661,49 @@
        1001-CHKTRD-SYOKI-EXT.
            EXIT.
       *****************************************************************
+      *    初期編集処理（チェックマスタ５）
+      *****************************************************************
+       1001-CHK005-SYOKI-SEC           SECTION.
+      *
+           INITIALIZE                  CHK005-REC
+      *
+           MOVE    "2"                 TO  CHK005-CDKBN
+      *
+           MOVE    HXLST-CHKKBN        TO  CHK005-CHKKBN
+      *
+           MOVE    SPA-SYSYMD          TO  CHK005-YUKOSTYMD
+                                           CHK005-YUKOEDYMD
+      *
+           MOVE    "tbl_chk005"        TO  WRK-MCP-TABLE
+           MOVE    "key6"              TO  WRK-MCP-PATHNAME
+      *
+      *
+           MOVE    CHK005-REC          TO  MCPDATA-REC
+           PERFORM 900-CHK005-SEL-SEC
+      *
+           EVALUATE    HXLST-CHKKBN
+           WHEN    "8"
+               MOVE
+               "＜　病名と薬剤一覧表　＞"
+                                       TO  H01-MIDASI
+                   MOVE    "病名コード"
+                                       TO  H02-MIDASI1
+                   MOVE    "薬剤コード"
+                                       TO  H02-MIDASI2R1
+           WHEN    "9"
+               MOVE
+               "＜　病名と診療行為一覧表　＞"
+                                       TO  H01-MIDASI
+                   MOVE    "病名コード"
+                                       TO  H02-MIDASI1
+                   MOVE    "診療行為コード"
+                                       TO  H02-MIDASI2R1
+           END-EVALUATE
+      *
+           .
+       1001-CHK005-SYOKI-EXT.
+           EXIT.
+      *****************************************************************
       *    明細編集処理（チェックマスタより）
       *****************************************************************
        200-MEISAI-CHKTRD-SYORI-SEC     SECTION.
@@ -758,7 +852,7 @@
       *****************************************************************
        2001-MEISAI-CHKSND-SYORI-SEC    SECTION.
       *
-           MOVE    ZERO        TO  FLG-R3
+           MOVE    ZERO        TO  FLG-MEISAI
            MOVE    ZERO        TO  FLG-TEKCD
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
@@ -793,7 +887,7 @@
       *
       *    INITIALIZE                  BODY-01
       *    MOVE    1               TO  WRK-PNT
-      *    MOVE    1               TO  FLG-R3
+      *    MOVE    1               TO  FLG-MEISAI
       *
            MOVE    "【"            TO  WRK-MEISAISTR
            PERFORM 20011-MEISAI-CHKSND-SYORI-SEC
@@ -849,7 +943,7 @@
       *
            MOVE    ZERO            TO  FLG-LINE-FEED
       *
-           IF    (      FLG-R3         =   ZERO )
+           IF    (      FLG-MEISAI         =   ZERO )
                IF    (  WRK-TEKIYOLEN  >   CONST-TEKIYO-MAX )
                    MOVE    1       TO  FLG-LINE-FEED
                END-IF
@@ -877,10 +971,10 @@
                PERFORM 2200-PAGE-FEED-CHK-SEC
                INITIALIZE          BODY-01
                MOVE    1       TO  WRK-PNT
-               MOVE    1       TO  FLG-R3
+               MOVE    1       TO  FLG-MEISAI
            END-IF
       *
-           IF    ( FLG-R3      =   ZERO )
+           IF    ( FLG-MEISAI      =   ZERO )
                STRING  WRK-STR (1:WRK-STRLEN)  DELIMITED   BY  SIZE
                INTO    B01-TEKIYO
                WITH    POINTER     WRK-PNT
@@ -960,6 +1054,261 @@
        200-MEISAI-CHKMST-SYORI-EXT.
            EXIT.
       *****************************************************************
+      *    明細編集処理（チェックマスタ５より）
+      *****************************************************************
+       200-MEISAI-CHK005-SYORI-SEC     SECTION.
+      *
+           MOVE    CHK005-ID       TO  KEY-ID
+           MOVE    CHK005-REC      TO  WKCHK005-REC
+           MOVE    ZERO            TO  CNT-TEKCD
+           INITIALIZE                  WRK-TEKCD-G
+           PERFORM UNTIL ( FLG-CHK005  NOT =   ZERO )
+                    OR   ( CHK005-ID   NOT =   KEY-ID )
+      *
+               IF    ( CONST-TEKCD-MAX >   WRK-TEKCD-MAX )
+                   COMPUTE WRK-TEKCD-MAX
+                       =   WRK-TEKCD-MAX   +   1
+                   MOVE    CHK005-DAYMONTHKBN
+                                       TO  WRK-DMKBN (WRK-TEKCD-MAX)
+                   MOVE    CHK005-SRYCD
+                                       TO  WRK-TEKCD (WRK-TEKCD-MAX)
+               END-IF
+      *
+               PERFORM 900-CHK005-FET-SEC
+      *
+           END-PERFORM
+      *
+           IF    ( IDX-LINE    >   CONST-MEISAI-ST )
+               MOVE    ALL "-" TO  HCM44-MOJI (IDX-LINE)
+               PERFORM 2200-PAGE-FEED-CHK-SEC
+           END-IF
+      *
+      *
+           INITIALIZE              BODY-03
+           EVALUATE    WKCHK005-NYUGAIKBN
+           WHEN    "1"
+               MOVE    "入"       TO  B03-NYUGAIKBN
+           WHEN    "2"
+               MOVE    "外"       TO  B03-NYUGAIKBN
+           WHEN    OTHER
+               MOVE    "　"       TO  B03-NYUGAIKBN
+           END-EVALUATE
+      *
+           IF    ( WKCHK005-NYUGAIBNDKBN =  "2" )
+               MOVE    "別"       TO  B03-NYUGAIBNDKBN
+           ELSE
+               MOVE    "　"       TO  B03-NYUGAIBNDKBN
+           END-IF
+      *
+           EVALUATE    WKCHK005-COMPKBN
+           WHEN    "2"
+               MOVE    "完"           TO  B03-COMPKBN
+               MOVE    1              TO  FLG-KANZEN
+           WHEN    "3"
+               MOVE    "前"           TO  B03-COMPKBN
+               MOVE    1              TO  FLG-ZENPO
+           WHEN    "4"
+               MOVE    "後"           TO  B03-COMPKBN
+               MOVE    1              TO  FLG-KOHO
+           WHEN    OTHER
+               MOVE    "　"           TO  B03-COMPKBN
+           END-EVALUATE
+      *
+           MOVE    WKCHK005-CD       TO  WRK-KEY-CD-G
+           MOVE    1                 TO  WRK-PNT
+      *
+           IF    ( WRK-KEY-CD (2)  =   SPACE )
+               MOVE    WRK-KEY-CD (1)  TO  B03-BYOMEICD
+               MOVE    WKCHK005-BYOMEI TO  B03-BYOMEI
+           ELSE
+               PERFORM 2001-MEISAI-CHK005-SYORI-SEC
+           END-IF
+      *
+      *
+           PERFORM 20011-MEISAI-CHK005-SRYCD-SEC
+           MOVE    BODY-03         TO  HCM44-MOJI (IDX-LINE)
+           PERFORM 2200-PAGE-FEED-CHK-SEC
+           INITIALIZE              BODY-03
+      *
+           PERFORM UNTIL ( CNT-TEKCD   >=  WRK-TEKCD-MAX )
+      *
+               PERFORM 20011-MEISAI-CHK005-SRYCD-SEC
+               INSPECT B03-LEFT    REPLACING   ALL "  "  BY  "　"
+               MOVE    BODY-03     TO  HCM44-MOJI (IDX-LINE)
+               PERFORM 2200-PAGE-FEED-CHK-SEC
+               INITIALIZE          BODY-03
+      *
+           END-PERFORM
+      *
+           .
+       200-MEISAI-CHK005-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    明細編集処理（チェックマスタ５より）
+      *****************************************************************
+       2001-MEISAI-CHK005-SYORI-SEC    SECTION.
+      *
+           MOVE    ZERO        TO  FLG-MEISAI
+           MOVE    ZERO        TO  FLG-TEKCD
+      *
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   CONST-MKCD-MAX )
+                    OR   ( WRK-KEY-CD (IDX1)   =   SPACE )
+      *
+               IF    ( WRK-KEY-CDSEP  (IDX1)   =   "-" )
+                   MOVE    "," TO  WRK-KEY-CDSEP  (IDX1)
+               END-IF
+      *
+               MOVE    WRK-KEY-CD-OCC (IDX1)   TO  WRK-MEISAISTR
+               PERFORM 20011-MEISAI-CHK005-SYORI-SEC
+      *
+           END-PERFORM
+      *
+           MOVE    WKCHK005-BYOMEI TO  WRK-MEISAISTR
+           PERFORM 20011-CHK005-LINE-FEED-CHK-SEC
+           IF    ( FLG-LINE-FEED   =   ZERO )
+               MOVE    SPACE           TO  WRK-BYOMEI-G
+               MOVE    WKCHK005-BYOMEI TO  WRK-BYOMEI
+               MOVE    WRK-BYOMEI-G    TO  WRK-MEISAISTR
+               PERFORM 20011-MEISAI-CHK005-SYORI-SEC
+           ELSE
+               MOVE    WKCHK005-BYOMEI TO  WRK-MEISAISTR
+               PERFORM 20011-MEISAI-CHK005-SYORI-SEC
+           END-IF
+      *
+           MOVE    "【"            TO  WRK-MEISAISTR
+           PERFORM 20011-MEISAI-CHK005-SYORI-SEC
+      *
+           MOVE    1               TO  FLG-TEKCD
+      *
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   CONST-MKCD-MAX )
+                    OR   ( WRK-KEY-CD (IDX1)   =   SPACE )
+      *
+               INITIALIZE          WRK-MSIBYO-G
+      *
+               MOVE    WRK-KEY-CD (IDX1)   TO  WRK-CMB-CD
+               PERFORM 2100-YYKBYOCD-CHK-SEC
+               IF    ( WRK-CMB-ITM NOT =   SPACE )
+                   MOVE    WRK-CMB-ITM TO  WRK-MSIBYO-MEI
+               ELSE
+                   MOVE    WRK-KEY-CD (IDX1)   TO  WRK-BYOMEICD
+                   PERFORM 900-BYOMEI-KEY-SEL-SEC
+                   MOVE    BYO-BYOMEI  TO  WRK-MSIBYO-MEI
+               END-IF
+               IF    ( IDX1    >=  CONST-MKCD-MAX )
+                OR   ( WRK-KEY-CD (IDX1 + 1 )  =   SPACE )
+                   MOVE    WRK-MSIBYO-G    TO  WRK-MEISAISTR
+                   PERFORM 20011-MEISAI-CHK005-SYORI-SEC
+               ELSE
+                   INITIALIZE  WRK-MEISAISTR
+                   STRING  WRK-MSIBYO-MEI  DELIMITED   BY  SPACE
+                           ","             DELIMITED   BY  SIZE
+                   INTO    WRK-MEISAISTR
+                   END-STRING
+                   PERFORM 20011-MEISAI-CHK005-SYORI-SEC
+               END-IF
+      *
+      *
+           END-PERFORM
+      *
+           MOVE    "】"            TO  WRK-MEISAISTR
+           PERFORM 20011-MEISAI-CHK005-SYORI-SEC
+      *
+           .
+       2001-MEISAI-CHK005-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    明細編集処理（チェックマスタ５より）
+      *****************************************************************
+       20011-MEISAI-CHK005-SYORI-SEC   SECTION.
+      *
+           PERFORM 20011-CHK005-LINE-FEED-CHK-SEC
+      *
+           IF  ( FLG-LINE-FEED         =   1 )
+      *
+               PERFORM 20011-MEISAI-CHK005-SRYCD-SEC
+      *
+               INSPECT B03-LEFT    REPLACING   ALL "  "  BY  "　"
+               MOVE    BODY-03 TO  HCM44-MOJI (IDX-LINE)
+               PERFORM 2200-PAGE-FEED-CHK-SEC
+               INITIALIZE          BODY-03
+               MOVE    1       TO  WRK-PNT
+               MOVE    1       TO  FLG-MEISAI
+           END-IF
+      *
+           IF    ( FLG-MEISAI   =   ZERO )
+               STRING  WRK-STR (1:WRK-STRLEN)  DELIMITED   BY  SIZE
+               INTO    B03-LEFT
+               WITH    POINTER     WRK-PNT
+               END-STRING
+           ELSE
+               IF    ( FLG-TEKCD   =   ZERO )
+                   STRING  WRK-STR (1:WRK-STRLEN)  DELIMITED   BY  SIZE
+                   INTO    B03-MEISAI
+                   WITH    POINTER     WRK-PNT
+                   END-STRING
+               ELSE
+                   STRING  WRK-STR (1:WRK-STRLEN)  DELIMITED   BY  SIZE
+                           " "                     DELIMITED   BY  SIZE
+                   INTO    B03-MEISAI
+                   WITH    POINTER     WRK-PNT
+                   END-STRING
+               END-IF
+           END-IF
+      *
+           .
+       20011-MEISAI-CHK005-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    明細編集処理（チェックマスタ５より）
+      *****************************************************************
+       20011-CHK005-LINE-FEED-CHK-SEC  SECTION.
+      *
+           MOVE    WRK-MEISAISTR   TO  WRK-STR
+           PERFORM 800-STRLEN-CHK-SEC
+      *
+           COMPUTE WRK-TEKIYOLEN   =   WRK-STRLEN  +   WRK-PNT -   1
+      *
+           MOVE    ZERO            TO  FLG-LINE-FEED
+      *
+           IF    (      FLG-MEISAI         =   ZERO )
+               IF    (  WRK-TEKIYOLEN  >   CONST-LEFT-MAX )
+                   MOVE    1       TO  FLG-LINE-FEED
+               END-IF
+           ELSE
+               IF    (  WRK-TEKIYOLEN  >   CONST-LEFT-R2-MAX )
+                   MOVE    1       TO  FLG-LINE-FEED
+               END-IF
+           END-IF
+      *
+           .
+       20011-CHK005-LINE-FEED-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    明細編集処理（チェックマスタ５より）
+      *****************************************************************
+       20011-MEISAI-CHK005-SRYCD-SEC   SECTION.
+      *
+           IF    ( WRK-TEKCD-MAX   >   CNT-TEKCD )
+               COMPUTE CNT-TEKCD   =   CNT-TEKCD   +   1
+               IF    ( WRK-DMKBN (CNT-TEKCD)   =   "0" )
+                   MOVE    "日"    TO  B03-DMKBN
+               ELSE
+                   MOVE    "月"    TO  B03-DMKBN
+               END-IF
+               MOVE    WRK-TEKCD (CNT-TEKCD)
+                                   TO  B03-SRYCD
+               MOVE    WRK-TEKCD (CNT-TEKCD)
+                                   TO  WRK-TNS-SRYCD
+               PERFORM 2001-SRYCD-HEN-SEC
+               MOVE    WRK-NAME-G  TO  B03-NAME
+           END-IF
+      *
+           .
+       20011-MEISAI-CHK005-SRYCD-EXT.
+           EXIT.
+      *****************************************************************
       *   診療コード処理
       *****************************************************************
        2001-SRYCD-HEN-SEC              SECTION.
@@ -1036,7 +1385,8 @@
            MOVE    WRK-PAGE            TO  H01-PCNT
            MOVE    HEAD-01             TO  HCM44-MOJI(1)
       *
-           IF        ( HXLST-CHKKBN    =   "1" OR "2" OR "6" )
+           IF        ( HXLST-CHKKBN    =   "1" OR "2" OR "6" 
+                                        OR "8" OR "9" )
                MOVE    SPACE           TO  H02-MIDASI2R2
                MOVE    1               TO  WRK-TGPNT
                PERFORM VARYING IDX2    FROM    1   BY  1
@@ -1315,6 +1665,43 @@
       *
            .
        900-CHKTRD-FET-EXT.
+           EXIT.
+      *****************************************************************
+      *    チェックマスタ５検索処理
+      *****************************************************************
+       900-CHK005-SEL-SEC              SECTION.
+      *
+           MOVE    ZERO                TO  FLG-CHK005
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  CHK005-REC
+           ELSE
+               INITIALIZE                  CHK005-REC
+               MOVE    1               TO  FLG-CHK005
+           END-IF
+      *
+           .
+       900-CHK005-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    チェックマスタ５FETCH処理
+      *****************************************************************
+       900-CHK005-FET-SEC              SECTION.
+      *
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           PERFORM 910-DBFETCH-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  CHK005-REC
+           ELSE
+               INITIALIZE                  CHK005-REC
+               MOVE    1               TO  FLG-CHK005
+           END-IF
+      *
+           .
+       900-CHK005-FET-EXT.
            EXIT.
       *****************************************************************
       *    点数マスタ検索処理(KEY4)

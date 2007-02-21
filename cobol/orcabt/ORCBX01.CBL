@@ -221,6 +221,12 @@
            WHEN    "7"
                MOVE    "診療行為どうしの算定漏れ一覧表"
                                        TO  WRK-TITLE
+           WHEN    "8"
+               MOVE    "病名と薬剤"
+                                       TO  WRK-TITLE
+           WHEN    "9"
+               MOVE    "病名と診療行為"
+                                       TO  WRK-TITLE
            END-EVALUATE
       *
       *    ステップ管理開始処理
