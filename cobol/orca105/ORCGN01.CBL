@@ -1741,7 +1741,8 @@
            IF      MCP-RC              NOT =   ZERO
                DISPLAY "N01 HKNJAINF ERR:" MCP-FUNC
                        ",MCP-RC:" MCP-RC
-                       ",KYE:" HKNJA-HOSPID
+      *****************",KYE:" HKNJA-HOSPID
+                       ",KYE:" HKNJA-HOSPNUM
                        ","   HKNJA-HKNJANUM
       *
                MOVE    "1001"                  TO  SPA-ERRCD
