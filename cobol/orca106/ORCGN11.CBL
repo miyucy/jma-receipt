@@ -556,7 +556,7 @@
       *
            INITIALIZE                  JINMEI-REC
            MOVE    SPA-GMN-JYOKEN  TO  JINMEI-KANA
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM     TO  JINMEI-HOSPNUM
            MOVE    JINMEI-REC      TO  MCPDATA-REC
            MOVE    "tbl_jinmei"    TO  WRK-PATH-TABLE
            MOVE    "key2"          TO  WRK-PATH-PATHNAME
@@ -589,7 +589,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            INITIALIZE                  JINMEI-REC
            MOVE    SPA-GMN-JYOKEN  TO  JINMEI-KANJI
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM     TO  JINMEI-HOSPNUM
            MOVE    JINMEI-REC      TO  MCPDATA-REC
            MOVE    "tbl_jinmei"    TO  WRK-PATH-TABLE
            MOVE    "key3"          TO  WRK-PATH-PATHNAME
@@ -697,14 +697,15 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    SPA-GMN-JYOKEN          TO  JINMEI-KANA
            END-EVALUATE
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM     TO  JINMEI-HOSPNUM
            MOVE    JINMEI-REC      TO  MCPDATA-REC
            MOVE    "DBDELETE"      TO  MCP-FUNC
            MOVE    "tbl_jinmei"    TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"     USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            IF      MCP-RC              NOT =   ZERO
                MOVE    "1012"                  TO  SPA-ERRCD
@@ -777,7 +778,7 @@ grpsys                            SPA-AREA
                        MOVE    SPA-GMN-JYOKEN          TO  JINMEI-KANA
                END-EVALUATE
       *
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
+               MOVE    SPA-HOSPNUM     TO  JINMEI-HOSPNUM
                MOVE    JINMEI-REC      TO  MCPDATA-REC
                MOVE    "tbl_jinmei"    TO  WRK-PATH-TABLE
                MOVE    "key"           TO  WRK-PATH-PATHNAME
@@ -820,14 +821,15 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-TIME        TO  JINMEI-UPHMS
            MOVE    SPA-SYSYMD      TO  JINMEI-UPYMD
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM     TO  JINMEI-HOSPNUM
            MOVE    JINMEI-REC      TO  MCPDATA-REC
            MOVE    "DBINSERT"      TO  MCP-FUNC
            MOVE    "tbl_jinmei"    TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"     USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            IF      MCP-RC              NOT =   ZERO 
                MOVE    "1011"          TO  SPA-ERRCD
@@ -1045,9 +1047,10 @@ grpsys                            SPA-AREA
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    WRK-PATH-TABLE      TO  MCP-TABLE
            MOVE    WRK-PATH-PATHNAME   TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-JINMEI
                PERFORM  900-JINMEI-FETCH-SEC
@@ -1067,9 +1070,10 @@ grpsys                            SPA-AREA
            MOVE    "DBFETCH"           TO  MCP-FUNC
            MOVE    WRK-PATH-TABLE      TO  MCP-TABLE
            MOVE    WRK-PATH-PATHNAME   TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-JINMEI
@@ -1090,9 +1094,10 @@ grpsys                            SPA-AREA
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    WRK-PATH-TABLE      TO  MCP-TABLE
            MOVE    WRK-PATH-PATHNAME   TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
            .
       *
        900-JINMEI-CLOSE-EXT.
@@ -1104,9 +1109,10 @@ grpsys                            SPA-AREA
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"      TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL   "ORCDBMAIN"      USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
            .
       *
        900-PUT-WINDOW-EXT.
