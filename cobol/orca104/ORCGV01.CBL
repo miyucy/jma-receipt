@@ -509,12 +509,12 @@
                                        TO  SPA-GMN-PAYKBN
       * 
            INITIALIZE                      HKNNUM-REC
-           MOVE    SPA-HOSPID              TO  HKN-HOSPID
+      *****MOVE    SPA-HOSPID              TO  HKN-HOSPID
            MOVE    SPA-GMN-HKNNUM          TO  HKN-HKNNUM
            MOVE    SPA-GMN-PAYKBN          TO  HKN-PAYKBN
            MOVE    SPA-NAI-STYUKYMD        TO  HKN-TEKSTYMD
            MOVE    SPA-NAI-EDYUKYMD        TO  HKN-TEKEDYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM             TO  HKN-HOSPNUM
            MOVE    HKNNUM-REC              TO  MCPDATA-REC
            MOVE    "tbl_hknnum"        TO  WRK-PATH-TABLE
            MOVE    "key"               TO  WRK-PATH-PATHNAME
@@ -601,9 +601,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    V01-HKNNUM     TO  SPA-GMN-HKNNUM
       * 
            INITIALIZE                  HKNNUM-REC
-           MOVE    SPA-HOSPID      TO  HKN-HOSPID
+      *****MOVE    SPA-HOSPID      TO  HKN-HOSPID
            MOVE    SPA-GMN-HKNNUM  TO  HKN-HKNNUM
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM     TO  HKN-HOSPNUM
            MOVE    HKNNUM-REC      TO  MCPDATA-REC
            MOVE    "tbl_hknnum"        TO  WRK-PATH-TABLE
            MOVE    "key2"              TO  WRK-PATH-PATHNAME
@@ -1125,9 +1125,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    WRK-PATH-TABLE      TO  MCP-TABLE
            MOVE    WRK-PATH-PATHNAME   TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-HKNNUM
                PERFORM 900-HKNNUM-FETCH-SEC
@@ -1147,9 +1148,10 @@ grpsys                            SPA-AREA
            MOVE    "DBFETCH"           TO  MCP-FUNC
            MOVE    WRK-PATH-TABLE      TO  MCP-TABLE
            MOVE    WRK-PATH-PATHNAME   TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-HKNNUM
            ELSE
@@ -1168,9 +1170,10 @@ grpsys                            SPA-AREA
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    WRK-PATH-TABLE      TO  MCP-TABLE
            MOVE    WRK-PATH-PATHNAME   TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
            .
        900-HKNNUM-CLOSE-EXT.
@@ -1182,9 +1185,10 @@ grpsys                            SPA-AREA
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"      TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL   "ORCDBMAIN"      USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.
