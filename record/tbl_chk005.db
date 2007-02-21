@@ -104,3 +104,15 @@ path	key5	{
 		;
 	};
 };
+
+path	key6	{ 	
+	DBSELECT	{
+		DECLARE tbl_chk005_key6_csr CURSOR FOR
+		SELECT * FROM TBL_CHK005
+		WHERE  CHKKBN     = :CHKKBN
+		AND YUKOSTYMD    <= :YUKOSTYMD
+		AND YUKOEDYMD    >= :YUKOEDYMD
+		ORDER BY BYOMEI,ID
+		;
+	};
+};
