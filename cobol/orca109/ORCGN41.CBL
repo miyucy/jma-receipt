@@ -431,7 +431,7 @@
       *
            MOVE    "tbl_help"          TO  MCP-TABLE
            MOVE    "key1"              TO  MCP-PATHNAME
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  HELP-HOSPNUM
            MOVE    HELP-REC            TO  MCPDATA-REC
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
@@ -499,7 +499,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    "tbl_help"          TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  HELP-HOSPNUM
            MOVE    HELP-REC            TO  MCPDATA-REC
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
@@ -868,7 +868,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-NAI-MENUNUM1    TO  HELP-MENUNUM1
            MOVE    WRK-INPUT-MENU      TO  HELP-MENU
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  HELP-HOSPNUM
            MOVE    HELP-REC            TO  MCPDATA-REC
            MOVE    "tbl_help"          TO  MCP-TABLE
            MOVE    "key6"              TO  MCP-PATHNAME
@@ -1095,7 +1095,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    WRK-MENUNUM1        TO  HELP-MENUNUM1
            MOVE    WRK-MENUNUM2        TO  HELP-MENUNUM2
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  HELP-HOSPNUM
            MOVE    HELP-REC            TO  MCPDATA-REC
            MOVE    "tbl_help"          TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
@@ -1220,7 +1220,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    WRK-MENUNUM2        TO  HELP-MENUNUM2
            MOVE    WRK-EDANUM          TO  HELP-EDANUM
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  HELP-HOSPNUM
            MOVE    HELP-REC            TO  MCPDATA-REC
            MOVE    "tbl_help"          TO  MCP-TABLE
            MOVE    "key7"              TO  MCP-PATHNAME
@@ -1691,7 +1691,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-NAI-MENUNUM1    TO  HELP-MENUNUM1
            MOVE    SPA-NAI-MENUNUM2    TO  HELP-MENUNUM2
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  HELP-HOSPNUM
            MOVE    HELP-REC            TO  MCPDATA-REC
            IF      SPA-NAI-MENUNUM2    =   ZERO
                MOVE    "tbl_help"          TO  MCP-TABLE
@@ -1701,9 +1701,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    "del1"              TO  MCP-PATHNAME
            END-IF
            MOVE    "DBDELETE"          TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
            IF      MCP-RC          NOT =   ZERO
                MOVE    "1001"          TO  SPA-ERRCD
                DISPLAY "N41 HELP DEL ERR:" MCP-RC
@@ -2060,7 +2061,7 @@ grpsys                            SPA-AREA
            MOVE    SPA-NAI-MENUNUM1    TO  HELP-MENUNUM1
            MOVE    ZERO                TO  HELP-MENUNUM2
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  HELP-HOSPNUM
            MOVE    HELP-REC            TO  MCPDATA-REC
            MOVE    "tbl_help"          TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
@@ -2109,14 +2110,15 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-NAI-MENUNUM1    TO  HELP-MENUNUM1
            MOVE    WRK-MENUNUM2        TO  HELP-MENUNUM2
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  HELP-HOSPNUM
            MOVE    HELP-REC            TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_help"          TO  MCP-TABLE
            MOVE    "del1"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
       *    追加処理
            MOVE    ZERO                TO  WRK-EDANUM
@@ -2200,14 +2202,15 @@ grpsys                            SPA-AREA
            MOVE    SMCNDATE-YMD        TO  HELP-UPYMD
            MOVE    SMCNDATE-HMS        TO  HELP-UPHMS
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  HELP-HOSPNUM
            MOVE    HELP-REC            TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "tbl_help"          TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
            IF      MCP-RC          NOT =   ZERO
                MOVE    "1000"          TO  SPA-ERRCD
                DISPLAY "N41 HELP INS ERR:" MCP-RC
@@ -2226,14 +2229,15 @@ grpsys                            SPA-AREA
            MOVE    SMCNDATE-YMD        TO  HELP-UPYMD
            MOVE    SMCNDATE-HMS        TO  HELP-UPHMS
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  HELP-HOSPNUM
            MOVE    HELP-REC            TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    "tbl_help"          TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
            IF      MCP-RC          NOT =   ZERO
                MOVE    "1000"          TO  SPA-ERRCD
                DISPLAY "N41 HELP UPD ERR:" MCP-RC
@@ -2340,7 +2344,7 @@ grpsys                            SPA-AREA
            MOVE    SPA-NAI-MENUNUM1    TO  HELP-MENUNUM1
            MOVE    WRK-MENUNUM2        TO  HELP-MENUNUM2
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  HELP-HOSPNUM
            MOVE    HELP-REC            TO  MCPDATA-REC
            MOVE    "tbl_help"          TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
@@ -2901,9 +2905,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"     USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -2914,9 +2919,10 @@ grpsys                            SPA-AREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"     USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -2929,9 +2935,10 @@ grpsys                            SPA-AREA
        990-DBCLOSE-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
            .
        990-DBCLOSE-EXT.
@@ -2943,9 +2950,10 @@ grpsys                            SPA-AREA
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL   "ORCDBMAIN"       USING
+                                        MCPAREA
+                                        MCPDATA-REC
+                                        SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.
