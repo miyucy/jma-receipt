@@ -273,6 +273,11 @@
            03  WRK-BIKOU               PIC X(86).
       *
            03  WRK-ORC-DBPATH          PIC X(64).
+      *----(03.04.01)--ADD-START---
+           03  WRK-HOSPNAME            PIC X(80).
+           03  WRK-ADRS                PIC X(80).
+           03  WRK-TEL                 PIC X(15).
+      *----(03.04.01)--ADD-END-----
       *
       *    ∫ﬁÀË§Œ∆‚Õ∆
        01  WRK-NAIYOU-AREA.
@@ -657,6 +662,9 @@
            PERFORM 990-DBCLOSE-SEC
       *
       *----(03.04.01)--ADD-START---
+           MOVE    SYS-1001-HOSPNAME   TO  WRK-HOSPNAME
+           MOVE    SYS-1002-ADRS       TO  WRK-ADRS
+           MOVE    SYS-1002-TEL        TO  WRK-TEL
       *    ∞ÂŒ≈µ°¥ÿ ‘Ω∏æ Û
            PERFORM 900-1900-READ-SEC
       *    ∞ÂŒ≈µ°¥ÿÃææŒ ‘Ω∏æ Û
@@ -1500,27 +1508,13 @@
       *
       *----(03.04.01)--UPD-START---
       *    ∞ÂŒ≈µ°¥ÿΩªΩÍ
-           IF      SYS-1902-ADRS1      NOT =   SPACE
-               MOVE    SYS-1902-ADRS1      TO  HCM19-HOSPADRS(1:40)
-               MOVE    SYS-1902-ADRS2      TO  HCM19-HOSPADRS(41:40)
-           ELSE
-               MOVE    SYS-1002-ADRS       TO  HCM19-HOSPADRS
-           END-IF
+           MOVE    WRK-ADRS        TO  HCM19-HOSPADRS
       *
       *    ∞ÂŒ≈µ°¥ÿÃæ
-           IF      SYS-1901-HOSPNAME1  NOT =   SPACE
-               MOVE    SYS-1901-HOSPNAME1  TO  HCM19-HOSPNAME(1:40)
-               MOVE    SYS-1901-HOSPNAME2  TO  HCM19-HOSPNAME(41:40)
-           ELSE
-               MOVE    SYS-1001-HOSPNAME   TO  HCM19-HOSPNAME
-           END-IF
+           MOVE    WRK-HOSPNAME    TO  HCM19-HOSPNAME
       *
       *    ∞ÂŒ≈µ°¥ÿ£‘£≈£Ã
-           IF      SYS-1902-TEL        NOT =   SPACE
-               MOVE    SYS-1902-TEL        TO  HCM19-HOSPTEL
-           ELSE
-               MOVE    SYS-1002-TEL        TO  HCM19-HOSPTEL
-           END-IF
+           MOVE    WRK-TEL         TO  HCM19-HOSPTEL
       *----(03.04.01)--UPD-END-----
       *
       *    •…•Ø•ø°º
@@ -3488,7 +3482,6 @@
        900-1901-READ-SEC           SECTION.
       *
            IF      SYS-1900-PRTKBN(9)  =   SPACE
-               MOVE    SPACE           TO  SYS-1901-REC
                GO  TO  900-1901-READ-EXT
            END-IF
       *
@@ -3504,6 +3497,8 @@
            PERFORM 900-SYSKANRI-KEY10-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC     TO  SYS-1901-REC
+               MOVE    SYS-1901-HOSPNAME1  TO  WRK-HOSPNAME(1:40)
+               MOVE    SYS-1901-HOSPNAME2  TO  WRK-HOSPNAME(41:40)
            ELSE
                INITIALIZE                  SYS-1901-REC
            END-IF
@@ -3518,7 +3513,6 @@
        900-1902-READ-SEC           SECTION.
       *
            IF      SYS-1900-PRTKBN(9)  =   SPACE
-               MOVE    SPACE           TO  SYS-1902-REC
                GO  TO  900-1902-READ-EXT
            END-IF
       *
@@ -3534,6 +3528,9 @@
            PERFORM 900-SYSKANRI-KEY10-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC     TO  SYS-1902-REC
+               MOVE    SYS-1902-ADRS1  TO  WRK-ADRS(1:40)
+               MOVE    SYS-1902-ADRS2  TO  WRK-ADRS(41:40)
+               MOVE    SYS-1902-TEL    TO  WRK-TEL
            ELSE
                INITIALIZE                  SYS-1902-REC
            END-IF
