@@ -90,6 +90,7 @@
       *    次月会計作成用の保険組合せと食事の退避領域
                05  SPA-TAIHI-HKN                   PIC 9(03).
                05  SPA-TAIHI-SHOKUJI               PIC 9(03).
+               05  SPA-SHOKUDOU-OFF                PIC 9(03).
       *
            03  SPA-IID1-AREA.
       *警告メッセージ
