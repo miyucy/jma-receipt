@@ -69,6 +69,8 @@
       *  03.02.01    NACL-小豆沢  06/08/09  入院時食事療養２の場合は特食
       *                                     を入力不可とする
       *  03.02.02    NACL-多々納  06/08/21  食事一括変更追加
+      *  03.04.01    NACL-小豆沢  07/02/22  当月食堂加算未算定時は次月会計
+      *                                     の食堂加算はゼロ設定で作成する
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -180,6 +182,7 @@
            03  IDX-KSN             PIC 9(04).
            03  KIKAN-IDX1          PIC 9(04).
            03  KIKAN-IDX2          PIC 9(04).
+           03  IDX-SHOKUDOU        PIC 9(02).
       *
       *    点数マスタ予約コード領域（選定入院料）
        01  WRK-YOYAKU.
@@ -1519,6 +1522,17 @@
                                                   TO  SPA-TAIHI-SHOKUJI
                                END-IF
                            END-PERFORM
+                       ELSE
+                           IF    NACCT-SRYCDTOTAL   =   197000570
+                             MOVE      1          TO   SPA-SHOKUDOU-OFF
+                             PERFORM  VARYING IDX-SHOKUDOU  FROM 1 BY 1
+                                    UNTIL  (IDX-SHOKUDOU  >  31)  OR
+                                           (SPA-SHOKUDOU-OFF  =  ZERO)
+                               IF   NACCT-DAY(IDX-SHOKUDOU)  NOT = ZERO
+                                   MOVE   ZERO  TO  SPA-SHOKUDOU-OFF
+                               END-IF
+                             END-PERFORM
+                           END-IF
                        END-IF
       *            最終日の保険組合せを退避（次月会計の作成用）
                    WHEN    "5"
@@ -5261,6 +5275,10 @@
                    MOVE    "197000570"     TO
                                            LNK-SCNYUACCT-SHOKUDO-SRYCD
                    MOVE    1               TO  LNK-SCNYUACCT-SHOKUDO-KBN
+                   DISPLAY "SPA-SHOKUDOU-OFF = " SPA-SHOKUDOU-OFF
+                   IF    SPA-SHOKUDOU-OFF  =   1
+                       MOVE    ZERO        TO  LNK-SCNYUACCT-SHOKUDO-KBN
+                   END-IF
                END-IF
            END-IF
       *    保険組合せ
@@ -5447,6 +5465,9 @@
                    MOVE    "197000570"     TO
                                            LNK-SCNYUACCT-SHOKUDO-SRYCD
                    MOVE    1               TO  LNK-SCNYUACCT-SHOKUDO-KBN
+                   IF    SPA-SHOKUDOU-OFF  =   1
+                       MOVE    ZERO        TO  LNK-SCNYUACCT-SHOKUDO-KBN
+                   END-IF
                END-IF
            END-IF
       *    保険組合せ
@@ -6903,6 +6924,17 @@
                                                TO  SPA-TAIHI-SHOKUJI
                            END-IF
                        END-PERFORM
+                   ELSE
+                       IF    NACCT-SRYCDTOTAL   =   197000570
+                           MOVE      1          TO   SPA-SHOKUDOU-OFF
+                           PERFORM  VARYING IDX-SHOKUDOU  FROM  1  BY 1
+                                    UNTIL  (IDX-SHOKUDOU  >  31)  OR
+                                           (SPA-SHOKUDOU-OFF  =  ZERO)
+                               IF   NACCT-DAY(IDX-SHOKUDOU)  NOT = ZERO
+                                   MOVE   ZERO  TO  SPA-SHOKUDOU-OFF
+                               END-IF
+                           END-PERFORM
+                       END-IF
                    END-IF
       *        最終日の保険組合せを退避（次月会計の作成用）
                WHEN    "5"
