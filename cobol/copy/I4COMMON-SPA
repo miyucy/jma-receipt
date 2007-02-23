@@ -61,6 +61,12 @@
                    07  SPA-GMN-TSUSANNISSU     PIC S9(06).
                    07  SPA-NAI-NYUINBI         PIC X(08).
                    07  SPA-NAI-TAINBI          PIC X(08).
+                   07  SPA-GMN-SYUBETSU1       PIC X(20).
+                   07  SPA-GMN-SYUBETSU2       PIC X(20).
+                   07  SPA-GMN-SYUBETSU3       PIC X(20).
+                   07  SPA-GMN-SYUBETSU4       PIC X(20).
+                   07  SPA-GMN-SYUBETSU5       PIC X(20).
+                   07  SPA-GMN-SYUBETSU6       PIC X(20).
       *
       *ø«Œ≈∂Ë ¨
                05  SPA-SRYKBN                  PIC X(02).
