@@ -179,7 +179,13 @@
            03  WRK-Z9                  PIC Z9.
       *----(03.04.01)--ADD-START---
            03  WRK-HOSPNAME            PIC X(100).
+           03  WRK-HOSPNAME-R          REDEFINES   WRK-HOSPNAME.
+               05  WRK-HOSPNAME1       PIC X(50).
+               05  WRK-HOSPNAME2       PIC X(50).
            03  WRK-HOSPADRS            PIC X(100).
+           03  WRK-HOSPADRS-R          REDEFINES   WRK-HOSPADRS.
+               05  WRK-HOSPADRS1       PIC X(50).
+               05  WRK-HOSPADRS2       PIC X(50).
            03  WRK-HOSPTEL             PIC X(15).
       *----(03.04.01)--ADD-END-----
       *
@@ -1200,11 +1206,15 @@
       *
       *----(03.04.01)--UPD-START---
       *    所在地
+      *    MOVE    SYS-1002-ADRS       TO  WRK-YKJ-JYUSYO
+      *    医療機関名
+      *    MOVE    SYS-1001-HOSPNAME   TO  WRK-YKJ-HSPNAME
+      *    電話番号
+      **** MOVE    SYS-1002-TEL        TO  WRK-YKJ-TEL
+      *    所在地
            MOVE    WRK-HOSPADRS    TO  WRK-YKJ-JYUSYO
-      *
       *    医療機関名称
            MOVE    WRK-HOSPNAME    TO  WRK-YKJ-HSPNAME
-      *
       *    電話番号
            MOVE    WRK-HOSPTEL     TO  WRK-YKJ-TEL
       *----(03.04.01)--UPD-START---
@@ -2077,8 +2087,8 @@
            PERFORM 800-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC     TO  SYS-1901-REC
-               MOVE    SYS-1901-HOSPNAME1  TO  WRK-HOSPNAME(1:50)
-               MOVE    SYS-1901-HOSPNAME2  TO  WRK-HOSPNAME(51:50)
+               MOVE    SYS-1901-HOSPNAME1  TO  WRK-HOSPNAME1
+               MOVE    SYS-1901-HOSPNAME2  TO  WRK-HOSPNAME2
            ELSE
                INITIALIZE                  SYS-1901-REC
            END-IF
@@ -2104,8 +2114,8 @@
            PERFORM 800-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC     TO  SYS-1902-REC
-               MOVE    SYS-1902-ADRS1  TO  WRK-HOSPADRS(1:50)
-               MOVE    SYS-1902-ADRS2  TO  WRK-HOSPADRS(51:50)
+               MOVE    SYS-1902-ADRS1  TO  WRK-HOSPADRS1
+               MOVE    SYS-1902-ADRS2  TO  WRK-HOSPADRS2
                MOVE    SYS-1902-TEL    TO  WRK-HOSPTEL
            ELSE
                INITIALIZE                  SYS-1902-REC
