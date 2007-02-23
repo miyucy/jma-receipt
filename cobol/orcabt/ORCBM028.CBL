@@ -156,8 +156,14 @@
                05  WRK-KOHNUM        PIC X(04).
                05  WRK-HKNNAME       PIC X(40). 
       *----(03.04.01)--ADD-START---
-           03  WRK-HOSPNAME          PIC X(100).
-           03  WRK-HOSPADRS          PIC X(100).
+           03  WRK-HOSPNAME            PIC X(100).
+           03  WRK-HOSPNAME-R          REDEFINES   WRK-HOSPNAME.
+               05  WRK-HOSPNAME1       PIC X(50).
+               05  WRK-HOSPNAME2       PIC X(50).
+           03  WRK-HOSPADRS            PIC X(100).
+           03  WRK-HOSPADRS-R          REDEFINES   WRK-HOSPADRS.
+               05  WRK-HOSPADRS1       PIC X(50).
+               05  WRK-HOSPADRS2       PIC X(50).
       *----(03.04.01)--ADD-END-----
       *
            COPY    "CPSHELLTBL.INC".
@@ -509,10 +515,13 @@
       *
       *----(03.04.01)--UPD-START---
       *    °åÎÅµ¡´Ø½»½ê
-           MOVE    WRK-HOSPADRS    TO  HCM2S-ADRS
-      *
+      *    MOVE    SYS-1002-ADRS       TO  HCM2S-ADRS
       *    °åÎÅµ¡´ØÌ¾
-           MOVE    WRK-HOSPNAME    TO  HCM2S-HOSPNAME
+      *    MOVE    SYS-1001-HOSPNAME   TO  HCM2S-HOSPNAME
+      *    °åÎÅµ¡´Ø½»½ê
+           MOVE    WRK-HOSPADRS        TO  HCM2S-ADRS
+      *    °åÎÅµ¡´ØÌ¾
+           MOVE    WRK-HOSPNAME        TO  HCM2S-HOSPNAME
       *----(03.04.01)--UPD-END-----
       *
       *    ³«Àß¼ÔÌ¾
@@ -1361,8 +1370,8 @@
            PERFORM 800-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC     TO  SYS-1901-REC
-               MOVE    SYS-1901-HOSPNAME1  TO  WRK-HOSPNAME(1:50)
-               MOVE    SYS-1901-HOSPNAME2  TO  WRK-HOSPNAME(51:50)
+               MOVE    SYS-1901-HOSPNAME1  TO  WRK-HOSPNAME1
+               MOVE    SYS-1901-HOSPNAME2  TO  WRK-HOSPNAME2
            ELSE
                INITIALIZE                  SYS-1901-REC
            END-IF
@@ -1391,8 +1400,8 @@
            PERFORM 800-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC     TO  SYS-1902-REC
-               MOVE    SYS-1902-ADRS1  TO  WRK-HOSPADRS(1:50)
-               MOVE    SYS-1902-ADRS2  TO  WRK-HOSPADRS(51:50)
+               MOVE    SYS-1902-ADRS1  TO  WRK-HOSPADRS1
+               MOVE    SYS-1902-ADRS2  TO  WRK-HOSPADRS2
            ELSE
                INITIALIZE                  SYS-1902-REC
            END-IF
