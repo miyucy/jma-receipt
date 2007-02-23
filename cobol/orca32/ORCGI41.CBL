@@ -1317,6 +1317,13 @@
            MOVE    "key11"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC.
       *
+      *    ÉÂÅï¼ïÊÌÊÔ½¸
+           MOVE    SPACE               TO  SPA-GMN-SYUBETSU1
+           MOVE    SPACE               TO  SPA-GMN-SYUBETSU2
+           MOVE    SPACE               TO  SPA-GMN-SYUBETSU3
+           MOVE    SPACE               TO  SPA-GMN-SYUBETSU4
+           MOVE    SPACE               TO  SPA-GMN-SYUBETSU5
+           MOVE    SPACE               TO  SPA-GMN-SYUBETSU6
            .
       *
        3103-PTNYUINRRK-HEN-EXT.
@@ -2276,6 +2283,19 @@
            MOVE    SPA-GMN-TAINBI      TO  I41-TAINBI.
            MOVE    SPA-GMN-NYUINNISSU  TO  I41-NYUINNISSU.
            MOVE    SPA-GMN-TSUSANNISSU TO  I41-TSUSANNISSU.
+      *    ÉÂÅï¼ïÊÌÆü¿ô
+           MOVE    "black"             TO  I41-SYUBETSU1-STYLE.
+           MOVE    "black"             TO  I41-SYUBETSU2-STYLE.
+           MOVE    "black"             TO  I41-SYUBETSU3-STYLE.
+           MOVE    "black"             TO  I41-SYUBETSU4-STYLE.
+           MOVE    "black"             TO  I41-SYUBETSU5-STYLE.
+           MOVE    "black"             TO  I41-SYUBETSU6-STYLE.
+           MOVE    SPA-GMN-SYUBETSU1   TO  I41-SYUBETSU1.
+           MOVE    SPA-GMN-SYUBETSU2   TO  I41-SYUBETSU2.
+           MOVE    SPA-GMN-SYUBETSU3   TO  I41-SYUBETSU3.
+           MOVE    SPA-GMN-SYUBETSU4   TO  I41-SYUBETSU4.
+           MOVE    SPA-GMN-SYUBETSU5   TO  I41-SYUBETSU5.
+           MOVE    SPA-GMN-SYUBETSU6   TO  I41-SYUBETSU6.
       *    Æþ±¡²Ê
            PERFORM   VARYING   IDX     FROM    1   BY  1
                      UNTIL     IDX         >   SPA-GMN-SRYKA-MAX-41
