@@ -275,8 +275,8 @@
            03  WRK-ORC-DBPATH          PIC X(64).
       *----(03.04.01)--ADD-START---
            03  WRK-HOSPNAME            PIC X(80).
-           03  WRK-ADRS                PIC X(80).
-           03  WRK-TEL                 PIC X(15).
+           03  WRK-HOSPADRS            PIC X(80).
+           03  WRK-HOSPTEL             PIC X(15).
       *----(03.04.01)--ADD-END-----
       *
       *    剤毎の内容
@@ -663,14 +663,10 @@
       *
       *----(03.04.01)--ADD-START---
            MOVE    SYS-1001-HOSPNAME   TO  WRK-HOSPNAME
-           MOVE    SYS-1002-ADRS       TO  WRK-ADRS
-           MOVE    SYS-1002-TEL        TO  WRK-TEL
+           MOVE    SYS-1002-ADRS       TO  WRK-HOSPADRS
+           MOVE    SYS-1002-TEL        TO  WRK-HOSPTEL
       *    医療機関編集情報
            PERFORM 900-1900-READ-SEC
-      *    医療機関名称編集情報
-           PERFORM 900-1901-READ-SEC
-      *    医療機関住所編集情報
-           PERFORM 900-1902-READ-SEC
       *----(03.04.01)--ADD-END-----
       *
            .
@@ -1479,14 +1475,14 @@
       *****************************************************************
       *    帳票編集処理
       *****************************************************************
-       300-HCM19-HEN-SEC                SECTION.
+       300-HCM19-HEN-SEC           SECTION.
       *
            INITIALIZE                  HCM19
       *
       *    診療科
-      *****MOVE    SPA-SRYKAMEI        TO  HCM19-SRYKA
+      *****MOVE    SPA-SRYKAMEI    TO  HCM19-SRYKA
       *    患者番号
-           MOVE    SPA-PTNUM           TO  HCM19-PTNUM
+           MOVE    SPA-PTNUM       TO  HCM19-PTNUM
       *    患者名称カナ
            IF    ( PTINF-KANANAME (31 : )  =   SPACE )
                MOVE    PTINF-KANANAME      TO  HCM19-KANANAME
@@ -1500,30 +1496,30 @@
                MOVE    PTINF-NAME      TO  HCM19-NAME2
            END-IF
       *
-           MOVE    SPA-SEX             TO  HCM19-SEX
+           MOVE    SPA-SEX         TO  HCM19-SEX
       *    生年月日
-           MOVE    PTINF-BIRTHDAY      TO  WRK-SYMD
+           MOVE    PTINF-BIRTHDAY  TO  WRK-SYMD
            PERFORM 31012-SEIWA-HEN-SEC
-           MOVE    WRK-HENYMDG         TO  HCM19-BIRTH
+           MOVE    WRK-HENYMDG     TO  HCM19-BIRTH
       *
       *----(03.04.01)--UPD-START---
       *    医療機関住所
-           MOVE    WRK-ADRS        TO  HCM19-HOSPADRS
+           MOVE    WRK-HOSPADRS    TO  HCM19-HOSPADRS
       *
       *    医療機関名
            MOVE    WRK-HOSPNAME    TO  HCM19-HOSPNAME
       *
       *    医療機関ＴＥＬ
-           MOVE    WRK-TEL         TO  HCM19-HOSPTEL
+           MOVE    WRK-HOSPTEL     TO  HCM19-HOSPTEL
       *----(03.04.01)--UPD-END-----
       *
       *    ドクター
-           MOVE    SYS-1010-NAME       TO  HCM19-DRNAME
+           MOVE    SYS-1010-NAME   TO  HCM19-DRNAME
       *---(01.00.01) LINE ADD END   ------------------------------------
       *
       *    保険者情報
       *    保険者番号
-           MOVE    WRK-HKNJA-G         TO  HCM19-HKNJA
+           MOVE    WRK-HKNJA-G     TO  HCM19-HKNJA
       *
       *    記号・番号
       **** STRING  PTHKN-KIGO          DELIMITED   BY  SPACE
@@ -3468,6 +3464,12 @@
            PERFORM 900-SYSKANRI-KEY10-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC     TO  SYS-1900-REC
+               IF      SYS-1900-PRTKBN(9)  NOT =   SPACE
+      *            医療機関名称編集情報
+                   PERFORM 900-1901-READ-SEC
+      *            医療機関住所編集情報
+                   PERFORM 900-1902-READ-SEC
+               END-IF
            ELSE
                INITIALIZE                  SYS-1900-REC
            END-IF
@@ -3480,10 +3482,6 @@
       *    医療機関名称編集情報読み込み
       *****************************************************************
        900-1901-READ-SEC           SECTION.
-      *
-           IF      SYS-1900-PRTKBN(9)  =   SPACE
-               GO  TO  900-1901-READ-EXT
-           END-IF
       *
       *    医療機関名称編集情報読み込み
            MOVE    SPACE           TO  SYS-1901-REC
@@ -3512,10 +3510,6 @@
       *****************************************************************
        900-1902-READ-SEC           SECTION.
       *
-           IF      SYS-1900-PRTKBN(9)  =   SPACE
-               GO  TO  900-1902-READ-EXT
-           END-IF
-      *
       *    医療機関住所編集情報読み込み
            MOVE    SPACE           TO  SYS-1902-REC
            INITIALIZE                  SYS-1902-REC
@@ -3528,9 +3522,9 @@
            PERFORM 900-SYSKANRI-KEY10-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC     TO  SYS-1902-REC
-               MOVE    SYS-1902-ADRS1  TO  WRK-ADRS(1:40)
-               MOVE    SYS-1902-ADRS2  TO  WRK-ADRS(41:40)
-               MOVE    SYS-1902-TEL    TO  WRK-TEL
+               MOVE    SYS-1902-ADRS1  TO  WRK-HOSPADRS(1:40)
+               MOVE    SYS-1902-ADRS2  TO  WRK-HOSPADRS(41:40)
+               MOVE    SYS-1902-TEL    TO  WRK-HOSPTEL
            ELSE
                INITIALIZE                  SYS-1902-REC
            END-IF
