@@ -275,7 +275,13 @@
            03  WRK-ORC-DBPATH          PIC X(64).
       *---(03.04.01) LINE ADD START -----------------------------------
            03  WRK-HOSPNAME            PIC X(80).
+           03  WRK-HOSPNAME-R          REDEFINES   WRK-HOSPNAME.
+               05  WRK-HOSPNAME1       PIC X(40).
+               05  WRK-HOSPNAME2       PIC X(40).
            03  WRK-HOSPADRS            PIC X(80).
+           03  WRK-HOSPADRS-R          REDEFINES   WRK-HOSPADRS.
+               05  WRK-HOSPADRS1       PIC X(40).
+               05  WRK-HOSPADRS2       PIC X(40).
            03  WRK-HOSPTEL             PIC X(15).
       *---(03.04.01) LINE ADD END   -----------------------------------
       *
@@ -3499,8 +3505,8 @@
            PERFORM 900-SYSKANRI-KEY10-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC     TO  SYS-1901-REC
-               MOVE    SYS-1901-HOSPNAME1  TO  WRK-HOSPNAME(1:40)
-               MOVE    SYS-1901-HOSPNAME2  TO  WRK-HOSPNAME(41:40)
+               MOVE    SYS-1901-HOSPNAME1  TO  WRK-HOSPNAME1
+               MOVE    SYS-1901-HOSPNAME2  TO  WRK-HOSPNAME2
            ELSE
                INITIALIZE                  SYS-1901-REC
            END-IF
@@ -3526,8 +3532,8 @@
            PERFORM 900-SYSKANRI-KEY10-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC     TO  SYS-1902-REC
-               MOVE    SYS-1902-ADRS1  TO  WRK-HOSPADRS(1:40)
-               MOVE    SYS-1902-ADRS2  TO  WRK-HOSPADRS(41:40)
+               MOVE    SYS-1902-ADRS1  TO  WRK-HOSPADRS1
+               MOVE    SYS-1902-ADRS2  TO  WRK-HOSPADRS2
                MOVE    SYS-1902-TEL    TO  WRK-HOSPTEL
            ELSE
                INITIALIZE                  SYS-1902-REC
