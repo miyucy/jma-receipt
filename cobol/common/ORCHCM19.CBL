@@ -273,11 +273,11 @@
            03  WRK-BIKOU               PIC X(86).
       *
            03  WRK-ORC-DBPATH          PIC X(64).
-      *----(03.04.01)--ADD-START---
+      *---(03.04.01) LINE ADD START -----------------------------------
            03  WRK-HOSPNAME            PIC X(80).
            03  WRK-HOSPADRS            PIC X(80).
            03  WRK-HOSPTEL             PIC X(15).
-      *----(03.04.01)--ADD-END-----
+      *---(03.04.01) LINE ADD END   -----------------------------------
       *
       *    剤毎の内容
        01  WRK-NAIYOU-AREA.
@@ -359,14 +359,14 @@
       *    出力先プリンタ名割り当て情報
            COPY  "CPSK1031.INC".
       *
-      *----(03.04.01)--ADD-START---
+      *---(03.04.01) LINE ADD START -----------------------------------
       *    医療機関編集情報
            COPY    "CPSK1900.INC".
       *    医療機関名称編集情報
            COPY    "CPSK1901.INC".
       *    医療機関住所編集情報
            COPY    "CPSK1902.INC".
-      *----(03.04.01)--ADD-END-----
+      *---(03.04.01) LINE ADD END   -----------------------------------
       *
       *    患者マスタ
        01  PTINF-REC.
@@ -661,13 +661,13 @@
            MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-      *----(03.04.01)--ADD-START---
+      *---(03.04.01) LINE ADD START -----------------------------------
            MOVE    SYS-1001-HOSPNAME   TO  WRK-HOSPNAME
            MOVE    SYS-1002-ADRS       TO  WRK-HOSPADRS
            MOVE    SYS-1002-TEL        TO  WRK-HOSPTEL
       *    医療機関編集情報
-           PERFORM 900-1900-READ-SEC
-      *----(03.04.01)--ADD-END-----
+           PERFORM 900-SYS1900-SYORI-SEC
+      *---(03.04.01) LINE ADD END   -----------------------------------
       *
            .
        100-SYORI-EXT.
@@ -1480,9 +1480,9 @@
            INITIALIZE                  HCM19
       *
       *    診療科
-      *****MOVE    SPA-SRYKAMEI    TO  HCM19-SRYKA
+      *****MOVE    SPA-SRYKAMEI        TO  HCM19-SRYKA
       *    患者番号
-           MOVE    SPA-PTNUM       TO  HCM19-PTNUM
+           MOVE    SPA-PTNUM           TO  HCM19-PTNUM
       *    患者名称カナ
            IF    ( PTINF-KANANAME (31 : )  =   SPACE )
                MOVE    PTINF-KANANAME      TO  HCM19-KANANAME
@@ -1496,30 +1496,34 @@
                MOVE    PTINF-NAME      TO  HCM19-NAME2
            END-IF
       *
-           MOVE    SPA-SEX         TO  HCM19-SEX
+           MOVE    SPA-SEX             TO  HCM19-SEX
       *    生年月日
-           MOVE    PTINF-BIRTHDAY  TO  WRK-SYMD
+           MOVE    PTINF-BIRTHDAY      TO  WRK-SYMD
            PERFORM 31012-SEIWA-HEN-SEC
-           MOVE    WRK-HENYMDG     TO  HCM19-BIRTH
+           MOVE    WRK-HENYMDG         TO  HCM19-BIRTH
       *
-      *----(03.04.01)--UPD-START---
+      *---(03.04.01) LINE UPD START -----------------------------------
       *    医療機関住所
-           MOVE    WRK-HOSPADRS    TO  HCM19-HOSPADRS
-      *
+      *    MOVE    SYS-1002-ADRS       TO  HCM19-HOSPADRS
       *    医療機関名
-           MOVE    WRK-HOSPNAME    TO  HCM19-HOSPNAME
-      *
+      *    MOVE    SYS-1001-HOSPNAME   TO  HCM19-HOSPNAME
       *    医療機関ＴＥＬ
-           MOVE    WRK-HOSPTEL     TO  HCM19-HOSPTEL
-      *----(03.04.01)--UPD-END-----
+      **** MOVE    SYS-1002-TEL        TO  HCM19-HOSPTEL
+      *    医療機関住所
+           MOVE    WRK-HOSPADRS        TO  HCM19-HOSPADRS
+      *    医療機関名
+           MOVE    WRK-HOSPNAME        TO  HCM19-HOSPNAME
+      *    医療機関ＴＥＬ
+           MOVE    WRK-HOSPTEL         TO  HCM19-HOSPTEL
+      *---(03.04.01) LINE UPD END   -----------------------------------
       *
       *    ドクター
-           MOVE    SYS-1010-NAME   TO  HCM19-DRNAME
+           MOVE    SYS-1010-NAME       TO  HCM19-DRNAME
       *---(01.00.01) LINE ADD END   ------------------------------------
       *
       *    保険者情報
       *    保険者番号
-           MOVE    WRK-HKNJA-G     TO  HCM19-HKNJA
+           MOVE    WRK-HKNJA-G         TO  HCM19-HKNJA
       *
       *    記号・番号
       **** STRING  PTHKN-KIGO          DELIMITED   BY  SPACE
@@ -3447,11 +3451,11 @@
        2005-ZENKAI-SYORI-EXT.
            EXIT.
       *---(01.00.16) LINE ADD END   ------------------------------------
-      *----(03.04.01)--ADD-START---
+      *---(03.04.01) LINE ADD START ------------------------------------
       *****************************************************************
-      *    医療機関編集情報読み込み
+      *    医療機関編集情報処理
       *****************************************************************
-       900-1900-READ-SEC           SECTION.
+        900-SYS1900-SYORI-SEC           SECTION.
       *
       *    医療機関編集情報読み込み
            MOVE    SPACE           TO  SYS-1900-REC
@@ -3466,22 +3470,22 @@
                MOVE    MCPDATA-REC     TO  SYS-1900-REC
                IF      SYS-1900-PRTKBN(9)  NOT =   SPACE
       *            医療機関名称編集情報
-                   PERFORM 900-1901-READ-SEC
+                   PERFORM 900-SYS1901-READ-SEC
       *            医療機関住所編集情報
-                   PERFORM 900-1902-READ-SEC
+                   PERFORM 900-SYS1902-READ-SEC
                END-IF
            ELSE
                INITIALIZE                  SYS-1900-REC
            END-IF
            .
       *
-       900-1900-READ-EXT.
+        900-SYS1900-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
       *    医療機関名称編集情報読み込み
       *****************************************************************
-       900-1901-READ-SEC           SECTION.
+       900-SYS1901-READ-SEC           SECTION.
       *
       *    医療機関名称編集情報読み込み
            MOVE    SPACE           TO  SYS-1901-REC
@@ -3502,13 +3506,13 @@
            END-IF
            .
       *
-       900-1901-READ-EXT.
+       900-SYS1901-READ-EXT.
            EXIT.
       *
       *****************************************************************
       *    医療機関住所編集情報読み込み
       *****************************************************************
-       900-1902-READ-SEC           SECTION.
+       900-SYS1902-READ-SEC           SECTION.
       *
       *    医療機関住所編集情報読み込み
            MOVE    SPACE           TO  SYS-1902-REC
@@ -3530,7 +3534,7 @@
            END-IF
            .
       *
-       900-1902-READ-EXT.
+       900-SYS1902-READ-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3555,7 +3559,7 @@
            .
        900-SYSKANRI-KEY10-EXT.
            EXIT.
-      *----(03.04.01)--ADD-END-----
+      *---(03.04.01) LINE ADD END   ------------------------------------
       *****************************************************************
       *    システム管理マスタ読み込み処理
       *****************************************************************
