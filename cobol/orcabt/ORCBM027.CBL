@@ -152,7 +152,7 @@
                05  WRK-HKNNAME       PIC X(40). 
       *----(03.04.01)--ADD-START---
            03  WRK-HOSPNAME          PIC X(100).
-           03  WRK-ADRS              PIC X(100).
+           03  WRK-HOSPADRS          PIC X(100).
       *----(03.04.01)--ADD-END-----
       *
            COPY    "CPSHELLTBL.INC".
@@ -412,13 +412,9 @@
       *
       *----(03.04.01)--ADD-START---
            MOVE    SYS-1001-HOSPNAME   TO  WRK-HOSPNAME
-           MOVE    SYS-1002-ADRS       TO  WRK-ADRS
+           MOVE    SYS-1002-ADRS       TO  WRK-HOSPADRS
       *    医療機関編集情報
            PERFORM 900-1900-READ-SEC
-      *    医療機関名称編集情報
-           PERFORM 900-1901-READ-SEC
-      *    医療機関住所編集情報
-           PERFORM 900-1902-READ-SEC
       *----(03.04.01)--ADD-END-----
            .
        120-HOSPINF-GET-EXT.
@@ -504,7 +500,7 @@
       *
       *----(03.04.01)--UPD-START---
       *    医療機関住所
-           MOVE    WRK-ADRS        TO  HCM2K-ADRS
+           MOVE    WRK-HOSPADRS    TO  HCM2K-ADRS
       *
       *    医療機関名
            MOVE    WRK-HOSPNAME    TO  HCM2K-HOSPNAME
@@ -1095,6 +1091,12 @@
            PERFORM 800-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC     TO  SYS-1900-REC
+               IF      SYS-1900-PRTKBN(7)  NOT =   SPACE
+      *            医療機関名称編集情報
+                   PERFORM 900-1901-READ-SEC
+      *            医療機関住所編集情報
+                   PERFORM 900-1902-READ-SEC
+                END-IF
            ELSE
                INITIALIZE                  SYS-1900-REC
            END-IF
@@ -1107,10 +1109,6 @@
       *    医療機関名称編集情報読み込み
       *****************************************************************
        900-1901-READ-SEC           SECTION.
-      *
-           IF      SYS-1900-PRTKBN(7)  =   SPACE
-               GO  TO  900-1901-READ-EXT
-           END-IF
       *
       *    医療機関名称編集情報読み込み
            MOVE    SPACE           TO  SYS-1901-REC
@@ -1142,10 +1140,6 @@
       *****************************************************************
        900-1902-READ-SEC           SECTION.
       *
-           IF      SYS-1900-PRTKBN(7)  =   SPACE
-               GO  TO  900-1902-READ-EXT
-           END-IF
-      *
       *    医療機関住所編集情報読み込み
            MOVE    SPACE           TO  SYS-1902-REC
            INITIALIZE                  SYS-1902-REC
@@ -1161,8 +1155,8 @@
            PERFORM 800-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1902-REC
-               MOVE    SYS-1902-ADRS1      TO  WRK-ADRS(1:50)
-               MOVE    SYS-1902-ADRS2      TO  WRK-ADRS(51:50)
+               MOVE    SYS-1902-ADRS1      TO  WRK-HOSPADRS(1:50)
+               MOVE    SYS-1902-ADRS2      TO  WRK-HOSPADRS(51:50)
            ELSE
                INITIALIZE                      SYS-1902-REC
            END-IF
