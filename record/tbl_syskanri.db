@@ -270,7 +270,6 @@ path	key16	{
 	};
 };
 
-
 path	key17	{
 	DBSELECT	{
 		DECLARE tbl_syskanri_key17_csr CURSOR FOR
@@ -282,3 +281,17 @@ path	key17	{
 		;
 	};
 };
+
+path	key18	{
+	DBSELECT	{
+		DECLARE tbl_syskanri_key18_csr CURSOR FOR
+		SELECT STYUKYMD,EDYUKYMD
+		FROM tbl_syskanri
+			WHERE   KANRICD      =   :KANRICD
+			AND     KBNCD        <   :KBNCD
+			GROUP   BY	STYUKYMD,EDYUKYMD
+			ORDER	BY	STYUKYMD DESC,EDYUKYMD
+		;
+	};
+};
+
