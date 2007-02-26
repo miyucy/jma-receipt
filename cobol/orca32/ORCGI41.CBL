@@ -71,6 +71,8 @@
       *  03.02.02    NACL-多々納  06/08/21  食事一括変更追加
       *  03.04.01    NACL-小豆沢  07/02/22  当月食堂加算未算定時は次月会計
       *                                     の食堂加算はゼロ設定で作成する
+      *  03.04.02    NACL-小豆沢  07/02/26  病棟別の入院日数（今回入院分）
+      *                                     を表示
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -321,6 +323,14 @@
       *    コラムリスト位置
            03  WRK-DATALIST-ROW        PIC S9(09).
            03  FLG-GMN-INIT            PIC  9(01).
+      *
+      *    病棟別入院日数算出用
+           03  WRK-BTU-NISSU-AREA.
+               05  WRK-LAST-RRKNUM     PIC 9(03).
+               05  WRK-NYUIN-BTUNUM    PIC X(02)   OCCURS  6.
+               05  WRK-NYUIN-BTUDAY    PIC 9(04)   OCCURS  6.
+               05  WRK-LAST-RECNO      PIC 9(01).
+               05  WRK-NYUIN-BTUDAY-Z  PIC ZZZ9.
       *
       *    回数一括変更用
        01  WRK-DAY-AREA.
@@ -1317,13 +1327,9 @@
            MOVE    "key11"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC.
       *
-      *    病棟種別編集
-           MOVE    SPACE               TO  SPA-GMN-SYUBETSU1
-           MOVE    SPACE               TO  SPA-GMN-SYUBETSU2
-           MOVE    SPACE               TO  SPA-GMN-SYUBETSU3
-           MOVE    SPACE               TO  SPA-GMN-SYUBETSU4
-           MOVE    SPACE               TO  SPA-GMN-SYUBETSU5
-           MOVE    SPACE               TO  SPA-GMN-SYUBETSU6
+      *    病棟別日数編集
+           PERFORM      3103-BTUDAY-EDIT-SEC
+      *
            .
       *
        3103-PTNYUINRRK-HEN-EXT.
@@ -1421,6 +1427,229 @@
       *
            .
        3103-180DAYS-EDIT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   病棟別日数編集処理
+      *****************************************************************
+       3103-BTUDAY-EDIT-SEC            SECTION.
+      *
+           MOVE    SPACE               TO  SPA-GMN-SYUBETSU1
+           MOVE    SPACE               TO  SPA-GMN-SYUBETSU2
+           MOVE    SPACE               TO  SPA-GMN-SYUBETSU3
+           MOVE    SPACE               TO  SPA-GMN-SYUBETSU4
+           MOVE    SPACE               TO  SPA-GMN-SYUBETSU5
+           MOVE    SPACE               TO  SPA-GMN-SYUBETSU6
+      *
+      *    最終入院履歴を確定
+           INITIALIZE                      PTNYUINRRK-REC
+           MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID
+           MOVE    SPA-GMN-PTID        TO  PTNYUINRRK-PTID
+      *
+           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key9"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_ptnyuinrrk" TO MCP-TABLE
+               MOVE    "key9"          TO  MCP-PATHNAME
+               PERFORM 970-PTNYUINRRK-READ-SEC
+           ELSE
+               INITIALIZE                  PTNYUINRRK-REC
+               MOVE    1               TO  FLG-PTNYUINRRK
+           END-IF
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key9"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           MOVE    SPACE               TO  WRK-BTU-NISSU-AREA
+           INITIALIZE                      WRK-BTU-NISSU-AREA
+      *
+           IF      FLG-PTNYUINRRK          =   ZERO
+               MOVE    PTNYUINRRK-RRKNUM
+                                           TO  WRK-LAST-RRKNUM
+               INITIALIZE                      PTNYUINRRK-REC
+               MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID
+               MOVE    SPA-GMN-PTID        TO  PTNYUINRRK-PTID
+               MOVE    WRK-LAST-RRKNUM     TO  PTNYUINRRK-RRKNUM
+      *
+               MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
+               MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
+               PERFORM 910-DBSELECT-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    "tbl_ptnyuinrrk" TO MCP-TABLE
+                   MOVE    "key5"          TO  MCP-PATHNAME
+                   PERFORM 970-PTNYUINRRK-READ-SEC
+                   PERFORM    UNTIL   FLG-PTNYUINRRK  =   1
+                       MOVE    ZERO        TO  IDX
+                       EVALUATE    PTNYUINRRK-JTIKBN
+                           WHEN    "0"
+                           WHEN    "1"
+                           WHEN    "2"
+                           WHEN    "3"
+                           WHEN    "4"
+                           WHEN    "7"
+                               IF    PTNYUINRRK-BTUNUM   =
+                                               WRK-NYUIN-BTUNUM(1)
+                                   MOVE   1      TO   IDX
+                               END-IF
+                               IF    PTNYUINRRK-BTUNUM   =
+                                               WRK-NYUIN-BTUNUM(2)
+                                   MOVE   2      TO   IDX
+                               END-IF
+                               IF    PTNYUINRRK-BTUNUM   =
+                                               WRK-NYUIN-BTUNUM(3)
+                                   MOVE   3      TO   IDX
+                               END-IF
+                               IF    PTNYUINRRK-BTUNUM   =
+                                               WRK-NYUIN-BTUNUM(4)
+                                   MOVE   4      TO   IDX
+                               END-IF
+                               IF    PTNYUINRRK-BTUNUM   =
+                                               WRK-NYUIN-BTUNUM(5)
+                                   MOVE   5      TO   IDX
+                               END-IF
+                               IF    PTNYUINRRK-BTUNUM   =
+                                               WRK-NYUIN-BTUNUM(6)
+                                   MOVE   6      TO   IDX
+                               END-IF
+      *
+                               IF   IDX   =   ZERO
+                                   ADD     1    TO   WRK-LAST-RECNO
+                                   MOVE    WRK-LAST-RECNO   TO  IDX
+                                   MOVE  PTNYUINRRK-BTUNUM
+                                                TO  WRK-NYUIN-BTUNUM
+                                                                  (IDX)
+                               END-IF
+      *                        期間算出
+                               INITIALIZE   STS-AREA-DAY
+                               INITIALIZE   LNK-DAY5-AREA
+                               MOVE  "51"   TO  LNK-DAY5-IRAI
+                               MOVE  PTNYUINRRK-TENNYUYMD
+                                            TO  LNK-DAY5-START
+                               IF  PTNYUINRRK-TENSTUYMD  <
+                                                        SPA-SYSYMD
+                                  IF  PTNYUINRRK-TENSTUYMD  =
+                                                  PTNYUINRRK-TAIINYMD
+                                      MOVE  PTNYUINRRK-TAIINYMD
+                                                   TO  LNK-DAY5-END
+                                  ELSE
+      *                               転出日のマイナス１日
+                                      INITIALIZE   LNK-DAY6-AREA
+                                      MOVE  "61"   TO  LNK-DAY6-IRAI
+                                      MOVE  PTNYUINRRK-TENSTUYMD
+                                                   TO  LNK-DAY6-KIJUN
+                                      MOVE  "1"    TO  LNK-DAY6-ZOGENPTN
+                                      MOVE  -1     TO  LNK-DAY6-ZOGEN
+                                      CALL  "ORCSDAY"    USING
+                                                         STS-AREA-DAY
+                                                         LNK-DAY6-AREA
+                                      MOVE   LNK-DAY6-KEISAN
+                                                   TO  LNK-DAY5-END
+                                  END-IF    
+                               ELSE
+                                  MOVE  SPA-SYSYMD TO  LNK-DAY5-END
+                               END-IF
+      *
+                               CALL  "ORCSDAY"    USING
+                                                  STS-AREA-DAY
+                                                  LNK-DAY5-AREA
+                               IF   STS-DAY-RC1   =   ZERO
+                                   ADD   LNK-DAY5-NISSU2
+                                             TO  WRK-NYUIN-BTUDAY(IDX)
+                               END-IF
+                           WHEN  OTHER
+                               CONTINUE
+                       END-EVALUATE
+                       MOVE    "tbl_ptnyuinrrk" TO MCP-TABLE
+                       MOVE    "key5"          TO  MCP-PATHNAME
+                       PERFORM 970-PTNYUINRRK-READ-SEC
+                   END-PERFORM
+               ELSE
+                   INITIALIZE                  PTNYUINRRK-REC
+                   MOVE    1               TO  FLG-PTNYUINRRK
+               END-IF
+               MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
+               PERFORM 990-DBCLOSE-SEC
+           END-IF
+      *
+           PERFORM   VARYING    IDX   FROM   1    BY   1
+                     UNTIL     (IDX     >    6)    OR
+                               (WRK-NYUIN-BTUNUM(IDX)  =  SPACE)
+      *        病棟名称
+               INITIALIZE                  SYSKANRI-REC
+               MOVE    "5001"          TO  SYS-KANRICD
+               MOVE    WRK-NYUIN-BTUNUM(IDX)
+                                       TO  SYS-KBNCD
+               MOVE    SPA-SYSYMD      TO  SYS-STYUKYMD
+               MOVE    SYS-STYUKYMD    TO  SYS-EDYUKYMD
+               MOVE    SYSKANRI-REC    TO  MCPDATA-REC
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key10"         TO  MCP-PATHNAME
+               PERFORM 910-DBSELECT-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    "tbl_syskanri"      TO  MCP-TABLE
+                   MOVE    "key10"             TO  MCP-PATHNAME
+                   PERFORM 900-KANRIMST-READ-SEC
+               ELSE
+                   MOVE    1           TO  FLG-SYSKANRI
+               END-IF
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key10"         TO  MCP-PATHNAME
+               PERFORM 990-DBCLOSE-SEC
+      *
+               IF      FLG-SYSKANRI    =   ZERO
+                   MOVE    MCPDATA-REC TO  SYS-5001-REC
+               END-IF
+               MOVE   WRK-NYUIN-BTUDAY(IDX)
+                                       TO   WRK-NYUIN-BTUDAY-Z
+      *
+               EVALUATE    IDX
+                   WHEN    1
+                       MOVE   SYS-5001-BTU-TANNAME
+                                          TO   SPA-GMN-SYUBETSU1(1:10)
+                       MOVE   WRK-NYUIN-BTUDAY-Z
+                                          TO   SPA-GMN-SYUBETSU1(11:4)
+                       MOVE  "日"         TO   SPA-GMN-SYUBETSU1(15:2)
+                   WHEN    2
+                       MOVE   SYS-5001-BTU-TANNAME
+                                          TO   SPA-GMN-SYUBETSU2(1:10)
+                       MOVE   WRK-NYUIN-BTUDAY-Z
+                                          TO   SPA-GMN-SYUBETSU2(11:4)
+                       MOVE  "日"         TO   SPA-GMN-SYUBETSU2(15:2)
+                   WHEN    3
+                       MOVE   SYS-5001-BTU-TANNAME
+                                          TO   SPA-GMN-SYUBETSU3(1:10)
+                       MOVE   WRK-NYUIN-BTUDAY-Z
+                                          TO   SPA-GMN-SYUBETSU3(11:4)
+                       MOVE  "日"         TO   SPA-GMN-SYUBETSU3(15:2)
+                   WHEN    4
+                       MOVE   SYS-5001-BTU-TANNAME
+                                          TO   SPA-GMN-SYUBETSU4(1:10)
+                       MOVE   WRK-NYUIN-BTUDAY-Z
+                                          TO   SPA-GMN-SYUBETSU4(11:4)
+                       MOVE  "日"         TO   SPA-GMN-SYUBETSU4(15:2)
+                   WHEN    5
+                       MOVE   SYS-5001-BTU-TANNAME
+                                          TO   SPA-GMN-SYUBETSU5(1:10)
+                       MOVE   WRK-NYUIN-BTUDAY-Z
+                                          TO   SPA-GMN-SYUBETSU5(11:4)
+                       MOVE  "日"         TO   SPA-GMN-SYUBETSU5(15:2)
+                   WHEN    6
+                       MOVE   SYS-5001-BTU-TANNAME
+                                          TO   SPA-GMN-SYUBETSU6(1:10)
+                       MOVE   WRK-NYUIN-BTUDAY-Z
+                                          TO   SPA-GMN-SYUBETSU6(11:4)
+                       MOVE  "日"         TO   SPA-GMN-SYUBETSU6(15:2)
+                   WHEN   OTHER
+                       CONTINUE
+               END-EVALUATE
+           END-PERFORM
+      *
+           .
+       3103-BTUDAY-EDIT-EXT.
            EXIT.
       *
       *****************************************************************
