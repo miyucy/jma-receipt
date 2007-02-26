@@ -27,7 +27,6 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  03.05.00    NACL-太田    07/06/04  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -40,7 +39,7 @@
            SELECT  DTCHK004-FILE
                                    ASSIGN  DTCHK004PARA
                                    ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  DYNAMIC
+                                   ACCESS  MODE    IS  SEQUENTIAL
                                    RECORD  KEY     IS  DTCHK004-KEY
                                    FILE    STATUS  IS  STS-DTCHK004.
       *
@@ -61,18 +60,19 @@
       *
        WORKING-STORAGE                 SECTION.
       *
-           COPY    "HCM402V03.INC"
-                                   REPLACING  //HCM402V03//
+           COPY    "HCM402V01.INC"
+                                   REPLACING  //HCM402V01//
                                    BY         //HCM402//.
       *
       *    エラーファイルファイル名称領域 
-           COPY    "CPRECEERR.INC"   REPLACING  //RECEERR//
-                                   BY         //DTCHKERRPARA//.
+           COPY    "CPCOMMONDAT6.INC"
+                                   REPLACING  //DTCHK//
+                                   BY         //DTCHKERR//.
       *
       *    中間ファイルファイル名称領域 
-           COPY    "CPCOMMONDAT3.INC"
-                                   REPLACING  //TMPFLPARA//
-                                   BY         //DTCHK004PARA//.
+           COPY    "CPCOMMONDAT6.INC"
+                                   REPLACING  //DTCHK//
+                                   BY         //DTCHK004//.
       *
       *    フラグ領域
        01  STS-AREA.
@@ -113,11 +113,11 @@
            03  WRK-SRYYMD.
                05  WRK-SRYYMD-G                        PIC X(04).
                05  WRK-SRYYMD-Y                        PIC X(04).
-               05  WRK-SRYYMD-FL01                     PIC X(02).
+               05                                      PIC X(02).
                05  WRK-SRYYMD-M                        PIC X(04).
-               05  WRK-SRYYMD-FL02                     PIC X(02).
+               05                                      PIC X(02).
                05  WRK-SRYYMD-D                        PIC X(04).
-               05  WRK-SRYYMD-FL03                     PIC X(02).
+               05                                      PIC X(02).
            03  WRK-ZZ9                                 PIC ZZ9.
            03  WRK-Z9                                  PIC Z9.
            03  WRK-HMS.
@@ -158,11 +158,6 @@
            03  WRK-MESG                                PIC X(1000).
            03  WRK-MESG-ORG                            PIC X(1000).
            03  WRK-FIL                                 PIC X(02).
-           03  WRK-CHKKOMOKU-LEN-MAX                   PIC 9(05).
-           03  WRK-CNT-LINE                            PIC 9(05).
-           03  WRK-IDX-MESG                            PIC 9(05).
-           03  WRK-SHO                                 PIC 9(05).
-           03  WRK-AMARI                               PIC 9(05).
       *
        01  KEY-AREA.
            03  KEY-NEW.
@@ -172,15 +167,20 @@
                05  KEY-O-PTID                          PIC 9(10).
                05  KEY-O-HKNKBN                        PIC X(01).
       *
-      *    データチェック確認項目
-           COPY    "CPDTCHKKOMOKU.INC".
+      *    パラメタ領域
+       01  WRK-PARA.
+           COPY    "CPORCSPRTLNK.INC".
+           03  WRK-PARA-JOBID                          PIC 9(07).
+           03  WRK-PARA-SHELLID                        PIC X(08).
+           03  WRK-PARA-HOSPID                         PIC X(24).
+      *
+      *    データチェック一括処理パラメータ
+           COPY    "CPORCBSD01PARA.INC".
       *
       *    固定値領域
        01  CONST-AREA.
            03  CONST-LINE-MAX                          PIC 9(05)
                                                        VALUE   20.
-      *
-           COPY    "COMMON-SPA".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -215,9 +215,6 @@
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    一時ファイル名編集
-           COPY    "CPORCSGETTEMP.INC".
-      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "MCPAREA".
@@ -225,33 +222,19 @@
       ****************************************************************
        LINKAGE                         SECTION.
        01  DTCHK-RC        PIC S9(09).
-      *    パラメタ領域
-       01  WRK-PARA.
-           COPY    "CPORCSPRTLNK.INC".
-           03  WRK-PARA-JOBID      PIC 9(07).
-           03  WRK-PARA-SHELLID    PIC X(08).
-           03  WRK-PARA-HOSPNUM    PIC 9(02).
-      *
-      *    エラーファイルファイル名称領域 
-           COPY    "CPRECEERR.INC"   REPLACING  //RECEERR//
-                                   BY         //LNKDTCHKERRPARA//.
-      *
-      *    データチェック一括処理パラメータ
-           COPY    "CPORCBSD01PARA.INC".
+       01  COMMAND-PARAM.
+           02  FILLER      PIC X(2000).
       ****************************************************************
        PROCEDURE                       DIVISION
                USING
-                                               DTCHK-RC
-                                               WRK-PARA
-                                               LNKDTCHKERRPARA
-                                               ORCBSD01PARA.
+           DTCHK-RC
+           COMMAND-PARAM.
       *
       *****************************************************************
       *    主処理
       *****************************************************************
        000-PROC-SEC                    SECTION.
       *
-           DISPLAY "*** ORCDTCHK007 START ***"
            PERFORM 100-INIT-SEC
       *
            PERFORM 200-MAIN-SEC    UNTIL ( FLG-END =   1 )
@@ -268,50 +251,67 @@
       *****************************************************************
        100-INIT-SEC                    SECTION.
       *
-           DISPLAY "007 program start " 
            INITIALIZE                  STS-AREA
                                        IDX-AREA
                                        CNT-AREA
                                        FLG-AREA
                                        WRK-AREA
+                                       WRK-PARA
+                                       ORCBSD01PARA
                                        KEY-AREA
-                                       SPA-AREA
       *
-           MOVE    LNKDTCHKERRPARA     TO  DTCHKERRPARA
+           UNSTRING   COMMAND-PARAM    DELIMITED  BY  ","
+                                       INTO    LNK-PRTKANRI-RENNUM
+                                               LNK-PRTKANRI-TBL-KEY
+                                               LNK-PRTKANRI-TBL-GROUP
+                                               LNK-PRTKANRI-SHORI-RENNUM
+                                               LNK-PRTKANRI-SRYYM
+                                               LNK-PRTKANRI-SKYYMD
+                                               LNK-PRTKANRI-SHELLID
+                                               LNK-PRTKANRI-PRIORITY
+                                               LNK-PRTKANRI-TERMID
+                                               LNK-PRTKANRI-OPID
+                                               LNK-PRTKANRI-PRTNM
+                                               WRK-PARA-JOBID
+                                               WRK-PARA-SHELLID
+                                               WRK-PARA-HOSPID
+                                               DTCHKERRPARA
+                                               ORCBSD01-IKTKBT
+                                               ORCBSD01-SRYYM
+                                               ORCBSD01-NYUGAIKBN
+                                               ORCBSD01-CHKKBN-G
+                                               ORCBSD01-SYAHOPROCKBN
+                                               ORCBSD01-KOKUHOPROCKBN
+                                               ORCBSD01-RSIPROCKBN
+                                               ORCBSD01-JBIPROCKBN
+                                               ORCBSD01-JIHIPROCKBN
+                                               ORCBSD01-INGAIPROCKBN
+                                               ORCBSD01-PRTSRTKBN
+                                               ORCBSD01-PRTPTLSTKBN
+                                               ORCBSD01-SRYYMDKBN
+                                               ORCBSD01-STSRYYMD
+                                               ORCBSD01-EDSRYYMD
       *
-           MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
-      *      
-           IF      LNK-PRTKANRI-TBL-KEY  NOT =  "RECEPTX"
-               PERFORM 900-DBSTART-SEC
+           PERFORM 900-DBSTART-SEC
       *
       *    ステップ管理開始処理
-               MOVE    "STS"               TO  SJOBKANRI-MODE
-               INITIALIZE                      JOBKANRI-REC
-               MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
-               MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
-               MOVE    "ORCDTCHK007"       TO  JOB-PGID
-               MOVE    "チェックリスト作成"
-                                           TO  JOB-SHELLMSG
-               MOVE    WRK-PARA-HOSPNUM    TO  JOB-HOSPNUM
-               PERFORM 800-ORCSJOB-SEC
-           END-IF
+           MOVE    "STS"               TO  SJOBKANRI-MODE
+           INITIALIZE                      JOBKANRI-REC
+           MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
+           MOVE    "ORCDTCHK007"       TO  JOB-PGID
+           MOVE    "チェックリスト作成"
+                                       TO  JOB-SHELLMSG
+           CALL    "ORCSJOB"           USING
+                                       ORCSJOBKANRIAREA
+                                       JOBKANRI-REC
       *
            MOVE    ZERO                TO  FLG-END
                                            FLG-ERR
       *
       *    データチェック中間ファイル名
-           MOVE    WRK-PARA-HOSPNUM    TO  DTCHK004PARA-HOSPNUM
-           MOVE    "DTCHK004"          TO  DTCHK004PARA-FILE-ID
-           MOVE    LNK-PRTKANRI-TERMID TO  DTCHK004PARA-TERMID
-      *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    DTCHK004PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES (1)
-      *
-           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
-      *
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  DTCHK004PARA-FULLNAME
+           MOVE    "DTCHK004"          TO  DTCHK004-FILE-ID
+           MOVE    LNK-PRTKANRI-TERMID TO  DTCHK004-TERMID
       *
       *    データチェック２機能情報
            PERFORM 1001-SYS1101-GET-SEC
@@ -320,7 +320,6 @@
            PERFORM 1001-INIT-VAL-SET-SEC
       *
            OPEN    INPUT               DTCHK004-FILE
-           DISPLAY "007 file open st = " STS-DTCHK004
       *
            .
        100-INIT-EXT.
@@ -332,11 +331,10 @@
       *
            INITIALIZE                      SYS-1101-REC
            MOVE    "1101"              TO  SYS-1101-KANRICD
-           MOVE    "*"                 TO  SYS-1101-KBNCD
+           MOVE    "*%"                TO  SYS-1101-KBNCD
            MOVE    ORCBSD01-SRYYM      TO  SYS-1101-STYUKYMD
            MOVE    "01"                TO  SYS-1101-STYUKYMD (7:2)
            MOVE    SYS-1101-STYUKYMD   TO  SYS-1101-EDYUKYMD
-           MOVE    WRK-PARA-HOSPNUM    TO  SYS-1101-HOSPNUM
            MOVE    SYS-1101-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -431,14 +429,6 @@
       *
       *    チェック結果ファイル読込
            PERFORM 900-DTCHK004-READ-SEC
-           DISPLAY "007 file status = " FLG-DTCHK004
-      *
-           IF     (LNK-PRTKANRI-TBL-KEY  =  "RECEPTX")
-           AND    (FLG-DTCHK004        = 1)
-      *        帳票編集<見出し>処理
-               PERFORM 210-HEAD-HEN-SEC
-               PERFORM 290-PRINT-OUT-SEC
-           END-IF
       *
            PERFORM UNTIL ( FLG-DTCHK004    =   1 )
                      OR  ( FLG-END         =   1 )
@@ -500,38 +490,27 @@
       *
            MOVE    WRK-SRYYMD (1:16)   TO  HCM402-SRYYM
       *
-           IF    ( DTCHK004-ERRSBT     =   "0" )
+           IF    ( ORCBSD01-PRTSRTKBN  =   "3" OR  "4" )
+               MOVE    DTCHK004-HKNKBN TO  WRK-HKNKBN
+               PERFORM 2201-HKNNAME-GET-SEC
+               STRING  "（"                DELIMITED   BY  SIZE
+                       WRK-NYUGAIMES       DELIMITED   BY  SPACE
+                       "　"                DELIMITED   BY  SIZE
+                       WRK-HKNMES          DELIMITED   BY  SPACE
+                        "）"               DELIMITED   BY  SIZE
+               INTO    HCM402-NYUGAIKBN
+               END-STRING
       *
-               IF    ( ORCBSD01-PRTSRTKBN  =   "3" OR  "4" )
-                   MOVE    DTCHK004-HKNKBN TO  WRK-HKNKBN
-                   PERFORM 2201-HKNNAME-GET-SEC
-                   STRING  "（"                DELIMITED   BY  SIZE
-                           WRK-NYUGAIMES       DELIMITED   BY  SPACE
-                           "　"                DELIMITED   BY  SIZE
-                           WRK-HKNMES          DELIMITED   BY  SPACE
-                            "）"               DELIMITED   BY  SIZE
-                   INTO    HCM402-NYUGAIKBN
-                   END-STRING
-      *
-                   IF    ( DTCHK004-HKNOTHERS  =   "1" )
-                       MOVE    "他保険あり"    TO  HCM402-BIKO
-                   END-IF
-      *
-               ELSE
-                   STRING  "（"                DELIMITED   BY  SIZE
-                           WRK-NYUGAIMES       DELIMITED   BY  SPACE
-                            "）"               DELIMITED   BY  SIZE
-                   INTO    HCM402-NYUGAIKBN
-                   END-STRING
+               IF    ( DTCHK004-HKNOTHERS  =   "1" )
+                   MOVE    "他保険あり"    TO  HCM402-BIKO
                END-IF
+      *
            ELSE
-                   STRING  "（"                DELIMITED   BY  SIZE
-                           WRK-NYUGAIMES       DELIMITED   BY  SPACE
-                           "　"                DELIMITED   BY  SIZE
-                           "その他"            DELIMITED   BY  SPACE
-                            "）"               DELIMITED   BY  SIZE
-                   INTO    HCM402-NYUGAIKBN
-                   END-STRING
+               STRING  "（"                DELIMITED   BY  SIZE
+                       WRK-NYUGAIMES       DELIMITED   BY  SPACE
+                        "）"               DELIMITED   BY  SIZE
+               INTO    HCM402-NYUGAIKBN
+               END-STRING
            END-IF
       *
            INITIALIZE                      WRK-PAGE-G
@@ -565,107 +544,37 @@
            INTO    HCM402-SAKYMD
            END-STRING
       *
-           IF    ( DTCHK004-ERRSBT     =   "0" )
-      *
-      *        患者番号
-               IF    ( DTCHK004-PTNUM      =   SPACE )
-                   MOVE   SPACE            TO  WRK-MAE-INPUT
-                   STRING "患者ＩＤ"       DELIMITED   BY  SIZE
-                          DTCHK004-PTID    DELIMITED   BY  SIZE
-                   INTO   HCM402-PTNUM
-                   END-STRING
-               ELSE
-                   MOVE    DTCHK004-PTNUM  TO  WRK-MAE-INPUT
-                   PERFORM 800-ZENKAKU-HEN-SEC
-                   MOVE    WRK-OUT-INPUT   TO  HCM402-PTNUM
-               END-IF
-      *
-      *        患者氏名
-               MOVE    DTCHK004-NAME       TO  HCM402-NAME
-      *
-      *        年齢
-               IF    ( DTCHK004-BIRTHDAY   NOT =   SPACE )
-                   PERFORM 2201-NENREI-HEN-SEC
-                   MOVE    WRK-NENREI      TO  WRK-ZZ9
-                   MOVE    WRK-ZZ9         TO  WRK-MAE-INPUT
-                   PERFORM 800-ZENKAKU-HEN-SEC
-                   MOVE    WRK-OUT-INPUT   TO  HCM402-NENREI
-               END-IF
+      *    患者番号
+           IF    ( DTCHK004-PTNUM      =   SPACE )
+               MOVE   SPACE            TO  WRK-MAE-INPUT
+               STRING "患者ＩＤ"       DELIMITED   BY  SIZE
+                      DTCHK004-PTID    DELIMITED   BY  SIZE
+               INTO   HCM402-PTNUM
+               END-STRING
            ELSE
-      *
                MOVE    DTCHK004-PTNUM  TO  WRK-MAE-INPUT
                PERFORM 800-ZENKAKU-HEN-SEC
-               MOVE    WRK-OUT-INPUT       TO  HCM402-PTNUM
-      *
-               MOVE    "その他"            TO  HCM402-NAME
+               MOVE    WRK-OUT-INPUT   TO  HCM402-PTNUM
            END-IF
       *
-           PERFORM 2101-CHKKOMOKU-HEN-SEC
+      *    患者氏名
+           MOVE    DTCHK004-NAME       TO  HCM402-NAME
       *
-           IF    ( DTCHK004-ERRSBT     =   "0" )
-            AND  ( CNT-PAGE2           =   1 )
+      *    年齢
+           IF    ( DTCHK004-BIRTHDAY   NOT =   SPACE )
+               PERFORM 2201-NENREI-HEN-SEC
+               MOVE    WRK-NENREI      TO  WRK-ZZ9
+               MOVE    WRK-ZZ9         TO  WRK-MAE-INPUT
+               PERFORM 800-ZENKAKU-HEN-SEC
+               MOVE    WRK-OUT-INPUT   TO  HCM402-NENREI
+           END-IF
+      *
+           IF    ( CNT-PAGE2           =   1 )
                PERFORM 2101-PTHKN-HEN-SEC
            END-IF
       *
            .
        210-HEAD-HEN-EXT.
-           EXIT.
-      *****************************************************************
-      *    確認項目編集処理
-      *****************************************************************
-       2101-CHKKOMOKU-HEN-SEC          SECTION.
-      *
-           MOVE    ZERO        TO  HCM402-CHKKOMOKU   (1)
-           MOVE    HCM402-CHKKOMOKU   (1)
-                               TO  WRK-MAE-INPUT
-           PERFORM 800-LENGTH-CHK-SEC
-           MOVE    WRK-OUT-MAX TO  WRK-CHKKOMOKU-LEN-MAX
-           MOVE    SPACE       TO  HCM402-CHKKOMOKU   (1)
-      *
-           MOVE    1               TO  IDX-MESG
-      *
-           PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0    >   DTCHKKOMOKU-MAX )
-      *
-               IF    ( ORCBSD01-CHKKBN (IDX0)  =   "1" OR "2" )
-                   MOVE    DTCHKKOMOKU-CHKKOMOKU (IDX0)
-                                       TO  WRK-MAE-INPUT
-                   PERFORM 800-ZENKAKU-HEN-SEC
-                   IF    ( IDX-MESG    +   WRK-OUT-MAX +   1
-                           >=  WRK-CHKKOMOKU-LEN-MAX )
-                       MOVE    HCM402-CHKKOMOKU   (1)
-                                           TO  HCM402-CHKKOMOKU   (2)
-                       MOVE    SPACE       TO  HCM402-CHKKOMOKU   (1)
-                       MOVE    1           TO  IDX-MESG
-                       STRING  "　　　　　"    DELIMITED   BY  SIZE
-                       INTO    HCM402-CHKKOMOKU   (1)
-                       WITH    POINTER IDX-MESG
-                       END-STRING
-                   ELSE
-                       IF    ( IDX-MESG    =   1   )
-                           STRING  "確認項目："    DELIMITED   BY  SIZE
-                           INTO    HCM402-CHKKOMOKU   (1)
-                           WITH    POINTER IDX-MESG
-                           END-STRING
-                       ELSE
-                           STRING  "、"    DELIMITED   BY  SIZE
-                           INTO    HCM402-CHKKOMOKU   (1)
-                           WITH    POINTER IDX-MESG
-                           END-STRING
-                       END-IF
-                   END-IF
-      *
-                   STRING  DTCHKKOMOKU-CHKKOMOKU (IDX0)
-                                       DELIMITED   BY  SPACE
-                   INTO    HCM402-CHKKOMOKU (1)
-                   WITH    POINTER IDX-MESG
-                   END-STRING
-               END-IF
-      *
-           END-PERFORM
-      *
-           .
-       2101-CHKKOMOKU-HEN-EXT.
            EXIT.
       *****************************************************************
       *    患者保険情報編集処理
@@ -685,12 +594,11 @@
            MOVE    WRK-MESG        TO  WRK-MESG-ORG
       *
            INITIALIZE                  SDTCHK05AREA
-           MOVE    WRK-PARA-HOSPNUM TO  SDTCHK05-HOSPNUM
+           MOVE    WRK-PARA-HOSPID TO  SDTCHK05-HOSPID
            MOVE    DTCHK004-PTID   TO  SDTCHK05-PTID
            MOVE    DTCHK004-HKNKBN TO  SDTCHK05-HKNKBN
            CALL    "ORCSDTCHK05"   USING   SDTCHK05AREA
                                            ORCBSD01PARA
-                                           SPA-AREA
       *
            PERFORM VARYING IDX-HKN FROM    1   BY  1
                    UNTIL ( IDX-HKN >   SDTCHK05-OT-MAX )
@@ -701,12 +609,7 @@
       *
            IF    ( WRK-MESG        NOT =   WRK-MESG-ORG )
                COMPUTE CNT-LINE    =   CNT-LINE    +   1
-               MOVE    WRK-MESG        TO  HCM402-MESG2 (CNT-LINE)
-               IF    ( HCM402-MESG2 (CNT-LINE)(157:)   =   SPACE )
-                   MOVE    HCM402-MESG2 (CNT-LINE)
-                                       TO  HCM402-MESG (CNT-LINE)
-                   MOVE    SPACE       TO  HCM402-MESG2 (CNT-LINE)
-               END-IF
+               MOVE    WRK-MESG        TO  HCM402-MESG (CNT-LINE)
            END-IF
       *
            .
@@ -832,19 +735,13 @@
                    STRING  WRK-HKNMES      DELIMITED   BY  SPACE
                            "："            DELIMITED   BY  SIZE
                            DTCHK004-ERRMSG DELIMITED   BY  SIZE
-                   INTO    HCM402-MESG2 (CNT-LINE)
+                   INTO    HCM402-MESG  (CNT-LINE)
                    END-STRING
                ELSE
-                   MOVE    DTCHK004-ERRMSG TO  HCM402-MESG2  (CNT-LINE)
+                   MOVE    DTCHK004-ERRMSG TO  HCM402-MESG  (CNT-LINE)
                END-IF
            ELSE
-                   MOVE    DTCHK004-ERRMSG TO  HCM402-MESG2  (CNT-LINE)
-           END-IF
-      *
-           IF    ( HCM402-MESG2 (CNT-LINE)(157:)   =   SPACE )
-               MOVE    HCM402-MESG2 (CNT-LINE)
-                                   TO  HCM402-MESG  (CNT-LINE)
-               MOVE    SPACE       TO  HCM402-MESG2 (CNT-LINE)
+                   MOVE    DTCHK004-ERRMSG TO  HCM402-MESG  (CNT-LINE)
            END-IF
       *
            .
@@ -886,18 +783,6 @@
                MOVE    "自賠責"        TO  WRK-HKNMES
            WHEN    "5"
                MOVE    "自費"          TO  WRK-HKNMES
-           WHEN    "6"
-               MOVE    "公害"          TO  WRK-HKNMES
-           WHEN    "7"
-               MOVE    "後期高齢者"    TO  WRK-HKNMES
-           WHEN    "8"
-               MOVE    "治験"          TO  WRK-HKNMES
-           WHEN    "9"
-               MOVE    "第三者行為"    TO  WRK-HKNMES
-           WHEN    "H"
-               MOVE    "包括"          TO  WRK-HKNMES
-           WHEN    "Z"
-               MOVE    "その他"        TO  WRK-HKNMES
            END-EVALUATE
       *
            .
@@ -915,7 +800,6 @@
            END-IF
       *
            INITIALIZE                  ORCSPRTAREA
-           DISPLAY "007 prtdata ins start"
            MOVE    "INS"               TO  SPRT-MODE
            MOVE    2                   TO  SPRT-RENNUM
            MOVE    LNK-PRTKANRI-TBL-KEY
@@ -930,7 +814,7 @@
            MOVE    WRK-SHORI-RENNUM    TO  SPRT-SHORI-RENNUM
            MOVE    LNK-PRTKANRI-PRIORITY
                                        TO  SPRT-PRIORITY
-           MOVE   "HCM402V03.red"      TO  SPRT-PRTID
+           MOVE   "HCM402V01.red"      TO  SPRT-PRTID
            IF    ( WRK-HKNMES      NOT =   SPACE )
                STRING  WRK-SPRT-TITLE      DELIMITED   BY  SPACE
                        "（"                DELIMITED   BY  SIZE
@@ -948,27 +832,20 @@
            MOVE    "1"                 TO  SPRT-SITEKBN
            CALL    "ORCSPRT"           USING
                                        ORCSPRTAREA
-                                       SPA-AREA
            IF     ( SPRT-RETURN        =   ZERO )
       *
                COMPUTE CNT-PRINT   =   CNT-PRINT   +   1
       *
-             IF    LNK-PRTKANRI-TBL-KEY  NOT =  "RECEPTX"
-               IF    ( CNT-PRINT  >=   200 )
+               IF    ( CNT-PRINT  >=   50 )
                    PERFORM 900-DBCOMMIT-SEC
                    PERFORM 900-DBSTART-SEC
                    MOVE    ZERO    TO  CNT-PRINT
                END-IF
-             END-IF
            ELSE
                MOVE    "印刷ＤＢに更新できませんでした"
                                        TO  WRK-DTCHKERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
-      *
-           DIVIDE  100         INTO    CNT-PRINT   GIVING  WRK-SHO
-           REMAINDER WRK-AMARI
-           END-DIVIDE
       *
            .
        290-PRINT-OUT-EXT.
@@ -987,7 +864,6 @@
                MOVE    WRK-DTCHKERR    TO  DTCHKERR-REC
                WRITE   DTCHKERR-REC
                CLOSE   DTCHKERR-FILE
-             IF    LNK-PRTKANRI-TBL-KEY  NOT =  "RECEPTX"
       *
       *        ジョブ管理開始処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
@@ -997,9 +873,9 @@
                                        TO  JOB-SHELLID
                MOVE    WRK-DTCHKERR    TO  JOB-YOBI
                MOVE    "9999"          TO  JOB-ERRCD
-               MOVE    WRK-PARA-HOSPNUM    TO  JOB-HOSPNUM
-               PERFORM 800-ORCSJOB-SEC
-             END-IF
+               CALL    "ORCSJOB"       USING
+                                       ORCSJOBKANRIAREA
+                                       JOBKANRI-REC
            END-IF
       *
            MOVE    1                   TO  FLG-ERR
@@ -1015,19 +891,18 @@
       *
            CLOSE                       DTCHK004-FILE
       *
-           IF      LNK-PRTKANRI-TBL-KEY  NOT =  "RECEPTX"
       *    ステップ管理終了処理
-               MOVE    "STE"           TO  SJOBKANRI-MODE
-               INITIALIZE                  JOBKANRI-REC
-               MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-               MOVE    WRK-PARA-SHELLID
-                                       TO  JOB-SHELLID
-               MOVE    ZERO            TO  JOB-UPDCNT
-               MOVE    WRK-PARA-HOSPNUM    TO  JOB-HOSPNUM
-               PERFORM 800-ORCSJOB-SEC
+           MOVE    "STE"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
+           MOVE    ZERO            TO  JOB-UPDCNT
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA
+                                   JOBKANRI-REC
       *
-               PERFORM 900-DBCOMMIT-SEC
-           END-IF
+           PERFORM 900-DBCOMMIT-SEC
       *     
            DISPLAY "*** ORCDTCHK007 END ***"
            .
@@ -1042,8 +917,7 @@
            MOVE    SPACE           TO  WRK-OUT-INPUT
       *
            INITIALIZE                  ORCSKANACHKAREA
-           MOVE   "2"              TO  KANACHK-SYORI
-           MOVE  500               TO  KANACHK-MAX-CNT
+           MOVE    "2"             TO  KANACHK-SYORI
            MOVE  WRK-MAE-INPUT     TO  KANACHK-MAE-INPUT
            CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
            IF    ( KANACHK-RC      =   ZERO )
@@ -1054,22 +928,6 @@
       *
            .
        800-ZENKAKU-HEN-EXT.
-           EXIT.
-      *****************************************************************
-      *    文字列長チェック
-      *****************************************************************
-       800-LENGTH-CHK-SEC              SECTION.
-      *
-           MOVE    SPACE           TO  ORCSKANACHKAREA
-           INITIALIZE                  ORCSKANACHKAREA
-           MOVE  500               TO  KANACHK-MAX-CNT
-           MOVE    "1"             TO  KANACHK-SYORI
-           MOVE    WRK-MAE-INPUT   TO  KANACHK-MAE-INPUT
-           CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
-           MOVE    KANACHK-MAX     TO  WRK-OUT-MAX
-      *
-           .
-       800-LENGTH-CHK-EXT.
            EXIT.
       *****************************************************************
       *    西暦日本語変換処理
@@ -1108,21 +966,6 @@
        800-MCNDATE-EXT.
            EXIT.
       *****************************************************************
-      *    ジョブ管理サブ
-      *****************************************************************
-       800-ORCSJOB-SEC                 SECTION.
-      *
-           MOVE    WRK-PARA-HOSPNUM    TO  JOB-HOSPNUM
-           CALL    "ORCSJOB"           USING
-                                       ORCSJOBKANRIAREA 
-                                       JOBKANRI-REC
-                                       SPA-AREA
-      *
-           .
-      *
-       800-ORCSJOB-EXT.
-           EXIT.
-      *****************************************************************
       *    チェック結果ファイル読込処理
       *****************************************************************
        900-DTCHK004-READ-SEC           SECTION.
@@ -1153,10 +996,9 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
-                                       SPA-AREA
            IF    ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
@@ -1171,10 +1013,9 @@
        911-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
-                                       SPA-AREA
       *
            .
       *
@@ -1186,10 +1027,9 @@
        910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
-                                       SPA-AREA
       *
            .
       *
@@ -1201,10 +1041,9 @@
        910-DBCLOSECURSOR-SEC                 SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
-                                       SPA-AREA
       *
            .
       *
@@ -1218,10 +1057,9 @@
            MOVE    LOW-VALUE           TO  MCP-TABLE
            MOVE    LOW-VALUE           TO  MCP-PATHNAME
            MOVE    "DBSTART"           TO  MCP-FUNC.
-           CALL    "ORCDBMAIN"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
-                                       SPA-AREA
            .
        900-DBSTART-EXT.
            EXIT.
@@ -1234,10 +1072,9 @@
            MOVE    LOW-VALUE           TO  MCP-TABLE
            MOVE    LOW-VALUE           TO  MCP-PATHNAME
            MOVE    "DBCOMMIT"          TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
-                                       SPA-AREA
            .
        900-DBCOMMIT-EXT.
            EXIT.

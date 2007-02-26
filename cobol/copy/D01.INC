@@ -16,9 +16,6 @@
       * 113-8621, Japan.
       ********************************************************************
         02  D01.
-          03  D01-B05S-STATE           PIC S9(9)   BINARY.
-          03  D01-B06S-STATE           PIC S9(9)   BINARY.
-          03  D01-B07S-STATE           PIC S9(9)   BINARY.
           03  D01-B08-LABEL            PIC X(10).
           03  D01-LBLIKTKBT-STYLE      PIC X(20).
           03  D01-LBLIKTKBT            PIC X(20).
@@ -29,10 +26,7 @@
             04  D01-NYUGAIKBN-ITEM     PIC X(20)   OCCURS  5 TIMES.
           03  D01-CHK-SYAHO            PIC X(01).
           03  D01-CHK-KOKUHO           PIC X(01).
-          03  D01-CHK-KOUKI-STATE      PIC S9(9)   BINARY.
-          03  D01-CHK-KOUKI            PIC X(01).
           03  D01-CHK-RSIJBI           PIC X(01).
-          03  D01-CHK-KOUGAI           PIC X(01).
           03  D01-CHK-JIHI             PIC X(01).
           03  D01-CMB-PRTSRTKBN.
             04  D01-PRTSRTKBN          PIC X(22).
@@ -44,15 +38,11 @@
           03  D01-STSRYYMD             PIC S9(2).
           03  D01-EDSRYYMD-STATE       PIC S9(9)   BINARY.
           03  D01-EDSRYYMD             PIC S9(2).
-          03  D01-CMB-USRCHKKBN.
-            04  D01-USRCHKKBN          PIC X(33).
-            04  D01-USRCHKKBN-COUNT    PIC S9(9)   BINARY.
-            04  D01-USRCHKKBN-ITEM     PIC X(33)   OCCURS 10 TIMES.
           03  D01-CHKMSG-G.
-            04  D01-CHKMSG             PIC X(40)   OCCURS 20 TIMES.
+            04  D01-CHKMSG             PIC X(40)   OCCURS 19 TIMES.
           03  D01-INGAIPROCMSG         PIC X(40).
           03  D01-CMB-CHKKBN-G.
-            04  D01-CMB-CHKKBN-OCC                 OCCURS 20 TIMES.
+            04  D01-CMB-CHKKBN-OCC                 OCCURS 19 TIMES.
               05  D01-CHKKBN           PIC X(20).
               05  D01-CHKKBN-COUNT     PIC S9(9)   BINARY.
               05  D01-CHKKBN-ITEM      PIC X(20)   OCCURS  5 TIMES.

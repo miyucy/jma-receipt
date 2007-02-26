@@ -1,3 +1,4 @@
+
       *******************************************************************
       * Project code name "ORCA"
       * 日医標準レセプトソフト（JMA standard receipt software）
@@ -28,7 +29,6 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  03.05.00    NACL-太田    07/06/01  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -90,13 +90,9 @@
                    07  SPA-NAI-CHKKBN      PIC  X(01)  OCCURS 50.
                05  SPA-NAI-SYAHOPROCKBN    PIC  X(01).
                05  SPA-NAI-KOKUHOPROCKBN   PIC  X(01).
-               05  SPA-NAI-KOUKIPROCKBN    PIC  X(01).
                05  SPA-NAI-RSIPROCKBN      PIC  X(01).
                05  SPA-NAI-JBIPROCKBN      PIC  X(01).
-               05  SPA-NAI-DAISANPROCKBN   PIC  X(01).
-               05  SPA-NAI-KGIPROCKBN      PIC  X(01).
                05  SPA-NAI-JIHIPROCKBN     PIC  X(01).
-               05  SPA-NAI-CHIKENPROCKBN   PIC  X(01).
                05  SPA-NAI-INGAIPROCKBN    PIC  X(01).
                05  SPA-NAI-PRTSRTKBN       PIC  X(01).
                05  SPA-NAI-SRYYMDKBN       PIC  X(01).
@@ -154,19 +150,16 @@
            03  WRK-CHKLST-SEL              PIC 9(05).
            03  WRK-MOTOPG                  PIC X(05).
            03  WRK-SELKBNCD                PIC X(08).
-           03  WRK-NAME                    PIC X(100).
       *
        01  WRK-ROW-AREA.
            03  WRK-CHKLST-ROW              PIC S9(9).
       *
        01  CONST-AREA.
            03  CONST-CHKLST-MAX            PIC 9(05)   VALUE   200.
+           03  CONST-CHKKBN-MAX            PIC 9(05)   VALUE   18.
       *
       *    データチェック一括処理パラメータ
            COPY    "CPORCBSD01PARA.INC".
-      *
-      *    データチェック確認項目
-           COPY    "CPDTCHKKOMOKU.INC".
       *
            COPY "COMMON-SPA"       REPLACING //SPA-//
                                    BY        //WKSPA-//.
@@ -224,9 +217,6 @@
        01  SCRAREA.
            COPY    "D01.INC".
            COPY    "D02.INC".
-           COPY    "D03.INC".
-           COPY    "D04.INC".
-           COPY    "D05.INC".
            COPY    "D99.INC".
            COPY    "DERR.INC".
            COPY    "DID1.INC".
@@ -381,20 +371,16 @@
            MOVE    SPA-D01-SRYYM           TO  SPA-NAI-SRYYM
            MOVE    SPA-D01-NYUGAIKBN       TO  SPA-NAI-NYUGAIKBN
            PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0    >   DTCHKKOMOKU-MAX )
+                   UNTIL ( IDX0    >   CONST-CHKKBN-MAX )
                MOVE    SPA-D01-CHKKBN  (IDX0)
                                            TO  SPA-NAI-CHKKBN  (IDX0)
            END-PERFORM
       *
            MOVE    SPA-D01-SYAHOPROCKBN    TO  SPA-NAI-SYAHOPROCKBN
            MOVE    SPA-D01-KOKUHOPROCKBN   TO  SPA-NAI-KOKUHOPROCKBN
-           MOVE    SPA-D01-KOUKIPROCKBN    TO  SPA-NAI-KOUKIPROCKBN
            MOVE    SPA-D01-RSIPROCKBN      TO  SPA-NAI-RSIPROCKBN
            MOVE    SPA-D01-JBIPROCKBN      TO  SPA-NAI-JBIPROCKBN
-           MOVE    SPA-D01-DAISANPROCKBN   TO  SPA-NAI-DAISANPROCKBN
-           MOVE    SPA-D01-KGIPROCKBN      TO  SPA-NAI-KGIPROCKBN
            MOVE    SPA-D01-JIHIPROCKBN     TO  SPA-NAI-JIHIPROCKBN
-           MOVE    SPA-D01-CHIKENPROCKBN   TO  SPA-NAI-CHIKENPROCKBN
            MOVE    SPA-D01-INGAIPROCKBN    TO  SPA-NAI-INGAIPROCKBN
            MOVE    SPA-D01-PRTSRTKBN       TO  SPA-NAI-PRTSRTKBN
            MOVE    SPA-D01-SRYYMDKBN       TO  SPA-NAI-SRYYMDKBN
@@ -472,7 +458,6 @@
        31011-EDIT-CKHPTDATA-SEC         SECTION.
       *
            INITIALIZE                  CHK004-REC
-           MOVE    SPA-HOSPNUM     TO  CHK004-HOSPNUM
            MOVE    "2001"          TO  CHK004-KANRICD
            MOVE    "2%"            TO  CHK004-KBNCD
            MOVE    SPA-SYSYMD      TO  CHK004-STYUKYMD
@@ -519,7 +504,6 @@
                                        SPA-NAI-CHKLST-AREA
       *
            INITIALIZE                  CHK004-REC
-           MOVE    SPA-HOSPNUM     TO  CHK004-HOSPNUM
            MOVE    "2001"          TO  CHK004-KANRICD
            MOVE    "3%"            TO  CHK004-KBNCD
            MOVE    SPA-SYSYMD      TO  CHK004-STYUKYMD
@@ -596,11 +580,11 @@
       *
            IF    ( WKSPA-PTID    =   ZERO )
              OR  ( WKSPA-PTID    =   SPA-NAI-PTID )
-               MOVE    2           TO  SPA-GMN-CUR
+               CONTINUE
            ELSE
-               MOVE    WKSPA-PTNUM TO  D02-PTNUM
-               PERFORM 4100-PTNUM-CHK-SEC
-               MOVE    SPACE       TO  SPA-ERRCD
+               MOVE    WKSPA-PTNUM TO  SPA-GMN-PTNUM
+               MOVE    WKSPA-PTID  TO  SPA-NAI-PTID
+               MOVE    WKSPA-NAME  TO  SPA-GMN-NAME
                MOVE    2           TO  SPA-GMN-CUR
            END-IF
       *
@@ -653,7 +637,6 @@
            WHEN    "CLICKED"       ALSO    "B07"
                PERFORM 270-NEXTPAGE-SEC
            WHEN    "CLICKED"       ALSO    "B09"
-               MOVE    SPACE       TO      WRK-NAME
                PERFORM 490-KENSAKU-SEC
            WHEN    "CLICKED"       ALSO    "B12"
                PERFORM 412-KAKUTEI-SEC
@@ -777,7 +760,6 @@
                    END-EVALUATE
       *
                    INITIALIZE                  CHK004-REC
-                   MOVE    SPA-HOSPNUM     TO  CHK004-HOSPNUM
                    MOVE    "2000"          TO  CHK004-KANRICD
                    MOVE    WRK-SELKBNCD    TO  CHK004-KBNCD
                    MOVE    SPA-SYSYMD      TO  CHK004-STYUKYMD
@@ -837,13 +819,11 @@
            PERFORM 4101-PTNUM-CHK-SEC
            IF    ( SPA-ERRCD           =   SPACE )
             AND  ( SPA-GMN-PTNUM  NOT  =   SPACE )
-            AND  ( FLG-END             =   ZERO  )
                IF    ( SPA-GMN-CHKLST-SEL  =   ZERO )
       *
                    INITIALIZE              WRK-KBNCD-G
       *
                    INITIALIZE              CHK004-REC
-                   MOVE    SPA-HOSPNUM TO  CHK004-HOSPNUM
                    MOVE    "2001"      TO  CHK004-KANRICD
                    MOVE    "3%"        TO  CHK004-KBNCD
                    MOVE    SPA-SYSYMD  TO  CHK004-STYUKYMD
@@ -860,7 +840,6 @@
                        =   WRK-KBNCD-SEQ   +   1
       *
                    INITIALIZE              CHK004-REC
-                   MOVE    SPA-HOSPNUM TO  CHK004-HOSPNUM
                    MOVE    "2001"      TO  CHK004-KANRICD
                    MOVE    WRK-KBNCD-G TO  CHK004-KBNCD
                    MOVE    "00000000"  TO  CHK004-STYUKYMD
@@ -890,7 +869,6 @@
                                        TO  IDX-LST
       *
                    INITIALIZE              CHK004-REC
-                   MOVE    SPA-HOSPNUM TO  CHK004-HOSPNUM
                    MOVE    "2001"      TO  CHK004-KANRICD
                    MOVE    SPA-NAI-TKBNCD (IDX-LST)
                                        TO  CHK004-KBNCD
@@ -1013,14 +991,8 @@
            MOVE    SPTNUM-PTNUM    TO  SPA-GMN-PTNUM
                                        WRK-PTNUM
            IF    ( SPTNUM-RC       NOT =   ZERO )
-               IF    ( SPTNUM-RC       =   20 )
-                   MOVE    SPA-GMN-PTNUM   TO  WRK-NAME
-                   PERFORM 490-KENSAKU-SEC
-                   GO  TO  4101-PTNUM-CHK-EXT
-               ELSE
-                   MOVE    "0002"      TO  SPA-ERRCD
-                   MOVE    2           TO  SPA-GMN-CUR
-               END-IF
+               MOVE    "0002"      TO  SPA-ERRCD
+               MOVE    2           TO  SPA-GMN-CUR
            END-IF
       *
            IF    ( SPA-ERRCD       =   SPACE )
@@ -1031,16 +1003,14 @@
                MOVE    PTINF-NAME      TO  SPA-GMN-NAME
       *
                INITIALIZE                  SS001-AREA
-               MOVE    SPA-HOSPNUM      TO  SS001-HOSPNUM
+               MOVE    SPA-HOSPID      TO  SS001-HOSPID
                MOVE    SPA-NAI-PTID    TO  SS001-PTID
                MOVE    SPA-NAI-SRYYM   TO  SS001-SRYYM
                CALL    "ORCSS001"          USING   SS001-AREA
-                                                   SPA-AREA
                IF    ( SPA-NAI-NYUGAIKBN   =   "1" )
                    IF    ( SS001-NIHO-FLG  =   1 )
                     OR   ( SS001-NRSI-FLG  =   1 )
                     OR   ( SS001-NJBI-FLG  =   1 )
-                    OR   ( SS001-NKGI-FLG  =   1 )
                        CONTINUE
                    ELSE
                        MOVE    "0003"  TO  SPA-ERRCD
@@ -1050,7 +1020,6 @@
                    IF    ( SS001-GIHO-FLG  =   1 )
                     OR   ( SS001-GRSI-FLG  =   1 )
                     OR   ( SS001-GJBI-FLG  =   1 )
-                    OR   ( SS001-GKGI-FLG  =   1 )
                        CONTINUE
                    ELSE
                        MOVE    "0003"  TO  SPA-ERRCD
@@ -1061,7 +1030,6 @@
       *
            IF    ( SPA-ERRCD       =   SPACE )
                INITIALIZE              CHK004-REC
-               MOVE    SPA-HOSPNUM TO  CHK004-HOSPNUM
                MOVE    "2001"      TO  CHK004-KANRICD
                MOVE    "3%"        TO  CHK004-KBNCD
                IF    ( SPA-GMN-CHKLST-SEL  =   ZERO )
@@ -1140,7 +1108,6 @@
        410011-DEL-CK2001-SEC            SECTION.
       *
            INITIALIZE                  CHK004-REC
-           MOVE    SPA-HOSPNUM     TO  CHK004-HOSPNUM
            MOVE    "2001"          TO  CHK004-KANRICD
            MOVE    WRK-DELKBNCD    TO  CHK004-KBNCD
            MOVE    SPA-SYSYMD      TO  CHK004-STYUKYMD
@@ -1163,7 +1130,6 @@
        410011-EDIT-PTDATA-SEC          SECTION.
       *
            INITIALIZE                  CHK004-REC
-           MOVE    SPA-HOSPNUM     TO  CHK004-HOSPNUM
            MOVE    "2000"          TO  CHK004-KANRICD
            MOVE    WRK-SELKBNCD    TO  CHK004-KBNCD
            MOVE    SPA-SYSYMD      TO  CHK004-STYUKYMD
@@ -1176,7 +1142,7 @@
                                    TO  SPA-NAI-NYUGAIKBN
       *
            PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0    >   DTCHKKOMOKU-MAX )
+                   UNTIL ( IDX0    >   CONST-CHKKBN-MAX )
                MOVE    ORCBSD01-CHKKBN (IDX0)
                                    TO  SPA-NAI-CHKKBN (IDX0)
            END-PERFORM
@@ -1185,20 +1151,12 @@
                                    TO  SPA-NAI-SYAHOPROCKBN
            MOVE    ORCBSD01-KOKUHOPROCKBN
                                    TO  SPA-NAI-KOKUHOPROCKBN
-           MOVE    ORCBSD01-KOUKIPROCKBN
-                                   TO  SPA-NAI-KOUKIPROCKBN
            MOVE    ORCBSD01-RSIPROCKBN
                                    TO  SPA-NAI-RSIPROCKBN
            MOVE    ORCBSD01-JBIPROCKBN
                                    TO  SPA-NAI-JBIPROCKBN
-           MOVE    ORCBSD01-DAISANPROCKBN
-                                   TO  SPA-NAI-DAISANPROCKBN
-           MOVE    ORCBSD01-KGIPROCKBN
-                                   TO  SPA-NAI-KGIPROCKBN
            MOVE    ORCBSD01-JIHIPROCKBN
                                    TO  SPA-NAI-JIHIPROCKBN
-           MOVE    ORCBSD01-CHIKENPROCKBN
-                                   TO  SPA-NAI-CHIKENPROCKBN
            MOVE    ORCBSD01-INGAIPROCKBN
                                    TO  SPA-NAI-INGAIPROCKBN
            MOVE    ORCBSD01-PRTSRTKBN
@@ -1213,7 +1171,6 @@
            PERFORM 3101-EDIT-LBLCHKLST-SEC
       *
            INITIALIZE                  CHK004-REC
-           MOVE    SPA-HOSPNUM     TO  CHK004-HOSPNUM
            MOVE    "2001"          TO  CHK004-KANRICD
            MOVE    WRK-SELKBNCD    TO  CHK004-KBNCD
            MOVE    "%"             TO  CHK004-KBNCD (2:1)
@@ -1275,20 +1232,12 @@
       *****************************************************************
        220-CLEAR-SEC                   SECTION.
       *
-           IF    ( SPA-GMN-SELNUM  NOT =   ZERO )
-            OR   ( SPA-GMN-PTNUM   NOT =   SPACE )
-               INITIALIZE              SPA-GMN-INPUT-AREA
-                                       SPA-NAI-INPUT-AREA
-                                       SPA-GMN-CHKLST-SEL
-               MOVE    2               TO   SPA-GMN-CUR
-           ELSE
-               PERFORM 3101-SPASET-SEC
+           PERFORM 3101-SPASET-SEC
       *
-               MOVE    "3%"            TO   WRK-DELKBNCD
-               PERFORM 410011-DEL-CK2001-SEC
-               IF    ( SPA-ERRCD       =   SPACE )
-                   PERFORM 3101-EDIT-CHKLST-SEC
-               END-IF
+           MOVE    "3%"            TO   WRK-DELKBNCD
+           PERFORM 410011-DEL-CK2001-SEC
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 3101-EDIT-CHKLST-SEC
            END-IF
       *
            .
@@ -1308,7 +1257,6 @@
                                    TO  IDX-LST
       *
                INITIALIZE          CHK004-REC
-               MOVE    SPA-HOSPNUM TO  CHK004-HOSPNUM
                MOVE    "2001"      TO  CHK004-KANRICD
                MOVE    SPA-NAI-TKBNCD (IDX-LST)
                                    TO  CHK004-KBNCD
@@ -1384,7 +1332,8 @@
            MOVE    "D02"               TO  SPA-MOTOPG
            MOVE    "P97"               TO  SPA-SAKIPG
       *
-           MOVE    WRK-NAME            TO  SPA-NAME
+      *    氏名をクリアする
+           MOVE    SPACE               TO  SPA-NAME
            MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
       *
            MOVE    "CHANGE"            TO  MCP-PUTTYPE
@@ -1439,7 +1388,6 @@
            INITIALIZE              SPA-D01-INF-AREA
       *
            INITIALIZE                  CHK004-REC
-           MOVE    SPA-HOSPNUM     TO  CHK004-HOSPNUM
            MOVE    "2001"          TO  CHK004-KANRICD
            MOVE    "2%"            TO  CHK004-KBNCD
            MOVE    SPA-SYSYMD      TO  CHK004-STYUKYMD
@@ -1458,19 +1406,15 @@
                                    TO  SPA-D01-NYUGAIKBN
       *
            PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0    >   DTCHKKOMOKU-MAX )
+                   UNTIL ( IDX0    >   CONST-CHKKBN-MAX )
                MOVE    SPA-NAI-CHKKBN (IDX0)
                                    TO  SPA-D01-CHKKBN (IDX0)
            END-PERFORM
            MOVE    SPA-NAI-SYAHOPROCKBN    TO  SPA-D01-SYAHOPROCKBN
            MOVE    SPA-NAI-KOKUHOPROCKBN   TO  SPA-D01-KOKUHOPROCKBN
-           MOVE    SPA-NAI-KOUKIPROCKBN    TO  SPA-D01-KOUKIPROCKBN
            MOVE    SPA-NAI-RSIPROCKBN      TO  SPA-D01-RSIPROCKBN
            MOVE    SPA-NAI-JBIPROCKBN      TO  SPA-D01-JBIPROCKBN
-           MOVE    SPA-NAI-DAISANPROCKBN   TO  SPA-D01-DAISANPROCKBN
-           MOVE    SPA-NAI-KGIPROCKBN      TO  SPA-D01-KGIPROCKBN
            MOVE    SPA-NAI-JIHIPROCKBN     TO  SPA-D01-JIHIPROCKBN
-           MOVE    SPA-NAI-CHIKENPROCKBN   TO  SPA-D01-CHIKENPROCKBN
            MOVE    SPA-NAI-INGAIPROCKBN    TO  SPA-D01-INGAIPROCKBN
            MOVE    SPA-NAI-PRTSRTKBN       TO  SPA-D01-PRTSRTKBN
            MOVE    SPA-NAI-SRYYMDKBN       TO  SPA-D01-SRYYMDKBN
@@ -1480,7 +1424,6 @@
            MOVE    ZERO            TO  CNT-2001
       *
            INITIALIZE                  CHK004-REC
-           MOVE    SPA-HOSPNUM     TO  CHK004-HOSPNUM
            MOVE    "2001"          TO  CHK004-KANRICD
            MOVE    "3%"            TO  CHK004-KBNCD
            MOVE    SPA-SYSYMD      TO  CHK004-STYUKYMD
@@ -1598,8 +1541,6 @@
                MOVE    ZERO            TO  D02-CHKLST-ROWATTR
            END-IF
       *
-           MOVE    "blue"              TO  D02-LBLSRYYM-STYLE
-                                           D02-LBLNYUGAI-STYLE
            MOVE    SPA-GMN-LBLSRYYM    TO  D02-LBLSRYYM
            MOVE    SPA-GMN-LBLNYUGAI   TO  D02-LBLNYUGAI
            MOVE    SPA-GMN-SELNUM      TO  D02-SELNUM
@@ -1799,7 +1740,6 @@
       *    END-EVALUATE
       *
            MOVE    SPACE               TO  DID1
-           INITIALIZE                      DID1
            MOVE    SPA-DIDCD           TO  DID1-ID1CODE
            MOVE    WRK-DIDMSG          TO  DID1-ID1MSG
            MOVE    "B12"               TO  MCP-WIDGET
@@ -1886,7 +1826,7 @@
            MOVE    ZERO            TO  FLG-PTINF
       *
            INITIALIZE                  PTINF-REC
-           MOVE    SPA-HOSPNUM      TO  PTINF-HOSPNUM
+           MOVE    SPA-HOSPID      TO  PTINF-HOSPID
            MOVE    WRK-PTID        TO  PTINF-PTID
            MOVE    PTINF-REC       TO  MCPDATA-REC
            MOVE    "tbl_ptinf"     TO  MCP-TABLE
@@ -1914,7 +1854,7 @@
            MOVE    ZERO                TO  FLG-PTNUM
       *
            INITIALIZE                  PTNUM-REC
-           MOVE    SPA-HOSPNUM          TO  PTNUM-HOSPNUM
+           MOVE    SPA-HOSPID          TO  PTNUM-HOSPID
            MOVE    WRK-PTID            TO  PTNUM-PTID
            MOVE    PTNUM-REC           TO  MCPDATA-REC
            MOVE    "tbl_ptnum"         TO  MCP-TABLE
@@ -1941,7 +1881,6 @@
       *
            MOVE    ZERO            TO  FLG-CHK004
       *
-           MOVE    SPA-HOSPNUM     TO  CHK004-HOSPNUM
            MOVE    CHK004-REC      TO  MCPDATA-REC
            MOVE    "tbl_chk004"    TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
@@ -1967,7 +1906,6 @@
       *
            MOVE    ZERO            TO  FLG-CHK004
       *
-           MOVE    SPA-HOSPNUM     TO  CHK004-HOSPNUM
            MOVE    CHK004-REC      TO  MCPDATA-REC
            MOVE    "tbl_chk004"    TO  MCP-TABLE
            MOVE    "key7"          TO  MCP-PATHNAME
@@ -2009,7 +1947,6 @@
       *
            MOVE    ZERO            TO  FLG-CHK004
       *
-           MOVE    SPA-HOSPNUM     TO  CHK004-HOSPNUM
            MOVE    CHK004-REC      TO  MCPDATA-REC
            MOVE    "tbl_chk004"    TO  MCP-TABLE
            MOVE    "key4"          TO  MCP-PATHNAME
@@ -2051,7 +1988,6 @@
       *
            MOVE    ZERO            TO  FLG-CHK004
       *
-           MOVE    SPA-HOSPNUM     TO  CHK004-HOSPNUM
            MOVE    CHK004-REC      TO  MCPDATA-REC
            MOVE    "tbl_chk004"    TO  MCP-TABLE
            MOVE    "key5"          TO  MCP-PATHNAME
@@ -2077,7 +2013,6 @@
       *
            MOVE    ZERO            TO  FLG-CHK004
       *
-           MOVE    SPA-HOSPNUM     TO  CHK004-HOSPNUM
            MOVE    CHK004-REC      TO  MCPDATA-REC
            MOVE    "tbl_chk004"    TO  MCP-TABLE
            MOVE    "key6"          TO  MCP-PATHNAME
@@ -2102,10 +2037,9 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
-                                       SPA-AREA
            IF    ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
@@ -2120,10 +2054,9 @@
        910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
-                                       SPA-AREA
       *
            .
       *
@@ -2135,10 +2068,9 @@
        910-DBCLOSECURSOR-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
-                                       SPA-AREA
       *
            .
       *
@@ -2150,10 +2082,9 @@
        910-DBDELETE-SEC                SECTION.
       *
            MOVE    "DBDELETE"      TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
-                                       SPA-AREA
       *
            .
       *
@@ -2165,10 +2096,9 @@
        910-DBINSERT-SEC                SECTION.
       *
            MOVE    "DBINSERT"      TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
-                                       SPA-AREA
       *
            .
       *
@@ -2180,10 +2110,9 @@
        910-DBUPDATE-SEC                SECTION.
       *
            MOVE    "DBUPDATE"      TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
-                                       SPA-AREA
       *
            .
       *
@@ -2195,10 +2124,9 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"          TO  MCP-FUNC.
-           CALL    "ORCDBMAIN"         USING
+           CALL   "MONFUNC"            USING
                                        MCPAREA
                                        MCPDATA-REC
-                                       SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.

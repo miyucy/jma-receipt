@@ -25,10 +25,6 @@
       *  作成日付    作業者        記述
       *  05/02/02    NACL−太田    新規作成
       *****************************************************************
-      *  プログラム修正履歴
-      * Maj/Min/Rev  修正者       日付      内容
-      *  03.05.00    NACL-太田    07/06/04  グループ診療対応
-      *****************************************************************
       *
        ENVIRONMENT             DIVISION.
        CONFIGURATION           SECTION.
@@ -73,12 +69,10 @@
        LINKAGE                     SECTION.
       *
            COPY    "CPORCSDTCHK04.INC".
-           COPY    "COMMON-SPA".
       *
       *
        PROCEDURE                    DIVISION    USING
-       SDTCHK04AREA
-       SPA-AREA.
+       SDTCHK04AREA.
       *
       *****************************************************************
       *    主　　処理
@@ -106,7 +100,6 @@
                                        IDX-AREA
                                        WRK-AREA
                                        SDTCHK04-OT
-           MOVE    ZERO            TO  SDTCHK04-KETA9
            .
        100-INIT-EXT.
            EXIT.
@@ -126,11 +119,8 @@
                WHEN    "亜"    THRU    "熙"
                    MOVE    1       TO  SDTCHK04-KANJI
                WHEN    "Ａ"    THRU     "Ｚ"
-               WHEN    "ａ"    THRU     "ｚ"
                    MOVE    1       TO  SDTCHK04-ALPHABET
                WHEN    "−"
-               WHEN    "―"
-               WHEN    "‐"
                    MOVE    1       TO  SDTCHK04-HYPHEN
                WHEN    "ー"
                    MOVE    1       TO  SDTCHK04-TYOON
@@ -142,8 +132,6 @@
                        MOVE    1   TO  SDTCHK04-SPACE
                    END-IF
                END-EVALUATE
-      *
-               COMPUTE SDTCHK04-KETA9  =   SDTCHK04-KETA9  +   1
       *
            END-PERFORM
       *

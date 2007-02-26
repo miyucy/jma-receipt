@@ -265,6 +265,7 @@
            03  FLG-INGAI-DAY-G.
                05  FLG-INGAI-DAY                       PIC 9(01)
                                                        OCCURS  31.
+           03  FLG-DATACHECK                           PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -1059,6 +1060,7 @@
                                                WRK-PARA-SHELLID
                                                WRK-PARA-HOSPID
                                                DTCHKERRPARA
+                                               ORCBSD01-IKTKBT
                                                ORCBSD01-SRYYM
                                                ORCBSD01-NYUGAIKBN
                                                ORCBSD01-CHKKBN-G
@@ -1687,10 +1689,20 @@
       *
            PERFORM UNTIL ( FLG-DTCHK003    NOT =   ZERO )
       *
+               MOVE    ZERO        TO  FLG-DATACHECK
+      *
       *        患者情報取得処理
                PERFORM 900-PTINF-KEY-SEL-SEC
       *
-               IF    ( PTINF-TSTPTNUMKBN   NOT =   "1" )
+               IF    ( ORCBSD01-IKTKBT     =   "1" )
+                   IF    ( PTINF-TSTPTNUMKBN   NOT =   "1" )
+                       MOVE    1   TO  FLG-DATACHECK
+                   END-IF
+               ELSE
+                       MOVE    1   TO  FLG-DATACHECK
+               END-IF
+      *
+               IF    ( FLG-DATACHECK   =   1 )
       *
       *            患者番号取得処理
                    PERFORM 900-PTNUM-KEY-SEL-SEC
@@ -7766,7 +7778,7 @@
            WRITE   DTCHK004-REC
            COMPUTE CNT-DTCHK004    =   CNT-DTCHK004    +   1
       *
-           DISPLAY "DTCHK004-REC = " DTCHK004-REC
+      *    DISPLAY "DTCHK004-REC = " DTCHK004-REC
       *
            .
        210-ERRMES-HEN-EXT.
@@ -7797,7 +7809,7 @@
            WRITE   DTCHK004-REC
            COMPUTE CNT-DTCHK004    =   CNT-DTCHK004    +   1
       *
-           DISPLAY "DTCHK004-REC = " DTCHK004-REC
+      *    DISPLAY "DTCHK004-REC = " DTCHK004-REC
       *
            .
        211-ERRMES-HEN-EXT.
@@ -7828,7 +7840,7 @@
            WRITE   DTCHK004-REC
            COMPUTE CNT-DTCHK004    =   CNT-DTCHK004    +   1
       *
-           DISPLAY "DTCHK004-REC = " DTCHK004-REC
+      *    DISPLAY "DTCHK004-REC = " DTCHK004-REC
       *
            .
        212-ERRMES-HEN-EXT.
@@ -7867,7 +7879,7 @@
            WRITE   DTCHK004-REC
            COMPUTE CNT-DTCHK004    =   CNT-DTCHK004    +   1
       *
-           DISPLAY "DTCHK004-REC = " DTCHK004-REC
+      *    DISPLAY "DTCHK004-REC = " DTCHK004-REC
       *
            .
        213-ERRMES-HEN-EXT.
@@ -7900,7 +7912,7 @@
            WRITE   DTCHK004-REC
            COMPUTE CNT-DTCHK004    =   CNT-DTCHK004    +   1
       *
-           DISPLAY "DTCHK004-REC = " DTCHK004-REC
+      *    DISPLAY "DTCHK004-REC = " DTCHK004-REC
       *
            .
        214-ERRMES-HEN-EXT.
@@ -7925,7 +7937,7 @@
            WRITE   DTCHK004-REC
            COMPUTE CNT-DTCHK004    =   CNT-DTCHK004    +   1
       *
-           DISPLAY "DTCHK004-REC = " DTCHK004-REC
+      *    DISPLAY "DTCHK004-REC = " DTCHK004-REC
       *
            .
        215-ERRMES-HEN-EXT.
@@ -7964,7 +7976,7 @@
            WRITE   DTCHK004-REC
            COMPUTE CNT-DTCHK004    =   CNT-DTCHK004    +   1
       *
-           DISPLAY "DTCHK004-REC = " DTCHK004-REC
+      *    DISPLAY "DTCHK004-REC = " DTCHK004-REC
       *
            .
        216-ERRMES-HEN-EXT.

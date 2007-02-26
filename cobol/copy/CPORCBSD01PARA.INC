@@ -18,9 +18,6 @@
       *----------------------------------------------------------------*
       *    データチェック一括処理固有パラメータ
       *                         COPY (CPORCBSD01PARA.INC)              *
-      *    ※注意事項※
-      *    CHK004(2000)でORCBSD01PARAの内容をそのまま記録している為、
-      *    項目追加は必ず既存項目の最後尾から行うこと。
       *----------------------------------------------------------------*
       *****************************************************************
       *  コピー句修正履歴
@@ -43,7 +40,3 @@
            03  ORCBSD01-SRYYMDKBN      PIC  X(01).
            03  ORCBSD01-STSRYYMD       PIC  9(02).
            03  ORCBSD01-EDSRYYMD       PIC  9(02).
-           03  ORCBSD01-KGIPROCKBN     PIC  X(01).
-           03  ORCBSD01-KOUKIPROCKBN   PIC  X(01).
-           03  ORCBSD01-CHIKENPROCKBN  PIC  X(01).
-           03  ORCBSD01-DAISANPROCKBN  PIC  X(01).

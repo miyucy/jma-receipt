@@ -19,9 +19,7 @@
       *     02  D02-FIXED6.
               03  D02-B06-STATE        PIC S9(9)   BINARY.
               03  D02-B07-STATE        PIC S9(9)   BINARY.
-              03  D02-LBLSRYYM-STYLE   PIC X(20).
               03  D02-LBLSRYYM         PIC X(30).
-              03  D02-LBLNYUGAI-STYLE  PIC X(20).
               03  D02-LBLNYUGAI        PIC X(20).
               03  D02-SELNUM           PIC S9(5).
               03  D02-PTNUM.

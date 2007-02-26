@@ -27,7 +27,6 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  03.05.00    NACL-太田    07/06/04  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -45,7 +44,7 @@
            SELECT  DTCHK006N-FILE
                                    ASSIGN  DTCHK006NPARA
                                    ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  DYNAMIC
+                                   ACCESS  MODE    IS  SEQUENTIAL
                                    RECORD  KEY     IS  DTCHK006N-KEY
                                    FILE    STATUS  IS  STS-DTCHK006.
       *
@@ -53,7 +52,7 @@
            SELECT  DTCHK006G-FILE
                                    ASSIGN  DTCHK006GPARA
                                    ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  DYNAMIC
+                                   ACCESS  MODE    IS  SEQUENTIAL
                                    RECORD  KEY     IS  DTCHK006G-KEY
                                    FILE    STATUS  IS  STS-DTCHK006.
       *
@@ -64,14 +63,6 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  DCSRY-KEY
                                    FILE    STATUS  IS  STS-DCSRY.
-      *
-      *    データチェック算定履歴
-           SELECT  DCSANTEI-FILE
-                                   ASSIGN  DTCHKSANTEIPARA
-                                   ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  DYNAMIC
-                                   RECORD  KEY     IS  DCSANTEI-KEY
-                                   FILE    STATUS  IS  STS-DCSANTEI.
       *    エラーファイル
            SELECT  DTCHKERR-FILE   ASSIGN  DTCHKERRPARA
                                    FILE    STATUS  IS  STS-DTCHKERR.
@@ -100,12 +91,6 @@
        01  DCSRY-REC.
            COPY    "CPDCSRY.INC".
       *
-      *    データチェック算定履歴
-       FD  DCSANTEI-FILE.
-       01  DCSANTEI-REC.
-           COPY    "CPSANTEI.INC"  REPLACING  //SANTEI-//
-                                   BY         //DCSANTEI-//.
-      *
       *    エラーファイル
        FD  DTCHKERR-FILE.
        01  DTCHKERR-REC                PIC X(200). 
@@ -113,25 +98,23 @@
        WORKING-STORAGE                 SECTION.
       *
       *    エラーファイルファイル名称領域 
-           COPY    "CPRECEERR.INC"   REPLACING  //RECEERR//
-                                   BY         //DTCHKERRPARA//.
+           COPY    "CPCOMMONDAT6.INC"
+                                   REPLACING  //DTCHK//
+                                   BY         //DTCHKERR//.
       *
       *    中間ファイルファイル名称領域 
-           COPY    "CPCOMMONDAT3.INC"
-                                   REPLACING  //TMPFLPARA//
-                                   BY         //DTCHK002PARA//.
-           COPY    "CPCOMMONDAT3.INC"
-                                   REPLACING  //TMPFLPARA//
-                                   BY         //DTCHK006NPARA//.
-           COPY    "CPCOMMONDAT3.INC"
-                                   REPLACING  //TMPFLPARA//
-                                   BY         //DTCHK006GPARA//.
-           COPY    "CPCOMMONDAT3.INC"
-                                   REPLACING  //TMPFLPARA//
-                                   BY         //DTCHKSRYPARA//.
-           COPY    "CPCOMMONDAT3.INC"
-                                   REPLACING  //TMPFLPARA//
-                                   BY         //DTCHKSANTEIPARA//.
+           COPY    "CPCOMMONDAT6.INC"
+                                   REPLACING  //DTCHK//
+                                   BY         //DTCHK002//.
+           COPY    "CPCOMMONDAT6.INC"
+                                   REPLACING  //DTCHK//
+                                   BY         //DTCHK006N//.
+           COPY    "CPCOMMONDAT6.INC"
+                                   REPLACING  //DTCHK//
+                                   BY         //DTCHK006G//.
+           COPY    "CPCOMMONDAT6.INC"
+                                   REPLACING  //DTCHK//
+                                   BY         //DTCHKSRY//.
       *
       *    フラグ領域
        01  STS-AREA.
@@ -139,13 +122,11 @@
            03  STS-DTCHK006                            PIC X(02).
            03  STS-DTCHKERR                            PIC X(02).
            03  STS-DCSRY                               PIC X(02).
-           03  STS-DCSANTEI                            PIC X(02).
       *
        01  FLG-AREA.
            03  FLG-END                                 PIC 9(01).
            03  FLG-ERR                                 PIC 9(01).
            03  FLG-SRYACT                              PIC 9(01).
-           03  FLG-SANTEI                              PIC 9(01).
            03  FLG-DTCHK002                            PIC 9(01).
       *
       *    カウント領域
@@ -165,15 +146,22 @@
            03  WRK-DTCHKERR                            PIC X(200).
            03  WRK-JOB-YOBI                            PIC X(500).
       *
+      *    パラメタ領域
+       01  WRK-PARA.
+           COPY    "CPORCSPRTLNK.INC".
+           03  WRK-PARA-JOBID                          PIC 9(07).
+           03  WRK-PARA-SHELLID                        PIC X(08).
+           03  WRK-PARA-HOSPID                         PIC X(24).
+      *
+      *    データチェック一括処理パラメータ
+           COPY    "CPORCBSD01PARA.INC".
+      *
            COPY    "CPDTCHK006.INC".
       *
       *    固定値領域
        01  CONST-AREA.
            03  CONST-SRYCD-MAX                         PIC 9(05)
                                                        VALUE   5.
-      *
-           COPY    "COMMON-SPA".
-      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -186,10 +174,6 @@
        01  SRYACT-REC.
            COPY    "CPSRYACT.INC".
       *
-      *    算定履歴
-       01  SANTEI-REC.
-           COPY    "CPSANTEI.INC".
-      *
       *****************************************************************
       *    サブプロ用領域
       *****************************************************************
@@ -200,9 +184,6 @@
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
-      *    一時ファイル名編集
-           COPY    "CPORCSGETTEMP.INC".
-      *
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -211,26 +192,13 @@
       ****************************************************************
        LINKAGE                         SECTION.
        01  DTCHK-RC        PIC S9(09).
-      *    パラメタ領域
-       01  WRK-PARA.
-           COPY    "CPORCSPRTLNK.INC".
-           03  WRK-PARA-JOBID      PIC 9(07).
-           03  WRK-PARA-SHELLID    PIC X(08).
-           03  WRK-PARA-HOSPNUM    PIC 9(02).
-      *
-      *    エラーファイルファイル名称領域 
-           COPY    "CPRECEERR.INC"   REPLACING  //RECEERR//
-                                   BY         //LNKDTCHKERRPARA//.
-      *
-      *    データチェック一括処理パラメータ
-           COPY    "CPORCBSD01PARA.INC".
+       01  COMMAND-PARAM.
+           02  FILLER      PIC X(2000).
       ****************************************************************
        PROCEDURE                       DIVISION
                USING
-                                               DTCHK-RC
-                                               WRK-PARA
-                                               LNKDTCHKERRPARA
-                                               ORCBSD01PARA.
+           DTCHK-RC
+           COMMAND-PARAM.
       *
       *****************************************************************
       *    主処理
@@ -260,75 +228,70 @@
                                        CNT-AREA
                                        FLG-AREA
                                        WRK-AREA
-                                       SPA-AREA
+                                       WRK-PARA
+                                       ORCBSD01PARA
       *
-           MOVE    LNKDTCHKERRPARA     TO  DTCHKERRPARA
+           UNSTRING   COMMAND-PARAM    DELIMITED  BY  ","
+                                       INTO    LNK-PRTKANRI-RENNUM
+                                               LNK-PRTKANRI-TBL-KEY
+                                               LNK-PRTKANRI-TBL-GROUP
+                                               LNK-PRTKANRI-SHORI-RENNUM
+                                               LNK-PRTKANRI-SRYYM
+                                               LNK-PRTKANRI-SKYYMD
+                                               LNK-PRTKANRI-SHELLID
+                                               LNK-PRTKANRI-PRIORITY
+                                               LNK-PRTKANRI-TERMID
+                                               LNK-PRTKANRI-OPID
+                                               LNK-PRTKANRI-PRTNM
+                                               WRK-PARA-JOBID
+                                               WRK-PARA-SHELLID
+                                               WRK-PARA-HOSPID
+                                               DTCHKERRPARA
+                                               ORCBSD01-IKTKBT
+                                               ORCBSD01-SRYYM
+                                               ORCBSD01-NYUGAIKBN
+                                               ORCBSD01-CHKKBN-G
+                                               ORCBSD01-SYAHOPROCKBN
+                                               ORCBSD01-KOKUHOPROCKBN
+                                               ORCBSD01-RSIPROCKBN
+                                               ORCBSD01-JBIPROCKBN
+                                               ORCBSD01-JIHIPROCKBN
+                                               ORCBSD01-INGAIPROCKBN
+                                               ORCBSD01-PRTSRTKBN
+                                               ORCBSD01-PRTPTLSTKBN
+                                               ORCBSD01-SRYYMDKBN
+                                               ORCBSD01-STSRYYMD
+                                               ORCBSD01-EDSRYYMD
       *
-           MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
-      *
-           IF      LNK-PRTKANRI-TBL-KEY  NOT =  "RECEPTX"
-               PERFORM 900-DBSTART-SEC
+           PERFORM 900-DBSTART-SEC
       *
       *    ステップ管理開始処理
-               MOVE    "STS"               TO  SJOBKANRI-MODE
-               INITIALIZE                      JOBKANRI-REC
-               MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
-               MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
-               MOVE    "ORCDTCHK005"       TO  JOB-PGID
-               MOVE    "診療行為情報抽出"
-                                           TO  JOB-SHELLMSG
-               MOVE    WRK-PARA-HOSPNUM    TO  JOB-HOSPNUM
-               PERFORM 800-ORCSJOB-SEC
-           END-IF
+           MOVE    "STS"               TO  SJOBKANRI-MODE
+           INITIALIZE                      JOBKANRI-REC
+           MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
+           MOVE    "ORCDTCHK005"       TO  JOB-PGID
+           MOVE    "診療行為情報抽出"
+                                       TO  JOB-SHELLMSG
+           CALL    "ORCSJOB"           USING
+                                       ORCSJOBKANRIAREA
+                                       JOBKANRI-REC
       *
            MOVE    ZERO                TO  FLG-END
                                            FLG-ERR
       *
       *    データチェック中間ファイル名
-           MOVE    WRK-PARA-HOSPNUM    TO  DTCHK002PARA-HOSPNUM
-           MOVE    "DTCHK002"          TO  DTCHK002PARA-FILE-ID
-           MOVE    LNK-PRTKANRI-TERMID TO  DTCHK002PARA-TERMID
+           MOVE    "DTCHK002"          TO  DTCHK002-FILE-ID
+           MOVE    LNK-PRTKANRI-TERMID TO  DTCHK002-TERMID
       *
-           MOVE    WRK-PARA-HOSPNUM    TO  DTCHK006NPARA-HOSPNUM
-           MOVE    "DTCHK06N"          TO  DTCHK006NPARA-FILE-ID
-           MOVE    LNK-PRTKANRI-TERMID TO  DTCHK006NPARA-TERMID
+           MOVE    "DTCHK06N"          TO  DTCHK006N-FILE-ID
+           MOVE    LNK-PRTKANRI-TERMID TO  DTCHK006N-TERMID
       *
-           MOVE    WRK-PARA-HOSPNUM    TO  DTCHK006GPARA-HOSPNUM
-           MOVE    "DTCHK06G"          TO  DTCHK006GPARA-FILE-ID
-           MOVE    LNK-PRTKANRI-TERMID TO  DTCHK006GPARA-TERMID
+           MOVE    "DTCHK06G"          TO  DTCHK006G-FILE-ID
+           MOVE    LNK-PRTKANRI-TERMID TO  DTCHK006G-TERMID
       *
-           MOVE    WRK-PARA-HOSPNUM    TO  DTCHKSRYPARA-HOSPNUM
-           MOVE    "DCSRY000"          TO  DTCHKSRYPARA-FILE-ID
-           MOVE    LNK-PRTKANRI-TERMID TO  DTCHKSRYPARA-TERMID
-      *
-           MOVE    WRK-PARA-HOSPNUM    TO  DTCHKSANTEIPARA-HOSPNUM
-           MOVE    "DCSANTEI"          TO  DTCHKSANTEIPARA-FILE-ID
-           MOVE    LNK-PRTKANRI-TERMID TO  DTCHKSANTEIPARA-TERMID
-      *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    DTCHK002PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES (1)
-           MOVE    DTCHK006NPARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES (2)
-           MOVE    DTCHK006GPARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES (3)
-           MOVE    DTCHKSRYPARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES (4)
-           MOVE    DTCHKSANTEIPARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES (5)
-      *
-           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
-      *
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  DTCHK002PARA-FULLNAME
-           MOVE    SGETTEMP-FULLNAMES (2)
-                                       TO  DTCHK006NPARA-FULLNAME
-           MOVE    SGETTEMP-FULLNAMES (3)
-                                       TO  DTCHK006GPARA-FULLNAME
-           MOVE    SGETTEMP-FULLNAMES (4)
-                                       TO  DTCHKSRYPARA-FULLNAME
-           MOVE    SGETTEMP-FULLNAMES (5)
-                                       TO  DTCHKSANTEIPARA-FULLNAME
+           MOVE    "DCSRY000"          TO  DTCHKSRY-FILE-ID
+           MOVE    LNK-PRTKANRI-TERMID TO  DTCHKSRY-TERMID
       *
       *    初期値設定処理
            PERFORM 1001-INIT-VAL-SET-SEC
@@ -355,13 +318,10 @@
            MOVE    ZERO            TO  FLG-SRYACT
       *
       *    診療行為編集処理
-           IF    ( ORCBSD01-IKTKBT     =   "2" )
-            OR   ( ORCBSD01-SRYYMDKBN  =   "1" )
-               PERFORM 2002-SRYACT-EDIT-SEC
-               PERFORM 2002-DCSANTEI-EDIT-SEC
-           ELSE
+           IF    ( ORCBSD01-SRYYMDKBN  =   SPACE )
                PERFORM 2001-SRYACT-EDIT-SEC
-               PERFORM 2001-DCSANTEI-EDIT-SEC
+           ELSE
+               PERFORM 2002-SRYACT-EDIT-SEC
            END-IF
       *
       *    データチェック診療行為追加処理
@@ -420,12 +380,6 @@
       *
                 MOVE    SRY-SRYCD (IDX0)
                                     TO  DTCHK006-SRYCD
-                MOVE    SRY-SRYSURYO (IDX0)
-                                    TO  DTCHK006-SURYO
-                MOVE    SRY-INPUTNUM (IDX0)
-                                    TO  DTCHK006-INPUTNUM
-                MOVE    SRY-MEISKYFLG(IDX0)
-                                    TO  DTCHK006-MEISKYFLG
       *
                 IF    ( SRY-NYUGAIKBN   =   "1" )
       *
@@ -483,72 +437,6 @@
        2002-SRYACT-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    算定履歴編集処理
-      *****************************************************************
-       2001-DCSANTEI-EDIT-SEC          SECTION.
-      *
-           PERFORM 800-MCNDATE-SEC
-      *
-           OPEN    OUTPUT  DCSANTEI-FILE
-      *
-           PERFORM 900-SANTEI-ALL2-SEL-SEC
-      *
-           PERFORM UNTIL ( FLG-SANTEI  NOT =   ZERO )
-      *
-               MOVE    SANTEI-REC  TO  DCSANTEI-REC
-               WRITE   DCSANTEI-REC
-      *
-               PERFORM 900-SANTEI-ALL2-FET-SEC
-      *
-           END-PERFORM
-      *
-           MOVE    "tbl_santei"    TO  MCP-TABLE
-           MOVE    "all2"          TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *
-           CLOSE   DCSANTEI-FILE
-      *
-           .
-       2001-DCSANTEI-EDIT-EXT.
-           EXIT.
-      *****************************************************************
-      *    算定履歴編集処理
-      *****************************************************************
-       2002-DCSANTEI-EDIT-SEC          SECTION.
-      *
-           OPEN    INPUT   DTCHK002-FILE
-           OPEN    OUTPUT  DCSANTEI-FILE
-      *
-           PERFORM 900-DTCHK002-READ-SEC
-      *
-           PERFORM UNTIL ( FLG-DTCHK002    NOT =   ZERO )
-      *
-               PERFORM 900-SANTEI-KEY10-SEL-SEC
-      *
-               PERFORM UNTIL ( FLG-SANTEI  NOT =   ZERO )
-      *
-                   MOVE    SANTEI-REC  TO  DCSANTEI-REC
-                   WRITE   DCSANTEI-REC
-      *
-                   PERFORM 900-SANTEI-KEY10-FET-SEC
-      *
-               END-PERFORM
-      *
-               MOVE    "tbl_santei"    TO  MCP-TABLE
-               MOVE    "key10"         TO  MCP-PATHNAME
-               PERFORM 910-DBCLOSECURSOR-SEC
-      *
-               PERFORM 900-DTCHK002-READ-SEC
-      *
-           END-PERFORM
-      *
-           CLOSE   DTCHK002-FILE
-                   DCSANTEI-FILE
-      *
-           .
-       2002-DCSANTEI-EDIT-EXT.
-           EXIT.
-      *****************************************************************
       *    データチェック診療行為テーブル追加処理
       *****************************************************************
        2001-DCSRY-INS-SEC              SECTION.
@@ -559,24 +447,43 @@
            OPEN    OUTPUT              DCSRY-FILE
       *
            PERFORM 900-DTCHK006N-READ-SEC
-      *
-           PERFORM UNTIL ( DTCHK006N-KEY   =   HIGH-VALUE )
-      *
-               MOVE    DTCHK006N-REC   TO  DTCHK006-REC
-               PERFORM 20011-DCSRY-INS-SEC
-               PERFORM 900-DTCHK006N-READ-SEC
-      *
-           END-PERFORM
-      *
            PERFORM 900-DTCHK006G-READ-SEC
       *
-           PERFORM UNTIL ( DTCHK006G-KEY   =   HIGH-VALUE )
+           PERFORM UNTIL ( DTCHK006N-KEY   =   HIGH-VALUE )
+                    AND  ( DTCHK006G-KEY   =   HIGH-VALUE )
       *
-               MOVE    DTCHK006G-REC   TO  DTCHK006-REC
-               PERFORM 20011-DCSRY-INS-SEC
-               PERFORM 900-DTCHK006G-READ-SEC
+               EVALUATE    TRUE
+               WHEN  ( DTCHK006N-PTID-X    >   DTCHK006G-PTID-X  )
+                   IF    ( ORCBSD01-NYUGAIKBN  =   "1" )
+                       PERFORM 900-DTCHK006G-READ-SEC
+                   ELSE
+                       MOVE    DTCHK006G-REC   TO  DTCHK006-REC
+                       PERFORM 20011-DCSRY-INS-SEC
+                       PERFORM 900-DTCHK006G-READ-SEC
+                   END-IF
+               WHEN  ( DTCHK006N-PTID-X    <   DTCHK006G-PTID-X  )
+                   IF    ( ORCBSD01-NYUGAIKBN  =   "1" )
+                       MOVE    DTCHK006N-REC   TO  DTCHK006-REC
+                       PERFORM 20011-DCSRY-INS-SEC
+                       PERFORM 900-DTCHK006N-READ-SEC
+                   ELSE
+                       PERFORM 900-DTCHK006N-READ-SEC
+                   END-IF
+               WHEN  ( DTCHK006N-PTID-X    =   DTCHK006G-PTID-X  )
+      *
+                   IF    ( ORCBSD01-NYUGAIKBN  =   "1" )
+                       MOVE    DTCHK006G-REC   TO  DTCHK006-REC
+                       PERFORM 20011-DCSRY-INS-SEC
+                       PERFORM 900-DTCHK006G-READ-SEC
+                   ELSE
+                       MOVE    DTCHK006N-REC   TO  DTCHK006-REC
+                       PERFORM 20011-DCSRY-INS-SEC
+                       PERFORM 900-DTCHK006N-READ-SEC
+                   END-IF
+               END-EVALUATE
       *
            END-PERFORM
+      *
       *
            CLOSE   DTCHK006N-FILE
            CLOSE   DTCHK006G-FILE
@@ -601,11 +508,6 @@
            MOVE    DTCHK006-SRYSYUKBN
                                        TO  DCSRY-SRYSYUKBN
            MOVE    DTCHK006-SRYCD  TO  DCSRY-SRYCD
-           MOVE    DTCHK006-SURYO  TO  DCSRY-SURYO
-           MOVE    DTCHK006-INPUTNUM
-                                   TO  DCSRY-INPUTNUM
-           MOVE    DTCHK006-MEISKYFLG
-                                   TO  DCSRY-MEISKYFLG
       *
            PERFORM 800-MCNDATE-SEC
            MOVE    SMCNDATE-YMD    TO  DCSRY-CREYMD
@@ -631,7 +533,6 @@
                MOVE    WRK-DTCHKERR    TO  DTCHKERR-REC
                WRITE   DTCHKERR-REC
                CLOSE   DTCHKERR-FILE
-             IF    LNK-PRTKANRI-TBL-KEY  NOT =  "RECEPTX"
       *
       *        ジョブ管理開始処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
@@ -641,9 +542,9 @@
                                        TO  JOB-SHELLID
                MOVE    WRK-DTCHKERR    TO  JOB-YOBI
                MOVE    "9999"          TO  JOB-ERRCD
-               MOVE    WRK-PARA-HOSPNUM    TO  JOB-HOSPNUM
-               PERFORM 800-ORCSJOB-SEC
-             END-IF
+               CALL    "ORCSJOB"       USING
+                                       ORCSJOBKANRIAREA
+                                       JOBKANRI-REC
            END-IF
       *
            MOVE    1                   TO  FLG-END
@@ -657,19 +558,18 @@
       *****************************************************************
        300-END-SEC                     SECTION.
       *
-           IF      LNK-PRTKANRI-TBL-KEY  NOT =  "RECEPTX"
       *    ステップ管理終了処理
-               MOVE    "STE"           TO  SJOBKANRI-MODE
-               INITIALIZE                  JOBKANRI-REC
-               MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-               MOVE    WRK-PARA-SHELLID
-                                       TO  JOB-SHELLID
-               MOVE    ZERO            TO  JOB-UPDCNT
-               MOVE    WRK-PARA-HOSPNUM    TO  JOB-HOSPNUM
-               PERFORM 800-ORCSJOB-SEC
+           MOVE    "STE"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
+           MOVE    ZERO            TO  JOB-UPDCNT
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA
+                                   JOBKANRI-REC
       *
-               PERFORM 900-DBCOMMIT-SEC
-           END-IF
+           PERFORM 900-DBCOMMIT-SEC
       *     
            DISPLAY "*** ORCDTCHK005 END ***"
            .
@@ -688,8 +588,9 @@
            MOVE    "ORCDTCHK004"       TO  JOB-PGID
            MOVE    "診療行為情報抽出"  TO  JOB-SHELLMSG
       *
-           MOVE    WRK-PARA-HOSPNUM    TO  JOB-HOSPNUM
-           PERFORM 800-ORCSJOB-SEC
+           CALL    "ORCSJOB"               USING
+                                           ORCSJOBKANRIAREA
+                                           JOBKANRI-REC
            .
        800-ORCSJOB-STM-EXT.
            EXIT.
@@ -703,21 +604,6 @@
            .
       *
        800-MCNDATE-EXT.
-           EXIT.
-      *****************************************************************
-      *    ジョブ管理サブ
-      *****************************************************************
-       800-ORCSJOB-SEC                 SECTION.
-      *
-           MOVE    WRK-PARA-HOSPNUM    TO  JOB-HOSPNUM
-           CALL    "ORCSJOB"           USING
-                                       ORCSJOBKANRIAREA 
-                                       JOBKANRI-REC
-                                       SPA-AREA
-      *
-           .
-      *
-       800-ORCSJOB-EXT.
            EXIT.
       *****************************************************************
       *    データチェック中間ファイル（診療行為：入院）読込処理
@@ -768,7 +654,6 @@
            MOVE    ZERO                TO  FLG-SRYACT
            INITIALIZE                  SRYACT-REC
       *
-           MOVE    SPA-HOSPNUM         TO  SRY-HOSPNUM
            MOVE    ORCBSD01-SRYYM      TO  SRY-SRYYM
            MOVE    SRYACT-REC          TO  MCPDATA-REC
            MOVE    "tbl_sryact"            TO  MCP-TABLE
@@ -813,7 +698,7 @@
            MOVE    ZERO                TO  FLG-SRYACT
            INITIALIZE                  SRYACT-REC
       *
-           MOVE    WRK-PARA-HOSPNUM    TO  SRY-HOSPNUM
+           MOVE    WRK-PARA-HOSPID     TO  SRY-HOSPID
            MOVE    ORCBSD01-SRYYM      TO  SRY-SRYYM
            MOVE    DTCHK002-PTID       TO  SRY-PTID
            MOVE    SRYACT-REC          TO  MCPDATA-REC
@@ -852,104 +737,14 @@
        900-SRYACT-KEY15-FET-EXT.
            EXIT.
       *****************************************************************
-      *    算定履歴検索処理
-      *****************************************************************
-       900-SANTEI-KEY10-SEL-SEC        SECTION.
-      *
-           MOVE    ZERO                TO  FLG-SANTEI
-           INITIALIZE                  SANTEI-REC
-      *
-           MOVE    WRK-PARA-HOSPNUM    TO  SANTEI-HOSPNUM
-           MOVE    ORCBSD01-SRYYM      TO  SANTEI-SRYYM
-           MOVE    DTCHK002-PTID       TO  SANTEI-PTID
-           MOVE    SANTEI-REC          TO  MCPDATA-REC
-           MOVE    "tbl_santei"        TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC     TO  SANTEI-REC
-           ELSE
-               MOVE    1               TO  FLG-SANTEI
-               INITIALIZE                  SANTEI-REC
-           END-IF
-      *
-           .
-       900-SANTEI-KEY10-SEL-EXT.
-           EXIT.
-      *****************************************************************
-      *    算定履歴FETCH処理
-      *****************************************************************
-       900-SANTEI-KEY10-FET-SEC        SECTION.
-      *
-           MOVE    ZERO                TO  FLG-SANTEI
-      *
-           MOVE    "tbl_santei"        TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 910-DBFETCH-SEC
-           IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC     TO  SANTEI-REC
-           ELSE
-               MOVE    1               TO  FLG-SANTEI
-               INITIALIZE                  SANTEI-REC
-           END-IF
-      *
-           .
-       900-SANTEI-KEY10-FET-EXT.
-           EXIT.
-      *****************************************************************
-      *    算定履歴検索処理
-      *****************************************************************
-       900-SANTEI-ALL2-SEL-SEC        SECTION.
-      *
-           MOVE    ZERO                TO  FLG-SANTEI
-           INITIALIZE                  SANTEI-REC
-      *
-           MOVE    WRK-PARA-HOSPNUM    TO  SANTEI-HOSPNUM
-           MOVE    ORCBSD01-SRYYM      TO  SANTEI-SRYYM
-           MOVE    SANTEI-REC          TO  MCPDATA-REC
-           MOVE    "tbl_santei"        TO  MCP-TABLE
-           MOVE    "all2"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC     TO  SANTEI-REC
-           ELSE
-               MOVE    1               TO  FLG-SANTEI
-               INITIALIZE                  SANTEI-REC
-           END-IF
-      *
-           .
-       900-SANTEI-ALL2-SEL-EXT.
-           EXIT.
-      *****************************************************************
-      *    算定履歴FETCH処理
-      *****************************************************************
-       900-SANTEI-ALL2-FET-SEC        SECTION.
-      *
-           MOVE    ZERO                TO  FLG-SANTEI
-      *
-           MOVE    "tbl_santei"        TO  MCP-TABLE
-           MOVE    "all2"              TO  MCP-PATHNAME
-           PERFORM 910-DBFETCH-SEC
-           IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC     TO  SANTEI-REC
-           ELSE
-               MOVE    1               TO  FLG-SANTEI
-               INITIALIZE                  SANTEI-REC
-           END-IF
-      *
-           .
-       900-SANTEI-ALL2-FET-EXT.
-           EXIT.
-      *****************************************************************
       *    ＤＢ検索処理（FHETCHも行う)
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
-                                       SPA-AREA
            IF    ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
@@ -964,10 +759,9 @@
        911-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
-                                       SPA-AREA
       *
            .
       *
@@ -979,10 +773,9 @@
        910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
-                                       SPA-AREA
       *
            .
       *
@@ -994,10 +787,9 @@
        910-DBCLOSECURSOR-SEC               SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
-                                       SPA-AREA
       *
            .
       *
@@ -1009,10 +801,9 @@
        910-DBDELETE-SEC                 SECTION.
       *
            MOVE    "DBDELETE"          TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
-                                       SPA-AREA
       *
            .
       *
@@ -1024,10 +815,9 @@
        910-DBINSERT-SEC                SECTION.
       *
            MOVE    "DBINSERT"          TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
-                                       SPA-AREA
       *
            .
       *
@@ -1039,10 +829,9 @@
        910-DBUPDATE-SEC                SECTION.
       *
            MOVE    "DBUPDATE"          TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
-                                       SPA-AREA
       *
            .
       *
@@ -1056,10 +845,9 @@
            MOVE    LOW-VALUE           TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBSTART"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
-                                       SPA-AREA
            .
        900-DBSTART-EXT.
            EXIT.
@@ -1071,10 +859,9 @@
            MOVE    LOW-VALUE           TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBCOMMIT"          TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
-                                       SPA-AREA
            .
        900-DBCOMMIT-EXT.
            EXIT.

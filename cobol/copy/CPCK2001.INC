@@ -26,7 +26,6 @@
       ************************************************************
        01  CK4-2001-REC.
            03  CK4-2001-KEY.
-               05  CK4-2001-HOSPNUM     PIC 9(2).
       *管理コード
                05  CK4-2001-KANRICD     PIC  X(04).
       *区分コード
@@ -39,7 +38,13 @@
            03  CK4-2001-PTID            PIC  9(10).
       *管理テーブル
            03  CK4-2001-TBL.
-               05  CK4-2001-FILLER      PIC  X(500).
+               05  CK4-2001-MULHKNKBN   PIC  X(01).
+               05  CK4-2001-SYAHO       PIC  X(01).
+               05  CK4-2001-KOKUHO      PIC  X(01).
+               05  CK4-2001-ROUSAI      PIC  X(01).
+               05  CK4-2001-JIBAI       PIC  X(01).
+               05  CK4-2001-JIHI        PIC  X(01).
+               05  CK4-2001-FILLER      PIC  X(494).
       *端末ＩＤ
            03  CK4-2001-TERMID          PIC  X(16).
       *オペーレータＩＤ
