@@ -10,9 +10,7 @@
       *    患者ＩＤ                              
              05  SLOCK-PTID     PIC  9(10). 
       *    処理区分                              
-             05  SLOCK-MODE       PIC  9(01). 
-      *    電子カルテキー
-             05  SLOCK-KARTE-UID  PIC X(36).
+             05  SLOCK-MODE     PIC  9(01). 
            03  SLOCK-OUT.
       *     ロック情報追加区分
 018900       05  SLOCK-INSERT   PIC  X(1).

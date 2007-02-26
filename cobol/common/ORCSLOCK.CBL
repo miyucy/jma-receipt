@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  03.04.00    NACL-多々納  07/01/23  患者登録、診療行為、会計照会の排他修正
+      *  03.04.00    NACL-太田    07/02/23  データチェックの排他を追加
       *****************************************************************
 001200*
 001300 ENVIRONMENT             DIVISION.
@@ -212,6 +213,9 @@
                                        FLG-AREA
                                        WRK-AREA
                                        INDEX-AREA
+      *
+           MOVE        SPACE           TO  SLOCK-INSERT
+      *
            MOVE        ZERO            TO  SLOCK-RETURN  
       *
            MOVE    ZERO            TO  SPA-LOCK
@@ -392,9 +396,11 @@
            END-SEARCH
       *
       *    業務が患者登録・診療行為・会計照会はすべて排他処理を行う
+      *    データチェック業務もすべて排他処理を行う
            IF      WRK-LD              =   "ORCA12"
                                        OR  "ORCA21"
                                        OR  "ORCA24"
+                                       OR  "ORCA41"
                MOVE    1               TO  FLG-ALLCHK
            ELSE
                MOVE    ZERO            TO  FLG-ALLCHK
@@ -453,6 +459,9 @@
                ACCEPT LOCK-STARTTIME(01)   FROM  TIME
                MOVE  TBL-LOCK          TO  MCPDATA-REC
                PERFORM 910-LOCK-INS-SEC
+      *
+               MOVE  "1"               TO  SLOCK-INSERT
+      *
            ELSE
       *    レコード更新処理
       *    (更新位置の取得)
