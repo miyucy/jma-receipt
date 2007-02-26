@@ -3,6 +3,7 @@ tbl_chk004	{
 	KBNCD		char(8);
 	STYUKYMD	char(8);
 	EDYUKYMD	char(8);
+	PTID 				number(10);
 	KANRITBL	varchar(500);
 	TERMID		varchar(16);
 	OPID		varchar(16);
@@ -14,6 +15,8 @@ tbl_chk004	{
 	UPKBNCD	char(8),virtual;
 	UPSTYUKYMD	char(8),virtual;
 	UPEDYUKYMD	char(8),virtual;
+	SELLIMIT		number(8),virtual;
+	SELOFFSET		number(8),virtual;
 };
 
 primary	{
@@ -65,6 +68,7 @@ path	upd1	{
 					KBNCD     	 =   :KBNCD,
 					STYUKYMD     =   :STYUKYMD,
 					EDYUKYMD     =   :EDYUKYMD,
+					PTID		     =   :PTID,
 					KANRITBL     =   :KANRITBL,
 					TERMID       =   :TERMID,
 					OPID         =   :OPID,
@@ -75,6 +79,78 @@ path	upd1	{
 			AND		KBNCD        =   :UPKBNCD
 			AND		STYUKYMD     =   :UPSTYUKYMD
 			AND		EDYUKYMD     =   :UPEDYUKYMD
+		;
+	};
+};
+
+
+path	del1		{ 	
+	DBDELETE	{
+		DELETE	FROM	tbl_chk004
+		WHERE	KANRICD      =   :KANRICD
+			AND KBNCD     LIKE   :KBNCD
+			AND	STYUKYMD     <=  :STYUKYMD
+			AND	EDYUKYMD     >=  :EDYUKYMD
+		;
+	};
+};
+
+
+path	key4		{ 	
+	DBSELECT	{
+		DECLARE tbl_chk004_key4_csr CURSOR FOR
+		SELECT *
+		FROM tbl_chk004
+			WHERE   KANRICD      =   :KANRICD
+			AND KBNCD				LIKE :KBNCD
+			ORDER	BY KBNCD
+			LIMIT    :SELLIMIT
+			OFFSET   :SELOFFSET
+		;
+	};
+};
+
+
+path	key5		{ 	
+	DBSELECT	{
+		DECLARE tbl_chk004_key5_csr CURSOR FOR
+		SELECT *
+		FROM tbl_chk004
+			WHERE   KANRICD      =   :KANRICD 
+			AND KBNCD        LIKE :KBNCD
+			AND	STYUKYMD     <=  :STYUKYMD
+			AND	EDYUKYMD     >=  :EDYUKYMD
+			AND PTID             =   :PTID
+		;
+	};
+};
+
+path	key6		{ 	
+	DBSELECT	{
+		DECLARE tbl_chk004_key6_csr CURSOR FOR
+		SELECT *
+		FROM tbl_chk004
+			WHERE   KANRICD      =   :KANRICD 
+			AND KBNCD            LIKE :KBNCD
+			AND KBNCD            <>   :UPKBNCD
+			AND	STYUKYMD     <=  :STYUKYMD
+			AND	EDYUKYMD     >=  :EDYUKYMD
+			ORDER	BY KBNCD DESC
+		;
+	};
+};
+
+
+path	key7		{ 	
+	DBSELECT	{
+		DECLARE tbl_chk004_key7_csr CURSOR FOR
+		SELECT *
+		FROM tbl_chk004
+			WHERE   KANRICD      =   :KANRICD 
+			AND KBNCD				LIKE :KBNCD
+			AND	STYUKYMD     <=  :STYUKYMD
+			AND	EDYUKYMD     >=  :EDYUKYMD
+			ORDER	BY KBNCD
 		;
 	};
 };

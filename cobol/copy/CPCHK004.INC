@@ -33,6 +33,8 @@
                05  CHK004-STYUKYMD         PIC  X(08).
       *終了有効年月日
                05  CHK004-EDYUKYMD         PIC  X(08).
+      *患者ＩＤ
+           03  CHK004-PTID                 PIC  9(10).
       *管理テーブル
            03  CHK004-KANRITBL             PIC  X(500).
       *端末ＩＤ
@@ -51,3 +53,5 @@
                05  CHK004-UPKBNCD          PIC X(08).
                05  CHK004-UPSTYUKYMD       PIC X(08).
                05  CHK004-UPEDYUKYMD       PIC X(08).
+           03  CHK004-SELLIMIT             PIC 9(08).
+           03  CHK004-SELOFFSET            PIC 9(08).
