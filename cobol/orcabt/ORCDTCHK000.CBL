@@ -125,6 +125,7 @@
                                                WRK-PARA-SHELLID
                                                WRK-PARA-HOSPID
                                                DTCHKERRPARA
+                                               ORCBSD01-IKTKBT
                                                ORCBSD01-SRYYM
                                                ORCBSD01-NYUGAIKBN
                                                ORCBSD01-CHKKBN-G
@@ -153,7 +154,8 @@
            MOVE    ZERO                TO  DTCHK-RC
       *
            IF    ( DTCHK-RC            =   ZERO )
-               IF    ( ORCBSD01-SRYYMDKBN  =   "1" )
+               IF    ( ORCBSD01-IKTKBT     =   "2" )
+                OR   ( ORCBSD01-SRYYMDKBN  =   "1" )
                    PERFORM 800-MCNDATE-SEC
                    DISPLAY SMCNDATE-HMS "ST:ORCDTCHK009"
                    CALL    "ORCDTCHK009"       USING
@@ -214,6 +216,16 @@
                                                COMMAND-PARAM
                    PERFORM 800-MCNDATE-SEC
                    DISPLAY SMCNDATE-HMS "ED:ORCDTCHK002"
+           END-IF
+      *
+           IF    ( DTCHK-RC            =   ZERO )
+                   PERFORM 800-MCNDATE-SEC
+                   DISPLAY SMCNDATE-HMS "ST:ORCDTCHK010"
+                   CALL    "ORCDTCHK010"       USING
+                                               DTCHK-RC
+                                               COMMAND-PARAM
+                   PERFORM 800-MCNDATE-SEC
+                   DISPLAY SMCNDATE-HMS "ED:ORCDTCHK001"
            END-IF
       *
            IF    ( DTCHK-RC            =   ZERO )

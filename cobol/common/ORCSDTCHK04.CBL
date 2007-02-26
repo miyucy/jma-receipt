@@ -143,14 +143,6 @@
       *****************************************************************
        300-END-SEC                     SECTION.
       *
-           DISPLAY SDTCHK04-KIGONUM (1:20) ","
-                   SDTCHK04-SUJI           ","
-                   SDTCHK04-KANJI          ","
-                   SDTCHK04-ALPHABET       ","
-                   SDTCHK04-HYPHEN         ","
-                   SDTCHK04-TYOON          ","
-                   SDTCHK04-KAKKO          ","
-                   SDTCHK04-ETC
       *
            .
        300-END-EXT.

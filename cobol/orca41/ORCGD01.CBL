@@ -131,9 +131,11 @@
                            11  SPA-GMN-D01-INGAIPROCKBNMEIL
                                                            PIC X(18).
                05  SPA-NAIB-D01-AREA.
+                   07  SPA-NAI-D01-KBTUSER                 PIC 9(01).
                    07  SPA-NAI-D01-INPUT-AREA.
                        09  SPA-NAI-D01-SRYYM               PIC X(06).
                        09  SPA-NAI-D01-STSRYYMD-BF         PIC 9(02).
+                       09  SPA-NAI-D01-IKTKBT              PIC X(01).
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -141,6 +143,7 @@
            03  FLG-ERR                     PIC 9(01).
            03  FLG-SYSKANRI                PIC 9(01).
            03  FLG-HIZUKE-ERR              PIC 9(01).
+           03  FLG-CHK004                  PIC 9(01).
       *
       *    エンドステータス領域
        01  STS-AREA.
@@ -192,6 +195,11 @@
                05  WRK-SRYYMD-YYYY         PIC 9(04).
                05  WRK-SRYYMD-MM           PIC 9(02).
                05  WRK-SRYYMD-DD           PIC 9(02).
+           03  WRK-DELKANRICD              PIC X(04).
+           03  WRK-DELKBNCD                PIC X(08).
+           03  WRK-KBNCD-G.
+               05  WRK-KBNCD-KBN           PIC X(01).
+               05  WRK-KBNCD-SEQ           PIC 9(07).
       *
        01  CONST-AREA.
            03  CONST-LINE                  PIC X(40)   VALUE
@@ -263,6 +271,11 @@
       *    ファイルレイアウト
       *****************************************************************
       *
+      *    チェックマスタ４
+           COPY    "CPCHK004.INC".
+           COPY    "CPCK2000.INC".
+           COPY    "CPCK2001.INC".
+      *
       *    システム管理
            COPY    "CPSK1101.INC".
            COPY    "CPSK1031.INC".
@@ -286,6 +299,9 @@
       *
       *    フィアルデイレクトリ位置指定サブ
            COPY  "CPMKPASS.INC".
+      *
+      *    排他制御サブパラメタ
+           COPY    "CPORCSLOCK.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -320,6 +336,7 @@
       *
        01  SCRAREA.
            COPY    "D01.INC".
+           COPY    "D02.INC".
            COPY    "D99.INC".
            COPY    "DERR.INC".
            COPY    "DID1.INC".
@@ -441,6 +458,10 @@
            WHEN    "D99"
                PERFORM 340-D99-SET-SEC
                GO  TO  300-SCREEN-EXT
+      *    患者選択画面
+           WHEN    "D02"
+               PERFORM 340-D02-SET-SEC
+               GO  TO  300-SCREEN-EXT
            END-EVALUATE
       *
            PERFORM 310-SPASET-SEC.
@@ -453,8 +474,22 @@
       *****************************************************************
        310-SPASET-SEC                  SECTION.
       *
+           INITIALIZE                      SPA-D01KYOUTU
+      *
+           PERFORM 311-SPASET-SEC
+      *
+           MOVE    1                   TO  SPA-GMN-D01-CUR
+      *
+           .
+       310-SPASET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    スパ初期編集処理
+      *****************************************************************
+       311-SPASET-SEC                 SECTION.
+      *
            INITIALIZE                      SPA-D01
-                                           SPA-D01KYOUTU
       *
       *    入外区分コンボ編集
            PERFORM 3101-NYUGAIKBNLST-HEN-SEC
@@ -475,12 +510,9 @@
       *
            PERFORM 420-CLEAR-SEC
       *
-           MOVE    1                   TO  SPA-GMN-D01-CUR
-      *
            .
-       310-SPASET-EXT.
+       311-SPASET-EXT.
            EXIT.
-      *
       *****************************************************************
       *    入外区分コンボ編集処理
       *****************************************************************
@@ -655,6 +687,76 @@
            EXIT.
       *
       *****************************************************************
+      *    患者選択画面戻り処理
+      *****************************************************************
+       340-D02-SET-SEC             SECTION.
+      *
+           IF    ( SPA-DID1-FLG    =   "OK" )
+               MOVE    212         TO  SPA-GMN-D01-CUR
+           END-IF
+      *
+           MOVE    SPACE           TO  SPA-DID1-FLG
+      *
+           PERFORM 311-SPASET-SEC
+      *
+           MOVE    SPA-D01-IKTKBT  TO  SPA-NAI-D01-IKTKBT
+      *
+           MOVE    SPA-D01-SRYYM   TO  SPA-GMN-D01-SRYYM
+           IF    ( SPA-D01-SYAHOPROCKBN    =   "1" )
+               MOVE    "T"         TO  SPA-GMN-D01-CHK-SYAHO
+           END-IF
+           IF    ( SPA-D01-KOKUHOPROCKBN   =   "1" )
+               MOVE    "T"         TO  SPA-GMN-D01-CHK-KOKUHO
+           END-IF
+           IF    ( SPA-D01-RSIPROCKBN      =   "1" )
+             OR  ( SPA-D01-JBIPROCKBN      =   "1" )
+               MOVE    "T"         TO  SPA-GMN-D01-CHK-RSIJBI
+           END-IF
+           IF    ( SPA-D01-JIHIPROCKBN     =   "1" )
+               MOVE    "T"         TO  SPA-GMN-D01-CHK-JIHI
+           END-IF
+           IF    ( SPA-D01-SRYYMDKBN       =   "1" )
+               MOVE    "T"         TO  SPA-GMN-D01-CHK-SRYYMD
+           END-IF
+           MOVE    SPA-D01-STSRYYMD    TO  SPA-GMN-D01-STSRYYMD
+                                           SPA-NAI-D01-STSRYYMD-BF
+           MOVE    SPA-D01-EDSRYYMD    TO  SPA-GMN-D01-EDSRYYMD
+           MOVE    SPA-D01-PRTSRTKBN   TO  SPA-GMN-D01-PRTSRTKBN
+           MOVE    SPA-D01-NYUGAIKBN   TO  SPA-GMN-D01-NYUGAIKBN
+      *
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   CONST-CHKKBN-MAX )
+      *
+               IF    ( SPA-D01-CHKKBN (IDX0)   =   ZERO )
+                   MOVE    SPACE       TO  SPA-GMN-D01-CHKKBN (IDX0)
+               ELSE
+                   MOVE    SPA-D01-CHKKBN (IDX0)
+                                       TO  SPA-GMN-D01-CHKKBN (IDX0)
+               END-IF
+      *
+           END-PERFORM
+      *
+           MOVE    SPA-D01-KBTUSER     TO  SPA-NAI-D01-KBTUSER
+           IF    ( SPA-NAI-D01-KBTUSER =   ZERO )
+      *
+      *        排他制御解除処理
+               PERFORM 990-LOCK-OUT-SEC
+           END-IF
+      *
+           IF    ( SPA-D01-INGAIPROCKBN    =   ZERO )
+               MOVE    SPACE   TO  SPA-GMN-D01-INGAIPROCKBN
+           ELSE
+               MOVE    SPA-D01-INGAIPROCKBN
+                               TO  SPA-GMN-D01-INGAIPROCKBN
+           END-IF
+      *
+      *
+           PERFORM 4102-KIHON-CHK-SEC
+      *
+           .
+       340-D02-SET-EXT.
+           EXIT.
+      *****************************************************************
       *    プレビュー処理
       *****************************************************************
        4501-NEXT-GMN-SEC            SECTION.
@@ -793,73 +895,17 @@
            MOVE    SYS-1031-PRTNM (11)
                                    TO  LNK-PRTKANRI-PRTNM
       *
-           INITIALIZE                  ORCBSD01PARA
-           MOVE    SPA-NAI-D01-SRYYM
-                                   TO  ORCBSD01-SRYYM
-           MOVE    SPA-GMN-D01-NYUGAIKBN
-                                   TO  ORCBSD01-NYUGAIKBN
-           PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0    >   CONST-CHKKBN-MAX )
+           PERFORM 4901-SET-ORCBSD01PARA-SEC
       *
-               IF    ( SPA-GMN-D01-CHKKBN (IDX0)   =   SPACE )
-                   MOVE    ZERO    TO  ORCBSD01-CHKKBN (IDX0)
-               ELSE
-                   MOVE    SPA-GMN-D01-CHKKBN (IDX0)
-                                   TO  ORCBSD01-CHKKBN (IDX0)
+           IF    ( SPA-NAI-D01-IKTKBT  =   "2" )
+               PERFORM 4901-SET-CK4-2000-SEC
+               IF    ( SPA-ERRCD   NOT =   SPACE )
+                   GO  TO  490-PRINT-EXT
                END-IF
       *
-           END-PERFORM
-      *
-           IF    ( SPA-GMN-D01-CHK-SYAHO       =   "T" )
-               MOVE    "1"         TO  ORCBSD01-SYAHOPROCKBN
-           END-IF
-      *
-           IF    ( SPA-GMN-D01-CHK-KOKUHO      =   "T" )
-               MOVE    "1"         TO  ORCBSD01-KOKUHOPROCKBN
-           END-IF
-      *
-           IF    ( SPA-GMN-D01-CHK-RSIJBI      =   "T" )
-               MOVE    "1"         TO  ORCBSD01-RSIPROCKBN
-               MOVE    "1"         TO  ORCBSD01-JBIPROCKBN
-           END-IF
-      *
-           IF    ( SPA-GMN-D01-CHK-JIHI        =   "T" )
-               MOVE    "1"         TO  ORCBSD01-JIHIPROCKBN
-           END-IF
-      *
-           IF    ( SPA-GMN-D01-INGAIPROCKBN    =   SPACE )
-               MOVE    ZERO        TO  ORCBSD01-INGAIPROCKBN
-           ELSE
-               MOVE    SPA-GMN-D01-INGAIPROCKBN
-                                   TO  ORCBSD01-INGAIPROCKBN
-           END-IF
-      *
-           MOVE    SPA-GMN-D01-PRTSRTKBN
-                                   TO  ORCBSD01-PRTSRTKBN
-      *
-           IF    ( SYS-1101-PRTPTLSTKBN        =   SPACE )
-               MOVE    "1"         TO  ORCBSD01-PRTPTLSTKBN
-           ELSE
-               MOVE    SYS-1101-PRTPTLSTKBN
-                                   TO  ORCBSD01-PRTPTLSTKBN
-           END-IF
-      *
-           IF    ( SPA-GMN-D01-CHK-SRYYMD      =   "T" )
-               MOVE    "1"         TO  ORCBSD01-SRYYMDKBN
-               IF    ( SPA-GMN-D01-STSRYYMD    =   ZERO )
-                   MOVE    1       TO  ORCBSD01-STSRYYMD
-               ELSE
-                   MOVE    SPA-GMN-D01-STSRYYMD
-                                   TO  ORCBSD01-STSRYYMD
-               END-IF
-               IF    ( SPA-GMN-D01-EDSRYYMD    =   ZERO )
-                   MOVE    LNK-PRTKANRI-SRYYM
-                                   TO  WRK-SYMD
-                   PERFORM 800-GETUMATU-SEC
-                   MOVE    WRK-SYMD TO ORCBSD01-EDSRYYMD
-               ELSE
-                   MOVE    SPA-GMN-D01-EDSRYYMD
-                                   TO  ORCBSD01-EDSRYYMD
+               PERFORM 4901-SET-CK4-2001-SEC
+               IF    ( SPA-ERRCD   NOT =   SPACE )
+                   GO  TO  490-PRINT-EXT
                END-IF
            END-IF
       *
@@ -900,33 +946,35 @@
       *
            MOVE    DTCHKERRPARA            TO  SHELLTBL-ARG15
       *
-           MOVE    ORCBSD01-SRYYM          TO  SHELLTBL-ARG16
+           MOVE    ORCBSD01-IKTKBT         TO  SHELLTBL-ARG16
       *
-           MOVE    ORCBSD01-NYUGAIKBN      TO  SHELLTBL-ARG17
+           MOVE    ORCBSD01-SRYYM          TO  SHELLTBL-ARG17
       *
-           MOVE    ORCBSD01-CHKKBN-G       TO  SHELLTBL-ARG18
+           MOVE    ORCBSD01-NYUGAIKBN      TO  SHELLTBL-ARG18
       *
-           MOVE    ORCBSD01-SYAHOPROCKBN   TO  SHELLTBL-ARG19
+           MOVE    ORCBSD01-CHKKBN-G       TO  SHELLTBL-ARG19
       *
-           MOVE    ORCBSD01-KOKUHOPROCKBN  TO  SHELLTBL-ARG20
+           MOVE    ORCBSD01-SYAHOPROCKBN   TO  SHELLTBL-ARG20
       *
-           MOVE    ORCBSD01-RSIPROCKBN     TO  SHELLTBL-ARG21
+           MOVE    ORCBSD01-KOKUHOPROCKBN  TO  SHELLTBL-ARG21
       *
-           MOVE    ORCBSD01-JBIPROCKBN     TO  SHELLTBL-ARG22
+           MOVE    ORCBSD01-RSIPROCKBN     TO  SHELLTBL-ARG22
       *
-           MOVE    ORCBSD01-JIHIPROCKBN    TO  SHELLTBL-ARG23
+           MOVE    ORCBSD01-JBIPROCKBN     TO  SHELLTBL-ARG23
       *
-           MOVE    ORCBSD01-INGAIPROCKBN   TO  SHELLTBL-ARG24
+           MOVE    ORCBSD01-JIHIPROCKBN    TO  SHELLTBL-ARG24
       *
-           MOVE    ORCBSD01-PRTSRTKBN      TO  SHELLTBL-ARG25
+           MOVE    ORCBSD01-INGAIPROCKBN   TO  SHELLTBL-ARG25
       *
-           MOVE    ORCBSD01-PRTPTLSTKBN    TO  SHELLTBL-ARG26
+           MOVE    ORCBSD01-PRTSRTKBN      TO  SHELLTBL-ARG26
       *
-           MOVE    ORCBSD01-SRYYMDKBN      TO  SHELLTBL-ARG27
+           MOVE    ORCBSD01-PRTPTLSTKBN    TO  SHELLTBL-ARG27
       *
-           MOVE    ORCBSD01-STSRYYMD       TO  SHELLTBL-ARG28
+           MOVE    ORCBSD01-SRYYMDKBN      TO  SHELLTBL-ARG28
       *
-           MOVE    ORCBSD01-EDSRYYMD       TO  SHELLTBL-ARG29
+           MOVE    ORCBSD01-STSRYYMD       TO  SHELLTBL-ARG29
+      *
+           MOVE    ORCBSD01-EDSRYYMD       TO  SHELLTBL-ARG30
       *
            MOVE    SHELLTBL                TO  MCPDATA-REC
            MOVE    "SHELL"                 TO  MCP-FUNC
@@ -1016,12 +1064,209 @@
                GO  TO  490-PRINT-EXT
            END-IF
       *
+           IF    ( SPA-NAI-D01-KBTUSER =   1 )
+      *
+      *        排他制御解除処理
+               PERFORM 990-LOCK-OUT-SEC
+      *
+           END-IF
+      *
+           MOVE    ZERO        TO  SPA-NAI-D01-KBTUSER
+           MOVE    "1"         TO  SPA-NAI-D01-IKTKBT
+      *
            PERFORM 490-SYORIKAKUNIN-SEC
       *
            .
        490-PRINT-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    データチェックパラメタ設定処理
+      *****************************************************************
+       4901-SET-ORCBSD01PARA-SEC       SECTION.
+      *
+           INITIALIZE                  ORCBSD01PARA
+           MOVE    SPA-NAI-D01-IKTKBT
+                                   TO  ORCBSD01-IKTKBT
+           MOVE    SPA-NAI-D01-SRYYM
+                                   TO  ORCBSD01-SRYYM
+           MOVE    SPA-GMN-D01-NYUGAIKBN
+                                   TO  ORCBSD01-NYUGAIKBN
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   CONST-CHKKBN-MAX )
+      *
+               IF    ( SPA-GMN-D01-CHKKBN (IDX0)   =   SPACE )
+                   MOVE    ZERO    TO  ORCBSD01-CHKKBN (IDX0)
+               ELSE
+                   MOVE    SPA-GMN-D01-CHKKBN (IDX0)
+                                   TO  ORCBSD01-CHKKBN (IDX0)
+               END-IF
+      *
+           END-PERFORM
+      *
+           IF    ( SPA-GMN-D01-CHK-SYAHO       =   "T" )
+               MOVE    "1"         TO  ORCBSD01-SYAHOPROCKBN
+           END-IF
+      *
+           IF    ( SPA-GMN-D01-CHK-KOKUHO      =   "T" )
+               MOVE    "1"         TO  ORCBSD01-KOKUHOPROCKBN
+           END-IF
+      *
+           IF    ( SPA-GMN-D01-CHK-RSIJBI      =   "T" )
+               MOVE    "1"         TO  ORCBSD01-RSIPROCKBN
+               MOVE    "1"         TO  ORCBSD01-JBIPROCKBN
+           END-IF
+      *
+           IF    ( SPA-GMN-D01-CHK-JIHI        =   "T" )
+               MOVE    "1"         TO  ORCBSD01-JIHIPROCKBN
+           END-IF
+      *
+           IF    ( SPA-GMN-D01-INGAIPROCKBN    =   SPACE )
+               MOVE    ZERO        TO  ORCBSD01-INGAIPROCKBN
+           ELSE
+               MOVE    SPA-GMN-D01-INGAIPROCKBN
+                                   TO  ORCBSD01-INGAIPROCKBN
+           END-IF
+      *
+           MOVE    SPA-GMN-D01-PRTSRTKBN
+                                   TO  ORCBSD01-PRTSRTKBN
+      *
+           IF    ( SYS-1101-PRTPTLSTKBN        =   SPACE )
+               MOVE    "1"         TO  ORCBSD01-PRTPTLSTKBN
+           ELSE
+               MOVE    SYS-1101-PRTPTLSTKBN
+                                   TO  ORCBSD01-PRTPTLSTKBN
+           END-IF
+      *
+           IF    ( SPA-GMN-D01-CHK-SRYYMD      =   "T" )
+               MOVE    "1"         TO  ORCBSD01-SRYYMDKBN
+               IF    ( SPA-GMN-D01-STSRYYMD    =   ZERO )
+                   MOVE    1       TO  ORCBSD01-STSRYYMD
+               ELSE
+                   MOVE    SPA-GMN-D01-STSRYYMD
+                                   TO  ORCBSD01-STSRYYMD
+               END-IF
+               IF    ( SPA-GMN-D01-EDSRYYMD    =   ZERO )
+                   MOVE    LNK-PRTKANRI-SRYYM
+                                   TO  WRK-SYMD
+                   PERFORM 800-GETUMATU-SEC
+                   MOVE    WRK-SYMD TO ORCBSD01-EDSRYYMD
+               ELSE
+                   MOVE    SPA-GMN-D01-EDSRYYMD
+                                   TO  ORCBSD01-EDSRYYMD
+               END-IF
+           END-IF
+      *
+           .
+       4901-SET-ORCBSD01PARA-EXT.
+           EXIT.
+      *****************************************************************
+      *    個別患者基本情報設定処理
+      *****************************************************************
+       4901-SET-CK4-2000-SEC           SECTION.
+      *
+           PERFORM 800-MCNDATE-SEC
+      *
+           MOVE    "2000"          TO  WRK-DELKANRICD
+           MOVE    "1%"            TO  WRK-DELKBNCD
+           PERFORM 4901-DEL-CHK004-SEC
+           IF    ( SPA-ERRCD       NOT =   SPACE )
+               GO  TO  4901-SET-CK4-2000-EXT
+           END-IF
+      *
+           INITIALIZE                  CK4-2000-REC
+           MOVE    "2000"          TO  CK4-2000-KANRICD
+           MOVE    "1"             TO  CK4-2000-KBNCD
+           MOVE    "00000000"      TO  CK4-2000-STYUKYMD
+           MOVE    "99999999"      TO  CK4-2000-EDYUKYMD
+           MOVE    ORCBSD01PARA    TO  CK4-2000-TBL
+           PERFORM 800-MCNDATE-SEC
+           MOVE    SMCNDATE-YMD    TO  CK4-2000-CREYMD
+                                       CK4-2000-UPYMD
+           MOVE    SMCNDATE-YMD    TO  CK4-2000-UPHMS
+           MOVE    CK4-2000-REC    TO  MCPDATA-REC
+           MOVE    "tbl_chk004"    TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           PERFORM 910-DBINSERT-SEC
+           IF    ( MCP-RC      NOT =   ZERO )
+               MOVE    "4006"      TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       4901-SET-CK4-2000-EXT.
+           EXIT.
+      *****************************************************************
+      *    個別指示患者情報設定処理
+      *****************************************************************
+       4901-SET-CK4-2001-SEC           SECTION.
+      *
+           PERFORM 800-MCNDATE-SEC
+      *
+           MOVE    "2001"          TO  WRK-DELKANRICD
+           MOVE    "1%"            TO  WRK-DELKBNCD
+           PERFORM 4901-DEL-CHK004-SEC
+           IF    ( SPA-ERRCD       NOT =   SPACE )
+               GO  TO  4901-SET-CK4-2001-EXT
+           END-IF
+      *
+           INITIALIZE                  CHK004-REC
+           MOVE    "2001"          TO  CHK004-KANRICD
+           MOVE    "2%"            TO  CHK004-KBNCD
+           MOVE    SPA-SYSYMD      TO  CHK004-STYUKYMD
+                                       CHK004-EDYUKYMD
+           PERFORM 900-CHK004-KEY7-SEL-SEC
+           MOVE    CHK004-REC      TO  CK4-2001-REC
+      *
+           PERFORM UNTIL ( FLG-CHK004  NOT =   ZERO )
+                     OR  ( SPA-ERRCD   NOT =   SPACE )
+      *
+               MOVE    "1"          TO CK4-2001-KBNCD(1:1)
+               MOVE    SMCNDATE-YMD TO CK4-2001-CREYMD
+                                       CK4-2001-UPYMD
+               MOVE    SMCNDATE-HMS TO CK4-2001-UPHMS
+      *
+               MOVE    CK4-2001-REC TO MCPDATA-REC
+               MOVE    "tbl_chk004" TO MCP-TABLE
+               MOVE    "key"        TO MCP-PATHNAME
+               PERFORM 910-DBINSERT-SEC
+               IF    ( MCP-RC  NOT =   ZERO )
+                   MOVE    "4005"  TO  SPA-ERRCD
+               END-IF
+      *
+               PERFORM 900-CHK004-KEY7-FET-SEC
+               MOVE    CHK004-REC  TO  CK4-2001-REC
+      *
+           END-PERFORM
+      *
+           MOVE    "tbl_chk004"    TO  MCP-TABLE
+           MOVE    "key7"          TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       4901-SET-CK4-2001-EXT.
+           EXIT.
+      *****************************************************************
+      *    個別処理患者情報削除処理
+      *****************************************************************
+       4901-DEL-CHK004-SEC             SECTION.
+      *
+           INITIALIZE                  CHK004-REC
+           MOVE    WRK-DELKANRICD  TO  CHK004-KANRICD
+           MOVE    WRK-DELKBNCD    TO  CHK004-KBNCD
+           MOVE    SPA-SYSYMD      TO  CHK004-STYUKYMD
+                                       CHK004-EDYUKYMD
+           MOVE    CHK004-REC      TO  MCPDATA-REC
+           MOVE    "tbl_chk004"    TO  MCP-TABLE
+           MOVE    "del1"          TO  MCP-PATHNAME
+           PERFORM 910-DBDELETE-SEC
+           IF    ( MCP-RC      NOT =   ZERO )
+               MOVE    "4004"      TO  SPA-ERRCD
+           END-IF
+      *
+           .
+      *
+       4901-DEL-CHK004-EXT.
+           EXIT.
       *****************************************************************
       *    ジョブ開始セット処理
       *****************************************************************
@@ -1123,6 +1368,14 @@
            WHEN    "CLICKED"       ALSO    "B05"
       *        再印刷
                PERFORM 450-REPRINT-SEC
+           WHEN    "CLICKED"       ALSO    "B06"
+      *        患者選択
+               PERFORM 460-D02-SENI-SEC
+           WHEN    "CLICKED"       ALSO    "B08"
+      *        一括・個別切替
+               IF    ( SPA-NAI-D01-KBTUSER =   1 )
+                   PERFORM 480-IKTKBT-SEC
+               END-IF
            WHEN    "CLICKED"       ALSO    "B11"
       *        情報削除
                PERFORM 490-JYOUHOU-DEL-SEC
@@ -1533,6 +1786,8 @@
       *****************************************************************
        210-BACK-SYORI-SEC              SECTION.
       *
+      *    排他制御解除処理
+           PERFORM 990-LOCK-OUT-SEC
       *
            MOVE    "M01"               TO  SPA-SAKIPG
            MOVE    "D01"               TO  SPA-MOTOPG
@@ -1558,6 +1813,8 @@
       *
            INITIALIZE                      SPA-GMN-D01-INPUT-AREA
                                            SPA-NAI-D01-INPUT-AREA
+      *
+           MOVE    "1"                 TO  SPA-NAI-D01-IKTKBT
       *
            MOVE    SPA-SYSYMDWH(1:6)   TO  SPA-GMN-D01-SRYYM
            MOVE    SPA-SYSYMD(1:6)     TO  SPA-NAI-D01-SRYYM
@@ -1663,6 +1920,85 @@
            .
       *
        450-REPRINT-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者選択処理
+      *****************************************************************
+       460-D02-SENI-SEC                SECTION.
+      *
+      *    入力チェック
+           PERFORM 410-INPUT-CHK-SEC
+           IF    ( SPA-ERRCD       NOT =   SPACE )
+               GO  TO  460-D02-SENI-EXT
+           END-IF
+      *
+           PERFORM 990-LOCK-IN-SEC
+           IF    ( SPA-ERRCD       NOT =   SPACE )
+               GO  TO  460-D02-SENI-EXT
+           END-IF
+      *
+           IF    ( SLOCK-INSERT        =   "1" )
+               MOVE    "2001"             TO  WRK-DELKANRICD
+               MOVE    "2%"               TO  WRK-DELKBNCD
+               PERFORM 4901-DEL-CHK004-SEC
+           END-IF
+      *
+           PERFORM 4901-SET-ORCBSD01PARA-SEC
+      *
+           INITIALIZE                          SPA-D01-INF-AREA
+           MOVE    SPA-NAI-D01-KBTUSER     TO  SPA-D01-KBTUSER
+           MOVE    ORCBSD01-IKTKBT         TO  SPA-D01-IKTKBT
+           MOVE    ORCBSD01-SRYYM          TO  SPA-D01-SRYYM
+           MOVE    ORCBSD01-NYUGAIKBN      TO  SPA-D01-NYUGAIKBN
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   CONST-CHKKBN-MAX )
+               MOVE    ORCBSD01-CHKKBN (IDX0)
+                                           TO  SPA-D01-CHKKBN (IDX0)
+      *
+           END-PERFORM
+      *
+           MOVE    ORCBSD01-SYAHOPROCKBN   TO  SPA-D01-SYAHOPROCKBN
+           MOVE    ORCBSD01-KOKUHOPROCKBN  TO  SPA-D01-KOKUHOPROCKBN
+           MOVE    ORCBSD01-RSIPROCKBN     TO  SPA-D01-RSIPROCKBN
+           MOVE    ORCBSD01-JBIPROCKBN     TO  SPA-D01-JBIPROCKBN
+           MOVE    ORCBSD01-JIHIPROCKBN    TO  SPA-D01-JIHIPROCKBN
+           MOVE    ORCBSD01-INGAIPROCKBN   TO  SPA-D01-INGAIPROCKBN
+           MOVE    ORCBSD01-PRTSRTKBN      TO  SPA-D01-PRTSRTKBN
+           MOVE    ORCBSD01-SRYYMDKBN      TO  SPA-D01-SRYYMDKBN
+           MOVE    ORCBSD01-STSRYYMD       TO  SPA-D01-STSRYYMD
+           MOVE    ORCBSD01-EDSRYYMD       TO  SPA-D01-EDSRYYMD
+      *
+           MOVE    "D01"                   TO  SPA-MOTOPG
+           MOVE    "D02"                   TO  SPA-SAKIPG
+      *
+           MOVE   "CHANGE"                 TO  MCP-PUTTYPE.
+           MOVE   "D02    "                TO  MCP-WINDOW.
+      *
+           PERFORM 900-PUT-WINDOW.
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+      *
+       460-D02-SENI-EXT.
+           EXIT.
+      *****************************************************************
+      *    一括・個別切替処理
+      *****************************************************************
+       480-IKTKBT-SEC                  SECTION.
+      *
+      *    画面をＳＰＡセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *
+           IF    ( SPA-NAI-D01-IKTKBT  =   "1" )
+               MOVE    "2"             TO  SPA-NAI-D01-IKTKBT
+           ELSE
+               MOVE    "1"             TO  SPA-NAI-D01-IKTKBT
+           END-IF
+      *
+           .
+      *
+       480-IKTKBT-EXT.
            EXIT.
       *****************************************************************
       *    情報削除
@@ -2150,6 +2486,21 @@
       *
            END-PERFORM
       *
+           MOVE    "black"             TO  D01-LBLIKTKBT-STYLE
+      *
+           IF    ( SPA-NAI-D01-KBTUSER     =   1 )
+               IF    ( SPA-NAI-D01-IKTKBT  =   "1" )
+                   MOVE    "　一括チェック　"  TO  D01-LBLIKTKBT
+               ELSE
+                   MOVE    "blue"              TO  D01-LBLIKTKBT-STYLE
+                   MOVE    "＊個別チェック＊"  TO  D01-LBLIKTKBT
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-NAI-D01-KBTUSER     =   1 )
+               MOVE    "一括／個別"        TO  D01-B08-LABEL
+           END-IF
+      *
            PERFORM 500-GMNHEN-STATE-EDIT-SEC
       *
       *    カーソル位置
@@ -2401,6 +2752,10 @@
                                        TO  SPA-ERRMSG
            WHEN    "7777"
                MOVE    WRK-ERRMSG      TO  SPA-ERRMSG
+           WHEN    "9999"
+               MOVE    "他端末で使用中です。"
+                                       TO  SPA-ERRMSG
+               MOVE    SLOCK-MSG       TO  SPA-ERRMSG(21:)
            END-EVALUATE
       *
            MOVE    SPACE               TO  DERR
@@ -2615,7 +2970,7 @@
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSE-SEC
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
       *
@@ -2645,11 +3000,52 @@
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSE-SEC
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
       *
        900-SYS3003-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    チェックマスタ４検索処理
+      *****************************************************************
+       900-CHK004-KEY7-SEL-SEC         SECTION.
+      *
+           MOVE    ZERO            TO  FLG-CHK004
+      *
+           MOVE    CHK004-REC      TO  MCPDATA-REC
+           MOVE    "tbl_chk004"    TO  MCP-TABLE
+           MOVE    "key7"          TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC TO  CHK004-REC
+           ELSE
+               INITIALIZE              CHK004-REC
+               MOVE    1           TO  FLG-CHK004
+           END-IF
+      *
+           .
+       900-CHK004-KEY7-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    チェックマスタ４FETCH処理
+      *****************************************************************
+       900-CHK004-KEY7-FET-SEC         SECTION.
+      *
+           MOVE    ZERO            TO  FLG-CHK004
+      *
+           MOVE    "tbl_chk004"    TO  MCP-TABLE
+           MOVE    "key7"          TO  MCP-PATHNAME
+           PERFORM 910-DBFETCH-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC TO  CHK004-REC
+           ELSE
+               INITIALIZE              CHK004-REC
+               MOVE    1           TO  FLG-CHK004
+           END-IF
+      *
+           .
+       900-CHK004-KEY7-FET-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ検索処理
@@ -2666,7 +3062,7 @@
       *
            .
       *
-       910-DB-SELECT-EXT.
+       910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ読み込み処理
@@ -2685,7 +3081,7 @@
       *****************************************************************
       *    ＤＢクローズ処理
       *****************************************************************
-       910-DBCLOSE-SEC                 SECTION.
+       910-DBCLOSECURSOR-SEC                 SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            CALL    "MONFUNC"           USING
@@ -2694,7 +3090,68 @@
       *
            .
       *
-       910-DBCLOSE-EXT.
+       910-DBCLOSECURSOR-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢＤＥＬＥＴＥ処理
+      *****************************************************************
+       910-DBDELETE-SEC                SECTION.
+      *
+           MOVE    "DBDELETE"      TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       910-DBDELETE-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢＩＮＳＥＲＴ処理
+      *****************************************************************
+       910-DBINSERT-SEC                SECTION.
+      *
+           MOVE    "DBINSERT"      TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       910-DBINSERT-EXT.
+           EXIT.
+      *****************************************************************
+      *    排他制御処理
+      *****************************************************************
+       990-LOCK-IN-SEC         SECTION.
+      *
+      *    排他制御処理
+           MOVE    1                   TO  SLOCK-MODE
+           MOVE    ZERO                TO  SLOCK-PTID
+           CALL    "ORCSLOCK"          USING
+                                       MCPAREA
+                                       SPA-AREA
+                                       ORCSLOCKAREA
+           IF    ( SLOCK-RETURN    NOT =   ZERO )
+               MOVE    "9999"          TO  SPA-ERRCD
+           END-IF
+           .
+       990-LOCK-IN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    排他制御解除処理
+      *****************************************************************
+       990-LOCK-OUT-SEC         SECTION.
+      *
+      *    排他制御解除処理
+           MOVE    2                   TO  SLOCK-MODE
+           CALL    "ORCSLOCK"          USING
+                                       MCPAREA
+                                       SPA-AREA
+                                       ORCSLOCKAREA
+           .
+       990-LOCK-OUT-EXT.
            EXIT.
       *****************************************************************
       *    ＰＵＴ　処理

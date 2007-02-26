@@ -25,12 +25,30 @@
       *****************************************************************
        01  SPA-D01KYOUTU.
       *
-           05  SPA-D01-TBL-GROUP           PIC  X(14).
-           05  SPA-D01-JOB-JOBID           PIC  9(07).
+           03  SPA-D01-INF-AREA.
+               05  SPA-D01-KBTUSER         PIC  9(01).
+               05  SPA-D01-IKTKBT          PIC  X(01).
+               05  SPA-D01-SRYYM           PIC  X(06).
+               05  SPA-D01-NYUGAIKBN       PIC  X(01).
+               05  SPA-D01-CHKKBN-G.
+                   07  SPA-D01-CHKKBN      PIC  X(01)  OCCURS 50.
+               05  SPA-D01-SYAHOPROCKBN    PIC  X(01).
+               05  SPA-D01-KOKUHOPROCKBN   PIC  X(01).
+               05  SPA-D01-RSIPROCKBN      PIC  X(01).
+               05  SPA-D01-JBIPROCKBN      PIC  X(01).
+               05  SPA-D01-JIHIPROCKBN     PIC  X(01).
+               05  SPA-D01-INGAIPROCKBN    PIC  X(01).
+               05  SPA-D01-PRTSRTKBN       PIC  X(01).
+               05  SPA-D01-SRYYMDKBN       PIC  X(01).
+               05  SPA-D01-STSRYYMD        PIC  9(02).
+               05  SPA-D01-EDSRYYMD        PIC  9(02).
+      *
+           03  SPA-D01-TBL-GROUP           PIC  X(14).
+           03  SPA-D01-JOB-JOBID           PIC  9(07).
       *警告メッセージ
-           05  SPA-DIDCD                   PIC  X(04).
+           03  SPA-DIDCD                   PIC  X(04).
       *警告画面より
-           05  SPA-DID1-AREA. 
-               07  SPA-DID1-FLG            PIC  X(02).
-               07  SPA-D99-FLG             PIC  X(02).
+           03  SPA-DID1-AREA. 
+               05  SPA-DID1-FLG            PIC  X(02).
+               05  SPA-D99-FLG             PIC  X(02).
       *

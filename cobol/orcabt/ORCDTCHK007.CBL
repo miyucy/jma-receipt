@@ -276,6 +276,7 @@
                                                WRK-PARA-SHELLID
                                                WRK-PARA-HOSPID
                                                DTCHKERRPARA
+                                               ORCBSD01-IKTKBT
                                                ORCBSD01-SRYYM
                                                ORCBSD01-NYUGAIKBN
                                                ORCBSD01-CHKKBN-G
