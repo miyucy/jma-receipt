@@ -344,7 +344,7 @@
            MOVE    SPA-Y01-YYKYMDS     TO  SYS-1012-STYUKYMD
            MOVE    SPA-Y01-YYKYMDS     TO  SYS-1012-EDYUKYMD
       *    システム管理検索
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1012-HOSPNUM
            MOVE    SYS-1012-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -391,7 +391,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-Y01-YYKYMDS     TO  SYS-1010-STYUKYMD
            MOVE    SPA-Y01-YYKYMDS     TO  SYS-1010-EDYUKYMD
       *    システム管理検索
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
            MOVE    SYS-1010-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -473,7 +473,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *        予約マスター検索
                INITIALIZE                  YYK-REC
-               MOVE    SPA-HOSPID          TO  YYK-HOSPID
+      *********MOVE    SPA-HOSPID          TO  YYK-HOSPID
                MOVE    SPA-GMN-SINRYOCD    TO  YYK-SRYNAIYO
                MOVE    SPA-NAI-DRNCD       TO  YYK-DRCD
                MOVE    SPA-NAI-YYKYMD(IDX) TO  YYK-YYKYMD
@@ -483,7 +483,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                ELSE
                    MOVE    "key3"          TO  WRK-PATH
                END-IF
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
+               MOVE    SPA-HOSPNUM         TO  YYK-HOSPNUM
                MOVE    YYK-REC             TO  MCPDATA-REC
                MOVE    "tbl_yyk"           TO  MCP-TABLE
                MOVE    WRK-PATH            TO  MCP-PATHNAME
@@ -597,7 +597,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    YYK-YYKYMD          TO  SYS-1012-STYUKYMD
            MOVE    YYK-YYKYMD          TO  SYS-1012-EDYUKYMD
       *    システム管理検索
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1012-HOSPNUM
            MOVE    SYS-1012-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -1192,9 +1192,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"     USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -1205,9 +1206,10 @@ grpsys                            SPA-AREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"     USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
        920-DBFETCH-EXT.
@@ -1219,9 +1221,10 @@ grpsys                            SPA-AREA
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
            .
        990-DBCLOSE-EXT.
@@ -1233,9 +1236,10 @@ grpsys                            SPA-AREA
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL   "ORCDBMAIN"       USING
+                                        MCPAREA
+                                        MCPDATA-REC
+                                        SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.
