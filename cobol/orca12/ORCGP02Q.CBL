@@ -399,7 +399,7 @@
            MOVE    WRK-TMM             TO  WRK-TMM-H
            MOVE    WRK-HENTIME         TO  SPA-P02Q-TTIME (IDX)
       *    保険者番号
-           MOVE    QRCDHKN-HKNNUM      TO  SPA-P02Q-THKNJANUM (IDX)
+           MOVE    QRCDHKN-HKNJANUM    TO  SPA-P02Q-THKNJANUM (IDX)
       *    記号番号
            STRING  QRCDHKN-KIGO        DELIMITED  BY  SPACE
                    "・"                DELIMITED  BY  SIZE
@@ -609,7 +609,7 @@
                       (PTHKN-HKNNUM(1:1)       =   "9"   )
                    CONTINUE
                ELSE
-                   IF     (PTHKN-HKNJANUM      =   QRCDHKN-HKNNUM) 
+                   IF     (PTHKN-HKNJANUM      =   QRCDHKN-HKNJANUM) 
                       AND (PTHKN-KIGO          =   QRCDHKN-KIGO )
                       AND (PTHKN-NUM           =   QRCDHKN-NUM )
                       AND (PTHKN-HONKZKKBN     =   QRCDHKN-HONKZKKBN )

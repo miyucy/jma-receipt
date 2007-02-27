@@ -311,7 +311,7 @@
            INITIALIZE                      QRCDHKN-REC
            MOVE    SPA-HOSPID          TO  QRCDHKN-HOSPID
            MOVE    SPA-P02Q-SYSYMD     TO  QRCDHKN-REGISTYMD
-           MOVE    SPA-P02Q-REGISTID  TO  QRCDHKN-REGISTID
+           MOVE    SPA-P02Q-REGISTID   TO  QRCDHKN-REGISTID
            MOVE    QRCDHKN-REC         TO  MCPDATA-REC
            MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -345,8 +345,8 @@
        30011-QRCDHKN-HEN-SEC              SECTION.
       *
       *    保険者番号
-           MOVE    QRCDHKN-HKNNUM      TO  SPA-P02Q1-QRHKNJANUM
-           MOVE    QRCDHKN-HKNNUM      TO  WRK-HKNJANUM
+           MOVE    QRCDHKN-HKNJANUM    TO  SPA-P02Q1-QRHKNJANUM
+           MOVE    QRCDHKN-HKNJANUM    TO  WRK-HKNJANUM
            PERFORM 300111-HKNJAINF-HEN-SEC
            MOVE    WRK-HKNJANAME       TO  SPA-P02Q1-QRHKNJANAME
            MOVE    WRK-HKNNUMMEI       TO  SPA-P02Q1-QRHKNNUMMEI
@@ -702,7 +702,7 @@
                    ELSE
                        MOVE    ZERO            TO  SPA-P02Q1-KIKAN-OK
                    END-IF
-                   IF     (PTHKN-HKNJANUM      =   QRCDHKN-HKNNUM)
+                   IF     (PTHKN-HKNJANUM      =   QRCDHKN-HKNJANUM)
                       AND (PTHKN-KIGO          =   QRCDHKN-KIGO )
                       AND (PTHKN-NUM           =   QRCDHKN-NUM )
                       AND (PTHKN-HONKZKKBN     =   QRCDHKN-HONKZKKBN )
@@ -858,6 +858,7 @@
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
       *    戻る
                WHEN    "CLICKED"       ALSO    "B01"
+                   MOVE    SPACE               TO  SPA-QR-SYORI
                    PERFORM 210-BACK
       *    クリア
                WHEN    "CLICKED"       ALSO    "B02"

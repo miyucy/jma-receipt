@@ -1051,7 +1051,7 @@
                MOVE    SPA-GMN-SEX-LST (2) TO  P02-P02-SEX
            END-IF
            MOVE    QRCDHKN-BIRTHDAY    TO  P02-P02-BIRTHDAY
-           MOVE    QRCDHKN-HKNNUM      TO  P02-P02-HKNJANUM
+           MOVE    QRCDHKN-HKNJANUM    TO  P02-P02-HKNJANUM
            MOVE    QRCDHKN-KIGO        TO  P02-P02-KIGO
            MOVE    QRCDHKN-NUM         TO  P02-P02-NUM
            MOVE    QRCDHKN-HONKZKKBN   TO  P02-P02-HONKZKBN
@@ -1071,7 +1071,7 @@
       *
       *    ÊÝ¸±¹¹¿·
            IF     (SPA-QR-HKNID         =   SPA-NAI-HKNID )  AND
-                  (SPA-GMN-HKNJANUM     =   QRCDHKN-HKNNUM)   AND
+                  (SPA-GMN-HKNJANUM     =   QRCDHKN-HKNJANUM) AND
                   (SPA-GMN-HONKZKKBN    =   QRCDHKN-HONKZKKBN) AND
                   (SPA-GMN-KIGO         =   QRCDHKN-KIGO )     AND
                   (SPA-GMN-NUM          =   QRCDHKN-NUM  )
@@ -1124,7 +1124,7 @@
            MOVE    SPACE               TO  P02-P02-SKKGETYMD
            MOVE    SPACE               TO  P02-P02-HIHKNJANAME
       *    £Ñ£Ò¾ðÊó
-           MOVE    QRCDHKN-HKNNUM      TO  P02-P02-HKNJANUM
+           MOVE    QRCDHKN-HKNJANUM    TO  P02-P02-HKNJANUM
            MOVE    QRCDHKN-KIGO        TO  P02-P02-KIGO
            MOVE    QRCDHKN-NUM         TO  P02-P02-NUM
            MOVE    QRCDHKN-HONKZKKBN   TO  P02-P02-HONKZKBN
