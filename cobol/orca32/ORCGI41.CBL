@@ -328,6 +328,8 @@
            03  WRK-BTU-NISSU-AREA.
                05  WRK-LAST-RRKNUM     PIC 9(03).
                05  WRK-NYUIN-BTUNUM    PIC X(02)   OCCURS  6.
+               05  WRK-NYUIN-BTUTANNAME
+                                       PIC X(10)   OCCURS  6.
                05  WRK-NYUIN-BTUDAY    PIC 9(04)   OCCURS  6.
                05  WRK-LAST-RECNO      PIC 9(01).
                05  WRK-NYUIN-BTUDAY-Z  PIC ZZZ9.
@@ -1490,28 +1492,43 @@
                            WHEN    "3"
                            WHEN    "4"
                            WHEN    "7"
-                               IF    PTNYUINRRK-BTUNUM   =
-                                               WRK-NYUIN-BTUNUM(1)
+      *                        病棟短縮名の取得
+                               PERFORM    3103-BTU-TANNAME-EDIT-SEC
+      *
+                               IF    (PTNYUINRRK-BTUNUM   =
+                                               WRK-NYUIN-BTUNUM(1)) AND
+                                     (SYS-5001-BTU-TANNAME =
+                                               WRK-NYUIN-BTUTANNAME(1))
                                    MOVE   1      TO   IDX
                                END-IF
-                               IF    PTNYUINRRK-BTUNUM   =
-                                               WRK-NYUIN-BTUNUM(2)
+                               IF    (PTNYUINRRK-BTUNUM   =
+                                               WRK-NYUIN-BTUNUM(2)) AND
+                                     (SYS-5001-BTU-TANNAME =
+                                               WRK-NYUIN-BTUTANNAME(2))
                                    MOVE   2      TO   IDX
                                END-IF
-                               IF    PTNYUINRRK-BTUNUM   =
-                                               WRK-NYUIN-BTUNUM(3)
+                               IF    (PTNYUINRRK-BTUNUM   =
+                                               WRK-NYUIN-BTUNUM(3)) AND
+                                     (SYS-5001-BTU-TANNAME =
+                                               WRK-NYUIN-BTUTANNAME(3))
                                    MOVE   3      TO   IDX
                                END-IF
-                               IF    PTNYUINRRK-BTUNUM   =
-                                               WRK-NYUIN-BTUNUM(4)
+                               IF    (PTNYUINRRK-BTUNUM   =
+                                               WRK-NYUIN-BTUNUM(4)) AND
+                                     (SYS-5001-BTU-TANNAME =
+                                               WRK-NYUIN-BTUTANNAME(4))
                                    MOVE   4      TO   IDX
                                END-IF
-                               IF    PTNYUINRRK-BTUNUM   =
-                                               WRK-NYUIN-BTUNUM(5)
+                               IF    (PTNYUINRRK-BTUNUM   =
+                                               WRK-NYUIN-BTUNUM(5)) AND
+                                     (SYS-5001-BTU-TANNAME =
+                                               WRK-NYUIN-BTUTANNAME(5))
                                    MOVE   5      TO   IDX
                                END-IF
-                               IF    PTNYUINRRK-BTUNUM   =
-                                               WRK-NYUIN-BTUNUM(6)
+                               IF    (PTNYUINRRK-BTUNUM   =
+                                               WRK-NYUIN-BTUNUM(6)) AND
+                                     (SYS-5001-BTU-TANNAME =
+                                               WRK-NYUIN-BTUTANNAME(6))
                                    MOVE   6      TO   IDX
                                END-IF
       *
@@ -1522,9 +1539,15 @@
                                      MOVE  PTNYUINRRK-BTUNUM
                                                 TO  WRK-NYUIN-BTUNUM
                                                                   (IDX)
+                                     MOVE  SYS-5001-BTU-TANNAME
+                                                TO  WRK-NYUIN-BTUTANNAME
+                                                                  (IDX)
                                   ELSE
                                      MOVE    6    TO    IDX
                                      MOVE  "XX" TO  WRK-NYUIN-BTUNUM
+                                                                  (IDX)
+                                     MOVE  "その他計"
+                                                TO  WRK-NYUIN-BTUTANNAME
                                                                   (IDX)
                                   END-IF
                                END-IF
@@ -1584,74 +1607,43 @@
            PERFORM   VARYING    IDX   FROM   1    BY   1
                      UNTIL     (IDX     >    6)    OR
                                (WRK-NYUIN-BTUNUM(IDX)  =  SPACE)
-      *        病棟名称
-               IF      WRK-NYUIN-BTUNUM(IDX)   =   "XX"
-                   MOVE   "その他計"   TO  SYS-5001-BTU-TANNAME
-               ELSE
-                   INITIALIZE                  SYSKANRI-REC
-                   MOVE    "5001"          TO  SYS-KANRICD
-                   MOVE    WRK-NYUIN-BTUNUM(IDX)
-                                           TO  SYS-KBNCD
-                   MOVE    SPA-SYSYMD      TO  SYS-STYUKYMD
-                   MOVE    SYS-STYUKYMD    TO  SYS-EDYUKYMD
-                   MOVE    SYSKANRI-REC    TO  MCPDATA-REC
-                   MOVE    "tbl_syskanri"  TO  MCP-TABLE
-                   MOVE    "key10"         TO  MCP-PATHNAME
-                   PERFORM 910-DBSELECT-SEC
-                   IF      MCP-RC              =   ZERO
-                       MOVE    "tbl_syskanri"      TO  MCP-TABLE
-                       MOVE    "key10"             TO  MCP-PATHNAME
-                       PERFORM 900-KANRIMST-READ-SEC
-                   ELSE
-                       MOVE    1           TO  FLG-SYSKANRI
-                   END-IF
-                   MOVE    "tbl_syskanri"  TO  MCP-TABLE
-                   MOVE    "key10"         TO  MCP-PATHNAME
-                   PERFORM 990-DBCLOSE-SEC
-      *
-                   IF      FLG-SYSKANRI    =   ZERO
-                       MOVE    MCPDATA-REC TO  SYS-5001-REC
-                   ELSE
-                       INITIALIZE              SYS-5001-REC
-                   END-IF
-               END-IF
       *
                MOVE   WRK-NYUIN-BTUDAY(IDX)
                                        TO   WRK-NYUIN-BTUDAY-Z
       *
                EVALUATE    IDX
                    WHEN    1
-                       MOVE   SYS-5001-BTU-TANNAME
+                       MOVE   WRK-NYUIN-BTUTANNAME(1)
                                           TO   SPA-GMN-SYUBETSU1(1:10)
                        MOVE   WRK-NYUIN-BTUDAY-Z
                                           TO   SPA-GMN-SYUBETSU1(11:4)
                        MOVE  "日"         TO   SPA-GMN-SYUBETSU1(15:2)
                    WHEN    2
-                       MOVE   SYS-5001-BTU-TANNAME
+                       MOVE   WRK-NYUIN-BTUTANNAME(2)
                                           TO   SPA-GMN-SYUBETSU2(1:10)
                        MOVE   WRK-NYUIN-BTUDAY-Z
                                           TO   SPA-GMN-SYUBETSU2(11:4)
                        MOVE  "日"         TO   SPA-GMN-SYUBETSU2(15:2)
                    WHEN    3
-                       MOVE   SYS-5001-BTU-TANNAME
+                       MOVE   WRK-NYUIN-BTUTANNAME(3)
                                           TO   SPA-GMN-SYUBETSU3(1:10)
                        MOVE   WRK-NYUIN-BTUDAY-Z
                                           TO   SPA-GMN-SYUBETSU3(11:4)
                        MOVE  "日"         TO   SPA-GMN-SYUBETSU3(15:2)
                    WHEN    4
-                       MOVE   SYS-5001-BTU-TANNAME
+                       MOVE   WRK-NYUIN-BTUTANNAME(4)
                                           TO   SPA-GMN-SYUBETSU4(1:10)
                        MOVE   WRK-NYUIN-BTUDAY-Z
                                           TO   SPA-GMN-SYUBETSU4(11:4)
                        MOVE  "日"         TO   SPA-GMN-SYUBETSU4(15:2)
                    WHEN    5
-                       MOVE   SYS-5001-BTU-TANNAME
+                       MOVE   WRK-NYUIN-BTUTANNAME(5)
                                           TO   SPA-GMN-SYUBETSU5(1:10)
                        MOVE   WRK-NYUIN-BTUDAY-Z
                                           TO   SPA-GMN-SYUBETSU5(11:4)
                        MOVE  "日"         TO   SPA-GMN-SYUBETSU5(15:2)
                    WHEN    6
-                       MOVE   SYS-5001-BTU-TANNAME
+                       MOVE   WRK-NYUIN-BTUTANNAME(6)
                                           TO   SPA-GMN-SYUBETSU6(1:10)
                        MOVE   WRK-NYUIN-BTUDAY-Z
                                           TO   SPA-GMN-SYUBETSU6(11:4)
@@ -1663,6 +1655,43 @@
       *
            .
        3103-BTUDAY-EDIT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   病棟短縮名称の取得
+      *****************************************************************
+       3103-BTU-TANNAME-EDIT-SEC            SECTION.
+      *
+      *
+           INITIALIZE                      SYSKANRI-REC
+           MOVE    "5001"              TO  SYS-KANRICD
+           MOVE    PTNYUINRRK-BTUNUM   TO  SYS-KBNCD
+           MOVE    PTNYUINRRK-TENNYUYMD
+                                       TO  SYS-STYUKYMD
+           MOVE    SYS-STYUKYMD        TO  SYS-EDYUKYMD
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key10"         TO  MCP-PATHNAME
+               PERFORM 900-KANRIMST-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC     TO  SYS-5001-REC
+           ELSE
+               INITIALIZE                  SYS-5001-REC
+           END-IF
+      *
+           .
+       3103-BTU-TANNAME-EDIT-EXT.
            EXIT.
       *
       *****************************************************************
