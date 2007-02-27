@@ -1516,10 +1516,15 @@
                                END-IF
       *
                                IF   IDX   =   ZERO
-                                   ADD     1    TO   WRK-LAST-RECNO
-                                   MOVE    WRK-LAST-RECNO   TO  IDX
-                                   MOVE  PTNYUINRRK-BTUNUM
+                                  IF   WRK-LAST-RECNO   <   6
+                                     ADD     1    TO   WRK-LAST-RECNO
+                                     MOVE    WRK-LAST-RECNO   TO  IDX
+                                     MOVE  PTNYUINRRK-BTUNUM
                                                 TO  WRK-NYUIN-BTUNUM
+                                                                  (IDX)
+                                  ELSE
+                                     MOVE    6    TO    IDX
+                                     MOVE  "XX" TO  WRK-NYUIN-BTUNUM
                                                                   (IDX)
                                END-IF
       *                        期間算出
@@ -1579,30 +1584,35 @@
                      UNTIL     (IDX     >    6)    OR
                                (WRK-NYUIN-BTUNUM(IDX)  =  SPACE)
       *        病棟名称
-               INITIALIZE                  SYSKANRI-REC
-               MOVE    "5001"          TO  SYS-KANRICD
-               MOVE    WRK-NYUIN-BTUNUM(IDX)
-                                       TO  SYS-KBNCD
-               MOVE    SPA-SYSYMD      TO  SYS-STYUKYMD
-               MOVE    SYS-STYUKYMD    TO  SYS-EDYUKYMD
-               MOVE    SYSKANRI-REC    TO  MCPDATA-REC
-               MOVE    "tbl_syskanri"  TO  MCP-TABLE
-               MOVE    "key10"         TO  MCP-PATHNAME
-               PERFORM 910-DBSELECT-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    "tbl_syskanri"      TO  MCP-TABLE
-                   MOVE    "key10"             TO  MCP-PATHNAME
-                   PERFORM 900-KANRIMST-READ-SEC
+               IF      WRK-NYUIN-BTUNUM(IDX)   =   "XX"
+                   MOVE   "その他計"   TO  SYS-5001-BTU-TANNAME
                ELSE
-                   MOVE    1           TO  FLG-SYSKANRI
-               END-IF
-               MOVE    "tbl_syskanri"  TO  MCP-TABLE
-               MOVE    "key10"         TO  MCP-PATHNAME
-               PERFORM 990-DBCLOSE-SEC
+                   INITIALIZE                  SYSKANRI-REC
+                   MOVE    "5001"          TO  SYS-KANRICD
+                   MOVE    WRK-NYUIN-BTUNUM(IDX)
+                                           TO  SYS-KBNCD
+                   MOVE    SPA-SYSYMD      TO  SYS-STYUKYMD
+                   MOVE    SYS-STYUKYMD    TO  SYS-EDYUKYMD
+                   MOVE    SYSKANRI-REC    TO  MCPDATA-REC
+                   MOVE    "tbl_syskanri"  TO  MCP-TABLE
+                   MOVE    "key10"         TO  MCP-PATHNAME
+                   PERFORM 910-DBSELECT-SEC
+                   IF      MCP-RC              =   ZERO
+                       MOVE    "tbl_syskanri"      TO  MCP-TABLE
+                       MOVE    "key10"             TO  MCP-PATHNAME
+                       PERFORM 900-KANRIMST-READ-SEC
+                   ELSE
+                       MOVE    1           TO  FLG-SYSKANRI
+                   END-IF
+                   MOVE    "tbl_syskanri"  TO  MCP-TABLE
+                   MOVE    "key10"         TO  MCP-PATHNAME
+                   PERFORM 990-DBCLOSE-SEC
       *
-               IF      FLG-SYSKANRI    =   ZERO
-                   MOVE    MCPDATA-REC TO  SYS-5001-REC
+                   IF      FLG-SYSKANRI    =   ZERO
+                       MOVE    MCPDATA-REC TO  SYS-5001-REC
+                   END-IF
                END-IF
+      *
                MOVE   WRK-NYUIN-BTUDAY(IDX)
                                        TO   WRK-NYUIN-BTUDAY-Z
       *
