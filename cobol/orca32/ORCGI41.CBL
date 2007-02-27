@@ -1526,6 +1526,7 @@
                                      MOVE    6    TO    IDX
                                      MOVE  "XX" TO  WRK-NYUIN-BTUNUM
                                                                   (IDX)
+                                  END-IF
                                END-IF
       *                        ´ü´Ö»»½Ð
                                INITIALIZE   STS-AREA-DAY
@@ -1610,6 +1611,8 @@
       *
                    IF      FLG-SYSKANRI    =   ZERO
                        MOVE    MCPDATA-REC TO  SYS-5001-REC
+                   ELSE
+                       INITIALIZE              SYS-5001-REC
                    END-IF
                END-IF
       *
