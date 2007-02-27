@@ -16313,7 +16313,8 @@
                END-IF
              ELSE
                IF  LNK-SYU-SRYYMD(1:6)   >=  "200704"
-                 IF    COMB-HOJOKBN       =  "1"
+                 IF    COMB-HOJOKBN           =  "1"
+                 AND   LNK-SYU-SYUSKJ-FTNKBN  =  "1"
                    MOVE  WK-SKJ-ZEIKEI2   TO  LNK-SYU-SKYMONEY-SKJ-TAX
                    COMPUTE  WK-SKJ-ZEITAISYO           =
                             WK-SKJ-ZEITAISYO           +
@@ -16351,7 +16352,8 @@
                END-IF
              ELSE
                IF  LNK-SYU-SRYYMD(1:6)   >=  "200704"
-                 IF    COMB-HOJOKBN       =  "1"
+                 IF    COMB-HOJOKBN           =  "1"
+                 AND   LNK-SYU-SYUSKJ-FTNKBN  =  "1"
                    MOVE  WK-SKJ-ZEIKEI2L  TO  LNK-SYU-SKYMONEY-LIFE-TAX
                    COMPUTE  WK-SKJ-ZEITAISYO           =
                             WK-SKJ-ZEITAISYO           +
