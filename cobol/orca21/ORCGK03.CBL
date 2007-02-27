@@ -4504,6 +4504,11 @@
       *****************************************************************
        4801-FUKU-HKNCOMBI-CHG-SEC           SECTION.
       *
+           IF      SPA-GMN-HKNCOMBI    =   SPACE
+               MOVE    SPA-GMN-THKNCOMBINUM (SPA-HKN-MAX)
+                                           TO  SPA-GMN-HKNCOMBI
+               MOVE    SPA-GMN-HKNCOMBI    TO  WRK-HKNCOMBI
+           END-IF
            MOVE    ZERO                TO  FLG-CHK
            PERFORM VARYING    IDX      FROM    1   BY  1
                    UNTIL     (IDX      >   SPA-HKN-MAX ) OR
@@ -4596,6 +4601,10 @@
       *****************************************************************
        4901-FUKU-SRYKA-CHG-SEC          SECTION.
       *
+           IF      SPA-GMN-SRYKA    =   SPACE
+               MOVE    SPA-GMN-TSRYKA (SPA-GMN-SRYKA-MAX)
+                                           TO  SPA-GMN-SRYKA
+           END-IF
            MOVE    ZERO                TO  FLG-CHK
            PERFORM VARYING    IDX      FROM    1   BY  1
                    UNTIL     (IDX      >   SPA-GMN-SRYKA-MAX ) OR
