@@ -337,6 +337,8 @@ RECORD_files = \
 	P02Q.rec \
 	P02Q1.rec \
 	U02Q.rec \
+	C12.rec \
+	D02.rec \
 
 DEF_files = \
 	HC01.def \
