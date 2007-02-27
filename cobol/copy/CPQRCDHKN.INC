@@ -37,7 +37,7 @@
       *制度区分(必須)
            03  QRCDHKN-SEIDOKBN            PIC X(03).
       *保険者番号(必須)
-           03  QRCDHKN-HKNNUM              PIC X(08).
+           03  QRCDHKN-HKNJANUM            PIC X(08).
       *記号番号(必須)
            03  QRCDHKN-KIGONUM             PIC X(40).
       *本人家族区分(必須)
@@ -54,7 +54,7 @@
       *漢字氏名(任意)
            03  QRCDHKN-NAME                PIC X(100).
       *給付割合(任意)
-           03  QRCDHKN-KYUFU               PIC X(02).
+           03  QRCDHKN-KYURATE             PIC X(02).
       *再発行コード(任意)
            03  QRCDHKN-SAIHAKKU            PIC X(50).
       *-------------> ここまで入力情報

@@ -4,7 +4,7 @@ tbl_qrcdhkn {
 	REGISTID    			number(5,0);
 	REGISTTIME 			char(6);
 	SEIDOKBN			char(3);
-	HKNNUM	 			char(8);
+	HKNJANUM 			char(8);
 	KIGONUM				varchar(40);
 	HONKZKKBN			char(1);
 	KANANAME			varchar(100);
@@ -12,7 +12,7 @@ tbl_qrcdhkn {
 	BIRTHDAY			char(7);
 	KANRINUM			varchar(100);
 	NAME				varchar(100);
-	WARIAI				varchar(02);
+	KYURATE				varchar(02);
 	SAIHAKKU			varchar(50);
 	PTID	   			number(10,0);
 	KIGO				varchar(80);

@@ -435,11 +435,6 @@
                ELSE
                    INITIALIZE                  SPA-XE01
                END-IF
-           ELSE
-      *TEST
-      *
-           DISPLAY "ERR QRCDHKN-REC:" QRCDHKN-REC
-      *
            END-IF
       *
            .
@@ -503,6 +498,7 @@
       *    受付最大件数
            MOVE    QRCDHKN-REGISTID   TO  WRK-REGISTID
       *
+           MOVE    SPACE               TO  QRCDHKN-REC
            INITIALIZE                      QRCDHKN-REC
            MOVE    SPA-HOSPID          TO  QRCDHKN-HOSPID
            MOVE    SPA-SYSYMD          TO  QRCDHKN-REGISTYMD
@@ -513,7 +509,7 @@
                GO      TO   420-DATA-HENSYU-EXT
            END-IF
            ADD     1                   TO  WRK-REGISTID
-           MOVE    WRK-REGISTID       TO  QRCDHKN-REGISTID
+           MOVE    WRK-REGISTID        TO  QRCDHKN-REGISTID
       *受付時間
            MOVE    SMCNDATE-HMS        TO  QRCDHKN-REGISTTIME
       *制度区分(必須)
@@ -582,20 +578,21 @@
                EVALUATE    KANACHK-MAX
                    WHEN    6
       *            政管
-                       MOVE    SPA-GMN-HKNNUM(3:4) TO  QRCDHKN-HKNNUM
+                       MOVE    SPA-GMN-HKNNUM(3:4) TO  QRCDHKN-HKNJANUM
                    WHEN    8
                        IF      SPA-GMN-HKNNUM(1:2) =   "00"
       *            国保
-                           MOVE    SPA-GMN-HKNNUM(3:) TO  QRCDHKN-HKNNUM
+                           MOVE    SPA-GMN-HKNNUM(3:)
+                                                   TO  QRCDHKN-HKNJANUM
                        ELSE
-                           MOVE    SPA-GMN-HKNNUM     TO  QRCDHKN-HKNNUM
+                           MOVE    SPA-GMN-HKNNUM  TO  QRCDHKN-HKNJANUM
                        END-IF
                    WHEN    OTHER
-                       MOVE    SPA-GMN-HKNNUM    TO  QRCDHKN-HKNNUM
+                       MOVE    SPA-GMN-HKNNUM    TO  QRCDHKN-HKNJANUM
                        MOVE    "02"              TO  QRCDHKN-ERRCD
                END-EVALUATE
            ELSE
-               MOVE    SPA-GMN-HKNNUM    TO  QRCDHKN-HKNNUM
+               MOVE    SPA-GMN-HKNNUM    TO  QRCDHKN-HKNJANUM
                MOVE    "02"              TO  QRCDHKN-ERRCD
            END-IF
            .
@@ -874,7 +871,7 @@
       *****************************************************************
        42011-KYUFU-HEN-SEC         SECTION.
       *
-           MOVE    WRK-NIN-DATA (IDX)(1:2) TO  QRCDHKN-KYUFU
+           MOVE    WRK-NIN-DATA (IDX)(1:2) TO  QRCDHKN-KYURATE
       *
            .
        42011-KYUFU-HEN-EXT.
@@ -1006,7 +1003,7 @@
            INITIALIZE                      PTHKNINF-REC
            MOVE    PTINF-HOSPID        TO  PTHKN-HOSPID
            MOVE    PTINF-PTID          TO  PTHKN-PTID
-           MOVE    QRCDHKN-HKNNUM      TO  PTHKN-HKNJANUM
+           MOVE    QRCDHKN-HKNJANUM    TO  PTHKN-HKNJANUM
       *
            MOVE    PTHKNINF-REC        TO  MCPDATA-REC
            MOVE    "tbl_pthkninf"      TO  MCP-TABLE
@@ -1045,7 +1042,7 @@
                INITIALIZE                      PTHKNINF-REC
                MOVE    PTINF-HOSPID        TO  PTHKN-HOSPID
                MOVE    PTINF-PTID          TO  PTHKN-PTID
-               MOVE    QRCDHKN-HKNNUM      TO  PTHKN-HKNJANUM
+               MOVE    QRCDHKN-HKNJANUM    TO  PTHKN-HKNJANUM
                MOVE    QRCDHKN-HONKZKKBN   TO  PTHKN-HONKZKKBN
                MOVE    QRCDHKN-KIGO        TO  PTHKN-KIGO
                MOVE    QRCDHKN-NUM         TO  PTHKN-NUM
