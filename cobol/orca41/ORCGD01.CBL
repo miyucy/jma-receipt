@@ -1071,6 +1071,10 @@
       *
            END-IF
       *
+           MOVE    "2001"             TO  WRK-DELKANRICD
+           MOVE    "2%"               TO  WRK-DELKBNCD
+           PERFORM 4901-DEL-CHK004-SEC
+      *
            MOVE    ZERO        TO  SPA-NAI-D01-KBTUSER
            MOVE    "1"         TO  SPA-NAI-D01-IKTKBT
       *
