@@ -318,10 +318,11 @@
            MOVE    ZERO            TO  FLG-SRYACT
       *
       *    診療行為編集処理
-           IF    ( ORCBSD01-SRYYMDKBN  =   SPACE )
-               PERFORM 2001-SRYACT-EDIT-SEC
-           ELSE
+           IF    ( ORCBSD01-IKTKBT     =   "2" )
+            OR   ( ORCBSD01-SRYYMDKBN  =   "1" )
                PERFORM 2002-SRYACT-EDIT-SEC
+           ELSE
+               PERFORM 2001-SRYACT-EDIT-SEC
            END-IF
       *
       *    データチェック診療行為追加処理

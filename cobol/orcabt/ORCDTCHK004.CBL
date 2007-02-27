@@ -339,10 +339,11 @@
            MOVE    ZERO            TO  FLG-SRYACCT
       *
       *    診療会計編集処理
-           IF    ( ORCBSD01-SRYYMDKBN  =   SPACE )
-               PERFORM 2001-SRYACCT-EDIT-SEC
-           ELSE
+           IF    ( ORCBSD01-IKTKBT     =   "2" )
+            OR   ( ORCBSD01-SRYYMDKBN  =   "1" )
                PERFORM 2002-SRYACCT-EDIT-SEC
+           ELSE
+               PERFORM 2001-SRYACCT-EDIT-SEC
            END-IF
       *
       *    データチェック診療会計テーブル追加処理
