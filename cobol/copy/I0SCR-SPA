@@ -723,6 +723,13 @@
                            13                        PIC X(01).
                            13   SPA-GMN-I04-DR-NM    PIC X(24).
       *
+                   09  SPA-GMN-I04-KBT-AREA.
+                       11  SPA-GMN-I04-KBT-TITLE       PIC X(30).
+                       11  SPA-GMN-I04-SKY1ST          PIC S9(10).
+                       11  SPA-GMN-I04-SKY2ND          PIC S9(10).
+                       11  SPA-GMN-I04-SKY3RD          PIC S9(10).
+                       11  SPA-GMN-I04-SKYSGK          PIC S9(10).
+      *
       *            ÊÝ¸±ÁÈ¤ß¹ç¤ï¤»¥ê¥¹¥È
                    09  SPA-GMN-I04-HKNCOMBILST.
                        11  SPA-GMN-I04-HKNCOMBILST-CNT
@@ -742,9 +749,16 @@
                        11  SPA-NAI-I04-PTRRKEDANUM   PIC 9(03).
       *                ºÆ·×»»¥Õ¥é¥°
                        11  SPA-NAI-I04-SAIKEISANFLG  PIC 9(01).
+      *                Ï«ºÒ¼«ÇåÀÕÀÁµáÍ­Ìµ¥Õ¥é¥°
+                       11  SPA-NAI-I04-RSIJBIARIFLG  PIC 9(01).
+      *                Äê´üÀÁµáº¹³Û·×»»¥Õ¥é¥°
+                       11  SPA-NAI-I04-TEIKIKEISANFLG  PIC 9(01).
+      *                Ï«ºÒ¡¦Äê´üÀÁµáº¹³ÛÉ½¼¨ÀÚÂØ¥Õ¥é¥°
+                       11  SPA-NAI-I04-RSITEIKIFLG   PIC 9(01).
+                       11  SPA-NAI-I04-SAKKBN-MAX    PIC X(01).
       *
                    09  SPA-NAI-I04-INPUT-AREA.
-      *                Æþ±¡²½
+      *                Æþ±¡²Ê
                        11  SPA-NAI-I04-NYUINKA       PIC X(02).
       *                Æþ±¡Æü
                        11  SPA-NAI-I04-NYUINYMD      PIC X(08).

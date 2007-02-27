@@ -24,11 +24,17 @@
       *
         02  I04.
       *     02  I04-FIXED3.
-              03  I04-B05-LABEL                    PIC X(10).
+              03  I04-B05-LABEL            PIC X(10).
+              03  I04-B08-LABEL            PIC X(10).
               03  I04-LBLTAIINKEISAN-G.
                 04  I04-LBLTAIINKEISAN-STYLE
                                          PIC X(20).
                 04  I04-LBLTAIINKEISAN   PIC X(20).
+              03  I04-LBLRSITTL        PIC X(30).
+              03  I04-LBLRSISYO        PIC X(10).
+              03  I04-LBLRSISAI        PIC X(10).
+              03  I04-LBLRSISDO        PIC X(10).
+              03  I04-LBLRSIETC        PIC X(10).
               03  I04-PTNUM.
                 04  I04-VALUE   PIC X(20).
               03  I04-KANANAME.

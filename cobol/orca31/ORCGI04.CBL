@@ -133,6 +133,8 @@
        01  WRK-AREA.
            03  WRK-SKYMONEY               PIC  S9(07).
            03  WRK-YMD                    PIC X(10). 
+           03  WRK-EDTYMD1                 PIC X(10).
+           03  WRK-EDTYMD3                 PIC X(22).
            03  WRK-HENYMDG                PIC X(09).
            03  WRK-SYMD.
                05  WRK-SYY                 PIC 9(04).
@@ -192,15 +194,26 @@
            03  WRK-SKY-CNT                 PIC 9(10).
            03  WRK-PRINT-PG                PIC X(20).
            03  WRK-ORG-PRINT-PG            PIC X(20).
+           03  WRK-LASTTEIKIEDYMD          PIC X(08).
            03  WRK-SEIKYU-G.
                05  WRK-SKY-SKYMONEY-TAX-SAI PIC  S9(07).
                05  WRK-SKY-SKYMONEY        PIC  S9(07).
                05  WRK-SKY-NYUKIN-TOTAL    PIC  S9(07).
                03  WRK-SKY-KONMISYU        PIC  S9(07).
       *
+       01  KBT-AREA.
+           03  KBT-OCC                             OCCURS  3.
+               05  KBT-SKYSTYMD                    PIC X(08).
+               05  KBT-SKYEDYMD                    PIC X(08).
+               05  KBT-SYU-SKYMONEY                PIC S9(9).
+               05  KBT-FTN-SKYMONEY                PIC S9(9).
+               05  KBT-SAGAKU                      PIC S9(9).
+      *
        01  CONST-AREA.
            03  CONST-JOB-SHELLID           PIC X(08)   VALUE   "TEIKI1".
            03  CONST-JOB-JOBID             PIC 9(07)   VALUE   1.
+           03  CONST-EDIT-RSIJBI           PIC 9(01)   VALUE   ZERO.
+           03  CONST-EDIT-TEIKI            PIC 9(01)   VALUE   1.
       *
       *    ¥¹¥ÑÎÎ°è ¥ï¡¼¥¯
            COPY    "COMMON-SPA"      REPLACING
@@ -253,6 +266,7 @@
       *
            COPY  "CPSK1041.INC".
       *
+           COPY  "CPSK5010.INC".
            COPY  "CPSK5013.INC".
       *
       *    ´µ¼Ô¥Þ¥¹¥¿¡Ý
@@ -349,6 +363,16 @@
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
       *****************************************************************
+      *
+      *    ÉéÃ´¶â·×»»¥µ¥Ö
+       01  LNK-ORCS02-REC.
+           COPY  "CPORCS02.INC".
+       01  LNK-SYUNOU-REC-T.
+         02 LNK-SYUNOU-REC     OCCURS 10.
+           COPY  "CPSYUNOU.INC"    REPLACING  //SYU-// BY //LNK-SYU-//.
+       01  LNK-SYUDAY-REC-T.
+         02 LNK-SYUDAY-REC     OCCURS 10.
+           COPY  "CPSYUDAY.INC"  REPLACING  //SDAY-// BY //LNK-SDAY-//.
       *
       *   ÆüÉÕÊÑ´¹¥µ¥Ö
            COPY    "CPORCSDAY.INC".
@@ -815,8 +839,197 @@
       *
            MOVE    1                   TO  SPA-NAI-I04-SAIKEISANFLG
       *
+           PERFORM VARYING IDX-SYU     FROM    1   BY  1
+                   UNTIL ( IDX-SYU     >   SPA-I0-SYUNOU-CNT )
+      *
+               IF    ( SPA-I0-SYUNOU-TTLDAT-FLG (IDX-SYU)
+                                   =   ZERO )
+                   MOVE    SPA-I0-SYUNOU-DAT (IDX-SYU)
+                                   TO  SYUNOU-REC
+      *
+                   IF    ( SYU-SYUHKNNUM   =   "971"   OR  "973" )
+                       MOVE    1           TO  SPA-NAI-I04-RSIJBIARIFLG
+                   END-IF
+      *
+               END-IF
+      *
+           END-PERFORM
+      *
+           INITIALIZE                  SYSKANRI-REC
+           MOVE    "5010"              TO  SYS-KANRICD
+           MOVE    "*"                 TO  SYS-KBNCD
+           MOVE    SPA-I01-I04-SKYSTYMD TO SYS-STYUKYMD
+                                           SYS-EDYUKYMD
+           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+           MOVE    SYSKANRI-REC        TO  SYS-5010-REC
+      *
+           EVALUATE    TRUE
+           WHEN    SYS-5010-SEIKYU-DAY (1) =   99
+               MOVE    "1" TO  SPA-NAI-I04-SAKKBN-MAX
+           WHEN    SYS-5010-SEIKYU-DAY (2) =   99
+               MOVE    "2" TO  SPA-NAI-I04-SAKKBN-MAX
+           WHEN    OTHER
+               MOVE    "3" TO  SPA-NAI-I04-SAKKBN-MAX
+           END-EVALUATE
+      *
+           PERFORM 31001-TEIKISAGAKU-HEN-SEC
+      *
+           IF    ( SPA-NAI-I04-RSIJBIARIFLG    =   1 )
+               MOVE    CONST-EDIT-RSIJBI   TO  SPA-NAI-I04-RSITEIKIFLG
+           ELSE
+               MOVE    CONST-EDIT-TEIKI    TO  SPA-NAI-I04-RSITEIKIFLG
+           END-IF
+      *
             .
        3100-SYOKI-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    Äê´üÀÁµáº¹³ÛÊÔ½¸½èÍý
+      *****************************************************************
+       31001-TEIKISAGAKU-HEN-SEC       SECTION.
+      *
+           IF    ( SPA-NAI-I04-TEIKIKEISANFLG
+                                       =   ZERO )
+               PERFORM 3101-KBT-HEN-SEC
+               PERFORM 3101-KBT-SAGAKU-HEN-SEC
+      *
+               MOVE    1           TO  SPA-NAI-I04-TEIKIKEISANFLG
+      *
+           END-IF
+      *
+            .
+       31001-TEIKISAGAKU-HEN-EXT.
+           EXIT.
+      *************************************************************
+      *    ´üÊÌÊÔ½¸½èÍý
+      *************************************************************
+       3101-KBT-HEN-SEC         SECTION.
+      *
+           INITIALIZE                      SPA-GMN-I04-KBT-AREA
+      *
+           MOVE    SPA-I01-I04-SKYSTYMD    TO  WRK-YMD
+           MOVE    "1"                     TO  WRK-ZOGENPTN
+           MOVE    -1                      TO  WRK-ZOGEN
+           PERFORM 800-CALENDAR-SEC
+           MOVE    WRK-KEISANYMD           TO  WRK-LASTTEIKIEDYMD
+      *
+           MOVE    WRK-LASTTEIKIEDYMD      TO  WRK-YMD
+           PERFORM 800-SEIWA-HEN-SEC
+           STRING  WRK-EDTYMD3 (11:6)      DELIMITED   BY  SIZE
+                   "Äê´üÀÁµáº¹³Û"          DELIMITED   BY  SIZE
+           INTO    SPA-GMN-I04-KBT-TITLE
+           END-STRING
+      *
+           INITIALIZE                      KBT-AREA
+      *
+           PERFORM 900-PTTEIKIRRK-KEY9-SEL-SEC
+      *
+           PERFORM UNTIL ( FLG-PTTEIKIRRK  NOT =   ZERO )
+      *
+               INITIALIZE                      SYUNOU-REC
+               MOVE    SPA-HOSPID          TO  SYU-HOSPID
+               MOVE    "1"                 TO  SYU-NYUGAIKBN
+               MOVE    PTTEIKIRRK-PTID     TO  SYU-PTID
+               MOVE    PTTEIKIRRK-DENPNUM  TO  SYU-DENPNUM
+               PERFORM 900-SYUNOU-KEY-SEL-SEC
+      *
+               MOVE    ZERO                TO  IDX5
+      *
+               EVALUATE    PTTEIKIRRK-KBT
+               WHEN    "1"
+                   MOVE    1               TO  IDX5
+               WHEN    "2"
+                   MOVE    2               TO  IDX5
+               WHEN    "3"
+                   MOVE    3               TO  IDX5
+               END-EVALUATE
+      *
+               IF    ( IDX5            >=  1 )
+                AND  ( IDX5            <=  3 )
+      *
+                   MOVE    PTTEIKIRRK-SKYSTYMD
+                                           TO  KBT-SKYSTYMD (IDX5)
+                   MOVE    PTTEIKIRRK-SKYEDYMD
+                                           TO  KBT-SKYEDYMD (IDX5)
+                   COMPUTE KBT-SYU-SKYMONEY (IDX5)
+                       =   KBT-SYU-SKYMONEY (IDX5)
+                       +   SYU-SKYMONEY
+      *
+               END-IF
+      *
+               PERFORM 900-PTTEIKIRRK-KEY9-FET-SEC
+      *
+           END-PERFORM
+      *
+           MOVE    "tbl_ptteikirrk"    TO  MCP-TABLE
+           MOVE    "key9"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           PERFORM VARYING IDX5    FROM    1   BY  1
+                   UNTIL ( IDX5    >   3 )
+      *
+               IF    ( KBT-SKYSTYMD (IDX5) NOT =   SPACE )
+      *
+                   INITIALIZE              LNK-ORCS02-REC
+                                           LNK-SYUNOU-REC-T
+                                           LNK-SYUDAY-REC-T
+      *
+                   MOVE    SPA-HOSPID  TO  LNK-S02-HOSPID
+                   MOVE    "1"         TO  LNK-S02-NYUGAIKBN
+                   MOVE    SPA-NAI-I04-PTID
+                                       TO  LNK-S02-PTID
+      *
+                   MOVE    KBT-SKYSTYMD (IDX5)
+                                       TO  LNK-S02-SKYSTYMD
+                   MOVE    KBT-SKYEDYMD (IDX5)
+                                       TO  LNK-S02-SKYEDYMD
+                   MOVE    SPA-SYSYMD  TO  LNK-S02-SYSYMD
+                   MOVE    "1"         TO  LNK-S02-SYORI-KBN
+                   CALL    "ORCSNYUFTN"    USING
+                                           SPA-AREA
+                                           LNK-ORCS02-REC
+                                           LNK-SYUNOU-REC-T
+                                           LNK-SYUDAY-REC-T
+                   IF    ( LNK-S02-RC      =   ZERO )
+                       PERFORM VARYING IDX6    FROM    1   BY  1
+                               UNTIL ( IDX6    >   10 )
+      *
+                           COMPUTE KBT-FTN-SKYMONEY (IDX5)
+                               =   KBT-FTN-SKYMONEY (IDX5)
+                               +   LNK-SYU-SKYMONEY (IDX6)
+      *
+                       END-PERFORM
+                   ELSE
+                       MOVE    ZERO    TO  KBT-SYU-SKYMONEY (IDX5)
+                   END-IF
+      *
+                   COMPUTE KBT-SAGAKU (IDX5)
+                       =   KBT-FTN-SKYMONEY (IDX5)
+                       -   KBT-SYU-SKYMONEY (IDX5)
+      *
+               END-IF
+      *
+           END-PERFORM
+      *
+           MOVE    KBT-SAGAKU (1)      TO  SPA-GMN-I04-SKY1ST
+           MOVE    KBT-SAGAKU (2)      TO  SPA-GMN-I04-SKY2ND
+           MOVE    KBT-SAGAKU (3)      TO  SPA-GMN-I04-SKY3RD
+      *
+           .
+       3101-KBT-HEN-EXT.
+           EXIT.
+      *************************************************************
+      *    ´üÊÌº¹³ÛÊÔ½¸½èÍý
+      *************************************************************
+       3101-KBT-SAGAKU-HEN-SEC         SECTION.
+      *
+           COMPUTE SPA-GMN-I04-SKYSGK
+               =   SPA-GMN-I04-SKY1ST
+               +   SPA-GMN-I04-SKY2ND
+               +   SPA-GMN-I04-SKY3RD
+      *
+           .
+       3101-KBT-SAGAKU-HEN-EXT.
            EXIT.
       *****************************************************************
       *    ¥³¥ó¥Ü¥Ü¥Ã¥¯¥¹½é´ü²½
@@ -1012,9 +1225,6 @@
            MOVE    "tbl_syunou"        TO   MCP-TABLE
            MOVE    "key13"             TO   MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
-      *
-           DISPLAY "1:SPA-GMN-I04-ZENMISYU-NYU =" 
-                     SPA-GMN-I04-ZENMISYU-NYU
       *
            IF    ( SPA-NAI-I04-SAIKEISANFLG    =   1 )
                PERFORM VARYING IDX-SYU FROM    1   BY  1
@@ -1742,22 +1952,6 @@
                                        TO  I04-JIHIMSG9
            MOVE    SPA-GMN-I04-JIHIMSG(10)
                                        TO  I04-JIHIMSG10
-      *
-      *    Ï«ºÒ½é¿Ç
-           MOVE    SPA-GMN-I04-ROUSYOSIN
-                                       TO  WRK-Z9
-           MOVE    WRK-Z9              TO  I04-ROUSYOSIN
-      *    Ï«ºÒºÆ¿Ç
-           MOVE    SPA-GMN-I04-ROUSAISIN
-                                       TO  WRK-Z9
-           MOVE    WRK-Z9              TO  I04-ROUSAISIN
-      *    Ï«ºÒ»ØÆ³
-           MOVE    SPA-GMN-I04-ROUSIDOU
-                                       TO  WRK-Z9
-           MOVE    WRK-Z9              TO  I04-ROUSIDOU
-      *    Ï«ºÒ¤½¤ÎÂ¾
-           MOVE    SPA-GMN-I04-ROUETC  TO  WRK-Z9
-           MOVE    WRK-Z9              TO  I04-ROUETC
       *    ¼¼ÎÁº¹³Û
            MOVE    SPA-GMN-I04-RMSAGAKU
                                        TO  WRK-Z9
@@ -1859,6 +2053,75 @@
                                            TO  I04-LBLTAIINKEISAN
                    MOVE    "¼ýÇ¼ºÆºîÀ®"    TO  I04-B05-LABEL
                END-IF
+           END-IF
+      *
+           IF    ( SPA-NAI-I04-RSITEIKIFLG =   CONST-EDIT-RSIJBI )
+      *
+               MOVE    "Äê´üº¹³Û"          TO  I04-B08-LABEL
+      *
+               MOVE    "Ï«ºÒ¼«ÇåÊÝ¸±Å¬ÍÑÊ¬¡Ê±ß¡Ë"
+                                           TO  I04-LBLRSITTL
+               MOVE    "½é¿Ç"
+                                           TO  I04-LBLRSISYO
+               MOVE    "ºÆ¿Ç"
+                                           TO  I04-LBLRSISAI
+               MOVE    "»ØÆ³"
+                                           TO  I04-LBLRSISDO
+               MOVE    "¤½¤ÎÂ¾"
+                                           TO  I04-LBLRSIETC
+      *
+      *        Ï«ºÒ½é¿Ç
+               MOVE    SPA-GMN-I04-ROUSYOSIN
+                                           TO  WRK-Z9
+               MOVE    WRK-Z9              TO  I04-ROUSYOSIN
+      *        Ï«ºÒºÆ¿Ç
+               MOVE    SPA-GMN-I04-ROUSAISIN
+                                           TO  WRK-Z9
+               MOVE    WRK-Z9              TO  I04-ROUSAISIN
+      *        Ï«ºÒ»ØÆ³
+               MOVE    SPA-GMN-I04-ROUSIDOU
+                                           TO  WRK-Z9
+               MOVE    WRK-Z9              TO  I04-ROUSIDOU
+      *        Ï«ºÒ¤½¤ÎÂ¾
+               MOVE    SPA-GMN-I04-ROUETC  TO  WRK-Z9
+               MOVE    WRK-Z9              TO  I04-ROUETC
+           ELSE
+      *
+               MOVE    "Ï«ºÒ¼«ÇåÀÕ"        TO  I04-B08-LABEL
+      *
+               MOVE    SPA-GMN-I04-KBT-TITLE
+                                           TO  I04-LBLRSITTL
+      *
+               IF    ( SPA-NAI-I04-SAKKBN-MAX  >=  "1" )
+                   MOVE    "£±´ü"          TO  I04-LBLRSISYO
+               END-IF
+      *
+               IF    ( SPA-NAI-I04-SAKKBN-MAX  >=  "2" )
+                   MOVE    "£²´ü"          TO  I04-LBLRSISAI
+               END-IF
+      *
+               IF    ( SPA-NAI-I04-SAKKBN-MAX  >=  "3" )
+                   MOVE    "£³´ü"          TO  I04-LBLRSISDO
+               END-IF
+      *
+               MOVE    "º¹³Û"              TO  I04-LBLRSIETC
+      *
+      *        £±´ü
+               MOVE    SPA-GMN-I04-SKY1ST  TO  WRK-Z9
+               MOVE    WRK-Z9              TO  I04-ROUSYOSIN
+      *
+      *        £²´ü
+               MOVE    SPA-GMN-I04-SKY2ND  TO  WRK-Z9
+               MOVE    WRK-Z9              TO  I04-ROUSAISIN
+      *
+      *        £³´ü
+               MOVE    SPA-GMN-I04-SKY3RD  TO  WRK-Z9
+               MOVE    WRK-Z9              TO  I04-ROUSIDOU
+      *
+      *        º¹³Û
+               MOVE    SPA-GMN-I04-SKYSGK  TO  WRK-Z9
+               MOVE    WRK-Z9              TO  I04-ROUETC
+      *
            END-IF
       *
            MOVE    SPA-GMN-I04-LBLSKYINF   TO  I04-LBLSKYINF
@@ -2022,12 +2285,8 @@
                                      TO    SPA-GMN-I04-SKYPRTOUT
                MOVE    SPA-GMN-I04-TAIPRTOUT-ITM (2)
                                      TO    SPA-GMN-I04-TAIPRTOUT
-      *    ¥³¥ó¥Ü½é´ü²½¡Ê¥Æ¥¹¥ÈÍÑ¡Ë
-      *    WHEN    "CLICKED"       ALSO    "B08"
-      *        MOVE    SPA-GMN-I04-SKYPRTOUT-ITM (1)
-      *                              TO    SPA-GMN-I04-SKYPRTOUT
-      *        MOVE    SPA-GMN-I04-TAIPRTOUT-ITM (1)
-      *                              TO    SPA-GMN-I04-TAIPRTOUT
+           WHEN    "CLICKED"       ALSO    "B08"
+               PERFORM 4100-RSITEIKI-CHG-SEC
       *    ÅÐÏ¿
            WHEN    "CLICKED"       ALSO    "B12"
                PERFORM 450-TOUROKU-SEC
@@ -2645,6 +2904,25 @@
       *
            .
        4100-SAIKEISAN-CHG-EXT.
+           EXIT.
+      *****************************************************************
+      *    Ï«ºÒ¡¦Äê´üÀÁµáº¹³ÛÉ½¼¨ÀÚÂØ½èÍý
+      *****************************************************************
+       4100-RSITEIKI-CHG-SEC           SECTION.
+      *
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *
+           IF    ( SPA-NAI-I04-RSITEIKIFLG =   CONST-EDIT-RSIJBI )
+               MOVE    CONST-EDIT-TEIKI
+                                   TO  SPA-NAI-I04-RSITEIKIFLG
+               PERFORM 31001-TEIKISAGAKU-HEN-SEC
+           ELSE
+               MOVE    CONST-EDIT-RSIJBI
+                                   TO  SPA-NAI-I04-RSITEIKIFLG
+           END-IF
+      *
+           .
+       4100-RSITEIKI-CHG-EXT.
            EXIT.
       *****************************************************************
       *    Æþ¶âÊýË¡¥µ¡¼¥Á½èÍý
@@ -4218,7 +4496,7 @@
       *****************************************************************
       *    ¥«¥ì¥ó¥À¡¼½èÍý
       *****************************************************************
-       5002-CALENDAR-SEC               SECTION.
+       800-CALENDAR-SEC                SECTION.
       *
            INITIALIZE                  STS-AREA-DAY
            INITIALIZE                  LNK-DAY6-AREA
@@ -4231,7 +4509,7 @@
            MOVE    LNK-DAY6-KEISAN     TO  WRK-KEISANYMD
       *
            .
-       5002-CALENDAR-EXT.
+       800-CALENDAR-EXT.
            EXIT.
       *****************************************************************
       *    ·îËöÆü¼èÆÀ½èÍý
@@ -4249,6 +4527,31 @@
            .
        5002-GETUMATU-EXT.
             EXIT.
+      *****************************************************************
+      *    À¾ÎñÆüËÜ¸ìÊÑ´¹½èÍý
+      *****************************************************************
+       800-SEIWA-HEN-SEC         SECTION.
+      *
+           MOVE    SPACE               TO  WRK-EDTYMD1
+                                           WRK-EDTYMD3
+      *
+           IF    ( WRK-YMD             =   SPACE )
+               GO  TO  800-SEIWA-HEN-EXT
+           END-IF
+      *
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY2-AREA
+           MOVE    "21"                TO  LNK-DAY2-IRAI
+           MOVE    WRK-YMD             TO  LNK-DAY2-YMD
+           CALL    "ORCSDAY"       USING   STS-AREA-DAY
+                                           LNK-DAY2-AREA
+           MOVE    LNK-DAY2-EDTYMD1    TO  WRK-EDTYMD1
+           MOVE    LNK-DAY2-EDTYMD3    TO  WRK-EDTYMD3
+           INSPECT WRK-EDTYMD3     REPLACING  ALL "  "  BY  "¡¡"
+      *
+           .
+       800-SEIWA-HEN-EXT.
+           EXIT.
       *****************************************************************
       *    Á´³ÑÈ¾³Ñº®ºß¥Á¥§¥Ã¥¯
       *****************************************************************
@@ -4505,6 +4808,54 @@
       *
            .
        900-PTNYUINRRK-KEY4-FET-EXT.
+           EXIT.
+      *****************************************************************
+      *    ´µ¼ÔÄê´üÀÁµáÍúÎò¸¡º÷½èÍý
+      *****************************************************************
+       900-PTTEIKIRRK-KEY9-SEL-SEC     SECTION.
+      *
+           MOVE    ZERO                TO  FLG-PTTEIKIRRK
+      *
+           INITIALIZE                      PTTEIKIRRK-REC
+           MOVE    SPA-HOSPID          TO  PTTEIKIRRK-HOSPID
+           MOVE    SPA-NAI-I04-PTID    TO  PTTEIKIRRK-PTID
+           MOVE    WRK-LASTTEIKIEDYMD (1:6)
+                                       TO  PTTEIKIRRK-SRYYM
+           MOVE    SPA-NAI-I04-PTRRKNUM
+                                       TO  PTTEIKIRRK-RRKNUM
+           MOVE    PTTEIKIRRK-REC      TO  MCPDATA-REC
+           MOVE    "tbl_ptteikirrk"    TO  MCP-TABLE
+           MOVE    "key9"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  PTTEIKIRRK-REC
+           ELSE
+               MOVE    1               TO  FLG-PTTEIKIRRK
+               INITIALIZE                  PTTEIKIRRK-REC
+           END-IF
+      *
+           .
+       900-PTTEIKIRRK-KEY9-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    ´µ¼ÔÄê´üÀÁµáÍúÎò¸¡º÷½èÍý
+      *****************************************************************
+       900-PTTEIKIRRK-KEY9-FET-SEC     SECTION.
+      *
+           MOVE    ZERO                TO  FLG-PTTEIKIRRK
+      *
+           MOVE    "tbl_ptteikirrk"    TO  MCP-TABLE
+           MOVE    "key9"              TO  MCP-PATHNAME
+           PERFORM 910-DBFETCH-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  PTTEIKIRRK-REC
+           ELSE
+               MOVE    1               TO  FLG-PTTEIKIRRK
+               INITIALIZE                  PTTEIKIRRK-REC
+           END-IF
+      *
+           .
+       900-PTTEIKIRRK-KEY9-FET-EXT.
            EXIT.
       *****************************************************************
       *    ¼ýÇ¼¥Þ¥¹¥¿¸¡º÷½èÍý

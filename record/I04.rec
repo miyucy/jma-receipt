@@ -3,9 +3,27 @@ I04	{
 		B05	{
 			label	varchar(10);
 		};
+		B08	{
+			label	varchar(10);
+		};
 		LBLTAIINKEISAN	{
 			style   varchar(20);
 			value	varchar(20);
+		};
+		LBLRSITTL	{
+			value	varchar(30);
+		};
+		LBLRSISYO	{
+			value	varchar(10);
+		};
+		LBLRSISAI	{
+			value	varchar(10);
+		};
+		LBLRSISDO	{
+			value	varchar(10);
+		};
+		LBLRSIETC	{
+			value	varchar(10);
 		};
 		PTNUM	{
 			value	varchar(20);
