@@ -470,7 +470,7 @@
                       (PTHKN-HKNNUM(1:1)       =   "9"   )
                    CONTINUE
                ELSE
-                   IF     (PTHKN-HKNJANUM      =   QRCDHKN-HKNNUM) 
+                   IF     (PTHKN-HKNJANUM      =   QRCDHKN-HKNJANUM) 
                       AND (PTHKN-KIGO          =   QRCDHKN-KIGO )
                       AND (PTHKN-NUM           =   QRCDHKN-NUM )
                       AND (PTHKN-HONKZKKBN     =   QRCDHKN-HONKZKKBN )
