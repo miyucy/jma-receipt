@@ -250,7 +250,7 @@
            03  WRK-U02Q-DATA-G.
                05  WRK-U02Q-REGISTID           PIC 9(05).
                05  WRK-U02Q-PTNUM              PIC X(20).
-               05  WRK-U02Q-PTID               PIC 9(05).
+               05  WRK-U02Q-PTID               PIC 9(10).
                05  WRK-U02Q-HKNID              PIC 9(10).
       *
        01  WRK-HENSYU-AREA.
@@ -4604,7 +4604,6 @@
                MOVE    2                   TO  SPA-GMN-CUR
                GO  TO  492-ORCGP01-EXT
            END-IF
-      *
       *
            IF      SPA-GMN-SELNUM      >   ZERO
       *
