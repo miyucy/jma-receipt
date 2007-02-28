@@ -25,7 +25,7 @@
       ************************************************************
       *01  RECE-PUTH-REC.
       *医療機関ＩＤ
-            02  RECE-PUTH-HOSPNUM      PIC 9(2).
+            02  RECE-PUTH-HOSPID       PIC X(24).
       *印刷順指定（県内県外）
             02  RECE-PUTH-PREFKBN-PRTJYUN
                                        PIC X(1).
@@ -49,7 +49,7 @@
                 03  RECE-PUTH-ZAITAKU  PIC X(1).
       *高額点数
                 03  RECE-PUTH-KOUGAKU-TEN
-                                       PIC 9(7).
+                                       PIC S9(7).
       *最終出力順
                 03  RECE-PUTH-SRT-LAST PIC X(1).
       *有効開始年月日

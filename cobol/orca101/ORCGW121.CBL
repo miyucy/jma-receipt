@@ -28,15 +28,6 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  03.04.01    NACL-藤原    07/04/16  レセプト請求がない地方公費
-      *                                     を入力時の登録を不可とする
-      *
-      *  03.05.00    NACL-多々納  07/05/02  グループ診療対応
-      * 
-      *  04.02.01    NACL-藤原    08/03/04  平成２０年４月改正対応
-      *  04.03.00    NACL-太田    08/06/17  タブ切替ボタン追加
-      *
-      *  04.07.01    NACL-藤原    12/05/28  タブラベル対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -64,12 +55,12 @@
       *
                05  SPA-GMN-AREA.
                    07  SPA-GMN-PREFKBN-PRTJYUNLST
-                                              OCCURS  3.
+                                              OCCURS  2.
                        09  SPA-GMN-PREFKBN-PRTJYUNL
                                               PIC X(01).
                        09  SPA-GMN-F1L        PIC X(01).
                        09  SPA-GMN-PREFKBN-PRTJYUNMEIL
-                                              PIC X(26).
+                                              PIC X(10).
                    07  SPA-GMN-PREFKBN-PRTJYUN-MAX
                                               PIC 9(02).   
       * 
@@ -105,21 +96,16 @@
                        09  SPA-GMN-F1L        PIC X(01).
                        09  SPA-GMN-PRTJYUN2MEIL
                                               PIC X(28).
-                   07  SPA-GMN-PRTJYUN2-MAX   PIC 9(01).   
+                   07  SPA-GMN-PRTJYUN2-MAX
+                                              PIC 9(01).   
       * 
                    07  SPA-GMN-ZAITAKULST     OCCURS  2.
                        09  SPA-GMN-ZAITAKUL   PIC X(01).
                        09  SPA-GMN-F1L        PIC X(01).
                        09  SPA-GMN-ZAITAKUMEIL
                                               PIC X(24).
-                   07  SPA-GMN-ZAITAKU-MAX    PIC 9(02).   
-      * 
-                   07  SPA-GMN-SRT-LASTLST    OCCURS  2.
-                       09  SPA-GMN-SRT-LASTL  PIC X(01).
-                       09  SPA-GMN-F1L        PIC X(01).
-                       09  SPA-GMN-SRT-LASTMEIL
-                                              PIC X(12).
-                   07  SPA-GMN-SRT-LAST-MAX   PIC 9(02).   
+                   07  SPA-GMN-ZAITAKU-MAX
+                                              PIC 9(02).   
       * 
                    07  SPA-GMN-CHOUKILST      OCCURS  2.
                        09  SPA-GMN-CHOUKIL    PIC X(01).
@@ -170,7 +156,7 @@
                                               PIC X(01).
                            11  SPA-GMN-F1     PIC X(01).
                            11  SPA-GMN-PREFKBN-PRTJYUNMEI
-                                              PIC X(26).
+                                              PIC X(10).
                        09  SPA-GMN-HKNJANUM-PRTJYUN-G.
                            11  SPA-GMN-HKNJANUM-PRTJYUN
                                               PIC X(01).
@@ -185,45 +171,32 @@
                            11  SPA-GMN-F1     PIC X(01).
                            11  SPA-GMN-HKNJANUM-PRTKBNMEI
                                               PIC X(22).
-      *
-                       09  SPA-GMN-HEAD1-OCC  OCCURS  2.
-                           11  SPA-GMN-PRTJYUN1-G.
-                               13  SPA-GMN-PRTJYUN1
+                       09  SPA-GMN-PRTJYUN1-G.
+                           11  SPA-GMN-PRTJYUN1
                                                PIC X(02).
-                               13  SPA-GMN-F1  PIC X(01).
-                               13  SPA-GMN-PRTJYUN1MEI
+                           11  SPA-GMN-F1      PIC X(01).
+                           11  SPA-GMN-PRTJYUN1MEI
                                                PIC X(28).
-                           11  SPA-GMN-PRTJYUN2-G.
-                               13  SPA-GMN-PRTJYUN2
+                       09  SPA-GMN-PRTJYUN2-G.
+                           11  SPA-GMN-PRTJYUN2
                                                PIC X(02).
-                               13  SPA-GMN-F1  PIC X(01).
-                               13  SPA-GMN-PRTJYUN2MEI
+                           11  SPA-GMN-F1      PIC X(01).
+                           11  SPA-GMN-PRTJYUN2MEI
                                                PIC X(28).
-                           11  SPA-GMN-SRT-LAST-G.
-                               13  SPA-GMN-SRT-LAST
+                       09  SPA-GMN-ZAITAKU-G.
+                           11  SPA-GMN-ZAITAKU
                                                PIC X(01).
-                               13  SPA-GMN-F1  PIC X(01).
-                               13  SPA-GMN-SRT-LASTMEI
-                                               PIC X(12).
-                           11  SPA-GMN-ZAITAKU-G.
-                               13  SPA-GMN-ZAITAKU
-                                               PIC X(01).
-                               13  SPA-GMN-F1  PIC X(01).
-                               13  SPA-GMN-ZAITAKUMEI
+                           11  SPA-GMN-F1      PIC X(01).
+                           11  SPA-GMN-ZAITAKUMEI
                                                PIC X(24).
-                           11  SPA-GMN-CHOUKI-G.
-                               13  SPA-GMN-CHOUKI
-                                               PIC X(01).
-                               13  SPA-GMN-F1  PIC X(01).
-                               13  SPA-GMN-CHOUKIMEI
+                       09  SPA-GMN-CHOUKI-G.
+                           11  SPA-GMN-CHOUKI  PIC X(01).
+                           11  SPA-GMN-F1      PIC X(01).
+                           11  SPA-GMN-CHOUKIMEI
                                                PIC X(24).
-                           11  SPA-GMN-GRP1-NO-MAX
-                                               PIC 9(03).
-                           11  SPA-GMN-KOUGAKU-TEN
-                                               PIC 9(07).
+                       09  SPA-GMN-GRP1-NO-MAX PIC 9(03).
       *
                    07  SPA-GMN-GRP-KOUMOKU.
-                       09  SPA-GMN-GRP-OCC     OCCURS  2.
                            11  SPA-GMN-GRP-SETTEI
                                                PIC X(01).
                            11  SPA-GMN-GRP-KAIJYO
@@ -236,7 +209,6 @@
                            11  SPA-NAI-GRP1-NO PIC 9(03).
       *
                    07  SPA-GMN-BODY-KOUMOKU.
-                       09  SPA-GMN-BODY-OCC    OCCURS  2.
                            11  SPA-GMN-RECESYUBETU
                                                PIC X(04).
                            11  SPA-GMN-SYUBETUNAME 
@@ -260,33 +232,31 @@
                                                    PIC X(20).
       *
                    07  SPA-GMN-BODYLIST.
-                       09  SPA-GMN-BODYLIST-OCC    OCCURS  2.
-                           11  SPA-GMN-BODYLIST-TBL        OCCURS  50.
-                               13  SPA-GMN-BODYLIST-TSYUBETU
+                       09  SPA-GMN-BODYLIST-TBL        OCCURS  50.
+                           11  SPA-GMN-BODYLIST-TSYUBETU
                                                        PIC X(04).
-                               13  SPA-GMN-BODYLIST-TSYUBETUNAME
+                           11  SPA-GMN-BODYLIST-TSYUBETUNAME
                                                        PIC X(40).
-                               13  SPA-NAI-BODYLIST-TGRP1-NO.
-                                   15  SPA-NAI-BODYLIST-TGRP1-NO-9
+                           11  SPA-NAI-BODYLIST-TGRP1-NO.
+                               13  SPA-NAI-BODYLIST-TGRP1-NO-9
                                                        PIC 9(03).
-                               13  SPA-NAI-BODYLIST-TGRP2-NO
+                           11  SPA-NAI-BODYLIST-TGRP2-NO
                                                        PIC X(03).
-                               13  SPA-NAI-BODYLIST-TPRTJYUN1
+                           11  SPA-NAI-BODYLIST-TPRTJYUN1
                                                        PIC X(02).
-                               13  SPA-NAI-BODYLIST-TPRTJYUN2
+                           11  SPA-NAI-BODYLIST-TPRTJYUN2
                                                        PIC X(02).
       *
-                               13  SPA-GMN-KOHLIST.
-                                   15  SPA-GMN-KOHLIST-TBL OCCURS  30.
-                                       17  SPA-GMN-KOHLIST-THKNNUM
+                           11  SPA-GMN-KOHLIST.
+                               13  SPA-GMN-KOHLIST-TBL OCCURS  30.
+                                   15  SPA-GMN-KOHLIST-THKNNUM
                                                        PIC X(03).
-                                       17  SPA-GMN-KOHLIST-TSEIDONAME
+                                   15  SPA-GMN-KOHLIST-TSEIDONAME
                                                        PIC X(20).
-                                       17  SPA-GMN-KOHLIST-TJYUN
+                                   15  SPA-GMN-KOHLIST-TJYUN
                                                        PIC X(01).
-                                   15  SPA-GMN-KOHLIST-MAX PIC 9(03).
-                        09  SPA-GMN-BODYLIST-MAX    PIC 9(02)
-                                                    OCCURS  2.
+                               13  SPA-GMN-KOHLIST-MAX PIC 9(03).
+                   07  SPA-GMN-BODYLIST-MAX    PIC 9(02).
       *
                05  SPA-NAI-AREA.
                    07  SPA-NAI-HEADLIST.
@@ -302,11 +272,10 @@
                            11  SPA-NAI-EDYUKYMD    PIC 9(08).
       *
                        09  SPA-NAI-BODY-KOUMOKU.
-                           11  SPA-NAI-BODY-OCC    OCCURS  2.
-                               13  SPA-NAI-SELNUM2     PIC 9(02).
-                               13  SPA-NAI-KOH-KOUMOKU.
-                                   15  SPA-NAI-SELNUM3 PIC 9(03).
-                               13  SPA-NAI-SELNUM2-ROW PIC 9(02).
+                           11  SPA-NAI-SELNUM2     PIC 9(02).
+                           11  SPA-NAI-KOH-KOUMOKU.
+                               13  SPA-NAI-SELNUM3 PIC 9(03).
+                       09  SPA-NAI-SELNUM2-ROW     PIC 9(02).
       *
                05  SPA-1001-PREFNUM    PIC 9(02). 
                05  SPA-W121-PAGENO     PIC S9(9)   BINARY.
@@ -331,8 +300,8 @@
            03  FLG-RECE-PUTB       PIC 9(01).
       *
            03  FLG-HEADLIST-ROW    PIC 9(01).
-           03  FLG-BODYLIST-ROW    PIC 9(01)   OCCURS  2.
-           03  FLG-KOHLIST-ROW     PIC 9(01)   OCCURS  2.
+           03  FLG-BODYLIST-ROW    PIC 9(01).
+           03  FLG-KOHLIST-ROW     PIC 9(01).
            03  FLG-UPDFLG          PIC 9(01).
            03  FLG-TOUROKU         PIC 9(01).
            03  FLG-CHK             PIC 9(01).
@@ -343,9 +312,6 @@
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
            03  IDZ                 PIC 9(04).
-           03  IDXX                PIC 9(04).
-           03  IDYY                PIC 9(04).
-           03  IDZZ                PIC 9(04).
       *
       *    一時領域
       *
@@ -365,10 +331,6 @@
       *
            03  WRK-SELNUM          PIC 9(03).
            03  WRK-HKNNUM          PIC X(03).
-           03  WRK-PAGENO          PIC 9(01).
-      *
-           03  WRK-SELNUM2         PIC 9(03).
-           03  WRK-SELNUM3         PIC 9(03).
       *
            03  WRK-Z9              PIC Z9.
            03  WRK-ZZ9             PIC ZZ9.
@@ -381,16 +343,16 @@
            03  WRK-W121-HEADLIST-ROW
                                    PIC S9(09).
            03  WRK-W121-BODYLIST-ROW
-                                   PIC S9(09)   OCCURS  2.
+                                   PIC S9(09).
            03  WRK-W121-KOHLIST-ROW
-                                   PIC S9(09)   OCCURS  2.
+                                   PIC S9(09).
       *
            03  WRK-TOP-CNT         PIC 9(03).
            03  WRK-BOTTOM-CNT      PIC 9(03).
       *
            03  WRK-KOH-KBN         PIC X(01). 
       *
-      *    公費並び設定用ワーク
+      *    公費設定用ワーク
            03  WRK-GMN-KOHLIST-AREA.
                05  WRK-GMN-KOHLIST-MAX
                                    PIC 9(03)   OCCURS  2.
@@ -403,9 +365,9 @@
                                    PIC X(20).
                            11  WRK-GMN-KOHLIST-TJYUN
                                    PIC X(01).
-               05  WRK-GMN-KOHLIST-TABLE-R
+               03  WRK-GMN-KOHLIST-TABLE-R
                                    REDEFINES  WRK-GMN-KOHLIST-TABLE.
-                   07  WRK-GMN-KOHLIST-TBL-R  OCCURS  60.
+                   05  WRK-GMN-KOHLIST-TBL-R  OCCURS  60.
                        09  WRK-GMN-KOHLIST-THKNNUM-R
                                    PIC X(03).
                        09  WRK-GMN-KOHLIST-TSEIDONAME-R
@@ -428,21 +390,19 @@
                                    PIC X(02).
                    07  WRK-NAI-BODYLIST-TPRTJYUN2
                                    PIC X(02).
-                   07  WRK-GMN-BODYLIST-KOHLIST.
-                       09  WRK-GMN-BODYLIST-KOHLIST-TBL OCCURS  30.
-                           11  WRK-GMN-BODYLIST-KOHLIST-THKNNM
+                   07  WRK-GMN-KOHLIST.
+                       09  WRK-GMN-KOHLIST-TBL OCCURS  30.
+                           11  WRK-GMN-KOHLIST-THKNNUM
                                                PIC X(03).
-                           11  WRK-GMN-BODYLIST-KOHLIST-TSEINM
+                           11  WRK-GMN-KOHLIST-TSEIDONAME
                                                PIC X(20).
-                           11  WRK-GMN-BODYLIST-KOHLIST-TJYUN
+                           11  WRK-GMN-KOHLIST-TJYUN
                                                PIC X(01).
-                       09  WRK-GMN-BODYLIST-KOHLIST-MAX PIC 9(03).
+                       09  WRK-GMN-KOHLIST-MAX PIC 9(03).
       *
            03  WRK-GRP-INDEX       PIC 9(02).
            03  WRK-INDEX           PIC 9(02).
            03  WRK-SYUBETU-SRT1    PIC 9(03).
-           03  WRK-SYUBETU-GAI     PIC X(04).
-           03  WRK-SYUBETU-NYU     PIC X(04).
            03  WRK-GRP1-NO         PIC X(03).
       *
            03  WRK-2003-TABLE.
@@ -477,10 +437,6 @@
                                    PIC 9(02)   VALUE   30.
            03  WRK-CONS-SRYYM-200610
                                    PIC X(08)   VALUE   "20061001".
-           03  WRK-CONS-SRYYM-20080401
-                                   PIC 9(08)   VALUE   20080401.
-           03  WRK-CONS-SRYYM-20080331
-                                   PIC 9(08)   VALUE   20080331.
       *         
       *****************************************************************
       *    ファイルレイアウト
@@ -547,7 +503,50 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA101SCRAREA.INC".
+           COPY    "W01.INC".
+           COPY    "W02.INC".
+           COPY    "W03.INC".
+           COPY    "W04.INC".
+           COPY    "W05.INC".
+           COPY    "W06.INC".
+           COPY    "W07.INC". 
+           COPY    "W08.INC". 
+           COPY    "W09.INC".
+           COPY    "W10.INC".
+           COPY    "W11.INC".
+           COPY    "W111.INC".
+           COPY    "W12.INC".
+           COPY    "W121.INC".
+           COPY    "W13.INC".
+           COPY    "W14.INC".
+           COPY    "W15.INC".
+           COPY    "W16.INC".
+           COPY    "W17.INC".
+           COPY    "W18.INC".
+           COPY    "W19.INC".
+           COPY    "W20.INC".
+           COPY    "W21.INC".
+           COPY    "W22.INC".
+           COPY    "W23.INC".
+           COPY    "W24.INC".
+           COPY    "W25.INC".
+           COPY    "W26.INC".
+           COPY    "W27.INC".
+           COPY    "W28.INC".
+           COPY    "W29.INC".
+           COPY    "W30.INC".
+           COPY    "W31.INC".
+           COPY    "W60.INC".
+           COPY    "W61.INC".
+           COPY    "W62.INC".
+           COPY    "W63.INC".
+           COPY    "W98.INC".
+           COPY    "W981.INC".
+           COPY    "W97.INC".
+           COPY    "W99.INC".
+           COPY    "WERR.INC".
+           COPY    "WID1.INC".
+           COPY    "WID2.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -655,43 +654,13 @@
                        PERFORM 490-KOUSHIN-SEC
                    WHEN    "1002"
                        PERFORM 490-CLEAR-SEC
-                   WHEN    "1003"
-                       PERFORM 490-EDYUKYMD-KOUSHIN-SEC
-                   WHEN    "1004"
-                       MOVE    SPACE           TO  SPA-WID1-FLG
-                       MOVE    SPACE           TO  SPA-WIDCD      
-                       MOVE    "JOIN"          TO  MCP-PUTTYPE
-                       PERFORM 210-BACK-SYORI-SEC
-                       GO  TO  330-WID1-SET-EXT
-               END-EVALUATE
-           ELSE    
-               EVALUATE    SPA-WIDCD
-                   WHEN    "1003"
-                       MOVE    1               TO  SPA-GMN-CUR
-                       INITIALIZE                  SPA-GMN-HEAD-KOUMOKU
-                                                   SPA-NAI-KOUMOKU
-                                                   SPA-GMN-BODY-KOUMOKU
-                                                   SPA-GMN-GRP-KOUMOKU
-                                                   SPA-GMN-BODYLIST
-               END-EVALUATE
+               END-EVALUATE    
            END-IF
       *
-           EVALUATE    SPA-W121-PAGENO
-               WHEN    ZERO 
-                   IF      SPA-NAI-SELNUM2 (1)
-                                       >   ZERO
-                       MOVE    SPA-NAI-SELNUM2 (1)
-                                               TO  W121-BODYLIST-ROW
-                       MOVE    ZERO            TO  FLG-BODYLIST-ROW (1)
-                   END-IF
-               WHEN    1 
-                   IF      SPA-NAI-SELNUM2 (2)
-                                       >   ZERO
-                       MOVE    SPA-NAI-SELNUM2 (2)
-                                               TO  W121-BODYLIST-1-ROW
-                       MOVE    ZERO            TO  FLG-BODYLIST-ROW (2)
-                   END-IF
-           END-EVALUATE
+           IF      SPA-NAI-SELNUM2 >   ZERO
+               MOVE    SPA-NAI-SELNUM2 TO  W121-BODYLIST-ROW
+               MOVE    ZERO            TO  FLG-BODYLIST-ROW
+           END-IF
       *
            MOVE    SPACE           TO  SPA-WID1-FLG
            MOVE    SPACE           TO  SPA-WIDCD      
@@ -710,10 +679,7 @@
            MOVE    "県内・県外"    TO  SPA-GMN-PREFKBN-PRTJYUNMEIL (1)
            MOVE    "2"             TO  SPA-GMN-PREFKBN-PRTJYUNL    (2)
            MOVE    "県外・県内"    TO  SPA-GMN-PREFKBN-PRTJYUNMEIL (2)
-           MOVE    "3"             TO  SPA-GMN-PREFKBN-PRTJYUNL    (3)
-           MOVE    "当該画面の編綴は使用しない"
-                                   TO  SPA-GMN-PREFKBN-PRTJYUNMEIL (3)
-           MOVE    3               TO  SPA-GMN-PREFKBN-PRTJYUN-MAX 
+           MOVE    2               TO  SPA-GMN-PREFKBN-PRTJYUN-MAX 
       *
            MOVE    "1"             TO  SPA-GMN-HKNJANUM-PRTJYUNL    (1)
            MOVE    "市町村国保・国保組合・県内扱いの県外国保組合"
@@ -745,10 +711,12 @@
            MOVE    2               TO  SPA-GMN-HKNJANUM-PRTKBN-MAX
       *
            MOVE    "01"            TO  SPA-GMN-PRTJYUN1L   (1)
-           MOVE    "保険者"        TO  SPA-GMN-PRTJYUN1MEIL(1)
+           MOVE    "使用しない"    TO  SPA-GMN-PRTJYUN1MEIL(1)
            MOVE    "02"            TO  SPA-GMN-PRTJYUN1L   (2)
-           MOVE    "レセプト種別"  TO  SPA-GMN-PRTJYUN1MEIL(2)
-           MOVE    2               TO  SPA-GMN-PRTJYUN1-MAX 
+           MOVE    "保険者"        TO  SPA-GMN-PRTJYUN1MEIL(2)
+           MOVE    "03"            TO  SPA-GMN-PRTJYUN1L   (3)
+           MOVE    "レセプト種別"  TO  SPA-GMN-PRTJYUN1MEIL(3)
+           MOVE    3               TO  SPA-GMN-PRTJYUN1-MAX 
       *
            MOVE    "01"            TO  SPA-GMN-PRTJYUN2L   (1)
            MOVE    "市町村国保は本人家族で分ける" 
@@ -757,12 +725,6 @@
            MOVE    "組合国保は本人家族で分ける" 
                                    TO  SPA-GMN-PRTJYUN2MEIL(2)
            MOVE    2               TO  SPA-GMN-PRTJYUN2-MAX 
-      *
-           MOVE    "1"             TO  SPA-GMN-SRT-LASTL   (1)
-           MOVE    "カナ氏名順"    TO  SPA-GMN-SRT-LASTMEIL(1)
-           MOVE    "2"             TO  SPA-GMN-SRT-LASTL   (2)
-           MOVE    "患者番号順"    TO  SPA-GMN-SRT-LASTMEIL(2)
-           MOVE    2               TO  SPA-GMN-SRT-LAST-MAX 
       *
            MOVE    "1"             TO  SPA-GMN-ZAITAKUL    (1)
            MOVE    "県内・県外の先頭に印刷" 
@@ -847,7 +809,6 @@
            MOVE    SPA-W01-SEL-EDYUKYMD
                                        TO  SYS-1001-STYUKYMD
                                            SYS-1001-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
            MOVE    SYS-1001-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  WRK-MCP-TABLE
            MOVE    "key10"             TO  WRK-MCP-PATHNAME
@@ -855,8 +816,7 @@
            IF      FLG-SYSKANRI            =   ZERO
                MOVE    MCPDATA-REC             TO  SYS-1001-REC
                MOVE    SYS-1001-PREFNUM        TO  SPA-1001-PREFNUM
-           END-IF
-      *
+           END-IF 
       *    レセプト（編綴順）情報
            MOVE    SPACE               TO  SYS-2008-REC
            INITIALIZE                      SYS-2008-REC
@@ -865,7 +825,6 @@
                                        TO  SYS-2008-STYUKYMD
            MOVE    SPA-W01-SEL-EDYUKYMD
                                        TO  SYS-2008-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-2008-HOSPNUM
            MOVE    SYS-2008-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  WRK-MCP-TABLE
            MOVE    "key13"             TO  WRK-MCP-PATHNAME
@@ -882,14 +841,13 @@
            MOVE    SPACE               TO  SYS-2003-KEY
            MOVE    "2003"              TO  SYS-2003-KANRICD
            MOVE    "200"               TO  SYS-2003-KBNCD
-           MOVE    SPA-HOSPNUM         TO  SYS-2003-HOSPNUM
            MOVE    SYS-2003-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key18"             TO  MCP-PATHNAME
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key18"             TO  MCP-PATHNAME
@@ -935,17 +893,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    レセプト（編綴順）情報編集処理
            PERFORM 3102-SPA-2008-HENSYU-SEC
       *
-           MOVE    "T"                 TO  SPA-GMN-GRP1 (1)
-                                           SPA-GMN-GRP1 (2)
-           MOVE    "F"                 TO  SPA-GMN-GRP2 (1)
-                                           SPA-GMN-GRP2 (2)
+           MOVE    "T"                 TO  SPA-GMN-GRP1
+           MOVE    "F"                 TO  SPA-GMN-GRP2
       *
            MOVE    1                   TO  FLG-HEADLIST-ROW
-                                           FLG-BODYLIST-ROW (1)
-                                           FLG-BODYLIST-ROW (2)
-                                           FLG-KOHLIST-ROW  (1)
-                                           FLG-KOHLIST-ROW  (2)
-                                           
+                                           FLG-BODYLIST-ROW
+                                           FLG-KOHLIST-ROW 
       *
            MOVE    1                   TO  SPA-GMN-CUR
            . 
@@ -961,14 +914,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                    SPA-NAI-HEADLIST
       *
            INITIALIZE                  RECE-PUTH-REC
-           MOVE    SPA-HOSPNUM      TO  RECE-PUTH-HOSPNUM
+           MOVE    SPA-HOSPID      TO  RECE-PUTH-HOSPID
            MOVE    RECE-PUTH-REC   TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
            MOVE    "tbl_rece_puth" TO  MCP-TABLE
            MOVE    "key2"          TO  MCP-PATHNAME
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"       USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC          =   ZERO
                MOVE    "tbl_rece_puth" TO  MCP-TABLE
                MOVE    "key2"          TO  MCP-PATHNAME
@@ -1059,6 +1012,28 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-IF
                END-PERFORM
            END-IF    
+      *         
+           MOVE    SYS-2008-ZAITAKU    TO  SPA-GMN-ZAITAKU
+           PERFORM VARYING IDY FROM    1   BY  1
+                   UNTIL   IDY >       SPA-GMN-ZAITAKU-MAX
+               IF      SPA-GMN-ZAITAKU =   SPA-GMN-ZAITAKUL (IDY)
+                   MOVE    SPA-GMN-ZAITAKULST (IDY)
+                                       TO  SPA-GMN-ZAITAKU-G
+                   MOVE    SPA-GMN-ZAITAKU-MAX
+                                       TO  IDY
+               END-IF
+           END-PERFORM
+      *
+           MOVE    SYS-2008-CHOUKI     TO  SPA-GMN-CHOUKI
+           PERFORM VARYING IDY FROM    1   BY  1
+                   UNTIL   IDY >       SPA-GMN-CHOUKI-MAX
+               IF      SPA-GMN-CHOUKI  =   SPA-GMN-CHOUKIL (IDY)
+                   MOVE    SPA-GMN-CHOUKILST (IDY)
+                                       TO  SPA-GMN-CHOUKI-G
+                   MOVE    SPA-GMN-CHOUKI-MAX
+                                       TO  IDY
+               END-IF
+           END-PERFORM
       *
            MOVE    SYS-2008-HKNJANUM-PRTKBN
                                        TO  SPA-GMN-HKNJANUM-PRTKBN
@@ -1076,38 +1051,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SYS-2008-HKNJANUM   TO  SPA-GMN-HKNJANUM
            MOVE    SPACE               TO  HKNJAINF-REC
            INITIALIZE                      HKNJAINF-REC
-           MOVE    SPA-HOSPNUM         TO  HKNJA-HOSPNUM
+           MOVE    SPA-HOSPID          TO  HKNJA-HOSPID
            MOVE    SPA-GMN-HKNJANUM    TO  HKNJA-HKNJANUM
            MOVE    HKNJAINF-REC        TO  MCPDATA-REC
            PERFORM 900-HKNJAINF-READ-SEC
            MOVE    HKNJA-HKNJANAME     TO  SPA-GMN-HKNJANAME
-      *         
-           MOVE    SYS-2008-ZAITAKU    TO  SPA-GMN-ZAITAKU (1)
-           PERFORM VARYING IDY FROM    1   BY  1
-                   UNTIL   IDY >       SPA-GMN-ZAITAKU-MAX
-               IF      SPA-GMN-ZAITAKU (1) =   SPA-GMN-ZAITAKUL (IDY)
-                   MOVE    SPA-GMN-ZAITAKULST (IDY)
-                                       TO  SPA-GMN-ZAITAKU-G (1)
-                   MOVE    SPA-GMN-ZAITAKU-MAX
-                                       TO  IDY
-               END-IF
-           END-PERFORM
-           MOVE    SPA-GMN-ZAITAKU-G (1)
-                                       TO  SPA-GMN-ZAITAKU-G (2)
-      *
-           MOVE    SYS-2008-CHOUKI     TO  SPA-GMN-CHOUKI (1)
-           PERFORM VARYING IDY FROM    1   BY  1
-                   UNTIL   IDY >       SPA-GMN-CHOUKI-MAX
-               IF      SPA-GMN-CHOUKI  (1) =   SPA-GMN-CHOUKIL (IDY)
-                   MOVE    SPA-GMN-CHOUKILST (IDY)
-                                       TO  SPA-GMN-CHOUKI-G (1)
-                   MOVE    SPA-GMN-CHOUKI-MAX
-                                       TO  IDY
-               END-IF
-           END-PERFORM
-           MOVE    SPA-GMN-CHOUKI-G (1)
-                                       TO  SPA-GMN-CHOUKI-G (2)
-      *
            .
        3102-SPA-2008-HENSYU-EXT.
            EXIT.
@@ -1126,14 +1074,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-NAI-STYUKYMD    TO  SYS-2003-STYUKYMD
                                            SYS-2003-EDYUKYMD
       *
-           MOVE    SPA-HOSPNUM         TO  SYS-2003-HOSPNUM
            MOVE    SYS-2003-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
@@ -1172,16 +1119,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        200-GMNSENI                   SECTION.  
       *
-           IF      SPA-W121-PAGENO     =   0
-               MOVE    1           TO  WRK-PAGENO
-           ELSE
-               MOVE    2           TO  WRK-PAGENO
-           END-IF
-           MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                   TO  WRK-SELNUM2
-           MOVE    SPA-NAI-SELNUM3 (WRK-PAGENO)
-                                   TO  WRK-SELNUM3
-      * 
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
       *    戻る
                WHEN    "CLICKED"       ALSO    "B01"
@@ -1195,50 +1132,40 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    PERFORM 490-TOUROKU-SEC
       *    ↑
                WHEN    "CLICKED"       ALSO    "SYUBETU_UP"
-               WHEN    "CLICKED"       ALSO    "SYUBETU_UP_1"
                    PERFORM 490-SYUBETU-UP-SEC
       *    ↓
                WHEN    "CLICKED"       ALSO    "SYUBETU_DOWN"
-               WHEN    "CLICKED"       ALSO    "SYUBETU_DOWN_1"
                    PERFORM 490-SYUBETU-DOWN-SEC
       *    グループ設定
                WHEN    "CLICKED"       ALSO    "GRP_SETTEI"
-               WHEN    "CLICKED"       ALSO    "GRP_SETTEI_1"
                    PERFORM 490-GRP-SETTEI-SEC
       *    グループ解除
                WHEN    "CLICKED"       ALSO    "GRP_KAIJYO"
-               WHEN    "CLICKED"       ALSO    "GRP_KAIJYO_1"
                    PERFORM 490-GRP-KAIJYO-SEC
       *    グループ１
                WHEN    "CLICKED"       ALSO    "GRP1"
-               WHEN    "CLICKED"       ALSO    "GRP1_1"
                    PERFORM 490-GRP1-SETTEI-SEC
       *    グループ２
                WHEN    "CLICKED"       ALSO    "GRP2"
-               WHEN    "CLICKED"       ALSO    "GRP2_1"
                    PERFORM 490-GRP2-SETTEI-SEC
       *    ↑
                WHEN    "CLICKED"       ALSO    "KOH_UP"
-               WHEN    "CLICKED"       ALSO    "KOH_UP_1"
                    PERFORM 490-KOH-UP-SEC
       *    ↓
                WHEN    "CLICKED"       ALSO    "KOH_DOWN"
-               WHEN    "CLICKED"       ALSO    "KOH_DOWN_1"
                    PERFORM 490-KOH-DOWN-SEC
       *    先頭
                WHEN    "CLICKED"       ALSO    "TOP"
-               WHEN    "CLICKED"       ALSO    "TOP_1"
                    PERFORM 490-KOH-TOP-HENSYU-SEC
       *    後尾
                WHEN    "CLICKED"       ALSO    "BOTTOM"
-               WHEN    "CLICKED"       ALSO    "BOTTOM_1"
                    PERFORM 490-KOH-BOTTOM-HENSYU-SEC
       *    削除
                WHEN    "CLICKED"       ALSO    "DEL"
-               WHEN    "CLICKED"       ALSO    "DEL_1"
                    PERFORM 490-KOH-DELETE-SEC
       *    タグ
-               WHEN    "CLICKED"       ALSO    "B08"
+               WHEN    "CLICKED"       ALSO    "N01"
+               WHEN    "CLICKED"       ALSO    "N02"
                    PERFORM 440-TAG-CHANGE-SEC
            END-EVALUATE
       *
@@ -1249,16 +1176,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    会話　処理
       *****************************************************************
        200-ENTRY                   SECTION.
-      *
-           IF      SPA-W121-PAGENO     =   0
-               MOVE    1           TO  WRK-PAGENO
-           ELSE
-               MOVE    2           TO  WRK-PAGENO
-           END-IF
-           MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                   TO  WRK-SELNUM2
-           MOVE    SPA-NAI-SELNUM3 (WRK-PAGENO)
-                                   TO  WRK-SELNUM3
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
       *        選択番号
@@ -1276,15 +1193,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    PERFORM 41021-EDYUKYMD-CHK-SEC
       *        グループ１番号
                WHEN    "ACTIVATE"       ALSO    "GRP1_NO"
-               WHEN    "ACTIVATE"       ALSO    "GRP1_NO_1"
                    PERFORM 41021-GRP1-NO-CHK-SEC
       *        グループ２番号
                WHEN    "ACTIVATE"       ALSO    "GRP2_NO"
-               WHEN    "ACTIVATE"       ALSO    "GRP2_NO_1"
                    PERFORM 41021-GRP2-NO-CHK-SEC
-      *        タグ
-               WHEN    "SWITCH"        ALSO    "nt1"
-                   PERFORM 440-TAG-CHANGE-SEC
       *        一括分
                WHEN    OTHER
                    PERFORM 400-ENTRY-SYORI-SEC
@@ -1305,7 +1217,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        SPA-GMN-BODY-KOUMOKU
                                        SPA-GMN-GRP-KOUMOKU
                                        SPA-GMN-BODYLIST
-      ***                              SPA-GMN-BODYLIST-MAX
+                                       SPA-GMN-BODYLIST-MAX
       *
            MOVE    W121-SELNUM1    TO  SPA-GMN-SELNUM1
       *
@@ -1334,20 +1246,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        41011-SELNUM1-HENSYU-SEC        SECTION.
       *
-      *    平成２０年４月を跨ってるとき
-           IF    ( SPA-NAI-HEADLIST-TSTYUKYMD (SPA-GMN-SELNUM1)
-                                       <   WRK-CONS-SRYYM-20080401 )
-           AND   ( SPA-NAI-HEADLIST-TEDYUKYMD (SPA-GMN-SELNUM1)
-                                       >=  WRK-CONS-SRYYM-20080401 )
-               MOVE    "1003"              TO  SPA-WIDCD
-               GO  TO  41011-SELNUM1-HENSYU-EXT
-           END-IF
-      *
            INITIALIZE                  SPA-GMN-HEAD1-KOUMOKU
       *
       *    ＨＥＡＤ部表示
            INITIALIZE                      RECE-PUTH-REC
-           MOVE    SPA-HOSPNUM          TO  RECE-PUTH-HOSPNUM
+           MOVE    SPA-HOSPID          TO  RECE-PUTH-HOSPID
            MOVE    SPA-NAI-HEADLIST-TSTYUKYMD (SPA-GMN-SELNUM1)
                                        TO  RECE-PUTH-STYUKYMD
            MOVE    SPA-NAI-HEADLIST-TEDYUKYMD (SPA-GMN-SELNUM1)
@@ -1407,77 +1310,57 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    RECE-PUTH-HKNJANUM  TO  SPA-GMN-HKNJANUM
                MOVE    SPACE               TO  HKNJAINF-REC
                INITIALIZE                      HKNJAINF-REC
-               MOVE    SPA-HOSPNUM          TO  HKNJA-HOSPNUM
+               MOVE    SPA-HOSPID          TO  HKNJA-HOSPID
                MOVE    SPA-GMN-HKNJANUM    TO  HKNJA-HKNJANUM
                MOVE    HKNJAINF-REC        TO  MCPDATA-REC
                PERFORM 900-HKNJAINF-READ-SEC
                MOVE    HKNJA-HKNJANAME     TO  SPA-GMN-HKNJANAME
       *         
-               PERFORM VARYING IDXX    FROM    1   BY  1
-                       UNTIL   IDXX    >       2  
-                 MOVE    RECE-PUTH-SRT-01 (IDXX)
-                                             TO  SPA-GMN-PRTJYUN1 (IDXX)
+               PERFORM VARYING IDZ FROM    1   BY  1
+                       UNTIL   IDZ >       1  
+                 MOVE    RECE-PUTH-SRT-01 (IDZ)
+                                             TO  SPA-GMN-PRTJYUN1
                  PERFORM VARYING IDY FROM    1   BY  1
                          UNTIL   IDY >       SPA-GMN-PRTJYUN1-MAX
-                   IF      SPA-GMN-PRTJYUN1 (IDXX)
-                                         =   SPA-GMN-PRTJYUN1L (IDY)
+                   IF      SPA-GMN-PRTJYUN1 =   SPA-GMN-PRTJYUN1L (IDY)
                        MOVE    SPA-GMN-PRTJYUN1LST (IDY)
-                                           TO  SPA-GMN-PRTJYUN1-G (IDXX)
+                                           TO  SPA-GMN-PRTJYUN1-G
                        MOVE    SPA-GMN-PRTJYUN1-MAX
                                            TO  IDY
                    END-IF
                  END-PERFORM
       *         
-                 MOVE    RECE-PUTH-KKHKBN (IDXX)
-                                             TO  SPA-GMN-PRTJYUN2 (IDXX)
+                 MOVE    RECE-PUTH-KKHKBN (IDZ)
+                                             TO  SPA-GMN-PRTJYUN2
                  PERFORM VARYING IDY FROM    1   BY  1
                          UNTIL   IDY >       SPA-GMN-PRTJYUN2-MAX
-                   IF      SPA-GMN-PRTJYUN2 (IDXX)
-                                       =   SPA-GMN-PRTJYUN2L (IDY)
+                   IF      SPA-GMN-PRTJYUN2 =   SPA-GMN-PRTJYUN2L (IDY)
                        MOVE    SPA-GMN-PRTJYUN2LST (IDY)
-                                           TO  SPA-GMN-PRTJYUN2-G (IDXX)
+                                           TO  SPA-GMN-PRTJYUN2-G
                        MOVE    SPA-GMN-PRTJYUN2-MAX
                                            TO  IDY
                    END-IF
                  END-PERFORM
       *         
-                 MOVE    RECE-PUTH-SRT-LAST (IDXX)
-                                             TO  SPA-GMN-SRT-LAST (IDXX)
-                 PERFORM VARYING IDY FROM    1   BY  1
-                         UNTIL   IDY >       SPA-GMN-SRT-LAST-MAX
-                   IF      SPA-GMN-SRT-LAST (IDXX)
-                                       =   SPA-GMN-SRT-LASTL (IDY)
-                       MOVE    SPA-GMN-SRT-LASTLST (IDY)
-                                           TO  SPA-GMN-SRT-LAST-G (IDXX)
-                       MOVE    SPA-GMN-SRT-LAST-MAX
-                                           TO  IDY
-                   END-IF
-                 END-PERFORM
-      *         
-                 MOVE    RECE-PUTH-KOUGAKU-TEN (IDXX)
-                                           TO  SPA-GMN-KOUGAKU-TEN(IDXX)
-      *         
-                 MOVE    RECE-PUTH-ZAITAKU (IDXX)
-                                             TO  SPA-GMN-ZAITAKU (IDXX)
+                 MOVE    RECE-PUTH-ZAITAKU (IDZ)
+                                             TO  SPA-GMN-ZAITAKU
                  PERFORM VARYING IDY FROM    1   BY  1
                          UNTIL   IDY >       SPA-GMN-ZAITAKU-MAX
-                   IF      SPA-GMN-ZAITAKU (IDXX)
-                                       =   SPA-GMN-ZAITAKUL (IDY)
+                   IF      SPA-GMN-ZAITAKU =   SPA-GMN-ZAITAKUL (IDY)
                        MOVE    SPA-GMN-ZAITAKULST (IDY)
-                                           TO  SPA-GMN-ZAITAKU-G (IDXX)
+                                           TO  SPA-GMN-ZAITAKU-G
                        MOVE    SPA-GMN-ZAITAKU-MAX
                                            TO  IDY
                    END-IF
                  END-PERFORM
       *
-                 MOVE    RECE-PUTH-CHOUKI (IDXX)
-                                             TO  SPA-GMN-CHOUKI (IDXX)
+                 MOVE    RECE-PUTH-CHOUKI (IDZ)
+                                             TO  SPA-GMN-CHOUKI
                  PERFORM VARYING IDY FROM    1   BY  1
                        UNTIL   IDY >       SPA-GMN-CHOUKI-MAX
-                   IF      SPA-GMN-CHOUKI (IDXX)
-                                       =   SPA-GMN-CHOUKIL (IDY)
+                   IF      SPA-GMN-CHOUKI  =   SPA-GMN-CHOUKIL (IDY)
                        MOVE    SPA-GMN-CHOUKILST (IDY)
-                                           TO  SPA-GMN-CHOUKI-G (IDXX)
+                                           TO  SPA-GMN-CHOUKI-G
                        MOVE    SPA-GMN-CHOUKI-MAX
                                            TO  IDY
                    END-IF
@@ -1492,120 +1375,108 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM 3103-2003-HENSYU-SEC
       *
       *    ＢＯＤＹ部表示
-           PERFORM VARYING IDXX    FROM    1   BY  1
-                   UNTIL   IDXX    >       2  
+           INITIALIZE                  RECE-PUTB-REC
+           MOVE    SPA-HOSPID      TO  RECE-PUTB-HOSPID
+           MOVE    "1"             TO  RECE-PUTB-PREFKBN
+           MOVE    SPA-NAI-HEADLIST-TSTYUKYMD (SPA-GMN-SELNUM1)
+                                   TO  RECE-PUTB-STYUKYMD
+           MOVE    SPA-NAI-HEADLIST-TEDYUKYMD (SPA-GMN-SELNUM1)
+                                   TO  RECE-PUTB-EDYUKYMD
+           MOVE    RECE-PUTB-REC   TO  MCPDATA-REC
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           MOVE    "tbl_rece_putb" TO  MCP-TABLE
+           MOVE    "key2"          TO  MCP-PATHNAME
+           CALL    "MONFUNC"       USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC          =   ZERO
+               MOVE    "tbl_rece_putb" TO  MCP-TABLE
+               MOVE    "key2"          TO  MCP-PATHNAME
+               PERFORM 900-RECE-PUTB-READ-N-SEC
+           ELSE
                INITIALIZE                  RECE-PUTB-REC
-               MOVE    SPA-HOSPNUM      TO  RECE-PUTB-HOSPNUM
-               EVALUATE    IDXX
-                   WHEN    1
-                       MOVE    "1"             TO  RECE-PUTB-PREFKBN
-                   WHEN    2
-                       MOVE    "2"             TO  RECE-PUTB-PREFKBN
-               END-EVALUATE 
-               MOVE    SPA-NAI-HEADLIST-TSTYUKYMD (SPA-GMN-SELNUM1)
-                                       TO  RECE-PUTB-STYUKYMD
-               MOVE    SPA-NAI-HEADLIST-TEDYUKYMD (SPA-GMN-SELNUM1)
-                                       TO  RECE-PUTB-EDYUKYMD
-               MOVE    RECE-PUTB-REC   TO  MCPDATA-REC
-               MOVE    "DBSELECT"      TO  MCP-FUNC
-               MOVE    "tbl_rece_putb" TO  MCP-TABLE
-               MOVE    "key2"          TO  MCP-PATHNAME
-grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
-               IF      MCP-RC          =   ZERO
-                   MOVE    "tbl_rece_putb" TO  MCP-TABLE
-                   MOVE    "key2"          TO  MCP-PATHNAME
-                   PERFORM 900-RECE-PUTB-READ-N-SEC
-               ELSE
-                   INITIALIZE                  RECE-PUTB-REC
-                   MOVE    1               TO  FLG-RECE-PUTB
-               END-IF
+               MOVE    1               TO  FLG-RECE-PUTB
+           END-IF
       *
-               MOVE    ZERO            TO  IDX
-               PERFORM     UNTIL   FLG-RECE-PUTB   =   1
-                           OR      IDX             >=
-                                               WRK-CONS-BODYLIST-MAX
+           MOVE    ZERO            TO  IDX
+           PERFORM     UNTIL   FLG-RECE-PUTB   =   1
+                       OR      IDX            >=  WRK-CONS-BODYLIST-MAX
       *
-                   EVALUATE    RECE-PUTB-KOUHI-NO
-                       WHEN    ZERO
-                           ADD     1   TO  IDX
-                           MOVE    RECE-PUTB-GRP-NO1
-                               TO  SPA-NAI-BODYLIST-TGRP1-NO (IDXX IDX)
-                           IF      SPA-GMN-GRP1-NO-MAX (IDXX)  <
-                               SPA-NAI-BODYLIST-TGRP1-NO-9 (IDXX IDX)
-                               MOVE    SPA-NAI-BODYLIST-TGRP1-NO-9
-                                                           (IDXX IDX)
-                                       TO  SPA-GMN-GRP1-NO-MAX (IDXX)
-                           END-IF
-                           MOVE    RECE-PUTB-GRP-NO2
-                               TO  SPA-NAI-BODYLIST-TGRP2-NO (IDXX IDX)
-                           MOVE    RECE-PUTB-SYUBETU-GAI
-                               TO  SPA-GMN-BODYLIST-TSYUBETU (IDXX IDX)
-                           PERFORM VARYING IDZ FROM    1   BY  1
-                                   UNTIL   IDZ >       50
-                                   OR  WRK-2003-TSYUBETU (IDZ) =   SPACE
-                               IF      RECE-PUTB-SYUBETU-GAI
+               EVALUATE    RECE-PUTB-KOUHI-NO
+                   WHEN    ZERO
+                       ADD     1   TO  IDX
+                       MOVE    RECE-PUTB-GRP-NO1
+                                   TO  SPA-NAI-BODYLIST-TGRP1-NO (IDX)
+                       IF      SPA-GMN-GRP1-NO-MAX
+                                   <   SPA-NAI-BODYLIST-TGRP1-NO-9 (IDX)
+                           MOVE    SPA-NAI-BODYLIST-TGRP1-NO-9 (IDX)
+                                       TO  SPA-GMN-GRP1-NO-MAX
+                       END-IF
+                       MOVE    RECE-PUTB-GRP-NO2
+                                   TO  SPA-NAI-BODYLIST-TGRP2-NO (IDX)
+                       MOVE    RECE-PUTB-SYUBETU-GAI
+                                   TO  SPA-GMN-BODYLIST-TSYUBETU (IDX)
+                       PERFORM VARYING IDZ FROM    1   BY  1
+                               UNTIL   IDZ >       50
+                               OR  WRK-2003-TSYUBETU (IDZ) =   SPACE
+                           IF      RECE-PUTB-SYUBETU-GAI
                                            =   WRK-2003-TSYUBETU (IDZ)
-                                   MOVE    WRK-2003-TSYUBETUNAME (IDZ)
-                                       TO  SPA-GMN-BODYLIST-TSYUBETUNAME
-                                                              (IDXX IDX)
-                               END-IF
-                           END-PERFORM
-                           MOVE    RECE-PUTB-SYUBETU-UNDER-NO1
-                               TO  SPA-NAI-BODYLIST-TPRTJYUN1 (IDXX IDX)
-                           MOVE    RECE-PUTB-SYUBETU-UNDER-NO2
-                               TO  SPA-NAI-BODYLIST-TPRTJYUN2 (IDXX IDX)
-                       WHEN    OTHER
-                           ADD     1   TO  SPA-GMN-KOHLIST-MAX(IDXX IDX)
-                           MOVE    SPA-GMN-KOHLIST-MAX (IDXX IDX)
-                                       TO  IDY
-                           MOVE    RECE-PUTB-KOUHI-NUM
-                                       TO  SPA-GMN-KOHLIST-THKNNUM
-                                                       (IDXX IDX IDY)
-                           IF      RECE-PUTB-KOUHI-NO  <   500
-                               MOVE    "T"                                    
-                                   TO  SPA-GMN-KOHLIST-TJYUN
-                                                       (IDXX IDX IDY)
-                           ELSE
-                               MOVE    "B"                                    
-                                   TO  SPA-GMN-KOHLIST-TJYUN
-                                                       (IDXX IDX IDY)
+                               MOVE    WRK-2003-TSYUBETUNAME (IDZ)
+                                   TO  SPA-GMN-BODYLIST-TSYUBETUNAME
+                                                                  (IDX)
                            END-IF
-                           EVALUATE    RECE-PUTB-KOUHI-NUM
-                               WHEN    "XXX"
-                                   MOVE    "長期"              TO
-                                       SPA-GMN-KOHLIST-TSEIDONAME
-                                                         (IDXX IDX IDY)
-                               WHEN    "YYY"
-                                   MOVE    "在総診・在医総"    TO
-                                       SPA-GMN-KOHLIST-TSEIDONAME
-                                                         (IDXX IDX IDY)
-                               WHEN    OTHER
-                                   INITIALIZE              HKNNUM-REC
-                                   MOVE    SPA-HOSPNUM  TO  HKN-HOSPNUM
-                                   MOVE    RECE-PUTB-KOUHI-NUM
+                       END-PERFORM
+                       MOVE    RECE-PUTB-SYUBETU-UNDER-NO1
+                                   TO  SPA-NAI-BODYLIST-TPRTJYUN1 (IDX)
+                       MOVE    RECE-PUTB-SYUBETU-UNDER-NO2
+                                   TO  SPA-NAI-BODYLIST-TPRTJYUN2 (IDX)
+                   WHEN    OTHER
+                       ADD     1   TO  SPA-GMN-KOHLIST-MAX (IDX)
+                       MOVE    SPA-GMN-KOHLIST-MAX (IDX)
+                                   TO  IDY
+                       MOVE    RECE-PUTB-KOUHI-NUM
+                                   TO  SPA-GMN-KOHLIST-THKNNUM
+                                                           (IDX IDY)
+                       IF      RECE-PUTB-KOUHI-NO  <   500
+                           MOVE    "T"                                    
+                                   TO  SPA-GMN-KOHLIST-TJYUN (IDX IDY)
+                       ELSE
+                           MOVE    "B"                                    
+                                   TO  SPA-GMN-KOHLIST-TJYUN (IDX IDY)
+                       END-IF
+                       EVALUATE    RECE-PUTB-KOUHI-NUM
+                           WHEN    "XXX"
+                               MOVE    "長期"              TO
+                                   SPA-GMN-KOHLIST-TSEIDONAME
+                                                           (IDX IDY)
+                           WHEN    "YYY"
+                               MOVE    "在総診・在医総"    TO
+                                   SPA-GMN-KOHLIST-TSEIDONAME
+                                                           (IDX IDY)
+                           WHEN    OTHER
+                               INITIALIZE                  HKNNUM-REC
+                               MOVE    SPA-HOSPID      TO  HKN-HOSPID
+                               MOVE    RECE-PUTB-KOUHI-NUM
                                                        TO  HKN-HKNNUM
-                                   MOVE    "00"        TO  HKN-PAYKBN
-                                   MOVE    HKNNUM-REC  TO  MCPDATA-REC
-                                   PERFORM 900-HKNNUM-READ-SEC
-                                   MOVE    HKN-TANSEIDONAME    TO
-                                       SPA-GMN-KOHLIST-TSEIDONAME
-                                                        (IDXX IDX IDY)
-                           END-EVALUATE
-                   END-EVALUATE
-      *
-                   MOVE    "tbl_rece_putb" TO  MCP-TABLE
-                   MOVE    "key2"          TO  MCP-PATHNAME
-                   PERFORM 900-RECE-PUTB-READ-N-SEC
-               END-PERFORM
+                               MOVE    "00"            TO  HKN-PAYKBN
+                               MOVE    HKNNUM-REC      TO  MCPDATA-REC
+                               PERFORM 900-HKNNUM-READ-SEC
+                               MOVE    HKN-TANSEIDONAME    TO
+                                   SPA-GMN-KOHLIST-TSEIDONAME
+                                                           (IDX IDY)
+                       END-EVALUATE
+               END-EVALUATE
       *
                MOVE    "tbl_rece_putb" TO  MCP-TABLE
                MOVE    "key2"          TO  MCP-PATHNAME
-               PERFORM 900-CLOSE-SEC
-      *
-               MOVE    IDX             TO  SPA-GMN-BODYLIST-MAX (IDXX)
+               PERFORM 900-RECE-PUTB-READ-N-SEC
            END-PERFORM
+      *
+           MOVE    "tbl_rece_putb" TO  MCP-TABLE
+           MOVE    "key2"          TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           MOVE    IDX             TO  SPA-GMN-BODYLIST-MAX
       *
            MOVE    SPA-GMN-SELNUM1 TO  W121-HEADLIST-ROW
            MOVE    ZERO            TO  FLG-HEADLIST-ROW
@@ -1638,10 +1509,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            INITIALIZE                  SPA-GMN-HEAD-KOUMOKU
                                        SPA-NAI-KOUMOKU
+                                       SPA-GMN-HEAD1-KOUMOKU
                                        SPA-GMN-BODY-KOUMOKU
                                        SPA-GMN-GRP-KOUMOKU
                                        SPA-GMN-BODYLIST
-      *****                            SPA-GMN-BODYLIST-MAX
+                                       SPA-GMN-BODYLIST-MAX
       *
            IF      WRK-SELNUM         >   ZERO
                MOVE    WRK-SELNUM         TO  SPA-GMN-SELNUM1
@@ -1664,20 +1536,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
       *
                WHEN    ANY             ALSO    "BODYLIST"
-               WHEN    ANY             ALSO    "BODYLIST_1"
                    PERFORM 41011-BODYLIST-SEL-SEC
       *
                WHEN    ANY             ALSO    "KOHLIST"
-               WHEN    ANY             ALSO    "KOHLIST_1"
                    PERFORM 41012-KOHLIST-SEL-SEC
       *            入力チェック処理
                    MOVE    ZERO                TO  FLG-TOUROKU
                    PERFORM 410-INPUT-CHK-SEC
-                   IF      WRK-PAGENO          =   1
-                       MOVE    101                 TO  SPA-GMN-CUR
-                   ELSE
-                       MOVE    301                 TO  SPA-GMN-CUR
-                   END-IF
+                   MOVE    101                 TO  SPA-GMN-CUR
                WHEN    OTHER
       *            入力チェック処理
                    MOVE    ZERO                TO  FLG-TOUROKU
@@ -1694,65 +1560,36 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    ZERO                TO  WRK-SELNUM
       *
-           PERFORM VARYING     IDX FROM    1   BY  1
-                   UNTIL       IDX >       SPA-GMN-BODYLIST-MAX
-                                                   (WRK-PAGENO)
-               IF      WRK-PAGENO      =   1
-                   IF      W121-BODYLIST-SELECT (IDX)  =   "T"
-                       IF      IDX     =   SPA-NAI-SELNUM2 (WRK-PAGENO)
-                           CONTINUE
-                       ELSE
-                           MOVE    IDX                 TO  WRK-SELNUM
-                           MOVE    SPA-GMN-BODYLIST-MAX (WRK-PAGENO)
-                                                       TO  IDX
-                       END-IF
-                   END-IF
-               ELSE
-                   IF      W121-BODYLIST-1-SELECT (IDX) =   "T"
-                       IF      IDX     =   SPA-NAI-SELNUM2 (WRK-PAGENO)
-                           CONTINUE
-                       ELSE
-                           MOVE    IDX                 TO  WRK-SELNUM
-                           MOVE    SPA-GMN-BODYLIST-MAX (WRK-PAGENO)
-                                                       TO  IDX
-                       END-IF
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >       SPA-GMN-BODYLIST-MAX
+               IF      W121-BODYLIST-SELECT (IDX)  =   "T"
+                   IF      IDX                 =   SPA-NAI-SELNUM2
+                       CONTINUE
+                   ELSE
+                       MOVE    IDX                 TO  WRK-SELNUM
+                       MOVE    SPA-GMN-BODYLIST-MAX
+                                                   TO  IDX
                    END-IF
                END-IF
            END-PERFORM
       *
            IF      WRK-SELNUM          >   ZERO
-               INITIALIZE              SPA-GMN-BODY-OCC    (WRK-PAGENO)
-                                       SPA-NAI-BODY-OCC    (WRK-PAGENO)
-                                       SPA-NAI-SELNUM2-ROW (WRK-PAGENO)
-               MOVE    WRK-SELNUM      TO  SPA-NAI-SELNUM2 (WRK-PAGENO)
+               INITIALIZE                      SPA-GMN-BODY-KOUMOKU
+                                               SPA-NAI-BODY-KOUMOKU
+                                               SPA-NAI-SELNUM2-ROW
+               MOVE    WRK-SELNUM          TO  SPA-NAI-SELNUM2
            END-IF
-           MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                       TO  WRK-SELNUM2
-           MOVE    SPA-NAI-SELNUM3 (WRK-PAGENO)
-                                       TO  WRK-SELNUM3
-     *
+      *
            EVALUATE    TRUE
-               WHEN    SPA-GMN-GRP-SETTEI (WRK-PAGENO) =   "1"
+               WHEN    SPA-GMN-GRP-SETTEI  =   "1"
                    PERFORM 410111-GRP-HENSYU-SEC
-                   IF      WRK-PAGENO      =   1
-                       MOVE    50              TO  SPA-GMN-CUR
-                   ELSE
-                       MOVE    250             TO  SPA-GMN-CUR
-                   END-IF
-               WHEN    SPA-GMN-GRP-KAIJYO(WRK-PAGENO)  =   "1"
+                   MOVE    50              TO  SPA-GMN-CUR
+               WHEN    SPA-GMN-GRP-KAIJYO  =   "1"
                    PERFORM 410112-GRP-KAIJYO-SEC
-                   IF      WRK-PAGENO      =   1
-                       MOVE    100             TO  SPA-GMN-CUR
-                   ELSE
-                       MOVE    300             TO  SPA-GMN-CUR
-                   END-IF
+                   MOVE    100             TO  SPA-GMN-CUR
                WHEN    OTHER
                    PERFORM 41021-SELNUM2-HENSYU-SEC
-                   IF      WRK-PAGENO      =   1
-                       MOVE    13             TO  SPA-GMN-CUR
-                   ELSE
-                       MOVE    213            TO  SPA-GMN-CUR
-                   END-IF
+                   MOVE    13              TO  SPA-GMN-CUR
            END-EVALUATE
       *
            .
@@ -1765,77 +1602,60 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        410111-GRP-HENSYU-SEC       SECTION.
       *
       *    グループ１の設定
-           IF      SPA-GMN-GRP1 (WRK-PAGENO)   =   "T"
-               IF      SPA-NAI-GRP1-NO(WRK-PAGENO) =   ZERO
-                   IF      WRK-PAGENO      =   1
-                       MOVE    50              TO  SPA-GMN-CUR
-                   ELSE
-                       MOVE    250             TO  SPA-GMN-CUR
-                   END-IF
-                   MOVE    "0011"          TO  SPA-ERRCD
-                   MOVE    ZERO            TO  FLG-BODYLIST-ROW
-                                                       (WRK-PAGENO)
-                   MOVE    ZERO            TO  SPA-NAI-SELNUM2
-                                                       (WRK-PAGENO)
-                                               SPA-NAI-SELNUM2-ROW
-                                                       (WRK-PAGENO)
+           IF      SPA-GMN-GRP1        =   "T"
+               IF      SPA-NAI-GRP1-NO     =   ZERO
+                   MOVE    50                  TO  SPA-GMN-CUR
+                   MOVE    "0011"              TO  SPA-ERRCD
+                   MOVE    ZERO                TO  FLG-BODYLIST-ROW
+                   MOVE    ZERO                TO  SPA-NAI-SELNUM2
+                                                   SPA-NAI-SELNUM2-ROW
                    GO  TO  410111-GRP-HENSYU-EXT
                END-IF 
       *
       *        元情報と設定場所を取得
                MOVE    ZERO            TO  WRK-GRP-INDEX
                MOVE    ZERO            TO  WRK-INDEX
-               IF      SPA-GMN-GRP1-NO-MAX (WRK-PAGENO)
-                                       <   SPA-NAI-GRP1-NO (WRK-PAGENO)
+               IF      SPA-GMN-GRP1-NO-MAX <   SPA-NAI-GRP1-NO
       *            既にグループ１番号を設定済のとき設定場所を取得
-                   IF      SPA-NAI-BODYLIST-TGRP1-NO
-                                               (WRK-PAGENO WRK-SELNUM2)
+                   IF      SPA-NAI-BODYLIST-TGRP1-NO (SPA-NAI-SELNUM2)
                                            NOT =   "000"
-                       COMPUTE IDX =   SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                       +   1
-                       IF    ( SPA-NAI-BODYLIST-TGRP1-NO(WRK-PAGENO IDX)
+                       COMPUTE IDX =   SPA-NAI-SELNUM2     +   1
+                       IF    ( SPA-NAI-BODYLIST-TGRP1-NO (IDX)
                                            =   "000"                )
-                       OR    ( SPA-NAI-BODYLIST-TGRP1-NO(WRK-PAGENO IDX)
-                                       NOT =
-                               SPA-NAI-BODYLIST-TGRP1-NO
-                                           (WRK-PAGENO WRK-SELNUM2) ) 
+                       OR    ( SPA-NAI-BODYLIST-TGRP1-NO (IDX)
+                                       NOT =   SPA-NAI-BODYLIST-TGRP1-NO
+                                                  (SPA-NAI-SELNUM2) ) 
                            CONTINUE
                        ELSE
-                           PERFORM VARYING IDX FROM   WRK-SELNUM2  BY  1
-                                   UNTIL   IDX >
-                                       SPA-GMN-BODYLIST-MAX (WRK-PAGENO)
-                               IF    ( SPA-NAI-BODYLIST-TGRP1-NO
-                                                     (WRK-PAGENO IDX)
+                           PERFORM VARYING IDX FROM    SPA-NAI-SELNUM2
+                                                       BY  1
+                                   UNTIL   IDX >   SPA-GMN-BODYLIST-MAX
+                               IF    ( SPA-NAI-BODYLIST-TGRP1-NO (IDX)
                                                    NOT =
-                                         SPA-NAI-BODYLIST-TGRP1-NO
-                                            (WRK-PAGENO WRK-SELNUM2)  ) 
-                               AND   ( SPA-NAI-SELNUM2(WRK-PAGENO)
-                                                  NOT =   IDX         )
+                                           SPA-NAI-BODYLIST-TGRP1-NO
+                                                     (SPA-NAI-SELNUM2) ) 
+                               AND   ( SPA-NAI-SELNUM2 NOT =   IDX     )
                                    COMPUTE WRK-GRP-INDEX
                                                       =    IDX -   1
-                                   MOVE    SPA-GMN-BODYLIST-MAX 
-                                                           (WRK-PAGENO)
+                                   MOVE    SPA-GMN-BODYLIST-MAX
                                                            TO  IDX
                                END-IF
                            END-PERFORM
                        END-IF    
                    END-IF
                ELSE
-                   PERFORM VARYING IDX FROM
-                               SPA-GMN-BODYLIST-MAX (WRK-PAGENO)  BY  -1
+                   PERFORM VARYING IDX FROM    SPA-GMN-BODYLIST-MAX
+                                               BY  -1
                            UNTIL   IDX <       1
-                       IF    ( SPA-NAI-BODYLIST-TGRP1-NO
-                                                   (WRK-PAGENO IDX)
-                                       =   SPA-NAI-GRP1-NO(WRK-PAGENO) )
-                       AND   ( IDX NOT =   SPA-NAI-SELNUM2(WRK-PAGENO) )
+                       IF    ( SPA-NAI-BODYLIST-TGRP1-NO (IDX)
+                                               =   SPA-NAI-GRP1-NO )
+                       AND   ( IDX         NOT =   SPA-NAI-SELNUM2 )
                            MOVE    IDX             TO  WRK-GRP-INDEX
-                           IF    ( SPA-NAI-BODYLIST-TPRTJYUN1
-                                          (WRK-PAGENO IDX)
+                           IF    ( SPA-NAI-BODYLIST-TPRTJYUN1 (IDX)
                                                    =   SPACE        )
-                           AND   ( SPA-NAI-BODYLIST-TPRTJYUN2
-                                          (WRK-PAGENO IDX)
+                           AND   ( SPA-NAI-BODYLIST-TPRTJYUN2 (IDX)
                                                    =   SPACE        )
-                           AND   ( SPA-GMN-KOHLIST-MAX (WRK-PAGENO IDX)
+                           AND   ( SPA-GMN-KOHLIST-MAX (IDX)
                                                    =   ZERO         )
                                CONTINUE
                            ELSE
@@ -1847,91 +1667,72 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
       *
       *        既に設定済の同グループの設定との設定のチェック
-               IF    ( SPA-GMN-GRP1-NO-MAX (WRK-PAGENO)
-                                   <   SPA-NAI-GRP1-NO (WRK-PAGENO) )
-               OR    ((SPA-NAI-BODYLIST-TPRTJYUN1
-                                               (WRK-PAGENO WRK-SELNUM2)
+               IF    ( SPA-GMN-GRP1-NO-MAX <   SPA-NAI-GRP1-NO )
+               OR    ((SPA-NAI-BODYLIST-TPRTJYUN1 (SPA-NAI-SELNUM2)
                                            =   SPACE    )
-                  AND (SPA-NAI-BODYLIST-TPRTJYUN2
-                                               (WRK-PAGENO WRK-SELNUM2)
+                  AND (SPA-NAI-BODYLIST-TPRTJYUN2 (SPA-NAI-SELNUM2)
                                            =   SPACE    )
-                  AND (SPA-GMN-KOHLIST-MAX     (WRK-PAGENO WRK-SELNUM2)
-                                           =   ZERO     )           )
-               OR    ( WRK-INDEX           =   ZERO                 )
+                  AND (SPA-GMN-KOHLIST-MAX (SPA-NAI-SELNUM2)
+                                           =   ZERO     )      )
+               OR    ( WRK-INDEX           =   ZERO            )
                    CONTINUE
                ELSE
-                   IF    ( SPA-NAI-BODYLIST-TPRTJYUN1
-                                           (WRK-PAGENO WRK-SELNUM2)
-                                           NOT =
-                               SPA-NAI-BODYLIST-TPRTJYUN1
-                                               (WRK-PAGENO WRK-INDEX) )
-                   OR    ( SPA-NAI-BODYLIST-TPRTJYUN2
-                                           (WRK-PAGENO WRK-SELNUM2)
-                                           NOT =
-                               SPA-NAI-BODYLIST-TPRTJYUN2
-                                               (WRK-PAGENO WRK-INDEX) )
-                   OR    ( SPA-GMN-KOHLIST (WRK-PAGENO WRK-SELNUM2)
-                                           NOT =
-                               SPA-GMN-KOHLIST (WRK-PAGENO WRK-INDEX) )
-                       MOVE    "0002"      TO  SPA-ERRCD
+                   IF    ( SPA-NAI-BODYLIST-TPRTJYUN1 (SPA-NAI-SELNUM2)
+                                            NOT =
+                               SPA-NAI-BODYLIST-TPRTJYUN1 (WRK-INDEX) )
+                   OR    ( SPA-NAI-BODYLIST-TPRTJYUN2 (SPA-NAI-SELNUM2)
+                                            NOT =
+                               SPA-NAI-BODYLIST-TPRTJYUN2 (WRK-INDEX) )
+                   OR    ( SPA-GMN-KOHLIST            (SPA-NAI-SELNUM2)
+                                            NOT =
+                               SPA-GMN-KOHLIST (WRK-INDEX)            )
+                       MOVE    "0002"       TO  SPA-ERRCD
                        GO  TO  410111-GRP-HENSYU-EXT
                    END-IF
                END-IF
       *
       *        グループ１番号と設定内容の設定
-               MOVE    SPA-NAI-GRP1-NO (WRK-PAGENO)
-                                       TO  SPA-NAI-BODYLIST-TGRP1-NO
-                                               (WRK-PAGENO WRK-SELNUM2)
+               MOVE    SPA-NAI-GRP1-NO TO
+                           SPA-NAI-BODYLIST-TGRP1-NO (SPA-NAI-SELNUM2)
       *
                IF      WRK-INDEX       >   ZERO
-                   MOVE    SPA-NAI-BODYLIST-TPRTJYUN1
-                                              (WRK-PAGENO WRK-INDEX)
+                   MOVE    SPA-NAI-BODYLIST-TPRTJYUN1 (WRK-INDEX)
                                            TO
-                               SPA-NAI-BODYLIST-TPRTJYUN1
-                               (WRK-PAGENO WRK-SELNUM2)
-                   MOVE    SPA-NAI-BODYLIST-TPRTJYUN2
-                                              (WRK-PAGENO WRK-INDEX)
+                                           SPA-NAI-BODYLIST-TPRTJYUN1
+                                                      (SPA-NAI-SELNUM2)
+                   MOVE    SPA-NAI-BODYLIST-TPRTJYUN2 (WRK-INDEX)
                                            TO
-                               SPA-NAI-BODYLIST-TPRTJYUN2
-                                               (WRK-PAGENO WRK-SELNUM2)
-                   MOVE    SPA-GMN-KOHLIST  (WRK-PAGENO WRK-INDEX)
+                                           SPA-NAI-BODYLIST-TPRTJYUN2
+                                                      (SPA-NAI-SELNUM2)
+                   MOVE    SPA-GMN-KOHLIST  (WRK-INDEX)
                                            TO
-                               SPA-GMN-KOHLIST (WRK-PAGENO WRK-SELNUM2)
+                                           SPA-GMN-KOHLIST 
+                                                      (SPA-NAI-SELNUM2)
                ELSE
-                   IF    ( SPA-GMN-GRP1-NO-MAX (WRK-PAGENO)
-                                       <   SPA-NAI-GRP1-NO (WRK-PAGENO))
-                   OR    ((SPA-NAI-BODYLIST-TPRTJYUN1
-                                           (WRK-PAGENO WRK-SELNUM2)
-                                       =   SPACE           )
-                      AND (SPA-NAI-BODYLIST-TPRTJYUN2
-                                            (WRK-PAGENO WRK-SELNUM2)
-                                       =   SPACE    )
-                      AND (SPA-GMN-KOHLIST-MAX
-                                            (WRK-PAGENO WRK-SELNUM2)
-                                       =   ZERO     )      )
+                   IF    ( SPA-GMN-GRP1-NO-MAX <   SPA-NAI-GRP1-NO )
+                   OR    ((SPA-NAI-BODYLIST-TPRTJYUN1 (SPA-NAI-SELNUM2)
+                                               =   SPACE           )
+                      AND (SPA-NAI-BODYLIST-TPRTJYUN2 (SPA-NAI-SELNUM2)
+                                               =   SPACE    )
+                      AND (SPA-GMN-KOHLIST-MAX (SPA-NAI-SELNUM2)
+                                               =   ZERO     )      )
                        CONTINUE
                    ELSE
                        PERFORM VARYING IDX FROM    1   BY  1
-                               UNTIL   IDX >
-                                       SPA-GMN-BODYLIST-MAX (WRK-PAGENO)
-                           IF    ( SPA-NAI-BODYLIST-TGRP1-NO
-                                                       (WRK-PAGENO IDX)
-                                                   =   SPA-NAI-GRP1-NO
-                                                       (WRK-PAGENO) )
-                           AND   ( IDX         NOT =   SPA-NAI-SELNUM2
-                                                       (WRK-PAGENO) )
+                               UNTIL   IDX >       SPA-GMN-BODYLIST-MAX
+                           IF    ( SPA-NAI-BODYLIST-TGRP1-NO (IDX)
+                                                   =   SPA-NAI-GRP1-NO )
+                           AND   ( IDX         NOT =   SPA-NAI-SELNUM2 )
                                MOVE    SPA-NAI-BODYLIST-TPRTJYUN1
-                                               (WRK-PAGENO WRK-SELNUM2)
+                                                       (SPA-NAI-SELNUM2)
                                        TO  SPA-NAI-BODYLIST-TPRTJYUN1
-                                                       (WRK-PAGENO IDX)
+                                                           (IDX)
                                MOVE    SPA-NAI-BODYLIST-TPRTJYUN2
-                                               (WRK-PAGENO WRK-SELNUM2)
+                                                       (SPA-NAI-SELNUM2)
                                        TO  SPA-NAI-BODYLIST-TPRTJYUN2
-                                                       (WRK-PAGENO IDX)
-                               MOVE    SPA-GMN-KOHLIST
-                                               (WRK-PAGENO WRK-SELNUM2)
-                                       TO  SPA-GMN-KOHLIST
-                                                      (WRK-PAGENO IDX)
+                                                           (IDX)
+                               MOVE    SPA-GMN-KOHLIST (SPA-NAI-SELNUM2)
+                                       TO  SPA-GMN-KOHLIST (IDX)
                            END-IF
                        END-PERFORM    
                    END-IF
@@ -1939,101 +1740,63 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *        既に設定済の同グループの最後に置き換える
                IF      WRK-GRP-INDEX       >   ZERO    
-                   MOVE    SPA-GMN-BODYLIST-OCC (WRK-PAGENO)
-                                           TO  WRK-GMN-BODYLIST-AREA
-                   INITIALIZE                  SPA-GMN-BODYLIST-OCC
-                                                       (WRK-PAGENO)
-                   MOVE    ZERO            TO  IDY
+                   MOVE    SPA-GMN-BODYLIST    TO  WRK-GMN-BODYLIST-AREA
+                   INITIALIZE                      SPA-GMN-BODYLIST
+                   MOVE    ZERO                TO  IDY
                    PERFORM VARYING IDX FROM    1   BY  1
                            UNTIL   IDX >       SPA-GMN-BODYLIST-MAX
-                                                       (WRK-PAGENO)
-                       IF      IDX     =   SPA-NAI-SELNUM2 (WRK-PAGENO)
+                       IF      IDX             =   SPA-NAI-SELNUM2
                            CONTINUE
                        ELSE
                            ADD     1               TO  IDY
                            MOVE    WRK-GMN-BODYLIST-TBL (IDX)
                                                    TO
-                                   SPA-GMN-BODYLIST-TBL(WRK-PAGENO IDY)
+                                               SPA-GMN-BODYLIST-TBL(IDY)
                            IF      IDX             =  WRK-GRP-INDEX
                                ADD     1               TO  IDY
                                MOVE    WRK-GMN-BODYLIST-TBL
-                                                       (WRK-SELNUM2)
+                                           (SPA-NAI-SELNUM2)
                                                        TO
-                                   SPA-GMN-BODYLIST-TBL(WRK-PAGENO IDY)
-                               IF      WRK-PAGENO      =   1
-                                   MOVE    IDY TO  W121-BODYLIST-ROW
-                               ELSE
-                                   MOVE    IDY TO  W121-BODYLIST-1-ROW
-                               END-IF
+                                               SPA-GMN-BODYLIST-TBL(IDY)
+                               MOVE    IDY             TO
+                                               W121-BODYLIST-ROW
                            END-IF
                        END-IF
                    END-PERFORM
                    INITIALIZE                  WRK-GMN-BODYLIST-AREA
                ELSE
-                   IF      WRK-PAGENO      =   1
-                       MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)    TO
-                                                   W121-BODYLIST-ROW
-                   ELSE
-                       MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)    TO
-                                                   W121-BODYLIST-1-ROW
-                   END-IF
+                   MOVE    SPA-NAI-SELNUM2 TO  W121-BODYLIST-ROW
                END-IF
-               MOVE    ZERO            TO  SPA-NAI-SELNUM2 (WRK-PAGENO)
-               IF      WRK-PAGENO      =   1
-                   MOVE    W121-BODYLIST-ROW
-                                       TO  SPA-NAI-SELNUM2-ROW
-                                                           (WRK-PAGENO)
-               ELSE
-                   MOVE    W121-BODYLIST-1-ROW
-                                       TO  SPA-NAI-SELNUM2-ROW
-                                                           (WRK-PAGENO)
-               END-IF
+               MOVE    W121-BODYLIST-ROW   TO  SPA-NAI-SELNUM2-ROW
       *
                MOVE    ZERO            TO  SPA-GMN-GRP1-NO-MAX
-                                                           (WRK-PAGENO)
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       SPA-GMN-BODYLIST-MAX
-                                                           (WRK-PAGENO)
-                   IF      SPA-GMN-GRP1-NO-MAX (WRK-PAGENO)
-                               <   SPA-NAI-BODYLIST-TGRP1-NO-9
-                                                   (WRK-PAGENO IDX)
-                       MOVE    SPA-NAI-BODYLIST-TGRP1-NO-9
-                                                       (WRK-PAGENO IDX)
-                                   TO  SPA-GMN-GRP1-NO-MAX (WRK-PAGENO)
+                   IF      SPA-GMN-GRP1-NO-MAX
+                               <   SPA-NAI-BODYLIST-TGRP1-NO-9 (IDX)
+                       MOVE    SPA-NAI-BODYLIST-TGRP1-NO-9 (IDX)
+                                       TO  SPA-GMN-GRP1-NO-MAX
                    END-IF
                END-PERFORM
            END-IF
       * 
       *    グループ２の設定
-           IF      SPA-GMN-GRP2 (WRK-PAGENO)       =   "T"
-               IF      SPA-GMN-GRP2-NO (WRK-PAGENO)     =   SPACE
-                   IF      WRK-PAGENO      =   1
-                       MOVE    51              TO  SPA-GMN-CUR
-                   ELSE
-                       MOVE    251             TO  SPA-GMN-CUR
-                   END-IF
-                   MOVE    "0012"      TO  SPA-ERRCD
-                   MOVE    ZERO        TO  FLG-BODYLIST-ROW (WRK-PAGENO)
-                   MOVE    ZERO        TO  SPA-NAI-SELNUM2  (WRK-PAGENO)
-                                           SPA-NAI-SELNUM2-ROW
-                                                            (WRK-PAGENO)
+           IF      SPA-GMN-GRP2        =   "T"
+               IF      SPA-GMN-GRP2-NO     =   SPACE
+                   MOVE    51                  TO  SPA-GMN-CUR
+                   MOVE    "0012"              TO  SPA-ERRCD
+                   MOVE    ZERO                TO  FLG-BODYLIST-ROW
+                   MOVE    ZERO                TO  SPA-NAI-SELNUM2
+                                                   SPA-NAI-SELNUM2-ROW
                    GO  TO  410111-GRP-HENSYU-EXT
                END-IF 
-               MOVE    SPA-GMN-GRP2-NO (WRK-PAGENO) TO
-                               SPA-NAI-BODYLIST-TGRP2-NO
-                                           (WRK-PAGENO WRK-SELNUM2)
-               IF      WRK-PAGENO      =   1
-                   MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO) TO
-                                                   W121-BODYLIST-ROW
-               ELSE
-                   MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO) TO
-                                                   W121-BODYLIST-1-ROW
-               END-IF
-                   MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO) TO
-                                       SPA-NAI-SELNUM2-ROW (WRK-PAGENO)
+               MOVE    SPA-GMN-GRP2-NO TO
+                           SPA-NAI-BODYLIST-TGRP2-NO(SPA-NAI-SELNUM2)
+               MOVE    SPA-NAI-SELNUM2 TO  W121-BODYLIST-ROW
+                                           SPA-NAI-SELNUM2-ROW
            END-IF
       *
-           MOVE    ZERO            TO  FLG-BODYLIST-ROW (WRK-PAGENO)
+           MOVE    ZERO            TO  FLG-BODYLIST-ROW
       **** MOVE    SPA-NAI-SELNUM2 TO  W121-BODYLIST-ROW
       *
            .
@@ -2046,72 +1809,49 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        410112-GRP-KAIJYO-SEC       SECTION.
       *
       *    グループ１の解除
-           IF      SPA-GMN-GRP1 (WRK-PAGENO)       =   "T"
-               IF      SPA-NAI-BODYLIST-TGRP1-NO
-                                           (WRK-PAGENO WRK-SELNUM2)
+           IF      SPA-GMN-GRP1        =   "T"
+               IF      SPA-NAI-BODYLIST-TGRP1-NO  (SPA-NAI-SELNUM2)
                                        =   "000"
                    GO  TO  410112-GRP-KAIJYO-EXT
                END-IF
       *
-               MOVE    SPA-NAI-BODYLIST-TGRP1-NO
-                                          (WRK-PAGENO WRK-SELNUM2)
+               MOVE    SPA-NAI-BODYLIST-TGRP1-NO (SPA-NAI-SELNUM2)
                                            TO  WRK-GRP1-NO
       *
                MOVE    "000"               TO
-                           SPA-NAI-BODYLIST-TGRP1-NO
-                                               (WRK-PAGENO WRK-SELNUM2)
-               INITIALIZE      SPA-GMN-KOHLIST (WRK-PAGENO WRK-SELNUM2)
-                               SPA-GMN-KOHLIST-MAX
-                                               (WRK-PAGENO WRK-SELNUM2)
-                               SPA-NAI-BODYLIST-TPRTJYUN1
-                                               (WRK-PAGENO WRK-SELNUM2)
-                               SPA-NAI-BODYLIST-TPRTJYUN2
-                                               (WRK-PAGENO WRK-SELNUM2)
+                           SPA-NAI-BODYLIST-TGRP1-NO (SPA-NAI-SELNUM2)
+               INITIALIZE              SPA-GMN-KOHLIST
+                                                 (SPA-NAI-SELNUM2)
+                                       SPA-NAI-BODYLIST-TPRTJYUN1
+                                                 (SPA-NAI-SELNUM2)
+                                       SPA-NAI-BODYLIST-TPRTJYUN2
+                                                 (SPA-NAI-SELNUM2)
       *
-               IF      SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                   =   SPA-GMN-BODYLIST-MAX (WRK-PAGENO)
-                   IF      WRK-PAGENO     =   1
-                       MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                              TO  W121-BODYLIST-ROW
-                   ELSE
-                       MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                              TO  W121-BODYLIST-1-ROW
-                   END-IF
+               IF      SPA-NAI-SELNUM2     =   SPA-GMN-BODYLIST-MAX
+                   MOVE    SPA-NAI-SELNUM2     TO  W121-BODYLIST-ROW
                ELSE
-                   COMPUTE IDX =   SPA-NAI-SELNUM2 (WRK-PAGENO)
-                               +   1
-                   IF    ( SPA-NAI-BODYLIST-TGRP1-NO (WRK-PAGENO IDX)
+                   COMPUTE IDX =   SPA-NAI-SELNUM2     +   1
+                   IF    ( SPA-NAI-BODYLIST-TGRP1-NO (IDX)
                                        =   "000"       )
-                   OR    ( SPA-NAI-BODYLIST-TGRP1-NO (WRK-PAGENO IDX)
+                   OR    ( SPA-NAI-BODYLIST-TGRP1-NO (IDX)
                                    NOT =   WRK-GRP1-NO ) 
-                       IF      WRK-PAGENO     =   1
-                           MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                              TO  W121-BODYLIST-ROW
-                       ELSE
-                           MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                              TO  W121-BODYLIST-1-ROW
-                       END-IF
+                       MOVE    SPA-NAI-SELNUM2 TO  W121-BODYLIST-ROW
                    ELSE
                        MOVE    ZERO            TO  WRK-GRP-INDEX
-                       PERFORM VARYING IDX FROM
-                                       SPA-NAI-SELNUM2 (WRK-PAGENO)
+                       PERFORM VARYING IDX FROM    SPA-NAI-SELNUM2
                                                    BY  1
-                               UNTIL   IDX > 
-                                       SPA-GMN-BODYLIST-MAX (WRK-PAGENO)
-                           IF    ( SPA-NAI-BODYLIST-TGRP1-NO
-                                                   (WRK-PAGENO IDX)
+                               UNTIL   IDX >   SPA-GMN-BODYLIST-MAX
+                           IF    ( SPA-NAI-BODYLIST-TGRP1-NO (IDX)
                                                    NOT =   WRK-GRP1-NO ) 
-                           AND   ( SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                                   NOT =   IDX         )
+                           AND   ( SPA-NAI-SELNUM2 NOT =   IDX         )
                                MOVE    IDX         TO  WRK-GRP-INDEX
-                               MOVE    SPA-GMN-BODYLIST-MAX (WRK-PAGENO)
+                               MOVE    SPA-GMN-BODYLIST-MAX
                                                    TO  IDX
                            END-IF
                        END-PERFORM
                        IF      WRK-GRP-INDEX       =   ZERO
                            COMPUTE WRK-GRP-INDEX
-                                   =   SPA-GMN-BODYLIST-MAX (WRK-PAGENO)
-                                   +   1
+                                   =   SPA-GMN-BODYLIST-MAX    +   1
                        ELSE
                            COMPUTE WRK-GRP-INDEX
                                    =   WRK-GRP-INDEX           -   1
@@ -2119,44 +1859,27 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        PERFORM 4901-SYUBETU-HENSYU-SEC
                    END-IF    
                END-IF
-               IF      WRK-PAGENO     =   1
-                   MOVE    W121-BODYLIST-ROW
-                                   TO  SPA-NAI-SELNUM2-ROW (WRK-PAGENO)
-               ELSE
-                   MOVE    W121-BODYLIST-1-ROW
-                                   TO  SPA-NAI-SELNUM2-ROW (WRK-PAGENO)
-               END-IF
+               MOVE    W121-BODYLIST-ROW   TO  SPA-NAI-SELNUM2-ROW
       *
-               MOVE    ZERO        TO  SPA-GMN-GRP1-NO-MAX (WRK-PAGENO)
+               MOVE    ZERO            TO  SPA-GMN-GRP1-NO-MAX
                PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX > 
-                                       SPA-GMN-BODYLIST-MAX (WRK-PAGENO)
-                   IF      SPA-GMN-GRP1-NO-MAX (WRK-PAGENO)
-                               <   SPA-NAI-BODYLIST-TGRP1-NO-9
-                                                       (WRK-PAGENO IDX)
-                       MOVE    SPA-NAI-BODYLIST-TGRP1-NO-9
-                                                       (WRK-PAGENO IDX)
-                                   TO  SPA-GMN-GRP1-NO-MAX (WRK-PAGENO)
+                       UNTIL   IDX >       SPA-GMN-BODYLIST-MAX
+                   IF      SPA-GMN-GRP1-NO-MAX
+                               <   SPA-NAI-BODYLIST-TGRP1-NO-9 (IDX)
+                       MOVE    SPA-NAI-BODYLIST-TGRP1-NO-9 (IDX)
+                                       TO  SPA-GMN-GRP1-NO-MAX
                    END-IF
                END-PERFORM
            END-IF
       *    グループ２の解除
-           IF      SPA-GMN-GRP2 (WRK-PAGENO)        =   "T"
+           IF      SPA-GMN-GRP2        =   "T"
                MOVE    SPACE               TO
-                           SPA-NAI-BODYLIST-TGRP2-NO
-                                               (WRK-PAGENO WRK-SELNUM2)
-               IF      WRK-PAGENO          =   1
-                   MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                               TO  W121-BODYLIST-ROW
-               ELSE
-                   MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                               TO  W121-BODYLIST-1-ROW
-               END-IF
-               MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                   TO  SPA-NAI-SELNUM2-ROW (WRK-PAGENO)
+                           SPA-NAI-BODYLIST-TGRP2-NO (SPA-NAI-SELNUM2)
+               MOVE    SPA-NAI-SELNUM2     TO  W121-BODYLIST-ROW
+                                               SPA-NAI-SELNUM2-ROW
            END-IF
       *
-           MOVE    ZERO            TO  FLG-BODYLIST-ROW (WRK-PAGENO)
+           MOVE    ZERO            TO  FLG-BODYLIST-ROW
       **** MOVE    SPA-NAI-SELNUM2 TO  W121-BODYLIST-ROW
       *
            .
@@ -2168,57 +1891,39 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        41021-SELNUM2-HENSYU-SEC        SECTION.
       *
-           MOVE    SPA-GMN-BODYLIST-TSYUBETU
-                           (WRK-PAGENO WRK-SELNUM2)
-                                   TO  SPA-GMN-RECESYUBETU (WRK-PAGENO)
-           MOVE    SPA-GMN-BODYLIST-TSYUBETUNAME
-                           (WRK-PAGENO WRK-SELNUM2)
-                                   TO  SPA-GMN-SYUBETUNAME (WRK-PAGENO)
-           MOVE    SPA-NAI-BODYLIST-TPRTJYUN1
-                           (WRK-PAGENO WRK-SELNUM2)
+           MOVE    SPA-GMN-BODYLIST-TSYUBETU     (SPA-NAI-SELNUM2)
+                                   TO  SPA-GMN-RECESYUBETU
+           MOVE    SPA-GMN-BODYLIST-TSYUBETUNAME (SPA-NAI-SELNUM2)
+                                   TO  SPA-GMN-SYUBETUNAME
+           MOVE    SPA-NAI-BODYLIST-TPRTJYUN1    (SPA-NAI-SELNUM2)
                                    TO  SPA-GMN-SYUBETU-PRTJYUN1
-                                                           (WRK-PAGENO)
            PERFORM VARYING IDY FROM    1   BY  1
                    UNTIL   IDY >   SPA-GMN-SYUBETU-PRTJYUN1-MAX
-               IF      SPA-GMN-SYUBETU-PRTJYUN1 (WRK-PAGENO)
+               IF      SPA-GMN-SYUBETU-PRTJYUN1
                                =   SPA-GMN-SYUBETU-PRTJYUN1L (IDY)
                    MOVE    SPA-GMN-SYUBETU-PRTJYUN1LST (IDY)
                                        TO  SPA-GMN-SYUBETU-PRTJYUN1-G
-                                                           (WRK-PAGENO)
                    MOVE    SPA-GMN-SYUBETU-PRTJYUN1-MAX
                                        TO  IDY
                END-IF                                     
            END-PERFORM
-           MOVE    SPA-NAI-BODYLIST-TPRTJYUN2
-                               (WRK-PAGENO WRK-SELNUM2)
+           MOVE    SPA-NAI-BODYLIST-TPRTJYUN2    (SPA-NAI-SELNUM2)
                                    TO  SPA-GMN-SYUBETU-PRTJYUN2
-                                                       (WRK-PAGENO)
            PERFORM VARYING IDY FROM    1   BY  1
                    UNTIL   IDY >   SPA-GMN-SYUBETU-PRTJYUN2-MAX
-               IF      SPA-GMN-SYUBETU-PRTJYUN2 (WRK-PAGENO)
+               IF      SPA-GMN-SYUBETU-PRTJYUN2
                                =   SPA-GMN-SYUBETU-PRTJYUN2L (IDY)
                    MOVE    SPA-GMN-SYUBETU-PRTJYUN2LST (IDY)
                                        TO  SPA-GMN-SYUBETU-PRTJYUN2-G
-                                                            (WRK-PAGENO)
                    MOVE    SPA-GMN-SYUBETU-PRTJYUN2-MAX
                                        TO  IDY
                END-IF                                     
            END-PERFORM
       *
-           IF      WRK-PAGENO      =   1
-               MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO) 
-                                       TO  W121-BODYLIST-ROW
-           ELSE
-               MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO) 
-                                       TO  W121-BODYLIST-1-ROW
-           END-IF 
-           MOVE    ZERO            TO  FLG-BODYLIST-ROW  (WRK-PAGENO)
+           MOVE    SPA-NAI-SELNUM2 TO  W121-BODYLIST-ROW
+           MOVE    ZERO            TO  FLG-BODYLIST-ROW
       *
-           IF      WRK-PAGENO      =   1
-               MOVE    13              TO  SPA-GMN-CUR
-           ELSE
-               MOVE    213             TO  SPA-GMN-CUR
-           END-IF
+           MOVE    13              TO  SPA-GMN-CUR
            .
        41021-SELNUM2-HENSYU-EXT.
            EXIT.
@@ -2232,33 +1937,16 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >       SPA-GMN-KOHLIST-MAX
-                                               (WRK-PAGENO WRK-SELNUM2)
-               IF      WRK-PAGENO          =   1
-                   IF      W121-KOHLIST-SELECT (IDX)   =   "T"
-                       MOVE    SPA-GMN-KOHLIST-THKNNUM
-                           (WRK-PAGENO WRK-SELNUM2 IDX)
-                                                   TO  WRK-HKNNUM
-                       MOVE    SPA-GMN-KOHLIST-MAX
-                               (WRK-PAGENO WRK-SELNUM2)
-                                                   TO  IDX
-                   END-IF
-               ELSE
-                   IF      W121-KOHLIST-1-SELECT (IDX)  =   "T"
-                       MOVE    SPA-GMN-KOHLIST-THKNNUM
-                           (WRK-PAGENO WRK-SELNUM2 IDX)
-                                                   TO  WRK-HKNNUM
-                       MOVE    SPA-GMN-KOHLIST-MAX
-                               (WRK-PAGENO WRK-SELNUM2)
-                                                   TO  IDX
-                   END-IF
-               END-IF    
+                                                   (SPA-NAI-SELNUM2)
+               IF      W121-KOHLIST-SELECT (IDX)   =   "T"
+                   MOVE    SPA-GMN-KOHLIST-THKNNUM (SPA-NAI-SELNUM2 IDX)
+                                               TO  WRK-HKNNUM
+                   MOVE    SPA-GMN-KOHLIST-MAX     (SPA-NAI-SELNUM2)
+                                               TO  IDX
+               END-IF
            END-PERFORM
       *
-           IF      WRK-PAGENO      =   1
-               MOVE    WRK-HKNNUM      TO  W121-HKNNUM
-           ELSE
-               MOVE    WRK-HKNNUM      TO  W121-HKNNUM-1
-           END-IF
+           MOVE    WRK-HKNNUM          TO  W121-HKNNUM
            .
        41012-KOHLIST-SEL-EXT.
            EXIT.
@@ -2278,16 +1966,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                PERFORM 4102-KIHON-CHK-SEC
            END-IF
       *
-           IF      SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                       >   ZERO
-               IF      WRK-PAGENO          =   1
-                   MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                               TO  W121-BODYLIST-ROW
-               ELSE
-                   MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                               TO  W121-BODYLIST-1-ROW
-               END-IF 
-               MOVE    ZERO            TO  FLG-BODYLIST-ROW (WRK-PAGENO)
+           IF      SPA-NAI-SELNUM2 >   ZERO
+               MOVE    SPA-NAI-SELNUM2     TO  W121-BODYLIST-ROW
+               MOVE    ZERO                TO  FLG-BODYLIST-ROW
            END-IF
            .
        410-INPUT-CHK-EXT.
@@ -2303,29 +1984,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    W121-HKNJANUM       TO  SPA-GMN-HKNJANUM
            MOVE    W121-HKNJ-PRTKBN    TO  SPA-GMN-HKNJANUM-PRTKBN-G
       *
-      *    県内
-           MOVE    W121-PRTJYUN1       TO  SPA-GMN-PRTJYUN1-G        (1)
-           MOVE    W121-PRTJYUN2       TO  SPA-GMN-PRTJYUN2-G        (1)
-           MOVE    W121-SRT-LAST       TO  SPA-GMN-SRT-LAST-G        (1)
-           MOVE    W121-ZAITAKU        TO  SPA-GMN-ZAITAKU-G         (1)
-           MOVE    W121-CHOUKI         TO  SPA-GMN-CHOUKI-G          (1)
-           MOVE    W121-KOUGAKU-TEN    TO  SPA-GMN-KOUGAKU-TEN       (1)
+           MOVE    W121-PRTJYUN1       TO  SPA-GMN-PRTJYUN1-G
+           MOVE    W121-PRTJYUN2       TO  SPA-GMN-PRTJYUN2-G
+           MOVE    W121-ZAITAKU        TO  SPA-GMN-ZAITAKU-G
+           MOVE    W121-CHOUKI         TO  SPA-GMN-CHOUKI-G
       *
-           MOVE    W121-SYU-PRTJYUN1   TO  SPA-GMN-SYUBETU-PRTJYUN1-G(1)
-           MOVE    W121-SYU-PRTJYUN2   TO  SPA-GMN-SYUBETU-PRTJYUN2-G(1)
-           MOVE    W121-HKNNUM         TO  SPA-GMN-HKNNUM            (1)
-      *
-      *    県外
-           MOVE    W121-PRTJYUN1-1     TO  SPA-GMN-PRTJYUN1-G        (2)
-           MOVE    W121-PRTJYUN2-1     TO  SPA-GMN-PRTJYUN2-G        (2)
-           MOVE    W121-SRT-LAST-1     TO  SPA-GMN-SRT-LAST-G        (2)
-           MOVE    W121-ZAITAKU-1      TO  SPA-GMN-ZAITAKU-G         (2)
-           MOVE    W121-CHOUKI-1       TO  SPA-GMN-CHOUKI-G          (2)
-           MOVE    W121-KOUGAKU-TEN-1  TO  SPA-GMN-KOUGAKU-TEN       (2)
-      *
-           MOVE    W121-SYU-PRTJYUN1-1 TO  SPA-GMN-SYUBETU-PRTJYUN1-G(2)
-           MOVE    W121-SYU-PRTJYUN2-1 TO  SPA-GMN-SYUBETU-PRTJYUN2-G(2)
-           MOVE    W121-HKNNUM-1       TO  SPA-GMN-HKNNUM            (2)
+           MOVE    W121-SYU-PRTJYUN1   TO  SPA-GMN-SYUBETU-PRTJYUN1-G
+           MOVE    W121-SYU-PRTJYUN2   TO  SPA-GMN-SYUBETU-PRTJYUN2-G
+           MOVE    W121-HKNNUM         TO  SPA-GMN-HKNNUM
       *
            .
        4101-GMN-SPA-SET-EXT.
@@ -2366,22 +2032,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
       *
-           PERFORM 41021-SRT-LAST-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO  TO  4102-KIHON-CHK-EXT
-           END-IF
-      *
            PERFORM 41021-ZAITAKU-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
       *
            PERFORM 41021-CHOUKI-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO  TO  4102-KIHON-CHK-EXT
-           END-IF
-      *
-           PERFORM 41021-KOUGAKU-TEN-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
@@ -2410,24 +2066,20 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        4103-KANREN-CHK-SEC          SECTION.
       *
-           IF      SPA-GMN-BODYLIST-MAX (WRK-PAGENO)
-                                    =   ZERO
-               IF    ( SPA-GMN-GRP1-NO  (WRK-PAGENO)
-                                    NOT =   SPACE )
-               OR    ( SPA-GMN-GRP2-NO  (WRK-PAGENO)
-                                    NOT =   SPACE )
+           IF      SPA-GMN-BODYLIST-MAX =   ZERO
+               IF    ( SPA-GMN-GRP1-NO  NOT =   SPACE )
+               OR    ( SPA-GMN-GRP2-NO  NOT =   SPACE )
                    MOVE    "0102"           TO  SPA-ERRCD
                END-IF
            END-IF
       *
            IF      SPA-ERRCD        =   SPACE
-               IF    ( SPA-NAI-SELNUM2  (WRK-PAGENO)
-                                        =   ZERO )
-                   IF    ( SPA-GMN-SYUBETU-PRTJYUN1 (WRK-PAGENO)
+               IF    ( SPA-NAI-SELNUM2  =   ZERO )
+                   IF    ( SPA-GMN-SYUBETU-PRTJYUN1
                                         NOT =   SPACE )
-                   OR    ( SPA-GMN-SYUBETU-PRTJYUN2 (WRK-PAGENO)
+                   OR    ( SPA-GMN-SYUBETU-PRTJYUN2
                                         NOT =   SPACE )
-                   OR    ( SPA-GMN-HKNNUM           (WRK-PAGENO)
+                   OR    ( SPA-GMN-HKNNUM
                                         NOT =   SPACE )
                        MOVE    "0103"           TO  SPA-ERRCD
                    END-IF
@@ -2527,20 +2179,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
            END-IF
       *
-      *    新規入力のとき改正前後を跨ぐときの開始日の設定
-           IF      SPA-ERRCD       =   SPACE
-               IF      SPA-GMN-SELNUM1     =   ZERO
-                   IF    ( SPA-NAI-STYUKYMD <  WRK-CONS-SRYYM-20080401 )
-                   AND   ( SPA-NAI-EDYUKYMD >= WRK-CONS-SRYYM-20080401 )
-                       MOVE    WRK-CONS-SRYYM-20080401
-                                           TO  SPA-NAI-STYUKYMD
-                                               WRK-YMD
-                       PERFORM 5002-HIZUKE-CHK-SEC
-                       MOVE    WRK-HENYMDG TO  SPA-GMN-STYUKYMD
-                   END-IF
-               END-IF
-           END-IF 
-      *
       *    有効期間の重複チェック
            IF      SPA-ERRCD       =   SPACE
                PERFORM VARYING IDX FROM    1   BY  1
@@ -2548,12 +2186,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        OR      SPA-ERRCD   NOT =   SPACE
                    IF      SPA-GMN-SELNUM1     =   IDX
       *                選択された内容の開始日が変更された場合
-      ***                 IF      SPA-NAI-STYUKYMD    =
-      ***                             SPA-NAI-HEADLIST-TSTYUKYMD (IDX)
+                       IF      SPA-NAI-STYUKYMD    =
+                                   SPA-NAI-HEADLIST-TSTYUKYMD (IDX)
                            MOVE    ZERO            TO  FLG-CHK
-      ***                 ELSE
-      ***                     MOVE    1               TO  FLG-CHK
-      ***                 END-IF
+                       ELSE
+                           MOVE    1               TO  FLG-CHK
+                       END-IF
                    ELSE
                        MOVE    1               TO  FLG-CHK
                    END-IF
@@ -2573,25 +2211,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            IF      SPA-ERRCD       =   SPACE
                IF      SPA-GMN-SELNUM1     =   ZERO
-      *
-               INITIALIZE                  SPA-NAI-BODY-KOUMOKU
-                                           SPA-GMN-BODY-KOUMOKU
-                                           SPA-GMN-GRP-KOUMOKU
-                                           SPA-GMN-BODYLIST
-                                           SPA-GMN-HEAD1-OCC (1)
-                                           SPA-GMN-HEAD1-OCC (2)
       *            レセプト（編綴順）情報編集処理
                    PERFORM 3102-SPA-2008-HENSYU-SEC
       *            レセプト種別情報編集処理
                    PERFORM 410211-RECESYUBETU-HENSYU-SEC
       *
-                   MOVE    SPA-GMN-PRTJYUN1LST (1)
-                                       TO  SPA-GMN-PRTJYUN1-G (1)
-                                           SPA-GMN-PRTJYUN1-G (2)
-      *
-                   MOVE    SPA-GMN-SRT-LASTLST (1)
-                                       TO  SPA-GMN-SRT-LAST-G (1)
-                                           SPA-GMN-SRT-LAST-G (2)
+                   MOVE    SPA-GMN-PRTJYUN1LST (2)
+                                       TO  SPA-GMN-PRTJYUN1-G
                END-IF 
       *
                MOVE    4               TO  SPA-GMN-CUR
@@ -2611,34 +2237,15 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    レセプト種別印刷区分による初期表示
            MOVE    ZERO                TO  IDY
-           IF      SYS-2008-RECESYUBETU-PRTJYUN
-                                       =   SPACE
+           PERFORM VARYING IDZ FROM    1   BY  1
+                   UNTIL   IDZ >       3
+                   OR      IDY >=      WRK-CONS-BODYLIST-MAX
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       50
                        OR      WRK-2003-TSYUBETU    (IDX)
                                    =       SPACE
                        OR      IDY >=      WRK-CONS-BODYLIST-MAX
-                   ADD     1                           TO  IDY   
-                   MOVE    WRK-2003-TSYUBETU    (IDX)  TO
-                                   SPA-GMN-BODYLIST-TSYUBETU     (1 IDY)
-                                   SPA-GMN-BODYLIST-TSYUBETU     (2 IDY)
-                   MOVE    WRK-2003-TSYUBETUNAME(IDX)  TO
-                                   SPA-GMN-BODYLIST-TSYUBETUNAME (1 IDY)
-                                   SPA-GMN-BODYLIST-TSYUBETUNAME (2 IDY)
-      *
-                   MOVE    IDY     TO  SPA-GMN-BODYLIST-MAX (1)
-                                       SPA-GMN-BODYLIST-MAX (2)
-               END-PERFORM
-           ELSE     
-               PERFORM VARYING IDZ FROM    1   BY  1
-                       UNTIL   IDZ >       3
-                       OR      IDY >=      WRK-CONS-BODYLIST-MAX
-                   PERFORM VARYING IDX FROM    1   BY  1
-                           UNTIL   IDX >       50
-                           OR      WRK-2003-TSYUBETU    (IDX)
-                                       =       SPACE
-                           OR      IDY >=      WRK-CONS-BODYLIST-MAX
-                     EVALUATE  IDZ ALSO    SYS-2008-RECESYUBETU-PRTJYUN
+                   EVALUATE    IDZ ALSO    SYS-2008-RECESYUBETU-PRTJYUN
                                    ALSO    WRK-2003-TSYUBETU (IDX)(2:1)
                        WHEN    SPACE   ALSO    ANY     ALSO    ANY
                        WHEN    1   ALSO        "1"     ALSO    "1"
@@ -2661,18 +2268,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        WHEN    3   ALSO        "3"     ALSO    "4"
                            ADD     1                           TO  IDY   
                            MOVE    WRK-2003-TSYUBETU    (IDX)  TO
-                                   SPA-GMN-BODYLIST-TSYUBETU     (1 IDY)
-                                   SPA-GMN-BODYLIST-TSYUBETU     (2 IDY)
+                                   SPA-GMN-BODYLIST-TSYUBETU     (IDY)
                            MOVE    WRK-2003-TSYUBETUNAME(IDX)  TO
-                                   SPA-GMN-BODYLIST-TSYUBETUNAME (1 IDY)
-                                   SPA-GMN-BODYLIST-TSYUBETUNAME (2 IDY)
+                                   SPA-GMN-BODYLIST-TSYUBETUNAME (IDY)
       *
-                           MOVE    IDY     TO  SPA-GMN-BODYLIST-MAX (1)
-                                               SPA-GMN-BODYLIST-MAX (2)
-                     END-EVALUATE
-                   END-PERFORM
+                           MOVE    IDY     TO  SPA-GMN-BODYLIST-MAX
+                   END-EVALUATE
                END-PERFORM
-           END-IF        
+           END-PERFORM    
       *
            . 
        410211-RECESYUBETU-HENSYU-EXT.
@@ -2705,10 +2308,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            IF      SPA-ERRCD       NOT =   SPACE
                MOVE    4               TO  SPA-GMN-CUR
-           ELSE
-               IF      SPA-GMN-PREFKBN-PRTJYUN   =   "3"
-                   MOVE    999             TO  SPA-GMN-CUR
-               END-IF
            END-IF
            .
        41021-PREFKBN-PRTJYUN-CHK-EXT.
@@ -2721,12 +2320,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            IF      SPA-GMN-HKNJANUM-PRTJYUN
                                            =   SPACE
-               IF      SPA-GMN-PRTJYUN1 (1)    =   "02"
-                   CONTINUE
-               ELSE 
-                   MOVE    SPA-GMN-HKNJANUM-PRTJYUNLST (1)
+               MOVE    SPA-GMN-HKNJANUM-PRTJYUNLST (1)
                                    TO  SPA-GMN-HKNJANUM-PRTJYUN-G
-               END-IF
            ELSE
                PERFORM VARYING IDY FROM    1   BY  1
                        UNTIL   IDY >       SPA-GMN-HKNJANUM-PRTJYUN-MAX
@@ -2764,7 +2359,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            ELSE
                MOVE    SPACE               TO  HKNJAINF-REC
                INITIALIZE                      HKNJAINF-REC
-               MOVE    SPA-HOSPNUM          TO  HKNJA-HOSPNUM
+               MOVE    SPA-HOSPID          TO  HKNJA-HOSPID
                MOVE    SPA-GMN-HKNJANUM    TO  HKNJA-HKNJANUM
                MOVE    HKNJAINF-REC        TO  MCPDATA-REC
                PERFORM 900-HKNJAINF-READ-SEC
@@ -2831,48 +2426,33 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        41021-PRTJYUN1-CHK-SEC   SECTION.
       *
-           IF      SPA-GMN-PRTJYUN1 (WRK-PAGENO)
-                                       =   SPACE
-               MOVE    SPA-GMN-PRTJYUN1LST (1)
-                                   TO  SPA-GMN-PRTJYUN1-G (WRK-PAGENO)
+           IF      SPA-GMN-PRTJYUN1    =   SPACE
+               MOVE    SPA-GMN-PRTJYUN1LST (2)
+                                           TO  SPA-GMN-PRTJYUN1-G
            ELSE
                PERFORM VARYING IDY FROM    1   BY  1
                        UNTIL   IDY >   SPA-GMN-PRTJYUN1-MAX
-                   IF      SPA-GMN-PRTJYUN1(WRK-PAGENO)
-                                   =   SPA-GMN-PRTJYUN1L (IDY)
+                   IF      SPA-GMN-PRTJYUN1    =
+                                   SPA-GMN-PRTJYUN1L (IDY)
                        MOVE    SPA-GMN-PRTJYUN1LST (IDY)
-                                   TO  SPA-GMN-PRTJYUN1-G (WRK-PAGENO)
+                                           TO  SPA-GMN-PRTJYUN1-G
                        MOVE    SPA-GMN-PRTJYUN1-MAX
                                            TO  IDY
                    END-IF                                     
                END-PERFORM
       *     
-               IF      SPA-GMN-PRTJYUN1MEI (WRK-PAGENO) 
-                                               =   SPACE
+               IF      SPA-GMN-PRTJYUN1MEI =   SPACE
                    MOVE    "0009"                  TO  SPA-ERRCD
                END-IF
            END-IF    
-      *----> take add st
-               IF      SPA-GMN-PRTJYUN1-G (2)(1:2)
-                                               =   "02"
-                   MOVE    "0048"                  TO  SPA-ERRCD
-               END-IF
-      *----> take add ed
       *
            IF      SPA-ERRCD       NOT =   SPACE
-               IF      WRK-PAGENO      =   1
-                   MOVE    8               TO  SPA-GMN-CUR
-               ELSE
-                   MOVE    208             TO  SPA-GMN-CUR
-               END-IF
+               MOVE    8               TO  SPA-GMN-CUR
            ELSE
-               IF    ( WRK-PAGENO      =   1    )
-               AND   ( SPA-GMN-PRTJYUN1 (WRK-PAGENO)
-                                       =   "02" )
-                   MOVE    SPACE       TO  SPA-GMN-HKNJANUM
-                                           SPA-GMN-HKNJANAME
-                                           SPA-GMN-HKNJANUM-PRTKBN-G
-                                           SPA-GMN-HKNJANUM-PRTJYUN-G
+               IF      SPA-GMN-PRTJYUN1    =   "03"
+                   MOVE    SPACE           TO  SPA-GMN-HKNJANUM
+                                               SPA-GMN-HKNJANAME
+                                               SPA-GMN-HKNJANUM-PRTKBN-G
                END-IF    
            END-IF
            .
@@ -2884,83 +2464,30 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        41021-PRTJYUN2-CHK-SEC   SECTION.
       *
-           IF      SPA-GMN-PRTJYUN2 (WRK-PAGENO)
-                                   =   SPACE
+           IF      SPA-GMN-PRTJYUN2    =   SPACE
                CONTINUE
            ELSE
                PERFORM VARYING IDY FROM    1   BY  1
                        UNTIL   IDY >   SPA-GMN-PRTJYUN2-MAX
-                   IF      SPA-GMN-PRTJYUN2 (WRK-PAGENO)
-                                   =   SPA-GMN-PRTJYUN2L (IDY)
+                   IF      SPA-GMN-PRTJYUN2    =
+                                   SPA-GMN-PRTJYUN2L (IDY)
                        MOVE    SPA-GMN-PRTJYUN2LST (IDY)
-                                   TO  SPA-GMN-PRTJYUN2-G (WRK-PAGENO)
+                                           TO  SPA-GMN-PRTJYUN2-G
                        MOVE    SPA-GMN-PRTJYUN2-MAX
                                            TO  IDY
                    END-IF                                     
                END-PERFORM
       *     
-               IF      SPA-GMN-PRTJYUN2MEI (WRK-PAGENO)
-                                               =   SPACE
+               IF      SPA-GMN-PRTJYUN2MEI =   SPACE
                    MOVE    "0010"                  TO  SPA-ERRCD
                END-IF
            END-IF    
       *
            IF      SPA-ERRCD       NOT =   SPACE
-               IF      WRK-PAGENO      =   1
-                   MOVE    9               TO  SPA-GMN-CUR
-               ELSE
-                   MOVE    209             TO  SPA-GMN-CUR
-               END-IF
+               MOVE    9               TO  SPA-GMN-CUR
            END-IF
            .
        41021-PRTJYUN2-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    最終印刷順チェック
-      *****************************************************************
-       41021-SRT-LAST-CHK-SEC   SECTION.
-      *
-           IF      SPA-GMN-SRT-LAST (WRK-PAGENO)
-                                       =   SPACE
-               MOVE    SPA-GMN-SRT-LASTLST (1)
-                                   TO  SPA-GMN-SRT-LAST-G (WRK-PAGENO)
-           ELSE
-               PERFORM VARYING IDY FROM    1   BY  1
-                       UNTIL   IDY >   SPA-GMN-SRT-LAST-MAX
-                   IF      SPA-GMN-SRT-LAST (WRK-PAGENO)
-                                       =   SPA-GMN-SRT-LASTL (IDY)
-                       MOVE    SPA-GMN-SRT-LASTLST (IDY)
-                                   TO  SPA-GMN-SRT-LAST-G (WRK-PAGENO)
-                       MOVE    SPA-GMN-SRT-LAST-MAX
-                                           TO  IDY
-                   END-IF                                     
-               END-PERFORM
-      *     
-               IF      SPA-GMN-SRT-LASTMEI (WRK-PAGENO)
-                                           =   SPACE
-                   MOVE    "0013"              TO  SPA-ERRCD
-               END-IF
-           END-IF    
-      *
-           IF      SPA-ERRCD       NOT =   SPACE
-               IF      WRK-PAGENO      =   1
-                   MOVE    16              TO  SPA-GMN-CUR
-               ELSE
-                   MOVE    216             TO  SPA-GMN-CUR
-               END-IF
-           END-IF
-            .
-       41021-SRT-LAST-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    高額点数チェック
-      *****************************************************************
-       41021-KOUGAKU-TEN-CHK-SEC       SECTION.
-      *
-          .
-       41021-KOUGAKU-TEN-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2968,33 +2495,27 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        41021-ZAITAKU-CHK-SEC       SECTION.
       *
-           IF      SPA-GMN-ZAITAKU (WRK-PAGENO)
-                                   =   SPACE
+           IF      SPA-GMN-ZAITAKU =   SPACE
                CONTINUE
            ELSE
                PERFORM VARYING IDY FROM    1   BY  1
                        UNTIL   IDY >       SPA-GMN-ZAITAKU-MAX
-                   IF      SPA-GMN-ZAITAKU (WRK-PAGENO)
+                   IF      SPA-GMN-ZAITAKU
                                    =   SPA-GMN-ZAITAKUL (IDY)
                        MOVE    SPA-GMN-ZAITAKULST (IDY)
-                                   TO  SPA-GMN-ZAITAKU-G (WRK-PAGENO)
+                                           TO  SPA-GMN-ZAITAKU-G
                        MOVE    SPA-GMN-ZAITAKU-MAX
-                                   TO  IDY
+                                           TO  IDY
                    END-IF                                     
                END-PERFORM
       *     
-               IF      SPA-GMN-ZAITAKUMEI (WRK-PAGENO)
-                                               =   SPACE
+               IF      SPA-GMN-ZAITAKUMEI  =   SPACE
                    MOVE    "0024"                  TO  SPA-ERRCD
                END-IF
            END-IF    
       *
            IF      SPA-ERRCD       NOT =   SPACE
-               IF      WRK-PAGENO      =   1
-                   MOVE    10              TO  SPA-GMN-CUR
-               ELSE
-                   MOVE    210             TO  SPA-GMN-CUR
-               END-IF
+               MOVE    10              TO  SPA-GMN-CUR
            END-IF
            .
        41021-ZAITAKU-CHK-EXT.
@@ -3005,34 +2526,28 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        41021-CHOUKI-CHK-SEC       SECTION.
       *
-           IF      SPA-GMN-CHOUKI (WRK-PAGENO)
-                                   =   SPACE
+           IF      SPA-GMN-CHOUKI  =   SPACE
                CONTINUE
            ELSE
                PERFORM VARYING IDY FROM    1   BY  1
                        UNTIL   IDY >       SPA-GMN-CHOUKI-MAX
-                   IF      SPA-GMN-CHOUKI (WRK-PAGENO)
+                   IF      SPA-GMN-CHOUKI
                                    =   SPA-GMN-CHOUKIL (IDY)
                        MOVE    SPA-GMN-CHOUKILST (IDY)
                                            TO
-                                           SPA-GMN-CHOUKI-G (WRK-PAGENO)
+                                           SPA-GMN-CHOUKI-G
                        MOVE    SPA-GMN-CHOUKI-MAX
                                            TO  IDY
                    END-IF                                     
                END-PERFORM
       *     
-               IF      SPA-GMN-CHOUKIMEI (WRK-PAGENO)
-                                           =   SPACE
-                   MOVE    "0025"              TO  SPA-ERRCD
+               IF      SPA-GMN-CHOUKIMEI =   SPACE
+                   MOVE    "0025"                  TO  SPA-ERRCD
                END-IF
            END-IF    
       *
            IF      SPA-ERRCD       NOT =   SPACE
-               IF      WRK-PAGENO      =   1
-                   MOVE    11              TO  SPA-GMN-CUR
-               ELSE
-                   MOVE    211             TO  SPA-GMN-CUR
-               END-IF
+               MOVE    11               TO  SPA-GMN-CUR
            END-IF
            .
        41021-CHOUKI-CHK-EXT.
@@ -3043,33 +2558,27 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        41021-SYUBETU-PRTJYUN1-CHK-SEC   SECTION.
       *
-           IF      WRK-SELNUM2          =   ZERO
-               GO  TO  41021-SYUBETU-PRTJYUN1-CHK-EXT
-           END-IF
-      *
-           IF      SPA-GMN-SYUBETU-PRTJYUN1 (WRK-PAGENO)
+           IF      SPA-GMN-SYUBETU-PRTJYUN1
                                        =   SPACE
                CONTINUE
            ELSE
                PERFORM VARYING IDY FROM    1   BY  1
                        UNTIL   IDY >   SPA-GMN-SYUBETU-PRTJYUN1-MAX
-                   IF      SPA-GMN-SYUBETU-PRTJYUN1 (WRK-PAGENO)
+                   IF      SPA-GMN-SYUBETU-PRTJYUN1
                                =   SPA-GMN-SYUBETU-PRTJYUN1L (IDY)
                        MOVE    SPA-GMN-SYUBETU-PRTJYUN1LST (IDY)
                                            TO
-                               SPA-GMN-SYUBETU-PRTJYUN1-G (WRK-PAGENO)
+                                       SPA-GMN-SYUBETU-PRTJYUN1-G
                        MOVE    SPA-GMN-SYUBETU-PRTJYUN1-MAX
                                            TO  IDY
                    END-IF                                     
                END-PERFORM
       *     
-               IF      SPA-GMN-SYUBETU-PRTJYUN1MEI (WRK-PAGENO)
-                                               =   SPACE
+               IF      SPA-GMN-SYUBETU-PRTJYUN1MEI =   SPACE
                    MOVE    "0030"                  TO  SPA-ERRCD
                ELSE
-                   IF    ( SPA-GMN-PRTJYUN1 (WRK-PAGENO)
-                                               NOT =   "02" )
-                   AND   ( SPA-GMN-SYUBETU-PRTJYUN1 (WRK-PAGENO)
+                   IF    ( SPA-GMN-PRTJYUN1    NOT =   "03" )
+                   AND   ( SPA-GMN-SYUBETU-PRTJYUN1
                                                    =   "07" ) 
                        MOVE    "0031"              TO  SPA-ERRCD
                    END-IF
@@ -3077,32 +2586,25 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF    
       *
            IF      SPA-ERRCD       NOT =   SPACE
-               IF      WRK-PAGENO      =   1
-                   MOVE    12              TO  SPA-GMN-CUR
-               ELSE
-                   MOVE    212             TO  SPA-GMN-CUR
-               END-IF
+               MOVE    12                  TO  SPA-GMN-CUR
            ELSE
-               MOVE    SPA-GMN-SYUBETU-PRTJYUN1 (WRK-PAGENO)
+               MOVE    SPA-GMN-SYUBETU-PRTJYUN1
                                            TO
-                                           SPA-NAI-BODYLIST-TPRTJYUN1
-                                               (WRK-PAGENO WRK-SELNUM2)
-               IF      SPA-NAI-BODYLIST-TGRP1-NO
-                                   (WRK-PAGENO WRK-SELNUM2)
+                                       SPA-NAI-BODYLIST-TPRTJYUN1
+                                           (SPA-NAI-SELNUM2)
+               IF      SPA-NAI-BODYLIST-TGRP1-NO (SPA-NAI-SELNUM2)
                                NOT =   "000"
                    PERFORM VARYING IDX FROM    1   BY  1
                            UNTIL   IDX >       SPA-GMN-BODYLIST-MAX
-                                                       (WRK-PAGENO)
                        IF    ( SPA-NAI-BODYLIST-TGRP1-NO
-                                           (WRK-PAGENO WRK-SELNUM2)
+                                                   (SPA-NAI-SELNUM2)
                                        =   SPA-NAI-BODYLIST-TGRP1-NO
-                                                   (WRK-PAGENO IDX)   )
-                       AND   ( IDX NOT =   SPA-NAI-SELNUM2
-                                                   (WRK-PAGENO)       )
-                           MOVE    SPA-GMN-SYUBETU-PRTJYUN1 (WRK-PAGENO)
+                                                   (IDX)   )
+                       AND   ( IDX NOT =   SPA-NAI-SELNUM2 )
+                           MOVE    SPA-GMN-SYUBETU-PRTJYUN1
                                                TO
                                            SPA-NAI-BODYLIST-TPRTJYUN1
-                                                       (WRK-PAGENO IDX)
+                                                               (IDX)
                        END-IF
                    END-PERFORM
                END-IF
@@ -3116,72 +2618,57 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        41021-SYUBETU-PRTJYUN2-CHK-SEC   SECTION.
       *
-           IF      WRK-SELNUM2          =   ZERO
-               GO  TO  41021-SYUBETU-PRTJYUN2-CHK-EXT
-           END-IF
-      *
-           IF      SPA-GMN-SYUBETU-PRTJYUN2 (WRK-PAGENO)
+           IF      SPA-GMN-SYUBETU-PRTJYUN2
                                            =   SPACE
                CONTINUE
            ELSE
                PERFORM VARYING IDY FROM    1   BY  1
                        UNTIL   IDY >   SPA-GMN-SYUBETU-PRTJYUN2-MAX
-                   IF      SPA-GMN-SYUBETU-PRTJYUN2 (WRK-PAGENO)
+                   IF      SPA-GMN-SYUBETU-PRTJYUN2
                                    =
                                    SPA-GMN-SYUBETU-PRTJYUN2L (IDY)
                        MOVE    SPA-GMN-SYUBETU-PRTJYUN2LST (IDY)
                                            TO
-                               SPA-GMN-SYUBETU-PRTJYUN2-G (WRK-PAGENO)
+                                       SPA-GMN-SYUBETU-PRTJYUN2-G
                        MOVE    SPA-GMN-SYUBETU-PRTJYUN2-MAX
                                            TO  IDY
                    END-IF                                     
                END-PERFORM
       *     
-               IF      SPA-GMN-SYUBETU-PRTJYUN2MEI (WRK-PAGENO)
-                                               =   SPACE
+               IF      SPA-GMN-SYUBETU-PRTJYUN2MEI =   SPACE
                    MOVE    "0032"                  TO  SPA-ERRCD
                END-IF
            END-IF    
       *
            IF      SPA-ERRCD           =   SPACE
-               IF    ( SPA-GMN-PRTJYUN1         (WRK-PAGENO)
-                                           NOT =   "02"  )
-               AND   ( SPA-GMN-SYUBETU-PRTJYUN2 (WRK-PAGENO)
+               IF    ( SPA-GMN-PRTJYUN1    NOT =   "03"  )
+               AND   ( SPA-GMN-SYUBETU-PRTJYUN2
                                            NOT =   SPACE )
-                   MOVE    SPACE           TO 
-                               SPA-GMN-SYUBETU-PRTJYUN2-G (WRK-PAGENO)
-                   MOVE    "0033"          TO  SPA-ERRCD
+                   MOVE    "0033"              TO  SPA-ERRCD
                END-IF
            END-IF
       *
            IF      SPA-ERRCD       NOT =   SPACE
-               IF      WRK-PAGENO      =   1
-                   MOVE    13              TO  SPA-GMN-CUR
-               ELSE
-                   MOVE    213             TO  SPA-GMN-CUR
-               END-IF
+               MOVE    13               TO  SPA-GMN-CUR
            ELSE
-               MOVE    SPA-GMN-SYUBETU-PRTJYUN2 (WRK-PAGENO)
+               MOVE    SPA-GMN-SYUBETU-PRTJYUN2
                                            TO
-                                           SPA-NAI-BODYLIST-TPRTJYUN2
-                                               (WRK-PAGENO WRK-SELNUM2)
+                                       SPA-NAI-BODYLIST-TPRTJYUN2
+                                           (SPA-NAI-SELNUM2)
       *
-               IF      SPA-NAI-BODYLIST-TGRP1-NO
-                               (WRK-PAGENO WRK-SELNUM2)
+               IF      SPA-NAI-BODYLIST-TGRP1-NO (SPA-NAI-SELNUM2)
                                    NOT =   "000"
                    PERFORM VARYING IDX FROM    1   BY  1
                            UNTIL   IDX >       SPA-GMN-BODYLIST-MAX
-                                                           (WRK-PAGENO)
                        IF    ( SPA-NAI-BODYLIST-TGRP1-NO
-                                       (WRK-PAGENO WRK-SELNUM2)
+                                                   (SPA-NAI-SELNUM2)
                                        =   SPA-NAI-BODYLIST-TGRP1-NO
-                                                   (WRK-PAGENO IDX)   )
-                       AND   ( IDX NOT =   SPA-NAI-SELNUM2
-                                                   (WRK-PAGENO)       )
-                           MOVE    SPA-GMN-SYUBETU-PRTJYUN2 (WRK-PAGENO)
+                                                   (IDX)   )
+                       AND   ( IDX NOT =   SPA-NAI-SELNUM2 )
+                           MOVE    SPA-GMN-SYUBETU-PRTJYUN2
                                                TO
                                            SPA-NAI-BODYLIST-TPRTJYUN2
-                                                       (WRK-PAGENO IDX)
+                                                               (IDX)
                        END-IF
                    END-PERFORM
                END-IF
@@ -3195,25 +2682,18 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        41021-HKNNUM-CHK-SEC           SECTION.
       *
-           IF      WRK-SELNUM2          =   ZERO
-               GO  TO  41021-HKNNUM-CHK-EXT
-           END-IF
+           MOVE    SPACE           TO  SPA-GMN-SEIDONAME
+           MOVE    ZERO            TO  SPA-NAI-SELNUM3
       *
-           MOVE    SPACE           TO  SPA-GMN-SEIDONAME (WRK-PAGENO)
-           MOVE    ZERO            TO  SPA-NAI-SELNUM3   (WRK-PAGENO)
-      *
-           IF      SPA-GMN-HKNNUM  (WRK-PAGENO)
-                                   =   SPACE
+           IF      SPA-GMN-HKNNUM  =   SPACE
                CONTINUE
            ELSE
                EVALUATE    TRUE
-                   WHEN    SPA-GMN-HKNNUM (WRK-PAGENO) (1:1)
-                                           >=  "1" AND <=  "8"
+                   WHEN    SPA-GMN-HKNNUM (1:1)    >=  "1" AND <=  "8"
                        MOVE    SPACE           TO  HKNNUM-REC
                        INITIALIZE                  HKNNUM-REC
-                       MOVE    SPA-HOSPNUM      TO  HKN-HOSPNUM
-                       MOVE    SPA-GMN-HKNNUM (WRK-PAGENO)
-                                               TO  HKN-HKNNUM
+                       MOVE    SPA-HOSPID      TO  HKN-HOSPID
+                       MOVE    SPA-GMN-HKNNUM  TO  HKN-HKNNUM
                        MOVE    "00"            TO  HKN-PAYKBN
                        MOVE    HKNNUM-REC      TO  MCPDATA-REC
                        PERFORM 900-HKNNUM-READ-SEC
@@ -3221,75 +2701,50 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        IF      FLG-HKNNUM      =   ZERO
                            MOVE    HKN-TANSEIDONAME
                                                   TO  SPA-GMN-SEIDONAME
-                                                           (WRK-PAGENO)
-                           IF      HKN-RECESKYKBN  =   "1" OR "3"
-                               MOVE    SPACE           TO
-                                          SPA-GMN-SEIDONAME (WRK-PAGENO)
+                           IF      HKN-RECESKYKBN  =   "3"
                                MOVE    "0034"          TO  SPA-ERRCD
                            END-IF
                        ELSE
                            MOVE    "0035"          TO  SPA-ERRCD
                        END-IF
-                   WHEN    SPA-GMN-HKNNUM (WRK-PAGENO) =   "XXX"
+                   WHEN    SPA-GMN-HKNNUM  =   "XXX"
                        MOVE    "長期"          TO  SPA-GMN-SEIDONAME
-                                                           (WRK-PAGENO)
-                   WHEN    SPA-GMN-HKNNUM  (WRK-PAGENO)=   "YYY"
+                   WHEN    SPA-GMN-HKNNUM  =   "YYY"
                        MOVE    "在総診・在医総"
                                                TO  SPA-GMN-SEIDONAME
-                                                           (WRK-PAGENO)
                    WHEN    OTHER
                        MOVE    "0035"          TO  SPA-ERRCD
                END-EVALUATE
       * 
                IF      SPA-ERRCD           =   SPACE
-                   IF      SPA-NAI-SELNUM2 (WRK-PAGENO)     =   ZERO
+                   IF      SPA-NAI-SELNUM2     =   ZERO
                        MOVE    "0103"              TO  SPA-ERRCD
-                       IF      WRK-PAGENO      =   1
-                           MOVE    4               TO  SPA-GMN-CUR
-                       ELSE
-                           MOVE    204             TO  SPA-GMN-CUR
-                       END-IF
+                       MOVE    4                   TO  SPA-GMN-CUR
                        GO  TO   41021-HKNNUM-CHK-EXT
                    END-IF
       * 
-                   PERFORM VARYING IDX FROM    1   BY  1
-                           UNTIL   IDX >       SPA-GMN-KOHLIST-MAX
-                                                (WRK-PAGENO WRK-SELNUM2)
+                   PERFORM VARYING IDX     FROM    1   BY  1
+                           UNTIL   IDX     >       SPA-GMN-KOHLIST-MAX
+                                                   (SPA-NAI-SELNUM2)
                        IF      SPA-GMN-KOHLIST-THKNNUM
-                           (WRK-PAGENO WRK-SELNUM2 IDX)
-                                           =   SPA-GMN-HKNNUM
-                                                       (WRK-PAGENO)
-                           MOVE    IDX     TO  SPA-NAI-SELNUM3
-                                                       (WRK-PAGENO)
+                                                   (SPA-NAI-SELNUM2 IDX)
+                                               =   SPA-GMN-HKNNUM
+                           MOVE    IDX             TO  SPA-NAI-SELNUM3
                            MOVE    SPA-GMN-KOHLIST-MAX 
-                               (WRK-PAGENO WRK-SELNUM2)
-                                           TO  IDX
+                                                   (SPA-NAI-SELNUM2)
+                                                   TO  IDX
                        END-IF
                    END-PERFORM
       *
-                   IF      SPA-NAI-SELNUM3 (WRK-PAGENO)
-                                           >   ZERO
-                       IF      WRK-PAGENO      =   1
-                           MOVE    SPA-NAI-SELNUM3 (WRK-PAGENO)
-                                               TO  W121-KOHLIST-ROW
-                       ELSE
-                           MOVE    SPA-NAI-SELNUM3 (WRK-PAGENO)
-                                               TO  W121-KOHLIST-1-ROW
-                       END-IF
-                       MOVE    ZERO    TO  FLG-KOHLIST-ROW (WRK-PAGENO)
+                   IF      SPA-NAI-SELNUM3 >   ZERO
+                       MOVE    SPA-NAI-SELNUM3 TO  W121-KOHLIST-ROW
+                       MOVE    ZERO            TO  FLG-KOHLIST-ROW
                    END-IF
                END-IF
            END-IF
       *
-           MOVE    SPA-NAI-SELNUM3 (WRK-PAGENO)
-                                       TO  WRK-SELNUM3
-      *
            IF      SPA-ERRCD       NOT =   SPACE
-               IF      WRK-PAGENO      =   1
-                   MOVE    15              TO  SPA-GMN-CUR
-               ELSE
-                   MOVE    215             TO  SPA-GMN-CUR
-               END-IF
+               MOVE    15              TO  SPA-GMN-CUR
            END-IF
       *
            .
@@ -3301,61 +2756,28 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        41021-GRP1-NO-CHK-SEC           SECTION.
       *
-           EVALUATE    MCP-WIDGET
-               WHEN    "GRP1_NO"
-                   MOVE    1           TO  WRK-PAGENO
-                   MOVE    50          TO  SPA-GMN-CUR
-               WHEN    "GRP1_NO_1"
-                   MOVE    2           TO  WRK-PAGENO
-                   MOVE    250         TO  SPA-GMN-CUR
-           END-EVALUATE
-           MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                   TO  WRK-SELNUM2
-           MOVE    SPA-NAI-SELNUM3 (WRK-PAGENO)
-                                   TO  WRK-SELNUM3
+           MOVE    50              TO  SPA-GMN-CUR
       *
-           IF      SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                       >   ZERO
-               IF      WRK-PAGENO          =   1
-                   MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                           TO  W121-BODYLIST-ROW
-               ELSE
-                   MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                           TO  W121-BODYLIST-1-ROW
-               END-IF
-               MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                   TO  SPA-NAI-SELNUM2-ROW (WRK-PAGENO)
+           IF      SPA-NAI-SELNUM2     >   ZERO
+               MOVE    SPA-NAI-SELNUM2     TO  W121-BODYLIST-ROW
+                                               SPA-NAI-SELNUM2-ROW
            ELSE
-               IF      SPA-NAI-SELNUM2-ROW (WRK-PAGENO)
-                                       >   ZERO
-                   IF      WRK-PAGENO      =   1
-                       MOVE    SPA-NAI-SELNUM2-ROW (WRK-PAGENO)
-                                               TO  W121-BODYLIST-ROW
-                   ELSE
-                       MOVE    SPA-NAI-SELNUM2-ROW (WRK-PAGENO)
-                                               TO  W121-BODYLIST-1-ROW
-                   END-IF
+               IF      SPA-NAI-SELNUM2-ROW >   ZERO
+                   MOVE    SPA-NAI-SELNUM2-ROW TO  W121-BODYLIST-ROW
                END-IF 
            END-IF
-           MOVE    2                   TO  FLG-BODYLIST-ROW (WRK-PAGENO)
-           MOVE    ZERO                TO  SPA-NAI-SELNUM2  (WRK-PAGENO)
+           MOVE    2                   TO  FLG-BODYLIST-ROW
+           MOVE    ZERO                TO  SPA-NAI-SELNUM2
       *
-           IF      WRK-PAGENO      =   1
-               MOVE    W121-GRP1-NO    TO  SPA-GMN-GRP1-NO (WRK-PAGENO)
-           ELSE
-               MOVE    W121-GRP1-NO-1  TO  SPA-GMN-GRP1-NO (WRK-PAGENO)
-           END-IF
-           MOVE    ZERO            TO  SPA-NAI-GRP1-NO (WRK-PAGENO)
+           MOVE    W121-GRP1-NO    TO  SPA-GMN-GRP1-NO
+           MOVE    ZERO            TO  SPA-NAI-GRP1-NO
       * 
-           IF    ( SPA-GMN-GRP1-NO (WRK-PAGENO)
-                                   NOT =   SPACE )
-           AND   ( SPA-GMN-GRP1    (WRK-PAGENO)
-                                       =   "F"   )    
-               MOVE    "0036"              TO  SPA-ERRCD
+           IF    ( SPA-GMN-GRP1-NO NOT =   SPACE )
+           AND   ( SPA-GMN-GRP1        =   "F"   )    
+               MOVE    "0036"                  TO  SPA-ERRCD
            ELSE
                INITIALIZE                  ORCSNUMAREA
-               MOVE    SPA-GMN-GRP1-NO (WRK-PAGENO)
-                                       TO  SNUM-INX
+               MOVE    SPA-GMN-GRP1-NO     TO  SNUM-INX
                CALL    "ORCSNUM"           USING
                                            ORCSNUMAREA
                IF    ( SNUM-RC         NOT =   ZERO  )
@@ -3364,16 +2786,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "0037"              TO  SPA-ERRCD
                ELSE
                    MOVE    SNUM-OUTNUM         TO  SPA-NAI-GRP1-NO
-                                                           (WRK-PAGENO)
                END-IF
            END-IF
       *
            IF      SPA-ERRCD       =   SPACE
-               IF      WRK-PAGENO      =   1
-                   MOVE    100             TO  SPA-GMN-CUR
-               ELSE
-                   MOVE    300             TO  SPA-GMN-CUR
-               END-IF
+               MOVE    100             TO  SPA-GMN-CUR
            END-IF
            .
        41021-GRP1-NO-CHK-EXT.
@@ -3384,77 +2801,34 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        41021-GRP2-NO-CHK-SEC           SECTION.
       *
-           EVALUATE    MCP-WIDGET
-               WHEN    "GRP2_NO"
-                   MOVE    1           TO  WRK-PAGENO
-                   MOVE    51          TO  SPA-GMN-CUR
-               WHEN    "GRP2_NO_1"
-                   MOVE    2           TO  WRK-PAGENO
-                   MOVE    251         TO  SPA-GMN-CUR
-           END-EVALUATE
-           MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                   TO  WRK-SELNUM2
-           MOVE    SPA-NAI-SELNUM3 (WRK-PAGENO)
-                                   TO  WRK-SELNUM3
+           MOVE    51              TO  SPA-GMN-CUR
       *
-           IF      SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                       >   ZERO
-               IF      WRK-PAGENO          =   1
-                   MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                           TO  W121-BODYLIST-ROW
-               ELSE
-                   MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                           TO  W121-BODYLIST-1-ROW
-               END-IF
-               MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                   TO  SPA-NAI-SELNUM2-ROW (WRK-PAGENO)
+           IF      SPA-NAI-SELNUM2     >   ZERO
+               MOVE    SPA-NAI-SELNUM2     TO  W121-BODYLIST-ROW
+                                               SPA-NAI-SELNUM2-ROW
            ELSE
-               IF      SPA-NAI-SELNUM2-ROW (WRK-PAGENO)
-                                       >   ZERO
-                   IF      WRK-PAGENO      =   1
-                       MOVE    SPA-NAI-SELNUM2-ROW (WRK-PAGENO)
-                                               TO  W121-BODYLIST-ROW
-                   ELSE
-                       MOVE    SPA-NAI-SELNUM2-ROW (WRK-PAGENO)
-                                               TO  W121-BODYLIST-1-ROW
-                   END-IF
+               IF      SPA-NAI-SELNUM2-ROW >   ZERO
+                   MOVE    SPA-NAI-SELNUM2-ROW TO  W121-BODYLIST-ROW
                END-IF 
            END-IF
-           MOVE    2                   TO  FLG-BODYLIST-ROW (WRK-PAGENO)
-           MOVE    ZERO                TO  SPA-NAI-SELNUM2  (WRK-PAGENO)
+           MOVE    2                   TO  FLG-BODYLIST-ROW
+           MOVE    ZERO                TO  SPA-NAI-SELNUM2
       *
-           IF      WRK-PAGENO      =   1
-               MOVE    W121-GRP2-NO    TO  SPA-GMN-GRP2-NO (WRK-PAGENO)
-           ELSE
-               MOVE    W121-GRP2-NO-1  TO  SPA-GMN-GRP2-NO (WRK-PAGENO)
-           END-IF
+           MOVE    W121-GRP2-NO    TO  SPA-GMN-GRP2-NO
       *
-           IF      WRK-PAGENO      =   1
-               MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                       TO  W121-BODYLIST-ROW
-           ELSE 
-               MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                       TO  W121-BODYLIST-1-ROW
-           END-IF
-           MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                   TO  SPA-NAI-SELNUM2-ROW (WRK-PAGENO)
-           MOVE    ZERO            TO  FLG-BODYLIST-ROW    (WRK-PAGENO)
-           MOVE    ZERO            TO  SPA-NAI-SELNUM2     (WRK-PAGENO)
+           MOVE    SPA-NAI-SELNUM2 TO  W121-BODYLIST-ROW
+                                       SPA-NAI-SELNUM2-ROW
+           MOVE    ZERO            TO  FLG-BODYLIST-ROW
+           MOVE    ZERO            TO  SPA-NAI-SELNUM2
       *
       *
-           IF    ( SPA-GMN-GRP2-NO (WRK-PAGENO)
-                                   NOT =   SPACE )
-           AND   ( SPA-GMN-GRP2    (WRK-PAGENO)
-                                       =   "F"   )    
-               MOVE    "0038"              TO  SPA-ERRCD
+           IF    ( SPA-GMN-GRP2-NO NOT =   SPACE )
+           AND   ( SPA-GMN-GRP2        =   "F"   )    
+               MOVE    "0038"                  TO  SPA-ERRCD
            END-IF
       *
            IF      SPA-ERRCD       =   SPACE
-               IF      WRK-PAGENO      =   1
-                   MOVE    100             TO  SPA-GMN-CUR
-               ELSE
-                   MOVE    300             TO  SPA-GMN-CUR
-               END-IF
+               MOVE    100             TO  SPA-GMN-CUR
            END-IF
            .
        41021-GRP2-NO-CHK-EXT.
@@ -3466,18 +2840,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        440-TAG-CHANGE-SEC            SECTION.
       *
            EVALUATE    MCP-WIDGET
-               WHEN    "B08"
-                   IF    ( W121-PAGENO  =   0 )
-                       MOVE    1       TO  IDYY
-                   ELSE
-                       MOVE    0       TO  IDYY
-                   END-IF
-               WHEN    OTHER
-                   MOVE   W121-PAGENO  TO  IDYY
+               WHEN    "N01"
+                   MOVE   0            TO  IDX
+               WHEN    "N02"
+                  MOVE    1            TO  IDX
            END-EVALUATE
       *
       *    タグが変わったとき項目チェック
-      *****IF      IDYY              NOT =   W121-PAGENO
+           IF      IDX              NOT =   W121-PAGENO
                MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
                MOVE    ZERO                TO  SPA-GMN-CUR
       *
@@ -3485,24 +2855,17 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                PERFORM 410-INPUT-CHK-SEC
                IF      SPA-ERRCD            =   SPACE
       *            関連チェック
-      ****         PERFORM 4900-KANRENCHK-SEC
+                   PERFORM 4900-KANRENCHK-SEC
                    IF      SPA-ERRCD        =   SPACE
-      *
-      *                グループ設定解除の設定
-                       INITIALIZE              SPA-GMN-GRP-OCC
-                                                           (WRK-PAGENO) 
-                       MOVE    "T"         TO  SPA-GMN-GRP1(WRK-PAGENO)
-                       MOVE    "F"         TO  SPA-GMN-GRP2(WRK-PAGENO)
-      *
-                       EVALUATE    IDYY
+                       EVALUATE    IDX
                            WHEN    0
-                               MOVE    8            TO  SPA-GMN-CUR
+                               MOVE    1            TO  SPA-GMN-CUR
                            WHEN    1
-                               MOVE    208          TO  SPA-GMN-CUR
+                               MOVE    200          TO  SPA-GMN-CUR
                        END-EVALUATE
                    END-IF
                END-IF
-      *****END-IF        
+           END-IF        
            .
        440-TAG-CHANGE-EXT.
            EXIT.
@@ -3511,29 +2874,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    戻る　処理
       *****************************************************************
        210-BACK                        SECTION.
-      *
-      *    平成２０年４月を跨ってるとき
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       SPA-GMN-HEADLIST-MAX
-               IF    ( SPA-NAI-HEADLIST-TSTYUKYMD (IDX)
-                                       <   WRK-CONS-SRYYM-20080401 )
-               AND   ( SPA-NAI-HEADLIST-TEDYUKYMD (IDX)
-                                       >=  WRK-CONS-SRYYM-20080401 )
-                   MOVE    "1004"                  TO  SPA-WIDCD 
-                   GO  TO  210-BACK-EXT
-               END-IF
-           END-PERFORM
-      *
-           PERFORM 210-BACK-SYORI-SEC         
-           .
-       210-BACK-EXT.
-           EXIT.
-      *
-      *
-      *****************************************************************
-      *    戻る処理
-      *****************************************************************
-       210-BACK-SYORI-SEC              SECTION.
       *
            MOVE    "W12"               TO  SPA-SAKIPG
            MOVE    "W121"              TO  SPA-MOTOPG
@@ -3545,7 +2885,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    1                   TO  FLG-END
       *
            .
-       210-BACK-SYORI-EXT.
+       210-BACK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3553,49 +2893,31 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        490-SYUBETU-UP-SEC              SECTION.
       *
-           EVALUATE    MCP-WIDGET
-               WHEN    "SYUBETU_UP"
-                   MOVE    1           TO  WRK-PAGENO
-               WHEN    "SYUBETU_UP_1"
-                   MOVE    2           TO  WRK-PAGENO
-           END-EVALUATE
-           MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                   TO  WRK-SELNUM2
-           MOVE    SPA-NAI-SELNUM3 (WRK-PAGENO)
-                                   TO  WRK-SELNUM3
-      *
-           IF      SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                       =   ZERO
+           IF      SPA-NAI-SELNUM2     =   ZERO
                MOVE    "0103"              TO  SPA-ERRCD
            ELSE
-               IF    ( SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                           =   1 )
-               OR    ( SPA-GMN-BODYLIST-MAX (WRK-PAGENO)
+               IF    ( SPA-NAI-SELNUM2     =   1 )
+               OR    ( SPA-GMN-BODYLIST-MAX
                                            =   1 )
                    GO  TO  490-SYUBETU-UP-EXT
                END-IF
            END-IF
       *
            IF      SPA-ERRCD           =   SPACE
-               COMPUTE IDX =   SPA-NAI-SELNUM2 (WRK-PAGENO)    -   1
+               COMPUTE IDX =   SPA-NAI-SELNUM2     -   1
       *        上のグループ１と違うときの処理
-               IF    ( SPA-NAI-BODYLIST-TGRP1-NO
-                              (WRK-PAGENO WRK-SELNUM2)
+               IF    ( SPA-NAI-BODYLIST-TGRP1-NO (SPA-NAI-SELNUM2)
                                        NOT =   SPA-NAI-BODYLIST-TGRP1-NO
-                                                  (WRK-PAGENO IDX) )
+                                                              (IDX) )
       *            既にグループ１が設定済のとき        
-                   IF      SPA-NAI-BODYLIST-TGRP1-NO
-                               (WRK-PAGENO WRK-SELNUM2)
+                   IF      SPA-NAI-BODYLIST-TGRP1-NO (SPA-NAI-SELNUM2)
                                            NOT =   "000"    
-                       IF      SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                               <   SPA-GMN-BODYLIST-MAX
-                                                       (WRK-PAGENO)
-                           COMPUTE IDX =   SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                           +   1
+                       IF      SPA-NAI-SELNUM2 <   SPA-GMN-BODYLIST-MAX
+                           COMPUTE IDX =   SPA-NAI-SELNUM2     +   1
                            IF     SPA-NAI-BODYLIST-TGRP1-NO
-                               (WRK-PAGENO WRK-SELNUM2)
+                                                   (SPA-NAI-SELNUM2)
                                        =   SPA-NAI-BODYLIST-TGRP1-NO
-                                                   (WRK-PAGENO IDX)
+                                                   (IDX)
                                MOVE    "0039"      TO  SPA-ERRCD
                                GO  TO  490-SYUBETU-UP-EXT
                            END-IF
@@ -3603,23 +2925,19 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-IF
       *
                    MOVE    ZERO            TO  WRK-GRP-INDEX
-                   COMPUTE IDX =   SPA-NAI-SELNUM2 (WRK-PAGENO)    -   1
-                   MOVE    SPA-NAI-BODYLIST-TGRP1-NO (WRK-PAGENO IDX)
+                   COMPUTE IDX =   SPA-NAI-SELNUM2     -   1
+                   MOVE    SPA-NAI-BODYLIST-TGRP1-NO (IDX)
                                            TO  WRK-GRP1-NO
-                   PERFORM VARYING IDX FROM
-                                   SPA-NAI-SELNUM2 (WRK-PAGENO)   BY  -1
+                   PERFORM VARYING IDX FROM    SPA-NAI-SELNUM2 BY  -1
                            UNTIL   IDX <       1
-                       IF      SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                               NOT =   IDX
+                       IF      SPA-NAI-SELNUM2 NOT =   IDX
                            IF    ( WRK-GRP1-NO NOT =   "000"       )
-                           AND   ( SPA-NAI-BODYLIST-TGRP1-NO
-                                                       (WRK-PAGENO IDX)
+                           AND   ( SPA-NAI-BODYLIST-TGRP1-NO (IDX)
                                                NOT =   WRK-GRP1-NO )
                                MOVE    IDX         TO  WRK-GRP-INDEX
                                MOVE    1           TO  IDX
                            ELSE
-                               IF      SPA-NAI-BODYLIST-TGRP1-NO
-                                                       (WRK-PAGENO IDX)
+                               IF      SPA-NAI-BODYLIST-TGRP1-NO (IDX)
                                                            =   "000"
                                    COMPUTE WRK-GRP-INDEX   =   IDX -   1
                                    MOVE    1           TO  IDX
@@ -3630,22 +2948,16 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    PERFORM 4901-SYUBETU-HENSYU-SEC
                ELSE
       *            グループ１が同じときの処理
-                   MOVE    SPA-GMN-BODYLIST-TBL
-                               (WRK-PAGENO WRK-SELNUM2)
+                   MOVE    SPA-GMN-BODYLIST-TBL (SPA-NAI-SELNUM2)
                                            TO  WRK-GMN-BODYLIST-TBL (1)
-                   MOVE    SPA-GMN-BODYLIST-TBL (WRK-PAGENO IDX)
+                   MOVE    SPA-GMN-BODYLIST-TBL (IDX)
                                            TO  SPA-GMN-BODYLIST-TBL
-                               (WRK-PAGENO WRK-SELNUM2)
+                                                    (SPA-NAI-SELNUM2)
                    MOVE    WRK-GMN-BODYLIST-TBL (1)
                                            TO  SPA-GMN-BODYLIST-TBL
-                                                    (WRK-PAGENO IDX)
+                                                    (IDX)
                    MOVE    IDX             TO  SPA-NAI-SELNUM2
-                                                    (WRK-PAGENO)
-                   IF      WRK-PAGENO      =   1 
-                       MOVE    IDX             TO  W121-BODYLIST-ROW
-                   ELSE
-                       MOVE    IDX             TO  W121-BODYLIST-1-ROW
-                   END-IF   
+                                               W121-BODYLIST-ROW
                END-IF
            END-IF
            .
@@ -3657,71 +2969,48 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        4901-SYUBETU-HENSYU-SEC              SECTION.
       *
-           MOVE    SPA-GMN-BODYLIST-OCC (WRK-PAGENO)
-                                       TO  WRK-GMN-BODYLIST-AREA
-           INITIALIZE                      SPA-GMN-BODYLIST-OCC
-                                                       (WRK-PAGENO)
+           MOVE    SPA-GMN-BODYLIST    TO  WRK-GMN-BODYLIST-AREA
+           INITIALIZE                      SPA-GMN-BODYLIST
            MOVE    ZERO                TO  IDY
       *
       *    先頭に移動するとき
            IF      WRK-GRP-INDEX       =   ZERO
                ADD     1                   TO  IDY
-               MOVE    WRK-GMN-BODYLIST-TBL (WRK-SELNUM2)
-                                           TO  SPA-GMN-BODYLIST-TBL
-                                                       (WRK-PAGENO IDY)
-               IF      WRK-PAGENO      =   1 
-                   MOVE    IDY             TO  W121-BODYLIST-ROW
-               ELSE
-                   MOVE    IDY             TO  W121-BODYLIST-1-ROW
-               END-IF   
+               MOVE    WRK-GMN-BODYLIST-TBL (SPA-NAI-SELNUM2)
+                                           TO  SPA-GMN-BODYLIST-TBL(IDY)
+               MOVE    IDY                 TO  W121-BODYLIST-ROW
            END-IF
       * 
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       SPA-GMN-BODYLIST-MAX (WRK-PAGENO)
-               IF      IDX             =   SPA-NAI-SELNUM2 (WRK-PAGENO)
+                   UNTIL   IDX >       SPA-GMN-BODYLIST-MAX
+               IF      IDX             =   SPA-NAI-SELNUM2
                    CONTINUE
                ELSE
                    ADD     1               TO  IDY
                    MOVE    WRK-GMN-BODYLIST-TBL (IDX)
-                                           TO  SPA-GMN-BODYLIST-TBL
-                                                       (WRK-PAGENO IDY)
+                                           TO  SPA-GMN-BODYLIST-TBL(IDY)
                    IF      IDX             =  WRK-GRP-INDEX
                        ADD     1               TO  IDY
-                       MOVE    WRK-GMN-BODYLIST-TBL (WRK-SELNUM2)
+                       MOVE    WRK-GMN-BODYLIST-TBL
+                                           (SPA-NAI-SELNUM2)
                                                TO
-                                   SPA-GMN-BODYLIST-TBL(WRK-PAGENO IDY)
-                       IF      WRK-PAGENO      =   1 
-                           MOVE    IDY         TO  W121-BODYLIST-ROW
-                       ELSE
-                           MOVE    IDY         TO  W121-BODYLIST-1-ROW
-                       END-IF   
+                                               SPA-GMN-BODYLIST-TBL(IDY)
+                       MOVE    IDY             TO  W121-BODYLIST-ROW
                    END-IF
                END-IF
            END-PERFORM
       *
       *    最後に移動するとき
            IF      WRK-GRP-INDEX       >   SPA-GMN-BODYLIST-MAX
-                                                   (WRK-PAGENO)
                ADD     1                   TO  IDY
-               MOVE    WRK-GMN-BODYLIST-TBL (WRK-SELNUM2)
-                                           TO  SPA-GMN-BODYLIST-TBL
-                                                   (WRK-PAGENO IDY)
-               IF      WRK-PAGENO       =   1 
-                   MOVE    IDY         TO  W121-BODYLIST-ROW
-               ELSE
-                   MOVE    IDY         TO  W121-BODYLIST-1-ROW
-               END-IF   
+               MOVE    WRK-GMN-BODYLIST-TBL (SPA-NAI-SELNUM2)
+                                           TO  SPA-GMN-BODYLIST-TBL(IDY)
+               MOVE    IDY                 TO  W121-BODYLIST-ROW
            END-IF
       *
-           INITIALIZE                      WRK-GMN-BODYLIST-AREA
+          INITIALIZE                      WRK-GMN-BODYLIST-AREA
       *
-           IF      WRK-PAGENO       =   1 
-               MOVE    W121-BODYLIST-ROW   TO
-                                           SPA-NAI-SELNUM2 (WRK-PAGENO)
-           ELSE
-               MOVE    W121-BODYLIST-1-ROW TO
-                                           SPA-NAI-SELNUM2 (WRK-PAGENO)
-           END-IF
+          MOVE    W121-BODYLIST-ROW   TO  SPA-NAI-SELNUM2
       *
            .
        4901-SYUBETU-HENSYU-EXT.
@@ -3732,48 +3021,30 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        490-SYUBETU-DOWN-SEC              SECTION.
       *
-           EVALUATE    MCP-WIDGET
-               WHEN    "SYUBETU_DOWN"
-                   MOVE    1           TO  WRK-PAGENO
-               WHEN    "SYUBETU_DOWN_1"
-                   MOVE    2           TO  WRK-PAGENO
-           END-EVALUATE
-           MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                   TO  WRK-SELNUM2
-           MOVE    SPA-NAI-SELNUM3 (WRK-PAGENO)
-                                   TO  WRK-SELNUM3
-      *
-           IF      SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                       =   ZERO
+           IF      SPA-NAI-SELNUM2     =   ZERO
                MOVE    "0103"              TO  SPA-ERRCD
            ELSE
-               IF    ( SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                           =   SPA-GMN-BODYLIST-MAX
-                                                        (WRK-PAGENO))
-               OR    ( SPA-GMN-BODYLIST-MAX (WRK-PAGENO)
+               IF    ( SPA-NAI-SELNUM2     =   SPA-GMN-BODYLIST-MAX )
+               OR    ( SPA-GMN-BODYLIST-MAX
                                            =   1                    )
                    GO  TO  490-SYUBETU-DOWN-EXT
                END-IF
            END-IF
       *    
            IF      SPA-ERRCD           =   SPACE
-               COMPUTE IDX =   SPA-NAI-SELNUM2 (WRK-PAGENO)    +   1
-               IF    ( SPA-NAI-BODYLIST-TGRP1-NO
-                               (WRK-PAGENO WRK-SELNUM2)
+               COMPUTE IDX =   SPA-NAI-SELNUM2     +   1
+               IF    ( SPA-NAI-BODYLIST-TGRP1-NO (SPA-NAI-SELNUM2)
                                    NOT =   SPA-NAI-BODYLIST-TGRP1-NO
-                                                      (WRK-PAGENO IDX) )
+                                                          (IDX) )
       *            下のグループ１と違うときの処理
-                   IF      SPA-NAI-BODYLIST-TGRP1-NO
-                               (WRK-PAGENO WRK-SELNUM2)
+                   IF      SPA-NAI-BODYLIST-TGRP1-NO  (SPA-NAI-SELNUM2)
                                        NOT =   "000"    
-                       IF      SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                               >   1
-                           COMPUTE IDX =   SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                           -   1
+                       IF      SPA-NAI-SELNUM2 >   1
+                           COMPUTE IDX =   SPA-NAI-SELNUM2     -   1
                            IF     SPA-NAI-BODYLIST-TGRP1-NO
-                               (WRK-PAGENO WRK-SELNUM2)
+                                                   (SPA-NAI-SELNUM2)
                                        =   SPA-NAI-BODYLIST-TGRP1-NO
-                                                   (WRK-PAGENO IDX)
+                                                   (IDX)
                                MOVE    "0039"      TO  SPA-ERRCD
                                GO  TO  490-SYUBETU-DOWN-EXT
                            END-IF
@@ -3781,29 +3052,23 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-IF
       *
                    MOVE    ZERO            TO  WRK-GRP-INDEX
-                   COMPUTE IDX =   SPA-NAI-SELNUM2 (WRK-PAGENO)    +   1
-                   MOVE    SPA-NAI-BODYLIST-TGRP1-NO (WRK-PAGENO IDX)
+                   COMPUTE IDX =   SPA-NAI-SELNUM2     +   1
+                   MOVE    SPA-NAI-BODYLIST-TGRP1-NO (IDX)
                                            TO  WRK-GRP1-NO
-                   PERFORM VARYING IDX FROM
-                                   SPA-NAI-SELNUM2 (WRK-PAGENO)    BY  1
+                   PERFORM VARYING IDX FROM    SPA-NAI-SELNUM2 BY  1
                            UNTIL   IDX >   SPA-GMN-BODYLIST-MAX
-                                                       (WRK-PAGENO)
-                       IF      SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                               NOT =   IDX
+                       IF      SPA-NAI-SELNUM2 NOT =   IDX
                            IF    ( WRK-GRP1-NO NOT =   "000"       )
-                           AND   ( SPA-NAI-BODYLIST-TGRP1-NO
-                                                       (WRK-PAGENO IDX)
+                           AND   ( SPA-NAI-BODYLIST-TGRP1-NO (IDX)
                                                NOT =   WRK-GRP1-NO )
                                COMPUTE WRK-GRP-INDEX   =   IDX -   1
-                               MOVE    SPA-GMN-BODYLIST-MAX (WRK-PAGENO)
+                               MOVE    SPA-GMN-BODYLIST-MAX
                                                    TO  IDX
                            ELSE
-                               IF      SPA-NAI-BODYLIST-TGRP1-NO
-                                                       (WRK-PAGENO IDX)
+                               IF      SPA-NAI-BODYLIST-TGRP1-NO (IDX)
                                                            =   "000"
                                    MOVE    IDX         TO  WRK-GRP-INDEX
                                    MOVE    SPA-GMN-BODYLIST-MAX
-                                                           (WRK-PAGENO)
                                                        TO  IDX
                                END-IF
                            END-IF
@@ -3811,28 +3076,21 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-PERFORM
                    IF      WRK-GRP-INDEX       =   ZERO
                        COMPUTE WRK-GRP-INDEX
-                                   =   SPA-GMN-BODYLIST-MAX (WRK-PAGENO)
-                                       +   1
+                                   =   SPA-GMN-BODYLIST-MAX    +   1
                    END-IF
                    PERFORM 4901-SYUBETU-HENSYU-SEC
                ELSE
       *            グループ１が同じときの処理
-                   MOVE    SPA-GMN-BODYLIST-TBL
-                               (WRK-PAGENO WRK-SELNUM2)
+                   MOVE    SPA-GMN-BODYLIST-TBL (SPA-NAI-SELNUM2)
                                            TO  WRK-GMN-BODYLIST-TBL (1)
-                   MOVE    SPA-GMN-BODYLIST-TBL (WRK-PAGENO IDX)
+                   MOVE    SPA-GMN-BODYLIST-TBL (IDX)
                                            TO  SPA-GMN-BODYLIST-TBL
-                               (WRK-PAGENO WRK-SELNUM2)
+                                                    (SPA-NAI-SELNUM2)
                    MOVE    WRK-GMN-BODYLIST-TBL (1)
                                            TO  SPA-GMN-BODYLIST-TBL
-                                                    (WRK-PAGENO IDX)
+                                                    (IDX)
                    MOVE    IDX             TO  SPA-NAI-SELNUM2
-                                                    (WRK-PAGENO)
-                   IF      WRK-PAGENO      =   1 
-                       MOVE    IDX             TO  W121-BODYLIST-ROW
-                   ELSE
-                       MOVE    IDX             TO  W121-BODYLIST-1-ROW
-                   END-IF
+                                               W121-BODYLIST-ROW
                END-IF
            END-IF
            .
@@ -3844,86 +3102,39 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        490-GRP-SETTEI-SEC              SECTION.
       *
-           EVALUATE    MCP-WIDGET
-               WHEN    "GRP_SETTEI"
-                   MOVE    1           TO  WRK-PAGENO
-               WHEN    "GRP_SETTEI_1"
-                   MOVE    2           TO  WRK-PAGENO
-           END-EVALUATE
-           MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                   TO  WRK-SELNUM2
-           MOVE    SPA-NAI-SELNUM3 (WRK-PAGENO)
-                                   TO  WRK-SELNUM3
-      *
-           IF      SPA-GMN-BODYLIST-MAX (WRK-PAGENO)
-                                       =   ZERO
+           IF      SPA-GMN-BODYLIST-MAX    =   ZERO
                MOVE    "0102"              TO  SPA-ERRCD
                MOVE    1                   TO  SPA-GMN-CUR
            ELSE
-               IF      SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                           >   ZERO
-                   IF      WRK-PAGENO      =   1 
-                       MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                               TO  W121-BODYLIST-ROW
-                   ELSE
-                       MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                               TO  W121-BODYLIST-1-ROW
-                   END-IF
-                   MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                               TO
-                                       SPA-NAI-SELNUM2-ROW (WRK-PAGENO)
+               IF      SPA-NAI-SELNUM2     >   ZERO
+                   MOVE    SPA-NAI-SELNUM2     TO  W121-BODYLIST-ROW
+                                                   SPA-NAI-SELNUM2-ROW
                ELSE
-                   IF      SPA-NAI-SELNUM2-ROW (WRK-PAGENO)
-                                               >   ZERO
-                       IF      WRK-PAGENO      =   1 
-                           MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                               TO  W121-BODYLIST-ROW
-                       ELSE
-                           MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                               TO  W121-BODYLIST-1-ROW
-                       END-IF
+                   IF      SPA-NAI-SELNUM2-ROW >   ZERO
+                       MOVE    SPA-NAI-SELNUM2-ROW TO  W121-BODYLIST-ROW
                    END-IF 
                END-IF
                MOVE    2                   TO  FLG-BODYLIST-ROW
-                                                           (WRK-PAGENO)
                MOVE    ZERO                TO  SPA-NAI-SELNUM2
-                                                           (WRK-PAGENO)
       *
-               EVALUATE    SPA-GMN-GRP-SETTEI (WRK-PAGENO)
+               EVALUATE    SPA-GMN-GRP-SETTEI
                    WHEN    SPACE
                        MOVE    SPACE       TO  SPA-GMN-GRP-KAIJYO
-                                                           (WRK-PAGENO)
                        MOVE    "1"         TO  SPA-GMN-GRP-SETTEI
-                                                           (WRK-PAGENO)
-                       COMPUTE IDX =   SPA-GMN-GRP1-NO-MAX (WRK-PAGENO)
-                                       +   1
+                       COMPUTE IDX =   SPA-GMN-GRP1-NO-MAX +   1
                        MOVE    IDX         TO  SPA-NAI-GRP1-NO
-                                                           (WRK-PAGENO)
                        MOVE    IDX (2:3)   TO  SPA-GMN-GRP1-NO
-                                                           (WRK-PAGENO)
                        MOVE    SPACE       TO  SPA-GMN-GRP2-NO
-                                                           (WRK-PAGENO)
-                       MOVE    "T"         TO  SPA-GMN-GRP1(WRK-PAGENO)
-                       MOVE    "F"         TO  SPA-GMN-GRP2(WRK-PAGENO)
-                       INITIALIZE              SPA-GMN-BODY-OCC
-                                                           (WRK-PAGENO)
-                                               SPA-NAI-BODY-OCC
-                                                           (WRK-PAGENO)
-                       IF      WRK-PAGENO      =   1
-                           MOVE    50              TO  SPA-GMN-CUR
-                       ELSE
-                           MOVE    250             TO  SPA-GMN-CUR
-                       END-IF
+                       MOVE    "T"         TO  SPA-GMN-GRP1
+                       MOVE    "F"         TO  SPA-GMN-GRP2
+                       INITIALIZE              SPA-GMN-BODY-KOUMOKU
+                                               SPA-NAI-BODY-KOUMOKU
+                       MOVE    50          TO  SPA-GMN-CUR
                    WHEN    "1"
-                       INITIALIZE              SPA-GMN-GRP-OCC
-                                                           (WRK-PAGENO) 
-                       MOVE    "T"         TO  SPA-GMN-GRP1(WRK-PAGENO)
-                       MOVE    "F"         TO  SPA-GMN-GRP2(WRK-PAGENO)
-                       IF      WRK-PAGENO      =   1
-                           MOVE    13              TO  SPA-GMN-CUR
-                       ELSE
-                           MOVE    213             TO  SPA-GMN-CUR
-                       END-IF
+                       INITIALIZE              SPA-GMN-GRP-KOUMOKU
+                       MOVE    "T"         TO  SPA-GMN-GRP1
+                       MOVE    "F"         TO  SPA-GMN-GRP2
+                       MOVE    13          TO  SPA-GMN-CUR
                END-EVALUATE
            END-IF
            .
@@ -3935,80 +3146,36 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        490-GRP-KAIJYO-SEC              SECTION.
       *
-           EVALUATE    MCP-WIDGET
-               WHEN    "GRP_KAIJYO"
-                   MOVE    1           TO  WRK-PAGENO
-               WHEN    "GRP_KAIJYO_1"
-                   MOVE    2           TO  WRK-PAGENO
-           END-EVALUATE
-           MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                   TO  WRK-SELNUM2
-           MOVE    SPA-NAI-SELNUM3 (WRK-PAGENO)
-                                   TO  WRK-SELNUM3
-      *
-           IF      SPA-GMN-BODYLIST-MAX (WRK-PAGENO)
-                                       =   ZERO
+           IF      SPA-GMN-BODYLIST-MAX    =   ZERO
                MOVE    "0102"              TO  SPA-ERRCD
                MOVE    1                   TO  SPA-GMN-CUR
            ELSE
-               IF      SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                           >   ZERO
-                   IF      WRK-PAGENO      =   1 
-                       MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                               TO  W121-BODYLIST-ROW
-                   ELSE
-                       MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                               TO  W121-BODYLIST-1-ROW
-                   END-IF
-                   MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                           TO  SPA-NAI-SELNUM2-ROW
-                                                           (WRK-PAGENO)
+               IF      SPA-NAI-SELNUM2     >   ZERO
+                   MOVE    SPA-NAI-SELNUM2     TO  W121-BODYLIST-ROW
+                                                   SPA-NAI-SELNUM2-ROW
                ELSE
-                   IF      SPA-NAI-SELNUM2-ROW (WRK-PAGENO)
-                                               >   ZERO
-                       IF      WRK-PAGENO      =   1 
-                           MOVE    SPA-NAI-SELNUM2-ROW (WRK-PAGENO)
-                                               TO  W121-BODYLIST-ROW
-                       ELSE
-                           MOVE    SPA-NAI-SELNUM2-ROW (WRK-PAGENO)
-                                               TO  W121-BODYLIST-1-ROW
-                       END-IF
+                   IF      SPA-NAI-SELNUM2-ROW >   ZERO
+                       MOVE    SPA-NAI-SELNUM2-ROW TO  W121-BODYLIST-ROW
                    END-IF 
                END-IF
                MOVE    2                   TO  FLG-BODYLIST-ROW
-                                                           (WRK-PAGENO)
                MOVE    ZERO                TO  SPA-NAI-SELNUM2
-                                                           (WRK-PAGENO)
       *
-               EVALUATE    SPA-GMN-GRP-KAIJYO (WRK-PAGENO)
+               EVALUATE    SPA-GMN-GRP-KAIJYO
                    WHEN    SPACE
-                       INITIALIZE              SPA-GMN-GRP-OCC
-                                                           (WRK-PAGENO)
+                       INITIALIZE              SPA-GMN-GRP-KOUMOKU
                        MOVE    SPACE       TO  SPA-GMN-GRP-SETTEI
-                                                           (WRK-PAGENO)
                        MOVE    "1"         TO  SPA-GMN-GRP-KAIJYO
-                                                           (WRK-PAGENO)
-                       INITIALIZE              SPA-GMN-BODY-OCC
-                                                           (WRK-PAGENO)
-                                               SPA-NAI-BODY-OCC
-                                                           (WRK-PAGENO)
-                       MOVE    "T"         TO  SPA-GMN-GRP1(WRK-PAGENO)
-                       MOVE    "F"         TO  SPA-GMN-GRP2(WRK-PAGENO)
-                       IF      WRK-PAGENO      =   1
-                           MOVE    100             TO  SPA-GMN-CUR
-                       ELSE
-                           MOVE    300             TO  SPA-GMN-CUR
-                       END-IF
+                       INITIALIZE              SPA-GMN-BODY-KOUMOKU
+                                               SPA-NAI-BODY-KOUMOKU
+                       MOVE    "T"         TO  SPA-GMN-GRP1
+                       MOVE    "F"         TO  SPA-GMN-GRP2
+                       MOVE    100         TO  SPA-GMN-CUR
                    WHEN    "1"
-                       INITIALIZE              SPA-GMN-GRP-OCC
-                                                           (WRK-PAGENO)
-                       MOVE    "T"         TO  SPA-GMN-GRP1(WRK-PAGENO)
-                       MOVE    "F"         TO  SPA-GMN-GRP2(WRK-PAGENO)
-                       IF      WRK-PAGENO      =   1
-                           MOVE    13              TO  SPA-GMN-CUR
-                       ELSE
-                           MOVE    213             TO  SPA-GMN-CUR
-                       END-IF
+                       INITIALIZE              SPA-GMN-GRP-KOUMOKU
+                       MOVE    "T"         TO  SPA-GMN-GRP1
+                       MOVE    "F"         TO  SPA-GMN-GRP2
+                       MOVE    13          TO  SPA-GMN-CUR
                END-EVALUATE
            END-IF
            .
@@ -4020,75 +3187,35 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        490-GRP1-SETTEI-SEC          SECTION.
       *
-           EVALUATE    MCP-WIDGET
-               WHEN    "GRP1"
-                   MOVE    1           TO  WRK-PAGENO
-                   MOVE    W121-GRP1   TO  SPA-GMN-GRP1 (WRK-PAGENO)
-                   MOVE    W121-GRP2   TO  SPA-GMN-GRP2 (WRK-PAGENO)
-               WHEN    "GRP1_1"
-                   MOVE    2           TO  WRK-PAGENO
-                   MOVE    W121-GRP1-1 TO  SPA-GMN-GRP1 (WRK-PAGENO)
-                   MOVE    W121-GRP2-1 TO  SPA-GMN-GRP2 (WRK-PAGENO)
-           END-EVALUATE
-           MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                   TO  WRK-SELNUM2
-           MOVE    SPA-NAI-SELNUM3 (WRK-PAGENO)
-                                   TO  WRK-SELNUM3
+           MOVE    W121-GRP1           TO  SPA-GMN-GRP1
+           MOVE    W121-GRP2           TO  SPA-GMN-GRP2
       *
-           IF      SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                        >   ZERO
-               IF      WRK-PAGENO      =   1 
-                   MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                           TO  W121-BODYLIST-ROW
-               ELSE
-                   MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                           TO  W121-BODYLIST-1-ROW
-               END-IF
-               MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                           TO  SPA-NAI-SELNUM2-ROW
-                                                           (WRK-PAGENO)
+           IF      SPA-NAI-SELNUM2     >   ZERO
+               MOVE    SPA-NAI-SELNUM2     TO  W121-BODYLIST-ROW
+                                               SPA-NAI-SELNUM2-ROW
            ELSE
-               IF      SPA-NAI-SELNUM2-ROW (WRK-PAGENO)
-                                           >   ZERO
-                   IF      WRK-PAGENO      =   1 
-                       MOVE    SPA-NAI-SELNUM2-ROW (WRK-PAGENO)
-                                               TO  W121-BODYLIST-ROW
-                   ELSE
-                       MOVE    SPA-NAI-SELNUM2-ROW (WRK-PAGENO)
-                                               TO  W121-BODYLIST-1-ROW
-                   END-IF
+               IF      SPA-NAI-SELNUM2-ROW >   ZERO
+                   MOVE    SPA-NAI-SELNUM2-ROW TO  W121-BODYLIST-ROW
                END-IF 
            END-IF
-           MOVE    2                   TO  FLG-BODYLIST-ROW (WRK-PAGENO)
-           MOVE    ZERO                TO  SPA-NAI-SELNUM2  (WRK-PAGENO)
+           MOVE    2                   TO  FLG-BODYLIST-ROW
+           MOVE    ZERO                TO  SPA-NAI-SELNUM2
       *
-           IF      SPA-GMN-GRP1 (WRK-PAGENO)
-                                       =   "T"
-               IF      SPA-GMN-GRP-SETTEI (WRK-PAGENO)
-                                           =   "1"
-                   COMPUTE IDX     =   SPA-GMN-GRP1-NO-MAX (WRK-PAGENO)
-                                       +   1
-                   MOVE    IDX         TO  SPA-NAI-GRP1-NO(WRK-PAGENO)
-                   MOVE    IDX (2:3)   TO  SPA-GMN-GRP1-NO(WRK-PAGENO)
+           IF      SPA-GMN-GRP1        =   "T"
+               IF      SPA-GMN-GRP-SETTEI  =   "1"
+                   COMPUTE IDX     =   SPA-GMN-GRP1-NO-MAX +   1
+                   MOVE    IDX                 TO  SPA-NAI-GRP1-NO
+                   MOVE    IDX (2:3)           TO  SPA-GMN-GRP1-NO
                ELSE
-                   MOVE    SPACE       TO  SPA-GMN-GRP2-NO(WRK-PAGENO)
-                   MOVE    ZERO        TO  SPA-NAI-GRP1-NO(WRK-PAGENO)
+                   MOVE    SPACE               TO  SPA-GMN-GRP2-NO
+                   MOVE    ZERO                TO  SPA-NAI-GRP1-NO
                END-IF
-               MOVE    SPACE           TO  SPA-GMN-GRP2-NO(WRK-PAGENO)
+               MOVE    SPACE               TO  SPA-GMN-GRP2-NO
       *
-               IF      SPA-GMN-GRP-SETTEI (WRK-PAGENO)
-                                           =   "1"
-                   IF      WRK-PAGENO      =   1
-                       MOVE    50              TO  SPA-GMN-CUR
-                   ELSE
-                       MOVE    250             TO  SPA-GMN-CUR
-                   END-IF
+               IF      SPA-GMN-GRP-SETTEI  =   "1"
+                   MOVE    50                  TO  SPA-GMN-CUR
                ELSE
-                   IF      WRK-PAGENO      =   1
-                       MOVE    100             TO  SPA-GMN-CUR
-                   ELSE
-                       MOVE    300             TO  SPA-GMN-CUR
-                   END-IF
+                   MOVE    100                 TO  SPA-GMN-CUR
                END-IF
            END-IF
            .
@@ -4100,65 +3227,27 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        490-GRP2-SETTEI-SEC          SECTION.
       *
-           EVALUATE    MCP-WIDGET
-               WHEN    "GRP2"
-                   MOVE    1           TO  WRK-PAGENO
-                   MOVE    W121-GRP1   TO  SPA-GMN-GRP1 (WRK-PAGENO)
-                   MOVE    W121-GRP2   TO  SPA-GMN-GRP2 (WRK-PAGENO)
-               WHEN    "GRP2_1"
-                   MOVE    2           TO  WRK-PAGENO
-                   MOVE    W121-GRP1-1 TO  SPA-GMN-GRP1 (WRK-PAGENO)
-                   MOVE    W121-GRP2-1 TO  SPA-GMN-GRP2 (WRK-PAGENO)
-           END-EVALUATE
-           MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                   TO  WRK-SELNUM2
-           MOVE    SPA-NAI-SELNUM3 (WRK-PAGENO)
-                                   TO  WRK-SELNUM3
+           MOVE    W121-GRP1           TO  SPA-GMN-GRP1
+           MOVE    W121-GRP2           TO  SPA-GMN-GRP2
       *
-           IF      SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                       >   ZERO
-               IF      WRK-PAGENO          =   1
-                   MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO) 
-                                           TO  W121-BODYLIST-ROW
-               ELSE
-                   MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO) 
-                                           TO  W121-BODYLIST-1-ROW
-               END-IF
-               MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO) 
-                                           TO  SPA-NAI-SELNUM2-ROW
-                                                       (WRK-PAGENO)
+           IF      SPA-NAI-SELNUM2     >   ZERO
+               MOVE    SPA-NAI-SELNUM2     TO  W121-BODYLIST-ROW
+                                               SPA-NAI-SELNUM2-ROW
            ELSE
-               IF      SPA-NAI-SELNUM2-ROW (WRK-PAGENO)
-                                       >   ZERO
-                   IF      WRK-PAGENO          =   1
-                       MOVE    SPA-NAI-SELNUM2-ROW (WRK-PAGENO)
-                                               TO  W121-BODYLIST-ROW
-                   ELSE
-                       MOVE    SPA-NAI-SELNUM2-ROW (WRK-PAGENO)
-                                               TO  W121-BODYLIST-1-ROW
-                   END-IF
+               IF      SPA-NAI-SELNUM2-ROW >   ZERO
+                   MOVE    SPA-NAI-SELNUM2-ROW TO  W121-BODYLIST-ROW
                END-IF 
            END-IF
-           MOVE    2                   TO  FLG-BODYLIST-ROW(WRK-PAGENO)
-           MOVE    ZERO                TO  SPA-NAI-SELNUM2 (WRK-PAGENO)
+           MOVE    2                   TO  FLG-BODYLIST-ROW
+           MOVE    ZERO                TO  SPA-NAI-SELNUM2
       *
-           IF      SPA-GMN-GRP2 (WRK-PAGENO)
-                                       =   "T"
-               MOVE    SPACE           TO  SPA-GMN-GRP1-NO (WRK-PAGENO)
-               MOVE    ZERO            TO  SPA-NAI-GRP1-NO (WRK-PAGENO)
-               IF      SPA-GMN-GRP-SETTEI (WRK-PAGENO)
-                                           =   "1"
-                   IF      WRK-PAGENO      =   1
-                       MOVE    51              TO  SPA-GMN-CUR
-                   ELSE
-                       MOVE    251             TO  SPA-GMN-CUR
-                       END-IF
+           IF      SPA-GMN-GRP2        =   "T"
+               MOVE    SPACE               TO  SPA-GMN-GRP1-NO
+               MOVE    ZERO                TO  SPA-NAI-GRP1-NO
+               IF      SPA-GMN-GRP-SETTEI  =   "1"
+                   MOVE    51                  TO  SPA-GMN-CUR
                ELSE
-                   IF      WRK-PAGENO      =   1
-                       MOVE    100             TO  SPA-GMN-CUR
-                   ELSE
-                       MOVE    300             TO  SPA-GMN-CUR
-                   END-IF
+                   MOVE    100                 TO  SPA-GMN-CUR
                END-IF
            END-IF
            .
@@ -4170,80 +3259,53 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        490-KOH-UP-SEC              SECTION.
       *
-           EVALUATE    MCP-WIDGET
-               WHEN    "KOH_UP"
-                   MOVE    1           TO  WRK-PAGENO
-               WHEN    "KOH_UP_1"
-                   MOVE    2           TO  WRK-PAGENO
-           END-EVALUATE
-           MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                   TO  WRK-SELNUM2
-           MOVE    SPA-NAI-SELNUM3 (WRK-PAGENO)
-                                   TO  WRK-SELNUM3
-      *
-           IF      SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                       >   ZERO
-               IF      WRK-PAGENO          =   1
-                   MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                           TO  W121-BODYLIST-ROW
-               ELSE
-                   MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                           TO  W121-BODYLIST-1-ROW
-               END-IF
-               MOVE    ZERO                TO  FLG-BODYLIST-ROW 
-                                                       (WRK-PAGENO)
+           IF      SPA-NAI-SELNUM2     >   ZERO
+               MOVE    SPA-NAI-SELNUM2     TO  W121-BODYLIST-ROW
+               MOVE    ZERO                TO  FLG-BODYLIST-ROW
            END-IF
       *
-           IF    ( SPA-NAI-SELNUM2 (WRK-PAGENO) 
-                                       =   ZERO )
-           OR    ( SPA-NAI-SELNUM3 (WRK-PAGENO)
-                                       =   ZERO )
+           IF    ( SPA-NAI-SELNUM2     =   ZERO )
+           OR    ( SPA-NAI-SELNUM3     =   ZERO )
                MOVE    "0104"              TO  SPA-ERRCD
            ELSE
-               IF    ( SPA-NAI-SELNUM3 (WRK-PAGENO)
-                                           =   1 )
-               OR    ( SPA-GMN-KOHLIST-MAX (WRK-PAGENO WRK-SELNUM2)
+               IF    ( SPA-NAI-SELNUM3     =   1 )
+               OR    ( SPA-GMN-KOHLIST-MAX (SPA-NAI-SELNUM2)
                                            =   1 )
                    GO  TO  490-KOH-UP-EXT
                ELSE
-                   COMPUTE IDX =   SPA-NAI-SELNUM3 (WRK-PAGENO)    -   1
+                   COMPUTE IDX =   SPA-NAI-SELNUM3     -   1
                    IF      SPA-GMN-KOHLIST-TJYUN
-                                   (WRK-PAGENO WRK-SELNUM2 WRK-SELNUM3)
+                                      (SPA-NAI-SELNUM2 SPA-NAI-SELNUM3)
                                    NOT =   SPA-GMN-KOHLIST-TJYUN
-                                           (WRK-PAGENO WRK-SELNUM2 IDX)
+                                                  (SPA-NAI-SELNUM2 IDX)
                        MOVE    "0040"              TO  SPA-ERRCD
                    ELSE
                        MOVE    SPA-GMN-KOHLIST-TBL
-                                   (WRK-PAGENO WRK-SELNUM2 WRK-SELNUM3)
+                                      (SPA-NAI-SELNUM2 SPA-NAI-SELNUM3)
                                            TO  WRK-GMN-KOHLIST-TBL-R (1)
                        MOVE    SPA-GMN-KOHLIST-TBL
-                                          (WRK-PAGENO WRK-SELNUM2 IDX)
-                                           TO
-                               SPA-GMN-KOHLIST-TBL
-                                   (WRK-PAGENO WRK-SELNUM2 WRK-SELNUM3)
+                                      (SPA-NAI-SELNUM2 IDX)
+                                           TO  SPA-GMN-KOHLIST-TBL
+                                      (SPA-NAI-SELNUM2 SPA-NAI-SELNUM3)
                        MOVE    WRK-GMN-KOHLIST-TBL-R (1)
                                            TO  SPA-GMN-KOHLIST-TBL
-                                           (WRK-PAGENO WRK-SELNUM2 IDX)
+                                                   (SPA-NAI-SELNUM2 IDX)
                        MOVE    IDX         TO  SPA-NAI-SELNUM3
-                                                            (WRK-PAGENO)
       *
       *               グループ１設定済のとき 
                       IF      SPA-NAI-BODYLIST-TGRP1-NO
-                                               (WRK-PAGENO WRK-SELNUM2)
+                                               (SPA-NAI-SELNUM2)
                                            NOT = "000"
                           PERFORM VARYING IDX FROM    1   BY  1
                                   UNTIL   IDX >   SPA-GMN-BODYLIST-MAX
-                                                           (WRK-PAGENO)
                               IF    ( SPA-NAI-BODYLIST-TGRP1-NO
-                                           (WRK-PAGENO WRK-SELNUM2)
+                                                   (SPA-NAI-SELNUM2)
                                        =   SPA-NAI-BODYLIST-TGRP1-NO
-                                                      (WRK-PAGENO IDX) )
-                              AND   ( IDX NOT =   SPA-NAI-SELNUM2
-                                                      (WRK-PAGENO)     )
+                                                               (IDX) )
+                              AND   ( IDX NOT =   SPA-NAI-SELNUM2    )
                                   MOVE    SPA-GMN-KOHLIST
-                                              (WRK-PAGENO WRK-SELNUM2)
-                                               TO  SPA-GMN-KOHLIST
-                                                       (WRK-PAGENO IDX)
+                                                  (SPA-NAI-SELNUM2)
+                                               TO  SPA-GMN-KOHLIST (IDX)
                               END-IF
                           END-PERFORM
                        END-IF
@@ -4251,11 +3313,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       ***              MOVE    SPACE       TO  SPA-GMN-HKNNUM
       ***                                      SPA-GMN-SEIDONAME
                    END-IF
-                   IF      WRK-PAGENO          =   1
-                       MOVE    101         TO  SPA-GMN-CUR
-                   ELSE 
-                       MOVE    301         TO  SPA-GMN-CUR
-                   END-IF 
+                   MOVE    101         TO  SPA-GMN-CUR
                END-IF
            END-IF
            .
@@ -4267,82 +3325,54 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        490-KOH-DOWN-SEC              SECTION.
       *
-           EVALUATE    MCP-WIDGET
-               WHEN    "KOH_DOWN"
-                   MOVE    1           TO  WRK-PAGENO
-               WHEN    "KOH_DOWN_1"
-                   MOVE    2           TO  WRK-PAGENO
-           END-EVALUATE
-           MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                   TO  WRK-SELNUM2
-           MOVE    SPA-NAI-SELNUM3 (WRK-PAGENO)
-                                   TO  WRK-SELNUM3
-      *
-           IF      SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                       >   ZERO
-               IF      WRK-PAGENO          =   1
-                   MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                           TO  W121-BODYLIST-ROW
-               ELSE
-                   MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                           TO  W121-BODYLIST-1-ROW
-               END-IF
-               MOVE    ZERO                TO  FLG-BODYLIST-ROW 
-                                                       (WRK-PAGENO)
+           IF      SPA-NAI-SELNUM2     >   ZERO
+               MOVE    SPA-NAI-SELNUM2     TO  W121-BODYLIST-ROW
+               MOVE    ZERO                TO  FLG-BODYLIST-ROW
            END-IF
       *
-           IF    ( SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                       =   ZERO )
-           OR    ( SPA-NAI-SELNUM3 (WRK-PAGENO)
-                                       =   ZERO )
+           IF    ( SPA-NAI-SELNUM2     =   ZERO )
+           OR    ( SPA-NAI-SELNUM3     =   ZERO )
                MOVE    "0104"              TO  SPA-ERRCD
            ELSE
-               IF    ( SPA-NAI-SELNUM3 (WRK-PAGENO) 
-                                       =   SPA-GMN-KOHLIST-MAX
-                             (WRK-PAGENO WRK-SELNUM2) )
-               OR    ( SPA-GMN-KOHLIST-MAX
-                             (WRK-PAGENO WRK-SELNUM2)
-                                           =   1      )
+               IF    ( SPA-NAI-SELNUM3     =   SPA-GMN-KOHLIST-MAX
+                                                   (SPA-NAI-SELNUM2) )
+               OR    ( SPA-GMN-KOHLIST-MAX (SPA-NAI-SELNUM2)
+                                           =   1                     )
                    GO  TO  490-KOH-DOWN-EXT
                ELSE
-      *
-                   COMPUTE IDX =   SPA-NAI-SELNUM3 (WRK-PAGENO) +   1
+                   COMPUTE IDX =   SPA-NAI-SELNUM3     +   1
                    IF      SPA-GMN-KOHLIST-TJYUN
-                                   (WRK-PAGENO WRK-SELNUM2 WRK-SELNUM3)
+                                      (SPA-NAI-SELNUM2 SPA-NAI-SELNUM3)
                                    NOT =   SPA-GMN-KOHLIST-TJYUN
-                                           (WRK-PAGENO WRK-SELNUM2 IDX)
+                                                  (SPA-NAI-SELNUM2 IDX)
                        MOVE    "0040"              TO  SPA-ERRCD
                    ELSE
                        MOVE    SPA-GMN-KOHLIST-TBL
-                                   (WRK-PAGENO WRK-SELNUM2 WRK-SELNUM3)
+                                      (SPA-NAI-SELNUM2 SPA-NAI-SELNUM3)
                                            TO  WRK-GMN-KOHLIST-TBL-R (1)
                        MOVE    SPA-GMN-KOHLIST-TBL
-                                      (WRK-PAGENO WRK-SELNUM2 IDX)
+                                      (SPA-NAI-SELNUM2 IDX)
                                            TO  SPA-GMN-KOHLIST-TBL
-                                    (WRK-PAGENO WRK-SELNUM2 WRK-SELNUM3)
+                                      (SPA-NAI-SELNUM2 SPA-NAI-SELNUM3)
                        MOVE    WRK-GMN-KOHLIST-TBL-R (1)
                                            TO  SPA-GMN-KOHLIST-TBL
-                                           (WRK-PAGENO WRK-SELNUM2 IDX)
+                                                   (SPA-NAI-SELNUM2 IDX)
                        MOVE    IDX         TO  SPA-NAI-SELNUM3
-                                                       (WRK-PAGENO)
       *
       *               グループ１設定済のとき 
                       IF      SPA-NAI-BODYLIST-TGRP1-NO
-                                           (WRK-PAGENO WRK-SELNUM2)
+                                               (SPA-NAI-SELNUM2)
                                            NOT = "000"
                           PERFORM VARYING IDX FROM    1   BY  1
                                   UNTIL   IDX >   SPA-GMN-BODYLIST-MAX
-                                                     (WRK-PAGENO)
                               IF    ( SPA-NAI-BODYLIST-TGRP1-NO
-                                           (WRK-PAGENO WRK-SELNUM2)
+                                                   (SPA-NAI-SELNUM2)
                                        =   SPA-NAI-BODYLIST-TGRP1-NO
-                                                   (WRK-PAGENO IDX) )
-                              AND   ( IDX NOT =   SPA-NAI-SELNUM2
-                                                    (WRK-PAGENO)    )
+                                                               (IDX) )
+                              AND   ( IDX NOT =   SPA-NAI-SELNUM2    )
                                   MOVE    SPA-GMN-KOHLIST
-                                          (WRK-PAGENO WRK-SELNUM2)
-                                               TO  SPA-GMN-KOHLIST
-                                                       (WRK-PAGENO IDX)
+                                                  (SPA-NAI-SELNUM2)
+                                               TO  SPA-GMN-KOHLIST (IDX)
                               END-IF
                           END-PERFORM
                        END-IF
@@ -4350,11 +3380,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       ***                 MOVE    SPACE       TO  SPA-GMN-HKNNUM
       ***                                         SPA-GMN-SEIDONAME
                    END-IF
-                   IF      WRK-PAGENO          =   1
-                       MOVE    101         TO  SPA-GMN-CUR
-                   ELSE 
-                       MOVE    301         TO  SPA-GMN-CUR
-                   END-IF 
+                   MOVE    101         TO  SPA-GMN-CUR
                END-IF
            END-IF
            .
@@ -4366,79 +3392,50 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        490-KOH-TOP-HENSYU-SEC          SECTION.
       *
-           EVALUATE    MCP-WIDGET
-               WHEN    "TOP"
-                   MOVE    1           TO  WRK-PAGENO
-                   MOVE    15          TO  SPA-GMN-CUR
-               WHEN    "TOP_1"
-                   MOVE    2           TO  WRK-PAGENO
-                   MOVE    215         TO  SPA-GMN-CUR
-           END-EVALUATE
-           MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                   TO  WRK-SELNUM2
-           MOVE    SPA-NAI-SELNUM3 (WRK-PAGENO)
-                                   TO  WRK-SELNUM3
+           MOVE    15                  TO  SPA-GMN-CUR
       *
-           IF      SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                       >   ZERO
-               IF      WRK-PAGENO          =   1
-                   MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                           TO  W121-BODYLIST-ROW
-               ELSE
-                   MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                           TO  W121-BODYLIST-1-ROW
-               END-IF
-               MOVE    ZERO                TO  FLG-BODYLIST-ROW 
-                                                       (WRK-PAGENO)
+           IF      SPA-NAI-SELNUM2     >   ZERO
+               MOVE    SPA-NAI-SELNUM2     TO  W121-BODYLIST-ROW
+               MOVE    ZERO                TO  FLG-BODYLIST-ROW
            END-IF
       * 
-           IF    ( SPA-GMN-HKNNUM (WRK-PAGENO)
-                                       =   SPACE )
-           OR    ( SPA-GMN-SEIDONAME (WRK-PAGENO)
-                                       =   SPACE )
+           IF    ( SPA-GMN-HKNNUM      =   SPACE )
+           OR    ( SPA-GMN-SEIDONAME   =   SPACE )
                MOVE    "0041"              TO  SPA-ERRCD
                GO  TO  490-KOH-TOP-HENSYU-EXT
            END-IF
       * 
-           EVALUATE    SPA-GMN-HKNNUM (WRK-PAGENO)
+           EVALUATE    SPA-GMN-HKNNUM
                WHEN    "XXX"
-                   IF      SPA-GMN-CHOUKI (WRK-PAGENO)
-                                               NOT =   SPACE
+                   IF      SPA-GMN-CHOUKI  NOT =   SPACE
                        MOVE    "0042"              TO  SPA-ERRCD
                        GO  TO  490-KOH-TOP-HENSYU-EXT
                    END-IF
                WHEN    "YYY"
-                   IF      SPA-GMN-ZAITAKU (WRK-PAGENO)
-                                               NOT =   SPACE
+                   IF      SPA-GMN-ZAITAKU NOT =   SPACE
                        MOVE    "0043"              TO  SPA-ERRCD
                        GO  TO  490-KOH-TOP-HENSYU-EXT
                    END-IF
            END-EVALUATE
       * 
-           IF      SPA-NAI-SELNUM3 (WRK-PAGENO)
-                                        =   ZERO
-               IF      SPA-GMN-KOHLIST-MAX
-                      (WRK-PAGENO WRK-SELNUM2)
+           IF      SPA-NAI-SELNUM3     =   ZERO
+               IF      SPA-GMN-KOHLIST-MAX (SPA-NAI-SELNUM2)
                                             >=  WRK-CONS-KOHLIST-MAX
                    MOVE    "0105"              TO  SPA-ERRCD
                    MOVE    SPACE               TO  SPA-GMN-HKNNUM
-                                                           (WRK-PAGENO)
                                                    SPA-GMN-SEIDONAME
-                                                           (WRK-PAGENO)
                    GO  TO  490-KOH-TOP-HENSYU-EXT
                END-IF
            ELSE
                IF      SPA-GMN-KOHLIST-TJYUN
-                              (WRK-PAGENO WRK-SELNUM2 WRK-SELNUM3)
+                                  (SPA-NAI-SELNUM2 SPA-NAI-SELNUM3)
                                            =   "T"
                    MOVE    SPACE               TO  SPA-GMN-HKNNUM
-                                                           (WRK-PAGENO)
                                                    SPA-GMN-SEIDONAME
-                                                           (WRK-PAGENO)
                    GO  TO  490-KOH-TOP-HENSYU-EXT
                ELSE
                    INITIALIZE          SPA-GMN-KOHLIST-TBL
-                              (WRK-PAGENO WRK-SELNUM2 WRK-SELNUM3)
+                                       (SPA-NAI-SELNUM2 SPA-NAI-SELNUM3)
                END-IF
            END-IF     
       *
@@ -4457,12 +3454,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            INITIALIZE              WRK-GMN-KOHLIST-AREA           
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       SPA-GMN-KOHLIST-MAX
-                                           (WRK-PAGENO WRK-SELNUM2)
-               IF      SPA-GMN-KOHLIST-THKNNUM
-                                      (WRK-PAGENO WRK-SELNUM2 IDX)
+                                               (SPA-NAI-SELNUM2)
+               IF      SPA-GMN-KOHLIST-THKNNUM (SPA-NAI-SELNUM2 IDX)
                                    NOT =   SPACE
                    EVALUATE    SPA-GMN-KOHLIST-TJYUN
-                                     (WRK-PAGENO WRK-SELNUM2 IDX)
+                                         (SPA-NAI-SELNUM2 IDX)
                        WHEN    "T"
                            MOVE    1           TO  IDY
                        WHEN    "B"             
@@ -4472,8 +3468,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    ADD     1           TO  WRK-GMN-KOHLIST-MAX (IDY)
                    MOVE    WRK-GMN-KOHLIST-MAX (IDY)
                                        TO  IDZ
-                   MOVE    SPA-GMN-KOHLIST-TBL
-                               (WRK-PAGENO WRK-SELNUM2 IDX)
+                   MOVE    SPA-GMN-KOHLIST-TBL   (SPA-NAI-SELNUM2 IDX)
                                        TO  WRK-GMN-KOHLIST-TBL (IDY IDZ)
                END-IF
            END-PERFORM
@@ -4491,10 +3486,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                ADD     1               TO  WRK-GMN-KOHLIST-MAX(IDY)
                MOVE    WRK-GMN-KOHLIST-MAX  (IDY)
                                        TO  IDZ
-               MOVE    SPA-GMN-HKNNUM (WRK-PAGENO)
-                                       TO  WRK-GMN-KOHLIST-THKNNUM 
+               MOVE    SPA-GMN-HKNNUM  TO  WRK-GMN-KOHLIST-THKNNUM 
                                                               (IDY IDZ)
-               MOVE    SPA-GMN-SEIDONAME (WRK-PAGENO)
+               MOVE    SPA-GMN-SEIDONAME
                                        TO  WRK-GMN-KOHLIST-TSEIDONAME 
                                                               (IDY IDZ)
                MOVE    WRK-KOH-KBN     TO  WRK-GMN-KOHLIST-TJYUN
@@ -4502,8 +3496,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
       *    先頭・後尾の順にＳＰＡへ設定 
-           INITIALIZE                  SPA-GMN-KOHLIST
-                                           (WRK-PAGENO WRK-SELNUM2)
+           INITIALIZE                  SPA-GMN-KOHLIST (SPA-NAI-SELNUM2)
            MOVE    ZERO            TO  IDZ
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >       60
@@ -4512,36 +3505,32 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        NOT =   SPACE      
                    ADD     1               TO  IDZ
                    MOVE    WRK-GMN-KOHLIST-TBL-R (IDX)
-                                           TO
-                                    SPA-GMN-KOHLIST-TBL
-                                       (WRK-PAGENO WRK-SELNUM2 IDZ)
+                                           TO  SPA-GMN-KOHLIST-TBL
+                                                   (SPA-NAI-SELNUM2 IDZ)
                END-IF
            END-PERFORM
            MOVE    IDZ                 TO  SPA-GMN-KOHLIST-MAX
-                                            (WRK-PAGENO WRK-SELNUM2)
+                                                    (SPA-NAI-SELNUM2)
       *
       *    グループ１設定済のとき 
-           IF      SPA-NAI-BODYLIST-TGRP1-NO-9 (WRK-PAGENO WRK-SELNUM2)
+           IF      SPA-NAI-BODYLIST-TGRP1-NO-9 (SPA-NAI-SELNUM2)
                                >   ZERO
                PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >
-                                   SPA-GMN-BODYLIST-MAX (WRK-PAGENO)
+                       UNTIL   IDX >       SPA-GMN-BODYLIST-MAX
                    IF    ( SPA-NAI-BODYLIST-TGRP1-NO-9
-                                           (WRK-PAGENO WRK-SELNUM2)
+                                               (SPA-NAI-SELNUM2)
                                    =   SPA-NAI-BODYLIST-TGRP1-NO-9
-                                                 (WRK-PAGENO IDX)   )
-                   AND   ( IDX NOT =   WRK-SELNUM2 )
-                           MOVE    SPA-GMN-KOHLIST
-                                       (WRK-PAGENO WRK-SELNUM2)
-                                       TO
-                                       SPA-GMN-KOHLIST (WRK-PAGENO IDX)
+                                               (IDX)   )
+                   AND   ( IDX NOT =   SPA-NAI-SELNUM2 )
+                           MOVE    SPA-GMN-KOHLIST (SPA-NAI-SELNUM2)
+                                               TO  SPA-GMN-KOHLIST (IDX)
                    END-IF
                END-PERFORM
            END-IF
       *
-           MOVE    SPACE               TO  SPA-GMN-HKNNUM   (WRK-PAGENO)
-                                           SPA-GMN-SEIDONAME(WRK-PAGENO)
-           MOVE    ZERO                TO  SPA-NAI-SELNUM3  (WRK-PAGENO)
+           MOVE    SPACE               TO  SPA-GMN-HKNNUM
+                                           SPA-GMN-SEIDONAME
+           MOVE    ZERO                TO  SPA-NAI-SELNUM3
            .
        4901-KOH-HENYSU-EXT.
            EXIT.
@@ -4551,75 +3540,50 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        490-KOH-BOTTOM-HENSYU-SEC          SECTION.
       *
-           EVALUATE    MCP-WIDGET
-               WHEN    "BOTTOM"
-                   MOVE    1           TO  WRK-PAGENO
-                   MOVE    15          TO  SPA-GMN-CUR
-               WHEN    "BOTTOM_1"
-                   MOVE    2           TO  WRK-PAGENO
-                   MOVE    215         TO  SPA-GMN-CUR
-           END-EVALUATE
-           MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                   TO  WRK-SELNUM2
-           MOVE    SPA-NAI-SELNUM3 (WRK-PAGENO)
-                                   TO  WRK-SELNUM3
+           MOVE    15                  TO  SPA-GMN-CUR
       *
-           IF      SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                       >   ZERO
-               IF      WRK-PAGENO          =   2
-                   MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                           TO  W121-BODYLIST-ROW
-               ELSE
-                   MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                           TO  W121-BODYLIST-1-ROW
-               END-IF
-               MOVE    ZERO                TO  FLG-BODYLIST-ROW 
-                                                       (WRK-PAGENO)
+           IF      SPA-NAI-SELNUM2     >   ZERO
+               MOVE    SPA-NAI-SELNUM2     TO  W121-BODYLIST-ROW
+               MOVE    ZERO                TO  FLG-BODYLIST-ROW
            END-IF
       *
-           IF    ( SPA-GMN-HKNNUM    (WRK-PAGENO)
-                                       =   SPACE )
-           OR    ( SPA-GMN-SEIDONAME (WRK-PAGENO)
-                                       =   SPACE )
+           IF    ( SPA-GMN-HKNNUM      =   SPACE )
+           OR    ( SPA-GMN-SEIDONAME   =   SPACE )
                MOVE    "0041"              TO  SPA-ERRCD
                GO  TO  490-KOH-BOTTOM-HENSYU-EXT
            END-IF
       * 
-           EVALUATE    SPA-GMN-HKNNUM (WRK-PAGENO)
+           EVALUATE    SPA-GMN-HKNNUM
                WHEN    "XXX"
-                   IF      SPA-GMN-CHOUKI (WRK-PAGENO)
-                                           NOT =   SPACE
+                   IF      SPA-GMN-CHOUKI  NOT =   SPACE
                        MOVE    "0042"              TO  SPA-ERRCD
                        GO  TO  490-KOH-BOTTOM-HENSYU-EXT
                    END-IF
                WHEN    "YYY"
-                   IF      SPA-GMN-ZAITAKU(WRK-PAGENO)
-                                           NOT =   SPACE
+                   IF      SPA-GMN-ZAITAKU NOT =   SPACE
                        MOVE    "0043"              TO  SPA-ERRCD
                        GO  TO  490-KOH-BOTTOM-HENSYU-EXT
                    END-IF
            END-EVALUATE
       * 
-           IF      SPA-NAI-SELNUM3 (WRK-PAGENO)
-                                        =   ZERO
-               IF      SPA-GMN-KOHLIST-MAX
-                       (WRK-PAGENO WRK-SELNUM2)
+           IF      SPA-NAI-SELNUM3     =   ZERO
+               IF      SPA-GMN-KOHLIST-MAX (SPA-NAI-SELNUM2)
                                             >=  WRK-CONS-KOHLIST-MAX
-                   MOVE    "0105"      TO  SPA-ERRCD
-                   MOVE    SPACE       TO  SPA-GMN-HKNNUM (WRK-PAGENO)
-                                           SPA-GMN-SEIDONAME(WRK-PAGENO)
+                   MOVE    "0105"              TO  SPA-ERRCD
+                   MOVE    SPACE               TO  SPA-GMN-HKNNUM
+                                                   SPA-GMN-SEIDONAME
                    GO  TO  490-KOH-BOTTOM-HENSYU-EXT
                END-IF
            ELSE
                IF      SPA-GMN-KOHLIST-TJYUN
-                                  (WRK-PAGENO WRK-SELNUM2 WRK-SELNUM3)
+                                  (SPA-NAI-SELNUM2 SPA-NAI-SELNUM3)
                                            =   "B"
-                   MOVE    SPACE       TO  SPA-GMN-HKNNUM (WRK-PAGENO)
-                                           SPA-GMN-SEIDONAME(WRK-PAGENO)
+                   MOVE    SPACE               TO  SPA-GMN-HKNNUM
+                                                   SPA-GMN-SEIDONAME
                    GO  TO  490-KOH-BOTTOM-HENSYU-EXT
                ELSE
                    INITIALIZE          SPA-GMN-KOHLIST-TBL
-                                   (WRK-PAGENO WRK-SELNUM2 WRK-SELNUM3)
+                                       (SPA-NAI-SELNUM2 SPA-NAI-SELNUM3)
                END-IF 
            END-IF     
       *
@@ -4634,48 +3598,25 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        490-KOH-DELETE-SEC          SECTION.
       *
-           EVALUATE    MCP-WIDGET
-               WHEN    "DEL"
-                   MOVE    1           TO  WRK-PAGENO
-                   MOVE    15          TO  SPA-GMN-CUR
-               WHEN    "DEL_1"
-                   MOVE    2           TO  WRK-PAGENO
-                   MOVE    215         TO  SPA-GMN-CUR
-           END-EVALUATE
-           MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                   TO  WRK-SELNUM2
-           MOVE    SPA-NAI-SELNUM3 (WRK-PAGENO)
-                                   TO  WRK-SELNUM3
+           MOVE    15                  TO  SPA-GMN-CUR
       *
-           IF      SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                       >   ZERO
-               IF      WRK-PAGENO          =   2
-                   MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                           TO  W121-BODYLIST-ROW
-               ELSE
-                   MOVE    SPA-NAI-SELNUM2 (WRK-PAGENO)
-                                           TO  W121-BODYLIST-1-ROW
-               END-IF
-               MOVE    ZERO                TO  FLG-BODYLIST-ROW 
-                                                       (WRK-PAGENO)
+           IF      SPA-NAI-SELNUM2     >   ZERO
+               MOVE    SPA-NAI-SELNUM2     TO  W121-BODYLIST-ROW
+               MOVE    ZERO                TO  FLG-BODYLIST-ROW
            END-IF
       *
-           IF    ( SPA-GMN-HKNNUM    (WRK-PAGENO)
-                                       =   SPACE )
-           OR    ( SPA-GMN-SEIDONAME (WRK-PAGENO)
-                                       =   SPACE )
+           IF    ( SPA-GMN-HKNNUM      =   SPACE )
+           OR    ( SPA-GMN-SEIDONAME   =   SPACE )
                MOVE    "0104"              TO  SPA-ERRCD
                GO  TO  490-KOH-DELETE-EXT
            END-IF
       * 
-           IF      SPA-NAI-SELNUM3 (WRK-PAGENO) 
-                                       =   ZERO
+           IF      SPA-NAI-SELNUM3     =   ZERO
                MOVE    "0044"              TO  SPA-ERRCD
                GO  TO  490-KOH-DELETE-EXT
-           END-IF
-      *  
+           END-IF     
            INITIALIZE                  SPA-GMN-KOHLIST-TBL
-                                   (WRK-PAGENO WRK-SELNUM2 WRK-SELNUM3)
+                                       (SPA-NAI-SELNUM2 SPA-NAI-SELNUM3)
       *
            MOVE    SPACE               TO  WRK-KOH-KBN
            PERFORM 4901-KOH-HENYSU-SEC
@@ -4704,25 +3645,20 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        SPA-GMN-BODY-KOUMOKU
                                        SPA-GMN-GRP-KOUMOKU
                                        SPA-GMN-BODYLIST
-      ****                             SPA-GMN-BODYLIST-MAX
+                                       SPA-GMN-BODYLIST-MAX
       *
-           MOVE    "T"                 TO  SPA-GMN-GRP1 (1)
-                                           SPA-GMN-GRP1 (2)
-           MOVE    "F"                 TO  SPA-GMN-GRP2 (1)
-                                           SPA-GMN-GRP2 (2)
+           MOVE    "T"                 TO  SPA-GMN-GRP1
+           MOVE    "F"                 TO  SPA-GMN-GRP2
       *
       *    レセプト（編綴順）情報編集処理
            PERFORM 3102-SPA-2008-HENSYU-SEC
       *
            MOVE    1                   TO  FLG-HEADLIST-ROW
-                                           FLG-BODYLIST-ROW (1)
-                                           FLG-BODYLIST-ROW (2)
-                                           FLG-KOHLIST-ROW  (1)
-                                           FLG-KOHLIST-ROW  (2)
+                                           FLG-BODYLIST-ROW
+                                           FLG-KOHLIST-ROW 
       *
       *
-           MOVE    1               TO  SPA-GMN-CUR
-           MOVE    ZERO            TO  SPA-W121-PAGENO
+           MOVE    1               TO  SPA-GMN-CUR 
            .
        490-CLEAR-EXT.
            EXIT.
@@ -4772,21 +3708,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
            END-IF
       *
-      *    有効期間と改正の重複チェック
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       SPA-SYS-2003-MAX
-                   OR      SPA-ERRCD   NOT =   SPACE
-               IF    ( SPA-NAI-STYUKYMD    >=
-                                   SPA-SYS-2003-STYUKYMD (IDX) )
-               OR    ( SPA-NAI-EDYUKYMD    <=
-                                   SPA-SYS-2003-STYUKYMD (IDX) )
-                   CONTINUE
-               ELSE
-                   MOVE    "0049"              TO  SPA-ERRCD
-               END-IF
-           END-PERFORM
-           IF      SPA-ERRCD       NOT =   SPACE
-               MOVE    2                   TO  SPA-GMN-CUR
+      *    種別一覧の未入力チェック
+           IF      SPA-GMN-BODYLIST-MAX
+                                       =   ZERO    
+               MOVE    8                   TO  SPA-GMN-CUR
+               MOVE    "0102"              TO  SPA-ERRCD
                GO  TO  4900-KANRENCHK-EXT
            END-IF
       *
@@ -4796,12 +3722,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    OR      SPA-ERRCD   NOT =   SPACE
                IF      SPA-GMN-SELNUM1     =   IDX
       *            選択された内容の開始日が変更された場合
-      ***             IF      SPA-NAI-STYUKYMD    =
-      ***                             SPA-NAI-HEADLIST-TSTYUKYMD (IDX)
+                   IF      SPA-NAI-STYUKYMD    =
+                                   SPA-NAI-HEADLIST-TSTYUKYMD (IDX)
                        MOVE    ZERO            TO  FLG-CHK
-      ***             ELSE
-      ***                 MOVE    1               TO  FLG-CHK
-      ***             END-IF
+                   ELSE
+                       MOVE    1               TO  FLG-CHK
+                   END-IF
                ELSE
                    MOVE    1               TO  FLG-CHK
                END-IF
@@ -4821,36 +3747,26 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                GO  TO  4900-KANRENCHK-EXT
            END-IF
       *
-      *    種別一覧の未入力チェック
-           IF      SPA-GMN-BODYLIST-MAX (1)
-                                       =   ZERO    
-               MOVE    8                   TO  SPA-GMN-CUR
-               MOVE    "0102"              TO  SPA-ERRCD
-               GO  TO  4900-KANRENCHK-EXT
-           END-IF
-           IF      SPA-GMN-BODYLIST-MAX (2)
-                                       =   ZERO    
-               MOVE    208                 TO  SPA-GMN-CUR
-               MOVE    "0102"              TO  SPA-ERRCD
-               GO  TO  4900-KANRENCHK-EXT
-           END-IF
-      *
-      *    第一出力順と保険者印刷順（県内）
-           IF      SPA-GMN-PRTJYUN1 (1)
-                                       =   "02"
-               IF      SPA-GMN-HKNJANUM-PRTJYUN
-                                           =   SPACE
+      *    有効期間と改正の重複チェック
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       SPA-SYS-2003-MAX
+                   OR      SPA-ERRCD   NOT =   SPACE
+               IF    ( SPA-NAI-STYUKYMD    >=
+                                   SPA-SYS-2003-STYUKYMD (IDX) )
+               OR    ( SPA-NAI-EDYUKYMD    <=
+                                   SPA-SYS-2003-STYUKYMD (IDX) )
                    CONTINUE
                ELSE
-                   MOVE    8                   TO  SPA-GMN-CUR  
-                   MOVE    "0047"              TO  SPA-ERRCD
-                   GO  TO  4900-KANRENCHK-EXT
-               END-IF 
-           END-IF 
+                   MOVE    "0005"              TO  SPA-ERRCD
+               END-IF
+           END-PERFORM
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    2                   TO  SPA-GMN-CUR
+               GO  TO  4900-KANRENCHK-EXT
+           END-IF
       *
-      *    第一出力順と所在地保険者（県内）
-           IF      SPA-GMN-PRTJYUN1 (1)
-                                       =   "02"
+      *    第一出力順と所在地保険者
+           IF      SPA-GMN-PRTJYUN1    =   "03"
                IF    ( SPA-GMN-HKNJANUM    =   SPACE )
                AND   ( SPA-GMN-HKNJANUM-PRTKBN
                                            =   SPACE )
@@ -4863,79 +3779,54 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF 
       *
       *    第一出力順とグループ２
-           PERFORM VARYING IDXX    FROM    1   BY  1
-                   UNTIL   IDXX    >       2
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       SPA-GMN-BODYLIST-MAX
                    OR      SPA-ERRCD   NOT =   SPACE             
-             PERFORM VARYING IDX FROM    1   BY  1
-                     UNTIL   IDX >       SPA-GMN-BODYLIST-MAX (IDXX)
-                     OR      SPA-ERRCD   NOT =   SPACE
       *        グループ２
-               IF    ( SPA-GMN-PRTJYUN1 (IDXX) =   "01"  )
-               AND   ( SPA-NAI-BODYLIST-TGRP2-NO (IDXX IDX)
+               IF    ( SPA-GMN-PRTJYUN1        =   "02"  )
+               AND   ( SPA-NAI-BODYLIST-TGRP2-NO (IDX)
                                            NOT =   SPACE )
+                   MOVE    8                   TO  SPA-GMN-CUR  
                    MOVE    "0046"              TO  SPA-ERRCD
-                   IF      IDXX                =   1
-                       MOVE    8                   TO  SPA-GMN-CUR
-                   ELSE   
-                       MOVE    208                 TO  SPA-GMN-CUR  
-                   END-IF         
                END-IF
       *        第一出力順と種別内設定１
                IF      SPA-ERRCD       =   SPACE             
-                   IF    ( SPA-GMN-PRTJYUN1 (IDXX) NOT =   "02" )
-                   AND   ( SPA-NAI-BODYLIST-TPRTJYUN1 (IDXX IDX)
-                                                       =   "07" )
+                   IF    ( SPA-GMN-PRTJYUN1    NOT =   "03" )
+                   AND   ( SPA-NAI-BODYLIST-TPRTJYUN1 (IDX)
+                                                   =   "07" )
+                       MOVE    8                   TO  SPA-GMN-CUR  
                        MOVE    "0033"              TO  SPA-ERRCD
-                   IF      IDXX                =   1
-                       MOVE    8                   TO  SPA-GMN-CUR
-                   ELSE   
-                       MOVE    208                 TO  SPA-GMN-CUR  
-                   END-IF         
                    END-IF
                END-IF
       *        第一出力順と種別内設定２
                IF      SPA-ERRCD       =   SPACE             
-                   IF    ( SPA-GMN-PRTJYUN1 (IDXX) NOT =   "02"  )
-                   AND   ( SPA-NAI-BODYLIST-TPRTJYUN2 (IDXX IDX)
-                                                   NOT =   SPACE )
+                   IF    ( SPA-GMN-PRTJYUN1    NOT =   "03"  )
+                   AND   ( SPA-NAI-BODYLIST-TPRTJYUN2 (IDX)
+                                               NOT =   SPACE )
+                       MOVE    8                   TO  SPA-GMN-CUR  
                        MOVE    "0033"              TO  SPA-ERRCD
-                       IF      IDXX                =   1
-                           MOVE    8                   TO  SPA-GMN-CUR
-                       ELSE   
-                           MOVE    208                 TO  SPA-GMN-CUR  
-                       END-IF         
                    END-IF
                END-IF
       *
                PERFORM VARYING IDY FROM    1   BY  1
-                       UNTIL   IDY >       SPA-GMN-KOHLIST-MAX(IDXX IDX) 
+                       UNTIL   IDY >       SPA-GMN-KOHLIST-MAX (IDX) 
                        OR      SPA-ERRCD   NOT =   SPACE             
       *            在総診・在医総
-                   IF    ( SPA-GMN-ZAITAKU (IDXX)  NOT =   SPACE )
-                   AND   ( SPA-GMN-KOHLIST-THKNNUM (IDXX IDX IDY)
-                                                       =   "YYY" )
+                   IF    ( SPA-GMN-ZAITAKU NOT =   SPACE )
+                   AND   ( SPA-GMN-KOHLIST-THKNNUM (IDX IDY)
+                                               =   "YYY" )
+                       MOVE    9                   TO  SPA-GMN-CUR  
                        MOVE    "0043"              TO  SPA-ERRCD
-                       IF      IDXX                =   1
-                           MOVE    10                  TO  SPA-GMN-CUR
-                       ELSE   
-                           MOVE    210                 TO  SPA-GMN-CUR  
-                       END-IF         
                    END-IF
       *            長期
-                   IF    ( SPA-GMN-CHOUKI  (IDXX)  NOT =   SPACE )
-                   AND   ( SPA-GMN-KOHLIST-THKNNUM (IDXX IDX IDY)
-                                                       =   "XXX" )
+                   IF    ( SPA-GMN-CHOUKI  NOT =   SPACE )
+                   AND   ( SPA-GMN-KOHLIST-THKNNUM (IDX IDY)
+                                               =   "XXX" )
+                       MOVE    10                  TO  SPA-GMN-CUR  
                        MOVE    "0042"              TO  SPA-ERRCD
-                       IF      IDXX                =   1
-                           MOVE    11                  TO  SPA-GMN-CUR
-                       ELSE   
-                           MOVE    211                 TO  SPA-GMN-CUR  
-                       END-IF         
                    END-IF
                END-PERFORM
-             END-PERFORM
            END-PERFORM        
-      *
       *    
            .
        4900-KANRENCHK-EXT.
@@ -4954,7 +3845,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    ＨＥＡＤ部更新処理
            IF      SPA-GMN-SELNUM1     >   ZERO
                INITIALIZE                      RECE-PUTH-REC
-               MOVE    SPA-HOSPNUM          TO  RECE-PUTH-HOSPNUM
+               MOVE    SPA-HOSPID          TO  RECE-PUTH-HOSPID
                MOVE    SPA-NAI-HEADLIST-TSTYUKYMD (SPA-GMN-SELNUM1)
                                            TO  RECE-PUTH-STYUKYMD
                MOVE    SPA-NAI-HEADLIST-TEDYUKYMD (SPA-GMN-SELNUM1)
@@ -4971,7 +3862,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            IF      SPA-GMN-SELNUM1     =   ZERO
                INITIALIZE                      RECE-PUTH-REC
-               MOVE    SPA-HOSPNUM          TO  RECE-PUTH-HOSPNUM
+               MOVE    SPA-HOSPID          TO  RECE-PUTH-HOSPID
                MOVE    SPA-NAI-STYUKYMD    TO  RECE-PUTH-STYUKYMD
                MOVE    SPA-NAI-EDYUKYMD    TO  RECE-PUTH-EDYUKYMD
            ELSE    
@@ -4985,20 +3876,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  RECE-PUTH-HKNJANUM-PRTJYUN 
            MOVE    SPA-GMN-HKNJANUM
                                        TO  RECE-PUTH-HKNJANUM
-           MOVE    SPA-GMN-HKNJANUM-PRTKBN
+           MOVE    SPA-GMN-PREFKBN-PRTJYUN
                                        TO  RECE-PUTH-HKNJANUM-PRTKBN
-           PERFORM VARYING IDXX    FROM    1   BY  1
-                   UNTIL   IDXX    >       2
-               MOVE    SPA-GMN-PRTJYUN1(IDXX) TO RECE-PUTH-SRT-01 (IDXX) 
-               MOVE    SPA-GMN-PRTJYUN2(IDXX) TO RECE-PUTH-KKHKBN (IDXX) 
-               MOVE    SPA-GMN-CHOUKI  (IDXX) TO RECE-PUTH-CHOUKI (IDXX) 
-               MOVE    SPA-GMN-ZAITAKU (IDXX) TO RECE-PUTH-ZAITAKU(IDXX) 
-               MOVE    SPA-GMN-KOUGAKU-TEN
-                                       (IDXX) TO RECE-PUTH-KOUGAKU-TEN
-                                                                  (IDXX) 
-               MOVE    SPA-GMN-SRT-LAST(IDXX) TO RECE-PUTH-SRT-LAST
-                                                                  (IDXX)
-           END-PERFORM
+           MOVE    SPA-GMN-PRTJYUN1    TO  RECE-PUTH-SRT-01 (1) 
+           MOVE    SPA-GMN-PRTJYUN2    TO  RECE-PUTH-KKHKBN (1) 
+           MOVE    SPA-GMN-CHOUKI      TO  RECE-PUTH-CHOUKI (1) 
+           MOVE    SPA-GMN-ZAITAKU     TO  RECE-PUTH-ZAITAKU (1) 
+      ***  MOVE    PREFKBN-PRTJYUN     TO  RECE-PUTH-KOUGAKU-TEN (1) 
+      ***  MOVE    PREFKBN-PRTJYUN     TO  RECE-PUTH-SRT-LAST (1)
            MOVE    SPA-TERMID          TO  RECE-PUTH-TERMID
            MOVE    SPA-OPID            TO  RECE-PUTH-OPID
       *
@@ -5022,9 +3907,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
            MOVE    RECE-PUTH-REC       TO  MCPDATA-REC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
                IF      SPA-GMN-SELNUM1     =   ZERO
                    MOVE    "1001"              TO  SPA-ERRCD
@@ -5037,7 +3922,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *   ＢＯＤＹ部更新処理
            IF      SPA-GMN-SELNUM1     >   ZERO
                INITIALIZE                      RECE-PUTB-REC
-               MOVE    SPA-HOSPNUM          TO  RECE-PUTB-HOSPNUM
+               MOVE    SPA-HOSPID          TO  RECE-PUTB-HOSPID
                MOVE    SPA-NAI-HEADLIST-TSTYUKYMD (SPA-GMN-SELNUM1)
                                            TO  RECE-PUTB-STYUKYMD
                MOVE    SPA-NAI-HEADLIST-TEDYUKYMD (SPA-GMN-SELNUM1)
@@ -5046,150 +3931,119 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "DBDELETE"          TO  MCP-FUNC
                MOVE    "tbl_rece_putb"     TO  MCP-TABLE
                MOVE    "del1"              TO  MCP-PATHNAME
-grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
+               CALL    "MONFUNC"           USING
+                                               MCPAREA
+                                               MCPDATA-REC
                IF      MCP-RC          NOT =   ZERO
                    MOVE    "1003"              TO  SPA-ERRCD
                    GO  TO  490-KOUSHIN-EXT
                END-IF
            END-IF
       *
-           PERFORM VARYING IDXX    FROM    1   BY  1
-                   UNTIL   IDXX    >       2
-               MOVE    ZERO            TO  WRK-SYUBETU-SRT1
-               MOVE    SPACE           TO  WRK-SYUBETU-GAI
-                                           WRK-SYUBETU-NYU
-               MOVE    SPACE           TO  WRK-GRP1-NO
-               PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       SPA-GMN-BODYLIST-MAX (IDXX)
-                       OR      SPA-ERRCD   NOT =   SPACE
-                   INITIALIZE                      RECE-PUTB-REC
-                   MOVE    SPA-HOSPNUM          TO  RECE-PUTB-HOSPNUM
-                   EVALUATE    IDXX
-                       WHEN    1
-                           MOVE    "1"         TO  RECE-PUTB-PREFKBN
-                       WHEN    2
-                           MOVE    "2"         TO  RECE-PUTB-PREFKBN
-                   END-EVALUATE
-                   MOVE    SPA-NAI-STYUKYMD    TO  RECE-PUTB-STYUKYMD
-                   MOVE    SPA-NAI-EDYUKYMD    TO  RECE-PUTB-EDYUKYMD
-                   MOVE    SPA-GMN-BODYLIST-TSYUBETU (IDXX IDX)
-                                               TO  RECE-PUTB-SYUBETU-GAI
-                                                   RECE-PUTB-SYUBETU-NYU
-                   EVALUATE    RECE-PUTB-SYUBETU-GAI (4:1)
-                       WHEN    "2"
-                           MOVE    "1"         TO
-                                           RECE-PUTB-SYUBETU-NYU (4:1)
-                       WHEN    "4"
-                           MOVE    "3"         TO
-                                           RECE-PUTB-SYUBETU-NYU (4:1)
-                       WHEN    "6"
-                           MOVE    "5"         TO
-                                           RECE-PUTB-SYUBETU-NYU (4:1)
-                       WHEN    "8"
-                           MOVE    "7"         TO
-                                           RECE-PUTB-SYUBETU-NYU (4:1)
-                       WHEN    "0"
-                           MOVE    "9"         TO
-                                           RECE-PUTB-SYUBETU-NYU (4:1)
-                   END-EVALUATE
-                   IF      SPA-NAI-BODYLIST-TGRP1-NO (IDXX IDX)
-                                           NOT =   "000"
-                       IF      SPA-NAI-BODYLIST-TGRP1-NO (IDXX IDX)
-                                               NOT =   WRK-GRP1-NO
-                           MOVE    SPA-NAI-BODYLIST-TGRP1-NO (IDXX IDX)
-                                                   TO  WRK-GRP1-NO
-                           MOVE    IDX             TO  WRK-SYUBETU-SRT1
-                           MOVE    RECE-PUTB-SYUBETU-GAI
-                                                   TO  WRK-SYUBETU-GAI
-                           MOVE    RECE-PUTB-SYUBETU-NYU
-                                                   TO  WRK-SYUBETU-NYU
-                       END-IF
-                       MOVE    WRK-SYUBETU-SRT1    TO
-                                           RECE-PUTB-SYUBETU-SRT1
-                       MOVE    WRK-SYUBETU-GAI     TO
-                                           RECE-PUTB-SYUBETU-GAI-SRT1
-                       MOVE    WRK-SYUBETU-NYU     TO
-                                           RECE-PUTB-SYUBETU-NYU-SRT1
-                   ELSE
-                       MOVE    ZERO        TO  WRK-SYUBETU-SRT1
-                       MOVE    IDX         TO  RECE-PUTB-SYUBETU-SRT1
-                       MOVE    RECE-PUTB-SYUBETU-GAI
-                                       TO  RECE-PUTB-SYUBETU-GAI-SRT1
-                       MOVE    RECE-PUTB-SYUBETU-NYU
-                                       TO  RECE-PUTB-SYUBETU-NYU-SRT1
-                   END-IF  
-                   MOVE    SPA-NAI-BODYLIST-TGRP1-NO (IDXX IDX)
-                                           TO  RECE-PUTB-GRP-NO1
-                   MOVE    IDX             TO  RECE-PUTB-SYUBETU-SRT2
-                   MOVE    SPA-NAI-BODYLIST-TGRP2-NO (IDXX IDX)
-                                           TO  RECE-PUTB-GRP-NO2
-                   MOVE    SPA-NAI-BODYLIST-TPRTJYUN1(IDXX IDX) TO
-                                           RECE-PUTB-SYUBETU-UNDER-NO1
-                   MOVE    SPA-NAI-BODYLIST-TPRTJYUN2(IDXX IDX) TO
-                                           RECE-PUTB-SYUBETU-UNDER-NO2 
-                   MOVE    ZERO            TO  RECE-PUTB-KOUHI-NO
-                   MOVE    SPACE           TO  RECE-PUTB-KOUHI-NUM 
-                   MOVE    SPA-TERMID      TO  RECE-PUTB-TERMID
-                   MOVE    SPA-OPID        TO  RECE-PUTB-OPID
-                   MOVE    SMCNDATE-YMD    TO  RECE-PUTB-CREYMD
-                   MOVE    SMCNDATE-YMD    TO  RECE-PUTB-UPYMD
-                   MOVE    SMCNDATE-HMS    TO  RECE-PUTB-UPHMS
-grpsys*            MOVE    SPA-HOSPNUM         TO  -HOSPNUM
-                   MOVE    RECE-PUTB-REC   TO  MCPDATA-REC
-                   MOVE    "DBINSERT"      TO  MCP-FUNC
-                   MOVE    "tbl_rece_putb" TO  MCP-TABLE
-                   MOVE    "key"           TO  MCP-PATHNAME
-grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                       MCPDATA-REC
-                                                       SPA-AREA
-                   IF      MCP-RC      NOT =   ZERO
-                       MOVE    "1004"          TO  SPA-ERRCD
-                   ELSE
-      *                公費情報更新
-                       MOVE    RECE-PUTB-REC   TO  WRK-RECE-PUTB-REC
-                       MOVE    ZERO            TO  WRK-TOP-CNT
-                       MOVE    500             TO  WRK-BOTTOM-CNT
-      * 
-                       PERFORM VARYING IDY FROM    1   BY  1
-                               UNTIL   IDY >       SPA-GMN-KOHLIST-MAX
-                                                           (IDXX IDX)
-                               OR      SPA-ERRCD   NOT =   SPACE
-                           MOVE    WRK-RECE-PUTB-REC   TO  RECE-PUTB-REC
-                           MOVE    SPA-GMN-KOHLIST-THKNNUM(IDXX IDX IDY)
-                                               TO  RECE-PUTB-KOUHI-NUM
-                           EVALUATE    SPA-GMN-KOHLIST-TJYUN
-                                                       (IDXX IDX IDY)
-                               WHEN    "T"
-                                   ADD     1           TO  WRK-TOP-CNT
-                                   MOVE    WRK-TOP-CNT TO
-                                                   RECE-PUTB-KOUHI-NO
-                               WHEN    "B"
-                                   ADD     1           TO
-                                                   WRK-BOTTOM-CNT
-                                   MOVE    WRK-BOTTOM-CNT
-                                                       TO
-                                                   RECE-PUTB-KOUHI-NO
-                           END-EVALUATE
-                           MOVE    SPA-TERMID      TO  RECE-PUTB-TERMID
-                           MOVE    SPA-OPID        TO  RECE-PUTB-OPID
-                           MOVE    SMCNDATE-YMD    TO  RECE-PUTB-CREYMD
-                           MOVE    SMCNDATE-YMD    TO  RECE-PUTB-UPYMD
-                           MOVE    SMCNDATE-HMS    TO  RECE-PUTB-UPHMS
-                           MOVE    RECE-PUTB-REC   TO  MCPDATA-REC
-                           MOVE    "DBINSERT"      TO  MCP-FUNC
-                           MOVE    "tbl_rece_putb" TO  MCP-TABLE
-                           MOVE    "key"           TO  MCP-PATHNAME
-grpsys                     CALL    "ORCDBMAIN"     USING   MCPAREA
-                                                           MCPDATA-REC
-                                                           SPA-AREA
-                           IF      MCP-RC      NOT =   ZERO
-                               MOVE    "1004"          TO  SPA-ERRCD
-                           END-IF 
-                       END-PERFORM
+           MOVE    ZERO            TO  WRK-SYUBETU-SRT1
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       SPA-GMN-BODYLIST-MAX
+                   OR      SPA-ERRCD   NOT =   SPACE
+               INITIALIZE                      RECE-PUTB-REC
+               MOVE    SPA-HOSPID          TO  RECE-PUTB-HOSPID
+               MOVE    "1"                 TO  RECE-PUTB-PREFKBN
+               MOVE    SPA-NAI-STYUKYMD    TO  RECE-PUTB-STYUKYMD
+               MOVE    SPA-NAI-EDYUKYMD    TO  RECE-PUTB-EDYUKYMD
+               IF      SPA-NAI-BODYLIST-TGRP1-NO (IDX)
+                                           >   ZERO
+                   IF      WRK-SYUBETU-SRT1    =   ZERO
+                       MOVE    IDX                 TO  WRK-SYUBETU-SRT1
                    END-IF
-               END-PERFORM
+                   MOVE    WRK-SYUBETU-SRT1    TO
+                                               RECE-PUTB-SYUBETU-SRT1
+               ELSE
+                   MOVE    ZERO            TO  WRK-SYUBETU-SRT1
+                   MOVE    IDX             TO  RECE-PUTB-SYUBETU-SRT1
+               END-IF  
+               MOVE    SPA-NAI-BODYLIST-TGRP1-NO (IDX)
+                                           TO  RECE-PUTB-GRP-NO1
+               MOVE    IDX                 TO  RECE-PUTB-SYUBETU-SRT2
+               MOVE    SPA-NAI-BODYLIST-TGRP2-NO (IDX)
+                                           TO  RECE-PUTB-GRP-NO2
+               MOVE    SPA-GMN-BODYLIST-TSYUBETU (IDX)
+                                           TO  RECE-PUTB-SYUBETU-GAI
+                                               RECE-PUTB-SYUBETU-NYU
+               EVALUATE    RECE-PUTB-SYUBETU-GAI (4:1)
+                   WHEN    "2"
+                       MOVE    "1"         TO
+                                           RECE-PUTB-SYUBETU-NYU (4:1)
+                   WHEN    "4"
+                       MOVE    "3"         TO
+                                           RECE-PUTB-SYUBETU-NYU (4:1)
+                   WHEN    "6"
+                       MOVE    "5"         TO
+                                           RECE-PUTB-SYUBETU-NYU (4:1)
+                   WHEN    "8"
+                       MOVE    "7"         TO
+                                           RECE-PUTB-SYUBETU-NYU (4:1)
+                   WHEN    "0"
+                       MOVE    "9"         TO
+                                           RECE-PUTB-SYUBETU-NYU (4:1)
+               END-EVALUATE
+               MOVE    SPA-NAI-BODYLIST-TPRTJYUN1 (IDX)    TO
+                                           RECE-PUTB-SYUBETU-UNDER-NO1
+               MOVE    SPA-NAI-BODYLIST-TPRTJYUN2 (IDX)    TO
+                                           RECE-PUTB-SYUBETU-UNDER-NO2 
+               MOVE    ZERO                TO  RECE-PUTB-KOUHI-NO
+               MOVE    SPACE               TO  RECE-PUTB-KOUHI-NUM 
+               MOVE    SPA-TERMID          TO  RECE-PUTB-TERMID
+               MOVE    SPA-OPID            TO  RECE-PUTB-OPID
+               MOVE    SMCNDATE-YMD        TO  RECE-PUTB-CREYMD
+               MOVE    SMCNDATE-YMD        TO  RECE-PUTB-UPYMD
+               MOVE    SMCNDATE-HMS        TO  RECE-PUTB-UPHMS
+               MOVE    RECE-PUTB-REC       TO  MCPDATA-REC
+               MOVE    "DBINSERT"          TO  MCP-FUNC
+               MOVE    "tbl_rece_putb"     TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               CALL    "MONFUNC"           USING
+                                               MCPAREA
+                                               MCPDATA-REC
+               IF      MCP-RC          NOT =   ZERO
+                   MOVE    "1004"              TO  SPA-ERRCD
+               ELSE
+      *            公費情報更新
+                   MOVE    RECE-PUTB-REC       TO  WRK-RECE-PUTB-REC
+                   MOVE    ZERO                TO  WRK-TOP-CNT
+                   MOVE    500                 TO  WRK-BOTTOM-CNT
+      * 
+                   PERFORM VARYING IDY FROM    1   BY  1
+                           UNTIL   IDY >       SPA-GMN-KOHLIST-MAX(IDX)
+                           OR      SPA-ERRCD   NOT =   SPACE
+                       MOVE    WRK-RECE-PUTB-REC       TO  RECE-PUTB-REC
+                       MOVE    SPA-GMN-KOHLIST-THKNNUM (IDX IDY)
+                                               TO  RECE-PUTB-KOUHI-NUM
+                       EVALUATE    SPA-GMN-KOHLIST-TJYUN   (IDX IDY)
+                           WHEN    "T"
+                               ADD     1           TO  WRK-TOP-CNT
+                               MOVE    WRK-TOP-CNT TO
+                                                   RECE-PUTB-KOUHI-NO
+                           WHEN    "B"
+                               ADD     1           TO  WRK-BOTTOM-CNT
+                               MOVE    WRK-BOTTOM-CNT  TO
+                                                   RECE-PUTB-KOUHI-NO
+                       END-EVALUATE
+                       MOVE    SPA-TERMID          TO  RECE-PUTB-TERMID
+                       MOVE    SPA-OPID            TO  RECE-PUTB-OPID
+                       MOVE    SMCNDATE-YMD        TO  RECE-PUTB-CREYMD
+                       MOVE    SMCNDATE-YMD        TO  RECE-PUTB-UPYMD
+                       MOVE    SMCNDATE-HMS        TO  RECE-PUTB-UPHMS
+                       MOVE    RECE-PUTB-REC       TO  MCPDATA-REC
+                       MOVE    "DBINSERT"          TO  MCP-FUNC
+                       MOVE    "tbl_rece_putb"     TO  MCP-TABLE
+                       MOVE    "key"               TO  MCP-PATHNAME
+                       CALL    "MONFUNC"           USING
+                                                       MCPAREA
+                                                   MCPDATA-REC
+                       IF      MCP-RC          NOT =   ZERO
+                           MOVE    "1004"              TO  SPA-ERRCD
+                       END-IF 
+                   END-PERFORM
+               END-IF
            END-PERFORM
       *
            IF      SPA-ERRCD           =   SPACE
@@ -5202,86 +4056,6 @@ grpsys                     CALL    "ORCDBMAIN"     USING   MCPAREA
       *
            .
        490-KOUSHIN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *       更新処理（有効終了日）
-      *****************************************************************
-       490-EDYUKYMD-KOUSHIN-SEC      SECTION.
-      *
-      *    更新日取得
-           INITIALIZE                  ORCSMCNDATEAREA
-           CALL    "ORCSMCNDATE"       USING
-                                       ORCSMCNDATEAREA
-      *
-      *    ＨＥＡＤ部更新処理
-           INITIALIZE                      RECE-PUTH-REC
-           MOVE    SPA-HOSPNUM         TO  RECE-PUTH-HOSPNUM
-           MOVE    SPA-NAI-HEADLIST-TSTYUKYMD (SPA-GMN-SELNUM1)
-                                       TO  RECE-PUTH-STYUKYMD
-           MOVE    WRK-CONS-SRYYM-20080331
-                                       TO  RECE-PUTH-EDYUKYMD
-      *
-           MOVE    SPA-NAI-HEADLIST-TSTYUKYMD (SPA-GMN-SELNUM1)
-                                       TO  RECE-PUTH-UPSTYUKYMD
-           MOVE    SPA-NAI-HEADLIST-TEDYUKYMD (SPA-GMN-SELNUM1)
-                                       TO  RECE-PUTH-UPEDYUKYMD
-           MOVE    SMCNDATE-YMD        TO  RECE-PUTH-UPYMD
-           MOVE    SMCNDATE-HMS        TO  RECE-PUTH-UPHMS
-           MOVE    SPA-TERMID          TO  RECE-PUTH-TERMID
-           MOVE    SPA-OPID            TO  RECE-PUTH-OPID
-      *
-           MOVE    RECE-PUTH-REC       TO  MCPDATA-REC
-           MOVE    "tbl_rece_puth"     TO  MCP-TABLE
-           MOVE    "upd2"              TO  MCP-PATHNAME
-           MOVE    "DBUPDATE"          TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           IF      MCP-RC          NOT =   ZERO
-               MOVE    "1002"              TO  SPA-ERRCD
-               GO  TO  490-EDYUKYMD-KOUSHIN-EXT
-           END-IF
-      *
-      *   ＢＯＤＹ部更新処理
-           INITIALIZE                      RECE-PUTB-REC
-           MOVE    SPA-HOSPNUM         TO  RECE-PUTB-HOSPNUM
-           MOVE    SPA-NAI-HEADLIST-TSTYUKYMD (SPA-GMN-SELNUM1)
-                                       TO  RECE-PUTB-STYUKYMD
-           MOVE    WRK-CONS-SRYYM-20080331
-                                       TO  RECE-PUTB-EDYUKYMD
-      *
-           MOVE    SPA-NAI-HEADLIST-TSTYUKYMD (SPA-GMN-SELNUM1)
-                                       TO  RECE-PUTB-UPSTYUKYMD
-           MOVE    SPA-NAI-HEADLIST-TEDYUKYMD (SPA-GMN-SELNUM1)
-                                       TO  RECE-PUTB-UPEDYUKYMD
-           MOVE    SMCNDATE-YMD        TO  RECE-PUTB-UPYMD
-           MOVE    SMCNDATE-HMS        TO  RECE-PUTB-UPHMS
-           MOVE    SPA-TERMID          TO  RECE-PUTB-TERMID
-           MOVE    SPA-OPID            TO  RECE-PUTB-OPID
-      *
-           MOVE    RECE-PUTB-REC       TO  MCPDATA-REC
-           MOVE    "tbl_rece_putb"     TO  MCP-TABLE
-           MOVE    "upd1"              TO  MCP-PATHNAME
-           MOVE    "DBUPDATE"          TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           IF      MCP-RC          NOT =   ZERO
-               MOVE    "1003"              TO  SPA-ERRCD
-               GO  TO  490-EDYUKYMD-KOUSHIN-EXT
-           END-IF
-      *
-           IF      SPA-ERRCD           =   SPACE
-      *        画面クリア処理
-               PERFORM 490-CLEAR-SEC
-      *
-      *        管理部一覧編集処理
-               PERFORM 3101-SPA-HENSYU-SEC
-           END-IF    
-      *
-           .
-       490-EDYUKYMD-KOUSHIN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -5305,9 +4079,9 @@ grpsys                     CALL    "ORCDBMAIN"     USING   MCPAREA
            MOVE    SPACE               TO  LINKAREA
       *
            MOVE    "CURRENT"           TO  MCP-PUTTYPE
-           MOVE    "W121"              TO  MCP-WINDOW
+           MOVE    "W121    "          TO  MCP-WINDOW
       *
-           PERFORM 900-PUT-WINDOW
+           PERFORM 900-PUT-WINDOW.
            .
        500-SET-SCREEN-EXT.
            EXIT.
@@ -5321,25 +4095,15 @@ grpsys                     CALL    "ORCDBMAIN"     USING   MCPAREA
            ELSE
                MOVE    W121-HEADLIST-ROW   TO  WRK-W121-HEADLIST-ROW
            END-IF
-           IF      FLG-BODYLIST-ROW(1) =   1
-               MOVE    ZERO                TO  WRK-W121-BODYLIST-ROW(1)
+           IF      FLG-BODYLIST-ROW    =   1
+               MOVE    ZERO                TO  WRK-W121-BODYLIST-ROW
            ELSE
-               MOVE    W121-BODYLIST-ROW   TO  WRK-W121-BODYLIST-ROW(1)
+               MOVE    W121-BODYLIST-ROW   TO  WRK-W121-BODYLIST-ROW
            END-IF
-           IF      FLG-BODYLIST-ROW(2) =   1
-               MOVE    ZERO                TO  WRK-W121-BODYLIST-ROW(2)
+           IF      FLG-KOHLIST-ROW     =   1
+               MOVE    ZERO                TO  WRK-W121-KOHLIST-ROW
            ELSE
-               MOVE    W121-BODYLIST-1-ROW TO  WRK-W121-BODYLIST-ROW(2)
-           END-IF
-           IF      FLG-KOHLIST-ROW (1) =   1
-               MOVE    ZERO                TO  WRK-W121-KOHLIST-ROW (1)
-           ELSE
-               MOVE    W121-KOHLIST-ROW    TO  WRK-W121-KOHLIST-ROW (1)
-           END-IF
-           IF      FLG-KOHLIST-ROW (2) =   1
-               MOVE    ZERO                TO  WRK-W121-KOHLIST-ROW (2)
-           ELSE
-               MOVE    W121-KOHLIST-1-ROW  TO  WRK-W121-KOHLIST-ROW (2)
+               MOVE    W121-KOHLIST-ROW    TO  WRK-W121-KOHLIST-ROW
            END-IF
       *
            INITIALIZE                      W121
@@ -5357,6 +4121,24 @@ grpsys                     CALL    "ORCDBMAIN"     USING   MCPAREA
            MOVE    SPA-GMN-HKNJANUM-PRTKBN-G
                                            TO  W121-HKNJ-PRTKBN
       *
+           MOVE    SPA-GMN-PRTJYUN1-G      TO  W121-PRTJYUN1
+           MOVE    SPA-GMN-PRTJYUN2-G      TO  W121-PRTJYUN2
+           MOVE    SPA-GMN-ZAITAKU-G       TO  W121-ZAITAKU
+           MOVE    SPA-GMN-CHOUKI-G        TO  W121-CHOUKI
+      *
+           MOVE    SPA-GMN-RECESYUBETU     TO  W121-RECESYUBETU
+           MOVE    SPA-GMN-SYUBETUNAME     TO  W121-SYUBETUNAME
+           MOVE    SPA-GMN-HKNNUM          TO  W121-HKNNUM
+           MOVE    SPA-GMN-SEIDONAME       TO  W121-SEIDONAME
+           MOVE    SPA-GMN-SYUBETU-PRTJYUN1-G
+                                           TO  W121-SYU-PRTJYUN1
+           MOVE    SPA-GMN-SYUBETU-PRTJYUN2-G
+                                           TO  W121-SYU-PRTJYUN2
+           MOVE    SPA-GMN-GRP1            TO  W121-GRP1
+           MOVE    SPA-GMN-GRP2            TO  W121-GRP2
+           MOVE    SPA-GMN-GRP1-NO         TO  W121-GRP1-NO
+           MOVE    SPA-GMN-GRP2-NO         TO  W121-GRP2-NO
+      *     
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >       SPA-GMN-PREFKBN-PRTJYUN-MAX
                MOVE    SPA-GMN-PREFKBN-PRTJYUNLST (IDY)
@@ -5384,79 +4166,55 @@ grpsys                     CALL    "ORCDBMAIN"     USING   MCPAREA
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >   SPA-GMN-PRTJYUN1-MAX
                MOVE    SPA-GMN-PRTJYUN1LST (IDY)
-                                           TO  W121-PRTJYUN1LST   (IDY)
-                                               W121-PRTJYUN1-1LST (IDY)
+                                       TO  W121-PRTJYUN1LST (IDY)
            END-PERFORM
            MOVE    SPA-GMN-PRTJYUN1-MAX
                                        TO  W121-PRTJYUN1-COUNT 
-                                           W121-PRTJYUN1-1-COUNT 
       *     
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >   SPA-GMN-PRTJYUN2-MAX
                MOVE    SPA-GMN-PRTJYUN2LST (IDY)
-                                           TO  W121-PRTJYUN2LST   (IDY)
-                                               W121-PRTJYUN2-1LST (IDY) 
+                                       TO  W121-PRTJYUN2LST (IDY)
            END-PERFORM
            MOVE    SPA-GMN-PRTJYUN2-MAX
                                        TO  W121-PRTJYUN2-COUNT 
-                                           W121-PRTJYUN2-1-COUNT 
-      *     
-           PERFORM VARYING IDY     FROM    1   BY  1
-                   UNTIL   IDY     >   SPA-GMN-SRT-LAST-MAX
-               MOVE    SPA-GMN-SRT-LASTLST (IDY)
-                                       TO  W121-SRT-LASTLST (IDY)
-                                           W121-SRT-LAST-1LST (IDY)
-           END-PERFORM
-           MOVE    SPA-GMN-SRT-LAST-MAX
-                                   TO  W121-SRT-LAST-COUNT
-                                       W121-SRT-LAST-1-COUNT
       *     
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >       SPA-GMN-ZAITAKU-MAX
                MOVE    SPA-GMN-ZAITAKULST (IDY)
                                        TO  W121-ZAITAKULST (IDY)
-                                           W121-ZAITAKU-1LST (IDY)
            END-PERFORM
-           MOVE    SPA-GMN-ZAITAKU-MAX TO  W121-ZAITAKU-COUNT
-                                           W121-ZAITAKU-1-COUNT
+           MOVE    SPA-GMN-ZAITAKU-MAX TO  W121-ZAITAKU-COUNT 
       *     
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >       SPA-GMN-CHOUKI-MAX
                MOVE    SPA-GMN-CHOUKILST (IDY)
                                        TO  W121-CHOUKILST (IDY)
-                                           W121-CHOUKI-1LST (IDY)
            END-PERFORM
-           MOVE    SPA-GMN-CHOUKI-MAX  TO  W121-CHOUKI-COUNT
-                                           W121-CHOUKI-1-COUNT 
+           MOVE    SPA-GMN-CHOUKI-MAX  TO  W121-CHOUKI-COUNT 
       *     
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >   SPA-GMN-SYUBETU-PRTJYUN1-MAX
                MOVE    SPA-GMN-SYUBETU-PRTJYUN1LST (IDY)
-                                       TO  W121-SYU-PRTJYUN1LST   (IDY)
-                                           W121-SYU-PRTJYUN1-1LST (IDY)
+                                       TO
+                                       W121-SYU-PRTJYUN1LST (IDY)
            END-PERFORM
-           IF      SPA-GMN-PRTJYUN1 (1)    NOT =   "02"
+           IF      SPA-GMN-PRTJYUN1    NOT =   "03"
                MOVE    6               TO  W121-SYU-PRTJYUN1-COUNT
            ELSE
                MOVE    SPA-GMN-SYUBETU-PRTJYUN1-MAX
                                        TO  W121-SYU-PRTJYUN1-COUNT
            END-IF 
-           IF      SPA-GMN-PRTJYUN1 (2)    NOT =   "02"
-               MOVE    6               TO  W121-SYU-PRTJYUN1-1-COUNT
-           ELSE
-               MOVE    SPA-GMN-SYUBETU-PRTJYUN1-MAX
-                                       TO  W121-SYU-PRTJYUN1-1-COUNT
-           END-IF 
       *     
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >   SPA-GMN-SYUBETU-PRTJYUN2-MAX
                MOVE    SPA-GMN-SYUBETU-PRTJYUN2LST (IDY)
-                                       TO  W121-SYU-PRTJYUN2LST   (IDY)
-                                           W121-SYU-PRTJYUN2-1LST (IDY)
+                                       TO
+                                       W121-SYU-PRTJYUN2LST (IDY)
            END-PERFORM
            MOVE    SPA-GMN-SYUBETU-PRTJYUN2-MAX
-                                       TO  W121-SYU-PRTJYUN2-COUNT
-                                           W121-SYU-PRTJYUN2-1-COUNT 
+                                       TO
+                                       W121-SYU-PRTJYUN2-COUNT 
       *
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >       SPA-GMN-HEADLIST-MAX
@@ -5482,109 +4240,91 @@ grpsys                     CALL    "ORCDBMAIN"     USING   MCPAREA
                                            TO  W121-HEADLIST-ROW
            END-IF
       *
-      *    県内設定
-           MOVE    SPA-GMN-PRTJYUN1-G (1)  TO  W121-PRTJYUN1
-           MOVE    SPA-GMN-PRTJYUN2-G (1)  TO  W121-PRTJYUN2
-           MOVE    SPA-GMN-ZAITAKU-G  (1)  TO  W121-ZAITAKU
-           MOVE    SPA-GMN-CHOUKI-G   (1)  TO  W121-CHOUKI
-           MOVE    SPA-GMN-SRT-LAST-G (1)  TO  W121-SRT-LAST
-           MOVE    SPA-GMN-KOUGAKU-TEN(1)  TO  W121-KOUGAKU-TEN
-      *
-           MOVE    SPA-GMN-RECESYUBETU(1)  TO  W121-RECESYUBETU
-           MOVE    SPA-GMN-SYUBETUNAME(1)  TO  W121-SYUBETUNAME
-           MOVE    SPA-GMN-HKNNUM     (1)  TO  W121-HKNNUM
-           MOVE    SPA-GMN-SEIDONAME  (1)  TO  W121-SEIDONAME
-           MOVE    SPA-GMN-SYUBETU-PRTJYUN1-G (1)
-                                           TO  W121-SYU-PRTJYUN1
-           MOVE    SPA-GMN-SYUBETU-PRTJYUN2-G (1)
-                                           TO  W121-SYU-PRTJYUN2
-           MOVE    SPA-GMN-GRP1       (1)  TO  W121-GRP1
-           MOVE    SPA-GMN-GRP2       (1)  TO  W121-GRP2
-           MOVE    SPA-GMN-GRP1-NO    (1)  TO  W121-GRP1-NO
-           MOVE    SPA-GMN-GRP2-NO    (1)  TO  W121-GRP2-NO
-      *     
            PERFORM VARYING IDX     FROM    1   BY  1
-                   UNTIL   IDX     >       SPA-GMN-BODYLIST-MAX (1)
+                   UNTIL   IDX     >       SPA-GMN-BODYLIST-MAX
                MOVE    IDX             TO  WRK-Z9
                MOVE    WRK-Z9          TO  W121-BODYLIST-TNO   (IDX)
-               MOVE    SPA-GMN-BODYLIST-TSYUBETU   (1 IDX)
+               MOVE    SPA-GMN-BODYLIST-TSYUBETU   (IDX)
                                        TO
                                        W121-BODYLIST-TRECESYUBETU (IDX)
-               MOVE    SPA-GMN-BODYLIST-TSYUBETUNAME (1 IDX)
+               MOVE    SPA-GMN-BODYLIST-TSYUBETUNAME (IDX)
                                        TO
                                        W121-BODYLIST-TSYUBETUNAME (IDX)
-               IF      SPA-NAI-BODYLIST-TGRP1-NO (1 IDX)
+               IF      SPA-NAI-BODYLIST-TGRP1-NO (IDX)
                                    NOT =   "000"    
-                   MOVE    SPA-NAI-BODYLIST-TGRP1-NO (1 IDX)
+                   MOVE    SPA-NAI-BODYLIST-TGRP1-NO (IDX)
                                            TO  W121-BODYLIST-TGRP1 (IDX)
                END-IF
-               MOVE    SPA-NAI-BODYLIST-TGRP2-NO (1 IDX)
+               MOVE    SPA-NAI-BODYLIST-TGRP2-NO (IDX)
                                        TO  W121-BODYLIST-TGRP2  (IDX)
-               IF    ( SPA-NAI-BODYLIST-TPRTJYUN1(1 IDX) NOT =   SPACE )
-               OR    ( SPA-NAI-BODYLIST-TPRTJYUN2(1 IDX) NOT =   SPACE )
-               OR    ( SPA-GMN-KOHLIST-MAX (1 IDX)           >   ZERO  )
+               IF    ( SPA-NAI-BODYLIST-TPRTJYUN1 (IDX) )
+                                   NOT =   SPACE
+               OR    ( SPA-NAI-BODYLIST-TPRTJYUN2 (IDX) )
+                                   NOT =   SPACE     
+               OR    ( SPA-GMN-KOHLIST-MAX (IDX)
+                                       >   ZERO         )
                    MOVE    "○"        TO  W121-BODYLIST-TSETTEI(IDX)
                END-IF
       *
-               IF      FLG-BODYLIST-ROW (1)    =   2
+               IF      FLG-BODYLIST-ROW    =   2
                    MOVE    "F"     TO  W121-BODYLIST-SELECT (IDX)
                ELSE
-                   IF      IDX         =   SPA-NAI-SELNUM2     (1)
-                                       OR  SPA-NAI-SELNUM2-ROW (1) 
+                   IF      IDX         =   SPA-NAI-SELNUM2
+                                       OR  SPA-NAI-SELNUM2-ROW  
                        MOVE    "T"     TO  W121-BODYLIST-SELECT (IDX)
                    ELSE
                        MOVE    "F"     TO  W121-BODYLIST-SELECT (IDX)
                    END-IF
                END-IF
            END-PERFORM
-           MOVE    SPA-GMN-BODYLIST-MAX (1)
+           MOVE    SPA-GMN-BODYLIST-MAX
                                        TO  W121-BODYLIST-COUNT
            MOVE    ZERO                TO  W121-BODYLIST-ROW
-           IF      WRK-W121-BODYLIST-ROW (1)
+           IF      WRK-W121-BODYLIST-ROW
                                        >   ZERO
-               MOVE    WRK-W121-BODYLIST-ROW (1)
+               MOVE    WRK-W121-BODYLIST-ROW
                                            TO  W121-BODYLIST-ROW
                MOVE    2                   TO  W121-BODYLIST-ROWATTR
            END-IF
       *
-           IF    ( FLG-BODYLIST-ROW(1) NOT =   2    )
-           AND   ( SPA-NAI-SELNUM2 (1)     >   ZERO )
-               MOVE    SPA-NAI-SELNUM2 (1)
-                                           TO  IDYY
-               MOVE    SPA-GMN-KOHLIST-MAX (1 IDYY)
-                                           TO  IDZZ
+           IF    ( FLG-BODYLIST-ROW    NOT =   2    )
+           AND   ( SPA-NAI-SELNUM2         >   ZERO )
                PERFORM VARYING IDX     FROM    1   BY  1
-                       UNTIL   IDX     >       IDZZ
+                       UNTIL   IDX     >       SPA-GMN-KOHLIST-MAX
+                                               (SPA-NAI-SELNUM2)
                    MOVE    IDX             TO  WRK-ZZ9
                    MOVE    WRK-ZZ9         TO  W121-KOHLIST-TNO    (IDX)
-                   MOVE    SPA-GMN-KOHLIST-THKNNUM    (1 IDYY IDX)
+                   MOVE    SPA-GMN-KOHLIST-THKNNUM
+                                               (SPA-NAI-SELNUM2 IDX)
                                        TO  W121-KOHLIST-THKNNUM    (IDX)
-                   MOVE    SPA-GMN-KOHLIST-TSEIDONAME (1 IDYY IDX)
+                   MOVE    SPA-GMN-KOHLIST-TSEIDONAME
+                                               (SPA-NAI-SELNUM2 IDX)
                                        TO  W121-KOHLIST-TSEIDONAME (IDX)
-                   EVALUATE    SPA-GMN-KOHLIST-TJYUN  (1 IDYY IDX)
+                   EVALUATE    SPA-GMN-KOHLIST-TJYUN
+                                               (SPA-NAI-SELNUM2 IDX)
                        WHEN    "T"
                            MOVE    "先頭"  TO  W121-KOHLIST-TJYUN  (IDX)
                        WHEN    "B"
                            MOVE    "後尾"  TO  W121-KOHLIST-TJYUN  (IDX)
                    END-EVALUATE
       *
-                   IF      IDX         =   SPA-NAI-SELNUM3 (1)
+                   IF      IDX         =   SPA-NAI-SELNUM3
                        MOVE    "T"         TO  W121-KOHLIST-SELECT (IDX)
                    ELSE
                        MOVE    "F"         TO  W121-KOHLIST-SELECT (IDX)
                    END-IF
                END-PERFORM
-               MOVE    IDZZ            TO  W121-KOHLIST-COUNT
+               MOVE    SPA-GMN-KOHLIST-MAX (SPA-NAI-SELNUM2)
+                                       TO  W121-KOHLIST-COUNT
                MOVE    ZERO            TO  W121-KOHLIST-ROW
-               IF      WRK-W121-KOHLIST-ROW (1)
+               IF      WRK-W121-KOHLIST-ROW
                                        >   ZERO
-                   MOVE    WRK-W121-KOHLIST-ROW (1)
+                   MOVE    WRK-W121-KOHLIST-ROW
                                               TO  W121-KOHLIST-ROW
                END-IF
            END-IF 
       *
-           EVALUATE    SPA-GMN-GRP-SETTEI(1)
-                                           ALSO    SPA-GMN-GRP-KAIJYO(1)
+           EVALUATE    SPA-GMN-GRP-SETTEI  ALSO    SPA-GMN-GRP-KAIJYO
                WHEN    "1"                 ALSO    SPACE
                    MOVE    WIDGET-NORMAL       TO  W121-GRP1-STATE
                                                    W121-GRP1-NO-STATE
@@ -5602,46 +4342,37 @@ grpsys                     CALL    "ORCDBMAIN"     USING   MCPAREA
                                                    W121-GRP2-NO-STATE
            END-EVALUATE
       *
-           EVALUATE    SPA-GMN-GRP-SETTEI (1)
+           EVALUATE    SPA-GMN-GRP-SETTEI
                WHEN    SPACE
                    MOVE    "グループ設定"      TO  W121-GRP-SETTEI
                WHEN    "1"
                    MOVE    "グループ終了"      TO  W121-GRP-SETTEI
            END-EVALUATE
       *
-           EVALUATE    SPA-GMN-GRP-KAIJYO (1)
+           EVALUATE    SPA-GMN-GRP-KAIJYO
                WHEN    SPACE
                    MOVE    "グループ解除"      TO  W121-GRP-KAIJYO
                WHEN    "1"
                    MOVE    "解除設定終了"      TO  W121-GRP-KAIJYO
            END-EVALUATE
       *
-           IF      SPA-GMN-GRP-SETTEI  (1) =   "1"
-               MOVE    "グループ設定中"    TO  W121-GRP-DSP
-           END-IF
-           IF      SPA-GMN-GRP-KAIJYO  (1) =   "1"
-               MOVE    "グループ解除中"    TO  W121-GRP-DSP
-           END-IF
-      *
            MOVE    WIDGET-NORMAL       TO  W121-HKNJ-PRTKBN-STATE
                                            W121-HKNJANUM-STATE
-                                           W121-HKN-PRTJYUN-STATE
            MOVE    WIDGET-INSENSITIVE  TO  W121-SYU-PRTJYUN2-STATE
-           EVALUATE    SPA-GMN-PRTJYUN1 (1)
-               WHEN    "01"
+           EVALUATE    SPA-GMN-PRTJYUN1
+               WHEN    "02"
                    MOVE    WIDGET-INSENSITIVE
                                            TO  W121-GRP2-STATE
                                                W121-GRP2-NO-STATE
-               WHEN    "02"
+               WHEN    "03"
                    MOVE    WIDGET-INSENSITIVE
                                            TO  W121-HKNJ-PRTKBN-STATE
                                                W121-HKNJANUM-STATE
-                                               W121-HKN-PRTJYUN-STATE
                    MOVE    WIDGET-NORMAL   TO  W121-SYU-PRTJYUN2-STATE
            END-EVALUATE
       *
-           IF    ( SPA-GMN-GRP-SETTEI  (1) =   SPACE )
-           AND   ( SPA-GMN-GRP-KAIJYO  (1) =   SPACE )
+           IF    ( SPA-GMN-GRP-SETTEI  =   SPACE )
+           AND   ( SPA-GMN-GRP-KAIJYO  =   SPACE )
                MOVE    WIDGET-NORMAL       TO  W121-SYU-PRTJYUN1-STATE
                                                W121-SYU-PRTJYUN2-STATE
                                                W121-HKNNUM-STATE
@@ -5653,12 +4384,6 @@ grpsys                     CALL    "ORCDBMAIN"     USING   MCPAREA
                                                W121-BOTTOM-STATE
                                                W121-DEL-STATE
                                                W121-SCR4-STATE
-               IF      SPA-GMN-PRTJYUN1 (1)    =   "02"
-                   CONTINUE
-               ELSE 
-                   MOVE    WIDGET-INSENSITIVE  TO
-                                               W121-SYU-PRTJYUN2-STATE
-               END-IF
            ELSE
                MOVE    WIDGET-INSENSITIVE  TO  W121-SYU-PRTJYUN1-STATE
                                                W121-SYU-PRTJYUN2-STATE
@@ -5673,197 +4398,8 @@ grpsys                     CALL    "ORCDBMAIN"     USING   MCPAREA
                                                W121-SCR4-STATE
            END-IF
       *
-      *    県外設定
-           MOVE    SPA-GMN-PRTJYUN1-G (2)  TO  W121-PRTJYUN1-1
-           MOVE    SPA-GMN-PRTJYUN2-G (2)  TO  W121-PRTJYUN2-1
-           MOVE    SPA-GMN-ZAITAKU-G  (2)  TO  W121-ZAITAKU-1
-           MOVE    SPA-GMN-CHOUKI-G   (2)  TO  W121-CHOUKI-1
-           MOVE    SPA-GMN-SRT-LAST-G (2)  TO  W121-SRT-LAST-1
-           MOVE    SPA-GMN-KOUGAKU-TEN(2)  TO  W121-KOUGAKU-TEN-1
-      *
-           MOVE    SPA-GMN-RECESYUBETU(2)  TO  W121-RECESYUBETU-1
-           MOVE    SPA-GMN-SYUBETUNAME(2)  TO  W121-SYUBETUNAME-1
-           MOVE    SPA-GMN-HKNNUM     (2)  TO  W121-HKNNUM-1
-           MOVE    SPA-GMN-SEIDONAME  (2)  TO  W121-SEIDONAME-1
-           MOVE    SPA-GMN-SYUBETU-PRTJYUN1-G (2)
-                                           TO  W121-SYU-PRTJYUN1-1
-           MOVE    SPA-GMN-SYUBETU-PRTJYUN2-G (2)
-                                           TO  W121-SYU-PRTJYUN2-1
-           MOVE    SPA-GMN-GRP1       (2)  TO  W121-GRP1-1
-           MOVE    SPA-GMN-GRP2       (2)  TO  W121-GRP2-1
-           MOVE    SPA-GMN-GRP1-NO    (2)  TO  W121-GRP1-NO-1
-           MOVE    SPA-GMN-GRP2-NO    (2)  TO  W121-GRP2-NO-1
-      *     
-           PERFORM VARYING IDX     FROM    1   BY  1
-                   UNTIL   IDX     >       SPA-GMN-BODYLIST-MAX (2)
-               MOVE    IDX             TO  WRK-Z9
-               MOVE    WRK-Z9          TO  W121-BODYLIST-1-TNO   (IDX)
-               MOVE    SPA-GMN-BODYLIST-TSYUBETU   (2 IDX)
-                                       TO
-                                       W121-BODYLIST-1-TRECESYUBETU(IDX)
-               MOVE    SPA-GMN-BODYLIST-TSYUBETUNAME (2 IDX)
-                                       TO
-                                       W121-BODYLIST-1-TSYUBETUNAME(IDX)
-               IF      SPA-NAI-BODYLIST-TGRP1-NO (2 IDX)
-                                   NOT =   "000"    
-                   MOVE    SPA-NAI-BODYLIST-TGRP1-NO (2 IDX)
-                                       TO  W121-BODYLIST-1-TGRP1 (IDX)
-               END-IF
-               MOVE    SPA-NAI-BODYLIST-TGRP2-NO (2 IDX)
-                                       TO  W121-BODYLIST-1-TGRP2(IDX)
-               IF    ( SPA-NAI-BODYLIST-TPRTJYUN1(2 IDX) NOT =   SPACE )
-               OR    ( SPA-NAI-BODYLIST-TPRTJYUN2(2 IDX) NOT =   SPACE )
-               OR    ( SPA-GMN-KOHLIST-MAX (2 IDX)           >   ZERO  )
-                   MOVE    "○"        TO  W121-BODYLIST-1-TSETTEI(IDX)
-               END-IF
-      *
-               IF      FLG-BODYLIST-ROW (2)    =   2
-                   MOVE    "F"     TO  W121-BODYLIST-1-SELECT (IDX)
-               ELSE
-                   IF      IDX         =   SPA-NAI-SELNUM2     (2)
-                                       OR  SPA-NAI-SELNUM2-ROW (2) 
-                       MOVE    "T"     TO  W121-BODYLIST-1-SELECT (IDX)
-                   ELSE
-                       MOVE    "F"     TO  W121-BODYLIST-1-SELECT (IDX)
-                   END-IF
-               END-IF
-           END-PERFORM
-           MOVE    SPA-GMN-BODYLIST-MAX (2)
-                                       TO  W121-BODYLIST-1-COUNT
-           MOVE    ZERO                TO  W121-BODYLIST-1-ROW
-           IF      WRK-W121-BODYLIST-ROW (2)
-                                       >   ZERO
-               MOVE    WRK-W121-BODYLIST-ROW (2)
-                                           TO  W121-BODYLIST-1-ROW
-               MOVE    2                   TO  W121-BODYLIST-1-ROWATTR
-           END-IF
-      *
-           IF    ( FLG-BODYLIST-ROW(2) NOT =   2    )
-           AND   ( SPA-NAI-SELNUM2 (2)     >   ZERO )
-               MOVE    SPA-NAI-SELNUM2 (2)
-                                           TO  IDYY
-               MOVE    SPA-GMN-KOHLIST-MAX (2 IDYY)
-                                           TO  IDZZ
-               PERFORM VARYING IDX     FROM    1   BY  1
-                       UNTIL   IDX     >       IDZZ
-                   MOVE    IDX             TO  WRK-ZZ9
-                   MOVE    WRK-ZZ9         TO  W121-KOHLIST-1-TNO  (IDX)
-                   MOVE    SPA-GMN-KOHLIST-THKNNUM    (2 IDYY IDX)
-                                       TO  W121-KOHLIST-1-THKNNUM  (IDX)
-                   MOVE    SPA-GMN-KOHLIST-TSEIDONAME (2 IDYY IDX)
-                                       TO  W121-KOHLIST-1-TSEIDONAME
-                                                                  (IDX)
-                   EVALUATE    SPA-GMN-KOHLIST-TJYUN  (2 IDYY IDX)
-                       WHEN    "T"
-                           MOVE    "先頭"  TO  W121-KOHLIST-1-TJYUN(IDX)
-                       WHEN    "B"
-                           MOVE    "後尾"  TO  W121-KOHLIST-1-TJYUN(IDX)
-                   END-EVALUATE
-      *
-                   IF      IDX         =   SPA-NAI-SELNUM3 (2)
-                       MOVE    "T"     TO  W121-KOHLIST-1-SELECT (IDX)
-                   ELSE
-                       MOVE    "F"     TO  W121-KOHLIST-1-SELECT (IDX)
-                   END-IF
-               END-PERFORM
-               MOVE    IDZZ            TO  W121-KOHLIST-1-COUNT
-               MOVE    ZERO            TO  W121-KOHLIST-1-ROW
-               IF      WRK-W121-KOHLIST-ROW (2)
-                                       >   ZERO
-                   MOVE    WRK-W121-KOHLIST-ROW (2)
-                                              TO  W121-KOHLIST-1-ROW
-               END-IF
-           END-IF 
-      *
-           EVALUATE    SPA-GMN-GRP-SETTEI(2)
-                                           ALSO    SPA-GMN-GRP-KAIJYO(2)
-               WHEN    "1"                 ALSO    SPACE
-                   MOVE    WIDGET-NORMAL       TO  W121-GRP1-1-STATE
-                                                   W121-GRP1-NO-1-STATE
-                                                   W121-GRP2-1-STATE
-                                                   W121-GRP2-NO-1-STATE
-               WHEN    SPACE               ALSO    "1"
-                   MOVE    WIDGET-NORMAL       TO  W121-GRP1-1-STATE
-                                                   W121-GRP2-1-STATE
-                   MOVE    WIDGET-INSENSITIVE  TO  W121-GRP1-NO-1-STATE
-                                                   W121-GRP2-NO-1-STATE
-               WHEN    OTHER
-                   MOVE    WIDGET-INSENSITIVE  TO  W121-GRP1-1-STATE
-                                                   W121-GRP1-NO-1-STATE
-                                                   W121-GRP2-1-STATE
-                                                   W121-GRP2-NO-1-STATE
-           END-EVALUATE
-      *
-           EVALUATE    SPA-GMN-GRP-SETTEI (2)
-               WHEN    SPACE
-                   MOVE    "グループ設定"      TO  W121-GRP-SETTEI-1
-               WHEN    "1"
-                   MOVE    "グループ終了"      TO  W121-GRP-SETTEI-1
-           END-EVALUATE
-      *
-           EVALUATE    SPA-GMN-GRP-KAIJYO (2)
-               WHEN    SPACE
-                   MOVE    "グループ解除"      TO  W121-GRP-KAIJYO-1
-               WHEN    "1"
-                   MOVE    "解除設定終了"      TO  W121-GRP-KAIJYO-1
-           END-EVALUATE
-      *
-           IF      SPA-GMN-GRP-SETTEI  (2) =   "1"
-               MOVE    "グループ設定中"    TO  W121-GRP-DSP-1
-           END-IF
-           IF      SPA-GMN-GRP-KAIJYO  (2) =   "1"
-               MOVE    "グループ解除中"    TO  W121-GRP-DSP-1
-           END-IF
-      *
-           MOVE    WIDGET-INSENSITIVE  TO  W121-SYU-PRTJYUN2-1-STATE
-           EVALUATE    SPA-GMN-PRTJYUN1 (2)
-               WHEN    "01"
-                   MOVE    WIDGET-INSENSITIVE
-                                           TO  W121-GRP2-1-STATE
-                                               W121-GRP2-NO-1-STATE
-               WHEN    "02"
-                   MOVE    WIDGET-NORMAL   TO  W121-SYU-PRTJYUN2-1-STATE
-           END-EVALUATE
-      *
-           IF    ( SPA-GMN-GRP-SETTEI  (2) =   SPACE )
-           AND   ( SPA-GMN-GRP-KAIJYO  (2) =   SPACE )
-               MOVE    WIDGET-NORMAL       TO  W121-SYU-PRTJYUN1-1-STATE
-                                               W121-SYU-PRTJYUN2-1-STATE
-                                               W121-HKNNUM-1-STATE
-                                               W121-SYUBETU-UP-1-STATE
-                                               W121-SYUBETU-DOWN-1-STATE
-                                               W121-KOH-UP-1-STATE
-                                               W121-KOH-DOWN-1-STATE
-                                               W121-TOP-1-STATE
-                                               W121-BOTTOM-1-STATE
-                                               W121-DEL-1-STATE
-                                               W121-SCR4-1-STATE
-               IF      SPA-GMN-PRTJYUN1 (2)    =   "02"
-                   CONTINUE
-               ELSE 
-                   MOVE    WIDGET-INSENSITIVE  TO
-                                               W121-SYU-PRTJYUN2-1-STATE
-               END-IF
-           ELSE
-               MOVE    WIDGET-INSENSITIVE  TO  W121-SYU-PRTJYUN1-1-STATE
-                                               W121-SYU-PRTJYUN2-1-STATE
-                                               W121-HKNNUM-1-STATE
-                                               W121-SYUBETU-UP-1-STATE
-                                               W121-SYUBETU-DOWN-1-STATE
-                                               W121-KOH-UP-1-STATE
-                                               W121-KOH-DOWN-STATE
-                                               W121-TOP-1-STATE
-                                               W121-BOTTOM-1-STATE
-                                               W121-DEL-1-STATE
-                                               W121-SCR4-1-STATE
-           END-IF
-      *
            MOVE    "blue"          TO  W121-RECESYUBETU-STYLE
                                        W121-SYUBETUNAME-STYLE
-                                       W121-GRP-DSP-STYLE
-                                       W121-RECESYUBETU-1-STYLE
-                                       W121-SYUBETUNAME-1-STYLE
-                                       W121-GRP-DSP-1-STYLE
       *
            PERFORM 5001-MAPCUR-SEC
       *
@@ -5885,7 +4421,6 @@ grpsys                     CALL    "ORCDBMAIN"     USING   MCPAREA
       *    エラーメッセージ表示理
       *****************************************************************
        510-ERRSET-SEC              SECTION.
-      *
            MOVE    SPACE               TO  SPA-ERRMSG
       *
            EVALUATE    SPA-ERRCD
@@ -5918,8 +4453,6 @@ grpsys                     CALL    "ORCDBMAIN"     USING   MCPAREA
                WHEN    "0012"
                    MOVE    "グループ２番号が未入力です"
                                                       TO  SPA-ERRMSG
-               WHEN    "0013"
-                   MOVE    "最終印刷順入力エラー"     TO  SPA-ERRMSG
                WHEN    "0021"
                    MOVE    "印刷順指定・県内県外入力エラー"
                                                          TO  SPA-ERRMSG
@@ -5995,17 +4528,6 @@ grpsys                     CALL    "ORCDBMAIN"     USING   MCPAREA
                    MOVE
                   "第一印刷順が保険者のときグループ２の設定はできません"
                                                        TO  SPA-ERRMSG
-               WHEN    "0047"
-                   MOVE
-            "第一印刷順がレセプト種別のとき保険者印刷順は入力できません"
-                                                       TO  SPA-ERRMSG
-               WHEN    "0048"
-                   MOVE    "県内のみ選択可能な区分です"
-                                                       TO  SPA-ERRMSG
-               WHEN    "0049"
-                   MOVE
-                       "改正の月を跨いでの有効期間の設定はできません"
-                                                       TO  SPA-ERRMSG
                WHEN    "0098"
                    STRING
                        "医療機関の所在地保険者印刷位置を選択して"
@@ -6077,7 +4599,6 @@ grpsys                     CALL    "ORCDBMAIN"     USING   MCPAREA
        520-WIDSET-SEC              SECTION.
       *
            MOVE    SPACE                TO  WID1
-           INITIALIZE                       WID1
            MOVE    SPA-WIDCD            TO  WID1-ID1CODE
       *
            EVALUATE    SPA-WIDCD
@@ -6088,22 +4609,6 @@ grpsys                     CALL    "ORCDBMAIN"     USING   MCPAREA
                WHEN    "1002"
                    MOVE    "入力内容をクリアします。よろしいですか。"
                                                 TO  WID1-ID1MSG
-                   MOVE    "B01"                TO  MCP-WIDGET
-               WHEN    "1003"
-                   STRING  "期限を平成２０年３月３１日に変更します。"
-                                                DELIMITED  BY  SIZE
-                           "よろしいですか。"
-                                                DELIMITED  BY  SIZE
-                                                INTO  WID1-ID1MSG
-                   END-STRING
-                   MOVE    "B12"                TO  MCP-WIDGET
-               WHEN    "1004"
-                   STRING  "期限が平成２０年４月を跨いでい"
-                                                DELIMITED  BY  SIZE
-                   "るデータがあります。処理を終了してよろしいですか。"
-                                                DELIMITED  BY  SIZE
-                                                INTO  WID1-ID1MSG
-                   END-STRING
                    MOVE    "B01"                TO  MCP-WIDGET
            END-EVALUATE
       *
@@ -6126,11 +4631,11 @@ grpsys                     CALL    "ORCDBMAIN"     USING   MCPAREA
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
-           IF      SPA-GMN-CUR          =   ZERO
+          IF      SPA-GMN-CUR          =   ZERO
                PERFORM 50011-CUR-SET-SEC
-           END-IF
+          END-IF
       *
-           EVALUATE    SPA-GMN-CUR
+          EVALUATE    SPA-GMN-CUR
                 WHEN    1
                     MOVE  "SELNUM1"        TO  MCP-WIDGET
                 WHEN    2
@@ -6145,7 +4650,6 @@ grpsys                     CALL    "ORCDBMAIN"     USING   MCPAREA
                     MOVE  "HKNJANUM"       TO  MCP-WIDGET
                 WHEN    7
                     MOVE  "HKNJ_PRTKBN"    TO  MCP-WIDGET
-      *         県内
                 WHEN    8
                     MOVE  "PRTJYUN1"       TO  MCP-WIDGET
                 WHEN    9
@@ -6155,15 +4659,13 @@ grpsys                     CALL    "ORCDBMAIN"     USING   MCPAREA
                 WHEN    11
                     MOVE  "CHOUKI"         TO  MCP-WIDGET
                 WHEN    13
-                    MOVE  "SYU_PRTJYUN1"   TO  MCP-WIDGET
+                    MOVE  "SYU_PRTJYUN1"
+                                           TO  MCP-WIDGET
                 WHEN    14
-                    MOVE  "SYU_PRTJYUN2"   TO  MCP-WIDGET
+                    MOVE  "SYU_PRTJYUN2"
+                                           TO  MCP-WIDGET
                 WHEN    15
                     MOVE  "HKNNUM"         TO  MCP-WIDGET
-                WHEN    16
-                    MOVE  "SRT_LAST"       TO  MCP-WIDGET
-                WHEN    17
-                    MOVE  "KOUGAKU_TEN"    TO  MCP-WIDGET
                 WHEN    50
                     MOVE  "GRP1_NO"        TO  MCP-WIDGET
                 WHEN    51
@@ -6172,44 +4674,17 @@ grpsys                     CALL    "ORCDBMAIN"     USING   MCPAREA
                     MOVE  "SYUBETU_UP"     TO  MCP-WIDGET
                 WHEN    101
                     MOVE  "KOH_UP"         TO  MCP-WIDGET
-      *         県外
-                WHEN    208
-                    MOVE  "PRTJYUN1_1"     TO  MCP-WIDGET
-                WHEN    209
-                    MOVE  "PRTJYUN2_1"     TO  MCP-WIDGET
-                WHEN    210
-                    MOVE  "ZAITAKU_1"      TO  MCP-WIDGET
-                WHEN    211
-                    MOVE  "CHOUKI_1"       TO  MCP-WIDGET
-                WHEN    213
-                    MOVE  "SYU_PRTJYUN1_1" TO  MCP-WIDGET
-                WHEN    214
-                    MOVE  "SYU_PRTJYUN2_1" TO  MCP-WIDGET
-                WHEN    215
-                    MOVE  "HKNNUM_1"       TO  MCP-WIDGET
-                WHEN    216
-                    MOVE  "SRT_LAST_1"     TO  MCP-WIDGET
-                WHEN    217
-                    MOVE  "KOUGAKU_TEN_1"  TO  MCP-WIDGET
-                WHEN    250
-                    MOVE  "GRP1_NO_1"      TO  MCP-WIDGET
-                WHEN    251
-                    MOVE  "GRP2_NO_1"      TO  MCP-WIDGET
-                WHEN    300
-                    MOVE  "SYUBETU_UP_1"   TO  MCP-WIDGET
-                WHEN    301
-                    MOVE  "KOH_UP_1"       TO  MCP-WIDGET
       *
                 WHEN    999
                     MOVE  "B12"            TO  MCP-WIDGET
-           END-EVALUATE
+            END-EVALUATE
       *
-           EVALUATE    SPA-GMN-CUR
-                WHEN    8   THRU    199
+            EVALUATE    SPA-GMN-CUR
+                WHEN    1   THRU    199
                     MOVE    0              TO  W121-PAGENO
-                WHEN    208 THRU    399
+                WHEN    200 THRU    299
                     MOVE    1              TO  W121-PAGENO
-                WHEN    OTHER
+                WHEN    999
                     MOVE    SPA-W121-PAGENO
                                            TO  W121-PAGENO
             END-EVALUATE
@@ -6232,56 +4707,31 @@ grpsys                     CALL    "ORCDBMAIN"     USING   MCPAREA
                WHEN    "EDYUKYMD"
                    MOVE    4           TO  SPA-GMN-CUR
                WHEN    "PR_PRTJYUN"
-                   IF      SPA-GMN-PRTJYUN1 (1)    =   "02"
-                       IF      W121-PAGENO         =   ZERO 
-                           MOVE    8          TO  SPA-GMN-CUR
-                       ELSE
-                           MOVE    208        TO  SPA-GMN-CUR
-                       END-IF
-                   ELSE
-                       MOVE    5          TO  SPA-GMN-CUR
-                   END-IF
+                   MOVE    5           TO  SPA-GMN-CUR
                WHEN    "HKN_PRTJYUN"
-                   IF      SPA-GMN-PRTJYUN1 (1)    =   "02"
-                       IF      W121-PAGENO         =   ZERO 
-                           MOVE    8          TO  SPA-GMN-CUR
-                       ELSE
-                           MOVE    208        TO  SPA-GMN-CUR
-                       END-IF
+                   IF      SPA-GMN-PRTJYUN1    =   "03"
+                       MOVE    8          TO  SPA-GMN-CUR
                    ELSE
                        MOVE    6          TO  SPA-GMN-CUR
                    END-IF
                WHEN    "HKNJANUM"
-                   IF      SPA-GMN-HKNJANUM    NOT =   SPACE
-                       MOVE    7           TO  SPA-GMN-CUR
-                   ELSE
-                       IF      W121-PAGENO         =   ZERO 
-                           MOVE    8           TO  SPA-GMN-CUR
-                       ELSE
-                           MOVE    208         TO  SPA-GMN-CUR
-                       END-IF
-                   END-IF
-               WHEN    "HKNJ_PRTKBN"
-                   IF      W121-PAGENO         =   ZERO 
+                   IF      SPA-GMN-HKNJANUM    =   SPACE
                        MOVE    8           TO  SPA-GMN-CUR
                    ELSE
-                       MOVE    208         TO  SPA-GMN-CUR
+                       MOVE    7           TO  SPA-GMN-CUR
                    END-IF
-      * 
+               WHEN    "HKNJ_PRTKBN"
+                   MOVE    8           TO  SPA-GMN-CUR
                WHEN    "PRTJYUN1"
                    MOVE    9           TO  SPA-GMN-CUR
                WHEN    "PRTJYUN2"
-                   MOVE    16          TO  SPA-GMN-CUR
-               WHEN    "SRT_LAST"
                    MOVE    10          TO  SPA-GMN-CUR
                WHEN    "ZAITAKU"
                    MOVE    11          TO  SPA-GMN-CUR
                WHEN    "CHOUKI"
-                   MOVE    17          TO  SPA-GMN-CUR
-               WHEN    "KOUGAKU_TEN"
                    MOVE    13          TO  SPA-GMN-CUR
                WHEN    "SYU_PRTJYUN1"
-                   IF      SPA-GMN-PRTJYUN1 (1)    =   "02"
+                   IF      SPA-GMN-PRTJYUN1    =   "03"
                        MOVE    14          TO  SPA-GMN-CUR
                    ELSE
                        MOVE    15          TO  SPA-GMN-CUR
@@ -6292,33 +4742,7 @@ grpsys                     CALL    "ORCDBMAIN"     USING   MCPAREA
                WHEN    "GRP2_NO"
                    MOVE    13          TO  SPA-GMN-CUR
                WHEN    "HKNNUM"
-                   MOVE    15          TO  SPA-GMN-CUR
-      * 
-               WHEN    "PRTJYUN1_1"
-                   MOVE    209           TO  SPA-GMN-CUR
-               WHEN    "PRTJYUN2_1"
-                   MOVE    216          TO  SPA-GMN-CUR
-               WHEN    "SRT_LAST_1"
-                   MOVE    210          TO  SPA-GMN-CUR
-               WHEN    "ZAITAKU_1"
-                   MOVE    211          TO  SPA-GMN-CUR
-               WHEN    "CHOUKI_1"
-                   MOVE    217          TO  SPA-GMN-CUR
-               WHEN    "KOUGAKU_TEN_1"
-                   MOVE    213          TO  SPA-GMN-CUR
-               WHEN    "SYU_PRTJYUN1_1"
-                   IF      SPA-GMN-PRTJYUN1 (2)    =   "02"
-                       MOVE    214          TO  SPA-GMN-CUR
-                   ELSE
-                       MOVE    215          TO  SPA-GMN-CUR
-                   END-IF
-               WHEN    "SYU_PRTJYUN2_1"
-                   MOVE    215          TO  SPA-GMN-CUR
-               WHEN    "GRP1_NO_1"
-               WHEN    "GRP2_NO_1"
-                   MOVE    213          TO  SPA-GMN-CUR
-               WHEN    "HKNNUM_1"
-                   MOVE    215          TO  SPA-GMN-CUR
+                   MOVE    99          TO  SPA-GMN-CUR
            END-EVALUATE
       *
            .
@@ -6371,9 +4795,9 @@ grpsys                     CALL    "ORCDBMAIN"     USING   MCPAREA
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
            MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
                MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
@@ -6396,9 +4820,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        900-SYSKANRI-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"       USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-SYSKANRI
            ELSE
@@ -6416,16 +4840,16 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_hknjainf"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
                MOVE    "tbl_hknjainf"      TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO                TO  FLG-HKNJAINF
                    MOVE    MCPDATA-REC         TO  HKNJAINF-REC
@@ -6452,9 +4876,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_hknnum"        TO  MCP-TABLE
            MOVE    "key7"              TO  MCP-PATHNAME
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_hknnum"        TO  MCP-TABLE
                MOVE    "key7"              TO  MCP-PATHNAME
@@ -6486,9 +4910,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        900-HKNNUM-READ-N-SEC       SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO                TO  FLG-HKNNUM
                MOVE    MCPDATA-REC         TO  HKNNUM-REC
@@ -6508,9 +4932,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "tbl_rece_puth" TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"       USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC          =   ZERO
                MOVE    "tbl_rece_puth" TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
@@ -6534,9 +4958,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        900-RECE-PUTH-READ-N-SEC        SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO                TO  FLG-RECE-PUTH
                MOVE    MCPDATA-REC         TO  RECE-PUTH-REC
@@ -6554,9 +4978,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        900-RECE-PUTB-READ-N-SEC        SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO                TO  FLG-RECE-PUTB
                MOVE    MCPDATA-REC         TO  RECE-PUTB-REC
@@ -6574,9 +4998,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        900-CLOSE-SEC               SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
       *
            .
        900-CLOSE-EXT.
@@ -6588,9 +5012,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"          TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
       *
            .
        900-PUT-WINDOW-EXT.

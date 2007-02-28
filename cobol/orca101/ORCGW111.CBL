@@ -27,7 +27,6 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  03.05.00    NACL-多々納  07/05/02  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -114,7 +113,50 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA101SCRAREA.INC".
+           COPY    "W01.INC".
+           COPY    "W02.INC".
+           COPY    "W03.INC".
+           COPY    "W04.INC".
+           COPY    "W05.INC".
+           COPY    "W06.INC".
+           COPY    "W07.INC".
+           COPY    "W08.INC".
+           COPY    "W09.INC".
+           COPY    "W10.INC".
+           COPY    "W11.INC".
+           COPY    "W111.INC".
+           COPY    "W12.INC".
+           COPY    "W121.INC".
+           COPY    "W13.INC".
+           COPY    "W14.INC".
+           COPY    "W15.INC".
+           COPY    "W16.INC".
+           COPY    "W17.INC".
+           COPY    "W18.INC".
+           COPY    "W19.INC".
+           COPY    "W20.INC".
+           COPY    "W21.INC".
+           COPY    "W22.INC".
+           COPY    "W23.INC".
+           COPY    "W24.INC".
+           COPY    "W25.INC".
+           COPY    "W26.INC".
+           COPY    "W27.INC".
+           COPY    "W28.INC".
+           COPY    "W29.INC".
+           COPY    "W30.INC".
+           COPY    "W31.INC".
+           COPY    "W60.INC".
+           COPY    "W61.INC".
+           COPY    "W62.INC".
+           COPY    "W63.INC".
+           COPY    "W98.INC".
+           COPY    "W981.INC".
+           COPY    "W97.INC".
+           COPY    "W99.INC".
+           COPY    "WERR.INC".
+           COPY    "WID1.INC".
+           COPY    "WID2.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -254,7 +296,6 @@
            MOVE    "1044"              TO  SYS-1044-KANRICD
            MOVE    SPA-W01-STYUKYMD    TO  SYS-1044-STYUKYMD
            MOVE    SPA-W01-STYUKYMD    TO  SYS-1044-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-1044-HOSPNUM
            MOVE    SYS-1044-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key15"             TO  MCP-PATHNAME
@@ -315,7 +356,6 @@
       *
            MOVE    SPACE               TO  W111
       *    コラムリストの位置指定
-           INITIALIZE                      W111
            MOVE    ZERO                TO  W111-MEILIST-ROW
            IF      WRK-W111-ROW    NOT =   ZERO
                MOVE    WRK-W111-ROW    TO  W111-MEILIST-ROW 
@@ -698,7 +738,6 @@
                                        TO  SYS-1044-KBNCD
            MOVE    SPA-W01-STYUKYMD    TO  SYS-1044-STYUKYMD
            MOVE    SPA-W01-STYUKYMD    TO  SYS-1044-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-1044-HOSPNUM
            MOVE    SYS-1044-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -716,14 +755,13 @@
       *
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1044-REC
-               MOVE    SPA-HOSPNUM         TO  SYS-1044-HOSPNUM
                MOVE    SYS-1044-REC        TO  MCPDATA-REC
                MOVE    "DBDELETE"          TO  MCP-FUNC
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
                IF      MCP-RC              NOT =   ZERO 
                    MOVE    "9001"              TO  SPA-ERRCD
                    DISPLAY "W111 DEL SYSKANRI-KEY =>" SYS-1044-KEY 
@@ -800,7 +838,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    WRK-KBNCD           TO  SYS-1044-KBNCD
            MOVE    SPA-W01-STYUKYMD    TO  SYS-1044-STYUKYMD
            MOVE    SPA-W01-STYUKYMD    TO  SYS-1044-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-1044-HOSPNUM
            MOVE    SYS-1044-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -823,14 +860,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SMCNDATE-YMD        TO  SYS-1044-UPYMD
                MOVE    SMCNDATE-HMS        TO  SYS-1044-UPHMS
       *
-               MOVE    SPA-HOSPNUM         TO  SYS-1044-HOSPNUM
                MOVE    SYS-1044-REC        TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
                IF      MCP-RC              NOT =   ZERO 
                    MOVE    "9001"              TO  SPA-ERRCD
                    DISPLAY "W111 UPD SYSKANRI-KEY =>" SYS-1044-KEY 
@@ -849,14 +885,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SMCNDATE-YMD        TO  SYS-1044-UPYMD
                MOVE    SMCNDATE-HMS        TO  SYS-1044-UPHMS
       *
-               MOVE    SPA-HOSPNUM         TO  SYS-1044-HOSPNUM
                MOVE    SYS-1044-REC        TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
                IF      MCP-RC              NOT =   ZERO 
                    MOVE    "9001"              TO  SPA-ERRCD
                    DISPLAY "W111 INS SYSKANRI-KEY =>" SYS-1044-KEY 
@@ -1002,7 +1037,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
           END-EVALUATE
       *
            MOVE    SPACE               TO  WID1
-           INITIALIZE                      WID1
            MOVE    SPA-WIDCD           TO  WID1-ID1CODE
            MOVE    WRK-WIDMSG          TO  WID1-ID1MSG
            MOVE    "B12"               TO  MCP-WIDGET
@@ -1053,9 +1087,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        910-DBSELECT-EXT.
@@ -1066,9 +1100,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
       *
@@ -1081,9 +1115,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        990-DBCLOSE-EXT.
@@ -1095,9 +1129,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        900-PUT-WINDOW-EXT.

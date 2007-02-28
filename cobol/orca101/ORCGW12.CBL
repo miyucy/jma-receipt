@@ -83,6 +83,7 @@
       *  03.04.05    NACL-藤原    07/01/24  レセプト作成出力順区分
       *                                     種別・カナ氏名順、種別・患者
       *                                     番号順の追加
+      *  03.04.06    NACL-藤原    07/02/07  編綴詳細設定画面の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -878,6 +879,7 @@
            COPY    "W11.INC".
            COPY    "W111.INC".
            COPY    "W12.INC".
+           COPY    "W121.INC".
            COPY    "W13.INC".
            COPY    "W14.INC".
            COPY    "W15.INC".
@@ -1002,6 +1004,10 @@
            EVALUATE    SPA-MOTOPG
                WHEN    "WID1"
                    PERFORM 330-WID1-SET-SEC
+                   GO      TO      300-SCREEN-EXT
+               WHEN    "W121"
+                   PERFORM 310-SPASET-SEC
+                   MOVE    70           TO  SPA-GMN-CUR
                    GO      TO      300-SCREEN-EXT
            END-EVALUATE
       *
@@ -2271,6 +2277,9 @@
                WHEN    "CLICKED"       ALSO    "B01"
                    MOVE   "CHANGE"             TO  MCP-PUTTYPE
                    PERFORM 210-BACK
+      *    登録
+               WHEN    "CLICKED"       ALSO    "B36"
+                   PERFORM 490-SYOUSAI-SETTEI-SEC
       *    登録
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 490-TOUROKU-SEC
@@ -4123,6 +4132,25 @@
       *
            .
        210-BACK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *       登録前処理
+      *****************************************************************
+       490-SYOUSAI-SETTEI-SEC              SECTION.
+      *
+           MOVE    "W12"               TO  SPA-MOTOPG
+           MOVE    "W121"              TO  SPA-SAKIPG
+      *
+      *
+           MOVE   "JOIN"               TO  MCP-PUTTYPE
+           MOVE   SPA-SAKIPG           TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+           .
+       490-SYOUSAI-SETTEI-EXT.
            EXIT.
       *
       *****************************************************************

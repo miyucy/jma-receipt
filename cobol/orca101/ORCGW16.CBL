@@ -27,7 +27,6 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  03.05.00    NACL-多々納  07/05/02  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -84,7 +83,7 @@
        01  WRK-AREA.
            03  WRK-KBNCD.
                05  WRK-KBNNUM                      PIC 9(02).
-               05  WRK-KBNNUMFL                    PIC X(06).
+               05                                  PIC X(06).
            03  WRK-WIDMSG                          PIC X(70). 
            03  WRK-YMD                             PIC X(10). 
            03  WRK-SYMD.
@@ -131,7 +130,50 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA101SCRAREA.INC".
+           COPY    "W01.INC".
+           COPY    "W02.INC".
+           COPY    "W03.INC".
+           COPY    "W04.INC".
+           COPY    "W05.INC".
+           COPY    "W06.INC".
+           COPY    "W07.INC".
+           COPY    "W08.INC".
+           COPY    "W09.INC".
+           COPY    "W10.INC".
+           COPY    "W11.INC".
+           COPY    "W111.INC".
+           COPY    "W12.INC".
+           COPY    "W121.INC".
+           COPY    "W13.INC".
+           COPY    "W14.INC".
+           COPY    "W15.INC".
+           COPY    "W16.INC".
+           COPY    "W17.INC".
+           COPY    "W18.INC".
+           COPY    "W19.INC".
+           COPY    "W20.INC".
+           COPY    "W21.INC".
+           COPY    "W22.INC".
+           COPY    "W23.INC".
+           COPY    "W24.INC".
+           COPY    "W25.INC".
+           COPY    "W26.INC".
+           COPY    "W27.INC".
+           COPY    "W28.INC".
+           COPY    "W29.INC".
+           COPY    "W30.INC".
+           COPY    "W31.INC".
+           COPY    "W60.INC".
+           COPY    "W61.INC".
+           COPY    "W62.INC".
+           COPY    "W63.INC".
+           COPY    "W98.INC".
+           COPY    "W981.INC".
+           COPY    "W97.INC".
+           COPY    "W99.INC".
+           COPY    "WERR.INC".
+           COPY    "WID1.INC".
+           COPY    "WID2.INC".
       *
        PROCEDURE                   DIVISION    USING
                                                MCPAREA
@@ -283,7 +325,6 @@
            MOVE    WRK-KBNCD           TO  SYS-KBNCD
            MOVE    SPA-SYSYMD          TO  SYS-STYUKYMD
                                            SYS-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -560,7 +601,6 @@
       *****************************************************************
        4811-SYS1036-UPD-SEC          SECTION.
       *
-           MOVE    SPA-HOSPNUM         TO  SYS-1036-HOSPNUM
            MOVE    SYS-1036-REC        TO MCPDATA-REC
            MOVE    "tbl_syskanri"      TO MCP-TABLE
            MOVE    "key"               TO MCP-PATHNAME
@@ -858,7 +898,6 @@
       *
       *
            MOVE    SPACE                TO  WID1
-           INITIALIZE                       WID1
            MOVE    SPA-WIDCD            TO  WID1-ID1CODE
            MOVE    WRK-WIDMSG           TO  WID1-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET
@@ -908,9 +947,9 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF    ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
@@ -925,9 +964,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        911-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
       *
@@ -939,9 +978,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
       *
@@ -953,9 +992,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBCLOSECURSOR-SEC                 SECTION.
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
       *
@@ -967,9 +1006,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBDELETE-SEC                 SECTION.
       *
            MOVE    "DBDELETE"          TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
       *
@@ -981,9 +1020,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBINSERT-SEC                SECTION.
       *
            MOVE    "DBINSERT"          TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
       *
@@ -995,9 +1034,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBUPDATE-SEC                SECTION.
       *
            MOVE    "DBUPDATE"          TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
       *
@@ -1009,9 +1048,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        900-PUT-WINDOW-EXT.

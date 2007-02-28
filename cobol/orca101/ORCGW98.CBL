@@ -31,7 +31,6 @@
       *  03.03.00    NACL-多々納  06/10/24  初期設定修正
       *  03.04.00    NACL-多々納  07/01/23  排他削除修正
       *                                     MONFUNC対応
-      *  03.05.00    NACL-多々納  07/05/02  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -235,7 +234,51 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA101SCRAREA.INC".
+           COPY    "W01.INC".
+           COPY    "W02.INC".
+           COPY    "W03.INC".
+           COPY    "W04.INC".
+           COPY    "W05.INC".
+           COPY    "W06.INC".
+           COPY    "W07.INC". 
+           COPY    "W08.INC". 
+           COPY    "W09.INC".
+           COPY    "W10.INC".
+           COPY    "W11.INC".
+           COPY    "W111.INC".
+           COPY    "W12.INC".
+           COPY    "W121.INC".
+           COPY    "W13.INC".
+           COPY    "W14.INC".
+           COPY    "W15.INC".
+           COPY    "W16.INC".
+           COPY    "W17.INC".
+           COPY    "W18.INC".
+           COPY    "W19.INC".
+           COPY    "W20.INC".
+           COPY    "W21.INC".
+           COPY    "W22.INC".
+           COPY    "W23.INC".
+           COPY    "W24.INC".
+           COPY    "W25.INC".
+           COPY    "W26.INC".
+           COPY    "W27.INC".
+           COPY    "W28.INC".
+           COPY    "W29.INC".
+           COPY    "W30.INC".
+           COPY    "W31.INC".
+           COPY    "W60.INC".
+           COPY    "W61.INC".
+           COPY    "W62.INC".
+           COPY    "W63.INC".
+           COPY    "W98.INC".
+           COPY    "W981.INC".
+           COPY    "W97.INC".
+           COPY    "W99.INC".
+           COPY    "WERR.INC".
+           COPY    "WID1.INC".
+           COPY    "WID2.INC".
+      *
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -383,7 +426,6 @@
            MOVE    "*"                 TO  SYS-9800-KBNCD
            MOVE    SPA-W01-STYUKYMD    TO  SYS-9800-STYUKYMD
            MOVE    SPA-W01-STYUKYMD    TO  SYS-9800-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-9800-HOSPNUM
            MOVE    SYS-9800-REC        TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY"      TO  WRK-PATH
            PERFORM 900-SYSKANRI-INV-SEC
@@ -402,7 +444,6 @@
       *
            MOVE    SPACE               TO  TBL-LDMAP
            INITIALIZE                      TBL-LDMAP
-           MOVE    SPA-HOSPNUM         TO  LDMAP-HOSPNUM
            MOVE    TBL-LDMAP           TO  MCPDATA-REC
            MOVE    "tbl_ldmap"         TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
@@ -637,7 +678,7 @@
            MOVE    "W01"               TO  SPA-SAKIPG
            MOVE    "W98"               TO  SPA-MOTOPG
       *
-      *     INITIALIZE                  SPA-W01KYOUTU
+           INITIALIZE                  SPA-W01KYOUTU
       *
            MOVE    SPA-SAKIPG          TO  MCP-WINDOW
       *
@@ -772,43 +813,48 @@
       *    排他管理情報
            MOVE    SPACE               TO  SYS-9800-REC
            INITIALIZE                      SYS-9800-REC
-           MOVE    SPA-HOSPNUM         TO  SYS-9800-HOSPNUM
-           MOVE    "9800"              TO  SYS-9800-KANRICD
-           MOVE    "99999999"          TO  SYS-9800-STYUKYMD
-           MOVE    "00000000"          TO  SYS-9800-EDYUKYMD
-           MOVE    SYS-9800-REC        TO  MCPDATA-REC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "del11"             TO  MCP-PATHNAME
-           MOVE    "DBDELETE"          TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           IF    ( MCP-RC              NOT =   ZERO )
-               MOVE    "1003"                  TO  SPA-ERRCD
-               GO  TO  490-KOUSHIN-EXT
+           MOVE    "9800"                  TO  SYS-9800-KANRICD
+           MOVE    "*"                     TO  SYS-9800-KBNCD
+           MOVE    SPA-W01-STYUKYMD        TO  SYS-9800-STYUKYMD
+           MOVE    SPA-W01-STYUKYMD        TO  SYS-9800-EDYUKYMD
+           MOVE    SYS-9800-REC            TO  MCPDATA-REC
+           MOVE    "SYSKANRI-KEY"          TO  WRK-PATH
+           PERFORM 900-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI            =   ZERO
+               MOVE    MCPDATA-REC             TO  SYS-9800-REC
+           ELSE
+               MOVE    SPACE                   TO  SYS-9800-REC
+               INITIALIZE                      SYS-9800-REC
+               MOVE    "9800"                  TO  SYS-9800-KANRICD
+               MOVE    "*"                     TO  SYS-9800-KBNCD
            END-IF
       *
-      *    排他管理情報
-           MOVE    SPACE               TO  SYS-9800-REC
-           INITIALIZE                      SYS-9800-REC
-           MOVE    "9800"              TO  SYS-9800-KANRICD
-           MOVE    "*"                 TO  SYS-9800-KBNCD
-           MOVE    "00000000"          TO  SYS-9800-STYUKYMD
-           MOVE    "99999999"          TO  SYS-9800-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-9800-HOSPNUM
-           MOVE    SPA-GMN-HAITA       TO  SYS-9800-HAITA
-           MOVE    SYS-9800-REC        TO  SYSKANRI-REC
+           MOVE    SPA-GMN-HAITA           TO  SYS-9800-HAITA
+           MOVE    SPA-W01-STYUKYMD        TO  SYS-9800-STYUKYMD
+           MOVE    SPA-W01-EDYUKYMD        TO  SYS-9800-EDYUKYMD
+           MOVE    SYS-9800-REC            TO  SYSKANRI-REC
+      *
+           IF      FLG-SYSKANRI            =   ZERO
+               MOVE    SYS-KANRICD             TO  SYSUP-KANRICD
+               MOVE    SYS-KBNCD               TO  SYSUP-KBNCD
+               MOVE    SPA-W01-STYUKYMD        TO  SYSUP-STYUKYMD
+               MOVE    SPA-W01-EDYUKYMD        TO  SYSUP-EDYUKYMD
+               MOVE    "tbl_syskanri"          TO  MCP-TABLE
+               MOVE    "key"                   TO  MCP-PATHNAME
+               MOVE    "DBUPDATE"              TO  MCP-FUNC
+           ELSE
+               MOVE    "tbl_syskanri"          TO  MCP-TABLE
+               MOVE    "key"                   TO  MCP-PATHNAME
+               MOVE    "DBINSERT"              TO  MCP-FUNC
+           END-IF
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    "DBINSERT"          TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           IF    (  MCP-RC             NOT =   ZERO )
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              NOT =   ZERO 
                MOVE    "1003"                  TO  SPA-ERRCD
                GO  TO  490-KOUSHIN-EXT
-           END-IF
+           END-IF      
       *
            PERFORM 4901-LDMAP-KOUSHIN-SEC
       *    カーソルクロース
@@ -831,7 +877,6 @@
       *
            MOVE    SPACE               TO  TBL-LDMAP
            INITIALIZE                      TBL-LDMAP
-           MOVE    SPA-HOSPNUM         TO  LDMAP-HOSPNUM
            MOVE    TBL-LDMAP           TO  MCPDATA-REC
            MOVE    "tbl_ldmap"         TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
@@ -884,14 +929,13 @@
              END-IF
            END-PERFORM
       *                                  
-           MOVE    SPA-HOSPNUM         TO  LDMAP-HOSPNUM
            MOVE    TBL-LDMAP           TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    "tbl_ldmap"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                CONTINUE
            ELSE
@@ -930,14 +974,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *                                  
            MOVE    SPACE               TO  TBL-LOCK
            INITIALIZE                      TBL-LOCK
-           MOVE    SPA-HOSPNUM         TO  LOCK-HOSPNUM
            MOVE    TBL-LOCK            TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_lock"          TO  MCP-TABLE
            MOVE    "del1"              TO  MCP-PATHNAME
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                CONTINUE
            ELSE
@@ -1000,7 +1043,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  W98-TATE-VALUE(IDX)
              PERFORM VARYING IDY FROM    1   BY  1
                      UNTIL   IDY >       26
-               MOVE    "whitebutton"   TO  W98-CHK-STYLE(IDX IDY)
                MOVE    SPA-GMN-FLG-VALUE (IDX IDY)
                                        TO  W98-FLG-VALUE(IDX IDY)
              END-PERFORM
@@ -1035,7 +1077,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "更新ができませんでした"
                                                TO  SPA-ERRMSG
                WHEN    "1002"
-               WHEN    "1003"
                    MOVE    "削除ができませんでした"
                                                TO  SPA-ERRMSG
            END-EVALUATE
@@ -1079,7 +1120,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-EVALUATE
       *
            MOVE    SPACE                TO  WID1
-           INITIALIZE                       WID1
            MOVE    SPA-WIDCD            TO  WID1-ID1CODE
            MOVE    WRK-WIDMSG           TO  WID1-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET
@@ -1288,9 +1328,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        910-DBSELECT-EXT.
@@ -1301,9 +1341,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
       *
@@ -1316,9 +1356,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        990-DBCLOSE-EXT.
@@ -1330,9 +1370,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        900-PUT-WINDOW-EXT.

@@ -27,7 +27,6 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  03.05.00    NACL-多々納  07/05/02  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -183,7 +182,50 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA101SCRAREA.INC".
+           COPY    "W01.INC".
+           COPY    "W02.INC".
+           COPY    "W03.INC".
+           COPY    "W04.INC".
+           COPY    "W05.INC".
+           COPY    "W06.INC".
+           COPY    "W07.INC".
+           COPY    "W08.INC".
+           COPY    "W09.INC".
+           COPY    "W10.INC".
+           COPY    "W11.INC".
+           COPY    "W111.INC".
+           COPY    "W12.INC".
+           COPY    "W121.INC".
+           COPY    "W13.INC".
+           COPY    "W14.INC".
+           COPY    "W15.INC".
+           COPY    "W16.INC".
+           COPY    "W17.INC".
+           COPY    "W18.INC".
+           COPY    "W19.INC".
+           COPY    "W20.INC".
+           COPY    "W21.INC".
+           COPY    "W22.INC".
+           COPY    "W23.INC".
+           COPY    "W24.INC".
+           COPY    "W25.INC".
+           COPY    "W26.INC".
+           COPY    "W27.INC".
+           COPY    "W28.INC".
+           COPY    "W29.INC".
+           COPY    "W30.INC".
+           COPY    "W31.INC".
+           COPY    "W60.INC".
+           COPY    "W61.INC".
+           COPY    "W62.INC".
+           COPY    "W63.INC".
+           COPY    "W98.INC".
+           COPY    "W981.INC".
+           COPY    "W97.INC".
+           COPY    "W99.INC".
+           COPY    "WERR.INC".
+           COPY    "WID1.INC".
+           COPY    "WID2.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -334,16 +376,16 @@
            MOVE    SPACE               TO  SYS-5007-REC
            INITIALIZE                      SYS-5007-REC
            MOVE    "5007"              TO  SYS-5007-KANRICD
-           MOVE    SPA-HOSPNUM         TO  SYS-5007-HOSPNUM
-           MOVE    SPA-W01-STYUKYMD    TO  SYS-5007-STYUKYMD
-           MOVE    SPA-W01-EDYUKYMD    TO  SYS-5007-EDYUKYMD
            MOVE    SYS-5007-REC        TO  MCPDATA-REC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
+           MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
+               MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
                PERFORM 900-SYSKANRI-READ-SEC
            ELSE
                MOVE    SPACE               TO  SYS-5007-REC
@@ -405,13 +447,11 @@
                                            TO  SPA-GMN-SIJISEN-PRT (IDX)
                        END-PERFORM
                END-EVALUATE
-               MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
+               MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
                PERFORM 900-SYSKANRI-READ-SEC
            END-PERFORM
       *
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
            PERFORM 901-SYSKANRI-CLOSE-SEC
       *
            IF      SPA-GMN-SIJISENKBN  =   SPACE
@@ -830,7 +870,7 @@
            MOVE    "W01"           TO  SPA-SAKIPG
            MOVE    "W30"           TO  SPA-MOTOPG
       *
-      *     INITIALIZE                  SPA-W01KYOUTU
+           INITIALIZE                  SPA-W01KYOUTU
       *
            MOVE    SPA-SAKIPG      TO  MCP-WINDOW
       *
@@ -862,16 +902,16 @@
            MOVE    SPACE               TO  SYS-5007-REC
            INITIALIZE                      SYS-5007-REC
            MOVE    "5007"              TO  SYS-5007-KANRICD
-           MOVE    SPA-HOSPNUM         TO  SYS-5007-HOSPNUM
-           MOVE    SPA-W01-STYUKYMD    TO  SYS-5007-STYUKYMD
-           MOVE    SPA-W01-EDYUKYMD    TO  SYS-5007-EDYUKYMD
            MOVE    SYS-5007-REC        TO  MCPDATA-REC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
+           MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
+               MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
                PERFORM 900-SYSKANRI-READ-SEC
            ELSE
                MOVE    SPACE               TO  SYS-5007-REC
@@ -882,26 +922,23 @@
                    UNTIL       FLG-SYSKANRI    =   1
                MOVE    MCPDATA-REC         TO  SYS-5007-REC
       *
-               MOVE    SPA-HOSPNUM         TO  SYS-5007-HOSPNUM
                MOVE    SYS-5007-REC        TO  MCPDATA-REC
                MOVE    "DBDELETE"          TO  MCP-FUNC
-               MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
       *
                IF      MCP-RC              NOT =   ZERO 
                    MOVE    "1002"              TO  SPA-ERRCD
                    DISPLAY "DELETE ERR MCP-RC:"MCP-RC 
                                ",SYSKANRI-KEY =>" SYS-5007-KEY 
                END-IF
-               MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
+               MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
                PERFORM 900-SYSKANRI-READ-SEC
            END-PERFORM
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
            PERFORM 901-SYSKANRI-CLOSE-SEC
       *
            IF      SPA-ERRCD           =   SPACE
@@ -958,24 +995,23 @@
                    WHEN    5
                        MOVE    "05"        TO  SYS-5007-KBNCD
                END-EVALUATE
-               MOVE    SPA-HOSPNUM         TO  SYS-5007-HOSPNUM
-               MOVE    SPA-W01-STYUKYMD    TO  SYS-5007-STYUKYMD
-               MOVE    SPA-W01-EDYUKYMD    TO  SYS-5007-EDYUKYMD
                MOVE    SYS-5007-REC        TO  MCPDATA-REC
-               MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key10"             TO  MCP-PATHNAME
-               PERFORM 910-DBSELECT-SEC
+               MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               MOVE    "DBSELECT"          TO  MCP-FUNC
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
                IF      MCP-RC              =   ZERO
-                   MOVE    "tbl_syskanri"      TO  MCP-TABLE
-                   MOVE    "key10"             TO  MCP-PATHNAME
+                   MOVE    "SYSKANRI-KEY"     TO  ORC-DBPATH
                    PERFORM 900-SYSKANRI-READ-SEC
                ELSE
                    MOVE    SPACE               TO  SYS-5007-REC
                    INITIALIZE                  SYS-5007-REC
                    MOVE    1                   TO  FLG-SYSKANRI
                END-IF
-               MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key10"             TO  MCP-PATHNAME
+               MOVE    "SYSKANRI-KEY"     TO  ORC-DBPATH
                PERFORM 901-SYSKANRI-CLOSE-SEC
       *
                IF      FLG-SYSKANRI        =   ZERO
@@ -996,14 +1032,13 @@
                    MOVE    SYS-KBNCD               TO  SYSUP-KBNCD
                    MOVE    SPA-W01-SEL-STYUKYMD    TO  SYSUP-STYUKYMD
                    MOVE    SPA-W01-SEL-EDYUKYMD    TO  SYSUP-EDYUKYMD
-                   MOVE    SPA-HOSPNUM             TO  SYSUP-HOSPNUM
-                   MOVE    SYSKANRI-REC            TO  MCPDATA-REC
+                   MOVE    "SYSKANRI-UPD1"         TO  ORC-DBPATH
                    MOVE    "DBUPDATE"              TO  MCP-FUNC
-                   MOVE    "tbl_syskanri"          TO  MCP-TABLE
-                   MOVE    "upd1"                  TO  MCP-PATHNAME
-                   CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                       MCPDATA-REC
-                                                       SPA-AREA
+                   MOVE    SYSKANRI-REC            TO  MCPDATA-REC
+                   CALL    "ORCMCPSUB"             USING
+                                                   MCPAREA
+                                                   ORCMCPAREA
+                                                   MCPDATA-REC
                   IF      MCP-RC              NOT =   ZERO 
                        MOVE    "1001"                  TO  SPA-ERRCD
                        DISPLAY "SYS-5007 UPD ERR =>" SYS-KEY
@@ -1013,15 +1048,14 @@
                    MOVE    SMCNDATE-YMD            TO  SYS-CREYMD
                    MOVE    SMCNDATE-YMD            TO  SYS-UPYMD
                    MOVE    SMCNDATE-HMS            TO  SYS-UPHMS
-                   MOVE    SPA-HOSPNUM             TO  SYS-HOSPNUM
       *
-                   MOVE    SYSKANRI-REC            TO  MCPDATA-REC
+                   MOVE    "SYSKANRI-KEY"          TO  ORC-DBPATH
                    MOVE    "DBINSERT"              TO  MCP-FUNC
-                   MOVE    "tbl_syskanri"          TO  MCP-TABLE
-                   MOVE    "key"                   TO  MCP-PATHNAME
-                   CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                       MCPDATA-REC
-                                                       SPA-AREA
+                   MOVE    SYSKANRI-REC            TO  MCPDATA-REC
+                   CALL    "ORCMCPSUB"             USING
+                                                   MCPAREA
+                                                   ORCMCPAREA
+                                                   MCPDATA-REC
                    IF      MCP-RC              NOT =   ZERO 
                        MOVE    "1001"                  TO  SPA-ERRCD
                        DISPLAY "SYS-5007 INS ERR =>"  SYS-KEY
@@ -1181,7 +1215,6 @@
       *
            MOVE    SPACE               TO  W30
       *
-           INITIALIZE                      W30
            MOVE    SPA-GMN-STYUKYMD    TO  W30-STYUKYMD
            MOVE    SPA-GMN-EDYUKYMD    TO  W30-EDYUKYMD
       *
@@ -1343,7 +1376,6 @@
            END-EVALUATE
       *
            MOVE    SPACE               TO  WID1
-           INITIALIZE                      WID1
            MOVE    SPA-WIDCD           TO  WID1-ID1CODE
            MOVE    WRK-WIDMSG          TO  WID1-ID1MSG
            MOVE    "B12"               TO  MCP-WIDGET
@@ -1573,7 +1605,11 @@
       *****************************************************************
        900-SYSKANRI-READ-SEC       SECTION.
       *
-           PERFORM 920-DBFETCH-SEC
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-SYSKANRI
            ELSE
@@ -1584,41 +1620,15 @@
        900-SYSKANRI-READ-EXT.
            EXIT.
       *****************************************************************
-      *    テーブル検索処理
-      *****************************************************************
-       910-DBSELECT-SEC                SECTION.
-      *
-           MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-           .
-       910-DBSELECT-EXT.
-           EXIT.
-      *****************************************************************
-      *    ＤＢ読み込み処理
-      *****************************************************************
-       920-DBFETCH-SEC                 SECTION.
-      *
-           MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-           .
-      *
-       920-DBFETCH-EXT.
-           EXIT.
-      *****************************************************************
       *    管理マスターＣＬＯＳＥ処理
       *****************************************************************
        901-SYSKANRI-CLOSE-SEC          SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
            .
        901-SYSKANRI-CLOSE-EXT.
            EXIT.
@@ -1629,9 +1639,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"      TO  MCP-FUNC.
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL   "ORCMCPSUB"          USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC.
       *
            .
        900-PUT-WINDOW-EXT.

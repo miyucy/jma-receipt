@@ -1,5 +1,5 @@
 tbl_rece_puth {
-	HOSPNUM				number(2,0);
+	HOSPID				char(24);
 	PREFKBN_PRTJYUN 		char(1);
 	HKNJANUM_PRTJYUN		char(1);
 	HKNJANUM			char(8);
@@ -23,13 +23,13 @@ tbl_rece_puth {
 	CREYMD   			char(8);
 	UPYMD    			char(8);
 	UPHMS				char(6);
-#-----> ‰∏ª„Ç≠„ÉºÊõ¥Êñ∞Áî®È†ÖÁõÆ
+#-----> ºÁ•≠°ºππø∑Õ—π‡Ã‹
 	UPSTYUKYMD			char(8),virtual;
 	UPEDYUKYMD			char(8),virtual;
 };
 
 primary	{
-	HOSPNUM,STYUKYMD,EDYUKYMD;
+	HOSPID,STYUKYMD,EDYUKYMD;
 };
 
 path	key 	{
@@ -37,7 +37,7 @@ path	key 	{
 		DECLARE tbl_rece_puth_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_rece_puth
-			WHERE   HOSPNUM	        =   :HOSPNUM
+			WHERE   HOSPID	        =   :HOSPID
 			AND   STYUKYMD	        <=  :STYUKYMD
 			AND   EDYUKYMD	        >=  :EDYUKYMD
 		;
@@ -49,7 +49,7 @@ path	key2 	{
 		DECLARE tbl_rece_puth_key2_csr CURSOR FOR
 		SELECT STYUKYMD,EDYUKYMD
 		FROM tbl_rece_puth
-			WHERE   HOSPNUM	=   :HOSPNUM
+			WHERE   HOSPID	=   :HOSPID
 			GROUP BY STYUKYMD,EDYUKYMD
 			ORDER BY STYUKYMD,EDYUKYMD
 		;
@@ -61,6 +61,7 @@ path    upd1    {
 		UPDATE  tbl_rece_puth
 			SET
 #                       :*
+			HOSPID           =   :HOSPID,
 			PREFKBN_PRTJYUN  =   :PREFKBN_PRTJYUN,
 			HKNJANUM_PRTJYUN =   :HKNJANUM_PRTJYUN,
 			HKNJANUM         =   :HKNJANUM,
@@ -86,36 +87,7 @@ path    upd1    {
 			UPHMS            =   :UPHMS
 		WHERE   STYUKYMD         =   :UPSTYUKYMD
 		AND     EDYUKYMD         =   :UPEDYUKYMD
-		AND     HOSPNUM          =   :HOSPNUM
                 ;
         };
 };
 
-
-path	all	{
-	DBSELECT	{
-		DECLARE tbl_rece_puth_all_csr CURSOR FOR
-		SELECT *
-		FROM tbl_rece_puth
-		WHERE   HOSPNUM    =   :HOSPNUM
-		;
-	};
-};
-
-
-path    upd2    {
-	DBUPDATE        {
-		UPDATE  tbl_rece_puth
-			SET
-			STYUKYMD         =   :STYUKYMD,
-			EDYUKYMD         =   :EDYUKYMD,
-			TERMID           =   :TERMID,
-			OPID             =   :OPID,
-			UPYMD            =   :UPYMD,
-			UPHMS            =   :UPHMS
-		WHERE   STYUKYMD         =   :UPSTYUKYMD
-		AND     EDYUKYMD         =   :UPEDYUKYMD
-		AND     HOSPNUM          =   :HOSPNUM
-		;
-	};
-};

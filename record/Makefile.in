@@ -339,6 +339,7 @@ RECORD_files = \
 	U02Q.rec \
 	C12.rec \
 	D02.rec \
+	W121.rec \
 
 DEF_files = \
 	HC01.def \
@@ -518,6 +519,8 @@ DB_files = \
 	tbl_syurrk.db \
 	tbl_qrcdhkn.db \
 	tbl_chk005.db \
+	tbl_rece_puth.db \
+	tbl_rece_putb.db \
 
 all:   
 

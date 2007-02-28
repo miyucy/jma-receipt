@@ -13,56 +13,37 @@ SRCS = ORCGW01.CBL \
        ORCGWERR.CBL \
        ORCGWID1.CBL \
        ORCGW13.CBL \
-       ORCGW97.CBL \
-       ORCGW98.CBL \
-       ORCGWID2.CBL \
-       ORCGW981.CBL \
-       ORCGW99.CBL \
-       ORCGW25.CBL \
        ORCGW14.CBL \
-       ORCGW15.CBL \
-       ORCGW16.CBL \
-       ORCGW17.CBL \
-       ORCGW18.CBL \
-       ORCGW19.CBL \
-       ORCGW32.CBL \
-       ORCGW30.CBL \
-       ORCGW111.CBL \
-       ORCGW31.CBL \
-       ORCGW62.CBL \
-       ORCGW60.CBL \
-       ORCGW61.CBL \
-       ORCGW63.CBL \
-       ORCGW121.CBL \
        ORCGW20SUB01.CBL \
        ORCGW20.CBL \
-       ORCGW201.CBL \
        ORCGW21.CBL \
        ORCGW22.CBL \
        ORCGW23.CBL \
        ORCGW24.CBL \
+       ORCGW25.CBL \
+       ORCGW26.CBL \
+       ORCGW27.CBL \
        ORCGW28.CBL \
+       ORCGW15.CBL \
+       ORCGW99.CBL \
+       ORCGW98.CBL \
+       ORCGW16.CBL \
+       ORCGW17.CBL \
+       ORCGW18.CBL \
+       ORCGWID2.CBL \
        ORCGW29.CBL \
-       ORCGW33.CBL \
-       ORCGW64.CBL \
-       ORCGW34.CBL \
-       ORCGW35.CBL \
-       ORCGW96.CBL \
-       ORCGW65.CBL \
-       ORCGW66.CBL \
-       ORCGW67.CBL \
-       ORCGW321.CBL \
-       ORCGW68.CBL \
-       ORCGW122.CBL \
-       ORCGW36.CBL \
-       ORCGW37.CBL \
-       ORCGW91.CBL \
-       ORCGW92.CBL \
-       ORCGWAPI01.CBL \
-       ORCGW061.CBL \
-       ORCGW141.CBL \
-       ORCGW142.CBL \
-       ORCGW93.CBL \
+       ORCGW19.CBL \
+       ORCGW30.CBL \
+       ORCGW60.CBL \
+       ORCGW61.CBL \
+       ORCGW97.CBL \
+       ORCGW111.CBL \
+       ORCGW62.CBL \
+       ORCGW63.CBL \
+       ORCGW31.CBL \
+       ORCGW981.CBL \
+       ORCGW121.CBL \
+        
 
 top_builddir = ../..
 include $(top_builddir)/cobol/Makefile.global

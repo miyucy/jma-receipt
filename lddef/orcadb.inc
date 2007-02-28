@@ -115,4 +115,6 @@ db	{
         tbl_syurrk;
 	tbl_qrcdhkn;
 	tbl_chk005;
+	tbl_rece_puth;
+	tbl_rece_putb;
 };
