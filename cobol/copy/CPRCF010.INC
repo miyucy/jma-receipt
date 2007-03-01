@@ -41,46 +41,12 @@
       *
       *  03.04.01    NACL-藤原    07/02/27  保険ＩＤ、老人保険ＩＤ、
       *                                     公費ＩＤの追加
-      *
-      *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
-      *  03.05.02    NACL-藤原    07/07/18  特記事項、
-      *                                     請求区分（レセ電対象）を追加
-      *
-      *  04.01.01    NACL-藤原    07/11/22  公害レセプト対応
-      *                                     審査支払機関検索用項目の追加
-      *
-      *  04.02.01    NACL-藤原    08/03/12  フラグ、データエリア追加
-      *
-      *  04.04.01    NACL-藤原    08/12/17  返戻指示フラグ追加
-      *
-      *  04.05.01    NACL-藤原    09/11/13  特記事項照会対応
-      *                                     特記事項略称追加
-      *
-      *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
-      *                                     キーにkohid 追加
-      *                                     調査用にcrehms,updhms 追加
-      *  04.06.02    NACL-藤原    10/11/30  統計帳票用の項目追加
-      *                                     請求額情報（医療費、食事）
-      *                                     保険組合せ情報
-      *  04.06.03    NACL-藤原    12/10/26  特記事項０７（老併）及び
-      *                                     ０８（老健）のレセプト対応
-      *                                     receipt_kbn 追加 
-      *
-      *  04.07.01    NACL-藤原    11/09/02  労災請求書作成対応
-      *  04.07.02    NACL-藤原    12/02/13  健保組合への直接請求と審査
-      *                                     支払機関請求対応
-      *                                     直接請求フラグの追加
-      *  04.07.03    NACL-藤原    13/09/20  第三者行為対応
-      *
-      *  04.08.01    NACL-藤原    17/04/10  患者単位での点数算定設定
-      *                                     （労災準拠又は健保準拠）対応
-      *                                     保険区分（自賠責用）の追加
       ************************************************************
        01  RECE10-REC.
       *ＫＥＹ
            03  RECE10-KEY.
       *医療機関ＩＤ
-               05  RECE10-HOSPNUM          PIC 9(2).
+               05  RECE10-HOSPID           PIC  X(24).
       *診療年月
                05  RECE10-SRYYM            PIC  9(06).
       *入外区分
@@ -97,12 +63,8 @@
                05  RECE10-HKNJANUM         PIC  X(08).
       *補助区分（船員保険のときのみ）
                05  RECE10-HOJOKBN-KEY      PIC  X(01).
-      *公費ＩＤ（医保：公費単独のみ、労災、自賠責：保険ＩＤ）
-               05  RECE10-KOHID-KEY        PIC  9(10).
       *適用開始年月日
                05  RECE10-TEKSTYMD         PIC  X(08).
-      *分割区分
-               05  RECE10-RECEIPT-KBN      PIC  X(10).
       *患者番号
            03  RECE10-PTNUM                PIC  X(20).
       *県内・県外区分（１：県内　２：県外　）
@@ -121,8 +83,6 @@
            03  RECE10-HENREIYM             PIC  X(06).
       *請求区分
            03  RECE10-SKYKBN               PIC  X(01).
-      *請求区分（レセ電対象）
-           03  RECE10-SKYKBN-RECEDEN       PIC  X(01).
       *訂正区分
            03  RECE10-TEISEIKBN            PIC  X(01).
       *主保険−保険番号
@@ -168,15 +128,15 @@
       *合計点数情報
            03  RECE10-TOTALTENINF         OCCURS  5.
       *合計点数
-               05  RECE10-TOTALTEN        PIC S9(08).
+               05  RECE10-TOTALTEN        PIC  9(08).
       *負担金額情報
            03  RECE10-FTNMONEYINF         OCCURS  5.
       *負担金額
-               05  RECE10-FTNMONEY        PIC S9(09).
+               05  RECE10-FTNMONEY        PIC  9(09).
       *負担金額（一部負担額）
-               05  RECE10-FTNMONEY-FTN    PIC S9(09).
+               05  RECE10-FTNMONEY-FTN    PIC  9(09).
       *負担金額（控除額）
-               05  RECE10-FTNMONEY-KOJ    PIC S9(09).
+               05  RECE10-FTNMONEY-KOJ    PIC  9(09).
       *
       *食事療養費情報
            03  RECE10-SHOKUJIINF          OCCURS  5.
@@ -204,12 +164,12 @@
                    07  RECE10-ETC-JNISSU   PIC  9(02)   OCCURS  4.
       *記載外公費−合計点数
                05  RECE10-ETC-TOTALTENINF.
-                   07  RECE10-ETC-TOTALTEN PIC S9(08)   OCCURS  4.
+                   07  RECE10-ETC-TOTALTEN PIC  9(08)   OCCURS  4.
       *記載外公費−負担金額
                05  RECE10-ETC-FTNMONEYINF               OCCURS  4.
-                   07  RECE10-ETC-FTNMONEY     PIC S9(09).
-                   07  RECE10-ETC-FTNMONEY-FTN PIC S9(09).
-                   07  RECE10-ETC-FTNMONEY-KOJ PIC S9(09).
+                   07  RECE10-ETC-FTNMONEY     PIC  9(09).
+                   07  RECE10-ETC-FTNMONEY-FTN PIC  9(09).
+                   07  RECE10-ETC-FTNMONEY-KOJ PIC  9(09).
       *記載外公費−薬剤一部負担金情報
                05  RECE10-ETC-YKZFTNINF.
                    07  RECE10-ETC-YKZFTN   PIC  9(05)   OCCURS  4.
@@ -222,92 +182,21 @@
                                                PIC  9(09).
       *標準負担額
                    07  RECE10-ETC-SHOKUJIFTN   PIC  9(09).
-      *
-      *請求額情報（医療費）
-           03  RECE10-SKYIRYO-INF.
-      *実日数
-               05  RECE10-SKYIRYO-NISSU    PIC 9(02).
-      *請求点
-               05  RECE10-SKYIRYO-TOTALTEN PIC S9(08).
-      *患者負担
-               05  RECE10-SKYIRYO-ICHIBUFTN
-                                           PIC S9(09).
-      *保険者負担
-               05  RECE10-SKYIRYO-HOKENJA  PIC S9(09).
-      *公費負担
-               05  RECE10-SKYIRYO-KOHFTN   PIC S9(09).
-      *
-      *請求額情報（食事）
-           03  RECE10-SKYSKJ-INF.
-      *回数
-               05  RECE10-SKYSKJ-KAISU     PIC 9(02).
-      *請求円
-               05  RECE10-SKYSKJ-RYOYOHI   PIC 9(09).
-      *患者負担
-               05  RECE10-SKYSKJ-ICHIBUFTN PIC 9(09).
-      *保険者負担
-               05  RECE10-SKYSKJ-HOKENJA   PIC 9(09).
-      *公費負担
-               05  RECE10-SKYSKJ-KOHFTN    PIC 9(09).
-      *保険組合せ情報
-           03  RECE10-HKNCOMBI-INF.
-               05  RECE10-HKNCOMBI         PIC 9(04)   OCCURS 10.
-      *特記事項
-           03  RECE10-TOKKIINF.
-               05  RECE10-TOKKI            PIC X(02)   OCCURS  5.
-      *特記事項略称
-           03  RECE10-TOKKINMINF.
-               05  RECE10-TOKKINM          PIC X(12)   OCCURS  5.
-      *労災情報
-           03  RECE10-RSIINF.
-      *保険区分（１：短期、２：傷病、３：アフターケア、４：公務災害
-      *          ５：自賠責（労災準拠）、６：自賠責（健保準拠））
-               05  RECE10-HKNKBN           PIC X(01).
-      *様式区分（４：新様式、５：従来様式、６：第三者行為）
-               05  RECE10-RECEKBN          PIC X(01).
-      *労災初回請求分フラグ（１：初回請求分）
-               05  RECE10-SYOKAIFLG        PIC X(01).
-      *労働基準監督署コード
-               05  RECE10-SYOCD            PIC X(05).
-      *患者交付番号
-               05  RECE10-KOFUNUM          PIC X(14).
-      *災害区分（１：業務、２：通勤）
-               05  RECE10-SAIGAIKBN        PIC X(01).
-      *労災コメント
-               05  RECE10-COMMENT          PIC X(200).
-      *フラグ
-           03  RECE10-FLGINF.
-               05  RECE10-FLG              PIC 9(01)   OCCURS  5.
-      *データエリア
-           03  RECE10-RESERVE-AREA         PIC X(50).
-      *返戻指示フラグ
-           03  RECE10-HENREI-SIJI-FLG      PIC 9(01).
-      *直接請求フラグ
-           03  RECE10-DIRECT-FLG           PIC X(01).
-      *保険区分（５：自賠責（労災準拠）、６：自賠責（健保準拠））
-           03  RECE10-HKNKBN-RSI           PIC X(01).
       *(総括表用)
       *主保険−保険番号
-           03  RECE10-HKNNUM-S             PIC X(03).
+           03  RECE10-HKNNUM-S            PIC  X(03).
       *保険者番号 
-           03  RECE10-HKNJANUM-S           PIC X(08).
+           03  RECE10-HKNJANUM-S          PIC  X(08).
       *登録年月日
-           03  RECE10-CREYMD               PIC X(08).
-      *登録時間
-           03  RECE10-CREHMS               PIC X(06).
+           03  RECE10-CREYMD              PIC  X(08).
       *更新年月日
-           03  RECE10-UPDYMD               PIC X(08).
-      *更新時間
-           03  RECE10-UPDHMS               PIC X(06).
-      *
+           03  RECE10-UPDYMD              PIC  X(08).
       *主キー更新用項目
-           03  RECE10-UPHKNJANUM           PIC X(10).
+           03  RECE10-UPHKNJANUM          PIC X(10).
       *保険者番号検索用項目
-           03  RECE10-XXPREFNUM            PIC X(02).
+           03  RECE10-XXPREFNUM           PIC X(02).
       *診療年月検索用項目
-           03  RECE10-XXSRYYM              PIC 9(06).
+           03  RECE10-XXSRYYM             PIC 9(06).
       *対象保険者番号検索用項目 
-           03  RECE10-XXSTHKNJANUM         PIC X(08).
-           03  RECE10-XXEDHKNJANUM         PIC X(08).
-      *審査支払機関検索用項目
-           03  RECE10-XXTEISYUTUSAKI       PIC 9(01).
+           03  RECE10-XXSTHKNJANUM        PIC X(08).
+           03  RECE10-XXEDHKNJANUM        PIC X(08).
