@@ -352,7 +352,7 @@
       *
            03  WRK-KOH-KBN         PIC X(01). 
       *
-      *    给锐肋年脱ワ〖ク
+      *    给锐事び肋年脱ワ〖ク
            03  WRK-GMN-KOHLIST-AREA.
                05  WRK-GMN-KOHLIST-MAX
                                    PIC 9(03)   OCCURS  2.
@@ -390,15 +390,15 @@
                                    PIC X(02).
                    07  WRK-NAI-BODYLIST-TPRTJYUN2
                                    PIC X(02).
-                   07  WRK-GMN-KOHLIST.
-                       09  WRK-GMN-KOHLIST-TBL OCCURS  30.
-                           11  WRK-GMN-KOHLIST-THKNNUM
+                   07  WRK-GMN-BODYLIST-KOHLIST.
+                       09  WRK-GMN-BODYLIST-KOHLIST-TBL OCCURS  30.
+                           11  WRK-GMN-BODYLIST-KOHLIST-THKNNUM
                                                PIC X(03).
-                           11  WRK-GMN-KOHLIST-TSEIDONAME
+                           11  WRK-GMN-BODYLIST-KOHLIST-TSEIDONAME
                                                PIC X(20).
-                           11  WRK-GMN-KOHLIST-TJYUN
+                           11  WRK-GMN-BODYLIST-KOHLIST-TJYUN
                                                PIC X(01).
-                       09  WRK-GMN-KOHLIST-MAX PIC 9(03).
+                       09  WRK-GMN-BODYLIST-KOHLIST-MAX PIC 9(03).
       *
            03  WRK-GRP-INDEX       PIC 9(02).
            03  WRK-INDEX           PIC 9(02).
