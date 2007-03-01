@@ -582,9 +582,13 @@
       *
       *    老人保険
            IF      RECE10-RJNHKNNUM    NOT =   SPACE
-               MOVE    RECE10-RJNHKNID     TO  WRK-KOHID
-               PERFORM 900-PTKOH-READ-KOH-SEC
-      *         PERFORM 900-PTKOH-READ-SEC
+               IF      RECE10-RJNHKNID     NOT =   ZERO
+                   MOVE    RECE10-RJNHKNID     TO  WRK-KOHID
+                   PERFORM 900-PTKOH-READ-KOH-SEC
+               ELSE
+                   MOVE    RECE10-RJNHKNNUM    TO  WRK-KOHNUM
+                   PERFORM 900-PTKOH-READ-SEC
+               END-IF
                IF      FLG-PTKOH           =   ZERO
                    MOVE    PTKOH-FTNJANUM      TO  HCM37-RJNFTNJANUM
                    MOVE    PTKOH-JKYSNUM       TO  HCM37-RJNJKYSNUM
@@ -597,8 +601,13 @@
            PERFORM VARYING   IDX    FROM    1   BY   1
                    UNTIL    (IDX    >       4)
                    OR       (RECE10-KOHNUM(IDX) =   SPACE)
-               MOVE    RECE10-KOHID (IDX)       TO  WRK-KOHID
-               PERFORM 900-PTKOH-READ-KOH-SEC
+               IF      RECE10-KOHID (IDX)   NOT =   ZERO
+                   MOVE    RECE10-KOHID (IDX)       TO  WRK-KOHID
+                   PERFORM 900-PTKOH-READ-KOH-SEC
+               ELSE
+                   MOVE    RECE10-KOHNUM (IDX)      TO  WRK-KOHNUM
+                   PERFORM 900-PTKOH-READ-SEC
+               END-IF
                IF      FLG-PTKOH           =   ZERO
       *        生保のとき月代わり受給者番号マスタより受給者番号をセット 
                    IF    ( PTKOH-KOHNUM    =   "012" )
