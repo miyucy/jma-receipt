@@ -365,9 +365,9 @@
                                    PIC X(20).
                            11  WRK-GMN-KOHLIST-TJYUN
                                    PIC X(01).
-               03  WRK-GMN-KOHLIST-TABLE-R
+               05  WRK-GMN-KOHLIST-TABLE-R
                                    REDEFINES  WRK-GMN-KOHLIST-TABLE.
-                   05  WRK-GMN-KOHLIST-TBL-R  OCCURS  60.
+                   07  WRK-GMN-KOHLIST-TBL-R  OCCURS  60.
                        09  WRK-GMN-KOHLIST-THKNNUM-R
                                    PIC X(03).
                        09  WRK-GMN-KOHLIST-TSEIDONAME-R
