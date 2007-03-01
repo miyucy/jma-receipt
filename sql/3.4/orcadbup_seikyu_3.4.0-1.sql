@@ -41,9 +41,4 @@ alter table tbl_seikyu
 alter table tbl_seikyu
    alter KOHID4 set default 0;
 
-update tbl_seikyu set HKNID = 0;
-update tbl_seikyu set RJNHKNID = 0;
-update tbl_seikyu set KOHID1 = 0;
-update tbl_seikyu set KOHID2 = 0;
-update tbl_seikyu set KOHID3 = 0;
-update tbl_seikyu set KOHID4 = 0;
+update tbl_seikyu set HKNID = 0,RJNHKNID = 0,KOHID1 = 0,KOHID2 = 0,KOHID3 = 0,KOHID4 = 0;
