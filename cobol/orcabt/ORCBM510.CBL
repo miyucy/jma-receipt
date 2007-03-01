@@ -37,6 +37,8 @@
       *  01.01.06     NACL-森脇    05/05/12  公費単独の場合条件変更
       *  01.01.07     NACL-森脇    06/06/16  症状詳記区分追加monfunc対応
       *  03.03.01     NACL-森脇    06/10/18  老人三割対応
+      *
+      *  03.04.01    NACL-藤原    07/02/06  月途中の受給者番号変更に対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -116,6 +118,7 @@
       *         05  WRK-MCP-BLOCKS      PIC S9(9)   BINARY.
       *         05  WRK-MCP-RNAME       PIC S9(9)   BINARY.
       *         05  WRK-MCP-PNAME       PIC S9(9)   BINARY.
+           03  WRK-KOHID               PIC 9(10).
            03  WRK-KOHNUM              PIC X(03).
       *
            03  WRK-SYMD                PIC 9(08).
@@ -579,7 +582,7 @@
       *
       *    老人保険
            IF      RECE10-RJNHKNNUM    NOT =   SPACE
-               MOVE    RECE10-RJNHKNNUM    TO  WRK-KOHNUM
+               MOVE    RECE10-RJNHKNID     TO  WRK-KOHID
                PERFORM 900-PTKOH-READ-KOH-SEC
       *         PERFORM 900-PTKOH-READ-SEC
                IF      FLG-PTKOH           =   ZERO
@@ -594,21 +597,43 @@
            PERFORM VARYING   IDX    FROM    1   BY   1
                    UNTIL    (IDX    >       4)
                    OR       (RECE10-KOHNUM(IDX) =   SPACE)
-               MOVE    RECE10-KOHNUM(IDX)   TO  WRK-KOHNUM
-      *         IF      RECE10-TEKSTYMD      NOT = ZERO
-      *             PERFORM 900-PTKOH-READ-SEC
-      *         ELSE
-                   PERFORM 900-PTKOH-READ-KOH-SEC
-      *         END-IF
+               MOVE    RECE10-KOHID (IDX)       TO  WRK-KOHID
+               PERFORM 900-PTKOH-READ-KOH-SEC
                IF      FLG-PTKOH           =   ZERO
       *        生保のとき月代わり受給者番号マスタより受給者番号をセット 
                    IF    ( PTKOH-KOHNUM    =   "012" )
+                       INITIALIZE                  MONTHLYNUM-REC
+                       MOVE    RECE10-HOSPID   TO  MONTHLYNUM-HOSPID
+                       MOVE    RECE10-PTID     TO  MONTHLYNUM-PTID
+                       MOVE    PTKOH-KOHID     TO  MONTHLYNUM-KOHID
+                       MOVE    LNK-PRTKANRI-SRYYM
+                                               TO  MONTHLYNUM-SRYYM
+                       MOVE    RECE10-NYUGAIKBN
+                                               TO  MONTHLYNUM-NYUGAIKBN
+                       MOVE    MONTHLYNUM-REC  TO  MCPDATA-REC
                        PERFORM 910-MONTHLYNUM-READ-SEC
                        IF      FLG-MONTHLYNUM  =   ZERO
                            MOVE    MONTHLYNUM-JKYSNUM
                                                    TO  HCM37-KOHJKYSNUM
                        ELSE
-                           MOVE    PTKOH-JKYSNUM   TO  HCM37-KOHJKYSNUM
+                           INITIALIZE                  MONTHLYNUM-REC
+                           MOVE    RECE10-HOSPID   TO  MONTHLYNUM-HOSPID
+                           MOVE    RECE10-PTID     TO  MONTHLYNUM-PTID
+                           MOVE    PTKOH-KOHID     TO  MONTHLYNUM-KOHID
+                           MOVE    LNK-PRTKANRI-SRYYM
+                                                   TO  MONTHLYNUM-SRYYM
+                           MOVE    RECE10-NYUGAIKBN
+                                                   TO
+                                                   MONTHLYNUM-NYUGAIKBN
+                           MOVE    MONTHLYNUM-REC  TO  MCPDATA-REC
+                           PERFORM 910-MONTHLYNUM-READ-SEC
+                           IF      FLG-MONTHLYNUM  =   ZERO
+                               MOVE    MONTHLYNUM-JKYSNUM
+                                                   TO  HCM37-KOHJKYSNUM
+                           ELSE
+                               MOVE    PTKOH-JKYSNUM
+                                                   TO  HCM37-KOHJKYSNUM
+                           END-IF
                        END-IF
                    ELSE
                        MOVE    PTKOH-JKYSNUM   TO  HCM37-KOHJKYSNUM
@@ -1118,40 +1143,26 @@
            INITIALIZE                  PTKOH-REC
            MOVE    SYS-1001-HOSPID TO  PTKOH-HOSPID
            MOVE    RECE10-PTID     TO  PTKOH-PTID
-           MOVE    WRK-KOHNUM      TO  PTKOH-KOHNUM
+           MOVE    WRK-KOHID       TO  PTKOH-KOHID
            MOVE    PTKOH-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
            MOVE    "tbl_ptkohinf"  TO  MCP-TABLE
-           MOVE    "key4"          TO  MCP-PATHNAME
+           MOVE    "key"           TO  MCP-PATHNAME
            CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_ptkohinf"  TO  MCP-TABLE
-               MOVE    "key4"          TO  MCP-PATHNAME
+               MOVE    "key"           TO  MCP-PATHNAME
                PERFORM 900-PTKOH-FETCH-SEC
            ELSE
                INITIALIZE                  PTKOH-REC
                MOVE    1               TO  FLG-PTKOH
            END-IF
       *
-           MOVE    ZERO            TO  FLG-OK
-           PERFORM UNTIL   ( FLG-PTKOH     =   1 )
-                   OR      ( FLG-OK        =   1 )
-               IF       PTKOH-TEKSTYMD(1:6)    <=  RECE10-SRYYM 
-                    AND    RECE10-SRYYM        <=  PTKOH-TEKEDYMD(1:6) 
-                    AND    PTKOH-SAKJOKBN  NOT =   "1" 
-                    MOVE    1              TO  FLG-OK 
-               ELSE
-                   MOVE    "tbl_ptkohinf"  TO  MCP-TABLE
-                   MOVE    "key4"          TO  MCP-PATHNAME
-                   PERFORM 900-PTKOH-FETCH-SEC
-               END-IF
-           END-PERFORM
-      *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
            MOVE    "tbl_ptkohinf"  TO  MCP-TABLE
-           MOVE    "key4"          TO  MCP-PATHNAME
+           MOVE    "key"           TO  MCP-PATHNAME
            CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
@@ -1188,26 +1199,16 @@
       *****************************************************************
        910-MONTHLYNUM-READ-SEC     SECTION.
       *
-           INITIALIZE                  MONTHLYNUM-REC
-           MOVE    RECE10-HOSPID   TO  MONTHLYNUM-HOSPID
-           MOVE    RECE10-PTID     TO  MONTHLYNUM-PTID
-           MOVE    "012"           TO  MONTHLYNUM-KOHNUM
-      *----(01.01.03)--UPD-START---
-           MOVE    LNK-PRTKANRI-SRYYM  TO  MONTHLYNUM-SRYYM
-      *----(01.01.03)--UPD-END-----
-           MOVE    RECE10-NYUGAIKBN    TO  MONTHLYNUM-NYUGAIKBN
-           MOVE    MONTHLYNUM-REC      TO  MCPDATA-REC
-      *
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_monthlynum"    TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    "key4"              TO  MCP-PATHNAME
            CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
                MOVE    "tbl_monthlynum"    TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
+               MOVE    "key4"              TO  MCP-PATHNAME
                CALL    "MONFUNC"           USING
                                            MCPAREA
                                            MCPDATA-REC
@@ -1223,7 +1224,7 @@
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "tbl_monthlynum"    TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    "key4"              TO  MCP-PATHNAME
            CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC

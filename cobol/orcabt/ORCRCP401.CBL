@@ -66,6 +66,8 @@
       *  03.02.03    NACL-Æ£¸¶    06/09/07  Ê¡²¬ÃÏÊý¸øÈñÂÐ±þ
       *
       *  03.04.01    NACL-Æ£¸¶    06/11/01  ¾È²ñµ¡Ç½Ï¢·ÈÂÐ±þ
+      *  03.04.02    NACL-Æ£¸¶    07/02/27  ÀÁµá´ÉÍý¤ØÊÝ¸±£É£Ä¡¢
+      *                                     Ï·¿ÍÊÝ¸±£É£Ä¡¢¸øÈñ£É£Ä¤ÎÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -6667,7 +6669,9 @@
                MOVE    RECE62-PTNUM        TO  RECE10-PTNUM
                MOVE    RECE62-HKNNUM       TO  RECE10-HKNNUM
                                                RECE10-HKNNUM-S
+               MOVE    RECE62-HKNID        TO  RECE10-HKNID
                MOVE    RECE62-RJNHKNNUM    TO  RECE10-RJNHKNNUM
+               MOVE    RECE62-RJNHKNID     TO  RECE10-RJNHKNID
                MOVE    RECE62-HONKZKKBN    TO  RECE10-HONKZKKBN
                MOVE    RECE62-HOJOKBN      TO  RECE10-HOJOKBN
                MOVE    RECE62-CONTKBN      TO  RECE10-CONTKBN
@@ -6680,6 +6684,8 @@
                        UNTIL   IDX >       4
                    MOVE    RECE62-KOHNUM (IDX) TO
                                        RECE10-KOHNUM (IDX)
+                   MOVE    RECE62-KOHID  (IDX) TO
+                                       RECE10-KOHID  (IDX)
                END-PERFORM
                MOVE    RECE62-HKNNUM   TO  RECE10-HKNNUM-S
                IF      RECE62-HKNJANUM-KEY =   SPACE
