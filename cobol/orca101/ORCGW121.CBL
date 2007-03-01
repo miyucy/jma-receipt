@@ -4257,12 +4257,9 @@
                END-IF
                MOVE    SPA-NAI-BODYLIST-TGRP2-NO (IDX)
                                        TO  W121-BODYLIST-TGRP2  (IDX)
-               IF    ( SPA-NAI-BODYLIST-TPRTJYUN1 (IDX) )
-                                   NOT =   SPACE
-               OR    ( SPA-NAI-BODYLIST-TPRTJYUN2 (IDX) )
-                                   NOT =   SPACE     
-               OR    ( SPA-GMN-KOHLIST-MAX (IDX)
-                                       >   ZERO         )
+               IF    ( SPA-NAI-BODYLIST-TPRTJYUN1 (IDX) NOT =   SPACE )
+               OR    ( SPA-NAI-BODYLIST-TPRTJYUN2 (IDX) NOT =   SPACE )
+               OR    ( SPA-GMN-KOHLIST-MAX (IDX)            >   ZERO  )
                    MOVE    "¡û"        TO  W121-BODYLIST-TSETTEI(IDX)
                END-IF
       *
