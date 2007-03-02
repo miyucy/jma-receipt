@@ -1103,6 +1103,7 @@
       *
       *    包括まとめ入力は以下対象外
            IF      SPA-HKNCOMBINUM     =   "9999"
+               OR (WRK-COM-HKNCOMBI (IDX-Z) =   "9999" )
                GO      TO      100114-SYUGISYORI-CHK-EXT
            END-IF
       *
@@ -1751,7 +1752,6 @@
                GO      TO      1002-KASAN-SET-EXT
            END-IF
       *
-      *
       *    時間自動加算　存在チェック
            MOVE    ZERO                TO  FLG-ARI
            MOVE    ZERO                TO  IDX-T
@@ -1845,10 +1845,12 @@
                    UNTIL      (IDX1        >   200     )   OR
                               (FLG-ARI                 =   1    ) OR
                               (WRK-GMN-INPUTCD (IDX1)  =   SPACE )
+             IF    WRK-COM-HKNCOMBI (IDX1) NOT =   "9999"
                IF       WRK-COM-INPUTCD (IDX1) =   WRK-SRYCD
                     MOVE    IDX1           TO  IDX-T
                     MOVE    1              TO  FLG-ARI
                END-IF
+             END-IF
            END-PERFORM
            .
        1110-KASAN-CHK-EXT.
@@ -2435,6 +2437,7 @@
                    UNTIL      (IDX1        >   200     )   OR
                               (WRK-GMN-INPUTCD (IDX1)  =   SPACE ) OR
                               (WRK-ERRCD       NOT =   SPACE )
+             IF    WRK-COM-HKNCOMBI (IDX1) NOT =   "9999"
                EVALUATE    WRK-COM-INPUTCD (IDX1)
                    WHEN    "113000770"
       *            特定薬剤治療管理料が当月存在しないこと
@@ -2461,6 +2464,7 @@
                            END-IF
                        END-IF
                END-EVALUATE
+             END-IF
            END-PERFORM
            IF      WRK-ERRCD       NOT =   SPACE
                GO      TO      10011-TOKUYAKU-EXT
@@ -2649,6 +2653,9 @@
                    UNTIL      (IDX1        >   200     )   OR
                               (WRK-GMN-INPUTCD (IDX1)  =   SPACE ) OR
                               (WRK-COM-YM      NOT =   SPACE )
+             IF   (WRK-COM-HKNCOMBI (IDX1) =   "9999" )
+               CONTINUE
+             ELSE
                EVALUATE    WRK-COM-INPUTCD (IDX1)
                    WHEN    "840000038"
                        IF     (WRK-COM-ATAI1(IDX1) NOT =   SPACE ) AND
@@ -2673,6 +2680,7 @@
                            MOVE    LNK-DAY1-YMD(1:6)   TO  WRK-COM-YM
                        END-IF
                END-EVALUATE
+             END-IF
            END-PERFORM
            .
        100110-COMMNT-CHK-EXT.
@@ -3128,6 +3136,7 @@
       *
       *    包括まとめ入力は以下対象外
            IF      SPA-HKNCOMBINUM     =   "9999"
+               OR (WRK-COM-HKNCOMBI (IDX-Z) =   "9999" )
                GO      TO      10018-COMMENT-EXT
            END-IF
       *
@@ -3239,6 +3248,9 @@
                    UNTIL      (IDX         >   200     )   OR
                               (WRK-GMN-INPUTCD (IDX)   =   SPACE  AND
                                WRK-COM-INPUTCD (IDX)   =   SPACE )
+             IF   (WRK-COM-HKNCOMBI (IDX)  =   "9999" )
+               CONTINUE
+             ELSE
                IF      WRK-GMN-INPUTCD(IDX)    =   ".110"  OR
                                                    ".120"
                    MOVE    1                   TO  FLG-OK
@@ -3247,6 +3259,7 @@
                                                    "099120001"
                    MOVE    1                   TO  FLG-OK
                END-IF
+             END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
                MOVE    "0136"          TO  WRK-ERRCD
@@ -3621,6 +3634,9 @@
                    UNTIL      (IDX-Z       >   200      )   OR
                               (SPA-ERRCD           NOT =   SPACE )  OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
+             IF   (WRK-COM-HKNCOMBI (IDX-Z) =   "9999" )
+               CONTINUE
+             ELSE
       *        診察料の判定
                IF      IDX-SINSATU         =   ZERO
                    PERFORM 2001-SINSATU-CHK-SEC
@@ -3833,6 +3849,8 @@
                        MOVE    1               TO  FLG-JIKASAN
                    END-IF
                END-IF
+      *
+             END-IF
            END-PERFORM
       *
       *    診察料以外チェック
@@ -3841,8 +3859,9 @@
                               (SPA-ERRCD           NOT =   SPACE )  OR
                              ((WRK-GMN-INPUTCD (IDX-Z) =   SPACE ) AND
                               (WRK-COM-INPUTCD (IDX-Z) =   SPACE ))
-             IF      WRK-COM-SRYKBN (IDX-Z)    =   "96"
-                                               OR  "95"
+             IF     (WRK-COM-SRYKBN (IDX-Z)    =   "96"
+                                               OR  "95" )
+                OR  (WRK-COM-HKNCOMBI (IDX-Z) =   "9999" )
                 CONTINUE
              ELSE
       *         指導料・初診日チェック
@@ -4171,6 +4190,9 @@
                    UNTIL      (IDX-Z       >   200      )   OR
                               (SPA-ERRCD           NOT =   SPACE )  OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
+             IF   (WRK-COM-HKNCOMBI (IDX-Z) =   "9999" )
+               CONTINUE
+             ELSE
                MOVE    ZERO                TO  FLG-CHK
                MOVE    ZERO                TO  FLG-KEI
       *        診察で手技の時、重複チェックを行う
@@ -4205,6 +4227,7 @@
                                       (IDX-KEI         >   ZERO  )  OR
                                       (WRK-GMN-INPUTCD (IDX-Z2)
                                                        =   SPACE )
+                     IF   (WRK-COM-HKNCOMBI (IDX-Z2) NOT =   "9999" )
                        IF     (WRK-COM-SRYKBN  (IDX-Z)
                                            =   WRK-COM-SRYKBN(IDX-Z2))
                          AND  (WRK-COM-INPUTCD (IDX-Z)
@@ -4219,6 +4242,7 @@
                                                               (IDX-Z2)
                            END-IF
                        END-IF
+                     END-IF
                    END-PERFORM
       *
       *            警告
@@ -4241,6 +4265,8 @@
                        END-IF
                    END-IF
                END-IF
+      *
+             END-IF
            END-PERFORM
       *
            .

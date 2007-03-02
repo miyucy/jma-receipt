@@ -340,6 +340,7 @@ RECORD_files = \
 	C12.rec \
 	D02.rec \
 	W121.rec \
+	W32.rec \
 
 DEF_files = \
 	HC01.def \
@@ -521,6 +522,8 @@ DB_files = \
 	tbl_chk005.db \
 	tbl_rece_puth.db \
 	tbl_rece_putb.db \
+	tbl_hktsantei.db \
+	tbl_hktsrycd.db \
 
 all:   
 

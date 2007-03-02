@@ -26,7 +26,6 @@
       ************************************************************
        01  SYS-1014-REC.
            03  SYS-1014-KEY.
-               05  SYS-1014-HOSPNUM     PIC 9(2).
       *管理コード
                05  SYS-1014-KANRICD     PIC  X(04).
       *区分コード
@@ -50,7 +49,7 @@
                    07  SYS-1014-SRYKBN-KBN   PIC X(01)
                                              OCCURS   50.
       *予備
-           03  SYS-1014-YOBI            PIC  X(446).
+           03                           PIC  X(446).
       *端末ＩＤ
            03  SYS-1014-TERMID          PIC  X(16).
       *オペーレータＩＤ
@@ -61,10 +60,3 @@
            03  SYS-1014-UPYMD           PIC  X(08).
       *更新時間
            03  SYS-1014-UPHMS           PIC  X(06).
-      *主キー更新用項目
-           03  SYS-1014-UPD-KEY.
-               05  SYS-1014-UPD-HOSPNUM     PIC 9(2).
-               05  SYS-1014-UPD-KANRICD     PIC X(04).
-               05  SYS-1014-UPD-KBNCD       PIC X(08).
-               05  SYS-1014-UPD-STYUKYMD    PIC X(08).
-               05  SYS-1014-UPD-EDYUKYMD    PIC X(08).

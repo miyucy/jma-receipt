@@ -30,9 +30,9 @@
            03  SPA-GMN-TBL.
                05  SPA-GMN-TBLREC          OCCURS  400.
                    07  SPA-GMN-TBANGO      PIC 9(03).
-                   07  SPA-GMN-TMEISYO     PIC X(80).
+                   07  SPA-GMN-TMEISYO     PIC X(100).
                    07  SPA-GMN-TSURYO.
-                       09  SPA-GMN-TSURYOU      PIC X(11).
+                       09  SPA-GMN-TSURYOU      PIC X(09).
                        09  SPA-GMN-TTANI1       PIC X(01).
                        09  SPA-GMN-TTANMEI      PIC X(03).
                    07  SPA-GMN-TTENSU      PIC X(07).
@@ -41,9 +41,6 @@
                    07  SPA-GMN-TDAY-G.
                        09  SPA-GMN-TDAY    PIC X(03)
                                                    OCCURS  31.
-                   07  SPA-GMN-TSRYCD      PIC X(09).
-      *            一般名称
-                   07  SPA-GMN-GENENAME        PIC X(80).
       *
            03  SPA-NAI-G.
                05  SPA-NAI-TBL.
@@ -57,30 +54,28 @@
                        09  SPA-NAI-SRYKBN          PIC  X(02).
                        09  SPA-NAI-ZAINUM          PIC  9(08).
                        09  SPA-NAI-HKNCOMBI        PIC  9(04).
-                       09  SPA-NAI-HKNCOMBIERR     PIC  9(01).
+                       09  SPA-NAI-JIHOKBN         PIC  X(01).
                        09  SPA-NAI-ROUJIN          PIC  9(01).
                        09  SPA-NAI-JIHOKBN         PIC  X(01).
                        09  SPA-NAI-ZAITEN          PIC  9(08).
                        09  SPA-NAI-SYRCDTOTAL      PIC  9(14).
-                       09  SPA-NAI-SURYOTOTAL      PIC  9(07)V9(05).
+                       09  SPA-NAI-SURYOTOTAL      PIC  9(07)V9(03).
                        09  SPA-NAI-MEISAISU        PIC  9(07).
                        09  SPA-NAI-ZAIKAISU        PIC  9(07).
-                       09  SPA-NAI-SURYOU          PIC  9(05)V9(05).
+                       09  SPA-NAI-SURYOU          PIC  9(05)V9(03).
                        09  SPA-NAI-SYUTEN1         PIC  9(07).
                        09  SPA-NAI-SYUTEN2         PIC  9(07).
-                       09  SPA-NAI-ZAIKBN          PIC  9(03).
                        09  SPA-NAI-INPUTCHI-G.
                            11  SPA-NAI-INPUTCHI1       PIC  X(08).
                            11  SPA-NAI-INPUTCHI2       PIC  X(08).
                            11  SPA-NAI-INPUTCHI3       PIC  X(08).
                            11  SPA-NAI-INPUTCHI4       PIC  X(08).
-                           11  SPA-NAI-INPUTCHI5       PIC  X(08).
                        09  SPA-NAI-INPUTCHI-R      REDEFINES
                                                    SPA-NAI-INPUTCHI-G.
                            11  SPA-NAI-INPUTCHI        PIC  X(08)
-                                                       OCCURS  5.
+                                                       OCCURS  4.
                        09  SPA-NAI-DAY-AREA.
-                           11  SPA-NAI-DAY-TBL     OCCURS   10.
+                           11  SPA-NAI-DAY-TBL     OCCURS   4.
                                13   SPA-NAI-DAY    PIC  9(03)
                                                        OCCURS   31.
                        09  SPA-NAI-RENNUM          PIC  9(02).
@@ -94,8 +89,6 @@
                        09  SPA-NAI-JGNCNT          PIC  9(03).
       *                日上限
                        09  SPA-NAI-JGNCNT1D        PIC  9(03).
-      *                週上限
-                       09  SPA-NAI-JGNCNT1W        PIC  9(03).
       *                月上限
                        09  SPA-NAI-JGNCNTETC       PIC  9(03).
       *                エラー識別
@@ -104,10 +97,4 @@
                        09  SPA-NAI-HOUKNSKBN       PIC  9(02).
       *                内数量
                        09  SPA-NAI-TSURYO          PIC  9(05).
-      *                入院自動発生調剤料
-                       09  SPA-NAI-NYUAUTO         PIC  9(01).
-      *ver.4.7         院外処方点数
-                       09  SPA-NAI-INGAITEN        PIC  9(07).
-      *H28.5           後発品変更不可（処方）あり
-                       09  SPA-NAI-GENEFLG         PIC  X(01).
       *

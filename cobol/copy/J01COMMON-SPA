@@ -22,7 +22,6 @@
       * Maj/Min/Rev  修正者       日付      内容
       * 01.00.01     MCC-多々納   01/05/17  年齢計算追加
       * 01.00.02     MCC-多々納   02/04/25  労災追加
-      * 04.08.00     NACL-多々納  16/02/XX  一般名表示対応
       ************************************************************
       *
        01  SPA-J01KYOUTU.
@@ -77,32 +76,21 @@
                05  SPA-GMN-SRYKBN-MAE      PIC X(02).
       *
       *選択対象剤番号
+      *　診療区分
+               05  SPA-SRYKBN          PIC  X(02).
+      *　剤番号
+               05  SPA-ZAINUM          PIC  9(08).
+      *　パラメタ番号
+               05  SPA-RENNUM          PIC  9(02).
       *　老人区分
                05  SPA-ROUJIN          PIC  9(01).
-      *H28.2
-      *        後発医薬品への変更可署名
-               05  SPA-KOUHATUKA                 PIC X(01).
-      *        一般名表示
-               05  SPA-GENERICFLG                PIC X(01).
-      *
-               05  SPA-ZAINUMSEL-AREA.
-      *　診療区分
-                   07  SPA-SRYKBN          PIC  X(02).
-      *　剤番号
-                   07  SPA-ZAINUM          PIC  9(08).
-      *　パラメタ番号
-                   07  SPA-RENNUM          PIC  9(02).
       *　剤点数分
-                   07  SPA-ZAITEN          PIC  9(08).
+               05  SPA-ZAITEN          PIC  9(08).
       *  包括診療剤
-                   07  SPA-JIHOKBN          PIC  X(01).
-      *　剤区分
-                   07  SPA-ZAIKBN          PIC  9(03).
-      *H28.2       後発品変更不可あり
-                   07  SPA-GENEFUKAFLG     PIC  X(01).
+               05  SPA-JIHOKBN          PIC  X(01).
       *  回数テーブル
-                   07  SPA-SEL-DAY-G.
-                       11  SPA-SEL-DAY     PIC 9(03)
+               05  SPA-SEL-DAY-G.
+                   11  SPA-SEL-DAY     PIC 9(03)
                                                 OCCURS   31.
       *
                05  SPA-NAI-AREA.
@@ -119,7 +107,6 @@
                05  SPA-NAI-RSI-ARAE.
       *            労災用労災区分
                    07  SPA-NAI-RSI-HKNKBN        PIC X(01).
-                   07  SPA-NAI-RSI-JUNKYO        PIC X(01).
       *
       *    保険組合せ一覧画面より
            03  SPA-J021-SET.
@@ -162,7 +149,7 @@
       **********   07  SPA-J98-SRYCD           PIC X(09).
       ***********  07  SPA-J98-NAME            PIC X(60).
                    07  SPA-J98-SRYCD-G.
-                       09  SPA-J98-SRYCD       PIC X(09)  OCCURS  10.
+                       09  SPA-J98-SRYCD       PIC X(09)  OCCURS  5.
       *
                    07  SPA-J98-RC              PIC 9(04).
       *
@@ -176,7 +163,7 @@
                05  SPA-J01-SRYKA               PIC X(02).
                05  SPA-J01-SRYKAMEI            PIC X(12).
                05  SPA-GMN-SRYKA-AREA.
-                   07  SPA-GMN-SRYKA-LIST      OCCURS  100.
+                   07  SPA-GMN-SRYKA-LIST      OCCURS  41.
                        09  SPA-GMN-SRYKAL      PIC X(02).
                        09  SPA-GMN-F1L         PIC X(01).
                        09  SPA-GMN-SRYKAMEIL   PIC X(16).

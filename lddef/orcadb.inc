@@ -117,4 +117,6 @@ db	{
 	tbl_chk005;
 	tbl_rece_puth;
 	tbl_rece_putb;
+	tbl_hktsantei;
+	tbl_hktsrycd;
 };

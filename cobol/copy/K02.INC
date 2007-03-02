@@ -41,12 +41,14 @@
                 04  K02-VALUE   PIC X(14).
               03  K02-GOKEITEN.
                 04  K02-VALUE   PIC X(15).
-              03  K02-SRYKBN    OCCURS   20.
-                04  K02-VALUE   PIC X(2).
+              03  K02-SRYKBN-G    OCCURS   20.
+                04  K02-SRYKBN-STYLE   PIC X(20).
+                04  K02-SRYKBN   PIC X(2).
               03  K02-INPUTCD   OCCURS 20.
                 04  K02-VALUE   PIC X(22).
-              03  K02-MEISYO    OCCURS  20.
-                04  K02-VALUE   PIC X(80).
+              03  K02-MEISYO-G    OCCURS  20.
+                04  K02-MEISYO-STYLE   PIC X(20).
+                04  K02-MEISYO    PIC X(80).
               03  K02-SURYO-R     OCCURS  20.
                 04  K02-SURYO-STYLE   PIC X(20).
                 04  K02-SURYO   PIC X(60).

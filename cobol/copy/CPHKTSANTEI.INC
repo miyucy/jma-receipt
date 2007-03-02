@@ -35,8 +35,6 @@
                05  HKTSANTEI-SRYCD           PIC  X(09).
       *Êñ³ç»»Äê¶èÊ¬
            03  HKTSANTEI-SANTEIKBN           PIC  X(01).
-      *Êñ³çÂÐ¾Ý¸¡ºº¡ÊÇ¢¡Ë
-           03  HKTSANTEI-KENTAIKBN           PIC  X(01).
       *Ã¼Ëö£É£Ä
            03  HKTSANTEI-TERMID              PIC  X(16).
       *¥ª¥Ú¥ì¡¼¥¿£É£Ä

@@ -43,7 +43,7 @@
       *診療コード計
                05  ORCSCZAICHK-SRYCDTOTAL          PIC  9(14).
       *数量計
-               05  ORCSCZAICHK-SURYOUTOTAL         PIC  9(07)V9(05).
+               05  ORCSCZAICHK-SURYOUTOTAL         PIC  9(07)V9(03).
       *明細数
                05  ORCSCZAICHK-MEISAISU            PIC  9(07).
       *剤回数
@@ -54,17 +54,12 @@
                05  ORCSCZAICHK-MEISAI-TBL.
                    07  ORCSCZAICHK-MEISAI-OCC      OCCURS   50.
                        09  ORCSCZAICHK-SRYCD       PIC  X(09).
-                       09  ORCSCZAICHK-SRYSURYO    PIC  9(05)V9(05).
+                       09  ORCSCZAICHK-SRYSURYO    PIC  9(05)V9(03).
                        09  ORCSCZAICHK-SRYKAISU    PIC  9(03).
                        09  ORCSCZAICHK-INPUTCOMENT PIC  X(80).
                        09  ORCSCZAICHK-INPUTCHI-G.
                            11  ORCSCZAICHK-ATAI    PIC  X(08)
-                                                        OCCURS  5.
-      *                換算値数量
-                       09  ORCSCZAICHK-KANSURYO    PIC  9(05)V9(05).
-                       09  ORCSCZAICHK-INPUTKBN    PIC  X(01).
-      *                自費金額
-                       09  ORCSCZAICHK-JIHIMONEY   PIC  9(07).
+                                                        OCCURS  3.
       *出力
            03  ORCSCZAICHK-OUT-AREA.
       *    対象剤番号

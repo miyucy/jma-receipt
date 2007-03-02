@@ -52,6 +52,7 @@
       *  01.00.21    NACL-Â¿¡¹Ç¼  06/01/23  ÍÑÎÌ³ä¹ç¡¦Êñ³ç¸¡ºº¿ôÄÉ²Ã
       *  01.00.22    NACL-Â¿¡¹Ç¼  06/05/14  ¥³¥á¥ó¥ÈÆþÎÏ²èÌÌÊÑ¹¹
       *  03.04.00    NACL-Â¿¡¹Ç¼  06/11/13  ¸¡ººÀµ¼°Ì¾¾ÎÉ½¼¨ÄÉ²Ã
+      *  03.04.01    NACL-Â¿¡¹Ç¼  07/02/28  Êñ³ç¿ÇÎÅÄÉ²ÃÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2438,6 +2439,8 @@
            MOVE    ACCT-DAY-AREA        TO  SPA-NAI-DAY-AREA (IDX)
       *    Ï«ºÒ¤Ç³°Íè´ÉÍý²Ã»»¤Î¿¶ÂØ¤¨¤¢¤ê¤Î»þ¡¢¼êµ»ÎÁ£²¤¬¤¢¤ë
            MOVE    ACCT-SYUTEN2         TO  SPA-NAI-SYUTEN2 (IDX)
+      *    Êñ³ç¿ÇÎÅÊ¬
+           MOVE    ACCT-JIHOKBN         TO  SPA-NAI-JIHOKBN (IDX)
       *
       *    Ï·¿ÍÈ½Äê
            INITIALIZE                  HKNCOMBI-REC
@@ -2663,12 +2666,17 @@
            END-IF
       *
       *    Êñ³çÊ¬¤ÎÌ¾¾ÎÊÔ½¸
-           IF      ACCT-HKNCOMBI       =   "9999"
+           IF      ACCT-JIHOKBN        =   "1"
                MOVE    SPACE               TO  WRK-SRYSYUMEI2
-               STRING  WRK-SRYSYUMEI       DELIMITED  BY  SPACE
-                       "¡ÊÊñ³çÊ¬¡Ë"        DELIMITED  BY  SIZE
+               IF      WRK-SRYSYUMEI(15:)  =   SPACE
+                   MOVE    WRK-SRYSYUMEI       TO  WRK-SRYSYUMEI2
+                   MOVE    "¡ÚÊñ³ç¿ÇÎÅ¡Û"      TO  WRK-SRYSYUMEI2(15:)
+               ELSE
+                   STRING  WRK-SRYSYUMEI       DELIMITED  BY  SPACE
+                           "¡ÚÊñ³ç¿ÇÎÅ¡Û"      DELIMITED  BY  SIZE
                                        INTO    WRK-SRYSYUMEI2
-               END-STRING
+                   END-STRING
+               END-IF
                MOVE    WRK-SRYSYUMEI2      TO  WRK-SRYSYUMEI
            END-IF
       *
@@ -2679,6 +2687,11 @@
                MOVE    "."             TO  SPA-GMN-TMEISYO (IDG)(1:1)
                MOVE    SRY-SRYSYUKBN   TO  SPA-GMN-TMEISYO (IDG)(2:3)
                MOVE    WRK-SRYSYUMEI   TO  SPA-GMN-TMEISYO (IDG)(7:)
+           END-IF
+      *    Êñ³çÊ¬¤ÏÅÀ¿ô¤Ë¡ö¤òÊÔ½¸
+           IF     (ACCT-HKNCOMBI       =   "9999" )
+              OR  (ACCT-JIHOKBN        =   "1"    )
+               MOVE    ALL "*"             TO  SPA-GMN-TTENSU (IDG)
            END-IF
       *
            MOVE    SRY-SRYSYUKBN       TO  SPA-NAI-SRYSYU (IDG)
@@ -5459,6 +5472,8 @@
            IF      FLG-SRYACCT          =   ZERO
       *        ¼«Èñ¤Î»þÂÐ¾Ý³°
                IF      ACCT-SRYKBN          =   "95"  OR  "96"
+      *                Êñ³ç¿ÇÎÅÂÐ¾Ý³°
+                  OR  (ACCT-JIHOKBN        =   "1"   )
                    CONTINUE
                ELSE
                    MOVE    1                TO  IDX
@@ -5879,7 +5894,7 @@
                PERFORM 41016131-SYUNOU-UPDSYORI-SEC
            END-PERFORM
            .
-       4101612-ACCT-UPDSYORI-EXT.
+       4101613-SYUNOU-UPD-EXT.
            EXIT.
       *
       *****************************************************************
@@ -7342,6 +7357,9 @@
                                        TO  SPA-ZAINUM
       *    »ÞÈÖ
            MOVE    SPA-NAI-RENNUM(IDX) TO  SPA-RENNUM
+      *    Êñ³ç¿ÇÎÅ¶èÊ¬
+           MOVE    SPA-NAI-JIHOKBN (IDX)   TO  SPA-JIHOKBN
+      *
       *    Ï·¿Í¶èÊ¬
       **** MOVE    SPA-NAI-ROUJIN(IDX)
       ****************                 TO  SPA-ROUJIN
@@ -10369,6 +10387,10 @@
       *
       *    ¼«Èñ¤Î»þÂÐ¾Ý³°
            IF      ACCT-SRYKBN         =   "95"  OR  "96"
+               GO      TO      4902-SANTEI-KOUSIN-EXT
+           END-IF
+      *    Êñ³ç¿ÇÎÅÂÐ¾Ý³°
+           IF      ACCT-JIHOKBN        =   "1"
                GO      TO      4902-SANTEI-KOUSIN-EXT
            END-IF
       *
