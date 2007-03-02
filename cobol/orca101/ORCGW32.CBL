@@ -1071,7 +1071,7 @@
            END-PERFORM
            IF      FLG-CHK             =   ZERO
                MOVE    "0008"              TO  SPA-ERRCD
-               MOVE    5                   TO  SPA-GMN-CUR
+               MOVE    6                   TO  SPA-GMN-CUR
            END-IF
            .
        4100-SANTEIHOU-CHK-EXT.
@@ -1094,7 +1094,7 @@
            END-PERFORM
            IF      FLG-CHK             =   ZERO
                MOVE    "0009"              TO  SPA-ERRCD
-               MOVE    6                   TO  SPA-GMN-CUR
+               MOVE    7                   TO  SPA-GMN-CUR
            END-IF
            .
        4112-SANTEIKBN-CHK-EXT.
@@ -1117,7 +1117,7 @@
            END-PERFORM
            IF      FLG-CHK             =   ZERO
                MOVE    "0010"              TO  SPA-ERRCD
-               MOVE    7                   TO  SPA-GMN-CUR
+               MOVE    8                   TO  SPA-GMN-CUR
            END-IF
            .
        4113-NYUGAIKBN-CHK-EXT.
@@ -1140,7 +1140,7 @@
            END-PERFORM
            IF      FLG-CHK             =   ZERO
                MOVE    "0011"              TO  SPA-ERRCD
-               MOVE    7                   TO  SPA-GMN-CUR
+               MOVE    9                   TO  SPA-GMN-CUR
            END-IF
            .
        4114-HKNCOMBIKBN-CHK-EXT.
@@ -1167,7 +1167,8 @@
                END-PERFORM
                IF      FLG-CHK             =   ZERO
                    MOVE    "0012"              TO  SPA-ERRCD
-                   MOVE    20                  TO  SPA-GMN-CUR
+                   COMPUTE SPA-GMN-CUR         =   IDX
+                                               +   20
                END-IF
            END-PERFORM
            .
