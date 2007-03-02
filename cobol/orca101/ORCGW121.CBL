@@ -3942,6 +3942,7 @@
            END-IF
       *
            MOVE    ZERO            TO  WRK-SYUBETU-SRT1
+           MOVE    SPACE           TO  WRK-GRP1-NO
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       SPA-GMN-BODYLIST-MAX
                    OR      SPA-ERRCD   NOT =   SPACE
@@ -3951,9 +3952,11 @@
                MOVE    SPA-NAI-STYUKYMD    TO  RECE-PUTB-STYUKYMD
                MOVE    SPA-NAI-EDYUKYMD    TO  RECE-PUTB-EDYUKYMD
                IF      SPA-NAI-BODYLIST-TGRP1-NO (IDX)
-                                           >   ZERO
+                                       NOT =   "000"
                    IF      SPA-NAI-BODYLIST-TGRP1-NO (IDX)
-                                           NOT =   WRK-SYUBETU-SRT1
+                                           NOT =   WRK-GRP1-NO
+                       MOVE    SPA-NAI-BODYLIST-TGRP1-NO (IDX)
+                                                   TO  WRK-GRP1-NO
                        MOVE    IDX                 TO  WRK-SYUBETU-SRT1
                    END-IF
                    MOVE    WRK-SYUBETU-SRT1    TO
