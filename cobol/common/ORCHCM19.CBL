@@ -2799,11 +2799,11 @@
                    END-IF
                END-IF
       *        ÅêÌô¤ÈºßÂð¤Î¤ßÂÐ¾Ý¤È¤¹¤ë
-               IF      WKSRY-SRYKBN        =   "21"
+               IF     (WKSRY-SRYKBN        =   "21"
                                            OR  "22"
                                            OR  "23"
                                            OR  "14"
-                                           OR  "98"
+                                           OR  "98"  )
       *---(03.04.02) LINE ADD START -----------------------------------
       *           Êñ³çÊÝ¸±Ê¬¤ÏÂÐ¾Ý³°
                   AND (WRK-HKNCOMBINUM NOT =   "9999" )
