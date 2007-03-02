@@ -697,6 +697,14 @@
                END-IF
            END-IF
       *
+      **   Äê´üÀÁµáº¹³Û½é´üÉ½¼¨
+           IF    ( SYS-5000-TEIKISAGAKUACTKBN  =   "1" )
+               MOVE    CONST-EDIT-TEIKI    TO  SPA-NAI-I04-RSITEIKIFLG
+               PERFORM 31001-TEIKISAGAKU-HEN-SEC
+           ELSE
+               MOVE    CONST-EDIT-RSIJBI   TO  SPA-NAI-I04-RSITEIKIFLG
+           END-IF
+      *
            PERFORM 3100-SEIKYU-DAT-INIT-SEC
       *
       *    Ì¤¼ý¥Ç¡¼¥¿¼èÆÀ½èÍý
@@ -839,22 +847,6 @@
       *
            MOVE    1                   TO  SPA-NAI-I04-SAIKEISANFLG
       *
-           PERFORM VARYING IDX-SYU     FROM    1   BY  1
-                   UNTIL ( IDX-SYU     >   SPA-I0-SYUNOU-CNT )
-      *
-               IF    ( SPA-I0-SYUNOU-TTLDAT-FLG (IDX-SYU)
-                                   =   ZERO )
-                   MOVE    SPA-I0-SYUNOU-DAT (IDX-SYU)
-                                   TO  SYUNOU-REC
-      *
-                   IF    ( SYU-SYUHKNNUM   =   "971"   OR  "973" )
-                       MOVE    1           TO  SPA-NAI-I04-RSIJBIARIFLG
-                   END-IF
-      *
-               END-IF
-      *
-           END-PERFORM
-      *
            INITIALIZE                  SYSKANRI-REC
            MOVE    "5010"              TO  SYS-KANRICD
            MOVE    "*"                 TO  SYS-KBNCD
@@ -871,14 +863,6 @@
            WHEN    OTHER
                MOVE    "3" TO  SPA-NAI-I04-SAKKBN-MAX
            END-EVALUATE
-      *
-           PERFORM 31001-TEIKISAGAKU-HEN-SEC
-      *
-           IF    ( SPA-NAI-I04-RSIJBIARIFLG    =   1 )
-               MOVE    CONST-EDIT-RSIJBI   TO  SPA-NAI-I04-RSITEIKIFLG
-           ELSE
-               MOVE    CONST-EDIT-TEIKI    TO  SPA-NAI-I04-RSITEIKIFLG
-           END-IF
       *
             .
        3100-SYOKI-SET-EXT.

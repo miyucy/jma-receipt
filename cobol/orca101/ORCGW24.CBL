@@ -612,6 +612,9 @@
       *    ＡＤＬ入力区分コンボ
            PERFORM 310-ADLINPUTLST-SET-SEC
       *
+      *    定期請求差額初期表示区分コンボ
+           PERFORM 310-TEIKISAGAKUACTLST-SET-SEC
+      *
            .
        310-CMB-SYOKI-EXT.
            EXIT.
@@ -961,6 +964,24 @@
        310-ADLINPUTLST-SET-EXT.
            EXIT.
       *****************************************************************
+      *    定期請求差額初期表示区分コンボ
+      *****************************************************************
+       310-TEIKISAGAKUACTLST-SET-SEC    SECTION.
+      *
+           MOVE    2               TO  SPA-GMN-W24-TEIKISAGAKUACT-MAX
+      *
+           MOVE    "0"             TO  SPA-GMN-W24-TEIKISAGAKUACTL   (1)
+           MOVE    "初期表示しない"
+                                   TO  SPA-GMN-W24-TEIKISAGAKUACTMEIL(1)
+      *
+           MOVE    "1"             TO  SPA-GMN-W24-TEIKISAGAKUACTL   (2)
+           MOVE    "初期表示する"
+                                   TO  SPA-GMN-W24-TEIKISAGAKUACTMEIL(2)
+      *
+           .
+       310-TEIKISAGAKUACTLST-SET-EXT.
+           EXIT.
+      *****************************************************************
       *    入力情報編集処理
       *****************************************************************
        310-INPUT-AREA-EDIT-SEC     SECTION.
@@ -1085,6 +1106,16 @@
            ELSE
                MOVE    SPA-GMN-W24-ADLINPUTLST (2)
                                        TO  SPA-GMN-W24-ADLINPUT-G
+           END-IF
+      *
+      *    定期請求差額初期表示
+           MOVE    SYS-5000-TEIKISAGAKUACTKBN  TO  WRK-CMB-CD
+           PERFORM 4200-TEIKISAGAKUACTLST-CHK-SEC
+           IF    ( WRK-CMB-ITM     NOT =   SPACE )
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-W24-TEIKISAGAKUACT-G
+           ELSE
+               MOVE    SPA-GMN-W24-TEIKISAGAKUACTLST (1)
+                                       TO  SPA-GMN-W24-TEIKISAGAKUACT-G
            END-IF
       *
       *    入院料加算情報
@@ -1572,6 +1603,9 @@
       *    ＡＤＬ区分
            MOVE    W24-ADLINPUT        TO  SPA-GMN-W24-ADLINPUT-G
       *
+      *    定期請求差額初期表示区分
+           MOVE    W24-TEIKISAGAKUACT  TO  SPA-GMN-W24-TEIKISAGAKUACT-G
+      *
            .
       *
        4101-GMN-SPA-SET-EXT.
@@ -1733,6 +1767,12 @@
       *
       *    ＡＤＬ入力区分チェック処理
            PERFORM 4100-ADLINPUT-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
+      *    定期請求差額初期表示区分チェック処理
+           PERFORM 4100-TEIKISAGAKUACT-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
@@ -2167,6 +2207,10 @@
       *    ＡＤＬ入力区分
            MOVE    SPA-GMN-W24-ADLINPUT
                                    TO  SYS-5000-ADLINPUTKBN
+      *
+      *    定期請求差額初期表示区分
+           MOVE    SPA-GMN-W24-TEIKISAGAKUACT
+                                   TO  SYS-5000-TEIKISAGAKUACTKBN
       *
       *    減算情報
            IF    ( SPA-W01-EDYUKYMD    >=  CONST-H180401 )
@@ -2941,6 +2985,25 @@
        4100-ADLINPUT-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    定期請求差額初期表示区分チェック処理
+      *****************************************************************
+       4100-TEIKISAGAKUACT-CHK-SEC          SECTION.
+      *
+           MOVE    SPA-GMN-W24-TEIKISAGAKUACT
+                                       TO  WRK-CMB-CD
+           PERFORM 4200-TEIKISAGAKUACTLST-CHK-SEC
+           IF    ( WRK-CMB-ITM         =   SPACE )
+               MOVE    SPA-GMN-W24-TEIKISAGAKUACTLST (1)
+                                       TO  SPA-GMN-W24-TEIKISAGAKUACT-G
+           ELSE
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-W24-TEIKISAGAKUACT-G
+           END-IF
+      *
+           .
+      *
+       4100-TEIKISAGAKUACT-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    入院時食事療養コンボチェック処理
       *****************************************************************
        4200-SKJRYOYOLST-CHK-SEC    SECTION.
@@ -3367,6 +3430,29 @@
        4200-ADLINPUTLST-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    定期請求差額初期表示区分コンボチェック処理
+      *****************************************************************
+       4200-TEIKISAGAKUACTLST-CHK-SEC   SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM-G
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-W24-TEIKISAGAKUACT-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-W24-TEIKISAGAKUACTL (IDX-CMB)
+                                       =   WRK-CMB-CD )
+                   MOVE    SPA-GMN-W24-TEIKISAGAKUACTLST (IDX-CMB)
+                                       TO  WRK-CMB-ITM
+                   MOVE    IDX-CMB     TO  WRK-CMB-IDX
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       4200-TEIKISAGAKUACTLST-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    入力情報領域初期化処理
       *****************************************************************
        4201-INPUT-AREA-INIT-SEC        SECTION.
@@ -3464,6 +3550,8 @@
                                    TO  SPA-GMN-W24-TEISU-G
            MOVE    SPA-GMN-W24-ADLINPUTLST (2)
                                    TO  SPA-GMN-W24-ADLINPUT-G
+           MOVE    SPA-GMN-W24-TEIKISAGAKUACTLST (1)
+                                   TO  SPA-GMN-W24-TEIKISAGAKUACT-G
       *
       *
       *    入院加算名称編集処理
@@ -4040,6 +4128,21 @@
       *
            END-PERFORM
       *
+      *    定期請求差額初期表示区分
+           MOVE    SPA-GMN-W24-TEIKISAGAKUACT-G
+                                       TO  W24-TEIKISAGAKUACT
+           MOVE    SPA-GMN-W24-TEIKISAGAKUACT-MAX
+                                       TO  W24-TEIKISAGAKUACT-CNT
+      *
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   W24-TEIKISAGAKUACT-CNT )
+      *
+      *
+               MOVE    SPA-GMN-W24-TEIKISAGAKUACTLST (IDX0)
+                                       TO  W24-TEIKISAGAKUACT-ITM (IDX0)
+      *
+           END-PERFORM
+      *
            IF    ( SPA-W01-EDYUKYMD    >=  CONST-H180401 )
                MOVE    "入院加算情報"          TO  W24-FRAME3-LABEL
            ELSE
@@ -4231,6 +4334,8 @@
            WHEN    049
                MOVE    "SENTEI_TANKARJ"
                                        TO  MCP-WIDGET
+           WHEN    057
+               MOVE    "TEIKISAGAKUACT" TO MCP-WIDGET
            WHEN    212
                MOVE    "B12"           TO  MCP-WIDGET
            END-EVALUATE
@@ -4342,7 +4447,7 @@
            WHEN    "TAIPRTKBN"
                MOVE    052             TO  SPA-GMN-W24-CUR
            WHEN    "TAIKSIKBN"
-               MOVE    212             TO  SPA-GMN-W24-CUR
+               MOVE    057             TO  SPA-GMN-W24-CUR
            WHEN    "BRMSGK_TAX"
                MOVE    047             TO  SPA-GMN-W24-CUR
            WHEN    "NACCT_BRMSGK"
@@ -4355,6 +4460,8 @@
                MOVE    055             TO  SPA-GMN-W24-CUR
            WHEN    "ADLINPUT"
                MOVE    008             TO  SPA-GMN-W24-CUR
+           WHEN    "TEIKISAGAKUACT"
+               MOVE    212             TO  SPA-GMN-W24-CUR
            END-EVALUATE
       *
            .
