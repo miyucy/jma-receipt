@@ -50,6 +50,7 @@
       *
       *  03.04.01    NACL-藤原    06/11/01  病名一括削除機能対応
       *  03.04.02    NACL-藤原    06/11/27   ＳＰＡデータの削除
+      *  03.04.03    NACL-藤原    07/03/02  月途中保険変更時の病名対応中止
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -360,11 +361,9 @@
            MOVE    "死亡"          TO  SPA-GMN-C10-TENKIKBNMEIL     (3)
            MOVE    "3"             TO  SPA-GMN-C10-TENKIKBNL        (4)
            MOVE    "中止"          TO  SPA-GMN-C10-TENKIKBNMEIL     (4)
-           MOVE    "7"             TO  SPA-GMN-C10-TENKIKBNL        (5)
-           MOVE    "保険変更"      TO  SPA-GMN-C10-TENKIKBNMEIL     (5)
-           MOVE    "8"             TO  SPA-GMN-C10-TENKIKBNL        (6)
-           MOVE    "移行"          TO  SPA-GMN-C10-TENKIKBNMEIL     (6)
-           MOVE    6               TO  SPA-GMN-C10-TENKIKBN-MAX
+           MOVE    "8"             TO  SPA-GMN-C10-TENKIKBNL        (5)
+           MOVE    "移行"          TO  SPA-GMN-C10-TENKIKBNMEIL     (5)
+           MOVE    5               TO  SPA-GMN-C10-TENKIKBN-MAX
       *
            MOVE    "-"             TO  SPA-GMN-C10-UTAGAIFLGL       (1)
            MOVE    "取消"          TO  SPA-GMN-C10-UTAGAIFLGMEIL    (1)

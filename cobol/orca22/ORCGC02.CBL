@@ -209,6 +209,7 @@
       *                                     入外区分、処理区分変更時の入力
       *                                     項目のクリア
       *  03.04.03    NACL-藤原    06/12/01  月途中保険変更時の病名対応
+      *  03.04.04    NACL-藤原    07/03/02  月途中保険変更時の病名対応中止
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -971,11 +972,9 @@
            MOVE    "死亡"          TO  SPA-GMN-C02-TENKIKBNMEIL     (2)
            MOVE    "3"             TO  SPA-GMN-C02-TENKIKBNL        (3)
            MOVE    "中止"          TO  SPA-GMN-C02-TENKIKBNMEIL     (3)
-           MOVE    "7"             TO  SPA-GMN-C02-TENKIKBNL        (4)
-           MOVE    "保険変更"      TO  SPA-GMN-C02-TENKIKBNMEIL     (4)
-           MOVE    "8"             TO  SPA-GMN-C02-TENKIKBNL        (5)
-           MOVE    "移行"          TO  SPA-GMN-C02-TENKIKBNMEIL     (5)
-           MOVE    5               TO  SPA-GMN-C02-TENKIKBN-MAX
+           MOVE    "8"             TO  SPA-GMN-C02-TENKIKBNL        (4)
+           MOVE    "移行"          TO  SPA-GMN-C02-TENKIKBNMEIL     (4)
+           MOVE    4               TO  SPA-GMN-C02-TENKIKBN-MAX
       *
            MOVE    "1"             TO  SPA-GMN-C02-UTAGAIFLGL       (1)
            MOVE    "疑い"          TO  SPA-GMN-C02-UTAGAIFLGMEIL    (1)

@@ -54,6 +54,7 @@
       *                                     MONFUNC対応
       *
       *  03.04.01    NACL-藤原    06/12/01  月途中保険変更時の病名対応
+      *  03.04.02    NACL-藤原    07/03/02  月途中保険変更時の病名対応中止
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -414,17 +415,17 @@
                END-IF
            END-IF
       *   
-      *    主保険の適用期間とのチェック
-           IF      RECE02-TEKSTYMD-X    =   SPACE
-               CONTINUE
-           ELSE
-               IF    ( PTBYO-SRYYMD     >=  RECE02-TEKSTYMD-X )
-               AND   ( PTBYO-SRYYMD     <=  RECE02-TEKEDYMD-X )
-                   CONTINUE
-               ELSE
-                   GO  TO  2001-PTBYO-CHK-EXT
-               END-IF
-           END-IF
+      **** 主保険の適用期間とのチェック
+      **** IF      RECE02-TEKSTYMD-X    =   SPACE
+      ****     CONTINUE
+      **** ELSE
+      ****     IF    ( PTBYO-SRYYMD     >=  RECE02-TEKSTYMD-X )
+      ****     AND   ( PTBYO-SRYYMD     <=  RECE02-TEKEDYMD-X )
+      ****         CONTINUE
+      ****     ELSE
+      ****         GO  TO  2001-PTBYO-CHK-EXT
+      ****     END-IF
+      **** END-IF
       *
       *    入外区分
            IF      PTBYO-NYUGAIKBN      =   SPACE
@@ -544,12 +545,8 @@
            IF      RECE02-SRYYM        <   PTBYO-TENKIYMD(1:6)
                CONTINUE
            ELSE    
-               IF      PTBYO-TENKIKBN       =   "7"
-                   CONTINUE
-               ELSE
-                   MOVE    PTBYO-TENKIKBN      TO  RECE03-TENKIKBN
-                   MOVE    PTBYO-TENKIYMD      TO  RECE03-TENKIYMD
-               END-IF
+               MOVE    PTBYO-TENKIKBN      TO  RECE03-TENKIKBN
+               MOVE    PTBYO-TENKIYMD      TO  RECE03-TENKIYMD
            END-IF    
            MOVE    PTBYO-BYOMEI        TO  RECE03-BYOMEI
            MOVE    PTBYO-BYOMEIMOJI    TO  RECE03-BYOMEIMOJI
