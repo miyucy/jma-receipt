@@ -56,7 +56,6 @@
                        09  SPA-NAI-HKNCOMBI        PIC  9(04).
                        09  SPA-NAI-JIHOKBN         PIC  X(01).
                        09  SPA-NAI-ROUJIN          PIC  9(01).
-                       09  SPA-NAI-JIHOKBN         PIC  X(01).
                        09  SPA-NAI-ZAITEN          PIC  9(08).
                        09  SPA-NAI-SYRCDTOTAL      PIC  9(14).
                        09  SPA-NAI-SURYOTOTAL      PIC  9(07)V9(03).
