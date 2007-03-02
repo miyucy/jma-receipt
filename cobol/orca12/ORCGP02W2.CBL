@@ -462,7 +462,7 @@
            MOVE    SPA-TERMID          TO  PARA-TERMID
            MOVE    "PTHKNINF"          TO  PARA-FILEMEI
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
            MOVE    PARA-REC            TO  MCPDATA-REC
            MOVE    "tbl_para"          TO  MCP-TABLE
            MOVE    "key5"              TO  MCP-PATHNAME
@@ -503,7 +503,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-TERMID          TO  PARA-TERMID
            MOVE    "PTKOHINF"          TO  PARA-FILEMEI
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
            MOVE    PARA-REC            TO  MCPDATA-REC
            MOVE    "tbl_para"          TO  MCP-TABLE
            MOVE    "key5"              TO  MCP-PATHNAME
@@ -767,14 +767,15 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-TERMID          TO  PARA-TERMID
            MOVE    "NC01PARA"          TO  PARA-FILEMEI
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
            MOVE    PARA-REC            TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_para"          TO  MCP-TABLE
            MOVE    "del3"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
       *   主保険中心　組合せ作成処理
            PERFORM     57011-SYUHKN-HEN-SEC
@@ -828,7 +829,8 @@ grpsys                            SPA-AREA
       ******** INITIALIZE                  NC01PARA-REC
       *        MOVE    SPA-TERMID      TO  PARA-NC01-TERMID
       *********MOVE    CNT-COMB        TO  PARA-NC01-EDANUM
-               MOVE    SPA-HOSPID      TO  WRK-LCOMB-HOSPID     (IDZ)
+      *********MOVE    SPA-HOSPID      TO  WRK-LCOMB-HOSPID     (IDZ)
+               MOVE    SPA-HOSPNUM     TO  WRK-LCOMB-HOSPNUM    (IDZ)
                MOVE    SPA-PTID        TO  WRK-LCOMB-PTID       (IDZ)
                MOVE    ZERO            TO  WRK-LCOMB-HKNCOMBINUM(IDZ)
       ******** MOVE    WRK-LCOMB-REC (IDZ)
@@ -844,19 +846,21 @@ grpsys                            SPA-AREA
                                            TO  PARA-NC01-REC
                MOVE    NC01PARA-REC        TO  PARA-DATA-REC
       *
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
+               MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
                MOVE    PARA-REC            TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "tbl_para"          TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-grpsys         CALL "ORCDBMAIN" USING MCPAREA
-                                      MCPDATA-REC
-grpsys                                SPA-AREA
+               CALL    "ORCDBMAIN"         USING
+                                               MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
               ELSE
                IF   (WRK-LCOMB-TEKSTYMD(IDZ)  < WRK-SYOCYO-TEKSTYMD)
                AND  (WRK-SYOCYO-TEKSTYMD  NOT = 99999999           )
                   ADD     1               TO  CNT-COMB
-                  MOVE    SPA-HOSPID      TO  WRK-LCOMB-HOSPID     (IDZ)
+      ************MOVE    SPA-HOSPID      TO  WRK-LCOMB-HOSPID     (IDZ)
+                  MOVE    SPA-HOSPNUM     TO  WRK-LCOMB-HOSPNUM    (IDZ)
                   MOVE    SPA-PTID        TO  WRK-LCOMB-PTID       (IDZ)
                   MOVE    ZERO            TO  WRK-LCOMB-HKNCOMBINUM(IDZ)
                   INITIALIZE                      PARA-REC
@@ -881,19 +885,21 @@ grpsys                                SPA-AREA
                   MOVE    WRK-TCOMB-REC       TO  PARA-NC01-REC
                   MOVE    NC01PARA-REC        TO  PARA-DATA-REC
       *
-grpsys*           MOVE SPA-HOSPNUM TO -HOSPNUM
+                  MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
                   MOVE    PARA-REC            TO  MCPDATA-REC
                   MOVE    "DBINSERT"          TO  MCP-FUNC
                   MOVE    "tbl_para"          TO  MCP-TABLE
                   MOVE    "key"               TO  MCP-PATHNAME
-grpsys            CALL "ORCDBMAIN" USING MCPAREA
-                                         MCPDATA-REC
-grpsys                                   SPA-AREA
+                  CALL    "ORCDBMAIN"         USING
+                                                  MCPAREA
+                                                  MCPDATA-REC
+                                                  SPA-AREA
                END-IF
                IF   (WRK-LCOMB-TEKEDYMD(IDZ)  > WRK-SYOCYO-TEKEDYMD)
                AND  (WRK-SYOCYO-TEKEDYMD  NOT = ZERO               )
                   ADD     1               TO  CNT-COMB
-                  MOVE    SPA-HOSPID      TO  WRK-LCOMB-HOSPID     (IDZ)
+      ************MOVE    SPA-HOSPID      TO  WRK-LCOMB-HOSPID     (IDZ)
+                  MOVE    SPA-HOSPNUM     TO  WRK-LCOMB-HOSPNUM    (IDZ)
                   MOVE    SPA-PTID        TO  WRK-LCOMB-PTID       (IDZ)
                   MOVE    ZERO            TO  WRK-LCOMB-HKNCOMBINUM(IDZ)
                   INITIALIZE                      PARA-REC
@@ -918,14 +924,15 @@ grpsys                                   SPA-AREA
                   MOVE    WRK-TCOMB-REC       TO  PARA-NC01-REC
                   MOVE    NC01PARA-REC        TO  PARA-DATA-REC
       *
-grpsys*           MOVE SPA-HOSPNUM TO -HOSPNUM
+                  MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
                   MOVE    PARA-REC            TO  MCPDATA-REC
                   MOVE    "DBINSERT"          TO  MCP-FUNC
                   MOVE    "tbl_para"          TO  MCP-TABLE
                   MOVE    "key"               TO  MCP-PATHNAME
-grpsys            CALL "ORCDBMAIN" USING MCPAREA
-                                         MCPDATA-REC
-grpsys                                   SPA-AREA
+                  CALL    "ORCDBMAIN"         USING
+                                                  MCPAREA
+                                                  MCPDATA-REC
+                                                  SPA-AREA
                END-IF
               END-IF
       ***    END-IF
@@ -4921,9 +4928,9 @@ grpsys                                   SPA-AREA
       *
            MOVE    ZERO               TO  FLG-HKNNUM
            MOVE    SPACE              TO  HKNNUM-REC
-           MOVE    SPA-HOSPID         TO  HKN-HOSPID
+      *****MOVE    SPA-HOSPID         TO  HKN-HOSPID
            MOVE    WRK-KEN-HKNNUM     TO  HKN-HKNNUM
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM        TO  HKN-HOSPNUM
            MOVE    HKNNUM-REC         TO  MCPDATA-REC
            MOVE    "tbl_hknnum"       TO  MCP-TABLE
            MOVE    "key2"             TO  MCP-PATHNAME
@@ -5077,9 +5084,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"     USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -5090,9 +5098,10 @@ grpsys                            SPA-AREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"     USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -5105,9 +5114,10 @@ grpsys                            SPA-AREA
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
            .
        990-DBCLOSE-EXT.

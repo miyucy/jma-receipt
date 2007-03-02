@@ -1375,7 +1375,7 @@
            MOVE    SPTID-PTNUM         TO  SPA-GMN-PTNUM
            MOVE    SPTID-PTID          TO  SPA-GMN-PTID
       *    ´µ¼Ô¥Þ¥¹¥¿¡¼Â¸ºß¥Á¥§¥Ã¥¯
-           MOVE    SPA-HOSPID          TO  PTINF-HOSPID
+      *****MOVE    SPA-HOSPID          TO  PTINF-HOSPID
            MOVE    SPA-GMN-PTID        TO  PTINF-PTID
            PERFORM  900-PTINF-READ-SEC
            IF      FLG-PTINF       NOT =   ZERO
@@ -2053,364 +2053,391 @@
       *
       *    ´µ¼Ô¾ðÊóºï½ü
            INITIALIZE                      PTINF-REC
-           MOVE    SPA-HOSPID          TO  PTINF-HOSPID
+      *****MOVE    SPA-HOSPID          TO  PTINF-HOSPID
            MOVE    SPA-GMN-PTID        TO  PTINF-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
            IF      MCP-RC          NOT =   ZERO
                MOVE    "1000"              TO  SPA-ERRCD
                GO      TO    49911-DB-DELETE-EXT
            END-IF
       *    ÊÝ¸±ÁÈ¹ç¤»
            INITIALIZE                      HKNCOMBI-REC
-           MOVE    SPA-HOSPID          TO  COMB-HOSPID
+      *****MOVE    SPA-HOSPID          TO  COMB-HOSPID
            MOVE    SPA-GMN-PTID        TO  COMB-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
            MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_hkncombi"      TO  MCP-TABLE
            MOVE    "del1"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
       *    ¼õ¿ÇÍúÎò
            INITIALIZE                      JYURRK-REC
-           MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
+      *****MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
            MOVE    SPA-GMN-PTID        TO  JYURRK-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
            MOVE    "del1"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
       *    ¿ÇÎÅ²ÊÍúÎò
            INITIALIZE                      SRYKARRK-REC
-           MOVE    SPA-HOSPID          TO  KARRK-HOSPID
+      *****MOVE    SPA-HOSPID          TO  KARRK-HOSPID
            MOVE    SPA-GMN-PTID            TO  KARRK-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  KARRK-HOSPNUM
            MOVE    SRYKARRK-REC        TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_srykarrk"      TO  MCP-TABLE
            MOVE    "del1"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *    ´µ¼ÔÉÂÌ¾
            INITIALIZE                      PTBYOMEI-REC
-           MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
+      *****MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
            MOVE    SPA-GMN-PTID        TO  PTBYO-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
            MOVE    "del21"             TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
       *    ´µ¼Ô¥³¥á¥ó¥È
            INITIALIZE                      PTCOM-REC
-           MOVE    SPA-HOSPID          TO  PTCOM-HOSPID
+      *****MOVE    SPA-HOSPID          TO  PTCOM-HOSPID
            MOVE    SPA-GMN-PTID        TO  PTCOM-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PTCOM-HOSPNUM
            MOVE    PTCOM-REC           TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_ptcom"         TO  MCP-TABLE
            MOVE    "del12"             TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
       *    ´µ¼ÔÈÖ¹æÊÑ´¹
            INITIALIZE                      PTNUM-REC
-           MOVE    SPA-HOSPID          TO  PTNUM-HOSPID
+      *****MOVE    SPA-HOSPID          TO  PTNUM-HOSPID
            MOVE    SPA-GMN-PTID        TO  PTNUM-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PTNUM-HOSPNUM
            MOVE    PTNUM-REC           TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_ptnum"         TO  MCP-TABLE
            MOVE    "del1"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
       *    ´µ¼ÔÊÝ¸±¾ðÊó
            INITIALIZE                      PTHKNINF-REC
-           MOVE    SPA-HOSPID          TO  PTHKN-HOSPID
+      *****MOVE    SPA-HOSPID          TO  PTHKN-HOSPID
            MOVE    SPA-GMN-PTID            TO  PTHKN-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PTHKN-HOSPNUM
            MOVE    PTHKNINF-REC        TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_pthkninf"      TO  MCP-TABLE
            MOVE    "del1"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
       *    ´µ¼Ô¸øÈñ¾ðÊó
            INITIALIZE                      PTKOHINF-REC
-           MOVE    SPA-HOSPID          TO  PTKOH-HOSPID
+      *****MOVE    SPA-HOSPID          TO  PTKOH-HOSPID
            MOVE    SPA-GMN-PTID            TO  PTKOH-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PTKOH-HOSPNUM
            MOVE    PTKOHINF-REC        TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
            MOVE    "del1"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *    µìÀ«ÍúÎò
            INITIALIZE                      KYUSEIRRK-REC
-           MOVE    SPA-HOSPID          TO  KYUSEI-HOSPID
+      *****MOVE    SPA-HOSPID          TO  KYUSEI-HOSPID
            MOVE    SPA-GMN-PTID        TO  KYUSEI-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  KYUSEI-HOSPNUM
            MOVE    KYUSEIRRK-REC       TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_kyuseirrk"     TO  MCP-TABLE
            MOVE    "del1"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
       *    ¿ÇÎÅ²ñ·×¡Ê³°Íè¡Ë
            INITIALIZE                      SRYACCT-REC
-           MOVE    SPA-HOSPID          TO  ACCT-HOSPID
+      *****MOVE    SPA-HOSPID          TO  ACCT-HOSPID
            MOVE    SPA-GMN-PTID        TO  ACCT-PTID
            MOVE    "2"                 TO  ACCT-NYUGAIKBN
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_sryacct"       TO  MCP-TABLE
            MOVE    "del2"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
       *    ¿ÇÎÅ²ñ·×¡ÊÆþ±¡¡Ë
            INITIALIZE                      SRYACCT-REC
-           MOVE    SPA-HOSPID          TO  ACCT-HOSPID
+      *****MOVE    SPA-HOSPID          TO  ACCT-HOSPID
            MOVE    SPA-GMN-PTID        TO  ACCT-PTID
            MOVE    "1"                 TO  ACCT-NYUGAIKBN
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_sryacct"       TO  MCP-TABLE
            MOVE    "del2"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
       *    ¿ÇÎÅ¹Ô°Ù¡ÊÆþ±¡¡Ë
            INITIALIZE                      SRYACT-REC
-           MOVE    SPA-HOSPID          TO  SRY-HOSPID
+      *****MOVE    SPA-HOSPID          TO  SRY-HOSPID
            MOVE    SPA-GMN-PTID        TO  SRY-PTID
            MOVE    "1"                 TO  SRY-NYUGAIKBN
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SRY-HOSPNUM
            MOVE    SRYACT-REC          TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_sryact"        TO  MCP-TABLE
            MOVE    "del3"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *    ¿ÇÎÅ¹Ô°Ù¡Ê³°Íè¡Ë
            INITIALIZE                      SRYACT-REC
-           MOVE    SPA-HOSPID          TO  SRY-HOSPID
+      *****MOVE    SPA-HOSPID          TO  SRY-HOSPID
            MOVE    SPA-GMN-PTID        TO  SRY-PTID
            MOVE    "2"                 TO  SRY-NYUGAIKBN
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SRY-HOSPNUM
            MOVE    SRYACT-REC          TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_sryact"        TO  MCP-TABLE
            MOVE    "del3"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
       *    ¼ýÇ¼
            INITIALIZE                      SYUNOU-REC
-           MOVE    SPA-HOSPID          TO  SYU-HOSPID
+      *****MOVE    SPA-HOSPID          TO  SYU-HOSPID
            MOVE    SPA-GMN-PTID        TO  SYU-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYU-HOSPNUM
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_syunou"        TO  MCP-TABLE
            MOVE    "del1"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
       *    ¼ýÇ¼ÌÀºÙ
            INITIALIZE                      SYUMEI-REC
-           MOVE    SPA-HOSPID          TO  SMEI-HOSPID
+      *****MOVE    SPA-HOSPID          TO  SMEI-HOSPID
            MOVE    SPA-GMN-PTID        TO  SMEI-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SMEI-HOSPNUM
            MOVE    SYUMEI-REC          TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_syumei"        TO  MCP-TABLE
            MOVE    "del1"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
       *    ¼ýÇ¼¹ç·×
            INITIALIZE                      SYUTTL-REC
-           MOVE    SPA-HOSPID          TO  SYUTTL-HOSPID
+      *****MOVE    SPA-HOSPID          TO  SYUTTL-HOSPID
            MOVE    SPA-GMN-PTID        TO  SYUTTL-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYUTTL-HOSPNUM
            MOVE    SYUTTL-REC          TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_syutotal"      TO  MCP-TABLE
            MOVE    "del1"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
       *    Äã½êÆÀ¼Ô
            INITIALIZE                      TSYRRK-REC
-           MOVE    SPA-HOSPID          TO  TSYRRK-HOSPID
+      *****MOVE    SPA-HOSPID          TO  TSYRRK-HOSPID
            MOVE    SPA-GMN-PTID            TO  TSYRRK-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  TSYRRK-HOSPNUM
            MOVE    TSYRRK-REC          TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_tsyrrk"        TO  MCP-TABLE
            MOVE    "del11"             TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
       *    ¾Ò²ðÍúÎò
            INITIALIZE                      SYKRRK-REC
-           MOVE    SPA-HOSPID          TO  SYK-HOSPID
+      *****MOVE    SPA-HOSPID          TO  SYK-HOSPID
            MOVE    SPA-GMN-PTID            TO  SYK-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYK-HOSPNUM
            MOVE    SYKRRK-REC          TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_sykrrk"        TO  MCP-TABLE
            MOVE    "del1"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
       *    ¼õÉÕ
            INITIALIZE                      UKETUKE-REC
-           MOVE    SPA-HOSPID          TO  UKE-HOSPID
+      *****MOVE    SPA-HOSPID          TO  UKE-HOSPID
            MOVE    SPA-GMN-PTID        TO  UKE-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  UKE-HOSPNUM
            MOVE    UKETUKE-REC         TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_uketuke"       TO  MCP-TABLE
            MOVE    "del12"             TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
       *    Ç¯¶âÍúÎò
            INITIALIZE                      TNKRRK-REC
-           MOVE    SPA-HOSPID          TO  TNKRRK-HOSPID
+      *****MOVE    SPA-HOSPID          TO  TNKRRK-HOSPID
            MOVE    SPA-GMN-PTID        TO  TNKRRK-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  TNKRRK-HOSPNUM
            MOVE    TNKRRK-REC          TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_tnkrrk"        TO  MCP-TABLE
            MOVE    "del11"             TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
       *    »»ÄêÍúÎò
            INITIALIZE                      SANTEI-REC
-           MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
+      *****MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
            MOVE    SPA-GMN-PTID        TO  SANTEI-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_santei"        TO  MCP-TABLE
            MOVE    "del1"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
       *    ¥ï¡¼¥¯¿ÇÎÅ¹Ô°Ù
            INITIALIZE                      WKSRYACT-REC
-           MOVE    SPA-HOSPID          TO  WKSRY-HOSPID
+      *****MOVE    SPA-HOSPID          TO  WKSRY-HOSPID
            MOVE    SPA-GMN-PTID        TO  WKSRY-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  WKSRY-HOSPNUM
            MOVE    WKSRYACT-REC        TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_wksryact"      TO  MCP-TABLE
            MOVE    "del12"             TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
       *    ÀÁµá´ÉÍý
            INITIALIZE                      RECE10-REC
-           MOVE    SPA-HOSPID          TO  RECE10-HOSPID
+      *****MOVE    SPA-HOSPID          TO  RECE10-HOSPID
            MOVE    SPA-GMN-PTID        TO  RECE10-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  RECE10-HOSPNUM
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_seikyu"        TO  MCP-TABLE
            MOVE    "del1"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
       *    ¥ì¥»¥×¥È¥³¥á¥ó¥È
            INITIALIZE                      RECECOM-REC
-           MOVE    SPA-HOSPID          TO  RECECOM-HOSPID
+      *****MOVE    SPA-HOSPID          TO  RECECOM-HOSPID
            MOVE    SPA-GMN-PTID        TO  RECECOM-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  RECECOM-HOSPNUM
            MOVE    RECECOM-REC         TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_rececom"       TO  MCP-TABLE
            MOVE    "del1"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
       *    Ï«ºÒÊÝ¸±¾ðÊó
            INITIALIZE                      PTRSIINF-REC
-           MOVE    SPA-HOSPID          TO  PTRSI-HOSPID
+      *****MOVE    SPA-HOSPID          TO  PTRSI-HOSPID
            MOVE    SPA-GMN-PTID        TO  PTRSI-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PTRSI-HOSPNUM
            MOVE    PTRSIINF-REC        TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "tbl_ptrsiinf"       TO  MCP-TABLE
+           MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
            MOVE    "del1"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
       *    ·îÂå¤ê¼õµë¼ÔÈÖ¹æ
            INITIALIZE                      MONTHLYNUM-REC
-           MOVE    SPA-HOSPID          TO  MONTHLYNUM-HOSPID
+      *****MOVE    SPA-HOSPID          TO  MONTHLYNUM-HOSPID
            MOVE    SPA-GMN-PTID        TO  MONTHLYNUM-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  MONTHLYNUM-HOSPNUM
            MOVE    MONTHLYNUM-REC      TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_monthlynum"    TO  MCP-TABLE
            MOVE    "del1"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
       *    Í½Ìó
            INITIALIZE                      YYK-REC
-           MOVE    SPA-HOSPID          TO  YYK-HOSPID
+      *****MOVE    SPA-HOSPID          TO  YYK-HOSPID
            MOVE    SPA-GMN-PTID        TO  YYK-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  YYK-HOSPNUM
            MOVE    YYK-REC             TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_yyk"           TO  MCP-TABLE
@@ -2427,7 +2454,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *        Í½Ìó·ï¿ô¤Î¸º»»
                 MOVE    YYK-REC            TO  WRK-YYK-REC
                 MOVE    ZERO               TO  YYK-YYKID
-grpsys*         MOVE SPA-HOSPNUM TO -HOSPNUM
+                MOVE    SPA-HOSPNUM        TO  YYK-HOSPNUM
                 MOVE    YYK-REC            TO  MCPDATA-REC
                 MOVE    "tbl_yyk"          TO  MCP-TABLE
                 MOVE    "key"              TO  MCP-PATHNAME
@@ -2441,28 +2468,30 @@ grpsys*         MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    SMCNDATE-YMD        TO  YYK-UPYMD
                    MOVE    SMCNDATE-HMS        TO  YYK-UPHMS
       *            ¹¹¿·
-grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
+                   MOVE    SPA-HOSPNUM         TO  YYK-HOSPNUM
                    MOVE    YYK-REC             TO  MCPDATA-REC
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
                    MOVE    "tbl_yyk"           TO  MCP-TABLE
                    MOVE    "key"               TO  MCP-PATHNAME
-grpsys             CALL "ORCDBMAIN" USING MCPAREA
-                                          MCPDATA-REC
-grpsys                                    SPA-AREA
+                   CALL    "ORCDBMAIN"         USING
+                                                   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
                END-IF
                MOVE    "tbl_yyk"           TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
                PERFORM 990-DBCLOSE-SEC
       *        ºï½ü
                MOVE    WRK-YYK-REC         TO  YYK-REC
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
+               MOVE    SPA-HOSPNUM         TO  YYK-HOSPNUM
                MOVE    YYK-REC             TO  MCPDATA-REC
                MOVE    "DBDELETE"          TO  MCP-FUNC
                MOVE    "tbl_yyk"           TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-grpsys         CALL "ORCDBMAIN" USING MCPAREA
-                                      MCPDATA-REC
-grpsys                                SPA-AREA
+               CALL    "ORCDBMAIN"         USING
+                                               MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
                MOVE    "tbl_yyk"           TO  MCP-TABLE
                MOVE    "key6"              TO  MCP-PATHNAME
@@ -2474,203 +2503,218 @@ grpsys                                SPA-AREA
       *
       *    Æþ±¡¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿¡¼
            INITIALIZE                      NYUINACT-REC
-           MOVE    SPA-HOSPID          TO  NSRY-HOSPID
+      *****MOVE    SPA-HOSPID          TO  NSRY-HOSPID
            MOVE    SPA-GMN-PTID        TO  NSRY-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  NSRY-HOSPNUM
            MOVE    NYUINACT-REC        TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_nyuinact"      TO  MCP-TABLE
            MOVE    "del12"             TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
       *    Æþ±¡¿ÇÎÅ²ñ·×¥Þ¥¹¥¿¡¼
            INITIALIZE                      NYUINACCT-REC
-           MOVE    SPA-HOSPID          TO  NACCT-HOSPID
+      *****MOVE    SPA-HOSPID          TO  NACCT-HOSPID
            MOVE    SPA-GMN-PTID        TO  NACCT-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  NACCT-HOSPNUM
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
            MOVE    "del1"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
       *    ´µ¼ÔÆþ±¡ÍúÎò
            INITIALIZE                      PTNYUINRRK-REC
-           MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID
+      *****MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID
            MOVE    SPA-GMN-PTID        TO  PTNYUINRRK-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
            MOVE    "del2"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
       *    ´µ¼ÔÂ¾±¡ÎòÉÕ²Ã¾ðÊó
            INITIALIZE                      PTTAINFUKA-REC
-           MOVE    SPA-HOSPID          TO  PTTAINFUKA-HOSPID
+      *****MOVE    SPA-HOSPID          TO  PTTAINFUKA-HOSPID
            MOVE    SPA-GMN-PTID        TO  PTTAINFUKA-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PTTAINFUKA-HOSPNUM
            MOVE    PTTAINFUKA-REC      TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_pttainfuka"    TO  MCP-TABLE
            MOVE    "del2"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
       *    ´µ¼ÔÄê´üÀÁµáÍúÎò
            INITIALIZE                      PTTEIKIRRK-REC
-           MOVE    SPA-HOSPID          TO  PTTEIKIRRK-HOSPID
+      *****MOVE    SPA-HOSPID          TO  PTTEIKIRRK-HOSPID
            MOVE    SPA-GMN-PTID        TO  PTTEIKIRRK-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PTTEIKIRRK-HOSPNUM
            MOVE    PTTEIKIRRK-REC      TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_ptteikirrk"    TO  MCP-TABLE
            MOVE    "del1"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
       *    ÃÏÊý¸øÈñÀÁµá½ñ
            INITIALIZE                      KOHSKY-REC
-           MOVE    SPA-HOSPID          TO  KOHSKY-HOSPID
+      *****MOVE    SPA-HOSPID          TO  KOHSKY-HOSPID
            MOVE    SPA-GMN-PTID        TO  KOHSKY-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  KOHSKY-HOSPNUM
            MOVE    KOHSKY-REC          TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_kohsky"        TO  MCP-TABLE
            MOVE    "del3"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
       *    ¸øÈñÉéÃ´³Û
            INITIALIZE                      PTKOHFTN-REC
-           MOVE    SPA-HOSPID          TO  PTKOHFTN-HOSPID
+      *****MOVE    SPA-HOSPID          TO  PTKOHFTN-HOSPID
            MOVE    SPA-GMN-PTID        TO  PTKOHFTN-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PTKOHFTN-HOSPNUM
            MOVE    PTKOHFTN-REC        TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_ptkohftn"      TO  MCP-TABLE
            MOVE    "del1"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
       *    ÆüÊÌ¼ýÇ¼¥Þ¥¹¥¿¡ÊÆþ±¡¡Ë
            INITIALIZE                      SYUDAY-REC
-           MOVE    SPA-HOSPID          TO  SDAY-HOSPID
+      *****MOVE    SPA-HOSPID          TO  SDAY-HOSPID
            MOVE    SPA-GMN-PTID        TO  SDAY-PTID
            MOVE    "1"                 TO  SDAY-NYUGAIKBN
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SDAY-HOSPNUM
            MOVE    SYUDAY-REC          TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_syuday"        TO  MCP-TABLE
            MOVE    "del2"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *    ÆüÊÌ¼ýÇ¼¥Þ¥¹¥¿¡Ê³°Íè¡Ë
            INITIALIZE                      SYUDAY-REC
-           MOVE    SPA-HOSPID          TO  SDAY-HOSPID
+      *****MOVE    SPA-HOSPID          TO  SDAY-HOSPID
            MOVE    SPA-GMN-PTID        TO  SDAY-PTID
            MOVE    "2"                 TO  SDAY-NYUGAIKBN
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SDAY-HOSPNUM
            MOVE    SYUDAY-REC          TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_syuday"        TO  MCP-TABLE
            MOVE    "del2"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
       *    ¼ê½ÑÎò¥ì¥»¥×¥È¥³¥á¥ó¥È¥Þ¥¹¥¿
            INITIALIZE                      OPECOM-REC
-           MOVE    SPA-HOSPID          TO  OPECOM-HOSPID
+      *****MOVE    SPA-HOSPID          TO  OPECOM-HOSPID
            MOVE    SPA-GMN-PTID        TO  OPECOM-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  OPECOM-HOSPNUM
            MOVE    OPECOM-REC          TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_opecom"        TO  MCP-TABLE
            MOVE    "del2"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
       *    ¥ì¥»¥×¥ÈÅÅ»»¥Þ¥¹¥¿
            INITIALIZE                      RECEDEN-REC
-           MOVE    SPA-HOSPID          TO  RECEDEN-HOSPID
+      *****MOVE    SPA-HOSPID          TO  RECEDEN-HOSPID
            MOVE    SPA-GMN-PTID        TO  RECEDEN-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  RECEDEN-HOSPNUM
            MOVE    RECEDEN-REC         TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_receden"       TO  MCP-TABLE
            MOVE    "del3"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *    Éí²Ã¾ðÊóºï½ü¡ÊÆþ±¡¡Ë
            INITIALIZE                  SRYACCTPLUS-REC
-           MOVE    SPA-HOSPID          TO  ACCTP-HOSPID
+      *****MOVE    SPA-HOSPID          TO  ACCTP-HOSPID
            MOVE    "1"                 TO  ACCTP-NYUGAIKBN
            MOVE    SPA-GMN-PTID        TO  ACCTP-PTID
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  ACCTP-HOSPNUM
            MOVE    SRYACCTPLUS-REC     TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_sryacctplus"   TO  MCP-TABLE
            MOVE    "del1"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *    Éí²Ã¾ðÊóºï½ü¡Ê³°Íè¡Ë
            INITIALIZE                  SRYACCTPLUS-REC
-           MOVE    SPA-HOSPID          TO  ACCTP-HOSPID
+      *****MOVE    SPA-HOSPID          TO  ACCTP-HOSPID
            MOVE    "2"                 TO  ACCTP-NYUGAIKBN
            MOVE    SPA-GMN-PTID        TO  ACCTP-PTID
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  ACCTP-HOSPNUM
            MOVE    SRYACCTPLUS-REC     TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_sryacctplus"   TO  MCP-TABLE
            MOVE    "del1"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
       *    ¼ç²Ê¥Æ¡¼¥Ö¥ë
            INITIALIZE                  SYUKA-REC
-           MOVE    SPA-HOSPID          TO  SYUKA-HOSPID
+      *****MOVE    SPA-HOSPID          TO  SYUKA-HOSPID
            MOVE    SPA-GMN-PTID        TO  SYUKA-PTID
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYUKA-HOSPNUM
            MOVE    SYUKA-REC           TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_syuka"         TO  MCP-TABLE
            MOVE    "del1"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
       *    ÎÅÍÜ¥ì¥»¥×¥È¥³¥á¥ó¥È
            INITIALIZE                  RYOCOM-REC
-           MOVE    SPA-HOSPID          TO  RYOCOM-HOSPID
+      *****MOVE    SPA-HOSPID          TO  RYOCOM-HOSPID
            MOVE    SPA-GMN-PTID        TO  RYOCOM-PTID
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  RYOCOM-HOSPNUM
            MOVE    RYOCOM-REC          TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_ryocom"        TO  MCP-TABLE
            MOVE    "del1"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
            .
        49911-DB-DELETE-EXT.
@@ -2997,7 +3041,7 @@ grpsys                            SPA-AREA
       *
       *    ´µ¼ÔÈÖ¹æÊÑ´¹¡Ê´ÉÍý¡Ë¥Þ¥¹¥¿ÆÉ¤ß¹þ¤ß
            INITIALIZE                      PTNUM-REC
-           MOVE    SPA-HOSPID          TO  PTNUM-HOSPID
+      *****MOVE    SPA-HOSPID          TO  PTNUM-HOSPID
            MOVE    SPA-GMN-PTNUM       TO  PTNUM-PTNUM
            IF      SPA-GMN-PTNUM(20:1) =   SPACE
                STRING  SPA-GMN-PTNUM       DELIMITED   BY  SPACE
@@ -3006,7 +3050,7 @@ grpsys                            SPA-AREA
                END-STRING
            END-IF
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PTNUM-HOSPNUM
            MOVE    PTNUM-REC           TO  MCPDATA-REC
            MOVE    "tbl_ptnum"         TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -3036,7 +3080,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    ´µ¼Ô¥Þ¥¹¥¿¡¼Â¸ºß¥Á¥§¥Ã¥¯
                IF      SPA-GMN-PTID    NOT =   ZERO 
-                   MOVE    SPA-HOSPID         TO  PTINF-HOSPID
+      *************MOVE    SPA-HOSPID         TO  PTINF-HOSPID
                    MOVE    SPA-GMN-PTID       TO  PTINF-PTID
                    PERFORM 900-PTINF-READ-SEC
                    IF      FLG-PTINF          =   ZERO 
@@ -3106,7 +3150,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-SYSYMD          TO  SYS-9000-STYUKYMD
            MOVE    SPA-SYSYMD          TO  SYS-9000-EDYUKYMD
       *    ¥·¥¹¥Æ¥à´ÉÍý¸¡º÷
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-9000-HOSPNUM
            MOVE    SYS-9000-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -3208,7 +3252,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-SYSYMD          TO  SYS-9001-STYUKYMD
            MOVE    SPA-SYSYMD          TO  SYS-9001-EDYUKYMD
       *    ¥·¥¹¥Æ¥à´ÉÍý¸¡º÷
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-9001-HOSPNUM
            MOVE    SYS-9001-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -3285,14 +3329,14 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            ADD     1                   TO  WRK-RENNUM
            MOVE    WRK-RENNUM          TO  SHELLTBL-ARG11 (1:2)
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC
            MOVE    "shell"             TO  MCP-TABLE
            MOVE    "shell"             TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
            .
        49061-CLAIM-SOUSINSYOSI-EXT.
@@ -4480,7 +4524,7 @@ grpsys                            SPA-AREA
       *****************************************************************
        900-PTINF-READ-SEC         SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -4531,9 +4575,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"     USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -4544,9 +4589,10 @@ grpsys                            SPA-AREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"     USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -4559,9 +4605,10 @@ grpsys                            SPA-AREA
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
            .
        990-DBCLOSE-EXT.
@@ -4611,14 +4658,15 @@ grpsys                            SPA-AREA
            MOVE    "P02"               TO  PARA-GYOUMUID
            MOVE    SPA-TERMID          TO  PARA-TERMID
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
            MOVE    PARA-REC            TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_para"          TO  MCP-TABLE
            MOVE    "del2"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
            .
        992-PARA-DEL-EXT.
@@ -4630,9 +4678,10 @@ grpsys                            SPA-AREA
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL   "ORCDBMAIN"       USING
+                                        MCPAREA
+                                        MCPDATA-REC
+                                        SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.

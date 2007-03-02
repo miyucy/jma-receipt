@@ -436,10 +436,10 @@
       *
       *    保険者番号　検索チェック
            INITIALIZE                    HKNJAINF-REC
-           MOVE    SPA-HOSPID            TO  HKNJA-HOSPID
+      *****MOVE    SPA-HOSPID            TO  HKNJA-HOSPID
            MOVE    SPA-GMN-HKNJANUM      TO  HKNJA-HKNJANUM
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM           TO  HKNJA-HOSPNUM
            MOVE    HKNJAINF-REC          TO  MCPDATA-REC
            MOVE    "tbl_hknjainf"        TO  MCP-TABLE
            MOVE    "key"                 TO  MCP-PATHNAME
@@ -587,12 +587,12 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        1003-HKNNUM-HBTNUM-SEC     SECTION.
       *
            INITIALIZE                  HKNNUM-REC
-           MOVE    SPA-HOSPID          TO  HKN-HOSPID
+      *****MOVE    SPA-HOSPID          TO  HKN-HOSPID
            MOVE    SPA-GMN-HKNJANUM(1:2)
                                        TO  HKN-HBTNUM
            MOVE    SPA-SYSYMD          TO  HKN-TEKSTYMD
            MOVE    SPA-SYSYMD          TO  HKN-TEKEDYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
            MOVE    HKNNUM-REC          TO  MCPDATA-REC
            MOVE    "tbl_hknnum"       TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
@@ -1862,10 +1862,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        2002-HNKKIKAN-CHK-SEC           SECTION.
       *
            MOVE    SPACE               TO  HKNNUM-REC
-           MOVE    SPA-HOSPID          TO  HKN-HOSPID
+      *****MOVE    SPA-HOSPID          TO  HKN-HOSPID
            MOVE    SPA-GMN-HKNNUM      TO  HKN-HKNNUM
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
            MOVE    HKNNUM-REC          TO  MCPDATA-REC
            MOVE    "tbl_hknnum"        TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -2476,10 +2476,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    保険者番号　検索チェック
            INITIALIZE                  HKNJAINF-REC
-           MOVE    SPA-HOSPID          TO  HKNJA-HOSPID
+      *****MOVE    SPA-HOSPID          TO  HKNJA-HOSPID
            MOVE    SPA-GMN-HKNJANUM    TO  HKNJA-HKNJANUM
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  HKNJA-HOSPNUM
            MOVE    HKNJAINF-REC        TO  MCPDATA-REC
            MOVE    "tbl_hknjainf"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -2621,10 +2621,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    保険者番号　検索チェック
            INITIALIZE                  HKNJAINF-REC
-           MOVE    SPA-HOSPID          TO  HKNJA-HOSPID
+      *****MOVE    SPA-HOSPID          TO  HKNJA-HOSPID
            MOVE    SPA-GMN-HKNJANUM    TO  HKNJA-HKNJANUM
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  HKNJA-HOSPNUM
            MOVE    HKNJAINF-REC        TO  MCPDATA-REC
            MOVE    "tbl_hknjainf"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -2832,9 +2832,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"     USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -2845,9 +2846,10 @@ grpsys                            SPA-AREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"     USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -2860,9 +2862,10 @@ grpsys                            SPA-AREA
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
            .
        990-DBCLOSE-EXT.

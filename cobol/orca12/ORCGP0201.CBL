@@ -300,11 +300,11 @@
       *
       *    ∂¶ƒÃ£”£–£¡ ‘Ω∏
            MOVE  SPACE                           TO  UKETUKE-REC
-           MOVE  SPA-HOSPID                      TO  UKE-HOSPID.
+      *****MOVE  SPA-HOSPID                      TO  UKE-HOSPID.
            MOVE  SPA-SYSYMD                      TO  UKE-UKEYMD.
            MOVE  SPA-NAI201-UKEID (SPA-NAI201-SELNUM)
                                                  TO  UKE-UKEID.
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE  SPA-HOSPNUM                     TO  UKE-HOSPNUM
            MOVE  UKETUKE-REC                     TO  MCPDATA-REC.
       *
            MOVE    "tbl_uketuke"       TO  MCP-TABLE
@@ -466,9 +466,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"     USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -479,9 +480,10 @@ grpsys                            SPA-AREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"     USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -494,9 +496,10 @@ grpsys                            SPA-AREA
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
            .
        990-DBCLOSE-EXT.
@@ -508,9 +511,10 @@ grpsys                            SPA-AREA
        900-PUT-WINDOW                            SECTION.
       *
            MOVE   "PUTWINDOW"                    TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL   "ORCDBMAIN"                    USING
+                                                     MCPAREA
+                                                     MCPDATA-REC
+                                                     SPA-AREA
            .
        900-PUT-WINDOW-EXT.
            EXIT.

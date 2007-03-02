@@ -491,7 +491,7 @@
        41011-PTNUM-SYORI-SEC           SECTION.
       *
       *    患者マスター存在チェック
-           MOVE    SPA-HOSPID          TO  PTINF-HOSPID
+      *****MOVE    SPA-HOSPID          TO  PTINF-HOSPID
            MOVE    SPA-GMN2E-PTID      TO  PTINF-PTID
            PERFORM 900-PTINF-READ-SEC
            IF      FLG-PTINF      NOT =   ZERO
@@ -656,14 +656,15 @@
            MOVE    "P02"               TO  PARA-GYOUMUID
            MOVE    SPA-TERMID          TO  PARA-TERMID
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
            MOVE    PARA-REC            TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_para"          TO  MCP-TABLE
            MOVE    "del2"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
            .
        49021-PARA-DEL-EXT.
@@ -978,10 +979,10 @@ grpsys                            SPA-AREA
            INITIALIZE                  SPA-PTHKNINF-AREA
       *    保険者編集
            INITIALIZE                  PTHKNINF-REC
-           MOVE    SPA-HOSPID          TO  PTHKN-HOSPID
+      *****MOVE    SPA-HOSPID          TO  PTHKN-HOSPID
            MOVE    SPA-GMN2E-PTID      TO  PTHKN-PTID
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PTHKN-HOSPNUM
            MOVE    PTHKNINF-REC        TO  MCPDATA-REC
            MOVE    "tbl_pthkninf"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -1031,10 +1032,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    公費編集
            INITIALIZE                  SPA-PTKOHINF-AREA
            INITIALIZE                  PTKOHINF-REC
-           MOVE    PTINF-HOSPID        TO  PTKOH-HOSPID
+      *****MOVE    PTINF-HOSPID        TO  PTKOH-HOSPID
            MOVE    SPA-GMN2E-PTID      TO  PTKOH-PTID
-      *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PTKOH-HOSPNUM
            MOVE    PTKOHINF-REC        TO  MCPDATA-REC
            MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -1093,7 +1093,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "P02"               TO  PARA-GYOUMUID
            MOVE    SPA-TERMID          TO  PARA-TERMID
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
            MOVE    PARA-REC            TO  MCPDATA-REC
            MOVE    "tbl_para"          TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
@@ -1111,27 +1111,29 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            PERFORM 990-DBCLOSE-SEC
       *
            IF      FLG-PARA            =   1
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
+               MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
                MOVE    PARA-REC            TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "tbl_para"          TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-grpsys         CALL "ORCDBMAIN" USING MCPAREA
-                                      MCPDATA-REC
-grpsys                                SPA-AREA
+               CALL    "ORCDBMAIN"         USING
+                                               MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P02 PARA INSERT ERR:"  MCP-RC
                            ",KEY2:" PARA-KEY(1:42)
                END-IF
            ELSE
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
+               MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
                MOVE    PARA-REC            TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "tbl_para"          TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-grpsys         CALL "ORCDBMAIN" USING MCPAREA
-                                      MCPDATA-REC
-grpsys                                SPA-AREA
+               CALL    "ORCDBMAIN"         USING
+                                               MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P02 PARA UPDATE ERR:"  MCP-RC
                            ",KEY2:" PARA-KEY(1:42)
@@ -1256,7 +1258,7 @@ grpsys                                SPA-AREA
        1002211-HKNNUM-SET-SEC           SECTION.
       *
            INITIALIZE                  HKNNUM-REC
-           MOVE    SPA-HOSPID          TO  HKN-HOSPID
+      *****MOVE    SPA-HOSPID          TO  HKN-HOSPID
            MOVE    WRK-HKNNUM          TO  HKN-HKNNUM
            IF      WRK-PAYKBN          =   SPACE
                MOVE    ZERO                TO  HKN-PAYKBN
@@ -1266,7 +1268,7 @@ grpsys                                SPA-AREA
            MOVE    WRK-TEKSTYMD        TO  HKN-TEKSTYMD
            MOVE    WRK-TEKEDYMD        TO  HKN-TEKEDYMD
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
            MOVE    HKNNUM-REC          TO  MCPDATA-REC
            MOVE    "tbl_hknnum"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -1457,7 +1459,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        900-PTINF-READ-SEC         SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -1567,9 +1569,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"     USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -1580,9 +1583,10 @@ grpsys                            SPA-AREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"     USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -1595,9 +1599,10 @@ grpsys                            SPA-AREA
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
            .
        990-DBCLOSE-EXT.
@@ -1609,9 +1614,10 @@ grpsys                            SPA-AREA
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL   "ORCDBMAIN"       USING
+                                        MCPAREA
+                                        MCPDATA-REC
+                                        SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.

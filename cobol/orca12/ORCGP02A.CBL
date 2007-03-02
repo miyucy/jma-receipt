@@ -260,7 +260,7 @@
       *
            MOVE    SPACE               TO  PTINF-REC
            INITIALIZE                      PTINF-REC
-           MOVE    SPA-HOSPID          TO  PTINF-HOSPID
+      *****MOVE    SPA-HOSPID          TO  PTINF-HOSPID
            MOVE    SPA-GMN-KANANAME    TO  PTINF-KANANAME
            IF     (SPA-P02A-SYORI          =   2  )  AND
                   (SPA-NAI-JYUFUKU-CHKKBN  =   "2")
@@ -278,7 +278,7 @@
                MOVE    "key3"              TO  WRK-MCP-PATHNAME
            END-IF
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
@@ -339,7 +339,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *            患者番号変換(管理）を検索し、患者IDより患者NOを取得
                    INITIALIZE                      ORCSPTIDAREA
-                   MOVE    SPA-HOSPID          TO  SPTID-HOSPID
+      *************MOVE    SPA-HOSPID          TO  SPTID-HOSPID
+                   MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
                    MOVE    PTINF-PTID          TO  SPTID-PTID
                    CALL    "ORCSPTID"      USING   ORCSPTIDAREA
                                                    SPA-1009-TBL
@@ -722,9 +723,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"     USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -735,9 +737,10 @@ grpsys                            SPA-AREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"     USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                      SPA-AREA
       *
            .
       *
@@ -750,9 +753,10 @@ grpsys                            SPA-AREA
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
            .
        990-DBCLOSE-EXT.
@@ -764,9 +768,10 @@ grpsys                            SPA-AREA
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL   "ORCDBMAIN"       USING
+                                        MCPAREA
+                                        MCPDATA-REC
+                                        SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.

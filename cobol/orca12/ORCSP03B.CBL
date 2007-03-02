@@ -427,10 +427,10 @@
       *
       *    保険者番号　検索チェック
            INITIALIZE                    HKNJAINF-REC
-           MOVE    SPA-HOSPID            TO  HKNJA-HOSPID
+      *****MOVE    SPA-HOSPID            TO  HKNJA-HOSPID
            MOVE    SPA-GMN-FTNJANUM (IDX-K)
                                          TO  HKNJA-HKNJANUM
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM           TO  HKNJA-HOSPNUM
            MOVE    HKNJAINF-REC          TO  MCPDATA-REC
            MOVE    "tbl_hknjainf"        TO  MCP-TABLE
            MOVE    "key"                 TO  MCP-PATHNAME
@@ -552,11 +552,11 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    ZERO                TO  FLG-HKNNUM-CHK
            MOVE    SPACE               TO  HKNNUM-REC
-           MOVE    HKNJA-HOSPID        TO  HKN-HOSPID
+      *****MOVE    HKNJA-HOSPID        TO  HKN-HOSPID
            MOVE    HKNJA-HKNNUM        TO  HKN-HKNNUM
            MOVE    ZERO                TO  HKN-PAYKBN
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
            MOVE    HKNNUM-REC          TO  MCPDATA-REC
            MOVE    "tbl_hknnum"        TO  MCP-TABLE
            MOVE    "key7"              TO  MCP-PATHNAME
@@ -631,12 +631,12 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            END-IF
       *
            INITIALIZE                  HKNNUM-REC
-           MOVE    SPA-HOSPID          TO  HKN-HOSPID
+      *****MOVE    SPA-HOSPID          TO  HKN-HOSPID
            MOVE    SPA-GMN-FTNJANUM(IDX-K) (1:2)
                                        TO  HKN-HBTNUM
            MOVE    SPA-SYSYMD          TO  HKN-TEKSTYMD
            MOVE    SPA-SYSYMD          TO  HKN-TEKEDYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
            MOVE    HKNNUM-REC          TO  MCPDATA-REC
            MOVE    "tbl_hknnum"       TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
@@ -1278,7 +1278,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPACE               TO  WRK-HKN2-TEKEDYMD
       *
            MOVE    SPACE               TO  HKNNUM-REC
-           MOVE    SPA-HOSPID          TO  HKN-HOSPID
+      *****MOVE    SPA-HOSPID          TO  HKN-HOSPID
            MOVE    SPA-GMN-KOHNUM(IDX-K)
                                        TO  HKN-HKNNUM
            IF     (SPA-GMN-KOHNUM(IDX-K)   =   "027"  )  AND
@@ -1293,7 +1293,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                            TO  HKN-PAYKBN
            END-IF
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
            MOVE    HKNNUM-REC          TO  MCPDATA-REC
            MOVE    "tbl_hknnum"        TO  MCP-TABLE
            MOVE    "key7"              TO  MCP-PATHNAME
@@ -2218,13 +2218,13 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    開始日セット
            MOVE    SPACE               TO  HKNNUM-REC
-           MOVE    SPA-HOSPID          TO  HKN-HOSPID
+      *****MOVE    SPA-HOSPID          TO  HKN-HOSPID
            MOVE    SPA-GMN-KOHNUM(IDX-K)
                                        TO  HKN-HKNNUM
            MOVE    SPA-NAI-PTKOH-PAYKBN (IDX-K)
                                        TO  HKN-PAYKBN
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
            MOVE    HKNNUM-REC          TO  MCPDATA-REC
            MOVE    "tbl_hknnum"        TO  MCP-TABLE
            MOVE    "key7"              TO  MCP-PATHNAME
@@ -2340,13 +2340,13 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    開始日セット
            MOVE    SPACE               TO  HKNNUM-REC
-           MOVE    SPA-HOSPID          TO  HKN-HOSPID
+      *****MOVE    SPA-HOSPID          TO  HKN-HOSPID
            MOVE    SPA-GMN-KOHNUM(IDX-K)
                                        TO  HKN-HKNNUM
            MOVE    SPA-NAI-PTKOH-PAYKBN (IDX-K)
                                        TO  HKN-PAYKBN
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
            MOVE    HKNNUM-REC          TO  MCPDATA-REC
            MOVE    "tbl_hknnum"        TO  MCP-TABLE
            MOVE    "key7"              TO  MCP-PATHNAME
@@ -2537,9 +2537,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"     USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -2550,9 +2551,10 @@ grpsys                            SPA-AREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"     USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -2565,9 +2567,10 @@ grpsys                            SPA-AREA
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
            .
        990-DBCLOSE-EXT.

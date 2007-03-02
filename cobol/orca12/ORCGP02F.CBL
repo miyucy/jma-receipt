@@ -295,7 +295,7 @@
       *
       *    ´Á»ú¸¡º÷
            INITIALIZE                  PTINF-REC
-           MOVE    SPA-HOSPID          TO  PTINF-HOSPID
+      *****MOVE    SPA-HOSPID          TO  PTINF-HOSPID
            MOVE    SPACE               TO  PTINF-NAME
            MOVE    SPA-GMN2F-KNJKEY(1:WRK-MOJISU)
                                        TO  PTINF-NAME(1:WRK-MOJISU)
@@ -307,7 +307,7 @@
            END-IF
       *
       *    ´µ¼Ô¥Þ¥¹¥¿¡¼¤ò´Á»ú»áÌ¾¤Ç¸¡º÷
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
            MOVE    "key5"              TO  MCP-PATHNAME
@@ -359,7 +359,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTINF-PTID          TO  SPA-GMN2F-PTID  (IDX)
       *
            INITIALIZE                      ORCSPTIDAREA
-           MOVE    SPA-HOSPID          TO  SPTID-HOSPID
+      *****MOVE    SPA-HOSPID          TO  SPTID-HOSPID
+           MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
            MOVE    PTINF-PTID          TO  SPTID-PTID
            CALL    "ORCSPTID"          USING   ORCSPTIDAREA
                                                SPA-1009-TBL
@@ -655,9 +656,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        810-PTINF-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  PTINF-REC
                MOVE    ZERO            TO  FLG-PTINF
@@ -676,9 +678,10 @@ grpsys                            SPA-AREA
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"     USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -689,9 +692,10 @@ grpsys                            SPA-AREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"     USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -704,9 +708,10 @@ grpsys                            SPA-AREA
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
            .
        990-DBCLOSE-EXT.
@@ -718,9 +723,10 @@ grpsys                            SPA-AREA
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL   "ORCDBMAIN"       USING
+                                        MCPAREA
+                                        MCPDATA-REC
+                                        SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.

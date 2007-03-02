@@ -431,9 +431,9 @@
       *
            MOVE    ZERO                TO  FLG-SRYKARRK
            MOVE    SPACE               TO  SRYKARRK-REC
-           MOVE    SPA-HOSPID          TO  KARRK-HOSPID
+      *****MOVE    SPA-HOSPID          TO  KARRK-HOSPID
            MOVE    SPA-GMN-PTID        TO  KARRK-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  KARRK-HOSPNUM
            MOVE    SRYKARRK-REC        TO  MCPDATA-REC
       *
            MOVE    "tbl_srykarrk"      TO  MCP-TABLE
@@ -508,7 +508,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    KARRK-SRYKA         TO  SYS-1005-KBNCD
            MOVE    WRK-SYMD            TO  SYS-1005-STYUKYMD
            MOVE    WRK-SYMD            TO  SYS-1005-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
            MOVE    SYS-1005-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -1279,12 +1279,12 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    ZERO                  TO  FLG-JYURRK
            MOVE    SPACE                 TO  JYURRK-REC
-           MOVE    SPA-HOSPID            TO  JYURRK-HOSPID
+      *****MOVE    SPA-HOSPID            TO  JYURRK-HOSPID
            MOVE    SPA-GMN-PTID          TO  JYURRK-PTID
            MOVE    WRK-SRYKA             TO  JYURRK-SRYKA
            MOVE    "2"                   TO  JYURRK-NYUGAIKBN
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM           TO  JYURRK-HOSPNUM
            MOVE    JYURRK-REC            TO  MCPDATA-REC
            MOVE    "tbl_jyurrk"          TO  MCP-TABLE
            MOVE    "key7"                TO  MCP-PATHNAME
@@ -1486,9 +1486,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"     USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -1499,9 +1500,10 @@ grpsys                            SPA-AREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"     USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -1514,9 +1516,10 @@ grpsys                            SPA-AREA
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
            .
        990-DBCLOSE-EXT.
@@ -1527,9 +1530,10 @@ grpsys                            SPA-AREA
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL   "ORCDBMAIN"       USING
+                                        MCPAREA
+                                        MCPDATA-REC
+                                        SPA-AREA
            .
        900-PUT-WINDOW-EXT.
            EXIT.

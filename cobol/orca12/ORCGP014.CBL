@@ -570,7 +570,8 @@
       *
       *    患者番号変換(管理）を検索
            INITIALIZE                      ORCSPTIDAREA
-           MOVE    SPA-HOSPID          TO  SPTID-HOSPID
+      *****MOVE    SPA-HOSPID          TO  SPTID-HOSPID
+           MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
            MOVE    SPA-GMN014-PTNUM    TO  SPTID-PTNUM
            CALL    "ORCSPTID"      USING   ORCSPTIDAREA
                                            SPA-1009-TBL
@@ -670,9 +671,10 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL   "ORCDBMAIN"       USING
+                                        MCPAREA
+                                        MCPDATA-REC
+                                        SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.

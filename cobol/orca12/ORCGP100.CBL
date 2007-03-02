@@ -631,26 +631,28 @@
       *
                    IF  (   FLG-JINMEI      =   ZERO )
       *                タイムスタンプを更新する
-grpsys*                MOVE SPA-HOSPNUM TO -HOSPNUM
+                       MOVE    SPA-HOSPNUM         TO  JINMEI-HOSPNUM
                        MOVE    JINMEI-REC          TO  MCPDATA-REC
                        MOVE    "DBUPDATE"          TO  MCP-FUNC
                        MOVE    "tbl_jinmei"        TO  MCP-TABLE
                        MOVE    "upd1"              TO  MCP-PATHNAME
-grpsys                 CALL "ORCDBMAIN" USING MCPAREA
-                                              MCPDATA-REC
-grpsys                                        SPA-AREA
+                       CALL    "ORCDBMAIN"         USING
+                                                       MCPAREA
+                                                       MCPDATA-REC
+                                                       SPA-AREA
                    ELSE
       *
                        DISPLAY "DBINSERT " JINMEI-REC
       *                人名テーブル追加処理
-grpsys*                MOVE SPA-HOSPNUM TO -HOSPNUM
+                       MOVE    SPA-HOSPNUM         TO  JINMEI-HOSPNUM
                        MOVE    JINMEI-REC          TO  MCPDATA-REC
                        MOVE    "DBINSERT"          TO  MCP-FUNC
                        MOVE    "tbl_jinmei"        TO  MCP-TABLE
                        MOVE    "key"               TO  MCP-PATHNAME
-grpsys                 CALL "ORCDBMAIN" USING MCPAREA
-                                              MCPDATA-REC
-grpsys                                        SPA-AREA
+                       CALL    "ORCDBMAIN"         USING
+                                                       MCPAREA
+                                                       MCPDATA-REC
+                                                       SPA-AREA
                    END-IF
       *
                END-IF
@@ -828,7 +830,7 @@ grpsys                                        SPA-AREA
            MOVE    ZERO                TO  FLG-JINMEI
       *
       *    人名テーブル検索
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  JINMEI-HOSPNUM
            MOVE    JINMEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_jinmei"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -861,9 +863,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DB-SELECT-SEC               SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
            .
       *
@@ -875,9 +878,10 @@ grpsys                            SPA-AREA
        910-DB-READ-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"     USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -889,9 +893,10 @@ grpsys                            SPA-AREA
        910-DB-CLOSE-SEC                SECTION.
       *
            MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"          USING
+                                            MCPAREA
+                                            MCPDATA-REC
+                                            SPA-AREA
       *
            .
       *
@@ -903,9 +908,10 @@ grpsys                            SPA-AREA
        900-PUT-WINDOW              SECTION.
       *
            MOVE    "PUTWINDOW"     TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"     USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.

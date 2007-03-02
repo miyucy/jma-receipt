@@ -265,7 +265,8 @@
       *        患者番号変換
                IF      UKE-PTID        NOT =   ZERO
                    INITIALIZE                  ORCSPTIDAREA
-                   MOVE    SPA-HOSPID      TO  SPTID-HOSPID
+      *************MOVE    SPA-HOSPID      TO  SPTID-HOSPID
+                   MOVE    SPA-HOSPNUM     TO  SPTID-HOSPNUM
                    MOVE    UKE-PTID        TO  SPTID-PTID
                    CALL    "ORCSPTID"          USING
                                                ORCSPTIDAREA
@@ -398,7 +399,7 @@
            MOVE    UKE-SRYKA       TO  SYS-1005-KBNCD
            MOVE    SPA-SYSYMD      TO  SYS-1005-STYUKYMD
            MOVE    SPA-SYSYMD      TO  SYS-1005-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM     TO  SYS-1005-HOSPNUM
            MOVE    SYS-1005-REC    TO  MCPDATA-REC
            PERFORM 800-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI    =   ZERO
@@ -422,7 +423,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    UKE-DRCD        TO  SYS-1010-KBNCD
            MOVE    SPA-SYSYMD      TO  SYS-1010-STYUKYMD
            MOVE    SPA-SYSYMD      TO  SYS-1010-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM     TO  SYS-1010-HOSPNUM
            MOVE    SYS-1010-REC    TO  MCPDATA-REC
            PERFORM 800-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI    =   ZERO
@@ -446,7 +447,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    UKE-SRYNAIYO    TO  SYS-1012-KBNCD
            MOVE    SPA-SYSYMD      TO  SYS-1012-STYUKYMD
            MOVE    SPA-SYSYMD      TO  SYS-1012-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM     TO  SYS-1012-HOSPNUM
            MOVE    SYS-1012-REC    TO  MCPDATA-REC
            PERFORM 800-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI    =   ZERO
@@ -500,9 +501,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        900-UKETUKE-SELECT-SEC      SECTION.
       *
            INITIALIZE                  UKETUKE-REC
-           MOVE    SPA-HOSPID      TO  UKE-HOSPID
+      *****MOVE    SPA-HOSPID      TO  UKE-HOSPID
            MOVE    SPA-SYSYMD      TO  UKE-UKEYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM     TO  UKE-HOSPNUM
            MOVE    UKETUKE-REC     TO  MCPDATA-REC
       *
            MOVE    "tbl_uketuke"   TO  MCP-TABLE
@@ -560,9 +561,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"     USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -573,9 +575,10 @@ grpsys                            SPA-AREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"     USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -588,9 +591,10 @@ grpsys                            SPA-AREA
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
            .
        990-DBCLOSE-EXT.

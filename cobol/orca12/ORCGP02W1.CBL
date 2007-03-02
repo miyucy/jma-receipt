@@ -1273,10 +1273,10 @@
       *
       *    保険者番号　検索チェック
            INITIALIZE                    HKNJAINF-REC
-           MOVE    SPA-HOSPID            TO  HKNJA-HOSPID
+      *****MOVE    SPA-HOSPID            TO  HKNJA-HOSPID
            MOVE    SPA-GMN-HKNJANUM      TO  HKNJA-HKNJANUM
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM           TO  HKNJA-HOSPNUM
            MOVE    HKNJAINF-REC          TO  MCPDATA-REC
            MOVE    "tbl_hknjainf"        TO  MCP-TABLE
            MOVE    "key"                 TO  MCP-PATHNAME
@@ -1354,7 +1354,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        31012-HKNNUM-SET-SEC           SECTION.
       *
            INITIALIZE                  HKNNUM-REC
-           MOVE    SPA-HOSPID          TO  HKN-HOSPID
+      *****MOVE    SPA-HOSPID          TO  HKN-HOSPID
            MOVE    WRK-HKNNUM          TO  HKN-HKNNUM
            IF      WRK-PAYKBN          =   SPACE
                MOVE    ZERO                TO  HKN-PAYKBN
@@ -1364,7 +1364,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    WRK-TEKSTYMD        TO  HKN-TEKSTYMD
            MOVE    WRK-TEKEDYMD        TO  HKN-TEKEDYMD
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
            MOVE    HKNNUM-REC          TO  MCPDATA-REC
            MOVE    "tbl_hknnum"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -1590,7 +1590,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-TERMID          TO  PARA-TERMID
            MOVE    "PTRSIINF"          TO  PARA-FILEMEI
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
            MOVE    PARA-REC            TO  MCPDATA-REC
            MOVE    "tbl_para"          TO  MCP-TABLE
            MOVE    "key5"              TO  MCP-PATHNAME
@@ -1702,11 +1702,11 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    保険者番号　検索チェック
            INITIALIZE                    HKNJAINF-REC
-           MOVE    SPA-HOSPID            TO  HKNJA-HOSPID
+      *****MOVE    SPA-HOSPID            TO  HKNJA-HOSPID
            MOVE    SPA-PTKOH-FTNJANUM(IDX)
                                          TO  HKNJA-HKNJANUM
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  HKNJA-HOSPNUM
            MOVE    HKNJAINF-REC        TO  MCPDATA-REC
            MOVE    "tbl_hknjainf"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -1770,7 +1770,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-TERMID          TO  PARA-TERMID
            MOVE    "HKNCOMBI"          TO  PARA-FILEMEI
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
            MOVE    PARA-REC            TO  MCPDATA-REC
            MOVE    "tbl_para"          TO  MCP-TABLE
            MOVE    "key5"              TO  MCP-PATHNAME
@@ -1970,7 +1970,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-TERMID          TO  PARA-TERMID
            MOVE    "PTRSIINF"          TO  PARA-FILEMEI
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
            MOVE    PARA-REC            TO  MCPDATA-REC
            MOVE    "tbl_para"          TO  MCP-TABLE
            MOVE    "key5"              TO  MCP-PATHNAME
@@ -3327,7 +3327,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-GMN-POST (2:3)  TO  SYS-1015-KBNCD
            MOVE    SPA-SYSYMD          TO  SYS-1015-STYUKYMD
            MOVE    SPA-SYSYMD          TO  SYS-1015-EDYUKYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1015-HOSPNUM
            MOVE    SYS-1015-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -3356,7 +3356,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-1015-LPUBCD     TO  ADRS-LPUBCD
            MOVE    SYS-1015-POST       TO  ADRS-POST
            MOVE    SYS-1015-RENNUM     TO  ADRS-EDANUM
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  ADRS-HOSPNUM
            MOVE    ADRS-REC            TO  MCPDATA-REC
            MOVE    "tbl_adrs"          TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -5219,14 +5219,15 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-TERMID          TO  PARA-TERMID
            MOVE    "PTHKNINF"          TO  PARA-FILEMEI
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
            MOVE    PARA-REC            TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_para"          TO  MCP-TABLE
            MOVE    "del3"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -5240,14 +5241,15 @@ grpsys                            SPA-AREA
                MOVE    IDX                 TO  PARA-EDANUM
                MOVE    PTHKNINF-REC        TO  PARA-DATA-REC
       *
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
+               MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
                MOVE    PARA-REC            TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "tbl_para"          TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-grpsys         CALL "ORCDBMAIN" USING MCPAREA
-                                      MCPDATA-REC
-grpsys                                SPA-AREA
+               CALL    "ORCDBMAIN"         USING
+                                               MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P02W1 PARA HKNINF INS ERR:"  MCP-RC
@@ -5266,7 +5268,8 @@ grpsys                                SPA-AREA
            MOVE    SPACE               TO  PTHKNINF-REC
            INITIALIZE                      PTHKNINF-REC
       *
-           MOVE    SPA-HOSPID          TO  PTHKN-HOSPID
+      *****MOVE    SPA-HOSPID          TO  PTHKN-HOSPID
+           MOVE    SPA-HOSPNUM         TO  PTHKN-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  PTHKN-PTID
            MOVE    SPA-PTHKN-HKNID     (IDX)   TO  PTHKN-HKNID
            MOVE    SPA-PTHKN-HKNNUM    (IDX)   TO  PTHKN-HKNNUM
@@ -5298,14 +5301,15 @@ grpsys                                SPA-AREA
            MOVE    SPA-TERMID          TO  PARA-TERMID
            MOVE    "PTKOHINF"          TO  PARA-FILEMEI
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
            MOVE    PARA-REC            TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_para"          TO  MCP-TABLE
            MOVE    "del3"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-PTKOH-MAX
@@ -5319,14 +5323,15 @@ grpsys                            SPA-AREA
                MOVE    IDX                 TO  PARA-EDANUM
                MOVE    PTKOHINF-REC        TO  PARA-DATA-REC
       *
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
+               MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
                MOVE    PARA-REC            TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "tbl_para"          TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-grpsys         CALL "ORCDBMAIN" USING MCPAREA
-                                      MCPDATA-REC
-grpsys                                SPA-AREA
+               CALL    "ORCDBMAIN"         USING
+                                               MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P02W1 PARA PTKOHINF INS ERR:"  MCP-RC
@@ -5345,7 +5350,8 @@ grpsys                                SPA-AREA
            MOVE    SPACE               TO  PTKOHINF-REC
            INITIALIZE                      PTKOHINF-REC
       *
-           MOVE    SPA-HOSPID          TO  PTKOH-HOSPID
+      *****MOVE    SPA-HOSPID          TO  PTKOH-HOSPID
+           MOVE    SPA-HOSPNUM         TO  PTKOH-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  PTKOH-PTID
            MOVE    SPA-PTKOH-KOHID     (IDX)   TO  PTKOH-KOHID
            MOVE    SPA-PTKOH-KOHNUM    (IDX)   TO  PTKOH-KOHNUM
@@ -5782,13 +5788,13 @@ grpsys                                SPA-AREA
       *
       *    労災か自賠責が登録されていること
            INITIALIZE                  HKNNUM-REC
-           MOVE    SPA-HOSPID          TO  HKN-HOSPID
+      *****MOVE    SPA-HOSPID          TO  HKN-HOSPID
            MOVE    SPA-SYSYMD          TO  HKN-TEKSTYMD
            MOVE    SPA-SYSYMD          TO  HKN-TEKEDYMD
            MOVE    "971"               TO  HKN-HKNNUM
            MOVE    ZERO                TO  HKN-PAYKBN
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
            MOVE    HKNNUM-REC          TO  MCPDATA-REC
            MOVE    "tbl_hknnum"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -5812,7 +5818,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    自賠責が登録されていること
            INITIALIZE                  HKNNUM-REC
-           MOVE    SPA-HOSPID          TO  HKN-HOSPID
+      *****MOVE    SPA-HOSPID          TO  HKN-HOSPID
+           MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
            MOVE    SPA-SYSYMD          TO  HKN-TEKSTYMD
            MOVE    SPA-SYSYMD          TO  HKN-TEKEDYMD
            MOVE    "973"               TO  HKN-HKNNUM
@@ -6068,7 +6075,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-TERMID          TO  PARA-TERMID
            MOVE    "HKNCOMBI"          TO  PARA-FILEMEI
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
            MOVE    PARA-REC            TO  MCPDATA-REC
            MOVE    "tbl_para"          TO  MCP-TABLE
            MOVE    "key5"              TO  MCP-PATHNAME
@@ -6746,7 +6753,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        941-JINMEI-SELECT-SEC           SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  JINMEI-HOSPNUM
            MOVE    JINMEI-REC          TO  MCPDATA-REC
       *
            MOVE    "tbl_jinmei"        TO  MCP-TABLE
@@ -6837,9 +6844,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"     USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
        910-DBSELECT-EXT.
@@ -6850,9 +6858,10 @@ grpsys                            SPA-AREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"     USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -6865,9 +6874,10 @@ grpsys                            SPA-AREA
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
            .
        990-DBCLOSE-EXT.
@@ -6880,9 +6890,10 @@ grpsys                            SPA-AREA
        900-PUT-WINDOW           SECTION.
       *
            MOVE    "PUTWINDOW"      TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"      USING
+                                        MCPAREA
+                                        MCPDATA-REC
+                                        SPA-AREA
            .
        900-PUT-WINDOW-EXT.
            EXIT.
