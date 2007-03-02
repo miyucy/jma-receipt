@@ -35,30 +35,4 @@
                05  ORCSCHKTCHK-HKTFLG     PIC 9(01).
       *        エラーあり
                05  ORCSCHKTCHK-HKTERR     PIC 9(01).
-      *        入院料算定なし
-               05  ORCSCHKTCHK-NYUERR     PIC 9(01).
-      *H29.1
-      *        翌月入院料算定なし
-               05  ORCSCHKTCHK-NYUERR-2     PIC 9(01).
-      *    入院料包括情報
-           03  ORCSCHKTCHK-NYUINAREA.
-               05  ORCSCHKTCHK-NYUHKTCHK       PIC 9(01).
-      *        診療日の包括区分
-               05  ORCSCHKTCHK-NYUHKTCD        PIC X(03).
-      *        診療日の入院料コード
-               05  ORCSCHKTCHK-NYUSRYCD        PIC X(09).
-               05  ORCSCHKTCHK-NYUHKT-G.
-                   07  ORCSCHKTCHK-NYUHKT-OCC  OCCURS   31.
-      *                ０：違う包括、１：同じ包括
-                       09  ORCSCHKTCHK-NYUHKTFLG   PIC 9(01).
-      *                １：出来高算定日
-                       09  ORCSCHKTCHK-DEKIDAFLG   PIC 9(01).
-      *外来まとめ算定履歴領域
-           03  ORCSCHKTCHK-KT01-AREA.
-               05  ORCSCHKTCHK-KT01FLG         PIC X(01).
-               05  ORCSCHKTCHK-KT01-OCC        OCCURS   100.
-                   07  ORCSCHKTCHK-KT01-SRYCD  PIC X(09).
-                   07  ORCSCHKTCHK-KT01-DAY-G.
-                       09  ORCSCHKTCHK-KT01-DAY     PIC 9(03)
-                                                  OCCURS   31.
       *
