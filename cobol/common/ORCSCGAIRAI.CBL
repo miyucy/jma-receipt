@@ -34,6 +34,7 @@
       *  01.00.04    NACL-Â¿¡¹Ç¼  06/03/06  ¼ç²ÊÀßÄêÄÉ²Ã
       *  03.04.00    NACL-Â¿¡¹Ç¼  07/01/22  ¼ýÇ¼º¹³Û½èÍýÄÉ²Ã
       *  03.04.01    NACL-Â¿¡¹Ç¼  07/02/20  ¼ýÇ¼ÍúÎò¥Þ¥¹¥¿ºï½üÄÉ²Ã
+      *  03.04.02    NACL-Â¿¡¹Ç¼  07/02/28  Ê£¿ôÊÝ¸±¤ËÊñ³çÊÝ¸±ÄÉ²Ã
       *****************************************************************
       *
       *
@@ -240,6 +241,8 @@
                    07  TBL-SRYKA               PIC X(02).
                    07  TBL-SRYKA-MAX           PIC 9(02).
                    07  TBL-SRYKA-REN           PIC 9(02).
+      *
+           03  WRK-SYUNOU-MAX          PIC 9(03).
       *
            03  WRK-SRYKA-MAX           PIC 9(02).
            03  WRK-SRYKA-REN           PIC 9(02).
@@ -526,6 +529,15 @@
            IF      SPA-SYORIFLG         =   1
                PERFORM 1001-TEISEI-SYORI-SEC
            END-IF
+      *    ¼ýÇ¼¤«¤éÊñ³çÊÝ¸±¤Î·ï¿ô¤òºï½ü
+           MOVE    ZERO                TO  WRK-SYUNOU-MAX
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   ORCSCGAIRAI-SYUNOU-MAX)
+               MOVE    ORCSCGAIRAI-SYUNOU-REC(IDX) TO  SYUNOU-REC
+               IF     (SYU-HKNCOMBINUM     NOT =   "9999" )
+                   ADD     1               TO  WRK-SYUNOU-MAX
+                END-IF
+           END-PERFORM
       *
       *    ²ÊËè¤ÎÊÝ¸±¿ô¤òÀßÄê¤¹¤ë
            INITIALIZE                  TBL-SRYKA-AREA
@@ -868,6 +880,7 @@
            IF      SPA-ERRCD           =   SPACE
       *        Êñ³çÊÝ¸±¤Î¾ì¹ç¡¢ÅÁÉ¼ÈÖ¹æ¤Î¤ß¼èÆÀ
                IF      SPA-HKNCOMBINUM     =   "9999"
+                  OR  (WRK-HKNCOMBI        =   "9999" )
                    MOVE    WRK-DENPNUM         TO  SYU-DENPNUM
       *            ¤Þ¤È¤áÆþÎÏÅÁÉ¼ÈÖ¹æ
                    IF      ORCSCGAIRAI-SYUNOU-MAX  >   1
@@ -1001,6 +1014,12 @@
                MOVE    WRK-GRP-RENNUM      TO  SYU-GRP-RENNUM
       *        È¯¹ÔÊýË¡
                MOVE    ORCSCGAIRAI-HAKHOUFLG   TO  SYU-GRP-HAKHOUFLG
+      *        Êñ³çÊÝ¸±°Ê³°¤Ï£±·ï¤Î»þ
+               IF      WRK-SYUNOU-MAX      =   1
+                   MOVE    ZERO                TO  SYU-GRP-DENPNUM
+                   MOVE    ZERO                TO  SYU-GRP-RENNUM
+                   MOVE    ZERO                TO  SYU-GRP-HAKHOUFLG
+               END-IF
            ELSE
                MOVE    ZERO                TO  SYU-GRP-DENPNUM
                MOVE    ZERO                TO  SYU-GRP-RENNUM
@@ -2939,6 +2958,11 @@
            MOVE    WRK-MEISAISU            TO  ORCSCZAICHK-MEISAISU
            MOVE    WRK-SRYSURYOKEI         TO  ORCSCZAICHK-SURYOUTOTAL
            MOVE    WRK-SRYKAISUKEI         TO  ORCSCZAICHK-ZAIKAISU
+      *@
+      *    Êñ³çºÞ¤ÎÀßÄê
+           IF      LNK-WKSRY-CONTKBN (1)   =   "H"
+               MOVE    "1"                 TO  ORCSCZAICHK-JIHOKBN
+           END-IF
            MOVE    ZERO                    TO  IDX-ATO
            PERFORM VARYING     IDX1    FROM    1   BY  1
                    UNTIL       IDX1        >   IDX-KOUI
@@ -3255,6 +3279,13 @@
                MOVE    "2"                 TO  ACCT-ZAIREQFLG
            END-IF
       *!!
+      *@
+      *    Êñ³çºÞ¤ÎÀßÄê
+           IF      LNK-WKSRY-CONTKBN (1)   =   "H"
+               MOVE    "1"                 TO  ACCT-JIHOKBN
+           ELSE
+               MOVE    SPACE               TO  ACCT-JIHOKBN
+           END-IF
            .
       *
        45015-SRYACCT-SRY-EXT.
@@ -3417,6 +3448,11 @@
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   IDX-KOUI  )
                            OR (SPA-ERRCD   NOT =   SPACE )
+      *      Êñ³çºÞ¤ÎÀßÄê
+             IF     (LNK-WKSRY-CONTKBN (IDX)   =   "H" )  OR
+                    (LNK-WKSRY-HKNCOMBI(IDX)   =   "9999")
+               CONTINUE
+             ELSE
                PERFORM VARYING     IDY     FROM    1   BY  1
                        UNTIL      (IDY     >   5   )  OR
                                   (LNK-WKSRY-SRYCD (IDX IDY) =   SPACE)
@@ -3450,8 +3486,9 @@
                        END-IF
                    END-IF
                END-PERFORM
-           END-PERFORM
       *
+             END-IF
+           END-PERFORM
       *
            .
        4502-SANTEI-SYORI-EXT.
@@ -3702,6 +3739,7 @@
                                OR (FLG-OK  =   1    )
                    MOVE    ORCSCGAIRAI-SYUNOU-REC(IDX) TO  SYUNOU-REC
                    IF      SYU-DENPNUM     =   SPA-TEI-DENPNUM (IDXF) 
+                    AND   (SYU-HKNCOMBINUM NOT =   "9999" )
                        MOVE    1               TO  FLG-OK
                        MOVE    IDX             TO  IDH-GAI
                     END-IF

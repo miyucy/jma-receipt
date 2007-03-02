@@ -43,6 +43,7 @@
       *  02.00.09    NACL-多々納  05/12/14  MONFUNC 対応 他
       *  02.00.10    NACL-多々納  05/12/20  処方せん料と調基の訂正判定
       *  02.00.11    NACL-多々納  06/06/09  後発医薬品ありの判定追加
+      *  03.04.00    NACL-多々納  07/02/XX  包括保険同時入力追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -967,12 +968,16 @@
                        UNTIL      (IDX     >   200  )  OR
                                  ((WRK-GMN-INPUTCD(IDX) =   SPACE) AND
                                   (WRK-COM-INPUTCD(IDX) =   SPACE))
+      *@
+               IF      WRK-COM-HKNCOMBI (IDX)  NOT =   "9999"
       *            調基の判定
                    IF     (WRK-COM-SRYKBN (IDX)    =   "27"  )  AND
                           (WRK-COM-INPUTCD(IDX)    =   "120001810" OR
                                                        "120001710")
                        MOVE    IDX                 TO  IDX-CHOKI
                    END-IF
+      *@
+               END-IF
                END-PERFORM
       *        調基が算定時の処方せん料とのチェック
                IF      IDX-CHOKI           >   ZERO
@@ -1032,6 +1037,8 @@
                        MOVE    SPA-HKNCOMBINUM
                                               TO  WRK-COM-HKNCOMBI(IDX)
                    END-IF
+      *@
+                   IF     WRK-COM-HKNCOMBI (IDX)  NOT =   "9999"
                    PERFORM VARYING     IDX-KA  FROM    1   BY  1
                            UNTIL       IDX-KA  >   10
                        IF      TBL-SRYKA (IDX-KA)  =   SPACE
@@ -1046,6 +1053,8 @@
                            MOVE    10              TO  IDX-KA
                        END-IF
                    END-PERFORM
+      *@
+                   END-IF
                END-IF
            END-PERFORM
       *
@@ -1133,6 +1142,8 @@
                               (WRK-COM-INPUTCD(IDX) =   SPACE))
       *
            IF      WRK-COM-SRYKA (IDX)     =   WRK-SRYKA
+      *@
+            AND    WRK-COM-HKNCOMBI (IDX)  NOT =   "9999"
                MOVE    WRK-COM-SRYSYUKBN (IDX) TO  WRK-CHK-SRYSYUKBN
       *----(01.00.01) LINE ADD START ----------------------------------
                IF      WRK-CHK-SRYSYUKBN       =   SPACE
@@ -1447,6 +1458,8 @@
                    UNTIL      (IDX3    >   200  )  OR
                               (WRK-GMN-INPUTCD(IDX3) =   SPACE)  OR
                               (FLG-YAKUZAI-ARI       =   1    )
+      *@
+           IF      WRK-COM-HKNCOMBI (IDX3)  NOT =   "9999"
                IF      WRK-COM-INPUTCD(IDX3)(1:1)  =   "6"
                    MOVE    1              TO  FLG-YAKUZAI-ARI
                ELSE
@@ -1455,6 +1468,8 @@
                        MOVE    300            TO  IDX3
                    END-IF
                END-IF
+      *@
+           END-IF
            END-PERFORM
       *
            IF      FLG-YAKUZAI-ARI      =   ZERO
@@ -2631,6 +2646,7 @@
                        OR    ( SPA-ERRCD       NOT  =   SPACE )
       *
              IF      WRK-COM-SRYKA(IDX)    =   WRK-SRYKA
+                AND (WRK-COM-HKNCOMBI(IDX) NOT =   "9999" )
       *
                MOVE    WRK-COM-SRYSYUKBN  (IDX)  TO  WRK-CHK-SRYSYUKBN
       *----(01.00.01) LINE ADD START ----------------------------------

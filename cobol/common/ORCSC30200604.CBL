@@ -546,7 +546,9 @@
                                                        =   "320" OR
                                                            "330" OR
                                                            "340" )
-                           PERFORM 1006-DOUJI-CHK-SEC
+                         AND  (WRK-COM-HKNCOMBI (IDX-Z)
+                                                   NOT =   "9999")
+                          PERFORM 1006-DOUJI-CHK-SEC
                        END-IF
                    END-IF
       *
@@ -1319,6 +1321,7 @@
                    UNTIL      (IDX     >   200  )  OR
                               (WRK-GMN-INPUTCD(IDX) =   SPACE)  OR
                               (SPA-ERRCD        NOT =   SPACE)
+             IF   (WRK-COM-HKNCOMBI (IDX) NOT =   "9999")
       *        点滴は１回のみとする（外来のみ）
                IF     (SPA-NYUGAIKBN               =   "2"   )  AND
                       (WRK-COM-SRYSYUKBN(IDX)  NOT =   "950"  AND
@@ -1373,6 +1376,7 @@
       *            END-IF
       **           MOVE    1               TO  FLG-TENTEKI
       ******   END-IF
+             END-IF
            END-PERFORM
       *----(01.00.01) LINE ADD START ----------------------------------
       *

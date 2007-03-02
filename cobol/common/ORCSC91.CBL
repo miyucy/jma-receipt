@@ -838,6 +838,11 @@
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX         >   200 )  OR
                               (SPA-GMN-INPUTCD (IDX)   =   SPACE)
+      *
+      *@
+             IF      (SPA-COM-HKNCOMBI (IDX)   =   "9999")
+               CONTINUE
+             ELSE
       *        入院で１日上限の時、入力日のみ
                MOVE    ZERO            TO  FLG-NYU-CHK
                IF     (SPA-NYUGAIKBN       =   "1"   )  AND
@@ -879,6 +884,9 @@
                    END-IF
                END-IF
              END-IF
+      *
+           END-IF
+      *
            END-PERFORM
       *
            .
@@ -1357,6 +1365,11 @@
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX         >   200 )  OR
                               (SPA-GMN-INPUTCD (IDX)   =   SPACE)
+      *@
+             IF      (SPA-COM-HKNCOMBI (IDX)   =   "9999")
+               CONTINUE
+             ELSE
+      *
       *        入院で１日上限の時、入力日のみ
                MOVE    ZERO            TO  FLG-NYU-CHK
                IF     (SPA-NYUGAIKBN       =   "1"   )  AND
@@ -1396,6 +1409,9 @@
                    END-IF
                END-IF
              END-IF
+      *
+             END-IF
+      *
            END-PERFORM
       *
            .

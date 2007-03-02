@@ -622,6 +622,7 @@
       *
       *    包括まとめ入力は以下対象外
            IF      SPA-HKNCOMBINUM     =   "9999"
+               OR (WRK-COM-HKNCOMBI (IDX-Z) =   "9999")
                GO      TO      100112-SYOEN-CHK-EXT
            END-IF
       *
@@ -1154,6 +1155,7 @@
                    (SPA-HKNCOMBINUM    NOT =   "9999") AND
                    (LNK-ORCSC-SINSATU-ARI  =   ZERO )  AND
                    (SPA-GAI-JIKANKBN   NOT =   ZERO )
+              AND  (WRK-COM-HKNCOMBI (IDX-ZS) NOT =   "9999")
                PERFORM 10019-JIKANKASAN-CHK-SEC
            END-IF
       *    時間加算

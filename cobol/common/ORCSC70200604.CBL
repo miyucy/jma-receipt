@@ -1091,6 +1091,7 @@
       *
       *    Êñ³ç¤Þ¤È¤áÆþÎÏ¤ÏÂÐ¾Ý³°
            IF      SPA-HKNCOMBINUM     =   "9999"
+             OR   (WRK-COM-HKNCOMBI (IDX-Z) =   "9999")
                GO      TO      10012-SYUGI-CHK-EXT
            END-IF
       *
@@ -2470,6 +2471,7 @@
                    UNTIL      (IDX-Z       >   200     )   OR
                               (SPA-ERRCD           NOT =   SPACE )  OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
+             IF   (WRK-COM-HKNCOMBI (IDX-Z) NOT =   "9999")
       *        »þ´Ö³°¶ÛµÞ±¡Æâ²èÁü¿ÇÃÇ²Ã»»
                IF      WRK-COM-INPUTCD(IDX-Z)  =   "170016010"
                    MOVE    IDX-Z           TO  IDX-GAI
@@ -2507,6 +2509,7 @@
                    MOVE    1               TO  FLG-TENTEKI
                END-IF
       *
+             END-IF
            END-PERFORM
       *
            IF      SPA-ERRCD       NOT =   SPACE
@@ -2808,6 +2811,7 @@
                    UNTIL      (IDX-Z       >   200     )   OR
                               (SPA-ERRCD           NOT =   SPACE )  OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
+             IF   (WRK-COM-HKNCOMBI (IDX-Z) NOT =   "9999")
                IF     (WRK-COM-SRYKBN (IDX-Z)  =   "70")  AND
                       (WRK-COM-INPUTCD(IDX-Z)(1:1)
                                                =   "1"  )  AND
@@ -2874,6 +2878,8 @@
                    MOVE    ZERO                TO  FLG-CTMRI-ARI
                    MOVE    ZERO                TO  FLG-KAKUI-ARI
                END-IF
+      *
+             END-IF
            END-PERFORM
       *    ²èÁü¿ÇÃÇ´ÉÍý²Ã»»ÄÉ²Ã
            PERFORM 3001-GAZOUKSN-SET-SEC

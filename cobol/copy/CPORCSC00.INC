@@ -245,6 +245,8 @@
                                                    OCCURS  5.
       *                自動発生分としない
                        09  LNK-ORCSC-AUTOKBN       PIC X(01).
+      *                包括剤
+                       09  LNK-ORCSC-HKTKBN        PIC 9(01).
       *    確認メッセージ
            03  LNK-ORCSC-KIDCD              PIC  X(04).
       *

@@ -41,6 +41,7 @@
       * 03.04.00     NACL-多々納  06/11/13  検査正式名称表示フラグ追加
       * 03.04.00     NACL-多々納  06/12/01  自賠責健保準拠追加
       * 03.04.01     NACL-多々納  06/12/14  薬剤附加チェック追加
+      * 03.04.02     NACL-多々納  07/02/28  包括診療追加対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1216,6 +1217,8 @@
            END-PERFORM
       *
            MOVE    SPA-SRYKBN          TO  SPA-J04-SRYKBN
+      *
+           MOVE    SPA-JIHOKBN         TO  SPA-J04-JIHOKBN
       *
       *    保険組合せ
            MOVE    SPA-HKNCOMBINUM     TO  SPA-J04-HKNCOMBI
@@ -4717,6 +4720,8 @@
       *
       *    包括まとめ入力以外
            IF      SPA-HKNCOMBINUM     =   "9999"
+      *      包括診療対象外
+             OR   (ACCT-JIHOKBN        =   "1"   )
                CONTINUE
            ELSE
                INITIALIZE                      ORCSSYUACCAREA
@@ -4939,6 +4944,7 @@
            MOVE    WRK-MEISAISU            TO  ORCSCZAICHK-MEISAISU
            MOVE    WRK-SURYOKEI            TO  ORCSCZAICHK-SURYOUTOTAL
            MOVE    1                       TO  ORCSCZAICHK-ZAIKAISU
+           MOVE    SPA-J04-JIHOKBN         TO  ORCSCZAICHK-JIHOKBN
            MOVE    ZERO                TO  IDX-ATO
            PERFORM VARYING     IDX1    FROM    1   BY  1
                    UNTIL       IDX1        >   SPA-GMN-MAX
@@ -5633,6 +5639,8 @@
       *    レセプト作成管理マスタ更新処理
            IF     (SPA-NYUGAIKBN       =   "2" )  AND
                   (SPA-HKNCOMBINUM NOT =   "9999")
+      *         包括診療対象外
+              AND (ACCT-JIHOKBN    NOT =   "1"   )
                PERFORM 45021-RECEUPD-UPDATE-SEC
            END-IF
       *
@@ -6154,6 +6162,10 @@
            IF     ACCT-HKNCOMBI        =   "9999"
                GO      TO      450422-SANTEI-UPD-EXT
            END-IF
+      *    包括診療対象外
+           IF      ACCT-JIHOKBN        =   "1"
+               GO      TO      450422-SANTEI-UPD-EXT
+           END-IF
       *
       *    自費の時対象外
            IF      ACCT-SRYKBN         =   "95"  OR  "96"
@@ -6523,6 +6535,8 @@
            MOVE    WRK-ZAINUM          TO  ACCT-ZAINUM
       *    保険組合せ
            MOVE    SPA-HKNCOMBINUM     TO  ACCT-HKNCOMBI
+      *    包括診療剤（自保区分）
+           MOVE    SPA-J04-JIHOKBN     TO  ACCT-JIHOKBN
       *    剤点数
            MOVE    WRK-ZAITEN          TO  ACCT-ZAITEN
       *    診療コード計

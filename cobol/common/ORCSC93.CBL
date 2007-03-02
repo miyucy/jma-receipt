@@ -87,6 +87,7 @@
            03  FLG-HASSYO          PIC 9(01).
       *
            03  FLG-ZEN             PIC 9(01).
+           03  FLG-HOUKATU         PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -102,6 +103,8 @@
            03  IDX-TBL             PIC 9(04).
            03  ID2                 PIC 9(02).
       *
+           03  IDX-Z               PIC 9(04).
+           03  IDX-S               PIC 9(04).
       *    °ì»þÎÎ°è
        01  WRK-AREA.
       *
@@ -297,13 +300,16 @@
            MOVE    ZERO                TO  WRK-ZAI-CNT
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX             >   200        )  OR
-                              (SPA-GMN-INPUTCD(IDX) =   SPACE )  OR
-                              (SPA-ERRCD       NOT  =   SPACE )
+                             ((SPA-GMN-INPUTCD(IDX) =   SPACE ) AND
+                              (SPA-COM-INPUTCD(IDX) =   SPACE ))
       *
+               MOVE    SPACE               TO  SPA-GMN-SRYKBN (IDX)
       *        ºÞËè¤ÎÆ±°ì¹àÌÜºÆÊÔ½¸
                IF     (IDX                         =   1   )  OR
                       (SPA-GMN-INPUTCD(IDX)(1:1)   =   "." )  OR
                       (SPA-COM-ZAIEND (IDX - 1)    =   "1" )
+                   MOVE    SPA-COM-SRYKBN (IDX)    TO  SPA-GMN-SRYKBN
+                                                                (IDX)
                    MOVE    SPA-COM-SRYSYUKBN (IDX) TO  WRK-H-SRYSYUKBN
                    MOVE    SPA-COM-SRYKBN (IDX)    TO  WRK-H-SRYKBN
                    ADD     1                       TO  WRK-ZAINUM
@@ -330,6 +336,27 @@
                IF      WRK-ZAI-CNT         >   50
                    MOVE    "7006"          TO  SPA-ERRCD
                    MOVE    "1"             TO  SPA-COM-CUR(IDX)
+               END-IF
+           END-PERFORM
+      *
+           MOVE    ZERO                TO  IDX
+           MOVE    1                   TO  IDX-S
+           MOVE    ZERO                TO  FLG-HOUKATU
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX         >   200     )   OR
+                             ((SPA-GMN-INPUTCD (IDX)   =   SPACE ) AND
+                              (SPA-COM-INPUTCD (IDX)   =   SPACE ))
+               IF     (SPA-COM-HOUKATU-FLG (IDX)   =   1  )
+                   MOVE    1                   TO  FLG-HOUKATU
+               END-IF
+               IF     (SPA-COM-ZAIEND (IDX)    =   "1"   )
+                   PERFORM VARYING     IDX-Z   FROM    IDX-S  BY  1
+                           UNTIL      (IDX-Z       >   IDX    )
+                       MOVE    FLG-HOUKATU     TO  SPA-COM-HOUKATU-ZAI
+                                                              (IDX-Z)
+                   END-PERFORM
+                   MOVE    IDX-Z               TO  IDX-S
+                   MOVE    ZERO                TO  FLG-HOUKATU
                END-IF
            END-PERFORM
            .

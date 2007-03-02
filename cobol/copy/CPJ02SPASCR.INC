@@ -54,6 +54,7 @@
                        09  SPA-NAI-SRYKBN          PIC  X(02).
                        09  SPA-NAI-ZAINUM          PIC  9(08).
                        09  SPA-NAI-HKNCOMBI        PIC  9(04).
+                       09  SPA-NAI-JIHOKBN         PIC  X(01).
                        09  SPA-NAI-ROUJIN          PIC  9(01).
                        09  SPA-NAI-JIHOKBN         PIC  X(01).
                        09  SPA-NAI-ZAITEN          PIC  9(08).

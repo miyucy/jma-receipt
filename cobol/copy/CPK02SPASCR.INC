@@ -152,7 +152,7 @@
       *                    数量チェック済（投与量チェック）
                            11  SPA-COM-SURCHK        PIC X(01).
       *                    併用算定済フラグ
-      *********************11  SPA-COM-SDOFLG        PIC X(01).
+                           11  SPA-COM-HCHKFLG       PIC X(01).
       *                    基本チェック済フラグ
                            11  SPA-COM-CHKFLG        PIC X(01).
       *                    時間加算フラグ
@@ -195,8 +195,12 @@
       *                後発医薬品有無（１：後発あり）
                        09  SPA-COM-KOUHATU-FLG   PIC  9(01).
       *!????
-      *                包括剤
+      *                包括コード（１：包括分）
                        09  SPA-COM-HOUKATU-FLG   PIC  9(01).
+      *                包括剤
+                       09  SPA-COM-HOUKATU-ZAI   PIC  9(01).
+      *                包括エラ−データ
+                       09  SPA-COM-HOUKATU-ERR   PIC  9(01).
       *!????
       *        診療会計附加項目
                        09  SPA-COM-PLUS-AREA.

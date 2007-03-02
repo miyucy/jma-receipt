@@ -854,13 +854,19 @@
                IF      SPA-GMN-HHKNCOMBI   =   ZERO
       *            抁喟引午戶動陸
                    IF      ACCT-HKNCOMBI       =   "9999"
+                      OR  (ACCT-JIHOKBN        =   "1"    )
                        MOVE    ZERO            TO  IDX
                    END-IF
                ELSE
                    IF      SPA-GMN-HHKNCOMBI   =   ACCT-HKNCOMBI
                        CONTINUE
                    ELSE
-                       MOVE    ZERO            TO  IDX
+                       IF     (SPA-GMN-HHKNCOMBI   =   "9999")
+                         AND  (ACCT-JIHOKBN        =   "1"    )
+                           CONTINUE
+                       ELSE
+                           MOVE    ZERO            TO  IDX
+                       END-IF
                    END-IF
                END-IF
       *
@@ -1725,6 +1731,7 @@
                IF      SPA-GMN-HHKNCOMBI   =   ZERO
       *            抁喟引午戶動陸
                    IF      ACCT-HKNCOMBI       =   "9999"
+                      OR  (ACCT-JIHOKBN        =   "1"    )
                        CONTINUE
                    ELSE
                        MOVE    1               TO  FLG-OK
@@ -1732,6 +1739,11 @@
                ELSE
                    IF      SPA-GMN-HHKNCOMBI   =   ACCT-HKNCOMBI
                        MOVE    1               TO  FLG-OK
+                   ELSE
+                       IF     (SPA-GMN-HHKNCOMBI   =   "9999")
+                         AND  (ACCT-JIHOKBN        =   "1"    )
+                           MOVE    1               TO  FLG-OK
+                       END-IF
                    END-IF
                END-IF
                IF     (FLG-OK              =   1   )  AND

@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-多々納  06/07/07  領収書変更対応
       *  03.04.01    NACL-森脇    07/01/17  医療機関名称、住所セット変更
+      *  03.04.02    NACL-多々納  07/02/28  包括分対象外追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -564,6 +565,11 @@
                   (ACCT-ZAITEN         =   ZERO )  OR
                   (ACCT-SRYKBN         =   "98"
                                        OR  "99" )
+      *---(03.04.02) LINE ADD START -----------------------------------
+      *      包括分は対象外
+               OR (ACCT-HKNCOMBI       =   "9999")
+               OR (ACCT-JIHOKBN        =   "1"   )
+      *---(03.04.02) LINE ADD END   -----------------------------------
                CONTINUE
            ELSE
                PERFORM 20021-SRYACT-SYORI-SEC
@@ -615,6 +621,7 @@
                        PERFORM 200211-MEISE-HEN-SEC
                    END-IF
                END-PERFORM
+      *
                MOVE    "tbl_sryact"        TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 920-SRYACT-READ-SEC

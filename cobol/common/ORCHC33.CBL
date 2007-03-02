@@ -30,6 +30,7 @@
       * 01.00.01     NACL-多々納  04/12/15  追記印刷・日集計追加他
       * 01.00.02     NACL-多々納  06/05/15  MONFUNC 対応
       * 03.04.01     NACL-森脇    07/02/08  平成１９年４月自費消費税表示変更
+      * 03.04.02     NACL-多々納  07/02/28  包括診療追加対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -698,7 +699,8 @@
            PERFORM
                UNTIL      (FLG-SRYACCT     =   1   )
       *        包括まとめ入力対象外
-               IF      ACCT-HKNCOMBI       =   "9999"
+               IF     (ACCT-HKNCOMBI       =   "9999" )
+                  OR  (ACCT-JIHOKBN        =   "1"    )
                    CONTINUE
                ELSE
       *            保険編集

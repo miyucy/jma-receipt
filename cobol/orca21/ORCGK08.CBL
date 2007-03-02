@@ -49,6 +49,7 @@
       *  01.00.20    NACL-Â¿¡¹Ç¼  06/07/06  ¼ýÇ¼ÊÑ¹¹ÂÐ±þ
       *  01.00.21    NACL-Â¿¡¹Ç¼  06/08/18  Ê¡²¬¸©ÃÏÊý¸øÈñ¤ËÆ±Æü½é¿ÇÄÉ²Ã
       *  03.04.00    NACL-Â¿¡¹Ç¼  06/11/14  ¸¡ººÀµ¼°Ì¾¾ÎÉ½¼¨ÄÉ²ÃÂ¾
+      *  03.04.01    NACL-Â¿¡¹Ç¼  07/02/XX  Êñ³ç¿ÇÎÅ½èÍýÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -466,6 +467,8 @@
            03  WRK-HOUKNS-CNT          PIC 9(02).
            03  WRK-HOUKNS-IDX          PIC 9(04).
            03  WRK-HOUKNS-NAME         PIC X(100).
+      *    Êñ³çºÞ¤ÎÈ½Äê
+           03  WRK-HKTZAI              PIC X(01).
       *
       *    ·ÑÂ³¤Î»þ¡¢¼«Æ°È¯À¸¤Î¥Á¥§¥Ã¥¯
        01  WRK-CONTCHK-TBL.
@@ -1461,6 +1464,16 @@
                END-IF
            END-PERFORM
       *
+      *    Êñ³çºÞ¤ÎÈ½Äê
+           MOVE    SPACE               TO  WRK-HKTZAI
+           IF     (SPA-HKNCOMBINUM     =   "9999" )  OR
+                  (WRK-HKNCOMBI        =   "9999" )
+               MOVE    "2"                 TO  WRK-HKTZAI
+           ELSE
+               IF       (LNK-WKSRY-CONTKBN (1)   =   "H" )
+                   MOVE    "1"                 TO  WRK-HKTZAI
+               END-IF
+           END-IF
       *    ºÞÊÌÊÔ½¸
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   IDX-KOUI )
@@ -1470,13 +1483,10 @@
       *        ²ó¿ô·×
                MOVE    LNK-WKSRY-ZAIKAIKEI(IDX)    TO  WRK-SRYKAISUKEI
       *        ¼«Èñ
-      *        IF      LNK-WKSRY-JIHIMONEYTOTAL (IDX)
-      ***                                      NOT =   ZERO
-                   MOVE    LNK-WKSRY-JIHIMONEYTOTAL (IDX)
+               MOVE    LNK-WKSRY-JIHIMONEYTOTAL (IDX)
                                                   TO  WRK-JIHIMONEY
-                   ADD     LNK-WKSRY-JIHIMONEYTOTAL (IDX)
+               ADD     LNK-WKSRY-JIHIMONEYTOTAL (IDX)
                                                   TO  WRK-JIHIMONEY-KEI
-      ***      END-IF
       *
       *        ºÞÆâ£±¹ÔÌÜ
                IF      IDX                 =   1
@@ -1557,6 +1567,11 @@
            END-IF
            COMPUTE WRK-KEI-G           =   WRK-ZAITEN
                                        *   WRK-SRYKAISUKEI
+      *    Êñ³çÊ¬
+           IF      WRK-HKTZAI      NOT =   SPACE
+               MOVE    ZERO            TO  WRK-KEI-G
+           END-IF
+      *
            MOVE    WRK-KEI-G           TO  SPA-NAI-HKNTEN  (IDX-NAI)
       *    Ï«ºÒ¶â³Û¤Î»þ¡¢¥¼¥í¡Ê»ØÆ³ÎÁ¡¢¤½¤ÎÂ¾¤Î¤ß¡Ë
            IF      LNK-WKSRY-SRYKBN (01)   =   "13"  OR  "80"
@@ -1900,6 +1915,11 @@
                                        *   LNK-SC97-KAISU
            COMPUTE WRK-KEI-G           =   WRK-ZAITEN
                                        *   WRK-KAISU-9
+      *    Êñ³çÊ¬
+           IF      WRK-HKTZAI      NOT =   SPACE
+               MOVE    ZERO            TO  WRK-KEI-G
+           END-IF
+      *
            ADD     WRK-KEI-G           TO  SPA-NAI-HKNTEN  (IDX-NAI)
       *    Ï«ºÒ¶â³Û¤Î»þ¡¢¥¼¥í¡Ê»ØÆ³ÎÁ¡¢¤½¤ÎÂ¾¤Î¤ß¡Ë
            IF      LNK-WKSRY-SRYKBN (01)   =   "13"  OR  "80"
@@ -1982,6 +2002,11 @@
                                        *   LNK-SC97-KAISU
            COMPUTE WRK-KEI-G           =   WRK-JIHIMONEY-KEI
                                        *   WRK-KAISU-9
+      *    Êñ³çÊ¬
+           IF      WRK-HKTZAI      NOT =   SPACE
+               MOVE    ZERO            TO  WRK-KEI-G
+           END-IF
+      *
            MOVE    WRK-KEI-G           TO  WRK-KEI
            MOVE    SPACE               TO  WRK-ZAIKEIJIJ
       *    ·×½¸·×
@@ -2129,6 +2154,10 @@
                MOVE    LNK-WKSRY-SRYSYUKBN (IDX)
                                        TO  SPA-GMN-TMEISYO1(IDG)(2:3)
                MOVE    WRK-SRYSYUMEI   TO  SPA-GMN-TMEISYO1(IDG)(7:)
+           END-IF
+      *    Êñ³çºÞ
+           IF      WRK-HKTZAI          =   "1"
+               MOVE    "¡ÚÊñ³çÊ¬¡Û"     TO   SPA-GMN-TMEISYO1(IDG)(57:)
            END-IF
       *
            INSPECT SPA-GMN-TMEISYO1 (IDG)  REPLACING  ALL "  "  BY "¡¡"
@@ -2665,6 +2694,11 @@
            END-IF
            COMPUTE WRK-KEI-G           =   WRK-ZAITEN
                                        *   WRK-SRYKAISUKEI
+      *    Êñ³çÊ¬
+           IF      WRK-HKTZAI      NOT =   SPACE
+               MOVE    ZERO            TO  WRK-KEI-G
+           END-IF
+      *
            MOVE    WRK-KEI-G           TO  WRK-KEI
       *    ¹ç·×ÅÀ¿ô½¸·×
       *****IF      LNK-WKSRY-SRYCD (01 01)     =   "630010002"
@@ -5276,10 +5310,13 @@
                        MOVE    IDX                 TO  LNK-WKSRYACT-MAX
       *            ¼ýÇ¼
                    WHEN    "SYUNOU"
-                       ADD     1                   TO  LNK-SYUNOU-MAX
-                       IF      LNK-SYUNOU-MAX      <=  15
-                           MOVE    PARA-DATA-REC   TO  LNK-SYUNOU-REC
+                       MOVE    PARA-DATA-REC       TO  SYUNOU-REC
+                       IF     (SYU-HKNCOMBINUM     NOT =   "9999" )
+                           ADD     1               TO  LNK-SYUNOU-MAX
+                           IF      LNK-SYUNOU-MAX      <=  15
+                             MOVE    PARA-DATA-REC   TO  LNK-SYUNOU-REC
                                                        (LNK-SYUNOU-MAX)
+                           END-IF
                        END-IF
       *            ¤½¤ÎÂ¾
                    WHEN    OTHER
@@ -5362,8 +5399,14 @@
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   LNK-WKSRYACT-MAX
                MOVE    ZERO                TO  FLG-DEL
+      *        Êñ³çÊ¬¤ÏÂÐ¾Ý³°
+               IF     (LNK-WKSRY-HKNCOMBI (IDX)    =   "9999")
+                   OR (LNK-WKSRY-CONTKBN  (IDX)    =   "H"   )
+                   MOVE    1               TO  FLG-DEL
+               END-IF
                PERFORM VARYING     IDY     FROM    1   BY  1
-                       UNTIL       IDY     >   600
+                       UNTIL      (IDY     >   600     )
+                               OR (FLG-DEL =   1       )
                    IF      LNK-WKSRY-ZAINUM (IDX)  =   SPA-NAI-ZAINUM
                                                                  (IDY)
                        IF      SPA-NAI-DELFLG (IDY)    =   1

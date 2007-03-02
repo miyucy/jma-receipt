@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-多々納  05/11/22  MONFUNC 対応
+      *  03.04.00    NACL-多々納  07/02/XX  包括診療対応
       *****************************************************************
       *
       *
@@ -222,6 +223,8 @@
                  AND   (ACCT-ZAITEN        =   ORCSCZAICHK-ZAITEN    )
                  AND   (ACCT-MEISAISU      =   ORCSCZAICHK-MEISAISU  )
                  AND   (ACCT-SURYOUTOTAL   =   ORCSCZAICHK-SURYOUTOTAL)
+      *          自保区分（包括剤）
+                 AND   (ACCT-JIHOKBN       =   ORCSCZAICHK-JIHOKBN   )
                    MOVE    ACCT-ZAINUM         TO  WRK-H-ZAINUM
       *            診療行為内容の比較処理
                    PERFORM 1002-SRYACCT-CHK-SEC

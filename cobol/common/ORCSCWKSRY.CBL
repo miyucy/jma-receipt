@@ -30,6 +30,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-多々納  05/11/22  MONFUNC 対応
       *  01.00.02    NACL-多々納  06/07/06  収納変更対応
+      *  03.04.00    NACL-多々納  07/02/XX  包括診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -94,6 +95,7 @@
            03  FLG-AUTO-NASI       PIC 9(01).
       *
            03  FLG-TIME            PIC 9(01).
+           03  FLG-HKN999          PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -174,6 +176,8 @@
       *
            03  WRK-SYU-DENPNUM     PIC 9(07).
            03  WRK-TNSSRYSYUKBN        PIC X(03).
+      *
+           03  WRK-HOUKATU-ZAI         PIC 9(01).
       *
       *画面最大行
        01  WRK-GYO-MAX                 PIC 9(04)   VALUE   200.
@@ -1043,6 +1047,17 @@
            IF      FLG-AUTO-OK         =   1
                MOVE    SPACE               TO  SPA-COM-AUTOKBN (IDX2)
            END-IF
+      *@
+      *    包括剤の設定
+           IF      LNK-WKSRY-CONTKBN (IDX) =   "H"
+               MOVE    1               TO  SPA-COM-HOUKATU-FLG(IDX2)
+               MOVE    1               TO  SPA-COM-HOUKATU-ZAI(IDX2)
+      *        包括診療行為チェックをオンにする
+               IF      SPA-HKTSANTEI-FLG   =   ZERO
+                   MOVE   1                TO  SPA-HKTSANTEI-FLG
+               END-IF
+           END-IF
+      *@
       *
            MOVE    LNK-WKSRY-INPUTCHI-G (IDX IDY)
                                        TO  SPA-COM-INPUTCHI-G  (IDX2)
@@ -1971,6 +1986,12 @@
            MOVE    SPA-DOUJI-RENNUM    TO  WKSRY-DOUJI-RENNUM
       *    継続区分
            MOVE    SPA-CONTKBN         TO  WKSRY-CONTKBN
+      *@
+      *    包括剤は継続区分に'H'を編集
+           IF      SPA-COM-HOUKATU-ZAI(IDX) =   1
+               MOVE    "H"              TO  WKSRY-CONTKBN
+           END-IF
+      *@
       *    ドクター
            MOVE    SPA-DRCD            TO  WKSRY-DRCD
       *    電子カルテフラグ
@@ -2180,6 +2201,7 @@
                PERFORM 30022-WKSRYACTPLUS-SEC
            END-IF
       *
+           MOVE    SPA-COM-HOUKATU-ZAI (IDX)   TO  WRK-HOUKATU-ZAI
            PERFORM 300211-WKSRYPARA-WRITE-SEC
       *
            IF      SPA-COM-ZAIEND(IDX) =   "1"
@@ -2209,7 +2231,7 @@
       *    診療会計マスタ作成の為、剤点数計、回数を保存する
            MOVE    WRK-TENSUKEI        TO  WKSRY-ZAITENKEI
            MOVE    WRK-KAISUKEI        TO  WKSRY-ZAIKAIKEI
-      *     各計
+      *    各計
            MOVE    WRK-SYUTEN1         TO  WKSRY-SYUTEN1
            MOVE    WRK-SYUTEN2         TO  WKSRY-SYUTEN2
            MOVE    WRK-YKZTEN          TO  WKSRY-YKZTEN
@@ -2223,6 +2245,12 @@
            MOVE    SPA-DOUJI-RENNUM    TO  WKSRY-DOUJI-RENNUM
       *    継続区分
            MOVE    SPA-CONTKBN         TO  WKSRY-CONTKBN
+      *@
+      *    包括剤は継続区分に'H'を編集
+           IF      WRK-HOUKATU-ZAI      =   1
+               MOVE    "H"              TO  WKSRY-CONTKBN
+           END-IF
+      *@
       *    ドクター
            MOVE    SPA-DRCD            TO  WKSRY-DRCD
       *
@@ -2471,6 +2499,7 @@
            MOVE    SPA-GMN-FTNRATEMEI  TO  SPA-TBL-FTNRATEMEI(IDH)
            MOVE    SPA-SRYKA           TO  SPA-TBL-SRYKA (IDH 1)
            MOVE    SPA-DRCD            TO  SPA-TBL-DRCD  (IDH 1)
+           MOVE    ZERO                TO  FLG-HKN999
            PERFORM VARYING     IDH1    FROM    1   BY  1
                    UNTIL      (IDH1    >   WRK-GYO-MAX )  OR
                              ((SPA-GMN-INPUTCD (IDH1)  =   SPACE ) AND
@@ -2479,6 +2508,9 @@
                                                    OR  "$"
                    CONTINUE
                ELSE
+                 IF      SPA-COM-HKNCOMBI(IDH1)  =   "9999"
+                     MOVE    1                   TO  FLG-HKN999
+                 ELSE
                    MOVE    SPA-COM-HKNCOMBI(IDH1)  TO  WRK-HKNCOMBI
                    PERFORM VARYING     IDH     FROM    1   BY  1
                            UNTIL       IDH     >   15
@@ -2490,8 +2522,21 @@
                            MOVE    15              TO  IDH
                        END-IF
                    END-PERFORM
+                 END-IF
                END-IF
            END-PERFORM
+      *    包括保険は最後
+           IF     (SPA-HKNCOMBINUM NOT =   "9999")  AND
+                  (FLG-HKN999          =   1     )
+               PERFORM VARYING     IDH     FROM    1   BY  1
+                       UNTIL       IDH     >   15
+                   IF      SPA-TBL-HKNCOMBI (IDH)  =   SPACE
+                       MOVE    "9999"          TO  SPA-TBL-HKNCOMBI
+                                                                 (IDH)
+                       MOVE    15              TO  IDH
+                   END-IF
+               END-PERFORM
+           END-IF
       *
            PERFORM VARYING     IDH     FROM    1   BY  1
                    UNTIL      (IDH     >   15   )  OR
@@ -2743,6 +2788,12 @@
       *    診療行為より、収納マスタの請求額の計算処理
       *****************************************************************
        4501-SEIKYU-KEI-SEC             SECTION.
+      *
+      *    包括剤は対象外
+           IF     (SPA-COM-HOUKATU-ZAI (IDX)   =   1 )  OR
+                  (SPA-COM-HKNCOMBI    (IDX)   =   "9999")
+               GO      TO      4501-SEIKYU-KEI-EXT
+           END-IF
       *
       *   自費の集計（診療コードが'09500'で始まるもの）
           IF     (SPA-COM-INPUTCD(IDX)(1:5)   =   "09500"  OR
@@ -3250,6 +3301,12 @@
       *    自動加算分集計
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX         >   ORCSCWKSRY-KSN-IDX
+      *    包括剤は対象外
+           IF     (ORCSCWKSRY-KSN-HKTKBN  (IDX)   =   1 )  OR
+                  (ORCSCWKSRY-KSN-HKNCOMBI(IDX)   =   "9999")
+               CONTINUE
+           ELSE
+      *
             IF   ( ORCSCWKSRY-KSN-HKNCOMBI (IDX)  =   WRK-HKNCOMBI) AND
                  ((WRK-SRYKA               =   ZERO   )   OR
                   (ORCSCWKSRY-KSN-SRYKA    (IDX)  =   WRK-SRYKA  ))
@@ -3311,6 +3368,9 @@
                        PERFORM 4504-JIDOUKEI-SONOTA-SEC
                END-EVALUATE
              END-IF
+      *
+           END-IF
+      *
            END-PERFORM
       *
            .
@@ -3438,6 +3498,8 @@
       *
                IF      ORCSCWKSRY-KSN-ZAIEND(IDX)     =   "1"
       *            診療行為パラメタ出力
+                   MOVE    ORCSCWKSRY-KSN-HKTKBN(IDX)
+                                               TO  WRK-HOUKATU-ZAI
                    PERFORM 300211-WKSRYPARA-WRITE-SEC
                    ADD     1                   TO  WRK-ZAINUM
                    MOVE    ZERO                TO  IDY

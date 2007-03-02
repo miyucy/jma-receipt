@@ -5435,7 +5435,6 @@
                   (SPA-K02N-KENSAFLG   =   "T"  )
                MOVE    "F"             TO  SPA-K02N-KENSAFLG
            END-IF
-      *
       *!   特定診療チェック
       *    MOVE    SPA-K01KYOUTU       TO  SPA-WORK
       *    INITIALIZE                      ORCSC10SAREA
@@ -5490,8 +5489,6 @@
                    END-IF
       *            入院回数・日数
                    IF      SPA-GMN-INPUTCD(IDX)(1:1)   =   "*"
-      *************    MOVE    SPA-COM-NYUIN-AREA (IDX)
-      *************                            TO  WRK-NYUIN-AREA
                        PERFORM VARYING     IDX-N2  FROM    1   BY  1
                                UNTIL       IDX-N2  >   31
                            IF      SPA-COM-NYUINDAY  (IDX IDX-N2)
@@ -5505,11 +5502,9 @@
                                                    TO  WRK-NYU-KAI
                    END-IF
                    IF     (WRK-NYU-KAI         =   ZERO )
-      ************** AND  (SPA-SYORIFLG        =   ZERO )
                        MOVE    SPA-SRYYMD(7:2)     TO  IDX-N2
                        MOVE    1                   TO  WRK-NYUINDAY
                                                            (IDX-N2)
-      **************   MOVE    WRK-KAISU           TO  WRK-NYU-KAI
                        MOVE    1                   TO  WRK-NYU-KAI
                    END-IF
       *            入院回数入力分以外
@@ -5543,15 +5538,18 @@
                END-IF
            END-PERFORM
       *
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   WRK-GYO-MAX
+      *    算定回数・併用算定チェック
+           PERFORM 51017-SANTEI-CHEK-SEC
+      *
+      *    PERFORM VARYING     IDX     FROM    1   BY  1
+      *            UNTIL       IDX     >   WRK-GYO-MAX
       *        入院日数がある時回数のチェック
-               IF     (SPA-COM-SANTEIRRKKBN (IDX)
-                                           NOT =   ZERO  )  AND
-                      (SPA-COM-NYU-KAI (IDX)   >   ZERO  )
-                   PERFORM 51019-NYUIN-SANCHK-SEC
-               END-IF
-           END-PERFORM
+      *        IF     (SPA-COM-SANTEIRRKKBN (IDX)
+      *                                    NOT =   ZERO  )  AND
+      *               (SPA-COM-NYU-KAI (IDX)   >   ZERO  )
+      *            PERFORM 51019-NYUIN-SANCHK-SEC
+      *        END-IF
+      *    END-PERFORM
       *
            IF      SPA-ERRCD       NOT =   SPACE
               AND (FLG-INIT            =   ZERO )
@@ -5792,6 +5790,30 @@
        51011-KAISU-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    算定回数・併用算定チェック処理
+      *****************************************************************
+       51017-SANTEI-CHEK-SEC             SECTION.
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   WRK-GYO-MAX    )   OR
+                             ((SPA-GMN-INPUTCD (IDX)   =   SPACE ) AND
+                              (SPA-COM-INPUTCD (IDX)   =   SPACE ))
+                          OR ( SPA-ERRCD           NOT =   SPACE )
+               IF      (SPA-COM-SANTEIRRKKBN(IDX)
+                                               NOT =   ZERO )
+                 AND   (SPA-COM-HKNCOMBI(IDX)  NOT =   "9999")
+                 AND   (SPA-COM-HCHKFLG (IDX)      =   SPACE )
+      *
+                   PERFORM 51019-NYUIN-SANCHK-SEC
+                   IF      SPA-ERRCD           =   SPACE
+                       MOVE    "1"             TO  SPA-COM-HCHKFLG(IDX)
+                   END-IF
+               END-IF
+           END-PERFORM
+           .
+       51017-SANTEI-CHEK-EXT.
+           EXIT.
+      *****************************************************************
       *    入院日数がある時回数のチェック処理
       *****************************************************************
        51019-NYUIN-SANCHK-SEC             SECTION.
@@ -5851,7 +5873,9 @@
                            MOVE    SPACE           TO  LNK-SC91-ERRCD
                            MOVE    SPACE           TO  LNK-SC91-ERRMSG
                            MOVE    SPACE           TO  SPA-COM-CUR
-                                                                (IDX)
+                                                                  (IDX)
+                           MOVE    "1"             TO  SPA-COM-HCHKFLG
+                                                                  (IDX)
                        END-IF
                    END-IF
                    MOVE    LNK-SC91-ERRCD      TO  SPA-ERRCD
@@ -7446,6 +7470,8 @@
                                            TO  SPA-GMN-SRYYMD
            END-IF
       *
+           INITIALIZE                      SPA-NAIACCT2-AREA
+           INITIALIZE                      SPA-RIGAKU-NCNT-AREA
       *    当月診療行為チェック用編集、当月累計点数計算
       *****PERFORM 3201-TOUCHKSET-SEC
       *    点滴の変更
@@ -10201,6 +10227,15 @@
                    MOVE    SPA-GMN-MEISYO-G(WRK-IDX)
                                                TO  K02N-MEISYO(IDX)
                    PERFORM 5002-SURYO-HEN-SEC
+      *@
+      *            包括行
+                   IF     (SPA-COM-HOUKATU-ZAI (WRK-IDX) =   1 )
+                       MOVE    "blue"         TO  K02N-SRYKBN-STYLE(IDX)
+                       MOVE    "blue"         TO  K02N-MEISYO-STYLE(IDX)
+                   ELSE
+                       MOVE    "black"        TO  K02N-SRYKBN-STYLE(IDX)
+                       MOVE    "black"        TO  K02N-MEISYO-STYLE(IDX)
+                   END-IF
                END-IF
       *
            END-PERFORM
@@ -10506,6 +10541,11 @@
       *
            MOVE    WRK-SURYO-HENSYU    TO  K02N-SURYO (IDX)
            MOVE    "user-font"         TO  K02N-SURYO-STYLE(IDX)
+      *@
+      *    包括剤
+           IF    ( SPA-COM-HOUKATU-ZAI (WRK-IDX) =   1  ) 
+              MOVE    "blue"         TO  K02N-SURYO-STYLE(IDX)
+           END-IF
       *
            .
        5002-SURYO-HEN-EXT.

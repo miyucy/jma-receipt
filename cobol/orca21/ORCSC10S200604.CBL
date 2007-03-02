@@ -3897,6 +3897,7 @@
                    UNTIL      (IDX     >   200                )  OR
                               (SPA-COM-INPUTCD(IDX) =   SPACE  AND
                                SPA-GMN-INPUTCD(IDX) =   SPACE )
+             IF      SPA-COM-HKNCOMBI (IDX)    NOT =   "9999"
       *
       *        ÆÃÄê¤Î¿ÇÎÅ¹Ô°ÙÈ½Äê
                EVALUATE    SPA-COM-INPUTCD (IDX)
@@ -4027,6 +4028,7 @@
                            END-IF
                    END-EVALUATE
                END-IF
+             END-IF
            END-PERFORM
            IF      SPA-SYONIKA-ARI     =   ZERO
                MOVE    SPA-SYONIKA-ARI2    TO  SPA-SYONIKA-ARI
@@ -4109,6 +4111,8 @@
                                                      "$" )
       *              ¥³¥á¥ó¥È
                  OR (SPA-COM-INPUTCD(IDX)(1:1)   =   "8" )
+      *          Êñ³çÊÝ¸±
+                 OR (SPA-COM-HKNCOMBI (IDX)      =   "9999")
                  CONTINUE
              ELSE
       *        ¾®»ù²Ê³°Íè¿ÇÎÅ²Ê¤Î»þ¡¢¾®»ù²Ê³°Íè¿ÇÎÅ²Ê¤Î¤ß¤Ç¤¢¤ë¤³¤È
@@ -4368,6 +4372,10 @@
                    UNTIL      (IDX         >   200      )   OR
                               (SPA-ERRCD           NOT =   SPACE )  OR
                               (SPA-GMN-INPUTCD (IDX)   =   SPACE )
+      *      Êñ³çÊÝ¸±
+             IF     (SPA-COM-HKNCOMBI (IDX)      =   "9999")
+               CONTINUE
+             ELSE
       *        À¸³è»ØÆ³¡¢¸¡ºº¡¢Ãí¼Í¡¢ºßÂðÎÁ°Ê³°¤Ç¤¢¤ë¤³¤È
                EVALUATE    SPA-COM-SRYKBN(IDX)
                    WHEN    "31"
@@ -4418,6 +4426,7 @@
                            END-IF
                        END-IF
                END-EVALUATE
+             END-IF
            END-PERFORM
            .
        5020-ROUMANSEI-CHK-EXT.
@@ -4495,6 +4504,10 @@
                    UNTIL      (IDX         >   200      )   OR
                               (SPA-ERRCD           NOT =   SPACE )  OR
                               (SPA-GMN-INPUTCD (IDX)   =   SPACE )
+      *      Êñ³çÊÝ¸±
+             IF     (SPA-COM-HKNCOMBI (IDX)      =   "9999")
+               CONTINUE
+             ELSE
       *        ¸¡ºº¡¢ÅêÌô¡¢Ãí¼Í¤Ï»»Äê¤Ç¤­¤Ê¤¤
                EVALUATE    SPA-COM-SRYKBN(IDX)
                    WHEN    "60"
@@ -4546,6 +4559,7 @@
                            END-IF
                        END-IF
                END-EVALUATE
+             END-IF
            END-PERFORM
            .
        5022-SEIKATU-CHK-EXT.
@@ -4559,6 +4573,10 @@
                    UNTIL      (IDX         >   200      )   OR
                               (SPA-ERRCD           NOT =   SPACE )  OR
                               (SPA-GMN-INPUTCD (IDX)   =   SPACE )
+      *      Êñ³çÊÝ¸±
+             IF     (SPA-COM-HKNCOMBI (IDX)      =   "9999")
+               CONTINUE
+             ELSE
       *        ¸¡ºº¡¢ÅêÌô¡¢Ãí¼Í¤Ï»»Äê¤Ç¤­¤Ê¤¤
                EVALUATE    SPA-COM-SRYKBN(IDX)
                    WHEN    "21"
@@ -4604,6 +4622,7 @@
                            END-IF
                        END-IF
                END-EVALUATE
+             END-IF
            END-PERFORM
            .
        5022-ZAIKANRI-CHK-EXT.
@@ -4617,6 +4636,10 @@
                    UNTIL      (IDX         >   200      )   OR
                               (SPA-ERRCD           NOT =   SPACE )  OR
                               (SPA-GMN-INPUTCD (IDX)   =   SPACE )
+      *      Êñ³çÊÝ¸±
+             IF     (SPA-COM-HKNCOMBI (IDX)      =   "9999")
+               CONTINUE
+             ELSE
       *        º£²óÆþÎÏ
                IF      SPA-ZAIMATU-ARI    NOT  =   ZERO
       *            ºßÂðÎÁ°Ê³°¤Ï»»Äê¤Ç¤­¤Ê¤¤
@@ -4667,6 +4690,7 @@
                            MOVE    "1"             TO  SPA-COM-CUR (IDX)
                    END-EVALUATE
                END-IF
+            END-IF
            END-PERFORM
            .
        5022-ZAIMATU-CHK-EXT.
@@ -5503,6 +5527,7 @@
            IF     (FLG-CHK             =   ZERO )  AND
                   (FLG-SRYKBN      NOT =   ZERO )  AND
                   (IDX-A               <   199  )
+            AND   (FLG-HKN-ARI     NOT =   9    )
                IF      FLG-HKN-ARI         =   1
                    MOVE    IDX-A           TO  IDX-A-HZN
                    ADD     1               TO  IDX-A
@@ -5819,6 +5844,10 @@
                END-IF
                IF      SPA-GMN-INPUTCD (IDX)(1:1)  =   "#"
                    MOVE    1               TO  FLG-HKN-ARI
+      *
+                   IF     (SPA-GMN-INPUTCD (IDX)(2:4)  =   "9999")
+                       MOVE    9               TO  FLG-HKN-ARI
+                   END-IF
                END-IF
                IF      SPA-GMN-INPUTCD (IDX)(1:1)  =   "$"
                    MOVE    1               TO  FLG-KA-ARI
@@ -5899,6 +5928,7 @@
                   (SPA-ERRCD           =   SPACE)  AND
                   (LNK-SC10S-SYORI     =   "A"
                                        OR  "D"   )
+              AND (WRK-HKNCOMBI    NOT =   "9999" )
                PERFORM 101521-HKNCOMBI-HEN-SEC
            END-IF
       *

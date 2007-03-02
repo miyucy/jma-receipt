@@ -56,6 +56,7 @@
       * 03.04.00     NACL-Â¿¡¹Ç¼  06/12/20  ÆâÍÑÁíÎÌÊÔ½¸ÂÐ±þ
       *                                     °ìÈÌÌ¾µ­ºÜÂÐ±þ
       * 03.04.01     NACL-¿¹ÏÆ    07/01/17  °åÎÅµ¡´ØÌ¾¾Î¡¢½»½ê¥»¥Ã¥ÈÊÑ¹¹
+      * 03.04.02     NACL-Â¿¡¹Ç¼  07/02/28  Êñ³çÊ¬ÊÝ¸±Æ±»þÆþÎÏÂÐ±þ
       *****************************************************************
       *
       *
@@ -879,6 +880,12 @@
       *****************************************************************
        20023-JYURRK-HEN-SEC          SECTION.
       *
+      *---(03.04.02) LINE ADD START -----------------------------------
+      *    Êñ³çÊÝ¸±Ê¬¤ÏÂÐ¾Ý³°
+           IF      JYURRK-HKNCOMBINUM  =   "9999"
+               MOVE    ZERO            TO  JYURRK-ZAINUM (01)
+           END-IF
+      *---(03.04.02) LINE ADD END   -----------------------------------
            PERFORM VARYING     IDX-JYU     FROM    1   BY  1
                    UNTIL      (IDX-JYU         >   15  )   OR
                               (JYURRK-ZAINUM (IDX-JYU) =   ZERO )
@@ -2797,6 +2804,10 @@
                                            OR  "23"
                                            OR  "14"
                                            OR  "98"
+      *---(03.04.02) LINE ADD START -----------------------------------
+      *           Êñ³çÊÝ¸±Ê¬¤ÏÂÐ¾Ý³°
+                  AND (WRK-HKNCOMBINUM NOT =   "9999" )
+      *---(03.04.02) LINE ADD END   -----------------------------------
                    MOVE    WRK-SRYKA           TO  WKSRY-SRYKA
                    MOVE    WRK-HKNCOMBINUM     TO  WKSRY-HKNCOMBI
                    ADD     1                   TO  LNK-WKSRYACT-MAX
@@ -2868,7 +2879,6 @@
       *            °õºþ
                    PERFORM 200212-PRINT-CHK-SEC
                END-IF
-      *
            END-PERFORM
            .
        2003-WKSRYACT-SYORI-EXT.

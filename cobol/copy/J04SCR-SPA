@@ -88,6 +88,8 @@
                05  SPA-J04-HKNCOMBI    PIC X(04).
                05  SPA-J04-HKNKBN      PIC X(01).
                05  SPA-J04-RSI-HKNKBN  PIC X(01).
+      *        Êñ³ç¿ÇÎÅºÞ
+               05  SPA-J04-JIHOKBN          PIC  X(01).
       *
       *        ÊÝ¸±ÁÈ¹ç¤»°ìÍ÷
                05  SPA-HKNCOMBI-AREA.

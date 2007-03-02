@@ -256,8 +256,8 @@
                    UNTIL      (IDX     >   SPA-HKN-MAX ) OR
                               (SPA-HKNCOMBINUM     =   "9999") OR
                               (SPA-HKNKBN          =   1     )
-               IF     (SPA-GMN-THKNCOMBINUM(IDX)   =   "9999") OR
-                      (SPA-NAI-RSI-HKNKBN(IDX) NOT =   SPACE )
+      *******  IF     (SPA-GMN-THKNCOMBINUM(IDX)   =   "9999") OR
+               IF     (SPA-NAI-RSI-HKNKBN(IDX) NOT =   SPACE )
                    CONTINUE
                ELSE
                    ADD     1               TO  IDY

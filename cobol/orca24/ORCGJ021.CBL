@@ -2138,6 +2138,7 @@
            MOVE    ACCT-MEISAISU           TO  ORCSCZAICHK-MEISAISU
            MOVE    ACCT-SURYOUTOTAL        TO  ORCSCZAICHK-SURYOUTOTAL
            MOVE    1                       TO  ORCSCZAICHK-ZAIKAISU
+           MOVE    ACCT-JIHOKBN            TO  ORCSCZAICHK-JIHOKBN
       *
            PERFORM 300321111-SRYACT-HEN-SEC
       *

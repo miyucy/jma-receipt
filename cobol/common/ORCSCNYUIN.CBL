@@ -1076,6 +1076,11 @@
            MOVE    WRK-MEISAISU            TO  ORCSCZAICHK-MEISAISU
            MOVE    WRK-SRYSURYOKEI         TO  ORCSCZAICHK-SURYOUTOTAL
            MOVE    WRK-SRYKAISUKEI         TO  ORCSCZAICHK-ZAIKAISU
+      *@
+      *     Ò≥Á∫ﬁ§Œ¿ﬂƒÍ
+           IF      LNK-WKSRY-CONTKBN (1)   =   "H"
+               MOVE    "1"                 TO  ORCSCZAICHK-JIHOKBN
+           END-IF
            MOVE    ZERO                    TO  IDX-ATO
            PERFORM VARYING     IDX1    FROM    1   BY  1
                    UNTIL       IDX1        >   IDX-KOUI
@@ -1268,6 +1273,13 @@
            MOVE    WRK-YKZTEN          TO  ACCT-YKZTEN
       *    ¥Ô∫‡≈¿øÙ
            MOVE    WRK-KIZAITEN        TO  ACCT-KIZAITEN
+      *@
+      *     Ò≥Á∫ﬁ§Œ¿ﬂƒÍ
+           IF      LNK-WKSRY-CONTKBN (1)   =   "H"
+               MOVE    "1"                 TO  ACCT-JIHOKBN
+           ELSE
+               MOVE    SPACE               TO  ACCT-JIHOKBN
+           END-IF
            .
       *
        45015-SRYACCT-SRY-EXT.

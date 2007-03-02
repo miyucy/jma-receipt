@@ -86,6 +86,8 @@
                05  SPA-ROUJIN          PIC  9(01).
       *¡¡ºÞÅÀ¿ôÊ¬
                05  SPA-ZAITEN          PIC  9(08).
+      *  Êñ³ç¿ÇÎÅºÞ
+               05  SPA-JIHOKBN          PIC  X(01).
       *  ²ó¿ô¥Æ¡¼¥Ö¥ë
                05  SPA-SEL-DAY-G.
                    11  SPA-SEL-DAY     PIC 9(03)

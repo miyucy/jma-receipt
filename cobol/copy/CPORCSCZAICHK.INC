@@ -48,6 +48,8 @@
                05  ORCSCZAICHK-MEISAISU            PIC  9(07).
       *剤回数
                05  ORCSCZAICHK-ZAIKAISU            PIC  9(07).
+      *自保区分（包括剤）
+               05  ORCSCZAICHK-JIHOKBN             PIC  X(01).
       *        明細内容
                05  ORCSCZAICHK-MEISAI-TBL.
                    07  ORCSCZAICHK-MEISAI-OCC      OCCURS   50.

@@ -39,6 +39,7 @@
       *  01.00.10    NACL-Â¿¡¹Ç¼  04/10/08  ¥ï¡¼¥¯¿ÇÎÅ¹Ô°Ù¤Ë¥É¥¯¥¿¡¼ÄÉ²Ã
       *  01.00.11    NACL-Â¿¡¹Ç¼  05/01/14  ÉÂÌ¾ÊÔ½¸ÄÉ²Ã
       *  01.00.12    NACL-Â¿¡¹Ç¼  05/11/18  MONFUNC ÂÐ±þ Â¾
+      *  03.04.00    NACL-Â¿¡¹Ç¼  07/02/XX  Êñ³ç¿ÇÎÅÂÐ±þ
       *****************************************************************
       *
       *
@@ -170,7 +171,7 @@
            03  WRK-RENNUM              PIC  9(01).
            03  WRK-RRK-SRYYMD          PIC  X(08).
            03  WRK-RRK-DENPNUM         PIC  9(07).
-      *  ¿ÇÎÅÍúÎòÊÝÂ¸
+      *    ¿ÇÎÅÍúÎòÊÝÂ¸
            03  WRK-CONTKBN-AREA.
                05  WRK-CONTKBN-TBL      OCCURS    3.
                    07  WRK-CONTKBN-NUM      PIC X(04).
@@ -305,6 +306,8 @@
            COPY    "CPSK1038.INC".
       *
            COPY    "CPSK1030.INC".
+      *
+           COPY    "CPSK1014.INC".
       *
       *    ´µ¼Ô¥Þ¥¹¥¿¡Ý
        01  PTINF-REC.
@@ -803,7 +806,7 @@
       *    »ÜÀß´ð½à¸¡º÷
            PERFORM 1009-SISETU-KIJUN-SEC
       *
-      *    ¥·¥¹¥Æ¥à´ÉÍý¸¡º÷¡Ê»ÜÀß´ð½à¡Ë
+      *    ¥·¥¹¥Æ¥à´ÉÍý¸¡º÷
            MOVE    SPACE               TO  SYS-1007-REC
            INITIALIZE                  SYS-1007-REC
            MOVE    "1007"              TO  SYS-1007-KANRICD
@@ -928,6 +931,9 @@
                MOVE    "0"                 TO  SPA-KOUHATUKA
           END-IF
       *
+      *    Êñ³ç¿ÇÎÅ¹Ô°Ù»»Äê
+           PERFORM 10010-HKTSANTEI-SEC
+      *
            .
        100-K01KYOUTU-EXT.
            EXIT.
@@ -989,6 +995,48 @@
       *
            .
        1009-SISETU-KIJUN-EXT.
+      *
+      *****************************************************************
+      *    Êñ³ç¿ÇÎÅ¹Ô°Ù»»Äê½èÍý
+      *****************************************************************
+       10010-HKTSANTEI-SEC            SECTION.
+      *
+      *    Êñ³ç¿ÇÎÅ¹Ô°Ù»»Äê
+           MOVE    SPACE               TO  SYS-1014-REC
+           INITIALIZE                  SYS-1014-REC
+           MOVE    "1014"              TO  SYS-1014-KANRICD
+           MOVE    SPA-SRYYMD          TO  SYS-1014-STYUKYMD
+           MOVE    SPA-SRYYMD          TO  SYS-1014-EDYUKYMD
+           MOVE    SYS-1014-REC        TO  MCPDATA-REC
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           MOVE    ZERO                TO  SPA-HKTSANTEI-FLG
+           PERFORM UNTIL  (FLG-SYSKANRI    =   1  )
+                       OR (SPA-HKTSANTEI-FLG   NOT =   ZERO )
+               MOVE    MCPDATA-REC         TO  SYS-1014-REC
+               IF      SYS-1014-SANTEI-HOU     =   "1"
+                                               OR  "2"
+                   MOVE    1               TO  SPA-HKTSANTEI-FLG
+               END-IF
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           .
+       10010-HKTSANTEI-EXT.
+           EXIT.
       *
       *****************************************************************
       *    ¿¦°÷¾ðÊó¤è¤êÈ¯¹Ô¥Õ¥é¥°ºÆÀßÄê½èÍý
@@ -1394,6 +1442,8 @@
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
+      *    Êñ³ç¿ÇÎÅ¹Ô°Ù»»Äê
+           PERFORM 10010-HKTSANTEI-SEC
       *
            .
        900-K01KYOUTU-EXT.
@@ -3846,6 +3896,8 @@
       *
       *    »ÜÀß´ð½à¸¡º÷
            PERFORM 1009-SISETU-KIJUN-SEC
+      *    Êñ³ç¿ÇÎÅ¹Ô°Ù»»Äê
+           PERFORM 10010-HKTSANTEI-SEC
       *
       *    ´µ¼Ô¾ðÊó¤ÎºÆ¥»¥Ã¥È
            PERFORM 1001-SPA-JYUSIN-SEC
@@ -4703,6 +4755,8 @@
                IF     (ACCT-ZAITEN         =   ZERO )  OR
                       (WRK-ZAIKAISU        =   ZERO )  OR
                       (ACCT-SRYKBN         =   "95" OR "96")
+                  OR  (ACCT-HKNCOMBI       =   "9999" )
+                  OR  (ACCT-JIHOKBN        =   "1"    )
                    CONTINUE
                ELSE
       *            ÂÐ¾ÝÊ¬¤Î¹ç·×ÅÀ¿ô·×»»
@@ -4732,6 +4786,11 @@
       *ÊÝ¸±ÁÈ¹ç
       *!   MOVE    ACCT-HKNCOMBI       TO  WKSRY-HKNCOMBI
            MOVE    SPA-HKNCOMBINUM     TO  WKSRY-HKNCOMBI
+      *@
+      *¼«ÊÝ¶èÊ¬¤¬£±¤Î¾ì¹ç¡¢Êñ³çºÞ¤È¤·¤Æ·ÑÂ³¶èÊ¬¤Ë'H'¤òÊÔ½¸
+           IF      ACCT-JIHOKBN        =   1
+               MOVE    "H"                 TO  WKSRY-CONTKBN
+           END-IF
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX         >   5   )   OR

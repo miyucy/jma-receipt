@@ -59,6 +59,7 @@
       *  02.00.24    NACL-多々納  06/07/06  収納変更対応
       *  03.02.00    NACL-多々納  06/09/XX  返金処理対応
       *  03.04.00    NACL-多々納  07/02/06  処方せん等の訂正時印刷無し追加
+      *  03.04.01    NACL-多々納  07/02/27  複数保険に包括保険追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -162,12 +163,14 @@
            03  IDX-ATO             PIC 9(04).
            03  IDX-YAKUZAI         PIC 9(04).
            03  IDX-Y2              PIC 9(02).
+           03  IDX-S               PIC 9(04).
       *
            03  IDX-1               PIC 9(04).
            03  IDX-2               PIC 9(02).
            03  IDX-3               PIC 9(02).
       *
            03  IDS1               PIC 9(04).
+           03  IDX-SYU            PIC 9(04).
       *
            03  IDH1               PIC 9(04).
            03  IDH2               PIC 9(04).
@@ -953,6 +956,8 @@
            INITIALIZE                  SPA-GMN-SRYKA-LSTG
            INITIALIZE                  SPA-GMN-HKNCOMBI-LSTG
            IF      SPA-TBL-HKNCOMBI (2)    =   SPACE
+              OR ((SPA-TBL-HKNCOMBI (2)    =   "9999" )  AND
+                  (SPA-TBL-HKNCOMBI (3)    =   SPACE  ))
                MOVE    1                       TO  SPA-HKN-MAX
                MOVE    SPA-TBL-HKNCOMBI(1)     TO  SPA-GMN-THKNCOMBINUM
                                                        (SPA-HKN-MAX)
@@ -969,6 +974,7 @@
                PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   15  )  OR
                               (SPA-TBL-HKNCOMBI (IDX)  =   SPACE )
+               IF      SPA-TBL-HKNCOMBI (IDX)  NOT =   "9999"
                    ADD     1               TO  SPA-HKN-MAX
                    MOVE    SPA-TBL-HKNCOMBI(IDX)
                                            TO  SPA-GMN-THKNCOMBINUM
@@ -980,6 +986,7 @@
                                            TO  SPA-NAI-TFTNRATEMEI
                                                        (SPA-HKN-MAX)
                    PERFORM 3003-SRYKA-HEN-SEC
+               END-IF
                END-PERFORM
            END-IF
            MOVE    SPA-GMN-HKN-LIST(1)     TO  SPA-GMN-HKNCOMBI-G
@@ -5481,9 +5488,15 @@
            END-IF
       *
            MOVE    ZERO                TO  WRK-HENKIN
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-SYUNOU-MAX
-               MOVE    SPA-SYUNOU-REC(IDX) TO  SYUNOU-REC
+           MOVE    ZERO                TO  IDX
+           MOVE    ZERO                TO  IDX-SYU
+           PERFORM VARYING     IDX-S   FROM    1   BY  1
+                   UNTIL       IDX-S   >   SPA-SYUNOU-MAX
+               MOVE    SPA-SYUNOU-REC(IDX-S)   TO  SYUNOU-REC
+               IF      SYU-HKNCOMBINUM     NOT =   "9999"
+      *
+               ADD     1               TO  IDX
+               ADD     1               TO  IDX-SYU
                MOVE    SYU-DENPNUM     TO  ORCHC03-OLD-DENPNUM (IDX)
                MOVE    SYU-SRYKA       TO  ORCHC03-OLD-SRYKA   (IDX)
                MOVE    SYU-HKNCOMBINUM TO  ORCHC03-OLD-HKNCOMBI (IDX)
@@ -5511,7 +5524,13 @@
                        ADD     SPA-SYU-HENKIN (IDX)    TO  WRK-HENKIN
                    END-IF
                END-IF
+      *
+               END-IF
            END-PERFORM
+      *    収納単独
+           IF      IDX-SYU             =   1
+               MOVE    ZERO                TO  ORCHC03-HAKHOUFLG
+           END-IF
       *    今回返金充当額
            IF      SPA-SYORIFLG        =   1
                MOVE    ZERO                TO  ORCHC03-ZEN-HENKIN
@@ -5547,7 +5566,7 @@
            END-IF
       *    発行方法
            MOVE    SPA-GMN-HAKHOUFLG   TO  ORCHC04-HAKHOUFLG
-           IF      SPA-SYUNOU-MAX      =   1
+           IF      IDX-SYU             =   1
       *        単独の時
                MOVE    ZERO                TO  ORCHC04-HAKHOUFLG
            END-IF

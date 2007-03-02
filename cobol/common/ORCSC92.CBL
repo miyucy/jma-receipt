@@ -545,7 +545,9 @@
                END-IF
            END-IF
       *    算定回数チェック
-           IF      LNK-SC92-KBN    NOT =   "6"
+      **** IF      LNK-SC92-KBN    NOT =   "6"
+           IF      LNK-SC92-KBN        =   "1"
+                                       OR  "3"
                IF     (TNS-SANTEIRRKKBN    =   ZERO   )  OR
                       (SPA-HKNCOMBINUM     =   "9999" )
                    OR (LNK-SC92-PG     NOT =   "K02"  )
@@ -649,6 +651,8 @@
                IF     (LNK-SC92-ERRCD3     =   SPACE ) AND
                       (LNK-SC92-SRYCD(1:1) =   "1"   )
                   AND (LNK-SC92-PG         =   "K02" )
+                  AND (LNK-SC92-KBN        =   "1"
+                                           OR  "3" )
                    PERFORM 2005-HEIYOU-CHK-SEC
                END-IF
            END-IF
@@ -1426,9 +1430,11 @@
           IF      SPA-HKNCOMBINUM     =   "9999"
                GO      TO      2005-HEIYOU-CHK-EXT
            END-IF
-      *
-      *
-           IF      SPA-COM-CHKFLG (IDX-T)  =   "1"
+           IF      SPA-COM-HKNCOMBI(IDX-T)  =   "9999"
+               GO      TO      2005-HEIYOU-CHK-EXT
+           END-IF
+      *    併用算定済み
+           IF      SPA-COM-HCHKFLG (IDX-T) =   "1"
                GO      TO      2005-HEIYOU-CHK-EXT
            END-IF
       *
@@ -1508,6 +1514,11 @@
                IF      FLG-KONKAI          =   ZERO
                    PERFORM 20053-MANSEI-CHK-SEC
                END-IF
+           END-IF
+           IF     (LNK-SC92-ERRCD6     =   SPACE )
+               MOVE    "1"             TO  SPA-COM-HCHKFLG (IDX-T)
+           ELSE
+               MOVE    SPACE           TO  SPA-COM-HCHKFLG (IDX-T)
            END-IF
       *
            .
@@ -1717,9 +1728,12 @@
        20052-CHK-INPUT-SEC                SECTION.
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   WRK-MAX   )  OR
+                   UNTIL      (IDX     >   200          )  OR
+                             ((SPA-GMN-INPUTCD (IDX)   =   SPACE ) AND
+                              (SPA-COM-INPUTCD (IDX)   =   SPACE )) OR
                               (FLG-KONKAI          =   1     )
                IF      IDX                 =   IDX-T
+                 OR   (SPA-COM-HKNCOMBI (IDX)  =   "9999" )
                    CONTINUE
                ELSE
                    IF      SPA-COM-INPUTCD(IDX)
@@ -1816,8 +1830,12 @@
            MOVE    ZERO                TO  FLG-MANSEI-ARI
            IF      LNK-SC92-SRYCD  NOT =   WRK-SRYCD
                PERFORM VARYING     IDX     FROM    1   BY  1
-                       UNTIL       IDX     >   WRK-MAX
-                   IF      SPA-COM-INPUTCD (IDX)   =   WRK-SRYCD
+                       UNTIL      (IDX     >   200  )  OR
+                                 ((SPA-GMN-INPUTCD (IDX)
+                                               =   SPACE ) AND
+                                  (SPA-COM-INPUTCD (IDX)
+                                               =   SPACE ))
+                  IF      SPA-COM-INPUTCD (IDX)   =   WRK-SRYCD
                        MOVE    1                   TO  FLG-MANSEI-ARI
                    END-IF
                END-PERFORM
@@ -3160,17 +3178,22 @@
                  ((SPA-COM-KAISU  (IDX-T)          >  1    )
              OR   (SPA-COM-SURYO  (IDX-T)          >  1    ))
       *
-               IF      SPA-COM-SANTEIRRKKBN (IDX-T)   NOT =   ZERO
-               MOVE    LNK-SC92-SRYCD      TO  TNS-SRYCD
-               PERFORM 910-TENSU-READ-SEC
-      *        算定回数チェック
-               IF     (TNS-SANTEIRRKKBN    =   ZERO   )  OR
-                      (SPA-HKNCOMBINUM     =   "9999" )
-                   CONTINUE
-               ELSE
-                   PERFORM 2001-SANTEI-CHK-SEC
-               END-IF
-              END-IF
+      *        IF     (SPA-COM-SANTEIRRKKBN (IDX-T)    =   ZERO)  OR
+      *               (SPA-COM-HKNCOMBI (IDX-T)    =   "9999" )  OR
+      *               (SPA-HKNCOMBINUM             =   "9999" )
+      *            CONTINUE
+      *        ELSE
+      *            MOVE    LNK-SC92-SRYCD      TO  TNS-SRYCD
+      *            PERFORM 910-TENSU-READ-SEC
+      *            算定回数チェック
+      *            IF     (TNS-SANTEIRRKKBN    =   ZERO   )
+      *                CONTINUE
+      *            ELSE
+      *                PERFORM 2001-SANTEI-CHK-SEC
+      *            END-IF
+      *?       END-IF
+      *        算定履歴・併用チェッククリア
+               MOVE    SPACE               TO  SPA-COM-HCHKFLG(IDX-T)
             END-IF
            END-IF
       *

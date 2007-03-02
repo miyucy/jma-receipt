@@ -222,18 +222,18 @@
            END-EVALUATE
       *
       *TEST
-           DISPLAY "ORCSCH30-KBN:" ORCSCH30-KBN
-           DISPLAY "ORCHC30-MAX:" ORCHC30-MAX
-           PERFORM VARYING    IDX   FROM    1  BY  1
-                   UNTIL      IDX   >  ORCHC30-MAX
-             DISPLAY "ORCHC30-SRYCD:" ORCHC30-SRYCD (IDX)
-                     ",ORCHC30-YSRYCD:" ORCHC30-YSRYCD (IDX)
-                     ",ORCHC30-YOURYOU 1:" ORCHC30-YOURYOU (IDX 1)
-                     ",2:" ORCHC30-YOURYOU (IDX 2)
-                     ",3:" ORCHC30-YOURYOU (IDX 3)
-                     ",4:" ORCHC30-YOURYOU (IDX 4)
-                     ",ORCHC30-SRYKAISU:" ORCHC30-SRYKAISU (IDX)
-           END-PERFORM 
+      *    DISPLAY "ORCSCH30-KBN:" ORCSCH30-KBN
+      *    DISPLAY "ORCHC30-MAX:" ORCHC30-MAX
+      *    PERFORM VARYING    IDX   FROM    1  BY  1
+      *            UNTIL      IDX   >  ORCHC30-MAX
+      *      DISPLAY "ORCHC30-SRYCD:" ORCHC30-SRYCD (IDX)
+      *              ",ORCHC30-YSRYCD:" ORCHC30-YSRYCD (IDX)
+      *              ",ORCHC30-YOURYOU 1:" ORCHC30-YOURYOU (IDX 1)
+      *              ",2:" ORCHC30-YOURYOU (IDX 2)
+      *              ",3:" ORCHC30-YOURYOU (IDX 3)
+      *              ",4:" ORCHC30-YOURYOU (IDX 4)
+      *              ",ORCHC30-SRYKAISU:" ORCHC30-SRYKAISU (IDX)
+      *    END-PERFORM 
       *TEST
       *
       *    °õºþ½èÍý¤Ø
@@ -372,6 +372,10 @@
                        MOVE    1               TO  FLG-SYORI
                    END-IF
                END-IF
+      *        Êñ³çÊÝ¸±ÂÐ¾Ý³°
+               IF     (WRK-HKNCOMBINUM     =   "9999")
+                   MOVE    ZERO                TO  FLG-SYORI
+               END-IF
       *        ÊÔ½¸
                IF      FLG-SYORI           =   1
                    MOVE    JYURRK-DENPNUM      TO  WRK-DENPNUM
@@ -435,8 +439,12 @@
       *
            PERFORM
                    UNTIL       FLG-JYURRK      =   1
-      *
-               PERFORM 100211-JYURRK-CHK-SEC
+      *        Êñ³çÊÝ¸±ÂÐ¾Ý³°
+               IF     (JYURRK-HKNCOMBINUM      =   "9999")
+                   CONTINUE
+               ELSE
+                   PERFORM 100211-JYURRK-CHK-SEC
+               END-IF
       *
                MOVE    "key6"              TO  MCP-PATHNAME
                PERFORM 970-JYURRK-NEXT-SEC
@@ -474,7 +482,12 @@
            PERFORM
                    UNTIL       FLG-JYURRK      =   1
       *
-               PERFORM 100211-JYURRK-CHK-SEC
+      *        Êñ³çÊÝ¸±ÂÐ¾Ý³°
+               IF     (JYURRK-HKNCOMBINUM      =   "9999")
+                   CONTINUE
+               ELSE
+                   PERFORM 100211-JYURRK-CHK-SEC
+               END-IF
       *
                MOVE    "key26"             TO  MCP-PATHNAME
                PERFORM 970-JYURRK-NEXT-SEC
@@ -808,6 +821,7 @@
            MOVE    SPACE               TO  WRK-SRYSYUKBN
            MOVE    ZERO                TO  WRK-ZAITENKEI
            MOVE    SPACE               TO  WRK-YOHOU-G
+           MOVE    SPACE               TO  WRK-HKNCOMBINUM
            PERFORM
                UNTIL   FLG-WKSRYACT    =   1
                IF      WKSRY-RENNUM        =   1
@@ -860,10 +874,15 @@
                    MOVE    ZERO                TO  WRK-ZAITENKEI
                END-IF
       *
+               IF     (WKSRY-INPUTCD(1)(1:1)   =   "#" )
+                   MOVE    WKSRY-INPUTCD(1)(2:4)   TO  WRK-HKNCOMBINUM
+               END-IF
       *        ÅêÌô¤òÂÐ¾Ý¤È¤¹¤ë
-               IF      WKSRY-SRYKBN        =   "21"  OR
+               IF     (WKSRY-SRYKBN        =   "21"  OR
                                                "22"  OR
-                                               "23"
+                                               "23"    )
+      *            Êñ³çÊÝ¸±¤ÏÂÐ¾Ý³°
+                 AND  (WRK-HKNCOMBINUM NOT =   "9999"  )
                    MOVE    WKSRY-ZAITENKEI         TO  WRK-ZAITENKEI
                    PERFORM 20031-WKSRYACT-HEN-SEC
                END-IF
