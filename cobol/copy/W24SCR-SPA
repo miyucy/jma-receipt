@@ -88,6 +88,11 @@
                    13  SPA-GMN-W24-ADLINPUT            PIC X(01).
                    13                                  PIC X(01).
                    13  SPA-GMN-W24-ADLINPUTMEI         PIC X(08).
+      *          定期請求初期表示区分
+                 11  SPA-GMN-W24-TEIKISAGAKUACT-G.
+                   13  SPA-GMN-W24-TEIKISAGAKUACT      PIC X(01).
+                   13                                  PIC X(01).
+                   13  SPA-GMN-W24-TEIKISAGAKUACTMEI   PIC X(18).
       *          入院加算情報
                  11  SPA-GMN-W24-FRAME3.
                    13  SPA-GMN-W24-NYUKSN-G.
@@ -305,6 +310,14 @@
                        15  SPA-GMN-W24-ADLINPUTL       PIC X(01).
                        15                              PIC X(01).
                        15  SPA-GMN-W24-ADLINPUTMEIL    PIC X(08).
+      *
+      *          定期請求差額初期表示区分
+                 11  SPA-GMN-W24-TEIKISAGAKUACTLST-G.
+                   13  SPA-GMN-W24-TEIKISAGAKUACT-MAX      PIC 9(03).
+                   13  SPA-GMN-W24-TEIKISAGAKUACTLST       OCCURS  5.
+                       15  SPA-GMN-W24-TEIKISAGAKUACTL     PIC X(01).
+                       15                                  PIC X(01).
+                       15  SPA-GMN-W24-TEIKISAGAKUACTMEIL  PIC X(18).
       *
              07  SPA-NAI-W24-AREA.
                09  SPA-NAI-W24-SKJSRY-SRYCD-G.

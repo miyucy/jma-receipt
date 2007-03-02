@@ -404,5 +404,12 @@ W24	{
 			item	varchar(10)[05];
 			state	int;
 		};
+		CMB_TEIKISAGAKUACT	{
+			TEIKISAGAKUACT	{
+				value	varchar(20);
+			};
+			count	int;
+			item	varchar(20)[05];
+		};
 	};
 };

@@ -2711,6 +2711,38 @@
     </widget>
 
     <widget>
+      <class>GtkLabel</class>
+      <name>label1012</name>
+      <x>695</x>
+      <y>580</y>
+      <width>120</width>
+      <height>25</height>
+      <label>Âà±¡¾ÚÌÀ½ñÈ¯¹Ô</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label1024</name>
+      <x>695</x>
+      <y>610</y>
+      <width>120</width>
+      <height>25</height>
+      <label>Âà±¡¾ÚÌÀ½ñµ­ºÜ</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
       <class>GtkPandaCombo</class>
       <name>CMB_SRYPRTKBN</name>
       <x>815</x>
@@ -2755,7 +2787,7 @@
       <name>CMB_TAIPRTKBN</name>
       <x>815</x>
       <y>580</y>
-      <width>174</width>
+      <width>175</width>
       <height>25</height>
       <value_in_list>False</value_in_list>
       <ok_if_empty>True</ok_if_empty>
@@ -2791,27 +2823,11 @@
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>label1012</name>
-      <x>695</x>
-      <y>580</y>
-      <width>120</width>
-      <height>25</height>
-      <label>Âà±¡¾ÚÌÀ½ñÈ¯¹Ô</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
       <class>GtkPandaCombo</class>
       <name>CMB_TAIKSIKBN</name>
       <x>815</x>
       <y>610</y>
-      <width>170</width>
+      <width>175</width>
       <height>25</height>
       <value_in_list>False</value_in_list>
       <ok_if_empty>True</ok_if_empty>
@@ -2848,18 +2864,58 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label1024</name>
+      <name>label1029</name>
       <x>695</x>
-      <y>610</y>
+      <y>640</y>
       <width>120</width>
       <height>25</height>
-      <label>Âà±¡¾ÚÌÀ½ñµ­ºÜ</label>
+      <label>Äê´üÀÁµáº¹³Û</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkPandaCombo</class>
+      <name>CMB_TEIKISAGAKUACT</name>
+      <x>815</x>
+      <y>640</y>
+      <width>175</width>
+      <height>25</height>
+      <value_in_list>False</value_in_list>
+      <ok_if_empty>True</ok_if_empty>
+      <case_sensitive>False</case_sensitive>
+      <use_arrows>True</use_arrows>
+      <use_arrows_always>False</use_arrows_always>
+      <items></items>
+
+      <widget>
+	<class>GtkPandaEntry</class>
+	<child_name>GtkPandaCombo:entry</child_name>
+	<name>TEIKISAGAKUACT</name>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>activate</name>
+	  <handler>send_event</handler>
+	  <data>ACTIVATE</data>
+	  <last_modification_time>Mon, 04 Feb 2002 03:04:50 GMT</last_modification_time>
+	</signal>
+	<signal>
+	  <name>changed</name>
+	  <handler>entry_changed</handler>
+	  <data>CHANGED</data>
+	  <last_modification_time>Mon, 04 Feb 2002 03:05:03 GMT</last_modification_time>
+	</signal>
+	<editable>True</editable>
+	<text_visible>True</text_visible>
+	<text_max_length>20</text_max_length>
+	<text>1 ½é´üÉ½¼¨¤¹¤ë</text>
+	<input_mode>XIM</input_mode>
+	<xim_enabled>False</xim_enabled>
+      </widget>
     </widget>
   </widget>
 </widget>
