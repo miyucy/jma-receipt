@@ -3952,7 +3952,8 @@
                MOVE    SPA-NAI-EDYUKYMD    TO  RECE-PUTB-EDYUKYMD
                IF      SPA-NAI-BODYLIST-TGRP1-NO (IDX)
                                            >   ZERO
-                   IF      WRK-SYUBETU-SRT1    =   ZERO
+                   IF      SPA-NAI-BODYLIST-TGRP1-NO (IDX)
+                                           NOT =   WRK-SYUBETU-SRT1
                        MOVE    IDX                 TO  WRK-SYUBETU-SRT1
                    END-IF
                    MOVE    WRK-SYUBETU-SRT1    TO
