@@ -103,7 +103,6 @@
            03  IDX-TBL             PIC 9(04).
            03  ID2                 PIC 9(02).
       *
-           03  IDX-Z               PIC 9(04).
            03  IDX-S               PIC 9(04).
       *    °ì»þÎÎ°è
        01  WRK-AREA.
