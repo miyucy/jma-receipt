@@ -200,7 +200,7 @@
                    PERFORM 100-INIT-SYORI-SEC
       *            包括チェック
                    PERFORM 300-AUTO-SYORI-SEC
-               WHEN    "4"
+               WHEN    "3"
       *        エラー削除
                    PERFORM 400-ERR-DELETE-SEC
            END-EVALUATE
