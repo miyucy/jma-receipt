@@ -177,6 +177,7 @@
            03  CNT-SRYACT-LINE                     PIC 9(05).
            03  CNT-YKZINGAI                        PIC 9(05).
            03  CNT-YKZHKT                          PIC 9(05).
+           03  CNT-ZAIHKT                          PIC 9(05).
            03  CNT-SPACE                           PIC 9(05).
            03  CNT-STR                             PIC 9(05).
            03  CNT-BYOMEIMOJI                      PIC 9(05).
@@ -243,6 +244,7 @@
            03  IDX-RRK                             PIC 9(05).
            03  IDX-RJ                              PIC 9(05).
            03  IDX-DAY                             PIC 9(05).
+           03  IDX-PNT                             PIC 9(05).
       *
       *    き域本弁扑亦件ま及心銀迕
            03  IDX0                                PIC 9(05).
@@ -483,6 +485,7 @@
                        09 SRT-SRYACCT-PRIORITY     PIC 9(03).
                        09 SRT-SRYACCT-PRIORITY2    PIC 9(03).
                        09 SRT-SRYACCT-PRIORITY3    PIC 9(03).
+                       09 SRT-SRYACCT-ZAIHKTKBN    PIC 9(01).
                        09 SRT-SRYACCT-YKZHKTKBN    PIC 9(01).
                        09 SRT-SRYACCT-YKZINGAIKBN  PIC 9(01).
                        09 SRT-SRYACCT-KNSJISKBN    PIC 9(01).
@@ -898,6 +901,7 @@
            MOVE    ZERO                TO  CNT-SRYACT-LINE
            MOVE    ZERO                TO  CNT-YKZINGAI
            MOVE    ZERO                TO  CNT-YKZHKT
+           MOVE    ZERO                TO  CNT-ZAIHKT
            MOVE    LOW-VALUE           TO  WRK-KEY-HKNCOMBI
            MOVE    ZERO                TO  WRK-TTL-JIHI
            MOVE    ZERO                TO  WRK-TTL-JIHI-TAX
@@ -2676,6 +2680,8 @@
                                                        (WKSRYACCT-IDX)
             AND    ACCT-MEISAISU       =   WKACCT-MEISAISU
                                                        (WKSRYACCT-IDX)
+            AND    ACCT-JIHOKBN        =   WKACCT-JIHOKBN
+                                                       (WKSRYACCT-IDX)
             AND    HCM34ACCT-RUIKEITOTAL
                                        =   WKACCT-RUIKEITOTAL
                                                        (WKSRYACCT-IDX)
@@ -2946,6 +2952,11 @@
                        END-IF
                    END-IF
       *
+               END-IF
+      *
+               IF    ( ACCT-JIHOKBN    =  "1" )
+                   MOVE    1       TO  SRT-SRYACCT-ZAIHKTKBN
+                                                          (SRT-IDX1)
                END-IF
       *
                IF    ( WRK-SRYSYUKBN   =  "213" OR "223" OR "233" )
@@ -3551,19 +3562,25 @@
            END-IF
       *
       *    褲恓嗉坌
-           IF    ( ACCT-ZAITEN         =   ZERO )
-            AND  ( FLG-SRYSTATUS       =   1 )
-               IF    ( SRY-SRYSYUKBN       =   "213" OR "223" OR "233" )
-                        MOVE    "↘"   TO  WRK-SRYACT-MARK
-                        COMPUTE CNT-YKZHKT
-                            =   CNT-YKZHKT  +   1
-               ELSE
-                   IF    ( ACCT-SRYKBN     =   "21" OR "22" OR "23" )
+           MOVE    SPACE               TO  WRK-SRYACT-MARK
+           IF    ( ACCT-JIHOKBN    =   "1" )
+               MOVE    "∣"   TO  WRK-SRYACT-MARK
+               COMPUTE CNT-ZAIHKT
+                   =   CNT-ZAIHKT  +   1
+           ELSE
+               IF    ( ACCT-ZAITEN         =   ZERO )
+                AND  ( FLG-SRYSTATUS       =   1 )
+                   EVALUATE    TRUE
+                   WHEN  ( SRY-SRYSYUKBN   =   "213" OR "223" OR "233" )
+                            MOVE    "↘"   TO  WRK-SRYACT-MARK
+                            COMPUTE CNT-YKZHKT
+                                =   CNT-YKZHKT  +   1
+                   WHEN  ( ACCT-SRYKBN     =   "21" OR "22" OR "23" )
                     OR   ( SRY-SRYSYUKBN   =  "148" )
-                        MOVE    "↗"   TO  WRK-SRYACT-MARK
-                        COMPUTE CNT-YKZINGAI
-                            =   CNT-YKZINGAI    +   1
-                   END-IF
+                            MOVE    "↗"   TO  WRK-SRYACT-MARK
+                            COMPUTE CNT-YKZINGAI
+                                =   CNT-YKZINGAI    +   1
+                   END-EVALUATE
                END-IF
            END-IF
       *
@@ -5830,6 +5847,7 @@
                MOVE    ZERO        TO  CNT-SRYACT-LINE
                MOVE    ZERO        TO  CNT-YKZINGAI
                MOVE    ZERO        TO  CNT-YKZHKT
+               MOVE    ZERO        TO  CNT-ZAIHKT
            END-IF
       *
            .
@@ -6016,17 +6034,30 @@
            MOVE    CNT-PAGE                TO  WRK-ZZ9
            MOVE    WRK-ZZ9                 TO  HCM341-PAGE
       *
-           EVALUATE    TRUE
-           WHEN      ( CNT-YKZINGAI    >   ZERO )
-                 AND ( CNT-YKZHKT      >   ZERO )
-               MOVE  "↗“情陸質杅及泔管﹛↘“情ま質杅﹋抁喟﹌坌及泔管"
-                                           TO  HCM341-COMMENT
-           WHEN      ( CNT-YKZINGAI    >   ZERO )
-               MOVE  "↗“情陸質杅及泔管"  TO  HCM341-COMMENT
-           WHEN      ( CNT-YKZHKT      >   ZERO )
-               MOVE  "↘“情ま質杅﹋抁喟﹌坌及泔管"
-                                           TO  HCM341-COMMENT
-           END-EVALUATE
+           MOVE    1                       TO  IDX-PNT
+           MOVE    SPACE                   TO  HCM341-COMMENT
+      *
+           IF    ( CNT-ZAIHKT     >       ZERO )
+               STRING  "∣“抁喟覆擂坌﹛"  DELIMITED   BY  SIZE
+               INTO    HCM341-COMMENT
+               WITH    POINTER     IDX-PNT
+               END-STRING
+           END-IF
+      *
+           IF    ( CNT-YKZINGAI    >       ZERO )
+               STRING  "↗“情陸質杅及泔管﹛"  DELIMITED   BY  SIZE
+               INTO    HCM341-COMMENT
+               WITH    POINTER     IDX-PNT
+               END-STRING
+           END-IF
+      *
+           IF    ( CNT-YKZHKT      >       ZERO )
+               STRING  "↘“情ま質杅﹋抁喟﹌坌及泔管﹛"
+                                               DELIMITED   BY  SIZE
+               INTO    HCM341-COMMENT
+               WITH    POINTER     IDX-PNT
+               END-STRING
+           END-IF
       *
            .
        29011-HCM341-HEADER-HEN-EXT.
@@ -6063,17 +6094,31 @@
            MOVE    CNT-PAGE                TO  WRK-ZZ9
            MOVE    WRK-ZZ9                 TO  HCM342-PAGE
       *
-           EVALUATE    TRUE
-           WHEN      ( CNT-YKZINGAI    >   ZERO )
-                 AND ( CNT-YKZHKT      >   ZERO )
-               MOVE  "↗“情陸質杅及泔管﹛↘“情ま質杅﹋抁喟﹌坌及泔管"
-                                           TO  HCM342-COMMENT
-           WHEN      ( CNT-YKZINGAI    >   ZERO )
-               MOVE  "↗“情陸質杅及泔管"  TO  HCM342-COMMENT
-           WHEN      ( CNT-YKZHKT      >   ZERO )
-               MOVE  "↘“情ま質杅﹋抁喟﹌坌及泔管"
-                                           TO  HCM342-COMMENT
-           END-EVALUATE
+      *
+           MOVE    1                       TO  IDX-PNT
+           MOVE    SPACE                   TO  HCM342-COMMENT
+      *
+           IF    ( CNT-ZAIHKT     >       ZERO )
+               STRING  "∣“抁喟覆擂坌﹛"  DELIMITED   BY  SIZE
+               INTO    HCM342-COMMENT
+               WITH    POINTER     IDX-PNT
+               END-STRING
+           END-IF
+      *
+           IF    ( CNT-YKZINGAI    >       ZERO )
+               STRING  "↗“情陸質杅及泔管﹛"  DELIMITED   BY  SIZE
+               INTO    HCM342-COMMENT
+               WITH    POINTER     IDX-PNT
+               END-STRING
+           END-IF
+      *
+           IF    ( CNT-YKZHKT      >       ZERO )
+               STRING  "↘“情ま質杅﹋抁喟﹌坌及泔管﹛"
+                                               DELIMITED   BY  SIZE
+               INTO    HCM342-COMMENT
+               WITH    POINTER     IDX-PNT
+               END-STRING
+           END-IF
       *
            .
        29011-HCM342-HEADER-HEN-EXT.
