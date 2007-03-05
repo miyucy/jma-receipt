@@ -257,7 +257,9 @@
                               (SPA-HKNCOMBINUM     =   "9999") OR
                               (SPA-HKNKBN          =   1     )
       *******  IF     (SPA-GMN-THKNCOMBINUM(IDX)   =   "9999") OR
-               IF     (SPA-NAI-RSI-HKNKBN(IDX) NOT =   SPACE )
+               IF     (SPA-NAI-RSI-HKNKBN(IDX) NOT =   SPACE )  OR
+                     ((SPA-GMN-THKNCOMBINUM(IDX)   =   "9999") AND
+                      (SPA-SRYYMD                  <   "20060401"))
                    CONTINUE
                ELSE
                    ADD     1               TO  IDY

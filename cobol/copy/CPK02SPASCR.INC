@@ -197,6 +197,7 @@
       *!????
       *                 Ò≥Á•≥°º•…° £±°ß Ò≥Á ¨°À
                        09  SPA-COM-HOUKATU-FLG   PIC  9(01).
+                       09  SPA-COM-HOUKATU-FLG2  PIC  9(01).
       *                 Ò≥Á∫ﬁ
                        09  SPA-COM-HOUKATU-ZAI   PIC  9(01).
       *                 Ò≥Á•®•È°›•«°º•ø

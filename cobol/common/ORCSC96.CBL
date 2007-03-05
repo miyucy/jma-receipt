@@ -1291,6 +1291,14 @@
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
+      *!
+               WHEN    "K202"
+                   STRING  "警告！"
+                           "剤内に包括診療コード以外の算定があります。"
+                           "剤分離をして下さい。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
       *
            END-EVALUATE
            .

@@ -3713,6 +3713,7 @@
                    MOVE    WRK-KEN-HKNCOMBI (WRK-KENIDX)
                                                TO  WRK-KENTAI-HKNCOMBI
                END-IF
+      *
                MOVE    1               TO  FLG-KENTAI2
                ADD     1               TO  WRK-KENTAI2-CNT
            END-IF
@@ -3722,7 +3723,7 @@
            EXIT.
       *
       *****************************************************************
-      *    院外　算定処理
+      *    入院回数集計処理
       *****************************************************************
        3009-NYUINKAISU-SEC              SECTION.
       *

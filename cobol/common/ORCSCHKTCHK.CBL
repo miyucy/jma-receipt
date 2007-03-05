@@ -55,6 +55,7 @@
            03  FLG-CHK2                PIC 9(01).
            03  FLG-CHK3                PIC 9(01).
            03  FLG-HOUKATU             PIC 9(01).
+           03  FLG-SONOTA              PIC 9(01).
            03  FLG-ZAIARI              PIC 9(01).
       *
       *    Åº»úÎÎ°è
@@ -71,6 +72,7 @@
       *
            03  IDX-L1                  PIC 9(04).
            03  IDX-L2                  PIC 9(04).
+           03  IDX-ERR                 PIC 9(04).
       *
            03  IDD                     PIC 9(02).
            03  IDD2                    PIC 9(02).
@@ -316,6 +318,7 @@
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
                    UNTIL      (IDX-Z       >   SPA-GMN-MAX  ) 
                MOVE    ZERO            TO  SPA-COM-HOUKATU-FLG (IDX-Z)
+               MOVE    ZERO            TO  SPA-COM-HOUKATU-FLG2(IDX-Z)
                MOVE    ZERO            TO  SPA-COM-HOUKATU-ZAI (IDX-Z)
                MOVE    ZERO            TO  SPA-COM-HOUKATU-ERR (IDX-Z)
            END-PERFORM
@@ -327,7 +330,9 @@
            MOVE    SPA-SCR-REC         TO  HZN-SCR-REC
            MOVE    ZERO                TO  IDX
            MOVE    1                   TO  IDX-S
+           MOVE    ZERO                TO  IDX-ERR
            MOVE    ZERO                TO  FLG-HOUKATU
+           MOVE    ZERO                TO  FLG-SONOTA
            MOVE    ZERO                TO  ORCSCHKTCHK-HKTERR
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
                    UNTIL      (IDX-Z       >   200     )   OR
@@ -339,16 +344,50 @@
                IF     (SPA-COM-HOUKATU-FLG (IDX-Z) =   1  )
                    MOVE    1                   TO  FLG-HOUKATU
                END-IF
-               IF     (HZN-COM-ZAIEND (IDX-Z)  =   "1"   )
+               IF     (SPA-COM-HOUKATU-FLG (IDX-Z) =   ZERO  )
+                   IF    ((SPA-COM-INPUTCD (IDX-Z)(1:1)    =   "1" )
+                      AND (SPA-COM-DATAKBN (IDX-Z)         =   "1" ))
+                   OR    ( SPA-COM-INPUTCD (IDX-Z)(1:1)    =   "6"
+                                                           OR  "7" )
+                       MOVE    1                   TO  FLG-SONOTA
+                   END-IF
+               END-IF
+               IF     (SPA-COM-ZAIEND (IDX-Z)  =   "1"   )
                    PERFORM VARYING     IDX     FROM    IDX-S  BY  1
                            UNTIL      (IDX         >   IDX-Z  )
                        MOVE    FLG-HOUKATU     TO  SPA-COM-HOUKATU-ZAI
                                                               (IDX)
+      *                ºÞÆâ¤ËÊñ³ç³°¤¬¤¢¤ë¾ì¹ç¡¢·Ù¹ð
+                       IF     (FLG-HOUKATU     =   1   )  AND
+                              (FLG-SONOTA      =   1   )  AND
+                              (SPA-COM-HOUKATU-FLG (IDX) =   ZERO)
+                           IF    (SPA-COM-INPUTCD (IDX)(1:1)
+                                                           =   "6"
+                                                           OR  "7" ) OR
+                                ((SPA-COM-INPUTCD (IDX)(1:1)
+                                                           =   "1" ) AND
+                                 (SPA-COM-DATAKBN (IDX)  =   "1" ))
+                               MOVE    1       TO  SPA-COM-HOUKATU-FLG2
+                                                              (IDX)
+                               IF      IDX-ERR         =   ZERO
+                                   MOVE    IDX             TO  IDX-ERR
+                               END-IF
+                           END-IF
+                       END-IF
                    END-PERFORM
                    MOVE    IDX                 TO  IDX-S
                    MOVE    ZERO                TO  FLG-HOUKATU
+                   MOVE    ZERO                TO  FLG-SONOTA
                END-IF
            END-PERFORM
+      *
+           IF      IDX-ERR         NOT =   ZERO
+               IF      SPA-HKTKEI-FLG      =   ZERO
+                   MOVE    "K202"          TO  SPA-ERRCD
+                   MOVE    1               TO  SPA-HKTKEI-FLG
+                   MOVE    "1"             TO  SPA-COM-CUR(IDX-ERR)
+               END-IF
+           END-IF
       *
            .
        200-MAIN-SYORI-EXT.
