@@ -661,7 +661,8 @@ path	key29 	{
 			AND   SRYYM       =   :SRYYM
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   ZAIKAISU    >   0 
-                        AND   HKNCOMBI   <>  '9999'
+                        AND   ( HKNCOMBI   <>  '9999' 
+                         OR     JIHOKBN <> '1' )
 			ORDER  BY  PTID,HKNCOMBI,SRYKA,
                                    ZAINUM
 		;
@@ -678,7 +679,8 @@ path	key30 	{
 			AND   PTID        =   :PTID
 			AND   SRYYM       =   :SRYYM
 			AND   ZAIKAISU    >   0 
-                        AND   HKNCOMBI   <>  '9999'
+                        AND   ( HKNCOMBI   <>  '9999' 
+                         OR     JIHOKBN <> '1' )
 			ORDER  BY  PTID,HKNCOMBI,SRYKA,
                                    ZAINUM
 		;
@@ -696,7 +698,8 @@ path	key31 	{
 			AND   SRYKA       =   :SRYKA
 			AND   SRYYM       =   :SRYYM
 			AND   ZAINUM      =   :ZAINUM
-                        AND   HKNCOMBI   <>  '9999'
+			AND   ( HKNCOMBI   <>  '9999' 
+				OR     JIHOKBN <> '1' )
 			ORDER   BY      SRYKBN
 		;
 	};
@@ -712,7 +715,8 @@ path	key32 	{
 			AND   PTID        =   :PTID
 			AND   SRYKA       =   :SRYKA
 			AND   SRYYM       =   :SRYYM
-                        AND   HKNCOMBI   <>  '9999'
+			AND   ( HKNCOMBI   <>  '9999' 
+			OR     JIHOKBN <> '1' )
 			ORDER   BY      SRYKBN,
                                         ZAINUM
 		;
@@ -728,7 +732,8 @@ path	key33 	{
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   SRYYM       =   :SRYYM
-                        AND   HKNCOMBI   <>  '9999'
+			AND   ( HKNCOMBI   <>  '9999' 
+				OR    JIHOKBN <> '1' )
 			ORDER  BY   SRYKA,
                                     SRYKBN,
                                     ZAINUM
@@ -748,7 +753,8 @@ path	key34 	{
 			AND   SRYYM       <=  :EDSRYYM
 			AND   ZAIKAISU    >   0
 			AND   SRYKBN      =   :SRYKBN
-			AND   HKNCOMBI    <>  '9999'
+			AND   ( HKNCOMBI   <>  '9999' 
+				OR    JIHOKBN <> '1' )
 			ORDER  BY   SRYYM,SRYKA,ZAINUM
 		;
 	};
@@ -767,7 +773,8 @@ path	key35 	{
 			AND   SRYYM       <=  :EDSRYYM
 			AND   ZAIKAISU    >   0
 			AND   SRYKBN      =   :SRYKBN
-			AND   HKNCOMBI    <>  '9999'
+			AND   ( HKNCOMBI   <>  '9999' 
+      OR     JIHOKBN <> '1' )
 			ORDER  BY   SRYYM,SRYKA,ZAINUM
 		;
 	};
@@ -824,7 +831,8 @@ path	key36 	{
 			AND   SRYYM       =   :SRYYM
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   ZAIKAISU    >   0 
-                        AND   HKNCOMBI   <>  '9999'
+			AND   ( HKNCOMBI   <>  '9999' 
+				OR     JIHOKBN <> '1' )
 			GROUP  BY  HOSPID,PTID,HKNCOMBI,SRYKA,SRYYM,NYUGAIKBN
 			ORDER  BY  PTID,HKNCOMBI,SRYKA
 		;
@@ -872,7 +880,8 @@ path	key37 	{
 			AND   PTID        =   :PTID
 			AND   SRYYM       =   :SRYYM
 			AND   ZAIKAISU    >   0 
-                        AND   HKNCOMBI   <>  '9999'
+			AND   ( HKNCOMBI   <>  '9999' 
+				OR     JIHOKBN <> '1' )
 			GROUP  BY  HOSPID,PTID,HKNCOMBI,SRYKA,SRYYM,NYUGAIKBN
 			ORDER  BY  PTID,HKNCOMBI,SRYKA
 		;
@@ -1057,7 +1066,8 @@ path	key44 	{
 			AND   ZAITEN      >    0
 			AND   ZAIKAISU    >    0
 			AND   SRYKBN      NOT IN ('95','96','97','99')
-			AND   HKNCOMBI    <>  '9999'
+			AND   ( HKNCOMBI   <>  '9999' 
+       OR     JIHOKBN <> '1' )
 			ORDER  BY   HKNCOMBI,SRYKA,ZAINUM
 		;
 	};
@@ -1072,7 +1082,8 @@ path	key45 	{
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   SRYYM       =   :SRYYM
-                        AND   HKNCOMBI   <>  '9999'
+			AND   ( HKNCOMBI   <>  '9999' 
+      		OR  JIHOKBN    <> '1' )
 			AND  (SRYCDTOTAL  =   197001210  OR
 		 	      SRYCDTOTAL  =   197000470)
 			ORDER  BY   SRYKA,
@@ -1167,7 +1178,8 @@ path	key49 	{
 		AND     SRYYM       >=  :STSRYYM
 		AND     SRYYM       <=  :EDSRYYM
 		AND     SRYKBN IN ('95','96')
-		AND     HKNCOMBI   <>  '9999'
+		AND   ( HKNCOMBI   <>  '9999' 
+			OR     JIHOKBN   <> '1' )
 		;
 	};
 };
