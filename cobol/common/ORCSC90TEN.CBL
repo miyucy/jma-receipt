@@ -20,7 +20,7 @@
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : 診療行為入力
-      *  コンポーネント名  : 剤ごと点数計算（2005.4）
+      *  コンポーネント名  : 剤ごと点数計算
       *  管理者            : 
       *  作成日付    作業者        記述
       *  00/12/01    NACL−多々納  新規作成
@@ -28,8 +28,6 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  03.03.00    NACL-多々納  07/03/06  酸素点数計算修正
-      *  04.05.00    NACL-多々納  09/06/XX  数量小数５桁対応
-      *  04.05.00    NACL-多々納  10/01/XX  薬評対応
       *****************************************************************
       *
       *
@@ -48,7 +46,6 @@
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-SP              PIC 9(01).
-           03  FLG-GENTEN          PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -69,34 +66,34 @@
       *
       *    一時領域
        01  WRK-AREA.
-           03  WRK-SURYO           PIC 9(05)V9(05).
+           03  WRK-SURYO           PIC 9(05)V9(03).
            03  WRK-SURYO-R         REDEFINES   WRK-SURYO.
                05  WRK-SURYO-S1    PIC 9(05).
-               05  WRK-SURYO-S2    PIC 9(05).
+               05  WRK-SURYO-S2    PIC 9(03).
       *
-           03  WRK-SYOKEIS         PIC 9(08)V9(8).
-           03  WRK-SYOKEIS2        PIC 9(08)V9(8).
-           03  WRK-SYOKEIS3        PIC 9(08)V9(8).
+           03  WRK-SYOKEIS         PIC 9(08)V99.
+           03  WRK-SYOKEIS2        PIC 9(08)V9999.
+           03  WRK-SYOKEIS3        PIC 9(08)V9999.
            03  WRK-SYOKEI          PIC 9(08).
-           03  WRK-TENSUKEIS       PIC 9(08)V9(6).
+           03  WRK-TENSUKEIS       PIC 9(08)V9999.
            03  WRK-TENSUKEI-9      PIC 9(08).
       *    薬剤
-           03  WRK-ZAIKEI          PIC 9(08)V9(8).
+           03  WRK-ZAIKEI          PIC 9(08)V999.
       *    器材
-           03  WRK-KIZKEI          PIC 9(08)V9(5).
-           03  WRK-KIZKEI-3        PIC 9(08)V9(5).
+           03  WRK-KIZKEI          PIC 9(08)V999.
+           03  WRK-KIZKEI-3        PIC 9(08)V999.
       *    フィルム
-           03  WRK-FIRKEI          PIC 9(08)V9(5).
-           03  WRK-NYU-FIRKEI      PIC 9(08)V9(5).
-           03  WRK-NYU-FIRTEN      PIC 9(08)V9(5).
+           03  WRK-FIRKEI          PIC 9(08)V999.
+           03  WRK-NYU-FIRKEI      PIC 9(08)V999.
+           03  WRK-NYU-FIRTEN      PIC 9(08)V999.
            03  WRK-FIRTEN-G        PIC 9(08).
            03  WRK-FIRTEN          PIC 9(08).
       *    窒素
-           03  WRK-CHISOKEI        PIC 9(08)V9(5).
+           03  WRK-CHISOKEI        PIC 9(08)V999.
            03  WRK-CHITEN          PIC 9(08).
       *    酸素
-           03  WRK-SANSOKIN        PIC 9(08)V9(5).
-           03  WRK-SANSOKIN-SUM    PIC 9(08)V9(5).
+           03  WRK-SANSOKIN        PIC 9(08)V999.
+           03  WRK-SANSOKIN-SUM    PIC 9(08)V999.
            03  WRK-SANSOGOK        PIC 9(08).
            03  WRK-SANTEN          PIC 9(08).
       *
@@ -109,14 +106,11 @@
       *
       *    注射液計算用
            03  WRK-SURYO-CHU9      PIC 9(05).
-           03  WRK-SURYO-CHU       PIC 9(05)V9(05).
+           03  WRK-SURYO-CHU       PIC 9(05)V9(03).
       *
            03  WRK-MOJI            PIC X(01).
       *
            03  WRK-MAISU           PIC 9(05).
-      *
-      *診療行為処理最大行
-       01  MAX-LINE                PIC 9(03)   VALUE   400.
       *
       *    スパ領域
        01  SPA-SCR-REC.
@@ -154,7 +148,7 @@
                MOVE    LNK-SC90-IDX-STR    TO  IDX-STR
            END-IF
            IF      LNK-SC90-IDX-END    =   ZERO
-               MOVE    MAX-LINE            TO  IDX-END
+               MOVE    200                 TO  IDX-END
            ELSE
                MOVE    LNK-SC90-IDX-END    TO  IDX-END
            END-IF
@@ -190,10 +184,6 @@
                ELSE
                    MOVE    LNK-COM-INPUTCD(IDX)(1:1)   TO  WRK-MOJI
                END-IF
-      *        薬評は対象外
-               IF      LNK-COM-YAKUHYO (IDX)   =   "1"
-                   CONTINUE
-               ELSE
       *
                MOVE    IDX                 TO  IDX-MAX
                EVALUATE    WRK-MOJI
@@ -220,8 +210,6 @@
                        END-IF
                    END-IF
                END-EVALUATE
-      *
-               END-IF
            END-PERFORM
       *
       *    薬剤点数計算（剤内でまとめて計算）
@@ -275,12 +263,11 @@
       *                                    OR  "022"
       *!                                   OR  "046"  )  AND
       *    残量廃棄のあるすべての注射薬剤を対象とする
-           IF     (IDX                     <   MAX-LINE    )  AND
+           IF     (IDX                     <   200    )  AND
                   (LNK-COM-INPUTCD(IDX + 1)  =   "099309901")
-               MOVE    LNK-COM-SURYO(IDX)    TO  WRK-SURYO
-               IF      WRK-SURYO-S2          >   ZERO
+               IF      LNK-COM-SURYO(IDX)(6:3) >   ZERO
                    COMPUTE WRK-SURYO-CHU9      =   LNK-COM-SURYO (IDX)
-                                               +   0.99999
+                                               +   0.99
                    MOVE    WRK-SURYO-CHU9          TO  WRK-SURYO-CHU
                ELSE
                    MOVE    LNK-COM-SURYO (IDX)     TO  WRK-SURYO-CHU
@@ -413,7 +400,7 @@
                                            +   1
            END-IF
       *
-           COMPUTE WRK-SC90-YKZTEN     =   WRK-SYOKEIS3   + 0.999999
+           COMPUTE WRK-SC90-YKZTEN     =   WRK-SYOKEIS3   + 0.9999
       *
            .
        1005-KEIZAITENU-EXT.
@@ -502,10 +489,9 @@
            MOVE    ZERO                TO  WRK-CHISOKEI
            MOVE    ZERO                TO  WRK-SANSOKIN-SUM
            MOVE    ZERO                TO  IDX-MAX
-           MOVE    ZERO                TO  FLG-GENTEN
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   MAX-LINE  )  OR
+                   UNTIL      (IDX     >   200  )  OR
                              ((LNK-COM-INPUTCD(IDX)    =   SPACE ) AND
                               (LNK-GMN-INPUTCD(IDX)    =   SPACE ))
                ADD     1                   TO  IDX-MAX
@@ -516,13 +502,6 @@
       *                酸素・窒素の集計
                        PERFORM 2004-KIZAI-SET-SEC
                    END-IF
-               END-IF
-      *        減点
-               IF     (LNK-COM-PLUSKBN (IDX)   =   1   )
-                   MOVE    1               TO  FLG-GENTEN
-               END-IF
-               IF      FLG-GENTEN          =   1
-                   MOVE    1               TO  LNK-COM-PLUSKBN (IDX)
                END-IF
            END-PERFORM
       *    窒素点数計算処理
@@ -568,10 +547,6 @@
                                            +   LNK-SC90-FIRTEN
                                            +   LNK-SC90-SANTEN
                                            +   LNK-SC90-CHITEN
-      *    減点分
-           IF      FLG-GENTEN          =   1
-               MOVE    1               TO  LNK-COM-PLUSKBN (IDX-MAX)
-           END-IF
       *
            .
        200-TENSUKEI-EXT.
