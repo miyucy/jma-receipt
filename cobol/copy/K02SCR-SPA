@@ -193,7 +193,7 @@
       *****        07  SPA-ACCT2-TBL             OCCURS   100.
       *                09  SPA-ACCT2-SRYKBN          PIC  X(02).
       *                09  SPA-ACCT2-SRYCD           PIC  X(09).
-      *****:           09  SPA-ACCT2-GAIKANRIKBN     PIC  9(01).
+      *****            09  SPA-ACCT2-GAIKANRIKBN     PIC  9(01).
       *        リハビリ当月内回数集計
                05  SPA-RIGAKU-NCNT-AREA.
                    07  SPA-RIGAKU-INIT               PIC X(01).
@@ -207,6 +207,7 @@
       *@
       *        包括診療チェックあり
                05  SPA-HKTSANTEI-CHK           PIC 9(01).
+               05  SPA-HKTKEI-FLG              PIC 9(01).
       *!!
       *        訂正時点数変更チェック
                05  SPA-TEISEI-CHK              PIC 9(01).

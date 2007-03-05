@@ -1743,6 +1743,7 @@
                    UNTIL      (IDX     >   200  )  OR
                               (WRK-GMN-INPUTCD(IDX) =   SPACE)  OR
                               (SPA-ERRCD        NOT =   SPACE)
+             IF   (WRK-COM-HKNCOMBI (IDX) NOT =   "9999")
       *        点滴は１回のみとする（外来のみ）
                IF     (SPA-NYUGAIKBN               =   "2"   )  AND
                       (WRK-COM-SRYSYUKBN(IDX)  NOT =   "950"  AND
@@ -1774,6 +1775,8 @@
                       (WRK-COM-DATAKBN  (IDX)      =   "1"   )
                    MOVE    1                   TO  FLG-SYUJUTU
                END-IF
+      *
+             END-IF
            END-PERFORM
       *    今回と前回の両方に手技がある場合は、チェックしない
       *    手術がある時対象外

@@ -1459,6 +1459,7 @@
                    MOVE    ZERO            TO  SPA-CHOZAI-CHK
                    MOVE    ZERO            TO  SPA-SYOHOU-CHK
                    MOVE    SPACE           TO  SPA-TOKUTEI-SRYKA 
+                   MOVE    ZERO            TO  SPA-HKTKEI-FLG
       *            診療行為、計計算処理、編集
                    MOVE    SPACE           TO  FLG-TOROKU
                    PERFORM 510-TBLHEN-SEC
@@ -1488,6 +1489,7 @@
                        MOVE    ZERO            TO  SPA-NAIFUKU-OK
                        MOVE    ZERO            TO  SPA-CHOKITOFLG-CHK
                        MOVE    SPACE           TO  SPA-TOKUTEI-SRYKA 
+                       MOVE    ZERO            TO  SPA-HKTKEI-FLG
                    END-IF
                    PERFORM 3003-GMN-HEN-SEC
                    IF      SPA-MOTOPG      =   "S02"  OR  "J02" OR "C02"
@@ -2850,52 +2852,6 @@
       *    同一検査削除処理
       *****************************************************************
        30016-KENSA-DELETE-SEC                  SECTION.
-      *TEST
-      *    診療行為、計計算処理、編集
-           MOVE    1                   TO  FLG-KENSADEL
-           MOVE    SPACE               TO  FLG-TOROKU
-           PERFORM 510-TBLHEN-SEC
-           MOVE    ZERO                TO  FLG-KENSADEL
-           MOVE    SPACE               TO  FLG-TOROKU
-           MOVE    SPACE               TO  SPA-KID1-FLG
-           GO      TO    30016-KENSA-DELETE-EXT
-      *TEST
-           INITIALIZE                  WRK-SCR-REC
-           MOVE    SPA-SCR-REC         TO  WRK-SCR-REC
-      *
-      *    同一検査をエラーとする
-           PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   200     )   OR
-                              (SPA-GMN-INPUTCD (IDX-Z) =   SPACE  AND
-                               SPA-COM-INPUTCD (IDX-Z) =   SPACE )
-               IF     (SPA-COM-SRYKBN (IDX-Z)  =   "60"  )  AND
-                      (SPA-COM-INPUTCD(IDX-Z)(1:1)  =   "1" )  AND
-                      (SPA-COM-DATAKBN(IDX-Z)  =   "1"   )
-      *        逓減以外
-               AND    (SPA-COM-TEIGENKBN (IDX-Z)   NOT =   1    )
-      *        包括対象以外
-               AND    (SPA-COM-SRYSYUKBN (IDX-Z)   NOT =   "610")
-      *        包括分
-               AND    (SPA-COM-HOUKNSKBN(IDX-Z)   NOT =   ZERO )
-      *        検体検査コメント以外
-               AND    (SPA-COM-KENTAICOMMENT (IDX-Z)  =   ZERO )
-                   PERFORM VARYING     IDX-Z2  FROM    IDX-Z   BY  1
-                           UNTIL       IDX-Z2      >   200
-                       IF     (IDX-Z2      NOT =   IDX-Z )  AND
-                              (SPA-COM-SRYSYUKBN   (IDX-Z2)
-                                           NOT =   "610"  )  AND
-                              (SPA-COM-INPUTCD(IDX-Z)
-                                               =   SPA-COM-INPUTCD
-                                                        (IDX-Z2))
-      *                 検体検査コメントの判定
-                         AND  (WRK-COM-KENGRP(IDX-Z)
-                                             =   WRK-COM-KENGRP(IDX-Z2))
-                           MOVE    SPACE           TO  SPA-GMN-INPUTCD
-                                                        (IDX-Z2)
-                       END-IF
-                   END-PERFORM
-               END-IF
-           END-PERFORM
       *
       *    診療行為、計計算処理、編集
            MOVE    1                   TO  FLG-KENSADEL
@@ -2903,7 +2859,6 @@
            PERFORM 510-TBLHEN-SEC
            MOVE    ZERO                TO  FLG-KENSADEL
            MOVE    SPACE               TO  FLG-TOROKU
-      *
            MOVE    SPACE               TO  SPA-KID1-FLG
            .
        30016-KENSA-DELETE-EXT.
@@ -7339,7 +7294,8 @@
       *          包括分はチェックなし
                  IF    (SPA-COM-HKNCOMBI(SPA-GMN-IDX)
                                                =   "9999" )  OR
-                       (SPA-COM-HOUKATU-ZAI(SPA-GMN-IDX) =   1 )
+                       (SPA-COM-HOUKATU-ZAI(SPA-GMN-IDX)
+                                           NOT =   ZERO   )
                    CONTINUE
                  ELSE
       *@@
@@ -8273,6 +8229,14 @@
                    MOVE    SPA-SRYKA       TO  WRK-COM-SRYKA  (IDX-Z)
                ELSE
                    MOVE    WRK-SRYKA        TO  WRK-COM-SRYKA (IDX-Z)
+               END-IF
+      *        包括診療コードの加算も包括分とする
+               IF      (WRK-COM-AUTOKBN (IDX-Z)    =   "2" )  AND
+                       (WRK-COM-INPUTCD (IDX-Z - 1 )   =   "1" )  AND
+                       (WRK-COM-HOUKATU-FLG (IDX-Z - 1 )
+                                                       =   1   )
+                   MOVE    1               TO  WRK-COM-HOUKATU-ZAI
+                                                           (IDX-Z)
                END-IF
       *
       *        画面再編集・基本チェック
@@ -11278,6 +11242,7 @@
       *    更新前のチェック
            MOVE    SPACE               TO  FLG-TOROKU
       *    包括診療チェック
+           MOVE    ZERO                TO  SPA-HKTKEI-FLG
            MOVE    1                   TO  FLG-HKTCHK
            PERFORM 510-TBLHEN-SEC
            MOVE    SPACE               TO  FLG-TOROKU
@@ -12132,11 +12097,15 @@
                    PERFORM 5002-SURYO-HEN-SEC
       *@
       *            包括行
-                   IF     (SPA-COM-HOUKATU-ZAI (WRK-IDX) =   1 )
+                   IF     (SPA-COM-HOUKATU-ZAI (WRK-IDX) NOT =   ZERO)
                       OR ((SPA-COM-HKNCOMBI(WRK-IDX)     =   "9999" )
                       AND (SPA-HKNCOMBINUM    NOT =   "9999" ))
                        MOVE    "blue"         TO  K02-SRYKBN-STYLE(IDX)
                        MOVE    "blue"         TO  K02-MEISYO-STYLE(IDX)
+                       IF       SPA-COM-HOUKATU-FLG2(WRK-IDX)   =   1
+                           MOVE    "red"      TO  K02-SRYKBN-STYLE(IDX)
+                           MOVE    "red"      TO  K02-MEISYO-STYLE(IDX)
+                       END-IF
                    ELSE
                        MOVE    "black"        TO  K02-SRYKBN-STYLE(IDX)
                        MOVE    "black"        TO  K02-MEISYO-STYLE(IDX)
@@ -12524,7 +12493,7 @@
            MOVE    "user-font"         TO  K02-SURYO-STYLE(IDX)
       *@
       *    包括剤
-           IF    ( SPA-COM-HOUKATU-ZAI (WRK-IDX) =   1  )   OR
+           IF    ( SPA-COM-HOUKATU-ZAI (WRK-IDX) NOT =   ZERO)   OR
                  ((SPA-COM-HKNCOMBI(WRK-IDX)     =   "9999" )
               AND (SPA-HKNCOMBINUM           NOT =   "9999" ))
               MOVE    "blue"         TO  K02-SURYO-STYLE(IDX)
