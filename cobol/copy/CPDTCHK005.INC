@@ -32,6 +32,7 @@
            03  DTCHK005-SRYKA          PIC X(02).
            03  DTCHK005-SRYKBN         PIC X(02).
            03  DTCHK005-SRYSYUKBN      PIC X(03).
+           03  DTCHK005-JIHOKBN        PIC X(01).
            03  DTCHK005-HKNCOMBI       PIC X(04).
            03  DTCHK005-ZAITEN         PIC 9(08).
            03  DTCHK005-ZAIKAISU       PIC 9(07).

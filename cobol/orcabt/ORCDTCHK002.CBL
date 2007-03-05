@@ -2643,6 +2643,7 @@
        200111-TSRYCD-HKNFLG-HEN-SEC        SECTION.
       *
            IF    ( DCACCT-HKNCOMBI         =   9999 )
+            OR   ( DCACCT-JIHOKBN          =   "1"  )
                IF    ( DCSRY-SRYCD (1:1)   =   "6" )
                    MOVE    1               TO  TSRYCD-HKNFLG (IDX26)
                END-IF
@@ -9126,6 +9127,7 @@
                            END-IF
       *
                            IF    ( DCACCT-HKNCOMBI =   9999 )
+                            OR   ( DCACCT-JIHOKBN  =   "1" )
                                MOVE   ZERO    TO   FLG-LOOP-END
                            END-IF
                        END-IF

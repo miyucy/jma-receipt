@@ -663,6 +663,7 @@
                                        TO  DCACCT-SRYKA
            MOVE    HCM34S01-SRYKBN (IDX4)
                                        TO  DCACCT-SRYKBN
+           MOVE    SPACE               TO  DCACCT-JIHOKBN
            MOVE    COMB-HKNCOMBINUM    TO  DCACCT-HKNCOMBI
            MOVE    HCM34S01-ZAITEN (IDX4)
                                        TO  DCACCT-ZAITEN
@@ -786,6 +787,7 @@
            MOVE    "2"                 TO  DCACCT-ACCTKBN
            MOVE    NACCT-SRYKA         TO  DCACCT-SRYKA
            MOVE    NACCT-SRYKBN        TO  DCACCT-SRYKBN
+           MOVE    SPACE               TO  DCACCT-JIHOKBN
            MOVE    NACCT-HKNCOMBI      TO  DCACCT-HKNCOMBI
            MOVE    NACCT-ZAITEN        TO  DCACCT-ZAITEN
            MOVE    NACCT-ZAIKAISU      TO  DCACCT-ZAIKAISU

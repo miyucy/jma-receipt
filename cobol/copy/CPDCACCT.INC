@@ -32,6 +32,7 @@
            03  DCACCT-SRYKA            PIC X(02).
            03  DCACCT-SRYKBN           PIC X(02).
            03  DCACCT-SRYSYUKBN        PIC X(03).
+           03  DCACCT-JIHOKBN          PIC X(01).
            03  DCACCT-HKNCOMBI         PIC 9(04).
            03  DCACCT-ZAITEN           PIC 9(08).
            03  DCACCT-ZAIKAISU         PIC 9(07).
