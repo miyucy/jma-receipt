@@ -985,7 +985,8 @@
                                                TO  IDX
                    END-IF
                END-PERFORM
-           END-IF    
+           END-IF
+           MOVE    SPA-GMN-PRTJYUN     TO  SPA-GMN-PRTJYUN-OLD
       *
       *    出力先プリンタ名割り当て情報編集
            MOVE    SPACE               TO  SYS-1031-REC
@@ -2649,7 +2650,6 @@
       *
            IF      SPA-ERRCD           =   SPACE
                MOVE    SPA-GMN-PRTJYUN     TO  SPA-GMN-PRTJYUN-OLD
-
       *        主科設定時は全科に戻す
                IF    ( SPA-GMN-SYUKA-MAX   >   ZERO )
                AND   ( SPA-GMN-SYUKA   NOT =   "00" )
