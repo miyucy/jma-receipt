@@ -1159,7 +1159,8 @@
                MOVE    ZERO                TO  FLG-SRYACCT
                MOVE    MCPDATA-REC         TO  SRYACCT-REC
       *----(01.02.01)--ADD-START---
-               IF          ACCT-HKNCOMBI   =   9999
+               IF        ( ACCT-HKNCOMBI   =   "9999" )
+                   OR    ( ACCT-JIHOKBN    =   "1" )
                    GO  TO  900-ACCT-DBFETCH-SEC
                END-IF
       *----(01.02.01)--ADD-END-----

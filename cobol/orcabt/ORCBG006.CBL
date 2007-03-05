@@ -515,7 +515,7 @@
        220-MAIN-SRY-SEC            SECTION.
       *
       *    ÂÐ¾Ý¿ÇÎÅÇ¯·î¤Ç¸¡º÷
-           INITIALIZE                  SRYACCT-REC
+           INITIALIZE                  SRYACT-REC
            MOVE    WRK-PARA-HOSPID     TO  SRY-HOSPID
            MOVE    WRK-PARA-DENPPRTYM  TO  SRY-SRYYM
            MOVE    SRYACT-REC          TO  MCPDATA-REC
