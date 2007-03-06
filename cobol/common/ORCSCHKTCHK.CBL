@@ -361,18 +361,7 @@
                        IF     (FLG-HOUKATU     =   1   )  AND
                               (FLG-SONOTA      =   1   )  AND
                               (SPA-COM-HOUKATU-FLG (IDX) =   ZERO)
-                           IF    (SPA-COM-INPUTCD (IDX)(1:1)
-                                                           =   "6"
-                                                           OR  "7" ) OR
-                                ((SPA-COM-INPUTCD (IDX)(1:1)
-                                                           =   "1" ) AND
-                                 (SPA-COM-DATAKBN (IDX)  =   "1" ))
-                               MOVE    1       TO  SPA-COM-HOUKATU-FLG2
-                                                              (IDX)
-                               IF      IDX-ERR         =   ZERO
-                                   MOVE    IDX             TO  IDX-ERR
-                               END-IF
-                           END-IF
+                           PERFORM 2002-HOUKATU-GAI-CHK-SEC
                        END-IF
                    END-PERFORM
                    MOVE    IDX                 TO  IDX-S
@@ -391,6 +380,35 @@
       *
            .
        200-MAIN-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    包括外チェック処理
+      *****************************************************************
+       2002-HOUKATU-GAI-CHK-SEC            SECTION.
+      *
+           IF    (SPA-COM-INPUTCD (IDX)(1:1)   =   "6"
+                                               OR  "7" )
+               MOVE    1               TO  SPA-COM-HOUKATU-FLG2 (IDX)
+           END-IF
+           IF     (SPA-COM-INPUTCD (IDX)(1:1)  =   "1" ) AND
+                  (SPA-COM-DATAKBN (IDX)       =   "1" )
+               IF     (SPA-COM-SRYKBN (IDX)    =   "60"  ) AND
+                      (SPA-COM-KENTAICOMMENT(IDX)  =   1 )
+      *            検体検査コメントは対象外
+                   CONTINUE
+               ELSE
+                   MOVE    1               TO  SPA-COM-HOUKATU-FLG2
+                                                                (IDX)
+               END-IF
+           END-IF
+           IF      SPA-COM-HOUKATU-FLG2 (IDX)  =   1
+               IF      IDX-ERR             =   ZERO
+                   MOVE    IDX                 TO  IDX-ERR
+               END-IF
+           END-IF
+           .
+       2002-HOUKATU-GAI-CHK-EXT.
            EXIT.
       *
       *****************************************************************
