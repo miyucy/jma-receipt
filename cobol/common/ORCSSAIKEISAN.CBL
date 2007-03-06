@@ -40,6 +40,7 @@
       *  03.02.01    NACL-ÌçÏÆ    06/09/05  ·ò¹¯ÊÝ¸±Ë¡£±£°·î²þÀµÂÐ±þ
       *  03.04.01    NACL-ÌçÏÆ    06/12/01  ¼«ÇåÀÕ·òÊÝ½àµòÂÐ±þ
       *  03.04.02    NACL-ÌçÏÆ    07/01/22  ¼ýÇ¼ÌÀºÙÊÔ½¸½¤Àµ
+      *  03.04.03    NACL-Â¿¡¹Ç¼  07/03/06  Êñ³ç¿ÇÎÅºÞÈ½ÄêÄÉ²Ã
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -1093,7 +1094,8 @@
        4401-SRYACCT-SET-SEC           SECTION.
       *
            IF    (ACCT-ZAITEN       NOT = ZERO                  ) AND
-                 (ACCT-DAY(SAI-IDX  WRK-SAIKEISAN-DD) NOT = ZERO)    
+                 (ACCT-DAY(SAI-IDX  WRK-SAIKEISAN-DD) NOT = ZERO)
+             AND (ACCT-JIHOKBN          =   SPACE )
       *
               MOVE    ACCT-SRYKBN    TO  TBL-SRYKBN(IDX1)
               MOVE    ACCT-ZAINUM    TO  TBL-ZAIBAN(IDX1)
