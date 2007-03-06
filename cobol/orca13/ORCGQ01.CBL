@@ -1170,7 +1170,7 @@
       *        xxx 存在しなかった場合 xxx
       *        自院病名マスタ−読込処理２（データ存在チェック）
                INITIALIZE              USERBYOMEI-REC
-               MOVE    SPA-HOSPID  TO  USBYO-HOSPID
+      *********MOVE    SPA-HOSPID  TO  USBYO-HOSPID
                PERFORM 900-USERBYOMEI-KEY3-SEL-SEC
       *
       *        分類コードが設定されていないデータが存在したかチェック
@@ -3344,7 +3344,7 @@
        4118-USERBYOMEI-LST-EDIT-SEC        SECTION.
       *
            INITIALIZE                      USERBYOMEI-REC
-           MOVE    SPA-HOSPID          TO  USBYO-HOSPID
+      *****MOVE    SPA-HOSPID          TO  USBYO-HOSPID
       *
            MOVE    SPA-GMN-Q01-BYOMEISEL
                                        TO  WRK-SELWORD
@@ -3650,7 +3650,7 @@
            END-IF
       *
            INITIALIZE                  USERBYOMEI-REC
-           MOVE    SPA-HOSPID          TO  USBYO-HOSPID
+      *****MOVE    SPA-HOSPID          TO  USBYO-HOSPID
            MOVE    WRK-CDSYUBETU       TO  USBYO-CDSYU
            MOVE    SPA-GMN-Q01-BYOMEICD(IDX1)
                                        TO  USBYO-BYOMEIINPUTCD
@@ -4002,7 +4002,7 @@
            END-IF
       *
            INITIALIZE              INPUTCD-REC
-           MOVE    SPA-HOSPID      TO  ICD-HOSPID
+      *****MOVE    SPA-HOSPID      TO  ICD-HOSPID
            MOVE    WRK-CDSYUBETU   TO  ICD-CDSYU
            MOVE    WRK-SRYCD       TO  ICD-INPUTCD
       *
@@ -7063,7 +7063,7 @@
            CALL    "ORCSADDSIGN"       USING   ORCSADDSIGNAREA
            MOVE    SADDSIGN-STR        TO  ADRS-POST
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  ADRS-HOSPNUM
            MOVE    ADRS-REC            TO  MCPDATA-REC
            MOVE    "tbl_adrs"          TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
@@ -7103,7 +7103,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    ZERO                TO  FLG-USERBYOMEI
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  USBYO-HOSPNUM
            MOVE    USERBYOMEI-REC      TO  MCPDATA-REC
            MOVE    "tbl_userbyomei"    TO  MCP-TABLE
            MOVE    "key8"              TO  MCP-PATHNAME
@@ -7141,7 +7141,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    ZERO                TO  FLG-BYOMEI
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  BYO-HOSPNUM
            MOVE    BYOMEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_byomei"        TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -7180,7 +7180,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    ZERO                TO  FLG-BYOMEI
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  BYO-HOSPNUM
            MOVE    BYOMEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_byomei"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -7209,7 +7209,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-SYSYMD          TO  TNS-YUKOSTYMD
                                            TNS-YUKOEDYMD
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key72"             TO  MCP-PATHNAME
@@ -7248,7 +7248,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        900-INPUTCD-KEY-SEL-SEC         SECTION.
       *
            MOVE    ZERO                TO  FLG-INPUTCD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
            MOVE    INPUTCD-REC         TO  MCPDATA-REC
            MOVE    "tbl_inputcd"       TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -7274,7 +7274,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        900-TENSU-KEY-SEL-SEC            SECTION.
       *
            MOVE    ZERO                TO  FLG-TENSU
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -7310,7 +7310,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        900-SYSKANRI-KEY2-SEL-SEC       SECTION.
       *
            MOVE    ZERO                TO  FLG-SYSKANRI
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1026-HOSPNUM
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -7349,10 +7349,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    ZERO                TO  FLG-HKNNUM
            INITIALIZE                  HKNNUM-REC
-           MOVE    SPA-HOSPID          TO  HKN-HOSPID
+      *****MOVE    SPA-HOSPID          TO  HKN-HOSPID
            MOVE    SPA-SYSYMD          TO  HKN-TEKSTYMD
            MOVE    SPA-SYSYMD          TO  HKN-TEKEDYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
            MOVE    HKNNUM-REC          TO  MCPDATA-REC
            MOVE    "tbl_hknnum"        TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
@@ -7390,8 +7390,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    ZERO                TO  FLG-USERBYOMEI
            INITIALIZE                  USERBYOMEI-REC
-           MOVE    SPA-HOSPID          TO  USBYO-HOSPID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+      *****MOVE    SPA-HOSPID          TO  USBYO-HOSPID
+           MOVE    SPA-HOSPNUM         TO  USBYO-HOSPNUM
            MOVE    USERBYOMEI-REC      TO  MCPDATA-REC
            MOVE    "tbl_userbyomei"    TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
@@ -7428,7 +7428,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        900-USERBYOMEI-KEY3-SEL-SEC     SECTION.
       *
            MOVE    ZERO                TO  FLG-USERBYOMEI
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  USBYO-HOSPNUM
            MOVE    USERBYOMEI-REC      TO  MCPDATA-REC
            MOVE    "tbl_userbyomei"    TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
@@ -7454,7 +7454,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-USERBYOMEI-KEY-SEL-SEC      SECTION.
       *
            MOVE    ZERO                TO  FLG-USERBYOMEI
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  USBYO-HOSPNUM
            MOVE    USERBYOMEI-REC      TO  MCPDATA-REC
            MOVE    "tbl_userbyomei"    TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -7479,9 +7479,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBSELECT-SEC               SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
            IF    ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
@@ -7496,9 +7497,10 @@ grpsys                            SPA-AREA
        910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"     USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -7510,9 +7512,10 @@ grpsys                            SPA-AREA
        910-DBCLOSECURSOR-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"     USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -7524,9 +7527,10 @@ grpsys                            SPA-AREA
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL   "ORCDBMAIN"       USING
+                                        MCPAREA
+                                        MCPDATA-REC
+                                        SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.

@@ -454,7 +454,7 @@
                END-IF
                IF      SPA-GMN-C04-BUNRUICD    =   ZERO
                    INITIALIZE                      USERBYOMEI-REC
-                   MOVE    SPA-HOSPID          TO  USBYO-HOSPID
+      *************MOVE    SPA-HOSPID          TO  USBYO-HOSPID
                    MOVE    "tbl_userbyomei"    TO  WRK-MCP-TABLE
                    MOVE    "key3"              TO  WRK-MCP-PATHNAME
                    PERFORM 3101-USERBYOMEI-LST-SEC
@@ -467,7 +467,7 @@
       *        自院病名一覧
                MOVE    1                   TO  SPA-GMN-C04-PAGE
                INITIALIZE                      USERBYOMEI-REC
-               MOVE    SPA-HOSPID          TO  USBYO-HOSPID
+      *********MOVE    SPA-HOSPID          TO  USBYO-HOSPID
                STRING  SPA-C01-BYOMEIINPUTCD   DELIMITED   BY  SPACE
                        "%"                     DELIMITED   BY  SIZE
                                            INTO    USBYO-BYOMEIINPUTCD
@@ -697,15 +697,16 @@
       *
       *    分類コード ’Ｃ’のもの
            INITIALIZE                  USERBYOMEI-REC
-           MOVE    SPA-HOSPID          TO  USBYO-HOSPID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+      *****MOVE    SPA-HOSPID          TO  USBYO-HOSPID
+           MOVE    SPA-HOSPNUM         TO  USBYO-HOSPNUM
            MOVE    USERBYOMEI-REC      TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_userbyomei"    TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_userbyomei"    TO  MCP-TABLE
                MOVE    "key4"              TO  MCP-PATHNAME
@@ -744,14 +745,15 @@ grpsys                            SPA-AREA
       *****************************************************************
        3101-USERBYOMEI-LST-SEC         SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  USBYO-HOSPNUM
            MOVE    USERBYOMEI-REC      TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
            MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
                MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
@@ -914,7 +916,7 @@ grpsys                            SPA-AREA
            MOVE    "tbl_userbyomei"    TO  WRK-MCP-TABLE
            MOVE    "key7"              TO  WRK-MCP-PATHNAME
            INITIALIZE                  USERBYOMEI-REC
-           MOVE    SPA-HOSPID          TO  USBYO-HOSPID
+      *****MOVE    SPA-HOSPID          TO  USBYO-HOSPID
            MOVE    SPA-GMN-C04-BBUNRUICD 
                            (SPA-NAI-C04-BUNRUICD-IDX)
                                        TO  USBYO-BUNRUICD
@@ -1010,7 +1012,7 @@ grpsys                            SPA-AREA
            IF      SPA-GMN-C04-INPUTCD (IDZ)
                                    NOT =   SPACE
                INITIALIZE                      USERBYOMEI-REC
-               MOVE    SPA-HOSPID          TO  USBYO-HOSPID
+      *********MOVE    SPA-HOSPID          TO  USBYO-HOSPID
                MOVE    SPA-GMN-C04-INPUTCD (IDZ)
                                            TO  USBYO-BYOMEIINPUTCD
                PERFORM 900-USBYO-INV-SEC                            
@@ -1436,7 +1438,7 @@ grpsys                            SPA-AREA
                MOVE    "tbl_userbyomei"    TO  WRK-MCP-TABLE
                MOVE    "key8"              TO  WRK-MCP-PATHNAME
                INITIALIZE                  USERBYOMEI-REC
-               MOVE    SPA-HOSPID          TO  USBYO-HOSPID
+      *********MOVE    SPA-HOSPID          TO  USBYO-HOSPID
                STRING  "%"                 DELIMITED  BY  SIZE
                        SPA-GMN-C04-KENBYOMEI
                                            DELIMITED  BY  SPACE
@@ -1583,7 +1585,7 @@ grpsys                            SPA-AREA
            MOVE    "tbl_userbyomei"    TO  WRK-MCP-TABLE
            MOVE    "key3"              TO  WRK-MCP-PATHNAME
            INITIALIZE                  USERBYOMEI-REC
-           MOVE    SPA-HOSPID          TO  USBYO-HOSPID
+      *****MOVE    SPA-HOSPID          TO  USBYO-HOSPID
            PERFORM 3101-USERBYOMEI-LST-SEC
       *
            MOVE    9                   TO  SPA-GMN-C04-CUR     
@@ -1615,10 +1617,10 @@ grpsys                            SPA-AREA
                    MOVE    "tbl_userbyomei"    TO  WRK-MCP-TABLE
                    MOVE    "key3"              TO  WRK-MCP-PATHNAME
                    INITIALIZE                  USERBYOMEI-REC
-                   MOVE    SPA-HOSPID          TO  USBYO-HOSPID
+      *************MOVE    SPA-HOSPID          TO  USBYO-HOSPID
                ELSE
                    INITIALIZE                  USERBYOMEI-REC
-                   MOVE    SPA-HOSPID          TO  USBYO-HOSPID
+      *************MOVE    SPA-HOSPID          TO  USBYO-HOSPID
                    STRING  SPA-C01-BYOMEIINPUTCD   DELIMITED   BY  SPACE
                            "%"                     DELIMITED   BY  SIZE
                                            INTO    USBYO-BYOMEIINPUTCD
@@ -1630,7 +1632,7 @@ grpsys                            SPA-AREA
                MOVE    "tbl_userbyomei"    TO  WRK-MCP-TABLE
                MOVE    "key7"              TO  WRK-MCP-PATHNAME
                INITIALIZE                  USERBYOMEI-REC
-               MOVE    SPA-HOSPID          TO  USBYO-HOSPID
+      *********MOVE    SPA-HOSPID          TO  USBYO-HOSPID
                MOVE    SPA-GMN-C04-BUNRUICD 
                                        TO  USBYO-BUNRUICD
            END-IF
@@ -1666,10 +1668,10 @@ grpsys                            SPA-AREA
                    MOVE    "tbl_userbyomei"    TO  WRK-MCP-TABLE
                    MOVE    "key3"              TO  WRK-MCP-PATHNAME
                    INITIALIZE                  USERBYOMEI-REC
-                   MOVE    SPA-HOSPID          TO  USBYO-HOSPID
+      *************MOVE    SPA-HOSPID          TO  USBYO-HOSPID
                ELSE
                    INITIALIZE                  USERBYOMEI-REC
-                   MOVE    SPA-HOSPID          TO  USBYO-HOSPID
+      *************MOVE    SPA-HOSPID          TO  USBYO-HOSPID
                    STRING  SPA-C01-BYOMEIINPUTCD   DELIMITED   BY  SPACE
                            "%"                     DELIMITED   BY  SIZE
                                            INTO    USBYO-BYOMEIINPUTCD
@@ -1681,7 +1683,7 @@ grpsys                            SPA-AREA
                MOVE    "tbl_userbyomei"    TO  WRK-MCP-TABLE
                MOVE    "key7"              TO  WRK-MCP-PATHNAME
                INITIALIZE                  USERBYOMEI-REC
-               MOVE    SPA-HOSPID          TO  USBYO-HOSPID
+      *********MOVE    SPA-HOSPID          TO  USBYO-HOSPID
                MOVE    SPA-GMN-C04-BUNRUICD 
                                        TO  USBYO-BUNRUICD
            END-IF
@@ -2092,14 +2094,15 @@ grpsys                            SPA-AREA
       *****************************************************************
        900-USBYO-INV-SEC         SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  USBYO-HOSPNUM
            MOVE    USERBYOMEI-REC      TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_userbyomei"    TO  MCP-TABLE
            MOVE    "key6"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_userbyomei"    TO  MCP-TABLE
                MOVE    "key6"              TO  MCP-PATHNAME
@@ -2123,9 +2126,10 @@ grpsys                            SPA-AREA
        900-USBYO-READ-SEC           SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  USERBYOMEI-REC
                MOVE    ZERO            TO  FLG-USERBYOMEI
@@ -2143,21 +2147,23 @@ grpsys                            SPA-AREA
       *****************************************************************
        900-BYOMEI-READ-SEC         SECTION.
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  BYO-HOSPNUM
            MOVE    BYOMEI-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_byomei"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
                MOVE    "tbl_byomei"        TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-grpsys         CALL "ORCDBMAIN" USING MCPAREA
-                                      MCPDATA-REC
-grpsys                                SPA-AREA
+               CALL    "ORCDBMAIN"         USING
+                                               MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC         TO  BYOMEI-REC
                    MOVE    ZERO                TO  FLG-BYOMEI
@@ -2184,9 +2190,10 @@ grpsys                                SPA-AREA
        900-CLOSE-SEC               SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
            .
        900-CLOSE-EXT.
@@ -2198,9 +2205,10 @@ grpsys                            SPA-AREA
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL   "ORCDBMAIN"       USING
+                                        MCPAREA
+                                        MCPDATA-REC
+                                        SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.

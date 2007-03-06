@@ -565,7 +565,7 @@
            CALL    "ORCSADDSIGN"       USING   ORCSADDSIGNAREA
            MOVE    SADDSIGN-STR        TO  ADRS-POST
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  ADRS-HOSPNUM
            MOVE    ADRS-REC            TO  MCPDATA-REC
            MOVE    "tbl_adrs"          TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
@@ -604,9 +604,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBSELECT-SEC               SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
            IF    ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
@@ -621,9 +622,10 @@ grpsys                            SPA-AREA
        910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"     USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -635,9 +637,10 @@ grpsys                            SPA-AREA
        910-DBCLOSECURSOR-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"          USING
+                                            MCPAREA
+                                            MCPDATA-REC
+                                            SPA-AREA
       *
            .
       *
@@ -649,9 +652,10 @@ grpsys                            SPA-AREA
        900-PUT-WINDOW              SECTION.
       *
            MOVE    "PUTWINDOW"     TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"     USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.

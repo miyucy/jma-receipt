@@ -304,18 +304,19 @@
            MOVE    "key31"         TO  WRK-MCP-PATHNAME
       *
            INITIALIZE                  PTBYOMEI-REC
-           MOVE    SPA-HOSPID      TO  PTBYO-HOSPID
+      *****MOVE    SPA-HOSPID      TO  PTBYO-HOSPID
            MOVE    SPA-NAI-C02-PTID
                                    TO  PTBYO-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM     TO  PTBYO-HOSPNUM
            MOVE    PTBYOMEI-REC    TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
            MOVE    WRK-MCP-TABLE   TO  MCP-TABLE
            MOVE    WRK-MCP-PATHNAME
                                    TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"     USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
            IF      MCP-RC          =   ZERO
                MOVE    WRK-MCP-TABLE   TO  MCP-TABLE
                MOVE    WRK-MCP-PATHNAME
@@ -495,16 +496,17 @@ grpsys                            SPA-AREA
        480-DELETE-SEC              SECTION.
       *
            INITIALIZE                      PTBYO-KEY
-           MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
+      *****MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
            MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
            MOVE    "del31"             TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
            IF      MCP-RC          NOT =   ZERO 
                MOVE    "1001"              TO  SPA-ERRCD
@@ -737,9 +739,10 @@ grpsys                            SPA-AREA
        900-PTBYO-READ-SEC           SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  PTBYOMEI-REC
                MOVE    ZERO            TO  FLG-PTBYOMEI
@@ -758,9 +761,10 @@ grpsys                            SPA-AREA
        900-CLOSE-SEC               SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
            .
        900-CLOSE-EXT.
@@ -772,9 +776,10 @@ grpsys                            SPA-AREA
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL   "ORCDBMAIN"       USING
+                                        MCPAREA
+                                        MCPDATA-REC
+                                        SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.
