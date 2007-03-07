@@ -73,6 +73,7 @@
       *                                     の食堂加算はゼロ設定で作成する
       *  03.04.02    NACL-小豆沢  07/02/26  病棟別の入院日数（今回入院分）
       *                                     を表示
+      *  03.04.03    NACL-小豆沢  07/03/07  病棟設定と算定入院料不一致警告
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2444,6 +2445,11 @@
       *            保険の期間判定
                    WHEN    "5"
                        PERFORM 31061-HKN-KIKANCHK-SEC
+      *            病棟設定と算定入院料のチェック
+                   WHEN    "1"
+                       IF   SPA-GMN-KEIKOKU   =    SPACE
+                           PERFORM 31062-SANTEI-NYUINCHK-SEC
+                       END-IF
                END-EVALUATE
            END-PERFORM
            .
@@ -2458,7 +2464,7 @@
       *
            MOVE    ZERO            TO  WRK-HKN-ST
            MOVE    ZERO            TO  WRK-HKN-ED
-           MOVE    SPACE           TO  SPA-GMN-KEIKOKU
+      ***     MOVE    SPACE           TO  SPA-GMN-KEIKOKU
       *
            PERFORM VARYING IDK     FROM    1   BY  1
                    UNTIL   IDK     >   SPA-NAI-SRYMATU
@@ -2516,6 +2522,98 @@
            .
       *
        31061-HKN-KIKANCHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    病棟設定と算定入院料のチェック
+      *****************************************************************
+       31062-SANTEI-NYUINCHK-SEC                  SECTION.
+           DISPLAY "31062-SANTEI-NYUINCHK-SEC"
+      *
+           DISPLAY "SPA-GMN-PTID = "  SPA-GMN-PTID
+           DISPLAY "SPA-NAI-SRYYM = " SPA-NAI-SRYYM
+           DISPLAY "SPA-GMN-TSRYCD (1) = " SPA-GMN-TSRYCD (1)
+      *
+           MOVE    SPACE           TO  SPA-GMN-KEIKOKU
+      *    入院履歴から該当月１日時点の情報検索
+           INITIALIZE                      PTNYUINRRK-REC
+           MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID
+           MOVE    SPA-GMN-PTID        TO  PTNYUINRRK-PTID
+           MOVE    SPA-NAI-SRYYM       TO  PTNYUINRRK-TENNYUYMD(1:6)
+           MOVE    "01"                TO  PTNYUINRRK-TENNYUYMD(7:2)
+           MOVE    PTNYUINRRK-TENNYUYMD TO PTNYUINRRK-TENSTUYMD
+           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key41"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE   "tbl_ptnyuinrrk" TO MCP-TABLE
+               MOVE   "key41"          TO  MCP-PATHNAME
+               PERFORM 970-PTNYUINRRK-READ-SEC
+               IF  (FLG-PTNYUINRRK     =   ZERO)   AND
+                   (PTNYUINRRK-TOKUTEI-KBN  =   SPACE)
+                   DISPLAY "1111111"
+                   INITIALIZE                      SYSKANRI-REC
+                   MOVE    "5001"              TO  SYS-KANRICD
+                   MOVE    PTNYUINRRK-BTUNUM   TO  SYS-KBNCD
+                   MOVE    SPA-NAI-SRYYM       TO  SYS-STYUKYMD(1:6)
+                   MOVE    "01"                TO  SYS-STYUKYMD(7:2)
+                   MOVE    SYS-STYUKYMD        TO  SYS-EDYUKYMD
+                   MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+                   MOVE    "tbl_syskanri"      TO  MCP-TABLE
+                   MOVE    "key10"             TO  MCP-PATHNAME
+                   PERFORM 910-DBSELECT-SEC
+                   IF      MCP-RC              =   ZERO
+                      MOVE    "tbl_syskanri"  TO  MCP-TABLE
+                      MOVE    "key10"         TO  MCP-PATHNAME
+                      PERFORM 900-KANRIMST-READ-SEC
+                   ELSE
+                      MOVE    1               TO  FLG-SYSKANRI
+                   END-IF
+                   MOVE    "tbl_syskanri"      TO  MCP-TABLE
+                   MOVE    "key10"             TO  MCP-PATHNAME
+                   PERFORM 990-DBCLOSE-SEC
+      *
+                   IF      FLG-SYSKANRI        =   ZERO
+                       DISPLAY "2222222"
+                       MOVE    MCPDATA-REC     TO  SYS-5001-REC
+                       DISPLAY "SYS-5001-BTU-KHNSRYCD = "
+                                SYS-5001-BTU-KHNSRYCD
+      *                入院料の比較
+                       IF (SPA-GMN-TSRYCD (1)  =  SYS-5001-BTU-KHNSRYCD)
+                                               OR
+                          ((SPA-GMN-TSRYCD (1)  =  "190097010"   OR
+                                                   "190097110"   OR
+                                                   "190119510"   OR
+                                                   "190119610")  AND
+                           (SYS-5001-BTU-KHNSRYCD = "099999950"))
+                                               OR
+                          ((SPA-GMN-TSRYCD (1)  =  "190097210"   OR
+                                                   "190097310"   OR
+                                                   "190119710"   OR
+                                                   "190119810")  AND
+                           (SYS-5001-BTU-KHNSRYCD = "099999950"))
+                               CONTINUE
+                       ELSE
+                           DISPLAY "KEIKOKU SET !!"
+                           MOVE
+               "算定入院料と病棟設定が異なります。確認してください。"
+                                       TO      SPA-GMN-KEIKOKU
+                       END-IF
+                   ELSE
+                       INITIALIZE                  SYS-5001-REC
+                   END-IF
+               END-IF
+           ELSE
+               INITIALIZE                  PTNYUINRRK-REC
+               MOVE    1               TO  FLG-PTNYUINRRK
+           END-IF
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key41"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+      *
+       31062-SANTEI-NYUINCHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2635,7 +2733,7 @@
            END-PERFORM
       *    一括修正
            MOVE    SPA-GMN-KOMENTO-41  TO  I41-KOMENTO.
-      *    保険切れ警告
+      *    保険切れ警告（または病棟設定と算定入院料不一致警告）
            IF      SPA-GMN-KEIKOKU     NOT =   SPACE
                MOVE    "red"               TO  I41-KEIKOKU-STYLE
                MOVE    SPA-GMN-KEIKOKU     TO  I41-KEIKOKU
