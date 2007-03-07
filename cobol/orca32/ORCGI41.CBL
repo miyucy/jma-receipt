@@ -2401,6 +2401,9 @@
       *
              END-IF
            END-PERFORM
+      *
+           MOVE    SPACE           TO  SPA-GMN-KEIKOKU
+      *
       *    画面の日表示
            PERFORM   VARYING   IDX     FROM    1   BY  1
                      UNTIL     IDX     >   SPA-NAI-MAX-41
@@ -2447,9 +2450,7 @@
                        PERFORM 31061-HKN-KIKANCHK-SEC
       *            病棟設定と算定入院料のチェック
                    WHEN    "1"
-                       IF   SPA-GMN-KEIKOKU   =    SPACE
-                           PERFORM 31062-SANTEI-NYUINCHK-SEC
-                       END-IF
+                       PERFORM 31062-SANTEI-NYUINCHK-SEC
                END-EVALUATE
            END-PERFORM
            .
@@ -2527,13 +2528,7 @@
       *    病棟設定と算定入院料のチェック
       *****************************************************************
        31062-SANTEI-NYUINCHK-SEC                  SECTION.
-           DISPLAY "31062-SANTEI-NYUINCHK-SEC"
       *
-           DISPLAY "SPA-GMN-PTID = "  SPA-GMN-PTID
-           DISPLAY "SPA-NAI-SRYYM = " SPA-NAI-SRYYM
-           DISPLAY "SPA-GMN-TSRYCD (1) = " SPA-GMN-TSRYCD (1)
-      *
-           MOVE    SPACE           TO  SPA-GMN-KEIKOKU
       *    入院履歴から該当月１日時点の情報検索
            INITIALIZE                      PTNYUINRRK-REC
            MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID
@@ -2551,7 +2546,6 @@
                PERFORM 970-PTNYUINRRK-READ-SEC
                IF  (FLG-PTNYUINRRK     =   ZERO)   AND
                    (PTNYUINRRK-TOKUTEI-KBN  =   SPACE)
-                   DISPLAY "1111111"
                    INITIALIZE                      SYSKANRI-REC
                    MOVE    "5001"              TO  SYS-KANRICD
                    MOVE    PTNYUINRRK-BTUNUM   TO  SYS-KBNCD
@@ -2574,10 +2568,7 @@
                    PERFORM 990-DBCLOSE-SEC
       *
                    IF      FLG-SYSKANRI        =   ZERO
-                       DISPLAY "2222222"
                        MOVE    MCPDATA-REC     TO  SYS-5001-REC
-                       DISPLAY "SYS-5001-BTU-KHNSRYCD = "
-                                SYS-5001-BTU-KHNSRYCD
       *                入院料の比較
                        IF (SPA-GMN-TSRYCD (1)  =  SYS-5001-BTU-KHNSRYCD)
                                                OR
@@ -2594,7 +2585,6 @@
                            (SYS-5001-BTU-KHNSRYCD = "099999951"))
                                CONTINUE
                        ELSE
-                           DISPLAY "KEIKOKU SET !!"
                            MOVE
                "算定入院料と病棟設定が異なります。確認してください。"
                                        TO      SPA-GMN-KEIKOKU
@@ -5019,7 +5009,6 @@
                                            TO  WRK-SANTEISTYMD
                MOVE    PTNYUINRRK-TOKUTEI-NYUIN
                                            TO  WRK-TOKUTEI-NYUIN
-               DISPLAY "SPA-NAI-SRYYM = " SPA-NAI-SRYYM
       *        老人性認知症疾患療養病棟入院料は平成１８年３月迄
                IF     (PTNYUINRRK-TOKUTEI-KBN   =   "2")   AND
                       (PTNYUINRRK-TOKUTEI-NYUIN =   "06")  AND
@@ -5027,7 +5016,6 @@
                        MOVE      SPACE     TO  WRK-TOKUTEI-NYUIN
                END-IF
                MOVE    PTNYUINRRK-REC      TO  WK-PTNYUINRRK-REC
-      *         DISPLAY  "PTNYUINRRK-RRKNUM = " PTNYUINRRK-RRKNUM
            ELSE
                INITIALIZE                  PTNYUINRRK-REC
                MOVE    1               TO  FLG-PTNYUINRRK
@@ -5084,7 +5072,6 @@
                    END-IF
                END-IF
            END-IF
-      *     DISPLAY  "WRK-TOKUTEI-NYUIN = " WRK-TOKUTEI-NYUIN
       *
            IF      WRK-TOKUTEI-NYUIN           NOT =   SPACE
                PERFORM 410191-TOKTEI-NYUIN-SET-SEC
@@ -5104,7 +5091,6 @@
                    GO  TO  410191-NYUACCT-SAKUSEI-EXT
                END-IF
            END-IF
-      *     DISPLAY   "410191-NYUACCT-SAKUSEI-SEC4"
       *
       *    入院会計作成サブの呼出し（処理区分９により次月分のみ作成）
            INITIALIZE                      ORCSNYUACCT-AREA
@@ -5122,7 +5108,6 @@
                                        TO  LNK-SCNYUACCT-STSRYYMD
            MOVE    SYOKIKSN-IN-SANTEISTYMD
                                        TO  LNK-SCNYUACCT-EDSRYYMD
-      *     DISPLAY "LNK-SCNYUACCT-STSRYYMD = " LNK-SCNYUACCT-STSRYYMD
            PERFORM VARYING IDX6        FROM    1   BY   1
                    UNTIL  (IDX6            >     7 )    OR
                           (SYOKIKSN-OT-KGNSRYCD(IDX6)   =  SPACE)
