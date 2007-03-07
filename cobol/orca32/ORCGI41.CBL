@@ -2587,12 +2587,17 @@
                            (SYS-5001-BTU-KHNSRYCD = "099999951"))
                                CONTINUE
                        ELSE
+                           MOVE   SPACE  TO  SPA-GMN-KEIKOKU
                            MOVE
                "算定入院料と病棟設定が異なります。確認してください。"
                                        TO      SPA-GMN-KEIKOKU
                        END-IF
                    ELSE
                        INITIALIZE                  SYS-5001-REC
+                        MOVE   SPACE   TO  SPA-GMN-KEIKOKU
+                           MOVE
+                     "病棟の情報が取得できません。確認してください。"
+                                       TO      SPA-GMN-KEIKOKU
                    END-IF
                END-IF
            ELSE
