@@ -2503,6 +2503,7 @@
            END-IF
       *
            IF     (WRK-HKN-ST          =   WRK-HKN-ED ) 
+               MOVE    SPACE           TO   SPA-GMN-KEIKOKU
                STRING  "保険の適用が切れている期間があります。"
                                             DELIMITED  BY  SIZE
                        WRK-HKN-ST           DELIMITED  BY  SIZE
@@ -2510,6 +2511,7 @@
                                        INTO      SPA-GMN-KEIKOKU
                END-STRING
            ELSE
+               MOVE    SPACE           TO   SPA-GMN-KEIKOKU
                STRING  "保険の適用が切れている期間があります。"
                                             DELIMITED  BY  SIZE
                        WRK-HKN-ST           DELIMITED  BY  SIZE
