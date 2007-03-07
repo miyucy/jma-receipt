@@ -67,6 +67,7 @@
       *  03.03.06    NACL-藤原    06/12/15  入院の包括のデータ作成の修正
       *
       *  03.04.01    NACL-藤原    07/02/06  月途中の受給者番号変更に対応
+      *  03.04.02    NACL-藤原    07/03/06  包括診療判定の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2758,6 +2759,7 @@
                IF    ( WRK-PARA-HOUKATUKBN =   "1"  )
                    IF    ( ACCT-ZAITEN         =   ZERO   )
                    OR    ( ACCT-HKNCOMBI       =   "9999" )
+                   OR    ( ACCT-JIHOKBN        =   "1"    )
                        GO  TO  900-SRYACCT-READ-SEC
                    END-IF
                END-IF
