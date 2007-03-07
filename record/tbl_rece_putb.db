@@ -71,6 +71,20 @@ path	key3 	{
 	};
 };
 
+path	key4 	{
+	DBSELECT	{
+		DECLARE tbl_rece_putb_key4_csr CURSOR FOR
+		SELECT *
+		FROM tbl_rece_putb
+			WHERE   HOSPID		=   :HOSPID
+			AND   PREFKBN		=   :PREFKBN
+			AND   STYUKYMD		<=  :STYUKYMD
+			AND   EDYUKYMD		>=  :EDYUKYMD
+			ORDER BY SYUBETU_SRT2,KOUHI_NO
+		;
+	};
+};
+
 path    del1   {
         DBDELETE        {
                 DELETE
