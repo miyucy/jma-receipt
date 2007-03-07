@@ -2591,7 +2591,7 @@
                                                    "190097310"   OR
                                                    "190119710"   OR
                                                    "190119810")  AND
-                           (SYS-5001-BTU-KHNSRYCD = "099999950"))
+                           (SYS-5001-BTU-KHNSRYCD = "099999951"))
                                CONTINUE
                        ELSE
                            DISPLAY "KEIKOKU SET !!"
