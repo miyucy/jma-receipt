@@ -5601,6 +5601,16 @@
                MOVE    SPACE           TO  SPA-ERRCD
                MOVE    ZERO            TO  FLG-END
            END-IF
+      *    ページ変更
+           IF      FLG-HENKOU          =   2
+               MOVE    SPACE           TO  SPA-KIDCD
+               MOVE    ZERO            TO  FLG-END
+               IF      SPA-ERRCD(1:1)  =   "K"
+                   CONTINUE
+               ELSE
+                   MOVE    SPACE           TO  SPA-ERRCD
+               END-IF
+           END-IF
       *
            .
        410112-KOUI-SPACHK-EXT.
@@ -6567,6 +6577,7 @@
                MOVE    "5"                 TO  LNK-SC92-KBN
            END-IF
            IF      FLG-HENKOU          =   1
+                                       OR  2
       *        画面遷移前
                IF     (LNK-SC97-NYURYOKU       =   1 ) OR
                       (SPA-COM-CHKFLG (SPA-GMN-IDX)  =   SPACE)
@@ -7275,7 +7286,9 @@
                END-IF
            END-IF
       *    包括診療チェック
-           IF     (FLG-HKTCHK          =   1 ) AND
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-KIDCD           =   SPACE )  AND
+                  (FLG-HKTCHK          =   1 ) AND
                   (SPA-HKTSANTEI-FLG   =   1 ) AND
                   (SPA-HKNCOMBINUM NOT =   "9999")
                PERFORM 5109-HKTSANTEI-CHK-SEC
@@ -8231,12 +8244,17 @@
                    MOVE    WRK-SRYKA        TO  WRK-COM-SRYKA (IDX-Z)
                END-IF
       *        包括診療コードの加算も包括分とする
-               IF      (WRK-COM-AUTOKBN (IDX-Z)    =   "2" )  AND
-                       (WRK-COM-INPUTCD (IDX-Z - 1 )   =   "1" )  AND
-                       (WRK-COM-HOUKATU-FLG (IDX-Z - 1 )
-                                                       =   1   )
-                   MOVE    1               TO  WRK-COM-HOUKATU-ZAI
+               IF     ( WRK-COM-AUTOKBN (IDX-Z)    =   "2" ) OR
+                      ((WRK-COM-INPUTCD (IDX-Z)(1:1)
+                                                   =   "1" ) AND
+                       (WRK-COM-DATAKBN (IDX-Z)    =   "2" ))
+                   IF      (WRK-COM-INPUTCD (IDX-Z - 1 )(1:1)
+                                                   =   "1" )  AND
+                           (WRK-COM-HOUKATU-FLG (IDX-Z - 1)
+                                                   =   1   )
+                       MOVE    1               TO  WRK-COM-HOUKATU-ZAI
                                                            (IDX-Z)
+                   END-IF
                END-IF
       *
       *        画面再編集・基本チェック
@@ -10497,7 +10515,7 @@
       *****************************************************************
        450-MAEGMN-SEC             SECTION.
       *
-           MOVE    1                   TO  FLG-HENKOU
+           MOVE    2                   TO  FLG-HENKOU
       *    診療行為入力チェック
            PERFORM 41011-KOUI-ALLHEN-SEC
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
@@ -10523,7 +10541,7 @@
       *****************************************************************
        460-ATOGMN-SEC             SECTION.
       *
-           MOVE    1                   TO  FLG-HENKOU
+           MOVE    2                   TO  FLG-HENKOU
       *    診療行為入力チェック
            PERFORM 41011-KOUI-ALLHEN-SEC
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
@@ -10539,7 +10557,6 @@
            END-IF
       *
            COMPUTE WRK-FREE            =   SPA-GMN-PAGE  *  20
-      *****IF      SPA-GMN-MAX         <   WRK-FREE
            IF      SPA-GMN-INPUTCD(WRK-FREE)   =   SPACE
                GO  TO                 460-ATOGMN-EXT
            END-IF
@@ -10702,48 +10719,48 @@
       *****************************************************************
       *    算定処理へ
       *****************************************************************
-       470-SANTEI-SEC             SECTION.
+      *470-SANTEI-SEC             SECTION.
       *
-           MOVE    1                   TO  FLG-HENKOU
+      *    MOVE    1                   TO  FLG-HENKOU
       *    診療行為入力チェック
-           PERFORM 41011-KOUI-ALLHEN-SEC
-           IF     (SPA-ERRCD       NOT =   SPACE )  OR
-                  (SPA-KIDCD           =   "0180" )  OR
-                  (FLG-END             =   1     )
-               GO      TO      470-SANTEI-EXT
-           END-IF
+      *    PERFORM 41011-KOUI-ALLHEN-SEC
+      *    IF     (SPA-ERRCD       NOT =   SPACE )  OR
+      *           (SPA-KIDCD           =   "0180" )  OR
+      *           (FLG-END             =   1     )
+      *        GO      TO      470-SANTEI-EXT
+      *    END-IF
       *
-           MOVE    SPACE               TO  LINKAREA
-           MOVE    SPACE               TO  SPA-MOTOPG
-           MOVE    SPA-AREA            TO  SPA-COMMON
-           MOVE    "LINK"              TO  MCP-STATUS
-           MOVE    SPACE               TO  MCP-EVENT
-           CALL    "ORCGK04"           USING
-                   MCPAREA
-                   SPAAREA
-                   LINKAREA
-                   SCRAREA.
+      *    MOVE    SPACE               TO  LINKAREA
+      *    MOVE    SPACE               TO  SPA-MOTOPG
+      *    MOVE    SPA-AREA            TO  SPA-COMMON
+      *    MOVE    "LINK"              TO  MCP-STATUS
+      *    MOVE    SPACE               TO  MCP-EVENT
+      *    CALL    "ORCGK04"           USING
+      *            MCPAREA
+      *            SPAAREA
+      *            LINKAREA
+      *            SCRAREA.
       *
       *    初期カーソル設定
-           MOVE    "B01"               TO  MCP-WIDGET
+      *    MOVE    "B01"               TO  MCP-WIDGET
       *
-           MOVE    "K04"               TO  SPA-SAKIPG
-           MOVE    "K02"               TO  SPA-MOTOPG
+      *    MOVE    "K04"               TO  SPA-SAKIPG
+      *    MOVE    "K02"               TO  SPA-MOTOPG
       *
-           MOVE    SPA-K01KYOUTU       TO  SPA-WORK
+      *    MOVE    SPA-K01KYOUTU       TO  SPA-WORK
       *
-           MOVE    SPACE               TO  LINKAREA
+      *    MOVE    SPACE               TO  LINKAREA
       *
-           MOVE    "NEW"               TO  MCP-PUTTYPE
-           MOVE    "K04"               TO  MCP-WINDOW
+      *    MOVE    "NEW"               TO  MCP-PUTTYPE
+      *    MOVE    "K04"               TO  MCP-WINDOW
       *
-           PERFORM 900-PUT-WINDOW
+      *    PERFORM 900-PUT-WINDOW
       *
-           MOVE    1                   TO  FLG-END
+      *    MOVE    1                   TO  FLG-END
       *
-           .
-       470-SANTEI-EXT.
-           EXIT.
+      *    .
+      *470-SANTEI-EXT.
+      **** EXIT.
       *    
       *****************************************************************
       *    前回患者番号編集処理
