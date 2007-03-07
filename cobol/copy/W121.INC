@@ -25,6 +25,9 @@
                     06  W121-VALUE  PIC X(3).
                   05  W121-SEIDONAME.
                     06  W121-VALUE  PIC X(20).
+                  05  W121-GRP-DSP-STYLE   PIC X(20).
+                  05  W121-GRP-DSP.
+                    06  W121-VALUE  PIC X(14).
                   05  W121-GRP2-STATE   PIC S9(09) BINARY.
                   05  W121-GRP2.
                     06  W121-VALUE  PIC X.
@@ -58,6 +61,14 @@
                     06  W121-PRTJYUN2-COUNT  PIC S9(9)   BINARY.
                     06  W121-PRTJYUN2LST
                             PIC X(31)   OCCURS  5 TIMES.
+                  05  W121-SRT-LAST-COMBO.
+                    06  W121-SRT-LAST.
+                      07  W121-VALUE  PIC X(14).
+                    06  W121-SRT-LAST-COUNT  PIC S9(9)   BINARY.
+                    06  W121-SRT-LASTLST
+                            PIC X(14)   OCCURS  5 TIMES.
+                  05  W121-KOUGAKU-TEN.
+                    06  W121-VALUE  PIC S9(7).
                   05  W121-GRP1-STATE   PIC S9(09) BINARY.
                   05  W121-GRP1.
                     06  W121-VALUE  PIC X.

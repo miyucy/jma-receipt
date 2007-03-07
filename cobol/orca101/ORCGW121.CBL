@@ -96,16 +96,21 @@
                        09  SPA-GMN-F1L        PIC X(01).
                        09  SPA-GMN-PRTJYUN2MEIL
                                               PIC X(28).
-                   07  SPA-GMN-PRTJYUN2-MAX
-                                              PIC 9(01).   
+                   07  SPA-GMN-PRTJYUN2-MAX   PIC 9(01).   
       * 
                    07  SPA-GMN-ZAITAKULST     OCCURS  2.
                        09  SPA-GMN-ZAITAKUL   PIC X(01).
                        09  SPA-GMN-F1L        PIC X(01).
                        09  SPA-GMN-ZAITAKUMEIL
                                               PIC X(24).
-                   07  SPA-GMN-ZAITAKU-MAX
-                                              PIC 9(02).   
+                   07  SPA-GMN-ZAITAKU-MAX    PIC 9(02).   
+      * 
+                   07  SPA-GMN-SRT-LASTLST    OCCURS  2.
+                       09  SPA-GMN-SRT-LASTL  PIC X(01).
+                       09  SPA-GMN-F1L        PIC X(01).
+                       09  SPA-GMN-SRT-LASTMEIL
+                                              PIC X(12).
+                   07  SPA-GMN-SRT-LAST-MAX   PIC 9(02).   
       * 
                    07  SPA-GMN-CHOUKILST      OCCURS  2.
                        09  SPA-GMN-CHOUKIL    PIC X(01).
@@ -183,6 +188,12 @@
                            11  SPA-GMN-F1      PIC X(01).
                            11  SPA-GMN-PRTJYUN2MEI
                                                PIC X(28).
+                       09  SPA-GMN-SRT-LAST-G.
+                           11  SPA-GMN-SRT-LAST
+                                               PIC X(01).
+                           11  SPA-GMN-F1      PIC X(01).
+                           11  SPA-GMN-SRT-LASTMEI
+                                               PIC X(12).
                        09  SPA-GMN-ZAITAKU-G.
                            11  SPA-GMN-ZAITAKU
                                                PIC X(01).
@@ -195,6 +206,7 @@
                            11  SPA-GMN-CHOUKIMEI
                                                PIC X(24).
                        09  SPA-GMN-GRP1-NO-MAX PIC 9(03).
+                       09  SPA-GMN-KOUGAKU-TEN PIC 9(07).
       *
                    07  SPA-GMN-GRP-KOUMOKU.
                            11  SPA-GMN-GRP-SETTEI
@@ -726,6 +738,12 @@
            MOVE    "組合国保は本人家族で分ける" 
                                    TO  SPA-GMN-PRTJYUN2MEIL(2)
            MOVE    2               TO  SPA-GMN-PRTJYUN2-MAX 
+      *
+           MOVE    "1"             TO  SPA-GMN-SRT-LASTL   (1)
+           MOVE    "カナ氏名順"    TO  SPA-GMN-SRT-LASTMEIL(1)
+           MOVE    "2"             TO  SPA-GMN-SRT-LASTL   (2)
+           MOVE    "患者番号順"    TO  SPA-GMN-SRT-LASTMEIL(2)
+           MOVE    2               TO  SPA-GMN-SRT-LAST-MAX 
       *
            MOVE    "1"             TO  SPA-GMN-ZAITAKUL    (1)
            MOVE    "県内・県外の先頭に印刷" 
@@ -1343,6 +1361,21 @@
                    END-IF
                  END-PERFORM
       *         
+                 MOVE    RECE-PUTH-SRT-LAST (IDZ)
+                                             TO  SPA-GMN-SRT-LAST
+                 PERFORM VARYING IDY FROM    1   BY  1
+                         UNTIL   IDY >       SPA-GMN-SRT-LAST-MAX
+                   IF      SPA-GMN-SRT-LAST =   SPA-GMN-SRT-LASTL (IDY)
+                       MOVE    SPA-GMN-SRT-LASTLST (IDY)
+                                           TO  SPA-GMN-SRT-LAST-G
+                       MOVE    SPA-GMN-SRT-LAST-MAX
+                                           TO  IDY
+                   END-IF
+                 END-PERFORM
+      *         
+                 MOVE    RECE-PUTH-KOUGAKU-TEN (IDZ)
+                                             TO  SPA-GMN-KOUGAKU-TEN
+      *         
                  MOVE    RECE-PUTH-ZAITAKU (IDZ)
                                              TO  SPA-GMN-ZAITAKU
                  PERFORM VARYING IDY FROM    1   BY  1
@@ -1768,6 +1801,7 @@
                ELSE
                    MOVE    SPA-NAI-SELNUM2 TO  W121-BODYLIST-ROW
                END-IF
+               MOVE    ZERO                TO  SPA-NAI-SELNUM2
                MOVE    W121-BODYLIST-ROW   TO  SPA-NAI-SELNUM2-ROW
       *
                MOVE    ZERO            TO  SPA-GMN-GRP1-NO-MAX
@@ -1987,8 +2021,10 @@
       *
            MOVE    W121-PRTJYUN1       TO  SPA-GMN-PRTJYUN1-G
            MOVE    W121-PRTJYUN2       TO  SPA-GMN-PRTJYUN2-G
+           MOVE    W121-SRT-LAST       TO  SPA-GMN-SRT-LAST-G
            MOVE    W121-ZAITAKU        TO  SPA-GMN-ZAITAKU-G
            MOVE    W121-CHOUKI         TO  SPA-GMN-CHOUKI-G
+           MOVE    W121-KOUGAKU-TEN    TO  SPA-GMN-KOUGAKU-TEN
       *
            MOVE    W121-SYU-PRTJYUN1   TO  SPA-GMN-SYUBETU-PRTJYUN1-G
            MOVE    W121-SYU-PRTJYUN2   TO  SPA-GMN-SYUBETU-PRTJYUN2-G
@@ -2033,12 +2069,22 @@
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
       *
+           PERFORM 41021-SRT-LAST-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
            PERFORM 41021-ZAITAKU-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
       *
            PERFORM 41021-CHOUKI-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 41021-KOUGAKU-TEN-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
@@ -2219,6 +2265,9 @@
       *
                    MOVE    SPA-GMN-PRTJYUN1LST (2)
                                        TO  SPA-GMN-PRTJYUN1-G
+      *
+                   MOVE    SPA-GMN-SRT-LASTLST (1)
+                                       TO  SPA-GMN-SRT-LAST-G
                END-IF 
       *
                MOVE    4               TO  SPA-GMN-CUR
@@ -2492,6 +2541,47 @@
            EXIT.
       *
       *****************************************************************
+      *    最終印刷順チェック
+      *****************************************************************
+       41021-SRT-LAST-CHK-SEC   SECTION.
+      *
+           IF      SPA-GMN-SRT-LAST    =   SPACE
+               MOVE    SPA-GMN-SRT-LASTLST (1)
+                                           TO  SPA-GMN-SRT-LAST-G
+           ELSE
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >   SPA-GMN-SRT-LAST-MAX
+                   IF      SPA-GMN-SRT-LAST    =
+                                   SPA-GMN-SRT-LASTL (IDY)
+                       MOVE    SPA-GMN-SRT-LASTLST (IDY)
+                                           TO  SPA-GMN-SRT-LAST-G
+                       MOVE    SPA-GMN-SRT-LAST-MAX
+                                           TO  IDY
+                   END-IF                                     
+               END-PERFORM
+      *     
+               IF      SPA-GMN-SRT-LASTMEI =   SPACE
+                   MOVE    "0013"              TO  SPA-ERRCD
+               END-IF
+           END-IF    
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    16              TO  SPA-GMN-CUR
+           END-IF
+            .
+       41021-SRT-LAST-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    高額点数チェック
+      *****************************************************************
+       41021-KOUGAKU-TEN-CHK-SEC       SECTION.
+      *
+          .
+       41021-KOUGAKU-TEN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    在総診・在医総チェック
       *****************************************************************
        41021-ZAITAKU-CHK-SEC       SECTION.
@@ -2645,7 +2735,9 @@
                IF    ( SPA-GMN-PRTJYUN1    NOT =   "03"  )
                AND   ( SPA-GMN-SYUBETU-PRTJYUN2
                                            NOT =   SPACE )
-                   MOVE    "0033"              TO  SPA-ERRCD
+                   MOVE    SPACE           TO 
+                                           SPA-GMN-SYUBETU-PRTJYUN2-G
+                   MOVE    "0033"          TO  SPA-ERRCD
                END-IF
            END-IF
       *
@@ -3883,8 +3975,8 @@
            MOVE    SPA-GMN-PRTJYUN2    TO  RECE-PUTH-KKHKBN (1) 
            MOVE    SPA-GMN-CHOUKI      TO  RECE-PUTH-CHOUKI (1) 
            MOVE    SPA-GMN-ZAITAKU     TO  RECE-PUTH-ZAITAKU (1) 
-      ***  MOVE    PREFKBN-PRTJYUN     TO  RECE-PUTH-KOUGAKU-TEN (1) 
-      ***  MOVE    PREFKBN-PRTJYUN     TO  RECE-PUTH-SRT-LAST (1)
+           MOVE    SPA-GMN-KOUGAKU-TEN TO  RECE-PUTH-KOUGAKU-TEN (1) 
+           MOVE    SPA-GMN-SRT-LAST    TO  RECE-PUTH-SRT-LAST (1)
            MOVE    SPA-TERMID          TO  RECE-PUTH-TERMID
            MOVE    SPA-OPID            TO  RECE-PUTH-OPID
       *
@@ -4130,6 +4222,8 @@
            MOVE    SPA-GMN-PRTJYUN2-G      TO  W121-PRTJYUN2
            MOVE    SPA-GMN-ZAITAKU-G       TO  W121-ZAITAKU
            MOVE    SPA-GMN-CHOUKI-G        TO  W121-CHOUKI
+           MOVE    SPA-GMN-SRT-LAST-G      TO  W121-SRT-LAST
+           MOVE    SPA-GMN-KOUGAKU-TEN     TO  W121-KOUGAKU-TEN
       *
            MOVE    SPA-GMN-RECESYUBETU     TO  W121-RECESYUBETU
            MOVE    SPA-GMN-SYUBETUNAME     TO  W121-SYUBETUNAME
@@ -4183,6 +4277,14 @@
            END-PERFORM
            MOVE    SPA-GMN-PRTJYUN2-MAX
                                        TO  W121-PRTJYUN2-COUNT 
+      *     
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >   SPA-GMN-SRT-LAST-MAX
+               MOVE    SPA-GMN-SRT-LASTLST (IDY)
+                                       TO  W121-SRT-LASTLST (IDY)
+           END-PERFORM
+           MOVE    SPA-GMN-SRT-LAST-MAX
+                                       TO  W121-SRT-LAST-COUNT 
       *     
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >       SPA-GMN-ZAITAKU-MAX
@@ -4358,6 +4460,13 @@
                    MOVE    "解除設定終了"      TO  W121-GRP-KAIJYO
            END-EVALUATE
       *
+           IF      SPA-GMN-GRP-SETTEI  =   "1"
+               MOVE    "グループ設定中"    TO  W121-GRP-DSP
+           END-IF
+           IF      SPA-GMN-GRP-KAIJYO  =   "1"
+               MOVE    "グループ解除中"    TO  W121-GRP-DSP
+           END-IF
+      *
            MOVE    WIDGET-NORMAL       TO  W121-HKNJ-PRTKBN-STATE
                                            W121-HKNJANUM-STATE
            MOVE    WIDGET-INSENSITIVE  TO  W121-SYU-PRTJYUN2-STATE
@@ -4386,6 +4495,12 @@
                                                W121-BOTTOM-STATE
                                                W121-DEL-STATE
                                                W121-SCR4-STATE
+               IF      SPA-GMN-PRTJYUN1    =   "03"
+                   CONTINUE
+               ELSE 
+                   MOVE    WIDGET-INSENSITIVE  TO
+                                               W121-SYU-PRTJYUN2-STATE
+               END-IF
            ELSE
                MOVE    WIDGET-INSENSITIVE  TO  W121-SYU-PRTJYUN1-STATE
                                                W121-SYU-PRTJYUN2-STATE
@@ -4402,6 +4517,7 @@
       *
            MOVE    "blue"          TO  W121-RECESYUBETU-STYLE
                                        W121-SYUBETUNAME-STYLE
+                                       W121-GRP-DSP-STYLE
       *
            PERFORM 5001-MAPCUR-SEC
       *
@@ -4423,6 +4539,7 @@
       *    エラーメッセージ表示理
       *****************************************************************
        510-ERRSET-SEC              SECTION.
+      *
            MOVE    SPACE               TO  SPA-ERRMSG
       *
            EVALUATE    SPA-ERRCD
@@ -4455,6 +4572,8 @@
                WHEN    "0012"
                    MOVE    "グループ２番号が未入力です"
                                                       TO  SPA-ERRMSG
+               WHEN    "0013"
+                   MOVE    "最終印刷順入力エラー"     TO  SPA-ERRMSG
                WHEN    "0021"
                    MOVE    "印刷順指定・県内県外入力エラー"
                                                          TO  SPA-ERRMSG
@@ -4633,11 +4752,11 @@
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
-          IF      SPA-GMN-CUR          =   ZERO
+           IF      SPA-GMN-CUR          =   ZERO
                PERFORM 50011-CUR-SET-SEC
-          END-IF
+           END-IF
       *
-          EVALUATE    SPA-GMN-CUR
+           EVALUATE    SPA-GMN-CUR
                 WHEN    1
                     MOVE  "SELNUM1"        TO  MCP-WIDGET
                 WHEN    2
@@ -4661,13 +4780,15 @@
                 WHEN    11
                     MOVE  "CHOUKI"         TO  MCP-WIDGET
                 WHEN    13
-                    MOVE  "SYU_PRTJYUN1"
-                                           TO  MCP-WIDGET
+                    MOVE  "SYU_PRTJYUN1"   TO  MCP-WIDGET
                 WHEN    14
-                    MOVE  "SYU_PRTJYUN2"
-                                           TO  MCP-WIDGET
+                    MOVE  "SYU_PRTJYUN2"   TO  MCP-WIDGET
                 WHEN    15
                     MOVE  "HKNNUM"         TO  MCP-WIDGET
+                WHEN    16
+                    MOVE  "SRT_LAST"       TO  MCP-WIDGET
+                WHEN    17
+                    MOVE  "KOUGAKU_TEN"    TO  MCP-WIDGET
                 WHEN    50
                     MOVE  "GRP1_NO"        TO  MCP-WIDGET
                 WHEN    51
@@ -4679,9 +4800,9 @@
       *
                 WHEN    999
                     MOVE  "B12"            TO  MCP-WIDGET
-            END-EVALUATE
+           END-EVALUATE
       *
-            EVALUATE    SPA-GMN-CUR
+           EVALUATE    SPA-GMN-CUR
                 WHEN    1   THRU    199
                     MOVE    0              TO  W121-PAGENO
                 WHEN    200 THRU    299
@@ -4727,10 +4848,14 @@
                WHEN    "PRTJYUN1"
                    MOVE    9           TO  SPA-GMN-CUR
                WHEN    "PRTJYUN2"
+                   MOVE    16          TO  SPA-GMN-CUR
+               WHEN    "SRT_LAST"
                    MOVE    10          TO  SPA-GMN-CUR
                WHEN    "ZAITAKU"
                    MOVE    11          TO  SPA-GMN-CUR
                WHEN    "CHOUKI"
+                   MOVE    17          TO  SPA-GMN-CUR
+               WHEN    "KOUGAKU_TEN"
                    MOVE    13          TO  SPA-GMN-CUR
                WHEN    "SYU_PRTJYUN1"
                    IF      SPA-GMN-PRTJYUN1    =   "03"
