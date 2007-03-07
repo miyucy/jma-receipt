@@ -37,8 +37,6 @@
       * 01.00.07     NACL-多々納  03/06/06  人工心肺不使用加算の計算修正
       * 01.00.08     NACL-多々納  04/03/16  Ｈ１６年４月改正追加
       * 01.00.09     NACL-多々納  05/12/14  MONFUNC 対応
-      * 03.05.00     NACL-多々納  07/04/XX  グループ診療対応
-      * 04.02.00     NACL-多々納  08/06/24  通則加算を通則加算対象の所定点数としない
       *****************************************************************
       *
       *
@@ -140,6 +138,12 @@
                05  WRK-RSI-TENSUKEI        PIC 9(08)V99.
                05  WRK-RSI-TENSUKEI2       PIC 9(08)V99.
       *
+      *****03  WRK-SANSO           PIC 9(08).
+           03  WRK-SANSOKIN        PIC 9(08)V99.
+           03  WRK-SANKEI          PIC 9(08).
+           03  WRK-SANTEN          PIC 9(08).
+           03  WRK-SANSOKIN-SUM    PIC 9(08)V99.
+      *
            03  WRK-SYOKEIS         PIC 9(08)V9999.
            03  WRK-SYOKEIS2        PIC 9(08)V99.
            03  WRK-SYOKEI          PIC 9(08).
@@ -155,6 +159,12 @@
       *
            03  WRK-SCNT            PIC 9(03).
       *
+      *
+           03  WRK-TENSU-X.
+               05  WRK-TENSU-Z     PIC ZZZZZZZZ.
+           03  WRK-KAISU-X.
+               05  WRK-KAISU-Z     PIC ZZZZ.
+      *
            03  WRK-INPUTCD         PIC X(22).
       *
       *    保存用
@@ -166,7 +176,7 @@
            COPY     "CMSANSOTBL.INC".
       *
       *    保険別算定履歴テーブル
-      *    COPY   "CMSANTEITBL.INC".
+           COPY   "CMSANTEITBL.INC".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -177,11 +187,11 @@
       *
       *    点数マスタ−
       *01  TENSU-REC.
-      *     COPY    "CPTENSU.INC".
+           COPY    "CPTENSU.INC".
       *
       *    算定履歴
-      *01  SANTEI-REC.
-      *    COPY    "CPSANTEI.INC".
+       01  SANTEI-REC.
+           COPY    "CPSANTEI.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -285,7 +295,7 @@
            MOVE    ZERO                TO  WRK-SCNT
      *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   SPA-MAX-LINE  )   OR
+                   UNTIL      (IDX-Z       >   200     )   OR
                               (SPA-ERRCD       NOT =   SPACE )  OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
       *
@@ -364,8 +374,6 @@
                    END-IF
       *            労災の時、労災加算の算定
                    IF      SPA-HKNKBN          =   1
-      ***********    AND  (SPA-RSI-HKNKBN  NOT =   "5" )
-                     AND  (SPA-RSI-JUNKYO  NOT =   "1" )
                        PERFORM 100113-RSIHKN-SYORI-SEC
                    END-IF
       *        薬剤
@@ -512,7 +520,6 @@
            MOVE    SPA-SRYYMD          TO  SYS-1006-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-1006-EDYUKYMD
       *    システム管理検索
-           MOVE    SPA-HOSPNUM         TO  SYS-1006-HOSPNUM
            MOVE    SYS-1006-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -562,7 +569,7 @@
            MOVE    ZERO                TO  IDX-TUS
       *
            PERFORM VARYING     IDX1    FROM    IDX-S   BY  1
-                   UNTIL      (IDX1        >   SPA-MAX-LINE     )   OR
+                   UNTIL      (IDX1        >   200     )   OR
                              ((WRK-GMN-INPUTCD (IDX1)  =   SPACE ) AND
                               (WRK-COM-INPUTCD (IDX1)  =   SPACE)) OR
                               (FLG-ARI                 =   1     )
@@ -577,7 +584,7 @@
                IF     (IDX1                >   IDX-S     )   AND
                       (WRK-COM-DATAKBN (IDX1)  =   "1"   )   AND
                       (WRK-COM-INPUTCD (IDX1)(1:1) =   "1" )
-                   MOVE    SPA-MAX-LINE            TO  IDX1
+                   MOVE    200             TO  IDX1
                ELSE
       *        最後の通則加算対象位置
                    IF     (WRK-COM-INPUTCD (IDX1)(1:1) =   "1" )  AND
@@ -603,7 +610,7 @@
            MOVE    "770020070"         TO  WRK-SRYCD
            MOVE    ZERO                TO  FLG-ARI
            PERFORM VARYING     IDX1    FROM    1   BY  1
-                   UNTIL      (IDX1    >   SPA-MAX-LINE  )  OR
+                   UNTIL      (IDX1    >   200  )  OR
                               (WRK-COM-INPUTCD(IDX1)   =   SPACE AND
                                WRK-GMN-INPUTCD(IDX1)   =   SPACE )
                IF       WRK-COM-INPUTCD (IDX1) =   WRK-SRYCD
@@ -629,12 +636,12 @@
       *    初診時ブラッシング料は初診算定時のみの算定とする
            IF     (IDX-ZS                  >   ZERO       )  AND
                   (WRK-COM-INPUTCD(IDX-ZS) =   "101400030")
-      *@@      IF      LNK-ORCSC-SYOSIN2       =   1
+      *@@@@    IF      LNK-ORCSC-SYOSIN2       =   1
       *            CONTINUE
       *        ELSE
       *            MOVE    "8014"              TO  SPA-ERRCD
       *            MOVE    "1"                 TO  WRK-COM-CUR (IDX-ZS)
-      *@@      END-IF
+      *@@@@@   END-IF
       *        アフターケアの時算定不可
                IF      SPA-RSI-HKNKBN          =   "3"
                    MOVE    "8018"              TO  SPA-ERRCD
@@ -679,7 +686,7 @@
            MOVE    1                   TO  IDX-Z2
            MOVE    ZERO                TO  IDX-KSN
            PERFORM VARYING     IDX1    FROM    IDX-Z2    BY  1
-                   UNTIL      (IDX1        >   SPA-MAX-LINE     )
+                   UNTIL      (IDX1        >   200     )
       ********************OR  (FLG-ROU-ARI             =   1    )
                           OR  (WRK-GMN-INPUTCD (IDX1)  =   SPACE )
                           OR  (SPA-ERRCD           NOT =   SPACE )
@@ -698,7 +705,7 @@
                END-IF
       ******   IF     (WRK-COM-INPUTCD (IDX1)(1:1) =  "1" ) AND
       *               (WRK-COM-DATAKBN (IDX1)      =  "1" )
-      *           MOVE    SPA-MAX-LINE             TO  IDX1
+      *           MOVE    200              TO  IDX1
       ******** END-IF
            END-PERFORM
            IF      SPA-ERRCD           =   SPACE
@@ -732,7 +739,7 @@
            MOVE    ZERO                TO  IDX-T
            COMPUTE IDX-Z2              =   IDX-ZS    +   1
            PERFORM VARYING     IDX1    FROM    IDX-Z2    BY  1
-                   UNTIL      (IDX1        >   SPA-MAX-LINE     ) OR
+                   UNTIL      (IDX1        >   200     )   OR
                               (FLG-ARI                 =   1    ) OR
                               (WRK-GMN-INPUTCD (IDX1)  =   SPACE )
                IF       WRK-COM-INPUTCD (IDX1) =   WRK-SRYCD
@@ -745,7 +752,7 @@
                    END-IF
                    IF     (WRK-COM-INPUTCD (IDX1)(1:1) =  "1" ) AND
                           (WRK-COM-DATAKBN (IDX1)      =  "1" )
-                      MOVE    SPA-MAX-LINE             TO  IDX1
+                      MOVE    200              TO  IDX1
                    END-IF
                END-IF
            END-PERFORM
@@ -778,11 +785,10 @@
            MOVE    ZERO                TO  IDX-KSN
            MOVE    ZERO                TO  IDX-SYU
            PERFORM VARYING     IDX1    FROM    1   BY  1
-                   UNTIL      (IDX1        >   SPA-MAX-LINE     )   OR
+                   UNTIL      (IDX1        >   200     )   OR
                              ((WRK-GMN-INPUTCD (IDX1)  =   SPACE ) AND
                               (WRK-COM-INPUTCD (IDX1)  =   SPACE ))
                          OR   (SPA-ERRCD           NOT =   SPACE )
-                         OR   (SPA-RSI-SISIKBN         =   ZERO  )
                MOVE    ZERO                TO  FLG-ROUSAI
                IF      (WRK-COM-INPUTCD(IDX1)(1:1) =   "1"  )  AND
                        (WRK-COM-INPUTCD(IDX1)(1:3) NOT =   "101")  AND
@@ -824,18 +830,17 @@
                IF       WRK-COM-INPUTCD (IDX1) =   "101500010"  OR
                                                    "101500020"  OR
                                                    "099509901"
-      *D           IF      FLG-ROU-ARI     =   ZERO
-      *                MOVE    "8004"          TO  SPA-ERRCD
-      *                MOVE    "1"             TO  WRK-COM-CUR (IDX1)
-      *                MOVE    SPACE           TO  WRK-COM-CUR (IDX1)
-      *D           ELSE
+                   IF      FLG-ROU-ARI     =   ZERO
+                       MOVE    "8004"          TO  SPA-ERRCD
+                       MOVE    "1"             TO  WRK-COM-CUR (IDX1)
+                   ELSE
                        IF      IDX-KSN         >   ZERO
                            MOVE    "8004"      TO  SPA-ERRCD
                            MOVE    "1"         TO  WRK-COM-CUR (IDX1)
                        ELSE
                            MOVE    IDX1        TO  IDX-KSN
                        END-IF
-      *D           END-IF
+                   END-IF
                END-IF
            END-PERFORM
       *    自動発生の有無
@@ -844,7 +849,7 @@
                   (WRK-RSI-SRYCD   NOT =   SPACE )
                MOVE    ZERO                TO  IDX-T
                PERFORM VARYING     IDX1    FROM    IDX-SYU BY  1
-                       UNTIL      (IDX1        >   SPA-MAX-LINE )   OR
+                       UNTIL      (IDX1        >   200     )   OR
                                  ((WRK-GMN-INPUTCD (IDX1)  =   SPACE )
                               AND (WRK-COM-INPUTCD (IDX1)  =   SPACE ))
                    IF      (WRK-COM-INPUTCD(IDX1)(1:1) =   "1"  )  AND
@@ -880,7 +885,7 @@
            MOVE    ZERO                TO  IDX-TUS
       *
            PERFORM VARYING     IDX1    FROM    1    BY  1
-                   UNTIL      (IDX1        >   SPA-MAX-LINE     ) OR
+                   UNTIL      (IDX1        >   200     )   OR
                               (WRK-GMN-INPUTCD (IDX1)  =   SPACE  AND
                                WRK-COM-INPUTCD (IDX1)  =   SPACE )
       *        主たる手術を判定対象とする
@@ -929,8 +934,6 @@
            END-IF
       *    労災加算
            IF      (SPA-HKNKBN         =   1   )  AND
-      ************ (SPA-RSI-HKNKBN NOT =   "5" )  AND
-                   (SPA-RSI-JUNKYO NOT =   "1" )  AND
                    (SPA-ERRCD          =   SPACE ) AND
                    (WRK-ERRCD          =   SPACE ) 
                PERFORM 10013-RISIKASAN-SET-SEC
@@ -1025,7 +1028,7 @@
            MOVE    ZERO                TO  FLG-ARI
            MOVE    ZERO                TO  IDX-T
            PERFORM VARYING     IDX1    FROM    1   BY  1
-                   UNTIL      (IDX1        >   SPA-MAX-LINE     ) OR
+                   UNTIL      (IDX1        >   200     )   OR
                               (FLG-ARI                 =   1    ) OR
                               (WRK-GMN-INPUTCD (IDX1)  =   SPACE )
                IF       WRK-COM-INPUTCD (IDX1) =   WRK-SRYCD
@@ -1118,7 +1121,7 @@
            MOVE    ZERO                TO  IDX-T
            MOVE    ZERO                TO  IDX-TUS
            PERFORM VARYING     IDX1    FROM    1   BY  1
-                   UNTIL      (IDX1        >   SPA-MAX-LINE     ) OR
+                   UNTIL      (IDX1        >   200     )   OR
       *********************** (FLG-ARI                 =   1    ) OR
                               (WRK-GMN-INPUTCD (IDX1)  =   SPACE  AND
                                WRK-COM-INPUTCD (IDX1)  =   SPACE )
@@ -1289,15 +1292,6 @@
                END-IF
            END-IF
       *
-      *    通則加算は通則加算対象外とする（告示２で判定）
-           IF      (SPA-ERRCD                  =   SPACE )  AND
-                   (WRK-COM-TENSIKIBETU (IDX-Z)    =   3    )  AND
-                   (WRK-COM-KOKUJISKBKBN2(IDX-Z)   =   "9"  )  AND
-                   (WRK-COM-TUSOKUGAIKBN (IDX-Z)   =   "0" )
-               MOVE    "1"                 TO  WRK-COM-TUSOKUGAIKBN
-                                                               (IDX-Z)
-           END-IF
-      *
            .
        1005-KASAN-CHK-EXT.
            EXIT.
@@ -1310,6 +1304,10 @@
            MOVE    ZERO                TO  IDX-MAX
            MOVE    ZERO                TO  IDX-ZS
            MOVE    ZERO                TO  IDX-SANSO
+      *****MOVE    ZERO                TO  WRK-SANSO
+           MOVE    ZERO                TO  WRK-SANKEI
+           MOVE    ZERO                TO  WRK-SANTEN
+           MOVE    ZERO                TO  WRK-SANSOKIN-SUM
            MOVE    ZERO                TO  WRK-GRSI-TENSUKEI
            MOVE    ZERO                TO  WRK-RSI-TENSUKEI2
       *
@@ -1318,7 +1316,7 @@
            MOVE    ZERO                TO  WRK-SUM-AREA
       *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   SPA-MAX-LINE     ) OR
+                   UNTIL      (IDX-Z       >   200     )   OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
       *
                ADD     1                   TO  IDX-MAX
@@ -1481,8 +1479,6 @@
       *
       *    労災の外来管理加算読み替え処理
            IF      SPA-HKNKBN          =   1
-      *D     AND  (SPA-RSI-HKNKBN  NOT =   "5" )
-             AND  (SPA-RSI-JUNKYO  NOT =   "1" )
                IF     (WRK-COM-RSIGIRI (IDX-ZS)
                                            =   1  )  AND
                       (WRK-COM-SYUTEN2 (IDX-ZS)
@@ -1743,8 +1739,6 @@
       *
       *    労災の加算
            IF      SPA-HKNKBN          =   1
-      *****  AND  (SPA-RSI-HKNKBN  NOT =   "5" )
-             AND  (SPA-RSI-JUNKYO  NOT =   "1" )
                CONTINUE
            ELSE
                GO      TO      1007-KASAN-SET-ALL-EXT
@@ -1842,6 +1836,34 @@
            EXIT.
       *
       *****************************************************************
+      *    算定履歴チェック処理
+      *****************************************************************
+       3001-SANTEI-CHK-SEC         SECTION.
+      *
+           INITIALIZE                      ORCSC91AREA
+           MOVE    "2"                 TO  LNK-SC91-KBN
+           MOVE    LNK-ORCSC-SYORIFLG  TO  LNK-SC91-SYORIFLG
+           MOVE    WRK-COM-INPUTCD(IDX)
+                                       TO  LNK-SC91-SRYCD
+           CALL    "ORCSC91"       USING
+                                       MCPAREA
+                                       ORCSC91AREA
+                                       WRK-SCR-REC
+                                       SPA-AREA
+      *
+           IF      LNK-SC91-ERRCD      =   SPACE
+      *        追加あり
+               MOVE    ZERO            TO  FLG-ERR
+           ELSE
+      *        追加なし
+               MOVE    1               TO  FLG-ERR
+           END-IF
+      *
+           .
+       3001-SANTEI-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    システム管理マスタ読み込み処理
       *****************************************************************
        900-KANRIMST-READ-SEC         SECTION.
@@ -1863,9 +1885,9 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        910-DBSELECT-EXT.
@@ -1876,9 +1898,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
       *
@@ -1891,9 +1913,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        990-DBCLOSE-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        990-DBCLOSE-EXT.
