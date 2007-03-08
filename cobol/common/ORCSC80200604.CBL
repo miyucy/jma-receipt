@@ -451,9 +451,6 @@
                    END-IF
                END-PERFORM
            END-IF
-      *TEST
-           DISPLAY "WRK-TEI-CNT:" WRK-TEI-CNT
-      *TEST
       *    リハビリ算定回数
            INITIALIZE                  SANTEI-REC
            MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
@@ -494,9 +491,6 @@
                                                =   SANTEI-DAY (IDD)
                                                -   WRK-TEI-CNT
                        END-IF
-      *TEST
-           DISPLAY "IDD2:" IDD2 ",SANTEI-DAY:" SANTEI-DAY (IDD)
-      *TEST
                    END-IF
                    ADD     SANTEI-DAY (IDD)    TO  WRK-RIHA-DAY(IDD)
                END-PERFORM
@@ -2203,12 +2197,6 @@
            COMPUTE WRK-DAYCNT          =   WRK-RIHA-CNT (IDD)
                                        +   WRK-KAISU
       *    １日９単位でエラー
-      *TEST
-             DISPLAY "IDX-Z:" IDX-Z
-              ",WRK-DAYCNT:" WRK-DAYCNT
-              ",WRK-RIHA-DAY :" WRK-RIHA-DAY (IDD)
-              ",COM-KZMFLG:" WRK-COM-KZMFLG (IDX-Z)
-      *TEST
            IF      SPA-ERRCD           =   SPACE
                IF     (WRK-RIHA-DAY (IDD) +   WRK-DAYCNT)
                                            >    9
