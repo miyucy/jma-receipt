@@ -5601,16 +5601,6 @@
                MOVE    SPACE           TO  SPA-ERRCD
                MOVE    ZERO            TO  FLG-END
            END-IF
-      *    ページ変更
-           IF      FLG-HENKOU          =   2
-               MOVE    SPACE           TO  SPA-KIDCD
-               MOVE    ZERO            TO  FLG-END
-               IF      SPA-ERRCD(1:1)  =   "K"
-                   CONTINUE
-               ELSE
-                   MOVE    SPACE           TO  SPA-ERRCD
-               END-IF
-           END-IF
       *
            .
        410112-KOUI-SPACHK-EXT.
@@ -6577,7 +6567,6 @@
                MOVE    "5"                 TO  LNK-SC92-KBN
            END-IF
            IF      FLG-HENKOU          =   1
-                                       OR  2
       *        画面遷移前
                IF     (LNK-SC97-NYURYOKU       =   1 ) OR
                       (SPA-COM-CHKFLG (SPA-GMN-IDX)  =   SPACE)
@@ -10515,7 +10504,7 @@
       *****************************************************************
        450-MAEGMN-SEC             SECTION.
       *
-           MOVE    2                   TO  FLG-HENKOU
+           MOVE    1                   TO  FLG-HENKOU
       *    診療行為入力チェック
            PERFORM 41011-KOUI-ALLHEN-SEC
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
@@ -10541,7 +10530,7 @@
       *****************************************************************
        460-ATOGMN-SEC             SECTION.
       *
-           MOVE    2                   TO  FLG-HENKOU
+           MOVE    1                   TO  FLG-HENKOU
       *    診療行為入力チェック
            PERFORM 41011-KOUI-ALLHEN-SEC
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
