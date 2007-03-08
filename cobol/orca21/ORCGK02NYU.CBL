@@ -3671,6 +3671,7 @@
            PERFORM VARYING     IDX     FROM   1   BY  1
                    UNTIL       IDX     >   200
                MOVE    SPACE               TO  SPA-COM-CHKFLG (IDX)
+               MOVE    SPACE               TO  SPA-COM-HCHKFLG (IDX)
            END-PERFORM
            .
        410121-ROUJINCHK-EXT.
@@ -4882,6 +4883,7 @@
       *---(01.00.01) LINE ADD  END    ----
            IF      SPA-ERRCD       NOT =   SPACE
                MOVE    SPACE           TO  SPA-COM-CHKFLG  (SPA-GMN-IDX)
+               MOVE    SPACE           TO  SPA-COM-HCHKFLG (SPA-GMN-IDX)
                GO      TO      4101113-INPUTCD-CHK-EXT
            END-IF
       *
@@ -5346,38 +5348,6 @@
       *
                END-IF
            END-IF
-      *一括チェックですべて行っているため
-      *    算定回数チェック（各基本チェックを行う時、ここで）
-      *    IF      FLG-TOROKU          =   "1"
-      *        PERFORM VARYING SPA-GMN-IDX  FROM    1   BY  1
-      *                UNTIL  (SPA-GMN-IDX     >   WRK-GYO-MAX  )   OR
-      *                       (SPA-GMN-INPUTCD (SPA-GMN-IDX)
-      *                                        =   SPACE )  OR
-      *                       (SPA-ERRCD   NOT =   SPACE )
-      *            IF      SPA-COM-SANTEIRRKKBN(SPA-GMN-IDX)
-      *                                        NOT =   ZERO
-      *                MOVE    "3"             TO  WRK-SANTEI-SYORI
-      *                PERFORM 41011231-SANTEI-CHK-SEC
-      *                IF      SPA-ERRCD(1:1)      =   "K"
-      *                    IF      SPA-COM-KZMFLG (SPA-GMN-IDX)
-      *                                                =   SPACE
-      *                         MOVE    "1"        TO  SPA-COM-KZMFLG
-      *                                                  (SPA-GMN-IDX)
-      *                         MOVE    "2"        TO  SPA-COM-CUR
-      *                                                  (SPA-GMN-IDX)
-      *                    ELSE
-      *                        MOVE    SPACE           TO  SPA-ERRCD
-      *                        MOVE    SPACE           TO  SPA-COM-CUR
-      *                                                  (SPA-GMN-IDX)
-      *                   END-IF
-      *                END-IF
-      *                IF      SPA-ERRCD       NOT =   SPACE
-      *                    MOVE    "1"            TO  SPA-COM-CUR
-      *                                                   (SPA-GMN-IDX)
-      *                END-IF
-      *            END-IF
-      *        END-PERFORM
-      *****END-IF
       *
       *    ７０歳到達の警告
            IF      SPA-ERRCD       =   SPACE
@@ -5515,6 +5485,7 @@
       *                    訂正時展開以外
                        AND    (FLG-INIT            =   ZERO   )
                            MOVE    SPACE       TO  SPA-COM-KZMFLG(IDX)
+                           MOVE    SPACE       TO  SPA-COM-HCHKFLG(IDX)
                        END-IF
                        MOVE    WRK-KAISU       TO  SPA-COM-KAISU (IDX)
                        MOVE    WRK-NYUIN-AREA  TO  SPA-COM-NYUIN-AREA
@@ -5803,10 +5774,11 @@
                                                NOT =   ZERO )
                  AND   (SPA-COM-HKNCOMBI(IDX)  NOT =   "9999")
                  AND   (SPA-COM-HCHKFLG (IDX)      =   SPACE )
-      *
                    PERFORM 51019-NYUIN-SANCHK-SEC
                    IF      SPA-ERRCD           =   SPACE
                        MOVE    "1"             TO  SPA-COM-HCHKFLG(IDX)
+                   ELSE
+                       MOVE    SPACE           TO  SPA-COM-HCHKFLG(IDX)
                    END-IF
                END-IF
            END-PERFORM
@@ -5838,7 +5810,6 @@
                    UNTIL  (IDX-N2      >   31  )   OR
                           (SPA-ERRCD   NOT =   SPACE )
                IF      SPA-COM-NYUINDAY(IDX IDX-N2)    >   ZERO
-      *
                    MOVE    IDX-N2              TO  SPA-SRYYMD(7:2)
       *            算定履歴チェック処理
                    INITIALIZE                  ORCSC91AREA
@@ -5862,6 +5833,7 @@
                    ELSE
                        ADD     WRK-KAISU           TO  WRK-NYU-KAISU
                    END-IF
+      *
       *            警告判定
                    IF      LNK-SC91-ERRCD(1:1)     =   "K"
                        IF      SPA-COM-KZMFLG (IDX)    =   SPACE
@@ -5915,6 +5887,7 @@
                            MOVE    LNK-SC92-ERRMSG     TO  SPA-ERRMSG2
                        END-IF
                    END-IF
+      *
                END-IF
            END-PERFORM
       *
@@ -6421,6 +6394,19 @@
                                                                (IDX-Z)
                    MOVE    LNK-ORCSC-KAISU         TO  WRK-COM-KAISU
                                                                (IDX-Z)
+               END-IF
+      *        包括診療コードの加算も包括分とする
+               IF     ( WRK-COM-AUTOKBN (IDX-Z)    =   "2" ) OR
+                      ((WRK-COM-INPUTCD (IDX-Z)(1:1)
+                                                   =   "1" ) AND
+                       (WRK-COM-DATAKBN (IDX-Z)    =   "2" ))
+                   IF      (WRK-COM-INPUTCD (IDX-Z - 1 )(1:1)
+                                                   =   "1" )  AND
+                           (WRK-COM-HOUKATU-FLG (IDX-Z - 1)
+                                                   =   1   )
+                       MOVE    1               TO  WRK-COM-HOUKATU-ZAI
+                                                           (IDX-Z)
+                   END-IF
                END-IF
       *        画面再編集・基本チェック
                INITIALIZE                  ORCSC94AREA
@@ -8419,7 +8405,7 @@
        450-MAEGMN-SEC             SECTION.
       *
       *    診療行為入力チェック
-           MOVE    1                   TO  FLG-HENKOU
+           MOVE    1                  TO  FLG-HENKOU
            PERFORM 41011-KOUI-ALLHEN-SEC
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
                   (SPA-KIDCD           =   "0180" )  OR
