@@ -3654,7 +3654,6 @@
                IF      RECE64-SRYKBN      =  "33"
       *
                 IF   (WRK-SRYSYUKBN      =  "330")
-      *         AND  (TBL-ZAI-IDX(IDY)   =   1   )
                 AND  (TBL-ZAI-SRYCD(IDY) =  "130003710" OR "130009470"
                                          OR "130003810" OR "130700310"
                                          OR "130700410" OR "130702910"
@@ -3665,25 +3664,92 @@
       *
                 IF   (WRK-SRYSYUKBN      =  "340")
                 AND  (WRK-TBLMAX         =   1   )
-      *         AND  (TBL-ZAI-IDX(IDY)   =   1   )
                 AND  (TBL-ZAI-SRYCD(IDY) =  "130004410" OR "130008510"
                                          OR "130011210"               )
                          MOVE   2              TO  RECE66-TENTEKIKBN
                          MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
                 END-IF
-                IF   (WRK-SRYSYUKBN      =  "340")
-                AND  (WRK-TBLMAX         =   2   )
-      *         AND  (TBL-ZAI-IDX(IDY)   =   1   )
-                   IF ((IDY = 1                           ) AND
-                       (TBL-ZAI-SRYCD(IDY) =  "130004410"
-                                           OR "130008510"
-                                           OR "130011210" ) AND
-                       (TBL-ZAI-SRYCD(2)   =  "130011170" ))
-                   OR ((IDY = 2                           ) AND
-                       (TBL-ZAI-SRYCD(IDY) =  "130011170" ) AND
-                       (TBL-ZAI-SRYCD(1)   =  "130004410"
-                                           OR "130008510"
-                                           OR "130011210" ))
+                IF   (WRK-SRYSYUKBN      =  "340"       )
+                AND  (WRK-TBLMAX         =   2          )
+                AND  (RECE66-TENTEKIKBN  =   ZERO       )
+                   IF ((TBL-ZAI-SRYCD(1)(1:1) =  "8"   ) OR
+                       (TBL-ZAI-SRYCD(1)(1:3) =  "008" ))
+                   OR ((TBL-ZAI-SRYCD(1)(1:1) =  "7"   ) OR
+                       (TBL-ZAI-SRYCD(1)(1:3) =  "059" ))
+                   OR ((TBL-ZAI-SRYCD(1)(1:1) =  "6"   ) OR
+                       (TBL-ZAI-SRYCD(1) =  "099309901"))
+                   OR ((TBL-ZAI-SRYCD(2)(1:1) =  "8"   ) OR
+                       (TBL-ZAI-SRYCD(2)(1:3) =  "008" ))
+                   OR ((TBL-ZAI-SRYCD(2)(1:1) =  "7"   ) OR
+                       (TBL-ZAI-SRYCD(2)(1:3) =  "059" ))
+                   OR ((TBL-ZAI-SRYCD(2)(1:1) =  "6"   ) OR
+                       (TBL-ZAI-SRYCD(2) =  "099309901"))
+                         CONTINUE
+                   ELSE
+                     IF  TBL-ZAI-SRYCD(1) = TBL-ZAI-SRYCD(2)
+                         CONTINUE
+                     ELSE
+                         MOVE   2              TO  RECE66-TENTEKIKBN
+                         MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
+                     END-IF
+                   END-IF
+                END-IF
+                IF   (WRK-SRYSYUKBN      =  "340"       )
+                AND  (WRK-TBLMAX         =   3          )
+                AND  (RECE66-TENTEKIKBN  =   ZERO       )
+                   IF ((TBL-ZAI-SRYCD(1)(1:1) =  "8"   ) OR
+                       (TBL-ZAI-SRYCD(1)(1:3) =  "008" ))
+                   OR ((TBL-ZAI-SRYCD(1)(1:1) =  "7"   ) OR
+                       (TBL-ZAI-SRYCD(1)(1:3) =  "059" ))
+                   OR ((TBL-ZAI-SRYCD(1)(1:1) =  "6"   ) OR
+                       (TBL-ZAI-SRYCD(1) =  "099309901"))
+                   OR ((TBL-ZAI-SRYCD(2)(1:1) =  "8"   ) OR
+                       (TBL-ZAI-SRYCD(2)(1:3) =  "008" ))
+                   OR ((TBL-ZAI-SRYCD(2)(1:1) =  "7"   ) OR
+                       (TBL-ZAI-SRYCD(2)(1:3) =  "059" ))
+                   OR ((TBL-ZAI-SRYCD(2)(1:1) =  "6"   ) OR
+                       (TBL-ZAI-SRYCD(2) =  "099309901"))
+                   OR ((TBL-ZAI-SRYCD(3)(1:1) =  "8"   ) OR
+                       (TBL-ZAI-SRYCD(3)(1:3) =  "008" ))
+                   OR ((TBL-ZAI-SRYCD(3)(1:1) =  "7"   ) OR
+                       (TBL-ZAI-SRYCD(3)(1:3) =  "059" ))
+                   OR ((TBL-ZAI-SRYCD(3)(1:1) =  "6"   ) OR
+                       (TBL-ZAI-SRYCD(3) =  "099309901"))
+                         CONTINUE
+                   ELSE
+                         MOVE   2              TO  RECE66-TENTEKIKBN
+                         MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
+                   END-IF
+                END-IF
+                IF   (WRK-SRYSYUKBN      =  "340"       )
+                AND  (WRK-TBLMAX         =   4          )
+                AND  (RECE66-TENTEKIKBN  =   ZERO       )
+                   IF ((TBL-ZAI-SRYCD(1)(1:1) =  "8"   ) OR
+                       (TBL-ZAI-SRYCD(1)(1:3) =  "008" ))
+                   OR ((TBL-ZAI-SRYCD(1)(1:1) =  "7"   ) OR
+                       (TBL-ZAI-SRYCD(1)(1:3) =  "059" ))
+                   OR ((TBL-ZAI-SRYCD(1)(1:1) =  "6"   ) OR
+                       (TBL-ZAI-SRYCD(1) =  "099309901"))
+                   OR ((TBL-ZAI-SRYCD(2)(1:1) =  "8"   ) OR
+                       (TBL-ZAI-SRYCD(2)(1:3) =  "008" ))
+                   OR ((TBL-ZAI-SRYCD(2)(1:1) =  "7"   ) OR
+                       (TBL-ZAI-SRYCD(2)(1:3) =  "059" ))
+                   OR ((TBL-ZAI-SRYCD(2)(1:1) =  "6"   ) OR
+                       (TBL-ZAI-SRYCD(2) =  "099309901"))
+                   OR ((TBL-ZAI-SRYCD(3)(1:1) =  "8"   ) OR
+                       (TBL-ZAI-SRYCD(3)(1:3) =  "008" ))
+                   OR ((TBL-ZAI-SRYCD(3)(1:1) =  "7"   ) OR
+                       (TBL-ZAI-SRYCD(3)(1:3) =  "059" ))
+                   OR ((TBL-ZAI-SRYCD(3)(1:1) =  "6"   ) OR
+                       (TBL-ZAI-SRYCD(3) =  "099309901"))
+                   OR ((TBL-ZAI-SRYCD(4)(1:1) =  "8"   ) OR
+                       (TBL-ZAI-SRYCD(4)(1:3) =  "008" ))
+                   OR ((TBL-ZAI-SRYCD(4)(1:1) =  "7"   ) OR
+                       (TBL-ZAI-SRYCD(4)(1:3) =  "059" ))
+                   OR ((TBL-ZAI-SRYCD(4)(1:1) =  "6"   ) OR
+                       (TBL-ZAI-SRYCD(4) =  "099309901"))
+                         CONTINUE
+                   ELSE
                          MOVE   2              TO  RECE66-TENTEKIKBN
                          MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
                    END-IF
@@ -3691,7 +3757,7 @@
       *
                 IF   (WRK-SRYSYUKBN      =  "330" OR "340")
                 AND  (WRK-TBLMAX         =   1 OR 2       )
-      *         AND  (TBL-ZAI-IDX(IDY)   =   1            )
+                AND  (RECE66-TENTEKIKBN  =   ZERO         )
                 AND  (TBL-ZAI-SRYCD(IDY) =  "130000110" OR "130000210"
                                          OR "130000310" OR "130008270"
                                          OR "130701270" OR "130004570"
@@ -3704,7 +3770,6 @@
                 END-IF
       *
                 IF   (WRK-SRYSYUKBN           =  "330")
-      *         AND  (TBL-ZAI-IDX(IDY)        =   1   )
                 AND  (TBL-ZAI-SRYCD(IDY)(1:1) =  "6"   
                    OR TBL-ZAI-SRYCD(IDY)      =  "099309901")
                          MOVE   4              TO  RECE66-TENTEKIKBN
@@ -3712,7 +3777,6 @@
                 END-IF
       *
                 IF   (WRK-SRYSYUKBN           =  "330")
-      *         AND  (TBL-ZAI-IDX(IDY)        =   1   )
                 AND  (TBL-ZAI-SRYCD(IDY)(1:1) =  "7"   
                    OR TBL-ZAI-SRYCD(IDY)(1:3) =  "059")
                          MOVE   5              TO  RECE66-TENTEKIKBN
@@ -3720,14 +3784,12 @@
                 END-IF
       *
                 IF   WRK-SRYSYUKBN                =  "340"
-      *         AND  TBL-ZAI-IDX(IDY)             =   1
                 AND  RECE66-TENTEKIKBN            =   ZERO
                          MOVE   6              TO  RECE66-TENTEKIKBN
                          MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
                 END-IF
       *
                 IF  ( WRK-SRYSYUKBN           =  "330"  )
-      *         AND ( TBL-ZAI-IDX(IDY)        =   1     )
                 AND ((TBL-ZAI-SRYCD(IDY)(1:1) =  "8"   ) OR
                      (TBL-ZAI-SRYCD(IDY)(1:3) =  "008" ))
                          MOVE   7              TO  RECE66-TENTEKIKBN
@@ -3735,7 +3797,6 @@
                 END-IF
       *
                 IF  ( WRK-SRYSYUKBN           =  "331"  )
-      *         AND ( TBL-ZAI-IDX(IDY)        =   1     )
                 AND ((TBL-ZAI-SRYCD(IDY)(1:1) =  "8"   ) OR
                      (TBL-ZAI-SRYCD(IDY)(1:3) =  "008" ))
                          MOVE   8              TO  RECE66-TENTEKIKBN
@@ -3743,7 +3804,6 @@
                 END-IF
       *
                 IF  ( WRK-SRYSYUKBN           =  "332"  )
-      *         AND ( TBL-ZAI-IDX(IDY)        =   1     )
                 AND ((TBL-ZAI-SRYCD(IDY)(1:1) =  "8"   ) OR
                      (TBL-ZAI-SRYCD(IDY)(1:3) =  "008" ))
                          MOVE   9              TO  RECE66-TENTEKIKBN
@@ -3751,7 +3811,6 @@
                 END-IF
       *
                 IF  ( WRK-SRYSYUKBN           =  "350"  )
-      *         AND ( TBL-ZAI-IDX(IDY)        =   1     )
                 AND ((TBL-ZAI-SRYCD(IDY)(1:1) =  "8"   ) OR
                      (TBL-ZAI-SRYCD(IDY)(1:3) =  "008" ))
                          MOVE   10             TO  RECE66-TENTEKIKBN
@@ -3759,7 +3818,6 @@
                 END-IF
       *
                 IF  ( WRK-SRYSYUKBN           =  "352"  )
-      *         AND ( TBL-ZAI-IDX(IDY)        =   1     )
                 AND ((TBL-ZAI-SRYCD(IDY)(1:1) =  "8"   ) OR
                      (TBL-ZAI-SRYCD(IDY)(1:3) =  "008" ))
                          MOVE   11             TO  RECE66-TENTEKIKBN
