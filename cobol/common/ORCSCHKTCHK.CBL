@@ -111,7 +111,7 @@
                                            OCCURS   50.
            03  TBL-MAX                 PIC 9(04).
        01  TBL-HKTSANTEI-AREA.
-           03  TBL-HKTSANTEI-DATA-G        OCCURS   400.
+           03  TBL-HKTSANTEI-DATA-G        OCCURS   600.
                05  TBL-HKTSRYCD            PIC X(09).
                05  TBL-SANTEIKBN           PIC X(01).
       *
@@ -608,7 +608,7 @@
            INITIALIZE                  TBL-HKTSANTEI-AREA
            MOVE    ZERO                TO  IDX-H
            PERFORM UNTIL  (FLG-HKTSANTEI   =   1  )
-                      OR  (IDX-H           >=  400 )
+                      OR  (IDX-H           >=  600 )
                ADD     1                   TO  IDX-H
                MOVE    HKTSANTEI-SRYCD     TO  TBL-HKTSRYCD (IDX-H)
                MOVE    HKTSANTEI-SANTEIKBN TO  TBL-SANTEIKBN (IDX-H)
@@ -712,14 +712,14 @@
       *
            MOVE    ZERO                TO  FLG-CHK2
            PERFORM VARYING     IDX-H    FROM    1   BY  1
-                   UNTIL      (IDX-H    >  400   )  OR
+                   UNTIL      (IDX-H    >  600   )  OR
                               (TBL-HKTSRYCD(IDX-H) =   SPACE)
                IF      WRK-SRYCD           =   TBL-HKTSRYCD (IDX-H)
                    MOVE    1               TO  FLG-CHK2
                    IF      TBL-SANTEIKBN (IDX-H)   =   "1"
                        MOVE    2               TO  FLG-CHK2
                    END-IF
-                   MOVE    200             TO  IDX-H
+                   MOVE    600             TO  IDX-H
                END-IF
            END-PERFORM
       *
@@ -914,14 +914,14 @@
       *
            MOVE    ZERO                TO  FLG-CHK2
            PERFORM VARYING     IDX-H    FROM    1   BY  1
-                   UNTIL      (IDX-H    >  400   )  OR
+                   UNTIL      (IDX-H    >  600   )  OR
                               (TBL-HKTSRYCD(IDX-H) =   SPACE)
                IF      WRK-SRYCD           =   TBL-HKTSRYCD (IDX-H)
                    MOVE    1               TO  FLG-CHK2
                    IF      TBL-SANTEIKBN (IDX-H)   =   "1"
                        MOVE    2               TO  FLG-CHK2
                    END-IF
-                   MOVE    200             TO  IDX-H
+                   MOVE    600             TO  IDX-H
                END-IF
            END-PERFORM
       *
