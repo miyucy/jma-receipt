@@ -2157,7 +2157,7 @@
            END-IF
       *    Êñ³çºÞ
            IF      WRK-HKTZAI          =   "1"
-               MOVE    "¡ÚÊñ³çÊ¬¡Û"     TO   SPA-GMN-TMEISYO1(IDG)(57:)
+               MOVE    "¡ÚÊñ³ç¿ÇÎÅ¡Û"  TO   SPA-GMN-TMEISYO1(IDG)(57:)
            END-IF
       *
            INSPECT SPA-GMN-TMEISYO1 (IDG)  REPLACING  ALL "  "  BY "¡¡"
