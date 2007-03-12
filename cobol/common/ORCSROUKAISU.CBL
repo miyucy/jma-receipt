@@ -27,6 +27,7 @@
       ****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  03.04.01    NACL-ÌçÏÆ    07/03/12  Êñ³ç¿ÇÎÅÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -492,7 +493,8 @@
                      CONTINUE
                   ELSE
                      IF   (ACCT-ZAITEN    NOT =    ZERO) AND
-                          (ACCT-ZAIKAISU  NOT =    ZERO)
+                          (ACCT-ZAIKAISU  NOT =    ZERO) AND
+                          (ACCT-JIHOKBN       =   SPACE)
                          MOVE     1     TO    FLG-ARI
                      END-IF
                   END-IF
@@ -540,7 +542,8 @@
                      CONTINUE
                   ELSE
                      IF   (ACCT-ZAITEN    NOT =    ZERO) AND
-                          (ACCT-ZAIKAISU  NOT =    ZERO)
+                          (ACCT-ZAIKAISU  NOT =    ZERO) AND
+                          (ACCT-JIHOKBN       =   SPACE)
       *
                         PERFORM   20031-ACCT-HENSYU-SEC
       *

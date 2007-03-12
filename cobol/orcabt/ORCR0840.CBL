@@ -108,6 +108,7 @@
       *  03.03.02    NACL-ÌçÏÆ    06/10/11  Æþ±¡»þÀ¸³èÎÅÍÜÈñÂÐ±þ
       *  03.03.03    NACL-ÌçÏÆ    06/11/10  ±ý¿Ç¤Î¥³¥á¥ó¥È¼«Æ°µ­ºÜ¾ò·ï½¤Àµ
       *  03.04.01    NACL-ÌçÏÆ    06/12/01  ¼«ÇåÀÕ·òÊÝ½àµòÂÐ±þ
+      *  03.04.02    NACL-ÌçÏÆ    07/03/12  Êñ³ç¿ÇÎÅÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1426,7 +1427,8 @@
                    CONTINUE
                  ELSE
                    IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
-                        (ACCT-ZAIKAISU  NOT =    ZERO)
+                        (ACCT-ZAIKAISU  NOT =    ZERO)    AND
+                        (ACCT-JIHOKBN       =   SPACE)
       *
                        MOVE   ZERO   TO   WRK-TEN
                                           WRK-MEISAI-CNT

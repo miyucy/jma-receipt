@@ -53,6 +53,7 @@
       *  03.01.02    NACL-小豆沢  06.07.04  入院料に含める加算がコメント
       *                                     と同時入力された場合の対応
       *  03.04.01    NACL-門脇    06/12/01  自賠責健保準拠対応
+      *  03.04.02    NACL-門脇    07/03/12  包括診療対応
       *****************************************************************
       *
       *
@@ -826,7 +827,8 @@
                PERFORM   UNTIL   (FLG-SRYACCT    =   1)
                  MOVE      ZERO     TO      FLG-RYAKU
                  IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
-                      (ACCT-ZAIKAISU  NOT =    ZERO)
+                      (ACCT-ZAIKAISU  NOT =    ZERO)    AND
+                      (ACCT-JIHOKBN       =   SPACE)
                    IF   ACCT-SRYKBN  =  "90" OR "92"
       *
                      INITIALIZE                         SRYACT-REC

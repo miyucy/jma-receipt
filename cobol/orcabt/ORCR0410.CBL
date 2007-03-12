@@ -63,6 +63,7 @@
       *
       *  03.03.01    NACL-Æ£¸¶    06/09/19  ·îÅÓÃæ¤Ç¤Î»áÌ¾ÊÑ¹¹ÂÐ±þ
       *  03.04.01    NACL-ÌçÏÆ    06/12/01  ¼«ÇåÀÕ·òÊÝ½àµòÂÐ±þ
+      *  03.04.02    NACL-ÌçÏÆ    07/03/12  Êñ³ç¿ÇÎÅÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1057,7 +1058,8 @@
                               FLG-SRYACCT        =    1
       *
                    IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
-                        (ACCT-ZAIKAISU  NOT =    ZERO)
+                        (ACCT-ZAIKAISU  NOT =    ZERO)    AND
+                        (ACCT-JIHOKBN       =   SPACE)
                                MOVE    ZERO    TO      FLG-SHOSAISIN
                                                        FLG-SHOSAISIN2   
                                                        FLG-SHOSAISIN-GEN
@@ -1964,7 +1966,8 @@
       *
                    IF      FLG-DAY         =   1
                            IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
-                                (ACCT-ZAIKAISU  NOT =    ZERO)
+                                (ACCT-ZAIKAISU  NOT =    ZERO)    AND
+                                (ACCT-JIHOKBN       =   SPACE)
                                MOVE  ACCT-DAY(1 WRK-DAY)  
                                                TO      WRK-ZAIKAISU
                                MOVE    ZERO    TO      FLG-KENSA
@@ -2055,7 +2058,8 @@
                               FLG-SRYACCT        =    1
       *
                    IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
-                        (ACCT-ZAIKAISU  NOT =    ZERO)
+                        (ACCT-ZAIKAISU  NOT =    ZERO)    AND
+                        (ACCT-JIHOKBN       =   SPACE)
                                MOVE    ZERO    TO      FLG-KENSA
                                IF   ACCT-SRYKBN  =  "60"  
                                    MOVE     1      TO     FLG-KENSA
