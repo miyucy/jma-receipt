@@ -55,12 +55,12 @@
       *
                05  SPA-GMN-AREA.
                    07  SPA-GMN-PREFKBN-PRTJYUNLST
-                                              OCCURS  2.
+                                              OCCURS  3.
                        09  SPA-GMN-PREFKBN-PRTJYUNL
                                               PIC X(01).
                        09  SPA-GMN-F1L        PIC X(01).
                        09  SPA-GMN-PREFKBN-PRTJYUNMEIL
-                                              PIC X(10).
+                                              PIC X(26).
                    07  SPA-GMN-PREFKBN-PRTJYUN-MAX
                                               PIC 9(02).   
       * 
@@ -161,7 +161,7 @@
                                               PIC X(01).
                            11  SPA-GMN-F1     PIC X(01).
                            11  SPA-GMN-PREFKBN-PRTJYUNMEI
-                                              PIC X(10).
+                                              PIC X(26).
                        09  SPA-GMN-HKNJANUM-PRTJYUN-G.
                            11  SPA-GMN-HKNJANUM-PRTJYUN
                                               PIC X(01).
@@ -415,6 +415,8 @@
            03  WRK-GRP-INDEX       PIC 9(02).
            03  WRK-INDEX           PIC 9(02).
            03  WRK-SYUBETU-SRT1    PIC 9(03).
+           03  WRK-SYUBETU-GAI     PIC X(04).
+           03  WRK-SYUBETU-NYU     PIC X(04).
            03  WRK-GRP1-NO         PIC X(03).
       *
            03  WRK-2003-TABLE.
@@ -692,7 +694,10 @@
            MOVE    "県内・県外"    TO  SPA-GMN-PREFKBN-PRTJYUNMEIL (1)
            MOVE    "2"             TO  SPA-GMN-PREFKBN-PRTJYUNL    (2)
            MOVE    "県外・県内"    TO  SPA-GMN-PREFKBN-PRTJYUNMEIL (2)
-           MOVE    2               TO  SPA-GMN-PREFKBN-PRTJYUN-MAX 
+           MOVE    "3"             TO  SPA-GMN-PREFKBN-PRTJYUNL    (3)
+           MOVE    "当該画面の編綴は使用しない"
+                                   TO  SPA-GMN-PREFKBN-PRTJYUNMEIL (3)
+           MOVE    3               TO  SPA-GMN-PREFKBN-PRTJYUN-MAX 
       *
            MOVE    "1"             TO  SPA-GMN-HKNJANUM-PRTJYUNL    (1)
            MOVE    "市町村国保・国保組合・県内扱いの県外国保組合"
@@ -724,12 +729,10 @@
            MOVE    2               TO  SPA-GMN-HKNJANUM-PRTKBN-MAX
       *
            MOVE    "01"            TO  SPA-GMN-PRTJYUN1L   (1)
-           MOVE    "使用しない"    TO  SPA-GMN-PRTJYUN1MEIL(1)
+           MOVE    "保険者"        TO  SPA-GMN-PRTJYUN1MEIL(1)
            MOVE    "02"            TO  SPA-GMN-PRTJYUN1L   (2)
-           MOVE    "保険者"        TO  SPA-GMN-PRTJYUN1MEIL(2)
-           MOVE    "03"            TO  SPA-GMN-PRTJYUN1L   (3)
-           MOVE    "レセプト種別"  TO  SPA-GMN-PRTJYUN1MEIL(3)
-           MOVE    3               TO  SPA-GMN-PRTJYUN1-MAX 
+           MOVE    "レセプト種別"  TO  SPA-GMN-PRTJYUN1MEIL(2)
+           MOVE    2               TO  SPA-GMN-PRTJYUN1-MAX 
       *
            MOVE    "01"            TO  SPA-GMN-PRTJYUN2L   (1)
            MOVE    "市町村国保は本人家族で分ける" 
@@ -2263,7 +2266,7 @@
       *            レセプト種別情報編集処理
                    PERFORM 410211-RECESYUBETU-HENSYU-SEC
       *
-                   MOVE    SPA-GMN-PRTJYUN1LST (2)
+                   MOVE    SPA-GMN-PRTJYUN1LST (1)
                                        TO  SPA-GMN-PRTJYUN1-G
       *
                    MOVE    SPA-GMN-SRT-LASTLST (1)
@@ -2358,6 +2361,10 @@
       *
            IF      SPA-ERRCD       NOT =   SPACE
                MOVE    4               TO  SPA-GMN-CUR
+           ELSE
+               IF      SPA-GMN-PREFKBN-PRTJYUN   =   "3"
+                   MOVE    999             TO  SPA-GMN-CUR
+               END-IF
            END-IF
            .
        41021-PREFKBN-PRTJYUN-CHK-EXT.
@@ -2477,7 +2484,7 @@
        41021-PRTJYUN1-CHK-SEC   SECTION.
       *
            IF      SPA-GMN-PRTJYUN1    =   SPACE
-               MOVE    SPA-GMN-PRTJYUN1LST (2)
+               MOVE    SPA-GMN-PRTJYUN1LST (1)
                                            TO  SPA-GMN-PRTJYUN1-G
            ELSE
                PERFORM VARYING IDY FROM    1   BY  1
@@ -2499,7 +2506,7 @@
            IF      SPA-ERRCD       NOT =   SPACE
                MOVE    8               TO  SPA-GMN-CUR
            ELSE
-               IF      SPA-GMN-PRTJYUN1    =   "03"
+               IF      SPA-GMN-PRTJYUN1    =   "02"
                    MOVE    SPACE           TO  SPA-GMN-HKNJANUM
                                                SPA-GMN-HKNJANAME
                                                SPA-GMN-HKNJANUM-PRTKBN-G
@@ -2668,7 +2675,7 @@
                IF      SPA-GMN-SYUBETU-PRTJYUN1MEI =   SPACE
                    MOVE    "0030"                  TO  SPA-ERRCD
                ELSE
-                   IF    ( SPA-GMN-PRTJYUN1    NOT =   "03" )
+                   IF    ( SPA-GMN-PRTJYUN1    NOT =   "02" )
                    AND   ( SPA-GMN-SYUBETU-PRTJYUN1
                                                    =   "07" ) 
                        MOVE    "0031"              TO  SPA-ERRCD
@@ -2732,7 +2739,7 @@
            END-IF    
       *
            IF      SPA-ERRCD           =   SPACE
-               IF    ( SPA-GMN-PRTJYUN1    NOT =   "03"  )
+               IF    ( SPA-GMN-PRTJYUN1    NOT =   "02"  )
                AND   ( SPA-GMN-SYUBETU-PRTJYUN2
                                            NOT =   SPACE )
                    MOVE    SPACE           TO 
@@ -3859,7 +3866,7 @@
            END-IF
       *
       *    第一出力順と所在地保険者
-           IF      SPA-GMN-PRTJYUN1    =   "03"
+           IF      SPA-GMN-PRTJYUN1    =   "02"
                IF    ( SPA-GMN-HKNJANUM    =   SPACE )
                AND   ( SPA-GMN-HKNJANUM-PRTKBN
                                            =   SPACE )
@@ -3876,7 +3883,7 @@
                    UNTIL   IDX >       SPA-GMN-BODYLIST-MAX
                    OR      SPA-ERRCD   NOT =   SPACE             
       *        グループ２
-               IF    ( SPA-GMN-PRTJYUN1        =   "02"  )
+               IF    ( SPA-GMN-PRTJYUN1        =   "01"  )
                AND   ( SPA-NAI-BODYLIST-TGRP2-NO (IDX)
                                            NOT =   SPACE )
                    MOVE    8                   TO  SPA-GMN-CUR  
@@ -3884,7 +3891,7 @@
                END-IF
       *        第一出力順と種別内設定１
                IF      SPA-ERRCD       =   SPACE             
-                   IF    ( SPA-GMN-PRTJYUN1    NOT =   "03" )
+                   IF    ( SPA-GMN-PRTJYUN1    NOT =   "02" )
                    AND   ( SPA-NAI-BODYLIST-TPRTJYUN1 (IDX)
                                                    =   "07" )
                        MOVE    8                   TO  SPA-GMN-CUR  
@@ -3893,7 +3900,7 @@
                END-IF
       *        第一出力順と種別内設定２
                IF      SPA-ERRCD       =   SPACE             
-                   IF    ( SPA-GMN-PRTJYUN1    NOT =   "03"  )
+                   IF    ( SPA-GMN-PRTJYUN1    NOT =   "02"  )
                    AND   ( SPA-NAI-BODYLIST-TPRTJYUN2 (IDX)
                                                NOT =   SPACE )
                        MOVE    8                   TO  SPA-GMN-CUR  
@@ -3969,7 +3976,7 @@
                                        TO  RECE-PUTH-HKNJANUM-PRTJYUN 
            MOVE    SPA-GMN-HKNJANUM
                                        TO  RECE-PUTH-HKNJANUM
-           MOVE    SPA-GMN-PREFKBN-PRTJYUN
+           MOVE    SPA-GMN-HKNJANUM-PRTKBN
                                        TO  RECE-PUTH-HKNJANUM-PRTKBN
            MOVE    SPA-GMN-PRTJYUN1    TO  RECE-PUTH-SRT-01 (1) 
            MOVE    SPA-GMN-PRTJYUN2    TO  RECE-PUTH-KKHKBN (1) 
@@ -3977,6 +3984,14 @@
            MOVE    SPA-GMN-ZAITAKU     TO  RECE-PUTH-ZAITAKU (1) 
            MOVE    SPA-GMN-KOUGAKU-TEN TO  RECE-PUTH-KOUGAKU-TEN (1) 
            MOVE    SPA-GMN-SRT-LAST    TO  RECE-PUTH-SRT-LAST (1)
+      *???
+           MOVE    SPA-GMN-PRTJYUN1    TO  RECE-PUTH-SRT-01 (2) 
+           MOVE    SPA-GMN-PRTJYUN2    TO  RECE-PUTH-KKHKBN (2) 
+           MOVE    SPA-GMN-CHOUKI      TO  RECE-PUTH-CHOUKI (2) 
+           MOVE    SPA-GMN-ZAITAKU     TO  RECE-PUTH-ZAITAKU (2) 
+           MOVE    SPA-GMN-KOUGAKU-TEN TO  RECE-PUTH-KOUGAKU-TEN (2) 
+           MOVE    SPA-GMN-SRT-LAST    TO  RECE-PUTH-SRT-LAST (2)
+      *???
            MOVE    SPA-TERMID          TO  RECE-PUTH-TERMID
            MOVE    SPA-OPID            TO  RECE-PUTH-OPID
       *
@@ -4034,6 +4049,8 @@
            END-IF
       *
            MOVE    ZERO            TO  WRK-SYUBETU-SRT1
+           MOVE    SPACE           TO  WRK-SYUBETU-GAI
+                                       WRK-SYUBETU-NYU
            MOVE    SPACE           TO  WRK-GRP1-NO
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       SPA-GMN-BODYLIST-MAX
@@ -4043,25 +4060,6 @@
                MOVE    "1"                 TO  RECE-PUTB-PREFKBN
                MOVE    SPA-NAI-STYUKYMD    TO  RECE-PUTB-STYUKYMD
                MOVE    SPA-NAI-EDYUKYMD    TO  RECE-PUTB-EDYUKYMD
-               IF      SPA-NAI-BODYLIST-TGRP1-NO (IDX)
-                                       NOT =   "000"
-                   IF      SPA-NAI-BODYLIST-TGRP1-NO (IDX)
-                                           NOT =   WRK-GRP1-NO
-                       MOVE    SPA-NAI-BODYLIST-TGRP1-NO (IDX)
-                                                   TO  WRK-GRP1-NO
-                       MOVE    IDX                 TO  WRK-SYUBETU-SRT1
-                   END-IF
-                   MOVE    WRK-SYUBETU-SRT1    TO
-                                               RECE-PUTB-SYUBETU-SRT1
-               ELSE
-                   MOVE    ZERO            TO  WRK-SYUBETU-SRT1
-                   MOVE    IDX             TO  RECE-PUTB-SYUBETU-SRT1
-               END-IF  
-               MOVE    SPA-NAI-BODYLIST-TGRP1-NO (IDX)
-                                           TO  RECE-PUTB-GRP-NO1
-               MOVE    IDX                 TO  RECE-PUTB-SYUBETU-SRT2
-               MOVE    SPA-NAI-BODYLIST-TGRP2-NO (IDX)
-                                           TO  RECE-PUTB-GRP-NO2
                MOVE    SPA-GMN-BODYLIST-TSYUBETU (IDX)
                                            TO  RECE-PUTB-SYUBETU-GAI
                                                RECE-PUTB-SYUBETU-NYU
@@ -4082,6 +4080,37 @@
                        MOVE    "9"         TO
                                            RECE-PUTB-SYUBETU-NYU (4:1)
                END-EVALUATE
+               IF      SPA-NAI-BODYLIST-TGRP1-NO (IDX)
+                                       NOT =   "000"
+                   IF      SPA-NAI-BODYLIST-TGRP1-NO (IDX)
+                                           NOT =   WRK-GRP1-NO
+                       MOVE    SPA-NAI-BODYLIST-TGRP1-NO (IDX)
+                                                   TO  WRK-GRP1-NO
+                       MOVE    IDX                 TO  WRK-SYUBETU-SRT1
+                       MOVE    RECE-PUTB-SYUBETU-GAI
+                                                   TO  WRK-SYUBETU-GAI
+                       MOVE    RECE-PUTB-SYUBETU-NYU
+                                                   TO  WRK-SYUBETU-NYU
+                   END-IF
+                   MOVE    WRK-SYUBETU-SRT1    TO
+                                           RECE-PUTB-SYUBETU-SRT1
+                   MOVE    WRK-SYUBETU-GAI     TO
+                                           RECE-PUTB-SYUBETU-GAI-SRT1
+                   MOVE    WRK-SYUBETU-NYU     TO
+                                           RECE-PUTB-SYUBETU-NYU-SRT1
+               ELSE
+                   MOVE    ZERO        TO  WRK-SYUBETU-SRT1
+                   MOVE    IDX         TO  RECE-PUTB-SYUBETU-SRT1
+                   MOVE    RECE-PUTB-SYUBETU-GAI
+                                       TO  RECE-PUTB-SYUBETU-GAI-SRT1
+                   MOVE    RECE-PUTB-SYUBETU-NYU
+                                       TO  RECE-PUTB-SYUBETU-NYU-SRT1
+               END-IF  
+               MOVE    SPA-NAI-BODYLIST-TGRP1-NO (IDX)
+                                           TO  RECE-PUTB-GRP-NO1
+               MOVE    IDX                 TO  RECE-PUTB-SYUBETU-SRT2
+               MOVE    SPA-NAI-BODYLIST-TGRP2-NO (IDX)
+                                           TO  RECE-PUTB-GRP-NO2
                MOVE    SPA-NAI-BODYLIST-TPRTJYUN1 (IDX)    TO
                                            RECE-PUTB-SYUBETU-UNDER-NO1
                MOVE    SPA-NAI-BODYLIST-TPRTJYUN2 (IDX)    TO
@@ -4306,7 +4335,7 @@
                                        TO
                                        W121-SYU-PRTJYUN1LST (IDY)
            END-PERFORM
-           IF      SPA-GMN-PRTJYUN1    NOT =   "03"
+           IF      SPA-GMN-PRTJYUN1    NOT =   "02"
                MOVE    6               TO  W121-SYU-PRTJYUN1-COUNT
            ELSE
                MOVE    SPA-GMN-SYUBETU-PRTJYUN1-MAX
@@ -4471,11 +4500,11 @@
                                            W121-HKNJANUM-STATE
            MOVE    WIDGET-INSENSITIVE  TO  W121-SYU-PRTJYUN2-STATE
            EVALUATE    SPA-GMN-PRTJYUN1
-               WHEN    "02"
+               WHEN    "01"
                    MOVE    WIDGET-INSENSITIVE
                                            TO  W121-GRP2-STATE
                                                W121-GRP2-NO-STATE
-               WHEN    "03"
+               WHEN    "02"
                    MOVE    WIDGET-INSENSITIVE
                                            TO  W121-HKNJ-PRTKBN-STATE
                                                W121-HKNJANUM-STATE
@@ -4495,7 +4524,7 @@
                                                W121-BOTTOM-STATE
                                                W121-DEL-STATE
                                                W121-SCR4-STATE
-               IF      SPA-GMN-PRTJYUN1    =   "03"
+               IF      SPA-GMN-PRTJYUN1    =   "02"
                    CONTINUE
                ELSE 
                    MOVE    WIDGET-INSENSITIVE  TO
@@ -4832,7 +4861,7 @@
                WHEN    "PR_PRTJYUN"
                    MOVE    5           TO  SPA-GMN-CUR
                WHEN    "HKN_PRTJYUN"
-                   IF      SPA-GMN-PRTJYUN1    =   "03"
+                   IF      SPA-GMN-PRTJYUN1    =   "02"
                        MOVE    8          TO  SPA-GMN-CUR
                    ELSE
                        MOVE    6          TO  SPA-GMN-CUR
@@ -4858,7 +4887,7 @@
                WHEN    "KOUGAKU_TEN"
                    MOVE    13          TO  SPA-GMN-CUR
                WHEN    "SYU_PRTJYUN1"
-                   IF      SPA-GMN-PRTJYUN1    =   "03"
+                   IF      SPA-GMN-PRTJYUN1    =   "02"
                        MOVE    14          TO  SPA-GMN-CUR
                    ELSE
                        MOVE    15          TO  SPA-GMN-CUR

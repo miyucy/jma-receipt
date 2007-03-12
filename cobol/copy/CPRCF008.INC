@@ -60,21 +60,10 @@
       *                                     グループ設定２
       *                                     種別内出力順２
       *                                     出力順 
-      *
-      *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
-      *
-      *  04.03.01    NACL-藤原    08/06/19  医師別出力対応
-      *                                     医師コード、医師別診療科
-      *
-      *  04.05.01    NACL-藤原    09/06/11  病棟別出力対応
-      *
-      *  04.07.01    NACL-藤原    12/12/03  ターミナルデジットによる出力対応
       *************************************************************
        01  RECE08-REC.
       *ＫＥＹ
            03  RECE08-KEY.
-      *医療機関ＩＤ
-               05  RECE08-HOSPNUM          PIC 9(2).
       *帳票ＩＤ（検索用ＫＥＹ）
                05  RECE08-PRTID            PIC  X(04).
       *診療年月（検索用ＫＥＹ　一括：診療年月、個別：ゼロ）
@@ -85,7 +74,7 @@
                05  RECE08-CREHMS           PIC  X(06).
       *審査支払機関
                05  RECE08-TEISYUTUSAKI     PIC  X(01).
-      *主科コード
+      *主科コード（社保のみ使用）
                05  RECE08-SRYKA            PIC  X(02).
       *県内県外印刷区分（国保のみ使用）
                05  RECE08-PREFKBN-SRT      PIC  X(02).
@@ -95,7 +84,7 @@
                05  RECE08-HKNJANUM         PIC  X(08).
       *適用開始年月日
                05  RECE08-TEKSTYMD         PIC  X(08). 
-      *レセプト種別印刷区分
+      *レセプト種別印刷区分（国保のみ使用）
                05  RECE08-RECESYUBETU-SRT  PIC  X(03).
       *レセプト種別
                05  RECE08-RECESYUBETU      PIC  X(04).
@@ -149,16 +138,6 @@
            03  RECE08-SYUBETU-UNDER-2      PIC X(40).
       *
            03  RECE08-SYUBETU-SRT2         PIC S9(9)   BINARY.
-      *医師別情報
-           03  RECE08-DRCD-AREA.
-      *医師コード
-               05  RECE08-DRCD             PIC  X(05).
-      *医師別診療科
-               05  RECE08-DRCD-SRYKA       PIC  X(02).
-      *ｓｏｒｔ
-           03  RECE08-SORT-1               PIC  X(10).
-      *ｓｏｒｔ２
-           03  RECE08-SORT-2               PIC  X(50).
       *帳票ＩＤ
            03  RECE08-FORMID               PIC  X(20).
       *帳票データ

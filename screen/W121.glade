@@ -1684,7 +1684,7 @@
       <name>PR_PRTJYUN_COMBO</name>
       <x>490</x>
       <y>10</y>
-      <width>240</width>
+      <width>350</width>
       <height>24</height>
       <value_in_list>False</value_in_list>
       <ok_if_empty>True</ok_if_empty>
@@ -1712,7 +1712,7 @@
 	</signal>
 	<editable>True</editable>
 	<text_visible>True</text_visible>
-	<text_max_length>12</text_max_length>
+	<text_max_length>28</text_max_length>
 	<text>1 ∏©∆‚Õ•¿Ë</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>

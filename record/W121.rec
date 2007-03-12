@@ -185,10 +185,10 @@ W121	{
 		};
 		PR_PRTJYUN_COMBO	{
 			PR_PRTJYUN	{
-				value	varchar(12);
+				value	varchar(28);
 			};
 			count	int;
-			item	varchar(12)[5];
+			item	varchar(28)[5];
 		};
 		scr1	{
 			HEADLIST	{

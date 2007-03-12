@@ -75,6 +75,7 @@
       *                                     番号順の指定
       *                                     「０９」「１０」の追加
       *                                     MONFUNC対応
+      *  03.04.03    NACL-藤原    07/03/01  国保レセプト編綴順詳細設定対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -150,6 +151,8 @@
                    07  WRK-PARA-RECE09-PRTJYUN       PIC X(02).
                    07  WRK-PARA-RECE09-CHOUKI        PIC X(01).
                    07  WRK-PARA-RECE09-ZAITAKU       PIC X(01).
+                   07  WRK-PARA-RECE09-KOUGAKU       PIC X(01).
+                   07  WRK-PARA-RECE09-SRT-LAST      PIC X(01).
                    07  WRK-PARA-RECE09-HKNJANUM      PIC X(08).
                05  WRK-PARA-RECE09-STDATA            PIC X(100).
                05  WRK-PARA-RECE09-EDDATA            PIC X(100).
@@ -608,8 +611,16 @@
       *
            MOVE    WRK-PARA-RECE09-CHOUKI  TO  RECE08-CHOUKI
            MOVE    WRK-PARA-RECE09-ZAITAKU TO  RECE08-ZAITAKU
+           MOVE    WRK-PARA-RECE09-KOUGAKU TO  RECE08-KOUGAKU
       *
-               MOVE    "key37"             TO  WRK-MCP-PATHNAME
+           EVALUATE    WRK-PARA-RECE09-SRT-LAST
+               WHEN    "0"
+                   MOVE    "key37"             TO  WRK-MCP-PATHNAME
+               WHEN    "1"
+                   MOVE    "key40"             TO  WRK-MCP-PATHNAME
+               WHEN    "2"
+                   MOVE    "key41"             TO  WRK-MCP-PATHNAME
+           END-EVALUATE
       *
            .
        9001-RECEPRT-KEY-HENSYU-EXT.

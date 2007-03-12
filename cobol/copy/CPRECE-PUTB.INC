@@ -29,8 +29,7 @@
       *
             02  RECE-PUTB-PREFKBN      PIC X(1).
       *
-            02  RECE-PUTB-SYUBETU-SRT1
-                                       PIC S9(9)   BINARY.
+            02  RECE-PUTB-SYUBETU-SRT1 PIC S9(9)   BINARY.
       *
             02  RECE-PUTB-GRP-NO1      PIC X(3).
       *
@@ -51,6 +50,12 @@
             02  RECE-PUTB-KOUHI-NO     PIC S9(3).
       *
             02  RECE-PUTB-KOUHI-NUM    PIC X(3).
+      *
+            02  RECE-PUTB-SYUBETU-GAI-SRT1
+                                       PIC X(4).
+      *
+            02  RECE-PUTB-SYUBETU-NYU-SRT1
+                                       PIC X(4).
       *有効開始年月日
             02  RECE-PUTB-STYUKYMD     PIC X(8).
       *有効終了年月日

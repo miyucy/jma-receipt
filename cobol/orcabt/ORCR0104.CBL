@@ -152,6 +152,7 @@
       *  03.04.05    NACL-門脇    07/02/19  北海道５１＋４１対応
       *  03.04.06    NACL-藤原    07/02/27  請求管理へ保険ＩＤ、
       *                                     老人保険ＩＤ、公費ＩＤの追加
+      *  03.04.07    NACL-藤原    07/03/01  国保レセプト編綴順詳細設定対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -349,6 +350,8 @@
            03  FLG-BTPARA          PIC 9(01).
            03  FLG-KOHSKY          PIC 9(01).
            03  FLG-RECE02X         PIC 9(01).
+           03  FLG-RECE-PUTH       PIC 9(01).
+           03  FLG-RECE-PUTB       PIC 9(01).
       *
            03  FLG-TENKI           PIC 9(01).     
            03  FLG-SRYKBNPRT       PIC 9(01).
@@ -358,6 +361,8 @@
            03  FLG-SYS-1901        PIC 9(01).
            03  FLG-SYS-1902        PIC 9(01).
            03  FLG-SYS-2008        PIC 9(01).
+           03  FLG-RECE-PUT-UM     PIC 9(01).
+           03  FLG-HENSYU          PIC 9(01).
            03  FLG-LINE            PIC 9(01).
            03  FLG-RECECOM-SJKBN   PIC 9(01).
       *
@@ -466,9 +471,24 @@
            03  WRK-RECENUM          PIC 9(06). 
       *
            03  WRK-HKNJANUM        PIC X(08).
-           03  WRK-KYURATE-9       PIC 9(03).
+           03  WRK-KYURATE-X.
+               05  WRK-KYURATE-9   PIC 9(03).
            03  WRK-KYURATE         PIC Z9.
            03  WRK-BEDSU           PIC ZZZZ.
+           03  WRK-HBTNUM-X.
+               05  WRK-HBTNUM-9    PIC 9(03).
+           03  WRK-RECE02-HBTNUM-X. 
+               05  WRK-RECE02-HBTNUM-9
+                                   PIC 9(02).
+      *
+           03  WRK-RECE07-SYUBETU-SRT1
+                                   PIC X(04).
+           03  WRK-RECE-PUTB-SYUBETU-SRT1 PIC 9(9).
+           03  WRK-RECE-PUTB-SYUBETU-SRT1-R
+                               REDEFINES   WRK-RECE-PUTB-SYUBETU-SRT1.
+               05  FILLER          PIC X(01).
+               05  WRK-RECE-PUTB-SYUBETU-SRT1-X
+                                   PIC X(08).
       *
            03  WRK-ERRMSG          PIC X(40).
       *
@@ -660,6 +680,23 @@
                                    PIC X(10000).
                05  TBL-RECE-FORMID PIC X(20). 
                05  TBL-RECE-RENNUM PIC 9(02).
+      *
+      *    編綴詳細設定用テーブル
+       01  TABLE-RECE-PUTB-AREA.
+      *    種別用 
+           03  TABLE-SYUBETU-AREA  OCCURS  2.
+               05  TBL-SYUBETU-RECE-PUTB-TBL    OCCURS  50.
+                   07  TBL-SYUBETU-RECE-PUTB-SYUBETU
+                                   PIC X(04).
+                   07  TBL-SYUBETU-RECE-PUTB-REC
+                                   PIC X(1000).
+      *    公費用
+           03  TABLE-KOH-AREA      OCCURS  2.
+               05  TBL-KOH-RECE-PUTB-TBL       OCCURS  2000.
+                   11  TBL-KOH-RECE-PUTB-HKNNUM
+                                   PIC X(03).
+                   07  TBL-KOH-RECE-PUTB-REC
+                                   PIC X(1000).
       *
        01  WRK-BYOMEI-AREA.     
       *    傷病名最大文字数（傷病名欄）
@@ -918,6 +955,11 @@
            03  WRK-CONS-SRYYM-200609   PIC 9(06)   VALUE   200609. 
            03  WRK-CONS-SRYYM-200703   PIC 9(06)   VALUE   200703. 
       *
+           03  WRK-CONS-BODYLIST-MAX
+                                   PIC 9(02)   VALUE   50.
+           03  WRK-CONS-KOHLIST-MAX
+                                   PIC 9(04)   VALUE   2000.
+      *
        01  WRK-RECE07-REC. 
            COPY    "CPRCF007.INC"  REPLACING  //RECE07//
                                    BY         //WRK-RECE07//.
@@ -987,6 +1029,14 @@
       *    主科
        01  SYUKA-REC.
            COPY    "CPSYUKA.INC".
+      *
+      *    編綴管理レコード（管理部）
+       01  RECE-PUTH-REC.
+           COPY    "CPRECE-PUTH.INC".
+      *
+      *    編綴管理レコード（明細部）
+       01  RECE-PUTB-REC.
+           COPY    "CPRECE-PUTB.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -1475,12 +1525,12 @@
            END-IF
       *         
       *    レセプト編綴順情報
-           MOVE    SPACE            TO  SYSKANRI-REC
-           INITIALIZE                   SYSKANRI-REC
-           MOVE    "2008"           TO  SYS-KANRICD
-           MOVE    WRK-PARA-SRYYM   TO  SYS-STYUKYMD (1:6)
-           MOVE    "01"             TO  SYS-STYUKYMD (7:2)
-           MOVE    SYS-STYUKYMD     TO  SYS-EDYUKYMD
+           MOVE    SPACE               TO  SYSKANRI-REC
+           INITIALIZE                     SYSKANRI-REC
+           MOVE    "2008"              TO  SYS-KANRICD
+           MOVE    WRK-PARA-SRYYM      TO  SYS-STYUKYMD (1:6)
+           MOVE    "01"                TO  SYS-STYUKYMD (7:2)
+           MOVE    SYS-STYUKYMD        TO  SYS-EDYUKYMD
            MOVE    "tbl_syskanri"      TO  WRK-MCP-TABLE
            MOVE    "key13"             TO  WRK-MCP-PATHNAME
            PERFORM 960-KANRIMST-READ-SEC
@@ -1492,6 +1542,11 @@
            IF      SYS-2008-PREFKBN-PRTJYUN
                                 NOT =   SPACE
                MOVE    1                TO  FLG-SYS-2008
+           END-IF
+      *
+      *    レセプト編綴順詳細設定情報（一括作成時のみ）
+           IF   WRK-PARA-SRYYM    NOT =  ZERO
+               PERFORM 1201-HENTETU-HENSYU-SEC
            END-IF
       *         
       *    レセプト編集区分情報
@@ -1589,6 +1644,110 @@
            END-IF
            .
        120-HOSPINF-GET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセプト編綴順詳細設定情報（一括作成時のみ）
+      *****************************************************************
+       1201-HENTETU-HENSYU-SEC     SECTION.
+      *
+           INITIALIZE                  TABLE-RECE-PUTB-AREA
+      *
+      *    レセプト編綴順詳細設定情報（ＨＥＡＤ部）
+           INITIALIZE                      RECE-PUTH-REC
+           MOVE    SYS-1001-HOSPID     TO  RECE-PUTH-HOSPID
+           MOVE    WRK-PARA-SRYYM      TO  RECE-PUTH-STYUKYMD (1:6)
+           MOVE    "01"                TO  RECE-PUTH-STYUKYMD (7:2)
+           MOVE    RECE-PUTH-STYUKYMD  TO  RECE-PUTH-EDYUKYMD
+           MOVE    RECE-PUTH-REC       TO  MCPDATA-REC
+           PERFORM 900-RECE-PUTH-READ-SEC
+      *
+      *    「使用しない」以外のときＨＥＡＤ部の情報を２００８に設定
+           IF      RECE-PUTH-PREFKBN-PRTJYUN =   "3"
+               CONTINUE
+           ELSE
+               MOVE    RECE-PUTH-PREFKBN-PRTJYUN
+                                           TO  SYS-2008-PREFKBN-PRTJYUN
+               MOVE    RECE-PUTH-HKNJANUM-PRTJYUN
+                                           TO  SYS-2008-HKNJANUM-PRTJYUN
+               MOVE    RECE-PUTH-HKNJANUM-PRTKBN
+                                           TO  SYS-2008-HKNJANUM-PRTKBN
+               MOVE    RECE-PUTH-HKNJANUM
+                                           TO  SYS-2008-HKNJANUM
+      *
+               MOVE    1                   TO  FLG-RECE-PUT-UM
+      *
+      *        レセプト編綴順詳細設定情報（ＢＯＤＹ部）
+               PERFORM VARYING IDXX    FROM    1   BY  1
+                       UNTIL   IDXX    >       2
+                   INITIALIZE                      RECE-PUTB-REC
+                   MOVE    SYS-1001-HOSPID     TO  RECE-PUTB-HOSPID
+                   EVALUATE    IDXX
+                       WHEN    1
+                           MOVE    "1"         TO  RECE-PUTB-PREFKBN
+                       WHEN    2
+                           MOVE    "2"         TO  RECE-PUTB-PREFKBN
+                   END-EVALUATE
+                   MOVE    WRK-PARA-SRYYM  TO  RECE-PUTB-STYUKYMD (1:6)
+                   MOVE    "01"            TO  RECE-PUTB-STYUKYMD (7:2)
+                   MOVE    RECE-PUTB-STYUKYMD
+                                           TO  RECE-PUTB-EDYUKYMD
+                   MOVE    RECE-PUTB-REC   TO  MCPDATA-REC
+                   MOVE    "DBSELECT"      TO  MCP-FUNC
+                   MOVE    "tbl_rece_putb" TO  MCP-TABLE
+                   MOVE    "key4"          TO  MCP-PATHNAME
+                   CALL    "MONFUNC"       USING
+                                               MCPAREA
+                                               MCPDATA-REC
+                   IF      MCP-RC          =   ZERO
+                       MOVE    "tbl_rece_putb" TO  MCP-TABLE
+                       MOVE    "key4"          TO  MCP-PATHNAME
+                       PERFORM 900-RECE-PUTB-READ-N-SEC
+                   ELSE
+                       INITIALIZE                  RECE-PUTB-REC
+                       MOVE    1               TO  FLG-RECE-PUTB
+                   END-IF
+      *
+                   MOVE    ZERO            TO  IDX
+                                               IDY
+                   PERFORM     UNTIL   FLG-RECE-PUTB
+                                           =   1
+      ***                         OR      IDX >=  WRK-CONS-BODYLIST-MAX
+      ***                         OR      IDY >=  WRK-CONS-KOHLIST-MAX
+      *
+                       EVALUATE    RECE-PUTB-KOUHI-NO
+                           WHEN    ZERO
+                               ADD     1               TO  IDX
+                               MOVE    RECE-PUTB-REC   TO
+                                       TBL-SYUBETU-RECE-PUTB-REC
+                                                             (IDXX IDX)
+                               MOVE    RECE-PUTB-SYUBETU-GAI
+                                                       TO
+                                       TBL-SYUBETU-RECE-PUTB-SYUBETU
+                                                             (IDXX IDX)
+                           WHEN    OTHER
+                               ADD     1               TO  IDY
+                               MOVE    RECE-PUTB-REC   TO
+                                       TBL-KOH-RECE-PUTB-REC (IDXX IDY)
+                               MOVE    RECE-PUTB-KOUHI-NUM
+                                                       TO
+                                       TBL-KOH-RECE-PUTB-HKNNUM
+                                                             (IDXX IDY)
+                       END-EVALUATE
+      *
+                       MOVE    "tbl_rece_putb" TO  MCP-TABLE
+                       MOVE    "key4"          TO  MCP-PATHNAME
+                       PERFORM 900-RECE-PUTB-READ-N-SEC
+                   END-PERFORM
+      *
+                   MOVE    "tbl_rece_putb" TO  MCP-TABLE
+                   MOVE    "key4"          TO  MCP-PATHNAME
+                   PERFORM 900-CLOSE-SEC
+               END-PERFORM
+           END-IF    
+      *
+           .
+       1201-HENTETU-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -6075,6 +6234,8 @@
       *****************************************************************
        3901-RECE08-INSERT-SEC        SECTION.
       *
+           MOVE    SPACE               TO  WRK-RECE07-SYUBETU-SRT1 
+      *
            INITIALIZE                  RECE08-REC
            MOVE    "HC06"              TO  RECE08-PRTID
       *->  MOVE    WRK-PARA-SRYYM      TO  RECE08-RECEYM
@@ -6163,6 +6324,7 @@
            MOVE    "9"                 TO  RECE08-HKNJANUM-SRT
                                            RECE08-ZAITAKU
                                            RECE08-CHOUKI
+                                           RECE08-KOUGAKU
       *     主科設定
            IF    ( SYS-2009-SYUKA-KBN  =   "1"                )
       *****AND   ( RECE02-TEISYUTUSAKI =   "1"                )
@@ -6181,157 +6343,16 @@
            END-IF
       *
       *    編綴順項目の設定（国保特別療養費以外）
-           IF    ( FLG-SYS-2008        =   ZERO   )
-           OR    ( RECE02-TEISYUTUSAKI =   "1"    )
+           IF    ( RECE02-TEISYUTUSAKI =   "1"    )
            OR    ( RECE02-RECESYUBETU  =   "6666"  OR  "8888"  OR
                                            "0000" )
                CONTINUE
            ELSE
-      *
-      *        検索用保険者番号
-               IF      RECE08-HKNJANUM(1:2)    =   "67"
-                   MOVE    RECE08-HKNJANUM(3:) TO  RECE08-HKNJANUM-S
+               IF    ( FLG-SYS-2008        =   ZERO   )
+               AND   ( FLG-RECE-PUT-UM     =   ZERO   )
+                   CONTINUE
                ELSE
-                   MOVE    RECE08-HKNJANUM     TO  RECE08-HKNJANUM-S
-               END-IF
-      *
-               EVALUATE    SYS-2008-PREFKBN-PRTJYUN
-                                       ALSO    RECE08-PREFKBN
-                   WHEN    "1"         ALSO    "1"
-                       MOVE    "10"            TO  RECE08-PREFKBN-SRT
-                   WHEN    "1"         ALSO    "2"
-                       MOVE    "20"            TO  RECE08-PREFKBN-SRT
-                   WHEN    "2"         ALSO    "1"
-                       MOVE    "20"            TO  RECE08-PREFKBN-SRT
-                   WHEN    "2"         ALSO    "2"
-                       MOVE    "10"            TO  RECE08-PREFKBN-SRT
-               END-EVALUATE
-      *
-      *        （県内分のみ）
-               IF      RECE08-PREFKBN      =   "1"     
-                   EVALUATE    SYS-2008-HKNJANUM-PRTJYUN
-                       WHEN    "1"
-                           IF      RECE08-PREFNUM  =   SYS-1001-PREFNUM
-                               IF      RECE08-HKNJANUM-S (3:1)  =   "3"
-                                   MOVE    "2" TO RECE08-PREFKBN-SRT(2:)
-                               ELSE
-                                   MOVE    "1" TO RECE08-PREFKBN-SRT(2:)
-                               END-IF
-                           ELSE
-                               MOVE    "3" TO  RECE08-PREFKBN-SRT (2:)
-                           END-IF
-                       WHEN    "2"
-                           IF      RECE08-PREFNUM  =   SYS-1001-PREFNUM
-                               IF      RECE08-HKNJANUM-S (3:1)  =   "3"
-                                   MOVE    "3" TO RECE08-PREFKBN-SRT(2:)
-                               ELSE
-                                   MOVE    "1" TO RECE08-PREFKBN-SRT(2:)
-                               END-IF
-                           ELSE
-                               MOVE    "2" TO  RECE08-PREFKBN-SRT (2:)
-                           END-IF
-                       WHEN    "3"
-                           IF      RECE08-PREFNUM  =   SYS-1001-PREFNUM
-                               IF      RECE08-HKNJANUM-S (3:1)  =   "3"
-                                   MOVE    "1" TO RECE08-PREFKBN-SRT(2:)
-                               ELSE
-                                   MOVE    "2" TO RECE08-PREFKBN-SRT(2:)
-                               END-IF
-                           ELSE
-                               MOVE    "3" TO  RECE08-PREFKBN-SRT (2:)
-                           END-IF                               
-                       WHEN    "4"
-                           IF      RECE08-PREFNUM  =   SYS-1001-PREFNUM
-                               IF      RECE08-HKNJANUM-S (3:1)  =   "3"
-                                   MOVE    "1" TO RECE08-PREFKBN-SRT(2:)
-                               ELSE
-                                   MOVE    "3" TO RECE08-PREFKBN-SRT(2:)
-                               END-IF
-                           ELSE
-                               MOVE    "2" TO  RECE08-PREFKBN-SRT (2:)
-                           END-IF
-                       WHEN    "5"
-                           IF      RECE08-PREFNUM  =   SYS-1001-PREFNUM
-                               IF      RECE08-HKNJANUM-S (3:1)  =   "3"
-                                   MOVE    "3" TO RECE08-PREFKBN-SRT(2:)
-                               ELSE
-                                   MOVE    "2" TO RECE08-PREFKBN-SRT(2:)
-                               END-IF
-                           ELSE
-                               MOVE    "1" TO  RECE08-PREFKBN-SRT (2:)
-                           END-IF
-                       WHEN    "6"
-                           IF      RECE08-PREFNUM  =   SYS-1001-PREFNUM
-                               IF      RECE08-HKNJANUM-S (3:1)  =   "3"
-                                   MOVE    "2" TO RECE08-PREFKBN-SRT(2:)
-                               ELSE
-                                   MOVE    "3" TO RECE08-PREFKBN-SRT(2:)
-                               END-IF
-                           ELSE
-                               MOVE    "1" TO  RECE08-PREFKBN-SRT (2:)
-                           END-IF
-                   END-EVALUATE
-               END-IF
-      *
-      *        所属保険者による保険者印刷区分の設定
-               MOVE    "1"             TO  RECE08-HKNJANUM-SRT
-               IF    ( SYS-2008-HKNJANUM   =   RECE08-HKNJANUM-S )
-               AND   ( RECE08-PREFKBN      =   "1"               )
-                   EVALUATE    SYS-2008-HKNJANUM-PRTKBN
-                       WHEN    "1"
-                           MOVE    "0"     TO  RECE08-HKNJANUM-SRT
-                       WHEN    "2"
-                           MOVE    "9"     TO  RECE08-HKNJANUM-SRT
-                   END-EVALUATE
-               END-IF
-      *
-      *        レセプト種別印刷区分
-               EVALUATE    SYS-2008-RECESYUBETU-PRTJYUN
-                                   ALSO    RECE02-RECESYUBETU (2:1)
-                   WHEN    "1"     ALSO    "1"
-                   WHEN    "2"     ALSO    "1"
-                   WHEN    "3"     ALSO    "3"
-                   WHEN    "4"     ALSO    "3"
-                   WHEN    "5"     ALSO    "4"
-                   WHEN    "6"     ALSO    "4"
-                       MOVE    "1"     TO  RECE08-RECESYUBETU-SRT (1:1)
-                   WHEN    "3"     ALSO    "1"
-                   WHEN    "5"     ALSO    "1"
-                   WHEN    "1"     ALSO    "3"
-                   WHEN    "6"     ALSO    "3"
-                   WHEN    "2"     ALSO    "4"
-                   WHEN    "4"     ALSO    "4"
-                       MOVE    "2"     TO  RECE08-RECESYUBETU-SRT (1:1)
-                   WHEN    "4"     ALSO    "1"
-                   WHEN    "6"     ALSO    "1"
-                   WHEN    "2"     ALSO    "3"
-                   WHEN    "5"     ALSO    "3"
-                   WHEN    "1"     ALSO    "4"
-                   WHEN    "3"     ALSO    "4"
-                       MOVE    "3"     TO  RECE08-RECESYUBETU-SRT (1:1)
-               END-EVALUATE    
-               MOVE    RECE02-RECESYUBETU (3:2)
-                                       TO  RECE08-RECESYUBETU-SRT (2:2)
-               IF      RECE02-RECESYUBETU (4:1)  =   "0"
-                   MOVE    "A"         TO  RECE08-RECESYUBETU-SRT (3:1)
-               END-IF
-      *
-               IF    ( SYS-2008-ZAITAKU 
-                                    NOT =   SPACE )
-               AND   ( RECE02-ZAITAKU   =   "1"   )
-                   MOVE    "1"              TO  RECE08-ZAITAKU
-               END-IF
-      *
-               IF      SYS-2008-CHOUKI
-                                    NOT =   SPACE
-                   PERFORM VARYING IDX     FROM    1   BY  1
-                           UNTIL   IDX     >       4
-                           OR      RECE02-ETC-KOHNUM (IDX) =   SPACE
-                       IF      RECE02-ETC-KOHNUM (IDX) =  "972" OR "974"
-                           MOVE    "1"             TO  RECE08-CHOUKI
-                           MOVE    4               TO  IDX
-                       END-IF
-                   END-PERFORM
+                   PERFORM 39011-HENTETU-HENSYU-SEC
                END-IF
            END-IF
       *    
@@ -6442,6 +6463,412 @@
            EXIT.
       *
       *****************************************************************
+      *    国保編綴設定処理
+      *****************************************************************
+       39011-HENTETU-HENSYU-SEC     SECTION.
+      *
+      *    検索用保険者番号
+           IF      RECE08-HKNJANUM(1:2)    =   "67"
+               MOVE    RECE08-HKNJANUM(3:) TO  RECE08-HKNJANUM-S
+           ELSE
+               MOVE    RECE08-HKNJANUM     TO  RECE08-HKNJANUM-S
+           END-IF
+      *
+      *    県内県外印刷順
+           EVALUATE    SYS-2008-PREFKBN-PRTJYUN
+                                   ALSO    RECE08-PREFKBN
+               WHEN    "1"         ALSO    "1"
+                   MOVE    "10"            TO  RECE08-PREFKBN-SRT
+               WHEN    "1"         ALSO    "2"
+                   MOVE    "20"            TO  RECE08-PREFKBN-SRT
+               WHEN    "2"         ALSO    "1"
+                   MOVE    "20"            TO  RECE08-PREFKBN-SRT
+               WHEN    "2"         ALSO    "2"
+                   MOVE    "10"            TO  RECE08-PREFKBN-SRT
+           END-EVALUATE
+      *
+      *    保険者印刷順（県内分のみ）
+           IF      RECE08-PREFKBN      =   "1"
+               EVALUATE    SYS-2008-HKNJANUM-PRTJYUN
+                   WHEN    "1"
+                       IF      RECE08-PREFNUM  =   SYS-1001-PREFNUM
+                           IF      RECE08-HKNJANUM-S (3:1)  =   "3"
+                               MOVE    "2" TO RECE08-PREFKBN-SRT(2:)
+                           ELSE
+                               MOVE    "1" TO RECE08-PREFKBN-SRT(2:)
+                           END-IF
+                       ELSE
+                           MOVE    "3" TO  RECE08-PREFKBN-SRT (2:)
+                       END-IF
+                   WHEN    "2"
+                       IF      RECE08-PREFNUM  =   SYS-1001-PREFNUM
+                           IF      RECE08-HKNJANUM-S (3:1)  =   "3"
+                               MOVE    "3" TO RECE08-PREFKBN-SRT(2:)
+                           ELSE
+                               MOVE    "1" TO RECE08-PREFKBN-SRT(2:)
+                           END-IF
+                       ELSE
+                           MOVE    "2" TO  RECE08-PREFKBN-SRT (2:)
+                       END-IF
+                   WHEN    "3"
+                       IF      RECE08-PREFNUM  =   SYS-1001-PREFNUM
+                           IF      RECE08-HKNJANUM-S (3:1)  =   "3"
+                               MOVE    "1" TO RECE08-PREFKBN-SRT(2:)
+                           ELSE
+                               MOVE    "2" TO RECE08-PREFKBN-SRT(2:)
+                           END-IF
+                       ELSE
+                           MOVE    "3" TO  RECE08-PREFKBN-SRT (2:)
+                       END-IF                               
+                   WHEN    "4"
+                       IF      RECE08-PREFNUM  =   SYS-1001-PREFNUM
+                           IF      RECE08-HKNJANUM-S (3:1)  =   "3"
+                               MOVE    "1" TO RECE08-PREFKBN-SRT(2:)
+                           ELSE
+                               MOVE    "3" TO RECE08-PREFKBN-SRT(2:)
+                           END-IF
+                       ELSE
+                           MOVE    "2" TO  RECE08-PREFKBN-SRT (2:)
+                       END-IF
+                   WHEN    "5"
+                       IF      RECE08-PREFNUM  =   SYS-1001-PREFNUM
+                           IF      RECE08-HKNJANUM-S (3:1)  =   "3"
+                               MOVE    "3" TO RECE08-PREFKBN-SRT(2:)
+                           ELSE
+                               MOVE    "2" TO RECE08-PREFKBN-SRT(2:)
+                           END-IF
+                       ELSE
+                           MOVE    "1" TO  RECE08-PREFKBN-SRT (2:)
+                       END-IF
+                   WHEN    "6"
+                       IF      RECE08-PREFNUM  =   SYS-1001-PREFNUM
+                           IF      RECE08-HKNJANUM-S (3:1)  =   "3"
+                               MOVE    "2" TO RECE08-PREFKBN-SRT(2:)
+                           ELSE
+                               MOVE    "3" TO RECE08-PREFKBN-SRT(2:)
+                           END-IF
+                       ELSE
+                           MOVE    "1" TO  RECE08-PREFKBN-SRT (2:)
+                       END-IF
+               END-EVALUATE
+           END-IF
+      *
+      *    所属保険者による保険者印刷区分の設定
+           MOVE    "1"             TO  RECE08-HKNJANUM-SRT
+           IF    ( SYS-2008-HKNJANUM   =   RECE08-HKNJANUM-S )
+           AND   ( RECE08-PREFKBN      =   "1"               )
+               EVALUATE    SYS-2008-HKNJANUM-PRTKBN
+                   WHEN    "1"
+                       MOVE    "0"     TO  RECE08-HKNJANUM-SRT
+                   WHEN    "2"
+                       MOVE    "9"     TO  RECE08-HKNJANUM-SRT
+               END-EVALUATE
+           END-IF
+      *
+      *    レセプト種別印刷区分（詳細設定なしのとき）
+           IF      FLG-RECE-PUT-UM     =   ZERO
+               EVALUATE    SYS-2008-RECESYUBETU-PRTJYUN
+                                   ALSO    RECE02-RECESYUBETU (2:1)
+                   WHEN    "1"     ALSO    "1"
+                   WHEN    "2"     ALSO    "1"
+                   WHEN    "3"     ALSO    "3"
+                   WHEN    "4"     ALSO    "3"
+                   WHEN    "5"     ALSO    "4"
+                   WHEN    "6"     ALSO    "4"
+                       MOVE    "1"     TO  RECE08-RECESYUBETU-SRT (1:1)
+                   WHEN    "3"     ALSO    "1"
+                   WHEN    "5"     ALSO    "1"
+                   WHEN    "1"     ALSO    "3"
+                   WHEN    "6"     ALSO    "3"
+                   WHEN    "2"     ALSO    "4"
+                   WHEN    "4"     ALSO    "4"
+                       MOVE    "2"     TO  RECE08-RECESYUBETU-SRT (1:1)
+                   WHEN    "4"     ALSO    "1"
+                   WHEN    "6"     ALSO    "1"
+                   WHEN    "2"     ALSO    "3"
+                   WHEN    "5"     ALSO    "3"
+                   WHEN    "1"     ALSO    "4"
+                   WHEN    "3"     ALSO    "4"
+                       MOVE    "3"     TO  RECE08-RECESYUBETU-SRT (1:1)
+               END-EVALUATE    
+               MOVE    RECE02-RECESYUBETU (3:2)
+                                       TO  RECE08-RECESYUBETU-SRT (2:2)
+               IF      RECE02-RECESYUBETU (4:1)  =   "0"
+                   MOVE    "A"         TO  RECE08-RECESYUBETU-SRT (3:1)
+               END-IF
+      *
+               IF    ( SYS-2008-ZAITAKU 
+                                    NOT =   SPACE )
+               AND   ( RECE02-ZAITAKU   =   "1"   )
+                   MOVE    "1"              TO  RECE08-ZAITAKU
+               END-IF
+      *
+               IF      SYS-2008-CHOUKI
+                                    NOT =   SPACE
+                   PERFORM VARYING IDX     FROM    1   BY  1
+                           UNTIL   IDX     >       4
+                           OR      RECE02-ETC-KOHNUM (IDX) =   SPACE
+                       IF      RECE02-ETC-KOHNUM (IDX) =  "972" OR "974"
+                           MOVE    "1"             TO  RECE08-CHOUKI
+                           MOVE    4               TO  IDX
+                       END-IF
+                   END-PERFORM
+               END-IF
+           ELSE
+      *        編綴詳細設定より設定
+               IF      RECE08-PREFKBN      =   "1"
+                   MOVE    1                   TO  IDXX
+               ELSE
+                   MOVE    2                   TO  IDXX
+               END-IF
+      *
+      *        ＨＥＡＤ情報の設定
+               IF    ( RECE-PUTH-KOUGAKU-TEN (IDXX)
+                                        >   ZERO                     )
+               AND   ( RECE02-TOTALTEN (1)
+                                        >=
+                                        RECE-PUTH-KOUGAKU-TEN (IDXX) )
+                   MOVE    "1"              TO  RECE08-KOUGAKU
+               END-IF
+      *
+               IF    ( RECE02-ZAITAKU   =   "1"   )
+               AND   ( RECE-PUTH-ZAITAKU (IDXX)
+                                    NOT =   SPACE )
+                   MOVE    "1"              TO  RECE08-ZAITAKU
+               END-IF
+      *
+               IF    ( RECE02-ETC-KOHNUM (1)
+                                   NOT =   SPACE )
+               AND   ( RECE-PUTH-CHOUKI  (IDXX) 
+                                   NOT =   SPACE )
+                   PERFORM VARYING IDX     FROM    1   BY  1
+                           UNTIL   IDX     >       4
+                           OR      RECE02-ETC-KOHNUM (IDX) =   SPACE
+                       IF      RECE02-ETC-KOHNUM (IDX) =  "972" OR "974"
+                           MOVE    "1"             TO  RECE08-CHOUKI
+                           MOVE    4               TO  IDX
+                       END-IF
+                   END-PERFORM
+               END-IF
+      *
+               EVALUATE    RECE-PUTH-KKHKBN (IDXX)
+                   WHEN    "01"
+                       IF      RECE08-HKNJANUM-S (3:1)
+                                               NOT =   "3"
+                           MOVE    RECE02-HONKZKKBN
+                                               TO  RECE08-HONKZKKBN
+                       END-IF 
+                   WHEN    "02"
+                       IF      RECE08-HKNJANUM-S (3:1)
+                                                   =   "3"
+                           MOVE    RECE02-HONKZKKBN
+                                               TO  RECE08-HONKZKKBN
+                       END-IF 
+               END-EVALUATE
+      *
+      *        ＢＯＤＹ情報の設定
+               MOVE    ZERO                TO  FLG-HENSYU
+      *        公費からの設定
+               IF      TBL-KOH-RECE-PUTB-HKNNUM (IDXX 1)
+                                       NOT =   SPACE    
+      *            長期
+                   PERFORM VARYING IDX FROM    1   BY  1
+                           UNTIL   IDX >       4
+                           OR      RECE02-ETC-KOHNUM (IDX)
+                                               =   SPACE
+                           OR      FLG-HENSYU  =   1
+                       IF      RECE02-ETC-KOHNUM (IDX) 
+                                               =  "972" OR "974"
+                           PERFORM VARYING IDY FROM    1   BY  1
+                                   UNTIL   IDY >   WRK-CONS-KOHLIST-MAX
+                                   OR      TBL-KOH-RECE-PUTB-HKNNUM
+                                                           (IDXX IDY)
+                                                       =   SPACE
+                                   OR      FLG-HENSYU  =   1
+                               MOVE    TBL-KOH-RECE-PUTB-REC (IDXX IDY)
+                                                   TO  RECE-PUTB-REC
+      *
+                               IF    ( RECE-PUTB-KOUHI-NUM =   "XXX" )
+                               AND   ( RECE02-RECESYUBETU  =
+                                               RECE-PUTB-SYUBETU-GAI )
+                                   PERFORM 390111-HENTETU-HENSYU-SEC
+                               END-IF
+                           END-PERFORM
+                       END-IF
+                   END-PERFORM
+      *
+      *            在総診
+                   IF    ( FLG-HENSYU          =   ZERO )
+                   AND   ( RECE02-ZAITAKU      =   "1"  )
+                       PERFORM VARYING IDY FROM    1   BY  1
+                               UNTIL   IDY >   WRK-CONS-KOHLIST-MAX
+                               OR      TBL-KOH-RECE-PUTB-HKNNUM
+                                                           (IDXX IDY)
+                                                   =   SPACE
+                               OR      FLG-HENSYU  =   1
+                           MOVE    TBL-KOH-RECE-PUTB-REC (IDXX IDY)
+                                                   TO  RECE-PUTB-REC
+      *
+                           IF    ( RECE-PUTB-KOUHI-NUM =   "YYY" )
+                           AND   ( RECE02-RECESYUBETU  =
+                                           RECE-PUTB-SYUBETU-GAI )
+                               PERFORM 390111-HENTETU-HENSYU-SEC
+                           END-IF
+                       END-PERFORM
+                   END-IF
+      *
+      *            その他の公費
+                   IF    ( FLG-HENSYU          =   ZERO  )
+                   AND   ( RECE02-KOHNUM (1)
+                                           NOT =   SPACE )
+                       PERFORM VARYING IDX FROM    1   BY  1
+                               UNTIL   IDX >       4
+                               OR      RECE02-KOHNUM (IDX)
+                                                   =   SPACE
+                               OR      FLG-HENSYU  =   1
+                           IF      RECE02-KOHNUM (IDX) 
+                                               >=  "100"   AND <=  "899"
+                               PERFORM VARYING IDY FROM    1   BY  1
+                                       UNTIL   IDY >
+                                               WRK-CONS-KOHLIST-MAX
+                                       OR      TBL-KOH-RECE-PUTB-HKNNUM
+                                                           (IDXX IDY)
+                                                           =   SPACE
+                                       OR      FLG-HENSYU  =   1
+                                   MOVE    TBL-KOH-RECE-PUTB-REC
+                                                           (IDXX IDY)
+                                                   TO  RECE-PUTB-REC
+                                   IF    ( RECE02-KOHNUM (IDX) =
+                                               RECE-PUTB-KOUHI-NUM   )
+                                   AND   ( RECE02-RECESYUBETU  =
+                                               RECE-PUTB-SYUBETU-GAI )
+                                       PERFORM 390111-HENTETU-HENSYU-SEC
+                                   END-IF
+                               END-PERFORM
+      *
+                               IF      RECE02-RECESYUBETU (4:1)  =   "4"
+                                   PERFORM VARYING IDY FROM    1   BY  1
+                                           UNTIL   IDY >
+                                               WRK-CONS-KOHLIST-MAX
+                                           OR  TBL-KOH-RECE-PUTB-HKNNUM
+                                                           (IDXX IDY)
+                                                               =   SPACE
+                                           OR      FLG-HENSYU  =   1
+                                       MOVE    TBL-KOH-RECE-PUTB-REC
+                                                           (IDXX IDY)
+                                                   TO  RECE-PUTB-REC
+                                       IF    ( RECE02-KOHNUM (IDX) =
+                                               RECE-PUTB-KOUHI-NUM   )
+                                       AND   ( RECE02-RECESYUBETU (2:1)
+                                                                  =
+                                           RECE-PUTB-SYUBETU-GAI (2:1) )
+                                           PERFORM
+                                               390111-HENTETU-HENSYU-SEC
+                                       END-IF
+                                   END-PERFORM
+                               END-IF
+                           END-IF    
+                       END-PERFORM
+                   END-IF
+               END-IF
+      *
+      *        公費からの設定がなかったとき
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       WRK-CONS-BODYLIST-MAX
+                       OR      TBL-SYUBETU-RECE-PUTB-SYUBETU
+                                                       (IDXX IDY)
+                                           =   SPACE
+                       OR      FLG-HENSYU  =   1
+                   MOVE    TBL-SYUBETU-RECE-PUTB-REC (IDXX IDY)
+                                           TO  RECE-PUTB-REC
+                   IF      RECE02-RECESYUBETU  =
+                                               RECE-PUTB-SYUBETU-GAI
+                       PERFORM 390111-HENTETU-HENSYU-SEC
+                   END-IF
+               END-PERFORM
+           END-IF
+      *
+           .
+       39011-HENTETU-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    詳細設定情報出力処理
+      *****************************************************************
+       390111-HENTETU-HENSYU-SEC   SECTION.
+      *
+           MOVE    RECE-PUTB-SYUBETU-SRT1
+                                       TO  RECE08-SYUBETU-SRT1
+           MOVE    RECE-PUTB-SYUBETU-SRT2
+                                       TO  RECE08-SYUBETU-SRT2
+           IF       RECE-PUTB-KOUHI-NO >   ZERO
+               MOVE    RECE-PUTB-KOUHI-NO  TO  RECE08-KOUHI-NO
+           ELSE
+               MOVE    500                 TO  RECE08-KOUHI-NO
+           END-IF
+           MOVE    RECE-PUTB-GRP-NO1   TO  RECE08-GRP-NO1
+           MOVE    RECE-PUTB-GRP-NO2   TO  RECE08-GRP-NO2
+           EVALUATE    RECE-PUTB-SYUBETU-UNDER-NO1 
+               WHEN    "01"
+                   COMPUTE WRK-KYURATE-9   =   100 -   RECE02-KYURATE
+                   MOVE    WRK-KYURATE-X   TO  RECE08-SYUBETU-UNDER-1
+               WHEN    "02"
+                   MOVE    RECE02-KYURATE  TO  RECE08-SYUBETU-UNDER-1
+               WHEN    "03"
+                   MOVE    RECE02-KOHHBTNUM(1)
+                                           TO  RECE08-SYUBETU-UNDER-1
+               WHEN    "04"
+                   IF      RECE02-KOHHBTNUM(1) NUMERIC
+                       MOVE    RECE02-KOHHBTNUM(1) TO
+                                                   WRK-RECE02-HBTNUM-X
+                   ELSE
+                       MOVE    "00"                TO
+                                                   WRK-RECE02-HBTNUM-X
+                   END-IF
+                   COMPUTE WRK-HBTNUM-9    =   100 -
+                                               WRK-RECE02-HBTNUM-9
+                   MOVE    WRK-HBTNUM-X    TO  RECE08-SYUBETU-UNDER-1
+               WHEN    "05"
+                   MOVE    RECE02-KIGO     TO   RECE08-SYUBETU-UNDER-1-1
+                   MOVE    RECE02-NUM      TO   RECE08-SYUBETU-UNDER-1-2
+               WHEN    "06"
+                   MOVE    RECE02-KOHJKYSNUM (1)
+                                           TO  RECE08-SYUBETU-UNDER-1
+               WHEN    "07"
+                   MOVE    RECE08-HKNJANUM-S
+                                           TO  RECE08-SYUBETU-UNDER-1
+          END-EVALUATE
+           EVALUATE    RECE-PUTB-SYUBETU-UNDER-NO2
+               WHEN    "01"
+                   MOVE    RECE02-KYURATE  TO  RECE08-SYUBETU-UNDER-2
+               WHEN    "02"
+                   MOVE    RECE02-KYURATE  TO  RECE08-SYUBETU-UNDER-2
+               WHEN    "03"
+                   MOVE    RECE02-KOHHBTNUM
+                                           TO  RECE08-SYUBETU-UNDER-2
+               WHEN    "04"
+                   MOVE    RECE02-KOHHBTNUM
+                                           TO  RECE08-SYUBETU-UNDER-2
+          END-EVALUATE
+      *
+          IF      RECE-PUTH-SRT-01 (IDXX) =   "02"
+              MOVE    RECE-PUTB-SYUBETU-SRT1
+                                          TO  WRK-RECE-PUTB-SYUBETU-SRT1
+              MOVE    WRK-RECE-PUTB-SYUBETU-SRT1-X
+                                          TO  RECE08-HKNJANUM-S
+              MOVE    RECE-PUTB-SYUBETU-GAI-SRT1
+                                          TO  WRK-RECE07-SYUBETU-SRT1
+          ELSE
+              MOVE    SPACE               TO  WRK-RECE07-SYUBETU-SRT1  
+          END-IF
+      *
+          MOVE    1                    TO  FLG-HENSYU
+      *
+           .
+       390111-HENTETU-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    出力処理
       *****************************************************************
        3903-RECE07-WRITE-SEC        SECTION.
@@ -6489,6 +6916,7 @@
                MOVE    RECE08-PREFKBN-SRT  TO  RECE07-PREFKBN-SRT
                MOVE    RECE08-ZAITAKU      TO  RECE07-ZAITAKU
                MOVE    RECE08-CHOUKI       TO  RECE07-CHOUKI
+               MOVE    RECE08-KOUGAKU      TO  RECE07-KOUGAKU
                MOVE    RECE08-SRYKA        TO  RECE07-SRYKA
                MOVE    RECE08-HKNJANUM-SRT TO  RECE07-HKNJANUM-SRT
                MOVE    RECE08-RECESYUBETU-SRT
@@ -6525,12 +6953,40 @@
                IF      RECE08-CHOUKI       =   "1"
                    ADD     1               TO  RECE07-PAGE-CHOUKI
                END-IF
+               IF      RECE08-KOUGAKU      =   "1"  
+                   ADD     1               TO  RECE07-PAGE-KOUGAKU
+               END-IF
                IF    ( RECE08-CHOUKI       =   "1" )  
                AND   ( RECE08-ZAITAKU      =   "1" )
                    ADD     1               TO  RECE07-PAGE-DUP
                END-IF
                MOVE    SYS-2008-KBNCD      TO  WRK-HSEQNUM
                MOVE    WRK-HSEQNUM         TO  RECE07-HSEQNUM
+      *        編綴順項目の設定（国保特別療養費以外）
+               IF    ( RECE02-TEISYUTUSAKI =   "1"    )
+               OR    ( RECE02-RECESYUBETU  =   "6666"  OR  "8888"  OR
+                                               "0000" )
+                   CONTINUE
+               ELSE
+                   IF      FLG-RECE-PUT-UM     =   1
+                       MOVE    99999999            TO  RECE07-HSEQNUM
+      *                編綴詳細設定より設定
+                       IF      RECE08-PREFKBN      =   "1"
+                           MOVE    1                   TO  IDXX
+                       ELSE
+                           MOVE    2                   TO  IDXX
+                       END-IF
+                       MOVE    RECE08-PREFKBN  TO  RECE07-PREFKBN
+                       MOVE    RECE-PUTH-ZAITAKU     (IDXX) 
+                                               TO  RECE07-ZAITAKU-KBN
+                       MOVE    RECE-PUTH-CHOUKI      (IDXX)
+                                               TO  RECE07-CHOUKI-KBN
+                       MOVE    RECE-PUTH-SRT-LAST    (IDXX)
+                                               TO  RECE07-SRT-LAST
+                       MOVE    RECE-PUTH-KOUGAKU-TEN    (IDXX)
+                                               TO  RECE07-KOUGAKU-TEN
+                   END-IF
+               END-IF    
            ELSE
                ADD     1                   TO  RECE07-PAGE
                IF    ( CNT-KENSU           =   1 )
@@ -6543,12 +6999,18 @@
                    IF      RECE08-CHOUKI       =   "1"  
                        ADD     1               TO  RECE07-PAGE-CHOUKI
                    END-IF
+                   IF      RECE08-KOUGAKU      =   "1"  
+                       ADD     1               TO  RECE07-PAGE-KOUGAKU
+                   END-IF
                    IF    ( RECE08-CHOUKI       =   "1" )  
                    AND   ( RECE08-ZAITAKU      =   "1" )
                        ADD     1               TO  RECE07-PAGE-DUP
                    END-IF
                END-IF
            END-IF
+           IF    WRK-RECE07-SYUBETU-SRT1   >   ZERO     
+              MOVE    WRK-RECE07-SYUBETU-SRT1 TO  RECE07-SYUBETU-SRT1
+           END-IF   
       *
            MOVE    RECE07-REC          TO  MCPDATA-REC
            MOVE    "RECEKANRI-KEY"     TO  ORC-DBPATH
@@ -7918,6 +8380,74 @@
       *
            .
        900-BTPARA-READ-N-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    編綴管理レコード（管理部）読込
+      *****************************************************************
+       900-RECE-PUTH-READ-SEC        SECTION.
+      *
+           MOVE    "tbl_rece_puth" TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           CALL    "MONFUNC"       USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC          =   ZERO
+               MOVE    "tbl_rece_puth" TO  MCP-TABLE
+               MOVE    "key"           TO  MCP-PATHNAME
+               PERFORM 900-RECE-PUTH-READ-N-SEC
+           ELSE
+               INITIALIZE                  RECE-PUTH-REC
+               MOVE    1               TO  FLG-RECE-PUTH
+           END-IF
+      *
+           MOVE    "tbl_rece_puth" TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           .
+       900-RECE-PUTH-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    編綴管理レコード（管理部）読込
+      *****************************************************************
+       900-RECE-PUTH-READ-N-SEC        SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO                TO  FLG-RECE-PUTH
+               MOVE    MCPDATA-REC         TO  RECE-PUTH-REC
+           ELSE
+               MOVE    1                   TO  FLG-RECE-PUTH
+           END-IF
+      *
+           .
+       900-RECE-PUTH-READ-N-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    編綴管理レコード（明細部）読込
+      *****************************************************************
+       900-RECE-PUTB-READ-N-SEC        SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO                TO  FLG-RECE-PUTB
+               MOVE    MCPDATA-REC         TO  RECE-PUTB-REC
+           ELSE
+               MOVE    1                   TO  FLG-RECE-PUTB
+           END-IF
+      *
+           .
+       900-RECE-PUTB-READ-N-EXT.
            EXIT.
       *
       *****************************************************************
