@@ -41,6 +41,7 @@
       *
       *  03.04.01    NACL-藤原    06/12/05  未請求レセ対応
       *  03.04.02    NACL-藤原    07/01/16  プリンタ一括設定対応
+      *  03.04.03    NACL-藤原    07/03/01  国保レセプト編綴順詳細設定対応
       *****************************************************************
        01  SPA-R01KYOUTU.
       *
@@ -107,6 +108,19 @@
            05  SPA-R01-RECE07-EDYMD        PIC  X(08).
       *編綴順情報
            05  SPA-R01-RECE07-HSEQNUM      PIC  X(08).
+      *編綴順詳細設定
+           05  SPA-R01-RECE07-RECE-PUTH    OCCURS  2.
+      *在総診
+               07  SPA-R01-RECE07-ZAITAKU-KBN
+                                           PIC  X(01).
+      *長期（長期高額療養費）
+               07  SPA-R01-RECE07-CHOUKI-KBN
+                                           PIC  X(01).
+      *最終出力順
+               07  SPA-R01-RECE07-SRT-LAST PIC  X(01).
+      *高額点数
+               07  SPA-R01-RECE07-KOUGAKU-TEN
+                                           PIC  9(07).
       *
       *起動ジョブ数
            05  SPA-R01-JOBCNT              PIC  9(03).

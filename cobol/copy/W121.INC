@@ -136,10 +136,10 @@
                         PIC X(46)   OCCURS  6 TIMES.
               03  W121-PR-PRTJYUN-COMBO.
                 04  W121-PR-PRTJYUN.
-                  05  W121-VALUE  PIC X(12).
+                  05  W121-VALUE  PIC X(28).
                 04  W121-PR-PRTJYUN-COUNT  PIC S9(9)   BINARY.
                 04  W121-PR-PRTJYUNLST
-                        PIC X(12)   OCCURS  5 TIMES.
+                        PIC X(28)   OCCURS  5 TIMES.
               03  W121-SCR1.
                 04  W121-HEADLIST.
                   05  W121-HEADLIST-COUNT  PIC S9(9)   BINARY.

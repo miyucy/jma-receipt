@@ -87,6 +87,7 @@
       *
       *  03.04.01    NACL-藤原    06/12/05  未請求レセ対応
       *  03.04.02    NACL-藤原    06/12/22  自賠責健保準拠対応
+      *  03.04.03    NACL-藤原    07/03/01  国保レセプト編綴順詳細設定対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -173,6 +174,15 @@
                                    BY         //SPA-RECE07//.
            03  SPA-RECE07-SRYKA-KOKUHO
                                    PIC X(02).
+           03  SPA-RECE07-RECE-PUTH-T   OCCURS 2.
+               05  SPA-RECE07-ZAITAKU-KBN-T
+                                   PIC  X(01).
+               05  SPA-RECE07-CHOUKI-KBN-T
+                                   PIC  X(01).
+               05  SPA-RECE07-SRT-LAST-T
+                                   PIC  X(01).
+               05  SPA-RECE07-KOUGAKU-TEN-T
+                                   PIC  9(07).
       *
       *    ファイルデイレクトリ位置指定サブ
            COPY  "CPMKPASS.INC".
@@ -200,6 +210,7 @@
            03  IDY                 PIC 9(04).
            03  IDZ                 PIC 9(04).
            03  IDX2                PIC 9(04).
+           03  IDXX                PIC 9(04).
       *
       *    システム領域
        01  SYS-AREA.
@@ -1620,6 +1631,10 @@
                                           TO  SPA-R01-RECE07-HKNJANUM
                        MOVE    SPA-RECE07-SRYKA-KOKUHO
                                           TO SPA-R01-RECE07-SRYKA-KOKUHO
+                       MOVE    SPA-RECE07-RECE-PUTH-T (1)
+                                          TO SPA-R01-RECE07-RECE-PUTH(1)
+                       MOVE    SPA-RECE07-RECE-PUTH-T (2)
+                                          TO SPA-R01-RECE07-RECE-PUTH(2)
                    END-IF    
            END-EVALUATE
       *
@@ -1768,6 +1783,58 @@
                    PERFORM 900-RECE07-INV-SEC
                    IF      FLG-RECE07          =   ZERO
                        MOVE    RECE07-HKNJANUM TO  SPA-RECE07-HKNJANUM
+                       MOVE    RECE07-HSEQNUM  TO  SPA-RECE07-HSEQNUM
+      *                編綴順設定のとき詳細情報を取得
+                       IF    ( SPA-RECE07-HKNJANUM
+                                               NOT =   "99999999" )
+                       AND   ( SPA-RECE07-HSEQNUM  =   "99999999" )
+                           MOVE    "tbl_recekanri" TO  WRK-MCP-TABLE
+                           MOVE    "key12"         TO  WRK-MCP-PATHNAME
+                           MOVE    "1"             TO  RECE07-PREFKBN
+                           MOVE    "2"             TO
+                                                   RECE07-TEISYUTUSAKI
+                           MOVE    RECE07-REC      TO  MCPDATA-REC
+                           PERFORM 900-RECE07-INV-SEC
+                           IF      FLG-RECE07      =   ZERO
+                               EVALUATE    RECE07-PREFKBN-SRT (1:1)
+                                   WHEN    "1"
+                                       MOVE    1           TO  IDXX
+                                   WHEN    "2"
+                                       MOVE    2           TO  IDXX
+                               END-EVALUATE    
+                               MOVE    RECE07-ZAITAKU-KBN  TO
+                                         SPA-RECE07-ZAITAKU-KBN-T (IDXX)
+                               MOVE    RECE07-CHOUKI-KBN   TO
+                                         SPA-RECE07-CHOUKI-KBN-T  (IDXX)
+                               MOVE    RECE07-SRT-LAST     TO
+                                         SPA-RECE07-SRT-LAST-T    (IDXX)
+                               MOVE    RECE07-KOUGAKU-TEN  TO
+                                         SPA-RECE07-KOUGAKU-TEN-T (IDXX)
+                           END-IF
+                           MOVE    "tbl_recekanri" TO  WRK-MCP-TABLE
+                           MOVE    "key12"         TO  WRK-MCP-PATHNAME
+                           MOVE    "2"             TO  RECE07-PREFKBN
+                           MOVE    "2"             TO
+                                                   RECE07-TEISYUTUSAKI
+                           MOVE    RECE07-REC      TO  MCPDATA-REC
+                           PERFORM 900-RECE07-INV-SEC
+                           IF      FLG-RECE07      =   ZERO
+                               EVALUATE    RECE07-PREFKBN-SRT (1:1)
+                                   WHEN    "1"
+                                       MOVE    1           TO  IDXX
+                                   WHEN    "2"
+                                       MOVE    2           TO  IDXX
+                               END-EVALUATE    
+                               MOVE    RECE07-ZAITAKU-KBN  TO
+                                         SPA-RECE07-ZAITAKU-KBN-T (IDXX)
+                               MOVE    RECE07-CHOUKI-KBN   TO
+                                         SPA-RECE07-CHOUKI-KBN-T  (IDXX)
+                               MOVE    RECE07-SRT-LAST     TO
+                                         SPA-RECE07-SRT-LAST-T    (IDXX)
+                               MOVE    RECE07-KOUGAKU-TEN  TO
+                                         SPA-RECE07-KOUGAKU-TEN-T (IDXX)
+                           END-IF
+                       END-IF
                    END-IF
                END-IF  
       *
@@ -2319,8 +2386,12 @@
                                           TO  SPA-R01-RECE07-HSEQNUM
                            MOVE    SPA-RECE07-HKNJANUM
                                           TO  SPA-R01-RECE07-HKNJANUM
-                       MOVE    SPA-RECE07-SRYKA-KOKUHO
+                           MOVE    SPA-RECE07-SRYKA-KOKUHO
                                           TO SPA-R01-RECE07-SRYKA-KOKUHO
+                           MOVE    SPA-RECE07-RECE-PUTH-T (1)
+                                          TO SPA-R01-RECE07-RECE-PUTH(1)
+                           MOVE    SPA-RECE07-RECE-PUTH-T (2)
+                                          TO SPA-R01-RECE07-RECE-PUTH(2)
                        END-IF
                      END-IF 
                    ELSE

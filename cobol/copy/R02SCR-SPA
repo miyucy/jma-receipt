@@ -23,6 +23,7 @@
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  03.04.01    NACL-藤原    07/01/16  プリンタ一括設定機能
+      *  03.04.02    NACL-藤原    07/03/01  国保レセプト編綴順詳細設定対応
       *****************************************************************
       *
        01  SPA-R02.
@@ -91,25 +92,23 @@
                        09  SPA-GMN-F1L             PIC X(01).
                        09  SPA-GMN-PRTKBNMEIL      PIC X(12).
                    07  SPA-GMN-TBL.
-                       09  SPA-GMN-TBL-OCC         OCCURS   21.
+                       09  SPA-GMN-TBL-OCC         OCCURS   19.
                            11  SPA-GMN-TBL-G       OCCURS   36.
                                13  SPA-GMN-TSTDATA PIC X(100).
                                13  SPA-GMN-TEDDATA PIC X(100).
                                13  SPA-GMN-TCHK.
                                    15  SPA-GMN-TCHK-VALUE
                                                    PIC X(01).
-      *******                      15  SPA-GMN-TCHK-STYLE
-      *******                                      PIC X(20).
                                13  SPA-GMN-TPRTFLG PIC X(01).
                    07  SPA-GMN-TBL1.
-                       09  SPA-GMN-TBL-OCC1        OCCURS   21.
+                       09  SPA-GMN-TBL-OCC1        OCCURS   19.
                            11  SPA-GMN-TBL-G1      OCCURS   36.
                                13  SPA-GMN-TPAGE   PIC 9(04).
                                13  SPA-GMN-TKENSU  PIC 9(04).
                                13  SPA-GMN-TSYURUINAME
                                                    PIC X(40).
                    07  SPA-GMN-TBL2.
-                       09  SPA-GMN-TBL-OCC2        OCCURS   21.
+                       09  SPA-GMN-TBL-OCC2        OCCURS   19.
                            11  SPA-GMN-TBL-G2      OCCURS   36.
                                13  SPA-GMN-TPRTNM-G.
                                    15  SPA-GMN-TPRTNM
@@ -134,6 +133,14 @@
                    07  SPA-NAI-2005-KKHPRTNM-N     PIC X(16).
                    07  SPA-NAI-2005-SYAPRTNM-NEXT-N  PIC X(16).
                    07  SPA-NAI-2005-KKHPRTNM-NEXT-N  PIC X(16).
+                   07  SPA-NAI-2008-HYOUJI         PIC 9(01).
+      *
+                   07  SPA-NAI-2003-TABLE.
+                       09  SPA-NAI-2003-TBL    OCCURS  50.
+                           11  SPA-NAI-2003-TSYUBETU
+                                                   PIC X(04).
+                           11  SPA-NAI-2003-TSYUBETUNAME
+                                                   PIC X(40).
       *
                    07  SPA-NAI-PRTNM-TABLE.
                        09  SPA-NAI-PRTNM-G                 OCCURS  4.
@@ -155,7 +162,7 @@
                    07  SPA-NAI-2008-HKNJANAME      PIC  X(50).
       *
                    07  SPA-NAI-TBL.
-                       09  SPA-NAI-TBL-OCC         OCCURS   21.
+                       09  SPA-NAI-TBL-OCC         OCCURS   19.
                            11  SPA-NAI-TBL-G       OCCURS   36.
                                13  SPA-NAI-PRTJYUNI
                                                    PIC X(02).
@@ -165,11 +172,13 @@
                                                    PIC X(08).
                                13  SPA-NAI-THKNJANUM-ERR
                                                    PIC X(01).
-                               13  SPA-NAI-TPREFKBN
+                               13  SPA-NAI-TPREFKBN-SRT
                                                    PIC X(01).
                                13  SPA-NAI-TPAGE-CHOUKI
                                                    PIC 9(04).
                                13  SPA-NAI-TPAGE-ZAITAKU
+                                                   PIC 9(04).
+                               13  SPA-NAI-TPAGE-KOUGAKU
                                                    PIC 9(04).
                                13  SPA-NAI-TPAGE-SYUKA
                                                    PIC 9(04)
@@ -180,10 +189,17 @@
                                13  SPA-NAI-TPAGE-ZAITAKU-SYUKA
                                                    PIC 9(01)
                                                    OCCURS 50.
+                               13  SPA-NAI-TPAGE-KOUGAKU-SYUKA
+                                                   PIC 9(01)
+                                                   OCCURS 50.
                                13  SPA-NAI-SYUBETU-G.
                                    15  SPA-NAI-SYUBETU
                                                    PIC X(04)
                                                    OCCURS 1.
+                               13  SPA-NAI-TSYUBETU-SRT1
+                                                   PIC X(04).
+                               13  SPA-NAI-TPREFKBN
+                                                   PIC X(01).
       *    プレビュー用情報
            03  SPA-LNK-XC01-KEY.
                05  SPA-LNK-XC01-TBL-KEY    PIC X(8).
@@ -231,7 +247,7 @@
                                                    OCCURS   25.
                        09  SPA-GMN-R04-TKENSU      PIC 9(04)
                                                    OCCURS   25.
-                       09  SPA-GMN-R04-TSYURUINAME PIC X(40)
+                       09  SPA-GMN-R04-TSYURUINAME PIC X(20)
                                                    OCCURS   25.
       *
                05  SPA-NAI-R04-AREA.

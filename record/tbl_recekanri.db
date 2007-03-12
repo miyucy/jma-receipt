@@ -12,11 +12,13 @@ tbl_recekanri	{
         RECESYUBETU_SRT     char(3);
         ZAITAKU             char(1);
         CHOUKI              char(1);
+        KOUGAKU             char(1);
         NYUGAIKBN           char(1);
         SRYYM               char(6);
         PAGE                number(5);
         PAGE_ZAITAKU        number(5);
         PAGE_CHOUKI         number(5);
+        PAGE_KOUGAKU        number(5);
         PAGE_DUP            number(5);
         KENSU               number(5);
         RECEKBN             char(1);
@@ -24,6 +26,12 @@ tbl_recekanri	{
         STYMD               char(8);
         EDYMD               char(8);
         HSEQNUM             number(8);
+        SYUBETU_SRT1        char(4);
+        PREFKBN             char(1);
+        ZAITAKU_KBN         char(1);
+        CHOUKI_KBN          char(1);
+        SRT_LAST            char(1);
+        KOUGAKU_TEN         number(7);
         TERMID              varchar(64);
         OPID                varchar(16);
 };
@@ -191,7 +199,7 @@ path	all	{
 path	key8		{ 	
 	DBSELECT	{
 		DECLARE tbl_recekanri_key8_csr CURSOR FOR
-		SELECT  SRYKA,PREFKBN_SRT,HKNJANUM,SUM(PAGE) AS PAGE,SUM(KENSU) AS KENSU,SUM(PAGE_CHOUKI) AS PAGE_CHOUKI,SUM(PAGE_ZAITAKU) AS PAGE_ZAITAKU
+		SELECT  SRYKA,PREFKBN_SRT,HKNJANUM,SYUBETU_SRT1,PREFKBN,SUM(PAGE) AS PAGE,SUM(KENSU) AS KENSU,SUM(PAGE_CHOUKI) AS PAGE_CHOUKI,SUM(PAGE_ZAITAKU) AS PAGE_ZAITAKU,SUM(PAGE_KOUGAKU) AS PAGE_KOUGAKU
 		FROM tbl_recekanri
                     WHERE   PRTID        =   :PRTID
                     AND     SYOKBN       =   :SYOKBN
@@ -203,7 +211,7 @@ path	key8		{
                     AND     RECESYUBETU  <>  '8888'
                     AND     RECESYUBETU  <>  '6666'
                     AND     SRYKA        like :SRYKA
-                    GROUP BY PREFKBN_SRT,HKNJANUM_SRT,HKNJANUM,SRYKA
+                    GROUP BY PREFKBN_SRT,HKNJANUM_SRT,HKNJANUM,SYUBETU_SRT1,PREFKBN,SRYKA
                     ORDER BY PREFKBN_SRT,HKNJANUM_SRT,HKNJANUM,SRYKA
 		;
 	};
@@ -254,6 +262,26 @@ path	key11		{
                     AND     CREHMS       =   :CREHMS
                     AND     TEISYUTUSAKI =   :TEISYUTUSAKI
                     AND     NYUGAIKBN    =   :NYUGAIKBN
+                    ORDER BY  SRYKA DESC
+		;
+	};
+};
+
+path	key12		{ 	
+	DBSELECT	{
+		DECLARE tbl_recekanri_key12_csr CURSOR FOR
+		SELECT *
+		FROM tbl_recekanri
+                    WHERE   PRTID        =   :PRTID
+                    AND     SRYYM        =   :SRYYM
+                    AND     CREYMD       =   :CREYMD
+                    AND     CREHMS       =   :CREHMS
+                    AND     TEISYUTUSAKI =   :TEISYUTUSAKI
+                    AND     RECESYUBETU  <>  '0000'
+                    AND     RECESYUBETU  <>  '6666'
+                    AND     RECESYUBETU  <>  '8888'
+                    AND     NYUGAIKBN    =   :NYUGAIKBN
+                    AND     PREFKBN      =   :PREFKBN
                     ORDER BY  SRYKA DESC
 		;
 	};

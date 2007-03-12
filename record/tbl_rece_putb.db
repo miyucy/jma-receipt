@@ -1,6 +1,6 @@
 tbl_rece_putb {
 	HOSPID				char(24);
-	PREFKBN			char(1);
+	PREFKBN				char(1);
 	SYUBETU_SRT1			integer;
 	GRP_NO1				char(3);
 	SYUBETU_SRT2			integer;
@@ -11,6 +11,8 @@ tbl_rece_putb {
 	SYUBETU_UNDER_NO2		char(2);
 	KOUHI_NO			number(3);
 	KOUHI_NUM			char(3);
+	SYUBETU_GAI_SRT1		char(4);
+	SYUBETU_NYU_SRT1		char(4);
 	STYUKYMD			char(8);
 	EDYUKYMD			char(8);
 	TERMID   			varchar(64);

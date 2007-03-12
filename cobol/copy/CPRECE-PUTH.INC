@@ -49,7 +49,7 @@
                 03  RECE-PUTH-ZAITAKU  PIC X(1).
       *高額点数
                 03  RECE-PUTH-KOUGAKU-TEN
-                                       PIC S9(7).
+                                       PIC 9(7).
       *最終出力順
                 03  RECE-PUTH-SRT-LAST PIC X(1).
       *有効開始年月日
