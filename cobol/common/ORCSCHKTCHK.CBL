@@ -21,7 +21,6 @@
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : 診療行為入力
       *  コンポーネント名  : 包括診療行為チェック処理
-      *                      （Ｋ０２、Ｊ０４のみ共通使用）
       *  管理者            : 
       *  作成日付    作業者        記述
       *  07/02/XX    NACL−多々納  新規作成
@@ -98,7 +97,7 @@
       *
        01  TBL-AREA.
            03  TBL-DATA-G              OCCURS   100.
-               05  TBL-KANRICD             PIC X(03).
+               05  TBL-KANRICD             PIC  X(03).
                05  TBL-SANTEI-HOU          PIC  X(01).
                05  TBL-SANTEI-KBN          PIC  X(01).
                05  TBL-NYUGAIKBN           PIC  X(01).
@@ -349,6 +348,7 @@
                       AND (SPA-COM-DATAKBN (IDX-Z)         =   "1" ))
                    OR    ( SPA-COM-INPUTCD (IDX-Z)(1:1)    =   "6"
                                                            OR  "7" )
+                   OR    ( SPA-COM-HOUKATU-FLG2 (IDX-Z)    =   1   )
                        MOVE    1                   TO  FLG-SONOTA
                    END-IF
                END-IF
@@ -362,6 +362,9 @@
                               (FLG-SONOTA      =   1   )  AND
                               (SPA-COM-HOUKATU-FLG (IDX) =   ZERO)
                            PERFORM 2002-HOUKATU-GAI-CHK-SEC
+                       ELSE
+                           MOVE    ZERO        TO  SPA-COM-HOUKATU-FLG2
+                                                                (IDX) 
                        END-IF
                    END-PERFORM
                    MOVE    IDX                 TO  IDX-S
@@ -737,6 +740,11 @@
            IF      FLG-CHK2            =   2
                MOVE    ZERO            TO  SPA-COM-HOUKATU-FLG(IDX-Z)
                MOVE    ZERO            TO  SPA-COM-HOUKATU-ERR(IDX-Z)
+      *        加算の場合
+               IF     (SPA-COM-DATAKBN (IDX-Z)     =   "2" )
+                  AND (SPA-COM-AUTOKBN (IDX-Z) NOT =   "2" )
+                   MOVE    1           TO  SPA-COM-HOUKATU-FLG2(IDX-Z)
+               END-IF
            END-IF
       *
            .
