@@ -28,7 +28,6 @@
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       *  03.04.01    NACL-ÌçÏÆ    07/03/12  Êñ³ç¿ÇÎÅÂÐ±þ
-      *  03.05.00    NACL-ÌçÏÆ    07/05/08  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -114,18 +113,15 @@
       *    £Ä£Â¸¡º÷
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
-      ***  COPY    "CPORCMCP.INC".
+           COPY    "CPORCMCP.INC".
       *
       /
       ***
        LINKAGE             SECTION.
            COPY  "CPORCSROUKAISU.INC".
-      *
-grpsys     COPY  "COMMON-SPA".
       /
        PROCEDURE           DIVISION  USING
-                                     LNK-ORCSROUKAISU-REC
-                                     SPA-AREA.
+                                     LNK-ORCSROUKAISU-REC.
       ******************************************************************
       *        °ÍÍêÀ©¸æ½èÍý
       ******************************************************************
@@ -210,20 +206,15 @@ grpsys     COPY  "COMMON-SPA".
            INITIALIZE                         SYS-1001-REC
            MOVE    "1001"               TO    SYS-1001-KANRICD
            MOVE    "*"                  TO    SYS-1001-KBNCD
-           MOVE    LNK-ORCSROUKAISU-HOSPNUM
-                                        TO    SYS-1001-HOSPNUM
-           MOVE    WRK-RYOSTYMD         TO    SYS-1001-STYUKYMD
-           MOVE    WRK-RYOSTYMD         TO    SYS-1001-EDYUKYMD
+           MOVE    WRK-RYOSTYMD         TO    ORC-DBYMD
            MOVE    SYS-1001-REC         TO    MCPDATA-REC
            MOVE    "DBSELECT"           TO    MCP-FUNC
-           MOVE    "tbl_syskanri"       TO    MCP-TABLE
-           MOVE    "key10"              TO    MCP-PATHNAME
-           CALL    "ORCDBMAIN"          USING   MCPAREA
-                                                MCPDATA-REC
-                                                SPA-AREA
+           MOVE    "SYSKANRI-KEY"       TO    ORC-DBPATH
+           CALL    "ORCMCPSUB"    USING       MCPAREA
+                                              ORCMCPAREA
+                                              MCPDATA-REC
            IF      MCP-RC               =     ZERO
-               MOVE     "tbl_syskanri"  TO    MCP-TABLE
-               MOVE     "key10"         TO    MCP-PATHNAME
+               MOVE     "SYSKANRI-KEY"  TO    ORC-DBPATH
                PERFORM   900-SYSKANRI-READ-SEC
                IF    FLG-SYSKANRI   =   ZERO
                   MOVE  SYS-1001-HOSPSBT1
@@ -235,9 +226,12 @@ grpsys     COPY  "COMMON-SPA".
                   MOVE     11           TO    LNK-ORCSROUKAISU-RC
            END-IF
       *
-           MOVE     "tbl_syskanri"      TO    MCP-TABLE
-           MOVE     "key10"             TO    MCP-PATHNAME
-           PERFORM   910-DB-CLOSE-SEC
+           MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            .
       *
@@ -430,20 +424,18 @@ grpsys     COPY  "COMMON-SPA".
        2001-NACCT-KENSAKU-SEC         SECTION.
       *
            INITIALIZE                            NYUINACCT-REC
-           MOVE    LNK-ORCSROUKAISU-HOSPNUM TO   NACCT-HOSPNUM
+           MOVE    LNK-ORCSROUKAISU-HOSPID  TO   NACCT-HOSPID
            MOVE    LNK-ORCSROUKAISU-PTID    TO   NACCT-PTID
            MOVE    WRK-RYOSTYM              TO   NACCT-SRYYM
            MOVE    "5"                      TO   NACCT-ZAISKBKBN
            MOVE    NYUINACCT-REC            TO   MCPDATA-REC
            MOVE    "DBSELECT"               TO   MCP-FUNC
-           MOVE    "tbl_nyuinacct"          TO   MCP-TABLE
-           MOVE    "key17"                  TO   MCP-PATHNAME
-           CALL    "ORCDBMAIN"              USING   MCPAREA
+           MOVE    "NYUINACCT-KEY17"        TO   ORC-DBPATH
+           CALL    "ORCMCPSUB"              USING   MCPAREA
+                                                    ORCMCPAREA
                                                     MCPDATA-REC
-                                                    SPA-AREA
            IF      MCP-RC             =       ZERO
-                 MOVE    "tbl_nyuinacct"    TO   MCP-TABLE
-                 MOVE    "key17"            TO   MCP-PATHNAME
+                 MOVE    "NYUINACCT-KEY17"    TO   ORC-DBPATH
                  PERFORM  900-NYUINACCT-READ-SEC
                  PERFORM  UNTIL  (FLG-NYUINACCT  =  1)
                            OR    (FLG-ARI        =  1)
@@ -456,15 +448,17 @@ grpsys     COPY  "COMMON-SPA".
                        END-IF
                     END-PERFORM
       *
-                    MOVE    "tbl_nyuinacct" TO   MCP-TABLE
-                    MOVE    "key17"         TO   MCP-PATHNAME
-                    PERFORM  900-NYUINACCT-READ-SEC
+                    MOVE     "NYUINACCT-KEY17"  TO   ORC-DBPATH
+                    PERFORM   900-NYUINACCT-READ-SEC
                  END-PERFORM
            END-IF
       *
-           MOVE    "tbl_nyuinacct" TO   MCP-TABLE
-           MOVE    "key17"         TO   MCP-PATHNAME
-           PERFORM  910-DB-CLOSE-SEC
+           MOVE    "DBCLOSECURSOR"         TO  MCP-FUNC
+           MOVE    "NYUINACCT-KEY17"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"             USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
       *
            .
       *
@@ -477,21 +471,20 @@ grpsys     COPY  "COMMON-SPA".
        2002-ACCT-KENSAKU-SEC         SECTION.
       *
            INITIALIZE                              SRYACCT-REC
-           MOVE    LNK-ORCSROUKAISU-HOSPNUM   TO   ACCT-HOSPNUM
+           MOVE    LNK-ORCSROUKAISU-HOSPID    TO   ACCT-HOSPID
            MOVE    WRK-NYUGAIKBN              TO   ACCT-NYUGAIKBN
            MOVE    LNK-ORCSROUKAISU-PTID      TO   ACCT-PTID
            MOVE    WRK-RYOSTYM                TO   ACCT-SRYYM
            MOVE    LNK-ORCSROUKAISU-HKNCOMBI  TO   ACCT-HKNCOMBI
            MOVE    SRYACCT-REC                TO   MCPDATA-REC
            MOVE    "DBSELECT"                 TO   MCP-FUNC
-           MOVE    "tbl_sryacct"              TO   MCP-TABLE
-           MOVE    "key22"                    TO   MCP-PATHNAME
-           CALL    "ORCDBMAIN"                USING   MCPAREA
-                                                      MCPDATA-REC
-                                                      SPA-AREA
+           MOVE    "SRYACCT-KEY22"            TO   ORC-DBPATH
+           CALL    "ORCMCPSUB"                USING
+                                              MCPAREA
+                                              ORCMCPAREA
+                                              MCPDATA-REC
            IF      MCP-RC               =       ZERO
-               MOVE    "tbl_sryacct"          TO   MCP-TABLE
-               MOVE    "key22"                TO   MCP-PATHNAME
+               MOVE    "SRYACCT-KEY22"   TO     ORC-DBPATH
                PERFORM  900-SRYACCT-READ-SEC
                PERFORM    UNTIL   (FLG-SRYACCT   =    1)  OR
                                   (FLG-ARI       =    1)
@@ -506,15 +499,17 @@ grpsys     COPY  "COMMON-SPA".
                      END-IF
                   END-IF
       *
-                  MOVE    "tbl_sryacct"   TO   MCP-TABLE
-                  MOVE    "key22"         TO   MCP-PATHNAME
-                  PERFORM  900-SRYACCT-READ-SEC
+                  MOVE     "SRYACCT-KEY22"  TO   ORC-DBPATH
+                  PERFORM   900-SRYACCT-READ-SEC
                END-PERFORM
            END-IF
       *
-           MOVE    "tbl_sryacct"   TO   MCP-TABLE
-           MOVE    "key22"         TO   MCP-PATHNAME
-           PERFORM  910-DB-CLOSE-SEC
+           MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
+           MOVE    "SRYACCT-KEY22"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            .
       *
@@ -527,21 +522,20 @@ grpsys     COPY  "COMMON-SPA".
        2003-ACCT-KENSAKU2-SEC         SECTION.
       *
            INITIALIZE                              SRYACCT-REC
-           MOVE    LNK-ORCSROUKAISU-HOSPNUM   TO   ACCT-HOSPNUM
+           MOVE    LNK-ORCSROUKAISU-HOSPID    TO   ACCT-HOSPID
            MOVE    WRK-NYUGAIKBN              TO   ACCT-NYUGAIKBN
            MOVE    LNK-ORCSROUKAISU-PTID      TO   ACCT-PTID
            MOVE    WRK-RYOSTYM                TO   ACCT-SRYYM
            MOVE    LNK-ORCSROUKAISU-HKNCOMBI  TO   ACCT-HKNCOMBI
            MOVE    SRYACCT-REC                TO   MCPDATA-REC
            MOVE    "DBSELECT"                 TO   MCP-FUNC
-           MOVE    "tbl_sryacct"              TO   MCP-TABLE
-           MOVE    "key22"                    TO   MCP-PATHNAME
-           CALL    "ORCDBMAIN"                USING   MCPAREA
-                                                      MCPDATA-REC
-                                                      SPA-AREA
+           MOVE    "SRYACCT-KEY22"            TO   ORC-DBPATH
+           CALL    "ORCMCPSUB"                USING
+                                              MCPAREA
+                                              ORCMCPAREA
+                                              MCPDATA-REC
            IF      MCP-RC               =       ZERO
-               MOVE    "tbl_sryacct"          TO   MCP-TABLE
-               MOVE    "key22"                TO   MCP-PATHNAME
+               MOVE    "SRYACCT-KEY22"   TO     ORC-DBPATH
                PERFORM  900-SRYACCT-READ-SEC
                PERFORM    UNTIL    FLG-SRYACCT   =    1
                   IF    ACCT-SRYKBN   =  "95"  OR  "96"
@@ -555,15 +549,17 @@ grpsys     COPY  "COMMON-SPA".
       *
                      END-IF
                   END-IF
-                  MOVE     "tbl_sryacct"      TO   MCP-TABLE
-                  MOVE     "key22"            TO   MCP-PATHNAME
+                  MOVE     "SRYACCT-KEY22"  TO   ORC-DBPATH
                   PERFORM   900-SRYACCT-READ-SEC
                END-PERFORM
            END-IF
       *
-           MOVE    "tbl_sryacct"   TO   MCP-TABLE
-           MOVE    "key22"         TO   MCP-PATHNAME
-           PERFORM  910-DB-CLOSE-SEC
+           MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
+           MOVE    "SRYACCT-KEY22"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            .
       *
@@ -682,20 +678,18 @@ grpsys     COPY  "COMMON-SPA".
        2004-NACCT-KENSAKU2-SEC         SECTION.
       *
            INITIALIZE                            NYUINACCT-REC
-           MOVE    LNK-ORCSROUKAISU-HOSPNUM TO   NACCT-HOSPNUM
+           MOVE    LNK-ORCSROUKAISU-HOSPID  TO   NACCT-HOSPID
            MOVE    LNK-ORCSROUKAISU-PTID    TO   NACCT-PTID
            MOVE    WRK-RYOSTYM              TO   NACCT-SRYYM
            MOVE    "5"                      TO   NACCT-ZAISKBKBN
            MOVE    NYUINACCT-REC            TO   MCPDATA-REC
            MOVE    "DBSELECT"               TO   MCP-FUNC
-           MOVE    "tbl_nyuinacct"          TO   MCP-TABLE
-           MOVE    "key17"                  TO   MCP-PATHNAME
-           CALL    "ORCDBMAIN"              USING   MCPAREA
+           MOVE    "NYUINACCT-KEY17"        TO   ORC-DBPATH
+           CALL    "ORCMCPSUB"              USING   MCPAREA
+                                                    ORCMCPAREA
                                                     MCPDATA-REC
-                                                    SPA-AREA
            IF      MCP-RC             =       ZERO
-                 MOVE    "tbl_nyuinacct"    TO   MCP-TABLE
-                 MOVE    "key17"            TO   MCP-PATHNAME
+                 MOVE    "NYUINACCT-KEY17"  TO   ORC-DBPATH
                  PERFORM  900-NYUINACCT-READ-SEC
                  PERFORM  UNTIL   FLG-NYUINACCT  =  1
       *
@@ -706,15 +700,17 @@ grpsys     COPY  "COMMON-SPA".
                        END-IF
                     END-PERFORM
       *
-                    MOVE    "tbl_nyuinacct" TO   MCP-TABLE
-                    MOVE    "key17"         TO   MCP-PATHNAME
-                    PERFORM  900-NYUINACCT-READ-SEC
+                    MOVE     "NYUINACCT-KEY17"  TO   ORC-DBPATH
+                    PERFORM   900-NYUINACCT-READ-SEC
                  END-PERFORM
            END-IF
       *
-           MOVE    "tbl_nyuinacct" TO   MCP-TABLE
-           MOVE    "key17"         TO   MCP-PATHNAME
-           PERFORM  910-DB-CLOSE-SEC
+           MOVE    "DBCLOSECURSOR"         TO  MCP-FUNC
+           MOVE    "NYUINACCT-KEY17"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"             USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
       *
            .
       *
@@ -727,20 +723,18 @@ grpsys     COPY  "COMMON-SPA".
        2005-NACCT-KENSAKU3-SEC         SECTION.
       *
            INITIALIZE                            NYUINACCT-REC
-           MOVE    LNK-ORCSROUKAISU-HOSPNUM TO   NACCT-HOSPNUM
+           MOVE    LNK-ORCSROUKAISU-HOSPID  TO   NACCT-HOSPID
            MOVE    LNK-ORCSROUKAISU-PTID    TO   NACCT-PTID
            MOVE    WRK-RYOSTYM              TO   NACCT-SRYYM
            MOVE    "5"                      TO   NACCT-ZAISKBKBN
            MOVE    NYUINACCT-REC            TO   MCPDATA-REC
            MOVE    "DBSELECT"               TO   MCP-FUNC
-           MOVE    "tbl_nyuinacct"          TO   MCP-TABLE
-           MOVE    "key17"                  TO   MCP-PATHNAME
-           CALL    "ORCDBMAIN"              USING   MCPAREA
+           MOVE    "NYUINACCT-KEY17"        TO   ORC-DBPATH
+           CALL    "ORCMCPSUB"              USING   MCPAREA
+                                                    ORCMCPAREA
                                                     MCPDATA-REC
-                                                    SPA-AREA
            IF      MCP-RC             =       ZERO
-                 MOVE    "tbl_nyuinacct"    TO   MCP-TABLE
-                 MOVE    "key17"            TO   MCP-PATHNAME
+                 MOVE    "NYUINACCT-KEY17"  TO   ORC-DBPATH
                  PERFORM  900-NYUINACCT-READ-SEC
                  PERFORM  UNTIL   FLG-NYUINACCT  =  1
       *
@@ -764,15 +758,17 @@ grpsys     COPY  "COMMON-SPA".
                        END-IF
                     END-PERFORM
       *
-                    MOVE    "tbl_nyuinacct"    TO   MCP-TABLE
-                    MOVE    "key17"            TO   MCP-PATHNAME
-                    PERFORM  900-NYUINACCT-READ-SEC
+                    MOVE     "NYUINACCT-KEY17"  TO   ORC-DBPATH
+                    PERFORM   900-NYUINACCT-READ-SEC
                  END-PERFORM
            END-IF
       *
-           MOVE    "tbl_nyuinacct" TO   MCP-TABLE
-           MOVE    "key17"         TO   MCP-PATHNAME
-           PERFORM  910-DB-CLOSE-SEC
+           MOVE    "DBCLOSECURSOR"         TO  MCP-FUNC
+           MOVE    "NYUINACCT-KEY17"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"             USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
       *
            .
       *
@@ -787,22 +783,16 @@ grpsys     COPY  "COMMON-SPA".
            INITIALIZE                           SYS-1005-REC
            MOVE    "1005"                 TO    SYS-1005-KANRICD
            MOVE    WRK-SRYKA(IDX)         TO    SYS-1005-KBNCD
-           MOVE    LNK-ORCSROUKAISU-HOSPNUM
-                                          TO    SYS-1005-HOSPNUM
-           MOVE    LNK-ORCSROUKAISU-SRYYM TO    SYS-1005-STYUKYMD(1:6)
-           MOVE    "01"                   TO    SYS-1005-STYUKYMD(7:2)
-           MOVE    LNK-ORCSROUKAISU-SRYYM TO    SYS-1005-EDYUKYMD(1:6)
-           MOVE    "01"                   TO    SYS-1005-EDYUKYMD(7:2)
+           MOVE    LNK-ORCSROUKAISU-SRYYM TO    ORC-DBYMD(1:6)
+           MOVE    "01"                   TO    ORC-DBYMD(7:2)
            MOVE    SYS-1005-REC           TO    MCPDATA-REC
            MOVE    "DBSELECT"             TO    MCP-FUNC
-           MOVE    "tbl_syskanri"         TO    MCP-TABLE
-           MOVE    "key10"                TO    MCP-PATHNAME
-           CALL    "ORCDBMAIN"            USING   MCPAREA
-                                                  MCPDATA-REC
-                                                  SPA-AREA
+           MOVE    "SYSKANRI-KEY"         TO    ORC-DBPATH
+           CALL    "ORCMCPSUB"            USING MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC
            IF      MCP-RC               =     ZERO
-               MOVE     "tbl_syskanri"    TO    MCP-TABLE
-               MOVE     "key10"           TO    MCP-PATHNAME
+               MOVE     "SYSKANRI-KEY"  TO    ORC-DBPATH
                PERFORM   900-SYSKANRI-READ-SEC
                IF    FLG-SYSKANRI   =   ZERO
                   MOVE  SYS-1005-RECESRYKA
@@ -812,9 +802,12 @@ grpsys     COPY  "COMMON-SPA".
                END-IF
            END-IF
       *
-           MOVE    "tbl_syskanri"       TO    MCP-TABLE
-           MOVE    "key10"              TO    MCP-PATHNAME
-           PERFORM  910-DB-CLOSE-SEC
+           MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            .
       *
@@ -826,10 +819,11 @@ grpsys     COPY  "COMMON-SPA".
       *****************************************************************
        900-SYSKANRI-READ-SEC         SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           MOVE    "DBFETCH"            TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  SYS-1001-REC
                                            SYS-1005-REC
@@ -851,9 +845,10 @@ grpsys     COPY  "COMMON-SPA".
        900-NYUINACCT-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  NYUINACCT-REC
                MOVE    ZERO            TO  FLG-NYUINACCT
@@ -873,9 +868,10 @@ grpsys     COPY  "COMMON-SPA".
        900-SRYACCT-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  SRYACCT-REC
                MOVE    ZERO            TO  FLG-SRYACCT
@@ -887,20 +883,5 @@ grpsys     COPY  "COMMON-SPA".
            .
       *
        900-SRYACCT-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    £Ä£Â¥¯¥í¡¼¥º½èÍý
-      *****************************************************************
-       910-DB-CLOSE-SEC                 SECTION.
-      *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-           .
-      *
-       910-DB-CLOSE-EXT.
            EXIT.
       *
