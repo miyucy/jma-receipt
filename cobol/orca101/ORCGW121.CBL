@@ -2290,15 +2290,31 @@
       *
       *    レセプト種別印刷区分による初期表示
            MOVE    ZERO                TO  IDY
-           PERFORM VARYING IDZ FROM    1   BY  1
-                   UNTIL   IDZ >       3
-                   OR      IDY >=      WRK-CONS-BODYLIST-MAX
+           IF      SYS-2008-RECESYUBETU-PRTJYUN
+                                       =   SPACE
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       50
                        OR      WRK-2003-TSYUBETU    (IDX)
                                    =       SPACE
                        OR      IDY >=      WRK-CONS-BODYLIST-MAX
-                   EVALUATE    IDZ ALSO    SYS-2008-RECESYUBETU-PRTJYUN
+                   ADD     1                           TO  IDY   
+                   MOVE    WRK-2003-TSYUBETU    (IDX)  TO
+                                   SPA-GMN-BODYLIST-TSYUBETU     (IDY)
+                   MOVE    WRK-2003-TSYUBETUNAME(IDX)  TO
+                                   SPA-GMN-BODYLIST-TSYUBETUNAME (IDY)
+      *
+                   MOVE    IDY     TO  SPA-GMN-BODYLIST-MAX
+               END-PERFORM     
+           ELSE
+               PERFORM VARYING IDZ FROM    1   BY  1
+                       UNTIL   IDZ >       3
+                       OR      IDY >=      WRK-CONS-BODYLIST-MAX
+                   PERFORM VARYING IDX FROM    1   BY  1
+                           UNTIL   IDX >       50
+                           OR      WRK-2003-TSYUBETU    (IDX)
+                                       =       SPACE
+                           OR      IDY >=      WRK-CONS-BODYLIST-MAX
+                     EVALUATE  IDZ ALSO    SYS-2008-RECESYUBETU-PRTJYUN
                                    ALSO    WRK-2003-TSYUBETU (IDX)(2:1)
                        WHEN    SPACE   ALSO    ANY     ALSO    ANY
                        WHEN    1   ALSO        "1"     ALSO    "1"
@@ -2326,9 +2342,10 @@
                                    SPA-GMN-BODYLIST-TSYUBETUNAME (IDY)
       *
                            MOVE    IDY     TO  SPA-GMN-BODYLIST-MAX
-                   END-EVALUATE
+                     END-EVALUATE
+                   END-PERFORM
                END-PERFORM
-           END-PERFORM    
+           END-IF        
       *
            . 
        410211-RECESYUBETU-HENSYU-EXT.
