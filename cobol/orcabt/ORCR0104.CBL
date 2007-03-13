@@ -693,7 +693,7 @@
       *    ¸øÈñÍÑ
            03  TABLE-KOH-AREA      OCCURS  2.
                05  TBL-KOH-RECE-PUTB-TBL       OCCURS  2000.
-                   11  TBL-KOH-RECE-PUTB-HKNNUM
+                   07  TBL-KOH-RECE-PUTB-HKNNUM
                                    PIC X(03).
                    07  TBL-KOH-RECE-PUTB-REC
                                    PIC X(1000).
