@@ -129,6 +129,7 @@
                 04  W121-HKNJ-PRTKBNLST
                         PIC X(24)   OCCURS  5 TIMES.
               03  W121-HKN-PRTJYUN-COMBO.
+                04  W121-HKN-PRTJYUN-STATE   PIC S9(09) BINARY.
                 04  W121-HKN-PRTJYUN.
                   05  W121-VALUE  PIC X(46).
                 04  W121-HKN-PRTJYUN-COUNT  PIC S9(9)   BINARY.

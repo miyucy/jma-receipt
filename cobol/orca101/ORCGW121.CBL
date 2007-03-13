@@ -2376,9 +2376,13 @@
        41021-HKNJANUM-PRTJYUN-CHK-SEC       SECTION.
       *
            IF      SPA-GMN-HKNJANUM-PRTJYUN
-                                           =   SPACE
-               MOVE    SPA-GMN-HKNJANUM-PRTJYUNLST (1)
+                                       =   SPACE
+               IF      SPA-GMN-PRTJYUN1    =   "02"
+                   CONTINUE
+               ELSE 
+                   MOVE    SPA-GMN-HKNJANUM-PRTJYUNLST (1)
                                    TO  SPA-GMN-HKNJANUM-PRTJYUN-G
+               END-IF
            ELSE
                PERFORM VARYING IDY FROM    1   BY  1
                        UNTIL   IDY >       SPA-GMN-HKNJANUM-PRTJYUN-MAX
@@ -2507,9 +2511,10 @@
                MOVE    8               TO  SPA-GMN-CUR
            ELSE
                IF      SPA-GMN-PRTJYUN1    =   "02"
-                   MOVE    SPACE           TO  SPA-GMN-HKNJANUM
-                                               SPA-GMN-HKNJANAME
-                                               SPA-GMN-HKNJANUM-PRTKBN-G
+                   MOVE    SPACE       TO  SPA-GMN-HKNJANUM
+                                           SPA-GMN-HKNJANAME
+                                           SPA-GMN-HKNJANUM-PRTKBN-G
+                                           SPA-GMN-HKNJANUM-PRTJYUN-G
                END-IF    
            END-IF
            .
@@ -3865,6 +3870,18 @@
                GO  TO  4900-KANRENCHK-EXT
            END-IF
       *
+      *    第一出力順と保険者印刷順
+           IF      SPA-GMN-PRTJYUN1    =   "02"
+               IF      SPA-GMN-HKNJANUM-PRTJYUN
+                                           =   SPACE
+                   CONTINUE
+               ELSE
+                   MOVE    8                   TO  SPA-GMN-CUR  
+                   MOVE    "0047"              TO  SPA-ERRCD
+                   GO  TO  4900-KANRENCHK-EXT
+               END-IF 
+           END-IF 
+      *
       *    第一出力順と所在地保険者
            IF      SPA-GMN-PRTJYUN1    =   "02"
                IF    ( SPA-GMN-HKNJANUM    =   SPACE )
@@ -4498,6 +4515,7 @@
       *
            MOVE    WIDGET-NORMAL       TO  W121-HKNJ-PRTKBN-STATE
                                            W121-HKNJANUM-STATE
+                                           W121-HKN-PRTJYUN-STATE
            MOVE    WIDGET-INSENSITIVE  TO  W121-SYU-PRTJYUN2-STATE
            EVALUATE    SPA-GMN-PRTJYUN1
                WHEN    "01"
@@ -4508,6 +4526,7 @@
                    MOVE    WIDGET-INSENSITIVE
                                            TO  W121-HKNJ-PRTKBN-STATE
                                                W121-HKNJANUM-STATE
+                                               W121-HKN-PRTJYUN-STATE
                    MOVE    WIDGET-NORMAL   TO  W121-SYU-PRTJYUN2-STATE
            END-EVALUATE
       *
@@ -4677,6 +4696,10 @@
                WHEN    "0046"
                    MOVE
                   "第一印刷順が保険者のときグループ２の設定はできません"
+                                                       TO  SPA-ERRMSG
+               WHEN    "0047"
+                   MOVE
+            "第一印刷順がレセプト種別のとき保険者印刷順は入力できません"
                                                        TO  SPA-ERRMSG
                WHEN    "0098"
                    STRING
