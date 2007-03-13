@@ -520,6 +520,8 @@
                05  SPA-K052-CUR            PIC 9(02).
                05  SPA-K052-INPUTCD1       PIC X(06).
                05  SPA-K052-INPUTCD2       PIC X(06).
+               05  SPA-K052-KEIKAYMD       PIC X(13).
+               05  SPA-K052-NAI-KEIKAYMD   PIC X(08).
       *    £Ë£¹£·²èÌÌ¸ÇÍ­£Ó£Ð£Á
            03  SPA-K97-AREA.
                05  SPA-K97-CUR             PIC 9(02).
