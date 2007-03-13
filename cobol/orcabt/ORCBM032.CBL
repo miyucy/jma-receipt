@@ -567,7 +567,7 @@
            MOVE    "£±£≤° ¿∏ ›°À"      TO  HCM2Y-BKO-KOHKBN (4)
            MOVE    "£±£µ° ππ¿∏°À"      TO  HCM2Y-BKO-KOHKBN (5)
            MOVE    "£≤£∞° ¿∫£≤£π°À"    TO  HCM2Y-BKO-KOHKBN (6)
-           MOVE    "£≤£±° ¿∫ø¿ƒÃ±°°À"  TO  HCM2Y-BKO-KOHKBN (71)
+           MOVE    "£≤£±° ¿∫ø¿ƒÃ±°°À"  TO  HCM2Y-BKO-KOHKBN (7)
            MOVE    "£≤£≤° À„ÃÙ°À"      TO  HCM2Y-BKO-KOHKBN (8)
            MOVE    "£≤£∏° ¥∂¿˜æ…°À"    TO  HCM2Y-BKO-KOHKBN (9)
            MOVE    "£µ£±° ∆√º¿°À"      TO  HCM2Y-BKO-KOHKBN (10)
