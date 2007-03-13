@@ -183,12 +183,18 @@
        10012-CHOKI-ERR-SEC            SECTION.
       *
            IF     (SPA-COM-CHOKIERR (IDX-Z)    =   9 )
-               IF      SPA-COM-KZMFLG4 (IDX-Z) =   SPACE
-                   MOVE    "K200"          TO  SPA-ERRCD
-                   MOVE    "1"             TO  SPA-COM-KZMFLG4 (IDX-Z)
-                   IF      SPA-COM-SET (IDX-Z) =   "1"
+               IF      SPA-COM-SET (IDX-Z) =   "1"
+                   IF      SPA-COM-KZMFLG4 (IDX-SET) =   SPACE
+                       MOVE    "K200"          TO  SPA-ERRCD
+                       MOVE    "1"             TO  SPA-COM-KZMFLG4
+                                                            (IDX-SET)
                        MOVE    "1"             TO  SPA-COM-CUR (IDX-SET)
-                   ELSE
+                   END-IF
+               ELSE
+                   IF      SPA-COM-KZMFLG4 (IDX-Z) =   SPACE
+                       MOVE    "K200"          TO  SPA-ERRCD
+                       MOVE    "1"             TO  SPA-COM-KZMFLG4
+                                                            (IDX-Z)
                        MOVE    "1"             TO  SPA-COM-CUR (IDX-Z)
                    END-IF
                END-IF
