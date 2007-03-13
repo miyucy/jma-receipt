@@ -481,8 +481,7 @@
                05  WRK-RECE02-HBTNUM-9
                                    PIC 9(02).
       *
-           03  WRK-RECE07-SYUBETU-SRT1
-                                   PIC X(04).
+           03  WRK-SYUBETU-SRT1    PIC X(04).
            03  WRK-RECE-PUTB-SYUBETU-SRT1 PIC 9(9).
            03  WRK-RECE-PUTB-SYUBETU-SRT1-R
                                REDEFINES   WRK-RECE-PUTB-SYUBETU-SRT1.
@@ -6234,7 +6233,7 @@
       *****************************************************************
        3901-RECE08-INSERT-SEC        SECTION.
       *
-           MOVE    SPACE               TO  WRK-RECE07-SYUBETU-SRT1 
+           MOVE    SPACE               TO  WRK-SYUBETU-SRT1 
       *
            INITIALIZE                  RECE08-REC
            MOVE    "HC06"              TO  RECE08-PRTID
@@ -6746,6 +6745,7 @@
                                    END-IF
                                END-PERFORM
       *
+      *                        »°ºÐÌ¤Ëþ¤Î¤ß
                                IF      RECE02-RECESYUBETU (4:1)  =   "4"
                                    PERFORM VARYING IDY FROM    1   BY  1
                                            UNTIL   IDY >
@@ -6857,9 +6857,9 @@
               MOVE    WRK-RECE-PUTB-SYUBETU-SRT1-X
                                           TO  RECE08-HKNJANUM-S
               MOVE    RECE-PUTB-SYUBETU-GAI-SRT1
-                                          TO  WRK-RECE07-SYUBETU-SRT1
+                                          TO  WRK-SYUBETU-SRT1
           ELSE
-              MOVE    SPACE               TO  WRK-RECE07-SYUBETU-SRT1  
+              MOVE    SPACE               TO  WRK-SYUBETU-SRT1  
           END-IF
       *
           MOVE    1                    TO  FLG-HENSYU
@@ -7008,8 +7008,8 @@
                    END-IF
                END-IF
            END-IF
-           IF    WRK-RECE07-SYUBETU-SRT1   >   ZERO     
-              MOVE    WRK-RECE07-SYUBETU-SRT1 TO  RECE07-SYUBETU-SRT1
+           IF    WRK-SYUBETU-SRT1  NOT =   SPACE
+              MOVE    WRK-SYUBETU-SRT1     TO  RECE07-SYUBETU-SRT1
            END-IF   
       *
            MOVE    RECE07-REC          TO  MCPDATA-REC
