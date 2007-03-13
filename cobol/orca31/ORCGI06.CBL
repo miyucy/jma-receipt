@@ -259,7 +259,8 @@
                    07  SPA-NAI-UKEYMD              PIC X(08).
                05  SPA-NAI-ALLIDOLST-AREA.
                    07  SPA-NAI-ALLIDOLST-OCC       OCCURS  50.
-                       09  SPA-NAI-TALLHOSPID      PIC X(24).
+      *****************09  SPA-NAI-TALLHOSPID      PIC X(24).
+                       09  SPA-NAI-TALLHOSPNUM     PIC X(24).
                        09  SPA-NAI-TALLKARTE-KEY   PIC X(36).
                        09  SPA-NAI-TALLORDERNUM    PIC 9(02).
                        09  SPA-NAI-TALLIDOYMD      PIC X(08).
@@ -1263,7 +1264,8 @@
                WHEN  ( SPA-NAI-BTU-BTUTOK  =   "01" OR "02" OR "14" )
       *
                    INITIALIZE ORCSAGECHKAREA
-                   MOVE    SPA-HOSPID          TO  AGECHK-HOSPID
+      *************MOVE    SPA-HOSPID          TO  AGECHK-HOSPID
+                   MOVE    SPA-HOSPNUM         TO  AGECHK-HOSPNUM
                    MOVE    SPA-NAI-PTID        TO  AGECHK-PTID
                    MOVE    SPA-NAI-BIRTHDAY    TO  AGECHK-BIRTHDAY
                    MOVE    SPA-NAI-KJNYMD      TO  AGECHK-SRYYMD
@@ -1418,14 +1420,15 @@
       *    Æþ±¡´µ¼Ô¤ÎÏ·¿ÍÊÝ¸±È½Äê
            INITIALIZE                       HKNCOMBI-REC
       *
-           MOVE    SPA-HOSPID          TO   COMB-HOSPID
+      *****MOVE    SPA-HOSPID          TO   COMB-HOSPID
            MOVE    SPA-NAI-PTID        TO   COMB-PTID
            MOVE    SPA-GMN-HKNCOMBI    TO   COMB-HKNCOMBINUM
            PERFORM 900-HKNCOMBI-KEY-SEL-SEC 
       *
       *    Æþ±¡´µ¼Ô¤ÎÇ¯Îð·×»»
            INITIALIZE ORCSAGECHKAREA
-           MOVE    SPA-HOSPID          TO  AGECHK-HOSPID
+      *****MOVE    SPA-HOSPID          TO  AGECHK-HOSPID
+           MOVE    SPA-HOSPNUM         TO  AGECHK-HOSPNUM
            MOVE    SPA-NAI-PTID        TO  AGECHK-PTID
            MOVE    SPA-NAI-KJNYMD      TO  AGECHK-SRYYMD
            MOVE    SPA-NAI-BIRTHDAY    TO  AGECHK-BIRTHDAY
@@ -1448,7 +1451,7 @@
       *
       *    ´µ¼Ô¸øÈñ¾ðÊó¤«¤éÏ·¿ÍÊÝ·ò¤ÎÅÐÏ¿¥Á¥§¥Ã¥¯
            INITIALIZE                      PTKOHINF-REC
-           MOVE    SPA-HOSPID          TO  PTKOH-HOSPID
+      *****MOVE    SPA-HOSPID          TO  PTKOH-HOSPID
            MOVE    SPA-NAI-PTID        TO  PTKOH-PTID
            MOVE    "027"               TO  PTKOH-KOHNUM
            MOVE    SPA-NAI-KJNYMD      TO  PTKOH-TEKSTYMD
@@ -1483,8 +1486,10 @@
       *
                COMPUTE IDX-MAX =   IDX-MAX +   1
       *
-               MOVE    ORDER-HOSPID
-                                   TO  SPA-NAI-TALLHOSPID    (IDX-MAX)
+      *********MOVE    ORDER-HOSPID
+      *********                    TO  SPA-NAI-TALLHOSPID    (IDX-MAX)
+               MOVE    ORDER-HOSPNUM
+                                   TO  SPA-NAI-TALLHOSPNUM   (IDX-MAX)
                MOVE    ORDER-KARTE-KEY
                                    TO  SPA-NAI-TALLKARTE-KEY (IDX-MAX)
                MOVE    ORDER-ORDERNUM
@@ -1911,8 +1916,10 @@
            INITIALIZE                  SODR-AREA
            INITIALIZE                  LNK-ODRITEM-REC
       *
-           MOVE    SPA-NAI-TALLHOSPID    (SPA-GMN-ALLIDOLST-SEL)
-                                   TO  SODR-HOSPID
+      *****MOVE    SPA-NAI-TALLHOSPID    (SPA-GMN-ALLIDOLST-SEL)
+      *****                        TO  SODR-HOSPID
+           MOVE    SPA-NAI-TALLHOSPNUM   (SPA-GMN-ALLIDOLST-SEL)
+                                   TO  SODR-HOSPNUM
            MOVE    SPA-NAI-TALLKARTE-KEY (SPA-GMN-ALLIDOLST-SEL)
                                    TO  SODR-KARTE-KEY
            MOVE    SPA-NAI-TALLORDERNUM (SPA-GMN-ALLIDOLST-SEL)
@@ -2351,7 +2358,7 @@
            IF    ( FLG-HIZUKE-ERR  =   ZERO )
                MOVE    WRK-SYMD        TO  ITEM-LASTNYINYMD
                INITIALIZE                  PTNYUINRRK-REC
-               MOVE    SPA-HOSPID      TO  PTNYUINRRK-HOSPID
+      *********MOVE    SPA-HOSPID      TO  PTNYUINRRK-HOSPID
                MOVE    SPA-NAI-PTID    TO  PTNYUINRRK-PTID
                MOVE    ITEM-LASTNYINYMD
                                       TO  PTNYUINRRK-NYUINYMD
@@ -2763,7 +2770,8 @@
       *
            IF    ( SPA-NAI-BIRTHDAY    NOT =   ZERO )
                INITIALIZE ORCSAGECHKAREA
-               MOVE    SPA-HOSPID          TO  AGECHK-HOSPID
+      *********MOVE    SPA-HOSPID          TO  AGECHK-HOSPID
+               MOVE    SPA-HOSPNUM         TO  AGECHK-HOSPNUM
                MOVE    SPA-NAI-PTID        TO  AGECHK-PTID
                MOVE    SPA-SYSYMD          TO  AGECHK-SRYYMD
                MOVE    SPA-NAI-BIRTHDAY    TO  AGECHK-BIRTHDAY
@@ -3251,7 +3259,7 @@
            END-IF
       *
            INITIALIZE                  PTNYUINRRK-REC
-           MOVE    SPA-HOSPID      TO  PTNYUINRRK-HOSPID
+      *****MOVE    SPA-HOSPID      TO  PTNYUINRRK-HOSPID
            MOVE    SPA-NAI-PTID    TO  PTNYUINRRK-PTID
            MOVE    SPA-GMN-SHONUM  TO  PTNYUINRRK-SHONUM
            PERFORM 900-PTNYUINRRK-KEY30-SEL-SEC
@@ -3925,7 +3933,7 @@
                                            TO  ORDER-KARTE-KEY
            MOVE    SPA-NAI-TALLORDERNUM  (IDX-LST)
                                            TO  ORDER-ORDERNUM
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM             TO  ORDER-HOSPNUM
            MOVE    ORDER-REC               TO  MCPDATA-REC
            MOVE    "tbl_order"             TO  MCP-TABLE
            MOVE    "upd1"                  TO  MCP-PATHNAME
@@ -4515,7 +4523,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    "01"        TO  LNK-ODRITEM-ITEM (IDX-ITM)
       *
                INITIALIZE                  PTNYUINRRK-REC
-               MOVE    SPA-HOSPID      TO  PTNYUINRRK-HOSPID
+      *********MOVE    SPA-HOSPID      TO  PTNYUINRRK-HOSPID
                MOVE    SPA-NAI-PTID    TO  PTNYUINRRK-PTID
                MOVE    ALL "9"         TO  PTNYUINRRK-NYUINYMD
                MOVE    SPA-GMN-SHONUM  TO  PTNYUINRRK-SHONUM
@@ -4753,7 +4761,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        2300-SODR-COMMON-SET-SEC       SECTION.
       *
-           MOVE    SPA-HOSPID          TO  SODR-HOSPID
+      *****MOVE    SPA-HOSPID          TO  SODR-HOSPID
+           MOVE    SPA-HOSPNUM         TO  SODR-HOSPNUM
            MOVE    ORDER-KARTE-KEY     TO  SODR-KARTE-KEY
            MOVE    ORDER-ORDERNUM      TO  SODR-ORDERNUM
            MOVE    ORDER-NYUGAIKBN     TO  SODR-NYUGAIKBN
@@ -4784,7 +4793,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            COMPUTE    IDX-ITM  =   IDX-ITM +   1
       *
-           MOVE    ORDER-HOSPID        TO  LNK-ODRITEM-HOSPID  (IDX-ITM)
+      *****MOVE    ORDER-HOSPID        TO  LNK-ODRITEM-HOSPID  (IDX-ITM)
+           MOVE    ORDER-HOSPNUM       TO  LNK-ODRITEM-HOSPNUM (IDX-ITM)
            MOVE    ORDER-KARTE-KEY     TO  LNK-ODRITEM-KARTE-KEY
                                                                (IDX-ITM)
            MOVE    ORDER-ORDERNUM      TO  LNK-ODRITEM-ORDERNUM(IDX-ITM)
@@ -5666,7 +5676,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
              OR  ( BAK-AGE-KJNYMD      NOT =   SPA-NAI-KJNYMD ))
       *
                INITIALIZE                  ORCSAGECHKAREA
-               MOVE    SPA-HOSPID          TO  AGECHK-HOSPID
+      *********MOVE    SPA-HOSPID          TO  AGECHK-HOSPID
+               MOVE    SPA-HOSPNUM         TO  AGECHK-HOSPNUM
                MOVE    SPA-NAI-PTID        TO  AGECHK-PTID
                MOVE    SPA-NAI-KJNYMD      TO  AGECHK-SRYYMD
                MOVE    SPA-NAI-BIRTHDAY    TO  AGECHK-BIRTHDAY
@@ -5776,7 +5787,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    ZERO            TO  FLG-SYSKANRI
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
            MOVE    "tbl_syskanri"  TO  MCP-TABLE
            MOVE    "key10"         TO  MCP-PATHNAME
@@ -5803,7 +5814,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    ZERO            TO  FLG-SYSKANRI
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
            MOVE    "tbl_syskanri"  TO  MCP-TABLE
            MOVE    "key2"          TO  MCP-PATHNAME
@@ -5845,7 +5856,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    ZERO                TO  FLG-HKNCOMBI
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
            MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
            MOVE    "tbl_hkncombi"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -5872,7 +5883,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    ZERO                TO  FLG-PTKOHINF
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PTKOH-HOSPNUM
            MOVE    PTKOHINF-REC        TO  MCPDATA-REC
            MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
            MOVE    "key6"              TO  MCP-PATHNAME
@@ -5904,7 +5915,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    WRK-TNS-SRYCD   TO  TNS-SRYCD
            MOVE    WRK-TNS-KJNYMD  TO  TNS-YUKOSTYMD
                                        TNS-YUKOEDYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM     TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC   TO  MCPDATA-REC
       *
            MOVE    "tbl_tensu"     TO  MCP-TABLE
@@ -5934,9 +5945,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ZERO            TO  FLG-ORDER
       *
            INITIALIZE                  ORDER-REC
-           MOVE    SPA-HOSPID      TO  ORDER-HOSPID
+      *****MOVE    SPA-HOSPID      TO  ORDER-HOSPID
            MOVE    SPA-NAI-UKEYMD  TO  ORDER-UKEYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM     TO  ORDER-HOSPNUM
            MOVE    ORDER-REC       TO  MCPDATA-REC
            MOVE    "tbl_order"     TO  MCP-TABLE
            MOVE    "key3"          TO  MCP-PATHNAME
@@ -5978,9 +5989,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ZERO            TO  FLG-ORDER
       *
            INITIALIZE                  ORDER-REC
-           MOVE    SPA-HOSPID      TO  ORDER-HOSPID
+      *****MOVE    SPA-HOSPID      TO  ORDER-HOSPID
            MOVE    SPA-GMN-PTNUM   TO  ORDER-PTNUM
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM     TO  ORDER-HOSPNUM
            MOVE    ORDER-REC       TO  MCPDATA-REC
            MOVE    "tbl_order"     TO  MCP-TABLE
            MOVE    "key4"          TO  MCP-PATHNAME
@@ -6022,10 +6033,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ZERO                TO  FLG-ORDER
       *
            INITIALIZE                      ORDER-REC
-           MOVE    SPA-HOSPID          TO  ORDER-HOSPID
+      *****MOVE    SPA-HOSPID          TO  ORDER-HOSPID
            MOVE    SPA-NAI-KARTE-KEY   TO  ORDER-KARTE-KEY
            MOVE    SPA-NAI-ORDERNUM    TO  ORDER-ORDERNUM
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  ORDER-HOSPNUM
            MOVE    ORDER-REC           TO  MCPDATA-REC
            MOVE    "tbl_order"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -6052,10 +6063,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ZERO            TO  FLG-ODRITEM
       *
            INITIALIZE                      ODRITEM-REC
-           MOVE    SPA-HOSPID          TO  ODRITEM-HOSPID
+      *****MOVE    SPA-HOSPID          TO  ODRITEM-HOSPID
            MOVE    SPA-NAI-KARTE-KEY   TO  ODRITEM-KARTE-KEY
            MOVE    SPA-NAI-ORDERNUM    TO  ODRITEM-ORDERNUM
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  ODRITEM-HOSPNUM
            MOVE    ODRITEM-REC     TO  MCPDATA-REC
            MOVE    "tbl_odritem"   TO  MCP-TABLE
            MOVE    "key4"          TO  MCP-PATHNAME
@@ -6094,9 +6105,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        900-PTINF-KEY-SEL-SEC           SECTION.
       *
            INITIALIZE                  PTINF-REC
-           MOVE    SPA-HOSPID      TO  PTINF-HOSPID
+      *****MOVE    SPA-HOSPID      TO  PTINF-HOSPID
            MOVE    WRK-PTINF-PTID  TO  PTINF-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
            MOVE    PTINF-REC       TO  MCPDATA-REC
            MOVE    "tbl_ptinf"     TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
@@ -6123,10 +6134,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ZERO            TO  FLG-PTNYUINRRK
       *
            INITIALIZE                  PTNYUINRRK-REC
-           MOVE    SPA-HOSPID      TO  PTNYUINRRK-HOSPID
+      *****MOVE    SPA-HOSPID      TO  PTNYUINRRK-HOSPID
            MOVE    SPA-NAI-PTID    TO  PTNYUINRRK-PTID
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM     TO  PTNYUINRRK-HOSPNUM
            MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
@@ -6153,12 +6164,12 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ZERO                TO  FLG-PTNYUINRRK
       *
            INITIALIZE                  PTNYUINRRK-REC
-           MOVE    SPA-HOSPID      TO  PTNYUINRRK-HOSPID
+      *****MOVE    SPA-HOSPID      TO  PTNYUINRRK-HOSPID
            MOVE    SPA-NAI-PTID    TO  PTNYUINRRK-PTID
            MOVE    SPA-NAI-HIDOYMD TO  PTNYUINRRK-TENNYUYMD
                                        PTNYUINRRK-TENSTUYMD
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
            MOVE    "key42"             TO  MCP-PATHNAME
@@ -6184,7 +6195,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    ZERO                TO  FLG-PTNYUINRRK
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
            MOVE    "key30"             TO  MCP-PATHNAME
@@ -6210,7 +6221,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    ZERO                TO  FLG-PTNYUINRRK
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
            MOVE    "key35"             TO  MCP-PATHNAME
@@ -6236,7 +6247,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    ZERO                TO  FLG-PTNYUINRRK
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
            MOVE    "key39"             TO  MCP-PATHNAME
@@ -6263,9 +6274,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ZERO                TO  FLG-PTNUM
       *
            INITIALIZE                  PTNUM-REC
-           MOVE    SPA-HOSPID          TO  PTNUM-HOSPID
+      *****MOVE    SPA-HOSPID          TO  PTNUM-HOSPID
            MOVE    WRK-PTNUM-PTID      TO  PTNUM-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PTNUM-HOSPNUM
            MOVE    PTNUM-REC           TO  MCPDATA-REC
            MOVE    "tbl_ptnum"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -6297,13 +6308,13 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            ELSE
       *
                INITIALIZE                  PTNUM-REC
-               MOVE    SPA-HOSPID          TO  PTNUM-HOSPID
+      *********MOVE    SPA-HOSPID          TO  PTNUM-HOSPID
                STRING  WRK-PTNUM-PTNUM     DELIMITED   BY  SPACE
                        "%"                 DELIMITED   BY  SIZE
                INTO    PTNUM-PTNUM
                END-STRING
       *
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
+               MOVE    SPA-HOSPNUM         TO  PTNUM-HOSPNUM
                MOVE    PTNUM-REC           TO  MCPDATA-REC
                MOVE    "tbl_ptnum"         TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
@@ -6330,7 +6341,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    ZERO                TO  FLG-SYSKANRI
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key7"              TO  MCP-PATHNAME
@@ -6352,7 +6363,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    ZERO                TO  FLG-SYSKANRI
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key7"              TO  MCP-PATHNAME
@@ -6373,9 +6384,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
            IF    ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
@@ -6390,9 +6402,10 @@ grpsys                            SPA-AREA
        911-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
            .
       *
@@ -6404,9 +6417,10 @@ grpsys                            SPA-AREA
        910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
            .
       *
@@ -6418,9 +6432,10 @@ grpsys                            SPA-AREA
        910-DBCLOSECURSOR-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"     USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
       *
            .
       *
@@ -6432,9 +6447,10 @@ grpsys                            SPA-AREA
        910-DBDELETE-SEC                 SECTION.
       *
            MOVE    "DBDELETE"          TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
            .
       *
@@ -6446,9 +6462,10 @@ grpsys                            SPA-AREA
        910-DBINSERT-SEC                SECTION.
       *
            MOVE    "DBINSERT"          TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
            .
       *
@@ -6460,9 +6477,10 @@ grpsys                            SPA-AREA
        910-DBUPDATE-SEC                SECTION.
       *
            MOVE    "DBUPDATE"          TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
            .
       *
@@ -6474,9 +6492,10 @@ grpsys                            SPA-AREA
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"          TO  MCP-FUNC.
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL   "ORCDBMAIN"          USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
        900-PUT-WINDOW-EXT.
            EXIT.

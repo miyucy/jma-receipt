@@ -409,13 +409,13 @@
            MOVE    ZERO            TO  FLG-PTNYUINRRK
            INITIALIZE  PTNYUINRRK-REC
       *
-           MOVE    SPA-HOSPID      TO  PTNYUINRRK-HOSPID
+      *****MOVE    SPA-HOSPID      TO  PTNYUINRRK-HOSPID
            MOVE    SPA-I01-I02-PTID
                                    TO  PTNYUINRRK-PTID
            MOVE    SPA-I01-I02-PTRRKNUM
                                    TO  PTNYUINRRK-RRKNUM
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM     TO  PTNYUINRRK-HOSPNUM
            MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
            MOVE    "PTNYUINRRK-KEY4"
                                    TO  WRK-DBPATH
@@ -534,7 +534,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                    TO  SYS-KBNCD
            MOVE    PTNYUINRRK-TENNYUYMD
                                    TO  ORC-DBYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
       *
       *    システム管理マスタ検索処理
@@ -588,7 +588,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    "1005"          TO  SYS-KANRICD
            MOVE    WRK-KBNCD       TO  SYS-KBNCD
            MOVE    SPA-SYSYMD      TO  ORC-DBYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY10"
                                    TO  WRK-DBPATH
@@ -623,7 +623,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    PTNYUINRRK-TAIINYMD
                                    TO  ORC-DBYMD
            END-IF
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
       *
       *    システム管理マスタ検索処理
@@ -655,7 +655,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    WRK-KBNCD       TO  SYS-KBNCD
            MOVE    PTNYUINRRK-TAIINYMD
                                    TO  ORC-DBYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY10"
                                    TO  WRK-DBPATH
@@ -681,12 +681,12 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    他院付加情報検索処理
            INITIALIZE  PTTAINFUKA-REC
-           MOVE    SPA-HOSPID      TO  PTTAINFUKA-HOSPID
+      *****MOVE    SPA-HOSPID      TO  PTTAINFUKA-HOSPID
            MOVE    SPA-I01-I02-PTID
                                    TO  PTTAINFUKA-PTID
            MOVE    SPA-I01-I02-PTRRKNUM
                                    TO  PTTAINFUKA-RRKNUM
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM     TO  PTTAINFUKA-HOSPNUM
            MOVE    PTTAINFUKA-REC  TO  MCPDATA-REC
            MOVE    "PTTAINFUKA-KEY"
                                    TO  WRK-DBPATH
@@ -715,13 +715,13 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    入院履歴検索
            INITIALIZE  PTNYUINRRK-REC
       *
-           MOVE    SPA-HOSPID      TO  PTNYUINRRK-HOSPID
+      *****MOVE    SPA-HOSPID      TO  PTNYUINRRK-HOSPID
            MOVE    SPA-I01-I02-PTID
                                    TO  PTNYUINRRK-PTID
            MOVE    SPA-I01-I02-PTRRKNUM
                                    TO  PTNYUINRRK-RRKNUM
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM     TO  PTNYUINRRK-HOSPNUM
            MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
            MOVE    "PTNYUINRRK-KEY5"
                                    TO  WRK-DBPATH
@@ -1082,10 +1082,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    患者病名マスタ検索
            INITIALIZE  PTBYOMEI-REC
-           MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
+      *****MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
            MOVE    SPA-I01-I02-PTID
                                        TO  PTBYO-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
            MOVE    "PTBYOMEI-KEY6"     TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC

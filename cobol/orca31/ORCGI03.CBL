@@ -654,14 +654,14 @@
       *    Æþ±¡ÍúÎò¸¡º÷
            MOVE    ZERO            TO  FLG-PTNYUINRRK
            INITIALIZE  PTNYUINRRK-REC
-           MOVE    SPA-HOSPID      TO  PTNYUINRRK-HOSPID
+      *****MOVE    SPA-HOSPID      TO  PTNYUINRRK-HOSPID
            MOVE    SPA-I01-I03-PTID
                                    TO  PTNYUINRRK-PTID
            MOVE    SPA-I01-I03-PTRRKNUM
                                    TO  PTNYUINRRK-RRKNUM
            MOVE    1
                                    TO  PTNYUINRRK-RRKEDANUM
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM     TO  PTNYUINRRK-HOSPNUM
            MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
            MOVE    "PTNYUINRRK-KEY"
                                    TO  WRK-DBPATH
@@ -738,12 +738,12 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    Â¾±¡ÉÕ²Ã¾ðÊó¸¡º÷½èÍý
            MOVE    ZERO            TO  FLG-TAINFUKA
            INITIALIZE  PTTAINFUKA-REC
-           MOVE    SPA-HOSPID      TO  PTTAINFUKA-HOSPID
+      *****MOVE    SPA-HOSPID      TO  PTTAINFUKA-HOSPID
            MOVE    SPA-I01-I03-PTID
                                    TO  PTTAINFUKA-PTID
            MOVE    SPA-I01-I03-PTRRKNUM
                                    TO  PTTAINFUKA-RRKNUM
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM     TO  PTTAINFUKA-HOSPNUM
            MOVE    PTTAINFUKA-REC  TO  MCPDATA-REC
            MOVE    "PTTAINFUKA-KEY"
                                    TO  WRK-DBPATH
@@ -1231,14 +1231,14 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    ´û¤ËÎò¥Ç¡¼¥¿¤¬Â¸ºß¤¹¤ë¤«¥Á¥§¥Ã¥¯¤¹¤ë
            INITIALIZE              PTNYUINRRK-REC
-           MOVE    SPA-HOSPID      TO  PTNYUINRRK-HOSPID
+      *****MOVE    SPA-HOSPID      TO  PTNYUINRRK-HOSPID
            MOVE    SPA-I01-I03-PTID
                                    TO  PTNYUINRRK-PTID
            MOVE    SPA-I01-I03-PTRRKNUM
                                    TO  PTNYUINRRK-RRKNUM
            MOVE    1
                                    TO  PTNYUINRRK-RRKEDANUM
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM     TO  PTNYUINRRK-HOSPNUM
            MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
            MOVE    "PTNYUINRRK-KEY"
                                    TO  WRK-DBPATH
@@ -1308,21 +1308,21 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *        Æþ±¡ÍúÎò¥Þ¥¹¥¿ÄÉ²Ã
                MOVE    "PTNYUINRRK-KEY"
                                        TO  WRK-DBPATH
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
+               MOVE    SPA-HOSPNUM     TO  PTNYUINRRK-HOSPNUM
                MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
                PERFORM 900-TBL-INSERT-SEC
            WHEN    "UPD"
       *        Æþ±¡ÍúÎò¥Þ¥¹¥¿¹¹¿·
                MOVE    "PTNYUINRRK-KEY"
                                        TO  WRK-DBPATH
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
+               MOVE    SPA-HOSPNUM     TO  PTNYUINRRK-HOSPNUM
                MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
                PERFORM 900-TBL-UPDATE-SEC
            WHEN    "DEL"
       *        Æþ±¡ÍúÎò¥Þ¥¹¥¿ºï½ü
                MOVE    "PTNYUINRRK-DEL1"
                                        TO  WRK-DBPATH
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
+               MOVE    SPA-HOSPNUM     TO  PTNYUINRRK-HOSPNUM
                MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
                PERFORM 900-TBL-DELETE-SEC
            END-EVALUATE
@@ -1347,7 +1347,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            INITIALIZE              PTNYUINRRK-REC
       *
       *    °åÎÅµ¡´Ø£É£Ä
-           MOVE    SPA-HOSPID      TO  PTNYUINRRK-HOSPID
+      *****MOVE    SPA-HOSPID      TO  PTNYUINRRK-HOSPID
       *
       *    ´µ¼Ô£É£Ä
            MOVE    SPA-I01-I03-PTID
@@ -1439,10 +1439,10 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
       *        Æþ±¡ÍúÎò¥Þ¥¹¥¿¸¡º÷
                MOVE    ZERO                TO  FLG-PTNYUINRRK
                INITIALIZE  PTNYUINRRK-REC
-               MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID
+      *********MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID
                MOVE    SPA-I01-I03-PTID
                                            TO  PTNYUINRRK-PTID
-grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
+               MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
                MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
                MOVE    "PTNYUINRRK-KEY6"   TO  WRK-DBPATH
                PERFORM 900-TBL-SELECT-SEC
@@ -1475,12 +1475,12 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    ´û¤Ë¥Ç¡¼¥¿¤¬Â¸ºß¤¹¤ë¤«¥Á¥§¥Ã¥¯
            INITIALIZE  PTTAINFUKA-REC
-           MOVE    SPA-HOSPID  TO  PTTAINFUKA-HOSPID
+      *****MOVE    SPA-HOSPID  TO  PTTAINFUKA-HOSPID
            MOVE    SPA-I01-I03-PTID
                                    TO  PTTAINFUKA-PTID
            MOVE    SPA-I01-I03-PTRRKNUM
                                    TO  PTTAINFUKA-RRKNUM
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM     TO  PTTAINFUKA-HOSPNUM
            MOVE    PTTAINFUKA-REC
                                    TO  MCPDATA-REC
            MOVE    "PTTAINFUKA-KEY"
@@ -1505,7 +1505,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    "PTTAINFUKA-KEY"
                                    TO  WRK-DBPATH
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM     TO  PTTAINFUKA-HOSPNUM
            MOVE    PTTAINFUKA-REC  TO  MCPDATA-REC
       *
            IF   ( WRK-UPDKBN   =   "UPD" )
@@ -1531,7 +1531,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            INITIALIZE              PTTAINFUKA-REC
       *
       *    °åÎÅµ¡´Ø£É£Ä
-           MOVE    SPA-HOSPID      TO  PTTAINFUKA-HOSPID
+      *****MOVE    SPA-HOSPID      TO  PTTAINFUKA-HOSPID
       *    ´µ¼Ô£É£Ä
            MOVE    SPA-I01-I03-PTID
                                    TO  PTTAINFUKA-PTID
@@ -1572,7 +1572,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        4801-PTTAINFUKA-DEL-SEC     SECTION.
       *
            INITIALIZE  PTTAINFUKA-REC
-           MOVE    SPA-HOSPID      TO  PTTAINFUKA-HOSPID
+      *****MOVE    SPA-HOSPID      TO  PTTAINFUKA-HOSPID
            MOVE    SPA-I01-I03-PTID
                                    TO  PTTAINFUKA-PTID
            MOVE    SPA-I01-I03-PTRRKNUM
@@ -1720,7 +1720,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    Æþ±¡ÍúÎò¥Þ¥¹¥¿¸¡º÷
            MOVE    ZERO                TO  FLG-PTNYUINRRK
            INITIALIZE  PTNYUINRRK-REC
-           MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID
+      *****MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID
            MOVE    SPA-I01-I03-PTID
                                        TO  PTNYUINRRK-PTID
            MOVE    SPA-I01-I03-PTRRKNUM
@@ -1729,7 +1729,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                        TO  PTNYUINRRK-NYUINYMD
            MOVE    SPA-NAI-I03-TAIINYMD
                                        TO  PTNYUINRRK-TAIINYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "PTNYUINRRK-KEY7"   TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
@@ -1759,13 +1759,13 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    Æþ±¡ÍúÎò¥Þ¥¹¥¿¸¡º÷
            MOVE    ZERO                TO  FLG-PTNYUINRRK
            INITIALIZE  PTNYUINRRK-REC
-           MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID
+      *****MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID
            MOVE    SPA-I01-I03-PTID
                                        TO  PTNYUINRRK-PTID
            MOVE    SPA-NAI-I03-NYUINYMD
                                        TO  PTNYUINRRK-NYUINYMD
            MOVE    SPA-GMN-I03-SHONUM  TO  PTNYUINRRK-SHONUM
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "PTNYUINRRK-KEY16"  TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
@@ -1800,13 +1800,13 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    Æþ±¡ÍúÎò¥Þ¥¹¥¿¸¡º÷
            MOVE    ZERO                TO  FLG-PTNYUINRRK
            INITIALIZE  PTNYUINRRK-REC
-           MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID
+      *****MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID
            MOVE    SPA-I01-I03-PTID
                                        TO  PTNYUINRRK-PTID
            MOVE    SPA-NAI-I03-TAIINYMD
                                        TO  PTNYUINRRK-NYUINYMD
            MOVE    SPA-GMN-I03-SHONUM  TO  PTNYUINRRK-SHONUM
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "PTNYUINRRK-KEY20"  TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC

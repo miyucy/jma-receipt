@@ -509,9 +509,9 @@
       *
       *    患者マスタ検索
            INITIALIZE  PTINF-REC
-           MOVE    SPA-HOSPID          TO  PTINF-HOSPID
+      *****MOVE    SPA-HOSPID          TO  PTINF-HOSPID
            MOVE    SPA-NAI-I51-PTID    TO  PTINF-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
       *
            MOVE    "PTINF-KEY"         TO  WRK-DBPATH
@@ -1131,10 +1131,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    患者マスタ検索
            INITIALIZE  PTINF-REC
-           MOVE    SPA-HOSPID      TO  PTINF-HOSPID
+      *****MOVE    SPA-HOSPID      TO  PTINF-HOSPID
            MOVE    SPA-NAI-I51-PTID
                                    TO  PTINF-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
            MOVE    PTINF-REC       TO  MCPDATA-REC
       *
            MOVE    "PTINF-KEY"     TO  WRK-DBPATH
@@ -1195,11 +1195,11 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    入院履歴マスタより患者の入院情報を取得
            MOVE    ZERO            TO  FLG-PTNYUINRRK
            INITIALIZE  PTNYUINRRK-REC
-           MOVE    SPA-HOSPID      TO  PTNYUINRRK-HOSPID
+      *****MOVE    SPA-HOSPID      TO  PTNYUINRRK-HOSPID
            MOVE    SPA-NAI-I51-PTID
                                    TO  PTNYUINRRK-PTID
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM     TO  PTNYUINRRK-HOSPNUM
            MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
            MOVE    "PTNYUINRRK-KEY29"
                                    TO  WRK-DBPATH
@@ -1378,10 +1378,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            INITIALIZE  PTTEIKIRRK-REC
       *
            INITIALIZE                      PTTEIKIRRK-REC
-           MOVE    SPA-HOSPID          TO  PTTEIKIRRK-HOSPID
+      *****MOVE    SPA-HOSPID          TO  PTTEIKIRRK-HOSPID
            MOVE    PTNYUINRRK-PTID     TO  PTTEIKIRRK-PTID
            MOVE    PTNYUINRRK-RRKNUM   TO  PTTEIKIRRK-RRKNUM
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PTTEIKIRRK-HOSPNUM
            MOVE    PTTEIKIRRK-REC      TO  MCPDATA-REC
            MOVE    "PTTEIKIRRK-KEY7"   TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
@@ -1409,7 +1409,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    WRK-KANRICD     TO  SYS-KANRICD
            MOVE    WRK-KBNCD       TO  SYS-KBNCD
            MOVE    WRK-KJNYMD      TO  ORC-DBYMD
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY10"
                                    TO  WRK-DBPATH
@@ -1645,9 +1645,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    患者マスタ検索
            INITIALIZE  PTINF-REC
-           MOVE    SPA-HOSPID          TO  PTINF-HOSPID
+      *****MOVE    SPA-HOSPID          TO  PTINF-HOSPID
            MOVE    SPA-NAI-I51-PTID    TO  PTINF-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
       *
            MOVE    "PTINF-KEY"         TO  WRK-DBPATH
@@ -1754,7 +1754,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                        LNK-SYUNOU-REC-T
                                        LNK-SYUDAY-REC-T
       *
-           MOVE    SPA-HOSPID      TO  LNK-S02-HOSPID
+      *****MOVE    SPA-HOSPID      TO  LNK-S02-HOSPID
+           MOVE    SPA-HOSPNUM     TO  LNK-S02-HOSPNUM
            MOVE    "1"             TO  LNK-S02-NYUGAIKBN
            MOVE    SPA-NAI-I51-PTID
                                    TO  LNK-S02-PTID
@@ -1766,7 +1767,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                    TO  LNK-S02-SKYEDYMD
            MOVE    SPA-SYSYMD      TO  LNK-S02-SYSYMD
            MOVE    "1"             TO  LNK-S02-SYORI-KBN
-           DISPLAY "LNK-S02-HOSPID             = " LNK-S02-HOSPID
+      *****DISPLAY "LNK-S02-HOSPID             = " LNK-S02-HOSPID
+           DISPLAY "LNK-S02-HOSPNUM            = " LNK-S02-HOSPNUM
            DISPLAY "LNK-S02-NYUGAIKBN          = " LNK-S02-NYUGAIKBN
            DISPLAY "LNK-S02-PTID               = " LNK-S02-PTID
            DISPLAY "LNK-S02-NYUIN-TSUSAN-NISSU = "
@@ -2306,10 +2308,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                             SPA-GMN-I51-ZENMISYU-GAI
       *    入院分未収集計
            INITIALIZE                       SYUNOU-REC
-           MOVE    SPA-HOSPID          TO   SYU-HOSPID
+      *****MOVE    SPA-HOSPID          TO   SYU-HOSPID
            MOVE    "1"                 TO   SYU-NYUGAIKBN
            MOVE    SPA-NAI-I51-PTID    TO   SYU-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO   SYU-HOSPNUM
            MOVE    SYUNOU-REC          TO   MCPDATA-REC
            MOVE    "SYUNOU-KEY2"       TO   ORC-DBPATH
            PERFORM  910-DB-SELECT-SEC
@@ -2336,10 +2338,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    外来分未収集計
            INITIALIZE                       SYUNOU-REC
-           MOVE    SPA-HOSPID          TO   SYU-HOSPID
+      *****MOVE    SPA-HOSPID          TO   SYU-HOSPID
            MOVE    "2"                 TO   SYU-NYUGAIKBN
            MOVE    SPA-NAI-I51-PTID    TO   SYU-PTID
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO   SYU-HOSPNUM
            MOVE    SYUNOU-REC          TO   MCPDATA-REC
            MOVE    "SYUNOU-KEY2"       TO   ORC-DBPATH
            PERFORM  910-DB-SELECT-SEC
@@ -2480,7 +2482,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-SYSYMD
                                        TO  ORC-DBYMD
       *    システム管理検索
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1013-HOSPNUM
            MOVE    SYS-1013-REC        TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY2"     TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
