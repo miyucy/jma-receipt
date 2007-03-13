@@ -576,6 +576,9 @@
       *    退院再計算区分コンボ
            PERFORM 310-SAIKEISANKBNLST-SET-SEC
       *
+      *    入金の取扱いコンボ
+           PERFORM 310-NYKNKNRKBNLST-SET-SEC
+      *
       *    請求書発行区分コンボ
            PERFORM 310-SKYPRTKBNLST-SET-SEC
       *
@@ -746,7 +749,7 @@
        310-REKI-DISPKBNLST-SET-EXT.
            EXIT.
       *****************************************************************
-      *    入院歴表示コンボ
+      *    再計算区分コンボ
       *****************************************************************
        310-SAIKEISANKBNLST-SET-SEC     SECTION.
       *
@@ -762,6 +765,36 @@
       *
            .
        310-SAIKEISANKBNLST-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    入金の取扱いコンボ
+      *****************************************************************
+       310-NYKNKNRKBNLST-SET-SEC     SECTION.
+      *
+           MOVE    5               TO  SPA-GMN-W24-NYKNKNRKBN-MAX
+      *
+           MOVE    "1"             TO  SPA-GMN-W24-NYKNKNRKBNL (1)
+           MOVE    "今回請求分のみ入金"
+                                   TO  SPA-GMN-W24-NYKNKNRKBNMEIL (1)
+      *
+           MOVE    "2"             TO  SPA-GMN-W24-NYKNKNRKBNL (2)
+           MOVE    "今回分・伝票の古い未収順"
+                                   TO  SPA-GMN-W24-NYKNKNRKBNMEIL (2)
+      *
+           MOVE    "3"             TO  SPA-GMN-W24-NYKNKNRKBNL (3)
+           MOVE    "今回分・伝票の新しい未収順"
+                                   TO  SPA-GMN-W24-NYKNKNRKBNMEIL (3)
+      *
+           MOVE    "4"             TO  SPA-GMN-W24-NYKNKNRKBNL (4)
+           MOVE    "伝票の古い未収順"
+                                   TO  SPA-GMN-W24-NYKNKNRKBNMEIL (4)
+      *
+           MOVE    "5"             TO  SPA-GMN-W24-NYKNKNRKBNL (5)
+           MOVE    "伝票の新しい未収順"
+                                   TO  SPA-GMN-W24-NYKNKNRKBNMEIL (5)
+      *
+           .
+       310-NYKNKNRKBNLST-SET-EXT.
            EXIT.
       *****************************************************************
       *    請求書発行区分コンボ
@@ -1244,6 +1277,16 @@
                                        TO  SPA-GMN-W24-SAIKEISANKBN-G
            END-IF
       *
+      *    入金の取扱い
+           MOVE    SYS-5000-NYKNKNRKBN   TO  WRK-CMB-CD
+           PERFORM 4200-NYKNKNRKBNLST-CHK-SEC
+           IF    ( WRK-CMB-ITM     NOT =   SPACE )
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-W24-NYKNKNRKBN-G
+           ELSE
+               MOVE    SPA-GMN-W24-NYKNKNRKBNLST (1)
+                                       TO  SPA-GMN-W24-NYKNKNRKBN-G
+           END-IF
+      *
       *    請求書発行発行区分
            MOVE    SYS-5000-SKYPRTKBN   TO  WRK-CMB-CD
            PERFORM 4200-SKYPRTKBNLST-CHK-SEC
@@ -1580,6 +1623,9 @@
       *    退院再計算区分
            MOVE    W24-SAIKEISANKBN    TO  SPA-GMN-W24-SAIKEISANKBN-G
       *
+      *    入金の取扱い
+           MOVE    W24-NYKNKNRKBN      TO  SPA-GMN-W24-NYKNKNRKBN-G
+      *
       *    請求書発行区分
            MOVE    W24-SKYPRTKBN       TO  SPA-GMN-W24-SKYPRTKBN-G
       *
@@ -1720,6 +1766,12 @@
       *
       *    退院再計算区分チェック処理
            PERFORM 4101-SAIKEISANKBN-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
+      *    入金の取扱いチェック処理
+           PERFORM 4101-NYKNKNRKBN-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
@@ -2176,6 +2228,9 @@
       *    退院再計算区分
            MOVE    SPA-GMN-W24-SAIKEISANKBN
                                    TO  SYS-5000-SAIKEISANKBN
+      *    入金の取扱い
+           MOVE    SPA-GMN-W24-NYKNKNRKBN
+                                   TO  SYS-5000-NYKNKNRKBN
       *
       *    請求書発行区分
            MOVE    SPA-GMN-W24-SKYPRTKBN
@@ -2834,6 +2889,25 @@
        4101-SAIKEISANKBN-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    入金の取扱いチェック処理
+      *****************************************************************
+       4101-NYKNKNRKBN-CHK-SEC         SECTION.
+      *
+           MOVE    SPA-GMN-W24-NYKNKNRKBN
+                                       TO  WRK-CMB-CD
+           PERFORM 4200-NYKNKNRKBNLST-CHK-SEC
+           IF    ( WRK-CMB-ITM         =   SPACE )
+               MOVE    SPA-GMN-W24-NYKNKNRKBNLST (1)
+                                       TO  SPA-GMN-W24-NYKNKNRKBN-G
+           ELSE
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-W24-NYKNKNRKBN-G
+           END-IF
+      *
+           .
+      *
+       4101-NYKNKNRKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    請求書発行区分チェック処理
       *****************************************************************
        4101-SKYPRTKBN-CHK-SEC       SECTION.
@@ -3123,6 +3197,30 @@
            .
       *
        4200-SAIKEISANKBNLST-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    入金の取扱いコンボチェック処理
+      *****************************************************************
+       4200-NYKNKNRKBNLST-CHK-SEC   SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM-G
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-W24-NYKNKNRKBN-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-W24-NYKNKNRKBNL (IDX-CMB)
+                                       =   WRK-CMB-CD )
+                   MOVE    SPA-GMN-W24-NYKNKNRKBNLST (IDX-CMB)
+                                       TO  WRK-CMB-ITM
+                   MOVE    IDX-CMB     TO  WRK-CMB-IDX
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+      *
+       4200-NYKNKNRKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
       *    請求書発行区分コンボチェック処理
@@ -3535,6 +3633,8 @@
                                    TO  SPA-GMN-W24-REKI-DISPKBN-G
            MOVE    SPA-GMN-W24-SAIKEISANKBNLST (1)
                                    TO  SPA-GMN-W24-SAIKEISANKBN-G
+           MOVE    SPA-GMN-W24-NYKNKNRKBNLST (1)
+                                   TO  SPA-GMN-W24-NYKNKNRKBN-G
            MOVE    SPA-GMN-W24-SKYPRTKBNLST    (2)
                                    TO  SPA-GMN-W24-SKYPRTKBN-G
            MOVE    SPA-GMN-W24-MISYUPRTKBNLST  (1)
@@ -4016,6 +4116,19 @@
       *
            END-PERFORM
       *
+      *    入金の取扱い
+           MOVE    SPA-GMN-W24-NYKNKNRKBN-G
+                                       TO  W24-NYKNKNRKBN
+           MOVE    SPA-GMN-W24-NYKNKNRKBN-MAX
+                                       TO  W24-NYKNKNRKBN-CNT
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   W24-NYKNKNRKBN-CNT )
+      *
+               MOVE    SPA-GMN-W24-NYKNKNRKBNLST (IDX0)
+                                       TO  W24-NYKNKNRKBN-ITM (IDX0)
+      *
+           END-PERFORM
+      *
       *    請求書発行区分
            MOVE    SPA-GMN-W24-SKYPRTKBN-G
                                        TO  W24-SKYPRTKBN
@@ -4306,6 +4419,8 @@
                MOVE    "REKI_DISPKBN"  TO  MCP-WIDGET
            WHEN    056
                MOVE    "SAIKEISANKBN"  TO  MCP-WIDGET
+           WHEN    058
+               MOVE    "NYKNKNRKBN"    TO  MCP-WIDGET
            WHEN    043
                MOVE    "SKYPRTKBN"     TO  MCP-WIDGET
            WHEN    044
@@ -4438,6 +4553,8 @@
            WHEN    "REKI_DISPKBN"
                MOVE    056             TO  SPA-GMN-W24-CUR
            WHEN    "SAIKEISANKBN"
+               MOVE    058             TO  SPA-GMN-W24-CUR
+           WHEN    "NYKNKNRKBN"
                MOVE    043             TO  SPA-GMN-W24-CUR
            WHEN    "SKYPRTKBN"
                MOVE    044             TO  SPA-GMN-W24-CUR
