@@ -25,7 +25,7 @@
         02  I04.
       *     02  I04-FIXED3.
               03  I04-B05-LABEL            PIC X(10).
-              03  I04-B08-LABEL            PIC X(10).
+              03  I04-B07-LABEL            PIC X(10).
               03  I04-LBLTAIINKEISAN-G.
                 04  I04-LBLTAIINKEISAN-STYLE
                                          PIC X(20).
@@ -222,16 +222,34 @@
                   05  I04-VALUE        PIC X(33).
                 04  I04-NYKNHOHO-CNT   PIC S9(9)   BINARY.
                 04  I04-NYKNHOHO-ITM   PIC X(33)   OCCURS  99 TIMES.
+              03  I04-CMB-NYKNKNRKBN.
+                04  I04-NYKNKNRKBN.
+                  05  I04-VALUE          PIC X(42).
+                04  I04-NYKNKNRKBN-CNT   PIC S9(9)   BINARY.
+                04  I04-NYKNKNRKBN-ITM   PIC X(42)   OCCURS  10 TIMES.
               03  I04-HKNTEKMONEY.
                 04  I04-VALUE   PIC X(10).
               03  I04-HKNTEKGAI.
                 04  I04-VALUE   PIC X(10).
-              03  I04-MISYUZAN-GAI.
-                04  I04-VALUE   PIC X(10).
-              03  I04-MISYUZAN-NYU.
-                04  I04-VALUE   PIC X(10).
+              03  I04-MISYUZAN-GAI-G.
+                04  I04-MISYUZAN-GAI-STYLE PIC X(20).
+                04  I04-MISYUZAN-GAI   PIC X(40).
+              03  I04-MISYUZAN-NYU-G.
+                04  I04-MISYUZAN-NYU-STYLE PIC X(20).
+                04  I04-MISYUZAN-NYU   PIC X(10).
+              03  I04-KANYUZAN-NYU-G.
+                04  I04-KANYUZAN-NYU-STYLE PIC X(20).
+                04  I04-KANYUZAN-NYU   PIC X(10).
               03  I04-GOKSKY.
                 04  I04-VALUE   PIC X(10).
+              03  I04-LBLNYUKINMAX.
+                04  I04-VALUE   PIC X(12).
+              03  I04-NYUKINMAX.
+                04  I04-VALUE   PIC X(12).
+              03  I04-LBLNYUKINTTL.
+                04  I04-VALUE   PIC X(12).
+              03  I04-NYUKINTTL.
+                04  I04-VALUE   PIC X(12).
               03  I04-RMSAGAKU.
                 04  I04-VALUE   PIC X(10).
               03  I04-CHOSEI.

@@ -3,7 +3,7 @@ I04	{
 		B05	{
 			label	varchar(10);
 		};
-		B08	{
+		B07	{
 			label	varchar(10);
 		};
 		LBLTAIINKEISAN	{
@@ -304,6 +304,14 @@ I04	{
                         item    varchar(33)[99];
 
                 };
+                CMB_NYKNKNRKBN    {
+                        NYKNKNRKBN        {
+                                value   varchar(42);
+                        };
+                        count   int;
+                        item    varchar(42)[10];
+
+                };
 		HKNTEKMONEY	{
 			value	varchar(10);
 		};
@@ -311,13 +319,31 @@ I04	{
 			value	varchar(10);
 		};
 		MISYUZAN_GAI	{
-			value	varchar(10);
+			style   varchar(20);
+			value	varchar(40);
 		};
 		MISYUZAN_NYU	{
+			style   varchar(20);
+			value	varchar(10);
+		};
+		KANYUKIN	{
+			style   varchar(20);
 			value	varchar(10);
 		};
 		GOKSKY	{
 			value	varchar(10);
+		};
+		LBLNYUKINMAX	{
+			value	varchar(12);
+		};
+		NYUKINMAX	{
+			value	varchar(12);
+		};
+		LBLNYUKINTTL	{
+			value	varchar(12);
+		};
+		NYUKINTTL	{
+			value	varchar(12);
 		};
 		RMSAGAKU	{
 			value	varchar(10);

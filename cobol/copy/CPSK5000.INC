@@ -133,8 +133,10 @@
       *定期請求差額初期表示区分
                05  SYS-5000-TEIKISAGAKUACTKBN
                                            PIC  X(01).
+      *入金の取扱い
+               05  SYS-5000-NYKNKNRKBN     PIC  X(01).
       *予備（２）
-               05                          PIC  X(02).
+               05                          PIC  X(01).
       *端末ＩＤ
            03  SYS-5000-TERMID             PIC  X(16).
       *オペーレータＩＤ

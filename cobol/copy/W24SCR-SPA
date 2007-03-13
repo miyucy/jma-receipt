@@ -143,6 +143,11 @@
                    13  SPA-GMN-W24-SAIKEISANKBN        PIC X(01).
                    13                                  PIC X(01).
                    13  SPA-GMN-W24-SAIKEISANKBNMEI     PIC X(18).
+      *          ∆˛∂‚§ŒºË∞∑§§∂Ë ¨
+                 11  SPA-GMN-W24-NYKNKNRKBN-G.
+                   13  SPA-GMN-W24-NYKNKNRKBN          PIC X(01).
+                   13                                  PIC X(01).
+                   13  SPA-GMN-W24-NYKNKNRKBNMEI       PIC X(38).
       *          ¿¡µ·ΩÒ»Øπ‘∂Ë ¨
                  11  SPA-GMN-W24-SKYPRTKBN-G.
                    13  SPA-GMN-W24-SKYPRTKBN           PIC X(01).
@@ -205,6 +210,14 @@
                        15  SPA-GMN-W24-SAIKEISANKBNL   PIC X(01).
                        15                              PIC X(01).
                        15  SPA-GMN-W24-SAIKEISANKBNMEIL PIC X(18).
+      *
+      *          ∆˛∂‚§ŒºË∞∑§§∂Ë ¨
+                 11  SPA-GMN-W24-NYKNKNRKBNLST-G.
+                   13  SPA-GMN-W24-NYKNKNRKBN-MAX      PIC 9(03).
+                   13  SPA-GMN-W24-NYKNKNRKBNLST       OCCURS  10.
+                       15  SPA-GMN-W24-NYKNKNRKBNL     PIC X(01).
+                       15                              PIC X(01).
+                       15  SPA-GMN-W24-NYKNKNRKBNMEIL  PIC X(38).
       *
       *          ¿¡µ·ΩÒ»Øπ‘∂Ë ¨
                  11  SPA-GMN-W24-SKYPRTKBNLST-G.
