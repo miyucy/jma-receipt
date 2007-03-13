@@ -1,5 +1,5 @@
 tbl_sryacctplus_prv {
-	HOSPNUM				number(2,0);
+	HOSPID				char(24);
 	NYUGAIKBN			char(1);
 	PTID				number(10,0);
 	SRYKA				char(2);
@@ -35,7 +35,6 @@ tbl_sryacctplus_prv {
 	FIRTEN5				number(7,0);
 	SANSOTEN			number(7,0);
 	CHISOTEN			number(7,0);
-	INGAITEN			number(7,0);
 	GRP_ZAINUM1			number(8,0);
 	GRP_ZAINUM2			number(8,0);
 	GRP_ZAINUM3			number(8,0);
@@ -59,7 +58,7 @@ tbl_sryacctplus_prv {
 };
 
 primary	{
-	HOSPNUM,NYUGAIKBN,PTID,SRYKA,SRYYM,ZAINUM,RENNUM;
+	HOSPID,NYUGAIKBN,PTID,SRYKA,SRYYM,ZAINUM,RENNUM;
 };
 
 path	key 	{
@@ -67,7 +66,7 @@ path	key 	{
 		DECLARE tbl_sryacctplus_prv_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_sryacctplus_prv
-			WHERE   HOSPNUM    =   :HOSPNUM
+			WHERE   HOSPID    =   :HOSPID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   SRYKA       =   :SRYKA
@@ -83,7 +82,7 @@ path	key2 	{
 		DECLARE tbl_sryacctplus_prv_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_sryacctplus_prv
-			WHERE   HOSPNUM    =   :HOSPNUM
+			WHERE   HOSPID    =   :HOSPID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   SRYKA       =   :SRYKA
@@ -99,8 +98,7 @@ path	all 	{
 		DECLARE tbl_sryacctplus_prv_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_sryacctplus_prv
-			WHERE   HOSPNUM    =   :HOSPNUM
-			ORDER   BY      HOSPNUM,
+			ORDER   BY      HOSPID,
                                         NYUGAIKBN,
                                         PTID,
                                         SRYKA,
@@ -115,7 +113,7 @@ path	del1 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_sryacctplus_prv
-			WHERE   HOSPNUM    =   :HOSPNUM
+			WHERE   HOSPID    =   :HOSPID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 		;
@@ -126,7 +124,7 @@ path	del2 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_sryacctplus_prv
-			WHERE   HOSPNUM    =   :HOSPNUM
+			WHERE   HOSPID    =   :HOSPID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   SRYKA       =   :SRYKA
@@ -141,7 +139,7 @@ path	key3 	{
 		DECLARE tbl_sryacctplus_prv_key3_csr CURSOR FOR
 		SELECT *
 		FROM tbl_sryacctplus_prv
-			WHERE   HOSPNUM    =   :HOSPNUM
+			WHERE   HOSPID    =   :HOSPID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   SRYYM       =   :SRYYM
@@ -153,8 +151,8 @@ path	key4 	{
 	DBSELECT	{
 		DECLARE tbl_sryacctplus_prv_key4_csr CURSOR FOR
 		SELECT *
-		FROM tbl_sryacctplus_prv
-			WHERE   HOSPNUM   =   :HOSPNUM
+		FROM tbl_sryacctplus
+			WHERE   HOSPID    =   :HOSPID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   SRYYM       =   :SRYYM
