@@ -177,6 +177,7 @@ W121	{
 			item	varchar(24)[5];
 		};
 		HKN_PRTJYUN_COMBO	{
+			state   int;
 			HKN_PRTJYUN	{
 				value	varchar(46);
 			};
